@@ -1,0 +1,143 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.javaee.ddmodel/resources/com/ibm/ws/javaee/ddmodel/internal/resources/DDModelMessages.nlsprops
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Java EE modelling
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+#   Reserving message prefixes CWWKC2251 to CWWKC2450
+
+required.attribute.missing=CWWKC2251E: O elemento {2} n\u00e3o possui o atributo {3} necess\u00e1rio no descritor de implementa\u00e7\u00e3o {0} na linha {1}.
+required.attribute.missing.explanation=Um atributo necess\u00e1rio est\u00e1 ausente do elemento especificado.
+required.attribute.missing.useraction=Corrija o descritor de implementa\u00e7\u00e3o incluindo o atributo ausente.
+
+invalid.root.element=CWWKC2252E: Nome local da raiz inv\u00e1lido {2} no descritor de implementa\u00e7\u00e3o {0} na linha {1}.
+invalid.root.element.explanation=O elemento-raiz est\u00e1 incorreto.
+invalid.root.element.useraction=Valide o arquivo XML para certificar-se de que o elemento-raiz esteja correto.
+
+root.element.not.found=CWWKC2253E: N\u00e3o \u00e9 poss\u00edvel localizar o elemento raiz do descritor de implementa\u00e7\u00e3o {0} na linha {1}.
+root.element.not.found.explanation=O elemento raiz estava ausente no descritor de implementa\u00e7\u00e3o.
+root.element.not.found.useraction=Corrija o descritor de implementa\u00e7\u00e3o.
+
+end.element.not.found=CWWKC2254E: A tag de elemento final do elemento {2} n\u00e3o foi localizada no descritor de implementa\u00e7\u00e3o {0} na linha {1}.
+end.element.not.found.explanation=O descritor de implementa\u00e7\u00e3o n\u00e3o parece ser xml apropriado.
+end.element.not.found.useraction=Corrija o descritor de implementa\u00e7\u00e3o.
+
+incorrect.id.attr.namespace=CWWKC2255E: O namespace do atributo do id do elemento {2} era {3} quando deveria ser {4} no descritor de implementa\u00e7\u00e3o {0} na linha {1}.
+incorrect.id.attr.namespace.explanation=O namespace dos elementos e atributos no descritor de implementa\u00e7\u00e3o n\u00e3o estava consistente.
+incorrect.id.attr.namespace.useraction=Corrija o descritor de implementa\u00e7\u00e3o.
+
+unexpected.attribute=CWWKC2256E: Atributo inesperado {3} encontrado ao analisar o elemento {2} no descritor de implementa\u00e7\u00e3o {0} na linha {1}.
+unexpected.attribute.explanation=Foi encontrado um atributo n\u00e3o definido para estar no descritor de implementa\u00e7\u00e3o.
+unexpected.attribute.useraction=Corrija o descritor de implementa\u00e7\u00e3o.
+
+unexpected.content=CWWKC2257E: Conte\u00fado inesperado encontrado no elemento {2} no descritor de implementa\u00e7\u00e3o {0} na linha {1}.
+unexpected.content.explanation=Foi encontrado um conte\u00fado de texto n\u00e3o definido para estar no descritor de implementa\u00e7\u00e3o.
+unexpected.content.useraction=Corrija o descritor de implementa\u00e7\u00e3o.
+
+incorrect.child.element.namespace=CWWKC2258E:  O namespace do elemento filho {3} do elemento pai {2} {4} n\u00e3o {5} estava no descritor de implementa\u00e7\u00e3o {0} na linha {1}.
+incorrect.child.element.namespace.explanation=O namespace dos elementos e atributos no descritor de implementa\u00e7\u00e3o n\u00e3o estava consistente.
+incorrect.child.element.namespace.useraction=Corrija o descritor de implementa\u00e7\u00e3o.
+
+unexpected.child.element=CWWKC2259E: Elemento filho inesperado {3} do elemento-pai {2} encontrado no descritor de implementa\u00e7\u00e3o {0}, na linha {1}.
+unexpected.child.element.explanation=Foi encontrado um elemento n\u00e3o definido para estar no descritor de implementa\u00e7\u00e3o.
+unexpected.child.element.useraction=Corrija o descritor de implementa\u00e7\u00e3o.
+
+invalid.href.prefix=CWWKC2260E: O valor do atributo href do elemento {2} n\u00e3o inicia com {3} no descritor de implementa\u00e7\u00e3o {0} na linha {1}.
+invalid.href.prefix.explanation=Um atributo href deve iniciar com o caminho correto para o descritor que est\u00e1 sendo referenciado.
+invalid.href.prefix.useraction=Corrija o descritor de implementa\u00e7\u00e3o.
+
+unknown.deployment.descriptor.version=CWWKC2261E: Ocorreu um erro ao tentar determinar a vers\u00e3o do descritor de implementa\u00e7\u00e3o {0}.
+unknown.deployment.descriptor.version.explanation=A vers\u00e3o ou o namespace eram inv\u00e1lidos ou n\u00e3o estavam especificados no elemento raiz do descritor de implementa\u00e7\u00e3o.
+unknown.deployment.descriptor.version.useraction=Verifique e corrija a vers\u00e3o ou o namespace no elemento raiz do descritor de implementa\u00e7\u00e3o.
+
+invalid.deployment.descriptor.namespace=CWWKC2262E:  O servidor n\u00e3o consegue processar a vers\u00e3o {3} e o namespace {2} no descritor de implementa\u00e7\u00e3o {0} na linha {1}.
+invalid.deployment.descriptor.namespace.explanation= A vers\u00e3o especificada e o namespace n\u00e3o s\u00e3o v\u00e1lidos, ou a configura\u00e7\u00e3o do servidor n\u00e3o possui um recurso que pode processar a vers\u00e3o e o namespace.
+invalid.deployment.descriptor.namespace.useraction= Verifique e corrija a vers\u00e3o ou o namespace no elemento raiz do descritor de implementa\u00e7\u00e3o, ou verifique e corrija os recursos na configura\u00e7\u00e3o do servidor.
+
+invalid.deployment.descriptor.version=CWWKC2263E:  O atributo de vers\u00e3o {2} especificado no descritor de implementa\u00e7\u00e3o {0} na linha {1} n\u00e3o \u00e9 v\u00e1lido.
+invalid.deployment.descriptor.version.explanation=Uma vers\u00e3o inv\u00e1lida foi especificada no elemento raiz do descritor de implementa\u00e7\u00e3o.
+invalid.deployment.descriptor.version.useraction=Verifique e corrija o n\u00famero da vers\u00e3o no elemento raiz do descritor de implementa\u00e7\u00e3o.
+
+missing.deployment.descriptor.namespace=CWWKC2264E:  Ocorreu um erro ao tentar determinar o namespace do descritor de implementa\u00e7\u00e3o {0} na linha {1}.
+missing.deployment.descriptor.namespace.explanation=Um namespace inv\u00e1lido foi especificado no elemento raiz do descritor de implementa\u00e7\u00e3o.
+missing.deployment.descriptor.namespace.useraction=Verifique e corrija o namespace no elemento raiz do descritor de implementa\u00e7\u00e3o.
+
+missing.deployment.descriptor.version=CWWKC2265E:  Ocorreu um erro ao tentar determinar a vers\u00e3o do descritor de implementa\u00e7\u00e3o {0} na linha {1}.
+missing.deployment.descriptor.version.explanation=A vers\u00e3o n\u00e3o estava especificada no elemento raiz do descritor de implementa\u00e7\u00e3o.
+missing.deployment.descriptor.version.useraction=Verifique e corrija a vers\u00e3o no elemento raiz do descritor de implementa\u00e7\u00e3o.
+
+at.most.one.occurrence=CWWKC2266E: Deve haver no m\u00e1ximo um elemento filho {3} do elemento-pai {2} no descritor de implementa\u00e7\u00e3o {0} na linha {1}.
+at.most.one.occurrence.explanation=Alguns elementos no descritor de implementa\u00e7\u00e3o t\u00eam permiss\u00e3o para aparecer somente uma vez, se presentes.
+at.most.one.occurrence.useraction=Corrija o descritor de implementa\u00e7\u00e3o.
+
+required.method.element.missing=CWWKC2267E: O elemento {2} deve ter pelo menos um elemento filho {3} definido no descritor de implementa\u00e7\u00e3o {0} na linha {1}.
+required.method.element.missing.explanation=Um elemento filho necess\u00e1rio est\u00e1 ausente no elemento pai especificado. 
+required.method.element.missing.useraction=Corrija o descritor de implementa\u00e7\u00e3o incluindo o elemento filho necess\u00e1rio.
+
+runasmode.missing.specifiedID.element=CWWKC2268E:  Quando um atributo de modo do elemento <run-as-mode> for configurado como SPECIFIED_IDENTITY no descritor de implementa\u00e7\u00e3o {0} na linha {1}, o elemento filho <specified-identity> dever\u00e1 ser definido.
+runasmode.missing.specifiedID.element.explanation=O elemento filho <specified-identity> est\u00e1 ausente no elemento <run-as-mode> que possui o modo configurado como SPECIFIED_IDENTITY.
+runasmode.missing.specifiedID.element.useraction=Corrija o descritor de implementa\u00e7\u00e3o incluindo o elemento filho necess\u00e1rio ou altere o modo.
+
+found.duplicate.ejbname=CWWKC2269E: O atributo de nome para todos os elementos bean <session> e <message-driven> deve ser exclusivo. Localizado nome duplicado {1} no descritor de implementa\u00e7\u00e3o {0}.
+found.duplicate.ejbname.explanation=Todos os nomes de beans de sess\u00e3o e acionados por mensagens devem ser exclusivos. O nome de bean especificado \u00e9 usado mais de uma vez.
+found.duplicate.ejbname.useraction=Corrija o descritor de implementa\u00e7\u00e3o renomeando qualquer nome de enterprise bean duplicado.
+
+found.duplicate.attribute.value=CWWKC2270E: O atributo {2} para todos os elementos {1} deve ser exclusivo. Localizado nome duplicado {3} no descritor de implementa\u00e7\u00e3o {0}.
+found.duplicate.attribute.value.explanation=O valor do atributo especificado deve ser exclusivo em todos os elementos do mesmo tipo. 
+found.duplicate.attribute.value.useraction=Corrija o descritor de implementa\u00e7\u00e3o renomeando qualquer valor de atributo duplicado.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path name for the module
+# -----------------------------------------------------------------------
+BVKEY_NOT_A_BEAN_VALIDATION_XML=CWWKC2271W: Um arquivo validation.xml foi encontrado para o m\u00f3dulo {0}. Entretanto, esse arquivo validation.xml n\u00e3o est\u00e1 configurado para valida\u00e7\u00e3o; portanto, esse arquivo XML ser\u00e1 ignorado.
+BVKEY_NOT_A_BEAN_VALIDATION_XML.explanation=O BeanValidationService n\u00e3o pode criar um ValidatorFactory devido a um erro ao analisar o arquivo validation.xml com o arquivo de esquema validation-configuration-1.0.xsd. Esse erro pode indicar que o arquivo validation.xml n\u00e3o se destina ao uso pelo tempo de execu\u00e7\u00e3o da Valida\u00e7\u00e3o de Bean; portanto, esse arquivo XML ser\u00e1 ignorado.
+BVKEY_NOT_A_BEAN_VALIDATION_XML.useraction=Se o arquivo validation.xml n\u00e3o for para criar uma inst\u00e2ncia ValidatorFactory, ent\u00e3o ignore a mensagem. No entanto, se o arquivo validation.xml for destinado a criar uma inst\u00e2ncia ValidatorFactory, ent\u00e3o haver\u00e1 um problema.  Ative o rastreio de tempo de execu\u00e7\u00e3o da Valida\u00e7\u00e3o de Bean no servidor de aplicativos, pare o aplicativo, reinicie o aplicativo e examine o arquivo de sa\u00edda de rastreio para obter um evento de rastreio, tal como: Exce\u00e7\u00e3o inesperada ao tentar desserializar o arquivo validation.xml. Examine o rastreio de pilha de exce\u00e7\u00f5es para obter assist\u00eancia para depura\u00e7\u00e3o.
+
+xml.error=CWWKC2272E: Ocorreu um erro ao fazer a an\u00e1lise sint\u00e1tica do descritor de implementa\u00e7\u00e3o {0} na linha {1}. A mensagem de erro era: {2}
+xml.error.explanation=Ocorreu um erro ao fazer a an\u00e1lise sint\u00e1tica do descritor de implementa\u00e7\u00e3o XML. Consulte a mensagem de erro para obter explica\u00e7\u00e3o adicional.
+xml.error.useraction=Corrija o descritor de implementa\u00e7\u00e3o para remover o erro. 
+
+invalid.enum.value=CWWKC2273E: O valor {2} no descritor de implementa\u00e7\u00e3o {0} na linha {1} n\u00e3o \u00e9 v\u00e1lido. Os valores v\u00e1lidos s\u00e3o: {3}
+invalid.enum.value.explanation=O descritor de implementa\u00e7\u00e3o especifica um valor que n\u00e3o \u00e9 v\u00e1lido.
+invalid.enum.value.useraction=Corrija o descritor de implementa\u00e7\u00e3o para usar um dos valores esperados.
+
+invalid.int.value=CWWKC2274E: O valor {2} no descritor de implementa\u00e7\u00e3o {0} na linha {1} n\u00e3o \u00e9 um n\u00famero inteiro v\u00e1lido.
+invalid.int.value.explanation=O descritor de implementa\u00e7\u00e3o especifica um valor que n\u00e3o \u00e9 um n\u00famero no intervalo de -2147483648 a 2147483647.
+invalid.int.value.useraction=Corrija o descritor de implementa\u00e7\u00e3o para usar um n\u00famero inteiro v\u00e1lido.
+
+invalid.long.value=CWWKC2275E: O valor {2} no descritor de implementa\u00e7\u00e3o {0} na linha {1} n\u00e3o \u00e9 um n\u00famero longo v\u00e1lido.
+invalid.long.value.explanation=O descritor de implementa\u00e7\u00e3o especifica um valor que n\u00e3o \u00e9 um n\u00famero no intervalo de -9223372036854775808 a 9223372036854775807.
+invalid.long.value.useraction=Corrija o descritor de implementa\u00e7\u00e3o para usar um n\u00famero longo v\u00e1lido.
+
+module.name.not.specified=CWWKC2276E: O elemento {0} deve especificar um atributo de nome de m\u00f3dulo.
+module.name.not.specified.explanation=A configura\u00e7\u00e3o de liga\u00e7\u00e3o e extens\u00e3o para m\u00f3dulos EJB e da web devem conter um atributo moduleName que especifique o m\u00f3dulo ao qual a configura\u00e7\u00e3o se aplica. 
+module.name.not.specified.useraction=Inclua um atributo moduleName no elemento web-bnd, web-ext, ejb-bnd ou ejb-ext. 
+
+module.name.invalid=CWWKC2277E: Um ou mais nomes de m\u00f3dulo no elemento {1} s\u00e3o inv\u00e1lidos. O nome ou os nomes de m\u00f3dulo inv\u00e1lidos s\u00e3o {0}.
+module.name.invalid.explanation=A configura\u00e7\u00e3o de liga\u00e7\u00e3o e extens\u00e3o para m\u00f3dulos da web devem especificar um atributo moduleName v\u00e1lido. Pelo menos uma configura\u00e7\u00e3o especificou um nome de m\u00f3dulo inv\u00e1lido. O nome do m\u00f3dulo deve ser o nome do archive que cont\u00e9m o aplicativo da web ou EJB.
+module.name.invalid.useraction=Corrija o atributo moduleName na configura\u00e7\u00e3o de liga\u00e7\u00e3o ou extens\u00e3o. 

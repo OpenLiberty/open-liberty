@@ -1,0 +1,143 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.javaee.ddmodel/resources/com/ibm/ws/javaee/ddmodel/internal/resources/DDModelMessages.nlsprops
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Java EE modelling
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+#   Reserving message prefixes CWWKC2251 to CWWKC2450
+
+required.attribute.missing=CWWKC2251E: Al elemento {2} le falta el atributo necesario {3} en el descriptor de despliegue {0} en la l\u00ednea {1}.
+required.attribute.missing.explanation=Falta un atributo necesario en el elemento especificado.
+required.attribute.missing.useraction=Corrija el descriptor de despliegue a\u00f1adiendo el atributo que falta.
+
+invalid.root.element=CWWKC2252E: Nombre local ra\u00edz no v\u00e1lido {2} en el descriptor de despliegue {0} en la l\u00ednea {1}.
+invalid.root.element.explanation=El elemento ra\u00edz es incorrecto.
+invalid.root.element.useraction=Valide el archivo xml para asegurarse de que el elemento ra\u00edz es correcto.
+
+root.element.not.found=CWWKC2253E: No se puede ubicar el elemento ra\u00edz del descriptor de despliegue {0} en la l\u00ednea {1}.
+root.element.not.found.explanation=Falta el elemento ra\u00edz en el descriptor de despliegue.
+root.element.not.found.useraction=Corrija el descriptor de despliegue.
+
+end.element.not.found=CWWKC2254E: No se ha encontrado el c\u00f3digo de elemento final del elemento {2} en el descriptor de despliegue {0} en la l\u00ednea {1}.
+end.element.not.found.explanation=El descriptor de despliegue parece que no tiene el formato xml adecuado.
+end.element.not.found.useraction=Corrija el descriptor de despliegue.
+
+incorrect.id.attr.namespace=CWWKC2255E: El espacio de nombres del atributo id del elemento {2} era {3} cuando deber\u00eda haber sido {4} en el descriptor de despliegue {0} en la l\u00ednea {1}.
+incorrect.id.attr.namespace.explanation=Los espacios de nombres de los elementos y los atributos en el descriptor de despliegue no eran coherentes.
+incorrect.id.attr.namespace.useraction=Corrija el descriptor de despliegue.
+
+unexpected.attribute=CWWKC2256E: Se ha encontrado un atributo inesperado {3} al analizar el elemento {2} en el descriptor de despliegue {0} en la l\u00ednea {1}.
+unexpected.attribute.explanation=Se ha encontrado un atributo que no est\u00e1 definido para estar en el descriptor de despliegue.
+unexpected.attribute.useraction=Corrija el descriptor de despliegue.
+
+unexpected.content=CWWKC2257E: Se ha encontrado un contenido inesperado en el elemento {2} en el descriptor de despliegue {0} en la l\u00ednea {1}.
+unexpected.content.explanation=Se ha encontrado un contenido de texto que no est\u00e1 definido para estar en el descriptor de despliegue.
+unexpected.content.useraction=Corrija el descriptor de despliegue.
+
+incorrect.child.element.namespace=CWWKC2258E: El espacio de nombres del elemento hijo {3} del elemento padre {2} era {4} y no {5} en el descriptor de despliegue {0} en la l\u00ednea {1}.
+incorrect.child.element.namespace.explanation=Los espacios de nombres de los elementos y los atributos en el descriptor de despliegue no eran coherentes.
+incorrect.child.element.namespace.useraction=Corrija el descriptor de despliegue.
+
+unexpected.child.element=CWWKC2259E: Se ha encontrado un elemento hijo inesperado {3} del elemento padre {2} en el descriptor de despliegue {0} en la l\u00ednea {1}.
+unexpected.child.element.explanation=Se ha encontrado un elemento que no est\u00e1 definido para estar en el descriptor de despliegue.
+unexpected.child.element.useraction=Corrija el descriptor de despliegue.
+
+invalid.href.prefix=CWWKC2260E: El valor del atributo href del elemento {2} no empieza por {3} en el descriptor de despliegue {0} en la l\u00ednea {1}.
+invalid.href.prefix.explanation=Un atributo href debe empezar con la v\u00eda de acceso correcta del descriptor al que se hace referencia.
+invalid.href.prefix.useraction=Corrija el descriptor de despliegue.
+
+unknown.deployment.descriptor.version=CWWKC2261E: Se ha producido un error al intentar determinar la versi\u00f3n del descriptor de despliegue {0}.
+unknown.deployment.descriptor.version.explanation=La versi\u00f3n o el espacio de nombres no eran v\u00e1lidos o no se han especificado en el elemento ra\u00edz del descriptor de despliegue.
+unknown.deployment.descriptor.version.useraction=Verifique y corrija la versi\u00f3n o el espacio de nombres en el elemento ra\u00edz del descriptor de despliegue.
+
+invalid.deployment.descriptor.namespace=CWWKC2262E: El servidor no puede procesar la versi\u00f3n {3} y el espacio de nombres {2} en el descriptor de despliegue {0} en la l\u00ednea {1}.
+invalid.deployment.descriptor.namespace.explanation=Es posible que la versi\u00f3n y el espacio de nombres o sean v\u00e1lidos o que la configuraci\u00f3n del servidor no tenga una caracter\u00edstica que pueda procesar la versi\u00f3n y el espacio de nombres.
+invalid.deployment.descriptor.namespace.useraction=Verifique y corrija la versi\u00f3n o el espacio de nombres en el elemento ra\u00edz del descriptor de despliegue o verifique y corrija las caracter\u00edsticas en la configuraci\u00f3n del servidor.
+
+invalid.deployment.descriptor.version=CWWKC2263E: El atributo de versi\u00f3n {2} especificado en el descriptor de despliegue {0} en la l\u00ednea {1} no es v\u00e1lido.
+invalid.deployment.descriptor.version.explanation=Se ha especificado una versi\u00f3n no v\u00e1lida en el elemento ra\u00edz del descriptor de despliegue.
+invalid.deployment.descriptor.version.useraction=Verifique y corrija el n\u00famero de versi\u00f3n en el elemento ra\u00edz del descriptor de despliegue.
+
+missing.deployment.descriptor.namespace=CWWKC2264E: Se ha producido un error al intentar determinar el espacio de nombres del descriptor de despliegue {0} en la l\u00ednea {1}.
+missing.deployment.descriptor.namespace.explanation=Se ha especificado un espacio de nombres no v\u00e1lido en el elemento ra\u00edz del descriptor de despliegue.
+missing.deployment.descriptor.namespace.useraction=Verifique y corrija el espacio de nombres en el elemento ra\u00edz del descriptor de despliegue.
+
+missing.deployment.descriptor.version=CWWKC2265E: Se ha producido un error al intentar determinar la versi\u00f3n del descriptor de despliegue {0} en la l\u00ednea {1}.
+missing.deployment.descriptor.version.explanation=La versi\u00f3n no se ha especificado en el elemento ra\u00edz del descriptor de despliegue.
+missing.deployment.descriptor.version.useraction=Verifique y corrija la versi\u00f3n en el elemento ra\u00edz del descriptor de despliegue.
+
+at.most.one.occurrence=CWWKC2266E: Debe haber como m\u00e1ximo un elemento hijo {3} del elemento padre {2} en el descriptor de despliegue {0} en la l\u00ednea {1}.
+at.most.one.occurrence.explanation=Algunos elementos en el descriptor de despliegue s\u00f3lo pueden aparecer una vez si est\u00e1n presentes.
+at.most.one.occurrence.useraction=Corrija el descriptor de despliegue.
+
+required.method.element.missing=CWWKC2267E: El elemento {2} debe tener al menos un elemento hijo {3} definido en el descriptor de despliegue {0} en la l\u00ednea {1}.
+required.method.element.missing.explanation=Falta un elemento hijo necesario en el elemento padre especificado. 
+required.method.element.missing.useraction=Corrija el descriptor de despliegue a\u00f1adiendo el elemento hijo necesario.
+
+runasmode.missing.specifiedID.element=CWWKC2268E: Cuando se establece un atributo de modalidad del elemento <run-as-mode> en SPECIFIED_IDENTITY en el descriptor de despliegue {0} en la l\u00ednea {1}, debe definirse el elemento hijo <specified-identity>.
+runasmode.missing.specifiedID.element.explanation=Falta el elemento hijo  <specified-identity> del elemento <run-as-mode> que tiene la modalidad establecida en SPECIFIED_IDENTITY.
+runasmode.missing.specifiedID.element.useraction=Corrija el descriptor de despliegue a\u00f1adiendo el elemento hijo necesario o cambie la modalidad.
+
+found.duplicate.ejbname=CWWKC2269E: El atributo de nombre de todos los elementos de bean <session> y <message-driven> debe ser exclusivo. Se ha encontrado un nombre duplicado {1} en el descriptor de despliegue {0}.
+found.duplicate.ejbname.explanation=Todos los nombres de bean controlado por mensaje y de sesi\u00f3n deben ser exclusivos. El nombre de bean especificado se ha utilizado m\u00e1s de una vez.
+found.duplicate.ejbname.useraction=Corrija el descriptor de despliegue cambiando los nombres de enterprise bean duplicados.
+
+found.duplicate.attribute.value=CWWKC2270E: El atributo {2} para todos los elementos {1} debe ser exclusivo. Se ha encontrado un nombre duplicado {3} en el descriptor de despliegue {0}.
+found.duplicate.attribute.value.explanation=El valor del atributo especificado debe ser exclusivo en todos los elementos del mismo tipo. 
+found.duplicate.attribute.value.useraction=Corrija el descriptor de despliegue cambiando los nombres de los valores de atributo duplicados.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path name for the module
+# -----------------------------------------------------------------------
+BVKEY_NOT_A_BEAN_VALIDATION_XML=CWWKC2271W: Se ha encontrado un archivo validation.xml para el m\u00f3dulo {0}. No obstante, dicho archivo validation.xml no se ha configurado para la validaci\u00f3n y, por tanto, se ignora.
+BVKEY_NOT_A_BEAN_VALIDATION_XML.explanation=El servicio BeanValidationService no puede crear una clase ValidatorFactory porque se ha producido un error al analizar el archivo validation.xml con el archivo de esquema validation-configuration-1.0.xsd. Este error puede indicar que el archivo validation.xml no est\u00e1 pensado para su uso en un tiempo de ejecuci\u00f3n de validaci\u00f3n de beans y, por tanto, se ignora.
+BVKEY_NOT_A_BEAN_VALIDATION_XML.useraction=Si el archivo validation.xml no se ha dise\u00f1ado para crear una instancia ValidatorFactory, ignore el mensaje. No obstante, si el archivo validation.xml s\u00ed se ha dise\u00f1ado para crear una instancia ValidatorFactory, significa que hay un problema.  Habilite el rastreo de tiempo de ejecuci\u00f3n de validaci\u00f3n de beans en el servidor de aplicaciones, detenga y reinicie la aplicaci\u00f3n, y busque en el archivo de salida de rastreo un suceso de rastreo parecido al siguiente: Excepci\u00f3n inesperada al tratar de desclasificar el archivo validation.xml. Examine el rastreo de la pila de excepciones para obtener ayuda sobre la depuraci\u00f3n.
+
+xml.error=CWWKC2272E: Se ha producido un error al analizar el descriptor de despliegue {0} en la l\u00ednea {1}. El mensaje de error es: {2}
+xml.error.explanation=Se ha producido un error al analizar el descriptor de despliegue XML. Consulte el mensaje de error para obtener una descripci\u00f3n detallada.
+xml.error.useraction=Corrija el descriptor de despliegue para eliminar el error.
+
+invalid.enum.value=CWWKC2273E: El valor {2} especificado en el descriptor de despliegue {0} en la l\u00ednea {1} no es v\u00e1lido. Los valores v\u00e1lidos son: {3}
+invalid.enum.value.explanation=El descriptor de despliegue especifica un valor que no es v\u00e1lido.
+invalid.enum.value.useraction=Corrija el descriptor de despliegue para utilizar uno de los valores previstos.
+
+invalid.int.value=CWWKC2274E: El valor {2} especificado en el descriptor de despliegue {0} en la l\u00ednea {1} no es un n\u00famero entero v\u00e1lido.
+invalid.int.value.explanation=El descriptor de despliegue especifica un valor que no es un n\u00famero dentro del rango de -2147483648 a 2147483647.
+invalid.int.value.useraction=Corrija el descriptor de despliegue para que utilice un n\u00famero entero v\u00e1lido.
+
+invalid.long.value=CWWKC2275E: El valor {2} del descriptor de despliegue {0} en la l\u00ednea {1} no es un n\u00famero largo v\u00e1lido.
+invalid.long.value.explanation=El descriptor de despliegue especifica un valor que no es un n\u00famero dentro del rango de -9223372036854775808 a 9223372036854775807.
+invalid.long.value.useraction=Corrija el descriptor de despliegue para que utilice un n\u00famero largo v\u00e1lido.
+
+module.name.not.specified=CWWKC2276E: El elemento {0} debe especificar un atributo de nombre de m\u00f3dulo.
+module.name.not.specified.explanation=La configuraci\u00f3n de enlace y extensi\u00f3n para EJB y m\u00f3dulos web debe contener un atributo moduleName que especifica el m\u00f3dulo al que se aplica la configuraci\u00f3n. 
+module.name.not.specified.useraction=A\u00f1ada un atributo moduleName al elemento web-bnd, web-ext, ejb-bnd o ejb-ext. 
+
+module.name.invalid=CWWKC2277E: Uno o varios nombres de m\u00f3dulo en el elemento {1} no son v\u00e1lidos. El nombre o nombres de m\u00f3dulo no v\u00e1lidos son {0}.
+module.name.invalid.explanation=La configuraci\u00f3n de enlace y extensi\u00f3n para m\u00f3dulos web debe especificar un atributo moduleName v\u00e1lido. Al menos, una configuraci\u00f3n ha especificado un nombre de m\u00f3dulo no v\u00e1lido. El nombre de m\u00f3dulo debe ser el nombre del archivo de archivado que contiene la aplicaci\u00f3n web o EJB.
+module.name.invalid.useraction=Corrija el atributo moduleName en la configuraci\u00f3n de enlace o extensi\u00f3n. 

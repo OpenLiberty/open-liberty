@@ -1,0 +1,186 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service
+#CMVCPATHNAME com.ibm.ws.channelfw/resources/com/ibm/ws/channelfw/internal/resources/ChannelfwMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#ISMESSAGEFILE TRUE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+### CHFW will use message numbers 0000-0199
+
+channel.dir.missing=CWWKO0001W: {0} chyb\u00ed nebo nen\u00ed adres\u00e1\u0159em.
+channel.dir.missing.explanation=CMSG0001
+channel.dir.missing.useraction=CMSG0002
+
+channel.jar.open.failure=CWWKO0002E: Implementaci kan\u00e1lu {0} nelze otev\u0159\u00edt: {1}
+channel.jar.open.failure.explanation=CMSG0001
+channel.jar.open.failure.useraction=CMSG0002
+
+channel.descriptor.missing=CWWKO0003E: Implementace kan\u00e1lu {0} nem\u00e1 deskriptor kan\u00e1lu.
+channel.descriptor.missing.explanation=CMSG0001
+channel.descriptor.missing.useraction=CMSG0002
+
+channel.descriptor.parse.failure=CWWKO0004E: P\u0159i syntaktick\u00e9 anal\u00fdze deskriptoru kan\u00e1lu z {0} byly generov\u00e1ny chyby: {1}
+channel.descriptor.parse.failure.explanation=CMSG0001
+channel.descriptor.parse.failure.useraction=CMSG0002
+
+channel.descriptor.factory.missing=CWWKO0005E: Implementace kan\u00e1lu {0} neur\u010duje t\u0159\u00eddu b\u011bhov\u00e9ho prost\u0159ed\u00ed tov\u00e1rny.
+channel.descriptor.factory.missing.explanation=CMSG0001
+channel.descriptor.factory.missing.useraction=CMSG0002
+
+channel.descriptor.channel.missing=CWWKO0006E: Implementace kan\u00e1lu {0} neur\u010duje t\u0159\u00eddu konfigurace kan\u00e1lu.
+channel.descriptor.channel.missing.explanation=CMSG0001
+channel.descriptor.channel.missing.useraction=CMSG0002
+
+channel.descriptor.interfaces.missing=CWWKO0007E: Implementace kan\u00e1lu {0} neur\u010duje rozhran\u00ed za\u0159\u00edzen\u00ed \u010di rozhran\u00ed aplikace.
+channel.descriptor.interfaces.missing.explanation=CMSG0001
+channel.descriptor.interfaces.missing.useraction=CMSG0002
+
+channel.descriptor.weight.invalid=CWWKO0008E: Implementace kan\u00e1lu {0} ur\u010duje v\u00fdchoz\u00ed v\u00e1hu {1}. Nejedn\u00e1 se o platnou v\u00fdchoz\u00ed v\u00e1hu.
+channel.descriptor.weight.invalid.explanation=CMSG0001
+channel.descriptor.weight.invalid.useraction=CMSG0002
+
+chain.channels.empty=CWWKO0009E: \u0158et\u011bzec {0} neobsahuje \u017e\u00e1dn\u00e9 kan\u00e1ly p\u0159enosu.
+chain.channels.empty.explanation=Maj\u00ed-li \u0159et\u011bzce fungovat, mus\u00ed obsahovat kan\u00e1ly p\u0159enosu.
+chain.channels.empty.useraction=P\u0159idejte do ur\u010den\u00e9ho \u0159et\u011bzce n\u011bjak\u00e9 kan\u00e1ly p\u0159enosu.
+
+chain.flow.mismatch=CWWKO0010E: Kan\u00e1ly p\u0159enosu \u0159et\u011bzce {0} mus\u00ed m\u00edt v\u0161echny stejn\u00fd sm\u011br toku.
+chain.flow.mismatch.explanation=Kan\u00e1ly p\u0159enosu mohou t\u00e9ct do serveru (kan\u00e1l p\u0159\u00edchoz\u00edch po\u017eadavk\u016f) nebo ze serveru (odchoz\u00ed kan\u00e1l). V\u0161echny kan\u00e1ly p\u0159enosu v \u0159et\u011bzci mus\u00ed m\u00edt stejn\u00fd sm\u011br toku.
+chain.flow.mismatch.useraction=Zajist\u011bte, aby m\u011bly v\u0161echny kan\u00e1ly p\u0159enosu v \u0159et\u011bzci stejn\u00fd sm\u011br toku. Nekombinujte v jednom \u0159et\u011bzci kan\u00e1ly p\u0159\u00edchoz\u00edch po\u017eadavk\u016f s odchoz\u00edmi kan\u00e1ly.
+
+chain.inbound.first.mismatch=CWWKO0011E: Prvn\u00ed kan\u00e1l p\u0159enosu v \u0159et\u011bzci {0} nen\u00ed kan\u00e1lem konektoru.
+chain.inbound.first.mismatch.explanation=Prvn\u00ed kan\u00e1l p\u0159enosu v p\u0159\u00edchoz\u00edm \u0159et\u011bzci mus\u00ed b\u00fdt kan\u00e1lem konektoru.
+chain.inbound.first.mismatch.useraction=Zajist\u011bte, aby byl prvn\u00ed kan\u00e1l p\u0159enosu v p\u0159\u00edchoz\u00edm \u0159et\u011bzci kan\u00e1lem konektoru.
+
+chain.inbound.last.mismatch=CWWKO0012E: Posledn\u00ed kan\u00e1l transportu v \u0159et\u011bzci {0} nen\u00ed kan\u00e1lem p\u0159\u00edjemce.
+chain.inbound.last.mismatch.explanation=Posledn\u00ed kan\u00e1l transportu v p\u0159\u00edchoz\u00edm \u0159et\u011bzci mus\u00ed b\u00fdt kan\u00e1lem p\u0159\u00edjemce.
+chain.inbound.last.mismatch.useraction=Zajist\u011bte, aby posledn\u00ed kan\u00e1l p\u0159enosu v p\u0159\u00edchoz\u00edm \u0159et\u011bzci byl kan\u00e1lem p\u0159\u00edjemce.
+
+chain.acceptor.determination.failure=CWWKO0013E: Syst\u00e9m nem\u016f\u017ee ur\u010dit ID p\u0159\u00edjemce pro \u0159et\u011bzec {0}.
+chain.acceptor.determination.failure.explanation=CMSG0001
+chain.acceptor.determination.failure.useraction=CMSG0002
+
+channel.descriptor.notfound=CWWKO0014E: Syst\u00e9m nem\u016f\u017ee naj\u00edt deskriptor kan\u00e1lu vyhovuj\u00edc\u00ed typu konfigurace kan\u00e1lu {0}.
+channel.descriptor.notfound.explanation=Kan\u00e1ly mus\u00ed poskytovat deskriptor, pomoc\u00ed n\u011bho\u017e lze mapovat typy konfigurace na typy b\u011bhov\u00e9ho prost\u0159ed\u00ed; vyhovuj\u00edc\u00ed deskriptor nelze naj\u00edt.
+channel.descriptor.notfound.useraction=CMSG0002
+
+jndi.context.failure=CWWKO0015E: Syst\u00e9m nem\u016f\u017ee z\u00edskat tento kontext po\u010d\u00e1te\u010dn\u00edho pojmenovan\u00ed: {0}
+jndi.context.failure.explanation=CMSG0001
+jndi.context.failure.useraction=CMSG0002
+
+factory.load.failure=CWWKO0016E: Syst\u00e9m nem\u016f\u017ee na\u010d\u00edst tuto tov\u00e1rnu kan\u00e1lu p\u0159enosu: {0}
+factory.load.failure.explanation=CMSG0001
+factory.load.failure.useraction=CMSG0002
+
+channel.load.failure=CWWKO0017E: Syst\u00e9m nem\u016f\u017ee na\u010d\u00edst tento kan\u00e1l p\u0159enosu: {0}
+channel.load.failure.explanation=CMSG0001
+channel.load.failure.useraction=CMSG0002
+
+chain.load.failure=CWWKO0018E: Syst\u00e9m nem\u016f\u017ee na\u010d\u00edst tento \u0159et\u011bzec: {0}
+chain.load.failure.explanation=CMSG0001
+chain.load.failure.useraction=CMSG0002
+
+chain.started=CWWKO0019I: Slu\u017eba kan\u00e1lu p\u0159enosu spustila \u0159et\u011bzec {0}.
+chain.started.explanation=Slu\u017eba kan\u00e1lu p\u0159enosu spustila ur\u010den\u00fd \u0159et\u011bzec.
+chain.started.useraction=Nen\u00ed nutn\u00e1 \u017e\u00e1dn\u00e1 akce.
+
+chain.stopped=CWWKO0020I: Slu\u017eba kan\u00e1lu p\u0159enosu zastavila \u0159et\u011bzec opat\u0159en\u00fd \u0161t\u00edtkem {0}.
+chain.stopped.explanation=Slu\u017eba kan\u00e1lu p\u0159enosu zastavila ur\u010den\u00fd \u0159et\u011bzec.
+chain.stopped.useraction=Nen\u00ed nutn\u00e1 \u017e\u00e1dn\u00e1 akce.
+
+chain.disabled=CWWKO0021I: P\u0159\u00edchoz\u00ed \u0159et\u011bzec {0} byl ozna\u010den jako zak\u00e1zan\u00fd.
+chain.disabled.explanation=Maj\u00ed-li b\u00fdt p\u0159\u00edchoz\u00ed \u0159et\u011bzce vhodn\u00e9 pro automatick\u00e9 spu\u0161t\u011bn\u00ed, mus\u00ed b\u00fdt v\u00fdslovn\u011b ozna\u010deny jako povolen\u00e9. Zak\u00e1zan\u00e9 \u0159et\u011bzce je i tak mo\u017en\u00e9 spou\u0161t\u011bt, ale mus\u00ed b\u00fdt spou\u0161t\u011bny v\u00fdslovn\u011b podle jm\u00e9na.
+chain.disabled.useraction=Nen\u00ed nutn\u00e1 \u017e\u00e1dn\u00e1 akce.
+
+config.load.error=CWWKO0022E: Slu\u017eba kan\u00e1lu p\u0159enosu nem\u016f\u017ee naj\u00edt svoji konfiguraci v d\u016fsledku v\u00fdjimky: {0}
+config.load.error.explanation=Slu\u017eba kan\u00e1lu p\u0159enosu generovala v\u00fdjimku p\u0159i pokusu o zji\u0161t\u011bn\u00ed a na\u010dten\u00ed sv\u00e9 konfigurace. Bude spu\u0161t\u011bna bez konfigurace.
+config.load.error.useraction=CMSG0002
+
+boot.no.config=CWWKO0023I: Slu\u017eba kan\u00e1lu p\u0159enosu nem\u016f\u017ee naj\u00edt svoji konfiguraci, ale bude spu\u0161t\u011bna bez n\u00ed.
+boot.no.config.explanation=Slu\u017eba kan\u00e1lu p\u0159enosu nem\u016f\u017ee naj\u00edt svoji konfiguraci. Podrobnosti v\u00fdchoz\u00ed konfigurace Slu\u017eby kan\u00e1lu p\u0159enosu by m\u011bly b\u00fdt p\u0159id\u00e1ny do konfigura\u010dn\u00edho souboru server.xml.
+boot.no.config.useraction=V\u00fdchoz\u00ed konfiguraci pro Slu\u017ebu kan\u00e1lu p\u0159enosu p\u0159id\u00e1te pomoc\u00ed administrativn\u00ed konzoly nebo n\u00e1stroje wsadmin.
+
+framework.disabled=CWWKO0024I: Slu\u017eba kan\u00e1lu p\u0159enosu byla v\u00fdslovn\u011b zak\u00e1z\u00e1na.
+framework.disabled.explanation=Slu\u017eba kan\u00e1lu p\u0159enosu byla v\u00fdslovn\u011b konfigurov\u00e1na tak, aby byla zak\u00e1z\u00e1na a nebyla spou\u0161t\u011bna.
+framework.disabled.useraction=Nen\u00ed nutn\u00e1 \u017e\u00e1dn\u00e1 akce.
+
+channel.descriptor.factory.config.missing=CWWKO0025E: Implementace kan\u00e1lu {0} neur\u010duje t\u0159\u00eddu konfigurace tov\u00e1rny.
+channel.descriptor.factory.config.missing.explanation=CMSG0001
+channel.descriptor.factory.config.missing.useraction=CMSG0002
+
+factory.descriptor.notfound=CWWKO0026E: Syst\u00e9m nem\u016f\u017ee naj\u00edt deskriptor tov\u00e1rny kan\u00e1lu vyhovuj\u00edc\u00ed typu konfigurace kan\u00e1lu p\u0159enosu {0}.
+factory.descriptor.notfound.explanation=Kan\u00e1ly mus\u00ed poskytovat deskriptor, pomoc\u00ed n\u011bho\u017e lze mapovat typy konfigurace na typy b\u011bhov\u00e9ho prost\u0159ed\u00ed. Vyhovuj\u00edc\u00ed deskriptor nelze naj\u00edt.
+factory.descriptor.notfound.useraction=CMSG0002
+
+channel.load.problems=CWWKO0027I: Minim\u00e1ln\u011b jedna implementace kan\u00e1lu p\u0159enosu nebyla na\u010dtena.
+channel.load.problems.explanation=CMSG0001
+channel.load.problems.useraction=CMSG0002
+
+chain.outbound.last.mismatch=CWWKO0028E: Posledn\u00ed kan\u00e1l p\u0159enosu v \u0159et\u011bzci {0} nen\u00ed kan\u00e1lem konektoru.
+chain.outbound.last.mismatch.explanation=Posledn\u00ed kan\u00e1l p\u0159enosu v odchoz\u00edm \u0159et\u011bzci mus\u00ed b\u00fdt kan\u00e1lem konektoru.
+chain.outbound.last.mismatch.useraction=Zajist\u011bte, aby byl posledn\u00ed kan\u00e1l p\u0159enosu v odchoz\u00edm \u0159et\u011bzci kan\u00e1lem konektoru.
+
+chain.initialization.error=CWWKO0029E: P\u0159i inicializaci \u0159et\u011bzce {0} byla generov\u00e1na v\u00fdjimka v d\u016fsledku v\u00fdjimky {1}
+chain.initialization.error.explanation=Byla generov\u00e1na v\u00fdjimka v \u0159et\u011bzci nebo v z\u00e1kladn\u00edch kan\u00e1lech.
+chain.initialization.error.useraction=Zajist\u011bte, aby byly v \u0159et\u011bzci pou\u017eity spr\u00e1vn\u00e9 kan\u00e1ly.
+
+chain.start.error=CWWKO0030E: P\u0159i spou\u0161t\u011bn\u00ed \u0159et\u011bzce {0} byla generov\u00e1na v\u00fdjimka v d\u016fsledku v\u00fdjimky {1}
+chain.start.error.explanation=Byla generov\u00e1na v\u00fdjimka v \u0159et\u011bzci nebo v z\u00e1kladn\u00edch kan\u00e1lech.
+chain.start.error.useraction=Zajist\u011bte, aby byly v \u0159et\u011bzci pou\u017eity spr\u00e1vn\u00e9 kan\u00e1ly.
+
+chain.stop.error=CWWKO0031E: P\u0159i ukon\u010dov\u00e1n\u00ed \u0159et\u011bzce {0} byla generov\u00e1na v\u00fdjimka v d\u016fsledku v\u00fdjimky {1}
+chain.stop.error.explanation=Byla generov\u00e1na v\u00fdjimka v \u0159et\u011bzci nebo v z\u00e1kladn\u00edch kan\u00e1lech.
+chain.stop.error.useraction=Zajist\u011bte, aby byly v \u0159et\u011bzci pou\u017eity spr\u00e1vn\u00e9 kan\u00e1ly.
+
+chain.destroy.error=CWWKO0032E: P\u0159i ni\u010den\u00ed \u0159et\u011bzce {0} byla generov\u00e1na v\u00fdjimka v d\u016fsledku v\u00fdjimky {1}
+chain.destroy.error.explanation=Byla generov\u00e1na v\u00fdjimka v \u0159et\u011bzci nebo v z\u00e1kladn\u00edch kan\u00e1lech.
+chain.destroy.error.useraction=Zajist\u011bte, aby byly v \u0159et\u011bzci pou\u017eity spr\u00e1vn\u00e9 kan\u00e1ly.
+
+chain.retrystart.error=CWWKO0033E: Slu\u017eba kan\u00e1lu \u0159et\u011bzce nespustila transportn\u00ed \u0159et\u011bzec {0} po {1} pokusech o jeho spu\u0161t\u011bn\u00ed.
+chain.retrystart.error.explanation=Konfigurovan\u00fd po\u010det pokus\u00ed nesta\u010d\u00ed ke spu\u0161t\u011bn\u00ed \u0159et\u011bzce, nebo je port pou\u017e\u00edvan\u00fd \u0159et\u011bzcem ji\u017e pou\u017e\u00edv\u00e1n.
+chain.retrystart.error.useraction=Ujist\u011bte se, \u017ee port pou\u017e\u00edvan\u00fd \u0159et\u011bzcem nen\u00ed pou\u017e\u00edv\u00e1n. Spr\u00e1vn\u011b nastavte p\u0159izp\u016fsoben\u00e9 vlastnosti pro restartov\u00e1n\u00ed \u0159et\u011bzc\u016f.
+
+chain.retrystart.warning=CWWKO0034W: Slu\u017eba kan\u00e1lu p\u0159enosu zjistila, \u017ee transportn\u00ed \u0159et\u011bzec {0} nebyl spu\u0161t\u011bn. Slu\u017eba se pokus\u00ed \u0159et\u011bzec {0} spustit ka\u017ed\u00fdch {1} milisekund po dobu {2} pokus\u016f.
+chain.retrystart.warning.explanation=Po\u010d\u00e1te\u010dn\u00ed pokus o spu\u0161t\u011bn\u00ed \u0159et\u011bzce nebyl \u00fasp\u011b\u0161n\u00fd. Budou provedeny dal\u0161\u00ed pokusy o jeho spu\u0161t\u011bn\u00ed.
+chain.retrystart.warning.useraction=Sledujte chybovou zpr\u00e1vu nebo zpr\u00e1vu auditu ozna\u010duj\u00edc\u00ed v\u00fdsledek opakovan\u00fdch pokus\u016f.
+
+framework.property.error=CWWKO0035E: Slu\u017eba kan\u00e1lu p\u0159enosu na\u0161la hodnotu {0} vlastnosti {1}. Nejedn\u00e1 se o platnou hodnotu.
+framework.property.error.explanation=Hodnota vlastnosti je mimo o\u010dek\u00e1van\u00e9 rozmez\u00ed.
+framework.property.error.useraction=Upravte konfiguraci nastaven\u00edm vlastnosti na platnou hodnotu.
+
+missing.factory=CWWKO0036W: Konfigurace \u0159et\u011bzce obsahuje chyb\u011bj\u00edc\u00ed typ tov\u00e1rny, {0}, a nemohla spustit minim\u00e1ln\u011b jeden \u0159et\u011bzec.
+missing.factory.explanation=B\u011bhov\u00e9 prost\u0159ed\u00ed neobsahuje tov\u00e1rnu kan\u00e1lu vyhovuj\u00edc\u00edho typu, tak\u017ee nem\u016f\u017ee spou\u0161t\u011bt \u0159et\u011bzce, kter\u00e9 ho vyu\u017e\u00edvaj\u00ed.
+missing.factory.useraction=Ujist\u011bte se, zda v seznamu funkc\u00ed b\u011bhov\u00e9ho prost\u0159ed\u00ed nechyb\u00ed minim\u00e1ln\u011b jedna povinn\u00e1 polo\u017eka.
+
+DEFAULT_OPTIONS_ERROR_TCP=CWWKO0037E: Nelze vytvo\u0159it v\u00fdchoz\u00ed konfiguraci kan\u00e1lu TCP. V\u00fdjimka: {0}.
+DEFAULT_OPTIONS_ERROR_TCP.explanation=Byla rozpozn\u00e1na chyba p\u0159i vytv\u00e1\u0159en\u00ed v\u00fdchoz\u00ed konfigurace pro kan\u00e1ly TCP.
+DEFAULT_OPTIONS_ERROR_TCP.useraction=Zkontrolujte ve v\u00fdjimce informace o tom, jak se vytv\u00e1\u0159en\u00ed nezda\u0159ilo.
+
+DEFAULT_OPTIONS_ERROR_UDP=CWWKO0038E: Nelze vytvo\u0159it v\u00fdchoz\u00ed konfiguraci kan\u00e1lu UDP. V\u00fdjimka: {0}.
+DEFAULT_OPTIONS_ERROR_UDP.explanation=Byla rozpozn\u00e1na chyba p\u0159i vytv\u00e1\u0159en\u00ed v\u00fdchoz\u00ed konfigurace pro kan\u00e1ly UDP.
+DEFAULT_OPTIONS_ERROR_UDP.useraction=Zkontrolujte ve v\u00fdjimce informace o tom, jak se vytv\u00e1\u0159en\u00ed nezda\u0159ilo.
+
+channel.shared.warning=CWWKO0039W: Kan\u00e1l {0}, kter\u00fd nen\u00ed mo\u017en\u00e9 sd\u00edlet, je sd\u00edlen n\u011bkolika oblastmi.
+channel.shared.warning.explanation=Kan\u00e1l byl konfigurov\u00e1n jako kan\u00e1l, kter\u00fd nen\u00ed mo\u017en\u00e9 sd\u00edlet. Kan\u00e1l je v\u0161ak sd\u00edlen n\u011bkolika oblastmi.
+channel.shared.warning.useraction=Zkontrolujte konfiguraci kan\u00e1lu a jeho pou\u017eit\u00ed.

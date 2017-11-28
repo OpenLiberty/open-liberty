@@ -1,0 +1,88 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.appclient.boot/resources/com/ibm/ws/appclient/boot/resources/ClientLauncherOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+briefUsage=\uc0ac\uc6a9\ubc95: java [JVM options] -javaagent:bin/tools/ws-javaagent.jar \\        \n\
+\t-jar bin/tools/ws-client.jar clientName [actions] [\uc635\uc158]  
+scriptUsage=\uc0ac\uc6a9\ubc95: {0} action clientName [\uc635\uc158]
+
+use.actions=\uc870\uce58:
+use.options=\uc635\uc158:
+use.jvmarg=JVM \uc635\uc158:
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# ClientName
+processName.key=\ \ \ \ clientName
+processName.desc=\t\ud074\ub77c\uc774\uc5b8\ud2b8\uc758 \ub85c\uceec\uc5d0\uc11c \uace0\uc720\ud55c \uc774\ub984. \uc774\ub984\uc744    \n\
+\t\uc720\ub2c8\ucf54\ub4dc \uc601\uc22b\uc790 \ubb38\uc790(\uc608: A-Za-z0-9), \n\
+\t\ubc11\uc904(_), \ub300\uc2dc(-), \ub354\ud558\uae30(+) \ubc0f \ub9c8\uce68\ud45c(.)\ub97c \uc0ac\uc6a9\ud558\uc5ec \uad6c\uc131\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \ud074\ub77c\uc774\uc5b8\ud2b8 \uc774\ub984\uc740     \n\
+\t\ub300\uc2dc(-) \ub610\ub294 \ub9c8\uce68\ud45c(.)\ub85c \uc2dc\uc791\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# JavaAgent 
+javaAgent.key=\ \ \ \ -javaagent:bin/tools/ws-javaagent.jar
+javaAgent.desc=\t\uc774\ub294 \uc778\uc2a4\ud2b8\ub8e8\uba3c\ud14c\uc774\uc158\uc744 \uc704\ud55c \uc5d0\uc774\uc804\ud2b8\ub97c \uc9c0\uc815\ud558\ub294 \ub370 \uc0ac\uc6a9\ub418\ub294 JVM \uc635\uc158\uc785\ub2c8\ub2e4.   \n\
+\t\ub7f0\ud0c0\uc784\uc740 \ucd94\uc801 \ubc0f \uae30\ud0c0 \ub514\ubc84\uadf8 \uc815\ubcf4 \uc218\uc9d1\uc744 \uc704\ud574 \uc778\uc2a4\ud2b8\ub8e8\uba3c\ud14c\uc774\uc158\uc744 \n\
+\t\uc0ac\uc6a9\ud569\ub2c8\ub2e4. bootstrap-agent.jar\ub294 \ub7f0\ud0c0\uc784\uc744 \uc2e4\ud589\ud558\ub294 \ub370 \uc0ac\uc6a9\ub418\ub294 JAR\uc640 \n\
+\t\ub3d9\uc77c\ud55c \ub514\ub809\ud1a0\ub9ac\uc5d0 \uc788\uc2b5\ub2c8\ub2e4.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Actions: create, run, debug, package, help
+action-key.create=\ \ \ \ --create
+action-desc.create=\t\uc9c0\uc815\ub41c \ud074\ub77c\uc774\uc5b8\ud2b8\uac00 \uc5c6\uc73c\uba74 \uc0c8 \ud074\ub77c\uc774\uc5b8\ud2b8\ub97c \uc791\uc131\ud569\ub2c8\ub2e4. \ud15c\ud50c\ub9ac\ud2b8      \n\
+\t--\uc635\uc158\uc744 \uc0ac\uc6a9\ud558\uc5ec \uc0c8 \ud074\ub77c\uc774\uc5b8\ud2b8\ub97c \uc791\uc131\ud560 \ub54c      \n\
+\t\uc0ac\uc6a9\ud560 \ud15c\ud50c\ub9ac\ud2b8\ub97c \uc9c0\uc815\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.run=\ \ \ \ --run
+action-desc.run=\t\ucf58\uc194 \ud3ec\uadf8\ub77c\uc6b4\ub4dc\uc5d0\uc11c \uc774\ub984 \uc9c0\uc815\ub41c \ud074\ub77c\uc774\uc5b8\ud2b8\ub97c \uc2e4\ud589\ud569\ub2c8\ub2e4.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.debug=\ \ \ \ --debug
+action-desc.debug=\t\ub514\ubc84\uac70\uac00 \ub514\ubc84\uadf8 \ud3ec\ud2b8(\uae30\ubcf8\uac12: 7778)\uc5d0 \uc5f0\uacb0\ub41c \ub2e4\uc74c \n\
+\t\ucf58\uc194 \ud3ec\uadf8\ub77c\uc6b4\ub4dc\uc5d0\uc11c \uc774\ub984 \uc9c0\uc815\ub41c \ud074\ub77c\uc774\uc5b8\ud2b8\ub97c \uc2e4\ud589\ud569\ub2c8\ub2e4.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.package=\ \ \ \ --package
+action-desc.package=\t\ud074\ub77c\uc774\uc5b8\ud2b8\ub97c \uc544\uce74\uc774\ube0c\uc5d0 \ud328\ud0a4\uc9d5\ud569\ub2c8\ub2e4. --archive \uc635\uc158\uc744 \uc0ac\uc6a9\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.    \n\
+\t--include \uc635\uc158\uc740 "all","usr" \ubc0f        \n\
+\t"minify" \uac12\uacfc \ud568\uaed8 \uc0ac\uc6a9\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.help=\ \ \ \ --help
+action-desc.help=\t\ub3c4\uc6c0\ub9d0 \uc815\ubcf4\ub97c \uc778\uc1c4\ud569\ub2c8\ub2e4.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.clean=\ \ \ \ --clean
+option-desc.clean=\t\uc774 \ud074\ub77c\uc774\uc5b8\ud2b8 \uc778\uc2a4\ud134\uc2a4\uc640 \uad00\ub828\ub41c \ubaa8\ub4e0 \uce90\uc2dc \uc815\ubcf4\ub97c \uc815\ub9ac\ud569\ub2c8\ub2e4.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.archive=\ \ \ \ --archive="\ub300\uc0c1 \uc544\uce74\uc774\ube0c \ud30c\uc77c \uacbd\ub85c"
+option-desc.archive=\t\ud328\ud0a4\uc9c0 \uc870\uce58\ub85c \uc0dd\uc131\ub420 \n\
+\t\uc544\uce74\uc774\ube0c \ub300\uc0c1\uc744 \uc9c0\uc815\ud569\ub2c8\ub2e4. \ub300\uc0c1\uc740 \uc808\ub300 \uacbd\ub85c \ub610\ub294 \uc0c1\ub300 \uacbd\ub85c\ub85c \n\
+\t\uc9c0\uc815\ub420 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \uc774 \uc635\uc158\uc744 \uc0dd\ub7b5\ud558\uba74 \uc544\uce74\uc774\ube0c \ud30c\uc77c\uc774\n\
+\t\ud074\ub77c\uc774\uc5b8\ud2b8 \ucd9c\ub825 \ub514\ub809\ud1a0\ub9ac\uc5d0 \uc791\uc131\ub429\ub2c8\ub2e4. \ub300\uc0c1 \ud30c\uc77c \uc774\ub984      \n\
+\t\ud655\uc7a5\uc790\ub294 \uc0dd\uc131\ub41c \uc544\uce74\uc774\ube0c\uc758 \ud615\uc2dd\uc5d0 \uc601\ud5a5\uc744 \uc904 \uc218 \uc788\uc2b5\ub2c8\ub2e4.        \n\
+\t\ud328\ud0a4\uc9c0 \uc870\uce58\uc758 \uae30\ubcf8 \uc544\uce74\uc774\ube0c \ud615\uc2dd\uc740 z/OS\uc5d0\uc11c\ub294 "pax"\uc774\uace0,   \n\
+\t\uadf8 \uc678 \ubaa8\ub4e0 \ud50c\ub7ab\ud3fc\uc5d0\uc11c\ub294 "zip"\uc785\ub2c8\ub2e4. \
+                                   \n\
+\t\uc544\uce74\uc774\ube0c \ud615\uc2dd "jar"\uc740 \uc6d0\ubcf8 \uc124\uce58 \uc544\uce74\uc774\ube0c\uc640 \ube44\uc2b7\ud55c \n\
+\t\uc790\uccb4 \uc555\ucd95 \ud574\uc81c jar\uc744 \uc0dd\uc131\ud569\ub2c8\ub2e4.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.include=\ \ \ \ --include=value,value,...
+option-desc.include=\t\uc27c\ud45c\ub85c \uad6c\ubd84\ub41c \uac12 \ubaa9\ub85d\uc785\ub2c8\ub2e4. \uc870\uce58\uc5d0 \ub530\ub77c \uc62c\ubc14\ub978 \uac12\uc774 \n\
+\t\ub2e4\ub985\ub2c8\ub2e4.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.template=\ \ \ \ --template="templateName"
+option-desc.template=\t\uc0c8 \ud074\ub77c\uc774\uc5b8\ud2b8\ub97c \uc791\uc131\ud560 \ub54c \uc0ac\uc6a9\ud560 \ud15c\ud50c\ub9ac\ud2b8\uc758 \uc774\ub984\uc744 \uc9c0\uc815\ud569\ub2c8\ub2e4.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.autoAcceptSigner=\ \ \ \ --autoAcceptSigner
+option-desc.autoAcceptSigner=\t\ud074\ub77c\uc774\uc5b8\ud2b8\uac00 \uc11c\ubc84\ub97c \uc2e0\ub8b0\ud558\uc9c0 \uc54a\uc744 \uacbd\uc6b0 \uc11c\ubc84 \uc11c\uba85\uc790 \uc778\uc99d\uc11c\ub97c \uc790\ub3d9\uc73c\ub85c \uc2b9\uc778\ud558\uace0 \n\
+\t\ud074\ub77c\uc774\uc5b8\ud2b8 \uc2e0\ub8b0 \uc800\uc7a5\uc18c\uc5d0 \uc800\uc7a5\ud569\ub2c8\ub2e4.

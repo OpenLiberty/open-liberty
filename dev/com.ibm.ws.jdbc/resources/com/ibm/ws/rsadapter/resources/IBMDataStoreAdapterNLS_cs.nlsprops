@@ -1,0 +1,605 @@
+###############################################################################
+# Copyright (c) 2001, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# Notes:
+#
+#   Message Ranges for this file are as follows:
+#
+#       0000 - 0299       General exception messages and warnings.
+#       0300 - 0999       XA exceptions and warnings.
+#       1000 - 1999       Additional general exception messages and warnings.
+#       2000 - 3999       Currently unused.
+#       4000 - 4999       Messages for Liberty only.
+#       5000 - 6999       Currently unused.
+#       7000 - 7599       Database Helper exception messages and warnings.
+#       8000 - 8499       DataSource configuration exception messages and warnings.
+#       8500 - 8999       JDBC Wrapper warnings.
+#       9000 - 9999       JDBC Wrapper exception messages.
+#
+#CMVCPATHNAME com.ibm.ws.jdbc/resources/com/ibm/ws/rsadapter/resources/IBMDataStoreAdapterNLS.nlsprops
+#COMPONENTPREFIX DSRA
+#COMPONENTNAMEFOR DSRA JDBC Integration Layer
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#-----------------------------------------------------------------------------------------#
+# 
+# Using 0000-0299 for General DataStore Adapter exception messages and warnings
+# 
+# ----------------------------------------------------------------------------
+# 0010E      SQL_STATE_ERROR_CODE
+# 
+# {0}        The SQLSTATE.
+# {1}        The ERRORCODE
+SQL_STATE_ERROR_CODE=DSRA0010E: Stav SQL = {0}, K\u00f3d chyby = {1}
+SQL_STATE_ERROR_CODE.explanation=Do\u0161lo k chyb\u011b v datab\u00e1zi, pro kterou jsou uvedeny stav SQL a k\u00f3d chyby.
+SQL_STATE_ERROR_CODE.useraction=Chcete-li opravit probl\u00e9my v datab\u00e1zi, pou\u017eijte informace p\u0159idru\u017een\u00e9 dan\u00e9mu k\u00f3du chyby.
+
+# 0011 deleted
+# 0015 deleted
+# 0020-0027 deleted
+
+# General purpose template for messages that will not be translated
+DSA_INTERNAL_ERROR=DSRA0030E: Do\u0161lo k intern\u00ed chyb\u011b adapt\u00e9ru Data Store Adapter. Obra\u0165te se na podporu platformy WebSphere a p\u0159edejte pracovn\u00edk\u016fm n\u00e1sleduj\u00edc\u00ed data: {0} {1} {2}.
+DSA_INTERNAL_ERROR.explanation=CMSG0001
+DSA_INTERNAL_ERROR.useraction=Informace o ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f najdete na webu podpory spole\u010dnosti IBM.
+
+# 0035 deleted
+
+# General purpose template for messages that will not be translated
+WS_INTERNAL_ERROR=DSRA0040E: Do\u0161lo k intern\u00ed chyb\u011b platformy WebSphere. Obra\u0165te se na podporu platformy WebSphere a p\u0159edejte pracovn\u00edk\u016fm n\u00e1sleduj\u00edc\u00ed data: {0} {1} {2}.
+WS_INTERNAL_ERROR.explanation=Do\u0161lo k chyb\u011b v k\u00f3du platformy WebSphere.
+WS_INTERNAL_ERROR.useraction=Shrom\u00e1\u017ed\u011bte v\u0161echny trasovac\u00ed a syst\u00e9mov\u00e9 protokoly spolu s popisem operace, kterou jste se pokou\u0161eli prov\u00e9st. Informace o ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f najdete na webu podpory spole\u010dnosti IBM.
+
+# General purpose template for messages that will not be translated
+DSA_INTERNAL_WARNING=DSRA0050W: Do\u0161lo k intern\u00edmu varov\u00e1n\u00ed adapt\u00e9ru Data Store Adapter. Obra\u0165te se na podporu platformy WebSphere a p\u0159edejte pracovn\u00edk\u016fm n\u00e1sleduj\u00edc\u00ed data: {0} {1} {2}.
+DSA_INTERNAL_WARNING.explanation=CMSG0001
+DSA_INTERNAL_WARNING.useraction=Informace o ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f najdete na webu podpory spole\u010dnosti IBM.
+
+# 0060 deleted
+# 0070 deleted
+
+# 0080E      DSA_ERROR
+# 
+# {0}        The exception.
+DSA_ERROR=DSRA0080E: Adapt\u00e9r Data Store Adapter obdr\u017eel v\u00fdjimku. Viz p\u016fvodn\u00ed zpr\u00e1va v\u00fdjimky: {0}.
+DSA_ERROR.explanation=Komponenta back-end datab\u00e1ze generovala v\u00fdjimku, kter\u00e1 byla zachycena adapt\u00e9rem Data Store Adapter.
+DSA_ERROR.useraction=P\u0159i ur\u010dov\u00e1n\u00ed mo\u017en\u00fdch p\u0159\u00ed\u010din chyby mohou b\u00fdt u\u017eite\u010dn\u00e9 informace v textu chyby ohl\u00e1\u0161en\u00e9m datab\u00e1zov\u00fdm softwarem.
+
+# 0081-0087 deleted
+
+DSA_GENERIC_MSG=DSRA0086E: Operace zp\u016fsobila v\u00fdjimku. Operace: {0}. V\u00fdjimka: {1}. Mo\u017en\u00e1 p\u0159\u00ed\u010dina {2}.
+DSA_GENERIC_MSG.explanation=Operace  zp\u016fsobila v\u00fdjimku.
+DSA_GENERIC_MSG.useraction=Prozkoumejte operaci, v\u00fdjimku a soubory protokolu datab\u00e1ze.
+
+# 0090 deleted
+
+UNSUPPORTED_METHOD=DSRA0091I: Metoda {0} nen\u00ed pro tuto datab\u00e1zi syst\u00e9mu back-end podporov\u00e1na.
+UNSUPPORTED_METHOD.explanation=Do\u0161lo k intern\u00ed chyb\u011b.
+UNSUPPORTED_METHOD.useraction=Informace o ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f najdete na webu podpory spole\u010dnosti IBM.
+
+#TRANSLATOR Do Not Translate: DataSource
+RESOLVING_DB_IMPLICIT_TRANSACTIONS=DSRA0092I: Byla zji\u0161t\u011bna implicitn\u00ed transakce datab\u00e1ze. Platforma WebSphere s transakc\u00ed provede operaci {0}. Tato zpr\u00e1va bude zaznamen\u00e1na do protokolu jednou pro ka\u017ed\u00fd zdroj dat. N\u00e1sledn\u00e9 implicitn\u00ed transakce budou zpracov\u00e1ny automaticky. 
+RESOLVING_DB_IMPLICIT_TRANSACTIONS.explanation=Aplika\u010dn\u00ed server zjistil, \u017ee datab\u00e1ze zah\u00e1jila zpracov\u00e1n\u00ed transakce. Aplika\u010dn\u00ed server se pokus\u00ed transakci zpracovat podle konfigurace v r\u00e1mci p\u0159izp\u016fsoben\u00fdch vlastnost\u00ed pro p\u0159\u00edslu\u0161n\u00fd zdroj dat.
+RESOLVING_DB_IMPLICIT_TRANSACTIONS.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele. 
+
+#TRANSLATOR Do Not Translate: Datasource, FFDC
+ERROR_RESOLVING_DB_IMPLICIT_TRANSACTIONS=DSRA0093I: Byla zji\u0161t\u011bna implicitn\u00ed transakce datab\u00e1ze. Produkt WebSphere s transakc\u00ed provedl operaci {0}, av\u0161ak do\u0161lo k chyb\u011b {1}.
+ERROR_RESOLVING_DB_IMPLICIT_TRANSACTIONS.explanation=Aplika\u010dn\u00ed server zjistil, \u017ee datab\u00e1ze zah\u00e1jila zpracov\u00e1n\u00ed transakce. Aplika\u010dn\u00ed server se pokus\u00ed transakci zpracovat podle konfigurace v r\u00e1mci p\u0159izp\u016fsoben\u00fdch vlastnost\u00ed pro p\u0159\u00edslu\u0161n\u00fd zdroj dat. Do\u0161lo k chyb\u011b, kter\u00e1 znemo\u017enila dokon\u010den\u00ed transakce.
+ERROR_RESOLVING_DB_IMPLICIT_TRANSACTIONS.useraction=Shrom\u00e1\u017ed\u011bte soubory protokolu FFDC a ve\u0161ker\u00e9 soubory protokolu serveru. Pokud chyba nesouvis\u00ed s poruchou datab\u00e1ze, vyhledejte informace t\u00fdkaj\u00edc\u00ed se ur\u010dov\u00e1n\u00ed probl\u00e9mu na webu podpory spole\u010dnosti IBM.
+
+#TRANSLATOR Do Not Translate: Datasource
+IMPLICIT_TRANSACTION_FOUND=DSRA0095I: Byla zji\u0161t\u011bna transakce datab\u00e1ze, kter\u00e1 nebyla zaznamen\u00e1na produktem WebSphere a pro kterou byl p\u0159ed vy\u010di\u0161t\u011bn\u00edm p\u0159ipojen\u00ed proveden pokus o odvol\u00e1n\u00ed. Tato zpr\u00e1va bude zaznamen\u00e1na do protokolu jednou pro ka\u017ed\u00fd zdroj dat. N\u00e1sledn\u00e9 implicitn\u00ed transakce budou zpracov\u00e1ny automaticky. 
+IMPLICIT_TRANSACTION_FOUND.explanation=Datab\u00e1ze spustila transakci pro p\u0159ipojen\u00ed. Aplika\u010dn\u00ed server tuto transakci p\u0159ed navr\u00e1cen\u00edm p\u0159ipojen\u00ed do fondu odvol\u00e1.
+IMPLICIT_TRANSACTION_FOUND.useraction=Vyhodno\u0165te k\u00f3d aplikace s c\u00edlem ur\u010dit p\u0159\u00ed\u010dinu implicitn\u00ed transakce. K\u00f3d aplikace m\u016f\u017ee explicitn\u011b zabr\u00e1nit dal\u0161\u00edm implicitn\u00edm transakc\u00edm nebo m\u016f\u017eete konfigurovat explicitn\u00ed akci pro zdroj dat. 
+
+# 0096-0101 deleted
+# 0110 deleted
+# 0174 deleted
+
+# TRANSLATOR Do not translate: ManagedConnection.destroy()
+DSTRY_ERROR_EX=DSRA0180W: B\u011bhem vol\u00e1n\u00ed procedury ManagedConnection.destroy() byla zji\u0161t\u011bna v\u00fdjimka. V\u00fdjimka je: {0}.
+DSTRY_ERROR_EX.explanation=P\u0159i \u010di\u0161t\u011bn\u00ed objektu ManagedConnection z p\u0159\u00ed\u010diny operace likvidace byla zji\u0161t\u011bna v\u00fdjimka.
+DSTRY_ERROR_EX.useraction=P\u0159i ur\u010dov\u00e1n\u00ed p\u0159\u00ed\u010diny chyby mohou b\u00fdt u\u017eite\u010dn\u00e9 informace o chyb\u00e1ch ohl\u00e1\u0161en\u00e9 datab\u00e1zov\u00fdm softwarem.
+
+# 0230E      INVALID_TX_STATE
+# 
+# {0}        The operation.
+# {1}        The transaction state.
+INVALID_TX_STATE=DSRA0230E: Pokus o proveden\u00ed operace {0} nen\u00ed povolen, proto\u017ee stav transakce je {1}.
+INVALID_TX_STATE.explanation=Po\u017eadovan\u00e1 operace nen\u00ed b\u011bhem transakce povolena.
+INVALID_TX_STATE.useraction=Prove\u010fte operaci p\u0159ed zah\u00e1jen\u00edm transakce nebo po jej\u00edm dokon\u010den\u00ed.
+
+# 0240E      INVALID_CONNECTION
+#
+INVALID_CONNECTION=DSRA0240E: Neplatn\u00e9 p\u0159ipojen\u00ed. Prob\u00edh\u00e1 uvoln\u011bn\u00ed fondu p\u0159ipojen\u00ed.
+INVALID_CONNECTION.explanation=U\u017eivatel zadal po\u017eadavek na uvoln\u011bn\u00ed fondu. Tento po\u017eadavek ru\u0161\u00ed platnost st\u00e1vaj\u00edc\u00edch p\u0159ipojen\u00ed ve fondu.
+INVALID_CONNECTION.useraction=Opus\u0165te transakci a hranice metody a zkuste logiky pou\u017e\u00edt v r\u00e1mci nov\u00e9ho p\u0159ipojen\u00ed.
+
+# 0244 deleted
+
+# 0250E		WS_ERROR
+#
+# General purpose template for messages that will not be translated
+WS_ERROR=DSRA0250E: Adapt\u00e9r Data Store Adapter obdr\u017eel v\u00fdjimku. Viz p\u016fvodn\u00ed zpr\u00e1va v\u00fdjimky: {0}.
+WS_ERROR.explanation=CMSG0001
+WS_ERROR.useraction=CMSG0002
+
+# 0280 deleted
+
+# ----------------------------------------------------------------------------
+# 
+# Using 0300-0999 for XA Exceptions and Warnings
+# 
+# 
+THROW_XAEXCEPTION=DSRA0302E:  Do\u0161lo k v\u00fdjimce XAException. K\u00f3d chyby: {0}. V\u00fdjimka: {1}.
+THROW_XAEXCEPTION.explanation=Dvouf\u00e1zov\u00e1 operace nad datab\u00e1z\u00ed vygenerovala v\u00fdjimku. 
+THROW_XAEXCEPTION.useraction=CMSG0002
+
+
+
+DISPLAY_XAEX_CONTENT=DSRA0304E:  Do\u0161lo k v\u00fdjimce XAException. Obsah a podrobnosti v\u00fdjimky XAException: {0}.
+DISPLAY_XAEX_CONTENT.explanation=Dvouf\u00e1zov\u00e1 operace nad datab\u00e1z\u00ed vygenerovala v\u00fdjimku.
+DISPLAY_XAEX_CONTENT.useraction=CMSG0002
+
+# 0310E      XID_MISMATCH
+# 
+# {0}        The Xid from the XAResource.start method.
+# {1}        An XAResource method name.
+# {2}        The Xid for the above XAResource method.
+XID_MISMATCH=DSRA0310E: Parametry Xid se neshoduj\u00ed.\nMetoda XAResource.start: {0}\nMetoda XAResource.{1}: {2}.
+XID_MISMATCH.explanation=Aplika\u010dn\u00ed server se pokusil o proveden\u00ed operace XAResource s jin\u00fdm parametrem Xid, ne\u017e kter\u00fd byl pou\u017eit v metod\u011b XAResource.start.
+XID_MISMATCH.useraction=Z\u00edskejte nov\u00e9 p\u0159ipojen\u00ed a zkuste transakci zopakovat.
+
+# 0330E      ORACLE_RAC_RETRY
+# 
+# {0}        The operation being delayed.
+# {1}        Number of milliseconds from the last stale connection.
+# {2}        The value (in milliseconds) of the oracleRACXARecoveryDelay.
+ORACLE_RAC_RETRY=DSRA0330E: Aplika\u010dn\u00ed server zpo\u017e\u010fuje zpracov\u00e1n\u00ed po\u017eadavku {0}, proto\u017ee \u010dasov\u00fd \u00fasek od posledn\u00edho zablokovan\u00e9ho p\u0159ipojen\u00ed ({1} milisekund) nep\u0159esahuje hodnotu oracleRACXARecoveryDelay ({2} milisekund).
+ORACLE_RAC_RETRY.explanation=P\u0159izp\u016fsoben\u00e1 vlastnost zdroje dat oracleRACXARecoveryDelay zp\u016fsobuje, \u017ee aplika\u010dn\u00ed server zpo\u017e\u010fuje operace xa.commit a xa.rollback po dobu trv\u00e1n\u00ed intervalu opakov\u00e1n\u00ed.
+ORACLE_RAC_RETRY.useraction=Po\u010dkejte na pokus spr\u00e1vce transakc\u00ed o zopakov\u00e1n\u00ed operace. Je t\u0159eba konfigurovat heuristick\u00e9 opakov\u00e1n\u00ed pokus\u016f ve spr\u00e1vci transakc\u00ed, aby vlastnost oracleRACXARecoveryDelay pracovala spr\u00e1vn\u011b.
+
+# 0400W      TBC_NOT_SUPPORTED
+#
+# {0}        The datasource JNDI name.
+TBC_NOT_SUPPORTED=DSRA0400W: Objekt DataSource {0}: Nepodporuje \u00fazk\u00e9 spojen\u00ed v\u011btv\u00ed.
+TBC_NOT_SUPPORTED.explanation=Datab\u00e1ze nebo poskytovatel JDBC ur\u010den\u00fd objektem DataSource  nepodporuje volbu \u00fazk\u00e9ho spojen\u00ed v\u011btv\u00ed. \u00dazk\u00e9 spojen\u00ed v\u011btv\u00ed je podporov\u00e1no pouze v datab\u00e1zi DB2 for z/OS s p\u0159\u00edstupem prost\u0159ednictv\u00edm ovlada\u010de DB2 Universal JCC Driver. Bude pou\u017eita v\u00fdchoz\u00ed volba voln\u00e9ho spojen\u00ed v\u011btv\u00ed. Pokud je aplikace navr\u017eena pro \u00fazk\u00e9 spojen\u00ed v\u011btv\u00ed, m\u016f\u017ee doj\u00edt k vypr\u0161en\u00ed \u010dasov\u00fdch limit\u016f z\u00e1mku, uv\u00e1znut\u00ed nebo odvol\u00e1n\u00ed transakc\u00ed, proto\u017ee z\u00e1mky datab\u00e1ze nebudou sd\u00edleny v r\u00e1mci v\u011btv\u00ed transakc\u00ed v glob\u00e1ln\u00ed transakci.
+TBC_NOT_SUPPORTED.useraction=Je nutn\u00e9 konfigurovat objekt DataSource tak, aby pou\u017e\u00edval podporovanou \u00farove\u0148 ovlada\u010de JDBC a datab\u00e1ze, nebo konfigurovat aplikaci tak, aby nevy\u017eadovala \u00fazk\u00e9 spojen\u00ed v\u011btv\u00ed.
+
+# 0401 deleted
+
+# 0402W      TBC_DB_NOT_SUPPORTED
+#
+# {0}        The datasource JNDI name.
+TBC_DB_NOT_SUPPORTED=DSRA0402W: Objekt DataSource {0}: Verze datab\u00e1ze nepodporuje \u00fazk\u00e9 spojen\u00ed v\u011btv\u00ed.
+TBC_DB_NOT_SUPPORTED.explanation=Datab\u00e1ze ur\u010den\u00e1 objektem DataSource  nepodporuje volbu \u00fazk\u00e9ho spojen\u00ed v\u011btv\u00ed. \u00dazk\u00e9 spojen\u00ed v\u011btv\u00ed je podporov\u00e1no pouze pro p\u0159ipojen\u00ed typu 4 k datab\u00e1zi DB2 for z/OS verze 8 (+ APAR PK47713) nebo k datab\u00e1zi DB2 for Linux, UNIX and Windows verze 8 nebo nov\u011bj\u0161\u00ed. Bude pou\u017eita v\u00fdchoz\u00ed volba voln\u00e9ho spojen\u00ed v\u011btv\u00ed. Pokud je aplikace navr\u017eena pro \u00fazk\u00e9 spojen\u00ed v\u011btv\u00ed, m\u016f\u017ee doj\u00edt k vypr\u0161en\u00ed \u010dasov\u00fdch limit\u016f z\u00e1mku, uv\u00e1znut\u00ed nebo odvol\u00e1n\u00ed transakc\u00ed, proto\u017ee z\u00e1mky datab\u00e1ze nebudou sd\u00edleny v r\u00e1mci v\u011btv\u00ed transakc\u00ed v glob\u00e1ln\u00ed transakci.
+TBC_DB_NOT_SUPPORTED.useraction=Je nutn\u00e9 konfigurovat objekt DataSource tak, aby pou\u017e\u00edval podporovanou \u00farove\u0148 ovlada\u010de JDBC a datab\u00e1ze, nebo konfigurovat aplikaci tak, aby nevy\u017eadovala \u00fazk\u00e9 spojen\u00ed v\u011btv\u00ed.
+
+# 0403W      TBC_JCC_NOT_SUPPORTED
+#
+# {0}        The datasource JNDI name.
+TBC_JCC_NOT_SUPPORTED=DSRA0403W: Objekt DataSource {0}: Nepodporuje \u00fazk\u00e9 spojen\u00ed v\u011btv\u00ed, proto\u017ee ovlada\u010d JCC produktu DB2 se nach\u00e1z\u00ed na nespr\u00e1vn\u00e9 \u00farovni.
+TBC_JCC_NOT_SUPPORTED.explanation=Poskytovatel JDBC ur\u010den\u00fd objektem DataSource  nepodporuje volbu \u00fazk\u00e9ho spojen\u00ed v\u011btv\u00ed. \u00dazk\u00e9 spojen\u00ed v\u011btv\u00ed je podporov\u00e1no pouze s minim\u00e1ln\u00ed \u00farovn\u00ed ovlada\u010de DB2 Universal JCC Driver produktu DB2 verze 3.51 nebo 3.6, sbalen\u00e9ho se servisn\u00ed \u00farovn\u00ed produktu DB2 verze 9.5 nebo 9, nebo s ovlada\u010dem JCC4 verze 4.1. Bude pou\u017eita v\u00fdchoz\u00ed volba voln\u00e9ho spojen\u00ed v\u011btv\u00ed. Pokud je aplikace navr\u017eena pro \u00fazk\u00e9 spojen\u00ed v\u011btv\u00ed, m\u016f\u017ee doj\u00edt k vypr\u0161en\u00ed \u010dasov\u00fdch limit\u016f z\u00e1mku, uv\u00e1znut\u00ed nebo odvol\u00e1n\u00ed transakc\u00ed, proto\u017ee z\u00e1mky datab\u00e1ze nebudou sd\u00edleny v r\u00e1mci v\u011btv\u00ed transakc\u00ed v glob\u00e1ln\u00ed transakci.
+TBC_JCC_NOT_SUPPORTED.useraction=Je nutn\u00e9 konfigurovat objekt DataSource tak, aby pou\u017e\u00edval podporovanou \u00farove\u0148 ovlada\u010de JDBC a datab\u00e1ze, nebo konfigurovat aplikaci tak, aby nevy\u017eadovala \u00fazk\u00e9 spojen\u00ed v\u011btv\u00ed.
+
+# ----------------------------------------------------------------------------
+# 
+# Using 1000-1999 for additional general DataStore Adapter exception messages and warnings.
+# 
+# 1000 deleted
+# 1100-1102 deleted
+# 1110 deleted
+
+# 1120E      CONN_NEVER_CLOSED
+# 
+CONN_NEVER_CLOSED=DSRA1120E: Aplikace explicitn\u011b neuzav\u0159ela v\u0161echny obslu\u017en\u00e9 rutiny k tomuto p\u0159ipojen\u00ed. P\u0159ipojen\u00ed nelze za\u0159adit do fondu.
+CONN_NEVER_CLOSED.explanation=P\u0159ipojen\u00ed nebude obnoveno pro fond p\u0159ipojen\u00ed, proto\u017ee aplikace nezav\u0159ela explicitn\u011b v\u0161echny obslu\u017en\u00e9 rutiny.
+CONN_NEVER_CLOSED.useraction=Upravte aplikaci tak, aby v\u017edy zav\u0159ela v\u0161echny obslu\u017en\u00e9 rutiny p\u0159ipojen\u00ed.
+
+# 1130 deleted
+# 1200 deleted
+# 1210-1213 deleted
+
+# 1300E      FEATURE_NOT_IMPLEMENTED
+# 
+# {0}        The feature (usually a JDBC API method)
+FEATURE_NOT_IMPLEMENTED=DSRA1300E: Funkce nen\u00ed implementov\u00e1na: {0}
+FEATURE_NOT_IMPLEMENTED.explanation=Po\u017eadovan\u00e1 funkce nen\u00ed k dispozici.
+FEATURE_NOT_IMPLEMENTED.useraction=Nepou\u017e\u00edvejte tuto funkci nebo p\u0159epn\u011bte na verzi ovlada\u010de podporuj\u00edc\u00ed tuto funkci, je-li to mo\u017en\u00e9.
+
+# 1301 deleted
+# 3000-3020 deleted
+# 3100-3127 deleted
+# 3200-3202 deleted
+# 3250-3262 deleted
+# 3600-3616 deleted
+
+# ----------------------------------------------------------------------------
+# 
+# Using 4000-4999 for Liberty-only messages
+# 
+
+DSRA4000.no.suitable.driver=DSRA4000E: Platn\u00e1 t\u0159\u00edda implementace ovlada\u010de JDBC nebyla nalezena pro atribut jdbcDriver {0} pomoc\u00ed knihovny {1}.
+DSRA4000.no.suitable.driver.explanation=Nelze naj\u00edt platnou t\u0159\u00eddu implementace ovlada\u010de JDBC.
+DSRA4000.no.suitable.driver.useraction=Aktualizujte konfiguraci, aby knihovna obsahovala cestu k rozpoznan\u00e9mu ovlada\u010di JDBC nebo aby t\u0159\u00edda implementace byla ur\u010dena na zdroji dat.
+
+DSRA4001.no.suitable.driver.nested=DSRA4001E: Platn\u00e1 t\u0159\u00edda implementace ovlada\u010de JDBC nebyla nalezena ve vno\u0159en\u00e9 knihovn\u011b pou\u017e\u00edvan\u00e9 ovlada\u010dem jdbcDriver {0}.
+DSRA4001.no.suitable.driver.nested.explanation=Nelze naj\u00edt platnou t\u0159\u00eddu implementace ovlada\u010de JDBC.
+DSRA4001.no.suitable.driver.nested.useraction=Aktualizujte konfiguraci, aby vno\u0159en\u00e1 knihovna obsahovala cestu k rozpoznan\u00e9mu ovlada\u010di JDBC nebo aby t\u0159\u00edda implementace byla ur\u010dena na zdroji dat.
+
+DSRA4003.driver.null=DSRA4003E: Nelze naj\u00edt platn\u00fd prvek jdbcDriver pro zdroj dat dataSource {0}.
+DSRA4003.driver.null.explanation=Nelze naj\u00edt platn\u00fd prvek jdbcDriver pro zadan\u00fd zdroj dat dataSource.
+DSRA4003.driver.null.useraction=Aktualizujte konfiguraci, aby obsahovala platn\u00fd vno\u0159en\u00fd prvek jdbcDriver nebo prvek jdbcDriver nejvy\u0161\u0161\u00ed \u00farovn\u011b se stejn\u00fdm n\u00e1zvem, jak\u00fd m\u011bl atribut jdbcDriverRef ve zdroji dat dataSource.
+
+# {0} SQL command
+# {1} data source JNDI name or config display id 
+DSRA4004.onconnect.sql=DSRA4004E: Nelze prov\u00e9st p\u0159\u00edkaz onConnect SQL \"{0}\" u p\u0159ipojen\u00ed z\u00edskan\u00e9ho ze zdroje dat {1}. Dal\u0161\u00ed informace naleznete v p\u0159\u00ed\u010dinn\u00e9 v\u00fdjimce.
+DSRA4004.onconnect.sql.explanation=Do\u0161lo k chyb\u011b p\u0159i pokusu o proveden\u00ed ur\u010den\u00e9ho p\u0159\u00edkazu SQL.
+DSRA4004.onconnect.sql.useraction=Na z\u00e1klad\u011b zpr\u00e1vy v\u00fdjimky ur\u010dete p\u0159\u00ed\u010dinu probl\u00e9mu.
+
+# ----------------------------------------------------------------------------
+# 
+# Using 7000-7599 for DataStore Helper exception messages and warnings
+# 
+# 7000-7009 deleted
+
+# No Comment Provided
+DB2_FILE_OUTSTREAM_ERROR=DSRA7010E: Zadan\u00fd soubor trasov\u00e1n\u00ed {0} neexistuje. Pokud nebude probl\u00e9m odstran\u011bn, bude z datab\u00e1ze vyvol\u00e1na v\u00fdjimka.
+DB2_FILE_OUTSTREAM_ERROR.explanation=Soubor trasov\u00e1n\u00ed, kter\u00fd jste zadali pro zdroj dat, neexistuje.
+DB2_FILE_OUTSTREAM_ERROR.useraction=Pou\u017eijte jako soubor trasov\u00e1n\u00ed existuj\u00edc\u00ed soubor.
+
+# 7011-7013 deleted
+
+# TRANSLATOR Do not translate: DB2 Universal JDBC
+DB2ZOS_CONFIG_INFO=DSRA7014I: Ovlada\u010d DB2 Universal JDBC je spu\u0161t\u011bn v prost\u0159ed\u00ed RRS.
+DB2ZOS_CONFIG_INFO.explanation=Ovlada\u010d DB2 Universal JDBC byl p\u0159epnut pro spu\u0161t\u011bn\u00ed v prost\u0159ed\u00ed RRS v produktu DB2 for z/OS. 
+DB2ZOS_CONFIG_INFO.useraction=Jedn\u00e1 se o informa\u010dn\u00ed zpr\u00e1vu pro prost\u0159ed\u00ed spu\u0161t\u011bn\u00e9ho ovlada\u010de JDBC.
+
+
+# TRANSLATOR Do not translate: DB2ConnectionPoolDatasource, DB2 Universal JDBC
+DB2ZOS_TYPE2_ERROR=DSRA7015E: Datab\u00e1ze DB2 nepodporuje typ ovlada\u010de 2 se zdrojem dat DB2XADataSource v produktu DB2 for z/OS.
+DB2ZOS_TYPE2_ERROR.explanation=P\u0159izp\u016fsoben\u00e1 vlastnost driverType pro zdroj dat byla pro objekt DB2XADatasource nastavena na hodnotu 2. Konfigurace nen\u00ed podporov\u00e1na produktem DB2 for z/OS.
+DB2ZOS_TYPE2_ERROR.useraction=Pou\u017eijte objekt DB2ConnectionPoolDatasource nebo p\u0159epn\u011bte na ovlada\u010d DB2 Universal JDBC Driver typu 4, je-li pro p\u0159\u00edslu\u0161nou konfiguraci k dispozici.
+
+# 7016 deleted
+
+# DSRA7017I      ORACLE_TRACE_WARNING
+# TRANSLATOR Do not translate: IOException
+ORACLE_TRACE_WARNING=DSRA7017I: Nedo\u0161lo k zaprotokolov\u00e1n\u00ed do souboru {0} kv\u016fli v\u00fdjimce IOException {1}.
+ORACLE_TRACE_WARNING.explanation=P\u0159i pokusu aplika\u010dn\u00edho serveru o otev\u0159en\u00ed ur\u010den\u00e9ho souboru trasov\u00e1n\u00ed do\u0161lo k v\u00fdjimce IOException.
+ORACLE_TRACE_WARNING.useraction=Prozkoumejte v\u00fdjimku, opravte probl\u00e9m vstupu/v\u00fdstupu souboru a spus\u0165te aplika\u010dn\u00ed server znovu.
+
+# DSRA7018I      META_DATA_EXCEPTION
+# 
+META_DATA_EXCEPTION=DSRA7018I: P\u0159\u00edstup k metadat\u016fm datab\u00e1ze zp\u016fsobil v\u00fdjimku aktivn\u00edho p\u0159ipojen\u00ed. Bylo obnoveno norm\u00e1ln\u00ed prov\u00e1d\u011bn\u00ed. V\u00fdjimka: {0}
+META_DATA_EXCEPTION.explanation=P\u0159i pokusu aplika\u010dn\u00edho serveru o z\u00edsk\u00e1n\u00ed objektu metadat pro datab\u00e1zi nebo o p\u0159\u00edstup k n\u011bmu do\u0161lo k v\u00fdjimce.
+META_DATA_EXCEPTION.useraction=Ov\u011b\u0159te, \u017ee jsou povolena v datab\u00e1zi typu back-end povolena metadata.
+
+# 7019-7039 deleted
+
+# DSRA7040I	WAS_CONNECTION_POOLING_DISABLED_INFO
+WAS_CONNECTION_POOLING_DISABLED_INFO=DSRA7040I: Aplika\u010dn\u00ed server zak\u00e1zal intern\u00ed pou\u017eit\u00ed fondu p\u0159ipojen\u00ed.
+WAS_CONNECTION_POOLING_DISABLED_INFO.explanation=Aplika\u010dn\u00ed server zjistil povoleno ukl\u00e1d\u00e1n\u00ed p\u0159ipojen\u00ed do mezipam\u011bti prost\u0159ednictv\u00edm datab\u00e1ze. Pou\u017eit\u00ed fondu p\u0159ipojen\u00ed na aplika\u010dn\u00edm serveru bude zak\u00e1z\u00e1no.
+WAS_CONNECTION_POOLING_DISABLED_INFO.useraction=Nechcete-li zak\u00e1zat pou\u017eit\u00ed fondu p\u0159ipojen\u00ed na aplika\u010dn\u00edm serveru, zaka\u017ete pou\u017eit\u00ed fondu p\u0159ipojen\u00ed pro datab\u00e1zov\u00fd server.
+
+# 7041-7042 deleted
+# 7600-7606 deleted
+
+# ----------------------------------------------------------------------------
+# 
+# Using 8000-8499 for DataSource configuration messages.
+# 
+# 8000-8001 deleted
+# 8010 deleted
+
+# 8011E      NO_SETTER_METHOD
+# 
+# {0}        The property we cannot find a setter method for.
+NO_SETTER_METHOD=DSRA8011E: Pro vlastnost {0} neexistuje \u017e\u00e1dn\u00e1 nastavovac\u00ed metoda.
+NO_SETTER_METHOD.explanation=Aplika\u010dn\u00ed server nenalezl nastavovac\u00ed metodu pro zdroj dat, pomoc\u00ed kter\u00e9 by mohla b\u00fdt nastavena po\u017eadovan\u00e1 vlastnost.
+NO_SETTER_METHOD.useraction=Ov\u011b\u0159te, \u017ee byl zad\u00e1n spr\u00e1vn\u00fd n\u00e1zev vlastnosti.
+
+# 8020E      PROP_NOT_FOUND
+# 
+# TRANSLATOR Do not translate: JDBC.
+# {0}        The DataSource class name.
+# {1}        The property name.
+PROP_NOT_FOUND=DSRA8020E: Varov\u00e1n\u00ed: Vlastnost {1} t\u0159\u00eddy zdroje dat {0} neexistuje.
+PROP_NOT_FOUND.explanation=Aplika\u010dn\u00ed server nenalezl ur\u010denou vlastnost zdroje dat. Mo\u017en\u00e9 p\u0159\u00ed\u010diny: 1. Vlastnost zdroje dat nen\u00ed zad\u00e1na spr\u00e1vn\u011b nebo jsou nespr\u00e1vn\u011b pou\u017eita velk\u00e1 a mal\u00e1 p\u00edsmena. 2) Zadan\u00e1 vlastnost se nevztahuje na konfigurovan\u00fd zdroj dat. 3. Aplika\u010dn\u00ed server obsahuje v\u00fdchoz\u00ed konfiguraci pro jinou verzi ovlada\u010de JDBC, ne\u017e bylo ur\u010deno, v d\u016fsledku \u010deho\u017e do\u0161lo k neshod\u011b vlastnost\u00ed zdroje dat.
+PROP_NOT_FOUND.useraction=Ov\u011b\u0159te, \u017ee je zadan\u00e1 vlastnost spr\u00e1vn\u00e1 pro p\u0159\u00edslu\u0161n\u00fd zdroj dat. Odstra\u0148te v\u0161echny chyby n\u00e1zvu v\u010detn\u011b nespr\u00e1vn\u00e9ho pou\u017eit\u00ed velk\u00fdch a mal\u00fdch p\u00edsmen. Odstra\u0148te tuto vlastnost, pokud ji nelze pou\u017e\u00edt spolu s pou\u017eit\u00fdm ovlada\u010dem JDBC.
+
+# 8021W      PROP_SET_ERROR
+# 
+# {0}        The property name.
+# {1}        The Exception class, if not already included in the exception message.
+# {2}        The Exception.
+PROP_SET_ERROR=DSRA8021W: Varov\u00e1n\u00ed: Chybn\u00e9 nastaven\u00ed vlastnosti ''{0}''{1}: {2}.
+PROP_SET_ERROR.explanation=P\u0159i nastavov\u00e1n\u00ed zadan\u00e9 vlastnosti zdroje dat do\u0161lo k v\u00fdjimce.
+PROP_SET_ERROR.useraction=Ov\u011b\u0159te, \u017ee je zadan\u00e1 hodnota pro p\u0159\u00edslu\u0161nou vlastnost spr\u00e1vn\u00e1.
+
+# 8023-8035 deleted
+# 8040-8043 deleted
+# 8050-8055 deleted
+# 8060 deleted
+# 8065 deleted
+
+# 8100E      JAVAX_CONN_ERR
+# 
+# {0}        Type of Connection: XAConnection or PooledConnection.
+JAVAX_CONN_ERR=DSRA8100E: Nelze z\u00edskat {0} ze zdroje dat.
+JAVAX_CONN_ERR.explanation=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 v\u00fdjimce.
+JAVAX_CONN_ERR.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 v\u00fdjimce.
+
+# 8101E      NOT_A_1_PHASE_DS
+# 
+# TRANSLATOR Do not translate: enable2Phase, DataSource, ConnectionPoolDataSource, XADataSource.
+# {0}        ClassCastException message.
+NOT_A_1_PHASE_DS=DSRA8101E: T\u0159\u00eddu DataSource nelze pou\u017e\u00edt jako jednof\u00e1zovou: ClassCastException: {0}.
+NOT_A_1_PHASE_DS.explanation=Vlastnost enable2Phase m\u016f\u017ee b\u00fdt nastavena na hodnotu false pouze v p\u0159\u00edpad\u011b, \u017ee t\u0159\u00edda zdroje dat implementuje rozhran\u00ed ConnectionPoolDatasource.
+NOT_A_1_PHASE_DS.useraction=Nastavte vlastnost 'enable2Phase' na hodnotu true pro zdroj dat XADataSource nebo na hodnotu false pro rozhran\u00ed ConnectionPoolDataSource.
+
+# 8102E      NOT_A_2_PHASE_DS
+# 
+# TRANSLATOR Do not translate: enable2Phase, DataSource, ConnectionPoolDataSource, XADataSource.
+# {0}        ClassCastException message.
+NOT_A_2_PHASE_DS=DSRA8102E: T\u0159\u00eddu DataSource nelze pou\u017e\u00edt jako dvouf\u00e1zovou: ClassCastException: {0}.
+NOT_A_2_PHASE_DS.explanation=Vlastnost enable2Phase m\u016f\u017ee b\u00fdt nastavena na hodnotu true pouze v p\u0159\u00edpad\u011b, \u017ee t\u0159\u00edda zdroje dat implementuje rozhran\u00ed XADatasource.
+NOT_A_2_PHASE_DS.useraction=Nastavte vlastnost 'enable2Phase' na hodnotu true pro zdroj dat XADataSource nebo na hodnotu false pro rozhran\u00ed ConnectionPoolDataSource.
+
+# 8150 deleted
+# 8160 deleted
+# 8200-8202 deleted
+
+# 8203I      DB_PRODUCT_NAME
+# 
+# TRANSLATOR Do not translate: Database.
+DB_PRODUCT_NAME=DSRA8203I: N\u00e1zev datab\u00e1zov\u00e9ho produktu: {0}.
+DB_PRODUCT_NAME.explanation=V t\u00e9to zpr\u00e1v\u011b je zobrazen n\u00e1zev produktu pro datab\u00e1zi.
+DB_PRODUCT_NAME.useraction=Uveden\u00fd n\u00e1zev aplikace je nyn\u00ed pou\u017e\u00edv\u00e1n aplikacemi.
+
+# 8204I      DB_PRODUCT_VERSION
+# 
+DB_PRODUCT_VERSION=DSRA8204I: Verze datab\u00e1zov\u00e9ho produktu: {0}
+DB_PRODUCT_VERSION.explanation=V t\u00e9to zpr\u00e1v\u011b je zobrazena verze produktu pro datab\u00e1zi.
+DB_PRODUCT_VERSION.useraction=Uveden\u00e1 verze aplikace je nyn\u00ed pou\u017e\u00edv\u00e1na aplikacemi.
+
+# 8205I      JDBC_DRIVER_NAME
+# 
+# TRANSLATOR Do not translate: JDBC.
+JDBC_DRIVER_NAME=DSRA8205I: N\u00e1zev ovlada\u010de JDBC: {0}
+JDBC_DRIVER_NAME.explanation=V t\u00e9to zpr\u00e1v\u011b je zobrazen n\u00e1zev ovlada\u010de JDBC (Java Database Connectivity).
+JDBC_DRIVER_NAME.useraction=Uveden\u00fd n\u00e1zev ovlada\u010de JDBC je nyn\u00ed pou\u017e\u00edv\u00e1n aplikacemi.
+
+# 8206I      JDBC_DRIVER_VERSION
+# 
+# TRANSLATOR Do not translate: JDBC.
+JDBC_DRIVER_VERSION=DSRA8206I: Verze ovlada\u010de JDBC: {0}
+JDBC_DRIVER_VERSION.explanation=Verze ovlada\u010de JDBC (Java Database Connectivity).
+JDBC_DRIVER_VERSION.useraction=Uveden\u00e1 verze ovlada\u010de JDBC je nyn\u00ed pou\u017e\u00edv\u00e1na aplikacemi.
+
+# 8207I      ORA_READONLY
+# 
+ORA_READONLY=DSRA8207I: Metoda setReadOnly(false) je ignorov\u00e1na. Nebude spu\u0161t\u011bna \u017e\u00e1dn\u00e1 transakce datab\u00e1ze Oracle.
+ORA_READONLY.explanation=Datab\u00e1ze Oracle neimplementuj\u00ed metodu setReadOnly. Metoda setReadOnly(true) nevytvo\u0159\u00ed p\u0159ipojen\u00ed jen pro \u010dten\u00ed. Metoda setReadOnly(false) rovn\u011b\u017e nen\u00ed implementov\u00e1na a transakce je implicitn\u011b spu\u0161t\u011bna datab\u00e1z\u00ed Oracle. Aplika\u010dn\u00ed server nevyvol\u00e1 metodu setReadOnly(false) pro datab\u00e1zi Oracle, aby zabr\u00e1nil spu\u0161t\u011bn\u00ed zbyte\u010dn\u00e9 transakce. 
+ORA_READONLY.useraction=Prozkoumejte aplikaci a ov\u011b\u0159te, \u017ee nen\u00ed z\u00e1visl\u00e1 na transakci po vol\u00e1n\u00ed metody setReadOnly(false).
+
+# 8208-8212 deleted
+
+# 8213W     PROVIDER_NOT_SUPPORTED
+PROVIDER_NOT_SUPPORTED=DSRA8213W: Poskytovatel JDBC {0} ji\u017e nen\u00ed produktem WebSphere Application Server podporov\u00e1n. Pro aplikace je t\u0159eba pou\u017e\u00edt poskytovatele {1}.
+PROVIDER_NOT_SUPPORTED.explanation=Aplikace pou\u017e\u00edv\u00e1 poskytovatele JDBC, kter\u00fd ji\u017e nen\u00ed aplika\u010dn\u00edm serverem podporov\u00e1n.
+PROVIDER_NOT_SUPPORTED.useraction=Pou\u017eijte poskytovatele JDBC uveden\u00e9ho v textu chyby.
+
+# 8214-8222 deleted
+
+# 8230W     NONTRAN_DATASOURCE_WARNING
+# 
+# {0}       The name of the data source property for nontransactional behavior
+# {1}       The name of the data source property for configuring commit or rollback on connection cleanup
+NONTRAN_DATASOURCE_WARNING=DSRA8230W: Aplika\u010dn\u00ed server nem\u016f\u017ee ur\u010dit, zda m\u00e1 b\u00fdt transakce p\u0159evedena, proto\u017ee p\u0159izp\u016fsoben\u00e1 vlastnost zdroje dat {0} je konfigurov\u00e1na, ale p\u0159izp\u016fsoben\u00e1 vlastnost zdroje dat {1} konfigurov\u00e1na nen\u00ed.
+NONTRAN_DATASOURCE_WARNING.explanation=Byl proveden pokus vlo\u017eit do fondu p\u0159ipojen\u00ed s vlastnost\u00ed AutoCommit nastavenou na hodnotu False. Aplika\u010dn\u00ed server nem\u016f\u017ee ur\u010dit, zda je transakce aktivn\u00ed, proto\u017ee zdroj dat je konfigurov\u00e1n jako netransak\u010dn\u00ed. Aplika\u010dn\u00ed server se nepokus\u00ed o p\u0159eveden\u00ed transakce, proto\u017ee zdroj dat nen\u00ed konfigurov\u00e1n pro automatick\u00e9 potvrzov\u00e1n\u00ed nebo odvol\u00e1v\u00e1n\u00ed transakc\u00ed p\u0159i ukon\u010dov\u00e1n\u00ed p\u0159ipojen\u00ed.
+NONTRAN_DATASOURCE_WARNING.useraction=Konfigurujte zdroj dat tak, aby pro automatick\u00e9 potvrzov\u00e1n\u00ed nebo odvol\u00e1v\u00e1n\u00ed p\u0159i ukon\u010dov\u00e1n\u00ed p\u0159ipojen\u00ed, nebo v\u017edy nastavujte hodnotu vlastnosti AutoCommit na hodnotu True.
+
+# ----------------------------------------------------------------------------
+# 
+# Using 8500-8999 for JDBC wrapper warnings.
+# 
+# 8520 deleted
+
+# 8600W      ERR_CLOSING_OBJECT
+# 
+# TRANSLATOR Do not translate: JDBC.
+# {0}        The object
+# {1}        The error
+ERR_CLOSING_OBJECT=DSRA8600W: Chyba p\u0159i zav\u00edr\u00e1n\u00ed objektu {0}\n {1}.
+ERR_CLOSING_OBJECT.explanation=P\u0159i zav\u00edr\u00e1n\u00ed ur\u010den\u00e9ho objektu JDBC do\u0161lo k chyb\u011b.
+ERR_CLOSING_OBJECT.useraction=CMSG0002
+
+# 8650 deleted
+# 8660 deleted
+# 8680 deleted
+# 8710 deleted
+
+# 8720W      MULTITHREADED_ACCESS_DETECTED
+#
+# TRANSLATOR Do not translate: Statements, ResultSets, metadata, Datasource
+# 
+# {0}        Object on which multithreaded access was detected.
+# {1}        The thread id on which access is permissible.
+# {2}        The current thread id.
+# {3}        Stack trace of the current thread.
+MULTITHREADED_ACCESS_DETECTED=DSRA8720W: Byl zji\u0161t\u011bn p\u0159\u00edstup v\u00edce podproces\u016f k objektu {0}.\nNaposledy pou\u017eito s ID podprocesu:         {1}.\nAktu\u00e1ln\u00ed ID podprocesu:                    {2}.\nTrasov\u00e1n\u00ed z\u00e1sobn\u00edku aktu\u00e1ln\u00edho podprocesu: {3}.
+MULTITHREADED_ACCESS_DETECTED.explanation=Aplikace se pokusila o p\u0159\u00edstup k p\u0159ipojen\u00ed nebo k p\u0159\u00edslu\u0161n\u00fdm objekt\u016fm Statement nebo ResultSet \u010di k metadat\u016fm tohoto p\u0159ipojen\u00ed z jin\u00e9ho podprocesu. Toto chov\u00e1n\u00ed je naru\u0161en\u00edm modelu programov\u00e1n\u00ed pro p\u0159\u00edslu\u0161n\u00fd aplika\u010dn\u00ed server. Zav\u00edr\u00e1n\u00ed objekt\u016f, k nim\u017e se aplikace pokou\u0161ela p\u0159istupovat v r\u00e1mci metody finalize(), je rovn\u011b\u017e pova\u017eov\u00e1no za naru\u0161en\u00ed modulu programov\u00e1n\u00ed, proto\u017ee metoda finalize() je spou\u0161t\u011bna prost\u0159ed\u00edm JVM v jin\u00e9m podprocesu.
+MULTITHREADED_ACCESS_DETECTED.useraction=Upravte aplikaci tak, aby nemohlo doj\u00edt k p\u0159\u00edstupu z v\u00edce podproces\u016f.
+
+# 8730 deleted
+
+# 8750W      UNSUPPORTED_JDBC30_METHOD
+# 
+# {0}        The method trying to be invoked
+UNSUPPORTED_JDBC30_METHOD=DSRA8750W: Metoda {0} JDBC verze 3.0 nen\u00ed implementov\u00e1na v tomto poskytovateli JDBC.
+UNSUPPORTED_JDBC30_METHOD.explanation=Vyvolan\u00e1 metoda je sou\u010d\u00e1st\u00ed specifikace JDBC (Java Database Connectivity) verze 3.0 a v tomto poskytovateli neexistuje.
+UNSUPPORTED_JDBC30_METHOD.useraction=Ov\u011b\u0159te, \u017ee v\u00e1\u0161 poskytovatel JDBC podporuje specifikaci JDBC verze 3.0, nebo tuto metodu nepou\u017e\u00edvejte.
+
+# 8760W      VENDOR_IMPL_NOT_FOUND
+#
+# {0}        The vendor interface requested for the wrapper.
+# {1}        The underlying connection implementation class of the pooled connection.
+VENDOR_IMPL_NOT_FOUND=DSRA8760W: Po p\u0159epnut\u00ed do jin\u00e9ho p\u0159ipojen\u00ed ve fondu nebyla nalezena implementace pro rozhran\u00ed dodavatele {0}. Obslu\u017en\u00e1 rutina p\u0159ipojen\u00ed nezpracovan\u00fd modulem wrapper nen\u00ed jako toto rozhran\u00ed d\u00e1le pou\u017eiteln\u00e1. Nov\u00e1 implementa\u010dn\u00ed t\u0159\u00edda p\u0159ipojen\u00ed: {1}
+VENDOR_IMPL_NOT_FOUND.explanation=Obslu\u017en\u00e1 rutina p\u0159ipojen\u00ed je nyn\u00ed p\u0159idru\u017eena k p\u0159ipojen\u00ed ve fondu, kter\u00e9 se li\u0161\u00ed a kter\u00e9 neimplementuje rozhran\u00ed vy\u017eadovan\u00e9 pro modul wrapper.
+VENDOR_IMPL_NOT_FOUND.useraction=Moduly wrapper pro ur\u010den\u00e9 rozhran\u00ed by nem\u011bly b\u00fdt pou\u017e\u00edv\u00e1ny, pokud metoda Wrapper.isWrapperFor indikuje, \u017ee p\u0159ipojen\u00ed nen\u00ed modulem wrapper rozhran\u00ed.
+
+# 8770I      DEFAULT_MATCH_ORIGINAL
+# 
+# {0}        The name of the connection property.
+# {1}        The name of the data source custom property.
+DEFAULT_MATCH_ORIGINAL=DSRA8770I: P\u0159i v\u00fdchoz\u00edm nastaven\u00ed je zji\u0161\u0165ov\u00e1na shoda vlastnosti p\u0159ipojen\u00ed {0} s p\u0159ipojen\u00edmi s mo\u017enost\u00ed sd\u00edlen\u00ed na z\u00e1klad\u011b p\u016fvodn\u00edho po\u017eadavku na p\u0159ipojen\u00ed, nikoli na z\u00e1klad\u011b aktu\u00e1ln\u00edho stavu p\u0159ipojen\u00ed. Ke konfiguraci po\u017eadovan\u00e9ho chov\u00e1n\u00ed m\u016f\u017eete pou\u017e\u00edt p\u0159izp\u016fsobenou vlastnost zdroje dat {1}.
+DEFAULT_MATCH_ORIGINAL.explanation=P\u0159izp\u016fsoben\u00e1 vlastnost zdroje dat umo\u017e\u0148uje zvolit po\u017eadovan\u00e9 chov\u00e1n\u00ed p\u0159i sd\u00edlen\u00ed p\u0159ipojen\u00ed.
+DEFAULT_MATCH_ORIGINAL.useraction=Ov\u011b\u0159te, \u017ee je p\u0159izp\u016fsoben\u00e1 vlastnost zdroje dat konfigurov\u00e1na pro po\u017eadovan\u00e9 chov\u00e1n\u00ed.
+
+# 8780 deleted
+
+# ----------------------------------------------------------------------------
+# 
+# Using the 9000's for JDBC wrapper messages.
+# 
+# 9000-9001 deleted
+
+# 9002E      RESX_TO_SQLX		Reserved, do not use 342913
+#RESX_TO_SQLX=DSRA9002E
+
+# 9010E      METHOD_UNSUPPORTED
+# 
+# {0}        The method name.
+# {1}        The interface class.
+METHOD_UNSUPPORTED=DSRA9010E: Metoda {0} nen\u00ed podporov\u00e1na v implementaci t\u0159\u00eddy rozhran\u00ed {1} platformy WebSphere.
+METHOD_UNSUPPORTED.explanation=Ur\u010den\u00e1 metoda nen\u00ed podporov\u00e1na implementac\u00ed aplika\u010dn\u00edho serveru.
+METHOD_UNSUPPORTED.useraction=Nepou\u017e\u00edvejte tuto metodu.
+
+# 9020E      NOT_A_JDBC_METHOD
+# 
+# TRANSLATOR Do not translate: JDBC.
+NOT_A_JDBC_METHOD=DSRA9020E: Vyvolan\u00e1 metoda nen\u00ed metoda JDBC. K\u00f3d WebSphere mus\u00ed p\u0159edat platn\u00fd kl\u00ed\u010d pro p\u0159\u00edstup k metod\u011b.
+NOT_A_JDBC_METHOD.explanation=Tato metoda je poskytnuta pouze pro intern\u00ed pou\u017eit\u00ed aplika\u010dn\u00edm serverem.
+NOT_A_JDBC_METHOD.useraction=Tuto metodu nevolejte.
+
+# 9110E      OBJECT_CLOSED
+# 
+# {0}        The object class (such as Connection).
+OBJECT_CLOSED=DSRA9110E: Objekt {0} je zav\u0159en.
+OBJECT_CLOSED.explanation=Do\u0161lo k pokusu o proveden\u00ed operace pro objekt, kter\u00fd je zav\u0159en.
+OBJECT_CLOSED.useraction=Na\u010dt\u011bte novou instanci objektu, pro kter\u00fd chcete operaci prov\u00e9st.
+
+# 9115 deleted
+# 9120-9121 - deleted
+
+# 9122E      NO_WRAPPED_OBJECT
+# 
+# {0}        The WebSphere wrapper object.
+# {1}        The Class of the wrapped object.
+NO_WRAPPED_OBJECT=DSRA9122E: Objekt {0} nezahrnuje \u017e\u00e1dn\u00e9 objekty typu {1}.
+NO_WRAPPED_OBJECT.explanation=Ur\u010den\u00fd modul wrapper neobsahuje ur\u010den\u00fd typ objektu zpracovan\u00e9ho modulem wrapper.
+NO_WRAPPED_OBJECT.useraction=Ov\u011b\u0159te spr\u00e1vn\u00e9 ur\u010den\u00ed modulu wrapper a parametr\u016f pro objekt zpracovan\u00fd modulem wrapper.
+
+# 9123 deleted
+
+# 9130E      OPERATION_NOT_PERMITTED
+# 
+# {0}        The operation.
+OPERATION_NOT_PERMITTED=DSRA9130E: Operace nen\u00ed povolena aplika\u010dn\u00edm serverem: {0}
+OPERATION_NOT_PERMITTED.explanation=Aplika\u010dn\u00ed server nepovoluje po\u017eadovanou operaci.
+OPERATION_NOT_PERMITTED.useraction=Nepou\u017e\u00edvejte ur\u010denou operaci.
+
+# 9210 deleted
+
+# 9250E      OP_NOT_SHAREABLE
+# 
+# TRANSLATOR Do not translate: Connection, Shareable, Unshareable, setTypeMap, setReadOnly, setCatalog.
+# {0}        The operation being performed (such as setTypeMap, setReadOnly and setCatalog)
+OP_NOT_SHAREABLE=DSRA9250E: Operace {0} nen\u00ed povolena b\u011bhem glob\u00e1ln\u00ed transakce pro p\u0159ipojen\u00ed umo\u017e\u0148uj\u00edc\u00ed sd\u00edlen\u00ed.
+OP_NOT_SHAREABLE.explanation=Aplika\u010dn\u00ed server nepovoluje vol\u00e1n\u00ed metod setTypeMap, setReadOnly nebo setCatalog v r\u00e1mci p\u0159ipojen\u00ed umo\u017e\u0148uj\u00edc\u00edch sd\u00edlen\u00ed, je-li aktivn\u00ed glob\u00e1ln\u00ed transakce.
+OP_NOT_SHAREABLE.useraction=Nevolejte operace setTypeMap, setReadOnly nebo setCatalog na p\u0159ipojen\u00edch umo\u017e\u0148uj\u00edc\u00edch sd\u00edlen\u00ed v glob\u00e1ln\u00ed transakci, nebo p\u0159ejd\u011bte k p\u0159ipojen\u00ed, kter\u00e9 sd\u00edlen\u00ed neumo\u017e\u0148uje.
+
+# 9300 deleted
+# 9310 deleted
+# 9312 deleted
+# 9316 deleted
+# 9320 deleted
+# 9330 deleted
+# 9340 deleted
+
+# 9350E      OP_NOT_VALID_IN_GT
+# 
+# TRANSLATOR Do not translate: Connection, commit, rollback, setSavepoint, releaseSavepoint
+# {0}        The operation being performed (such as Connection.commit)
+OP_NOT_VALID_IN_GT=DSRA9350E: Operace {0} nen\u00ed povolena b\u011bhem glob\u00e1ln\u00ed transakce.
+OP_NOT_VALID_IN_GT.explanation=Aplika\u010dn\u00ed server nepovoluje vol\u00e1n\u00ed metod commit, rollback, setSavepoint pro objekt Connection, je-li aktivn\u00ed glob\u00e1ln\u00ed transakce.
+OP_NOT_VALID_IN_GT.useraction=Nevolejte pro p\u0159ipojen\u00ed metody commit, rollback, setSavepoint nebo releaseSavepoint, pokud prob\u00edh\u00e1 zpracov\u00e1n\u00ed v glob\u00e1ln\u00ed transakci. Je-li pou\u017e\u00edv\u00e1n netransak\u010dn\u00ed zdroj dat (nap\u0159\u00edklad objekt non-jta-data-source pro rozhran\u00ed API Java Persistence), konfigurujte polo\u017eku non-jta-data-source v souboru persistence.xml a tak\u00e9 p\u0159izp\u016fsobenou vlastnost nonTransactionalDataSource ve zdroji dat.
+
+# 9360E      INVALID_TRAN_STATE
+# 
+# {0}        String representing the current ManagedConnection transaction state.
+# TRANSLATOR Do not translate: Connection.
+INVALID_TRAN_STATE=DSRA9360E: Nelze prov\u00e9st po\u017eadovanou operaci z n\u00e1sleduj\u00edc\u00edho stavu transakce: {0}.
+INVALID_TRAN_STATE.explanation=Pokud se aplikace nach\u00e1z\u00ed v aktu\u00e1ln\u00edm stavu transakce, nelze prov\u00e1d\u011bt operace.
+INVALID_TRAN_STATE.useraction=Z\u00edskejte pro proveden\u00ed operace nov\u00e9 p\u0159ipojen\u00ed.
+
+# 9380 deleted
+
+# 9400E      REASSOCIATION_ERR
+# 
+# TRANSLATOR Do not translate: Connection.
+# {0}        The error.
+REASSOCIATION_ERR=DSRA9400E: Do\u0161lo k z\u00e1va\u017en\u00e9 chyb\u011b b\u011bhem op\u011btovn\u00e9ho p\u0159idru\u017een\u00ed p\u0159ipojen\u00ed: {0}.
+REASSOCIATION_ERR.explanation=Aktu\u00e1ln\u00ed obslu\u017en\u00e1 rutina p\u0159ipojen\u00ed nem\u016f\u017ee b\u00fdt op\u011btovn\u011b p\u0159idru\u017eena.
+REASSOCIATION_ERR.useraction=Zkuste z\u00edskat nov\u00e9 p\u0159ipojen\u00ed.
+
+# 9410E      CANNOT_REASSOCIATE
+# 
+# TRANSLATOR Do not translate: Connection.
+# {0}        Current Connection state.
+CANNOT_REASSOCIATE=DSRA9410E: Op\u011btovn\u00e9 p\u0159idru\u017een\u00ed obslu\u017en\u00e9 rutiny je povoleno pouze z neaktivn\u00edho stavu. Stav aktu\u00e1ln\u00edho p\u0159ipojen\u00ed: {0}.
+CANNOT_REASSOCIATE.explanation=Obslu\u017en\u00e9 rutiny p\u0159ipojen\u00ed mohou b\u00fdt op\u011btovn\u011b p\u0159idru\u017eeny pouze z neaktivn\u00edho stavu.
+CANNOT_REASSOCIATE.useraction=Ukon\u010dete aktu\u00e1ln\u00ed obslu\u017enou rutinu p\u0159ipojen\u00ed a z\u00edskejte novou.
+
+# 9420E      CHILDREN_STILL_OPEN
+# 
+# TRANSLATOR Do not translate: Connection.
+CHILDREN_STILL_OPEN=DSRA9420E: P\u0159ipojen\u00ed nem\u016f\u017ee b\u00fdt op\u011btovn\u011b p\u0159idru\u017eeno, proto\u017ee pod\u0159\u00edzen\u00e9 objekty jsou dosud otev\u0159eny.
+CHILDREN_STILL_OPEN.explanation=Obslu\u017en\u00e9 rutiny p\u0159ipojen\u00ed mohou b\u00fdt op\u011btovn\u011b p\u0159idru\u017eeny pouze tehdy, jsou-li v\u0161echny pod\u0159\u00edzen\u00e9 objekty zav\u0159eny.
+CHILDREN_STILL_OPEN.useraction=Ukon\u010dete aktu\u00e1ln\u00ed obslu\u017enou rutinu p\u0159ipojen\u00ed a z\u00edskejte novou.
+
+# 9430E      HANDLE_IN_USE
+# 
+# TRANSLATOR Do not translate: Connection.
+HANDLE_IN_USE=DSRA9430E: P\u0159idru\u017een\u00ed obslu\u017en\u00e9 rutiny p\u0159ipojen\u00ed nem\u016f\u017ee b\u00fdt zru\u0161eno, proto\u017ee obslu\u017en\u00e1 rutina je v sou\u010dasn\u00e9 dob\u011b pou\u017e\u00edv\u00e1na.
+HANDLE_IN_USE.explanation=Na obslu\u017enou rutinu p\u0159ipojen\u00ed je pr\u00e1v\u011b prov\u00e1d\u011bna operace. B\u011bhem operace nelze zru\u0161it jej\u00ed p\u0159idru\u017een\u00ed.
+HANDLE_IN_USE.useraction=Po\u010dkejte, dokud nejsou v\u0161echny operace na obslu\u017en\u00e9 rutiny dokon\u010deny, a pak zru\u0161te p\u0159idru\u017een\u00ed obslu\u017en\u00e9 rutiny.
+
+# 9500E      NO_NEGATIVE_FETCH_SIZES
+# 
+NO_NEGATIVE_FETCH_SIZES=DSRA9500E: Pro velikost na\u010dten\u00ed nejsou povoleny z\u00e1porn\u00e9 hodnoty.
+NO_NEGATIVE_FETCH_SIZES.explanation=Velikost na\u010dten\u00ed lze nastavit pouze na nez\u00e1pornou hodnotu.
+NO_NEGATIVE_FETCH_SIZES.useraction=Zvolte pro velikost na\u010dten\u00ed nez\u00e1pornou hodnotu.
+
+# 9510 deleted
+# 9520 deleted
+# 9530-9542 deleted
+
+# DSRA9543W      KERBEROS_NOT_SUPPORTED_WARNING
+# TRANSLATOR Do not translate: Kerberos
+KERBEROS_NOT_SUPPORTED_WARNING=DSRA9543W: Aplika\u010dn\u00ed server nepodporuje ov\u011b\u0159ov\u00e1n\u00ed Kerberos pro pou\u017eitou datab\u00e1zi typu back-end. K z\u00edsk\u00e1n\u00ed p\u0159ipojen\u00ed nebude pou\u017eito \u017e\u00e1dn\u00e9 jm\u00e9no u\u017eivatele a heslo.
+KERBEROS_NOT_SUPPORTED_WARNING.explanation= Aplika\u010dn\u00ed server nepodporuje ov\u011b\u0159ov\u00e1n\u00ed Kerberos pro pou\u017eitou datab\u00e1zi. P\u0159i z\u00edsk\u00e1v\u00e1n\u00ed p\u0159ipojen\u00ed nebude pou\u017eito jm\u00e9no u\u017eivatele a heslo.
+KERBEROS_NOT_SUPPORTED_WARNING.useraction= Zaka\u017ete ov\u011b\u0159ov\u00e1n\u00ed Kerberos nebo pou\u017eijte datab\u00e1zi DB2 typu back-end s ovlada\u010dem DB2 Universal JDBC Driver.
+
+# 9544-9548 deleted
+# 9600-9603 deleted 
+# 9900 deleted

@@ -1,0 +1,1014 @@
+###############################################################################
+# Copyright (c) 2012, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# Change activity:
+#
+# Reason          Date       Origin   Description
+# --------------- ---------- -------- ------------------------------------------
+# d341984         2006-01-27 holdeni  Remove unused messages
+# d353701         2006-08-15 matrober Warn application writers they may be leaking JMS resources
+# SIB0121.jms.3   2007-01-29 jamessid Adding exception text for producer-guarantee violations
+# SIB0121.jms.4   2007-02-26 jamessid Remove 'guarantee' prop value, add forwarder flag to ActSpec
+# 431745          2007-04-13 jamessid Information development updates
+# 490428          2008-01-15 susana   Fail more helpfully at an unknown property on decode
+# 499445          2008-02-21 susana   Fix up any 'non-IBM-approved' terms
+# 99986           2013-05-23 Chetan   Proper error message on authentication exception
+# -------------------------------------------------------------------------------------------------
+# File com.ibm.websphere.sib.api.jms.CWSIAJMSMessages.props
+#
+# SIB.api.jms component file for logging _external_ messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIA0001=CWSIA0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   Message Range        Owning class
+#   ----------------------------------------------------
+#   CWSIA0000-CWSIA0500   JMS api usage only (within API team)
+#   ----------------------------------------------------
+#   CWSIA0001-CWSIA0020   com.ibm.ws.sib.api.jms.impl.JmsFactoryFactoryImpl
+#   CWSIA0021-CWSIA0040   com.ibm.ws.sib.api.jms.impl.JmsConnectionImpl
+#   CWSIA0041-CWSIA0060   com.ibm.ws.sib.api.jms.impl.JmsSessionImpl
+#   CWSIA0061-CWSIA0080   com.ibm.ws.sib.api.jms.impl.JmsMsgProducerImpl
+#   CWSIA0081-CWSIA0100   com.ibm.ws.sib.api.jms.impl.JmsMsgConsumerImpl
+#   CWSIA0101-CWSIA0120   com.ibm.ws.sib.api.jms.impl.JmsMessageImpl
+#   CWSIA0121-CWSIA0140   com.ibm.ws.sib.api.jms.impl.JmsObjectMessageImpl
+#   CWSIA0141-CWSIA0160   com.ibm.ws.sib.api.jms.impl.JmsQueueBrowserImpl
+#   CWSIA0161-CWSIA0180   com.ibm.ws.sib.api.jms.impl.JmsStreamMessageImpl
+#   CWSIA0181-CWSIA0200   com.ibm.ws.sib.api.jms.impl.JmsBytesMessageImpl
+#   CWSIA0201-CWSIA0220   com.ibm.ws.sib.api.jms.impl.JmsInternalsFactory
+#   CWSIA0221-CWSIA0240   com.ibm.ws.sib.api.jms.impl.JmsDurableSubscriberImpl
+#   CWSIA0241-CWSIA0260   com.ibm.ws.sib.api.jms.impl.JmsManagedConnectionFactoryImpl
+#   CWSIA0261-CWSIA0280   com.ibm.ws.sib.api.jms.impl.JmsConnectionFactoryImpl
+#   CWSIA0281-CWSIA0300   com.ibm.ws.sib.api.jms.impl.JmsDestinationImpl
+#   CWSIA0301-CWSIA0320   com.ibm.ws.sib.api.jms.impl.ProducerProperties
+#   CWSIA0321-CWSIA0340   com.ibm.ws.sib.api.jms.impl.ReportMessageConverter
+#   CWSIA0341-CWSIA0359   com.ibm.ws.sib.api.jms.impl.ConnectionListenerImpl
+#   CWSIA0360-CWSIA0380   com.ibm.ws.sib.api.jms.impl.MsgDestEncodingUtilsImpl
+#   CWSIA0381-CWSIA0390   com.ibm.ws.sib.api.jms.impl.URIDestinationCreator
+#   CWSIA0391-CWSIA0400   com.ibm.ws.sib.api.jms.impl.MQRequestReplyUtilsImpl & factory
+#   CWSIA0481-CWSIA0500   common messages
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.45,0,02/07/25,05:29:29
+#
+#CMVCPATHNAME com.ibm.ws.messaging.jms/resources/com/ibm/ws/sib/api/jms/CWSIAJMSMessages.nlsprops
+#COMPONENTPREFIX CWSIA
+#COMPONENTNAMEFOR CWSIA SIbus
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# JmsFactoryFactoryImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the class that could not be instantiated
+# {1} is the name of the jarfile that contains the class in question
+# This message is cloned as UNABLE_TO_CREATE_FACTORY_CWSIA0201 for JmsInternalsFactory
+# This message is cloned as UNABLE_TO_CREATE_FACTORY_CWSIA0008 for JmsFactoryFactoryImpl
+# This message is cloned as UNABLE_TO_CREATE_FACTORY_CWSIA0391 for MQRequestReplyUtils
+UNABLE_TO_CREATE_FACTORY_CWSIA0001=CWSIA0001E: A ap\u0103rut o eroare intern\u0103. Un obiect de clas\u0103 {0} nu poate fi creat deoarece fi\u015fierul JAR {1} nu poate fi g\u0103sit.
+UNABLE_TO_CREATE_FACTORY_CWSIA0001.explanation=CMSG0001
+UNABLE_TO_CREATE_FACTORY_CWSIA0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception.
+INITIALIZATION_ERROR_CWSIA0002=CWSIA0002E: A ap\u0103rut o eroare intern\u0103. Nu a fost posibil\u0103 instan\u0163ierea unei clase necesare: {0}
+INITIALIZATION_ERROR_CWSIA0002.explanation=CMSG0001
+INITIALIZATION_ERROR_CWSIA0002.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# derived from 0048
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0003=CWSIA0003E: Valoarea specificat\u0103 {1} nu este permis\u0103 pentru {0}.
+INVALID_VALUE_CWSIA0003.explanation=Valoarea furnizat\u0103 nu este permis\u0103 pentru proprietatea specificat\u0103.
+INVALID_VALUE_CWSIA0003.useraction=Introduce\u0163i o valoare care este suportat\u0103 pentru proprietate.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the supplied user name
+AUTHENTICATION_FAILED_CWSIA0004=CWSIA0004E: Autentificarea pentru numele de utilizator furnizat {0} \u015fi parola asociat\u0103 nu a avut succes.
+AUTHENTICATION_FAILED_CWSIA0004.explanation=Autentificarea utiliz\u00e2nd detaliile furnizate a e\u015fuat, deoarece numele de utilizator sau parola sunt incorecte.
+AUTHENTICATION_FAILED_CWSIA0004.useraction=Vede\u0163i mesajul de eroare legat pentru mai multe informa\u0163ii.Verifica\u0163i c\u0103 numele de utilizator \u015fi parola sunt corecte \u015fi au fost definite \u00een sistem.
+
+# -------------------------------------------------------------------------------------------------
+JCA_RESOURCE_EXC_CWSIA0005=CWSIA0005E: Runtime-ul JCA a e\u015fuat s\u0103 aloce o conexiune.
+JCA_RESOURCE_EXC_CWSIA0005.explanation=O \u00eencercare de creare a unei conexiuni JMS a e\u015fuat din cauza unei excep\u0163ii din mediul de rulare JCA.
+JCA_RESOURCE_EXC_CWSIA0005.useraction=Vede\u0163i excep\u0163ia legat\u0103 pentru mai multe informa\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+AUTHORIZATION_FAILED_CWSIA0006=CWSIA0006E: Autorizarea pentru numele de utilizator furnizat nu a avut succes.
+AUTHORIZATION_FAILED_CWSIA0006.explanation=Numele de utilizator nu este autorizat pentru accesarea resursei.
+AUTHORIZATION_FAILED_CWSIA0006.useraction=Vede\u0163i mesajul de eroare legat pentru numele de utilizator. Asigura\u0163i-v\u0103 c\u0103 este autorizat corect pentru resursa cerut\u0103 \u00een sistem.
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0007=CWSIA0007E: O excep\u0163ie a fost primit\u0103 \u00een timpul apelului la metoda {1}: {0}.
+EXCEPTION_RECEIVED_CWSIA0007.explanation=O alt\u0103 component\u0103 a detectat o eroare \u00een timpul execu\u0163iei metodei specificate.
+EXCEPTION_RECEIVED_CWSIA0007.useraction=Vede\u0163i mesajul de eroare legat pentru mai multe informa\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the class that could not be instantiated
+# {1} is the name of the jarfile that contains the class in question
+# This message is a clone of UNABLE_TO_CREATE_FACTORY_CWSIA0001
+UNABLE_TO_CREATE_FACTORY_CWSIA0008=CWSIA0008E: A ap\u0103rut o eroare intern\u0103. Un obiect de clas\u0103 {0} nu poate fi creat deoarece fi\u015fierul JAR {1} nu poate fi g\u0103sit.
+UNABLE_TO_CREATE_FACTORY_CWSIA0008.explanation=CMSG0001
+UNABLE_TO_CREATE_FACTORY_CWSIA0008.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+AUTHENTICATION_FAILED_CWSIA0009=CWSIA0009E: Autentificarea pentru numele de utilizator furnizat nu a avut succes.
+AUTHENTICATION_FAILED_CWSIA0009.explanation=Autentificarea utiliz\u00e2nd detaliile furnizate a e\u015fuat, deoarece numele de utilizator sau parola sunt incorecte.
+AUTHENTICATION_FAILED_CWSIA0009.useraction=Vede\u0163i mesajul de eroare legat pentru mai multe informa\u0163ii.Verifica\u0163i c\u0103 numele de utilizator \u015fi parola sunt corecte \u015fi au fost definite \u00een sistem.
+ 
+# -------------------------------------------------------------------------------------------------
+
+# JmsConnectionImpl
+# -------------------------------------------------------------------------------------------------
+CONNECTION_CLOSED_CWSIA0021=CWSIA0021E: Aceast\u0103 conexiune este \u00eenchis\u0103.
+CONNECTION_CLOSED_CWSIA0021.explanation=O aplica\u0163ie a apelat o metod\u0103 care nu poate fi utilizat\u0103 dup\u0103 \u00eenchiderea conexiunii.
+CONNECTION_CLOSED_CWSIA0021.useraction=Asigura\u0163i-v\u0103 c\u0103 nu este \u00eenchis\u0103 conexiunea \u00eenaintea de apelarea metodei.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception which was received
+# {1} is the name of the method which received it, and is effectively a unique probe ID for this message.
+# This message is cloned widely within this file.
+EXCEPTION_RECEIVED_CWSIA0022=CWSIA0022E: O excep\u0163ie a fost primit\u0103 \u00een timpul apelului la metoda {1}: {0}.
+EXCEPTION_RECEIVED_CWSIA0022.explanation=O alt\u0103 component\u0103 a detectat o eroare \u00een timpul execu\u0163iei metodei specificate.
+EXCEPTION_RECEIVED_CWSIA0022.useraction=Vede\u0163i mesajul de eroare legat pentru mai multe informa\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+CLIENT_ID_FIXED_CWSIA0023=CWSIA0023E: ID-ul client pentru aceast\u0103 conexiune este numai citire.
+CLIENT_ID_FIXED_CWSIA0023.explanation=O aplica\u0163ie a \u00eencercat s\u0103 seteze identificatorul clientului, care a fost deja setat sau configurat din punct de vedere administrativ.
+CLIENT_ID_FIXED_CWSIA0023.useraction=Asigura\u0163i-v\u0103 c\u0103 identificatorul clientului nu este setat dup\u0103 ce a fost anterior setat sau configurat.
+
+# -------------------------------------------------------------------------------------------------
+JCA_CREATE_SESS_CWSIA0024=CWSIA0024E: Runtime-ul JCA a e\u015fuat s\u0103 creeze o conexiune.
+JCA_CREATE_SESS_CWSIA0024.explanation=O apelare a mediului de rulare JCA pentru crearea unei sesiuni a generat o eroare.
+JCA_CREATE_SESS_CWSIA0024.useraction=Vede\u0163i mesajul de eroare legat pentru mai multe informa\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that is not permitted to call in this container.
+# This message is cloned as MGD_ENV_CWSIA0052 and MGD_ENV_CWSIA0084.
+MGD_ENV_CWSIA0025=CWSIA0025E: Metoda {0} nu este permis\u0103 \u00een acest container.
+MGD_ENV_CWSIA0025.explanation=A fost apelat\u0103 o metod\u0103 care nu este permis\u0103 \u00een containerul curent.
+MGD_ENV_CWSIA0025.useraction=\u00cenl\u0103tura\u0163i apelarea metodei.
+
+# -------------------------------------------------------------------------------------------------
+# clone 0484 created for JmsTopicConnectionImpl
+# {0} describes the unsupported functionality
+UNSUPPORTED_FUNC_CWSIA0026=CWSIA0026E: {0} nu este suportat \u00een aceast\u0103 edi\u0163ie.
+UNSUPPORTED_FUNC_CWSIA0026.explanation=Aplica\u0163ia a \u00eencercat s\u0103 utilizeze o caracteristic\u0103 sau capabilitate care nu este suportat\u0103 de edi\u0163ia curent\u0103 de software.
+UNSUPPORTED_FUNC_CWSIA0026.useraction=\u00cenl\u0103tura\u0163i codul care \u00eencearc\u0103 s\u0103 utilizeze aceast\u0103 capabilitate sau actualiza\u0163i la o edi\u0163ie ulterioar\u0103 pentru software, dac\u0103 este disponibil\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of JMS Sessions that are currently open on the connection.
+# {1} is the line of application code that created the latest session
+MANY_SESSIONS_WARNING_CWSIA0027=CWSIA0027W: Sunt momentan {0} sesiuni JMS deschise pentru Conexiune. Aceasta poate indica faptul c\u0103 sesiunile nu sunt \u00eenchise atunci c\u00e2nd aplica\u0163ia a terminat utilizarea lor. Sesiunea a fost creat\u0103 la {1}
+MANY_SESSIONS_WARNING_CWSIA0027.explanation=Un num\u0103r mare de sesiuni deschise pe o conexiune poate avea un efect negativ asupra performan\u0163ei.
+MANY_SESSIONS_WARNING_CWSIA0027.useraction=Asigura\u0163i-v\u0103 c\u0103 aplica\u0163ia \u00eenchide sesiunile care nu mai sunt necesare.
+
+# -------------------------------------------------------------------------------------------------
+CLIENT_ID_ALREADY_EXISTS_CWSIA0028=CWSIA0028E: ID-ul de client {0} este deoarece o conexiune cu acela\u015fi ID de client ruleaz\u0103 deja.
+CLIENT_ID_ALREADY_EXISTS_CWSIA0028.explanation=Id-ul client care este setat de aplica\u0163ie este acela\u015fi cu Id-ul client al unei conexiuni active.
+CLIENT_ID_ALREADY_EXISTS_CWSIA0028.useraction=Asigura\u0163i-v\u0103 c\u0103 Id-ul client furnizat este unic.
+
+# JmsSessionImpl
+
+# clone of 222
+CONN_CLOSED_CWSIA0041=CWSIA0041E: Conexiune \u00eenchis\u0103
+CONN_CLOSED_CWSIA0041.explanation=Conexiunea a fost \u00eenchis\u0103 \u00een timpul execu\u0163iei acestei metode.
+CONN_CLOSED_CWSIA0041.useraction=Repeta\u0163i apelul utiliz\u00e2nd o conexiune nou\u0103.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method which must not be called on a nontransacted session.
+INVALID_OP_FOR_NONTRANS_SESSION_CWSIA0042=CWSIA0042E: Nu este valid s\u0103 apela\u0163i metoda {0} \u00eentr-o sesiune netranzac\u0163ionat\u0103.
+INVALID_OP_FOR_NONTRANS_SESSION_CWSIA0042.explanation=Aplica\u0163ia a apelat o metod\u0103 care nu trebuie apelat\u0103 \u00eentr-o sesiune netranzac\u0163ionat\u0103.
+INVALID_OP_FOR_NONTRANS_SESSION_CWSIA0042.useraction=Modifica\u0163i programul aplica\u0163iei pentru a \u00eenl\u0103tura acest comportament.
+
+DSUB_LOCKED_CWSIA0043=CWSIA0043E: Abonament blocat
+DSUB_LOCKED_CWSIA0043.explanation=Nu pute\u0163i s\u0103 anula\u0163i subscrierea la un abonament durabil care are un consumator activ sau re\u0163ine mesaje care sunt blocate sub o tranzac\u0163ie activ\u0103.
+DSUB_LOCKED_CWSIA0043.useraction=Asigura\u0163i-v\u0103 c\u0103 nu exist\u0103 nici un consumator activ, apoi re\u00eencerca\u0163i metoda de anulare a subscrierii.
+
+NOT_AUTH_CWSIA0044=CWSIA0044E: Cererea de anulare a subscrierii din abonamentul durabil nu poate fi finalizat\u0103 deoarece nu este autorizat\u0103.
+NOT_AUTH_CWSIA0044.explanation=Utilizatorul curent nu este autorizat s\u0103 anuleze subscrierea din abonamentul durabil.
+NOT_AUTH_CWSIA0044.useraction=Verifica\u0163i c\u0103 utilizatorul curent are accesul necesar la resursele necesare. Vede\u0163i mesajul de eroare legat pentru mai multe informa\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the operation which is not supported
+UNSUPPORTED_OPERATION_CWSIA0045=CWSIA0045E: Opera\u0163ia JMS op\u0163ional\u0103 {0} nu este suportat\u0103 de aceast\u0103 implementare.
+UNSUPPORTED_OPERATION_CWSIA0045.explanation=Aplica\u0163ia a apelat o metod\u0103 care este op\u0163ional\u0103 \u00een specifica\u0163iile JMS \u015fi care nu este suportat\u0103 de aceast\u0103 implementare.
+UNSUPPORTED_OPERATION_CWSIA0045.useraction=\u00cenl\u0103tura\u0163i apelurile la metodele numite din aplica\u0163ie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the object instance which is not supported.
+FOREIGN_IMPLEMENTATION_CWSIA0046=CWSIA0046E: Parametrul {0} provine dintr-o implementare extern\u0103 care nu este suportat\u0103.
+FOREIGN_IMPLEMENTATION_CWSIA0046.explanation=Aplica\u0163ia utilizator pasat\u0103 \u00eentr-o clas\u0103 de implementare dintr-un furnizor JMS nesuportat.
+FOREIGN_IMPLEMENTATION_CWSIA0046.useraction=\u00cenlocui\u0163i obiectul nesuportat cu unul suportat.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the object type which was being created.
+MALFORMED_DESCRIPTOR_CWSIA0047=CWSIA0047E: Numele {1} nu descrie un obiect de tipul {0}.
+MALFORMED_DESCRIPTOR_CWSIA0047.explanation=A fost livrat un nume de coad\u0103 la o apelare createTopic sau un nume subiect a fost livrat\u0103 la o apelare createQueue.
+MALFORMED_DESCRIPTOR_CWSIA0047.useraction=Modifica\u0163i numele la tipul corect de obiect.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0048=CWSIA0048E: Valoarea specificat\u0103 {1} nu este permis\u0103 pentru {0}.
+INVALID_VALUE_CWSIA0048.explanation=Valoarea furnizat\u0103 nu este permis\u0103 pentru proprietatea specificat\u0103.
+INVALID_VALUE_CWSIA0048.useraction=Introduce\u0163i o valoare care este suportat\u0103 pentru proprietate.
+
+# -------------------------------------------------------------------------------------------------
+SESSION_CLOSED_CWSIA0049=CWSIA0049E: Aceast\u0103 sesiune este \u00eenchis\u0103.
+SESSION_CLOSED_CWSIA0049.explanation=O aplica\u0163ie a apelat o metod\u0103 care nu poate fi utilizat\u0103 dup\u0103 \u00eenchiderea sesiunii.
+SESSION_CLOSED_CWSIA0049.useraction=Asigura\u0163i-v\u0103 c\u0103 nu este \u00eenchis\u0103 sesiunea \u00eenainte de apelarea metodei.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method which must not be called on a transacted session
+INVALID_OP_FOR_TRANS_SESSION_CWSIA0050=CWSIA0050E: Nu este valid s\u0103 apela\u0163i metoda {0} \u00eentr-o sesiune tranzac\u0163ionat\u0103.
+INVALID_OP_FOR_TRANS_SESSION_CWSIA0050.explanation=Aplica\u0163ia a apelat o metod\u0103 care nu trebuie apelat\u0103 \u00eentr-o sesiune tranzac\u0163ionat\u0103.
+INVALID_OP_FOR_TRANS_SESSION_CWSIA0050.useraction=Modifica\u0163i programul aplica\u0163iei pentru a \u00eenl\u0103tura acest comportament.
+
+# -------------------------------------------------------------------------------------------------
+CONNECTION_CLOSED_CWSIA0051=CWSIA0051E: Conexiunea asociat\u0103 cu aceast\u0103 sesiune este \u00eenchis\u0103.
+CONNECTION_CLOSED_CWSIA0051.explanation=Aplica\u0163ia a apelat o metod\u0103 pe un obiect sesiune pentru care conexiunea asociat\u0103 a fost \u00eenchis\u0103.
+CONNECTION_CLOSED_CWSIA0051.useraction=Asigura\u0163i-v\u0103 c\u0103 nu se \u00eenchide conexiunea \u00eenainte de apelarea metodei.
+
+# -------------------------------------------------------------------------------------------------
+# clone of 64
+# {0} is the destination which does not exist
+DESTINATION_DOES_NOT_EXIST_CWSIA0052=CWSIA0052E: Destina\u0163ia {0} nu exist\u0103.
+DESTINATION_DOES_NOT_EXIST_CWSIA0052.explanation=Aplica\u0163ia a \u00eencercat s\u0103 se conecteze la o destina\u0163ie care nu este definit\u0103.
+DESTINATION_DOES_NOT_EXIST_CWSIA0052.useraction=Defini\u0163i destina\u0163ia necesar\u0103 \u015fi repeta\u0163i opera\u0163ia.
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0053=CWSIA0053E: O excep\u0163ie a fost primit\u0103 \u00een timpul apelului la metoda {1}: {0}.
+EXCEPTION_RECEIVED_CWSIA0053.explanation=O alt\u0103 component\u0103 a detectat o eroare \u00een timpul execu\u0163iei metodei specificate.
+EXCEPTION_RECEIVED_CWSIA0053.useraction=Vede\u0163i mesajul de eroare legat pentru mai multe informa\u0163ii.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the durable subscription in question.
+DURABLE_SUB_DOES_NOT_EXIST_CWSIA0054=CWSIA0054E: Abonamentul durabil cu numele abonamentului {0} nu exist\u0103.
+DURABLE_SUB_DOES_NOT_EXIST_CWSIA0054.explanation=Aplica\u0163ia a \u00eencercat s\u0103 anuleze subscrierea unui abonament durabil care nu exist\u0103.
+DURABLE_SUB_DOES_NOT_EXIST_CWSIA0054.useraction=Nu este necesar\u0103 nici o ac\u0163iune dec\u00e2t dac\u0103 aplica\u0163ia a\u015ftepta ca abonamentul s\u0103 existe, caz \u00een care ar fi trebuit s\u0103 o creeze anterior.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of JMS Producers that are currently open on the session.
+# {1} is the line of application code that created the latest producer
+MANY_PRODUCERS_WARNING_CWSIA0055=CWSIA0055W: Sunt momentan {0} Produc\u0103tori JMS deschi\u015fi pentru Sesiune. Aceasta poate indica faptul c\u0103 produc\u0103torii nu sunt \u00eenchi\u015fi atunci c\u00e2nd aplica\u0163ia a terminat utilizarea lor. Produc\u0103torul a fost creat la {1}
+MANY_PRODUCERS_WARNING_CWSIA0055.explanation=Un num\u0103r mare de produc\u0103tori deschi\u015fi pe o conexiune pot avea un efect negativ asupra performan\u0163ei.
+MANY_PRODUCERS_WARNING_CWSIA0055.useraction=Asigura\u0163i-v\u0103 c\u0103 aplica\u0163ia \u00eenchide produc\u0103torii care nu mai sunt necesari.
+
+# -------------------------------------------------------------------------------------------------
+DURABLE_SUB_HOME_NOT_SPECIFIED_CWSIA0056=CWSIA0056E: O valoare goal\u0103 sau nul\u0103 a fost specificat\u0103 pentru proprietatea durableSubscriptionHome a ConnectionFactory
+DURABLE_SUB_HOME_NOT_SPECIFIED_CWSIA0056.explanation=Proprietatea durableSubscriptionHome trebuie setat\u0103 \u00eenainte de crearea unei conexiuni care va folosi abonamente durabile.
+DURABLE_SUB_HOME_NOT_SPECIFIED_CWSIA0056.useraction=Seta\u0163i proprietatea durableSubscriptionHome din fabrica de conexiuni la numele motorului de mesagerie pe care ar trebui s\u0103 fie localizat abonamentul.
+
+# -------------------------------------------------------------------------------------------------
+# Clone of CWSIA0006, with userID inserted
+# {0} UserID that failed to be autherised
+AUTHORIZATION_FAILED_CWSIA0057=CWSIA0057E: Autorizarea pentru {0} nu a avut succes.
+AUTHORIZATION_FAILED_CWSIA0057.explanation=Numele de utilizator nu este autorizat pentru accesarea resursei.
+AUTHORIZATION_FAILED_CWSIA0057.useraction=Vede\u0163i mesajul de eroare legat pentru numele de utilizator \u015fi asigura\u0163i-v\u0103 c\u0103 este corect autorizat pentru resursa necesar\u0103 din sistem.
+
+
+DEST_LOCKED_CWSIA0058=CWSIA0058E: Subiect temporar blocat
+DEST_LOCKED_CWSIA0058.explanation=Subiectul temporar nu a putut fi \u015fters. Poate avea abona\u0163i activi.
+DEST_LOCKED_CWSIA0058.useraction=\u00cenchide\u0163i orice abona\u0163i la subiect \u015fi re\u00eencerca\u0163i apelarea.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of JMS Consumers that are currently open on the session.
+# {1} is the line of application code that created the latest consumer
+MANY_CONSUMERS_WARNING_CWSIA0059=CWSIA0059W: Sunt momentan {0} Consumatori JMS deschi\u015fi pentru Sesiune. Aceasta poate indica faptul c\u0103 nu sunt \u00eenchi\u015fi consumatorii atunci c\u00e2nd aplica\u0163ia a terminat utilizarea lor. Consumatorul a fost creat la {1}
+MANY_CONSUMERS_WARNING_CWSIA0059.explanation=Un num\u0103r mare de consumatori deschi\u015fi pe o conexiune pot avea un efect negativ asupra performan\u0163ei.
+MANY_CONSUMERS_WARNING_CWSIA0059.useraction=Asigura\u0163i-v\u0103 c\u0103 aplica\u0163ia \u00eenchide consumatorii care nu mai sunt necesari.
+
+
+# JmsMsgProducerImpl
+# -------------------------------------------------------------------------------------------------
+PRODUCER_CLOSED_CWSIA0061=CWSIA0061E: Acest produc\u0103tor mesaj este \u00eenchis.
+PRODUCER_CLOSED_CWSIA0061.explanation=O aplica\u0163ie a apelat o metod\u0103 care nu trebuie s\u0103 fie utilizat\u0103 dup\u0103 ce produc\u0103torul mesajului este \u00eenchis.
+PRODUCER_CLOSED_CWSIA0061.useraction=Asigura\u0163i-v\u0103 c\u0103 produc\u0103torul mesajului nu este \u00eenchis conexiunea \u00eenaintea de apelarea metodei.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+MP_CREATE_FAILED_CWSIA0062=CWSIA0062E: A e\u015fuat crearea unui MessageProducer pentru {0}
+MP_CREATE_FAILED_CWSIA0062.explanation=A fost \u00eent\u00e2lnit\u0103 o problem\u0103 la crearea unui MessageProducer.
+MP_CREATE_FAILED_CWSIA0062.useraction=Vede\u0163i mesajul de eroare legat pentru mai multe informa\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+SEND_FAILED_CWSIA0063=CWSIA0063E: A e\u015fuat trimiterea la {0}
+SEND_FAILED_CWSIA0063.explanation=A fost \u00eent\u00e2lnit\u0103 o problem\u0103 la trimiterea mesajului.
+SEND_FAILED_CWSIA0063.useraction=Vede\u0163i mesajul de eroare legat pentru mai multe informa\u0163ii.
+
+# 64 deleted
+
+# -------------------------------------------------------------------------------------------------
+NO_DEST_SPECIFIED_ON_SEND_CWSIA0065=CWSIA0065E: O destina\u0163ie trebuie specificat\u0103 la trimiterea de la acest produc\u0103tor.
+NO_DEST_SPECIFIED_ON_SEND_CWSIA0065.explanation=Produc\u0103torul a fost creat cu o destina\u0163ie null \u015fi nu a fost furnizat\u0103 o destina\u0163ie la metoda de trimitere.
+NO_DEST_SPECIFIED_ON_SEND_CWSIA0065.useraction=Modifica\u0163i aplica\u0163ia astfel \u00eenc\u00e2t s\u0103 fie utilizat\u0103 o metod\u0103 de trimitere care specific\u0103 destina\u0163ia, sau specifica\u0163i o destina\u0163ie la crearea produc\u0103torului.
+
+# -------------------------------------------------------------------------------------------------
+DEST_SPECIFIED_ON_SEND_CWSIA0066=CWSIA0066E: Nu este valid s\u0103 specifica\u0163i o destina\u0163ie la trimiterea de la acest produc\u0103tor.
+DEST_SPECIFIED_ON_SEND_CWSIA0066.explanation=Produc\u0103torul a fost creat cu o destina\u0163ie specificat\u0103; nu este valid\u0103 specificarea din nou a unei destina\u0163ii la trimiterea mesajului.
+DEST_SPECIFIED_ON_SEND_CWSIA0066.useraction=Modifica\u0163i aplica\u0163ia astfel \u00eenc\u00e2t s\u0103 fie utilizat\u0103 o metod\u0103 de trimitere care nu specific\u0103 destina\u0163ia, sau specifica\u0163i o destina\u0163ie null la crearea produc\u0103torului.
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0067=CWSIA0067E: O excep\u0163ie a fost primit\u0103 \u00een timpul apelului la metoda {1}: {0}.
+EXCEPTION_RECEIVED_CWSIA0067.explanation=O alt\u0103 component\u0103 a detectat o eroare \u00een timpul execu\u0163iei metodei specificate.
+EXCEPTION_RECEIVED_CWSIA0067.useraction=Vede\u0163i mesajul de eroare legat pentru mai multe informa\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# clone of 0048
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0068=CWSIA0068E: Valoarea specificat\u0103 {1} nu este permis\u0103 pentru {0}.
+INVALID_VALUE_CWSIA0068.explanation=Valoarea furnizat\u0103 nu este permis\u0103 pentru proprietatea specificat\u0103.
+INVALID_VALUE_CWSIA0068.useraction=Introduce\u0163i o valoare care este suportat\u0103 pentru proprietate.
+
+# -------------------------------------------------------------------------------------------------
+PRODUCER_AUTH_ERROR_CWSIA0069=CWSIA0069E: Utilizatorul nu are autoriza\u0163ie s\u0103 realizeze aceast\u0103 opera\u0163ie. Vede\u0163i excep\u0163ia legat\u0103 pentru detalii.
+PRODUCER_AUTH_ERROR_CWSIA0069.explanation=Mesajul de eroare legat con\u0163ine detalii despre autorizarea necesar\u0103 pentru realizarea acestei opera\u0163ii.
+PRODUCER_AUTH_ERROR_CWSIA0069.useraction=Administratorul trebuie s\u0103 acorde autorizarea necesar\u0103 utilizatorului relevant.
+
+
+# -------------------------------------------------------------------------------------------------
+#{0} Delivery delay time
+#{1} Expiry time or time to live
+INVALID_VALUE_CWSIA0070=CWSIA0070E: Valoarea deliverDelay a {0} nu poate fi mai amre dec\u00e2t valoarea timeToLive a {1}
+INVALID_VALUE_CWSIA0070.explanation=Dac\u0103 valoarea timeToLive este mai mic\u0103 dec\u00e2t valoarea deliveryDelay, atunci expirarea mesajului va avea loc prima. La expirare, mesajul va fi \u015fters.
+INVALID_VALUE_CWSIA0070.useraction=Seta\u0163i valoarea deliverDelay la o valoare mai mic\u0103 dec\u00e2t timeToLive.
+
+
+# JmsMsgConsumerImpl
+# -------------------------------------------------------------------------------------------------
+CONSUMER_CLOSED_CWSIA0081=CWSIA0081E: Acest consumator de mesaje este \u00eenchis.
+CONSUMER_CLOSED_CWSIA0081.explanation=O aplica\u0163ie a apelat o metod\u0103 care nu trebuie s\u0103 fie utilizat\u0103 dup\u0103 ce consumatorul mesajului este \u00eenchis.
+CONSUMER_CLOSED_CWSIA0081.useraction=Asigura\u0163i-v\u0103 c\u0103 nu este \u00eenchis consumatorul mesajului \u00eenaintea de apelarea metodei.
+
+# -------------------------------------------------------------------------------------------------
+# conflict between asynchronous message delivery and a synchronous call
+# {0} the call which triggered the exception
+ASYNC_IN_PROGRESS_CWSIA0082=CWSIA0082E: Apelul la metoda asincron nu este permis atunci c\u00e2nd sesiunea este folosit\u0103 asincron: {0}
+ASYNC_IN_PROGRESS_CWSIA0082.explanation=Specifica\u0163ia JMS nu permite utilizarea unei sesiuni pentru metodele sincrone atunci c\u00e2nd ruleaz\u0103 livrarea asincron\u0103 a mesajelor.
+ASYNC_IN_PROGRESS_CWSIA0082.useraction=Dac\u0103 dori\u0163i s\u0103 utiliza\u0163i simultan at\u00e2t metodele sincrone c\u00e2t \u015fi livr\u0103rile asincrone, crea\u0163i o sesiune separat\u0103.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_SELECTOR_CWSIA0083=CWSIA0083E: Selectorul nu este valid.
+INVALID_SELECTOR_CWSIA0083.explanation=S-a specificat un selector de mesaj incorect.
+INVALID_SELECTOR_CWSIA0083.useraction=Vede\u0163i mesajul de eroare legat pentru mai multe informa\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of MGD_ENV_CWSIA0025.
+MGD_ENV_CWSIA0084=CWSIA0084E: Metoda {0} nu este permis\u0103 \u00een acest container.
+MGD_ENV_CWSIA0084.explanation=A fost apelat\u0103 o metod\u0103 care nu este permis\u0103 \u00een containerul curent.
+MGD_ENV_CWSIA0084.useraction=\u00cenl\u0103tura\u0163i apelarea metodei.
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0085=CWSIA0085E: O excep\u0163ie a fost primit\u0103 \u00een timpul apelului la metoda {1}: {0}.
+EXCEPTION_RECEIVED_CWSIA0085.explanation=O alt\u0103 component\u0103 a detectat o eroare \u00een timpul execu\u0163iei metodei specificate.
+EXCEPTION_RECEIVED_CWSIA0085.useraction=Vede\u0163i mesajul de eroare legat pentru mai multe informa\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+MC_CREATE_FAILED_CWSIA0086=CWSIA0086E: A e\u015fuat crearea unui MessageConsumer pentru {0}
+MC_CREATE_FAILED_CWSIA0086.explanation=A fost \u00eent\u00e2lnit\u0103 o problem\u0103 la crearea unui MessageConsumer.
+MC_CREATE_FAILED_CWSIA0086.useraction=Vede\u0163i mesajul de eroare legat pentru mai multe informa\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# 87 deleted, replaced
+
+# This is used as a WARNING message if a receive times out whilst the connection is stopped.
+# {0} is the class/line number of method which called the message consumer (finger of blame).
+MC_CONN_STOPPED_CWSIA0087=CWSIA0087W: S-a f\u0103cut o \u00eencercare de a termina un mesaj \u00een timp ce era oprit\u0103 conexiunea. Metoda urm\u0103toare a apelat clientul mesajului:  {0}.
+MC_CONN_STOPPED_CWSIA0087.explanation=O conexiune oprit\u0103 nu poate livra mesaje consumatorilor de mesaje. O \u00eencercare de consumare a mesajelor dintr-o conexiune oprit\u0103 poate indica o eroare \u00een logica aplica\u0163iei.
+MC_CONN_STOPPED_CWSIA0087.useraction=Verifica\u0163i pentru a determina dac\u0103 consumul dintr-o conexiune oprit\u0103 este comportamentul a\u015fteptat al aplica\u0163iei. Dac\u0103 nu, corecta\u0163i proiectul aplica\u0163iei.
+
+# -------------------------------------------------------------------------------------------------
+# 88 deleted
+
+# -------------------------------------------------------------------------------------------------
+# RuntimeException thrown by onMessage
+ML_THREW_EXCPTN_CWSIA0089=CWSIA0089E: O excep\u0163ie RuntimeException a fost aruncat\u0103 de MessageListener.onMessage
+ML_THREW_EXCPTN_CWSIA0089.explanation=Un MessageConsumer cu un MessageListener \u00eenregistrat a primit un mesaj de eroare de la metoda onMessage.
+ML_THREW_EXCPTN_CWSIA0089.useraction=Modifica\u0163i metoda onMessage pentru a evita aruncarea de excep\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# This message is a clone of PRODUCER_AUTH_ERROR_CWSIA0069.
+CONSUMER_AUTH_ERROR_CWSIA0090=CWSIA0090E: Utilizatorul nu are autoriza\u0163ie s\u0103 realizeze aceast\u0103 opera\u0163ie. Vede\u0163i excep\u0163ia legat\u0103 pentru detalii.
+CONSUMER_AUTH_ERROR_CWSIA0090.explanation=Mesajul de eroare legat con\u0163ine detalii despre autorizarea necesar\u0103 pentru realizarea acestei opera\u0163ii.
+CONSUMER_AUTH_ERROR_CWSIA0090.useraction=Administratorul trebuie s\u0103 acorde autorizarea necesar\u0103 utilizatorului relevant.
+
+
+# JmsMessageImpl
+
+# 101 deleted
+
+# -------------------------------------------------------------------------------------------------
+# Used when an inappropriate type of object is given to setObjectProperty
+# {0} is the class of object.
+# {1} is the name of the property
+INVALID_OBJECT_TYPE_CWSIA0102=CWSIA0102E: Tipul {0} nu este valid pentru folosirea ca proprietate obiect {1}.
+INVALID_OBJECT_TYPE_CWSIA0102.explanation=O aplica\u0163ie a \u00eencercat s\u0103 seteze o proprietate obiect utiliz\u00e2nd un tip obiect care nu este permis de specifica\u0163ia JMS.
+INVALID_OBJECT_TYPE_CWSIA0102.useraction=Utiliza\u0163i un tip de obiect permis, care este una din clasele wrapper primitive sau obiecte \u015fir.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the Exception which occurred.
+INBOUND_MSG_ERROR_CWSIA0103=CWSIA0103E: A ap\u0103rut o excep\u0163ie \u00een timpul primirii unui mesaj: {0}.
+INBOUND_MSG_ERROR_CWSIA0103.explanation=\u00cen timpul recep\u0163iei unui mesaj, a ap\u0103rut o eroare care a determinat e\u015fuarea opera\u0163iei.
+INBOUND_MSG_ERROR_CWSIA0103.useraction=Vede\u0163i mesajul de eroare legat pentru mai multe informa\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the item which is being converted
+# {1} is the actual type of the item
+# {2} is the type that the user has requested it be converted to.
+INVALID_TYPE_CONVERSION_CWSIA0104=CWSIA0104E: Conversia elementului {0} de la tipul {1} la tipul {2} nu este permis\u0103.
+INVALID_TYPE_CONVERSION_CWSIA0104.explanation=Specifica\u0163ia JMS nu permite conversia \u00eentre cele dou\u0103 tipuri specificate de date.
+INVALID_TYPE_CONVERSION_CWSIA0104.useraction=Extrage\u0163i elementul numit utiliz\u00e2nd una dintre conversiile permise.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property which was not set.
+FIELD_NOT_SET_CWSIA0105=CWSIA0105E: C\u00e2mpul mesaj {0} nu a fost setat.
+FIELD_NOT_SET_CWSIA0105.explanation=O aplica\u0163ie a \u00eencercat s\u0103 extrag\u0103 valoarea unui c\u00e2mp care nu a fost setat\u0103.
+FIELD_NOT_SET_CWSIA0105.useraction=Seta\u0163i valoarea c\u00e2mpului \u00eenainte de a o extrage.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property which was not set.
+INVALID_FIELD_NAME_CWSIA0106=CWSIA0106E: Un nume de c\u00e2mp \u015fir nul sau gol nu este permis.
+INVALID_FIELD_NAME_CWSIA0106.explanation=O aplica\u0163ie utilizator a \u00eencercat setarea unui c\u00e2mp utiliz\u00e2nd un nume care nu este valid, de exemplu null sau \u015fir gol.
+INVALID_FIELD_NAME_CWSIA0106.useraction=Utiliza\u0163i un nume valid de c\u00e2mp.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the illegal method.
+READ_ONLY_MESSAGE_BODY_CWSIA0107=CWSIA0107E: Sistemul nu poate apela metoda {0} pe mesaj deoarece corpul mesajului este numai citire.
+READ_ONLY_MESSAGE_BODY_CWSIA0107.explanation=O aplica\u0163ie utilizator a \u00eencercat s\u0103 modifice corpul unui mesaj care este \u00een momentul actual numai citire.
+READ_ONLY_MESSAGE_BODY_CWSIA0107.useraction=Modifica\u0163i programul aplica\u0163iei pentru a \u00eenl\u0103tura acest comportament sau seta\u0163i corpul mesajului s\u0103 fie inscriptibil prin apelarea mai \u00eent\u00e2i a metodei clearBody.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the illegal method.
+READ_ONLY_MESSAGE_PROPERTY_CWSIA0108=CWSIA0108E: Sistemul nu poate apela metoda {0} pe mesaj deoarece propriet\u0103\u0163ile mesajului sunt numai citire.
+READ_ONLY_MESSAGE_PROPERTY_CWSIA0108.explanation=O aplica\u0163ie utilizator a \u00eencercat s\u0103 modifice proprietatea unui mesaj care este \u00een momentul actual numai citire.
+READ_ONLY_MESSAGE_PROPERTY_CWSIA0108.useraction=Modifica\u0163i programul aplica\u0163iei pentru a \u00eenl\u0103tura acest comportament sau seta\u0163i proprietatea mesajului s\u0103 fie inscriptibil prin apelarea mai \u00eent\u00e2i a metodei clearProperties.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the illegal method.
+WRITE_ONLY_MESSAGE_BODY_CWSIA0109=CWSIA0109E: Nu este permis\u0103 apelarea metodei {0} pe mesaj deoarece corpul mesajului este numai scriere.
+WRITE_ONLY_MESSAGE_BODY_CWSIA0109.explanation=O aplica\u0163ie utilizator a \u00eencercat s\u0103 citeasc\u0103 un corp de mesaj doar scriere.
+WRITE_ONLY_MESSAGE_BODY_CWSIA0109.useraction=Modifica\u0163i programul aplica\u0163iei pentru a \u00eenl\u0103tura acest comportament, sau apela\u0163i mai \u00eent\u00e2i metoda reset.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the action which was invalid
+INVALID_FOR_UNCONSUMED_MSG_CWSIA0110=CWSIA0110E: Nu este permis\u0103 apelarea opera\u0163iei {0} dec\u00e2t pe un mesaj ob\u0163inut folosind un apel de primire sau un mesaj presentat unui MessageListener.
+INVALID_FOR_UNCONSUMED_MSG_CWSIA0110.explanation=Mesajul fie a fost construit de aplica\u0163ie, fie a fost ob\u0163inut folosind un browser de coad\u0103 \u015fi astfel, nu suport\u0103 opera\u0163ia declarat\u0103.
+INVALID_FOR_UNCONSUMED_MSG_CWSIA0110.useraction=Asigura\u0163i-v\u0103 c\u0103 aplica\u0163iile invoc\u0103 aceast\u0103 opera\u0163ie pe mesajele ob\u0163inute utiliz\u00e2nd o coad\u0103 de primire, sau pe mesajele prezentate unui MessageListener.
+
+# -------------------------------------------------------------------------------------------------
+MSG_CREATE_FAILED_CWSIA0111=CWSIA0111E: A ap\u0103rut o eroare \u00een timpul \u00eencerc\u0103rii de a crea mesajul. Vede\u0163i excep\u0163ia legat\u0103 pentru mai multe detalii.
+MSG_CREATE_FAILED_CWSIA0111.explanation=Nu a fost posibil\u0103 instan\u0163ierea unui mesaj \u00een JMS deoarece a ap\u0103rut o eroare \u00een alt\u0103 parte a sistemului.
+MSG_CREATE_FAILED_CWSIA0111.useraction=Vede\u0163i mesajul de eroare legat pentru mai multe informa\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property
+INVALID_PROPNAME_CWSIA0112=CWSIA0112E: Numele propriet\u0103\u0163ii {0} nu este un identificator Java valid.
+INVALID_PROPNAME_CWSIA0112.explanation=Numele furnizat al propriet\u0103\u0163ii nu se conformeaz\u0103 formatului descris \u00een specifica\u0163iile JMS.
+INVALID_PROPNAME_CWSIA0112.useraction=Modifica\u0163i numele propriet\u0103\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property
+RESERVED_PROPNAME_CWSIA0113=CWSIA0113E: Numele propriet\u0103\u0163ii {0} este rezervat \u015fi nu poate fi setat.
+RESERVED_PROPNAME_CWSIA0113.explanation=Numele propriet\u0103\u0163ii furnizat \u00eencepe cu prefixul JMS, dar nu este una dintre propriet\u0103\u0163ile suportate, setabile.
+RESERVED_PROPNAME_CWSIA0113.useraction=Modifica\u0163i numele propriet\u0103\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property
+# {1} is the type of the variable eg. Integer.class
+JMS_IBM_INVALID_TYPE_CWSIA0114=CWSIA0114E: Proprietatea {0} ar trebui setat\u0103 folosind tipul {1}, nu {2}.
+JMS_IBM_INVALID_TYPE_CWSIA0114.explanation=Propriet\u0103\u0163ile JMS_IBM trebuie setate utiliz\u00e2nd tipuri specifice de variabile.
+JMS_IBM_INVALID_TYPE_CWSIA0114.useraction=Corecta\u0163i codul aplica\u0163iei astfel \u00eenc\u00e2t s\u0103 folosesc\u0103 tipurile de variabile necesare pentru setarea acestei propriet\u0103\u0163i JMS_IBM.
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0115=CWSIA0115E: O excep\u0163ie a fost primit\u0103 \u00een timpul apelului la metoda {1}: {0}.
+EXCEPTION_RECEIVED_CWSIA0115.explanation=O alt\u0103 component\u0103 a detectat o eroare \u00een timpul execu\u0163iei metodei specificate.
+EXCEPTION_RECEIVED_CWSIA0115.useraction=Vede\u0163i mesajul de eroare legat pentru mai multe informa\u0163ii.
+# -------------------------------------------------------------------------------------------------
+# derived from 0048
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0116=CWSIA0116E: Valoarea specificat\u0103 {1} nu este permis\u0103 pentru {0}.
+INVALID_VALUE_CWSIA0116.explanation=Valoarea furnizat\u0103 nu este permis\u0103 pentru proprietatea specificat\u0103.
+INVALID_VALUE_CWSIA0116.useraction=Introduce\u0163i o valoare care este suportat\u0103 pentru proprietate.
+# -------------------------------------------------------------------------------------------------
+STREAM_MESSAGE_CWSIA0117=CWSIA0117E: Mesajul este un StreamMessage 
+STREAM_MESSAGE_CWSIA0117.explanation=Mesajul primit \
+este de tip StreamMessage.
+STREAM_MESSAGE_CWSIA0117.useraction=Nici o ac\u0163iune necesar\u0103.
+# -------------------------------------------------------------------------------------------------
+# {0} The type to which the message body will be assigned
+INVALID_CLASS_TYPE_CWSIA0118=CWSIA0118E: Corpul \
+mesajului nu poate fi alocat tipului specificat {0} 
+INVALID_CLASS_TYPE_CWSIA0118.explanation= Corpul \
+mesajului nu este compatibil cu tipul de mesaj specificat
+INVALID_CLASS_TYPE_CWSIA0118.useraction=Furniza\u0163i un \
+tip de mesaj valid.
+# -------------------------------------------------------------------------------------------------
+NO_MSG_BODY_CWSIA0119=CWSIA0119E: Mesajul nu are corp.
+NO_MSG_BODY_CWSIA0119.explanation= Mesajul primit nu \
+are un corp de mesaj.
+NO_MSG_BODY_CWSIA0119.useraction=Nici o ac\u0163iune necesar\u0103.
+# -------------------------------------------------------------------------------------------------
+GET_MSG_BODY_FAILED_CWSIA0120=CWSIA0120E: A e\u015fuat \
+extragerea corpului mesajului.
+GET_MSG_BODY_FAILED_CWSIA0120.explanation= E\u015fuare la \
+extragerea corpului mesajului din cauza unei erori interne.
+GET_MSG_BODY_FAILED_CWSIA0120.useraction=Nici o ac\u0163iune necesar\u0103.
+# -------------------------------------------------------------------------------------------------
+
+# JmsObjectMessageImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception which was received
+SERIALIZATION_EXCEPTION_CWSIA0121=CWSIA0121E: A ap\u0103rut o excep\u0163ie \u00een timpul serializ\u0103rii obiectului: {0}.
+SERIALIZATION_EXCEPTION_CWSIA0121.explanation=Obiectul nu poate fi serializat din cauza unei erori.
+SERIALIZATION_EXCEPTION_CWSIA0121.useraction=Vede\u0163i mesajul de eroare legat pentru mai multe informa\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception which was received
+DESERIALIZATION_EXCEPTION_CWSIA0122=CWSIA0122E: A ap\u0103rut o excep\u0163ie la deserializarea unui mesaj, excep\u0163ia: {0}.
+DESERIALIZATION_EXCEPTION_CWSIA0122.explanation=Mesajul nu poate fi deserializat din cauza excep\u0163iei afi\u015fate.
+DESERIALIZATION_EXCEPTION_CWSIA0122.useraction=Vede\u0163i mesajul de eroare legat pentru mai multe informa\u0163ii.
+
+# JmsQueueBrowserImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception which was received
+NO_MESSAGE_AVAILABLE_CWSIA0141=CWSIA0141E: Browser-ul de cozi nu are mesaje disponibile.
+NO_MESSAGE_AVAILABLE_CWSIA0141.explanation=Aplica\u0163ia a cerut un mesaj dintr-un browser coad\u0103 care nu era disponibil.
+NO_MESSAGE_AVAILABLE_CWSIA0141.useraction=Modifica\u0163i aplica\u0163ia pentru a trata aceast\u0103 eroare sau utiliza\u0163i metoda hasMoreElements pentru a verifica disponibilitatea mai departe a mesajelor.
+
+# -------------------------------------------------------------------------------------------------
+BROWSER_CLOSED_CWSIA0142=CWSIA0142E: Browser-ul de cozi este \u00eenchis.
+BROWSER_CLOSED_CWSIA0142.explanation=O aplica\u0163ie a apelat o metod\u0103 care nu trebuie s\u0103 fie utilizat\u0103 dup\u0103 ce browserul de coad\u0103 este \u00eenchis.
+BROWSER_CLOSED_CWSIA0142.useraction=Asigura\u0163i-v\u0103 c\u0103 browserul de coad\u0103 nu este \u00eenchis \u00eenainte de apelarea metodei.
+
+# -------------------------------------------------------------------------------------------------
+FAILED_TO_CREATE_BSESSION_CWSIA0143=CWSIA0143E: A ap\u0103rut o eroare intern\u0103.
+FAILED_TO_CREATE_BSESSION_CWSIA0143.explanation=Apelul createBrowserSession a returnat null \u00een locul unui obiect BrowserSession valid.
+FAILED_TO_CREATE_BSESSION_CWSIA0143.useraction=CMSG0001
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0144=CWSIA0144E: O excep\u0163ie a fost primit\u0103 \u00een timpul apelului la metoda {1}: {0}.
+EXCEPTION_RECEIVED_CWSIA0144.explanation=O alt\u0103 component\u0103 a detectat o eroare \u00een timpul execu\u0163iei metodei specificate.
+EXCEPTION_RECEIVED_CWSIA0144.useraction=Vede\u0163i mesajul de eroare legat pentru mai multe informa\u0163ii.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+BROWSE_FAILED_CWSIA0145=CWSIA0145E: Nu se poate r\u0103sfoi destina\u0163ia {0}
+BROWSE_FAILED_CWSIA0145.explanation=A fost \u00eent\u00e2lnit\u0103 o problem\u0103 la r\u0103sfoirea destina\u0163iei.
+BROWSE_FAILED_CWSIA0145.useraction=Vede\u0163i mesajul de eroare legat pentru mai multe informa\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# 146 deleted
+
+# -------------------------------------------------------------------------------------------------
+# clone of 83
+INVALID_SELECTOR_CWSIA0147=CWSIA0147E: Selectorul nu este valid.
+INVALID_SELECTOR_CWSIA0147.explanation=A fost livrat un selector de mesaj incorect.
+INVALID_SELECTOR_CWSIA0147.useraction=Vede\u0163i mesajul de eroare legat pentru mai multe informa\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# clone of 103
+# {0} is the Exception which occurred.
+INBOUND_MSG_ERROR_CWSIA0148=CWSIA0148E: A ap\u0103rut o excep\u0163ie \u00een timpul primirii unui mesaj: {0}.
+INBOUND_MSG_ERROR_CWSIA0148.explanation=\u00cen timpul recep\u0163iei unui mesaj, a ap\u0103rut o eroare care a determinat e\u015fuarea opera\u0163iei.
+INBOUND_MSG_ERROR_CWSIA0148.useraction=Vede\u0163i mesajul de eroare legat pentru mai multe informa\u0163ii.
+
+
+# -------------------------------------------------------------------------------------------------
+# This message is a clone of PRODUCER_AUTH_ERROR_CWSIA0069.
+BROWSER_AUTH_ERROR_CWSIA0149=CWSIA0149E: Utilizatorul nu are autoriza\u0163ie s\u0103 realizeze aceast\u0103 opera\u0163ie. Vede\u0163i excep\u0163ia legat\u0103 pentru detalii.
+BROWSER_AUTH_ERROR_CWSIA0149.explanation=Mesajul de eroare legat con\u0163ine detalii despre autorizarea necesar\u0103 pentru realizarea acestei opera\u0163ii.
+BROWSER_AUTH_ERROR_CWSIA0149.useraction=Administratorul trebuie s\u0103 acorde autorizarea necesar\u0103 utilizatorului relevant.
+
+
+
+# JmsStreamMessageImpl
+# -------------------------------------------------------------------------------------------------
+NULL_BUFFER_CWSIA0161=CWSIA0161E: Bufferul de citire este nul.
+NULL_BUFFER_CWSIA0161.explanation=O referin\u0163\u0103 null a fost transmis\u0103 metodei StreamMessage.readBytes, astfel \u00eenc\u00e2t nu au putut fi returnate date.
+NULL_BUFFER_CWSIA0161.useraction=Transmite\u0163i un buffer de m\u0103rime corespunz\u0103toare \u00eentr-o metod\u0103 readBytes.
+
+# -------------------------------------------------------------------------------------------------
+END_STREAM_CWSIA0162=CWSIA0162I: Sf\u00e2r\u015fitul fluxului de mesaje a fost atins.
+END_STREAM_CWSIA0162.explanation=A fost atins sf\u00e2r\u015fitul con\u0163inutului mesajului. Acest lucru este normal dac\u0103 aplica\u0163ia de citire nu \u015ftie c\u00e2t de multe date s\u0103 a\u015ftepte.
+END_STREAM_CWSIA0162.useraction=Nu e necesar\u0103 nici o ac\u0163iune.
+
+# -------------------------------------------------------------------------------------------------
+INCOMPLETE_BYTE_ARRAY_CWSIA0163=CWSIA0163E: Matricea octet StreamMessage a fost citit\u0103 incomplet.
+INCOMPLETE_BYTE_ARRAY_CWSIA0163.explanation=S-a f\u0103cut o \u00eencercare de citire a c\u00e2mpului urm\u0103tor din StreamMessage \u00eenainte de citirea complet\u0103 a c\u00e2mpului actual de matrice de octe\u0163i.
+INCOMPLETE_BYTE_ARRAY_CWSIA0163.useraction=Asigura\u0163i-v\u0103 c\u0103 codul utilizator cite\u015fte orice matrice de octe\u0163i \u00eenainte de a \u00eencerca citirea c\u00e2mpului urm\u0103tor.
+
+# -------------------------------------------------------------------------------------------------
+NULL_CHAR_CWSIA0164=CWSIA0164E: Nu este posibil\u0103 \u00eentoarcerea null ca un caracter.
+NULL_CHAR_CWSIA0164.explanation=S-a f\u0103cut o \u00eencercare de citire a c\u00e2mpului StreamMessage con\u0163in\u00e2nd null, utiliz\u00e2nd metoda readChar.
+NULL_CHAR_CWSIA0164.useraction=Evita\u0163i citirea caracterelor null utiliz\u00e2nd metoda readChar.
+
+# JmsBytesMessageImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the encoding string
+BAD_ENCODING_CWSIA0181=CWSIA0181E: Codificarea nu este valid\u0103 pentru \u015firul {0}.
+BAD_ENCODING_CWSIA0181.explanation=Valoarea livrat\u0103 nu are o codificare cunoscut\u0103.
+BAD_ENCODING_CWSIA0181.useraction=Asigura\u0163i-v\u0103 c\u0103 aplica\u0163ia livreaz\u0103 o valoare din lista definit\u0103 a codific\u0103rilor.
+
+# -------------------------------------------------------------------------------------------------
+DATA_STREAM_PROBLEM_CWSIA0182=CWSIA0182E: A avut loc o eroare intern\u0103 \u00een timpul scrierii \u00een fluxul de date.
+DATA_STREAM_PROBLEM_CWSIA0182.explanation=A ap\u0103rut o problem\u0103 cu fluxurile de date utilizate pentru conversia de format pentru valori virgul\u0103 \u015fi duble.
+DATA_STREAM_PROBLEM_CWSIA0182.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+END_BYTESMESSAGE_CWSIA0183=CWSIA0183I: S-a f\u0103cut o \u00eencercare de citire dincolo de terminarea mesajului.
+END_BYTESMESSAGE_CWSIA0183.explanation=S-a f\u0103cut o \u00eencercare de citire dincolo de terminarea mesajului. Aceasta poate fi o condi\u0163ie normal\u0103 dac\u0103 o aplica\u0163ie a fost codificat\u0103 pentru a citi date de lungime variabil\u0103 utiliz\u00e2nd specifica\u0163ia JMS 1.0.2.
+END_BYTESMESSAGE_CWSIA0183.useraction=Dac\u0103 este necesar, recodifica\u0163i aplica\u0163ia pentru a utiliza metoda getBodyLength.
+
+# -------------------------------------------------------------------------------------------------
+UTF8_CONV_CWSIA0184=CWSIA0184E: A e\u015fuat conversia UTF-8.
+UTF8_CONV_CWSIA0184.explanation=A ap\u0103rut o problem\u0103 \u00een timpul citirii sau scrierii unui \u015fir UTF-8. Problema cea mai comun\u0103 este \u00eencercarea de scriere a unui \u015fir mai lung de 65535 caractere.
+UTF8_CONV_CWSIA0184.useraction=Vede\u0163i mesajul de eroare legat pentru mai multe informa\u0163ii.
+# -------------------------------------------------------------------------------------------------
+# This message is used for JmsBytesMessageImpl - clones CWSIA0188 and CWSIA0189 created
+# {0} is the class type which is incorrect
+BAD_OBJECT_CWSIA0185=CWSIA0185E: A fost furnizat un obiect incorect de tipul {0}.
+BAD_OBJECT_CWSIA0185.explanation=Metoda writeObject a fost livrat\u0103 cu un parametru obiect care nu a fost de tip wrapper primitiv.
+BAD_OBJECT_CWSIA0185.useraction=Corecta\u0163i aplica\u0163ia pentru a v\u0103 asigura c\u0103 numai obiectele de tipuri permise sunt transmise ca parametri la metoda writeObject.
+
+# -------------------------------------------------------------------------------------------------
+WRITE_PROBLEM_CWSIA0186=CWSIA0186E: A ap\u0103rut o eroare intern\u0103. Exist\u0103 o problem\u0103 la scrierea \u00een mesaj.
+WRITE_PROBLEM_CWSIA0186.explanation=A ap\u0103rut o eroare la \u00eencercarea de scrierere a unui element \u00een mesaj.
+WRITE_PROBLEM_CWSIA0186.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+#ENCS_TOSTR_CWSIA0187=Integer encoding: {0}, floating point encoding {1}
+#ENCS_TOSTR_CWSIA0187.explanation=This message is for informational purposes only.
+#ENCS_TOSTR_CWSIA0187.useraction=No action required.
+
+# -------------------------------------------------------------------------------------------------
+# This message is used for JmsMapMessageImpl - clone of CWSIA0185
+# {0} is the class type which is incorrect
+BAD_OBJECT_CWSIA0188=CWSIA0188E: A fost furnizat un obiect incorect de tipul {0}.
+BAD_OBJECT_CWSIA0188.explanation=Metoda writeObject a fost livrat\u0103 cu un parametru obiect care nu a fost de tip wrapper primitiv.
+BAD_OBJECT_CWSIA0188.useraction=Corecta\u0163i aplica\u0163ia pentru a v\u0103 asigura c\u0103 numai obiectele de tipuri permise sunt transmise ca parametri la metoda writeObject.
+
+
+# -------------------------------------------------------------------------------------------------
+# This message is used for JmsStreamMessageImpl - clone of CWSIA0185
+# {0} is the class type which is incorrect
+BAD_OBJECT_CWSIA0189=CWSIA0189E: A fost furnizat un obiect incorect de tipul {0}.
+BAD_OBJECT_CWSIA0189.explanation=Metoda writeObject a fost livrat\u0103 cu un parametru obiect care nu a fost de tip wrapper primitiv.
+BAD_OBJECT_CWSIA0189.useraction=Corecta\u0163i aplica\u0163ia pentru a v\u0103 asigura c\u0103 numai obiectele de tipuri permise sunt transmise ca parametri la metoda writeObject.
+
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0190=CWSIA0190E: O excep\u0163ie a fost primit\u0103 \u00een timpul apelului la metoda {1}: {0}.
+EXCEPTION_RECEIVED_CWSIA0190.explanation=O alt\u0103 component\u0103 a detectat o eroare \u00een timpul execu\u0163iei metodei specificate.
+EXCEPTION_RECEIVED_CWSIA0190.useraction=Vede\u0163i mesajul de eroare legat pentru mai multe informa\u0163ii.
+
+
+# com.ibm.ws.sib.api.jms.JmsInternalsFactory
+# -------------------------------------------------------------------------------------------------
+# This message is a clone of UNABLE_TO_CREATE_FACTORY_CWSIA0001.
+UNABLE_TO_CREATE_FACTORY_CWSIA0201=CWSIA0201E: A ap\u0103rut o eroare intern\u0103. Un obiect de clas\u0103 {0} nu poate fi creat deoarece fi\u015fierul JAR {1} nu poate fi g\u0103sit.
+UNABLE_TO_CREATE_FACTORY_CWSIA0201.explanation=CMSG0001
+UNABLE_TO_CREATE_FACTORY_CWSIA0201.useraction=CMSG0002
+
+
+# com.ibm.websphere.sib.api.jms.JmsDurableSubscriberImpl
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0221=CWSIA0221E: O excep\u0163ie a fost primit\u0103 \u00een timpul apelului la metoda {1}: {0}.
+EXCEPTION_RECEIVED_CWSIA0221.explanation=O alt\u0103 component\u0103 a detectat o eroare \u00een timpul execu\u0163iei metodei specificate.
+EXCEPTION_RECEIVED_CWSIA0221.useraction=Vede\u0163i mesajul de eroare legat pentru mai multe informa\u0163ii.
+
+
+CONN_CLOSED_CWSIA0222=CWSIA0222E: Conexiune \u00eenchis\u0103
+CONN_CLOSED_CWSIA0222.explanation=Conexiunea a fost \u00eenchis\u0103 \u00een timpul exeu\u0163iei acestei metode.
+CONN_CLOSED_CWSIA0222.useraction=Repeta\u0163i apelul utiliz\u00e2nd o conexiune nou\u0103.
+
+DEST_LOCKED_CWSIA0223=CWSIA0223E: Abonament blocat
+DEST_LOCKED_CWSIA0223.explanation=Abonamentul durabil nu accept\u0103 consumatori. Poate avea un abonat activ, sau se poate s\u0103 fi fost dezactivat din punct de vedere administrativ. Vede\u0163i mesajul de eroare legat pentru mai multe informa\u0163ii.
+DEST_LOCKED_CWSIA0223.useraction=Verifica\u0163i aplica\u0163ia/aplica\u0163iile pentru \u00eencerc\u0103ri multiple de a accesare a unui singur abonament durabil. Specifica\u0163ia JMS interzice aceasta, dar, dac\u0103 este absolut necesar, vede\u0163i op\u0163iunea shareDurableSubscriptions pe fabrica de conexiuni.
+
+NOT_AUTH_CWSIA0224=CWSIA0224E: Accesarea abonamentului durabil neautorizat\u0103
+NOT_AUTH_CWSIA0224.explanation=Utilizatorul curent nu are autorizarea de accesare a abonamentului durabil.
+NOT_AUTH_CWSIA0224.useraction=Verifica\u0163i c\u0103 ID utilizator a cerut acces la resursele necesare. Vede\u0163i mesajul de eroare legat pentru mai multe informa\u0163ii.
+
+BAD_SELECT_CWSIA0225=CWSIA0225E: Selectorul de mesaje furnizat nu a fost valid.
+BAD_SELECT_CWSIA0225.explanation=A fost \u00eent\u00e2lnit\u0103 o problem\u0103 la interpretarea \u015firului selector furnizat.
+BAD_SELECT_CWSIA0225.useraction=Verifica\u0163i \u015firul selector \u015fi corecta\u0163i orice erori.
+
+BAD_TOPICSPACE_CWSIA0226=CWSIA0226E: Nu se poate crea abonat durabil pentru subiectul dat.
+BAD_TOPICSPACE_CWSIA0226.explanation=Nu poate fi creat un abonat durabil din cauza problemelor cu spa\u0163iul subiect.
+BAD_TOPICSPACE_CWSIA0226.useraction=Vede\u0163i mesajul de eroare legat pentru detalii. Dac\u0103 spa\u0163iul subiectului nu exist\u0103, crea\u0163i-l sau utiliza\u0163i unul existent. Dac\u0103 subiectul a fost unul temporar, utiliza\u0163i un abonat ne-durabil sau schimba\u0163i-l \u00eentr-un subiect permanent.
+
+# com.ibm.websphere.sib.api.jms.JmsManagedConnectionFactoryImpl
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0241=CWSIA0241E: O excep\u0163ie a fost primit\u0103 \u00een timpul apelului la metoda {1}: {0}.
+EXCEPTION_RECEIVED_CWSIA0241.explanation=O alt\u0103 component\u0103 a detectat o eroare \u00een timpul execu\u0163iei metodei specificate.
+EXCEPTION_RECEIVED_CWSIA0241.useraction=Vede\u0163i mesajul de eroare legat pentru mai multe informa\u0163ii.
+
+
+# com.ibm.websphere.sib.api.jms.JmsConnectionFactoryImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0261=CWSIA0261E: Valoarea specificat\u0103 {1} nu este permis\u0103 pentru {0}.
+INVALID_VALUE_CWSIA0261.explanation=Valoarea dat\u0103 nu este permis\u0103 pentru proprietatea specificat\u0103.
+INVALID_VALUE_CWSIA0261.useraction=Schimba\u0163i valoarea cu o valoare care este suportat\u0103 pentru proprietate.
+
+# com.ibm.websphere.sib.api.jms.JmsDestinationImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0281=CWSIA0281E: Valoarea specificat\u0103 {1} nu este permis\u0103 pentru {0}.
+INVALID_VALUE_CWSIA0281.explanation=Valoarea dat\u0103 nu este permis\u0103 pentru proprietatea specificat\u0103.
+INVALID_VALUE_CWSIA0281.useraction=Schimba\u0163i valoarea cu o valoare care este suportat\u0103 pentru proprietate.
+
+# -------------------------------------------------------------------------------------------------
+# Generic error message for a blocked destination
+# {0} is the reason code for the blocking of the destination
+DESTINATION_BLOCKED_CWSIA0283=CWSIA0283E: Destina\u0163ia \u00een cauz\u0103 este blocat\u0103 de la a mai produce/primi mesaje cu un cod motiv {0}
+DESTINATION_BLOCKED_CWSIA0283.explanation=Obiectul destina\u0163ie nu are suficiente informa\u0163ii pentru producerea \u015fi consumul de mesaje.
+DESTINATION_BLOCKED_CWSIA0283.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Specific message for destination blockage due to missing PSB reply data (no broker input stream)
+# {0} is the string form of the JMS Destination
+DESTINATION_BLOCKED_PSBREPLY_CWSIA0284=CWSIA0284E: Informa\u0163iile sunt insuficiente pentru rutarea unui mesaj la aceast\u0103 destina\u0163ie: {0}
+DESTINATION_BLOCKED_PSBREPLY_CWSIA0284.explanation=Maparea subiectului profil broker publicare/abonare utilizat\u0103 pentru transferul publica\u0163iei originale din MQ nu con\u0163ine o coad\u0103 de intrare broker.
+DESTINATION_BLOCKED_PSBREPLY_CWSIA0284.useraction=Ad\u0103uga\u0163i numele cozii de intrare broker la maparea subiectului profil broker corespunz\u0103tor.
+
+
+# com.ibm.ws.sib.api.jms.impl.ProducerProperties
+# -------------------------------------------------------------------------------------------------
+# clone of 48
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0301=CWSIA0301E: Valoarea specificat\u0103 {1} nu este permis\u0103 pentru {0}.
+INVALID_VALUE_CWSIA0301.explanation=Valoarea furnizat\u0103 nu este permis\u0103 pentru proprietatea specificat\u0103.
+INVALID_VALUE_CWSIA0301.useraction=Introduce\u0163i o valoare care este suportat\u0103 pentru proprietate.
+
+# com.ibm.ws.sib.api.jms.impl.ReportMessageConverter
+# -------------------------------------------------------------------------------------------------
+# clone of 48
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0321=CWSIA0321E: Valoarea specificat\u0103 {1} nu este permis\u0103 pentru {0}.
+INVALID_VALUE_CWSIA0321.explanation=Valoarea furnizat\u0103 nu este permis\u0103 pentru proprietatea specificat\u0103.
+INVALID_VALUE_CWSIA0321.useraction=Introduce\u0163i o valoare care este suportat\u0103 pentru proprietate.
+
+
+# com.ibm.ws.sib.api.jms.impl.ConnectionListenerImpl
+# -------------------------------------------------------------------------------------------------
+# Generic message for when an exception occurs during core processing for async delivery
+ASYNC_EXCEPTION_CWSIA0341=CWSIA0341E: Excep\u0163ie primit\u0103 \u00een timpul proces\u0103rii asincron: {0}
+ASYNC_EXCEPTION_CWSIA0341.explanation=O excep\u0163ie ap\u0103rut\u0103 \u00een afara codului utilizator \u00een timpul rul\u0103rii livr\u0103rii asincrone.
+ASYNC_EXCEPTION_CWSIA0341.useraction=Vede\u0163i mesajul de eroare legat pentru mai multe informa\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# The messaging engine is shutting down
+ME_QUIESCE_CWSIA0342=CWSIA0342E: Motorul de mesagerie \u00ee\u015fi opre\u015fte activitatea.
+ME_QUIESCE_CWSIA0342.explanation=Motorul de mesagerie la care este ata\u015fat\u0103 aplica\u0163ia \u015fi-a oprit activitatea.
+ME_QUIESCE_CWSIA0342.useraction=Acesta este un semnal pentru ca aplica\u0163ia s\u0103 se deconecteze de la motorul de mesagerie.
+
+# -------------------------------------------------------------------------------------------------
+# The connection is closed due to a communications failure.
+# {0} is the exception passed to the commsFailure notification method.
+COMMS_FAILURE_CWSIA0343=CWSIA0343E: Conexiunea a fost \u00eenchis\u0103 datorit\u0103 urm\u0103toarei excep\u0163ii: {0}
+COMMS_FAILURE_CWSIA0343.explanation=O e\u015fuare de comunica\u0163ie a avut ca rezultat pierderea conexiunii la motorul de mesagerie.
+COMMS_FAILURE_CWSIA0343.useraction=Vede\u0163i mesajul de eroare legat pentru mai multe informa\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# This method is called when a connection is closed because the messaging engine has terminated.
+ME_TERMINATED_CWSIA0344=CWSIA0344E: Conexiunea a fost \u00eenchis\u0103 deoarece motorul de mesagerie a fost terminat.
+ME_TERMINATED_CWSIA0344.explanation=Motorul de mesagerie \u015fi-a oprit activitatea l\u0103s\u00e2nd conexiunea neutilizabil\u0103.
+ME_TERMINATED_CWSIA0344.useraction=Restarta\u0163i motorul de mesagerie \u015fi reconecta\u0163i.
+
+
+# com.ibm.ws.sib.api.jms.impl.MsgDestEncodingUtilsImpl
+# -------------------------------------------------------------------------------------------------
+# Could not find the required character set for this utility class (UTF-8)
+UNSUPPORTED_ENCODING_CWSIA0360=CWSIA0360E: Cifrarea setului de caractere necesar\u0103 {0} nu este suportat\u0103.
+UNSUPPORTED_ENCODING_CWSIA0360.explanation=Setul de caractere specificat este necesar pentru operarea acesti func\u0163ionalit\u0103\u0163i, dar nu a putut fi g\u0103sit.
+UNSUPPORTED_ENCODING_CWSIA0360.useraction=Face disponibil setul de caractere specificat pentru utilizare de c\u0103tre acest JVM.
+
+# -------------------------------------------------------------------------------------------------
+# An invalid value (such as null) was supplied to a method.
+# {0} is the invalid value that was supplied
+# {1} is the property/method parameter for which it was supplied.
+INTERNAL_INVALID_VALUE_CWSIA0361=CWSIA0361E: O eroare intern\u0103 a avut loc deoarece {0} a fost specificat pentru {1}
+INTERNAL_INVALID_VALUE_CWSIA0361.explanation=CMSG0001
+INTERNAL_INVALID_VALUE_CWSIA0361.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# An invalid value (such as null) was supplied to a method.
+# {0} is a probeID to enable service to identify the problem location.
+# {1} and {2} are additional information to enable problem diagnosis.
+INTERNAL_ERROR_CWSIA0362=CWSIA0362E: A survenit o eroare intern\u0103. ProbeID: {0}. Informa\u0163ii suplimentare: {1} : {2}
+INTERNAL_ERROR_CWSIA0362.explanation=CMSG0001
+INTERNAL_ERROR_CWSIA0362.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# An unknown property name has been found in the encoded JMS destination or replyTo field
+# {0} is the unknown name found
+UNKNOWN_PROPERTY_CWSIA0363=CWSIA0363E: JMSDestination sau JMSReplyTo con\u0163ine un nume de proprietate necunoscut: {0}.
+UNKNOWN_PROPERTY_CWSIA0363.explanation=Un mesaj JMS a fost recep\u0163ionat de la o versiune mai t\u00e2rzie a serverului de aplica\u0163ie \u015fi a fost dat unei aplica\u0163ii. \
+Aplica\u0163ia a \u00eencercat apoi s\u0103 extrag\u0103 fie anterul mesajului JMSDestination, fie JMSReplyTo din mesaj. \
+C\u00e2mpul antet al mesajului nu poate fi extras deoarece una dintre propriet\u0103\u0163ile sale nu este suportat\u0103 \u00een aceast\u0103 edi\u0163ie.
+UNKNOWN_PROPERTY_CWSIA0363.useraction=\u00cenl\u0103tura\u0163i proprietatea nesuportat\u0103 din JMSDestination sau JMSReplyTo utilizate de aplica\u0163ia care trimite. \
+Proprietatea nesuportat\u0103 poate s\u0103 fi fost specificat\u0103 direct de aplica\u0163ia care trimite sau poate s\u0103 fi fost specificat\u0103 \u00een configura\u0163ia cozii JMS.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the malformed URI element
+# {1} is the full URI from which {0} has been identified
+MALFORMED_URI_ELEMENT_CWSIA0382=CWSIA0382E: Elementul UR {0} este malformat \u00een URI-ul {1}
+MALFORMED_URI_ELEMENT_CWSIA0382.explanation=Elementul pereche nume-valoare identificat drept deformat, posibil deoarece nu con\u0163ine at\u00e2t un nume c\u00e2t \u015fi o valoare.
+MALFORMED_URI_ELEMENT_CWSIA0382.useraction=Verifica\u0163i c\u0103 elementul pereche nume-valoare este corect format.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the reserved destination prefix
+# {1} is the full URI from which {0} has been identified
+RESERVED_DEST_PREFIX_CWSIA0383=CWSIA0383E: Prefixul destina\u0163ie rezervat {0} a fost g\u0103sit \u00een URI-ul {1}
+RESERVED_DEST_PREFIX_CWSIA0383.explanation=Prefixul destina\u0163ie identificat este rezervat.
+RESERVED_DEST_PREFIX_CWSIA0383.useraction=Considera\u0163i utilizarea prefixului 'queue://' pentru o destina\u0163ie coad\u0103 sau 'topic://' pentru o destina\u0163ie subiect.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name in the URI element
+# {1} is the property value in the URI element
+# {2} is the full URI from which {0} and {1} have been identified
+INVALID_URI_ELEMENT_CWSIA0384=CWSIA0384E: Elementul URI {0}={1} nu a putut fi setat ca proprietate pe obiectul Destina\u0163ie, de la URI-ul {2}
+INVALID_URI_ELEMENT_CWSIA0384.explanation=Proprietatea nume a elementului URI identificat nu poate fi decodificat\u0103 \u00eentr-o proprietate Destina\u0163ie valid\u0103.
+INVALID_URI_ELEMENT_CWSIA0384.useraction=Asigura\u0163i-v\u0103 c\u0103 proprietatea nume identificat\u0103 este o proprietate valid\u0103 pentru obiectele Destina\u0163ie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the URI with the illegal MA88 queue manager specified
+INVALID_URI_ELEMENT_CWSIA0385=CWSIA0385E: Nu este permis unui URI de destina\u0163ie s\u0103 specifice un manager de coad\u0103, cum este g\u0103sit \u00een URI-ul: {0}
+INVALID_URI_ELEMENT_CWSIA0385.explanation=Utilizarea managerilor de cozi conform specifica\u0163iei din destina\u0163ia URI nu este suportat\u0103.
+INVALID_URI_ELEMENT_CWSIA0385.useraction=Specifica\u0163i un URI care nu utilizeaz\u0103 un manager de cozi.
+
+# -------------------------------------------------------------------------------------------------
+# The code has entered an inconsistent state
+INTERNAL_ERROR_CWSIA0386=CWSIA0386E: A ap\u0103rut o eroare intern\u0103.
+INTERNAL_ERROR_CWSIA0386.explanation=CMSG0001
+INTERNAL_ERROR_CWSIA0386.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Found an escaped character which shouldn't have been escaped
+# {0} is the string containing the problem
+BAD_ESCAPE_CHAR_CWSIA0387=CWSIA0387E: \u015eirul con\u0163inea o secven\u0163\u0103 de sc\u0103pare necorespunz\u0103toare : {0}
+BAD_ESCAPE_CHAR_CWSIA0387.explanation=CMSG0001
+BAD_ESCAPE_CHAR_CWSIA0387.useraction=CMSG0002
+
+# MQRequestReplyUtils
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the class that could not be instantiated
+# {1} is the name of the jarfile that contains the class in question
+# clone of UNABLE_TO_CREATE_FACTORY_CWSIA0001
+UNABLE_TO_CREATE_FACTORY_CWSIA0391=CWSIA0391E: A ap\u0103rut o eroare intern\u0103. Un obiect de clas\u0103 {0} nu poate fi creat deoarece nu poate fi g\u0103sit un fi\u015fier JAR {1}.
+UNABLE_TO_CREATE_FACTORY_CWSIA0391.explanation=CMSG0001
+UNABLE_TO_CREATE_FACTORY_CWSIA0391.useraction=CMSG0002
+
+# Common
+# -------------------------------------------------------------------------------------------------
+# This message is used in JmsQueueSessionImpl - clone 0483 created for JmsTopicSessionImpl
+# {0} is the name of the method which must not be called on the class
+# {1} is the name of the class
+INVALID_OP_FOR_CLASS_CWSIA0481=CWSIA0481E: Nu este permis\u0103 apelarea metodei {0} pe clasa {1}.
+INVALID_OP_FOR_CLASS_CWSIA0481.explanation=Aplica\u0163ia a apelat o metod\u0103 care nu este suportat\u0103 de specifica\u0163ia JMS.
+INVALID_OP_FOR_CLASS_CWSIA0481.useraction=Modifica\u0163i programul aplica\u0163ie pentru a \u00eenl\u0103tura acest comportament.
+
+# -------------------------------------------------------------------------------------------------
+# This message is used in JmsQueueConnectionImpl - clone 0484 created for JmsTopicConnectionImpl
+# {0} describes the unsupported functionality
+UNSUPPORTED_FUNC_CWSIA0482=CWSIA0482E: {0} nu este suportat \u00een aceast\u0103 edi\u0163ie.
+UNSUPPORTED_FUNC_CWSIA0482.explanation=Aplica\u0163ia a \u00eencercat s\u0103 utilizeze o caracteristic\u0103 sau capabilitate care nu este suportat\u0103 de edi\u0163ia curent\u0103 de software.
+UNSUPPORTED_FUNC_CWSIA0482.useraction=\u00cenl\u0103tura\u0163i codul care \u00eencearc\u0103 s\u0103 utilizeze aceast\u0103 capabilitate sau actualiza\u0163i la o edi\u0163ie ulterioar\u0103 a software-ului, dac\u0103 este disponibil\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# This message is a clone of CWSIA0481 created for use in JmsQueueTopicSessionImpl
+# {0} is the name of the method which must not be called on the class
+# {1} is the name of the class
+INVALID_OP_FOR_CLASS_CWSIA0483=CWSIA0483E: Nu este permis\u0103 apelarea metodei {0} pe clasa {1}.
+INVALID_OP_FOR_CLASS_CWSIA0483.explanation=Aplica\u0163ia a apelat o metod\u0103 care nu este suportat\u0103 de specifica\u0163ia JMS.
+INVALID_OP_FOR_CLASS_CWSIA0483.useraction=Modifica\u0163i programul aplica\u0163iei pentru a \u00eenl\u0103tura acest comportament.
+
+# -------------------------------------------------------------------------------------------------
+# This message is a clone of CWSIA0482 created for use in JmsTopicConnectionImpl
+# {0} describes the unsupported functionality
+UNSUPPORTED_FUNC_CWSIA0484=CWSIA0484E: {0} nu este suportat \u00een aceast\u0103 edi\u0163ie.
+UNSUPPORTED_FUNC_CWSIA0484.explanation=Aplica\u0163ia a \u00eencercat s\u0103 utilizeze o caracteristic\u0103 sau capabilitate care nu este suportat\u0103 de edi\u0163ia curent\u0103 de software.
+UNSUPPORTED_FUNC_CWSIA0484.useraction=\u00cenl\u0103tura\u0163i codul care \u00eencearc\u0103 s\u0103 utilizeze aceast\u0103 capabilitate sau actualiza\u0163i la o edi\u0163ie ulterioar\u0103 a software-ului, dac\u0103 este disponibil\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property or variable
+# {1} is the value of the property or variable
+INTERNAL_ERROR_CWSIA0499=CWSIA0499E: A ap\u0103rut o eroare intern\u0103. Valoarea {1} nu este valid\u0103 pentru un parametru sau variabil\u0103 {0}.
+INTERNAL_ERROR_CWSIA0499.explanation=CMSG0001
+INTERNAL_ERROR_CWSIA0499.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIA0500=CWSIA0500E: ''{0}''
+TEMPORARY_CWSIA0500.explanation=Vede\u0163i orice mesaj de eroare legat pentru mai multe informa\u0163ii.
+TEMPORARY_CWSIA0500.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the BytesMessage method that was called
+PROMISE_BROKEN_EXCEPTION_CWSIA0510=CWSIA0510E: Apeluri la metoda BytesMessage {0} nu sunt permise deoarece proprietatea ConnectionFactory sau ActivationSpecification ''producerDoesNotModifyPayloadAfterSet'' a fost activat\u0103.
+PROMISE_BROKEN_EXCEPTION_CWSIA0510.explanation=Produc\u0103torul de mesaj a promis s\u0103 nu modifice sarcinile utile ale mesajului dup\u0103 setarea acestora. Apelurile la anumite metode sau obiecte mesaj sunt considerate o \u00eenc\u0103lcare a acestei promisiuni.
+PROMISE_BROKEN_EXCEPTION_CWSIA0510.useraction=Fie modifica\u0163i codul aplica\u0163ie pentru a \u00eenl\u0103tura apelul care \u00eencalc\u0103 regula, fie modifica\u0163i op\u0163iunea de administrare care indic\u0103 faptul c\u0103 promisiunea este activ\u0103. Nota\u0163i c\u0103 dezactivarea op\u0163iunii de admministrare poate avea ca rezultat sc\u0103derea performan\u0163ei.
+
+# -------------------------------------------------------------------------------------------------
+PROMISE_BROKEN_EXCEPTION_CWSIA0511=CWSIA0511E: Apelarea BytesMessage.writeBytes(byte[]) mai mult de o singur\u0103 dat\u0103 nu este permis\u0103 deoarece proprietatea ConnectionFactory sau ActivationSpecification 'producerDoesNotModifyPayloadAfterSet' a fost activat\u0103.
+PROMISE_BROKEN_EXCEPTION_CWSIA0511.explanation=Produc\u0103torul de mesaj a promis s\u0103 nu modifice sarcinile utile ale mesajului dup\u0103 setarea acestora. Doar un apel la BytesMessage.writeBytes(valoare octet[]) este permis\u0103 \u00een aceast\u0103 situa\u0163ie.
+PROMISE_BROKEN_EXCEPTION_CWSIA0511.useraction=Exist\u0103 trei ac\u0163iuni disponibile pentru remedierea problemei: 1) modificarea codului aplica\u0163iei pentru \u00eenl\u0103turarea apelului care \u00eencalc\u0103 regula, 2) apelarea BytesMessage.clearBody() dup\u0103 primul apel, sau 3) modificarea op\u0163iunii administrative care indic\u0103 faptul c\u0103 promisiunea este activ\u0103. Nota\u0163i c\u0103 dezactivarea op\u0163iunii de admministrare poate avea ca rezultat sc\u0103derea performan\u0163ei.
+# -------------------------------------------------------------------------------------------------
+# The error message CWSIA0512E is not required in JMS 2 feature,  it is moved to com.ibm.ws.cdi-1.2.jms project and some modifcation in wordings had done
+# {0} method name
+#JMSCONTEXT_INJECTED_CWSIA0512=CWSIA0512E: The method {0} is not permitted if the JMSContext is container-managed.
+#JMSCONTEXT_INJECTED_CWSIA0512.explanation= A method was called that is not permitted if JMSContext is container-managed.
+#JMSCONTEXT_INJECTED_CWSIA0512.useraction= Remove the call to the method.
+# -------------------------------------------------------------------------------------------------
+CREATECONTEXT_IN_CONTAINER_CWSIA0513=CWSIA0513E: createContext trebuie s\u0103 fie folosit de aplica\u0163iile care ruleaz\u0103 \u00een web Java EE sau containere EJB.
+CREATECONTEXT_IN_CONTAINER_CWSIA0513.explanation= Aplica\u0163ia nu ar trebui s\u0103 aib\u0103 permisiunea de a crea mai mult de un obiect Sesiune activ per conexiune.
+CREATECONTEXT_IN_CONTAINER_CWSIA0513.useraction=Metoda createContext nu trebuie folosit\u0103 dac\u0103 aplica\u0163iile ruleaz\u0103 \u00een containerele web Java EE sau EJB.
+# -------------------------------------------------------------------------------------------------
+# {0} the acknowledgement mode
+INVALID_ACKNOWLEDGE_MODE_CWSIA0514=CWSIA0514E: Mod confirmare nevalid {0}.
+INVALID_ACKNOWLEDGE_MODE_CWSIA0514.explanation= Modul confirmare a fost invalid.
+INVALID_ACKNOWLEDGE_MODE_CWSIA0514.useraction=Utiliza\u0163i modul de confirmare valid.
+# -------------------------------------------------------------------------------------------------
+# {0} method name
+INVALID_METHOD_CWSIA0515=CWSIA0515E: Metodele CompletionListener nu trebuie s\u0103 apeleze {0} pe propriul JMSContext, Session sau Connection.
+INVALID_METHOD_CWSIA0515.explanation= Metodele CompletionListener (onComplete/OnException) nu trebuie s\u0103 apeleze opera\u0163iile de \u00eenchidere, derulare \u00eenapoi sau comitere pe propriul JMSContext, Session sau Connection. Dac\u0103 \u00eencerca\u0163i s\u0103 apela\u0163i aceste opera\u0163ii din propriul JMSContext, Session sau Connection, o excep\u0163ie este aruncat\u0103 deoarece furnizorul JMS nu permite acele opera\u0163ii p\u00e2n\u0103 c\u00e2nd toate trimiterile incomplete de mesaje nu sunt finalizate.
+INVALID_METHOD_CWSIA0515.useraction= Nu apela\u0163i metoda {0} din propriul JMSContext, Session sau Connection.
+# -------------------------------------------------------------------------------------------------
+INVALID_MESSAGE_ACCESS_CWSIA0516=CWSIA0516E: Obiectele mesaj nu pot fi accesate c\u00e2nd trimiterea asincron\u0103 este \u00een curs.
+INVALID_MESSAGE_ACCESS_CWSIA0516.explanation= Conform specifica\u0163iei JMS 2.0, nu pute\u0163i accesa obiecte mesaj atunci c\u00e2nd trimiterea asincron\u0103 este \u00eenc\u0103 \u00een curs.
+INVALID_MESSAGE_ACCESS_CWSIA0516.useraction= Asigura\u0163i-v\u0103 c\u0103 obiectele mesaj sunt accesate dup\u0103 ce trimiterea asincron\u0103 este rezolvat\u0103, care se \u00eent\u00e2mpl\u0103 dup\u0103 ce onCompletion sau OnException a fost apelat\u0103.
+# -------------------------------------------------------------------------------------------------
+INVALID_METHOD_CWSIA0517=CWSIA0517E: MessageListener nu trebuie s\u0103 \u00eencerce s\u0103 apeleze metoda de oprire \u00een propriul Connection sau JMSContext.
+INVALID_METHOD_CWSIA0517.explanation=O excep\u0163ie este aruncat\u0103 dac\u0103 mesajul ascult\u0103tor \u00eencearc\u0103 s\u0103 opreasc\u0103 propriul s\u0103u Connection sau JMSContext.
+INVALID_METHOD_CWSIA0517.useraction= MessageListener nu trebuie s\u0103 \u00eencerce s\u0103 apeleze metoda de oprire \u00een propriul JMSContext sau Connection.
+# -------------------------------------------------------------------------------------------------
+INVALID_METHOD_CWSIA0518=CWSIA0518E: MessageListener nu trebuie s\u0103 \u00eencerce s\u0103 apeleze metoda de \u00eenchidere \u00een propriul JMSContext, Connection sau Session.
+INVALID_METHOD_CWSIA0518.explanation=O excep\u0163ie este aruncat\u0103 dac\u0103 mesajul ascult\u0103tor \u00eencearc\u0103 s\u0103 \u00ee\u015fi \u00eenchid\u0103 propriul Connection, JMSContext sau Session.
+INVALID_METHOD_CWSIA0518.useraction= MessageListener nu trebuie s\u0103 \u00eencerce s\u0103 apeleze metoda de \u00eenchidere \u00een propriul JMSContext, Connection sau Session.
+# -------------------------------------------------------------------------------------------------

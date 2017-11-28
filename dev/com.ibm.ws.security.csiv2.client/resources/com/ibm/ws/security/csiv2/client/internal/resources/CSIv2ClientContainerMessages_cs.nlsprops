@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.csiv2.client/resources/com/ibm/ws/security/csiv2/client/internal/resources/CSIv2ClientContainerMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server CSIv2 for the client container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9700 - CWWKS9749
+
+# Client CSIv2 Configuration related messages CWWKS9700 - CWWKS9719
+# -------------------------------------------------------------------------------------------------
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID=CWWKS9700E: V zabezpe\u010den\u00ed klienta {0} je uveden neplatn\u00fd mechanizmus \u010di neplatn\u00e9 mechanizmy vrstvy ov\u011b\u0159ov\u00e1n\u00ed. Platn\u00e1 hodnota je GSSUP.
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.explanation=Uveden\u00fd mechanizmus \u010di mechanizmy vrstvy ov\u011b\u0159ov\u00e1n\u00ed zabezpe\u010den\u00ed klienta nejsou podporov\u00e1ny.
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.useraction=Zajist\u011bte, aby byl zad\u00e1n mechanizmus vrstev ov\u011b\u0159en\u00ed zabezpe\u010den\u00ed klienta GSSUP.
+
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL=CWWKS9701W: Mechanizmus \u010di mechanizmy vrstvy ov\u011b\u0159ov\u00e1n\u00ed uveden\u00e9 v zabezpe\u010den\u00ed klienta maj\u00ed hodnotu null.
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.explanation=Uveden\u00fd mechanizmus \u010di mechanizmy vrstvy ov\u011b\u0159ov\u00e1n\u00ed zabezpe\u010den\u00ed klienta maj\u00ed hodnotu null.
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.useraction=Zajist\u011bte, aby byl zad\u00e1n mechanizmus vrstev ov\u011b\u0159en\u00ed zabezpe\u010den\u00ed klienta GSSUP.
+
+CSIv2_CLIENT_MISSING_AUTH_MECH_PROPERTIES=CWWKS9702W: V z\u00e1sad\u00e1ch klienta IIOP chyb\u00ed n\u00e1sleduj\u00edc\u00ed atribut(y). Chyb\u00ed atribut(y) [{0}]. Pokud aplikace nem\u00e1 implementov\u00e1no programov\u00e9 p\u0159ihl\u00e1\u0161en\u00ed, ujist\u011bte se, zda jsou tyto atributy uvedeny v souboru client.xml.
+
+CSIv2_CLIENT_MISSING_AUTH_MECH_PROPERTIES.explanation=V ur\u010den\u00e9m mechanizmu vrstev ov\u011b\u0159en\u00ed z\u00e1sad klienta IIOP chyb\u00ed atribut.
+CSIv2_CLIENT_MISSING_AUTH_MECH_PROPERTIES.useraction=Zajist\u011bte, aby byly nastaveny povinn\u00e9 atributy, nebo aby se k zad\u00e1n\u00ed hodnot pou\u017eilo programov\u00e9 p\u0159ihl\u00e1\u0161en\u00ed.
+
+# Client CSIv2 runtime related messages CWWKS9720 - CWWKS9729
+# -------------------------------------------------------------------------------------------------
+
+# Common CSIv2  related messages CWWKS9730 - CWWKS9749
+# -------------------------------------------------------------------------------------------------
+CSIv2_COMMON_AUTH_LAYER_DISABLED=CWWKS9730W: Vrstva ov\u011b\u0159ov\u00e1n\u00ed CSIv2 je zak\u00e1z\u00e1na, proto\u017ee hodnota establishTrustInClient je {0}.
+CSIv2_COMMON_AUTH_LAYER_DISABLED.explanation=Kdy\u017e je hodnota establishTrustInClient nastavena na Nikdy, vrstva ov\u011b\u0159ov\u00e1n\u00ed CSIv2 je zak\u00e1z\u00e1na. 
+CSIv2_COMMON_AUTH_LAYER_DISABLED.useraction=Chcete-li povolit vrstvu ov\u011b\u0159ov\u00e1n\u00ed CSIv2, nastavte hodnotu establishTrustInClient na Supported nebo Required.
+
+

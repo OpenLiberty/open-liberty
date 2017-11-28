@@ -1,0 +1,187 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.wsspi.sib.core.CWSIRMessages.nlsprops
+#
+# SIB.common component file for logging messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIR0001=CWSIR0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - CWSIR9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=%I%
+#
+#CMVCPATHNAME com.ibm.ws.messaging.common/resources/com/ibm/wsspi/sib/core/CWSIRMessages.nlsprops
+#COMPONENTPREFIX CWSIR
+#COMPONENTNAMEFOR CWSIR SIBus Core
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+BROWSE_METHOD_CWSIR0001=CWSIR0001E: Argument destinationAddress je nulov\u00fd.
+BROWSE_METHOD_CWSIR0001.explanation=Vol\u00e1n\u00ed metody createBrowserSession zadalo do argumentu destinationAddress nulovou hodnotu. Hodnota destinationAddress nesm\u00ed b\u00fdt nulov\u00e1.
+BROWSE_METHOD_CWSIR0001.useraction=Zadejte platnou hodnotu destinationAddress.
+
+# -------------------------------------------------------------------------------------------------
+# destAddr is a argument name for a method call
+CREATE_CONSUMER_CWSIR0021=CWSIR0021E: Argument destAddr je nulov\u00fd.
+CREATE_CONSUMER_CWSIR0021.explanation=Vol\u00e1n\u00ed metody createConsumerSession zadalo do argumentu destAddr nulovou hodnotu. Hodnota destAddr nesm\u00ed b\u00fdt nulov\u00e1.
+CREATE_CONSUMER_CWSIR0021.useraction=Zadejte platnou hodnotu destAddr.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+CREATE_DURABLE_SUB_CWSIR0031=CWSIR0031E: Argument destinationAddress je nulov\u00fd.
+CREATE_DURABLE_SUB_CWSIR0031.explanation=Vol\u00e1n\u00ed metody createConsumerSessionForDurableSubscription zadalo do argumentu destinationAddress nulovou hodnotu. Hodnota destinationAddress nesm\u00ed b\u00fdt nulov\u00e1.
+CREATE_DURABLE_SUB_CWSIR0031.useraction=Zadejte platnou hodnotu destinationAddress.
+
+# -------------------------------------------------------------------------------------------------
+# subscriptionName is a argument name for a method call
+CREATE_DURABLE_SUB_CWSIR0032=CWSIR0032E: Argument subscriptionName je nulov\u00fd.
+CREATE_DURABLE_SUB_CWSIR0032.explanation=Vol\u00e1n\u00ed metody createConsumerSessionForDurableSubscription zadalo do argumentu subscriptionName nulovou hodnotu. Hodnota subscriptionName nesm\u00ed b\u00fdt nulov\u00e1.
+CREATE_DURABLE_SUB_CWSIR0032.useraction=Zadejte platnou hodnotu subscriptionName.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+CREATE_DURABLE_SUB_CWSIR0041=CWSIR0041E: Argument destinationAddress je nulov\u00fd.
+CREATE_DURABLE_SUB_CWSIR0041.explanation=Vol\u00e1n\u00ed metody createDurableSubscription zadalo do argumentu destinationAddress nulovou hodnotu. Hodnota destinationAddress nesm\u00ed b\u00fdt nulov\u00e1.
+CREATE_DURABLE_SUB_CWSIR0041.useraction=Zadejte platnou hodnotu destinationAddress.
+
+# -------------------------------------------------------------------------------------------------
+# subscriptionName is a argument name for a method call
+CREATE_DURABLE_SUB_CWSIR0042=CWSIR0042E: Argument subscriptionName je nulov\u00fd.
+CREATE_DURABLE_SUB_CWSIR0042.explanation=Vol\u00e1n\u00ed metody createDurableSubscription zadalo do argumentu subscriptionName nulovou hodnotu. Hodnota subscriptionName nesm\u00ed b\u00fdt nulov\u00e1.
+CREATE_DURABLE_SUB_CWSIR0042.useraction=Zadejte platnou hodnotu subscriptionName.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+CREATE_PRODUCER_CWSIR0051=CWSIR0051E: Argument destAddr je nulov\u00fd.
+CREATE_PRODUCER_CWSIR0051.explanation=Vol\u00e1n\u00ed metody createProducerSession zadalo do argumentu destAddr nulovou hodnotu. Hodnota destAddr nesm\u00ed b\u00fdt nulov\u00e1.
+CREATE_PRODUCER_CWSIR0051.useraction=Zadejte platnou hodnotu destAddr.
+
+# -------------------------------------------------------------------------------------------------
+# subscriptionName is a argument name for a method call
+DELETE_DURABLE_SUB_CWSIR0061=CWSIR0061E: Argument subscriptionName je nulov\u00fd.
+DELETE_DURABLE_SUB_CWSIR0061.explanation=Vol\u00e1n\u00ed metody deleteDurableSubscription zadalo do argumentu subscriptionName nulovou hodnotu. Hodnota subscriptionName nesm\u00ed b\u00fdt nulov\u00e1.
+DELETE_DURABLE_SUB_CWSIR0061.useraction=Zadejte platnou hodnotu subscriptionName.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+CREATE_PRODUCER_CWSIR0071=CWSIR0071E: Argument destAddr je nulov\u00fd.
+CREATE_PRODUCER_CWSIR0071.explanation=Vol\u00e1n\u00ed metody deleteTemporaryDestination zadalo do argumentu destAddr nulovou hodnotu. Hodnota destAddr nesm\u00ed b\u00fdt nulov\u00e1.
+CREATE_PRODUCER_CWSIR0071.useraction=Zadejte platnou hodnotu destAddr.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+GET_DEST_CONFIG_CWSIR0081=CWSIR0081E: Argument destAddr je nulov\u00fd.
+GET_DEST_CONFIG_CWSIR0081.explanation=Vol\u00e1n\u00ed metody getDestinationConfiguration zadalo do argumentu destAddr nulovou hodnotu. Hodnota destAddr nesm\u00ed b\u00fdt nulov\u00e1.
+GET_DEST_CONFIG_CWSIR0081.useraction=Zadejte platnou hodnotu destAddr.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+RECEIVE_NO_WAIT_CWSIR0091=CWSIR0091E: Argument destAddr je nulov\u00fd.
+RECEIVE_NO_WAIT_CWSIR0091.explanation=Vol\u00e1n\u00ed metody receiveNoWait zadalo do argumentu destAddr nulovou hodnotu. Hodnota destAddr nesm\u00ed b\u00fdt nulov\u00e1.
+RECEIVE_NO_WAIT_CWSIR0091.useraction=Zadejte platnou hodnotu destAddr.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+RECEIVE_WITH_WAIT_CWSIR0101=CWSIR0101E: Argument destAddr je nulov\u00fd.
+RECEIVE_WITH_WAIT_CWSIR0101.explanation=Vol\u00e1n\u00ed metody receiveWithWait zadalo do argumentu destAddr nulovou hodnotu. Hodnota destAddr nesm\u00ed b\u00fdt nulov\u00e1.
+RECEIVE_WITH_WAIT_CWSIR0101.useraction=Zadejte platnou hodnotu destAddr.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+SEND_CWSIR0111=CWSIR0111E: Argument destAddr je nulov\u00fd.
+SEND_CWSIR0111.explanation=Vol\u00e1n\u00ed metody receiveWithWait zadalo do argumentu destAddr nulovou hodnotu. Hodnota destAddr nesm\u00ed b\u00fdt nulov\u00e1.
+SEND_CWSIR0111.useraction=Zadejte platnou hodnotu destAddr.
+
+# -------------------------------------------------------------------------------------------------
+# msg is a argument name for a method call
+SEND_CWSIR0112=CWSIR0112E: Argument zpr\u00e1vy je nulov\u00fd.
+SEND_CWSIR0112.explanation=Vol\u00e1n\u00ed metody send zadalo do argumentu zpr\u00e1vy nulovou hodnotu. Hodnota zpr\u00e1vy nesm\u00ed b\u00fdt nulov\u00e1.
+SEND_CWSIR0112.useraction=Zadejte platnou hodnotu zpr\u00e1vy.
+
+# -------------------------------------------------------------------------------------------------
+# msg is a argument name for a method call
+SEND_EXCEPTION_DEST_CWSIR0121=CWSIR0121E: Argument zpr\u00e1vy je nulov\u00fd.
+SEND_EXCEPTION_DEST_CWSIR0121.explanation=Vol\u00e1n\u00ed metody sendToExceptionDestination zadalo do argumentu zpr\u00e1vy nulovou hodnotu. Hodnota zpr\u00e1vy nesm\u00ed b\u00fdt nulov\u00e1.
+SEND_EXCEPTION_DEST_CWSIR0121.useraction=Zadejte platnou hodnotu zpr\u00e1vy.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the internal method name called on the SPI.
+LME_ERROR_CWSIR0131=CWSIR0131E: Vol\u00e1n\u00ed metody {0} je v t\u00e9to chv\u00edli neplatn\u00e9.
+LME_ERROR_CWSIR0131.explanation=Zadan\u00e9 vol\u00e1n\u00ed je platn\u00e9 pouze z metody AsynchConsumerCallback.consumeMessages.
+LME_ERROR_CWSIR0131.useraction=Znovu vyvolejte vol\u00e1n\u00ed z metody AsynchConsumerCallback.consumeMessages nebo pou\u017eijte p\u0159\u00edslu\u0161n\u00e9 vol\u00e1n\u00ed ConsumerSession, pokud je to mo\u017en\u00e9.
+
+# -------------------------------------------------------------------------------------------------
+# 
+LME_ERROR_CWSIR0132=CWSIR0132E: Jedna nebo v\u00edce hodnot v poli msgHandles m\u011blo hodnotu null.
+LME_ERROR_CWSIR0132.explanation=Pole argumentu msgHandles nesm\u00ed obsahovat prvky s hodnotou null. Proto bylo vol\u00e1n\u00ed metody ConsumerSession nebo BifurcatedConsumerSession odm\u00edtnuto.
+LME_ERROR_CWSIR0132.useraction=Po odebr\u00e1n\u00ed v\u0161ech prvk\u016f s hodnotou null z pole zadejte znovu toto vol\u00e1n\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# 
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0141=CWSIR0141E: Argument maxActiveMessages {0} nem\u011bl platnou hodnotu.
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0141.explanation=Hodnota maxActiveMessages mus\u00ed b\u00fdt v\u011bt\u0161\u00ed nebo rovna nule.
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0141.useraction=Zadejte platnou hodnotu maxActiveMessages.
+
+# -------------------------------------------------------------------------------------------------
+# 
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0142=CWSIR0142E: Argument messageLockExpiry {0} nem\u011bl platnou hodnotu.
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0142.explanation=Hodnota messageLockExpiry mus\u00ed b\u00fdt v\u011bt\u0161\u00ed nebo rovna nule.
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0142.useraction=Zadejte platnou hodnotu messageLockExpiry.
+
+# -------------------------------------------------------------------------------------------------
+# 
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0143=CWSIR0143E: Argument maxBatchSize {0} nem\u011bl platnou hodnotu.
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0143.explanation=Hodnota maxBatchSize mus\u00ed b\u00fdt v\u011bt\u0161\u00ed ne\u017e nula.
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0143.useraction=Zadejte platnou hodnotu maxBatchSize.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIR9999=CWSIR9999E: {0}
+TEMPORARY_CWSIR9999.explanation=Pokud zpr\u00e1va neposkytuje dostate\u010dn\u00e9 informace, zkuste vyhledat dal\u0161\u00ed n\u00e1pov\u011bdu v p\u0159edchoz\u00edch zpr\u00e1v\u00e1ch.
+TEMPORARY_CWSIR9999.useraction=Dal\u0161\u00ed informace naleznete v p\u0159edchoz\u00edch zpr\u00e1v\u00e1ch.

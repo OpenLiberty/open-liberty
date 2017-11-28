@@ -1,0 +1,214 @@
+###############################################################################
+# Copyright (c) 2013, 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME ws/code/ras/src/com/ibm/ws/logging/hpel/resources/BinaryLogMessages.nlsprops
+#COMPONENTPREFIX CWTRA
+#COMPONENTNAMEFOR CWTRA WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+BL_INVALID_ACTION=La acci\u00f3n especificada {0} no es v\u00e1lida.  
+
+# do not translate "--minDate"
+BL_INVALID_MINDATE=No se ha podido analizar el valor --minDate.
+
+# do not translate "--maxDate"
+BL_INVALID_MAXDATE=No se ha podido analizar el valor --maxDate.
+
+BL_INVALID_REPOSITORYDIR=La v\u00eda de acceso del repositorio {0} no es un nombre de v\u00eda de acceso v\u00e1lido.
+BL_INVALID_TARGETDIR=La v\u00eda de acceso del destino {0} no es un nombre de v\u00eda de acceso v\u00e1lido.
+BL_UNABLE_TO_COPY=No se puede crear un repositorio en la ubicaci\u00f3n de destino. Aseg\u00farese de que el directorio de destino especificado est\u00e9 vac\u00edo y que tenga permiso de escritura.
+BL_NO_FILES_FOUND_MONITOR=El directorio especificado no contiene actualmente ning\u00fan archivo de registro o rastreo.  Se seguir\u00e1 supervisando este directorio.
+BL_NO_FILES_FOUND=El directorio de registro del servidor o el directorio de repositorio especificado no contiene ning\u00fan archivo de registro o rastreo.
+BL_OPTION_REQUIRES_A_VALUE=La opci\u00f3n {0} requiere un valor.
+BL_UNKNOWN_OPTION=No se reconoce la opci\u00f3n {0}.
+BL_BAD_FORMAT=El formato {0} no se reconoce.
+
+# do not translate "--minDate" or "--maxDate"
+BL_MINDATE_AFTER_MAXDATE=La fecha especificada por --minDate es posterior a la fecha especificada por --maxDate.
+
+# do not translate "--minLevel" or "--maxLevel"
+BL_MINLEVEL_GREATER_THAN_MAXLEVEL=El nivel especificado por --minLevel es superior al nivel especificado por --maxLevel.
+
+# do not translate "binaryLog help"
+BL_USE_HELP=Para obtener informaci\u00f3n de uso, utilice la ayuda de binaryLog.
+
+BL_REPOSITORY_DIRECTORY=Se utiliza {0} como directorio de repositorio. 
+BL_TARGET_DIRECTORY=Se utiliza {0} como directorio de destino.
+
+# do not translate "serverName", "repositoryPath", "targetPath"
+BL_COPY_REQUIRES_TARGETDIR=La acci\u00f3n de copiar requiere la especificaci\u00f3n de {serverName | repositoryPath} y targetPath.
+#--------------------------------------------------------------------------------------------------
+
+# do not translate "binaryLog", "action", "serverName", "repositoryPath"
+BL_MAIN_USAGE_001=Uso: binaryLog action {serverName | repositoryPath} [opciones]
+
+# do not translate "serverName"
+BL_MAIN_USAGE_004=\ \ \ \ Nombre de servidor
+BL_MAIN_USAGE_005=\tEspecifique el nombre de un servidor Liberty con un repositorio donde que leer.
+
+# do not translate "repositoryPath"
+BL_MAIN_USAGE_006=\ \ \ \ repositoryPath
+
+# do not translate "logdata", "tracedata"
+BL_MAIN_USAGE_007=\tEspecifique la v\u00eda de acceso de un repositorio donde leer.  Normalmente, es el\n\
+\tdirectorio que contiene los directorios logdata y tracedata.
+
+BL_MAIN_USAGE_008=Descripci\u00f3n:
+BL_MAIN_USAGE_009=\tVea o copie el contenido de un repositorio de High Performance Extensible Logging  \n\
+\to liste las instancias de proceso de servidor disponibles en el \n\
+\trepositorio.
+
+BL_MAIN_USAGE_010=Acciones:
+
+# do not translate "view"
+BL_MAIN_USAGE_011=\ \ \ \ view
+BL_MAIN_USAGE_012=\tLeer un repositorio, filtrarlo de manera opcional y crear una versi\u00f3n\n\
+\telegible para las personas.
+
+# do not translate "copy"
+BL_MAIN_USAGE_013=\ \ \ \ copy
+BL_MAIN_USAGE_014=\tLeer un repositorio, filtrarlo de manera opcional y escribir\n\
+\tel contenido en un nuevo repositorio.
+
+# do not translate "listInstances"
+BL_MAIN_USAGE_015=\ \ \ \ listInstances
+BL_MAIN_USAGE_016=\tListar las instancias de proceso de servidor en el repositorio.
+
+BL_MAIN_USAGE_017=Opciones:
+
+# do not translate "help [action]"
+BL_MAIN_USAGE_018=\tUtilice help [action] para obtener informaci\u00f3n detallada de las opciones de cada acci\u00f3n.
+
+#--------------------------------------------------------------------------------------------------
+
+# do not translate "binaryLog view", "serverName", "repositoryPath"
+BL_VIEW_USAGE_001=Uso: binaryLog view {serverName | repositoryPath} [opciones]
+
+BL_VIEW_USAGE_002=\tLeer un repositorio, filtrarlo de manera opcional y crear una versi\u00f3n\n\
+\telegible para las personas.
+
+BL_VIEW_USAGE_003=Opciones de filtro:
+BL_VIEW_USAGE_004=\tLos filtros son todos opcionales.  Cuando se utilizan varios filtros\n\
+\tse a\u00f1aden l\u00f3gicamente con AND.
+
+# do not translate "--minDate=value"
+BL_VIEW_USAGE_005=\ \ \ \ --minDate=value
+
+# do not translate "--minDate="
+BL_VIEW_USAGE_006=\tFiltrar bas\u00e1ndose en la fecha de creaci\u00f3n m\u00ednima del registro. El valor se debe      \n\
+\tespecificar como una fecha (por ejemplo --minDate=\"{0}\") o como una fecha \n\
+\ty hora (por ejemplo --minDate=\"{1}\"). Tambi\u00e9n puede especificar la     \n\
+\tfecha y hora en formato ISO-8601; por ejemplo,  --minDate=\"{2}\" o  \n\
+\t--minDate=\"{3}\".
+
+# do not translate "--maxDate=value"
+BL_VIEW_USAGE_007=\ \ \ \ --maxDate=value
+
+# do not translate "--maxDate="
+BL_VIEW_USAGE_008=\tFiltrar bas\u00e1ndose en la fecha de creaci\u00f3n m\u00e1xima del registro. El valor se debe      \n\
+\tespecificar como una fecha (por ejemplo --maxDate=\"{0}\") o como una fecha y \n\
+\thora (por ejemplo --maxDate=\"{1}\"). Tambi\u00e9n puede especificar     \n\
+\tla fecha y hora en formato ISO-8601; por ejemplo, --maxDate=\"{2}\" o  \n\
+\t--maxDate=\"{3}\".
+
+# do not translate "--minLevel=value"
+BL_VIEW_USAGE_009=\ \ \ \ --minLevel=value
+BL_VIEW_USAGE_010=\tFiltrar bas\u00e1ndose en el nivel m\u00ednimo.  El valor debe ser uno de                 \n\
+\t{0}.
+
+# do not translate "--maxLevel=value"
+BL_VIEW_USAGE_011=\ \ \ \ --maxLevel=value
+BL_VIEW_USAGE_012=\tFiltrar bas\u00e1ndose en el nivel m\u00e1ximo.  El valor debe ser uno de                 \n\
+\t{0}.
+
+# do not translate "--includeLogger=value[,value]*"
+BL_VIEW_USAGE_013=\ \ \ \ --includeLogger=value[,value]*
+BL_VIEW_USAGE_014=\tIncluir registros con el nombre de registrador especificado.  El valor puede incluir * o ? como un\n\
+\tcomod\u00edn.
+
+# do not translate "--excludeLogger=value[,value]*"
+BL_VIEW_USAGE_015=\ \ \ \ --excludeLogger=value[,value]*
+BL_VIEW_USAGE_016=\tExcluir registros con el nombre de registrador especificado.  El valor puede incluir * o ? como un\n\
+\tcomod\u00edn.
+
+# do not translate "--includeMessage=value"
+BL_VIEW_USAGE_017=\ \ \ \ --includeMessage=value
+BL_VIEW_USAGE_018=\tFiltrar bas\u00e1ndose en el nombre de mensaje.  \
+El valor puede incluir * o ? \
+como comod\u00edn.
+
+# do not translate "--includeThread=value"
+BL_VIEW_USAGE_019=\ \ \ \ --includeThread=value
+
+# do not translate "--includeThread=2a"
+BL_VIEW_USAGE_020=\tIncluir registros con el ID de hebra especificado.  Los \n\
+\tvalores deben estar en hexadecimal (por ejemplo, --includeThread=2a).
+
+# do not translate "--includeExtension=name=value[,name=value]*"
+BL_VIEW_USAGE_021=\ \ \ \ --includeExtension=name=value[,name=value]*
+BL_VIEW_USAGE_022=\tIncluir registros con el nombre de extensi\u00f3n y el valor especificados.  El valor puede incluir * o ? como un\n\
+\tcomod\u00edn.
+
+# do not translate "--includeInstance=value"
+BL_VIEW_USAGE_023=\ \ \ \ --includeInstance=value
+
+# do not translate "latest", "listInstances"
+BL_VIEW_USAGE_024=\tIncluir registros de la instancia de servidor especificada.  El \n\
+\tvalor debe ser "latest" o un ID de instancia v\u00e1lido.  Ejecute este mandato \n \tutilizando la acci\u00f3n listInstances para ver una lista de ID de instancia v\u00e1lidos.
+
+BL_VIEW_USAGE_025=Opci\u00f3n de supervisor:
+
+# do not translate "--monitor"
+BL_VIEW_USAGE_026=\ \ \ \ --monitor
+BL_VIEW_USAGE_027=\tSupervisar continuamente el repositorio y producir una salida \n\
+\tdel nuevo contenido a medida que se genera.
+			
+BL_VIEW_USAGE_028=Opciones de salida:
+
+# do not translate "--format={basic | advanced | CBE-1.0.1}"
+BL_VIEW_USAGE_029=\ \ \ \ --format={basic | advanced | CBE-1.0.1}
+BL_VIEW_USAGE_030=\tEspecifique el formato de salida que desee utilizar.  \
+"basic" es el formato predeterminado.
+		
+# do not translate "--encoding=value"
+BL_VIEW_USAGE_031=\ \ \ \ --encoding=value
+BL_VIEW_USAGE_032=\tEspecifique la codificaci\u00f3n de caracteres que desee utilizar para la salida.
+
+# do not translate "--isoDateFormat"
+BL_VIEW_USAGE_033=\ \ \ \ --isoDateFormat
+BL_VIEW_USAGE_034=\tEspecifique el formato de fecha y hora ISO-8601 para utilizar para la salida.
+#--------------------------------------------------------------------------------------------------
+
+# do not translate "binaryLog", "listInstances", "serverName", "repositoryPath"
+BL_LISTINSTANCES_USAGE_001=Uso: binaryLog listInstances {serverName | repositoryPath} [opciones]
+
+# do not translate "--includeInstance", "binaryLog view"
+BL_LISTINSTANCES_USAGE_002=\tListar los ID de las instancias de servidor en el repositorio.  Una         \n\
+\tinstancia de servidor es la colecci\u00f3n de todos los registros de rastreo/registro\n\
+\tescritos desde que se inicia el servidor hasta que se detiene.  Los ID   \n\
+\tde instancia de servidor pueden utilizase con la opci\u00f3n --includeInstance \n\
+\tde la acci\u00f3n binaryLog view.
+
+#--------------------------------------------------------------------------------------------------
+
+# do not translate "binaryLog", "copy", "serverName", "repositoryPath", "targetPath"
+BL_COPY_USAGE_001=Uso: binaryLog copy {serverName | repositoryPath} targetPath [opciones]
+
+# do not translate "targetPath"
+BL_COPY_USAGE_002=\ \ \ \ targetPath
+BL_COPY_USAGE_003=\tEspecifique la v\u00eda de acceso en la que desee crear un nuevo repositorio.
+
+
+BL_COPY_USAGE_004=\tLeer un repositorio, filtrarlo de manera opcional y escribir\n\
+\tel contenido en un nuevo repositorio.

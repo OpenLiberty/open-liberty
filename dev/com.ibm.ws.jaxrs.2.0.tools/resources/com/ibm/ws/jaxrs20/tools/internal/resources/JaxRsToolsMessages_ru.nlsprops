@@ -1,0 +1,25 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs-2.0.tools/resources/com/ibm/ws/jaxrs20/tools/internal/resources/JaxRsToolsMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS 2.0 Tools Code
+#RANGE 0900-9999
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+error.badVersion=CWWKW0900E: \u041d\u0435 \u0437\u0430\u043f\u0443\u0449\u0435\u043d\u0430 \u043d\u0435\u043e\u0431\u0445\u043e\u0434\u0438\u043c\u0430\u044f \u0432\u0435\u0440\u0441\u0438\u044f Java. \u0414\u043b\u044f \u0441\u0440\u0435\u0434\u044b \u0432\u044b\u043f\u043e\u043b\u043d\u0435\u043d\u0438\u044f \u0442\u0440\u0435\u0431\u0443\u0435\u0442\u0441\u044f Java 7 \u0438\u043b\u0438 \u0432\u044b\u0448\u0435.
+error.badVersion.explanation=\u0417\u0430\u043f\u0443\u0449\u0435\u043d\u0430 \u043d\u0435\u043f\u043e\u0434\u0434\u0435\u0440\u0436\u0438\u0432\u0430\u0435\u043c\u0430\u044f \u0432\u0435\u0440\u0441\u0438\u044f Java, \u043b\u0438\u0431\u043e \u0441\u0438\u0441\u0442\u0435\u043c\u043d\u0430\u044f \u043f\u0435\u0440\u0435\u043c\u0435\u043d\u043d\u0430\u044f JAVA_HOME \u0441\u0441\u044b\u043b\u0430\u0435\u0442\u0441\u044f \u043d\u0430 \u0441\u0442\u0430\u0440\u0443\u044e \u0432\u0435\u0440\u0441\u0438\u044e Java.
+error.badVersion.useraction= \u041e\u0431\u043d\u043e\u0432\u0438\u0442\u0435 Java \u0434\u043e \u0432\u0435\u0440\u0441\u0438\u0438 7 \u0438\u043b\u0438 \u0438\u0437\u043c\u0435\u043d\u0438\u0442\u0435 \u0441\u0438\u0441\u0442\u0435\u043c\u043d\u0443\u044e \u043f\u0435\u0440\u0435\u043c\u0435\u043d\u043d\u0443\u044e JAVA_HOME \u0442\u0430\u043a\u0438\u043c \u043e\u0431\u0440\u0430\u0437\u043e\u043c \u0447\u0442\u043e\u0431\u044b \u043e\u043d\u0430 \u0443\u043a\u0430\u0437\u044b\u0432\u0430\u043b\u0430 \u043d\u0430 Java 7.

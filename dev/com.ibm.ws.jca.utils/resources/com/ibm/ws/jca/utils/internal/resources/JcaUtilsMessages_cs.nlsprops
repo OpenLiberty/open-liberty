@@ -1,0 +1,199 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jca.utils/resources/com/ibm/ws/jca/utils/internal/resources/JcaUtilsMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA JCA
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+# Range: 9900 - 9999
+
+# {0} = resource adapter class name
+# {1} = annotation used on the class
+# {2} = name of interface that the class is required to implement with this annotation
+J2CA9902.required.rainterface.for.anno.missing=J2CA9902E: T\u0159\u00edda adapt\u00e9ru prost\u0159edku {0} s anotac\u00ed {1} neimplementuje rozhran\u00ed {2}.
+J2CA9902.required.rainterface.for.anno.missing.explanation=Anotovan\u00e1 t\u0159\u00edda adapt\u00e9ru prost\u0159edku neimplementuje po\u017eadovan\u00e9 rozhran\u00ed.
+J2CA9902.required.rainterface.for.anno.missing.useraction=Prostudujte procesy ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f a dokumentaci dodavatele adapt\u00e9ru prost\u0159edku.
+
+# {0} = resource adapter class name
+# {1} = name of interface that the class is required to implement for this deployment descriptor entry type
+J2CA9903.required.rainterface.missing=J2CA9903E: T\u0159\u00edda adapt\u00e9ru prost\u0159edku {0} neimplementuje rozhran\u00ed {1}.
+J2CA9903.required.rainterface.missing.explanation=T\u0159\u00edda adapt\u00e9ru prost\u0159edku uveden\u00e1 v deskriptoru implementace neimplementuje po\u017eadovan\u00e9 rozhran\u00ed.
+J2CA9903.required.rainterface.missing.useraction=Prostudujte procesy ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f a dokumentaci dodavatele adapt\u00e9ru prost\u0159edku.
+
+# {0} = resource adapter class name
+# {1} = resource adapter name
+J2CA9904.required.raclass.missing=J2CA9904E: Je ur\u010den\u00e1 t\u0159\u00edda adapt\u00e9ru prost\u0159edku {0}, ale v adapt\u00e9ru prost\u0159edku {1} tuto t\u0159\u00eddu nelze naj\u00edt.
+J2CA9904.required.raclass.missing.explanation=V adapt\u00e9ru prost\u0159edku nelze naj\u00edt t\u0159\u00eddu adapt\u00e9ru prost\u0159edku, kter\u00e1 je ur\u010den\u00e1 prvkem <resourceadapter-class> v souboru ra.xml nebo ve t\u0159\u00edd\u011b s anotac\u00ed @Connector.
+J2CA9904.required.raclass.missing.useraction=Prostudujte procesy ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f a dokumentaci dodavatele adapt\u00e9ru prost\u0159edku.
+
+# {0} = config property name
+# {1} = resource adapter name
+J2CA9905.required.prop.missing=J2CA9905W: Konfigura\u010dn\u00ed vlastnost {0} je povinn\u00e1, ale v adapt\u00e9ru prost\u0159edku {1} nelze naj\u00edt definici vlastnosti.
+J2CA9905.required.prop.missing.explanation=V adapt\u00e9ru prost\u0159edku nelze nal\u00e9zt definici vlastnosti pro povinnou konfigura\u010dn\u00ed vlastnost.
+J2CA9905.required.prop.missing.useraction=Prostudujte procesy ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f a dokumentaci dodavatele adapt\u00e9ru prost\u0159edku.
+
+# {0} = config property type specified
+# {1} = config property name
+J2CA9906.invalid.type=J2CA9906E: Typ vlastnosti {0} ur\u010den\u00fd pro konfigura\u010dn\u00ed vlastnost {1} je neplatn\u00fd.
+J2CA9906.invalid.type.explanation=Konfigura\u010dn\u00ed vlastnost mus\u00ed m\u00edt jeden z t\u011bchto typ\u016f: String, Long, Double, Float, Integer, Byte, Character, Boolean nebo Short.
+J2CA9906.invalid.type.useraction=Prostudujte procesy ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f a dokumentaci dodavatele adapt\u00e9ru prost\u0159edku.
+
+# {0} = config property name
+# {1} = resource adapter name
+J2CA9908.duplicate.copy=J2CA9908E: Konfigura\u010dn\u00ed vlastnost {0} byla v adapt\u00e9ru prost\u0159edku {1} nalezena ve stejn\u00e9m rozsahu v\u00edcekr\u00e1t. Duplicitn\u00ed vlastnosti jsou ignorov\u00e1ny.
+J2CA9908.duplicate.copy.explanation=Konfigura\u010dn\u00ed vlastnost byla v r\u00e1mci dan\u00e9ho rozsahu, nap\u0159\u00edklad v r\u00e1mci specifikace aktivace, definov\u00e1na v\u00edcekr\u00e1t.
+J2CA9908.duplicate.copy.useraction=Prostudujte procesy ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f a dokumentaci dodavatele adapt\u00e9ru prost\u0159edku.
+
+# {0} = config property name
+# {1} = resource adapter name
+J2CA9909.missing.matching.config.prop=J2CA9909E: V souboru wlp-ra.xml je ur\u010dena konfigura\u010dn\u00ed vlastnost {0}, ale v adapt\u00e9ru prost\u0159edku {1} nebyla nalezena odpov\u00eddaj\u00edc\u00ed anotace ConfigProperty, polo\u017eka deskriptoru implementace, ani vlastnost Java Bean.
+J2CA9909.missing.matching.config.prop.explanation=V souboru wlp-ra.xml byla pou\u017eita konfigura\u010dn\u00ed vlastnost, ale v adapt\u00e9ru prost\u0159edku nebyla nalezena jej\u00ed definice.
+J2CA9909.missing.matching.config.prop.useraction=Prostudujte procesy ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f a dokumentaci dodavatele adapt\u00e9ru prost\u0159edku.
+
+# {0} = admin object interface
+# {1} = admin object class
+# {2} = resource adapter name
+J2CA9910.missing.matching.adminobject=J2CA9910E: V souboru wlp-ra.xml je ur\u010den prvek <adminobject> s rozhran\u00edm {0} a t\u0159\u00eddou {1}, ale v adapt\u00e9ru prost\u0159edku {2} nebyla nalezena odpov\u00eddaj\u00edc\u00ed anotace AdministeredObject ani polo\u017eka deskriptoru implementace.
+J2CA9910.missing.matching.adminobject.explanation=V souboru wlp-ra.xml byl pou\u017eit prvek <adminobject>, ale v adapt\u00e9ru prost\u0159edku nebyla nalezena jeho definice.
+J2CA9910.missing.matching.adminobject.useraction=Prostudujte procesy ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f a dokumentaci dodavatele adapt\u00e9ru prost\u0159edku.
+
+# {0} = wlp-ra.xml element name
+# {1} = interface of connection factory or message listener
+# {2} = annotation type
+# {3} = resource adapter name
+J2CA9911.missing.matching.type=J2CA9911E: V souboru wlp-ra.xml je ur\u010den prvek {0} pro typ {1}, ale v adapt\u00e9ru prost\u0159edku {3} nebyla nalezena odpov\u00eddaj\u00edc\u00ed anotace {2} ani polo\u017eka deskriptoru implementace.
+J2CA9911.missing.matching.type.explanation=V souboru wlp-ra.xml byl pou\u017eit prvek <connection-definition> nebo <messagelistener>, ale v adapt\u00e9ru prost\u0159edku nelze nal\u00e9zt odpov\u00eddaj\u00edc\u00ed definici.
+J2CA9911.missing.matching.type.useraction=Prostudujte procesy ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f a dokumentaci dodavatele adapt\u00e9ru prost\u0159edku.
+   
+J2CA9912.conn.defn.required=J2CA9912E: Neexistuje \u017e\u00e1dn\u00fd prvek <connection-definition> ani t\u0159\u00edda s anotac\u00ed @ConnectionDefinition, i kdy\u017e byla definov\u00e1na podpora transakc\u00ed, mechanizmy ov\u011b\u0159ov\u00e1n\u00ed nebo podpora pro op\u011btn\u00e9 ov\u011b\u0159en\u00ed.
+J2CA9912.conn.defn.required.explanation=Podporu transakc\u00ed, mechanizmy ov\u011b\u0159ov\u00e1n\u00ed ani podporu pro op\u011btn\u00e9 ov\u011b\u0159en\u00ed nelze ur\u010dit, pokud v souboru ra.xml nen\u00ed aspo\u0148 jeden prvek <connection-definition> nebo aspo\u0148 jedna t\u0159\u00edda s anotac\u00ed @ConnectionDefinition.
+J2CA9912.conn.defn.required.useraction=Prostudujte procesy ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f a dokumentaci dodavatele adapt\u00e9ru prost\u0159edku.
+
+# {0} = nls file name
+# {1} = resource adapter name
+# {2} = message key
+J2CA9916.duplicate.nls.key=J2CA9916W: Soubor {0} s p\u0159elo\u017eiteln\u00fdmi zpr\u00e1vami pro adapt\u00e9r prost\u0159edku {1} definuje r\u016fzn\u00e9 zpr\u00e1vy pro stejn\u00fd kl\u00ed\u010d: {2}.
+J2CA9916.duplicate.nls.key.explanation=P\u0159i zpracov\u00e1n\u00ed souboru p\u0159eklad\u016f byla nalezen jeden kl\u00ed\u010d NLS, kter\u00fd je pou\u017e\u00edv\u00e1n pro r\u016fzn\u00e9 zpr\u00e1vy.
+J2CA9916.duplicate.nls.key.useraction=Prostudujte procesy ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f a dokumentaci dodavatele adapt\u00e9ru prost\u0159edku.
+
+# {0} = nls file name
+# {1} = resource adapter name
+# {2} = message key
+J2CA9917.missing.nls.msg=J2CA9917W: Soubor {0} s p\u0159elo\u017eiteln\u00fdmi zpr\u00e1vami pro adapt\u00e9r prost\u0159edku {1} nem\u00e1 zpr\u00e1vu k p\u0159ekladu pro kl\u00ed\u010d {2}, kter\u00fd je ur\u010den v souboru wlp-ra.xml.
+J2CA9917.missing.nls.msg.explanation=Pro uveden\u00fd kl\u00ed\u010d nebyla nalezena \u017e\u00e1dn\u00e1 zpr\u00e1va k p\u0159ekladu.
+J2CA9917.missing.nls.msg.useraction=Prostudujte procesy ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f a dokumentaci dodavatele adapt\u00e9ru prost\u0159edku.
+
+# {0} = attribute name
+# {1} = resource adapter name
+J2CA9918.attrdef.already.processed=J2CA9918W: Adapt\u00e9r prost\u0159edku {1} definuje duplicitn\u00ed konfigura\u010dn\u00ed vlastnosti nazvan\u00e9 {0} se stejn\u00fdm rozsahem. Duplik\u00e1ty jsou ignorov\u00e1ny.
+J2CA9918.attrdef.already.processed.explanation=Adapt\u00e9r prost\u0159edku, specifikace aktivace, administrovan\u00fd objekt nebo definice tov\u00e1rny p\u0159ipojen\u00ed ud\u00e1v\u00e1 duplicitn\u00ed konfigura\u010dn\u00ed vlastnosti se stejn\u00fdm n\u00e1zvem.
+J2CA9918.attrdef.already.processed.useraction=Prostudujte procesy ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f a dokumentaci dodavatele adapt\u00e9ru prost\u0159edku.
+
+J2CA9919.class.not.found=J2CA9919W: Zavad\u011b\u010d t\u0159\u00edd pro adapt\u00e9r prost\u0159edku {1} nem\u016f\u017ee na\u010d\u00edst {0}. Zkontrolujte, zda adapt\u00e9r prost\u0159edku nevy\u017eaduje funkci, kter\u00e1 nen\u00ed zapnuta, nebo knihovnu, k n\u00ed\u017e nem\u00e1 p\u0159\u00edstup.
+J2CA9919.class.not.found.explanation=Uvedenou t\u0159\u00eddu nelze na\u010d\u00edst, mo\u017en\u00e1 proto\u017ee je tato t\u0159\u00edda nebo n\u011bjak\u00e1 t\u0159\u00edda, na kter\u00e9 z\u00e1vis\u00ed, poskytov\u00e1na funkc\u00ed, kter\u00e1 nen\u00ed zapnuta, nebo knihovnou, kterou adapt\u00e9r prost\u0159edku nem\u00e1 k dispozici.
+J2CA9919.class.not.found.useraction=Zapn\u011bte v\u0161echny funkce po\u017eadovan\u00e9 adapt\u00e9rem prost\u0159edku a nakonfigurujte jej tak, aby m\u011bl p\u0159\u00edstup ke v\u0161em knihovn\u00e1m, kter\u00e9 vy\u017eaduje.
+
+# {0} = type of object
+# {1} = possible ra.xml entry
+# {2} = possible annotation class
+J2CA9920.duplicate.type=J2CA9920W: V {1} a v dal\u0161\u00ed polo\u017ece souboru ra.xml nebo v nejm\u00e9n\u011b jedn\u00e9 t\u0159\u00edd\u011b s anotac\u00ed {2} byl ur\u010den duplicitn\u00ed typ {0}.
+J2CA9920.duplicate.type.explanation=Adapt\u00e9r prost\u0159edku, specifikace aktivace, administrovan\u00fd objekt nebo definice tov\u00e1rny p\u0159ipojen\u00ed jsou ur\u010deny v\u00edcekr\u00e1t se stejn\u00fdm typem.
+J2CA9920.duplicate.type.useraction=Prostudujte procesy ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f a dokumentaci dodavatele adapt\u00e9ru prost\u0159edku.
+
+# {0} = resource adapter name
+J2CA9922.multiple.connector.anno.found=J2CA9922E: Adapt\u00e9r prost\u0159edku {0} m\u00e1 v\u00edce t\u0159\u00edd s anotac\u00ed @Connector, ale neur\u010duje, kter\u00e1 se m\u00e1 pou\u017e\u00edvat, prost\u0159ednictv\u00edm deskriptoru implementace.
+J2CA9922.multiple.connector.anno.found.explanation=V\u00edce t\u0159\u00edd s anotac\u00ed @Connector je sice povoleno, ale t\u0159\u00edda, kterou m\u00e1 adapt\u00e9r prost\u0159edku pou\u017e\u00edvat, mus\u00ed b\u00fdt explicitn\u011b ur\u010dena v deskriptoru implementace.
+J2CA9922.multiple.connector.anno.found.useraction=Prostudujte procesy ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f a dokumentaci dodavatele adapt\u00e9ru prost\u0159edku.
+
+# {0} = message listener type
+# {1} = annotated activation specification class
+J2CA9924.listener.actspec.missing=J2CA9924E: Listener zpr\u00e1v typu {0} definovan\u00fd v souboru ra.xml by m\u011bl potla\u010dit t\u0159\u00eddu {1} s anotac\u00ed @Activation, neobsahuje v\u0161ak specifikaci aktivace.
+J2CA9924.listener.actspec.missing.explanation=Soubor ra.xml obsahuje typ listeneru zpr\u00e1v, pro tento typ existuje anotovan\u00e1 t\u0159\u00edda, ale soubor ra.xml neobsahuje odpov\u00eddaj\u00edc\u00ed polo\u017eku specifikace aktivace.
+J2CA9924.listener.actspec.missing.useraction=Prostudujte procesy ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f a dokumentaci dodavatele adapt\u00e9ru prost\u0159edku.
+
+# {0} = class annotated with @AdministeredObject
+J2CA9925.admobj.interface.missing=J2CA9925E: Anotace @AdministeredObject nedefinuje rozhran\u00ed administrovan\u00fdch objekt\u016f a t\u0159\u00edda {0} \u017e\u00e1dn\u00e1 rozhran\u00ed neimplementuje.
+J2CA9925.admobj.interface.missing.explanation=Anotovan\u00e1 t\u0159\u00edda mus\u00ed poskytnout rozhran\u00ed v r\u00e1mci anotace, nebo je mus\u00ed implementovat.
+J2CA9925.admobj.interface.missing.useraction=Prostudujte procesy ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f a dokumentaci dodavatele adapt\u00e9ru prost\u0159edku.
+
+# {0} = class annotated with @AdministeredObject
+J2CA9926.admobj.multiple.interfaces=J2CA9926E: Anotace @AdministeredObject nedefinuje rozhran\u00ed administrovan\u00fdch objekt\u016f, tak\u017ee budou pou\u017eita rozhran\u00ed definovan\u00e1 pro tuto t\u0159\u00eddu. Pro t\u0159\u00eddu {0} v\u0161ak existuje v\u00edce rozhran\u00ed.
+J2CA9926.admobj.multiple.interfaces.explanation=Rozhran\u00ed mus\u00ed b\u00fdt v anotaci definov\u00e1na.
+J2CA9926.admobj.multiple.interfaces.useraction=Prostudujte procesy ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f a dokumentaci dodavatele adapt\u00e9ru prost\u0159edku.
+
+# {0} = method with invalid name
+J2CA9927.cfgprop.invalid.method=J2CA9927E: Anotaci @ConfigProperty lze pou\u017e\u00edt pouze pro metody nastaven\u00ed, ale byla nalezena u metody {0}.
+J2CA9927.cfgprop.invalid.method.explanation=Anotace @ConfigProperty byla ur\u010dena pro metodu, jej\u00ed\u017e jm\u00e9no neza\u010d\u00edn\u00e1 na set.
+J2CA9927.cfgprop.invalid.method.useraction=Prostudujte procesy ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f a dokumentaci dodavatele adapt\u00e9ru prost\u0159edku.
+
+J2CA9930.value.too.small=J2CA9930W: Hodnota {0} je ni\u017e\u0161\u00ed ne\u017e minimum {1} pro atribut {2}.
+J2CA9930.value.too.small.explanation=Nakonfigurovan\u00e1 hodnota neodpov\u00edd\u00e1 omezen\u00ed minim\u00e1ln\u00ed velikosti dan\u00e9ho atributu.
+J2CA9930.value.too.small.useraction=Vyberte hodnotu v\u011bt\u0161\u00ed nebo rovnou minimu.
+
+J2CA9931.value.too.large=J2CA9931W: Hodnota {0} je vy\u0161\u0161\u00ed ne\u017e maximum {1} pro atribut {2}.
+J2CA9931.value.too.large.explanation=Nakonfigurovan\u00e1 hodnota p\u0159ekra\u010duje omezen\u00ed maxim\u00e1ln\u00ed velikosti dan\u00e9ho atributu.
+J2CA9931.value.too.large.useraction=Vyberte hodnotu men\u0161\u00ed nebo rovnou maximu.
+
+J2CA9932.value.too.short=J2CA9932W: Hodnota {0} je ni\u017e\u0161\u00ed ne\u017e minim\u00e1ln\u00ed d\u00e9lka {1} pro atribut {2}.
+J2CA9932.value.too.short.explanation=Nakonfigurovan\u00e1 hodnota neodpov\u00edd\u00e1 omezen\u00ed minim\u00e1ln\u00ed d\u00e9lky dan\u00e9ho atributu.
+J2CA9932.value.too.short.useraction=Vyberte hodnotu, jej\u00ed\u017e d\u00e9lka je v\u011bt\u0161\u00ed nebo rovn\u00e1 minimu.
+
+J2CA9933.value.too.long=J2CA9933W: Hodnota {0} je vy\u0161\u0161\u00ed ne\u017e maxim\u00e1ln\u00ed d\u00e9lka {1} pro atribut {2}.
+J2CA9933.value.too.long.explanation=Nakonfigurovan\u00e1 hodnota p\u0159ekra\u010duje omezen\u00ed maxim\u00e1ln\u00ed d\u00e9lky dan\u00e9ho atributu.
+J2CA9933.value.too.long.useraction=Vyberte hodnotu, jej\u00ed\u017e d\u00e9lka je men\u0161\u00ed nebo rovn\u00e1 maximu.
+
+J2CA9934.not.a.valid.option=J2CA9934E: Hodnota {0} nen\u00ed platnou volbou atributu {1}. Platn\u00e9 volby jsou {2}.
+J2CA9934.not.a.valid.option.explanation=Nakonfigurovan\u00e1 hodnota nespad\u00e1 do rozsahu platn\u00fdch voleb pro tento atribut.
+J2CA9934.not.a.valid.option.useraction=Zvolte hodnotu ze seznamu platn\u00fdch voleb.
+
+J2CA9935.secperm.not.supported=J2CA9935I: Opr\u00e1vn\u011bn\u00ed zabezpe\u010den\u00ed Java 2 ur\u010den\u00e1 v deskriptoru implementace pro adapt\u00e9r prost\u0159edku {0} nebudou prosazov\u00e1na.
+J2CA9935.secperm.not.supported.explanation=V profilu Liberty nen\u00ed zabezpe\u010den\u00ed Java 2 povoleno, tak\u017ee se kontroly zabezpe\u010den\u00ed Java 2 pro adapt\u00e9r prost\u0159edku neprov\u00e1d\u00ed.
+J2CA9935.secperm.not.supported.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+J2CA9936.default.value.error=J2CA9936W: Z instance t\u0159\u00eddy {1} v adapt\u00e9ru prost\u0159edku {2} nelze z\u00edskat v\u00fdchoz\u00ed hodnotu vlastnosti {0}, proto\u017ee do\u0161lo k chyb\u011b: {3}
+J2CA9936.default.value.error.explanation=P\u0159i pokusu o p\u0159\u00edstup k v\u00fdchoz\u00ed hodnot\u011b vlastnosti objektu JavaBean adapt\u00e9ru prost\u0159edku do\u0161lo k chyb\u011b.
+J2CA9936.default.value.error.useraction=P\u0159ezkoumejte chybu a nastavte adapt\u00e9r prost\u0159edku podle pot\u0159eby.
+
+J2CA9937.cfgprop.invalid.return=J2CA9937E: Vlastnost konfigurace {0} JavaBean {1} anotovan\u00e1 s @ConfigProperty m\u00e1 n\u00e1vratov\u00fd typ metody getter {2}, kter\u00fd neodpov\u00edd\u00e1 typu vlastnosti konfigurace {3}. 
+J2CA9937.cfgprop.invalid.return.explanation=Vlastnost konfigurace anotovan\u00e1 s @ConfigProperty mus\u00ed m\u00edt metodu getter s n\u00e1vratov\u00fdm typem, kter\u00fd odpov\u00edd\u00e1 typu vlastnosti konfigurace.
+J2CA9937.cfgprop.invalid.return.useraction=Prostudujte procesy ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f a dokumentaci dodavatele adapt\u00e9ru prost\u0159edku.
+
+J2CA9938.cfgprop.no.getter=J2CA9938E: Vlastnost konfigurace {0} JavaBean {1} anotovan\u00e1 s @ConfigProperty nem\u00e1 metodu getter s n\u00e1vratov\u00fdm typem {2}.
+J2CA9938.cfgprop.no.getter.explanation=Vlastnost konfigurace anotovan\u00e1 s @ConfigProperty mus\u00ed m\u00edt metodu getter s n\u00e1vratov\u00fdm typem, kter\u00fd odpov\u00edd\u00e1 typu vlastnosti konfigurace.
+J2CA9938.cfgprop.no.getter.useraction=Prostudujte procesy ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f a dokumentaci dodavatele adapt\u00e9ru prost\u0159edku.
+
+J2CA9939.cfgprop.no.setter=J2CA9939E: Vlastnost konfigurace {0} JavaBean {1} anotovan\u00e1 s @ConfigProperty nem\u00e1 metodu setter s jedn\u00edm parametrem typu {2}.
+J2CA9939.cfgprop.no.setter.explanation=Vlastnost konfigurace anotovan\u00e1 s @ConfigProperty mus\u00ed m\u00edt metodu setter s jedn\u00edm parametrem typu, kter\u00fd odpov\u00edd\u00e1 typu vlastnosti konfigurace.
+J2CA9939.cfgprop.no.setter.useraction=Prostudujte procesy ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f a dokumentaci dodavatele adapt\u00e9ru prost\u0159edku.
+
+J2CA9940.cfgprop.type.mismatch.field=J2CA9940E: Vlastnost konfigurace {0} JavaBean {1} anotovan\u00e1 s @ConfigProperty m\u00e1 typ {2} nastaven\u00fd v anotaci, kter\u00fd neodpov\u00edd\u00e1 typu {3} pole.
+J2CA9940.cfgprop.type.mismatch.field.explanation=Typ nastaven\u00fd v anotaci @ConfigProperty mus\u00ed odpov\u00eddat typu pole, na kter\u00e9m se pou\u017e\u00edv\u00e1.
+J2CA9940.cfgprop.type.mismatch.field.useraction=Prostudujte procesy ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f a dokumentaci dodavatele adapt\u00e9ru prost\u0159edku.
+
+J2CA9941.cfgprop.type.mismatch.setter=J2CA9941E: Vlastnost konfigurace {0} JavaBean {1} anotovan\u00e1 s @ConfigProperty m\u00e1 typ {2} nastaven\u00fd v anotaci, kter\u00e1 neodpov\u00edd\u00e1 typu {4} parametru v metod\u011b setter.
+J2CA9941.cfgprop.type.mismatch.setter.explanation=Typ nastaven\u00fd v anotaci @ConfigProperty mus\u00ed odpov\u00eddat typu parametru, na kter\u00e9m se pou\u017e\u00edv\u00e1.
+J2CA9941.cfgprop.type.mismatch.setter.useraction=Prostudujte procesy ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f a dokumentaci dodavatele adapt\u00e9ru prost\u0159edku.
+
+J2CA9942.cfgprop.invalid.parameters=J2CA9942E: Anotaci @ConfigProperty lze pou\u017e\u00edt pouze na metod\u011b setter s jedn\u00edm parametrem, ale byla nalezena u {0} s n\u00e1sleduj\u00edc\u00edmi parametry: {1}.
+J2CA9942.cfgprop.invalid.parameters.explanation=Anotace @ConfigProperty mus\u00ed b\u00fdt ur\u010dena na metod\u011b setter, kter\u00e1 m\u00e1 pouze jeden parametr.
+J2CA9942.cfgprop.invalid.parameters.useraction=Prostudujte procesy ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f a dokumentaci dodavatele adapt\u00e9ru prost\u0159edku.
+
+J2CA9943.missing.connector.dd=J2CA9943E: Adapt\u00e9r prost\u0159edku {0} je neplatn\u00fd. M\u011bl by obsahovat bu\u010f deskriptor implementace, nebo t\u0159\u00eddu JavaBean anotovanou jednou z anotac\u00ed adapt\u00e9r\u016f prost\u0159edku.
+J2CA9943.missing.connector.dd.explanation=Platn\u00fd adapt\u00e9r prost\u0159edku mus\u00ed m\u00edt bu\u010f deskriptor implementace, nebo t\u0159\u00eddu JavaBean anotovanou jednou z anotac\u00ed @Connector, @AdministeredObject, @ConnectionDefinition, @ConnectionDefinitions nebo @Activation.
+J2CA9943.missing.connector.dd.useraction=Prostudujte procesy ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f a dokumentaci dodavatele adapt\u00e9ru prost\u0159edku.

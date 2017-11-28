@@ -1,0 +1,1269 @@
+###############################################################################
+# Copyright (c) 1997, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://seaux.raleigh.ibm.com/g11n/was/seae/45/messages/index.html
+# or contact Dennis Hebert/Raleigh/IBM (hebert@us.ibm.com)
+#
+# cmvc_en_version_level=1.4,0,04/02/09,12:44:41
+#
+#CMVCPATHNAME ws/code/webcontainer/src/com/ibm/ws/webcontainer/resources/Messages.nlsprops
+#COMPONENTPREFIX SRVE
+#COMPONENTNAMEFOR SRVE Servlet Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+
+
+# --------------------------------
+Illegal.Argument.Trying.to.write.chars=SRVE0011E: Illeg\u00e1lis argumentum kiv\u00e9tel: Pr\u00f3b\u00e1lkoz\u00e1s 0-t\u00f3l kevesebb karakter \u00edr\u00e1s\u00e1ra.
+Illegal.Argument.Trying.to.write.chars.explanation=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt 0-t\u00f3l kisebb m\u00e9ret\u0171 puffer ki\u00edr\u00e1s\u00e1ra. Ez egy alkalmaz\u00e1shiba.
+Illegal.Argument.Trying.to.write.chars.useraction=Csak 0 vagy nagyobb m\u00e9ret\u0171 puffert \u00edrjon ki.
+
+# --------------------------------
+Uncaught.service().exception.root.cause.{0}\:.{1}=SRVE0014E: El nem fogott service() kiv\u00e9tel, kiv\u00e1lt\u00f3 ok {0}: {1}
+Uncaught.service().exception.root.cause.{0}\:.{1}.explanation=A szervlet szolg\u00e1ltat\u00e1s met\u00f3dus\u00e1ban el nem fogott kiv\u00e9tel j\u00f6tt l\u00e9tre. Ez egy alkalmaz\u00e1shiba.
+Uncaught.service().exception.root.cause.{0}\:.{1}.useraction=A kiv\u00e1lt\u00f3 okt\u00f3l f\u00fcgg\u0151en v\u00e1ltozik.
+
+# --------------------------------
+Failed.to.initialize.webapp.{0}=SRVE0015E: Hiba a(z) {0} webes alkalmaz\u00e1s inicializ\u00e1l\u00e1sa k\u00f6zben.
+Failed.to.initialize.webapp.{0}.explanation=Nem lehet inicializ\u00e1lni az \u00fczenetben megadott webes alkalmaz\u00e1st. Tov\u00e1bbi r\u00e9szleteket a hibanapl\u00f3ban tal\u00e1l.
+Failed.to.initialize.webapp.{0}.useraction=A probl\u00e9ma gy\u00f6k\u00e9rok\u00e1nak a meghat\u00e1roz\u00e1s\u00e1hoz tekintse meg a hibanapl\u00f3t.
+
+# --------------------------------
+Illegal.Argument\:.Invalid.Header.Format=SRVE0016E: Illeg\u00e1lis argumentum kiv\u00e9tel: \u00c9rv\u00e9nytelen fejl\u00e9cform\u00e1tum.
+Illegal.Argument\:.Invalid.Header.Format.explanation=A k\u00e9rt fejl\u00e9c form\u00e1tuma nem \u00e9rv\u00e9nyes.
+Illegal.Argument\:.Invalid.Header.Format.useraction=Ellen\u0151rizze az \u00fcgyf\u00e9l fejl\u00e9c\u00e9nek l\u00e9trehoz\u00e1s\u00e1t.
+
+# -------------------------------- replaced by SRVE0255E ---------------------------
+#Web.Group.VHost.Not.Found=SRVE0017W: A WebGroup/Virtual Host to handle {0} has not been defined.
+#Web.Group.VHost.Not.Found.explanation=Could not find a web group (web module) or virtual host to handle the request.
+#Web.Group.VHost.Not.Found.useraction=Be sure the web group and virtual host is defined and deployed.
+
+# --------------------------------
+Servlet.unloaded\:.{0}=SRVE0021I: A kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s elt\u00e1vol\u00edtva: {0}.
+Servlet.unloaded\:.{0}.explanation=A megsemmis\u00edt\u00e9s met\u00f3dus megh\u00edv\u00e1sa ut\u00e1n a rendszer ki\u00fcr\u00edtette a megadott kisalkalmaz\u00e1st.
+Servlet.unloaded\:.{0}.useraction=Nincs.
+
+# --------------------------------
+Illegal.Argument\:.{0}.is.not.a.directory.=SRVE0031E: Illeg\u00e1lis argumentum kiv\u00e9tel: A(z) {0} nem egy k\u00f6nyvt\u00e1r.
+Illegal.Argument\:.{0}.is.not.a.directory..explanation=A megadott \u00fatvonal nem k\u00f6nyvt\u00e1r.
+Illegal.Argument\:.{0}.is.not.a.directory..useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00f6nyvt\u00e1r l\u00e9tezik \u00e9s a megfelel\u0151 k\u00f6nyvt\u00e1rat k\u00e9ri le.
+
+# --------------------------------
+WebAppSecurityCollaborator=SRVE0035E: WebAppSecurityCollaborator
+WebAppSecurityCollaborator.explanation=WebAppSecurityCollaborator. Ez egy rendszerhiba. 
+WebAppSecurityCollaborator.useraction=A probl\u00e9ma ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben vizsg\u00e1lja meg a kiszolg\u00e1l\u00f3 napl\u00f3it. Ha nincsenek kapcsol\u00f3d\u00f3 \u00fczenetek, vagy nem seg\u00edtenek a probl\u00e9ma megold\u00e1s\u00e1ban, akkor l\u00e9pjen kapcsolatba az IBM term\u00e9kt\u00e1mogat\u00e1ssal.
+
+# --------------------------------
+Illegal.Argument\:.Bootstrap.File.Not.Found=SRVE0041E: Illeg\u00e1lis argumentum kiv\u00e9tel: Az el\u0151bet\u00f6lt\u0151 f\u00e1jl nem tal\u00e1lhat\u00f3.
+Illegal.Argument\:.Bootstrap.File.Not.Found.explanation=Ez egy bels\u0151 rendszerhiba \u00e9s val\u00f3sz\u00edn\u0171leg egy kor\u00e1bbi meghib\u00e1sod\u00e1s okozta.
+Illegal.Argument\:.Bootstrap.File.Not.Found.useraction=A probl\u00e9ma ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben vizsg\u00e1lja meg a kiszolg\u00e1l\u00f3 napl\u00f3it. Ha nincsenek kapcsol\u00f3d\u00f3 \u00fczenetek, vagy nem seg\u00edtenek a probl\u00e9ma megold\u00e1s\u00e1ban, akkor l\u00e9pjen kapcsolatba az IBM term\u00e9kt\u00e1mogat\u00e1ssal.
+
+# --------------------------------
+Illegal.Argument\:.Invalid.Content.Length=SRVE0042E: Illeg\u00e1lis argumentum kiv\u00e9tel: \u00c9rv\u00e9nytelen tartalomhossz.
+Illegal.Argument\:.Invalid.Content.Length.explanation=Ez egy bels\u0151 rendszerhiba \u00e9s val\u00f3sz\u00edn\u0171leg egy kor\u00e1bbi meghib\u00e1sod\u00e1s okozta. Ez egy alkalmaz\u00e1shiba.
+Illegal.Argument\:.Invalid.Content.Length.useraction=A probl\u00e9ma ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben vizsg\u00e1lja meg a kiszolg\u00e1l\u00f3 napl\u00f3it. Ha nincsenek kapcsol\u00f3d\u00f3 \u00fczenetek, vagy nem seg\u00edtenek a probl\u00e9ma megold\u00e1s\u00e1ban, akkor l\u00e9pjen kapcsolatba az IBM term\u00e9kt\u00e1mogat\u00e1ssal.
+
+# --------------------------------
+Illegal.Argument\:.Invalid.Date.Format=SRVE0053E: Illeg\u00e1lis argumentum kiv\u00e9tel: \u00c9rv\u00e9nytelen d\u00e1tumform\u00e1tum.
+Illegal.Argument\:.Invalid.Date.Format.explanation=A d\u00e1tumform\u00e1tum \u00e9rv\u00e9nytelen.
+Illegal.Argument\:.Invalid.Date.Format.useraction=A probl\u00e9ma ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben vizsg\u00e1lja meg a kiszolg\u00e1l\u00f3 napl\u00f3it. Ha nincsenek kapcsol\u00f3d\u00f3 \u00fczenetek, vagy nem seg\u00edtenek a probl\u00e9ma megold\u00e1s\u00e1ban, akkor l\u00e9pjen kapcsolatba az IBM term\u00e9kt\u00e1mogat\u00e1ssal.
+
+# --------------------------------
+Servlet.wait.for.destroy.timeout.has.expired,.destroy.will.be.forced\:.{0}=SRVE0055I: A kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s megsemmis\u00edt\u00e9sre v\u00e1rakoz\u00e1si id\u0151korl\u00e1t lej\u00e1rt, a megsemmis\u00edt\u00e9s ki lesz k\u00e9nyszer\u00edtve: {0}.
+Servlet.wait.for.destroy.timeout.has.expired,.destroy.will.be.forced\:.{0}.explanation=A kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s meg lesz semmis\u00edtve miut\u00e1n a v\u00e1rakoz\u00e1s t\u00fall\u00e9pte az id\u0151korl\u00e1tot.
+Servlet.wait.for.destroy.timeout.has.expired,.destroy.will.be.forced\:.{0}.useraction=Nincs.
+
+# --------------------------------
+Illegal.Argument\:.Unsupported.flag=SRVE0056E: Illeg\u00e1lis argumentum kiv\u00e9tel: Nem t\u00e1mogatott jelz\u0151.
+Illegal.Argument\:.Unsupported.flag.explanation=Ez egy bels\u0151 rendszerhiba \u00e9s val\u00f3sz\u00edn\u0171leg egy kor\u00e1bbi meghib\u00e1sod\u00e1s okozta.
+Illegal.Argument\:.Unsupported.flag.useraction=A probl\u00e9ma ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben vizsg\u00e1lja meg a kiszolg\u00e1l\u00f3 napl\u00f3it. Ha nincsenek kapcsol\u00f3d\u00f3 \u00fczenetek, vagy nem seg\u00edtenek a probl\u00e9ma megold\u00e1s\u00e1ban, akkor l\u00e9pjen kapcsolatba az IBM term\u00e9kt\u00e1mogat\u00e1ssal.
+
+# --------------------------------
+Uncaught.destroy().exception.thrown.by.servlet.{0}\:.{2}=SRVE0058E: Nem siker\u00fclt megval\u00f3s\u00edtani a(z) {0} kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s \u00e1ltal l\u00e9trehozott destroy() kiv\u00e9telt a k\u00f6vetkez\u0151 alkalmaz\u00e1sban: {1}: {2}
+Uncaught.destroy().exception.thrown.by.servlet.{0}\:.{2}.explanation=Nem siker\u00fclt megsemmis\u00edteni a megadott kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1st. Ez egy alkalmaz\u00e1shiba.
+Uncaught.destroy().exception.thrown.by.servlet.{0}\:.{2}.useraction=A probl\u00e9ma ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben vizsg\u00e1lja meg a kiszolg\u00e1l\u00f3 napl\u00f3it. Ha nincsenek kapcsol\u00f3d\u00f3 \u00fczenetek, vagy nem seg\u00edtenek a probl\u00e9ma megold\u00e1s\u00e1ban, akkor l\u00e9pjen kapcsolatba az IBM term\u00e9kt\u00e1mogat\u00e1ssal.
+
+# --------------------------------
+Unable.to.bind.hostname.[{0}].to.servletHost.[{1}]=SRVE0060E: Nem lehet a hosztnevet [{0}] a servletHost [{1}] g\u00e9phez k\u00f6tni.
+Unable.to.bind.hostname.[{0}].to.servletHost.[{1}].explanation=Nem siker\u00fclt a megadott gazdag\u00e9pn\u00e9v hozz\u00e1rendel\u00e9se a megadott kisalkalmaz\u00e1s gazdag\u00e9p\u00e9hez.
+Unable.to.bind.hostname.[{0}].to.servletHost.[{1}].useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a hosztnevet helyesen adta meg \u00e9s hogy a kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s meg lett adva a virtualhosts.xml f\u00e1jlban.
+
+# --------------------------------
+Illegal.Argument\:.Invalid.Directory.Specified\:.{0}=SRVE0061E: Illeg\u00e1lis argumentum kiv\u00e9tel: \u00c9rv\u00e9nytelen k\u00f6nyvt\u00e1r ker\u00fclt megad\u00e1sra: {0}.
+Illegal.Argument\:.Invalid.Directory.Specified\:.{0}.explanation=A megadott k\u00f6nyvt\u00e1r \u00e9rv\u00e9nytelen.
+Illegal.Argument\:.Invalid.Directory.Specified\:.{0}.useraction=Keressen hib\u00e1kat a k\u00f6nyvt\u00e1r meghat\u00e1roz\u00e1s\u00e1ban.
+
+# --------------------------------
+Waiting.servlet.to.finish.servicing.requests\:.{0}=SRVE0066I: V\u00e1rakoz\u00e1s a kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1sra, hogy befejezze a k\u00e9r\u00e9sek kiszolg\u00e1l\u00e1s\u00e1t: {0}.
+Waiting.servlet.to.finish.servicing.requests\:.{0}.explanation=A kisalkalmaz\u00e1s m\u00e9g mindig kezeli a k\u00e9r\u00e9st. V\u00e1rakoz\u00e1s a k\u00e9r\u00e9s befejez\u00e9s\u00e9re a megsemmis\u00edt\u00e9s megh\u00edv\u00e1sa el\u0151tt.
+Waiting.servlet.to.finish.servicing.requests\:.{0}.useraction=Nincs.
+
+# --------------------------------
+Uncaught.service().exception.thrown.by.servlet.{0}\:.{2}=SRVE0068E: El nem kapott kiv\u00e9tel j\u00f6tt l\u00e9tre a(z) {0} kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s egyik szolg\u00e1ltat\u00e1s met\u00f3dus\u00e1ban, a(z) {1} alkalmaz\u00e1sban. L\u00e9trej\u00f6tt kiv\u00e9tel: {2}
+Uncaught.service().exception.thrown.by.servlet.{0}\:.{2}.explanation=El nem kapott kiv\u00e9tel t\u00f6rt\u00e9nt a szervlet egyik szolg\u00e1ltat\u00e1s met\u00f3dus\u00e1ban. Ez egy alkalmaz\u00e1shiba.
+Uncaught.service().exception.thrown.by.servlet.{0}\:.{2}.useraction=A probl\u00e9ma ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben vizsg\u00e1lja meg a kiszolg\u00e1l\u00f3 napl\u00f3it. Ha nincsenek kapcsol\u00f3d\u00f3 \u00fczenetek, vagy nem seg\u00edtenek a probl\u00e9ma megold\u00e1s\u00e1ban, akkor l\u00e9pjen kapcsolatba az IBM term\u00e9kt\u00e1mogat\u00e1ssal.
+
+# --------------------------------
+Error.Initializing.for.Next.Request=SRVE0070E: Hiba a k\u00f6vetkez\u0151 k\u00e9r\u00e9s inicializ\u00e1l\u00e1sa k\u00f6zben.
+Error.Initializing.for.Next.Request.explanation=Bels\u0151 webes t\u00e1rol\u00f3 hiba.
+Error.Initializing.for.Next.Request.useraction=Gy\u0171jtse \u00f6ssze a kiszolg\u00e1l\u00f3 napl\u00f3it \u00e9s keresse meg az IBM szervizt.
+
+# --------------------------------
+Invalid.Content.Length=SRVE0080E: \u00c9rv\u00e9nytelen tartalomhossz.
+Invalid.Content.Length.explanation=Bels\u0151 kiszolg\u00e1l\u00f3hiba. Ezt okozhatt\u00e1k h\u00e1l\u00f3zathangol\u00e1si probl\u00e9m\u00e1k, hib\u00e1s tartalomhossz megad\u00e1sa, vagy egy mell\u00e9klet nem megfelel\u0151 hossza vagy m\u00e9rete. Ez egy alkalmaz\u00e1shiba.
+Invalid.Content.Length.useraction=Gy\u0171jtse \u00f6ssze a napl\u00f3kat \u00e9s keresse meg az IBM szervizt.
+
+# --------------------------------
+Illegal.Argument\:.Missing.Resource.Bootstrap.Properties=SRVE0086E: Illeg\u00e1lis argumentum kiv\u00e9tel: Az er\u0151forr\u00e1s bet\u00f6lt\u0151programj\u00e1nak tulajdons\u00e1gai hi\u00e1nyoznak.
+Illegal.Argument\:.Missing.Resource.Bootstrap.Properties.explanation=Bels\u0151 kiszolg\u00e1l\u00f3hiba.
+Illegal.Argument\:.Missing.Resource.Bootstrap.Properties.useraction=Gy\u0171jtse \u00f6ssze a napl\u00f3kat \u00e9s keresse meg az IBM szervizt.
+
+# --------------------------------
+Servlet.unload.initiated\:.{0}=SRVE0097I: Kezdem\u00e9nyezve lett a kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s elt\u00e1vol\u00edt\u00e1sa: {0}
+Servlet.unload.initiated\:.{0}.explanation=A rendszer jelenleg elt\u00e1vol\u00edtja a szolg\u00e1ltat\u00e1sb\u00f3l a megadott kisalkalmaz\u00e1st.
+Servlet.unload.initiated\:.{0}.useraction=Nincs.
+
+# --------------------------------
+Object.Pool.Exception.Class.could.not.be.instantiated.[{0}]=SRVE0099E: Objektumt\u00e1rol\u00f3 kiv\u00e9tel: A(z) [{0}] oszt\u00e1ly nem p\u00e9ld\u00e1nyos\u00edthat\u00f3.
+Object.Pool.Exception.Class.could.not.be.instantiated.[{0}].explanation=Nem lehet egy, az objektumt\u00e1rol\u00f3 \u00e1ltal haszn\u00e1land\u00f3 oszt\u00e1lyt p\u00e9ld\u00e1nyos\u00edtani. Ez egy rendszerhiba.
+Object.Pool.Exception.Class.could.not.be.instantiated.[{0}].useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az oszt\u00e1ly l\u00e9tezik, \u00e9s hogy l\u00e1that\u00f3 az alkalmaz\u00e1s oszt\u00e1ly\u00fatvonal\u00e1n.
+
+# --------------------------------
+Uncaught.init().exception.thrown.by.servlet.{0}\:.{2}=SRVE0100E: A(z) {0} kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s l\u00e9trehozott egy init() kiv\u00e9telt a k\u00f6vetkez\u0151 alkalmaz\u00e1sban: {1}: {2}
+Uncaught.init().exception.thrown.by.servlet.{0}\:.{2}.explanation=Nem inicializ\u00e1lhat\u00f3 a megadott kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s. Ez egy alkalmaz\u00e1shiba.
+Uncaught.init().exception.thrown.by.servlet.{0}\:.{2}.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s oszt\u00e1lyf\u00e1jlja el\u00e9rhet\u0151 az alkalmaz\u00e1s oszt\u00e1ly\u00fatvonal\u00e1n.
+
+# --------------------------------
+Illegal.Argument\:.ScriptName.must.be.the.first.part.of.the.URI=SRVE0103E: Illeg\u00e1lis argumentum kiv\u00e9tel: A ScriptName az URI c\u00edm els\u0151 r\u00e9sze kell legyen
+Illegal.Argument\:.ScriptName.must.be.the.first.part.of.the.URI.explanation=Ez egy bels\u0151 rendszerhiba \u00e9s val\u00f3sz\u00edn\u0171leg egy kor\u00e1bbi meghib\u00e1sod\u00e1s okozta.
+Illegal.Argument\:.ScriptName.must.be.the.first.part.of.the.URI.useraction=A probl\u00e9ma ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben vizsg\u00e1lja meg a kiszolg\u00e1l\u00f3 napl\u00f3it. Ha nincsenek kapcsol\u00f3d\u00f3 \u00fczenetek, vagy nem seg\u00edtenek a probl\u00e9ma megold\u00e1s\u00e1ban, akkor l\u00e9pjen kapcsolatba az IBM term\u00e9kt\u00e1mogat\u00e1ssal.
+
+# --------------------------------
+Session.releaseSession().threw.an.unexpected.exception=SRVE0105E: Kiv\u00e9tel t\u00f6rt\u00e9nt a Session.releaseSession() met\u00f3dusban
+Session.releaseSession().threw.an.unexpected.exception.explanation=Probl\u00e9ma t\u00f6rt\u00e9nt egy munkamenet felszabad\u00edt\u00e1sa k\u00f6zben.
+Session.releaseSession().threw.an.unexpected.exception.useraction=A probl\u00e9ma ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben vizsg\u00e1lja meg a kiszolg\u00e1l\u00f3 napl\u00f3it. Ha nincsenek kapcsol\u00f3d\u00f3 \u00fczenetek, vagy nem seg\u00edtenek a probl\u00e9ma megold\u00e1s\u00e1ban, akkor l\u00e9pjen kapcsolatba az IBM term\u00e9kt\u00e1mogat\u00e1ssal.
+
+# --------------------------------
+Illegal.Argument\:.Missing.flag.value=SRVE0108E: Illeg\u00e1lis argumentum kiv\u00e9tel: A jelz\u0151 \u00e9rt\u00e9ke hi\u00e1nyzik.
+Illegal.Argument\:.Missing.flag.value.explanation=A jelz\u0151 \u00e9rt\u00e9ke hi\u00e1nyzik.
+Illegal.Argument\:.Missing.flag.value.useraction=A probl\u00e9ma ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben vizsg\u00e1lja meg a kiszolg\u00e1l\u00f3 napl\u00f3it. Ha nincsenek kapcsol\u00f3d\u00f3 \u00fczenetek, vagy nem seg\u00edtenek a probl\u00e9ma megold\u00e1s\u00e1ban, akkor l\u00e9pjen kapcsolatba az IBM term\u00e9kt\u00e1mogat\u00e1ssal.
+
+# --------------------------------
+Illegal.Argument\:.Invalid.ObjectPool.Instantiated.=SRVE0109E: Illeg\u00e1lis argumentum kiv\u00e9tel: \u00c9rv\u00e9nytelen ObjectPool ker\u00fclt p\u00e9ld\u00e1nyos\u00edt\u00e1sra.
+Illegal.Argument\:.Invalid.ObjectPool.Instantiated..explanation=Ez egy bels\u0151 rendszerhiba \u00e9s val\u00f3sz\u00edn\u0171leg egy kor\u00e1bbi meghib\u00e1sod\u00e1s okozta.
+Illegal.Argument\:.Invalid.ObjectPool.Instantiated..useraction=A probl\u00e9ma ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben vizsg\u00e1lja meg a kiszolg\u00e1l\u00f3 napl\u00f3it. Ha nincsenek kapcsol\u00f3d\u00f3 \u00fczenetek, vagy nem seg\u00edtenek a probl\u00e9ma megold\u00e1s\u00e1ban, akkor l\u00e9pjen kapcsolatba az IBM term\u00e9kt\u00e1mogat\u00e1ssal.
+
+# --------------------------------
+Error.occurred.while.invoking.error.reporter=SRVE0115E: Hiba t\u00f6rt\u00e9nt a(z) {0} hibajelent\u0151 megh\u00edv\u00e1sa k\u00f6zben
+Error.occurred.while.invoking.error.reporter.explanation=Probl\u00e9ma t\u00f6rt\u00e9nt a megadott hibajelent\u0151 megh\u00edv\u00e1sa k\u00f6zben.
+Error.occurred.while.invoking.error.reporter.useraction=A probl\u00e9ma ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben vizsg\u00e1lja meg a kiszolg\u00e1l\u00f3 napl\u00f3it. Ha nincsenek kapcsol\u00f3d\u00f3 \u00fczenetek, vagy nem seg\u00edtenek a probl\u00e9ma megold\u00e1s\u00e1ban, akkor l\u00e9pjen kapcsolatba az IBM term\u00e9kt\u00e1mogat\u00e1ssal.
+
+# --------------------------------
+IO.Error=SRVE0120E: IO hiba: {0}
+IO.Error.explanation=A rendszer IO hib\u00e1val tal\u00e1lkozott.
+IO.Error.useraction=A jelentett okt\u00f3l f\u00fcgg\u0151en v\u00e1ltozik.
+
+# --------------------------------
+Illegal.Argument\:.Trying.to.write.<.0.bytes=SRVE0121E: Illeg\u00e1lis argumentum kiv\u00e9tel: Pr\u00f3b\u00e1lkoz\u00e1s a k\u00f6vetkez\u0151 karakterek \u00edr\u00e1s\u00e1val: &lt, 0 b\u00e1jt
+Illegal.Argument\:.Trying.to.write.<.0.bytes.explanation=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt 0-t\u00f3l kisebb m\u00e9ret\u0171 puffer ki\u00edr\u00e1s\u00e1ra. Ez egy alkalmaz\u00e1shiba.
+Illegal.Argument\:.Trying.to.write.<.0.bytes.useraction=Csak 0 vagy nagyobb m\u00e9ret\u0171 puffert \u00edrjon ki.
+
+# --------------------------------
+Invalidation.Exception\:.{0}.was.created=SRVE0126E: A(z) {0} \u00e9rv\u00e9nytelen\u00edt\u00e9si kiv\u00e9tel l\u00e9trehozva
+Invalidation.Exception\:.{0}.was.created.explanation=Ez egy bels\u0151 rendszerhiba \u00e9s val\u00f3sz\u00edn\u0171leg egy kor\u00e1bbi meghib\u00e1sod\u00e1s okozta.
+Invalidation.Exception\:.{0}.was.created.useraction=A probl\u00e9ma ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben vizsg\u00e1lja meg a kiszolg\u00e1l\u00f3 napl\u00f3it. Ha nincsenek kapcsol\u00f3d\u00f3 \u00fczenetek, vagy nem seg\u00edtenek a probl\u00e9ma megold\u00e1s\u00e1ban, akkor l\u00e9pjen kapcsolatba az IBM term\u00e9kt\u00e1mogat\u00e1ssal.
+
+# --------------------------------
+Error.Parsing.Parameters=SRVE0133E: A param\u00e9terek elemz\u00e9se sor\u00e1n hiba t\u00f6rt\u00e9nt. {0}
+Error.Parsing.Parameters.explanation=A rendszer probl\u00e9m\u00e1val tal\u00e1lkozott a kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s param\u00e9tereinek elemz\u00e9se k\u00f6zben.
+Error.Parsing.Parameters.useraction=Ellen\u0151rizze, hogy az \u00fcgyf\u00e9l a teljes k\u00e9r\u00e9st k\u00fcldi-e.
+
+# --------------------------------
+postInvoke.Security.Exception.=SRVE0138E: postInvoke biztons\u00e1gi kiv\u00e9tel
+postInvoke.Security.Exception..explanation=A rendszer biztons\u00e1gi probl\u00e9m\u00e1val tal\u00e1lkozott a k\u00e9r\u00e9s feldolgoz\u00e1sa k\u00f6zben. Ez egy rendszerhiba.
+postInvoke.Security.Exception..useraction=A probl\u00e9ma ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben vizsg\u00e1lja meg a kiszolg\u00e1l\u00f3 napl\u00f3it. Ha nincsenek kapcsol\u00f3d\u00f3 \u00fczenetek, vagy nem seg\u00edtenek a probl\u00e9ma megold\u00e1s\u00e1ban, akkor l\u00e9pjen kapcsolatba az IBM term\u00e9kt\u00e1mogat\u00e1ssal.
+
+# --------------------------------
+preInvoke.Security.Exception.=SRVE0139E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} biztons\u00e1gi el\u0151zetes megh\u00edv\u00e1s sor\u00e1n.
+preInvoke.Security.Exception..explanation=A rendszer biztons\u00e1gi probl\u00e9m\u00e1val tal\u00e1lkozott a k\u00e9r\u00e9s feldolgoz\u00e1sa k\u00f6zben. Ez egy rendszerhiba.
+preInvoke.Security.Exception..useraction=A kiv\u00e1lt\u00f3 okt\u00f3l f\u00fcgg\u0151en v\u00e1ltozik.
+
+# --------------------------------
+instantiate.collaborator.exception=SRVE0140E: Nem lehet p\u00e9ld\u00e1nyos\u00edtani a biztons\u00e1gi egy\u00fcttm\u0171k\u00f6d\u0151t: {0}
+instantiate.collaborator.exception.explanation=Bels\u0151 kiszolg\u00e1l\u00f3hiba.
+instantiate.collaborator.exception.useraction=Gy\u0171jtse \u00f6ssze a napl\u00f3kat \u00e9s keresse meg az IBM szervizt.
+
+# --------------------------------
+failed.to.load.encoding.properties=SRVE0155E: A(z) {0} encoding.properties tulajdons\u00e1gf\u00e1jl bet\u00f6lt\u00e9se meghi\u00fasult
+failed.to.load.encoding.properties.explanation=Nem t\u00f6lthet\u0151 be a megadott f\u00e1jl. Rendszerm\u0171veletre van sz\u00fcks\u00e9g.
+failed.to.load.encoding.properties.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott f\u00e1jl l\u00e9tezik, \u00e9s hogy a java.utils.Properties szerint helyes a form\u00e1tuma.
+
+# --------------------------------
+failed.to.load.converter.properties=SRVE0156E: A(z) {0} converter.properties f\u00e1jl bet\u00f6lt\u00e9se meghi\u00fasult
+failed.to.load.converter.properties.explanation=Nem t\u00f6lthet\u0151 be a megadott f\u00e1jl. Rendszerm\u0171veletre van sz\u00fcks\u00e9g.
+failed.to.load.converter.properties.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott f\u00e1jl l\u00e9tezik, \u00e9s hogy a java.utils.Properties szerint helyes a form\u00e1tuma.
+
+# --------------------------------
+setbuffer.size.called.after.write=SRVE0157E: A setBufferSize() met\u00f3dus ker\u00fclt megh\u00edv\u00e1sra az els\u0151 \u00edr\u00e1s ut\u00e1n a kimeneti adatfolyamba/\u00edr\u00f3eszk\u00f6zbe
+setbuffer.size.called.after.write.explanation=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt a v\u00e1laszpuffer m\u00e9ret\u00e9nek be\u00e1ll\u00edt\u00e1s\u00e1ra a v\u00e1lasz v\u00e9grehajt\u00e1sa ut\u00e1n. Ez egy alkalmaz\u00e1shiba.
+setbuffer.size.called.after.write.useraction=T\u00e1vol\u00edtsa el a setBufferSize() h\u00edv\u00e1st vagy helyezze \u00e1t a v\u00e1lasz v\u00e9gleges\u00edt\u00e9se el\u0151tti poz\u00edci\u00f3ba.
+
+# --------------------------------
+usertransaction.rollback.exception=SRVE0160E: Kiv\u00e9tel t\u00f6rt\u00e9nt a UserTransaction visszag\u00f6rget\u00e9se k\u00f6zben: {0}
+usertransaction.rollback.exception.explanation=A rendszer probl\u00e9m\u00e1val tal\u00e1lkozott a megadott felhaszn\u00e1l\u00f3i tranzakci\u00f3 visszag\u00f6rget\u00e9se k\u00f6zben. Ez egy alkalmaz\u00e1shiba.
+usertransaction.rollback.exception.useraction=A probl\u00e9ma ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben vizsg\u00e1lja meg a kiszolg\u00e1l\u00f3 napl\u00f3it. Ha nincsenek kapcsol\u00f3d\u00f3 \u00fczenetek, vagy nem seg\u00edtenek a probl\u00e9ma megold\u00e1s\u00e1ban, akkor l\u00e9pjen kapcsolatba az IBM term\u00e9kt\u00e1mogat\u00e1ssal.
+
+# --------------------------------
+web.container.copyright=SRVE0161I: IBM WebSphere Application Server - Web Container.  Copyright IBM Corp. 1998-2008
+web.container.copyright.explanation=Alkalmaz\u00e1skiszolg\u00e1l\u00f3 azonos\u00edt\u00f3.
+web.container.copyright.useraction=Nincs.
+
+# --------------------------------
+web.container.servlet.spec.level=SRVE0162I: Kisalkalmaz\u00e1s specifik\u00e1ci\u00f3 szintje: 2.5
+web.container.servlet.spec.level.explanation=Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 \u00e1ltal t\u00e1mogatott kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s specifik\u00e1ci\u00f3 szint.
+web.container.servlet.spec.level.useraction=Nincs.
+
+# --------------------------------
+web.container.jsp.spec.level=SRVE0163I: T\u00e1mogatott JSP specifik\u00e1ci\u00f3 szintje: 2.1
+web.container.jsp.spec.level.explanation=Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 \u00e1ltal t\u00e1mogatott JSP specifik\u00e1ci\u00f3 szint.
+web.container.jsp.spec.level.useraction=Nincs.
+
+# --------------------------------
+context.root.already.in.use=SRVE0164E: A(z) {0} webalkalmaz\u00e1s a(z) {1} kontextusgy\u00f6keret haszn\u00e1lja, amelyet m\u00e1r a(z) {2} webalkalmaz\u00e1s haszn\u00e1l. A(z) {3} webalkalmaz\u00e1s nem lesz bet\u00f6ltve.
+context.root.already.in.use.explanation=K\u00e9t, azonos virtu\u00e1lis hoszton elhelyezked\u0151 webalkalmaz\u00e1s ugyanazt a kontextusgy\u00f6keret haszn\u00e1lja. Ez egy alkalmaz\u00e1shiba.
+context.root.already.in.use.useraction=Vagy m\u00f3dos\u00edtsa az egyik webalkalmaz\u00e1s kontextusgy\u00f6ker\u00e9t, vagy helyezze \u00e1t az egyiket egy k\u00fcl\u00f6nb\u00f6z\u0151 virtu\u00e1lis hosztra.
+
+# --------------------------------
+loading.web.module=SRVE0169I: Webes modul bet\u00f6lt\u00e9se: {0}.
+loading.web.module.explanation=A webes modul elindul \u00e9s a szolg\u00e1ltat\u00e1s rendelkez\u00e9sre \u00e1ll.
+loading.web.module.useraction=Nincs.
+
+# --------------------------------
+[{0}][{1}][Servlet.LOG]\:.{2}=SRVE0180I: [{0}] [{1}] [Servlet.LOG]: {2}
+[{0}][{1}][Servlet.LOG]\:.{2}.explanation=A(z) {2} inform\u00e1ci\u00f3s \u00fczenet ker\u00fclt napl\u00f3z\u00e1sra a ServletContext.log napl\u00f3n kereszt\u00fcl a(z) {1} kontextusgy\u00f6k\u00e9rrel rendelkez\u0151 {0} alkalmaz\u00e1sb\u00f3l.
+[{0}][{1}][Servlet.LOG]\:.{2}.useraction=Nincs.
+
+# --------------------------------
+[{0}][{1}][Servlet.LOG]\:.{2}\:.{3}=SRVE0181I: [{0}] [{1}] [Servlet.LOG]: {2}: {3}
+[{0}][{1}][Servlet.LOG]\:.{2}\:.{3}.explanation=A(z) {2} inform\u00e1ci\u00f3s \u00fczenet ker\u00fclt napl\u00f3z\u00e1sra a ServletContext.log napl\u00f3n kereszt\u00fcl a(z) {1} kontextusgy\u00f6k\u00e9rrel \u00e9s a(z) {3} veremnyomk\u00f6vet\u00e9ssel rendelkez\u0151 {0} alkalmaz\u00e1sb\u00f3l.
+[{0}][{1}][Servlet.LOG]\:.{2}\:.{3}.useraction=Nincs.
+
+# --------------------------------
+error.occurred.processing.request=SRVE0185E: Hiba t\u00f6rt\u00e9nt a k\u00e9r\u00e9s feldolgoz\u00e1sa k\u00f6zben:
+error.occurred.processing.request.explanation=A k\u00e9r\u00e9s feldolgoz\u00e1sakor t\u00f6rt\u00e9nt hiba.
+error.occurred.processing.request.useraction=Az \u00fczenet \u00e1tn\u00e9z\u00e9s\u00e9vel \u00e1llap\u00edtsa meg a probl\u00e9ma gy\u00f6k\u00e9rok\u00e1t.
+
+# -----------------------------------------------
+Cannot.set.buffer.size.after.data=SRVE0186E: Nem lehet be\u00e1ll\u00edtani a pufferm\u00e9retet miut\u00e1n adatok lettek \u00edrva az adatfolyamba
+Cannot.set.buffer.size.after.data.explanation=N\u00e9h\u00e1ny adatot m\u00e1r be van \u00edrva az adatfolyamba, ez\u00e9rt a pufferm\u00e9ret tov\u00e1bb nem vez\u00e9relhet\u0151. Ez egy alkalmaz\u00e1shiba.
+Cannot.set.buffer.size.after.data.useraction=Vagy az adatok be\u00edr\u00e1sa el\u0151tt \u00e1ll\u00edtsa be a pufferm\u00e9retet, vagy \u00e1ll\u00edtsa alaphelyzetbe a puffert, miel\u0151tt a m\u00e9ret\u00e9t be\u00e1ll\u00edtja.
+
+# -----------------------------------------------
+Check.your.classpath.ensure.all.classes.present=SRVE0187E: Ellen\u0151rizze az oszt\u00e1ly\u00fatvonalat, hogy meggy\u0151z\u0151dj\u00f6n r\u00f3la, hogy a kisalkalmaz\u00e1s \u00e1ltal megk\u00f6vetelt \u00f6sszes oszt\u00e1ly jelen van-e.
+Check.your.classpath.ensure.all.classes.present.explanation=Egy sz\u00fcks\u00e9ges oszt\u00e1ly nem tal\u00e1lhat\u00f3. Ez egy alkalmaz\u00e1shiba.
+Check.your.classpath.ensure.all.classes.present.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az oszt\u00e1ly\u00fatvonal visszat\u00fckr\u00f6zi-e az \u00f6sszes hozz\u00e1f\u00e9rhet\u0151 oszt\u00e1lyt
+
+# -----------------------------------------------
+Class.{0}.does.not.implement.servlet=SRVE0188E: A(z) {0} oszt\u00e1ly nem val\u00f3s\u00edtja meg a kisalkalmaz\u00e1st
+Class.{0}.does.not.implement.servlet.explanation=Ez egy alkalmaz\u00e1shiba.
+Class.{0}.does.not.implement.servlet.useraction=Az eml\u00edtett oszt\u00e1lynak meg kell val\u00f3s\u00edtania a javax.servlet.Servlet fel\u00fcletet vagy ki kell terjesztenie a javax.servlet.GenericServlet vagy javax.servlet.http.HttpServlet egyik\u00e9t.
+
+# -----------------------------------------------
+Error.occurred.while.finishing.request=SRVE0189E: Hiba t\u00f6rt\u00e9nt a k\u00e9r\u00e9s befejez\u00e9se k\u00f6zben
+Error.occurred.while.finishing.request.explanation=Ez a hiba a k\u00e9r\u00e9s befej\u00e9se k\u00f6zben fordul el\u0151. Ez az alkalmaz\u00e1skiszolg\u00e1l\u00f3n bel\u00fcl fell\u00e9p\u0151 kommunik\u00e1ci\u00f3s hiba miatt t\u00f6rt\u00e9nhetett meg, de nem lett volna szabad befoly\u00e1solnia a k\u00e9r\u00e9s feldolgoz\u00e1s\u00e1t. Ez egy rendszerhiba.
+Error.occurred.while.finishing.request.useraction=Nincs.
+
+# -----------------------------------------------
+File.not.found=SRVE0190E: A f\u00e1jl nem tal\u00e1lhat\u00f3: {0}
+File.not.found.explanation=Az eml\u00edtett f\u00e1jl nem tal\u00e1lhat\u00f3. Ez egy alkalmaz\u00e1shiba.
+File.not.found.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az eml\u00edtett f\u00e1jl megtal\u00e1lhat\u00f3.
+
+# -----------------------------------------------
+Illegal.from.included.servlet=SRVE0194E: Illeg\u00e1lis a be\u00e1gyazott kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1sb\u00f3l
+Illegal.from.included.servlet.explanation=A megk\u00eds\u00e9relt m\u0171veletet nem lehet v\u00e9grehajtani egy be\u00e1gyazott kisalkalmaz\u00e1sb\u00f3l/JSP alkalmaz\u00e1sb\u00f3l (Tekintse meg a kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s specifik\u00e1ci\u00f3j\u00e1t). Ez egy alkalmaz\u00e1shiba.
+Illegal.from.included.servlet.useraction=M\u00f3dos\u00edtsa a hib\u00e1s kisalkalmaz\u00e1st/JSP alkalmaz\u00e1st.
+
+# -----------------------------------------------
+Missing.required.initialization.parameter=SRVE0196E: Hi\u00e1nyz\u00f3 k\u00f6telez\u0151 inicializ\u00e1l\u00e1si param\u00e9ter {0}
+Missing.required.initialization.parameter.explanation=Az eml\u00edtett nev\u0171 param\u00e9ternek nincs \u00e9rt\u00e9ke. Ez egy k\u00f6telez\u0151 param\u00e9ter. Ez egy alkalmaz\u00e1shiba.
+Missing.required.initialization.parameter.useraction=Adjon egy \u00e9rt\u00e9ket az eml\u00edtett param\u00e9ternek.
+
+# -----------------------------------------------
+OutputStream.already.obtained=SRVE0199E: Az OutputStream m\u00e1r lek\u00e9rdez\u00e9sre ker\u00fclt
+OutputStream.already.obtained.explanation=Az alkalmaz\u00e1s egy PrintWriter elemet k\u00e9rt a ServletResponse OutputStream lek\u00e9rdez\u00e9se ut\u00e1n. Ez egy alkalmaz\u00e1shiba.
+OutputStream.already.obtained.useraction=Tekintse \u00e1t az alkalmaz\u00e1st \u00e9s hat\u00e1rozza meg, hogy a PrintWriter \u00e9s az OuputStream is le lett-e k\u00e9rdezve. M\u00f3dos\u00edtsa \u00fagy a hib\u00e1s kisalkalmaz\u00e1st/JSP alkalmaz\u00e1st, hogy csak az egyik vagy a m\u00e1sik legyen lek\u00e9rdezve.
+
+# -----------------------------------------------
+Servlet.Could.not.find.required.servlet.class=SRVE0200E: [{0}] kisalkalmaz\u00e1s: A sz\u00fcks\u00e9ges {1} oszt\u00e1ly nem tal\u00e1lhat\u00f3 -
+Servlet.Could.not.find.required.servlet.class.explanation=A kisalkalmaz\u00e1s nem tal\u00e1lta meg a k\u00e9r\u00e9s kiszolg\u00e1l\u00e1s\u00e1hoz sz\u00fcks\u00e9ges oszt\u00e1lyt. Ez egy alkalmaz\u00e1shiba.
+Servlet.Could.not.find.required.servlet.class.useraction=Ellen\u0151rizze, hogy az oszt\u00e1ly l\u00e9tezik-e az alkalmaz\u00e1son bel\u00fcl.
+
+# -----------------------------------------------
+Servlet.not.a.servlet.class=SRVE0201E: Kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s [{0}]: nem egy kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s oszt\u00e1ly
+Servlet.not.a.servlet.class.explanation=Ez egy alkalmaz\u00e1shiba.
+Servlet.not.a.servlet.class.useraction=M\u00f3dos\u00edtsa \u00fagy a hib\u00e1s oszt\u00e1lyt, hogy megval\u00f3s\u00edtsa a javax.servlet.Servlet kisalkalmaz\u00e1st, vagy kib\u0151v\u00edtse a javax.servlet.GenericServlet vagy a javax.servlet.http.HttpServlet kisalkalmaz\u00e1sok k\u00f6z\u00fcl az egyiket.
+
+# -----------------------------------------------
+Servlet.found.but.corrupt=SRVE0202E: {0}] kisalkalmaz\u00e1s: a(z) {1} oszt\u00e1ly megtal\u00e1lhat\u00f3, de s\u00e9r\u00fclt:\n
+Servlet.found.but.corrupt.explanation=A kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s oszt\u00e1lya megtal\u00e1lhat\u00f3, de s\u00e9r\u00fclt. Ez egy alkalmaz\u00e1shiba.
+Servlet.found.but.corrupt.useraction=Ford\u00edtsa \u00fajra az oszt\u00e1lyt, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+
+# -----------------------------------------------
+Servlet.was.found.but.is.missing.another.required.class=SRVE0203E: Kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s [{0}]: A(z) {1} jelen van, de egy m\u00e1sik sz\u00fcks\u00e9ges oszt\u00e1ly hi\u00e1nyzik.\n
+Servlet.was.found.but.is.missing.another.required.class.explanation=Egy sz\u00fcks\u00e9ges oszt\u00e1ly nem tal\u00e1lhat\u00f3. Ez egy alkalmaz\u00e1shiba.
+Servlet.was.found.but.is.missing.another.required.class.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy minden k\u00f6telez\u0151 oszt\u00e1ly az oszt\u00e1ly\u00fatvonalat k\u00e9pvisel\u0151 mapp\u00e1kban/jar f\u00e1jlokban van elhelyezve
+
+# -----------------------------------------------
+host.has.not.been.defined=SRVE0204E: A(z) {0} hoszt nincs meghat\u00e1rozva
+host.has.not.been.defined.explanation=A virtu\u00e1lis hoszt nem tal\u00e1lhat\u00f3. Rendszerm\u0171veletre van sz\u00fcks\u00e9g.
+host.has.not.been.defined.useraction=Ellen\u0151rizze a virtu\u00e1lis gazdag\u00e9p be\u00e1ll\u00edt\u00e1s\u00e1t a virtualhosts.xml f\u00e1jlban vagy az adminisztr\u00e1ci\u00f3s konzolon kereszt\u00fcl.
+
+# -----------------------------------------------
+host.on.port.has.not.been.defined=SRVE0205E: A(z) {1} porton l\u00e9v\u0151 {0} gazdag\u00e9pet nincs meghat\u00e1rozva. 
+host.on.port.has.not.been.defined.explanation=Az ezen k\u00e9r\u00e9s URI c\u00edm\u00e9nek kezel\u00e9s\u00e9hez meghat\u00e1rozott virtu\u00e1lis gazdag\u00e9p nem tal\u00e1lhat\u00f3. Rendszerm\u0171veletre van sz\u00fcks\u00e9g.
+host.on.port.has.not.been.defined.useraction=Ellen\u0151rizze a virtu\u00e1lis gazdag\u00e9p be\u00e1ll\u00edt\u00e1s\u00e1t a virtualhosts.xml f\u00e1jlban vagy az adminisztr\u00e1ci\u00f3s konzolon kereszt\u00fcl.
+
+# -----------------------------------------------
+This.error.implies.servlet.was.originally.compiled.with.classes.which.cannot.be.located.by.server=SRVE0206E: Ebb\u0151l a hib\u00e1b\u00f3l tipikusan az k\u00f6vetkezik, hogy a kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s eredetileg olyan oszt\u00e1lyokkal lett leford\u00edtva, amelyeket a kiszolg\u00e1l\u00f3 nem tal\u00e1l.\n
+This.error.implies.servlet.was.originally.compiled.with.classes.which.cannot.be.located.by.server.explanation=Ez egy alkalmaz\u00e1shiba.
+This.error.implies.servlet.was.originally.compiled.with.classes.which.cannot.be.located.by.server.useraction=Ford\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1st az oszt\u00e1ly\u00fatvonalban elhelyezett minden sz\u00fcks\u00e9ges komponens\u00e9vel egy\u00fctt.
+
+# -----------------------------------------------
+Uncaught.initialization.exception.thrown.by.servlet=SRVE0207E: A kisalkalmaz\u00e1s \u00e1ltal l\u00e9trehozott inicializ\u00e1l\u00e1s kiv\u00e9tel
+Uncaught.initialization.exception.thrown.by.servlet.explanation=A c\u00e9l az inicializ\u00e1l\u00e1s sor\u00e1n egy olyan kiv\u00e9telt dobott, melyet a felhaszn\u00e1l\u00f3i k\u00f3d nem fogott el. Ez egy alkalmaz\u00e1shiba.
+Uncaught.initialization.exception.thrown.by.servlet.useraction=A kiv\u00e9tel elsz\u00e1mol\u00e1sa a c\u00e9lk\u00f3dban.
+
+# -----------------------------------------------
+Unsupported.conversion=SRVE0208E: Nem t\u00e1mogatott \u00e1talak\u00edt\u00e1s
+Unsupported.conversion.explanation=A k\u00f3d megpr\u00f3b\u00e1lta a fejl\u00e9c \u00e9rt\u00e9k\u00e9t illeg\u00e1lisan \u00e1talak\u00edtani. p\u00e9ld\u00e1ul: int \u00e9rt\u00e9kr\u0151l Data \u00e9rt\u00e9kk\u00e9, mikor ez az \u00e1talak\u00edt\u00e1s lehetetlen. Ez egy alkalmaz\u00e1shiba.
+Unsupported.conversion.useraction=M\u00f3dos\u00edtsa a hib\u00e1s kisalkalmaz\u00e1st/JSP alkalmaz\u00e1st.
+
+# -----------------------------------------------
+Writer.already.obtained=SRVE0209E: Az \u00edr\u00f3 m\u00e1r lek\u00e9rdez\u00e9sre ker\u00fclt
+Writer.already.obtained.explanation=A rendszer m\u00e1r lek\u00e9rdezte ennek a v\u00e1lasznak az \u00edr\u00f3j\u00e1t. Haszn\u00e1lja a jelenlegi \u00edr\u00f3t. Ez egy alkalmaz\u00e1shiba.
+Writer.already.obtained.useraction=Tekintse \u00e1t az alkalmaz\u00e1st \u00e9s hat\u00e1rozza meg, hogy a PrintWriter \u00e9s az OuputStream is le lett-e k\u00e9rdezve. M\u00f3dos\u00edtsa \u00fagy a hib\u00e1s kisalkalmaz\u00e1st/JSP alkalmaz\u00e1st, hogy csak az egyik vagy a m\u00e1sik legyen lek\u00e9rdezve.
+
+# -----------------------------------------------
+be.debugged.by.recompiling.the.servlet.using.only.the.classes.in.the.application's.runtime.classpath=SRVE0210I: A probl\u00e9ma hibakeres\u00e9s\u00e9t a kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s \u00fajraford\u00edt\u00e1s\u00e1val lehet elv\u00e9gezni, csak az alkalmaz\u00e1s fut\u00e1si idej\u00e9nek oszt\u00e1ly\u00fatvonal\u00e1ban megadott oszt\u00e1lyokat haszn\u00e1lva\n
+be.debugged.by.recompiling.the.servlet.using.only.the.classes.in.the.application's.runtime.classpath.explanation=Ez egy alkalmaz\u00e1shiba.
+be.debugged.by.recompiling.the.servlet.using.only.the.classes.in.the.application's.runtime.classpath.useraction=Ford\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1st, csak az alkalmaz\u00e1s fut\u00e1si idej\u00e9nek oszt\u00e1ly\u00fatvonal\u00e1ban megadott oszt\u00e1lyokat haszn\u00e1lva.
+
+# -----------------------------------------------
+class.{0}.could.not.be.instantiated=SRVE0211E: A(z) {0} oszt\u00e1ly nem p\u00e9ld\u00e1nyos\u00edthat\u00f3.
+class.{0}.could.not.be.instantiated.explanation=Bels\u0151 kiv\u00e9tel.
+class.{0}.could.not.be.instantiated.useraction=CMSG0002
+
+# -----------------------------------------------
+class.{0}.not.accessible=SRVE0212E: a(z) {0} oszt\u00e1ly nem \u00e9rhet\u0151 el
+class.{0}.not.accessible.explanation=Bels\u0151 kiv\u00e9tel.
+class.{0}.not.accessible.useraction=CMSG0002
+
+# -----------------------------------------------
+class.not.found=SRVE0213E: oszt\u00e1ly nem tal\u00e1lhat\u00f3
+class.not.found.explanation=Bels\u0151 kiv\u00e9tel.
+class.not.found.useraction=CMSG0002
+
+# -----------------------------------------------
+invalid.count=SRVE0214E: \u00e9rv\u00e9nytelen sz\u00e1ml\u00e1l\u00f3
+invalid.count.explanation=Bels\u0151 kiv\u00e9tel.
+invalid.count.useraction=CMSG0002
+
+# -----------------------------------------------
+non-HTTP.request.or.response=SRVE0215E: nem HTTP k\u00e9r\u00e9s vagy v\u00e1lasz
+non-HTTP.request.or.response.explanation=A meghat\u00e1rozott kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s l\u00e1nc csak HTTP k\u00e9r\u00e9seket tud kezelni. Ez egy alkalmaz\u00e1shiba.
+non-HTTP.request.or.response.useraction=Nincs.
+
+# -----------------------------------------------
+post.body.contains.less.bytes.than.specified=SRVE0216E: az elk\u00fcld\u00f6tt anyag t\u00f6rzse kevesebb byte-ot tartalmaz, mint ahogy az a tartalomhosszban meg van adva
+post.body.contains.less.bytes.than.specified.explanation=A bej\u00f6v\u0151 k\u00e9r\u00e9s megs\u00e9r\u00fclhetett. Ez egy alkalmaz\u00e1shiba.
+post.body.contains.less.bytes.than.specified.useraction=Nincs.
+
+# -----------------------------------------------
+{0}.is.not.a.valid.class=SRVE0217E: {0} nem \u00e9rv\u00e9nyes oszt\u00e1ly
+{0}.is.not.a.valid.class.explanation=Ez a hiba akkor t\u00f6rt\u00e9nt, amikor a webes t\u00e1rol\u00f3 megpr\u00f3b\u00e1lt egy bels\u0151 megval\u00f3s\u00edt\u00e1soszt\u00e1lyt bet\u00f6lteni. Ez egy rendszerhiba.
+{0}.is.not.a.valid.class.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az eredeti WAS oszt\u00e1ly\u00fatvonal nem lett m\u00f3dos\u00edtva.
+
+# -----------------------------------------------
+Forbidden.Web.Security.Exception=SRVE0218E: Megakad\u00e1lyozva: Webes biztons\u00e1gi kiv\u00e9tel
+Forbidden.Web.Security.Exception.explanation=A k\u00e9r\u00e9s megk\u00eds\u00e9relt hozz\u00e1f\u00e9rni egy tiltott er\u0151forr\u00e1shoz.
+Forbidden.Web.Security.Exception.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00e9relmez\u0151 egyed rendelkezik a sz\u00fcks\u00e9ges jogosults\u00e1gokkal.
+
+# -----------------------------------------------
+No.Error.to.Report=SRVE0219I: Nincs jelenteni val\u00f3 hiba
+No.Error.to.Report.explanation=A DefaultErrorReport meg lett h\u00edva, de nem tal\u00e1lt hib\u00e1t. Ez egy rendszerhiba.
+No.Error.to.Report.useraction=Tekintse \u00e1t az alkalmaz\u00e1st a probl\u00e9ma ok\u00e1nak a meghat\u00e1roz\u00e1s\u00e1hoz.
+
+# -----------------------------------------------
+Wrapped.Error=SRVE0220I: \u00c1tt\u00f6rdelt hiba-
+Wrapped.Error.explanation=A probl\u00e9m\u00e1t okoz\u00f3 hiba.
+Wrapped.Error.useraction=Nincs.
+
+# -----------------------------------------------
+Serving.JSP.Not.Allowed=SRVE0221E: A JSP f\u00e1jlok tartalm\u00e1nak kiszolg\u00e1l\u00e1sa nem enged\u00e9lyezett
+Serving.JSP.Not.Allowed.explanation=A JSP f\u00e1jl tartalm\u00e1t nem lehet kiszolg\u00e1lni.
+Serving.JSP.Not.Allowed.useraction=Nincs.
+
+# -----------------------------------------------
+StackTrace=SRVE0223I: Veremnyomk\u00f6vet\u00e9s:
+StackTrace.explanation=Nincs.
+StackTrace.useraction=Nincs.
+
+# -----------------------------------------------
+Target.Servlet=SRVE0224I: C\u00e9l kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s:
+Target.Servlet.explanation=Nincs.
+Target.Servlet.useraction=Nincs.
+
+# -----------------------------------------------
+Root.Error=SRVE0225I: Gy\u00f6k\u00e9r hiba-
+Root.Error.explanation=Nincs.
+Root.Error.useraction=Nincs.
+
+# -----------------------------------------------
+class.resides.in.proper.package.directory=SRVE0227E: Ellen\u0151rizze, hogy az oszt\u00e1ly a megfelel\u0151 csomagk\u00f6nyvt\u00e1rban tal\u00e1lhat\u00f3. \n
+class.resides.in.proper.package.directory.explanation=Az er\u0151forr\u00e1s csomagneve nem egyezik meg a leford\u00edtott oszt\u00e1lyf\u00e1jl csomagj\u00e1val. Ez egy alkalmaz\u00e1shiba.
+class.resides.in.proper.package.directory.useraction=Ellen\u0151rizze, hogy az oszt\u00e1ly a megfelel\u0151 csomagk\u00f6nyvt\u00e1rban tal\u00e1lhat\u00f3-e.
+
+# -----------------------------------------------
+classname.defined.in.server.using.proper.case.and.fully.qualified.package=SRVE0228E: Ellen\u0151rizze, hogy az oszt\u00e1lyn\u00e9v a kiszolg\u00e1l\u00f3n kis- \u00e9s nagybet\u0171helyesen \u00e9s teljes k\u00e9pz\u00e9s\u0171 csomag haszn\u00e1lat\u00e1val van meghat\u00e1rozva.\n
+classname.defined.in.server.using.proper.case.and.fully.qualified.package.explanation=Ez egy alkalmaz\u00e1shiba.
+classname.defined.in.server.using.proper.case.and.fully.qualified.package.useraction=Ellen\u0151rizze, hogy a kiszolg\u00e1l\u00f3n az oszt\u00e1lyn\u00e9v kis- \u00e9s nagybet\u0171helyesen \u00e9s teljes k\u00e9pz\u00e9s\u0171 csomag haszn\u00e1lat\u00e1val lett-e megadva.
+
+# -----------------------------------------------
+class.transfered.using.binary.mode=SRVE0229E: Ellen\u0151rizze, hogy az oszt\u00e1ly \u00e1tvitele a f\u00e1jlrendszerbe bin\u00e1ris \u00e1tviteli m\u00f3d haszn\u00e1lat\u00e1val t\u00f6rt\u00e9nt-e.\n
+class.transfered.using.binary.mode.explanation=Ez egy alkalmaz\u00e1shiba.
+class.transfered.using.binary.mode.useraction=Ellen\u0151rizze, hogy az oszt\u00e1ly \u00e1tvitele a f\u00e1jlrendszerbe bin\u00e1ris \u00e1tviteli m\u00f3d haszn\u00e1lat\u00e1val t\u00f6rt\u00e9nt-e.
+
+# -----------------------------------------------
+class.compiled.using.proper.case=SRVE0230E: Ellen\u0151rizze, hogy az oszt\u00e1ly kis- \u00e9s nagybet\u0171helyesen lett leford\u00edtva (ahogyan az oszt\u00e1ly meghat\u00e1roz\u00e1s\u00e1ban meg van hat\u00e1rozva).\n
+class.compiled.using.proper.case.explanation=Ez egy alkalmaz\u00e1shiba.
+class.compiled.using.proper.case.useraction=Ellen\u0151rizze, hogy az oszt\u00e1ly kis- \u00e9s nagybet\u0171helyesen lett-e leford\u00edtva (ahogyan az oszt\u00e1ly meghat\u00e1roz\u00e1s\u00e1ban meg van hat\u00e1rozva).
+
+# -----------------------------------------------
+class.not.renamed.after.compiled=SRVE0231E: Ellen\u0151rizze, hogy az oszt\u00e1lyf\u00e1jl nem lett \u00e1tnevezve a leford\u00edt\u00e1sa ut\u00e1n.
+class.not.renamed.after.compiled.explanation=Ez egy alkalmaz\u00e1shiba.
+class.not.renamed.after.compiled.useraction=Ellen\u0151rizze, hogy az oszt\u00e1lyf\u00e1jl nem lett \u00e1tnevezve a leford\u00edt\u00e1sa ut\u00e1n.
+
+# -----------------------------------------------
+Engine.Exception.[{0}]=SRVE0232E: Bels\u0151 kiszolg\u00e1l\u00f3hiba. <br>Kiv\u00e9tel \u00fczenet: [{0}]
+Engine.Exception.[{0}].explanation=V\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt, \u00e9s a r\u00e9szletek az eredm\u00e9ny\u00fcl kapott hibaoldalon lettek felt\u00fcntetve. Ez egy rendszerhiba.
+Engine.Exception.[{0}].useraction=Az el\u0151\u00e1ll\u00edtott kiv\u00e9tellel kapcsolatot tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt ellen\u0151rizze a System.out \u00e9s a System.err napl\u00f3kat.
+
+# -----------------------------------------------
+Error.Report=SRVE0233E: Hibajelent\u00e9s
+Error.Report.explanation=none
+Error.Report.useraction=none
+
+# -----------------------------------------------
+Application.classpath=SRVE0234I: Alkalmaz\u00e1s oszt\u00e1ly\u00fatvonala=[{0}]
+Application.classpath.explanation=none
+Application.classpath.useraction=none
+
+# -----------------------------------------------
+[{0}].reported.an.error=SRVE0235E: [{0}] hib\u00e1t jelentett
+[{0}].reported.an.error.explanation=L\u00e1sd a jelentett hib\u00e1t.
+[{0}].reported.an.error.useraction=Nincs.
+
+# -----------------------------------------------
+error.on.collaborator.starting.call=SRVE0236E: Hiba t\u00f6rt\u00e9nt az inicializ\u00e1l\u00e1si egy\u00fcttm\u0171k\u00f6d\u0151 megh\u00edv\u00e1sa sor\u00e1n a starting() h\u00edv\u00e1skor.
+error.on.collaborator.starting.call.explanation=Ez egy rendszerhiba.
+error.on.collaborator.starting.call.useraction=A hiba tov\u00e1bbi r\u00e9szleteinek a megtekint\u00e9s\u00e9hez ellen\u0151rizze az FFDC napl\u00f3kat.
+
+# -----------------------------------------------
+error.on.collaborator.started.call=SRVE0237E: Hiba t\u00f6rt\u00e9nt az inicializ\u00e1l\u00e1si egy\u00fcttm\u0171k\u00f6d\u0151 megh\u00edv\u00e1sa sor\u00e1n a started() h\u00edv\u00e1skor.
+error.on.collaborator.started.call.explanation=Ez egy rendszerhiba.
+error.on.collaborator.started.call.useraction=A hiba tov\u00e1bbi r\u00e9szleteinek a megtekint\u00e9s\u00e9hez ellen\u0151rizze az FFDC napl\u00f3kat
+
+# -----------------------------------------------
+resource.path.has.to.start.with.slash=SRVE0238E: Az er\u0151forr\u00e1s-\u00fatvonalaknak egy oszt\u00e1sjellel kell kezd\u0151dni\u00fck
+resource.path.has.to.start.with.slash.explanation=Ez egy alkalmaz\u00e1shiba.
+resource.path.has.to.start.with.slash.useraction=\u00cdrjon egy kezd\u0151 oszt\u00e1sjelet az \u00fatvonal el\u00e9 \u00e9s pr\u00f3b\u00e1lkozzon \u00fajra.
+
+# -----------------------------------------------
+ExtensionFactory.[{0}].registered.successfully=SRVE0239I: A(z) [{0}] kiterjeszt\u00e9sgy\u00e1r regisztr\u00e1ci\u00f3ja sikeres volt.
+ExtensionFactory.[{0}].registered.successfully.explanation=Nincs.
+ExtensionFactory.[{0}].registered.successfully.useraction=Nincs.
+
+# -----------------------------------------------
+ExtensionFactory.[{0}].associated.with.patterns.[{1}]=SRVE0240I: A(z) [{0}] kiterjeszt\u00e9sgy\u00e1r ezekkel a mint\u00e1kkal lett t\u00e1rs\u00edtva: [{1}].
+ExtensionFactory.[{0}].associated.with.patterns.[{1}].explanation=Nincs.
+ExtensionFactory.[{0}].associated.with.patterns.[{1}].useraction=Nincs.
+
+# -----------------------------------------------
+Using.[{0}].as.server.root=SRVE0241I: A(z) [{0}] haszn\u00e1lata a kiszolg\u00e1l\u00f3 gy\u00f6k\u00e9rk\u00f6nyvt\u00e1rak\u00e9nt a getTempDirectory() parancsban.
+Using.[{0}].as.server.root.explanation=Nincs.
+Using.[{0}].as.server.root.useraction=Nincs.
+
+# -----------------------------------------------
+[{0}].Initialization.successful=SRVE0242I: [{2}] [{1}] [{0}]: Az inicializ\u00e1l\u00e1s sikeres volt.
+[{0}].Initialization.successful.explanation=A c\u00e9l er\u0151forr\u00e1s init() met\u00f3dusa sikeresen lefutott, \u00e9s a c\u00e9l beker\u00fclt a szolg\u00e1ltat\u00e1sba.
+[{0}].Initialization.successful.useraction=Nincs.
+
+# -----------------------------------------------
+reaper.with.interval.[{0}].limit.[{1}].started=SRVE0243I: A(z) [{0}] begy\u0171jt\u0151 sz\u00e1l id\u0151tartam \u00e9s a(z) [{1}] inakt\u00edv korl\u00e1t elindult.
+reaper.with.interval.[{0}].limit.[{1}].started.explanation=Nincs.
+reaper.with.interval.[{0}].limit.[{1}].started.useraction=Nincs.
+
+# -----------------------------------------------
+reaper.unloading.servlet.[{0}]=SRVE0244I: Kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1st elt\u00e1vol\u00edt\u00f3 begy\u0171jt\u0151 sz\u00e1l: [{0}].
+reaper.unloading.servlet.[{0}].explanation=A begy\u0171jt\u0151 sz\u00e1l elt\u00e1vol\u00edtja azokat a kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1sokat, amelyek a begy\u0171jt\u0151 inakt\u00edv korl\u00e1tj\u00e1t meghalad\u00f3 ideig voltak inakt\u00edv \u00e1llapotban.
+reaper.unloading.servlet.[{0}].useraction=Nincs.
+
+# -----------------------------------------------
+reaper.removing.mapping.[{0}].for.servlet.[{1}]=SRVE0245I: Lek\u00e9pez\u00e9st elt\u00e1vol\u00edt\u00f3 begy\u0171jt\u0151 sz\u00e1l: [{0}] ehhez a kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1shoz: [{0}].
+reaper.removing.mapping.[{0}].for.servlet.[{1}].explanation=A begy\u0171jt\u0151 sz\u00e1l elt\u00e1vol\u00edtja azokat a jsp lek\u00e9pez\u00e9seket \u00e9s m\u00e1s kiterjeszt\u00e9seket, amelyek a begy\u0171jt\u0151 inakt\u00edv korl\u00e1tj\u00e1t meghalad\u00f3 ideig voltak inakt\u00edv \u00e1llapotban.
+reaper.removing.mapping.[{0}].for.servlet.[{1}].useraction=Nincs.
+
+# -----------------------------------------------
+reaper.destroying.servlet.[{0}]=SRVE0246I: Kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1st megsemmis\u00edt\u0151 begy\u0171jt\u0151 sz\u00e1l: [{0}].
+reaper.destroying.servlet.[{0}].explanation=Nincs.
+reaper.destroying.servlet.[{0}].useraction=Nincs.
+
+# -----------------------------------------------
+reaper.thread.error=SRVE0247E: Hiba t\u00f6rt\u00e9nt a begy\u0171jt\u0151 sz\u00e1l v\u00e9grehajt\u00e1sa sor\u00e1n.
+reaper.thread.error.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a begy\u0171jt\u0151 sz\u00e1l feldolgoz\u00e1s\u00e1ban. Ez egy rendszerhiba.  
+reaper.thread.error.useraction=A begy\u0171jt\u0151 feldolgoz\u00e1s csak a szem\u00e9tgy\u0171jt\u00e9s egyik form\u00e1ja.
+
+# -----------------------------------------------
+waiting.to.destroy.filter.[{0}]=SRVE0248I: A k\u00e9r\u00e9sek feldolgoz\u00e1sa jelenleg folyamatban van. 60 m\u00e1sodperces v\u00e1rakoz\u00e1s a sz\u0171r\u0151 megsemmis\u00edt\u00e9s kik\u00e9nyszer\u00edt\u00e9se el\u0151tt.
+waiting.to.destroy.filter.[{0}].explanation=Nincs.
+waiting.to.destroy.filter.[{0}].useraction=Nincs.
+
+# -----------------------------------------------
+sync.tothread.not.set.for.server.[{0}]=SRVE0249W: A(z) {0} alkalmaz\u00e1s SyncToOSThread h\u00edv\u00e1st k\u00e9rt, de a kiszolg\u00e1l\u00f3 nem rendelkezik SyncToOSThread t\u00e1mogat\u00e1ssal.
+sync.tothread.not.set.for.server.[{0}].explanation=A SyncToOSThread szinkroniz\u00e1lja a Java EE szerepk\u00f6r azonoss\u00e1g\u00e1t az OS sz\u00e1l azonoss\u00e1g\u00e1hoz, ami azt jelenti, hogy a k\u00e9r\u00e9s id\u0151tartama alatt az OS sz\u00e1l azonoss\u00e1ga egyenl\u0151 lesz a Java EE szerepk\u00f6r azonoss\u00e1g\u00e1val. Ez az \u00fczenet azt jelzi, hogy m\u00edg egy alkalmaz\u00e1s a SyncToOSThread funkcionalit\u00e1s\u00e1nak a kihaszn\u00e1l\u00e1s\u00e1ra van be\u00e1ll\u00edtva, azt a kiszolg\u00e1l\u00f3t, amelyre telep\u00edtett\u00e9k, nem \u00e1ll\u00edtott\u00e1k be a SyncToOSThread k\u00e9pess\u00e9geinek a t\u00e1mogat\u00e1s\u00e1ra. Rendszerm\u0171veletre van sz\u00fcks\u00e9g.
+sync.tothread.not.set.for.server.[{0}].useraction=Ha a SyncToOSThread k\u00e9pess\u00e9gei sz\u00fcks\u00e9gesek a k\u00e9rd\u00e9ses kiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra, az inform\u00e1ci\u00f3s k\u00f6zpontban tal\u00e1lhat le\u00edr\u00e1st arra vonatkoz\u00f3an, hogyan enged\u00e9lyezheti egy kiszolg\u00e1l\u00f3nak a SyncToOSThread haszn\u00e1lat\u00e1t.
+
+# -----------------------------------------------
+module.[{0}].successfully.bound.to.virtualhost.[{1}]=SRVE0250I: A(z) {0} webmodul a(z) {1} elemhez lett k\u00f6tve.
+module.[{0}].successfully.bound.to.virtualhost.[{1}].explanation=A megadott webmodul az eml\u00edtett virtu\u00e1lis gazdag\u00e9phez lett t\u00e1rs\u00edtva, \u00e9s az adott virtu\u00e1lis gazdag\u00e9p b\u00e1rmilyen gazda/port kombin\u00e1ci\u00f3j\u00e1n kereszt\u00fcl hozz\u00e1f\u00e9rhet\u0151.
+module.[{0}].successfully.bound.to.virtualhost.[{1}].useraction=Nincs.
+
+# -----------------------------------------------
+threadpool.not.used=SRVE0251W: A webes t\u00e1rol\u00f3 alatt be\u00e1ll\u00edtott sz\u00e1lt\u00e1rol\u00f3 nincs haszn\u00e1latban.
+threadpool.not.used.explanation=A webt\u00e1rol\u00f3 alatt l\u00e9tezik egy ThreadPool konfigur\u00e1ci\u00f3. A konfigur\u00e1ci\u00f3s elem semmilyen m\u00f3dos\u00edt\u00e1sa nem okoz v\u00e1ltoz\u00e1sokat a rendszerben.
+threadpool.not.used.useraction=Nincs.
+
+# -----------------------------------------------
+transports.detected=SRVE0252W: Sz\u00e1ll\u00edt\u00e1sok \u00e9s l\u00e1ncok tal\u00e1lhat\u00f3k. A sz\u00e1ll\u00edt\u00e1sok m\u00f3dos\u00edt\u00e1sra ker\u00fcltek egy \u00faj modell haszn\u00e1lat\u00e1hoz. Haszn\u00e1lja az \u00e1t\u00e1ll\u00edt\u00e1si seg\u00e9dprogramokat a sz\u00e1ll\u00edt\u00e1sok \u00faj modellre \u00e1t\u00e1ll\u00edt\u00e1s\u00e1hoz. A webes t\u00e1rol\u00f3 alatti sz\u00e1lt\u00e1rol\u00f3 konfigur\u00e1ci\u00f3 nem ker\u00fcl felhaszn\u00e1l\u00e1sra ezekkel a sz\u00e1ll\u00edt\u00e1sokkal.
+transports.detected.explanation= A sz\u00e1ll\u00edt\u00e1sok \u00fagy lettek m\u00f3dos\u00edtva, hogy Csatornal\u00e1ncokat haszn\u00e1ljanak. A csatornal\u00e1ncokkal kapcsolatos inform\u00e1ci\u00f3kat \u00e1ttekintheti az inform\u00e1ci\u00f3s k\u00f6zpontban, valamint azt is, hogyan lehet \u00e1t\u00e1ll\u00edtani a megl\u00e9v\u0151 sz\u00e1ll\u00edt\u00e1sokat csatornal\u00e1nc alap\u00fara. A webes t\u00e1rol\u00f3 alatti sz\u00e1lt\u00e1rol\u00f3 konfigur\u00e1ci\u00f3 nem ker\u00fcl felhaszn\u00e1l\u00e1sra ezekkel a sz\u00e1ll\u00edt\u00e1sokkal.
+transports.detected.useraction= Haszn\u00e1lja az \u00e1t\u00e1ll\u00edt\u00e1si seg\u00e9dprogramokat a saj\u00e1t konfigur\u00e1ci\u00f3s modellje \u00e1t\u00e1ll\u00edt\u00e1s\u00e1hoz a sz\u00e1ll\u00edt\u00e1sokr\u00f3l az \u00faj csatornal\u00e1ncokra.
+
+# -----------------------------------------------
+[{0}].Destroy.successful=SRVE0253I: [{2}] [{1}] [{0}]: Sikeres megsemmis\u00edt\u00e9s.
+[{0}].Destroy.successful.explanation=A c\u00e9l er\u0151forr\u00e1s destroy() met\u00f3dusa sikeresen lefutott \u00e9s a c\u00e9l el lett t\u00e1vol\u00edtva a szolg\u00e1ltat\u00e1sb\u00f3l.
+[{0}].Destroy.successful.useraction=Nincs.
+
+# -----------------------------------------------
+unsupported.request.encoding.[{0}]=SRVE0254E: A k\u00e9r\u00e9s karakterk\u00f3dol\u00e1s\u00e1nak be\u00e1ll\u00edt\u00e1sa meghi\u00fasult: [{0}].
+unsupported.request.encoding.[{0}].explanation=A k\u00e9r\u00e9s idej\u00e9n megadott k\u00e9r\u00e9s karakterk\u00f3dol\u00e1s \u00e9rv\u00e9nytelen. Ez egy alkalmaz\u00e1shiba.
+unsupported.request.encoding.[{0}].useraction=Tekintse \u00e1t a napl\u00f3kat, \u00e9s \u00e1llap\u00edtsa meg, hogy a megadott k\u00f3dol\u00e1s \u00e9rv\u00e9nyes-e.
+
+# -----------------------------------------------
+Web.Group.VHost.Not.Found=SRVE0255E: Egy webcsoport/virtu\u00e1lis gazdag\u00e9p a {0} kezel\u00e9s\u00e9re nem lett meghat\u00e1rozva.
+Web.Group.VHost.Not.Found.explanation=Nem tal\u00e1lhat\u00f3 webcsoport (webmodul) vagy virtu\u00e1lis gazdag\u00e9p a k\u00e9r\u00e9s kezel\u00e9s\u00e9hez. Ez egy alkalmaz\u00e1shiba.
+Web.Group.VHost.Not.Found.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a webcsoport \u00e9s a virtu\u00e1lis gazdag\u00e9p meg lett hat\u00e1rozva \u00e9s telep\u00edtve lett.
+
+# -----------------------------------------------
+webcontainer.not.initialized=SRVE0256E: A webes t\u00e1rol\u00f3 nem ker\u00fclt inicializ\u00e1l\u00e1sra.
+webcontainer.not.initialized.explanation=A webt\u00e1rol\u00f3 nincs inicializ\u00e1lva, am\u00edg egy alkalmaz\u00e1s telep\u00edt\u00e9sre nem ker\u00fcl. Ez egy rendszerhiba.
+webcontainer.not.initialized.useraction=Telep\u00edtsen egy alkalmaz\u00e1st a webt\u00e1rol\u00f3 inicializ\u00e1l\u00e1s\u00e1hoz.
+
+# -----------------------------------------------
+property.has.changed=SRVE0257W: A sz\u00e1ll\u00edt\u00e1s {0} tulajdons\u00e1g\u00e1nak szemantik\u00e1ja megv\u00e1ltozott.
+property.has.changed.explanation=A sz\u00e1l nincs t\u00f6bb\u00e9 egyetlen kapcsolathoz k\u00f6tve. Rendszerm\u0171veletre van sz\u00fcks\u00e9g.
+property.has.changed.useraction=Tov\u00e1bbi r\u00e9szleteket az inform\u00e1ci\u00f3s k\u00f6zpontban olvashat.
+
+# -----------------------------------------------
+property.not.applicable=SRVE0258W: A sz\u00e1ll\u00edt\u00e1s {0} attrib\u00fatuma t\u00f6bb\u00e9 m\u00e1r nem \u00e9rv\u00e9nyes.
+property.not.applicable.explanation=Rendszerm\u0171veletre van sz\u00fcks\u00e9g.
+property.not.applicable.useraction=\u00c1ll\u00edtsa be ezt a tulajdons\u00e1got a napl\u00f3z\u00e1si szolg\u00e1ltat\u00e1sn\u00e1l (a HTTP hozz\u00e1f\u00e9r\u00e9s napl\u00f3z\u00f3val kapcsolatos tov\u00e1bbi r\u00e9szleteket olvassa el az inform\u00e1ci\u00f3s k\u00f6zpontban).
+
+# -----------------------------------------------
+property.configuration.change=SRVE0259W: A(z) {0} tulajdons\u00e1g most csak a webes t\u00e1rol\u00f3 szintj\u00e9n konfigur\u00e1lhat\u00f3.
+property.configuration.change.explanation=A(z) {0} tulajdons\u00e1g m\u00e1r nem konfigur\u00e1lhat\u00f3 a sz\u00e1ll\u00edt\u00e1si szinten, hanem a webt\u00e1rol\u00f3 szintj\u00e9n kell be\u00e1ll\u00edtani. Rendszerm\u0171veletre van sz\u00fcks\u00e9g.
+property.configuration.change.useraction=Ezt a tulajdons\u00e1got a webt\u00e1rol\u00f3 szintj\u00e9n \u00e1ll\u00edtsa be.
+
+# -----------------------------------------------
+cannot.use.error.page=SRVE0260E: A kiszolg\u00e1l\u00f3 nem tudja haszn\u00e1lni a saj\u00e1t alkalmaz\u00e1shoz megadott hibaoldalt az al\u00e1bbiakban kinyomtatott eredeti kiv\u00e9tel kezel\u00e9s\u00e9hez.
+cannot.use.error.page.explanation=Nincs.
+cannot.use.error.page.useraction=Tekintse meg a hibaoldal kiv\u00e9telben a probl\u00e9ma le\u00edr\u00e1s\u00e1t a megadott hibaoldallal egy\u00fctt.
+
+# -----------------------------------------------
+annotation.helper.not.defined=SRVE0261E: A(z) '''' {0} feljegyz\u00e9s-seg\u00e9d nincs meghat\u00e1rozva.
+annotation.helper.not.defined.explanation=A megadott feljegyz\u00e9s-seg\u00e9d nem lett meghat\u00e1rozva. Ez egy rendszerhiba.
+annotation.helper.not.defined.useraction=Ellen\u0151rizze a megadott feljegyz\u00e9s-seg\u00e9d meghat\u00e1roz\u00e1s\u00e1t, \u00e9s ha sz\u00fcks\u00e9ges, eg\u00e9sz\u00edtse ki.
+
+# -----------------------------------------------
+annotation.helper.wrong.type=SRVE0262E: A(z) {0} feljegyz\u00e9s-seg\u00e9d t\u00edpusa nem com.ibm.wsspi.webcontainer.AnnotationHelper.
+annotation.helper.wrong.type.explanation=A megadott feljegyz\u00e9s-seg\u00e9d nem a v\u00e1rt t\u00edpus\u00fa. Ez egy rendszerhiba.
+annotation.helper.wrong.type.useraction=Ellen\u0151rizze \u00e9s jav\u00edtsa ki a feljegyz\u00e9s-seg\u00e9d megval\u00f3s\u00edt\u00e1si oszt\u00e1ly\u00e1t.
+
+# -----------------------------------------------
+annotation.helper.cannot.create=SRVE0263E: A(z) {0} feljegyz\u00e9s-seg\u00e9d nem p\u00e9ld\u00e1nyos\u00edthat\u00f3.
+annotation.helper.cannot.create.explanation=A megadott feljegyz\u00e9s-seg\u00e9det nem siker\u00fclt p\u00e9ld\u00e1nyos\u00edtani. Ez egy rendszerhiba.
+annotation.helper.cannot.create.useraction=Ellen\u0151rizze a kiv\u00e9tel napl\u00f3kban az okot, ami\u00e9rt a feljegyz\u00e9s-seg\u00e9det nem siker\u00fclt p\u00e9ld\u00e1nyos\u00edtani.
+
+#------------------------------------------------
+error.initializing.extension.factories=SRVE0264E: Hiba t\u00f6rt\u00e9nt a kiterjeszt\u00e9sgy\u00e1rak inicializ\u00e1l\u00e1sa sor\u00e1n: {0}
+error.initializing.extension.factories.explanation=Ez egy rendszerhiba.
+error.initializing.extension.factories.useraction=Tekintse \u00e1t a napl\u00f3kat.
+
+#------------------------------------------------
+error.notifying.listeners.of.WebApp.start=SRVE0265E: Hiba t\u00f6rt\u00e9nt a WebApp ind\u00edt\u00e1s figyel\u0151inek \u00e9rtes\u00edt\u00e9sekor: {0}
+error.notifying.listeners.of.WebApp.start.explanation=Ez egy rendszerhiba.
+error.notifying.listeners.of.WebApp.start.useraction=Tekintse \u00e1t a napl\u00f3kat.
+
+#-------------------------------------------------
+error.while.initializing.servlets=SRVE0266E: Hiba t\u00f6rt\u00e9nt a kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1sok inicializ\u00e1l\u00e1sa sor\u00e1n: {0}
+error.while.initializing.servlets.explanation=Ez egy rendszerhiba.
+error.while.initializing.servlets.useraction=Tekintse \u00e1t a napl\u00f3kat.
+
+#-------------------------------------------------
+error.initializing.filters=SRVE0267E: Hiba t\u00f6rt\u00e9nt a sz\u0171r\u0151k inicializ\u00e1l\u00e1sa sor\u00e1n: {0}
+error.initializing.filters.explanation=Ez egy rendszerhiba.
+error.initializing.filters.useraction=Tekintse \u00e1t a napl\u00f3kat.
+
+#------------------------------------------------
+error.obtaining.session.context=SRVE0268E: Hiba t\u00f6rt\u00e9nt a WebApp munkamenet-kontextus\u00e1nak beszerz\u00e9sekor: {0}
+error.obtaining.session.context.explanation=Nem szerezhet\u0151 be \u00e9rv\u00e9nyes munkamenet-kontextus a WebApp sz\u00e1m\u00e1ra. Rendszerm\u0171veletre van sz\u00fcks\u00e9g. 
+error.obtaining.session.context.useraction=Ellen\u0151rizze, hogy a munkamenet-kezel\u0151 helyesen van-e be\u00e1ll\u00edtva.
+
+#-------------------------------------------------
+no.jsp.extension.handler.found=SRVE0269W: Nem tal\u00e1lhat\u00f3 kiterjeszt\u00e9sfeldolgoz\u00f3 a JSP f\u00e1jlok kezel\u00e9s\u00e9hez.
+no.jsp.extension.handler.found.explanation=Ez egy rendszerhiba.
+no.jsp.extension.handler.found.useraction=Tekintse \u00e1t a napl\u00f3kat.
+
+#-------------------------------------------------
+illegal.servlet.mapping=SRVE0270E: Illeg\u00e1lis kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s lek\u00e9pez\u00e9se t\u00f6rt\u00e9nt a(z) {0} kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s eset\u00e9ben.
+illegal.servlet.mapping.explanation=A webconfig.xml f\u00e1jlban meghat\u00e1rozott kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s lek\u00e9pez\u00e9s \u00e9rv\u00e9nytelen. Rendszerm\u0171veletre van sz\u00fcks\u00e9g.
+illegal.servlet.mapping.useraction=Ellen\u0151rizze a webconfig.xml f\u00e1jlban l\u00e9v\u0151 kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s lek\u00e9pez\u00e9seket, \u00e9s v\u00e9gezze el a megfelel\u0151 m\u00f3dos\u00edt\u00e1sokat.
+
+#-------------------------------------------------
+uncaught.init.exception.thrown.by.servlet=SRVE0271E: A(z) {0} kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s l\u00e9trehozott egy init() kiv\u00e9telt a k\u00f6vetkez\u0151 alkalmaz\u00e1sban: [{1}]: {2}
+uncaught.init.exception.thrown.by.servlet.explanation=Ez egy alkalmaz\u00e1shiba.
+uncaught.init.exception.thrown.by.servlet.useraction=Tekintse \u00e1t a napl\u00f3kat.
+
+#-------------------------------------------------
+jsp.processor.not.defined.skipping=SRVE0272W: Nincs megadva JSP feldolgoz\u00f3. {0} kihagy\u00e1sa
+jsp.processor.not.defined.skipping.explanation=Ez egy rendszerhiba.
+jsp.processor.not.defined.skipping.useraction=Nincs.
+
+#--------------------------------------------------
+error.while.initializing.jsp.as.servlet=SRVE0273E: Hiba t\u00f6rt\u00e9nt a JSP [{0}] kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1sk\u00e9nt t\u00f6rt\u00e9n\u0151 inicializ\u00e1l\u00e1sakor a k\u00f6vetkez\u0151 alkalmaz\u00e1sban: [{1}]: {1}
+error.while.initializing.jsp.as.servlet.explanation=Ez egy alkalmaz\u00e1shiba.
+error.while.initializing.jsp.as.servlet.useraction=Tekintse \u00e1t a napl\u00f3kat.
+
+#--------------------------------------------------
+error.while.adding.servlet.mapping.for.path=SRVE0274W: Hiba t\u00f6rt\u00e9nt a kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s lek\u00e9pez\u00e9s hozz\u00e1ad\u00e1sakor a k\u00f6vetkez\u0151k r\u00e9sz\u00e9re: \u00fatvonal-->{0}, \u00e1talak\u00edt\u00f3-->{1}, alkalmaz\u00e1s-->{2}.
+error.while.adding.servlet.mapping.for.path.explanation=Ez egy alkalmaz\u00e1shiba.
+error.while.adding.servlet.mapping.for.path.useraction=Ellen\u0151rizze, hogy nincs-e a webconfig.xml f\u00e1jlban lek\u00e9pez\u00e9si ellentmond\u00e1s.
+
+#--------------------------------------------------
+error.adding.servlet.mapping.for.servlet=SRVE0275E: Hiba t\u00f6rt\u00e9nt a kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s lek\u00e9pez\u00e9s hozz\u00e1ad\u00e1sakor a(z) [{0}] kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s r\u00e9sz\u00e9re ebben az alkalmaz\u00e1sban: [{1}]: {2}
+error.adding.servlet.mapping.for.servlet.explanation=Ez egy alkalmaz\u00e1shiba.
+error.adding.servlet.mapping.for.servlet.useraction=Ellen\u0151rizze, hogy a lek\u00e9pez\u00e9s \u00e9rv\u00e9nyes-e.
+
+#--------------------------------------------------
+error.initializing.servlet=SRVE0276E: Hiba t\u00f6rt\u00e9nt a k\u00f6vetkez\u0151 kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s inicializ\u00e1l\u00e1sa sor\u00e1n: [{0}]: {1}
+error.initializing.servlet.explanation=Ez egy alkalmaz\u00e1shiba.
+error.initializing.servlet.useraction=Tekintse \u00e1t a napl\u00f3kat.
+
+#--------------------------------------------------
+mapping.for.directorybrowsingservlet.already.exists=SRVE0277W: M\u00e1r l\u00e9tezik lek\u00e9pez\u00e9s a DirectoryBrowsingServlet kisalkalmaz\u00e1shoz.
+mapping.for.directorybrowsingservlet.already.exists.explanation=Ez egy alkalmaz\u00e1shiba.
+mapping.for.directorybrowsingservlet.already.exists.useraction=T\u00e1vol\u00edtsa el a t\u00f6bbsz\u00f6r szerepl\u0151 lek\u00e9pez\u00e9st.
+
+#--------------------------------------------------
+error.adding.servlet.mapping.file.handler=SRVE0278E: Hiba t\u00f6rt\u00e9nt a k\u00f6vetkez\u0151 kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s lek\u00e9pez\u00e9s hozz\u00e1ad\u00e1sakor --> {0}.
+error.adding.servlet.mapping.file.handler.explanation=Ez egy alkalmaz\u00e1shiba.
+error.adding.servlet.mapping.file.handler.useraction=\u00c1ll\u00edtsa be a fileServingEnabled=false \u00e9rt\u00e9ket a WEB-INF mapp\u00e1ban tal\u00e1lhat\u00f3 ibm-web-ext.xmi f\u00e1jlban.
+
+#--------------------------------------------------
+error.processing.global.listeners.for.webapp=SRVE0279E: Hiba t\u00f6rt\u00e9nt a glob\u00e1lis figyel\u0151k feldolgoz\u00e1sa sor\u00e1n a k\u00f6vetkez\u0151 alkalmaz\u00e1shoz: {0}: {1}
+error.processing.global.listeners.for.webapp.explanation=Ez egy alkalmaz\u00e1shiba.
+error.processing.global.listeners.for.webapp.useraction=Tekintse \u00e1t a napl\u00f3kat.
+
+#---------------------------------------------------
+extension.processor.failed.to.initialize.in.factory=SRVE0280E: A kiterjeszt\u00e9s-feldolgoz\u00f3 inicializ\u00e1l\u00e1sa meghi\u00fasult a k\u00f6vetkez\u0151 gy\u00e1rban: [{0}]: {1}
+extension.processor.failed.to.initialize.in.factory.explanation=Ez egy rendszerhiba.
+extension.processor.failed.to.initialize.in.factory.useraction=Tekintse \u00e1t a napl\u00f3kat.
+
+#---------------------------------------------------
+request.processor.already.present.for.mapping=SRVE0281E: A(z) {0} k\u00e9r\u00e9sfeldolgoz\u00f3 m\u00e1r jelen van a lek\u00e9pez\u00e9shez
+request.processor.already.present.for.mapping.explanation=Ez egy rendszerhiba.
+request.processor.already.present.for.mapping.useraction=Tekintse \u00e1t a napl\u00f3kat.
+
+#---------------------------------------------------
+error.while.setting.WebAppAttributes=SRVE0282E: Hiba t\u00f6rt\u00e9nt a WebAppAttribues be\u00e1ll\u00edt\u00e1sakor: {0} 
+error.while.setting.WebAppAttributes.explanation=Ez egy rendszerhiba.
+error.while.setting.WebAppAttributes.useraction=Tekintse \u00e1t a napl\u00f3kat.
+
+#---------------------------------------------------
+exception.while.initializing.context=SRVE0283E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} k\u00f6rnyezet inicializ\u00e1l\u00e1sa k\u00f6zben
+exception.while.initializing.context.explanation=Ez egy alkalmaz\u00e1shiba.
+exception.while.initializing.context.useraction=Tekintse \u00e1t a napl\u00f3kat.
+
+#---------------------------------------------------
+exception.caught.in.notifyServletContextCreated=SRVE0284E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} notifyServletContextCreated elemben
+exception.caught.in.notifyServletContextCreated.explanation=Ez egy rendszerhiba.
+exception.caught.in.notifyServletContextCreated.useraction=Tekintse \u00e1t a napl\u00f3kat.
+
+#---------------------------------------------------
+exception.caught.destroying.context=SRVE0285E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} k\u00f6rnyezet megsemmis\u00edt\u00e9se k\u00f6zben
+exception.caught.destroying.context.explanation=Ez egy rendszerhiba.
+exception.caught.destroying.context.useraction=Tekintse \u00e1t a napl\u00f3kat.
+
+#---------------------------------------------------
+exception.caught.in.notifyServletContextDestroyed=SRVE0286E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} notifyServletContextDestroyed elemben
+exception.caught.in.notifyServletContextDestroyed.explanation=Ez egy rendszerhiba.
+exception.caught.in.notifyServletContextDestroyed.useraction=Tekintse \u00e1t a napl\u00f3kat.
+
+#---------------------------------------------------
+server.root.is.null=SRVE0287E: a server.root null \u00e9rt\u00e9k\u0171
+server.root.is.null.explanation=Ez egy rendszerhiba.
+server.root.is.null.useraction=Nincs.
+
+#---------------------------------------------------
+chown.failed=SRVE0288E: A chown meghi\u00fasult, megk\u00eds\u00e9relte lefuttatni a(z) [{0}] parancsot. Kil\u00e9p\u00e9si k\u00f3d: [{1}]
+chown.failed.explanation=Ez egy rendszerhiba.
+chown.failed.useraction=Nincs.
+
+#---------------------------------------------------
+failed.to.create.temp.directory=SRVE0289E: A(z) {0} ideiglenes k\u00f6nyvt\u00e1r l\u00e9trehoz\u00e1sa meghi\u00fasult
+failed.to.create.temp.directory.explanation=Ez egy rendszerhiba.
+failed.to.create.temp.directory.useraction=Nincs.
+
+#---------------------------------------------------
+unable.to.use.specified.temp.directory=SRVE0290E: A megadott ideiglenes k\u00f6nyvt\u00e1r nem haszn\u00e1lhat\u00f3: {0} olvas\u00e1s:{1} \u00edr\u00e1s:{2}
+unable.to.use.specified.temp.directory.explanation=Rendszerm\u0171veletre van sz\u00fcks\u00e9g.
+unable.to.use.specified.temp.directory.useraction=Ellen\u0151rizze a k\u00f6nyvt\u00e1r \u00e1llapot\u00e1t, bele\u00e9rtve a l\u00e9tez\u00e9s\u00e9t, a hozz\u00e1f\u00e9r\u00e9si jogosults\u00e1gokat \u00e9s a rendelkez\u00e9sre \u00e1ll\u00f3 ter\u00fcletet.
+
+#---------------------------------------------------
+unable.to.use.default.temp.directory=SRVE0291E: Az alap\u00e9rtelmezett ideiglenes k\u00f6nyvt\u00e1r nem haszn\u00e1lhat\u00f3: {0} olvas\u00e1s:{1} \u00edr\u00e1s:{2}
+unable.to.use.default.temp.directory.explanation=Rendszerm\u0171veletre van sz\u00fcks\u00e9g.
+unable.to.use.default.temp.directory.useraction=Ellen\u0151rizze a k\u00f6nyvt\u00e1r \u00e1llapot\u00e1t, bele\u00e9rtve a l\u00e9tez\u00e9s\u00e9t, a hozz\u00e1f\u00e9r\u00e9si jogosults\u00e1gokat \u00e9s a rendelkez\u00e9sre \u00e1ll\u00f3 ter\u00fcletet.
+
+#----------------------------------------------------
+log.servlet.message=SRVE0292I: Kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s \u00fczenete - [{0}]:.{1}
+log.servlet.message.explanation=Nincs.
+log.servlet.message.useraction=Nincs.
+
+#----------------------------------------------------
+log.servlet.error=SRVE0293E: [Kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s hiba]-[{0}]: {1}.
+log.servlet.error.explanation=Nincs.
+log.servlet.error.useraction=Nincs.
+
+#----------------------------------------------------
+log.servlet.error.and.message=SRVE0294E: [Kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s hiba]-[{0}]: {1}: {2}
+log.servlet.error.and.message.explanation=Nincs.
+log.servlet.error.and.message.useraction=Nincs.
+
+# -----------------------------------------------
+Error.reported.{0}=SRVE0295E: Hiba: {0}
+Error.reported.{0}.explanation=HttpServletResponse.sendError lett megh\u00edvva \u00e1llapotk\u00f3ddal egy\u00fctt, de nincs magyar\u00e1zat.
+Error.reported.{0}.useraction=A hiba \u00e1llapotk\u00f3dj\u00e1nak meghat\u00e1roz\u00e1s\u00e1hoz tekintse \u00e1t a napl\u00f3kat.
+
+#------------------------------------------------
+log.servlet.message.with.throwable=SRVE0296E: [{0}][{1}][Kisalkalmaz\u00e1s.LOG]:.{2}:.{3}
+log.servlet.message.with.throwable.explanation=Nincs.
+log.servlet.message.with.throwable.useraction=Nincs.
+
+#------------------------------------------------
+WebApp.destroy.encountered.errors=SRVE0297E: A WebApp {0} megsemmis\u00edt\u00e9s hib\u00e1ba \u00fctk\u00f6z\u00f6tt: {1}
+WebApp.destroy.encountered.errors.explanation=Ez egy rendszerhiba.
+WebApp.destroy.encountered.errors.useraction=Tekintse \u00e1t a napl\u00f3kat.
+
+#------------------------------------------------
+exception.occured.while.creating.wrapper.for.servlet=SRVE0298E: Kiv\u00e9tel t\u00f6rt\u00e9nt az \u00e1talak\u00edt\u00f3 l\u00e9trehoz\u00e1sa sor\u00e1n a k\u00f6vetkez\u0151 kisalkalmaz\u00e1shoz: [{0}] {1}
+exception.occured.while.creating.wrapper.for.servlet.explanation=Ez egy rendszerhiba.
+exception.occured.while.creating.wrapper.for.servlet.useraction=Tekintse \u00e1t a napl\u00f3kat.
+
+#------------------------------------------------
+could.not.create.wrapper.for.servlet=SRVE0299E: Nem hozhat\u00f3 l\u00e9tre \u00e1talak\u00edt\u00f3 a(z) [{0}] kisalkalmaz\u00e1shoz
+could.not.create.wrapper.for.servlet.explanation=Ez egy rendszerhiba.
+could.not.create.wrapper.for.servlet.useraction=Tekintse \u00e1t a napl\u00f3kat.
+
+#------------------------------------------------
+mapping.already.exists=SRVE0300E: A lek\u00e9pez\u00e9s m\u00e1r l\u00e9tezik: [{0}][{1}]: {2}
+mapping.already.exists.explanation=A kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s lek\u00e9pez\u00e9s\u00e9ben m\u00e1r hozz\u00e1 van rendelve a k\u00edv\u00e1nt \u00fatvonal. Ez egy alkalmaz\u00e1shiba.
+mapping.already.exists.useraction=M\u00f3dos\u00edtsa vagy t\u00e1vol\u00edtsa el a lek\u00e9pez\u00e9st az alkalmaz\u00e1skonfigur\u00e1ci\u00f3b\u00f3l.
+
+#------------------------------------------------
+encountered.problems.while.removing.servlet=SRVE0301I: A(z) {0} kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s elt\u00e1vol\u00edt\u00e1sa k\u00f6zben probl\u00e9m\u00e1k mer\u00fcltek fel. R\u00e9szletek: {1}
+encountered.problems.while.removing.servlet.explanation=Ez egy rendszerhiba.
+encountered.problems.while.removing.servlet.useraction=Tekintse \u00e1t a napl\u00f3kat.
+
+#--------------------------------------------------
+error.while.adding.static.file.processor=SRVE0302E: Hiba mer\u00fclt fel a(z) {0} statikus f\u00e1jlfeldolgoz\u00f3 hozz\u00e1ad\u00e1sa sor\u00e1n
+error.while.adding.static.file.processor.explanation=Ez egy rendszerhiba.
+error.while.adding.static.file.processor.useraction=Tekintse \u00e1t a napl\u00f3kat.
+
+# -----------------------------------------------
+servlet.name.for.servlet.mapping.not.found=SRVE0303E: A szervlet nev\u00e9t a rendszer a szervlet lek\u00e9pez\u00e9s hozz\u00e1ad\u00e1sakor nem tal\u00e1lta; szervletn\u00e9v={0}; URL minta={1}; modul={2}; alkalmaz\u00e1s={3}
+servlet.name.for.servlet.mapping.not.found.explanation=Nincs kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s meghat\u00e1roz\u00e1s a kisalkalmaz\u00e1s lek\u00e9pez\u00e9s\u00e9hez.
+servlet.name.for.servlet.mapping.not.found.useraction=Ellen\u0151rizze, hogy a web.xml f\u00e1jl tartalmaz-e kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s meghat\u00e1roz\u00e1st ehhez a kisalkalmaz\u00e1s lek\u00e9pez\u00e9shez.
+
+#------------------------------------------------
+servletrequestwrapper.is.not.an.instance.of.so.wrapped.logic.may.be.bypassed=SRVE0304E: A(z) [{0}] ServletRequestWrapper nem a(z) [{1}] egyik p\u00e9ld\u00e1nya, ez\u00e9rt az \u00e1talak\u00edtott funkci\u00f3 kihagyhat\u00f3.
+servletrequestwrapper.is.not.an.instance.of.so.wrapped.logic.may.be.bypassed.explanation=A WebContainer egy csomagolt k\u00e9r\u00e9sobjektum eset\u00e9ben azt v\u00e1rja, hogy az egy adott oszt\u00e1ly p\u00e9ld\u00e1nya legyen, ez pedig nem az. Ez egy alkalmaz\u00e1shiba.
+servletrequestwrapper.is.not.an.instance.of.so.wrapped.logic.may.be.bypassed.useraction=M\u00f3dos\u00edtsa \u00fagy a k\u00f3dot, hogy a v\u00e1rt fel\u00fclet megval\u00f3suljon.
+
+# --------------------------------
+Object.Pool.Disabled=SRVE0305W: Az ObjectPoolService nem \u00e1ll rendelkez\u00e9sre. Az SRTConnectionContext t\u00e1rol\u00e1sa le van tiltva.
+Object.Pool.Disabled.explanation=Az objektumt\u00e1rol\u00e1si szolg\u00e1ltat\u00e1s jav\u00edtja a webt\u00e1rol\u00f3 teljes\u00edtm\u00e9ny\u00e9t, azonban le van tiltva. Ez egy rendszerhiba.
+Object.Pool.Disabled.useraction=Aj\u00e1nlott az objektumt\u00e1rol\u00f3 szolg\u00e1ltat\u00e1s enged\u00e9lyez\u00e9se.
+
+#------------------------------------------------
+ARD.Not.Enabled=SRVE0306W: Az ARD nincs enged\u00e9lyezve, \u00edgy az aszinkron tartalmaz\u00e1sok v\u00e9grehajt\u00e1s\u00e1ra \u00e9s az insertFragment h\u00edv\u00e1sokra ir\u00e1nyul\u00f3 k\u00eds\u00e9rletek mind szinkron m\u00f3dban t\u00f6rt\u00e9nnek.
+ARD.Not.Enabled.explanation=Az ARD nem megfelel\u0151en enged\u00e9lyezett. Rendszerm\u0171veletre van sz\u00fcks\u00e9g.
+ARD.Not.Enabled.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az ARD enged\u00e9lyezve van a WebContainer be\u00e1ll\u00edt\u00e1sokban, \u00e9s egy CLIENT_SIDE vagy SERVER_SIDE terjeszt\u00e9si t\u00edpus van hozz\u00e1 megadva az alkalmaz\u00e1s be\u00e1ll\u00edt\u00e1sain\u00e1l.
+
+#------------------------------------------------
+Null.Filter.Mapping=SRVE0307W: nincs lek\u00e9pez\u00e9s a sz\u0171r\u0151h\u00f6z. Ez akkor fordul el\u0151, ha egy * lek\u00e9pez\u00e9st pr\u00f3b\u00e1l megadni egy 2.5 el\u0151tti v\u00e1ltozat\u00fa alkalmaz\u00e1sban.
+Null.Filter.Mapping.explanation=Nem lett kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s lek\u00e9pezve a sz\u0171r\u0151h\u00f6z, ez\u00e9rt azt nem lehet hozz\u00e1adni. Ez egy alkalmaz\u00e1shiba.
+Null.Filter.Mapping.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1sle\u00edr\u00f3kat 2.5-\u00f6s szint\u0171re, ha * lek\u00e9pez\u00e9st haszn\u00e1l.
+
+#------------------------------------------------
+filtering.by.asterisk=SRVE0308E: Csillag karakter haszn\u00e1lata nem enged\u00e9lyezett a sz\u0171r\u00e9shez. 
+filtering.by.asterisk.explanation=Csillag karakter haszn\u00e1lata nem enged\u00e9lyezett a sz\u0171r\u00e9shez, mivel megtiltja a com.ibm.ws.webcontainer.disallowserveservletsbyclassname egy\u00e9ni tulajdons\u00e1g \u00e1ltal kezelt oszt\u00e1lyn\u00e9vnek, hogy minden kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1st kiszolg\u00e1ljon. Ez egy alkalmaz\u00e1shiba.
+filtering.by.asterisk.useraction=\u00c1ll\u00edtsa be a com.ibm.ws.webcontainer.disallowserveservletsbyclassname \u00e9rt\u00e9k\u00e9t igazra, hogy blokkolja, hogy az oszt\u00e1lyn\u00e9v minden oszt\u00e1lyt kiszolg\u00e1ljon.
+
+#------------------------------------------------
+servlet.on.blocked.list.{0}=SRVE0309E: A kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s a blokkolt list\u00e1n tal\u00e1lhat\u00f3: {0}
+servlet.on.blocked.list.{0}.explanation=A k\u00e9rt kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s a com.ibm.ws.webcontainer.donotservebyclassname egy\u00e9ni tulajdons\u00e1g \u00e1ltal k\u00e9sz\u00edtett list\u00e1n tal\u00e1lhat\u00f3. Ez egy alkalmaz\u00e1shiba.
+servlet.on.blocked.list.{0}.useraction=Ha nem ez a k\u00edv\u00e1nt viselked\u00e9st, m\u00f3dos\u00edtsa a com.ibm.ws.webcontainer.donotservebyclassname tulajdons\u00e1got.
+
+#------------------------------------------------
+Error.in.WebContainer.custom.property.value=SRVE0310E: Egy egy\u00e9ni tulajdons\u00e1gban hiba t\u00f6rt\u00e9nt: {1}
+Error.in.WebContainer.custom.property.value.explanation=Rendszerm\u0171veletre van sz\u00fcks\u00e9g.
+Error.in.WebContainer.custom.property.value.useraction=Ellen\u0151rizze, hogy helyes-e az egy\u00e9ni tulajdons\u00e1g
+
+#------------------------------------------------
+transport.error=SRVE0311E: Hiba t\u00f6rt\u00e9nt a sz\u00e1ll\u00edt\u00e1sban: {0}
+transport.error.explanation=Ez egy rendszerhiba.
+transport.error.useraction=Tekintse \u00e1t a napl\u00f3kat.
+
+#------------------------------------------------
+error.adding.channel=SRVE0312E: Hiba t\u00f6rt\u00e9nt egy csatorna hozz\u00e1ad\u00e1sa k\u00f6zben: {0}
+error.adding.channel.explanation=Ez egy rendszerhiba.
+error.adding.channel.useraction=Tekintse \u00e1t a napl\u00f3kat.
+
+#------------------------------------------------
+transport.migration.error=SRVE0313E: Hiba t\u00f6rt\u00e9nt a(z) {0} porton a sz\u00e1ll\u00edt\u00e1s \u00e1tad\u00e1sa k\u00f6zben a megfelel\u0151 l\u00e1nc sz\u00e1m\u00e1ra: {1}
+transport.migration.error.explanation=Ez egy rendszerhiba.
+transport.migration.error.useraction=Tekintse \u00e1t a napl\u00f3kat.
+
+#------------------------------------------------
+failed.to.remove.webmodule=SRVE0314E: A(z) {0} webmodul elt\u00e1vol\u00edt\u00e1sa meghi\u00fasult: {1}
+failed.to.remove.webmodule.explanation=Ez egy rendszerhiba.
+failed.to.remove.webmodule.useraction=Tekintse \u00e1t a napl\u00f3kat.
+
+#------------------------------------------------
+Exception=SRVE0315E: Kiv\u00e9tel t\u00f6rt\u00e9nt: {0}
+Exception.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt.
+Exception.useraction=Tekintse \u00e1t a napl\u00f3kat.
+
+
+# -------------------------------------------------------------------------------------------------
+# Thread Pool Instances
+Servlet.Engine.Transports=Webt\u00e1rol\u00f3
+
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+webAppModule.desc=Webes alkalmaz\u00e1sok, kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1sok \u00e9s JSP f\u00e1jlok teljes\u00edtm\u00e9nyadatai.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.numLoadedServlets.desc=A bet\u00f6lt\u00f6tt kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1sok sz\u00e1ma.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.numReloads.desc=Az \u00fajra bet\u00f6lt\u00f6tt kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1sok sz\u00e1ma.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.desc=A kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1sok \u00e9s JSP f\u00e1jlok teljes\u00edtm\u00e9nyadatait tartalmaz\u00f3 kollekci\u00f3.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.totalRequests.desc=Egy kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s \u00e1ltal feldolgozott k\u00e9r\u00e9sek sz\u00e1ma \u00f6sszesen.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.concurrentRequests.desc=Az egyidej\u0171leg feldolgozott k\u00e9r\u00e9sek sz\u00e1ma.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.responseTime.desc=Egy kisalkalmaz\u00e1s-k\u00e9r\u00e9s befejez\u0151d\u00e9s\u00e9nek \u00e1tlagos v\u00e1laszideje ezredm\u00e1sodpercben.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.numErrors.desc=Az \u00f6sszes alkalom sz\u00e1ma, ah\u00e1nyszor a rendszer hib\u00e1t fogadott a kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1st\u00f3l vagy a JSP alkalmaz\u00e1st\u00f3l.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.url.totalRequests.desc=Egy kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1ssal t\u00e1rs\u00edtott uri sz\u00e1m\u00e1ra feldolgozott k\u00e9r\u00e9sek sz\u00e1ma \u00f6sszesen.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.url.concurrentRequests.desc=Egy kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1ssal t\u00e1rs\u00edtott uri sz\u00e1m\u00e1ra egyidej\u0171leg feldolgozott k\u00e9r\u00e9sek sz\u00e1ma.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.url.responseTime.desc=Egy kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1ssal t\u00e1rs\u00edtott uri \u00e1tlagos szolg\u00e1ltat\u00e1si v\u00e1laszideje ezredm\u00e1sodpercben.
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.numLoadedServlets=Num Loaded Servlets
+webAppModule.numLoadedServlets=LoadedServletCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.numReloads=Num Reloads
+webAppModule.numReloads=ReloadCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+webAppModule.servlets=Kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1sok
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+webAppModule.servlets.urls=URL c\u00edmek
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.totalRequests=Total Requests
+webAppModule.servlets.totalRequests=RequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.concurrentRequests=Concurrent Requests
+webAppModule.servlets.concurrentRequests=ConcurrentRequests
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module (JSR77)
+#webAppModule.servlets.responseTime=Average Response Time (ms)
+webAppModule.servlets.responseTime=ServiceTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.numErrors=Num Errors
+webAppModule.servlets.numErrors=ErrorCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.url.totalRequests=Total Requests
+webAppModule.url.totalRequests=URIRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.url.concurrentRequests=Concurrent Requests
+webAppModule.url.concurrentRequests=URIConcurrentRequests
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module (JSR77)
+#webAppModule.url.responseTime=Average Response Time (ms)
+webAppModule.url.responseTime=URIServiceTime
+
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.loadedSince=Loaded Since (ms)
+webAppModule.servlets.loadedSince=LoadedSince
+
+webAppModule=Webalkalmaz\u00e1sok
+
+# -------------------------------------------------------------------------------------------------
+# Unit for counters
+unit.none=N/A
+
+# -------------------------------------------------------------------------------------------------
+# Unit for counters
+#unit.ms=millisecond (JSR77)
+unit.ms=EZREDM\u00c1SODPERC
+
+request.matches.context.root=SRVE0316W: A k\u00e9r\u00e9s megegyezik a(z) [{1}] virtu\u00e1lis gazdag\u00e9p \u00e1lneve alatti [{0}] kontextusgy\u00f6k\u00e9rrel.
+request.matches.context.root.explanation=A k\u00e9r\u00e9s \u00fatvonala egy nem egyez\u0151 virtu\u00e1lis gazdag\u00e9pen l\u00e9v\u0151 kontextusgy\u00f6k\u00e9rre k\u00e9pez\u0151dik le.
+request.matches.context.root.useraction=Ellen\u0151rizze, hogy sz\u00fcks\u00e9g van-e egy tov\u00e1bbi virtu\u00e1lis gazdag\u00e9p \u00e1ln\u00e9v hozz\u00e1ad\u00e1s\u00e1ra.
+
+need.to.add.a.new.virtual.host.alias=SRVE0317W: Lehet, hogy egy \u00faj *:<saj\u00e1t port> virtu\u00e1lis gazdag\u00e9p \u00e1lnevet kell hozz\u00e1adnia ugyanahhoz a virtu\u00e1lis gazdag\u00e9phez, amely alatt a(z) [{0}] tal\u00e1lhat\u00f3.
+need.to.add.a.new.virtual.host.alias.explanation=A k\u00e9r\u00e9s \u00fatvonala egy nem egyez\u0151 virtu\u00e1lis gazdag\u00e9pen l\u00e9v\u0151 kontextusgy\u00f6k\u00e9rre k\u00e9pez\u0151dik le.
+need.to.add.a.new.virtual.host.alias.useraction=\u00daj virtu\u00e1lis gazdag\u00e9p \u00e1ln\u00e9v hozz\u00e1ad\u00e1s\u00e1hoz k\u00f6vesse az inform\u00e1ci\u00f3s k\u00f6zpont utas\u00edt\u00e1sait.
+
+# --------------------------------
+Servlet.has.become.temporarily.unavailable.for.service\:.{0}=SRVE0095I: A kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s ideiglenesen el\u00e9rhetetlenn\u00e9 v\u00e1lt a(z) {0} szolg\u00e1ltat\u00e1s sz\u00e1m\u00e1ra
+Servlet.has.become.temporarily.unavailable.for.service\:.{0}.explanation=A megadott kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s ideiglenesen nem \u00e9rhet\u0151 el.
+Servlet.has.become.temporarily.unavailable.for.service\:.{0}.useraction=V\u00e1rjon majd pr\u00f3b\u00e1lkozzon \u00fajra a m\u0171velettel.  Lehets\u00e9ges, hogy a kiszolg\u00e1l\u00f3 rendszergazd\u00e1ja elt\u00e1vol\u00edtotta a kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1st a szolg\u00e1ltat\u00e1sb\u00f3l.
+
+Session.Feature.Set.Not.Started=SRVE0096E: Egy munkamenethez nem lehet hozz\u00e1f\u00e9rni.  A munkamenet-kezel\u0151 szolg\u00e1ltat\u00e1sk\u00e9szlet nem lett elind\u00edtva.
+Session.Feature.Set.Not.Started.explanation=Egy munkamenethez nem lehet hozz\u00e1f\u00e9rni.  A munkamenet-kezel\u0151 szolg\u00e1ltat\u00e1sk\u00e9szlet nem lett elind\u00edtva.
+Session.Feature.Set.Not.Started.useraction=Ellen\u0151rizze, hogy a kiszolg\u00e1l\u00f3 be\u00e1ll\u00edt\u00e1sai f\u00fcggenek-e a munkamenet szolg\u00e1ltat\u00e1sk\u00e9szlet\u00e9t\u0151l.
+# --------------------------------
+invalid.query.string=SRVE0318W: \u00c9rv\u00e9nytelen karakter tal\u00e1lhat\u00f3 a lek\u00e9rdez\u00e9si karaktersorozatban.
+invalid.query.string.explanation=Egy \u00e9rv\u00e9nytelen karakter van a lek\u00e9rdez\u00e9si karaktersorozatban, de mell\u0151zve lett.
+invalid.query.string.useraction=Nincs sz\u00fcks\u00e9g felhaszn\u00e1l\u00f3i beavatkoz\u00e1sra.
+
+
+ClassNotFound.check.web.xml=SRVE0319W: A feljegyz\u00e9s keres\u00e9st sikertelen\u00fcl inicializ\u00e1l\u00f3 oszt\u00e1ly ki lett hagyva.
+ClassNotFound.check.web.xml.explanation=A webmodulban egy oszt\u00e1lyt nem siker\u00fclt p\u00e9ld\u00e1nyos\u00edtani, \u00edgy nem lehet ellen\u0151rizni, hogy tartalmaz-e magyar\u00e1zatokat.
+ClassNotFound.check.web.xml.useraction=Ellen\u0151rizze, hogy l\u00e9tezik-e az oszt\u00e1ly, \u00e9s hogy az oszt\u00e1ly\u00fatvonalban megtal\u00e1lhat\u00f3-e minden f\u00fcgg\u0151s\u00e9ge.
+
+Not.in.servletContextCreated=SRVE0320E: A programozhat\u00f3 konfigur\u00e1ci\u00f3s met\u00f3dusokat a contextInitialized met\u00f3duson bel\u00fclr\u0151l kell megh\u00edvni.
+Not.in.servletContextCreated.explanation=A szervletek \u00e9s sz\u0171r\u0151k csak dinamikusan adhat\u00f3k hozz\u00e1 az alkalmaz\u00e1sind\u00edt\u00e1s contextInitalized f\u00e1zisa sor\u00e1n.
+Not.in.servletContextCreated.useraction=Helyezze \u00e1t a jelenlegi met\u00f3dust megh\u00edv\u00f3 k\u00f3dot egy ServletContextInitalizer contextInitalized met\u00f3dus\u00e1ba.
+
+# ----------------------------- Taken/Copied from plugin generator hence allocating a new number here that's (now) reserved for that purpose
+duplicate.context.root=SRVE9100W: T\u00f6bb alkalmaz\u00e1s tartalmazza ugyanazt a(z) [{0}] kontextusgy\u00f6keret.
+duplicate.context.root.explanation=A bedolgoz\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jl el\u0151\u00e1ll\u00edt\u00e1sa sor\u00e1n a rendszer meg\u00e1llap\u00edtotta, hogy t\u00f6bb alkalmaz\u00e1s haszn\u00e1lja ugyanazt a kontextusgy\u00f6keret.
+duplicate.context.root.useraction=\u00c1llap\u00edtsa meg, hogy ez sz\u00e1nd\u00e9kosan van-e \u00edgy konfigur\u00e1lva, \u00e9s ha nem, akkor jav\u00edtsa.
+
+collocated.appserver=SRVE9101W: A localhost haszn\u00e1lata hosztn\u00e9vk\u00e9nt a(z) {0}.{1} kiszolg\u00e1l\u00f3 sz\u00e1ll\u00edt\u00e1si funkci\u00f3j\u00e1hoz. A k\u00e9r\u00e9stov\u00e1bb\u00edt\u00e1s nem fog m\u0171k\u00f6dni, am\u00edg a webkiszolg\u00e1l\u00f3 \u00e9s az alkalmaz\u00e1skiszolg\u00e1l\u00f3 nem egy helyen van.
+collocated.appserver.explanation=A localhost haszn\u00e1lata hosztn\u00e9vk\u00e9nt csak akkor m\u0171k\u00f6dik, ha a c\u00e9l alkalmaz\u00e1skiszolg\u00e1l\u00f3 ugyanazon a sz\u00e1m\u00edt\u00f3g\u00e9pen fut.
+collocated.appserver.useraction=M\u00f3dos\u00edtsa a hosztnevet, ha az alkalmaz\u00e1skiszolg\u00e1l\u00f3 nem t\u00e9nylegesen nem helyileg fut.
+
+warn.check.applications=SRVE9102W: A bedolgoz\u00f3 konfigur\u00e1ci\u00f3 el\u0151\u00e1ll\u00edt\u00f3 nem tal\u00e1lt egy virtu\u00e1lis hosztot.
+warn.check.applications.explanation=Nem lesz el\u00e9rhet\u0151 virtu\u00e1lis hoszt, ha nincs megadva alkalmaz\u00e1s. 
+warn.check.applications.useraction=Friss\u00edtse a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3j\u00e1t, hogy meghat\u00e1rozzon legal\u00e1bb egy alkalmaz\u00e1st, miel\u0151tt el\u0151\u00e1ll\u00edtja a bedolgoz\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jlt.
+
+plugin.file.generated.info=SRVE9103I: Egy webkiszolg\u00e1l\u00f3 bedolgoz\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jl automatikusan el\u0151\u00e1ll\u00edt\u00e1sra ker\u00fclt a kiszolg\u00e1l\u00f3hoz itt: {0}.
+plugin.file.generated.info.explanation=Minden kiszolg\u00e1l\u00f3 \u00fajraind\u00edt\u00e1s alkalm\u00e1val, valamint alkalmaz\u00e1sok hozz\u00e1ad\u00e1sakor, elt\u00e1vol\u00edt\u00e1sakor vagy m\u00f3dos\u00edt\u00e1sakor a kiszolg\u00e1l\u00f3n \u00faj bedolgoz\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jl ker\u00fcl el\u0151\u00e1ll\u00edt\u00e1sra.
+plugin.file.generated.info.useraction=A f\u00e1jl helyess\u00e9g\u00e9t megvizsg\u00e1lhatja, majd \u00e1thelyezheti a webkiszolg\u00e1l\u00f3 bedolgoz\u00f3 hely\u00e9re, hogy a HTTP forgalmat a kiszolg\u00e1l\u00f3 alkalmaz\u00e1saihoz ir\u00e1ny\u00edtsa. A pluginUtility \u00f6ssze tudja f\u00e9s\u00fclni a f\u00e1jlokat \u00fagy, hogy a k\u00e9r\u00e9sek t\u00f6bb alkalmaz\u00e1skiszolg\u00e1l\u00f3n is \u00e1tir\u00e1ny\u00edthat\u00f3k.  Ha a f\u00e1jl alkalmaz\u00e1sm\u00f3dos\u00edt\u00e1sok miatt ker\u00fclt el\u0151\u00e1ll\u00edt\u00e1sra, akkor lehets\u00e9ges, hogy a megl\u00e9v\u0151 konfigur\u00e1ci\u00f3s f\u00e1jlt friss\u00edtenie kell a webkiszolg\u00e1l\u00f3 hoszton.
+
+plugin.file.generated.audit=SRVE9104A: Egy webkiszolg\u00e1l\u00f3 bedolgoz\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jl el\u0151\u00e1ll\u00edt\u00e1sra ker\u00fclt a kiszolg\u00e1l\u00f3hoz itt: {0}.
+plugin.file.generated.audit.explanation=Egy felhaszn\u00e1l\u00f3i k\u00e9r\u00e9s \u00faj bedolgoz\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jl l\u00e9trehoz\u00e1s\u00e1t eredm\u00e9nyezte.
+plugin.file.generated.audit.useraction=A f\u00e1jl helyess\u00e9g\u00e9t megvizsg\u00e1lhatja, majd \u00e1thelyezheti a webkiszolg\u00e1l\u00f3 bedolgoz\u00f3 hely\u00e9re a kiszolg\u00e1l\u00f3n fut\u00f3 alkalmaz\u00e1sok k\u00f6zvetlen HTTP forgalm\u00e1ba.  A pluginUtility \u00f6ssze tudja f\u00e9s\u00fclni a f\u00e1jlokat \u00fagy, hogy a k\u00e9r\u00e9sek t\u00f6bb alkalmaz\u00e1skiszolg\u00e1l\u00f3n is \u00e1tjussanak. 
+
+# ------------------------------- added for liberty
+WARNING_RESOURCE_NOT_FOUND=SRVE9999W: Nem tal\u00e1lhat\u00f3 er\u0151forr\u00e1s a res-ref-name haszn\u00e1lat\u00e1val: {0}
+WARNING_RESOURCE_NOT_FOUND.explanation=Az er\u0151forr\u00e1s nem tal\u00e1lhat\u00f3 a megadott er\u0151forr\u00e1shivatkoz\u00e1s-n\u00e9v haszn\u00e1lat\u00e1val.
+WARNING_RESOURCE_NOT_FOUND.useraction=M\u00f3dos\u00edtsa a res-ref-name attrib\u00fatum \u00e9rt\u00e9k\u00e9t.
+
+AUDIT_APPLICATION_INSTALLED=SRVE9998I: A(z) {0} alkalmaz\u00e1s hozz\u00e1 lett adva a webt\u00e1rol\u00f3hoz.
+AUDIT_APPLICATION_INSTALLED.explanation=Az alkalmaz\u00e1s hozz\u00e1 lett adva a webt\u00e1rol\u00f3hoz.
+AUDIT_APPLICATION_INSTALLED.useraction=Nincs teend\u0151.
+
+ERROR_INVALID_RES_AUTH=SRVE9997E: A(z) {1} res-auth attrib\u00fatum\u00e1nak {0} \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen.
+ERROR_INVALID_RES_AUTH.explanation=A res-auth attrib\u00fatum \u00e9rv\u00e9nyes \u00e9rt\u00e9kei "Application" (alkalmaz\u00e1s) \u00e9s "Container" (t\u00e1rol\u00f3).
+ERROR_INVALID_RES_AUTH.useraction=M\u00f3dos\u00edtsa a res-auth attrib\u00fatum \u00e9rt\u00e9k\u00e9t.
+
+WARN_INVALID_SHARE_SCOPE=SRVE9996W: A(z) res-sharing-scope attrib\u00fatum {0} \u00e9rt\u00e9ke a(z) {1} resource-ref attrib\u00fatummal \u00e9rv\u00e9nytelen; az alap\u00e9rtelmezett {2} \u00e9rt\u00e9k ker\u00fcl felhaszn\u00e1l\u00e1sra.
+WARN_INVALID_SHARE_SCOPE.explanation=A res-auth attrib\u00fatum \u00e9rv\u00e9nyes \u00e9rt\u00e9kei "Shareable" (megoszthat\u00f3) \u00e9s "Unshareable" (nem megoszthat\u00f3).
+WARN_INVALID_SHARE_SCOPE.useraction=M\u00f3dos\u00edtsa a res-sharing-scope attrib\u00fatum \u00e9rt\u00e9k\u00e9t.
+
+INFO_APPLICATION_REMOVED=SRVE9995I: A(z) {0} alkalmaz\u00e1s elt\u00e1vol\u00edt\u00e1sra ker\u00fclt a webt\u00e1rol\u00f3b\u00f3l.
+INFO_APPLICATION_REMOVED.explanation=Az alkalmaz\u00e1s elt\u00e1vol\u00edt\u00e1sra ker\u00fclt a webt\u00e1rol\u00f3b\u00f3l.
+INFO_APPLICATION_REMOVED.useraction=Nincs teend\u0151. 
+
+INFO_APPLICATION_UPDATED=SRVE9994I: A(z) {0} alkalmaz\u00e1s friss\u00edtve lett a webt\u00e1rol\u00f3ban.
+INFO_APPLICATION_UPDATED.explanation=Az alkalmaz\u00e1s friss\u00edtve lett.
+INFO_APPLICATION_UPDATED.useraction=Nincs teend\u0151. 
+
+WARN_JARS_STILL_CACHED=SRVE9993W: A JAR f\u00e1jlok nem k\u00e9sz\u00edthet\u0151k el\u0151 t\u00f6rl\u00e9sre, a JAR f\u00e1jlokat tartalmaz\u00f3 WAR f\u00e1jlok nem lesznek t\u00f6r\u00f6lhet\u0151k.
+WARN_JARS_STILL_CACHED.explanation=A JAR f\u00e1jlok t\u00f6rl\u00e9s\u00e9nek enged\u00e9lyez\u00e9s\u00e9hez egy telep\u00edtett webalkalmaz\u00e1son bel\u00fcl, a JAR f\u00e1jlokat t\u00f6rlend\u0151k\u00e9nt kell be\u00e1ll\u00edtani, \u00e9s ez a folyamat sikertelen volt. 
+WARN_JARS_STILL_CACHED.useraction=A JAR f\u00e1jlok t\u00f6rl\u00e9s\u00e9hez egy telep\u00edtett webalkalmaz\u00e1son bel\u00fcl, a kiszolg\u00e1l\u00f3t a t\u00f6rl\u00e9s el\u0151tt le kell \u00e1ll\u00edtani.
+
+ERROR_WEBLISTENER_MUST_IMPLEMENT_IFACE=SRVE9992E: A(z) {0} oszt\u00e1ly tartalmaz egy @WebListener annot\u00e1ci\u00f3t, de nem val\u00f3s\u00edt meg egyetlen sz\u00fcks\u00e9ges fel\u00fcletet sem.
+ERROR_WEBLISTENER_MUST_IMPLEMENT_IFACE.explanation=Egy @WebListener annot\u00e1ci\u00f3val ell\u00e1tott oszt\u00e1lynak meg kell val\u00f3s\u00edtania a javax.servlet.ServletContextListener, javax.servlet.ServletContextAttributeListener, javax.servlet.ServletRequestListener, javax.servlet.ServletRequestAttributeListener, javax.servlet.http.HttpSessionListener vagy javax.servlet.http.HttpSessionAttributeListener fel\u00fcletek egyik\u00e9t.
+ERROR_WEBLISTENER_MUST_IMPLEMENT_IFACE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a @WebListener annot\u00e1ci\u00f3val ell\u00e1tott b\u00e1rmely oszt\u00e1ly megval\u00f3s\u00edtja a sz\u00fcks\u00e9ges fel\u00fcletek egyik\u00e9t.
+
+ERROR_WEBFILTER_MUST_IMPLEMENT_FILTER=SRVE9991E: A(z) {0} oszt\u00e1ly tartalmaz egy @WebFilter annot\u00e1ci\u00f3t, de nem val\u00f3s\u00edtja meg a javax.servlet.Filter fel\u00fcletet.
+ERROR_WEBFILTER_MUST_IMPLEMENT_FILTER.explanation=Egy @WebFilter annot\u00e1ci\u00f3val megjel\u00f6lt oszt\u00e1lynak meg kell val\u00f3s\u00edtania a megadott fel\u00fcletet.
+ERROR_WEBFILTER_MUST_IMPLEMENT_FILTER.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a @WebFilter annot\u00e1ci\u00f3val ell\u00e1tott oszt\u00e1ly megval\u00f3s\u00edtja a sz\u00fcks\u00e9ges fel\u00fcletet.
+
+ERROR_WEBSERVLET_MUST_IMPLEMENT_HTTPSERVLET=SRVE9990E: A(z) {0} oszt\u00e1ly tartalmaz egy @WebServlet annot\u00e1ci\u00f3t, de nem val\u00f3s\u00edtja meg a javax.servlet.http.HttpServlet fel\u00fcletet.
+ERROR_WEBSERVLET_MUST_IMPLEMENT_HTTPSERVLET.explanation=Egy @WebServlet annot\u00e1ci\u00f3val megjel\u00f6lt oszt\u00e1lynak meg kell val\u00f3s\u00edtania a megadott fel\u00fcletet.
+ERROR_WEBSERVLET_MUST_IMPLEMENT_HTTPSERVLET.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a @WebServlet annot\u00e1ci\u00f3val ell\u00e1tott oszt\u00e1ly megval\u00f3s\u00edtja a sz\u00fcks\u00e9ges fel\u00fcletet.
+
+ERROR_WEBSERVLET_MISSING_PATTERNS=SRVE9989E: A(z) {0} oszt\u00e1lyhoz megadott @WebServlet annot\u00e1ci\u00f3 nem tartalmaz sem value, sem urlPatterns attrib\u00fatumot.  Vagy a value, vagy az urlPatterns attrib\u00fatumot meg kell adni.
+ERROR_WEBSERVLET_MISSING_PATTERNS.explanation=Egy @WebServlet annot\u00e1ci\u00f3nak vagy egy value, vagy egy urlPatterns attrib\u00fatumot kell tartalmaznia.  Pontosan egyet kell megadni, mindkett\u0151 nem hagyhat\u00f3 el.
+ERROR_WEBSERVLET_MISSING_PATTERNS.useraction=Adja meg a sz\u00fcks\u00e9ges URL mint\u00e1t a @WebServlet annot\u00e1ci\u00f3 value vagy az urlPatterns attrib\u00fatum\u00e1ban.  A value attrib\u00fatum haszn\u00e1lata csak akkor javasolt, ha az annot\u00e1ci\u00f3 egyetlen attrib\u00fatuma az URL minta.
+
+ERROR_WEBSERVLET_HAS_VALUE_AND_PATTERNS=SRVE9988E: A(z) {0} oszt\u00e1lyhoz megadott @WebServlet annot\u00e1ci\u00f3 egyar\u00e1nt tartalmaz value \u00e9s urlPatterns attrib\u00fatumot.  A value \u00e9s az urlPatterns attrib\u00fatumok nem adhat\u00f3k meg egy\u00fctt. 
+ERROR_WEBSERVLET_HAS_VALUE_AND_PATTERNS.explanation=Egy @WebServlet annot\u00e1ci\u00f3ban nem haszn\u00e1lhat\u00f3 az urlPatterns attrib\u00fatum, ha a value attrib\u00fatum meg van adva.
+ERROR_WEBSERVLET_HAS_VALUE_AND_PATTERNS.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a @WebServlet annot\u00e1ci\u00f3 value attrib\u00fatum\u00e1ban megadott b\u00e1rmely URL minta meg van adva az urlPatterns attrib\u00fatumban, \u00e9s t\u00e1vol\u00edtsa el a value attrib\u00fatumot.  A value attrib\u00fatum haszn\u00e1lata csak akkor javasolt, ha az annot\u00e1ci\u00f3 egyetlen attrib\u00fatuma az URL minta.
+
+ERROR_WEBFILTER_HAS_VALUE_AND_PATTERNS=SRVE9987E: A(z) {0} oszt\u00e1lyhoz megadott @WebFilter annot\u00e1ci\u00f3 egyar\u00e1nt tartalmaz value \u00e9s urlPatterns attrib\u00fatumot.  A value \u00e9s az urlPatterns attrib\u00fatumok nem adhat\u00f3k meg egy\u00fctt.
+ERROR_WEBFILTER_HAS_VALUE_AND_PATTERNS.explanation=Egy @WebFilter annot\u00e1ci\u00f3ban nem haszn\u00e1lhat\u00f3 az urlPatterns attrib\u00fatum, ha a value attrib\u00fatum meg van adva.
+ERROR_WEBFILTER_HAS_VALUE_AND_PATTERNS.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a @WebFilter annot\u00e1ci\u00f3 value attrib\u00fatum\u00e1ban megadott b\u00e1rmely URL minta meg van adva az urlPatterns attrib\u00fatumban, \u00e9s t\u00e1vol\u00edtsa el a value attrib\u00fatumot.  A value attrib\u00fatum haszn\u00e1lata csak akkor javasolt, ha az annot\u00e1ci\u00f3 egyetlen attrib\u00fatuma az URL minta.
+
+ERROR_WEBFILTER_MISSING_VAL_PATT_SERVLET=SRVE9986E: A(z) {0} oszt\u00e1lyhoz megadott @WebFilter annot\u00e1ci\u00f3 nem tartalmaz sem value, sem urlPatterns, sem servletNames attrib\u00fatumot.  Legal\u00e1bb az egyik attrib\u00fatumot meg kell adni.
+ERROR_WEBFILTER_MISSING_VAL_PATT_SERVLET.explanation=A @WebFilter annot\u00e1ci\u00f3nak tartalmaznia kell a value, urlPatterns vagy servletNames attrib\u00fatumok egyik\u00e9t.
+ERROR_WEBFILTER_MISSING_VAL_PATT_SERVLET.useraction=Adja meg a @WebFilter annot\u00e1ci\u00f3 sz\u00fcks\u00e9ges attrib\u00fatumai k\u00f6z\u00fcl legal\u00e1bb az egyiket.
+
+INVALID_APPLICATION_BND_DEFINITION=SRVE9985E: A(z) {0} alkalmaz\u00e1skonfigur\u00e1ci\u00f3 nem oldhat\u00f3 fel. Kiv\u00e9tel: {1}
+INVALID_APPLICATION_BND_DEFINITION.explanation=Egy alkalmaz\u00e1s biztons\u00e1gi szerepei egy kiv\u00e9tel miatt nem \u00e1llap\u00edthat\u00f3k meg az alkalmaz\u00e1s \u00e1ltal biztos\u00edtott application-bnd f\u00e1jlb\u00f3l.
+INVALID_APPLICATION_BND_DEFINITION.useraction=Vizsg\u00e1lja meg a kiv\u00e9tel ok\u00e1t, \u00e9s jav\u00edtsa az alkalmaz\u00e1skonfigur\u00e1ci\u00f3t.
+
+NO_APPLICATION_BND_DEFINITION=SRVE9984E: Nem tal\u00e1lhat\u00f3 alkalmaz\u00e1skonfigur\u00e1ci\u00f3 a k\u00f6vetkez\u0151ben: {0}.
+NO_APPLICATION_BND_DEFINITION.explanation=Egy alkalmaz\u00e1s biztons\u00e1gi szerepei nem \u00e1llap\u00edthat\u00f3k meg a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3j\u00e1b\u00f3l, mert az alkalmaz\u00e1shoz nem tal\u00e1lhat\u00f3 application-bnd f\u00e1jl.
+NO_APPLICATION_BND_DEFINITION.useraction=Friss\u00edtse az alkalmaz\u00e1st az application-bnd f\u00e1jl megad\u00e1sa \u00e9rdek\u00e9ben.
+
+INVALID_SECURITY_ROLE_DEFINITION=SRVE9983E: A(z) {0} szerep konfigur\u00e1ci\u00f3ja (hivatkozva: {1}) nem t\u00f6lthet\u0151 be. Kiv\u00e9tel: {2}
+INVALID_SECURITY_ROLE_DEFINITION.explanation=Az alkalmaz\u00e1s biztons\u00e1gi szerep nem \u00e1llap\u00edthat\u00f3 meg egy kiv\u00e9tel miatt.
+INVALID_SECURITY_ROLE_DEFINITION.useraction=Vizsg\u00e1lja meg a kiv\u00e9tel ok\u00e1t, \u00e9s jav\u00edtsa az alkalmaz\u00e1skonfigur\u00e1ci\u00f3t.
+
+NO_SECURITY_ROLE_DEFINITION=SRVE9982E: A(z) {0} szerep konfigur\u00e1ci\u00f3ja (hivatkozva: {1}) nem l\u00e9tezik.
+NO_SECURITY_ROLE_DEFINITION.explanation=Az alkalmaz\u00e1s biztons\u00e1gi szerep meghat\u00e1roz\u00e1s nem tal\u00e1lhat\u00f3, azonban az application-bnd f\u00e1jlban van egy hivatkoz\u00e1s r\u00e1.
+NO_SECURITY_ROLE_DEFINITION.useraction=Friss\u00edtse az alkalmaz\u00e1s konfigur\u00e1ci\u00f3j\u00e1t a szerep megad\u00e1s\u00e1hoz.
+
+NO_SECURITY_ROLE_NAME_DEFINITION=SRVE9981E: A szerepn\u00e9v nem tal\u00e1lhat\u00f3 a(z) {0} tulajdons\u00e1gban (hivatkozva: {1}).
+NO_SECURITY_ROLE_NAME_DEFINITION.explanation=Az alkalmaz\u00e1s konfigur\u00e1ci\u00f3ja tartalmazza a biztons\u00e1gi szerepek list\u00e1j\u00e1t, de a szerepek egyik\u00e9nek neve nem tal\u00e1lhat\u00f3 az adott konfigur\u00e1ci\u00f3ban.
+NO_SECURITY_ROLE_NAME_DEFINITION.useraction=Friss\u00edtse az alkalmaz\u00e1s konfigur\u00e1ci\u00f3j\u00e1t a szerep meghat\u00e1roz\u00e1s\u00e1nak jav\u00edt\u00e1sa \u00e9rdek\u00e9ben.
+
+INVALID_USER_DEFINITION=SRVE9980E: A(z) {0} felhaszn\u00e1l\u00f3hoz tartoz\u00f3 konfigur\u00e1ci\u00f3 (a(z) {1} szerep hivatkozik r\u00e1 a k\u00f6vetkez\u0151ben: {2}) nem t\u00f6lthet\u0151 be. Kiv\u00e9tel: {3}
+INVALID_USER_DEFINITION.explanation=A biztons\u00e1gi szerep \u00e1ltal megadott felhaszn\u00e1l\u00f3 egy kiv\u00e9tel miatt nem \u00e1llap\u00edthat\u00f3 meg.
+INVALID_USER_DEFINITION.useraction=Vizsg\u00e1lja meg a kiv\u00e9tel ok\u00e1t, \u00e9s jav\u00edtsa az alkalmaz\u00e1skonfigur\u00e1ci\u00f3t.
+
+NO_USER_DEFINITION=SRVE9979E: A(z) {0} felhaszn\u00e1l\u00f3hoz nem tal\u00e1lhat\u00f3 felhaszn\u00e1l\u00f3meghat\u00e1roz\u00e1s (a(z) {1} szerep hivatkozik r\u00e1 a k\u00f6vetkez\u0151ben: {2}).
+NO_USER_DEFINITION.explanation=Az alkalmaz\u00e1sban egy szerep konfigur\u00e1ci\u00f3ja megadta a felhaszn\u00e1l\u00f3meghat\u00e1roz\u00e1sok list\u00e1j\u00e1t, de a meghat\u00e1roz\u00e1sok egyike nem tal\u00e1lhat\u00f3.
+NO_USER_DEFINITION.useraction=Friss\u00edtse az alkalmaz\u00e1s konfigur\u00e1ci\u00f3j\u00e1t a felhaszn\u00e1l\u00f3 megad\u00e1s\u00e1hoz.
+
+NO_USER_NAME_DEFINITION=SRVE9978E: A felhaszn\u00e1l\u00f3 neve nem tal\u00e1lhat\u00f3 a(z) {0} tulajdons\u00e1gokban (a(z) {1} szerep hivatkozik r\u00e1 a k\u00f6vetkez\u0151ben: {2}).
+NO_USER_NAME_DEFINITION.explanation=Az alkalmaz\u00e1s konfigur\u00e1ci\u00f3ja tartalmazza a felhaszn\u00e1l\u00f3k list\u00e1j\u00e1t, de a felhaszn\u00e1l\u00f3k egyik\u00e9nek neve nem tal\u00e1lhat\u00f3 az adott konfigur\u00e1ci\u00f3ban.
+NO_USER_NAME_DEFINITION.useraction=Friss\u00edtse az alkalmaz\u00e1s konfigur\u00e1ci\u00f3j\u00e1t a felhaszn\u00e1l\u00f3 meghat\u00e1roz\u00e1s\u00e1nak jav\u00edt\u00e1sa \u00e9rdek\u00e9ben.
+
+INVALID_GROUP_DEFINITION=SRVE9977E: A(z) {0} csoporthoz tartoz\u00f3 konfigur\u00e1ci\u00f3 (a(z) {1} szerep hivatkozik r\u00e1 a k\u00f6vetkez\u0151ben: {2}) nem t\u00f6lthet\u0151 be. Kiv\u00e9tel: {3}
+INVALID_GROUP_DEFINITION.explanation=A biztons\u00e1gi szerep \u00e1ltal megadott csoport egy kiv\u00e9tel miatt nem \u00e1llap\u00edthat\u00f3 meg.
+INVALID_GROUP_DEFINITION.useraction=Vizsg\u00e1lja meg a kiv\u00e9tel ok\u00e1t, \u00e9s jav\u00edtsa az alkalmaz\u00e1skonfigur\u00e1ci\u00f3t.
+
+NO_GROUP_DEFINITION=SRVE9976E: A(z) {0} csoporthoz nem tal\u00e1lhat\u00f3 csoportmeghat\u00e1roz\u00e1s (a(z) {1} szerep hivatkozik r\u00e1 a k\u00f6vetkez\u0151ben: {2}).
+NO_GROUP_DEFINITION.explanation=Az alkalmaz\u00e1sban egy szerep konfigur\u00e1ci\u00f3ja megadta a csoportmeghat\u00e1roz\u00e1sok list\u00e1j\u00e1t, de a meghat\u00e1roz\u00e1sok egyike nem tal\u00e1lhat\u00f3.
+NO_GROUP_DEFINITION.useraction=Friss\u00edtse az alkalmaz\u00e1s konfigur\u00e1ci\u00f3j\u00e1t a csoport megad\u00e1s\u00e1hoz.
+
+NO_GROUP_NAME_DEFINITION=SRVE9975E: A csoport neve nem tal\u00e1lhat\u00f3 a(z) {0} tulajdons\u00e1gokban (a(z) {1} szerep hivatkozik r\u00e1 a k\u00f6vetkez\u0151ben: {2}).
+NO_GROUP_NAME_DEFINITION.explanation=Az alkalmaz\u00e1s konfigur\u00e1ci\u00f3ja tartalmazza a csoportok list\u00e1j\u00e1t, de a csoportok egyik\u00e9nek neve nem tal\u00e1lhat\u00f3 az adott konfigur\u00e1ci\u00f3ban.
+NO_GROUP_NAME_DEFINITION.useraction=Friss\u00edtse az alkalmaz\u00e1s konfigur\u00e1ci\u00f3j\u00e1t a csoport meghat\u00e1roz\u00e1s\u00e1nak jav\u00edt\u00e1sa \u00e9rdek\u00e9ben.
+
+INVALID_SPECIAL_SUBJECT_DEFINITION=SRVE9974E: A(z) {0} speci\u00e1lis t\u00e1rgyhoz tartoz\u00f3 konfigur\u00e1ci\u00f3 (a(z) {1} szerep hivatkozik r\u00e1 a k\u00f6vetkez\u0151ben: {2}) nem t\u00f6lthet\u0151 be. Kiv\u00e9tel: {3}
+INVALID_SPECIAL_SUBJECT_DEFINITION.explanation=A biztons\u00e1gi szerep \u00e1ltal megadott speci\u00e1lis t\u00e1rgy egy kiv\u00e9tel miatt nem \u00e1llap\u00edthat\u00f3 meg.
+INVALID_SPECIAL_SUBJECT_DEFINITION.useraction=Vizsg\u00e1lja meg a kiv\u00e9tel ok\u00e1t, \u00e9s jav\u00edtsa az alkalmaz\u00e1skonfigur\u00e1ci\u00f3t.
+
+NO_SPECIAL_SUBJECT_DEFINITION=SRVE9973E: A(z) {0} t\u00e1rgyhoz nem tal\u00e1lhat\u00f3 speci\u00e1lis t\u00e1rgy meghat\u00e1roz\u00e1s (a(z) {1} szerep hivatkozik r\u00e1 a k\u00f6vetkez\u0151ben: {2}).
+NO_SPECIAL_SUBJECT_DEFINITION.explanation=Az alkalmaz\u00e1sban egy szerep konfigur\u00e1ci\u00f3ja megadta a speci\u00e1lis t\u00e1rgy meghat\u00e1roz\u00e1sok list\u00e1j\u00e1t, de a meghat\u00e1roz\u00e1sok egyike nem tal\u00e1lhat\u00f3.
+NO_SPECIAL_SUBJECT_DEFINITION.useraction=Friss\u00edtse az alkalmaz\u00e1s konfigur\u00e1ci\u00f3j\u00e1t a speci\u00e1lis t\u00e1rgy meghat\u00e1roz\u00e1s megad\u00e1s\u00e1hoz.
+
+NO_SPECIAL_SUBJECT_NAME_DEFINITION=SRVE9972E: A speci\u00e1lis t\u00e1rgy neve nem tal\u00e1lhat\u00f3 a(z) {0} tulajdons\u00e1gokban (a(z) {1} szerep hivatkozik r\u00e1 a k\u00f6vetkez\u0151ben: {2}).
+NO_SPECIAL_SUBJECT_NAME_DEFINITION.explanation=Az alkalmaz\u00e1s konfigur\u00e1ci\u00f3ja tartalmazza a speci\u00e1lis t\u00e1rgyak list\u00e1j\u00e1t, de a speci\u00e1lis t\u00e1rgyak egyik\u00e9nek neve nem tal\u00e1lhat\u00f3 az adott konfigur\u00e1ci\u00f3ban.
+NO_SPECIAL_SUBJECT_NAME_DEFINITION.useraction=Friss\u00edtse az alkalmaz\u00e1s konfigur\u00e1ci\u00f3j\u00e1t a speci\u00e1lis t\u00e1rgy meghat\u00e1roz\u00e1s\u00e1nak jav\u00edt\u00e1sa \u00e9rdek\u00e9ben.
+
+INVALID_RUN_AS_DEFINITION=SRVE9971E: A(z) {0} futtat\u00e1s (run-as) meghat\u00e1roz\u00e1shoz tartoz\u00f3 konfigur\u00e1ci\u00f3 (a(z) {1} szerep hivatkozik r\u00e1 a k\u00f6vetkez\u0151ben: {2}) nem t\u00f6lthet\u0151 be. Kiv\u00e9tel: {3}
+INVALID_RUN_AS_DEFINITION.explanation=A biztons\u00e1gi szerep \u00e1ltal megadott futtat\u00e1s (run-as) meghat\u00e1roz\u00e1s egy kiv\u00e9tel miatt nem \u00e1llap\u00edthat\u00f3 meg.
+INVALID_RUN_AS_DEFINITION.useraction=Vizsg\u00e1lja meg a kiv\u00e9tel ok\u00e1t, \u00e9s jav\u00edtsa az alkalmaz\u00e1skonfigur\u00e1ci\u00f3t.
+
+NO_RUN_AS_DEFINITION=SRVE9970E: A(z) {0} meghat\u00e1roz\u00e1shoz nem tal\u00e1lhat\u00f3 futtat\u00e1s (run-as) meghat\u00e1roz\u00e1s (a(z) {1} szerep hivatkozik r\u00e1 a k\u00f6vetkez\u0151ben: {2}).
+NO_RUN_AS_DEFINITION.explanation=Az alkalmaz\u00e1sban egy szerep konfigur\u00e1ci\u00f3ja megadta a futtat\u00e1s (run-as) meghat\u00e1roz\u00e1sok list\u00e1j\u00e1t, de a meghat\u00e1roz\u00e1sok egyike nem tal\u00e1lhat\u00f3.
+NO_RUN_AS_DEFINITION.useraction=Friss\u00edtse az alkalmaz\u00e1s konfigur\u00e1ci\u00f3j\u00e1t a futtat\u00e1s (run-as) meghat\u00e1roz\u00e1s megad\u00e1s\u00e1hoz.
+
+NO_RUN_AS_USER_OR_PASSWORD_DEFINITION=SRVE9969E: A(z) {0} futtat\u00e1s (run-as) meghat\u00e1roz\u00e1shoz megadott felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 vagy jelsz\u00f3 (a(z) {1} szerep hivatkozik r\u00e1 a k\u00f6vetkez\u0151ben: {2}) \u00e9rv\u00e9nytelen.
+NO_RUN_AS_USER_OR_PASSWORD_DEFINITION.explanation=A felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 vagy jelsz\u00f3 nem lett megadva, vagy \u00fcres karaktersorozat. Ezek nem \u00e9rv\u00e9nyes felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3k vagy jelszavak.
+NO_RUN_AS_USER_OR_PASSWORD_DEFINITION.useraction=Friss\u00edtse az alkalmaz\u00e1s konfigur\u00e1ci\u00f3j\u00e1t a helyes futtat\u00e1s (run-as) meghat\u00e1roz\u00e1s megad\u00e1s\u00e1hoz.
+
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION=SRVE9968W: \u00c9rv\u00e9nytelen le\u00edr\u00f3f\u00e1jl oszt\u00e1ly\u00fatvonal ({0}) a(z) {1} jar f\u00e1jlban.
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION.explanation=Az oszt\u00e1ly\u00fatvonal helytelen\u00fcl van megadva. Olyan relat\u00edv URI karaktersorozatnak kell lennie, amely jar f\u00e1jlra vagy mapp\u00e1ra mutat.
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION.useraction=Friss\u00edtse a jar f\u00e1jl MANIFEST.MF \u00e1llom\u00e1ny\u00e1t \u00e9s jav\u00edtsa az oszt\u00e1ly\u00fatvonal-meghat\u00e1roz\u00e1st.
+
+WARN_MANIFEST_CLASSPATH_NOT_FOUND=SRVE9967W: Nem siker\u00fclt feloldani a(z) {1} arch\u00edvum le\u00edr\u00f3f\u00e1jl oszt\u00e1ly\u00fatvonal\u00e1nak {0} elem\u00e9t.
+WARN_MANIFEST_CLASSPATH_NOT_FOUND.explanation=\u00c1ltal\u00e1ban a le\u00edr\u00f3f\u00e1jl oszt\u00e1ly\u00fatvonal elemei JAR-f\u00e1jlok hivatkoz\u00e1sai. Ha a hivatkozott elem sz\u00fcks\u00e9ges az alkalmaz\u00e1s sz\u00e1m\u00e1ra, akkor az \u00fczenet komoly probl\u00e9m\u00e1t jelez, \u00e9s nem szabad figyelmen k\u00edv\u00fcl hagyni. Ha a hivatkozott elem nem sz\u00fcks\u00e9ges az alkalmaz\u00e1s sz\u00e1m\u00e1ra, akkor az \u00fczenet \u00e1rtalmatlan probl\u00e9m\u00e1t jelez, \u00e9s figyelmen k\u00edv\u00fcl hagyhat\u00f3. A hivatkozott elem hi\u00e1nyzik, rossz helyen van, vagy a hivatkozott elem a megfelel\u0151 helyen van, \u00e9s a le\u00edr\u00f3f\u00e1jl oszt\u00e1ly\u00fatvonal eleme m\u00e1sik, helytelen helyre hivatkozik. Ha sz\u00fcks\u00e9g van egy elemre, akkor azt legink\u00e1bb az jelzi, hogy az alkalmaz\u00e1s nem tal\u00e1l egy oszt\u00e1lyt vagy m\u00e1s er\u0151forr\u00e1st, vagy az alkalmaz\u00e1s az oszt\u00e1ly vagy er\u0151forr\u00e1s rossz v\u00e1ltozat\u00e1t tal\u00e1lja meg. A le\u00edr\u00f3f\u00e1jl oszt\u00e1ly\u00fatvonal elem feloldhatatlans\u00e1g\u00e1nak gyakori oka, hogy friss\u00fcl az alkalmaz\u00e1s strukt\u00far\u00e1ja, ami miatt a hivatkozott elem elavultt\u00e1 v\u00e1lt. A le\u00edr\u00f3f\u00e1jl oszt\u00e1ly\u00fatvonal elem feloldhatatlans\u00e1g\u00e1nak m\u00e1sik gyakori oka, hogy az alkalmaz\u00e1shoz harmadik f\u00e9lt\u0151l sz\u00e1rmaz\u00f3 JAR-f\u00e1jlt adtak, \u00e9s ez a harmadik f\u00e9lt\u0151l sz\u00e1rmaz\u00f3 JAR-f\u00e1jl olyan helyre hivatkozik, amit nem adtak az alkalmaz\u00e1shoz.
+WARN_MANIFEST_CLASSPATH_NOT_FOUND.useraction=Vegyen fel, nevezzen \u00e1t vagy helyezzen \u00e1t alkalmaz\u00e1selemeket, vagy friss\u00edtse a le\u00edr\u00f3f\u00e1jl oszt\u00e1ly\u00fatvonalat a feloldhatatlan le\u00edr\u00f3f\u00e1jl oszt\u00e1ly\u00fatvonal elemek m\u00f3dos\u00edt\u00e1s\u00e1val vagy elt\u00e1vol\u00edt\u00e1s\u00e1val. A le\u00edr\u00f3f\u00e1jl oszt\u00e1ly\u00fatvonal elemek felold\u00e1sa a tartalmaz\u00f3 arch\u00edvumf\u00e1jl hely\u00e9hez viszony\u00edtva t\u00f6rt\u00e9nik.
+
+CONFLICT_KEY_VALUE_CONFIG_BETWEEN_WEB_FRAGMENT_XML=SRVE9966E: T\u00f6bbsz\u00f6r\u00f6s {0} \u00e9rt\u00e9k tal\u00e1lhat\u00f3 a(z) {1} elemben ugyanahhoz a(z) {2} / {3} konfigur\u00e1ci\u00f3hoz; az \u00e9rt\u00e9k {4} a(z) {5} web-fragment.xml f\u00e1jlj\u00e1ban, de {6} a(z) {7} f\u00e1jlban. 
+CONFLICT_KEY_VALUE_CONFIG_BETWEEN_WEB_FRAGMENT_XML.explanation=Ugyanazon konfigur\u00e1ci\u00f3 \u00e9rt\u00e9keinek a k\u00fcl\u00f6nb\u00f6z\u0151 web-fragment.xml f\u00e1jlokban azonosaknak kell lenni\u00fck.
+CONFLICT_KEY_VALUE_CONFIG_BETWEEN_WEB_FRAGMENT_XML.useraction=Haszn\u00e1lja ugyanazt az \u00e9rt\u00e9ket a k\u00fcl\u00f6nb\u00f6z\u0151 web-fragment.xml f\u00e1jlokban, vagy \u00e1ll\u00edtsa be a web.xml f\u00e1jlban a web-fragment.xml f\u00e1jlokb\u00f3l sz\u00e1rmaz\u00f3 \u00e9rt\u00e9kek fel\u00fclb\u00edr\u00e1l\u00e1s\u00e1t.
+
+CONFLICT_SINGLE_VALUE_CONFIG_BETWEEN_WEB_FRAGMENT_XML=SRVE9965E: T\u00f6bbsz\u00f6r\u00f6s {0}.{1} \u00e9rt\u00e9k fordult el\u0151; az \u00e9rt\u00e9k {2} a(z) {3} web-fragment.xml f\u00e1jlj\u00e1ban, de {4} a(z) {5} f\u00e1jlban.
+CONFLICT_SINGLE_VALUE_CONFIG_BETWEEN_WEB_FRAGMENT_XML.explanation=Ugyanazon konfigur\u00e1ci\u00f3 \u00e9rt\u00e9keinek a k\u00fcl\u00f6nb\u00f6z\u0151 web-fragment.xml f\u00e1jlokban azonosaknak kell lenni\u00fck.
+CONFLICT_SINGLE_VALUE_CONFIG_BETWEEN_WEB_FRAGMENT_XML.useraction=Haszn\u00e1lja ugyanazt az \u00e9rt\u00e9ket a k\u00fcl\u00f6nb\u00f6z\u0151 web-fragment.xml f\u00e1jlokban, vagy \u00e1ll\u00edtsa be a web.xml f\u00e1jlban a web-fragment.xml f\u00e1jlokb\u00f3l sz\u00e1rmaz\u00f3 \u00e9rt\u00e9kek fel\u00fclb\u00edr\u00e1l\u00e1s\u00e1t.
+
+CONFLICT_DEFAULT_ERROR_PAGE_WEB_FRAGMENT_XML=SRVE9957E: A(z) {1} web-fragment.xml f\u00e1jlj\u00e1ban az alap\u00e9rtelmezett hibaoldal ({0}) \u00fctk\u00f6zik a(z) {3} web-fragment.xml f\u00e1jlj\u00e1ban l\u00e9v\u0151 alap\u00e9rtelmezett hibaoldallal ({2}). 
+CONFLICT_DEFAULT_ERROR_PAGE_WEB_FRAGMENT_XML.explanation=A k\u00fcl\u00f6nb\u00f6z\u0151 web-fragment.xml f\u00e1jlokban az alap\u00e9rtelmezett hibaoldalak \u00e9rt\u00e9keinek azonosnak kell lenni\u00fck.
+CONFLICT_DEFAULT_ERROR_PAGE_WEB_FRAGMENT_XML.useraction=Haszn\u00e1lja ugyanazt az alap\u00e9rtelmezett hiba oldalt a k\u00fcl\u00f6nb\u00f6z\u0151 web-fragment.xml f\u00e1jlokban, vagy \u00e1ll\u00edtson be alap\u00e9rtelmezett hibaoldalt a web.xml f\u00e1jlban a web-fragment.xml f\u00e1jlok alap\u00e9rtelmezett hibaoldalainak fel\u00fclb\u00edr\u00e1l\u00e1s\u00e1ra.
+                                                         
+NO_UNIQUE_WEB_FRAGMENT_NAMES=SRVE9964E: T\u00f6bbsz\u00f6r szerepl\u0151 nevek ({0}) ker\u00fcltek felhaszn\u00e1l\u00e1sra a(z) {1} \u00e9s a(z) {2}  web-fragment.xml f\u00e1jljaiban relat\u00edv rendez\u00e9s alkalmaz\u00e1sakor.
+NO_UNIQUE_WEB_FRAGMENT_NAMES.explanation=Relat\u00edv rendez\u00e9s alkalmaz\u00e1sakor egyedi nevet kell haszn\u00e1lni az elemhez minden web-fragment.xml f\u00e1jlban.
+NO_UNIQUE_WEB_FRAGMENT_NAMES.useraction=Rendeljen hozz\u00e1 egyedi nevet minden web-fragment.xml f\u00e1jlhoz relat\u00edv rendez\u00e9s alkalmaz\u00e1sakor vagy \u00e1ll\u00edtsa be az abszol\u00fat rendez\u00e9s haszn\u00e1lat\u00e1t az <absolute-ordering> elem seg\u00edts\u00e9g\u00e9vel a web.xml f\u00e1jlban.
+
+CIRCUIT_WEB_FRAGMENT_DEPENDENCY=SRVE9963E: K\u00f6rk\u00f6r\u00f6s hivatkoz\u00e1sok a k\u00f6vetkez\u0151ben: {0}.
+CIRCUIT_WEB_FRAGMENT_DEPENDENCY.explanation=K\u00f6rk\u00f6r\u00f6s hivatkoz\u00e1sok tal\u00e1lhat\u00f3k a web-fragment.xml f\u00e1jlokban relat\u00edv rendez\u00e9s alkalmaz\u00e1sakor.
+CIRCUIT_WEB_FRAGMENT_DEPENDENCY.useraction=Jav\u00edtsa a k\u00f6rk\u00f6r\u00f6s hivatkoz\u00e1sokat a <before> \u00e9s <after> elemek seg\u00edts\u00e9g\u00e9vel a web-fragment.xml f\u00e1jlokban, vagy haszn\u00e1lja az <absolute-ordering> elemet a web.xml f\u00e1jlban.
+
+INVALID_BOTH_BEFORE_AND_AFTER_OTHERS=SRVE9962E: Az <others/> elem be\u00e1ll\u00edt\u00e1sa <before> \u00e9s <after> elemekkel nem enged\u00e9lyezett a(z) {0} web-fragment.xml f\u00e1jlj\u00e1ban
+INVALID_BOTH_BEFORE_AND_AFTER_OTHERS.explanation=Az <others/> elem be\u00e1ll\u00edt\u00e1sa a <before> \u00e9s <after> elemekben egyidej\u0171leg nem megengedett.
+INVALID_BOTH_BEFORE_AND_AFTER_OTHERS.useraction=T\u00e1vol\u00edtsa el az <others/> elemet a <before> vagy az <after> elemb\u0151l.
+
+INVALID_BEFORE_OR_AFTER_ITSELF=SRVE9961E: Mag\u00e1nak a webt\u00f6red\u00e9knek a konfigur\u00e1l\u00e1sa a(z) {0} web-fragment.xml f\u00e1jlj\u00e1nak <before> \u00e9s <after> elem\u00e9ben nem enged\u00e9lyezett.
+INVALID_BEFORE_OR_AFTER_ITSELF.explanation=Mag\u00e1nak a webt\u00f6red\u00e9knek a konfigur\u00e1l\u00e1sa  a <before> \u00e9s <after> elemekben nem megengedett
+INVALID_BEFORE_OR_AFTER_ITSELF.useraction=T\u00e1vol\u00edtsa el a webt\u00f6red\u00e9k nev\u00e9t a <before> \u00e9s <after> elemekb\u0151l
+
+CONFLICT_JNDI_REFERENCE_BETWEEN_WEB_FRAGMENT_XML=SRVE9960E: A(z) {0} a(z) {2} ugyanazon {1} \u00e9rt\u00e9k\u00e9vel megtal\u00e1lhat\u00f3 a(z) {3} \u00e9s {4} web-fragment.xml f\u00e1jlj\u00e1ban.
+CONFLICT_JNDI_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.explanation=Nem lehet ugyanolyan nev\u0171 JNDI hivatkoz\u00e1sokat meghat\u00e1rozni elt\u00e9r\u0151 web-fragment.xml f\u00e1jlokban, am\u00edg hi\u00e1nyzik a web.xml f\u00e1jlb\u00f3l
+CONFLICT_JNDI_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.useraction=Konfigur\u00e1lja a JNDI hivatkoz\u00e1st a web.xml f\u00e1jlban besz\u00far\u00e1si c\u00e9lok n\u00e9lk\u00fcl, hogy belefoglalja az egyes web-fragment.xml f\u00e1jlb\u00f3l sz\u00e1rmaz\u00f3kat, vagy konfigur\u00e1lja az \u00f6sszes sz\u00fcks\u00e9ges be\u00e1ll\u00edt\u00e1st a web.xml f\u00e1jlban.
+
+CONFLICT_DATASOURCE_REFERENCE_BETWEEN_WEB_FRAGMENT_XML=SRVE9959E: K\u00e9t azonos nev\u0171 ({0}) adatforr\u00e1s-konfigur\u00e1ci\u00f3 tal\u00e1lhat\u00f3 a(z) {1} \u00e9s {2} web-fragment.xml f\u00e1jlj\u00e1ban.
+CONFLICT_DATASOURCE_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.explanation=Nem lehet ugyanolyan nev\u0171 adatforr\u00e1sokat meghat\u00e1rozni elt\u00e9r\u0151 web-fragment.xml f\u00e1jlokban, am\u00edg az hi\u00e1nyzik a web.xml f\u00e1jlb\u00f3l
+CONFLICT_DATASOURCE_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.useraction=A web.xml f\u00e1jlban hat\u00e1rozza meg az azonos nev\u0171 adatforr\u00e1st, hogy fel\u00fclb\u00edr\u00e1lja a web-fragment.xml f\u00e1jlokb\u00f3l sz\u00e1rmaz\u00f3kat.
+
+CONFLICT_MAILSESSION_REFERENCE_BETWEEN_WEB_FRAGMENT_XML=SRVE9958E: K\u00e9t azonos nev\u0171 ({0}) levelez\u00e9si munkamenet konfigur\u00e1ci\u00f3 tal\u00e1lhat\u00f3 a(z) {1} \u00e9s {2} web-fragment.xml f\u00e1jlj\u00e1ban.
+CONFLICT_MAILSESSION_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.explanation=Nem lehet ugyanolyan nev\u0171 levelez\u00e9si munkameneteket meghat\u00e1rozni elt\u00e9r\u0151 web-fragment.xml f\u00e1jlokban, am\u00edg az hi\u00e1nyzik a web.xml f\u00e1jlb\u00f3l
+CONFLICT_MAILSESSION_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.useraction=A web.xml f\u00e1jlban hat\u00e1rozza meg az azonos nev\u0171 levelez\u00e9si munkamenetet, hogy fel\u00fclb\u00edr\u00e1lja a web-fragment.xml f\u00e1jlokb\u00f3l sz\u00e1rmaz\u00f3kat.
+
+UNKNOWN_VIRTUAL_HOST=SRVE9956W: A k\u00f6vetkez\u0151 virtu\u00e1lis hosztok nem tal\u00e1lhat\u00f3k vagy nincsenek megfelel\u0151en konfigur\u00e1lva: {0}.
+UNKNOWN_VIRTUAL_HOST.explanation=Legal\u00e1bb egy alkalmaz\u00e1s nem l\u00e9tez\u0151 virtu\u00e1lis hosztot ad meg. A virtu\u00e1lis hoszt konfigur\u00e1ci\u00f3 hi\u00e1nyos vagy hib\u00e1kat tartalmaz.
+UNKNOWN_VIRTUAL_HOST.useraction=A virtu\u00e1lis hosztot ibm-web-bnd.xml vagy ibm-web-bnd.xmi f\u00e1jlon kereszt\u00fcl meghat\u00e1roz\u00f3 alkalmaz\u00e1sok eset\u00e9ben biztos\u00edtsa, hogy a megfelel\u0151 virtualHost elem meg legyen hat\u00e1rozva a server.xml f\u00e1jlban.
+
+DISTRIBUTABLE_SET_TO_FALSE_IN_FRAGMENT=SRVE9955E: A  <distributable/> elem hamis \u00e9rt\u00e9kre ker\u00fcl be\u00e1ll\u00edt\u00e1sra, mivel nem szerepel k\u00f6vetkez\u0151 web-fragment.xml f\u00e1jlj\u00e1ban: {0}
+DISTRIBUTABLE_SET_TO_FALSE_IN_FRAGMENT.explanation=A <distributable/> elem nem tal\u00e1lhat\u00f3 a webes t\u00f6red\u00e9kben.  Ez\u00e9rt a modul nem lesz terjeszthet\u0151k\u00e9nt megjel\u00f6lve.
+DISTRIBUTABLE_SET_TO_FALSE_IN_FRAGMENT.useraction=\u00c1ll\u00edtsa be web-fragment.xml f\u00e1jlban a modulban l\u00e9v\u0151 az \u00f6sszes webes t\u00f6red\u00e9k <distributable/> elem\u00e9t, ha terjeszthet\u0151k\u00e9nt k\u00edv\u00e1nja a modult megjel\u00f6lni.
+
+CONFLICT_CONNECTION_FACTORY_REFERENCE_BETWEEN_WEB_FRAGMENT_XML=SRVE9954E: K\u00e9t azonos nev\u0171 ({0}) kapcsolatgy\u00e1r konfigur\u00e1ci\u00f3 tal\u00e1lhat\u00f3 a(z) {1} \u00e9s {2} web-fragment.xml f\u00e1jlj\u00e1ban.
+CONFLICT_CONNECTION_FACTORY_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.explanation=K\u00e9t azonos nev\u0171 kapcsolatgy\u00e1r nem konfigur\u00e1lhat\u00f3 elt\u00e9r\u0151 web-fragment.xml f\u00e1jlban, ha az hi\u00e1nyzik a web.xml f\u00e1jlb\u00f3l.
+CONFLICT_CONNECTION_FACTORY_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.useraction=A web.xml f\u00e1jlban hat\u00e1rozza meg az azonos nev\u0171 kapcsolatgy\u00e1rat, hogy fel\u00fclb\u00edr\u00e1lja a web-fragment.xml f\u00e1jlokb\u00f3l sz\u00e1rmaz\u00f3kat.
+
+
+CONFLICT_ADMINISTERED_OBJECT_REFERENCE_BETWEEN_WEB_FRAGMENT_XML=SRVE9951E: K\u00e9t azonos nev\u0171 ({0}) adminisztr\u00e1lt objektum tal\u00e1lhat\u00f3 a(z) {1} \u00e9s {2} web-fragment.xml f\u00e1jlj\u00e1ban.
+CONFLICT_ADMINISTERED_OBJECT_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.explanation=K\u00e9t azonos nev\u0171 adminisztr\u00e1lt objektum nem konfigur\u00e1lhat\u00f3 elt\u00e9r\u0151 web-fragment.xml f\u00e1jlban, ha az hi\u00e1nyzik a web.xml f\u00e1jlb\u00f3l.
+CONFLICT_ADMINISTERED_OBJECT_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.useraction=A web.xml f\u00e1jlban hat\u00e1rozza meg az azonos nev\u0171 adminisztr\u00e1lt objektumot, hogy fel\u00fclb\u00edr\u00e1lja a web-fragment.xml f\u00e1jlokb\u00f3l sz\u00e1rmaz\u00f3kat.
+
+CONFLICT_JMS_CONNECTION_FACTORY_REFERENCE_BETWEEN_WEB_FRAGMENT_XML=SRVE9952E: K\u00e9t azonos nev\u0171 ({0}) JMS kapcsolatgy\u00e1r-konfigur\u00e1ci\u00f3 tal\u00e1lhat\u00f3 a(z) {1} \u00e9s {2} web-fragment.xml f\u00e1jlj\u00e1ban.
+CONFLICT_JMS_CONNECTION_FACTORY_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.explanation=K\u00e9t azonos nev\u0171 JMS kapcsolatgy\u00e1r nem konfigur\u00e1lhat\u00f3 elt\u00e9r\u0151 web-fragment.xml f\u00e1jlban, ha az hi\u00e1nyzik a web.xml f\u00e1jlb\u00f3l.
+CONFLICT_JMS_CONNECTION_FACTORY_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.useraction=A web.xml f\u00e1jlban hat\u00e1rozza meg az azonos nev\u0171 JMS kapcsolatgy\u00e1rat, hogy fel\u00fclb\u00edr\u00e1lja a web-fragment.xml f\u00e1jlokb\u00f3l sz\u00e1rmaz\u00f3kat.
+
+CONFLICT_JMS_DESTINATION_REFERENCE_BETWEEN_WEB_FRAGMENT_XML=SRVE9953E: K\u00e9t azonos nev\u0171 ({0}) JMS c\u00e9lkonfigur\u00e1ci\u00f3 tal\u00e1lhat\u00f3 a(z) {1} \u00e9s {2} web-fragment.xml f\u00e1jlj\u00e1ban.
+CONFLICT_JMS_DESTINATION_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.explanation=K\u00e9t azonos nev\u0171 JMS c\u00e9l nem konfigur\u00e1lhat\u00f3 elt\u00e9r\u0151 web-fragment.xml f\u00e1jlban, ha az hi\u00e1nyzik a web.xml f\u00e1jlb\u00f3l.
+CONFLICT_JMS_DESTINATION_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.useraction=A web.xml f\u00e1jlban hat\u00e1rozza meg az azonos nev\u0171 JMS c\u00e9lt, hogy fel\u00fclb\u00edr\u00e1lja a web-fragment.xml f\u00e1jlokb\u00f3l sz\u00e1rmaz\u00f3kat.
+
+
+SRVE0777E=SRVE0777E: Hib\u00e1t dobott az alkalmaz\u00e1soszt\u00e1ly: ''{0}.{1}:{2}''\n{3}
+SRVE0777E.explanation= Az alkalmaz\u00e1sk\u00f3d nem v\u00e1rt kiv\u00e9telt dobott.
+SRVE0777E.useraction=A verem nyomk\u00f6vet\u00e9s vizsg\u00e1lat\u00e1val \u00e1llap\u00edtsa meg a probl\u00e9ma gy\u00f6ker\u00e9t.
+
+# -----------------------------------------------
+Reader.already.obtained=SRVE0778E: A v\u00e1lasz Reader objektuma m\u00e1r lek\u00e9r\u00e9sre ker\u00fclt. Ez egy alkalmaz\u00e1shiba.
+Reader.already.obtained.explanation= K\u00eds\u00e9rlet t\u00f6rt\u00e9nt a v\u00e1lasz InputStream lek\u00e9r\u00e9s\u00e9re vagy be\u00e1ll\u00edt\u00e1s\u00e1ra, de egy BufferedReader m\u00e1r lek\u00e9r\u00e9sre ker\u00fclt.
+Reader.already.obtained.useraction= M\u00f3dos\u00edtsa a hib\u00e1s szervletet, hogy az BufferedReader p\u00e9ld\u00e1nyt vagy InputStream p\u00e9ld\u00e1nyt haszn\u00e1ljon, de ne mindkett\u0151t egyszerre.
+# -----------------------------------------------
+InputStream.already.obtained=SRVE0779E: A v\u00e1lasz InputStream objektuma m\u00e1r lek\u00e9r\u00e9sre ker\u00fclt. Ez egy alkalmaz\u00e1shiba.
+InputStream.already.obtained.explanation=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt a v\u00e1laszhoz BufferedReader lek\u00e9r\u00e9s\u00e9re, de egy InputStream m\u00e1r lek\u00e9r\u00e9sre ker\u00fclt.
+InputStream.already.obtained.useraction=M\u00f3dos\u00edtsa a hib\u00e1s szervletet, hogy az BufferedReader p\u00e9ld\u00e1nyt vagy InputStream p\u00e9ld\u00e1nyt szerezzen be, de ne mindkett\u0151t egyszerre.
+
+# --------------------------------
+# Notes for translation:
+# {0} is the URL pattern 
+# {1} and {2} are servlet names
+
+duplicate.url.pattern.for.servlet.mapping=SRVE9016E: A(z) [{0}] lek\u00e9pez\u00e9s nem illeszthet\u0151 be a(z) [{1}] nev\u0171 szervlet eset\u00e9n. Az URL minta m\u00e1r meg van hat\u00e1rozva a(z) [{2}] nev\u0171 szervlethez.
+duplicate.url.pattern.for.servlet.mapping.explanation=Alkalmaz\u00e1shiba t\u00f6rt\u00e9nt. Egy szervlet lek\u00e9pez\u00e9si URL nem tartozhat t\u00f6bb szervlethez.
+duplicate.url.pattern.for.servlet.mapping.useraction=M\u00f3dos\u00edtsa a szervlet lek\u00e9pez\u00e9s URL mint\u00e1j\u00e1t.
+

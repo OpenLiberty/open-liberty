@@ -1,0 +1,43 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.javaeesec/resources/com/ibm/ws/security/javaeesec/cdi/internal/resources/JavaEESecMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Java EE Security 1.0 CDI
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS1925 - CWWKS1949
+
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1925E: Az alkalmaz\u00e1stelep\u00edt\u00e9s meghi\u00fasult, mivel t\u00f6bb HttpAuthenticationMechanism megval\u00f3s\u00edt\u00e1s l\u00e9tezik. Az oszt\u00e1lyok list\u00e1ja: {0}. Ez nagy val\u00f3sz\u00edn\u0171s\u00e9ggel alkalmaz\u00e1scsomagol\u00e1si hiba. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy csak egy HttpAuthenticationMechanism megval\u00f3s\u00edt\u00e1s tal\u00e1lhat\u00f3 az alkalmaz\u00e1sban.
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=Az alkalmaz\u00e1stelep\u00edt\u00e9s meghi\u00fasult, mivel t\u00f6bb HttpAuthenticationMechanism megval\u00f3s\u00edt\u00e1s l\u00e9tezik. Ez a felt\u00e9tel nem megengedett.
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy csak egy HttpAuthenticationMechanism megval\u00f3s\u00edt\u00e1s tal\u00e1lhat\u00f3 az alkalmaz\u00e1sban.
+
+JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST=CWWKS1926E: A LoginToContinueProperties komponens nem l\u00e9tezik. Az \u0171rlap alap\u00fa bejelentkez\u00e9s nem enged\u00e9lyezett. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1s LoginToContinue feljegyz\u00e9ssel van ell\u00e1tva.
+JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST.explanation=Az \u0171rlap alap\u00fa bejelentkez\u00e9shez sz\u00fcks\u00e9ges LoginToContinueProperties komponens nem l\u00e9tezik.
+JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1s LoginToContinue FormAuthenticationMechanismDefinition vagy CustomFormAuthenticationMechanismDefinition feljegyz\u00e9ssel van ell\u00e1tva.
+
+JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED=CWWKS1927E: A megadott {0} azonos\u00edt\u00f3 oszt\u00e1lyt a CustomFormHttpAuthenticationMechanism oszt\u00e1ly nem t\u00e1mogatja. Haszn\u00e1lja a javax.security.enterprise.credential.UsernamePasswordCredential vagy javax.security.enterprise.credential.BasicAuthenticationCredential tan\u00fas\u00edtv\u00e1nyt a hiteles\u00edt\u00e9shez.
+JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.explanation=A megadott azonos\u00edt\u00f3 oszt\u00e1lyt a CustomFormHttpAuthenticationMechanism oszt\u00e1ly nem t\u00e1mogatja. Haszn\u00e1lja a javax.security.enterprise.credential.UsernamePasswordCredential vagy javax.security.enterprise.credential.BasicAuthenticationCredential tan\u00fas\u00edtv\u00e1nyt a hiteles\u00edt\u00e9shez.
+JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a t\u00e1mogatott azonos\u00edt\u00f3 oszt\u00e1ly ker\u00fcl alkalmaz\u00e1sra az Egy\u00e9ni \u0171rlap hiteles\u00edt\u00e9shez.
+
+JAVAEESEC_CDI_ERROR_USERNAME_NULL=CWWKS1928E: Az azonos\u00edt\u00f3n\u00e9v null\u00e9rt\u00e9k\u0171 vagy az azonos\u00edt\u00f3 objektum nem l\u00e9tezik. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a CredentialValidationResult \u00e9rv\u00e9nyes azonos\u00edt\u00f3 objektumot tartalmaz.
+JAVAEESEC_CDI_ERROR_USERNAME_NULL.explanation=Az azonos\u00edt\u00f3 objektum az adott CredentialValidationResult objektumban \u00e9rv\u00e9nytelen. Ez null\u00e9rt\u00e9k\u0171, vagy nem rendelkezik \u00e9rv\u00e9nyes n\u00e9vvel.
+JAVAEESEC_CDI_ERROR_USERNAME_NULL.useraction=Ha az alkalmaz\u00e1s IdentityStore elemet biztos\u00edt, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy ez \u00e9rv\u00e9nyes azonos\u00edt\u00f3 objektumot ad vissza a CredentialValidationResult elemben.
+
+JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL=CWWKS1929E: A UniqueId null\u00e9rt\u00e9k\u0171. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a CredentialValidationResult \u00e9rv\u00e9nyes UniqueId elemet tartalmaz.
+JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.explanation=A UniqueId az adott CredentialValidationResult objektumban null\u00e9rt\u00e9k\u0171.
+JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.useraction=Ha az alkalmaz\u00e1s IdentityStore elemet biztos\u00edt, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy ez \u00e9rv\u00e9nyes UniqueId elemet ad vissza a CredentialValidationResult elemben.
+
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER=CWWKS1930W: Ay IdentityStoreHandler komponens nem tal\u00e1lhat\u00f3. Haszn\u00e1ljon a server.xml \u00e1ltal megadott felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1st. Az IdentityStoreHandler komponens akkor j\u00f6n l\u00e9tre, ha legal\u00e1bb egy IdentityStore komponens tal\u00e1lhat\u00f3. Ha az alkalmaz\u00e1s sz\u00e1nd\u00e9kozik IdentityStore elemet haszn\u00e1lni, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy ez megfelel\u0151en van be\u00e1ll\u00edtva. 
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.explanation=Ay IdentityStoreHandler komponens nem tal\u00e1lhat\u00f3. Ha az alkalmaz\u00e1s sz\u00e1nd\u00e9kozik IdentityStore elemet haszn\u00e1lni, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy ez megfelel\u0151en van be\u00e1ll\u00edtva. Az IdentityStoreHandler komponens akkor j\u00f6n l\u00e9tre, ha legal\u00e1bb egy IdentityStore komponens tal\u00e1lhat\u00f3.
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.useraction=Ha az alkalmaz\u00e1s sz\u00e1nd\u00e9kozik IdentityStore elemet haszn\u00e1lni, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy ez megfelel\u0151en van be\u00e1ll\u00edtva. 

@@ -1,0 +1,104 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWNEN (Injection Engine)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME com.ibm.ws.injection/resources/com/ibm/ws/injection/resources/InjectionMessages.nlsprops
+#COMPONENTPREFIX CWNEN
+#COMPONENTNAMEFOR CWNEN Injection Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWNEN1xxxI=CWNEN1xxxI: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWNEN1xxxI.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWNEN1xxxI.useraction=User action text for the message
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# NOTE: CWNEN1000-CWNEN1999 are reserved for use in this message file. All other
+#       CWNEN ranges are reserved by com/ibm/wsspi/injection/injection.nlsprops
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+JNDI_NON_JEE_THREAD_CWNEN1000E=CWNEN1000E: \u65e0\u6cd5\u5b8c\u6210\u5bf9 java:comp/env \u540d\u79f0\u7684 JNDI \u64cd\u4f5c\uff0c\u56e0\u4e3a\u5f53\u524d\u7ebf\u7a0b\u672a\u4e0e Java Enterprise Edition \u5e94\u7528\u7a0b\u5e8f\u7ec4\u4ef6\u5173\u8054\u3002\u5f53\u4f7f\u7528 java:comp/env \u540d\u79f0\u7684 JNDI \u5ba2\u6237\u673a\u672a\u5b58\u5728\u4e8e\u670d\u52a1\u5668\u5e94\u7528\u7a0b\u5e8f\u8bf7\u6c42\u7684\u7ebf\u7a0b\u4e0a\u65f6\uff0c\u53ef\u80fd\u4f1a\u53d1\u751f\u8fd9\u79cd\u60c5\u51b5\u3002\u8bf7\u786e\u4fdd Java EE \u5e94\u7528\u7a0b\u5e8f\u672a\u5bf9\u9759\u6001\u4ee3\u7801\u5757\u4e2d\u6216\u8be5\u5e94\u7528\u7a0b\u5e8f\u521b\u5efa\u7684\u7ebf\u7a0b\u4e2d\u7684 java:comp/env \u540d\u79f0\u8fd0\u884c JNDI \u64cd\u4f5c\u3002\u6b64\u7c7b\u4ee3\u7801\u4e0d\u4e00\u5b9a\u5728\u670d\u52a1\u5668\u5e94\u7528\u7a0b\u5e8f\u8bf7\u6c42\u7684\u7ebf\u7a0b\u4e0a\u8fd0\u884c\uff0c\u56e0\u6b64\u4e0d\u53d7\u5bf9 java:comp/env \u540d\u79f0\u6267\u884c\u7684 JNDI \u64cd\u4f5c\u652f\u6301\u3002
+JNDI_NON_JEE_THREAD_CWNEN1000E.explanation=\u4ec5\u652f\u6301\u5728\u4e0e Java EE \u5e94\u7528\u7a0b\u5e8f\u7ec4\u4ef6\u5173\u8054\u7684\u7ebf\u7a0b\u4e0a\u5bf9 java:comp/env \u540d\u79f0\u6267\u884c JNDI \u64cd\u4f5c\u3002
+JNDI_NON_JEE_THREAD_CWNEN1000E.useraction=\u8bf7\u4fee\u6539\u5e94\u7528\u7a0b\u5e8f\uff0c\u4ee5\u4f7f\u5f97 JNDI \u64cd\u4f5c\u5728\u4e0e Java EE \u5e94\u7528\u7a0b\u5e8f\u7ec4\u4ef6\u5173\u8054\u7684\u7ebf\u7a0b\u4e0a\u6267\u884c\u3002
+
+#-------------------------------------------------------------------------------
+# {0} the JNDI name that could not be resolved
+JNDI_CANNOT_INSTANTIATE_OBJECT_CWNEN1001E=CWNEN1001E: \u65e0\u6cd5\u5bf9 {0} JNDI \u540d\u79f0\u5f15\u7528\u7684\u5bf9\u8c61\u8fdb\u884c\u5b9e\u4f8b\u5316\u3002\u5982\u679c\u5f15\u7528\u540d\u79f0\u6620\u5c04\u81f3\u6267\u884c JNDI \u67e5\u627e\u7684\u5e94\u7528\u7a0b\u5e8f\u7684\u90e8\u7f72\u63cf\u8ff0\u7b26\u7ed1\u5b9a\u4e2d\u7684 JNDI \u540d\u79f0\uff0c\u8bf7\u786e\u4fdd\u8be5\u90e8\u7f72\u63cf\u8ff0\u7b26\u7ed1\u5b9a\u4e2d\u7684 JNDI \u540d\u79f0\u6620\u5c04\u6b63\u786e\u3002\u5982\u679c JNDI \u540d\u79f0\u6620\u5c04\u6b63\u786e\uff0c\u8bf7\u786e\u4fdd\u53ef\u4ee5\u4f7f\u7528\u76f8\u5bf9\u4e8e\u7f3a\u7701\u521d\u59cb\u4e0a\u4e0b\u6587\u7684\u6307\u5b9a\u540d\u79f0\u89e3\u6790\u76ee\u6807\u8d44\u6e90\u3002
+JNDI_CANNOT_INSTANTIATE_OBJECT_CWNEN1001E.explanation=\u521b\u5efa\u6307\u5b9a JNDI \u540d\u79f0\u5f15\u7528\u7684\u5bf9\u8c61\u7684\u5b9e\u4f8b\u65f6\u53d1\u751f\u9519\u8bef\u3002
+JNDI_CANNOT_INSTANTIATE_OBJECT_CWNEN1001E.useraction=\u8bf7\u53c2\u9605\u5d4c\u5957\u5f02\u5e38\u6216\u5148\u524d\u9519\u8bef\uff0c\u4ee5\u83b7\u53d6\u6709\u5173\u8be5\u9519\u8bef\u7684\u66f4\u591a\u4fe1\u606f\u3002
+
+#-------------------------------------------------------------------------------
+APPXML_REF_NAMESPACE_CWNEN1002E=CWNEN1002E: {1} \u5e94\u7528\u7a0b\u5e8f\u4e2d META-INF/application.xml \u6587\u4ef6\u58f0\u660e\u7684 {0} \u5f15\u7528\u4e0d\u5728 java:global \u6216 java:app \u4e0a\u4e0b\u6587\u4e2d\u3002
+APPXML_REF_NAMESPACE_CWNEN1002E.explanation=META-INF/application.xml \u6587\u4ef6\u4e2d\u58f0\u660e\u7684\u5f15\u7528\u53ea\u80fd\u4f7f\u7528 java:global \u6216 java:app \u4e0a\u4e0b\u6587\u4e2d\u7684\u540d\u79f0\u3002
+APPXML_REF_NAMESPACE_CWNEN1002E.useraction=\u8bf7\u9664\u53bb\u8be5\u5f15\u7528\u6216\u66f4\u65b0\u5f15\u7528\u540d\u79f0\u4ee5\u4f7f\u5176\u5177\u6709 java:global/ \u6216 java:app/ \u524d\u7f00\u3002
+
+#-------------------------------------------------------------------------------
+BINDING_OBJECT_NOT_FOUND_CWNEN1003E=CWNEN1003E: \u5bf9\u4e8e\u5f15\u7528 {2}\uff0c\u670d\u52a1\u5668\u627e\u4e0d\u5230\u5177\u6709\u7c7b\u578b {1} \u7684\u7ed1\u5b9a {0}\u3002
+BINDING_OBJECT_NOT_FOUND_CWNEN1003E.explanation=\u670d\u52a1\u5668\u627e\u4e0d\u5230\u5177\u6709\u6307\u5b9a\u540d\u79f0\u548c\u7c7b\u578b\u7684\u7ed1\u5b9a\u3002
+BINDING_OBJECT_NOT_FOUND_CWNEN1003E.useraction=\u8bf7\u5b9a\u4e49\u5177\u6709\u6307\u5b9a\u540d\u79f0\u7684\u8d44\u6e90\uff0c\u6216\u5c06\u5e94\u7528\u7a0b\u5e8f\u7ed1\u5b9a\u914d\u7f6e\u4e3a\u4f7f\u7528\u5df2\u5b9a\u4e49\u7684\u8d44\u6e90\u3002
+
+#-------------------------------------------------------------------------------
+DEFAULT_BINDING_OBJECT_NOT_FOUND_CWNEN1004E=CWNEN1004E: \u5bf9\u4e8e\u5f15\u7528 {2}\uff0c\u670d\u52a1\u5668\u627e\u4e0d\u5230\u5177\u6709\u7c7b\u578b {1} \u7684\u7f3a\u7701\u7ed1\u5b9a {0}\u3002
+DEFAULT_BINDING_OBJECT_NOT_FOUND_CWNEN1004E.explanation=\u670d\u52a1\u5668\u627e\u4e0d\u5230\u5177\u6709\u6307\u5b9a\u540d\u79f0\u548c\u7c7b\u578b\u7684\u7ed1\u5b9a\u3002\u5e94\u7528\u7a0b\u5e8f\u672a\u6307\u5b9a\u8be5\u7ed1\u5b9a\u540d\u79f0\uff0c\u56e0\u6b64\u4f7f\u7528\u4e86\u7f3a\u7701\u7ed1\u5b9a\u540d\u79f0\u3002
+DEFAULT_BINDING_OBJECT_NOT_FOUND_CWNEN1004E.useraction=\u8bf7\u5b9a\u4e49\u5177\u6709\u6307\u5b9a\u540d\u79f0\u7684\u8d44\u6e90\uff0c\u6216\u5c06\u5e94\u7528\u7a0b\u5e8f\u7ed1\u5b9a\u914d\u7f6e\u4e3a\u4f7f\u7528\u5df2\u5b9a\u4e49\u7684\u8d44\u6e90\u3002
+
+#-------------------------------------------------------------------------------
+LISTENER_BINDING_OBJECT_NOT_FOUND_CWNEN1005E=CWNEN1005E: \u5bf9\u4e8e\u5f15\u7528 {2}\uff0c\u670d\u52a1\u5668\u627e\u4e0d\u5230\u5177\u6709\u7c7b\u578b {1} \u7684\u7ed1\u5b9a {0}\u3002\u8be5\u7ed1\u5b9a\u5df2\u7531\u670d\u52a1 {3} \u6307\u5b9a\u3002
+LISTENER_BINDING_OBJECT_NOT_FOUND_CWNEN1005E.explanation=\u670d\u52a1\u5668\u627e\u4e0d\u5230\u5177\u6709\u6307\u5b9a\u540d\u79f0\u548c\u7c7b\u578b\u7684\u7ed1\u5b9a\u3002
+LISTENER_BINDING_OBJECT_NOT_FOUND_CWNEN1005E.useraction=\u8bf7\u4e0e\u670d\u52a1\u4f9b\u5e94\u5546\u8054\u7cfb\u3002
+
+#-------------------------------------------------------------------------------
+INDIRECT_LOOKUP_FAILED_CWNEN1006E=CWNEN1006E: \u5bf9\u4e8e\u5177\u6709\u7c7b\u578b {1} \u7684\u7ed1\u5b9a {0}\uff0c\u670d\u52a1\u5668\u65e0\u6cd5\u83b7\u53d6\u5bf9\u8c61\u3002\u5f02\u5e38\u6d88\u606f\u4e3a\uff1a{2}
+INDIRECT_LOOKUP_FAILED_CWNEN1006E.explanation=\u670d\u52a1\u5668\u5df2\u627e\u5230\u5177\u6709\u6307\u5b9a\u540d\u79f0\u548c\u7c7b\u578b\u7684\u7ed1\u5b9a\uff0c\u4f46\u662f\u5bf9\u5176\u8fdb\u884c\u8bbf\u95ee\u65f6\u53d1\u751f\u9519\u8bef\u3002
+INDIRECT_LOOKUP_FAILED_CWNEN1006E.useraction=\u8bf7\u53c2\u9605\u5f02\u5e38\u6d88\u606f\u6587\u672c\uff0c\u4ee5\u83b7\u53d6\u8fdb\u4e00\u6b65\u7684\u89e3\u91ca\u3002
+
+#-------------------------------------------------------------------------------
+EJB_REF_NOT_SUPPORTED_CWNEN1007E=CWNEN1007E: \u670d\u52a1\u5668\u914d\u7f6e\u7f3a\u5c11\u5728 {3} \u5e94\u7528\u7a0b\u5e8f\u7684 {2} \u6a21\u5757\u7684 {1} \u7ec4\u4ef6\u4e2d\u652f\u6301 {0} EJB \u5f15\u7528\u7684\u529f\u80fd\u90e8\u4ef6\u3002
+EJB_REF_NOT_SUPPORTED_CWNEN1007E.explanation=\u6b64\u5e94\u7528\u7a0b\u5e8f\u58f0\u660e\u5bf9\u4f1a\u8bdd EJB \u7684\u5f15\u7528\uff0c\u4f46\u672a\u5bf9\u670d\u52a1\u5668\u914d\u7f6e\u652f\u6301\u4f1a\u8bdd EJB \u7684\u529f\u80fd\u90e8\u4ef6\u3002
+EJB_REF_NOT_SUPPORTED_CWNEN1007E.useraction=\u8bf7\u4fee\u6539\u670d\u52a1\u5668\u914d\u7f6e\u4ee5\u542f\u7528\u652f\u6301\u4f1a\u8bdd EJB \u7684\u529f\u80fd\u90e8\u4ef6\u3002\u4f8b\u5982\uff0c\u542f\u7528 ejbLite-3.1 \u529f\u80fd\u90e8\u4ef6\u3002
+
+#-------------------------------------------------------------------------------
+INDIRECT_LOOKUP_LOOP_CWNEN1008E=CWNEN1008E: \u7ed1\u5b9a\u5305\u542b\u5f15\u7528\u5b83\u81ea\u8eab\u7684\u95f4\u63a5\u67e5\u627e\u3002
+INDIRECT_LOOKUP_LOOP_CWNEN1008E.explanation=\u7ed1\u5b9a\u5305\u542b\u5f15\u7528\u5b83\u81ea\u8eab\u7684\u95f4\u63a5\u67e5\u627e\u3002\u4f8b\u5982\uff0c\u5982\u679c\u4f7f\u7528\u4e86\u4e0d\u6b63\u786e\u7684 @Resource(name="jdbc/ds", lookup="java:comp/env/jdbc/ds") \u6ce8\u91ca\uff0c\u90a3\u4e48\u8be5\u540d\u79f0\u5177\u6709\u9690\u5f0f java:comp/env/ \u524d\u7f00\uff0c\u5bfc\u81f4\u67e5\u627e\u5b57\u7b26\u4e32\u5f15\u7528\u8d44\u6e90\u5f15\u7528\uff0c\u8fd9\u4f1a\u5f62\u6210\u65e0\u9650\u5faa\u73af\u3002
+INDIRECT_LOOKUP_LOOP_CWNEN1008E.useraction=\u8bf7\u5c06 lookup \u6216 binding-name \u66f4\u6539\u4e3a\u76ee\u6807\u8d44\u6e90\u3002\u4f8b\u5982\uff0c\u5982\u679c\u4f7f\u7528\u4e86\u4e0d\u6b63\u786e\u7684 @Resource(name="jdbc/ds", lookup="java:comp/env/jdbc/ds") \u6ce8\u91ca\uff0c\u90a3\u4e48 lookup \u53ef\u66f4\u6539\u4e3a jdbc/ds\uff0c\u8fd9\u4f1a\u5728\u7f3a\u7701\u540d\u79f0\u7a7a\u95f4\u4e2d\u67e5\u627e\u8be5\u8d44\u6e90\u3002

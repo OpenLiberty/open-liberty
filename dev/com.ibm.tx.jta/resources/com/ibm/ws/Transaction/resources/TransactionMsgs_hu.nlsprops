@@ -1,0 +1,871 @@
+###############################################################################
+# Copyright (c) 2002, 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#  02-11-18  irobins               Initial creation from seriousMessages
+#  02-12-05  awilkins      1442    Server quiesce - tx marked rollback only
+#  02-12-16  awilkins  LIDB1673.17 Embedded RAR recovery
+#  03-01-13  irobins   156517      390-specific message range reserved
+#  20/01/03  gareth    LIDB1673.1  JTA2 new messages
+#  28/02/03  hursdlg   LIDB1673.19.1 Add full exception for sync msgs
+#  14/03/03  mallam    160995      New message for inactivity timeout
+#  03/04/03  hursdlg   LIDB1673.22 Update messages 63/64
+#  14/04/03  hursdlg   163015      Fix duplicate message WTRN0068
+#  14/04/03  hursdlg   163130      Add new messages WTRN0081      
+#  15/07/03  hursdlg   170422      Add new messages WTRN0082      
+#  18/07/03  hursdlg   172027      Add new messages WTRN0083
+#  25/07/03  hursdlg   172471      Add new messages WTRN0084
+#  19/08/03  johawkes  174593      Add new messages WTRN0085
+#  18/09/03  johawkes  169114      Add new messages WTRN0086-90
+#  23/09/03  johawkes  177208      Add new messages WTRN0091
+#  09/12/03  mallam    184693      New message for quiesce WTRN0092
+#  04/02/04  hursdlg   189567      New messages for heuristic completion
+#  18/02/04  hursdlg   191317      Add new message WTRN0102
+#  18/05/04  hursdlg   191317.1    Fix punctuation and merge z/OS msgs
+#                                  from pok defect MD19484
+#  16/06/04  mallam    209935      New message for clean shutdown
+#  25/06/04  johawkes  210807      Indicate JTA demarcation disabled in client
+#  02/02/05  hursdlg   252732      New msgs 107-113
+#  17/01/05  mallam    LIDB3645    Recovery-mode restart
+#  20/04/05  hursdlg   266988      WSAT CFW message
+#  25/07/05  kaczyns   LI3187      Add z/OS BBOT messages
+#  18/10/05  mezarin   314369      z/OS messages temp fix
+#  11/11/05  hursdlg   311071      Add msg WTRN0116/117
+#  03/02/06  hursdlg   342682      Add msg WTRN0118
+#  26/02/07  awilkins  422999      Message review: updates to useraction and explanation
+#  07-03-02  awilkins  424163      Message review: improve contact IBM support user action
+#  07-04-27  awilkins  416102      Move z/OS BBOT messages into separate file
+#  07-05-03  mallam    422072      Migrate PK38831 to WASX
+#  25-07-07  mallam    453651      New message for log low on space
+#  22/10/07  mallam    476740      Improvements to out of space message 
+#  21/11/07  awilkins  481738      Output stack of thread when tx times out 
+#  06/12/07  hursdlg   467618      Commit priority validation messages
+#  18/12/07  johawkes  LIDB2778-12.10 WS-TX WS-Policy
+#  11/01/08  hursdlg   491762.1    WSTX 1.1 validation messages
+#  11/02/08  mallam    496337      PII additions
+#  25/02/08  johawkes  499078      Fix WTRN0080 user action wording
+#  29-02-08  johawkes  501807      Style changes
+#  29/01/09  jstidder  PK76761     Clarify WTRN0027/WTRN0028
+#  11/11/09  hursdlg   F923-4347.2 Add WTRN0130/131
+#  17/03/10  hursdlg   PM07874     New msgs WTRN0132-151
+#  13/05/10  hursdlg   649934      Further PM07874 changes
+#  12/10/10  johawkes  672987      Fix validation errors
+#  19/01/11  jstidder  PM30478     Clarify/expand WTRN0122
+#  10/07/12  johawkes  628170.3    Users of HA manager need proper log/error when HA not working
+#-----------------------------------------------------------------------
+#
+# USE OF PROPERTIES FILE FOR MESSAGES:
+#
+# - Each property in the property file is terminated by the line termination character.
+# - If a line contains only whitespace or if the first non-whitespace character of a
+# line is # or !, the line is ignored. (comments start with # or !)
+# - Every line in the properties file other than whitespace lines or comment lines
+# denotes a single property. A \ is treated as a line continuation character. Lines
+# should be terminated with the line termination character.
+# - Correct grammar for a property line is <key><separator><element>. A valid separator
+# is any one of equal, colon or whitespace ( =: ).
+# - The key consists of all the characters on the line starting from the first
+# non-whitespace up to the first separator. Separator characters can be included in the
+# key by escaping them (e.g. \:) This is not recommended because it is error prone and
+# confusing.
+# - Whitespace after the key is skipped until the first non-whitespace character is
+# found. All remaining characters up to the appropriate line termination character
+# define the element.
+#
+# MESSAGE INSERTS
+#
+#  Primitives
+# Primitives, such as int and long are not recognized as subclasses of Object
+# and cannot be directly passed to one of these methods. A primitive value must
+# be transformed to its proper type (e.g Integer, Long) before being passed as
+# a parameter.
+#
+#  Object
+# For normal Objects, toString() is called on the object and the resulting String
+# is displayed. For exceptions, the stack trace will be printed.For Objects that
+# implement the Traceable interface, the toTraceString() method is called instead.
+# To provide the proper trace representation for the Object, provide the proper
+# implementation for the appropriate method.
+#
+#  Object[]
+# Since Object[] is a proper subclass of Object, Object[] can be passed. Use
+# Object[] when more than one parameter should be passed to a message logging
+# or trace method. The appropriate method (toString() or toTraceString()) is
+# called on each Object in the array. This array should contain only
+# standalone normal Objects and should not contain other arrays. Passing nested
+# array may result in the following Strings being displayed :
+#  "[B@924586a0b" - This is deciphered as a byte array at location X.
+# This is typically returned when an array of primitives is passed as a member
+# of an Object[]. It is the result of calling toString() on the byte[].
+#  "[Ljava.lang.Object;@9136fa0b" : An array of objects.
+# Typically this is seen when an array containing nested arrays is passed.
+#
+#  Array of Primitives
+# An array of primitive (e.g. byte[], int[] is recognized as an Object, but is
+# treated somewhat as a second cousin of Object by Java. The results you see
+# will depend on the type of array passed and the API used. For consistent results,
+# user code should preprocess and format the primitive array into some type of
+# String form before passing it to the method. If such preprocessing is not
+# performed, you may see something results something like the following:
+#  "Illegal trace argument : array of long."
+# This is typically returned when an array of primitives is passed to a method
+# taking an Object and the Tr service does not provide special parsing for
+# primitive arrays of this type.
+#  "01040703..." : the hex representation of an array of bytes.
+# Typically this may be seen when a byte array is passed to a method taking a
+# single Object. This behavior is subject to change and should not be relied on.
+#  " '1' '2' ..." : The String representation of the members of an int[] formed
+# by converting each element to an Integer and calling toString on the Integers.
+# This behavior is subject to change and should not be relied on.
+#
+#  Common messages
+# The following common messages are used in this file:
+#
+#         CMSG0001       This is an unexpected exception. The cause can not be immediately determined. 
+#         CMSG0002       For further information on resolving this error, please consult the IBM WebSphere Application Server Support website available
+#                        at: http://www-3.ibm.com/software/webservers/appserv/support.html. The site provides searchable databases of technotes,
+#                        solutions, and e-fixes. Information on contacting the WebSphere Support team is also provided. 
+#
+# During the build, the WebSphere Message Tool will recognize the common message keywords, and replace them with text defined in the
+#                Common Messages Table. 
+#
+#
+#
+#
+#-----------------------------------------------------------------------
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells Java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+#
+#-----------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.15,0,02/08/23,04:09:52
+#
+#CMVCPATHNAME SERV1/ws/code/transaction.impl/src/com/ibm/ws/Transaction/resources/TransactionMsgs.nlsprops
+#COMPONENTPREFIX WTRN
+#COMPONENTNAMEFOR WTRN WebSphere Transaction Monitor
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+WTRN0000_ERR_INT_ERROR=WTRN0000E: Bels\u0151 hiba t\u00f6rt\u00e9nt a(z) {1} oszt\u00e1ly {0} met\u00f3dus\u00e1ban; a kiv\u00e9telverem tartalma: {2}.
+WTRN0000_ERR_INT_ERROR.explanation=CMSG0001
+WTRN0000_ERR_INT_ERROR.useraction=CMSG0002
+
+WTRN0001_ERR_INT_ERROR=WTRN0001E: Bels\u0151 hiba t\u00f6rt\u00e9nt a(z) {1} oszt\u00e1ly {0};
+WTRN0001_ERR_INT_ERROR.explanation=CMSG0001
+WTRN0001_ERR_INT_ERROR.useraction=CMSG0002
+
+WTRN0002_UNABLE_TO_FIND_RESOURCE_CLASS=WTRN0002W: A tranzakci\u00f3s szolg\u00e1ltat\u00e1s nem tal\u00e1lja a(z) {0} er\u0151forr\u00e1soszt\u00e1lyt.
+WTRN0002_UNABLE_TO_FIND_RESOURCE_CLASS.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s nem tal\u00e1lja az \u00fczenetben azonos\u00edtott XA er\u0151forr\u00e1s-oszt\u00e1lyt.
+WTRN0002_UNABLE_TO_FIND_RESOURCE_CLASS.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a t\u00e1rs\u00edtott XA er\u0151forr\u00e1s-szolg\u00e1ltat\u00f3 konfigur\u00e1lva van \u00e9s ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t. Ezut\u00e1n az er\u0151forr\u00e1s konfigur\u00e1ci\u00f3ja megsz\u00fcntethet\u0151 \u00e9s a kiszolg\u00e1l\u00f3 le\u00e1ll\u00edthat\u00f3.
+
+WTRN0003_RECOVERY_TXRECUTILS_LOAD_FAILED=WTRN0003E: A helyre\u00e1ll\u00edt\u00e1s sor\u00e1n egy sz\u00fcks\u00e9ges JAR f\u00e1jl nem tal\u00e1lhat\u00f3. A keres\u00e9s\u00e9re haszn\u00e1lt \u00fatvonal a k\u00f6vetkez\u0151 volt: {0}.
+WTRN0003_RECOVERY_TXRECUTILS_LOAD_FAILED.explanation=Egy be\u00e1gyazott RAR f\u00e1jlt \u00e9rint\u0151 helyre\u00e1ll\u00edt\u00e1s sor\u00e1n egy sz\u00fcks\u00e9ges JAR f\u00e1jl nem tal\u00e1lhat\u00f3. Ezen JAR f\u00e1jl n\u00e9lk\u00fcl a tranzakci\u00f3 helyre\u00e1ll\u00edt\u00e1sa nem fejezhet\u0151 be.
+WTRN0003_RECOVERY_TXRECUTILS_LOAD_FAILED.useraction=Nincs. Ez egy bels\u0151 rendszerhiba.
+
+WTRN0004_CANT_CREATE_XARESOURCEFACTORY=WTRN0004W: Az XAResourceFactory l\u00e9trehoz\u00e1sa nem lehets\u00e9ges. Az XAResourceFactory oszt\u00e1ly neve: {0}. A kiv\u00e9tel veremtartalma a k\u00f6vetkez\u0151: {1}
+WTRN0004_CANT_CREATE_XARESOURCEFACTORY.explanation=A kiszolg\u00e1l\u00f3 helyre\u00e1ll\u00edt\u00e1sa k\u00f6zben a megadott, XAResource objektumok el\u0151\u00e1ll\u00edt\u00e1s\u00e1ra haszn\u00e1lt gy\u00e1r nem tal\u00e1lhat\u00f3. Ez egy bels\u0151 rendszerhiba.
+WTRN0004_CANT_CREATE_XARESOURCEFACTORY.useraction=CMSG0002
+
+WTRN0005_CANT_RECREATE_XARESOURCE=WTRN0005W: Az XAResource nem hozhat\u00f3 l\u00e9tre ism\u00e9telten egy tranzakci\u00f3 r\u00e9sztvev\u0151 \u00e9s a tranzakci\u00f3 helyre\u00e1ll\u00edt\u00e1sa lehet, hogy nem k\u00e9pes megfelel\u0151en befejez\u0151dni. Az er\u0151forr\u00e1s: {0}. A kiv\u00e9tel veremtartalma a k\u00f6vetkez\u0151: {1}
+WTRN0005_CANT_RECREATE_XARESOURCE.explanation=A kiszolg\u00e1l\u00f3 helyre\u00e1ll\u00edt\u00e1sa k\u00f6zben egy XAResource objektum nem hozhat\u00f3 l\u00e9tre ism\u00e9telten a megfelel\u0151 gy\u00e1r \u00e1ltal.
+WTRN0005_CANT_RECREATE_XARESOURCE.useraction=CMSG0002
+
+WTRN0006_TRANSACTION_HAS_TIMED_OUT=WTRN0006W: A(z) {0} tranzakci\u00f3 t\u00fall\u00e9pte az id\u0151korl\u00e1tot {1} m\u00e1sodperc ut\u00e1n.
+WTRN0006_TRANSACTION_HAS_TIMED_OUT.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s id\u0151t\u00fall\u00e9p\u00e9sre k\u00e9nyszer\u00edtette (visszag\u00f6rgette) az \u00fczenetben megadott tranzakci\u00f3t.
+WTRN0006_TRANSACTION_HAS_TIMED_OUT.useraction=A j\u00f6v\u0151beli id\u0151t\u00fall\u00e9p\u00e9sek sz\u00e1m\u00e1nak cs\u00f6kkent\u00e9se \u00e9rdek\u00e9ben n\u00f6velje a tranzakci\u00f3 id\u0151korl\u00e1tj\u00e1nak \u00e9rt\u00e9k\u00e9t.
+
+WTRN0007_CANT_IMPORT_NULL_CONTEXT=WTRN0007W: A tranzakci\u00f3s szolg\u00e1ltat\u00e1s nem tudta import\u00e1lni a tranzakci\u00f3t null\u00e9rt\u00e9k\u0171 vagy \u00e9rv\u00e9nytelen kontextussal.
+WTRN0007_CANT_IMPORT_NULL_CONTEXT.explanation=Egy kontextus \u00e9rv\u00e9nytelen vagy hi\u00e1nyz\u00f3 adatokkal ker\u00fclt import\u00e1l\u00e1sra a kiszolg\u00e1l\u00f3ra, \u00edgy nem kezdem\u00e9nyezhet\u0151 tranzakci\u00f3.
+WTRN0007_CANT_IMPORT_NULL_CONTEXT.useraction=CMSG0002
+
+WTRN0008_CANT_IMPORT_NESTED_TRAN=WTRN0008W: A tranzakci\u00f3s szolg\u00e1ltat\u00e1s nem tudta import\u00e1lni a(z) {0} be\u00e1gyazott tranzakci\u00f3t.
+WTRN0008_CANT_IMPORT_NESTED_TRAN.explanation=Egy t\u00e1voli kiszolg\u00e1l\u00f3 be\u00e1gyazott tranzakci\u00f3 import\u00e1l\u00e1s\u00e1t k\u00eds\u00e9rlete meg. Ez a m\u0171velet nem t\u00e1mogatott.
+WTRN0008_CANT_IMPORT_NESTED_TRAN.useraction=CMSG0002
+
+WTRN0009_NO_GLOBAL_TID_ON_IMPORT=WTRN0009E: Nincs globalTID a koordin\u00e1tor er\u0151forr\u00e1shoz.
+WTRN0009_NO_GLOBAL_TID_ON_IMPORT.explanation=Nem ker\u00fclt megad\u00e1sra glob\u00e1lis tranzakci\u00f3-azonos\u00edt\u00f3 az import\u00e1lt tranzakci\u00f3s kontextusban.
+WTRN0009_NO_GLOBAL_TID_ON_IMPORT.useraction=CMSG0002
+
+WTRN0010_EXC_AT_COORD_REG=WTRN0010E: A tranzakci\u00f3 visszag\u00f6rgetve a/z {0} f\u00f6l\u00e9rendeltn\u00e9l a koordin\u00e1tor bejegyz\u00e9se k\u00f6zben bek\u00f6vetkezett kiv\u00e9tel miatt.
+WTRN0010_EXC_AT_COORD_REG.explanation=Probl\u00e9ma mer\u00fclt fel, amikor t\u00e1voli tranzakci\u00f3 ker\u00fclt import\u00e1l\u00e1sra a kiszolg\u00e1l\u00f3ra, \u00edgy a tranzakci\u00f3 visszag\u00f6rget\u00e9sre ker\u00fclt.
+WTRN0010_EXC_AT_COORD_REG.useraction=CMSG0002
+
+WTRN0011_FACTORY_BIND_FAILURE=WTRN0011E: Nem lehet bejegyezni a tranzakci\u00f3 gy\u00e1rat a JNDI n\u00e9vt\u00e9rben.
+WTRN0011_FACTORY_BIND_FAILURE.explanation=V\u00e1ratlan hiba t\u00f6rt\u00e9nt a tranzakci\u00f3s szolg\u00e1ltat\u00e1s inicializ\u00e1l\u00e1sa sor\u00e1n.
+WTRN0011_FACTORY_BIND_FAILURE.useraction=CMSG0002
+
+WTRN0012_UNEXP_FACTORY_REG_FAILURE=WTRN0012E: V\u00e1ratlan hiba a tranzakci\u00f3s gy\u00e1r bejegyz\u00e9se k\u00f6zben.
+WTRN0012_UNEXP_FACTORY_REG_FAILURE.explanation=V\u00e1ratlan hiba t\u00f6rt\u00e9nt a tranzakci\u00f3s szolg\u00e1ltat\u00e1s inicializ\u00e1l\u00e1sa sor\u00e1n.
+WTRN0012_UNEXP_FACTORY_REG_FAILURE.useraction=CMSG0002
+
+WTRN0013_LOGGING_IN_MEMORY=WTRN0013W: Nincs tranzakci\u00f3s napl\u00f3 megadva, napl\u00f3z\u00e1s a mem\u00f3ri\u00e1ba.
+WTRN0013_LOGGING_IN_MEMORY.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s \u00fagy van be\u00e1ll\u00edtva, hogy ne napl\u00f3zzon \u00e1lland\u00f3 t\u00e1rol\u00f3ra. Ez adatintegrit\u00e1si probl\u00e9m\u00e1kat vagy z\u00e1rolt er\u0151forr\u00e1sokat (p\u00e9ld\u00e1ul adatb\u00e1zis t\u00e1bl\u00e1kat) okozhat, ha f\u00fcgg\u0151ben l\u00e9v\u0151 k\u00e9tf\u00e1zis\u00fa v\u00e9gleges\u00edt\u00e9st haszn\u00e1l\u00f3 tranzakci\u00f3k futnak a kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1sakor.
+WTRN0013_LOGGING_IN_MEMORY.useraction=Ha a tranzakci\u00f3 helyre\u00e1ll\u00edt\u00e1sa sz\u00fcks\u00e9ges, akkor konfigur\u00e1lja \u00fajra a tranzakci\u00f3s szolg\u00e1ltat\u00e1st, hogy az haszn\u00e1lja a napl\u00f3z\u00e1st \u00e9s ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+WTRN0014_UNEXPECTED_LOGFILE_SPECIFICATION=WTRN0014I: A tranzakci\u00f3s szolg\u00e1ltat\u00e1s \u00e9rv\u00e9nytelen napl\u00f3f\u00e1jl konfigur\u00e1ci\u00f3s karaktersorozatot \u00e9szlelt. A tranzakci\u00f3s szolg\u00e1ltat\u00e1s helyre\u00e1ll\u00edt\u00e1si napl\u00f3z\u00e1s n\u00e9lk\u00fcl fog folytat\u00f3dni.
+WTRN0014_UNEXPECTED_LOGFILE_SPECIFICATION.explanation=A tranzakci\u00f3s napl\u00f3f\u00e1jl Tranzakci\u00f3s napl\u00f3k\u00f6nyvt\u00e1r mez\u0151ben be\u00e1ll\u00edtott k\u00f6nyvt\u00e1rneve \u00e9rv\u00e9nytelen. A form\u00e1tum egy teljes k\u00e9pz\u00e9s\u0171 napl\u00f3f\u00e1jl k\u00f6nyvt\u00e1r kell legyen, amelyet opcion\u00e1lisan k\u00f6vethet egy ';' \u00e9s a napl\u00f3f\u00e1jl m\u00e9rete, ahol az M a napl\u00f3f\u00e1jl m\u00e9rete ut\u00e1n M megabyte-okat jelez, a K pedig kilobyte-okat. Az alap\u00e9rtelmezett \u00e9s minim\u00e1lis napl\u00f3f\u00e1jl m\u00e9ret 1M.
+WTRN0014_UNEXPECTED_LOGFILE_SPECIFICATION.useraction=Jav\u00edtsa a tranzakci\u00f3s napl\u00f3k\u00f6nyvt\u00e1r be\u00e1ll\u00edt\u00e1s\u00e1t. Gondoskodj\u00e9k r\u00f3la, hogy a kiszolg\u00e1l\u00f3 \u00fajra legyen ind\u00edtva a tranzakci\u00f3 helyre\u00e1ll\u00edt\u00e1si napl\u00f3z\u00e1s\u00e1nak enged\u00e9lyez\u00e9s\u00e9hez.
+
+WTRN0015_DEFAULT_AND_MINIMUM_LOG_SIZE=WTRN0015E: \u00c9rv\u00e9nytelen tranzakci\u00f3s napl\u00f3f\u00e1jl m\u00e9ret ker\u00fclt megad\u00e1sra: {0}. A tranzakci\u00f3s szolg\u00e1ltat\u00e1s az alap\u00e9rtelmezett 1M napl\u00f3f\u00e1jlm\u00e9retet fogja haszn\u00e1lni.
+WTRN0015_DEFAULT_AND_MINIMUM_LOG_SIZE.explanation=A tranzakci\u00f3s napl\u00f3f\u00e1jl Tranzakci\u00f3s napl\u00f3k\u00f6nyvt\u00e1r mez\u0151ben be\u00e1ll\u00edtott f\u00e1jlm\u00e9rete \u00e9rv\u00e9nytelen. A form\u00e1tum egy teljes k\u00e9pz\u00e9s\u0171 napl\u00f3f\u00e1jl k\u00f6nyvt\u00e1r kell legyen, amelyet opcion\u00e1lisan k\u00f6vethet egy ';' \u00e9s a napl\u00f3f\u00e1jl m\u00e9rete, ahol az M a napl\u00f3f\u00e1jl m\u00e9rete ut\u00e1n M megabyte-okat jelez, a K pedig kilobyte-okat. Az alap\u00e9rtelmezett \u00e9s minim\u00e1lis napl\u00f3f\u00e1jl m\u00e9ret 1M.
+WTRN0015_DEFAULT_AND_MINIMUM_LOG_SIZE.useraction=Jav\u00edtsa a tranzakci\u00f3s napl\u00f3k\u00f6nyvt\u00e1r be\u00e1ll\u00edt\u00e1s\u00e1t.
+
+WTRN0016_EXC_DURING_RECOVERY=WTRN0016E: A rendszer kiv\u00e9telt \u00e9szlelt a tranzakci\u00f3s szolg\u00e1ltat\u00e1s helyre\u00e1ll\u00edt\u00e1sa k\u00f6zben. {0}
+WTRN0016_EXC_DURING_RECOVERY.explanation=A rendszer kiv\u00e9telt fogott el mik\u00f6zben a tranzakci\u00f3s szolg\u00e1ltat\u00e1s megpr\u00f3b\u00e1lt helyre\u00e1llni egy kor\u00e1bbi kiszolg\u00e1l\u00f3hiba ut\u00e1n.
+WTRN0016_EXC_DURING_RECOVERY.useraction=CMSG0002
+
+WTRN0017_UNABLE_TO_BEGIN_NESTED_TRANSACTION=WTRN0017W: Nem lehet elkezdeni a be\u00e1gyazott tranzakci\u00f3t. A be\u00e1gyazott tranzakci\u00f3k nem t\u00e1mogatottak.
+WTRN0017_UNABLE_TO_BEGIN_NESTED_TRANSACTION.explanation=Ez a hiba egy k\u00eds\u00e9rletet jelez egy be\u00e1gyazott tranzakci\u00f3 elkezd\u00e9s\u00e9re, de a be\u00e1gyazott tranzakci\u00f3k nem t\u00e1mogatottak.
+WTRN0017_UNABLE_TO_BEGIN_NESTED_TRANSACTION.useraction=Gondoskodj\u00e9k r\u00f3la, hogy nem t\u00f6rt\u00e9nik k\u00eds\u00e9rlet tranzakci\u00f3 ind\u00edt\u00e1s\u00e1ra, amikor egy m\u00e1sik tranzakci\u00f3 m\u00e1r akt\u00edv a sz\u00e1lon.
+
+WTRN0018_1PC_RESOURCE_DOES_NOT_SUPPORT_COMMIT=WTRN0018W: Az egyf\u00e1zis\u00fa er\u0151forr\u00e1s nem t\u00e1mogatja a v\u00e9gleges\u00edt\u00e9st.
+WTRN0018_1PC_RESOURCE_DOES_NOT_SUPPORT_COMMIT.explanation=Egy csak egyf\u00e1zis\u00fa v\u00e9grehajt\u00e1sra optimaliz\u00e1lt v\u00e9gleges\u00edt\u00e9st t\u00e1mogat\u00f3 er\u0151forr\u00e1s ker\u00fclt bejegyz\u00e9sre a tranzakci\u00f3s szolg\u00e1ltat\u00e1sn\u00e1l \u00e9s megh\u00edv\u00e1sra ker\u00fclt egy szabv\u00e1ny k\u00e9tf\u00e1zis\u00fa v\u00e9gleges\u00edt\u00e9si m\u0171velet feldolgoz\u00e1s\u00e1ra. Ez egy bels\u0151 rendszerhiba \u00e9s val\u00f3sz\u00edn\u0171leg egy kor\u00e1bbi meghib\u00e1sod\u00e1s okozta.
+WTRN0018_1PC_RESOURCE_DOES_NOT_SUPPORT_COMMIT.useraction=CMSG0002
+
+WTRN0019_LOGFILE_CORRUPTED=WTRN0019E: A tranzakci\u00f3s szolg\u00e1ltat\u00e1s {0} napl\u00f3f\u00e1jlja megs\u00e9r\u00fclt.
+WTRN0019_LOGFILE_CORRUPTED.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s helyre\u00e1ll\u00edt\u00e1si napl\u00f3f\u00e1jlja megs\u00e9r\u00fclt \u00e9s ennek eredm\u00e9nyek\u00e9nt a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa meghi\u00fasult.
+WTRN0019_LOGFILE_CORRUPTED.useraction=A kiszolg\u00e1l\u00f3 hidegind\u00edt\u00e1s\u00e1hoz t\u00f6r\u00f6lje a tranzakci\u00f3s napl\u00f3f\u00e1jlokat \u00e9s ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t. A t\u00e1rs\u00edtott er\u0151forr\u00e1s-kezel\u0151kben f\u00fcgg\u0151ben maradt tranzakci\u00f3kat saj\u00e1t kez\u0171leg kell befejeznie.
+
+WTRN0020_RECOVERING_TRANSACTIONS=WTRN0020W: Tranzakci\u00f3k helyre\u00e1ll\u00edt\u00e1sa a(z) {0} kiszolg\u00e1l\u00f3hoz ezen a kiszolg\u00e1l\u00f3n.
+WTRN0020_RECOVERING_TRANSACTIONS.explanation=Ez a kiszolg\u00e1l\u00f3 egy m\u00e1sik kiszolg\u00e1l\u00f3r\u00f3l sz\u00e1rmaz\u00f3 tranzakci\u00f3s napl\u00f3k helyre\u00e1ll\u00edt\u00e1s\u00e1t v\u00e9gzi. Ha az ezen a kiszolg\u00e1l\u00f3n konfigur\u00e1lt er\u0151forr\u00e1sok nem egyeznek meg azon kiszolg\u00e1l\u00f3 er\u0151forr\u00e1saival, amelyhez a napl\u00f3k k\u00e9sz\u00fcltek, akkor a helyre\u00e1ll\u00edt\u00e1s meghi\u00fasulhat.
+WTRN0020_RECOVERING_TRANSACTIONS.useraction=Ellen\u0151rizze a helyre\u00e1ll\u00edt\u00e1s sor\u00e1n keletkez\u0151 esetleges hiba\u00fczeneteket \u00e9s jav\u00edtson minden k\u00e9rt m\u0171veletet.
+
+WTRN0021_TMRESUME_NOT_SUPPORTED=WTRN0021W: A TMRESUME nem t\u00e1mogatott.
+WTRN0021_TMRESUME_NOT_SUPPORTED.explanation=Ez egy bels\u0151 rendszerhiba \u00e9s val\u00f3sz\u00edn\u0171leg egy kor\u00e1bbi meghib\u00e1sod\u00e1s okozta.
+WTRN0021_TMRESUME_NOT_SUPPORTED.useraction=CMSG0002
+
+WTRN0022_UNKNOWN_XARESOURCE_STATE=WTRN0022W: Ismeretlen XAResource \u00e1llapot.
+WTRN0022_UNKNOWN_XARESOURCE_STATE.explanation=Egy XAResource nem v\u00e1rt \u00e1llapotban volt. Ez egy bels\u0151 rendszerhiba \u00e9s val\u00f3sz\u00edn\u0171leg egy kor\u00e1bbi meghib\u00e1sod\u00e1s okozta.
+WTRN0022_UNKNOWN_XARESOURCE_STATE.useraction=CMSG0002
+
+WTRN0023_INVALID_XAEND_FLAG=WTRN0023W: \u00c9rv\u00e9nytelen XA befejez\u0151 jelz\u0151: {0}
+WTRN0023_INVALID_XAEND_FLAG.explanation=Ez egy bels\u0151 rendszerhiba \u00e9s val\u00f3sz\u00edn\u0171leg egy kor\u00e1bbi meghib\u00e1sod\u00e1s okozta.
+WTRN0023_INVALID_XAEND_FLAG.useraction=CMSG0002
+
+WTRN0024_INCONSISTENT_LOGS=WTRN0024E: Ellentmond\u00f3 tranzakci\u00f3s \u00e9s XA er\u0151forr\u00e1s helyre\u00e1ll\u00edt\u00e1si napl\u00f3k.
+WTRN0024_INCONSISTENT_LOGS.explanation=Ez egy bels\u0151 rendszerhiba \u00e9s val\u00f3sz\u00edn\u0171leg egy kor\u00e1bbi meghib\u00e1sod\u00e1s okozta.
+WTRN0024_INCONSISTENT_LOGS.useraction=CMSG0002
+
+WTRN0025_TRAN_RECOVERY_FAILED=WTRN0025E: A tranzakci\u00f3 helyre\u00e1ll\u00edt\u00e1sa meghi\u00fasult: {0}
+WTRN0025_TRAN_RECOVERY_FAILED.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt egy tranzakci\u00f3 helyre\u00e1ll\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
+WTRN0025_TRAN_RECOVERY_FAILED.useraction=CMSG0002
+
+WTRN0026_KEYPOINT_EXC_IN_RECOVERY=WTRN0026E: A rendszer kiv\u00e9telt \u00e9szlelt a kulcspont k\u00f6zben a helyre\u00e1ll\u00edt\u00e1s ut\u00e1n! {0}
+WTRN0026_KEYPOINT_EXC_IN_RECOVERY.explanation=Ez egy bels\u0151 rendszerhiba \u00e9s val\u00f3sz\u00edn\u0171leg egy kor\u00e1bbi meghib\u00e1sod\u00e1s okozta.
+WTRN0026_KEYPOINT_EXC_IN_RECOVERY.useraction=CMSG0002
+
+WTRN0027_RECOVERING_TXN=WTRN0027I: A tranzakci\u00f3s szolg\u00e1ltat\u00e1s helyre\u00e1ll\u00edt 1 tranzakci\u00f3t.
+WTRN0027_RECOVERING_TXN.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s \u00e9szlelte, hogy egy tranzakci\u00f3 futott a kiszolg\u00e1l\u00f3 utols\u00f3 le\u00e1ll\u00edt\u00e1sakor, \u00e9s most helyre\u00e1ll\u00edtja ezt a tranzakci\u00f3t.  Tov\u00e1bbi, a helyre\u00e1ll\u00edt\u00e1s feldolgoz\u00e1s\u00e1nak el\u0151rehalad\u00e1s\u00e1t jelz\u0151 fel\u00fclvizsg\u00e1lati \u00fczenetek jelenhetnek meg.
+WTRN0027_RECOVERING_TXN.useraction=Semmit sem kell tennie.
+
+WTRN0028_RECOVERING_TXNS=WTRN0028I: A tranzakci\u00f3s szolg\u00e1ltat\u00e1s helyre\u00e1ll\u00edt {0} tranzakci\u00f3t.
+WTRN0028_RECOVERING_TXNS.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s \u00e9szlelte, hogy tranzakci\u00f3k futottak a kiszolg\u00e1l\u00f3 utols\u00f3 le\u00e1ll\u00edt\u00e1sakor, \u00e9s most helyre\u00e1ll\u00edtja ezeket a tranzakci\u00f3kat.  Tov\u00e1bbi, a helyre\u00e1ll\u00edt\u00e1s feldolgoz\u00e1s\u00e1nak el\u0151rehalad\u00e1s\u00e1t jelz\u0151 fel\u00fclvizsg\u00e1lati \u00fczenetek jelenhetnek meg.
+WTRN0028_RECOVERING_TXNS.useraction=Semmit sem kell tennie.
+
+WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN=WTRN0029E: Hiba a napl\u00f3 lez\u00e1r\u00e1sakor le\u00e1ll\u00edt\u00e1s k\u00f6zben!
+WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s hib\u00e1val tal\u00e1lkozott a helyre\u00e1ll\u00edt\u00e1si napl\u00f3j\u00e1nak lez\u00e1r\u00e1sa k\u00f6zben a kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1sa sor\u00e1n.
+WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN.useraction=CMSG0002
+
+WTRN0030_XARESOURCE_RECOVER_FAILURE=WTRN0030E: Az XAResource adatok helyre\u00e1ll\u00edt\u00e1sa meghi\u00fasult: {0}
+WTRN0030_XARESOURCE_RECOVER_FAILURE.explanation=Ez egy bels\u0151 rendszerhiba \u00e9s val\u00f3sz\u00edn\u0171leg egy kor\u00e1bbi meghib\u00e1sod\u00e1s okozta.
+WTRN0030_XARESOURCE_RECOVER_FAILURE.useraction=CMSG0002
+
+WTRN0031_XA_ROLLBACK_FAILED=WTRN0031E: Egy xa_rollback m\u0171velet meghi\u00fasult egy tranzakci\u00f3s er\u0151forr\u00e1son. A glob\u00e1lis tranzakci\u00f3: {0}. A kiv\u00e9tel veremtartalma a k\u00f6vetkez\u0151: {1}
+WTRN0031_XA_ROLLBACK_FAILED.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt, amikor a tranzakci\u00f3s szolg\u00e1ltat\u00e1s megh\u00edvta az xa_rollback m\u0171veletet az \u00fczenetben megadott glob\u00e1lis tranzakci\u00f3n\u00e1l bejegyzett egyik er\u0151forr\u00e1sra.
+WTRN0031_XA_ROLLBACK_FAILED.useraction=Lehet, hogy a tranzakci\u00f3 heurisztikus eredm\u00e9nnyel fejez\u0151d\u00f6tt be. Ebben az esetben jav\u00edtsa az \u00f6sszes alkalmaz\u00e1s adatprobl\u00e9m\u00e1t, amelyet a heurisztikus eredm\u00e9ny okozott.
+
+WTRN0032_IMPLEMENTATION_SPECIFIC_ON_INBOUND=WTRN0032E: Megval\u00f3s\u00edt\u00e1sra jellemz\u0151 tranzakci\u00f3s kontextus \u00e9rkezett a bej\u00f6v\u0151 k\u00e9r\u00e9ssel.
+WTRN0032_IMPLEMENTATION_SPECIFIC_ON_INBOUND.explanation=Ez egy bels\u0151 rendszerhiba \u00e9s val\u00f3sz\u00edn\u0171leg egy kor\u00e1bbi meghib\u00e1sod\u00e1s okozta.
+WTRN0032_IMPLEMENTATION_SPECIFIC_ON_INBOUND.useraction=CMSG0002
+
+WTRN0033_TRANSACTION_FACTORY_CREATE=WTRN0033E: A tranzakci\u00f3s gy\u00e1r l\u00e9trehoz\u00e1sa a k\u00f6vetkez\u0151 kiv\u00e9telt fogta el: {0}.
+WTRN0033_TRANSACTION_FACTORY_CREATE.explanation=Ez egy bels\u0151 rendszerhiba \u00e9s val\u00f3sz\u00edn\u0171leg egy kor\u00e1bbi meghib\u00e1sod\u00e1s okozta.
+WTRN0033_TRANSACTION_FACTORY_CREATE.useraction=CMSG0002
+
+WTRN0034_DURING_SERVER_QUIESCE_TX_ROLLBACK_SUCCEEDED=WTRN0034W: A kiszolg\u00e1l\u00f3 nyugalmi id\u0151szaka sor\u00e1n a rendszer a(z) {0} tranzakci\u00f3t tal\u00e1lta. A tranzakci\u00f3 visszag\u00f6rget\u00e9s\u00e9re tett k\u00eds\u00e9rlet siker\u00fclt.
+WTRN0034_DURING_SERVER_QUIESCE_TX_ROLLBACK_SUCCEEDED.explanation=A kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1s nyugalmi f\u00e1zis\u00e1ban k\u00f6zben a rendszer egy f\u00fcgg\u0151ben l\u00e9v\u0151 tranzakci\u00f3t tal\u00e1lt. Ez a tranzakci\u00f3 sikeresen vissza lett g\u00f6rgetve.
+WTRN0034_DURING_SERVER_QUIESCE_TX_ROLLBACK_SUCCEEDED.useraction=Semmit sem kell tennie.
+
+WTRN0035_DURING_SERVER_QUIESCE_TX_ROLLBACK_FAILED=WTRN0035W: A kiszolg\u00e1l\u00f3 nyugalmi id\u0151szaka sor\u00e1n a rendszer a(z) {0} tranzakci\u00f3t tal\u00e1lta. A tranzakci\u00f3 visszag\u00f6rget\u00e9s\u00e9re tett k\u00eds\u00e9rlet meghi\u00fasult.
+WTRN0035_DURING_SERVER_QUIESCE_TX_ROLLBACK_FAILED.explanation=A kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1s nyugalmi f\u00e1zis\u00e1ban k\u00f6zben a rendszer egy f\u00fcgg\u0151ben l\u00e9v\u0151 tranzakci\u00f3t tal\u00e1lt. Ez a tranzakci\u00f3 nem lett sikeresen visszag\u00f6rgetve.
+WTRN0035_DURING_SERVER_QUIESCE_TX_ROLLBACK_FAILED.useraction=Semmit sem kell tennie. Ez a tranzakci\u00f3 a kiszolg\u00e1l\u00f3 k\u00f6vetkez\u0151 ind\u00edt\u00e1sakor helyre lesz \u00e1ll\u00edtva.
+
+WTRN0036_DURING_SERVER_QUIESCE_TX_MARKED_ROLLBACK_ONLY=WTRN0036W: A kiszolg\u00e1l\u00f3 nyugalmi id\u0151szaka sor\u00e1n a rendszer a(z) {0} tranzakci\u00f3t tal\u00e1lta. A tranzakci\u00f3 csak ki lett jel\u00f6lve visszag\u00f6rget\u00e9sre.
+WTRN0036_DURING_SERVER_QUIESCE_TX_MARKED_ROLLBACK_ONLY.explanation=A kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1s nyugalmi f\u00e1zis\u00e1ban k\u00f6zben a rendszer egy f\u00fcgg\u0151ben l\u00e9v\u0151 tranzakci\u00f3t tal\u00e1lt. Ez a tranzakci\u00f3 csak visszag\u00f6rget\u00e9sre lett kijel\u00f6lve.
+WTRN0036_DURING_SERVER_QUIESCE_TX_MARKED_ROLLBACK_ONLY.useraction=Semmit sem kell tennie. A tranzakci\u00f3 a kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1sakor vissza lesz g\u00f6rgetve, vagy a kiszolg\u00e1l\u00f3 \u00fajraind\u00edt\u00e1sakor helyre\u00e1ll\u00edt\u00e1sra ker\u00fcl.
+
+WTRN0037_XA_RECOVER_ERROR=WTRN0037W: A tranzakci\u00f3s szolg\u00e1ltat\u00e1s hib\u00e1val tal\u00e1lkozott az xa_recover m\u0171velet k\u00f6zben. Az er\u0151forr\u00e1s: {0}. A hibak\u00f3d: {1}. A kiv\u00e9tel veremtartalma a k\u00f6vetkez\u0151: {2}
+WTRN0037_XA_RECOVER_ERROR.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s hib\u00e1val tal\u00e1lkozott az xa_recover h\u00edv\u00e1sakor egy er\u0151forr\u00e1son abb\u00f3l a c\u00e9lb\u00f3l, hogy meghat\u00e1rozza a megfelel\u0151 er\u0151forr\u00e1s-kezel\u0151 \u00e1ltal felf\u00fcggesztett el\u0151k\u00e9sz\u00edtett tranzakci\u00f3kat. A m\u0171velet v\u00e9grehajt\u00e1sa \u00fajra meg lesz k\u00eds\u00e9relve.
+WTRN0037_XA_RECOVER_ERROR.useraction=A probl\u00e9ma ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben vizsg\u00e1lja meg a hibak\u00f3dot.
+
+WTRN0038_ERR_DESTROYING_XARESOURCE=WTRN0038W: Kiv\u00e9tel t\u00f6rt\u00e9nt egy XA er\u0151forr\u00e1s megsemmis\u00edt\u00e9se k\u00f6zben. A kiv\u00e9tel veremtartalma a k\u00f6vetkez\u0151: {0}
+WTRN0038_ERR_DESTROYING_XARESOURCE.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s nem tudott megsemmis\u00edteni egy XAResource elemet.
+WTRN0038_ERR_DESTROYING_XARESOURCE.useraction=Semmit nem kell tennie, mivel ennek nem szabad befoly\u00e1solnia a tranzakci\u00f3s szolg\u00e1ltat\u00e1st.
+
+WTRN0039_SERIALIZE_FAILED=WTRN0039E: Nem lehet sorbafejteni egy objektumot byte form\u00e1tumba.
+WTRN0039_SERIALIZE_FAILED.explanation=Ez egy bels\u0151 rendszerhiba \u00e9s val\u00f3sz\u00edn\u0171leg egy kor\u00e1bbi meghib\u00e1sod\u00e1s okozta.
+WTRN0039_SERIALIZE_FAILED.useraction=CMSG0002
+
+WTRN0040_OBJECT_DESERIALIZE_FAILED=WTRN0040W: Az objektum nem fejthet\u0151 vissza. A kiv\u00e9tel veremtartalma a k\u00f6vetkez\u0151: {0}
+WTRN0040_OBJECT_DESERIALIZE_FAILED.explanation=Ez egy bels\u0151 rendszerhiba \u00e9s val\u00f3sz\u00edn\u0171leg egy kor\u00e1bbi meghib\u00e1sod\u00e1s okozta.
+WTRN0040_OBJECT_DESERIALIZE_FAILED.useraction=CMSG0002
+
+WTRN0041_TXN_ROLLED_BACK=WTRN0041I: A(z) {0} tranzakci\u00f3 visszag\u00f6rgetve. 
+WTRN0041_TXN_ROLLED_BACK.explanation=A tranzakci\u00f3 kor\u00e1bban rollbackOnly \u00e1llapot\u00fanak lett jel\u00f6lve, \u00e9s most vissza lett g\u00f6rgetve. Ezt okozhatja egy tranzakci\u00f3s id\u0151t\u00fall\u00e9p\u00e9s vagy egy alkalmaz\u00e1s d\u00f6nthetett \u00fagy, hogy rollbackOnly \u00e1llapot\u00fanak jel\u00f6li a tranzakci\u00f3t.                             
+WTRN0041_TXN_ROLLED_BACK.useraction=Semmit sem kell tennie, kiv\u00e9ve, ha a visszag\u00f6rget\u00e9s nem k\u00edv\u00e1natos \u00e9s egy tranzakci\u00f3 id\u0151t\u00fall\u00e9p\u00e9s\u00e9nek eredm\u00e9nyek\u00e9nt t\u00f6rt\u00e9nik. Ebben az esetben vizsg\u00e1lja meg, mi\u00e9rt tart a tranzakci\u00f3 befejez\u0151d\u00e9se tov\u00e1bb, mint az id\u0151korl\u00e1tk\u00e9nt megadott id\u0151tartam \u00e9s fontolja meg a tranzakci\u00f3 id\u0151korl\u00e1t \u00e9rt\u00e9keinek n\u00f6vel\u00e9s\u00e9t a kiszolg\u00e1l\u00f3n.
+
+WTRN0042_GLOBAL_TRAN_ROLLBACK=WTRN0042I: A GlobalTransaction visszag\u00f6rgetve id\u0151t\u00fall\u00e9p\u00e9s vagy egy setRollbackOnly h\u00edv\u00e1s miatt.
+WTRN0042_GLOBAL_TRAN_ROLLBACK.explanation=Egy glob\u00e1lis tranzakci\u00f3 vissza lett g\u00f6rgetve, mert el\u00e9rte az id\u0151korl\u00e1t \u00e9rt\u00e9k\u00e9t, vagy a setRollbackOnly met\u00f3dus ker\u00fclt megh\u00edv\u00e1sra.
+WTRN0042_GLOBAL_TRAN_ROLLBACK.useraction=Ha az id\u0151korl\u00e1t \u00e9rt\u00e9k t\u00fal r\u00f6vid vagy hossz\u00fa, akkor az adminisztr\u00e1ci\u00f3s konzol seg\u00edts\u00e9g\u00e9vel m\u00f3dos\u00edtsa azt.
+
+WTRN0043_LOCAL_TRAN_ROLLBACK=WTRN0043I: A LocalTransaction visszag\u00f6rgetve egy setRollbackOnly h\u00edv\u00e1s miatt.
+WTRN0043_LOCAL_TRAN_ROLLBACK.explanation=Egy helyi tranzakci\u00f3 vissza lett g\u00f6rgetve, mert el\u00e9rte az id\u0151korl\u00e1t \u00e9rt\u00e9k\u00e9t, vagy a setRollbackOnly met\u00f3dus ker\u00fclt megh\u00edv\u00e1sra.
+WTRN0043_LOCAL_TRAN_ROLLBACK.useraction=Semmit sem kell tennie.
+
+WTRN0044_HEURISTIC_MAY_HAVE_OCCURED=WTRN0044W: Egy heurisztikus helyzet \u00e1llhatott el\u0151 a(z) {0} tranzakci\u00f3hoz.
+WTRN0044_HEURISTIC_MAY_HAVE_OCCURED.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s \u00e9szlelte, hogy a megadott tranzakci\u00f3 egy- \u00e9s k\u00e9tf\u00e1zis\u00fa visszag\u00f6rget\u00e9sre k\u00e9pes er\u0151forr\u00e1sok kever\u00e9k\u00e9t foglalja mag\u00e1ban. A tranzakci\u00f3s szolg\u00e1ltat\u00e1s \u00e1tadott egy egyf\u00e1zis\u00fa v\u00e9gleges\u00edt\u00e9si k\u00e9r\u00e9st az egyetlen egyf\u00e1zis\u00fa m\u0171veletekre k\u00e9pes er\u0151forr\u00e1snak, de kiszolg\u00e1l\u00f3hiba t\u00f6rt\u00e9nt miel\u0151tt a v\u00e9gleges\u00edt\u00e9s befejez\u0151d\u00f6tt volna. Nem ismert, hogy az er\u0151forr\u00e1s sikeresen v\u00e9gleges\u00edt\u00e9sre ker\u00fclt-e.
+WTRN0044_HEURISTIC_MAY_HAVE_OCCURED.useraction=Az \u00f6sszes k\u00e9tf\u00e1zis\u00fa visszag\u00f6rget\u00e9sre k\u00e9pes er\u0151forr\u00e1s vissza lesz g\u00f6rgetve. Ha az egyf\u00e1zis\u00fa visszag\u00f6rget\u00e9sre k\u00e9pes er\u0151forr\u00e1s sikeresen feldolgozta a v\u00e9gleges\u00edt\u00e9st, akkor heurisztikus s\u00e9r\u00fcl\u00e9s t\u00f6rt\u00e9nt \u00e9s az ez \u00e1ltal okozott \u00f6sszes alkalmaz\u00e1s adatprobl\u00e9m\u00e1t ki kell jav\u00edtania.
+
+WTRN0045_CANNOT_RECOVER_RESOURCE=WTRN0045W: A tranzakci\u00f3s szolg\u00e1ltat\u00e1s nem tudja helyre\u00e1ll\u00edtani a(z) {0} er\u0151forr\u00e1st. A kiv\u00e9tel veremtartalma a k\u00f6vetkez\u0151: {1}
+WTRN0045_CANNOT_RECOVER_RESOURCE.explanation=Bels\u0151 rendszerhiba t\u00f6rt\u00e9nt, amikor a tranzakci\u00f3s szolg\u00e1ltat\u00e1s megk\u00eds\u00e9relte rekonstru\u00e1lni egy tranzakci\u00f3 r\u00e9sztvev\u0151j\u00e9t a helyre\u00e1ll\u00edt\u00e1s sor\u00e1n. Ezt val\u00f3sz\u00edn\u0171leg egy kor\u00e1bbi meghib\u00e1sod\u00e1s okozta.
+WTRN0045_CANNOT_RECOVER_RESOURCE.useraction=CMSG0002
+
+WTRN0046_PREPARE_FAILED=WTRN0046E: A tranzakci\u00f3-kezel\u0151 k\u00eds\u00e9rlete egy el\u0151k\u00e9sz\u00edt\u00e9s h\u00edv\u00e1sra egy tranzakci\u00f3s er\u0151forr\u00e1son hib\u00e1t eredm\u00e9nyezett. A hibak\u00f3d: {0}. A kiv\u00e9tel veremtartalma a k\u00f6vetkez\u0151: {1}
+WTRN0046_PREPARE_FAILED.explanation=A tranzakci\u00f3s er\u0151forr\u00e1s hib\u00e1zott, amikor egy el\u0151k\u00e9sz\u00edt\u00e9s h\u00edv\u00e1s feldolgoz\u00e1s\u00e1ra lett k\u00e9rve. A hiba egy visszag\u00f6rget\u00e9si szavazatk\u00e9nt lesz kezelve.
+WTRN0046_PREPARE_FAILED.useraction=A probl\u00e9ma ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben vizsg\u00e1lja meg a hibak\u00f3dot.
+
+WTRN0047_XAER_RMERR_ON_COMMIT=WTRN0047W: XAER_RMERR t\u00f6rt\u00e9nt a munka v\u00e9gleges\u00edt\u00e9se k\u00f6zben egy tranzakci\u00f3s \u00e1gba. Az er\u0151forr\u00e1s: {0}.
+WTRN0047_XAER_RMERR_ON_COMMIT.explanation=A rendszer hib\u00e1t \u00e9szlelt egy tranzakci\u00f3 v\u00e9gleges\u00edt\u00e9si folyamata sor\u00e1n.
+WTRN0047_XAER_RMERR_ON_COMMIT.useraction=Jav\u00edtsa az ezen hiba \u00e1ltal okozott \u00f6sszes alkalmaz\u00e1s adatprobl\u00e9m\u00e1t.
+
+WTRN0048_XAER_RMFAIL_ON_COMMIT=WTRN0048W: A tranzakci\u00f3-kezel\u0151 k\u00eds\u00e9rlete egy v\u00e9gleges\u00edt\u00e9s h\u00edv\u00e1sra egy tranzakci\u00f3s er\u0151forr\u00e1son egy XAER_RMFAIL hib\u00e1t eredm\u00e9nyezett. Az er\u0151forr\u00e1s: {0}.
+WTRN0048_XAER_RMFAIL_ON_COMMIT.explanation=A v\u00e9gleges\u00edt\u00e9s h\u00edv\u00e1s a tranzakci\u00f3s er\u0151forr\u00e1son nem siker\u00fclt, mivel az er\u0151forr\u00e1s-kezel\u0151 el\u00e9rhetetlen volt. A v\u00e9gleges\u00edt\u00e9s h\u00edv\u00e1st a rendszer szab\u00e1lyos id\u0151k\u00f6z\u00f6nk\u00e9nt \u00fajrapr\u00f3b\u00e1lja.
+WTRN0048_XAER_RMFAIL_ON_COMMIT.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az er\u0151forr\u00e1s-kezel\u0151 el\u00e9rhet\u0151.
+
+WTRN0049_XAER_RMFAIL_ON_ROLLBACK=WTRN0049W: A tranzakci\u00f3-kezel\u0151 k\u00eds\u00e9rlete egy visszag\u00f6rget\u00e9s h\u00edv\u00e1sra egy tranzakci\u00f3s er\u0151forr\u00e1son egy XAER_RMFAIL hib\u00e1t eredm\u00e9nyezett. Az er\u0151forr\u00e1s: {0}.
+WTRN0049_XAER_RMFAIL_ON_ROLLBACK.explanation=A visszag\u00f6rget\u00e9s h\u00edv\u00e1s a tranzakci\u00f3s er\u0151forr\u00e1son nem siker\u00fclt, mivel az er\u0151forr\u00e1s-kezel\u0151 el\u00e9rhetetlen volt. A visszag\u00f6rget\u00e9s h\u00edv\u00e1st a rendszer szab\u00e1lyos id\u0151k\u00f6z\u00f6nk\u00e9nt \u00fajrapr\u00f3b\u00e1lja.
+WTRN0049_XAER_RMFAIL_ON_ROLLBACK.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az er\u0151forr\u00e1s-kezel\u0151 el\u00e9rhet\u0151.
+
+WTRN0050_UNEXPECTED_XA_ERROR_ON_COMMIT=WTRN0050E: A tranzakci\u00f3-kezel\u0151 k\u00eds\u00e9rlete egy v\u00e9gleges\u00edt\u00e9s h\u00edv\u00e1sra egy tranzakci\u00f3s er\u0151forr\u00e1son v\u00e1ratlan hib\u00e1t eredm\u00e9nyezett. Az XA hibak\u00f3d: {0}.
+WTRN0050_UNEXPECTED_XA_ERROR_ON_COMMIT.explanation=A v\u00e9gleges\u00edt\u00e9s h\u00edv\u00e1s a tranzakci\u00f3s er\u0151forr\u00e1son nem siker\u00fclt egy v\u00e1ratlan hiba miatt. A v\u00e9gleges\u00edt\u00e9s h\u00edv\u00e1st a rendszer szab\u00e1lyos id\u0151k\u00f6z\u00f6nk\u00e9nt \u00fajrapr\u00f3b\u00e1lja.
+WTRN0050_UNEXPECTED_XA_ERROR_ON_COMMIT.useraction=A probl\u00e9ma ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben vizsg\u00e1lja meg a hibak\u00f3dot.
+
+WTRN0051_UNEXPECTED_XA_ERROR_ON_ROLLBACK=WTRN0051E: A tranzakci\u00f3-kezel\u0151 k\u00eds\u00e9rlete egy visszag\u00f6rget\u00e9s h\u00edv\u00e1sra egy tranzakci\u00f3s er\u0151forr\u00e1son v\u00e1ratlan hib\u00e1t eredm\u00e9nyezett. Az XA hibak\u00f3d: {0}.
+WTRN0051_UNEXPECTED_XA_ERROR_ON_ROLLBACK.explanation=A v\u00e9gleges\u00edt\u00e9s h\u00edv\u00e1s a tranzakci\u00f3s er\u0151forr\u00e1son nem siker\u00fclt egy v\u00e1ratlan hiba miatt. A visszag\u00f6rget\u00e9s h\u00edv\u00e1st a rendszer szab\u00e1lyos id\u0151k\u00f6z\u00f6nk\u00e9nt \u00fajrapr\u00f3b\u00e1lja.
+WTRN0051_UNEXPECTED_XA_ERROR_ON_ROLLBACK.useraction=A probl\u00e9ma ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben vizsg\u00e1lja meg a hibak\u00f3dot.
+
+WTRN0052_XAER_RMFAIL_ON_COMMIT_ONE_PHASE=WTRN0052E: A tranzakci\u00f3-kezel\u0151 k\u00eds\u00e9rlete egy egyf\u00e1zis\u00fa v\u00e9gleges\u00edt\u00e9s h\u00edv\u00e1sra egy tranzakci\u00f3s er\u0151forr\u00e1son egy XAER_RMFAIL hib\u00e1t eredm\u00e9nyezett. Az er\u0151forr\u00e1s: {0}.
+WTRN0052_XAER_RMFAIL_ON_COMMIT_ONE_PHASE.explanation=Az egyf\u00e1zis\u00fa v\u00e9gleges\u00edt\u00e9s h\u00edv\u00e1s a tranzakci\u00f3s er\u0151forr\u00e1son nem siker\u00fclt, mivel az er\u0151forr\u00e1s-kezel\u0151 el\u00e9rhetetlen volt.
+WTRN0052_XAER_RMFAIL_ON_COMMIT_ONE_PHASE.useraction=A tranzakci\u00f3 vissza lesz g\u00f6rgetve.
+
+WTRN0053_UNEXPECTED_XA_ERROR_ON_COMMIT_ONE_PHASE=WTRN0053E: A tranzakci\u00f3-kezel\u0151 k\u00eds\u00e9rlete egy egyf\u00e1zis\u00fa v\u00e9gleges\u00edt\u00e9s h\u00edv\u00e1sra egy tranzakci\u00f3s er\u0151forr\u00e1son v\u00e1ratlan hib\u00e1t eredm\u00e9nyezett. Az XA hibak\u00f3d: {0}.
+WTRN0053_UNEXPECTED_XA_ERROR_ON_COMMIT_ONE_PHASE.explanation=Az egyf\u00e1zis\u00fa v\u00e9gleges\u00edt\u00e9s h\u00edv\u00e1s a tranzakci\u00f3s er\u0151forr\u00e1son nem siker\u00fclt egy v\u00e1ratlan hiba miatt.
+WTRN0053_UNEXPECTED_XA_ERROR_ON_COMMIT_ONE_PHASE.useraction=A tranzakci\u00f3-kezel\u0151 megk\u00eds\u00e9rli visszag\u00f6rgetni a tranzakci\u00f3t.
+
+WTRN0054_XA_FORGET_ERROR=WTRN0054W: Egy tranzakci\u00f3s er\u0151forr\u00e1son v\u00e9grehajtott xa_forget m\u0171velet kiv\u00e9tellel tal\u00e1lkozott. A hibak\u00f3d: {0}.  A kiv\u00e9tel veremtartalma a k\u00f6vetkez\u0151: {1}
+WTRN0054_XA_FORGET_ERROR.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt, amikor a tranzakci\u00f3s szolg\u00e1ltat\u00e1s megh\u00edvta az xa_forget m\u0171veletet egy er\u0151forr\u00e1sra.
+WTRN0054_XA_FORGET_ERROR.useraction=A probl\u00e9ma ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben vizsg\u00e1lja meg a hibak\u00f3dot.
+
+WTRN0055_GIVING_UP_OUTCOME_DELIVERY=WTRN0055W: A rendszer feladja a(z) {0} tranzakci\u00f3 eredm\u00e9ny\u00e9nek k\u00e9zbes\u00edt\u00e9s\u00e9re tett k\u00eds\u00e9rleteket.
+WTRN0055_GIVING_UP_OUTCOME_DELIVERY.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s nem tudta k\u00e9zbes\u00edteni egy v\u00e9gleges\u00edt\u00e9s vagy visszag\u00f6rget\u00e9s eredm\u00e9ny\u00e9t egy tranzakci\u00f3s r\u00e9sztvev\u0151nek.
+WTRN0055_GIVING_UP_OUTCOME_DELIVERY.useraction=Jav\u00edtsa az ezen hiba \u00e1ltal okozott \u00f6sszes alkalmaz\u00e1s adatprobl\u00e9m\u00e1t.
+
+WTRN0056_TRAN_RESYNC_FAILURE=WTRN0056I: A(z) {0} tranzakci\u00f3 \u00fajraszinkroniz\u00e1l\u00e1sa a kezdem\u00e9nyez\u0151t\u0151l meghi\u00fasult, \u00fajrapr\u00f3b\u00e1lkoz\u00e1s...
+WTRN0056_TRAN_RESYNC_FAILURE.explanation=Egy tranzakci\u00f3 \u00fajraszinkroniz\u00e1l\u00e1sa meghi\u00fasult a helyre\u00e1ll\u00edt\u00e1s k\u00f6zben \u00e9s az eredm\u00e9nye ismeretlen, \u00edgy a kiszolg\u00e1l\u00f3 folytatja az \u00fajrapr\u00f3b\u00e1lkoz\u00e1st.
+WTRN0056_TRAN_RESYNC_FAILURE.useraction=Semmit sem kell tennie.
+
+WTRN0057_HEURISTIC_ON_SUBORDINATE=WTRN0057E: Heurisztikus tev\u00e9kenys\u00e9g ker\u00fclt kiv\u00e1lt\u00e1sra egy el\u0151k\u00e9sz\u00edt\u00e9s/egyf\u00e1zis\u00fa t\u00f6rl\u00e9s m\u0171veleten az al\u00e1rendelten.
+WTRN0057_HEURISTIC_ON_SUBORDINATE.explanation=Egy al\u00e1rendelt tranzakci\u00f3 megpr\u00f3b\u00e1lt egy egyf\u00e1zis\u00fa v\u00e9gleges\u00edt\u00e9s haszn\u00e1lat\u00e1val optimaliz\u00e1lni az el\u0151k\u00e9sz\u00edt\u00e9s m\u0171velet k\u00f6zben \u00e9s heurisztikus hiba t\u00f6rt\u00e9nt.
+WTRN0057_HEURISTIC_ON_SUBORDINATE.useraction=CMSG0002
+
+WTRN0058_RECOVERY_EXCEPTION_IN_COMMIT=WTRN0058E: A rendszer kiv\u00e9telt \u00e9szlelt a v\u00e9gleges\u00edt\u00e9s m\u0171veletb\u0151l a(z) {0} tranzakci\u00f3 helyre\u00e1ll\u00edt\u00e1sa k\u00f6zben: {1}
+WTRN0058_RECOVERY_EXCEPTION_IN_COMMIT.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt egy tranzakci\u00f3 helyre\u00e1ll\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
+WTRN0058_RECOVERY_EXCEPTION_IN_COMMIT.useraction=CMSG0002
+
+WTRN0059_RECOVERY_EXCEPTION_IN_ROLLBACK=WTRN0059E: A rendszer kiv\u00e9telt \u00e9szlelt a visszag\u00f6rget\u00e9s m\u0171veletb\u0151l a(z) {0} tranzakci\u00f3 helyre\u00e1ll\u00edt\u00e1sa k\u00f6zben: {1}
+WTRN0059_RECOVERY_EXCEPTION_IN_ROLLBACK.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt egy tranzakci\u00f3 helyre\u00e1ll\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
+WTRN0059_RECOVERY_EXCEPTION_IN_ROLLBACK.useraction=CMSG0002
+
+WTRN0060_RECOVERY_EXCEPTION_IN_FORGET=WTRN0060E: A rendszer kiv\u00e9telt \u00e9szlelt az elfelejt\u00e9s m\u0171veletb\u0151l a(z) {0} tranzakci\u00f3 helyre\u00e1ll\u00edt\u00e1sa k\u00f6zben: {1}
+WTRN0060_RECOVERY_EXCEPTION_IN_FORGET.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt egy tranzakci\u00f3 helyre\u00e1ll\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
+WTRN0060_RECOVERY_EXCEPTION_IN_FORGET.useraction=CMSG0002
+
+WTRN0061_ERR_CREATING_JTAXARESOURCE=WTRN0061E: A rendszer hib\u00e1val tal\u00e1lkozott egy JTAXAResource objektum \u00f6ssze\u00e9p\u00edt\u00e9se k\u00f6zben.
+WTRN0061_ERR_CREATING_JTAXARESOURCE.explanation=Ez egy bels\u0151 rendszerhiba \u00e9s val\u00f3sz\u00edn\u0171leg egy kor\u00e1bbi meghib\u00e1sod\u00e1s okozta.
+WTRN0061_ERR_CREATING_JTAXARESOURCE.useraction=CMSG0002
+
+WTRN0062_ILLEGAL_ENLIST_FOR_MULTIPLE_1PC_RESOURCES=WTRN0062E: Illeg\u00e1lis k\u00eds\u00e9rlet t\u00f6rt\u00e9nt a glob\u00e1lis tranzakci\u00f3n bel\u00fcl t\u00f6bb olyan er\u0151forr\u00e1s haszn\u00e1lat\u00e1ra, amelyek csak egyf\u00e1zis\u00fa visszag\u00f6rget\u00e9si k\u00e9pess\u00e9ggel rendelkeznek.
+WTRN0062_ILLEGAL_ENLIST_FOR_MULTIPLE_1PC_RESOURCES.explanation=Glob\u00e1lis tranzakci\u00f3ban csak egyetlen egyf\u00e1zis\u00fa visszag\u00f6rget\u00e9si k\u00e9pess\u00e9ggel rendelkez\u0151 er\u0151forr\u00e1s jegyezhet\u0151 be. Ez a hiba akkor t\u00f6rt\u00e9nik, amikor a glob\u00e1lis tranzakci\u00f3ban t\u00f6bb, csak egyf\u00e1zis\u00fa visszag\u00f6rget\u00e9sre k\u00e9pes er\u0151forr\u00e1s-kezel\u0151 ker\u00fcl felhaszn\u00e1l\u00e1sra vagy egy ilyen er\u0151forr\u00e1s-kezel\u0151b\u0151l t\u00f6bb meg nem osztott kapcsolat ker\u00fcl felhaszn\u00e1l\u00e1sra egy glob\u00e1lis tranzakci\u00f3n bel\u00fcl.
+WTRN0062_ILLEGAL_ENLIST_FOR_MULTIPLE_1PC_RESOURCES.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1st, hogy csak egyetlen egyf\u00e1zis\u00fa visszag\u00f6rget\u00e9sre korl\u00e1tozott er\u0151forr\u00e1st haszn\u00e1ljon, vagy haszn\u00e1ljon k\u00e9tf\u00e1zis\u00fa visszag\u00f6rget\u00e9sre k\u00e9pes XAResources eszk\u00f6zt.
+
+WTRN0063_ILLEGAL_COMMIT_OF_1PC_RESOURCE=WTRN0063E: Illeg\u00e1lis k\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy egyf\u00e1zis\u00fa visszag\u00f6rget\u00e9sre k\u00e9pes er\u0151forr\u00e1s v\u00e9gleges\u00edt\u00e9s\u00e9re l\u00e9tez\u0151 k\u00e9tf\u00e1zis\u00fa visszag\u00f6rget\u00e9sre k\u00e9pes er\u0151forr\u00e1sokkal.
+WTRN0063_ILLEGAL_COMMIT_OF_1PC_RESOURCE.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s visszautas\u00edtott egy k\u00eds\u00e9rletet egy egyf\u00e1zis\u00fa visszag\u00f6rget\u00e9sre k\u00e9pes er\u0151forr\u00e1s v\u00e9gleges\u00edt\u00e9s\u00e9re egy olyan tranzakci\u00f3val, amely m\u00e1r \u00e9rint m\u00e1s k\u00e9tf\u00e1zis\u00fa visszag\u00f6rget\u00e9sre k\u00e9pes er\u0151forr\u00e1sokat. Vagy a Last Participant Support (LPS) nem \u00e9rhet\u0151 el, vagy ha az LPS el\u00e9rhet\u0151, akkor az alkalmaz\u00e1s nem fogadja el a heurisztikus kock\u00e1zatot, amit ez mag\u00e1ban foglalna.
+WTRN0063_ILLEGAL_COMMIT_OF_1PC_RESOURCE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy egy- \u00e9s k\u00e9tf\u00e1zis\u00fa visszag\u00f6rget\u00e9sre k\u00e9pes er\u0151forr\u00e1sokat nem \u00e9rint ugyanaz a tranzakci\u00f3, vagy ha az LPS el\u00e9rhet\u0151, akkor konfigur\u00e1lja \u00fajra az alkalmaz\u00e1st, hogy az fogadja el a heurisztikus kock\u00e1zatot, amit ez mag\u00e1ban foglalna.
+
+WTRN0064_SUBORDINATE_COMMIT_OF_1PC_RESOURCE=WTRN0064E: Illeg\u00e1lis k\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy egyf\u00e1zis\u00fa visszag\u00f6rget\u00e9sre k\u00e9pes er\u0151forr\u00e1s v\u00e9gleges\u00edt\u00e9s\u00e9re egy al\u00e1rendelt tranzakci\u00f3\u00e1gba.
+WTRN0064_SUBORDINATE_COMMIT_OF_1PC_RESOURCE.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s visszautas\u00edtott egy k\u00eds\u00e9rletet egy egyf\u00e1zis\u00fa visszag\u00f6rget\u00e9sre k\u00e9pes er\u0151forr\u00e1s v\u00e9gleges\u00edt\u00e9s\u00e9re egy osztott al\u00e1rendelt tranzakci\u00f3s \u00e1gon bel\u00fcl. A tranzakci\u00f3 vissza lesz g\u00f6rgetve.
+WTRN0064_SUBORDINATE_COMMIT_OF_1PC_RESOURCE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy egyf\u00e1zis\u00fa visszag\u00f6rget\u00e9sre k\u00e9pes er\u0151forr\u00e1sok nem \u00e9rintettek egy osztott tranzakci\u00f3 al\u00e1rendelt \u00e1g\u00e1ban.
+
+WTRN0065_XARESOURCE_NOT_KNOWN=WTRN0065W: Az XAResource ismeretlen ehhez a tranzakci\u00f3hoz. Az er\u0151forr\u00e1s: {0}.
+WTRN0065_XARESOURCE_NOT_KNOWN.explanation=A tranzakci\u00f3-kezel\u0151 nem tudott kit\u00f6r\u00f6lni egy XAResource eszk\u00f6zt mivel az kor\u00e1bban nem lett bejegyezve a jelenlegi tranzakci\u00f3hoz. Ez egy bels\u0151 rendszerhiba \u00e9s val\u00f3sz\u00edn\u0171leg egy kor\u00e1bbi meghib\u00e1sod\u00e1s okozta.
+WTRN0065_XARESOURCE_NOT_KNOWN.useraction=CMSG0002
+
+WTRN0066_LOG_WRITE_ERROR=WTRN0066W: A rendszer kiv\u00e9telbe \u00fctk\u00f6z\u00f6tt egy tranzakci\u00f3 napl\u00f3f\u00e1jl \u00edr\u00e1si m\u0171velet k\u00f6zben. A kiv\u00e9tel veremtartalma a k\u00f6vetkez\u0151: {0}
+WTRN0066_LOG_WRITE_ERROR.explanation=Hiba t\u00f6rt\u00e9nt a tranzakci\u00f3 napl\u00f3f\u00e1jlj\u00e1nak \u00edr\u00e1sa k\u00f6zben. A tranzakci\u00f3 vissza lesz g\u00f6rgetve.
+WTRN0066_LOG_WRITE_ERROR.useraction=Ennek legval\u00f3sz\u00edn\u0171bb oka egy I/O hiba. A probl\u00e9ma ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben vizsg\u00e1lja meg a kiv\u00e9tel veremtartalm\u00e1t.
+
+WTRN0067_PROG_MODEL_EXCEEDED=WTRN0067W: A tranzakci\u00f3s szolg\u00e1ltat\u00e1s a WebSphere alkalmaz\u00e1sprogramoz\u00e1si modellt t\u00fall\u00e9p\u0151 felhaszn\u00e1l\u00e1st \u00e9szlelt.
+WTRN0067_PROG_MODEL_EXCEEDED.explanation=Egy ezen a kiszolg\u00e1l\u00f3n fut\u00f3 alkalmaz\u00e1s olyan tranzakci\u00f3s szolg\u00e1ltat\u00e1s funkcionalit\u00e1st haszn\u00e1l, amely nem r\u00e9sze az alkalmaz\u00e1sprogramoz\u00e1si modellnek.
+WTRN0067_PROG_MODEL_EXCEEDED.useraction=Gondolja \u00e1t, hogy az alkalmaz\u00e1s m\u00f3dos\u00edthat\u00f3-e \u00fagy, hogy csak az alkalmaz\u00e1sprogramoz\u00e1si modellben t\u00e1mogatott tranzakci\u00f3s funkcionalit\u00e1st haszn\u00e1lja.
+
+WTRN0068_COMMIT_FAILED=WTRN0068E: A v\u00e9gleges\u00edt\u00e9s meghi\u00fasult a k\u00f6vetkez\u0151 kiv\u00e9tellel: {0}.
+WTRN0068_COMMIT_FAILED.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a tranzakci\u00f3 v\u00e9gleges\u00edt\u00e9se k\u00f6zben.
+WTRN0068_COMMIT_FAILED.useraction=CMSG0002
+
+WTRN0069_COMMIT_BAD_STATE=WTRN0069E: A v\u00e9gleges\u00edt\u00e9s hib\u00e1s tranzakci\u00f3-\u00e1llapotban \u00e9rkezett: {0}.
+WTRN0069_COMMIT_BAD_STATE.explanation=A tranzakci\u00f3 \u00e9rv\u00e9nytelen \u00e1llapotban volt, amikor v\u00e9gleges\u00edt\u00e9s feldolgoz\u00e1s\u00e1nak v\u00e9grehajt\u00e1s\u00e1ra lett k\u00e9rve.
+WTRN0069_COMMIT_BAD_STATE.useraction=CMSG0002
+
+WTRN0070_ONE_PHASE_COMMIT_FAILED=WTRN0070E: Az egyf\u00e1zis\u00fa v\u00e9gleges\u00edt\u00e9s meghi\u00fasult a  k\u00f6vetkez\u0151 kiv\u00e9tellel: {0}.
+WTRN0070_ONE_PHASE_COMMIT_FAILED.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a tranzakci\u00f3 v\u00e9gleges\u00edt\u00e9se k\u00f6zben az egyf\u00e1zis\u00fa v\u00e9gleges\u00edt\u00e9si protokoll haszn\u00e1lat\u00e1val.
+WTRN0070_ONE_PHASE_COMMIT_FAILED.useraction=CMSG0002
+
+WTRN0071_ROLLBACK_FAILED=WTRN0071E: A visszag\u00f6rget\u00e9s meghi\u00fasult a k\u00f6vetkez\u0151 kiv\u00e9tellel: {0}.
+WTRN0071_ROLLBACK_FAILED.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a tranzakci\u00f3 visszag\u00f6rget\u00e9se k\u00f6zben.
+WTRN0071_ROLLBACK_FAILED.useraction=CMSG0002
+
+WTRN0072_ROLLBACK_BAD_STATE=WTRN0072E: A visszag\u00f6rget\u00e9s hib\u00e1s tranzakci\u00f3-\u00e1llapotban \u00e9rkezett: {0}.
+WTRN0072_ROLLBACK_BAD_STATE.explanation=A tranzakci\u00f3 \u00e9rv\u00e9nytelen \u00e1llapotban volt, amikor visszag\u00f6rget\u00e9si feldolgoz\u00e1s\u00e1nak v\u00e9grehajt\u00e1s\u00e1ra lett k\u00e9rve.
+WTRN0072_ROLLBACK_BAD_STATE.useraction=CMSG0002
+
+WTRN0073_FORGET_BAD_STATE=WTRN0073E: Az elfelejt\u00e9s hib\u00e1s tranzakci\u00f3-\u00e1llapotban \u00e9rkezett: {0}.
+WTRN0073_FORGET_BAD_STATE.explanation=A tranzakci\u00f3 \u00e9rv\u00e9nytelen \u00e1llapotban volt, amikor elfelejt\u00e9s feldolgoz\u00e1s\u00e1nak v\u00e9grehajt\u00e1s\u00e1ra lett k\u00e9rve.
+WTRN0073_FORGET_BAD_STATE.useraction=CMSG0002
+
+WTRN0074_SYNCHRONIZATION_EXCEPTION=WTRN0074E: A rendszer kiv\u00e9telt \u00e9szlelt a(z) {0} szinkroniz\u00e1l\u00e1si m\u0171veletb\u0151l: {1}.
+WTRN0074_SYNCHRONIZATION_EXCEPTION.explanation=Egy Synchronization objektum kiv\u00e9telt dobott, amikor t\u00e1j\u00e9koztatva lett a tranzakci\u00f3 jelenlegi befejezetts\u00e9gi \u00e1llapot\u00e1r\u00f3l.
+WTRN0074_SYNCHRONIZATION_EXCEPTION.useraction=CMSG0002
+
+WTRN0075_HEURISTIC_ON_COMMIT=WTRN0075W: A(z) {0} tranzakci\u00f3 heurisztikus kiv\u00e9telt \u00e9szlelt egy er\u0151forr\u00e1s v\u00e9gleges\u00edt\u00e9se k\u00f6zben.
+WTRN0075_HEURISTIC_ON_COMMIT.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s heurisztikus v\u00e1laszt kapott egy v\u00e9gleges\u00edt\u00e9s eredm\u00e9ny\u00e9nek k\u00e9zbes\u00edt\u00e9se k\u00f6zben a tranzakci\u00f3 egy r\u00e9sztvev\u0151j\u00e9nek.
+WTRN0075_HEURISTIC_ON_COMMIT.useraction=Jav\u00edtsa az \u00f6sszes alkalmaz\u00e1s adatprobl\u00e9m\u00e1t, amelyet a heurisztikus eredm\u00e9ny okozott.
+
+WTRN0076_HEURISTIC_ON_ROLLBACK=WTRN0076W: A(z) {0} tranzakci\u00f3 heurisztikus kiv\u00e9telt \u00e9szlelt egy er\u0151forr\u00e1s visszag\u00f6rget\u00e9se k\u00f6zben.
+WTRN0076_HEURISTIC_ON_ROLLBACK.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s heurisztikus v\u00e1laszt kapott egy visszag\u00f6rget\u00e9s eredm\u00e9ny\u00e9nek k\u00e9zbes\u00edt\u00e9se k\u00f6zben a tranzakci\u00f3 egy r\u00e9sztvev\u0151j\u00e9nek.
+WTRN0076_HEURISTIC_ON_ROLLBACK.useraction=Jav\u00edtsa az \u00f6sszes alkalmaz\u00e1s adatprobl\u00e9m\u00e1t, amelyet a heurisztikus eredm\u00e9ny okozott.
+
+WTRN0077_OPERATOR_CANCELLED=WTRN0077W: A(z) {0} tranzakci\u00f3t az oper\u00e1tor f\u00e9lbeszak\u00edtotta.
+WTRN0077_OPERATOR_CANCELLED.explanation=Az \u00fczenetben azonos\u00edtott tranzakci\u00f3 eredm\u00e9nyk\u00e9zbes\u00edt\u00e9se az oper\u00e1tor k\u00e9r\u00e9s\u00e9re meg lett szak\u00edtva.
+WTRN0077_OPERATOR_CANCELLED.useraction=Jav\u00edtsa az ezen hiba \u00e1ltal okozott \u00f6sszes alkalmaz\u00e1s adatprobl\u00e9m\u00e1t.
+
+WTRN0078_START_FAILED=WTRN0078E: A tranzakci\u00f3-kezel\u0151 k\u00eds\u00e9rlete az ind\u00edt\u00e1sra egy tranzakci\u00f3s er\u0151forr\u00e1son hib\u00e1t eredm\u00e9nyezett. A hibak\u00f3d: {0}. A kiv\u00e9tel veremtartalma a k\u00f6vetkez\u0151: {1}
+WTRN0078_START_FAILED.explanation=A tranzakci\u00f3s er\u0151forr\u00e1s hib\u00e1zott, amikor egy ind\u00edt\u00e1s h\u00edv\u00e1s feldolgoz\u00e1s\u00e1ra lett k\u00e9rve. A tranzakci\u00f3 vissza lesz g\u00f6rgetve.
+WTRN0078_START_FAILED.useraction=A probl\u00e9ma ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben vizsg\u00e1lja meg a hibak\u00f3dot.
+
+WTRN0079_END_FAILED=WTRN0079E: A tranzakci\u00f3-kezel\u0151 k\u00eds\u00e9rlete egy befejez\u00e9s h\u00edv\u00e1sra egy tranzakci\u00f3s er\u0151forr\u00e1son hib\u00e1t eredm\u00e9nyezett. A hibak\u00f3d: {0}. A kiv\u00e9tel veremtartalma a k\u00f6vetkez\u0151: {1}
+WTRN0079_END_FAILED.explanation=A tranzakci\u00f3s er\u0151forr\u00e1s hib\u00e1zott, amikor egy befejez\u00e9s h\u00edv\u00e1s feldolgoz\u00e1s\u00e1ra lett k\u00e9rve. A tranzakci\u00f3 vissza lesz g\u00f6rgetve.
+WTRN0079_END_FAILED.useraction=A probl\u00e9ma ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben vizsg\u00e1lja meg a hibak\u00f3dot.
+
+WTRN0080_CLIENT_INACTIVITY_TIMEOUT=WTRN0080W: A(z) {0} tranzakci\u00f3 t\u00fall\u00e9pte az id\u0151korl\u00e1tot, mivel nem volt \u00fcgyf\u00e9ltev\u00e9kenys\u00e9g t\u00f6bb, mint {1} m\u00e1sodpercig.
+WTRN0080_CLIENT_INACTIVITY_TIMEOUT.explanation=Az \u00fcgyf\u00e9l az inaktivit\u00e1si id\u0151korl\u00e1t\u00e9rt\u00e9kn\u00e9l hosszabb ideig volt inakt\u00edv.
+WTRN0080_CLIENT_INACTIVITY_TIMEOUT.useraction=Hagyja figyelmen k\u00edv\u00fcl ezt az \u00fczenetet, ha az \u00fcgyf\u00e9l \u00fagy t\u00e1vozott, hogy a tranzakci\u00f3 akt\u00edv maradt. Ha az \u00fcgyf\u00e9l m\u00e9g akt\u00edv, akkor d\u00f6ntse el, hogy m\u00f3dos\u00edtja-e az \u00dcgyf\u00e9l inaktivit\u00e1si id\u0151korl\u00e1tot.
+
+WTRN0081_NULL_JTSXARESOURCE=WTRN0081W: A JTAXAResource objektum null\u00e9rt\u00e9k\u0171.
+WTRN0081_NULL_JTSXARESOURCE.explanation=Ez egy bels\u0151 rendszerhiba \u00e9s val\u00f3sz\u00edn\u0171leg egy kor\u00e1bbi meghib\u00e1sod\u00e1s okozta.
+WTRN0081_NULL_JTSXARESOURCE.useraction=CMSG0002
+
+WTRN0082_OPERATOR_ROLLBACK=WTRN0082W: A(z) {0} tranzakci\u00f3t az oper\u00e1tor visszag\u00f6rgette.
+WTRN0082_OPERATOR_ROLLBACK.explanation=Az \u00fczenetben azonos\u00edtott tranzakci\u00f3 az oper\u00e1tor k\u00e9r\u00e9s\u00e9re vissza lett g\u00f6rgetve.
+WTRN0082_OPERATOR_ROLLBACK.useraction=Jav\u00edtsa az ezen hiba \u00e1ltal okozott \u00f6sszes alkalmaz\u00e1s adatprobl\u00e9m\u00e1t.
+
+WTRN0083_LOG_FULL_ERROR=WTRN0083W: A tranzakci\u00f3s napl\u00f3 megtelt. A(z) {0} tranzakci\u00f3 visszag\u00f6rgetve.
+WTRN0083_LOG_FULL_ERROR.explanation=A tranzakci\u00f3s napl\u00f3f\u00e1jlok megteltek az akt\u00edv tranzakci\u00f3kb\u00f3l sz\u00e1rmaz\u00f3 rekordokkal. Minden tov\u00e1bbi k\u00e9tf\u00e1zis\u00fa v\u00e9gleges\u00edt\u00e9si tranzakci\u00f3 vissza lesz g\u00f6rgetve.  A k\u00e9tf\u00e1zis\u00fa v\u00e9gleges\u00edt\u00e9si m\u0171veletek k\u00e9s\u0151bbi folytat\u00e1sa \u00e9rdek\u00e9ben a kiszolg\u00e1l\u00f3t \u00fajra kell ind\u00edtani.
+WTRN0083_LOG_FULL_ERROR.useraction=Ha ez a probl\u00e9ma gyakran bek\u00f6vetkezik, akkor ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t nagyobb tranzakci\u00f3s napl\u00f3f\u00e1jl m\u00e9rettel.
+
+WTRN0084_RESOURCE_ENDING=WTRN0084W: A bejegyz\u00e9s meghi\u00fasult az er\u0151forr\u00e1s-illeszt\u0151 lez\u00e1r\u00e1sa miatt.
+WTRN0084_RESOURCE_ENDING.explanation=Egy k\u00e9r\u00e9s vissza lett utas\u00edtva egy er\u0151forr\u00e1s bejegyz\u00e9s\u00e9re egy tranzakci\u00f3ban, mert vagy a kiszolg\u00e1l\u00f3, vagy az er\u0151forr\u00e1s-illeszt\u0151 le van z\u00e1rva.
+WTRN0084_RESOURCE_ENDING.useraction=Futtassa \u00fajra a tranzakci\u00f3t, ha az er\u0151forr\u00e1s-illeszt\u0151 \u00fajra el\u00e9rhet\u0151 lesz.
+
+WTRN0085_BAD_DISSOCIATE=WTRN0085E: Nem tal\u00e1lhat\u00f3 tranzakci\u00f3 az elk\u00fcl\u00f6n\u00edt\u00e9shez.
+WTRN0085_BAD_DISSOCIATE.explanation=Ez egy bels\u0151 rendszerhiba.
+WTRN0085_BAD_DISSOCIATE.useraction=CMSG0002
+
+
+WTRN0086_PREPARE_DIAG=WTRN0086I: A rendszer XAException kiv\u00e9tellel tal\u00e1lkozott a(z) {0} tranzakci\u00f3 el\u0151k\u00e9sz\u00edt\u00e9si f\u00e1zisa sor\u00e1n. A helyi er\u0151forr\u00e1sok az al\u00e1bbiak.
+WTRN0086_PREPARE_DIAG.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+WTRN0086_PREPARE_DIAG.useraction=A rendszeradminisztr\u00e1torok az inform\u00e1ci\u00f3kat a tranzakci\u00f3s hib\u00e1k ut\u00e1ni k\u00e9zi helyre\u00e1ll\u00edt\u00e1shoz haszn\u00e1lhatj\u00e1k.
+
+WTRN0087_COMPLETION_DIAG=WTRN0087I: A rendszer XAException kiv\u00e9tellel tal\u00e1lkozott a(z) {0} tranzakci\u00f3 befejez\u00e9si f\u00e1zisa sor\u00e1n. A helyi er\u0151forr\u00e1sok az al\u00e1bbiak.
+WTRN0087_COMPLETION_DIAG.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+WTRN0087_COMPLETION_DIAG.useraction=A rendszeradminisztr\u00e1torok az inform\u00e1ci\u00f3kat a tranzakci\u00f3s hib\u00e1k ut\u00e1ni k\u00e9zi helyre\u00e1ll\u00edt\u00e1shoz haszn\u00e1lhatj\u00e1k.
+
+WTRN0088_EXCEPTION_DIAG=WTRN0088I: A(z) {0} XAException kiv\u00e9tellel tal\u00e1lkozott {1} hibak\u00f3ddal.
+WTRN0088_EXCEPTION_DIAG.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+WTRN0088_EXCEPTION_DIAG.useraction=A rendszeradminisztr\u00e1torok az inform\u00e1ci\u00f3kat a tranzakci\u00f3s hib\u00e1k ut\u00e1ni k\u00e9zi helyre\u00e1ll\u00edt\u00e1shoz haszn\u00e1lhatj\u00e1k.
+
+WTRN0089_PREPARED=WTRN0089I: {0}: Szavazat: {1}.
+WTRN0089_PREPARED.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+WTRN0089_PREPARED.useraction=A rendszeradminisztr\u00e1torok az inform\u00e1ci\u00f3kat a tranzakci\u00f3s hib\u00e1k ut\u00e1ni k\u00e9zi helyre\u00e1ll\u00edt\u00e1shoz haszn\u00e1lhatj\u00e1k.
+
+WTRN0090_COMPLETED=WTRN0090I: {0}: Szavazat: {1}. Eredm\u00e9ny: {2}.
+WTRN0090_COMPLETED.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+WTRN0090_COMPLETED.useraction=A rendszeradminisztr\u00e1torok az inform\u00e1ci\u00f3kat a tranzakci\u00f3s hib\u00e1k ut\u00e1ni k\u00e9zi helyre\u00e1ll\u00edt\u00e1shoz haszn\u00e1lhatj\u00e1k.
+
+WTRN0091_ASSOCIATE_FAILED=WTRN0091E: A v\u00e9grehajt\u00e1si kontextus t\u00e1rs\u00edt\u00e1sa meghi\u00fasult. Xid: {0}, id\u0151korl\u00e1t: {1}.
+WTRN0091_ASSOCIATE_FAILED.explanation=Ez egy bels\u0151 rendszerhiba.
+WTRN0091_ASSOCIATE_FAILED.useraction=CMSG0002
+
+WTRN0092_QUIESCE_UNFINISHED=WTRN0092W: A rendszer befejezetlen tranzakci\u00f3t (localid={0}) tal\u00e1lt a szerviz nyugalmi id\u0151szak\u00e1ban, a tranzakci\u00f3s szolg\u00e1ltat\u00e1s v\u00e1rakozni fog.
+WTRN0092_QUIESCE_UNFINISHED.explanation=A bej\u00f6v\u0151 tranzakci\u00f3s munka m\u00e9g nem fejez\u0151d\u00f6tt be. A tranzakci\u00f3s szolg\u00e1ltat\u00e1s k\u00e9sleltetni fogja a kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1s\u00e1t, lehet\u0151v\u00e9 t\u00e9ve a kezdem\u00e9nyez\u0151 sz\u00e1m\u00e1ra a tranzakci\u00f3 befejez\u00e9s\u00e9nek megk\u00eds\u00e9rl\u00e9s\u00e9t.
+WTRN0092_QUIESCE_UNFINISHED.useraction=Semmit sem kell tennie.
+
+WTRN0093_COMMIT_REPLAY_COMPLETION=WTRN0093W: A(z) {0} al\u00e1rendelt tranzakci\u00f3 eredm\u00e9nye nem \u00e9rhet\u0151 el. A tranzakci\u00f3 heurisztikusan v\u00e9gleges\u00edtve.
+WTRN0093_COMMIT_REPLAY_COMPLETION.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s nem tudta megszerezni a tranzakci\u00f3 eredm\u00e9ny\u00e9t a f\u00f6l\u00e9rendeltj\u00e9t\u0151l a be\u00e1ll\u00edtott \u00fajrapr\u00f3b\u00e1lkoz\u00e1si id\u0151tartamon bel\u00fcl. A tranzakci\u00f3 heurisztikusan lesz v\u00e9gleges\u00edtve.
+WTRN0093_COMMIT_REPLAY_COMPLETION.useraction=Jav\u00edtsa az \u00f6sszes alkalmaz\u00e1s adatprobl\u00e9m\u00e1t, amelyet a heurisztikus eredm\u00e9ny okozott.
+
+WTRN0094_ROLLBACK_REPLAY_COMPLETION=WTRN0094W: A(z) {0} al\u00e1rendelt tranzakci\u00f3 eredm\u00e9nye nem \u00e9rhet\u0151 el. A tranzakci\u00f3 heurisztikusan visszag\u00f6rgetve.
+WTRN0094_ROLLBACK_REPLAY_COMPLETION.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s nem tudta megszerezni a tranzakci\u00f3 eredm\u00e9ny\u00e9t a f\u00f6l\u00e9rendeltj\u00e9t\u0151l a be\u00e1ll\u00edtott \u00fajrapr\u00f3b\u00e1lkoz\u00e1si id\u0151tartamon bel\u00fcl. A tranzakci\u00f3 heurisztikusan lesz visszag\u00f6rgetve.
+WTRN0094_ROLLBACK_REPLAY_COMPLETION.useraction=Jav\u00edtsa az \u00f6sszes alkalmaz\u00e1s adatprobl\u00e9m\u00e1t, amelyet a heurisztikus eredm\u00e9ny okozott.
+
+WTRN0095_MANUAL_REPLAY_COMPLETION=WTRN0095W: A(z) {0} al\u00e1rendelt tranzakci\u00f3 eredm\u00e9nye nem \u00e9rhet\u0151 el. A tranzakci\u00f3 az adminisztr\u00e1tor beavatkoz\u00e1s\u00e1ra v\u00e1r az eredm\u00e9ny\u00e9nek meghat\u00e1roz\u00e1s\u00e1hoz.
+WTRN0095_MANUAL_REPLAY_COMPLETION.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s nem tudta megszerezni a tranzakci\u00f3 eredm\u00e9ny\u00e9t a f\u00f6l\u00e9rendeltj\u00e9t\u0151l a be\u00e1ll\u00edtott \u00fajrapr\u00f3b\u00e1lkoz\u00e1si id\u0151tartamon bel\u00fcl. A tranzakci\u00f3 most az adminisztr\u00e1torra v\u00e1r, hogy saj\u00e1t kez\u0171leg \u00e1ll\u00edtsa be a tranzakci\u00f3 eredm\u00e9ny\u00e9t.
+WTRN0095_MANUAL_REPLAY_COMPLETION.useraction=\u00c1llap\u00edtsa meg, hogy a f\u00f6l\u00e9rendelt tranzakci\u00f3 sikeres vagy sikertelen volt-e, majd \u00e1ll\u00edtsa be a tranzakci\u00f3 eredm\u00e9ny\u00e9t saj\u00e1t kez\u0171leg. Ez biztos\u00edtja, hogy nem k\u00f6vetkezik be heurisztikus s\u00e9r\u00fcl\u00e9s, \u00e9s hogy minden alkalmaz\u00e1sadat helyes marad.
+
+WTRN0096_HEURISTIC_MAY_HAVE_OCCURED=WTRN0096W: Egy heurisztikus helyzet \u00e1llhatott el\u0151 a(z) {0} tranzakci\u00f3hoz. A tranzakci\u00f3 heurisztikusan v\u00e9gleges\u00edtve.
+WTRN0096_HEURISTIC_MAY_HAVE_OCCURED.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s \u00e9szlelte, hogy a megadott tranzakci\u00f3 egy- \u00e9s k\u00e9tf\u00e1zis\u00fa m\u0171veletekre k\u00e9pes er\u0151forr\u00e1sok kever\u00e9k\u00e9t foglalja mag\u00e1ban. A tranzakci\u00f3s szolg\u00e1ltat\u00e1s \u00e1tadott egy egyf\u00e1zis\u00fa v\u00e9gleges\u00edt\u00e9si k\u00e9r\u00e9st az egyetlen egyf\u00e1zis\u00fa m\u0171veletekre k\u00e9pes er\u0151forr\u00e1snak, de kiszolg\u00e1l\u00f3hiba t\u00f6rt\u00e9nt miel\u0151tt a v\u00e9gleges\u00edt\u00e9s befejez\u0151d\u00f6tt volna. Nem ismert, hogy az er\u0151forr\u00e1s sikeresen v\u00e9gleges\u00edt\u00e9sre ker\u00fclt-e.
+WTRN0096_HEURISTIC_MAY_HAVE_OCCURED.useraction=Az \u00f6sszes k\u00e9tf\u00e1zis\u00fa visszag\u00f6rget\u00e9sre k\u00e9pes er\u0151forr\u00e1s vissza lesz g\u00f6rgetve. Ha az egyf\u00e1zis\u00fa m\u0171veletre k\u00e9pes er\u0151forr\u00e1s sikeresen feldolgozta a v\u00e9gleges\u00edt\u00e9st, akkor heurisztikus s\u00e9r\u00fcl\u00e9s t\u00f6rt\u00e9nt \u00e9s a heurisztikus eredm\u00e9ny \u00e1ltal okozott \u00f6sszes alkalmaz\u00e1s adatprobl\u00e9m\u00e1t ki kell jav\u00edtania.
+
+WTRN0097_HEURISTIC_MANUAL_COMPLETION=WTRN0097W: A(z) {0} tranzakci\u00f3 eredm\u00e9nye ismeretlen. A tranzakci\u00f3 az adminisztr\u00e1tor beavatkoz\u00e1s\u00e1ra v\u00e1r az eredm\u00e9ny\u00e9nek meghat\u00e1roz\u00e1s\u00e1hoz.
+WTRN0097_HEURISTIC_MANUAL_COMPLETION.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s \u00e9szlelte, hogy a megadott tranzakci\u00f3 egy- \u00e9s k\u00e9tf\u00e1zis\u00fa m\u0171veletekre k\u00e9pes er\u0151forr\u00e1sok kever\u00e9k\u00e9t foglalja mag\u00e1ban. A tranzakci\u00f3s szolg\u00e1ltat\u00e1s \u00e1tadott egy egyf\u00e1zis\u00fa v\u00e9gleges\u00edt\u00e9si k\u00e9r\u00e9st az egyetlen egyf\u00e1zis\u00fa m\u0171veletekre k\u00e9pes er\u0151forr\u00e1snak, de kiszolg\u00e1l\u00f3hiba t\u00f6rt\u00e9nt miel\u0151tt a v\u00e9gleges\u00edt\u00e9s befejez\u0151d\u00f6tt volna. Nem ismert, hogy az er\u0151forr\u00e1s sikeresen v\u00e9gleges\u00edt\u00e9sre ker\u00fclt-e.
+WTRN0097_HEURISTIC_MANUAL_COMPLETION.useraction=\u00c1llap\u00edtsa meg, hogy az egyf\u00e1zis\u00fa v\u00e9gleges\u00edt\u00e9si k\u00e9r\u00e9s sikeres vagy sikertelen volt-e, majd \u00e1ll\u00edtsa be a tranzakci\u00f3 eredm\u00e9ny\u00e9t saj\u00e1t kez\u0171leg. Ez biztos\u00edtja, hogy nem k\u00f6vetkezik be heurisztikus s\u00e9r\u00fcl\u00e9s, \u00e9s hogy minden alkalmaz\u00e1sadat helyes marad.
+
+WTRN0098_COMMIT_RA_UNINSTALLED=WTRN0098W: A(z) {0} tranzakci\u00f3 eredm\u00e9nye nem \u00e9rhet\u0151 el, mivel a(z) {1} er\u0151forr\u00e1s-illeszt\u0151 el lett t\u00e1vol\u00edtva. A tranzakci\u00f3 heurisztikusan v\u00e9gleges\u00edtve.
+WTRN0098_COMMIT_RA_UNINSTALLED.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s nem tudta megszerezni a tranzakci\u00f3 eredm\u00e9ny\u00e9t az er\u0151forr\u00e1s-illeszt\u0151t\u0151l, mivel az el lett t\u00e1vol\u00edtva. A tranzakci\u00f3 heurisztikusan lesz v\u00e9gleges\u00edtve.
+WTRN0098_COMMIT_RA_UNINSTALLED.useraction=Jav\u00edtsa az \u00f6sszes alkalmaz\u00e1s adatprobl\u00e9m\u00e1t, amelyet a heurisztikus eredm\u00e9ny okozott.
+
+WTRN0099_ROLLBACK_RA_UNINSTALLED=WTRN0099W: A(z) {0} tranzakci\u00f3 eredm\u00e9nye nem \u00e9rhet\u0151 el, mivel a(z) {1} er\u0151forr\u00e1s-illeszt\u0151 el lett t\u00e1vol\u00edtva. A tranzakci\u00f3 heurisztikusan visszag\u00f6rgetve.
+WTRN0099_ROLLBACK_RA_UNINSTALLED.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s nem tudta megszerezni a tranzakci\u00f3 eredm\u00e9ny\u00e9t az er\u0151forr\u00e1s-illeszt\u0151t\u0151l, mivel az el lett t\u00e1vol\u00edtva. A tranzakci\u00f3 heurisztikusan lesz visszag\u00f6rgetve.
+WTRN0099_ROLLBACK_RA_UNINSTALLED.useraction=Jav\u00edtsa az \u00f6sszes alkalmaz\u00e1s adatprobl\u00e9m\u00e1t, amelyet a heurisztikus eredm\u00e9ny okozott.
+
+WTRN0100_GENERIC_ERROR=WTRN0100E: {0}
+WTRN0100_GENERIC_ERROR.explanation=Ez az \u00fczenetk\u00f3d azon \u00fczenetek t\u00e1mogat\u00e1s\u00e1ra haszn\u00e1latos, amelyeknek m\u00e9g nincs saj\u00e1t \u00fczenetk\u00f3d kiosztva.
+WTRN0100_GENERIC_ERROR.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt forduljon az \u00fczenet sz\u00f6veg\u00e9hez.
+
+WTRN0101_MANUAL_RA_UNINSTALLED=WTRN0101W: A(z) {0} tranzakci\u00f3 eredm\u00e9nye nem \u00e9rhet\u0151 el, mivel a(z) {1} er\u0151forr\u00e1s-illeszt\u0151 el lett t\u00e1vol\u00edtva. A tranzakci\u00f3 az adminisztr\u00e1tor beavatkoz\u00e1s\u00e1ra v\u00e1r az eredm\u00e9ny\u00e9nek meghat\u00e1roz\u00e1s\u00e1hoz.
+WTRN0101_MANUAL_RA_UNINSTALLED.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s nem tudta megszerezni a tranzakci\u00f3 eredm\u00e9ny\u00e9t az er\u0151forr\u00e1s-illeszt\u0151t\u0151l, mivel az el lett t\u00e1vol\u00edtva.
+WTRN0101_MANUAL_RA_UNINSTALLED.useraction=\u00c1llap\u00edtsa meg, hogy az er\u0151forr\u00e1s-illeszt\u0151 tranzakci\u00f3 kezdem\u00e9nyez\u0151j\u00e9t\u0151l indul\u00f3 tranzakci\u00f3 sikeres vagy sikertelen volt-e, majd \u00e1ll\u00edtsa be a tranzakci\u00f3 eredm\u00e9ny\u00e9t saj\u00e1t kez\u0171leg. Ez biztos\u00edtja, hogy nem k\u00f6vetkezik be heurisztikus s\u00e9r\u00fcl\u00e9s, \u00e9s hogy minden alkalmaz\u00e1sadat helyes marad.
+
+WTRN0102_HEURISTIC_MAY_HAVE_OCCURED=WTRN0102W: Egy heurisztikus helyzet \u00e1llhatott el\u0151 a(z) {0} tranzakci\u00f3hoz. A tranzakci\u00f3 heurisztikusan visszag\u00f6rgetve.
+WTRN0102_HEURISTIC_MAY_HAVE_OCCURED.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s \u00e9szlelte, hogy a megadott tranzakci\u00f3 egy- \u00e9s k\u00e9tf\u00e1zis\u00fa m\u0171veletekre k\u00e9pes er\u0151forr\u00e1sok kever\u00e9k\u00e9t foglalja mag\u00e1ban. A tranzakci\u00f3s szolg\u00e1ltat\u00e1s \u00e1tadott egy egyf\u00e1zis\u00fa v\u00e9gleges\u00edt\u00e9si k\u00e9r\u00e9st az egyetlen egyf\u00e1zis\u00fa m\u0171veletekre k\u00e9pes er\u0151forr\u00e1snak, de kiszolg\u00e1l\u00f3hiba t\u00f6rt\u00e9nt miel\u0151tt a v\u00e9gleges\u00edt\u00e9s befejez\u0151d\u00f6tt volna. Nem ismert, hogy az er\u0151forr\u00e1s sikeresen v\u00e9gleges\u00edt\u00e9sre ker\u00fclt-e.
+WTRN0102_HEURISTIC_MAY_HAVE_OCCURED.useraction=Az \u00f6sszes k\u00e9tf\u00e1zis\u00fa visszag\u00f6rget\u00e9sre k\u00e9pes er\u0151forr\u00e1s vissza lesz g\u00f6rgetve. Ha az egyf\u00e1zis\u00fa m\u0171veletre k\u00e9pes er\u0151forr\u00e1s sikeresen feldolgozta a v\u00e9gleges\u00edt\u00e9st, akkor heurisztikus s\u00e9r\u00fcl\u00e9s t\u00f6rt\u00e9nt \u00e9s a heurisztikus eredm\u00e9ny \u00e1ltal okozott \u00f6sszes alkalmaz\u00e1s adatprobl\u00e9m\u00e1t ki kell jav\u00edtania.
+
+# Msgs 103 and 104 added by pok defect MD19484 for V5.1
+
+WTRN0103_RECOVERY_LOG_FAILED=WTRN0103E: A helyre\u00e1ll\u00edt\u00e1si napl\u00f3 meghib\u00e1sodottnak van megjel\u00f6lve. [ {0} {1} ]
+WTRN0103_RECOVERY_LOG_FAILED.explanation=A helyre\u00e1ll\u00edt\u00e1si napl\u00f3 meghib\u00e1sodott \u00e9s a tov\u00e1bbi hozz\u00e1f\u00e9r\u00e9s a helyre\u00e1ll\u00edt\u00e1si napl\u00f3hoz nem lehets\u00e9ges. Az \u00f6sszetev\u0151 \u00e9s a kiv\u00e9tel szerepelnek az \u00fczenetben.
+WTRN0103_RECOVERY_LOG_FAILED.useraction=A kiszolg\u00e1l\u00f3t \u00fajra kell ind\u00edtani, \u00edgy a napl\u00f3k jav\u00edthat\u00f3ak. Pr\u00f3b\u00e1ljon meg minden, a kiv\u00e9tel \u00e1ltal az \u00fczenetben jelzett helyzetet kijav\u00edtani.
+
+WTRN0104_RECOVERY_LOG_FAILED_DETAIL=WTRN0104E: A helyre\u00e1ll\u00edt\u00e1si napl\u00f3 meghib\u00e1sod\u00e1s\u00e1nak r\u00e9szletei: {0}
+WTRN0104_RECOVERY_LOG_FAILED_DETAIL.explanation=Ez az \u00fczenet a WTRN0103E \u00fczenettel egy\u00fctt ker\u00fclt kiad\u00e1sra \u00e9s a helyre\u00e1ll\u00edt\u00e1si napl\u00f3 meghib\u00e1sod\u00e1s\u00e1nak r\u00e9szleteit jelzi.
+WTRN0104_RECOVERY_LOG_FAILED_DETAIL.useraction=Haszn\u00e1lja az ezen \u00fczenetben tal\u00e1lhat\u00f3 inform\u00e1ci\u00f3kat a WTRN0103E \u00fczenettel egy\u00fctt a helyre\u00e1ll\u00edt\u00e1si napl\u00f3 meghib\u00e1sod\u00e1s\u00e1t okoz\u00f3 b\u00e1rmely helyzet jav\u00edt\u00e1s\u00e1hoz.
+
+WTRN0105_CLEAN_SHUTDOWN=WTRN0105I: A tranzakci\u00f3s szolg\u00e1ltat\u00e1s sikeresen le\u00e1llt, nincsenek helyre\u00e1ll\u00edt\u00e1st ig\u00e9nyl\u0151 tranzakci\u00f3k.
+WTRN0105_CLEAN_SHUTDOWN.explanation=Ez egy norm\u00e1lis esem\u00e9ny. Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+WTRN0105_CLEAN_SHUTDOWN.useraction=Semmit sem kell tennie.
+
+WTRN0106_JTADEMARCATION_DISALLOWED=WTRN0106I: Az \u00fcgyf\u00e9l JTA elhat\u00e1rol\u00e1sa le van tiltva.
+WTRN0106_JTADEMARCATION_DISALLOWED.explanation=A JTA elhat\u00e1rol\u00e1s ehhez az \u00fcgyf\u00e9lalkalmaz\u00e1shoz le van tiltva.
+WTRN0106_JTADEMARCATION_DISALLOWED.useraction=A JTA elhat\u00e1rol\u00e1s enged\u00e9lyez\u00e9s\u00e9hez haszn\u00e1lja az alkalmaz\u00e1skiszolg\u00e1l\u00f3 eszk\u00f6zk\u00e9szletet az Allow JTA Demarcation tulajdons\u00e1g be\u00e1ll\u00edt\u00e1s\u00e1ra az \u00fcgyf\u00e9l telep\u00edt\u00e9sle\u00edr\u00f3j\u00e1ban.
+
+WTRN0107_GENERIC_WARNING=WTRN0107W: {0}
+WTRN0107_GENERIC_WARNING.explanation=Ez az \u00fczenetk\u00f3d azon \u00fczenetek t\u00e1mogat\u00e1s\u00e1ra haszn\u00e1latos, amelyeknek m\u00e9g nincs saj\u00e1t \u00fczenetk\u00f3d kiosztva.
+WTRN0107_GENERIC_WARNING.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt forduljon az \u00fczenet sz\u00f6veg\u00e9hez.
+
+WTRN0108_GENERIC_INFOMSG=WTRN0108I: {0}
+WTRN0108_GENERIC_INFOMSG.explanation=Ez az \u00fczenetk\u00f3d azon \u00fczenetek t\u00e1mogat\u00e1s\u00e1ra haszn\u00e1latos, amelyeknek m\u00e9g nincs saj\u00e1t \u00fczenetk\u00f3d kiosztva.
+WTRN0108_GENERIC_INFOMSG.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt forduljon az \u00fczenet sz\u00f6veg\u00e9hez.
+
+WTRN0109_MBEAN_ACTIVATE=WTRN0109W: A rendszer kiv\u00e9telt \u00e9szlelt a tranzakci\u00f3s JMX MBean aktiv\u00e1l\u00e1sa k\u00f6zben: {0}.
+WTRN0109_MBEAN_ACTIVATE.explanation=Hiba t\u00f6rt\u00e9nt egy JMX MBean aktiv\u00e1l\u00e1s\u00e1ra tett k\u00eds\u00e9rlet k\u00f6zben a tranzakci\u00f3s szolg\u00e1ltat\u00e1s sz\u00e1m\u00e1ra. Annak ellen\u00e9re, hogy ez nem akad\u00e1lyozza meg a tranzakci\u00f3s szolg\u00e1ltat\u00e1s indul\u00e1s\u00e1t, azt jelenti, hogy azok az adminisztr\u00e1ci\u00f3s funkci\u00f3k, amelyek hozz\u00e1f\u00e9r\u00e9st ig\u00e9nyelnek a tranzakci\u00f3s szolg\u00e1ltat\u00e1shoz, meghi\u00fasulnak.
+WTRN0109_MBEAN_ACTIVATE.useraction=CMSG0002
+
+
+WTRN0110_BAD_CUSTOM_PROPERTY=WTRN0110W: A(z) {0} nem egy \u00e9rv\u00e9nyes tranzakci\u00f3s szolg\u00e1ltat\u00e1s egy\u00e9ni tulajdons\u00e1g.
+WTRN0110_BAD_CUSTOM_PROPERTY.explanation=Egy \u00e9rv\u00e9nytelen egy\u00e9ni tulajdons\u00e1g ker\u00fclt megad\u00e1sra a tranzakci\u00f3s szolg\u00e1ltat\u00e1s konfigur\u00e1ci\u00f3j\u00e1ban ehhez a kiszolg\u00e1l\u00f3hoz \u00e9s figyelmen k\u00edv\u00fcl lett hagyva.
+WTRN0110_BAD_CUSTOM_PROPERTY.useraction=Jav\u00edtsa ki a tranzakci\u00f3s szolg\u00e1ltat\u00e1s egy\u00e9ni tulajdons\u00e1gainak be\u00e1ll\u00edt\u00e1sait.
+
+WTRN0111_LOG_ALLOCATION=WTRN0111E: Nem lehet hozz\u00e1f\u00e9rni vagy l\u00e9trehozni a helyre\u00e1ll\u00edt\u00e1si napl\u00f3t. A napl\u00f3 konfigur\u00e1ci\u00f3ja: {0}.
+WTRN0111_LOG_ALLOCATION.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s nem tudta el\u00e9rni vagy l\u00e9trehozni a helyre\u00e1ll\u00edt\u00e1si napl\u00f3kat. Ha a helyre\u00e1ll\u00edt\u00e1si napl\u00f3k a helyi kiszolg\u00e1l\u00f3hoz tartoznak, akkor a kiszolg\u00e1l\u00f3 le lesz \u00e1ll\u00edtva. Ha a helyre\u00e1ll\u00edt\u00e1si napl\u00f3k egy egyenrang\u00fa helyre\u00e1ll\u00edtott kiszolg\u00e1l\u00f3hoz tartoznak, akkor a helyre\u00e1ll\u00edt\u00e1s be lesz fejezve \u00e9s egy m\u00e1sik kiszolg\u00e1l\u00f3hoz lesz hozz\u00e1rendelve, a jelent\u0151 kiszolg\u00e1l\u00f3 m\u0171k\u00f6d\u00e9se pedig norm\u00e1lisan fog folytat\u00f3dni.
+WTRN0111_LOG_ALLOCATION.useraction=A probl\u00e9ma ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben vizsg\u00e1lja meg a kapcsol\u00f3d\u00f3 \u00fczeneteket. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy kiszolg\u00e1l\u00f3 hozz\u00e1f\u00e9r a helyre\u00e1ll\u00edt\u00e1si napl\u00f3khoz, vagy ha m\u00e9g nem j\u00f6ttek l\u00e9tre, akkor ellen\u0151rizze, hogy van-e elegend\u0151 lemezter\u00fclet \u00e9s a kiszolg\u00e1l\u00f3 megfelel\u0151 jogosults\u00e1gokkal rendelkezik az \u00fczenetekben megadott f\u00e1jlokhoz vagy k\u00f6nyvt\u00e1rakhoz.
+
+WTRN0112_LOG_OPEN_FAILURE=WTRN0112E: V\u00e1ratlan hiba t\u00f6rt\u00e9nt a helyre\u00e1ll\u00edt\u00e1si napl\u00f3 megnyit\u00e1sa k\u00f6zben. A napl\u00f3 konfigur\u00e1ci\u00f3ja: {0}.
+WTRN0112_LOG_OPEN_FAILURE.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s nem tudta megnyitni a helyre\u00e1ll\u00edt\u00e1si napl\u00f3kat. Ha a helyre\u00e1ll\u00edt\u00e1si napl\u00f3k a helyi kiszolg\u00e1l\u00f3hoz tartoznak, akkor a kiszolg\u00e1l\u00f3 le lesz \u00e1ll\u00edtva. Ha a helyre\u00e1ll\u00edt\u00e1si napl\u00f3k egy egyenrang\u00fa helyre\u00e1ll\u00edtott kiszolg\u00e1l\u00f3hoz tartoznak, akkor a helyre\u00e1ll\u00edt\u00e1s be lesz fejezve \u00e9s egy m\u00e1sik kiszolg\u00e1l\u00f3hoz lesz hozz\u00e1rendelve, a jelent\u0151 kiszolg\u00e1l\u00f3 m\u0171k\u00f6d\u00e9se pedig norm\u00e1lisan fog folytat\u00f3dni.
+WTRN0112_LOG_OPEN_FAILURE.useraction=A probl\u00e9ma ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben vizsg\u00e1lja meg a kapcsol\u00f3d\u00f3 \u00fczeneteket. 
+
+WTRN0113_LOG_DOWNLEVEL=WTRN0113W: Egy alacsonyabb szinten l\u00e9v\u0151 WebSphere kiszolg\u00e1l\u00f3 helyre\u00e1ll\u00edt\u00e1si feldolgoz\u00e1sa nem lehets\u00e9ges \u00e9s meg lett \u00e1ll\u00edtva ({0}).
+WTRN0113_LOG_DOWNLEVEL.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s nem tudta egyenrang\u00faan helyre\u00e1ll\u00edtani a megadott alkalmaz\u00e1skiszolg\u00e1l\u00f3t, mivel a napl\u00f3kat a term\u00e9k egy kor\u00e1bbi, ezzel a kiszolg\u00e1l\u00f3val inkompatibilis kiad\u00e1sa form\u00e1zta. Az egyenrang\u00fa helyre\u00e1ll\u00edt\u00e1s ezen p\u00e9ld\u00e1nya be lesz fejezve \u00e9s egy m\u00e1sik kiszolg\u00e1l\u00f3hoz lesz hozz\u00e1rendelve, a jelent\u0151 kiszolg\u00e1l\u00f3 m\u0171k\u00f6d\u00e9se pedig norm\u00e1lisan fog folytat\u00f3dni. 
+WTRN0113_LOG_DOWNLEVEL.useraction=Semmit sem kell tennie. A f\u00fcrt konfigur\u00e1ci\u00f3j\u00e1t\u00f3l f\u00fcgg\u0151en, ha csak egy tag van egy bizonyos kiad\u00e1si szinten, akkor az egyenrang\u00fa helyre\u00e1ll\u00edt\u00e1s ahhoz a kiszolg\u00e1l\u00f3kiad\u00e1shoz lehet, hogy nem lesz lehets\u00e9ges, ha a napl\u00f3form\u00e1tum a kiad\u00e1sok k\u00f6z\u00f6tt inkompatibilis v\u00e1lt.
+
+WTRN0114_TRAN_RETRY_NEEDED=WTRN0114I: A(z) {0} tranzakci\u00f3 nem tudta az \u00f6sszes er\u0151forr\u00e1st \u00e9rtes\u00edteni az eredm\u00e9ny\u00e9r\u0151l.  \u00dajrapr\u00f3b\u00e1lkoz\u00e1s {1} m\u00e1sodpercen bel\u00fcl.
+WTRN0114_TRAN_RETRY_NEEDED.explanation=Egy t\u00e1voli er\u0151forr\u00e1s-kezel\u0151 nem \u00e9rhet\u0151 el a helyre\u00e1ll\u00edt\u00e1s \u00fajraind\u00edt\u00e1sa sor\u00e1n. A m\u0171veletet a rendszer szab\u00e1lyos id\u0151k\u00f6z\u00f6nk\u00e9nt \u00fajrapr\u00f3b\u00e1lja.
+WTRN0114_TRAN_RETRY_NEEDED.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az er\u0151forr\u00e1s-kezel\u0151 el\u00e9rhet\u0151.
+
+WTRN0115_NO_CFW_AVAILABLE=WTRN0115E: Csatorna-keretrendszer be\u00e1ll\u00edt\u00e1s nem ker\u00fclt meghat\u00e1roz\u00e1sra vagy az \u00e9rv\u00e9nytelen a Webszolg\u00e1ltat\u00e1sok atomi tranzakci\u00f3inak (WSAT) t\u00e1mogat\u00e1s\u00e1hoz.
+WTRN0115_NO_CFW_AVAILABLE.explanation=A Webt\u00e1rol\u00f3 nem ker\u00fclt meghat\u00e1roz\u00e1sra a csatorna-keretrendszer haszn\u00e1lat\u00e1ra, vagy helytelen\u00fcl hat\u00e1rozt\u00e1k meg. A WS-AT megk\u00f6veteli a csatorna-keretrendszer haszn\u00e1lat\u00e1t a tranzakci\u00f3s kontextus Webszolg\u00e1ltat\u00e1sok k\u00f6z\u00f6tti \u00e1tvitel\u00e9hez.
+WTRN0115_NO_CFW_AVAILABLE.useraction=Jav\u00edtsa ki vagy hat\u00e1rozza meg a Webt\u00e1rol\u00f3 csatorna-keretrendszer be\u00e1ll\u00edt\u00e1s\u00e1t.
+
+WTRN0116_UNEXPECTED_LOGFILE_SPECIFICATION=WTRN0116I: \u00c9rv\u00e9nytelen tranzakci\u00f3s napl\u00f3f\u00e1jl konfigur\u00e1ci\u00f3s karaktersorozat ker\u00fclt megad\u00e1sra: {0}. A tranzakci\u00f3s szolg\u00e1ltat\u00e1s helyre\u00e1ll\u00edt\u00e1si napl\u00f3z\u00e1s n\u00e9lk\u00fcl fog folytat\u00f3dni a WebSphere kiszolg\u00e1l\u00f3hoz ({1}).
+WTRN0116_UNEXPECTED_LOGFILE_SPECIFICATION.explanation=A tranzakci\u00f3s napl\u00f3f\u00e1jl Tranzakci\u00f3s napl\u00f3k\u00f6nyvt\u00e1r mez\u0151ben be\u00e1ll\u00edtott k\u00f6nyvt\u00e1rneve \u00e9rv\u00e9nytelen. A form\u00e1tum egy teljes k\u00e9pz\u00e9s\u0171 napl\u00f3f\u00e1jl k\u00f6nyvt\u00e1r kell legyen, amelyet opcion\u00e1lisan k\u00f6vethet egy ';' \u00e9s a napl\u00f3f\u00e1jl m\u00e9rete, ahol az M a napl\u00f3f\u00e1jl m\u00e9rete ut\u00e1n M megabyte-okat jelez, a K pedig kilobyte-okat. Az alap\u00e9rtelmezett \u00e9s minim\u00e1lis napl\u00f3f\u00e1jl m\u00e9ret 1M.
+WTRN0116_UNEXPECTED_LOGFILE_SPECIFICATION.useraction=Jav\u00edtsa a tranzakci\u00f3s napl\u00f3k\u00f6nyvt\u00e1r be\u00e1ll\u00edt\u00e1s\u00e1t. Gondoskodj\u00e9k r\u00f3la, hogy a kiszolg\u00e1l\u00f3 \u00fajra legyen ind\u00edtva a tranzakci\u00f3 helyre\u00e1ll\u00edt\u00e1si napl\u00f3z\u00e1s\u00e1nak enged\u00e9lyez\u00e9s\u00e9hez.
+
+WTRN0117_DEFAULT_AND_MINIMUM_LOG_SIZE=WTRN0117E: \u00c9rv\u00e9nytelen tranzakci\u00f3s napl\u00f3f\u00e1jl m\u00e9ret ker\u00fclt megad\u00e1sra: {0}. A tranzakci\u00f3s szolg\u00e1ltat\u00e1s az alap\u00e9rtelmezett 1M napl\u00f3f\u00e1jlm\u00e9retet fogja haszn\u00e1lni a WebSphere kiszolg\u00e1l\u00f3hoz ({1}).
+WTRN0117_DEFAULT_AND_MINIMUM_LOG_SIZE.explanation=A tranzakci\u00f3s napl\u00f3f\u00e1jl Tranzakci\u00f3s napl\u00f3k\u00f6nyvt\u00e1r mez\u0151ben be\u00e1ll\u00edtott f\u00e1jlm\u00e9rete \u00e9rv\u00e9nytelen. A form\u00e1tum egy teljes k\u00e9pz\u00e9s\u0171 napl\u00f3f\u00e1jl k\u00f6nyvt\u00e1r kell legyen, amelyet opcion\u00e1lisan k\u00f6vethet egy ';' \u00e9s a napl\u00f3f\u00e1jl m\u00e9rete, ahol az M a napl\u00f3f\u00e1jl m\u00e9rete ut\u00e1n M megabyte-okat jelez, a K pedig kilobyte-okat. Az alap\u00e9rtelmezett \u00e9s minim\u00e1lis napl\u00f3f\u00e1jl m\u00e9ret 1M.
+WTRN0117_DEFAULT_AND_MINIMUM_LOG_SIZE.useraction=Jav\u00edtsa a tranzakci\u00f3s napl\u00f3k\u00f6nyvt\u00e1r be\u00e1ll\u00edt\u00e1s\u00e1t.
+
+WTRN0118_DEPRECATED_CUSTOM_PROPERTY=WTRN0118W: A(z) {0} el\u00e9v\u00fcl tranzakci\u00f3 szolg\u00e1ltat\u00e1s egy\u00e9ni tulajdons\u00e1g tal\u00e1lhat\u00f3 a tranzakci\u00f3 szolg\u00e1ltat\u00e1s konfigur\u00e1ci\u00f3ban.  
+WTRN0118_DEPRECATED_CUSTOM_PROPERTY.explanation=Egy el\u00e9v\u00fclt egy\u00e9ni tulajdons\u00e1g ker\u00fclt megad\u00e1sra a tranzakci\u00f3s szolg\u00e1ltat\u00e1s konfigur\u00e1ci\u00f3j\u00e1ban ehhez a kiszolg\u00e1l\u00f3hoz. A tulajdons\u00e1g fel\u00fcl fogja b\u00edr\u00e1lni a megfelel\u0151 \u00e1ltal\u00e1nos tranzakci\u00f3 szolg\u00e1ltat\u00e1s tulajdons\u00e1got a konfigur\u00e1ci\u00f3ban. Az el\u00e9v\u00fclt egy\u00e9ni tulajdons\u00e1g a term\u00e9k egyik k\u00e9s\u0151bbi v\u00e1ltozat\u00e1ban el lesz t\u00e1vol\u00edtva.
+WTRN0118_DEPRECATED_CUSTOM_PROPERTY.useraction=T\u00e1vol\u00edtsa el az el\u00e9v\u00fclt tranzakci\u00f3 szolg\u00e1ltat\u00e1s egy\u00e9ni tulajdons\u00e1got a konfigur\u00e1ci\u00f3b\u00f3l, \u00e9s haszn\u00e1lja a megfelel\u0151 \u00e1ltal\u00e1nos tulajdons\u00e1g be\u00e1ll\u00edt\u00e1st az adminisztr\u00e1ci\u00f3s konzolon kereszt\u00fcl.
+
+WTRN0119_UNAUTHORIZED_PROTOCOL_MSG_COUNT=WTRN0119W: A hiteles\u00edt\u00e9sen megbukott WS-TX protokoll \u00fczenetek sz\u00e1ma: {0}
+WTRN0119_UNAUTHORIZED_PROTOCOL_MSG_COUNT.explanation=A Web Services Atomic Transactions (WS-AT) sz\u00e1ma \u00e9s a jelzett Web Service Business Activities (WS-BA) protokoll \u00fczenetek (p\u00e9ld\u00e1ul egy el\u0151k\u00e9sz\u00edt\u0151 \u00fczenet) az elv\u00e1rt hiteles\u00edt\u00e9si adatok n\u00e9lk\u00fcl \u00e9rkezett.
+WTRN0119_UNAUTHORIZED_PROTOCOL_MSG_COUNT.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3 megfelel\u0151en van be\u00e1ll\u00edtva a WS-AT \u00e9s WS-BA haszn\u00e1lat\u00e1ra egy biztons\u00e1gos k\u00f6rnyezetben.
+
+WTRN0120_INVALID_HA_LOGNAME=WTRN0120W: A(z) {1} kiszolg\u00e1l\u00f3 tranzakci\u00f3s napl\u00f3k\u00f6nyvt\u00e1r specifik\u00e1ci\u00f3ja (;0) \u00e9rv\u00e9nytelen, mert a kiszolg\u00e1l\u00f3 a(z) {0} f\u00fcrtben tal\u00e1lhat\u00f3, amelyben a magas szint\u0171 rendelkez\u00e9sre \u00e1ll\u00e1s (HA) enged\u00e9lyezett.
+WTRN0120_INVALID_HA_LOGNAME.explanation=Ha a f\u00fcrtben a magas szint\u0171 rendelkez\u00e9sre \u00e1ll\u00e1s enged\u00e9lyezett, akkor minden egyes kiszolg\u00e1l\u00f3hoz \u00e9rv\u00e9nyes tranzakci\u00f3s napl\u00f3k\u00f6nyvt\u00e1r \u00fatvonalat kell megadnia.
+WTRN0120_INVALID_HA_LOGNAME.useraction=M\u00f3dos\u00edtsa a tranzakci\u00f3s napl\u00f3f\u00e1jl be\u00e1ll\u00edt\u00e1s\u00e1t a f\u00e1jlrendszeren bel\u00fcl tal\u00e1lhat\u00f3 \u00e9rv\u00e9nyes helyre.
+
+WTRN0121_INVALID_HA_CONFIG=WTRN0121E: A magas szint\u0171 rendelkez\u00e9sre \u00e1ll\u00e1s (HA) konfigur\u00e1ci\u00f3 \u00e9rv\u00e9nytelen. A kiszolg\u00e1l\u00f3 le\u00e1ll.
+WTRN0121_INVALID_HA_CONFIG.explanation=A f\u00fcrtben, ahol a magas szint\u0171 rendelkez\u00e9sre \u00e1ll\u00e1s enged\u00e9lyezett, legal\u00e1bb egy kiszolg\u00e1l\u00f3 nem rendelkezik \u00e9rv\u00e9nyes tranzakci\u00f3s napl\u00f3k\u00f6nyvt\u00e1r meghat\u00e1roz\u00e1ssal.
+WTRN0121_INVALID_HA_CONFIG.useraction=Vizsg\u00e1lja meg a k\u00eds\u00e9r\u0151 \u00fczeneteket, hogy tov\u00e1bbi inform\u00e1ci\u00f3kat kapjon az \u00e9rintett kiszolg\u00e1l\u00f3kr\u00f3l. Jav\u00edtsa ki ezen kiszolg\u00e1l\u00f3k tranzakci\u00f3s napl\u00f3k\u00f6nyvt\u00e1r\u00e1t, majd ind\u00edtsa \u00fajra a f\u00fcrt\u00f6t.
+
+WTRN0122_LOG_FREE_SPACE=WTRN0122W: A(z) {0} tranzakci\u00f3s szolg\u00e1ltat\u00e1s napl\u00f3f\u00e1jl {1} byte-ot haszn\u00e1lt fel \u00f6sszesen {2} byte-b\u00f3l. Lehet, hogy a napl\u00f3f\u00e1jl m\u00e9ret\u00e9t n\u00f6velni kell.
+WTRN0122_LOG_FREE_SPACE.explanation=Egy sikeresen v\u00e9grehajtott kulcspont m\u0171velet ut\u00e1n (mely sor\u00e1n a t\u00f6r\u00f6lt \u00e9s befejezett bejegyz\u00e9sek t\u00f6rl\u00e9sre ker\u00fcltek egy napl\u00f3f\u00e1jlb\u00f3l, amely el\u00e9rte a maxim\u00e1lis kapacit\u00e1s\u00e1t) a rendszer azt \u00e9szlelte, hogy a napl\u00f3f\u00e1jl m\u00e9g mindig 75%-osan tele van a jelenlegi akt\u00edv tranzakci\u00f3s terhel\u00e9s miatt. Ha a napl\u00f3f\u00e1jl megtelik, akkor a kiszolg\u00e1l\u00f3t \u00fajra kell ind\u00edtani. Megjegyz\u00e9s: ez az \u00fczenet csak egy napl\u00f3f\u00e1jlon v\u00e9gzett sikeres kulcspont m\u0171velet ut\u00e1n jelenik meg; csak ekkor sz\u00e1m\u00edthat\u00f3 ki a napl\u00f3k jelenleg haszn\u00e1lt kapacit\u00e1sa.
+WTRN0122_LOG_FREE_SPACE.useraction=Fontolja meg nagyobb f\u00e1jlm\u00e9ret be\u00e1ll\u00edt\u00e1s\u00e1t a tranzakci\u00f3s napl\u00f3hoz.
+
+WTRN0123_INVALID_EXTERNAL_WSTX_URL_PREFIX=WTRN0123E: \u00c9rv\u00e9nytelen k\u00fcls\u0151 WS-tranzakci\u00f3 HTTP(S) URL el\u0151tag ker\u00fclt megad\u00e1sra: {0}
+WTRN0123_INVALID_EXTERNAL_WSTX_URL_PREFIX.explanation=A k\u00fcls\u0151 WS-tranzakci\u00f3 HTTP(S) URL el\u0151tagnak \u00e9rv\u00e9nyes URI c\u00edmnek kell lennie.
+WTRN0123_INVALID_EXTERNAL_WSTX_URL_PREFIX.useraction=Adjon meg \u00e9rv\u00e9nyes k\u00fcls\u0151 WS-tranzakci\u00f3 HTTP(S) URL el\u0151tagot.
+
+WTRN0124_TIMED_OUT_TRANSACTION_STACK=WTRN0124I: Amikor az id\u0151t\u00fall\u00e9p\u00e9s t\u00f6rt\u00e9nt, akkor a sz\u00e1l, amelyhez a tranzakci\u00f3 tartozik, vagy legut\u00f3bb tartozott a k\u00f6vetkez\u0151: {0}. A sz\u00e1l veremk\u00f6vet\u00e9se az id\u0151t\u00fall\u00e9p\u00e9skor a k\u00f6vetkez\u0151 volt: {1}
+WTRN0124_TIMED_OUT_TRANSACTION_STACK.explanation=Az id\u0151t\u00fall\u00e9p\u00e9s el\u0151fordul\u00e1sakor lementett verem seg\u00edts\u00e9g\u00e9re lesz a tranzakci\u00f3s id\u0151t\u00fall\u00e9p\u00e9sek diagnosztiz\u00e1l\u00e1s\u00e1ban \u00e9s hibakeres\u00e9s\u00e9ben.
+WTRN0124_TIMED_OUT_TRANSACTION_STACK.useraction=A veremk\u00f6vet\u00e9s vizsg\u00e1lat\u00e1val \u00e1llap\u00edtsa meg milyen feldolgoz\u00e1s volt folyamatban, amikor a tranzakci\u00f3s id\u0151t\u00fall\u00e9p\u00e9s t\u00f6rt\u00e9nt.
+
+WTRN0125_COMMIT_PRIORITY=WTRN0125W: A(z) {0} modult a(z) {1} csom\u00f3ponton nem lehet megc\u00e9lozni, mert a modul Er\u0151forr\u00e1s v\u00e9gleges\u00edt\u00e9si sorrend t\u00e1mogat\u00e1st hat\u00e1roz meg, ami a csom\u00f3ponton nem t\u00e1mogatott.
+WTRN0125_COMMIT_PRIORITY.explanation=Az Er\u0151forr\u00e1s v\u00e9gleges\u00edt\u00e9si sorrend t\u00e1mogat\u00e1s csak olyan csom\u00f3pontokon \u00e1ll rendelkez\u00e9sre, amelyek 7.0 vagy k\u00e9s\u0151bbi kiad\u00e1s\u00faak.
+WTRN0125_COMMIT_PRIORITY.useraction=Telep\u00edtse a modult egy 7.0 kiad\u00e1s\u00fa (vagy \u00fajabb) alkalmaz\u00e1skiszolg\u00e1l\u00f3ra, vagy az alkalmaz\u00e1stelep\u00edt\u0151 eszk\u00f6z\u00f6kben tal\u00e1lhat\u00f3 alkalmaz\u00e1s telep\u00edt\u00e9si le\u00edr\u00f3 szerkeszt\u0151 seg\u00edts\u00e9g\u00e9vel t\u00e1vol\u00edtson el minden Er\u0151forr\u00e1s v\u00e9gleges\u00edt\u00e9si sorrend be\u00e1ll\u00edt\u00e1st a modul telep\u00edt\u00e9se el\u0151tt.  Ennek v\u00e9grehajt\u00e1s\u00e1hoz navig\u00e1ljon a WebSphere kiterjeszt\u00e9sek v\u00e9gleges\u00edt\u00e9si sorrend r\u00e9sz\u00e9hez, \u00e9s t\u00e1vol\u00edtsa el az egyes tranzakci\u00f3s er\u0151forr\u00e1sok v\u00e9gleges\u00edt\u00e9si priorit\u00e1s\u00e1nak be\u00e1ll\u00edt\u00e1s\u00e1t.
+
+WTRN0126_COMMIT_PRIORITY_CLUSTER=WTRN0126W: A(z) {0} alkalmaz\u00e1s a(z) {1} csom\u00f3ponton a(z) {2} f\u00fcrtben nem telep\u00edthet\u0151, mert az alkalmaz\u00e1s Er\u0151forr\u00e1s v\u00e9gleges\u00edt\u00e9si sorrend t\u00e1mogat\u00e1st hat\u00e1roz meg, ami a csom\u00f3ponton nem t\u00e1mogatott.
+WTRN0126_COMMIT_PRIORITY_CLUSTER.explanation=Az Er\u0151forr\u00e1s v\u00e9gleges\u00edt\u00e9si sorrend t\u00e1mogat\u00e1s csak olyan csom\u00f3pontokon \u00e1ll rendelkez\u00e9sre, amelyek 7.0 vagy k\u00e9s\u0151bbi kiad\u00e1s\u00faak.  A csom\u00f3pont nem lesz hozz\u00e1adva a f\u00fcrth\u00f6z.
+WTRN0126_COMMIT_PRIORITY_CLUSTER.useraction=A f\u00fcrttagokat egy 7.0 kiad\u00e1s\u00fa (vagy \u00fajabb) alkalmaz\u00e1skiszolg\u00e1l\u00f3t futtat\u00f3 csom\u00f3pontokon hozza l\u00e9tre, vagy az alkalmaz\u00e1stelep\u00edt\u0151 eszk\u00f6z\u00f6kben tal\u00e1lhat\u00f3 alkalmaz\u00e1s telep\u00edt\u00e9si le\u00edr\u00f3 szerkeszt\u0151 seg\u00edts\u00e9g\u00e9vel t\u00e1vol\u00edtson el minden Er\u0151forr\u00e1s v\u00e9gleges\u00edt\u00e9si sorrend be\u00e1ll\u00edt\u00e1st a f\u00fcrttag l\u00e9trehoz\u00e1sa el\u0151tt.   Ennek v\u00e9grehajt\u00e1s\u00e1hoz navig\u00e1ljon a WebSphere kiterjeszt\u00e9sek v\u00e9gleges\u00edt\u00e9si sorrend r\u00e9sz\u00e9hez, \u00e9s t\u00e1vol\u00edtsa el az egyes tranzakci\u00f3s er\u0151forr\u00e1sok v\u00e9gleges\u00edt\u00e9si priorit\u00e1s\u00e1nak be\u00e1ll\u00edt\u00e1s\u00e1t.
+
+WTRN0127_BLOCKED_BY_POLICY_ASSERTION=WTRN0127E: A m\u0171veletet h\u00e1zirend t\u00edpus\u00fa konfigur\u00e1ci\u00f3 blokkolja.
+WTRN0127_BLOCKED_BY_POLICY_ASSERTION.explanation=A m\u0171velet a hat\u00e1lyos h\u00e1zirend t\u00edpus\u00fa konfigur\u00e1ci\u00f3nak megfelel\u0151en blokkolva lett.
+WTRN0127_BLOCKED_BY_POLICY_ASSERTION.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a h\u00e1zirend t\u00edpus\u00fa konfigur\u00e1ci\u00f3 az ilyen m\u0171velet eset\u00e9ben megfelel\u0151.
+
+WTRN0128_WSTX_APP_START_FAILURE=WTRN0128E: A(z) {0} alkalmaz\u00e1st nem lehet elind\u00edtani, mert az alkalmaz\u00e1s WS tranzakci\u00f3 specifik\u00e1ci\u00f3kat ig\u00e9nyel, amit a f\u00fcrt nem minden kiszolg\u00e1l\u00f3ja t\u00e1mogat.
+WTRN0128_WSTX_APP_START_FAILURE.explanation=Az alkalmaz\u00e1s WS tranzakci\u00f3 specifik\u00e1ci\u00f3kat megad\u00f3 WebService h\u00e1zirenddel lett be\u00e1ll\u00edtva, amit a f\u00fcrt nem minden kiszolg\u00e1l\u00f3ja t\u00e1mogat.  Az alkalmaz\u00e1s k\u00e9r\u00e9sei vagy azok helyre\u00e1ll\u00edt\u00e1sa a f\u00fcrt b\u00e1rmely kiszolg\u00e1l\u00f3j\u00e1ra \u00e1tir\u00e1ny\u00edt\u00e1sra ker\u00fclhet, ez\u00e9rt minden alkalmaz\u00e1snak olyan szolg\u00e1ltat\u00e1sokat kell haszn\u00e1lnia, amelyeket minden kiszolg\u00e1l\u00f3 t\u00e1mogat.
+WTRN0128_WSTX_APP_START_FAILURE.useraction=T\u00e1vol\u00edtsa el az alkalmaz\u00e1st vagy m\u00f3dos\u00edtsa az alkalmaz\u00e1s WS tranzakci\u00f3s h\u00e1zirend be\u00e1ll\u00edt\u00e1s\u00e1t \u00fagy, hogy t\u00e1mogatott szolg\u00e1ltat\u00e1sokat haszn\u00e1ljon.  Alternat\u00edv megold\u00e1sk\u00e9nt friss\u00edtse a f\u00fcrt \u00f6sszes csom\u00f3pontj\u00e1t 7.0 vagy \u00fajabb kiad\u00e1sra.
+
+WTRN0129_WSTX_APP_START_FAILURE=WTRN0129W: A WS tranzakci\u00f3 specifik\u00e1ci\u00f3 szint alap\u00e9rtelmezett be\u00e1ll\u00edt\u00e1sa kevert verzi\u00f3sz\u00e1m\u00fa f\u00fcrt\u00f6kben nem megfelel\u0151.
+WTRN0129_WSTX_APP_START_FAILURE.explanation=A kiszolg\u00e1l\u00f3 be\u00e1ll\u00edtott WS tranzakci\u00f3 specifik\u00e1ci\u00f3 szintj\u00e9nek alap\u00e9rtelmezett be\u00e1ll\u00edt\u00e1sa v\u00e9grehajt\u00e1si probl\u00e9m\u00e1kat okozhat, mivel a f\u00fcrt nem minden kiszolg\u00e1l\u00f3ja van ugyanolyan alkalmaz\u00e1skiszolg\u00e1l\u00f3 kiad\u00e1si szinten.  A f\u00fcrt minden kiszolg\u00e1l\u00f3j\u00e1nak ugyanazt a specifik\u00e1ci\u00f3 szintet kell t\u00e1mogatnia, mivel az alkalmaz\u00e1s k\u00e9r\u00e9sek vagy azok helyre\u00e1ll\u00edt\u00e1sa b\u00e1rmely kiszolg\u00e1l\u00f3ra \u00e1tir\u00e1ny\u00edt\u00e1sra ker\u00fclhet.  Ha a kiszolg\u00e1l\u00f3k elt\u00e9r\u0151 specifik\u00e1ci\u00f3 szinteket t\u00e1mogatnak, akkor az alkalmaz\u00e1s viselked\u00e9se a v\u00e9grehajt\u00f3 kiszolg\u00e1l\u00f3t\u00f3l f\u00fcgg\u0151en v\u00e1ltozhat.
+WTRN0129_WSTX_APP_START_FAILURE.useraction=\u00c1ll\u00edtsa be az alap\u00e9rtelmezett WS tranzakci\u00f3 specifik\u00e1ci\u00f3 szintet olyan \u00e9rt\u00e9kre, ami a f\u00fcrt minden kiszolg\u00e1l\u00f3ja eset\u00e9ben megegyezik.
+
+WTRN0130_BRANCH_COUPLING=WTRN0130W: A(z) {0} modult a(z) {1} csom\u00f3ponton nem lehet megc\u00e9lozni, mert a modul Er\u0151forr\u00e1s\u00e1g-csatol\u00e1s t\u00e1mogat\u00e1st hat\u00e1roz meg, ami a csom\u00f3ponton nem t\u00e1mogatott
+WTRN0130_BRANCH_COUPLING.explanation=Az Er\u0151forr\u00e1s\u00e1g-csatol\u00e1s t\u00e1mogat\u00e1s csak olyan csom\u00f3pontokon \u00e1ll rendelkez\u00e9sre, amelyek 8.0 vagy k\u00e9s\u0151bbi kiad\u00e1s\u00faak.
+WTRN0130_BRANCH_COUPLING.useraction=Telep\u00edtse a modult egy 8.0 kiad\u00e1s\u00fa (vagy \u00fajabb) alkalmaz\u00e1skiszolg\u00e1l\u00f3ra, vagy az alkalmaz\u00e1s az alkalmaz\u00e1sfejleszt\u0151 k\u00e9szletben tal\u00e1lhat\u00f3 telep\u00edt\u00e9sle\u00edr\u00f3 szerkeszt\u0151j\u00e9nek seg\u00edts\u00e9g\u00e9vel t\u00e1vol\u00edtson el minden Er\u0151forr\u00e1s\u00e1g-csatol\u00e1s be\u00e1ll\u00edt\u00e1st a modul telep\u00edt\u00e9se el\u0151tt.  Ennek v\u00e9grehajt\u00e1s\u00e1hoz navig\u00e1ljon a WebSphere kiterjeszt\u00e9sek \u00e1gcsatol\u00e1s r\u00e9sz\u00e9hez, \u00e9s sz\u00fcntesse meg az egyes tranzakci\u00f3s er\u0151forr\u00e1sok \u00e1gcsatol\u00e1s be\u00e1ll\u00edt\u00e1s\u00e1t.
+
+WTRN0131_BRANCH_COUPLING_CLUSTER=WTRN0131W: A(z) {0} alkalmaz\u00e1s a {1} csom\u00f3ponton a {2} f\u00fcrtben nem telep\u00edthet\u0151, mert az alkalmaz\u00e1s Er\u0151forr\u00e1s\u00e1g-csatol\u00e1s t\u00e1mogat\u00e1st hat\u00e1roz meg, ami a csom\u00f3ponton nem t\u00e1mogatott
+WTRN0131_BRANCH_COUPLING_CLUSTER.explanation=Az Er\u0151forr\u00e1s\u00e1g-csatol\u00e1s t\u00e1mogat\u00e1s csak olyan csom\u00f3pontokon \u00e1ll rendelkez\u00e9sre, amelyek 8.0 vagy k\u00e9s\u0151bbi kiad\u00e1s\u00faak.  A csom\u00f3pont nem lesz hozz\u00e1adva a f\u00fcrth\u00f6z.
+WTRN0131_BRANCH_COUPLING_CLUSTER.useraction=A f\u00fcrttagokat 8.0 kiad\u00e1s\u00fa (vagy \u00fajabb) alkalmaz\u00e1skiszolg\u00e1l\u00f3val rendelkez\u0151 csom\u00f3pontokon hozza l\u00e9tre, vagy az alkalmaz\u00e1s az alkalmaz\u00e1sfejleszt\u0151 k\u00e9szletben tal\u00e1lhat\u00f3 telep\u00edt\u00e9sle\u00edr\u00f3 szerkeszt\u0151j\u00e9nek seg\u00edts\u00e9g\u00e9vel t\u00e1vol\u00edtson el minden Er\u0151forr\u00e1s\u00e1g-csatol\u00e1s be\u00e1ll\u00edt\u00e1st a f\u00fcrttag l\u00e9trehoz\u00e1sa el\u0151tt.   Ennek v\u00e9grehajt\u00e1s\u00e1hoz navig\u00e1ljon a WebSphere kiterjeszt\u00e9sek \u00e1gcsatol\u00e1s r\u00e9sz\u00e9hez, \u00e9s sz\u00fcntesse meg az egyes tranzakci\u00f3s er\u0151forr\u00e1sok \u00e1gcsatol\u00e1s be\u00e1ll\u00edt\u00e1s\u00e1t.
+
+# 0 - servername
+# 1 - server uuid or server long name (zos)
+# 2 - server restart epoch value
+WTRN0132_RECOVERY_INITIATED=WTRN0132I: Tranzakci\u00f3-helyre\u00e1ll\u00edt\u00e1s ehhez: {0} a(z) {1} kiszolg\u00e1l\u00f3 UUID azonos\u00edt\u00f3val \u00e9s a(z) {2} \u00fajraind\u00edt\u00e1si korszakkezdettel ind\u00edtva
+WTRN0132_RECOVERY_INITIATED.explanation=Elindul a tranzakci\u00f3-helyre\u00e1ll\u00edt\u00e1si folyamat a kiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra.  A megl\u00e9v\u0151 tranzakci\u00f3s napl\u00f3kb\u00f3l kiolvasott kiszolg\u00e1l\u00f3 UUID azonos\u00edt\u00f3t \u00e9s a korszakkezdetet a rendszer jelenti.  Ezek az \u00e9rt\u00e9kek azonos\u00edtanak minden olyan bizonytalan xid azonos\u00edt\u00f3t az xa er\u0151forr\u00e1s-kezel\u0151k\u00f6n bel\u00fcl, amelyek az adott kiszolg\u00e1l\u00f3 kor\u00e1bbi p\u00e9ld\u00e1nyaib\u00f3l sz\u00e1rmazhatnak.  Ha a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sakor a tranzakci\u00f3s napl\u00f3k m\u00e9g nem l\u00e9teztek, a rendszer az uuid \u00e9s a korszakkezdet kimenet\u00e9nek \u00e9rt\u00e9keit fogja a napl\u00f3kba \u00edrni, \u00e9s a kiszolg\u00e1l\u00f3 a j\u00f6v\u0151ben ezeket fogja haszn\u00e1lni.
+WTRN0132_RECOVERY_INITIATED.useraction=Semmit sem kell tennie.
+
+WTRN0133_RECOVERY_COMPLETE=WTRN0133I: A tranzakci\u00f3-helyre\u00e1ll\u00edt\u00e1s feldolgoz\u00e1sa a kiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra befejez\u0151d\u00f6tt
+WTRN0133_RECOVERY_COMPLETE.explanation=A tranzakci\u00f3-helyre\u00e1ll\u00edt\u00e1si folyamat befejez\u0151d\u00f6tt a kiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra.  A rendszer elt\u00e1vol\u00edt a napl\u00f3kb\u00f3l minden, a kiszolg\u00e1l\u00f3 kor\u00e1bbi p\u00e9ld\u00e1nyaib\u00f3l sz\u00e1rmaz\u00f3, tranzakci\u00f3kkal \u00e9s xa er\u0151forr\u00e1s-kezel\u0151kkel kapcsolatos inform\u00e1ci\u00f3t.
+WTRN0133_RECOVERY_COMPLETE.useraction=Semmit sem kell tennie.
+
+# 0 - number of resource managers
+WTRN0134_RECOVERING_XARMS=WTRN0134I: {0} XA er\u0151forr\u00e1s-kezel\u0151(k) helyre\u00e1ll\u00edt\u00e1sa a tranzakci\u00f3s partner napl\u00f3ib\u00f3l
+WTRN0134_RECOVERING_XARMS.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s \u00e9szlelte, hogy a kiszolg\u00e1l\u00f3t kor\u00e1bban k\u00e9ts\u00e9ges tranzakci\u00f3kkal \u00e1ll\u00edthatt\u00e1k le, \u00e9s a rendszer felveszi a kapcsolatot a megadott sz\u00e1m\u00fa napl\u00f3zott xa er\u0151forr\u00e1s-kezel\u0151vel a helyre\u00e1ll\u00edt\u00e1s feldolgoz\u00e1s\u00e1nak r\u00e9szek\u00e9nt.
+WTRN0134_RECOVERING_XARMS.useraction=Semmit sem kell tennie.
+
+WTRN0135_RECOVERING_NOTXNS=WTRN0135I: A tranzakci\u00f3s szolg\u00e1ltat\u00e1s nem v\u00e9gzi tranzakci\u00f3k helyre\u00e1ll\u00edt\u00e1s\u00e1t.
+WTRN0135_RECOVERING_NOTXNS.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s befejezte a tranzakci\u00f3s helyre\u00e1ll\u00edt\u00e1si napl\u00f3k feldolgoz\u00e1s\u00e1t, \u00e9s meg\u00e1llap\u00edtotta, hogy egyetlen tranzakci\u00f3 sem ig\u00e9nyel helyre\u00e1ll\u00edt\u00e1st.  A rendszer visszag\u00f6rget minden k\u00e9ts\u00e9ges xa er\u0151forr\u00e1st, amely err\u0151l a kiszolg\u00e1l\u00f3r\u00f3l sz\u00e1rmazik.
+WTRN0135_RECOVERING_NOTXNS.useraction=Semmit sem kell tennie.
+
+# 0 - transaction xid
+# 1 - transaction id
+# 2 - transaction status
+WTRN0136_RECOVERING_TRAN=WTRN0136I: {0} helyre\u00e1ll\u00edtott tranzakci\u00f3 feldolgoz\u00e1sa (tid={1}) a k\u00f6vetkez\u0151vel: {2}
+WTRN0136_RECOVERING_TRAN.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s helyre\u00e1ll\u00edtja a megnevezett tranzakci\u00f3t.  Az \u00fczenet a tranzakci\u00f3 aktu\u00e1lis \u00e1llapot\u00e1t is jelzi a helyre\u00e1ll\u00edt\u00e1s sor\u00e1n.  A tid \u00e9rt\u00e9k egy\u00e9b helyre\u00e1ll\u00edt\u00e1si folyamattal kapcsolatos \u00fczenetekben \u00e9s az adminisztr\u00e1ci\u00f3s konzolon haszn\u00e1latos, \u00e9s a tranzakci\u00f3ra utal.
+WTRN0136_RECOVERING_TRAN.useraction=Semmit sem kell tennie.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name 
+WTRN0137_REC_TXN_COMMIT=WTRN0137I: Helyre\u00e1ll\u00edtott tranzakci\u00f3 (tid={0}) a(z) {1} xid v\u00e9gleges\u00edt\u00e9s\u00e9t v\u00e9gzi a k\u00f6vetkez\u0151vel: {2}
+WTRN0137_REC_TXN_COMMIT.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s helyre\u00e1ll\u00edtja a megnevezett tranzakci\u00f3t, \u00e9s v\u00e9gleges\u00edt\u00e9si parancsot ad ki egy er\u0151forr\u00e1s-kezel\u0151nek.
+WTRN0137_REC_TXN_COMMIT.useraction=Semmit sem kell tennie.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+WTRN0138_REC_TXN_ROLLBACK=WTRN0138I: A helyre\u00e1ll\u00edtott tranzakci\u00f3 (tid={0}) a(z) {1} xid visszag\u00f6rget\u00e9s\u00e9t v\u00e9gzi a k\u00f6vetkez\u0151vel: {2}
+WTRN0138_REC_TXN_ROLLBACK.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s helyre\u00e1ll\u00edtja a megnevezett tranzakci\u00f3t, \u00e9s visszag\u00f6rget\u00e9si parancsot ad ki egy er\u0151forr\u00e1s-kezel\u0151 sz\u00e1m\u00e1ra.
+WTRN0138_REC_TXN_ROLLBACK.useraction=Semmit sem kell tennie.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+WTRN0139_REC_TXN_FORGET=WTRN0139I: A helyre\u00e1ll\u00edtott tranzakci\u00f3 (tid={0}) a(z) {1} xid kihagy\u00e1s\u00e1t v\u00e9gzi a k\u00f6vetkez\u0151vel: {2}
+WTRN0139_REC_TXN_FORGET.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s helyre\u00e1ll\u00edtja a megnevezett tranzakci\u00f3t, \u00e9s elhagy\u00e1si parancsot ad ki egy er\u0151forr\u00e1s-kezel\u0151nek.
+WTRN0139_REC_TXN_FORGET.useraction=Semmit sem kell tennie.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+WTRN0140_REC_TXN_COMMITED=WTRN0140I: A helyre\u00e1ll\u00edtott tranzakci\u00f3 (tid={0}) sikeresen v\u00e9gleges\u00edtette a(z) {1} xid azonos\u00edt\u00f3t a k\u00f6vetkez\u0151vel: {2}
+WTRN0140_REC_TXN_COMMITED.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s helyre\u00e1ll\u00edtja a megnevezett tranzakci\u00f3t, \u00e9s sikeresen v\u00e9gleges\u00edtett egy er\u0151forr\u00e1st.
+WTRN0140_REC_TXN_COMMITED.useraction=Semmit sem kell tennie.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+# 3 - response code
+WTRN0141_REC_TXN_COMMITERR=WTRN0141I: A(z) {1} xid v\u00e9gleges\u00edt\u00e9se a helyre\u00e1ll\u00edtott tranzakci\u00f3 (tid={0}) \u00e1ltal a(z) {2} seg\u00edts\u00e9g\u00e9vel a k\u00f6vetkez\u0151t eredm\u00e9nyezte: {3}
+WTRN0141_REC_TXN_COMMITERR.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s helyre\u00e1ll\u00edtja a megnevezett tranzakci\u00f3t, \u00e9s egy er\u0151forr\u00e1s v\u00e9gleges\u00edt\u00e9se kapcs\u00e1n fogadta a v\u00e1laszk\u00f3dot, az \u00fczenetben foglaltak szerint.
+WTRN0141_REC_TXN_COMMITERR.useraction=Vizsg\u00e1lja meg a v\u00e1laszk\u00f3dot, \u00e9s hat\u00e1rozza meg, hogy a v\u00e9gleges\u00edt\u00e9s esetleg meghi\u00fasult-e, majd hajtsa v\u00e9gre a megfelel\u0151 m\u0171veletet.  Ha a k\u00f3d heurisztikus kimenetelt jelez, jav\u00edtson ki minden lehets\u00e9ges adatprobl\u00e9m\u00e1t.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+WTRN0142_REC_TXN_ROLLED=WTRN0142I: A helyre\u00e1ll\u00edtott tranzakci\u00f3 (tid={0}) sikeresen visszag\u00f6rgette a(z) {1} xid azonos\u00edt\u00f3t a k\u00f6vetkez\u0151vel: {2}
+WTRN0142_REC_TXN_ROLLED.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s helyre\u00e1ll\u00edtja a megnevezett tranzakci\u00f3t, \u00e9s sikeresen visszag\u00f6rgetett egy er\u0151forr\u00e1st.
+WTRN0142_REC_TXN_ROLLED.useraction=Semmit sem kell tennie.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+# 3 - response code
+WTRN0143_REC_TXN_ROLLEDERR=WTRN0143I: A(z) {1} xid visszag\u00f6rget\u00e9se a helyre\u00e1ll\u00edtott tranzakci\u00f3 (tid={0}) \u00e1ltal a(z) {2} seg\u00edts\u00e9g\u00e9vel a k\u00f6vetkez\u0151t eredm\u00e9nyezte: {3}
+WTRN0143_REC_TXN_ROLLEDERR.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s helyre\u00e1ll\u00edtja a megnevezett tranzakci\u00f3t, \u00e9s egy er\u0151forr\u00e1s visszag\u00f6rget\u00e9se kapcs\u00e1n fogadta a v\u00e1laszk\u00f3dot, az \u00fczenetben foglaltak szerint.
+WTRN0143_REC_TXN_ROLLEDERR.useraction=Vizsg\u00e1lja meg a v\u00e1laszk\u00f3dot, \u00e9s hat\u00e1rozza meg, hogy a visszag\u00f6rget\u00e9s esetleg meghi\u00fasult-e, majd hajtsa v\u00e9gre a megfelel\u0151 m\u0171veletet.  Ha a k\u00f3d heurisztikus kimenetelt jelez, jav\u00edtson ki minden lehets\u00e9ges adatprobl\u00e9m\u00e1t.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+WTRN0144_REC_TXN_FORGOT=WTRN0144I: A helyre\u00e1ll\u00edtott tranzakci\u00f3 (tid={0}) sikeresen kihagyta a(z) {1} xid azonos\u00edt\u00f3t a k\u00f6vetkez\u0151vel: {2}
+WTRN0144_REC_TXN_FORGOT.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s helyre\u00e1ll\u00edtja a megnevezett tranzakci\u00f3t, \u00e9s sikeresen elhagyott egy er\u0151forr\u00e1st.
+WTRN0144_REC_TXN_FORGOT.useraction=Semmit sem kell tennie.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+# 3 - response code
+WTRN0145_REC_TXN_FORGETERR=WTRN0145I: A(z) {1} xid kihagy\u00e1sa a helyre\u00e1ll\u00edtott tranzakci\u00f3 (tid={0}) \u00e1ltal a(z) {2} seg\u00edts\u00e9g\u00e9vel a k\u00f6vetkez\u0151t eredm\u00e9nyezte: {3}
+WTRN0145_REC_TXN_FORGETERR.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s helyre\u00e1ll\u00edtja a megnevezett tranzakci\u00f3t, \u00e9s egy er\u0151forr\u00e1s kihagy\u00e1sa kapcs\u00e1n fogadta a v\u00e1laszk\u00f3dot, az \u00fczenetben foglaltak szerint.
+WTRN0145_REC_TXN_FORGETERR.useraction=Vizsg\u00e1lja meg a v\u00e1laszk\u00f3dot, \u00e9s hat\u00e1rozza meg, hogy a kihagy\u00e1s esetleg meghi\u00fasult-e, majd hajtsa v\u00e9gre a megfelel\u0151 m\u0171veletet.
+
+# 0 - number of xids
+# 1 - resource manager name
+# 2 - number of xids
+WTRN0146_REC_XA_RECOVERED=WTRN0146I: A(z) {1} helyen zajl\u00f3 xa helyre\u00e1ll\u00edt\u00e1sb\u00f3l {0} xid \u00e9rkezett, amelyek k\u00f6z\u00fcl {2} lesz feldolgozva a kiszolg\u00e1l\u00f3 \u00e1ltal
+WTRN0146_REC_XA_RECOVERED.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s sikeresen adott ki xa vissza\u00e1ll\u00edt\u00e1st egy napl\u00f3zott er\u0151forr\u00e1s-kezel\u0151n.
+WTRN0146_REC_XA_RECOVERED.useraction=Semmit sem kell tennie.
+
+# 0 - xid
+# 1 - resource manager name
+# 2 - restart epoch value
+WTRN0147_REC_XID_LATE=WTRN0147W: A(z) {1} helyr\u0151l vissza\u00e1ll\u00edtott {0} xid egy kor\u00e1bban \u00fajraind\u00edtott, {2} korszakkezdettel rendelkez\u0151 kiszolg\u00e1l\u00f3p\u00e9ld\u00e1nyr\u00f3l sz\u00e1rmazik
+WTRN0147_REC_XID_LATE.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s sikeresen adott ki xa vissza\u00e1ll\u00edt\u00e1st egy napl\u00f3zott er\u0151forr\u00e1s-kezel\u0151n, \u00e9s olyan xid azonos\u00edt\u00f3t szerzett be, amelyet a kor\u00e1bbi kiszolg\u00e1l\u00f3 \u00fajraind\u00edt\u00e1skor kellett volna helyre\u00e1ll\u00edtani.  A korszakkezdet \u00e9rt\u00e9ke azt a kiszolg\u00e1l\u00f3p\u00e9ld\u00e1nyt jelzi, amelyen az xid eredetileg t\u00e1rs\u00edtva volt egy tranzakci\u00f3hoz.
+WTRN0147_REC_XID_LATE.useraction=Vizsg\u00e1lja meg a korszakkezdet \u00e9rt\u00e9ket ebben az \u00fczenetben, \u00e9s hasonl\u00edtsa \u00f6ssze a jelenlegi kiszolg\u00e1l\u00f3 \u00fajraind\u00edt\u00e1s korszakkezdet\u00e9vel a WTRN0132 \u00fczenetben.  Ha a k\u00f6zbees\u0151 kiszolg\u00e1l\u00f3 \u00fajraind\u00edt\u00e1sok sikeresek voltak, ellen\u0151rizze az el\u0151z\u0151 kiszolg\u00e1l\u00f3p\u00e9ld\u00e1nyok napl\u00f3it \u00e9s a jelenlegi napl\u00f3kat, \u00e9s hat\u00e1rozza meg, hogy a rendszer mi\u00e9rt nem dolgozta fel ezt a xid azonos\u00edt\u00f3t a helyre\u00e1ll\u00edt\u00e1s sor\u00e1n.  P\u00e9ld\u00e1ul, a kiszolg\u00e1l\u00f3 kor\u00e1bbi \u00fajraind\u00edt\u00e1sakor az er\u0151forr\u00e1s-kezel\u0151 nem volt el\u00e9rhet\u0151.
+
+# 0 - xid
+# 1 - resource manager name
+WTRN0148_REC_XA_ROLLBACK=WTRN0148I: A(z) {1} helyr\u0151l vissza\u00e1ll\u00edtott {0} xid nem rendelkezik t\u00e1rs\u00edtott tranzakci\u00f3val, \u00e9s a rendszer vissza fogja g\u00f6rgetni
+WTRN0148_REC_XA_ROLLBACK.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s sikeresen adott ki xa vissza\u00e1ll\u00edt\u00e1st egy napl\u00f3zott er\u0151forr\u00e1s-kezel\u0151n, \u00e9s olyan xid azonos\u00edt\u00f3t szerzett be, amely nem felel meg egy napl\u00f3zott tranzakci\u00f3nak.  A helyre\u00e1ll\u00edt\u00e1s feldolgoz\u00e1s\u00e1nak r\u00e9szek\u00e9nt a tranzakci\u00f3s szolg\u00e1ltat\u00e1s vissza fogja g\u00f6rgetni az xid azonos\u00edt\u00f3t.
+WTRN0148_REC_XA_ROLLBACK.useraction=Semmit sem kell tennie.
+
+# 0 - xid
+# 1 - resource manager name
+# 2 - transaction id
+# 3 - transaction state
+WTRN0149_REC_XA_TRAN=WTRN0149I: A(z) {1} helyr\u0151l vissza\u00e1ll\u00edtott {0} xid {3} napl\u00f3zott \u00e1llapot\u00fa t\u00e1rs\u00edtott tranzakci\u00f3val (tid={2}) rendelkezik
+WTRN0149_REC_XA_TRAN.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s sikeresen adott ki xa vissza\u00e1ll\u00edt\u00e1st egy napl\u00f3zott er\u0151forr\u00e1s-kezel\u0151n, \u00e9s olyan xid azonos\u00edt\u00f3t szerzett be, amely egy napl\u00f3zott tranzakci\u00f3nak felel meg.  A helyre\u00e1ll\u00edt\u00e1s feldolgoz\u00e1s\u00e1nak r\u00e9szek\u00e9nt a tranzakci\u00f3s szolg\u00e1ltat\u00e1s befejezi a tranzakci\u00f3t.
+WTRN0149_REC_XA_TRAN.useraction=Semmit sem kell tennie.
+
+# 0 - xid
+# 1 - resource manager name
+# 2 - error code
+WTRN0150_REC_XA_ROLLEDBACK=WTRN0150I: V\u00e1lasz a(z) {1} helyr\u0151l helyre\u00e1ll\u00edtott {0} xid visszag\u00f6rget\u00e9s\u00e9b\u0151l - {2}
+WTRN0150_REC_XA_ROLLEDBACK.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s sikeresen adott ki xa vissza\u00e1ll\u00edt\u00e1st egy napl\u00f3zott er\u0151forr\u00e1s-kezel\u0151n, \u00e9s olyan xid azonos\u00edt\u00f3t szerzett be, amely nem felel meg egy napl\u00f3zott tranzakci\u00f3nak.  A tranzakci\u00f3s szolg\u00e1ltat\u00e1s megk\u00eds\u00e9relte visszag\u00f6rgetni az xid azonos\u00edt\u00f3t a helyre\u00e1ll\u00edt\u00e1s feldolgoz\u00e1s\u00e1nak r\u00e9szek\u00e9nt.
+WTRN0150_REC_XA_ROLLEDBACK.useraction=Vizsg\u00e1lja meg a hibak\u00f3dot, \u00e9s hat\u00e1rozza meg, hogy a visszag\u00f6rget\u00e9s esetleg meghi\u00fasult-e.
+
+# 0 - resource manager name
+WTRN0151_REC_XA_RECOVER=WTRN0151I: Felk\u00e9sz\u00fcl\u00e9s xa helyre\u00e1ll\u00edt\u00e1s megh\u00edv\u00e1s\u00e1ra a k\u00f6vetkez\u0151n: {0}
+WTRN0151_REC_XA_RECOVER.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s xa helyre\u00e1ll\u00edt\u00e1s megh\u00edv\u00e1s\u00e1ra k\u00e9sz\u00fcl egy napl\u00f3zott er\u0151forr\u00e1s-kezel\u0151n egy kapcsolat megnyit\u00e1s\u00e1val \u00e9s egy xa er\u0151forr\u00e1s beszerz\u00e9s\u00e9vel.  Ha sikeresen beszerzett egy xa er\u0151forr\u00e1st, egy \u00fajabb \u00fczenet jelzi az xa helyre\u00e1ll\u00edt\u00e1sb\u00f3l vissza\u00e9rkez\u0151 xid azonos\u00edt\u00f3k sz\u00e1m\u00e1t.  Ha a kapcsolat l\u00e9tes\u00edt\u00e9se vagy az xa er\u0151forr\u00e1s beszerz\u00e9se meghi\u00fasul, tov\u00e1bbi \u00fczenetek jelzik az okot.
+WTRN0151_REC_XA_RECOVER.useraction=Amennyiben b\u00e1rmely k\u00f6vetkez\u0151 \u00fczenet hib\u00e1t jelez a kapcsolat l\u00e9tes\u00edt\u00e9s\u00e9ben vagy xa er\u0151forr\u00e1s beszerz\u00e9s\u00e9ben, \u00e1llap\u00edtsa meg annak ok\u00e1t, \u00e9s hajtsa v\u00e9gre a megfelel\u0151 m\u0171veletet.
+
+WTRN0152_UNUSUAL_HA_CONFIG=WTRN0152W: A rendszer szokatlan HA konfigur\u00e1ci\u00f3t \u00e9szlelt.
+WTRN0152_UNUSUAL_HA_CONFIG.explanation=A HA enged\u00e9lyezett a f\u00fcrtben, de a HA kezel\u0151 le van tiltva.
+WTRN0152_UNUSUAL_HA_CONFIG.useraction=Ha ez a k\u00edv\u00e1nt konfigur\u00e1ci\u00f3, akkor semmit sem kell tennie. Ellenkez\u0151 esetben jav\u00edtsa ki a HA konfigur\u00e1ci\u00f3t.
+
+# --------------------------------
+# WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1

@@ -1,0 +1,143 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.javaee.ddmodel/resources/com/ibm/ws/javaee/ddmodel/internal/resources/DDModelMessages.nlsprops
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Java EE modelling
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+#   Reserving message prefixes CWWKC2251 to CWWKC2450
+
+required.attribute.missing=CWWKC2251E: Prvku {2} chyb\u00ed po\u017eadovan\u00fd atribut {3} v deskriptoru implementace {0} na \u0159\u00e1dku {1}.
+required.attribute.missing.explanation=V ur\u010den\u00e9m prvku chyb\u00ed povinn\u00fd atribut.
+required.attribute.missing.useraction=Opravte deskriptor implementace p\u0159id\u00e1n\u00edm chyb\u011bj\u00edc\u00edho atributu.
+
+invalid.root.element=CWWKC2252E: Neplatn\u00fd lok\u00e1ln\u00ed n\u00e1zev ko\u0159ene {2} v deskriptoru implementace {0} na \u0159\u00e1dku {1}.
+invalid.root.element.explanation=Ko\u0159enov\u00fd prvek je chybn\u00fd.
+invalid.root.element.useraction=Ov\u011b\u0159te platnost souboru XML a zajist\u011bte spr\u00e1vnost ko\u0159enov\u00e9ho prvku.
+
+root.element.not.found=CWWKC2253E: Nelze naj\u00edt ko\u0159enov\u00fd prvek deskriptoru implementace {0} na \u0159\u00e1dku {1}.
+root.element.not.found.explanation=V deskriptoru implementace chyb\u00ed ko\u0159enov\u00fd prvek.
+root.element.not.found.useraction=Opravte deskriptor implementace.
+
+end.element.not.found=CWWKC2254E: U prvku {2} v deskriptoru implementace {0} na \u0159\u00e1dku {1} byla nalezena zna\u010dka posledn\u00edho prvku.
+end.element.not.found.explanation=Zd\u00e1 se, \u017ee deskriptor implementace nen\u00ed spr\u00e1vn\u00fdm xml.
+end.element.not.found.useraction=Opravte deskriptor implementace.
+
+incorrect.id.attr.namespace=CWWKC2255E: Obor n\u00e1zv\u016f atributu ID prvku {2} byl {3}, zat\u00edmco m\u011bl b\u00fdt {4} dle deskriptoru implementace {0} na \u0159\u00e1dku {1}.
+incorrect.id.attr.namespace.explanation=Obor n\u00e1zv\u016f prvk\u016f a atribut\u016f v deskriptoru implementace nebyly konzistentn\u00ed.
+incorrect.id.attr.namespace.useraction=Opravte deskriptor implementace.
+
+unexpected.attribute=CWWKC2256E: P\u0159i anal\u00fdze prvku {2} v deskriptoru implementace {0} byl na \u0159\u00e1dku {1} zji\u0161t\u011bn neo\u010dek\u00e1van\u00fd atribut {3}.
+unexpected.attribute.explanation=Vyskytl se atribut, kter\u00fd nebyl definov\u00e1nAn k v\u00fdskytu v deskriptoru implementace.
+unexpected.attribute.useraction=Opravte deskriptor implementace.
+
+unexpected.content=CWWKC2257E: V prvku {2} deskriptoru implementace {0} byl na \u0159\u00e1dku {1} zji\u0161t\u011bn neo\u010dek\u00e1van\u00fd obsah.
+unexpected.content.explanation=Vyskytl se textov\u00fd obsah, kter\u00fd nebyl definov\u00e1n k v\u00fdskytu v deskriptoru implementace.
+unexpected.content.useraction=Opravte deskriptor implementace.
+
+incorrect.child.element.namespace=CWWKC2258E: Obor n\u00e1zv\u016f pod\u0159\u00edzen\u00e9ho prvku {3} nad\u0159\u00edzen\u00e9ho prvku {2} byl {4}, ne {5} v deskriptoru implementace {0} na \u0159\u00e1dku {1}.
+incorrect.child.element.namespace.explanation=Obor n\u00e1zv\u016f prvk\u016f a atribut\u016f v deskriptoru implementace nebyly konzistentn\u00ed.
+incorrect.child.element.namespace.useraction=Opravte deskriptor implementace.
+
+unexpected.child.element=CWWKC2259E: V deskriptoru implementace {0} byl na \u0159\u00e1dku {1} zji\u0161t\u011bn neo\u010dek\u00e1van\u00fd pod\u0159\u00edzen\u00fd prvek {3} nad\u0159\u00edzen\u00e9ho prvku {2}.
+unexpected.child.element.explanation=Vyskytl se pod\u0159\u00edzen\u00fd prvek, kter\u00fd nebyl definov\u00e1n k v\u00fdskytu v deskriptoru implementace.
+unexpected.child.element.useraction=Opravte deskriptor implementace.
+
+invalid.href.prefix=CWWKC2260E: Hodnota atributu href prvku {2} neza\u010d\u00edn\u00e1 v deskriptoru implementace {0} na \u0159\u00e1dku {1} hodnotou {3}.
+invalid.href.prefix.explanation=Atribut href mus\u00ed za\u010d\u00ednat spr\u00e1vnou cestou k odkazovan\u00e9mu deskriptoru.
+invalid.href.prefix.useraction=Opravte deskriptor implementace.
+
+unknown.deployment.descriptor.version=CWWKC2261E: Do\u0161lo k chyb\u011b p\u0159i pokusu o ur\u010den\u00ed verze deskriptoru implementace {0}.
+unknown.deployment.descriptor.version.explanation=Verze nebo obor n\u00e1zv\u016f nebyly platn\u00e9 nebo nebyly ur\u010deny v ko\u0159enov\u00e9m prvku deskriptoru implementace.
+unknown.deployment.descriptor.version.useraction=Ov\u011b\u0159te a opravte verzi a obor n\u00e1zv\u016f v ko\u0159enov\u00e9m prvku deskriptoru implementace.
+
+invalid.deployment.descriptor.namespace=CWWKC2262E: Server nem\u016f\u017ee zpracovat verzi {3} a obor n\u00e1zv\u016f {2} v deskriptoru implementace {0} na \u0159\u00e1dku {1}.
+invalid.deployment.descriptor.namespace.explanation=Bu\u010f uveden\u00e1 verze a obor n\u00e1zv\u016f nejsou platn\u00e9, nebo konfigurace serveru neobsahuje funkci, kter\u00e1 by tuto verzi a obor n\u00e1zv\u016f zpracovala.
+invalid.deployment.descriptor.namespace.useraction=Ov\u011b\u0159te a opravte verzi a obor n\u00e1zv\u016f v ko\u0159enov\u00e9m prvku deskriptoru implementace nebo ov\u011b\u0159te a opravte funkce v konfiguraci serveru.
+
+invalid.deployment.descriptor.version=CWWKC2263E: Verze {2} atributu uveden\u00e1 v deskriptoru implementace {0} na \u0159\u00e1dku {1} nen\u00ed platn\u00e1.
+invalid.deployment.descriptor.version.explanation=V ko\u0159enov\u00e9m prvku deskriptoru implementace byla zad\u00e1na neplatn\u00e1 verze.
+invalid.deployment.descriptor.version.useraction=Ov\u011b\u0159te a opravte \u010d\u00edslo verze v ko\u0159enov\u00e9m prvku deskriptoru implementace.
+
+missing.deployment.descriptor.namespace=CWWKC2264E: P\u0159i pokusu ur\u010dit obor n\u00e1zv\u016f deskriptoru implementace {0} na \u0159\u00e1dku {1} do\u0161lo k chyb\u011b.
+missing.deployment.descriptor.namespace.explanation=V ko\u0159enov\u00e9m prvku deskriptoru implementace byl zad\u00e1n neplatn\u00fd obor n\u00e1zv\u016f.
+missing.deployment.descriptor.namespace.useraction=Ov\u011b\u0159te a opravte obor n\u00e1zv\u016f v ko\u0159enov\u00e9m prvku deskriptoru implementace.
+
+missing.deployment.descriptor.version=CWWKC2265E: P\u0159i pokusu ur\u010dit verzi deskriptoru implementace {0} na \u0159\u00e1dku {1} do\u0161lo k chyb\u011b.
+missing.deployment.descriptor.version.explanation=V ko\u0159enov\u00e9m prvku deskriptoru implementace nebyla zad\u00e1na verze.
+missing.deployment.descriptor.version.useraction=Ov\u011b\u0159te a opravte verzi v ko\u0159enov\u00e9m prvku deskriptoru implementace.
+
+at.most.one.occurrence=CWWKC2266E: V deskriptoru implementace {0} na \u0159\u00e1dku {1} by m\u011bl b\u00fdt maxim\u00e1ln\u011b jeden pod\u0159\u00edzen\u00fd prvek {3} nad\u0159\u00edzen\u00e9ho prvku {2}.
+at.most.one.occurrence.explanation=N\u011bkter\u00e9 prvky deskriptoru implementace maj\u00ed povoleno b\u00fdt zobrazeny pouze jednou, jsou-li p\u0159\u00edtomny.
+at.most.one.occurrence.useraction=Opravte deskriptor implementace.
+
+required.method.element.missing=CWWKC2267E: Prvek {2} mus\u00ed m\u00edt v deskriptoru implementace {0} na \u0159\u00e1dku {1} definov\u00e1n minim\u00e1ln\u011b jeden pod\u0159\u00edzen\u00fd prvek {3}.
+required.method.element.missing.explanation=Povinn\u00fd pod\u0159\u00edzen\u00fd prvek chyb\u00ed v ur\u010den\u00e9m nad\u0159\u00edzen\u00edm prvku. 
+required.method.element.missing.useraction=Opravte deskriptor implementace p\u0159id\u00e1n\u00edm povinn\u00e9ho pod\u0159\u00edzen\u00e9ho prvku.
+
+runasmode.missing.specifiedID.element=CWWKC2268E: Je-li atribut re\u017eimu prvku <run-as-mode> nastaven v deskriptoru implementace {0} na \u0159\u00e1dku {1} na hodnotu SPECIFIED_IDENTITY, mus\u00ed b\u00fdt definov\u00e1n pod\u0159\u00edzen\u00fd prvek <specified-identity>.
+runasmode.missing.specifiedID.element.explanation=Pod\u0159\u00edzen\u00fd prvek <specified-identity> chyb\u00ed pro prvek <run-as-mode>, kter\u00fd m\u00e1 re\u017eim nastaven\u00fd na hodnotu SPECIFIED_IDENTITY.
+runasmode.missing.specifiedID.element.useraction=Opravte deskriptor implementace p\u0159id\u00e1n\u00edm povinn\u00e9ho pod\u0159\u00edzen\u00e9ho prvku nebo zm\u011bnou re\u017eimu.
+
+found.duplicate.ejbname=CWWKC2269E: Atribut name pro v\u0161echny prvky bean <session> a <message-driven> mus\u00ed b\u00fdt jedine\u010dn\u00fd. V deskriptoru implementace {0} byl nalezen duplicitn\u00ed n\u00e1zev {1}.
+found.duplicate.ejbname.explanation=V\u0161echny n\u00e1zvy relac\u00ed a objekt\u016f typu message-driven bean musej\u00ed b\u00fdt jedine\u010dn\u00e9. Zadan\u00fd n\u00e1zev objektu typu bean je pou\u017eit v\u00edce ne\u017e jednou.
+found.duplicate.ejbname.useraction=Opravte deskriptor implementace p\u0159ejmenov\u00e1n\u00edm n\u011bkter\u00e9ho z duplicitn\u00edch n\u00e1zv\u016f objektu enterprise bean. 
+
+found.duplicate.attribute.value=CWWKC2270E: Atribut {2} pro v\u0161echny prvky {1} mus\u00ed b\u00fdt jedine\u010dn\u00fd. V deskriptoru implementace {0} byl nalezen duplicitn\u00ed n\u00e1zev {3}.
+found.duplicate.attribute.value.explanation=Hodnota zadan\u00e9ho atributu mus\u00ed b\u00fdt jedine\u010dn\u00e1 nap\u0159\u00ed\u010d v\u0161emi prvky stejn\u00e9ho typu. 
+found.duplicate.attribute.value.useraction=Opravte deskriptor implementace p\u0159ejmenov\u00e1n\u00edm n\u011bkter\u00e9 z duplicitn\u00edch hodnot atributu.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path name for the module
+# -----------------------------------------------------------------------
+BVKEY_NOT_A_BEAN_VALIDATION_XML=CWWKC2271W: Byl nalezen soubor validation.xml pro modul {0}. Nicm\u00e9n\u011b tento soubor validation.xml nen\u00ed zkonfigurov\u00e1n pro ov\u011b\u0159en\u00ed, tak\u017ee se tento soubor XML ignoruje.
+BVKEY_NOT_A_BEAN_VALIDATION_XML.explanation=Slu\u017eba BeanValidationService nem\u016f\u017ee vytvo\u0159it tov\u00e1rnu ValidatorFactory kv\u016fli chyb\u011b p\u0159i syntaktick\u00e9 anal\u00fdze souboru validation.xml se souborem sch\u00e9matu validation-configuration-1.0.xsd. Tato chyba m\u016f\u017ee nazna\u010dovat, \u017ee soubor validation.xml nen\u00ed ur\u010den pro pou\u017eit\u00ed v b\u011bhov\u00e9m prost\u0159ed\u00ed Bean Validation, a proto se tento soubor XML ignoruje.
+BVKEY_NOT_A_BEAN_VALIDATION_XML.useraction=Pokud soubor validation.xml nen\u00ed ur\u010den pro vytvo\u0159en\u00ed instance tov\u00e1rny ValidatorFactory, pak tuto zpr\u00e1vu ignorujte. Pokud je v\u0161ak soubor validation.xml zam\u00fd\u0161len pro vytvo\u0159en\u00ed instance tov\u00e1rny ValidatorFactory, pak se vyskytl probl\u00e9m. V aplika\u010dn\u00edm serveru povolte trasov\u00e1n\u00ed b\u011bhov\u00e9ho prost\u0159ed\u00ed Bean Validation, zastavte aplikaci, znovu aplikaci spus\u0165te a prov\u011b\u0159te v\u00fdstupn\u00ed soubor trasov\u00e1n\u00ed, zda se v n\u011bm vyskytuje ud\u00e1lost trasov\u00e1n\u00ed, jako nap\u0159.: Neo\u010dek\u00e1van\u00e1 v\u00fdjimka p\u0159i pokusu o vy\u0159azen\u00ed souboru validation.xml. Pomoc p\u0159i lad\u011bn\u00ed v\u00e1m poskytne trasov\u00e1n\u00ed z\u00e1sobn\u00edku v\u00fdjimek.
+
+xml.error=CWWKC2272E: P\u0159i anal\u00fdze deskriptoru implementace {0} na \u0159\u00e1dku {1} do\u0161lo k chyb\u011b. Chybov\u00e1 zpr\u00e1va byla: {2}
+xml.error.explanation=P\u0159i anal\u00fdze deskriptoru implementace XML do\u0161lo k chyb\u011b. Podrobn\u011bj\u0161\u00ed vysv\u011btlen\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b.
+xml.error.useraction=Opravte deskriptor implementace a odeberte chybu.
+
+invalid.enum.value=CWWKC2273E: Hodnota {2} v deskriptoru implementace {0} nen\u00ed na \u0159\u00e1dku {1} platn\u00e1. Platn\u00e9 hodnoty jsou: {3}
+invalid.enum.value.explanation=Deskriptor implementace uv\u00e1d\u00ed hodnotu, kter\u00e1 nen\u00ed platn\u00e1.
+invalid.enum.value.useraction=Opravte deskriptor implementace tak, aby pou\u017e\u00edval jednu z o\u010dek\u00e1van\u00fdch hodnot.
+
+invalid.int.value=CWWKC2274E: Hodnota {2} v deskriptoru implementace {0} nen\u00ed na \u0159\u00e1dku {1} platn\u00fdm cel\u00fdm \u010d\u00edslem.
+invalid.int.value.explanation=Deskriptor implementace uv\u00e1d\u00ed hodnotu, kter\u00e1 nen\u00ed \u010d\u00edslem z rozsahu -2147483648 a\u017e 2147483647.
+invalid.int.value.useraction=Opravte deskriptor implementace tak, aby pou\u017e\u00edval platn\u00e9 cel\u00e9 \u010d\u00edslo.
+
+invalid.long.value=CWWKC2275E: Hodnota {2} v deskriptoru implementace {0} nen\u00ed na \u0159\u00e1dku {1} platn\u00fdm dlouh\u00fdm \u010d\u00edslem.
+invalid.long.value.explanation=Deskriptor implementace uv\u00e1d\u00ed hodnotu, kter\u00e1 nen\u00ed \u010d\u00edslem z rozsahu -9223372036854775808 a\u017e 9223372036854775807.
+invalid.long.value.useraction=Opravte deskriptor implementace tak, aby pou\u017e\u00edval platn\u00e9 dlouh\u00e9 \u010d\u00edslo.
+
+module.name.not.specified=CWWKC2276E: Prvek {0} mus\u00ed ur\u010dovat atribut n\u00e1zvu modulu.
+module.name.not.specified.explanation=Konfigurace vazby a roz\u0161\u00ed\u0159en\u00ed modul\u016f EJB a webov\u00fdch modul\u016f mus\u00ed obsahovat atribut moduleName, kter\u00fd ur\u010duje modul, pro n\u011bj\u017e dan\u00e1 konfigurace plat\u00ed. 
+module.name.not.specified.useraction=P\u0159idejte atribut moduleName do prvku web-bnd, web-ext, ejb-bnd nebo ejb-ext. 
+
+module.name.invalid=CWWKC2277E: Minim\u00e1ln\u011b jeden z n\u00e1zv\u016f modul\u016f v prvku {1} je neplatn\u00fd. Neplatn\u00e9 n\u00e1zvy modul\u016f jsou {0}.
+module.name.invalid.explanation=Konfigurace vazeb a roz\u0161\u00ed\u0159en\u00ed webov\u00fdch modul\u016f mus\u00ed obsahovat platn\u00fd atribut moduleName. Minim\u00e1ln\u011b jedna konfigurace uv\u00e1d\u00ed neplatn\u00fd n\u00e1zev modulu. N\u00e1zev modulu mus\u00ed b\u00fdt n\u00e1zvem archivn\u00edho souboru, kter\u00fd obsahuje webovou aplikaci nebo aplikaci EJB.
+module.name.invalid.useraction=Opravte atribut moduleName v konfiguraci vazby nebo roz\u0161\u00ed\u0159en\u00ed. 

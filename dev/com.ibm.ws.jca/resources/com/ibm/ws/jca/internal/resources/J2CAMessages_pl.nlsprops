@@ -1,0 +1,160 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jca/resources/com/ibm/ws/jca/internal/resources/J2CAMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA JCA
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+J2CA8500.config.prop.error=J2CA8500E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by skonfigurowania w\u0142a\u015bciwo\u015bci {0} elementu konfiguracji {1} w klasie {2}: {3}.
+J2CA8500.config.prop.error.explanation=Nie mo\u017cna skonfigurowa\u0107 w\u0142a\u015bciwo\u015bci w okre\u015blonym zasobie z powodu wyst\u0105pienia b\u0142\u0119du.
+J2CA8500.config.prop.error.useraction=Popraw konfiguracj\u0119 okre\u015blonego zasobu i spr\u00f3buj ponownie.
+ 
+J2CA8501.config.prop.unknown=J2CA8501E: Nie mo\u017cna ustawi\u0107 w\u0142a\u015bciwo\u015bci {0} elementu konfiguracji {1}, poniewa\u017c nie mo\u017cna jej znale\u017a\u0107 w klasie {2}.
+J2CA8501.config.prop.unknown.explanation=Nie mo\u017cna znale\u017a\u0107 w\u0142a\u015bciwo\u015bci w okre\u015blonym zasobie.
+J2CA8501.config.prop.unknown.useraction=Popraw konfiguracj\u0119 zasobu.
+
+# {1} is the unique identifier for a configuration element, such as jmsTopicConnectionFactory[cf1] or jmsQueue[queue1] 
+J2CA8504.incorrect.props.list=J2CA8504E: Element podrz\u0119dny {0} jest niepoprawny dla elementu konfiguracji {1}.
+J2CA8504.incorrect.props.list.explanation=Typ listy w\u0142a\u015bciwo\u015bci konfiguracji jest niepoprawny dla okre\u015blonego elementu konfiguracji.
+J2CA8504.incorrect.props.list.useraction=Zaktualizuj konfiguracj\u0119, aby u\u017cy\u0107 listy w\u0142a\u015bciwo\u015bci konfiguracji odpowiedniej dla wymaganego typu zasobu.
+
+J2CA8505.destination.type.mismatch=J2CA8505E: W specyfikacji aktywowania nie mo\u017cna skonfigurowa\u0107 w\u0142a\u015bciwo\u015bci miejsca docelowego, poniewa\u017c miejsce docelowe {0} nie jest instancj\u0105 interfejsu, kt\u00f3ry podano jako warto\u015b\u0107 atrybutu destinationType {1}.
+J2CA8505.destination.type.mismatch.explanation=Podano typ docelowy, kt\u00f3ry nie jest zgodny z miejscem docelowym.
+J2CA8505.destination.type.mismatch.useraction=Zaktualizuj konfiguracj\u0119 serwera lub aplikacj\u0119, podaj\u0105c tym docelowy, kt\u00f3ry jest sp\u00f3jny z miejscem docelowym.
+
+J2CA8510.create.timed.out=J2CA8510E: Nie mo\u017cna utworzy\u0107 licznika czasu dla adaptera zasob\u00f3w {0} w ci\u0105gu {1} ms.
+J2CA8510.create.timed.out.explanation=Utworzenie licznika czasu trwa d\u0142u\u017cej ni\u017c zwykle.
+J2CA8510.create.timed.out.useraction=Sprawd\u017a, czy wyst\u0119puje wysokie obci\u0105\u017cenie w systemie, i rozwa\u017c zmniejszenie go.
+
+J2CA8600.work.start.timeout=J2CA8600E: Praca {0} wprowadzona przez adapter zasob\u00f3w {1} nie zosta\u0142a uruchomiona w ci\u0105gu {2} ms.
+J2CA8600.work.start.timeout.explanation=Przekroczono limit czasu uruchamiania pracy.
+J2CA8600.work.start.timeout.useraction=Sprawd\u017a, czy wyst\u0119puje wysokie obci\u0105\u017cenie w systemie, i rozwa\u017c zmniejszenie go lub skontaktuj si\u0119 z dostawc\u0105 adaptera zasob\u00f3w, aby ustali\u0107, czy powinien zwi\u0119kszy\u0107 limit czasu pracy u\u017cywany podczas wprowadzania pracy do mened\u017cera pracy JCA.
+
+# 8622 deleted
+
+J2CA8623.execution.context.conflict=J2CA8623E: Adapter zasob\u00f3w {0} podj\u0105\u0142 pr\u00f3b\u0119 wprowadzenia pracy zar\u00f3wno z kontekstem ExecutionContext, jak i WorkContext. Kombinacja kontekstu ExecutionContext i WorkContext nie jest obs\u0142ugiwana.
+J2CA8623.execution.context.conflict.explanation=Adapter zasob\u00f3w wprowadzi\u0142 prac\u0119, kt\u00f3ra implementuje dostawc\u0119 WorkContextProvider, oraz okre\u015bli\u0142 kontekst ExecutionContext. Wykonywanie obu dzia\u0142a\u0144 jednocze\u015bnie jest niepoprawne.
+J2CA8623.execution.context.conflict.useraction=Adapter zasob\u00f3w musi zosta\u0107 zaktualizowany, aby dokona\u0107 wyboru mi\u0119dzy dostawc\u0105 WorkContextProvider i kontekstem ExecutionContext.
+
+J2CA8624.work.context.duplicate=J2CA8624E: Adapter zasob\u00f3w {0} podj\u0105\u0142 pr\u00f3b\u0119 wprowadzenia pracy z wieloma kopiami typu kontekstu WorkContext {1}. W przypadku pojedynczego wprowadzenia pracy obs\u0142ugiwany jest tylko jeden kontekst WorkContext ka\u017cdego typu.
+J2CA8624.work.context.duplicate.explanation=Adapter zasob\u00f3w wprowadzi\u0142 prac\u0119 z wieloma instancjami kontekstu WorkContext tego samego typu.
+J2CA8624.work.context.duplicate.useraction=Adapter zasob\u00f3w musi zosta\u0107 zaktualizowany, aby wyeliminowa\u0107 podw\u00f3jne instancje kontekstu WorkContext z dostawcy WorkContextProvider.
+
+J2CA8625.work.context.unavailable=J2CA8625E: Adapter zasob\u00f3w {0} podj\u0105\u0142 pr\u00f3b\u0119 wys\u0142ania pracy z typem kontekstu pracy {1}, kt\u00f3ry nie jest obs\u0142ugiwany, lub funkcja nie jest w\u0142\u0105czona.
+J2CA8625.work.context.unavailable.explanation=Ten typ kontekstu pracy nie jest obs\u0142ugiwany przez serwer aplikacji lub sk\u0142adnik, kt\u00f3ry go obs\u0142uguje, nie zosta\u0142 w\u0142\u0105czony.
+J2CA8625.work.context.unavailable.useraction=Sprawd\u017a, czy typ kontekstu pracy jest obs\u0142ugiwany. Je\u015bli tak, sprawd\u017a, czy sk\u0142adnik, kt\u00f3ry go obs\u0142uguje, jest w\u0142\u0105czony.
+
+J2CA8687.hint.datatype.invalid=J2CA8687E: Warto\u015bci wskaz\u00f3wek dla elementu {0} musz\u0105 mie\u0107 typ {1}. Adapter zasob\u00f3w {2} okre\u015bli\u0142 warto\u015b\u0107 {3} typu {4}.
+J2CA8687.hint.datatype.invalid.explanation=Warto\u015b\u0107 wskaz\u00f3wki okre\u015blona przez adapter zasob\u00f3w ma niepoprawny typ danych.
+J2CA8687.hint.datatype.invalid.useraction=Skontaktuj si\u0119 z dostawc\u0105 adaptera zasob\u00f3w w celu poprawienia typ\u00f3w danych wskaz\u00f3wki.
+
+J2CA8688.work.setup.failed=J2CA8688E: Mened\u017cer pracy nie mo\u017ce uruchomi\u0107 elementu pracy. Wyj\u0105tek przyczyny: {0}.
+J2CA8688.work.setup.failed.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas przygotowywania do uruchomienia elementu pracy.
+J2CA8688.work.setup.failed.useraction=Wi\u0119cej informacji zawiera wyj\u0105tek przyczyny.
+
+J2CA8800.multiple.xa.resources=J2CA8800E: Adapter zasob\u00f3w {0} zwr\u00f3ci\u0142 wi\u0119cej ni\u017c jeden zas\u00f3b XA dla specyfikacji aktywowania {1}.
+J2CA8800.multiple.xa.resources.explanation=Adapter zasob\u00f3w powinien zwr\u00f3ci\u0107 tylko jeden zas\u00f3b XA dla podanej specyfikacji aktywowania.
+J2CA8800.multiple.xa.resources.useraction=Skontaktuj si\u0119 z dostawc\u0105 adaptera zasob\u00f3w i popro\u015b go o poprawienie implementacji interfejsu API metody getXAResources, aby by\u0142a zgodna ze specyfikacj\u0105 JCA.
+
+J2CA8801.act.spec.active=J2CA8801I: Aktywowano punkt ko\u0144cowy komunikat\u00f3w dla specyfikacji aktywowania {0} i aplikacji komponentu bean sterowanego komunikatami {1}.
+J2CA8801.act.spec.active.explanation=Punkt ko\u0144cowy komunikat\u00f3w zosta\u0142 aktywowany i jest gotowy do obs\u0142ugi komunikat\u00f3w przychodz\u0105cych.
+J2CA8801.act.spec.active.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+J2CA8802.activation.failed=J2CA8802E: Aktywowanie punktu ko\u0144cowego komunikat\u00f3w nie powiod\u0142o si\u0119 dla adaptera zasob\u00f3w {0} z powodu wyst\u0105pienia wyj\u0105tku: {1}.
+J2CA8802.activation.failed.explanation=Podany wyj\u0105tek zosta\u0142 wygenerowany podczas aktywacji punktu ko\u0144cowego komunikat\u00f3w.
+J2CA8802.activation.failed.useraction=Sprawd\u017a podany wyj\u0105tek, aby uzyska\u0107 pomoc w okre\u015blaniu przyczyny b\u0142\u0119du.
+
+J2CA8803.deactivation.failed=J2CA8803E: Dezaktywowanie punktu ko\u0144cowego komunikat\u00f3w nie powiod\u0142o si\u0119 dla adaptera zasob\u00f3w {0} z powodu wyst\u0105pienia wyj\u0105tku: {1}.
+J2CA8803.deactivation.failed.explanation=Podany wyj\u0105tek zosta\u0142 wygenerowany podczas dezaktywacji punktu ko\u0144cowego komunikat\u00f3w.
+J2CA8803.deactivation.failed.useraction=Sprawd\u017a podany wyj\u0105tek, aby uzyska\u0107 pomoc w okre\u015blaniu przyczyny b\u0142\u0119du.
+
+J2CA8804.act.spec.inactive=J2CA8804I: Zdezaktywowano punkt ko\u0144cowy komunikat\u00f3w dla specyfikacji aktywowania {0} i aplikacji komponentu bean sterowanego komunikatami {1}.
+J2CA8804.act.spec.inactive.explanation=Punkt ko\u0144cowy komunikat\u00f3w zosta\u0142 zdezaktywowany i nie b\u0119dzie ju\u017c obs\u0142ugiwa\u0142 komunikat\u00f3w przychodz\u0105cych.
+J2CA8804.act.spec.inactive.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# 8806 deleted
+
+J2CA8807.native.rrs.not.available=J2CA8807E: Us\u0142uga udost\u0119pniaj\u0105ca obs\u0142ug\u0119 transakcyjn\u0105 RRS jest nieaktywna. Rejestracja zasobu zosta\u0142a odrzucona.
+J2CA8807.native.rrs.not.available.explanation=Us\u0142uga udost\u0119pniaj\u0105ca obs\u0142ug\u0119 transakcyjn\u0105 RRS jest nieaktywna. Pr\u00f3by rejestracji zasobu przy u\u017cyciu mened\u017cera transakcji s\u0105 odrzucane. 
+J2CA8807.native.rrs.not.available.useraction=Sprawd\u017a, czy proces Angel jest aktywny. Sprawd\u017a, czy identyfikator u\u017cytkownika MVS procesu produktu Liberty posiada odpowiednie uprawnienia SAF, aby wywo\u0142a\u0107 zestaw autoryzowanych us\u0142ug u\u017cywanych na potrzeby integracji us\u0142ug RRS. Sprawd\u017a, czy sk\u0142adnik, kt\u00f3ry udost\u0119pnia integracj\u0119 us\u0142ug RRS, zosta\u0142 skonfigurowany.
+
+J2CA8809.embedded.lookup.failed=J2CA8809E: Zas\u00f3b {0} z wbudowanego adaptera zasob\u00f3w {1} jest dost\u0119pny tylko dla aplikacji {2}. Podj\u0119to pr\u00f3b\u0119 uzyskania dost\u0119pu do zasobu z poziomu aplikacji {3}.
+J2CA8809.embedded.lookup.failed.explanation=Dost\u0119p do wbudowanego adaptera zasob\u00f3w i zdefiniowanych przez niego zasob\u00f3w mo\u017cna uzyska\u0107 tylko z poziomu aplikacji, w kt\u00f3rej wbudowany jest adapter. 
+J2CA8809.embedded.lookup.failed.useraction=Upewnij si\u0119, \u017ce aplikacja wyszukuje tylko te zasoby, kt\u00f3re zosta\u0142y zdefiniowane w zasi\u0119gu serwera lub w tej samej aplikacji.
+
+J2CA8810.embedded.activation.failed=J2CA8810E: Punkt ko\u0144cowy {0} z wbudowanego adaptera zasob\u00f3w {1} mo\u017cna aktywowa\u0107 tylko z poziomu aplikacji {2}. Podj\u0119to pr\u00f3b\u0119 aktywowania punktu ko\u0144cowego z poziomu aplikacji {3}.
+J2CA8810.embedded.activation.failed.explanation=Aktywacja punktu ko\u0144cowego nie powiod\u0142a si\u0119, poniewa\u017c wskazuje on specyfikacj\u0119 aktywowania wbudowan\u0105 w innej aplikacji.
+J2CA8810.embedded.activation.failed.useraction=Zaktualizuj konfiguracj\u0119 serwera tak, aby punkt ko\u0144cowy u\u017cywa\u0142 specyfikacji aktywowania znajduj\u0105cej si\u0119 w zasi\u0119gu serwera lub wbudowanej w tej samej aplikacji.
+
+J2CA8811.embedded.lookup.failed=J2CA8811E: Zas\u00f3b {0} z wbudowanego adaptera zasob\u00f3w {1} jest dost\u0119pny tylko dla aplikacji {2}.
+J2CA8811.embedded.lookup.failed.explanation=Dost\u0119p do wbudowanego adaptera zasob\u00f3w i zdefiniowanych przez niego zasob\u00f3w mo\u017cna uzyska\u0107 tylko z poziomu aplikacji, w kt\u00f3rej wbudowany jest adapter.
+J2CA8811.embedded.lookup.failed.useraction=Zmodyfikuj aplikacj\u0119 lub us\u0142ug\u0119 pod k\u0105tem wyszukiwania zasob\u00f3w zdefiniowanych w zasi\u0119gu serwera.
+
+J2CA8812.embedded.activation.failed=J2CA8812E: Punkt ko\u0144cowy {0} z wbudowanego adaptera zasob\u00f3w {1} mo\u017cna aktywowa\u0107 tylko z poziomu aplikacji {2}.
+J2CA8812.embedded.activation.failed.explanation=Aktywacja punktu ko\u0144cowego nie powiod\u0142a si\u0119, poniewa\u017c wskazuje on specyfikacj\u0119 aktywowania wbudowan\u0105 w innej aplikacji.
+J2CA8812.embedded.activation.failed.useraction=Zaktualizuj konfiguracj\u0119 serwera tak, aby punkt ko\u0144cowy u\u017cywa\u0142 specyfikacji aktywowania znajduj\u0105cej si\u0119 w zasi\u0119gu serwera.
+
+J2CA8813.required.activation.prop.not.set=J2CA8813E: Brak wymaganej w\u0142a\u015bciwo\u015bci {0} dla specyfikacji aktywowania {1} adaptera zasob\u00f3w {2}.
+J2CA8813.required.activation.prop.not.set.explanation=Adapter zasob\u00f3w oznaczy\u0142 niekt\u00f3re w\u0142a\u015bciwo\u015bci specyfikacji aktywowania jako wymagane, ale warto\u015b\u0107 nie zosta\u0142a udost\u0119pniona. Te w\u0142a\u015bciwo\u015bci mo\u017cna ustawi\u0107 w dw\u00f3ch r\u00f3\u017cnych miejscach: (1) podczas tworzenia obiektu konfiguracji specyfikacji aktywowania przy u\u017cyciu zainstalowanego adaptera zasob\u00f3w oraz (2) przy u\u017cyciu samej aplikacji w postaci elementu <activation-config-property>.
+J2CA8813.required.activation.prop.not.set.useraction=Podaj wymagan\u0105 warto\u015b\u0107 specyfikacji aktywowania w konfiguracji serwera lub w pozycji activation-config-property w obr\u0119bie aplikacji.
+
+J2CA8814.resource.adapter.install.failed=J2CA8814E: Atrybut identyfikatora elementu resourceAdapter dla modu\u0142u adaptera zasob\u00f3w {0} zawiera nieobs\u0142ugiwane znaki.
+J2CA8814.resource.adapter.install.failed.explanation=Atrybut identyfikatora elementu resourceAdapter mo\u017ce zawiera\u0107 tylko kropk\u0119, \u0142\u0105cznik i znak podkre\u015blenia oraz znaki alfanumeryczne. Identyfikator okre\u015blony w konfiguracji lub pochodz\u0105cy z nazwy modu\u0142u zawiera nieobs\u0142ugiwane znaki.
+J2CA8814.resource.adapter.install.failed.useraction=Podaj poprawn\u0105 warto\u015b\u0107 dla atrybutu identyfikatora elementu resourceAdapter w konfiguracji serwera.
+
+J2CA8815.duplicate.resource.adapter.id=J2CA8815E: Kilka adapter\u00f3w zasob\u00f3w nie mo\u017ce mie\u0107 takiego samego unikalnego identyfikatora {0}.
+J2CA8815.duplicate.resource.adapter.id.explanation=Wiele adapter\u00f3w zasob\u00f3w zawiera ten sam unikalny identyfikator (id) lub zosta\u0142y one skonfigurowane przy u\u017cyciu tego samego unikalnego identyfikatora.
+J2CA8815.duplicate.resource.adapter.id.useraction=Przypisz unikalne identyfikatory do jednego lub kilku adapter\u00f3w zasob\u00f3w, aby wyeliminowa\u0107 konflikt.
+
+# Do not translate the term "Bean Validation"
+# Do not translate the term "Validator"
+# ---------------------------------
+# {0} The Validator type and instance hashcode
+# {1} The Validation exception
+# {2} The JavaBean type and instance hashcode
+BEAN_VALIDATION_VALIDATOR_FAILED_J2CA1008=J2CA1008E: Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by wykonania przez analizator poprawno\u015bci {0} sprawdzenia poprawno\u015bci instancji komponentu JavaBean pliku RAR {2}: {1}. Poprawno\u015b\u0107 ogranicze\u0144 sprawdzania poprawno\u015bci komponentu Bean nie zostanie sprawdzona przed umieszczeniem instancji w us\u0142udze.
+BEAN_VALIDATION_VALIDATOR_FAILED_J2CA1008.explanation=Ten nieoczekiwany wyj\u0105tek wskazuje na problem z implementacj\u0105 analizatora poprawno\u015bci.  Nie mo\u017cna w tym momencie okre\u015bli\u0107 przyczyny b\u0142\u0119du.  
+BEAN_VALIDATION_VALIDATOR_FAILED_J2CA1008.useraction=Sprawd\u017a dzienniki FFDC i dzienniki systemowe. Je\u015bli symptom wskazuje na awari\u0119 w implementacji klasy Validator innej ni\u017c dostarczona z serwerem WebSphere Application Server, skontaktuj si\u0119 z dostawc\u0105 sprawdzania poprawno\u015bci komponent\u00f3w Bean. CMSG0002
+
+# Do not translate the term "Bean Validation"
+# ---------------------------------
+# {0} A JavaBean type and instance hashcode, in hexadecimal
+# {1} A newline-delimited list of constraints violated by the JavaBean instance
+BEAN_VALIDATION_FAILED_J2CA0238=J2CA0238E: Nie powiod\u0142o si\u0119 sprawdzenie poprawno\u015bci komponentu bean w przypadku komponentu JavaBean typu {0} z powodu co najmniej jednego niepoprawnego ustawienia konfiguracyjnego wskazanego na nast\u0119puj\u0105cej li\u015bcie narusze\u0144 ogranicze\u0144: {1}
+BEAN_VALIDATION_FAILED_J2CA0238.explanation=Warto\u015b\u0107 co najmniej jednej w\u0142a\u015bciwo\u015bci konfiguracji instancji komponentu JavaBean narusza okre\u015blone ograniczenia sprawdzania poprawno\u015bci komponentu bean.
+BEAN_VALIDATION_FAILED_J2CA0238.useraction=Skorzystaj z dokumentacji dostawcy adaptera zasob\u00f3w, aby okre\u015bli\u0107 poprawne warto\u015bci dla ka\u017cdej w\u0142a\u015bciwo\u015bci konfiguracji wskazanej przez naruszenia ogranicze\u0144, a tak\u017ce, aby odpowiednio skonfigurowa\u0107 ka\u017cd\u0105 w\u0142a\u015bciwo\u015b\u0107.
+
+#--------------------------------------------------------------------------------
+# J2CA0239 is unused (it was previously used by beta-only code that was removed).
+
+#--------------------------------------------------------------------------------
+# J2CA0240 is unused (it was previously used by beta-only code that was removed).
+
+#--------------------------------------------------------------------------------
+BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241=J2CA0241W: Archiwa komponentu Bean adaptera zasob\u00f3w nie s\u0105 obs\u0142ugiwane.
+BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241.explanation=Plik beans.xml w katalogu META-INF zostanie zignorowany, poniewa\u017c adaptery zasob\u00f3w archiwum zarz\u0105dzanych komponent\u00f3w bean CDI nie s\u0105 obs\u0142ugiwane.
+BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241.useraction=Usu\u0144 plik beans.xml z katalogu META-INF, poniewa\u017c adaptery zasob\u00f3w archiwum zarz\u0105dzanych komponent\u00f3w bean CDI nie s\u0105 obs\u0142ugiwane.
+
+
+

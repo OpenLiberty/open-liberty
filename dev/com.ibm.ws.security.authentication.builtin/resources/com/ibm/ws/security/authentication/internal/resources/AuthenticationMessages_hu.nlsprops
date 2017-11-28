@@ -1,0 +1,85 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authentication.builtin/resources/com/ibm/ws/security/authentication/internal/resources/AuthenticationMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Authentication Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS1000 - CWWKS1099
+
+AUTHENTICATION_SERVICE_JAAS_UNAVAILABLE=CWWKS1000E: A JAAS szolg\u00e1ltat\u00e1s nem el\u00e9rhet\u0151.
+AUTHENTICATION_SERVICE_JAAS_UNAVAILABLE.explanation=A hiteles\u00edt\u00e9si szolg\u00e1ltat\u00e1s nem a JAAS szolg\u00e1ltat\u00e1ssal van be\u00e1ll\u00edtva.
+AUTHENTICATION_SERVICE_JAAS_UNAVAILABLE.useraction=Nem kell semmit tennie.
+
+# JAAS Message prefix block: CWWKS1100 - CWWKS1132
+
+JAAS_AUTHENTICATION_FAILED_BADUSERPWD=CWWKS1100A: A (z) {0} felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 hiteles\u00edt\u00e9se nem siker\u00fclt. A megadott felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 vagy jelsz\u00f3 \u00e9rv\u00e9nytelen.
+JAAS_AUTHENTICATION_FAILED_BADUSERPWD.explanation=A megadott felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 vagy a hozz\u00e1 tartoz\u00f3 jelsz\u00f3 \u00e9rv\u00e9nytelen.
+JAAS_AUTHENTICATION_FAILED_BADUSERPWD.useraction=Ellen\u0151rizze, hogy a felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 \u00e9s a jelsz\u00f3 helyesen lett-e megadva. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, akkor k\u00e9rjen felvil\u00e1gos\u00edt\u00e1st a felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s adminisztr\u00e1tor\u00e1t\u00f3l.
+
+JAAS_AUTHENTICATION_FAILED_CERTNOMAP=CWWKS1101W: A CLIENT-CERT hiteles\u00edt\u00e9s meghi\u00fasult a(z) {0} dn \u00e9rt\u00e9k\u0171 \u00fcgyf\u00e9ltan\u00fas\u00edtv\u00e1nyn\u00e1l. A dn nem k\u00e9pezhet\u0151 le felhaszn\u00e1l\u00f3ra a nyilv\u00e1ntart\u00e1sban.
+JAAS_AUTHENTICATION_FAILED_CERTNOMAP.explanation=A megadott \u00fcgyf\u00e9ltan\u00fas\u00edtv\u00e1ny nem k\u00e9pezhet\u0151 le felhaszn\u00e1l\u00f3ra a nyilv\u00e1ntart\u00e1sban.
+JAAS_AUTHENTICATION_FAILED_CERTNOMAP.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fcgyf\u00e9l olyan tan\u00fas\u00edtv\u00e1nyt biztos\u00edt, amely lek\u00e9pezhet\u0151 egy felhaszn\u00e1l\u00f3ra a nyilv\u00e1ntart\u00e1sban.
+
+JAAS_AUTHENTICATION_FAILED_CERT_INTERNAL_ERROR=CWWKS1102E: A tan\u00fas\u00edtv\u00e1nyra {0} megk\u00fcl\u00f6nb\u00f6ztetett n\u00e9vvel a CLIENT-CERT hiteles\u00edt\u00e9s sikertelen. Bels\u0151 kiv\u00e9tel t\u00f6rt\u00e9nt: {1}.
+JAAS_AUTHENTICATION_FAILED_CERT_INTERNAL_ERROR.explanation=CMSG0001
+JAAS_AUTHENTICATION_FAILED_CERT_INTERNAL_ERROR.useraction=CMSG0002
+
+JAAS_CUSTOM_LOGIN_MODULE_JAR_FILE_NOT_FOUND=CWWKS1103E: Nincs megosztott f\u00fcggv\u00e9nyt\u00e1r az egy\u00e9ni bejelentkez\u00e9si modulhoz.
+JAAS_CUSTOM_LOGIN_MODULE_JAR_FILE_NOT_FOUND.explanation=A hiteles\u00edt\u00e9s nem siker\u00fclt, mert nincs JAR f\u00e1jl a JAAS egy\u00e9ni bejelentkez\u00e9si modulhoz.
+JAAS_CUSTOM_LOGIN_MODULE_JAR_FILE_NOT_FOUND.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a JAAS egy\u00e9ni bejelentkez\u00e9si modul rendelkezik \u00e9rv\u00e9nyes JAR f\u00e1jllal.
+
+JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF=CWWKS1104W: A(z) {0} loginModuleRef elemhez nincs JAAS egy\u00e9ni loginModule megadva.
+JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF.explanation=A hiteles\u00edt\u00e9s nem siker\u00fclt, mert nincs bejelentkez\u00e9si modul megadva a bejelentkez\u00e9si modul hivatkoz\u00e1shoz.
+JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a loginModuleRef elem rendelkezik be\u00e1ll\u00edtott jaasLoginModule elemmel.
+
+JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR=CWWKS1105W: A JAAS bejelentkez\u00e9si modult nem lehetett bet\u00f6lteni az osztott k\u00f6nyvt\u00e1rb\u00f3l.  Bels\u0151 kiv\u00e9tel t\u00f6rt\u00e9nt.
+JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR.explanation=Bels\u0151 hiba t\u00f6rt\u00e9nt.
+JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+JAAS_AUTHENTICATION_FAILED_BADUSER=CWWKS1106A: A (z) {0} felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 hiteles\u00edt\u00e9se nem siker\u00fclt. \u00c9rv\u00e9nytelen felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 ker\u00fclt megad\u00e1sra.
+JAAS_AUTHENTICATION_FAILED_BADUSER.explanation=A hiteles\u00edt\u00e9s nem siker\u00fclt, mert a megadott felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 \u00e9rv\u00e9nytelen.
+JAAS_AUTHENTICATION_FAILED_BADUSER.useraction=Ellen\u0151rizze, hogy a felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 helyesen lett-e megadva. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, akkor k\u00e9rjen felvil\u00e1gos\u00edt\u00e1st a felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s adminisztr\u00e1tor\u00e1t\u00f3l.
+
+JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS=CWWKS1107E: A WSLoginModuleProxy param\u00e9terek nincsenek be\u00e1ll\u00edtva vagy \u00fcresek.
+JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS.explanation=A hiteles\u00edt\u00e9s sikertelen, mert a WSLoginModuleProxy options elem null\u00e9rt\u00e9k\u0171 vagy \u00fcres.
+JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS.useraction=Ellen\u0151rizze, hogy a WSLoginModuleProxy konfigur\u00e1ci\u00f3 tartalmazza-e az options elemet.
+
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET=CWWKS1108E: A WSLoginModuleProxy delegate param\u00e9tere nincs be\u00e1ll\u00edtva.
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.explanation=A hiteles\u00edt\u00e9s sikertelen, mivel a WSLoginModuleProxy azonos\u00edt\u00f3j\u00fa jaasLoginModule az options elemben nem rendelkezik delegate attrib\u00fatummal.
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.useraction=Ellen\u0151rizze, hogy a WSLoginModuleProxy azonos\u00edt\u00f3j\u00fa jaasLoginModule tartalmazza-e az options elem delegate attrib\u00fatum\u00e1t. 
+
+JAAS_PROXY_IS_NOT_SUPPORT_IN_SYSTEM_DEFAULT=CWWKS1109W: A WSLoginModuleProxy nem t\u00e1mogatott itt: jaasLoginContextEntry system.DEFAULT.
+JAAS_PROXY_IS_NOT_SUPPORT_IN_SYSTEM_DEFAULT.explanation=A WSLoginModuleProxy nem t\u00e1mogatott itt: jaasLoginContextEntry system.DEFAULT.
+JAAS_PROXY_IS_NOT_SUPPORT_IN_SYSTEM_DEFAULT.useraction=T\u00e1vol\u00edtsa el a proxybejegyz\u00e9st a jaasLoginContextEntry system.DEFAULT loginModuleRef attrib\u00fatum\u00e1b\u00f3l.
+
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_NO_LOGIN_MODULE=CWWKS1120E: A(z) {0} jaasLoginContextEntry elemhez nincs megadva bejelentkez\u00e9si modul a loginModuleRef elemben.
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_NO_LOGIN_MODULE.explanation=A jassLoginContextEntry nem rendelkezik a loginModuleRef attrib\u00fatumban megadott bejelentkez\u00e9si modullal.
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_NO_LOGIN_MODULE.useraction=Gondoskodj\u00e9k r\u00f3la, hogy legal\u00e1bb egy bejelentkez\u00e9si modul meg legyen adva a loginModuleRef attrib\u00fatumban. 
+
+JAAS_COMMON_LOGIN_NULL_DISPLAY_NAME=CWWKS1121W: A(z) {0} felhaszn\u00e1l\u00f3 hiteles\u00edt\u00e9se sikeres. A(z) {0} felhaszn\u00e1l\u00f3 megjelen\u0151 neve nem \u00e1llap\u00edthat\u00f3 meg az LDAP nyilv\u00e1ntart\u00e1sb\u00f3l a userIdMap sz\u0171r\u0151 seg\u00edts\u00e9g\u00e9vel. A biztons\u00e1gi nevet (amely jellemz\u0151en a teljes megk\u00fcl\u00f6nb\u00f6ztetett n\u00e9v) adja vissza a rendszer a felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3t lek\u00e9r\u0151 programozhat\u00f3 API h\u00edv\u00e1sokra.
+JAAS_COMMON_LOGIN_NULL_DISPLAY_NAME.explanation=A userIDMap LDAP sz\u0171r\u0151 nem tudja meg\u00e1llap\u00edtani a felhaszn\u00e1l\u00f3 megjelen\u0151 nev\u00e9t. A programozhat\u00f3 API h\u00edv\u00e1sok, mint a getUserPrincipal a biztons\u00e1gi nevet fogj\u00e1k visszakapni.
+JAAS_COMMON_LOGIN_NULL_DISPLAY_NAME.useraction=Ha a felhaszn\u00e1l\u00f3nak rendelkeznie kell displayName tulajdons\u00e1ggal, akkor gondoskodj\u00e9k r\u00f3la, hogy a felhaszn\u00e1l\u00f3 az LDAP c\u00edmt\u00e1rban a be\u00e1ll\u00edtott userIdMap sz\u0171r\u0151nek megfelel\u0151en legyen l\u00e9trehozva.
+
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_DUPLICATE_NAME=CWWKS1122W: A t\u00f6bbsz\u00f6r szerepl\u0151 n\u00e9v miatt a(z) {1} azonos\u00edt\u00f3 \u00e1ltal meghat\u00e1rozott {0} jaasLoginContextEntry nevet a(z) {2} azonos\u00edt\u00f3 \u00e9rt\u00e9ke fel\u00fcl\u00edrta. 
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_DUPLICATE_NAME.explanation=T\u00f6bb jassLoginContextEntry elem ugyanazt a nevet hat\u00e1rozza meg. Ennek eredm\u00e9nyek\u00e9nt az eredeti \u00e9rt\u00e9ket egy m\u00e1sik \u00e9rt\u00e9k fel\u00fcl\u00edrta.
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_DUPLICATE_NAME.useraction=Gondoskodj\u00e9k r\u00f3la, hogy minden jaasLoginContextEntry elem egyedi azonos\u00edt\u00f3val \u00e9s n\u00e9vvel rendelkezzen.
+
+JAAS_LOGIN_COLLECTIVE_PLUGIN_AVAILABLE=CWWKS1123I: Az egy\u00fcttes hiteles\u00edt\u00e9si bedolgoz\u00f3, melynek oszt\u00e1lyneve {0}, aktiv\u00e1lva lett. 
+JAAS_LOGIN_COLLECTIVE_PLUGIN_AVAILABLE.explanation=Egy egy\u00fcttes hiteles\u00edt\u00e9si bedolgoz\u00f3 aktiv\u00e1lva lett, \u00e9s most el\u00e9rhet\u0151 egy\u00fcttes k\u00e9r\u00e9sek hiteles\u00edt\u00e9s\u00e9hez.
+JAAS_LOGIN_COLLECTIVE_PLUGIN_AVAILABLE.useraction=Nincs teend\u0151.
+
+JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE=CWWKS1124I: Az egy\u00fcttes hiteles\u00edt\u00e9si bedolgoz\u00f3, melynek oszt\u00e1lyneve {0}, deaktiv\u00e1lva lett. 
+JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE.explanation=Egy egy\u00fcttes hiteles\u00edt\u00e9si bedolgoz\u00f3 deaktiv\u00e1lva lett, \u00e9s m\u00e1r nem \u00e9rhet\u0151 el egy\u00fcttes k\u00e9r\u00e9sek hiteles\u00edt\u00e9s\u00e9hez.
+JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE.useraction=Nincs teend\u0151.

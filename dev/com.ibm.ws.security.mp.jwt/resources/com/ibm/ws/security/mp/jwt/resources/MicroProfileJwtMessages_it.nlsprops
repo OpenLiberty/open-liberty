@@ -1,0 +1,152 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/mp/jwt/resources/MicroProfileJwtMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server MicroProfile JWT
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS5500 - CWWKS5599
+
+MPJWT_CONFIG_PROCESSED=CWWKS5500I: La configurazione JWT del microprofilo [{0}] \u00e8 stata elaborata correttamente.
+MPJWT_CONFIG_PROCESSED.explanation=La configurazione indicata \u00e8 stata elaborata correttamente.
+MPJWT_CONFIG_PROCESSED.useraction=Non \u00e8 richiesta alcuna azione.
+
+MPJWT_CONFIG_MODIFIED=CWWKS5501I: La configurazione JWT del microprofilo [{0}] \u00e8 stata elaborata correttamente.
+MPJWT_CONFIG_MODIFIED.explanation=La configurazione indicata \u00e8 stata elaborata correttamente.
+MPJWT_CONFIG_MODIFIED.useraction=Non \u00e8 richiesta alcuna azione.
+
+MPJWT_CONFIG_DEACTIVATED=CWWKS5502I: La configurazione JWT del microprofilo [{0}] \u00e8 stata disattivata correttamente.
+MPJWT_CONFIG_DEACTIVATED.explanation=La configurazione indicata \u00e8 stata disattivata correttamente.
+MPJWT_CONFIG_DEACTIVATED.useraction=Non \u00e8 richiesta alcuna azione.
+
+# 0=Exception message
+ERROR_GETTING_CLAIMS_FROM_JWT_STRING=CWWKS5503E: La funzione JWT del microprofilo ha rilevato un problema durante il richiamo delle asserzioni dalla stringa JWT fornita. {0}
+ERROR_GETTING_CLAIMS_FROM_JWT_STRING.explanation=\u00c8 probabile che la stringa JWT sia in formato non corretto, pertanto non pu\u00f2 essere analizzata.
+ERROR_GETTING_CLAIMS_FROM_JWT_STRING.useraction=Verificare che la stringa JWT sia un oggetto JSON valido.
+
+# Do not translate "JsonWebToken"
+# 0=List of principal names
+TOO_MANY_JWT_PRINCIPALS=CWWKS5504W: Il soggetto fornito contiene pi\u00f9 di un principal di tipo JsonWebToken. Nel soggetto pu\u00f2 esistere solo un principal JsonWebToken. I nomi dei principal JsonWebToken sono: {0}
+TOO_MANY_JWT_PRINCIPALS.explanation=Il soggetto contiene troppi principal di tipo JsonWebToken. \u00c8 supportato solo un principal di questo tipo.
+TOO_MANY_JWT_PRINCIPALS.useraction=Verificare che l'applicazione non inserisca principal JsonWebToken aggiuntivi nel soggetto.
+
+# Do not translate "mpjwt_login_hint"
+# 0=mpJwt configuration ID
+MPJWT_NO_SUCH_PROVIDER=CWWKS5505E: La configurazione JWT del microprofilo [{0}] specificata nella richiesta \u00e8 mancante o non configurata per elaborare questa richiesta.
+MPJWT_NO_SUCH_PROVIDER.explanation=La richiesta include un parametro o un'intestazione con nome mpjwt_login_hint che specifica un ID di configurazione JWT del microprofilo da utilizzare per questa richiesta. Tuttavia, una configurazione JWT del microprofilo corrispondente all'ID \u00e8 mancante o non configurata per elaborare questa richiesta.
+MPJWT_NO_SUCH_PROVIDER.useraction=Verificare che un servizio JWT del microprofilo con l'ID indicato sia configurato.
+
+USERNAME_NOT_FOUND=CWWKS5506E: Il nome utente non pu\u00f2 essere estratto dal token.
+USERNAME_NOT_FOUND.explanation=Il token non contiene un'asserzione corrispondente al valore dell'attributo di configurazione userNameAttribute, oppure il valore specificato dall'attributo di configurazione userNameAttribute non \u00e8 corretto.
+USERNAME_NOT_FOUND.useraction=Verificare che il token contenga un'asserzione corrispondente al valore dell'attributo di configurazione userNameAttribute.
+
+# 0=Claim name, 1=Exception message
+CANNOT_GET_CLAIM_FROM_JSON=CWWKS5507E: La funzione JWT del microprofilo ha rilevato un problema durante il richiamo dell''asserzione [{0}] dai dati JSON forniti. {1}
+CANNOT_GET_CLAIM_FROM_JSON.explanation=\u00c8 probabile che i dati JSON forniti siano mancanti o in formato non corretto.
+CANNOT_GET_CLAIM_FROM_JSON.useraction=Verificare che i dati JSON forniti siano formattati come un oggetto JSON valido.
+
+# 0=mpJwt element ID, 1=Error message
+ERROR_CREATING_RESULT=CWWKS5508E: La funzione JWT del microprofilo non pu\u00f2 creare un soggetto per l''utente con il token fornito utilizzando la configurazione JWT del microprofilo [{0}]. {1}
+ERROR_CREATING_RESULT.explanation=Alcuni dei dati utilizzati per creare il soggetto per l'utente specificato potrebbero essere mancanti o in formato non corretto.
+ERROR_CREATING_RESULT.useraction=Vedere l'azione utente per l'errore che viene visualizzato nel messaggio. Controllare i log del server per eventuali ulteriori messaggi di errore.
+
+# 0=Claim name, 1=Exception message
+CLAIM_MALFORMED=CWWKS5509W: Il valore dell''asserzione [{0}] non \u00e8 formattata in modo corretto. {1}
+CLAIM_MALFORMED.explanation=Il valore per l'asserzione specificata non corrisponde al tipo di dati previsto.
+CLAIM_MALFORMED.useraction=Verificare che l'asserzione specificata esista e che il relativo valore sia formattato correttamente.
+
+# 0=mpJwt element ID, 1=Error message
+FAILED_TO_GET_SSL_CONTEXT=CWWKS5510E: Impossibile caricare il contesto SSL per la configurazione JWT del microprofilo [{0}]. {1}
+FAILED_TO_GET_SSL_CONTEXT.explanation=La configurazione SSL utilizzata per la configurazione specificata potrebbe essere mancante o non corretta.
+FAILED_TO_GET_SSL_CONTEXT.useraction=Per ulteriori informazioni, consultare l'errore nel messaggio. Verificare che le informazioni SSL per la configurazione specificata siano precise. Se l'attributo di configurazione sslRef \u00e8 specificato nella configurazione JWT del microprofilo, verificare che la configurazione SSL corrispondente sia corretta. Altrimenti, verificare che la configurazione SSL predefinita per il server sia configurata correttamente.
+
+# Do not translate "JSON", "JSON Web Token", or "JWT"
+# 0=mpJwt element ID
+SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE=CWWKS5511E: La funzionalit\u00e0 consumer JWT (JSON Web Token) potrebbe non essere disponibile per la configurazione JWT del microprofilo [{0}] in quanto non \u00e8 possibile trovare il servizio per la configurazione specificata.
+SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE.explanation=La configurazione JWT del microprofilo specificata potrebbe non essere ancora disponibile, oppure il servizio per la configurazione \u00e8 stato arrestato.
+SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE.useraction=Verificare che la configurazione specificata sia configurata e disponibile.
+
+# 0=Exception message
+ERROR_LOADING_SSL_PROPS=CWWKS5512E: Impossibile caricare le informazioni di riferimento SSL per la funzione JWT del microprofilo in quanto \u00e8 stato rilevato un errore durante il caricamento delle propriet\u00e0 SSL. {0}
+ERROR_LOADING_SSL_PROPS.explanation=La configurazione SSL utilizzata dalla configurazione JWT del microprofilo non \u00e8 disponibile, oppure si \u00e8 verificato un errore durante il caricamento delle propriet\u00e0 per la configurazione SSL.
+ERROR_LOADING_SSL_PROPS.useraction=Verificare che la configurazione SSL utilizzata dal servizio JWT del microprofilo sia configurata correttamente e che sia stata avviata correttamente.
+
+KEYSTORE_SERVICE_NOT_FOUND=CWWKS5513E: Impossibile trovare il servizio keystore.
+KEYSTORE_SERVICE_NOT_FOUND.explanation=Il servizio keystore per la funzione JWT del microprofilo non \u00e8 disponibile.
+KEYSTORE_SERVICE_NOT_FOUND.useraction=Verificare che il servizio keystore utilizzato dal servizio JWT del microprofilo sia configurato correttamente.
+
+# 0=Trust store name, 1=Exception message
+FAILED_TO_LOAD_PUBLIC_KEYS=CWWKS5514E: Le chiavi pubbliche non possono essere caricate dal truststore specificato [{0}]. {1}
+FAILED_TO_LOAD_PUBLIC_KEYS.explanation=Il servizio truststore non \u00e8 disponibile o si \u00e8 verificato un errore durante il caricamento dei certificati dal truststore.
+FAILED_TO_LOAD_PUBLIC_KEYS.useraction=Vedere l'azione utente per l'errore che viene visualizzato nel messaggio. Controllare i log del server per eventuali ulteriori messaggi di errore.
+
+# 0=Trust store name, 1=Exception message
+FAILED_TO_LOAD_PUBLIC_KEY=CWWKS5515E: Impossibile caricare una chiave pubblica dal truststore specificato [{0}]. {1}
+FAILED_TO_LOAD_PUBLIC_KEY.explanation=Impossibile caricare la chiave specificata dall'attributo di configurazione keyAlias, oppure \u00e8 stato rilevato un errore durante il caricamento della prima chiave pubblica disponibile.
+FAILED_TO_LOAD_PUBLIC_KEY.useraction=Vedere l'azione utente per l'errore che viene visualizzato nel messaggio. Controllare i log del server per eventuali ulteriori messaggi di errore.
+
+# Intended to be a child of FAILED_TO_LOAD_PUBLIC_KEYS
+# 0=Trust store name, 1=Exception message
+ERROR_LOADING_KEYSTORE_CERTIFICATES=CWWKS5516E: La funzione JWT del microprofilo ha rilevato un problema durante il caricamento dei certificati dal truststore [{0}]. {1}
+ERROR_LOADING_KEYSTORE_CERTIFICATES.explanation=Il truststore potrebbe non esistere, oppure \u00e8 stato rilevato un errore durante il richiamo dei certificati attendibili dal truststore.
+ERROR_LOADING_KEYSTORE_CERTIFICATES.useraction=Verificare che il truststore specificato esista nella configurazione del server. Verificare che il servizio keystore utilizzato dal servizio JWT del microprofilo sia configurato correttamente.
+
+# Intended to be a child of FAILED_TO_LOAD_PUBLIC_KEYS or FAILED_TO_LOAD_PUBLIC_KEY
+# 0=Certificate alias name, 1=Trust store name, 2=Exception message
+ERROR_LOADING_CERTIFICATE=CWWKS5517E: Impossibile caricare un certificato con alias [{0}] dal truststore [{1}]. {2}
+ERROR_LOADING_CERTIFICATE.explanation=Il truststore specificato non esiste, oppure non contiene un certificato con l'alias fornito.
+ERROR_LOADING_CERTIFICATE.useraction=Verificare che il truststore specificato esista nella configurazione del server. Verificare che il truststore contenga un certificato con l'alias specificato.
+
+# Intended to be a child of FAILED_TO_LOAD_PUBLIC_KEY
+# 0=Trust store name, 1=Exception message
+FAILED_TO_LOAD_FIRST_AVAILABLE_KEY=CWWKS5518E: Impossibile caricare la prima chiave pubblica trovata nel truststore specificato [{0}]. {1}
+FAILED_TO_LOAD_FIRST_AVAILABLE_KEY.explanation=\u00c8 probabile che si sia verificato un errore durante il caricamento delle chiavi pubbliche nel truststore specificato.
+FAILED_TO_LOAD_FIRST_AVAILABLE_KEY.useraction=Vedere l'azione utente per l'errore che viene visualizzato nel messaggio. Controllare i log del server per eventuali ulteriori messaggi di errore.
+
+# 0=Claim name, 1=Name of the configuration attribute that specifies which claim to use
+PRINCIPAL_MAPPING_MISSING_ATTR=CWWKS5519E: Le informazioni dell''utente autenticato non contengono l''asserzione [{0}] specificata dall''attributo [{1}] nella configurazione JWT del microprofilo.
+PRINCIPAL_MAPPING_MISSING_ATTR.explanation=\u00c8 previsto che l'asserzione sia presente nelle informazioni dell'utente autenticato, ma l'asserzione non \u00e8 stata trovata. Le informazioni dell'utente potrebbero essere mancanti o in formato non corretto, l'attributo di configurazione specificato potrebbe essere mancante o vuoto oppure l'asserzione specificata non \u00e8 presente nelle informazioni dell'utente.
+PRINCIPAL_MAPPING_MISSING_ATTR.useraction=Effettuare una delle seguenti operazioni. 1) Specificare un'asserzione differente come valore per l'attributo specificato nella configurazione JWT del microprofilo. 2) Verificare che il provider emetta le informazioni dell'utente autenticato con l'asserzione specificata.
+
+# 0=Claim name, 1=Name of the configuration attribute that specifies which claim to use
+PRINCIPAL_MAPPING_INCORRECT_CLAIM_TYPE=CWWKS5520E: Il tipo di dati dell''asserzione [{0}] nelle informazioni dell''utente autenticato non \u00e8 valido. L''asserzione specificata \u00e8 associata all''attributo [{1}] nella configurazione JWT del microprofilo.
+PRINCIPAL_MAPPING_INCORRECT_CLAIM_TYPE.explanation=L'asserzione specificata nelle informazioni dell'utente autenticato non corrisponde al tipo di dati previsto, pertanto non \u00e8 possibile utilizzare il valore dell'asserzione per l'associazione del principal.
+PRINCIPAL_MAPPING_INCORRECT_CLAIM_TYPE.useraction=Verificare che la configurazione JWT del microprofilo specifichi il nome asserzione corretto per l'attributo di configurazione specificato.
+
+# 0=List of configuration IDs
+TOO_MANY_MP_JWT_PROVIDERS=CWWKS5521E: Troppi servizi JWT del microprofilo [{0}] qualificati per gestire la richiesta.
+TOO_MANY_MP_JWT_PROVIDERS.explanation=La funzione JWT del microprofilo non pu\u00f2 selezionare un servizio JWT del microprofilo per gestire la richiesta quando pi\u00f9 di un servizio \u00e8 qualificato per gestire la richiesta.
+TOO_MANY_MP_JWT_PROVIDERS.useraction=Accertarsi che non sia configurato pi\u00f9 di un servizio JWT del microprofilo nella configurazione del server per gestire la richiesta.
+
+# Do not translate "Authorization", "Bearer", or "POST"
+JWT_NOT_FOUND_IN_REQUEST=CWWKS5522E: La funzione JWT del microprofilo non pu\u00f2 eseguire l'autenticazione perch\u00e9 non \u00e8 possibile trovare un JWT del microprofilo nella richiesta.
+JWT_NOT_FOUND_IN_REQUEST.explanation=Per eseguire l'autenticazione, \u00e8 necessario includere un JWT del microprofilo nell'intestazione Autorizzazione utilizzando lo schema di autorizzazione Bearer o come parametro POST. L'intestazione Autorizzazione \u00e8 mancante, lo schema di autorizzazione dell'intestazione Autorizzazione non \u00e8 impostato su Bearer, la richiesta non \u00e8 di tipo POST oppure un JWT del microprofilo non \u00e8 incluso come parametro.
+JWT_NOT_FOUND_IN_REQUEST.useraction=Accertarsi che un JWT del microprofilo sia incluso nell'intestazione Autorizzazione o come parametro POST della richiesta.
+
+# 0=Exception message
+ERROR_CREATING_JWT_USING_TOKEN_IN_REQ=CWWKS5523E: La funzione JWT del microprofilo non \u00e8 in grado di autenticare la richiesta perch\u00e9 non \u00e8 possibile creare un JWT valido dal token incluso nella richiesta. {0}
+ERROR_CREATING_JWT_USING_TOKEN_IN_REQ.explanation=La funzione JWT del microprofilo ha rilevato un errore durante la creazione di un JWT dalla stringa token fornita. Non \u00e8 possibile creare un consumer JWT oppure il consumer JWT ha rilevato un errore durante l'analisi e la convalida della stringa token.
+ERROR_CREATING_JWT_USING_TOKEN_IN_REQ.useraction=Vedere l'azione utente per l'errore che viene visualizzato nel messaggio. Controllare i log del server per eventuali ulteriori messaggi di errore.
+
+# 0=Configuration ID, 1=Exception message
+ERROR_CREATING_JWT=CWWKS5524E: La funzione JWT del microprofilo ha rilevato un errore durante la creazione di un JWT utilizzando la configurazione [{0}] e il token incluso nella richiesta. {1}
+ERROR_CREATING_JWT.explanation=Non \u00e8 possibile creare un consumer JWT oppure il consumer JWT ha rilevato un errore durante l'analisi e la convalida della stringa token.
+ERROR_CREATING_JWT.useraction=Verificare che la configurazione del microprofilo JWT specificata sia presente nella configurazione del server. Verificare che la stringa token fornita sia formattata correttamente. Vedere l'azione utente per l'errore che viene visualizzato nel messaggio. Controllare i log del server per eventuali ulteriori messaggi di errore.
+
+MP_JWT_FRONT_END_ERROR=CWWKS5525E: Si \u00e8 verificato un errore durante l'autenticazione di un utente tramite il JWT (JSON Web Token) del microprofilo.
+MP_JWT_FRONT_END_ERROR.explanation=Si \u00e8 verificato un problema durante l'autenticazione di un utente. Potrebbe essersi verificato un problema di connessione tra l'applicazione e un provider di servizio di terze parti o un problema con i dati di autenticazione.
+MP_JWT_FRONT_END_ERROR.useraction=Contattare l'amministratore di sistema per risolvere il problema.
+
+MPJWT_NOT_FOUND_IN_APPLICATION=CWWKS5526W: La funzione JWT microprofilo non pu\u00f2 eseguire l''autenticazione perch\u00e9 \u00e8 previsto il tipo di autenticazione [{0}] nell''applicazione, ma \u00e8 stato trovato [{1}]. L''attributo [{2}] \u00e8 impostato su [{3}]. 
+MPJWT_NOT_FOUND_IN_APPLICATION.explanation=Per eseguire correttamente l'autenticazione, effettuare una delle seguenti operazioni. a) Assicurarsi che l'attributo ignoreApplicationAuthMethod sia "true" b) l'annotazione loginConfig sia impostato su MP-JWT nell'applicazione.
+MPJWT_NOT_FOUND_IN_APPLICATION.useraction=Verificare che la configurazione del server o dell'applicazione sia aggiornata.

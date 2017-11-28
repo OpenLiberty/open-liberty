@@ -1,0 +1,411 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWWKC0000=CWWKC0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.anno/resources/com/ibm/ws/anno/resources/internal/AnnoMessages.nlsprops
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Annotation Scan and Infostore Service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# Base Anno scanning layer: 0001 to 0250   com.ibm.ws.anno.resources.internal.AnnoMessages
+# -------------------------------------------------------------------------------------------------
+#
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} The class name of the resource
+# # {2} the hashcode id of the resource
+ANNO_CLASSSOURCE_CLOSE1_EXCEPTION=CWWKC0001W: [ {0} ]: Zav\u0159en\u00ed prost\u0159edku [{1}] [{2}] se nezda\u0159ilo s v\u00fdjimkou.
+ANNO_CLASSSOURCE_CLOSE1_EXCEPTION.explanation=Zav\u0159en\u00ed prost\u0159edku zp\u016fsobilo v\u00fdjimku.
+ANNO_CLASSSOURCE_CLOSE1_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} The name of the resource
+# # {2} the name of the class associated with the resource
+ANNO_CLASSSOURCE_CLOSE2_EXCEPTION=CWWKC0002W: [ {0} ]: Zav\u0159en\u00ed prost\u0159edku [{1}] pro t\u0159\u00eddu [{2}] se nezda\u0159ilo s v\u00fdjimkou.
+ANNO_CLASSSOURCE_CLOSE2_EXCEPTION.explanation=Zav\u0159en\u00ed vstupn\u00edho proudu pro prost\u0159edek zp\u016fsobilo v\u00fdjimku.
+ANNO_CLASSSOURCE_CLOSE2_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} The name of the resource, includes the full path to the class
+# # {2} the name of the class associated with the resource
+ANNO_CLASSSOURCE_OPEN1_EXCEPTION=CWWKC0003W: [ {0} ]: Otev\u0159en\u00ed prost\u0159edku [{1}] pro t\u0159\u00eddu [{2}] se nezda\u0159ilo s v\u00fdjimkou.
+ANNO_CLASSSOURCE_OPEN1_EXCEPTION.explanation=Otev\u0159en\u00ed vstupn\u00edho proudu InputStream pro prost\u0159edek zp\u016fsobilo v\u00fdjimku.
+ANNO_CLASSSOURCE_OPEN1_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} file name
+# # {2} a class name
+# # {3} a file name
+# # {4} the file path name of {1}
+ANNO_CLASSSOURCE_ADAPT_EXCEPTION=CWWKC0004W: [ {0} ]: P\u0159evod prost\u0159edku [{1}] t\u0159\u00eddy [{2}] v ko\u0159enov\u00e9m adres\u00e1\u0159i [{3}] pro p\u0159edponu [{4}] se nezda\u0159il.
+ANNO_CLASSSOURCE_ADAPT_EXCEPTION.explanation=Soubor nelze p\u0159en\u00e9st na nov\u00fd typ objektu.
+ANNO_CLASSSOURCE_ADAPT_EXCEPTION.useraction=Nen\u00ed k dispozici \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} the resource name, class name plus path
+# # {2} the name of the item
+# # {3} the name of the container that holds item
+# # {4} the name of the class
+ANNO_CLASSSOURCE_OPEN2_EXCEPTION=CWWKC0005W: [ {0} ]: Otev\u0159en\u00ed prost\u0159edku [{1}] t\u0159\u00eddy [{2}] v ko\u0159enov\u00e9m adres\u00e1\u0159i [{3}] pro t\u0159\u00eddu [{4}] se nezda\u0159ilo.
+ANNO_CLASSSOURCE_OPEN2_EXCEPTION.explanation=Otev\u0159en\u00ed vstupn\u00edho proudu InputStream pro prost\u0159edek zp\u016fsobilo v\u00fdjimku.
+ANNO_CLASSSOURCE_OPEN2_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} the resource name, class name plus path
+# # {2} the name of the container that holds item
+# # {3} the name of the class
+ANNO_CLASSSOURCE_RESOURCE_NOTFOUND=CWWKC0006W: [ {0} ]: Polo\u017eku [{1}] v ko\u0159enov\u00e9m adres\u00e1\u0159i [{2}] pro t\u0159\u00eddu [{3}] nelze nal\u00e9zt.
+ANNO_CLASSSOURCE_RESOURCE_NOTFOUND.explanation=Prost\u0159edek nebyl v ko\u0159enov\u00e9m kontejneru nalezen.
+ANNO_CLASSSOURCE_RESOURCE_NOTFOUND.useraction=Ov\u011b\u0159te, zda cesta k prost\u0159edku t\u0159\u00eddy existuje k kontejneru.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} the resource name, class name plus path
+# # {2} the name of the item
+# # {3} the name of the container that holds item
+# # {4} the name of the class
+ANNO_CLASSSOURCE_CLOSE3_EXCEPTION=CWWKC0007W: [ {0} ]: Zav\u0159en\u00ed prost\u0159edku [{1}] t\u0159\u00eddy [{2}] v ko\u0159enov\u00e9m adres\u00e1\u0159i [{3}] pro t\u0159\u00eddu [{4}] se nezda\u0159ilo.
+ANNO_CLASSSOURCE_CLOSE3_EXCEPTION.explanation=Pokus o zav\u0159en\u00ed vstupn\u00edho proudu InputStream pro t\u0159\u00eddu zp\u016fsobil v\u00fdjimku.
+ANNO_CLASSSOURCE_CLOSE3_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a directory name
+# # {2} the path for the directory
+ANNO_CLASSSOURCE_EMPTY_DIR=CWWKC0008W: [ {0} ]: V adres\u00e1\u0159i [{1}] v ko\u0159enov\u00e9m adres\u00e1\u0159i [{2}] nebyly nalezeny \u017e\u00e1dn\u00e9 soubory.
+ANNO_CLASSSOURCE_EMPTY_DIR.explanation=Bylo vyvol\u00e1no proch\u00e1zen\u00ed anotac\u00ed v c\u00edlov\u00e9m adres\u00e1\u0159i, ale nebyly v n\u011bm nalezeny \u017e\u00e1dn\u00e9 soubory t\u0159\u00eddy.
+ANNO_CLASSSOURCE_EMPTY_DIR.useraction=Zkontrolujte, zda by m\u011bl adres\u00e1\u0159 obsahovat t\u0159\u00eddy. Odeberte z aplikace pr\u00e1zdn\u00e9 adres\u00e1\u0159e.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} the resource name, class name plus path
+# # {2} a file path
+# # {3} the name of the container for {1}
+# # {4} the name of the class
+ANNO_CLASSSOURCE_NOT_FILE=CWWKC0009W: [ {0} ]: Prost\u0159edek [{1}] byl nalezen jako adres\u00e1\u0159 [{2}] v ko\u0159enov\u00e9m adres\u00e1\u0159i [{3}] pro t\u0159\u00eddu [{4}].
+ANNO_CLASSSOURCE_NOT_FILE.explanation=Prost\u0159edek m\u011bl b\u00fdt souborem, nalezen byl ale adres\u00e1\u0159. 
+ANNO_CLASSSOURCE_NOT_FILE.useraction=Nen\u00ed k dispozici \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a file path
+# # {2} the resource name, class name plus path
+# # {3} a directory name
+# # {4} the name of the class
+ANNO_CLASSSOURCE_OPEN3_EXCEPTION=CWWKC0010W: [ {0} ]: Otev\u0159en\u00ed proudu [{1}] pro prost\u0159edek [{2}] v ko\u0159enov\u00e9m adres\u00e1\u0159i [{3}] pro t\u0159\u00eddu [{4}] se nezda\u0159ilo.
+ANNO_CLASSSOURCE_OPEN3_EXCEPTION.explanation=Pokus o otev\u0159en\u00ed vstupn\u00edho proudu InputStream pro soubor zp\u016fsobil v\u00fdjimku.
+ANNO_CLASSSOURCE_OPEN3_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a resource name
+# # {2} a directory path
+# # {3} a class name
+ANNO_CLASSSOURCE_CLOSE4_EXCEPTION=CWWKC0011W: [ {0} ]: Zav\u0159en\u00ed prost\u0159edku [{1}] v ko\u0159enov\u00e9m adres\u00e1\u0159i [{2}] pro t\u0159\u00eddu [{3}] se nezda\u0159ilo.
+ANNO_CLASSSOURCE_CLOSE4_EXCEPTION.explanation=Zav\u0159en\u00ed vstupn\u00edho proudu InputStream pro prost\u0159edek zp\u016fsobilo v\u00fdjimku.
+ANNO_CLASSSOURCE_CLOSE4_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a jar file path name
+ANNO_CLASSSOURCE_OPEN4_EXCEPTION=CWWKC0012W: [ {0} ]: Otev\u0159en\u00ed souboru [{1}] se nezda\u0159ilo s v\u00fdjimkou.
+ANNO_CLASSSOURCE_OPEN4_EXCEPTION.explanation=Soubor byl otev\u00edr\u00e1n jako soubor Jar a tato akce zp\u016fsobila v\u00fdjimku.
+ANNO_CLASSSOURCE_OPEN4_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} The name of the jar file
+# # {2} A number, the value of the 'open counter'
+ANNO_CLASSSOURCE_JAR_STATE_BAD=CWWKC0013W: [ {0} ]: \u010c\u00edta\u010d po\u010dtu otev\u0159en\u00ed [{2}] souboru JAR [{1}] m\u011bl p\u0159i zav\u00edr\u00e1n\u00ed chybn\u00fd stav.
+ANNO_CLASSSOURCE_JAR_STATE_BAD.explanation=Do\u0161lo k intern\u00ed chyb\u011b. Po\u010det aktivn\u00edch u\u017eivatel\u016f souboru jar se neshoduje se stavem souboru jar.
+ANNO_CLASSSOURCE_JAR_STATE_BAD.useraction=CMSG0002
+                        
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} the name of a jar file
+ANNO_CLASSSOURCE_CLOSE5_EXCEPTION=CWWKC0014W: [ {0} ]: Zav\u0159en\u00ed souboru [{1}] se nezda\u0159ilo s v\u00fdjimkou.
+ANNO_CLASSSOURCE_CLOSE5_EXCEPTION.explanation=Pokus o zav\u0159en\u00ed objektu JarFile zp\u016fsobil v\u00fdjimku.
+ANNO_CLASSSOURCE_CLOSE5_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+                
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a resource name
+# # {2} a class name
+# # {3} a jar file path 
+ANNO_CLASSSOURCE_OPEN5_EXCEPTION=CWWKC0015W: [ {0} ]: Otev\u0159en\u00ed prost\u0159edku [{1}] pro t\u0159\u00eddu [{2}] s cestou [{3}] se nezda\u0159ilo s v\u00fdjimkou.
+ANNO_CLASSSOURCE_OPEN5_EXCEPTION.explanation=V souboru jar byla nalezena polo\u017eka pro t\u0159\u00eddu, ale vytvo\u0159en\u00ed vstupn\u00edho proudu InputStream pro t\u0159\u00eddu zp\u016fsobilo v\u00fdjimku. 
+ANNO_CLASSSOURCE_OPEN5_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a resource name
+# # {2} a class name
+# # {3} a jar file path 
+ANNO_CLASSSOURCE_CLOSE6_EXCEPTION=CWWKC0016W: [ {0} ]: Zav\u0159en\u00ed prost\u0159edku [{1}] pro t\u0159\u00eddu [{2}] s cestou [{3}] se nezda\u0159ilo s v\u00fdjimkou.
+ANNO_CLASSSOURCE_CLOSE6_EXCEPTION.explanation=Zav\u0159en\u00ed vstupn\u00edho proudu InputStream prost\u0159edku zp\u016fsobilo v\u00fdjimku.
+ANNO_CLASSSOURCE_CLOSE6_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a java class name
+# # {2} a method name
+ANNO_ANNOINFO_NO_METHOD=CWWKC0017W: Anotace [{0}] t\u0159\u00eddy anotac\u00ed [{1}] neobsahuje metodu [{2}].
+ANNO_ANNOINFO_NO_METHOD.explanation=Pro parametr nelze na k\u00f3dovan\u00e9 anotaci nal\u00e9zt vyhovuj\u00edc\u00ed metodu.
+ANNO_ANNOINFO_NO_METHOD.useraction=Nen\u00ed k dispozici \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+                
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a hash id used to identify the object
+# # {2} a hash id used to identify the object
+ANNO_CLASSINFO_EXISTS1=CWWKC0018W: [{0}] Ji\u017e m\u00e1 jako jedine\u010dnou t\u0159\u00eddu java [{2}] objekt [{1}].
+ANNO_CLASSINFO_EXISTS1.explanation=Objekt informac\u00ed o t\u0159\u00edd\u011b pro danou pam\u011b\u0165 ji\u017e existuje v mezipam\u011bti.
+ANNO_CLASSINFO_EXISTS1.useraction=Nen\u00ed k dispozici \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+            
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a hash id used to identify the object
+ANNO_CLASSINFO_EXISTS2=CWWKC0019W: [{0}] Ji\u017e m\u00e1 jako t\u0159\u00eddu java objekt [{1}].
+ANNO_CLASSINFO_EXISTS2.explanation=Objekt informac\u00ed o t\u0159\u00edd\u011b pro danou pam\u011b\u0165 ji\u017e existuje v mezipam\u011bti.
+ANNO_CLASSINFO_EXISTS2.useraction=Nen\u00ed k dispozici \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a hash id used to identify the object
+# # {2} a hash id used to identify the object
+ANNO_CLASSINFO_EXISTS3=CWWKC0020W: [{0}] Ji\u017e m\u00e1 jedine\u010dnou anotovanou t\u0159\u00eddu [{2}] objekt [{1}].
+ANNO_CLASSINFO_EXISTS3.explanation=Objekt informac\u00ed o t\u0159\u00edd\u011b pro danou pam\u011b\u0165 ji\u017e existuje v mezipam\u011bti.
+ANNO_CLASSINFO_EXISTS3.useraction=Nen\u00ed k dispozici \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+            
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a hash id used to identify the object
+ANNO_CLASSINFO_EXISTS4=CWWKC0021W: [ {0} ] Ji\u017e m\u00e1 jako anotovanou t\u0159\u00eddu objekt [{1}].
+ANNO_CLASSINFO_EXISTS4.explanation=Objekt informac\u00ed o t\u0159\u00edd\u011b pro danou pam\u011b\u0165 ji\u017e existuje v mezipam\u011bti.
+ANNO_CLASSINFO_EXISTS4.useraction=Nen\u00ed k dispozici \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} the name of a class
+ANNO_CLASSINFO_SCAN_EXCEPTION=CWWKC0022W: [ {0} ] Proch\u00e1zen\u00ed t\u0159\u00eddy [{1}] zp\u016fsobilo v\u00fdjimku. Zpr\u00e1va: [{2}] zp\u016fsobil [{3}].
+ANNO_CLASSINFO_SCAN_EXCEPTION.explanation=Proch\u00e1zen\u00ed t\u0159\u00eddy p\u0159i hled\u00e1n\u00ed anotac\u00ed zp\u016fsobilo v\u00fdjimku.
+ANNO_CLASSINFO_SCAN_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a hash id used to identify the object
+# # {2} a hash id used to identify the object
+ANNO_CLASSINFO_METHODEXISTS=CWWKC0023W: [ {0} ] P\u0159id\u00e1n\u00ed objektu [{1}] p\u0159ep\u00ed\u0161e existuj\u00edc\u00ed objekt [{2}].
+ANNO_CLASSINFO_METHODEXISTS.explanation=Objekt metody pro t\u0159\u00eddu ji\u017e existuje v mezipam\u011bti.
+ANNO_CLASSINFO_METHODEXISTS.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele. 
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a hash id used to identify the object
+# # {2} a hash id used to identify the object
+ANNO_CLASSINFO_FIELDEXISTS=CWWKC0024W: [ {0} ] P\u0159id\u00e1n\u00ed objektu [{1}] p\u0159ep\u00ed\u0161e existuj\u00edc\u00ed objekt [{2}].
+ANNO_CLASSINFO_FIELDEXISTS.explanation=Objekt pole pro t\u0159\u00eddu ji\u017e existuje v mezipam\u011bti.
+ANNO_CLASSINFO_FIELDEXISTS.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele. 
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} The name of a class 
+ANNO_CLASSINFO_CLASS_NOTFOUND=CWWKC0025W: [ {0} ] T\u0159\u00edda [{1}] nebyla nalezena.
+ANNO_CLASSINFO_CLASS_NOTFOUND.explanation=Proces proch\u00e1zen\u00ed anotac\u00ed nerozpoznal t\u0159\u00eddu. Toto lze vy\u0159e\u0161it dodate\u010dn\u00fdm pokusem o rozpozn\u00e1n\u00ed t\u0159\u00eddy.
+ANNO_CLASSINFO_CLASS_NOTFOUND.useraction=Ov\u011b\u0159te, zda se t\u0159\u00edda nach\u00e1z\u00ed v cest\u011b k aplikaci nebo v cest\u011b ke t\u0159\u00edd\u011b aplikace.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A hashcode id used to identify the object causing the exception
+# # {2} The error message from the exception
+ANNO_INFOSTORE_OPEN1_EXCEPTION=CWWKC0026W: [ {0} ]: Otev\u0159en\u00ed objektu [{1}] zp\u016fsobilo v\u00fdjimku. Zpr\u00e1va: {2}
+ANNO_INFOSTORE_OPEN1_EXCEPTION.explanation=Otev\u0159en\u00ed zdroje t\u0159\u00eddy zp\u016fsobilo v\u00fdjimku.
+ANNO_INFOSTORE_OPEN1_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A hashcode id used to identify the object causing the exception
+ANNO_INFOSTORE_CLOSE1_EXCEPTION=CWWKC0027W: [ {0} ]: Zav\u0159en\u00ed objektu [{1}] zp\u016fsobilo v\u00fdjimku.
+ANNO_INFOSTORE_CLOSE1_EXCEPTION.explanation=Zav\u0159en\u00ed zdroje t\u0159\u00eddy zp\u016fsobilo v\u00fdjimku.
+ANNO_INFOSTORE_CLOSE1_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+       
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} the full resource name for the class
+# # {2} The class name
+ANNO_INFOSTORE_OPEN2_EXCEPTION=CWWKC0028W: [ {0} ]: Otev\u0159en\u00ed vstupn\u00edho proudu pro prost\u0159edek [{1}] pro t\u0159\u00eddu [{2}] se nezda\u0159ilo s v\u00fdjimkou.
+ANNO_INFOSTORE_OPEN2_EXCEPTION.explanation=Kdy\u017e se proces proch\u00e1zen\u00ed anotac\u00ed pokusil otev\u0159\u00edt vstupn\u00ed proud pro t\u0159\u00eddu, do\u0161lo k v\u00fdjimce. 
+ANNO_INFOSTORE_OPEN2_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+            
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} the full resource name for the class
+# # {2} The class name
+ANNO_INFOSTORE_CLOSE2_EXCEPTION=CWWKC0029W: [ {0} ]: Zav\u0159en\u00ed vstupn\u00edho proudu pro prost\u0159edek [{1}] pro t\u0159\u00eddu [{2}] se nezda\u0159ilo s v\u00fdjimkou.
+ANNO_INFOSTORE_CLOSE2_EXCEPTION.explanation=Kdy\u017e se proces proch\u00e1zen\u00ed anotac\u00ed pokusil zav\u0159\u00edt vstupn\u00ed proud pro t\u0159\u00eddu, do\u0161lo k v\u00fdjimce.
+ANNO_INFOSTORE_CLOSE2_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# # {0} The class name
+# # {1} the full resource name for the class
+ANNO_CREATE_READER_EXCEPTION=CWWKC0030W: Vytv\u00e1\u0159en\u00ed \u010dte\u010dky t\u0159\u00edd pro t\u0159\u00eddu [ {0} ] z prost\u0159edku [{1}] se nezda\u0159ilo s v\u00fdjimkou.
+ANNO_CREATE_READER_EXCEPTION.explanation=Proces proch\u00e1zen\u00ed anotac\u00ed vytv\u00e1\u0159el objekt ClassReader pro zpracov\u00e1n\u00ed vstupn\u00edho proudu pro prost\u0159edek, a to zp\u016fsobilo v\u00fdjimku.
+ANNO_CREATE_READER_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a parameter name
+# # {2} a parameter value
+ANNO_INFOVISIT_INVALID_STATE=CWWKC0031W: Chyba intern\u00edho stavu: N\u00e1v\u0161t\u011bvn\u00edk [ {0} ] Nastaven\u00ed [ {1} ] na [ {2} ].
+ANNO_INFOVISIT_INVALID_STATE.explanation=Do\u0161lo k chyb\u011b p\u0159i zpracov\u00e1n\u00ed anotace, objekt n\u00e1v\u0161t\u011bvn\u00edka je chybn\u00fd.
+ANNO_INFOVISIT_INVALID_STATE.useraction=CMSG0001
+                    
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A hashcode id used to identify the object that exists
+ANNO_INFOVISITOR_RESET1=CWWKC0032W: [ {0} ] Existuje zbytkov\u00fd bal\u00edk objektu [ {1} ].
+ANNO_INFOVISITOR_RESET1.explanation=Do\u0161lo k intern\u00ed chyb\u011b. B\u011bhem nulov\u00e1n\u00ed n\u00e1v\u0161t\u011bvn\u00edka byla nalezena zbytkov\u00e1 data.
+ANNO_INFOVISITOR_RESET1.useraction=CMSG0002
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A hashcode id used to identify the object that exists
+ANNO_INFOVISITOR_RESET2=CWWKC0033W: [ {0} ] Existuje zbytkov\u00e1 t\u0159\u00edda objektu [ {1} ].
+ANNO_INFOVISITOR_RESET2.explanation=Do\u0161lo k intern\u00ed chyb\u011b. B\u011bhem nulov\u00e1n\u00ed n\u00e1v\u0161t\u011bvn\u00edka byla nalezena zbytkov\u00e1 data.
+ANNO_INFOVISITOR_RESET2.useraction=CMSG0002
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A hashcode id used to identify the object that exists
+ANNO_INFOVISITOR_RESET3=CWWKC0034W: [ {0} ] Existuje zbytkov\u00e1 metoda objektu [ {1} ].
+ANNO_INFOVISITOR_RESET3.explanation=Do\u0161lo k intern\u00ed chyb\u011b. B\u011bhem nulov\u00e1n\u00ed n\u00e1v\u0161t\u011bvn\u00edka byla nalezena zbytkov\u00e1 data.
+ANNO_INFOVISITOR_RESET3.useraction=CMSG0002
+                
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A hashcode id used to identify the object that exists
+ANNO_INFOVISITOR_RESET4=CWWKC0035W: [ {0} ] Existuje zbytkov\u00e9 pole objektu [ {1} ].
+ANNO_INFOVISITOR_RESET4.explanation=Do\u0161lo k intern\u00ed chyb\u011b. B\u011bhem nulov\u00e1n\u00ed n\u00e1v\u0161t\u011bvn\u00edka byla nalezena zbytkov\u00e1 data.
+ANNO_INFOVISITOR_RESET4.useraction=CMSG0002
+   
+# # {0} A hashcode id used to identify the object emitting the message
+ANNO_INFOVISITOR_RESET5=CWWKC0036W: [ {0} ] Existuje zbytkov\u00fd stav zastaven\u00ed.
+ANNO_INFOVISITOR_RESET5.explanation=Do\u0161lo k intern\u00ed chyb\u011b. B\u011bhem nulov\u00e1n\u00ed n\u00e1v\u0161t\u011bvn\u00edka byla nalezena zbytkov\u00e1 data.
+ANNO_INFOVISITOR_RESET5.useraction=CMSG0002
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} The name of a class
+ANNO_INFOVISITOR_RESET6=CWWKC0037W: [ {0} ] Existuje n\u00e1zev zbytkov\u00e9 extern\u00ed t\u0159\u00eddy objektu [ {1} ].
+ANNO_INFOVISITOR_RESET6.explanation=Do\u0161lo k intern\u00ed chyb\u011b. B\u011bhem nulov\u00e1n\u00ed n\u00e1v\u0161t\u011bvn\u00edka byla nalezena zbytkov\u00e1 data.
+ANNO_INFOVISITOR_RESET6.useraction=CMSG0002
+                                       
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} The name of a class package
+ANNO_INFOVISITOR_VISIT1=CWWKC0038W: [ {0} ] Bal\u00edk s n\u00e1zvem [ {1} ] m\u00e1 hodnotu null.
+ANNO_INFOVISITOR_VISIT1.explanation=Do\u0161lo k intern\u00ed chyb\u011b. B\u011bhem procesu proch\u00e1zen\u00ed anotac\u00ed nebylo mo\u017en\u00e9 vytvo\u0159it objekt.
+ANNO_INFOVISITOR_VISIT1.useraction=CMSG0002
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} The name of a class field
+ANNO_INFOVISITOR_VISIT2=CWWKC0039W: [ {0} ] Objekt pole s n\u00e1zvem [ {1} ] nebyl nalezen.
+ANNO_INFOVISITOR_VISIT2.explanation=Do\u0161lo k intern\u00ed chyb\u011b. B\u011bhem procesu proch\u00e1zen\u00ed anotac\u00ed nebylo mo\u017en\u00e9 vytvo\u0159it objekt.
+ANNO_INFOVISITOR_VISIT2.useraction=CMSG0002
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} The name of a class method
+ANNO_INFOVISITOR_VISIT3=CWWKC0040W: [ {0} ] Objekt metody s n\u00e1zvem [ {1} ] nebyl nalezen.
+ANNO_INFOVISITOR_VISIT3.explanation=Do\u0161lo k intern\u00ed chyb\u011b. B\u011bhem procesu proch\u00e1zen\u00ed anotac\u00ed nebylo mo\u017en\u00e9 vytvo\u0159it objekt.
+ANNO_INFOVISITOR_VISIT3.useraction=CMSG0002
+
+# # {0} A hashcode id used to identify the object emitting the message
+ANNO_INFOVISITOR_VISIT4=CWWKC0041W: [ {0} ] Objekt n\u00e1v\u0161t\u011bvn\u00edka nelze identifikovat.
+ANNO_INFOVISITOR_VISIT4.explanation=CMSG0001
+ANNO_INFOVISITOR_VISIT4.useraction=CMSG0002
+
+
+ANNO_CLASSINFO_INTERFACE_LATE_ADD=CWWKC0042W: Intern\u00ed chyba: Rozhran\u00ed [ {1} ] bylo p\u0159id\u00e1no ke t\u0159\u00edd\u011b [ {0} ] pot\u00e9, co byla interpretov\u00e1na rozhran\u00ed t\u0159\u00eddy.
+ANNO_CLASSINFO_INTERFACE_LATE_ADD.explanation=CMSG0001
+ANNO_CLASSINFO_INTERFACE_LATE_ADD.useraction=CMSG0002
+
+ANNO_CLASSINFO_INTERFACE_MISSORDERED_ADD=CWWKC0043W: Intern\u00ed chyba t\u0159\u00eddy bez vzniku prodlevy. Rozhran\u00ed [ {1} ] bylo p\u0159id\u00e1no ke t\u0159\u00edd\u011b [ {0} ] mimo r\u00e1mec b\u011b\u017en\u00e9ho postupu zpracov\u00e1n\u00ed.
+ANNO_CLASSINFO_INTERFACE_MISSORDERED_ADD.explanation=CMSG0001
+ANNO_CLASSINFO_INTERFACE_MISSORDERED_ADD.useraction=CMSG0002
+
+ANNO_TARGETS_SCAN_EXCEPTION=CWWKC0044W: Do\u0161lo k v\u00fdjimce p\u0159i proch\u00e1zen\u00ed dat t\u0159\u00eddy a anotac\u00ed. V\u00fdjimka: {0}.
+ANNO_TARGETS_SCAN_EXCEPTION.explanation=Do\u0161lo k chyb\u011b p\u0159i proch\u00e1zen\u00ed dat t\u0159\u00eddy a anotac\u00ed. P\u0159idru\u017een\u00fd modul m\u016f\u017ee pracovat chybn\u011b.
+ANNO_TARGETS_SCAN_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+ANNO_TARGETS_FLUSH_WRITE_EXCEPTION=CWWKC0045W: Do\u0161lo k v\u00fdjimce p\u0159i dokon\u010dov\u00e1n\u00ed \u010dten\u00ed dat t\u0159\u00eddy a anotac\u00ed.
+ANNO_TARGETS_FLUSH_WRITE_EXCEPTION.explanation=P\u0159i dokon\u010dov\u00e1n\u00ed \u010dten\u00ed dat t\u0159\u00eddy a anotac\u00ed nastal probl\u00e9m. Mezipam\u011b\u0165 dat t\u0159\u00eddy a anotac\u00ed m\u016f\u017ee b\u00fdt ne\u00fapln\u00e1 a m\u011bla by b\u00fdt vymaz\u00e1na.
+ANNO_TARGETS_FLUSH_WRITE_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+ANNO_TARGETS_READ_EXCEPTION=CWWKC0046W: Do\u0161lo k v\u00fdjimce p\u0159i \u010dten\u00ed dat anotac\u00ed.
+ANNO_TARGETS_READ_EXCEPTION.explanation=P\u0159i \u010dten\u00ed dat t\u0159\u00eddy a anotac\u00ed nastal probl\u00e9m. Dal\u0161\u00ed zpracov\u00e1n\u00ed m\u016f\u017ee v\u00e9st k chybn\u00fdm v\u00fdsledk\u016fm, proto\u017ee byla na\u010dtena ne\u00fapln\u00e1 data. Mezipam\u011b\u0165 dat t\u0159\u00eddy a anotac\u00ed by m\u011bla b\u00fdt vymaz\u00e1na.
+ANNO_TARGETS_READ_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+ANNO_TARGETS_WRITE_EXCEPTION=CWWKC0047W: Do\u0161lo k v\u00fdjimce p\u0159i zapisov\u00e1n\u00ed dat anotac\u00ed.
+ANNO_TARGETS_WRITE_EXCEPTION.explanation=P\u0159i zapisov\u00e1n\u00ed dat t\u0159\u00eddy a anotac\u00ed nastal probl\u00e9m. Zobrazen\u00fd \u0159\u00e1dek nebyl \u00fasp\u011b\u0161n\u011b zaps\u00e1n do dat t\u0159\u00eddy a anotac\u00ed. Mezipam\u011b\u0165 dat t\u0159\u00eddy a anotac\u00ed m\u016f\u017ee b\u00fdt ne\u00fapln\u00e1 a m\u011bla by b\u00fdt vymaz\u00e1na.
+ANNO_TARGETS_WRITE_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+ANNO_TARGETS_SCAN_CLASS_EXCEPTION=CWWKC0048W: Do\u0161lo k v\u00fdjimce p\u0159i hled\u00e1n\u00ed informac\u00ed t\u0159\u00eddy [ {0} ] a informac\u00ed anotac\u00ed.
+ANNO_TARGETS_SCAN_CLASS_EXCEPTION.explanation=P\u0159i pokusu o vyhled\u00e1n\u00ed informac\u00ed t\u0159\u00eddy a informac\u00ed anotac\u00ed nastal probl\u00e9m. Zkontrolujte zobrazenou t\u0159\u00eddu, abyste zjistili, zda ji lze \u010d\u00edst a zda obsahuje platn\u00e9 bajty t\u0159\u00eddy.
+ANNO_TARGETS_SCAN_CLASS_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+ANNO_TARGETS_FAILED_TO_CREATE_READER=CWWKC0049W: Do\u0161lo k v\u00fdjimce p\u0159i vytv\u00e1\u0159en\u00ed \u010dte\u010dky bajtov\u00e9ho k\u00f3du pro t\u0159\u00eddu [ {0} ].
+ANNO_TARGETS_FAILED_TO_CREATE_READER.explanation=P\u0159i p\u0159\u00edprav\u011b \u010dte\u010dky bajtov\u00e9ho k\u00f3du t\u0159\u00eddy nastal probl\u00e9m. Hodnoty bajtov\u00e9ho k\u00f3du t\u00e9to t\u0159\u00eddy mohou b\u00fdt neplatn\u00e9, nebo m\u016f\u017ee b\u00fdt ne\u010diteln\u00fd soubor t\u0159\u00eddy. V d\u016fsledku toho nebudou informace t\u0159\u00eddy a informace anotac\u00ed pro tuto t\u0159\u00eddu dostupn\u00e9 a modul, kter\u00fd t\u0159\u00eddu pou\u017e\u00edv\u00e1, nemus\u00ed pracovat spr\u00e1vn\u011b.
+ANNO_TARGETS_FAILED_TO_CREATE_READER.useraction=Zkontrolujte obsah souboru t\u0159\u00eddy, kter\u00fd zp\u016fsobuje chybu. Je-li to nezbytn\u00e9, nahra\u010fte soubor t\u0159\u00eddy jin\u00fdm s platn\u00fdmi bajtov\u00fdmi k\u00f3dy. Dal\u0161\u00ed informace najdete ve zpr\u00e1v\u011b v\u00fdjimky a v p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+ANNO_TARGETS_RESIDUAL_PACKAGE=CWWKC0050W: Intern\u00ed chyba proch\u00e1zen\u00ed t\u0159\u00eddy: N\u00e1v\u0161t\u011bvn\u00edk [ {0} ] zobrazil nejasn\u00fd n\u00e1zev bal\u00edku [ {2} ] p\u0159i proch\u00e1zen\u00ed t\u0159\u00eddy [ {1} ].
+ANNO_TARGETS_RESIDUAL_PACKAGE.explanation=CMSG0001
+ANNO_TARGETS_RESIDUAL_PACKAGE.useraction=CMSG0002
+
+ANNO_TARGETS_RESIDUAL_CLASS=CWWKC0051W: Intern\u00ed chyba proch\u00e1zen\u00ed t\u0159\u00eddy: N\u00e1v\u0161t\u011bvn\u00edk [ {0} ] zobrazil nejasn\u00fd n\u00e1zev t\u0159\u00eddy [ {2} ] p\u0159i proch\u00e1zen\u00ed t\u0159\u00eddy [ {1} ].
+ANNO_TARGETS_RESIDUAL_CLASS.explanation=CMSG0001
+ANNO_TARGETS_RESIDUAL_CLASS.useraction=CMSG0002
+
+ANNO_TARGETS_RESIDUAL_METHOD=CWWKC0052W: Intern\u00ed chyba proch\u00e1zen\u00ed t\u0159\u00eddy: N\u00e1v\u0161t\u011bvn\u00edk [ {0} ] zobrazil nejasn\u00fd n\u00e1zev metody [ {2} ] p\u0159i proch\u00e1zen\u00ed t\u0159\u00eddy [ {1} ].
+ANNO_TARGETS_RESIDUAL_METHOD.explanation=CMSG0001
+ANNO_TARGETS_RESIDUAL_METHOD.useraction=CMSG0002
+
+ANNO_TARGETS_RESIDUAL_FIELD=CWWKC0053W: Intern\u00ed chyba proch\u00e1zen\u00ed t\u0159\u00eddy: N\u00e1v\u0161t\u011bvn\u00edk [ {0} ] zobrazil nejasn\u00fd n\u00e1zev pole [ {2} ] p\u0159i proch\u00e1zen\u00ed t\u0159\u00eddy [ {1} ].
+ANNO_TARGETS_RESIDUAL_FIELD.explanation=CMSG0001
+ANNO_TARGETS_RESIDUAL_FIELD.useraction=CMSG0002
+
+ANNO_TARGETS_DUPLICATE_PACKAGE=CWWKC0054W: Intern\u00ed chyba proch\u00e1zen\u00ed t\u0159\u00eddy: N\u00e1v\u0161t\u011bvn\u00edk [ {0} ] se pokusil o druh\u00e9 proch\u00e1zen\u00ed bal\u00edku [ {1} ].
+ANNO_TARGETS_DUPLICATE_PACKAGE.explanation=CMSG0001
+ANNO_TARGETS_DUPLICATE_PACKAGE.useraction=CMSG0002
+
+ANNO_TARGETS_DUPLICATE_CLASS=CWWKC0055W: Intern\u00ed chyba proch\u00e1zen\u00ed t\u0159\u00eddy: N\u00e1v\u0161t\u011bvn\u00edk [ {0} ] se pokusil o druh\u00e9 proch\u00e1zen\u00ed t\u0159\u00eddy [ {1} ].
+ANNO_TARGETS_DUPLICATE_CLASS.explanation=CMSG0001
+ANNO_TARGETS_DUPLICATE_CLASS.useraction=CMSG0002
+
+ANNO_TARGETS_UNEXPECTED_NULL=CWWKC0056W: Intern\u00ed chyba proch\u00e1zen\u00ed t\u0159\u00eddy: N\u00e1v\u0161t\u011bvn\u00edk [ {0} ] m\u00e1 neo\u010dek\u00e1vanou hodnotu null.
+ANNO_TARGETS_UNEXPECTED_NULL.explanation=CMSG0001
+ANNO_TARGETS_UNEXPECTED_NULL.useraction=CMSG0002
+
+ANNO_UTIL_MAPPING_INCONSISTENCY=CWWKC0057W: Vnit\u0159n\u00ed nekonzistence dat: Obousm\u011brn\u00e9 mapov\u00e1n\u00ed objektu [ {0} ] nenamapovalo konzistentn\u011b kl\u00ed\u010d [ {1} ] na hodnotu [ {2} ]. V\u00fdsledkem p\u0159id\u00e1n\u00ed kl\u00ed\u010de bylo [ {3} ], zat\u00edmco v\u00fdsledkem p\u0159id\u00e1n\u00ed hodnoty bylo [ {4} ]. V\u00fdsledky by m\u011bly b\u00fdt stejn\u00e9. 
+ANNO_UTIL_MAPPING_INCONSISTENCY.explanation=CMSG0001
+ANNO_UTIL_MAPPING_INCONSISTENCY.useraction=CMSG0002
+
+ANNO_UTIL_UNEXPECTED_BACKSLASH=CWWKC0058W: V tabulce \u0159et\u011bzc\u016f [ {0} ] do\u0161lo k chyb\u011b p\u0159i zpracov\u00e1n\u00ed hodnoty [ {1} ] typu [ {2} ]. Hodnota by nem\u011bla obsahovat zp\u011btn\u00e9 lom\u00edtko (''\\'\').
+ANNO_UTIL_UNEXPECTED_BACKSLASH.explanation=Pro p\u0159edpokl\u00e1dan\u00e9 pou\u017eit\u00ed m\u00e1 hodnota neplatn\u00fd obsah. Hodnota nemus\u00ed b\u00fdt zpracov\u00e1na spr\u00e1vn\u011b. P\u0159idru\u017een\u00fd modul m\u016f\u017ee pracovat chybn\u011b.
+ANNO_UTIL_UNEXPECTED_BACKSLASH.useraction=Data modulu by m\u011bla b\u00fdt zkontrolov\u00e1na, aby se ov\u011b\u0159ilo, \u017ee je zadan\u00e1 hodnota platn\u00e1.
+
+ANNO_UTIL_UNEXPECTED_CLASS=CWWKC0059W: V tabulce \u0159et\u011bzc\u016f [ {0} ] do\u0161lo k chyb\u011b p\u0159i zpracov\u00e1n\u00ed hodnoty [ {1} ] typu [ {2} ]. Hodnota by nem\u011bla kon\u010dit p\u0159\u00edponou ''.class''.
+ANNO_UTIL_UNEXPECTED_CLASS.explanation=Pro p\u0159edpokl\u00e1dan\u00e9 pou\u017eit\u00ed m\u00e1 hodnota neplatn\u00fd obsah. Hodnota nemus\u00ed b\u00fdt zpracov\u00e1na spr\u00e1vn\u011b. P\u0159idru\u017een\u00fd modul m\u016f\u017ee pracovat chybn\u011b.
+ANNO_UTIL_UNEXPECTED_CLASS.useraction=Data modulu by m\u011bla b\u00fdt zkontrolov\u00e1na, aby se ov\u011b\u0159ilo, \u017ee je zadan\u00e1 hodnota platn\u00e1.
+
+ANNO_UTIL_EXPECTED_CLASS=CWWKC0060W: V tabulce \u0159et\u011bzc\u016f [ {0} ] do\u0161lo k chyb\u011b p\u0159i zpracov\u00e1n\u00ed hodnoty [ {1} ] typu [ {2} ]. Hodnota by m\u011bla kon\u010dit p\u0159\u00edponou ''.class''.
+ANNO_UTIL_EXPECTED_CLASS.explanation=Pro p\u0159edpokl\u00e1dan\u00e9 pou\u017eit\u00ed m\u00e1 hodnota neplatn\u00fd obsah. Hodnota nemus\u00ed b\u00fdt zpracov\u00e1na spr\u00e1vn\u011b. P\u0159idru\u017een\u00fd modul m\u016f\u017ee pracovat chybn\u011b.
+ANNO_UTIL_EXPECTED_CLASS.useraction=Data modulu by m\u011bla b\u00fdt zkontrolov\u00e1na, aby se ov\u011b\u0159ilo, \u017ee je zadan\u00e1 hodnota platn\u00e1.
+
+ANNO_UTIL_UNEXPECTED_FORWARD_SLASH=CWWKC0061W: V tabulce \u0159et\u011bzc\u016f [ {0} ] do\u0161lo k chyb\u011b p\u0159i zpracov\u00e1n\u00ed hodnoty [ {1} ] typu [ {2} ]. Hodnota by nem\u011bla obsahovat dop\u0159edn\u00e9 lom\u00edtko (''//'').
+ANNO_UTIL_UNEXPECTED_FORWARD_SLASH.explanation=Pro p\u0159edpokl\u00e1dan\u00e9 pou\u017eit\u00ed m\u00e1 hodnota neplatn\u00fd obsah. Hodnota nemus\u00ed b\u00fdt zpracov\u00e1na spr\u00e1vn\u011b. P\u0159idru\u017een\u00fd modul m\u016f\u017ee pracovat chybn\u011b.
+ANNO_UTIL_UNEXPECTED_FORWARD_SLASH.useraction=Data modulu by m\u011bla b\u00fdt zkontrolov\u00e1na, aby se ov\u011b\u0159ilo, \u017ee je zadan\u00e1 hodnota platn\u00e1.
+
+ANNO_UTIL_UNRECOGNIZED_TYPE=CWWKC0062W: Intern\u00ed chyba zpracov\u00e1n\u00ed: V tabulce \u0159et\u011bzc\u016f [ {0} ] do\u0161lo k chyb\u011b p\u0159i zpracov\u00e1n\u00ed hodnoty [ {1} ] typu [ {2} ]. Typ nelze rozpoznat.
+ANNO_UTIL_UNRECOGNIZED_TYPE.explanation=CMSG0001
+ANNO_UTIL_UNRECOGNIZED_TYPE.useraction=CMSG0002
+
+# #{0} A hashcode id used to identify the object emitting the message
+# #{1} The name of the java exception which occurred 
+# #{2} The class name of the resource being closed
+# #{3} The hashcode id of the resource being closed
+ANNO_CLASSSOURCE_CLOSE_EXCEPTION=CWWKC0063W: [ {0} ]: Ru\u0161en\u00ed dal\u0161\u00ed v\u00fdjimky {1} zav\u0159en\u00ed prost\u0159edku t\u0159\u00eddy {2} [ {3} ].
+ANNO_CLASSSOURCE_CLOSE_EXCEPTION.explanation=P\u0159i pokusu o zav\u0159en\u00ed prost\u0159edku do\u0161lo k v\u00fdjimce.
+ANNO_CLASSSOURCE_CLOSE_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# {0} The name of the class
+# {1} The name of the jar the class was in.
+ANNO_TARGETS_CORRUPT_CLASS=CWWKC0064I: T\u0159\u00eddu {0} v {1} nebylo mo\u017en\u00e9 zpracovat pro anotace, proto\u017ee je z\u0159ejm\u011b po\u0161kozen\u00e1.
+ANNO_TARGETS_CORRUPT_CLASS.explanation=Do\u0161lo k probl\u00e9mu p\u0159i na\u010d\u00edt\u00e1n\u00ed souboru t\u0159\u00eddy k ur\u010den\u00ed, zda existuj\u00ed n\u011bjak\u00e9 d\u016fle\u017eit\u00e9 anotace. T\u0159\u00edda je pravd\u011bpodobn\u011b neplatn\u00fd soubor t\u0159\u00eddy. V\u00fdsledkem bude, \u017ee anotace od t\u00e9to t\u0159\u00eddy nebudou rozpozn\u00e1ny.
+ANNO_TARGETS_CORRUPT_CLASS.useraction=V z\u00e1vislosti na v\u00fdznamu t\u0159\u00eddy pro fungov\u00e1n\u00ed aplikace m\u016f\u017eete t\u0159\u00eddu nahradit, odebrat nebo tuto zpr\u00e1vu ignorovat.

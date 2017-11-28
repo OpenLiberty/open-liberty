@@ -1,0 +1,281 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME wlp.lib.extract/resources/wlp/lib/extract/SelfExtractMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_ALL
+#
+#   All strings in the self-extract utility go through MessageFormat: 
+#    single quote must be coded as 2 consecutive single quotes ''.
+#
+
+
+helpAgreement=Vede\u0163i acordul de licen\u0163\u0103.
+helpInformation=Vede\u0163i informa\u0163iile de licen\u0163\u0103.
+helpVerbose=Afi\u015feaz\u0103 informa\u0163ii detaliate \u00een timpul extragerii arhivei.
+helpAcceptLicense=Indic\u0103 automat acceptan\u0163a termenilor \u015fi condi\u0163iilor licen\u0163ei.
+
+# The following messages are used to tell the user how to run the installer from the command line.
+#
+# usage
+#  
+#   java -jar wlp-liberty-developers-core.jar [options] [installLocation]
+#
+# options
+#    < list of options and descriptions goes here >
+usage=Utilizare
+installLocation=loca\u0163ie de instalare
+options=Op\u0163iuni
+
+
+licenseOptionDescription=Prin alegerea op\u0163iunii "De acord" de mai jos, sunte\u0163i de acord cu termenii acordului de licen\u0163\u0103 \u015ficu termenii non-IBM, dac\u0103 se aplic\u0103. \
+Dac\u0103 nu sunte\u0163i de acord, selecta\u0163i "Nu sunt de acord".
+
+licenseeAcknowledges=Licen\u0163iatul \u00een\u0163elege \u015fi este de acord c\u0103 tot codul (inclusiv caracteristici, func\u0163ii sau alte desc\u0103rc\u0103ri de software) desc\u0103rcat de Licen\u0163iat \u00een leg\u0103tur\u0103 cu acesta ("Codul") va fi folosit cu o versiune licen\u0163iat\u0103 a programului IBM WebSphere Application Server Liberty ("Programul"). \
+Licen\u0163iatul \u00een\u0163elege \u015fi este de acord c\u0103 utilizarea Codului se supune termenilor acordurilor de licen\u0163\u0103 care guverneaz\u0103 utilizarea Programului (i.e., Acordul interna\u0163ional de licen\u0163\u0103 program, Acordul interna\u0163ional de licen\u0163\u0103 pentru programe negarantate, Acordul interna\u0163ional de licen\u0163\u0103 pentru evaluarea programelor, Acordul interna\u0163ional de licen\u0163\u0103 pentru eliberarea devreme a programelor), inclusiv, dac\u0103 se aplic\u0103, orice Informa\u0163ii de licen\u0163\u0103.
+
+extractPrompt=Directorul \u0163int\u0103 pentru fi\u015fierele de produs?
+extractSuccess=S-au extras cu succes toate fi\u015fierele produsului.
+extractLicenseSuccess=S-au aplicat cu succes fi\u015fierele de licen\u0163\u0103.
+licenseNotFound=E\u015fuare la g\u0103sirea fi\u015fierelor acordului de licen\u0163\u0103.
+
+promptAgreement=Ap\u0103sa\u0163i Enter pentru a afi\u015fa termenii licen\u0163ei acum, sau ''x'' pentru a-i ocoli.
+promptInfo=Ap\u0103sa\u0163i Enter pentru a afi\u015fa informa\u0163ii suplimentare de licen\u0163\u0103 acum, sau ''x'' pentru a le ocoli.
+
+#
+# {0} [1]
+# {1} [2]
+# 
+licensePrompt=Selecta\u0163i {0} Sunt de acord, sau {1} Nu sunt de acord: 
+
+#
+# {0} IBM WebSphere Application Server Network Deployment Version 8.5 (EXAMPLE)
+# {1} International Program License Agreement
+#
+licenseStatement=\u00cenainte de a putea utiliza, extrage sau instala {0}, trebuie s\u0103 accepta\u0163i termenii {1} \u015fi informa\u0163iile de licen\u0163\u0103 suplimentare. \
+V\u0103 rug\u0103m s\u0103 citi\u0163i cu aten\u0163ie urm\u0103toarele acorduri de licen\u0163\u0103.
+
+#
+# {0} --viewLicenseAgreement
+# 
+showAgreement=Acordul de licen\u0163\u0103 se poate vedea separat utiliz\u00e2nd op\u0163iunea {0}. 
+
+#
+# {0} --viewLicenseInfo
+# 
+showInformation=Informa\u0163ii de licen\u0163\u0103 suplimentare se pot vizualiza separat utiliz\u00e2nd op\u0163iunea {0}.
+
+#
+# {0} --acceptLicense
+# 
+licenseAccepted=Argumentul {0} a fost g\u0103sit. Acest lucru indic\u0103 faptul c\u0103 a\u0163i acceptat termenii acordului de licen\u0163\u0103.
+
+#
+# {0} c:/full/directory/path
+# 
+extractInstruction=Introduce\u0163i directorul pentru fi\u015fierele de produs sau l\u0103sa\u0163i gol pentru a accepta valoarea implicit\u0103.
+extractLicenseInstruction=Specifica\u0163i directorul arhivei de modernizare licen\u0163\u0103 sau ap\u0103sa\u0163i Enter pentru a accepta directorul implicit.
+extractDefault=Directorul \u0163int\u0103 implicit este {0}
+extractDirectoryExists=Directorul exist\u0103 deja: {0}
+extractDirectoryError=E\u015fuare la crearea directorului: {0}
+extractDirectory=Extragere fi\u015fiere \u00een {0}
+
+#
+# {0} c:/full/directory/path/fileName
+# 
+extractFileError=E\u015fuare la extragere {0}
+chmodError=Nu s-au putut modifica permisiunile scriptului: {0}.
+extractFileExists=Fi\u015fierul exist\u0103 deja: {0}
+
+#
+# {0} exception message text
+# 
+inputException=Intrare pentru procesare excep\u0163ie: {0}
+
+invalidInstall=Directorul {0} nu este un director de instalare valid Liberty.
+invalidVersion=Instalarea produsului specificat este \u00een versiunea {0} \u015fi addon-ul acestui produs se aplic\u0103 numai versiunii {1}.
+invalidEdition=Instalarea de produs specificat\u0103 este edi\u0163ia {0} \u015fi acest add-on de produs se aplic\u0103 numai edi\u0163iilor {1}.
+invalidLicense=Instalarea produsului specificat are o licen\u0163\u0103 {0} \u015fi acest add-on de produs este pentru un produs cu licen\u0163a {1}.
+invalidInstallType=Instalarea produsului specificat a fost instalat\u0103 utiliz\u00e2nd IBM Installation Manager, v\u0103 rug\u0103m s\u0103 utiliza\u0163i IBM Installation Manager pentru a instala orice addon-uri de produs.
+invalidOption=Op\u0163iunea {0} nu este recunoscut\u0103.
+
+#
+# {0} name of the addon
+# {1} list of features that are missing
+# {2} the install directory on which we are trying to install
+#
+missingRequiredFeatures=Nu se poate instala addon-ul de produs {0}. Instalarea produsului specificat la {2} nu are urm\u0103toarele caracteristicii: {1}. 
+
+allFeaturesAlreadyPresent=Addon-ul de produs {0} nu are nevoie s\u0103 fie instalat. Instalarea produsului specificat {2} are deja toate caracteristicile addon-ului: {1}.
+
+#
+# {0} the install directory
+# {1} the list of addons installed into that installed
+#
+addonsInstalled=Instalarea produsului la {0} are urm\u0103toarele addon-uri instalate: {1}.
+
+#
+# {0} the install directory
+# {1} the list of supported features by that installation
+#
+featuresInstalled=Instalarea de produs la {0} suport\u0103 urm\u0103toarele caracteristici: {1}.
+
+#
+# {0} name of the addon
+# {1} the features included in the addon
+#
+addonFeatures=Acest addon de produs {0} con\u0163ine urm\u0103toarele caracteristici: {1}.
+
+helpMakeBackups=\u00cenainte de a rula aceast\u0103 unealt\u0103, poate fi necesar s\u0103 realiza\u0163i o copie de rezerv\u0103 pentru unele fi\u015fiere. V\u0103 rug\u0103m s\u0103 urma\u0163i instruc\u0163iunile din sec\u0163iunea ''Indica\u0163ii pentru aplicarea corec\u0163iei'' a fi\u015fierului readme.txt.
+helpInstallLocation=Loca\u0163ia absolut\u0103 sau relativ\u0103 a directorului de instalare pentru profilul Liberty.
+helpSupressInfo=Singurele mesaje de ie\u015fire din fi\u015fierul JAR vor fi mesaje de eroare sau de confirmare a finaliz\u0103rii aplic\u0103rii corec\u0163iei.
+
+# {0} is the Liberty install directory, according to the user.
+couldNotFindLiberty=Nu a putut fi g\u0103sit directorul {0}.
+
+# {0} is the Liberty install directory.
+patchingStarted=Acum se aplic\u0103 corec\u0163ia \u00een directorul de instalare Liberty {0}.
+patchingStartedWithFix=Aplicarea corec\u0163iei {1} la directorul de instalare Liberty la {0} acum.
+
+patchingSuccessful=Corec\u0163ia a fost aplicat\u0103 cu succes.
+patchingSuccessfulWithFix=Corec\u0163ie {1} a fost aplicat\u0103 cu succes.
+
+patchingNotNeeded=Corec\u0163ia a fost deja aplicat\u0103 pentru directorul de instalare Liberty la {0}.
+patchingNotNeededWithFix=Corec\u0163ia {1} a fost deja aplicat\u0103 directorului de instalare Liberty la {0}.
+
+patchingNotApplicable=Nici una dintre caracteristicile \u00eembun\u0103t\u0103\u0163ite de corec\u0163ie nu sunt prezente \u00een directorul de instalare Liberty la {0}.
+patchingNotApplicableWithFix=Nici una dintre caracteristicile \u00eembun\u0103t\u0103\u0163ite de corec\u0163ia {1} nu sunt prezente \u00een directorul de instalare Liberty la {0}.
+
+invalidPatch=Nu a putut fi citit con\u0163inutul sau corec\u0163ia. Se renun\u0163\u0103 la corec\u0163ie.
+invalidPatchWithFix=Nu s-au putut citi con\u0163inuturile corec\u0163iei {0}. Se renun\u0163\u0103 la corec\u0163ie.
+
+# {0} directory location does not exist and cannot be created.
+noWriteAccess=Nu a putut fi g\u0103sit sau creat directorul {0}. Se renun\u0163\u0103 la corec\u0163ie.
+noWriteAccessWithFix=Nu a putut fi g\u0103sit sau creat directorul {0}. Renun\u0163area la instalarea corec\u0163iei {1}.
+
+restoreBackupsNeeded=Aplicarea corec\u0163iei a e\u015fuat \u015fi trebuie s\u0103 restaura\u0163i instalarea Liberty anterioar\u0103. Urma\u0163i instruc\u0163iunile din sec\u0163iunea ''Indica\u0163ii pentru \u00eenl\u0103turarea corec\u0163iei'' a fi\u015fierului readme.txt. Re\u0163ine\u0163i c\u0103 anumite fi\u015fiere pe care vi se cere s\u0103 le \u015fterge\u0163i \u00een aceste instruc\u0163iuni este posibil s\u0103 nu fi fost create.
+restoreBackupsNeededWithFix=Corec\u0163ia {1} nu a fost aplicat\u0103 cu succes \u015fi trebuie s\u0103 restaura\u0163i instalarea Liberty anterioar\u0103. Urma\u0163i instruc\u0163iunile din sec\u0163iunea ''Indica\u0163ii pentru \u00eenl\u0103turarea corec\u0163iei'' a fi\u015fierului readme.txt. Re\u0163ine\u0163i c\u0103 anumite fi\u015fiere pe care vi se cere s\u0103 le \u015fterge\u0163i \u00een aceste instruc\u0163iuni este posibil s\u0103 nu fi fost create.
+
+noRestoreNeeded=De\u015fi aplicarea corec\u0163iei a e\u015fuat, nu trebuie s\u0103 restaura\u0163i sau s\u0103 \u015fterge\u0163i niciun fi\u015fier.
+noRestoreNeededWithFix=De\u015fi corec\u0163ie {1} nu a fost aplicat\u0103 cu succes, nu trebuie s\u0103 restaura\u0163i sau s\u0103 \u015fterge\u0163i fi\u015fiere.
+
+# {0} is a file's location
+replacingFile=\u00cenlocuire fi\u015fier \u00een ''{0}''.
+
+patchFailed=Corec\u0163ia nu a putut fi aplicat\u0103 cu succes.
+
+# This message was written speculatively and is sadly not what we need. Use addOnNeedsIFixes instead.
+addonsNeedsFix=Instalarea de produs la {0} a avut corec\u0163ii aplicate acesteia ce nu sunt incluse \u00een addon-ul de produs {1}. Aceste corec\u0163ii trebuiesc reaplicate deoarece addon-ul de produs nu include aceste corec\u0163ii. Caracteristicile afectate sunt: {2}
+
+# This message is terse because it was part of a 2000-character emergency translation. 
+addOnNeedsIFixes=Instalarea produsului la {0} a fost extins\u0103. Urm\u0103toarele corec\u0163ii trebuie reaplicate: {1}.  
+
+# This message is for the feature processing in the SelfExtraction code. 
+fileProcessingException=A fost aruncat\u0103 urm\u0103toarea excep\u0163ie la procesarea fi\u015fierului {0}: {1}
+
+#
+helpDownloadDependencies=Desc\u0103rcarea automat\u0103 a tuturor dependen\u0163elor externe.
+# {0} Space-separated list of URLs
+externalDepsInstruction=Acest pachet are dependen\u0163e pe urm\u0103toarele biblioteci externe: {0}
+
+#
+# {0} [1]
+# {1} [2]
+externalDepsPrompt=Dori\u0163i s\u0103 desc\u0103rca\u0163i automat aceste dependen\u0163e? Selecta\u0163i {0} Da (implicit), sau {1} Nu: 
+
+# {0} URL to download the file from, e.g. : http://url-for-download.com/path/to/file.jar
+# {1] Destination file to download the file to, eg c:/path/to/file/download-file.jar
+downloadFileError=A e\u015fuat desc\u0103rcarea fi\u015fierului la distan\u0163\u0103 de la {0} la {1}. 
+downloadingFileNotice=Desc\u0103rcarea fi\u015fierului la distan\u0163\u0103 de la {0} la {1}. 
+
+# {0} --verbose
+downloadingBeginNotice=Acum este disponibil\u0103 desc\u0103rcarea dependen\u0163elor externe - informa\u0163ii suplimentare dac\u0103 utiliza\u0163i op\u0163iunea {0}.
+
+# {0} Exception description
+readDepsError=A e\u015fuat citirea fi\u015fierului de metadate dependen\u0163e externe, cu excep\u0163ia {0}
+
+archiveContainsNoLicense=Acest fi\u015fier arhiv\u0103 nu con\u0163ine o licen\u0163\u0103.
+
+# {0} is a path to a directory
+targetUserDirectory=Directorul \u0163int\u0103 de utilizator este {0}
+
+#Used when the ifix installer subclass specified by the header in the fix manifest cannot be found/created/invoked.
+# {0} is the error detected, eg class not found, method not found, etc should only happen if the ifix is built incorrectly.
+invalidFixInstaller=S-a detectat o eroare intern\u0103 la execu\u0163ia programului de instalare de corec\u0163ie : {0}. Nu se poate aplica corec\u0163ia.
+
+#Used if the fix is built missing the required header that specifies the subclass to handle fix installation.
+# {0} is the missing header name.
+missingFixInstallerHeader=S-a detectat o eroare intern\u0103 la lipsa antetului corec\u0163iei {0}. Nu se poate aplica corec\u0163ia.
+
+#Used if the specified fix installer does not meet the interface requirement.
+# {0} is the bad fix class name
+badFixInstaller=Eroare intern\u0103, program de instalare corec\u0163ie defect {0}. Nu se poate aplica corec\u0163ia.
+
+#Used when the lpmf file inside the fix is unabled to be parsed.
+# {0} is the error reported parsing the lpmf
+invalidMetaDataFile=S-a detectat o eroare intern\u0103 la procesarea metadatelor de corec\u0163ie: {0}. Nu se poate aplica corec\u0163ia.
+
+#Cannot create the output log file.
+# {0} is the filename of the log that had the error, {1} is the error.
+unableToCreateFixLog=Nu se poate crea fi\u015fierului istoric de instalare corec\u0163ii {0} datorit\u0103 {1}. Nu se poate aplica corec\u0163ia. 
+
+#Used when the fix installer is unable to understand the content of a manifest contained in the fix.
+#{0} is the manifest with the issue, {1} is the error.
+invalidFixManifest=S-a detectat o eroare intern\u0103 la procesarea datelor manifest de corec\u0163ie {0} : {1}. Nu se poate aplica corec\u0163ia.
+
+#The update to the fingerprint could fail.. but the fix will have been applied.
+unableToUpdateFingerprint=Nu se poate actualiza amprenta serviciului datorit\u0103 {0}, corec\u0163ia nu a fost aplicat\u0103, v\u0103 rug\u0103m s\u0103 utiliza\u0163i --clean c\u00e2nd porni\u0163i serverul.
+
+#Updated not applicable message stating no files have been written.
+patchingNotApplicableNoChange=Nu a fost extras niciun con\u0163inut deoarece nu exist\u0103 nicio caracteristic\u0103 de potrivire \u00een runtime-ul {0}
+
+# {0} is the message from the exception that caused us to be unable to create a parser for reading the XML files
+ifixutils.unable.to.create.parser=A ap\u0103rut o eroare la citirea informa\u0163iilor iFix pentru instalarea curent\u0103. Mesajul excep\u0163iei este: {0}.
+# {0} is the path to a file that could not be parsed
+# {1} is the message from the exception that meant we couldn't read the file
+ifixutils.unable.to.read.file=A ap\u0103rut o excep\u0163ie la citirea fi\u015fierului {0}. Mesajul excep\u0163iei este: {1}.
+
+# {0} is the manifest file path and {1} is the exception message
+exception.reading.manifest=A survenit o excep\u0163ie n timpul citirii fi\u015fierului manifest {0}.  Excep\u0163ia: {1}
+
+# Platform utils messages
+ERROR_UNABLE_TO_SET_EXT_ATTR=Nu se pot seta atributele extinse {0} pe fi\u015fierele urm\u0103toare: {1}
+ERROR_UNABLE_TO_SET_EXECUTE_PERMISSIONS=Nu se poate seta permisiunea de executare pe urm\u0103toarele fi\u015fiere: {0}
+ERROR_UNABLE_TO_GET_UMASK=Nu se poate extrage setarea umask utiliz\u00e2nd comanda: {0}
+ERROR_INVALID_EXTATTR_PARMS=Parametrii {0} nu sunt valizi pentru comanda extattr.  Parametri valizi pentru comanda extattr sunt: [+alps] [-alps]
+ERROR_EXECUTING_COMMAND=A existat o eroare la rularea comenzii: {0}  Comanda a returnat cu codul de ie\u015fire {1} \u015fi mesajul de eroare: {2}
+ERROR_UNABLE_TO_LOCATE_COMMAND_EXE=Nu se poate localiza executabilul {0} dup\u0103 verificarea urm\u0103toarelor loca\u0163ii: {1}
+
+# java -jar messages 
+UNABLE_TO_FIND_PID=A e\u015fuat ob\u0163inerea ID-ului de Proces din procesul java -jar. Nu se poate \u015fterge directorul de extragere temporar {1} p\u00e2n\u0103 c\u00e2nd termina\u0163i manual procesul java -jar.
+
+UNABLE_TO_ATTACH_AGENT=Agentul Liberty Java nu a putut fi ata\u015fat. Acest server va rula dar nu poate realiza func\u0163ii care necesit\u0103 agentul Java, precum monitorizarea sau urm\u0103rirea. Excep\u0163ie: {0}
+
+UNABLE_TO_FIND_TOOLS_JAR=Agentul Liberty Java nu a putut fi ata\u015fat deoarece acest server utilizeaz\u0103 un JRE mai degrab\u0103 dec\u00e2t un Java SDK. Acest server va rula dar nu poate realiza func\u0163ii care necesit\u0103 agentul Java, precum monitorizarea sau urm\u0103rirea.
+
+UNABLE_TO_FIND_JAVA_AGENT=Agentul Liberty Java nu a putut fi localizat. Acest server va rula dar nu poate realiza func\u0163ii care necesit\u0103 agentul Java, precum monitorizarea sau urm\u0103rirea.
+
+# messages for LicenseSelfEctractor
+LICENSE_invalidInstall=Directorul {0} nu este o instalare Liberty valid\u0103. Specifica\u0163i directorul root al instal\u0103rii Liberty pe care vre\u0163i s\u0103 o moderniza\u0163i.
+LICENSE_invalidVersion=Licen\u0163a nu poate fi modernizat\u0103 deoarece instalarea de produs specificat\u0103 este la versiunea {0}, dar licen\u0163a nu poate fi modernizat\u0103 dec\u00e2t de la versiunea {1}.
+LICENSE_invalidEdition=Licen\u0163a nu poate fi modernizat\u0103 deoarece instalarea de produs specificat\u0103 este la edi\u0163ia {0} dar licen\u0163a nu poate fi modernizat\u0103 dec\u00e2t de la urm\u0103toarele edi\u0163ii: {1}
+LICENSE_invalidLicense=Licen\u0163a nu poate fi modernizat\u0103 deoarece instalarea de produs specificat\u0103 are o licen\u0163\u0103 {0} dar licen\u0163a nu poate fi moderniza dec\u00e2t produse cu o licen\u0163\u0103 {1}.
+LICENSE_invalidInstallType=Licen\u0163a nu poate fi modernizat\u0103 deoarece instalarea de produs specificat\u0103 a fost instalat\u0103 utiliz\u00e2nd IBM Installation Manager. Utiliza\u0163i IBM Installation Manager pentru a v\u0103 moderniza instalarea.
+
+# new messages for license upgrade and downgrade
+LICENSE_replace_invalidVersion=Licen\u0163a nu poate fi aplicat\u0103 deoarece instalarea de produs specificat\u0103 este la versiunea {0}, dar licen\u0163a nu poate fi aplicat\u0103 dec\u00e2t de la versiunea {1}.
+LICENSE_replace_invalidInstallType=Licen\u0163a nu poate fi aplicat\u0103 deoarece instalarea de produs specificat\u0103 a fost instalat\u0103 utiliz\u00e2nd IBM Installation Manager. Utiliza\u0163i IBM Installation Manager pentru a v\u0103 moderniza instalarea.
+
+LICENSE_replace_invalidEditonFeatures=Caracteristicile urm\u0103toare nu se aplic\u0103 la edi\u0163ia {0} \u015fi trebuie s\u0103 fie dezinstalate \u00eenainte de aplicarea licen\u0163ei: {1}\n\
+\n\
+Utiliza\u0163i urm\u0103toarea comand\u0103 pentru a dezinstala aceste caracteristici \u00eenainte de a aplica licen\u0163a pentru edi\u0163ia {2}: {3}
+
+LICENSE_downgrade_block_8557_low=Aceast\u0103 licen\u0163\u0103 poate fi aplicat\u0103 doar la o instalare la {0} sau superioar\u0103. Instalarea curent\u0103 este la {1}. Desc\u0103rca\u0163i \u015fi actualiza\u0163i la ultimul nivel \u015fi reaplica\u0163i licen\u0163a.

@@ -1,0 +1,296 @@
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME ws/code/ras/src/com/ibm/ws/logging/hpel/resources/LogViewerMessages.nlsprops
+#COMPONENTPREFIX CWTRA
+#COMPONENTNAMEFOR CWTRA WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+# Date Translation Comment - There are two types of date format strings in this properties file. 
+#
+# 1. The first is a date format string which is used  by Java. These date format strings should not be translated but
+# rearranged to represent the  date format convention appropriate for the locale.
+# For example, a Jan 31st date in the US is represented as 01/31/2011 or M/d/yy. In the case of a
+# locale where the day comes before the month, such as 31/01/2011, the string should be changed to d/M/yy. 
+#  The messages IDs CWTRA0001I, CWTRA0002I, CWTRA0003I, and CWTRA0073I
+# must have the strings remain in English - as they are used by the product. But the character order should be 
+# changed as needed to be locale appropriate.
+# 
+# 2. Date format strings in the file that need to be both translated and have characters rearranged per 
+# localization rules of the language being translated. These date strings will appear as-is and are
+# used to demonstrate to the user the date format expected by user input. 
+#
+# For example, a message id with the key M/d/yy will continue to be displayed as M/d/yy.  In another locale, such 
+# as Spanish, it needs to be considered that the month and day position will be swapped and characters might need
+# to be translated, as a US locale understands that y represents year while the spanish word for year is ano and y 
+# might not make sense to the user.  This applies to message ids CWTRA0074I and CWTRA0075I
+# -------------------------------------------------------------------------------------------------
+
+CWTRA0000E=Le r\u00e9pertoire du r\u00e9f\u00e9rentiel est introuvable.
+
+# Example output in the En_en locale is: 4/27/10
+# Note to translator, see Date Translation Comment above as this is type 1.
+CWTRA0001I=d/M/aa
+
+# Example output in the En_en locale is: April 27, 2010 1:30 A.M. CDT
+# Note to translator, see Date Translation Comment above as this is type 1.
+CWTRA0002I=d MMM, aaaa H:mm a z
+
+# Example output in the En_en locale is: 4/27/10 1:30:0:100 CDT
+# Note to translator, see Date Translation Comment above as this is type 1.
+CWTRA0003I=d/M/aa H:m:s:S z
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0004E=Impossible d'analyser la date/l'heure de d\u00e9but.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0005E=Impossible d'\u00e9crire \u00e0 l'emplacement du journal de sortie.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0006E=Impossible d'analyser la date/l'heure de fin.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0007I=Messages de LogViewer
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0008E=Impossible d'analyser l'ID d'unit\u00e9 d'ex\u00e9cution. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0009E=Impossible d'\u00e9crire \u00e0 l'emplacement du r\u00e9f\u00e9rentiel binaire export\u00e9.  V\u00e9rifiez que le r\u00e9pertoire sp\u00e9cifi\u00e9 est vide et qu'il est accessible en \u00e9criture.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0010I=Op\u00e9ration termin\u00e9e
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0013E=Impossible d''analyser le niveau {0}  
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0014I=Impossible d'utiliser l'environnement local d'origine des r\u00e9f\u00e9rentiels. Utilisation de l'environnement local par d\u00e9faut du syst\u00e8me. 
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0015I=Impossible d'\u00e9crire dans le fichier de sortie 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0016I=Ecriture de la sortie dans : 
+
+# -------------------------------------------------------------------------------------------------
+LVM_SelectServerPrompt=S\u00e9lectionnez un serveur
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0018I={0} enregistrements trait\u00e9s en {1} secondes ({2} enregistrements par seconde).
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0019E=Impossible d''analyser l''intervalle {0} : {1}.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0020I=Le r\u00e9pertoire sp\u00e9cifi\u00e9 ne contient pas de fichier journal ni de fichier de trace.  La surveillance de ce r\u00e9pertoire se poursuit.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0021E=Le r\u00e9pertoire sp\u00e9cifi\u00e9 ne contient pas de fichier journal ni de fichier de trace.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0022E=L''option {0} requiert {1} param\u00e8tre(s).  
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0023E=Argument inconnu : {0}
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0024E=L'argument -repositoryDir manque ou aucun r\u00e9f\u00e9rentiel HPEL n'a \u00e9t\u00e9 trouv\u00e9 \u00e0 cet emplacement.\n\t -repositoryDir est requis lorsque logViewer est appel\u00e9 en dehors du r\u00e9pertoire bin du profil.\n\t Si -repositoryDir ne d\u00e9signe pas un r\u00e9f\u00e9rentiel HPEL, cela signifie que la sp\u00e9cification\n\t est incorrecte ou que le r\u00e9f\u00e9rentiel n'a pas encore \u00e9t\u00e9 cr\u00e9\u00e9,\n\t peut-\u00eatre parce qu'HPEL n'est pas activ\u00e9 ou parce que le serveur\n\t n'a pas \u00e9t\u00e9 d\u00e9marr\u00e9 depuis l'activation d'HPEL.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0026E=Arguments de date non valides : -startDate suit -stopDate
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0027E=Arguments de niveau non valides : -minLevel est sup\u00e9rieur \u00e0 -maxLevel
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0028E=Format de sortie incorrect sp\u00e9cifi\u00e9 : {0}
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0029I=Utilisez l'option -help pour des informations sur la syntaxe.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0030I=Utilisation de {0} comme r\u00e9pertoire de r\u00e9f\u00e9rentiel. 
+
+# -------------------------------------------------------------------------------------------------
+#CWTRA0031I=LogViewer is used to output log data from the HPEL repository (group of common \nbinary log files) to a text file, console, or to a new HPEL repository. \n\n\By default, the LogViewer will output all records in the repository in basic \nformat.  Use options to control what is included in the LogViewer output, to format \nthe output, or to direct where the output is sent. 
+CWTRA0031I=LogViewer\nUtilisez la commande logViewer pour afficher, interroger et filtrer les r\u00e9f\u00e9rentiels de traces et de journaux HPEL. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0032I=Utilisation de {0} comme r\u00e9pertoire de r\u00e9f\u00e9rentiel.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0033I=logViewer.bat|sh [options]
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0034I=Options :\n\n-repositoryDir <directory name>\n\t Sp\u00e9cifie le chemin d'acc\u00e8s au r\u00e9pertoire du r\u00e9f\u00e9rentiel. Si vous voulez\n\t interroger simultan\u00e9ment les donn\u00e9es de trace et de journal, indiquez le\n\t chemin d'acc\u00e8s au r\u00e9pertoire parent qui contient \u00e0 la fois le r\u00e9pertoire des donn\u00e9es de\n\t trace et le r\u00e9pertoire des donn\u00e9es de journal. Si vous utilisez l'emplacement de r\u00e9f\u00e9rentiel \n\t par d\u00e9faut racine_profil/logs/serveur_applications/ et ex\u00e9cutez cet outil \u00e0 partir du r\u00e9pertoire\n\t bin du profil, cet argument est facultatif. L'outil interroge l'emplacement par d\u00e9faut\n\t si aucun emplacement n'est indiqu\u00e9. Si plusieurs serveurs d'applications existent dans\n\t ce profil avec des r\u00e9f\u00e9rentiels HPEL, vous \u00eates invit\u00e9 \u00e0 s\u00e9lectionner le r\u00e9f\u00e9rentiel\n\t des traces et des journaux du serveur \u00e0 afficher. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0035I=-outLog <nom_fichier>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0036I=\t Sp\u00e9cifie le nom de fichier dans lequel la sortie texte doit \u00eatre enregistr\u00e9e. Si vous\n\t n'indiquez pas cette information, la sortie texte est affich\u00e9e dans la console. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0037I=-startDate <date_heure>
+
+# -------------------------------------------------------------------------------------------------
+# Note to translator: Parms {0} and {1} will be substituted with values from CWTRA0074I and CWTRA0075I respectively, so please make sure that if CWTRA0074I and CWTRA0075I are translated, it is possible that H, m, s, S, and z will need to be translated as well.
+# see Date Translation Comment above as an example where translation might be required for type 2.
+CWTRA0038I=\t Sp\u00e9cifie la date \u00e0 partir de laquelle les entr\u00e9es de journal doivent \u00eatre extraites,\n\t ou la date et l''heure pour lesquelles les entr\u00e9es de journal doivent \u00eatre extraites.\n \t Vous pouvez sp\u00e9cifier une date uniquement ou une date et une heure.\n  \t Si vous ne sp\u00e9cifiez qu''une date, le syst\u00e8me consid\u00e8re que l''heure correspond \u00e0\n\t 00:00:00:000 pour votre fuseau horaire. Les dates doivent \u00eatre entr\u00e9es\n\t au format {0}. Les dates et les heures doivent \u00eatre indiqu\u00e9es au format\n\t {1}, o\u00f9 H est l''heure au format militaire, m correspond aux minutes,\n\t s correspond aux secondes, S correspond aux millisecondes et\n\t z est le fuseau horaire. Lorsque vous sp\u00e9cifiez l''heure avec cette option,\n\t utilisez des guillemets car le format de date et d''heure comporte\n\t des espaces.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0039I=\t Exemples : \n\t -startDate {0} \n\t -startDate "{1}"
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0040I=-stopDate <date_heure>
+
+# -------------------------------------------------------------------------------------------------
+# Note to translator: Parms {0} and {1} will be substituted with values from CWTRA0074I and CWTRA0075I respectively, so please make sure that if CWTRA0074I and CWTRA0075I are translated, it is possible that H, m, s, S, and z will need to be translated as well.
+# see Date Translation Comment above as an example where translation might be required for type 2.
+CWTRA0041I=\t Sp\u00e9cifie la date la plus r\u00e9cente \u00e0 partir de laquelle les entr\u00e9es de journal\n\t doivent \u00eatre extraites ou la date et l''heure pour lesquelles les entr\u00e9es de journal doivent \n\t \u00eatre extraites. Vous pouvez sp\u00e9cifier une date uniquement ou une date et une heure.\n  \t Si vous ne sp\u00e9cifiez qu''une date, le syst\u00e8me consid\u00e8re que l''heure correspond \u00e0\n\t 23:59:59:999 pour votre fuseau horaire.  Les dates doivent \u00eatre entr\u00e9es au format\n\t {0}. Les dates et les heures doivent \u00eatre indiqu\u00e9es au format\n\t {1}, o\u00f9 H est l''heure au format militaire, m correspond aux minutes,\n\t s correspond aux secondes, S correspond aux millisecondes et\n\t z est le fuseau horaire. Lorsque vous sp\u00e9cifiez l''heure avec cette option,\n\t utilisez des guillemets car le format de date et d''heure comporte\n\t des espaces.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0042I=\t Exemples : \n\t -stopDate {0} \n\t -stopDate "{1}"
+
+# Description of the -level option ----------------------------------------------------------------
+CWTRA0044I=\t Indique que LogViewer ne doit extraire que les entr\u00e9es de journal\n\t du niveau sp\u00e9cifi\u00e9. Si cette option est combin\u00e9e \u00e0 -minLevel ou -maxLevel, la ou les derni\u00e8res\n\t options sont utilis\u00e9es.
+
+# Description of the -minLevel option -------------------------------------------------------------
+CWTRA0046I=\t Indique que LogViewer ne doit pas afficher les entr\u00e9es de journal qui se\n\t trouvent sous le niveau sp\u00e9cifi\u00e9. Sp\u00e9cifiez un niveau pour extraire tous les messages qui se\n\t trouvent \u00e0 ce niveau et au-dessus de ce niveau.
+
+# Description of the -maxLevel option -------------------------------------------------------------
+CWTRA0048I=\t Indique que LogViewer ne doit pas afficher les entr\u00e9es de journal qui se trouvent \n\t au-dessus du niveau sp\u00e9cifi\u00e9. Si vous sp\u00e9cifiez un niveau, tous les messages qui se\n\t trouvent \u00e0 ce niveau et en-dessous sont extraits.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0049I=-format <basic | advanced | CBE-1.0.1>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0050I=\t Sp\u00e9cifie le format de sortie. Les formats basic, advanced et\n\t CBE-1.0.1 sont pris en charge. Si vous n'incluez pas ce param\u00e8tre, la sortie est pr\u00e9sent\u00e9e\n\t au format basique (basic). 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0051I=-tail [intervalle]
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0052I=\t Indique que logViewer doit surveiller en permanence les nouvelles entr\u00e9es \n\t d'enregistrement de journal de la sortie et du r\u00e9f\u00e9rentiel qui sont cr\u00e9\u00e9es. Vous pouvez indiquer\n\t un argument entier facultatif apr\u00e8s ce param\u00e8tre pour sp\u00e9cifier la fr\u00e9quence \u00e0 laquelle l'outil\n\t LogViewer doit interroger le r\u00e9f\u00e9rentiel pour savoir si de nouveaux enregistrements existent.\n \t Par d\u00e9faut, LogViewer interroge le r\u00e9f\u00e9rentiel  toutes les cinq secondes pour savoir si de nouveaux\n\t enregistrements existent. Si vous utilisez ce param\u00e8tre avec d'autres options de filtrage,\n\t seuls les nouveaux enregistrements correspondant aux crit\u00e8res de filtrage sont affich\u00e9s.\n 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0053I=-monitor [intervalle]
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0054I=\t Synonyme de -tail.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0055I=-includeLoggers <nom__consignateur>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0056I=\t Sp\u00e9cifie les consignateurs \u00e0 inclure dans la sortie. S\u00e9parez les entr\u00e9es\n\t par une virgule. Si cette option est utilis\u00e9e avec\n\t l'option -excludeLoggers et qu'un consignateur correspond dans les deux listes\n\t de noms de consignateur, l'entr\u00e9e la plus sp\u00e9cifique est utilis\u00e9e pour d\u00e9terminer si\n\t un consignateur est inclus ou exclu.  Ce sc\u00e9nario est illustr\u00e9 dans le dernier exemple ci-apr\u00e8s :\n\t tous les consignateurs com.ibm sont exclus sauf les consignateurs\n\t com.ibm.ws.config loggers.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0057I=\t Exemples : \n\t -includeLoggers SystemErr \n\t -includeLoggers "com.ibm.*,org.apache.struts.*" \n\t -includeLoggers "com.ibm.ws.config" -excludeLoggers "com.ibm.*"
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0058I=-excludeLoggers <noms_consignateur>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0059I=\t Sp\u00e9cifie les consignateurs \u00e0 exclure de la sortie. S\u00e9parez les entr\u00e9es\n\t par une virgule. Si cette option est utilis\u00e9e avec\n\t l'option -includeLoggers et qu'un consignateur correspond dans les deux listes\n\t de noms de consignateur, l'entr\u00e9e la plus sp\u00e9cifique est utilis\u00e9e pour d\u00e9terminer si\n\t un consignateur est inclus ou exclu.  Ce sc\u00e9nario est illustr\u00e9 dans le dernier exemple ci-apr\u00e8s :\n\t tous les consignateurs com.ibm sont exclus sauf les consignateurs\n\t com.ibm.ws.config loggers.
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0060I=\t Exemples : \n\t -excludeLoggers SystemErr \n\t -excludeLoggers "com.hp.*,org.apache.struts.*" \n\t -includeLoggers "com.ibm.ws.config" -excludeLoggers "com.ibm.*"
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0061I=-thread <thread_id>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0062I=\t Affiche les entr\u00e9es de journal \u00e0 partir d'une unit\u00e9 d'ex\u00e9cution sp\u00e9cifique.\n \t Cette option exclut les messages de journal qui n'ont pas \u00e9t\u00e9 cr\u00e9\u00e9s par l'ID d'unit\u00e9\n\t d'ex\u00e9cution que vous sp\u00e9cifiez. \n \t Remarque : sp\u00e9cifiez l'ID d'unit\u00e9 d'ex\u00e9cution au format hexad\u00e9cimal.
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0065I=-extractToNewRepository <nom_r\u00e9pertoire>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0066I=\t Extrait les enregistrements et \u00e9crit la sortie dans un nouveau r\u00e9f\u00e9rentiel binaire.\n \t Vous pouvez utiliser cette option avec d'autres options de filtrage afin de transf\u00e9rer \n\t un sous-ensemble des enregistrements de journal et de trace dans le nouveau r\u00e9f\u00e9rentiel.\n  \t Cette option utilise le chemin d'acc\u00e8s au r\u00e9pertoire dans lequel le nouveau r\u00e9f\u00e9rentiel \n\t doit \u00eatre \u00e9crit sous forme d'argument. Par cons\u00e9quent, le r\u00e9pertoire doit \u00eatre vide. \n \t Si le r\u00e9pertoire n'existe pas, il est cr\u00e9\u00e9. Toutefois, si des erreurs se produisent \n\t lors de la cr\u00e9ation du r\u00e9pertoire, il se peut que des r\u00e9pertoires superflus soient cr\u00e9\u00e9s.\n
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0067I=-listInstances
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0068I=\t R\u00e9pertorie les ID des instances de processus serveur disponibles\n\t pour une utilisation avec l'option -instance. Apr\u00e8s l'ex\u00e9cution de\n\t LogViewer avec l'option -listInstances, vous pouvez utiliser l'option\n\t -instance pour appeler LogViewer avec l'un des ID d'instance de processus\n\t serveur comme argument. Cette option ne traitant pas les enregistrements\n\t de journal ni les enregistrements de trace, les autres options\n\t sont toutes ignor\u00e9es lorsque vous la sp\u00e9cifiez. 
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0069I=-instance <ID_Instance>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0070I=\t Extrait les donn\u00e9es de journal et de trace pour un ID d'instance\n\t de processus serveur donn\u00e9. Ex\u00e9cutez LogViewer\n\t avec l'option -listInstances avant d'utiliser cette option pour obtenir\n\t un ID d'instance valide. Cette option est requise lors de l'affichage des donn\u00e9es\n\t de journal et de trace \u00e0 partir d'un environnement contenant des sous-processus,\n\t tel que le syst\u00e8me d'exploitation z/OS. Si cette option est combin\u00e9e avec\n\t -latestInstance, l'option -instance est ignor\u00e9e.
+
+# LogViewer command line heading for listinstances on z/OS
+CWTRA0071I=       ID d'instance                                                          Date de d\u00e9but
+
+# LogViewer command line heading for listinstances on distributed
+CWTRA0072I=ID d'instance                Date de d\u00e9but
+
+# Instance Start Date format
+CWTRA0073I=dd/MM/aa HH:mm:ss.SSS z
+
+# Example output in the En_en locale is: M/d/yy
+# Note to translator, see Date Translation Comment above as this is type 2.
+CWTRA0074I=d/M/aa
+
+# Example output in the En_en locale is: M/d/yy H:m:s:S z
+# Note to translator, see Date Translation Comment above as this is type 2.
+CWTRA0075I=d/M/aa H:m:s:S z
+
+NoLevelNameInCustomLevelsFile=Erreur de format dans {0}. Niveau {1} indiqu\u00e9. La valeur doit \u00eatre le nom du niveau.
+TooManyValuesInCustomLevelsFile=Erreur de format dans {0}. Niveau {1} indiqu\u00e9. La valeur "{2}" contient plus de {3} \u00e9l\u00e9ments.
+LevelIdTooBigInCustomLevelsFile=Erreur de format dans {0}. Niveau {1} indiqu\u00e9. Au moins l''une des valeurs {2} ou {3} doit correspondre \u00e0 un ID de niveau comportant un caract\u00e8re.
+NotIntegerKeyInCustomLevelsFile=Erreur de format dans {0}. La cl\u00e9 {1} doit \u00eatre un entier.
+SpecifiedCustomLevelsFileNotFound=Le fichier {0} contenant la sp\u00e9cification de niveau personnalis\u00e9 est introuvable.
+ErrorReadingCustomLevelsFile=Echec de la lecture du fichier {0} contenant la sp\u00e9cification de niveau personnalis\u00e9. Erreur : {1}
+SpecifiedCustomHeaderFileNotFound=Le fichier {0} contenant la sp\u00e9cification d''en-t\u00eate personnalis\u00e9 est introuvable.
+ErrorReadingCustomHeaderFile=Echec de la lecture du fichier {0} contenant la sp\u00e9cification d''en-t\u00eate personnalis\u00e9. Erreur : {1}
+
+ErrorUsingHeaderTimeZone=L''en-t\u00eate de journal contient une sp\u00e9cification de fuseau horaire incorrecte : {0}. Utilisation de la valeur par d\u00e9faut du syst\u00e8me \u00e0 la place.
+
+UnsupportedEncodingError=Le codage sp\u00e9cifi\u00e9 {0} n''est pas pris en charge sur cette machine JVM.
+
+# -------------------------------------------------------------------------------------------------
+LVM_ERROR_INSTANCEID=Impossible d'utiliser la valeur d'ID d'instance fournie pour l'option -instance.  Utilisez une des valeurs d'ID d'instance valides affich\u00e9es lorsque vous utilisez l'option -listInstances.
+
+
+# ------------------------------------------------------------------------------------------------- 
+LVM_HELP_LATESTINSTANCE=-latestInstance
+
+# -------------------------------------------------------------------------------------------------
+LVM_HELP_LATESTINSTANCE_DESCR=\t Extrait les donn\u00e9es de journal et de trace \u00e0 partir de l'instance de serveur\n\t la plus r\u00e9cente.  Si vous utilisez cette option avec l'option -instance, \n\t l'option -instance est ignor\u00e9e.
+
+
+# ------------------------------------------------------------------------------------------------- 
+LVM_HELP_MESSAGE=-message <message>
+
+# -------------------------------------------------------------------------------------------------
+LVM_HELP_MESSAGE_DESCR=\t Extrait uniquement les donn\u00e9es de journal et de trace dont la zone de message correspond\n\t au texte demand\u00e9. Utilisez un ast\u00e9risque (*) pour repr\u00e9senter une s\u00e9rie de caract\u00e8res \n\t ou un point d'interrogation (?) pour repr\u00e9senter un caract\u00e8re unique lorsque vous extrayez \n\t des donn\u00e9es de journal ou de trace.
+
+LVM_HELP_EXTENSIONS=-includeExtensions name[=valeur][,name[=valeur]]*
+
+LVM_HELP_EXTENSIONS_DESCR=\t Extrait les donn\u00e9es de journal et de trace avec un nom d'extension qui correspond\n\t au nom demand\u00e9 et une valeur d'extension qui correspond\n\t \u00e0 la valeur demand\u00e9e. Vous pouvez \u00e9galement utiliser cette option pour extraire les donn\u00e9es de journal et de trace \n\t avec un nom d'extension qui correspond au nom demand\u00e9 et une valeur \n\t d'extension qui correspond \u00e0 n'importe quelle valeur, si vous omettez la partie =valeur \n\t de l'option. S\u00e9parez les arguments name=valeur avec une virgule. \n\t D\u00e9finissez '==' (deux signes \u00e9gal) \u00e0 la place de'=' (un signe \u00e9gal) dans \n\t les cas o\u00f9 le nom ou la valeur doit contenir un signe \u00e9gal. \n\t Sp\u00e9cifiez ',,' (deux virgules) \u00e0 la place de ',' (une virgule) dans le cas o\u00f9 \n\t le nom ou la valeur doit contenir une virgule.
+
+LVM_HELP_ENCODING=-encoding <charset>
+
+LVM_HELP_ENCODING_DESCR=\t Indique le jeu de caract\u00e8res utilis\u00e9 par l'afficheur de journal pour la sortie de texte.
+
+#--------------------------------------------------------------------------------------------------
+LVM_HELP_SAMPLES_INTRO=Voici des exemples d'utilisation de l'afficheur de journal avec certaines des options \ndisponibles r\u00e9pertori\u00e9es ci-dessus.
+LVM_HELP_SAMPLE1= Pour extraire uniquement les entr\u00e9es de journal d'un r\u00e9f\u00e9rentiel pouvant contenir des entr\u00e9es de journal et de trace : \n\t logViewer.bat -minLevel DETAIL
+LVM_HELP_SAMPLE2= Pour extraire les entr\u00e9es de journal, avec un niveau minimum SEVERE, du consignateur com.my.company.name.MyClass \nentre le {0} et le {1} :\n\t logViewer.bat -startDate "{2}" -stopDate "{3}" \n\t-includeLoggers "com.my.company.name.MyClass"  -minLevel SEVERE
+LVM_HELP_SAMPLE3= Pour effectuer une sauvegarde du r\u00e9f\u00e9rentiel dans laquelle {1} contiendra une copie du \nr\u00e9f\u00e9rentiel existant \u00e0 partir du journal et des donn\u00e9es de trace du {0} : \n\t logViewer.bat -extractToNewRepository {1} -startDate "{2}"
+LVM_HELP_SAMPLE4= Pour afficher le journal et les entr\u00e9es de trace de votre propre code d'application (en supposant\nque les noms de consignateurs commencent tous par com.mycompany) : \n\t logViewer.bat -includeloggers com.mycompany.*

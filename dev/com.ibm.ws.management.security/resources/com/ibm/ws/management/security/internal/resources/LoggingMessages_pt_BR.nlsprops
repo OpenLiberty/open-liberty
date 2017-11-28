@@ -1,0 +1,27 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.management.security/resources/com/ibm/ws/management/security/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR WebSphere Management Security Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKX0000-CWWKX0099	
+
+MANAGEMENT_SECURITY_AUTHZ_FAILED=CWWKX0001A: A autoriza\u00e7\u00e3o falhou para o usu\u00e1rio {0} ao chamar a opera\u00e7\u00e3o de gerenciamento {1}. O usu\u00e1rio n\u00e3o tem acesso concedido a qualquer fun\u00e7\u00e3o necess\u00e1ria: {2}.
+MANAGEMENT_SECURITY_AUTHZ_FAILED.explanation=O usu\u00e1rio especificado n\u00e3o possui a autoriza\u00e7\u00e3o apropriada para acessar a opera\u00e7\u00e3o de gerenciamento especificada.
+MANAGEMENT_SECURITY_AUTHZ_FAILED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+ROLE_ENTRY_DUPLICATE=CWWKX0002E: Foi detectada uma entrada duplicada na liga\u00e7\u00e3o de fun\u00e7\u00e3o {0}. A entrada {1} duplicada \u00e9 {2}.
+ROLE_ENTRY_DUPLICATE.explanation=A entrada especificada j\u00e1 est\u00e1 definida para a liga\u00e7\u00e3o de fun\u00e7\u00e3o especificada. Entradas duplicadas n\u00e3o s\u00e3o suportadas.
+ROLE_ENTRY_DUPLICATE.useraction=Remova a entrada duplicada.

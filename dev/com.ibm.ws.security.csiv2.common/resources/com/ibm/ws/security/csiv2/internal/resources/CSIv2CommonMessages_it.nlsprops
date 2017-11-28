@@ -1,0 +1,194 @@
+###############################################################################
+# Copyright (c) 2014, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.common/resources/com/ibm/ws/security/csiv2/internal/resources/CSIv2CommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server CSIv2 Common
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9500 - CWWKS9599
+
+# Client CSIv2 Configuration related messages CWWKS9500 - CWWKS9509
+# -------------------------------------------------------------------------------------------------
+
+# Server CSIv2 Configuration related messages CWWKS9510 - CWWKS9519
+# -------------------------------------------------------------------------------------------------
+
+
+# Client CSIv2 runtime related messages CWWKS9520 - CWWKS9579
+# -------------------------------------------------------------------------------------------------
+CSIv2_CLIENT_COMPATIBLE_CHECK_FAILED=CWWKS9520E: Si \u00e8 verificata una mancata corrispondenza tra il client CSIv2 e le politiche di sicurezza del server. \n {0}
+CSIv2_CLIENT_COMPATIBLE_CHECK_FAILED.explanation=Sono presenti incompatibilit\u00e0 tra il client CSIv2 specificato e le politiche di sicurezza del server.  
+CSIv2_CLIENT_COMPATIBLE_CHECK_FAILED.useraction=Assicurarsi che il client CSIv2 e le politiche di sicurezza del server siano compatibili.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_SUPPORTS_FAILED=CWWKS9521E: La politica di sicurezza del client ha i livelli trasporto, autenticazione e attributo configurati per <{0}> con <{1}> come supportato nel file configuration e la politica di sicurezza del server \u00e8 configurata con <{2}> come obbligatorio. 
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_SUPPORTS_FAILED.explanation=Sono presenti incompatibilit\u00e0 nei livelli trasporto, autenticazione e/o attributo tra la politica di sicurezza supportata dal client CSIv2 specificato e la politica di sicurezza obbligatoria del server nel file server.xml nell'ambiente del server delle applicazioni o nel file client.xml nell'ambiente del client dell'applicazione.  
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_SUPPORTS_FAILED.useraction=Assicurarsi che la sicurezza del client CSIv2 per i livelli trasporto, autenticazione e/o attributo abbia una politica di sicurezza obbligatoria del server e supportata compatibile.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_SUPPORTS_NO_AUTH_FAILED=CWWKS9522E: La politica di sicurezza del client ha i livelli trasporto e attributo configurati con <{0}> come supportato nel file di configurazione e la politica di sicurezza del server \u00e8 configurata con <{1}> come obbligatorio. 
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_SUPPORTS_NO_AUTH_FAILED.explanation=Sono presenti incompatibilit\u00e0 nei livelli trasporto e/o attributo tra la politica di sicurezza supportata dal client CSIv2 specificato e la politica di sicurezza obbligatoria del server nel file server.xml nell'ambiente del server delle applicazioni o nel file client.xml nell'ambiente del client dell'applicazione.  
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_SUPPORTS_NO_AUTH_FAILED.useraction=Assicurarsi che la sicurezza del client CSIv2 per i livelli trasporto e/o attributo abbia una politica di sicurezza obbligatoria del server e supportata compatibile.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_REQUIRES_FAILED=CWWKS9523E: La politica di sicurezza del client ha i livelli trasporto, autenticazione e attributo configurati per <{0}> con <{1}> come obbligatorio nel file di configurazione e la politica di sicurezza del server \u00e8 configurata con <{2}> come supportato. 
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_REQUIRES_FAILED.explanation=Sono presenti incompatibilit\u00e0 nei livelli trasporto, autenticazione e/o attributo tra la politica di sicurezza obbligatoria dal client CSIv2 specificato e la politica di sicurezza supportata del server nel file server.xml nell'ambiente del server delle applicazioni o nel file client.xml nell'ambiente del client dell'applicazione.  
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_REQUIRES_FAILED.useraction=Assicurarsi che la sicurezza del client CSIv2 per i livelli trasporto, autenticazione e/o attributo abbia una politica di sicurezza supportata del server e obbligatoria compatibile.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_REQUIRES_NO_AUTH_FAILED=CWWKS9524E: La politica di sicurezza del client ha i livelli trasporto e attributo configurati con <{0}> come obbligatorio nel file di configurazione e la politica di sicurezza del server \u00e8 configurata con <{1}> come supportato. 
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_REQUIRES_NO_AUTH_FAILED.explanation=Sono presenti incompatibilit\u00e0 nei livelli trasporto e/o attributo tra la politica di sicurezza obbligatoria dal client CSIv2 specificato e la politica di sicurezza supportata del server nel file server.xml nell'ambiente del server delle applicazioni o nel file client.xml nell'ambiente del client dell'applicazione.  
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_REQUIRES_NO_AUTH_FAILED.useraction=Assicurarsi che la sicurezza del client CSIv2 per i livelli trasporto e/o attributo abbia una politica di sicurezza supportata del server e obbligatoria compatibile.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_SUPPORTS_FAILED=CWWKS9525E: La politica di sicurezza del client ha il livello trasporto configurato per {0} con <{1}> come supportato nel file di configurazione e la politica di sicurezza del server \u00e8 configurata con <{2}> come obbligatorio. 
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_SUPPORTS_FAILED.explanation=Sono presenti incompatibilit\u00e0 nei livelli trasporto e/o attributo tra la politica di sicurezza supportata dal client CSIv2 specificato e la politica di sicurezza obbligatoria del server nel file server.xml nell'ambiente del server delle applicazioni o nel file client.xml nell'ambiente del client dell'applicazione.  
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_SUPPORTS_FAILED.useraction=Assicurarsi che la sicurezza del client CSIv2 per il livello trasporto abbia una politica di sicurezza obbligatoria del server e supportata compatibile.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_SUPPORTS_NO_AUTH_FAILED=CWWKS9526E: La politica di sicurezza del client ha il livello trasporto configurato con <{0}> come supportato nel file di configurazione e la politica di sicurezza del server \u00e8 configurata con <{1}> come obbligatorio. 
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_SUPPORTS_NO_AUTH_FAILED.explanation=Sono presenti incompatibilit\u00e0 nel livello di trasporto tra la politica di sicurezza supportata dal client CSIv2 specificato e la politica di sicurezza obbligatoria del server nel file server.xml nell'ambiente del server delle applicazioni o nel file client.xml nell'ambiente del client dell'applicazione.  
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_SUPPORTS_NO_AUTH_FAILED.useraction=Assicurarsi che la sicurezza del client CSIv2 per il livello trasporto abbia una politica di sicurezza obbligatoria del server e supportata del client compatibile.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_REQUIRES_FAILED=CWWKS9527E: La politica di sicurezza del client ha il livello trasporto configurato per {0} con <{1}> come obbligatorio nel file di configurazione e la politica di sicurezza del server \u00e8 configurata con <{2}> come supportato. 
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_REQUIRES_FAILED.explanation=Sono presenti incompatibilit\u00e0 nel livello di trasporto tra la politica di sicurezza obbligatoria dal client CSIv2 specificato e la politica di sicurezza supportata del server nel file server.xml nell'ambiente del server delle applicazioni o nel file client.xml nell'ambiente del client dell'applicazione.  
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_REQUIRES_FAILED.useraction=Assicurarsi che la sicurezza del client CSIv2 per il livello trasporto abbia una politica di sicurezza supportata del server e obbligatoria compatibile.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_REQUIRES_NO_AUTH_FAILED=CWWKS9528E: La politica di sicurezza del client ha il livello trasporto configurato con <{0}> come obbligatorio nel file di configurazione e la politica di sicurezza del server \u00e8 configurata con <{1}> come supportato. 
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_REQUIRES_NO_AUTH_FAILED.explanation= Sono presenti incompatibilit\u00e0 nel livello di trasporto tra la politica di sicurezza obbligatoria dal client CSIv2 specificato e la politica di sicurezza supportata del server nel file server.xml nell'ambiente del server delle applicazioni o nel file client.xml nell'ambiente del client dell'applicazione. 
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_REQUIRES_NO_AUTH_FAILED.useraction=Assicurarsi che la sicurezza del client CSIv2 per il livello trasporto abbia una politica di sicurezza supportata del server e obbligatoria compatibile.
+	
+# Do not translate Supported and Required	
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_SUPPORTS_FAILED=CWWKS9529E: La politica di sicurezza del client ha il livello attributo configurato per {0} con <{1}> come supportato nel file di configurazione e la politica di sicurezza del server \u00e8 configurata con <{2}> come obbligatorio. 
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_SUPPORTS_FAILED.explanation=Sono presenti incompatibilit\u00e0 nel livello attributo tra la politica di sicurezza supportata dal client CSIv2 specificato e la politica di sicurezza obbligatoria del server nel file server.xml nell'ambiente del server delle applicazioni o nel file client.xml nell'ambiente del client dell'applicazione.  
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_SUPPORTS_FAILED.useraction=Assicurarsi che la sicurezza del client CSIv2 per il livello trasporto abbia una politica di sicurezza obbligatoria del server e supportata compatibile.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_SUPPORTS_NO_AUTH_FAILED=CWWKS9530E: La politica di sicurezza del client ha il livello attributo configurato con <{0}> come supportato nel file di configurazione e la politica di sicurezza del server \u00e8 configurata con <{1}> come obbligatorio. 
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_SUPPORTS_NO_AUTH_FAILED.explanation=Sono presenti incompatibilit\u00e0 nel livello attributo tra la politica di sicurezza supportata dal client CSIv2 specificato e la politica di sicurezza obbligatoria del server nel file server.xml nell'ambiente del server delle applicazioni o nel file client.xml nell'ambiente del client dell'applicazione.  
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_SUPPORTS_NO_AUTH_FAILED.useraction=Assicurarsi che la sicurezza del client CSIv2 per il livello attributo abbia una politica di sicurezza obbligatoria del server e supportata compatibile.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_REQUIRES_FAILED=CWWKS9531E: La politica di sicurezza del client ha il livello attributo configurato per {0} con <{1}> come obbligatorio nel file di configurazione e la politica di sicurezza del server \u00e8 configurata con <{2}> come supportato. 
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_REQUIRES_FAILED.explanation=Sono presenti incompatibilit\u00e0 nel livello attributo tra la politica di sicurezza obbligatoria dal client CSIv2 specificato e la politica di sicurezza supportata del server nel file server.xml nell'ambiente del server delle applicazioni o nel file client.xml nell'ambiente del client dell'applicazione.  
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_REQUIRES_FAILED.useraction=Assicurarsi che la sicurezza del client CSIv2 per il livello attributo abbia una politica di sicurezza supportata del server e obbligatoria compatibile.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_REQUIRES_NO_AUTH_FAILED=CWWKS9532E: La politica di sicurezza del client ha il livello attributo configurato con <{0}> come obbligatorio nel file di configurazione e la politica di sicurezza del server \u00e8 configurata con <{1}> come supportato. 
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_REQUIRES_NO_AUTH_FAILED.explanation=Sono presenti incompatibilit\u00e0 nel livello attributo tra la politica di sicurezza obbligatoria dal client CSIv2 specificato e la politica di sicurezza supportata del server nel file server.xml nell'ambiente del server delle applicazioni o nel file client.xml nell'ambiente del client dell'applicazione.  
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_REQUIRES_NO_AUTH_FAILED.useraction=Assicurarsi che la sicurezza del client CSIv2 per il livello attributo abbia una politica di sicurezza supportata del server e obbligatoria compatibile.
+
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_IDENTITY_ASSERTION_FAILED=CWWKS9533E: La politica di sicurezza del client ha il livello attributo configurato per <{0}> con il tipo di asserzione identit\u00e0 <{1}> nel file di configurazione e la politica di sicurezza del server \u00e8 configurata con il tipo di asserzione identit\u00e0 <{2}>. 
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_IDENTITY_ASSERTION_FAILED.explanation=Sono presenti incompatibilit\u00e0 nell'asserzione identit\u00e0 livello attributo tra le politiche di sicurezza client e server nel file server.xml nell'ambiente del server delle applicazioni o nel file client.xml nell'ambiente del client dell'applicazione.  
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_IDENTITY_ASSERTION_FAILED.useraction=Assicurarsi che la sicurezza del client CSIv2 per il livello attributo abbia un tipo di asserzione identit\u00e0 compatibile.
+
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_IDENTITY_ASSERTION_NO_AUTH_FAILED=CWWKS9534E: La politica di sicurezza del client ha il livello attributo configurato con il tipo di asserzione identit\u00e0 <{0}> nel file di configurazione e la politica di sicurezza del server \u00e8 configurata con il tipo di asserzione identit\u00e0 <{1}>. 
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_IDENTITY_ASSERTION_NO_AUTH_FAILED.explanation=Sono presenti incompatibilit\u00e0 nell'asserzione identit\u00e0 livello attributo tra le politiche di sicurezza client e server nel file server.xml nell'ambiente del server delle applicazioni o nel file client.xml nell'ambiente del client dell'applicazione.  
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_IDENTITY_ASSERTION_NO_AUTH_FAILED.useraction=Assicurarsi che la politica di sicurezza del client CSIv2 per il livello attributo abbia un tipo di asserzione identit\u00e0 compatibile.
+
+CSIv2_CLIENT_COMPATIBLE_AUTH_MECHANISMS_FAILED=CWWKS9535E: La politica di sicurezza del client ha il livello di autenticazione configurato con il meccanismo {0} nel file di configurazione e la politica di sicurezza del server configurata con il meccanismo {1}. 
+CSIv2_CLIENT_COMPATIBLE_AUTH_MECHANISMS_FAILED.explanation=Sono presenti incompatibilit\u00e0 nel meccanismo al livello di autenticazione tra le politiche di sicurezza client e server nel file server.xml nell'ambiente del server delle applicazioni o nel file client.xml nell'ambiente del client dell'applicazione.  
+CSIv2_CLIENT_COMPATIBLE_AUTH_MECHANISMS_FAILED.useraction=Assicurarsi che la politica di sicurezza del client CSIv2 per il livello autenticazione abbia un meccanismo compatibile.
+
+CSIv2_CLIENT_COMPATIBLE_AUTTH_CLIENT_DISABLED_FAILED=CWWKS9536E: Il livello di autenticazione della politica di sicurezza del client \u00e8 disabilitato nel file di configurazione e il livello di autenticazione della politica di sicurezza del server \u00e8 configurato con il meccanismo {0}. 
+CSIv2_CLIENT_COMPATIBLE_AUTTH_CLIENT_DISABLED_FAILED.explanation=Sono presenti incompatibilit\u00e0 nel meccanismo al livello di autenticazione tra le politiche di sicurezza client e server nel file server.xml nell'ambiente del server delle applicazioni o nel file client.xml nell'ambiente del client dell'applicazione.  
+CSIv2_CLIENT_COMPATIBLE_AUTTH_CLIENT_DISABLED_FAILED.useraction=Assicurarsi che la politica di sicurezza del client CSIv2 per il livello autenticazione abbia un meccanismo compatibile.
+
+CSIv2_CLIENT_COMPATIBLE_AUTH_SERVER_DISABLED_FAILED=CWWKS9537E: La politica di sicurezza del client ha il livello di autenticazione configurato con il meccanismo {0} nel file di configurazione e il livello di autenticazione della politica di sicurezza del server \u00e8 disabilitato. 
+CSIv2_CLIENT_COMPATIBLE_AUTH_SERVER_DISABLED_FAILED.explanation=Sono presenti incompatibilit\u00e0 nel meccanismo al livello di autenticazione tra le politiche di sicurezza client e server nel file server.xml nell'ambiente del server delle applicazioni o nel file client.xml nell'ambiente del client dell'applicazione.  
+CSIv2_CLIENT_COMPATIBLE_AUTH_SERVER_DISABLED_FAILED.useraction=Assicurarsi che la politica di sicurezza del client CSIv2 per il livello autenticazione abbia un meccanismo compatibile.
+
+CSIv2_CLIENT_POLICY_NULL_ERROR=CWWKS9538E: La politica di sicurezza del client \u00e8 null per l''id richiesta: {0}.
+CSIv2_CLIENT_POLICY_NULL_ERROR.explanation= La politica di sicurezza del client CSIv2 non \u00e8 definita nel file di configurazione.
+CSIv2_CLIENT_POLICY_NULL_ERROR.useraction= L'utente potrebbe dover definire la politica di sicurezza del client, come da requisito.
+ 
+CSIv2_SERVER_UNEXPECTED_MSG_ERROR=CWWKS9539E: Il server ha ricevuto un messaggio di CSIv2 imprevisto {0} dal client per l''ID richiesta {1}.
+CSIv2_SERVER_UNEXPECTED_MSG_ERROR.explanation= Il client ha inviato un messaggio CSIv2 che solo un server deve inviare come risposta.
+CSIv2_SERVER_UNEXPECTED_MSG_ERROR.useraction= Non sono richieste azioni.
+ 
+CSIv2_SERVER_CONFIG_NULL_ERROR=CWWKS9540E: Nessuna configurazione client trovata nell''id richiesta della politica di sicurezza del client: {0}.
+CSIv2_SERVER_CONFIG_NULL_ERROR.explanation= La politica di sicurezza del server CSIv2 non \u00e8 definita nel file di configurazione.
+CSIv2_SERVER_CONFIG_NULL_ERROR.useraction= L'utente potrebbe dover definire la configurazione di sicurezza del server, come da requisito.
+
+CSIv2_NO_SECURITY_CONTEXT_FOUND_ERROR=CWWKS9541E: Nessun contesto del servizio di sicurezza trovato per l''ID richiesta {0}.
+CSIv2_NO_SECURITY_CONTEXT_FOUND_ERROR.explanation= L'utente non ha definito un contesto di sicurezza nel server o nel client.
+CSIv2_NO_SECURITY_CONTEXT_FOUND_ERROR.useraction= L'utente potrebbe dover definire il contesto di sicurezza sia nel server che nel client.  
+
+CSIv2_CLIENT_UNEXPECTED_EXCEPTION_ERROR=CWWKS9542E: Si \u00e8 verificata un''eccezione imprevista durante il tentativo di inviare una richiesta CSIv2 in uscita per l''ID richiesta {0}. Il messaggio di eccezione \u00e8 {1}.
+CSIv2_CLIENT_UNEXPECTED_EXCEPTION_ERROR.explanation= Si \u00e8 verificata un'eccezione imprevista durante il tentativo di inviare una richiesta CSIv2 in uscita.
+CSIv2_CLIENT_UNEXPECTED_EXCEPTION_ERROR.useraction= Controllare i log per ulteriori informazioni sulla causa dell'eccezione.
+
+CSIv2_SERVER_DOES_NOT_SUPPORT_STATEFUL_ERROR=CWWKS9543E: Il CSIv2 client ha richiesto una sessione con stato con ID contesto {0} per l''ID richiesta {1}, ma il server non supporta le sessioni con stato.
+CSIv2_SERVER_DOES_NOT_SUPPORT_STATEFUL_ERROR.explanation= Non \u00e8 previsto che il server riceva un messaggio CompleteEstablishContext. 
+CSIv2_SERVER_DOES_NOT_SUPPORT_STATEFUL_ERROR.useraction= Non sono richieste azioni.
+
+CSIv2_SERVER_UNEXPECTED_EXCEPTION_ERROR=CWWKS9544E: Si \u00e8 verificata un''eccezione imprevista durante la ricezione di una richiesta CSIv2 in entrata  per l''ID richiesta {0}. Il messaggio di eccezione \u00e8 {1}
+CSIv2_SERVER_UNEXPECTED_EXCEPTION_ERROR.explanation= Si \u00e8 verificata un'eccezione imprevista durante la ricezione di una richiesta CSIv2 in entrata.
+CSIv2_SERVER_UNEXPECTED_EXCEPTION_ERROR.useraction= Controllare i log per ulteriori informazioni sulla causa dell'eccezione.
+
+# Do not translate ITTAnonymous
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_NOT_SUPPORTED_BY_SERVER=CWWKS9545E: Il client non pu\u00f2 creare il token di asserzione di identit\u00e0 in quanto non \u00e8 supportato dalla configurazione del server remoto.
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_NOT_SUPPORTED_BY_SERVER.explanation=Il livello di attributo della politica di sicurezza del server non supporta l'asserzione di identit\u00e0 con ITTAnonymous nel file server.xml.
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_NOT_SUPPORTED_BY_SERVER.useraction=Assicurarsi che il livello di attributo della politica di sicurezza del server remoto nel file server.xml supporti ITTAnonymous.
+
+# Do not translate ITTAnonymous
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_NOT_SUPPORTED_BY_CLIENT=CWWKS9546E: Il client non pu\u00f2 creare il token di asserzione di identit\u00e0 in quanto non \u00e8 supportato dalla configurazione di questo client.
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_NOT_SUPPORTED_BY_CLIENT.explanation=Il livello di attributo della politica di sicurezza del client non supporta l'asserzione di identit\u00e0 con ITTAnonymous nel file server.xml.
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_NOT_SUPPORTED_BY_CLIENT.useraction=Assicurarsi che il livello di attributo della politica di sicurezza del client nel file server.xml supporti ITTAnonymous.
+
+# Do not translate ITTAnonymous
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_ONLY=CWWKS9547E: Il client non pu\u00f2 eseguire l'asserzione di un soggetto autenticato in quanto supporta solo le asserzioni di identit\u00e0 con ITTAnonymous.
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_ONLY.explanation=Il livello di attributo della politica di sicurezza del client supporta l'asserzione di identit\u00e0 con ITTAnonymous nel file server.xml e non \u00e8 possibile eseguire l'asserzione dell'utente autenticato utilizzando questo tipo di token. 
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_ONLY.useraction=Assicurarsi che il livello di attributo della politica di sicurezza del client nel file server.xml supporti un altro tipo di asserzione di identit\u00e0 oltre a ITTAnonymous quando esegue l'asserzione di un utente autenticato.
+
+CSIv2_CLIENT_ASSERTION_TYPE_NOT_SUPPORTED=CWWKS9548E: Il client non pu\u00f2 eseguire l''asserzione di un soggetto autenticato in quanto la configurazione del  server remoto non supporta le asserzioni di identit\u00e0 con i tipi <{0}>.
+CSIv2_CLIENT_ASSERTION_TYPE_NOT_SUPPORTED.explanation=Il livello di attributo della politica di sicurezza del server non supporta l'asserzione di identit\u00e0 con i tipi indicati. 
+CSIv2_CLIENT_ASSERTION_TYPE_NOT_SUPPORTED.useraction=Assicurarsi che il livello di attributo della politica di sicurezza del server nel file server.xml supporti almeno uno dei tipi di asserzione di identit\u00e0 indicati.
+
+# Do not translate GSSUP, WSLogin, and JAAS
+CSIv2_SERVER_CANNOT_DECODE_GSSUP=CWWKS9549E: Il server non \u00e8 in grado di decodificare il token GSSUP inviato dal client e non pu\u00f2 autenticare il token.
+CSIv2_SERVER_CANNOT_DECODE_GSSUP.explanation=Impossibile eseguire l'autenticazione con il token GSSUP perch\u00e9 non pu\u00f2 essere decodificato. 
+CSIv2_SERVER_CANNOT_DECODE_GSSUP.useraction=Assicurarsi che l'applicazione client esegua un login programmato con la configurazione WSLogin JAAS per creare un soggetto di autenticazione di base.
+
+# Server CSIv2 runtime related messages CWWKS9580 - CWWKS9589
+# -------------------------------------------------------------------------------------------------
+
+SOCKET_BIND_ERROR=CWWKS9580E: Il socket del server non pu\u00f2 essere aperto su {0}:{1}.  Il messaggio di eccezione \u00e8 {2}.
+SOCKET_BIND_ERROR.explanation= Si \u00e8 verificata un'eccezione imprevista durante l'apertura di un socket del server.
+SOCKET_BIND_ERROR.useraction= Controllare i log per ulteriori informazioni sulla causa dell'eccezione.
+
+IOR_NO_MATCHING_ADDRESS=CWWKS9581E: Nessun elemento iiopsOptions corrispondente trovato configurato con sslRef {0}.
+IOR_NO_MATCHING_ADDRESS.explanation= Ogni elemento del livello di trasporto configurato con un attributo sslRef deve corrispondere a uno o pi\u00f9 elementi iiopsOptions. Gli elementi iiopsOptions devono essere configurati con lo stesso attributo sslRef dell'elemento livello di trasporto e devono essere in un elemento iiopEndpoint a cui fa riferimento questo elemento orb.
+IOR_NO_MATCHING_ADDRESS.useraction= Configurare uno o pi\u00f9 elementi iiopsOptions con lo stesso valore attributo sslRef utilizzato nel livello di trasporto.
+
+# Do not translate sslRef, orb, defaultKeyStore, defaultSSLConfig, ssl in "ssl element".
+SSL_SERVICE_NOT_STARTED=CWWKS9582E: Gli attributi sslRef {0} richiesti dall''elemento orb con l''id {1} non sono stati risolti entro {2} secondi. Di conseguenza, le applicazioni non verranno avviate. Verificare di aver incluso un elemento keyStore e che SSL (Secure Sockets Layer) sia configurato correttamente. Se sslRef \u00e8 defaultSSLConfig, aggiungere un elemento keyStore con l''id defaultKeyStore e una password.
+SSL_SERVICE_NOT_STARTED.explanation= Le applicazioni non sono state avviate perch\u00e9 almeno un elemento ssl cui faceva riferimento un attributo sslRef dell'elemento orb fornito non \u00e8 stato risolto dopo un certo periodo di tempo. Questo errore pu\u00f2 dipendere da una configurazione SSL non valida, ad esempio un elemento keystore mancante, o il certificato SSL non \u00e8 stato creato entro il tempo assegnato. Una volta corretto l'errore di configurazione, le applicazioni verranno avviate.
+SSL_SERVICE_NOT_STARTED.useraction= Assicurarsi di aver configurato un elemento keyStore e che ogni attributo sslRef punti a un elemento ssl valido configurato appropriatamente. Se sslRef \u00e8 defaultSSLConfig, aggiungere un elemento keyStore con l'id defaultKeyStore e una password. Se il certificato SSL non \u00e8 stato creato, utilizzare l'attivit\u00e0 createSSLCertificate del comando securityUtility per crearlo manualmente.
+
+
+# Common CSIv2  related messages CWWKS9590 - CWWKS9599
+# -------------------------------------------------------------------------------------------------
+
+
+# Do not translate Supported and Required
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH=CWWKS9590W: La suite di cifratura richiesta da {0} sembra aver opzioni di associazione {1} che non corrispondono alle opzioni supportate specificate {2} e alle opzioni richieste {3}.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH.explanation=La suite di cifratura potrebbe non corrispondere alle opzioni di associazione scritte nell'IOR (Interoperable Object Reference) o utilizzate per mettere in corrispondenza l'IOR.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH.useraction=Verificare che la suite di cifratura richiesta corrisponda alle opzioni di associazione specificate oppure rimuoverla.
+
+CSIv2_SSLCONFIG_DOES_NOT_EXISTS=CWWKS9591W: La configurazione SSL {0} non esiste. Ci\u00f2 pu\u00f2 dipendere da un elemento SSL mancante o da un riferimento non valido a un elemento keystore o truststore nella configurazione. 
+CSIv2_SSLCONFIG_DOES_NOT_EXISTS.explanation=Impossibile richiamare l'elemento di configurazione SSL necessario, a causa di un errore nella configurazione. 
+CSIv2_SSLCONFIG_DOES_NOT_EXISTS.useraction=Verificare che l'elemento di configurazione SSL esista e abbia riferimenti validi ad elementi keystore e truststore.  

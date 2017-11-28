@@ -1,0 +1,144 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMFT
+#COMPONENTNAMEFOR CWMFT MicroProfile FaultTolerance API
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by FaultTolerance CDI Auto Feature -  range is 5000-5999
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#An asynchronous message does not return Future.
+asynchronous.class.not.returning.future.CWMFT5000E=CWMFT5000E: A(z) {0} aszinkron met\u00f3dus visszat\u00e9r\u00e9si t\u00edpusa nem Future.
+asynchronous.class.not.returning.future.CWMFT5000E.explanation=Egy oszt\u00e1ly minden olyan met\u00f3dus\u00e1nak, amely meg van jel\u00f6lve az org.eclipse.microprofile.faulttolerance.Asynchronous annot\u00e1ci\u00f3val, egy java.util.concurrent.Future t\u00edpusb\u00f3l hozz\u00e1rendelhet\u0151 visszat\u00e9r\u00e9si t\u00edpussal kell rendelkeznie.
+asynchronous.class.not.returning.future.CWMFT5000E.useraction=Friss\u00edtse a visszat\u00e9r\u00e9si t\u00edpust.
+
+asynchronous.method.not.returning.future.CWMFT5001E=CWMFT5001E: A(z) {0} aszinkron met\u00f3dus visszat\u00e9r\u00e9si t\u00edpusa nem Future.
+asynchronous.method.not.returning.future.CWMFT5001E.explanation=Minden olyan met\u00f3dusnak, amely meg van jel\u00f6lve az org.eclipse.microprofile.faulttolerance.Asynchronous annot\u00e1ci\u00f3val, egy java.util.concurrent.Future t\u00edpusb\u00f3l hozz\u00e1rendelhet\u0151 visszat\u00e9r\u00e9si t\u00edpussal kell rendelkeznie.
+asynchronous.method.not.returning.future.CWMFT5001E.useraction=Friss\u00edtse a visszat\u00e9r\u00e9si t\u00edpust.
+
+#A fallback method does not match the return type of the method that falls back to it.
+fallback.policy.return.type.not.match.CWMFT5002E=CWMFT5002E: A(z) {0} visszaes\u00e9si met\u00f3dus visszat\u00e9r\u00e9si t\u00edpusa helytelen. A visszat\u00e9r\u00e9si t\u00edpusnak meg kell felelnie a(z) {1} met\u00f3dus t\u00edpus\u00e1nak.
+fallback.policy.return.type.not.match.CWMFT5002E.explanation=Egy visszaes\u00e9si met\u00f3dusnak ugyanazzal a visszat\u00e9r\u00e9si t\u00edpussal kell rendelkeznie, mint a kezelt met\u00f3dusnak. 
+fallback.policy.return.type.not.match.CWMFT5002E.useraction=Friss\u00edtse a visszat\u00e9r\u00e9si t\u00edpust.
+
+#A fallback method that should exist cannot be found.
+fallback.method.not.found.CWMFT5003E=CWMFT5003E: A(z) {1} visszaes\u00e9si met\u00f3dus {2} param\u00e9terekkel nem tal\u00e1lhat\u00f3 a(z) {0} oszt\u00e1lyban.
+fallback.method.not.found.CWMFT5003E.explanation=A(z) {1} met\u00f3dushoz deklar\u00e1lva lett egy visszaes\u00e9si met\u00f3dus. Azonban ez a met\u00f3dus nem l\u00e9tezik a(z) {0} oszt\u00e1lyban.
+fallback.method.not.found.CWMFT5003E.useraction=T\u00e1vol\u00edtsa el a fallback annot\u00e1ci\u00f3t, vagy adja hozz\u00e1 a hi\u00e1nyz\u00f3 met\u00f3dust.
+
+#A security exception was thrown while trying to create a fallback policy.
+security.exception.acquiring.fallback.method.CWMFT5004E=CWMFT5004E: Biztons\u00e1gi kiv\u00e9tel t\u00f6rt\u00e9nt, amikor az alkalmaz\u00e1skiszolg\u00e1l\u00f3 megpr\u00f3b\u00e1lta feldolgozni a fallback annot\u00e1ci\u00f3kat.
+security.exception.acquiring.fallback.method.CWMFT5004E.explanation=Fallback ir\u00e1nyelv l\u00e9trehoz\u00e1s\u00e1hoz az alkalmaz\u00e1skiszolg\u00e1l\u00f3nak enged\u00e9lyre van sz\u00fcks\u00e9ge Java met\u00f3dusok beszerz\u00e9s\u00e9re \u00e9s vizsg\u00e1lat\u00e1ra.
+security.exception.acquiring.fallback.method.CWMFT5004E.useraction=Tekintse \u00e1t az alkalmaz\u00e1skiszolg\u00e1l\u00f3 biztons\u00e1gi ir\u00e1nyelv\u00e9t, \u00e9s biztos\u00edtsa az enged\u00e9lyeket.
+
+#A problem occurred while converting a system property {0} to type {1}. The raw string value is {2}. The exception is {3}.
+conversion.error.CWMFT5005E=CWMFT5005E: Probl\u00e9ma mer\u00fclt fel egy {0} rendszertulajdons\u00e1g \u00e1talak\u00edt\u00e1sakor {1} t\u00edpusra. A nyers karaktersorozat \u00e9rt\u00e9k: {2}. A kiv\u00e9tel: {3}.
+conversion.error.CWMFT5005E.explanation=A rendszertulajdons\u00e1gokon kereszt\u00fcl biztos\u00edtott b\u00e1rmely konfigur\u00e1ci\u00f3s \u00e9rt\u00e9knek \u00e1talak\u00edthat\u00f3nak kell lennie a megfelel\u0151 t\u00edpusra, p\u00e9ld\u00e1ul a Long.valueOf(String) haszn\u00e1lat\u00e1val.
+conversion.error.CWMFT5005E.useraction=Ellen\u0151rizze, hogy a megadott \u00e9rt\u00e9k a fel\u00fclb\u00edr\u00e1lt tulajdons\u00e1g t\u00edpus\u00e1nak megfelel\u0151 form\u00e1tumban van-e.
+
+#A problem occurred while converting a system property to type {0}. The raw string value is {1}. The exception is {2}.
+conversion.error.CWMFT5006E=CWMFT5006E: Probl\u00e9ma mer\u00fclt fel egy rendszertulajdons\u00e1g \u00e1talak\u00edt\u00e1sakor {0} t\u00edpusra. A nyers karaktersorozat \u00e9rt\u00e9k: {1}. A kiv\u00e9tel: {2}.
+conversion.error.CWMFT5006E.explanation=A rendszertulajdons\u00e1gokon kereszt\u00fcl biztos\u00edtott b\u00e1rmely konfigur\u00e1ci\u00f3s \u00e9rt\u00e9knek \u00e1talak\u00edthat\u00f3nak kell lennie a megfelel\u0151 t\u00edpusra, p\u00e9ld\u00e1ul a Long.valueOf(String) haszn\u00e1lat\u00e1val.
+conversion.error.CWMFT5006E.useraction=Ellen\u0151rizze, hogy a megadott \u00e9rt\u00e9k a fel\u00fclb\u00edr\u00e1lt tulajdons\u00e1g t\u00edpus\u00e1nak megfelel\u0151 form\u00e1tumban van-e.
+
+#A problem occurred while converting a system property to type {0}. The raw string value is {1}.
+conversion.error.CWMFT5007E=CWMFT5007E: Probl\u00e9ma mer\u00fclt fel egy rendszertulajdons\u00e1g \u00e1talak\u00edt\u00e1sakor {0} t\u00edpusra. A nyers karaktersorozat \u00e9rt\u00e9k: {1}.
+conversion.error.CWMFT5007E.explanation=A rendszertulajdons\u00e1gokon kereszt\u00fcl biztos\u00edtott b\u00e1rmely konfigur\u00e1ci\u00f3s \u00e9rt\u00e9knek \u00e1talak\u00edthat\u00f3nak kell lennie a megfelel\u0151 t\u00edpusra, p\u00e9ld\u00e1ul a Long.valueOf(String) haszn\u00e1lat\u00e1val.
+conversion.error.CWMFT5007E.useraction=Ellen\u0151rizze, hogy a megadott \u00e9rt\u00e9k a fel\u00fclb\u00edr\u00e1lt tulajdons\u00e1g t\u00edpus\u00e1nak megfelel\u0151 form\u00e1tumban van-e.
+
+#The value parameter on the Fallback is not valid.
+fallback.policy.invalid.CWMFT5008E=CWMFT5008E: A(z) {0} met\u00f3dus fallback ir\u00e1nyelve nem \u00e9rv\u00e9nyes, mert a FallbackHandler megval\u00f3s\u00edt\u00e1si oszt\u00e1ly t\u00edpus\u00e1nak ({1}) kompatibilisnek kell lennie a(z) {2} visszat\u00e9r\u00e9si t\u00edpussal az eredeti {3} met\u00f3dusban.
+fallback.policy.invalid.CWMFT5008E.explanation=A FallbackHandler megval\u00f3s\u00edt\u00e1s t\u00edpus\u00e1nak kompatibilisnek kell lennie az eredeti met\u00f3dus visszat\u00e9r\u00e9si t\u00edpus\u00e1val.
+fallback.policy.invalid.CWMFT5008E.useraction=Friss\u00edtse a FallbackHandler megval\u00f3s\u00edt\u00e1si oszt\u00e1ly t\u00edpus\u00e1t, hogy kompatibilis legyen az eredeti met\u00f3dus visszat\u00e9r\u00e9si t\u00edpus\u00e1val.
+
+
+#The fallback policies are conflicting.
+fallback.policy.conflicts.CWMFT5009E=CWMFT5009E: A(z) {0} met\u00f3dus Fallback ir\u00e1nyelve nem \u00e9rv\u00e9nyes, mivel a FallbackHandler oszt\u00e1ly ({1}) \u00e9s a fallbackMethod ({2}) egyar\u00e1nt megad\u00e1sra ker\u00fclt. Csak az egyiket adja meg.
+fallback.policy.conflicts.CWMFT5009E.explanation=Vagy a fallbackMethod-ot vagy az \u00e9rt\u00e9ket kell be\u00e1ll\u00edtani, nem mindkett\u0151t. 
+fallback.policy.conflicts.CWMFT5009E.useraction=T\u00e1vol\u00edtsa el a fallbackMethod-ot vagy az \u00e9rt\u00e9ket a Fallback annot\u00e1ci\u00f3b\u00f3l.
+
+#Incorrect value on FT Retry parameters
+retry.parameter.invalid.value.CWMFT5010E=CWMFT5010E: A Retry ir\u00e1nyelv {0} param\u00e9ter\u00e9nek {1} \u00e9rt\u00e9ke a(z) {2} eset\u00e9ben nem \u00e9rv\u00e9nyes, mivel nem lehet kisebb, mint {3}.
+retry.parameter.invalid.value.CWMFT5010E.explanation=A megadott \u00e9rt\u00e9k vagy a be\u00e1ll\u00edtott \u00e9rt\u00e9k, ha a Retry ir\u00e1nyelv param\u00e9ter\u00e9hez van be\u00e1ll\u00edtva, nem \u00e9rv\u00e9nyes.
+retry.parameter.invalid.value.CWMFT5010E.useraction=Jav\u00edtsa a megadott param\u00e9ter \u00e9rt\u00e9k\u00e9t.
+
+#Incorrect value on FT Timeout parameters
+timeout.parameter.invalid.value.CWMFT5011E=CWMFT5011E: A(z) {0} id\u0151t\u00fall\u00e9p\u00e9s \u00e9rt\u00e9k (megad\u00e1s helye: {1}) nem \u00e9rv\u00e9nyes, mivel nem lehet kisebb, mint 0.
+timeout.parameter.invalid.value.CWMFT5011E.explanation=A megadott \u00e9rt\u00e9k vagy a be\u00e1ll\u00edtott \u00e9rt\u00e9k, ha a Timeout ir\u00e1nyelv value param\u00e9ter\u00e9hez van be\u00e1ll\u00edtva, nem \u00e9rv\u00e9nyes.
+timeout.parameter.invalid.value.CWMFT5011E.useraction=Jav\u00edtsa a megadott param\u00e9ter \u00e9rt\u00e9k\u00e9t.
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.delay.invalid.value.CWMFT5012E=CWMFT5012E: A CircuitBreaker ir\u00e1nyelv {0} param\u00e9ter\u00e9nek {1} \u00e9rt\u00e9ke a(z) {2} eset\u00e9ben nem \u00e9rv\u00e9nyes, mivel a param\u00e9ter \u00e9rt\u00e9ke nem lehet negat\u00edv sz\u00e1m.
+circuitBreaker.parameter.delay.invalid.value.CWMFT5012E.explanation=A megadott \u00e9rt\u00e9k vagy a be\u00e1ll\u00edtott \u00e9rt\u00e9k, ha a CircuitBreaker ir\u00e1nyelv delay param\u00e9ter\u00e9hez van be\u00e1ll\u00edtva, nem \u00e9rv\u00e9nyes.
+circuitBreaker.parameter.delay.invalid.value.CWMFT5012E.useraction=Jav\u00edtsa a megadott param\u00e9ter \u00e9rt\u00e9k\u00e9t.
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.failureRatio.invalid.value.CWMFT5013E=CWMFT5013E: A CircuitBreaker ir\u00e1nyelv {0} param\u00e9ter\u00e9nek {1} \u00e9rt\u00e9ke a(z) {2} eset\u00e9ben nem \u00e9rv\u00e9nyes, mivel 0 \u00e9s 1 k\u00f6z\u00f6tti \u00e9rt\u00e9knek kell lennie (inkluz\u00edve).
+circuitBreaker.parameter.failureRatio.invalid.value.CWMFT5013E.explanation=A megadott \u00e9rt\u00e9k vagy a be\u00e1ll\u00edtott \u00e9rt\u00e9k, ha a CircuitBreaker ir\u00e1nyelv failureRatio param\u00e9ter\u00e9hez van be\u00e1ll\u00edtva, nem \u00e9rv\u00e9nyes.
+circuitBreaker.parameter.failureRatio.invalid.value.CWMFT5013E.useraction=Jav\u00edtsa a megadott param\u00e9ter \u00e9rt\u00e9k\u00e9t.
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.requestVolumeThreshold.invalid.value.CWMFT5014E=CWMFT5014E: A CircuitBreaker ir\u00e1nyelv {0} param\u00e9ter\u00e9nek {1} \u00e9rt\u00e9ke a(z) {2} eset\u00e9ben nem \u00e9rv\u00e9nyes, mivel a param\u00e9ter \u00e9rt\u00e9ke nem lehet negat\u00edv sz\u00e1m.
+circuitBreaker.parameter.requestVolumeThreshold.invalid.value.CWMFT5014E.explanation=A megadott \u00e9rt\u00e9k vagy a be\u00e1ll\u00edtott \u00e9rt\u00e9k, ha a CircuitBreaker ir\u00e1nyelv requestVolumeThreshold param\u00e9ter\u00e9hez van be\u00e1ll\u00edtva, nem \u00e9rv\u00e9nyes.
+circuitBreaker.parameter.requestVolumeThreshold.invalid.value.CWMFT5014E.useraction=Jav\u00edtsa a megadott param\u00e9ter \u00e9rt\u00e9k\u00e9t.
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.successThreshold.invalid.value.CWMFT5015E=CWMFT5015E: A CircuitBreaker ir\u00e1nyelv {0} param\u00e9ter\u00e9nek {1} \u00e9rt\u00e9ke a(z) {2} eset\u00e9ben nem \u00e9rv\u00e9nyes, mivel a param\u00e9ter nem lehet negat\u00edv sz\u00e1m.
+circuitBreaker.parameter.successThreshold.invalid.value.CWMFT5015E.explanation=A megadott \u00e9rt\u00e9k vagy a be\u00e1ll\u00edtott \u00e9rt\u00e9k, ha a CircuitBreaker ir\u00e1nyelv successThreshold param\u00e9ter\u00e9hez van be\u00e1ll\u00edtva, nem \u00e9rv\u00e9nyes.
+circuitBreaker.parameter.successThreshold.invalid.value.CWMFT5015E.useraction=Jav\u00edtsa a megadott param\u00e9ter \u00e9rt\u00e9k\u00e9t.
+
+#Incorrect value on FT Bulkhead parameters
+bulkhead.parameter.invalid.value.CWMFT5016E=CWMFT5016E: A Bulkhead ir\u00e1nyelv {0} param\u00e9ter\u00e9nek {1} \u00e9rt\u00e9ke a(z) {2} eset\u00e9ben nem \u00e9rv\u00e9nyes, mivel a param\u00e9ter nem lehet kisebb, mint 1.
+bulkhead.parameter.invalid.value.CWMFT5016E.explanation=A megadott \u00e9rt\u00e9k vagy a be\u00e1ll\u00edtott \u00e9rt\u00e9k, ha a Bulkhead ir\u00e1nyelv param\u00e9ter\u00e9hez van be\u00e1ll\u00edtva, nem \u00e9rv\u00e9nyes.
+bulkhead.parameter.invalid.value.CWMFT5016E.useraction=Jav\u00edtsa a megadott param\u00e9ter \u00e9rt\u00e9k\u00e9t.
+
+#Incorrect value on FT Retry parameters, the passed in values are: {0} - maxDuration, {1} - durationUnit, {2} - target, {3} - delay, {4} - delayUnit
+retry.parameter.invalid.value.CWMFT5017E=CWMFT5017E: A Retry ir\u00e1nyelv maxim\u00e1lis id\u0151tartama ({0} {1}) a(z) {2} c\u00e9l eset\u00e9ben nem \u00e9rv\u00e9nyes, mert nagyobbnak kell lennie, mint a k\u00e9sleltet\u00e9s id\u0151tartama ({3} {4})).
+retry.parameter.invalid.value.CWMFT5017E.explanation=A maxim\u00e1lis id\u0151tartamnak nagyobbnak kell lennie, mint a k\u00e9sleltet\u00e9s. A maxim\u00e1lis id\u0151tartamot a maxDuration param\u00e9ter \u00e9s a durationUnit param\u00e9ter alkotja. A k\u00e9sleltet\u00e9st a delay param\u00e9ter \u00e9s a delayUnit param\u00e9ter alkotja.
+retry.parameter.invalid.value.CWMFT5017E.useraction=Jav\u00edtsa legal\u00e1bb az egyik param\u00e9ter \u00e9rt\u00e9k\u00e9t.
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.failOn.invalid.value.CWMFT5018E=CWMFT5018E: A CircuitBreaker ir\u00e1nyelv {0} param\u00e9tere a(z) {1} eset\u00e9ben nem \u00e9rv\u00e9nyes, mert az \u00e9rt\u00e9ke \u00fcres.
+circuitBreaker.parameter.failOn.invalid.value.CWMFT5018E.explanation=A megadott \u00e9rt\u00e9k vagy CircuitBreaker ir\u00e1nyelv failOn param\u00e9ter\u00e9hez be\u00e1ll\u00edtott \u00e9rt\u00e9k \u00e9rv\u00e9nytelen.
+circuitBreaker.parameter.failOn.invalid.value.CWMFT5018E.useraction=Jav\u00edtsa a megadott param\u00e9ter \u00e9rt\u00e9k\u00e9t.
+
+#Incorrect value on FT Retry parameters, the passed in values are: {0} - jitter, {1} - jitterDelayUnit, {2} - target, {3} - delay, {4} - delayUnit
+retry.parameter.invalid.value.CWMFT5019W=CWMFT5019W: A Retry ir\u00e1nyelv ingadoz\u00e1si k\u00e9sleltet\u00e9se ({0} {1}) a(z) {2} c\u00e9l eset\u00e9ben nem \u00e9rv\u00e9nyes, mert az ingadoz\u00e1si k\u00e9sleltet\u00e9snek kisebbnek kell lennie, mint a k\u00e9sleltet\u00e9s id\u0151tartama ({3} {4})).
+retry.parameter.invalid.value.CWMFT5019W.explanation=Az ingadoz\u00e1si k\u00e9sleltet\u00e9snek kisebbnek kell lennie, mint a k\u00e9sleltet\u00e9s. Az ingadoz\u00e1si k\u00e9sleltet\u00e9st a jitter param\u00e9ter \u00e9s a jitterDelayUnit param\u00e9ter alkotja. A k\u00e9sleltet\u00e9st a delay param\u00e9ter \u00e9s a delayUnit param\u00e9ter alkotja.
+retry.parameter.invalid.value.CWMFT5019W.useraction=Jav\u00edtsa legal\u00e1bb az egyik param\u00e9ter \u00e9rt\u00e9k\u00e9t, hogy az ingadoz\u00e1si k\u00e9sleltet\u00e9s id\u0151tartama kisebb legyen, mint a k\u00e9sleltet\u00e9s id\u0151tartama.
+
+#Generic error for internal failures. 
+internal.error.CWMFT5997E=CWMFT5997E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A kiv\u00e9tel: {0}.
+internal.error.CWMFT5997E.explanation=Az alkalmaz\u00e1skiszolg\u00e1l\u00f3n bels\u0151 hiba t\u00f6rt\u00e9nt.
+internal.error.CWMFT5997E.useraction=Gy\u0171jtse \u00f6ssze a nyomk\u00f6vet\u00e9seket, \u00e9s nyisson meg egy probl\u00e9majelent\u00e9st az alkalmaz\u00e1skiszolg\u00e1l\u00f3val kapcsolatban.
+
+#Generic error for internal failures.
+internal.error.CWMFT5998E=CWMFT5998E: Bels\u0151 hiba t\u00f6rt\u00e9nt.
+internal.error.CWMFT5998E.explanation=Az alkalmaz\u00e1skiszolg\u00e1l\u00f3n bels\u0151 hiba t\u00f6rt\u00e9nt.
+internal.error.CWMFT5998E.useraction=Gy\u0171jtse \u00f6ssze a nyomk\u00f6vet\u00e9seket, \u00e9s nyisson meg egy probl\u00e9majelent\u00e9st az alkalmaz\u00e1skiszolg\u00e1l\u00f3val kapcsolatban.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency FaultTolerance error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Fault Tolerance API error has occurred: {0}
+temporary.CWMFT5999E=CWMFT9999E: Hibat\u0171r\u00e9si API hiba t\u00f6rt\u00e9nt: {0}
+temporary.CWMFT5999E.explanation=A norm\u00e1l m\u0171k\u00f6d\u00e9st megakad\u00e1lyoz\u00f3 hibat\u0171r\u00e9si API hiba t\u00f6rt\u00e9nt.
+temporary.CWMFT5999E.useraction=Az FFDC napl\u00f3k \u00e9s a kiv\u00e9tel sz\u00f6veg\u00e9nek \u00e1ttekint\u00e9s\u00e9vel azonos\u00edtsa a probl\u00e9m\u00e1t.

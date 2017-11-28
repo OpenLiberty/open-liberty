@@ -1,0 +1,140 @@
+###############################################################################
+# Copyright (c) 1997, 2009 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME ws/code/ras/src/com/ibm/ws/logging/hpel/resources/HpelMessages.nlsprops
+#COMPONENTPREFIX HPEL
+# Long proper prefix CWLHP
+#COMPONENTNAMEFOR HPEL IBM High Performance Extensible Logging
+#NLS_MESSAGEFORMAT_VAR
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+# AbstractBufferedLogFileWriter messages.
+HPEL_WrongBufferSizeValue=HPEL0101W: O tamanho do buffer {0} especificado na propriedade de sistema {1} n\u00e3o \u00e9 um n\u00famero. Usando {2}.
+HPEL_WrongBufferSizeValue.explanation=O tamanho do buffer especificado era inv\u00e1lido, um tamanho padr\u00e3o est\u00e1 sendo usado
+HPEL_WrongBufferSizeValue.useraction=Se o tamanho padr\u00e3o n\u00e3o for ideal, especifique um tamanho de buffer v\u00e1lido
+
+HPEL_WrongFlushPeriodValue=HPEL0102W: O per\u00edodo de flush {0} especificado na propriedade de sistema {1} n\u00e3o \u00e9 um n\u00famero. Usando {2}.
+HPEL_WrongFlushPeriodValue.explanation=O per\u00edodo de limpeza especificado \u00e9 inv\u00e1lido, em vez disso, um per\u00edodo padr\u00e3o est\u00e1 sendo usado.
+HPEL_WrongFlushPeriodValue.useraction=Se o per\u00edodo de flush padr\u00e3o n\u00e3o for ideal, especifique um per\u00edodo de flush v\u00e1lido
+
+HPEL_ExceptionInPeriodicFlush=HPEL0103W: Exce\u00e7\u00e3o durante flush peri\u00f3dico do fluxo de logs.
+HPEL_ExceptionInPeriodicFlush.explanation=Ocorreu uma exce\u00e7\u00e3o durante o flush do fluxo de logs em buffer.  Os detalhes est\u00e3o inclu\u00eddos na mensagem
+HPEL_ExceptionInPeriodicFlush.useraction=Examine a exce\u00e7\u00e3o para determinar a causa raiz. Certifique-se que o nome do arquivo especificado seja um nome de arquivo v\u00e1lido. Certifique-se que o tempo de execu\u00e7\u00e3o do Servidor de Aplicativos tenha acesso de grava\u00e7\u00e3o permitido para o diret\u00f3rio do arquivo de log de servi\u00e7o. Se isso n\u00e3o resolver o problema, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da Web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# AbstractHPELRepositoryExporter messages.
+HPEL_HeaderWithoutProcessId=HPEL0104E: O cabe\u00e7alho n\u00e3o cont\u00e9m informa\u00e7\u00f5es do ID do processo. Certifique-se de que a propriedade {0} esteja configurada.
+HPEL_HeaderWithoutProcessId.explanation=H\u00e1 informa\u00e7\u00f5es ausentes no cabe\u00e7alho
+HPEL_HeaderWithoutProcessId.useraction=Examine a exce\u00e7\u00e3o para determinar a causa raiz. Certifique-se que o nome do arquivo especificado seja um nome de arquivo v\u00e1lido. Certifique-se que o tempo de execu\u00e7\u00e3o do Servidor de Aplicativos tenha acesso de grava\u00e7\u00e3o permitido para o diret\u00f3rio do arquivo de log de servi\u00e7o. Se isso n\u00e3o resolver o problema, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da Web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_ErrorWhileSerializingHeader=HPEL0105E: Exce\u00e7\u00e3o durante convers\u00e3o do cabe\u00e7alho de log em uma matriz de byte.
+HPEL_ErrorWhileSerializingHeader.explanation=O cabe\u00e7alho de log n\u00e3o era v\u00e1lido pois o processamento de c\u00f3digo n\u00e3o p\u00f4de analisar nem convert\u00ea-lo
+HPEL_ErrorWhileSerializingHeader.useraction=Examine a exce\u00e7\u00e3o para determinar a causa raiz. Certifique-se que o nome do arquivo especificado seja um nome de arquivo v\u00e1lido. Certifique-se que o tempo de execu\u00e7\u00e3o do Servidor de Aplicativos tenha acesso de grava\u00e7\u00e3o permitido para o diret\u00f3rio do arquivo de log de servi\u00e7o. Se isso n\u00e3o resolver o problema, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da Web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_LogHeaderWasNotSet=HPEL0106E: Erro de chamada: tentativa ilegal de exportar um registro de log antes de configurar informa\u00e7\u00f5es de todo o processo.
+HPEL_LogHeaderWasNotSet.explanation=Ocorreu um problema na ordem do processo e os registros est\u00e3o sendo gravados antes que o sistema de cria\u00e7\u00e3o de log esteja pronto
+HPEL_LogHeaderWasNotSet.useraction=Examine a exce\u00e7\u00e3o para determinar a causa raiz. Certifique-se que o nome do arquivo especificado seja um nome de arquivo v\u00e1lido. Certifique-se que o tempo de execu\u00e7\u00e3o do Servidor de Aplicativos tenha acesso de grava\u00e7\u00e3o permitido para o diret\u00f3rio do arquivo de log de servi\u00e7o. Se isso n\u00e3o resolver o problema, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da Web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_ErrorWhileSerializingRecord=HPEL0107E: Exce\u00e7\u00e3o durante convers\u00e3o do registro de log em uma matriz de byte.
+HPEL_ErrorWhileSerializingRecord.explanation=As informa\u00e7\u00f5es de log n\u00e3o foram serializadas corretamente. Informa\u00e7\u00f5es da exce\u00e7\u00e3o est\u00e3o inclu\u00eddas no erro
+HPEL_ErrorWhileSerializingRecord.useraction=Examine a exce\u00e7\u00e3o para determinar a causa raiz. Certifique-se que o nome do arquivo especificado seja um nome de arquivo v\u00e1lido. Certifique-se que o tempo de execu\u00e7\u00e3o do Servidor de Aplicativos tenha acesso de grava\u00e7\u00e3o permitido para o diret\u00f3rio do arquivo de log de servi\u00e7o. Se isso n\u00e3o resolver o problema, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da Web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# LogRecordBrowser messages.
+HPEL_NoRecordAtLocation=HPEL0108W: Nenhum registro foi encontrado no local especificado.
+HPEL_NoRecordAtLocation.explanation=O local especificado para o diret\u00f3rio de log n\u00e3o cont\u00e9m arquivos com registros
+HPEL_NoRecordAtLocation.useraction=Examine a exce\u00e7\u00e3o para determinar a causa raiz. Certifique-se que o nome do arquivo especificado seja um nome de arquivo v\u00e1lido. Certifique-se que o tempo de execu\u00e7\u00e3o do Servidor de Aplicativos tenha acesso de grava\u00e7\u00e3o permitido para o diret\u00f3rio do arquivo de log de servi\u00e7o. Se isso n\u00e3o resolver o problema, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da Web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# LogRepositoryBrowserImpl messages.
+HPEL_NotRepositoryLocation=HPEL0109E: O local especificado n\u00e3o pertence a este reposit\u00f3rio.
+HPEL_NotRepositoryLocation.explanation=As informa\u00e7\u00f5es do reposit\u00f3rio especificadas est\u00e3o incorretas
+HPEL_NotRepositoryLocation.useraction=Reavalie as informa\u00e7\u00f5es do local especificado e modifique as chamadas
+
+HPEL_NotRepositoryFileNoTimestamp=HPEL0110E: O arquivo "{0}" usado no argumento n\u00e3o pertence a este reposit\u00f3rio. N\u00e3o \u00e9 poss\u00edvel recuperar o registro de data e hora.
+HPEL_NotRepositoryFileNoTimestamp.explanation=O arquivo n\u00e3o \u00e9 um arquivo leg\u00edtimo no reposit\u00f3rio
+HPEL_NotRepositoryFileNoTimestamp.useraction=Examine a exce\u00e7\u00e3o para determinar a causa raiz. Certifique-se que o nome do arquivo especificado seja um nome de arquivo v\u00e1lido. Certifique-se que o tempo de execu\u00e7\u00e3o do Servidor de Aplicativos tenha acesso de grava\u00e7\u00e3o permitido para o diret\u00f3rio do arquivo de log de servi\u00e7o. Se isso n\u00e3o resolver o problema, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da Web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_RepositoryFileMissing=HPEL0111W: O arquivo "{0}" est\u00e1 ausente no reposit\u00f3rio. Muito provavelmente foi removido pelo gerenciador de reten\u00e7\u00e3o.
+HPEL_RepositoryFileMissing.explanation=O arquivo esperado foi removido pelo gerenciador de local ou por interven\u00e7\u00e3o manual
+HPEL_RepositoryFileMissing.useraction=Se informa\u00e7\u00f5es do arquivo forem desejadas e tiverem sido arquivadas, considere restaurar as informa\u00e7\u00f5es.
+
+HPEL_NotRepositoryFileNoProcessId=HPEL0112E: O arquivo "{0}" usado no argumento n\u00e3o pertence a este reposit\u00f3rio. N\u00e3o \u00e9 poss\u00edvel recuperar o ID do processo.
+HPEL_NotRepositoryFileNoProcessId.explanation=Informa\u00e7\u00f5es do cabe\u00e7alho no arquivo indicam que o arquivo n\u00e3o est\u00e1 formado corretamente neste reposit\u00f3rio
+HPEL_NotRepositoryFileNoProcessId.useraction=Examine a exce\u00e7\u00e3o para determinar a causa raiz. Certifique-se que o nome do arquivo especificado seja um nome de arquivo v\u00e1lido. Certifique-se que o tempo de execu\u00e7\u00e3o do Servidor de Aplicativos tenha acesso de grava\u00e7\u00e3o permitido para o diret\u00f3rio do arquivo de log de servi\u00e7o. Se isso n\u00e3o resolver o problema, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da Web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# LogRepositoryWriterImpl messages.
+HPEL_IncorrectSwitchHour=HPEL0113W: O valor especificado {0} \u00e9 incorreto para uma hora do dia. O valor {1} ser\u00e1 usado.
+HPEL_IncorrectSwitchHour.explanation=A hora do dia especificada \u00e9 inv\u00e1lida, em vez disso, uma hora padr\u00e3o est\u00e1 sendo usada.
+HPEL_IncorrectSwitchHour.useraction=Se a hora padr\u00e3o n\u00e3o for ideal, especifique uma hora v\u00e1lida do dia
+
+# OneLogFileRecordIterator messages.
+HPEL_NoHeaderRecordInFileHead=HPEL0114E: Falha ao ler o registro de cabe\u00e7alho no in\u00edcio do arquivo "{0}": {1}
+HPEL_NoHeaderRecordInFileHead.explanation=O arquivo n\u00e3o possui informa\u00e7\u00f5es de cabe\u00e7alho v\u00e1lidas ou quando o armazenamento em buffer estiver ativado, o reposit\u00f3rio estar\u00e1 criando um novo arquivo bin\u00e1rio que est\u00e1 sendo acessado simultaneamente. 
+HPEL_NoHeaderRecordInFileHead.useraction=Este pode ser um problema de tempo, considere reexecutar a consulta.  Examine a exce\u00e7\u00e3o para determinar a causa raiz. Certifique-se que o nome do arquivo especificado seja um nome de arquivo v\u00e1lido. Certifique-se que o tempo de execu\u00e7\u00e3o do Servidor de Aplicativos tenha acesso de grava\u00e7\u00e3o permitido para o diret\u00f3rio do arquivo de log de servi\u00e7o. Se isso n\u00e3o resolver o problema, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da Web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_NoRecordsInFile=HPEL0115E: Nenhum registro encontrado no arquivo "{0}".
+HPEL_NoRecordsInFile.explanation=Este arquivo est\u00e1 vazio no momento.  Isso \u00e9 geralmente um indicativo de algum tipo de erro, pois os arquivos s\u00e3o criados porque existem registros a serem armazenados ou o reposit\u00f3rio est\u00e1 criando um novo arquivo bin\u00e1rio que est\u00e1 sendo acessado simultaneamente. 
+HPEL_NoRecordsInFile.useraction=Este pode ser um problema de tempo, considere reexecutar a consulta.  Examine a exce\u00e7\u00e3o para determinar a causa raiz. Certifique-se que o nome do arquivo especificado seja um nome de arquivo v\u00e1lido. Certifique-se que o tempo de execu\u00e7\u00e3o do Servidor de Aplicativos tenha acesso de grava\u00e7\u00e3o permitido para o diret\u00f3rio do arquivo de log de servi\u00e7o. Se isso n\u00e3o resolver o problema, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da Web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_InconsistencyInHeaderRecordSize=HPEL0116W: A verifica\u00e7\u00e3o do tamanho do registro do Cabe\u00e7alho de Log falhou. A c\u00f3pia final do tamanho de cabe\u00e7alho de um registro ({0}) no deslocamento ({1}) \u00e9 diferente da c\u00f3pia inicial ({2}). Isso pode indicar um problema com o arquivo de log "{3}".
+HPEL_InconsistencyInHeaderRecordSize.explanation=Informa\u00e7\u00f5es internas do arquivo de log indicam que pode ter ocorrido um problema.
+HPEL_InconsistencyInHeaderRecordSize.useraction=Examine a exce\u00e7\u00e3o para determinar a causa raiz. Certifique-se que o nome do arquivo especificado seja um nome de arquivo v\u00e1lido. Certifique-se que o tempo de execu\u00e7\u00e3o do Servidor de Aplicativos tenha acesso de grava\u00e7\u00e3o permitido para o diret\u00f3rio do arquivo de log de servi\u00e7o. Se isso n\u00e3o resolver o problema, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da Web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_InconsistencyInLogRecordSize=HPEL0117W: A c\u00f3pia de rodap\u00e9 de um tamanho de registro de mensagem ({0}) no deslocamento ({1}) \u00e9 diferente do cabe\u00e7alho ({2}). Isso pode indicar um problema com o arquivo de log "{3}".
+HPEL_InconsistencyInLogRecordSize.explanation=Informa\u00e7\u00f5es internas do arquivo de log indicam que pode ter ocorrido um problema.
+HPEL_InconsistencyInLogRecordSize.useraction=Examine a exce\u00e7\u00e3o para determinar a causa raiz. Certifique-se que o nome do arquivo especificado seja um nome de arquivo v\u00e1lido. Certifique-se que o tempo de execu\u00e7\u00e3o do Servidor de Aplicativos tenha acesso de grava\u00e7\u00e3o permitido para o diret\u00f3rio do arquivo de log de servi\u00e7o. Se isso n\u00e3o resolver o problema, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da Web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_OffsetBeyondFileSize=HPEL0118E: Tentativa incorreta de posicionar o fluxo para o arquivo "{0}" no deslocamento {1} que ultrapassa seu tamanho: {2}.
+HPEL_OffsetBeyondFileSize.explanation=De alguma forma, um deslocamento em um arquivo \u00e9 inv\u00e1lido (al\u00e9m do fim do arquivo)
+HPEL_OffsetBeyondFileSize.useraction=Se este for um cliente gravado localmente, revise a l\u00f3gica no c\u00e1lculo do deslocamento.  Examine a exce\u00e7\u00e3o para determinar a causa raiz. Certifique-se que o nome do arquivo especificado seja um nome de arquivo v\u00e1lido. Certifique-se que o tempo de execu\u00e7\u00e3o do Servidor de Aplicativos tenha acesso de grava\u00e7\u00e3o permitido para o diret\u00f3rio do arquivo de log de servi\u00e7o. Se isso n\u00e3o resolver o problema, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da Web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_ErrorSettingFileOffset=HPEL0119E: Falha ao posicionar o fluxo para o arquivo "{0}" no deslocamento {1} em que um registro de log foi lido com sucesso a partir do anterior: {2}.
+HPEL_ErrorSettingFileOffset.explanation=Parece que h\u00e1 um problema no posicionamento no local apropriado no arquivo.
+HPEL_ErrorSettingFileOffset.useraction=Examine a exce\u00e7\u00e3o para determinar a causa raiz. Certifique-se que o nome do arquivo especificado seja um nome de arquivo v\u00e1lido. Certifique-se que o tempo de execu\u00e7\u00e3o do Servidor de Aplicativos tenha acesso de grava\u00e7\u00e3o permitido para o diret\u00f3rio do arquivo de log de servi\u00e7o. Se isso n\u00e3o resolver o problema, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da Web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_ErrorReadingFileOffset=HPEL0120E: Falha ao recuperar o deslocamento atual no fluxo para o arquivo "{0}": {2}.
+HPEL_ErrorReadingFileOffset.explanation=Parece que h\u00e1 um problema no posicionamento no local apropriado no arquivo. 
+HPEL_ErrorReadingFileOffset.useraction=Examine a exce\u00e7\u00e3o para determinar a causa raiz. Certifique-se que o nome do arquivo especificado seja um nome de arquivo v\u00e1lido. Certifique-se que o tempo de execu\u00e7\u00e3o do Servidor de Aplicativos tenha acesso de grava\u00e7\u00e3o permitido para o diret\u00f3rio do arquivo de log de servi\u00e7o. Se isso n\u00e3o resolver o problema, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da Web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_ErrorReadingLogRecord=HPEL0121E: Falha ao ler o registro de log do arquivo "{0}": {1}.
+HPEL_ErrorReadingLogRecord.explanation=N\u00e3o \u00e9 poss\u00edvel ler um registro a partir do arquivo
+HPEL_ErrorReadingLogRecord.useraction=Examine a exce\u00e7\u00e3o para determinar a causa raiz. Certifique-se que o nome do arquivo especificado seja um nome de arquivo v\u00e1lido. Certifique-se que o tempo de execu\u00e7\u00e3o do Servidor de Aplicativos tenha acesso de grava\u00e7\u00e3o permitido para o diret\u00f3rio do arquivo de log de servi\u00e7o. Se isso n\u00e3o resolver o problema, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da Web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_ErrorSkippingFailedLogRecord=HPEL0122E: Falha ao ignorar para o pr\u00f3ximo registro ap\u00f3s falha no arquivo "{0}": {1}.
+HPEL_ErrorSkippingFailedLogRecord.explanation=Ocorreu um erro ao tentar reposicionar no arquivo
+HPEL_ErrorSkippingFailedLogRecord.useraction=Examine a exce\u00e7\u00e3o para determinar a causa raiz. Certifique-se que o nome do arquivo especificado seja um nome de arquivo v\u00e1lido. Certifique-se que o tempo de execu\u00e7\u00e3o do Servidor de Aplicativos tenha acesso de grava\u00e7\u00e3o permitido para o diret\u00f3rio do arquivo de log de servi\u00e7o. Se isso n\u00e3o resolver o problema, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da Web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# CompatZipRepositoryExporter and HPELZipRepositoryExporter message.
+HPEL_ErrorClosingZipStream=HPEL0123W: Ocorreu um erro ao fechar um fluxo Zip.
+HPEL_ErrorClosingZipStream.explanation=Ocorreu um erro ao fechar um fluxo.  A exce\u00e7\u00e3o deveria incluir mais informa\u00e7\u00f5es
+HPEL_ErrorClosingZipStream.useraction=Examine a exce\u00e7\u00e3o para determinar a causa raiz. Certifique-se que o nome do arquivo especificado seja um nome de arquivo v\u00e1lido. Certifique-se que o tempo de execu\u00e7\u00e3o do Servidor de Aplicativos tenha acesso de grava\u00e7\u00e3o permitido para o diret\u00f3rio do arquivo de log de servi\u00e7o. Se isso n\u00e3o resolver o problema, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da Web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# RepositoryReaderImpl message.
+HPEL_RepositoryPointerNotInRepository=HPEL0124W: O ponteiro do reposit\u00f3rio especificado n\u00e3o pertence a nenhum reposit\u00f3rio. Muito provavelmente o arquivo para o qual ele aponta j\u00e1 tenha sido exclu\u00eddo.
+HPEL_RepositoryPointerNotInRepository.explanation=O ponteiro do reposit\u00f3rio especificado n\u00e3o pertence a nenhum reposit\u00f3rio. Muito provavelmente o arquivo para o qual ele aponta j\u00e1 tenha sido exclu\u00eddo.
+HPEL_RepositoryPointerNotInRepository.useraction=Examine a exce\u00e7\u00e3o para determinar a causa raiz. Certifique-se que o nome do arquivo especificado seja um nome de arquivo v\u00e1lido. Certifique-se que o tempo de execu\u00e7\u00e3o do Servidor de Aplicativos tenha acesso de grava\u00e7\u00e3o permitido para o diret\u00f3rio do arquivo de log de servi\u00e7o. Se isso n\u00e3o resolver o problema, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da Web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# Additional messages from OneLogFileRecordIterator
+HPEL_ErrorReadingLogRecordDoSkip=HPEL0125W: N\u00e3o foi poss\u00edvel localizar registro v\u00e1lido no deslocamento {0}. Ignorando {1} bytes para o pr\u00f3ximo registro no arquivo {2}.
+HPEL_ErrorReadingLogRecordDoSkip.explanation=N\u00e3o \u00e9 poss\u00edvel ler um registro a partir do arquivo embora o arquivo possa conter alguns outros registros v\u00e1lidos.
+HPEL_ErrorReadingLogRecordDoSkip.useraction=Examine a exce\u00e7\u00e3o para determinar a causa raiz. Certifique-se que o nome do arquivo especificado seja um nome de arquivo v\u00e1lido. Certifique-se que o tempo de execu\u00e7\u00e3o do Servidor de Aplicativos tenha acesso de grava\u00e7\u00e3o permitido para o diret\u00f3rio do arquivo de log de servi\u00e7o. Se isso n\u00e3o resolver o problema, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da Web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# Messages for handling of PCI list
+IllegalArgInConstructingPatternLevel=HPEL0150W: Argumento ilegal na constru\u00e7\u00e3o de um elemento na lista restrita {0}
+IllegalArgInConstructingPatternLevel.explanation=Uma nova entrada na lista restrita estava no formato errado
+IllegalArgInConstructingPatternLevel.useraction=Determine se essa entrada \u00e9 do arquivo de propriedades ou se algu\u00e9m est\u00e1 usando a API para incluir as entradas e corrija o arquivo ou o respons\u00e1vel pela chamada da API
+
+InvalidPatternString=HPEL0151I: A Sequ\u00eancia de Padr\u00e3o/N\u00edvel {0} n\u00e3o pode ser analisada adequadamente em um Padr\u00e3o e um N\u00edvel loggerName
+InvalidPatternString.explanation=A sequ\u00eancia a ser analisada no loggerName e no n\u00edvel n\u00e3o pode ser analisada
+InvalidPatternString.useraction=Determine se essa entrada \u00e9 do arquivo de propriedades ou se algu\u00e9m est\u00e1 usando a API para incluir as entradas e corrija o arquivo ou o respons\u00e1vel pela chamada da API
+
+# Messages for file system space alarms
+HPEL_FileSystem_Space_Warning=HPEL0161W: O Sistema de Arquivos em {0} precisa de {1} para os requisitos de cria\u00e7\u00e3o de log, mas possui apenas {2} bytes restantes
+HPEL_FileSystem_Space_Warning.explanation=As configura\u00e7\u00f5es de cria\u00e7\u00e3o de log e rastreio requerem mais espa\u00e7o do que cont\u00e9m atualmente esse sistema de arquivos
+HPEL_FileSystem_Space_Warning.useraction=Limpe espa\u00e7o para o sistema de arquivos ou modifique as configura\u00e7\u00f5es de log e de rastreio para apontar para qualquer outro local ou consumir menos espa\u00e7o

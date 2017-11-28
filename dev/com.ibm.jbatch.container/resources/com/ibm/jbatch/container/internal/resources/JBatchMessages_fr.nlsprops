@@ -1,0 +1,318 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.jbatch.container/resources/com/ibm/jbatch/container/internal/resources/JBatchMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# NLS message prefix registry: http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+#
+# This file contains the messages in use.
+#
+# The range of messages "reserved":
+# 0001 - 0100: com.ibm.jbatch.container
+# 
+
+stopping.job.at.shutdown=CWWKY0001I: Emission d''arr\u00eat pour l''ex\u00e9cution de travail {0} car le composant par lots est en cours de d\u00e9sactivation.
+stopping.job.at.shutdown.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+stopping.job.at.shutdown.useraction=Aucune action n'est n\u00e9cessaire.
+
+jobs.running.at.shutdown=CWWKY0002I: Le composant par lots est en cours de d\u00e9sactivation. \
+Des demandes d''arr\u00eat ont \u00e9t\u00e9 \u00e9mises pour toutes les ex\u00e9cutions de travail actives. \
+Les ex\u00e9cutions de travail suivantes \u00e9taient encore en cours d''ex\u00e9cution au moment de la d\u00e9sactivation : {0}. 
+jobs.running.at.shutdown.explanation=Lorsque le composant de traitement par lots est d\u00e9sactiv\u00e9, il \u00e9met des demandes d'arr\u00eat pour toutes les ex\u00e9cutions de travaux actives et attend bri\u00e8vement avant de les arr\u00eater.  \
+Les ex\u00e9cutions de travail qui ne sont pas arr\u00eat\u00e9es sont indiqu\u00e9es dans le message. \
+Les ex\u00e9cutions de travail qui s'ex\u00e9cutent apr\u00e8s la d\u00e9sactivation du composant par lots peuvent avoir un comportement impr\u00e9visible.
+jobs.running.at.shutdown.useraction=Il est recommand\u00e9 d'attendre que tous les travaux se terminent avant de d\u00e9sactiver le composant par lots. \
+Le composant par lots est d\u00e9sactiv\u00e9 lorsque le serveur est arr\u00eat\u00e9, lorsque la fonction par lots est supprim\u00e9e ou lorsque la configuration par lots est mise \u00e0 jour.
+ 
+jsl.schema.invalid=CWWKY0003E: Le nom JSL (document XML de travail) \u00e0 l''URL {0} n''est pas valide conform\u00e9ment au sch\u00e9ma XML de travail. \
+La premi\u00e8re erreur de validation consign\u00e9e par le programme de validation JAXB \u00e9tait : {1}.
+jsl.schema.invalid.explanation=Le document XML n'\u00e9tait pas conforme au sch\u00e9ma XSD.
+jsl.schema.invalid.useraction=Utilisez un outil de validation XML pour comprendre la construction qui viole les exigences de sch\u00e9ma.
+
+jsl.not.found.batch-jobs=CWWKY0004E: Le nom JSL (document XML de travail) : {0} est introuvable \u00e0 l''emplacement : {1} au sein de l''archive d''application.
+jsl.not.found.batch-jobs.explanation=Le document n'a pas pu \u00eatre localis\u00e9 \u00e0 l'emplacement identifi\u00e9 par le param\u00e8tre utilis\u00e9 pour soumettre (c'est-\u00e0-dire, \
+d\u00e9marrer) le travail.
+jsl.not.found.batch-jobs.useraction=Assurez-vous que les param\u00e8tres utilis\u00e9s pour identifier l'emplacement JSL sont corrects. \
+Lors de l'utilisation d'une soumission de travail \u00e0 distance pour soumettre un travail distant d\u00e9fini dans un JSL int\u00e9gr\u00e9 au sein d'un module d'application, assurez-vous que le module d'application est correctement identifi\u00e9 par les param\u00e8tres transmis \u00e0 l'interface REST (directement ou \u00e0 l'aide de l'utilitaire de ligne de commande).
+
+persistence.service.status=CWWKY0005I: Le service de persistance {0} Batch est {1}.
+persistence.service.status.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+persistence.service.status.useraction=Aucune action n'est n\u00e9cessaire.
+
+job.recovery.failed=CWWKY0006W: Le service de reprise de travail Batch n''a pas pu corriger le statut pour une instance de travail {0} ex\u00e9cut\u00e9e pr\u00e9c\u00e9demment qui s''est arr\u00eat\u00e9e. La correction a \u00e9chou\u00e9 en raison de l''exception {1}.
+job.recovery.failed.explanation=Le service de reprise de travail Batch, qui corrige le statut des travaux en cours d'ex\u00e9cution lors de l'arr\u00eat anormal d'une instance pr\u00e9c\u00e9dente de ce serveur, n'a pas \
+pu corriger le statut de l'instance de travail indiqu\u00e9e en raison de l'exception sp\u00e9cifique.
+job.recovery.failed.useraction=Traitez la cause de l'exception, si possible, et red\u00e9marrez le serveur pour ex\u00e9cuter \u00e0 nouveau le service de reprise de travail Batch.
+
+recovery.failed=CWWKY0007W: Le service de reprise de travail Batch \
+n''a pas pu corriger le statut pour les travaux dont l''ex\u00e9cution vient de s''arr\u00eater. La correction a \u00e9chou\u00e9 en raison de l''exception {0}.
+recovery.failed.explanation=Le service de reprise de travail Batch, qui corrige \
+le statut des travaux qui \u00e9taient en cours d'ex\u00e9cution lors de l'arr\u00eat anormal d'une instance pr\u00e9c\u00e9dente de ce serveur, a \u00e9chou\u00e9 en raison de l'exception indiqu\u00e9e.
+recovery.failed.useraction=Traitez la cause de l'exception, si possible, et red\u00e9marrez le serveur pour ex\u00e9cuter \u00e0 nouveau le service de reprise de travail Batch.
+
+batch.kernel.persistence=CWWKY0008I: Batch Feature utilise le type de persistance {0}.
+batch.kernel.persistence.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+batch.kernel.persistence.useraction=Aucune action n'est n\u00e9cessaire.
+
+#{0} The job name
+#{1} The job instance id
+#{2} The job execution id
+job.started=CWWKY0009I: Travail {0} d\u00e9marr\u00e9 pour l''instance de travail {1} et l''ex\u00e9cution de travail {2}.
+job.started.explanation=Une nouvelle unit\u00e9 d'ex\u00e9cution de travail a \u00e9t\u00e9 d\u00e9marr\u00e9e.
+job.started.useraction=Aucune action n'est n\u00e9cessaire.
+
+#{0} The job name
+#{1} The batch status of the job
+#{2} The exit status of the job
+#{3} The job instance id
+#{4} The job execution id
+job.ended=CWWKY0010I: Le travail {0} s''est termin\u00e9 avec le statut Batch {1} et le statut de sortie {2} pour l''instance de travail {3} et l''ex\u00e9cution de travail {4}.
+job.ended.explanation=L'ex\u00e9cution du travail s'est arr\u00eat\u00e9e.
+job.ended.useraction=Aucune action n'est n\u00e9cessaire.
+
+#{0} The job name
+#{1} The batch status of the job
+#{2} The exit status of the job
+#{3} The job instance id
+#{4} The job execution id
+job.failed=CWWKY0011W: Le travail {0} a \u00e9chou\u00e9 avec le statut Batch {1} et le statut de sortie {2} pour l''instance de travail {3} et l''ex\u00e9cution de travail {4}.
+job.failed.explanation=L'ex\u00e9cution du travail ne s'est pas arr\u00eat\u00e9e correctement.
+job.failed.useraction=Consultez les journaux de travaux de l'ex\u00e9cution de travail associ\u00e9e afin de d\u00e9terminer la cause de l'\u00e9chec.
+
+#{0} The partition number
+#{1} The step name
+#{2} The job instance id
+#{3} The job execution id
+partition.started=CWWKY0012I: Partition {0} d\u00e9marr\u00e9e pour l''\u00e9tape {1} de l''instance de travail {2} et l''ex\u00e9cution de travail {3}.
+partition.started.explanation=Une nouvelle partition a \u00e9t\u00e9 d\u00e9marr\u00e9e.
+partition.started.useraction=Aucune action n'est n\u00e9cessaire.
+
+#{0} The step name
+#{1} The partition number
+#{2} The batch status of the partition
+#{3} The exit status of the partition
+#{4} The job instance id
+#{5} The job execution id
+partition.ended=CWWKY0013I: La partition {0} s''est arr\u00eat\u00e9e avec le statut Batch {1} et le statut de sortie {2} pour l''\u00e9tape {3} de l''instance de travail {4} et l''ex\u00e9cution de travail {5}.
+partition.ended.explanation=La partition s'est arr\u00eat\u00e9e.
+partition.ended.useraction=Aucune action n'est n\u00e9cessaire.
+
+#{0} The step name
+#{1} The partition number
+#{2} The batch status of the partition
+#{3} The exit status of the partition
+#{4} The job instance id
+#{5} The job execution id
+partition.failed=CWWKY0014W: La partition {0} a \u00e9chou\u00e9 avec le statut Batch {1} et le statut de sortie {2} pour l''\u00e9tape {3} de l''instance de travail {4} et l''ex\u00e9cution de travail {5}.
+partition.failed.explanation=La partition ne s'est pas arr\u00eat\u00e9e correctement.
+partition.failed.useraction=Consultez les journaux de travaux de l'ex\u00e9cution de travail associ\u00e9e afin de d\u00e9terminer la cause de l'\u00e9chec.
+
+#{0} The flow name
+#{1} The job instance id
+#{2} The job execution id
+flow.started=CWWKY0015I: Flux {0} d\u00e9marr\u00e9 pour l''instance de travail {1} et l''ex\u00e9cution de travail {2}.
+flow.started.explanation=Le flux a d\u00e9marr\u00e9.
+flow.started.useraction=Aucune action n'est n\u00e9cessaire.
+
+#{0} The flow name
+#{1} The job instance id
+#{2} The job execution id
+flow.ended=CWWKY0016I: Flux {0} arr\u00eat\u00e9 pour l''instance de travail {1} et l''ex\u00e9cution de travail {2}.
+flow.ended.explanation=Le flux s'est arr\u00eat\u00e9.
+flow.ended.useraction=Aucune action n'est n\u00e9cessaire.
+
+#{0} The flow name
+#{1} The job instance id
+#{2} The job execution id
+flow.failed=CWWKY0017W: Echec du flux {0} pour l''instance de travail {1} et l''ex\u00e9cution de travail {2}.
+flow.failed.explanation=Le flux ne s'est pas arr\u00eat\u00e9 correctement.
+flow.failed.useraction=Consultez les journaux de travaux de l'ex\u00e9cution de travail associ\u00e9e afin de d\u00e9terminer la cause de l'\u00e9chec.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+step.started=CWWKY0018I: Etape {0} d\u00e9marr\u00e9e pour l''instance de travail {1} et l''ex\u00e9cution de travail {2}.
+step.started.explanation=L'ex\u00e9cution de l'\u00e9tape indiqu\u00e9e a commenc\u00e9 sur une unit\u00e9 d'ex\u00e9cution.
+step.started.useraction=Aucune action n'est n\u00e9cessaire.
+
+#{0} The step name
+#{1} The batch status of the step
+#{2} The exit status of the step
+#{3} The job instance id
+#{4} The job execution id
+step.failed=CWWKY0019W: L''\u00e9tape {0} a \u00e9chou\u00e9 avec le statut Batch {1} et le statut de sortie {2} pour l''instance de travail {3} et l''ex\u00e9cution de travail {4}.
+step.failed.explanation=L'\u00e9tape ne s'est pas arr\u00eat\u00e9e correctement.
+step.failed.useraction=Consultez les journaux de travaux de l'ex\u00e9cution d'\u00e9tape associ\u00e9e afin de d\u00e9terminer la cause de l'\u00e9chec.
+
+#{0} The step name
+#{1} The batch status of the step
+#{2} The exit status of the step
+#{3} The job instance id
+#{4} The job execution id
+step.ended=CWWKY0020I: L''\u00e9tape {0} s''est termin\u00e9e avec le statut Batch {1} et le statut de sortie {2} pour l''instance de travail {3} et l''ex\u00e9cution de travail {4}.
+step.ended.explanation=L'\u00e9tape s'est arr\u00eat\u00e9e.
+step.ended.useraction=Aucune action n'est n\u00e9cessaire.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.started=CWWKY0021I: Un nouveau bloc a \u00e9t\u00e9 d\u00e9marr\u00e9 pour l''\u00e9tape {0} dans l''instance de travail {1} et l''ex\u00e9cution de travail {2}. Mesures de l''\u00e9tape = {3}
+chunk.started.explanation= Une nouvelle transaction a \u00e9t\u00e9 d\u00e9marr\u00e9e pour le traitement de ce bloc.
+chunk.started.useraction=Aucune action n'est n\u00e9cessaire.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.ended=CWWKY0022I: Le bloc s''est arr\u00eat\u00e9 pour l''\u00e9tape {0} dans l''instance de travail {1} et l''ex\u00e9cution de travail {2}. Mesures de l''\u00e9tape = {3}
+chunk.ended.explanation= La validation de la transaction associ\u00e9e \u00e0 ce bloc a abouti.
+chunk.ended.useraction=Aucune action n'est n\u00e9cessaire.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.rollback=CWWKY0024W: Le bloc actuel est revenu au point de contr\u00f4le pr\u00e9c\u00e9dent pour l''\u00e9tape {0} dans l''instance de travail {1} et l''ex\u00e9cution de travail {2}. Mesures de l''\u00e9tape = {3}
+chunk.rollback.explanation= Une erreur est survenue dans le bloc en cours qui a provoqu\u00e9 un retour au point de contr\u00f4le pr\u00e9c\u00e9dent.
+chunk.rollback.useraction=Consultez les journaux de travaux de l'ex\u00e9cution de travail associ\u00e9e afin de d\u00e9terminer la cause de l'\u00e9chec.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.rollback.and.retry=CWWKY0025W: Retour au point de contr\u00f4le pr\u00e9c\u00e9dent pour le bloc en cours apr\u00e8s une exception permettant une nouvelle tentative pour l''\u00e9tape {0} dans l''instance de travail {1} et l''ex\u00e9cution de travail {2}. Mesures de l''\u00e9tape = {3}
+chunk.rollback.and.retry.explanation= Une exception permettant une nouvelle tentative s'est produite lors du traitement d'un bloc. Ce dernier revient au point de contr\u00f4le pr\u00e9c\u00e9dent et une nouvelle tentative est effectu\u00e9e.
+chunk.rollback.and.retry.useraction=Consultez les journaux de travaux de l'ex\u00e9cution de travail associ\u00e9e afin de d\u00e9terminer la cause de l'\u00e9chec.
+
+#{0} The step name that is associated with this reader
+item.reader.opened=CWWKY0026I: Le lecteur d''\u00e9l\u00e9ment de l''\u00e9tape {0} a \u00e9t\u00e9 ouvert.
+item.reader.opened.explanation=Le lecteur d'\u00e9l\u00e9ment associ\u00e9 \u00e0 cette \u00e9tape a \u00e9t\u00e9 ouvert.
+item.reader.opened.useraction=Aucune action n'est n\u00e9cessaire.
+
+#{0} The step name that is associated with this reader
+item.reader.closed=CWWKY0027I: Le lecteur d''\u00e9l\u00e9ment de l''\u00e9tape {0} a \u00e9t\u00e9 ferm\u00e9.
+item.reader.closed.explanation=Le lecteur d'\u00e9l\u00e9ment associ\u00e9 \u00e0 cette \u00e9tape a \u00e9t\u00e9 ferm\u00e9.
+item.reader.closed.useraction=Aucune action n'est n\u00e9cessaire.
+
+#{0} The step name that is associated with this writer
+item.writer.opened=CWWKY0028I: L''\u00e9diteur d''\u00e9l\u00e9ment de l''\u00e9tape {0} a \u00e9t\u00e9 ouvert.
+item.writer.opened.explanation=L'\u00e9diteur d'\u00e9l\u00e9ment associ\u00e9 \u00e0 cette \u00e9tape a \u00e9t\u00e9 ouvert.
+item.writer.opened.useraction=Aucune action n'est n\u00e9cessaire.
+
+#{0} The step name that is associated with this writer
+item.writer.closed=CWWKY0029I: L''\u00e9diteur d''\u00e9l\u00e9ment de l''\u00e9tape {0} a \u00e9t\u00e9 ferm\u00e9.
+item.writer.closed.explanation=L'\u00e9diteur d'\u00e9l\u00e9ment associ\u00e9 \u00e0 cette \u00e9tape a \u00e9t\u00e9 ferm\u00e9.
+item.writer.closed.useraction=Aucune action n'est n\u00e9cessaire.
+
+#{0} The step name that is associated with this writer
+#{1} The exception that occurred
+exception.executing.step=CWWKY0030I: Une exception s''est produite lors de l''ex\u00e9cution de l''\u00e9tape {0}.\n\
+{1}
+exception.executing.step.explanation=Il peut s'agir d'une erreur d'application. Une exception s'est produite lors de l'ex\u00e9cution de la \
+portion principale de l'\u00e9tape, apr\u00e8s que le conteneur de lots ait appel\u00e9 les artefacts pertinents de l'application par lots.
+exception.executing.step.useraction=Consultez les journaux de travaux de l'ex\u00e9cution de travail associ\u00e9e afin de d\u00e9terminer la cause de l'\u00e9chec.  Cette \
+situation peut n\u00e9cessiter le d\u00e9bogage de votre application.
+
+#{0} The step name that is associated with this writer
+#{1} The exception that occurred
+exception.after.step=CWWKY0031I: Une exception s''est produite lors de l''ex\u00e9cution de la portion finale de l''\u00e9tape {0}.\n\
+{1}
+exception.after.step.explanation=Il peut s'agir d'une erreur d'application. Une exception s'est produite lors de l'ex\u00e9cution de la portion \
+finale de l'\u00e9tape (par exemple, l'inclusion de la m\u00e9thode StepListener afterStep()), apr\u00e8s que le conteneur de lots ait appel\u00e9 les artefacts pertinents de \
+l'application par lots.
+exception.after.step.useraction=Consultez les journaux de travaux de l'ex\u00e9cution de travail associ\u00e9e afin de d\u00e9terminer la cause de l'\u00e9chec.  Cette \
+situation peut n\u00e9cessiter le d\u00e9bogage de votre application.
+
+#{0} The exception that occurred
+error.persisting.stepExecution=CWWKY0032I: Une exception s''est produite lors de la tentative de rendre persistants le statut d''ex\u00e9cution \
+de l''\u00e9tape et les donn\u00e9es associ\u00e9es.\n\
+{0}
+error.persisting.stepExecution.explanation=Si cette situation se produit, il est fr\u00e9quent que le statut final de l'\u00e9tape ne soit pas \
+rendu correctement persistant dans la base de donn\u00e9es et que le statut du lot reste bloqu\u00e9 \u00e0 l'\u00e9tat \
+D\u00e9marr\u00e9 bien qu'il ne soit plus en ex\u00e9cution. Ceci peut enrayer une tentative de red\u00e9marrage en provoquant des erreurs d'incoh\u00e9rence au red\u00e9marrage. 
+error.persisting.stepExecution.useraction=V\u00e9rifiez que la base de donn\u00e9es est correctement configur\u00e9e et connect\u00e9e.   Apr\u00e8s cela, vous pouvez \
+red\u00e9marrer si n\u00e9cessaire le serveur du programme d'ex\u00e9cution (le serveur sur lequel le travail s'ex\u00e9cute), ce qui entra\u00eenera \
+un r\u00e9tablissement et marquera les travaux et \u00e9tapes associ\u00e9s comme \u00e9tant En \u00e9chec de sorte qu'un red\u00e9marrage du travail puisse \u00eatre effectu\u00e9. 
+
+#{0} The exception that occurred
+exception.executing.job=CWWKY0033I: Une exception s''est produite lors de l''ex\u00e9cution du travail.\n\
+{0}
+exception.executing.job.explanation=Il peut s'agir d'une erreur d'application. Une exception s'est produite lors de l'ex\u00e9cution de la portion \
+principale du travail, apr\u00e8s que le conteneur de lots ait appel\u00e9 les artefacts pertinents de l'application par lots.
+exception.executing.job.useraction=Consultez les journaux de travaux de l'ex\u00e9cution de travail associ\u00e9e afin de d\u00e9terminer la cause de l'\u00e9chec.  Cette situation peut n\u00e9cessiter le d\u00e9bogage de votre application.
+
+#{0} The exception that occurred
+exception.after.job=CWWKY0034I: Une exception s''est produite lors de l''ex\u00e9cution de la portion finale du travail.\n\
+{0}
+exception.after.job.explanation=Il peut s'agir d'une erreur d'application. Une exception s'est produite lors de l'ex\u00e9cution de la portion \
+finale du travail (par exemple, l'inclusion de la m\u00e9thode JobListener afterJob()), apr\u00e8s que le conteneur de lots ait appel\u00e9 les artefacts pertinents de \
+l'application par lots.
+exception.after.job.useraction=Examinez les journaux de travail du travail associ\u00e9 pour d\u00e9terminer la cause de l'\u00e9chec.  Cette situation peut \
+n\u00e9cessiter le d\u00e9bogage de votre application.
+
+#{0} The exception that occurred
+error.persisting.jobExecution=CWWKY0035I: Une exception s''est produite lors de la tentative de rendre persistants le statut d''ex\u00e9cution du \
+travail et les donn\u00e9es associ\u00e9es.\n\
+{0}
+error.persisting.jobExecution.explanation=Si cette situation se produit, il est fr\u00e9quent que le statut final du travail ne \
+soit pas rendu \
+correctement persistant dans la base de donn\u00e9es et que le statut du lot reste bloqu\u00e9 \u00e0 l'\u00e9tat D\u00e9marr\u00e9 bien qu'il ne soit plus en ex\u00e9cution. Ceci peut enrayer une \
+tentative de red\u00e9marrage en provoquant des erreurs d'incoh\u00e9rence au red\u00e9marrage.
+error.persisting.jobExecution.useraction=V\u00e9rifiez que la base de donn\u00e9es est correctement configur\u00e9e et connect\u00e9e.   Apr\u00e8s cela, vous pouvez red\u00e9marrer si n\u00e9cessaire le serveur du programme d'ex\u00e9cution (le serveur sur lequel le travail s'ex\u00e9cute), ce qui entra\u00eenera un r\u00e9tablissement et marquera les travaux et \u00e9tapes associ\u00e9s comme \u00e9tant En \u00e9chec de sorte qu'un red\u00e9marrage du travail puisse \u00eatre effectu\u00e9.
+
+#{0} The invalid job instance id.
+#{1} The persistence exception.
+error.invalid.persisted.job.id=CWWKY0036E: Valeur d''ID instance de travail non valide {0} g\u00e9n\u00e9r\u00e9e en tant que valeur de cl\u00e9 primaire pour une table par lots. La valeur d''ID doit \u00eatre un entier positif.\n\
+{1}
+error.invalid.persisted.job.id.explanation=L'ex\u00e9cution de travail a \u00e9chou\u00e9 car un ID non valide a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9 dans une table par lots. Un ID de lot doit \u00eatre un entier positif.
+error.invalid.persisted.job.id.useraction=Assurez-vous que la d\u00e9finition de table de base de donn\u00e9es par lots utilis\u00e9e autorise uniquement les entiers positifs pour les valeurs d'ID utilis\u00e9es comme cl\u00e9 primaires.
+
+#{0} The invalid execution id.
+#{1} The persistence exception.
+error.invalid.persisted.exe.id=CWWKY0037E: Valeur d''ID d''execution de travail non valide {0} g\u00e9n\u00e9r\u00e9e en tant que valeur de cl\u00e9 primaire pour une table par lots. La valeur d''ID doit \u00eatre un entier positif.\n\
+{1}
+error.invalid.persisted.exe.id.explanation=L'ex\u00e9cution de travail a \u00e9chou\u00e9 car un ID non valide a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9 dans une table par lots. Un ID de lot doit \u00eatre un entier positif.
+error.invalid.persisted.exe.id.useraction=Assurez-vous que la d\u00e9finition de table de base de donn\u00e9es par lots utilis\u00e9e autorise uniquement les entiers positifs pour les valeurs d'ID utilis\u00e9es comme cl\u00e9 primaires.
+
+#{0} The invalid step execution id.
+#{1} The persistence exception.
+error.invalid.persisted.step.id=CWWKY0038E: Valeur d''ID d''ex\u00e9cution d''\u00e9tape non valide {0} g\u00e9n\u00e9r\u00e9e en tant que valeur de cl\u00e9 primaire pour une table par lots. La valeur d''ID doit \u00eatre un entier positif.\n\
+{1}
+error.invalid.persisted.step.id.explanation=L'ex\u00e9cution de travail a \u00e9chou\u00e9 car un ID non valide a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9 dans une table par lots. Un ID de lot doit \u00eatre un entier positif.
+error.invalid.persisted.step.id.useraction=Assurez-vous que la d\u00e9finition de table de base de donn\u00e9es par lots utilis\u00e9e autorise uniquement les entiers positifs pour les valeurs d'ID utilis\u00e9es comme cl\u00e9 primaires.
+
+partition.recovery.failed=CWWKY0039W: Le service de reprise de travail Batch n''a pas pu corriger le statut pour une partition {0} ex\u00e9cut\u00e9e pr\u00e9c\u00e9demment qui s''est arr\u00eat\u00e9e. La correction a \u00e9chou\u00e9 en raison de l''exception {1}.
+partition.recovery.failed.explanation=Le service de reprise de travail Batch, qui corrige le statut des partitions en cours d'ex\u00e9cution lors de l'arr\u00eat anormal d'une instance pr\u00e9c\u00e9dente de ce serveur, n'a pas pu corriger le statut de la partition indiqu\u00e9e en raison de l'exception sp\u00e9cifique.
+partition.recovery.failed.useraction=Traitez la cause de l'exception, si possible, et red\u00e9marrez le serveur pour ex\u00e9cuter \u00e0 nouveau le service de reprise de travail Batch.
+
+info.batch.events.publish.topic=CWWKY0040I: L''environnement d''ex\u00e9cution par lots publiera les \u00e9v\u00e9nements sous la racine de rubrique JMS {0}.
+info.batch.events.publish.topic.explanation=Message d'information. L'environnement d'ex\u00e9cution par lots publiera les \u00e9v\u00e9nements sous la racine de rubrique JMS d'ex\u00e9cution par lots indiqu\u00e9e.
+info.batch.events.publish.topic.useraction=La racine de rubrique JMS d'ex\u00e9cution par lots peut \u00eatre modifi\u00e9e. V\u00e9rifiez les options configur\u00e9es utilis\u00e9es pour batchJmsEvents.
+
+cdi.ambiguous.artifact.names=CWWKY0041W: Le conteneur de lots s'ex\u00e9cute avec une fonction CDI active, or, le moteur CDI n'est pas parvenu \u00e0 charger l'artefact de lots en tant que bean g\u00e9r\u00e9 par CDI et \u00e0 ex\u00e9cuter d'autres injections CDI. Cela peut \u00eatre d\u00fb \u00e0 l'absence d'une annotation de d\u00e9finition de bean, telle que @Dependent, \u00e0 la pr\u00e9sence d'un mode de reconnaissance de bean inintentionnel ou \u00e0 la pr\u00e9sence d'une valeur 'ref' ambigu\u00eb.
+cdi.ambiguous.artifact.names.explanation=Lorsque l'environnement d'ex\u00e9cution par lots charge des artefacts en utilisant le moteur CDI, les propri\u00e9t\u00e9s par lots (@BatchProperty) et les contextes par lots (JobContext et StepContext) sont inject\u00e9s, et les fonctionnalit\u00e9s compl\u00e8tes de CDI sont disponibles. Ces fonctionnalit\u00e9s incluent l'injection d'autres beans g\u00e9r\u00e9s en fonction de qualificateurs et de toutes les autres fonctions du mod\u00e8le de programmation CDI. Lorsque l'environnement d'ex\u00e9cution par lots charge des artefacts sans utiliser le moteur CDI, il injecte uniquement les propri\u00e9t\u00e9s et les contextes par lots. Etant donn\u00e9 qu'il ne s'agit pas d'un bean g\u00e9r\u00e9 par CDI dans ce chemin, aucune autre injection ou fonction du mod\u00e8le de programmation CDI n'est disponible dans cet artefact par lots. Ce message indique que bien que le serveur soit configur\u00e9 pour que la fonction CDI soit active, l'artefact par lots ne peut pas \u00eatre charg\u00e9 en tant que bean g\u00e9r\u00e9 par CDI car la valeur d'attribut 'ref' correspondant \u00e0 cette r\u00e9f\u00e9rence d'artefact dans XML ne pointe pas vers un seul bean g\u00e9r\u00e9 par CDI explicite.
+cdi.ambiguous.artifact.names.useraction=Ajoutez l'annotation @Dependent ou une autre annotation de d\u00e9finition de bean appropri\u00e9e \u00e0 votre artefact par lots. Vous pouvez aussi d\u00e9finir la valeur 'all' pour le mode de reconnaissance de bean dans le fichier beans.xml, mais cette solution est susceptible de ralentir votre application. Si tous les artefacts ambigus ne sont pas n\u00e9cessaires, vous pouvez \u00e9galement retirer les attributs 'ref' ambigus de l'application de sorte qu'il ne reste qu'une seule r\u00e9f\u00e9rence explicite.

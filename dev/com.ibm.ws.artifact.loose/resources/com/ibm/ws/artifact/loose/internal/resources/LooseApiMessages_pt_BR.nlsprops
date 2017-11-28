@@ -1,0 +1,62 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.artifact.api.loose/resources/com/ibm/ws/artifact/api/loose/internal/resources/LooseApiMessages.nlsprops
+#COMPONENTPREFIX CWWKM
+#COMPONENTNAMEFOR CWWKM Loose Config
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+# 0000-0999: in-use or reserved
+# 1001-1100: Loose api
+# -------------------------------------------------------------------------------------------------
+
+#{0} is xml file location
+XML_NOT_FOUND=CWWKM1001E: O arquivo XML em {0} n\u00e3o p\u00f4de ser localizado.
+XML_NOT_FOUND.explanation=O arquivo XML especificado n\u00e3o p\u00f4de ser localizado.
+XML_NOT_FOUND.useraction=Assegure que o arquivo esteja no local correto e n\u00e3o tenha sido movido.
+
+#{0} is xml file location
+XML_STREAM_ERROR=CWWKM1002E: O arquivo XML em {0} n\u00e3o p\u00f4de ser lido.
+XML_STREAM_ERROR.explanation=O arquivo XML especificado n\u00e3o p\u00f4de ser lido.
+XML_STREAM_ERROR.useraction=Assegure que o arquivo esteja formatado corretamente como XML.
+
+#{0} is location of file on disk
+EXCLUDES_ON_FILE=CWWKM1003W: O arquivo XML declarado em um aplicativo de \u00e1rea de trabalho referencia um arquivo em {0} e inclui um atributo "excludes" que n\u00e3o \u00e9 v\u00e1lido. 
+EXCLUDES_ON_FILE.explanation=O elemento do arquivo XML possui um atributo "excludes" que n\u00e3o \u00e9 v\u00e1lido. O atributo foi ignorado.
+EXCLUDES_ON_FILE.useraction=Remova o atributo "excludes" do elemento.
+
+#{0} is name of the archive
+EXCLUDES_ON_ARCHIVE=CWWKM1004W: O arquivo XML declarado em um aplicativo da \u00e1rea de trabalho referencia um archive denominado {0} e inclui um atributo "excludes" que n\u00e3o \u00e9 v\u00e1lido. 
+EXCLUDES_ON_ARCHIVE.explanation=O elemento de archive XML possui um atributo "excludes" que n\u00e3o \u00e9 v\u00e1lido. O atributo foi ignorado.
+EXCLUDES_ON_ARCHIVE.useraction=Remova o atributo "excludes" do elemento.
+
+#{0} is the pattern
+INVALID_EXCLUDE_PATTERN=CWWKM1005E: O arquivo XML declarado em um aplicativo da \u00e1rea de trabalho cont\u00e9m um atributo "excludes" que n\u00e3o \u00e9 v\u00e1lido: {0}
+INVALID_EXCLUDE_PATTERN.explanation=O atributo "excludes" n\u00e3o \u00e9 v\u00e1lido e n\u00e3o pode ser entendido.
+INVALID_EXCLUDE_PATTERN.useraction=Altere o atributo para ser a sintaxe correta ou remova-o se ele n\u00e3o for necess\u00e1rio.
+
+#{0} is the filename of the missing file
+DECLARED_FILE_NOT_FOUND=CWWKM1006I: O arquivo XML declarado em um aplicativo de \u00e1rea de trabalho referencia um arquivo {0} que n\u00e3o p\u00f4de ser localizado.
+DECLARED_FILE_NOT_FOUND.explanation=O arquivo declarado para o aplicativo da \u00e1rea de trabalho n\u00e3o p\u00f4de ser localizado.
+DECLARED_FILE_NOT_FOUND.useraction=Assegure que o arquivo esteja no local referenciado ou que o local referenciado corresponda ao local do arquivo.

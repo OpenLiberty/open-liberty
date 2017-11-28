@@ -1,0 +1,54 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.security/resources/com/ibm/ws/jbatch/security/resources/BatchSecurityMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0300 - 0349: com.ibm.ws.jbatch.security
+# 
+
+#No fill-ins
+BATCH_SECURITY_ENABLED=CWWKY0300I: Die Sicherheit f\u00fcr die Stapelverarbeitung ist aktiviert.
+BATCH_SECURITY_ENABLED.explanation=Benutzer sind bei der Ausf\u00fchrung aller Stapelverarbeitungsoperationen f\u00fcr Stapelverarbeitungsrollen berechtigt.
+BATCH_SECURITY_ENABLED.useraction=Es ist keine Aktion erforderlich.
+
+#No fill-ins
+BATCH_SECURITY_DISABLED=CWWKY0301I: Die Sicherheit f\u00fcr die Stapelverarbeitung ist inaktiviert.
+BATCH_SECURITY_DISABLED.explanation=Benutzer sind nicht f\u00fcr Stapelverarbeitungsrollen berechtigt.
+BATCH_SECURITY_DISABLED.useraction=Wenn keine auf Stapelverarbeitungsrollen basierende Berechtigung in dieser Serverkonfiguration erforderlich ist, ist keine Aktion erforderlich.
+
+#{0} The invocation subject on the thread.
+#{1} The job instance id.
+USER_UNAUTHORIZED_JOB_INSTANCE=CWWKY0302W: Der Benutzer {0} ist nicht berechtigt, Stapelverarbeitungsoperationen f\u00fcr die Jobinstanz {1} auszuf\u00fchren.
+USER_UNAUTHORIZED_JOB_INSTANCE.explanation=Der Benutzer geh\u00f6rt nicht zu keiner Stapelverarbeitungsrolle, die berechtigt ist, die angeforderte Stapelverarbeitungsoperation f\u00fcr diese Jobinstanz auszuf\u00fchren.
+USER_UNAUTHORIZED_JOB_INSTANCE.useraction=Wenn der Benutzer zur Ausf\u00fchrung der angeforderten Stapelverarbeitungsoperation berechtigt ist, konfigurieren Sie die Sicherheitsberechtigung und f\u00fcgen Sie diesen Benutzer den erforderlichen Stapelverarbeitungsrollen hinzu.
+
+#{0} The invocation subject on the thread.
+USER_UNAUTHORIZED_NO_BATCH_ROLES=CWWKY0303W: Der Benutzer {0} ist nicht zur Ausf\u00fchrung von Stapelverarbeitungsoperationen berechtigt.
+USER_UNAUTHORIZED_NO_BATCH_ROLES.explanation=Der Benutzer geh\u00f6rt zu keiner Stapelverarbeitungsrolle und ist deshalb nicht berechtigt, Stapelverarbeitungsoperationen auszuf\u00fchren.
+USER_UNAUTHORIZED_NO_BATCH_ROLES.useraction=Wenn der Benutzer nicht als Stapelverarbeitungsbenutzer berechtigt ist, ist keine Aktion erforderlich. Wenn der Benutzer zur Ausf\u00fchrung der Stapelverarbeitungsoperationen berechtigt ist, konfigurieren Sie die Sicherheitsberechtigung und f\u00fcgen Sie diesen Benutzer den erforderlichen Stapelverarbeitungsrollen hinzu.
+#{0} The invocation subject on the thread.
+USER_UNAUTHORIZED_TO_START_JOB=CWWKY0304W: Der Benutzer {0} ist nicht berechtigt, Stapeljobs zu starten.
+USER_UNAUTHORIZED_TO_START_JOB.explanation=Der Benutzer geh\u00f6rt zu keiner Stapelverarbeitungsrolle, die berechtigt ist, Stapeljobs zu starten.
+USER_UNAUTHORIZED_TO_START_JOB.useraction=Wenn der Benutzer nicht berechtigt ist, Stapeljobs zu starten, ist keine Aktion erforderlich. Wenn der Benutzer zur Ausf\u00fchrung der angeforderten Stapelverarbeitungsoperation berechtigt ist, konfigurieren Sie die Sicherheitsberechtigung und f\u00fcgen Sie diesen Benutzer den erforderlichen Stapelverarbeitungsrollen hinzu.

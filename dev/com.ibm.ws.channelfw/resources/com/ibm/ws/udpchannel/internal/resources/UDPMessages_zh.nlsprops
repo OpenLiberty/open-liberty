@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service: udp channel
+#CMVCPATHNAME com.ibm.ws.channelfw/resources/com/ibm/ws/udpchannel/internal/resources/UDPMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#ISMESSAGEFILE TRUE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+### UDP channel will use message numbers 0400-0599
+
+CWUDP0001I=CWWKO0400I: UDP \u901a\u9053 {0} \u6b63\u5728\u4fa6\u542c\u4e3b\u673a {1} \u7aef\u53e3 {2}\u3002
+CWUDP0001I.explanation=UDP \u901a\u9053\u5df2\u6210\u529f\u542f\u52a8\u3002
+CWUDP0001I.useraction=\u65e0\u9700\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+CWUDP0002I=CWWKO0401I: UDP \u901a\u9053 {0} \u5df2\u505c\u6b62\u4fa6\u542c\u4e3b\u673a {1} \u7aef\u53e3 {2}\u3002
+CWUDP0002I.explanation=UDP \u901a\u9053\u5df2\u6b63\u5e38\u505c\u6b62\u3002
+CWUDP0002I.useraction=\u65e0\u9700\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+CWUDP0003W=CWWKO0402W: \u5df2\u4f7f\u7528\u4e0d\u6b63\u786e\u7684\u914d\u7f6e\u5c5e\u6027\u503c\u6784\u9020\u4e86 UDP \u901a\u9053 {0}\u3002\u540d\u79f0\uff1a{1} \u503c\uff1a{2}\u3002
+CWUDP0003W.explanation=UDP \u901a\u9053\u6b63\u5728\u5ffd\u7565\u914d\u7f6e\u503c\u3002
+CWUDP0003W.useraction=\u65e0\u9700\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+CWUDP0004E=CWWKO0403E: UDP \u901a\u9053 {0} \u521d\u59cb\u5316\u672a\u6210\u529f\u3002\u65e0\u6cd5\u89e3\u6790\u4e3b\u673a {1}\u3002
+CWUDP0004E.explanation=\u7cfb\u7edf\u65e0\u6cd5\u89e3\u6790\u914d\u7f6e\u7684\u4e3b\u673a\u540d\u3002
+CWUDP0004E.useraction=\u8bf7\u9a8c\u8bc1\u4e3b\u673a\u540d\u914d\u7f6e\u662f\u5426\u6b63\u786e\u3002
+
+CWUDP0005E=CWWKO0404E: UDP \u901a\u9053 {0} \u521d\u59cb\u5316\u672a\u6210\u529f\u3002\u5bf9\u4e8e\u4e3b\u673a {1} \u548c\u7aef\u53e3 {2}\uff0c\u6570\u636e\u62a5\u5957\u63a5\u5b57\u7ed1\u5b9a\u672a\u6210\u529f\u3002
+CWUDP0005E.explanation=\u914d\u7f6e\u7684\u7aef\u53e3\u53ef\u80fd\u5df2\u5728\u4f7f\u7528\u4e2d\u3002
+CWUDP0005E.useraction=\u8bf7\u9a8c\u8bc1\u7aef\u53e3\u914d\u7f6e\u662f\u5426\u6b63\u786e\u3002
+
+CWUDP0006I=CWWKO0405I: \u5bf9\u4e8e {0} \u4e3b\u673a\uff0cUDP \u901a\u9053\u7684\u57df\u540d\u7cfb\u7edf (DNS) \u67e5\u627e\u4e0d\u6210\u529f\u3002\u6b64\u4e0d\u6210\u529f\u67e5\u627e\u5df2\u53d1\u751f {1} \u6b21\u3002
+CWUDP0006I.explanation=UDP \u901a\u9053\u5df2\u5c1d\u8bd5\u5411\u65e0\u6cd5\u89e3\u6790\u4e3b\u673a\u540d\u7684\u4e3b\u673a\u53d1\u9001\u5305\u3002DNS \u670d\u52a1\u5668\u53ef\u80fd\u672a\u5728\u8fd0\u884c\uff0c\u6216\u53ef\u80fd\u914d\u7f6e\u4e0d\u6b63\u786e\u3002
+CWUDP0006I.useraction=\u8bf7\u9a8c\u8bc1\u670d\u52a1\u5668\u7684 DNS \u914d\u7f6e\u662f\u5426\u6b63\u786e\u3002
+
+EXECUTOR_SVC_MISSING=CWWKO0406E: \u53d1\u751f\u5185\u90e8\u9519\u8bef\u3002\u7f3a\u5c11\u6267\u884c\u7a0b\u5e8f\u670d\u52a1\u3002
+EXECUTOR_SVC_MISSING.explanation=CMSG0001
+EXECUTOR_SVC_MISSING.useraction=CMSG0002

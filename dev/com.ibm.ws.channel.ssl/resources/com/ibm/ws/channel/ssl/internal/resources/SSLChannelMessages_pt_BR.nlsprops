@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2002, 2003 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://seaux.raleigh.ibm.com/g11n/was/seae/45/messages/index.html
+# or contact Dennis Hebert/Raleigh/IBM (hebert@us.ibm.com)
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service: ssl channel
+#CMVCPATHNAME com.ibm.ws.channel.ssl/resources/com/ibm/ws/channel/ssl/internal/resources/SSLChannelMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#
+#ISMESSAGEFILE TRUE
+# NLS_MESSAGEFORMAT_VAR
+
+### SSL channel is using CHFW bundle ids, values 0800-0899
+
+invalid.security.properties=CWWKO0800E: O canal SSL n\u00e3o pode ser iniciado devido \u00e0s seguintes configura\u00e7\u00f5es incorretas:\n {0}
+invalid.security.properties.explanation=Uma ou mais defini\u00e7\u00f5es para seguran\u00e7a no canal SSL n\u00e3o eram v\u00e1lidas.
+invalid.security.properties.useraction=As configura\u00e7\u00f5es de seguran\u00e7a do canal SSL devem ser modificadas para os valores corretos.
+
+handshake.failure=CWWKO0801E: Imposs\u00edvel inicializar conex\u00e3o SSL. O acesso n\u00e3o autorizado foi negado ou as configura\u00e7\u00f5es de seguran\u00e7a expiraram. A exce\u00e7\u00e3o \u00e9 {0}.
+handshake.failure.explanation=Uma nova conex\u00e3o n\u00e3o conseguiu concluir com \u00eaxito um protocolo de reconhecimento protegido.
+handshake.failure.useraction=Verifique as configura\u00e7\u00f5es de seguran\u00e7a.  O certificado pode ter expirado ou estar ausente. Como alternativa, uma conex\u00e3o do cliente n\u00e3o autorizada pode ter sido negada.  Para desativar essas mensagens, configure o par\u00e2metro suppressHandshakeErrors da configura\u00e7\u00e3o sslOptions como verdadeiro.
+
+init.failure=CWWKO0802E: Imposs\u00edvel inicializar pacote configur\u00e1vel de SSL. A exce\u00e7\u00e3o \u00e9 {0}.
+init.failure.explanation=Foi encontrado um erro ao tentar inicializar o pacote configur\u00e1vel de SSL. Isto provavelmente se deve a uma falha de depend\u00eancia.
+init.failure.useraction=Revise os logs do processo para obter informa\u00e7\u00f5es sobre o que falhou ao iniciar.
+
+DEFAULT_OPTIONS_ERROR=CWWKO0803E: Imposs\u00edvel criar configura\u00e7\u00e3o do canal SSL padr\u00e3o. A exce\u00e7\u00e3o \u00e9 {0}.
+DEFAULT_OPTIONS_ERROR.explanation=Foi encontrado um erro ao criar a configura\u00e7\u00e3o padr\u00e3o para canais SSL.
+DEFAULT_OPTIONS_ERROR.useraction=Revise a exce\u00e7\u00e3o para obter informa\u00e7\u00f5es sobre como a cria\u00e7\u00e3o falhou.
+
+handshake.failure.stop.logging=CWWKO0804I: Foi atingido o n\u00famero m\u00e1ximo de falhas de handshake SSL a serem registradas em log. Essas mensagens n\u00e3o ser\u00e3o mais registradas em log.
+handshake.failure.stop.logging.explanation=O n\u00famero de falhas de handshake SSL que s\u00e3o registradas em log s\u00e3o limitadas para evitar entradas de log excessivas.
+handshake.failure.stop.logging.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.

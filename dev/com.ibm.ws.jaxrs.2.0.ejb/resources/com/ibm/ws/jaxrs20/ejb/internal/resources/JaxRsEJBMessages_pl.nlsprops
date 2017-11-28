@@ -1,0 +1,40 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs-2.0.ejb/resources/com/ibm/ws/jaxrs20/ejb/internal/resources/JaxRsEJBMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS EJB Code
+#RANGE 1100 - 1199
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+
+
+warning.jaxrs.ejb.resource.mismatch=CWWKW1100W: Zasi\u0119g {1} zasobu JAXRS-2.0 {0} nie jest zgodny z zasi\u0119giem komponentu EJB {2}. Profil Liberty pobiera instancje zasob\u00f3w z {3}.
+warning.jaxrs.ejb.resource.mismatch.explanation=Je\u015bli zasi\u0119g zasobu JAXRS-2.0 nie jest zgodny z zasi\u0119giem komponentu EJB, a instancja zasobu istnieje w komponencie EJB, profil Liberty pobiera instancj\u0119 zasobu z komponentu EJB.
+warning.jaxrs.ejb.resource.mismatch.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. 
+
+warning.jaxrs.ejb.provider.mismatch=CWWKW1102W: Zasi\u0119g komponentu EJB dostawcy JAXRS-2.0 {0} ma warto\u015b\u0107 {1}. Profil Liberty pobiera instancj\u0119 dostawcy z {2}.
+warning.jaxrs.ejb.provider.mismatch.explanation=Instancja dostawcy jest tylko typu Singleton. Profil Liberty pobiera instancje dostawcy z komponentu EJB, je\u015bli zasi\u0119g komponentu EJB dostawcy ma warto\u015b\u0107 Dependent or ApplicationScoped.
+warning.jaxrs.ejb.provider.mismatch.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+warning.failed.instantiate.ejb.instance=CWWKW1103W: Nie mo\u017cna utworzy\u0107 instancji komponentu EJB dla klasy {0}. Profil Liberty pobiera instancj\u0119 z JAXRS.
+warning.failed.instantiate.ejb.instance.explanation= Klasa komponentu EJB {0} nie zawiera konstruktora domy\u015blnego. Profil Liberty odbiera wyj\u0105tek InstantiationException podczas pr\u00f3by utworzenia instancji komponentu EJB.
+warning.failed.instantiate.ejb.instance.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.failed.toloadejbclass=CWWKW1104W: Nie mo\u017cna za\u0142adowa\u0107 klasy EJB {0}.
+error.failed.toloadejbclass.explanation= Nie mo\u017cna za\u0142adowa\u0107 klasy EJB {0}.
+error.failed.toloadejbclass.useraction=Popraw aplikacj\u0119, aby rozwi\u0105za\u0107 problem.

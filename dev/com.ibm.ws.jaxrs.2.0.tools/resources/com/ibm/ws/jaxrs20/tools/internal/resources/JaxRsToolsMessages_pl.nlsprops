@@ -1,0 +1,25 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs-2.0.tools/resources/com/ibm/ws/jaxrs20/tools/internal/resources/JaxRsToolsMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS 2.0 Tools Code
+#RANGE 0900-9999
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+error.badVersion=CWWKW0900E: Nie jest uruchomiona poprawna wersja \u015brodowiska Java. \u015arodowisko wykonawcze wymaga \u015brodowiska Java 7 lub nowszego.
+error.badVersion.explanation=Uruchomiona jest nieobs\u0142ugiwana wersja \u015brodowiska Java lub zmienna systemowa JAVA_HOME jest ustawiona tak, \u017ce wskazuje starsz\u0105 wersj\u0119 \u015brodowiska Java.
+error.badVersion.useraction= Zaktualizuj \u015brodowisko Java do wersji 7 lub dopasuj zmienn\u0105 systemow\u0105 JAVA_HOME tak, aby wskazywa\u0142a \u015brodowisko Java 7.

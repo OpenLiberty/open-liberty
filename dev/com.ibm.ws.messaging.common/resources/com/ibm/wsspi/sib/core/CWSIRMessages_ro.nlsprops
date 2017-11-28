@@ -1,0 +1,187 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.wsspi.sib.core.CWSIRMessages.nlsprops
+#
+# SIB.common component file for logging messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIR0001=CWSIR0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - CWSIR9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=%I%
+#
+#CMVCPATHNAME com.ibm.ws.messaging.common/resources/com/ibm/wsspi/sib/core/CWSIRMessages.nlsprops
+#COMPONENTPREFIX CWSIR
+#COMPONENTNAMEFOR CWSIR SIBus Core
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+BROWSE_METHOD_CWSIR0001=CWSIR0001E: Argumentul destinationAddress este nul.
+BROWSE_METHOD_CWSIR0001.explanation=Apelul createBrowserSession a determinat o valoare nul\u0103 pentru argumentul destinationAddress .  DestinationAddress nu trebuie s\u0103 fie nul
+BROWSE_METHOD_CWSIR0001.useraction=Furniza\u0163i o valoare valid\u0103 destinationAddress.
+
+# -------------------------------------------------------------------------------------------------
+# destAddr is a argument name for a method call
+CREATE_CONSUMER_CWSIR0021=CWSIR0021E: Argumentul destAddr este nul
+CREATE_CONSUMER_CWSIR0021.explanation=Apelul createConsumerSession a furnizat o valoare nul\u0103 pentru argumentul destAddr .  destAddr nu trebuie s\u0103 fie nul
+CREATE_CONSUMER_CWSIR0021.useraction=Furniza\u0163i o valoare valid\u0103 destAddr.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+CREATE_DURABLE_SUB_CWSIR0031=CWSIR0031E: Argumentul destinationAddress este nul
+CREATE_DURABLE_SUB_CWSIR0031.explanation=Apelul createConsumerSessionForDurableSubscription a furnizat o valoare nul\u0103 pentru argumentul destinationAddress .  Adresa destina\u0163ie nu trebuie sa fie nul\u0103
+CREATE_DURABLE_SUB_CWSIR0031.useraction=Supply a valid destinationAddress value.
+
+# -------------------------------------------------------------------------------------------------
+# subscriptionName is a argument name for a method call
+CREATE_DURABLE_SUB_CWSIR0032=CWSIR0032E: Argumentul subscriptionName este nul
+CREATE_DURABLE_SUB_CWSIR0032.explanation=Apelul createConsumerSessionForDurableSubscription a furnizat o valoare nul\u0103 pentru argumentul subscriptionName .  subscriptionName nu trebuie s\u0103 fie nul
+CREATE_DURABLE_SUB_CWSIR0032.useraction=Furniza\u0163i o valoare valid\u0103 subscriptionName.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+CREATE_DURABLE_SUB_CWSIR0041=CWSIR0041E: Argumentul destinationAddress este nul
+CREATE_DURABLE_SUB_CWSIR0041.explanation=Apelul createDurableSubscription a determinat o valoare nul\u0103 pentru argumentul destinationAddress .  DestinationAddress nu trebuie s\u0103 fie nul
+CREATE_DURABLE_SUB_CWSIR0041.useraction=Furniza\u0163i o valoare valid\u0103 destinationAddress.
+
+# -------------------------------------------------------------------------------------------------
+# subscriptionName is a argument name for a method call
+CREATE_DURABLE_SUB_CWSIR0042=CWSIR0042E: Argumentul subscriptionName este nul
+CREATE_DURABLE_SUB_CWSIR0042.explanation=Apelul createDurableSubscription a furnizat o valoare nul\u0103 pentru argumentul subscriptionName .  subscriptionName nu trebuie s\u0103 fie nul
+CREATE_DURABLE_SUB_CWSIR0042.useraction=Furniza\u0163i o valoare valid\u0103 subscriptionName.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+CREATE_PRODUCER_CWSIR0051=CWSIR0051E: Argumentul destAddr este nul
+CREATE_PRODUCER_CWSIR0051.explanation=Apelul createProducerSession a furnizat o valoare nul\u0103 pentru argumentul destAddr .  destAddr nu trebuie s\u0103 fie nul
+CREATE_PRODUCER_CWSIR0051.useraction=Furniza\u0163i o valoare valid\u0103 destAddr.
+
+# -------------------------------------------------------------------------------------------------
+# subscriptionName is a argument name for a method call
+DELETE_DURABLE_SUB_CWSIR0061=CWSIR0061E: Argumentul subscriptionName este nul
+DELETE_DURABLE_SUB_CWSIR0061.explanation=Apelul deleteDurableSubscription a furnizat o valoare nul\u0103 pentru argumentul subscriptionName .  subscriptionName nu trebuie s\u0103 fie nul
+DELETE_DURABLE_SUB_CWSIR0061.useraction=Furniza\u0163i o valoare valid\u0103 subscriptionName.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+CREATE_PRODUCER_CWSIR0071=CWSIR0071E: Argumentul destAddr este nul
+CREATE_PRODUCER_CWSIR0071.explanation=Apelul deleteTemporaryDestination a furnizat o valoare nul\u0103 pentru argumentul destAddr .  destAddr nu trebuie s\u0103 fie nul
+CREATE_PRODUCER_CWSIR0071.useraction=Furniza\u0163i o valoare valid\u0103 destAddr.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+GET_DEST_CONFIG_CWSIR0081=CWSIR0081E: Argumentul destAddr este nul
+GET_DEST_CONFIG_CWSIR0081.explanation=Apelul getDestinationConfiguration a furnizat o valoare nul\u0103 pentru argumentul destAddr .  destAddr nu trebuie s\u0103 fie nul
+GET_DEST_CONFIG_CWSIR0081.useraction=Furniza\u0163i o valoare valid\u0103 destAddr.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+RECEIVE_NO_WAIT_CWSIR0091=CWSIR0091E: Argumentul destAddr este nul
+RECEIVE_NO_WAIT_CWSIR0091.explanation=Apelul receiveNoWait a furnizat o valoare nul\u0103 pentru argumentul destAddr .  destAddr nu trebuie s\u0103 fie nul
+RECEIVE_NO_WAIT_CWSIR0091.useraction=Furniza\u0163i o valoare valid\u0103 destAddr.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+RECEIVE_WITH_WAIT_CWSIR0101=CWSIR0101E: Argumentul destAddr este nul
+RECEIVE_WITH_WAIT_CWSIR0101.explanation=Apelul receiveWithWait a furnizat o valoare nul\u0103 pentru argumentul destAddr .  destAddr nu trebuie s\u0103 fie nul
+RECEIVE_WITH_WAIT_CWSIR0101.useraction=Furniza\u0163i o valoare valid\u0103 destAddr.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+SEND_CWSIR0111=CWSIR0111E: Argumentul destAddr este nul
+SEND_CWSIR0111.explanation=Apelul receiveWithWait a furnizat o valoare nul\u0103 pentru argumentul destAddr .  destAddr nu trebuie s\u0103 fie nul
+SEND_CWSIR0111.useraction=Furniza\u0163i o valoare valid\u0103 destAddr.
+
+# -------------------------------------------------------------------------------------------------
+# msg is a argument name for a method call
+SEND_CWSIR0112=CWSIR0112E: Argumentul mesajului este nul.
+SEND_CWSIR0112.explanation=Apelarea de trimitere a furnizat o valoare nul\u0103 pentru argumentul mesajului.  Mesajul nu trebuie s\u0103 fie nul.
+SEND_CWSIR0112.useraction=Furniza\u0163i o valoare valid\u0103 de mesaj.
+
+# -------------------------------------------------------------------------------------------------
+# msg is a argument name for a method call
+SEND_EXCEPTION_DEST_CWSIR0121=CWSIR0121E: Argumentul mesajului este nul.
+SEND_EXCEPTION_DEST_CWSIR0121.explanation=Apelarea de sendToExceptionDestination a furnizat o valoare nul\u0103 pentru argumentul mesajului.  Mesajul nu trebuie s\u0103 fie nul.
+SEND_EXCEPTION_DEST_CWSIR0121.useraction=Furniza\u0163i o valoare valid\u0103 de mesaj.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the internal method name called on the SPI.
+LME_ERROR_CWSIR0131=CWSIR0131E: Apelul la metoda {0} nu este valid \u00een acest moment.
+LME_ERROR_CWSIR0131.explanation=Apelul specificat este valid doar din interiorul metodei AsynchConsumerCallback.consumeMessages.
+LME_ERROR_CWSIR0131.useraction=Emite\u0163i apelul din nou din interiorul metodei AsynchConsumerCallback.consumeMessages sau utiliza\u0163i un apel corespunz\u0103tor ConsumerSession dac\u0103 e posibil.
+
+# -------------------------------------------------------------------------------------------------
+# 
+LME_ERROR_CWSIR0132=CWSIR0132E: Una sau mai multe valori din matricea msgHandles au fost nule.
+LME_ERROR_CWSIR0132.explanation=Re\u0163eaua de argumente msgHandles nu trebuie s\u0103 con\u0163in\u0103 elemente nule \u015fi de aceea apelul la must not cConsumerSession sau BifurcatedConsumerSession a fost respins.
+LME_ERROR_CWSIR0132.useraction=Emite\u0163i apelul din nou dup\u0103 \u00eenl\u0103turarea tuturor elementelor nule din re\u0163ea
+
+# -------------------------------------------------------------------------------------------------
+# 
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0141=CWSIR0141E: Argumentul maxActiveMessages {0} nu avea o valoare valid\u0103.
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0141.explanation=Valoarea maxActiveMessages trebuie s\u0103 fie >=0
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0141.useraction=Furniza\u0163i o valoare valid\u0103 maxActiveMessages.
+
+# -------------------------------------------------------------------------------------------------
+# 
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0142=CWSIR0142E: Argumentul messageLockExpiry {0} nu avea o valoare valid\u0103.
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0142.explanation=Valoarea messageLockExpiry trebuie s\u0103 fie >=0
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0142.useraction=Furniza\u0163i o valoare valid\u0103 messageLockExpiry.
+
+# -------------------------------------------------------------------------------------------------
+# 
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0143=CWSIR0143E: Argumentul maxBatchSize {0} nu avea o valoare valid\u0103.
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0143.explanation=Valoarea maxBatchSize value trebuie s\u0103 fie >0
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0143.useraction=Furniza\u0163i o valoare valid\u0103 maxBatchSize.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIR9999=CWSIR9999E: ''{0}''
+TEMPORARY_CWSIR9999.explanation=Dac\u0103 acest mesaj nu v\u0103 d\u0103 suficiente informa\u0163ii, verifica\u0163i mesajele anterioare pentru ajutor suplimentar.
+TEMPORARY_CWSIR9999.useraction=Verifica\u0163i mesajele anterioare pentru mai multe informa\u0163ii.

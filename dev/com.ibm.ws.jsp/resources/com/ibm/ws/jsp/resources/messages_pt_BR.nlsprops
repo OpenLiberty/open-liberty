@@ -1,0 +1,1260 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME ws/code/jsp/src/com/ibm/ws/jsp/resources/messages.nlsprops
+#COMPONENTPREFIX JSPG
+#COMPONENTNAMEFOR JSPG jsp
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+
+jsp.params.invalid.parent=JSPG0001E: jsp:params possui uma tag pai inv\u00e1lida
+jsp.params.invalid.parent.explanation=
+jsp.params.invalid.parent.useraction=
+
+jsp.fallback.invalid.parent=JSPG0002E: jsp:fallback possui uma tag pai inv\u00e1lida
+jsp.fallback.invalid.parent.explanation=
+jsp.fallback.invalid.parent.useraction=
+
+jsp.param.invalid.parent=JSPG0003E: jsp:param possui uma tag pai inv\u00e1lida
+jsp.param.invalid.parent.explanation=
+jsp.param.invalid.parent.useraction=
+
+jsp.param.name.empty=JSPG0004E: o atributo de nome jsp:param n\u00e3o pode ser vazio
+jsp.param.name.empty.explanation=
+jsp.param.name.empty.useraction=
+
+jsp.error.tld.not.found=JSPG0005E: o arquivo tld n\u00e3o p\u00f4de ser localizado para a uri [{0}] prefixo [{1}]
+jsp.error.tld.not.found.explanation=
+jsp.error.tld.not.found.useraction=
+
+jsp.error.missing.attribute=JSPG0006E: O atributo requerido {0} da Tag de Customiza\u00e7\u00e3o est\u00e1 ausente
+jsp.error.missing.attribute.explanation=
+jsp.error.missing.attribute.useraction=
+
+jsp.error.bad.attribute=JSPG0007E: A Tag de Customiza\u00e7\u00e3o possui atributo ausente {0}
+jsp.error.bad.attribute.explanation=
+jsp.error.bad.attribute.useraction=
+
+jsp.error.invalid.attributes=JSPG0008E: A Tag de Customiza\u00e7\u00e3o possui atributos inv\u00e1lidos
+jsp.error.invalid.attributes.explanation=
+jsp.error.invalid.attributes.useraction=
+
+jsp.error.unable.loadclass=JSPG0009E: N\u00e3o \u00e9 poss\u00edvel carregar a classe manipuladora de tag {0}
+jsp.error.unable.loadclass.explanation=
+jsp.error.unable.loadclass.useraction=
+
+jsp.root.has.no.attributes=JSPG0010E: o elemento jsp:root n\u00e3o possui atributos
+jsp.root.has.no.attributes.explanation=
+jsp.root.has.no.attributes.useraction=
+
+jsp.error.usebean.missing.attribute=JSPG0011E: jsp:useBean est\u00e1 sem um atributo do id
+jsp.error.usebean.missing.attribute.explanation=
+jsp.error.usebean.missing.attribute.useraction=
+
+jsp.error.usebean.missing.type=JSPG0012E: jsp:useBean est\u00e1 sem um atributo de tipo ou atributo de classe
+jsp.error.usebean.missing.type.explanation=
+jsp.error.usebean.missing.type.useraction=
+
+jsp.error.usebean.duplicate=JSPG0013E: Um bean com id {0} j\u00e1 foi definido 
+jsp.error.usebean.duplicate.explanation=
+jsp.error.usebean.duplicate.useraction=
+
+jsp.error.usebean.prohibited.as.session=JSPG0014E: o atributo de escopo n\u00e3o poder\u00e1 ser "sess\u00e3o" se a diretiva da p\u00e1gina de sess\u00e3o for falsa
+jsp.error.usebean.prohibited.as.session.explanation=
+jsp.error.usebean.prohibited.as.session.useraction=
+
+jsp.error.usebean.not.both=JSPG0015E: jsp:useBean n\u00e3o pode ter uma classe nem um atributo beanName (classe = [{0}] beanName =[{1}]). 
+jsp.error.usebean.not.both.explanation=
+jsp.error.usebean.not.both.useraction=
+
+jsp.error.usebean.invalid.scope=JSPG0016E: valor de atributo de escopo inv\u00e1lido. Deve ser p\u00e1gina, pedido, sess\u00e3o ou aplicativo. O escopo especificou {0}.
+jsp.error.usebean.invalid.scope.explanation=
+jsp.error.usebean.invalid.scope.useraction=
+
+jsp.error.usebean.contains.no.attributes=JSPG0017E: jsp:useBean n\u00e3o cont\u00e9m atributos
+jsp.error.usebean.contains.no.attributes.explanation=
+jsp.error.usebean.contains.no.attributes.useraction=
+
+jsp.error.expression.contains.no.cdata=JSPG0018E: A express\u00e3o n\u00e3o cont\u00e9m texto
+jsp.error.expression.contains.no.cdata.explanation=
+jsp.error.expression.contains.no.cdata.useraction=
+
+jsp.error.invalid.value.for.session=JSPG0019E: Valor inv\u00e1lido para a diretiva da sess\u00e3o
+jsp.error.invalid.value.for.session.explanation=
+jsp.error.invalid.value.for.session.useraction=
+
+jsp.error.page.invalid.buffer=JSPG0020E: Valor inv\u00e1lido para a diretiva do buffer
+jsp.error.page.invalid.buffer.explanation=
+jsp.error.page.invalid.buffer.useraction=
+
+jsp.error.page.invalid.autoflush=JSPG0021E: Valor inv\u00e1lido para a diretiva autoflush
+jsp.error.page.invalid.autoflush.explanation=
+jsp.error.page.invalid.autoflush.useraction=
+
+jsp.error.page.invalid.threadsafe=JSPG0022E: Valor inv\u00e1lido para a diretiva thread-safe
+jsp.error.page.invalid.threadsafe.explanation=
+jsp.error.page.invalid.threadsafe.useraction=
+
+jsp.error.page.invalid.iserrorpage=JSPG0023E: Valor inv\u00e1lido para o atributo iserrorpage
+jsp.error.page.invalid.iserrorpage.explanation=
+jsp.error.page.invalid.iserrorpage.useraction=
+
+jsp.error.page.directive.unknown=JSPG0024E: Diretiva desconhecida {0}
+jsp.error.page.directive.unknown.explanation=
+jsp.error.page.directive.unknown.useraction=
+
+jsp.error.page.directive.contains.no.attributes=JSPG0025E: A diretiva da p\u00e1gina n\u00e3o cont\u00e9m atributos
+jsp.error.page.directive.contains.no.attributes.explanation=
+jsp.error.page.directive.contains.no.attributes.useraction=
+
+jsp.error.scriptlet.contains.no.cdata=JSPG0026E: O scriptlet n\u00e3o cont\u00e9m texto
+jsp.error.scriptlet.contains.no.cdata.explanation=
+jsp.error.scriptlet.contains.no.cdata.useraction=
+
+jsp.error.declaration.contains.no.cdata=JSPG0027E: A declara\u00e7\u00e3o n\u00e3o cont\u00e9m texto
+jsp.error.declaration.contains.no.cdata.explanation=
+jsp.error.declaration.contains.no.cdata.useraction=
+
+jsp.error.jsptext.contains.no.cdata=JSPG0028E: jsp:text n\u00e3o cont\u00e9m texto
+jsp.error.jsptext.contains.no.cdata.explanation=
+jsp.error.jsptext.contains.no.cdata.useraction=
+
+jsp.error.invoke.only.in.tagfiles=JSPG0029E: a chamada da a\u00e7\u00e3o s\u00f3 pode ser usada nos arquivos de tags
+jsp.error.invoke.only.in.tagfiles.explanation=
+jsp.error.invoke.only.in.tagfiles.useraction=
+
+jsp.error.dobody.only.in.tagfiles=JSPG0030E: a a\u00e7\u00e3o doBody s\u00f3 pode ser usada nos arquivos de tags
+jsp.error.dobody.only.in.tagfiles.explanation=
+jsp.error.dobody.only.in.tagfiles.useraction=
+
+jsp.error.tag.directive.only.in.tagfiles=JSPG0031E: a diretiva da tag s\u00f3 pode ser usada nos arquivos de tag
+jsp.error.tag.directive.only.in.tagfiles.explanation=
+jsp.error.tag.directive.only.in.tagfiles.useraction=
+
+jsp.error.attribute.directive.only.in.tagfiles=JSPG0032E: a diretiva do atributo s\u00f3 pode ser usada nos arquivos de tags
+jsp.error.attribute.directive.only.in.tagfiles.explanation=
+jsp.error.attribute.directive.only.in.tagfiles.useraction=
+
+jsp.error.variable.directive.only.in.tagfiles=JSPG0033E: a diretiva da vari\u00e1vel s\u00f3 pode ser usada nos arquivos de tags
+jsp.error.variable.directive.only.in.tagfiles.explanation=
+jsp.error.variable.directive.only.in.tagfiles.useraction=
+
+jsp.error.internal.dtd.not.found=JSPG0034E: xml dtd ou esquema n\u00e3o localizado
+jsp.error.internal.dtd.not.found.explanation=
+jsp.error.internal.dtd.not.found.useraction=
+
+jsp.error.page.encoding.mismatch=JSPG0035E: a codifica\u00e7\u00e3o da p\u00e1gina na configura\u00e7\u00e3o de jsp n\u00e3o corresponde a uma no jsp
+jsp.error.page.encoding.mismatch.explanation=
+jsp.error.page.encoding.mismatch.useraction=
+
+jsp.error.failed.to.find.resource=JSPG0036E: Falha ao localizar recurso {0}
+jsp.error.failed.to.find.resource.explanation=
+jsp.error.failed.to.find.resource.useraction=
+
+jsp.error.page.invalid.iselignored=JSPG0037E: Valor inv\u00e1lido para o atributo isELIgnored
+jsp.error.page.invalid.iselignored.explanation=
+jsp.error.page.invalid.iselignored.useraction=
+
+jsp.error.page.invalid.dynamicattributes= JSPG0038E: Valor inv\u00e1lido para a diretiva dynamicAttributes
+jsp.error.page.invalid.dynamicattributes.explanation=
+jsp.error.page.invalid.dynamicattributes.useraction=
+
+jsp.error.page.directive.only.in.jsps=JSPG0039E: a diretiva da p\u00e1gina s\u00f3 pode ser usada nos arquivos de p\u00e1gina
+jsp.error.page.directive.only.in.jsps.explanation=
+jsp.error.page.directive.only.in.jsps.useraction=
+
+jsp.error.static.include.circular.dependency=JSPG0040E: {0} j\u00e1 foi estaticamente inclu\u00eddo
+jsp.error.static.include.circular.dependency.explanation=
+jsp.error.static.include.circular.dependency.useraction=
+
+jsp.error.tld.fn.invalid.signature.classnotfound=JSPG0041E: Classe de fun\u00e7\u00e3o do idioma de express\u00e3o n\u00e3o localizada. {0} {1} {2}
+jsp.error.tld.fn.invalid.signature.classnotfound.explanation=
+jsp.error.tld.fn.invalid.signature.classnotfound.useraction=
+
+jsp.error.tld.fn.invalid.signature.parenexpected=JSPG0042E: Par\u00eantese esperado para a fun\u00e7\u00e3o do idioma de express\u00e3o {0} {1}
+jsp.error.tld.fn.invalid.signature.parenexpected.explanation=
+jsp.error.tld.fn.invalid.signature.parenexpected.useraction=
+
+jsp.error.tld.fn.invalid.signature=JSPG0043E: Assinatura inv\u00e1lida para a fun\u00e7\u00e3o do idioma de express\u00e3o {0} {1}
+jsp.error.tld.fn.invalid.signature.explanation=
+jsp.error.tld.fn.invalid.signature.useraction=
+
+jsp.error.tld.fn.invalid.signature.commaexpected=JSPG0044E: V\u00edrgula esperada para a fun\u00e7\u00e3o do idioma de express\u00e3o {0} {1}
+jsp.error.tld.fn.invalid.signature.commaexpected.explanation=
+jsp.error.tld.fn.invalid.signature.commaexpected.useraction=
+
+jsp.error.introspect.taghandler=JSPG0045E: Erro ao recuperar informa\u00e7\u00f5es do bean para {0}
+jsp.error.introspect.taghandler.explanation=
+jsp.error.introspect.taghandler.useraction=
+
+jsp.error.tagfile.not.found=JSPG0046E: N\u00e3o \u00e9 poss\u00edvel localizar o tagfile para a tag{0} 
+jsp.error.tagfile.not.found.explanation=
+jsp.error.tagfile.not.found.useraction=
+
+jsp.error.taglib.not.found=JSPG0047E: N\u00e3o \u00e9 poss\u00edvel localizar a biblioteca de tags para a uri {0} 
+jsp.error.taglib.not.found.explanation=
+jsp.error.taglib.not.found.useraction=
+
+jsp.error.tlv.invalid.page=JSPG0048E: A p\u00e1gina falhou ao validar usando o validador taglib para {0} : {1}
+jsp.error.tlv.invalid.page.explanation=
+jsp.error.tlv.invalid.page.useraction=
+
+jsp.error.compile.failed=JSPG0049E: {0} falha ao compilar : {1}
+jsp.error.compile.failed.explanation=
+jsp.error.compile.failed.useraction=
+
+jsp.error.tld.not.found.at.location=JSPG0050E: o arquivo tld n\u00e3o p\u00f4de ser localizado no local {0}
+jsp.error.tld.not.found.at.location.explanation=
+jsp.error.tld.not.found.at.location.useraction=
+
+jsp.error.page.directive.dup.value=JSPG0051E: Valor da Diretiva da P\u00e1gina Duplicada: {0}
+jsp.error.page.directive.dup.value.explanation=
+jsp.error.page.directive.dup.value.useraction=
+
+jsp.error.tag.directive.dup.value=JSPG0052E: Valor da Diretiva da Tag Duplicada : {0}
+jsp.error.tag.directive.dup.value.explanation=
+jsp.error.tag.directive.dup.value.useraction=
+
+jsp.error.xml.no.prelude=JSPG0053E: A inclus\u00e3o de prel\u00fadios n\u00e3o \u00e9 permitida nos Documentos Jsp
+jsp.error.xml.no.prelude.explanation=
+jsp.error.xml.no.prelude.useraction=
+
+jsp.error.xml.no.coda=JSPG0054E: A inclus\u00e3o de codas n\u00e3o \u00e9 permitida nos Documentos Jsp
+jsp.error.xml.no.coda.explanation=
+jsp.error.xml.no.coda.useraction=
+
+jsp.error.unable.to.create.xml.attr=JSPG0055E: N\u00e3o \u00e9 poss\u00edvel criar um atributo xml com base no nome [{0}] valor [{1}]
+jsp.error.unable.to.create.xml.attr.explanation=
+jsp.error.unable.to.create.xml.attr.useraction=
+
+jsp.error.unable.to.create.xml.element=JSPG0056E: N\u00e3o \u00e9 poss\u00edvel criar um elemento xml com base no espa\u00e7o de nomes [{0}] nome [{1}]
+jsp.error.unable.to.create.xml.element.explanation=
+jsp.error.unable.to.create.xml.element.useraction=
+
+jsp.jspmodc.usage=JSPG0057I: JspModC -appDir <path> -tmpDir <path> -forceTranslation <true/false> -additionalClasspath <classpath> -jspFile <jspFile>
+jsp.jspmodc.usage.explanation=
+jsp.jspmodc.usage.useraction=
+
+jsp.engine.info=JSPG0058I: Mecanismo IBM JSP 2.1
+jsp.engine.info.explanation=
+jsp.engine.info.useraction=
+
+jsp.error.invalid.jsp.syntax=JSPG0060E: Sintaxe jsp inv\u00e1lida [{0}]
+jsp.error.invalid.jsp.syntax.explanation=
+jsp.error.invalid.jsp.syntax.useraction=
+
+jsp.error.unknown.attribute=JSPG0061E: O atributo {0} n\u00e3o \u00e9 reconhecido para o elemento jsp {1}
+jsp.error.unknown.attribute.explanation=
+jsp.error.unknown.attribute.useraction=
+
+jsp.error.unknown.runtime.attribute=JSPG0062E: O Atributo Request-time {0} n\u00e3o \u00e9 reconhecido para o elemento jsp {1}
+jsp.error.unknown.runtime.attribute.explanation=
+jsp.error.unknown.runtime.attribute.useraction=
+
+jsp.error.invalid.value.for.language=JSPG0063E: Valor inv\u00e1lido para a diretiva do idioma {0}
+jsp.error.invalid.value.for.language.explanation=
+jsp.error.invalid.value.for.language.useraction=
+
+# keep this around so at least NLS is done if this is added at a later time.
+jsp.error.invalid.value.for.buffer=JSPG0064E: Valor inv\u00e1lido para os valores v\u00e1lidos da diretiva do valor. Se o valor for diferente de um, o sufixo kb ser\u00e1 requerido.
+jsp.error.invalid.value.for.buffer.explanation=
+jsp.error.invalid.value.for.buffer.useraction=
+
+
+jsp.error.validating.el.nesting.el.not.allowed=JSPG0065E: Uso ilegal da tag EL. O aninhamento das marca\u00e7\u00f5es EL n\u00e3o \u00e9 permitido
+jsp.error.validating.el.nesting.el.not.allowed.explanation=
+jsp.error.validating.el.nesting.el.not.allowed.useraction=
+
+
+failed.to.parse.el.expression=JSPG0066E: Falha ao analisar a tag de Idioma de Express\u00e3o {0}
+failed.to.parse.el.expression.explanation=
+failed.to.parse.el.expression.useraction=
+
+
+el.expression.not.allowed.for.attribute=JSPG0067E: Uso ilegal da tag EL.  O valor "{2}" n\u00e3o \u00e9 permitido para o atributo "{1}" do elemento jsp {0}
+el.expression.not.allowed.for.attribute.explanation=
+el.expression.not.allowed.for.attribute.useraction=
+
+jsp.error.unmatched.tag=JSPG0068E: Tag n\u00e3o correspondente localizada ao analisar jsp [{0}]
+jsp.error.unmatched.tag.explanation=
+jsp.error.unmatched.tag.useraction=
+
+jsp.error.unmatched.end.tag=JSPG0069E: Tag de finaliza\u00e7\u00e3o n\u00e3o correspondente localizada ao analisar jsp. Esperava-se {0} localizado {1} em {2}
+jsp.error.unmatched.end.tag.explanation=
+jsp.error.unmatched.end.tag.useraction=
+
+jsp.error.dup.url.pattern=JSPG0070E: Padr\u00e3o de url duplicada [{0}] localizado na Configura\u00e7\u00e3o Jsp dos Aplicativos da Web
+jsp.error.dup.url.pattern.explanation=
+jsp.error.dup.url.pattern.useraction=
+
+jsp.error.tld.load.failed=JSPG0071E: Falha ao carregar o tld do recurso webinf {0} msg: {1}
+jsp.error.tld.load.failed.explanation=
+jsp.error.tld.load.failed.useraction=
+
+jsp.error.tld.load.failed.from.jar=JSPG0072E: Falha ao carregar o tld do jar {0} recurso {1} msg: {2}
+jsp.error.tld.load.failed.from.jar.explanation=
+jsp.error.tld.load.failed.from.jar.useraction=
+
+jsp.error.usebean.class.must.be.assignable.to.type=JSPG0073E: A classe useBean "{0}" deve ser design\u00e1vel para o tipo "{1}" para o elemento jsp {2} 
+jsp.error.usebean.class.must.be.assignable.to.type.explanation=
+jsp.error.usebean.class.must.be.assignable.to.type.useraction=
+
+jsp.error.usebean.cannot.locate.class.to.validate.assignable=JSPG0074E: N\u00e3o \u00e9 poss\u00edvel localizar a classe para determinar se a classe useBean "{0}" \u00e9 design\u00e1vel para o tipo "{1}" para o elemento jsp {2}
+jsp.error.usebean.cannot.locate.class.to.validate.assignable.explanation
+jsp.error.usebean.cannot.locate.class.to.validate.assignable.useraction
+
+jsp.error.multiple.attribute.definitions=JSPG0075E: M\u00faltiplas ocorr\u00eancias de atributo {0} n\u00e3o permitido para o elemento jsp {1}
+jsp.error.multiple.attribute.definitions.explanation=
+jsp.error.multiple.attribute.definitions.useraction=
+
+jsp.error.missing.required.attribute=JSPG0076E: Atributo necess\u00e1rio {0} para o elemento jsp ausente {1} 
+jsp.error.missing.required.attribute.explanation=
+jsp.error.missing.required.attribute.useraction=
+
+jsp.error.end.of.file.reached=JSPG0077E: o fim do arquivo foi atingido durante o processamento {0} em {1}
+jsp.error.end.of.file.reached.explanation=
+jsp.error.end.of.file.reached.useraction=
+
+
+jsp.body-content.directive.value.invalid=JSPG0078E: Valor inv\u00e1lido para o conte\u00fado do corpo do atributo da diretiva da tag.  Valor {0}
+jsp.body-content.directive.value.invalid.explanation=
+jsp.body-content.directive.value.invalid.useraction=
+
+multiple.occurences.attribute.tagfile.name=JSPG0079E:  M\u00faltiplas ocorr\u00eancias do nome do atributo ou alias ou nome dado "{2}" n\u00e3o permitido. "{2}" especificado nos elementos jsp "{0}" e "{1}"
+multiple.occurences.attribute.tagfile.name.explanation=
+multiple.occurences.attribute.tagfile.name.useraction=
+
+variable.attribute.nameGiven.nameFromAttribute.not.both=JSPG0080E:  A diretiva da vari\u00e1vel do arquivo de tags n\u00e3o pode ter um elemento jsp do atributo name-given e name-from-attribute (name-given=[{1}] name-from-attribute=[{2}]) {0}. 
+variable.attribute.nameGiven.nameFromAttribute.not.both.explanation=
+variable.attribute.nameGiven.nameFromAttribute.not.both.useraction=
+
+missing.required.variable.attribute.nameGiven.nameFromAttribute=JSPG0081E:  A diretiva da vari\u00e1vel do arquivo de tags requer um atributo name-given ou name-from-attribute para o elemento {0}. 
+missing.required.variable.attribute.nameGiven.nameFromAttribute.explanation=
+missing.required.variable.attribute.nameGiven.nameFromAttribute.useraction=
+
+invalid.value.for.variable.directive.attribute.scope=JSPG0082E:  Valor inv\u00e1lido para o elemento jsp do escopo do atributo da diretiva da vari\u00e1vel "{1}" {0}. 
+invalid.value.for.variable.directive.attribute.scope.explanation=
+invalid.value.for.variable.directive.attribute.scope.useraction=
+
+required.attribute.alias.required.if.nameFromAttribute.specified=JSPG0083E: Alias do atributo necess\u00e1rio ausente quando elemento jsp de name-from-attribute "{1}" especificado {0}
+required.attribute.alias.required.if.nameFromAttribute.specified.explanation=
+required.attribute.alias.required.if.nameFromAttribute.specified.useraction=
+
+attribute.alias.not.permitted.if.namegiven.specified=JSPG0084E: Alias do atributo "{2}" n\u00e3o permitido se name-given "{1}" especificado. Elemento jsp {0}
+attribute.alias.not.permitted.if.namegiven.specified.explanation=
+attribute.alias.not.permitted.if.namegiven.specified.useraction=
+
+jsp.error.loadclass.taghandler.attr=JSPG0085E: Erro ao carregar a classe especificada para o atributo de tag para {0}
+jsp.error.loadclass.taghandler.attr.explanation=
+jsp.error.loadclass.taghandler.attr.useraction=
+
+jsp.error.include.type.invalid=JSPG0086E: A Inclus\u00e3o Est\u00e1tica {0} deve ser do mesmo tipo que o jsp de inclus\u00e3o. 
+jsp.error.include.type.invalid.explanation=
+jsp.error.include.type.invalid.useraction=
+
+jsp.error.encoding.mismatch.config.xml=JSPG0087E: Incompatibilidade encontrada entre a codifica\u00e7\u00e3o de configura\u00e7\u00e3o de jsp {0} e a codifica\u00e7\u00e3o do pr\u00f3logo de xml {1}
+jsp.error.encoding.mismatch.config.xml.explanation=
+jsp.error.encoding.mismatch.config.xml.useraction=
+
+jsp.error.encoding.mismatch.config.pageencoding=JSPG0088E: Incompatibilidade encontrada entre a codifica\u00e7\u00e3o de configura\u00e7\u00e3o de jsp {0} e a codifica\u00e7\u00e3o de diretiva da p\u00e1gina {1}
+jsp.error.encoding.mismatch.config.pageencoding.explanation=
+jsp.error.encoding.mismatch.config.pageencoding.useraction=
+
+jsp.error.encoding.mismatch.pageencoding.xml=JSPG0089E: Incompatibilidade encontrada entre a codifica\u00e7\u00e3o da diretiva da p\u00e1gina {0} e a codifica\u00e7\u00e3o do pr\u00f3logo de xml {1}
+jsp.error.encoding.mismatch.pageencoding.xml.explanation=
+jsp.error.encoding.mismatch.pageencoding.xml.useraction=
+
+jsp.error.encoding.already.supplied=JSPG0090E: pageEncoding com erro j\u00e1 foi fornecido para este jsp
+jsp.error.encoding.already.supplied.explanation=
+jsp.error.encoding.already.supplied.useraction=
+
+jsp.error.single.line.number=JSPG0091E: Ocorreu um erro na linha: {0} no arquivo: {1}
+jsp.error.single.line.number.explanation=
+jsp.error.single.line.number.useraction=
+
+jsp.error.multiple.line.number=JSPG0092E: Ocorreu um erro entre as linhas: {0} e {1} no arquivo: {2}
+jsp.error.multiple.line.number.explanation=
+jsp.error.multiple.line.number.useraction=
+
+jsp.error.corresponding.servlet=JSPG0093E: Erro de servlet gerado no arquivo: {0} 
+jsp.error.corresponding.servlet.explanation=
+jsp.error.corresponding.servlet.useraction=
+
+jsp.error.el.function.prefix.not.found=JSPG0094E: N\u00e3o \u00e9 poss\u00edvel localizar o prefixo para a fun\u00e7\u00e3o el {0}
+jsp.error.el.function.prefix.not.found.explanation=
+jsp.error.el.function.prefix.not.found.useraction=
+
+jsp.error.el.function.not.found=JSPG0095E: N\u00e3o \u00e9 poss\u00edvel localizar a fun\u00e7\u00e3o el {0} no tld com a uri {1}
+jsp.error.el.function.not.found.explanation=
+jsp.error.el.function.not.found.useraction=
+
+jsp.error.function.classnotfound=JSPG0096E: Falha ao carregar {0}
+jsp.error.function.classnotfound.explanation=
+jsp.error.function.classnotfound.useraction=
+
+jsp.error.noFunctionMethod=JSPG0097E: Falha ao carregar o m\u00e9todo da fun\u00e7\u00e3o el {0}
+jsp.error.noFunctionMethod.explanation=
+jsp.error.noFunctionMethod.useraction=
+
+jsp.error.output.has.body=JSPG0098E: a tag jsp:output n\u00e3o pode ter um corpo
+jsp.error.output.has.body.explanation=
+jsp.error.output.has.body.useraction=
+
+jsp.error.root.invalid.version=JSPG0099E: o atributo de vers\u00e3o jsp:root \u00e9 inv\u00e1lido : {0}
+jsp.error.root.invalid.version.explanation=
+jsp.error.root.invalid.version.useraction=
+
+jsp.error.tagfile.tag_dynamic_attrs_equals_attr_name=JSPG0100E: O nome do Mapa de Atributos Din\u00e2micos \u00e9 igual ao do atributo de nome da diretiva do atributo de tag 
+jsp.error.tagfile.tag_dynamic_attrs_equals_attr_name.explanation=
+jsp.error.tagfile.tag_dynamic_attrs_equals_attr_name.useraction=
+
+jsp.error.tagfile.tag_dynamic_attrs_equals_var_name_given=JSPG0101E: O nome do Mapa de Atributos Din\u00e2micos \u00e9 igual ao do atributo name-given da diretiva da vari\u00e1vel de tag 
+jsp.error.tagfile.tag_dynamic_attrs_equals_var_name_given.explanation=
+jsp.error.tagfile.tag_dynamic_attrs_equals_var_name_given.useraction=
+
+jsp.error.jsptext.has.child.elements=JSPG0102E: jsp:text n\u00e3o pode ter elementos filhos
+jsp.error.jsptext.has.child.elements.explanation=
+jsp.error.jsptext.has.child.elements.useraction=
+
+
+jsp.error.jspbody.emptybody.only=JSPG0105E: A tag {0} pode ter apenas jsp:attribute em seu corpo.  Encontrado: {1}
+jsp.error.jspbody.emptybody.only.explanation=
+jsp.error.jspbody.emptybody.only.useraction=
+
+jsp.error.jspoutput.xml.only=JSPG0106E: O elemento jsp:output s\u00f3 pode ser usado nos documentos JSP e nos arquivos de tags na sintaxe de XML.
+jsp.error.jspoutput.xml.only.explanation=
+jsp.error.jspoutput.xml.only.useraction=
+
+jsp.error.attribute.fragment.cannot.be.scriplet=JSPG0107E: O elemento jsp:attribute com o valor do tipo JspFragment n\u00e3o pode conter scriptlets {0}.
+jsp.error.attribute.fragment.cannot.be.scriplet.explanation=
+jsp.error.attribute.fragment.cannot.be.scriplet.useraction=
+
+jsp.error.illegal.fragment.and.rtexprvalue=JSPG0108E: Ilegal especificar rtexprvalue para o atributo de fragmento de tipo. rtexprvalue: {0}
+jsp.error.illegal.fragment.and.rtexprvalue.explanation=
+jsp.error.illegal.fragment.and.rtexprvalue.useraction=
+
+jsp.error.illegal.fragment.and.type=JSPG0109E: Ilegal especificar tipo para o atributo de fragmento de tipo. tipo: {0}
+jsp.error.illegal.fragment.and.type.explanation=
+jsp.error.illegal.fragment.and.type.useraction=
+
+jsp.error.illegal.type.primitive=JSPG0110E: Ilegal especificar tipo como Classe primitiva para o atributo do arquivo de tags. primitiva {0}
+jsp.error.illegal.type.primitive.explanation=
+jsp.error.illegal.type.primitive.useraction=
+
+jsp.error.tagfile.cannot.locate.class.to.validate.primitive=JSPG0111E: N\u00e3o \u00e9 poss\u00edvel verificar o tipo de atributo do arquivo de tags {0} n\u00e3o \u00e9 uma Classe primitiva.
+jsp.error.tagfile.cannot.locate.class.to.validate.primitive.explanation=
+jsp.error.tagfile.cannot.locate.class.to.validate.primitive.useraction=
+
+jsp.error.scripting.disabled.for.translation.unit=JSPG0112E: Script nas express\u00f5es de tempo de execu\u00e7\u00e3o desativado para esta unidade de convers\u00e3o. 
+jsp.error.scripting.disabled.for.translation.unit.explanation=
+jsp.error.scripting.disabled.for.translation.unit.useraction=
+
+jsp.error.scriptlets.disabled.for.translation.unit=JSPG0113E: Scriptlets desativados para esta unidade de convers\u00e3o. 
+jsp.error.scriptlets.disabled.for.translation.unit.explanation=
+jsp.error.scriptlets.disabled.for.translation.unit.useraction=
+
+jsp.error.declarations.disabled.for.translation.unit=JSPG0114E: Declara\u00e7\u00f5es desativadas para esta unidade de convers\u00e3o. 
+jsp.error.declarations.disabled.for.translation.unit.explanation=
+jsp.error.declarations.disabled.for.translation.unit.useraction=
+
+jsp.error.expressions.disabled.for.translation.unit=JSPG0115E: Express\u00f5es desativadas para esta unidade de convers\u00e3o. 
+jsp.error.expressions.disabled.for.translation.unit.explanation=
+jsp.error.expressions.disabled.for.translation.unit.useraction=
+
+jsp.error.multiple.occurrences.directive=JSPG0116E: Ilegal especificar diretiva de p\u00e1gina {0} mais de uma vez se j\u00e1 tiver valores diferentes.  Primeiro: {1} segundo: {2}
+jsp.error.multiple.occurrences.directive.explanation=
+jsp.error.multiple.occurrences.directive.useraction=
+
+jsp.error.invalid.taglib.directive.tagdir.uri=JSPG0117E: Ilegal especificar a uri juntamente com tagdir na diretiva taglib. uri: "[{0}]" tagdir: "[{1}]"
+jsp.error.invalid.taglib.directive.tagdir.uri.explanation=
+jsp.error.invalid.taglib.directive.tagdir.uri.useraction=
+
+jsp.error.invalid.taglib.directive.duplicate.uri=JSPG0118E: Ilegal especificar m\u00faltiplas ocorr\u00eancias de uri na diretiva taglib. uri: "[{0}]" uri: "[{1}]"
+jsp.error.invalid.taglib.directive.duplicate.uri.explanation=
+jsp.error.invalid.taglib.directive.duplicate.uri.useraction=
+
+jsp.error.invalid.taglib.directive.duplicate.tagdir=JSPG0119E: Ilegal especificar m\u00faltiplas ocorr\u00eancias de tagdir na diretiva taglib. tagdir: "[{0}]" tagdir: "[{1}]"
+jsp.error.invalid.taglib.directive.duplicate.tagdir.explanation=
+jsp.error.invalid.taglib.directive.duplicate.tagdir.useraction=
+
+jsp.error.page.pageencoding.mismatch=JSPG0120E: Ilegal especificar diferentes valores para o atributo pageEncoding e o elemento de configura\u00e7\u00e3o para corresponder ao padr\u00e3o de URI. Diretiva: "[{0}]" configura\u00e7\u00e3o: "[{1}]"
+jsp.error.page.pageencoding.mismatch.explanation=
+jsp.error.page.pageencoding.mismatch.useraction=
+
+jsp.error.jsp.attribute.defined.value.jsp.attribute=JSPG0121E: Ilegal usar <jsp:attribute> para definir o valor de um atributo de <jsp:attribute>
+jsp.error.jsp.attribute.defined.value.jsp.attribute.explanation=
+jsp.error.jsp.attribute.defined.value.jsp.attribute.useraction=
+
+jsp.error.el.function.cannot.parse=JSPG0122E: N\u00e3o \u00e9 poss\u00edvel analisar a fun\u00e7\u00e3o EL {0}.
+jsp.error.el.function.cannot.parse.explanation=
+jsp.error.el.function.cannot.parse.useraction=
+
+jsp.error.unable.locate.tagname=JSPG0123E: N\u00e3o \u00e9 poss\u00edvel localizar informa\u00e7\u00f5es para o atributo de tags {0}.
+jsp.error.unable.locate.tagname.explanation=
+jsp.error.unable.locate.tagname.useraction=
+
+# jsp2.1ELwork
+jsp.error.attribute.cannot.be.request.time=JSPG0124E: De acordo com o TLD ou diretiva do atributo no arquivo de tags, o atributo "[{0}]" n\u00e3o aceita nenhuma express\u00e3o. O valor da express\u00e3o \u00e9: "[{1}]".
+jsp.error.attribute.cannot.be.request.time.explanation=
+jsp.error.attribute.cannot.be.request.time.useraction=
+
+jsp.error.attribute.cannot.be.request.time.fragment=JSPG0125E: O atributo da tag de customiza\u00e7\u00e3o {0} n\u00e3o pode ser o fragmento do tempo de execu\u00e7\u00e3o.
+jsp.error.attribute.cannot.be.request.time.fragment.explanation=
+jsp.error.attribute.cannot.be.request.time.fragment.useraction=
+
+jsp.error.page.pageencoding.dup=JSPG0126E: jsp {0} n\u00e3o pode conter mais de uma diretiva pageEncoding
+jsp.error.page.pageencoding.dup.explanation=
+jsp.error.page.pageencoding.dup.useraction=
+
+jsp.error.multiple.occurrences.tag.directive=JSPG0127E: Ilegal especificar a diretiva da tag {0} mais de uma vez.  Primeiro: {1} segundo: {2}
+jsp.error.multiple.occurrences.tag.directive.explanation=
+jsp.error.multiple.occurrences.tag.directive.useraction=
+
+jsp.error.translation.failed=JSPG0128E: N\u00e3o \u00e9 poss\u00edvel converter o JSP {0}.
+jsp.error.translation.failed.explanation=
+jsp.error.translation.failed.useraction=
+
+jsp.error.jsp.servlet.init.failed=JSPG0129E: O JspServlet falhou ao inicializar
+jsp.error.jsp.servlet.init.failed.explanation=
+jsp.error.jsp.servlet.init.failed.useraction=
+
+jsp.error.include.flush.invalid.value=JSPG0130E: Valor inv\u00e1lido para o atributo flush:  {0}
+jsp.error.include.flush.invalid.value.explanation=
+jsp.error.include.flush.invalid.value.useraction=
+
+jsp.error.non_null_tei_and_var_subelems=JSPG0131E: Erro n\u00e3o nulo tei e subelementos de vari\u00e1vel localizados
+jsp.error.non_null_tei_and_var_subelems.explanation=
+jsp.error.non_null_tei_and_var_subelems.useraction=
+
+jsp.error.tei.invalid.attributes=JSPG0132E: Atributos inv\u00e1lidos localizados para {0} {1}. O erro \u00e9 {2}
+jsp.error.tei.invalid.attributes.explanation=
+jsp.error.tei.invalid.attributes.useraction=
+
+jsp.error.jsp.attribute.invalid.parent=JSPG0133E: O pai de jsp:attribute deve ser uma a\u00e7\u00e3o padr\u00e3o ou customizada
+jsp.error.jsp.attribute.invalid.parent.explanation=
+jsp.error.jsp.attribute.invalid.parent.useraction=
+
+jsp.error.jsp.body.invalid.parent=JSPG0134E: O pai de jsp:body \u00e9 inv\u00e1lido
+jsp.error.jsp.body.invalid.parent.explanation=
+jsp.error.jsp.body.invalid.parent.useraction=
+
+jsp.error.jsp.body.parent.nobody=JSPG0135E: O pai de jsp:body \u00e9 uma tag de customiza\u00e7\u00e3o que especificou que n\u00e3o possui corpo em seu tld
+jsp.error.jsp.body.parent.nobody.explanation=
+jsp.error.jsp.body.parent.nobody.useraction=
+
+jsp.error.tagfile.invoke.var_varreader=JSPG0136E: jsp:invoke n\u00e3o pode ter o conjunto var nem varReader
+jsp.error.tagfile.invoke.var_varreader.explanation=
+jsp.error.tagfile.invoke.var_varreader.useraction=
+
+jsp.error.tagfile.dobody.var_varreader=JSPG0137E: jsp:doBody n\u00e3o pode ter o conjunto var e nem varReader
+jsp.error.tagfile.dobody.var_varreader.explanation=
+jsp.error.tagfile.dobody.var_varreader.useraction=
+
+jsp.error.tagfile.invoke.scope_var_varreader=JSPG0138E: jsp:invoke deve ter o conjunto var e varReader quando o escopo for configurado
+jsp.error.tagfile.invoke.scope_var_varreader.explanation=
+jsp.error.tagfile.invoke.scope_var_varreader.useraction=
+
+jsp.error.tagfile.dobody.scope_var_varreader=JSPG0139E: jsp:doBody deve ter o conjunto var e varReader quando o escopo for configurado
+jsp.error.tagfile.dobody.scope_var_varreader.explanation=
+jsp.error.tagfile.dobody.scope_var_varreader.useraction=
+
+jsp.error.tagfile.invoke.scope_invalid=JSPG0140E: O valor do escopo de jsp:invoke \u00e9 inv\u00e1lido
+jsp.error.tagfile.invoke.scope_invalid.explanation=
+jsp.error.tagfile.invoke.scope_invalid.useraction=
+
+jsp.error.tagfile.dobody.scope_invalid=JSPG0141E: O valor do escopo jsp:doBody \u00e9 inv\u00e1lido 
+jsp.error.tagfile.dobody.scope_invalid.explanation=
+jsp.error.tagfile.dobody.scope_invalid.useraction=
+
+rt.expression.not.allowed.for.attribute=JSPG0142E: O Valor da Expr. de Tempo de Execu\u00e7\u00e3o "{2}" n\u00e3o \u00e9 permitido para o atributo "{1}" para o elemento jsp {0}
+rt.expression.not.allowed.for.attribute.explanation=
+rt.expression.not.allowed.for.attribute.useraction=
+
+jsp.error.jsp.attribute.prefix.mismatch=JSPG0143E: O atributo de nome dejsp:attribute possui prefixo diferente para o pai : {0} n\u00e3o \u00e9 igual {1}
+jsp.error.jsp.attribute.prefix.mismatch.explanation=
+jsp.error.jsp.attribute.prefix.mismatch.useraction=
+
+jsp.error.plugin.invalid.type=JSPG0144E: Valor inv\u00e1lido para o atributo "tipo" do plug-in : {0}
+jsp.error.plugin.invalid.type.explanation=
+jsp.error.plugin.invalid.type.useraction=
+
+jsp.error.element.unknown=JSPG0145E: Elemento JSP desconhecido : {0}
+jsp.error.element.unknown.explanation=
+jsp.error.element.unknown.useraction=
+
+jsp.error.include.directive.attribute.invalid=JSPG0146E: Atributo inv\u00e1lido para a diretiva de inclus\u00e3o : {0}
+jsp.error.include.directive.attribute.invalid.explanation=
+jsp.error.include.directive.attribute.invalid.useraction=
+
+jsp.error.static.include.value.missing=JSPG0147E: Atributo "arquivo" necess\u00e1rio ausente para a diretiva de inclus\u00e3o.
+jsp.error.static.include.value.missing.explanation=
+jsp.error.static.include.value.missing.useraction=
+
+jsp.batchcompilerbase.jspfile.does.not.exist=JSPG0148E: O arquivo JSP n\u00e3o existe: {0}
+jsp.batchcompilerbase.jspfile.does.not.exist.explanation=
+jsp.batchcompilerbase.jspfile.does.not.exist.useraction=
+
+jsp.batchcompilerbase.docroot.not.found=JSPG0149E: O diret\u00f3rio de destino n\u00e3o existe: {0}
+jsp.batchcompilerbase.docroot.not.found.explanation=
+jsp.batchcompilerbase.docroot.not.found.useraction=
+
+jsp.batchcompilerbase.docroot.not.directory=JSPG0150E: O nome do diret\u00f3rio de destino n\u00e3o \u00e9 um diret\u00f3rio: {0}
+jsp.batchcompilerbase.docroot.not.directory.explanation=
+jsp.batchcompilerbase.docroot.not.directory.useraction=
+
+jsp.batchcompilerbase.return.code=JSPG0151I: C\u00f3digo de retorno: {0}
+jsp.batchcompilerbase.return.code.explanation=
+jsp.batchcompilerbase.return.code.useraction=
+
+jsp.batchcompilerbase.unable.to.create.classloader=JSPG0152E: N\u00e3o \u00e9 poss\u00edvel criar o carregador de classe.
+jsp.batchcompilerbase.unable.to.create.classloader.explanation=
+jsp.batchcompilerbase.unable.to.create.classloader.useraction=
+
+jsp.batchcompiler.initializing.server=JSPG0153I: Inicializando o servidor...
+jsp.batchcompiler.initializing.server.explanation=
+jsp.batchcompiler.initializing.server.useraction=
+
+jsp.batchcompiler.exception.while.processing.arguments=JSPG0154E: Exce\u00e7\u00e3o capturada ao processar argumentos de linha de comandos.
+jsp.batchcompiler.exception.while.processing.arguments.explanation=
+jsp.batchcompiler.exception.while.processing.arguments.useraction=
+
+jsp.batchcompiler.unknown.argument=JSPG0155E: Argumento de linha de comandos desconhecido: {0}
+jsp.batchcompiler.unknown.argument.explanation=
+jsp.batchcompiler.unknown.argument.useraction=
+
+jsp.batchcompiler.using.default.log.level=JSPG0156W: N\u00edvel log desconhecido {0}, usando padr\u00e3o {1}
+jsp.batchcompiler.using.default.log.level.explanation=
+jsp.batchcompiler.using.default.log.level.useraction=
+
+jsp.batchcompiler.using.default.cell.name=JSPG0157I: Nome da c\u00e9lula n\u00e3o fornecido; usando padr\u00e3o: {0}
+jsp.batchcompiler.using.default.cell.name.explanation=
+jsp.batchcompiler.using.default.cell.name.useraction=
+
+jsp.batchcompiler.using.default.node.name=JSPG0158I: Nome do n\u00f3 n\u00e3o fornecido; usando padr\u00e3o: {0}
+jsp.batchcompiler.using.default.node.name.explanation=
+jsp.batchcompiler.using.default.node.name.useraction=
+
+jsp.batchcompiler.using.default.server.name=JSPG0159I: Nome do servidor n\u00e3o fornecido; usando padr\u00e3o: {0}
+jsp.batchcompiler.using.default.server.name.explanation=
+jsp.batchcompiler.using.default.server.name.useraction=
+
+jsp.batchcompiler.compiling.all.webmodules=JSPG0160I: Compilando todos os m\u00f3dulos da Web
+jsp.batchcompiler.compiling.all.webmodules.explanation=
+jsp.batchcompiler.compiling.all.webmodules.useraction=
+
+jsp.batchcompiler.unable.to.initialize.server=JSPG0161E: N\u00e3o \u00e9 poss\u00edvel inicializar o servidor.
+jsp.batchcompiler.unable.to.initialize.server.explanation=
+jsp.batchcompiler.unable.to.initialize.server.useraction=
+
+jsp.batchcompiler.exception.caught.while.adding.componentmanager.service=JSPG0162E: Exce\u00e7\u00e3o capturada ao incluir o servi\u00e7o ComponentManager.
+jsp.batchcompiler.exception.caught.while.adding.componentmanager.service.explanation=
+jsp.batchcompiler.exception.caught.while.adding.componentmanager.service.useraction=
+
+jsp.batchcompiler.exception.caught.while.initializing.batchcompiler.service=JSPG0163E: Exce\u00e7\u00e3o capturada ao inicializar o servi\u00e7o do compilador de lotes.
+jsp.batchcompiler.exception.caught.while.initializing.batchcompiler.service.explanation=
+jsp.batchcompiler.exception.caught.while.initializing.batchcompiler.service.useraction=
+
+jsp.batchcompiler.repository.not.available=JSPG0164E: Servi\u00e7o de reposit\u00f3rio n\u00e3o dispon\u00edvel.
+jsp.batchcompiler.repository.not.available.explanation=
+jsp.batchcompiler.repository.not.available.useraction=
+
+jsp.batchcompiler.reading.configfile=JSPG0165I: Lendo arquivo de configura\u00e7\u00e3o... \n
+jsp.batchcompiler.reading.configfile.explanation=
+jsp.batchcompiler.reading.configfile.useraction=
+
+jsp.batchcompiler.enterpriseapp.not.found=JSPG0166E: Aplicativo Corporativo n\u00e3o localizado: {0}
+jsp.batchcompiler.enterpriseapp.not.found.explanation=
+jsp.batchcompiler.enterpriseapp.not.found.useraction=
+
+jsp.batchcompiler.finished.reading.configfile=JSPG0167I: Leitura do arquivo de configura\u00e7\u00e3o conclu\u00edda.
+jsp.batchcompiler.finished.reading.configfile.explanation=
+jsp.batchcompiler.finished.reading.configfile.useraction=
+
+jsp.batchcompiler.successfully.exiting=JSPG0168I: O Compilador de Lotes efetuou a sa\u00edda com \u00eaxito sem erros.
+jsp.batchcompiler.successfully.exiting.explanation=
+jsp.batchcompiler.successfully.exiting.useraction=
+
+jsp.batchcompiler.exiting.with.errors=JSPG0169I: O Compilador de Lotes efetuou a sa\u00edda com erros.
+jsp.batchcompiler.exiting.with.errors.explanation=
+jsp.batchcompiler.exiting.with.errors.useraction=
+
+jsp.batchcompiler.error.reading.configuration=JSPG0170E: Erro ao ler a configura\u00e7\u00e3o: {0} {1}
+jsp.batchcompiler.error.reading.configuration.explanation=
+jsp.batchcompiler.error.reading.configuration.useraction=
+
+jsp.batchcompiler.error.while.finding.server=JSPG0171E: Erro ao localizar o Servidor.
+jsp.batchcompiler.error.while.finding.server.explanation=
+jsp.batchcompiler.error.while.finding.server.useraction=
+
+jsp.batchcompiler.error.while.finding.enterpriseapp=JSPG0172E: Erro ao localizar o aplicativo corporativo.
+jsp.batchcompiler.error.while.finding.enterpriseapp.explanation=
+jsp.batchcompiler.error.while.finding.enterpriseapp.useraction=
+
+jsp.batchcompiler.extracttodir.not.writable=JSPG0173E: O diret\u00f3rio extractToDir n\u00e3o \u00e9 grav\u00e1vel: {0}
+jsp.batchcompiler.extracttodir.not.writable.explanation=
+jsp.batchcompiler.extracttodir.not.writable.useraction=
+
+jsp.batchcompiler.extracttodir.not.a.directory=JSPG0174E: extractToDir n\u00e3o \u00e9 um diret\u00f3rio: {0}
+jsp.batchcompiler.extracttodir.not.a.directory.explanation=
+jsp.batchcompiler.extracttodir.not.a.directory.useraction=
+
+jsp.batchcompiler.exception.caught.extracting.earfile=JSPG0175E: Exce\u00e7\u00e3o capturada ao extrair arquivo EAR {0}.
+jsp.batchcompiler.exception.caught.extracting.earfile.explanation=
+jsp.batchcompiler.exception.caught.extracting.earfile.useraction=
+
+jsp.batchcompiler.war.path.does.not.exist=JSPG0176E: O caminho do WAR n\u00e3o existe: {0}
+jsp.batchcompiler.war.path.does.not.exist.explanation=
+jsp.batchcompiler.war.path.does.not.exist.useraction=
+
+jsp.batchcompiler.war.path.is.not.a.file=JSPG0177E: O caminho do WAR n\u00e3o \u00e9 um arquivo: {0}
+jsp.batchcompiler.war.path.is.not.a.file.explanation=
+jsp.batchcompiler.war.path.is.not.a.file.useraction=
+
+jsp.batchcompiler.ear.path.does.not.exist=JSPG0178E: O caminho do EAR n\u00e3o existe: {0}
+jsp.batchcompiler.ear.path.does.not.exist.explanation=
+jsp.batchcompiler.ear.path.does.not.exist.useraction=
+
+jsp.batchcompiler.ear.path.is.not.a.file=JSPG0179E: O caminho do EAR n\u00e3o \u00e9 um arquivo: {0}
+jsp.batchcompiler.ear.path.is.not.a.file.explanation=
+jsp.batchcompiler.ear.path.is.not.a.file.useraction=
+
+jsp.batchcompiler.webmodule.not.found=JSPG0180E: M\u00f3dulo da Web n\u00e3o localizado: {0}
+jsp.batchcompiler.webmodule.not.found.explanation=
+jsp.batchcompiler.webmodule.not.found.useraction=
+
+jsp.batchcompiler.removing.file=JSPG0183I: Removendo {0}
+jsp.batchcompiler.removing.file.explanation=
+jsp.batchcompiler.removing.file.useraction=
+
+jsp.batchcompiler.extracting=JSPG0184I: Extraindo {0} para {1}
+jsp.batchcompiler.extracting.explanation=
+jsp.batchcompiler.extracting.useraction=
+
+jsp.batchcompiler.done.extracting=JSPG0185I: Extra\u00e7\u00e3o conclu\u00edda.
+jsp.batchcompiler.done.extracting.explanation=
+jsp.batchcompiler.done.extracting.useraction=
+
+jsp.batchcompiler.saving.zipfile=JSPG0186I: Salvando {0}
+jsp.batchcompiler.saving.zipfile.explanation=
+jsp.batchcompiler.saving.zipfile.useraction=
+
+jsp.batchcompiler.done.saving=JSPG0187I: Salvamento conclu\u00eddo.
+jsp.batchcompiler.done.saving.explanation=
+jsp.batchcompiler.done.saving.useraction=
+
+jsp.batchcompiler.exception.while.saving=JSPG0188E: Exce\u00e7\u00e3o encontrada durante a opera\u00e7\u00e3o de salvamento.
+jsp.batchcompiler.exception.while.saving.explanation=
+jsp.batchcompiler.exception.while.saving.useraction=
+
+jsp.batchcompiler.must.supply.ear.path.or.war.path.or.enterpriseapp=JSPG0192E: N\u00e3o foi fornecido nenhum nome de caminho do EAR nem do WAR nem do Aplicativo Corporativo.  Um desses deve ser fornecido.
+jsp.batchcompiler.must.supply.ear.path.or.war.path.or.enterpriseapp.explanation=
+jsp.batchcompiler.must.supply.ear.path.or.war.path.or.enterpriseapp.useraction=
+
+jsp.batchcompiler.must.supply.only.one.of.ear.path.or.war.path.or.enterpriseapp=JSPG0193E: Deve ser fornecido apenas um do caminho do EAR ou do WAR ou Aplicativo Corporativo.
+jsp.batchcompiler.must.supply.only.one.of.ear.path.or.war.path.or.enterpriseapp.explanation=
+jsp.batchcompiler.must.supply.only.one.of.ear.path.or.war.path.or.enterpriseapp.useraction=
+
+jsp.batchcompiler.webmodule.name.being.ignored.because.war.path.given=JSPG0194W: O nome do m\u00f3dulo da Web {0} est\u00e1 sendo ignorado porque o caminho do WAR foi fornecido.
+jsp.batchcompiler.webmodule.name.being.ignored.because.war.path.given.explanation=
+jsp.batchcompiler.webmodule.name.being.ignored.because.war.path.given.useraction=
+
+jsp.batchcompiler.exception.caught.extracting.warfile=JSPG0195E: Exce\u00e7\u00e3o capturada ao extrair arquivo War: {0}.
+jsp.batchcompiler.exception.caught.extracting.warfile.explanation=
+jsp.batchcompiler.exception.caught.extracting.warfile.useraction=
+
+jsp.batchcompiler.extracttodir.must.not.overlap.with.ear.path=JSPG0196E: O extractToDir do compilador de Lotes JSP n\u00e3o deve sobrepor com o caminho do ear.
+jsp.batchcompiler.extracttodir.must.not.overlap.with.ear.path.explanation=
+jsp.batchcompiler.extracttodir.must.not.overlap.with.ear.path.useraction=
+
+jsp.batchcompiler.extracttodir.must.not.overlap.with.war.path=JSPG0197E: O extractToDir do Compilador de Lotes JSP n\u00e3o deve sobrepor com o caminho do war.
+jsp.batchcompiler.extracttodir.must.not.overlap.with.war.path.explanation=
+jsp.batchcompiler.extracttodir.must.not.overlap.with.war.path.useraction=
+
+jsp.batchcompiler.extracttodir.does.not.exist=JSPG0198E: O extractToDir n\u00e3o existe: {0}
+jsp.batchcompiler.extracttodir.does.not.exist.explanation=
+jsp.batchcompiler.extracttodir.does.not.exist.useraction=
+
+jsp.batchcompiler.exception.caught.getting.warfile.list=JSPG0199E: Exce\u00e7\u00e3o capturada ao obter a lista do arquivo WAR
+jsp.batchcompiler.exception.caught.getting.warfile.list.explanation=
+jsp.batchcompiler.exception.caught.getting.warfile.list.useraction=
+
+jsp.batchcompiler.exception.caught.opening.earfile=JSPG0200E: Exce\u00e7\u00e3o capturada ao abrir o arquivo EAR
+jsp.batchcompiler.exception.caught.opening.earfile.explanation=
+jsp.batchcompiler.exception.caught.opening.earfile.useraction=
+
+jsp.batchcompiler.exception.caught.opening.warfile=JSPG0202E: Exce\u00e7\u00e3o capturada ao abrir o arquivo WAR
+jsp.batchcompiler.exception.caught.opening.warfile.explanation=
+jsp.batchcompiler.exception.caught.opening.warfile.useraction=
+
+jsp.batchcompiler.ignoring.extracttodir=JSPG0203W: ExtractToDir {0} est\u00e1 sendo ignorado porque o enterpriseapp.name foi fornecido.
+jsp.batchcompiler.ignoring.extracttodir.explanation=
+jsp.batchcompiler.ignoring.extracttodir.useraction=
+
+jsp.batchcompiler.error.adding.variable.map=JSPG0204W: Exce\u00e7\u00e3o capturada ao incluir o mapa de vari\u00e1veis. {0}
+jsp.batchcompiler.error.adding.variable.map.explanation=
+jsp.batchcompiler.error.adding.variable.map.useraction=
+
+jsp.error.building.visitor.order=JSPG0205W: Erro ao criar ordem de visitantes de JSP. {0}
+jsp.error.building.visitor.order.explanation=
+jsp.error.building.visitor.order.useraction=
+
+jsp.error.failed.load.jsp-visitor-definition=JSPG0206E: Erro ao carregar jsp-visitor-definition
+jsp.error.failed.load.jsp-visitor-definition.explanation=
+jsp.error.failed.load.jsp-visitor-definition.useraction=
+
+jsp.batchcompiler.exception.while.processing.arguments.filenotfound=JSPG0207E: Exce\u00e7\u00e3o capturada ao processar argumentos de linha de comandos: Arquivo: {0} Mensagem: {1}
+jsp.batchcompiler.exception.while.processing.arguments.filenotfound.explanation=
+jsp.batchcompiler.exception.while.processing.arguments.filenotfound.useraction=
+
+jsp.batchcompiler.compiletowebinf.being.ignored.because.compiletodir.given=JSPG0208W: compileToWebInf est\u00e1 sendo ignorado porque o compileToDir {0} foi fornecido.
+jsp.batchcompiler.compiletowebinf.being.ignored.because.compiletodir.given.explanation=
+jsp.batchcompiler.compiletowebinf.being.ignored.because.compiletodir.given.useraction=
+
+jsp.error.failed.read.jsp=JSPG0209E: {0}(0,0) falha ao ler JSP: {1}
+jsp.error.failed.read.jsp.explanation=
+jsp.error.failed.read.jsp.useraction=
+
+jsp.error.page.invalid.autoflush.buffer=JSPG0210E: O autoFlush n\u00e3o pode ser configurado como falso quando o buffer est\u00e1 configurado como nenhum
+jsp.error.page.invalid.autoflush.buffer.explanation=
+jsp.error.page.invalid.autoflush.buffer.useraction=
+
+jsp.error.root.must.be.top=JSPG0211E: jsp:root deve ser o elemento da parte superior do documento
+jsp.error.root.must.be.top.explanation=
+jsp.error.root.must.be.top.useraction=
+
+jsp.error.root.only.in.jsp.document=JSPG0212E: jsp:root s\u00f3 pode ser usado em Documentos JSP
+jsp.error.root.only.in.jsp.document.explanation=
+jsp.error.root.only.in.jsp.document.useraction=
+
+jsp.error.no.doctype-root-element.attr=JSPG0213E: O erro deve fornecer um doctype-root-element ao usar o atributo doctype-system
+jsp.error.no.doctype-root-element.attr.explanation=
+jsp.error.no.doctype-root-element.attr.useraction=
+
+jsp.error.no.doctype-system.attr=JSPG0214E: O erro doctype-system n\u00e3o \u00e9 fornecido. 
+jsp.error.no.doctype-system.attr.explanation=
+jsp.error.no.doctype-system.attr.useraction=
+
+jsp.error.failed.translation.context.creation=JSPG0215E: Erro com falha ao criar contexto de convers\u00e3o configurado de {0}. Exce\u00e7\u00e3o: {2}
+jsp.error.failed.translation.context.creation.explanation=
+jsp.error.failed.translation.context.creation.useraction=
+
+jsp.error.failed.load.context.class=JSPG0216E: Erro com falha ao carregar classe de contexto configurado {0}
+jsp.error.failed.load.context.class.explanation=
+jsp.error.failed.load.context.class.useraction=
+
+jsp.error.failed.load.extension.processor.class=JSPG0217E: Erro com falha ao carregar classe do processador de extens\u00e3o configurada {0}
+jsp.error.failed.load.extension.processor.class.explanation=
+jsp.error.failed.load.extension.processor.class.useraction=
+
+
+jsp.error.unable.locate.setter.method.attribute.for.tagname=JSPG0218E: Erro com falha ao localizar m\u00e9todo setter para o atributo {1} na classe de tags {0}
+jsp.error.unable.locate.setter.method.attribute.for.tagname.explanation=
+jsp.error.unable.locate.setter.method.attribute.for.tagname.useraction=
+
+jsp.error.invalid.taglib.directive.attribute=JSPG0219E: O atributo da diretiva taglib com erro {0} com valor {1} \u00e9 desconhecido.
+jsp.error.invalid.taglib.directive.attribute.explanation=
+jsp.error.invalid.taglib.directive.attribute.useraction=
+
+jsp.error.invalid.taglib.directive.missing.required.prefix=JSPG0220E: A diretiva taglib com erro est\u00e1 sem o prefixo do atributo.
+jsp.error.invalid.taglib.directive.missing.required.prefix.explanation=
+jsp.error.invalid.taglib.directive.missing.required.prefix.useraction=
+
+jsp.batchcompiler.compiling.in.metainf.not.allowed=JSPG0221E: Compila\u00e7\u00e3o de um JSP em META-INF n\u00e3o permitida.  Arquivo: {0}
+jsp.batchcompiler.compiling.in.metainf.not.allowed.explanation=
+jsp.batchcompiler.compiling.in.metainf.not.allowed.useraction=
+
+jsp.batchcompiler.if.removetempdir.true.enterpriseapp.must.be.given=JSPG0222E: Se removeTempDir for verdadeiro, enterpriseApp.name dever\u00e1 ser fornecido.
+jsp.batchcompiler.if.removetempdir.true.enterpriseapp.must.be.given.explanation=
+jsp.batchcompiler.if.removetempdir.true.enterpriseapp.must.be.given.useraction=
+
+jsp.batchcompiler.if.translatejsps.false.removetempdir.must.be.true=JSPG0223E: Se converter for falso, removeTempDir dever\u00e1 ser verdadeiro.
+jsp.batchcompiler.if.translatejsps.false.removetempdir.must.be.true.explanation=
+jsp.batchcompiler.if.translatejsps.false.removetempdir.must.be.true.useraction=
+
+jsp.batchcompiler.ignoring.scratchdir=JSPG0224W: O par\u00e2metro scratchdir [{0}] do Mecanismo JSP est\u00e1 sendo ignorado porque ear.path ou war.path foi fornecido.
+jsp.batchcompiler.ignoring.scratchdir.explanation=
+jsp.batchcompiler.ignoring.scratchdir.useraction=
+
+jsp.error.single.line.number.included.file=JSPG0225E: Ocorreu um erro na linha: {0} no arquivo inclu\u00eddo estaticamente: {1}
+jsp.error.single.line.number.included.file.explanation=
+jsp.error.single.line.number.included.file.useraction=
+
+jsp.error.multiple.line.number.included.file=JSPG0226E: Ocorreu um erro entre as linhas: {0} e {1} no arquivo inclu\u00eddo estaticamente: {2}
+jsp.error.multiple.line.number.included.file.explanation=
+jsp.error.multiple.line.number.included.file.useraction=
+
+jsp.error.exception.caught.translating=JSPG0227E: Exce\u00e7\u00e3o capturada ao converter {0}
+jsp.error.exception.caught.translating.explanation=
+jsp.error.exception.caught.translating.useraction=
+
+jsp.error.exception.caught.translating.included.file=JSPG0228E: Exce\u00e7\u00e3o capturada ao converter {0}: erro no arquivo inclu\u00eddo estaticamente {1}
+jsp.error.exception.caught.translating.included.file.explanation=
+jsp.error.exception.caught.translating.included.file.useraction=
+
+JSPG0229=Erro de Processamento da JSP
+JSPG0230=C\u00f3digo de Erro HTTP:
+JSPG0231=Mensagem de Erro:
+JSPG0232=Causa Raiz:
+
+jsp.batchcompiler.exception.caught.while.getting.configuration.options=JSPG0233E: Exce\u00e7\u00e3o capturada ao obter op\u00e7\u00f5es de configura\u00e7\u00e3o.
+jsp.batchcompiler.exception.caught.while.getting.configuration.options.explanation=
+jsp.batchcompiler.exception.caught.while.getting.configuration.options.useraction=
+
+jsp.error.unable.to.locate.tld.jar.file=JSPG0234E: O cont\u00eainer do JSP n\u00e3o consegue localizar o recurso de arquivo de Java (JAR) [{0}] para analisar os descritores de biblioteca de tags (TLDs).
+jsp.error.unable.to.locate.tld.jar.file.explanation=Um URI da biblioteca de marca\u00e7\u00f5es definida como um local do JAR (arquivo web.xml ou diretiva de p\u00e1gina) n\u00e3o pode ser localizado.
+jsp.error.unable.to.locate.tld.jar.file.useraction=Verifique se o arquivo JAR existe e est\u00e1 acess\u00edvel para este m\u00f3dulo da web.
+
+jsp.error.failed.load.tei.class=JSPG0235E: O cont\u00eainer do JSP falhou ao carregar a classe TagExtraInfo [{0}] 
+jsp.error.failed.load.tei.class.explanation=O cont\u00eainer do JSP n\u00e3o pode carregar a classe TagExtraInfo que est\u00e1 especificada no TLD (Tag Library Descriptor).
+jsp.error.failed.load.tei.class.useraction=Verifique se a classe TagExtraInfo existe e est\u00e1 acess\u00edvel para este m\u00f3dulo da web.
+
+jsp.error.failed.load.tlv.class=JSPG0236E: O cont\u00eainer do JSP falhou ao carregar a classe TagLibraryValidator [{0}]
+jsp.error.failed.load.tlv.class.explanation=O cont\u00eainer do JSP n\u00e3o pode carregar a classe TagLibraryValidator que est\u00e1 especificada no TLD (Tag Library Descriptor).
+jsp.error.failed.load.tlv.class.useraction=Verifique se a classe TagLibraryValidator existe e est\u00e1 acess\u00edvel para este m\u00f3dulo da web.
+
+jsp.error.tagfile.nameFrom.noAttribute=JSPG0237E: N\u00e3o \u00e9 poss\u00edvel localizar uma diretiva de atributo com um atributo de nome com um valor \"{0}\", o valor desse atributo name-from-attribute.
+jsp.error.tagfile.nameFrom.noAttribute.explanation=Explica\u00e7\u00e3o
+jsp.error.tagfile.nameFrom.noAttribute.useraction=A\u00e7\u00e3o do Usu\u00e1rio
+
+jsp.error.tagfile.nameFrom.badAttribute=JSPG0238E: A diretiva do atributo (declarada na linha {0} e cujo atributo de nome \u00e9 \"{1}\", o valor desse atributo name-from-attribute) do tipo java.lang.String, \u00e9 \"required\" e n\u00e3o um \"rtexprvalue\".
+jsp.error.tagfile.nameFrom.badAttribute.explanation=Explica\u00e7\u00e3o
+jsp.error.tagfile.nameFrom.badAttribute.useraction=A\u00e7\u00e3o do Usu\u00e1rio
+
+jsp.error.jspoutput.conflict=JSPG0239E: <jsp:output>: \u00e9 ilegal a exist\u00eancia de m\u00faltiplas ocorr\u00eancias de \"{0}\" com diferentes valores (antigo: {1}, novo: {2})
+jsp.error.jspoutput.conflict.explanation=<jsp:output> cont\u00e9m diversas ocorr\u00eancias do atributo e possuem valores diferentes.
+jsp.error.jspoutput.conflict.useraction=Certifique-se de que diversas ocorr\u00eancias do atributo possuam o mesmo valor.
+
+# defect 396002
+jsp.error.prefix.redefined=JSPG0240E: Tentativa de redefinir o prefixo \"{0}\" para \"{1}\", quando ele j\u00e1 havia sido definido como \"{2}\" no escopo atual.
+jsp.error.prefix.redefined.explanation= O prefixo taglibrary j\u00e1 foi definido com um URI diferente.
+jsp.error.prefix.redefined.useraction= Certifique-se de que o prefixo esteja definido com apenas um URI.
+
+# defect 396002
+jsp.error.prefix.use_before_dcl=JSPG0241E: O prefixo \"{0}\" especificado nesta diretiva de tag foi usado anteriormente por uma a\u00e7\u00e3o no arquivo {1}.
+jsp.error.prefix.use_before_dcl.explanation= O prefixo taglibrary foi usado antes da diretiva de identifica\u00e7\u00e3o que define o prefixo.
+jsp.error.prefix.use_before_dcl.useraction= Mova a diretiva de identifica\u00e7\u00e3o acima de todas as a\u00e7\u00f5es que usam o prefixo.
+
+# jsp2.1work
+jsp.error.page.invalid.trimdirectivewhitespaces=JSPG0242E: Valor inv\u00e1lido para o atributo trimDirectiveWhitespaces
+jsp.error.page.invalid.trimdirectivewhitespaces.explanation=
+jsp.error.page.invalid.trimdirectivewhitespaces.useraction=
+
+# jsp2.1ELwork
+jsp.error.page.invalid.deferredsyntaxallowedasliteral=JSPG0243E: Valor inv\u00e1lido para o atributo deferredSyntaxAllowedAsLiteral
+jsp.error.page.invalid.deferredsyntaxallowedasliteral.explanation=
+jsp.error.page.invalid.deferredsyntaxallowedasliteral.useraction=
+
+# jsp2.1ELwork
+jsp.error.el.template.deferred=JSPG0244E: \"{0}\" n\u00e3o \u00e9 permitido no texto de modelo.
+jsp.error.el.template.deferred.explanation=
+jsp.error.el.template.deferred.useraction=
+
+# jsp2.1ELwork
+jsp.error.page.conflict.deferredsyntaxallowedasliteral=JSPG0245E: Diretiva da p\u00e1gina:\u00e9 ilegal exist\u00eancia de m\u00faltiplas ocorr\u00eancias de ''deferredSyntaxAllowedAsLiteral'' com diferentes valores (antigo: {0}, novo: {1})
+jsp.error.page.conflict.deferredsyntaxallowedasliteral.explanation=
+jsp.error.page.conflict.deferredsyntaxallowedasliteral.useraction=
+
+# jsp2.1ELwork
+jsp.error.tag.conflict.deferredsyntaxallowedasliteral=JSPG0246E: Diretiva da tag:\u00e9 ilegal a exist\u00eancia de m\u00faltiplas ocorr\u00eancias de ''deferredSyntaxAllowedAsLiteral'' com valores diferentes (antigo: {0}, novo: {1})
+jsp.error.tag.conflict.deferredsyntaxallowedasliteral.explanation=
+jsp.error.tag.conflict.deferredsyntaxallowedasliteral.useraction=
+
+# jsp2.1ELwork
+jsp.error.page.conflict.trimdirectivewhitespaces=JSPG0247E: Diretiva da p\u00e1gina: \u00e9 ilegal a exist\u00eancia de m\u00faltiplas ocorr\u00eancias de ''trimDirectiveWhitespaces'' com diferentes valores (antigo: {0}, novo: {1})
+jsp.error.page.conflict.trimdirectivewhitespaces.explanation=
+jsp.error.page.conflict.trimdirectivewhitespaces.useraction=
+
+# jsp2.1ELwork
+jsp.error.tag.conflict.trimdirectivewhitespaces=JSPG0248E: Diretiva da tag: \u00e9 ilegal a exist\u00eancia de m\u00faltiplas ocorr\u00eancias de ''trimDirectiveWhitespaces'' com diferentes valores(antigo: {0}, novo: {1})
+jsp.error.tag.conflict.trimdirectivewhitespaces.explanation=
+jsp.error.tag.conflict.trimdirectivewhitespaces.useraction=
+
+# jsp2.1ELwork
+jsp.error.tag.conflict.attr=JSPG0249E: Diretiva da tag: \u00e9 ilegal a exist\u00eancia de m\u00faltiplas ocorr\u00eancias do atributo \"{0}\" com diferentes valores (antigo: {1}, novo: {2})
+jsp.error.tag.conflict.attr.explanation=
+jsp.error.tag.conflict.attr.useraction=
+
+# jsp2.1ELwork
+jsp.error.tagdirective.badbodycontent=JSPG0250E: Conte\u00fado do corpo inv\u00e1lido ({0}) na diretiva da tag.
+jsp.error.tagdirective.badbodycontent.explanation=
+jsp.error.tagdirective.badbodycontent.useraction=
+
+# jsp2.1ELwork
+jsp.error.deferredvaluetypewithoutdeferredvalue=JSPG0251E: N\u00e3o ser\u00e1 poss\u00edvel especificar um tipo de valor se 'deferredValue' n\u00e3o for 'verdadeiro'
+jsp.error.deferredvaluetypewithoutdeferredvalue.explanation=
+jsp.error.deferredvaluetypewithoutdeferredvalue.useraction=
+
+# jsp2.1ELwork
+jsp.error.deferredmethodsignaturewithoutdeferredmethod=JSPG0252E: N\u00e3o ser\u00e1 poss\u00edvel especificar uma assinatura de m\u00e9todo se 'deferredMethod' n\u00e3o for 'verdadeiro'
+jsp.error.deferredmethodsignaturewithoutdeferredmethod.explanation=
+jsp.error.deferredmethodsignaturewithoutdeferredmethod.useraction=
+
+# jsp2.1ELwork
+jsp.error.deferredmethodandvalue=JSPG0253E: 'deferredValue' e 'deferredMethod' n\u00e3o podem ser ambos 'verdadeiros'
+jsp.error.deferredmethodandvalue.explanation=
+jsp.error.deferredmethodandvalue.useraction=
+
+# jsp2.1ELwork
+jsp.error.invalid.version=JSPG0254E: Vers\u00e3o de JSP inv\u00e1lida definida para o arquivo de tags em {0}
+jsp.error.invalid.version.explanation=
+jsp.error.invalid.version.useraction=
+
+# jsp2.1ELwork
+jsp.error.unknown_attribute_type=JSPG0255E: Tipo de atributo desconhecido ({1}) para o atributo {0}.
+jsp.error.unknown_attribute_type.explanation=
+jsp.error.unknown_attribute_type.useraction=
+
+# jsp2.1ELwork
+jsp.error.coerce_to_type=JSPG0256E: N\u00e3o \u00e9 poss\u00edvel for\u00e7ar o valor ({2}) para o tipo ({1}) para o atributo {0}.
+jsp.error.coerce_to_type.explanation=
+jsp.error.coerce_to_type.useraction=
+
+# jsp2.1work
+jsp.error.xml.spaceRequiredBeforeVersionInTextDecl=JSPG0257E: O espa\u00e7o em branco \u00e9 necess\u00e1rio antes do pseudoatributo da vers\u00e3o na declara\u00e7\u00e3o de texto.
+jsp.error.xml.spaceRequiredBeforeVersionInTextDecl.explanation=
+jsp.error.xml.spaceRequiredBeforeVersionInTextDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.spaceRequiredBeforeVersionInXMLDecl=JSPG0258E: O espa\u00e7o em branco \u00e9 necess\u00e1rio antes do pseudoatributo da vers\u00e3o na declara\u00e7\u00e3o de XML.
+jsp.error.xml.spaceRequiredBeforeVersionInXMLDecl.explanation=
+jsp.error.xml.spaceRequiredBeforeVersionInXMLDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.versionNotSupported=JSPG0259E: A vers\u00e3o XML \"{0}\" n\u00e3o \u00e9 suportada, somente a XML 1.0 \u00e9 suportada.
+jsp.error.xml.versionNotSupported.explanation=
+jsp.error.xml.versionNotSupported.useraction=
+
+# jsp2.1work
+jsp.error.xml.encodingDeclRequired=JSPG0260E: A declara\u00e7\u00e3o de codifica\u00e7\u00e3o \u00e9 requerida na declara\u00e7\u00e3o de texto.
+jsp.error.xml.encodingDeclRequired.explanation=
+jsp.error.xml.encodingDeclRequired.useraction=
+
+# jsp2.1work
+jsp.error.xml.versionInfoRequired=JSPG0261E: A vers\u00e3o \u00e9 requerida na declara\u00e7\u00e3o XML.
+jsp.error.xml.versionInfoRequired.explanation=
+jsp.error.xml.versionInfoRequired.useraction=
+
+# jsp2.1work
+jsp.error.xml.spaceRequiredBeforeEncodingInTextDecl=JSPG0262E: O espa\u00e7o em branco \u00e9 necess\u00e1rio antes da codifica\u00e7\u00e3o do pseudoatributo na declara\u00e7\u00e3o de texto.
+jsp.error.xml.spaceRequiredBeforeEncodingInTextDecl.explanation=
+jsp.error.xml.spaceRequiredBeforeEncodingInTextDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.spaceRequiredBeforeEncodingInXMLDecl=JSPG0263E: O espa\u00e7o em branco \u00e9 necess\u00e1rio antes da codifica\u00e7\u00e3o do pseudoatributo na declara\u00e7\u00e3o de XML.
+jsp.error.xml.spaceRequiredBeforeEncodingInXMLDecl.explanation=
+jsp.error.xml.spaceRequiredBeforeEncodingInXMLDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.eqRequiredInTextDecl=JSPG0264E: O caractere '' = '' deve vir ap\u00f3s \"{0}\" na declara\u00e7\u00e3o de texto.
+jsp.error.xml.eqRequiredInTextDecl.explanation=
+jsp.error.xml.eqRequiredInTextDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.eqRequiredInXMLDecl=JSPG0265E: O caractere '' = '' deve vir ap\u00f3s \"{0}\" na declara\u00e7\u00e3o de XML.
+jsp.error.xml.eqRequiredInXMLDecl.explanation=
+jsp.error.xml.eqRequiredInXMLDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.quoteRequiredInTextDecl=JSPG0266E: O valor ap\u00f3s \"{0}\" na declara\u00e7\u00e3o de texto deve ser uma sequ\u00eancia de caracteres entre aspas.
+jsp.error.xml.quoteRequiredInTextDecl.explanation=
+jsp.error.xml.quoteRequiredInTextDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.quoteRequiredInXMLDecl=JSPG0267E: O valor ap\u00f3s \"{0}\" na declara\u00e7\u00e3o de XML deve ser uma sequ\u00eancia de caracteres entre aspas.
+jsp.error.xml.quoteRequiredInXMLDecl.explanation=
+jsp.error.xml.quoteRequiredInXMLDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.invalidCharInTextDecl=JSPG0268E: Um caractere de XML inv\u00e1lido (Unicode: 0x{0}) foi localizado na declara\u00e7\u00e3o de texto.
+jsp.error.xml.invalidCharInTextDecl.explanation=
+jsp.error.xml.invalidCharInTextDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.invalidCharInXMLDecl=JSPG0269E: Um caractere de XML inv\u00e1lido (Unicode: 0x{0}) foi localizado na declara\u00e7\u00e3o de XML.
+jsp.error.xml.invalidCharInXMLDecl.explanation=
+jsp.error.xml.invalidCharInXMLDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.closeQuoteMissingInTextDecl=JSPG0270E: a aspa de fechamento no valor ap\u00f3s \"{0}\" na declara\u00e7\u00e3o de texto est\u00e1 ausente.
+jsp.error.xml.closeQuoteMissingInTextDecl.explanation=
+jsp.error.xml.closeQuoteMissingInTextDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.closeQuoteMissingInXMLDecl=JSPG0271E: a aspa de fechamento no valor ap\u00f3s \"{0}\" na declara\u00e7\u00e3o de XML est\u00e1 ausente.
+jsp.error.xml.closeQuoteMissingInXMLDecl.explanation=
+jsp.error.xml.closeQuoteMissingInXMLDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.encodingByteOrderUnsupported=JSPG0272E: A ordem do byte fornecido para codifica\u00e7\u00e3o \"{0}\" n\u00e3o \u00e9 suportada.
+jsp.error.xml.encodingByteOrderUnsupported.explanation=
+jsp.error.xml.encodingByteOrderUnsupported.useraction=
+
+# jsp2.1work
+jsp.error.xml.encodingDeclInvalid=JSPG0273E: Nome de codifica\u00e7\u00e3o inv\u00e1lido \"{0}\".
+jsp.error.xml.encodingDeclInvalid.explanation=
+jsp.error.xml.encodingDeclInvalid.useraction=
+
+# jsp2.1work
+jsp.error.xml.spaceRequiredBeforeStandalone=JSPG0274E: O espa\u00e7o em branco \u00e9 necess\u00e1rio antes do pseudoatributo independente na declara\u00e7\u00e3o de XML.
+jsp.error.xml.spaceRequiredBeforeStandalone.explanation=
+jsp.error.xml.spaceRequiredBeforeStandalone.useraction=
+
+# jsp2.1work
+jsp.error.xml.sdDeclInvalid=JSPG0275E: O valor da declara\u00e7\u00e3o do documento independente deve ser \"sim\" ou \"n\u00e3o\", n\u00e3o \"{0}\".
+jsp.error.xml.sdDeclInvalid.explanation=
+jsp.error.xml.sdDeclInvalid.useraction=
+
+# jsp2.1work
+jsp.error.xml.noMorePseudoAttributes=JSPG0276E: nenhum pseudoatributo \u00e9 mais permitido.
+jsp.error.xml.noMorePseudoAttributes.explanation=
+jsp.error.xml.noMorePseudoAttributes.useraction=
+
+# jsp2.1work
+jsp.error.xml.morePseudoAttributes=JSPG0277E: s\u00e3o esperados mais pseudoatributos.
+jsp.error.xml.morePseudoAttributes.explanation=
+jsp.error.xml.morePseudoAttributes.useraction=
+
+# jsp2.1work
+jsp.error.xml.xmlDeclUnterminated=JSPG0278E: A declara\u00e7\u00e3o de XML deve terminar com \"?>\".
+jsp.error.xml.xmlDeclUnterminated.explanation=
+jsp.error.xml.xmlDeclUnterminated.useraction=
+
+# jsp2.1work
+jsp.error.xml.pseudoAttrNameExpected=JSPG0279E: um nome do pseudoatributo \u00e9 esperado.
+jsp.error.xml.pseudoAttrNameExpected.explanation=
+jsp.error.xml.pseudoAttrNameExpected.useraction=
+
+# jsp2.1work
+jsp.error.xml.reservedPITarget=JSPG0280E: A correspond\u00eancia de destino da instru\u00e7\u00e3o de processamento \"[xX][mM][lL]\" n\u00e3o \u00e9 permitida.
+jsp.error.xml.reservedPITarget.explanation=
+jsp.error.xml.reservedPITarget.useraction=
+
+# jsp2.1work
+jsp.error.xml.spaceRequiredInPI=JSPG0281E: Um espa\u00e7o em branco \u00e9 requerido entre o destino da instru\u00e7\u00e3o de processamento e os dados.
+jsp.error.xml.spaceRequiredInPI.explanation=
+jsp.error.xml.spaceRequiredInPI.useraction=
+
+# jsp2.1work
+jsp.error.xml.invalidCharInPI=JSPG0282E: Um caractere XML inv\u00e1lido (Unicode: 0x{0}) foi localizado na instru\u00e7\u00e3o de processamento.
+jsp.error.xml.invalidCharInPI.explanation=
+jsp.error.xml.invalidCharInPI.useraction=
+
+# jsp2.1work
+jsp.error.xml.invalidCharInContent=JSPG0283E: Um caractere de XML inv\u00e1lido (Unicode: 0x{0}) foi localizado no conte\u00fado de elemento do documento.
+jsp.error.xml.invalidCharInContent.explanation=
+jsp.error.xml.invalidCharInContent.useraction=
+
+# jsp2.1work
+jsp.error.xml.operationNotSupported=JSPG0284E: Opera\u00e7\u00e3o \"{0}\" n\u00e3o suportada pelo {1} leitor.
+jsp.error.xml.operationNotSupported.explanation=
+jsp.error.xml.operationNotSupported.useraction=
+
+# jsp2.1work
+jsp.error.xml.invalidASCII=JSPG0285E: Byte \"{0}\" n\u00e3o ASCII de 7 bits.
+jsp.error.xml.invalidASCII.explanation=
+jsp.error.xml.invalidASCII.useraction=
+
+# jsp2.1work
+jsp.error.xml.expectedByte=JSPG0286E: Byte esperado {0} de sequ\u00eancia UTF-8 de {1} bytes.
+jsp.error.xml.expectedByte.explanation=
+jsp.error.xml.expectedByte.useraction=
+
+# jsp2.1work
+jsp.error.xml.invalidByte=JSPG0287E: Byte inv\u00e1lido {0} de sequ\u00eancia de UTF-8 de {1} bytes.
+jsp.error.xml.invalidByte.explanation=
+jsp.error.xml.invalidByte.useraction=
+
+# jsp2.1work
+jsp.error.xml.invalidHighSurrogate=JSPG0288E: Bits substitutos elevados na sequ\u00eancia de UTF-8 n\u00e3o devem exceder 0x10, mas foi localizado 0x{0}.
+jsp.error.xml.invalidHighSurrogate.explanation=
+jsp.error.xml.invalidHighSurrogate.useraction=
+
+# jsp2.1work
+jsp.error.prolog_config_encoding_mismatch=JSPG0289E: A codifica\u00e7\u00e3o de p\u00e1gina especificada no pr\u00f3logo de XML ({0}) \u00e9 diferente da que \u00e9 especificada em jsp-property-group ({1})
+jsp.error.prolog_config_encoding_mismatch.explanation=
+jsp.error.prolog_config_encoding_mismatch.useraction=
+
+# jsp2.1work
+jsp.error.invalid.tagdir=JSPG0290E: O diret\u00f3rio do arquivo de tags {0} n\u00e3o come\u00e7a com \"/WEB-INF/tags\"
+jsp.error.invalid.tagdir.explanation=
+jsp.error.invalid.tagdir.useraction=
+
+# jsp2.1work
+jsp.error.invalid.implicit=JSPG0291E: TLD impl\u00edcito inv\u00e1lido para arquivo de tags no {0}; elemento inv\u00e1lido= [{1}].
+jsp.error.invalid.implicit.explanation=
+jsp.error.invalid.implicit.useraction=
+
+# jsp2.1work
+jsp.error.invalid.implicit.version=JSPG0292E: Vers\u00e3o de JSP inv\u00e1lida definida no TLD impl\u00edcito para o arquivo de tags em {0}; vers\u00e3o=[{1}].
+jsp.error.invalid.implicit.version.explanation=
+jsp.error.invalid.implicit.version.useraction=
+
+jsp.ard.nullRequestDispatcher=JSPG0293E: ARDRequestDispatcher \u00e9 nulo.
+jsp.ard.nullRequestDispatcher.explanation=
+jsp.ard.nullRequestDispatcher.useraction=
+
+jsp.ard.executionError=JSPG0294E: O Fragmento ARD \u00e9 nulo.
+jsp.ard.executionError.explanation=
+jsp.ard.executionError.useraction=
+
+jsp.ard.notAFragmentResponse=JSPG0295E: O objeto n\u00e3o \u00e9 um FragmentResponse.
+jsp.ard.notAFragmentResponse.explanation=
+jsp.ard.notAFragmentResponse.useraction=
+
+jsp.ard.nullFragmentResponse=JSPG0296E: O Fragmento ARD n\u00e3o existe no escopo especificado.
+jsp.ard.nullFragmentResponse.explanation=
+jsp.ard.nullFragmentResponse.useraction=
+
+jsp.ard.importTagValidationError=JSPG0297E: H\u00e1 um problema com a tag de importa\u00e7\u00e3o.  O atributo de url e/ou o atributo de var precisa(m) ser configurado(s).
+jsp.ard.importTagValidationError.explanation=
+jsp.ard.importTagValidationError.useraction=
+
+jsp.error.pageContext.multipleInitOrRelease=JSPG0298E: O PageContext j\u00e1 foi inicializado ou liberado.  
+jsp.error.pageContext.multipleInitOrRelease.explanation=O cont\u00eainer JSP manipula a inicializa\u00e7\u00e3o e libera\u00e7\u00e3o dos objetos PageContext.
+jsp.error.pageContext.multipleInitOrRelease.useraction=De acordo com a especifica\u00e7\u00e3o, verifique se n\u00e3o h\u00e1 aplicativos usando objetos JspFactory.
+
+jsp.error.dynamicAttributes.translationException=JSPG0299E: O atributo din\u00e2mico {0} possui um prefixo que n\u00e3o mapeia para um espa\u00e7o de nomes.
+jsp.error.dynamicAttributes.translationException.explanation=O prefixo do atributo din\u00e2mico n\u00e3o \u00e9 mapeado para um namespace.
+jsp.error.dynamicAttributes.translationException.useraction=Certifique-se de que o prefixo \u00e9 mapeado para um namespace s existente.
+
+jsp.ard.badContext = JSPG0300E: N\u00e3o foi poss\u00edvel obter um RequestDispatcher para o contexto: {0}
+jsp.ard.badContext.explanation=N\u00e3o \u00e9 poss\u00edvel obter um RequestDispatcher para o contexto solicitado.
+jsp.ard.badContext.useraction=Verifique se os valores de tag est\u00e3o corretos e verifique se o contexto solicitado existe.
+
+jsp.error.translation.invalid.void.deferredMethodClass = JSPG0301E: Atributo inv\u00e1lido, {0}, para anula\u00e7\u00e3o de retorno do m\u00e9todo adiado.
+jsp.error.translation.invalid.void.deferredMethodClass.explanation=O atributo transferido para uma anula\u00e7\u00e3o de retorno do m\u00e9todo adiado n\u00e3o pode ser uma sequ\u00eancia literal.
+jsp.error.translation.invalid.void.deferredMethodClass.useraction=Modifique o valor transferido para o atributo.
+
+jsp.jdk.not.at.17=JSPG8500W: O JDK 7 n\u00e3o est\u00e1 em uso apesar de o jdkSourceLevel ter sido especificado para ser 17.
+jsp.jdk.not.at.17.explanation=Foi feita um solicita\u00e7\u00e3o para compilar jsps em um n\u00edvel n\u00e3o suportado.
+jsp.jdk.not.at.17.useraction=Instale o JDK 7 ou altere o jdkSourceLevel para 16.
+
+jsp.jdk.version.exception=JSPG8501W: Exce\u00e7\u00e3o emitida ao verificar a propriedade java.version
+jsp.jdk.version.exception.explanation=Houve um problema na an\u00e1lise da propriedade java.version.
+jsp.jdk.version.exception.useraction=Verifique se a vers\u00e3o Java \u00e9 v\u00e1lida.
+
+jsp.load.class.exception=JSPG0302W: Falha ao carregar a classe JSP a seguir: {0}, a exce\u00e7\u00e3o \u00e9: {1}
+jsp.load.class.exception.explanation=Houve um problema ao carregar a classe JSP.  O Cont\u00eainer JSP tentar\u00e1 carregar o arquivo de classe com o nome do pacote org.apache.jsp ao inv\u00e9s disso.
+jsp.load.class.exception.useraction=Se o problema persistir, reinicie o aplicativo.
+
+jsp.jdksourcelevel.value =JSPG8502I: O valor do atributo JSP jdkSourceLevel \u00e9 \"{0}\".
+jsp.jdksourcelevel.value.explanation =
+jsp.jdksourcelevel.value.useraction =
+
+jsp.parse.tld.exception=JSPG0303W: O sistema n\u00e3o pode analisar o Descritor da biblioteca de tags do JSP a seguir: {0}. A exce\u00e7\u00e3o para o erro da an\u00e1lise sint\u00e1tica \u00e9: {1}
+jsp.parse.tld.exception.explanation=Ocorreu um problema ao analisar o arquivo Descritor da biblioteca de tags do JSP. Esse erro pode ser causado por um arquivo XML malformado.
+jsp.parse.tld.exception.useraction=Verifique o arquivo Descritor da biblioteca de tags do JSP para o XML malformado. Se o problema persistir ap\u00f3s a corre\u00e7\u00e3o do arquivo XML malformado, reinicie o aplicativo.
+
+system.java.compiler.not.found=JSPG0304W: O atributo JSP, useJDKCompiler, \u00e9 configurado como true, mas o compilador Java SDK n\u00e3o foi localizado. O cont\u00eainer JSP utiliza o compilador que est\u00e1 integrado no produto para compilar os arquivos JSP no m\u00f3dulo da web: {0}.
+system.java.compiler.not.found.explanation= O cont\u00eainer do JSP n\u00e3o p\u00f4de localizar o compilador do sistema, que geralmente indica que o arquivo jar do Java SDK, tools.jar, n\u00e3o foi localizado no caminho de classe.
+system.java.compiler.not.found.useraction= Certifique-se de que o arquivo jar do Java SDK, tools.jar, esteja no caminho de classe e verifique se o Java SDK suporta a API do Compilador Java. Consulte o Java Specification Request 199 para obter mais informa\u00e7\u00f5es.

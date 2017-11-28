@@ -1,0 +1,49 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.server/resources/com/ibm/ws/jmx/connector/server/internal/resources/RouterServerMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX JMX REST Connector
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKX7851 - CWWKX7899
+
+jmx.connector.server.rest.router.ssl.exception=CWWKX7851E: O controlador coletivo n\u00e3o p\u00f4de criar o contexto de SSL ao tentar rotear a conex\u00e3o jmx para {0}. A exce\u00e7\u00e3o \u00e9: {1}
+jmx.connector.server.rest.router.ssl.exception.explanation=Um contexto de SSL n\u00e3o p\u00f4de ser criado com o certificado SSL do servidor. 
+jmx.connector.server.rest.router.ssl.exception.useraction=Verifique a configura\u00e7\u00e3o de SSL do servidor e registre novamente o servidor no controlador coletivo.
+
+jmx.connector.server.rest.router.jmxauth.node.not.found=CWWKX7852E: As informa\u00e7\u00f5es sobre autentica\u00e7\u00e3o de JMX n\u00e3o est\u00e3o dispon\u00edveis no reposit\u00f3rio do controlador coletivo para o servidor de destino {0} no host {1} no diret\u00f3rio {2}. 
+jmx.connector.server.rest.router.jmxauth.node.not.found.explanation=As informa\u00e7\u00f5es sobre autentica\u00e7\u00e3o de JMX s\u00e3o necess\u00e1rias para fazer uma conex\u00e3o JMX ao servidor de destino especificado.
+jmx.connector.server.rest.router.jmxauth.node.not.found.useraction=Verifique se o servidor de destino foi autoinicializado com \u00eaxito no controlador coletivo.
+
+jmx.connector.server.rest.router.jmxauth.hostname.not.found=CWWKX7853E: A propriedade de nome do host das informa\u00e7\u00f5es sobre autentica\u00e7\u00e3o de JMX n\u00e3o est\u00e1 dispon\u00edvel no reposit\u00f3rio do controlador coletivo para o servidor de destino {0} no host {1} no diret\u00f3rio {2}.
+jmx.connector.server.rest.router.jmxauth.hostname.not.found.explanation=A propriedade de nome do host das informa\u00e7\u00f5es sobre autentica\u00e7\u00e3o de JMX \u00e9 necess\u00e1ria para fazer uma conex\u00e3o JMX com o servidor de destino especificado.
+jmx.connector.server.rest.router.jmxauth.hostname.not.found.useraction=Verifique se o servidor de destino foi autoinicializado com \u00eaxito no controlador coletivo.
+
+jmx.connector.server.rest.router.jmxauth.port.not.found=CWWKX7854E: A propriedade de porta das informa\u00e7\u00f5es sobre autentica\u00e7\u00e3o de JMX n\u00e3o est\u00e1 dispon\u00edvel no reposit\u00f3rio do controlador coletivo para o servidor de destino {0} no host {1} no diret\u00f3rio {2}.
+jmx.connector.server.rest.router.jmxauth.port.not.found.explanation=O n\u00famero da porta das informa\u00e7\u00f5es sobre autentica\u00e7\u00e3o de JMX \u00e9 necess\u00e1rio para fazer uma conex\u00e3o JMX com o servidor de destino especificado.
+jmx.connector.server.rest.router.jmxauth.port.not.found.useraction=Verifique se o servidor de destino foi autoinicializado com \u00eaxito no controlador coletivo.
+
+jmx.connector.server.rest.router.ssl.keystore.error=CWWKX7855E: O keystore requerido {0} n\u00e3o est\u00e1 configurado.
+jmx.connector.server.rest.router.ssl.keystore.error.explanation=O keystore requerido para roteamento de JMX n\u00e3o est\u00e1 configurado.
+jmx.connector.server.rest.router.ssl.keystore.error.useraction=Assegure-se de que o keystore esteja especificado no arquivo server.xml.
+
+jmx.connector.server.rest.router.collectivePlugin.not.available=CWWKX7856E: O leitor do reposit\u00f3rio do controlador coletivo n\u00e3o est\u00e1 dispon\u00edvel.
+jmx.connector.server.rest.router.collectivePlugin.not.available.explanation=O leitor do reposit\u00f3rio do controlador coletivo necess\u00e1rio n\u00e3o foi iniciado.
+jmx.connector.server.rest.router.collectivePlugin.not.available.useraction=Verifique a configura\u00e7\u00e3o do servidor para certificar-se de que os recursos requeridos para roteamento de JMX estejam presentes.

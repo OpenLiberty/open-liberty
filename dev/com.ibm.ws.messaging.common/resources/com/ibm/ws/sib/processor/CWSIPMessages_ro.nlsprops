@@ -1,0 +1,1875 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# Change activity:
+#
+# Reason          Date       Origin   Description
+# --------------- ---------- -------- ------------------------------------------
+# d673319         18/10/2010 lohit    Addressed issues related to nls translations.
+# 91911           30/01/2013 Sharath  Liberty: Added new information message for Message Discard
+# 98292           23/05/2013 Chetan   New nls message for invalid temporary prefix
+# 114553          06/11/13   balgirid Fixing message threshold not shown in messages.log
+# ------------------------------------------------------------------------------
+# File com.ibm.ws.sib.processor.CWSIPMessages.nlsprops
+#
+# SIB.processor component file for logging messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIP0001=CWSIP0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Msgs in the range CWSIP0001-CWSIP0020 General Internal Errors for Message Processor
+#
+#   - Msgs in the range CWSIP0021-CWSIP0030 belong to class com.ibm.ws.sib.processor.impl.ConnectionImpl
+#   - Msgs in the range CWSIP0031-CWSIP0040 belong to class com.ibm.ws.sib.processor.impl.BaseDestinationHandler
+#   - Msgs in the range CWSIP0041-CWSIP0070 belong to class com.ibm.ws.sib.processor.impl.DestinationManager
+#   - Msgs in the range CWSIP0071-CWSIP0080 belong to class com.ibm.ws.sib.processor.impl.AdministratorImpl
+#   - Msgs in the range CWSIP0081-CWSIP0090 belong to class com.ibm.ws.sib.processor.impl.BrowserSessionImpl
+#   - Msgs in the range CWSIP0091-CWSIP0110 belong to class com.ibm.ws.sib.processor.impl.ConnectionImpl
+#   - Msgs in the range CWSIP0111-CWSIP0120 belong to class com.ibm.ws.sib.processor.impl.ConsumerDispatcher
+#   - Msgs in the range CWSIP0121-CWSIP0130 belong to class com.ibm.ws.sib.processor.impl.AbstractDestinationHandler
+#   - Msgs in the range CWSIP0131-CWSIP0140 belong to class com.ibm.ws.sib.processor.impl.ConsumerSessionImpl
+#   - Msgs in the range CWSIP0141-CWSIP0170 belong to class com.ibm.ws.sib.processor.impl.DestinationHandler
+#   - Msgs in the range CWSIP0171-CWSIP0190 belong to class com.ibm.ws.sib.processor.impl.LocalConsumerPoint
+#   - Msgs in the range CWSIP0191-CWSIP0200 belong to class com.ibm.ws.sib.processor.impl.LockedMessageEnumerationImpl
+#   - Msgs in the range CWSIP0201-CWSIP0210 belong to class com.ibm.ws.sib.processor.runtime.MediatedMessageHandlerControl
+#   - Msgs in the range CWSIP0211-CWSIP0220 belong to class com.ibm.ws.sib.processor.impl.MessageProcessor
+#   - Msgs in the range CWSIP0221-CWSIP0230 belong to class com.ibm.ws.sib.processor.impl.ConsumerKey
+#   - Msgs in the range CWSIP0231-CWSIP0240 belong to class com.ibm.ws.sib.processor.impl.ProducerSessionImpl
+#   - Msgs in the range CWSIP0241-CWSIP0260 belong to class com.ibm.ws.sib.processor.impl.PtoPInputHandler
+#   - Msgs in the range CWSIP0261-CWSIP0270 belong to class com.ibm.ws.sib.processor.store.items.SIMPItem
+#   - Msgs in the range CWSIP0271-CWSIP0280 belong to class com.ibm.ws.sib.processor.runtime.Topicspace
+#   - Msgs in the range CWSIP0281-CWSIP0290 belong to class com.ibm.ws.sib.processor.io.impl.MessageBuffer
+#   - Msgs in the range CWSIP0291-CWSIP0300 belong to class com.ibm.ws.sib.processor.impl.ExceptionDestination
+#   - Msgs in the range CWSIP0301-CWSIP0330 General Security Errors for Message Processor
+#   - Msgs in the range CWSIP0331-CWSIP0340 belong to class com.ibm.ws.sib.processor.impl.DynamicConfigManager
+#   - Msgs in the range CWSIP0341-CWSIP0350 belong to class com.ibm.ws.sib.processor.runtime.MessageProcessorControl
+#
+#   - Msgs in the range CWSIP0361-CWSIP0370 belong to class com.ibm.ws.sib.processor.runtime.QueuedMessage
+#   - Msgs in the range CWSIP0371-CWSIP0390 belong to class com.ibm.ws.sib.processor.matching.MessageProcessorMatching
+#   - Msgs in the range CWSIP0391-CWSIP0410 belong to class com.ibm.ws.sib.processor.impl.MessageProcessor continuation
+#
+#   - Msgs in the range CWSIP0421-CWSIP0430 belong to class com.ibm.ws.sib.processor.impl.AbstractInputHandler
+#
+#
+#   - Msgs in the range CWSIP0451-CWSIP0460 belong to class com.ibm.ws.sib.processor.impl.AnycastOutputHandler
+#
+#   - Msgs in the range CWSIP0471-CWSIP0480 belong to class com.ibm.ws.sib.processor.impl.RemoteConsumerDispatcher
+#   - Msgs in the range CWSIP0481-CWSIP0490 belong to class com.ibm.ws.sib.processor.impl.RemoteConsumerKey
+#
+#
+#   - Msgs in the range CWSIP0511-CWSIP0520 belong to class com.ibm.ws.sib.processor.impl.AnycastInputHandler
+#
+#   - Msgs in the range CWSIP0531-CWSIP0540 belong to class com.ibm.ws.sib.processor.impl.AIBrowseCoursor
+#   - Msgs in the range CWSIP0541-CWSIP0550 belong to class com.ibm.ws.sib.processor.utils.SIMPUtils
+#   - Msgs in the range CWSIP0551-CWSIP0560 belong to class com.ibm.ws.sib.processor.impl.store.itemstreams.PtoPLocalMsgsItemStream
+#   - Msgs in the range CWSIP0561-CWSIP0570 belong to class com.ibm.ws.sib.processor.impl.AsynchConsumer
+#   - Msgs in the range CWSIP0571-CWSIP0579 belong to class com.ibm.ws.sib.processor.impl.mediation.MessagePump
+#
+#
+#
+#
+#   - Msgs in the range CWSIP0621-CWSIP0630 belong to class com.ibm.ws.sib.processor.utils.AliasChainValidator
+#   - Msgs in the range CWSIP0631-CWSIP0640 belong to classes com.ibm.ws.sib.processor.impl.Durable(Input|Output)Handler
+#   - Msgs in the range CWSIP0641-CWSIP0650 belong to classes com.ibm.ws.sib.processor.impl.MediationInputItemStream
+#   - Msgs in the range CWSIP0651-CWSIP0660 belong to classes com.ibm.ws.sib.processor.impl.mediation.MediationStateMachine
+#   - Msgs in the range CWSIP0661-CWSIP0670 belong to classes com.ibm.ws.sib.processor.impl.mediation.ExceptionDestinationImpl
+#
+#   - Msgs in the range CWSIP0701-CWSIP0800 are reserved.
+#   - Msgs in the range CWSIP0801-CWSIP0810 are reserved.
+#   - Msgs in the range CWSIP0811-CWSIP0850 belong to Remote MQ errors for Message Processor
+#   - Msgs in the range CWSIP0851-CWSIP0860 belong to XD integration
+#
+#   - CWSIP9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.274
+#
+#CMVCPATHNAME com.ibm.ws.messaging.common/resources/com/ibm/ws/sib/processor/CWSIPMessages.nlsprops
+#COMPONENTPREFIX CWSIP
+#COMPONENTNAMEFOR CWSIP Message Processor
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# The following messages have moved to sib.mfp.api\com\ibm\websphere\sib\CWSIKMessages.nlsprops
+#
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0154
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0155
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0158
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0159
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0160
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0161
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0162
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0163
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0164
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0165
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0166
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0167
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0168
+# DESTINATION_NOT_FOUND_ERROR_CWSIP0042
+# TRANSACTION_SEND_USAGE_ERROR_CWSIP0093
+# DESTINATION_LOCKED_ERROR_CWSIP0232
+# USER_NOT_AUTH_SEND_ERROR_CWSIP0306
+# USER_NOT_AUTH_SEND_ERROR_CWSIP0307
+# USER_NOT_AUTH_SEND_ERROR_CWSIP0308
+# OBJECT_CLOSED_ERROR_CWSIP0233
+# OBJECT_CLOSED_ERROR_CWSIP0091
+# EXCEPTION_DESTINATION_ERROR_CWSIP0296
+# DESTINATION_SEND_DISALLOWED_CWSIP0252
+# DESTINATION_HIGH_MESSAGES_ERROR_CWSIP0250
+# NO_LOCALISATIONS_FOUND_ERROR_CWSIP0032
+# DESTINATION_CORRUPT_ERROR_CWSIP0058
+# ALIAS_TARGET_DESTINATION_NOT_FOUND_EXCEPTION_CWSIP0057
+# ALIAS_TARGETS_SERVICE_DESTINATION_ERROR_CWSIP0622
+# LINK_NOT_FOUND_ERROR_CWSIP0047
+# DESTINATION_ALREADY_EXISTS_ERROR_CWSIP0045
+# DESTINATION_DELETED_ERROR_CWSIP0421
+# MESSAGE_RELIABILITY_ERROR_CWSIP0231
+# FORWARD_ROUTING_PATH_ERROR_CWSIP0254
+
+# -------------------------------------------------------------------------------------------------
+# {0} The class name
+# {1} The PROBE ID.
+INTERNAL_MESSAGING_ERROR_CWSIP0001=CWSIP0001E: A avut loc o eroare de mesagerie intern\u0103 \u00een {0}, {1}
+INTERNAL_MESSAGING_ERROR_CWSIP0001.explanation=CMSG0001
+INTERNAL_MESSAGING_ERROR_CWSIP0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The class name
+# {1} The PROBE ID.
+# {2} The related exception
+INTERNAL_MESSAGING_ERROR_CWSIP0002=CWSIP0002E: A avut loc o eroare de mesagerie intern\u0103 \u00een {0}, {1}, {2}
+INTERNAL_MESSAGING_ERROR_CWSIP0002.explanation=CMSG0001
+INTERNAL_MESSAGING_ERROR_CWSIP0002.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The class name
+# {1} The PROBE ID.
+# {2} The related exception
+# {3} Related Parameter
+INTERNAL_MESSAGING_ERROR_CWSIP0003=CWSIP0003E: A avut loc {3} o eroare de mesagerie intern\u0103 \u00een {0}, {1}, {2}
+INTERNAL_MESSAGING_ERROR_CWSIP0003.explanation=CMSG0001
+INTERNAL_MESSAGING_ERROR_CWSIP0003.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The class name
+# {1} The PROBE ID.
+# {2} Related parameter
+INTERNAL_MESSAGING_ERROR_CWSIP0005=CWSIP0005E: A avut loc {2} o eroare de mesagerie intern\u0103 \u00een {0}, {1}
+INTERNAL_MESSAGING_ERROR_CWSIP0005.explanation=CMSG0001
+INTERNAL_MESSAGING_ERROR_CWSIP0005.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The class name
+# {1} The PROBE ID.
+# {2} destination name
+INTERNAL_CONFIGURATION_ERROR_CWSIP0006=CWSIP0006E: O eroare intern\u0103 de configurare destina\u0163ie a avut loc la destina\u0163ia {2} \u00een {0}, {1}.
+INTERNAL_CONFIGURATION_ERROR_CWSIP0006.explanation=CMSG0001
+INTERNAL_CONFIGURATION_ERROR_CWSIP0006.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+# {1} is the link UUID
+INTERNAL_LINK_CONFIGURATION_ERROR_CWSIP0007=CWSIP0007E: Leg\u0103tura cu numele {0} \u015fi UUID {1} nu poate fi creat\u0103 datorit\u0103 unei configura\u0163ii incorecte.
+INTERNAL_LINK_CONFIGURATION_ERROR_CWSIP0007.explanation=CMSG0001
+INTERNAL_LINK_CONFIGURATION_ERROR_CWSIP0007.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The class name
+# {1} The PROBE ID.
+# {2} Related parameter
+# {3} Related parameter2
+INTERNAL_MESSAGING_ERROR_CWSIP0008=CWSIP0008E: O eroare de mesagerie intern\u0103 a avut loc \u00een {0}, {1}, : valori \u00eenrudite {2}, {3}
+INTERNAL_MESSAGING_ERROR_CWSIP0008.explanation=CMSG0001
+INTERNAL_MESSAGING_ERROR_CWSIP0008.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination prefix supplied by the user
+INVALID_DESTINATION_USAGE_ERROR_CWSIP0021=CWSIP0021E: Nu se poate crea un consumator la o Destina\u0163ie Serviciu cu numele {0} pe motorul de mesagerie {1}.
+INVALID_DESTINATION_USAGE_ERROR_CWSIP0021.explanation=Destina\u0163iile serviciu nu pot avea Consumatori ata\u015fa\u0163i.  Este creat\u0103 o excep\u0163ie pentru orice \u00eencercare de creare sesiune consumator pentru o Destina\u0163ie serviciu
+INVALID_DESTINATION_USAGE_ERROR_CWSIP0021.useraction=Crea\u0163i o destina\u0163ie care s\u0103 nu fie o Destina\u0163ie serviciu \u015fi crea\u0163i un Consumator pentru aceasta.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination prefix supplied by the user
+INVALID_DESTINATION_USAGE_ERROR_CWSIP0022=CWSIP0022E: Nu se poate crea un Browseer la o Destina\u0163ie Serviciu cu numele {0} pe motorul de mesagerie {1}.
+INVALID_DESTINATION_USAGE_ERROR_CWSIP0022.explanation=Destina\u0163iile serviciu nu pot avea Browser-e ata\u015fate.  Este creat\u0103 o excep\u0163ie pentru orice \u00eencercare de creare sesiune Browser pentru o Destina\u0163ie serviciu
+INVALID_DESTINATION_USAGE_ERROR_CWSIP0022.useraction=Crea\u0163i o destina\u0163ie care s\u0103 nu fie o Destina\u0163ie serviciu \u015fi crea\u0163i un Browser pentru aceasta.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination prefix supplied by the user
+INVALID_DESTINATION_PREFIX_ERROR_CWSIP0023=CWSIP0023E: Prefixul destina\u0163iei {0} este incorect pentru o destina\u0163ie sistem.
+INVALID_DESTINATION_PREFIX_ERROR_CWSIP0023.explanation=Prefixul dat pentru destina\u0163ia sistem este mai mare de 24 de caractere sau con\u0163ine caractere care nu se  afl\u0103 \u00een intervalele a-z, A-Z, 0-9, ., /, \u015fi %.
+INVALID_DESTINATION_PREFIX_ERROR_CWSIP0023.useraction=Asigura\u0163i-v\u0103 c\u0103 prefixul dat pentru o destina\u0163ie sistem este mai mic de 24 de caractere \u015fi con\u0163ine doar caractere care se afl\u0103 \u00een intervalele a-z, A-Z, 0-9, ., /, \u015fi %.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+# {1} The Related exception
+SYSTEM_DESTINATION_USAGE_ERROR_CWSIP0024=CWSIP0024E: S-a \u00eencercat accesarea unei destina\u0163ii non-sistem {0} de la o conexiune sistem pe motorul de mesagerie {1}
+SYSTEM_DESTINATION_USAGE_ERROR_CWSIP0024.explanation=CMSG0001
+SYSTEM_DESTINATION_USAGE_ERROR_CWSIP0024.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+# {1} The name of the subscriptions destination
+# {2} The durable Subscription name
+# {3} The messaging engine name
+DURABLE_MISMATCH_ERROR_CWSIP0025=CWSIP0025E: Eroare de nepotrivire la Abonamentul Durabil, numele destina\u0163iei {0} nu se potrive\u015fte cu destina\u0163ia abonamentelor {1} pentru abonamentul durabil {2} pe motorul de mesagerie {3}
+DURABLE_MISMATCH_ERROR_CWSIP0025.explanation= \u00cencercarea de creare Consumator pentru numele abonamentului durabil specificat a e\u015fuat din cauz\u0103 c\u0103 destina\u0163ia specificat\u0103 nu s-a potrivit cu destina\u0163ia folosit\u0103 la crearea abonamentului.
+DURABLE_MISMATCH_ERROR_CWSIP0025.useraction=Ata\u015fa\u0163i abonamentului durabil folosind aceea\u015fi destina\u0163ie ca la crearea abonamentului.
+
+# -------------------------------------------------------------------------------------------------
+# {1} The MQLink UUID
+# {2} The messaging engine name
+MQLINK_ERROR_CWSIP0026=CWSIP0026E: Leg\u0103tura MQ cu UUID {0} nu a fost g\u0103sit\u0103 pe motorul de mesagerie {1}.
+MQLINK_ERROR_CWSIP0026.explanation= A avut loc o \u00eencercare de folosire a unei leg\u0103turi MQ, dar aceasta nu a fost g\u0103sit\u0103 \u00een motorul de mesagerie specificat.
+MQLINK_ERROR_CWSIP0026.useraction=Defini\u0163i leg\u0103tura MQ \u00een Consola de administrare \u015fi reporni\u0163i serverul.
+
+# -------------------------------------------------------------------------------------------------
+# {1} The MQLink UUID
+# {2} The messaging engine name
+MQLINK_PSB_ERROR_CWSIP0027=CWSIP0027E: Leg\u0103tura MQ de Publicare/Abonare cu UUID {0} nu a fost g\u0103sit\u0103 pe motorul de mesagerie {1}.
+MQLINK_PSB_ERROR_CWSIP0027.explanation= A avut loc o \u00eencercare de folosire a unei leg\u0103turi MQ Publicare/Abonare, dar nu a fost g\u0103sit\u0103 \u00een motorul de mesagerie specificat.
+MQLINK_PSB_ERROR_CWSIP0027.useraction=Defini\u0163i leg\u0103tura MQ \u00een Consola de administrare \u015fi reporni\u0163i serverul.
+
+# -------------------------------------------------------------------------------------------------
+# {0} subscription id
+# {1} destination name
+CLONED_SUBSCRIBER_OVERRIDE_CWSIP0028=CWSIP0028W: Suportul pentru mai mul\u0163i abona\u0163i la abonamentul {0}, pe destina\u0163ia {1}, a fost dezactivat.
+CLONED_SUBSCRIBER_OVERRIDE_CWSIP0028.explanation=Destina\u0163ia este setat\u0103 s\u0103 men\u0163in\u0103 ordonarea mesajelor. De aceea, orice abonare la o destina\u0163ie poate avea un singur abonat.
+CLONED_SUBSCRIBER_OVERRIDE_CWSIP0028.useraction=Dac\u0103 nu este necesar\u0103 ordonarea, deseta\u0163i atributul maintainMessageOrder pentru dezactivarea \u00eenlocuirii pentru abona\u0163i multiplii.
+
+# -------------------------------------------------------------------------------------------------
+# {0} code token to identify exception location
+MISSING_PARAM_ERROR_CWSIP0029=CWSIP0029W: A avut loc o eroare intern\u0103 de mesagerie.  Parametrul cu numele mqLinkUuidStr nu a fost livrat c\u0103tre loca\u0163ia {0}
+MISSING_PARAM_ERROR_CWSIP0029.explanation=CMSG0001
+MISSING_PARAM_ERROR_CWSIP0029.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the destination
+# {1} the foreign bus
+# {2} the local bus
+CONSUME_FROM_FOREIGN_BUS_ERROR_CWSIP0030=CWSIP0030E: Consumarea mesajelor de la destina\u0163ia {0} pe magistrala {1} \u00een timpul conexiunii la magistrala {2} nu este permis\u0103.
+CONSUME_FROM_FOREIGN_BUS_ERROR_CWSIP0030.explanation=Cererea de mesaje este permis\u0103 doar de la destina\u0163ii din magistrala conectat\u0103 local, nu \u015fi din magistrale externe.
+CONSUME_FROM_FOREIGN_BUS_ERROR_CWSIP0030.useraction=Modifica\u0163i destina\u0163ia pe care consumatorul \u00eencearc\u0103 s\u0103 o foloseasc\u0103 sau modifica\u0163i conexiunea pentru conectarea la magistrala unde este localizat\u0103 destina\u0163ia.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+# {1} The Related exception
+SUBSCRIPTION_CREATION_FAILED_CWSIP0031=CWSIP0031E: O \u00eencercare de a crea un abonament pe destina\u0163ia {0} a e\u015fuat datorit\u0103 erorii {1}
+SUBSCRIPTION_CREATION_FAILED_CWSIP0031.explanation=CMSG0001
+SUBSCRIPTION_CREATION_FAILED_CWSIP0031.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+# {1} The name of the durable subscription
+# {2} The Related exception
+SUBSCRIPTION_CREATION_FAILED_CWSIP0033=CWSIP0033E: O \u00eencercare de a crea un abonament pe destina\u0163ia {0} cu numele {1} a e\u015fuat datorit\u0103 unei Probleme Resurs\u0103 de stocare de date {2}
+SUBSCRIPTION_CREATION_FAILED_CWSIP0033.explanation=La crearea unui abonament durabil este ad\u0103ugat un articol \u00een depozitul de date.  Acest lucru a e\u015fuat datorit\u0103 unei probleme de resurse a cache-ului
+SUBSCRIPTION_CREATION_FAILED_CWSIP0033.useraction=M\u0103ri\u0163i dimensiunea cache-ului pentru depozitul de date folosind consola de administrare
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+# {1} The Related exception
+SUBSCRIPTION_CREATION_FAILED_CWSIP0034=CWSIP0034E: O \u00eencercare de a crea un abonament pe destina\u0163ia {0} a e\u015fuat datorit\u0103 unei Probleme Resurs\u0103 de Stocare Persistent\u0103 {2}
+SUBSCRIPTION_CREATION_FAILED_CWSIP0034.explanation=La crearea unui abonament durabil este ad\u0103ugat un articol \u00een depozitul de date.  Acest lucru a e\u015fuat datorit\u0103 unei probleme de resurse a cache-ului
+SUBSCRIPTION_CREATION_FAILED_CWSIP0034.useraction=M\u0103ri\u0163i dimensiunea cache-ului pentru depozitul de date folosind consola de administrare
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the durable subscription
+# {1} is the durable home of the durable subscription
+SUBSCRIPTION_ATTACH_FAILED_CWSIP0035=CWSIP0035E: O \u00eencercare de a ata\u015fa un consumator abonamentului {0} pe motorul de mesagerie la distan\u0163\u0103 {1} a e\u015fuat deoarece abonamentul este deja localizat \u00een home.
+SUBSCRIPTION_ATTACH_FAILED_CWSIP0035.explanation=Un abonament durabil poate exista doar pe un singur motor de mesagerie. \u00cen prezent pe ME-ul local se afl\u0103 un abonament cu un nume similar, a\u015fa c\u0103 nu se poate afla \u015fi pe ME-ul la distan\u0163\u0103.
+SUBSCRIPTION_ATTACH_FAILED_CWSIP0035.useraction=Modifica\u0163i proprietatea home a abonamentului durabil sau \u015fterge\u0163i abonamentul local.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the system destination
+PROXY_LIMIT_EXCEEDED_WARNING_CWSIP0036=CWSIP0036E: O \u00eencercare de a trimite un mesaj de control c\u0103tre o destina\u0163ie sistem intern\u0103 {0} destina\u0163ia pentru motorul de mesagerie {1} a e\u015fuat deoarece destina\u0163ia este plin\u0103.
+PROXY_LIMIT_EXCEEDED_WARNING_CWSIP0036.explanation=Un mesaj de control nu poate fi transmis c\u0103tre destina\u0163ie c\u00e2nd aceasta este plin\u0103.  Aceasta \u00eenseamn\u0103 c\u0103 topologia Publicare abonament este inconsistent\u0103.
+PROXY_LIMIT_EXCEEDED_WARNING_CWSIP0036.useraction=\u015eterge\u0163i mesajele din destina\u0163ia sistem \u015fi reporni\u0163i serverul.  Asigura\u0163i-v\u0103 c\u0103 motorul de mesagerie la distan\u0163\u0103 este pornit \u015fi comunica\u0163iile \u00eentre ace\u015ftia au fost stabilite.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination prefix supplied by the user
+INVALID_DESTINATION_PREFIX_ERROR_CWSIP0038=CWSIP0038E: Prefixul destina\u0163iei {0} este incorect pentru o destina\u0163ie temporar\u0103.
+INVALID_DESTINATION_PREFIX_ERROR_CWSIP0038.explanation=Prefixul dat pentru destina\u0163ia temporar\u0103 este mai mare de 12 de caractere sau con\u0163ine caractere care nu se  afl\u0103 \u00een intervalele a-z, A-Z, 0-9, ., /, \u015fi %.
+INVALID_DESTINATION_PREFIX_ERROR_CWSIP0038.useraction=Asigura\u0163i-v\u0103 c\u0103 prefixul dat pentru o destina\u0163ie temporar\u0103 este mai mic de 12 de caractere \u015fi con\u0163ine doar caractere care se afl\u0103 \u00een intervalele a-z, A-Z, 0-9, ., /, \u015fi %.
+
+# -------------------------------------------------------------------------------------------------
+
+INVALID_DESTINATION_PREFIX_MAX_LENGTH_ERROR_CWSIP0039=CWSIP0039E: Prefixul dat pentru destina\u0163ia temporar\u0103 este mai mare de 12 caractere.
+INVALID_DESTINATION_PREFIX_MAX_LENGTH_ERROR_CWSIP0039.explanation=Prefixul dat pentru destina\u0163ia temporar\u0103 este mai mare de 12 caractere.
+INVALID_DESTINATION_PREFIX_MAX_LENGTH_ERROR_CWSIP0039.useraction=Asigura\u0163i-v\u0103 c\u0103 prefixul dat pentru o destina\u0163ie temporar\u0103 este mai mic de 12 caractere.
+
+# -------------------------------------------------------------------------------------------------
+
+# {0} the destination prefix supplied by the user
+# {1} the invalid character
+INVALID_DESTINATION_PREFIX_CHAR_ERROR_CWSIP0040=CWSIP0040E: Prefixul destina\u0163iei {0} este incorect pentru o destina\u0163ie temporar\u0103. Caracterul {1} nu este permis.
+INVALID_DESTINATION_PREFIX_CHAR_ERROR_CWSIP0040.explanation=Prefixul dat pentru destina\u0163ia temporar\u0103 con\u0163ine caractere care nu se  afl\u0103 \u00een intervalele a-z, A-Z, 0-9, ., /, \u015fi %.
+INVALID_DESTINATION_PREFIX_CHAR_ERROR_CWSIP0040.useraction=Asigura\u0163i-v\u0103 c\u0103 prefixul de destina\u0163ie pentru o destina\u0163ie temporar\u0103 con\u0163ine caractere care se afl\u0103 \u00een intervalele  a-z, A-Z, 0-9, ., / \u015fi %.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the link
+# {1} is the name of the messaging engine.
+LINK_NOT_FOUND_ERROR_CWSIP0041=CWSIP0041E: Leg\u0103tura cu numele {0} nu a fost g\u0103sit\u0103 pe motorul de mesagerie {1}.
+LINK_NOT_FOUND_ERROR_CWSIP0041.explanation=A fost primit un mesaj \u00een motorul de mesagerie numit, destinat leg\u0103turii numite, dar leg\u0103tura este necunoscut\u0103.
+LINK_NOT_FOUND_ERROR_CWSIP0041.useraction=Verifica\u0163i c\u0103 numele leg\u0103turii este corect \u015fi este definit \u00een consola de administrare.  Verifica\u0163i c\u0103 motorul de mesagerie are cea mai nou\u0103 versiune aplicat\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the link
+# {1} is the name of the messaging engine.
+LINK_ALREADY_EXISTS_ERROR_CWSIP0043=CWSIP0043E: Leg\u0103tura cu numele {0} exist\u0103 deja pe motorul de mesagerie {1}.
+LINK_ALREADY_EXISTS_ERROR_CWSIP0043.explanation=S-a f\u0103cut o \u00eencercare de creare leg\u0103tur\u0103, dar leg\u0103tura numit\u0103 exist\u0103 deja \u00een motorul de mesagerie numit.
+LINK_ALREADY_EXISTS_ERROR_CWSIP0043.useraction=Verifica\u0163i c\u0103 numele leg\u0103turii este corect \u015fi este definit \u00een consola de administrare.  Verifica\u0163i c\u0103 motorul de mesagerie are cea mai nou\u0103 versiune aplicat\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} messaging engine name
+MISSING_PARAM_ERROR_CWSIP0044=CWSIP0044W: A avut loc o eroare intern\u0103 de mesagerie.  destinationName nu a fost livrat motorului de mesagerie {0}
+MISSING_PARAM_ERROR_CWSIP0044.explanation=CMSG0001
+MISSING_PARAM_ERROR_CWSIP0044.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name
+# {1} messaging engine name
+INVALID_DEST_ALTER_ERROR_CWSIP0045=CWSIP0045W: A avut loc o eroare intern\u0103 de mesagerie.  O comand\u0103 invalid\u0103 de modificare destina\u0163ie a fost livrat\u0103 pentru destina\u0163ia {0} din motorul de mesagerie {1}
+INVALID_DEST_ALTER_ERROR_CWSIP0045.explanation=CMSG0001
+INVALID_DEST_ALTER_ERROR_CWSIP0045.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name
+# {1} messaging engine name
+DELETE_SYSTEM_DEST_ERROR_CWSIP0046=CWSIP0046W: A avut loc o eroare intern\u0103 de mesagerie.  Nu se poate \u015fterge destina\u0163ia sistem {0} din motorul de mesagerie {1}
+DELETE_SYSTEM_DEST_ERROR_CWSIP0046.explanation=CMSG0001
+DELETE_SYSTEM_DEST_ERROR_CWSIP0046.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+DESTINATION_HANDLER_RECOVERY_ERROR_CWSIP0048=CWSIP0048E: Destina\u0163ia {0} nu poate fi recuperat\u0103 din magazia de date.
+DESTINATION_HANDLER_RECOVERY_ERROR_CWSIP0048.explanation=CMSG0001
+DESTINATION_HANDLER_RECOVERY_ERROR_CWSIP0048.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+LINK_HANDLER_RECOVERY_ERROR_CWSIP0049=CWSIP0049E: Leg\u0103tura {0} nu poate fi recuperat\u0103 din magazia de date.
+LINK_HANDLER_RECOVERY_ERROR_CWSIP0049.explanation=CMSG0001
+LINK_HANDLER_RECOVERY_ERROR_CWSIP0049.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+#
+TEMPORARY_DESTINATION_UNIQUE_COUNT_WARNING_CWSIP0050=CWSIP0050W: Num\u0103rul unic pentru destina\u0163ia temporar\u0103 a ajuns la valoarea sa maxim\u0103.
+TEMPORARY_DESTINATION_UNIQUE_COUNT_WARNING_CWSIP0050.explanation=Num\u0103rul de destina\u0163ii temporare unice a atins valoarea maxim\u0103 \u015fi a f\u0103cut wrap.  Destina\u0163iile temporare nu mai sunt garantat unice.
+TEMPORARY_DESTINATION_UNIQUE_COUNT_WARNING_CWSIP0050.useraction=Nimic
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+DESTINATION_HANDLER_RECOVERY_ERROR_CWSIP0051=CWSIP0051E: Destina\u0163ia {0} nu poate fi recuperat\u0103 din magazia de date datorit\u0103 erorii {1}.
+DESTINATION_HANDLER_RECOVERY_ERROR_CWSIP0051.explanation=CMSG0001
+DESTINATION_HANDLER_RECOVERY_ERROR_CWSIP0051.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name
+TEMPORARY_DESTINATION_IN_USE_ERROR_CWSIP0052=CWSIP0052E: Destina\u0163ia temporar\u0103 cu numele {0} este folosit\u0103 de alt\u0103 aplica\u0163ie \u015fi nu poate fi \u015ftears\u0103.
+TEMPORARY_DESTINATION_IN_USE_ERROR_CWSIP0052.explanation=Destina\u0163ia temporar\u0103 este folosit\u0103. \u015etergerea destina\u0163iei temporare nu poate avea loc p\u00e2n\u0103 c\u00e2nd nu sunt deconecta\u0163i to\u0163i consumatorii.
+TEMPORARY_DESTINATION_IN_USE_ERROR_CWSIP0052.useraction=\u00cenchide\u0163i orice consumator activ al destina\u0163iei temporare numite \u015fi \u00eencerca\u0163i din nou.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+# {1} is the link UUID
+LINK_HANDLER_CORRUPT_ERROR_CWSIP0054=CWSIP0054E: Leg\u0103tura WebSphere MQ cu numele {0} \u015fi UUID {1} este corupt\u0103
+LINK_HANDLER_CORRUPT_ERROR_CWSIP0054.explanation=CMSG0001
+LINK_HANDLER_CORRUPT_ERROR_CWSIP0054.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+# {1} is the link UUID
+# {2} The related exception
+LINK_HANDLER_WARM_START_ERROR_CWSIP0056=CWSIP0056E: Leg\u0103tura cu numele {0} \u015fi UUID {1} nu poate fi recuperat\u0103 din magazia de date. {2}
+LINK_HANDLER_WARM_START_ERROR_CWSIP0056.explanation=CMSG0001
+LINK_HANDLER_WARM_START_ERROR_CWSIP0056.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the publish/subscribe broker profile name
+# {1} is the MQLink name
+PUB_SUB_BROKER_PROFILE_NOT_FOUND_ERROR_CWSIP0057=CWSIP0057E: Nu se poate g\u0103si profilul broker de publicare/abonare {0} pe MQLink {1}.
+PUB_SUB_BROKER_PROFILE_NOT_FOUND_ERROR_CWSIP0057.explanation=CMSG0001
+PUB_SUB_BROKER_PROFILE_NOT_FOUND_ERROR_CWSIP0057.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+# {1} is the destination UUID
+DESTINATION_INDOUBT_ERROR_CWSIP0062=CWSIP0062E: Destina\u0163ia {0} cu UUID {1} nu a putut fi recuperat\u0103 datorit\u0103 unei posibile erori de configurare WCCM
+DESTINATION_INDOUBT_ERROR_CWSIP0062.explanation=Configura\u0163ia WCCM pentru aceast\u0103 destina\u0163ie din motorul de mesagerie a devenit incorect\u0103, astfel c\u0103 destina\u0163ia nu va fi disponibil\u0103 acestui motor de mesagerie.
+DESTINATION_INDOUBT_ERROR_CWSIP0062.useraction=Corecta\u0163i configura\u0163ia WCCM \u015fi apoi reporni\u0163i serverul. Destina\u0163ia va fi apoi disponibil\u0103 din nou pentru acest motor de mesagerie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+# {1} is the destination UUID
+LOCAL_DEST_DELETE_INFO_CWSIP0063=CWSIP0063I: Destina\u0163ia local\u0103 {0} cu UUID {1} a fost marcat\u0103 pentru \u015ftergere.
+LOCAL_DEST_DELETE_INFO_CWSIP0063.explanation=Configura\u0163ia WCCM pentru aceast\u0103 destina\u0163ie din motorul de mesagerie a fost \u00eenl\u0103turat\u0103, deci resursele sale vor fi planificate pentru \u015ftergere.
+LOCAL_DEST_DELETE_INFO_CWSIP0063.useraction=nimic
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the WebSphere MQ link name
+# {1} is the WebSphere MQ link UUID
+MQLINK_DEST_DELETE_INFO_CWSIP0064=CWSIP0064I: Leg\u0103tura WebSphere MQ {0} cu UUID {1} a fost marcat\u0103 pentru \u015ftergere.
+MQLINK_DEST_DELETE_INFO_CWSIP0064.explanation=Configura\u0163ia WCCM pentru aceast\u0103 leg\u0103tur\u0103 WebSphere MQ din motorul de mesagerie a fost \u00eenl\u0103turat\u0103, deci resursele sale vor fi planificate pentru \u015ftergere.
+MQLINK_DEST_DELETE_INFO_CWSIP0064.useraction=nimic
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the Link name
+# {1} is the Link UUID
+LOCAL_LINK_DELETE_INFO_CWSIP0065=CWSIP0065I: Leg\u0103tura local\u0103 {0} cu UUID {1} a fost marcat\u0103 pentru \u015ftergere.
+LOCAL_LINK_DELETE_INFO_CWSIP0065.explanation=Configura\u0163ia WCCM pentru aceast\u0103 leg\u0103tur\u0103 din motorul de mesagerie a fost \u00eenl\u0103turat\u0103, deci resursele sale vor fi planificate pentru \u015ftergere.
+LOCAL_LINK_DELETE_INFO_CWSIP0065.useraction=nimic
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+# {1} is the destination UUID
+REMOTE_DEST_DELETE_INFO_CWSIP0066=CWSIP0066I: Destina\u0163ia la distan\u0163\u0103 {0} cu UUID {1} a fost marcat\u0103 pentru \u015ftergere.
+REMOTE_DEST_DELETE_INFO_CWSIP0066.explanation=Configura\u0163ia WCCM pentru aceast\u0103 destina\u0163ie din motorul de mesagerie la distan\u0163\u0103 a fost \u00eenl\u0103turat\u0103, deci resursele sale vor fi planificate pentru \u015ftergere.
+REMOTE_DEST_DELETE_INFO_CWSIP0066.useraction=nimic
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the Link name
+# {1} is the Link UUID
+REMOTE_LINK_DELETE_INFO_CWSIP0067=CWSIP0067I: Leg\u0103tura la distan\u0163\u0103 {0} cu UUID {1} a fost marcat\u0103 pentru \u015ftergere.
+REMOTE_LINK_DELETE_INFO_CWSIP0067.explanation=Configura\u0163ia WCCM pentru aceast\u0103 leg\u0103tur\u0103 din motorul de mesagerie la distan\u0163\u0103 a fost \u00eenl\u0103turat\u0103, deci resursele sale vor fi planificate pentru \u015ftergere.
+REMOTE_LINK_DELETE_INFO_CWSIP0067.useraction=nimic
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the max thread pool size
+INVALID_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0068=CWSIP0068I: Dimensiune reconstituire ThreadPool nevalid\u0103 : {0}
+INVALID_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0068.explanation=Dimensiune reconstituire ThreadPool nevalid\u0103 oferit\u0103 \u00een proprietatea personalizat\u0103sib.processor.maxReconstituteThreadpoolSize
+INVALID_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0068.useraction=Modifica\u0163i valoarea proprietat\u0103\u0163ii personalizate sib.processor.maxReconstituteThreadpoolSize la o valoare valid\u0103.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0069=CWSIP0069W: Dimensiunea reconstituire Thread Pool este mai mare dec\u00e2t numberOfCores.
+INVALID_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0069.explanation=Dimensiunea reconstituire Thread Pool este mai mare dec\u00e2t numberOfCores.
+INVALID_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0069.useraction=nimic
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the max thread pool size
+MAX_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0070=CWSIP0070I: Dimensiune Reconstituire ThreadPool maxim\u0103 : {0}
+MAX_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0070.explanation=Dimensiune Reconstituire ThreadPool maxim\u0103 
+MAX_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0070.useraction=nimic
+
+# -------------------------------------------------------------------------------------------------
+# {0} Is the durable subscription id
+# {1} The messaging engine name
+SUBSCRIPTION_DOESNT_EXIST_ERROR_CWSIP0072=CWSIP0072E: Abonamentul durabil cu numele {0} nu exist\u0103 pe motorul de mesagerie {1}.
+SUBSCRIPTION_DOESNT_EXIST_ERROR_CWSIP0072.explanation=A avut loc o \u00eencercare de accesare a unui abonament durabil cu numele dat \u015fi acest abonament nu exist\u0103.
+SUBSCRIPTION_DOESNT_EXIST_ERROR_CWSIP0072.useraction=Fie crea\u0163i abonamentul durabil cu numele dat, fie \u00eencerca\u0163i din nou cu un identificator valid de abonament durabil.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the destination name
+# {1} The messaging engine name
+OBJECT_CLOSED_ERROR_CWSIP0081=CWSIP0081E: Sesiunea Browser este \u00eenchis\u0103 pe destina\u0163ia {0} \u015fi nu poate fi folosit\u0103.
+OBJECT_CLOSED_ERROR_CWSIP0081.explanation=Browser-ul a fost \u00eenchis \u015fi nu poate fi folosit pe destina\u0163ia specificat\u0103.
+OBJECT_CLOSED_ERROR_CWSIP0081.useraction=Crea\u0163i o sesiune browser nou\u0103 pentru destina\u0163ia specificat\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} The messaging engine name
+DESTINATION_IS_LOCKED_ERROR_CWSIP0085=CWSIP0085E: S-a \u00eencercat deschiderea destina\u0163iei {0} pentru r\u0103sfoirea pe motorul de mesagerie {1}.  Destina\u0163ia este blocat\u0103 temporar.
+DESTINATION_IS_LOCKED_ERROR_CWSIP0085.explanation=Destina\u0163iile sunt blocate \u00een timpul unor ac\u0163iuni administrative, spre exemplu \u015ftergerea.
+DESTINATION_IS_LOCKED_ERROR_CWSIP0085.useraction=\u00cencercare de conectare din nou a destina\u0163iei.
+
+# -------------------------------------------------------------------------------------------------
+# {0}  The id for the originating consumer
+# {1} The messaging engine name
+# The term BifurcatedConsumer is a technical term that should not be translated.
+CREATE_CONSUMER_ERROR_CWSIP0092=CWSIP0092E: Nu se poate crea BifurcatedConsumer la consumatorul original {0} pe motorul de mesagerie {1}.
+CREATE_CONSUMER_ERROR_CWSIP0092.explanation=S-a f\u0103cut o \u00eencercare de creare BifurcatedConsumer, dar consumatorul de origine nu a fost g\u0103sit cu identificatorul livrat.
+CREATE_CONSUMER_ERROR_CWSIP0092.useraction=Asigura\u0163i-v\u0103 c\u0103 este activ consumatorul original \u015fi re\u00eencerca\u0163i opera\u0163ia cu identificatorul corect.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The id for the originating conusmer
+# {1} The messaging engine name
+# The term BifurcatedConsumer is a technical term that should not be translated.
+CREATE_BIFURCATED_CONSUMER_ERROR_CWSIP0094=CWSIP0094E: Nu se poate crea BifurcatedConsumer la consumatorul original {0} pe motorul de mesagerie {1} deoarece au ID-uri diferite.
+CREATE_BIFURCATED_CONSUMER_ERROR_CWSIP0094.explanation=A avut loc o \u00eencercare de creare BifurcatedConsumer, dar contextul de securitate folosit la crearea BifurcatedConsumer \u015fi cel folosit la creare consumatorului original sunt diferi\u0163i.
+CREATE_BIFURCATED_CONSUMER_ERROR_CWSIP0094.useraction=Asigura\u0163i-v\u0103 c\u0103 consumatorul original \u015fi BifurcatedConsumer folosesc acela\u015fi context de securitate sau Conexiune \u015fi re\u00eencerca\u0163i comanda.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name.
+TEMPORARY_DESTINATION_NAME_ERROR_CWSIP0097=CWSIP0097E: Destina\u0163ia temporar\u0103 cu numele {0} nu a putut fi g\u0103sit\u0103.
+TEMPORARY_DESTINATION_NAME_ERROR_CWSIP0097.explanation=A avut loc o \u00eencercare de \u015ftergere destina\u0163ia temporar\u0103 numit\u0103, dar aceasta nu poate fi g\u0103sit\u0103.
+TEMPORARY_DESTINATION_NAME_ERROR_CWSIP0097.useraction=Asigura\u0163i-v\u0103 c\u0103 destina\u0163ia temporar\u0103 exist\u0103 \u015fi re\u00eencerca\u0163i opera\u0163ia de \u015ftergere.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the subscription name.
+# {1} The destination name.
+DURABLE_SUBSCRIPTION_USAGE_ERROR_CWSIP0098=CWSIP0098E: Nu se poate crea abonamentul durabil {0} la o destina\u0163ie temporar\u0103 {1}.
+DURABLE_SUBSCRIPTION_USAGE_ERROR_CWSIP0098.explanation=A avut loc o \u00eencercare de creare abonament durabil unei destina\u0163ii temporare, dar acest lucru nu este permis.
+DURABLE_SUBSCRIPTION_USAGE_ERROR_CWSIP0098.useraction=Crea\u0163i abonamentul durabil \u00eentr-un spa\u0163iu subiect care nu este temporar.  Verifica\u0163i consola de administrare pentru aceast\u0103 list\u0103 cu destina\u0163iile spa\u0163iu subiect disponibile.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name.
+TEMPORARY_DESTINATION_CONNECTION_ERROR_CWSIP0099=CWSIP0099E: Destina\u0163ia temporar\u0103 cu numele {0} nu a putut fi g\u0103sit\u0103 deoarece destina\u0163ia temporar\u0103 a fost creat\u0103 pe o conexiune diferit\u0103.
+TEMPORARY_DESTINATION_CONNECTION_ERROR_CWSIP0099.explanation=Destina\u0163iile temporare pot fi accesate doar de pe aceea\u015fi conexiune.
+TEMPORARY_DESTINATION_CONNECTION_ERROR_CWSIP0099.useraction=Verifica\u0163i c\u0103 destina\u0163ia utilizat\u0103 a fost creat\u0103 pe conexiunea actual\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name.
+# {1} is the messaging engine name
+INVALID_PARAMETER_COMBINATION_ERROR_CWSIP0100=CWSIP0100E: Combina\u0163ia de parametri furnizat\u0103 nu este valid\u0103 pentru crearea unui abonament durabil clonat {0} pe destina\u0163ia {1} pentru motorul de mesagerie {2}
+INVALID_PARAMETER_COMBINATION_ERROR_CWSIP0100.explanation=O \u00eencercare de creare clon\u0103 abonament durabil a e\u015fuat pentru c\u0103 este cerut comportamentul noLocal, dar acesta nu este suportat pentru abona\u0163ii clona\u0163i
+INVALID_PARAMETER_COMBINATION_ERROR_CWSIP0100.useraction=Reconfigura\u0163i abonamentul durabil \u00een consola de administrare prin \u00eenl\u0103turarea op\u0163iunii noLocal.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the destination name.
+# {1} The name of the messaging engine
+DESTINATION_DELETED_ERROR_CWSIP0111=CWSIP0111E: Destina\u0163ia cu numele {0} este \u015ftears\u0103 pe motorul de mesagerie {1}.
+DESTINATION_DELETED_ERROR_CWSIP0111.explanation=A avut loc o \u00eencercare de folosire destina\u0163ie \u00een timp ce destina\u0163ia era \u015ftears\u0103.
+DESTINATION_DELETED_ERROR_CWSIP0111.useraction=Recrea\u0163i destina\u0163ia \u00een consola administrativ\u0103 sau folosi\u0163i o alt\u0103 destina\u0163ie \u015fi \u00eencerca\u0163i din nou.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+# {1} The name of the messaging engine
+DESTINATION_DELETION_ERROR_CWSIP0112=CWSIP0112E: Destina\u0163ia {0} pe motorul de mesagerie {1} nu poate fi \u015ftears\u0103 \u00een timp ce consumatorii sunt ata\u015fa\u0163i.
+DESTINATION_DELETION_ERROR_CWSIP0112.explanation=A avut loc o \u00eencercare de \u015ftergere destina\u0163ie cu consumatori \u00eenc\u0103 ata\u015fa\u0163i.
+DESTINATION_DELETION_ERROR_CWSIP0112.useraction=O destina\u0163ie nu poate fi \u015ftears\u0103 c\u00e2t timp are aplica\u0163ii consumatoare ata\u015fate.  \u00cenl\u0103tura\u0163i toate aplica\u0163iile consumatoare ale destina\u0163iei \u015fi \u00eencerca\u0163i din nou.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} is the name of the messaging engine.
+DESTINATION_RECEIVE_EXCLUSIVE_CWSIP0114=CWSIP0114E: Destina\u0163ia cu numele {0} pe motorul de mesagerie {1} este exclusiv receptor.
+DESTINATION_RECEIVE_EXCLUSIVE_CWSIP0114.explanation=A avut loc o \u00eencercare de creare sesiune consumator unei destina\u0163ii configurate exclusiv receptor. Aceast\u0103 opera\u0163ie a e\u015fuat pentru c\u0103 destina\u0163ia are deja un consumator ata\u015fat.
+DESTINATION_RECEIVE_EXCLUSIVE_CWSIP0114.useraction=Re\u00eencerca\u0163i opera\u0163ia atunci c\u00e2nd nu mai sunt consumatori ata\u015fa\u0163i sau actualiza\u0163i destina\u0163ia astfel \u00eenc\u00e2t s\u0103 nu mai fie exclusiv receptor \u015fi apoi re\u00eencerca\u0163i opera\u0163ia de creare sesiune consumator.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the internal subscription
+# {1} is the name of the messaging engine
+# {2} is the name of the target destination
+INTERNAL_SUBSCRIPTION_TARGET_NOT_FOUND_CWSIP0115=CWSIP0115E: Un mesaj potrivit cu abonamentul {0} pe motorul de mesagerie {1} nu a putut fi trimis la destina\u0163ia {2} deoarece destina\u0163ia nu a putut fi g\u0103sit\u0103.
+INTERNAL_SUBSCRIPTION_TARGET_NOT_FOUND_CWSIP0115.explanation=A avut loc o \u00eencercare de potrivire a unui mesaj cu un abonament intern \u015fi mai departe cu destina\u0163ia vizat\u0103. Destina\u0163ia vizat\u0103 nu a fost g\u0103sit\u0103.
+INTERNAL_SUBSCRIPTION_TARGET_NOT_FOUND_CWSIP0115.useraction=Destina\u0163ia poate s\u0103 nu existe sau a fost \u015ftears\u0103. Verifica\u0163i c\u0103 destina\u0163ia exist\u0103 \u015fi este accesibil\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} is the name of the messaging engine
+ORDERED_DESTINATION_IN_USE_CWSIP0116=CWSIP0116E: Destina\u0163ia cu numele {0} pe motorul de mesagerie {1} este ordonat\u0103 \u015fi are deja un consumator ata\u015fat.
+ORDERED_DESTINATION_IN_USE_CWSIP0116.explanation=A avut loc o \u00eencercare de creare sesiune consumator unei destina\u0163ii configurate pentru men\u0163inere comandare. Aceast\u0103 opera\u0163ie a e\u015fuat pentru c\u0103 destina\u0163ia are deja un consumator ata\u015fat.
+ORDERED_DESTINATION_IN_USE_CWSIP0116.useraction=Deta\u015fa\u0163i to\u0163i ceilal\u0163i consumatori \u00eenainte de a \u00eencerca reata\u015farea.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} is the name of the messaging engine
+ORDERED_MESSAGING_ERROR_CWSIP0117=CWSIP0117E: Destina\u0163ia cu numele {0} pe motorul de mesagerie {1} nu poate garanta \u00een continuare ordonarea mesajelor.
+ORDERED_MESSAGING_ERROR_CWSIP0117.explanation=A ap\u0103rut o eroare intern\u0103 care e posibil s\u0103 fi afectat abilitatea de men\u0163inere a ordon\u0103rii mesajelor.
+ORDERED_MESSAGING_ERROR_CWSIP0117.useraction=O repornire a motorului de mesagerie va continua \u00eentre\u0163inerea pentru ordonarea mesajelor.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} is the name of the messaging engine.
+OPERATION_IS_INVALID_ERROR_CWSIP0121=CWSIP0121E: Opera\u0163ia \u00eencercat\u0103 este incorect\u0103 pe destina\u0163ia {0} pe motorul de mesagerie {1}.
+OPERATION_IS_INVALID_ERROR_CWSIP0121.explanation=Destina\u0163ia nu suport\u0103 aceast\u0103 opera\u0163ie.
+OPERATION_IS_INVALID_ERROR_CWSIP0121.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+DESTINATION_IS_LOCKED_ERROR_CWSIP0133=CWSIP0133E: S-a \u00eencercat deschiderea destina\u0163iei {0} pe motorul de mesagerie {1} pentru Consumare.  Destina\u0163ia este blocat\u0103 temporar.
+DESTINATION_IS_LOCKED_ERROR_CWSIP0133.explanation=Destina\u0163iile sunt blocate \u00een timpul unor ac\u0163iuni administrative, spre exemplu \u015ftergerea.
+DESTINATION_IS_LOCKED_ERROR_CWSIP0133.useraction=\u00cencerca\u0163i din nou.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} The name of the messaging engine.
+# {2} The Subscription name
+DESTINATION_USEAGE_ERROR_CWSIP0141=CWSIP0141E: Eroare nepotrivire destina\u0163ie, un abonament {2} \u00eencearc\u0103 s\u0103 foloseasc\u0103 destina\u0163ia {0} care a fost definit\u0103 ca o coad\u0103 pe motorul de mesagerie {1}.
+DESTINATION_USEAGE_ERROR_CWSIP0141.explanation=A avut loc o \u00eencercare de asociere a unui abonament cu o destina\u0163ie definit\u0103 a fi coad\u0103.  Abonamentele pot fi create doar \u00een spa\u0163ii subiect
+DESTINATION_USEAGE_ERROR_CWSIP0141.useraction=Redefini\u0163i destina\u0163ia s\u0103 fie o destina\u0163ie spa\u0163iu subiect sau crea\u0163i o destina\u0163ie nou\u0103 de tip Topicspace.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the subscription id
+# {1} The name of the messaging engine.
+SUBSCRIPTION_ALREADY_EXISTS_ERROR_CWSIP0143=CWSIP0143E: Abonamentul cu numele {0} exist\u0103 deja pe motorul de mesagerie {1}.
+SUBSCRIPTION_ALREADY_EXISTS_ERROR_CWSIP0143.explanation=A avut loc o \u00eencercare de creare abonament durabil cu numele dat, dar acest abonament exist\u0103 deja.
+SUBSCRIPTION_ALREADY_EXISTS_ERROR_CWSIP0143.useraction=\u015eterge\u0163i abonamentul existent \u015fi \u00eencerca\u0163i din nou sau crea\u0163i un abonament cu un nume nou.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the subscription id
+# {1} The name of the messaging engine
+SUBSCRIPTION_DOESNT_EXIST_ERROR_CWSIP0146=CWSIP0146E: Abonamentul durabil cu numele {0} nu exist\u0103 pe motorul de mesagerie {1}.
+SUBSCRIPTION_DOESNT_EXIST_ERROR_CWSIP0146.explanation=A avut loc o \u00eencercare de accesare abonament durabil, dar acest abonament durabil nu exist\u0103.
+SUBSCRIPTION_DOESNT_EXIST_ERROR_CWSIP0146.useraction=Abonamentul ar putea fi \u015fters sau nu e \u00eenc\u0103 creat.  Verifica\u0163i c\u0103 abonamentul exist\u0103 \u015fi re\u00eencerca\u0163i comanda.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the subscription id
+# {1} The name of the messaging engine
+INTERNAL_SUBSCRIPTION_ACCESS_DISALLOWED_CWSIP0147=CWSIP0147E: Abonamentul durabil cu numele {0} pe motorul de mesagerie {1} este un abonament intern \u015fi prin urmare nu se poate ata\u015fa la el.
+INTERNAL_SUBSCRIPTION_ACCESS_DISALLOWED_CWSIP0147.explanation=A avut loc o \u00eencercare de accesare abonament durabil, dar acest abonament durabil este intern \u015fi nu poate fi folosit.
+INTERNAL_SUBSCRIPTION_ACCESS_DISALLOWED_CWSIP0147.useraction=Un Abonament intern este folosit la maparea publica\u0163iilor unei destina\u0163ii vizate. Abonamentului intern nu i se poate ata\u015fa de c\u0103tre consumatorii externi. Re\u00eencerca\u0163i folosind un nume valid de abonament.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the subscription id
+# {1} The messaging engine name
+SUBSCRIPTION_IN_USE_ERROR_CWSIP0152=CWSIP0152E: Abonamentul durabil cu numele {0} este deja folosit de alt consumator pe motorul de mesagerie {1}.
+SUBSCRIPTION_IN_USE_ERROR_CWSIP0152.explanation=Un abonament durabil cu numele specificat este folosit de alt consumator. Opera\u0163iile nu pot fi realizate pe abonament p\u00e2n\u0103 c\u00e2nd nu sunt deconecta\u0163i to\u0163i consumatorii.
+SUBSCRIPTION_IN_USE_ERROR_CWSIP0152.useraction=Doar unui singur consumator \u00eei este permis s\u0103 ata\u015feze unui abonament durabil.  Deta\u015fa\u0163i orice consumator \u015fi \u00eencerca\u0163i din nou.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the subscription id
+# {1} The messaging engine Name
+SUBSCRIPTION_IN_USE_ERROR_CWSIP0153=CWSIP0153E: Abonamentul durabil cu numele {0} are mesaje care nu sunt comise pe motorul de mesagerie {1}.
+SUBSCRIPTION_IN_USE_ERROR_CWSIP0153.explanation=Un abonament durabil are mesaje care nu sunt comise, astfel c\u0103 \u00eencercarea de \u015ftergere a e\u015fuat.
+SUBSCRIPTION_IN_USE_ERROR_CWSIP0153.useraction=Comite\u0163i orice unitate de lucru nerezolvat\u0103 creat\u0103 fie de trimiterea c\u0103tre, fie de primirea de la aplica\u0163ia consumatoare cu abonament durabil, apoi \u00eencerca\u0163i din nou.
+
+# -------------------------------------------------------------------------------------------------
+#
+# {0} The name of the remote messaging engine we attempt to map.
+REMOTE_ME_MAPPING_ERROR_CWSIP0156=CWSIP0156E: A ap\u0103rut o eroare \u00een timpul localiz\u0103rii motorului de mesagerie la distan\u0163\u0103 {0}.
+REMOTE_ME_MAPPING_ERROR_CWSIP0156.explanation=Procesarea nu a putut fi finalizat\u0103 pentru c\u0103 nu a fost g\u0103sit motorul de mesagerie la distan\u0163\u0103.
+REMOTE_ME_MAPPING_ERROR_CWSIP0156.useraction=Verifica\u0163i c\u0103 numele motorului de mesagerie este valid, c\u0103 Motorul de mesagerie la distan\u0163\u0103 este pornit \u015fi comunica\u0163iile din motorul de mesagerie sunt active.
+
+# -------------------------------------------------------------------------------------------------
+#
+RECEIVE_USAGE_ERROR_CWSIP0171=CWSIP0171E: O comand\u0103 de recep\u0163ie nu este posibil\u0103 \u00een timp ce un consumator asincron este \u00eenregistrat pe destina\u0163ia {0} pe motorul de mesagerie {1}
+RECEIVE_USAGE_ERROR_CWSIP0171.explanation=Un consumator nu poate primi mesaje c\u00e2t timp este ata\u015fat ca un consumator asincron.
+RECEIVE_USAGE_ERROR_CWSIP0171.useraction=Asigura\u0163i-v\u0103 c\u0103 consumatorul nu este \u00eenregistrat consumator asincron \u015fi \u00eencerca\u0163i din nou.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message that was not found.
+# {1} the name of the destination.
+# {2} The name of the messaging engine.
+CORE_MESSAGE_NOT_FOUND_ERROR_CWSIP0173=CWSIP0173E: Nu se poate localiza mesajul {0} pe destina\u0163ia {1} pe motorul de mesagerie {2}
+CORE_MESSAGE_NOT_FOUND_ERROR_CWSIP0173.explanation=A fost f\u0103cut\u0103 o cerere de localizare mesaj dintr-o destina\u0163ie, dar mesajul nu exist\u0103.
+CORE_MESSAGE_NOT_FOUND_ERROR_CWSIP0173.useraction=Mesajul poate fi \u015fters anterior sau expirat.  Verifica\u0163i c\u0103 exist\u0103 mesajul \u00een destina\u0163ia specificat\u0103 \u015fi re\u00eencerca\u0163i opera\u0163ia.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination.
+# {1} The name of the messaging engine.
+RECEIVE_USAGE_ERROR_CWSIP0174=CWSIP0174E: Un consumator asincron nu poate fi \u00eenregistrat pe destina\u0163ia {0} pe motorul de mesagerie {1} atunci c\u00e2nd este emis\u0103 o comand\u0103 de recep\u0163ie sincron.
+RECEIVE_USAGE_ERROR_CWSIP0174.explanation=A avut loc o \u00eencercare de \u00eenregistrare consumator asincron \u00een timpul lans\u0103rii unei comenzi de primire.
+RECEIVE_USAGE_ERROR_CWSIP0174.useraction=A\u015ftepta\u0163i terminarea comenzii de primire, apoi \u00eenregistra\u0163i consumatorul asincron.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The name of the messaging engine.
+ASYNCH_CONSUMER_ERROR_CWSIP0175=CWSIP0175E: S-a \u00eencercat rularea unui consumator asincron, dar niciunul nu a fost \u00eenregistrat pe destina\u0163ia {0} pe motorul de mesagerie {1}.
+ASYNCH_CONSUMER_ERROR_CWSIP0175.explanation=O aplica\u0163ie a realizat o cerere de rulare a unui consumator asincron, dar nu a fost \u00eenregistrat nimic \u00een destina\u0163ia specificat\u0103.
+ASYNCH_CONSUMER_ERROR_CWSIP0175.useraction=\u00cenregistra\u0163i un consumator asincron \u00een destina\u0163ie \u015fi \u00eencerca\u0163i din nou.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The messaging engine name
+ASYNCH_CONSUMER_RUN_ERROR_CWSIP0176=CWSIP0176E: Un consumator asincron nu poate fi \u00eenregistrat pe destina\u0163ia {0} pe motorul de mesagerie {1} atunci c\u00e2nd sesiunea este pornit\u0103.
+ASYNCH_CONSUMER_RUN_ERROR_CWSIP0176.explanation=A avut loc o \u00eencercare de \u00eenregistrare consumator asincron pe o destina\u0163ie c\u00e2nd sesiunea folosit\u0103 la crearea consumatorului nu este \u00een stare oprit\u0103.
+ASYNCH_CONSUMER_RUN_ERROR_CWSIP0176.useraction=Opri\u0163i consumatorul \u015fi \u00eencerca\u0163i din nou.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The name of the messaging engine.
+CONSUMER_CLOSED_ERROR_CWSIP0177=CWSIP0177E: Sesiunea consumator pe destina\u0163ia {0} pe motorul de mesagerie {1} a fost \u00eenchis\u0103.
+CONSUMER_CLOSED_ERROR_CWSIP0177.explanation=O opera\u0163ie nu poate fi realizat\u0103 pe sesiunea consumator dac\u0103 a fost \u00eenchis\u0103.
+CONSUMER_CLOSED_ERROR_CWSIP0177.useraction=Crea\u0163i o nou\u0103 Sesiune consumator pentru destina\u0163ia specificat\u0103 sau realiza\u0163i opera\u0163ia \u00eenainte de \u00eenchiderea consumatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The name of the messaging engine.
+RECEIVE_USAGE_ERROR_CWSIP0178=CWSIP0178E: Opera\u0163ia de primire nu este valid\u0103 la acest moment pe destina\u0163ia {0} pe motorul de mesagerie {1}.
+RECEIVE_USAGE_ERROR_CWSIP0178.explanation=O alt\u0103 opera\u0163ie de primire este deja \u00een progres pentru aceast\u0103 sesiune consumator pe destina\u0163ia specificat\u0103.
+RECEIVE_USAGE_ERROR_CWSIP0178.useraction=Permite\u0163i opera\u0163iei originale de primire s\u0103 se termine \u015fi apoi \u00eencerca\u0163i din nou.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} is the name of the messaging engine.
+ORDERED_TRANSACTED_RECEIVE_ERROR_CWSIP0180=CWSIP0180E: Destina\u0163ia cu numele {0} pe motorul de mesagerie {1} are primirea nepermis\u0103 datorit\u0103 unei primiri tranzac\u0163ionate curente care are loc.
+ORDERED_TRANSACTED_RECEIVE_ERROR_CWSIP0180.explanation=A avut loc o \u00eencercare de primire mesaje de la o destina\u0163ie configurat\u0103 cu men\u0163inere comandare. O alt\u0103 tranzac\u0163ie este \u00een prezent nerezolvat\u0103 pe aceast\u0103 destina\u0163ie.
+ORDERED_TRANSACTED_RECEIVE_ERROR_CWSIP0180.useraction=Finaliza\u0163i toate tranzac\u0163iile de pe aceast\u0103 destina\u0163ie \u00eenainte de a \u00eencerca recep\u0163ionarea unei noi tranzac\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# {0} destination name
+MAX_BATCH_SIZE_OVERRIDE_WARNING_CWSIP0181=CWSIP0181W: Dimensiunea batch maxim\u0103 pentru consumator pe destina\u0163ia {0}, a fost setat\u0103 1.
+MAX_BATCH_SIZE_OVERRIDE_WARNING_CWSIP0181.explanation=Destina\u0163ia este setat\u0103 s\u0103 men\u0163in\u0103 ordonarea mesajelor. De aceea dimensiunea maxim\u0103 a batch-ului pentru consumator a fost setat\u0103 la 1.
+MAX_BATCH_SIZE_OVERRIDE_WARNING_CWSIP0181.useraction=Dac\u0103 nu este necesar\u0103 ordonarea, deseta\u0163i atributul maintainMessageOrder pentru dezactivarea \u00eenlocuirii dimensiunii batch maxime.
+
+# -------------------------------------------------------------------------------------------------
+# {0} consumer ID
+# {1} resource name, e.g. queue or subscription name
+# {2} messaging engine name
+# {3} elapsed time in seconds
+MSG_BLOCK_WARNING_CWSIP0182=CWSIP0182W: Consumatorul {0} resursei {1} pe motorul de mesagerie {2} a fost blocat timp de {3} secunde.
+MSG_BLOCK_WARNING_CWSIP0182.explanation=Consumatorul de mesaje din resursa numit\u0103 a fost blocat pentru o perioad\u0103 de timp nea\u015fteptat de lung\u0103, proces\u00e2nd acela\u015fi set de mesaje. C\u00e2t timp este \u00een aceast\u0103 stare, nu se pot procesa mesaje mai departe.
+MSG_BLOCK_WARNING_CWSIP0182.useraction=Rezolva\u0163i problema pentru care s-a blocat consumatorul de mesaje, investiga\u0163i starea aplica\u0163iilor ce consum\u0103 \u00een prezent mesaje de la resursa respectiv\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} consumer ID
+# {1} resource name, e.g. queue or subscription name
+# {2} messaging engine name
+MSG_BLOCK_CLEARED_CWSIP0183=CWSIP0183I: Consumatorul {0} resursei {1} pe motorul de mesagerie {2} nu mai este blocat.
+MSG_BLOCK_CLEARED_CWSIP0183.explanation=Consumatorul de mesaje de pe resursa numit\u0103 nu mai este blocat pe un set de mesaje. Acest lucru este fie din cauza rezolv\u0103rii cauzei blocajului, fie pentru c\u0103 a fost \u00eenchis consumatorul.
+MSG_BLOCK_CLEARED_CWSIP0183.useraction=Nimic.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The name of the messaging engine.
+INVALID_MESSAGE_ERROR_CWSIP0191=CWSIP0191E: Mesajul curent nu este valid pe destina\u0163ia {0} pe motorul de mesagerie {1}.
+INVALID_MESSAGE_ERROR_CWSIP0191.explanation=A avut loc o \u00eencercare de deblocare a mesajului curent, dar nu a fost g\u0103sit nici un mesaj de deblocat.
+INVALID_MESSAGE_ERROR_CWSIP0191.useraction=Mesajul poate fi deja deblocat sau \u015fters de consumatorul curent.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The name of the messaging engine.
+INVALID_MESSAGE_ERROR_CWSIP0192=CWSIP0192E: Mesajul curent nu este valid pe destina\u0163ia {0} pe motorul de mesagerie {1}.
+INVALID_MESSAGE_ERROR_CWSIP0192.explanation=A avut loc o \u00eencercare de \u015ftergere a mesajului curent, dar nu a fost g\u0103sit nici un mesaj de \u015fters.
+INVALID_MESSAGE_ERROR_CWSIP0192.useraction=Mesajul poate fi deja deblocat sau \u015fters de consumatorul curent.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The name of the messaging engine.
+MESSAGE_LOCK_EXPIRED_ERROR_CWSIP0193=CWSIP0193E: Blocarea a expirat pentru mesajul cu ID-ul {0} pe motorul de mesagerie {1}.
+MESSAGE_LOCK_EXPIRED_ERROR_CWSIP0193.explanation=A avut loc o \u00eencercare de folosire a unui mesaj \u00een Consumator, dar timeout-ul bloc\u0103rii a expirat \u015fi mesajul a fost ref\u0103cut disponibil.
+MESSAGE_LOCK_EXPIRED_ERROR_CWSIP0193.useraction=C\u00e2nd expir\u0103 o blocare, mesajul este ref\u0103cut disponibil pentru procesarea de c\u0103tre alt Consumator.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The name of the messaging engine.
+ORDERED_MESSAGING_ERROR_CWSIP0194=CWSIP0194E: Destina\u0163ia cu numele {0} pe motorul de mesagerie {1} are primirea mesajelor nepermis\u0103 datorit\u0103 unei primiri tranzac\u0163ionate curente care are loc.
+ORDERED_MESSAGING_ERROR_CWSIP0194.explanation=A avut loc o \u00eencercare de primire mesaje de la o destina\u0163ie configurat\u0103 cu men\u0163inere comandare. O alt\u0103 tranzac\u0163ie este \u00een prezent nerezolvat\u0103 pe aceast\u0103 destina\u0163ie.
+ORDERED_MESSAGING_ERROR_CWSIP0194.useraction=Finaliza\u0163i toate tranzac\u0163iile de pe aceast\u0103 destina\u0163ie \u00eenainte de a \u00eencerca recep\u0163ionarea unei noi tranzac\u0163ii.
+
+
+# -------------------------------------------------------------------------------------------------
+MESSAGE_HANDLER_CORRUPT_ERROR_CWSIP0201=CWSIP0201E: Aceast\u0103 opera\u0163ie nu este disponibil\u0103
+MESSAGE_HANDLER_CORRUPT_ERROR_CWSIP0201.explanation=Acest handler de mesaj este corupt sau este \u00een starea reset.
+MESSAGE_HANDLER_CORRUPT_ERROR_CWSIP0201.useraction=Reseta\u0163i handlerul de mesaj dac\u0103 nu este deja \u00een starea reset.  Apoi reporni\u0163i motorul de mesagerie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the messaging engine
+# {1} is the name of the messaging engine bus
+MESSAGE_PROCESSOR_NOT_STARTED_ERROR_CWSIP0211=CWSIP0211E: Motorul de mesagerie {0} pe magistrala {1} nu este pornit.
+MESSAGE_PROCESSOR_NOT_STARTED_ERROR_CWSIP0211.explanation=A fost f\u0103cut\u0103 o cerere de acces la motorul de mesagerie numit, dar nu a fost pornit.
+MESSAGE_PROCESSOR_NOT_STARTED_ERROR_CWSIP0211.useraction=Porni\u0163i motorul de mesagerie numit .
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the messaging engine
+# {1} is the name of the messaging engine bus
+RECONCILE_STARTED_INFO_CWSIP00212=CWSIP0212I: Motorul de mesagerie {0} pe magistrala {1} \u00eencepe s\u0103 reconcilieze destina\u0163ia WCCM \u015fi configura\u0163ia leg\u0103turii.
+RECONCILE_STARTED_INFO_CWSIP00212.explanation=Configura\u0163ia destina\u0163iei \u015fi leg\u0103turii WCCM este reconciliat\u0103 cu configura\u0163ia memorat\u0103 de motorul de mesagerie c\u00e2nd a fost oprit.
+RECONCILE_STARTED_INFO_CWSIP00212.useraction=nimic
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the messaging engine
+# {1} is the name of the messaging engine bus
+RECONCILE_COMPLETED_INFO_CWSIP00213=CWSIP0213I: Motorul de mesagerie {0} pe magistrala {1} a terminat de reconciliat destina\u0163ia WCCM \u015fi configura\u0163ia leg\u0103turii.
+RECONCILE_COMPLETED_INFO_CWSIP00213.explanation=Configura\u0163ia destina\u0163iei \u015fi leg\u0103turii WCCM a fost reconciliat\u0103 cu configura\u0163ia memorat\u0103 de motorul de mesagerie c\u00e2nd a fost oprit. Resursele corespunz\u0103toare vor fi fost modificate, create sau planificate pentru \u015ftergere.
+RECONCILE_COMPLETED_INFO_CWSIP00213.useraction=nimic
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the messaging engine
+# {1} is the name of the messaging engine bus
+DESTINATION_DELETED_ERROR_CWSIP00221=CWSIP0221E: Destina\u0163ia cu numele {0} pe motorul de mesagerie {1} a fost \u015ftears\u0103.
+DESTINATION_DELETED_ERROR_CWSIP00221.explanation=O aplica\u0163ie care a fost conectat\u0103 la destina\u0163ia specificat\u0103 a fost deconectat\u0103 pentru c\u0103 destina\u0163ia a fost \u015ftears\u0103.
+DESTINATION_DELETED_ERROR_CWSIP00221.useraction=nimic
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the messaging engine
+# {1} is the name of the messaging engine bus
+DESTINATION_EXCLUSIVE_ERROR_CWSIP00222=CWSIP0222E: Destina\u0163ia cu numele {0} pe motorul de mesagerie {1} a fost modificat\u0103 \u00een Exclusiv Primire.
+DESTINATION_EXCLUSIVE_ERROR_CWSIP00222.explanation=O aplica\u0163ie care a fost conectat\u0103 la destina\u0163ia specificat\u0103 a fost deconectat\u0103 pentru c\u0103 destina\u0163ia a fost modificat\u0103 s\u0103 devin\u0103 receptor exclusiv.  Toate aplica\u0163iile conectate la destina\u0163ie vor fi deconectate \u015fi doar unei singure aplica\u0163ii \u00eei va fi permis\u0103 reconectarea.
+DESTINATION_EXCLUSIVE_ERROR_CWSIP00222.useraction=nimic
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the messaging engine
+# {1} is the name of the messaging engine bus
+DESTINATION_UNREACHABLE_ERROR_CWSIP00223=CWSIP0223E: Destina\u0163ia cu numele {0} pe motorul de mesagerie {1} are un punct mesaj care nu poate fi atins.
+DESTINATION_UNREACHABLE_ERROR_CWSIP00223.explanation=O aplica\u0163ie care a fost conectat\u0103 la destina\u0163ia specificat\u0103 a fost deconectat\u0103 pentru c\u0103 motorul de mesagerie care localizeaz\u0103 destina\u0163ia nu a putut fi atins.
+DESTINATION_UNREACHABLE_ERROR_CWSIP00223.useraction=Asigura\u0163i-v\u0103 c\u0103 motorul de mesagerie care localizeaz\u0103 destina\u0163ia este disponibil.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} The reason code for not being able to put message to exception destination
+DESTINATION_DELETED_ERROR_CWSIP0247=CWSIP0247E: Destina\u0163ia {0} a fost \u015ftears\u0103 \u015fi mesajul nu poate fi pus \u00een destina\u0163ia de excep\u0163ii datorit\u0103 motivului {1}.
+DESTINATION_DELETED_ERROR_CWSIP0247.explanation=O \u00eencercare de a comite un mesaj pe o destina\u0163ie \u015ftears\u0103 a rezultat \u00eentr-o eroare.
+DESTINATION_DELETED_ERROR_CWSIP0247.useraction=Destina\u0163ia a fost \u015ftears\u0103 \u015fi nu mai este utilizabil\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the topic space
+# {1} The messaging engine Name
+FORWARD_ROUTING_PATH_ERROR_CWSIP0249=CWSIP0249E: Un mesaj nu a putut fi livrat la o destina\u0163ie \u00een calea de rutare \u00eenainte deoarece destina\u0163ia {0} este un spa\u0163iu subiect pe motorul de mesagerie {1}.
+FORWARD_ROUTING_PATH_ERROR_CWSIP0249.explanation=O cale de rutare con\u0163inea un spa\u0163iu subiect care nu era ultimul element din cale. Nu se poate livra c\u0103tre nici una din destina\u0163iile urm\u0103toare.
+FORWARD_ROUTING_PATH_ERROR_CWSIP0249.useraction=Un spa\u0163iu subiect poate fi doar ultimul element dintr-o cale de rutare. Corecta\u0163i calea \u015fi re\u00eencerca\u0163i.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the Destination
+# {1} identifies the high limit for the topic space
+# {2} the messaging engine name
+DESTINATION_HIGH_MESSAGES_ERROR_CWSIP0251=CWSIP0251E: Destina\u0163ia {0} pe motorul de mesagerie {2} nu este disponibil\u0103 deoarece limita superioar\u0103 {1} pentru num\u0103rul de mesaje pentru aceast\u0103 destina\u0163ie a fost deja atins\u0103.
+DESTINATION_HIGH_MESSAGES_ERROR_CWSIP0251.explanation=Toate cozile cu destina\u0163ia numit\u0103 au atins deja limita superioar\u0103 configurat\u0103 \u015fi de aceea mesajele nu sunt acceptate.
+DESTINATION_HIGH_MESSAGES_ERROR_CWSIP0251.useraction=Verifica\u0163i c\u0103 limita superioar\u0103 a mesajelor pentru destina\u0163ie este corect\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the messaging engine
+DESTINATION_SEND_DISALLOWED_CWSIP0253=CWSIP0253E: Destina\u0163ia {0} are trimiterea nepermis\u0103 pentru motorul de mesagerie {1}.
+DESTINATION_SEND_DISALLOWED_CWSIP0253.explanation=A avut loc o \u00eencercare de trimitere a unui mesaj c\u0103tre o destina\u0163ie \u015fi s-a verificat c\u0103 exist\u0103 un punct de publicare pentru aceast\u0103 destina\u0163ie.  Aceast\u0103 verificare a e\u015fuat pentru c\u0103 punctul de publicare pentru aceast\u0103 destina\u0163ie nu permite trimiterea.
+DESTINATION_SEND_DISALLOWED_CWSIP0253.useraction=Actualiza\u0163i punctul de publicare al destina\u0163iei astfel \u00eenc\u00e2t s\u0103 permit\u0103 trimiterea \u015fi re\u00eencerca\u0163i opera\u0163ia de trimitere.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+ITEM_RESTORE_ERROR_CWSIP0261=CWSIP0261E: Eroare de recuperare a motorului de mesagerie.  Versiunea a\u015fteptat\u0103 {0}, primit\u0103 {1}
+ITEM_RESTORE_ERROR_CWSIP0261.explanation=La recuperarea unui articol din motorul de mesagerie cu stocare persistent\u0103 a fost f\u0103cut\u0103 o verificare de versiune.  Aceast\u0103 verificare a e\u015fuat.  Cauza acestei erori poate fi instalarea unei noi versiuni WebSphere care a fost ulterior \u00eenl\u0103turat\u0103.  Sau stocarea persistent\u0103 a devenit corupt\u0103.
+ITEM_RESTORE_ERROR_CWSIP0261.useraction=Restaura\u0163i starea motorului de mesagerie de pe rezerv\u0103 \u015fi consulta\u0163i centrul de informare pentru informa\u0163ii despre realizarea acesteia.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+MESSAGE_CORRUPT_ERROR_CWSIP0262=CWSIP0262E: Mesajul curent este corupt \u015fi nu poate fi ad\u0103ugat la depozitul persistent datorit\u0103 excep\u0163iei {0}
+MESSAGE_CORRUPT_ERROR_CWSIP0262.explanation=Mesajele sunt ad\u0103ugate \u00een Depozitul persistent, dar acest lucru a e\u015fuat din cauza unei probleme \u00eent\u00e2lnite.
+MESSAGE_CORRUPT_ERROR_CWSIP0262.useraction= Verifica\u0163i excep\u0163ia legat\u0103 \u015fi corecta\u0163i orice probleme \u00eenainte de retrimiterea mesajului
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+SUBSCRIPTION_NOT_FOUND_ERROR_CWSIP0271=CWSIP0271E: Abonamentul cu ID-ul {0} nu a fost g\u0103sit
+SUBSCRIPTION_NOT_FOUND_ERROR_CWSIP0271.explanation=Ata\u015farea \u00een timpul rul\u0103rii unui abonament a e\u015fuat pentru c\u0103 abonamentul nu a fost g\u0103sit.  Acest lucru poate fi cauzat de \u015ftergerea abonamentului.
+SUBSCRIPTION_NOT_FOUND_ERROR_CWSIP0271.useraction=Reconecta\u0163i-v\u0103 folosind Consola administrativ\u0103 la un alt abonament pentru vizualizare stare
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+SUBSCRIPTION_DELETE_ERROR_CWSIP0272=CWSIP0272E: Abonamentul cu ID-ul {0} nu poate fi \u015fters deoarece nu este durabil
+SUBSCRIPTION_DELETE_ERROR_CWSIP0272.explanation=Folosirea panourilor Runtime \u00een Consola de administrare pentru \u015ftergere abonamente va \u015fterge doar abonamentele care sunt durabile.  O opera\u0163ie de \u015ftergere va e\u015fua dac\u0103 este \u00eencercat\u0103 pentru abonamente non-durabile
+SUBSCRIPTION_DELETE_ERROR_CWSIP0272.useraction=Re\u00eencerca\u0163i opera\u0163ia de \u015ftergere pentru abonamente durabile.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The remote messaging engine
+# {1} the name of the destination
+# {2} Tick Value (internal object)
+# {3} The Stream id (internal object)
+# {4} The exception
+ENCODE_FAIL_ERROR_CWSIP0281=CWSIP0281E: A e\u015fuat codificarea mesajului de transmis c\u0103tre motorul de mesagerie la distan\u0163\u0103 {0} pe destina\u0163ia {1} cu valoarea {2}, {3} \u015fi eroarea {4}
+ENCODE_FAIL_ERROR_CWSIP0281.explanation=Un mesaj legat de un motor de mesagerie la distan\u0163\u0103 a e\u015fuat la codificare \u015fi nu a putut fi trimis
+ENCODE_FAIL_ERROR_CWSIP0281.useraction=Verifica\u0163i \u00een istoricele ffdc cauza e\u015fu\u0103rii codific\u0103rii mesajului \u015fi corecta\u0163i eroarea.  Mesajul curent trebuie \u00eenl\u0103turat de pe fluxul de ie\u015fire.  Acest lucru poate fi f\u0103cut prin \u00eenl\u0103turarea din Punctul coad\u0103 la distan\u0163\u0103 folosind Consola de administrare.
+
+# -------------------------------------------------------------------------------------------------
+# {0}  The exception destination name
+# {1} The name of the messaging engine
+# {2} The reason exception
+EXCEPTION_DESTINATION_WARNING_CWSIP0291=CWSIP0291W: O \u00eencercare de a trimite un mesaj la destina\u0163ia de excep\u0163ii {0} pe motorul de mesagerie {1} a e\u015fuat datorit\u0103 urm\u0103toarelor : {2}
+EXCEPTION_DESTINATION_WARNING_CWSIP0291.explanation=\u00cencercarea de trimitere mesaj c\u0103tre destina\u0163ia de excep\u0163ii specificat\u0103 a e\u015fuat. Aceasta va fi re\u00eencercat\u0103 folosind destina\u0163ia de excep\u0163ii implicit\u0103.
+EXCEPTION_DESTINATION_WARNING_CWSIP0291.useraction=Verifica\u0163i c\u0103 destina\u0163ia specificat\u0103 exist\u0103 \u015fi c\u0103 este opera\u0163ional\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The default exception destination name
+# {1} The messaging engine name
+EXCEPTION_DESTINATION_ERROR_CWSIP0295=CWSIP0295E: O \u00eencercare de a genera un raport de excep\u0163ii a e\u015fuat astfel \u00eenc\u00e2t mesajul original nu a fost la destina\u0163ia de excep\u0163ii {0} pe motorul de mesagerie {1}
+EXCEPTION_DESTINATION_ERROR_CWSIP0295.explanation=\u00cencercarea de rutare mesaj c\u0103tre destina\u0163ia de excep\u0163ii a e\u015fuat pentru c\u0103 a fost cerut un raport de excep\u0163ii dar nu a fost trimis pentru mesaj.
+EXCEPTION_DESTINATION_ERROR_CWSIP0295.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0}  The user ID creating the connection
+# {1} The messaging engine name
+# {2} The bus Name
+USER_NOT_AUTHORIZED_ERROR_CWSIP0301=CWSIP0301E: Nu se poate autentifica utilizatorul {0} la crearea unei conexiuni pentru a securiza motorul de mesagerie {1} pe magistrala {2}.
+USER_NOT_AUTHORIZED_ERROR_CWSIP0301.explanation=Utilizatorul specificat nu a putut fi autentificat la \u00eencercarea de creare conexiune c\u0103tre magistrala motorului de mesagerie.
+USER_NOT_AUTHORIZED_ERROR_CWSIP0301.useraction=Verifica\u0163i c\u0103 utilizatorul a fost ad\u0103ugat depozitului de securitate WebSphere Application Server \u015fi c\u0103 a fost specificat\u0103 parola corect\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0}  The user attempting to access the messaging engine bus.
+USER_NOT_AUTHORIZED_ERROR_CWSIP0302=CWSIP0302E: Un utilizator {0} nu este autorizat s\u0103 acceseze motorul de mesagerie {1} pe magistrala {2}.
+USER_NOT_AUTHORIZED_ERROR_CWSIP0302.explanation=Utilizatorul specificat nu este autorizat s\u0103 acceseze magistrala motorului de mesagerie.
+USER_NOT_AUTHORIZED_ERROR_CWSIP0302.useraction=Dac\u0103 utilizatorul trebuie s\u0103 aib\u0103 autoritate pentru accesarea magistralei motorului de mesagerie, atunci actualiza\u0163i drepturile de autorizare pentru magistrala motorului de mesagerie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The messaging engine name
+# {1} The bus Name
+NULL_USER_NOT_AUTHORIZED_ERROR_CWSIP0303=CWSIP0303E: Niciun utilizator specificat la crearea unei conexiuni c\u0103tre motorul de mesagerie securizat {0} pe magistrala{1}.
+NULL_USER_NOT_AUTHORIZED_ERROR_CWSIP0303.explanation=A avut loc o \u00eencercare de creare conexiune pe un motor de mesagerie securizat, dar nu a fost livrat nici un utilizator.
+NULL_USER_NOT_AUTHORIZED_ERROR_CWSIP0303.useraction=Crea\u0163i conexiunea pentru motorul de mesagerie oferind un utilizator \u015fi parol\u0103
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The subject attempting the operation
+USER_NOT_AUTH_BROWSE_ERROR_CWSIP0304=CWSIP0304E: Accesul de r\u0103sfoire c\u0103tre destina\u0163ia {0} a fost refuzat pentru subiectul {1}.
+USER_NOT_AUTH_BROWSE_ERROR_CWSIP0304.explanation=Un utilizator nu este autorizat s\u0103 r\u0103sfoiasc\u0103 \u00een destina\u0163ie.
+USER_NOT_AUTH_BROWSE_ERROR_CWSIP0304.useraction=Dac\u0103 utilizatorul ar trebui s\u0103 aib\u0103 autoritate pentru r\u0103sfoirea mesajelor din destina\u0163ia dat\u0103, atunci actualiza\u0163i drepturile de autorizare pentru destina\u0163ie
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination prefix
+# {1} The subject attempting the operation
+USER_NOT_AUTH_CREATE_ERROR_CWSIP0305=CWSIP0305E: Utilizatorul cu subiectul {1} nu este autorizat s\u0103 creeze destina\u0163ii temporare cu prefixul {0}.
+USER_NOT_AUTH_CREATE_ERROR_CWSIP0305.explanation=Un utilizator nu este autorizat s\u0103 creeze destina\u0163ie temporar\u0103 cu prefixul numit.
+USER_NOT_AUTH_CREATE_ERROR_CWSIP0305.useraction=Dac\u0103 utilizatorul ar trebui s\u0103 aib\u0103 autoritate s\u0103 creeze destina\u0163ii temporare cu prefixul numit, apoi actualiza\u0163i drepturile de autorizare a utilizatorilor pentru prefixul numit.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The subject attempting the operation
+USER_NOT_AUTH_RECEIVE_ERROR_CWSIP0309=CWSIP0309E: Accesul la primire c\u0103tre destina\u0163ia {0} a fost refuzat pentru utilizatorul cu subiectul {1}.
+USER_NOT_AUTH_RECEIVE_ERROR_CWSIP0309.explanation=Un utilizator nu este autorizat s\u0103 primeasc\u0103 de la destina\u0163ie.
+USER_NOT_AUTH_RECEIVE_ERROR_CWSIP0309.useraction=Dac\u0103 utilizatorul trebuie s\u0103 aib\u0103 autoritate pentru primirea mesajelor de la destina\u0163ia dat\u0103, atunci actualiza\u0163i drepturile de autorizare ale utilizatorilor pentru destina\u0163ie
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The discriminator name
+# {2} The subject attempting the operation
+USER_NOT_AUTH_RECEIVE_ERROR_CWSIP0310=CWSIP0310E: Accesul la primire de la discriminatorul {1} pe destina\u0163ia {0} a fost refuzat pentru utilizatorul cu subiectul {2}.
+USER_NOT_AUTH_RECEIVE_ERROR_CWSIP0310.explanation=Un utilizator nu este autorizat s\u0103 primeasc\u0103 de la destina\u0163ie utiliz\u00e2nd subiectul specificat.
+USER_NOT_AUTH_RECEIVE_ERROR_CWSIP0310.useraction=Dac\u0103 utilizatorul trebuie s\u0103 aib\u0103 autoritatea s\u0103 primeasc\u0103 mesaje pe un subiect dat, actualiza\u0163i drepturile de autorizare utilizatori cu privire la subiectul unei destina\u0163ii date.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The user ID deleting the durable subscription
+# {1} The subscription name
+# {2} The Destination name
+USER_NOT_AUTH_DELETE_ERROR_CWSIP0311=CWSIP0311E: Un utilizator {0} nu este autorizat s\u0103 \u015ftearg\u0103 un abonament durabil {1} pe destina\u0163ia {2}.
+USER_NOT_AUTH_DELETE_ERROR_CWSIP0311.explanation=Un utilizator a \u00eencercat sa \u015ftearg\u0103 un abonament durabil, dar nu este utilizatorul care a creat abonamentul durabil.
+USER_NOT_AUTH_DELETE_ERROR_CWSIP0311.useraction=\u015eterge\u0163i abonamentul durabil cu utilizatorul original.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The user ID activating the durable subscription
+# {1} The subscription name
+# {2} The Destination name
+USER_NOT_AUTH_ACTIVATE_ERROR_CWSIP0312=CWSIP0312E: Un utilizator {0} nu este autorizat s\u0103 activeze un abonament durabil {1} pe destina\u0163ia {2}.
+USER_NOT_AUTH_ACTIVATE_ERROR_CWSIP0312.explanation=Un utilizator nu este autorizat s\u0103 activeze abonament durabil, dar nu este utilizatorul care a creat abonamentul durabil.
+USER_NOT_AUTH_ACTIVATE_ERROR_CWSIP0312.useraction=Activa\u0163i abonamentul durabil cu utilizatorul original.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The user ID activating the durable subscription
+# {1} The exception destination name
+USER_NOT_AUTH_EXCEPTION_DEST_ERROR_CWSIP0313=CWSIP0313E: Un utilizator {0} nu este autorizat s\u0103 acceseze destina\u0163ia de excep\u0163ii {1}.
+USER_NOT_AUTH_EXCEPTION_DEST_ERROR_CWSIP0313.explanation=Un utilizator nu este autorizat s\u0103 pun\u0103 mesaje \u00een Destina\u0163ia de excep\u0163ii specificat\u0103.
+USER_NOT_AUTH_EXCEPTION_DEST_ERROR_CWSIP0313.useraction=Dac\u0103 utilizatorul trebuie s\u0103 aib\u0103 acces la destina\u0163ia de excep\u0163ii, edita\u0163i controlul de acces la destina\u0163ia de excep\u0163ii \u00een consola de administrare prin ad\u0103ugarea utilizatorului specificat
+
+# -------------------------------------------------------------------------------------------------
+# {0} destination name
+# {1} the user name
+USER_NOT_AUTH_INQUIRE_ERROR_CWSIP0314=CWSIP0314E: Accesul la cereri c\u0103tre destina\u0163ia {0} a fost refuzat pentru utilizatorul cu subiectul {1}.
+USER_NOT_AUTH_INQUIRE_ERROR_CWSIP0314.explanation=Un utilizator nu este autorizat s\u0103 realizeze cereri cu privire la configura\u0163ia destina\u0163iei
+USER_NOT_AUTH_INQUIRE_ERROR_CWSIP0314.useraction=Dac\u0103 utilizatorul trebuie s\u0103 aib\u0103 acces s\u0103 realizeze cereri cu privire la configura\u0163ie, edita\u0163i Cerere acces \u00een consola de administrare prin ad\u0103ugarea utilizatorului specificat
+
+# -------------------------------------------------------------------------------------------------
+# {0} The foreign bus name
+# {1} the user name
+USER_NOT_AUTH_INQUIRE_FB_ERROR_CWSIP0315=CWSIP0315E: Accesul la cereri pentru magistrala extern\u0103 {0} a fost refuzat pentru utilizatorul cu subiectul {1}.
+USER_NOT_AUTH_INQUIRE_FB_ERROR_CWSIP0315.explanation=Un utilizator nu este autorizat s\u0103 realizeze cereri cu privire la configura\u0163ia Magistralei externe
+USER_NOT_AUTH_INQUIRE_FB_ERROR_CWSIP0315.useraction=Dac\u0103 utilizatorul trebuie s\u0103 aib\u0103 acces s\u0103 realizeze cereri cu privire la configura\u0163ia Magistralei externe, edita\u0163i Cerere acces \u00een consola de administrare prin ad\u0103ugarea utilizatorului specificat
+
+# -------------------------------------------------------------------------------------------------
+# {0} the user name
+USER_NOT_AUTH_INVOKE_ERROR_CWSIP0316=CWSIP0316E: Utilizatorul {0} trebuie s\u0103 fie SIBServerSubject pentru a folosi metoda invokeCommand()
+USER_NOT_AUTH_INVOKE_ERROR_CWSIP0316.explanation=Utilizatorul nu este autorizat s\u0103 apeleze metoda invokeCommand() \u00een conexiune
+USER_NOT_AUTH_INVOKE_ERROR_CWSIP0316.useraction=Invoca\u0163i metoda pe o conexiune cu acces SIBServerSubject
+
+# -------------------------------------------------------------------------------------------------
+# {0} the user name
+DESTINATION_DELETE_ERROR_CWSIP0331=CWSIP0331W: Destina\u0163ia {0} pe motorul de mesagerie {1} a fost marcat\u0103 pentru \u015ftergere.
+DESTINATION_DELETE_ERROR_CWSIP0331.explanation=A fost f\u0103cut\u0103 o cerere de \u015ftergere a unei destina\u0163ii, dar aceast\u0103 destina\u0163ie a fost deja marcat\u0103 pentru \u015ftergere.
+DESTINATION_DELETE_ERROR_CWSIP0331.useraction=Destina\u0163ia trebuie \u00eenl\u0103turat\u0103 de c\u0103tre sistem din motorul de mesagerie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the user name
+DESTINATION_NOT_FOUND_ERROR_CWSIP0341=CWSIP0341W: Destina\u0163ia {0} nu a fost g\u0103sit\u0103 pe motorul de mesagerie {1}.
+DESTINATION_NOT_FOUND_ERROR_CWSIP0341.explanation=Destina\u0163ia indicat\u0103 este necunoscut\u0103 pe motorul local de mesaje.
+DESTINATION_NOT_FOUND_ERROR_CWSIP0341.useraction==Verifica\u0163i c\u0103 numele destina\u0163iei este corect.  Dac\u0103 destina\u0163ia exist\u0103 pe alt motor de mesagerie, asigura\u0163i-v\u0103 c\u0103 func\u0163ioneaz\u0103 comunica\u0163ia cel\u0103lalt motor de mesagerie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id.
+# {1} The destination name
+MESSAGE_INDOUBT_WARNING_CWSIP0361=CWSIP0361W: Mesajul cu ID-ul {0} nu poate fi \u015fters deoarece tranzac\u0163ia folosit\u0103 pentru a-l ad\u0103uga la destina\u0163ia {1} nu a fost comis\u0103.
+MESSAGE_INDOUBT_WARNING_CWSIP0361.explanation=A fost trimis un mesaj c\u0103tre destina\u0163ia specificat\u0103 cu MessageProducer folosind o tranzac\u0163ie.  Aceast\u0103 tranzac\u0163ie nu a fost comis\u0103 c\u0103tre destina\u0163ie \u015fi mesajele nu pot fi \u015fterse.
+MESSAGE_INDOUBT_WARNING_CWSIP0361.useraction=Examina\u0163i sec\u0163iunea "Rezolvare tranzac\u0163ii nesigure" pentru comitere sau derulare \u00eenapoi a tranzac\u0163iei.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id.
+# {1} The destination name
+MESSAGE_INDOUBT_WARNING_CWSIP0362=CWSIP0362W: Mesajul cu ID-ul {0} nu poate fi \u015fters de la destina\u0163ia {1} deoarece mesajul a fost livrat unui consumator.
+MESSAGE_INDOUBT_WARNING_CWSIP0362.explanation=Mesajul nu poate fi \u015fters pentru c\u0103 a fost livrat unui consumator.
+MESSAGE_INDOUBT_WARNING_CWSIP0362.useraction=Opri\u0163i toate MDB sau aplica\u0163iile consumatoare din destina\u0163ie \u015fi \u00eencerca\u0163i \u015ftergerea din nou.  Dac\u0103 mesajul \u00eenc\u0103 nu poate fi \u015fters, examina\u0163i sec\u0163iunea "Rezolvare tranzac\u0163ii nesigure" pentru comitere sau derulare \u00eenapoi a tranzac\u0163iei.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The selector supplied.
+INVALID_SELECTOR_ERROR_CWSIP0371=CWSIP0371E: Sintaxa selector {0} nu este valid\u0103.
+INVALID_SELECTOR_ERROR_CWSIP0371.explanation=Sintaxa selectorului oferit nu este valid\u0103.
+INVALID_SELECTOR_ERROR_CWSIP0371.useraction=Corecta\u0163i sintaxa selectorului \u015fi \u00eencerca\u0163i din nou.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic supplied.
+INVALID_TOPIC_ERROR_CWSIP0372=CWSIP0372E: Sintaxa subiect {0} nu este valid\u0103.
+INVALID_TOPIC_ERROR_CWSIP0372.explanation=Sintaxa subiectului oferit nu este valid\u0103.
+INVALID_TOPIC_ERROR_CWSIP0372.useraction=Corecta\u0163i sintaxa subiectului \u015fi \u00eencerca\u0163i din nou.
+
+# -------------------------------------------------------------------------------------------------
+# {0} related Exception.
+ACL_ADD_WARNING_CWSIP0373=CWSIP0373W: Nu s-a putut \u00eenc\u0103rca lista de control acces datorit\u0103 excep\u0163iei {0}.
+ACL_ADD_WARNING_CWSIP0373.explanation=A ap\u0103rut o excep\u0163ie la \u00eenc\u0103rcarea listei de control acces.
+ACL_ADD_WARNING_CWSIP0373.useraction=Verifica\u0163i \u015fi corecta\u0163i excep\u0163iile \u00eenrudite pentru a permite listei de control acces s\u0103 se \u00eencarce corect.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Discriminator name
+# {1} user
+# {2} related Exception.
+ACL_ADD_WARNING_CWSIP0374=CWSIP0374W: Nu s-a putut \u00eenc\u0103rca lista de control acces datorit\u0103 excep\u0163iei {2} pentru discriminatorul {0} \u015fi utilizatorul {1}.
+ACL_ADD_WARNING_CWSIP0374.explanation=A ap\u0103rut o excep\u0163ie la \u00eenc\u0103rcarea listei de control acces.
+ACL_ADD_WARNING_CWSIP0374.useraction=Verifica\u0163i \u015fi corecta\u0163i excep\u0163iile \u00eenrudite pentru a permite listei de control acces s\u0103 se \u00eencarce corect.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Discriminator name
+# {1} related Exception.
+ACL_ADD_WARNING_CWSIP0375=CWSIP0375W: Nu s-a putut \u00eenc\u0103rca lista de control acces datorit\u0103 excep\u0163iei {1} pentru discriminatorul {0}.
+ACL_ADD_WARNING_CWSIP0375.explanation=A ap\u0103rut o excep\u0163ie la \u00eenc\u0103rcarea listei de control acces.
+ACL_ADD_WARNING_CWSIP0375.useraction=Verifica\u0163i \u015fi corecta\u0163i excep\u0163iile \u00eenrudite pentru a permite listei de control acces s\u0103 se \u00eencarce corect.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The related exception.
+INVALID_SELECTOR_ERROR_CWSIP0376=CWSIP0376E: Selectorul nu a putut fi parsat datorit\u0103 unei erori interne.
+INVALID_SELECTOR_ERROR_CWSIP0376.explanation=Mediul de parsare pentru selector nu este valid.
+INVALID_SELECTOR_ERROR_CWSIP0376.useraction=Verifica\u0163i \u015fi corecta\u0163i excep\u0163iile \u00eenrudite.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value provided for the custom property
+INVALID_XPATH_CUSTOM_PROPERTY_CWSIP0377=CWSIP0377I: Proprietatea personalizat\u0103 Magistral\u0103 de Optimizare XPath a fost setat\u0103 incorect la {0}. Optimizarea XPath va fi activat\u0103.
+INVALID_XPATH_CUSTOM_PROPERTY_CWSIP0377.explanation=Proprietatea personalizat\u0103 a Magistralei de optimizare XPath a fost setat\u0103 incorect. Valoarea a\u015fteptat\u0103 este fie "activat", fie "dezactivat". ME va porni cu optimizarea activat\u0103.
+INVALID_XPATH_CUSTOM_PROPERTY_CWSIP0377.useraction=Verifica\u0163i \u015fi corecta\u0163i valoarea propriet\u0103\u0163ii personalizate \u015fi reporni\u0163i serverul.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The UUID of the Remote messaging engine
+NO_NEIGHBOUR_REPLY_WARNING_CWSIP0381=CWSIP0381W: Niciun r\u0103spuns primit de la motorul de mesagerie {0} pentru mesajul de cerere abonament.
+NO_NEIGHBOUR_REPLY_WARNING_CWSIP0381.explanation=Un mesaj de cerere a fost trimis c\u0103tre un motor de mesagerie la distan\u0163\u0103 care nu a r\u0103spuns \u00een timp util.  Acest lucru \u00eenseamn\u0103 c\u0103 Topologia de publicare abonament a motorului de mesagerie poate fi inconsistent\u0103.
+NO_NEIGHBOUR_REPLY_WARNING_CWSIP0381.useraction=Asigura\u0163i-v\u0103 c\u0103 motorul de mesagerie la distan\u0163\u0103 men\u0163ionat este pornit.  Dac\u0103 problema persist\u0103, contacta\u0163i reprezentantul suport IBM.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The UUID of the Remote messaging engine
+NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382=CWSIP0382I: Motorul de mesagerie {0} a r\u0103spuns la cererea de abonament, topologia Publicare Abonare este acum consistent\u0103.
+NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382.explanation=Comunica\u0163iile dintre motoarele de mesagerie au fost f\u0103cute cu succes \u015fi Topologia de publicare abonament este consistent\u0103.
+NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382.useraction=nimic
+
+# -------------------------------------------------------------------------------------------------
+# {0} The remote messaging engine name
+# {1} The related exception
+PUBSUB_CONSISTENCY_ERROR_CWSIP0383=CWSIP0383E: Nu se poate trimite mesajul de stare abonament ini\u0163ial c\u0103tre motorul de mesagerie {0}. P\u00e2n\u0103 c\u00e2nd se va rezolva aceast\u0103 problem\u0103, trimiterea mesajelor de Publicare abonament nu va fi consistent\u0103. {1}.
+PUBSUB_CONSISTENCY_ERROR_CWSIP0383.explanation=Comunica\u0163ia \u00eentre motoarele de mesagerie a fost f\u0103r\u0103 succes. Topologia de publicare abonament nu va fi consistent\u0103.
+PUBSUB_CONSISTENCY_ERROR_CWSIP0383.useraction=Rezolva\u0163i toate problemele eviden\u0163iate de eroare \u015fi reporni\u0163i motorul de mesagerie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The messaging engine name.
+# {1} The related exception
+MESSAGE_PROCESSOR_CONFIGURE_NEIGHBOURS_ERROR_CWSIP0391=CWSIP0391E: A avut loc o eroare la \u00eencercarea de a configura lista de motoare de mesagerie la distan\u0163\u0103 pentru motorul de mesagerie {0}, {1}.
+MESSAGE_PROCESSOR_CONFIGURE_NEIGHBOURS_ERROR_CWSIP0391.explanation=CMSG0001
+MESSAGE_PROCESSOR_CONFIGURE_NEIGHBOURS_ERROR_CWSIP0391.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The messaging engine name
+# {1} The related exception
+REPORT_MESSAGE_ERROR_CWSIP0422=CWSIP0422E: Un tip de mesaj raport de expirare cerut nu a putut fi trimis pe motorul de mesagerie {0}. {1}
+REPORT_MESSAGE_ERROR_CWSIP0422.explanation=A ap\u0103rut o problem\u0103 la generarea unui tip de mesaj Raport de expirare.
+REPORT_MESSAGE_ERROR_CWSIP0422.useraction=Corecta\u0163i toate erorile asociate.  Dac\u0103 problemele persist\u0103, contacta\u0163i reprezentantul suport IBM.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the report message type
+# {1} The related exception
+REPORT_MESSAGE_ERROR_CWSIP0423=CWSIP0423E: Un tip de mesaj raport Confirmare la Livrare cerut nu a putut fi trimis pe motorul de mesagerie {0}. {1}
+REPORT_MESSAGE_ERROR_CWSIP0423.explanation=A ap\u0103rut o problem\u0103 la generarea unui tip de mesaj raport Confirmare la livrare.
+REPORT_MESSAGE_ERROR_CWSIP0423.useraction=Corecta\u0163i toate erorile asociate.  Dac\u0103 problemele persist\u0103, contacta\u0163i reprezentantul suport IBM.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The Messaging engine name
+# {1} The destination name
+FLUSH_COMPLETE_CWSIP0451=CWSIP0451I: For\u0163area epur\u0103rii s-a terminat pentru fluxurile Anycast pentru ME dat {0} \u015fi destina\u0163ia {1} localizat\u0103 aici
+FLUSH_COMPLETE_CWSIP0451.explanation=Nimic
+FLUSH_COMPLETE_CWSIP0451.useraction=Nimic
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The Messaging engine name
+# {2} The remote messaging engine name
+FLUSH_COMPLETE_CWSIP0452=CWSIP0452I: For\u0163area epur\u0103rii s-a terminat pentru fluxurile Anycast pentru destina\u0163ia {0} localizat\u0103 pe motorul de mesagerie {1} deoarece  ME la distan\u0163\u0103 {2} a fost \u015fters
+FLUSH_COMPLETE_CWSIP0452.explanation=Nimic
+FLUSH_COMPLETE_CWSIP0452.useraction=Nimic
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination for which for which the transaction failed
+# {1} The number of retries attempted
+MSGSTORE_STOP_RETRY_CWSIP0457=CWSIP0457E: A e\u015fuat persistarea st\u0103rii pentru accesul la consumatorul la distan\u0163\u0103 pentru destina\u0163ia {0} localizat\u0103 la acest ME.
+MSGSTORE_STOP_RETRY_CWSIP0457.explanation=Starea local\u0103 pentru ata\u015farea la distan\u0163\u0103 a consumatorilor unei destina\u0163ii poate fi corupt\u0103 deoarece o tranzac\u0163ie local\u0103 a e\u015fuat la comitere dup\u0103 multe \u00eencerc\u0103ri.
+MSGSTORE_STOP_RETRY_CWSIP0457.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination
+# {1} The messaging engine we are trying to reach
+ANYCAST_STREAM_UNAVAILABLE_CWSIP0471=CWSIP0471E: Nu se poate comunica cu motorul de mesagerie {1} unde destina\u0163ia {0} este localizat\u0103.
+ANYCAST_STREAM_UNAVAILABLE_CWSIP0471.explanation=Nu se poate comunica cu localizarea motorului de mesagerie pentru destina\u0163ia. Acest lucru poate fi pentru c\u0103 motorul de mesagerie \u00eenc\u0103 se ini\u0163ializeaz\u0103 sau din cauza unei parti\u0163ii de re\u0163ea.
+ANYCAST_STREAM_UNAVAILABLE_CWSIP0471.useraction=Verifica\u0163i ca este posibil\u0103 comunicarea cu localizarea motorului de mesagerie \u015fi apoi \u00eencerca\u0163i din nou.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination
+# {1} The messaging engine where it is localised
+CONSUMERCARDINALITY_LIMIT_REACHED_CWSIP0472=CWSIP0472E: Ata\u015famentul consumator nu este permis sau este deta\u015fat deoarece limita de cardinalitate a consumatorului  pentru destina\u0163ia {0} localizat\u0103 la ME {1} a fost atins\u0103.
+CONSUMERCARDINALITY_LIMIT_REACHED_CWSIP0472.explanation=Destina\u0163ia are o limit\u0103 de cardinalitate a consumatorilor de unu. Limita a fost atins\u0103.
+CONSUMERCARDINALITY_LIMIT_REACHED_CWSIP0472.useraction=\u00cencerca\u0163i din nou dup\u0103 ce consumatorul existent a fost deconectat.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination
+# {1} The messaging engine where it is localised
+# {2} The exception
+PUTEXCEPTION_DISCONNECT_CONSUMER_CWSIP0473=CWSIP0473E: O excep\u0163ie {2} a avut loc la punerea unui mesaj la distan\u0163\u0103, pe destina\u0163ia {0} localizat\u0103 la motorul de mesagerie {1}, \u00een Depozitul Persistent local.
+PUTEXCEPTION_DISCONNECT_CONSUMER_CWSIP0473.explanation=A ap\u0103rut o excep\u0163ie la punerea unui mesaj la distan\u0163\u0103 \u00een Depozitul persistent local. Consumatorul ar trebui deconectat pentru prevenirea viol\u0103rii ordon\u0103rii mesajelor.
+PUTEXCEPTION_DISCONNECT_CONSUMER_CWSIP0473.useraction=Consumatorul ar trebui deconectat pentru prevenirea viol\u0103rii ordon\u0103rii mesajelor. Excep\u0163ia ar trebui s\u0103 explice cauza problemei. \u00cencerca\u0163i din nou dup\u0103 rezolvarea problemei.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination
+# {1} The messaging engine we are trying to reach
+ANYCAST_STREAM_UNAVAILABLE_CWSIP0481=CWSIP0481E: Nu este disponibil niciun flux de comunicare cu motorul de mesagerie localizare {1} pentru destina\u0163ia {0}.
+ANYCAST_STREAM_UNAVAILABLE_CWSIP0481.explanation=Un flux de comunicare cu localizarea motorului de mesagerie pentru destina\u0163ie nu este disponibil. Acest lucru poate fi pentru c\u0103 fluxul \u00eenc\u0103 se ini\u0163ializeaz\u0103 sau din cauza unei parti\u0163ii de re\u0163ea.
+ANYCAST_STREAM_UNAVAILABLE_CWSIP0481.useraction=Verifica\u0163i ca este posibil\u0103 comunicarea cu localizarea motorului de mesagerie \u015fi apoi \u00eencerca\u0163i din nou.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination
+# {1} The messaging engine we are trying to reach
+ANYCAST_STREAM_NOT_FLUSHED_CWSIP0512=CWSIP0512E: Nu este disponibil niciun flux de comunicare cu motorul de mesagerie localizare {1} pentru destina\u0163ia {0}.
+ANYCAST_STREAM_NOT_FLUSHED_CWSIP0512.explanation=Un flux de comunicare cu localizarea motorului de mesagerie pentru destina\u0163ie nu este disponibil pentru c\u0103 un nou flux trebuie creat, dar fluxul anterior nu a fost \u00eenc\u0103 golit. Aceasta poate fi cauzat\u0103 de o parti\u0163ie de re\u0163ea.
+ANYCAST_STREAM_NOT_FLUSHED_CWSIP0512.useraction=Verifica\u0163i ca este posibil\u0103 comunicarea cu localizarea motorului de mesagerie \u015fi apoi \u00eencerca\u0163i din nou.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination
+# {1} The messaging engine where it is localised
+CONSUMERCARDINALITY_LIMIT_REACHED_CWSIP0514=CWSIP0514E: Ata\u015famentul consumator nu este permis sau este deta\u015fat deoarece limita de cardinalitate a consumatorului  pentru destina\u0163ia {0} localizat\u0103 la motorul de mesagerie {1} a fost atins\u0103.
+CONSUMERCARDINALITY_LIMIT_REACHED_CWSIP0514.explanation=Destina\u0163ia are o limit\u0103 de cardinalitate a consumatorilor de unu. Limita a fost atins\u0103.
+CONSUMERCARDINALITY_LIMIT_REACHED_CWSIP0514.useraction=\u00cencerca\u0163i din nou dup\u0103 ce consumatorul existent a fost deconectat.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination for which for which the transaction failed
+# {1} The number of retries attempted
+MSGSTORE_STOP_RETRY_CWSIP0515=CWSIP0515E: A e\u015fuat persistarea st\u0103rii de acces coad\u0103 la distan\u0163\u0103 pentru destina\u0163ia {0}.
+MSGSTORE_STOP_RETRY_CWSIP0515.explanation=Starea local\u0103 pentru un ata\u015fament al destina\u0163iei poate fi corupt\u0103 deoarece o tranzac\u0163ie local\u0103 a e\u015fuat la comitere dup\u0103 multe \u00eencerc\u0103ri.
+MSGSTORE_STOP_RETRY_CWSIP0515.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination we are trying to attach to.
+# {1} The messaging engine we are trying to reach.
+ANYCAST_CANNOT_CREATE_STREAM_CWSIP0517=CWSIP0517E: Nu se poate ata\u015fa la punctul coad\u0103 pentru destina\u0163ia {0} pe motorul de mesagerie {1}.
+ANYCAST_CANNOT_CREATE_STREAM_CWSIP0517.explanation=Motorul de mesagerie care g\u0103zduie\u015fte punctul coad\u0103 pentru destina\u0163ie este inaccesibil.
+ANYCAST_CANNOT_CREATE_STREAM_CWSIP0517.useraction=Verifica\u0163i c\u0103 motorul de mesagerie este pornit \u015fi comunica\u0163iile \u00eentre motoarele de mesagerie sunt active \u00eenainte de a re\u00eencerca opera\u0163ia.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination we are trying to attach to.
+# {1} The messaging engine we are trying to reach.
+ANYCAST_CANNOT_REQUEST_FLUSH_CWSIP0518=CWSIP0518E: Nu se poate ata\u015fa la punctul coad\u0103 pentru destina\u0163ia {0} pe motorul de mesagerie {1}.
+ANYCAST_CANNOT_REQUEST_FLUSH_CWSIP0518.explanation=Motorul de mesagerie care g\u0103zduie\u015fte punctul coad\u0103 pentru destina\u0163ie este inaccesibil.
+ANYCAST_CANNOT_REQUEST_FLUSH_CWSIP0518.useraction=Verifica\u0163i c\u0103 motorul de mesagerie este pornit \u015fi comunica\u0163iile \u00eentre motoarele de mesagerie sunt active \u00eenainte de a re\u00eencerca opera\u0163ia.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination we are trying to browse.
+BROWSE_TIMEOUT_CWSIP0532=CWSIP0532E: A avut loc un timeout \u00een timpul r\u0103sforii la distan\u0163\u0103 a destina\u0163iei {0}.
+BROWSE_TIMEOUT_CWSIP0532.explanation=Motorul de mesagerie care g\u0103zduie\u015fte un punct mesaj pentru destina\u0163ie a e\u015fuat \u00een a r\u0103spunde unei cereri de r\u0103sfoire.
+BROWSE_TIMEOUT_CWSIP0532.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination we are trying to browse.
+# {1} the failure reason
+BROWSE_FAILED_CWSIP0533=CWSIP0533E: O r\u0103sfoire la distan\u0163\u0103 a destina\u0163iei {0} a e\u015fuat cu motivul: {1}
+BROWSE_FAILED_CWSIP0533.explanation=Motorul de mesagerie care g\u0103zduie\u015fte un punct mesaj pentru destina\u0163ie a returnat un cod de eroare \u00een timpul unei cereri de r\u0103sfoire.
+BROWSE_FAILED_CWSIP0533.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the UUID of the destination
+DESTINATION_DELETED_ERROR_CWSIP0550=CWSIP0550E: Destina\u0163ia {0}, UUID {1} a fost \u015ftears\u0103 \u015fi mesajul nu poate fi pus \u00een destina\u0163ia de excep\u0163ii.
+DESTINATION_DELETED_ERROR_CWSIP0550.explanation=\u00cencercarea de cur\u0103\u0163are a mesajelor din destina\u0163ia specificat\u0103 a rezultat o eroare.
+DESTINATION_DELETED_ERROR_CWSIP0550.useraction=Cur\u0103\u0163area va fi \u00eencercat\u0103 din nou mai t\u00e2rziu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the UUID of the destination
+# {2} the state
+NOTIFY_SEND_ALLOWED_STATE_CHANGE_CWSIP0551=CWSIP0551I: Starea de trimitere permis\u0103 a destina\u0163iei {0}, cu UUID {1} s-a modificat \u00een {2}.
+NOTIFY_SEND_ALLOWED_STATE_CHANGE_CWSIP0551.explanation=Comportarea punctelor mesaj asociate cu destina\u0163ia a fost modificat\u0103.
+NOTIFY_SEND_ALLOWED_STATE_CHANGE_CWSIP0551.useraction=Nimic.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the UUID of the destination
+# {2} the state
+NOTIFY_RECEIVE_ALLOWED_STATE_CHANGE_CWSIP0552=CWSIP0552I: Starea de primire permis\u0103 a destina\u0163iei {0}, cu UUID {1} s-a modificat \u00een {2}.
+NOTIFY_RECEIVE_ALLOWED_STATE_CHANGE_CWSIP0552.explanation=Comportarea punctelor mesaj asociate cu destina\u0163ia a fost modificat\u0103.
+NOTIFY_RECEIVE_ALLOWED_STATE_CHANGE_CWSIP0552.useraction=Nimic.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the messaging engine
+NOTIFY_DEPTH_THRESHOLD_REACHED_CWSIP0553=CWSIP0553W: Destina\u0163ia {0}, localizat\u0103 la {1} \u015fi-a atins pragul de sus al ad\u00e2ncimii mesajului de {2}.
+NOTIFY_DEPTH_THRESHOLD_REACHED_CWSIP0553.explanation=Num\u0103rul de mesaje stocate la un punct mesaj a f\u0103cut o modificare de ad\u00e2ncime care duce num\u0103rul stocat peste pragul superior.
+NOTIFY_DEPTH_THRESHOLD_REACHED_CWSIP0553.useraction=Nimic.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the messaging engine
+NOTIFY_DEPTH_THRESHOLD_REACHED_CWSIP0554=CWSIP0554W: Destina\u0163ia {0}, localizat\u0103 la {1} \u015fi-a atins pragul de jos al ad\u00e2ncimii mesajului de {2}.
+NOTIFY_DEPTH_THRESHOLD_REACHED_CWSIP0554.explanation=Num\u0103rul de mesaje de la destina\u0163ie a ajuns la nivelul pragului de mai jos de la nivelul pragului de sus; prin urmare, destina\u0163ia poate accepta mesaje noi.
+NOTIFY_DEPTH_THRESHOLD_REACHED_CWSIP0554.useraction=Nimic.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine that hosts the remote messaging point.
+# {1} the name of the destination
+# {2} the name of the messaging engine where the destination is localised
+NOTIFY_REMOTE_DEPTH_THRESHOLD_REACHED_CWSIP0555=CWSIP0555W: Punctul de Mesaj la Distan\u0163\u0103 pe ME {0} pentru destina\u0163ia {1}, localizat\u0103 la {2} \u015fi-a atins pragul superior de ad\u00e2ncime a mesajelor.
+NOTIFY_REMOTE_DEPTH_THRESHOLD_REACHED_CWSIP0555.explanation=Num\u0103rul de mesaje stocate la un punct mesaj a f\u0103cut o modificare de ad\u00e2ncime care duce num\u0103rul stocat peste pragul superior.
+NOTIFY_REMOTE_DEPTH_THRESHOLD_REACHED_CWSIP0555.useraction=Nimic.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine that hosts the remote messaging point.
+# {1} the name of the destination
+# {2} the name of the messaging engine where the destination is localised
+NOTIFY_REMOTE_DEPTH_THRESHOLD_REACHED_CWSIP0556=CWSIP0556W: Punctul de Mesaj la Distan\u0163\u0103 pe ME {0} pentru destina\u0163ia {1}, localizat\u0103 la {2} \u015fi-a atins pragul inferior de ad\u00e2ncime a mesajelor.
+NOTIFY_REMOTE_DEPTH_THRESHOLD_REACHED_CWSIP0556.explanation=Num\u0103rul de mesaje stocate la un punct mesaj a f\u0103cut o modificare de ad\u00e2ncime care duce num\u0103rul stocat sub pragul inferior.
+NOTIFY_REMOTE_DEPTH_THRESHOLD_REACHED_CWSIP0556.useraction=Nimic.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the WebSphere MQ link name
+# {1} the name of the messaging engine
+NOTIFY_MQLINK_DEPTH_THRESHOLD_REACHED_CWSIP0557=CWSIP0557W: Leg\u0103tura WebSphere MQ {0}, localizat\u0103 la {2} \u015fi-a atins pragul superior de ad\u00e2ncime a mesajelor.
+NOTIFY_MQLINK_DEPTH_THRESHOLD_REACHED_CWSIP0557.explanation=Num\u0103rul de mesaje stocate \u00eentr-o leg\u0103tur\u0103 MQ a f\u0103cut o modificare de ad\u00e2ncime care duce num\u0103rul stocat peste pragul superior.
+NOTIFY_MQLINK_DEPTH_THRESHOLD_REACHED_CWSIP0557.useraction=Nimic.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the WebSphere MQ link name
+# {1} the name of the messaging engine
+NOTIFY_MQLINK_DEPTH_THRESHOLD_REACHED_CWSIP0558=CWSIP0558W: Leg\u0103tura WebSphere MQ {0}, localizat\u0103 la {1} \u015fi-a atins pragul inferior de ad\u00e2ncime a mesajelor.
+NOTIFY_MQLINK_DEPTH_THRESHOLD_REACHED_CWSIP0558.explanation=Num\u0103rul de mesaje stocate \u00eentr-o leg\u0103tur\u0103 MQ a f\u0103cut o modificare de ad\u00e2ncime care duce num\u0103rul stocat sub pragul inferior.
+NOTIFY_MQLINK_DEPTH_THRESHOLD_REACHED_CWSIP0558.useraction=Nimic.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the SIB link name
+# {1} the name of the foreign bus
+# {2} the name of the messaging engine
+NOTIFY_SIBLINK_DEPTH_THRESHOLD_REACHED_CWSIP0559=CWSIP0559W: Leg\u0103tura {0} pentru magistrala {1}, pe ME {2} \u015fi-a atins pragul superior de ad\u00e2ncime a mesajelor.
+NOTIFY_SIBLINK_DEPTH_THRESHOLD_REACHED_CWSIP0559.explanation=Num\u0103rul de mesaje stocate \u00eentr-o leg\u0103tur\u0103 MQ a f\u0103cut o modificare de ad\u00e2ncime care duce num\u0103rul stocat peste pragul superior.
+NOTIFY_SIBLINK_DEPTH_THRESHOLD_REACHED_CWSIP0559.useraction=Nimic.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the SIB link name
+# {1} the name of the foreign bus
+# {2} the name of the messaging engine
+NOTIFY_SIBLINK_DEPTH_THRESHOLD_REACHED_CWSIP0560=CWSIP0560W: Leg\u0103tura {0} pentru magistrala {1}, pe ME {2} \u015fi-a atins pragul inferior de ad\u00e2ncime a mesajelor.
+NOTIFY_SIBLINK_DEPTH_THRESHOLD_REACHED_CWSIP0560.explanation=Num\u0103rul de mesaje stocate \u00eentr-o leg\u0103tur\u0103 a f\u0103cut o modificare de ad\u00e2ncime care duce num\u0103rul stocat sub pragul inferior.
+NOTIFY_SIBLINK_DEPTH_THRESHOLD_REACHED_CWSIP0560.useraction=Nimic.
+
+# -------------------------------------------------------------------------------------------------
+CONNECTION_CONTROLLABLE_ERROR_CWSIP0571=CWSIP0571E: Obiectul conexiune nu mai exist\u0103.
+CONNECTION_CONTROLLABLE_ERROR_CWSIP0571.explanation=\u00cencercarea de accesare a unei Conexiuni a e\u015fuat deoarece Conexiunea nu mai exist\u0103.  Aceasta poate fi din cauza unei aplica\u0163ii ce \u00eenchide conexiunea.
+CONNECTION_CONTROLLABLE_ERROR_CWSIP0571.useraction=Nimic
+
+# -------------------------------------------------------------------------------------------------
+MESSAGE_EXISTS_ERROR_CWSIP0572=CWSIP0572E: Mesajul cu ID-ul {0} nu mai exist\u0103 pe destina\u0163ia {1}.
+MESSAGE_EXISTS_ERROR_CWSIP0572.explanation=\u00cencercarea de accesare a mesajului cu ID-ul specificat a e\u015fuat.  Aceasta este posibil din cauza expir\u0103rii mesajului, fie o Aplica\u0163ie l-a \u00eenl\u0103turat.
+MESSAGE_EXISTS_ERROR_CWSIP0572.useraction=Nimic
+
+# -------------------------------------------------------------------------------------------------
+NO_ELEMENTS_ERROR_CWSIP0601=CWSIP0601E: Nu mai exist\u0103 elemente in Iterator.
+NO_ELEMENTS_ERROR_CWSIP0601.explanation=Nimic.
+NO_ELEMENTS_ERROR_CWSIP0601.useraction=Nimic
+
+# -------------------------------------------------------------------------------------------------
+NO_ELEMENTS_ERROR_CWSIP0602=CWSIP0602E: Nu exist\u0103 elemente \u00eenl\u0103turabile in Iterator.
+NO_ELEMENTS_ERROR_CWSIP0602.explanation=Nimic.
+NO_ELEMENTS_ERROR_CWSIP0602.useraction=Nimic
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the alias destination
+# {1} is the alias resolution path
+# {2} The name of the messaging engine bus
+ALIAS_CIRCULAR_DEPENDENCY_ERROR_CWSIP0621=CWSIP0621E: A ap\u0103rut o eroare \u00een timpul rezolv\u0103rii destina\u0163iei alias {0} datorit\u0103 urm\u0103toarei dependen\u0163e circulare {1} pe magistrala motor de mesagerie {2}
+ALIAS_CIRCULAR_DEPENDENCY_ERROR_CWSIP0621.explanation=Destina\u0163ia alias nu a putut fi rezolvat\u0103 din cauza unei dependen\u0163e circulare
+ALIAS_CIRCULAR_DEPENDENCY_ERROR_CWSIP0621.useraction=\u00centrerupe\u0163i dependen\u0163a circular\u0103 prin modificarea aliasurilor \u00een calea de rezolu\u0163ie din consola de administrare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The request type
+# {1} The subscription ID, i.e. client##subName
+# {2} The ME the request was sent to
+REMOTE_DURABLE_TIMEOUT_ERROR_CWSIP0631=CWSIP0631E: Opera\u0163ia durabil\u0103 la distan\u0163\u0103 {0} pentru abonamentul {1} a intrat \u00een timeout \u00een timpul a\u015ftept\u0103rii motorului de mesagerie {2}.
+REMOTE_DURABLE_TIMEOUT_ERROR_CWSIP0631.explanation=Cererea durabil\u0103 la distan\u0163\u0103 a f\u0103cut timeout \u00een timpul a\u015ftept\u0103rii motorului de mesagerie la distan\u0163\u0103.
+REMOTE_DURABLE_TIMEOUT_ERROR_CWSIP0631.useraction=Verifica\u0163i c\u0103 DURABLE_HOME este setat\u0103 corespunz\u0103tor, \u015fi c\u0103 motorul de mesagerie destina\u0163ie este activ.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+MEDIATION_POINT_DELETED_ERROR_SIMP0641=CWSIP0641E: Punctul de mediere local pentru destina\u0163ia {0} a fost \u015fters \u015fi mesajul nu poate fi pus \u00een destina\u0163ia de excep\u0163ii.
+MEDIATION_POINT_DELETED_ERROR_SIMP0641.explanation=O \u00eencercare de mutare a mesajelor din punctul local de mediere al destina\u0163iei a rezultat o eroare.
+MEDIATION_POINT_DELETED_ERROR_SIMP0641.useraction=Cur\u0103\u0163area va fi \u00eencercat\u0103 din nou mai t\u00e2rziu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+MEDIATION_START_ERROR_SIMP0651=CWSIP0651E: Punctul de mediere local pentru destina\u0163ia {0} a fost instructat s\u0103 porneasc\u0103 medierea mesajelor, dar nu poate deoarece o modificare a configura\u0163iei a avut loc pentru a \u00eenl\u0103tura acea mediere de la destina\u0163ie.
+MEDIATION_START_ERROR_SIMP0651.explanation=Medierea nu mai este definit\u0103 pe destina\u0163ie, astfel c\u0103 cererea de pornire a punctului de mediere a rezultat o eroare.
+MEDIATION_START_ERROR_SIMP0651.useraction=Nu este necesar\u0103 nici-o ac\u0163iune din partea utilizatorului. Punctul de mediere va fi \u00eenl\u0103turat \u00een scurt timp.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+MEDIATION_STOPPED_BY_SHUTDOWN_SIMP0652=CWSIP0652I: Punctul de mediere local pentru destina\u0163ia {0} s-a oprit deoarece motorul de mesagerie se opre\u015fte.
+MEDIATION_STOPPED_BY_SHUTDOWN_SIMP0652.explanation=Punctul de mediere nu mai poate func\u0163iona deoarece motorul de mesagerie se opre\u015fte. Punctul de mediere se opre\u015fte.
+MEDIATION_STOPPED_BY_SHUTDOWN_SIMP0652.useraction=Nu este necesar\u0103 nici-o ac\u0163iune din partea utilizatorului. Punctul de mediere va continua c\u00e2nd motorul de mesagerie va fi repornit, dac\u0103 este configurat astfel.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the exception which caused the failure.
+MEDIATION_FAILED_TO_START_SIMP0654=CWSIP0654E: Punctul de mediere local pentru destina\u0163ia {0} a e\u015fuat s\u0103 porneasc\u0103 deoarece a avut loc o eroare. Defini\u0163ia medierii este incorect\u0103. Eroare este {1}.
+MEDIATION_FAILED_TO_START_SIMP0654.explanation=Punctul de mediere r\u0103m\u00e2ne \u00een starea de oprire.
+MEDIATION_FAILED_TO_START_SIMP0654.useraction=Punctul de mediere poate fi repornit odat\u0103 ce condi\u0163iile erorii au fost modificate.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the mediation we were looking for
+# {2} the exception which caused the failure.
+MEDIATION_FAILED_TO_START_SIMP0655=CWSIP0655E: Punctul de mediere local pentru destina\u0163ia {0} a e\u015fuat s\u0103 porneasc\u0103 deoarece a avut loc o eroare. Medierea {1} nu a fost g\u0103sit\u0103. Eroare este {2}.
+MEDIATION_FAILED_TO_START_SIMP0655.explanation=Punctul de mediere r\u0103m\u00e2ne \u00een starea de oprire.
+MEDIATION_FAILED_TO_START_SIMP0655.useraction=Punctul de mediere poate fi repornit odat\u0103 ce condi\u0163iile erorii au fost modificate.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination
+# {1} The exception string why the message flow can't start. Not the stack trace.
+#
+MESSAGE_PUMP_START_WARNING_CWSIP0656W=CWSIP0656W: Un punct de mediere nu poate s\u0103 porneasc\u0103 fluxul de mesaje pentru destina\u0163ia {0} datorit\u0103 unei erori {1}
+MESSAGE_PUMP_START_WARNING_CWSIP0656W.explanation=Punctul de mediere a \u00eencercat s\u0103 porneasc\u0103 fluxul mesajelor c\u0103tre mediere \u015fi destina\u0163ia punct final. A e\u015fuat la pornirea fluxului mesajelor.
+MESSAGE_PUMP_START_WARNING_CWSIP0656W.useraction=Punctul de mediere poate fi repornit odat\u0103 ce condi\u0163iile erorii au fost modificate.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the mediation
+# {2} the state change.
+NOTIFY_MEDIATION_STATE_CHANGE_CWSIP0657=CWSIP0657I: Punctul local de mediere pentru destina\u0163ia {0} \u015fi medierea {1} s-a mutat \u00een starea {2}.
+NOTIFY_MEDIATION_STATE_CHANGE_CWSIP0657.explanation=Punctul de mediere s-a mutat \u00eentr-o stare nou\u0103.
+NOTIFY_MEDIATION_STATE_CHANGE_CWSIP0657.useraction=nimic.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+MEDIATION_EXCEPT_DEST_CLOSED_SIMP0661=CWSIP0661E: Medierea pentru destina\u0163ia {0} a \u00eencercat s\u0103 pun\u0103 un mesaj \u00een destina\u0163ia de excep\u0163ii dup\u0103 ce medierea s-a oprit.
+MEDIATION_EXCEPT_DEST_CLOSED_SIMP0661.explanation=Mesajul nu a fost pus \u00een destina\u0163ia de excep\u0163ii.
+MEDIATION_EXCEPT_DEST_CLOSED_SIMP0661.useraction=Medierea poate re\u00eencerca punerea mesajului dup\u0103 repornire.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+MEDIATION_STOPPED_BY_FAILURE_TO_MOVE_UNMEDIATED_MESSAGE_SIMP0662=CWSIP0662E: Punctul de mediere pentru destina\u0163ia {0} a \u00eencercat s\u0103 mute un mesaj \u00een partea post-mediat\u0103 a destina\u0163iei. Aceast\u0103 opera\u0163ie a e\u015fuat.
+MEDIATION_STOPPED_BY_FAILURE_TO_MOVE_UNMEDIATED_MESSAGE_SIMP0662.explanation=Mesajul nu a fost pus \u00een partea de post-mediere a destina\u0163iei. Punctul de mediere a fost oprit.
+MEDIATION_STOPPED_BY_FAILURE_TO_MOVE_UNMEDIATED_MESSAGE_SIMP0662.useraction=Medierea poate re\u00eencerca punerea mesajului dup\u0103 repornire.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the selector passed to MP by the configuration
+# {2} the parse failure when the selector was turned into a parse tree.
+MEDIATION_START_FAILURE_INVALID_SELECTOR_SIMP0663=CWSIP0663E: Punctul de mediere pentru destina\u0163ia {0} a e\u015fuat s\u0103 porneasc\u0103 deoarece selectorul este incorect. Selectorul era setat {1}. Eroare este {2}.
+MEDIATION_START_FAILURE_INVALID_SELECTOR_SIMP0663.explanation=Selectorul specificat \u00een configura\u0163ia medierii este incorect.
+MEDIATION_START_FAILURE_INVALID_SELECTOR_SIMP0663.useraction=Referi\u0163i documenta\u0163ia pentru a afla ce constituie un selector valid. Modifica\u0163i configura\u0163ia medierii pentru a seta un selector valid. Reporni\u0163i punctul de mediere.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the discriminator passed to MP by the configuration
+# {2} the parse failure when the selector was turned into a parse tree.
+MEDIATION_START_FAILURE_INVALID_DISCRIMINATOR_SIMP0664=CWSIP0664E: Punctul de mediere pentru destina\u0163ia {0} a e\u015fuat s\u0103 porneasc\u0103 deoarece discriminatorul este incorect. Discriminatorul era setat {1}. Eroare este {2}.
+MEDIATION_START_FAILURE_INVALID_DISCRIMINATOR_SIMP0664.explanation=Discriminatorul specificat \u00een configura\u0163ia medierii este incorect.
+MEDIATION_START_FAILURE_INVALID_DISCRIMINATOR_SIMP0664.useraction=Referi\u0163i documenta\u0163ia pentru a afla ce constituie un discriminator valid. Modifica\u0163i configura\u0163ia medierii pentru a seta un discriminator valid. Reporni\u0163i punctul de mediere.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+MEDIATION_START_PREVENTED_DISABLED_SIMP0665=CWSIP0665E: Punctul de mediere pentru destina\u0163ia {0} nu poate porni deoarece medierea este dezactivat\u0103 pentru acea destina\u0163ie.
+MEDIATION_START_PREVENTED_DISABLED_SIMP0665.explanation=Informa\u0163iile de configurare indic\u0103 c\u0103 toate activit\u0103\u0163ile de mediere pe aceast\u0103 destina\u0163ie sunt dezactivate.
+MEDIATION_START_PREVENTED_DISABLED_SIMP0665.useraction=C\u00e2nd medierile sunt \u00een func\u0163iune, destina\u0163ia trebuie s\u0103 indice c\u0103 medierile sunt activate.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} The bus name
+# {2} The related exception
+MEDIATION_MESSAGE_PUMP_START_PRODUCER_FAILED_SIMP0666=CWSIP0666W: Punctul de mediere penru destina\u0163ia {0} pe magistrala {1} a e\u015fuat s\u0103 creeze un Produc\u0103tor datorit\u0103 erorii {2}
+MEDIATION_MESSAGE_PUMP_START_PRODUCER_FAILED_SIMP0666.explanation=Pentru livrarea mesajelor c\u0103tre mediere, este necesar un Furnizor.  A ap\u0103rut o eroare \u00een timpul cre\u0103rii unui Furnizor.
+MEDIATION_MESSAGE_PUMP_START_PRODUCER_FAILED_SIMP0666.useraction=Examina\u0163i excep\u0163ia \u00eenrudit\u0103 \u015fi corecta\u0163i toate problemele.
+
+# -------------------------------------------------------------------------------------------------
+# Used in ConnectionImpl.java
+NULL_CONSUMERSETCHANGECALLBACK_CWSIP0667=CWSIP0667E: A survenit o eroare intern\u0103. Comanda registerConsumerSetMonitor a e\u015fuat deoarece parametrul transmis ConsumerSetChangeCallback este Nul.
+NULL_CONSUMERSETCHANGECALLBACK_CWSIP0667.explanation=CMSG0001
+NULL_CONSUMERSETCHANGECALLBACK_CWSIP0667.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Used in ConnectionImpl.java
+NULL_DESTINATIONADDRESS_CWSIP0668=CWSIP0668E: A survenit o eroare intern\u0103. Comanda destinationAddress a e\u015fuat deoarece parametrul transmis ConsumerSetChangeCallback este Nul.
+NULL_DESTINATIONADDRESS_CWSIP0668.explanation=CMSG0001
+NULL_DESTINATIONADDRESS_CWSIP0668.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Used in ConnectionImpl.java
+NULL_DISCRIMINATOREXPRESSION_CWSIP0669=CWSIP0669E: A survenit o eroare intern\u0103. Comanda discriminatorExpression a e\u015fuat deoarece parametrul transmis ConsumerSetChangeCallback este Nul.
+NULL_DISCRIMINATOREXPRESSION_CWSIP0669.explanation=CMSG0001
+NULL_DISCRIMINATOREXPRESSION_CWSIP0669.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the messaging engine
+ORDERING_INITIALISATION_ERROR_CWSIP0671=CWSIP0671E: Destina\u0163ia {0} pe motorul de mesagerie {1} a e\u015fuat s\u0103 se ini\u0163ializeze pentru men\u0163inerea ordinii.
+ORDERING_INITIALISATION_ERROR_CWSIP0671.explanation=A avut loc o \u00eencercare de ini\u0163ializare o destina\u0163ie comandat\u0103, dar destina\u0163ia are multiple tranzac\u0163ii nerezolvate.
+ORDERING_INITIALISATION_ERROR_CWSIP0671.useraction=Finaliza\u0163i toate tranzac\u0163iile din destina\u0163ie \u00eenainte s\u0103 poat\u0103 fi activat\u0103 comandarea.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination prefix supplied by the user
+CONSUMER_NOT_BIFURCATABLE_CWSIP0680=CWSIP0680E: Nu se poate crea un consumator bifurcat din consumatorul {0}, consumatorul {0} nu este bifurcabil.
+CONSUMER_NOT_BIFURCATABLE_CWSIP0680.explanation=Consumatorii bifurca\u0163i nu pot fi crea\u0163i dec\u00e2t din consumatori care au fost crea\u0163i ini\u0163ial ca bifurcabili.
+CONSUMER_NOT_BIFURCATABLE_CWSIP0680.useraction=Modifica\u0163i aplica\u0163ia care a creat consumatorul pentru a permite consumatorilor bifurca\u0163i s\u0103 fie crea\u0163i.
+
+# -------------------------------------------------------------------------------------------------
+# no parameters.
+MEDIATION_CHANGE_REASON_ADMIN_ACTION_SIMP0771=CWSIP0771I: Ac\u0163iune administrator.
+MEDIATION_CHANGE_REASON_ADMIN_ACTION_SIMP0771.explanation=Punctul de mediere a introdus o stare ca rezultat al ac\u0163iunii administratorului.
+MEDIATION_CHANGE_REASON_ADMIN_ACTION_SIMP0771.useraction=Referi\u0163i documenta\u0163ia pentru a afla cum se modific\u0103, dac\u0103 este necesar, starea punctului de mediere.
+
+# -------------------------------------------------------------------------------------------------
+# no parameters.
+MEDIATION_CHANGE_REASON_MEDIATION_ACTION_SIMP0772=CWSIP0772I: Ac\u0163iune mediere.
+MEDIATION_CHANGE_REASON_MEDIATION_ACTION_SIMP0772.explanation=Punctul de mediere a introdus o stare ca rezultat al ac\u0163iunii medierii.
+MEDIATION_CHANGE_REASON_MEDIATION_ACTION_SIMP0772.useraction=Referi\u0163i documenta\u0163ia pentru a afla cum se modific\u0103, dac\u0103 este necesar, starea punctului de mediere.
+
+# -------------------------------------------------------------------------------------------------
+# no parameters.
+MEDIATION_CHANGE_REASON_CONFIG_ACTION_SIMP0773=CWSIP0773I: Se folose\u015fte starea ini\u0163ial\u0103 configurat\u0103.
+MEDIATION_CHANGE_REASON_CONFIG_ACTION_SIMP0773.explanation=Punctul de mediere a introdus o stare \u00een timpul \u00eencerc\u0103rii de a atinge starea configurat\u0103 de pornire.
+MEDIATION_CHANGE_REASON_CONFIG_ACTION_SIMP0773.useraction=Referi\u0163i documenta\u0163ia pentru a afla cum se modific\u0103, dac\u0103 este necesar, starea punctului de mediere.
+
+# -------------------------------------------------------------------------------------------------
+# no parameters.
+MEDIATION_CHANGE_REASON_WAIT_WAS_SIMP0774=CWSIP0774I: A\u015fteptare ca serverul WebSphere s\u0103 porneac\u0103
+MEDIATION_CHANGE_REASON_WAIT_WAS_SIMP0774.explanation=Punctul de mediere a introdus o stare \u00een timpul a\u015ftept\u0103rii pornirii Serverului Websphere.
+MEDIATION_CHANGE_REASON_WAIT_WAS_SIMP0774.useraction=Referi\u0163i documenta\u0163ia pentru a afla cum se modific\u0103, dac\u0103 este necesar, starea punctului de mediere.
+
+# -------------------------------------------------------------------------------------------------
+# no parameters.
+MEDIATION_CHANGE_REASON_WAIT_DELETE_SIMP0775=CWSIP0775I: A\u015fteptare pentru \u015ftergerea unui alt punct de mediere pe aceast\u0103 destina\u0163ie.
+MEDIATION_CHANGE_REASON_WAIT_DELETE_SIMP0775.explanation=Punctul de mediere a fost ad\u0103ugat la destina\u0163ie \u00eenainte ca punctul de mediere anterior s\u0103 fie complet \u00eenl\u0103turat. Medierea va a\u015ftepta p\u00e2n\u0103 c\u00e2nd \u00eenl\u0103turarea medierii anterioare este finalizat\u0103 pentru a putea continua.
+MEDIATION_CHANGE_REASON_WAIT_DELETE_SIMP0775.useraction=Referi\u0163i documenta\u0163ia pentru a afla cum se modific\u0103, dac\u0103 este necesar, starea punctului de mediere.
+
+# -------------------------------------------------------------------------------------------------
+# no parameters.
+MEDIATION_CHANGE_REASON_CONFIG_CHANGE_SIMP0776=CWSIP0776I: Aplicare modificare de configurare.
+MEDIATION_CHANGE_REASON_CONFIG_CHANGE_SIMP0776.explanation=Punctul de mediere a introdus aceast\u0103 stare ca rezultat a unei modific\u0103ri \u00een configura\u0163ie.
+MEDIATION_CHANGE_REASON_CONFIG_CHANGE_SIMP0776.useraction=Referi\u0163i documenta\u0163ia pentru a afla cum se modific\u0103, dac\u0103 este necesar, starea punctului de mediere.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination address
+TRANSACTION_RECEIVE_USAGE_ERROR_CWSIP0777=CWSIP0777E: Tranzac\u0163ia folosit\u0103 pentru primire pe destina\u0163ia: {0} a fost deja finalizat\u0103.
+TRANSACTION_RECEIVE_USAGE_ERROR_CWSIP0777.explanation=A avut loc o \u00eencercare de folosire a unei tranzac\u0163ii deja finalizate.
+TRANSACTION_RECEIVE_USAGE_ERROR_CWSIP0777.useraction=Asigura\u0163i-v\u0103 c\u0103 tranzac\u0163ia folosit\u0103 este o tranzac\u0163ie nou\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination address
+TRANSACTION_DELETE_USAGE_ERROR_CWSIP0778=CWSIP0778E: Tranzac\u0163ia folosit\u0103 pentru \u015ftergere pe destina\u0163ia: {0} a fost deja finalizat\u0103.
+TRANSACTION_DELETE_USAGE_ERROR_CWSIP0778.explanation=A avut loc o \u00eencercare de folosire a unei tranzac\u0163ii deja finalizate.
+TRANSACTION_DELETE_USAGE_ERROR_CWSIP0778.useraction=Asigura\u0163i-v\u0103 c\u0103 tranzac\u0163ia folosit\u0103 este o tranzac\u0163ie nou\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The messaging engine name
+FLUSH_REQUESTED_MESSAGE_CWSIP0780=CWSIP0780I: Motorul de mesagerie: {0} pornit, epurarea tutoror fluxurilor de livrare cerut\u0103.
+FLUSH_REQUESTED_MESSAGE_CWSIP0780.explanation=Motorul de mesagerie a sesizat o cerere de golire a fluxurilor de livrare.
+FLUSH_REQUESTED_MESSAGE_CWSIP0780.useraction=Nimic.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The messaging engine name
+# {1} The Stream ID
+# {2} The Destination Name
+FLUSH_INITIATED_MESSAGE_CWSIP0781=CWSIP0781I: Motorul de mesagerie: {0} pornit, epurarea ini\u0163iat\u0103 pentru fluxul: {1} \u015fi destina\u0163ia: {2}.
+FLUSH_INITIATED_MESSAGE_CWSIP0781.explanation=Motorul de mesagerie a \u00eenceput ac\u0163iunea de golire a fluxurilor.
+FLUSH_INITIATED_MESSAGE_CWSIP0781.useraction=Nimic.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The messaging engine name
+# {1} The Stream ID
+# {2} The Destination Name
+# {3} The Exception causing the problem
+FLUSH_FAILED_MESSAGE_CWSIP0782=CWSIP0782E: Motorul de mesagerie: {0} pornit, epurarea fluxului: {1} \u015fi destina\u0163ia: {2} a e\u015fuat cu excep\u0163ia {3}.
+FLUSH_FAILED_MESSAGE_CWSIP0782.explanation=A ap\u0103rut o eroare \u00een timpul golirii fluxurilor.
+FLUSH_FAILED_MESSAGE_CWSIP0782.useraction=Dac\u0103 problema persist\u0103, contacta\u0163i reprezentantul suport IBM.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The messaging engine name
+FLUSH_COMPLETED_MESSAGE_CWSIP0783=CWSIP0783I: Motorul de mesagerie: {0} pornit, epurarea tuturor fluxurilor de livrare a fost finalizat\u0103.
+FLUSH_COMPLETED_MESSAGE_CWSIP0783.explanation=Motorul de mesagerie a golit toate fluxurile de livrare proprii.
+FLUSH_COMPLETED_MESSAGE_CWSIP0783.useraction=Nimic.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+# {1} is the uuid of the remote engine
+# {2} is the stream id in the remote engine
+# {3} is the name of the receiving engine
+UNEXPECTED_MESSAGE_RECEIVED_CWSIP0784=CWSIP0784W: O cerere mesaj la distan\u0163\u0103 (cu ID {2}) pe o destina\u0163ie (cu ID {1}) de la motorul de mesagerie {3} la {1} nu mai este valid\u0103. Poate fi necesar\u0103 cur\u0103\u0163area.
+UNEXPECTED_MESSAGE_RECEIVED_CWSIP0784.explanation=Starea cererii de mesaj la distan\u0163\u0103 partajat\u0103 \u00eentre cele dou\u0103 motoare de mesagerie este inconsistent\u0103, posibil din cauza depozitului de mesaje al unuia dintre motoare care este restaurat/\u015fters, dar nu \u015fi cel\u0103lalt.
+UNEXPECTED_MESSAGE_RECEIVED_CWSIP0784.useraction=Face\u0163i consistent\u0103 starea dintre cele dou\u0103 motoare de mesagerie. Fie prin recuperarea celor dou\u0103 depozite de mesaje la acela\u015fi punct de timp, fie prin anularea cererii din motorul de mesagerie receptor.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination or foreign bus name
+# {1} Messaging engine name
+# {2} Number of seconds since the blockage was noticed
+# {3} Transaction ID blocking the message
+STREAM_BLOCKED_BY_COMMITTING_MESSAGE_CWSIP0785=CWSIP0785W: Un mesaj \u0163inut pe motorul de mesagerie {1} pentru transmitere c\u0103tre o destina\u0163ie la distan\u0163\u0103 pe magistrala extern\u0103 {0} a r\u0103mas \u00een starea de comitere pentru {2} secunde sub tranzac\u0163ia {3}. Mesajele ulterioare pot s\u0103 nu urmeze fluxul p\u00e2n\u0103 c\u00e2nd aceast\u0103 tranzac\u0163ie se finalizeaz\u0103.
+STREAM_BLOCKED_BY_COMMITTING_MESSAGE_CWSIP0785.explanation=Toate mesajele pentru destina\u0163ia la distan\u0163\u0103 sau magistrala extern\u0103 trimise dup\u0103 mesajul blocat nu vor fi transmise p\u00e2n\u0103 c\u00e2nd tranzac\u0163ia nu este finalizat\u0103.
+STREAM_BLOCKED_BY_COMMITTING_MESSAGE_CWSIP0785.useraction=Finaliza\u0163i tranzac\u0163ia identificat\u0103 c\u0103 blocheaz\u0103 mesajul
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination or foreign bus name
+# {1} Messaging engine name
+# {2} Number of seconds since the blockage was noticed
+# {3} Transaction ID blocking the message
+STREAM_UNBLOCKED_BY_COMMITTING_MESSAGE_CWSIP0786=CWSIP0786I: Mesajele trimise c\u0103tre destina\u0163ia la distan\u0163\u0103 sau magistrala extern\u0103 {0} de la motorul de mesagerie {1} nu mai sunt blocate de tranzac\u0163ia {2}.
+STREAM_UNBLOCKED_BY_COMMITTING_MESSAGE_CWSIP0786.explanation=Tranzac\u0163ia raportat\u0103 anterior ca fiind nefinalizat\u0103 s-a finalizat \u015fi transmisia mesajului a fost continuat\u0103.
+STREAM_UNBLOCKED_BY_COMMITTING_MESSAGE_CWSIP0786.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} Messaging engine name
+# {2} Number of messages queued
+DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0787=CWSIP0787I: Destina\u0163ia {0} pe motorul de mesagerie {1} a atins o ad\u00e2ncime de {2} mesaje.
+DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0787.explanation=Punctul mesaj pentru destina\u0163ie a atins ad\u00e2ncimea mesajelor stabilit\u0103
+DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0787.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Number of messages queued
+# {1} Messaging engine with the queued messages
+# {2} The destination name
+# {3} Target messaging engine name
+REMOTE_DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0788=CWSIP0788I: {0}mesaje \u00een coad\u0103 pe motorul de mesagerie {1} pentru transmitere c\u0103tre destina\u0163ia {2} pe motorul de mesagerie {3}.
+REMOTE_DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0788.explanation=Punctul mesaj la distan\u0163\u0103 pentru destina\u0163ie a atins ad\u00e2ncimea mesajelor stabilit\u0103
+REMOTE_DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0788.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Number of messages queued
+# {1} Messaging engine with the queued messages
+# {2} The next target foreign bus
+# {3} The link connecting the foreign bus
+REMOTE_LINK_DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0789=CWSIP0789I: {0}mesaje \u00een coad\u0103 pe motorul de mesagerie {1} pentru transmitere c\u0103tre magistrala extern\u0103 {2} pe leg\u0103tura {3}.
+REMOTE_LINK_DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0789.explanation=Leg\u0103tura c\u0103tre magistrala extern\u0103 a atins ad\u00e2ncimea mesajelor stabilit\u0103
+REMOTE_LINK_DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0789.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+# -------------------------------------------------------------------------------------------------
+# {0} First missing sequence id
+# {1} Sending bus name
+# {2} link name
+# {3} Receiving messaging engine
+UNRESOLVED_GAP_IN_LINK_TRANSMITTER_CWSIP0790=CWSIP0790W: Motorul de mesagerie {3} a detectat un interval \u00een fluxul de mesaje primite de la magistrala {1} pe leg\u0103tura {2}. Cererile f\u0103cute pentru a completa acest decalaj trebuie satisf\u0103cute. Decalajul \u00eencepe de la secven\u0163a cu ID {0}.
+UNRESOLVED_GAP_IN_LINK_TRANSMITTER_CWSIP0790.explanation=Motorul de mesagerie care recep\u0163ioneaz\u0103 mesaje peste leg\u0103tura inter-magistrale a detectat un decalaj \u00een ID-urile de secven\u0163\u0103 ale mesajelor primite. Au fost f\u0103cute cereri de re-livrare a unuia sau mai multor mesaje c\u0103tre motorul de mesagerie emitent, dar decalajul nu a fost \u00eenc\u0103 completat. Dac\u0103 leg\u0103tura inter-magistrale nu ruleaz\u0103, decalajul nu va putea fi rezolvat p\u00e2n\u0103 c\u00e2nd leg\u0103tura inter-magistrale este repornit\u0103.
+UNRESOLVED_GAP_IN_LINK_TRANSMITTER_CWSIP0790.useraction=Reporni\u0163i leg\u0103tura dac\u0103 este oprit\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} First missing sequence id
+# {1} Sending bus name
+# {2} link name
+# {3} Receiving messaging engine
+RESOLVED_GAP_IN_LINK_TRANSMITTER_CWSIP0791=CWSIP0791I: Intervalul care \u00eencepe la secven\u0163a cu ID-ul {0} \u00een fluxul de mesaje de la magistrala {1} pe leg\u0103tura {2} a fost rezolvat pe motorul de mesagerie {3}.
+RESOLVED_GAP_IN_LINK_TRANSMITTER_CWSIP0791.explanation=Un decalaj raportat anterior \u00een secven\u0163a mesajelor a fost rezolvat acum, mesajele urm\u0103toare vor fi acum procesate.
+RESOLVED_GAP_IN_LINK_TRANSMITTER_CWSIP0791.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+# -------------------------------------------------------------------------------------------------
+# {0} First missing sequence id
+# {1} Destination name
+# {2} sending messaging engine
+# {3} Receiving messaging engine
+UNRESOLVED_GAP_IN_DESTINATION_TRANSMITTER_CWSIP0792=CWSIP0792W: Motorul de mesagerie {3} a detectat un interval \u00een fluxul de mesaje primite de la motorul de mesagerie {1} pentru destina\u0163ia {2}. Cererile f\u0103cute pentru a completa acest decalaj trebuie satisf\u0103cute. Decalajul \u00eencepe de la secven\u0163a cu ID {0}.
+UNRESOLVED_GAP_IN_DESTINATION_TRANSMITTER_CWSIP0792.explanation=Motorul de mesagerie care recep\u0163ioneaz\u0103 mesaje pentru destina\u0163ie a detectat un decalaj \u00een ID-urile de secven\u0163\u0103 ale mesajelor primite. Au fost f\u0103cute cereri de re-livrare a unuia sau mai multor mesaje c\u0103tre motorul de mesagerie emitent, dar decalajul nu a fost \u00eenc\u0103 completat. Dac\u0103 motoarele de mesagerie nu pot comunica, decalajul nu se va completa p\u00e2n\u0103 c\u00e2nd nu se rezolv\u0103.
+UNRESOLVED_GAP_IN_DESTINATION_TRANSMITTER_CWSIP0792.useraction=Reporni\u0163i motorul de mesagerie emitent dac\u0103 este oprit \u015fi asigura\u0163i-v\u0103 ca este activ\u0103 conexiunea \u00eentre cele dou\u0103 motoare de mesagerie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} First missing sequence id
+# {1} Destination name
+# {2} sending messaging engine
+# {3} Receiving messaging engine
+RESOLVED_GAP_IN_DESTINATION_TRANSMITTER_CWSIP0793=CWSIP0793I: Intervalul care \u00eencepe la secven\u0163a cu ID {0} \u00een fluxul de mesaje pentru magistrala {1} de la motorul de mesagerie {2} a fost rezolvat pe motorul de mesagerie {3}.
+RESOLVED_GAP_IN_DESTINATION_TRANSMITTER_CWSIP0793.explanation=Un decalaj raportat anterior \u00een secven\u0163a mesajelor a fost rezolvat acum, mesajele urm\u0103toare vor fi acum procesate.
+RESOLVED_GAP_IN_DESTINATION_TRANSMITTER_CWSIP0793.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Percentage of messages repeated
+# {1} Sending bus name
+# {2} link name
+# {3} Receiving messaging engine
+REPEATED_MESSAGE_THRESHOLD_REACHED_ON_LINK_CWSIP0794=CWSIP0794W: Un procent de {0} din mesajele primite de motorul de mesagerie {3} de la magistrala {1} pe calea  leg\u0103turii \u00eentre magistrale {2} au fost transmise \u00een mod repetat pe calea leg\u0103turii \u00eentre magistrale.
+REPEATED_MESSAGE_THRESHOLD_REACHED_ON_LINK_CWSIP0794.explanation=Un procent mare de mesaje trimise de la magistrala extern\u0103 a fost primit de acest motor de mesagerie, mesajele nu vor fi duplicate, dar performan\u0163a sistemului de mesagerie se poate reduce. Acest mesaj poate ap\u0103rea atunci c\u00e2nd este trimis\u0103 brusc o rafal\u0103 de mesaje peste leg\u0103tur\u0103, apari\u0163ii repetate ale acestui mesaj pot ar\u0103ta c\u0103 debitul leg\u0103turii este dep\u0103\u015fit pe o baz\u0103 sus\u0163inut\u0103.
+REPEATED_MESSAGE_THRESHOLD_REACHED_ON_LINK_CWSIP0794.useraction=Investiga\u0163i dac\u0103 rata produc\u0163iei mesajelor pentru transfer peste aceast\u0103 leg\u0103tur\u0103 este prea mare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Percentage of messages repeated
+# {1} sending messaging engine
+# {2} Receiving messaging engine
+# {3} Destination name
+REPEATED_MESSAGE_THRESHOLD_REACHED_ON_DESTINATION_CWSIP0795=CWSIP0795W: Un procent de {0} din mesajele primite de motorul de mesagerie {2} pentru destina\u0163ia {3} transmise de la motorul de mesagerie {1} au fost transmise \u00een mod repetat c\u0103tre motorul de mesagerie.
+REPEATED_MESSAGE_THRESHOLD_REACHED_ON_DESTINATION_CWSIP0795.explanation=Un procent mare de mesaje trimise de la motorul de mesagerie la distan\u0163\u0103 a fost primit anterior de acest motor de mesagerie, mesajele nu vor fi duplicate, dar performan\u0163a sistemului de mesagerie se poate reduce.  Acest mesaj poate ap\u0103rea atunci c\u00e2nd este trimis\u0103 brusc o rafal\u0103 de mesaje c\u0103tre motorul de mesagerie. Apari\u0163ii repetate ale acestui mesaj pot indica dep\u0103\u015firea debitului maxim de mesaje pe o baz\u0103 sus\u0163inut\u0103.
+REPEATED_MESSAGE_THRESHOLD_REACHED_ON_DESTINATION_CWSIP0795.useraction=Investiga\u0163i dac\u0103 rata produc\u0163iei mesajelor pentru transfer peste aceast\u0103 leg\u0103tur\u0103 este prea mare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The key
+INVOKE_COMMAND_ERROR_CWSIP0801=CWSIP0801E: Invocarea comenzii a e\u015fuat deoarece cheia era nevalid\u0103 {0}
+INVOKE_COMMAND_ERROR_CWSIP0801.explanation=Comanda nu a putut fi invocat\u0103 pentru c\u0103 cheia nu este valid\u0103
+INVOKE_COMMAND_ERROR_CWSIP0801.useraction=Verifica\u0163i cheia oferit\u0103 de invokeCommand
+
+# -------------------------------------------------------------------------------------------------
+# {0} The null parameter
+INVOKE_COMMAND_ERROR_CWSIP0802=CWSIP0802E: Invocarea comenzii a e\u015fuat deoarece urm\u0103torul parametru era nul {0}
+INVOKE_COMMAND_ERROR_CWSIP0802.explanation=Comanda nu a putut fi invocat\u0103 pentru c\u0103 unul dintre parametri este nul
+INVOKE_COMMAND_ERROR_CWSIP0802.useraction=Seta\u0163i parametrul specificat cu o valoare valid\u0103 \u015fi \u00eencerca\u0163i din nou
+
+# -------------------------------------------------------------------------------------------------
+# no parameters.
+ADD_DEST_LISTENER_ERROR_CWSIP0803=CWSIP0803E: Comanda addDestinationListener a e\u015fuat deoarece niciun DestinationListener nu a fost specificat
+ADD_DEST_LISTENER_ERROR_CWSIP0803.explanation=Comanda nu a putut fi invocat\u0103 pentru c\u0103 parametrul DestinationListener este nul
+ADD_DEST_LISTENER_ERROR_CWSIP0803.useraction=Specifica\u0163i o valoare valid\u0103 pentru DestinationListener \u015fi \u00eencerca\u0163i din nou
+
+# -------------------------------------------------------------------------------------------------
+# {0} is destination name
+# {1} is the Websphere MQ Server bus member name
+# {2} is the websphere MQ completion code
+# {3} is the websphere MQ reason code
+MSG_NOT_SENT_CWSIP0811=CWSIP0811W: Nu s-a putut trimite un mesaj c\u0103tre destina\u0163ia {0} alocat\u0103 membrului de magistral\u0103 Server WebSphere MQ {1}.  Codul WebSphere MQ de finalizare este {2}.  Codul motiv WebSphere MQ este {3}.
+MSG_NOT_SENT_CWSIP0811.explanation=Un mesaj nu a putut fi trimis c\u0103tre destina\u0163ia specificat\u0103, asignat\u0103 membrului magistralei serverului WebSphere MQ specificat. Codurile WebSphere MQ de finalizare \u015fi motiv specificate pot fi folosite la determinarea motivului pentru care nu a fost trimis mesajul.
+MSG_NOT_SENT_CWSIP0811.useraction=Consulta\u0163i documenta\u0163ia WebSphere MQ pentru determinarea semnifica\u0163iei codurilor de finalizare \u015fi motiv.  Realiza\u0163i ac\u0163iunea corectiv\u0103 corespunz\u0103toare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is destination name
+# {1} is the Websphere MQ Server bus member name
+# {2} is the websphere MQ completion code
+# {3} is the websphere MQ reason code
+MEDIATION_MSG_NOT_SENT_CWSIP0812=CWSIP0812W: Nu s-a putut trimite un mesaj c\u0103tre punctul de mediere asociat cu destina\u0163ia {0} asociat\u0103 cu membrul de magistral\u0103 al Serverului WebSphere MQ {1}.  Codul WebSphere MQ de finalizare este {2}.  Codul motiv WebSphere MQ este {3}.
+MEDIATION_MSG_NOT_SENT_CWSIP0812.explanation=Un mesaj nu a putut fi transmis c\u0103tre punctul de execu\u0163ie mediere asociat cu membrul magistralei WebSphere MQ specificat. Codurile WebSphere MQ de finalizare \u015fi motiv specificate pot fi folosite la determinarea motivului pentru care nu a fost trimis mesajul.
+MEDIATION_MSG_NOT_SENT_CWSIP0812.useraction=Consulta\u0163i documenta\u0163ia WebSphere MQ pentru determinarea semnifica\u0163iei codurilor de finalizare \u015fi motiv. Realiza\u0163i ac\u0163iunea corectiv\u0103 corespunz\u0103toare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+# {1} is the destination name
+# {2} is the websphere MQ Server bus member name
+EXCEPTION_CWSIP0813=CWSIP0813W: A avut loc o excep\u0163ie {0} la \u00eencercarea de a trimite un mesaj c\u0103tre destina\u0163ia {1} alocat\u0103 membrului de magistral\u0103 al serverului WebSphere MQ {2}.
+EXCEPTION_CWSIP0813.explanation=Un mesaj nu a putut fi trimis c\u0103tre destina\u0163ia specificat\u0103, asignat\u0103 membrului magistralei serverului WebSphere MQ specificat.  Excep\u0163ia WebSphere specificat\u0103 poate fi folosit\u0103 la determinarea motivului pentru care nu a putut fi trimis mesajul.
+EXCEPTION_CWSIP0813.useraction=Consulta\u0163i documenta\u0163ia WebSphere MQ pentru determinarea semnifica\u0163iei excep\u0163iei. Realiza\u0163i ac\u0163iunea corectiv\u0103 corespunz\u0103toare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+# {1} is the destination name
+# {2} is the websphere MQ Server bus member name
+MEDIATION_EXCEPTION_CWSIP0814=CWSIP0814W: A avut loc o excep\u0163ie {0} la \u00eencercarea de a trimite un mesaj c\u0103tre punctul de mediere asociat cu destina\u0163ia {1} asociat\u0103 cu membrul de magistral\u0103 al serverului WebSphere MQ {2}.
+MEDIATION_EXCEPTION_CWSIP0814.explanation=Un mesaj nu a putut fi transmis c\u0103tre punctul de mediere pentru destina\u0163ia specificat\u0103, asignat\u0103 membrului magistralei serverului WebSphere MQ. Excep\u0163ia WebSphere specificat\u0103 poate fi folosit\u0103 la determinarea motivului pentru care nu a putut fi trimis mesajul.
+MEDIATION_EXCEPTION_CWSIP0814.useraction=Consulta\u0163i documenta\u0163ia WebSphere MQ pentru determinarea semnifica\u0163iei excep\u0163iei. Realiza\u0163i ac\u0163iunea corectiv\u0103 corespunz\u0103toare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+# {1} is the Websphere MQ Server bus member name
+# {2} is the websphere MQ completion code
+# {3} is the websphere MQ reason code
+MSG_NOT_RECEIVED_CWSIP0815=CWSIP0815W: Nu s-a putut primi un mesaj de la destina\u0163ia {0} alocat\u0103 membrului de magistral\u0103 Server WebSphere MQ {1}. Codul WebSphere MQ de finalizare este {2}. Codul motiv WebSphere MQ este {3}.
+MSG_NOT_RECEIVED_CWSIP0815.explanation=Un mesaj nu a putut fi primit de la destina\u0163ia specificat\u0103, asignat\u0103 membrului magistralei serverului WebSphere MQ specificat.  Codurile WebSphere MQ de finalizare \u015fi motiv specificate pot fi folosite la determinarea motivului pentru care nu a fost primit mesajul.
+MSG_NOT_RECEIVED_CWSIP0815.useraction=Consulta\u0163i documenta\u0163ia WebSphere MQ pentru determinarea semnifica\u0163iei codurilor de finalizare \u015fi motiv.  Realiza\u0163i ac\u0163iunea corectiv\u0103 corespunz\u0103toare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+# {1} is the Websphere MQ Server bus member name
+# {2} is the websphere MQ completion code
+# {3} is the websphere MQ reason code
+MEDIATION_MSG_NOT_RECEIVED_CWSIP0816=CWSIP0816W: Nu s-a putut primi un mesaj de la punctul de mediere asociat cu destina\u0163ia {0} asociat\u0103 cu membrul de magistral\u0103 al Serverului WebSphere MQ {1}. Codul WebSphere MQ de finalizare este {2}. Codul motiv WebSphere MQ este {3}.
+MEDIATION_MSG_NOT_RECEIVED_CWSIP0816.explanation=Un mesaj nu a putut fi primit de la punctul de mediere asociat cu destina\u0163ia specificat\u0103, asignat\u0103 membrului magistralei serverului WebSphere MQ. Codurile WebSphere MQ de finalizare \u015fi motiv specificate pot fi folosite la determinarea motivului pentru care nu a fost primit mesajul.
+MEDIATION_MSG_NOT_RECEIVED_CWSIP0816.useraction=Consulta\u0163i documenta\u0163ia WebSphere MQ pentru determinarea semnifica\u0163iei codurilor de finalizare \u015fi motiv.  Realiza\u0163i ac\u0163iunea corectiv\u0103 corespunz\u0103toare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+# {1} is the destination name
+# {2} is the Websphere MQ Server bus member name
+EXCEPTION_MSG_NOT_RECEIVED_CWSIP0817=CWSIP0817W: A avut loc o excep\u0163ie {0} la \u00eencercarea de a primi un mesaj de la destina\u0163ia {1} alocat\u0103 membrului de magistral\u0103 al serverului WebSphere MQ {2}.
+EXCEPTION_MSG_NOT_RECEIVED_CWSIP0817.explanation=Un mesaj nu a putut fi primit de la destina\u0163ia specificat\u0103, asignat\u0103 membrului magistralei serverului WebSphere MQ specificat. Excep\u0163ia WebSphere specificat\u0103 poate fi folosit\u0103 la determinarea motivului pentru care nu a putut fi primit mesajul.
+EXCEPTION_MSG_NOT_RECEIVED_CWSIP0817.useraction=Consulta\u0163i documenta\u0163ia WebSphere MQ pentru determinarea semnifica\u0163iei excep\u0163iei. Realiza\u0163i ac\u0163iunea corectiv\u0103 corespunz\u0103toare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+# {1} is the destination name
+# {2} is the Websphere MQ Server bus member name
+MEDIATION_EXCEPTION_MSG_NOT_RECEIVED_CWSIP0818=CWSIP0818W: A avut loc o excep\u0163ie {0} la \u00eencercarea de a primi un mesaj de la punctul de mediere asociat cu destina\u0163ia {1} asociat\u0103 cu membrul de magistral\u0103 al serverului WebSphere MQ {2}.
+MEDIATION_EXCEPTION_MSG_NOT_RECEIVED_CWSIP0818.explanation=Un mesaj nu a putut fi primit de la punctul de mediere asociat cu destina\u0163ia specificat\u0103, asignat\u0103 serverului WebSphere MQ. Excep\u0163ia WebSphere specificat\u0103 poate fi folosit\u0103 la determinarea motivului pentru care nu a putut fi primit mesajul.
+MEDIATION_EXCEPTION_MSG_NOT_RECEIVED_CWSIP0818.useraction=Consulta\u0163i documenta\u0163ia WebSphere MQ pentru determinarea semnifica\u0163iei excep\u0163iei.  Realiza\u0163i ac\u0163iunea corectiv\u0103 corespunz\u0103toare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the Websphere MQ Server bus member name
+RMQ_DISABLED_CWSIP0819=CWSIP0819W: Nu s-a putut stabili o conexiune cu membrul magistralei Serverului WebSphere MQ {0} deoarece mesageria WebSphere MQ a fost dezactivat\u0103.
+RMQ_DISABLED_CWSIP0819.explanation=Mesageria prin Websphere MQ nu este disponibil\u0103 din cauza unei erori din timpul pornirii motorului de mesagerie.
+RMQ_DISABLED_CWSIP0819.useraction=Asigura\u0163i-v\u0103 c\u0103 un client WebSphere MQ corespunz\u0103tor a fost setat \u00een motorul de mesagerie. Examina\u0163i istoricele de pornire ale motorului de mesagerie pentru determinarea erorii de pornire \u015fi realizarea ac\u0163iunii corective corespunz\u0103toare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the Websphere MQ Server bus member name
+# {1} is the error
+RMQ_INTERNAL_ERROR_CWSIP0820=CWSIP0820W: A avut loc o eroare intern\u0103 de mesagerie la folosirea membrului magistralei Serverului WebSphere MQ {0} : {1}
+RMQ_INTERNAL_ERROR_CWSIP0820.explanation=CMSG0001
+RMQ_INTERNAL_ERROR_CWSIP0820.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the Resource Manager
+# {1} The UUID of the messaging engine
+# {2} The name of the bus
+FAILED_XA_CONNECTION_CWSIP0821=CWSIP0821W: A e\u015fuat crearea unei conexiuni din managerul de resurse {0}, la Motorul de Mesagerie {1} pe magistrala {2} la recuperarea unei tranzac\u0163ii.
+FAILED_XA_CONNECTION_CWSIP0821.explanation=O conexiune intern\u0103 c\u0103tre un motor de mesagerie nu a putut fi creat\u0103 \u015fi se va re\u00eencerca mai t\u00e2rziu.
+FAILED_XA_CONNECTION_CWSIP0821.useraction=nimic
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+LINK_CONTROLLABLE_NOT_FOUND_CWSIP0822=CWSIP0822E: A e\u015fuat g\u0103sirea unei resurse leg\u0103tura la crearea unui adaptor controlabil pentru un puct de publicare pe spa\u0163iul subiect {0}
+LINK_CONTROLLABLE_NOT_FOUND_CWSIP0822.explanation=CMSG0001
+LINK_CONTROLLABLE_NOT_FOUND_CWSIP0822.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Messages for XD Integration
+# -------------------------------------------------------------------------------------------------
+# {0} is the label of the consumer set
+NULL_FLOW_CLASSIFICATIONS_CWSIP0851=CWSIP0851E: Comanda setFlowProperties a e\u015fuat pe Setul Consumator {0} deoarece nu au fost specificate Fluxuri de Clasificare Mesaje
+NULL_FLOW_CLASSIFICATIONS_CWSIP0851.explanation=Propriet\u0103\u0163ile Fluxului de mesaje nu au putut fi configurate pentru c\u0103 parametrul Fluxuri este nul
+NULL_FLOW_CLASSIFICATIONS_CWSIP0851.useraction=Specifica\u0163i o valoare valid\u0103 pentru Fluxuri \u015fi \u00eencerca\u0163i din nou
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the label of the consumer set
+INVALID_FLOW_CLASSIFICATIONS_CWSIP0852=CWSIP0852E: Comanda setFlowProperties a e\u015fuat pe Setul Consumator {0} deoarece au fost specificate Fluxuri de Clasificare Mesaje nevalide
+INVALID_FLOW_CLASSIFICATIONS_CWSIP0852.explanation=Propriet\u0103\u0163ile Fluxului de mesaje nu au putut fi configurate pentru c\u0103 parametrul Fluxuri nu este valid
+INVALID_FLOW_CLASSIFICATIONS_CWSIP0852.useraction=Verifica\u0163i c\u0103 acele clasific\u0103ri specificate \u00een Fluxuri sunt unice \u015fi \u00eencerca\u0163i din nou
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of ME Control Listeners registered
+# {1} is the list of registered ME Control Listeners
+MORE_THAN_ONE_ME_CONTROL_LISTENER_CWSIP0853=CWSIP0853W: Au fost g\u0103si\u0163i {0} MessagingEngineControlListeners \u00eenregistra\u0163i dar ar trebui s\u0103 existe unul singur. Ascult\u0103torii g\u0103si\u0163i sunt {1}
+MORE_THAN_ONE_ME_CONTROL_LISTENER_CWSIP0853.explanation=Un singur ascult\u0103tor poate fi \u00eenregistrat. Sistemul va folosi doar primul MessagingEngineControlListener din list\u0103. 
+MORE_THAN_ONE_ME_CONTROL_LISTENER_CWSIP0853.useraction=Specifica\u0163i un singure MessagingEngineControlListener
+
+# -------------------------------------------------------------------------------------------------
+# {0} The related exception
+ME_CONTROL_LISTENER_REGISTRATION_FAILED_CWSIP0854=CWSIP0854E: S-a g\u0103sit dar a e\u015fuat \u00eenregistrarea unui MessagingEngineControlListener, a fost prins\u0103 excep\u0163ia {0}
+ME_CONTROL_LISTENER_REGISTRATION_FAILED_CWSIP0854.explanation=CMSG0001
+ME_CONTROL_LISTENER_REGISTRATION_FAILED_CWSIP0854.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topicpsace 
+# {1} The bus target
+# {2} The related exception
+PUBSUB_LINK_FORWARD_CWSIP0855=CWSIP0855E: O publica\u0163ie pe spa\u0163iul subiect, {0} nu a putut fi trimis\u0103 c\u0103tre magistrala {1} datorit\u0103 excep\u0163iei {2}
+PUBSUB_LINK_FORWARD_CWSIP0855.explanation=CMSG0001
+PUBSUB_LINK_FORWARD_CWSIP0855.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination we are trying to attach to.
+# {1} The messaging engine we are trying to reach.
+GATHERING_ME_VERSION_INCOMPATIBLE_CWSIP0856=CWSIP0856E: Nu se poate ata\u015fa la punctul coad\u0103 pentru destina\u0163ia {0} pe motorul de mesagerie {1} pentru str\u00e2ngerea mesajelor deoarece motorul de mesagerie are o versiune gre\u015fit\u0103.
+GATHERING_ME_VERSION_INCOMPATIBLE_CWSIP0856.explanation=Motorul de mesagerie care g\u0103zduie\u015fte punctul coad\u0103 pentru destina\u0163ie are o versiune mai veche \u015fi nu suport\u0103 colectarea mesajelor.
+GATHERING_ME_VERSION_INCOMPATIBLE_CWSIP0856.useraction=Folosi\u0163i un consumator non-colectare sau migra\u0163i motorul de mesagerie gazd\u0103 la o nou\u0103 versiune produs.
+
+
+# -------------------------------------------------------------------------------------------------
+# Messages for HealthStates - CWSIP09XY
+# Where X is the HealthState colour (0=RED, 1=AMBER, 2=GREEN)
+# Y is the HealthState reason (See HealthStateListener interface)
+# -------------------------------------------------------------------------------------------------
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the ME
+HEALTHSTATE_STATUS_CWSIP0920=CWSIP0920I: Stare OK
+HEALTHSTATE_STATUS_CWSIP0920.explanation=Nu au fost detectate probleme la transmisia mesajelor 
+HEALTHSTATE_STATUS_CWSIP0920.useraction=nimic
+
+# -------------------------------------------------------------------------------------------------
+HEALTHSTATE_STATUS_CWSIP0911=CWSIP0911W: Niciun r\u0103spuns de la receptor, termenul de confirmare al mesajelor primite a trecut
+HEALTHSTATE_STATUS_CWSIP0911.explanation=Mesajele au fost trimise c\u0103tre un motor de mesagerie la distan\u0163\u0103, dar nu a fost primit\u0103 nicio confirmare pentru acele mesaje pentru o perioad\u0103 nea\u015fteptat de mare.
+HEALTHSTATE_STATUS_CWSIP0911.useraction=Asigura\u0163i-v\u0103 c\u0103 motorul de mesagerie receptor este pornit \u015fi poate comunica cu motorul de mesagerie emitent. Dac\u0103 este, atunci sistemul poate fi supra\u00eenc\u0103rcat \u00een acest moment \u015fi o reduc\u0163ie a traficului de mesaje ar rezolva problema.
+
+# -------------------------------------------------------------------------------------------------
+HEALTHSTATE_STATUS_CWSIP0912=CWSIP0912W: Transmi\u0163\u0103tor blocat, mesajul principal a fost \u0163inut sub o tranzac\u0163ie \u00een dubiu pentru o perioad\u0103 nea\u015fteptat\u0103 de timp
+HEALTHSTATE_STATUS_CWSIP0912.explanation=Mesajul din fa\u0163a fluxului de transmisie este par\u0163ial comis, tranzac\u0163ia este par\u0163ial nesigur\u0103. Mesajele r\u0103mase vor fi blocate p\u00e2n\u0103 c\u00e2nd tranzac\u0163ia este rezolvat\u0103.
+HEALTHSTATE_STATUS_CWSIP0912.useraction=Localiza\u0163i mesajul blocat \u015fi diagnostica\u0163i motivul pentru care tranzac\u0163ia identificat\u0103 este \u00een aceast\u0103 stare. Rezolvarea tranzac\u0163iei va debloca mesajele
+
+# -------------------------------------------------------------------------------------------------
+HEALTHSTATE_STATUS_CWSIP0913=CWSIP0913W: Transmi\u0163\u0103tor mesaje complet
+HEALTHSTATE_STATUS_CWSIP0913.explanation=Transmi\u0163\u0103torul de mesaje a atins pragul superior de mesaje al motorului de mesagerie. Mesajele restante pot fi cauzate de faptul c\u0103 motorul de mesagerie nu accept\u0103 mesaje acum sau rata de produc\u0163ie a mesajelor dep\u0103\u015fe\u015fte capabilitatea de mesagerie.
+HEALTHSTATE_STATUS_CWSIP0913.useraction=Asigura\u0163i-v\u0103 c\u0103 motoarele de mesagerie care comunic\u0103 sunt active \u015fi o conexiune de re\u0163ea \u00eentre ele. Dac\u0103 persist\u0103 aceast\u0103 stare, reduce\u0163i rata de produc\u0163ie a mesajelor dac\u0103 este posibil sau verifica\u0163i istoricele de sistem pentru erori.
+
+# -------------------------------------------------------------------------------------------------
+HEALTHSTATE_STATUS_CWSIP0914=CWSIP0914W: A fost observat\u0103 o livrare de mesaje ineficient\u0103, datorit\u0103 re-livr\u0103rii mesajelor.
+HEALTHSTATE_STATUS_CWSIP0914.explanation=Unul sau mai multe mesaje au cerut re-livrare c\u0103tre motorul de mesagerie receptor, aceasta este acceptat\u0103, dar nu eficient\u0103. Posibile motive pentru cererea de re-livrare sunt atunci c\u00e2nd conexiunea cu destina\u0163ia motorul de mesagerie este pierdut\u0103 ori intermitent\u0103 sau c\u00e2nd rata de produc\u0163ie a mesajelor dep\u0103\u015fe\u015fte capabilitatea de a le transmite.
+HEALTHSTATE_STATUS_CWSIP0914.useraction=Asigura\u0163i-v\u0103 c\u0103 motoarele de mesagerie care comunic\u0103 sunt active \u015fi o conexiune de re\u0163ea \u00eentre ele. Dac\u0103 persist\u0103 aceast\u0103 stare, reduce\u0163i rata de produc\u0163ie a mesajelor dac\u0103 este posibil sau verifica\u0163i istoricele de sistem pentru erori.
+
+# -------------------------------------------------------------------------------------------------
+HEALTHSTATE_STATUS_CWSIP0905=CWSIP0905W: Nicio conexiune stabilit\u0103
+HEALTHSTATE_STATUS_CWSIP0905.explanation=Conexiunea \u00eentre acest motor de mesagerie \u015fi magistrala extern\u0103 nu este disponibil\u0103 acum, posibil din cauz\u0103 c\u0103 leg\u0103tura nu este pornit\u0103 sau motorul de mesagerie nu poate s\u0103 comunice cu motorul de mesagerie de pe magistrala extern\u0103
+HEALTHSTATE_STATUS_CWSIP0905.useraction=Asigura\u0163i-v\u0103 c\u0103 leg\u0103tura este pornit\u0103 \u015fi c\u0103 motoarele de mesagerie care g\u0103zduiesc leg\u0103tura sunt active \u015fi au o conexiune func\u0163ional\u0103 \u00eentre ele.
+
+# -------------------------------------------------------------------------------------------------
+HEALTHSTATE_STATUS_CWSIP0916=CWSIP0916W: A fost observat\u0103 o livrare de mesaje ineficient\u0103, datorit\u0103 re-livr\u0103rii mesajelor.
+HEALTHSTATE_STATUS_CWSIP0916.explanation=Re-livrarea mesajelor este acceptat\u0103, dar nu eficient\u0103. Posibile motive pentru cererea de re-livrare sunt atunci c\u00e2nd conexiunea cu sursa motorul de mesagerie este pierdut\u0103 ori intermitent\u0103 sau c\u00e2nd rata de produc\u0163ie a mesajelor dep\u0103\u015fe\u015fte capabilitatea de a le recep\u0163iona.
+HEALTHSTATE_STATUS_CWSIP0916.useraction=Asigura\u0163i-v\u0103 c\u0103 motoarele de mesagerie care comunic\u0103 sunt active \u015fi o conexiune de re\u0163ea \u00eentre ele. Dac\u0103 persist\u0103 aceast\u0103 stare, reduce\u0163i rata de produc\u0163ie a mesajelor dac\u0103 este posibil sau verifica\u0163i istoricele de sistem pentru erori.
+
+# -------------------------------------------------------------------------------------------------
+HEALTHSTATE_STATUS_CWSIP0917=CWSIP0917W: Restabilire livrare mesaje
+HEALTHSTATE_STATUS_CWSIP0917.explanation=A fost observat\u0103 o \u00eentrerupere \u00een transmisia mesajelor \u015fi este rezolvat\u0103, posibil din cauza unei \u00eentreruperi \u00een comunicare sau rata de produc\u0163ie a mesajelor a dep\u0103\u015fit capabilitatea de a le primi.
+HEALTHSTATE_STATUS_CWSIP0917.useraction=Asigura\u0163i-v\u0103 c\u0103 motoarele de mesagerie care comunic\u0103 sunt active \u015fi o conexiune de re\u0163ea \u00eentre ele. Dac\u0103 persist\u0103 aceast\u0103 stare, reduce\u0163i rata de produc\u0163ie a mesajelor dac\u0103 este posibil sau verifica\u0163i istoricele de sistem pentru erori.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Error ID
+HEALTHSTATE_STATUS_CWSIP0908=CWSIP0908E: Eroare detectat\u0103 ({0})
+HEALTHSTATE_STATUS_CWSIP0908.explanation=Una sau mai multe erori au fost detectate \u015fi pot preveni mesajele ulterioare de a fi transmise sau primite. Verifica\u0163i istoricele sistemului pentru erori.
+HEALTHSTATE_STATUS_CWSIP0908.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Exception class causing the blockage
+# {1} Target destination
+HEALTHSTATE_STATUS_CWSIP0919=CWSIP0919W: Receptor blocat, receptorul nu poate livra mesajele de intrare curente datorit\u0103 motivului {0} pe destina\u0163ia {1}
+HEALTHSTATE_STATUS_CWSIP0919.explanation=Receptorul nu poate livra un mesaj c\u0103tre destina\u0163ia vizat\u0103 pentru motivul dat, p\u00e2n\u0103 c\u00e2nd se rezolv\u0103 aceast\u0103 problem\u0103, livrarea mesajelor urm\u0103toare va fi blocat\u0103.
+HEALTHSTATE_STATUS_CWSIP0919.useraction=Dac\u0103 persist\u0103 aceast\u0103 stare, lua\u0163i m\u0103surile corespunz\u0103toare pentru rezolvarea problemei mesajului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIP9999=CWSIP9999E: ''{0}''
+TEMPORARY_CWSIP9999.explanation=Dac\u0103 mesajul nu ofer\u0103 suficiente informa\u0163ii, verifica\u0163i mesajele ulterioare pentru ajutor.
+TEMPORARY_CWSIP9999.useraction=Verifica\u0163i mesajele ulterioare pentru mai multe informa\u0163ii.
+# -------------------------------------------------------------------------------------------------
+
+# New messages for Liberty
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the messaging engine
+RECONCILE_STARTED_INFO_CWSIP00214=CWSIP0214I: Motorul de mesagerie {0} \u00eencepe s\u0103 reconcilieze destina\u0163ia.
+RECONCILE_STARTED_INFO_CWSIP00214.explanation=Destina\u0163ia este reconciliat\u0103 cu configura\u0163ia memorat\u0103 de motorul de mesagerie c\u00e2nd a fost oprit.
+RECONCILE_STARTED_INFO_CWSIP00214.useraction=nimic
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the messaging engine
+RECONCILE_COMPLETED_INFO_CWSIP00215=CWSIP0215I: Motorul de mesagerie {0} a terminat reconcilierea destina\u0163iei.
+RECONCILE_COMPLETED_INFO_CWSIP00215.explanation=Destina\u0163ia a fost reconciliat\u0103 cu configura\u0163ia memorat\u0103 de motorul de mesagerie c\u00e2nd a fost oprit. Resursele corespunz\u0103toare vor fi fost modificate, create sau planificate pentru \u015ftergere.
+RECONCILE_COMPLETED_INFO_CWSIP00215.useraction=nimic
+
+# -------------------------------------------------------------------------------------------------
+# {0} message id
+DISCARD_MESSAGE_INFO_CWSIP00216=CWSIP0216I: Mesajul {0} este ignorat dup\u0103 num\u0103rul maxim de \u00eencerc\u0103ri de livrare e\u015fuate.
+DISCARD_MESSAGE_INFO_CWSIP00216.explanation=Mesajul este ignorat pentru c\u0103 a e\u015fuat num\u0103rul maxim de \u00eencerc\u0103ri de livrare a mesajului.
+DISCARD_MESSAGE_INFO_CWSIP00216.useraction=Verifica\u0163i eroarea aruncat\u0103 de aplica\u0163ia de consumator \u015fi asigura\u0163i-v\u0103 c\u0103 sunt corecte configura\u0163iile aplica\u0163iei de consumator.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+LOCAL_DEST_DELETE_INFO_CWSIP00217=CWSIP0217I: Destina\u0163ia local\u0103 {0} a fost marcat\u0103 pentru \u015ftergere.
+LOCAL_DEST_DELETE_INFO_CWSIP00217.explanation=Configura\u0163ia pentru aceast\u0103 destina\u0163ie de pe acest motor de mesagerie a fost \u00eenl\u0103turat\u0103, a\u015fa c\u0103 va fi planificat\u0103 pentru \u015ftergere.
+LOCAL_DEST_DELETE_INFO_CWSIP00217.useraction=nimic

@@ -1,0 +1,56 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.service/resources/com/ibm/ws/kernel/service/location/internal/resources/LocServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0200 - 0299 com.ibm.ws.kernel.service.location.internal.resources.LocServiceMessages
+# -------------------------------------------------------------------------------------------------
+unreachableLocation=CWWKE0200E: L''ubicazione specificata non \u00e8 raggiungibile. Non si tratta di un elemento child di un percorso noto o configurato; percorso={0}.
+unreachableLocation.explanation=La piattaforma utilizza percorsi simbolici per fornire una protezione elementare dall'accesso arbitrario al file system quando si utilizza il servizio di ubicazione per risolvere i percorsi specificati. \
+Il file README.TXT contiene informazioni relative al modo in cui sono configurati i percorsi simbolici.
+unreachableLocation.useraction=Consultare il file bootstrap.properties per i percorsi configurati e verificare che il percorso configurato sia un elemento child di simboli esistenti o sia associato ad un simbolo definito in modo esplicito.
+
+invalidResourceType=CWWKE0201E: Impossibile creare il simbolo; l''ubicazione specificata esiste ed \u00e8 in conflitto con il tipo richiesto: {0}={1}.
+invalidResourceType.explanation=Il percorso specificato per un simbolo esiste ed \u00e8 di tipo differente rispetto alla risorsa specificata dal percorso (ad esempio, il simbolo descrive un file, ma la risorsa \u00e8 una directory).
+invalidResourceType.useraction=Verificare che il percorso sia specificato correttamente. \
+I percorsi di directory devono terminare con il carattere /. \
+Verificare se il percorso si riferisce ad una risorsa inesistente o ad una risorsa esistente e del tipo richiesto.
+
+missingTmpDir=CWWKE0202E: L''ubicazione della directory temporanea specificata non esiste e non \u00e8 stato possibile crearla: {0}.
+missingTmpDir.explanation=La directory specificata come java.io.tmpdir (mediante una propriet\u00e0 di sistema o una variabile di ambiente specifica della piattaforma) non esiste e non \u00e8 stato possibile crearla.
+missingTmpDir.useraction=Verificare che la directory specificata esista e che disponga delle autorizzazioni di lettura/scrittura.
+
+relativeTmpDir=CWWKE0203I: Directory java.io.tempdir specificata con un percorso relativo. Il percorso risolto \u00e8 {0}.
+relativeTmpDir.explanation=La directory specificata come java.io.tmpdir (mediante una propriet\u00e0 di sistema o una variabile di ambiente specifica della piattaforma) era relativa e viene risolta in relazione alla directory di avvio.
+relativeTmpDir.useraction=Non \u00e8 richiesta alcuna azione.
+
+locationInitializationError=CWWKE0204E: Impossibile inizializzare il servizio di ubicazione della piattaforma; causa={0}.
+locationInitializationError.explanation=CMSG0001
+locationInitializationError.useraction=CMSG0002
+
+frameworkShutdown=CWWKE0205W: Il framework verr\u00e0 arrestato a causa di un errore di inizializzazione precedente.
+frameworkShutdown.explanation=Il framework viene arrestato a causa di un errore precedente durante l'inizializzazione.
+frameworkShutdown.useraction=Correggere l'errore e riavviare il server.

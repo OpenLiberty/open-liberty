@@ -1,0 +1,871 @@
+###############################################################################
+# Copyright (c) 2002, 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#  02-11-18  irobins               Initial creation from seriousMessages
+#  02-12-05  awilkins      1442    Server quiesce - tx marked rollback only
+#  02-12-16  awilkins  LIDB1673.17 Embedded RAR recovery
+#  03-01-13  irobins   156517      390-specific message range reserved
+#  20/01/03  gareth    LIDB1673.1  JTA2 new messages
+#  28/02/03  hursdlg   LIDB1673.19.1 Add full exception for sync msgs
+#  14/03/03  mallam    160995      New message for inactivity timeout
+#  03/04/03  hursdlg   LIDB1673.22 Update messages 63/64
+#  14/04/03  hursdlg   163015      Fix duplicate message WTRN0068
+#  14/04/03  hursdlg   163130      Add new messages WTRN0081      
+#  15/07/03  hursdlg   170422      Add new messages WTRN0082      
+#  18/07/03  hursdlg   172027      Add new messages WTRN0083
+#  25/07/03  hursdlg   172471      Add new messages WTRN0084
+#  19/08/03  johawkes  174593      Add new messages WTRN0085
+#  18/09/03  johawkes  169114      Add new messages WTRN0086-90
+#  23/09/03  johawkes  177208      Add new messages WTRN0091
+#  09/12/03  mallam    184693      New message for quiesce WTRN0092
+#  04/02/04  hursdlg   189567      New messages for heuristic completion
+#  18/02/04  hursdlg   191317      Add new message WTRN0102
+#  18/05/04  hursdlg   191317.1    Fix punctuation and merge z/OS msgs
+#                                  from pok defect MD19484
+#  16/06/04  mallam    209935      New message for clean shutdown
+#  25/06/04  johawkes  210807      Indicate JTA demarcation disabled in client
+#  02/02/05  hursdlg   252732      New msgs 107-113
+#  17/01/05  mallam    LIDB3645    Recovery-mode restart
+#  20/04/05  hursdlg   266988      WSAT CFW message
+#  25/07/05  kaczyns   LI3187      Add z/OS BBOT messages
+#  18/10/05  mezarin   314369      z/OS messages temp fix
+#  11/11/05  hursdlg   311071      Add msg WTRN0116/117
+#  03/02/06  hursdlg   342682      Add msg WTRN0118
+#  26/02/07  awilkins  422999      Message review: updates to useraction and explanation
+#  07-03-02  awilkins  424163      Message review: improve contact IBM support user action
+#  07-04-27  awilkins  416102      Move z/OS BBOT messages into separate file
+#  07-05-03  mallam    422072      Migrate PK38831 to WASX
+#  25-07-07  mallam    453651      New message for log low on space
+#  22/10/07  mallam    476740      Improvements to out of space message 
+#  21/11/07  awilkins  481738      Output stack of thread when tx times out 
+#  06/12/07  hursdlg   467618      Commit priority validation messages
+#  18/12/07  johawkes  LIDB2778-12.10 WS-TX WS-Policy
+#  11/01/08  hursdlg   491762.1    WSTX 1.1 validation messages
+#  11/02/08  mallam    496337      PII additions
+#  25/02/08  johawkes  499078      Fix WTRN0080 user action wording
+#  29-02-08  johawkes  501807      Style changes
+#  29/01/09  jstidder  PK76761     Clarify WTRN0027/WTRN0028
+#  11/11/09  hursdlg   F923-4347.2 Add WTRN0130/131
+#  17/03/10  hursdlg   PM07874     New msgs WTRN0132-151
+#  13/05/10  hursdlg   649934      Further PM07874 changes
+#  12/10/10  johawkes  672987      Fix validation errors
+#  19/01/11  jstidder  PM30478     Clarify/expand WTRN0122
+#  10/07/12  johawkes  628170.3    Users of HA manager need proper log/error when HA not working
+#-----------------------------------------------------------------------
+#
+# USE OF PROPERTIES FILE FOR MESSAGES:
+#
+# - Each property in the property file is terminated by the line termination character.
+# - If a line contains only whitespace or if the first non-whitespace character of a
+# line is # or !, the line is ignored. (comments start with # or !)
+# - Every line in the properties file other than whitespace lines or comment lines
+# denotes a single property. A \ is treated as a line continuation character. Lines
+# should be terminated with the line termination character.
+# - Correct grammar for a property line is <key><separator><element>. A valid separator
+# is any one of equal, colon or whitespace ( =: ).
+# - The key consists of all the characters on the line starting from the first
+# non-whitespace up to the first separator. Separator characters can be included in the
+# key by escaping them (e.g. \:) This is not recommended because it is error prone and
+# confusing.
+# - Whitespace after the key is skipped until the first non-whitespace character is
+# found. All remaining characters up to the appropriate line termination character
+# define the element.
+#
+# MESSAGE INSERTS
+#
+#  Primitives
+# Primitives, such as int and long are not recognized as subclasses of Object
+# and cannot be directly passed to one of these methods. A primitive value must
+# be transformed to its proper type (e.g Integer, Long) before being passed as
+# a parameter.
+#
+#  Object
+# For normal Objects, toString() is called on the object and the resulting String
+# is displayed. For exceptions, the stack trace will be printed.For Objects that
+# implement the Traceable interface, the toTraceString() method is called instead.
+# To provide the proper trace representation for the Object, provide the proper
+# implementation for the appropriate method.
+#
+#  Object[]
+# Since Object[] is a proper subclass of Object, Object[] can be passed. Use
+# Object[] when more than one parameter should be passed to a message logging
+# or trace method. The appropriate method (toString() or toTraceString()) is
+# called on each Object in the array. This array should contain only
+# standalone normal Objects and should not contain other arrays. Passing nested
+# array may result in the following Strings being displayed :
+#  "[B@924586a0b" - This is deciphered as a byte array at location X.
+# This is typically returned when an array of primitives is passed as a member
+# of an Object[]. It is the result of calling toString() on the byte[].
+#  "[Ljava.lang.Object;@9136fa0b" : An array of objects.
+# Typically this is seen when an array containing nested arrays is passed.
+#
+#  Array of Primitives
+# An array of primitive (e.g. byte[], int[] is recognized as an Object, but is
+# treated somewhat as a second cousin of Object by Java. The results you see
+# will depend on the type of array passed and the API used. For consistent results,
+# user code should preprocess and format the primitive array into some type of
+# String form before passing it to the method. If such preprocessing is not
+# performed, you may see something results something like the following:
+#  "Illegal trace argument : array of long."
+# This is typically returned when an array of primitives is passed to a method
+# taking an Object and the Tr service does not provide special parsing for
+# primitive arrays of this type.
+#  "01040703..." : the hex representation of an array of bytes.
+# Typically this may be seen when a byte array is passed to a method taking a
+# single Object. This behavior is subject to change and should not be relied on.
+#  " '1' '2' ..." : The String representation of the members of an int[] formed
+# by converting each element to an Integer and calling toString on the Integers.
+# This behavior is subject to change and should not be relied on.
+#
+#  Common messages
+# The following common messages are used in this file:
+#
+#         CMSG0001       This is an unexpected exception. The cause can not be immediately determined. 
+#         CMSG0002       For further information on resolving this error, please consult the IBM WebSphere Application Server Support website available
+#                        at: http://www-3.ibm.com/software/webservers/appserv/support.html. The site provides searchable databases of technotes,
+#                        solutions, and e-fixes. Information on contacting the WebSphere Support team is also provided. 
+#
+# During the build, the WebSphere Message Tool will recognize the common message keywords, and replace them with text defined in the
+#                Common Messages Table. 
+#
+#
+#
+#
+#-----------------------------------------------------------------------
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells Java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+#
+#-----------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.15,0,02/08/23,04:09:52
+#
+#CMVCPATHNAME SERV1/ws/code/transaction.impl/src/com/ibm/ws/Transaction/resources/TransactionMsgs.nlsprops
+#COMPONENTPREFIX WTRN
+#COMPONENTNAMEFOR WTRN WebSphere Transaction Monitor
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+WTRN0000_ERR_INT_ERROR=WTRN0000E: Do\u0161lo k intern\u00ed chyb\u011b v metod\u011b {0} ve t\u0159\u00edd\u011b {1}; n\u00e1sleduje trasov\u00e1n\u00ed z\u00e1sobn\u00edku v\u00fdjimky: {2}.
+WTRN0000_ERR_INT_ERROR.explanation=CMSG0001
+WTRN0000_ERR_INT_ERROR.useraction=CMSG0002
+
+WTRN0001_ERR_INT_ERROR=WTRN0001E: Do\u0161lo k intern\u00ed chyb\u011b v metod\u011b {0} ve t\u0159\u00edd\u011b {1};
+WTRN0001_ERR_INT_ERROR.explanation=CMSG0001
+WTRN0001_ERR_INT_ERROR.useraction=CMSG0002
+
+WTRN0002_UNABLE_TO_FIND_RESOURCE_CLASS=WTRN0002W: Slu\u017eba transakc\u00ed nemohla naj\u00edt t\u0159\u00eddu prost\u0159edk\u016f {0}.
+WTRN0002_UNABLE_TO_FIND_RESOURCE_CLASS.explanation=Slu\u017eba transakc\u00ed nemohla naj\u00edt t\u0159\u00eddu prost\u0159edk\u016f XA uvedenou ve zpr\u00e1v\u011b.
+WTRN0002_UNABLE_TO_FIND_RESOURCE_CLASS.useraction=Ov\u011b\u0159te, zda je konfigurov\u00e1n p\u0159idru\u017een\u00fd poskytovatel prost\u0159edk\u016f XA, a restartujte server. Pak lze zru\u0161it konfiguraci prost\u0159edku a server lze vypnout.
+
+WTRN0003_RECOVERY_TXRECUTILS_LOAD_FAILED=WTRN0003E: B\u011bhem obnoven\u00ed nebyl nalezen po\u017eadovan\u00fd soubor JAR. Cesta pou\u017eit\u00e1 k jeho vyhled\u00e1n\u00ed byla {0}.
+WTRN0003_RECOVERY_TXRECUTILS_LOAD_FAILED.explanation=B\u011bhem obnoven\u00ed s c\u00edlem vyvolat vlo\u017een\u00fd soubor RAR nebyl nalezen po\u017eadovan\u00fd soubor JAR. Bez tohoto souboru nelze dokon\u010dit obnoven\u00ed transakce souboru JAR.
+WTRN0003_RECOVERY_TXRECUTILS_LOAD_FAILED.useraction=Nen\u00ed. Toto je intern\u00ed syst\u00e9mov\u00e1 chyba.
+
+WTRN0004_CANT_CREATE_XARESOURCEFACTORY=WTRN0004W: Nelze vytvo\u0159it tov\u00e1rnu XAResourceFactory. N\u00e1zev t\u0159\u00eddy XAResourceFactory byl {0}. Trasov\u00e1n\u00ed z\u00e1sobn\u00edku v\u00fdjimek: {1}
+WTRN0004_CANT_CREATE_XARESOURCEFACTORY.explanation=B\u011bhem zotavov\u00e1n\u00ed serveru nebylo mo\u017en\u00e9 naj\u00edt ur\u010denou tov\u00e1rnu pro vytv\u00e1\u0159en\u00ed objekt\u016f XAResource. Toto je intern\u00ed syst\u00e9mov\u00e1 chyba.
+WTRN0004_CANT_CREATE_XARESOURCEFACTORY.useraction=CMSG0002
+
+WTRN0005_CANT_RECREATE_XARESOURCE=WTRN0005W: Prost\u0159edek XAResource pro \u00fa\u010dastn\u00edka transakce nelze znovu vytvo\u0159it a obnoven\u00ed transakce nemus\u00ed b\u00fdt mo\u017en\u00e9 \u0159\u00e1dn\u011b dokon\u010dit. Prost\u0159edek: {0}. Trasov\u00e1n\u00ed z\u00e1sobn\u00edku v\u00fdjimek: {1}
+WTRN0005_CANT_RECREATE_XARESOURCE.explanation=B\u011bhem zotavov\u00e1n\u00ed serveru nebylo mo\u017en\u00e9 znovu vytvo\u0159it objekt XAResource podle odpov\u00eddaj\u00edc\u00ed tov\u00e1rny.
+WTRN0005_CANT_RECREATE_XARESOURCE.useraction=CMSG0002
+
+WTRN0006_TRANSACTION_HAS_TIMED_OUT=WTRN0006W: \u010casov\u00fd limit transakce {0} vypr\u0161el po {1} sekund\u00e1ch.
+WTRN0006_TRANSACTION_HAS_TIMED_OUT.explanation=Slu\u017eba transakc\u00ed ukon\u010dila (odvolala) transakci uvedenou ve zpr\u00e1v\u011b.
+WTRN0006_TRANSACTION_HAS_TIMED_OUT.useraction=Chcete-li sn\u00ed\u017eit v\u00fdskyty t\u00e9to ud\u00e1losti v budoucnu, zvy\u0161te hodnoty \u010dasov\u00e9ho limitu transakce.
+
+WTRN0007_CANT_IMPORT_NULL_CONTEXT=WTRN0007W: Slu\u017eba transakc\u00ed nem\u016f\u017ee importovat transakce s nulov\u00fdm nebo neplatn\u00fdm kontextem.
+WTRN0007_CANT_IMPORT_NULL_CONTEXT.explanation=Kontext byl importov\u00e1n na server bez dat transakce nebo s neplatn\u00fdmi daty transakce, tak\u017ee transakci nelze zah\u00e1jit.
+WTRN0007_CANT_IMPORT_NULL_CONTEXT.useraction=CMSG0002
+
+WTRN0008_CANT_IMPORT_NESTED_TRAN=WTRN0008W: Slu\u017eba transakc\u00ed nem\u016f\u017ee importovat vno\u0159en\u00e9 transakce {0}
+WTRN0008_CANT_IMPORT_NESTED_TRAN.explanation=Vzd\u00e1len\u00fd server se pokusil o importov\u00e1n\u00ed vno\u0159en\u00e9 transakce. Tato akce nen\u00ed podporov\u00e1na.
+WTRN0008_CANT_IMPORT_NESTED_TRAN.useraction=CMSG0002
+
+WTRN0009_NO_GLOBAL_TID_ON_IMPORT=WTRN0009E: Chyb\u00ed atribut globalTID pro prost\u0159edek koordin\u00e1tora.
+WTRN0009_NO_GLOBAL_TID_ON_IMPORT.explanation=V kontextu importovan\u00e9 transakce nebylo zad\u00e1no \u017e\u00e1dn\u00e9 ID glob\u00e1ln\u00ed transakce.
+WTRN0009_NO_GLOBAL_TID_ON_IMPORT.useraction=CMSG0002
+
+WTRN0010_EXC_AT_COORD_REG=WTRN0010E: Transakce byla odvol\u00e1na v d\u016fsledku v\u00fdjimky registrace koordin\u00e1tora s nad\u0159\u00edzenou hodnotou {0}
+WTRN0010_EXC_AT_COORD_REG.explanation=P\u0159i importov\u00e1n\u00ed vzd\u00e1len\u00e9 transakce na server se vyskytl probl\u00e9m. Transakce proto byla odvol\u00e1na.
+WTRN0010_EXC_AT_COORD_REG.useraction=CMSG0002
+
+WTRN0011_FACTORY_BIND_FAILURE=WTRN0011E: Nelze registrovat tov\u00e1rnu transakce v oboru n\u00e1zv\u016f rozhran\u00ed JNDI.
+WTRN0011_FACTORY_BIND_FAILURE.explanation=Do\u0161lo k neo\u010dek\u00e1van\u00e9 chyb\u011b p\u0159i inicializaci slu\u017eby transakc\u00ed.
+WTRN0011_FACTORY_BIND_FAILURE.useraction=CMSG0002
+
+WTRN0012_UNEXP_FACTORY_REG_FAILURE=WTRN0012E: B\u011bhem registrace tov\u00e1rny transakce do\u0161lo k neo\u010dek\u00e1van\u00e9mu selh\u00e1n\u00ed.
+WTRN0012_UNEXP_FACTORY_REG_FAILURE.explanation=Do\u0161lo k neo\u010dek\u00e1van\u00e9 chyb\u011b p\u0159i inicializaci slu\u017eby transakc\u00ed.
+WTRN0012_UNEXP_FACTORY_REG_FAILURE.useraction=CMSG0002
+
+WTRN0013_LOGGING_IN_MEMORY=WTRN0013W: Nebyl zad\u00e1n \u017e\u00e1dn\u00fd protokol transakce, protokolov\u00e1n\u00ed prob\u00edh\u00e1 v pam\u011bti.
+WTRN0013_LOGGING_IN_MEMORY.explanation=Slu\u017eba transakc\u00ed je konfigurov\u00e1na tak, aby nezapisovala protokol do trval\u00e9ho \u00falo\u017ei\u0161t\u011b. To m\u016f\u017ee zp\u016fsobit probl\u00e9my s integritou dat nebo uzam\u010den\u00edm prost\u0159edk\u016f (nap\u0159\u00edklad datab\u00e1zov\u00fdch tabulek) v p\u0159\u00edpad\u011b, \u017ee p\u0159i zastaven\u00ed serveru existuj\u00ed nevy\u0159\u00edzen\u00e9 transakce s dvouf\u00e1zov\u00fdm potvrzov\u00e1n\u00edm.
+WTRN0013_LOGGING_IN_MEMORY.useraction=Pokud je po\u017eadov\u00e1no obnoven\u00ed transakce, zm\u011b\u0148te konfiguraci slu\u017eby transakc\u00ed tak, aby pou\u017e\u00edvala protokolov\u00e1n\u00ed, a pak restartujte server.
+
+WTRN0014_UNEXPECTED_LOGFILE_SPECIFICATION=WTRN0014I: Slu\u017eba transakc\u00ed zjistila neplatn\u00fd konfigura\u010dn\u00ed \u0159et\u011bzec souboru protokolu. Slu\u017eba transakc\u00ed bude pokra\u010dovat bez protokolov\u00e1n\u00ed pro zotaven\u00ed.
+WTRN0014_UNEXPECTED_LOGFILE_SPECIFICATION.explanation=N\u00e1zev adres\u00e1\u0159e pro soubor protokolu transakc\u00ed nastaven\u00fd v poli Adres\u00e1\u0159 protokolu transakc\u00ed je neplatn\u00fd. Form\u00e1t by m\u011bl b\u00fdt n\u00e1sleduj\u00edc\u00ed: pln\u011b kvalifikovan\u00fd adres\u00e1\u0159 souboru voliteln\u011b n\u00e1sledovan\u00fd znakem ';' a velikost\u00ed souboru protokolu, p\u0159i\u010dem\u017e za velikost\u00ed souboru protokolu je uvedeno p\u00edsmeno M ur\u010duj\u00edc\u00ed megabajty nebo p\u00edsmeno K ur\u010duj\u00edc\u00ed kilobajty. V\u00fdchoz\u00ed a minim\u00e1ln\u00ed velikost souboru protokolu je 1M.
+WTRN0014_UNEXPECTED_LOGFILE_SPECIFICATION.useraction=Opravte konfiguraci adres\u00e1\u0159e protokolu transakc\u00ed. Ov\u011b\u0159te, zda je server restartov\u00e1n, aby bylo mo\u017en\u00e9 povolit protokolov\u00e1n\u00ed pro zotaven\u00ed transakc\u00ed.
+
+WTRN0015_DEFAULT_AND_MINIMUM_LOG_SIZE=WTRN0015E: Byla zad\u00e1na neplatn\u00e1 velikost souboru protokolu transakce: {0}. Slu\u017eba transakc\u00ed pou\u017eije v\u00fdchoz\u00ed velikost souboru protokolu 1M.
+WTRN0015_DEFAULT_AND_MINIMUM_LOG_SIZE.explanation=Velikost souboru protokolu transakc\u00ed nastaven\u00e1 v poli Adres\u00e1\u0159 protokolu transakc\u00ed je neplatn\u00e1. Form\u00e1t by m\u011bl b\u00fdt n\u00e1sleduj\u00edc\u00ed: pln\u011b kvalifikovan\u00fd adres\u00e1\u0159 souboru voliteln\u011b n\u00e1sledovan\u00fd znakem ';' a velikost\u00ed souboru protokolu, p\u0159i\u010dem\u017e za velikost\u00ed souboru protokolu je uvedeno p\u00edsmeno M ur\u010duj\u00edc\u00ed megabajty nebo p\u00edsmeno K ur\u010duj\u00edc\u00ed kilobajty. V\u00fdchoz\u00ed a minim\u00e1ln\u00ed velikost souboru protokolu je 1M.
+WTRN0015_DEFAULT_AND_MINIMUM_LOG_SIZE.useraction=Opravte konfiguraci adres\u00e1\u0159e protokolu transakc\u00ed.
+
+WTRN0016_EXC_DURING_RECOVERY=WTRN0016E: B\u011bhem obnoven\u00ed slu\u017eby transakc\u00ed do\u0161lo k v\u00fdjimce. {0}
+WTRN0016_EXC_DURING_RECOVERY.explanation=Byla zji\u0161t\u011bna v\u00fdjimka v dob\u011b, kdy se slu\u017eba transakc\u00ed pokou\u0161ela o obnovu po p\u0159edchoz\u00edm selh\u00e1n\u00ed serveru.
+WTRN0016_EXC_DURING_RECOVERY.useraction=CMSG0002
+
+WTRN0017_UNABLE_TO_BEGIN_NESTED_TRANSACTION=WTRN0017W: Nelze zah\u00e1jit vno\u0159enou transakci. Vno\u0159en\u00e9 transakce nejsou podporov\u00e1ny.
+WTRN0017_UNABLE_TO_BEGIN_NESTED_TRANSACTION.explanation=Tato chyba ozna\u010duje pokus o zah\u00e1jen\u00ed vno\u0159en\u00e9 transakce, ale vno\u0159en\u00e9 transakce nejsou podporov\u00e1ny.
+WTRN0017_UNABLE_TO_BEGIN_NESTED_TRANSACTION.useraction=Ov\u011b\u0159te, zda nedoch\u00e1z\u00ed k pokusu o zah\u00e1jen\u00ed transakce v dob\u011b, kdy je ji\u017e v podprocesu aktivn\u00ed jin\u00e1 transakce.
+
+WTRN0018_1PC_RESOURCE_DOES_NOT_SUPPORT_COMMIT=WTRN0018W: Jednof\u00e1zov\u00fd prost\u0159edek nepodporuje potvrzen\u00ed
+WTRN0018_1PC_RESOURCE_DOES_NOT_SUPPORT_COMMIT.explanation=Prost\u0159edek, kter\u00fd podporuje pouze jednof\u00e1zov\u00e9 optimalizovan\u00e9 potvrzen\u00ed, byl uveden u slu\u017eby transakc\u00ed a volal zpracov\u00e1n\u00ed standardn\u00ed dvouf\u00e1zov\u00e9 operace potvrzen\u00ed. Jde o intern\u00ed syst\u00e9movou chybu, kter\u00e1 je pravd\u011bpodobn\u011b zp\u016fsobena d\u0159\u00edv\u011bj\u0161\u00edm selh\u00e1n\u00edm.
+WTRN0018_1PC_RESOURCE_DOES_NOT_SUPPORT_COMMIT.useraction=CMSG0002
+
+WTRN0019_LOGFILE_CORRUPTED=WTRN0019E: Soubor protokolu slu\u017eby transakc\u00ed {0} je po\u0161kozen\u00fd.
+WTRN0019_LOGFILE_CORRUPTED.explanation=Soubor protokolu pro zotaven\u00ed slu\u017eby transakc\u00ed je po\u0161kozen\u00fd a v d\u016fsledku toho selhalo spu\u0161t\u011bn\u00ed serveru.
+WTRN0019_LOGFILE_CORRUPTED.useraction=Chcete-li server spustit znovu, odstra\u0148te soubory protokolu transakce a server restartujte. Je t\u0159eba ru\u010dn\u011b dokon\u010dit jak\u00e9koli transakce, kter\u00e9 byly nevy\u0159\u00edzen\u00e9 v p\u0159idru\u017een\u00fdch spr\u00e1vc\u00edch prost\u0159edk\u016f.
+
+WTRN0020_RECOVERING_TRANSACTIONS=WTRN0020W: Prob\u00edh\u00e1 obnoven\u00ed transakc\u00ed pro server {0} na tomto serveru.
+WTRN0020_RECOVERING_TRANSACTIONS.explanation=Server obnovuje protokoly transakc\u00ed z jin\u00e9ho serveru. Pokud prost\u0159edky konfigurovan\u00e9 na tomto serveru neodpov\u00eddaj\u00ed prost\u0159edk\u016fm konfigurovan\u00fdm na serveru, pro kter\u00fd byly protokoly vytvo\u0159eny, m\u016f\u017ee se st\u00e1t, \u017ee se dokon\u010den\u00ed nezda\u0159\u00ed.
+WTRN0020_RECOVERING_TRANSACTIONS.useraction=Ov\u011b\u0159te, zda jsou b\u011bhem obnoven\u00ed vyd\u00e1ny chybov\u00e9 zpr\u00e1vy, a opravte jak\u00e9koli po\u017eadovan\u00e9 akce.
+
+WTRN0021_TMRESUME_NOT_SUPPORTED=WTRN0021W: TMRESUME nen\u00ed podporov\u00e1no.
+WTRN0021_TMRESUME_NOT_SUPPORTED.explanation=Jde o intern\u00ed syst\u00e9movou chybu, kter\u00e1 je pravd\u011bpodobn\u011b zp\u016fsobena d\u0159\u00edv\u011bj\u0161\u00edm selh\u00e1n\u00edm.
+WTRN0021_TMRESUME_NOT_SUPPORTED.useraction=CMSG0002
+
+WTRN0022_UNKNOWN_XARESOURCE_STATE=WTRN0022W: Nezn\u00e1m\u00fd stav prost\u0159edku XAResource.
+WTRN0022_UNKNOWN_XARESOURCE_STATE.explanation=Prost\u0159edek XAResource byl v neo\u010dek\u00e1van\u00e9m stavu. Jde o intern\u00ed syst\u00e9movou chybu, kter\u00e1 je pravd\u011bpodobn\u011b zp\u016fsobena d\u0159\u00edv\u011bj\u0161\u00edm selh\u00e1n\u00edm.
+WTRN0022_UNKNOWN_XARESOURCE_STATE.useraction=CMSG0002
+
+WTRN0023_INVALID_XAEND_FLAG=WTRN0023W: Neplatn\u00fd p\u0159\u00edznak konce XA: {0}
+WTRN0023_INVALID_XAEND_FLAG.explanation=Jde o intern\u00ed syst\u00e9movou chybu, kter\u00e1 je pravd\u011bpodobn\u011b zp\u016fsobena d\u0159\u00edv\u011bj\u0161\u00edm selh\u00e1n\u00edm.
+WTRN0023_INVALID_XAEND_FLAG.useraction=CMSG0002
+
+WTRN0024_INCONSISTENT_LOGS=WTRN0024E: Nekonzistentn\u00ed protokoly pro zotaven\u00ed transakce a prost\u0159edku XA.
+WTRN0024_INCONSISTENT_LOGS.explanation=Jde o intern\u00ed syst\u00e9movou chybu, kter\u00e1 je pravd\u011bpodobn\u011b zp\u016fsobena d\u0159\u00edv\u011bj\u0161\u00edm selh\u00e1n\u00edm.
+WTRN0024_INCONSISTENT_LOGS.useraction=CMSG0002
+
+WTRN0025_TRAN_RECOVERY_FAILED=WTRN0025E: Obnoven\u00ed transakce selhalo {0}
+WTRN0025_TRAN_RECOVERY_FAILED.explanation=B\u011bhem pokusu o obnoven\u00ed transakce do\u0161lo k v\u00fdjimce.
+WTRN0025_TRAN_RECOVERY_FAILED.useraction=CMSG0002
+
+WTRN0026_KEYPOINT_EXC_IN_RECOVERY=WTRN0026E: Do\u0161lo k v\u00fdjimce b\u011bhem kl\u00ed\u010dov\u00e9ho bodu po obnoven\u00ed. {0}
+WTRN0026_KEYPOINT_EXC_IN_RECOVERY.explanation=Jde o intern\u00ed syst\u00e9movou chybu, kter\u00e1 je pravd\u011bpodobn\u011b zp\u016fsobena d\u0159\u00edv\u011bj\u0161\u00edm selh\u00e1n\u00edm.
+WTRN0026_KEYPOINT_EXC_IN_RECOVERY.useraction=CMSG0002
+
+WTRN0027_RECOVERING_TXN=WTRN0027I: Slu\u017eba transakc\u00ed zotavuje 1 transakci.
+WTRN0027_RECOVERING_TXN.explanation=Slu\u017eba transakc\u00ed zjistila, \u017ee po posledn\u00edm zastaven\u00ed serveru je transakce st\u00e1le spu\u0161t\u011bna, a nyn\u00ed prov\u00e1d\u00ed zotavov\u00e1n\u00ed p\u0159\u00edslu\u0161n\u00e9 transakce. V\u00fdstup m\u016f\u017ee obsahovat dal\u0161\u00ed zpr\u00e1vy auditu jako indikaci pr\u016fb\u011bhu zpracov\u00e1n\u00ed zotaven\u00ed.
+WTRN0027_RECOVERING_TXN.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+WTRN0028_RECOVERING_TXNS=WTRN0028I: Slu\u017eba transakc\u00ed zotavuje {0} transakc\u00ed.
+WTRN0028_RECOVERING_TXNS.explanation=Slu\u017eba transakc\u00ed zjistila, \u017ee po posledn\u00edm zastaven\u00ed serveru jsou transakce st\u00e1le spu\u0161t\u011bny, a nyn\u00ed prov\u00e1d\u00ed zotavov\u00e1n\u00ed p\u0159\u00edslu\u0161n\u00fdch transakc\u00ed. V\u00fdstup m\u016f\u017ee obsahovat dal\u0161\u00ed zpr\u00e1vy auditu jako indikaci pr\u016fb\u011bhu zpracov\u00e1n\u00ed zotaven\u00ed.
+WTRN0028_RECOVERING_TXNS.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN=WTRN0029E: Chyba p\u0159i zav\u00edr\u00e1n\u00ed protokolu p\u0159i vypnut\u00ed.
+WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN.explanation=Slu\u017eba transakc\u00ed zjistila chybu p\u0159i zav\u00edr\u00e1n\u00ed protokolu pro zotaven\u00ed b\u011bhem vypnut\u00ed serveru.
+WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN.useraction=CMSG0002
+
+WTRN0030_XARESOURCE_RECOVER_FAILURE=WTRN0030E: Obnoven\u00ed dat XAResource selhalo {0}
+WTRN0030_XARESOURCE_RECOVER_FAILURE.explanation=Jde o intern\u00ed syst\u00e9movou chybu, kter\u00e1 je pravd\u011bpodobn\u011b zp\u016fsobena d\u0159\u00edv\u011bj\u0161\u00edm selh\u00e1n\u00edm.
+WTRN0030_XARESOURCE_RECOVER_FAILURE.useraction=CMSG0002
+
+WTRN0031_XA_ROLLBACK_FAILED=WTRN0031E: Operace xa_rollback u prost\u0159edku transakce selhala. Glob\u00e1ln\u00ed transakce byla {0}. Trasov\u00e1n\u00ed z\u00e1sobn\u00edku v\u00fdjimek: {1}
+WTRN0031_XA_ROLLBACK_FAILED.explanation=Do\u0161lo k v\u00fdjimce, kdy\u017e slu\u017eba transakc\u00ed volala operaci xa_rollback u prost\u0159edku uveden\u00e9ho u glob\u00e1ln\u00ed transakce ur\u010den\u00e9 ve zpr\u00e1v\u011b.
+WTRN0031_XA_ROLLBACK_FAILED.useraction=Je mo\u017en\u00e9, \u017ee transakce byla dokon\u010dena s heuristick\u00fdm v\u00fdsledkem. Pokud se jedn\u00e1 o tento p\u0159\u00edpad, opravte ve\u0161ker\u00e9 probl\u00e9my s daty aplikac\u00ed, kter\u00e9 byly zp\u016fsobeny heuristick\u00fdm v\u00fdstupem.
+
+WTRN0032_IMPLEMENTATION_SPECIFIC_ON_INBOUND=WTRN0032E: Kontext transakce specifick\u00fd pro danou implementaci byl p\u0159ijat p\u0159i p\u0159\u00edchoz\u00edm po\u017eadavku.
+WTRN0032_IMPLEMENTATION_SPECIFIC_ON_INBOUND.explanation=Jde o intern\u00ed syst\u00e9movou chybu, kter\u00e1 je pravd\u011bpodobn\u011b zp\u016fsobena d\u0159\u00edv\u011bj\u0161\u00edm selh\u00e1n\u00edm.
+WTRN0032_IMPLEMENTATION_SPECIFIC_ON_INBOUND.useraction=CMSG0002
+
+WTRN0033_TRANSACTION_FACTORY_CREATE=WTRN0033E: P\u0159i vytv\u00e1\u0159en\u00ed tov\u00e1rny transakce byla zachycena v\u00fdjimka {0}
+WTRN0033_TRANSACTION_FACTORY_CREATE.explanation=Jde o intern\u00ed syst\u00e9movou chybu, kter\u00e1 je pravd\u011bpodobn\u011b zp\u016fsobena d\u0159\u00edv\u011bj\u0161\u00edm selh\u00e1n\u00edm.
+WTRN0033_TRANSACTION_FACTORY_CREATE.useraction=CMSG0002
+
+WTRN0034_DURING_SERVER_QUIESCE_TX_ROLLBACK_SUCCEEDED=WTRN0034W: B\u011bhem f\u00e1ze uv\u00e1d\u011bn\u00ed serveru do klidov\u00e9ho stavu byla nalezena transakce {0}. Pokus o odvol\u00e1n\u00ed transakce byl \u00fasp\u011b\u0161n\u00fd.
+WTRN0034_DURING_SERVER_QUIESCE_TX_ROLLBACK_SUCCEEDED.explanation=B\u011bhem f\u00e1ze uv\u00e1d\u011bn\u00ed do klidov\u00e9ho stavu p\u0159i ukon\u010dov\u00e1n\u00ed pr\u00e1ce serveru byla nalezena nevy\u0159\u00edzen\u00e1 transakce. P\u0159\u00edslu\u0161n\u00e1 transakce byla \u00fasp\u011b\u0161n\u011b odvol\u00e1na.
+WTRN0034_DURING_SERVER_QUIESCE_TX_ROLLBACK_SUCCEEDED.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+WTRN0035_DURING_SERVER_QUIESCE_TX_ROLLBACK_FAILED=WTRN0035W: B\u011bhem f\u00e1ze uv\u00e1d\u011bn\u00ed serveru do klidov\u00e9ho stavu byla nalezena transakce {0}. Pokus o odvol\u00e1n\u00ed transakce se nezda\u0159il.
+WTRN0035_DURING_SERVER_QUIESCE_TX_ROLLBACK_FAILED.explanation=B\u011bhem f\u00e1ze uv\u00e1d\u011bn\u00ed do klidov\u00e9ho stavu p\u0159i ukon\u010dov\u00e1n\u00ed pr\u00e1ce serveru byla nalezena nevy\u0159\u00edzen\u00e1 transakce. P\u0159\u00edslu\u0161n\u00e1 transakce nebyla \u00fasp\u011b\u0161n\u011b odvol\u00e1na.
+WTRN0035_DURING_SERVER_QUIESCE_TX_ROLLBACK_FAILED.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce. Tato transakce bude zotavena p\u0159i p\u0159\u00ed\u0161t\u00edm spu\u0161t\u011bn\u00ed serveru.
+
+WTRN0036_DURING_SERVER_QUIESCE_TX_MARKED_ROLLBACK_ONLY=WTRN0036W: B\u011bhem f\u00e1ze uv\u00e1d\u011bn\u00ed serveru do klidov\u00e9ho stavu byla nalezena transakce {0}. Transakce byla ozna\u010dena pouze k odvol\u00e1n\u00ed.
+WTRN0036_DURING_SERVER_QUIESCE_TX_MARKED_ROLLBACK_ONLY.explanation=B\u011bhem f\u00e1ze uv\u00e1d\u011bn\u00ed do klidov\u00e9ho stavu p\u0159i ukon\u010dov\u00e1n\u00ed pr\u00e1ce serveru byla nalezena nevy\u0159\u00edzen\u00e1 transakce. Tato transakce byla ozna\u010dena pouze pro odvol\u00e1n\u00ed.
+WTRN0036_DURING_SERVER_QUIESCE_TX_MARKED_ROLLBACK_ONLY.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce. Transakce bude b\u011bhem ukon\u010dov\u00e1n\u00ed \u010dinnosti serveru odvol\u00e1na nebo bude provedeno jej\u00ed zotaven\u00ed po op\u011btn\u00e9m spu\u0161t\u011bn\u00ed serveru.
+
+WTRN0037_XA_RECOVER_ERROR=WTRN0037W: Slu\u017eba transakc\u00ed zjistila chybu p\u0159i operaci xa_recover. Prost\u0159edek: {0}. K\u00f3d chyby: {1}. Trasov\u00e1n\u00ed z\u00e1sobn\u00edku v\u00fdjimek: {2}
+WTRN0037_XA_RECOVER_ERROR.explanation=Slu\u017eba transakc\u00ed zjistila chybu p\u0159i vol\u00e1n\u00ed xa_recover v prost\u0159edku za \u00fa\u010delem ur\u010den\u00ed p\u0159ipraven\u00fdch transakc\u00ed vlastn\u011bn\u00fdch odpov\u00eddaj\u00edc\u00edm spr\u00e1vcem prost\u0159edk\u016f. Operace bude zopakov\u00e1na.
+WTRN0037_XA_RECOVER_ERROR.useraction=Prozkoumejte k\u00f3d chyby, abyste mohli ur\u010dit p\u0159\u00ed\u010dinu selh\u00e1n\u00ed.
+
+WTRN0038_ERR_DESTROYING_XARESOURCE=WTRN0038W: Do\u0161lo k v\u00fdjimce p\u0159i likvidaci prost\u0159edku. Trasov\u00e1n\u00ed z\u00e1sobn\u00edku v\u00fdjimek: {0}
+WTRN0038_ERR_DESTROYING_XARESOURCE.explanation=Slu\u017eba transakc\u00ed nemohla zlikvidovat prost\u0159edek XAResource.
+WTRN0038_ERR_DESTROYING_XARESOURCE.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce, proto\u017ee by slu\u017eba transakc\u00ed touto situac\u00ed nem\u011bla b\u00fdt ovlivn\u011bna.
+
+WTRN0039_SERIALIZE_FAILED=WTRN0039E: Nelze serializovat objekt do bajtov\u00e9ho tvaru.
+WTRN0039_SERIALIZE_FAILED.explanation=Jde o intern\u00ed syst\u00e9movou chybu, kter\u00e1 je pravd\u011bpodobn\u011b zp\u016fsobena d\u0159\u00edv\u011bj\u0161\u00edm selh\u00e1n\u00edm.
+WTRN0039_SERIALIZE_FAILED.useraction=CMSG0002
+
+WTRN0040_OBJECT_DESERIALIZE_FAILED=WTRN0040W: Objekt nelze deserializovat. Trasov\u00e1n\u00ed z\u00e1sobn\u00edku v\u00fdjimek: {0}
+WTRN0040_OBJECT_DESERIALIZE_FAILED.explanation=Jde o intern\u00ed syst\u00e9movou chybu, kter\u00e1 je pravd\u011bpodobn\u011b zp\u016fsobena d\u0159\u00edv\u011bj\u0161\u00edm selh\u00e1n\u00edm.
+WTRN0040_OBJECT_DESERIALIZE_FAILED.useraction=CMSG0002
+
+WTRN0041_TXN_ROLLED_BACK=WTRN0041I: Transakce {0} byla odvol\u00e1na. 
+WTRN0041_TXN_ROLLED_BACK.explanation=Transakce byla p\u016fvodn\u011b ozna\u010dena rollbackOnly a nyn\u00ed byla odvol\u00e1na. P\u0159\u00ed\u010dinou m\u016f\u017ee b\u00fdt \u010dasov\u00fd limit transakce nebo rozhodnut\u00ed aplikace ozna\u010dit transakci rollbackOnly.                           
+WTRN0041_TXN_ROLLED_BACK.useraction=Nen\u00ed pot\u0159ebn\u00e1 \u017e\u00e1dn\u00e1 akce u\u017eivatele, pokud odvol\u00e1n\u00ed nen\u00ed ne\u017e\u00e1douc\u00ed a nedojde k n\u011bmu kv\u016fli \u010dasov\u00e9mu limitu transakce. Pokud tomu tak je, zjist\u011bte, pro\u010d dokon\u010den\u00ed transakce trv\u00e1 d\u00e9le, ne\u017e uv\u00e1d\u00ed \u010dasov\u00fd limit, a zva\u017ete zv\u00fd\u0161en\u00ed hodnot \u010dasov\u00e9ho limitu transakce pro server.
+
+WTRN0042_GLOBAL_TRAN_ROLLBACK=WTRN0042I: Glob\u00e1ln\u00ed transakce byla odvol\u00e1na v d\u016fsledku \u010dasov\u00e9ho limitu nebo vol\u00e1n\u00ed metody setRollbackOnly.
+WTRN0042_GLOBAL_TRAN_ROLLBACK.explanation=Glob\u00e1ln\u00ed transakce byla odvol\u00e1na, proto\u017ee byla dosa\u017eena hodnota \u010dasov\u00e9ho limitu nebo byla vol\u00e1na metoda setRollbackOnly.
+WTRN0042_GLOBAL_TRAN_ROLLBACK.useraction=Je-li hodnota \u010dasov\u00e9ho limitu p\u0159\u00edli\u0161 mal\u00e1 nebo p\u0159\u00edli\u0161 velk\u00e1, upravte ji prost\u0159ednictv\u00edm administrativn\u00ed konzoly.
+
+WTRN0043_LOCAL_TRAN_ROLLBACK=WTRN0043I: Lok\u00e1ln\u00ed transakce byla odvol\u00e1na v d\u016fsledku vol\u00e1n\u00ed metody setRollbackOnly.
+WTRN0043_LOCAL_TRAN_ROLLBACK.explanation=Lok\u00e1ln\u00ed transakce byla odvol\u00e1na, proto\u017ee byla vol\u00e1na metoda setRollbackOnly.
+WTRN0043_LOCAL_TRAN_ROLLBACK.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+
+WTRN0044_HEURISTIC_MAY_HAVE_OCCURED=WTRN0044W: Pro transakci {0} mohl nastat stav heuristiky.
+WTRN0044_HEURISTIC_MAY_HAVE_OCCURED.explanation=Slu\u017eba transakc\u00ed zjistila, \u017ee ur\u010den\u00e1 transakce zahrnuje sm\u00ed\u0161en\u00e9 prost\u0159edky s podporou jednof\u00e1zov\u00e9ho a dvouf\u00e1zov\u00e9ho zpracov\u00e1n\u00ed. Slu\u017eba transakc\u00ed p\u0159edala po\u017eadavek na jednof\u00e1zov\u00e9 potvrzen\u00ed konkr\u00e9tn\u00edmu prost\u0159edku s podporou jedn\u00e9 f\u00e1ze, do\u0161lo v\u0161ak k selh\u00e1n\u00ed serveru p\u0159ed mo\u017en\u00fdm dokon\u010den\u00edm potvrzen\u00ed. Nen\u00ed zn\u00e1mo, zda byl prost\u0159edek \u00fasp\u011b\u0161n\u011b potvrzen.
+WTRN0044_HEURISTIC_MAY_HAVE_OCCURED.useraction=V\u0161echny prost\u0159edky s podporou dvouf\u00e1zov\u00e9ho zpracov\u00e1n\u00ed budou odvol\u00e1ny. Pokud prost\u0159edek s podporou jednof\u00e1zov\u00e9ho zpracov\u00e1n\u00ed \u00fasp\u011b\u0161n\u011b zpracoval potvrzen\u00ed, do\u0161lo k po\u0161kozen\u00ed v d\u016fsledku heuristiky a je t\u0159eba opravit v\u0161echny probl\u00e9my dat aplikac\u00ed zp\u016fsoben\u00e9 heuristikou.
+
+WTRN0045_CANNOT_RECOVER_RESOURCE=WTRN0045W: Slu\u017eba transakc\u00ed nem\u016f\u017ee obnovit prost\u0159edek {0}. Trasov\u00e1n\u00ed z\u00e1sobn\u00edku v\u00fdjimek: {1}
+WTRN0045_CANNOT_RECOVER_RESOURCE.explanation=Do\u0161lo k intern\u00ed chyb\u011b v dob\u011b, kdy se slu\u017eba transakc\u00ed pokusila rekonstruovat prost\u0159edek transakce b\u011bhem obnovy. Tato chyba je pravd\u011bpodobn\u011b zp\u016fsobena d\u0159\u00edv\u011bj\u0161\u00edm selh\u00e1n\u00edm.
+WTRN0045_CANNOT_RECOVER_RESOURCE.useraction=CMSG0002
+
+WTRN0046_PREPARE_FAILED=WTRN0046E: Pokus spr\u00e1vce transakc\u00ed o vol\u00e1n\u00ed operace p\u0159\u00edpravy pro prost\u0159edek transakc\u00ed zp\u016fsobil chybu. K\u00f3d chyby: {0}. Trasov\u00e1n\u00ed z\u00e1sobn\u00edku v\u00fdjimek: {1}
+WTRN0046_PREPARE_FAILED.explanation=Prost\u0159edek transakc\u00ed selhal pot\u00e9, co byl po\u017e\u00e1d\u00e1n o zpracov\u00e1n\u00ed vol\u00e1n\u00ed operace p\u0159\u00edpravy. Selh\u00e1n\u00ed bude zpracov\u00e1no jako hlasov\u00e1n\u00ed pro odvol\u00e1n\u00ed.
+WTRN0046_PREPARE_FAILED.useraction=Prozkoumejte k\u00f3d chyby, abyste mohli ur\u010dit p\u0159\u00ed\u010dinu selh\u00e1n\u00ed.
+
+WTRN0047_XAER_RMERR_ON_COMMIT=WTRN0047W: Do\u0161lo k chyb\u011b XAER_RMERR p\u0159i potvrzov\u00e1n\u00ed pr\u00e1ce ve v\u011btvi transakce. Prost\u0159edek: {0}
+WTRN0047_XAER_RMERR_ON_COMMIT.explanation=B\u011bhem procesu potvrzov\u00e1n\u00ed transakce bylo zji\u0161t\u011bno selh\u00e1n\u00ed.
+WTRN0047_XAER_RMERR_ON_COMMIT.useraction=Odstra\u0148te ve\u0161ker\u00e9 probl\u00e9my t\u00fdkaj\u00edc\u00ed se dat aplikac\u00ed, kter\u00e9 byly zp\u016fsobeny t\u00edmto selh\u00e1n\u00edm.
+
+WTRN0048_XAER_RMFAIL_ON_COMMIT=WTRN0048W: Pokus spr\u00e1vce transakc\u00ed o vol\u00e1n\u00ed operace odvol\u00e1n\u00ed pro prost\u0159edek transakc\u00ed zp\u016fsobil chybu XAER_RMFAIL. Prost\u0159edek: {0}
+WTRN0048_XAER_RMFAIL_ON_COMMIT.explanation=Vol\u00e1n\u00ed modulu pro potvrzen\u00ed nebylo pro prost\u0159edek transakce \u00fasp\u011b\u0161n\u00e9, proto\u017ee spr\u00e1vce prost\u0159edk\u016f nebyl k dispozici. Vol\u00e1n\u00ed modulu pro potvrzen\u00ed bude opakov\u00e1no v pravideln\u00fdch intervalech.
+WTRN0048_XAER_RMFAIL_ON_COMMIT.useraction=Ov\u011b\u0159te, \u017ee je spr\u00e1vce prost\u0159edk\u016f k dispozici.
+
+WTRN0049_XAER_RMFAIL_ON_ROLLBACK=WTRN0049W: Pokus spr\u00e1vce transakc\u00ed o vol\u00e1n\u00ed operace odvol\u00e1n\u00ed pro prost\u0159edek transakc\u00ed zp\u016fsobil chybu XAER_RMFAIL. Prost\u0159edek: {0}
+WTRN0049_XAER_RMFAIL_ON_ROLLBACK.explanation=Vol\u00e1n\u00ed modulu pro odvol\u00e1n\u00ed nebylo pro prost\u0159edek transakce \u00fasp\u011b\u0161n\u00e9, proto\u017ee spr\u00e1vce prost\u0159edk\u016f nebyl k dispozici. Vol\u00e1n\u00ed modulu pro odvol\u00e1n\u00ed bude opakov\u00e1no v pravideln\u00fdch intervalech.
+WTRN0049_XAER_RMFAIL_ON_ROLLBACK.useraction=Ov\u011b\u0159te, \u017ee je spr\u00e1vce prost\u0159edk\u016f k dispozici.
+
+WTRN0050_UNEXPECTED_XA_ERROR_ON_COMMIT=WTRN0050E: Pokus spr\u00e1vce transakc\u00ed o vol\u00e1n\u00ed operace potvrzen\u00ed pro prost\u0159edek transakc\u00ed zp\u016fsobil neo\u010dek\u00e1vanou chybu. K\u00f3d chyby XA: {0}.
+WTRN0050_UNEXPECTED_XA_ERROR_ON_COMMIT.explanation=Vzhledem k neo\u010dek\u00e1van\u00e9mu selh\u00e1n\u00ed nebylo vol\u00e1n\u00ed modulu pro potvrzen\u00ed pro prost\u0159edek transakce \u00fasp\u011b\u0161n\u00e9. Vol\u00e1n\u00ed modulu pro potvrzen\u00ed bude opakov\u00e1no v pravideln\u00fdch intervalech.
+WTRN0050_UNEXPECTED_XA_ERROR_ON_COMMIT.useraction=Prozkoumejte k\u00f3d chyby, abyste mohli ur\u010dit p\u0159\u00ed\u010dinu selh\u00e1n\u00ed.
+
+WTRN0051_UNEXPECTED_XA_ERROR_ON_ROLLBACK=WTRN0051E: Pokus spr\u00e1vce transakc\u00ed o vol\u00e1n\u00ed operace odvol\u00e1n\u00ed pro prost\u0159edek transakc\u00ed zp\u016fsobil neo\u010dek\u00e1vanou chybu. K\u00f3d chyby XA: {0}.
+WTRN0051_UNEXPECTED_XA_ERROR_ON_ROLLBACK.explanation=Vzhledem k neo\u010dek\u00e1van\u00e9mu selh\u00e1n\u00ed nebylo vol\u00e1n\u00ed modulu pro odvol\u00e1n\u00ed pro prost\u0159edek transakce \u00fasp\u011b\u0161n\u00e9. Vol\u00e1n\u00ed modulu pro odvol\u00e1n\u00ed bude opakov\u00e1no v pravideln\u00fdch intervalech.
+WTRN0051_UNEXPECTED_XA_ERROR_ON_ROLLBACK.useraction=Prozkoumejte k\u00f3d chyby, abyste mohli ur\u010dit p\u0159\u00ed\u010dinu selh\u00e1n\u00ed.
+
+WTRN0052_XAER_RMFAIL_ON_COMMIT_ONE_PHASE=WTRN0052E: Pokus spr\u00e1vce transakc\u00ed o vol\u00e1n\u00ed operace jednof\u00e1zov\u00e9ho vr\u00e1cen\u00ed pro prost\u0159edek transakc\u00ed zp\u016fsobil chybu XAER_RMFAIL. Prost\u0159edek: {0}
+WTRN0052_XAER_RMFAIL_ON_COMMIT_ONE_PHASE.explanation=Vol\u00e1n\u00ed modulu pro jednof\u00e1zov\u00e9 potvrzen\u00ed nebylo pro prost\u0159edek transakce \u00fasp\u011b\u0161n\u00e9, proto\u017ee spr\u00e1vce prost\u0159edk\u016f nebyl k dispozici.
+WTRN0052_XAER_RMFAIL_ON_COMMIT_ONE_PHASE.useraction=Transakce bude odvol\u00e1na.
+
+WTRN0053_UNEXPECTED_XA_ERROR_ON_COMMIT_ONE_PHASE=WTRN0053E: Pokus spr\u00e1vce transakc\u00ed o vol\u00e1n\u00ed operace jednof\u00e1zov\u00e9ho potvrzen\u00ed pro prost\u0159edek transakc\u00ed zp\u016fsobil neo\u010dek\u00e1vanou chybu. K\u00f3d chyby XA: {0}.
+WTRN0053_UNEXPECTED_XA_ERROR_ON_COMMIT_ONE_PHASE.explanation=Vzhledem k neo\u010dek\u00e1van\u00e9mu selh\u00e1n\u00ed nebylo vol\u00e1n\u00ed modulu pro jednof\u00e1zov\u00e9 potvrzen\u00ed pro prost\u0159edek transakce \u00fasp\u011b\u0161n\u00e9.
+WTRN0053_UNEXPECTED_XA_ERROR_ON_COMMIT_ONE_PHASE.useraction=Spr\u00e1vce transakc\u00ed se pokus\u00ed o odvol\u00e1n\u00ed transakce.
+
+WTRN0054_XA_FORGET_ERROR=WTRN0054W: Operace xa_forget u prost\u0159edku transakce zjistila v\u00fdjimku. K\u00f3d chyby: {0}. Trasov\u00e1n\u00ed z\u00e1sobn\u00edku v\u00fdjimek: {1}
+WTRN0054_XA_FORGET_ERROR.explanation=Do\u0161lo k v\u00fdjimce, kdy\u017e slu\u017eba transakc\u00ed volala operaci xa_forget u prost\u0159edku.
+WTRN0054_XA_FORGET_ERROR.useraction=Prozkoumejte k\u00f3d chyby, abyste mohli ur\u010dit p\u0159\u00ed\u010dinu selh\u00e1n\u00ed.
+
+WTRN0055_GIVING_UP_OUTCOME_DELIVERY=WTRN0055W: Prob\u00edh\u00e1 ukon\u010den\u00ed odchoz\u00edho doru\u010den\u00ed u transakce {0}.
+WTRN0055_GIVING_UP_OUTCOME_DELIVERY.explanation=Slu\u017eba transakc\u00ed nemohla dodat v\u00fdstup potvrzen\u00ed nebo odvol\u00e1n\u00ed pro \u00fa\u010dastn\u00edka transakce.
+WTRN0055_GIVING_UP_OUTCOME_DELIVERY.useraction=Odstra\u0148te ve\u0161ker\u00e9 probl\u00e9my t\u00fdkaj\u00edc\u00ed se dat aplikac\u00ed, kter\u00e9 byly zp\u016fsobeny t\u00edmto selh\u00e1n\u00edm.
+
+WTRN0056_TRAN_RESYNC_FAILURE=WTRN0056I: Opakovan\u00e1 synchronizace transakce {0} z p\u016fvodce selhala, prob\u00edh\u00e1 opakov\u00e1n\u00ed akce...
+WTRN0056_TRAN_RESYNC_FAILURE.explanation=Resynchronizace transakce selhala b\u011bhem obnovy. V\u00fdstup je nezn\u00e1m\u00fd, tak\u017ee server bude d\u00e1le opakovat pokusy.
+WTRN0056_TRAN_RESYNC_FAILURE.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+
+WTRN0057_HEURISTIC_ON_SUBORDINATE=WTRN0057E: Heuristika byla vyvol\u00e1na b\u011bhem operace prepare/commit_one_phase u pod\u0159\u00edzen\u00e9ho prvku.
+WTRN0057_HEURISTIC_ON_SUBORDINATE.explanation=Pod\u0159\u00edzen\u00e1 transakce se pokusila o optimalizaci pomoc\u00ed jednof\u00e1zov\u00e9ho potvrzen\u00ed b\u011bhem p\u0159\u00edpravy a do\u0161lo k heuristick\u00e9 chyb\u011b.
+WTRN0057_HEURISTIC_ON_SUBORDINATE.useraction=CMSG0002
+
+WTRN0058_RECOVERY_EXCEPTION_IN_COMMIT=WTRN0058E: Do\u0161lo k v\u00fdjimce operace potvrzen\u00ed p\u0159i obnov\u011b transakce {0}: {1}
+WTRN0058_RECOVERY_EXCEPTION_IN_COMMIT.explanation=Byla zji\u0161t\u011bna v\u00fdjimka p\u0159i pokusu o zotaven\u00ed transakce.
+WTRN0058_RECOVERY_EXCEPTION_IN_COMMIT.useraction=CMSG0002
+
+WTRN0059_RECOVERY_EXCEPTION_IN_ROLLBACK=WTRN0059E: Do\u0161lo k v\u00fdjimce operace odvol\u00e1n\u00ed p\u0159i obnov\u011b transakce {0}: {1}
+WTRN0059_RECOVERY_EXCEPTION_IN_ROLLBACK.explanation=Byla zji\u0161t\u011bna v\u00fdjimka p\u0159i pokusu o zotaven\u00ed transakce.
+WTRN0059_RECOVERY_EXCEPTION_IN_ROLLBACK.useraction=CMSG0002
+
+WTRN0060_RECOVERY_EXCEPTION_IN_FORGET=WTRN0060E: Do\u0161lo k v\u00fdjimce operace zapomenut\u00ed p\u0159i obnov\u011b transakce {0}: {1}
+WTRN0060_RECOVERY_EXCEPTION_IN_FORGET.explanation=Byla zji\u0161t\u011bna v\u00fdjimka p\u0159i pokusu o zotaven\u00ed transakce.
+WTRN0060_RECOVERY_EXCEPTION_IN_FORGET.useraction=CMSG0002
+
+WTRN0061_ERR_CREATING_JTAXARESOURCE=WTRN0061E: Do\u0161lo k chyb\u011b p\u0159i vytv\u00e1\u0159en\u00ed objektu JTAXAResource
+WTRN0061_ERR_CREATING_JTAXARESOURCE.explanation=Jde o intern\u00ed syst\u00e9movou chybu, kter\u00e1 je pravd\u011bpodobn\u011b zp\u016fsobena d\u0159\u00edv\u011bj\u0161\u00edm selh\u00e1n\u00edm.
+WTRN0061_ERR_CREATING_JTAXARESOURCE.useraction=CMSG0002
+
+WTRN0062_ILLEGAL_ENLIST_FOR_MULTIPLE_1PC_RESOURCES=WTRN0062E: V glob\u00e1ln\u00ed transakci do\u0161lo k nepovolen\u00e9mu pokusu o pou\u017e\u00edv\u00e1n\u00ed n\u011bkolika prost\u0159edk\u016f, kter\u00e9 maj\u00ed pouze jednof\u00e1zov\u00e9 pou\u017eit\u00ed.
+WTRN0062_ILLEGAL_ENLIST_FOR_MULTIPLE_1PC_RESOURCES.explanation=V glob\u00e1ln\u00ed transakci lze uv\u00e9st pouze jeden prost\u0159edek, kter\u00fd je omezen na jednof\u00e1zov\u00e9 pou\u017eit\u00ed. K t\u00e9to chyb\u011b dojde, pokud je v glob\u00e1ln\u00ed transakci pou\u017eito v\u00edce spr\u00e1vc\u016f zdroj\u016f, kter\u00e9 maj\u00ed pouze schopnost jednof\u00e1zov\u00e9ho potvrzen\u00ed, nebo pokud je v glob\u00e1ln\u00ed transakci pou\u017eito v\u00edce nesd\u00edlen\u00fdch p\u0159ipojen\u00ed z jednoho takov\u00e9ho spr\u00e1vce prost\u0159edk\u016f.
+WTRN0062_ILLEGAL_ENLIST_FOR_MULTIPLE_1PC_RESOURCES.useraction=Zm\u011b\u0148te aplikaci tak, aby pou\u017e\u00edvala pouze jeden prost\u0159edek, kter\u00fd je omezen na jednof\u00e1zov\u00e9 potvrzen\u00ed, nebo aby pou\u017e\u00edvala prost\u0159edky XAResources se schopnost\u00ed dvouf\u00e1zov\u00e9ho potvrzen\u00ed.
+
+WTRN0063_ILLEGAL_COMMIT_OF_1PC_RESOURCE=WTRN0063E: Do\u0161lo k nepovolen\u00e9mu pokusu o potvrzen\u00ed prost\u0159edku s schopnost\u00ed jednof\u00e1zov\u00e9ho potvrzen\u00ed u existuj\u00edc\u00edch prost\u0159edk\u016f se schopnost\u00ed dvouf\u00e1zov\u00e9ho potvrzen\u00ed.
+WTRN0063_ILLEGAL_COMMIT_OF_1PC_RESOURCE.explanation=Slu\u017eba transakc\u00ed odm\u00edtla pokus o potvrzen\u00ed prost\u0159edku se schopnost\u00ed jednof\u00e1zov\u00e9ho potvrzen\u00ed u transakce, kter\u00e1 ji\u017e obsahuje dal\u0161\u00ed prost\u0159edky se schopnost\u00ed dvouf\u00e1zov\u00e9ho potvrzen\u00ed. Bu\u010f nen\u00ed k dispozici slu\u017eba LPS, nebo v p\u0159\u00edpad\u011b, \u017ee k dispozici je, nep\u0159ij\u00edm\u00e1 aplikace heuristick\u00e1 rizika spojen\u00e1 s t\u00edmto postupem.
+WTRN0063_ILLEGAL_COMMIT_OF_1PC_RESOURCE.useraction=Ov\u011b\u0159te, zda nejsou ve stejn\u00e9 transakci zahrnuty prost\u0159edky se schopnost\u00ed jednof\u00e1zov\u00e9ho a dvouf\u00e1zov\u00e9ho potvrzen\u00ed, nebo v p\u0159\u00edpad\u011b, \u017ee je slu\u017eba LPS k dispozici, zm\u011b\u0148te konfiguraci aplikace tak, aby p\u0159ij\u00edmala heuristick\u00e9 riziko spojen\u00e9 s t\u00edmto postupem.
+
+WTRN0064_SUBORDINATE_COMMIT_OF_1PC_RESOURCE=WTRN0064E: Do\u0161lo k nepovolen\u00e9mu pokusu o potvrzen\u00ed prost\u0159edku se schopnost\u00ed jednof\u00e1zov\u00e9ho potvrzen\u00ed v pod\u0159\u00edzen\u00e9 v\u011btvi transakce.
+WTRN0064_SUBORDINATE_COMMIT_OF_1PC_RESOURCE.explanation=Slu\u017eba transakc\u00ed odm\u00edtla pokus o potvrzen\u00ed prost\u0159edku se schopnost\u00ed jednof\u00e1zov\u00e9ho potvrzen\u00ed v r\u00e1mci distribuovan\u00e9 pod\u0159\u00edzen\u00e9 v\u011btve transakce. Transakce bude odvol\u00e1na.
+WTRN0064_SUBORDINATE_COMMIT_OF_1PC_RESOURCE.useraction=Ov\u011b\u0159te, zda nejsou prost\u0159edky se schopnost\u00ed jednof\u00e1zov\u00e9ho potvrzen\u00ed zahrnuty v pod\u0159\u00edzen\u00e9 v\u011btvi distribuovan\u00e9 transakce.
+
+WTRN0065_XARESOURCE_NOT_KNOWN=WTRN0065W: Prost\u0159edek XAResource nen\u00ed pro tuto transakci zn\u00e1m\u00fd. Prost\u0159edek: {0}
+WTRN0065_XARESOURCE_NOT_KNOWN.explanation=Spr\u00e1vce transakc\u00ed nemohl vy\u0159adit prost\u0159edek XAResource, proto\u017ee nebyl p\u016fvodn\u011b uveden u aktu\u00e1ln\u00ed transakce. Jde o intern\u00ed syst\u00e9movou chybu, kter\u00e1 je pravd\u011bpodobn\u011b zp\u016fsobena d\u0159\u00edv\u011bj\u0161\u00edm selh\u00e1n\u00edm.
+WTRN0065_XARESOURCE_NOT_KNOWN.useraction=CMSG0002
+
+WTRN0066_LOG_WRITE_ERROR=WTRN0066W: Byla rozpozn\u00e1na v\u00fdjimka b\u011bhem operace z\u00e1pisu do souboru protokolu transakce. Trasov\u00e1n\u00ed z\u00e1sobn\u00edku v\u00fdjimek: {0}
+WTRN0066_LOG_WRITE_ERROR.explanation=Do\u0161lo k chyb\u011b p\u0159i z\u00e1pisu do souboru protokolu transakce. Transakce bude odvol\u00e1na.
+WTRN0066_LOG_WRITE_ERROR.useraction=S nejv\u011bt\u0161\u00ed pravd\u011bpodobnost\u00ed se jedn\u00e1 o selh\u00e1n\u00ed vstupu/v\u00fdstupu. Prozkoumejte trasov\u00e1n\u00ed z\u00e1sobn\u00edku v\u00fdjimek, abyste mohli ur\u010dit p\u0159\u00ed\u010dinu probl\u00e9mu.
+
+WTRN0067_PROG_MODEL_EXCEEDED=WTRN0067W: Slu\u017eba transakc\u00ed zjistila pou\u017eit\u00ed, kter\u00e9 p\u0159ekra\u010duje model programov\u00e1n\u00ed aplikace WebSphere
+WTRN0067_PROG_MODEL_EXCEEDED.explanation=Aplikace spu\u0161t\u011bn\u00e1 na tomto serveru pou\u017e\u00edv\u00e1 funkci slu\u017eby transakc\u00ed, kter\u00e1 nen\u00ed sou\u010d\u00e1st\u00ed modelu programov\u00e1n\u00ed aplikace.
+WTRN0067_PROG_MODEL_EXCEEDED.useraction=Zva\u017ete, zda aplikaci lze zm\u011bnit tak, aby vyu\u017e\u00edvala pouze funkce transakc\u00ed podporovan\u00e9 v modelu programov\u00e1n\u00ed aplikac\u00ed.
+
+WTRN0068_COMMIT_FAILED=WTRN0068E: Potvrzen\u00ed selhalo s v\u00fdjimkou {0}
+WTRN0068_COMMIT_FAILED.explanation=Do\u0161lo k v\u00fdjimce p\u0159i potvrzov\u00e1n\u00ed transakce.
+WTRN0068_COMMIT_FAILED.useraction=CMSG0002
+
+WTRN0069_COMMIT_BAD_STATE=WTRN0069E: Potvrzen\u00ed bylo p\u0159ijato v nespr\u00e1vn\u00e9m stavu transakce {0}
+WTRN0069_COMMIT_BAD_STATE.explanation=Transakce nebyla p\u0159i v\u00fdzv\u011b k proveden\u00ed zpracov\u00e1n\u00ed potvrzen\u00ed v platn\u00e9m stavu.
+WTRN0069_COMMIT_BAD_STATE.useraction=CMSG0002
+
+WTRN0070_ONE_PHASE_COMMIT_FAILED=WTRN0070E: Jednof\u00e1zov\u00e9 potvrzen\u00ed selhalo s v\u00fdjimkou {0}
+WTRN0070_ONE_PHASE_COMMIT_FAILED.explanation=Do\u0161lo k v\u00fdjimce p\u0159i potvrzov\u00e1n\u00ed transakce pomoc\u00ed protokolu jednof\u00e1zov\u00e9ho potvrzen\u00ed.
+WTRN0070_ONE_PHASE_COMMIT_FAILED.useraction=CMSG0002
+
+WTRN0071_ROLLBACK_FAILED=WTRN0071E: Odvol\u00e1n\u00ed selhalo s v\u00fdjimkou {0}
+WTRN0071_ROLLBACK_FAILED.explanation=Do\u0161lo k v\u00fdjimce p\u0159i odvol\u00e1v\u00e1n\u00ed transakce.
+WTRN0071_ROLLBACK_FAILED.useraction=CMSG0002
+
+WTRN0072_ROLLBACK_BAD_STATE=WTRN0072E: Odvol\u00e1n\u00ed bylo p\u0159ijato v nespr\u00e1vn\u00e9m stavu transakce {0}
+WTRN0072_ROLLBACK_BAD_STATE.explanation=Transakce nebyla p\u0159i v\u00fdzv\u011b k proveden\u00ed zpracov\u00e1n\u00ed odvol\u00e1n\u00ed v platn\u00e9m stavu.
+WTRN0072_ROLLBACK_BAD_STATE.useraction=CMSG0002
+
+WTRN0073_FORGET_BAD_STATE=WTRN0073E: Zapomenut\u00ed bylo p\u0159ijato v nespr\u00e1vn\u00e9m stavu transakce {0}
+WTRN0073_FORGET_BAD_STATE.explanation=Transakce nebyla p\u0159i v\u00fdzv\u011b k proveden\u00ed zpracov\u00e1n\u00ed zapomenut\u00ed v platn\u00e9m stavu.
+WTRN0073_FORGET_BAD_STATE.useraction=CMSG0002
+
+WTRN0074_SYNCHRONIZATION_EXCEPTION=WTRN0074E: Do\u0161lo k v\u00fdjimce p\u0159i operaci synchronizace {0}: {1}
+WTRN0074_SYNCHRONIZATION_EXCEPTION.explanation=Do\u0161lo k vyvol\u00e1n\u00ed v\u00fdjimky objektem synchronizace, kdy\u017e byl informov\u00e1n o aktu\u00e1ln\u00edm stavu dokon\u010den\u00ed transakce.
+WTRN0074_SYNCHRONIZATION_EXCEPTION.useraction=CMSG0002
+
+WTRN0075_HEURISTIC_ON_COMMIT=WTRN0075W: Transakce {0} p\u0159ijala heuristickou v\u00fdjimku p\u0159i potvrzov\u00e1n\u00ed prost\u0159edku.
+WTRN0075_HEURISTIC_ON_COMMIT.explanation=Slu\u017eba transakc\u00ed p\u0159ijala heuristickou odpov\u011b\u010f p\u0159i doru\u010dov\u00e1n\u00ed v\u00fdstupu potvrzen\u00ed \u00fa\u010dastn\u00edkovi transakce.
+WTRN0075_HEURISTIC_ON_COMMIT.useraction=Odstra\u0148te ve\u0161ker\u00e9 probl\u00e9my t\u00fdkaj\u00edc\u00ed se dat aplikac\u00ed, kter\u00e9 byly zp\u016fsobeny heuristick\u00fdm v\u00fdstupem.
+
+WTRN0076_HEURISTIC_ON_ROLLBACK=WTRN0076W: Transakce {0} p\u0159ijala heuristickou v\u00fdjimku p\u0159i odvol\u00e1v\u00e1n\u00ed prost\u0159edku.
+WTRN0076_HEURISTIC_ON_ROLLBACK.explanation=Slu\u017eba transakc\u00ed p\u0159ijala heuristickou odpov\u011b\u010f p\u0159i doru\u010dov\u00e1n\u00ed v\u00fdstupu odvol\u00e1n\u00ed \u00fa\u010dastn\u00edkovi transakce.
+WTRN0076_HEURISTIC_ON_ROLLBACK.useraction=Odstra\u0148te ve\u0161ker\u00e9 probl\u00e9my t\u00fdkaj\u00edc\u00ed se dat aplikac\u00ed, kter\u00e9 byly zp\u016fsobeny heuristick\u00fdm v\u00fdstupem.
+
+WTRN0077_OPERATOR_CANCELLED=WTRN0077W: Transakce {0} byla zru\u0161ena oper\u00e1torem.
+WTRN0077_OPERATOR_CANCELLED.explanation=Dod\u00e1n\u00ed v\u00fdsledku pro transakci uvedenou ve zpr\u00e1v\u011b bylo zru\u0161eno na \u017e\u00e1dost oper\u00e1tora.
+WTRN0077_OPERATOR_CANCELLED.useraction=Odstra\u0148te ve\u0161ker\u00e9 probl\u00e9my t\u00fdkaj\u00edc\u00ed se dat aplikac\u00ed, kter\u00e9 byly zp\u016fsobeny t\u00edmto selh\u00e1n\u00edm.
+
+WTRN0078_START_FAILED=WTRN0078E: Pokus spr\u00e1vce transakc\u00ed o vol\u00e1n\u00ed funkce start prost\u0159edku transakc\u00ed zp\u016fsobil chybu. K\u00f3d chyby: {0}. Trasov\u00e1n\u00ed z\u00e1sobn\u00edku v\u00fdjimek: {1}
+WTRN0078_START_FAILED.explanation=Prost\u0159edek transakc\u00ed selhal pot\u00e9, co byl po\u017e\u00e1d\u00e1n o zpracov\u00e1n\u00ed vol\u00e1n\u00ed funkce start. Transakce bude odvol\u00e1na.
+WTRN0078_START_FAILED.useraction=Prozkoumejte k\u00f3d chyby, abyste mohli ur\u010dit p\u0159\u00ed\u010dinu selh\u00e1n\u00ed.
+
+WTRN0079_END_FAILED=WTRN0079E: Pokus spr\u00e1vce transakc\u00ed o vol\u00e1n\u00ed funkce end pro prost\u0159edek transakc\u00ed zp\u016fsobil chybu. K\u00f3d chyby: {0}. Trasov\u00e1n\u00ed z\u00e1sobn\u00edku v\u00fdjimek: {1}
+WTRN0079_END_FAILED.explanation=Prost\u0159edek transakc\u00ed selhal pot\u00e9, co byl po\u017e\u00e1d\u00e1n o zpracov\u00e1n\u00ed vol\u00e1n\u00ed funkce end. Transakce bude odvol\u00e1na.
+WTRN0079_END_FAILED.useraction=Prozkoumejte k\u00f3d chyby, abyste mohli ur\u010dit p\u0159\u00ed\u010dinu selh\u00e1n\u00ed.
+
+WTRN0080_CLIENT_INACTIVITY_TIMEOUT=WTRN0080W: Transakce {0} vypr\u0161ela kv\u016fli neaktivit\u011b klienta po v\u00edce ne\u017e {1} sekund.
+WTRN0080_CLIENT_INACTIVITY_TIMEOUT.explanation=Klient je neaktivn\u00ed d\u00e9le, ne\u017e stanov\u00ed hodnota \u010dasov\u00e9ho limitu neaktivity.
+WTRN0080_CLIENT_INACTIVITY_TIMEOUT.useraction=T\u00e9to zpr\u00e1vy si nev\u0161\u00edmejte, pokud klient ponechal transakci aktivn\u00ed a skon\u010dil. Pokud je klient st\u00e1le aktivn\u00ed, ur\u010dete, zda se m\u00e1 zm\u011bnit hodnota \u010dasov\u00e9ho limitu neaktivity klienta.
+
+WTRN0081_NULL_JTSXARESOURCE=WTRN0081W: Objekt JTAXAResource m\u00e1 hodnotu null.
+WTRN0081_NULL_JTSXARESOURCE.explanation=Jde o intern\u00ed syst\u00e9movou chybu, kter\u00e1 je pravd\u011bpodobn\u011b zp\u016fsobena d\u0159\u00edv\u011bj\u0161\u00edm selh\u00e1n\u00edm.
+WTRN0081_NULL_JTSXARESOURCE.useraction=CMSG0002
+
+WTRN0082_OPERATOR_ROLLBACK=WTRN0082W: Transakce {0} byla odvol\u00e1na oper\u00e1torem.
+WTRN0082_OPERATOR_ROLLBACK.explanation=Transakce uveden\u00e1 ve zpr\u00e1v\u011b byla odvol\u00e1na na \u017e\u00e1dost oper\u00e1tora.
+WTRN0082_OPERATOR_ROLLBACK.useraction=Odstra\u0148te ve\u0161ker\u00e9 probl\u00e9my t\u00fdkaj\u00edc\u00ed se dat aplikac\u00ed, kter\u00e9 byly zp\u016fsobeny t\u00edmto selh\u00e1n\u00edm.
+
+WTRN0083_LOG_FULL_ERROR=WTRN0083W: Protokol transakce je pln\u00fd. Transakce {0} byla odvol\u00e1na.
+WTRN0083_LOG_FULL_ERROR.explanation=Soubory protokolu transakce jsou pln\u00e9 z\u00e1znam\u016f z aktivn\u00edch transakc\u00ed. Ve\u0161ker\u00e9 dal\u0161\u00ed transakce s dvouf\u00e1zov\u00fdm potvrzov\u00e1n\u00edm budou odvol\u00e1ny. Server je t\u0159eba restartovat, aby mohlo pokra\u010dovat dal\u0161\u00ed zpracov\u00e1n\u00ed dvouf\u00e1zov\u00e9ho potvrzov\u00e1n\u00ed.
+WTRN0083_LOG_FULL_ERROR.useraction=Pokud k tomuto probl\u00e9mu doch\u00e1z\u00ed \u010dasto, restartujte server s ur\u010den\u00edm v\u011bt\u0161\u00ed velikosti souboru protokolu transakc\u00ed.
+
+WTRN0084_RESOURCE_ENDING=WTRN0084W: Uveden\u00ed selhalo z p\u0159\u00ed\u010diny ukon\u010den\u00ed adapt\u00e9ru prost\u0159edk\u016f.
+WTRN0084_RESOURCE_ENDING.explanation=Po\u017eadavek na uveden\u00ed prost\u0159edku v transakci byl odm\u00edtnut, proto\u017ee je server nebo adapt\u00e9r prost\u0159edk\u016f nedostupn\u00fd.
+WTRN0084_RESOURCE_ENDING.useraction=Spus\u0165te transakci, a\u017e bude adapt\u00e9r prost\u0159edk\u016f k dispozici.
+
+WTRN0085_BAD_DISSOCIATE=WTRN0085E: Nebyla nalezena \u017e\u00e1dn\u00e1 transakce k odpojen\u00ed.
+WTRN0085_BAD_DISSOCIATE.explanation=Toto je intern\u00ed syst\u00e9mov\u00e1 chyba.
+WTRN0085_BAD_DISSOCIATE.useraction=CMSG0002
+
+
+WTRN0086_PREPARE_DIAG=WTRN0086I: Do\u0161lo k v\u00fdjimce XAException b\u011bhem f\u00e1ze anal\u00fdzy transakce {0}. Lok\u00e1ln\u00ed prost\u0159edky jsou uvedeny d\u00e1le.
+WTRN0086_PREPARE_DIAG.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+WTRN0086_PREPARE_DIAG.useraction=Administr\u00e1to\u0159i syst\u00e9mu mohou tyto informace vyu\u017e\u00edt k ru\u010dn\u00edmu zotaven\u00ed po chyb\u00e1ch transakc\u00ed.
+
+WTRN0087_COMPLETION_DIAG=WTRN0087I: Do\u0161lo k v\u00fdjimce XAException b\u011bhem f\u00e1ze dokon\u010den\u00ed transakce {0}. Lok\u00e1ln\u00ed prost\u0159edky jsou uvedeny d\u00e1le.
+WTRN0087_COMPLETION_DIAG.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+WTRN0087_COMPLETION_DIAG.useraction=Administr\u00e1to\u0159i syst\u00e9mu mohou tyto informace vyu\u017e\u00edt k ru\u010dn\u00edmu zotaven\u00ed po chyb\u00e1ch transakc\u00ed.
+
+WTRN0088_EXCEPTION_DIAG=WTRN0088I: {0} zjistil v\u00fdjimku XAException s k\u00f3dem chyby {1}.
+WTRN0088_EXCEPTION_DIAG.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+WTRN0088_EXCEPTION_DIAG.useraction=Administr\u00e1to\u0159i syst\u00e9mu mohou tyto informace vyu\u017e\u00edt k ru\u010dn\u00edmu zotaven\u00ed po chyb\u00e1ch transakc\u00ed.
+
+WTRN0089_PREPARED=WTRN0089I: {0}: Hlasov\u00e1n\u00ed: {1}.
+WTRN0089_PREPARED.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+WTRN0089_PREPARED.useraction=Administr\u00e1to\u0159i syst\u00e9mu mohou tyto informace vyu\u017e\u00edt k ru\u010dn\u00edmu zotaven\u00ed po chyb\u00e1ch transakc\u00ed.
+
+WTRN0090_COMPLETED=WTRN0090I: {0}: Hlasov\u00e1n\u00ed: {1}. V\u00fdsledek: {2}.
+WTRN0090_COMPLETED.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+WTRN0090_COMPLETED.useraction=Administr\u00e1to\u0159i syst\u00e9mu mohou tyto informace vyu\u017e\u00edt k ru\u010dn\u00edmu zotaven\u00ed po chyb\u00e1ch transakc\u00ed.
+
+WTRN0091_ASSOCIATE_FAILED=WTRN0091E: Selhalo p\u0159idru\u017een\u00ed kontextu proveden\u00ed. Xid: {0}, \u010dasov\u00fd limit: {1}.
+WTRN0091_ASSOCIATE_FAILED.explanation=Toto je intern\u00ed syst\u00e9mov\u00e1 chyba.
+WTRN0091_ASSOCIATE_FAILED.useraction=CMSG0002
+
+WTRN0092_QUIESCE_UNFINISHED=WTRN0092W: Byla nalezena nedokon\u010den\u00e1 transakce (lok\u00e1ln\u00ed ID={0}) b\u011bhem uv\u00e1d\u011bn\u00ed serveru do klidov\u00e9ho re\u017eimu; slu\u017eba transakc\u00ed bude \u010dekat.
+WTRN0092_QUIESCE_UNFINISHED.explanation=P\u0159\u00edchoz\u00ed pr\u00e1ce transakce nebyla dosud dokon\u010dena. Slu\u017eba transakc\u00ed zpozd\u00ed vypnut\u00ed serveru, aby se p\u016fvodce mohl pokusit o dokon\u010den\u00ed transakce.
+WTRN0092_QUIESCE_UNFINISHED.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+
+WTRN0093_COMMIT_REPLAY_COMPLETION=WTRN0093W: Pro pod\u0159\u00edzenou transakci {0} nen\u00ed k dispozici v\u00fdsledek. Transakce bude heuristicky potvrzena.
+WTRN0093_COMMIT_REPLAY_COMPLETION.explanation=Slu\u017eba transakc\u00ed nedok\u00e1zala z\u00edskat v\u00fdsledek transakce z nad\u0159\u00edzen\u00e9 transakce v r\u00e1mci konfigurovan\u00e9ho \u010dasov\u00e9ho intervalu pro opakov\u00e1n\u00ed. Transakce bude heuristicky potvrzena.
+WTRN0093_COMMIT_REPLAY_COMPLETION.useraction=Odstra\u0148te ve\u0161ker\u00e9 probl\u00e9my t\u00fdkaj\u00edc\u00ed se dat aplikac\u00ed, kter\u00e9 byly zp\u016fsobeny heuristick\u00fdm v\u00fdstupem.
+
+WTRN0094_ROLLBACK_REPLAY_COMPLETION=WTRN0094W: Pro pod\u0159\u00edzenou transakci {0} nen\u00ed k dispozici v\u00fdsledek. Transakce bude heuristicky odvol\u00e1na.
+WTRN0094_ROLLBACK_REPLAY_COMPLETION.explanation=Slu\u017eba transakc\u00ed nedok\u00e1zala z\u00edskat v\u00fdsledek transakce z nad\u0159\u00edzen\u00e9 transakce v r\u00e1mci konfigurovan\u00e9ho \u010dasov\u00e9ho intervalu pro opakov\u00e1n\u00ed. Transakce bude heuristicky odvol\u00e1na.
+WTRN0094_ROLLBACK_REPLAY_COMPLETION.useraction=Odstra\u0148te ve\u0161ker\u00e9 probl\u00e9my t\u00fdkaj\u00edc\u00ed se dat aplikac\u00ed, kter\u00e9 byly zp\u016fsobeny heuristick\u00fdm v\u00fdstupem.
+
+WTRN0095_MANUAL_REPLAY_COMPLETION=WTRN0095W: Pro pod\u0159\u00edzenou transakci {0} nen\u00ed k dispozici v\u00fdsledek. Transakce \u010dek\u00e1 na z\u00e1sah administr\u00e1tora, kter\u00fd ur\u010d\u00ed jej\u00ed v\u00fdsledek.
+WTRN0095_MANUAL_REPLAY_COMPLETION.explanation=Slu\u017eba transakc\u00ed nedok\u00e1zala z\u00edskat v\u00fdsledek transakce z nad\u0159\u00edzen\u00e9 transakce v r\u00e1mci konfigurovan\u00e9ho \u010dasov\u00e9ho intervalu pro opakov\u00e1n\u00ed. Transakce nyn\u00ed \u010dek\u00e1 na ru\u010dn\u00ed nastaven\u00ed v\u00fdsledku transakce administr\u00e1torem.
+WTRN0095_MANUAL_REPLAY_COMPLETION.useraction=Ur\u010dete, zda byla nad\u0159\u00edzen\u00e1 transakce \u00fasp\u011b\u0161n\u00e1 \u010di ne\u00fasp\u011b\u0161n\u00e1, a pot\u00e9 nastavte v\u00fdsledek transakce ru\u010dn\u011b. T\u00edm je zaru\u010deno, \u017ee nedojde k heuristick\u00e9mu po\u0161kozen\u00ed a \u017ee ve\u0161ker\u00e1 data aplikac\u00ed z\u016fstanou spr\u00e1vn\u00e1.
+
+WTRN0096_HEURISTIC_MAY_HAVE_OCCURED=WTRN0096W: Pro transakci {0} mohl nastat stav heuristiky. Transakce bude heuristicky potvrzena.
+WTRN0096_HEURISTIC_MAY_HAVE_OCCURED.explanation=Slu\u017eba transakc\u00ed zjistila, \u017ee ur\u010den\u00e1 transakce zahrnuje sm\u00ed\u0161en\u00e9 prost\u0159edky s podporou jednof\u00e1zov\u00e9ho a dvouf\u00e1zov\u00e9ho zpracov\u00e1n\u00ed. Slu\u017eba transakc\u00ed p\u0159edala po\u017eadavek na jednof\u00e1zov\u00e9 potvrzen\u00ed konkr\u00e9tn\u00edmu prost\u0159edku s podporou jedn\u00e9 f\u00e1ze, do\u0161lo v\u0161ak k selh\u00e1n\u00ed serveru p\u0159ed mo\u017en\u00fdm dokon\u010den\u00edm potvrzen\u00ed. Nen\u00ed zn\u00e1mo, zda byl prost\u0159edek \u00fasp\u011b\u0161n\u011b potvrzen.
+WTRN0096_HEURISTIC_MAY_HAVE_OCCURED.useraction=V\u0161echny prost\u0159edky s podporou dvouf\u00e1zov\u00e9ho zpracov\u00e1n\u00ed budou potvrzeny. Pokud prost\u0159edek s podporou jednof\u00e1zov\u00e9ho zpracov\u00e1n\u00ed selhal p\u0159i zpracov\u00e1n\u00ed potvrzen\u00ed, do\u0161lo k po\u0161kozen\u00ed v d\u016fsledku heuristiky a je t\u0159eba opravit v\u0161echny probl\u00e9my dat aplikac\u00ed zp\u016fsoben\u00e9 heuristikou.
+
+WTRN0097_HEURISTIC_MANUAL_COMPLETION=WTRN0097W: Pro transakci {0} byl zji\u0161t\u011bn nezn\u00e1m\u00fd v\u00fdsledek transakce. Transakce \u010dek\u00e1 na z\u00e1sah administr\u00e1tora, kter\u00fd ur\u010d\u00ed jej\u00ed v\u00fdsledek.
+WTRN0097_HEURISTIC_MANUAL_COMPLETION.explanation=Slu\u017eba transakc\u00ed zjistila, \u017ee ur\u010den\u00e1 transakce zahrnuje sm\u00ed\u0161en\u00e9 prost\u0159edky s podporou jednof\u00e1zov\u00e9ho a dvouf\u00e1zov\u00e9ho zpracov\u00e1n\u00ed. Slu\u017eba transakc\u00ed p\u0159edala po\u017eadavek na jednof\u00e1zov\u00e9 potvrzen\u00ed konkr\u00e9tn\u00edmu prost\u0159edku s podporou jedn\u00e9 f\u00e1ze, do\u0161lo v\u0161ak k selh\u00e1n\u00ed serveru p\u0159ed mo\u017en\u00fdm dokon\u010den\u00edm potvrzen\u00ed. Nen\u00ed zn\u00e1mo, zda byl prost\u0159edek \u00fasp\u011b\u0161n\u011b potvrzen.
+WTRN0097_HEURISTIC_MANUAL_COMPLETION.useraction=Ur\u010dete, zda byl po\u017eadavek na potvrzen\u00ed pro jednof\u00e1zov\u00e9 zpracov\u00e1n\u00ed \u00fasp\u011b\u0161n\u00fd \u010di ne\u00fasp\u011b\u0161n\u00fd, a pot\u00e9 nastavte v\u00fdsledek transakce ru\u010dn\u011b. T\u00edm je zaru\u010deno, \u017ee nedojde k heuristick\u00e9mu po\u0161kozen\u00ed a \u017ee ve\u0161ker\u00e1 data aplikac\u00ed z\u016fstanou spr\u00e1vn\u00e1.
+
+WTRN0098_COMMIT_RA_UNINSTALLED=WTRN0098W: Pro transakci {0} nen\u00ed k dispozici v\u00fdsledek, proto\u017ee adapt\u00e9r prost\u0159edk\u016f {1} byl odinstalov\u00e1n. Transakce bude heuristicky potvrzena.
+WTRN0098_COMMIT_RA_UNINSTALLED.explanation=Slu\u017eba transakc\u00ed nedok\u00e1zala z\u00edskat v\u00fdsledek transakce z adapt\u00e9ru prost\u0159edk\u016f, proto\u017ee byl odinstalov\u00e1n. Transakce bude heuristicky potvrzena.
+WTRN0098_COMMIT_RA_UNINSTALLED.useraction=Odstra\u0148te ve\u0161ker\u00e9 probl\u00e9my t\u00fdkaj\u00edc\u00ed se dat aplikac\u00ed, kter\u00e9 byly zp\u016fsobeny heuristick\u00fdm v\u00fdstupem.
+
+WTRN0099_ROLLBACK_RA_UNINSTALLED=WTRN0099W: Pro transakci {0} nen\u00ed k dispozici v\u00fdsledek, proto\u017ee adapt\u00e9r prost\u0159edk\u016f {1} byl odinstalov\u00e1n. Transakce bude heuristicky odvol\u00e1na.
+WTRN0099_ROLLBACK_RA_UNINSTALLED.explanation=Slu\u017eba transakc\u00ed nedok\u00e1zala z\u00edskat v\u00fdsledek transakce z adapt\u00e9ru prost\u0159edk\u016f, proto\u017ee byl odinstalov\u00e1n. Transakce bude heuristicky odvol\u00e1na.
+WTRN0099_ROLLBACK_RA_UNINSTALLED.useraction=Odstra\u0148te ve\u0161ker\u00e9 probl\u00e9my t\u00fdkaj\u00edc\u00ed se dat aplikac\u00ed, kter\u00e9 byly zp\u016fsobeny heuristick\u00fdm v\u00fdstupem.
+
+WTRN0100_GENERIC_ERROR=WTRN0100E: {0}
+WTRN0100_GENERIC_ERROR.explanation=Tento k\u00f3d zpr\u00e1vy se pou\u017e\u00edv\u00e1 pro podporu zpr\u00e1v, kter\u00fdm dosud nebyl p\u0159id\u011blen vlastn\u00ed k\u00f3d zpr\u00e1vy.
+WTRN0100_GENERIC_ERROR.useraction=Dal\u0161\u00ed informace naleznete v textu zpr\u00e1vy.
+
+WTRN0101_MANUAL_RA_UNINSTALLED=WTRN0101W: Pro transakci {0} nen\u00ed k dispozici v\u00fdsledek, proto\u017ee adapt\u00e9r prost\u0159edk\u016f {1} byl odinstalov\u00e1n. Transakce \u010dek\u00e1 na z\u00e1sah administr\u00e1tora, kter\u00fd ur\u010d\u00ed jej\u00ed v\u00fdsledek.
+WTRN0101_MANUAL_RA_UNINSTALLED.explanation=Slu\u017eba transakc\u00ed nedok\u00e1zala z\u00edskat v\u00fdsledek transakce z adapt\u00e9ru prost\u0159edk\u016f, proto\u017ee byl odinstalov\u00e1n.
+WTRN0101_MANUAL_RA_UNINSTALLED.useraction=Ur\u010dete, zda byla transakce od p\u016fvodce transakce adapt\u00e9ru prost\u0159edk\u016f \u00fasp\u011b\u0161n\u00e1 \u010di ne\u00fasp\u011b\u0161n\u00e1, a pot\u00e9 nastavte v\u00fdsledek transakce ru\u010dn\u011b. T\u00edm je zaru\u010deno, \u017ee nedojde k heuristick\u00e9mu po\u0161kozen\u00ed a \u017ee ve\u0161ker\u00e1 data aplikac\u00ed z\u016fstanou spr\u00e1vn\u00e1.
+
+WTRN0102_HEURISTIC_MAY_HAVE_OCCURED=WTRN0102W: Pro transakci {0} mohl nastat stav heuristiky. Transakce bude heuristicky odvol\u00e1na.
+WTRN0102_HEURISTIC_MAY_HAVE_OCCURED.explanation=Slu\u017eba transakc\u00ed zjistila, \u017ee ur\u010den\u00e1 transakce zahrnuje sm\u00ed\u0161en\u00e9 prost\u0159edky s podporou jednof\u00e1zov\u00e9ho a dvouf\u00e1zov\u00e9ho zpracov\u00e1n\u00ed. Slu\u017eba transakc\u00ed p\u0159edala po\u017eadavek na jednof\u00e1zov\u00e9 potvrzen\u00ed konkr\u00e9tn\u00edmu prost\u0159edku s podporou jedn\u00e9 f\u00e1ze, do\u0161lo v\u0161ak k selh\u00e1n\u00ed serveru p\u0159ed mo\u017en\u00fdm dokon\u010den\u00edm potvrzen\u00ed. Nen\u00ed zn\u00e1mo, zda byl prost\u0159edek \u00fasp\u011b\u0161n\u011b potvrzen.
+WTRN0102_HEURISTIC_MAY_HAVE_OCCURED.useraction=V\u0161echny prost\u0159edky s podporou dvouf\u00e1zov\u00e9ho zpracov\u00e1n\u00ed budou odvol\u00e1ny. Pokud prost\u0159edek s podporou jednof\u00e1zov\u00e9ho zpracov\u00e1n\u00ed \u00fasp\u011b\u0161n\u011b zpracoval potvrzen\u00ed, do\u0161lo k po\u0161kozen\u00ed v d\u016fsledku heuristiky a je t\u0159eba opravit v\u0161echny probl\u00e9my dat aplikac\u00ed zp\u016fsoben\u00e9 heuristikou.
+
+# Msgs 103 and 104 added by pok defect MD19484 for V5.1
+
+WTRN0103_RECOVERY_LOG_FAILED=WTRN0103E: Protokol pro zotaven\u00ed je ozna\u010den jako protokol, u n\u011bho\u017e do\u0161lo k selh\u00e1n\u00ed. [ {0} {1} ]
+WTRN0103_RECOVERY_LOG_FAILED.explanation=Protokol pro zotaven\u00ed nebyl \u00fasp\u011b\u0161n\u00fd a nelze ji\u017e k n\u011bmu p\u0159istupovat. Podrobnosti a v\u00fdjimka jsou uvedeny ve zpr\u00e1v\u011b.
+WTRN0103_RECOVERY_LOG_FAILED.useraction=Server je t\u0159eba restartovat, aby bylo mo\u017en\u00e9 opravit protokol. Pokuste se opravit v\u0161echny stavy uveden\u00e9 ve zpr\u00e1v\u011b v\u00fdjimky.
+
+WTRN0104_RECOVERY_LOG_FAILED_DETAIL=WTRN0104E: Podrobnosti selh\u00e1n\u00ed protokolu pro zotaven\u00ed: {0}
+WTRN0104_RECOVERY_LOG_FAILED_DETAIL.explanation=Tato zpr\u00e1va je vyd\u00e1na se zpr\u00e1vou WTRN0103E a ozna\u010duje podrobnosti selh\u00e1n\u00ed protokolu pro zotaven\u00ed.
+WTRN0104_RECOVERY_LOG_FAILED_DETAIL.useraction=Pomoc\u00ed informac\u00ed v t\u00e9to zpr\u00e1v\u011b a zpr\u00e1vy WTRN0103E opravte stav, kter\u00fd zp\u016fsobil selh\u00e1n\u00ed protokolu pro zotaven\u00ed.
+
+WTRN0105_CLEAN_SHUTDOWN=WTRN0105I: Slu\u017eba transakc\u00ed byla \u00fasp\u011b\u0161n\u011b vypnut\u00e1, ani\u017e by n\u011bkter\u00e9 transakce vy\u017eadovaly obnoven\u00ed.
+WTRN0105_CLEAN_SHUTDOWN.explanation=Tato ud\u00e1lost je norm\u00e1ln\u00ed. Tato zpr\u00e1va je pouze informativn\u00ed.
+WTRN0105_CLEAN_SHUTDOWN.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+
+WTRN0106_JTADEMARCATION_DISALLOWED=WTRN0106I: Demarkace sady JTA klienta nen\u00ed povolena.
+WTRN0106_JTADEMARCATION_DISALLOWED.explanation=Demarkace sady JTA byla konfigurov\u00e1na jako zak\u00e1zan\u00e1 pro tuto klientskou aplikaci.
+WTRN0106_JTADEMARCATION_DISALLOWED.useraction=Chcete-li povolit demarkaci sady JTA, nastavte pomoc\u00ed sady n\u00e1stroj\u016f aplika\u010dn\u00edho serveru v deskriptoru implementace klienta vlastnost Povolit demarkaci sady JTA.
+
+WTRN0107_GENERIC_WARNING=WTRN0107W: {0}
+WTRN0107_GENERIC_WARNING.explanation=Tento k\u00f3d zpr\u00e1vy se pou\u017e\u00edv\u00e1 pro podporu zpr\u00e1v, kter\u00fdm dosud nebyl p\u0159id\u011blen vlastn\u00ed k\u00f3d zpr\u00e1vy.
+WTRN0107_GENERIC_WARNING.useraction=Dal\u0161\u00ed informace naleznete v textu zpr\u00e1vy.
+
+WTRN0108_GENERIC_INFOMSG=WTRN0108I: {0}
+WTRN0108_GENERIC_INFOMSG.explanation=Tento k\u00f3d zpr\u00e1vy se pou\u017e\u00edv\u00e1 pro podporu zpr\u00e1v, kter\u00fdm dosud nebyl p\u0159id\u011blen vlastn\u00ed k\u00f3d zpr\u00e1vy.
+WTRN0108_GENERIC_INFOMSG.useraction=Dal\u0161\u00ed informace naleznete v textu zpr\u00e1vy.
+
+WTRN0109_MBEAN_ACTIVATE=WTRN0109W: Do\u0161lo k v\u00fdjimce p\u0159i aktivaci objektu typu MBean JMX transakce: {0}
+WTRN0109_MBEAN_ACTIVATE.explanation=Do\u0161lo k chyb\u011b p\u0159i pokusu o aktivaci objektu typu MBean JMX pro slu\u017ebu transakc\u00ed. I kdy\u017e to nezabr\u00e1n\u00ed spu\u0161t\u011bn\u00ed slu\u017eby transakc\u00ed, dojde k selh\u00e1n\u00ed v\u0161ech administrativn\u00edch funkc\u00ed, kter\u00e9 vy\u017eaduj\u00ed p\u0159\u00edstup ke slu\u017eb\u011b transakc\u00ed.
+WTRN0109_MBEAN_ACTIVATE.useraction=CMSG0002
+
+
+WTRN0110_BAD_CUSTOM_PROPERTY=WTRN0110W: {0} nen\u00ed platn\u00e1 p\u0159izp\u016fsoben\u00e1 vlastnost slu\u017eby transakc\u00ed
+WTRN0110_BAD_CUSTOM_PROPERTY.explanation=P\u0159izp\u016fsoben\u00e1 vlastnost ur\u010den\u00e1 v konfiguraci slu\u017eby transakc\u00ed pro tento server je neplatn\u00e1 a bude ignorov\u00e1na.
+WTRN0110_BAD_CUSTOM_PROPERTY.useraction=Opravte konfiguraci p\u0159izp\u016fsoben\u00e9 vlastnosti slu\u017eby transakc\u00ed.
+
+WTRN0111_LOG_ALLOCATION=WTRN0111E: Nelze z\u00edskat p\u0159\u00edstup k protokolu pro zotaven\u00ed nebo jej vytvo\u0159it. Konfigurace protokolu: {0}
+WTRN0111_LOG_ALLOCATION.explanation=Slu\u017eba transakc\u00ed nemohla p\u0159istupovat k protokol\u016fm pro zotaven\u00ed nebo je nemohla vytvo\u0159it. Pokud jsou protokoly pro zotaven\u00ed ur\u010deny pro lok\u00e1ln\u00ed server, bude server zastaven. Pokud jsou protokoly pro zotaven\u00ed ur\u010deny pro obnoven\u00fd server typu peer, bude obnovov\u00e1n\u00ed zastaveno a p\u0159i\u0159azeno jin\u00e9mu serveru, p\u0159i\u010dem\u017e vykazuj\u00edc\u00ed server bude norm\u00e1ln\u011b pokra\u010dovat v \u010dinnosti.
+WTRN0111_LOG_ALLOCATION.useraction=Prozkoumejte v\u0161echny souvisej\u00edc\u00ed zpr\u00e1vy a ur\u010dete p\u0159\u00ed\u010dinu probl\u00e9mu. Ov\u011b\u0159te, zda server m\u016f\u017ee m\u00edt p\u0159\u00edstup k protokol\u016fm pro zotaven\u00ed, nebo, pokud nejsou dosud vytvo\u0159eny, ov\u011b\u0159te, \u017ee je na disku k dispozici dostatek m\u00edsta a \u017ee server m\u00e1 spr\u00e1vn\u00e1 p\u0159\u00edstupov\u00e1 opr\u00e1vn\u011bn\u00ed k soubor\u016fm nebo adres\u00e1\u0159\u016fm uveden\u00fdm ve zpr\u00e1v\u011b.
+
+WTRN0112_LOG_OPEN_FAILURE=WTRN0112E: P\u0159i otev\u00edr\u00e1n\u00ed protokolu pro zotaven\u00ed do\u0161lo k neo\u010dek\u00e1van\u00e9 chyb\u011b. Konfigurace protokolu: {0}
+WTRN0112_LOG_OPEN_FAILURE.explanation=Slu\u017eba transakc\u00ed nemohla otev\u0159\u00edt protokoly pro zotaven\u00ed. Pokud jsou protokoly pro zotaven\u00ed ur\u010deny pro lok\u00e1ln\u00ed server, bude server zastaven. Pokud jsou protokoly pro zotaven\u00ed ur\u010deny pro obnoven\u00fd server typu peer, bude obnovov\u00e1n\u00ed zastaveno a p\u0159i\u0159azeno jin\u00e9mu serveru, p\u0159i\u010dem\u017e vykazuj\u00edc\u00ed server bude norm\u00e1ln\u011b pokra\u010dovat v \u010dinnosti.
+WTRN0112_LOG_OPEN_FAILURE.useraction=Prozkoumejte v\u0161echny souvisej\u00edc\u00ed zpr\u00e1vy a ur\u010dete p\u0159\u00ed\u010dinu probl\u00e9mu. 
+
+WTRN0113_LOG_DOWNLEVEL=WTRN0113W: Zpracov\u00e1n\u00ed obnoven\u00ed zastaral\u00e9ho serveru WebSphere Server typu peer nen\u00ed mo\u017en\u00e9 a je pozastaveno ({0})
+WTRN0113_LOG_DOWNLEVEL.explanation=Slu\u017eba transakc\u00ed nemohla partnersky obnovit ur\u010den\u00fd aplika\u010dn\u00ed server, proto\u017ee protokoly byly form\u00e1tov\u00e1ny v d\u0159\u00edv\u011bj\u0161\u00ed verzi produktu, kter\u00e1 nen\u00ed kompatibiln\u00ed s t\u00edmto serverem. Tato instance obnoven\u00ed typu peer bude zastavena a p\u0159i\u0159azena jin\u00e9mu serveru a vykazuj\u00edc\u00ed server bude pokra\u010dovat norm\u00e1ln\u011b. 
+WTRN0113_LOG_DOWNLEVEL.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele. V z\u00e1vislosti na konfiguraci klastru, pokud existuje pouze jeden \u010dlen na konkr\u00e9tn\u00ed \u00farovni verze, nemus\u00ed b\u00fdt obnoven\u00ed typu peer pro danou verzi serveru mo\u017en\u00e9, pokud je form\u00e1t protokolu nekompatibiln\u00ed mezi verzemi.
+
+WTRN0114_TRAN_RETRY_NEEDED=WTRN0114I: Transakce {0} nem\u016f\u017ee upozornit v\u0161echny prost\u0159edky sv\u00e9ho v\u00fdstupu. Akce bude zopakov\u00e1na za {1} sekund.
+WTRN0114_TRAN_RETRY_NEEDED.explanation=Nebylo mo\u017en\u00e9 kontaktovat spr\u00e1vce vzd\u00e1len\u00fdch prost\u0159edk\u016f b\u011bhem restartov\u00e1n\u00ed obnoven\u00ed. Operace bude opakov\u00e1na v pravideln\u00fdch intervalech.
+WTRN0114_TRAN_RETRY_NEEDED.useraction=Ov\u011b\u0159te, \u017ee je spr\u00e1vce prost\u0159edk\u016f k dispozici.
+
+WTRN0115_NO_CFW_AVAILABLE=WTRN0115E: Konfigurace kan\u00e1lov\u00e9ho r\u00e1mce nen\u00ed definov\u00e1na nebo nen\u00ed pro podporu transakc\u00ed WSAT (WebServices Atomic Transactions) platn\u00e1.
+WTRN0115_NO_CFW_AVAILABLE.explanation=Pro pou\u017eit\u00ed kan\u00e1lov\u00e9ho r\u00e1mce nen\u00ed webov\u00fd kontejner definov\u00e1n nebo nen\u00ed definov\u00e1n spr\u00e1vn\u011b. Podpora transakc\u00ed WS-AT vy\u017eaduje pou\u017eit\u00ed kan\u00e1lov\u00e9ho r\u00e1mce pro p\u0159enos kontextu transakc\u00ed mezi webov\u00fdmi slu\u017ebami.
+WTRN0115_NO_CFW_AVAILABLE.useraction=Opravte nebo definujte konfiguraci kan\u00e1lov\u00e9ho r\u00e1mce pro webov\u00fd kontejner.
+
+WTRN0116_UNEXPECTED_LOGFILE_SPECIFICATION=WTRN0116I: Byl zad\u00e1n neplatn\u00fd konfigura\u010dn\u00ed \u0159et\u011bzec souboru protokolu transakce: {0}. Slu\u017eba transakc\u00ed bude pokra\u010dovat bez protokolov\u00e1n\u00ed pro zotaven\u00ed pro server WebSphere ({1}).
+WTRN0116_UNEXPECTED_LOGFILE_SPECIFICATION.explanation=N\u00e1zev adres\u00e1\u0159e pro soubor protokolu transakc\u00ed nastaven\u00fd v poli Adres\u00e1\u0159 protokolu transakc\u00ed je neplatn\u00fd. Form\u00e1t by m\u011bl b\u00fdt n\u00e1sleduj\u00edc\u00ed: pln\u011b kvalifikovan\u00fd adres\u00e1\u0159 souboru voliteln\u011b n\u00e1sledovan\u00fd znakem ';' a velikost\u00ed souboru protokolu, p\u0159i\u010dem\u017e za velikost\u00ed souboru protokolu je uvedeno p\u00edsmeno M ur\u010duj\u00edc\u00ed megabajty nebo p\u00edsmeno K ur\u010duj\u00edc\u00ed kilobajty. V\u00fdchoz\u00ed a minim\u00e1ln\u00ed velikost souboru protokolu je 1M.
+WTRN0116_UNEXPECTED_LOGFILE_SPECIFICATION.useraction=Opravte konfiguraci adres\u00e1\u0159e protokolu transakc\u00ed. Ov\u011b\u0159te, zda je server restartov\u00e1n, aby bylo mo\u017en\u00e9 povolit protokolov\u00e1n\u00ed pro zotaven\u00ed transakc\u00ed.
+
+WTRN0117_DEFAULT_AND_MINIMUM_LOG_SIZE=WTRN0117E: Byla zad\u00e1na neplatn\u00e1 velikost souboru protokolu transakce: {0}. Slu\u017eba transakc\u00ed pou\u017eije pro server WebSphere ({1}) v\u00fdchoz\u00ed velikost souboru protokolu 1M.
+WTRN0117_DEFAULT_AND_MINIMUM_LOG_SIZE.explanation=Velikost souboru protokolu transakc\u00ed nastaven\u00e1 v poli Adres\u00e1\u0159 protokolu transakc\u00ed je neplatn\u00e1. Form\u00e1t by m\u011bl b\u00fdt n\u00e1sleduj\u00edc\u00ed: pln\u011b kvalifikovan\u00fd adres\u00e1\u0159 souboru voliteln\u011b n\u00e1sledovan\u00fd znakem ';' a velikost\u00ed souboru protokolu, p\u0159i\u010dem\u017e za velikost\u00ed souboru protokolu je uvedeno p\u00edsmeno M ur\u010duj\u00edc\u00ed megabajty nebo p\u00edsmeno K ur\u010duj\u00edc\u00ed kilobajty. V\u00fdchoz\u00ed a minim\u00e1ln\u00ed velikost souboru protokolu je 1M.
+WTRN0117_DEFAULT_AND_MINIMUM_LOG_SIZE.useraction=Opravte konfiguraci adres\u00e1\u0159e protokolu transakc\u00ed.
+
+WTRN0118_DEPRECATED_CUSTOM_PROPERTY=WTRN0118W: V konfiguraci slu\u017eby transakc\u00ed byla nalezena zam\u00edtnut\u00e1 vlastnost z\u00e1kazn\u00edka slu\u017eby transakc\u00ed {0}. 
+WTRN0118_DEPRECATED_CUSTOM_PROPERTY.explanation=V konfiguraci slu\u017eby transakc\u00ed pro tento server byla zad\u00e1na zam\u00edtnut\u00e1 p\u0159izp\u016fsoben\u00e1 vlastnost. Hodnota t\u00e9to vlastnosti p\u0159ep\u00ed\u0161e v konfiguraci odpov\u00eddaj\u00edc\u00ed obecnou vlastnost slu\u017eby transakc\u00ed. Tato zam\u00edtnut\u00e1 p\u0159izp\u016fsoben\u00e1 vlastnost bude v n\u00e1sleduj\u00edc\u00edm vyd\u00e1n\u00ed produktu odebr\u00e1na.
+WTRN0118_DEPRECATED_CUSTOM_PROPERTY.useraction=Odeberte tuto zam\u00edtnutou p\u0159izp\u016fsobenou vlastnost slu\u017eby transakc\u00ed z konfigurace a prost\u0159ednictv\u00edm administrativn\u00ed konzoly ji nahra\u010fte odpov\u00eddaj\u00edc\u00ed obecnou vlastnost\u00ed.
+
+WTRN0119_UNAUTHORIZED_PROTOCOL_MSG_COUNT=WTRN0119W: Po\u010det zpr\u00e1v protokolu WS-TX s ne\u00fasp\u011b\u0161nou autorizac\u00ed: {0}
+WTRN0119_UNAUTHORIZED_PROTOCOL_MSG_COUNT.explanation=Uveden\u00fd po\u010det zpr\u00e1v protokolu WS-AT (Web Services Atomic Transactions) a WS-BA (Web Service Business Activities), nap\u0159\u00edklad p\u0159\u00edpravn\u00fdch zpr\u00e1v, byl obdr\u017een bez o\u010dek\u00e1van\u00fdch pov\u011b\u0159en\u00ed zabezpe\u010den\u00ed.
+WTRN0119_UNAUTHORIZED_PROTOCOL_MSG_COUNT.useraction=Ov\u011b\u0159te, \u017ee je server spr\u00e1vn\u011b konfigurov\u00e1n pro protokoly WS-AT a WS-BA v zabezpe\u010den\u00e9m prost\u0159ed\u00ed.
+
+WTRN0120_INVALID_HA_LOGNAME=WTRN0120W: Ur\u010den\u00ed adres\u00e1\u0159e protokolu transakc\u00ed ;0 pro server {1} je neplatn\u00e9, proto\u017ee se server nach\u00e1z\u00ed v klastru {0} s povolenou slu\u017ebou vysok\u00e9 dostupnosti (HA).
+WTRN0120_INVALID_HA_LOGNAME.explanation=Je-li pro klastr povolena slu\u017eba vysok\u00e9 dostupnosti, je t\u0159eba ur\u010dit pro ka\u017ed\u00fd server v klastru platnou cestu k adres\u00e1\u0159i protokolu transakc\u00ed.
+WTRN0120_INVALID_HA_LOGNAME.useraction=Zm\u011b\u0148te nastaven\u00ed souboru protokolu transakc\u00ed tak, aby p\u0159edstavovalo platn\u00e9 um\u00edst\u011bn\u00ed v syst\u00e9mu soubor\u016f.
+
+WTRN0121_INVALID_HA_CONFIG=WTRN0121E: Konfigurace slu\u017eby vysok\u00e9 dostupnosti (HA) je neplatn\u00e1. Server bude zastaven.
+WTRN0121_INVALID_HA_CONFIG.explanation=Pro jeden nebo v\u00edce server\u016f v klastru s povolenou slu\u017ebou vysok\u00e9 dostupnosti nen\u00ed definov\u00e1n platn\u00fd adres\u00e1\u0159 protokolu transakc\u00ed.
+WTRN0121_INVALID_HA_CONFIG.useraction=Vyhledejte v doprovodn\u00fdch zpr\u00e1v\u00e1ch informace o ovlivn\u011bn\u00fdch serverech. Opravte pro tyto servery adres\u00e1\u0159e protokolu transakc\u00ed a pot\u00e9 klastr restartujte.
+
+WTRN0122_LOG_FREE_SPACE=WTRN0122W: Soubor protokolu slu\u017eby transakc\u00ed {0} pou\u017eil {1} bajt\u016f z celkov\u00e9ho po\u010dtu {2}. Velikost souboru protokolu m\u016f\u017ee b\u00fdt pot\u0159ebn\u00e9 zv\u011bt\u0161it.
+WTRN0122_LOG_FREE_SPACE.explanation=Po \u00fasp\u011b\u0161n\u00e9m dokon\u010den\u00ed operace kl\u00ed\u010dov\u00e9ho bodu (b\u011bhem n\u00ed\u017e jsou ze souboru protokolu, kter\u00fd dos\u00e1hl maxim\u00e1ln\u00ed kapacitu, odebr\u00e1ny odstran\u011bn\u00e9 a dokon\u010den\u00e9 polo\u017eky) bylo zji\u0161t\u011bno, \u017ee soubor protokolu je dosud z v\u00edce ne\u017e 75 % pln\u00fd kv\u016fli aktu\u00e1ln\u011b aktivn\u00edmu transak\u010dn\u00edmu pracovn\u00edmu zat\u00ed\u017een\u00ed. Pokud se soubor protokolu zapln\u00ed, je t\u0159eba server restartovat. Nezapome\u0148te, \u017ee tato zpr\u00e1va je vyd\u00e1na pouze po \u00fasp\u011b\u0161n\u00e9 operaci kl\u00ed\u010dov\u00e9ho bodu na souboru protokolu; pouze tehdy m\u016f\u017ee b\u00fdt vypo\u010dtena kapacita aktu\u00e1ln\u011b pou\u017e\u00edvan\u00fdch protokol\u016f.
+WTRN0122_LOG_FREE_SPACE.useraction=Zva\u017ete mo\u017enost nastaven\u00ed v\u011bt\u0161\u00ed velikosti souboru pro protokoly transakc\u00ed.
+
+WTRN0123_INVALID_EXTERNAL_WSTX_URL_PREFIX=WTRN0123E: Byla zad\u00e1na nespr\u00e1vn\u00e1 p\u0159edpona extern\u00edch adres URL HTTP(S) slu\u017eby WS-Transaction: {0}
+WTRN0123_INVALID_EXTERNAL_WSTX_URL_PREFIX.explanation=P\u0159edpona extern\u00edch adres URL HTTP(S) slu\u017eby WS-Transaction mus\u00ed b\u00fdt platn\u00fdm identifik\u00e1torem URI.
+WTRN0123_INVALID_EXTERNAL_WSTX_URL_PREFIX.useraction=Ur\u010dete platnou p\u0159edponu extern\u00edch adres URL HTTP(S) slu\u017eby WS-Transaction.
+
+WTRN0124_TIMED_OUT_TRANSACTION_STACK=WTRN0124I: V dob\u011b vypr\u0161en\u00ed \u010dasov\u00e9ho limitu byla transakce naposledy p\u0159idru\u017eena k podprocesu {0}. Trasov\u00e1n\u00ed z\u00e1sobn\u00edku tohoto podprocesu v dob\u011b vypr\u0161en\u00ed \u010dasov\u00e9ho limitu: {1}
+WTRN0124_TIMED_OUT_TRANSACTION_STACK.explanation=Z\u00e1sobn\u00edk zachycen\u00fd p\u0159i vypr\u0161en\u00ed \u010dasov\u00e9ho limitu je poskytov\u00e1n s c\u00edlem usnadnit diagnostiku a lad\u011bn\u00ed \u010dasov\u00fdch limit\u016f transakc\u00ed.
+WTRN0124_TIMED_OUT_TRANSACTION_STACK.useraction=Prozkoumejte trasov\u00e1n\u00ed z\u00e1sobn\u00edku a ur\u010dete, jak\u00e9 zpracov\u00e1n\u00ed prob\u00edhalo v dob\u011b vypr\u0161en\u00ed \u010dasov\u00e9ho limitu.
+
+WTRN0125_COMMIT_PRIORITY=WTRN0125W: C\u00edlem modulu {0} nem\u016f\u017ee b\u00fdt uzel {1}, proto\u017ee modul ur\u010duje podporu \u0159azen\u00ed p\u0159i potvrzov\u00e1n\u00ed prost\u0159edk\u016f, kter\u00e9 nen\u00ed v uzlu podporov\u00e1no.
+WTRN0125_COMMIT_PRIORITY.explanation=Podpora pro \u0159azen\u00ed potvrzov\u00e1n\u00ed prost\u0159edk\u016f je k dispozici pouze v uzlech s \u00farovn\u00ed 7.0 nebo nov\u011bj\u0161\u00ed.
+WTRN0125_COMMIT_PRIORITY.useraction=Instalujte modul na aplika\u010dn\u00edm serveru verze 7.0 (nebo nov\u011bj\u0161\u00ed) nebo prost\u0159ednictv\u00edm editoru deskriptor\u016f implementace aplikace v r\u00e1mci n\u00e1stroj\u016f pro v\u00fdvoj aplikac\u00ed odeberte p\u0159ed instalac\u00ed modulu ve\u0161ker\u00e1 nastaven\u00ed \u0159azen\u00ed potvrzov\u00e1n\u00ed prost\u0159edk\u016f. Tuto operaci lze prov\u00e9st p\u0159echodem do \u010d\u00e1sti t\u00fdkaj\u00edc\u00ed se \u0159azen\u00ed potvrzov\u00e1n\u00ed v r\u00e1mci roz\u0161\u00ed\u0159en\u00ed platformy WebSphere a zru\u0161en\u00edm priority potvrzov\u00e1n\u00ed pro v\u0161echny transak\u010dn\u00ed prost\u0159edky.
+
+WTRN0126_COMMIT_PRIORITY_CLUSTER=WTRN0126W: Aplikaci {0} nelze implementovat v uzlu {1} v klastru {2}, proto\u017ee aplikace ur\u010duje podporu \u0159azen\u00ed p\u0159i potvrzov\u00e1n\u00ed prost\u0159edk\u016f, kter\u00e9 nen\u00ed v uzlu podporov\u00e1no.
+WTRN0126_COMMIT_PRIORITY_CLUSTER.explanation=Podpora pro \u0159azen\u00ed potvrzov\u00e1n\u00ed prost\u0159edk\u016f je k dispozici pouze v uzlech s \u00farovn\u00ed 7.0 nebo nov\u011bj\u0161\u00ed. Uzel nebude p\u0159id\u00e1n do klastru.
+WTRN0126_COMMIT_PRIORITY_CLUSTER.useraction=Vytv\u00e1\u0159ejte \u010dleny klastru v uzlech s instalovan\u00fdm aplika\u010dn\u00edm serverem verze 7.0 (nebo nov\u011bj\u0161\u00ed) nebo prost\u0159ednictv\u00edm editoru deskriptor\u016f implementace aplikace v r\u00e1mci n\u00e1stroj\u016f pro v\u00fdvoj aplikac\u00ed odeberte p\u0159ed vytvo\u0159en\u00edm \u010dlena klastru ve\u0161ker\u00e1 nastaven\u00ed \u0159azen\u00ed potvrzov\u00e1n\u00ed prost\u0159edk\u016f.   Tuto operaci lze prov\u00e9st p\u0159echodem do \u010d\u00e1sti t\u00fdkaj\u00edc\u00ed se \u0159azen\u00ed potvrzov\u00e1n\u00ed v r\u00e1mci roz\u0161\u00ed\u0159en\u00ed platformy WebSphere a zru\u0161en\u00edm priority potvrzov\u00e1n\u00ed pro v\u0161echny transak\u010dn\u00ed prost\u0159edky.
+
+WTRN0127_BLOCKED_BY_POLICY_ASSERTION=WTRN0127E: Operace je blokov\u00e1na konfigurac\u00ed typu z\u00e1sady.
+WTRN0127_BLOCKED_BY_POLICY_ASSERTION.explanation=Operace byla blokov\u00e1na v souladu s efektivn\u00ed konfigurac\u00ed typu z\u00e1sady.
+WTRN0127_BLOCKED_BY_POLICY_ASSERTION.useraction=Ov\u011b\u0159te, \u017ee konfigurace typu z\u00e1sady odpov\u00edd\u00e1 t\u00e9to operaci.
+
+WTRN0128_WSTX_APP_START_FAILURE=WTRN0128E: Aplikaci {0} nelze spustit, proto\u017ee vy\u017eaduje specifikace slu\u017eby WS Transaction, kter\u00e9 nejsou podporov\u00e1ny na v\u0161ech serverech v klastru.
+WTRN0128_WSTX_APP_START_FAILURE.explanation=Aplikace je konfigurov\u00e1na se z\u00e1sadou webov\u00fdch slu\u017eeb ur\u010duj\u00edc\u00ed specifikace slu\u017eby WS Transaction, kter\u00e9 nejsou podporov\u00e1ny na v\u0161ech serverech v klastru. Po\u017eadavky aplikac\u00ed \u010di jejich zotaven\u00ed m\u016f\u017ee b\u00fdt sm\u011brov\u00e1no na kter\u00fdkoli server v klastru, proto mus\u00ed v\u0161echny aplikace pou\u017e\u00edvat funkce, kter\u00e9 jsou podporov\u00e1ny na v\u0161ech serverech.
+WTRN0128_WSTX_APP_START_FAILURE.useraction=Odinstalujte aplikaci nebo upravte konfiguraci z\u00e1sady slu\u017eby WS Transaction tak, aby aplikace pou\u017e\u00edvala podporovan\u00e9 funkce. Dal\u0161\u00ed mo\u017enost\u00ed je p\u0159echod na verzi 7.0 nebo nov\u011bj\u0161\u00ed ve v\u0161ech uzlech v klastru.
+
+WTRN0129_WSTX_APP_START_FAILURE=WTRN0129W: V\u00fdchoz\u00ed nastaven\u00ed pro \u00farove\u0148 specifikace slu\u017eby WS Transaction neodpov\u00edd\u00e1 klastru se sm\u00ed\u0161en\u00fdmi verzemi.
+WTRN0129_WSTX_APP_START_FAILURE.explanation=V\u00fdchoz\u00ed nastaven\u00ed konfigurovan\u00e9 \u00farovn\u011b specifikace slu\u017eby WS Transaction pro server m\u016f\u017ee m\u00edt za n\u00e1sledek probl\u00e9my p\u0159i spou\u0161t\u011bn\u00ed, proto\u017ee v\u0161echny servery v klastru nepou\u017e\u00edvaj\u00ed stejnou verzi aplika\u010dn\u00edho serveru. V\u0161echny servery v klastru mus\u00ed podporovat stejnou \u00farove\u0148 specifikace, proto\u017ee po\u017eadavky aplikac\u00ed mohou b\u00fdt sm\u011brov\u00e1ny na kter\u00fdkoli server. Pokud servery podporuj\u00ed r\u016fzn\u00e9 \u00farovn\u011b specifikace, m\u016f\u017ee se chov\u00e1n\u00ed aplikace m\u011bnit v z\u00e1vislosti na serveru, na kter\u00e9m je spu\u0161t\u011bna.
+WTRN0129_WSTX_APP_START_FAILURE.useraction=Nastavte v\u00fdchoz\u00ed \u00farove\u0148 specifikace slu\u017eby WS Transaction na hodnotu spole\u010dnou pro v\u0161echny servery v klastru.
+
+WTRN0130_BRANCH_COUPLING=WTRN0130W: C\u00edlem modulu {0} nem\u016f\u017ee b\u00fdt uzel {1}, proto\u017ee modul ur\u010duje podporu pro p\u00e1rov\u00e1n\u00ed v\u011btv\u00ed prost\u0159edk\u016f, kter\u00e1 nen\u00ed v uzlu podporov\u00e1na.
+WTRN0130_BRANCH_COUPLING.explanation=Podpora pro p\u00e1rov\u00e1n\u00ed v\u011btv\u00ed prost\u0159edk\u016f je k dispozici pouze v uzlech s \u00farovn\u00ed 8.0 nebo nov\u011bj\u0161\u00ed.
+WTRN0130_BRANCH_COUPLING.useraction=Instalujte modul na aplika\u010dn\u00edm serveru verze 8.0 (nebo nov\u011bj\u0161\u00ed) nebo prost\u0159ednictv\u00edm editoru deskriptor\u016f implementace aplikace v r\u00e1mci n\u00e1stroj\u016f pro v\u00fdvoj aplikac\u00ed odeberte p\u0159ed instalac\u00ed modulu ve\u0161ker\u00e1 nastaven\u00ed p\u00e1rov\u00e1n\u00ed v\u011btv\u00ed prost\u0159edk\u016f. Tuto operaci lze prov\u00e9st p\u0159echodem do \u010d\u00e1sti t\u00fdkaj\u00edc\u00ed se p\u00e1rov\u00e1n\u00ed v\u011btv\u00ed v r\u00e1mci roz\u0161\u00ed\u0159en\u00ed platformy WebSphere a zru\u0161en\u00edm p\u00e1rov\u00e1n\u00ed v\u011btv\u00ed pro v\u0161echny transak\u010dn\u00ed prost\u0159edky.
+
+WTRN0131_BRANCH_COUPLING_CLUSTER=WTRN0131W: Aplikaci {0} nelze implementovat v uzlu {1} v klastru {2}, proto\u017ee aplikace ur\u010duje podporu pro p\u00e1rov\u00e1n\u00ed v\u011btv\u00ed prost\u0159edk\u016f, kter\u00e9 nen\u00ed v uzlu podporov\u00e1no.
+WTRN0131_BRANCH_COUPLING_CLUSTER.explanation=Podpora pro p\u00e1rov\u00e1n\u00ed v\u011btv\u00ed prost\u0159edk\u016f je k dispozici pouze v uzlech s \u00farovn\u00ed 8.0 nebo nov\u011bj\u0161\u00ed. Uzel nebude p\u0159id\u00e1n do klastru.
+WTRN0131_BRANCH_COUPLING_CLUSTER.useraction=Vytv\u00e1\u0159ejte \u010dleny klastru v uzlech s instalovan\u00fdm aplika\u010dn\u00edm serverem verze 8.0 (nebo nov\u011bj\u0161\u00ed) nebo prost\u0159ednictv\u00edm editoru deskriptor\u016f implementace aplikace v r\u00e1mci n\u00e1stroj\u016f pro v\u00fdvoj aplikac\u00ed odeberte p\u0159ed vytvo\u0159en\u00edm \u010dlena klastru ve\u0161ker\u00e1 nastaven\u00ed p\u00e1rov\u00e1n\u00ed v\u011btv\u00ed prost\u0159edk\u016f.   Tuto operaci lze prov\u00e9st p\u0159echodem do \u010d\u00e1sti t\u00fdkaj\u00edc\u00ed se p\u00e1rov\u00e1n\u00ed v\u011btv\u00ed v r\u00e1mci roz\u0161\u00ed\u0159en\u00ed platformy WebSphere a zru\u0161en\u00edm p\u00e1rov\u00e1n\u00ed v\u011btv\u00ed pro v\u0161echny transak\u010dn\u00ed prost\u0159edky.
+
+# 0 - servername
+# 1 - server uuid or server long name (zos)
+# 2 - server restart epoch value
+WTRN0132_RECOVERY_INITIATED=WTRN0132I: Pro server {0} bylo zah\u00e1jeno zotaven\u00ed transakce s UUID serveru {1} a epochou restartov\u00e1n\u00ed {2}.
+WTRN0132_RECOVERY_INITIATED.explanation=Spou\u0161t\u00ed se proces zotaven\u00ed transakce pro server. Je uvedeno UUID a epocha serveru na\u010dten\u00e9 z existuj\u00edc\u00edch transak\u010dn\u00edch protokol\u016f. Tyto hodnoty slou\u017e\u00ed k identifikaci ID neov\u011b\u0159en\u00fdch transakc\u00ed ve spr\u00e1vc\u00edch prost\u0159edk\u016f XA, kter\u00e9 mohou poch\u00e1zet z p\u0159edchoz\u00edch instanc\u00ed tohoto serveru. Pokud p\u0159i spu\u0161t\u011bn\u00ed serveru transak\u010dn\u00ed protokoly neexistuj\u00ed, hodnotami UUID a epochy jsou hodnoty, kter\u00e9 budou zaps\u00e1ny do protokol\u016f a pou\u017eity serverem v budoucnu.
+WTRN0132_RECOVERY_INITIATED.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+WTRN0133_RECOVERY_COMPLETE=WTRN0133I: Zpracov\u00e1n\u00ed zotaven\u00ed transakce pro tento server je dokon\u010deno.
+WTRN0133_RECOVERY_COMPLETE.explanation=Proces zotaven\u00ed transakce pro tento server je dokon\u010den. Ve\u0161ker\u00e9 informace o transakc\u00edch a spr\u00e1vc\u00edch prost\u0159edk\u016f XA z p\u0159edchoz\u00edch instanc\u00ed serveru byly z protokol\u016f odebr\u00e1ny.
+WTRN0133_RECOVERY_COMPLETE.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# 0 - number of resource managers
+WTRN0134_RECOVERING_XARMS=WTRN0134I: Prob\u00edh\u00e1 zotaven\u00ed {0} spr\u00e1vc\u016f prost\u0159edk\u016f XA z transak\u010dn\u00edch protokol\u016f partnera.
+WTRN0134_RECOVERING_XARMS.explanation=Slu\u017eba transakc\u00ed zjistila, \u017ee server mohl b\u00fdt d\u0159\u00edve ukon\u010den s neov\u011b\u0159en\u00fdmi transakcemi a jako sou\u010d\u00e1st procesu zotaven\u00ed bude kontaktov\u00e1n zadan\u00fd po\u010det spr\u00e1vc\u016f prost\u0159edk\u016f XA.
+WTRN0134_RECOVERING_XARMS.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+WTRN0135_RECOVERING_NOTXNS=WTRN0135I: Slu\u017eba transakc\u00ed nezotavuje \u017e\u00e1dn\u00e9 transakce.
+WTRN0135_RECOVERING_NOTXNS.explanation=Slu\u017eba transakc\u00ed zpracovala protokol pro zotaven\u00ed transakc\u00ed a zjistila, \u017ee neexistuj\u00ed \u017e\u00e1dn\u00e9 transakce vy\u017eaduj\u00edc\u00ed zotaven\u00ed. V\u0161echny neov\u011b\u0159en\u00e9 prost\u0159edky XA poch\u00e1zej\u00edc\u00ed z tohoto serveru byly odvol\u00e1ny.
+WTRN0135_RECOVERING_NOTXNS.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# 0 - transaction xid
+# 1 - transaction id
+# 2 - transaction status
+WTRN0136_RECOVERING_TRAN=WTRN0136I: Zpracov\u00e1n\u00ed zotaven\u00e9 transakce {0} (tid={1}) se stavem {2}
+WTRN0136_RECOVERING_TRAN.explanation=Slu\u017eba transakc\u00ed prov\u00e1d\u00ed zotaven\u00ed uveden\u00e9 transakce. Zpr\u00e1va tak\u00e9 uv\u00e1d\u00ed aktu\u00e1ln\u00ed stav transakce b\u011bhem zotaven\u00ed. Hodnota tid se pou\u017e\u00edv\u00e1 v jin\u00fdch zpr\u00e1v\u00e1ch o zpracov\u00e1n\u00ed zotaven\u00ed a v administrativn\u00ed konzole jako odkaz na transakci.
+WTRN0136_RECOVERING_TRAN.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name 
+WTRN0137_REC_TXN_COMMIT=WTRN0137I: Zotaven\u00e1 transakce (tid={0}) prov\u00e1d\u00ed potvrzen\u00ed (xid {1}) se spr\u00e1vcem prost\u0159edk\u016f {2}
+WTRN0137_REC_TXN_COMMIT.explanation=Slu\u017eba transakc\u00ed prov\u00e1d\u00ed zotaven\u00ed uveden\u00e9 transakce a vyd\u00e1v\u00e1 p\u0159\u00edkaz potvrzen\u00ed pro spr\u00e1vce prost\u0159edk\u016f.
+WTRN0137_REC_TXN_COMMIT.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+WTRN0138_REC_TXN_ROLLBACK=WTRN0138I: Zotaven\u00e1 transakce (tid={0}) prov\u00e1d\u00ed odvol\u00e1n\u00ed (xid {1}) se spr\u00e1vcem prost\u0159edk\u016f {2}
+WTRN0138_REC_TXN_ROLLBACK.explanation=Slu\u017eba transakc\u00ed prov\u00e1d\u00ed zotaven\u00ed uveden\u00e9 transakce a vyd\u00e1v\u00e1 p\u0159\u00edkaz odvol\u00e1n\u00ed pro spr\u00e1vce prost\u0159edk\u016f.
+WTRN0138_REC_TXN_ROLLBACK.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+WTRN0139_REC_TXN_FORGET=WTRN0139I: Zotaven\u00e1 transakce (tid={0}) prov\u00e1d\u00ed zapomenut\u00ed (xid {1}) se spr\u00e1vcem prost\u0159edk\u016f {2}
+WTRN0139_REC_TXN_FORGET.explanation=Slu\u017eba transakc\u00ed prov\u00e1d\u00ed zotaven\u00ed uveden\u00e9 transakce a vyd\u00e1v\u00e1 p\u0159\u00edkaz zapomenut\u00ed pro spr\u00e1vce prost\u0159edk\u016f.
+WTRN0139_REC_TXN_FORGET.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+WTRN0140_REC_TXN_COMMITED=WTRN0140I: Zotaven\u00e1 transakce (tid={0}) \u00fasp\u011b\u0161n\u011b provedla potvrzen\u00ed (xid {1}) se spr\u00e1vcem prost\u0159edk\u016f {2}
+WTRN0140_REC_TXN_COMMITED.explanation=Slu\u017eba transakc\u00ed prov\u00e1d\u00ed zotaven\u00ed uveden\u00e9 transakce a \u00fasp\u011b\u0161n\u011b potvrdila prost\u0159edek.
+WTRN0140_REC_TXN_COMMITED.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+# 3 - response code
+WTRN0141_REC_TXN_COMMITERR=WTRN0141I: Zotaven\u00e1 transakce (tid={0}): potvrzen\u00ed (xid {1}) se spr\u00e1vcem prost\u0159edk\u016f {2} vedlo k v\u00fdsledku {3}.
+WTRN0141_REC_TXN_COMMITERR.explanation=Slu\u017eba transakc\u00ed prov\u00e1d\u00ed zotaven\u00ed uveden\u00e9 transakce a potvrzen\u00ed prost\u0159edku vedlo k p\u0159ijet\u00ed k\u00f3du odezvy uveden\u00e9mu ve zpr\u00e1v\u011b.
+WTRN0141_REC_TXN_COMMITERR.useraction=Zkontrolujte k\u00f3d odezvy, ur\u010dete, zda se potvrzen\u00ed nezda\u0159ilo, a prove\u010fte odpov\u00eddaj\u00edc\u00ed akci. Pokud k\u00f3d ozna\u010duje heuristick\u00fd v\u00fdstup, opravte p\u0159\u00edpadn\u00e9 probl\u00e9my s daty.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+WTRN0142_REC_TXN_ROLLED=WTRN0142I: Zotaven\u00e1 transakce (tid={0}) \u00fasp\u011b\u0161n\u011b provedla odvol\u00e1n\u00ed (xid {1}) se spr\u00e1vcem prost\u0159edk\u016f {2}
+WTRN0142_REC_TXN_ROLLED.explanation=Slu\u017eba transakc\u00ed prov\u00e1d\u00ed zotaven\u00ed uveden\u00e9 transakce a \u00fasp\u011b\u0161n\u011b odvolala prost\u0159edek.
+WTRN0142_REC_TXN_ROLLED.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+# 3 - response code
+WTRN0143_REC_TXN_ROLLEDERR=WTRN0143I: Zotaven\u00e1 transakce (tid={0}): odvol\u00e1n\u00ed (xid {1}) se spr\u00e1vcem prost\u0159edk\u016f {2} vedlo k v\u00fdsledku {3}.
+WTRN0143_REC_TXN_ROLLEDERR.explanation=Slu\u017eba transakc\u00ed prov\u00e1d\u00ed zotaven\u00ed uveden\u00e9 transakce a odvol\u00e1n\u00ed prost\u0159edku vedlo k p\u0159ijet\u00ed k\u00f3du odezvy uveden\u00e9mu ve zpr\u00e1v\u011b.
+WTRN0143_REC_TXN_ROLLEDERR.useraction=Zkontrolujte k\u00f3d odezvy, ur\u010dete, zda se odvol\u00e1n\u00ed nezda\u0159ilo, a prove\u010fte odpov\u00eddaj\u00edc\u00ed akci. Pokud k\u00f3d ozna\u010duje heuristick\u00fd v\u00fdstup, opravte p\u0159\u00edpadn\u00e9 probl\u00e9my s daty.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+WTRN0144_REC_TXN_FORGOT=WTRN0144I: Zotaven\u00e1 transakce (tid={0}) \u00fasp\u011b\u0161n\u011b provedla zapomenut\u00ed (xid {1}) se spr\u00e1vcem prost\u0159edk\u016f {2}
+WTRN0144_REC_TXN_FORGOT.explanation=Slu\u017eba transakc\u00ed prov\u00e1d\u00ed zotaven\u00ed uveden\u00e9 transakce a \u00fasp\u011b\u0161n\u011b zapomn\u011bla prost\u0159edek.
+WTRN0144_REC_TXN_FORGOT.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+# 3 - response code
+WTRN0145_REC_TXN_FORGETERR=WTRN0145I: Zotaven\u00e1 transakce (tid={0}): zapomenut\u00ed (xid {1}) se spr\u00e1vcem prost\u0159edk\u016f {2} vedlo k v\u00fdsledku {3}.
+WTRN0145_REC_TXN_FORGETERR.explanation=Slu\u017eba transakc\u00ed prov\u00e1d\u00ed zotaven\u00ed uveden\u00e9 transakce a zapomenut\u00ed prost\u0159edku vedlo k p\u0159ijet\u00ed k\u00f3du odezvy uveden\u00e9mu ve zpr\u00e1v\u011b.
+WTRN0145_REC_TXN_FORGETERR.useraction=Zkontrolujte k\u00f3d odezvy, ur\u010dete, zda se zapomenut\u00ed nezda\u0159ilo, a prove\u010fte odpov\u00eddaj\u00edc\u00ed akci.
+
+# 0 - number of xids
+# 1 - resource manager name
+# 2 - number of xids
+WTRN0146_REC_XA_RECOVERED=WTRN0146I: Bylo p\u0159ijato {0} xid ze zotaven\u00ed transakce pro spr\u00e1vce prost\u0159edk\u016f {1}, z nich\u017e {2} bude zpracov\u00e1no t\u00edmto serverem.
+WTRN0146_REC_XA_RECOVERED.explanation=Slu\u017eba transakc\u00ed \u00fasp\u011b\u0161n\u011b vydala p\u0159\u00edkaz zotaven\u00ed transakc\u00ed pro protokolovan\u00fd spr\u00e1vce prost\u0159edk\u016f.
+WTRN0146_REC_XA_RECOVERED.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# 0 - xid
+# 1 - resource manager name
+# 2 - restart epoch value
+WTRN0147_REC_XID_LATE=WTRN0147W: Zotaven\u00e9 xid {0} ze spr\u00e1vce prost\u0159edk\u016f {1} poch\u00e1z\u00ed z d\u0159\u00edve restartovan\u00e9 instance serveru s epochou {2}
+WTRN0147_REC_XID_LATE.explanation=Slu\u017eba transakc\u00ed \u00fasp\u011b\u0161n\u011b vydala p\u0159\u00edkaz zotaven\u00ed transakc\u00ed pro protokolovan\u00fd spr\u00e1vce prost\u0159edk\u016f a obdr\u017eela xid, kter\u00e9 m\u00e1 b\u00fdt zotaveno na d\u0159\u00edve restartovan\u00e9m serveru. Hodnota epochy ur\u010duje instanci serveru, kde bylo xid p\u016fvodn\u011b p\u0159idru\u017eeno transakci.
+WTRN0147_REC_XID_LATE.useraction=Zkontrolujte hodnotu epochy z t\u00e9to zpr\u00e1vy a porovnejte ji s aktu\u00e1ln\u00ed epochou restartov\u00e1n\u00ed serveru ve zpr\u00e1v\u011b WTRN0132. Pokud restartov\u00e1n\u00ed intervenuj\u00edc\u00edho serveru byla \u00fasp\u011b\u0161n\u00e1, zkontrolujte protokoly z p\u0159edchoz\u00edch instanc\u00ed serveru spole\u010dn\u011b s aktu\u00e1ln\u00edmi protokoly a ur\u010dete, pro\u010d toto xid nebylo b\u011bhem zotaven\u00ed zpracov\u00e1no. P\u0159\u00ed\u010dinou m\u016f\u017ee b\u00fdt, \u017ee spr\u00e1vce prost\u0159edk\u016f nebyl p\u0159i p\u0159edchoz\u00edm restartov\u00e1n\u00ed serveru dostupn\u00fd.
+
+# 0 - xid
+# 1 - resource manager name
+WTRN0148_REC_XA_ROLLBACK=WTRN0148I: Zotaven\u00e9 xid {0} ze spr\u00e1vce prost\u0159edk\u016f {1} - xid nem\u00e1 p\u0159idru\u017eenu transakci a nebude odvol\u00e1no.
+WTRN0148_REC_XA_ROLLBACK.explanation=Slu\u017eba transakc\u00ed \u00fasp\u011b\u0161n\u011b vydala p\u0159\u00edkaz zotaven\u00ed transakc\u00ed pro protokolovan\u00fd spr\u00e1vce prost\u0159edk\u016f a obdr\u017eela xid, kter\u00e9 neodpov\u00edd\u00e1 \u017e\u00e1dn\u00e9 protokolovan\u00e9 transakci. Slu\u017eba transakc\u00ed provede odvol\u00e1n\u00ed tohoto xid jako sou\u010d\u00e1st zpracov\u00e1n\u00ed zotaven\u00ed.
+WTRN0148_REC_XA_ROLLBACK.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# 0 - xid
+# 1 - resource manager name
+# 2 - transaction id
+# 3 - transaction state
+WTRN0149_REC_XA_TRAN=WTRN0149I: Zotaven\u00e9 xid {0} ze spr\u00e1vce prost\u0159edk\u016f {1} - xid m\u00e1 p\u0159idru\u017eenu transakci (tid={2}) s protokolovan\u00fdm stavem {3}
+WTRN0149_REC_XA_TRAN.explanation=Slu\u017eba transakc\u00ed \u00fasp\u011b\u0161n\u011b vydala p\u0159\u00edkaz zotaven\u00ed transakc\u00ed pro protokolovan\u00fd spr\u00e1vce prost\u0159edk\u016f a obdr\u017eela xid, kter\u00e9 odpov\u00edd\u00e1 protokolovan\u00e9 transakci. Slu\u017eba transakc\u00ed dokon\u010d\u00ed transakci jako sou\u010d\u00e1st zpracov\u00e1n\u00ed zotaven\u00ed.
+WTRN0149_REC_XA_TRAN.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# 0 - xid
+# 1 - resource manager name
+# 2 - error code
+WTRN0150_REC_XA_ROLLEDBACK=WTRN0150I: Odezva z odvol\u00e1van\u00e9ho zotaven\u00e9ho xid {0} ze spr\u00e1vce prost\u0159edk\u016f {1} - {2}
+WTRN0150_REC_XA_ROLLEDBACK.explanation=Slu\u017eba transakc\u00ed \u00fasp\u011b\u0161n\u011b vydala p\u0159\u00edkaz zotaven\u00ed transakc\u00ed pro protokolovan\u00fd spr\u00e1vce prost\u0159edk\u016f a obdr\u017eela xid, kter\u00e9 neodpov\u00edd\u00e1 \u017e\u00e1dn\u00e9 protokolovan\u00e9 transakci. Slu\u017eba transakc\u00ed se pokusila odvolat toto xid jako sou\u010d\u00e1st zpracov\u00e1n\u00ed zotaven\u00ed.
+WTRN0150_REC_XA_ROLLEDBACK.useraction=Prozkoumejte k\u00f3d chyby a ur\u010dete, zda se odvol\u00e1n\u00ed nezda\u0159ilo.
+
+# 0 - resource manager name
+WTRN0151_REC_XA_RECOVER=WTRN0151I: P\u0159\u00edprava vol\u00e1n\u00ed zotaven\u00ed transakce pro spr\u00e1vce prost\u0159edk\u016f {0}
+WTRN0151_REC_XA_RECOVER.explanation=Slu\u017eba transakc\u00ed p\u0159ipravuje vol\u00e1n\u00ed zotaven\u00ed transakce pro protokolovan\u00fd spr\u00e1vce prost\u0159edk\u016f otev\u0159en\u00edm p\u0159ipojen\u00ed a z\u00edsk\u00e1n\u00edm prost\u0159edk\u016f transakce. Pokud jsou prost\u0159edky transakce \u00fasp\u011b\u0161n\u011b z\u00edsk\u00e1ny, bude n\u00e1sledovat dal\u0161\u00ed zpr\u00e1va uv\u00e1d\u011bj\u00edc\u00ed xid vr\u00e1cen\u00e9 zotaven\u00edm transakce. Pokud p\u0159i z\u00edsk\u00e1v\u00e1n\u00ed p\u0159ipojen\u00ed nebo prost\u0159edk\u016f transakce dojde k selh\u00e1n\u00ed, dal\u0161\u00ed zpr\u00e1vy budou ur\u010dovat p\u0159\u00ed\u010dinu.
+WTRN0151_REC_XA_RECOVER.useraction=Pokud n\u011bkter\u00e9 dal\u0161\u00ed zpr\u00e1vy uv\u00e1d\u011bj\u00ed selh\u00e1n\u00ed p\u0159i z\u00edsk\u00e1v\u00e1n\u00ed p\u0159ipojen\u00ed nebo prost\u0159edk\u016f transakce, ur\u010dete p\u0159\u00ed\u010dinu a prove\u010fte p\u0159\u00edslu\u0161nou akci.
+
+WTRN0152_UNUSUAL_HA_CONFIG=WTRN0152W: Byla zji\u0161t\u011bna neobvykl\u00e1 konfigurace vysok\u00e9 dostupnosti (HA).
+WTRN0152_UNUSUAL_HA_CONFIG.explanation=HA je povoleno pro tento klastr, ale spr\u00e1vce HA je zak\u00e1z\u00e1n.
+WTRN0152_UNUSUAL_HA_CONFIG.useraction=Pokud se jedn\u00e1 o po\u017eadovanou konfigurac\u00ed, nen\u00ed zapot\u0159eb\u00ed \u017e\u00e1dn\u00e1 akce. Jinak konfiguraci HA opravte.
+
+# --------------------------------
+# WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1

@@ -1,0 +1,505 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# Message component file for Exception messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_SIRC0001=CWSIK0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - All msgs are for use by the Exception Destination mechanism. These messages
+#       - will be exposed to the user when a message cannot be delivered.
+#
+#   - Developers: Please ensure that every message in this message file is
+#       - only used once. Servicability requirements mean we need to be able
+#       - determine exactly who decided to reroute a message to the exception
+#       - destination. In addition, please ensure that you add as much useful
+#       - information as possible. Remember that the exception destination
+#       - may be on a different server.
+#
+#		**** IMPORTANT ***
+#       Please ensure EVERY message added has a corresponding reason code
+#		in com/ibm/websphere/sib/SIRCConstants.java
+#       ******************
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.4
+#
+#CMVCPATHNAME ws/code/sib.mfp.api/com/ibm/websphere/sib/CWSIKMessages.nlsprops
+#COMPONENTPREFIX CWSIK
+#COMPONENTNAMEFOR CWSIK SIBus Return Codes
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# SIRC (Service Integration Return Code) messages
+# -------------------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------------------
+# Note to developers: Notice that this message has NO useful inserts. It is the default used by
+# by SICoreException if no exception reason is provided to the SICoreException. NO CODE MAY
+# CONSTRUCT AN SICOREEXCEPTION WITHOUT PROVIDING AN EXCEPTION REASON. ANY CODE THAT DOES WILL
+# BE CAUSING A SERVICABILITY PROBLEM AND (IF DISCOVERED) WILL RESULT IN A DEFECT
+DELIVERY_ERROR_SIRC_1=CWSIK0001E: \u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002
+DELIVERY_ERROR_SIRC_1.explanation=CMSG0001
+DELIVERY_ERROR_SIRC_1.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0159
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_2=CWSIK0002E: \u6d88\u606f\u4f20\u9012\u5f15\u64ce {1} \u4e0a\u7684\u76ee\u6807 {0} \u662f\u961f\u5217\uff0c\u4f46\u8fde\u63a5\u7684\u5e94\u7528\u7a0b\u5e8f\u8bf7\u6c42\u7684\u662f\u4e3b\u9898\u7a7a\u95f4\u3002
+DELIVERY_ERROR_SIRC_2.explanation=\u5e94\u7528\u7a0b\u5e8f\u5df2\u8fde\u63a5\u5230\u6d88\u606f\u4f20\u9012\u5f15\u64ce\uff0c\u4f46\u8bf7\u6c42\u7684\u76ee\u6807\u7c7b\u578b\u4e0e\u5e95\u5c42\u76ee\u6807\u7c7b\u578b\u4e0d\u5339\u914d\u3002
+DELIVERY_ERROR_SIRC_2.useraction=\u8bf7\u4f7f\u7528\u7ba1\u7406\u63a7\u5236\u53f0\u6765\u66f4\u6b63\u8fde\u63a5\u7684\u5e94\u7528\u7a0b\u5e8f\uff0c\u6216\u8005\u5c06\u76ee\u6807\u66f4\u6539\u4e3a\u5fc5\u9700\u7684\u7c7b\u578b\u3002
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0160
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_3=CWSIK0003E: \u6d88\u606f\u4f20\u9012\u5f15\u64ce {1} \u4e0a\u7684\u76ee\u6807 {0} \u662f\u961f\u5217\uff0c\u4f46\u662f\u8fde\u63a5\u7684\u5e94\u7528\u7a0b\u5e8f\u8bf7\u6c42\u7684\u662f\u670d\u52a1
+DELIVERY_ERROR_SIRC_3.explanation=\u5e94\u7528\u7a0b\u5e8f\u5df2\u8fde\u63a5\u5230\u6d88\u606f\u4f20\u9012\u5f15\u64ce\uff0c\u4f46\u8bf7\u6c42\u7684\u76ee\u6807\u7c7b\u578b\u4e0e\u5e95\u5c42\u76ee\u6807\u7c7b\u578b\u4e0d\u5339\u914d\u3002
+DELIVERY_ERROR_SIRC_3.useraction=\u8bf7\u4f7f\u7528\u7ba1\u7406\u63a7\u5236\u53f0\u6765\u66f4\u6b63\u8fde\u63a5\u7684\u5e94\u7528\u7a0b\u5e8f\uff0c\u6216\u8005\u5c06\u76ee\u6807\u66f4\u6539\u4e3a\u5fc5\u9700\u7684\u7c7b\u578b\u3002
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0161
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_4=CWSIK0004E: \u6d88\u606f\u4f20\u9012\u5f15\u64ce {1} \u4e0a\u7684\u76ee\u6807 {0} \u662f\u961f\u5217\uff0c\u4f46\u8fde\u63a5\u7684\u5e94\u7528\u7a0b\u5e8f\u8bf7\u6c42\u7684\u662f\u7aef\u53e3\u3002
+DELIVERY_ERROR_SIRC_4.explanation=\u5e94\u7528\u7a0b\u5e8f\u5df2\u8fde\u63a5\u5230\u6d88\u606f\u4f20\u9012\u5f15\u64ce\uff0c\u4f46\u8bf7\u6c42\u7684\u76ee\u6807\u7c7b\u578b\u4e0e\u5e95\u5c42\u76ee\u6807\u7c7b\u578b\u4e0d\u5339\u914d\u3002
+DELIVERY_ERROR_SIRC_4.useraction=\u8bf7\u4f7f\u7528\u7ba1\u7406\u63a7\u5236\u53f0\u6765\u66f4\u6b63\u8fde\u63a5\u7684\u5e94\u7528\u7a0b\u5e8f\uff0c\u6216\u8005\u5c06\u76ee\u6807\u66f4\u6539\u4e3a\u5fc5\u9700\u7684\u7c7b\u578b\u3002
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0162
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_5=CWSIK0005E: \u6d88\u606f\u4f20\u9012\u5f15\u64ce {1} \u4e0a\u7684\u76ee\u6807 {0} \u662f\u670d\u52a1\uff0c\u4f46\u8fde\u63a5\u7684\u5e94\u7528\u7a0b\u5e8f\u8bf7\u6c42\u7684\u662f\u961f\u5217\u3002
+DELIVERY_ERROR_SIRC_5.explanation=\u5e94\u7528\u7a0b\u5e8f\u5df2\u8fde\u63a5\u5230\u6d88\u606f\u4f20\u9012\u5f15\u64ce\uff0c\u4f46\u8bf7\u6c42\u7684\u76ee\u6807\u7c7b\u578b\u4e0e\u5e95\u5c42\u76ee\u6807\u7c7b\u578b\u4e0d\u5339\u914d\u3002
+DELIVERY_ERROR_SIRC_5.useraction=\u8bf7\u4f7f\u7528\u7ba1\u7406\u63a7\u5236\u53f0\u6765\u66f4\u6b63\u8fde\u63a5\u7684\u5e94\u7528\u7a0b\u5e8f\uff0c\u6216\u8005\u5c06\u76ee\u6807\u66f4\u6539\u4e3a\u5fc5\u9700\u7684\u7c7b\u578b\u3002
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0163
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_6=CWSIK0006E: \u6d88\u606f\u4f20\u9012\u5f15\u64ce {1} \u4e0a\u7684\u76ee\u6807 {0} \u662f\u670d\u52a1\uff0c\u4f46\u8fde\u63a5\u7684\u5e94\u7528\u7a0b\u5e8f\u8bf7\u6c42\u7684\u662f\u4e3b\u9898\u7a7a\u95f4\u3002
+DELIVERY_ERROR_SIRC_6.explanation=\u5e94\u7528\u7a0b\u5e8f\u5df2\u8fde\u63a5\u5230\u6d88\u606f\u4f20\u9012\u5f15\u64ce\uff0c\u4f46\u8bf7\u6c42\u7684\u76ee\u6807\u7c7b\u578b\u4e0e\u5e95\u5c42\u76ee\u6807\u7c7b\u578b\u4e0d\u5339\u914d\u3002
+DELIVERY_ERROR_SIRC_6.useraction=\u8bf7\u4f7f\u7528\u7ba1\u7406\u63a7\u5236\u53f0\u6765\u66f4\u6b63\u8fde\u63a5\u7684\u5e94\u7528\u7a0b\u5e8f\uff0c\u6216\u8005\u5c06\u76ee\u6807\u66f4\u6539\u4e3a\u5fc5\u9700\u7684\u7c7b\u578b\u3002
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0164
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_7=CWSIK0007E: \u6d88\u606f\u4f20\u9012\u5f15\u64ce {1} \u4e0a\u7684\u76ee\u6807 {0} \u662f\u670d\u52a1\uff0c\u4f46\u8fde\u63a5\u7684\u5e94\u7528\u7a0b\u5e8f\u8bf7\u6c42\u7684\u662f\u7aef\u53e3\u3002
+DELIVERY_ERROR_SIRC_7.explanation=\u5e94\u7528\u7a0b\u5e8f\u5df2\u8fde\u63a5\u5230\u6d88\u606f\u4f20\u9012\u5f15\u64ce\uff0c\u4f46\u8bf7\u6c42\u7684\u76ee\u6807\u7c7b\u578b\u4e0e\u5e95\u5c42\u76ee\u6807\u7c7b\u578b\u4e0d\u5339\u914d\u3002
+DELIVERY_ERROR_SIRC_7.useraction=\u8bf7\u4f7f\u7528\u7ba1\u7406\u63a7\u5236\u53f0\u6765\u66f4\u6b63\u8fde\u63a5\u7684\u5e94\u7528\u7a0b\u5e8f\uff0c\u6216\u8005\u5c06\u76ee\u6807\u66f4\u6539\u4e3a\u5fc5\u9700\u7684\u7c7b\u578b\u3002
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0165
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_8=CWSIK0008E: \u6d88\u606f\u4f20\u9012\u5f15\u64ce {1} \u4e0a\u7684\u76ee\u6807 {0} \u662f\u7aef\u53e3\uff0c\u4f46\u8fde\u63a5\u7684\u5e94\u7528\u7a0b\u5e8f\u8bf7\u6c42\u7684\u662f\u961f\u5217\u3002
+DELIVERY_ERROR_SIRC_8.explanation=\u5e94\u7528\u7a0b\u5e8f\u5df2\u8fde\u63a5\u5230\u6d88\u606f\u4f20\u9012\u5f15\u64ce\uff0c\u4f46\u8bf7\u6c42\u7684\u76ee\u6807\u7c7b\u578b\u4e0e\u5e95\u5c42\u76ee\u6807\u7c7b\u578b\u4e0d\u5339\u914d\u3002
+DELIVERY_ERROR_SIRC_8.useraction=\u8bf7\u4f7f\u7528\u7ba1\u7406\u63a7\u5236\u53f0\u6765\u66f4\u6b63\u8fde\u63a5\u7684\u5e94\u7528\u7a0b\u5e8f\uff0c\u6216\u8005\u5c06\u76ee\u6807\u66f4\u6539\u4e3a\u5fc5\u9700\u7684\u7c7b\u578b\u3002
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0166
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_9=CWSIK0009E: \u6d88\u606f\u4f20\u9012\u5f15\u64ce {1} \u4e0a\u7684\u76ee\u6807 {0} \u662f\u7aef\u53e3\uff0c\u4f46\u8fde\u63a5\u7684\u5e94\u7528\u7a0b\u5e8f\u8bf7\u6c42\u7684\u662f\u4e3b\u9898\u7a7a\u95f4\u3002
+DELIVERY_ERROR_SIRC_9.explanation=\u5e94\u7528\u7a0b\u5e8f\u5df2\u8fde\u63a5\u5230\u6d88\u606f\u4f20\u9012\u5f15\u64ce\uff0c\u4f46\u8bf7\u6c42\u7684\u76ee\u6807\u7c7b\u578b\u4e0e\u5e95\u5c42\u76ee\u6807\u7c7b\u578b\u4e0d\u5339\u914d\u3002
+DELIVERY_ERROR_SIRC_9.useraction=\u8bf7\u4f7f\u7528\u7ba1\u7406\u63a7\u5236\u53f0\u6765\u66f4\u6b63\u8fde\u63a5\u7684\u5e94\u7528\u7a0b\u5e8f\uff0c\u6216\u8005\u5c06\u76ee\u6807\u66f4\u6539\u4e3a\u5fc5\u9700\u7684\u7c7b\u578b\u3002
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0167
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_10=CWSIK0010E: \u6d88\u606f\u4f20\u9012\u5f15\u64ce {1} \u4e0a\u7684\u76ee\u6807 {0} \u662f\u7aef\u53e3\uff0c\u4f46\u8fde\u63a5\u7684\u5e94\u7528\u7a0b\u5e8f\u8bf7\u6c42\u7684\u662f\u670d\u52a1\u3002
+DELIVERY_ERROR_SIRC_10.explanation=\u5e94\u7528\u7a0b\u5e8f\u5df2\u8fde\u63a5\u5230\u6d88\u606f\u4f20\u9012\u5f15\u64ce\uff0c\u4f46\u8bf7\u6c42\u7684\u76ee\u6807\u7c7b\u578b\u4e0e\u5e95\u5c42\u76ee\u6807\u7c7b\u578b\u4e0d\u5339\u914d\u3002
+DELIVERY_ERROR_SIRC_10.useraction=\u8bf7\u4f7f\u7528\u7ba1\u7406\u63a7\u5236\u53f0\u6765\u66f4\u6b63\u8fde\u63a5\u7684\u5e94\u7528\u7a0b\u5e8f\uff0c\u6216\u8005\u5c06\u76ee\u6807\u66f4\u6539\u4e3a\u5fc5\u9700\u7684\u7c7b\u578b\u3002
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0154
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_11=CWSIK0011E: \u6d88\u606f\u4f20\u9012\u5f15\u64ce {1} \u4e0a\u7684\u76ee\u6807 {0} \u662f\u4e3b\u9898\u7a7a\u95f4\uff0c\u4f46\u8fde\u63a5\u7684\u5e94\u7528\u7a0b\u5e8f\u8bf7\u6c42\u7684\u662f\u961f\u5217\u3002
+DELIVERY_ERROR_SIRC_11.explanation=\u5e94\u7528\u7a0b\u5e8f\u5df2\u8fde\u63a5\u5230\u6d88\u606f\u4f20\u9012\u5f15\u64ce\uff0c\u4f46\u8bf7\u6c42\u7684\u76ee\u6807\u7c7b\u578b\u4e0e\u5e95\u5c42\u76ee\u6807\u7c7b\u578b\u4e0d\u5339\u914d\u3002
+DELIVERY_ERROR_SIRC_11.useraction=\u8bf7\u4f7f\u7528\u7ba1\u7406\u63a7\u5236\u53f0\u6765\u66f4\u6b63\u8fde\u63a5\u7684\u5e94\u7528\u7a0b\u5e8f\uff0c\u6216\u8005\u5c06\u76ee\u6807\u66f4\u6539\u4e3a\u5fc5\u9700\u7684\u7c7b\u578b\u3002
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0155
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_12=CWSIK0012E: \u6d88\u606f\u4f20\u9012\u5f15\u64ce {1} \u4e0a\u7684\u76ee\u6807 {0} \u662f\u4e3b\u9898\u7a7a\u95f4\uff0c\u4f46\u8fde\u63a5\u7684\u5e94\u7528\u7a0b\u5e8f\u8bf7\u6c42\u7684\u662f\u670d\u52a1\u3002
+DELIVERY_ERROR_SIRC_12.explanation=\u5e94\u7528\u7a0b\u5e8f\u5df2\u8fde\u63a5\u5230\u6d88\u606f\u4f20\u9012\u5f15\u64ce\uff0c\u4f46\u8bf7\u6c42\u7684\u76ee\u6807\u7c7b\u578b\u4e0e\u5e95\u5c42\u76ee\u6807\u7c7b\u578b\u4e0d\u5339\u914d\u3002
+DELIVERY_ERROR_SIRC_12.useraction=\u8bf7\u4f7f\u7528\u7ba1\u7406\u63a7\u5236\u53f0\u6765\u66f4\u6b63\u8fde\u63a5\u7684\u5e94\u7528\u7a0b\u5e8f\uff0c\u6216\u8005\u5c06\u76ee\u6807\u66f4\u6539\u4e3a\u5fc5\u9700\u7684\u7c7b\u578b\u3002
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0158
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_13=CWSIK0013E: \u6d88\u606f\u4f20\u9012\u5f15\u64ce {1} \u4e0a\u7684\u76ee\u6807 {0} \u662f\u4e3b\u9898\u7a7a\u95f4\uff0c\u4f46\u8fde\u63a5\u7684\u5e94\u7528\u7a0b\u5e8f\u8bf7\u6c42\u7684\u662f\u7aef\u53e3\u3002
+DELIVERY_ERROR_SIRC_13.explanation=\u5e94\u7528\u7a0b\u5e8f\u5df2\u8fde\u63a5\u5230\u6d88\u606f\u4f20\u9012\u5f15\u64ce\uff0c\u4f46\u8bf7\u6c42\u7684\u76ee\u6807\u7c7b\u578b\u4e0e\u5e95\u5c42\u76ee\u6807\u7c7b\u578b\u4e0d\u5339\u914d\u3002
+DELIVERY_ERROR_SIRC_13.useraction=\u8bf7\u4f7f\u7528\u7ba1\u7406\u63a7\u5236\u53f0\u6765\u66f4\u6b63\u8fde\u63a5\u7684\u5e94\u7528\u7a0b\u5e8f\uff0c\u6216\u8005\u5c06\u76ee\u6807\u66f4\u6539\u4e3a\u5fc5\u9700\u7684\u7c7b\u578b\u3002
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0168
+# {0} The destination name
+# {1} The messaging engine name.
+# {2} The destination Type
+# {3} The expected destination type
+DELIVERY_ERROR_SIRC_14=CWSIK0014E: \u6d88\u606f\u4f20\u9012\u5f15\u64ce {1} \u7684\u76ee\u6807 {0} \u7684\u7c7b\u578b\u4e3a {2}\uff0c\u4f46\u8fde\u63a5\u7684\u5e94\u7528\u7a0b\u5e8f\u8bf7\u6c42\u7684\u662f\u672a\u77e5\u7c7b\u578b {3}\u3002
+DELIVERY_ERROR_SIRC_14.explanation=\u5e94\u7528\u7a0b\u5e8f\u5df2\u8fde\u63a5\u5230\u6d88\u606f\u4f20\u9012\u5f15\u64ce\uff0c\u4f46\u8bf7\u6c42\u7684\u76ee\u6807\u7c7b\u578b\u4e0e\u5e95\u5c42\u76ee\u6807\u7c7b\u578b\u4e0d\u5339\u914d\u3002
+DELIVERY_ERROR_SIRC_14.useraction=\u8bf7\u4f7f\u7528\u7ba1\u7406\u63a7\u5236\u53f0\u6765\u66f4\u6b63\u8fde\u63a5\u7684\u5e94\u7528\u7a0b\u5e8f\uff0c\u6216\u8005\u5c06\u76ee\u6807\u66f4\u6539\u4e3a\u5fc5\u9700\u7684\u7c7b\u578b\u3002
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_NOT_FOUND_ERROR_CWSIP0042
+# {0} is the name of the destination
+# {1} The name of the messaging engine
+DELIVERY_ERROR_SIRC_15=CWSIK0015E: \u5728\u6d88\u606f\u4f20\u9012\u5f15\u64ce {1} \u4e0a\u672a\u627e\u5230\u76ee\u6807 {0}\u3002
+DELIVERY_ERROR_SIRC_15.explanation=\u6307\u5b9a\u7684\u76ee\u6807\u5728\u672c\u5730\u6d88\u606f\u4f20\u9012\u5f15\u64ce\u4e0a\u662f\u672a\u77e5\u7684\u3002
+DELIVERY_ERROR_SIRC_15.useraction=\u8bf7\u68c0\u67e5\u76ee\u6807\u540d\u79f0\u662f\u5426\u6b63\u786e\u4ee5\u53ca\u60a8\u662f\u5426\u5728\u603b\u7ebf\u4e0a\u521b\u5efa\u4e86\u8be5\u76ee\u6807\u3002\u5982\u679c\u8be5\u76ee\u6807\u5b58\u5728\u4e8e\u53e6\u4e00\u4e2a\u6d88\u606f\u4f20\u9012\u5f15\u64ce\u4e0a\uff0c\u90a3\u4e48\u8bf7\u786e\u4fdd\u53ef\u4ee5\u4e0e\u5176\u4ed6\u6d88\u606f\u4f20\u9012\u5f15\u64ce\u8fdb\u884c\u901a\u4fe1\u3002
+
+# -------------------------------------------------------------------------------------------------
+# TRANSACTION_SEND_USAGE_ERROR_CWSIP0093
+# {0} The destination address
+DELIVERY_ERROR_SIRC_16=CWSIK0016E: \u7528\u4e8e\u5728\u76ee\u6807 {0} \u4e0a\u53d1\u9001\u7684\u4e8b\u52a1\u5df2\u5b8c\u6210\u3002
+DELIVERY_ERROR_SIRC_16.explanation=\u5c1d\u8bd5\u4f7f\u7528\u4e00\u4e2a\u5df2\u5b8c\u6210\u7684\u4e8b\u52a1\u3002
+DELIVERY_ERROR_SIRC_16.useraction=\u8bf7\u786e\u4fdd\u6240\u4f7f\u7528\u7684\u4e8b\u52a1\u662f\u65b0\u4e8b\u52a1\u3002
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_LOCKED_ERROR_CWSIP0232
+# {0} the name of the destination
+# {1} The messaging engine Name
+DELIVERY_ERROR_SIRC_17=CWSIK0017E: \u6d88\u606f\u4f20\u9012\u5f15\u64ce {1} \u4e0a\u7684\u540d\u4e3a {0} \u7684\u76ee\u6807\u662f\u7981\u6b62\u53d1\u9001\u7684\u3002
+DELIVERY_ERROR_SIRC_17.explanation=\u5c1d\u8bd5\u5c06\u6d88\u606f\u53d1\u9001\u5230\u76ee\u6807\uff0c\u5e76\u4e14\u8fdb\u884c\u4e86\u68c0\u67e5\u4ee5\u786e\u4fdd\u5141\u8bb8\u5411\u8be5\u76ee\u6807\u53d1\u9001\u6d88\u606f\u3002\u7531\u4e8e\u7981\u6b62\u53d1\u9001\u5230\u8be5\u76ee\u6807\uff0c\u81f4\u4f7f\u6b64\u68c0\u67e5\u5931\u8d25\u3002
+DELIVERY_ERROR_SIRC_17.useraction=\u8bf7\u66f4\u65b0\u76ee\u6807\u4ee5\u5141\u8bb8\u53d1\u9001\uff0c\u5e76\u4e14\u91cd\u65b0\u53d1\u9001\u6d88\u606f\u3002
+
+# -------------------------------------------------------------------------------------------------
+# USER_NOT_AUTH_SEND_ERROR_CWSIP0306
+# {0} The destination name
+# {1} The subject attempting the operation
+DELIVERY_ERROR_SIRC_18=CWSIK0018E: \u62d2\u7edd\u5177\u6709\u4e3b\u9898 {1} \u7684\u7528\u6237\u5bf9\u76ee\u6807 {0} \u7684\u53d1\u9001\u8bbf\u95ee\u3002
+DELIVERY_ERROR_SIRC_18.explanation=\u672a\u6388\u6743\u7528\u6237\u5c06\u6d88\u606f\u53d1\u9001\u5230\u8be5\u76ee\u6807\u3002
+DELIVERY_ERROR_SIRC_18.useraction=\u5982\u679c\u7528\u6237\u5e94\u8be5\u5177\u6709\u5728\u7ed9\u5b9a\u76ee\u6807\u4e0a\u53d1\u9001\u6d88\u606f\u7684\u6743\u9650\uff0c\u90a3\u4e48\u8bf7\u66f4\u65b0\u8be5\u76ee\u6807\u7684\u7528\u6237\u6743\u9650\u3002
+
+# -------------------------------------------------------------------------------------------------
+# USER_NOT_AUTH_SEND_ERROR_CWSIP0307
+# {0} The destination prefix
+# {1} The subject attempting the operation
+DELIVERY_ERROR_SIRC_19=CWSIK0019E: \u672a\u6388\u6743\u7528\u6237 {1} \u5c06\u6d88\u606f\u53d1\u9001\u5230\u5177\u6709\u524d\u7f00 {0} \u7684\u4e34\u65f6\u76ee\u6807\u3002
+DELIVERY_ERROR_SIRC_19.explanation=\u672a\u6388\u6743\u7528\u6237\u5c06\u6d88\u606f\u53d1\u9001\u5230\u5177\u6709\u6307\u5b9a\u524d\u7f00\u7684\u4e34\u65f6\u76ee\u6807\u3002
+DELIVERY_ERROR_SIRC_19.useraction=\u5982\u679c\u7528\u6237\u5e94\u8be5\u5177\u6709\u5728\u7ed9\u5b9a\u4e34\u65f6\u76ee\u5f55\u4e0a\u53d1\u9001\u6d88\u606f\u7684\u6743\u9650\uff0c\u90a3\u4e48\u8bf7\u66f4\u65b0\u8be5\u4e34\u65f6\u76ee\u6807\u7684\u7528\u6237\u6743\u9650\u3002
+
+# -------------------------------------------------------------------------------------------------
+# USER_NOT_AUTH_SEND_ERROR_CWSIP0308
+# {0} The destination name
+# {1} The discriminator name
+# {2} The user attempting the operation
+DELIVERY_ERROR_SIRC_20=CWSIK0020E: \u62d2\u7edd\u5177\u6709\u4e3b\u9898 {2} \u7684\u7528\u6237\u53d1\u9001\u5bf9\u76ee\u6807 {0} \u4e0a\u7684\u9274\u522b\u5668 {1} \u7684\u8bbf\u95ee\u3002
+DELIVERY_ERROR_SIRC_20.explanation=\u672a\u6388\u6743\u7528\u6237\u5c06\u6d88\u606f\u53d1\u9001\u5230\u4f7f\u7528\u6307\u5b9a\u4e3b\u9898\u7684\u76ee\u6807\u3002
+DELIVERY_ERROR_SIRC_20.useraction=\u5982\u679c\u7528\u6237\u5e94\u8be5\u5177\u6709\u5728\u7ed9\u5b9a\u4e3b\u9898\u4e0a\u53d1\u9001\u6d88\u606f\u7684\u6743\u9650\uff0c\u90a3\u4e48\u8bf7\u66f4\u65b0\u7ed9\u5b9a\u76ee\u6807\u4e0a\u4e3b\u9898\u7684\u7528\u6237\u6743\u9650\u3002
+
+# -------------------------------------------------------------------------------------------------
+# OBJECT_CLOSED_ERROR_CWSIP0233
+# {0} the name of the destination
+# {1} The messaging engine Name
+DELIVERY_ERROR_SIRC_21=CWSIK0021E: \u6d88\u606f\u4f20\u9012\u5f15\u64ce {1} \u7684\u76ee\u6807 {0} \u4e0a\u7684\u751f\u4ea7\u8005\u4f1a\u8bdd\u5df2\u5173\u95ed\uff0c\u5e76\u4e14\u65e0\u6cd5\u4f7f\u7528\u3002
+DELIVERY_ERROR_SIRC_21.explanation=\u751f\u4ea7\u8005\u5df2\u5173\u95ed\uff0c\u65e0\u6cd5\u5728\u6307\u5b9a\u7684\u76ee\u6807\u4e0a\u8fdb\u884c\u4f7f\u7528\u3002
+DELIVERY_ERROR_SIRC_21.useraction=\u8bf7\u521b\u5efa\u4e0e\u6307\u5b9a\u76ee\u6807\u7684\u65b0\u751f\u4ea7\u8005\u4f1a\u8bdd\u3002
+
+# -------------------------------------------------------------------------------------------------
+# OBJECT_CLOSED_ERROR_CWSIP0091
+# {0} The messaging engine name
+DELIVERY_ERROR_SIRC_22=CWSIK0022E: \u4e0e\u6d88\u606f\u4f20\u9012\u5f15\u64ce {0} \u7684\u8fde\u63a5\u5df2\u5173\u95ed\uff0c\u5e76\u4e14\u65e0\u6cd5\u4f7f\u7528\u3002
+DELIVERY_ERROR_SIRC_22.explanation=\u8fde\u63a5\u5df2\u5173\u95ed\u5e76\u4e14\u4efb\u4f55\u64cd\u4f5c\u90fd\u65e0\u6cd5\u4f7f\u7528\u8be5\u8fde\u63a5\u3002
+DELIVERY_ERROR_SIRC_22.useraction=\u8bf7\u521b\u5efa\u4e0e\u6d88\u606f\u4f20\u9012\u5f15\u64ce\u7684\u65b0\u8fde\u63a5\u3002
+# -------------------------------------------------------------------------------------------------
+# EXCEPTION_DESTINATION_ERROR_CWSIP0296
+# {0}  The destination name that could not be found
+# {1} The reason for failing to put the message to the exception destination
+# {2} The related error
+# {3} The current destination
+DELIVERY_ERROR_SIRC_23=CWSIK0023E: \u7531\u6b63\u5411\u8def\u7531\u8def\u5f84\u76ee\u6807 {0} \u5f15\u53d1\u7684\u5c1d\u8bd5\u5c06\u6d88\u606f\u8def\u7531\u5230\u76ee\u6807 {3} \u4e0a\u7684\u5f02\u5e38\u76ee\u6807\u5931\u8d25\uff0c\u539f\u56e0\u662f {1}\uff0c\u76f8\u5173\u9519\u8bef\u4e3a {2}\u3002
+DELIVERY_ERROR_SIRC_23.explanation=\u672a\u627e\u5230\u6b63\u5411\u8def\u7531\u8def\u5f84\u4e2d\u7684\u4e0b\u4e00\u4e2a\u76ee\u6807\u3002\u56e0\u6b64\uff0c\u6d88\u606f\u88ab\u4f20\u9012\u81f3\u5f02\u5e38\u76ee\u6807\uff0c\u4f46\u662f\u5c06\u5b83\u4f20\u9012\u81f3\u5f02\u5e38\u76ee\u6807\u65f6\u51fa\u9519\u3002
+DELIVERY_ERROR_SIRC_23.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_SEND_DISALLOWED_CWSIP0252
+# {0} the name of the destination
+# {1} The name of the messaging engine
+DELIVERY_ERROR_SIRC_24=CWSIK0024E: \u76ee\u6807 {0} \u5bf9\u4e8e\u6d88\u606f\u4f20\u9012\u5f15\u64ce {1} \u662f\u7981\u6b62\u53d1\u9001\u7684\u3002
+DELIVERY_ERROR_SIRC_24.explanation=\u5c1d\u8bd5\u5c06\u6d88\u606f\u53d1\u9001\u5230\u76ee\u6807\uff0c\u5e76\u5bf9\u5176\u8fdb\u884c\u4e86\u68c0\u67e5\u4ee5\u786e\u4fdd\u8be5\u76ee\u6807\u53ef\u4f7f\u7528\u961f\u5217\u70b9\u3002\u7531\u4e8e\u8be5\u76ee\u6807\u7684\u552f\u4e00\u961f\u5217\u70b9\u662f\u7981\u6b62\u53d1\u9001\u7684\uff0c\u5bfc\u81f4\u6b64\u68c0\u67e5\u5931\u8d25\u3002
+DELIVERY_ERROR_SIRC_24.useraction=\u8bf7\u66f4\u65b0\u76ee\u6807\u7684\u961f\u5217\u70b9\u4ee5\u5141\u8bb8\u53d1\u9001\uff0c\u5e76\u4e14\u91cd\u8bd5\u53d1\u9001\u64cd\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_HIGH_MESSAGES_ERROR_CWSIP0250
+# {0} is the name of the Destination
+# {1} The name of the messaging engine.
+DELIVERY_ERROR_SIRC_25=CWSIK0025E: \u6d88\u606f\u4f20\u9012\u5f15\u64ce {1} \u7684\u76ee\u6807 {0} \u4e0d\u53ef\u7528\uff0c\u8fd9\u662f\u56e0\u4e3a\u5df2\u8fbe\u5230\u8be5\u76ee\u6807\u7684\u6d88\u606f\u6570\u4e0a\u9650\u3002
+DELIVERY_ERROR_SIRC_25.explanation=\u6307\u5b9a\u76ee\u6807\u7684\u6240\u6709\u961f\u5217\u70b9\u6216\u8005\u6b64\u6d88\u606f\u4f20\u9012\u5f15\u64ce\u4e0a\u6307\u5411\u8be5\u76ee\u6807\u7684\u4f20\u8f93\u961f\u5217\u5df2\u8fbe\u5230\u4e3a\u5b83\u4eec\u914d\u7f6e\u7684\u4e0a\u9650\uff0c\u56e0\u6b64\u65e0\u6cd5\u63a5\u53d7\u6d88\u606f\u3002
+DELIVERY_ERROR_SIRC_25.useraction=\u8bf7\u68c0\u67e5\u4e3a\u76ee\u6807\u914d\u7f6e\u7684\u6d88\u606f\u6570\u4e0a\u9650\u662f\u5426\u6b63\u786e\u3002\u5982\u679c\u8be5\u76ee\u6807\u5b58\u5728\u4e8e\u53e6\u4e00\u4e2a\u6d88\u606f\u4f20\u9012\u5f15\u64ce\u4e0a\uff0c\u90a3\u4e48\u8bf7\u786e\u4fdd\u53ef\u4ee5\u4e0e\u5176\u4ed6\u6d88\u606f\u4f20\u9012\u5f15\u64ce\u8fdb\u884c\u901a\u4fe1\u3002
+
+# -------------------------------------------------------------------------------------------------
+# NO_LOCALISATIONS_FOUND_ERROR_CWSIP0032
+# {0} is the name of the destination
+DELIVERY_ERROR_SIRC_26=CWSIK0026E: \u672a\u627e\u5230\u76ee\u6807 {0} \u7684\u5141\u8bb8\u53ef\u5bfb\u5740\u6d88\u606f\u70b9\u3002
+DELIVERY_ERROR_SIRC_26.explanation=\u5c1d\u8bd5\u4f7f\u7528\u76ee\u6807\uff0c\u4f46\u662f\u7531\u4e8e\u4f7f\u7528\u4e86\u522b\u540d\u6216\u8005\u7ed1\u5b9a\u81f3\u73b0\u5728\u5df2\u5220\u9664\u7684\u6d88\u606f\u70b9\u800c\u5b58\u5728\u4e00\u4e9b\u9650\u5236\uff0c\u56e0\u6b64\u65e0\u6cd5\u627e\u5230\u8be5\u76ee\u6807\u7684\u6d88\u606f\u70b9\u3002
+DELIVERY_ERROR_SIRC_26.useraction=\u5982\u679c\u8fd9\u662f\u4e00\u6761\u5e94\u7b54\u6d88\u606f\uff0c\u90a3\u4e48\u53ef\u80fd\u5728\u539f\u59cb\u8bf7\u6c42\u6d88\u606f\u4e2d\u5df2\u7ecf\u6307\u5b9a\u4e86\u6d88\u606f\u4f20\u9012\u5f15\u64ce\uff0c\u6b64\u76ee\u6807\u7684\u6d88\u606f\u70b9\u53ef\u80fd\u5df2\u7ecf\u88ab\u5220\u9664\u3002\u5982\u679c\u4f7f\u7528\u4e86\u5c06\u9650\u5236\u76ee\u6807\u4f4d\u7f6e\u7684\u53ef\u5bfb\u5740\u6d88\u606f\u70b9\u7684\u522b\u540d\u76ee\u6807\uff0c\u90a3\u4e48\u8bf7\u66f4\u6b63\u8be5\u522b\u540d\u4ee5\u6807\u8bc6\u4e00\u7ec4\u6b63\u786e\u7684\u6d88\u606f\u70b9\u3002
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_CORRUPT_ERROR_CWSIP0058
+# {0} is the destination name
+DELIVERY_ERROR_SIRC_27=CWSIK0027E: \u540d\u79f0\u4e3a {0} \u7684\u76ee\u6807\u5df2\u635f\u574f
+DELIVERY_ERROR_SIRC_27.explanation=\u5177\u6709\u7ed9\u5b9a\u540d\u79f0\u7684\u76ee\u6807\u5df2\u635f\u574f\u6216\u65e0\u6cd5\u4f7f\u7528\u3002
+DELIVERY_ERROR_SIRC_27.useraction=\u8bf7\u4ece\u7ba1\u7406\u63a7\u5236\u53f0\u4e2d\u91cd\u7f6e\u8be5\u76ee\u6807\u3002
+
+# -------------------------------------------------------------------------------------------------
+# ALIAS_TARGET_DESTINATION_NOT_FOUND_EXCEPTION_CWSIP0057
+# {0} is the alias destination name
+# {1} is the target destination name
+# {2} is the alias resolution path
+DELIVERY_ERROR_SIRC_28=CWSIK0028E: \u65e0\u6cd5\u89e3\u6790\u522b\u540d\u76ee\u6807 {0}\uff0c\u56e0\u4e3a\u522b\u540d\u8def\u5f84 {2} \u4e2d\u4e0d\u5b58\u5728\u76ee\u6807\u4f4d\u7f6e {1}\u3002
+DELIVERY_ERROR_SIRC_28.explanation=\u522b\u540d\u8def\u5f84\u4e2d\u7684\u76ee\u6807\u4f4d\u7f6e\u5728\u672c\u5730\u6d88\u606f\u4f20\u9012\u5f15\u64ce\u4e0a\u672a\u77e5\u3002
+DELIVERY_ERROR_SIRC_28.useraction=\u8bf7\u5728\u7ba1\u7406\u63a7\u5236\u53f0\u4e2d\u5b9a\u4e49\u76ee\u6807\u4f4d\u7f6e\u6216\u66f4\u6b63\u4e0d\u6b63\u786e\u7684\u522b\u540d\u3002
+
+# -------------------------------------------------------------------------------------------------
+# ALIAS_TARGETS_SERVICE_DESTINATION_ERROR_CWSIP0622
+# {0} is the name of the alias destination
+# {1} is the name of the service destination
+# {2} is the alias resolution path
+# {3} The name of the messaging engine bus
+DELIVERY_ERROR_SIRC_29=CWSIK0029E: \u56e0\u4e3a\u522b\u540d\u76ee\u6807 {0} \u9488\u5bf9\u6d88\u606f\u4f20\u9012\u5f15\u64ce\u603b\u7ebf {3} \u4e0a\u7684\u8def\u5f84 {2} \u4e2d\u7684\u670d\u52a1\u76ee\u6807 {1}\uff0c\u6240\u4ee5\u51fa\u9519\u3002
+DELIVERY_ERROR_SIRC_29.explanation=\u522b\u540d\u76ee\u6807\u65e0\u6548\uff0c\u539f\u56e0\u662f\u5b83\u7684\u76ee\u6807\u662f\u670d\u52a1\u76ee\u6807\u3002
+DELIVERY_ERROR_SIRC_29.useraction=\u8bf7\u901a\u8fc7\u5728\u7ba1\u7406\u63a7\u5236\u53f0\u4e2d\u66f4\u6539\u89e3\u6790\u8def\u5f84\u4e2d\u7684\u522b\u540d\u6765\u9664\u53bb\u670d\u52a1\u76ee\u6807\u4f4d\u7f6e\u3002
+
+# -------------------------------------------------------------------------------------------------
+# LINK_NOT_FOUND_ERROR_CWSIP0047
+# {0} is the name of the link
+# {1} is the link UUID
+# {2} is the Bus Name
+DELIVERY_ERROR_SIRC_30=CWSIK0030E: \u521b\u5efa\u603b\u7ebf {2} \u65f6\u672a\u627e\u5230\u5177\u6709\u540d\u79f0 {0} \u548c UUID {1} \u7684\u94fe\u8def\u3002
+DELIVERY_ERROR_SIRC_30.explanation=\u5728\u672c\u5730\u6d88\u606f\u4f20\u9012\u5f15\u64ce\u4e0a\u65e0\u6cd5\u8bc6\u522b\u6307\u5b9a\u7684\u94fe\u8def\uff0c\u56e0\u6b64\u5c1d\u8bd5\u521b\u5efa\u6307\u5b9a\u7684\u603b\u7ebf\u5931\u8d25\u3002
+DELIVERY_ERROR_SIRC_30.useraction=\u8bf7\u68c0\u67e5\u94fe\u63a5\u540d\u79f0\u662f\u5426\u6b63\u786e\uff0c\u4ee5\u53ca\u662f\u5426\u5728\u7ba1\u7406\u63a7\u5236\u53f0\u4e2d\u4e3a\u603b\u7ebf\u5b9a\u4e49\u4e86\u94fe\u63a5\u540d\u79f0\u3002\u68c0\u67e5\u662f\u5426\u5bf9\u6d88\u606f\u4f20\u9012\u5f15\u64ce\u5e94\u7528\u4e86\u6700\u65b0\u7684\u914d\u7f6e\u3002
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_ALREADY_EXISTS_ERROR_CWSIP0045
+# {0} is the name of the destination
+DELIVERY_ERROR_SIRC_31=CWSIK0031E: \u76ee\u6807 {0} \u5df2\u5b58\u5728\u3002
+DELIVERY_ERROR_SIRC_31.explanation=\u672c\u5730\u6d88\u606f\u4f20\u9012\u5f15\u64ce\u4e0a\u5df2\u5b58\u5728\u6307\u5b9a\u7684\u76ee\u6807\uff0c\u56e0\u6b64\u5c1d\u8bd5\u521b\u5efa\u8be5\u76ee\u6807\u5df2\u5931\u8d25\u3002
+DELIVERY_ERROR_SIRC_31.useraction=\u8bf7\u786e\u4fdd\u7ba1\u7406\u63a7\u5236\u53f0\u4e2d\u7684\u76ee\u6807\u914d\u7f6e\u6b63\u786e\uff0c\u5e76\u91cd\u65b0\u542f\u52a8\u670d\u52a1\u5668\u3002
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_DELETED_ERROR_CWSIP0421
+# {0} is the name of the destination
+# {1} The messaging engine name
+DELIVERY_ERROR_SIRC_32=CWSIK0032E: \u5df2\u5220\u9664\u6d88\u606f\u4f20\u9012\u5f15\u64ce {1} \u4e0a\u7684\u76ee\u6807\u6216\u5916\u90e8\u603b\u7ebf {0}\u3002
+DELIVERY_ERROR_SIRC_32.explanation=\u7531\u4e8e\u76ee\u6807\u6216\u5916\u90e8\u603b\u7ebf\u5df2\u88ab\u5220\u9664\uff0c\u56e0\u6b64\u8be5\u76ee\u6807\u6216\u5916\u90e8\u603b\u7ebf\u4e0d\u518d\u53ef\u7528\u3002
+DELIVERY_ERROR_SIRC_32.useraction=\u8bf7\u5728\u53d1\u9001\u6d88\u606f\u65f6\u6307\u5b9a\u6709\u6548\u7684\u76ee\u6807\u6216\u5916\u90e8\u603b\u7ebf\u540d\u79f0\u3002
+
+# -------------------------------------------------------------------------------------------------
+# MESSAGE_RELIABILITY_ERROR_CWSIP0231
+# {0}  The messages reliability
+# {1}  The destinations reliability
+# {2}  The destinations name.
+# {3}  The messaging engine name.
+DELIVERY_ERROR_SIRC_33=CWSIK0033E: \u6d88\u606f\u53ef\u9760\u6027\u503c {0} \u5927\u4e8e\u6d88\u606f\u4f20\u9012\u5f15\u64ce {3} \u4e0a\u7684\u76ee\u6807 {2} \u7684\u76ee\u6807\u53ef\u9760\u6027\u503c {1}\u3002
+DELIVERY_ERROR_SIRC_33.explanation=\u5c1d\u8bd5\u5c06\u6d88\u606f\u4f20\u9012\u81f3\u76ee\u6807\uff0c\u4f46\u6d88\u606f\u7684\u53ef\u9760\u6027\u9ad8\u4e8e\u76ee\u6807\u53ef\u4ee5\u652f\u6301\u7684\u53ef\u9760\u6027\u3002
+DELIVERY_ERROR_SIRC_33.useraction=\u8bf7\u66f4\u65b0\u76ee\u6807\uff0c\u4ee5\u4f7f\u5b83\u53ef\u4ee5\u652f\u6301\u66f4\u9ad8\u53ef\u9760\u6027\u7684\u6d88\u606f\uff0c\u6216\u8005\u964d\u4f4e\u8981\u53d1\u9001\u7684\u6d88\u606f\u7684\u53ef\u9760\u6027\u3002
+
+# -------------------------------------------------------------------------------------------------
+# FORWARD_ROUTING_PATH_ERROR_CWSIP0254
+# {0} the name of the service destination
+# {1} The name of the messaging engine
+DELIVERY_ERROR_SIRC_34=CWSIK0034E: \u6b63\u5411\u8def\u7531\u8def\u5f84\u4e0d\u5305\u542b\u6b64\u6d88\u606f\u4f20\u9012\u5f15\u64ce {1} \u4e0a\u7684\u6b64\u670d\u52a1\u76ee\u6807 {0} \u7684\u4efb\u4f55\u6761\u76ee\u3002
+DELIVERY_ERROR_SIRC_34.explanation=\u5c1d\u8bd5\u5728\u6b63\u5411\u8def\u7531\u8def\u5f84\u4e3a\u7a7a\u65f6\u4f7f\u7528\u670d\u52a1\u76ee\u6807\u3002
+DELIVERY_ERROR_SIRC_34.useraction=\u670d\u52a1\u76ee\u6807\u5fc5\u987b\u5df2\u8c03\u89e3\u5728\u5b83\u7684\u6b63\u5411\u8def\u7531\u8def\u5f84\u4e2d\u7684\u76ee\u6807\u3002\u8bf7\u66f4\u6539\u8def\u5f84\u5e76\u91cd\u8bd5\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the destination to which we were delivering
+# {1} identifies the messaging engine where the destination is located
+DELIVERY_ERROR_SIRC_35=CWSIK0035E: \u7531\u4e8e\u6d88\u606f\u56de\u6eda\u7684\u6b21\u6570\u5927\u4e8e\u5176\u91cd\u4f20\u6b21\u6570\u9608\u503c\uff0c\u56e0\u6b64\u65e0\u6cd5\u5c06\u8be5\u6d88\u606f\u4f20\u9012\u7ed9\u6d88\u606f\u4f20\u9012\u5f15\u64ce {1} \u4e0a\u7684\u76ee\u6807 {0}\u3002
+DELIVERY_ERROR_SIRC_35.explanation=\u7531\u4e8e\u6bcf\u6b21\u5c1d\u8bd5\u843d\u5b9e\u5c06\u4f20\u9012\u6d88\u606f\u7684\u4e8b\u52a1\u90fd\u4e0d\u6210\u529f\uff0c\u56e0\u6b64\u65e0\u6cd5\u4f20\u9012\u8be5\u6d88\u606f\u3002
+DELIVERY_ERROR_SIRC_35.useraction=\u8bf7\u8c03\u67e5\u53d1\u751f\u4e8b\u52a1\u56de\u6eda\u7684\u539f\u56e0\u3002\u6709\u5173\u5982\u4f55\u89e3\u51b3\u6b64\u9519\u8bef\u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605 WebSphere Application Server \u652f\u6301 Web \u9875\u9762\uff08http://www.ibm.com/software/webserver/appserv/was/support\uff09\u4e0a\u7684\u95ee\u9898\u786e\u5b9a\u4fe1\u606f\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the message that has been rerouted
+# {1} identifies the destination from which the message was rerouted
+# {2} identifies the messaging engine where the destination is located
+DELIVERY_ERROR_SIRC_36=CWSIK0036E: \u4ece\u6d88\u606f\u4f20\u9012\u5f15\u64ce {2} \u4e0a\u7684 {1} \u6709\u7ba1\u7406\u5730\u91cd\u65b0\u8def\u7531\u4e86\u6d88\u606f {0}\u3002
+DELIVERY_ERROR_SIRC_36.explanation=\u4ece\u7ed9\u5b9a\u76ee\u6807\u4e2d\u9664\u53bb\u4e86\u6d88\u606f\uff0c\u5e76\u4e14\u5df2\u5c06\u5b83\u79fb\u81f3\u5f02\u5e38\u76ee\u6807\u3002
+DELIVERY_ERROR_SIRC_36.useraction=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the destination that was invalid
+# {1} identifies the messaging engine where the destination is located
+# {2} identifies the last valid destination in the path
+# {3} identified the exception caused by the invalid destination
+DELIVERY_ERROR_SIRC_37=CWSIK0037E: \u7531\u4e8e\u6d88\u606f\u7684\u8def\u7531\u8def\u5f84\u5305\u542b\u4e00\u4e2a\u4e0d\u6b63\u786e\u76ee\u6807 {0}\uff0c\u800c\u5bfc\u81f4\u65e0\u6cd5\u4f20\u9012\u8be5\u6d88\u606f\u3002\u6d88\u606f\u4f20\u9012\u5f15\u64ce {3} \u4e0a\u7684\u6700\u540e\u4e00\u4e2a\u6709\u6548\u76ee\u6807\u4e3a {2}\u3002\u7531\u4e8e\u53d1\u751f\u5f02\u5e38 {3} \u800c\u5bfc\u81f4\u76ee\u6807\u4e0d\u6b63\u786e\u3002
+DELIVERY_ERROR_SIRC_37.explanation=\u7531\u4e8e\u8def\u5f84\u4e2d\u5305\u542b\u4e0d\u6b63\u786e\u7684\u76ee\u6807\uff0c\u56e0\u6b64\u6d88\u606f\u672a\u80fd\u901a\u8fc7\u4e3a\u5b83\u63d0\u4f9b\u7684\u8def\u7531\u8def\u5f84\u3002
+DELIVERY_ERROR_SIRC_37.useraction=\u8bf7\u68c0\u67e5\u8def\u7531\u8def\u5f84\u4e0a\u7684\u76ee\u6807\u662f\u5426\u53ef\u7528\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the foreign bus
+# {1} The name of the messaging engine
+# {2} The name of the messaging engines bus
+DELIVERY_ERROR_SIRC_38=CWSIK0038E: \u5728\u603b\u7ebf {2} \u6d88\u606f\u4f20\u9012\u5f15\u64ce {1} \u4e0a\u627e\u4e0d\u5230\u540d\u4e3a {0} \u7684\u5916\u90e8\u603b\u7ebf\u3002
+DELIVERY_ERROR_SIRC_38.explanation=\u6307\u5b9a\u7684\u5916\u90e8\u603b\u7ebf\u5728\u672c\u5730\u6d88\u606f\u4f20\u9012\u5f15\u64ce\u4e0a\u662f\u672a\u77e5\u7684\u3002
+DELIVERY_ERROR_SIRC_38.useraction=\u8bf7\u68c0\u67e5\u5916\u90e8\u603b\u7ebf\u540d\u79f0\u662f\u5426\u6b63\u786e\u3002\u68c0\u67e5\u662f\u5426\u5df2\u7ecf\u5b9a\u4e49\u4e86\u5916\u90e8\u603b\u7ebf\u94fe\u8def\u5e76\u91cd\u8bd5\u8be5\u547d\u4ee4\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the foreign bus
+# {1} The name of the messaging engine
+# {2} The name of the messaging engines bus
+# {3} The related error
+DELIVERY_ERROR_SIRC_39=CWSIK0039E: \u7531\u4e8e\u9519\u8bef {3}\uff0c\u5728\u603b\u7ebf {2} \u6d88\u606f\u4f20\u9012\u5f15\u64ce {1} \u4e0a\u627e\u4e0d\u5230\u540d\u4e3a {0} \u7684\u5916\u90e8\u603b\u7ebf\u3002
+DELIVERY_ERROR_SIRC_39.explanation=\u6307\u5b9a\u7684\u5916\u90e8\u603b\u7ebf\u5728\u672c\u5730\u6d88\u606f\u4f20\u9012\u5f15\u64ce\u4e0a\u662f\u672a\u77e5\u7684\u3002
+DELIVERY_ERROR_SIRC_39.useraction=\u8bf7\u68c0\u67e5\u5916\u90e8\u603b\u7ebf\u540d\u79f0\u662f\u5426\u6b63\u786e\u3002\u68c0\u67e5\u662f\u5426\u5df2\u7ecf\u5b9a\u4e49\u4e86\u5916\u90e8\u603b\u7ebf\u94fe\u8def\u5e76\u91cd\u8bd5\u8be5\u547d\u4ee4\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the foreign bus link
+# {1} The name of the messaging engine
+# {2} The name of the messaging engines bus
+DELIVERY_ERROR_SIRC_40=CWSIK0040E: \u5728\u603b\u7ebf {2} \u6d88\u606f\u4f20\u9012\u5f15\u64ce {1} \u4e0a\u627e\u4e0d\u5230\u540d\u4e3a {0} \u7684\u5916\u90e8\u603b\u7ebf\u94fe\u8def\u3002
+DELIVERY_ERROR_SIRC_40.explanation=\u6307\u5b9a\u7684\u5916\u90e8\u603b\u7ebf\u94fe\u8def\u5728\u672c\u5730\u6d88\u606f\u4f20\u9012\u5f15\u64ce\u4e0a\u662f\u672a\u77e5\u7684\u3002
+DELIVERY_ERROR_SIRC_40.useraction=\u8bf7\u68c0\u67e5\u5916\u90e8\u603b\u7ebf\u540d\u79f0\u662f\u5426\u6b63\u786e\u4ee5\u53ca\u5b83\u662f\u5426\u5b9a\u4e49\u4e86\u94fe\u8def\u3002\u5982\u679c\u6ca1\u6709\u5b9a\u4e49\u94fe\u8def\uff0c\u90a3\u4e48\u5b9a\u4e49\u4e24\u6761\u603b\u7ebf\u4e4b\u95f4\u7684\u65b0\u5916\u90e8\u603b\u7ebf\u94fe\u8def\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the foreign bus
+# {1} The name of the messaging engine
+# {2} The name of the messaging engines bus
+# {3} The related error
+DELIVERY_ERROR_SIRC_41=CWSIK0041E: \u7531\u4e8e\u9519\u8bef {3}\uff0c\u6ca1\u6709\u5b9a\u4e49\u7528\u4e8e\u8fde\u63a5\u81f3\u540d\u4e3a {0}\u3001\u5728\u603b\u7ebf {2} \u6d88\u606f\u4f20\u9012\u5f15\u64ce {1} \u4e0a\u7684\u5916\u90e8\u603b\u7ebf\u7684\u94fe\u8def\u3002
+DELIVERY_ERROR_SIRC_41.explanation=\u5e94\u7528\u7a0b\u5e8f\u5df2\u5c1d\u8bd5\u5c06\u6d88\u606f\u53d1\u9001\u81f3\u5916\u90e8\u603b\u7ebf\u4e0a\u7684\u76ee\u6807\uff0c\u4f46\u6ca1\u6709\u5b9a\u4e49\u672c\u5730\u603b\u7ebf\u4e0e\u8be5\u5916\u90e8\u603b\u7ebf\u4e4b\u95f4\u7684\u94fe\u8def\u3002
+DELIVERY_ERROR_SIRC_41.useraction=\u8bf7\u5728\u7ba1\u7406\u63a7\u5236\u53f0\u4e2d\u5b9a\u4e49\u672c\u5730\u603b\u7ebf\u4e0e\u5916\u90e8\u603b\u7ebf\u4e4b\u95f4\u7684\u94fe\u8def\u5e76\u91cd\u65b0\u53d1\u9001\u6d88\u606f\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the uuid of the mqlink
+# {1} The name of the messaging engine
+# {2} The name of the messaging engines bus
+DELIVERY_ERROR_SIRC_42=CWSIK0042E: \u5728\u603b\u7ebf {2} \u6d88\u606f\u4f20\u9012\u5f15\u64ce {1} \u4e0a\u627e\u4e0d\u5230 uuid \u4e3a {0} \u7684 MQ \u94fe\u8def\u3002
+DELIVERY_ERROR_SIRC_42.explanation=\u6307\u5b9a\u7684 MQ \u94fe\u8def\u5728\u672c\u5730\u6d88\u606f\u4f20\u9012\u5f15\u64ce\u4e0a\u662f\u672a\u77e5\u7684\u3002
+DELIVERY_ERROR_SIRC_42.useraction=\u8bf7\u68c0\u67e5 MQ \u94fe\u8def\u540d\u79f0\u662f\u5426\u5df2\u5b9a\u4e49\u4ee5\u53ca\u5927\u5c0f\u5199\u62fc\u5199\u662f\u5426\u6b63\u786e\u3002\u5982\u679c\u672a\u5b9a\u4e49 MQ \u94fe\u8def\uff0c\u90a3\u4e48\u4f7f\u7528\u5df2\u5b58\u5728 MQ \u94fe\u8def\u6216\u8005\u5b9a\u4e49\u65b0\u7684 MQ \u94fe\u8def\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the current maximum forward routing path depth
+DELIVERY_ERROR_SIRC_43=CWSIK0043E: \u65e0\u6cd5\u5c06\u6d88\u606f\u4f20\u9012\u5230\u6b63\u5411\u8def\u7531\u8def\u5f84\u4e2d\u7684\u76ee\u6807\uff0c\u56e0\u4e3a\u8d85\u51fa\u4e86\u6b63\u5411\u8def\u7531\u8def\u5f84\u7684\u6700\u5927\u6df1\u5ea6\uff08{0}\uff09\u3002
+DELIVERY_ERROR_SIRC_43.explanation=\u6cbf\u6b63\u5411\u8def\u7531\u8def\u5f84\u91cd\u5b9a\u5411\u4e86\u6d88\u606f\u3002\u91cd\u5b9a\u5411\u6570\u8d85\u51fa\u4e86\u5141\u8bb8\u7684\u6700\u5927\u503c\u3002\u56e0\u6b64\u6d88\u606f\u88ab\u53d1\u9001\u5230\u4e86\u5f02\u5e38\u76ee\u6807\u3002
+DELIVERY_ERROR_SIRC_43.useraction=\u8bf7\u68c0\u67e5\u6b63\u5411\u8def\u7531\u8def\u5f84\u4ee5\u786e\u5b9a\u662f\u5426\u5b58\u5728\u5faa\u73af\u3002\u6216\u8005\uff0c\u901a\u8fc7\u5b9a\u5236\u5c5e\u6027 sib.processor.maxForwardRoutingPath \u6765\u589e\u5927\u6700\u5927\u503c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination to which we were delivering
+# {1} is the bus from the message originated
+DELIVERY_ERROR_SIRC_44=CWSIK0044E: \u65e0\u6cd5\u5c06\u6d88\u606f\u4f20\u9012\u5230\u76ee\u6807 {0}\uff0c\u56e0\u4e3a\u8be5\u76ee\u6807\u7684\u961f\u5217\u70b9\u4fdd\u5b58\u5728 WebSphere MQ \u670d\u52a1\u5668\u603b\u7ebf\u6210\u5458\u4e0a\uff0c\u5e76\u4e14\u5df2\u4ece\u5916\u90e8\u603b\u7ebf {1} \u4e0a\u53d1\u9001\u8be5\u6d88\u606f\u3002
+DELIVERY_ERROR_SIRC_44.explanation=\u4e0d\u80fd\u5c06\u6d88\u606f\u4ece\u5916\u90e8\u603b\u7ebf\u76f4\u63a5\u53d1\u9001\u81f3\u5176\u961f\u5217\u70b9\u4fdd\u5b58\u5728 WebSphere MQ \u4e0a\u5e76\u4f7f\u7528 WebSphere MQ \u670d\u52a1\u5668\u603b\u7ebf\u6210\u5458\u8fdb\u884c\u8bbf\u95ee\u7684\u76ee\u6807\u3002
+DELIVERY_ERROR_SIRC_44.useraction=\u8bf7\u91cd\u65b0\u914d\u7f6e\u53d1\u9001\u5e94\u7528\u7a0b\u5e8f\u4ee5\u8fde\u63a5\u5230\u672c\u5730\u603b\u7ebf\uff0c\u6216\u8005\u5141\u8bb8\u4f7f\u7528 WebSphere MQ \u5916\u90e8\u603b\u7ebf\u8fde\u63a5\u6765\u8bbf\u95ee WebSphere MQ \u76ee\u6807\uff0c\u5e76\u901a\u8fc7\u5916\u90e8\u603b\u7ebf\u800c\u4e0d\u662f WebSphere MQ \u670d\u52a1\u5668\u603b\u7ebf\u6210\u5458\u6765\u8def\u7531\u6d88\u606f\u3002
+
+# -------------------------------------------------------------------------------------------------
+# ALIAS_TARGET_DESTINATION_NOT_FOUND_EXCEPTION_CWSIP0057
+# {0} is the alias destination name
+# {1} is the target destination name
+DELIVERY_ERROR_SIRC_45=CWSIK0045E: \u65e0\u6cd5\u89e3\u6790\u522b\u540d\u76ee\u6807 {0}\uff0c\u56e0\u4e3a\u76ee\u6807 {1} \u4e0d\u5b58\u5728\u3002
+DELIVERY_ERROR_SIRC_45.explanation=\u672c\u5730\u6d88\u606f\u4f20\u9012\u5f15\u64ce\u4e2d\u672a\u63d0\u4f9b\u8be5\u76ee\u6807\u3002
+DELIVERY_ERROR_SIRC_45.useraction=\u8bf7\u6307\u5b9a\u6b63\u786e\u76ee\u6807\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the message that has been rerouted
+# {1} identifies the destination to which the message was rerouted
+# {2} identifies the mediation that caused the message to be rerouted
+# {3} identifies the destination at which the message was mediated
+# {4} identifies the exception that mediation generated that caused the message to be rerouted
+DELIVERY_ERROR_SIRC_101=CWSIK0101W: \u7531\u4e8e\u76ee\u6807 {3} \u7684\u8c03\u89e3 {2} \u5f15\u8d77\u4e86\u5f02\u5e38 {4}\uff0c\u5bfc\u81f4\u6d88\u606f {0} \u88ab\u91cd\u65b0\u8def\u7531\u5230\u5f02\u5e38\u76ee\u6807 {1}\u3002
+DELIVERY_ERROR_SIRC_101.explanation=\u5df2\u5c06\u6d88\u606f\u63d0\u4f9b\u7ed9\u6307\u5b9a\u7684\u8c03\u89e3\uff1b\u8be5\u8c03\u89e3\u751f\u6210\u4e86\u5f02\u5e38\uff0c\u5bfc\u81f4\u6d88\u606f\u5df2\u88ab\u91cd\u65b0\u8def\u7531\u81f3\u5f02\u5e38\u76ee\u6807\u3002
+DELIVERY_ERROR_SIRC_101.useraction=\u5982\u679c\u8c03\u89e3\u5c06\u6ca1\u6709\u91cd\u65b0\u8def\u7531\u6d88\u606f\uff0c\u90a3\u4e48\u8bf7\u8c03\u67e5\u5f02\u5e38\u7684\u539f\u56e0\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the message that has been rerouted
+# {1} identifies the mediation that caused the message to become invalid
+# {2} identifies the destination at which the message was mediated
+# {3} identifies the message format to which the message does not conform
+DELIVERY_ERROR_SIRC_102=CWSIK0102E: \u7531\u4e8e\u6d88\u606f {0} \u4e0e\u6d88\u606f\u683c\u5f0f {3} \u4e0d\u7b26\u5408\uff0c\u5bfc\u81f4\u8be5\u6d88\u606f\u7531\u76ee\u6807 {2} \u7684\u8c03\u89e3 {1} \u8c03\u89e3\u540e\uff0c\u65e0\u6cd5\u6cbf\u7740\u5176\u6b63\u5411\u8def\u7531\u8def\u5f84\u518d\u524d\u8fdb\u3002
+DELIVERY_ERROR_SIRC_102.explanation=\u7ecf\u6307\u5b9a\u7684\u8c03\u89e3\u8fdb\u884c\u8c03\u89e3\u540e\uff0c\u8be5\u6d88\u606f\u4e0d\u7b26\u5408\u6307\u5b9a\u7684\u6d88\u606f\u683c\u5f0f\u3002\u8c03\u89e3\u5df2\u66f4\u6539\u6d88\u606f\u5185\u5bb9\u548c/\u6216\u6d88\u606f\u683c\u5f0f\u3002\u6d88\u606f\u7684\u6700\u521d\u7248\u672c\u5df2\u88ab\u91cd\u65b0\u8def\u7531\u5230\u5f02\u5e38\u76ee\u6807\u3002
+DELIVERY_ERROR_SIRC_102.useraction=\u8bf7\u8c03\u67e5\u6307\u5b9a\u7684\u8c03\u89e3\u5bf9\u6d88\u606f\u8fdb\u884c\u4fee\u6539\u800c\u5bfc\u81f4\u5176\u4e0d\u7b26\u5408\u6307\u5b9a\u6d88\u606f\u683c\u5f0f\u7684\u65b9\u5f0f\u548c\u539f\u56e0\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the message that has been rerouted
+# {1} identifies the mediation that caused the message to become invalid
+# {2} identifies the destination at which the message was mediated
+DELIVERY_ERROR_SIRC_103=CWSIK0103E: \u56e0\u4e3a\u6d88\u606f {0} \u7684\u683c\u5f0f\u4e0d\u6b63\u786e\uff0c\u6240\u4ee5\u8be5\u6d88\u606f\u7531\u76ee\u6807 {2} \u7684\u8c03\u89e3 {1} \u8c03\u89e3\u540e\uff0c\u65e0\u6cd5\u6cbf\u7740\u5176\u6b63\u5411\u8def\u7531\u8def\u5f84\u518d\u524d\u8fdb\u3002
+DELIVERY_ERROR_SIRC_103.explanation=\u7ecf\u6307\u5b9a\u7684\u8c03\u89e3\u8fdb\u884c\u8c03\u89e3\u540e\uff0c\u8be5\u6d88\u606f\u5c5e\u6027\u5305\u542b\u65e0\u6cd5\u5e8f\u5217\u5316\u7684\u5bf9\u8c61\uff0c\u6216\u6570\u636e\u56fe\u65e0\u6548\u3002
+DELIVERY_ERROR_SIRC_103.useraction=\u8bf7\u8c03\u67e5\u6307\u5b9a\u7684\u8c03\u89e3\u5bf9\u6d88\u606f\u8fdb\u884c\u4fee\u6539\u800c\u5bfc\u81f4\u5176\u4e0d\u518d\u6709\u6548\u7684\u65b9\u5f0f\u548c\u539f\u56e0\u3002
+
+# -------------------------------------------------------------------------------------------------
+DELIVERY_ERROR_SIRC_104=CWSIK0104E: \u6d88\u606f\u592a\u5927\u4ee5\u81f4\u8fdc\u7a0b MQ \u65e0\u6cd5\u5904\u7406\u5b83\uff1b\u53d1\u9001\u5230\u5f02\u5e38\u76ee\u6807\uff1a\u6d88\u606f\u5927\u5c0f {0}\uff0c\u6700\u5927\u6d88\u606f\u5927\u5c0f {1}\u3002
+DELIVERY_ERROR_SIRC_104.explanation=\u6d88\u606f\u592a\u5927\u3002
+DELIVERY_ERROR_SIRC_104.useraction=\u8bf7\u68c0\u67e5 MQ \u8bbe\u7f6e\u3002
+
+# -------------------------------------------------------------------------------------------------
+DELIVERY_ERROR_SIRC_105=CWSIK0105E: \u6709\u4e00\u4e2a\u6d88\u606f\u683c\u5f0f\u9519\u8bef\u3002
+DELIVERY_ERROR_SIRC_105.explanation=\u7531\u4e8e\u683c\u5f0f\u9519\u8bef\uff0c\u4e0d\u80fd\u5904\u7406\u6d88\u606f\u3002
+DELIVERY_ERROR_SIRC_105.useraction=\u8bf7\u68c0\u67e5\u8fde\u63a5\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the WebSphere MQ return code
+# {1} identifies the WebSphere MQ reason code
+DELIVERY_ERROR_SIRC_106=CWSIK0106E: WebSphere MQ \u5df2\u4ea7\u751f\u9519\u8bef\u3002WebSphere MQ \u8fd4\u56de\u7801\u548c\u539f\u56e0\u7801\u5206\u522b\u4e3a {0} \u548c {1}\u3002
+DELIVERY_ERROR_SIRC_106.explanation=\u7531\u4e8e WebSphere MQ \u4ea7\u751f\u4e86\u9519\u8bef\u6761\u4ef6\uff0c\u6240\u4ee5\u65e0\u6cd5\u5904\u7406\u8be5\u6d88\u606f\u3002
+DELIVERY_ERROR_SIRC_106.useraction=\u68c0\u67e5 WebSphere MQ \u8fd4\u56de\u7801\u548c\u539f\u56e0\u7801\u4ee5\u53ca WebSphere MQ \u9519\u8bef\u65e5\u5fd7\uff0c\u4ee5\u786e\u5b9a\u8be5\u9519\u8bef\u7684\u539f\u56e0\u3002\u60a8\u53ef\u80fd\u9700\u8981\u4e0e WebSphere MQ \u7ba1\u7406\u5458\u8054\u7cfb\u4ee5\u5e2e\u52a9\u89e3\u51b3\u8be5\u95ee\u9898\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The class name of the Object which cannot be serialized.
+DELIVERY_ERROR_SIRC_200=CWSIK0200E: \u5df2\u7ecf\u5c06 {0} \u7c7b\u7684\u5bf9\u8c61\u8bbe\u7f6e\u5230\u6d88\u606f\u7684\u6709\u6548\u5185\u5bb9\u4e2d\uff0c\u4f46\u662f\u65e0\u6cd5\u5c06\u5b83\u5e8f\u5217\u5316\u3002
+DELIVERY_ERROR_SIRC_200.explanation=\u53d1\u9001\u4e86\u5bf9\u8c61\u6d88\u606f\uff0c\u5e76\u4e14\u968f\u7cfb\u7edf\u65e0\u6cd5\u5e8f\u5217\u5316\u7684\u6709\u6548\u5185\u5bb9\u4e00\u8d77\u53d1\u9001\u4e86\u5728\u8be5\u6d88\u606f\u7684\u8fde\u63a5\u5de5\u5382\u4e0a\u542f\u7528\u7684 producerDoesNotModifyPayloadAfterSet \u6807\u5fd7\u3002\u6b64\u6d88\u606f\u6570\u636e\u5df2\u4e22\u5931\u3002
+DELIVERY_ERROR_SIRC_200.useraction=\u8bf7\u5bf9\u8fde\u63a5\u5de5\u5382\u7981\u7528 producerDoesNotModifyPayloadAfterSet\u3002\u5728\u4e0d\u542f\u7528\u8be5\u6807\u5fd7\u7684\u60c5\u51b5\u4e0b\uff0c\u7528\u4e8e\u5c06\u6b64\u5bf9\u8c61\u8bbe\u7f6e\u5230\u6d88\u606f\u4e2d\u7684 JMS \u5e94\u7528\u7a0b\u5e8f\u5c06\u7acb\u5373\u63a5\u6536\u5230\u4efb\u4f55\u5e8f\u5217\u5316\u5f02\u5e38\u3002
+
+# -------------------------------------------------------------------------------------------------
+# INTERNAL_MESSAGING_ERROR_CWSIP0001
+# {0} The class name
+# {1} The PROBE ID.
+DELIVERY_ERROR_SIRC_900=CWSIK0900E: {0} {1} \u4e2d\u53d1\u751f\u5185\u90e8\u6d88\u606f\u4f20\u9012\u9519\u8bef\u3002
+DELIVERY_ERROR_SIRC_900.explanation=CMSG0001
+DELIVERY_ERROR_SIRC_900.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# INTERNAL_MESSAGING_ERROR_CWSIP0002
+# {0} The class name
+# {1} The PROBE ID.
+# {2} The related exception
+DELIVERY_ERROR_SIRC_901=CWSIK0901E: {0} {1} \u4e2d\u53d1\u751f\u5185\u90e8\u6d88\u606f\u4f20\u9012\u9519\u8bef\uff1a{2}\u3002
+DELIVERY_ERROR_SIRC_901.explanation=CMSG0001
+DELIVERY_ERROR_SIRC_901.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# INTERNAL_CONFIGURATION_ERROR_CWSIP0006
+# {0} The class name
+# {1} The PROBE ID.
+# {2} destination name
+DELIVERY_ERROR_SIRC_905=CWSIK0905E: {0} {1} \u4e2d\u7684\u76ee\u6807 {2} \u53d1\u751f\u5185\u90e8\u76ee\u6807\u914d\u7f6e\u9519\u8bef\u3002
+DELIVERY_ERROR_SIRC_905.explanation=CMSG0001
+DELIVERY_ERROR_SIRC_905.useraction=CMSG0002

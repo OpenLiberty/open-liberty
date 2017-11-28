@@ -1,0 +1,159 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME 
+#COMPONENTPREFIX SRVE
+#COMPONENTNAMEFOR SRVE Servlet Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+failed.to.create.httpupgradehandler=SRVE9000E: Nezda\u0159ilo se vytvo\u0159it HttpUpgradeHandler: {0}. Ujist\u011bte se, \u017ee m\u00e1 v\u00fdchoz\u00ed konstruktor a lze jej p\u0159ev\u00e9st na instanci.
+failed.to.create.httpupgradehandler.explanation=Nezda\u0159ilo se vytvo\u0159it HttpUpgradeHandler.
+failed.to.create.httpupgradehandler.useraction=Prozkoumejte protokoly s informacemi FFDC a vyhledejte dal\u0161\u00ed podrobnosti o chyb\u011b.
+# --------------------------------
+servlet.31.not.in.use=SRVE9001E: Funkce servlet-3.1 se nepou\u017e\u00edv\u00e1.
+servlet.31.not.in.use.explanation=Funkce servlet-3.1 se nepou\u017e\u00edv\u00e1. Je mo\u017en\u00e9, \u017ee se ji\u017e pou\u017e\u00edv\u00e1 d\u0159\u00edv\u011bj\u0161\u00ed verze servletu.
+servlet.31.not.in.use.useraction=P\u0159idejte funkci servlet-3.1 do souboru server.xml.
+# --------------------------------
+# Translation note: {0} = operation being performed, {1} = the listener that called the operation, {2} = the application that contains the listener: SRVE9002E: You cannot start this operation from a programmatically added listener when using servlet-3.1 feature. (Operation: {0} | Listener: {1} | Application: {2})
+Unsupported.op.from.servlet.context.listener.31=SRVE9002E: Tuto operaci nem\u016f\u017eete spustit z programov\u011b p\u0159idan\u00e9ho modulu listener, pou\u017e\u00edv\u00e1te-li funkci servlet-3.1. (Operace: {0} | Listener: {1} | Aplikace: {2})
+Unsupported.op.from.servlet.context.listener.31.explanation=N\u011bkter\u00e9 operace nelze spustit z modulu listener p\u0159idan\u00e9ho z programu, proto\u017ee nen\u00ed k dispozici \u017e\u00e1dn\u00e1 volba konfigurace, kter\u00e1 by omezila jejich spou\u0161t\u011bn\u00ed, kdy\u017e jsou definovan\u00e9 v deskriptoru TLD (Tag Library Descriptor).
+Unsupported.op.from.servlet.context.listener.31.useraction=Aby bylo mo\u017en\u00e9 tuto metodu spou\u0161t\u011bt, p\u0159idejte p\u0159\u00edslu\u0161n\u00fd modul listener pomoc\u00ed anotace nebo v souboru web.xml.
+# --------------------------------
+# 
+# Notes for translation:
+# {0} is the application name
+handlerClass.is.null==SRVE9003E: P\u0159edan\u00fd objekt HttpUpgradeHandler m\u00e1 hodnotu ve webov\u00fdch aplikac\u00edch hodnotu null: {0}.
+handlerClass.is.null.explanation=Upgrade pro po\u017eadavek se nezda\u0159il, proto\u017ee p\u0159edan\u00fd objekt HttpUpgradeHandler m\u00e1 hodnotu Null.
+handlerClass.is.null.useraction= Ujist\u011bte se, \u017ee je poskytnut spr\u00e1vn\u00fd objekt HttpUpgradeHandler.
+# --------------------------------
+# -------------------------------- -------------------------------- --------------------------------
+# Following messages are added for Read and Write Listener per Java Servlet Specification 
+# -------------------------------- -------------------------------- --------------------------------
+readlistener.is.null=SRVE9004E: Pokus nastavit objekt ReadListener se nezda\u0159il, proto\u017ee objekt ReadListener m\u00e1 hodnotu null.
+readlistener.is.null.explanation=Argument prom\u011bnn\u00e9 p\u0159edan\u00fd do rozhran\u00ed setReadListener mus\u00ed b\u00fdt platn\u00fdm objektem ReadListener.
+readlistener.is.null.useraction=Upravte k\u00f3d aplikace v souladu s vysv\u011btlen\u00edm chyby.
+# --------------------------------
+writelistener.is.null=SRVE9005E: Pokus nastavit objekt WriteListener se nezda\u0159il, proto\u017ee objekt WriteListener m\u00e1 hodnotu null.
+writelistener.is.null.explanation=Argument prom\u011bnn\u00e9 p\u0159edan\u00fd do rozhran\u00ed WriteListener mus\u00ed b\u00fdt platn\u00fdm objektem WriteListener.
+writelistener.is.null.useraction=Upravte k\u00f3d aplikace v souladu s vysv\u011btlen\u00edm chyby.
+# --------------------------------
+readlistener.async.not.started=SRVE9006E: Pokus nastavit objekt ReadListener se nezda\u0159il, proto\u017ee p\u0159idru\u017een\u00fd po\u017eadavek nem\u00e1 spu\u0161t\u011bnou metodu async, nebo nebyl tento po\u017eadavek upgradov\u00e1n.
+readlistener.async.not.started.explanation=Objekt ReadListener m\u016f\u017eete v po\u017eadavku nastavit pouze v p\u0159\u00edpad\u011b, \u017ee je spu\u0161t\u011bna metoda async, nebo vol\u00e1te-li metodu init rutiny UpgradeHandler.
+readlistener.async.not.started.useraction=Upravte k\u00f3d aplikace v souladu s vysv\u011btlen\u00edm chyby.
+# --------------------------------
+writelistener.async.not.started=SRVE9007E: Pokus nastavit objekt WriteListener se nezda\u0159il, proto\u017ee p\u0159idru\u017een\u00fd po\u017eadavek nem\u00e1 spu\u0161t\u011bnou metodu async, nebo nebyl tento po\u017eadavek upgradov\u00e1n.
+writelistener.async.not.started.explanation=Objekt WriteListener m\u016f\u017eete nastavit v po\u017eadavku pouze v p\u0159\u00edpad\u011b, \u017ee je spu\u0161t\u011bna metoda async nebo \u017ee jste volali metodu init rutiny UpgradeHandler.
+writelistener.async.not.started.useraction=Upravte k\u00f3d aplikace v souladu s vysv\u011btlen\u00edm chyby.
+# --------------------------------
+readlistener.already.started=SRVE9008E: Pokus nastavit objekt ReadListener se nezda\u0159il, proto\u017ee je objekt ReadListener ji\u017e nastaven.
+readlistener.already.started.explanation=Objekt ReadListener nelze nastavit v\u00edce ne\u017e jednou.
+readlistener.already.started.useraction=Upravte k\u00f3d aplikace v souladu s vysv\u011btlen\u00edm chyby.
+# --------------------------------
+writelistener.already.started=SRVE9009E: Pokus nastavit objekt WriteListener se nezda\u0159il, proto\u017ee je objekt WriteListener ji\u017e nastaven.
+writelistener.already.started.explanation=Objekt WriteListener nelze nastavit v\u00edce ne\u017e jednou.
+writelistener.already.started.useraction=Upravte k\u00f3d aplikace v souladu s vysv\u011btlen\u00edm chyby.
+# --------------------------------
+read.failed.isReady.false=SRVE9010E: Pokus o \u010dten\u00ed se nezda\u0159il, proto\u017ee rozhran\u00ed isReady API vr\u00e1tilo hodnotu false.
+read.failed.isReady.false.explanation= Pokud rozhran\u00ed isReady vr\u00e1t\u00ed hodnotu false, je neplatn\u00e9 volat metodu read.
+read.failed.isReady.false.useraction= Upravte k\u00f3d aplikace v souladu s vysv\u011btlen\u00edm chyby.
+# --------------------------------
+# -------------------------------- -------------------------------- --------------------------------
+# Following messages for read in SRTUpgradeInputStream31 and write in SRTOutputStream31 per OutputStream Java doc
+# -------------------------------- -------------------------------- --------------------------------
+read.write.bytearray.null=SRVE9011E: Pokus o \u010dten\u00ed z proudu InputStream, nebo o z\u00e1pis do proudu OutputStream se nezda\u0159il, proto\u017ee byte[] argumentu prom\u011bnn\u00e9 m\u011bl hodnotu null.
+read.write.bytearray.null.explanation=Byte[] argumentu prom\u011bnn\u00e9 p\u0159edan\u00fd do rozhran\u00ed API pro \u010dten\u00ed nebo z\u00e1pis nesm\u00ed m\u00edt hodnotu null.
+read.write.bytearray.null.useraction=Upravte k\u00f3d aplikace v souladu s vysv\u011btlen\u00edm chyby.
+# --------------------------------
+# 
+# Notes for translation:
+# {0} is the offset as number
+# {1} is the length as number
+# {2} is the array length as number
+read.write.offset.length.bytearraylength= SRVE9012E: Pokud o \u010dten\u00ed nebo z\u00e1pis se nezda\u0159il, proto\u017ee jeden z argument\u016f prom\u011bnn\u00e9 pro offset {0} nebo d\u00e9lku {1} je z\u00e1porn\u00fd, nebo proto\u017ee je sou\u010det offset+d\u00e9lka v\u011bt\u0161\u00ed ne\u017e zadan\u00e1 d\u00e9lka byte[]: {2}.
+read.write.offset.length.bytearraylength.explanation= Bu\u010f byl offset argument\u016f prom\u011bnn\u00e9 z\u00e1porn\u00fd, nebo d\u00e9lka byla z\u00e1porn\u00e1, nebo byla d\u00e9lka v\u011bt\u0161\u00ed rozd\u00edl d\u00e9lky a offsetu v byte[].
+read.write.offset.length.bytearraylength.useraction=Upravte k\u00f3d aplikace a ov\u011b\u0159te, \u017ee hodnota offsetu poskytnut\u00e1 do rozhran\u00ed API pro \u010dten\u00ed nebo z\u00e1pis nem\u00e1 z\u00e1pornou hodnotu. D\u00e1le se ujist\u011bte, \u017ee hodnota d\u00e9lky poskytovan\u00e1 do rozhran\u00ed API nem\u00e1 z\u00e1pornou hodnotu. A ujist\u011bte se tak\u00e9, \u017ee zadan\u00e1 hodnota d\u00e9lky nen\u00ed v\u011bt\u0161\u00ed ne\u017e hodnota rozd\u00edlu d\u00e9lky a offsetu v byte[].
+# --------------------------------
+# -------------------------------- --------------------------------
+# Following SEVERE messages for SRTInputStream31
+# -------------------------------- --------------------------------
+# 
+# Notes for translation:
+# {0} is the exception as String
+setReadListener.initialread.failed= SRVE9013E: P\u0159i nastavov\u00e1n\u00ed objektu ReadListener v upgradovan\u00e9m po\u017eadavku do\u0161lo p\u0159i po\u010d\u00e1te\u010dn\u00edm \u010dten\u00ed k v\u00fdjimce: {0}
+setReadListener.initialread.failed.explanation=P\u0159i nastavov\u00e1n\u00ed objektu ReadListener se modul listener pokusil \u010d\u00edst, ale nebyl \u00fasp\u011b\u0161n\u00fd.
+setReadListener.initialread.failed.useraction=Projd\u011bte si protokoly JVM a vyhledejte tuto v\u00fdjimku.
+# --------------------------------
+# -------------------------------- --------------------------------
+# Following SEVERE messages for Session
+# -------------------------------- --------------------------------
+# 
+# Notes for translation:
+# {0} is the path as String
+changeSessionId.no.session.associated.with.request= SRVE9014E: Pokus zm\u011bnit ID relace se nezda\u0159il, proto\u017ee k po\u017eadavku pro {0} nen\u00ed p\u0159idru\u017eena \u017e\u00e1dn\u00e1 relace.
+changeSessionId.no.session.associated.with.request.explanation=Chcete-li zm\u011bnit ID relace po\u017eadavku, ujist\u011bte se nejprve, zda m\u00e1 pou\u017eit\u00fd po\u017eadavek p\u0159idru\u017eenou relaci.
+changeSessionId.no.session.associated.with.request.useraction=Upravte k\u00f3d aplikace v souladu s vysv\u011btlen\u00edm chyby.
+# --------------------------------
+# -------------------------------- --------------------------------
+# Following SEVERE messages for AysncContext31Impl
+# -------------------------------- --------------------------------
+# 
+# Notes for translation:
+# Do not translate the following terms: AsyncContext.dispatch(),AsyncContext.complete(),AsyncContext.getRequest(),AsyncContext.getResponse(), IllegalStateException, complete(), dispatch()
+asynccontext.getRequestResponse.illegalstateexception= SRVE9015E: Nelze z\u00edskat objekt po\u017eadavku nebo odezvy po proveden\u00ed AsyncContext.dispatch() nebo AsyncContext.complete().
+asynccontext.getRequestResponse.illegalstateexception.explanation= Po\u010d\u00ednaje verz\u00ed Servlet 3.1 AsyncContext.getRequest() a AsyncContext.getResponse() se mus\u00ed vydat v\u00fdjimka IllegalStateException, do\u0161lo-li k vol\u00e1n\u00ed jak\u00e9koliv metody complete() nebo dispatch() z asynchronn\u00edho cyklu. 
+asynccontext.getRequestResponse.illegalstateexception.useraction=Upravte k\u00f3d aplikace v souladu s vysv\u011btlen\u00edm chyby.
+# ---------------------------------
+#
+# NOTE: Message number SRVE9016E: is used in com.ibm.ws.webcontainer-8.0, see LShimMessages.
+#       Skip to message number SRVE9017 for next message. 
+# 
+# --------------------------------
+# --------------------------------
+stream.is.closed.no.read.write= SRVE9017E: Pokus o \u010dten\u00ed nebo z\u00e1pis se nezda\u0159il, proto\u017ee proud byl zav\u0159en.
+stream.is.closed.no.read.write.explanation=Rozhran\u00ed API pro z\u00e1pis u objektu OutputStream nebo rozhran\u00ed API pro \u010dten\u00ed u objektu InputStream ozn\u00e1milo, \u017ee pokud byl proud zav\u0159en, m\u016f\u017ee b\u00fdt vyd\u00e1na v\u00fdjimka IOException.
+stream.is.closed.no.read.write.useraction=Upravte k\u00f3d aplikace v souladu s vysv\u011btlen\u00edm chyby.
+# -----------------------------------------------
+# -------------------------------- --------------------------------
+# Following SEVERE messages for AysncContext31Impl
+# -------------------------------- --------------------------------
+#
+# Notes for translation:
+# Do not translate the following terms: content-length
+post.body.contains.less.bytes.than.specified=SRVE0216E: T\u011blo p\u0159\u00edsp\u011bvku obsahuje m\u00e9n\u011b bajt\u016f, ne\u017e uv\u00e1d\u00ed d\u00e9lka obsahu.
+post.body.contains.less.bytes.than.specified.explanation=P\u0159\u00edchoz\u00ed po\u017eadavek m\u016f\u017ee b\u00fdt nespr\u00e1vn\u011b zformovan\u00fd nebo po\u0161kozen\u00fd, co\u017e by mohlo b\u00fdt v\u00fdsledkem chyby aplikace na stran\u011b klienta nebo chyby s\u00edt\u011b.
+post.body.contains.less.bytes.than.specified.useraction=Projd\u011bte aplikaci na stran\u011b klienta nebo s\u00ed\u0165 a ur\u010dete, pro\u010d byl po\u017eadavek zkr\u00e1cen.
+# --------------------------------
+#
+# NOTE: Message number SRVE9018E is used as SRV0216E in com.ibm.ws.webcontainer-8.0, see Messages.nlsprops.
+#       Skip to message number SRVE9018 for next message. 
+# 
+# --------------------------------
+# 
+# Notes for translation:
+# {0} WriteListener class name
+# 
+blocking.write.not.allowed=SRVE0918E: Pokus o blokuj\u00edc\u00ed z\u00e1pis nen\u00ed povolen, proto\u017ee aplikace registruj\u00edc\u00ed WriteListener [{0}] ji\u017e spustila neblokuj\u00edc\u00ed I/O.
+blocking.write.not.allowed.explanation=Po\u017eadovan\u00fd blokuj\u00edc\u00ed z\u00e1pis nelze dokon\u010dit, proto\u017ee je ji\u017e spu\u0161t\u011bno neblokuj\u00edc\u00ed I/O.
+blocking.write.not.allowed.useraction=Zkontrolujte aplikaci a ur\u010dete m\u00edsto, kde do\u0161lo k blokuj\u00edc\u00edmu z\u00e1pisu. M\u016f\u017ee nap\u0159\u00edklad poch\u00e1zet ze servletu po registraci modulu WriteListener, nebo z modulu WriteListener, kter\u00fd prov\u00e1d\u00ed druh\u00fd z\u00e1pis po vol\u00e1n\u00ed rozhran\u00ed API isReady(). A\u017e bude blokuj\u00edc\u00ed z\u00e1pis ur\u010den, zm\u011b\u0148te aplikaci tak, abyste zajistili, \u017ee bude prov\u00e1d\u011bn v r\u00e1mci modulu WriteListener anebo po vol\u00e1n\u00ed rozhran\u00ed isReady().
+# --------------------------------
+# 
+# Notes for translation:
+# {0} WriteListener class name
+# {1} is the Exception String
+#
+writeListener.onError.failed=SRVE0919E: P\u0159i vol\u00e1n\u00ed rozhran\u00ed API onError() modulu WriteListener [{0}] aplikace do\u0161lo k v\u00fdjimce [{1}]
+writeListener.onError.failed.explanation= B\u011bhem vol\u00e1n\u00ed rozhran\u00ed API onError() modulu WriteListener aplikace do\u0161lo k v\u00fdjimce.
+writeListener.onError.failed.useraction=Zkontrolujte protokoly a ur\u010dete, jak\u00e1 v\u00fdjimka byla vr\u00e1cena implementac\u00ed rozhran\u00ed API onError() aplikace a jak tento probl\u00e9m \u0159e\u0161it. Pokud do\u0161lo k v\u00fdjimce I/O, nem\u016f\u017ee rozhran\u00ed API onError() zapsat v\u00fdstup.
+# --------------------------------
+ 

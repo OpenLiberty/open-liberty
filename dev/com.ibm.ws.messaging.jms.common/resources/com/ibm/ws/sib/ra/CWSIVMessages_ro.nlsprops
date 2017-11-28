@@ -1,0 +1,1194 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.ra.CWSIVMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIV0001=CWSIV0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you want them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Msgs in the range CWSIV0001-CWSIV0049 belong to class com.ibm.ws.sib.ra.recovery.impl.SibRaXaResourceInfo
+#   - Msgs in the range CWSIV0050-CWSIV0099 belong to class com.ibm.ws.sib.ra.SibRaFactory
+#   - Msgs in the range CWSIV0100-CWSIV0149 belong to class com.ibm.ws.sib.ra.impl.SibRaConnectionFactory
+#   - Msgs in the range CWSIV0150-CWSIV0199 belong to class com.ibm.ws.sib.ra.impl.SibRaConnection
+#   - Msgs in the range CWSIV0200-CWSIV0249 belong to class com.ibm.ws.sib.ra.impl.SibRaDestinationSession
+#   - Msgs in the range CWSIV0250-CWSIV0299 belong to class com.ibm.ws.sib.ra.impl.SibRaConsumerSession
+#   - Msgs in the range CWSIV0300-CWSIV0349 belong to class com.ibm.ws.sib.ra.impl.SibRaConnectionInfo
+#   - Msgs in the range CWSIV0350-CWSIV0399 belong to class com.ibm.ws.sib.ra.impl.SibRaManagedConnectionFactory
+#   - Msgs in the range CWSIV0400-CWSIV0449 belong to class com.ibm.ws.sib.ra.impl.SibRaManagedConnection
+#   - Msgs in the range CWSIV0450-CWSIV0499 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaResourceAdapterImpl
+#   - Msgs in the range CWSIV0500-CWSIV0549 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaActivationSpecImpl
+#   - Msgs in the range CWSIV0550-CWSIV0599 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaEndpointActivation
+#   - Msgs in the range CWSIV0600-CWSIV0649 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaDispatcher
+#   - Msgs in the range CWSIV0650-CWSIV0699 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaTransactionalDispatcher
+#   - Msgs in the range CWSIV0700-CWSIV0749 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaConsumerSession
+#   - Msgs in the range CWSIV0750-CWSIV0799 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaStaticDestinationEndpointActivation
+#   - Msgs in the range CWSIV0800-CWSIV0849 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaDynamicDestinationEndpointActivation
+#   - Msgs in the range CWSIV0850-CWSIV0899 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaEndpointInvokerImpl
+#   - Msgs in the range CWSIV0900-CWSIV0949 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaListener
+#   - Msgs in the range CWSIV0950-CWSIV0999 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaMessagingEngineConnection
+#   - Msgs in the range CWSIV1000-CWSIV1049 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaDispatchEndpointActivation
+#   - Msgs in the range CWSIV1050-CWSIV1099 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaDispatchTarget
+#   - Msgs in the range CWSIV1100-CWSIV1149 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaSingleProcessListener
+#   - Msgs in the range CWSIV1150-CWSIV1199 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaMultiProcessListener
+#   - Msgs in the range CWSIV1200-CWSIV1249 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaSynchronizedDispatcher
+#   - CWSIV9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+#
+# cmvc_en_version_level=1.29,0,05/04/28,09:28:22
+#
+#CMVCPATHNAME com.ibm.ws.messaging.jms/resources/com/ibm/ws/sib/ra/CWSIVMessages.nlsprops
+#COMPONENTPREFIX CWSIV
+#COMPONENTNAMEFOR CWSIV SIBus Resource Adapter
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} the security alias that could not be resolved
+RECOVERY_ALIAS_NOT_RESOLVED_CWSIV0001=CWSIV0001W: A e\u015fuat rezolvarea aliasului de securitate {0} \u00een timpul proces\u0103rii de recuperare.
+RECOVERY_ALIAS_NOT_RESOLVED_CWSIV0001.explanation=Un alias de securitate a fost specificat pe resursa pentru care are loc procesul de recuperare \u015fi care nu a putut fi rezolvat.  Procesarea va continua cu un nume de utilizator \u015fi o parol\u0103 nul\u0103.
+RECOVERY_ALIAS_NOT_RESOLVED_CWSIV0001.useraction=Verifica\u0163i faptul c\u0103 aliasul specificat este definit pentru serverul de aplica\u0163ii unde are loc procesul de recuperare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was received
+CONNECTION_FACTORY_EXCEPTION_CWSIV0050=CWSIV0050E: A ap\u0103rut o eroare intern\u0103. Excep\u0163ia {0} a fost primit\u0103 de la runtime-ul JCA \u00een timpul \u00eencerc\u0103rii de ob\u0163inere a fabricii de conexiuni.
+CONNECTION_FACTORY_EXCEPTION_CWSIV0050.explanation=\u00cen timpul \u00eencerc\u0103rii de a ob\u0163ine un SICoreConnectionFactory prin runtime-ul JCA s-a primit o excep\u0163ie nea\u015fteptat\u0103.
+CONNECTION_FACTORY_EXCEPTION_CWSIV0050.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection factory that was returned
+INCORRECT_FACTORY_TYPE_CWSIV0051=CWSIV0051E: A ap\u0103rut o eroare intern\u0103. Fabrica de conexiuni primit\u0103 de la runtime-ul JCA {0} nu implementeaz\u0103 SICoreConnectionFactory.
+INCORRECT_FACTORY_TYPE_CWSIV0051.explanation=Fabrica de conexiuni primit\u0103 de la runtime-ul JCA runtime nu a implementat SICoreConnectionFactory dup\u0103 cum s-a a\u015fteptat.
+INCORRECT_FACTORY_TYPE_CWSIV0051.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the invalid value
+# {1} the name of the property
+# {2} the first valid value
+# {3} the second valid value
+INVALID_PROPERTY_CWSIV0052=CWSIV0052E: Valoarea {0} nu este valid\u0103 pentru proprietatea fabric\u0103 de conexiuni {1} Valori valide sunt {2} \u015fi {3}.
+INVALID_PROPERTY_CWSIV0052.explanation=Mapa de propriet\u0103\u0163i pasat\u0103 metodei getConnectionFactory de peSICoreConnectionFactorySelector con\u0163inea o valoare incorect\u0103 pentru proprietatea dat\u0103.
+INVALID_PROPERTY_CWSIV0052.useraction=Asigura\u0163i-v\u0103 c\u0103 setul de propriet\u0103\u0163i pasate metodei getConnectionFactory de pe SICoreConnectionFactorySelector este valid.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the property
+# {1} the required type
+INVALID_PROPERTY_TYPE_CWSIV0053=CWSIV0053E: Proprietatea fabric\u0103 de conexiuni {0} nu este de tipul necesar {1}.
+INVALID_PROPERTY_TYPE_CWSIV0053.explanation=Mapa de propriet\u0103\u0163i pasat\u0103 metodei getConnectionFactory de peSICoreConnectionFactorySelector con\u0163inea o valoare pentru proprietatea dat\u0103 care nu era de tipul cerut.
+INVALID_PROPERTY_TYPE_CWSIV0053.useraction=Asigura\u0163i-v\u0103 c\u0103 setul de propriet\u0103\u0163i pasate metodei getConnectionFactory de pe SICoreConnectionFactorySelector este valid.
+
+# -------------------------------------------------------------------------------------------------
+ALIAS_REQUIRED_CWSIV0054=CWSIV0054E: Propriet\u0103\u0163ile fabric\u0103 de conexiune trebuie s\u0103 con\u0163in\u0103 o valoare pentru CONTAINER_AUTHENTICATION_ALIAS.
+ALIAS_REQUIRED_CWSIV0054.explanation=Mapa de propriet\u0103\u0163i pasat\u0103 metodei getConnectionFactory de pe SICoreConnectionFactorySelector a cerut ca containerul s\u0103 furnizeze acredit\u0103ri folosind maparea principal\u0103 implicit\u0103 dar nu a specificat un alias de autentificare a containerului.
+ALIAS_REQUIRED_CWSIV0054.useraction=Asigura\u0163i-v\u0103 c\u0103 setul de propriet\u0103\u0163i pasate metodei getConnectionFactory de pe SICoreConnectionFactorySelector con\u0163ine o valoare pentru CONTAINER_AUTHENTICATION_ALIAS.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the invalid value
+# {1} the name of the property
+# {2} the first valid value
+# {3} the second valid value
+INVALID_PROPERTY_CWSIV0055=CWSIV0055E: Valoarea {0} nu este valid\u0103 pentru proprietatea fabric\u0103 de conexiuni {1} Valori valide sunt {2} \u015fi {3}.
+INVALID_PROPERTY_CWSIV0055.explanation=Mapa de propriet\u0103\u0163i pasat\u0103 metodei getConnectionFactory de pe SICoreConnectionFactorySelector con\u0163inea o valoare incorect\u0103 pentru proprietatea dat\u0103.
+INVALID_PROPERTY_CWSIV0055.useraction=Asigura\u0163i-v\u0103 c\u0103 setul de propriet\u0103\u0163i pasate metodei getConnectionFactory de pe SICoreConnectionFactorySelector este valid.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection that was returned
+# {1} the expected type for the connection
+INCORRECT_CONNECTION_TYPE_CWSIV0101=CWSIV0101E: A ap\u0103rut o eroare intern\u0103. Managerul de conexiuni JCA a returnat o conexiune {0} care nu era de tipul a\u015fteptat {1}.
+INCORRECT_CONNECTION_TYPE_CWSIV0101.explanation=\u00cen timpul \u00eencerc\u0103rii de a ob\u0163ine o conexiune prin managerul de conexiuni JCA, a fost returnat\u0103 o conexiune de tip nea\u015fteptat.
+INCORRECT_CONNECTION_TYPE_CWSIV0101.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+ACTIVE_LOCAL_TRAN_CWSIV0150=CWSIV0150E: O SIUncoordinatedTransaction nu a fost completat\u0103.
+ACTIVE_LOCAL_TRAN_CWSIV0150.explanation=O \u00eencercare a fost f\u0103cut\u0103 pentru crearea unei noi SIUncoordinatedTransaction c\u00e2nd cea curent\u0103 nu a fost finalizat\u0103.
+ACTIVE_LOCAL_TRAN_CWSIV0150.useraction=Asigura\u0163i-v\u0103 c\u0103 s-a realizat comiterea sau derularea \u00eeanpoi pentru SIUncoordinatedTransaction curent\u0103 \u00eenainte de a crea una nou\u0103.
+
+# -------------------------------------------------------------------------------------------------
+ACTIVE_CONTAINER_TRAN_CWSIV0151=CWSIV0151E: Exist\u0103 o tranzac\u0163ie gestinoat\u0103 din container pe firul de execu\u0163ie.
+ACTIVE_CONTAINER_TRAN_CWSIV0151.explanation=O \u00eencercare a fost f\u0103cut\u0103 pentru crearea unei noi SIUncoordinatedTransaction \u00een timp ce o tranzac\u0163ie gestionat\u0103 de container era pe firul de execu\u0163ie.
+ACTIVE_CONTAINER_TRAN_CWSIV0151.useraction=Modifica\u0163i aplica\u0163ia astfel \u00eenc\u00e2t apelarea este f\u0103cut\u0103 \u00eentr-un mediu unde nu exist\u0103 nicio tranzac\u0163ie gestionat\u0103 de container pe firul de execu\u0163ie.
+
+# -------------------------------------------------------------------------------------------------
+XARESOURCE_NOT_SUPPORTED_CWSIV0152=CWSIV0152E: Crearea unei resurse SIXAResource nu este suportat\u0103.
+XARESOURCE_NOT_SUPPORTED_CWSIV0152.explanation=Crearea unui SIXAResource nu este suportat\u0103 atunci c\u00e2nd se folose\u015fte implementarea RA_CONNECTION a nucleului Platform Messaging SPI deoarece tranzac\u0163iile globale sunt tratate de adaptorul de resurse.
+XARESOURCE_NOT_SUPPORTED_CWSIV0152.useraction=Dac\u0103 aplica\u0163ia trebuie s\u0103 manevreze tranzac\u0163ii globale in mod explicit, atunci folosi\u0163i o implementare diferit\u0103 a nucleului Platform Messaging SPI, altfel \u00eenl\u0103tura\u0163i apelarea getSIXAResource.
+
+# -------------------------------------------------------------------------------------------------
+CLONE_NOT_SUPPORTED_CWSIV0153=CWSIV0153E: Clonarea unei conexiuni nu este suportat\u0103.
+CLONE_NOT_SUPPORTED_CWSIV0153.explanation=Clonarea unei conexiuni nu este suportat\u0103 c\u00e2nd se folose\u015fte implementarea RA_CONNECTION a nucleului SPI.
+CLONE_NOT_SUPPORTED_CWSIV0153.useraction=Ave\u0163i \u00een vedere dac\u0103 clonarea unei conexiuni este necesar\u0103 sau dac\u0103 este suficient\u0103 crearea unei alte conexiuni.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection manager
+LAZY_ENLIST_NOT_SUPPORTED_CWSIV0154=CWSIV0154E: A ap\u0103rut o eroare intern\u0103. Managerul de conexiuni {0} nu suport\u0103 \u00eenrolare lene\u015f\u0103.
+LAZY_ENLIST_NOT_SUPPORTED_CWSIV0154.explanation=Conexiunea curent\u0103 a fost disociat\u0103 din conexiunea ei gestionat\u0103 dar managerul de conexiuni nu suport\u0103 \u00eenrolare lene\u015f\u0103 pentru ca reasocierea s\u0103 aib\u0103 loc.
+LAZY_ENLIST_NOT_SUPPORTED_CWSIV0154.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+REASSOCIATION_FAILED_CWSIV0155=CWSIV0155E: A ap\u0103rut o eroare intern\u0103. Exce\u0163ia {0} a fost aruncat\u0103 \u00een timpul \u00eencerc\u0103rii reasocierii ei cu o conexiune gestionat\u0103.
+REASSOCIATION_FAILED_CWSIV0155.explanation=Conexiunea curent\u0103 a fost disociat\u0103 din conexiunea ei gestionat\u0103 \u015fi excep\u0163ia a fost primit\u0103 \u00een timpul \u00eencerc\u0103rii de reasociere.
+REASSOCIATION_FAILED_CWSIV0155.useraction=Vizualiza\u0163i excep\u0163ia legat\u0103 pentru mai multe informa\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_CONNECTION_CWSIV0156=CWSIV0156E: Conexiunea a fost invalidat\u0103.
+INVALID_CONNECTION_CWSIV0156.explanation=O eroare anterioar\u0103 a cauzat conexiune s\u0103 nu mai fie valid\u0103.
+INVALID_CONNECTION_CWSIV0156.useraction=Verifica\u0163i istoricele de eroare pentru a determina cauza erorii anterioare.  Aplica\u0163ia ar trebui s\u0103 creeze o nou\u0103 conexiune.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONTAINER_TRAN_CWSIV0157=CWSIV0157E: A ap\u0103rut o eroare intern\u0103.  Excep\u0163ia {0} a fost aruncat\u0103 \u00een timpul \u00eencerc\u0103rii de a ob\u0163ine tranzac\u0163ia curent\u0103 de container.
+CONTAINER_TRAN_CWSIV0157.explanation=\u00cen timpul \u00eencerc\u0103rii de a ob\u0163ine tranzac\u0163ia curent\u0103 de container o excep\u0163ie a fost primit\u0103.
+CONTAINER_TRAN_CWSIV0157.useraction=Vizualiza\u0163i excep\u0163ia legat\u0103 pentru mai multe informa\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+ACTIVE_LOCAL_TRAN_CWSIV0158=CWSIV0158E: Exist\u0103 o SIUncoordinatedTransaction asociat\u0103 cu aceast\u0103 conexiune.
+ACTIVE_LOCAL_TRAN_CWSIV0158.explanation=O \u00eencercare a fost f\u0103cut\u0103 pentru folosirea unui parametru null de tranzac\u0163ie c\u00e2t timp exist\u0103 un SIUncoordinatedTransaction asociat cu aceast\u0103 conexiune.
+ACTIVE_LOCAL_TRAN_CWSIV0158.useraction=Fie pasa\u0163i SIUncoordinatedTransaction activ ca \u015fi parametru de tranzac\u0163ie, sau face\u0163i commit/rollback \u00eenainte de a pasa null.
+
+# -------------------------------------------------------------------------------------------------
+INCORRECT_LOCAL_TRAN_CWSIV0159=CWSIV0159E: SIUncoordinatedTransaction activ\u0103 asociat\u0103 cu aceast\u0103 conexiune nu a fost transmis\u0103.
+INCORRECT_LOCAL_TRAN_CWSIV0159.explanation=A fost f\u0103cut\u0103 o \u00eencercare de a folosi un SIUncoordinatedTransaction ca \u015fi parametru de tranzac\u0163ie c\u00e2nd exist\u0103 un SIUncoordinatedTransaction activ diferit asociat cu aceast\u0103 conexiune.
+INCORRECT_LOCAL_TRAN_CWSIV0159.useraction=Asigura\u0163i-v\u0103 c\u0103 aplica\u0163ia paseaz\u0103 prezentul SIUncoordinatedTransaction activ asociat cu conexiunea este null dac\u0103 opera\u0163ia va fi cumva realizat\u0103 \u00een afara tranzac\u0163iei.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_XARESOURCE_CWSIV0160=CWSIV0160E: O SIXAResource nu este un parametru de tranzac\u0163ie valid.
+INVALID_XARESOURCE_CWSIV0160.explanation=Utilizarea unui SIXAResource ca \u015fi parametru de tranzac\u0163ie nu este suportat atunci c\u00e2nd se folose\u015fte o implementare RA_CONNECTION a nucleului Platform Messaging SPI deoarece tranzac\u0163iile globale sunt tratate de adaptorul de resurse.
+INVALID_XARESOURCE_CWSIV0160.useraction=Dac\u0103 aplica\u0163ia trebuie s\u0103 trateze tranzac\u0163ii globale explicit, folosi\u0163i o implementare diferit\u0103 a nucleului Platform Messaging SPI, altfel pasa\u0163i null ca \u015fi parametru de tranzac\u0163ie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the transaction parameter
+UNRECOGNISED_TRAN_CWSIV0161=CWSIV0161E: Parametrul de tranzac\u0163ie {0} nu era de un tip recunoscut.
+UNRECOGNISED_TRAN_CWSIV0161.explanation=Obiectul pasat ca \u015fi parametru de tranzac\u0163ie nu a fost un tip recunoscut.
+UNRECOGNISED_TRAN_CWSIV0161.useraction=Asigura\u0163i-v\u0103 c\u0103 parametrul de tranzac\u0163ii este fie null, fie unSIUncoordinatedTransaction ob\u0163inut din aceast\u0103 conexiune sau un SibRaAutoCommitTransaction.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONTAINER_COMMIT_FAILED_CWSIV0162=CWSIV0162E: A ap\u0103rut o eroare intern\u0103.  Excep\u0163ia {0} a fost aruncat\u0103 \u00een timp ce containerul a \u00eencercat s\u0103 comit\u0103 o tranzac\u0163ie local\u0103 a aplica\u0163iei.
+CONTAINER_COMMIT_FAILED_CWSIV0162.explanation=Containerul a detectat o tranzac\u0163ie de rezolvat local\u0103 a aplica\u0163iei la sf\u00e2r\u015fitul unui domeniu partajat \u015fi o excep\u0163ie a fost creat\u0103 la \u00eencercarea de a o comite.
+CONTAINER_COMMIT_FAILED_CWSIV0162.useraction=Vizualiza\u0163i excep\u0163ia legat\u0103 pentru mai multe informa\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONTAINER_ROLLBACK_FAILED_CWSIV0163=CWSIV0163E: A ap\u0103rut o eroare intern\u0103.  Excep\u0163ia {0} a fost aruncat\u0103 \u00een timp ce containerul \u00eencerca s\u0103 anuleze o tranzac\u0163ie local\u0103 a aplica\u0163iei.
+CONTAINER_ROLLBACK_FAILED_CWSIV0163.explanation=Containerul a detectat o tranzac\u0163ie de rezolvat local\u0103 a aplica\u0163iei \u015fi o excep\u0163ie a fost creat\u0103 la \u00eencercarea de a o anula.
+CONTAINER_ROLLBACK_FAILED_CWSIV0163.useraction=Vizualiza\u0163i excep\u0163ia legat\u0103 pentru mai multe informa\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_SESSION_CWSIV0200=CWSIV0200E: Conexiunea de la care a fost creat\u0103 aceast\u0103 sesiune a fost invalidat\u0103.
+INVALID_SESSION_CWSIV0200.explanation=O eroare anterioar\u0103 a facut ca aceast\u0103 conexiune s\u0103 nu mai fie valid\u0103.
+INVALID_SESSION_CWSIV0200.useraction=Verifica\u0163i istoricele de erori pentru a determina cauza erorii anterioare.  Aplica\u0163ia ar trebui s\u0103 creeze o nou\u0103 conexiune \u015fi sesiune.
+
+# -------------------------------------------------------------------------------------------------
+ASYNCHRONOUS_METHOD_CWSIV0250=CWSIV0250E: Metodele \u00eenrudite cu recep\u0163ia mesajelor asincron nu sunt suportate.
+ASYNCHRONOUS_METHOD_CWSIV0250.explanation=Utilizarea de metode ConsumerSession rela\u0163ionate de recep\u0163iile asincrone nu sunt suportate atunci c\u00e2nd se folose\u015fte implementarea RA_CONNECTION nucleului Platform Messaging SPI.
+ASYNCHRONOUS_METHOD_CWSIV0250.useraction=Dac\u0103 recep\u0163ia asincron\u0103 de mesaje este necesar\u0103, folosi\u0163i o implementare diferit\u0103 a nucleului Platform Messaging SPI.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONNECTION_CREATION_CWSIV0300=CWSIV0300E: A ap\u0103rut o eroare intern\u0103. Excep\u0163ia {0} a fost aruncat\u0103 \u00een timpul \u00eencerc\u0103rii de a crea o conexiune la motorul de mesagerie.
+CONNECTION_CREATION_CWSIV0300.explanation=O excep\u0163ie a fost primt\u0103 \u00een timpul \u00eencerc\u0103rii de a crea o conexiune la motorul de mesagerie.
+CONNECTION_CREATION_CWSIV0300.useraction=Vizualiza\u0163i excep\u0163ia legat\u0103 pentru mai multe informa\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONNECTION_FACTORY_ERROR_CWSIV0350=CWSIV0350E: A ap\u0103rut o eroare intern\u0103. Excep\u0163ia {0} a fost aruncat\u0103 \u00een timpul \u00eencerc\u0103rii de a crea un nucleu de fabrici de conexiuni SPI.
+CONNECTION_FACTORY_ERROR_CWSIV0350.explanation=O excep\u0163ie a fost creat\u0103 \u00een timpul \u00eencerc\u0103rii de a crea un nucleu de fabrici de conexiuni SPI folosind tipul de fabric\u0103 TRM_CONNECTION.
+CONNECTION_FACTORY_ERROR_CWSIV0350.useraction=Vizualiza\u0163i excep\u0163ia legat\u0103 pentru mai multe informa\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+NON_MANAGED_ENVIRONMENT_CWSIV0351=CWSIV0351E: Crearea unei fabrici de conexiuni \u00eentr-un mediu care nu este gestionat nu este suportat\u0103.
+NON_MANAGED_ENVIRONMENT_CWSIV0351.explanation=Crearea unei fabrici de conexiuni nu este suportat\u0103 \u00eenr-un mediu care nu este gestionat c\u00e2nd se folose\u015fte implementarea RA_CONNECTION nucleului SPI deoarece este nevoie de un manager de conexiuni pentru a furniza un suport de tranzac\u0163ii a containerelor.
+NON_MANAGED_ENVIRONMENT_CWSIV0351.useraction=\u00centr-un mediu care nu este gestionat crea\u0163i o fabric\u0103 de conexiuni folosind un SICoreConnectionFactorySelector cu un FactoryType altul dec\u00e2t RA_CONNECTION.
+
+# -------------------------------------------------------------------------------------------------
+NULL_REQUEST_INFO_CWSIV0352=CWSIV0352E: A ap\u0103rut o eroare intern\u0103. Informa\u0163iile de cerere a conexiunii sunt necesare pentru crearea unei conexiuni gestionate.
+NULL_REQUEST_INFO_CWSIV0352.explanation=Managerul de conexiuni a \u00eencercat crearea unei conexiuni gestionate f\u0103r\u0103 specificarea vreunei informa\u0163ii de cerere a conexiunii.
+NULL_REQUEST_INFO_CWSIV0352.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONNECTION_CLONE_CWSIV0353=CWSIV0353E: A ap\u0103rut o eroare intern\u0103. Excep\u0163ia {0} a fost aruncat\u0103 \u00een timpul \u00eencerc\u0103rii de a clona o conexiune la motorul de mesagerie.
+CONNECTION_CLONE_CWSIV0353.explanation=O excep\u0163ie a fost creat\u0103 \u00een timpul \u00eencerc\u0103rii de a clona o conexiune cu motorul de mesagerie \u00een timpul cre\u0103rii unuei conexiuni gestionate.
+CONNECTION_CLONE_CWSIV0353.useraction=Vizualiza\u0163i excep\u0163ia legat\u0103 pentru mai multe informa\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection request information object passed
+# {1} the expected type for the object
+UNRECOGNISED_REQUEST_INFO_CWSIV0354=CWSIV0354E: A ap\u0103rut o eroare intern\u0103. Obiectele de tip informa\u0163i de cerere a conexiunilor {0} nu au fost de tipul a\u015fteptat {1}.
+UNRECOGNISED_REQUEST_INFO_CWSIV0354.explanation=Obiectul trecut ca \u015fi parametru de tip informa\u0163ii de cerere a conexiunilor nu erau de tipul a\u015fteptat.
+UNRECOGNISED_REQUEST_INFO_CWSIV0354.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CREATE_MANAGED_CONNECTION_CWSIV0355=CWSIV0355E: A ap\u0103rut o eroare intern\u0103. \u00cen timpul cre\u0103rii conexiunii gestionate a fost aruncat\u0103 urm\u0103toarea excep\u0163ie: {0}
+CREATE_MANAGED_CONNECTION_CWSIV0355.explanation=A fost creat\u0103 o excep\u0163ie \u00een timpul \u00eencerc\u0103rii de a crea o conexiune gestionat\u0103.
+CREATE_MANAGED_CONNECTION_CWSIV0355.useraction=Vizualiza\u0163i excep\u0163ia legat\u0103 pentru mai multe informa\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the JCA exception
+CONNECTION_ERROR_RETRY_CWSIV0356=CWSIV0356W: Urm\u0103toarea eroare de Conexiune JCA a avut loc la \u00eencercarea de ob\u0163inere a conexiunii. Extragerea conexiunii va fi re\u00eencercat\u0103. Excep\u0163ia este {0}.
+CONNECTION_ERROR_RETRY_CWSIV0356.explanation=O eroare a fost prins\u0103 \u00een timpul ob\u0163inerii conexiunii. Sistemul va epura conexiunea dup\u0103 care va \u00eencerca ob\u0163inerea unei noi conexiuni.
+CONNECTION_ERROR_RETRY_CWSIV0356.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection request information object passed
+# {1} the expected type for the object
+UNRECOGNISED_REQUEST_INFO_CWSIV0401=CWSIV0401E: A ap\u0103rut o eroare intern\u0103. Obiectele de tip informa\u0163ii de cerere a conexiunilor {0} nu au fost de tipul a\u015fteptat {1}.
+UNRECOGNISED_REQUEST_INFO_CWSIV0401.explanation=Obiectul trecut ca \u015fi parametru de tip informa\u0163ii de cerere a conexiunilor nu erau de tipul a\u015fteptat.
+UNRECOGNISED_REQUEST_INFO_CWSIV0401.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONNECTION_CLOSE_CWSIV0402=CWSIV0402E: A ap\u0103rut o eroare intern\u0103. Excep\u0163ia {0} a fost aruncat\u0103 \u00een timpul \u00eencerc\u0103rii de a \u00eenchide o conexiune la motorul de mesagerie.
+CONNECTION_CLOSE_CWSIV0402.explanation=O excep\u0163ie a fost creat\u0103 \u00een timpul \u00eencerc\u0103rii de a \u00eenchide o conexiune cu motorul de mesagerie.
+CONNECTION_CLOSE_CWSIV0402.useraction=Vizualiza\u0163i excep\u0163ia legat\u0103 pentru mai multe informa\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection object passed
+# {1} the expected type for the object
+UNRECOGNISED_CONNECTION_CWSIV0403=CWSIV0403E: A ap\u0103rut o eroare intern\u0103. Obiectul de conexiune {0} nu a fost de tipul a\u015fteptat {1}.
+UNRECOGNISED_CONNECTION_CWSIV0403.explanation=Obiectul pasat ca \u015fi parametru de conexiune nu a fost de tipul a\u015fteptat de acest adaptor de resurse.
+UNRECOGNISED_CONNECTION_CWSIV0403.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+ACTIVE_LOCAL_TRAN_CWSIV0404=CWSIV0404E: A ap\u0103rut o eroare intern\u0103. Exist\u0103 deja o tranzac\u0163ie local\u0103 a unui container activ.
+ACTIVE_LOCAL_TRAN_CWSIV0404.explanation=Containerul \u00eencearc\u0103 ini\u0163ierea unei tranzac\u0163ii locale c\u00e2nd exist\u0103 deja una activ\u0103.
+ACTIVE_LOCAL_TRAN_CWSIV0404.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+LOCAL_TRAN_BEGIN_CWSIV0405=CWSIV0405E: A ap\u0103rut o eroare intern\u0103. Excep\u0163ia {0} a fost aruncat\u0103 \u00een timp ce containerul \u00eencerca s\u0103 ini\u0163ieze o tranzac\u0163ie local\u0103.
+LOCAL_TRAN_BEGIN_CWSIV0405.explanation=O excep\u0163ie a fost creat\u0103 \u00een timp ce containerul \u00eencerca s\u0103 ini\u0163ieze o tranzac\u0163ie local\u0103.
+LOCAL_TRAN_BEGIN_CWSIV0405.useraction=Vizualiza\u0163i excep\u0163ia legat\u0103 pentru mai multe informa\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+LOCAL_TRAN_COMMIT_CWSIV0406=CWSIV0406E: A ap\u0103rut o eroare intern\u0103. Excep\u0163ia {0} a fost aruncat\u0103 \u00een timp ce containerul \u00eencerca s\u0103 comit\u0103 o tranzac\u0163ie local\u0103.
+LOCAL_TRAN_COMMIT_CWSIV0406.explanation=O excep\u0163ie a fost creat\u0103 \u00een timp ce containerul \u00eencerca s\u0103 comit\u0103 o tranzac\u0163ie local\u0103.
+LOCAL_TRAN_COMMIT_CWSIV0406.useraction=Vizualiza\u0163i excep\u0163ia legat\u0103 pentru mai multe informa\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+LOCAL_TRAN_ROLLBACK_CWSIV0407=CWSIV0407E: A ap\u0103rut o eroare intern\u0103. Excep\u0163ia {0} a fost aruncat\u0103 \u00een timp ce containerul \u00eencerca s\u0103 anuleze o tranzac\u0163ie local\u0103.
+LOCAL_TRAN_ROLLBACK_CWSIV0407.explanation=O excep\u0163ie a fost creat\u0103 \u00een timp ce containerul \u00eencerca s\u0103 anuleze o tranzac\u0163ie local\u0103.
+LOCAL_TRAN_ROLLBACK_CWSIV0407.useraction=Vizualiza\u0163i excep\u0163ia legat\u0103 pentru mai multe informa\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+XARESOURCE_CREATE_CWSIV0408=CWSIV0408E: A ap\u0103rut o eroare intern\u0103. Excep\u0163ia {0} fost aruncat\u0103 \u00een timpul \u00eencerc\u0103rii de a ob\u0163ine o SIXAResource.
+XARESOURCE_CREATE_CWSIV0408.explanation=O excep\u0163ie an fost creat\u0103 \u00een timpul \u00eencerc\u0103rii de a ob\u0163ine o SIXAResource.
+XARESOURCE_CREATE_CWSIV0408.useraction=Vizualiza\u0163i excep\u0163ia legat\u0103 pentru mai multe informa\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the unexpected activation specification
+# {1} the expected type
+UNEXPECTED_ACTIVATION_SPEC_CWSIV0451=CWSIV0451E: A ap\u0103rut o eroare intern\u0103. Specifica\u0163ia de activare {0} pasat\u0103 activ\u0103rii punctului final nu a fost de tipul a\u015fteptat {1}.
+UNEXPECTED_ACTIVATION_SPEC_CWSIV0451.explanation=Specificarea de activare pasat\u0103 activ\u0103rii punctului final nu a fost de tipul a\u015fteptat de c\u0103tre adaptorul de resurse.
+UNEXPECTED_ACTIVATION_SPEC_CWSIV0451.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the invalid activation specification
+# {1} the exception thrown during validation
+INVALID_ACTIVATION_SPEC_CWSIV0452=CWSIV0452E: Excep\u0163ia {1} a fost aruncat\u0103 \u00een timp ce se \u00eencerca validarea specific\u0103rii de activare {0} \u00een timpul activ\u0103rii punctului final.
+INVALID_ACTIVATION_SPEC_CWSIV0452.explanation=\u00cen timpul activ\u0103rii unui endpoint specificarea de activare dat\u0103 a fost determinat\u0103 s\u0103 fie incorect\u0103.
+INVALID_ACTIVATION_SPEC_CWSIV0452.useraction=Vizualiza\u0163i excep\u0163ia legat\u0103 pentru propriet\u0103\u0163i incorecte \u015fi corecta\u0163i valorile \u00een specifica\u0163iile de activare administrate sau descriptorul de implementare al bean-ului message-driven.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the invalid activation specification
+# {1} the list of messages showing invalid properties
+INVALID_PROPERTIES_CWSIV0501=CWSIV0501E: Urm\u0103toarele probleme au fost g\u0103site la validarea propriet\u0103\u0163ilor definite pe specifica\u0163ia de activare. Problemele sunt {1}. Specifica\u0163iile de activare sunt : {0}
+INVALID_PROPERTIES_CWSIV0501.explanation=\u00cen timpul valid\u0103rii specifica\u0163iilor de activare date una sau mai multe propriet\u0103\u0163i au fost determinate ca fiind incorecte.
+INVALID_PROPERTIES_CWSIV0501.useraction=Corecta\u0163i valorile pentru propriet\u0103\u0163iile date \u00een specifica\u0163iile de activare administrate, sau \u00een configura\u0163iile de activare ale bean-ului message-driven, dup\u0103 care porni\u0163i aplica\u0163ia.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The exception that was thrown
+DEST_FACTORY_CWSIV0502=CWSIV0502E: O eroare intern\u0103.  Urm\u0103toarea excep\u0163ie a fost aruncat\u0103 \u00een timpul \u00eencerc\u0103rii de a ob\u0163ine un SIDestinationAddressFactory: {0}.
+DEST_FACTORY_CWSIV0502.explanation=\u00cen timpul activ\u0103rii punctului final, adaptorul de resurse al nucleului SPI \u00eencerca s\u0103 ob\u0163in\u0103 un SIDestinationAddressFactory \u015fi o excep\u0163ie nea\u015fteptat\u0103 a fost primit\u0103.
+DEST_FACTORY_CWSIV0502.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The exception that was thrown
+WLM_CLASSIFIER_REG_CWSIV0503=CWSIV0503E: A avut loc o eroare intern\u0103 \u00een timpul \u00eenregistr\u0103rii clasificatorului WLM pentru adaptorul de resurse Core SPI: {0}.
+WLM_CLASSIFIER_REG_CWSIV0503.explanation=\u00cen timpul \u00eenregistr\u0103rii a clasificatorului WLM pentru adaptorul de resurse a nucleului SPI cu registrul de handler, o excep\u0163ie nea\u015fteptat\u0103 a fost recep\u0163ionat\u0103.
+WLM_CLASSIFIER_REG_CWSIV0503.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_BUSNAME_CWSIV0504=CWSIV0504E: Numele magistralei pe o specifica\u0163ie de activare Core SPI trebuie s\u0103 primeasc\u0103 o valoare
+INVALID_PROPERTY_BUSNAME_CWSIV0504.explanation=\u00cen timpul valid\u0103rii propriet\u0103\u0163iilor de pe o specifica\u0163ie de activare a nucleului SPI numele magistralei a fost descoperit\u0103 a nu fi valid\u0103.
+INVALID_PROPERTY_BUSNAME_CWSIV0504.useraction=Corecta\u0163i valoarea propriet\u0103\u0163ii numelui de magistral\u0103 de pe specifica\u0163iile de activare apoi reporni\u0163i serverului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is another allowed value
+# {4} is the value of the destination type
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0505=CWSIV0505E: Urm\u0103torul tip de destina\u0163ie pe o specifica\u0163ie de activare Core SPI este nevalid [{4}]. Sunt a\u015fteptate valorile [{0}] sau [{1}] sau [{2}] sau [{3}].
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0505.explanation=\u00cen timpul valid\u0103rii propriet\u0103\u0163ilor configurate pe o specifica\u0163ie de activare a nucleului SPI, tipul destina\u0163iei a fost g\u0103sit ca invalid.
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0505.useraction=Corecta\u0163i valoarea propriet\u0103\u0163ii tipului de destina\u0163ie de pe specifica\u0163iile de activare, apoi reporni\u0163i serverul.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the subscription durability
+INVALID_PROPERTY_SHARE_DURSUB_CWSIV0506=CWSIV0506E: Urm\u0103torul c\u00e2mp de partajare abonament durabil pe o specifica\u0163ie de activare Core SPI este nevalid [{3}]. Valorile [{0}], [{1}] sau [{2}] sunt a\u015fteptate.
+INVALID_PROPERTY_SHARE_DURSUB_CWSIV0506.explanation=\u00cen timpul valid\u0103rii propriet\u0103\u0163iilor configurate pe specifica\u0163iile de activare a nucleului SPI subscrierea durabil\u0103 partajat\u0103 a fost g\u0103sit\u0103 ca fiind invalid\u0103
+INVALID_PROPERTY_SHARE_DURSUB_CWSIV0506.useraction=Corecta\u0163i valoarea propriet\u0103\u0163ii subscrierii durabile partajate pe specifica\u0163iile de activare, apoi reporni\u0163i serverul.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_DURSUBHOME_CWSIV0507=CWSIV0507E: Domiciliul abonamentului durabil pe o specifica\u0163ie de activare Core SPI trebuie s\u0103 aib\u0103 o valoare atunci c\u00e2nd sunt folosite abonamente durabile.
+INVALID_PROPERTY_DURSUBHOME_CWSIV0507.explanation=\u00cen timpul valid\u0103rii a propriet\u0103\u0163iilor configurate pe specifica\u0163iile de activare a nucleului SPI baza subscrierilor durabile a fost g\u0103sit\u0103 ca fiind invalid\u0103
+INVALID_PROPERTY_DURSUBHOME_CWSIV0507.useraction=Corecta\u0163i valoarea propriet\u0103\u0163ii baz\u0103 a subscrierilor durabile de pe specifica\u0163iiile de activare, apoi reporni\u0163i serverul.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the destination type
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0508=CWSIV0508E: Urm\u0103torul tip de destina\u0163ie pe o specifica\u0163ie de activare Core SPI este nevalid [{3}]. Sunt a\u015fteptate valorile [{0}] sau [{1}] sau [{2}].
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0508.explanation=\u00cen timpul valid\u0103rii propriet\u0103\u0163ilor configurate pe o specifica\u0163ie de activare a nucleului SPI, tipul destina\u0163iei a fost g\u0103sit ca invalid. At\u00e2ta timp c\u00e2t nu a fost furnizat niciun nume destina\u0163ie, Subiectele nu sunt permise
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0508.useraction=Corecta\u0163i valoarea pentru proprietatea tipului destina\u0163ie de pe specifica\u0163iile de activare, apoi reporni\u0163i serverul.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_MAXBATCH_CWSIV0509=CWSIV0509E: Dimensiunea maxim\u0103 batch pe o specifica\u0163ie de activare Core SPI trebuie s\u0103 primeasc\u0103 o valoare pozitiv\u0103
+INVALID_PROPERTY_MAXBATCH_CWSIV0509.explanation=\u00cen timpul valid\u0103rii propriet\u0103\u0163ilor configurate pe o specifica\u0163ie de activare a nucleului SPI, m\u0103rimea maxim\u0103 a lotului a fost g\u0103sit\u0103 ca fiind invalid\u0103.
+INVALID_PROPERTY_MAXBATCH_CWSIV0509.useraction=Corecta\u0163i valoarea pentru proprietatea maxim\u0103 a m\u0103rimii lotului de pe specifica\u0163iile de activare, apoi reporni\u0163i serverul.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the deletion mode
+INVALID_PROPERTY_DELETION_MODE_CWSIV0510=CWSIV0510E: Urm\u0103torul mod de \u015ftergere pe o specifica\u0163ie de activare Core SPI este nevalid [{3}]. Sunt a\u015fteptate valorile [{0}] sau [{1}] sau [{2}] .
+INVALID_PROPERTY_DELETION_MODE_CWSIV0510.explanation=\u00cen timpul valid\u0103rii propriet\u0103\u0163ilor configurate pe specifica\u0163iile de activare ale nucleului SPI, modul de \u015ftergere a fost g\u0103sit ca fiind invalid
+INVALID_PROPERTY_DELETION_MODE_CWSIV0510.useraction=Corecta\u0163i valoarea propriet\u0103\u0163ii modului de \u015ftergere de pe specifica\u0163iile de activare, apoi reporni\u0163i serverul.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_MAXCONC_CWSIV0511=CWSIV0511E: Dimensiunea maxim\u0103 de concuren\u0163\u0103 pe o specifica\u0163ie de activare Core SPI trebuie s\u0103 primeasc\u0103 o valoare pozitiv\u0103
+INVALID_PROPERTY_MAXCONC_CWSIV0511.explanation=\u00cen timpul valid\u0103rii propriet\u0103\u0163ilor configurate pe specifica\u0163iile de activare ale nucleului SPI concuren\u0163a maxim\u0103 a fost g\u0103sit\u0103 ca fiind invalid\u0103.
+INVALID_PROPERTY_MAXCONC_CWSIV0511.useraction=Corecta\u0163i valoarea pentru proprietatea maxim\u0103 de concuren\u0163\u0103 de pe specifica\u0163iile de activare, apoi reporni\u0163i serverul.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the target type
+INVALID_PROPERTY_TARGET_TYPE_CWSIV0512=CWSIV0512E: Urm\u0103torul c\u00e2mp de tip destina\u0163ie pe o specifica\u0163ie de activare Core SPI este nevalid [{3}]. Sunt a\u015fteptate valorile [{0}], [{1}] sau [{2}].
+INVALID_PROPERTY_TARGET_TYPE_CWSIV0512.explanation=\u00cen timpul valid\u0103rii propriet\u0103\u0163ilor configurate pe o specifica\u0163ie de activare a nucleului SPI, tipul destina\u0163iei a fost g\u0103sit ca fiind invalid.
+INVALID_PROPERTY_TARGET_TYPE_CWSIV0512.useraction=Corecta\u0163i valoarea propriet\u0103\u0163ii tipului destina\u0163ie de pe specifica\u0163iile de activare, apoi reporni\u0163i serverul.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is the value of the target significance
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSIV0513=CWSIV0513E: Urm\u0103torul c\u00e2mp de semnifica\u0163ie destina\u0163ie pe o specifica\u0163ie de activare Core SPI este nevalid [{2}]. Sunt a\u015fteptate valorile [{0}] sau [{1}].
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSIV0513.explanation=\u00cen timpul valid\u0103rii propriet\u0103\u0163ilor configurate pe o specifica\u0163ie de activare a nucleului SPI, semnifica\u0163ia destina\u0163iei a fost g\u0103sit\u0103 ca fiind invalid\u0103.
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSIV0513.useraction=Corecta\u0163i valoarea pentru proprietatea de semnifica\u0163ie destina\u0163ie de pe specifica\u0163iile de activare, apoi reporni\u0163i serverul.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the provider endpoints
+INVALID_PROPERTY_PROVIDER_ENDPOINTS_CWSIV0514=CWSIV0514E: Punctele finale ale furnizorului au fost setate la {0} pe o specifica\u0163ie de activare Core SPI. Punctele finale ale furnzorului nu sunt suportate atunci c\u00e2nd este setat\u0103 proprietatea "folosirea subiectului serverului" .
+INVALID_PROPERTY_PROVIDER_ENDPOINTS_CWSIV0514.explanation=\u00cen timpul valid\u0103rii propriet\u0103\u0163ilor configurate pe specifica\u0163iile de activare ale nucleului SPI, punctul final al furnizorului a fost g\u0103sit ca fiind invalid deoarece proprietatea de folosirea a subiectului serverului a fost setat\u0103.
+INVALID_PROPERTY_PROVIDER_ENDPOINTS_CWSIV0514.useraction=Asigura\u0163i-v\u0103 c\u0103 proprietatea punctelor finale ale furnizorului nu este setat\u0103 dac\u0103 este setat\u0103 folosirea subiectului serverului. Corecta\u0163i valoarea pentru proprietate de spespecifica\u0163iile de activare, apoi reporni\u0163i serverul.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_USEDESTWILDCARD_CWSIV0515=CWSIV0515E: Proprietatea "folosire metacaracter destina\u0163ie" a fost setat\u0103 pe o specifica\u0163ie de activare Core SPI \u00een timpul folosirii unui Spa\u0163iu Subiect. Proprietatea "folosirea metacaracterelor destina\u0163ie" nu este suportat\u0103 c\u00e2nd se folose\u015fte un Topic Space.
+INVALID_PROPERTY_USEDESTWILDCARD_CWSIV0515.explanation=\u00cen timpul valid\u0103rii propriet\u0103\u0163ilor configurate pe specifica\u0163iile de activare ale nucleului SPI, "folosirea metacaracterelor destina\u0163ie" nu a fost gasit\u0103 ca fiind valid\u0103 pentru c\u0103 se folose\u015fte Topic Space.
+INVALID_PROPERTY_USEDESTWILDCARD_CWSIV0515.useraction=Asigura\u0163i-v\u0103 c\u0103 proprietatea "folosirea metacaracterelor destina\u0163ie" nu este setat\u0103 c\u00e2nd se folose\u015fte Topic Space. Corecta\u0163i valoarea pentru proprietate de pe specifica\u0163iile de activare, apoi reporni\u0163i serverul.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint factory throwing the exception
+# {1} the exception thrown
+NO_METHOD_CWSIV0550=CWSIV0550E: A survenit o eroare intern\u0103. Excep\u0163ia {1} a fost aruncat\u0103 de fabrica de puncte finale ale mesajului {0} la \u00eencercarea de a determina dac\u0103 metoda onMessage este aplicat\u0103.
+NO_METHOD_CWSIV0550.explanation=Activarea punctelor finale a primit o excep\u0163ie de la fabrica punctelor finale ale mesajului care indic\u0103 faptul c\u0103 nu exist\u0103 niciun onMessage pentru acest punct final c\u00e2nd se \u00eencearc\u0103 determinarea apel\u0103rii acestuia.
+NO_METHOD_CWSIV0550.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the MDB that had the problem
+# {1} the max concurrency on the MDB
+# {2} the max pool size JCA is using
+# {3} the new max concurrency to use
+MAX_CONCURRENCY_CWSIV0551=CWSIV0551W: Concuren\u0163a maxim\u0103 pentru MDB-ul {0} a fost setat\u0103 la {1} \u00een specifica\u0163iile sale de activare. Aceasta este m\u0103rimea maxim\u0103 pentru dimensiunea pool-ului pentru {2} astfel c\u0103 concuren\u0163a maxim\u0103 pentru MDB a fost cobor\u00e2t\u0103 la {3}
+MAX_CONCURRENCY_CWSIV0551.explanation=Configura\u0163ia pentru concuren\u0163a maxim\u0103 de pe specifica\u0163iile de activare a fost setat\u0103 mult sau concuren\u0163a maxim\u0103 de pe dimensiunea maxim\u0103 pool-ului JCA-ului a fost setat\u0103 prea jos. Aceasta nu ar trebui s\u0103 cauzeze o problem\u0103 deoarece Platform Messaging va sc\u0103dea concuren\u0163a maxim\u0103 de pe specifica\u0163iile de activare dar o avertizare este distribuit\u0103 utilizatorului pentru a-l informa c\u0103 valoarea maxim\u0103 pentru concuren\u0163\u0103 care a fost configurat\u0103 nu va fi folosit\u0103.
+MAX_CONCURRENCY_CWSIV0551.useraction=Avertizarea va continua s\u0103 fie afi\u015fat\u0103 de fiecare dat\u0103 c\u00e2nd bean-ul message-driven a este pornit. Pentru a \u00eenl\u0103tura acest mesaj de avertizare sc\u0103de\u0163i concuren\u0163a maxim\u0103 pentru specifica\u0163iile de activare sau cre\u015fte\u0163i dimensiunea maxim\u0103 a pool-ului pentru pool-ul punctului final al JCA-ului (folosind proprietatea sistemul JVM com.ibm.websphere.ejbcontainer.poolSize)
+
+# -------------------------------------------------------------------------------------------------
+# {0} the messaging engine UUID
+# {1} the bus name
+# {2} the endpoint
+ENDPOINT_DEACTIVATED_CWSIV0554=CWSIV0554E: A survenit o eroare intern\u0103. O \u00eencercare a fost f\u0103cut\u0103 pentru a ob\u0163ine o conexiune c\u0103tre motorul de mesagerie cu UUID {0} de pe magistrala {1} dup\u0103 ce punctul final {2} a fost dezactivat.
+ENDPOINT_DEACTIVATED_CWSIV0554.explanation=O cerere a fost f\u0103cut\u0103 pentru o conexiune c\u0103tre motorul de mesagerie dat dar activarea punctului final a fost dezactivat\u0103.
+ENDPOINT_DEACTIVATED_CWSIV0554.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the ME name
+# (2) the bus name
+# {3} the endpoint activation
+MESSAGING_ENGINE_STARTING_CWSIV0555=CWSIV0555E: Excep\u0163ia {0} a fost aruncat\u0103 la procesarea pornirii motorului de mesagerie {1} pe magistrala {2} pentru activarea puntului final {3}.
+MESSAGING_ENGINE_STARTING_CWSIV0555.explanation=Adaptorul de resurs\u0103 de intrare a\u015ftepta procesarea motorului de mesagerie dat la primirea unei excep\u0163ii.  Mesajele din destina\u0163iile localizate pe acel motor de mesagerie nu vor fi primite de c\u0103tre bean-ul message-driven. Dac\u0103 excep\u0163ia este o excep\u0163ie autentificat\u0103 atunci asigura\u0163i-v\u0103 c\u0103 specifica\u0163iile de activare au fost asociate cu un alias de autentificare valid.
+MESSAGING_ENGINE_STARTING_CWSIV0555.useraction=Vizualiza\u0163i excep\u0163ia legat\u0103 pentru mai multe informa\u0163ii.  Dup\u0103 rezolvarea problemei, reporni\u0163i motorul de mesagerie, adaptorul de resurse sau aplica\u0163ia.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Activation Specification ID
+# {1} Destination Name
+TARGETTED_CONNECTION_SUCCESSFUL_CWSIV0556=CWSIV0556I: Conexiunea la motorul de mesagerie a fost realizat\u0103 cu succes. Bean-ul controlat de mesaj cu specifica\u0163ia de activare {0} va putea acum s\u0103 primeasc\u0103 mesaje de la destina\u0163ia {1}.
+TARGETTED_CONNECTION_SUCCESSFUL_CWSIV0556.explanation=Adaptorul de resurs\u0103 JMS a putut cu succes s\u0103 stabileasc\u0103 o conexiune cu motorul de mesagerie. Aceasta permite bean-ului controlat de mesaj s\u0103 primeasc\u0103 mesaje de la destina\u0163ie.
+TARGETTED_CONNECTION_SUCCESSFUL_CWSIV0556.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+# -------------------------------------------------------------------------------------------------
+
+
+
+# {0} the exception thrown
+# {1} the list of messages
+UNLOCK_EXCEPTION_CWSIV0601=CWSIV0601E: A survenit o eroare intern\u0103. Excep\u0163ia {0} a fost primit\u0103 la \u00eencercarea de a debloca mesajele {1}.
+UNLOCK_EXCEPTION_CWSIV0601.explanation=Adaptorul de resurse a primit o excep\u0163ie la \u00eencercarea de a debloca un set de mesaje.
+UNLOCK_EXCEPTION_CWSIV0601.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the message being deleted
+# {2} the transaction under which the message was being deleted
+DELETE_EXCEPTION_CWSIV0602=CWSIV0602E: A survenit o eroare intern\u0103. Excep\u0163ia {0} a fost primit\u0103 la \u00eencercarea de a \u015fterge mesajul {1} din tranzac\u0163ia {2}.
+DELETE_EXCEPTION_CWSIV0602.explanation=Adaptorul de resurse a primit o excep\u0163ie la \u00eencercarea de a \u015fterge un mesaj dintr-o tranzac\u0163ie dat\u0103.
+DELETE_EXCEPTION_CWSIV0602.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the messages being deleted
+# {2} the transaction under which the messages were being deleted
+DELETE_SET_EXCEPTION_CWSIV0603=CWSIV0603E: A survenit o eroare intern\u0103. Excep\u0163ia {0} a fost primit\u0103 la \u00eencercarea de a \u015fterge mesajele {1} care sunt \u00een curs de tranzac\u0163ionare {2}.
+DELETE_SET_EXCEPTION_CWSIV0603.explanation=Adaptorul de resurse a primit o excep\u0163ie la \u00eencercarea de a \u015fterge mesajele de sub tranzac\u0163ia respectiv\u0103.
+DELETE_SET_EXCEPTION_CWSIV0603.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+REQUEST_METRICS_CWSIV0604=CWSIV0604E: A survenit o eroare intern\u0103. Excep\u0163ia {0} a fost primit\u0103 la \u00eencercarea de a ob\u0163ine insta\u0163a metricilor de cereri.
+REQUEST_METRICS_CWSIV0604.explanation=Adaptorul de resurse a primit o excep\u0163ie la \u00eencercarea de a ob\u0163ine insta\u0163a metricilor de cereri.
+REQUEST_METRICS_CWSIV0604.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint
+# {1} the destination the message endpoint is attached to
+MESSAGE_ENDPOINT_SHOULD_BE_DEACTIVATED_CWSIV0605=CWSIV0605W: Punctul final al mesajului {0} care asculta destina\u0163ia {1} ar trebui dezactivat deoarece num\u0103rul maxim de e\u015fu\u0103ri secven\u0163iale a fost atins.
+MESSAGE_ENDPOINT_SHOULD_BE_DEACTIVATED_CWSIV0605.explanation=Sistemul a determinat faptul c\u0103 exist\u0103 o problem\u0103 posibil\u0103 cu MDB-ul asociat cu punctul final al mesajului.
+MESSAGE_ENDPOINT_SHOULD_BE_DEACTIVATED_CWSIV0605.useraction=Investiga\u0163i problemele posibile care pot cauza defect\u0103ri secven\u0163iale cu MDB-ul. Punctul final al mesajului poate fi dezactivat pentru a putea opri apari\u0163ia eventualelor erori, folosi\u0163i Message Endpoint MBean care paseaz\u0103 numele punctului final \u00een acest mesaj pentru a dezactiva sau opri aplica\u0163ia care con\u0163ine Message Driven Bean.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the session
+# {1} the message handle
+# {2} the transaction
+# {3} the bifurcated consumer session class name
+INVALID_SESSION_CWSIV0606=CWSIV0606E: A survenit o eroare intern\u0103. La \u00eencercarea de \u015ftergere a m\u00e2nerului mesajului {1} sub tranzac\u0163ia {2}, sesiunea {0} nu era de tipul necesar {3}
+INVALID_SESSION_CWSIV0606.explanation=Adaptorul de resurse a \u00eentalnit o problem\u0103 \u00een timpul \u00eencerc\u0103rii de a \u015fterge un m\u00e2ner de mesaj
+INVALID_SESSION_CWSIV0606.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the number of messagesin the list
+# {1} the message list
+# {2} the handle
+# {3} the transaction
+MESSAGE_LIST_INCORRECT_CWSIV0607=CWSIV0607E: A survenit o eroare intern\u0103. La \u00eencercarea de \u015ftergere a m\u00e2nerului mesajului {2} sub tranzac\u0163ia {3}, lista de mesaje {1} era a\u015fteptat\u0103 s\u0103 con\u0163in\u0103 1 mesaj, dar a con\u0163inut {0} mesaje
+MESSAGE_LIST_INCORRECT_CWSIV0607.explanation=Adaptorul de resurse a \u00eentalnit o problem\u0103 \u00een timpul \u00eencerc\u0103rii de a \u015fterge un m\u00e2ner de mesaj
+MESSAGE_LIST_INCORRECT_CWSIV0607.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the message handle
+# {2} the transaction
+DELETE_EXCEPTION_CWSIV0608=CWSIV0608E: A survenit o eroare intern\u0103. La \u00eencercarea de \u015ftergere a m\u00e2nerului mesajului {1} sub tranzac\u0163ia {2}, urm\u0103toarea excep\u0163ie a  fost aruncat\u0103 {0}
+DELETE_EXCEPTION_CWSIV0608.explanation=Adaptorul de resurse a \u00eent\u00e2lnit o problem\u0103 \u00een timpul \u00eencerc\u0103rii de a \u015fterge un m\u00e2ner de mesaj
+DELETE_EXCEPTION_CWSIV0608.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the connection throwing the exception
+XARESOURCE_EXCEPTION_CWSIV0650=CWSIV0650E: A survenit o eroare intern\u0103. Excep\u0163ia {0} a fost primit\u0103 la \u00eencercarea de a ob\u0163ine XAResource din conexiune {1}.
+XARESOURCE_EXCEPTION_CWSIV0650.explanation=Adaptorul de resurse a primit o excep\u0163ie la \u00eencercarea de a ob\u0163ine XAResource de la o conexiune pentru a o pasa la crearea punctului final.
+XARESOURCE_EXCEPTION_CWSIV0650.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the endpoint on which beforeDelivery is being invoked
+BEFORE_DELIVERY_CWSIV0651=CWSIV0651E: A survenit o eroare intern\u0103. Excep\u0163ia {0} a fost recep\u0163ionat\u0103 atunci c\u00e2nd se \u00eencerca invocarea beforeDelivery la punctul final {1}.
+BEFORE_DELIVERY_CWSIV0651.explanation=Adaptorul de resurse a recep\u0163ionat o excep\u0163ie atunci c\u00e2nd \u00eencerca s\u0103 invoce beforeDelivery \u00eentr-un punct final \u00eenainte de a apela onMessage.
+BEFORE_DELIVERY_CWSIV0651.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is a connection property name, eg targetType
+# {1} is the required connection property value
+ME_NAME_REQUIRED_CWSIV0652=CWSIV0652E: Un anumit motor de mesagerie trebuie specificat s\u0103 foloseasc\u0103 resurse JMS \u00eentr-o tranzac\u0163ie. Proprietatea de conexiune {0} trebuie setat\u0103 la {1}.
+ME_NAME_REQUIRED_CWSIV0652.explanation=Pentru a permite recuperarea tranzac\u0163iilor este necesar ca o fabric\u0103 de conexiuni s\u0103 aib\u0103 ca destina\u0163ie un motor de mesagerie specific \u00een magistral\u0103.
+ME_NAME_REQUIRED_CWSIV0652.useraction=Modifica\u0163i propriet\u0103\u0163ile fabricii de conexiuni 'targetGroup' la 'numele motorului de mesagerie din grup', 'targetType' la 'ME' \u015fi 'targetSignificance' la 'Required'.
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the ConsumerSession whose parent connection is throwing the exception
+CLONE_EXCEPTION_CWSIV0700=CWSIV0700E: A survenit o eroare intern\u0103. Excep\u0163ia {0} a fost primit\u0103 la \u00eencercarea de a clona conexiunea p\u0103rinte pentru sesiunea {1}.
+CLONE_EXCEPTION_CWSIV0700.explanation=Adaptorul de resurse a primit o excep\u0163ie la \u00eencercarea de a clona o conexiune care ar fi \u00eenapoiat\u0103 de la getConnection de pe sesiunea care urmeaz\u0103 a fi pasat\u0103 punctului final.
+CLONE_EXCEPTION_CWSIV0700.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the method that is not supported
+NOT_SUPPORTED_CWSIV0701=CWSIV0701E: Folosirea metodei {0} nu este suportat\u0103.
+NOT_SUPPORTED_CWSIV0701.explanation=Metoda dat\u0103 nu poate fi invocat\u0103 pe sesiunea pasat\u0103 metodei onMessage a unui bean message-driven a nucleului Platform Messaging SPI.
+NOT_SUPPORTED_CWSIV0701.useraction=\u00cenl\u0103tura\u0163i apelarea p\u0103c\u0103toas\u0103, dac\u0103 este necesar, crea\u0163i o sesiune separat\u0103 de nucleu Platform Messaging SPI.
+
+# -------------------------------------------------------------------------------------------------
+OUT_OF_SCOPE_CWSIV0702=CWSIV0702E: Sesiunea nu mai este \u00een domeniu.
+OUT_OF_SCOPE_CWSIV0702.explanation=Sesiunea pasat\u0103 metodei onMessage unui bean message-driven de nucleu Platform Messaging SPI nu poate fi utilizat\u0103 o singur\u0103 dat\u0103 deoarece metoda s-a finalzat.
+OUT_OF_SCOPE_CWSIV0702.useraction=\u00cenl\u0103tura\u0163i apelarea p\u0103c\u0103toas\u0103, dac\u0103 este necesar, crea\u0163i o sesiune separat\u0103 de nucleu Platform Messaging SPI.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the destination UUID
+DESTINATION_LOCALITY_CWSIV0753=CWSIV0753E: A survenit o eroare intern\u0103. Urm\u0103toarea excep\u0163ie a fost aruncat\u0103 la \u00eencercarea de a determina setul de puncte ale cozii pentru destina\u0163ie {1}: {0}.
+DESTINATION_LOCALITY_CWSIV0753.explanation=O excep\u0163ie nea\u015fteptat\u0103 a fost primit\u0103 la \u00eencercarea de a determina setul de motoare de mesagerie cu puncte ale cozilor pentru destina\u0163ia dat\u0103.
+DESTINATION_LOCALITY_CWSIV0753.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+FOREIGN_DESTINATION_CWSIV0754=CWSIV0754E: Destina\u0163ia {0} pe magistrala {1} nu este definit\u0103 ca un punct de coad\u0103 pe magistrala pe care este conectat bean-ul controlat de mesaje.
+FOREIGN_DESTINATION_CWSIV0754.explanation=Un bean message-driven trebuie s\u0103 fie conectat la magistrala care g\u0103zduie\u015fte destina\u0163ia din care consum\u0103 bean-ul.  Magistralele externe nu sunt suportate.
+FOREIGN_DESTINATION_CWSIV0754.useraction=Modifica\u0163i specifica\u0163ia de activare pentru bean-ul message-driven astfel \u00eenc\u00e2t s\u0103 se conecteze la magistrala necesar\u0103 la care se conecteaz\u0103 bean-ul message-driven.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the required destination type
+# {3} the actual destination type
+INCORRECT_TYPE_CWSIV0755=CWSIV0755E: Destina\u0163ia {0} pe magistrala {1} este de tipul {3} \u015fi nu de tipul necesar {2}.
+INCORRECT_TYPE_CWSIV0755.explanation=Tipul destina\u0163ie definit pe specifica\u0163iile de activare ale bean-urilor message-driven nu se potrive\u015fte cu tipul de destina\u0163ie configurat\u0103.
+INCORRECT_TYPE_CWSIV0755.useraction=Verifica\u0163i dac\u0103 specifica\u0163iile de activare ale bean-urilor message-driven sunt configurate cu destina\u0163ia corect\u0103, cu tipul corect, sau cu ambele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+UNKNOWN_TYPE_CWSIV0756=CWSIV0756E: A survenit o eroare intern\u0103. Destina\u0163ia {0} de pe magistrala {1} are o defini\u0163ie de tip nea\u015fteptat.
+UNKNOWN_TYPE_CWSIV0756.explanation=Destina\u0163ia dat\u0103 nu a fost o destina\u0163ie local\u0103, extern\u0103 sau una alias.
+UNKNOWN_TYPE_CWSIV0756.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+NOT_FOUND_CWSIV0757=CWSIV0757E: Destina\u0163ia {0} pe magistrala {1} nu a fost g\u0103sit\u0103.
+NOT_FOUND_CWSIV0757.explanation=Destina\u0163ia configurat\u0103 pe bean-ul message-driven nu exist\u0103 \u00een magistrala dat\u0103.
+NOT_FOUND_CWSIV0757.useraction=Verifica\u0163i defini\u0163ia destina\u0163iei de pe specifica\u0163iile de activare ale bean-urilor message driven sau pe cea a leg\u0103turilor.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the exception
+UNEXPECTED_EXCEPTION_CWSIV0758=CWSIV0758E: A survenit o eroare intern\u0103. Urm\u0103toarea excep\u0163ie a fost aruncat\u0103 la \u00eencercarea de a ob\u0163ine defini\u0163ia destina\u0163iei {0} de pe magistrala {1}: {2}.
+UNEXPECTED_EXCEPTION_CWSIV0758.explanation=O excep\u0163ie nea\u015fteptat\u0103 a fost primit\u0103 la \u00eencercarea de a ob\u0163ine defini\u0163ia destina\u0163iei date.
+UNEXPECTED_EXCEPTION_CWSIV0758.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the bus
+NO_ACTIVE_MES_CWSIV0759=CWSIV0759W: \u00cen timpul activ\u0103rii unui bean controlat de mesaje, niciun motor activ de mesagerie potrivit nu a fost g\u0103sit pe serverul local  pe magistrala {0}.
+NO_ACTIVE_MES_CWSIV0759.explanation=Un bean message-driven a fost configurat s\u0103 se conecteze la magistrala dat\u0103 dar nu sunt motoare de mesagerie active potrivite pe serverul local.  Consumarea mesajelor va \u00eencepe c\u00e2nd un motor de mesagerie local\u0103 potrivit devine activ.
+NO_ACTIVE_MES_CWSIV0759.useraction=Asigura\u0163i-v\u0103 c\u0103 un motor de mesagerie potrivit este pornit. Un mesaj este afi\u015fat c\u00e2nd o conexiune cu succes este f\u0103cut\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the bus
+# {1} the name of the messaging engine
+# {2} the name of the destination
+NEW_CONSUMER_CWSIV0764=CWSIV0764I: A fost creat un consumator pentru un bean controlat de mesaje \u00eempotriva destina\u0163iei {2} pe magistrala {0} urm\u00e2nd activarea motorului de mesagerie {1}.
+NEW_CONSUMER_CWSIV0764.explanation=Activarea motorului de mesagerie de pe magistrala necesar\u0103 a condus la crearea unui nou consumator pentru destina\u0163ia dat\u0103 .
+NEW_CONSUMER_CWSIV0764.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the ME name
+# (2) the bus name
+MESSAGING_ENGINE_STOPPING_CWSIV0765=CWSIV0765E: Excep\u0163ia {0} a fost aruncat\u0103 la \u00eencercarea de a crea o conexiune c\u0103tre alt motor de mesagerie \u00een timpul opririi  motorului de mesagerie {1} pe magistrala {2}.
+MESSAGING_ENGINE_STOPPING_CWSIV0765.explanation=\u00cen timpul opririi motorului de mesagerie dat adaptorul de resurse a primit o excep\u0163ie la \u00eencercarea de a se conecta la un motor de mesagerie alternativ.
+MESSAGING_ENGINE_STOPPING_CWSIV0765.useraction=Vizualiza\u0163i excep\u0163ia legat\u0103 pentru mai multe informa\u0163ii.  Dup\u0103 rezolvarea problemei reporni\u0163i motorul de mesagerie sau adaptorul de resurse.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the destination
+# {2} the messaging engine name
+# {3} the bus name
+# {4} the endpoint activation
+SESSION_ERROR_CWSIV0766=CWSIV0766E: Excep\u0163ia {0} a fost aruncat\u0103 consumatorului pentru destina\u0163ia {1} pe motorul de mesagerie {2} pe magistrala {3} pentru activarea puntului final {4}.
+SESSION_ERROR_CWSIV0766.explanation=O excep\u0163ie asincron\u0103 a fost primit\u0103 pentru consumatorul dat.  Bean-ul message-driven corespunz\u0103tor va fi dezactivat \u015fi nu va mai primi mesaje.
+SESSION_ERROR_CWSIV0766.useraction=Vizualiza\u0163i excep\u0163ia pentru a afla cauza.  Dup\u0103 rezolvarea problemei, reporni\u0163i motorul de mesagerie, adaptorul de resurse sau aplica\u0163ia.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the messaging engine name
+# {2} the endpoint activation
+CONNECTION_ERROR_CWSIV0767=CWSIV0767E: Excep\u0163ia {0} a fost aruncat\u0103 pe o conexiune c\u0103tre motorul de mesagerie {1} pentru activarea punctului final {2}.
+CONNECTION_ERROR_CWSIV0767.explanation=S-a recep\u0163ionat o excep\u0163ie pentru conexiunea dat\u0103.  Bean-ul message-driven corespunz\u0103tor va fi dezactivat \u015fi nu va mai primi mesaje.
+CONNECTION_ERROR_CWSIV0767.useraction=Vizualiza\u0163i excep\u0163ia pentru a afla cauza.  Dup\u0103 rezolvarea problemei, reporni\u0163i motorul de mesagerie, adaptorul de resurse sau aplica\u0163ia.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+# {2} the endpoint activation
+LAST_ME_CWSIV0768=CWSIV0768I: Ultimul motor de mesagerie local {0} pe magistrala {1} folosit de activarea punctului final {2} se opre\u015fte.
+LAST_ME_CWSIV0768.explanation=Activarea punctului final dat utiliza un motor de mesagerie care acum a fost oprit.  Nu mai sunt alte motoare de mesagerie active la care s\u0103 se conecteze.  Bean-ul message-driven asociat va \u00eencepe s\u0103 recep\u0163ioneze din nou mesaje atunci c\u00e2nd un motor de mesagerie adecvat devine disponibil.
+LAST_ME_CWSIV0768.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+ATTACH_FAILED_CWSIV0769=CWSIV0769W: Crearea unui consumator pentru destina\u0163ia la distan\u0163\u0103 {0} pe magistrala {1} pentru activarea punctului final {2} a e\u015fuat cu excep\u0163ia {3}.
+ATTACH_FAILED_CWSIV0769.explanation=Adaptorul de resurse de intrare s-a conectat cu succes la un motor de mesagerie dar a primit dup\u0103 aceea o excep\u0163ie \u00een \u00eencercarea de a crea un consumator \u00eentr-un punct al cozii la distan\u0163\u0103.
+ATTACH_FAILED_CWSIV0769.useraction=Asigura\u0163i-v\u0103 c\u0103 este disponibil un motor de mesagerie cu un punct al cozii pentru destina\u0163ia dorit\u0103.  Adaptorul de resurse va re\u00eencerca automat \u00een mod periodic crearea consumatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+CONSUMER_FAILED_CWSIV0770=CWSIV0770W: Un consumator pentru destina\u0163ia la distan\u0163\u0103 {0} pe magistrala {1} pentru activarea punctului final {2} a e\u015fuat cu excep\u0163ia {3}.
+CONSUMER_FAILED_CWSIV0770.explanation=Adaptorul de resurse de intrare a recep\u0163ionat o excep\u0163ie pentru un consumator existent \u00eentr-un punct al cozii la distan\u0163\u0103.
+CONSUMER_FAILED_CWSIV0770.useraction=Asigura\u0163i-v\u0103 c\u0103 este disponibil un motor de mesagerie cu un punct al cozii pentru destina\u0163ia dorit\u0103.  Adaptorul de resurse va re\u00eencerca automat \u00een mod periodic s\u0103 creeze consumatorul.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the name of the messaging engine
+# {2} the name of the bus
+# {3} the endpoint activation
+RELOAD_FAILED_CWSIV0773=CWSIV0773E: Excep\u0163ia {0} a fost aruncat\u0103 la procesarea configura\u0163iei actualizate pentru motorul de mesagerie {1} pe magistrala {2} pentru activarea puntului final {3}.
+RELOAD_FAILED_CWSIV0773.explanation=La procesarea configura\u0163iei actualizate pentru motorul de mesagerie dat a fost recep\u0163ionat\u0103 o excep\u0163ie.  Mesajele pentru punctul cozii ce privesc acel motor de mesagerie nu pot fi recep\u0163ionate de bean-ul message-driven corespunz\u0103tor.
+RELOAD_FAILED_CWSIV0773.useraction=Vizualiza\u0163i excep\u0163ia pentru a afla cauza.  Dup\u0103 rezolvarea problemei, reporni\u0163i motorul de mesagerie, adaptorul de resurse sau aplica\u0163ia.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the name of the destination
+# {2} the name of the messaging engine
+# {3} the name of the bus
+# {4} the endpoint activation
+FAILURE_DURING_RELOAD_CWSIV0774=CWSIV0774W: Excep\u0163ia {0} a fost aruncat\u0103 consumatorului pentru destina\u0163ia {1} pe motorul de mesagerie {2} pe magistrala {3} pentru activarea puntului final {4} \u00een timp ce motorul de mesagerie re\u00eenc\u0103rca configura\u0163ia sa.
+FAILURE_DURING_RELOAD_CWSIV0774.explanation=Excep\u0163ia dat\u0103 a fost recep\u0163ionat\u0103 pentru un consumator \u00een timp ce motorul de mesagerie corespunz\u0103tor \u00ee\u015fi re\u00eenc\u0103rca configura\u0163ia.
+FAILURE_DURING_RELOAD_CWSIV0774.useraction=Aceast\u0103 avertizare poate fi ignorat\u0103 dac\u0103 punctul cozii la care consumatorul a fost ata\u015fat a fost \u015fters \u00een mod deliberat, ca parte a actualiz\u0103rilor de configurare. Dac\u0103 a fost definit un \u00eenlocuitor de punct al cozii, atunci un nou consumator va fi creat atunci c\u00e2nd s-a terminat actualizarea.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+CONNECT_FAILED_CWSIV0775=CWSIV0775W: Crearea unei conexiuni pentru destina\u0163ia {0} pe magistrala {1} pentru activarea punctului final {2} a e\u015fuat cu excep\u0163ia {3}.
+CONNECT_FAILED_CWSIV0775.explanation=Adaptorul de resurse de intrare a recep\u0163ionat o excep\u0163ie \u00een \u00eencercarea de a se conecta la un motor de mesagerie la distan\u0163\u0103.
+CONNECT_FAILED_CWSIV0775.useraction=Asigura\u0163i-v\u0103 c\u0103 este disponibil un motor de mesagerie pe o magistral\u0103 dat\u0103.  Adaptorul de resurse \u00eencearc\u0103 s\u0103 se conecteze automat la magistral\u0103 periodic.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+CONNECTION_ERROR_CWSIV0776=CWSIV0776W: O conexiune la motorul de mesagerie la distan\u0163\u0103 {0} pe magistrala {1} pentru activarea punctului final {2} a e\u015fuat cu excep\u0163ia {3}.
+CONNECTION_ERROR_CWSIV0776.explanation=Adaptorul de resurse de intrare a recep\u0163ionat o excep\u0163ie pentru o conexiune existent\u0103 la un motor de mesagerie.
+CONNECTION_ERROR_CWSIV0776.useraction=Asigura\u0163i-v\u0103 c\u0103 este disponibil un motor de mesagerie pe o magistral\u0103 dat\u0103.  Adaptorul de resurse \u00eencearc\u0103 s\u0103 se conecteze automat la magistral\u0103 periodic.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the destination
+# {2} the name of the bus
+CONNECTED_CWSIV0777=CWSIV0777I: O conexiune la motorul de mesagerie {0} pentru destina\u0163ia {1} pe magistrala {2} a fost creat\u0103 cu succes.
+CONNECTED_CWSIV0777.explanation=Adaptorul de resurse de intrare a creat cu succes o conexiune la un motor de mesagerie pentru activarea punctelor finale dat\u0103.
+CONNECTED_CWSIV0777.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+# {2} the endpoint activation
+ME_INITIALIZING_CWSIV0778=CWSIV0778I: Motorul de mesagerie local {0} pentru magistrala {1} necesar activ\u0103rii punctului final {2} este acum disponibil.
+ME_INITIALIZING_CWSIV0778.explanation=Activarea punctelor finale dat\u0103 se conecta la distan\u0163\u0103 pentru c\u0103 nu era activat niciun motor de mesagerie local.  Toate conexiunile la distan\u0163\u0103 sunt acum \u00eenchise.  Atunci c\u00e2nd motorul de mesagerie local este activ, o nou\u0103 conexiune este \u00eencercat\u0103.
+ME_INITIALIZING_CWSIV0778.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+ME_DESTROYED_CWSIV0779=CWSIV0779I: Ultimul motor de mesagerie local {0} pentru magistrala {1} a fost distrus.
+ME_DESTROYED_CWSIV0779.explanation=Activarea punctelor finale dat\u0103, se conecta local, dar motoarele de mesagerie r\u0103mase nu sunt activate.  Adaptorul de resurse \u00eencerc\u0103 s\u0103 se conecteze la un motor de mesagerie la distan\u0163\u0103.
+ME_DESTROYED_CWSIV0779.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+# {2} the endpoint activation
+ME_TERMINATED_CWSIV0780=CWSIV0780W: Motorul de mesagerie la distan\u0163\u0103 {0} pe magistrala {1} la care era conectat\u0103 activarea punctului final {2} a fost terminat.
+ME_TERMINATED_CWSIV0780.explanation=Adaptorul de resurse de intrare a recep\u0163ionat notificarea c\u0103 motorul de mesagerie la distan\u0163\u0103 la care era conectat a terminat.
+ME_TERMINATED_CWSIV0780.useraction=Asigura\u0163i-v\u0103 c\u0103 este disponibil un motor de mesagerie pe o magistral\u0103 dat\u0103.  Adaptorul de resurse \u00eencearc\u0103 s\u0103 se conecteze automat la magistral\u0103 periodic.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+# {2} the endpoint activation
+ME_QUIESCING_CWSIV0781=CWSIV0781W: Motorul de mesagerie la distan\u0163\u0103 {0} pe magistrala {1} la care era conectat\u0103 activarea punctului final {2} a intrat \u00een modul quiesce.
+ME_QUIESCING_CWSIV0781.explanation=Adaptorul de resurse de intrare a recep\u0163ionat notificare c\u0103 motorul de mesagerie la distan\u0163\u0103 la care era conectat se dezactiveaz\u0103 \u015fi s-a deconectat.
+ME_QUIESCING_CWSIV0781.useraction=Asigura\u0163i-v\u0103 c\u0103 este disponibil un motor de mesagerie pe o magistral\u0103 dat\u0103.  Adaptorul de resurse \u00eencearc\u0103 s\u0103 se conecteze automat la magistral\u0103 periodic.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+CONNECT_FAILED_CWSIV0782=CWSIV0782W: Crearea unei conexiuni pentru destina\u0163ia {0} pe magistrala {1} pentru activarea punctului final {2} a e\u015fuat cu excep\u0163ia {3}. V\u0103 rug\u0103m examina\u0163i specifica\u0163ia de activare a punctului final {2}.
+CONNECT_FAILED_CWSIV0782.explanation=Adaptorul de resurse de intrare a recep\u0163ionat o excep\u0163ie la conectarea la un motor de mesagerie.
+CONNECT_FAILED_CWSIV0782.useraction=Asigura\u0163i-v\u0103 c\u0103 este disponibil un motor de mesagerie pe magistrala dat\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+CONNECT_FAILED_CWSIV0783=CWSIV0783E: Crearea unei conexiuni pentru destina\u0163ia {0} pe magistrala {1} pentru activarea punctului final {2} a e\u015fuat cu excep\u0163ia {3}.
+CONNECT_FAILED_CWSIV0783.explanation=Adaptorul de resurse de intrare a recep\u0163ionat o excep\u0163ie \u00een \u00eencercarea de a se conecta la un motor de mesagerie.  Bean-ul message-driven corespunz\u0103tor se dezactiveaz\u0103 \u015fi nu mai poate recep\u0163iona mesaje \u00een continuare.
+CONNECT_FAILED_CWSIV0783.useraction=Vitzualiza\u0163i excep\u0163ia pentru a afla cauza.  Dup\u0103 rezolvarea problemei, reporni\u0163i adaptorul de resurse sau aplica\u0163ia.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+ME_STOPPING_CWSIV0784=CWSIV0784I: Motorul de mesagerie local {0} pe magistrala {1} se opre\u015fte.
+ME_STOPPING_CWSIV0784.explanation=Activarea punctului final dat, utiliza un motor de mesagerie care acum a fost oprit. Adaptorul de resurse va \u00eencerca s\u0103 se conecteze la un alt motor de mesagerie.
+ME_STOPPING_CWSIV0784.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+ME_QUIESCING_CWSIV0785=CWSIV0785I: Motorul de mesagerie {0} pe magistrala {1} a intrat \u00een modul quiesce.
+ME_QUIESCING_CWSIV0785.explanation=Adaptorul de resurse de intrare a recep\u0163ionat o notificare c\u0103 motorul de mesagerie la care era conectat se dezactiveaz\u0103 \u015fi s-a deconectat.
+ME_QUIESCING_CWSIV0785.useraction=Asigura\u0163i-v\u0103 c\u0103 este disponibil un motor de mesagerie pe o magistral\u0103 dat\u0103.  Adaptorul de resurse \u00eencearc\u0103 s\u0103 se conecteze automat la magistral\u0103 periodic.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+ME_TERMINATED_CWSIV0786=CWSIV0786I: Motorul de mesagerie {0} pe magistrala {1} a fost terminat.
+ME_TERMINATED_CWSIV0786.explanation=Adaptorul de resurse de intrare a recep\u0163ionat notificarea c\u0103 motorul de mesagerie la care era conectat a terminat.
+ME_TERMINATED_CWSIV0786.useraction=Asigura\u0163i-v\u0103 c\u0103 este disponibil un motor de mesagerie pe o magistral\u0103 dat\u0103.  Adaptorul de resurse \u00eencearc\u0103 s\u0103 se conecteze automat la magistral\u0103 periodic.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the target type
+# {1} the target significance
+# {2} the target
+# {3} the busname
+TARGETTED_CONNECTION_FAILED_CWSIV0787=CWSIV0787I: A e\u015fuat crearea unei conexiuni la un motor de mesagerie atunci c\u00e2nd este specificat\u0103 o destina\u0163ie la care s\u0103 se conecteze. Destina\u0163ia era de tipul {0} avea semnifica\u0163ia de {1} \u015fi a fost denumit\u0103 {2}. Magistrala destina\u0163ie a fost {3}
+TARGETTED_CONNECTION_FAILED_CWSIV0787.explanation=Sistemul a e\u015fuat s\u0103 se conecteze la un motor de mesagerie c\u00e2nd s-a dat un set de informa\u0163ii destina\u0163ie. \
+Aceasta poate fi o problem\u0103 de conexiune temporar\u0103 dac\u0103 niciun motor de mesagerie care se potrive\u015fte cu datele destina\u0163iesau poate fi o problem\u0103 de configurare cu utilizarea specifica\u0163iilor de activare.
+TARGETTED_CONNECTION_FAILED_CWSIV0787.useraction=Asigura\u0163i-v\u0103 c\u0103 este disponibil un motor de mesagerie la o magistral\u0103 dat\u0103 care se potrive\u015fte cu informa\u0163iile destina\u0163ie furnizate.  \
+Adaptorul de resurse \u00eencearc\u0103 s\u0103 se conecteze automat la magistral\u0103 periodic. \
+Dac\u0103 motorul de mesagerie este disponibil atunci verifica\u0163i dac\u0103 sunt corecte set\u0103rile de activare config, \u00een special numele magistralei \u015fi informa\u0163iile destina\u0163ie.
+           
+# -------------------------------------------------------------------------------------------------
+# {0} the busname
+CONNECTION_FAILED_CWSIV0788=CWSIV0788I: A e\u015fuat crearea unei conexiuni la un motor de mesagerie. Magistrala destina\u0163ie a fost {0}
+CONNECTION_FAILED_CWSIV0788.explanation=Sistemul a e\u015fuat s\u0103 se conecteze la un motor de mesagerie. \
+Aceasta poate fi o problem\u0103 de conexiune temporar\u0103 dac\u0103 niciun motor de mesagerie nu este disponibil pe magistral\u0103 sau aceasta poate fi o problem\u0103 de configurare cu utilizarea specifica\u0163iilor de activare.
+CONNECTION_FAILED_CWSIV0788.useraction=Asigura\u0163i-v\u0103 c\u0103 este disponibil un motor de mesagerie pe o magistral\u0103 dat\u0103.  \
+Adaptorul de resurse \u00eencearc\u0103 s\u0103 se conecteze automat la magistral\u0103 periodic. \
+Dac\u0103 motorul de mesagerie este disponibil atunci verifica\u0163i dac\u0103 sunt corecte set\u0103rile de activare config, \u00een special numele magistralei.
+           
+# -------------------------------------------------------------------------------------------------
+# {0} the busname
+# {1} the durable subscription home
+DURSUB_CONNECTION_FAILED_CWSIV0789=CWSIV0789I: A e\u015fuat crearea unei conexiuni la un motor de mesagerie care g\u0103zduie\u015fte abonamentul durabil. Magistrala des\u0163ina\u0163ie a fost {0} \u015fi baza subscrierii durabile a fost {1}
+DURSUB_CONNECTION_FAILED_CWSIV0789.explanation=Sistemul a e\u015fuat s\u0103 se conecteze la motorul de mesagerie care g\u0103zduie\u015fte baza subscrierii durabile. \
+Aceasta poate fi o problem\u0103 de conexiune temporar\u0103 dac\u0103 motorul de mesagerie nu este diponibil \u00een magistral\u0103 sau aceasta poate fi o problem\u0103 de configurare cu utilizarea specifica\u0163iilor de activare.
+DURSUB_CONNECTION_FAILED_CWSIV0789.useraction=Asigura\u0163i-v\u0103 c\u0103 este disponibil motorul de mesagerie care g\u0103zduie\u015fte baza subscrierii durabile pe magistrala dat\u0103.  \
+Adaptorul de resurse \u00eencearc\u0103 s\u0103 se conecteze automat la magistral\u0103 periodic. \
+Dac\u0103 motorul de mesagerie este disponibil atunci verifica\u0163i dac\u0103 sunt corecte set\u0103rile de activare config, \u00een special numele magistralei \u015fi baza subcrierii durabile
+           
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the ME name
+# (2) the bus name
+CREATE_CONNECTION_FAILED_CWSIV0801=CWSIV0801E: Excep\u0163ia {0} a fost aruncat\u0103 \u00een timpul cre\u0103rii unei conexiuni c\u0103tre motorul de mesagerie {1} pe magistrala {2}.
+CREATE_CONNECTION_FAILED_CWSIV0801.explanation=Nucleul de intrare al adaptorului de resurse SPI a\u015ftepta s\u0103 creeze o conexiune pentru motorul de mesagerie dat atunci c\u00e2nd a recep\u0163ionat o excep\u0163ie.  Mesajele din destina\u0163iile localizate \u00een acel motor de c\u0103utare nu vor fi recep\u0163ionate de bean-ul message-driven.
+CREATE_CONNECTION_FAILED_CWSIV0801.useraction=Vizualiza\u0163i excep\u0163ia legat\u0103 pentru mai multe informa\u0163ii.  Dup\u0103 rezolvarea problemei, reporni\u0163i motorul de mesagerie, adaptorul de resurse sau aplica\u0163ia.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the destination name
+# {2} the ME name
+# (3) the bus name
+CREATE_LISTENER_FAILED_CWSIV0803=CWSIV0803E: Excep\u0163ia {0} a fost aruncat\u0103 \u00een timpul cre\u0103rii unui consumator pentru destina\u0163ia {1} pe motorul de mesagerie {2} pe magistrala {3}.
+CREATE_LISTENER_FAILED_CWSIV0803.explanation=Adaptorul de resurse de intrare a\u015ftepta s\u0103 se creeze un consumator pentru destina\u0163ia dat\u0103 atunci c\u00e2nd a recep\u0163ionat excep\u0163ia.  Mesajele din localizatorul destina\u0163iei nu vor fi recep\u0163ionate de bean-ul message-driven.
+CREATE_LISTENER_FAILED_CWSIV0803.useraction=Vizualiza\u0163i excep\u0163ia legat\u0103 pentru mai multe informa\u0163ii.  Dup\u0103 rezolvarea problemei, reporni\u0163i motorul de mesagerie, adaptorul de resurse sau aplica\u0163ia.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the ME name
+# (2) the bus name
+ADD_DESTINATION_LISTENER_FAILED_CWSIV0804=CWSIV0804E: Excep\u0163ia {0} a fost aruncat\u0103 \u00een timpul ad\u0103ug\u0103rii unui ascult\u0103tor de destina\u0163ii pentru motorul de mesagerie {1} pe magistrala {2}.
+ADD_DESTINATION_LISTENER_FAILED_CWSIV0804.explanation=Adaptorul de resurse de intrare a\u015ftepta s\u0103 adauge un ascult\u0103tor de destina\u0163ie pentru motorul de mesagerie dat atunci c\u00e2nd a recep\u0163ionat o excep\u0163ie.  Mesajele din punctele cozii din acel motor de mesagerie nu vor fi recep\u0163ionate de bean-ul message-driven.
+ADD_DESTINATION_LISTENER_FAILED_CWSIV0804.useraction=Verifica\u0163i excep\u0163ia corelat\u0103 pentru a afla cauza.  Dup\u0103 rezolvarea problemei, reporni\u0163i motorul de mesagerie, adaptorul de resurse sau aplica\u0163ia.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the destination name
+# {2} the ME name
+# (3) the bus name
+CREATE_LISTENER_FAILED_CWSIV0805=CWSIV0805E: Excep\u0163ia {0} a fost aruncat\u0103 \u00een timpul cre\u0103rii unui consumator pentru noua destina\u0163ie {1} pe motorul de mesagerie {2} pe magistrala {3}.
+CREATE_LISTENER_FAILED_CWSIV0805.explanation=Adaptorul de resurse de intare a\u015ftepta s\u0103 creeze un consumator pentru noua destina\u0163ie dat\u0103 atunci c\u00e2nd a recep\u0163ionat o excep\u0163ie.  Mesajele din acel punct al cozii nu vor fi recep\u0163ionate de bean-ul message-driven.
+CREATE_LISTENER_FAILED_CWSIV0805.useraction=Verifica\u0163i excep\u0163ia corelat\u0103 pentru a afla cauza.  Dup\u0103 rezolvarea problemei, reporni\u0163i motorul de mesagerie, adaptorul de resurse sau aplica\u0163ia.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the destination
+# {2} the messaging engine name
+# {3} the bus name
+# {4} the endpoint activation
+SESSION_ERROR_CWSIV0806=CWSIV0806E: Excep\u0163ia {0} a fost aruncat\u0103 consumatorului pentru destina\u0163ia {1} pe motorul de mesagerie {2} pe magistrala {3} pentru activarea puntului final {4}.
+SESSION_ERROR_CWSIV0806.explanation=O excep\u0163ie asincron\u0103 a fost primit\u0103 pentru consumatorul dat.  Bean-ul message-driven corespunz\u0103tor va fi dezactivat \u015fi nu va mai primi mesaje.
+SESSION_ERROR_CWSIV0806.useraction=Vizualiza\u0163i excep\u0163ia pentru a afla cauza.  Dup\u0103 rezolvarea problemei, reporni\u0163i motorul de mesagerie, adaptorul de resurse sau aplica\u0163ia.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the messaging engine name
+# {2} the endpoint activation
+CONNECTION_ERROR_CWSIV0807=CWSIV0807E: Excep\u0163ia {0} a fost aruncat\u0103 pe o conexiune c\u0103tre motorul de mesagerie {1} pentru activarea punctului final {2}.
+CONNECTION_ERROR_CWSIV0807.explanation=S-a recep\u0163ionat o excep\u0163ie pentru conexiunea dat\u0103.  Bean-ul message-driven corespunz\u0103tor va fi dezactivat \u015fi nu va mai primi mesaje.
+CONNECTION_ERROR_CWSIV0807.useraction=Vizualiza\u0163i excep\u0163ia pentru a afla cauza.  Dup\u0103 rezolvarea problemei, reporni\u0163i motorul de mesagerie, adaptorul de resurse sau aplica\u0163ia.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the destination
+# {1} the messaging engine name
+# {2} the bus name
+# {3} the exception
+SESSION_DROPPED_CWSIV0808=CWSIV0808W: Consumarea mesajelor de la destina\u0163ia {0} pe motorul de mesagerie {1} pe magistrala {2} a fost oprit\u0103 deoarece sesiunea a fost abandonat\u0103. Excep\u0163ia a fost {3}
+SESSION_DROPPED_CWSIV0808.explanation=Sesiunea a fost abandonat\u0103 pentru motivul declarat \u00een excep\u0163ie. Aceasta s-ar putea datora faptului c\u0103 destina\u0163ia specificat\u0103 a fost \u015ftears\u0103 sau marcat\u0103 ca doar de trimis.  Bean-ul message-driven corespunz\u0103tor va fi dezactivat \u015fi nu va mai primi mesaje.
+SESSION_DROPPED_CWSIV0808.useraction=Dac\u0103 aceast\u0103 eroare nu a fost a\u015fteptat\u0103, rezolva\u0163i problema apoi reporni\u0163i aplica\u0163ia, adaptorul de resurse sau motorul de mesagerie corespunz\u0103tor.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the destination wildcard string
+# {1} the messaging engine name
+# {2} the bus name
+NO_LISTENERS_CREATED_CWSIV0809=CWSIV0809W: Numele destina\u0163iei metacaracter {0} s-a potrivit cu zero destina\u0163ii care sunt disponibile pentru consumarea mesajelor pe motorul de mesagerie {1} pe magistrala {2}
+NO_LISTENERS_CREATED_CWSIV0809.explanation=Specifica\u0163iile de activare con\u0163in metacaractere \u00een numele destina\u0163iilor cu scopul de a consuma mesaje din destina\u0163ii multiple, totu\u015fi metacaracterele numelor se potrivesc cu zero destina\u0163ii disponibile
+NO_LISTENERS_CREATED_CWSIV0809.useraction=Asigura\u0163i-v\u0103 c\u0103 specifica\u0163iile de activare ar trebui s\u0103 utilizeze metacaractere in numele destina\u0163iilor, c\u0103 metacaracterul numelui destina\u0163iei se va potrivi cu unele destina\u0163ii \u015fi c\u0103 detaliile utilizatorului specificate pot consuma din destina\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint
+# {1} the expected interface
+UNEXPECTED_ENDPOINT_CWSIV0850=CWSIV0850E: A survenit o eroare intern\u0103. Punctul final al mesajului {0} nu implementeaz\u0103 interfa\u0163a a\u015fteptat\u0103 {1}.
+UNEXPECTED_ENDPOINT_CWSIV0850.explanation=Fabrica punctelor finale ale mesajelor a returnat un punct final care nu implementeaz\u0103 interfa\u0163a SibRaMessageListener a\u015fa cum se a\u015ftepta.
+UNEXPECTED_ENDPOINT_CWSIV0850.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+ON_MESSAGE_CWSIV0851=CWSIV0851E: A survenit o eroare intern\u0103. Excep\u0163ia {0} a fost aruncat\u0103 \u00een timp ce se \u00eencerca ob\u0163inerea unei instan\u0163e a metodei onMessage.
+ON_MESSAGE_CWSIV0851.explanation=O excep\u0163ie a fost creat\u0103 \u00een timp ce se \u00eencerca ob\u0163inerea unei instan\u0163e a metodei onMessage.
+ON_MESSAGE_CWSIV0851.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the destination name
+# {2} the bus name
+# {3} the connection
+LISTENER_CREATION_CWSIV0900=CWSIV0900E: Excep\u0163ia {0} a fost aruncat\u0103 \u00een timp ce se \u00eencerca crearea unui ascult\u0103tor pentru destina\u0163ia {1} pe magistrala {2} folosind conexiunea {3}.
+LISTENER_CREATION_CWSIV0900.explanation=O excep\u0163ie s-a creat \u00een timp ce adaptorul de resurse de intrare a\u015ftepta s\u0103 creeze un ascult\u0103tor pentru destina\u0163ia dat\u0103.
+LISTENER_CREATION_CWSIV0900.useraction=Vizualiza\u0163i excep\u0163ia legat\u0103 pentru mai multe informa\u0163ii.  Rezolva\u0163i problema apoi reporni\u0163i aplica\u0163ia, adaptorul de resurse sau motorul de mesagerie cel mai potrivit.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+SELECTION_FACTORY_CWSIV0901=CWSIV0901E: A survenit o eroare intern\u0103. Excep\u0163ia {0} a fost aruncat\u0103 \u00een timp ce se \u00eencerca ob\u0163inerea unei instan\u0163e SelectionCriteriaFactory.
+SELECTION_FACTORY_CWSIV0901.explanation=O excep\u0163ie a fost creat\u0103 \u00een timpul \u00eencerc\u0103rii de a ob\u0163ine o instan\u0163\u0103 a SelectionCriteriaFactory.
+SELECTION_FACTORY_CWSIV0901.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the message endpoint
+# {1} the destination the message endpoint was listening too
+MESSAGE_ENDPOINT_PAUSED_AUTONOMICALLY_CWSIV0902=CWSIV0902W: Punctul final al mesajului {0} care asculta destina\u0163ia {1} a f\u0103cut o pauz\u0103 cerut\u0103 de sistem.
+MESSAGE_ENDPOINT_PAUSED_AUTONOMICALLY_CWSIV0902.explanation=Sistemul a pus punctul final al mesajului sa fac\u0103 o pauz\u0103 pentru c\u0103 a detectat o problem\u0103 cu punctul final al mesajului bean-ului message-driven.
+MESSAGE_ENDPOINT_PAUSED_AUTONOMICALLY_CWSIV0902.useraction=Investiga\u0163i posibilele probleme cu bean-ul message-driven care ar putea cauza erori secven\u0163iale. C\u00e2nd sunte\u0163i gata s\u0103 relua\u0163i punctul final al mesajului, utiliza\u0163i consola administrativ\u0103. Alternativ, utiliza\u0163i MBean-ul punctului final al mesajului ca s\u0103 relua\u0163i punctul final, transmi\u0163\u00e2ndu-i numele punctului final \u00een acest mesaj.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the message endpoint
+# {1} the destination the message endpoint was listening too
+# {2} the exception thrown from the invoke
+INVOKE_MBEAN_EXCEPTION__CWSIV0903=CWSIV0903W: S-a \u00eencercat intrarea \u00een pauz\u0103 a punctului final al mesajului {0} care asculta destina\u0163ia {1} dar invocarea Mbean-ului a e\u015fuat cu urm\u0103toarea excep\u0163ie {2}.
+INVOKE_MBEAN_EXCEPTION__CWSIV0903.explanation=Sistemul a detectat o problem\u0103 cu bean-ul message-driven al unui punct final al unui mesaj, dar \u00eencercarea de a pune punctul final al mesajului \u00een pauz\u0103 a e\u015fuat.
+INVOKE_MBEAN_EXCEPTION__CWSIV0903.useraction=Verifica\u0163i starea punctului final al mesajului utiliz\u00e2nd scripting-ul wsadmin sau consola administrativ\u0103. Dac\u0103 punctul final al mesajului este activ, pune\u0163i \u00een pauz\u0103 punctul final \u015fi investiga\u0163i posibilele probleme cu bean-ul message-driven. Relua\u0163i punctul final atunci c\u00e2nd sunte\u0163i gata.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the message endpoint
+# {1} the destination the message endpoint was listening too
+NO_MBEAN_EXCEPTION_CWSIV0904=CWSIV0904W: \u00cen timpul unei \u00eencerc\u0103ri de oprire a unui MDB erau zero Puncte Finale de Mesaj care au putut fi localizate pentru punctul  final {0} care asculta la destina\u0163ia {1}. 
+NO_MBEAN_EXCEPTION_CWSIV0904.explanation=Sistemul nu poate localiza un punct final al mesajului.
+NO_MBEAN_EXCEPTION_CWSIV0904.useraction=Verifica\u0163i starea punctului final al mesajului utiliz\u00e2nd scripting-ul wsadmin sau consola administrativ\u0103. Dac\u0103 punctul final al mesajului este activ, pune\u0163i \u00een pauz\u0103 punctul final \u015fi investiga\u0163i posibilele probleme cu bean-ul message-driven. Relua\u0163i punctul final atunci c\u00e2nd sunte\u0163i gata.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the message endpoint
+# {1} the destination the message endpoint was listening too
+MULTIPLE_MBEAN_EXCEPTION_CWSIV0905=CWSIV0905W: \u00cen timpul unei \u00eencerc\u0103ri de oprire a unui MDB erau multiple Puncte Finale de Mesaj care au putut fi localizate pentru punctul final {0} care asculta la destina\u0163ia {1}. Doar un singur punct final ar trebui s\u0103 existe. MDB-ul nu va fi oprit. 
+MULTIPLE_MBEAN_EXCEPTION_CWSIV0905.explanation=Sistemul a detectat multiple puncte finale ale mesajelor. Nu a putut s\u0103 identifice ce punct final al mesajului s\u0103 pun\u0103 \u00een pauz\u0103.
+MULTIPLE_MBEAN_EXCEPTION_CWSIV0905.useraction=Verifca\u0163i starea tuturor punctelor finale ale mesajului \u00een acest bean message-driven utiliz\u00e2nd scritingul wsadmin sau consola administrativ\u0103. Dac\u0103 punctul final al unui mesaj este activ, pune\u0163i \u00een pauz\u0103 punctul final \u015fi investiga\u0163i posibilele probleme ale bean-ului message-driven. Relua\u0163i punctul final atunci c\u00e2nd sunte\u0163i gata.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the value it used to be
+# {1} the new value 
+MAXSEQUENTIALMESSAGEFAILURE_CONFIG_VALUE_CHANGED_CWSIV0906=CWSIV0906W: Valoarea maxim\u0103 de configurare de e\u015fuare a mesajelor secven\u0163iale a fost modificat\u0103 de la valoarea {0} la {1}.
+MAXSEQUENTIALMESSAGEFAILURE_CONFIG_VALUE_CHANGED_CWSIV0906.explanation=Valoarea maxim\u0103 de e\u015fu\u0103ri secven\u0163iale a mesajelor s-a modificat pentru c\u0103 ordonarea strict\u0103 a mesajelor a fost pornit\u0103.
+MAXSEQUENTIALMESSAGEFAILURE_CONFIG_VALUE_CHANGED_CWSIV0906.useraction=Nu este necesar\u0103 nicio ac\u0163iune dec\u00e2t dac\u0103 ave\u0163i nevoie de func\u0163ia de e\u015fuare secven\u0163ial\u0103 a mesajelor. Dac\u0103 cere\u0163i func\u0163ia de e\u015fuare secven\u0163ial\u0103 a mesajelor, opri\u0163i ordonarea strict\u0103 a mesajelor.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the value it used to be
+# {1} the new value 
+MAXSEQUENTIALMESSAGEFAILURE_EXCEPTION_DESTINATION_CWSIV0907=CWSIV0907W: Valoarea maxim\u0103 de configurare de e\u015fuare a mesajelor secven\u0163iale a fost modificat\u0103 de la valoarea {0} la {1}.
+MAXSEQUENTIALMESSAGEFAILURE_EXCEPTION_DESTINATION_CWSIV0907.explanation=Valoarea maxim\u0103 de e\u015fu\u0103ri secven\u0163iale a mesajelor s-a modificat pentru c\u0103 nu este definit\u0103 nicio destina\u0163ie de excep\u0163ie pentru destina\u0163ia la care ascult\u0103 bean-ul message-driven.
+MAXSEQUENTIALMESSAGEFAILURE_EXCEPTION_DESTINATION_CWSIV0907.useraction=Nu este necesar\u0103 nicio ac\u0163iune dec\u00e2t dac\u0103 ave\u0163i nevoie de func\u0163ia de e\u015fuare secven\u0163ial\u0103 a mesajelor. Dac\u0103 ave\u0163i nevoie de func\u0163ia de e\u015fuare secven\u0163ial\u0103 a mesajelor, configura\u0163i o destina\u0163ie de excep\u0163ie pentru destina\u0163ie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the connection factory
+CREATE_CONNECTION_CWSIV0950=CWSIV0950E: A survenit o eroare intern\u0103. Excep\u0163ia {0} a fost aruncat\u0103 \u00een timp ce se \u00eencerca crearea unei conexiuni la o fabric\u0103 {1}.
+CREATE_CONNECTION_CWSIV0950.explanation=Adaptorul de resurse de intrare a\u015ftepta s\u0103 creeze o conexiune atunci c\u00e2nd o excep\u0163ie nea\u015fteptat\u0103 a fost recep\u0163ionat\u0103.
+CREATE_CONNECTION_CWSIV0950.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the messaging engine UUID
+CREATE_CONNECTION_CWSIV0951=CWSIV0951E: A survenit o eroare intern\u0103. Excep\u0163ia {0} a fost aruncat\u0103 \u00een timp ce se \u00eencerca crearea unei conexiuni la motorul de mesagerie {1}.
+CREATE_CONNECTION_CWSIV0951.explanation=Adaptorul de resurse de intrare a\u015ftepta s\u0103 creeze o conexiune atunci c\u00e2nd o excep\u0163ie nea\u015fteptat\u0103 a fost recep\u0163ionat\u0103.
+CREATE_CONNECTION_CWSIV0951.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+LISTENER_CLOSED_CWSIV0952=CWSIV0952E: A survenit o eroare intern\u0103. S-a f\u0103cut o \u00eencercare de a crea un ascult\u0103tor la o conexiune ce a fost \u00eenchis\u0103.
+LISTENER_CLOSED_CWSIV0952.explanation=Conexiunea motorului de mesagerie a recep\u0163ionat o cerere s\u0103 creeze un ascult\u0103tor, dar era deja \u00eenchis\u0103.
+LISTENER_CLOSED_CWSIV0952.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+LISTENER_CLOSED_CWSIV0953=CWSIV0953E: A survenit o eroare intern\u0103. S-a f\u0103cut o \u00eencercare de a crea un dispecer la o conexiune care a fost \u00eenchis\u0103.
+LISTENER_CLOSED_CWSIV0953.explanation=Conexiunea motorului de mesagerie a recep\u0163ionat o cerere s\u0103 creeze un dispecer, dar era deja \u00eenchis\u0103.
+LISTENER_CLOSED_CWSIV0953.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the connection factory
+CREATE_CONNECTION_CWSIV0954=CWSIV0954E: Excep\u0163ia de autentificare {0} a fost aruncat\u0103 \u00een timp ce se \u00eencerca crearea unei conexiuni pe fabrica {1}.
+CREATE_CONNECTION_CWSIV0954.explanation=Adaptorul de resurse de intrare a\u015ftepta s\u0103 creeze o conexiune atunci c\u00e2nd o excep\u0163ie a fost aruncat\u0103.
+CREATE_CONNECTION_CWSIV0954.useraction=Asigura\u0163i-v\u0103 c\u0103 pe ActivationSpec sunt furnizate numele de utilizator \u015fi parola corecte, pe care bean-ul message-driven este configurat s\u0103 le foloseasc\u0103
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the messaging engine UUID
+CREATE_CONNECTION_CWSIV0955=CWSIV0955E: Excep\u0163ia de autentificare {0} a fost aruncat\u0103 \u00een timp ce se \u00eencerca crearea unei conexiuni c\u0103tre motorul de mesagerie {1}.
+CREATE_CONNECTION_CWSIV0955.explanation=Adaptorul de resurse de intrare a\u015ftepta s\u0103 creeze o conexiune atunci c\u00e2nd o excep\u0163ie a fost aruncat\u0103.
+CREATE_CONNECTION_CWSIV0955.useraction=Asigura\u0163i-v\u0103 c\u0103 pe ActivationSpec sunt furnizate numele de utilizator \u015fi parola corecte, pe care bean-ul message-driven este configurat s\u0103 le foloseasc\u0103
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+CREATE_CONNECTION_CWSIV0957=CWSIV0957E: A fost aruncat\u0103 excep\u0163ia de autentificare {0} la \u00eencercarea de a ob\u0163ine subiectul WebSphere Application Server.
+CREATE_CONNECTION_CWSIV0957.explanation=Adaptorul de resurse de intrare a \u00eencercat s\u0103 creeze o conexiune utiliz\u00e2nd subiectul serverului, dar nu a putut ob\u0163ine subiectul.
+CREATE_CONNECTION_CWSIV0957.useraction=Asigura\u0163i-v\u0103 c\u0103 set\u0103rile de securitate ale serverului de aplica\u0163ii sunt configurate corect.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the messaging engine UUID
+# {2} the activation specification
+CREATE_CONNECTION_CWSIV0958=CWSIV0958E: Excep\u0163ia de autorizare {0} a fost aruncat\u0103 la \u00eencercarea de a crea o conexiune c\u0103tre motorul de mesagerie {1} folosind specifica\u0163ia de activare {2}.
+CREATE_CONNECTION_CWSIV0958.explanation=Adaptorul de resurse de intrare \u00eencerca s\u0103 creeze o conexiune atunci c\u00e2nd o excep\u0163ie de autorizare a fost recep\u0163ionat\u0103.
+CREATE_CONNECTION_CWSIV0958.useraction=Asigura\u0163i-v\u0103 c\u0103 un alias corect al autentific\u0103rii este setat \u00een specifica\u0163iile de activare, cu care bean-ul message-driven este configurat s\u0103-l utilizeze.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the messaging engine UUID
+# {2} the activation specification
+CREATE_CONNECTION_CWSIV0959=CWSIV0959E: Excep\u0163ia de autorizare {0} a fost aruncat\u0103 la \u00eencercarea de a crea o conexiune c\u0103tre motorul de mesagerie {1} folosind specifica\u0163ia de activare {2}.
+CREATE_CONNECTION_CWSIV0959.explanation=Adaptorul de resurse de intrare \u00eencerca s\u0103 creeze o conexiune atunci c\u00e2nd o excep\u0163ie de autorizare a fost recep\u0163ionat\u0103.
+CREATE_CONNECTION_CWSIV0959.useraction=Asigura\u0163i-v\u0103 c\u0103 aliasul autentific\u0103rii \u00een specifica\u0163iile de activare, cu care este configurat bean-ul message-driven s\u0103-l utilizeze, este autorizat s\u0103 se conecteze la motorul de mesagerie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the bus name
+# {2} the activation specification
+CREATE_CONNECTION_CWSIV0960=CWSIV0960E: Excep\u0163ia de autorizare {0} a fost aruncat\u0103 la \u00eencercarea de a crea o conexiune c\u0103tre magistrala {1} folosind specifica\u0163ia de activare {2}.
+CREATE_CONNECTION_CWSIV0960.explanation=Adaptorul de resurse de intrare \u00eencerca s\u0103 creeze o conexiune atunci c\u00e2nd o excep\u0163ie de autorizare a fost recep\u0163ionat\u0103.
+CREATE_CONNECTION_CWSIV0960.useraction=Asigura\u0163i-v\u0103 c\u0103 un alias corect al autentific\u0103rii este setat \u00een specifica\u0163iile de activare, cu care bean-ul message-driven este configurat s\u0103-l utilizeze.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the bus name
+# {2} the activation specifcation
+CREATE_CONNECTION_CWSIV0961=CWSIV0961E: Excep\u0163ia de autorizare {0} a fost aruncat\u0103 la \u00eencercarea de a crea o conexiune c\u0103tre magistrala {1} folosind specifica\u0163ia de activare {2}.
+CREATE_CONNECTION_CWSIV0961.explanation=Adaptorul de resurse de intrare \u00eencerca s\u0103 creeze o conexiune atunci c\u00e2nd o excep\u0163ie de autorizare a fost recep\u0163ionat\u0103.
+CREATE_CONNECTION_CWSIV0961.useraction=Asigura\u0163i-v\u0103 c\u0103 aliasul autentific\u0103rii \u00een specifica\u0163iile de activare, cu care este configurat bean-ul message-driven s\u0103-l utilizeze, este autorizat s\u0103 se conecteze la magistral\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the bus name
+# {2} the activation specifcation
+CREATE_CONNECTION_CWSIV0962=CWSIV0962E: Excep\u0163ia de autentificare {0} a ap\u0103rut \u00een timp ce se crea o conexiune la magistrala {1} folosind specifica\u0163ia de activare {2}.
+CREATE_CONNECTION_CWSIV0962.explanation=Adaptorul de resurse de intrare a\u015ftepta s\u0103 creeze o conexiune atunci c\u00e2nd o excep\u0163ie a fost aruncat\u0103.
+CREATE_CONNECTION_CWSIV0962.useraction=Asigura\u0163i-v\u0103 c\u0103 aliasul de autentificare de pe specifica\u0163ia de activare, pe care este configurat s\u0103-l foloseasc\u0103 bean-ul controlate de mesaje, este autentificat s\u0103 se conecteze la magistral\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint factory passed
+# {1} the expected interface
+WAS_ENDPOINT_FACTORY_CWSIV1000=CWSIV1000E: A survenit o eroare intern\u0103. Fabrica punctului final al mesajului {0} transmis\u0103 adaptorului de resurse nu a implementat interfa\u0163a a\u015fteptat\u0103 {1}.
+WAS_ENDPOINT_FACTORY_CWSIV1000.explanation=Adaptorul de resurse de intrare necesit\u0103 ca fabrica punctului final al mesajului s\u0103 implementeze interfa\u0163a dat\u0103 pentru a ob\u0163ine numele unic al bean-ului message-drive.
+WAS_ENDPOINT_FACTORY_CWSIV1000.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the request object passed
+# {1} the expected interface
+MSG_TOKEN_CWSIV1050=CWSIV1050E: A survenit o eroare intern\u0103. Obiectul cererii {0} transmis adaptorului de resurse nu a implementat interfa\u0163a a\u015fteptat\u0103 {1}.
+MSG_TOKEN_CWSIV1050.explanation=Destina\u0163ia expedierii adaptorului de resurse de intrare a recep\u0163ionat un obiect care nu era de tipul a\u015fteptat.
+MSG_TOKEN_CWSIV1050.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the session ID
+# {1} the messaging engine UUID
+# {2} the message handle
+# {3} the messages
+READ_SET_CWSIV1051=CWSIV1051E: A survenit o eroare intern\u0103. Re\u0163eaua de mesaje {3} a returnat manipulatorului de mesaje {2} din sesiunea {0} din motorul de mesagerie {1} nu con\u0163inea un singur mesaj.
+READ_SET_CWSIV1051.explanation=Destina\u0163ia expedierii adaptorului de mesaje de intrare nu a recep\u0163ionat un singur mesaj \u00een schimbul manipulatorului de mesaje dat.
+READ_SET_CWSIV1051.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the session ID
+# {1} the messaging engine UUID
+# {2} the message handle
+# {3} the exception thrown
+EXCEPTION_CWSIV1052=CWSIV1052W: Adaptorul de resurse de intrare a primit excep\u0163ia {3} la procesarea m\u00e2nerului de mesaje {2} din sesiunea {0} pe motorul de mesagerie {1}.
+EXCEPTION_CWSIV1052.explanation=Adaptorul de resurse de intrare nu a putut procesa manipulatorul de mesaje primit de la anexa regiunii de control.
+EXCEPTION_CWSIV1052.useraction=Vizualiza\u0163i detaliile excep\u0163iei pentru a afla cauza.  Livrarea mesajelor va fi re\u00eencercat\u0103 de \u00eendat\u0103 ce a expirat blocajul mesajului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the j2eeName (MDB Name)
+NO_POOL_CWSIV1053=CWSIV1053E: A survenit o eroare intern\u0103. Adaptorul de resurse de intrare a e\u015fuat s\u0103 localizeze un pool de activare puncte finale pentru {0} a\u015fa c\u0103 nu a putut s\u0103 restabileasc\u0103 activarea unui punct final
+NO_POOL_CWSIV1053.explanation=Adaptorul de resurse de intrare nu a putut primi activarea unui punct final de la pool pentru c\u0103 nu a putut localiza pool-ul
+NO_POOL_CWSIV1053.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the locked message enumeration
+RETRIEVE_MESSAGES_CWSIV1100=CWSIV1100E: A survenit o eroare intern\u0103. Excep\u0163ia {0} a fost aruncat\u0103 \u00een timp ce se \u00eencerca ob\u0163inerea mesajelor din enumerare {1}.
+RETRIEVE_MESSAGES_CWSIV1100.explanation=Adaptorul de resurse de intrare \u00eencerca s\u0103 extrag\u0103 mesajele dintr-o enumerare atunci c\u00e2nd o excep\u0163ie nea\u015fteptat\u0103 a fost recep\u0163ionat\u0103.
+RETRIEVE_MESSAGES_CWSIV1100.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the value it used to be
+# {1} the new value
+MAXCONCURRENCY_CONFIG_VALUE_CHANGED_CWSIV1101=CWSIV1101W: Valoarea maxim\u0103 MDB de configurare a concuren\u0163ei a fost modificat\u0103 de la valoarea {0} la {1}.
+MAXCONCURRENCY_CONFIG_VALUE_CHANGED_CWSIV1101.explanation=Valorea maxim\u0103 de configurare a concuren\u0163ei s-a schimbat pentru c\u0103 ordonarea strict\u0103 a mesajelor a fost pornit\u0103.
+MAXCONCURRENCY_CONFIG_VALUE_CHANGED_CWSIV1101.useraction=Nu este necesar\u0103 nicio ac\u0163iune dec\u00e2t dac\u0103 sunt cerute bean-uri message-driven concurente. Dac\u0103 e a\u015fa, atunci opri\u0163i ordonarea strict\u0103 a mesajelor.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the locked message enumeration
+RETRIEVE_MESSAGES_CWSIV1150=CWSIV1150E: A survenit o eroare intern\u0103. Excep\u0163ia {0} a fost aruncat\u0103 \u00een timp ce se \u00eencerca ob\u0163inerea mesajelor din enumerare {1}.
+RETRIEVE_MESSAGES_CWSIV1150.explanation=Adaptorul de resurse de intrare \u00eencerca s\u0103 extrag\u0103 mesajele dintr-o enumerare atunci c\u00e2nd o excep\u0163ie nea\u015fteptat\u0103 a fost recep\u0163ionat\u0103.
+RETRIEVE_MESSAGES_CWSIV1150.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the session
+# {1} the connection
+GET_ID_CWSIV1151=CWSIV1151E: A survenit o eroare intern\u0103. Excep\u0163ia {0} a fost aruncat\u0103 \u00een timp ce se \u00eencerca ob\u0163inerea identificatorului pentru sesiunea {0} creat\u0103 din conexiunea {1}.
+GET_ID_CWSIV1151.explanation=Adaptorul de resurse de intrare \u00eencerca s\u0103 ob\u0163in\u0103 identificatorul pentru o sesiune atunci c\u00e2nd o excep\u0163ie nea\u015fteptat\u0103 a fost recep\u0163ionat\u0103.
+GET_ID_CWSIV1151.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint factory passed
+# {1} the expected interface
+WAS_ENDPOINT_FACTORY_CWSIV1152=CWSIV1152E: A survenit o eroare intern\u0103. Fabrica punctului final al mesajului {0} transmis\u0103 adaptorului de resurse nu a implementat interfa\u0163a a\u015fteptat\u0103 {1}.
+WAS_ENDPOINT_FACTORY_CWSIV1152.explanation=Adaptorul de resurse de intrare necesit\u0103 ca fabrica punctului final al mesajului s\u0103 implementeze interfa\u0163a dat\u0103 pentru a ob\u0163ine numele unic al bean-ului message-drive.
+WAS_ENDPOINT_FACTORY_CWSIV1152.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The default value for message lock expiry.
+UNABLE_TO_LOCATE_SERVER_CWSIV1153=CWSIV1153W: Nu se poate citi proprietatea personalizat\u0103 MessageLockExpiry deoarece Mesagerie Platform\u0103 nu a putut localiza serverul. Valoarea implicit\u0103 a {0} va fi utilizat\u0103
+UNABLE_TO_LOCATE_SERVER_CWSIV1153.explanation=Adaptorul de resurse de intrare nu a putut g\u0103si serverul, de aceea propriet\u0103\u0163ii MessageLockExpiry i s-a asignat o valoare implicit\u0103.
+UNABLE_TO_LOCATE_SERVER_CWSIV1153.useraction=CMSG0002
+
+#
+# {0} The value the message lock expiry was set to
+# {1} The default value for message lock expiry.
+INVALID_MESSAGELOCKEXPIRY_CWSIV1154=CWSIV1154W: Valoarea pentru MessageLockExpiry este aparent {0}, aceasta nu poate fi convertit\u0103 \u00eentr-un num\u0103r \u00eentreg. Valoarea implicit\u0103 a {1} va fi utilizat\u0103.
+INVALID_MESSAGELOCKEXPIRY_CWSIV1154.explanation=Atunci c\u00e2nd citea valoarea pentru MessageLockExpiry, nu putea s\u0103 fac\u0103 conversia valorii \u00eentr-un num\u0103r \u00eentreg.
+INVALID_MESSAGELOCKEXPIRY_CWSIV1154.useraction=Verifica\u0163i dac\u0103 valoarea asignat\u0103 propriet\u0103\u0163ii personalizate MessageLockExpiry este num\u0103r \u00eentreg, reporni\u0163i serverul pentru ca modific\u0103rile s\u0103 aib\u0103 efect.
+
+#
+# {0} The value the message lock expiry was set to
+# {1} The default value for message lock expiry.
+NEGATIVE_MESSAGELOCKEXPIRY_CWSIV1155=CWSIV1155W: Valoarea pentru MessageLockExpiry este aparent {0}, aceasta nu poate fi negativ\u0103. Valoarea implicit\u0103 a {1} va fi utilizat\u0103
+NEGATIVE_MESSAGELOCKEXPIRY_CWSIV1155.explanation=Valorile negative nu sunt permise pentru timpul de expirare de blocare al mesajului
+NEGATIVE_MESSAGELOCKEXPIRY_CWSIV1155.useraction=Verifica\u0163i dac\u0103 valoarea asignat\u0103 propriet\u0103\u0163ii personalizate MessageLockExpiry este fie pozitiv\u0103 fie zero, apoi reporni\u0163i serverul pentru ca modifc\u0103rile s\u0103 aib\u0103 efect.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the endpoint on which beforeDelivery is being invoked
+BEFORE_DELIVERY_CWSIV1200=CWSIV1200E: A survenit o eroare intern\u0103. Excep\u0163ia {0} a fost recep\u0163ionat\u0103 atunci c\u00e2nd se \u00eencerca invocarea beforeDelivery la punctul final {1}.
+BEFORE_DELIVERY_CWSIV1200.explanation=Adaptorul de resurse a recep\u0163ionat o excep\u0163ie atunci c\u00e2nd \u00eencerca s\u0103 invoce beforeDelivery \u00eentr-un punct final \u00eenainte de a apela onMessage.
+BEFORE_DELIVERY_CWSIV1200.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection on which the create was attempted
+# {1} the exception thrown
+UNCOORD_TRAN_CWSIV1201=CWSIV1201E: A survenit o eroare intern\u0103. Excep\u0163ia {1} a fost recep\u0163ionat\u0103 atunci c\u00e2nd se \u00eencerca crearea unei tranzac\u0163ii necoordonate la conexiunea {0}.
+UNCOORD_TRAN_CWSIV1201.explanation=Adaptorul de resurse a recep\u0163ionat o excep\u0163ie atunci c\u00e2nd \u00eencerca s\u0103 creeze o tranzac\u0163ie necoordonat\u0103 la conexiunea dat\u0103.
+UNCOORD_TRAN_CWSIV1201.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the synchronization that was being registered
+# {1} the exception thrown
+REGISTER_SYNC_CWSIV1202=CWSIV1202E: A survenit o eroare intern\u0103. Excep\u0163ia {1} a fost recep\u0163ionat\u0103 atunci c\u00e2nd se \u00eencerca \u00eenregistrarea sincroniz\u0103rii {0}.
+REGISTER_SYNC_CWSIV1202.explanation=Adaptorul de resurse a recep\u0163ionat o excep\u0163ie atunci c\u00e2nd \u00eencerca s\u0103 \u00eenregistreze sincronizarea dat\u0103 cu managerul tranzac\u0163iei.
+REGISTER_SYNC_CWSIV1202.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the transaction
+# {1} the expected interface
+SYNC_CWSIV1203=CWSIV1203E: Tranzac\u0163ia {0} \u00eentoars\u0103 de la conexiune nu a implementat interfa\u0163a a\u015fteptat\u0103 {1}.
+SYNC_CWSIV1203.explanation=Adaptorul de resurse de intrare necesit\u0103 ca tranzac\u0163iile necoordonate s\u0103 implementeze interfa\u0163a dat\u0103 pentru a executa optimizarea cu o singur\u0103 faz\u0103 de comitere.
+SYNC_CWSIV1203.useraction=Asigura\u0163i-v\u0103 c\u0103 sistemul este corect configurat pentru a profita de optimizarea cu o faz\u0103 de comitere \u00eentre un motor de mesagerie \u015fi o baz\u0103 de date, atunci c\u00e2nd sunt folosite \u015fi entit\u0103\u0163i bean ce folosesc persisten\u0163\u0103 gestionat\u0103 de container.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The object name
+# {1} The method name
+NULL_XA_RESOURCE_CWSIV1210=CWSIV1210E: A ap\u0103rut o eroare intern\u0103, un nul a fost transmis \u00een metoda {1} pe obiectul {0}. Trebuie transmis\u0103 o resurs\u0103 XAResource valid\u0103.
+NULL_XA_RESOURCE_CWSIV1210.explanation=CMSG0001
+NULL_XA_RESOURCE_CWSIV1210.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIV9999=CWSIV9999E: ''{0}''
+TEMPORARY_CWSIV9999.explanation=Dac\u0103 acest mesaj nu v\u0103 d\u0103 suficiente informa\u0163ii, verifica\u0163i mesajele adiacente pentru mai multe informa\u0163ii.
+TEMPORARY_CWSIV9999.useraction=Verifica\u0163i mesajele de eroare adiacente pentru mai multe informa\u0163ii.
+

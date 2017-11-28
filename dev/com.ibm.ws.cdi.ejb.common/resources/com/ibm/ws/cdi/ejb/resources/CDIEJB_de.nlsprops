@@ -1,0 +1,34 @@
+#CMVCPATHNAME SERV1/ws/code/prereq.jcdi/src/com/ibm/ws/webbeans/resources/jcdi.nlsprops
+#COMPONENTPREFIX CWOWB
+#COMPONENTNAMEFOR CWOWB Java EE Contexts and Dependency Injection 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by JCDI
+#-----------------------------------------------------------------------------------------------------------------------------
+
+transactional.annotation.on.ejb.CWOWB2000E=CWOWB2000E: Die Annotation {0} ist in der EJB {1} nicht zul\u00e4ssig.
+transactional.annotation.on.ejb.CWOWB2000E.explanation=Die Annotation Transactional kann nicht mit der EJB verwendet werden.
+transactional.annotation.on.ejb.CWOWB2000E.useraction=Verwenden Sie f\u00fcr EJBs TransactionAttribute anstelle von Transactional.
+
+lifecycle.interceptor.exception.CWOWB2001E=CWOWB2001E: Ein Lebenszyklusinterceptor f\u00fcr {0} hat eine Ausnahme ausgel\u00f6st: {1}
+lifecycle.interceptor.exception.CWOWB2001E.explanation=Lebenszyklusinterceptors sollten keine gepr\u00fcften Ausnahmen ausl\u00f6sen.
+lifecycle.interceptor.exception.CWOWB2001E.useraction=Bestimmen Sie das Problem mithilfe der Protokolle.
+

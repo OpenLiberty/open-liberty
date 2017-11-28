@@ -1,0 +1,40 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.javaeesec/resources/com/ibm/ws/security/javaeesec/internal/resources/JavaEESecMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Java EE Security 1.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS1900 - CWWKS1924
+# 1900 to 1909 will be used for some informational message such as JSR375 is enabled or something like that...
+
+JAVAEESEC_ERROR_NO_IDENTITYSTORES=CWWKS1910E: Obiectul IdentityStore nu a fost g\u0103sit. Asigura\u0163i-v\u0103 c\u0103 cel pu\u0163in un IdentityStore este definit de adnotare \u00een aplica\u0163ie.
+JAVAEESEC_ERROR_NO_IDENTITYSTORES.explanation=Obiectul IdentityStore nu a fost g\u0103sit. El este necesar pentru autentificare \u015fi autorizare.
+JAVAEESEC_ERROR_NO_IDENTITYSTORES.useraction=Asigura\u0163i-v\u0103 c\u0103 aplica\u0163ia este adnotat\u0103 corect ca s\u0103 fie activat cel pu\u0163in un IdentityStore.
+
+JAVAEESEC_ERROR_NO_VALIDATION=CWWKS1911E: Niciun obiect IdentityStore suport\u0103 validarea utilizatorului. Asigura\u0163i-v\u0103 c\u0103 cel pu\u0163in un IdentityStore suport\u0103 validarea utilizatorului.
+JAVAEESEC_ERROR_NO_VALIDATION.explanation=Niciun obiect IdentityStore suport\u0103 validarea utilizatorului, prin urmare codul de securitate nu autentific\u0103 utilizatorul.
+JAVAEESEC_ERROR_NO_VALIDATION.useraction=Asigura\u0163i-v\u0103 c\u0103 cel pu\u0163in un IdentityStore suport\u0103 validarea utilizatorului.
+
+JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: Obiectul HttpAuthenticationMechanism nu poate fi identificat pentru autentificare. Asigura\u0163i-v\u0103 c\u0103 exist\u0103 un HttpAuthenticationMechanism \u00een aplica\u0163ie.
+JAVAEESEC_ERROR_NO_HAM.explanation=Obiectul HttpAuthenticationMechanism nu poate fi identificat pentru autentificare. Fie nu exist\u0103 obiectul, fie mai multe obiecte corespund condi\u0163iei specificate. Asigura\u0163i-v\u0103 c\u0103 exist\u0103 un HttpAuthenticationMechanism \u00een aplica\u0163ie.
+JAVAEESEC_ERROR_NO_HAM.useraction=Asigura\u0163i-v\u0103 c\u0103 exist\u0103 un HttpAuthenticationMechanism \u00een aplica\u0163ie.
+
+JAVAEESEC_ERROR_NO_HAM_PROPS=CWWKS1913E: Obiectul HAMProperties nu poate fi identificat pentru autentificare. Cel mai probabil, nu exist\u0103 niciun obiect HttpAuthenticationMechanism \u00een aplica\u0163ie. Asigura\u0163i-v\u0103 c\u0103 este definit un obiect HttpAuthenticationMechanism.
+JAVAEESEC_ERROR_NO_HAM_PROPS.explanation=Obiectul HAMProperties nu poate fi identificat pentru autentificare. Probabil nu exist\u0103 niciun obiect HttpAuthenticationMechanism definit \u00een aplica\u0163ie.
+JAVAEESEC_ERROR_NO_HAM_PROPS.useraction=Asigura\u0163i-v\u0103 c\u0103 exist\u0103 un HttpAuthenticationMechanism \u00een aplica\u0163ie.
+
+JAVAEESEC_WARNING_NO_REALM_NAME=CWWKS1914W: Numele de regiune pentru autentificarea de baz\u0103 nu este setat, este utilizat\u0103 valoarea defaultRealm.
+JAVAEESEC_WARNING_NO_REALM_NAME.explanation=Numele de regiune pentru autentificarea de baz\u0103 nu este setat, este utilizat\u0103 valoarea implicit\u0103 defaultRealm.
+JAVAEESEC_WARNING_NO_REALM_NAME.useraction=Dac\u0103 numele regiunii trebuie s\u0103 fie setat, v\u0103 rug\u0103m s\u0103 \u00eel seta\u0163i folosind \u00een aplica\u0163ie adnotarea BasicAuthenticationMechanismDefinition.

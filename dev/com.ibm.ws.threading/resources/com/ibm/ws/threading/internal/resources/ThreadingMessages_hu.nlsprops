@@ -1,0 +1,57 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME=CWWKExxxxI: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.threading/resources/com/ibm/ws/threading/internal/resources/ThreadingMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 1200 - 1299 com.ibm.ws.threading.internal.resources.ThreadingMessages
+# -------------------------------------------------------------------------------------------------
+
+# {0} size of the pool when a deadlock was first detected
+# {1} current size of the pool
+unbreakableExecutorHang=CWWKE1200W:  \u00dagy t\u0171nik, hogy az alap\u00e9rtelmezett Liberty v\u00e9grehajt\u00f3ban tal\u00e1lhat\u00f3 \u00f6sszes sz\u00e1l lefagyott. A Liberty k\u00f6rnyezet automatikusan {0} \u00e9rt\u00e9kr\u0151l {1} \u00e9rt\u00e9kre n\u00f6velte a sz\u00e1lak sz\u00e1m\u00e1t. Azonban \u00fagy t\u0171nik, hogy az \u00f6sszes sz\u00e1l tov\u00e1bbra is le van fagyva.
+unbreakableExecutorHang.explanation=Hiba t\u00f6rt\u00e9nt, amely a v\u00e9grehajt\u00f3 lefagy\u00e1s\u00e1t okozta. A lefagyott \u00e1llapot megszak\u00edt\u00e1si k\u00eds\u00e9rlete keret\u00e9ben a Liberty fut\u00e1si k\u00f6rnyezet jelent\u0151s mennyis\u00e9g\u0171 sz\u00e1l hozz\u00e1ad\u00e1s\u00e1t hajtotta v\u00e9gre. A v\u00e9grehajt\u00f3 azonban nem v\u00e1laszol\u00f3 \u00e1llapotban marad. 
+unbreakableExecutorHang.useraction=Hat\u00e1rozza meg, hogy van-e olyan sz\u0171k keresztmetszet, p\u00e9ld\u00e1ul egy z\u00e1rolt adatb\u00e1zist\u00e1bla, amely megakad\u00e1lyozn\u00e1 a sz\u00e1lak felold\u00e1s\u00e1t a kiszolg\u00e1l\u00f3n. Ha van ilyen sz\u0171k keresztmetszet, \u00e9s a  kiszolg\u00e1l\u00f3 jogosan ig\u00e9nyel tov\u00e1bbi sz\u00e1lakat, akkor \u00e1ll\u00edtsa be a v\u00e9grehajt\u00f3 konfigur\u00e1ci\u00f3s elem\u00e9nek coreThreads attrib\u00fatum\u00e1t.
+
+CWWKE1201.queue.full.abort=CWWKE1201E: A feladat nem ny\u00fajthat\u00f3 be a(z) {0} v\u00e9grehajt\u00f3nak, mert a(z) {1} maxQueueSize m\u00e9ret\u0171 feladatsor teljes kapacit\u00e1sa ki van haszn\u00e1lva {2} nanoszekundum v\u00e1rakoz\u00e1s ut\u00e1n.
+CWWKE1201.queue.full.abort.explanation=A maxQueueSize attrib\u00fatum a sorban \u00e1ll\u00f3 feladatbeny\u00fajt\u00e1sok sz\u00e1m\u00e1t szab\u00e1lyozza. A maxWaitForEnqueue attrib\u00fatum szab\u00e1lyozza, hogy meddig v\u00e1rjon a rendszer a sorpoz\u00edci\u00f3 el\u00e9rhet\u0151v\u00e9 v\u00e1l\u00e1s\u00e1ra, de ez az intervallum r\u00f6vid\u00edthet\u0151 a h\u00e1trel\u00e9v\u0151 id\u0151vel, ha az id\u0151z\u00edtett invokeAll vagy invokeAny met\u00f3dust haszn\u00e1lta a feladatok elk\u00fcld\u00e9s\u00e9hez. A queueFullAction attrib\u00fatum hat\u00e1rozza meg, hogy milyen m\u0171velet ker\u00fclj\u00f6n v\u00e9grehajt\u00e1sra az id\u0151tartam letelte ut\u00e1n, ha nem v\u00e1lt el\u00e9rhet\u0151 sorpoz\u00edci\u00f3. A maxim\u00e1lis versenyhelyzet t\u00fall\u00e9p\u00e9s\u00e9t elker\u00fclend\u0151, illetve a megadott id\u0151korl\u00e1t betart\u00e1sa \u00e9rdek\u00e9ben az invokeAll \u00e9s invokeAny met\u00f3dusok fel\u00fcl tudj\u00e1k \u00edrni a queueFullAction \u00e9rt\u00e9k\u00e9t \u00e9s meg tudj\u00e1k szak\u00edtani a feladatbeny\u00fajt\u00e1st, ha az nem \u00e1ll\u00edthat\u00f3 sorba.
+CWWKE1201.queue.full.abort.useraction=Nincs teend\u0151, ha az alkalmaz\u00e1s kezeli a RejectedExecutionException hib\u00e1t. Ellenkez\u0151 esetben a k\u00f6vetkez\u0151 m\u0171veletek tetsz\u0151leges kombin\u00e1ci\u00f3j\u00e1t v\u00e9gezze el: maxQueueSize n\u00f6vel\u00e9se, maxWaitForEnqueue n\u00f6vel\u00e9se, m\u00e1sik queueFullAction haszn\u00e1lata, vagy az invokeAll \u00e9s invokeAny met\u00f3dushoz biztos\u00edtott id\u0151korl\u00e1t n\u00f6vel\u00e9se.
+
+CWWKE1202.submit.after.shutdown=CWWKE1202E: A feladat nem ny\u00fajthat\u00f3 be, mert a(z) {0} v\u00e9grehajt\u00f3 le van \u00e1ll\u00edtva.
+CWWKE1202.submit.after.shutdown.explanation=Feladatbeny\u00fajt\u00e1sok nem megengedettek, miut\u00e1n k\u00e9r\u00e9s t\u00f6rt\u00e9nt a v\u00e9grehajt\u00f3 szolg\u00e1ltat\u00e1s le\u00e1ll\u00edt\u00e1s\u00e1ra.
+CWWKE1202.submit.after.shutdown.useraction=Csak olyan v\u00e9grehajt\u00f3 szolg\u00e1ltat\u00e1snak ny\u00fajtson be feladatot, amely nem kapott le\u00e1ll\u00edt\u00e1si k\u00e9r\u00e9st.
+
+CWWKE1203.config.update.after.shutdown=CWWKE1203E: A(z) {0} konfigur\u00e1ci\u00f3j\u00e1nak friss\u00edt\u00e9se nem megengedett, mert a(z) {1} v\u00e9grehajt\u00f3 le van \u00e1ll\u00edtva.
+CWWKE1203.config.update.after.shutdown.explanation=Konfigur\u00e1ci\u00f3friss\u00edt\u00e9s nem lehets\u00e9ges, miut\u00e1n k\u00e9r\u00e9s t\u00f6rt\u00e9nt a v\u00e9grehajt\u00f3 szolg\u00e1ltat\u00e1s le\u00e1ll\u00edt\u00e1s\u00e1ra.
+CWWKE1203.config.update.after.shutdown.useraction=Csak olyan v\u00e9grehajt\u00f3 szolg\u00e1ltat\u00e1sp\u00e9ld\u00e1ny konfigur\u00e1ci\u00f3j\u00e1t friss\u00edtse, amely nem kapott le\u00e1ll\u00edt\u00e1si k\u00e9r\u00e9st.
+
+# {4} is the value of the time unit enum constant that was supplied to invokeAll/invokeAny. For example, MINUTES
+CWWKE1204.unable.to.invoke=CWWKE1204E: A(z) {0} v\u00e9grehajt\u00f3 nem tudta elk\u00fcldeni {2}/{1} feladatot a rendelkez\u00e9sre \u00e1ll\u00f3 {3} {4} id\u0151n bel\u00fcl.
+CWWKE1204.unable.to.invoke.explanation=A v\u00e9grehajt\u00f3 visszautas\u00edtotta az invokeAll vagy invokeAny m\u0171veletet, mivel nem volt elegend\u0151 id\u0151 vagy sorkapacit\u00e1s az \u00f6sszes k\u00e9rt feladat elk\u00fcld\u00e9s\u00e9re a megadott intervallumon bel\u00fcl.
+CWWKE1204.unable.to.invoke.useraction=Nincs teend\u0151, ha az alkalmaz\u00e1s kezeli a RejectedExecutionException hib\u00e1t. Ellenkez\u0151 esetben a k\u00f6vetkez\u0151 m\u0171veletek tetsz\u0151leges kombin\u00e1ci\u00f3j\u00e1t v\u00e9gezze el: maxQueueSize n\u00f6vel\u00e9se, maxConcurrency n\u00f6vel\u00e9se, vagy az invokeAll \u00e9s invokeAny met\u00f3dushoz biztos\u00edtott id\u0151korl\u00e1t \u00e9rt\u00e9k\u00e9nek n\u00f6vel\u00e9se.
+
+CWWKE1205.start.timeout=CWWKE1205E: A(z) {0} v\u00e9grehajt\u00f3 nem tudta elind\u00edtani a(z) {1} feladatot {2} nanoszekundum v\u00e1rakoz\u00e1s ut\u00e1n, mert a feladat t\u00fall\u00e9pte a(z) {3} nanoszekundum ind\u00edt\u00e1si id\u0151korl\u00e1tot.
+CWWKE1205.start.timeout.explanation=Amikor egy v\u00e9grehajt\u00f3n a startTimeout \u00e9rt\u00e9ke meg van adva, vagy egy program ig\u00e9nyli egy feladathoz, akkor a v\u00e9grehajt\u00f3 nyomon k\u00f6veti a feladat elk\u00fcld\u00e9se \u00e9s lehets\u00e9ges futtat\u00e1si ideje k\u00f6z\u00f6tt eltelt id\u0151t. Ha az eltelt id\u0151 t\u00fall\u00e9pi a startTimeout \u00e9rt\u00e9k\u00e9t, akkor a v\u00e9grehajt\u00f3 megszak\u00edtja a feladatot az elind\u00edt\u00e1s helyett. 
+CWWKE1205.start.timeout.useraction=Nincs teend\u0151, ha az alkalmaz\u00e1s el\u0151re l\u00e1tja n\u00e9h\u00e1ny feladat megszak\u00edt\u00e1s\u00e1t a startTimeout \u00e9rt\u00e9k\u00e9nek t\u00fall\u00e9p\u00e9se miatt. Ellenkez\u0151 esetben v\u00e9gezze el a k\u00f6vetkez\u0151 m\u0171veletek tetsz\u0151leges kombin\u00e1ci\u00f3j\u00e1t: startTimeout n\u00f6vel\u00e9se, maxConcurrency n\u00f6vel\u00e9se.

@@ -1,0 +1,28 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO 
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKO1350 - CWWKO1399
+
+OSGI_SERVICE_ERROR=CWWKO1350E: OSGi \uc11c\ube44\uc2a4 {0}\uc744(\ub97c) \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+OSGI_SERVICE_ERROR.explanation=\uc9c0\uc815\ub41c \uc11c\ube44\uc2a4\ub97c \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc73c\ubbc0\ub85c \ub0b4\ubd80 \uc11c\ubc84 \uc624\ub958\uac00 \ucc98\ub9ac\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+OSGI_SERVICE_ERROR.useraction=\uc815\ub9ac \uc635\uc158\uc73c\ub85c \uc11c\ubc84\ub97c \ub2e4\uc2dc \uc2dc\uc791\ud558\uc2ed\uc2dc\uc624.

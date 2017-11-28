@@ -1,0 +1,207 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.wim.adapter.ldap.util/resources/com/ibm/ws/security/wim/adapter/ldap/util/resources/LdapUtilMessages.nlsprops
+#COMPONENTPREFIX CWIML
+#COMPONENTPREFIX CWIMK
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR Virtual Member Manager user registry utilities
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: Profile Manager: 1000-1999
+# Message prefix block: Repository Manager: 4000-4499
+# Message prefix block: Adapters: 4500-4999
+# Message prefix block: CWWKS3200 - CWWKS3299
+
+ENTITY_NOT_FOUND=CWIML4001E: Impossibile completare l''operazione registro utenti. L''entit\u00e0 {0} non \u00e8 stata trovata. Specificare l''entit\u00e0 corretta o creare l''entit\u00e0 mancante.
+ENTITY_NOT_FOUND.explanation=Impossibile trovare il nome entit\u00e0 specificato, che potrebbe essere un uniqueName o uniqueId, nel repository sottostante. Impossibile proseguire l'operazione registro utenti senza trovare questa entit\u00e0.
+ENTITY_NOT_FOUND.useraction=Assicurarsi che esista l'entit\u00e0 nel repository sottostante. Se l'entit\u00e0 esiste, verificare che sia impostato il permesso di lettura per l'entit\u00e0 e tentare nuovamente.
+
+INVALID_LEVEL_IN_CONTROL=CWIML4514E: Impossibile completare l''operazione registro utenti. Un valore non corretto per il livello della propriet\u00e0 {0} \u00e8 stato specificato in {1}. Il valore della propriet\u00e0, livello, deve essere 0 o un numero intero positivo.
+INVALID_LEVEL_IN_CONTROL.explanation=Il valore del livello della propriet\u00e0 \u00e8 stato specificato come un numero negativo.
+INVALID_LEVEL_IN_CONTROL.useraction=Il valore della propriet\u00e0, livello, deve essere 0 o un numero intero positivo. Modificare il valore del livello della propriet\u00e0 e tentare nuovamente.
+
+NAMING_EXCEPTION=CWIML4520E: Impossibile completare l''operazione LDAP. Si \u00e8 verificata l''eccezione di denominazione LDAP {0} durante l''elaborazione.
+NAMING_EXCEPTION.explanation=Il messaggio indica che si \u00e8 verificata un'eccezione di denominazione generale durante un'operazione LDAP. Vedere l'eccezione per ulteriori dettagli. 
+NAMING_EXCEPTION.useraction=Assicurarsi che il repository correlato (ad esempio, un database o un server LDAP) sia avviato ed impostato correttamente.
+
+SYSTEM_EXCEPTION=CWIML1998E: Impossibile completare l''operazione registro utenti. Si \u00e8 verificata la seguente eccezione di sistema durante l''elaborazione dell''operazione registro utenti: {0} 
+SYSTEM_EXCEPTION.explanation=Il programma ha rilevato un'eccezione di sistema durante l'esecuzione dell'operazione registro utenti. 
+SYSTEM_EXCEPTION.useraction= Esaminare i log per determinare la causa di questo errore ed eseguire le azioni correttive appropriate. 
+
+INVALID_PROPERTY_VALUE=CWIML1013E: Impossibile completare l''operazione registro utenti. Il valore immesso della propriet\u00e0 {0} non \u00e8 valido per l''entit\u00e0 {1}. \u00c8 necessario che il valore della propriet\u00e0 sia corretto e che sia del tipo di dati corretto.
+INVALID_PROPERTY_VALUE.explanation=Il valore della propriet\u00e0 non \u00e8 valido. Per esempio, una propriet\u00e0 di tipo identificativo punta ad un elemento non corretto.
+INVALID_PROPERTY_VALUE.useraction=Assicurarsi che il valore della propriet\u00e0 sia corretto e che sia del tipo di dati corretto. Se si sta provando a richiamare la propriet\u00e0 del tipo di identificativo insieme ad altre propriet\u00e0, ripartirle in due chiamate. Eseguire una chiamata per richiamare le propriet\u00e0 non di tipo di identificativo e l'altra chiamata per richiamare la propriet\u00e0 di tipo di identificativo.
+
+GENERIC=CWIML1999E: Impossibile completare l''operazione del registro utente. Si \u00e8 verificato un errore di runtime durante l''elaborazione: {0}
+GENERIC.explanation=Il programma ha rilevato l'errore specificato durante l'operazione.
+GENERIC.useraction= Esaminare i log per determinare la causa di questo errore ed eseguire le azioni correttive appropriate.
+
+MISSING_MANDATORY_PROPERTY=CWIML1028E: Impossibile completare l''operazione registro utenti. Il valore della propriet\u00e0 obbligatoria {0} \u00e8 mancante. Fornire un valore per la propriet\u00e0 obbligatoria.
+MISSING_MANDATORY_PROPERTY.explanation=L'operazione non pu\u00f2 essere eseguita poich\u00e9 manca il valore della propriet\u00e0 obbligatoria. Ad esempio, la propriet\u00e0 RDN (Relative Distinguished Name) non \u00e8 specificata quando viene creata l'entit\u00e0 oppure propertyName o entityTypeName risultano mancanti in PropertyDefinitionControl o ExtensionPropertyDefinitionControl oppure entityName risulta mancante in entitySchema.
+MISSING_MANDATORY_PROPERTY.useraction=Fornire un valore per la propriet\u00e0 obbligatoria.
+
+ENTITY_IS_NOT_A_GROUP=CWIML4525E: Impossibile completare l''operazione registro utenti. Il tipo di entit\u00e0 {0} fornito non \u00e8 del tipo Gruppo. Questa operazione \u00e8 supportata solo da un''entit\u00e0 di tipo Gruppo.
+ENTITY_IS_NOT_A_GROUP.explanation=Le operazioni relative al gruppo, ad esempio l'assegnazione di membri ad un gruppo o l'acquisizione di membri di un gruppo, sono applicabili solo al tipo di entit\u00e0 Gruppo. Se l'entit\u00e0 specificata non \u00e8 di tipo Gruppo, viene generata un'eccezione.
+ENTITY_IS_NOT_A_GROUP.useraction=Assicurarsi che l'entit\u00e0 specificata sia di tipo Gruppo. Per l'adattatore LDAP assicurarsi che la classe di oggetti definita per il tipo di entit\u00e0 Gruppo corrisponda alla classe di oggetti effettiva del gruppo.
+
+CLEAR_ALL_CLEAR_CACHE_MODE=CWIML4002W:  L''utente {2} ha passato il controllo della cache specificando la modalit\u00e0 di cancellazione del contenuto della cache {1} per il repository {0}. \u00c8 stata cancellata tutta la cache del repository LDAP.
+CLEAR_ALL_CLEAR_CACHE_MODE.explanation=L'utente specificato sta tentando di cancellare il contenuto dell'intera cache del repository specificato utilizzando la modalit\u00e0 clearall.
+CLEAR_ALL_CLEAR_CACHE_MODE.useraction=Questo messaggio viene registrato per scopi di controllo.
+
+UNKNOWN_CLEAR_CACHE_MODE=CWIML4003W:  La modalit\u00e0 di cancellazione del contenuto della cache {1} specificata per il repository {0} nel controllo cache non \u00e8 supportata. Specificare una modalit\u00e0 di cancellazione del contenuto della cache supportata.
+UNKNOWN_CLEAR_CACHE_MODE.explanation=La modalit\u00e0 di cancellazione del contenuto della cache specificata non \u00e8 supportata per questo repository.
+UNKNOWN_CLEAR_CACHE_MODE.useraction=Specificare una modalit\u00e0 di cancellazione del contenuto della cache supportata per il repository specificato. 
+
+INVALID_PROPERTY_DATA_TYPE=CWIML4522E: Impossibile completare l''operazione registro utenti. Il tipo di dati della propriet\u00e0 {0} non \u00e8 valido.  Il registro utenti configurato e il repository di backend devono disporre dello stesso tipo di dati per la propriet\u00e0. 
+INVALID_PROPERTY_DATA_TYPE.explanation=Il tipo di dati specificato non corrisponde al tipo di dati definito per la propriet\u00e0. Ad esempio, il tipo di dati definito nel registro utenti configurato \u00e8 binario, ma il tipo di dati definito nel repository di backend \u00e8 una stringa.
+INVALID_PROPERTY_DATA_TYPE.useraction=Accertarsi che il tipo di dati della propriet\u00e0 sia identico nel registro utenti configurato e nel repository di backend. 
+
+LDAP_ENTRY_NOT_FOUND=CWIML4527E: Impossibile completare l''operazione LDAP. La voce LDAP {0} non \u00e8 stata trovata: {1} Specificare il nome univoco corretto dell''entit\u00e0 e definire l''associazione nodi corretta per il repository LDAP.
+LDAP_ENTRY_NOT_FOUND.explanation=La voce LDAP per l'entit\u00e0 specificata non \u00e8 stata trovata sul server LDAP.
+LDAP_ENTRY_NOT_FOUND.useraction=Assicurarsi che il nome univoco dell'entit\u00e0 sia stato specificato correttamente. Assicurarsi che l'associazione nodi del repository LDAP sia stata definita correttamente.
+
+PROPERTY_NOT_DEFINED=CWIML0514W: Impossibile completare l''operazione registro utenti. La propriet\u00e0 {0} non \u00e8 definita. Definire o utilizzare il nome propriet\u00e0 corretto.
+PROPERTY_NOT_DEFINED.explanation=La propriet\u00e0 specificata non \u00e8 definita.
+PROPERTY_NOT_DEFINED.useraction=Assicurarsi che la propriet\u00e0 sia definita o utilizzare il nome propriet\u00e0 corretto.
+
+CANNOT_SEARCH_PRINCIPAL_NAME_WITH_OTHER_PROPS=CWIML1021E: Impossibile completare l'operazione di ricerca nel registro utenti. Impossibile utilizzare principalName, insieme ad altre propriet\u00e0, nelle operazioni di ricerca.
+CANNOT_SEARCH_PRINCIPAL_NAME_WITH_OTHER_PROPS.explanation=La ricerca di principalName insieme ad altre propriet\u00e0 in un'espressione di ricerca non \u00e8 supportata.
+CANNOT_SEARCH_PRINCIPAL_NAME_WITH_OTHER_PROPS.useraction=Non utilizzare principalName nelle operazioni di ricerca insieme ad altre propriet\u00e0.
+
+NULL_CHECKPOINT_VALUE=CWIML4550E: Impossibile completare l'operazione LDAP. Un valore di punto di controllo vuoto o null \u00e8 stato passato a un adattatore che supporta la traccia delle modifiche. Specificare un punto di controllo valido oppure disabilitare 'supportChangeLog' per il repository nel file server.xml.
+NULL_CHECKPOINT_VALUE.explanation=Se un repository supporta la traccia delle modifiche come specificato dall'indicatore 'supportChangeLog' per il repository nel file server.xml, il punto di controllo passato per esso in ChangeControl non deve essere vuoto o null.
+NULL_CHECKPOINT_VALUE.useraction=Provare ad eseguire nuovamente la ricerca con un punto di controllo valido oppure disabilitare 'supportChangeLog' per tale repository nel file server.xml, se l'adattatore del registro utenti non \u00e8 in grado di tenere traccia delle modifiche.
+
+MISSING_OR_EMPTY_PASSWORD=CWIML4541E: Impossibile completare l'operazione di login. La password manca o \u00e8 vuota.
+MISSING_OR_EMPTY_PASSWORD.explanation=Se durante il collegamento viene specificato il nome principal, la password non pu\u00f2 essere null o vuota.
+MISSING_OR_EMPTY_PASSWORD.useraction=Specificare la password.
+
+PASSWORD_CHECKED_FAILED=CWIML4529E: Impossibile completare l''operazione di login. La verifica della password per il nome principal {0} non \u00e8 riuscita. Causa principale: {1}. Specificare il nome principal e la password correttamente e verificare che l''account sia abilitato e non vincolato.
+PASSWORD_CHECKED_FAILED.explanation=Non \u00e8 stato possibile autenticare il nome principal specificato in quanto la verifica della password non \u00e8 riuscita.
+PASSWORD_CHECKED_FAILED.useraction=Assicurarsi che sia il nome principal che la password siano specificati correttamente. Assicurarsi che l'account non sia vincolato e sia abilitato.
+
+UNSUPPORTED_CLEAR_CACHE_MODE=CWIML4004W: Impossibile completare l''operazione di cancellazione del contenuto della cache del repository LDAP. La modalit\u00e0 di cancellazione del contenuto della cache {1} passata nel controllo della cache non \u00e8 supportata per questa operazione dal repository specificato {0}. Specificare una modalit\u00e0 di cancellazione del contenuto della cache supportata.
+UNSUPPORTED_CLEAR_CACHE_MODE.explanation=La modalit\u00e0 di cancellazione del contenuto della cache specificata non \u00e8 valida per questo repository.
+UNSUPPORTED_CLEAR_CACHE_MODE.useraction=Specificare la modalit\u00e0 corretta di cancellazione del contenuto della cache. Il contenuto della cache non verr\u00e0 cancellato per il repository specificato a meno che non venga fornita una modalit\u00e0 di cancellazione del contenuto della cache valida.
+
+CURRENT_LDAP_SERVER=CWIML4564I: Il registro utenti ora \u00e8 connesso al server LDAP {0}.
+CURRENT_LDAP_SERVER.explanation=Il registro utenti ora \u00e8 connesso al server LDAP specificato.
+CURRENT_LDAP_SERVER.useraction=Non sono richieste azioni da parte dell'utente.
+
+CANNOT_CONNECT_TO_LDAP_SERVER=CWIML4563I: Impossibile connettersi al server LDAP primario {0} configurato. La connessione al server di failover si verificher\u00e0 se configurata nel file server.xml.
+CANNOT_CONNECT_TO_LDAP_SERVER.explanation=Impossibile connettersi al server LDAP primario. La connessione al server di failover si verificher\u00e0 se configurata nel file server.xml. Per ulteriori informazioni, consultare la documentazione relativa al failover.
+CANNOT_CONNECT_TO_LDAP_SERVER.useraction=Accertarsi che il server LDAP specificato sia attivo e in esecuzione.
+
+INVALID_CERTIFICATE_FILTER=CWIML0002E: Impossibile completare l''operazione di login. La sintassi del filtro del certificato {0} non \u00e8 valida. La sintassi corretta \u00e8: LDAP attribute=$[Client certificate attribute] (ad esempio, uid=$[SubjectCN]).
+INVALID_CERTIFICATE_FILTER.explanation=La sintassi o struttura del filtro \u00e8: LDAP attribute=$[Client certificate attribute] (ad esempio, uid=$[SubjectCN]). La parte sinistra della specifica del filtro \u00e8 un attributo LDAP che dipende dallo schema per il cui utilizzo \u00e8 configurato il server LDAP.  La parte destra della specifica del filtro \u00e8 uno degli attributi pubblici nel certificato client. La parte destra deve iniziare con il simbolo del dollaro ($) ed una parentesi graffa aperta ({ o [) e terminare con una parentesi graffa chiusa (} o ]). \u00c8 possibile utilizzare i seguenti valori attributo certificato sulla parte destra della specifica del filtro. Le stringhe sono sensibili al maiuscolo/minuscolo: $[UniqueKey], $[PublicKey], $[Issuer], $[NotAfter], $[NotBefore], $[SerialNumber], $[SigAlgName], $[SigAlgOID], $[SigAlgParams], $[SubjectCN], $[Version]. 
+INVALID_CERTIFICATE_FILTER.useraction=Assicurarsi che il filtro del certificato segua la sintassi documentata.
+
+TBS_CERTIFICATE_UNSUPPORTED=CWIML0008E: Impossibile completare l'operazione di login. L'operazione getTBSCertificate() non \u00e8 supportata nell'espressione del filtro. Specificare il filtro del certificato corretto.
+TBS_CERTIFICATE_UNSUPPORTED.explanation=L'attributo del certificato TBSCertificate non pu\u00f2 essere utilizzato nella specifica del filtro. \u00c8 possibile utilizzare i seguenti valori attributo certificato sulla parte destra della specifica del filtro. Le stringhe sono sensibili al maiuscolo/minuscolo: ${UniqueKey}, ${PublicKey}, ${Issuer}, ${NotAfter}, ${NotBefore}, ${SerialNumber}, ${SigAlgName}, ${SigAlgOID}, ${SigAlgParams}, ${SubjectCN}, ${Version}.
+TBS_CERTIFICATE_UNSUPPORTED.useraction=Assicurarsi che il filtro del certificato sia corretto.
+
+UNKNOWN_CERTIFICATE_ATTRIBUTE=CWIML0009E: Impossibile completare l''operazione di login. Un attributo del certificato sconosciuto {0} \u00e8 stato utilizzato nella specifica del filtro. Specificare un filtro del certificato supportato.
+UNKNOWN_CERTIFICATE_ATTRIBUTE.explanation=\u00c8 possibile utilizzare solo i seguenti valori di attributo del certificato sul lato destra della specifica del filtro. Le stringhe sono sensibili al maiuscolo/minuscolo: ${UniqueKey}, ${PublicKey}, ${Issuer}, ${NotAfter}, ${NotBefore}, ${SerialNumber}, ${SigAlgName}, ${SigAlgOID}, ${SigAlgParams}, ${SubjectCN}, ${Version}. 
+UNKNOWN_CERTIFICATE_ATTRIBUTE.useraction=Assicurarsi che il filtro del certificato sia corretto.
+
+UNKNOWN_DN_FIELD=CWIML0003E: Impossibile completare l''operazione di login. Il campo Distinguished Name configurato {0} non \u00e8 valido. Specificare un campo Distinguished Name valido.
+UNKNOWN_DN_FIELD.explanation=Il campo DN (Distinguished Name) specificato nel filtro del certificato \u00e8 sconosciuto.
+UNKNOWN_DN_FIELD.useraction=Assicurarsi che il filtro del certificato sia corretto. Per ulteriori informazioni, consultare la documentazione relativa alla configurazione del certificato.
+
+EXT_ID_VALUE_IS_NULL=CWIML4548E: Impossibile completare l''operazione di login. L''attributo LDAP specificato utilizzato come identificativo esterno {0} ha un valore null per l''entit\u00e0 {1}.
+EXT_ID_VALUE_IS_NULL.explanation=L'attributo LDAP utilizzato come identificativo esterno deve contenere un valore per ciascuna entit\u00e0.
+EXT_ID_VALUE_IS_NULL.useraction=Assicurarsi che sia scelto l'attributo corretto per l'identificativo esterno. Se non esiste alcun attributo appropriato, pu\u00f2 essere utilizzato come identificativo esterno il DN.
+
+EXT_ID_HAS_MULTIPLE_VALUES=CWIML4528E: Impossibile completare l''operazione di ricerca. L''attributo LDAP utilizzato come identificativo esterno contiene valori multipli: {0}. Scegliere l''attributo LDAP corretto come identificativo esterno.
+EXT_ID_HAS_MULTIPLE_VALUES.explanation=L'attributo LDAP utilizzato come identificativo esterno deve essere univoco e non pu\u00f2 contenere valori multipli.
+EXT_ID_HAS_MULTIPLE_VALUES.useraction=Assicurarsi che sia scelto l'attributo corretto per l'identificativo esterno. Se non esiste alcun attributo appropriato, pu\u00f2 essere utilizzato come identificativo esterno il DN.
+
+INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: Impossibile completare l''operazione registro utenti. La definizione della voce di base configurata non \u00e8 valida: {0}. Configurare una definizione della voce di base valida nel file server.xml. Ad esempio: <baseEntry name="..." baseDN="...."/>.
+INVALID_BASE_ENTRY_DEFINITION.explanation=La sintassi per definire una voce di base \u00e8 <baseEntry name="..." baseDN="...."/>.
+INVALID_BASE_ENTRY_DEFINITION.useraction=Correggere la definizione della voce di base nel file server.xml.
+
+INVALID_DN_SYNTAX=CWIML4517E: Impossibile completare l''operazione di login. Il DN (Distinguished Name) specificato {0} non \u00e8 valido. Specificare la sintassi corretta del DN (distinguished name).
+INVALID_DN_SYNTAX.explanation=Il DN specificato non \u00e8 valido. Impossibile proseguire l'operazione registro utenti senza un DN valido.
+INVALID_DN_SYNTAX.useraction=Assicurarsi che la sintassi del DN sia corretta. Ad esempio, esaminare i caratteri escape.
+
+INIT_POOL_SIZE_TOO_BIG=CWIML4532E: La dimensione iniziale del pool di contesto {0} \u00e8 superiore alla dimensione massima del pool di contesto {1}. Di conseguenza, il pool di contesto \u00e8 stato disabilitato.
+INIT_POOL_SIZE_TOO_BIG.explanation=La dimensione iniziale del pool di contesto deve essere inferiore alla dimensione massima del pool di contesto.
+INIT_POOL_SIZE_TOO_BIG.useraction=Assicurarsi che la dimensione iniziale del pool di contesto sia inferiore alla dimensione massima del pool di contesto o impostare la dimensione massima del pool di contesto su 0.
+
+PREF_POOL_SIZE_TOO_BIG=CWIML4533E: La dimensione preferita del pool di contesto {0} deve essere inferiore alla dimensione massima del pool di contesto {1}. Di conseguenza, il pool di contesto \u00e8 stato disabilitato.
+PREF_POOL_SIZE_TOO_BIG.explanation=La dimensione preferita del pool di contesto dovrebbe essere inferiore alla dimensione massima del pool di contesto.
+PREF_POOL_SIZE_TOO_BIG.useraction=Assicurarsi che la dimensione preferita del pool di contesto sia inferiore alla dimensione massima del pool di contesto o impostare la dimensione massima del pool di contesto su 0.
+
+MISSING_INI_PROPERTY=CWIML0004E: Si \u00e8 verificato un errore durante l''inizializzazione del registro utenti. La propriet\u00e0\u00a0 di inizializzazione {0} risulta mancante nel file server.xml. Specificare una propriet\u00e0 di inizializzazione nel file server.xml.
+MISSING_INI_PROPERTY.explanation=La propriet\u00e0 d'inizializzazione specificata \u00e8 obbligatoria. Impossibile avviare l'operazione registro utenti senza di essa.
+MISSING_INI_PROPERTY.useraction=Assicurarsi che questa propriet\u00e0 venga specificata nel file server.xml. Assicurarsi che questa propriet\u00e0 non sia vuota o null.
+
+DUPLICATE_ENTITY_TYPE=CWIML4531E: Nel file server.xml \u00e8 definito un tipo di entit\u00e0 {0} duplicato.
+DUPLICATE_ENTITY_TYPE.explanation=Il tipo di entit\u00e0 definito nel file server.xml deve essere univoco.
+DUPLICATE_ENTITY_TYPE.useraction=Modificare il file server.xml per rimuovere il tipo di entit\u00e0 duplicato.
+
+LDAP_CONFIG_INCOMPLETE=CWWKS3200E: Si \u00e8 verificata un''eccezione di configurazione. \u00c8 necessario definire l''attributo {0}.
+LDAP_CONFIG_INCOMPLETE.explanation=L'attributo specificato deve essere definito.
+LDAP_CONFIG_INCOMPLETE.useraction=Specificare il valore per l'attributo mancante.
+
+LDAP_SSL_SOCKET_FACTORY_INIT_ERROR=CWWKS3201E: Si \u00e8 verificata un''eccezione durante l''abilitazione del factory socket SSL LDAP: {0}.
+LDAP_SSL_SOCKET_FACTORY_INIT_ERROR.explanation=La porta, l'host o l'alias della configurazione SSL forniti nella configurazione SSL-LDAP non sono corretti.
+LDAP_SSL_SOCKET_FACTORY_INIT_ERROR.useraction=Fornire le informazioni di configurazione SSL corrette, necessarie per la connessione al server LDAP abilitato per SSL.
+
+LDAP_UNSUPPORTED_TYPE=CWWKS3202E: \u00c8 stato specificato un tipo di server LDAP non supportato: {0}.
+LDAP_UNSUPPORTED_TYPE.explanation=Sono supportati i seguenti tipi di server LDAP: Netscape Directory Server, IBM Lotus Domino, IBM SecureWay Directory Server, Microsoft Active Directory, Sun Java System Directory Server, IBM Tivoli Directory Server, Novell eDirectory, Personalizzato.
+LDAP_UNSUPPORTED_TYPE.useraction=Specificare un tipo di server LDAP supportato.
+
+LDAP_SSL_ENABLED_WITHOUT_SSL=CWWKS3203E: L'attributo sslEnabled \u00e8 impostato su true, ma la funzione SSL non \u00e8 abilitata.
+LDAP_SSL_ENABLED_WITHOUT_SSL.explanation=Se l'attributo sslEnabled \u00e8 impostato su true, \u00e8 necessario abilitare anche la funzione SSL.
+LDAP_SSL_ENABLED_WITHOUT_SSL.useraction=Impostare l'attributo sslEnabled su false oppure abilitare la funzione SSL.
+
+LDAP_REGISTRY_INVALID_FAILOVER_SERVERS_DEFINITION=CWWKS3204E: La definizione di server di failover non \u00e8 valida: {0}
+LDAP_REGISTRY_INVALID_FAILOVER_SERVERS_DEFINITION.explanation=La sintassi per definire un server di failover \u00e8 <server host="..." port="..." />.
+LDAP_REGISTRY_INVALID_FAILOVER_SERVERS_DEFINITION.useraction=Correggere la definizione del server di failover nella configurazione.
+
+SERVER_MUST_DEFINE_HOST=Un elemento server deve definire un host.
+SERVER_MUST_DEFINE_PORT=Un elemento server deve definire una porta.
+
+LDAP_REGISTRY_UNREACHABLE_SERVER=CWWKS3205A: Impossibile stabilire una connessione a {0}.
+LDAP_REGISTRY_UNREACHABLE_SERVER.explanation=Il server potrebbe essere inattivo oppure la porta potrebbe essere errata.
+LDAP_REGISTRY_UNREACHABLE_SERVER.useraction=Verificare che il server sia attivo e che il numero della porta sia corretto.
+
+LDAP_REGISTRY_UNABLE_TO_AUTHENTICATE=CWWKS3206A: Impossibile eseguire l''autenticazione presso {0} con il DN di bind configurato {1}.
+LDAP_REGISTRY_UNABLE_TO_AUTHENTICATE.explanation=Il DN di bind e la password di bind non sono corretti oppure la porta potrebbe essere errata.
+LDAP_REGISTRY_UNABLE_TO_AUTHENTICATE.useraction=Controllare che il DN di bind e la password di bind configurati siano corretti per il server LDAP configurato.
+
+ENTITY_HAS_DESCENDENTS=CWIML4519E: Impossibile completare l''operazione registro utenti. L''entit\u00e0 {0} ha dei discendenti. Non pu\u00f2 essere eliminata o ridenominata. Eliminare tutti i discendenti dell''entit\u00e0 prima di provare ad eliminare o a ridenominare l''entit\u00e0 stessa.
+ENTITY_HAS_DESCENDENTS.explanation=La funzione di eliminazione o ridenominazione pu\u00f2 essere eseguita solo su un'entit\u00e0 foglia, cio\u00e8, un'entit\u00e0 senza discendenti. L'entit\u00e0 specificata presenta discendenti.
+ENTITY_HAS_DESCENDENTS.useraction=Eliminare prima tutti i discendenti dell'entit\u00e0 e poi eliminarla o ridenominarla.
+
+ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: Impossibile completare l''operazione registro utenti. {0} non \u00e8 un tipo di entit\u00e0\u00a0 valido. Richiamare l''operazione specificando un tipo di entit\u00e0 valido.
+ENTITY_TYPE_NOT_SUPPORTED.explanation=\u00c8 stata richiesta un'operazione su un'entit\u00e0, ma l'operazione non supporta il tipo di entit\u00e0 specificato. Ad esempio, se un'operazione GET del repository viene richiamata per una entit\u00e0 Account, l'operazione non riesce.
+ENTITY_TYPE_NOT_SUPPORTED.useraction=Accertarsi che le operazioni vengano richiamate per tipi di entit\u00e0 supportati e rimuovere tutti i tipi di entit\u00e0 non supportati dall'input.
+
+CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY=CWIML4543E: Impossibile completare l''operazione registro utenti. Impossibile creare o aggiornare la propriet\u00e0 {0} nel repository {1}.
+CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY.explanation=Nell'operazione di creazione o aggiornamento, \u00e8 stato specificato un valore per una propriet\u00e0 che non pu\u00f2 essere scritto nel repository. Ad esempio, non \u00e8 possibile specificare un pricipalName per un'operazione CREATE.
+CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY.useraction=Rimuovere la propriet\u00e0 non corretta dall'input e tentare nuovamente l'operazione specificando valori e propriet\u00e0 validi.
+
+PARENT_NOT_FOUND=CWIML4526E: Impossibile completare l''operazione CREATE del registro utente. L''entit\u00e0 non \u00e8 stata creata poich\u00e9 non \u00e8 stato trovato il parent dell''entit\u00e0. L''eccezione JDNI sottostante \u00e8: {0}
+PARENT_NOT_FOUND.explanation=Durante la creazione, se non viene trovato il parent dell'entit\u00e0 che si desidera creare, viene generata un'eccezione.
+PARENT_NOT_FOUND.useraction=Assicurarsi che esista il parent predefinito per l'entit\u00e0.  Se non esiste, \u00e8 necessario crearlo ed eseguire nuovamente l'operazione.
+
+ENTITY_ALREADY_EXIST=CWIML4501E: Impossibile completare l''operazione CREATE del registro utente. Un''entit\u00e0 con lo stesso nome univoco, {0}, o lo stesso valore RDN esiste gi\u00e0.
+ENTITY_ALREADY_EXIST.explanation=Il nome univoco specificato o un'entit\u00e0 con lo stesso valore RDN esiste gi\u00e0 nel repository. Non pu\u00f2 essere aggiunta al repository un'entit\u00e0 duplicata con lo stesso nome univoco o RDN (Relative Distinguished Name).
+ENTITY_ALREADY_EXIST.useraction=Tentare nuovamente l'operazione e specificare un nome diverso per l'entit\u00e0 in modo da renderlo univoco.
+
+WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED=CWIML4547E: Impossibile completare l''operazione registro utenti. Le operazioni di scrittura non sono consentite sul server LDAP secondario {0}.
+WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED.explanation=Tutte le operazioni di scrittura (creazione, aggiornamento, eliminazione) sono consentite solo nel server LDAP principale.
+WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED.useraction=Verificare che il server principale sia stato avviato e ripetere l'operazione.

@@ -1,0 +1,196 @@
+###############################################################################
+# Copyright (c) 2011, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWNEN (Injection Engine)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME com.ibm.ws.injection/resources/com/ibm/ws/osgi/internal/resources/EJBContainerMessages.nlsprops
+#COMPONENTPREFIX CNTR
+#COMPONENTNAMEFOR CNTR EJB Container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# NOTE: CNTR4000-CNTR4999 are reserved for use in this message file. All other
+#       CNTR ranges are reserved by com/ibm/ejs/container/container.nlsprops
+#
+#  		CNTR4000-CNTR4099 - general EJB messages
+#       CNTR4100+ - Metadata messages
+#-------------------------------------------------------------------------------
+
+STARTING_MODULE_CNTR4000I=CNTR4000I: Trwa uruchamianie modu\u0142u EJB {0} w aplikacji {1}.
+STARTING_MODULE_CNTR4000I.explanation=Serwer uruchamia modu\u0142 EJB.
+STARTING_MODULE_CNTR4000I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+STARTED_MODULE_CNTR4001I=CNTR4001I: Modu\u0142 EJB {0} w aplikacji {1} zosta\u0142 pomy\u015blnie uruchomiony.
+STARTED_MODULE_CNTR4001I.explanation=Serwer uruchomi\u0142 modu\u0142 EJB.
+STARTED_MODULE_CNTR4001I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+ERROR_STARTING_MODULE_CNTR4002E=CNTR4002E: Nie powiod\u0142o si\u0119 uruchomienie modu\u0142u EJB {0} w aplikacji {1}. Wyj\u0105tek: {2}
+ERROR_STARTING_MODULE_CNTR4002E.explanation=Serwer nie m\u00f3g\u0142 uruchomi\u0107 modu\u0142u EJB.
+ERROR_STARTING_MODULE_CNTR4002E.useraction=U\u017cyj informacji o wyj\u0105tku, aby zidentyfikowa\u0107 przyczyn\u0119 problemu i rozwi\u0105za\u0107 ten problem. Informacje dotycz\u0105ce okre\u015blenia problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+STOPPING_MODULE_CNTR4003I=CNTR4003I: Trwa zatrzymywanie modu\u0142u EJB {0} w aplikacji {1}.
+STOPPING_MODULE_CNTR4003I.explanation=Serwer zatrzymuje modu\u0142 EJB.
+STOPPING_MODULE_CNTR4003I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+STOPPED_MODULE_CNTR4004I=CNTR4004I: Modu\u0142 EJB {0} w aplikacji {1} zosta\u0142 pomy\u015blnie zatrzymany.
+STOPPED_MODULE_CNTR4004I.explanation=Serwer zatrzyma\u0142 modu\u0142 EJB.
+STOPPED_MODULE_CNTR4004I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+ERROR_STOPPING_MODULE_CNTR4005E=CNTR4005E: Nie powiod\u0142o si\u0119 zatrzymanie modu\u0142u EJB {0} w aplikacji {1}. Wyj\u0105tek: {2}
+ERROR_STOPPING_MODULE_CNTR4005E.explanation=Serwer nie m\u00f3g\u0142 zatrzyma\u0107 modu\u0142u EJB.
+ERROR_STOPPING_MODULE_CNTR4005E.useraction=U\u017cyj informacji o wyj\u0105tku, aby zidentyfikowa\u0107 przyczyn\u0119 problemu i rozwi\u0105za\u0107 ten problem. Informacje dotycz\u0105ce okre\u015blenia problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_STARTING_EJB_CNTR4006E=CNTR4006E: Nie powiod\u0142o si\u0119 uruchomienie komponentu EJB {0} w module {1} aplikacji {2}. Wyj\u0105tek: {3}
+ERROR_STARTING_EJB_CNTR4006E.explanation=Komponent EJB zosta\u0142 skonfigurowany do uruchomienia przy pierwszym u\u017cyciu, a nie po uruchomieniu jego modu\u0142u. Uruchomienie komponentu EJB przy jego pierwszym u\u017cyciu nie powiod\u0142o si\u0119.
+ERROR_STARTING_EJB_CNTR4006E.useraction=U\u017cyj informacji o wyj\u0105tku, aby zidentyfikowa\u0107 przyczyn\u0119 problemu i rozwi\u0105za\u0107 ten problem. Informacje dotycz\u0105ce okre\u015blenia problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+JNDI_CANNOT_INSTANTIATE_OBJECT_CNTR4007E=CNTR4007E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas tworzenia interfejsu {0} dla komponentu EJB {1} w module {2} aplikacji {3}. Wyszukiwanie komponentu EJB za pomoc\u0105 nazwy JNDI {4} nie powiod\u0142o si\u0119. Wyj\u0105tek: {5}
+JNDI_CANNOT_INSTANTIATE_OBJECT_CNTR4007E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas tworzenia instancji komponentu EJB o okre\u015blonej nazwie JNDI.
+JNDI_CANNOT_INSTANTIATE_OBJECT_CNTR4007E.useraction=Zapoznaj si\u0119 z zagnie\u017cd\u017conym wyj\u0105tkiem lub poprzednim b\u0142\u0119dem, aby uzyska\u0107 wi\u0119cej informacji na temat b\u0142\u0119du.
+
+JNDI_CANNOT_INSTANTIATE_HOME_CNTR4008E=CNTR4008E: Nie mo\u017cna uzyska\u0107 interfejsu podstawowego {0} dla komponentu EJB {1} w module {2} aplikacji {3} dla nazwy JNDI {4}, poniewa\u017c interfejsy podstawowe nie s\u0105 obs\u0142ugiwane przez \u017caden ze sk\u0142adnik\u00f3w skonfigurowanych w pliku server.xml.
+JNDI_CANNOT_INSTANTIATE_HOME_CNTR4008E.explanation=Sk\u0142adniki ejbLite nie obs\u0142uguj\u0105 interfejsu podstawowego komponentu EJB ani interfejsu komponentu. W sk\u0142adnikach ejbLite s\u0105 obs\u0142ugiwane tylko interfejsy biznesowe.
+JNDI_CANNOT_INSTANTIATE_HOME_CNTR4008E.useraction=Zmodyfikuj aplikacj\u0119, aby usun\u0105\u0107 u\u017cycie interfejsu podstawowego komponentu bean i interfejsu komponentu, lub dodaj sk\u0142adnik ejbHome do pliku server.xml.
+
+JNDI_CANNOT_INSTANTIATE_REMOTE_CNTR4009E=CNTR4009E: Nie mo\u017cna uzyska\u0107 interfejsu zdalnego {0} dla komponentu EJB {1} w module {2} aplikacji {3} dla nazwy JNDI {4}, poniewa\u017c interfejsy zdalne nie s\u0105 obs\u0142ugiwane przez \u017caden ze sk\u0142adnik\u00f3w skonfigurowanych w pliku server.xml.
+JNDI_CANNOT_INSTANTIATE_REMOTE_CNTR4009E.explanation=Sk\u0142adniki ejbLite nie obs\u0142uguj\u0105 interfejsu zdalnego komponentu EJB. W sk\u0142adnikach ejbLite s\u0105 obs\u0142ugiwane tylko interfejsy lokalne.
+JNDI_CANNOT_INSTANTIATE_REMOTE_CNTR4009E.useraction=Zmodyfikuj aplikacj\u0119, aby usun\u0105\u0107 u\u017cycie interfejs\u00f3w zdalnych komponentu bean, lub dodaj sk\u0142adnik ejbRemote do pliku server.xml.
+
+AUTOMATIC_TIMERS_NOT_SUPPORTED_CNTR4010W=CNTR4010W: Komponent EJB {0} w module {1} w aplikacji {2} deklaruje nietrwa\u0142e automatyczne liczniki czasu. Nietrwa\u0142e automatyczne liczniki czasu nie s\u0105 obs\u0142ugiwane przez \u017caden ze sk\u0142adnik\u00f3w skonfigurowanych w pliku server.xml i zostan\u0105 zignorowane.
+AUTOMATIC_TIMERS_NOT_SUPPORTED_CNTR4010W.explanation=Nietrwa\u0142e automatyczne liczniki czasu komponent\u00f3w EJB zadeklarowane w deskryptorze wdra\u017cania lub w adnotacji nie s\u0105 obs\u0142ugiwane przez sk\u0142adnik ejbLite-3.1 i b\u0119d\u0105 ignorowane w czasie wykonywania. Aplikacja mo\u017ce dzia\u0142a\u0107 zgodnie z oczekiwaniami lub nie, w zale\u017cno\u015bci od zamierzonego sposobu u\u017cycia licznik\u00f3w czasu.
+AUTOMATIC_TIMERS_NOT_SUPPORTED_CNTR4010W.useraction=Usu\u0144 u\u017cycie nieobs\u0142ugiwanych automatycznych licznik\u00f3w czasu z aplikacji lub dodaj do pliku server.xml wersj\u0119 sk\u0142adnika ejbLite, kt\u00f3ra obs\u0142uguje nietrwa\u0142e automatyczne liczniki czasu. 
+
+INJECTION_CANNOT_INSTANTIATE_HOME_CNTR4011E=CNTR4011E: Nie mo\u017cna uzyska\u0107 interfejsu podstawowego {0} dla komponentu EJB {1} w module {2} aplikacji {3} na potrzeby wstrzykni\u0119cia , poniewa\u017c interfejsy podstawowe nie s\u0105 obs\u0142ugiwane przez \u017caden ze sk\u0142adnik\u00f3w skonfigurowanych w pliku server.xml.
+INJECTION_CANNOT_INSTANTIATE_HOME_CNTR4011E.explanation=Sk\u0142adniki ejbLite nie obs\u0142uguj\u0105 interfejsu podstawowego komponentu EJB ani interfejsu komponentu. W sk\u0142adnikach ejbLite s\u0105 obs\u0142ugiwane tylko interfejsy biznesowe.
+INJECTION_CANNOT_INSTANTIATE_HOME_CNTR4011E.useraction=Zmodyfikuj aplikacj\u0119, aby usun\u0105\u0107 u\u017cycie interfejsu podstawowego komponentu bean i interfejsu komponentu, lub dodaj sk\u0142adnik ejbHome do pliku server.xml.
+
+INJECTION_CANNOT_INSTANTIATE_REMOTE_CNTR4012E=CNTR4012E: Nie mo\u017cna uzyska\u0107 interfejsu zdalnego {0} dla komponentu EJB {1} w module {2} aplikacji {3} na potrzeby wstrzykni\u0119cia, poniewa\u017c interfejsy zdalne nie s\u0105 obs\u0142ugiwane przez \u017caden ze sk\u0142adnik\u00f3w skonfigurowanych w pliku server.xml.
+INJECTION_CANNOT_INSTANTIATE_REMOTE_CNTR4012E.explanation=Sk\u0142adniki ejbLite nie obs\u0142uguj\u0105 interfejsu zdalnego komponentu EJB. W sk\u0142adnikach ejbLite s\u0105 obs\u0142ugiwane tylko interfejsy lokalne.
+INJECTION_CANNOT_INSTANTIATE_REMOTE_CNTR4012E.useraction=Zmodyfikuj aplikacj\u0119, aby usun\u0105\u0107 u\u017cycie interfejs\u00f3w zdalnych komponentu bean, lub dodaj sk\u0142adnik ejbRemote do pliku server.xml.
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_ACTIVATED_CNTR4013I 
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_DEACTIVATED_CNTR4014I
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_DESTINATION_NOT_FOUND_CNTR4016W
+
+ASYNC_METHODS_NOT_SUPPORTED_CNTR4017E=CNTR4017E: Nie mo\u017cna zaplanowa\u0107 metody asynchronicznej {0} komponentu EJB {1} w module {2} aplikacji {3}. Asynchroniczne metody komponent\u00f3w EJB nie s\u0105 obs\u0142ugiwane przez \u017caden ze sk\u0142adnik\u00f3w skonfigurowanych w pliku server.xml.
+ASYNC_METHODS_NOT_SUPPORTED_CNTR4017E.explanation=Asynchroniczne metody komponent\u00f3w EJB nie s\u0105 obs\u0142ugiwane przez sk\u0142adnik ejbLite-3.1.
+ASYNC_METHODS_NOT_SUPPORTED_CNTR4017E.useraction=Usu\u0144 u\u017cycie nieobs\u0142ugiwanych metod asynchronicznych z aplikacji lub dodaj do pliku server.xml wersj\u0119 sk\u0142adnika ejbLite, kt\u00f3ra obs\u0142uguje metody asynchroniczne. 
+
+NON_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4018E=CNTR4018E: Nie mo\u017cna tworzy\u0107 nietrwa\u0142ych licznik\u00f3w czasu ani uzyskiwa\u0107 do nich dost\u0119pu. Nietrwa\u0142e liczniki czasu komponent\u00f3w EJB nie s\u0105 obs\u0142ugiwane przez \u017caden ze sk\u0142adnik\u00f3w skonfigurowanych w pliku server.xml.
+NON_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4018E.explanation=Nietrwa\u0142e liczniki czasu komponent\u00f3w EJB nie s\u0105 obs\u0142ugiwane przez sk\u0142adnik ejbLite-3.1.
+NON_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4018E.useraction=Usu\u0144 u\u017cycie nieobs\u0142ugiwanych nietrwa\u0142ych licznik\u00f3w czasu z aplikacji lub dodaj do pliku server.xml wersj\u0119 sk\u0142adnika ejbLite, kt\u00f3ra obs\u0142uguje nietrwa\u0142e liczniki czasu. 
+
+PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E=CNTR4019E: Nie mo\u017cna tworzy\u0107 trwa\u0142ych licznik\u00f3w czasu ani uzyskiwa\u0107 do nich dost\u0119pu. Trwa\u0142e liczniki czasu komponent\u00f3w EJB nie s\u0105 obs\u0142ugiwane przez \u017caden ze sk\u0142adnik\u00f3w skonfigurowanych w pliku server.xml.
+PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E.explanation=Trwa\u0142e liczniki czasu komponent\u00f3w EJB nie s\u0105 obs\u0142ugiwane przez sk\u0142adniki ejbLite.
+PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E.useraction=Usu\u0144 u\u017cycie nieobs\u0142ugiwanych trwa\u0142ych licznik\u00f3w czasu z aplikacji lub dodaj do pliku server.xml sk\u0142adnik ejbPersistentTimer. 
+
+DUPLICATE_EJB_CNTR4100E=CNTR4100E: Warto\u015b\u0107 {0} elementu <ejb-name> w pliku ejb-jar.xml nie jest unikalna.
+DUPLICATE_EJB_CNTR4100E.explanation=W pliku ejb-jar.xml zdefiniowano wiele komponent\u00f3w EJB o tej samej nazwie. Ka\u017cdy komponent EJB musi mie\u0107 unikaln\u0105 nazw\u0119.
+DUPLICATE_EJB_CNTR4100E.useraction=Usu\u0144 zduplikowane definicje komponent\u00f3w EJB.
+
+UNSPECIFIED_CLASS_CNTR4101E=CNTR4101E: Nie okre\u015blono elementu <ejb-class> dla komponentu EJB {0} w pliku ejb-jar.xml.
+UNSPECIFIED_CLASS_CNTR4101E.explanation=Nie okre\u015blono elementu <ejb-class> w pliku ejb-jar.xml. Ten element jest wymagany dla komponent\u00f3w EJB zdefiniowanych bez u\u017cycia adnotacji.
+UNSPECIFIED_CLASS_CNTR4101E.useraction=Dodaj element <ejb-class> do definicji komponentu EJB w pliku ejb-jar.xml.
+
+UNSPECIFIED_SESSION_TYPE_CNTR4102E=CNTR4102E: Nie okre\u015blono elementu <session-type> dla komponentu bean sesji {0} w pliku ejb-jar.xml.
+UNSPECIFIED_SESSION_TYPE_CNTR4102E.explanation=Nie okre\u015blono elementu <session-type> w pliku ejb-jar.xml. Ten element jest wymagany dla komponent\u00f3w bean sesji zdefiniowanych bez u\u017cycia adnotacji.
+UNSPECIFIED_SESSION_TYPE_CNTR4102E.useraction=Dodaj element <session-type> do definicji komponentu bean sesji.
+
+INCOMPATIBLE_KIND_CNTR4103E=CNTR4103E: Komponent EJB {0} zosta\u0142 zdefiniowany z niesp\u00f3jnymi typami komponent\u00f3w bean. Element {1} zosta\u0142 u\u017cyty w pliku ejb-jar.xml, a adnotacj\u0119 {2} okre\u015blono w klasie {3}.
+INCOMPATIBLE_KIND_CNTR4103E.explanation=Komponent EJB mo\u017ce mie\u0107 tylko jeden typ, ale w pliku ejb-jar.xml i adnotacji zosta\u0142y okre\u015blone niezgodne typy.
+INCOMPATIBLE_KIND_CNTR4103E.useraction=Zmie\u0144 typ elementu lub typ adnotacji dla komponentu EJB.
+
+INCOMPATIBLE_ANN_TYPE_CNTR4104E=CNTR4104E: Komponent EJB {0} zosta\u0142 zdefiniowany z niesp\u00f3jnymi typami komponent\u00f3w bean. W klasie {3} okre\u015blono obie adnotacje {1} i {2}.
+INCOMPATIBLE_ANN_TYPE_CNTR4104E.explanation=Komponent EJB mo\u017ce mie\u0107 tylko jeden typ, ale okre\u015blono wiele adnotacji definiuj\u0105cych komponent.
+INCOMPATIBLE_ANN_TYPE_CNTR4104E.useraction=Usu\u0144 jedn\u0105 z adnotacji definiuj\u0105cych komponent.
+
+INCOMPATIBLE_SESSION_TYPE_CNTR4105E=CNTR4105E: Komponent EJB {0} zosta\u0142 zdefiniowany z niesp\u00f3jnymi typami komponent\u00f3w bean. Element <session-type>{1}</session-type> zosta\u0142 u\u017cyty w pliku ejb-jar.xml, a adnotacja {2} zosta\u0142a okre\u015blona w klasie {3}.
+INCOMPATIBLE_SESSION_TYPE_CNTR4105E.explanation=Komponent EJB mo\u017ce mie\u0107 tylko jeden typ, ale w pliku ejb-jar.xml i adnotacji zosta\u0142y okre\u015blone niezgodne typy.
+INCOMPATIBLE_SESSION_TYPE_CNTR4105E.useraction=Zmie\u0144 typ elementu lub typ adnotacji dla komponentu EJB.
+
+INCOMPATIBLE_CLASS_ANN_ANN_CNTR4106E=CNTR4106E: Komponent {0} zosta\u0142 zadeklarowany z wieloma klasami: przez adnotacj\u0119 {1} w klasie {2} i przez adnotacj\u0119 {3} w klasie {4}.
+INCOMPATIBLE_CLASS_ANN_ANN_CNTR4106E.explanation=Komponent EJB mo\u017cna deklarowa\u0107 tylko z jedn\u0105 klas\u0105, ale zosta\u0142 on zadeklarowany z r\u00f3\u017cnymi klasami przez adnotacje w dw\u00f3ch oddzielnych klasach.
+INCOMPATIBLE_CLASS_ANN_ANN_CNTR4106E.useraction=Usu\u0144 jedn\u0105 z adnotacji lub zmie\u0144 jedn\u0105 z nazw komponentu EJB.
+
+INCOMPATIBLE_DEFAULT_BUSINESS_INTERFACE_TYPE_CNTR4107E=CNTR4107E: Adnotacje @Remote i @Local zosta\u0142y okre\u015blone bez warto\u015bci w klasie {0} komponentu EJB {1}.
+INCOMPATIBLE_DEFAULT_BUSINESS_INTERFACE_TYPE_CNTR4107E.explanation=Okre\u015blenie adnotacji @Remote lub @Local bez warto\u015bci wskazuje, \u017ce interfejsy biznesowe w klauzuli implements maj\u0105 by\u0107 traktowane odpowiednio jako zdalne lub lokalne, wi\u0119c nie mo\u017cna okre\u015bli\u0107 obu adnotacji bez warto\u015bci.
+INCOMPATIBLE_DEFAULT_BUSINESS_INTERFACE_TYPE_CNTR4107E.useraction=Usu\u0144 adnotacj\u0119 lub okre\u015bl adnotacje z interfejsami biznesowymi.
+
+DEFAULT_IMPLEMENTS_NONE_CNTR4108E=CNTR4108E: Adnotacja {0} zosta\u0142a okre\u015blona bez warto\u015bci w klasie {1} komponentu EJB {2}, ale klauzula implements nie zawiera \u017cadnych interfejs\u00f3w biznesowych.
+DEFAULT_IMPLEMENTS_NONE_CNTR4108E.explanation=Okre\u015blenie adnotacji @Remote lub @Local bez warto\u015bci wskazuje, \u017ce interfejsy biznesowe w klauzuli implements maj\u0105 by\u0107 traktowane odpowiednio jako zdalne lub lokalne, ale klasa nie ma interfejs\u00f3w biznesowych w klauzuli implements.
+DEFAULT_IMPLEMENTS_NONE_CNTR4108E.useraction=Dodaj interfejs biznesowy do klauzuli implements, usu\u0144 adnotacj\u0119 lub podaj adnotacj\u0119 z interfejsami biznesowymi.
+
+# Note: This message was added in 8.5.5 but is no longer used.
+DEFAULT_IMPLEMENTS_MULTIPLE_CNTR4109E=CNTR4109E: Adnotacja {0} zosta\u0142a okre\u015blona bez warto\u015bci w klasie {1} komponentu EJB {2}, ale klauzula implements zawiera wiele interfejs\u00f3w biznesowych: {3} i {4}.
+DEFAULT_IMPLEMENTS_MULTIPLE_CNTR4109E.explanation=Okre\u015blenie adnotacji @Remote lub @Local bez warto\u015bci wskazuje, \u017ce interfejs biznesowy w klauzuli implements ma by\u0107 traktowany, odpowiednio, jako zdalny lub lokalny, ale klasa ma wiele interfejs\u00f3w biznesowych w klauzuli implements.
+DEFAULT_IMPLEMENTS_MULTIPLE_CNTR4109E.useraction=Usu\u0144 z klauzuli implements wszystkie interfejsy biznesowe opr\u00f3cz jednego lub podaj adnotacj\u0119 ze wszystkimi interfejsami biznesowymi.
+
+INCOMPATIBLE_INTERFACE_TYPE_CNTR4110E=CNTR4110E: Komponent EJB {0} okre\u015bli\u0142 klas\u0119 {1} zar\u00f3wno jako lokalny, jak i zdalny interfejs biznesowy.
+INCOMPATIBLE_INTERFACE_TYPE_CNTR4110E.explanation=Klasa mo\u017ce by\u0107 okre\u015blona dla komponentu EJB jako lokalny lub zdalny interfejs biznesowy, ale nie mo\u017cna ustawi\u0107 obu typ\u00f3w jednocze\u015bnie.
+INCOMPATIBLE_INTERFACE_TYPE_CNTR4110E.useraction=Zaktualizuj klas\u0119 komponentu EJB, klas\u0119 interfejsu lub deskryptor wdra\u017cania w taki spos\u00f3b, aby interfejs by\u0142 okre\u015blony jako lokalny lub zdalny interfejs biznesowy, ale nie jako oba typy jednocze\u015bnie.
+
+IMPLEMENTS_INTERFACE_TYPE_VALUE_CNTR4111E=CNTR4111E: Okre\u015blono adnotacj\u0119 {0} z warto\u015bci\u0105 w interfejsie {1}. Interfejs zosta\u0142 okre\u015blony w klauzuli implements klasy {2} komponentu EJB {3}.
+IMPLEMENTS_INTERFACE_TYPE_VALUE_CNTR4111E.explanation=Adnotacje @Remote i @Local mog\u0105 mie\u0107 warto\u015b\u0107 tylko wtedy, gdy s\u0105 okre\u015blone w klasie komponentu EJB.
+IMPLEMENTS_INTERFACE_TYPE_VALUE_CNTR4111E.useraction=Usu\u0144 warto\u015b\u0107 z adnotacji @Remote lub @Local w interfejsie.
+
+ORPHAN_EXTENSION_ENTRY_CNTR4112W=CNTR4112W: Rozszerzenie {0} w pliku ibm-ejb-jar-ext.xml w module {1} odwo\u0142uje si\u0119 do komponentu EJB {2}, kt\u00f3ry nie istnieje.
+ORPHAN_EXTENSION_ENTRY_CNTR4112W.explanation=Prawdopodobnie nazwa komponentu EJB jest niepoprawna lub rozszerzenie zosta\u0142o okre\u015blone dla nieistniej\u0105cego komponentu EJB.
+ORPHAN_EXTENSION_ENTRY_CNTR4112W.useraction=Popraw nazw\u0119 komponentu EJB w pliku ibm-ejb-jar-ext.xml.
+
+RESOLVER_ACTIVITY_SESSION_NOT_SUPPORTED_CNTR4113E=CNTR4113E: Komponent EJB {0} w module {1} w aplikacji {2} zosta\u0142 skonfigurowany w pliku ibm-ejb-jar-ext.xml pod k\u0105tem u\u017cycia parametru {3} dla granicy transakcji lokalnej, kt\u00f3ry nie jest obs\u0142ugiwany w profilu Liberty.
+RESOLVER_ACTIVITY_SESSION_NOT_SUPPORTED_CNTR4113E.explanation=Warto\u015b\u0107 ACTIVITY_SESSION atrybutu boundary rozszerzenia <local-transaction> nie jest obs\u0142ugiwana w profilu Liberty.
+RESOLVER_ACTIVITY_SESSION_NOT_SUPPORTED_CNTR4113E.useraction=Zaktualizuj plik ibm-ejb-jar-ext.xml w celu okre\u015blenia warto\u015bci BEAN_METHOD dla atrybutu boundary lub usu\u0144 atrybut boundary w celu u\u017cycia warto\u015bci domy\u015blnej BEAN_METHOD.
+
+INCOMPATIBLE_CLASS_XML_ANN_CNTR4114E=CNTR4114E: Komponent EJB {0} zosta\u0142 zadeklarowany z wieloma klasami: z warto\u015bci\u0105 {1} w elemencie <ejb-class> w pliku ejb-jar.xml i przez adnotacj\u0119 {2} w klasie {3}.
+INCOMPATIBLE_CLASS_XML_ANN_CNTR4114E.explanation=Komponent EJB mo\u017cna zdefiniowa\u0107 tylko z jedn\u0105 klas\u0105, a zosta\u0142 zdefiniowany z r\u00f3\u017cnymi klasami w pliku XML i przez adnotacj\u0119.
+INCOMPATIBLE_CLASS_XML_ANN_CNTR4114E.useraction=Usu\u0144 klas\u0119 z pliku ejb-jar.xml, usu\u0144 adnotacj\u0119 lub zmie\u0144 jedn\u0105 z nazw komponentu EJB.
+
+INVALID_CLASS_CNTR4115E=CNTR4115E: Element <ejb-class> w pliku ejb-jar.xml okre\u015bla nazw\u0119 klasy {0} dla komponentu EJB {1}, ale plik klasy nie zosta\u0142 znaleziony.
+INVALID_CLASS_CNTR4115E.explanation=W pliku ejb-jar.xml okre\u015blono niepoprawn\u0105 nazw\u0119 klasy albo plik klasy nie zosta\u0142 spakowany w aplikacji.
+INVALID_CLASS_CNTR4115E.useraction=Popraw nazw\u0119 klasy w pliku ejb-jar.xml lub spakuj plik klasy w aplikacji.

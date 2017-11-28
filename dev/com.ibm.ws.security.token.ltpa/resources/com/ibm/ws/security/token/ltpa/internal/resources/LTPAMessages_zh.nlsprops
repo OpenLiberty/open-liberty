@@ -1,0 +1,54 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.token.ltpa/resources/com/ibm/ws/security/token/ltpa/internal/resources/LTPAMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Token Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS4100 - CWWKS4199
+
+LTPA_TOKEN_SERVICE_INVALID_FACTORY=CWWKS4100E: \u6ca1\u6709\u5df2\u521d\u59cb\u5316\u7684\u4ee4\u724c\u5de5\u5382\u3002
+LTPA_TOKEN_SERVICE_INVALID_FACTORY.explanation=\u672a\u521d\u59cb\u5316\u4ee4\u724c\u5de5\u5382\u3002
+LTPA_TOKEN_SERVICE_INVALID_FACTORY.useraction=\u8bf7\u9a8c\u8bc1 server.xml \u6587\u4ef6\u4e2d\u6216\u914d\u7f6e\u6307\u5b9a\u7684\u4efb\u4f55\u5176\u4ed6\u8d44\u6e90\u4e2d\u7684\u4ee4\u724c\u7ba1\u7406\u5668\u914d\u7f6e\u3002
+
+LTPA_TOKEN_SERVICE_INVALID_UNIQUE_ID=CWWKS4101E: \u6ca1\u6709\u7528\u4e8e\u521b\u5efa\u4ee4\u724c\u7684\u552f\u4e00\u6807\u8bc6\u3002
+LTPA_TOKEN_SERVICE_INVALID_UNIQUE_ID.explanation=unique_id \u53c2\u6570\u4e3a\u7a7a\uff0c\u6216\u4ee4\u724c\u6570\u636e\u4e2d\u672a\u6307\u5b9a\u8be5\u53c2\u6570\u3002
+LTPA_TOKEN_SERVICE_INVALID_UNIQUE_ID.useraction=\u8bf7\u9a8c\u8bc1\u7528\u6237\u662f\u5426\u5177\u6709\u552f\u4e00\u6807\u8bc6\u3002\u5982\u679c\u4f7f\u7528\u5b9a\u5236\u7528\u6237\u6ce8\u518c\u8868\uff0c\u8bf7\u9a8c\u8bc1\u4ee4\u724c\u6570\u636e\u662f\u5426\u5305\u542b unique_id \u53c2\u6570\u7684\u503c\u3002
+
+LTPA_TOKEN_SERVICE_MISSING_KEY=CWWKS4102E: \u7cfb\u7edf\u65e0\u6cd5\u521b\u5efa LTPA \u4ee4\u724c\uff0c\u56e0\u4e3a\u7f3a\u5c11\u5fc5\u9700\u7684 {0} \u5c5e\u6027\u3002
+LTPA_TOKEN_SERVICE_MISSING_KEY.explanation=\u7f3a\u5c11\u6307\u5b9a\u7684\u5bc6\u94a5\uff0c\u56e0\u6b64\u65e0\u6cd5\u521b\u5efa LTPA \u4ee4\u724c\u3002
+LTPA_TOKEN_SERVICE_MISSING_KEY.useraction=\u4ed4\u7ec6\u67e5\u770b\u5b58\u50a8 LTPA \u5bc6\u94a5\u4fe1\u606f\u7684\u5c5e\u6027\u6587\u4ef6\uff0c\u5e76\u68c0\u67e5\u5bc6\u94a5\u4fe1\u606f\u662f\u5426\u5305\u62ec\u5bc6\u94a5\u3001\u4e13\u7528\u5bc6\u94a5\u548c\u516c\u7528\u5bc6\u94a5\u3002
+
+LTPA_CREATE_KEYS_START=CWWKS4103I: \u6b63\u5728\u521b\u5efa LTPA \u5bc6\u94a5\u3002\u8fd9\u53ef\u80fd\u9700\u8981\u51e0\u79d2\u949f\u3002
+LTPA_CREATE_KEYS_START.explanation=LTPA \u5bc6\u94a5\u4e0d\u5b58\u5728\uff0c\u5e76\u5c06\u81ea\u52a8\u751f\u6210\u3002\u53ea\u6709\u5728\u5df2\u751f\u6210 LTPA \u5bc6\u94a5\u5e76\u4e14\u914d\u7f6e\u51c6\u5907\u5c31\u7eea\u4e4b\u540e\uff0c\u9700\u8981 LTPA \u7684\u6240\u6709\u670d\u52a1\u624d\u5c06\u542f\u52a8\u3002
+LTPA_CREATE_KEYS_START.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+LTPA_CREATE_KEYS_COMPLETE=CWWKS4104A: \u5df2\u5728 {0} \u79d2\u5185\u521b\u5efa LTPA \u5bc6\u94a5\u3002LTPA \u5bc6\u94a5\u6587\u4ef6\uff1a{1}
+LTPA_CREATE_KEYS_COMPLETE.explanation=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002
+LTPA_CREATE_KEYS_COMPLETE.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+LTPA_CONFIG_READY=CWWKS4105I: LTPA \u914d\u7f6e\u5c06\u5728 {0} \u79d2\u4e4b\u540e\u51c6\u5907\u5c31\u7eea\u3002
+LTPA_CONFIG_READY.explanation=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002
+LTPA_CONFIG_READY.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+LTPA_CONFIG_ERROR=CWWKS4106E: LTPA \u914d\u7f6e\u9519\u8bef\u3002\u65e0\u6cd5\u521b\u5efa\u6216\u8bfb\u53d6 LTPA \u5bc6\u94a5\u6587\u4ef6\uff1a{0}
+LTPA_CONFIG_ERROR.explanation=\u65e0\u6cd5\u5728\u6307\u5b9a\u4f4d\u7f6e\u8bfb\u53d6\u6216\u521b\u5efa LTPA \u5bc6\u94a5\u3002
+LTPA_CONFIG_ERROR.useraction=\u8bf7\u786e\u4fdd\u670d\u52a1\u5668\u8fdb\u7a0b\u53ef\u8bbf\u95ee\u8be5\u4f4d\u7f6e\u3002\u4efb\u4f55 FFDC \u53ef\u80fd\u6307\u793a\u751f\u6210\u6216\u88c5\u5165\u5bc6\u94a5\u65f6\u53d1\u751f\u81f4\u547d\u9519\u8bef\u3002
+
+LTPA_KEYS_TO_LOAD=CWWKS4107A: LTPA \u5bc6\u94a5\u6587\u4ef6\u6216\u914d\u7f6e\u5df2\u4fee\u6539\u3002\u5c06\u4ece\u6587\u4ef6 {0} \u91cd\u65b0\u88c5\u5165 LTPA \u5bc6\u94a5
+LTPA_KEYS_TO_LOAD.explanation=\u9700\u8981\u91cd\u65b0\u88c5\u5165 LTPA \u5bc6\u94a5\uff0c\u56e0\u4e3a\u5bf9 LTPA \u5bc6\u94a5\u6587\u4ef6\u6216\u914d\u7f6e\u8fdb\u884c\u4e86\u66f4\u6539\u3002
+LTPA_KEYS_TO_LOAD.useraction=\u8bf7\u786e\u4fdd\u53c2\u4e0e\u5355\u70b9\u767b\u5f55\u7684\u6240\u6709\u670d\u52a1\u5668\u90fd\u4f7f\u7528\u76f8\u540c\u7684 LTPA \u5bc6\u94a5\u548c\u5bc6\u7801\u3002
+
+LTPA_KEY_CREATE_ERROR=CWWKS4108E: \u7cfb\u7edf\u65e0\u6cd5\u521b\u5efa LTPA \u5bc6\u94a5\u3002
+LTPA_KEY_CREATE_ERROR.explanation=\u65e0\u6cd5\u521b\u5efa LTPA \u5bc6\u94a5\u3002
+LTPA_KEY_CREATE_ERROR.useraction=\u4efb\u4f55 FFDC \u53ef\u80fd\u6307\u793a\u751f\u6210\u5bc6\u94a5\u65f6\u53d1\u751f\u81f4\u547d\u9519\u8bef\u3002
+
+

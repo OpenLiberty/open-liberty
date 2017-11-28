@@ -1,0 +1,179 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.webserver.plugin.utility/resources/com/ibm/ws/webserver/plugin/utility/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+error=Chyba: {0}
+error.inputConsoleNotAvailable=Vstupn\u00ed konzola nen\u00ed dostupn\u00e1.
+error.missingIO=Chyba, chyb\u00ed za\u0159\u00edzen\u00ed I/O: {0}.
+
+serverNotFound=Zadan\u00fd server {0} nelze v um\u00edst\u011bn\u00ed {1} naj\u00edt
+jmx.local.connector.file.notfound=Nelze naj\u00edt soubor adres lok\u00e1ln\u00edho konektoru JMX v um\u00edst\u011bn\u00ed {0}
+jmx.local.connector.file.invalid=Nelze \u010d\u00edst soubor adres lok\u00e1ln\u00edho konektoru JMX v um\u00edst\u011bn\u00ed {0}
+
+#------------------------------------------------------------------------------
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+tooManyArgs=P\u0159\u00edli\u0161 mnoho argument\u016f.
+insufficientArgs=Nedostate\u010dn\u00e9 mno\u017estv\u00ed argument\u016f.
+missingServerName=C\u00edl \u00falohy nebyl ur\u010den.
+invalidArg=Neplatn\u00fd argument {0}.
+missingArg=Chyb\u00ed argument {0}.
+missingValue=Chyb\u00ed hodnota pro argument {0}.
+
+#------------------------------------------------------------------------------
+# Messages for HelpTask
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Pou\u017eit\u00ed: Akce {0} [volby]
+task.unknown=Nezn\u00e1m\u00e1 \u00faloha: {0}
+
+common.encodeError=\n\
+Nelze prov\u00e9st zak\u00f3dov\u00e1n\u00ed hesla pro argument: {0}
+
+common.hostError=\n\
+Zadan\u00fd n\u00e1zev hostitele je z\u0159ejm\u011b neplatn\u00fd: {0}\n\
+Ov\u011b\u0159te, \u017ee je n\u00e1zev hostitele spr\u00e1vn\u00fd, \u017ee m\u00e1 syst\u00e9m s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed.
+
+common.portError=\n\
+Ur\u010den\u00fd port {0} nen\u00ed dosa\u017eiteln\u00fd. Ov\u011b\u0159te, \u017ee je port spr\u00e1vn\u00fd.
+
+common.connectionError=\n\
+Nelze dokon\u010dit operaci.\n\
+Chyba: {0}
+
+#------------------------------------------------------------------------------
+# Messages for get and generate operations
+#------------------------------------------------------------------------------
+
+generateWebServerPluginTask.abort=\n\
+Zastavuje se...
+
+generateWebServerPluginTask.cleanupFail=\n\
+Chyba p\u0159i maz\u00e1n\u00ed vygenerovan\u00fdch soubor\u016f. Nelze odstranit {0}\n\
+Odeberte soubor ru\u010dn\u011b, zkontrolujte opr\u00e1vn\u011bn\u00ed souboru a zopakujte akci znovu.
+
+generateWebServerPluginTask.complete.collective=\n\
+Generov\u00e1n\u00ed konfigura\u010dn\u00edho souboru modulu plug-in webov\u00e9ho serveru pro c\u00edlov\u00fd kolektivn\u00ed \u0159adi\u010d prob\u011bhlo \u00fasp\u011b\u0161n\u011b.
+
+generateWebServerPluginTask.fail.collective=\n\
+Generov\u00e1n\u00ed konfigura\u010dn\u00edho souboru modulu plug-in webov\u00e9ho serveru pro c\u00edlov\u00fd kolektivn\u00ed \u0159adi\u010d selhalo.\n\
+Analyzujte protokoly c\u00edlov\u00e9ho kolektivn\u00edho \u0159adi\u010de, aby bylo mo\u017en\u00e9 diagnostikovat probl\u00e9m.
+
+generateWebServerPluginTask.start.server.local=\n\
+Lok\u00e1ln\u00ed c\u00edlov\u00fd server {0} bude vyu\u017eit ke generov\u00e1n\u00ed konfigura\u010dn\u00edho souboru modulu plug-in webov\u00e9ho serveru.
+
+generateWebServerPluginTask.start.server.remote=\n\
+Vzd\u00e1len\u00fd c\u00edlov\u00fd server {0} bude vyu\u017eit ke generov\u00e1n\u00ed konfigura\u010dn\u00edho souboru modulu plug-in webov\u00e9ho serveru.
+
+generateWebServerPluginTask.complete.server=\n\
+Generov\u00e1n\u00ed konfigura\u010dn\u00edho souboru modulu plug-in webov\u00e9ho serveru pro c\u00edlov\u00fd server prob\u011bhlo \u00fasp\u011b\u0161n\u011b.
+
+generateWebServerPluginTask.fail.server=\n\
+Generov\u00e1n\u00ed konfigura\u010dn\u00edho souboru modulu plug-in webov\u00e9ho serveru pro c\u00edlov\u00fd server selhalo.\n\
+Analyzujte protokoly c\u00edlov\u00e9ho serveru, aby bylo mo\u017en\u00e9 diagnostikovat probl\u00e9m.
+
+generateWebServerPluginTask.notEnabled=\n\
+Funkce kolektivn\u00edho \u0159adi\u010de nen\u00ed aktivov\u00e1na. Povolte tuto funkci a zopakujte\n\
+p\u0159\u00edkaz.
+
+generateWebServerPluginTask.start.server=\n\
+Spu\u0161t\u011bn\u00ed serveru {0}, proto\u017ee nen\u00ed aktu\u00e1ln\u011b spu\u0161t\u011bn.
+
+generateWebServerPluginTask.stop.server=\n\
+Zastaven\u00ed serveru {0}, proto\u017ee jeho po\u010d\u00e1te\u010dn\u00ed stav byl Zastaveno.
+
+generateWebServerPluginTask.server.started=\n\
+Server {0} byl spu\u0161t\u011bn \u00fasp\u011b\u0161n\u011b.
+
+generateWebServerPluginTask.server.not.started=\n\
+Server {0} nelze spustit.
+
+generateWebServerPluginTask.server.plugin=Generov\u00e1n\u00ed konfigura\u010dn\u00edho souboru modulu plug-in ze serveru WebSphere Liberty.
+
+generateWebServerPluginTask.target.directory.not.exists=\n\
+Adres\u00e1\u0159 ur\u010den\u00fd pro --targetPath: {0} neexistuje.
+
+generateWebServerPluginTask.server.plugin.generated=\n\
+Soubor modulu plug-in je na serveru generov\u00e1n v um\u00edst\u011bn\u00ed {0}.
+
+generateWebServerPluginTask.complete.next.step=\n\
+Zkop\u00edrujte konfigura\u010dn\u00ed soubor modulu plug-in do adres\u00e1\u0159e ur\u010den\u00e9ho v \n\
+direktiv\u011b WebSpherePluginConfig v souboru IBM HTTP Server httpd.conf.
+
+#------------------------------------------------------------------------------
+# Messages for merge operation
+#------------------------------------------------------------------------------
+
+MergePluginFilesTask.merging.plugin.dir=\n\
+Slou\u010den\u00ed soubor\u016f modulu plug-in se vzorem *plugin-cfg*.xml z adres\u00e1\u0159e {0}. 
+
+MergePluginFilesTask.merging.plugin.list=\n\
+Slou\u010den\u00ed poskytnut\u00e9ho seznamu soubor\u016f modulu plug-in.
+
+MergePluginFilesTask.merging.plugin.file.not.exists=\n\
+Soubor {0} neexistuje. Zkontrolujte, zda soubor existuje a je platn\u00fdm\n\
+konfigura\u010dn\u00edm souborem modulu plug-in.
+
+MergePluginFilesTask.merging.plugin.file.is.directory=\n\
+Soubor {0} je adres\u00e1\u0159. Adres\u00e1\u0159e a norm\u00e1ln\u00ed soubory nemohou b\u00fdt\n\
+p\u0159i slu\u010dov\u00e1n\u00ed sm\u00ed\u0161en\u00e9.
+
+MergePluginFilesTask.merging.plugin.targetdir.not.exists=\n\
+Adres\u00e1\u0159 {0}, kam by m\u011bl b\u00fdt slou\u010den\u00fd konfigura\u010dn\u00ed soubor vygenerov\u00e1n,\n\
+neexistuje.
+
+MergePluginFilesTask.merging.plugin.source.dir.not.exists=\n\
+Zdrojov\u00fd adres\u00e1\u0159 {0} neexistuje.
+
+MergePluginFilesTask.merging.plugin.source.file.not.directory=\n\
+Zdroj {0} nen\u00ed adres\u00e1\u0159em.
+
+MergePluginFilesTask.merging.plugin.source.file.selected=\n\
+Soubor {0} je vybr\u00e1n ke slou\u010den\u00ed. 
+
+MergePluginFilesTask.merging.plugin.target.file.generating=\n\
+Generov\u00e1n\u00ed slou\u010den\u00e9ho konfigura\u010dn\u00edho souboru v {0}.
+
+MergePluginFilesTask.merging.plugin.target.file.generated=\n\
+Slou\u010den\u00fd konfigura\u010dn\u00ed soubor byl vygenerov\u00e1n \u00fasp\u011b\u0161n\u011b.
+
+MergePluginFilesTask.merging.plugin.insufficent.number.of.source.files=\n\
+K proveden\u00ed slou\u010den\u00ed zadejte alespo\u0148 dva soubory konfigurace modulu plug-in.
+
+#------------------------------------------------------------------------------
+# Messages for pluginUtility generate option 
+#------------------------------------------------------------------------------
+# reading in a password
+#-----------------------------------------
+password.enterText=Zadejte {0}:
+password.reenterText=Znovu zadejte {0}:
+password.readError=Chyba p\u0159i \u010dten\u00ed hesla.
+password.entriesDidNotMatch=Hesla si neodpov\u00eddala.
+
+#-----------------------------------------
+# reading in a user 
+#-----------------------------------------
+user.enterText=Zadejte {0}:
+user.readError=Chyba p\u0159i \u010dten\u00ed v u\u017eivateli.
+
+#----------------------------------------- 
+# Missing Argument Messages 
+#-----------------------------------------
+invalidPortArg=Byla zad\u00e1na neplatn\u00e1 hodnota pro [port]={0} v argumentu pro {1}. Je nutn\u00e9 zadat \u010d\u00edselnou hodnotu.
+missingUsernameValue=Chyb\u00ed hodnota pro [u\u017eivatel] v argumentu pro {0}.
+missingPasswordValue=Chyb\u00ed hodnota pro [heslo] v argumentu pro {0}.
+missingHostValue=Chyb\u00ed hodnota pro [hostitel] v argumentu pro {0}.
+missingPortValue=Chyb\u00ed hodnota pro [port] v argumentu pro {0}.
+missingHostorPortValue=Chyb\u00ed hodnota pro [hostitel nebo port] v argumentu pro {0}.
+
+#------------------------------------------------------------------------------

@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS0000 - CWWKS0099
+
+SECURITY_CONFIG_ERROR_MISSING_ATTRIBUTE=CWWKS0000E: Wyst\u0105pi\u0142 wyj\u0105tek konfiguracji. Dla elementu <securityConfiguration> nie zdefiniowano atrybutu {0}.
+SECURITY_CONFIG_ERROR_MISSING_ATTRIBUTE.explanation=Brakuj\u0105cy atrybut jest wymagany dla elementu <securityConfiguration>.
+SECURITY_CONFIG_ERROR_MISSING_ATTRIBUTE.useraction=Okre\u015bl brakuj\u0105cy atrybut dla elementu <securityConfiguration>.
+
+SECURITY_SERVICE_REQUIRED_SERVICE_WITHOUT_ID=CWWKS0001E: Wyst\u0105pi\u0142 wyj\u0105tek konfiguracji. Element konfiguracji typu {0} nie zawiera definicji atrybutu id.
+SECURITY_SERVICE_REQUIRED_SERVICE_WITHOUT_ID.explanation=Podany typ elementu konfiguracji wymaga atrybutu id, aby m\u00f3g\u0142 by\u0107 poprawnie przywo\u0142ywany przez inne elementy w konfiguracji.
+SECURITY_SERVICE_REQUIRED_SERVICE_WITHOUT_ID.useraction=Zdefiniuj atrybut id dla podanego typu elementu konfiguracji.
+
+SECURITY_SERVICE_ERROR_MISSING_ATTRIBUTE=CWWKS0002E: Wyst\u0105pi\u0142 wyj\u0105tek konfiguracji. Dla elementu <security> nie zdefiniowano atrybutu {0}.
+SECURITY_SERVICE_ERROR_MISSING_ATTRIBUTE.explanation=Brakuj\u0105cy atrybut jest wymagany dla elementu <security>.
+SECURITY_SERVICE_ERROR_MISSING_ATTRIBUTE.useraction=Okre\u015bl brakuj\u0105cy atrybut dla elementu <security>.
+
+SECURITY_SERVICE_ERROR_BAD_DOMAIN=CWWKS0003E: Wyst\u0105pi\u0142 wyj\u0105tek konfiguracji. Podana konfiguracja zabezpiecze\u0144 przywo\u0142ywana za pomoc\u0105 identyfikatora {0} dla atrybutu {1} w elemencie <security> nie jest zdefiniowana.
+SECURITY_SERVICE_ERROR_BAD_DOMAIN.explanation=Podana konfiguracja zabezpiecze\u0144 nie jest zdefiniowana. Nazwa identyfikatora mo\u017ce by\u0107 niepoprawna lub odwo\u0142uje si\u0119 do nieistniej\u0105cej konfiguracji zabezpiecze\u0144.
+SECURITY_SERVICE_ERROR_BAD_DOMAIN.useraction=Zdefiniuj poprawn\u0105 konfiguracj\u0119 zabezpiecze\u0144 dla podanego atrybutu w elemencie <security>.
+
+SECURITY_SERVICE_ERROR_BAD_REFERENCE=CWWKS0004E: Wyst\u0105pi\u0142 wyj\u0105tek konfiguracji. Podany element przywo\u0142ywany za pomoc\u0105 identyfikatora {0} dla atrybutu {1} w elemencie <securityConfiguration> nie jest zdefiniowany.
+SECURITY_SERVICE_ERROR_BAD_REFERENCE.explanation=Skonfigurowany identyfikator odniesienia jest niepoprawny. Nazwa identyfikatora mo\u017ce by\u0107 niepoprawna lub odwo\u0142uje si\u0119 do nieistniej\u0105cej konfiguracji us\u0142ugi.
+SECURITY_SERVICE_ERROR_BAD_REFERENCE.useraction=Okre\u015bl poprawny identyfikator konfiguracji us\u0142ugi dla elementu <securityConfiguration>.
+
+SECURITY_SERVICE_NO_SERVICE_AVAILABLE=CWWKS0005E: Wyst\u0105pi\u0142 wyj\u0105tek konfiguracji. Brak dost\u0119pnej us\u0142ugi {0}.
+SECURITY_SERVICE_NO_SERVICE_AVAILABLE.explanation=\u017badna us\u0142uga podanego typu nie jest dost\u0119pna z poziomu rejestru us\u0142ug OSGi.
+SECURITY_SERVICE_NO_SERVICE_AVAILABLE.useraction=Okre\u015bl opcj\u0119 implementacji us\u0142ugi okre\u015blonego typu.
+
+SECURITY_SERVICE_MULTIPLE_SERVICE_AVAILABLE=CWWKS0006E: Wyst\u0105pi\u0142 wyj\u0105tek konfiguracji. Istnieje wiele dost\u0119pnych us\u0142ug {0}. System nie mo\u017ce okre\u015bli\u0107, kt\u00f3rej u\u017cy\u0107.
+SECURITY_SERVICE_MULTIPLE_SERVICE_AVAILABLE.explanation=Z poziomu rejestru us\u0142ug OSGi jest dost\u0119pnych wiele us\u0142ug podanego typu. Nie istnieje \u017cadna jawna konfiguracja wskazuj\u0105ca, kt\u00f3rej us\u0142ugi u\u017cy\u0107.
+SECURITY_SERVICE_MULTIPLE_SERVICE_AVAILABLE.useraction=Podaj tylko jedn\u0105 opcj\u0119 implementacji us\u0142ugi podanego typu lub zdefiniuj w konfiguracji, kt\u00f3rej us\u0142ugi u\u017cy\u0107.
+
+#
+# NOTE: CWWKS0007 through CWWKS0009 have been moved to com.ibm.ws.security.ready.service project
+#
+
+SEC_TOO_MANY_PRINCIPALS=CWWKS0010E: Podczas pobierania nazwy u\u017cytkownika programu wywo\u0142uj\u0105cego okre\u015blono, \u017ce temat programu wywo\u0142uj\u0105cego ma wiele nazw u\u017cytkownika typu WSPrincipal. W temacie mo\u017ce istnie\u0107 tylko jedna nazwa u\u017cytkownika WSPrincipal. Nazwy typu WSPrincipal to: {}
+SEC_TOO_MANY_PRINCIPALS.explanation=Temat programu wywo\u0142uj\u0105cego ma zbyt wiele nazw u\u017cytkownika typu WSPrincipal. Obs\u0142ugiwana jest tylko jedna nazwa u\u017cytkownika tego typu.
+SEC_TOO_MANY_PRINCIPALS.useraction=Przejrzyj aplikacj\u0119 i sprawd\u017a, dlaczego temat zawiera wi\u0119cej ni\u017c jedn\u0105 nazw\u0119 u\u017cytkownika WSPrincipal.

@@ -1,0 +1,311 @@
+###############################################################################
+# Copyright (c) 2016, 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/jwt/resources/JWTMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server JWT
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS6000 - CWWKS6100
+JWT_BUILDER_CONFIG_PROCESSED=CWWKS6000I: Configura\u00e7\u00e3o {0} do JWT processada com \u00eaxito
+JWT_BUILDER_CONFIG_PROCESSED.explanation=A configura\u00e7\u00e3o do JWT (construtor de token da web JSON) foi processada com \u00eaxito.
+JWT_BUILDER_CONFIG_PROCESSED.useraction=Nenhuma
+
+JWT_BUILDER_CONFIG_MODIFIED=CWWKS6001I: Mudan\u00e7a na configura\u00e7\u00e3o {0} do JWT processada com \u00eaxito.
+JWT_BUILDER_CONFIG_MODIFIED.explanation=A configura\u00e7\u00e3o do JWT (construtor de token da web JSON) foi modificada com \u00eaxito.
+JWT_BUILDER_CONFIG_MODIFIED.useraction=Nenhum.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_ENDPOINT_SERVICE_ACTIVATED=CWWKS6002I: O trabalho de terminal JSON Web Token (JWT) est\u00e1 dispon\u00edvel.
+JWT_ENDPOINT_SERVICE_ACTIVATED.explanation=Esta mensagem tem apenas prop\u00f3sitos informacionais.
+JWT_ENDPOINT_SERVICE_ACTIVATED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+# Do not translate "JSON Web Token", "JWT", "jwt-1.0"
+JWT_OSGI_ENDPOINT_SERVICE_ERROR=CWWKS6003E: Ocorreu um erro de configura\u00e7\u00e3o. O trabalho de terminal JSON Web Token (JWT) n\u00e3o est\u00e1 dispon\u00edvel. Certifique-se de ter o recurso jwt-1.0 configurado.
+JWT_OSGI_ENDPOINT_SERVICE_ERROR.explanation=O trabalho JSON Web Token (JWT) n\u00e3o est\u00e1 dispon\u00edvel por meio do registro de servi\u00e7o OSGi.
+JWT_OSGI_ENDPOINT_SERVICE_ERROR.useraction=Inclua o recurso jwt-1.0 na configura\u00e7\u00e3o do servidor.
+
+# Do not translate "jwt-1.0"
+# 0=URL to which the request was directed
+JWT_ENDPOINT_FILTER_MATCH_NOT_FOUND=CWWKS6004W: A solicita\u00e7\u00e3o direcionada \u00e0 URL de terminal [{0}] n\u00e3o foi reconhecida como uma solicita\u00e7\u00e3o v\u00e1lida.
+JWT_ENDPOINT_FILTER_MATCH_NOT_FOUND.explanation=A URL especificada n\u00e3o correspondia ao padr\u00e3o de URL esperado de uma solicita\u00e7\u00e3o que deve ser entregue por esse filtro.
+JWT_ENDPOINT_FILTER_MATCH_NOT_FOUND.useraction=Verifique se o caminho da URL aponta para o terminal esperado e se corresponde a um terminal fornecido pelo recurso jwt-1.0.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Config ID of JWT provider
+JWT_CONFIG_SERVICE_NOT_AVAILABLE=CWWKS6005E: O servi\u00e7o de configura\u00e7\u00e3o JSON Web Token (JWT) n\u00e3o est\u00e1 dispon\u00edvel para o provedor [{0}].
+JWT_CONFIG_SERVICE_NOT_AVAILABLE.explanation=O provedor especificado na mensagem n\u00e3o existe na configura\u00e7\u00e3o do servidor ou a configura\u00e7\u00e3o para o provedor especificado n\u00e3o foi processada pelo servi\u00e7o de configura\u00e7\u00e3o.
+JWT_CONFIG_SERVICE_NOT_AVAILABLE.useraction=Inspecione a configura\u00e7\u00e3o do servidor para assegurar que o provedor especificado esteja configurado.
+
+# 0=URL to which the request was directed, 1=Required attribute name
+JWT_REQUEST_ATTRIBUTE_MISSING=CWWKS6006E: A solicita\u00e7\u00e3o direcionada ao terminal [{0}] n\u00e3o tem um atributo [{1}].
+JWT_REQUEST_ATTRIBUTE_MISSING.explanation=A solicita\u00e7\u00e3o pode n\u00e3o ter sido identificada pelo filtro apropriado antes de ter sido processada. O filtro de solicita\u00e7\u00e3o criar\u00e1 o atributo especificado com base nas informa\u00e7\u00f5es na solicita\u00e7\u00e3o. O filtro, ent\u00e3o, encaminha essa solicita\u00e7\u00e3o para processamento adicional.
+JWT_REQUEST_ATTRIBUTE_MISSING.useraction=Verifique se a solicita\u00e7\u00e3o foi direcionada para o terminal esperado.
+
+# Do not translate "JSON Web Token", "JWT", "JSON Web Key"
+#0=signatureAlgorithm, 1=key, 2=exception or error message if any
+JWT_NULL_SIGNING_KEY_WITH_ERROR=CWWKS6007E: A chave de assinatura que \u00e9 requerida pelo algoritmo de assinatura [{0}] e o tipo de chave [{1}] n\u00e3o est\u00e1 dispon\u00edvel. Verifique se o algoritmo de assinatura e a chave est\u00e3o configurados corretamente. {2}
+JWT_NULL_SIGNING_KEY_WITH_ERROR.explanation=Uma chave de assinatura n\u00e3o pode ser localizada ou uma chave que usa o algoritmo de assinatura configurado n\u00e3o pode ser localizada. Esse erro pode ocorrer devido a informa\u00e7\u00f5es ausentes ou imprecisas na configura\u00e7\u00e3o do JWT.
+JWT_NULL_SIGNING_KEY_WITH_ERROR.useraction=Execute uma das a\u00e7\u00f5es a seguir: 1) Se estiver usando o JSON Web Key (JWK) para assinar, certifique-se de que o RS256 esteja configurado no atributo signatureAlgorithm. 2) Se estiver usando certificados X.509 para assinar, certifique-se de que os atributos signatureAlgorithm, KeyStoreRef e KeyStoreAlias estejam configurados corretamente. 3) Se estiver usando chaves compartilhadas para assinar, certifique-se de que os atributos signatureAlgorithm e sharedKey estejam configurados corretamente.
+
+# Do not translate "JSON Web Token", "JWT", "jwtBuilder"
+JWT_BUILDER_INVALID=CWWKS6008E: O ID do construtor JSON Web Token (JWT) especificado [{0}] n\u00e3o \u00e9 v\u00e1lido. Verifique se um construtor JWT com o ID especificado est\u00e1 configurado.
+JWT_BUILDER_INVALID.explanation=Um construtor JSON web token (JWT) com o ID especificado n\u00e3o existe na configura\u00e7\u00e3o do servidor.
+JWT_BUILDER_INVALID.useraction=No arquivo server.xml, configure um elemento jwtBuilder com o ID especificado.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_INVALID_CLAIM_VALUE_ERR=CWWKS6009E: O valor [{1}] na solicita\u00e7\u00e3o JSON web token (JWT) [{0}] n\u00e3o \u00e9 v\u00e1lido.
+JWT_INVALID_CLAIM_VALUE_ERR.explanation=O valor especificado na solicita\u00e7\u00e3o JSON web token (JWT) n\u00e3o atende \u00e0 especifica\u00e7\u00e3o JWT.
+JWT_INVALID_CLAIM_VALUE_ERR.useraction=Forne\u00e7a um valor v\u00e1lido para a solicita\u00e7\u00e3o especificada. Para obter informa\u00e7\u00f5es adicionais, consulte a especifica\u00e7\u00e3o JWT.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_BUILDER_NOT_ACTIVE=CWWKS6010E: A API do construtor JSON Web Token (JWT) n\u00e3o p\u00f4de criar um objeto construtor v\u00e1lido usando o ID [{0}]. Verifique se o recurso jwt-1.0 est\u00e1 configurado.
+JWT_BUILDER_NOT_ACTIVE.explanation=A API do construtor JSON Web Token (JWT) n\u00e3o p\u00f4de criar um objeto construtor v\u00e1lido porque o servi\u00e7o construtor n\u00e3o est\u00e1 dispon\u00edvel.
+JWT_BUILDER_NOT_ACTIVE.useraction=Certifique-se de ter o recurso jwt-1.0 configurado.
+
+JWT_CLAIMSMAP_NULL_KEY_OR_VALUE=CWWKS6011W: O mapa de solicita\u00e7\u00f5es JSON Web Token (JWT) fornecido tem um nome de solicita\u00e7\u00e3o ou valor que n\u00e3o \u00e9 v\u00e1lido.
+JWT_CLAIMSMAP_NULL_KEY_OR_VALUE.explanation=O construtor JSON Web Token n\u00e3o alterou as solicita\u00e7\u00f5es existentes porque o mapa de solicita\u00e7\u00f5es fornecido especifica nulo para o nome da solicita\u00e7\u00e3o ou o valor da solicita\u00e7\u00e3o.
+JWT_CLAIMSMAP_NULL_KEY_OR_VALUE.useraction=Certifique-se de passar um mapa de solicita\u00e7\u00e3o v\u00e1lido.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_CONSUMER_SERVICE_ACTIVATED=CWWKS6012I: O servi\u00e7o do consumidor JSON Web Token (JWT) est\u00e1 dispon\u00edvel.
+JWT_CONSUMER_SERVICE_ACTIVATED.explanation=Esta mensagem tem apenas prop\u00f3sitos informacionais.
+JWT_CONSUMER_SERVICE_ACTIVATED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_CONSUMER_SERVICE_NOT_ACTIVATED=CWWKS6013E: Um consumidor JSON Web Token (JWT) n\u00e3o pode ser criado porque o servi\u00e7o do consumidor n\u00e3o foi ativado.
+JWT_CONSUMER_SERVICE_NOT_ACTIVATED.explanation=O servi\u00e7o do consumidor JWT deve ser ativado antes de poder ser usado. O servi\u00e7o ainda n\u00e3o foi iniciado ou o servi\u00e7o foi desativado removendo o recurso jwt-1.0.
+JWT_CONSUMER_SERVICE_NOT_ACTIVATED.useraction=Certifique-se de que o recurso jwt-1.0 esteja configurado e que o servi\u00e7o do consumidor JWT esteja pronto para uso.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_CONSUMER_NULL_ID=CWWKS6014E: Um consumidor JSON Web Token (JWT) n\u00e3o pode ser criado porque o ID de configura\u00e7\u00e3o especificado \u00e9 nulo.
+JWT_CONSUMER_NULL_ID.explanation=Um consumidor JWT n\u00e3o pode ser criado usando um ID de configura\u00e7\u00e3o nulo. Um ID v\u00e1lido deve ser especificado para processar a configura\u00e7\u00e3o do consumidor JWT apropriada.
+JWT_CONSUMER_NULL_ID.useraction=Especifique um ID que n\u00e3o seja nulo e que corresponda ao ID de um consumidor JWT que existe na configura\u00e7\u00e3o do servidor.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_INVALID_CLAIM_ERR=CWWKS6015E: A solicita\u00e7\u00e3o JSON Web Token (JWT) [{0}] n\u00e3o \u00e9 v\u00e1lida. Especifique um nome de solicita\u00e7\u00e3o v\u00e1lido.
+JWT_INVALID_CLAIM_ERR.explanation=A solicita\u00e7\u00e3o especificada est\u00e1 vazia ou \u00e9 nula, portanto, a API do construtor JSON Web Token n\u00e3o pode continuar o processamento.
+JWT_INVALID_CLAIM_ERR.useraction=Certifique-se de que um nome de solicita\u00e7\u00e3o v\u00e1lido seja passado.
+
+# Do not translate "JSON Web Token", "JWT", "JSON Web Key"
+#0=signatureAlgorithm, 1=jwkEnabled, 2=exception or error message if any
+JWT_NO_SIGNING_KEY_WITH_ERROR=CWWKS6016E: A chave de assinatura que \u00e9 requerida pelo algoritmo de assinatura [{0}] n\u00e3o est\u00e1 dispon\u00edvel. Verifique se o algoritmo de assinatura e o jwkEnabled [{1}] est\u00e3o configurados corretamente. {2}
+JWT_NO_SIGNING_KEY_WITH_ERROR.explanation=Uma chave de assinatura n\u00e3o pode ser localizada ou uma chave que usa o algoritmo de assinatura configurado n\u00e3o pode ser localizada. Esse erro pode ocorrer devido a informa\u00e7\u00f5es ausentes ou imprecisas na configura\u00e7\u00e3o do JWT.
+JWT_NO_SIGNING_KEY_WITH_ERROR.useraction=Execute uma das a\u00e7\u00f5es a seguir: 1) Se estiver usando o JSON Web Key (JWK) para assinar, certifique-se de que o RS256 esteja configurado no atributo signatureAlgorithm. 2) Se JWK n\u00e3o for usado, certifique-se de que os atributos KeyStoreRef e KeyStoreAlias estejam configurados corretamente para RS256. 3) Se estiver usando chaves compartilhadas para assinar, certifique-se de que os atributos signatureAlgorithm e sharedKey estejam configurados corretamente.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_INVALID_TOKEN_ERR=CWWKS6017E: Algum conte\u00fado no JSON Web Token (JWT) est\u00e1 vazio, nulo ou n\u00e3o \u00e9 v\u00e1lido.
+JWT_INVALID_TOKEN_ERR.explanation=O conte\u00fado do token especificado n\u00e3o \u00e9 v\u00e1lido, portanto, a API do construtor JSON Web Token n\u00e3o pode continuar o processamento.
+JWT_INVALID_TOKEN_ERR.useraction=Assegure-se de que as URLs configuradas para a parte confi\u00e1vel sejam v\u00e1lidas. Certifique-se de que um conte\u00fado v\u00e1lido seja passado para o token. Para obter informa\u00e7\u00f5es adicionais, consulte a documenta\u00e7\u00e3o da API.
+
+JWT_INVALID_TIME_CLAIM_ERR=CWWKS6018E: A solicita\u00e7\u00e3o [{0}] deve ser um n\u00famero maior que zero.
+JWT_INVALID_TIME_CLAIM_ERR.explanation=O valor da solicita\u00e7\u00e3o especificado n\u00e3o \u00e9 v\u00e1lido, portanto, a API do construtor JSON Web Token n\u00e3o pode continuar o processamento.
+JWT_INVALID_TIME_CLAIM_ERR.useraction=Certifique-se de que o valor para a solicita\u00e7\u00e3o especificada seja um n\u00famero positivo diferente de zero.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_INVALID_CLAIM_VALUE_TYPE=CWWKS6019E: O tipo de dados da solicita\u00e7\u00e3o JSON Web Token (JWT) [{0}] n\u00e3o \u00e9 v\u00e1lido para o valor. 
+JWT_INVALID_CLAIM_VALUE_TYPE.explanation=O valor da solicita\u00e7\u00e3o especificado n\u00e3o \u00e9 v\u00e1lido para a solicita\u00e7\u00e3o especificada, portanto, a API do construtor JSON Web Token n\u00e3o pode continuar o processamento.
+JWT_INVALID_CLAIM_VALUE_TYPE.useraction=Certifique-se de que o valor da solicita\u00e7\u00e3o seja o tipo de dados correto. Para obter informa\u00e7\u00f5es adicionais, consulte a documenta\u00e7\u00e3o da API.
+
+# Do not translate "JSON Web Token", "JWT"
+#0=exception or error message
+JWT_CREATE_FAIL=CWWKS6020E: A API do construtor JSON Web Token falha ao criar um JSON Web Token (JWT) devido a [{0}]
+JWT_CREATE_FAIL.explanation=A API do construtor JSON Web Token encontrou um erro que impede a cria\u00e7\u00e3o do JWT.
+JWT_CREATE_FAIL.useraction=Consulte a a\u00e7\u00e3o do usu\u00e1rio para o erro que aparece antes dessa mensagem.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_INVALID_CLAIMS_ERR=CWWKS6021E: As solicita\u00e7\u00f5es do JSON Web Token (JWT) fornecidas n\u00e3o s\u00e3o v\u00e1lidas. Especifique uma solicita\u00e7\u00e3o v\u00e1lida.
+JWT_INVALID_CLAIMS_ERR.explanation=As solicita\u00e7\u00f5es fornecidas n\u00e3o s\u00e3o v\u00e1lidas, portanto, a API do construtor JSON Web Token n\u00e3o pode continuar o processamento.
+JWT_INVALID_CLAIMS_ERR.useraction=Certifique-se de que o conjunto correto de solicita\u00e7\u00f5es seja fornecido. Para obter informa\u00e7\u00f5es adicionais, consulte a documenta\u00e7\u00e3o da API.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Issuer claim of the token, 1=JWT configuration ID, 2=Trusted issuers specified in server configuration
+JWT_ISSUER_NOT_TRUSTED=CWWKS6022E: O emissor [{0}] do JSON Web Token (JWT) fornecido n\u00e3o \u00e9 listado como um emissor confi\u00e1vel na configura\u00e7\u00e3o de JWT [{1}]. Os emissores confi\u00e1veis s\u00e3o [{2}].
+JWT_ISSUER_NOT_TRUSTED.explanation=A configura\u00e7\u00e3o do servidor especifica quais emissores s\u00e3o confi\u00e1veis ao validar os JWTs. O token fornecido n\u00e3o foi originado de um emissor confi\u00e1vel, portanto, o token n\u00e3o pode ser validado.
+JWT_ISSUER_NOT_TRUSTED.useraction=Obtenha um novo token de um dos emissores confi\u00e1veis especificados em sua configura\u00e7\u00e3o do JWT, ou inclua o emissor especificado na mensagem como um emissor confi\u00e1vel em sua configura\u00e7\u00e3o do JWT.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Audience claim of the token, 1=JWT configuration ID, 2=Trusted audiences specified in server configuration
+JWT_AUDIENCE_NOT_TRUSTED=CWWKS6023E: O p\u00fablico [{0}] do JSON Web Token (JWT) fornecido n\u00e3o \u00e9 listado como um p\u00fablico confi\u00e1vel na configura\u00e7\u00e3o de JWT [{1}]. Os p\u00fablicos confi\u00e1veis s\u00e3o [{2}].
+JWT_AUDIENCE_NOT_TRUSTED.explanation=A configura\u00e7\u00e3o do servidor especifica quais p\u00fablicos s\u00e3o confi\u00e1veis ao validar os JWTs. O token fornecido n\u00e3o \u00e9 destinado a um p\u00fablico confi\u00e1vel, portanto, o token n\u00e3o pode ser validado.
+JWT_AUDIENCE_NOT_TRUSTED.useraction=Obtenha um novo token destinado a um dos p\u00fablicos confi\u00e1veis especificados em sua configura\u00e7\u00e3o do JWT, ou inclua o p\u00fablico especificado na mensagem como um p\u00fablico confi\u00e1vel em sua configura\u00e7\u00e3o do JWT.
+
+# Do not translate "JSON Web Token", "JWT", "iat", "exp"
+# 0=iat date, 1=exp date
+JWT_IAT_AFTER_EXP=CWWKS6024E: O JSON Web Token (JWT) n\u00e3o \u00e9 v\u00e1lido porque a emiss\u00e3o na solicita\u00e7\u00e3o (''iat'') especifica uma data posterior \u00e0 solicita\u00e7\u00e3o da expira\u00e7\u00e3o (''exp''). O tempo da solicita\u00e7\u00e3o ''iat'' \u00e9 [{0}] e o tempo da solicita\u00e7\u00e3o ''exp'' \u00e9 [{1}].
+JWT_IAT_AFTER_EXP.explanation=O JWT n\u00e3o \u00e9 v\u00e1lido porque foi emitido ap\u00f3s sua pr\u00f3pria data de expira\u00e7\u00e3o.
+JWT_IAT_AFTER_EXP.useraction=Obtenha um novo token com uma solicita\u00e7\u00e3o 'iat' v\u00e1lida que especifica um tempo anterior ao tempo especificado pela solicita\u00e7\u00e3o 'exp'.
+
+# Do not translate "JSON Web Token", "JWT", "exp"
+# 0=exp claim date, 1=Current time, 2=Clock skew in seconds
+JWT_TOKEN_EXPIRED=CWWKS6025E: O JSON Web Token (JWT) n\u00e3o \u00e9 v\u00e1lido porque sua solicita\u00e7\u00e3o de expira\u00e7\u00e3o (''exp'') est\u00e1 ausente ou o token expirou. A solicita\u00e7\u00e3o de expira\u00e7\u00e3o \u00e9 [{0}]. O hor\u00e1rio atual menos o clock skew \u00e9 [{1}]. O clock skew configurado \u00e9 de [{2}] segundos.
+JWT_TOKEN_EXPIRED.explanation=Os tokens que est\u00e3o expirados ou que n\u00e3o especificam uma solicita\u00e7\u00e3o 'exp' n\u00e3o s\u00e3o v\u00e1lidos.
+JWT_TOKEN_EXPIRED.useraction=Obtenha um novo token que contenha uma solicita\u00e7\u00e3o 'exp' e que n\u00e3o esteja expirado. Sincronize as horas do clock entre o emissor do token e o consumidor, ou aumente o clock skew em sua configura\u00e7\u00e3o do JWT.
+
+# Do not translate "JSON Web Token", "JWT", "nbf"
+# 0=nbf claim date, 1=Current time, 2=Clock skew in seconds
+JWT_TOKEN_BEFORE_NBF=CWWKS6026E: O JSON Web Token (JWT) n\u00e3o pode ser usado porque o valor da solicita\u00e7\u00e3o ''nbf'' [{0}] especifica um hor\u00e1rio posterior ao hor\u00e1rio atual. O hor\u00e1rio atual mais o clock skew \u00e9 [{1}]. O clock skew configurado \u00e9 de [{2}] segundos.
+JWT_TOKEN_BEFORE_NBF.explanation=O JWT tem uma solicita\u00e7\u00e3o 'nbf' (not-before) que especifica um hor\u00e1rio em que o token se torna v\u00e1lido. O hor\u00e1rio atual \u00e9 anterior ao hor\u00e1rio 'nbf', portanto, o token ainda n\u00e3o \u00e9 v\u00e1lido.
+JWT_TOKEN_BEFORE_NBF.useraction=Aguarde at\u00e9 depois do hor\u00e1rio especificado pela solicita\u00e7\u00e3o 'nbf' antes de usar este token, ou obtenha um novo token com um conjunto de solicita\u00e7\u00f5es 'nbf' para um hor\u00e1rio anterior ao hor\u00e1rio atual. Sincronize as horas do clock entre o emissor do token e o consumidor, ou aumente o clock skew em sua configura\u00e7\u00e3o do JWT.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Signature algorithm (e.g. RS256)
+JWT_MISSING_ALG_HEADER=CWWKS6027E: O JSON Web Token (JWT) n\u00e3o \u00e9 v\u00e1lido porque deve ser assinado usando o algoritmo [{0}], mas o token n\u00e3o continha nenhuma informa\u00e7\u00e3o de assinatura.
+JWT_MISSING_ALG_HEADER.explanation=O token est\u00e1 malformado, n\u00e3o assinado, ou est\u00e1 com informa\u00e7\u00f5es de assinatura faltando. Os tokens devem ser assinados pelo algoritmo especificado.
+JWT_MISSING_ALG_HEADER.useraction=Obtenha um novo token que seja assinado usando o algoritmo especificado.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Signature algorithm used to sign the token (e.g. RS256), 1=Signature algorithm required for signing (e.g. RS256)
+JWT_ALGORITHM_MISMATCH=CWWKS6028E: O JSON Web Token (JWT) n\u00e3o \u00e9 v\u00e1lido porque foi assinado usando o algoritmo [{0}]. Os tokens devem ser assinados usando o algoritmo [{1}].
+JWT_ALGORITHM_MISMATCH.explanation=Os tokens devem ser assinados pelo algoritmo especificado na mensagem. Os tokens que s\u00e3o assinados com qualquer outro algoritmo de assinatura n\u00e3o podem ser validados.
+JWT_ALGORITHM_MISMATCH.useraction=Obtenha um novo token que seja assinado usando o algoritmo requerido especificado na mensagem, ou atualize sua configura\u00e7\u00e3o do JWT para permitir os tokens que s\u00e3o assinados usando o outro algoritmo de assinatura.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Signature algorithm required for signing (e.g. RS256)
+JWT_MISSING_KEY=CWWKS6029E: O JSON Web Token (JWT) n\u00e3o pode ser validado porque uma chave de assinatura n\u00e3o pode ser localizada. O algoritmo de assinatura configurado [{0}] requer uma chave para validar o token.
+JWT_MISSING_KEY.explanation=Se estiver usando o algoritmo de assinatura HS256, uma chave compartilhada n\u00e3o poder\u00e1 ser especificada em sua configura\u00e7\u00e3o do consumidor JWT, ou um valor vazio est\u00e1 especificado. Se estiver usando o algoritmo de assinatura RS256, o servi\u00e7o de armazenamento de chaves poder\u00e1 n\u00e3o estar dispon\u00edvel ou uma chave n\u00e3o poder\u00e1 ser localizada dentro do armazenamento confi\u00e1vel que corresponde ao alias confi\u00e1vel especificado pela configura\u00e7\u00e3o do consumidor JWT.
+JWT_MISSING_KEY.useraction=Verifique os logs do servidor para ver se h\u00e1 alguma mensagem de erro adicional que explique por que uma chave n\u00e3o pode ser localizada. Se estiver usando o algoritmo de assinatura HS256, certifique-se de que uma chave compartilhada seja especificada em sua configura\u00e7\u00e3o do consumidor JWT. Se estiver usando o algoritmo de assinatura RS256, assegure-se de que o armazenamento confi\u00e1vel e o alias de confian\u00e7a na sua configura\u00e7\u00e3o do consumidor estejam configurados corretamente.
+
+# Do not translate "JSON Web Token", "JWT", "jwtConsumer"
+# 0=JWT config identifier ("id" attribute)
+JWT_CONSUMER_CONFIG_NOT_FOUND=CWWKS6030E: A configura\u00e7\u00e3o do consumidor JSON Web Token (JWT) com um ID de [{0}] n\u00e3o pode ser localizada. Verifique se um consumidor JWT com o ID especificado est\u00e1 configurado na configura\u00e7\u00e3o do servidor.
+JWT_CONSUMER_CONFIG_NOT_FOUND.explanation=Uma configura\u00e7\u00e3o do consumidor JWT com o identificador especificado n\u00e3o pode ser localizada na configura\u00e7\u00e3o do servidor.
+JWT_CONSUMER_CONFIG_NOT_FOUND.useraction=Certifique-se de que haja um elemento jwtConsumer configurado com o ID especificado na configura\u00e7\u00e3o do servidor.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=JWT consumer config ID, 1=Error message (if present)
+JWT_ERROR_PROCESSING_JWT=CWWKS6031E: O consumidor JSON Web Token (JWT) [{0}] n\u00e3o pode processar a sequ\u00eancia do token. {1} 
+JWT_ERROR_PROCESSING_JWT.explanation=Ocorreu um erro que impediu o consumidor de processar com \u00eaxito a sequ\u00eancia do token.
+JWT_ERROR_PROCESSING_JWT.useraction=Consulte a a\u00e7\u00e3o do usu\u00e1rio para ver o erro especificado na mensagem.
+
+# 0=Error message (if present)
+JWT_ERROR_GETTING_SHARED_KEY=CWWKS6032E: A chave compartilhada n\u00e3o pode ser recuperada. {0}
+JWT_ERROR_GETTING_SHARED_KEY.explanation=A chave compartilhada n\u00e3o pode ser recuperada por causa de um erro.
+JWT_ERROR_GETTING_SHARED_KEY.useraction=Consulte a a\u00e7\u00e3o do usu\u00e1rio para ver o erro especificado na mensagem. Verifique se uma chave compartilhada est\u00e1 configurada na configura\u00e7\u00e3o do consumidor JWT.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Trusted alias, 1=truststore reference, 2=Error message (if present)
+JWT_ERROR_GETTING_PUBLIC_KEY=CWWKS6033E: A chave p\u00fablica que corresponde ao alias [{0}] dentro do armazenamento confi\u00e1vel [{1}] n\u00e3o pode ser recuperada. {2}
+JWT_ERROR_GETTING_PUBLIC_KEY.explanation=Este erro pode ser causado por um problema ao obter o armazenamento confi\u00e1vel ou ao localizar uma chave que corresponde ao alias especificado na mensagem.
+JWT_ERROR_GETTING_PUBLIC_KEY.useraction=Consulte a a\u00e7\u00e3o do usu\u00e1rio para ver o erro especificado na mensagem. Verifique se o alias confi\u00e1vel apropriado e o armazenamento confi\u00e1vel est\u00e3o configurados na configura\u00e7\u00e3o do consumidor JSON Web Token (JWT).
+
+# Intended to be a child of JWT_ERROR_GETTING_SHARED_KEY
+# Do not translate "JSON Web Token", "JWT", "sharedKey"
+JWT_MISSING_SHARED_KEY=CWWKS6034E: Uma chave compartilhada n\u00e3o foi especificada na configura\u00e7\u00e3o do consumidor JSON Web Token (JWT).
+JWT_MISSING_SHARED_KEY.explanation=O atributo sharedKey na configura\u00e7\u00e3o do consumidor JWT estava ausente ou n\u00e3o recebeu um valor.
+JWT_MISSING_SHARED_KEY.useraction=Verifique se um valor sharedKey n\u00e3o vazio est\u00e1 configurado em sua configura\u00e7\u00e3o do consumidor JWT.
+
+# Intended to be a child of JWT_ERROR_GETTING_PUBLIC_KEY
+JWT_TRUSTSTORE_SERVICE_NOT_AVAILABLE=CWWKS6035E: O servi\u00e7o de armazenamento confi\u00e1vel n\u00e3o est\u00e1 dispon\u00edvel. Verifique se uma refer\u00eancia do armazenamento confi\u00e1vel est\u00e1 especificada em sua configura\u00e7\u00e3o do consumidor JWT.
+JWT_TRUSTSTORE_SERVICE_NOT_AVAILABLE.explanation=Um armazenamento confi\u00e1vel n\u00e3o foi configurado ou o armazenamento confi\u00e1vel configurado n\u00e3o foi processado pelo servi\u00e7o de configura\u00e7\u00e3o.
+JWT_TRUSTSTORE_SERVICE_NOT_AVAILABLE.useraction=Verifique se voc\u00ea possui uma refer\u00eancia de armazenamento confi\u00e1vel especificada em sua configura\u00e7\u00e3o de consumidor JWT.
+
+# 0=Signature algorithm (HS256, RS256), 1=Key object (string or Java object)
+# Do not translate "HS256", "RS256", "java.security.interfaces.RSAPrivateKey"
+JWT_INVALID_KEY_ERR=CWWKS6036E: O algoritmo de assinatura [{0}] requer uma chave v\u00e1lida para assinar o token, mas a chave fornecida [{1}] n\u00e3o \u00e9 v\u00e1lida.
+JWT_INVALID_KEY_ERR.explanation=Se voc\u00ea estiver usando o algoritmo de assinatura HS256, a chave compartilhada era nula ou uma sequ\u00eancia de caracteres vazia. Se voc\u00ea estiver usando o algoritmo de assinatura RS256, a chave era nula ou n\u00e3o era uma inst\u00e2ncia de java.security.interfaces.RSAPrivateKey.
+JWT_INVALID_KEY_ERR.useraction=Se voc\u00ea estiver usando o algoritmo de assinatura HS256, assegure-se de que uma sequ\u00eancia de caracteres n\u00e3o nula e n\u00e3o vazia seja fornecida como a chave de assinatura. Se voc\u00ea estiver usando o algoritmo de assinatura RS256, assegure-se de que uma inst\u00e2ncia n\u00e3o nula de uma classe que implementa a interface java.security.interfaces.RSAPrivateKey seja fornecida como a chave de assinatura.
+
+# 0=Signature algorithm string (null, empty, HS256, RS256), 1=Valid signature algorithm string (HS256, RS256)
+JWT_INVALID_ALGORITHM_ERR=CWWKS6037E: O algoritmo de assinatura fornecido [{0}] n\u00e3o \u00e9 v\u00e1lido. O conjunto v\u00e1lido de algoritmos \u00e9 [{1}].
+JWT_INVALID_ALGORITHM_ERR.explanation=O algoritmo de assinatura \u00e9 nulo, vazio ou n\u00e3o corresponde ao conjunto de algoritmos obrigat\u00f3rio que est\u00e1 especificado na mensagem.
+JWT_INVALID_ALGORITHM_ERR.useraction=Verifique se o algoritmo de assinatura fornecido corresponde ao conjunto v\u00e1lido de algoritmos.
+
+# Do not translate "JSON Web Key", "JWK", "JSON Web Token", "JWT", "jwkEnabled"
+# 0=JWT builder config ID
+JWK_ENDPOINT_JWK_NOT_ENABLED=CWWKS6038E: O terminal de valida\u00e7\u00e3o JSON Web Key (JWK) n\u00e3o pode ser usado porque o suporte para o JWK n\u00e3o est\u00e1 ativado para a configura\u00e7\u00e3o do construtor JSON Web Token (JWT) [{0}].
+JWK_ENDPOINT_JWK_NOT_ENABLED.explanation=O suporte para o JWK deve ser ativado para usar o terminal de valida\u00e7\u00e3o JWK. O atributo jwkEnabled pode n\u00e3o estar configurado na configura\u00e7\u00e3o do construtor JWT especificado ou o atributo est\u00e1 configurado como false.
+JWK_ENDPOINT_JWK_NOT_ENABLED.useraction=Verifique se o atributo de configura\u00e7\u00e3o jwkEnabled est\u00e1 configurado como true para a configura\u00e7\u00e3o do construtor JWT especificado.
+
+# Do not translate "JSON Web Key", "JWK", "JSON Web Token", "JWT"
+# 0=JWT builder config ID, 1=JWT builder's configured signature algorithm (HS256, RS256), 2=Valid signature algorithm (RS256)
+JWK_ENDPOINT_WRONG_ALGORITHM=CWWKS6039E: Para validar usando o terminal de valida\u00e7\u00e3o JSON Web Key (JWK), a configura\u00e7\u00e3o do construtor JSON Web Token (JWT) [{0}] deve usar o algoritmo de assinatura [{2}]. A configura\u00e7\u00e3o do construtor JWT est\u00e1 definida para usar o algoritmo de assinatura [{1}].
+JWK_ENDPOINT_WRONG_ALGORITHM.explanation=A funcionalidade do JWK requer o uso do algoritmo de assinatura especificado na mensagem. A configura\u00e7\u00e3o do construtor JWT especificada n\u00e3o usa o algoritmo de assinatura obrigat\u00f3rio.
+JWK_ENDPOINT_WRONG_ALGORITHM.useraction=Modifique a sua configura\u00e7\u00e3o do construtor JWT para usar o algoritmo de assinatura obrigat\u00f3rio.
+
+# Do not translate "JSON Web Token", "JWT", "Base64"
+# 0=JWT consumer config ID, 1=JWT string
+JWT_CONSUMER_NULL_OR_EMPTY_STRING=CWWKS6040E: O consumidor JSON Web Token (JWT) [{0}] n\u00e3o pode criar um JWT porque a sequ\u00eancia de caracteres fornecida [{1}] era nula ou vazia.
+JWT_CONSUMER_NULL_OR_EMPTY_STRING.explanation=Para criar um objeto JWT, deve-se fornecer uma sequ\u00eancia de caracteres do token codificada correspondente.
+JWT_CONSUMER_NULL_OR_EMPTY_STRING.useraction=Especifique uma sequ\u00eancia de caracteres JWT codificada adequadamente. A sequ\u00eancia de caracteres deve aderir ao formato descrito em https://tools.ietf.org/html/rfc7519#section-3, em que a sequ\u00eancia de caracteres \u00e9 uma sequ\u00eancia de partes seguras da URL codificadas para Base64 separadas por caracteres de ponto final ('.').
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Exception message, if present
+JWT_INVALID_SIGNATURE=CWWKS6041E: A assinatura do JSON Web Token (JWT) n\u00e3o \u00e9 v\u00e1lida. {0}
+JWT_INVALID_SIGNATURE.explanation=Ocorreu um erro ao processar a assinatura da sequ\u00eancia de caracteres JWT fornecida.
+JWT_INVALID_SIGNATURE.useraction=Consulte a a\u00e7\u00e3o do usu\u00e1rio para ver o erro especificado na mensagem. Verifique se o JWT foi assinado usando o algoritmo de assinatura e a chave corretos.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0="exp", 1=exp claim value, 2=exp claim converted to readable date, 3=Current time
+JWT_INVALID_EXP_CLAIM_ERR=CWWKS6042E: O valor de solicita\u00e7\u00e3o [{0}] [{1}] [{2}] deve ser igual ou posterior ao hor\u00e1rio atual [{3}].
+JWT_INVALID_EXP_CLAIM_ERR.explanation=O prazo de expira\u00e7\u00e3o JSON Web Token (JWT) deve ser configurado para o hor\u00e1rio atual ou para um hor\u00e1rio no futuro. Foi especificado um hor\u00e1rio no passado.
+JWT_INVALID_EXP_CLAIM_ERR.useraction=Configure o prazo de expira\u00e7\u00e3o do token para o hor\u00e1rio atual ou para um hor\u00e1rio no futuro.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Claim that is malformed ("exp", "iat", "sub", etc.), 1=Exception message, if present
+JWT_CONSUMER_MALFORMED_CLAIM=CWWKS6043E: O consumidor JSON Web Token (JWT) n\u00e3o pode processar o token porque a solicita\u00e7\u00e3o [{0}] est\u00e1 malformada. [ {1} ]
+JWT_CONSUMER_MALFORMED_CLAIM.explanation=O valor para a solicita\u00e7\u00e3o especificada n\u00e3o est\u00e1 formatado adequadamente ou n\u00e3o \u00e9 do tipo esperado.
+JWT_CONSUMER_MALFORMED_CLAIM.useraction=Consulte a a\u00e7\u00e3o do usu\u00e1rio para ver o erro especificado na mensagem. Assegure-se de que o valor para a solicita\u00e7\u00e3o especificada seja do tipo apropriado.
+
+# Do not translate "JSON Web Token", "JWT", "iat"
+# 0=iat claim time value (date), 1=Current time, 2=Clock skew configuration value
+JWT_IAT_AFTER_CURRENT_TIME=CWWKS6044E: O JSON Web Token (JWT) n\u00e3o \u00e9 v\u00e1lido porque a solicita\u00e7\u00e3o issued at (''iat'') especifica uma data posterior \u00e0 data atual. O hor\u00e1rio da solicita\u00e7\u00e3o ''iat'' \u00e9 [{0}]. O hor\u00e1rio atual mais o clock skew \u00e9 [{1}]. O clock skew configurado \u00e9 de [{2}] segundos.
+JWT_IAT_AFTER_CURRENT_TIME.explanation=Um token ser\u00e1 v\u00e1lido somente se a sua solicita\u00e7\u00e3o 'iat' especificar um hor\u00e1rio no passado. A solicita\u00e7\u00e3o 'iat' do token fornecido \u00e9 um hor\u00e1rio no futuro, portanto, o token ainda n\u00e3o \u00e9 v\u00e1lido.
+JWT_IAT_AFTER_CURRENT_TIME.useraction=Aguarde at\u00e9 depois do hor\u00e1rio especificado na solicita\u00e7\u00e3o 'iat' antes de usar esse token ou obtenha um novo token com um valor 'iat' que especifique uma data no passado.
+
+# Do not translate "JSON Web Token", "JWT", "iss", "jti"
+# 0=iss claim value (string), 1=jti claim value (string)
+JWT_DUP_JTI_ERR=CWWKS6045E: Um JSON Web Token (JWT) com a mesma solicita\u00e7\u00e3o ''iss'' [{0}] e solicita\u00e7\u00e3o ''jti'' [{1}] j\u00e1 foi recebido, o que pode indicar um ataque de reprodu\u00e7\u00e3o. Assegure-se de que o emissor do token forne\u00e7a um token com uma solicita\u00e7\u00e3o "jti" exclusiva.
+JWT_DUP_JTI_ERR.explanation=O token fornecido inclui uma solicita\u00e7\u00e3o 'jti' que identifica exclusivamente o token. Outro token com o mesmo valor 'iss' e valor 'jti' foi recebido e processado anteriormente. Solicita\u00e7\u00f5es duplicadas podem indicar um poss\u00edvel ataque de reprodu\u00e7\u00e3o.
+JWT_DUP_JTI_ERR.useraction=Certifique-se de que o emissor do token forne\u00e7a um novo token com uma solicita\u00e7\u00e3o 'jti' exclusiva.
+
+# Do not translate "JWT", "trustStoreRef" 
+# Intended to be a child of JWT_ERROR_GETTING_PUBLIC_KEY
+JWT_SIGNER_CERT_NOT_AVAILABLE=CWWKS6046E: N\u00e3o \u00e9 poss\u00edvel recuperar uma chave de assinatura do armazenamento confi\u00e1vel. N\u00e3o h\u00e1 certificados de assinante no armazenamento confi\u00e1vel especificado.
+JWT_SIGNER_CERT_NOT_AVAILABLE.explanation=O armazenamento confi\u00e1vel especificado pela configura\u00e7\u00e3o de consumidor JWT n\u00e3o cont\u00e9m nenhum certificado de assinante. Um certificado de assinante \u00e9 necess\u00e1rio para validar o token JWT.
+JWT_SIGNER_CERT_NOT_AVAILABLE.useraction=Verifique se o armazenamento confi\u00e1vel que \u00e9 usado pela configura\u00e7\u00e3o de consumidor JWT cont\u00e9m pelo menos um certificado de assinante. O armazenamento confi\u00e1vel pode ser configurado usando o atributo 'trustStoreRef' na configura\u00e7\u00e3o de consumidor JWT ou como parte da configura\u00e7\u00e3o geral de SSL do servidor.
+
+# Do not translate "JWT", "trustedAlias"
+# single quoted terms do NOT use double single quotes when there are no replacement variables
+# Intended to be a child of JWT_ERROR_GETTING_PUBLIC_KEY
+JWT_SIGNER_CERT_AMBIGUOUS=CWWKS6047E: N\u00e3o \u00e9 poss\u00edvel recuperar uma chave de assinatura do armazenamento confi\u00e1vel. O atributo 'trustedAlias' n\u00e3o foi especificado na configura\u00e7\u00e3o de consumidor JWT e h\u00e1 m\u00faltiplos certificados de assinante no armazenamento confi\u00e1vel.
+JWT_SIGNER_CERT_AMBIGUOUS.explanation=M\u00faltiplos certificados de assinante foram localizados no armazenamento confi\u00e1vel configurado. Quando h\u00e1 m\u00faltiplos certificados no armazenamento confi\u00e1vel, o atributo 'trustedAlias' deve ser especificado na configura\u00e7\u00e3o de consumidor JWT para estabelecer qual dos certificados usar.
+JWT_SIGNER_CERT_AMBIGUOUS.useraction=Especifique o atributo de configura\u00e7\u00e3o de consumidor JWT 'trustedAlias' com o alias do certificado de assinante apropriado.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_PROPAGATION_INVALID_TOKEN_ERR=CWWKS6048E: A API de filtro de solicita\u00e7\u00e3o do cliente n\u00e3o propagou o JSON Web Token (JWT).
+JWT_PROPAGATION_INVALID_TOKEN_ERR.explanation=A API de filtro de solicita\u00e7\u00e3o do cliente n\u00e3o obteve um token JWT v\u00e1lido por meio do assunto autenticado. A API n\u00e3o pode continuar a propaga\u00e7\u00e3o do token JWT porque o token n\u00e3o \u00e9 v\u00e1lido.
+JWT_PROPAGATION_INVALID_TOKEN_ERR.useraction=Assegure-se de que o fluxo de autentica\u00e7\u00e3o que ocorreu antes da propaga\u00e7\u00e3o seja bem-sucedido. Verifique os logs em busca de quaisquer erros de autentica\u00e7\u00e3o ou autoriza\u00e7\u00e3o que possam ter impedido a cria\u00e7\u00e3o do token e a inclus\u00e3o do token no assunto.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0: jwk url, 1:http status, 2: error message or the responding content
+JWT_JWK_RETRIEVE_FAILED=CWWKS6049E: Um JSON Web Key (JWK) n\u00e3o foi retornado da URL [{0}]. O status de resposta era [{1}] e o conte\u00fado retornado era [{2}].
+JWT_JWK_RETRIEVE_FAILED.explanation=A recupera\u00e7\u00e3o do JWK por meio da URL indicada tinha falhado. O c\u00f3digo de status e o conte\u00fado da resposta tamb\u00e9m foram mostrados na mensagem de erro.
+JWT_JWK_RETRIEVE_FAILED.useraction=Assegure-se de que a rede esteja configurada adequadamente e verifique a URL de JWK na configura\u00e7\u00e3o.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0: error
+JWT_HTTPS_WITH_SSLCONTEXT_NULL=CWWKS6050E: O consumidor de JSON Web Token (JWT) [{1}] n\u00e3o p\u00f4de criar um contexto de SSL devido a [{0}]. Assegure-se de que o recurso SSL esteja configurado corretamente.
+JWT_HTTPS_WITH_SSLCONTEXT_NULL.explanation=A configura\u00e7\u00e3o de consumidor de JWT est\u00e1 configurada para usar o esquema HTTPS, mas uma conex\u00e3o HTTPS n\u00e3o p\u00f4de ser estabelecida. O recurso SSL n\u00e3o pode ser ativado. O elemento keyStore pode estar ausente ou especificado incorretamente.  
+JWT_HTTPS_WITH_SSLCONTEXT_NULL.useraction=Assegure-se de que voc\u00ea tenha as informa\u00e7\u00f5es corretas de SSL no server.xml. Consulte a a\u00e7\u00e3o do usu\u00e1rio para o erro que aparece antes dessa mensagem.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=jwks uri, 1=Error message (if present)
+JWT_ERROR_GETTING_JWK_KEY=CWWKS6051E: N\u00e3o \u00e9 poss\u00edvel recuperar o JSON Web Key (JWK) da URL [{0}]. {1}
+JWT_ERROR_GETTING_JWK_KEY.explanation=A recupera\u00e7\u00e3o do JWK por meio da URL indicada falhou.
+JWT_ERROR_GETTING_JWK_KEY.useraction=Assegure-se de que a rede esteja configurada adequadamente e verifique a URL de JWK na configura\u00e7\u00e3o.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Issuer claim of the token, 1=JWT configuration ID
+JWT_TRUSTED_ISSUERS_NULL=CWWKS6052E: O emissor [{0}] do JSON Web Token (JWT) fornecido n\u00e3o \u00e9 confi\u00e1vel porque a configura\u00e7\u00e3o do JWT [{1}] n\u00e3o especifica nenhum emissor confi\u00e1vel.
+JWT_TRUSTED_ISSUERS_NULL.explanation=A configura\u00e7\u00e3o do servidor especifica quais emissores s\u00e3o confi\u00e1veis para valida\u00e7\u00e3o dos JWTs. A configura\u00e7\u00e3o do JWT n\u00e3o especifica nenhum emissor confi\u00e1vel, portanto, o token n\u00e3o pode ser validado.
+JWT_TRUSTED_ISSUERS_NULL.useraction=Assegure-se de que a configura\u00e7\u00e3o do JWT especificada na mensagem defina pelo menos um emissor confi\u00e1vel. Assegure-se de que o emissor do JWT corresponda a um dos emissores confi\u00e1veis especificados na sua configura\u00e7\u00e3o do JWT.

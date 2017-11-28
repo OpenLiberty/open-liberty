@@ -1,0 +1,57 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME=CWWKExxxxI: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.threading/resources/com/ibm/ws/threading/internal/resources/ThreadingMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 1200 - 1299 com.ibm.ws.threading.internal.resources.ThreadingMessages
+# -------------------------------------------------------------------------------------------------
+
+# {0} size of the pool when a deadlock was first detected
+# {1} current size of the pool
+unbreakableExecutorHang=CWWKE1200W:  Wszystkie w\u0105tki domy\u015blnego wykonawcy profilu Liberty zosta\u0142y prawdopodobnie zawieszone.  Profil Liberty automatycznie zwi\u0119kszy\u0142 liczb\u0119 w\u0105tk\u00f3w z {0} na {1}.  Jednak nadal wszystkie w\u0105tki s\u0105 zawieszone.
+unbreakableExecutorHang.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d, kt\u00f3ry spowodowa\u0142 zawieszenie si\u0119 wykonawcy i dodanie znacznej liczby w\u0105tk\u00f3w przez \u015brodowisko wykonawcze profilu Liberty w celu zako\u0144czenia stanu zawieszenia.  Jednak wykonawca nadal nie reaguje.  
+unbreakableExecutorHang.useraction=Sprawd\u017a, czy wyst\u0105pi\u0142o w\u0105skie gard\u0142o, takie jak zablokowana tabela bazy danych, kt\u00f3re mo\u017ce uniemo\u017cliwia\u0107 rozstrzyganie w\u0105tk\u00f3w na serwerze.  Je\u015bli w\u0105skie gard\u0142o nie wyst\u0119puje i serwer rzeczywi\u015bcie wymaga dodatkowych w\u0105tk\u00f3w, skoryguj warto\u015b\u0107 atrybutu coreThreads elementu konfiguracyjnego wykonawcy.
+
+CWWKE1201.queue.full.abort=CWWKE1201E: Nie mo\u017cna przes\u0142a\u0107 zadania do wykonawcy {0}, poniewa\u017c kolejka zada\u0144 z atrybutem maxQueueSize o warto\u015bci {1} jest zape\u0142niona po oczekiwaniu przez {2} ns.
+CWWKE1201.queue.full.abort.explanation=Atrybut maxQueueSize steruje wielko\u015bci\u0105 kolejki przesy\u0142anych zada\u0144.  Atrybut maxWaitForEnqueue steruje d\u0142ugo\u015bci\u0105 oczekiwania na dost\u0119pno\u015b\u0107 pozycji w kolejce. Ten okres mo\u017ce zosta\u0107 skr\u00f3cony o pozosta\u0142y limit czasu, je\u015bli do przesy\u0142ania zada\u0144 s\u0105 u\u017cywane czasowe metody invokeAll lub invokeAny. Atrybut queueFullAction okre\u015bla dzia\u0142anie, kt\u00f3re ma zosta\u0107 wykonane, je\u015bli po up\u0142ywie tego okresu w kolejce nadal nie b\u0119dzie dost\u0119pna \u017cadna pozycja. Aby unikn\u0105\u0107 przekroczenia maksymalnej wsp\u00f3\u0142bie\u017cno\u015bci lub aby zastosowa\u0107 podany limit czasu, metody invokeAll i invokeAny mog\u0105 nadpisa\u0107 atrybut queueFullAction i przerwa\u0107 przesy\u0142anie zadania, gdy nie mo\u017cna go umie\u015bci\u0107 w kolejce.
+CWWKE1201.queue.full.abort.useraction=Je\u015bli aplikacja obs\u0142uguje wyj\u0105tek RejectedExecutionException, nie jest wymagana \u017cadna czynno\u015b\u0107. W przeciwnym razie wykonaj dowoln\u0105 kombinacj\u0119 nast\u0119puj\u0105cych dzia\u0142a\u0144: zwi\u0119ksz warto\u015b\u0107 maxQueueSize, zwi\u0119ksz warto\u015b\u0107 maxWaitForEnqueue, u\u017cyj innego atrybutu queueFullAction lub zwi\u0119ksz limit czasu przekazywany do metody invokeAll lub invokeAny.
+
+CWWKE1202.submit.after.shutdown=CWWKE1202E: Nie mo\u017cna przes\u0142a\u0107 zadania, poniewa\u017c wykonawca {0} zosta\u0142 zamkni\u0119ty.
+CWWKE1202.submit.after.shutdown.explanation=Po wyst\u0105pieniu \u017c\u0105dania zamkni\u0119cia us\u0142ugi wykonawcy nie mo\u017cna przesy\u0142a\u0107 do niego zada\u0144.
+CWWKE1202.submit.after.shutdown.useraction=Zadania mo\u017cna przesy\u0142a\u0107 tylko do takiej instancji us\u0142ugi wykonawcy, dla kt\u00f3rej nie wyst\u0105pi\u0142o \u017c\u0105danie zamkni\u0119cia.
+
+CWWKE1203.config.update.after.shutdown=CWWKE1203E: Aktualizacja konfiguracji {0} jest niedozwolona, poniewa\u017c wykonawca {1} zosta\u0142 zamkni\u0119ty.
+CWWKE1203.config.update.after.shutdown.explanation=Nie mo\u017cna aktualizowa\u0107 konfiguracji po wyst\u0105pieniu \u017c\u0105dania zamkni\u0119cia us\u0142ugi wykonawcy.
+CWWKE1203.config.update.after.shutdown.useraction=Aktualizowa\u0107 mo\u017cna konfiguracj\u0119 tylko takiej instancji us\u0142ugi wykonawcy, dla kt\u00f3rej nie wyst\u0105pi\u0142o \u017c\u0105danie zamkni\u0119cia.
+
+# {4} is the value of the time unit enum constant that was supplied to invokeAll/invokeAny. For example, MINUTES
+CWWKE1204.unable.to.invoke=CWWKE1204E: Wykonawca {0} nie mo\u017ce przes\u0142a\u0107 {1} z {2} zada\u0144 w przydzielonym okresie {3} {4}.
+CWWKE1204.unable.to.invoke.explanation=Wykonawca odrzuci\u0142 operacj\u0119 invokeAll lub invokeAny, poniewa\u017c zabrak\u0142o czasu lub w kolejce by\u0142o za ma\u0142o dost\u0119pnego miejsca, aby mo\u017cna by\u0142o wprowadzi\u0107 wszystkie \u017c\u0105dane zadania w podanym okresie.
+CWWKE1204.unable.to.invoke.useraction=Je\u015bli aplikacja obs\u0142uguje wyj\u0105tek RejectedExecutionException, nie jest wymagana \u017cadna czynno\u015b\u0107. W przeciwnym razie wykonaj dowoln\u0105 kombinacj\u0119 nast\u0119puj\u0105cych dzia\u0142a\u0144: zwi\u0119ksz warto\u015b\u0107 maxQueueSize, zwi\u0119ksz warto\u015b\u0107 maxConcurrency lub zwi\u0119ksz warto\u015b\u0107 limitu czasu przekazywan\u0105 do metody invokeAll lub invokeAny.
+
+CWWKE1205.start.timeout=CWWKE1205E: Wykonawca {0} nie m\u00f3g\u0142 uruchomi\u0107 zadania {1} po {2} ns, poniewa\u017c zadanie przekroczy\u0142o limit czasu startTimeout wynosz\u0105cy {3} ns.
+CWWKE1205.start.timeout.explanation=Je\u015bli w przypadku wykonawcy skonfigurowano limit czasu startTimeout lub programowo za\u017c\u0105dano zastosowania tego limitu odno\u015bnie do zadania, wykonawca \u015bledzi czas up\u0142ywaj\u0105cy mi\u0119dzy momentem wprowadzeniem zadania a momentem, gdy b\u0119dzie mo\u017cliwe jego uruchomienie. Je\u015bli up\u0142ynie tyle czasu, \u017ce zostanie przekroczony limit startTimeout, wykonawca zrezygnuje z zadania zamiast je rozpoczyna\u0107. 
+CWWKE1205.start.timeout.useraction=Je\u015bli aplikacja oczekuje, \u017ce nast\u0105pi rezygnacja z uruchamiania jakich\u015b zada\u0144 z powodu przekroczenia ich limitu czasu startTimeout, nie jest wymagana \u017cadna czynno\u015b\u0107. W przeciwnym razie wykonaj dowoln\u0105 kombinacj\u0119 nast\u0119puj\u0105cych dzia\u0142a\u0144: zwi\u0119ksz warto\u015b\u0107 startTimeout lub zwi\u0119ksz warto\u015b\u0107 maxConcurrency.

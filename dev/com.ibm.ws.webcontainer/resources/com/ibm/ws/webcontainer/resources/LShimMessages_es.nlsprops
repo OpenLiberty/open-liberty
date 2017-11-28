@@ -1,0 +1,1269 @@
+###############################################################################
+# Copyright (c) 1997, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://seaux.raleigh.ibm.com/g11n/was/seae/45/messages/index.html
+# or contact Dennis Hebert/Raleigh/IBM (hebert@us.ibm.com)
+#
+# cmvc_en_version_level=1.4,0,04/02/09,12:44:41
+#
+#CMVCPATHNAME ws/code/webcontainer/src/com/ibm/ws/webcontainer/resources/Messages.nlsprops
+#COMPONENTPREFIX SRVE
+#COMPONENTNAMEFOR SRVE Servlet Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+
+
+# --------------------------------
+Illegal.Argument.Trying.to.write.chars=SRVE0011E: Excepci\u00f3n de argumento no permitido: Se est\u00e1n intentando escribir < 0 caracteres
+Illegal.Argument.Trying.to.write.chars.explanation=Se ha intentando escribir un almacenamiento intermedio de un tama\u00f1o inferior a 0. Se trata de un error de aplicaci\u00f3n.
+Illegal.Argument.Trying.to.write.chars.useraction=S\u00f3lo pueden escribirse almacenamientos intermedios de un tama\u00f1o 0 o superior.
+
+# --------------------------------
+Uncaught.service().exception.root.cause.{0}\:.{1}=SRVE0014E: No se ha podido detectar la causa ra\u00edz {0}: {1} de la excepci\u00f3n service()
+Uncaught.service().exception.root.cause.{0}\:.{1}.explanation=No se ha obtenido la excepci\u00f3n creada en el m\u00e9todo de servicio del servlet. Se trata de un error de aplicaci\u00f3n.
+Uncaught.service().exception.root.cause.{0}\:.{1}.useraction=Var\u00eda en funci\u00f3n de la causa ra\u00edz.
+
+# --------------------------------
+Failed.to.initialize.webapp.{0}=SRVE0015E: Error al inicializar la aplicaci\u00f3n web {0}
+Failed.to.initialize.webapp.{0}.explanation=No se ha podido inicializar la aplicaci\u00f3n Web especificada en el mensaje. Consulte el registro cronol\u00f3gico de errores para obtener m\u00e1s detalles.
+Failed.to.initialize.webapp.{0}.useraction=Consulte el registro cronol\u00f3gico de errores para determinar la causa ra\u00edz de este problema.
+
+# --------------------------------
+Illegal.Argument\:.Invalid.Header.Format=SRVE0016E: Excepci\u00f3n de argumento no permitido: Formato de cabecera no v\u00e1lido
+Illegal.Argument\:.Invalid.Header.Format.explanation=El formato encontrado para una cabecera de solicitud no es v\u00e1lido.
+Illegal.Argument\:.Invalid.Header.Format.useraction=Compruebe la creaci\u00f3n de cabecera del cliente.
+
+# -------------------------------- replaced by SRVE0255E ---------------------------
+#Web.Group.VHost.Not.Found=SRVE0017W: A WebGroup/Virtual Host to handle {0} has not been defined.
+#Web.Group.VHost.Not.Found.explanation=Could not find a web group (web module) or virtual host to handle the request.
+#Web.Group.VHost.Not.Found.useraction=Be sure the web group and virtual host is defined and deployed.
+
+# --------------------------------
+Servlet.unloaded\:.{0}=SRVE0021I: Servlet no cargado: {0}
+Servlet.unloaded\:.{0}.explanation=El servlet especificado no se ha cargado despu\u00e9s de haber llamado al m\u00e9todo destroy (destrucci\u00f3n).
+Servlet.unloaded\:.{0}.useraction=Ninguna.
+
+# --------------------------------
+Illegal.Argument\:.{0}.is.not.a.directory.=SRVE0031E: Excepci\u00f3n de argumento no permitido: {0} no es un directorio.
+Illegal.Argument\:.{0}.is.not.a.directory..explanation=La v\u00eda de acceso especificada no es un directorio.
+Illegal.Argument\:.{0}.is.not.a.directory..useraction=Aseg\u00farese de que el directorio existe o que est\u00e1 solicitando el directorio correcto.
+
+# --------------------------------
+WebAppSecurityCollaborator=SRVE0035E: WebAppSecurityCollaborator
+WebAppSecurityCollaborator.explanation=WebAppSecurityCollaborator. Es un error del sistema. 
+WebAppSecurityCollaborator.useraction=Examine las anotaciones cronol\u00f3gicas del servidor para determinar la causa ra\u00edz del problema. Si no existen mensajes relacionados o no ayudan a resolver el problema, p\u00f3ngase en contacto con el servicio de soporte de IBM.
+
+# --------------------------------
+Illegal.Argument\:.Bootstrap.File.Not.Found=SRVE0041E: Excepci\u00f3n de argumento no permitido: No se ha encontrado el archivo de rutina de carga
+Illegal.Argument\:.Bootstrap.File.Not.Found.explanation=Este es un error interno del sistema y est\u00e1 causado probablemente por una anomal\u00eda anterior.
+Illegal.Argument\:.Bootstrap.File.Not.Found.useraction=Examine las anotaciones cronol\u00f3gicas del servidor para determinar la causa ra\u00edz del problema. Si no existen mensajes relacionados o no ayudan a resolver el problema, p\u00f3ngase en contacto con el servicio de soporte de IBM.
+
+# --------------------------------
+Illegal.Argument\:.Invalid.Content.Length=SRVE0042E: Excepci\u00f3n de argumento no permitido: Longitud de contenido no v\u00e1lida
+Illegal.Argument\:.Invalid.Content.Length.explanation=Este es un error interno del sistema y est\u00e1 causado probablemente por una anomal\u00eda anterior. Se trata de un error de aplicaci\u00f3n.
+Illegal.Argument\:.Invalid.Content.Length.useraction=Examine las anotaciones cronol\u00f3gicas del servidor para determinar la causa ra\u00edz del problema. Si no existen mensajes relacionados o no ayudan a resolver el problema, p\u00f3ngase en contacto con el servicio de soporte de IBM.
+
+# --------------------------------
+Illegal.Argument\:.Invalid.Date.Format=SRVE0053E: Excepci\u00f3n de argumento no permitido: Formato de fecha no v\u00e1lido
+Illegal.Argument\:.Invalid.Date.Format.explanation=El formato de fecha no es v\u00e1lido.
+Illegal.Argument\:.Invalid.Date.Format.useraction=Examine las anotaciones cronol\u00f3gicas del servidor para determinar la causa ra\u00edz del problema. Si no existen mensajes relacionados o no ayudan a resolver el problema, p\u00f3ngase en contacto con el servicio de soporte de IBM.
+
+# --------------------------------
+Servlet.wait.for.destroy.timeout.has.expired,.destroy.will.be.forced\:.{0}=SRVE0055I: El tiempo de espera del servlet para la destrucci\u00f3n ha finalizado; se forzar\u00e1 la destrucci\u00f3n: {0}
+Servlet.wait.for.destroy.timeout.has.expired,.destroy.will.be.forced\:.{0}.explanation=Se va a destruir el servlet despu\u00e9s de que se haya excedido el tiempo de espera.
+Servlet.wait.for.destroy.timeout.has.expired,.destroy.will.be.forced\:.{0}.useraction=Ninguna.
+
+# --------------------------------
+Illegal.Argument\:.Unsupported.flag=SRVE0056E: Excepci\u00f3n de argumento no permitido: Distintivo no soportado
+Illegal.Argument\:.Unsupported.flag.explanation=Este es un error interno del sistema y est\u00e1 causado probablemente por una anomal\u00eda anterior.
+Illegal.Argument\:.Unsupported.flag.useraction=Examine las anotaciones cronol\u00f3gicas del servidor para determinar la causa ra\u00edz del problema. Si no existen mensajes relacionados o no ayudan a resolver el problema, p\u00f3ngase en contacto con el servicio de soporte de IBM.
+
+# --------------------------------
+Uncaught.destroy().exception.thrown.by.servlet.{0}\:.{2}=SRVE0058E: No se ha producido la excepci\u00f3n destroy() creada por el servlet {0} en la aplicaci\u00f3n {1}: {2}
+Uncaught.destroy().exception.thrown.by.servlet.{0}\:.{2}.explanation=No se ha podido destruir el servlet especificado. Se trata de un error de aplicaci\u00f3n.
+Uncaught.destroy().exception.thrown.by.servlet.{0}\:.{2}.useraction=Examine las anotaciones cronol\u00f3gicas del servidor para determinar la causa ra\u00edz del problema. Si no existen mensajes relacionados o no ayudan a resolver el problema, p\u00f3ngase en contacto con el servicio de soporte de IBM.
+
+# --------------------------------
+Unable.to.bind.hostname.[{0}].to.servletHost.[{1}]=SRVE0060E: No se ha podido enlazar el nombre de host [{0}] con servletHost [{1}]
+Unable.to.bind.hostname.[{0}].to.servletHost.[{1}].explanation=No se ha podido enlazar el nombre de host especificado con el host de servlet especificado.
+Unable.to.bind.hostname.[{0}].to.servletHost.[{1}].useraction=Aseg\u00farese de que el nombre del host se ha especificado correctamente y de que el host de servlet se ha especificado en virtualhosts.xml.
+
+# --------------------------------
+Illegal.Argument\:.Invalid.Directory.Specified\:.{0}=SRVE0061E: Excepci\u00f3n de argumento no permitido: El directorio especificado no es v\u00e1lido: {0}
+Illegal.Argument\:.Invalid.Directory.Specified\:.{0}.explanation=El directorio especificado no es v\u00e1lido.
+Illegal.Argument\:.Invalid.Directory.Specified\:.{0}.useraction=Compruebe si hay alg\u00fan error en la especificaci\u00f3n del directorio.
+
+# --------------------------------
+Waiting.servlet.to.finish.servicing.requests\:.{0}=SRVE0066I: Se est\u00e1 esperando a que el servlet termine de atender las solicitudes: {0}
+Waiting.servlet.to.finish.servicing.requests\:.{0}.explanation=El servlet a\u00fan est\u00e1 procesando la solicitud. Espere a que finalice la solicitud antes de llamar al m\u00e9todo destroy.
+Waiting.servlet.to.finish.servicing.requests\:.{0}.useraction=Ninguna.
+
+# --------------------------------
+Uncaught.service().exception.thrown.by.servlet.{0}\:.{2}=SRVE0068E: No se ha obtenido la excepci\u00f3n creada en uno de los m\u00e9todos de servicio del servlet {0} en la aplicaci\u00f3n {1}. Excepci\u00f3n creada: {2}
+Uncaught.service().exception.thrown.by.servlet.{0}\:.{2}.explanation=No se ha obtenido la excepci\u00f3n creada en uno de los m\u00e9todos de servicio del servlet. Se trata de un error de aplicaci\u00f3n.
+Uncaught.service().exception.thrown.by.servlet.{0}\:.{2}.useraction=Examine las anotaciones cronol\u00f3gicas del servidor para determinar la causa ra\u00edz del problema. Si no existen mensajes relacionados o no ayudan a resolver el problema, p\u00f3ngase en contacto con el servicio de soporte de IBM.
+
+# --------------------------------
+Error.Initializing.for.Next.Request=SRVE0070E: Error al inicializar para siguiente solicitud
+Error.Initializing.for.Next.Request.explanation=Error interno de contenedor Web.
+Error.Initializing.for.Next.Request.useraction=Recopile las anotaciones cronol\u00f3gicas del servidor y p\u00f3ngase en contacto con el servicio de IBM.
+
+# --------------------------------
+Invalid.Content.Length=SRVE0080E: Longitud de contenido no v\u00e1lida
+Invalid.Content.Length.explanation=Error interno del servidor. Esto podr\u00eda deberse a problemas de ajuste de red, a que la longitud de contenido se ha especificado de forma incorrecta o a la longitud o el tama\u00f1o de un archivo adjunto. Se trata de un error de aplicaci\u00f3n.
+Invalid.Content.Length.useraction=Recopile las anotaciones cronol\u00f3gicas y p\u00f3ngase en contacto con el servicio de IBM.
+
+# --------------------------------
+Illegal.Argument\:.Missing.Resource.Bootstrap.Properties=SRVE0086E: Excepci\u00f3n de argumento no permitido: Faltan propiedades de programa de arranque de recurso
+Illegal.Argument\:.Missing.Resource.Bootstrap.Properties.explanation=Error interno del servidor.
+Illegal.Argument\:.Missing.Resource.Bootstrap.Properties.useraction=Recopile las anotaciones cronol\u00f3gicas y p\u00f3ngase en contacto con el servicio de IBM.
+
+# --------------------------------
+Servlet.unload.initiated\:.{0}=SRVE0097I: Se ha iniciado la descarga del servlet: {0}
+Servlet.unload.initiated\:.{0}.explanation=El servlet especificado est\u00e1 siendo descargado desde el servicio.
+Servlet.unload.initiated\:.{0}.useraction=Ninguna.
+
+# --------------------------------
+Object.Pool.Exception.Class.could.not.be.instantiated.[{0}]=SRVE0099E: Excepci\u00f3n de agrupaci\u00f3n de objetos: No se ha podido instanciar la clase [{0}].
+Object.Pool.Exception.Class.could.not.be.instantiated.[{0}].explanation=No se ha podido crear la instancia de una clase para que la utilice la agrupaci\u00f3n de objetos. Es un error del sistema.
+Object.Pool.Exception.Class.could.not.be.instantiated.[{0}].useraction=Aseg\u00farese de que la clase exista y que sea visible en la v\u00eda de acceso de clases de la aplicaci\u00f3n.
+
+# --------------------------------
+Uncaught.init().exception.thrown.by.servlet.{0}\:.{2}=SRVE0100E: No se ha detectado la excepci\u00f3n init() creada por el servlet {0} en la aplicaci\u00f3n {1}: {2}
+Uncaught.init().exception.thrown.by.servlet.{0}\:.{2}.explanation=No se ha podido inicializar el servlet especificado. Se trata de un error de aplicaci\u00f3n.
+Uncaught.init().exception.thrown.by.servlet.{0}\:.{2}.useraction=Aseg\u00farese de que el archivo de clases del servlet est\u00e9 disponible en la v\u00eda de acceso de clases de la aplicaci\u00f3n.
+
+# --------------------------------
+Illegal.Argument\:.ScriptName.must.be.the.first.part.of.the.URI=SRVE0103E: Excepci\u00f3n de argumento no permitido: ScriptName debe ser la primera parte del URI
+Illegal.Argument\:.ScriptName.must.be.the.first.part.of.the.URI.explanation=Este es un error interno del sistema y est\u00e1 causado probablemente por una anomal\u00eda anterior.
+Illegal.Argument\:.ScriptName.must.be.the.first.part.of.the.URI.useraction=Examine las anotaciones cronol\u00f3gicas del servidor para determinar la causa ra\u00edz del problema. Si no existen mensajes relacionados o no ayudan a resolver el problema, p\u00f3ngase en contacto con el servicio de soporte de IBM.
+
+# --------------------------------
+Session.releaseSession().threw.an.unexpected.exception=SRVE0105E: Se ha producido una excepci\u00f3n en Session.releaseSession()
+Session.releaseSession().threw.an.unexpected.exception.explanation=Problema al liberar una sesi\u00f3n.
+Session.releaseSession().threw.an.unexpected.exception.useraction=Examine las anotaciones cronol\u00f3gicas del servidor para determinar la causa ra\u00edz del problema. Si no existen mensajes relacionados o no ayudan a resolver el problema, p\u00f3ngase en contacto con el servicio de soporte de IBM.
+
+# --------------------------------
+Illegal.Argument\:.Missing.flag.value=SRVE0108E: Excepci\u00f3n de argumento no permitido: Falta valor de distintivo
+Illegal.Argument\:.Missing.flag.value.explanation=Falta valor de distintivo.
+Illegal.Argument\:.Missing.flag.value.useraction=Examine las anotaciones cronol\u00f3gicas del servidor para determinar la causa ra\u00edz del problema. Si no existen mensajes relacionados o no ayudan a resolver el problema, p\u00f3ngase en contacto con el servicio de soporte de IBM.
+
+# --------------------------------
+Illegal.Argument\:.Invalid.ObjectPool.Instantiated.=SRVE0109E: Excepci\u00f3n de argumento no permitido: Instancia de ObjectPool no v\u00e1lida.
+Illegal.Argument\:.Invalid.ObjectPool.Instantiated..explanation=Este es un error interno del sistema y est\u00e1 causado probablemente por una anomal\u00eda anterior.
+Illegal.Argument\:.Invalid.ObjectPool.Instantiated..useraction=Examine las anotaciones cronol\u00f3gicas del servidor para determinar la causa ra\u00edz del problema. Si no existen mensajes relacionados o no ayudan a resolver el problema, p\u00f3ngase en contacto con el servicio de soporte de IBM.
+
+# --------------------------------
+Error.occurred.while.invoking.error.reporter=SRVE0115E: Se ha producido un error al invocar al informador de errores {0}
+Error.occurred.while.invoking.error.reporter.explanation=Problema al invocar el informador de errores especificado.
+Error.occurred.while.invoking.error.reporter.useraction=Examine las anotaciones cronol\u00f3gicas del servidor para determinar la causa ra\u00edz del problema. Si no existen mensajes relacionados o no ayudan a resolver el problema, p\u00f3ngase en contacto con el servicio de soporte de IBM.
+
+# --------------------------------
+IO.Error=SRVE0120E: Error de entrada/salida {0}
+IO.Error.explanation=Se ha encontrado un error de ES.
+IO.Error.useraction=Var\u00eda en funci\u00f3n de la causa ra\u00edz.
+
+# --------------------------------
+Illegal.Argument\:.Trying.to.write.<.0.bytes=SRVE0121E: Excepci\u00f3n de argumento no permitido: Se est\u00e1n intentando escribir &lt; 0 bytes
+Illegal.Argument\:.Trying.to.write.<.0.bytes.explanation=Se ha intentando escribir un almacenamiento intermedio de un tama\u00f1o inferior a 0. Se trata de un error de aplicaci\u00f3n.
+Illegal.Argument\:.Trying.to.write.<.0.bytes.useraction=S\u00f3lo pueden escribirse almacenamientos intermedios de un tama\u00f1o 0 o superior.
+
+# --------------------------------
+Invalidation.Exception\:.{0}.was.created=SRVE0126E: Excepci\u00f3n de invalidaci\u00f3n: se ha creado {0}
+Invalidation.Exception\:.{0}.was.created.explanation=Este es un error interno del sistema y est\u00e1 causado probablemente por una anomal\u00eda anterior.
+Invalidation.Exception\:.{0}.was.created.useraction=Examine las anotaciones cronol\u00f3gicas del servidor para determinar la causa ra\u00edz del problema. Si no existen mensajes relacionados o no ayudan a resolver el problema, p\u00f3ngase en contacto con el servicio de soporte de IBM.
+
+# --------------------------------
+Error.Parsing.Parameters=SRVE0133E: Se ha producido un error al analizar par\u00e1metros. {0}
+Error.Parsing.Parameters.explanation=Problema encontrado al analizar los par\u00e1metros del servlet.
+Error.Parsing.Parameters.useraction=Verifique que el cliente est\u00e9 enviando la solicitud completa.
+
+# --------------------------------
+postInvoke.Security.Exception.=SRVE0138E: Excepci\u00f3n de seguridad postInvoke
+postInvoke.Security.Exception..explanation=Problema de seguridad encontrado durante el proceso de la petici\u00f3n. Es un error del sistema.
+postInvoke.Security.Exception..useraction=Examine las anotaciones cronol\u00f3gicas del servidor para determinar la causa ra\u00edz del problema. Si no existen mensajes relacionados o no ayudan a resolver el problema, p\u00f3ngase en contacto con el servicio de soporte de IBM.
+
+# --------------------------------
+preInvoke.Security.Exception.=SRVE0139E: Excepci\u00f3n en la seguridad preInvoke {0}
+preInvoke.Security.Exception..explanation=Problema de seguridad encontrado durante el proceso de la petici\u00f3n. Es un error del sistema.
+preInvoke.Security.Exception..useraction=Var\u00eda en funci\u00f3n de la causa ra\u00edz.
+
+# --------------------------------
+instantiate.collaborator.exception=SRVE0140E: No se ha podido crear una instancia del colaborador de seguridad {0}
+instantiate.collaborator.exception.explanation=Error interno del servidor.
+instantiate.collaborator.exception.useraction=Recopile las anotaciones cronol\u00f3gicas y p\u00f3ngase en contacto con el servicio de IBM.
+
+# --------------------------------
+failed.to.load.encoding.properties=SRVE0155E: No se ha podido cargar el archivo encoding.properties {0}
+failed.to.load.encoding.properties.explanation=No se ha podido cargar el archivo especificado. Se requiere una acci\u00f3n del sistema.
+failed.to.load.encoding.properties.useraction=Aseg\u00farese de que el archivo especificado exista y de que tenga el formato correcto de acuerdo con java.utils.Properties.
+
+# --------------------------------
+failed.to.load.converter.properties=SRVE0156E: No se ha podido cargar el archivo converter.properties {0}
+failed.to.load.converter.properties.explanation=No se ha podido cargar el archivo especificado. Se requiere una acci\u00f3n del sistema.
+failed.to.load.converter.properties.useraction=Aseg\u00farese de que el archivo especificado exista y de que tenga el formato correcto de acuerdo con java.utils.Properties.
+
+# --------------------------------
+setbuffer.size.called.after.write=SRVE0157E: setBufferSize() llamada tras la primera grabaci\u00f3n en la corriente de salida/grabador
+setbuffer.size.called.after.write.explanation=Se ha intentado establecer el tama\u00f1o del almacenamiento intermedio de respuesta despu\u00e9s de que se haya comprometido la respuesta. Se trata de un error de aplicaci\u00f3n.
+setbuffer.size.called.after.write.useraction=Elimine la llamada a setBufferSize() o mu\u00e9valo a una posici\u00f3n anterior al compromiso de la respuesta.
+
+# --------------------------------
+usertransaction.rollback.exception=SRVE0160E: Excepci\u00f3n al retrotraer UserTransaction: {0}
+usertransaction.rollback.exception.explanation=Problema encontrado al retrotraer la transacci\u00f3n de usuario especificada. Se trata de un error de aplicaci\u00f3n.
+usertransaction.rollback.exception.useraction=Examine las anotaciones cronol\u00f3gicas del servidor para determinar la causa ra\u00edz del problema. Si no existen mensajes relacionados o no ayudan a resolver el problema, p\u00f3ngase en contacto con el servicio de soporte de IBM.
+
+# --------------------------------
+web.container.copyright=SRVE0161I: IBM WebSphere Application Server - Contenedor web.  Copyright IBM Corp. 1998-2008
+web.container.copyright.explanation=Identificador del servidor de aplicaciones.
+web.container.copyright.useraction=Ninguna.
+
+# --------------------------------
+web.container.servlet.spec.level=SRVE0162I: Nivel de especificaci\u00f3n de servlet: 2.5
+web.container.servlet.spec.level.explanation=El nivel de especificaci\u00f3n de servlet soportado por el servidor de aplicaciones.
+web.container.servlet.spec.level.useraction=Ninguna.
+
+# --------------------------------
+web.container.jsp.spec.level=SRVE0163I: Nivel de especificaci\u00f3n de JavaServer Pages soportado: 2.1
+web.container.jsp.spec.level.explanation=El nivel de especificaci\u00f3n de JSP soportado por el servidor de aplicaciones.
+web.container.jsp.spec.level.useraction=Ninguna.
+
+# --------------------------------
+context.root.already.in.use=SRVE0164E: La aplicaci\u00f3n web {0} utiliza la ra\u00edz de contexto {1} que ya est\u00e1 siendo utilizada por la aplicaci\u00f3n web {2}. La aplicaci\u00f3n Web {3} no se cargar\u00e1.
+context.root.already.in.use.explanation=Hay dos aplicaciones Web en el mismo host virtual que comparten el mismo directorio ra\u00edz de contexto. Se trata de un error de aplicaci\u00f3n.
+context.root.already.in.use.useraction=Cambie el directorio ra\u00edz de contexto de una de las aplicaciones Web o mueva una de ellas a un host virtual diferente.
+
+# --------------------------------
+loading.web.module=SRVE0169I: Cargando m\u00f3dulo web: {0}.
+loading.web.module.explanation=El m\u00f3dulo web se est\u00e1 iniciando y est\u00e1 disponible para el servicio.
+loading.web.module.useraction=Ninguna.
+
+# --------------------------------
+[{0}][{1}][Servlet.LOG]\:.{2}=SRVE0180I: [{0}] [{1}] [Servlet.LOG]: {2}
+[{0}][{1}][Servlet.LOG]\:.{2}.explanation=Mensaje informativo {2} anotado a trav\u00e9s de ServletContext.log desde la aplicaci\u00f3n {0} con la ra\u00edz de contexto {1}.
+[{0}][{1}][Servlet.LOG]\:.{2}.useraction=Ninguna.
+
+# --------------------------------
+[{0}][{1}][Servlet.LOG]\:.{2}\:.{3}=SRVE0181I: [{0}] [{1}] [Servlet.LOG]: {2}: {3}
+[{0}][{1}][Servlet.LOG]\:.{2}\:.{3}.explanation=Mensaje informativo {2} anotado a trav\u00e9s de ServletContext.log desde la aplicaci\u00f3n {0} con la ra\u00edz de contexto {1} y el rastreo de pila {3}.
+[{0}][{1}][Servlet.LOG]\:.{2}\:.{3}.useraction=Ninguna.
+
+# --------------------------------
+error.occurred.processing.request=SRVE0185E: Se ha producido un error al procesar la petici\u00f3n:
+error.occurred.processing.request.explanation=Se ha producido una excepci\u00f3n al procesar la solicitud.
+error.occurred.processing.request.useraction=Revise el mensaje para determinar la causa ra\u00edz del problema.
+
+# -----------------------------------------------
+Cannot.set.buffer.size.after.data=SRVE0186E: No se puede establecer el tama\u00f1o de almacenamiento intermedio una vez grabados los datos en la corriente de datos
+Cannot.set.buffer.size.after.data.explanation=Algunos datos ya se han grabado en la secuencia y, debido al tama\u00f1o del almacenamiento intermedio, ya no se pueden controlar. Se trata de un error de aplicaci\u00f3n.
+Cannot.set.buffer.size.after.data.useraction=O bien establezca el tama\u00f1o del almacenamiento intermedio antes de grabar datos o bien restablezca el almacenamiento intermedio antes de fijar el tama\u00f1o.
+
+# -----------------------------------------------
+Check.your.classpath.ensure.all.classes.present=SRVE0187E: Compruebe la v\u00eda de acceso de clases para asegurarse de que se encuentren todas las clases que precise el servlet.
+Check.your.classpath.ensure.all.classes.present.explanation=No se ha encontrado una clase necesaria. Se trata de un error de aplicaci\u00f3n.
+Check.your.classpath.ensure.all.classes.present.useraction=Aseg\u00farese de que la v\u00eda de acceso de clases refleje todas las clases a las que vaya a acceder
+
+# -----------------------------------------------
+Class.{0}.does.not.implement.servlet=SRVE0188E: La clase {0} no implementa el servlet
+Class.{0}.does.not.implement.servlet.explanation=Se trata de un error de aplicaci\u00f3n.
+Class.{0}.does.not.implement.servlet.useraction=La clase indicada necesita implementar javax.servlet.Servlet o ampliar una de javax.servlet.GenericServlet o javax.servlet.http.HttpServlet.
+
+# -----------------------------------------------
+Error.occurred.while.finishing.request=SRVE0189E: Se ha producido un error al finalizar la petici\u00f3n
+Error.occurred.while.finishing.request.explanation=Este error se produce cuando se est\u00e1 completando la solicitud. Puede haber sucedido debido a un error de comunicaci\u00f3n con el servidor de aplicaciones pero no deber\u00eda haber afectado al proceso de la solicitud. Es un error del sistema.
+Error.occurred.while.finishing.request.useraction=Ninguna.
+
+# -----------------------------------------------
+File.not.found=SRVE0190E: Archivo no encontrado: {0}
+File.not.found.explanation=No se ha encontrado el archivo mencionado. Se trata de un error de aplicaci\u00f3n.
+File.not.found.useraction=Aseg\u00farese de que el archivo mencionado est\u00e9 en su sitio.
+
+# -----------------------------------------------
+Illegal.from.included.servlet=SRVE0194E: Argumento no permitido del servlet incluido
+Illegal.from.included.servlet.explanation=La operaci\u00f3n intentada no se puede realizar en un servlet/JSP incluido (consulte la Especificaci\u00f3n del servlet). Se trata de un error de aplicaci\u00f3n.
+Illegal.from.included.servlet.useraction=Modifique el servlet/JSP que falla.
+
+# -----------------------------------------------
+Missing.required.initialization.parameter=SRVE0196E: Falta el par\u00e1metro de inicializaci\u00f3n necesario: {0}
+Missing.required.initialization.parameter.explanation=El par\u00e1metro con el nombre mencionada no tiene ning\u00fan valor. Se trata de un par\u00e1metro obligatorio. Se trata de un error de aplicaci\u00f3n.
+Missing.required.initialization.parameter.useraction=Proporcione un valor para el par\u00e1metro mencionado.
+
+# -----------------------------------------------
+OutputStream.already.obtained=SRVE0199E: Ya se ha obtenido OutputStream
+OutputStream.already.obtained.explanation=La aplicaci\u00f3n ha solicitado un PrintWriter despu\u00e9s de haber obtenido ya ServletResponse OutputStream. Se trata de un error de aplicaci\u00f3n.
+OutputStream.already.obtained.useraction=Revise la aplicaci\u00f3n para determinar si se ha obtenido tanto PrintWriter como OuputStream. S\u00f3lo modifique el servlet/JSP que falla para obtener el uno o el otro.
+
+# -----------------------------------------------
+Servlet.Could.not.find.required.servlet.class=SRVE0200E: Servlet [{0}]: No se ha encontrado la clase necesaria - {1}
+Servlet.Could.not.find.required.servlet.class.explanation=El servlet no ha podido encontrar la clase necesaria para servir a la solicitud. Se trata de un error de aplicaci\u00f3n.
+Servlet.Could.not.find.required.servlet.class.useraction=Verifique que exista la clase dentro de la aplicaci\u00f3n.
+
+# -----------------------------------------------
+Servlet.not.a.servlet.class=SRVE0201E: Servlet [{0}]: no es una clase de servlet
+Servlet.not.a.servlet.class.explanation=Se trata de un error de aplicaci\u00f3n.
+Servlet.not.a.servlet.class.useraction=Modifique la clase que falla para implementar javax.servlet.Servlet o ampliar javax.servlet.GenericServlet o javax.servlet.http.HttpServlet
+
+# -----------------------------------------------
+Servlet.found.but.corrupt=SRVE0202E: Servlet [{0}]: Se ha encontrado {1}, pero est\u00e1 corrompida:\n
+Servlet.found.but.corrupt.explanation=La clase de servlet ha resultado estar corrompida. Se trata de un error de aplicaci\u00f3n.
+Servlet.found.but.corrupt.useraction=Vuelva a compilar la clase e int\u00e9ntelo de nuevo.
+
+# -----------------------------------------------
+Servlet.was.found.but.is.missing.another.required.class=SRVE0203E: Servlet [{0}]: se ha encontrado {1}, pero le falta otra clase necesaria.\n
+Servlet.was.found.but.is.missing.another.required.class.explanation=No se ha encontrado una clase necesaria. Se trata de un error de aplicaci\u00f3n.
+Servlet.was.found.but.is.missing.another.required.class.useraction=Aseg\u00farese de que todas las clases necesarias est\u00e9n ubicadas en carpetas/jars que representen la v\u00eda de acceso de clases
+
+# -----------------------------------------------
+host.has.not.been.defined=SRVE0204E: El host {0} no se ha definido
+host.has.not.been.defined.explanation=No se ha encontrado el host virtual. Se requiere una acci\u00f3n del sistema.
+host.has.not.been.defined.useraction=Compruebe la configuraci\u00f3n del host virtual en el archivo virtualhosts.xml o mediante la consola de administraci\u00f3n.
+
+# -----------------------------------------------
+host.on.port.has.not.been.defined=SRVE0205E: El host {0} en el puerto {1} no se ha definido. 
+host.on.port.has.not.been.defined.explanation=No se ha podido ubicar el host virtual definido para manejar este URI de solicitud. Se requiere una acci\u00f3n del sistema.
+host.on.port.has.not.been.defined.useraction=Compruebe la configuraci\u00f3n del host virtual en el archivo virtualhosts.xml o mediante la consola de administraci\u00f3n.
+
+# -----------------------------------------------
+This.error.implies.servlet.was.originally.compiled.with.classes.which.cannot.be.located.by.server=SRVE0206E: Este error normalmente indica que el servlet se ha compilado en un principio con clases que el servidor no puede encontrar.\n
+This.error.implies.servlet.was.originally.compiled.with.classes.which.cannot.be.located.by.server.explanation=Se trata de un error de aplicaci\u00f3n.
+This.error.implies.servlet.was.originally.compiled.with.classes.which.cannot.be.located.by.server.useraction=Vuelva a compilar el servlet con todos los componentes necesarios ubicados en la v\u00eda de acceso de clases.
+
+# -----------------------------------------------
+Uncaught.initialization.exception.thrown.by.servlet=SRVE0207E: No se ha detectado la excepci\u00f3n de inicializaci\u00f3n creada por el servlet
+Uncaught.initialization.exception.thrown.by.servlet.explanation=El destino ha emitido una excepci\u00f3n durante una inicializaci\u00f3n que no ha sido detectada por el c\u00f3digo de usuario. Se trata de un error de aplicaci\u00f3n.
+Uncaught.initialization.exception.thrown.by.servlet.useraction=La excepci\u00f3n se justifica en el c\u00f3digo de usuario.
+
+# -----------------------------------------------
+Unsupported.conversion=SRVE0208E: Conversi\u00f3n no soportada
+Unsupported.conversion.explanation=El c\u00f3digo ha intentado hacer una conversi\u00f3n ilegal de un valor de cabecera, por ejemplo, desde int a Datos, cuando no se puede realizar dicha conversi\u00f3n. Se trata de un error de aplicaci\u00f3n.
+Unsupported.conversion.useraction=Modifique el servlet/JSP que falla.
+
+# -----------------------------------------------
+Writer.already.obtained=SRVE0209E: Ya se ha obtenido el grabador
+Writer.already.obtained.explanation=Ya se ha obtenido el grabador de esta respuesta. Utilice el grabador existente. Se trata de un error de aplicaci\u00f3n.
+Writer.already.obtained.useraction=Revise la aplicaci\u00f3n para determinar si se ha obtenido tanto PrintWriter como OuputStream. S\u00f3lo modifique el servlet/JSP que falla para obtener el uno o el otro.
+
+# -----------------------------------------------
+be.debugged.by.recompiling.the.servlet.using.only.the.classes.in.the.application's.runtime.classpath=SRVE0210I: Este problema puede ser depurado recompilando el servlet utilizando \u00fanicamente las clases de la v\u00eda de acceso de clases de tiempo de ejecuci\u00f3n de la aplicaci\u00f3n\n
+be.debugged.by.recompiling.the.servlet.using.only.the.classes.in.the.application's.runtime.classpath.explanation=Se trata de un error de aplicaci\u00f3n.
+be.debugged.by.recompiling.the.servlet.using.only.the.classes.in.the.application's.runtime.classpath.useraction=Recompile el servlet utilizando \u00fanicamente las clases de la v\u00eda de acceso de clases de tiempo de ejecuci\u00f3n de la aplicaci\u00f3n.
+
+# -----------------------------------------------
+class.{0}.could.not.be.instantiated=SRVE0211E: La clase {0} no se ha podido instanciar
+class.{0}.could.not.be.instantiated.explanation=Excepci\u00f3n interna.
+class.{0}.could.not.be.instantiated.useraction=CMSG0002
+
+# -----------------------------------------------
+class.{0}.not.accessible=SRVE0212E: La clase {0} no est\u00e1 accesible
+class.{0}.not.accessible.explanation=Excepci\u00f3n interna.
+class.{0}.not.accessible.useraction=CMSG0002
+
+# -----------------------------------------------
+class.not.found=SRVE0213E: clase no encontrada
+class.not.found.explanation=Excepci\u00f3n interna.
+class.not.found.useraction=CMSG0002
+
+# -----------------------------------------------
+invalid.count=SRVE0214E: recuento no v\u00e1lido
+invalid.count.explanation=Excepci\u00f3n interna.
+invalid.count.useraction=CMSG0002
+
+# -----------------------------------------------
+non-HTTP.request.or.response=SRVE0215E: Petici\u00f3n o respuesta no HTTP
+non-HTTP.request.or.response.explanation=La cadena de servlets que se ha definido s\u00f3lo puede manejar solicitudes HTTP. Se trata de un error de aplicaci\u00f3n.
+non-HTTP.request.or.response.useraction=Ninguna.
+
+# -----------------------------------------------
+post.body.contains.less.bytes.than.specified=SRVE0216E: La petici\u00f3n enviada contiene menos bytes que los especificados en la longitud del contenido
+post.body.contains.less.bytes.than.specified.explanation=Es posible que se haya corrompido la solicitud entrante. Se trata de un error de aplicaci\u00f3n.
+post.body.contains.less.bytes.than.specified.useraction=Ninguna.
+
+# -----------------------------------------------
+{0}.is.not.a.valid.class=SRVE0217E: {0} no es una clase v\u00e1lida
+{0}.is.not.a.valid.class.explanation=Este error se ha producido cuando el contenedor web ha intentado cargar una clase de implementaci\u00f3n interna. Es un error del sistema.
+{0}.is.not.a.valid.class.useraction=Aseg\u00farese de que la v\u00eda de acceso de clases de WAS original no se haya modificado.
+
+# -----------------------------------------------
+Forbidden.Web.Security.Exception=SRVE0218E: Prohibici\u00f3n: Excepci\u00f3n de seguridad de Web
+Forbidden.Web.Security.Exception.explanation=La solicitud ha intentado acceder a un recurso prohibido.
+Forbidden.Web.Security.Exception.useraction=Aseg\u00farese de que la entidad solicitante tenga los privilegios necesarios.
+
+# -----------------------------------------------
+No.Error.to.Report=SRVE0219I: No hay ning\u00fan error que notificar
+No.Error.to.Report.explanation=Se ha invocado DefaultErrorReport pero no se ha encontrado ning\u00fan error. Es un error del sistema.
+No.Error.to.Report.useraction=Revise la aplicaci\u00f3n para determinar la causa del problema.
+
+# -----------------------------------------------
+Wrapped.Error=SRVE0220I: Error de acomodaci\u00f3n
+Wrapped.Error.explanation=Error que ha causado el problema.
+Wrapped.Error.useraction=Ninguna.
+
+# -----------------------------------------------
+Serving.JSP.Not.Allowed=SRVE0221E: El servicio de contenidos de archivos JSP no est\u00e1 permitido.
+Serving.JSP.Not.Allowed.explanation=No se pueden servir los contenidos en un archivo JSP
+Serving.JSP.Not.Allowed.useraction=Ninguna.
+
+# -----------------------------------------------
+StackTrace=SRVE0223I: StackTrace:
+StackTrace.explanation=Ninguna.
+StackTrace.useraction=Ninguna.
+
+# -----------------------------------------------
+Target.Servlet=SRVE0224I: Servlet de destino:
+Target.Servlet.explanation=Ninguna.
+Target.Servlet.useraction=Ninguna.
+
+# -----------------------------------------------
+Root.Error=SRVE0225I: Error de root
+Root.Error.explanation=Ninguna.
+Root.Error.useraction=Ninguna.
+
+# -----------------------------------------------
+class.resides.in.proper.package.directory=SRVE0227E: Compruebe que la clase se encuentre en el directorio del paquete correcto.\n
+class.resides.in.proper.package.directory.explanation=El nombre de paquete del recurso no coincide con el paquete de archivos de clase compilado. Se trata de un error de aplicaci\u00f3n.
+class.resides.in.proper.package.directory.useraction=Compruebe que la clase se encuentre en el directorio del paquete correcto.
+
+# -----------------------------------------------
+classname.defined.in.server.using.proper.case.and.fully.qualified.package=SRVE0228E: Compruebe que el nombre de la clase se haya definido en el servidor con las may\u00fasculas y min\u00fasculas como corresponda y con el paquete plenamente cualificado.\n
+classname.defined.in.server.using.proper.case.and.fully.qualified.package.explanation=Se trata de un error de aplicaci\u00f3n.
+classname.defined.in.server.using.proper.case.and.fully.qualified.package.useraction=Compruebe que el nombre de la clase se haya definido en el servidor con las may\u00fasculas y min\u00fasculas como corresponda y con el paquete plenamente cualificado.
+
+# -----------------------------------------------
+class.transfered.using.binary.mode=SRVE0229E: Compruebe que la clase se haya transferido al sistema de archivos utilizando un nodo de transferencia binario.\n
+class.transfered.using.binary.mode.explanation=Se trata de un error de aplicaci\u00f3n.
+class.transfered.using.binary.mode.useraction=Compruebe que la clase se haya transferido al sistema de archivos utilizando un nodo de transferencia binario.
+
+# -----------------------------------------------
+class.compiled.using.proper.case=SRVE0230E: Compruebe que la clase se haya compilado con may\u00fasculas o min\u00fasculas seg\u00fan corresponda (tal como indica la definici\u00f3n de clase).\n
+class.compiled.using.proper.case.explanation=Se trata de un error de aplicaci\u00f3n.
+class.compiled.using.proper.case.useraction=Compruebe que la clase se haya compilado con may\u00fasculas o min\u00fasculas seg\u00fan corresponda (tal como indica la definici\u00f3n de clase).
+
+# -----------------------------------------------
+class.not.renamed.after.compiled=SRVE0231E: Compruebe que no se haya cambiado el nombre del archivo de clase una vez compilado.
+class.not.renamed.after.compiled.explanation=Se trata de un error de aplicaci\u00f3n.
+class.not.renamed.after.compiled.useraction=Compruebe que no se haya cambiado el nombre del archivo de clase una vez compilado.
+
+# -----------------------------------------------
+Engine.Exception.[{0}]=SRVE0232E: Error interno del servidor. <br> Mensaje de excepci\u00f3n: [{0}]
+Engine.Exception.[{0}].explanation=Se ha producido una excepci\u00f3n inesperada y se han facilitado detalles en la p\u00e1gina de errores resultante. Es un error del sistema.
+Engine.Exception.[{0}].useraction=Compruebe los registros System.out y System.err para obtener m\u00e1s informaci\u00f3n sobre la excepci\u00f3n generada.
+
+# -----------------------------------------------
+Error.Report=SRVE0233E: Informe de errores
+Error.Report.explanation=Ninguna.
+Error.Report.useraction=Ninguna.
+
+# -----------------------------------------------
+Application.classpath=SRVE0234I: V\u00eda de acceso de clases de aplicaci\u00f3n=[{0}]
+Application.classpath.explanation=Ninguna.
+Application.classpath.useraction=Ninguna.
+
+# -----------------------------------------------
+[{0}].reported.an.error=SRVE0235E: [{0}] ha notificado un error
+[{0}].reported.an.error.explanation=Consulte el error notificado.
+[{0}].reported.an.error.useraction=Ninguna.
+
+# -----------------------------------------------
+error.on.collaborator.starting.call=SRVE0236E: Se ha producido un error al invocar el colaborador de inicializaci\u00f3n en la llamada starting()
+error.on.collaborator.starting.call.explanation=Es un error del sistema.
+error.on.collaborator.starting.call.useraction=Compruebe los registros de captura de datos en primer error para obtener m\u00e1s detalles sobre el error.
+
+# -----------------------------------------------
+error.on.collaborator.started.call=SRVE0237E: Se ha producido un error al invocar el colaborador de inicializaci\u00f3n en la llamada started()
+error.on.collaborator.started.call.explanation=Es un error del sistema.
+error.on.collaborator.started.call.useraction=Compruebe los registros de captura de datos en primer error para obtener m\u00e1s detalles sobre el error
+
+# -----------------------------------------------
+resource.path.has.to.start.with.slash=SRVE0238E: Las v\u00edas de acceso de recurso deben tener una barra inclinada principal
+resource.path.has.to.start.with.slash.explanation=Se trata de un error de aplicaci\u00f3n.
+resource.path.has.to.start.with.slash.useraction=Proporcione una barra inclinada principal antes de la v\u00eda de acceso y vuelva a intentarlo.
+
+# -----------------------------------------------
+ExtensionFactory.[{0}].registered.successfully=SRVE0239I: Extension Factory [{0}] se ha registrado satisfactoriamente.
+ExtensionFactory.[{0}].registered.successfully.explanation=Ninguna.
+ExtensionFactory.[{0}].registered.successfully.useraction=Ninguna.
+
+# -----------------------------------------------
+ExtensionFactory.[{0}].associated.with.patterns.[{1}]=SRVE0240I: Extension Factory [{0}] se ha asociado con patrones [{1}].
+ExtensionFactory.[{0}].associated.with.patterns.[{1}].explanation=Ninguna.
+ExtensionFactory.[{0}].associated.with.patterns.[{1}].useraction=Ninguna.
+
+# -----------------------------------------------
+Using.[{0}].as.server.root=SRVE0241I: Se est\u00e1 utilizando [{0}] como servidor ra\u00edz en getTempDirectory().
+Using.[{0}].as.server.root.explanation=Ninguna.
+Using.[{0}].as.server.root.useraction=Ninguna.
+
+# -----------------------------------------------
+[{0}].Initialization.successful=SRVE0242I: [{2}] [{1}] [{0}]: Inicializaci\u00f3n satisfactoria.
+[{0}].Initialization.successful.explanation=El m\u00e9todo init() del recurso de destino se ha ejecutado satisfactoriamente y el destino se ha ubicado en el servicio.
+[{0}].Initialization.successful.useraction=Ninguna.
+
+# -----------------------------------------------
+reaper.with.interval.[{0}].limit.[{1}].started=SRVE0243I: Se ha iniciado el intervalo de hebras reaper: [{0}] y l\u00edmite inactivo: [{1}].
+reaper.with.interval.[{0}].limit.[{1}].started.explanation=Ninguna.
+reaper.with.interval.[{0}].limit.[{1}].started.useraction=Ninguna.
+
+# -----------------------------------------------
+reaper.unloading.servlet.[{0}]=SRVE0244I: Hebra segadora al descargar el servlet: [{0}].
+reaper.unloading.servlet.[{0}].explanation=La hebra segadora elimina servlets que han estado inactivos superando el l\u00edmite de inactividad de la segadora.
+reaper.unloading.servlet.[{0}].useraction=Ninguna.
+
+# -----------------------------------------------
+reaper.removing.mapping.[{0}].for.servlet.[{1}]=SRVE0245I: La hebra segadora est\u00e1 eliminando la correlaci\u00f3n: [{0}] para el servlet: [{0}].
+reaper.removing.mapping.[{0}].for.servlet.[{1}].explanation=La hebra segadora elimina las correlaciones de JSPS y otras extensiones que han estado inactivos de forma que han superado el l\u00edmite de inactividad de la segadora.
+reaper.removing.mapping.[{0}].for.servlet.[{1}].useraction=Ninguna.
+
+# -----------------------------------------------
+reaper.destroying.servlet.[{0}]=SRVE0246I: La hebra segadora esta destruyendo el servlet: [{0}].
+reaper.destroying.servlet.[{0}].explanation=Ninguna.
+reaper.destroying.servlet.[{0}].useraction=Ninguna.
+
+# -----------------------------------------------
+reaper.thread.error=SRVE0247E: Se ha producido un error al ejecutar la hebra segadora.
+reaper.thread.error.explanation=Se ha producido una excepci\u00f3n durante el proceso de la hebra segadora. Es un error del sistema.  
+reaper.thread.error.useraction=El proceso de segado es una forma de recogida de basura.
+
+# -----------------------------------------------
+waiting.to.destroy.filter.[{0}]=SRVE0248I: Actualmente se est\u00e1n procesando las solicitudes. Espere hasta 60 segundos antes de forzar la destrucci\u00f3n del filtro.
+waiting.to.destroy.filter.[{0}].explanation=Ninguna.
+waiting.to.destroy.filter.[{0}].useraction=Ninguna.
+
+# -----------------------------------------------
+sync.tothread.not.set.for.server.[{0}]=SRVE0249W: La aplicaci\u00f3n {0} ha solicitado SyncToOSThread, pero el servidor no est\u00e1 habilitado para SyncToOSThread
+sync.tothread.not.set.for.server.[{0}].explanation=SyncToOSThread sincroniza la entidad de rol de Java EE con la hebra del sistema operativo, lo que quiere decir que la identidad de la hebra del sistema operativo se equipara con la identidad del rol de Java EE para la duraci\u00f3n de la solicitud. Este mensaje indica que mientras se haya configurado una aplicaci\u00f3n para que utilice la funcionalidad SyncToOSThread, el servidor en el que se instala no est\u00e1 configurado para soportar funciones de SyncToOSThread. Se requiere una acci\u00f3n del sistema.
+sync.tothread.not.set.for.server.[{0}].useraction=Si se necesitan las funciones de SyncToOSThread para el servidor en cuesti\u00f3n, consulte el Information Center para obtener una descripci\u00f3n sobre c\u00f3mo habilitar SyncToOSThread para un servidor.
+
+# -----------------------------------------------
+module.[{0}].successfully.bound.to.virtualhost.[{1}]=SRVE0250I: El m\u00f3dulo web {0} se ha enlazado con {1}.
+module.[{0}].successfully.bound.to.virtualhost.[{1}].explanation=El m\u00f3dulo web especificado se ha asociado con el host virtual mencionado y se puede acceder al mismo mediante cualquiera de las combinaciones de host/puerto de dicho host virtual.
+module.[{0}].successfully.bound.to.virtualhost.[{1}].useraction=Ninguna.
+
+# -----------------------------------------------
+threadpool.not.used=SRVE0251W: La agrupaci\u00f3n de hebras configurada bajo el contenedor web se est\u00e1 utilizando.
+threadpool.not.used.explanation=Existe una configuraci\u00f3n ThreadPool bajo el contenedor web. Cualquier cambio que se realice en este elemento de configuraci\u00f3n no redundar\u00e1 en cambios en el sistema.
+threadpool.not.used.useraction=Ninguna.
+
+# -----------------------------------------------
+transports.detected=SRVE0252W: Se han detectado transportes y cadenas. Se han modificado los transportes para utilizar un nuevo modelo. Utilice los programas de utilidad de migraci\u00f3n para migrar los transporte al modelo nuevo. La configuraci\u00f3n de la agrupaci\u00f3n de hebras en el contenedor web no se utilizar\u00e1 con estos transportes.
+transports.detected.explanation= Los transportes se han utilizado para que utilicen cadenas de canal. Consulte el Information Center para revisar la informaci\u00f3n sobre cadenas de canal y sobre c\u00f3mo migrar los transportes existentes para que se basen en una cadena de canal. La configuraci\u00f3n de la agrupaci\u00f3n de hebras en el contenedor web no se utilizar\u00e1 en estos transportes.
+transports.detected.useraction= Utilice los programas de utilidad de migraci\u00f3n para migrar el modelo de configuraci\u00f3n desde los transportes a las nuevas cadenas de canal.
+
+# -----------------------------------------------
+[{0}].Destroy.successful=SRVE0253I: [{2}] [{1}] [{0}]: Destrucci\u00f3n satisfactoria.
+[{0}].Destroy.successful.explanation=El m\u00e9todo destroy() del recurso de destino se ha ejecutado satisfactoriamente y el destino se ha eliminado del servicio.
+[{0}].Destroy.successful.useraction=Ninguna.
+
+# -----------------------------------------------
+unsupported.request.encoding.[{0}]=SRVE0254E: No se ha podido establecer la codificaci\u00f3n de caracteres de la solicitud: [{0}].
+unsupported.request.encoding.[{0}].explanation=La codificaci\u00f3n de la solicitud especificada en la solicitud no es v\u00e1lida. Se trata de un error de aplicaci\u00f3n.
+unsupported.request.encoding.[{0}].useraction=Revise los registros para determinar si la codificaci\u00f3n especificada es una codificaci\u00f3n v\u00e1lida.
+
+# -----------------------------------------------
+Web.Group.VHost.Not.Found=SRVE0255E: No se ha definido un host WebGroup/Virtual para manejar {0}.
+Web.Group.VHost.Not.Found.explanation=No se ha podido encontrar un grupo web (m\u00f3dulo web) ni un host virtual para manejar la solicitud. Se trata de un error de aplicaci\u00f3n.
+Web.Group.VHost.Not.Found.useraction=Aseg\u00farese de que el grupo web y el host virtual se definan y se desplieguen.
+
+# -----------------------------------------------
+webcontainer.not.initialized=SRVE0256E: El contenedor web no se ha inicializado.
+webcontainer.not.initialized.explanation=El contenedor web no se inicializa hasta que se haya instalado una aplicaci\u00f3n. Es un error del sistema.
+webcontainer.not.initialized.useraction=Instale una aplicaci\u00f3n para inicializar el contenedor web.
+
+# -----------------------------------------------
+property.has.changed=SRVE0257W: Se ha cambiado la sem\u00e1ntica de la propiedad {0} en el transporte.
+property.has.changed.explanation=Ya no hay una hebra unida a una \u00fanica conexi\u00f3n. Se requiere una acci\u00f3n del sistema.
+property.has.changed.useraction=Consulte el Information Center para obtener m\u00e1s detalles.
+
+# -----------------------------------------------
+property.not.applicable=SRVE0258W: Ya no se puede aplicar el atributo {0} bajo el transporte.
+property.not.applicable.explanation=Se requiere una acci\u00f3n del sistema.
+property.not.applicable.useraction=Configure esta propiedad bajo el Servicio de anotaci\u00f3n cronol\u00f3gica (consulte el Information Center para obtener m\u00e1s detalles sobre el Registrador de acceso HTTP (HTTP Access Logger).
+
+# -----------------------------------------------
+property.configuration.change=SRVE0259W: La propiedad {0} ahora s\u00f3lo se puede configurar en el nivel del contenedor web.
+property.configuration.change.explanation=La propiedad {0} ya no se puede configurar en el nivel de transporte y se debe configurar en el nivel del contenedor web. Se requiere una acci\u00f3n del sistema.
+property.configuration.change.useraction=Configure esta propiedad en el nivel del contenedor web.
+
+# -----------------------------------------------
+cannot.use.error.page=SRVE0260E: El servidor no puede utilizar la p\u00e1gina de errores para que su aplicaci\u00f3n maneje la excepci\u00f3n original abajo impresa.
+cannot.use.error.page.explanation=Ninguna.
+cannot.use.error.page.useraction=Consulte Excepci\u00f3n de p\u00e1gina de errores para obtener una descripci\u00f3n del problema con la p\u00e1gina de errores especificada.
+
+# -----------------------------------------------
+annotation.helper.not.defined=SRVE0261E: El ayudante de anotaci\u00f3n {0} no se ha definido.
+annotation.helper.not.defined.explanation=El ayudante de anotaci\u00f3n especificado no se ha definido. Es un error del sistema.
+annotation.helper.not.defined.useraction=Compruebe la definici\u00f3n del ayudante de anotaci\u00f3n especificado y a\u00f1\u00e1dala si es necesario.
+
+# -----------------------------------------------
+annotation.helper.wrong.type=SRVE0262E: El ayudante de anotaci\u00f3n {0} no es del tipo com.ibm.wsspi.webcontainer.AnnotationHelper.
+annotation.helper.wrong.type.explanation=El ayudante de anotaci\u00f3n especificado no es del tipo esperado. Es un error del sistema.
+annotation.helper.wrong.type.useraction=Compruebe la clase de implementaci\u00f3n del ayudante de anotaci\u00f3n y arr\u00e9glela.
+
+# -----------------------------------------------
+annotation.helper.cannot.create=SRVE0263E: El ayudante de anotaci\u00f3n {0} no se puede instanciar.
+annotation.helper.cannot.create.explanation=El ayudante de anotaci\u00f3n especificado no se ha podido instanciar. Es un error del sistema.
+annotation.helper.cannot.create.useraction=Compruebe los registros de excepci\u00f3n para buscar la raz\u00f3n por la que el ayudante de anotaci\u00f3n no se ha podido instanciar.
+
+#------------------------------------------------
+error.initializing.extension.factories=SRVE0264E: Se ha producido un error al inicializar Extension Factories: {0}
+error.initializing.extension.factories.explanation=Es un error del sistema.
+error.initializing.extension.factories.useraction=Revise los registros.
+
+#------------------------------------------------
+error.notifying.listeners.of.WebApp.start=SRVE0265E: Se ha producido un error al notificar a los escuchas del inicio de WebApp: {0}
+error.notifying.listeners.of.WebApp.start.explanation=Es un error del sistema.
+error.notifying.listeners.of.WebApp.start.useraction=Revise los registros.
+
+#-------------------------------------------------
+error.while.initializing.servlets=SRVE0266E: Se ha producido un error al inicializar los servlets: {0}
+error.while.initializing.servlets.explanation=Es un error del sistema.
+error.while.initializing.servlets.useraction=Revise los registros.
+
+#-------------------------------------------------
+error.initializing.filters=SRVE0267E: Se ha producido un error al inicializar los filtros: {0}
+error.initializing.filters.explanation=Es un error del sistema.
+error.initializing.filters.useraction=Revise los registros.
+
+#------------------------------------------------
+error.obtaining.session.context=SRVE0268E: Error al obtener el contexto de sesi\u00f3n para WebApp: {0}
+error.obtaining.session.context.explanation=No se ha podido obtener un contexto de sesi\u00f3n v\u00e1lido para WebApp. Se requiere una acci\u00f3n del sistema. 
+error.obtaining.session.context.useraction=Compruebe que el gestor de sesiones est\u00e9 bien configurado.
+
+#-------------------------------------------------
+no.jsp.extension.handler.found=SRVE0269W: No se ha encontrado ning\u00fan procesador de extensiones para manejar JSP
+no.jsp.extension.handler.found.explanation=Es un error del sistema.
+no.jsp.extension.handler.found.useraction=Revise los registros.
+
+#-------------------------------------------------
+illegal.servlet.mapping=SRVE0270E: Se ha encontrado una correlaci\u00f3n de servlets no permitida para el servlet {0}.
+illegal.servlet.mapping.explanation=La correlaci\u00f3n de servlets especificada en webconfig.xml no es v\u00e1lida. Se requiere una acci\u00f3n del sistema.
+illegal.servlet.mapping.useraction=Compruebe las correlaciones de servlets en webconfig.xml y realice los cambios adecuados
+
+#-------------------------------------------------
+uncaught.init.exception.thrown.by.servlet=SRVE0271E: El servlet [{0}] no ha detectado la excepci\u00f3n init() en la aplicaci\u00f3n [{1}]: {2}
+uncaught.init.exception.thrown.by.servlet.explanation=Se trata de un error de aplicaci\u00f3n.
+uncaught.init.exception.thrown.by.servlet.useraction=Revise los registros.
+
+#-------------------------------------------------
+jsp.processor.not.defined.skipping=SRVE0272W: No se ha definido el procesador JSP. Se saltar\u00e1 : {0}
+jsp.processor.not.defined.skipping.explanation=Es un error del sistema.
+jsp.processor.not.defined.skipping.useraction=Ninguna.
+
+#--------------------------------------------------
+error.while.initializing.jsp.as.servlet=SRVE0273E: Se ha producido un error mientras se inicializaba JSP como servlet [{0}] en la aplicaci\u00f3n [{1}]: {1}
+error.while.initializing.jsp.as.servlet.explanation=Se trata de un error de aplicaci\u00f3n.
+error.while.initializing.jsp.as.servlet.useraction=Revise los registros.
+
+#--------------------------------------------------
+error.while.adding.servlet.mapping.for.path=SRVE0274W: Se ha producido un error al a\u00f1adir la correlaci\u00f3n de servlets para path-->{0}, wrapper-->{1}, application-->{2}.
+error.while.adding.servlet.mapping.for.path.explanation=Se trata de un error de aplicaci\u00f3n.
+error.while.adding.servlet.mapping.for.path.useraction=Compruebe si se ha producido un conflicto de correlaciones en webconfig.xml
+
+#--------------------------------------------------
+error.adding.servlet.mapping.for.servlet=SRVE0275E: Se ha producido un error al a\u00f1adir la correlaci\u00f3n de servlets para el [{0}] en la aplicaci\u00f3n [{1}]: {2}
+error.adding.servlet.mapping.for.servlet.explanation=Se trata de un error de aplicaci\u00f3n.
+error.adding.servlet.mapping.for.servlet.useraction=Verifique que la correlaci\u00f3n sea v\u00e1lida.
+
+#--------------------------------------------------
+error.initializing.servlet=SRVE0276E: Se ha producido un error al inicializar el servlet [{0}]: {1}
+error.initializing.servlet.explanation=Se trata de un error de aplicaci\u00f3n.
+error.initializing.servlet.useraction=Revise los registros.
+
+#--------------------------------------------------
+mapping.for.directorybrowsingservlet.already.exists=SRVE0277W: Ya existe una correlaci\u00f3n para DirectoryBrowsingServlet
+mapping.for.directorybrowsingservlet.already.exists.explanation=Se trata de un error de aplicaci\u00f3n.
+mapping.for.directorybrowsingservlet.already.exists.useraction=Elimine la correlaci\u00f3n duplicada.
+
+#--------------------------------------------------
+error.adding.servlet.mapping.file.handler=SRVE0278E: Se ha producido un error al a\u00f1adir la correlaci\u00f3n de servlets --> {0}.
+error.adding.servlet.mapping.file.handler.explanation=Se trata de un error de aplicaci\u00f3n.
+error.adding.servlet.mapping.file.handler.useraction=Establezca fileServingEnabled=false en el archivo ibm-web-ext.xmi, que se encuentra en la carpeta WEB-INF.
+
+#--------------------------------------------------
+error.processing.global.listeners.for.webapp=SRVE0279E: Se ha producido un error al procesar escuchas globales para la aplicaci\u00f3n {0}: {1}
+error.processing.global.listeners.for.webapp.explanation=Se trata de un error de aplicaci\u00f3n.
+error.processing.global.listeners.for.webapp.useraction=Revise los registros.
+
+#---------------------------------------------------
+extension.processor.failed.to.initialize.in.factory=SRVE0280E: El procesador de extensiones no se ha podido inicializar en la f\u00e1brica [{0}]: {1}
+extension.processor.failed.to.initialize.in.factory.explanation=Es un error del sistema.
+extension.processor.failed.to.initialize.in.factory.useraction=Revise los registros.
+
+#---------------------------------------------------
+request.processor.already.present.for.mapping=SRVE0281E: El procesador de solicitudes ya est\u00e1 presente en la correlaci\u00f3n: {0}
+request.processor.already.present.for.mapping.explanation=Es un error del sistema.
+request.processor.already.present.for.mapping.useraction=Revise los registros.
+
+#---------------------------------------------------
+error.while.setting.WebAppAttributes=SRVE0282E: Se ha producido un error al establecer WebAppAttribues: {0} 
+error.while.setting.WebAppAttributes.explanation=Es un error del sistema.
+error.while.setting.WebAppAttributes.useraction=Revise los registros.
+
+#---------------------------------------------------
+exception.while.initializing.context=SRVE0283E: Se ha detectado una excepci\u00f3n al inicializar el contexto: {0}
+exception.while.initializing.context.explanation=Se trata de un error de aplicaci\u00f3n.
+exception.while.initializing.context.useraction=Revise los registros.
+
+#---------------------------------------------------
+exception.caught.in.notifyServletContextCreated=SRVE0284E: Se ha detectado una excepci\u00f3n en notifyServletContextCreated: {0}
+exception.caught.in.notifyServletContextCreated.explanation=Es un error del sistema.
+exception.caught.in.notifyServletContextCreated.useraction=Revise los registros.
+
+#---------------------------------------------------
+exception.caught.destroying.context=SRVE0285E: Se ha detectado una excepci\u00f3n al destruir el contexto: {0}
+exception.caught.destroying.context.explanation=Es un error del sistema.
+exception.caught.destroying.context.useraction=Revise los registros.
+
+#---------------------------------------------------
+exception.caught.in.notifyServletContextDestroyed=SRVE0286E: Se ha detectado una excepci\u00f3n en notifyServletContextDestroyed: {0}
+exception.caught.in.notifyServletContextDestroyed.explanation=Es un error del sistema.
+exception.caught.in.notifyServletContextDestroyed.useraction=Revise los registros.
+
+#---------------------------------------------------
+server.root.is.null=SRVE0287E: server.root es nulo
+server.root.is.null.explanation=Es un error del sistema.
+server.root.is.null.useraction=Ninguna.
+
+#---------------------------------------------------
+chown.failed=SRVE0288E: chown (CHange OWNer) fallido; se ha intentado ejecutar el mandato: [{0}] c\u00f3digo de salida: [{1}]
+chown.failed.explanation=Es un error del sistema.
+chown.failed.useraction=Ninguna.
+
+#---------------------------------------------------
+failed.to.create.temp.directory=SRVE0289E: No se ha podido crear el directorio temporal: {0}
+failed.to.create.temp.directory.explanation=Es un error del sistema.
+failed.to.create.temp.directory.useraction=Ninguna.
+
+#---------------------------------------------------
+unable.to.use.specified.temp.directory=SRVE0290E: No se puede utilizar el directorio temporal especificado: {0} leer:{1} escribir:{2}
+unable.to.use.specified.temp.directory.explanation=Se requiere una acci\u00f3n del sistema.
+unable.to.use.specified.temp.directory.useraction=Compruebe el estado del directorio, incluyendo la existencia, los privilegios de acceso y el espacio disponible.
+
+#---------------------------------------------------
+unable.to.use.default.temp.directory=SRVE0291E: No se puede utilizar el directorio temporal predeterminado: {0} leer:{1} escribir:{2}
+unable.to.use.default.temp.directory.explanation=Se requiere una acci\u00f3n del sistema.
+unable.to.use.default.temp.directory.useraction=Compruebe el estado del directorio, incluyendo la existencia, los privilegios de acceso y el espacio disponible.
+
+#----------------------------------------------------
+log.servlet.message=SRVE0292I: Mensaje de servlet - [{0}]:.{1}
+log.servlet.message.explanation=Ninguna.
+log.servlet.message.useraction=Ninguna.
+
+#----------------------------------------------------
+log.servlet.error=SRVE0293E: [Error de servlet]-[{0}]: {1}
+log.servlet.error.explanation=Ninguna.
+log.servlet.error.useraction=Ninguna.
+
+#----------------------------------------------------
+log.servlet.error.and.message=SRVE0294E: [Error de servlet]-[{0}]: {1}: {2}
+log.servlet.error.and.message.explanation=Ninguna.
+log.servlet.error.and.message.useraction=Ninguna.
+
+# -----------------------------------------------
+Error.reported.{0}=SRVE0295E: Error notificado: {0}
+Error.reported.{0}.explanation=Se ha llamado a HttpServletResponse.sendError con un c\u00f3digo de estado pero sin explicaci\u00f3n.
+Error.reported.{0}.useraction=Revise los registros para determinar el c\u00f3digo de estado del error.
+
+#------------------------------------------------
+log.servlet.message.with.throwable=SRVE0296E: [{0}][{1}][Servlet.LOG]:.{2}:.{3}
+log.servlet.message.with.throwable.explanation=Ninguna.
+log.servlet.message.with.throwable.useraction=Ninguna.
+
+#------------------------------------------------
+WebApp.destroy.encountered.errors=SRVE0297E: La destrucci\u00f3n de WebApp {0} ha encontrado errores: {1}
+WebApp.destroy.encountered.errors.explanation=Es un error del sistema.
+WebApp.destroy.encountered.errors.useraction=Revise los registros.
+
+#------------------------------------------------
+exception.occured.while.creating.wrapper.for.servlet=SRVE0298E: Se ha producido una excepci\u00f3n al crear el derivador para el servlet [{0}]: {1}
+exception.occured.while.creating.wrapper.for.servlet.explanation=Es un error del sistema.
+exception.occured.while.creating.wrapper.for.servlet.useraction=Revise los registros.
+
+#------------------------------------------------
+could.not.create.wrapper.for.servlet=SRVE0299E: No se ha podido crear un derivador para el servlet [{0}]
+could.not.create.wrapper.for.servlet.explanation=Es un error del sistema.
+could.not.create.wrapper.for.servlet.useraction=Revise los registros.
+
+#------------------------------------------------
+mapping.already.exists=SRVE0300E: Ya existe la correlaci\u00f3n [{0}][{1}]: {2}
+mapping.already.exists.explanation=La v\u00eda de acceso deseada ya est\u00e1 asignada en una correlaci\u00f3n de servlets. Se trata de un error de aplicaci\u00f3n.
+mapping.already.exists.useraction=Cambie o elimine la correlaci\u00f3n desde la configuraci\u00f3n de la aplicaci\u00f3n.
+
+#------------------------------------------------
+encountered.problems.while.removing.servlet=SRVE0301I: Se han encontrado problemas al eliminar el servlet {0}. Detalles: {1}
+encountered.problems.while.removing.servlet.explanation=Es un error del sistema.
+encountered.problems.while.removing.servlet.useraction=Revise los registros.
+
+#--------------------------------------------------
+error.while.adding.static.file.processor=SRVE0302E: Se ha producido un error al a\u00f1adir el procesador de archivos est\u00e1tico: {0}
+error.while.adding.static.file.processor.explanation=Es un error del sistema.
+error.while.adding.static.file.processor.useraction=Revise los registros.
+
+# -----------------------------------------------
+servlet.name.for.servlet.mapping.not.found=SRVE0303E: Nombre de servlet no encontrado al a\u00f1adir la correlaci\u00f3n de servlets; nombre de servlet={0}; patr\u00f3n de URL={1}; m\u00f3dulo={2}; aplicaci\u00f3n={3}
+servlet.name.for.servlet.mapping.not.found.explanation=No hay ninguna definici\u00f3n de servlet para la correlaci\u00f3n de servlets.
+servlet.name.for.servlet.mapping.not.found.useraction=Compruebe que su web.xml tenga una definici\u00f3n de servlet para esta correlaci\u00f3n de servlets.
+
+#------------------------------------------------
+servletrequestwrapper.is.not.an.instance.of.so.wrapped.logic.may.be.bypassed=SRVE0304E: ServletRequestWrapper [{0}] no es una instancia de [{1}] por lo que es posible que se eluda la l\u00f3gica derivada.
+servletrequestwrapper.is.not.an.instance.of.so.wrapped.logic.may.be.bypassed.explanation=El contenedor web espera que un objeto de solicitud de derivaci\u00f3n sea una instancia de una clase que no le corresponde. Se trata de un error de aplicaci\u00f3n.
+servletrequestwrapper.is.not.an.instance.of.so.wrapped.logic.may.be.bypassed.useraction=Cambie el c\u00f3digo para implementar la interfaz esperada.
+
+# --------------------------------
+Object.Pool.Disabled=SRVE0305W: ObjectPoolService no est\u00e1 disponible. Se ha inhabilitado la agrupaci\u00f3n de SRTConnectionContext.
+Object.Pool.Disabled.explanation=El servicio de agrupaci\u00f3n de objetos mejora el rendimiento del contenedor web, pero se ha inhabilitado. Es un error del sistema.
+Object.Pool.Disabled.useraction=Es recomendable habilitar el servicio de agrupaci\u00f3n de objetos.
+
+#------------------------------------------------
+ARD.Not.Enabled=SRVE0306W: ARD no est\u00e1 habilitado y por lo tanto los intentos de realizar llamadas include e insertFragment as\u00edncronas ser\u00e1n todos s\u00edncronos.
+ARD.Not.Enabled.explanation=ARD no est\u00e1 bien habilitado. Se requiere una acci\u00f3n del sistema.
+ARD.Not.Enabled.useraction=Aseg\u00farese de que ARD est\u00e9 habilitado en los valores del contenedor web y de que se especifique un tipo de env\u00edo CLIENT_SIDE o SERVER_SIDE en los valores de la aplicaci\u00f3n.
+
+#------------------------------------------------
+Null.Filter.Mapping=SRVE0307W: Correlaci\u00f3n nula para el filtro. Esto puede ocurrir si intenta especificar una correlaci\u00f3n * en una aplicaci\u00f3n anterior a 2.5
+Null.Filter.Mapping.explanation=No hab\u00eda ninguna correlaci\u00f3n de servlets para el filtro por lo que no se ha podido a\u00f1adir. Se trata de un error de aplicaci\u00f3n.
+Null.Filter.Mapping.useraction=Cambie los descriptores de la aplicaci\u00f3n al nivel 2.5 si est\u00e1 utilizando una correlaci\u00f3n *.
+
+#------------------------------------------------
+filtering.by.asterisk=SRVE0308E: No se permite el filtrado por asterisco. 
+filtering.by.asterisk.explanation=No se permite realizar filtrados por asterisco porque la inhabilitaci\u00f3n del servicio a todos los servlets por nombre de clase est\u00e1 manejada por la propiedad personalizada com.ibm.ws.webcontainer.disallowserveservletsbyclassname. Se trata de un error de aplicaci\u00f3n.
+filtering.by.asterisk.useraction=Establezca com.ibm.ws.webcontainer.disallowserveservletsbyclassname en verdadero para bloquear el servicio a todas las clases por nombre de clase.
+
+#------------------------------------------------
+servlet.on.blocked.list.{0}=SRVE0309E: Servlet en la lista de elementos bloqueados: {0}
+servlet.on.blocked.list.{0}.explanation=El servlet solicitado se encuentra en la lista de elementos bloqueados proporcionada por la propiedad personalizada com.ibm.ws.webcontainer.donotservebyclassname. Se trata de un error de aplicaci\u00f3n.
+servlet.on.blocked.list.{0}.useraction=Si no desea este comportamiento, actualice la propiedad com.ibm.ws.webcontainer.donotservebyclassname.
+
+#------------------------------------------------
+Error.in.WebContainer.custom.property.value=SRVE0310E: Se ha producido un error en una propiedad personalizada: {1}
+Error.in.WebContainer.custom.property.value.explanation=Se requiere una acci\u00f3n del sistema.
+Error.in.WebContainer.custom.property.value.useraction=Verifique que la propiedad personalizada sea correcta
+
+#------------------------------------------------
+transport.error=SRVE0311E: Se ha producido un error en el transporte: {0}
+transport.error.explanation=Es un error del sistema.
+transport.error.useraction=Revise los registros.
+
+#------------------------------------------------
+error.adding.channel=SRVE0312E: Se ha producido un error al a\u00f1adir un canal: {0}
+error.adding.channel.explanation=Es un error del sistema.
+error.adding.channel.useraction=Revise los registros.
+
+#------------------------------------------------
+transport.migration.error=SRVE0313E: Se ha producido un error al migrar el transporte del puerto {0} a la correspondiente cadena: {1}
+transport.migration.error.explanation=Es un error del sistema.
+transport.migration.error.useraction=Revise los registros.
+
+#------------------------------------------------
+failed.to.remove.webmodule=SRVE0314E: No se ha podido eliminar el m\u00f3dulo web {0}: {1}
+failed.to.remove.webmodule.explanation=Es un error del sistema.
+failed.to.remove.webmodule.useraction=Revise los registros.
+
+#------------------------------------------------
+Exception=SRVE0315E: Se ha producido una excepci\u00f3n: {0}
+Exception.explanation=Se ha producido una excepci\u00f3n.
+Exception.useraction=Revise los registros.
+
+
+# -------------------------------------------------------------------------------------------------
+# Thread Pool Instances
+Servlet.Engine.Transports=Contenedor Web
+
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+webAppModule.desc=Datos del rendimiento de las aplicaciones Web, servlets y archivos JSP.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.numLoadedServlets.desc=N\u00famero de servlets que se han cargado.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.numReloads.desc=N\u00famero de servlets que se han cargado de nuevo.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.desc=Conjunto que contiene datos del rendimiento por servlet y archivo JSP.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.totalRequests.desc=N\u00famero total de solicitudes que un servlet ha procesado.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.concurrentRequests.desc=N\u00famero de solicitudes que se han procesado a la vez.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.responseTime.desc=Tiempo de respuesta medio, en milisegundos, en que una solicitud de servlet finaliza.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.numErrors.desc=El n\u00famero total de veces que se ha recibido un error desde el servlet o JSP.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.url.totalRequests.desc=El n\u00famero total de solicitudes procesadas por un URI asociado con un servlet.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.url.concurrentRequests.desc=El n\u00famero de solicitudes que se procesa simult\u00e1neamente para un URI asociado con un servlet.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.url.responseTime.desc=El tiempo de respuesta medio del servicio, en milisegundos, para un URI asociado con un servlet.
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.numLoadedServlets=Num Loaded Servlets
+webAppModule.numLoadedServlets=LoadedServletCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.numReloads=Num Reloads
+webAppModule.numReloads=ReloadCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+webAppModule.servlets=Servlets
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+webAppModule.servlets.urls=URL
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.totalRequests=Total Requests
+webAppModule.servlets.totalRequests=RequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.concurrentRequests=Concurrent Requests
+webAppModule.servlets.concurrentRequests=ConcurrentRequests
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module (JSR77)
+#webAppModule.servlets.responseTime=Average Response Time (ms)
+webAppModule.servlets.responseTime=ServiceTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.numErrors=Num Errors
+webAppModule.servlets.numErrors=ErrorCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.url.totalRequests=Total Requests
+webAppModule.url.totalRequests=URIRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.url.concurrentRequests=Concurrent Requests
+webAppModule.url.concurrentRequests=URIConcurrentRequests
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module (JSR77)
+#webAppModule.url.responseTime=Average Response Time (ms)
+webAppModule.url.responseTime=URIServiceTime
+
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.loadedSince=Loaded Since (ms)
+webAppModule.servlets.loadedSince=LoadedSince
+
+webAppModule=Aplicaciones Web
+
+# -------------------------------------------------------------------------------------------------
+# Unit for counters
+unit.none=N/A
+
+# -------------------------------------------------------------------------------------------------
+# Unit for counters
+#unit.ms=millisecond (JSR77)
+unit.ms=MILISEGUNDO
+
+request.matches.context.root=SRVE0316W: La solicitud coincide con la ra\u00edz de contexto [{0}] bajo el alias de host virtual de [{1}].
+request.matches.context.root.explanation=La v\u00eda de acceso de solicitud coincide con una ra\u00edz de contexto en un host virtual no coincidente.
+request.matches.context.root.useraction=Compruebe si debe a\u00f1adirse un alias de host virtual.
+
+need.to.add.a.new.virtual.host.alias=SRVE0317W: Es posible que deba a\u00f1adir un nuevo alias de host virtual de *:<su puerto> al mismo host virtual bajo el que est\u00e1 [{0}].
+need.to.add.a.new.virtual.host.alias.explanation=La v\u00eda de acceso de solicitud coincide con una ra\u00edz de contexto en un host virtual no coincidente.
+need.to.add.a.new.virtual.host.alias.useraction=Siga las instrucciones en el Information Center para a\u00f1adir un nuevo alias de host virtual.
+
+# --------------------------------
+Servlet.has.become.temporarily.unavailable.for.service\:.{0}=SRVE0095I: El servlet ha pasado a no estar disponible temporalmente para el servicio: {0}
+Servlet.has.become.temporarily.unavailable.for.service\:.{0}.explanation=El servlet especificado no est\u00e1 disponible temporalmente.
+Servlet.has.become.temporarily.unavailable.for.service\:.{0}.useraction=Espere y vuelta a intentar la operaci\u00f3n.  Es posible que el administrador del sistema haya eliminado el servlet del servicio.
+
+Session.Feature.Set.Not.Started=SRVE0096E: No se puede acceder a una sesi\u00f3n.  El conjunto de caracter\u00edsticas del gestor de sesiones no se ha iniciado.
+Session.Feature.Set.Not.Started.explanation=No se puede acceder a una sesi\u00f3n.  El conjunto de caracter\u00edsticas del gestor de sesiones no se ha iniciado.
+Session.Feature.Set.Not.Started.useraction=Aseg\u00farese de que la configuraci\u00f3n del servidor depende del conjunto de caracter\u00edsticas de la sesi\u00f3n.
+# --------------------------------
+invalid.query.string=SRVE0318W: Car\u00e1cter no v\u00e1lido en la serie de consulta.
+invalid.query.string.explanation=Hay un car\u00e1cter no es v\u00e1lido en la serie de consulta y se ha ignorado.
+invalid.query.string.useraction=No se requiere ninguna acci\u00f3n por parte del usuario.
+
+
+ClassNotFound.check.web.xml=SRVE0319W: Se ha saltado la clase que no ha podido inicializarse para explorar la anotaci\u00f3n.
+ClassNotFound.check.web.xml.explanation=No se ha podido crear una instancia de una clase en el m\u00f3dulo web, por lo tanto, no se puede explorar en busca de anotaciones.
+ClassNotFound.check.web.xml.useraction=Verifique que exista la clase y que tenga todas sus dependencias en la v\u00eda de acceso de clases.
+
+Not.in.servletContextCreated=SRVE0320E: Los m\u00e9todos de configuraci\u00f3n mediante programaci\u00f3n se deben llamar desde contextInitialized.
+Not.in.servletContextCreated.explanation=Los servlets y filtros s\u00f3lo se pueden a\u00f1adir din\u00e1micamente durante la fase contextInitalized del inicio de la aplicaci\u00f3n.
+Not.in.servletContextCreated.useraction=Mueva el c\u00f3digo que llama al m\u00e9todo actual al m\u00e9todo contextInitalized de ServletContextInitalizer.
+
+# ----------------------------- Taken/Copied from plugin generator hence allocating a new number here that's (now) reserved for that purpose
+duplicate.context.root=SRVE9100W: Varias aplicaciones contienen la misma ra\u00edz de contexto [{0}].
+duplicate.context.root.explanation=Mientras se generaba el archivo de configuraci\u00f3n del plug-in, se determin\u00f3 que varias aplicaciones utilizaban la misma ra\u00edz de contexto.
+duplicate.context.root.useraction=Determine si est\u00e1 configurado del modo previsto y arr\u00e9glelo si no lo est\u00e1.
+
+collocated.appserver=SRVE9101W: Utilizaci\u00f3n de localhost como nombre de host para el transporte del servidor {0}.{1}. El direccionamiento de solicitudes funcionar\u00e1 siempre que el servidor web y el servidor de aplicaciones compartan la ubicaci\u00f3n.
+collocated.appserver.explanation=La utilizaci\u00f3n de localhost como nombre de host s\u00f3lo funcionar\u00e1 si el servidor de aplicaciones de destino se ejecuta en la misma m\u00e1quina.
+collocated.appserver.useraction=Modifique el nombre de host si el servidor de aplicaciones no se est\u00e1 ejecutando localmente.
+
+warn.check.applications=SRVE9102W: El generador de configuraciones de plugins no ha podido encontrar un host virtual.
+warn.check.applications.explanation=No habr\u00e1 disponible ning\u00fan host virtual si no se definen aplicaciones. 
+warn.check.applications.useraction=Actualice la configuraci\u00f3n del servidor para que defina al menos una aplicaci\u00f3n antes de generar el archivo de configuraci\u00f3n del plugin.
+
+plugin.file.generated.info=SRVE9103I: Se ha generado autom\u00e1ticamente un archivo de configuraci\u00f3n para un plug-in de servidor web para este servidor en {0}.
+plugin.file.generated.info.explanation=La generaci\u00f3n de un nuevo archivo de configuraci\u00f3n de plug-in se produce en cada reinicio de servidor, y cuando se a\u00f1aden, eliminan o cambian aplicaciones en el servidor.
+plugin.file.generated.info.useraction=Este archivo puede revisarse para ver si es correcto y, a continuaci\u00f3n, moverse a la ubicaci\u00f3n del plug-in de servidor web para dirigir tr\u00e1fico HTTP a las aplicaciones en este servidor. El programa de utilidad de plug-in puede fusionar archivos de forma que las solicitudes pueden dirigirse entre varios servidores de aplicaciones.  Si el archivo se ha generado debido a cambios en la aplicaci\u00f3n, quiz\u00e1 tenga que actualizar el archivo de configuraci\u00f3n existente en el host de servidor web.
+
+plugin.file.generated.audit=SRVE9104A: Se ha generado un archivo de configuraci\u00f3n para un plug-in de servidor web para este servidor en {0}.
+plugin.file.generated.audit.explanation=Una solicitud de usuario ha dado como resultado la creaci\u00f3n de un nuevo archivo de configuraci\u00f3n de plug-in.
+plugin.file.generated.audit.useraction=Este archivo puede revisarse para ver si es correcto y, a continuaci\u00f3n, moverse a la ubicaci\u00f3n del plug-in de servidor web para dirigir tr\u00e1fico HTTP a las aplicaciones en este servidor.  El programa de utilidad de plug-in puede fusionar archivos de forma que las solicitudes pueden dirigirse entre varios servidores de aplicaciones. 
+
+# ------------------------------- added for liberty
+WARNING_RESOURCE_NOT_FOUND=SRVE9999W: No se ha encontrado el recurso para res-ref-name: {0}
+WARNING_RESOURCE_NOT_FOUND.explanation=El recurso no se puede encontrar utilizando el nombre de referencia de recurso especificado.
+WARNING_RESOURCE_NOT_FOUND.useraction=Modifique el valor de res-ref-name.
+
+AUDIT_APPLICATION_INSTALLED=SRVE9998I: La aplicaci\u00f3n {0} se ha a\u00f1adido al contenedor web.
+AUDIT_APPLICATION_INSTALLED.explanation=La aplicaci\u00f3n se ha a\u00f1adido al contenedor web.
+AUDIT_APPLICATION_INSTALLED.useraction=No se requiere ninguna acci\u00f3n.
+
+ERROR_INVALID_RES_AUTH=SRVE9997E: El valor de res-auth {0} para resource-ref {1} no es v\u00e1lido.
+ERROR_INVALID_RES_AUTH.explanation=Los valores v\u00e1lidos para el atributo res-auth son "Application" y "Container".
+ERROR_INVALID_RES_AUTH.useraction=Modifique el valor del atributo res-auth.
+
+WARN_INVALID_SHARE_SCOPE=SRVE9996W: El valor de res-sharing-scope {0} para resource-ref {1} no es v\u00e1lido; se utilizar\u00e1 el valor por omisi\u00f3n {2}.
+WARN_INVALID_SHARE_SCOPE.explanation=Los valores v\u00e1lidos para el atributo res-auth son "Shareable" y "Unshareable".
+WARN_INVALID_SHARE_SCOPE.useraction=Modifique el valor de res-sharing-scope.
+
+INFO_APPLICATION_REMOVED=SRVE9995I: La aplicaci\u00f3n {0} se ha eliminado del contenedor web.
+INFO_APPLICATION_REMOVED.explanation=La aplicaci\u00f3n se ha eliminado del contenedor web.
+INFO_APPLICATION_REMOVED.useraction=No se requiere ninguna acci\u00f3n.
+
+INFO_APPLICATION_UPDATED=SRVE9994I: La aplicaci\u00f3n {0} se ha actualizado en el contenedor web.
+INFO_APPLICATION_UPDATED.explanation=La aplicaci\u00f3n se ha actualizado.
+INFO_APPLICATION_UPDATED.useraction=No se requiere ninguna acci\u00f3n.
+
+WARN_JARS_STILL_CACHED=SRVE9993W: Los archivos JAR no se pueden preparar para la supresi\u00f3n. Los archivos WAR que contienen JAR no se podr\u00e1n suprimir.
+WARN_JARS_STILL_CACHED.explanation=Para habilitar la supresi\u00f3n de los archivos JAR en una aplicaci\u00f3n web instalada, los archivos JAR deben estar configurados para ser suprimidos. Este proceso ha fallado. 
+WARN_JARS_STILL_CACHED.useraction=Para suprimir los archivos JAR de una aplicaci\u00f3n web instalada, se debe detener el servidor antes de la supresi\u00f3n.
+
+ERROR_WEBLISTENER_MUST_IMPLEMENT_IFACE=SRVE9992E: La clase {0} tiene una anotaci\u00f3n @WebListener pero no implementa ninguna de las interfaces necesarias.
+ERROR_WEBLISTENER_MUST_IMPLEMENT_IFACE.explanation=Una clase anotada con una anotaci\u00f3n @WebListener debe implementar una de las interfaces javax.servlet.ServletContextListener, javax.servlet.ServletContextAttributeListener, javax.servlet.ServletRequestListener, javax.servlet.ServletRequestAttributeListener, javax.servlet.http.HttpSessionListener o javax.servlet.http.HttpSessionAttributeListener.
+ERROR_WEBLISTENER_MUST_IMPLEMENT_IFACE.useraction=Aseg\u00farese de que cualquier clase anotada con una anotaci\u00f3n @WebListener implementa una de las interfaces necesarias.
+
+ERROR_WEBFILTER_MUST_IMPLEMENT_FILTER=SRVE9991E: La clase {0} tiene una anotaci\u00f3n @WebFilter pero no implementa la interfaz javax.servlet.Filter.
+ERROR_WEBFILTER_MUST_IMPLEMENT_FILTER.explanation=Una clase anotada con una anotaci\u00f3n @WebFilter debe implementar la interfaz especificada.
+ERROR_WEBFILTER_MUST_IMPLEMENT_FILTER.useraction=Aseg\u00farese de que cualquier clase anotada con una anotaci\u00f3n @WebFilter implementa la interfaz necesaria.
+
+ERROR_WEBSERVLET_MUST_IMPLEMENT_HTTPSERVLET=SRVE9990E: La clase {0} tiene una anotaci\u00f3n @WebServlet, pero no implementa la interfaz javax.servlet.http.HttpServlet.
+ERROR_WEBSERVLET_MUST_IMPLEMENT_HTTPSERVLET.explanation=Una clase anotada con una anotaci\u00f3n @WebServlet debe implementar la interfaz especificada.
+ERROR_WEBSERVLET_MUST_IMPLEMENT_HTTPSERVLET.useraction=Aseg\u00farese de que cualquier clase anotada con una anotaci\u00f3n @WebServlet implementa la interfaz necesaria.
+
+ERROR_WEBSERVLET_MISSING_PATTERNS=SRVE9989E: Una anotaci\u00f3n @WebServlet en la clase {0} no tiene un valor ni un atributo urlPatterns.  Se debe especificar el valor o el atributo urlPatterns.
+ERROR_WEBSERVLET_MISSING_PATTERNS.explanation=Una anotaci\u00f3n @WebServlet debe tener un valor o un atributo urlPatterns.  Se debe especificar exactamente uno; ambos no se deben omitir.
+ERROR_WEBSERVLET_MISSING_PATTERNS.useraction=Especifique cualquier patr\u00f3n URL necesario en el valor o el atributo urlPatterns de la anotaci\u00f3n @WebServlet.  Se recomienda utilizar s\u00f3lo el valor si el \u00fanico atributo de la anotaci\u00f3n es el patr\u00f3n URL.
+
+ERROR_WEBSERVLET_HAS_VALUE_AND_PATTERNS=SRVE9988E: Una anotaci\u00f3n @WebServlet de la clase {0} tiene un valor y un atributo urlPatterns.  No se debe especificar a la vez el valor y el atributo urlPatterns. 
+ERROR_WEBSERVLET_HAS_VALUE_AND_PATTERNS.explanation=No se permite que una anotaci\u00f3n @WebServlet tenga un atributo urlPatterns si tiene un valor.
+ERROR_WEBSERVLET_HAS_VALUE_AND_PATTERNS.useraction=Aseg\u00farese de que cualquier patr\u00f3n URL especificado en el valor de la anotaci\u00f3n @WebServlet se haya especificado en el atributo urlPatterns y elimine el valor.  Se recomienda utilizar s\u00f3lo el valor si el \u00fanico atributo de la anotaci\u00f3n es el patr\u00f3n URL.
+
+ERROR_WEBFILTER_HAS_VALUE_AND_PATTERNS=SRVE9987E: Una anotaci\u00f3n @WebFilter de la clase {0} tiene un valor y un atributo urlPatterns.  No se debe especificar a la vez el valor y el atributo urlPatterns.
+ERROR_WEBFILTER_HAS_VALUE_AND_PATTERNS.explanation=No se permite que una anotaci\u00f3n @WebFilter tenga un atributo urlPatterns si tiene un valor.
+ERROR_WEBFILTER_HAS_VALUE_AND_PATTERNS.useraction=Aseg\u00farese de que cualquier patr\u00f3n URL especificado en el valor de la anotaci\u00f3n @WebFilter se haya especificado en el atributo urlPatterns y elimine el valor.  Se recomienda utilizar s\u00f3lo el valor si el \u00fanico atributo de la anotaci\u00f3n es el patr\u00f3n URL.
+
+ERROR_WEBFILTER_MISSING_VAL_PATT_SERVLET=SRVE9986E: Una anotaci\u00f3n @WebFilter de la clase {0} no tiene un valor, atributo urlPatterns ni atributo servletNames.  Se debe especificar al menos uno de estos atributos.
+ERROR_WEBFILTER_MISSING_VAL_PATT_SERVLET.explanation=Una anotaci\u00f3n @WebFilter debe tener al menos uno de los valores de atributo, urlPatterns o servletNames.
+ERROR_WEBFILTER_MISSING_VAL_PATT_SERVLET.useraction=Especifique al menos uno de los atributos necesarios de la anotaci\u00f3n @WebFilter.
+
+INVALID_APPLICATION_BND_DEFINITION=SRVE9985E: No se puede resolver la configuraci\u00f3n de la aplicaci\u00f3n {0}. Excepci\u00f3n: {1}
+INVALID_APPLICATION_BND_DEFINITION.explanation=Los roles de seguridad para una aplicaci\u00f3n no se han podido determinar a partir del archivo applicaci\u00f3n-bnd proporcionado por la aplicaci\u00f3n debido a una excepci\u00f3n.
+INVALID_APPLICATION_BND_DEFINITION.useraction=Investigue la causa de la excepci\u00f3n y corrija la configuraci\u00f3n de la aplicaci\u00f3n.
+
+NO_APPLICATION_BND_DEFINITION=SRVE9984E: No se ha podido encontrar ninguna configuraci\u00f3n de la aplicaci\u00f3n en {0}.
+NO_APPLICATION_BND_DEFINITION.explanation=Los roles de seguridad para una aplicaci\u00f3n no se han podido determinar a partir de la configuraci\u00f3n del servidor, ya que no se ha podido localizar ning\u00fan archivo application-bnd para la aplicaci\u00f3n.
+NO_APPLICATION_BND_DEFINITION.useraction=Actualice la aplicaci\u00f3n para proporcionar el archivo application-bnd.
+
+INVALID_SECURITY_ROLE_DEFINITION=SRVE9983E: La configuraci\u00f3n del rol {0} (referenciada en {1}) no se ha podido cargar. Excepci\u00f3n {2}
+INVALID_SECURITY_ROLE_DEFINITION.explanation=No se ha podido determinar un rol de seguridad de la aplicaci\u00f3n debido a una excepci\u00f3n.
+INVALID_SECURITY_ROLE_DEFINITION.useraction=Investigue la causa de la excepci\u00f3n y corrija la configuraci\u00f3n de la aplicaci\u00f3n.
+
+NO_SECURITY_ROLE_DEFINITION=SRVE9982E: La configuraci\u00f3n del rol {0} (referenciada en {1}) no existe.
+NO_SECURITY_ROLE_DEFINITION.explanation=No se ha podido encontrar una definici\u00f3n de rol de seguridad de la aplicaci\u00f3n, pero aparece referenciada en el archivo application-bnd.
+NO_SECURITY_ROLE_DEFINITION.useraction=Actualice la configuraci\u00f3n de la aplicaci\u00f3n para proporcionar el rol.
+
+NO_SECURITY_ROLE_NAME_DEFINITION=SRVE9981E: El nombre del rol no se ha podido localizar en las propiedades {0} (referenciadas en {1}).
+NO_SECURITY_ROLE_NAME_DEFINITION.explanation=La configuraci\u00f3n de una aplicaci\u00f3n ha proporcionado una lista de roles de seguridad, pero no se ha podido encontrar el nombre de uno de los roles en esa configuraci\u00f3n.
+NO_SECURITY_ROLE_NAME_DEFINITION.useraction=Actualice la configuraci\u00f3n de la aplicaci\u00f3n para corregir la definici\u00f3n del rol.
+
+INVALID_USER_DEFINITION=SRVE9980E: La configuraci\u00f3n del usuario {0} (referenciada por el rol {1} en {2}) no se ha podido cargar. Excepci\u00f3n {3}
+INVALID_USER_DEFINITION.explanation=No se ha podido determinar un usuario definido por un rol de seguridad debido a una excepci\u00f3n.
+INVALID_USER_DEFINITION.useraction=Investigue la causa de la excepci\u00f3n y corrija la configuraci\u00f3n de la aplicaci\u00f3n.
+
+NO_USER_DEFINITION=SRVE9979E: No se ha podido encontrar ninguna definici\u00f3n de usuario para {0} (referenciada por el rol {1} en {2}).
+NO_USER_DEFINITION.explanation=La configuraci\u00f3n de un rol en una aplicaci\u00f3n ha proporcionado una lista de definiciones de usuario, pero una de esas definiciones no se ha podido localizar.
+NO_USER_DEFINITION.useraction=Actualice la configuraci\u00f3n de la aplicaci\u00f3n para proporcionar el usuario.
+
+NO_USER_NAME_DEFINITION=SRVE9978E: El nombre del usuario no se ha podido localizar en las propiedades {0} (referenciadas por el rol {1} en {2}).
+NO_USER_NAME_DEFINITION.explanation=La configuraci\u00f3n de una aplicaci\u00f3n ha proporcionado una lista de usuarios, pero el nombre de uno de los usuarios no se ha podido encontrar en esa configuraci\u00f3n.
+NO_USER_NAME_DEFINITION.useraction=Actualice la configuraci\u00f3n de la aplicaci\u00f3n para corregir la definici\u00f3n del usuario.
+
+INVALID_GROUP_DEFINITION=SRVE9977E: La configuraci\u00f3n del grupo {0} (referenciada por el rol {1} en {2}) no se ha podido cargar. Excepci\u00f3n {3}
+INVALID_GROUP_DEFINITION.explanation=No se ha podido determinar un grupo definido por un rol de seguridad debido a una excepci\u00f3n.
+INVALID_GROUP_DEFINITION.useraction=Investigue la causa de la excepci\u00f3n y corrija la configuraci\u00f3n de la aplicaci\u00f3n.
+
+NO_GROUP_DEFINITION=SRVE9976E: No se ha podido encontrar ninguna definici\u00f3n de grupo para {0} (referenciada por el rol {1} en {2}).
+NO_GROUP_DEFINITION.explanation=La configuraci\u00f3n de un rol en una aplicaci\u00f3n ha proporcionado una lista de definiciones de grupo, pero una de esas definiciones no se ha podido localizar.
+NO_GROUP_DEFINITION.useraction=Actualice la configuraci\u00f3n de la aplicaci\u00f3n para proporcionar el grupo.
+
+NO_GROUP_NAME_DEFINITION=SRVE9975E: El nombre del grupo no se ha podido localizar en las propiedades {0} (referenciadas por el rol {1} en {2}).
+NO_GROUP_NAME_DEFINITION.explanation=La configuraci\u00f3n de una aplicaci\u00f3n ha proporcionado una lista de grupos, pero el nombre de uno de los grupos no se ha podido encontrar en esa configuraci\u00f3n.
+NO_GROUP_NAME_DEFINITION.useraction=Actualice la configuraci\u00f3n de la aplicaci\u00f3n para corregir la definici\u00f3n del grupo.
+
+INVALID_SPECIAL_SUBJECT_DEFINITION=SRVE9974E: La configuraci\u00f3n del sujeto especial {0} (referenciada por el rol {1} en {2}) no se ha podido cargar. Excepci\u00f3n {3}
+INVALID_SPECIAL_SUBJECT_DEFINITION.explanation=No se ha podido determinar un sujeto especial definido por un rol de seguridad debido a una excepci\u00f3n.
+INVALID_SPECIAL_SUBJECT_DEFINITION.useraction=Investigue la causa de la excepci\u00f3n y corrija la configuraci\u00f3n de la aplicaci\u00f3n.
+
+NO_SPECIAL_SUBJECT_DEFINITION=SRVE9973E: No se ha podido encontrar ninguna definici\u00f3n de sujeto especial para {0} (referenciada por el rol {1} en {2}).
+NO_SPECIAL_SUBJECT_DEFINITION.explanation=La configuraci\u00f3n de un rol en una aplicaci\u00f3n ha proporcionado una lista de definiciones de sujeto especial, pero una de esas definiciones no se ha podido localizar.
+NO_SPECIAL_SUBJECT_DEFINITION.useraction=Actualice la configuraci\u00f3n de la aplicaci\u00f3n para proporcionar la definici\u00f3n de sujeto especial.
+
+NO_SPECIAL_SUBJECT_NAME_DEFINITION=SRVE9972E: El nombre del sujeto especial no se ha podido localizar en las propiedades {0} (referenciadas por el rol {1} en {2}).
+NO_SPECIAL_SUBJECT_NAME_DEFINITION.explanation=La configuraci\u00f3n de una aplicaci\u00f3n ha proporcionado una lista de sujetos especiales, pero el nombre de uno de los sujetos especiales no se ha podido encontrar en esa configuraci\u00f3n.
+NO_SPECIAL_SUBJECT_NAME_DEFINITION.useraction=Actualice la configuraci\u00f3n de la aplicaci\u00f3n para corregir la definici\u00f3n del sujeto especial.
+
+INVALID_RUN_AS_DEFINITION=SRVE9971E: La configuraci\u00f3n de la definici\u00f3n de ejecutar como {0} (referenciada por el rol {1} en {2}) no se ha podido cargar. Excepci\u00f3n {3}
+INVALID_RUN_AS_DEFINITION.explanation=No se ha podido determinar una definici\u00f3n de ejecutar como definida por un rol de seguridad debido a una excepci\u00f3n.
+INVALID_RUN_AS_DEFINITION.useraction=Investigue la causa de la excepci\u00f3n y corrija la configuraci\u00f3n de la aplicaci\u00f3n.
+
+NO_RUN_AS_DEFINITION=SRVE9970E: No se ha podido encontrar ninguna definici\u00f3n de ejecutar como para {0} (referenciada por el rol {1} en {2}).
+NO_RUN_AS_DEFINITION.explanation=La configuraci\u00f3n de un rol en una aplicaci\u00f3n ha proporcionado una lista de definiciones de ejecutar como, pero una de esas definiciones no se ha podido localizar.
+NO_RUN_AS_DEFINITION.useraction=Actualice la configuraci\u00f3n de la aplicaci\u00f3n para proporcionar la definici\u00f3n de ejecutar como.
+
+NO_RUN_AS_USER_OR_PASSWORD_DEFINITION=SRVE9969E: El ID de usuario o la contrase\u00f1a especificada para la definici\u00f3n de ejecutar como {0} (referenciada por el rol {1} en {2}) no es v\u00e1lida.
+NO_RUN_AS_USER_OR_PASSWORD_DEFINITION.explanation=El ID de usuario o la contrase\u00f1a no se ha especificado, o es la serie vac\u00eda. Estos no son v\u00e1lidos como ID de usuarios o contrase\u00f1as.
+NO_RUN_AS_USER_OR_PASSWORD_DEFINITION.useraction=Actualice la configuraci\u00f3n de la aplicaci\u00f3n para corregir la definici\u00f3n de ejecutar como.
+
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION=SRVE9968W: Se ha encontrado una classpath de manifiesto no v\u00e1lido {0} en el archivo jar {1}.
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION.explanation=La classpath no se ha especificado correctamente. Debe ser una serie URI relativa que apunte a un archivo jar o carpeta.
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION.useraction=Actualice MANIFEST.MF del archivo jar para proporcionar la definici\u00f3n Class-Path correcta.
+
+WARN_MANIFEST_CLASSPATH_NOT_FOUND=SRVE9967W: No se ha podido resolver el elemento {0} de la ruta de clases de manifiesto del archivo {1}.
+WARN_MANIFEST_CLASSPATH_NOT_FOUND.explanation=Normalmente, los elementos de v\u00eda de acceso de clases de manifiesto son referencias a archivos JAR. Si el elemento referenciado es necesario para la aplicaci\u00f3n, el mensaje indica un problema grave y no se debe ignorar. Si el elemento referenciado no es necesario para la aplicaci\u00f3n, el mensaje indica un problema inocuo y puede ignorarse. O el elemento referenciado est\u00e1 ausente o se encuentra en una ubicaci\u00f3n incorrecta, o bien dicho elemento se encuentra en una ubicaci\u00f3n correcta y el elemento de v\u00eda de acceso de clases de manifiesto referencia una ubicaci\u00f3n distinta e incorrecta. La indicaci\u00f3n m\u00e1s frecuente de que un elemento es necesario suele ser un error de la aplicaci\u00f3n al ubicar una clase u otro recurso, o la ubicaci\u00f3n de la versi\u00f3n incorrecta de una clase o recurso. Un motivo habitual por el que no se resuelve un elemento de v\u00eda de acceso de clase de manifiesto es una actualizaci\u00f3n de la estructura de una aplicaci\u00f3n que hace que un elemento referenciado quede obsoleto. Otro motivo habitual por el que no se resuelve un elemento de v\u00eda de acceso de clases de manifiesto es la adici\u00f3n de un archivo JAR de terceros a la aplicaci\u00f3n en el que se referencia una ubicaci\u00f3n que no se ha a\u00f1adido tambi\u00e9n a la aplicaci\u00f3n.
+WARN_MANIFEST_CLASSPATH_NOT_FOUND.useraction=A\u00f1ada, renombre o mueva elementos de aplicaci\u00f3n, o actualice la v\u00eda de acceso de clases de manifiesto modificando o eliminando los elementos de v\u00eda de acceso de clases de manifiesto que no puedan resolverse. Los elementos de v\u00eda de acceso de clases de manifiesto se resuelven relativos a la ubicaci\u00f3n del archivo de archivado que los contiene.
+
+CONFLICT_KEY_VALUE_CONFIG_BETWEEN_WEB_FRAGMENT_XML=SRVE9966E: Los valores duplicados de {0} se encuentran en {1} para {2} de {3}, el valor es {4} en el archivo web-fragment.xml de {5}, pero {6} en {7}. 
+CONFLICT_KEY_VALUE_CONFIG_BETWEEN_WEB_FRAGMENT_XML.explanation=Los valores de la misma configuraci\u00f3n en diferentes archivos web-fragment.xml deben ser iguales.
+CONFLICT_KEY_VALUE_CONFIG_BETWEEN_WEB_FRAGMENT_XML.useraction=Utilice valores iguales en distintos archivos web-fragment.xml o config\u00farelo en el archivo web.xml de modo que sobrescriba los valores de los archivos web-fragment.xml.
+
+CONFLICT_SINGLE_VALUE_CONFIG_BETWEEN_WEB_FRAGMENT_XML=SRVE9965E: Se han encontrado valores duplicados de {0}.{1}, el valor es {2} en el archivo web-fragment.xml de {3}, pero {4} en {5}.
+CONFLICT_SINGLE_VALUE_CONFIG_BETWEEN_WEB_FRAGMENT_XML.explanation=Los valores de la misma configuraci\u00f3n en diferentes archivos web-fragment.xml deben ser iguales.
+CONFLICT_SINGLE_VALUE_CONFIG_BETWEEN_WEB_FRAGMENT_XML.useraction=Utilice valores iguales en distintos archivos web-fragment.xml o config\u00farelo en el archivo web.xml de modo que sobrescriba los valores de los archivos web-fragment.xml.
+
+CONFLICT_DEFAULT_ERROR_PAGE_WEB_FRAGMENT_XML=SRVE9957E: La p\u00e1gina de error predeterminada {0} en el web-fragment.xml de {1} entra en conflicto con la p\u00e1gina de error predeterminada {2} del web-fragment.xml de {3}. 
+CONFLICT_DEFAULT_ERROR_PAGE_WEB_FRAGMENT_XML.explanation=Los valores de p\u00e1gina de error predeterminada de distintos archivos web-fragment.xml deben ser iguales.
+CONFLICT_DEFAULT_ERROR_PAGE_WEB_FRAGMENT_XML.useraction=Utilice la misma p\u00e1gina de error predeterminada en distintos archivos web-fragment.xml o configure una p\u00e1gina de error predeterminada en el archivo web.xml de modo que sobrescriba la p\u00e1gina de error predeterminada de los archivos web-fragment.xml.
+                                                         
+NO_UNIQUE_WEB_FRAGMENT_NAMES=SRVE9964E: Se utilizan nombres duplicados {0} en los archivos web-fragment.xml de {1} y {2} cuando se usa el orden relativo.
+NO_UNIQUE_WEB_FRAGMENT_NAMES.explanation=Es obligatorio utilizar nombres exclusivos en el elemento de cada archivo web-fragment.xml al utilizar el orden relativo.
+NO_UNIQUE_WEB_FRAGMENT_NAMES.useraction=Asigne un nombre exclusivo a cada web-fragment.xml al utilizar el orden relativo o configure el uso de orden absoluto, elemento <absolute-ordering>, en el archivo web.xml.
+
+CIRCUIT_WEB_FRAGMENT_DEPENDENCY=SRVE9963E: Referencias circulares en {0}.
+CIRCUIT_WEB_FRAGMENT_DEPENDENCY.explanation=Se han encontrado referencias circulares en los archivos web-fragment.xml al utilizar el orden relativo.
+CIRCUIT_WEB_FRAGMENT_DEPENDENCY.useraction=Arregle las referencias circulares utilizando el elemento <before> o <after> en los archivos web-fragment.xml o utilice el elemento <absolute-ordering> en el archivo web.xml.
+
+INVALID_BOTH_BEFORE_AND_AFTER_OTHERS=SRVE9962E: No est\u00e1 permitido configurar <others/> con los elementos <before> y <after> en web-fragment.xml de {0}
+INVALID_BOTH_BEFORE_AND_AFTER_OTHERS.explanation=No se puede configurar <others/> en los elementos <before> y <after>.
+INVALID_BOTH_BEFORE_AND_AFTER_OTHERS.useraction=Elimine <others/> del elemento <before> o <after>.
+
+INVALID_BEFORE_OR_AFTER_ITSELF=SRVE9961E: No est\u00e1 permitido configurar web-fragment en los elementos <before> o <after> en web-fragment.xml de {0}
+INVALID_BEFORE_OR_AFTER_ITSELF.explanation=No se puede configurar web-fragment en los elementos <before> y <after>.
+INVALID_BEFORE_OR_AFTER_ITSELF.useraction=Elimine el nombre web-fragment de los elementos <before> y <after>.
+
+CONFLICT_JNDI_REFERENCE_BETWEEN_WEB_FRAGMENT_XML=SRVE9960E: {0} con el mismo valor {1} de {2} se encuentran en el archivo web-fragment.xml de {3} y {4}.
+CONFLICT_JNDI_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.explanation=No est\u00e1 permitido configurar las referencias de JNDI del mismo nombre en distintos archivos web-fragment.xml, mientras que falta en el archivo web.xml
+CONFLICT_JNDI_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.useraction=Configure la referencia JNDI del archivo web.xml sin destinos de inyecci\u00f3n para incluir los de cada archivo web-fragment.xml o configure todas las configuraciones necesarias en el archivo web.xml.
+
+CONFLICT_DATASOURCE_REFERENCE_BETWEEN_WEB_FRAGMENT_XML=SRVE9959E: Se han encontrado dos configuraciones de origen de datos con el mismo nombre {0} en web-fragment.xml de {1} y {2}.
+CONFLICT_DATASOURCE_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.explanation=No est\u00e1 permitido configurar el origen de datos con el mismo nombre en distintos archivos web-fragment.xml, mientras que falta en web.xml
+CONFLICT_DATASOURCE_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.useraction=Configure el origen de datos con el mismo nombre en web.xml para sustituir los de los archivos web-fragment.xml.
+
+CONFLICT_MAILSESSION_REFERENCE_BETWEEN_WEB_FRAGMENT_XML=SRVE9958E: Se han encontrado dos configuraciones de sesi\u00f3n de correo con el mismo nombre {0} en web-fragment.xml de {1} y {2}.
+CONFLICT_MAILSESSION_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.explanation=No est\u00e1 permitido configurar la sesi\u00f3n de correo con el mismo nombre en distintos archivos web-fragment.xml, mientras que falta en web.xml.
+CONFLICT_MAILSESSION_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.useraction=Configure la sesi\u00f3n de correo con el mismo nombre en web.xml para alterar temporalmente las de los archivos web-fragment.xml.
+
+UNKNOWN_VIRTUAL_HOST=SRVE9956W: Los siguientes hosts virtuales no se han podido encontrar o no est\u00e1n configurados correctamente : {0}.
+UNKNOWN_VIRTUAL_HOST.explanation=Uno o m\u00e1s aplicaciones especifican un host virtual que no existe. Puede que falte la configuraci\u00f3n del host virtual o puede que contenga errores.
+UNKNOWN_VIRTUAL_HOST.useraction=Para las aplicaciones que especifiquen un host virtual a trav\u00e9s de los archivos ibm-web-bnd.xml o ibm-web-bnd.xmi, aseg\u00farese de que est\u00e9 definido un elemento virtualHost correspondiente en el archivo server.xml.
+
+DISTRIBUTABLE_SET_TO_FALSE_IN_FRAGMENT=SRVE9955E: Se establece <distributable/> en false porque no est\u00e1 incluido en el archivo web-fragment.xml de {0}.
+DISTRIBUTABLE_SET_TO_FALSE_IN_FRAGMENT.explanation=El elemento <distributable/> no se ha encontrado en el fragmento web.  Por lo tanto, el m\u00f3dulo no est\u00e1 marcado como distribuible.
+DISTRIBUTABLE_SET_TO_FALSE_IN_FRAGMENT.useraction=Establezca el elemento <distributable/> en el archivo web-fragment.xml para todos los fragmentos Web del m\u00f3dulo si desea marcarlos como distribuibles.
+
+CONFLICT_CONNECTION_FACTORY_REFERENCE_BETWEEN_WEB_FRAGMENT_XML=SRVE9954E: Se han encontrado dos configuraciones de f\u00e1brica de conexiones con el mismo nombre {0} en el archivo web-fragment.xml de {1} y {2}.
+CONFLICT_CONNECTION_FACTORY_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.explanation=La f\u00e1brica de conexiones del mismo nombre no puede configurarse en distintos archivos web-fragment.xml si falta en web.xml.
+CONFLICT_CONNECTION_FACTORY_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.useraction=Configure la f\u00e1brica de conexiones con el mismo nombre en web.xml para alterar temporalmente las de los archivos web-fragment.xml.
+
+
+CONFLICT_ADMINISTERED_OBJECT_REFERENCE_BETWEEN_WEB_FRAGMENT_XML=SRVE9951E: Se han encontrado dos configuraciones de objeto administrado con el mismo nombre {0} en web-fragment.xml de {1} y {2}.
+CONFLICT_ADMINISTERED_OBJECT_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.explanation=El objeto administrado del mismo nombre no puede configurarse en distintos archivos web-fragment.xml si falta en web.xml.
+CONFLICT_ADMINISTERED_OBJECT_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.useraction=Configure el objeto administrado con el mismo nombre en web.xml para alterar temporalmente las de los archivos web-fragment.xml.
+
+CONFLICT_JMS_CONNECTION_FACTORY_REFERENCE_BETWEEN_WEB_FRAGMENT_XML=SRVE9952E: Se han encontrado dos configuraciones de f\u00e1brica de conexiones JMS con el mismo nombre {0} en web-fragment.xml de {1} y {2}.
+CONFLICT_JMS_CONNECTION_FACTORY_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.explanation=La f\u00e1brica de conexiones JMS del mismo nombre no puede configurarse en distintos archivos web-fragment.xml si falta en web.xml.
+CONFLICT_JMS_CONNECTION_FACTORY_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.useraction=Configure la f\u00e1brica de conexiones JMS con el mismo nombre en web.xml para sustituir los de los archivos web-fragment.xml.
+
+CONFLICT_JMS_DESTINATION_REFERENCE_BETWEEN_WEB_FRAGMENT_XML=SRVE9953E: Se han encontrado dos configuraciones de destino JMS con el mismo nombre {0} en web-fragment.xml de {1} y {2}.
+CONFLICT_JMS_DESTINATION_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.explanation=El destino JMS del mismo nombre no puede configurarse en distintos archivos web-fragment.xml si falta en web.xml.
+CONFLICT_JMS_DESTINATION_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.useraction=Configure el destino JMS con el mismo nombre en web.xml para sustituir los de los archivos web-fragment.xml.
+
+
+SRVE0777E=SRVE0777E: Excepci\u00f3n lanzada por la clase de aplicaci\u00f3n ''{0}.{1}:{2}''\n{3}
+SRVE0777E.explanation= El c\u00f3digo de aplicaci\u00f3n ha lanzado una excepci\u00f3n inesperada.
+SRVE0777E.useraction=Revise el rastreo de pila para identificar la causa ra\u00edz del problema.
+
+# -----------------------------------------------
+Reader.already.obtained=SRVE0778E: Ya se ha obtenido el objeto Reader para esta respuesta. Se trata de un error de aplicaci\u00f3n.
+Reader.already.obtained.explanation= Se ha intentado obtener o ajustar una InputStream para esta respuesta, pero ya se hab\u00eda obtenido un BufferedReader.
+Reader.already.obtained.useraction= Modifique el JSP o el servlet que falla para que utilice una instancia de BufferedReader o una instancia de InputStream, pero no ambas.
+# -----------------------------------------------
+InputStream.already.obtained=SRVE0779E: Ya se ha obtenido el objeto InputStream para esta respuesta. Se trata de un error de aplicaci\u00f3n.
+InputStream.already.obtained.explanation=Se ha intentado obtener o ajustar un BufferedReader para esta respuesta, pero ya se hab\u00eda obtenido una InputStream.
+InputStream.already.obtained.useraction=Modifique el JSP o el servlet que falla para que obtenga una instancia de BufferedReader o una instancia de InputStream, pero no ambas.
+
+# --------------------------------
+# Notes for translation:
+# {0} is the URL pattern 
+# {1} and {2} are servlet names
+
+duplicate.url.pattern.for.servlet.mapping=SRVE9016E: No se ha podido insertar la correlaci\u00f3n [{0}] para el servlet llamado [{1}]. El patr\u00f3n de URL ya est\u00e1 definido para el servlet llamado [{2}].
+duplicate.url.pattern.for.servlet.mapping.explanation=Hay un error de aplicaci\u00f3n. Un patr\u00f3n de URL de correlaci\u00f3n de servlets no se debe correlacionar con varios servlets.
+duplicate.url.pattern.for.servlet.mapping.useraction=Cambie el patr\u00f3n URL para la correlaci\u00f3n de servlet.
+

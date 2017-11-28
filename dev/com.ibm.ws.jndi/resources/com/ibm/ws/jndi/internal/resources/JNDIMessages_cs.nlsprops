@@ -1,0 +1,79 @@
+###############################################################################
+# Copyright (c) 2011, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jndi/resources/com/ibm/ws/jndi/internal/resources/JNDIMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKN
+#COMPONENTNAMEFOR CWWKN Naming Services
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote ').
+
+# Message numbers CWWKN0nnn are reserved for this file.
+#
+# CWWKN messages are also defined in the com.ibm.ws.jndi.url.contexts project.
+# CWWKN00nn: com.ibm.ws.jndi.internal.resources.JNDIMessages
+# CWWKN01nn: com.ibm.ws.jndi.internal.url.contexts.resources.JNDIMessages
+# CWWKN02nn: com.ibm.ws.jndi.iiop.Messages
+# -------------------------------------------------------------------------------------------------
+
+null.name=N\u00e1zev nesm\u00ed m\u00edt hodnotu Null.
+empty.name=N\u00e1zev nesm\u00ed b\u00fdt pr\u00e1zdn\u00fd.
+
+jndi.entry.bad.name=CWWKN0001W: N\u00e1zev [{0}] nelze analyzovat, nezda\u0159ilo se s v\u00fdjimkou [{1}].
+jndi.entry.bad.name.explanation=N\u00e1zev neodpov\u00edd\u00e1 povinn\u00e9 syntaxi. Dal\u0161\u00ed podrobnosti najdete v uveden\u00e9 v\u00fdjimce.
+jndi.entry.bad.name.useraction=Opravte n\u00e1zev tak, aby odpov\u00eddal povinn\u00e9 syntaxi.
+
+jndi.entry.bad.value=CWWKN0002W: Hodnotu [{0}] nelze analyzovat jako typ [{1}].
+jndi.entry.bad.value.explanation=Zadan\u00e1 hodnota neodpov\u00edd\u00e1 typu, kter\u00fd je pro ni uveden.
+jndi.entry.bad.value.useraction=Bu\u010f zm\u011b\u0148te hodnotu tak, aby vyhovovala typu, nebo zm\u011b\u0148te typ tak, aby vyhovoval hodnot\u011b.
+
+jndi.entry.bad.type=CWWKN0003W: Nebylo mo\u017en\u00e9 vytvo\u0159it polo\u017eku rozhran\u00ed JNDI, proto\u017ee je konfigurov\u00e1na s nezn\u00e1m\u00fdm typem [{0}].
+# DO NOT TRANSLATE: auto, boolean, byte, char, double, float, int, long, short, string
+jndi.entry.bad.type.explanation=Typ mus\u00ed m\u00edt o\u010dek\u00e1vanou hodnotu. Platn\u00e9 hodnoty jsou auto, boolean, byte, char, double, float, int, long, short nebo string.
+jndi.entry.bad.type.useraction=Zvolte platnou specifikaci typu.
+
+jndi.entry.bind.failed=CWWKN0004W: Vol\u00e1n\u00ed na vytvo\u0159en\u00ed vazby hodnoty [{0}] na n\u00e1zev [{1}] se nezda\u0159ilo, do\u0161lo k v\u00fdjimce [{3}].
+jndi.entry.bind.failed.explanation=Operace vazby nemohla pokra\u010dovat. Dal\u0161\u00ed podrobnosti najdete v uveden\u00e9 v\u00fdjimce.
+jndi.entry.bind.failed.useraction=Zkontrolujte, zda nen\u00ed na stejn\u00fd nebo p\u0159echodn\u00fd n\u00e1zev v\u00e1z\u00e1no n\u011bco jin\u00e9ho, a konflikt vy\u0159e\u0161te.
+
+jndi.osgi.bind.failed=CWWKN0005W: Automatick\u00e1 vazba objektu registru na n\u00e1zev {0} se nezda\u0159ila, do\u0161lo k v\u00fdjimce {1}.
+jndi.osgi.bind.failed.explanation=N\u011bco zabr\u00e1nilo tomu, aby byl objekt registru v\u00e1z\u00e1n na n\u00e1zev.
+jndi.osgi.bind.failed.useraction=Zkontrolujte v\u00fdjimku, ur\u010dete p\u0159\u00ed\u010dinu selh\u00e1n\u00ed a napravte ji.
+
+jndi.objectfactory.no.class=CWWKN0006E: Nebyla nalezena t\u0159\u00edda pro vytvo\u0159en\u00ed tov\u00e1rny objekt\u016f {0} pro t\u0159\u00eddu {1}.
+jndi.objectfactory.no.class.explanation=Zadanou tov\u00e1rnu objekt\u016f nelze vytvo\u0159it, proto\u017ee nebyla nalezena t\u0159\u00edda.
+jndi.objectfactory.no.class.useraction=Ov\u011b\u0159te, zda je v b\u011bhov\u00e9m prost\u0159ed\u00ed serveru WebSphere Application Server k dispozici t\u0159\u00edda {0}.
+
+jndi.objectfactory.create.failed=CWWKN0007E: Nelze vytvo\u0159it tov\u00e1rnu objekt\u016f {0} pro t\u0159\u00eddu {1}.
+jndi.objectfactory.create.failed.explanation=Dal\u0161\u00ed podrobnosti najdete v uveden\u00e9 v\u00fdjimce.
+jndi.objectfactory.create.failed.useraction=Dal\u0161\u00ed podrobnosti najdete v uveden\u00e9 v\u00fdjimce.
+
+jndi.servicereference.failed=CWWKN0008E: Objekt nelze z\u00edskat pro n\u00e1zev {0}.
+jndi.servicereference.failed.explanation=Do\u0161lo k chyb\u011b p\u0159i z\u00edsk\u00e1v\u00e1n\u00ed objektu pro ur\u010den\u00fd n\u00e1zev.
+jndi.servicereference.failed.useraction=Podrobnosti viz d\u0159\u00edv\u011bj\u0161\u00ed v\u00fdjimky.
+
+jndi.objectfactory.create.exception=CWWKN0009E: Nelze vytvo\u0159it ObjectFactory pro t\u0159\u00eddu {0}. V\u00fdjimka: {1}
+jndi.objectfactory.create.exception.explanation=Dal\u0161\u00ed podrobnosti najdete v uveden\u00e9 v\u00fdjimce.
+jndi.objectfactory.create.exception.useraction=Dal\u0161\u00ed podrobnosti najdete v uveden\u00e9 v\u00fdjimce.
+
+jndi.url.create.exception=CWWKN0010E: Syst\u00e9m nem\u016f\u017ee vytvo\u0159it hodnotu java.net.URL z \u0159et\u011bzce {0}. Tato adresa URL je zkonfigurov\u00e1na ke sv\u00e1z\u00e1n\u00ed v n\u00e1zvu JNDI {1}. Byla p\u0159ijata n\u00e1sleduj\u00edc\u00ed v\u00fdjimka: {2}
+jndi.url.create.exception.explanation=\u0158et\u011bzec adresy URL ur\u010den\u00fd v konfiguraci pro n\u00e1zev JNDI nen\u00ed platn\u00fd a nelze jej sv\u00e1zat do oboru n\u00e1zv\u016f JNDI.
+jndi.url.create.exception.useraction=Ur\u010dete platnou hodnotu pro \u0159et\u011bzec adresy URL. Chyba v\u00fdjimky poskytuje podrobnosti t\u00fdkaj\u00edc\u00ed se neplatn\u00e9ho n\u00e1zvu JNDI.
+
+jndi.decode.failed=CWWKN0011E: Do\u0161lo k chyb\u011b p\u0159i dek\u00f3dov\u00e1n\u00ed hesla {0}. Ov\u011b\u0159te, \u017ee je heslo zak\u00f3dov\u00e1no spr\u00e1vn\u011b. \u0160lo o v\u00fdjimku: {1}.
+jndi.decode.failed.explanation=Heslo nen\u00ed zak\u00f3dov\u00e1no spr\u00e1vn\u011b.
+jndi.decode.failed.useraction=Ov\u011b\u0159te, \u017ee je heslo zak\u00f3dov\u00e1no spr\u00e1vn\u011b. Dal\u0161\u00ed podrobnosti najdete v uveden\u00e9 v\u00fdjimce.

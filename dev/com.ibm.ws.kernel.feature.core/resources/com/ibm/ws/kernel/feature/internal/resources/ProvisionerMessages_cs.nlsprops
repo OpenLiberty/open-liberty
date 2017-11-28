@@ -1,0 +1,326 @@
+###############################################################################
+# Copyright (c) 2010, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.feature/resources/com/ibm/ws/kernel/feature/internal/resources/ProvisionerMessages.nlsprops
+#COMPONENTPREFIX CWWKF
+#COMPONENTNAMEFOR CWWKF Liberty Feature Manager
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+#   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
+# -------------------------------------------------------------------------------------------------
+
+UPDATE_MISSING_FEATURE_ERROR=CWWKF0001E: Pro {0} nelze nal\u00e9zt definici funkce.
+UPDATE_MISSING_FEATURE_ERROR.explanation=Spr\u00e1vce funkce nemohl nal\u00e9zt definici zadan\u00e9 funkce.
+UPDATE_MISSING_FEATURE_ERROR.useraction=Zkontrolujte, zda je spr\u00e1vn\u011b uveden n\u00e1zev zadan\u00e9 funkce a zda definice funkce existuje a lze ji v adres\u00e1\u0159i lib/features \u010d\u00edst.
+
+UPDATE_MISSING_BUNDLE_ERROR=CWWKF0002E: Pro {0} nelze nal\u00e9zt bal\u00edk.
+UPDATE_MISSING_BUNDLE_ERROR.explanation=Spr\u00e1vce funkce nemohl nal\u00e9zt bal\u00edk vy\u017eadovan\u00fd povolenou funkc\u00ed.
+UPDATE_MISSING_BUNDLE_ERROR.useraction=Zkontrolujte, zda lze bal\u00edky v adres\u00e1\u0159i lib \u010d\u00edst a zda je obraz instalace \u00fapln\u00fd.
+
+UPDATE_INSTALL_EXCEPTIONS_ERROR=CWWKF0003E: B\u011bhem instalace nebo odinstalace bal\u00edku {0} byla vygenerov\u00e1na v\u00fdjimka. V\u00fdjimka: {1}
+UPDATE_INSTALL_EXCEPTIONS_ERROR.explanation=Spr\u00e1vce funkc\u00ed nemohl nainstalovat nebo odinstalovat zadan\u00fd bal\u00edk.
+UPDATE_INSTALL_EXCEPTIONS_ERROR.useraction=Jednotliv\u00e1 selh\u00e1n\u00ed naleznete v odkazovan\u00fdch v\u00fdjimk\u00e1ch a generovan\u00fdch zpr\u00e1v\u00e1ch FFDC.
+
+UPDATE_OTHER_EXCEPTION_ERROR=CWWKF0004E: B\u011bhem instalace nebo odeb\u00edr\u00e1n\u00ed vlastnost\u00ed do\u0161lo k nezn\u00e1m\u00e9 v\u00fdjimce. V\u00fdjimka: {0}
+UPDATE_OTHER_EXCEPTION_ERROR.explanation=P\u0159i p\u0159id\u00e1v\u00e1n\u00ed nebo odeb\u00edr\u00e1n\u00ed jedn\u00e9 nebo v\u00edce funkc\u00ed z b\u011bhov\u00e9ho prost\u0159ed\u00ed do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce.
+UPDATE_OTHER_EXCEPTION_ERROR.useraction=Dal\u0161\u00ed informace naleznete v odkazovan\u00e9 v\u00fdjimce a vygenerovan\u00e9 zpr\u00e1v\u011b FFDC.
+
+UPDATE_LIFECYCLE_EXCEPTIONS_ERROR=CWWKF0005E: P\u0159i spou\u0161t\u011bn\u00ed, zastavov\u00e1n\u00ed nebo odinstalaci bal\u00edku {0} byla vygenerov\u00e1na v\u00fdjimka. V\u00fdjimka: {1}
+UPDATE_LIFECYCLE_EXCEPTIONS_ERROR.explanation=B\u011bhem zm\u011bny stavu bal\u00edku spravovan\u00e9ho spr\u00e1vcem funkc\u00ed do\u0161lo k v\u00fdjimce.
+UPDATE_LIFECYCLE_EXCEPTIONS_ERROR.useraction=Podrobnosti naleznete v odkazovan\u00e9 v\u00fdjimce a p\u0159idru\u017een\u00fdch z\u00e1znamech FFDC.
+
+UPDATE_BUNDLE_CACHE_WARNING=CWWKF0006W: Syst\u00e9m nemohl \u010d\u00edst nebo uchovat seznam bal\u00edk\u016f funkc\u00ed na\u010dten\u00fdch pro tuto instanci serveru do {0}, proto byla mezipam\u011b\u0165 bal\u00edk\u016f pro tepl\u00fd start zak\u00e1z\u00e1na. V\u00fdjimka: {1}
+UPDATE_BUNDLE_CACHE_WARNING.explanation=Nebylo mo\u017en\u00e9 vytvo\u0159it nebo \u010d\u00edst soubor mezipam\u011bti bal\u00edk\u016f. Dal\u0161\u00ed informace najdete v odkazovan\u00e9 v\u00fdjimce. 
+UPDATE_BUNDLE_CACHE_WARNING.useraction=Ujist\u011bte se, \u017ee do adres\u00e1\u0159e serveru a podadres\u00e1\u0159e pracovn\u00ed oblasti lze zapisovat. 
+
+STARTING_AUDIT=CWWKF0007I: Byla spu\u0161t\u011bna aktualizace funkc\u00ed.
+STARTING_AUDIT.explanation=Spr\u00e1vce funkc\u00ed zah\u00e1jil zpracov\u00e1n\u00ed povolen\u00fdch funkc\u00ed. Interval (v sekund\u00e1ch) je relativn\u00ed k \u010dasu spu\u0161t\u011bn\u00ed platformy.
+STARTING_AUDIT.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+COMPLETE_AUDIT=CWWKF0008I: Aktualizace funkc\u00ed byla dokon\u010dena za {0} sekund.
+COMPLETE_AUDIT.explanation=Spr\u00e1vce funkc\u00ed dokon\u010dil zpracov\u00e1n\u00ed povolen\u00fdch funkc\u00ed. Interval (v sekund\u00e1ch) je relativn\u00ed k \u010dasu spu\u0161t\u011bn\u00ed platformy.
+COMPLETE_AUDIT.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+EMPTY_FEATURES_WARNING=CWWKF0009W: Server nebyl nakonfigurov\u00e1n k instalaci \u017e\u00e1dn\u00fdch funkc\u00ed.
+EMPTY_FEATURES_WARNING.explanation=Nebyla nakonfigurov\u00e1na instalace \u017e\u00e1dn\u00fdch funkc\u00ed. 
+EMPTY_FEATURES_WARNING.useraction=Chcete-li p\u0159idat po\u017eadovan\u00e9 funkce, aktualizujte konfiguraci. 
+
+BUNDLE_MATCH_WARNING=CWWKF0010W: Zadan\u00e9mu filtru ({0}) vyhovuje v\u00edce ne\u017e jeden bal\u00edk, bude pou\u017eit {1}. Shody: {2}. 
+BUNDLE_MATCH_WARNING.explanation=Prvek definice funkce se shodoval s v\u00edce ne\u017e jedn\u00edm bal\u00edkem. Toto mohl zp\u016fsobit p\u0159\u00edli\u0161 obecn\u00fd filtr nebo star\u00e9 bal\u00edky v obrazu, kter\u00e9 se shoduj\u00ed s filtrem.
+BUNDLE_MATCH_WARNING.useraction=P\u0159esv\u011bd\u010dte se, \u017ee filtr je dostate\u010dn\u011b specifick\u00fd a je pou\u017eit \u010dist\u00fd obraz instalace.
+
+SERVER_STARTED=CWWKF0011I: Server {0} je p\u0159ipraven ke spu\u0161t\u011bn\u00ed chyt\u0159ej\u0161\u00ed planety.
+SERVER_STARTED.explanation=Server byl \u00fasp\u011b\u0161n\u011b spu\u0161t\u011bn.
+SERVER_STARTED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+FEATURES_ADDED=CWWKF0012I: Server nainstaloval n\u00e1sleduj\u00edc\u00ed funkce: {0}.
+FEATURES_ADDED.explanation=Server nainstaloval sadu funkc\u00ed.
+FEATURES_ADDED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+FEATURES_REMOVED=CWWKF0013I: Server odebral n\u00e1sleduj\u00edc\u00ed funkce: {0}.
+FEATURES_REMOVED.explanation=Server odebral sadu funkc\u00ed.
+FEATURES_REMOVED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+TEST_FIX_DETECTED=CWWKF0014W: Server m\u00e1 v b\u011bhov\u00e9m prost\u0159ed\u00ed n\u00e1sleduj\u00edc\u00ed aktivn\u00ed testovac\u00ed opravy: {0}. \u00dapln\u00fd v\u00fdpis nainstalovan\u00fdch oprav z\u00edsk\u00e1te po spu\u0161t\u011bn\u00ed p\u0159\u00edkazu: \
+productInfo version --ifixes
+TEST_FIX_DETECTED.explanation=Bal\u00edky OSGi na\u010dten\u00e9 v b\u011bhov\u00e9m prost\u0159ed\u00ed byly zm\u011bn\u011bny n\u011bkter\u00fdmi z nainstalovan\u00fdch testovac\u00edch oprav. V\u00fdpis v\u0161ech nainstalovan\u00fdch oprav lze z\u00edskat pomoc\u00ed \
+p\u0159\u00edkazu: productInfo version --ifixes
+TEST_FIX_DETECTED.useraction=Testovac\u00ed opravy by nem\u011bly b\u00fdt instalov\u00e1ny na produk\u010dn\u00edm serveru. Pokud se jedn\u00e1 o produk\u010dn\u00ed server, odeberte testovac\u00ed opravy a restartujte server.
+
+INTERIM_FIX_DETECTED=CWWKF0015I: Server m\u00e1 v b\u011bhov\u00e9m prost\u0159ed\u00ed n\u00e1sleduj\u00edc\u00ed aktivn\u00ed prozat\u00edmn\u00ed opravy: {0}. \u00dapln\u00fd v\u00fdpis nainstalovan\u00fdch oprav z\u00edsk\u00e1te po spu\u0161t\u011bn\u00ed p\u0159\u00edkazu: productInfo \
+version --ifixes
+INTERIM_FIX_DETECTED.explanation=Bal\u00edky OSGi na\u010dten\u00e9 v b\u011bhov\u00e9m prost\u0159ed\u00ed byly zm\u011bn\u011bny n\u011bkter\u00fdmi z nainstalovan\u00fdch prozat\u00edmn\u00edch oprav. V\u00fdpis v\u0161ech nainstalovan\u00fdch oprav lze z\u00edskat \
+pomoc\u00ed p\u0159\u00edkazu: productInfo version --ifixes
+INTERIM_FIX_DETECTED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# IBM-Provision-Capability is a manifest header name and should not be translated.
+INVALID_PROVISION_CAPABILITY_FILTER=CWWKF0016I: Filtr {0} v z\u00e1hlav\u00ed souboru typu manifest funkce {1} je nespr\u00e1vn\u00fd: {2}
+INVALID_PROVISION_CAPABILITY_FILTER.explanation=Z\u00e1hlav\u00ed IBM-Provision-Capability obsahuje minim\u00e1ln\u011b jeden filtr OSGi s neplatnou syntax\u00ed.
+INVALID_PROVISION_CAPABILITY_FILTER.useraction=Opravte syntaxi filtr\u016f v z\u00e1hlav\u00ed IBM-Provision-Capability.
+
+PRODUCT_FEATURE_INSTALL_PATH_ERROR=CWWKF0017E: Nebyla nalezena instala\u010dn\u00ed cesta produktu {0} zadan\u00e1 v souboru vlastnost\u00ed produktu {1}.
+PRODUCT_FEATURE_INSTALL_PATH_ERROR.explanation=Spr\u00e1vce funkc\u00ed nemohl nal\u00e9zt zadanou instala\u010dn\u00ed cestu produktu.
+PRODUCT_FEATURE_INSTALL_PATH_ERROR.useraction=Ov\u011b\u0159te, zda je pro vlastnost com.ibm.websphere.productInstall v souboru vlastnost\u00ed produktu definov\u00e1na platn\u00e1 cesta k produktu.
+
+PRODUCT_FEATURE_PROPERTIES_FILE_ERROR=CWWKF0018E: Vlastnost com.ibm.websphere.productInstall nebyla nalezena v souboru vlastnost\u00ed produktu {0}.
+PRODUCT_FEATURE_PROPERTIES_FILE_ERROR.explanation=Spr\u00e1vce funkc\u00ed nalezl soubor vlastnost\u00ed produktu, kter\u00fd neobsahuje vlastnost com.ibm.websphere.productInstall.
+PRODUCT_FEATURE_PROPERTIES_FILE_ERROR.useraction=P\u0159idejte vlastnost com.ibm.websphere.productInstall do souboru vlastnost\u00ed produktu v etc/extensions.
+
+PRODUCT_FEATURE_LOAD_ERROR=CWWKF0019E: Byla vygenerov\u00e1na v\u00fdjimka {1} p\u0159i na\u010d\u00edt\u00e1n\u00ed souboru vlastnost\u00ed produktu {0}.
+PRODUCT_FEATURE_LOAD_ERROR.explanation=Do\u0161lo k uveden\u00e9 v\u00fdjimce p\u0159i pokusu spr\u00e1vce funkc\u00ed o na\u010dten\u00ed vlastnost\u00ed ze souboru vlastnost\u00ed produktu.
+PRODUCT_FEATURE_LOAD_ERROR.useraction=Podrobnosti naleznete v odkazovan\u00e9 v\u00fdjimce a p\u0159idru\u017een\u00fdch z\u00e1znamech FFDC.
+
+#SUPERCEDED FEATURES
+SUPERSEDED_CONFIGURATION_ERROR=CWWKF0020E: Funkce {0} m\u00e1 nastaven\u00fd atribut superseded na hodnotu false, ale atribut superseded-by m\u00e1 hodnotu {1}. 
+SUPERSEDED_CONFIGURATION_ERROR.explanation=Z\u00e1hlav\u00ed symbolick\u00fd-n\u00e1zev ve funkci m\u00e1 nakonfigurovan\u00fd atribut superseded-by, ale jeho atribut superseded je nastaven na hodnotu false.
+SUPERSEDED_CONFIGURATION_ERROR.useraction=P\u0159esv\u011bd\u010dte se, \u017ee z\u00e1hlav\u00ed symbolick\u00fd-n\u00e1zev m\u00e1 spr\u00e1vn\u011b nakonfigurovan\u00e9 atributy superseded a superseded-by.
+
+UPDATE_NOT_PUBLIC_FEATURE_ERROR=CWWKF0021E: Funkce {0} zadan\u00e1 v souboru server.xml nen\u00ed ve\u0159ejnou funkc\u00ed, a proto ji server nespust\u00ed.
+UPDATE_NOT_PUBLIC_FEATURE_ERROR.explanation=V souboru server.xml lze zad\u00e1vat pouze ve\u0159ejn\u00e9 funkce.
+UPDATE_NOT_PUBLIC_FEATURE_ERROR.useraction=Zm\u011b\u0148te konfiguraci serveru zad\u00e1n\u00edm ve\u0159ejn\u00e9 funkce, kter\u00e1 poskytuje po\u017eadovanou funkci. Vyv\u00edj\u00edte-li funkci, kterou budou u\u017eivatel\u00e9 zad\u00e1vat ve sv\u00e9 konfiguraci serveru, zm\u011b\u0148te funkci tak, aby m\u011bla ve\u0159ejnou viditelnost p\u0159id\u00e1n\u00edm visibility=public jako atributu k Subsystem-SymbolicName pro tuto funkci.
+
+UNSUPPORTED_FEATURE_VERSION=CWWKF0022E: Funkce {0} nen\u00ed podporov\u00e1na. Z\u00e1hlav\u00ed IBM-Feature-Version je nastaveno na {1}.
+UNSUPPORTED_FEATURE_VERSION.explanation=Server podporuje pouze funkce, jejich\u017e z\u00e1hlav\u00ed IBM-Feature-Version je nastaveno na hodnotu 2. \u010c\u00edslo vy\u0161\u0161\u00ed ne\u017e 2 ozna\u010duje, \u017ee funkce je ur\u010dena pro pozd\u011bj\u0161\u00ed verzi produktu.
+UNSUPPORTED_FEATURE_VERSION.useraction=Obra\u0165te se na autora funkce a po\u017e\u00e1dejte jej o kopii, je\u017e je navr\u017eena pro tuto verzi produktu.
+
+#Minify feature query messages
+ERROR_OPENING_JAR_FOR_CLASSPATH=CWWKF0023W: Funkce odk\u00e1zala na archiv {1}, kter\u00fd nebyla schopna zpracovat v r\u00e1mci dotazu balen\u00ed. V\u00fdjimka: {2}
+ERROR_OPENING_JAR_FOR_CLASSPATH.explanation=Do\u0161lo k v\u00fdjimce p\u0159i \u010dten\u00ed souboru JAR funkce v r\u00e1mci dotazu balen\u00ed.
+ERROR_OPENING_JAR_FOR_CLASSPATH.useraction=Podrobnosti naleznete v odkazovan\u00e9 v\u00fdjimce a p\u0159idru\u017een\u00fdch z\u00e1znamech FFDC.
+
+ERROR_MISSING_FEATURE_RESOURCE=CWWKF0024W: Funkce {0} odk\u00e1zala na prost\u0159edek {1}, kter\u00fd nenalezla v r\u00e1mci dotazu balen\u00ed. 
+ERROR_MISSING_FEATURE_RESOURCE.explanation=Spr\u00e1vce funkc\u00ed nenalezl obsah zadan\u00e9 funkce.
+ERROR_MISSING_FEATURE_RESOURCE.useraction=Zkontrolujte spr\u00e1vnost instalace produktu. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, obra\u0165te se na servisn\u00edho z\u00e1stupce.
+
+ERROR_UNKNOWN_FEATURE_RESOURCE_TYPE=CWWKF0025W: Funkce {0} odk\u00e1zala na prost\u0159edek {1} nezn\u00e1m\u00e9ho typu {2} v r\u00e1mci dotazu balen\u00ed. 
+ERROR_UNKNOWN_FEATURE_RESOURCE_TYPE.explanation=Spr\u00e1vce funkc\u00ed neporozum\u011bl obsahu zadan\u00e9 funkce.
+ERROR_UNKNOWN_FEATURE_RESOURCE_TYPE.useraction=Zkontrolujte spr\u00e1vnost instalace produktu. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, obra\u0165te se na servisn\u00edho z\u00e1stupce.
+
+SERVER_MINIFY=CWWKF0026I: Server {0} je p\u0159ipraven k sestaven\u00ed men\u0161\u00edho bal\u00edku.
+SERVER_MINIFY.explanation=Server p\u0159ipravuje informace pro nevy\u0159\u00edzenou operaci balen\u00ed serveru.
+SERVER_MINIFY.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+# end Minify feature query messages
+
+PRODUCT_FEATURE_INSTALL_PATH_SYMBOL_ERROR=CWWKF0027E: Funkce roz\u0161\u00ed\u0159en\u00ed produktu nebudou nainstalov\u00e1na, proto\u017ee instala\u010dn\u00ed cesta roz\u0161\u00ed\u0159en\u00ed produktu zadan\u00e1 v souboru vlastnost roz\u0161\u00ed\u0159en\u00ed produktu {0} obsahuje symbolick\u00e9 um\u00edst\u011bn\u00ed {1}.
+PRODUCT_FEATURE_INSTALL_PATH_SYMBOL_ERROR.explanation=Instala\u010dn\u00ed cesta roz\u0161\u00ed\u0159en\u00ed produktu nem\u016f\u017ee obsahovat symbolick\u00e1 um\u00edst\u011bn\u00ed.
+PRODUCT_FEATURE_INSTALL_PATH_SYMBOL_ERROR.useraction=Aktualizujte vlastnost com.ibm.websphere.productInstall v zadan\u00e9m souboru vlastnost\u00ed roz\u0161\u00ed\u0159en\u00ed produktu, aby neobsahovala \u017e\u00e1dn\u00e1 symbolick\u00e1 um\u00edst\u011bn\u00ed.
+
+PRODUCT_FEATURE_INSTALL_PATH_WLP_ERROR=CWWKF0028E: Funkce roz\u0161\u00ed\u0159en\u00ed produktu nebudou nainstalov\u00e1na, proto\u017ee instala\u010dn\u00ed cesta roz\u0161\u00ed\u0159en\u00ed produktu zadan\u00e1 v souboru vlastnost roz\u0161\u00ed\u0159en\u00ed produktu {0} je stejn\u00e1 jako wlp.install.dir.
+PRODUCT_FEATURE_INSTALL_PATH_WLP_ERROR.explanation=Instala\u010dn\u00ed cesta roz\u0161\u00ed\u0159en\u00ed produktu nem\u016f\u017ee b\u00fdt stejn\u00e1 jako wlp.install.dir.
+PRODUCT_FEATURE_INSTALL_PATH_WLP_ERROR.useraction=Aktualizujte vlastnost com.ibm.websphere.productInstall v zadan\u00e9m souboru vlastnost\u00ed roz\u0161\u00ed\u0159en\u00ed produktu, aby nebyla stejn\u00e1 jako wlp.install.dir.
+
+BUNDLE_EXCEPTION_ERROR=CWWKF0029E: {0}
+BUNDLE_EXCEPTION_ERROR.explanation=V r\u00e1mci OSGi do\u0161lo k v\u00fdjimce BundleException.
+BUNDLE_EXCEPTION_ERROR.useraction=Informace naleznete ve zpr\u00e1v\u011b v\u00fdjimky.
+
+INVALID_START_PHASE_WARNING=CWWKF0030W: F\u00e1ze spu\u0161t\u011bn\u00ed {0} zadan\u00e1 v bal\u00edku {1} ve funkci {2} nen\u00ed platn\u00e1.
+INVALID_START_PHASE_WARNING.explanation=Byla zad\u00e1na neplatn\u00e1 hodnota pro f\u00e1zi spu\u0161t\u011bn\u00ed.
+INVALID_START_PHASE_WARNING.useraction=Zadejte platnou hodnotu pro f\u00e1zi spu\u0161t\u011bn\u00ed. 
+
+FEATURE_NOT_INSTALLED=CWWKF0031I: Server p\u0159esko\u010dil zaveden\u00ed funkce {0}, proto\u017ee ji\u017e existuje ekvivalentn\u00ed funk\u010dnost.
+FEATURE_NOT_INSTALLED.explanation=Jsou-li v souboru server.xml v\u00fdslovn\u011b zadan\u00e9 dv\u011b verze stejn\u00e9 funkce nebo kdy\u017e soubor server.xml ur\u010duje funkce, kter\u00e9 zahrnuj\u00ed podp\u016frn\u00e9 funkce s duplicitn\u00ed funk\u010dnost\u00ed, p\u0159esko\u010d\u00ed server na\u010dten\u00ed druh\u00e9 verze.
+FEATURE_NOT_INSTALLED.useraction=Jsou-li v souboru server.xml v\u00fdslovn\u011b uveden\u00e9 dv\u011b verze stejn\u00e9 funkce, odstra\u0148te verzi, kterou nepo\u017eadujete.
+
+FEATURE_JAVA_LEVEL_NOT_MET_ERROR=CWWKF0032E: Funkce {0} vy\u017eaduje prost\u0159ed\u00ed Java Runtime Environment s verz\u00ed minim\u00e1ln\u011b {1}.
+FEATURE_JAVA_LEVEL_NOT_MET_ERROR.explanation=Chcete-li pou\u017e\u00edvat uvedenou funkci, mus\u00edte m\u00edt uvedenou verzi prost\u0159ed\u00ed Java Runtime Environment, p\u0159\u00edpadn\u011b nov\u011bj\u0161\u00ed.
+FEATURE_JAVA_LEVEL_NOT_MET_ERROR.useraction=P\u0159eve\u010fte prost\u0159ed\u00ed Java Runtime Environment na uvedenou verzi nebo nov\u011bj\u0161\u00ed.
+
+UPDATE_CONFLICT_FEATURE_ERROR=CWWKF0033E: Funkce typu singleton {0} a {1} nelze na\u010d\u00edst sou\u010dasn\u011b. Nakonfigurovan\u00e9 funkce {2} a {3} zahrnuj\u00ed minim\u00e1ln\u011b jednu funkci, kter\u00e1 zp\u016fsobuje konflikt. Va\u0161e konfigurace nen\u00ed podporov\u00e1na. Aktualizujte server.xml, aby se odebraly nekompatibiln\u00ed funkce.
+UPDATE_CONFLICT_FEATURE_ERROR.explanation=V\u00edce verz\u00ed funkce typu singleton nelze na\u010d\u00edst sou\u010dasn\u011b. K tomuto konfliktu doch\u00e1z\u00ed, jsou-li dv\u011b verze funkce typu singleton p\u0159\u00edmo nakonfigurov\u00e1ny v konfiguraci serveru. Nebo pokud nakonfigurovan\u00e9 funkce zahrnuj\u00ed jin\u00e9 verze funkce typu singleton, ale nejsou schopn\u00e9 tolerovat b\u011b\u017enou verzi funkce typu singleton.
+UPDATE_CONFLICT_FEATURE_ERROR.useraction=Pokuste se zadat do souboru server.xml jinou verzi nakonfigurovan\u00fdch funkc\u00ed, kter\u00e9 zp\u016fsobuj\u00ed konflikt. Pokud nem\u00e1te k dispozici jin\u00e9 verze, nejsou nakonfigurovan\u00e9 funkce mezi sebou kompatibiln\u00ed a nelze je sou\u010dasn\u011b nakonfigurovat.
+
+FEATURES_ADDED_CLIENT=CWWKF0034I: Klient nainstaloval n\u00e1sleduj\u00edc\u00ed funkce: {0}.
+FEATURES_ADDED_CLIENT.explanation=Klient nainstaloval sadu funkc\u00ed.
+FEATURES_ADDED_CLIENT.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+CLIENT_STARTED=CWWKF0035I: Klient {0} je spu\u0161t\u011bn.
+CLIENT_STARTED.explanation=Klient byl \u00fasp\u011b\u0161n\u011b spu\u0161t\u011bn.
+CLIENT_STARTED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#Required feature gather query messages
+SERVER_GATHER_FEATURES=CWWKF0036I: Server {0} dokon\u010dil shroma\u017e\u010fov\u00e1n\u00ed seznamu nezbytn\u00fdch funkc\u00ed.
+SERVER_GATHER_FEATURES.explanation=Server sestavil seznam nezbytn\u00fdch funkc\u00ed.
+SERVER_GATHER_FEATURES.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+#End required feature gather query messages
+
+UPDATE_NOT_PUBLIC_FEATURE_CLIENT_ERROR=CWWKF0037E: Funkce {0} ur\u010den\u00e1 v souboru client.xml nen\u00ed ve\u0159ejnou funkc\u00ed, proto ji klient nespust\u00ed.
+UPDATE_NOT_PUBLIC_FEATURE_CLIENT_ERROR.explanation=Ur\u010dit m\u016f\u017eete pouze ve\u0159ejn\u00e9 funkce v souboru client.xml.
+UPDATE_NOT_PUBLIC_FEATURE_CLIENT_ERROR.useraction=Zm\u011b\u0148te konfiguraci klienta zad\u00e1n\u00edm ve\u0159ejn\u00e9 funkce, kter\u00e1 poskytuje po\u017eadovanou funkci. Vyv\u00edj\u00edte-li funkci, kterou budou u\u017eivatel\u00e9 zad\u00e1vat ve sv\u00e9 konfiguraci klienta, zm\u011b\u0148te funkci tak, aby m\u011bla ve\u0159ejnou viditelnost p\u0159id\u00e1n\u00edm visibility=public jako atributu k Subsystem-SymbolicName pro tuto funkci.
+
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_ERROR=CWWKF0038E: Funkce {0}, kter\u00e1 je ur\u010dena v souboru {1}, podporuje pouze typy procesu klienta, co\u017e znamen\u00e1, \u017ee se tato funkce nespust\u00ed procesem serveru.
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_ERROR.explanation=Zkonfigurovan\u00e1 funkce nepodporuje ur\u010den\u00fd typ procesu.
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_ERROR.useraction=Odeberte funkci z konfigurace nebo zm\u011b\u0148te soubor typu manifest funkce, abyste povolili podporu pro po\u017eadovan\u00fd typ procesu.
+
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_ERROR=CWWKF0039E: Funkce {0} podporuje pouze typy procesu klienta, co\u017e bude m\u00edt za n\u00e1sledek, \u017ee se tato funkce nespust\u00ed procesem serveru. Funkce {1}, kter\u00e1 je ur\u010dena v souboru {2}, nemus\u00ed spr\u00e1vn\u011b pracovat kv\u016fli z\u00e1vislosti na funkci {0}.
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_ERROR.explanation=Zkonfigurovan\u00e1 funkce nepodporuje ur\u010den\u00fd typ procesu.
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_ERROR.useraction=Odeberte funkci z konfigurace nebo zm\u011b\u0148te soubor typu manifest funkce, abyste povolili podporu pro po\u017eadovan\u00fd typ procesu.
+
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_CLIENT_ERROR=CWWKF0040E: Funkce {0}, kter\u00e1 je ur\u010dena v souboru {1}, podporuje pouze typy procesu serveru, co\u017e bude m\u00edt za n\u00e1sledek, \u017ee se tato funkce nespust\u00ed procesem klienta.
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_CLIENT_ERROR.explanation=Zkonfigurovan\u00e1 funkce nepodporuje ur\u010den\u00fd typ procesu.
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_CLIENT_ERROR.useraction=Odeberte funkci z konfigurace nebo zm\u011b\u0148te soubor typu manifest funkce, abyste povolili podporu pro po\u017eadovan\u00fd typ procesu.
+
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR=CWWKF0041E: Funkce {0} podporuje pouze typy procesu serveru, co\u017e bude m\u00edt za n\u00e1sledek, \u017ee se tato funkce nespust\u00ed procesem klienta. Funkce {1}, kter\u00e1 je ur\u010dena v souboru {2}, nemus\u00ed spr\u00e1vn\u011b pracovat kv\u016fli z\u00e1vislosti na funkci {0}.
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.explanation=Zkonfigurovan\u00e1 funkce nepodporuje ur\u010den\u00fd typ procesu.
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.useraction=Odeberte funkci z konfigurace nebo zm\u011b\u0148te soubor typu manifest funkce, abyste povolili podporu pro po\u017eadovan\u00fd typ procesu.
+
+# CWWK042E  {0} = feature Name: {1} = server name 
+UPDATE_MISSING_CORE_FEATURE_ERROR=CWWKF0042E: Nelze naj\u00edt definici funkce pro funkci {0}. Zkuste spustit p\u0159\u00edkaz bin/installUtility install {0} a funkci nainstalovat. P\u0159\u00edpadn\u011b \
+m\u016f\u017eete spustit p\u0159\u00edkaz bin/installUtility install {1} a nainstalovat v\u0161echny funkce, na kter\u00e9 tato konfigurace odkazuje.
+UPDATE_MISSING_CORE_FEATURE_ERROR.explanation=Spr\u00e1vce funkce nemohl nal\u00e9zt definici zadan\u00e9 funkce.
+UPDATE_MISSING_CORE_FEATURE_ERROR.useraction=Zkontrolujte, zda je n\u00e1zev uveden\u00e9 funkce naps\u00e1n spr\u00e1vn\u011b. \
+Tak\u00e9 zkontrolujte, zda definice funkce existuje v adres\u00e1\u0159i lib/features a je \u010diteln\u00e1. \
+Pokud funkce neexistuje, zkuste spustit p\u0159\u00edkaz bin/installUtility install n\u00e1zev_funkce a funkci nainstalovat, nebo zkuste spustit p\u0159\u00edkaz bin/installUtility install n\u00e1zev_serveru a nainstalovat \
+v\u0161echny funkce, na kter\u00e9 odkazuje tato konfigurace. 
+
+#   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
+
+tool.feature.exists=CWWKF1000I: Funkce {0} ji\u017e existuje. Nebude p\u0159einstalov\u00e1na. Chcete-li upravit existuj\u00edc\u00ed funkci, mus\u00edte ji nejprve ru\u010dn\u011b odinstalovat.
+tool.feature.exists.explanation=Instalovan\u00e1 funkce ji\u017e existuje.
+tool.feature.exists.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+tool.missing.args=CWWKF1001E: {0} vy\u017eaduje argumenty v po\u010dtu: {1}, p\u0159ed\u00e1ny v\u0161ak byly argumenty v po\u010dtu: {2}.
+tool.missing.args.explanation=K vyvol\u00e1n\u00ed akce byl pou\u017eit nespr\u00e1vn\u00fd po\u010det argument\u016f.
+tool.missing.args.useraction=Zopakujte spu\u0161t\u011bn\u00ed p\u0159\u00edkazu se spr\u00e1vn\u00fdmi argumenty.
+tool.unknown.options=CWWKF1002E: {0} nepodporuje volby: {1}.
+tool.unknown.options.explanation=Do\u0161lo k pokusu o spu\u0161t\u011bn\u00ed p\u0159\u00edkazu s pou\u017eit\u00edm neplatn\u00fdch argument\u016f.
+tool.unknown.options.useraction=Zopakujte spu\u0161t\u011bn\u00ed p\u0159\u00edkazu bez neplatn\u00fdch argument\u016f.
+
+tool.install.bad.extension=CWWKF1003E: Roz\u0161\u00ed\u0159en\u00ed produktu {0} neexistuje.
+tool.install.bad.extension.explanation=Roz\u0161\u00ed\u0159en\u00ed produktu, do n\u011bho\u017e m\u00e1 b\u00fdt funkce instalov\u00e1na, nen\u00ed registrov\u00e1no.
+tool.install.bad.extension.useraction=Nainstalujte funkci do roz\u0161\u00ed\u0159en\u00ed produktu, kter\u00e9 je nainstalov\u00e1no, nebo registrujte chyb\u011bj\u00edc\u00ed roz\u0161\u00ed\u0159en\u00ed produktu.
+tool.install.invalid.extension=CWWKF1004E: Roz\u0161\u00ed\u0159en\u00ed produktu {0} neur\u010duje um\u00edst\u011bn\u00ed.
+tool.install.invalid.extension.explanation=Roz\u0161\u00ed\u0159en\u00ed produktu nebylo nalezeno, proto\u017ee registra\u010dn\u00ed soubor neobsahuje um\u00edst\u011bn\u00ed.
+tool.install.invalid.extension.useraction=Opravte registraci roz\u0161\u00ed\u0159en\u00ed produktu tak, aby obsahovala um\u00edst\u011bn\u00ed tohoto roz\u0161\u00ed\u0159en\u00ed.
+tool.install.ioexception.extension=CWWKF1005E: Do\u0161lo k neo\u010dek\u00e1van\u00e9 chyb\u011b p\u0159i \u010dten\u00ed roz\u0161\u00ed\u0159en\u00ed produktu {0}, v\u00fdjimka: {1}
+tool.install.ioexception.extension.explanation=Do\u0161lo k neo\u010dek\u00e1van\u00e9 chyb\u011b pro pokusu o \u010dten\u00ed ze souboru vlastnost\u00ed pro roz\u0161\u00ed\u0159en\u00ed produktu uveden\u00fd v chybov\u00e9 zpr\u00e1v\u011b.
+tool.install.ioexception.extension.useraction=Zkontrolujte zpr\u00e1vu v\u00fdjimky, abyste zjistili, pro\u010d nen\u00ed mo\u017en\u00e9 ze souboru \u010d\u00edst, a operaci opakujte.
+tool.install.no.dir=CWWKF1006E: Funkci nelze instalovat, proto\u017ee adres\u00e1\u0159 {0} neexistuje.
+tool.install.no.dir.explanation=Adres\u00e1\u0159 roz\u0161\u00ed\u0159en\u00ed produktu neexistuje, a proto do n\u011bj nelze instalovat funkci.
+tool.install.no.dir.useraction=Zajist\u011bte, aby adres\u00e1\u0159 existoval, a zopakujte pokus o instalaci funkce.
+tool.install.download.esa=CWWKF1007E: Do\u0161lo k chyb\u011b p\u0159i stahov\u00e1n\u00ed archivu subsyst\u00e9mu do {0}, v\u00fdjimka {1}
+tool.install.download.esa.explanation=Do\u0161lo k chyb\u011b p\u0159i stahov\u00e1n\u00ed archivu subsyst\u00e9mu. P\u0159\u00ed\u010dinou m\u016f\u017ee b\u00fdt neplatn\u00e1 adresa URL nebo do\u010dasn\u00fd probl\u00e9m se s\u00edt\u00ed. Druh\u00e1 v\u011bta chybov\u00e9 zpr\u00e1vy m\u016f\u017ee obsahovat podrobn\u011bj\u0161\u00ed informace o p\u0159\u00ed\u010din\u011b chyby.
+tool.install.download.esa.useraction=Zkontrolujte spr\u00e1vnost adresy URL archivu subsyst\u00e9mu a zopakujte operaci.
+tool.install.download.tmpFile=CWWKF1008E: Nelze vytvo\u0159it do\u010dasn\u00fd soubor ke sta\u017een\u00ed archivu subsyst\u00e9mu, v\u00fdjimka {0}
+tool.install.download.tmpFile.explanation=Operace instalace funkce stahuje archiv subsyst\u00e9mu do do\u010dasn\u00e9ho souboru, av\u0161ak tento do\u010dasn\u00fd soubor nelze vytvo\u0159it. To je pravd\u011bpodobn\u011b zp\u016fsobeno ur\u010dit\u00fdm omezen\u00edm po\u010d\u00edta\u010de. Druh\u00e1 v\u011bta chybov\u00e9 zpr\u00e1vy m\u016f\u017ee obsahovat podrobn\u011bj\u0161\u00ed informace o p\u0159\u00ed\u010din\u011b chyby.
+tool.install.download.tmpFile.useraction=Je mo\u017en\u00e9, \u017ee do\u0161lo k zapln\u011bn\u00ed do\u010dasn\u00e9ho syst\u00e9mu soubor\u016f. V takov\u00e9m p\u0159\u00edpad\u011b vy\u0159e\u0161\u00edte probl\u00e9m vymaz\u00e1n\u00edm dat v tomto um\u00edst\u011bn\u00ed.
+tool.install.file.notexist=CWWKF1009E: Soubor {0} neexistuje.
+tool.install.file.notexist.explanation=Soubor archivu subsyst\u00e9mu poskytnut\u00fd operaci instalace neexistuje.
+tool.install.file.notexist.useraction=Zajist\u011bte spr\u00e1vn\u00e9 zad\u00e1n\u00ed n\u00e1zvu souboru archivu subsyst\u00e9mu a zopakujte spu\u0161t\u011bn\u00ed operace instalace.
+tool.install.file.notafile=CWWKF1010E: {0} nen\u00ed souborem.
+tool.install.file.notafile.explanation=Zadan\u00fd n\u00e1zev souboru identifikuje adres\u00e1\u0159, a nikoli archiv subsyst\u00e9mu.
+tool.install.file.notafile.useraction=Zajist\u011bte spr\u00e1vn\u00e9 zad\u00e1n\u00ed n\u00e1zvu souboru archivu subsyst\u00e9mu a zopakujte spu\u0161t\u011bn\u00ed operace instalace.
+tool.install.missing.feature=CWWKF1011E: Funkce {0} z\u00e1vis\u00ed na funkci {1}, kter\u00e1 nen\u00ed nainstalov\u00e1na.
+tool.install.missing.feature.explanation=Instalovan\u00e1 funkce z\u00e1vis\u00ed na jin\u00fdch funkc\u00edch, kter\u00e9 dosud nejsou instalov\u00e1ny. Funkci nelze pou\u017e\u00edvat, dokud nebudou nainstalov\u00e1ny funkce uveden\u00e9 v chybov\u00e9 zpr\u00e1v\u011b.
+tool.install.missing.feature.useraction=Nainstalujte chyb\u011bj\u00edc\u00ed funkci a spus\u0165te instalaci znovu.
+tool.install.missing.content=CWWKF1012E: Prost\u0159edek {0} neexistuje v archivu subsyst\u00e9mu v um\u00edst\u011bn\u00ed {1}.
+tool.install.missing.content.explanation=P\u0159i zpracov\u00e1v\u00e1n\u00ed obsahu subsyst\u00e9mu byl zji\u0161t\u011bn odkaz na soubor, kter\u00fd se v\u0161ak v archivu nenal\u00e9z\u00e1.
+tool.install.missing.content.useraction=Obra\u0165te se na autora subsyst\u00e9mu a po\u017e\u00e1dejte jej o aktualizovan\u00fd archiv obsahuj\u00edc\u00ed nezbytn\u00fd obsah.
+tool.install.content.notfound=CWWKF1013E: Obsah {0} v subsyst\u00e9mu nebyl nalezen v archivu subsyst\u00e9mu.
+tool.install.content.notfound.explanation=P\u0159i zpracov\u00e1n\u00ed obsahu subsyst\u00e9mu n\u011bkter\u00e9 povinn\u00e9 bal\u00edky nebyly nalezeny v archivu subsyst\u00e9mu.
+tool.install.content.notfound.useraction=Obra\u0165te se na autora subsyst\u00e9mu a po\u017e\u00e1dejte jej o aktualizovan\u00fd archiv obsahuj\u00edc\u00ed nezbytn\u00fd obsah.
+tool.install.bad.zip=CWWKF1014E: Do\u0161lo k chyb\u011b p\u0159i \u010dten\u00ed souboru archivu {0}, v\u00fdjimka {1}
+tool.install.bad.zip.explanation=Nelze \u010d\u00edst archiv subsyst\u00e9mu.
+tool.install.bad.zip.useraction=Ov\u011b\u0159te platnost a \u00faplnost archivu subsyst\u00e9mu. Nen\u00ed-li platn\u00fd, po\u017e\u00e1dejte poskytovatele o \u010derstv\u00fd archiv.
+tool.install.file.exists=CWWKF1015E: Soubor {0} ji\u017e existuje.
+tool.install.file.exists.explanation=Instalace archivu subsyst\u00e9mu se nezda\u0159ila, proto\u017ee ur\u010dit\u00fd soubor z archivu ji\u017e existuje v instalaci.
+tool.install.file.exists.useraction=Zkontrolujte soubory, kter\u00e9 ji\u017e existuj\u00ed. M\u016f\u017ee-li operace instalace pokra\u010dovat, zopakujte jej\u00ed spu\u0161t\u011bn\u00ed s volbou --when-file-exists=replace, kter\u00e1 zajist\u00ed p\u0159eps\u00e1n\u00ed existuj\u00edc\u00edch soubor\u016f, nebo s volbou --when-file-exists=ignore, kter\u00e1 bude pokra\u010dovat beze zm\u011bny existuj\u00edc\u00edho souboru.
+tool.install.dir.create.fail=CWWKF1016E: Nelze vytvo\u0159it adres\u00e1\u0159ovou strukturu {0}.
+tool.install.dir.create.fail.explanation=Adres\u00e1\u0159e po\u017eadovan\u00e9 instalovanou funkc\u00ed nelze vytvo\u0159it.
+tool.install.dir.create.fail.useraction=Ujist\u011bte se, \u017ee adres\u00e1\u0159 poskytovatele existuje a nezbytn\u00e1 opr\u00e1vn\u011bn\u00ed jsou na m\u00edst\u011b, aby bylo mo\u017en\u00e9 vytvo\u0159it adres\u00e1\u0159ovou strukturu. Znovu spus\u0165te operaci instalace.
+tool.install.feature.ok=CWWKF1017I: Minim\u00e1ln\u011b jedna funkce byla nainstalov\u00e1na \u00fasp\u011b\u0161n\u011b: {0}.
+tool.install.feature.ok.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+tool.install.feature.ok.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+tool.install.invalid.when.file.exists.value=CWWKF1018E: Hodnota {0} nen\u00ed platnou hodnotou pro volbu --when-file-exists. Platn\u00e9 hodnoty: fail, replace a ignore.
+tool.install.invalid.when.file.exists.value.explanation=Volba --when-file-exists mus\u00ed m\u00edt hodnotu fail, replace nebo ignore.
+tool.install.invalid.when.file.exists.value.useraction=Zadejte jednu z platn\u00fdch hodnot, tj. fail, replace nebo ignore.
+tool.product.ext.features.not.found=CWWKF1019E: Roz\u0161\u00ed\u0159en\u00ed produktu {0} neobsahuje \u017e\u00e1dn\u00e9 funkce.
+tool.product.ext.features.not.found.explanation=Nelze naj\u00edt soubory typu manifest funkce p\u0159idru\u017een\u00e9 k ur\u010den\u00e9mu roz\u0161\u00ed\u0159en\u00ed produktu.
+tool.product.ext.features.not.found.useraction=Ov\u011b\u0159te, \u017ee adres\u00e1\u0159, kde jsou soubory typu manifest funkce um\u00edst\u011bny, je platn\u00fd.
+tool.product.ext.not.found=CWWKF1020E: Roz\u0161\u00ed\u0159en\u00ed produktu {0} nelze naj\u00edt v um\u00edst\u011bn\u00ed {1}.
+tool.product.ext.not.found.explanation=Roz\u0161\u00ed\u0159en\u00ed produktu nelze v uveden\u00e9m um\u00edst\u011bn\u00ed naj\u00edt.
+tool.product.ext.not.found.useraction=Ov\u011b\u0159te, \u017ee um\u00edst\u011bn\u00ed instalace produktu je spr\u00e1vn\u011b definov\u00e1no v souboru vlastnost\u00ed pro instalaci produktu.
+tool.product.ext.not.defined=CWWKF1021E: Roz\u0161\u00ed\u0159en\u00ed produktu s n\u00e1zvem {0} neexistuje.
+tool.product.ext.not.defined.explanation=Roz\u0161\u00ed\u0159en\u00ed produktu se zadan\u00fdm n\u00e1zvem neexistuje.
+tool.product.ext.not.defined.useraction=Ov\u011b\u0159te, \u017ee je zadan\u00fd n\u00e1zev roz\u0161\u00ed\u0159en\u00ed produktu platn\u00fd.
+tool.install.content.no.subsystem.manifest=CWWKF1022E: Soubor OSGI-INF/SUBSYSTEM.MF nelze v archivu naj\u00edt.
+tool.install.content.no.subsystem.manifest.explanation=Archiv subsyst\u00e9mu neobsahuje soubor OSGI-INF/SUBSYSTEM.MF, kter\u00fd obsahuje metadata o subsyst\u00e9mu.
+tool.install.content.no.subsystem.manifest.useraction=P\u0159idejte do archivu soubor OSGI-INF/SUBSYSTEM.MF.
+# {0} is the path to the file being used
+tool.install.two.subsystem.manifests=CWWKF1023W: Existuj\u00ed dva soubory s cestou OSGI-INF/SUBSYSTEM.MF, ale li\u0161\u00ed se kombinac\u00ed velikosti p\u00edsmen. Bude pou\u017eit soubor {0}. 
+tool.install.two.subsystem.manifests.explanation=K definici souboru mus\u00edte pou\u017e\u00edt pouze jeden soubor OSGI-INF/SUBSYSTEM.MF, ale archiv obsahuje dva soubory OSGI-INF/SUBSYSTEM.MF, kter\u00e9 jsou zad\u00e1ny jinou kombinac\u00ed velk\u00fdch a mal\u00fdch p\u00edsmen.
+tool.install.two.subsystem.manifests.useraction=Jeden ze soubor\u016f SUBSYSTEM.MF odstra\u0148te.
+
+# {0} is the path to the (missing) feature directory
+tool.feature.dir.not.found=CWWKF1024E: P\u0159\u00edkaz featureManager nenalezl adres\u00e1\u0159 features, ani jej nemohl vytvo\u0159it na cest\u011b k adres\u00e1\u0159i {0}.
+tool.feature.dir.not.found.explanation=Adres\u00e1\u0159 features pro tento server neexistuje. M\u00edsto adres\u00e1\u0159e s n\u00e1zvem features mohl b\u00fdt ne\u00famysln\u011b vytvo\u0159en soubor.   P\u0159\u00edkaz featureManager se pokusil vytvo\u0159it adres\u00e1\u0159 features, ale nedok\u00e1zal to. Kdy\u017e nen\u00ed mo\u017en\u00e9 vytvo\u0159it adres\u00e1\u0159 features, u\u017eivateli \u010dasto chyb\u00ed opr\u00e1vn\u011bn\u00ed k z\u00e1pisu pro cestu k adres\u00e1\u0159i. 
+tool.feature.dir.not.found.useraction=Prove\u010fte n\u011bkterou z t\u011bchto akc\u00ed: (1) Vytvo\u0159te uveden\u00fd adres\u00e1\u0159 ru\u010dn\u011b a znovu spus\u0165te p\u0159\u00edkaz featureManager. (2) Znovu spus\u0165te p\u0159\u00edkaz featureManager jako u\u017eivatel s p\u0159\u00edstupem pro z\u00e1pis na ur\u010denou cestu k adres\u00e1\u0159i. 
+
+tool.find.view.info.name=\ \ \ \ N\u00e1zev: {0}
+tool.find.view.info.symbolic.name=\ \ \ \ Symbolick\u00fd n\u00e1zev: {0}
+tool.find.view.info.description=\ \ \ \ Popis: {0}
+tool.find.view.info.enabled.by=\ \ \ \ Povoleno pomoc\u00ed:
+tool.find.no.feature=Nebyla nalezena \u017e\u00e1dn\u00e1 funkce.
+
+tool.missing.option=CWWKF1025E: Akce {0} vy\u017eaduje volbu {1}, ale tato povinn\u00e1 volba nebyla zad\u00e1na.
+tool.missing.option.explanation=Do\u0161lo k pokusu spustit p\u0159\u00edkaz bez zad\u00e1n\u00ed povinn\u00e9 volby.
+tool.missing.option.useraction=Spus\u0165te p\u0159\u00edkaz znovu s povinnou volbou.
+
+tool.classpath.feature.not.found=CWWKF1026E: Funkce {0} neexistuje.
+tool.classpath.feature.not.found.explanation=Byla uvedena funkce, kter\u00e1 neexistuje.
+tool.classpath.feature.not.found.useraction=Spus\u0165te p\u0159\u00edkaz znovu, ani\u017e byste zadali tuto funkci. 
+
+tool.classpath.feature.not.public=CWWKF1027E: Funkce {0} nen\u00ed ve\u0159ejn\u00e1.
+tool.classpath.feature.not.public.explanation=Uveden\u00e1 funkce nen\u00ed ve\u0159ejn\u00e1.
+tool.classpath.feature.not.public.useraction=Spus\u0165te p\u0159\u00edkaz znovu, ani\u017e byste zadali tuto funkci.
+
+tool.classpath.wrong.drive=CWWKF1028E: V\u00fdstupn\u00ed soubor {0} se mus\u00ed nach\u00e1zet na stejn\u00e9 jednotce jako soubor {1}.
+tool.classpath.wrong.drive.explanation=V\u00fdstupn\u00ed soubor se mus\u00ed nach\u00e1zet na stejn\u00e9 jednotce jako v\u0161echny soubory, na kter\u00e9 se odkazuj\u00ed uveden\u00e9 funkce.
+tool.classpath.wrong.drive.useraction=Spus\u0165te p\u0159\u00edkaz znovu s v\u00fdstupn\u00edm souborem, kter\u00fd je um\u00edst\u011bn na stejn\u00e9 jednotce jako uveden\u00fd soubor.
+
+tool.classpath.create.fail=CWWKF1029E: V\u00fdstupn\u00ed soubor {0} nelze vytvo\u0159it. Byla p\u0159ijata n\u00e1sleduj\u00edc\u00ed chyba: {1}
+tool.classpath.create.fail.explanation=P\u0159i vytv\u00e1\u0159en\u00ed v\u00fdstupn\u00edho souboru do\u0161lo k chyb\u011b.
+tool.classpath.create.fail.useraction=P\u0159e\u010dt\u011bte si chybovou zpr\u00e1vu, opravte probl\u00e9m a znovu spus\u0165te p\u0159\u00edkaz. 
+
+tool.userfeature.install.location.invalid=CWWKF1036E: U\u017eivatelskou funkci {0} nelze instalovat do j\u00e1dra.
+tool.userfeature.install.location.invalid.explanation= U\u017eivatelsk\u00e1 funkce nen\u00ed funkc\u00ed j\u00e1dra, proto nem\u016f\u017ee b\u00fdt instalov\u00e1na do j\u00e1dra.
+tool.userfeature.install.location.invalid.useraction= U\u017eivatelskou funkci nainstalujte do usr. 
+

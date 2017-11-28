@@ -1,0 +1,73 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.server/resources/com/ibm/ws/jmx/connector/server/internal/resources/FileTransferServerMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX JMX REST Connector
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKX0121 - CWWKX0199
+
+SERVER_ACCESS_DENIED_ERROR=CWWKX0121E: P\u0159\u00edstup zam\u00edtnut k cest\u011b {0}.
+SERVER_ACCESS_DENIED_ERROR.explanation=Do\u0161lo k pokusu o p\u0159\u00edstup k cest\u011b, kter\u00e1 je mimo nakonfigurovanou oblast \u010dten\u00ed/z\u00e1pisu.
+SERVER_ACCESS_DENIED_ERROR.useraction=Opravte cestu, aby ozna\u010dovala cestu nach\u00e1zej\u00edc\u00ed se v konfigurovan\u00e9 oblasti \u010dten\u00ed/z\u00e1pisu.
+
+OSGI_SERVICE_ERROR=CWWKX0122E: Slu\u017eba OSGi {0} nen\u00ed k dispozici.
+OSGI_SERVICE_ERROR.explanation=Toto je intern\u00ed chyba serveru vygenerovan\u00e1 v d\u016fsledku nedostupnosti uveden\u00e9 slu\u017eby.
+OSGI_SERVICE_ERROR.useraction=Restartujte server s volbou "clean".
+
+DOWNLOAD_REQUEST_COMPLETE_INFO=CWWKX0123I: Po\u017eadavek sta\u017een\u00ed souboru {0} byl \u00fasp\u011b\u0161n\u011b dokon\u010den.
+DOWNLOAD_REQUEST_COMPLETE_INFO.explanation=Po\u017eadavek sta\u017een\u00ed uveden\u00e9ho souboru byl \u00fasp\u011b\u0161n\u011b dokon\u010den.
+DOWNLOAD_REQUEST_COMPLETE_INFO.useraction=Toto je informativn\u00ed zpr\u00e1va a nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+UPLOAD_REQUEST_COMPLETE_INFO=CWWKX0124I: Po\u017eadavek odesl\u00e1n\u00ed souboru {0} byl \u00fasp\u011b\u0161n\u011b dokon\u010den.
+UPLOAD_REQUEST_COMPLETE_INFO.explanation=Po\u017eadavek odesl\u00e1n\u00ed uveden\u00e9ho souboru byl \u00fasp\u011b\u0161n\u011b dokon\u010den.
+UPLOAD_REQUEST_COMPLETE_INFO.useraction=Toto je informativn\u00ed zpr\u00e1va a nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+DELETE_REQUEST_COMPLETE_INFO=CWWKX0125I: Po\u017eadavek odstran\u011bn\u00ed souboru {0} byl \u00fasp\u011b\u0161n\u011b dokon\u010den.
+DELETE_REQUEST_COMPLETE_INFO.explanation=Po\u017eadavek odstran\u011bn\u00ed uveden\u00e9ho souboru byl \u00fasp\u011b\u0161n\u011b dokon\u010den.
+DELETE_REQUEST_COMPLETE_INFO.useraction=Toto je informativn\u00ed zpr\u00e1va a nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+DELETE_REQUEST_ERROR=CWWKX0126E: Po\u017eadavek odstran\u011bn\u00ed souboru {0} nelze dokon\u010dit.
+DELETE_REQUEST_ERROR.explanation=Po\u017eadavek odstran\u011bn\u00ed uveden\u00e9ho souboru nebyl \u00fasp\u011b\u0161n\u00fd, soubor mo\u017en\u00e1 pou\u017e\u00edv\u00e1 jin\u00fd proces.
+DELETE_REQUEST_ERROR.useraction=Ov\u011b\u0159te, zda souboru nen\u00ed pou\u017e\u00edv\u00e1n jin\u00fdm procesem a zda existuj\u00ed p\u0159\u00edslu\u0161n\u00e1 opr\u00e1vn\u011bn\u00ed, kter\u00e1 umo\u017e\u0148uj\u00ed odstran\u011bn\u00ed souboru.
+
+PATH_NOT_VALID=CWWKX0127E: Cesta {0} nen\u00ed platn\u00e1.
+PATH_NOT_VALID.explanation=Zadan\u00e1 cesta nen\u00ed platn\u00e1 a nebylo mo\u017en\u00e9 ji vyhledat.
+PATH_NOT_VALID.useraction=Ujist\u011bte se, \u017ee je zad\u00e1na platn\u00e1 cesta neobsahuj\u00edc\u00ed \u017e\u00e1dn\u00e9 neplatn\u00e9 znaky nebo hodnoty.
+
+NO_WRITE_LOCATION=CWWKX0128E: Na serveru pro sm\u011brov\u00e1n\u00ed nejsou nakonfigurov\u00e1na \u017e\u00e1dn\u00e1 um\u00edst\u011bn\u00ed, do nich\u017e lze zapisovat.
+NO_WRITE_LOCATION.explanation=Na serveru pro sm\u011brov\u00e1n\u00ed nejsou nakonfigurov\u00e1na \u017e\u00e1dn\u00e1 um\u00edst\u011bn\u00ed, do nich\u017e lze zapisovat.
+NO_WRITE_LOCATION.useraction=Zajist\u011bte na serveru pro sm\u011brov\u00e1n\u00ed nakonfigurov\u00e1n\u00ed alespo\u0148 jednoho um\u00edst\u011bn\u00ed, do n\u011bho\u017e by bylo mo\u017en\u00e9 zapisovat.
+
+UPLOAD_EXPANSION_ERROR=CWWKX0129E: P\u0159enesen\u00fd archiv {0} nelze rozbalit.
+UPLOAD_EXPANSION_ERROR.explanation=Roz\u0161\u00ed\u0159en\u00ed pro zadan\u00fd p\u0159enesen\u00fd archiv nelze dokon\u010dit.
+UPLOAD_EXPANSION_ERROR.useraction=Ujist\u011bte se, \u017ee archiv nen\u00ed po\u0161kozen\u00fd.
+
+ARCHIVE_EXPANDER_ERROR=CWWKX0130E: Nelze nal\u00e9zt obslu\u017en\u00fd program expanderu archivu.
+ARCHIVE_EXPANDER_ERROR.explanation=Nelze naj\u00edt nezbytn\u00fd obslu\u017en\u00fd program expanderu archivu.
+ARCHIVE_EXPANDER_ERROR.useraction=Ujist\u011bte se, \u017ee instala\u010dn\u00ed adres\u00e1\u0159 profilu Liberty nen\u00ed po\u0161kozen.
+
+UNKNOWN_TASK_ID_ERROR=CWWKX0131E: \u00daloha s ID {0} nebyla nalezena.
+UNKNOWN_TASK_ID_ERROR.explanation=Poskytnut\u00fd identifik\u00e1tor neodpov\u00edd\u00e1 \u017e\u00e1dn\u00fdm aktu\u00e1ln\u011b zadr\u017een\u00fdm \u00faloh\u00e1m v registru \u00faloh.
+UNKNOWN_TASK_ID_ERROR.useraction=Dot\u00e1zejte se na platn\u00fd identifik\u00e1tor, kter\u00fd je\u0161t\u011b nebyl recyklov\u00e1n.
+
+INVALID_ACTION_OPTIONS=CWWKX0132E: Volby akce n\u00e1sleduj\u00edc\u00ed po p\u0159enosu {0} nejsou platn\u00e9.
+INVALID_ACTION_OPTIONS.explanation=Volby akce n\u00e1sleduj\u00edc\u00ed po p\u0159enosu mus\u00ed m\u00edt hodnotu null, b\u00fdt pr\u00e1zdn\u00e9 nebo mus\u00ed j\u00edt o seznam hodnot odd\u011blen\u00fdch \u010d\u00e1rkou o stejn\u00e9 d\u00e9lce, jako m\u00e1 seznam akc\u00ed.
+INVALID_ACTION_OPTIONS.useraction=Zkontrolujte, zda volby akce n\u00e1sleduj\u00edc\u00ed po p\u0159enosu obsahuj\u00ed platnou hodnotu.

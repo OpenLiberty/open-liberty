@@ -1,0 +1,499 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.processor.CWSJUMessages.nlsprops
+#
+# SIB.processor component file for logging messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJU0001=CWSJU0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - CWSJU9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.22.1.6
+#
+#CMVCPATHNAME SIB/ws/code/sib.processor/src/com/ibm/ws/sib/processor/CWSJUMessages.nlsprops
+#COMPONENTPREFIX CWSJU
+#COMPONENTNAMEFOR CWSJU Message Tracing
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+# {4} The transaction id
+PRODUCER_SEND_CWSJU0001=CWSJU0001I: Un produc\u0103tor {0} a trimis un mesaj cu ID-ul {1} \u015fi ID-ul de corelare {2} la destina\u0163ia {3} folosind tranzac\u0163ia {4}.
+PRODUCER_SEND_CWSJU0001.explanation=Acest mesaj de informare indic\u0103 starea programului.
+PRODUCER_SEND_CWSJU0001.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_NO_TRAN_CWSJU0002=CWSJU0002I: Un produc\u0103tor {0} a trimis un mesaj cu ID-ul {1} \u015fi ID-ul de corelare {2} la destina\u0163ia {3}.
+PRODUCER_SEND_NO_TRAN_CWSJU0002.explanation=Acest mesaj de informare indic\u0103 starea programului.
+PRODUCER_SEND_NO_TRAN_CWSJU0002.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+# {4} The messaging engine name or uuid
+PRODUCER_SEND_COMMIT_CWSJU0003=CWSJU0003I: Un mesaj cu ID-ul {0}, ID-ul de mesaj sistem {1} \u015fi ID-ul de corelare {2} este comis unei destina\u0163ii {3}, care este destinat\u0103 pentru motorul de mesagerie {4}.
+PRODUCER_SEND_COMMIT_CWSJU0003.explanation=Acest mesaj de informare indic\u0103 starea programului.
+PRODUCER_SEND_COMMIT_CWSJU0003.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_QUEUE_CWSJU0004=CWSJU0004I: Un mesaj cu ID-ul {0}, ID-ul de mesaj sistem {1} \u015fi ID-ul de corelare {2} este pus \u00een coada {3}.
+PRODUCER_SEND_QUEUE_CWSJU0004.explanation=Acest mesaj de informare indic\u0103 starea programului.
+PRODUCER_SEND_QUEUE_CWSJU0004.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The JMS Correlation Id
+# {2} The destination name
+PRODUCER_SEND_TOPICSPACE_CWSJU0005=CWSJU0005I: Un mesaj cu ID-ul {0} \u015fi ID-ul de corelare {1} este pus \u00een spa\u0163iul subiect {2}.
+PRODUCER_SEND_TOPICSPACE_CWSJU0005.explanation=Acest mesaj de informare indic\u0103 starea programului.
+PRODUCER_SEND_TOPICSPACE_CWSJU0005.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_SERVICE_CWSJU0006=CWSJU0006I: Un mesaj cu ID-ul {0}, ID-ul de mesaj sistem {1} \u015fi ID-ul de corelare {2} este pus la serviciul {3}.
+PRODUCER_SEND_SERVICE_CWSJU0006.explanation=Acest mesaj de informare indic\u0103 starea programului.
+PRODUCER_SEND_SERVICE_CWSJU0006.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_PORT_CWSJU0007=CWSJU0007I: Un mesaj cu ID-ul {0}, ID-ul de mesaj sistem {1} \u015fi ID-ul de corelare {2} este pus la portul {3}.
+PRODUCER_SEND_PORT_CWSJU0007.explanation=Acest mesaj de informare indic\u0103 starea programului.
+PRODUCER_SEND_PORT_CWSJU0007.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The destination name
+# {2} The number of matched consumers
+PUBLICATION_COUNT_CWSJU0008=CWSJU0008I: Un mesaj cu ID-ul {0} pe destina\u0163ia {1} s-a potrivit cu {2} consumatori
+PUBLICATION_COUNT_CWSJU0008.explanation=Acest mesaj de informare indic\u0103 starea programului.
+PUBLICATION_COUNT_CWSJU0008.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The destination name
+# {3} The transaction id
+MESSAGE_ROLLBACK_CWSJU0010=CWSJU0010I: Un mesaj cu ID-ul {0} \u015fi ID-ul Mesaje Sistem {1} s-a derulat \u00eenapoi de la destina\u0163ia {2} sub tranzac\u0163ia {3}.
+MESSAGE_ROLLBACK_CWSJU0010.explanation=Acest mesaj de informare indic\u0103 starea programului.
+MESSAGE_ROLLBACK_CWSJU0010.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The destination name
+MESSAGE_EXPIRED_CWSJU0011=CWSJU0011I: Un mesaj cu ID-ul {0} \u015fi ID-ul Mesaje Sistem {1} pe destina\u0163ia {2} a expirat.
+MESSAGE_EXPIRED_CWSJU0011.explanation=Acest mesaj de informare indic\u0103 starea programului.
+MESSAGE_EXPIRED_CWSJU0011.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+# {4} The reason.
+# {5} The explanation for why the message was exception destinationed
+MESSAGE_EXCEPTION_DESTINATIONED_CWSJU0012=CWSJU0012I: Un mesaj cu ID-ul {0}, ID-ul de mesaj sistem {1} \u015fi ID-ul de corelare {2} este pus pe destina\u0163ia de excep\u0163ii {3} cu motivul {4} \u015fi explica\u0163ia {5}.
+MESSAGE_EXCEPTION_DESTINATIONED_CWSJU0012.explanation=Un mesaj cu ID-ul specificat a fost trimis c\u0103tre destina\u0163ia de excep\u0163ii.
+MESSAGE_EXCEPTION_DESTINATIONED_CWSJU0012.useraction=Investiga\u0163i de ce mesajul a fost pus \u00een destina\u0163ia de excep\u0163ii \u015fi corecta\u0163i eroarea.
+
+# Missing 13
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+PRODUCER_SEND_BUS_CWSJU0014=CWSJU0014I: Un mesaj cu ID-ul {0}, ID-ul de mesaj sistem {1} \u015fi ID-ul de corelare {2} este pus la leg\u0103tura \u00eentre magistrale {3}.
+PRODUCER_SEND_BUS_CWSJU0014.explanation=Acest mesaj de informare indic\u0103 starea programului.
+PRODUCER_SEND_BUS_CWSJU0014.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The link name
+PRODUCER_SEND_LINK_CWSJU0015=CWSJU0015I: Un mesaj cu ID-ul {0}, ID-ul de mesaj sistem {1} \u015fi ID-ul de corelare {2} este pus la fluxul de transmisie leg\u0103turi {3}.
+PRODUCER_SEND_LINK_CWSJU0015.explanation=Acest mesaj de informare indic\u0103 starea programului.
+PRODUCER_SEND_LINK_CWSJU0015.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The mq link name
+PRODUCER_SEND_MQLINK_CWSJU0016=CWSJU0016I: Un mesaj cu ID-ul {0}, ID-ul de mesaj sistem {1} \u015fi ID-ul de corelare {2} este pus la fluxul de transmisie leg\u0103turi WebSphere MQ {3}.
+PRODUCER_SEND_MQLINK_CWSJU0016.explanation=Acest mesaj de informare indic\u0103 starea programului.
+PRODUCER_SEND_MQLINK_CWSJU0016.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+# {4} The transaction id
+PRODUCER_SEND_BUS_CWSJU0017=CWSJU0017I: Un produc\u0103tor {0} a trimis un mesaj cu ID-ul {1} \u015fi ID-ul de corelare {2} la leg\u0103tura \u00eentre magistrale {3} folosind tranzac\u0163ia {4}.
+PRODUCER_SEND_BUS_CWSJU0017.explanation=Acest mesaj de informare indic\u0103 starea programului.
+PRODUCER_SEND_BUS_CWSJU0017.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The link name
+# {4} The transaction id
+PRODUCER_SEND_LINK_CWSJU0018=CWSJU0018I: Un produc\u0103tor {0} a trimis un mesaj cu ID-ul {1} \u015fi ID-ul de corelare {2} la leg\u0103tura {3} folosind tranzac\u0163ia {4}.
+PRODUCER_SEND_LINK_CWSJU0018.explanation=Acest mesaj de informare indic\u0103 starea programului.
+PRODUCER_SEND_LINK_CWSJU0018.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+# {4} The transaction id
+PRODUCER_SEND_MQLINK_CWSJU0019=CWSJU0019I: Un produc\u0103tor {0} a trimis un mesaj cu ID-ul {1} \u015fi ID-ul de corelare {2} la leg\u0103tura WebSphere MQ {3} folosind tranzac\u0163ia {4}.
+PRODUCER_SEND_MQLINK_CWSJU0019.explanation=Acest mesaj de informare indic\u0103 starea programului.
+PRODUCER_SEND_MQLINK_CWSJU0019.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The messaging engine uuid
+# {4} The destination name
+INBOUND_MESSAGE_RECEIVED_CWSJU0020=CWSJU0020I: Un mesaj cu ID-ul {0}, ID-ul de mesaj sistem {1} \u015fi ID-ul de corelare {2} a fost primit de la motorul de mesagerie cu ID-ul {3} cu o destina\u0163ie {4}.
+INBOUND_MESSAGE_RECEIVED_CWSJU0020.explanation=Acest mesaj de informare indic\u0103 starea programului.
+INBOUND_MESSAGE_RECEIVED_CWSJU0020.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The messaging engine uuid
+# {4} The destination name
+OUTBOUND_MESSAGE_SENT_CWSJU0021=CWSJU0021I: Un mesaj cu ID-ul {0} ID-ul de mesaj sistem {1} \u015fi ID-ul de corelare {2} transmite c\u0103tre motorul de mesagerie cu ID-ul {3} pentru destina\u0163ia {4}.
+OUTBOUND_MESSAGE_SENT_CWSJU0021.explanation=Acest mesaj de informare indic\u0103 starea programului.
+OUTBOUND_MESSAGE_SENT_CWSJU0021.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The ME uuid or name
+# {4} The destination name
+MESSAGE_FORWARDED_CWSJU0022=CWSJU0022I: Un mesaj cu ID-ul {0} ID-ul de mesaj sistem {1} \u015fi ID-ul de corelare {2} este transmis c\u0103tre motorul de mesagerie cu ID-ul {3} vizat pentru destina\u0163ia {4}.
+MESSAGE_FORWARDED_CWSJU0022.explanation=Acest mesaj de informare indic\u0103 starea programului.
+MESSAGE_FORWARDED_CWSJU0022.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The messaging engine uuid
+# {4} The destination name
+OUTBOUND_MESSAGE_SENT_CWSJU0023=CWSJU0023I: Un mesaj cu ID-ul {0} ID-ul de mesaj sistem {1} \u015fi ID-ul de corelare {2} transmite c\u0103tre motorul de mesagerie cu ID-ul {3} asociat cu leg\u0103tura \u00eentre magistrale {4}.
+OUTBOUND_MESSAGE_SENT_CWSJU0023.explanation=Acest mesaj de informare indic\u0103 starea programului.
+OUTBOUND_MESSAGE_SENT_CWSJU0023.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The messaging engine uuid
+# {4} The destination name
+OUTBOUND_MESSAGE_SENT_CWSJU0024=CWSJU0024I: Un mesaj cu ID-ul {0} ID-ul de mesaj sistem {1} \u015fi ID-ul de corelare {2} transmite c\u0103tre motorul de mesagerie cu ID-ul {3} asociat cu leg\u0103tura WebSphere MQ, {4}.
+OUTBOUND_MESSAGE_SENT_CWSJU0024.explanation=Acest mesaj de informare indic\u0103 starea programului.
+OUTBOUND_MESSAGE_SENT_CWSJU0024.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The source ME uuid
+# {2} The target ME uuid
+# {3} The internal consumer uuid
+REMOTE_REQUEST_SENT_CWSJU0030=CWSJU0030I: O cerere pentru un mesaj pe destina\u0163ia {0} a fost trimis\u0103 de la ME {1} la ME {2} \u00een numele unui consumator care str\u00e2nge de la o destina\u0163ie cu uuid={3}.
+REMOTE_REQUEST_SENT_CWSJU0030.explanation=Acest mesaj de informare indic\u0103 starea programului.
+REMOTE_REQUEST_SENT_CWSJU0030.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The source ME uuid
+# {2} The target ME uuid
+# {3} The internal consumer uuid
+REMOTE_MESSAGE_SENT_CWSJU0031=CWSJU0031I: Un mesaj cerut pentru destina\u0163ia {0} a fost trimis de la ME {1} la ME {2} \u00een numele unui consumator care str\u00e2nge de la o destina\u0163ie cu uuid={3}.
+REMOTE_MESSAGE_SENT_CWSJU0031.explanation=Acest mesaj de informare indic\u0103 starea programului.
+REMOTE_MESSAGE_SENT_CWSJU0031.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The request tick
+# {1} The message
+REMOTE_REQUEST_SATISFIED_CWSJU0032=CWSJU0032I: Un mesaj {1}, a fost alocat unei cereri la distan\u0163\u0103 cu ID-ul {0}
+REMOTE_REQUEST_SATISFIED_CWSJU0032.explanation=Acest mesaj de informare indic\u0103 starea programului.
+REMOTE_REQUEST_SATISFIED_CWSJU0032.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The request tick
+REMOTE_REQUEST_EXPIRED_CWSJU0033=CWSJU0033I: O cerere la distan\u0163\u0103 cu ID-ul {0} a expirat.
+REMOTE_REQUEST_EXPIRED_CWSJU0033.explanation=Acest mesaj de informare indic\u0103 starea programului.
+REMOTE_REQUEST_EXPIRED_CWSJU0033.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message 
+# {1} The request id
+# {2} The destination
+# {3} The source me
+# {4} The target me
+# {5} The gatheirng uuid
+REMOTE_MESSAGE_EXPIRED_CWSJU0034=CWSJU0034I: Un mesaj persistat {0}, care a fost cerut cu ID-ul cererii {1} de la destina\u0163ia {2} pe ME {4} de c\u0103tre ME {3} pentru consumatorul {5} a expirat acum \u015fi va fi f\u0103cut disponibil din nou pe ME-ul surs\u0103. 
+REMOTE_MESSAGE_EXPIRED_CWSJU0034.explanation=Acest mesaj de informare indic\u0103 starea programului.
+REMOTE_MESSAGE_EXPIRED_CWSJU0034.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The consumer id
+# {4} The destination name
+# {5} The transaction id
+CONSUMER_RECEIVE_CWSJU0040=CWSJU0040I: Un mesaj cu ID-ul {0}, ID-ul de mesaj sistem {1} \u015fi ID-ul de corelare {2} a fost livrat unui consumator {3} de la destina\u0163ia {4} folosind tranzac\u0163ia {5}.
+CONSUMER_RECEIVE_CWSJU0040.explanation=Acest mesaj de informare indic\u0103 starea programului.
+CONSUMER_RECEIVE_CWSJU0040.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The consumer id
+# {4} The destination name
+CONSUMER_RECEIVE_NO_TRAN_CWSJU0041=CWSJU0041I: Un mesaj cu ID-ul {0}, ID-ul de mesaj sistem {1} \u015fi ID-ul de corelare {2} a fost livrat unui consumator {3} de la destina\u0163ia {4}.
+CONSUMER_RECEIVE_NO_TRAN_CWSJU0041.explanation=Acest mesaj de informare indic\u0103 starea programului.
+CONSUMER_RECEIVE_NO_TRAN_CWSJU0041.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The consumer id
+# {1} The destination name
+# {2} The transaction id
+CONSUMER_RECEIVE_NO_MESSAGE_CWSJU0042=CWSJU0042I: Niciun mesaj nu a fost primit de consumatorul {0} de la destina\u0163ia {1} folosind tranzac\u0163ia {2}
+CONSUMER_RECEIVE_NO_MESSAGE_CWSJU0042.explanation=Acest mesaj de informare indic\u0103 starea programului.
+CONSUMER_RECEIVE_NO_MESSAGE_CWSJU0042.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The consumer id
+# {1} The destination name
+CONSUMER_RECEIVE_NO_MESSAGE_NO_TRAN_CWSJU0043=CWSJU0043I: Niciun mesaj nu a fost primit de consumatorul {0} de la destina\u0163ia {1}
+CONSUMER_RECEIVE_NO_MESSAGE_NO_TRAN_CWSJU0043.explanation=Acest mesaj de informare indic\u0103 starea programului.
+CONSUMER_RECEIVE_NO_MESSAGE_NO_TRAN_CWSJU0043.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+# {4} The transaction id
+PRODUCER_SEND_CWSJU0051=CWSJU0051I: Un produc\u0103tor {0} a trimis un mesaj cu ID-ul {1} \u015fi ID-ul de corelare {2} la punctul de mediere {3} folosind tranzac\u0163ia {4}.
+PRODUCER_SEND_CWSJU0051.explanation=Acest mesaj de informare indic\u0103 starea programului.
+PRODUCER_SEND_CWSJU0051.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_NO_TRAN_CWSJU0052=CWSJU0052I: Un produc\u0103tor {0} a trimis un mesaj cu ID-ul {1} \u015fi ID-ul de corelare {2} la punctul de mediere {3}.
+PRODUCER_SEND_NO_TRAN_CWSJU0052.explanation=Acest mesaj de informare indic\u0103 starea programului.
+PRODUCER_SEND_NO_TRAN_CWSJU0052.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+# {4} The messaging engine name or uuid
+PRODUCER_SEND_COMMIT_CWSJU0053=CWSJU0053I: Un mesaj cu ID-ul {0} \u015fi ID-ul de mesaj sistem {1} \u015fi ID-ul de corelare {2} este comis unui punct de mediere {3}, care este destinat pentru motorul de mesagerie {4}.
+PRODUCER_SEND_COMMIT_CWSJU0053.explanation=Acest mesaj de informare indic\u0103 starea programului.
+PRODUCER_SEND_COMMIT_CWSJU0053.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_CWSJU0054=CWSJU0054I: Un mesaj cu ID-ul {0}, ID-ul de mesaj sistem {1} \u015fi ID-ul de corelare {2} este pus la punctul de mediere {3}.
+PRODUCER_SEND_CWSJU0054.explanation=Acest mesaj de informare indic\u0103 starea programului.
+PRODUCER_SEND_CWSJU0054.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+PRODUCER_SEND_NO_TRAN_BUS_CWSJU0061=CWSJU0061I: Un produc\u0103tor {0} a trimis un mesaj cu ID-ul {1} \u015fi ID-ul de corelare {2} la leg\u0103tura \u00eentre magistrale {3}.
+PRODUCER_SEND_NO_TRAN_BUS_CWSJU0061.explanation=Acest mesaj de informare indic\u0103 starea programului.
+PRODUCER_SEND_NO_TRAN_BUS_CWSJU0061.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+PRODUCER_SEND_NO_TRAN_LINK_CWSJU0062=CWSJU0062I: Un produc\u0103tor {0} a trimis un mesaj cu ID-ul {1} \u015fi ID-ul de corelare {2} la leg\u0103tura {3}.
+PRODUCER_SEND_NO_TRAN_LINK_CWSJU0062.explanation=Acest mesaj de informare indic\u0103 starea programului.
+PRODUCER_SEND_NO_TRAN_LINK_CWSJU0062.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+PRODUCER_SEND_NO_TRAN_MQLINK_CWSJU0063=CWSJU0063I: Un produc\u0103tor {0} a trimis un mesaj cu ID-ul {1} \u015fi ID-ul de corelare {2} la leg\u0103tura WebSphere MQ {3}.
+PRODUCER_SEND_NO_TRAN_MQLINK_CWSJU0063.explanation=Acest mesaj de informare indic\u0103 starea programului.
+PRODUCER_SEND_NO_TRAN_MQLINK_CWSJU0063.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+# {4} The messaging engine name or uuid
+PRODUCER_SEND_COMMIT_BUS_CWSJU0064=CWSJU0064I: Un mesaj cu ID-ul {0}, ID-ul de mesaj sistem {1} \u015fi ID-ul de corelare {2} este comis unei destina\u0163ii externe {3}, care este destinat\u0103 pentru motorul de mesagerie {4}.
+PRODUCER_SEND_COMMIT_BUS_CWSJU0064.explanation=Acest mesaj de informare indic\u0103 starea programului.
+PRODUCER_SEND_COMMIT_BUS_CWSJU0064.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+# {4} The messaging engine name or uuid
+PRODUCER_SEND_COMMIT_LINK_CWSJU0065=CWSJU0065I: Un mesaj cu ID-ul {0}, ID-ul de mesaj sistem {1} \u015fi ID-ul de corelare {2} este comis unei destina\u0163ii externe {3}, care este destinat\u0103 pentru motorul de mesagerie {4}.
+PRODUCER_SEND_COMMIT_LINK_CWSJU0065.explanation=Acest mesaj de informare indic\u0103 starea programului.
+PRODUCER_SEND_COMMIT_LINK_CWSJU0065.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+# {4} The messaging engine name or uuid
+PRODUCER_SEND_COMMIT_MQLINK_CWSJU0066=CWSJU0066I: Un mesaj cu ID-ul {0}, ID-ul de mesaj sistem {1} \u015fi ID-ul de corelare {2} este comis leg\u0103turii WebSphere MQ {3}, care este destinat\u0103 pentru serverul {4}.
+PRODUCER_SEND_COMMIT_MQLINK_CWSJU0066.explanation=Acest mesaj de informare indic\u0103 starea programului.
+PRODUCER_SEND_COMMIT_MQLINK_CWSJU0066.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_TEMPORARY_QUEUE_CWSJU0101=CWSJU0101I: Un mesaj cu ID-ul {0}, ID-ul de mesaj sistem {1} \u015fi ID-ul de corelare {2} este pus \u00een coada temporar\u0103 {3}.
+PRODUCER_SEND_TEMPORARY_QUEUE_CWSJU0101.explanation=Acest mesaj de informare indic\u0103 starea programului.
+PRODUCER_SEND_TEMPORARY_QUEUE_CWSJU0101.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_TEMPORARY_TOPICSPACE_CWSJU0102=CWSJU0102I: Un mesaj cu ID-ul {0}, ID-ul de mesaj sistem {1} \u015fi ID-ul de corelare {2} este pus \u00een spa\u0163iul subiect temporar {3}.
+PRODUCER_SEND_TEMPORARY_TOPICSPACE_CWSJU0102.explanation=Acest mesaj de informare indic\u0103 starea programului.
+PRODUCER_SEND_TEMPORARY_TOPICSPACE_CWSJU0102.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The messaging engine uuid
+# {4} The destination name
+INBOUND_MESSAGE_RECEIVED_TEMP_CWSJU0120=CWSJU0120I: Un mesaj cu ID-ul {0}, ID-ul de mesaj sistem {1} \u015fi ID-ul de corelare {2} a fost primit de la motorul de mesagerie cu ID-ul {3} cu o destina\u0163ie {4}.
+INBOUND_MESSAGE_RECEIVED_TEMP_CWSJU0120.explanation=Acest mesaj de informare indic\u0103 starea programului.
+INBOUND_MESSAGE_RECEIVED_TEMP_CWSJU0120.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The messaging engine uuid
+# {4} The destination name
+OUTBOUND_MESSAGE_SENT_TEMP_CWSJU0121=CWSJU0121I: Un mesaj cu ID-ul {0} ID-ul de mesaj sistem {1} \u015fi ID-ul de corelare {2} transmite c\u0103tre motorul de mesagerie cu ID-ul {3} pentru destina\u0163ia {4}.
+OUTBOUND_MESSAGE_SENT_TEMP_CWSJU0121.explanation=Acest mesaj de informare indic\u0103 starea programului.
+OUTBOUND_MESSAGE_SENT_TEMP_CWSJU0121.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The ME uuid or name
+# {4} The destination name
+MESSAGE_FORWARDED_TEMP_CWSJU0122=CWSJU0122I: Un mesaj cu ID-ul {0} ID-ul de mesaj sistem {1} \u015fi ID-ul de corelare {2} este transmis c\u0103tre motorul de mesagerie cu ID-ul {3} vizat pentru destina\u0163ia temporar\u0103 {4}.
+MESSAGE_FORWARDED_TEMP_CWSJU0122.explanation=Acest mesaj de informare indic\u0103 starea programului.
+MESSAGE_FORWARDED_TEMP_CWSJU0122.useraction=Nu este necesar\u0103 nici o ac\u0163iune din partea utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSJU9999=CWSJU9999E: ''{0}''
+TEMPORARY_CWSJU9999.explanation=Dac\u0103 mesajul nu v\u0103 furnizeaz\u0103 suficiente informa\u0163ii, verifica\u0163i mesajele anterioare pentru mai mult ajutor.
+TEMPORARY_CWSJU9999.useraction=Vede\u0163i mesajele anterioare pentru mai multe informa\u0163ii.
