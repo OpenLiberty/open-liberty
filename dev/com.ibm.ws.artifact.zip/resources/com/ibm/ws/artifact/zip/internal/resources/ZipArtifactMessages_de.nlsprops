@@ -1,0 +1,35 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.artifact.api.zip/resources/com/ibm/ws/artifact/api/zip/internal/resources/ZipArtifactMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKM
+#COMPONENTNAMEFOR CWWKM Module API
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+bad.zip.data=CWWKM0101E: Das System konnte die Archivdaten f\u00fcr {0} nicht verarbeiten.
+bad.zip.data.explanation=Bei der Verarbeitung der komprimierten Daten f\u00fcr das Archiv ist eine Ausnahme eingetreten. 
+bad.zip.data.useraction=Vergewissern Sie sich, dass die Datei ein g\u00fcltiges Archiv ist.
+
+remove.cache.data=CWWKM0102W: Das System hat ung\u00fcltige Cachedaten an der Position {0} gel\u00f6scht.
+remove.cache.data.explanation=Die Anwendungsstruktur scheint sich ge\u00e4ndert zu haben. Deshalb m\u00fcssen Cachedaten, die auf der vorherigen Struktur basieren, gel\u00f6scht werden.
+remove.cache.data.useraction=Wenn sich die Struktur Ihrer Anwendung ge\u00e4ndert hat, wird diese Ausnahme erwartet.
+
+extract.cache.fail=CWWKM0103E: Das System konnte ein verschachteltes Archiv nicht an eine Cacheposition extrahieren. Ursache: {0}
+extract.cache.fail.explanation=W\u00e4hrend der Erstellung der Cachedaten f\u00fcr die Anwendung ist ein Fehler aufgetreten, der eine ordnungsgem\u00e4\u00dfe Verarbeitung der Anwendung verhindert. 
+extract.cache.fail.useraction=\u00dcberpr\u00fcfen Sie die gemeldete Ursache.

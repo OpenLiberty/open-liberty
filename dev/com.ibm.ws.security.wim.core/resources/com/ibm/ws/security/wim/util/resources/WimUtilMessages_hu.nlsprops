@@ -1,0 +1,265 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.websphere.security.wim.util/resources/com/ibm/websphere/security/wim/util/resources/WebsphereWimUtilMessages.nlsprops
+#COMPONENTPREFIX CWIML
+#COMPONENTPREFIX CWIMK
+#COMPONENTNAMEFOR Virtual Member Manager wim utilities 
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: Configuration:0000-0499
+# Message prefix block: Profile Manager: 1000-1999
+# Message prefix block: Repository Manager: 4000-4499
+# Message prefix block: Adapters: 4500-4999
+# Message prefix block: Schema/Realm: 0500-0999
+# Message prefix block: User Registry: 3000-3499
+
+INVALID_UNIQUE_NAME_SYNTAX=CWIML1011E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) {0} egyedi n\u00e9v szintaxisa \u00e9rv\u00e9nytelen. Adjon meg helyes szintaxis\u00fa egyedi nevet. P\u00e9ld\u00e1ul: uid=xyz,dc=yourco,dc=com.
+INVALID_UNIQUE_NAME_SYNTAX.explanation=A megadott egyedi n\u00e9v szintaxisa nem \u00e9rv\u00e9nyes. Az azonos\u00edt\u00f3 tulajdons\u00e1gban megadott uniqueName helytelen. A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem folytat\u00f3dhat a helyes egyedi n\u00e9v n\u00e9lk\u00fcl.
+INVALID_UNIQUE_NAME_SYNTAX.useraction=Ellen\u0151rizze, hogy az egyedi n\u00e9v helyesen van-e \u00edrva. Tekintse \u00e1t az egyedi n\u00e9v szintaxis\u00e1t. Ha az p\u00e9ld\u00e1ul megk\u00fcl\u00f6nb\u00f6ztetett n\u00e9v (DN) form\u00e1tum\u00fa, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a speci\u00e1lis karakterek felold\u00e1sa helyesen meg van-e adva.
+
+INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION=CWIMK0001E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) {0} entit\u00e1st\u00edpus meghat\u00e1roz\u00e1s nem \u00e9rv\u00e9nyes. Jav\u00edtsa az entit\u00e1s meghat\u00e1roz\u00e1st a server.xml f\u00e1jlban.
+INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION.explanation= Az entit\u00e1st\u00edpust egy entit\u00e1sn\u00e9vvel \u00e9s legal\u00e1bb egy megfelel\u0151 relat\u00edv megk\u00fcl\u00f6nb\u00f6ztetett n\u00e9v (RDN) tulajdons\u00e1ggal kell meghat\u00e1rozni.
+INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION.useraction=M\u00f3dos\u00edtsa \u00e9s jav\u00edtsa az entit\u00e1st\u00edpus meghat\u00e1roz\u00e1s\u00e1t az server.xml f\u00e1jlban.
+
+INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) {0} alapbejegyz\u00e9s meghat\u00e1roz\u00e1s nem \u00e9rv\u00e9nyes.  Jav\u00edtsa az alapbejegyz\u00e9s meghat\u00e1roz\u00e1st a server.xml f\u00e1jlban. P\u00e9ld\u00e1ul a szintaxis: <baseEntry name="..." baseDN="...."/>.
+INVALID_BASE_ENTRY_DEFINITION.explanation= Az alapbejegyz\u00e9s megadott meghat\u00e1roz\u00e1sa helytelen. Az alapbejegyz\u00e9s meghat\u00e1roz\u00e1s\u00e1nak szintaxisa: <baseEntry name="..." baseDN="...."/>.
+INVALID_BASE_ENTRY_DEFINITION.useraction= M\u00f3dos\u00edtsa \u00e9s jav\u00edtsa az alapbejegyz\u00e9s meghat\u00e1roz\u00e1s\u00e1t az server.xml f\u00e1jlban.
+
+INVALID_REALM_DEFINITION=CWIMK0003E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) {0} tartom\u00e1nymeghat\u00e1roz\u00e1s nem \u00e9rv\u00e9nyes. Jav\u00edtsa a tartom\u00e1ny meghat\u00e1roz\u00e1st a server.xml f\u00e1jlban.
+INVALID_REALM_DEFINITION.explanation= A tartom\u00e1nyjel\u00f6l\u0151 hi\u00e1nyzik, vagy \u00e9rv\u00e9nytelen egy hi\u00e1nyz\u00f3 k\u00f6telez\u0151 attrib\u00fatum miatt.
+INVALID_REALM_DEFINITION.useraction=M\u00f3dos\u00edtsa \u00e9s jav\u00edtsa a tartom\u00e1ny meghat\u00e1roz\u00e1s\u00e1t az server.xml f\u00e1jlban.
+
+INVALID_PARTICIPATING_BASE_ENTRY_DEFINITION=CWIMK0004E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) {0} r\u00e9sztvev\u0151 alapbejegyz\u00e9s meghat\u00e1roz\u00e1s nem \u00e9rv\u00e9nyes. Jav\u00edtsa a r\u00e9sztvev\u0151 alapbejegyz\u00e9s meghat\u00e1roz\u00e1st a server.xml f\u00e1jlban. P\u00e9ld\u00e1ul a szintaxis: <participatingBaseEntry name="..."/>.
+INVALID_PARTICIPATING_BASE_ENTRY_DEFINITION.explanation= A r\u00e9sztvev\u0151 alapbejegyz\u00e9s megadott meghat\u00e1roz\u00e1sa helytelen. A r\u00e9sztvev\u0151 alapbejegyz\u00e9s meghat\u00e1roz\u00e1s\u00e1nak szintaxisa: <participatingBaseEntry name="..."/>.
+INVALID_PARTICIPATING_BASE_ENTRY_DEFINITION.useraction=M\u00f3dos\u00edtsa \u00e9s jav\u00edtsa a r\u00e9sztvev\u0151 alapbejegyz\u00e9s meghat\u00e1roz\u00e1s\u00e1t az server.xml f\u00e1jlban.
+
+INVALID_UR_ATTRIBUTE_MAPPING_DEFINITION=CWIMK0005E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) {0} felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s attrib\u00fatum lek\u00e9pez\u00e9si meghat\u00e1roz\u00e1sa nem \u00e9rv\u00e9nyes. Jav\u00edtsa a felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s lek\u00e9pez\u00e9s\u00e9t a server.xml f\u00e1jlban.
+INVALID_UR_ATTRIBUTE_MAPPING_DEFINITION.explanation= A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s attrib\u00fatum lek\u00e9pez\u00e9si meghat\u00e1roz\u00e1sa helytelen\u00fcl van megadva.
+INVALID_UR_ATTRIBUTE_MAPPING_DEFINITION.useraction=M\u00f3dos\u00edtsa \u00e9s jav\u00edtsa a felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s attrib\u00fatum lek\u00e9pez\u00e9si meghat\u00e1roz\u00e1s\u00e1t a server.xml f\u00e1jlban.
+
+INVALID_REALM_NAME=CWIMK0006E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A megadott {0} tartom\u00e1nyn\u00e9v nem \u00e9rv\u00e9nyes. Adjon meg l\u00e9tez\u0151 tartom\u00e1nynevet.
+INVALID_REALM_NAME.explanation=A megadott tartom\u00e1nyn\u00e9v nincs meghat\u00e1rozva vagy helytelen a server.xml f\u00e1jlban.
+INVALID_REALM_NAME.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a tartom\u00e1nyn\u00e9v l\u00e9tezik \u00e9s helyesen van \u00edrva a server.xml f\u00e1jlban. Ha nem l\u00e9tezik, akkor egy \u00e9rv\u00e9nyes tartom\u00e1nynevet kell megadni.
+
+MISSING_BASE_ENTRY_IN_REALM=CWIMK0007E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. Nincs meghat\u00e1rozva \u00e9rv\u00e9nyes alapbejegyz\u00e9s a(z) {0} tartom\u00e1nyhoz. Adja meg a tartom\u00e1ny alapbejegyz\u00e9s\u00e9t a server.xml f\u00e1jlban.
+MISSING_BASE_ENTRY_IN_REALM.explanation=Egy tartom\u00e1nyhoz legal\u00e1bb egy \u00e9rv\u00e9nyes r\u00e9sztvev\u0151 alapbejegyz\u00e9st meg kell hat\u00e1rozni.
+MISSING_BASE_ENTRY_IN_REALM.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy meg van hat\u00e1rozva \u00e9rv\u00e9nyes r\u00e9sztvev\u0151 alapbejegyz\u00e9s a tartom\u00e1nyhoz a server.xml f\u00e1jlban.
+
+MISSING_BASE_ENTRY=CWIMK0008E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) {0} lerakatnak tartalmaznia kell legal\u00e1bb egy alapbejegyz\u00e9st. Adja meg az alapbejegyz\u00e9st a server.xml f\u00e1jlban.
+MISSING_BASE_ENTRY.explanation=Lerakat felv\u00e9tele ut\u00e1n legal\u00e1bb egy alapbejegyz\u00e9st hozz\u00e1 kell adni.
+MISSING_BASE_ENTRY.useraction=Vegyen fel legal\u00e1bb egy alapbejegyz\u00e9st a lerakatba a server.xml f\u00e1jlban.
+
+FEDERATED_MANAGER_SERVICE_READY=CWIMK0009I: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s egyes\u00edt\u00e9si szolg\u00e1ltat\u00e1s \u00fczemk\u00e9sz.
+FEDERATED_MANAGER_SERVICE_READY.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+FEDERATED_MANAGER_SERVICE_READY.useraction=Nincs teend\u0151.
+
+FEDERATED_MANAGER_SERVICE_STOPPED=CWIMK0010I: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s egyes\u00edt\u00e9si szolg\u00e1ltat\u00e1s le\u00e1ll\u00edt\u00e1sra ker\u00fclt.
+FEDERATED_MANAGER_SERVICE_STOPPED.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+FEDERATED_MANAGER_SERVICE_STOPPED.useraction=Nincs teend\u0151.
+
+ENTITY_IDENTIFIER_NOT_SPECIFIED=CWIML1009E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. Az entit\u00e1s azonos\u00edt\u00f3ja nem tal\u00e1lhat\u00f3. Adja meg beviteli param\u00e9terk\u00e9nt a helyes azonos\u00edt\u00f3t. 
+ENTITY_IDENTIFIER_NOT_SPECIFIED.explanation=Az entit\u00e1s azonos\u00edt\u00f3ja nincs megadva. A rendszer nem tal\u00e1lja az entit\u00e1st. A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem folytat\u00f3dhat az entit\u00e1s megtal\u00e1l\u00e1sa n\u00e9lk\u00fcl. 
+ENTITY_IDENTIFIER_NOT_SPECIFIED.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a bemeneti objektumban l\u00e9v\u0151 entit\u00e1s tartalmaz egy azonos\u00edt\u00f3 tulajdons\u00e1got .
+
+EXTERNAL_NAME_CONTROL_NOT_FOUND=CWIML1024E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) ''{0}'' k\u00fcls\u0151 n\u00e9v meg van adva, de a k\u00fcls\u0151 n\u00e9v vez\u00e9rl\u00e9se nincs meghat\u00e1rozva. Adja meg az adott k\u00fcls\u0151 n\u00e9v vez\u00e9rl\u00e9s\u00e9t.
+EXTERNAL_NAME_CONTROL_NOT_FOUND.explanation=Ha a get m\u0171velet sor\u00e1n az externalName meg van hat\u00e1rozva, akkor az ExternalNameControl tulajdons\u00e1got is meg kell adni.
+EXTERNAL_NAME_CONTROL_NOT_FOUND.useraction=Adja meg az ExternalNameControl tulajdons\u00e1got vagy t\u00e1vol\u00edtsa el az externalName tulajdons\u00e1got a bemeneti bjektumb\u00f3l .
+
+INVALID_IDENTIFIER=CWIML1010E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. Az azonos\u00edt\u00f3 objektum uniqueId = {0} \u00e9s uniqueName = {1} attrib\u00fatuma \u00e9rv\u00e9nytelen vagy nincs meghat\u00e1rozva a h\u00e1tt\u00e9rlerakatban.
+INVALID_IDENTIFIER.explanation=A megadott azonos\u00edt\u00f3 objektum \u00e9rv\u00e9nytelen. Vagy egy \u00e9rv\u00e9nyes uniqueId vagy egy \u00e9rv\u00e9nyes uniqueName attrib\u00fatumot meg kell adni az azonos\u00edt\u00f3 objektumban. A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem folytat\u00f3dhat \u00e9rv\u00e9nyes azonos\u00edt\u00f3 objektum n\u00e9lk\u00fcl. Ha az azonos\u00edt\u00f3 objektum meg van adva, akkor a uniqueId vagy a uniqueName \u00fcres vagy null\u00e9rt\u00e9k\u0171.
+INVALID_IDENTIFIER.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a bemeneti objektumban l\u00e9tezik \u00e9rv\u00e9nyes uniqueId vagy uniqueName attrib\u00fatummal rendelkez\u0151  azonos\u00edt\u00f3 (nem lehet mindkett\u0151 null\u00e9rt\u00e9k\u0171 vagy \u00fcres). 
+
+ENTITY_NOT_IN_REALM_SCOPE=CWIML0515E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) {0} entit\u00e1s nem a(z) {1} tartom\u00e1ny hat\u00f3k\u00f6r\u00e9ben van. Adjon meg olyan entit\u00e1st, amely a server.xml f\u00e1jlban be\u00e1ll\u00edtott tartom\u00e1ny hat\u00f3k\u00f6r\u00e9n bel\u00fcl van.
+ENTITY_NOT_IN_REALM_SCOPE.explanation=A m\u0171velet nem hajthat\u00f3 v\u00e9gre, mert a megadott entit\u00e1s nincs a tartom\u00e1ny hat\u00f3k\u00f6r\u00e9ben.
+ENTITY_NOT_IN_REALM_SCOPE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az entit\u00e1s egyedi neve helyesen van megadva. Ha meg van adva egy tartom\u00e1nyn\u00e9v a bemeneti objektum Context objektum\u00e1ban, akkor ellen\u0151rizze, hogy a n\u00e9v helyesen van-e be\u00edrva.
+
+MISSING_SORT_KEY=CWIML1001E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A rendez\u00e9si kulcs hi\u00e1nyzik a bemeneti rendez\u00e9svez\u00e9rl\u00e9si objektumb\u00f3l. Adja meg a rendez\u00e9si kulcsot a megadott rendez\u00e9svez\u00e9rl\u00e9si objektumhoz.
+MISSING_SORT_KEY.explanation=Egy SortControl objektum a rendez\u00e9shez sz\u00fcks\u00e9ges rendez\u00e9si kulcs n\u00e9lk\u00fcl lett \u00e1tadva a keres\u00e9si m\u0171velet sz\u00e1m\u00e1ra.
+MISSING_SORT_KEY.useraction=\u00c1ll\u00edtsa be a rendez\u00e9si kulcsot a SortControl objektumban, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a rendez\u00e9si kulcsk\u00e9nt haszn\u00e1lt tulajdons\u00e1g szerepel a visszat\u00e9r\u00e9si tulajdons\u00e1gok list\u00e1j\u00e1n.
+
+MISSING_SEARCH_CONTROL=CWIML1017E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A keres\u00e9svez\u00e9rl\u00e9si objektum hi\u00e1nyzik a keres\u00e9si m\u0171velet bemeneti objektum\u00e1b\u00f3l. Adja meg a keres\u00e9svez\u00e9rl\u00e9si objektumot a beviteli objektumban.
+MISSING_SEARCH_CONTROL.explanation=A SearchControl objektumot meg kell adni a keres\u00e9si m\u0171velet bemeneti objektum\u00e1ban.
+MISSING_SEARCH_CONTROL.useraction=Adja meg a SearchControl objektumot a keres\u00e9svez\u00e9rl\u00e9si objektumban.
+
+MISSING_COOKIE=CWIML1002E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A keres\u00e9si tal\u00e1latok k\u00f6vetkez\u0151 oldal\u00e1nak lek\u00e9r\u00e9s\u00e9hez haszn\u00e1lt cookie hi\u00e1nyzik az oldalvez\u00e9rl\u00e9si objektumb\u00f3l. Adja meg a cookie param\u00e9tert az oldalvez\u00e9rl\u00e9si objektumban.
+MISSING_COOKIE.explanation=A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s nem tudja lek\u00e9rni a keres\u00e9si eredm\u00e9nyek k\u00f6vetkez\u0151 oldal\u00e1t. A keres\u00e9si eredm\u00e9nyek k\u00f6vetkez\u0151 oldal\u00e1nak lek\u00e9r\u00e9s\u00e9hez haszn\u00e1lt cookie param\u00e9tert meg kell adni a PageControl objektumban.
+MISSING_COOKIE.useraction=Gondoskodj\u00e9k r\u00f3la, hogy meg legyen adva a cookie tulajdons\u00e1g a PageControl objektumban 0 kezd\u0151\u00e9rt\u00e9kkel. A PageResponseControl objektumban tal\u00e1lhat\u00f3 cookie adja vissza a keres\u00e9si eredm\u00e9nyek k\u00f6vetkez\u0151 oldal\u00e1nak beolvas\u00e1s\u00e1hoz haszn\u00e1lt cookie \u00e9rt\u00e9k\u00e9t.
+
+INVALID_COOKIE=CWIML1041E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. Az oldalvez\u00e9rl\u0151 objektumban megadott cookie nem \u00e9rv\u00e9nyes vagy lej\u00e1rt.
+INVALID_COOKIE.explanation=A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s nem tudja lek\u00e9rni a keres\u00e9si eredm\u00e9nyek k\u00f6vetkez\u0151 oldal\u00e1t. A keres\u00e9si eredm\u00e9nyek k\u00f6vetkez\u0151 oldal\u00e1nak lek\u00e9r\u00e9s\u00e9hez haszn\u00e1lt cookie param\u00e9ter a PageControl objektumban \u00e9rv\u00e9nytelen. 
+INVALID_COOKIE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy \u00e9rv\u00e9nyes cookie van megadva a PageControl objektumban. 
+
+INCORRECT_COUNT_LIMIT=CWIML1022E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A keres\u00e9svez\u00e9rl\u00e9si objektumban megadott {0} sz\u00e1mkorl\u00e1t \u00e9rv\u00e9nytelen. Az \u00e9rt\u00e9k csak 0 vagy pozit\u00edv sz\u00e1m lehet.
+INCORRECT_COUNT_LIMIT.explanation=A keres\u00e9si m\u0171velet sz\u00e1ml\u00e1l\u00e1si korl\u00e1tja nem lehet negat\u00edv sz\u00e1m. Egy pozit\u00edv sz\u00e1m be\u00e1ll\u00edtja a keres\u00e9s eredm\u00e9ny\u00e9ben visszaadand\u00f3 bejegyz\u00e9sek maxim\u00e1lis sz\u00e1m\u00e1t. A 0 \u00e9rt\u00e9k azt jelzi, hogy nincsen korl\u00e1t; az \u00f6sszes bejegyz\u00e9st visszaadja a rendszer, ha a keres\u00e9si korl\u00e1t \u00e9rt\u00e9ke 0.
+INCORRECT_COUNT_LIMIT.useraction=Ne adjon meg negat\u00edv sz\u00e1mot a sz\u00e1ml\u00e1l\u00e1si korl\u00e1tk\u00e9nt.
+
+INCORRECT_SEARCH_LIMIT=CWIML1031E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A keres\u00e9svez\u00e9rl\u00e9si objektumban megadott {0} keres\u00e9si korl\u00e1t \u00e9rv\u00e9nytelen. Az \u00e9rt\u00e9k csak 0 vagy pozit\u00edv sz\u00e1m lehet.
+INCORRECT_SEARCH_LIMIT.explanation=A keres\u00e9si m\u0171velet keres\u00e9si korl\u00e1tja nem lehet negat\u00edv sz\u00e1m.
+INCORRECT_SEARCH_LIMIT.useraction=Ne adjon meg negat\u00edv sz\u00e1mot keres\u00e9si korl\u00e1t tulajdons\u00e1gk\u00e9nt. Az \u00e9rt\u00e9k csak 0 vagy pozit\u00edv sz\u00e1m lehet.
+
+CANNOT_SPECIFY_COUNT_LIMIT=CWIML1019E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. Nem adhatja meg a countLimit param\u00e9tert a keres\u00e9svez\u00e9rl\u00e9si objektumban, ha a keres\u00e9svez\u00e9rl\u00e9si objektum szint\u00e9n meg van adva a keres\u00e9si h\u00edv\u00e1sban. Adja meg a sz\u00e1mkorl\u00e1tot vagy az oldalvez\u00e9rl\u00e9si objektumot, de ne egyszerre mindkett\u0151t.
+CANNOT_SPECIFY_COUNT_LIMIT.explanation=A countLimit param\u00e9ter a keres\u00e9si eredm\u00e9nyek sz\u00e1m\u00e1t hat\u00e1rozza meg, amit a h\u00edv\u00f3 vissza szeretne kapni a keres\u00e9si m\u0171velet sor\u00e1n. Nem haszn\u00e1lhat\u00f3 a PageControl objektummal egy\u00fctt.
+CANNOT_SPECIFY_COUNT_LIMIT.useraction=A h\u00edv\u00f3 ig\u00e9ny szerint haszn\u00e1lhatja a countLimit param\u00e9tert vagy a PageControl objektumot, de mindkett\u0151t egyszerre nem. 
+
+MISSING_SEARCH_EXPRESSION=CWIML1003E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. Az expression tulajdons\u00e1g hi\u00e1nyzik a keres\u00e9svez\u00e9rl\u00e9si objektumb\u00f3l. Adjon meg kifejez\u00e9stulajdons\u00e1got a keres\u00e9svez\u00e9rl\u00e9si objektumban. 
+MISSING_SEARCH_EXPRESSION.explanation=A keres\u00e9si m\u0171velet nem hajthat\u00f3 v\u00e9gre. Az expression tulajdons\u00e1got meg kell adni a SearchControl objektumban.
+MISSING_SEARCH_EXPRESSION.useraction=Adja meg az expression tulajdons\u00e1g keres\u00e9si kifejez\u00e9s karaktersorozat\u00e1t a SearchControl objektumban.
+
+SEARCH_EXPRESSION_ERROR=CWIML1004E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A keres\u00e9svez\u00e9rl\u00e9si objektumban megadott keres\u00e9si kifejez\u00e9s hib\u00e1s: {0}. Adja meg a keres\u00e9si kifejez\u00e9s szintaxis\u00e1t a keres\u00e9svez\u00e9rl\u00e9si objektumban.
+SEARCH_EXPRESSION_ERROR.explanation=A m\u0171velet nem hajthat\u00f3 v\u00e9gre. A SearchControl objektumban megadott keres\u00e9si kifejez\u00e9s nem k\u00f6veti a t\u00e1mogatott XPath szintaxist.
+SEARCH_EXPRESSION_ERROR.useraction=Vizsg\u00e1lja meg a keres\u00e9si kifejez\u00e9s szintaxis\u00e1t, \u00e9s jav\u00edtsa ki az esetleges hib\u00e1kat.
+
+INVALID_SEARCH_EXPRESSION=CWIML1029E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) {0} keres\u00e9si kifejez\u00e9s szintaxisa \u00e9rv\u00e9nytelen. Adja meg a keres\u00e9si kifejez\u00e9s helyes szintaxis\u00e1t. 
+INVALID_SEARCH_EXPRESSION.explanation=A keres\u00e9si m\u0171velet nem hajthat\u00f3 v\u00e9gre, mert a keres\u00e9si kifejez\u00e9s \u00e9rv\u00e9nytelen.
+INVALID_SEARCH_EXPRESSION.useraction=\u00c9rv\u00e9nyes keres\u00e9si kifejez\u00e9st adjon meg.
+
+EXCEED_MAX_TOTAL_SEARCH_LIMIT=CWIML1018E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) {0} keres\u00e9si tal\u00e1lat meghaladja a keres\u00e9si korl\u00e1t maxim\u00e1lis sz\u00e1m\u00e1t: {1}. A rendszer nem ad vissza keres\u00e9si eredm\u00e9nyt. N\u00f6velje meg a keres\u00e9si korl\u00e1t maxim\u00e1lis sz\u00e1m\u00e1t, vagy m\u00f3dos\u00edtsa a keres\u00e9si kifejez\u00e9st \u00fagy, hogy kevesebb rekordot adjon vissza.
+EXCEED_MAX_TOTAL_SEARCH_LIMIT.explanation=A keres\u00e9s \u00e1ltal visszaadott rekordok sz\u00e1ma nagyobb, mint a keres\u00e9si korl\u00e1tban megadott rekordok maxim\u00e1lis sz\u00e1ma.
+EXCEED_MAX_TOTAL_SEARCH_LIMIT.useraction=N\u00f6velje a keres\u00e9s maxim\u00e1lis korl\u00e1tj\u00e1t, vagy haszn\u00e1ljon szigor\u00fabb keres\u00e9si kifejez\u00e9st, hogy kevesebb rekord ker\u00fclj\u00f6n leh\u00edv\u00e1sra.
+
+INVALID_CHANGETYPE=CWIML4552E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A megadott {0} changeType \u00e9rt\u00e9k nem \u00e9rv\u00e9nyes a m\u00f3dos\u00edtott entit\u00e1sok keres\u00e9s\u00e9hez. Az \u00e9rv\u00e9nyes m\u00f3dos\u00edt\u00e1si t\u00edpusok: add, modify, delete, rename \u00e9s * (* az \u00f6sszes m\u00f3dos\u00edt\u00e1si t\u00edpus eset\u00e9n).
+INVALID_CHANGETYPE.explanation=A megv\u00e1ltozott entit\u00e1sok keres\u00e9s\u00e9hez alkalmas v\u00e1ltoz\u00e1st\u00edpusok: add, modify, delete, rename \u00e9s * (* az \u00f6sszes v\u00e1ltoz\u00e1st\u00edpus eset\u00e9n).
+INVALID_CHANGETYPE.useraction=Az \u00e9rv\u00e9nyes v\u00e1ltoz\u00e1st\u00edpusok egyik\u00e9t adja meg.
+
+MISSING_ENTITY_DATA_OBJECT=CWIML1030E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A beviteli Entity objektum hi\u00e1nyzik a(z) {0} m\u0171veletb\u0151l. Meg kell adni az entity adatobjektumot ahhoz az objektumhoz, amelyen m\u0171veletet k\u00edv\u00e1n v\u00e9gezni.
+MISSING_ENTITY_DATA_OBJECT.explanation=A megadott m\u0171velet Entity objektumot ig\u00e9nyel.
+MISSING_ENTITY_DATA_OBJECT.useraction=Meg kell adni az entity objektumot ahhoz az entit\u00e1shoz, amelyen m\u0171veletet k\u00edv\u00e1n v\u00e9gezni.
+
+ACTION_MULTIPLE_ENTITIES_SPECIFIED=CWIML1016E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) {0} m\u0171velet nem t\u00e1mogatja a t\u00f6bb entit\u00e1st. A m\u0171velethez csak egy entit\u00e1st adjon meg.
+ACTION_MULTIPLE_ENTITIES_SPECIFIED.explanation=A m\u0171velet nem t\u00e1mogatja a t\u00f6bb entit\u00e1st. P\u00e9ld\u00e1ul a friss\u00edt\u00e9s m\u0171velet egyszerre csak egy entit\u00e1son hajthat\u00f3 v\u00e9gre.
+ACTION_MULTIPLE_ENTITIES_SPECIFIED.useraction=Gondoskodj\u00e9k r\u00f3la, hogy csak egy entit\u00e1s legyen \u00e1tadva a felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet sz\u00e1m\u00e1ra.
+
+MISSING_OR_EMPTY_PRINCIPAL_NAME=CWIML4536E: A bejelentkez\u00e9si m\u0171velet nem hajthat\u00f3 v\u00e9gre. Az azonos\u00edt\u00f3n\u00e9v hi\u00e1nyzik vagy \u00fcres. 
+MISSING_OR_EMPTY_PRINCIPAL_NAME.explanation=Azonos\u00edt\u00f3n\u00e9v sz\u00fcks\u00e9ges a jelsz\u00f3val t\u00f6rt\u00e9n\u0151 bejelentkez\u00e9shez.
+MISSING_OR_EMPTY_PRINCIPAL_NAME.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az azonos\u00edt\u00f3n\u00e9v meg van adva.
+
+MULTIPLE_PRINCIPALS_FOUND=CWIML4538E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. T\u00f6bb rekord l\u00e9tezik a(z) {0} azonos\u00edt\u00f3n\u00e9vhez a be\u00e1ll\u00edtott felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1sokban. Az azonos\u00edt\u00f3n\u00e9vnek egyedinek kell lennie az \u00f6sszes felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1sban.
+MULTIPLE_PRINCIPALS_FOUND.explanation=T\u00f6bb azonos\u00edt\u00f3 tal\u00e1lhat\u00f3 a megadott azonos\u00edt\u00f3n\u00e9vhez. A bejelentkez\u00e9si folyamat nem folytathat\u00f3.
+MULTIPLE_PRINCIPALS_FOUND.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a helyes azonos\u00edt\u00f3n\u00e9v van megadva. P\u00e9ld\u00e1ul az azonos\u00edt\u00f3n\u00e9v egyedi n\u00e9vk\u00e9nt val\u00f3 megad\u00e1s\u00e1val elker\u00fclhet\u0151 ez a t\u00edpus\u00fa kiv\u00e9tel.
+
+AUTHENTICATE_NOT_SUPPORTED=CWIML4530E: A hiteles\u00edt\u00e9si m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) {0} lerakat nem t\u00e1mogatja a hiteles\u00edt\u00e9st a tan\u00fas\u00edtv\u00e1nnyal. Az ok: {1}
+AUTHENTICATE_NOT_SUPPORTED.explanation=A lerakat nem t\u00e1mogatja a hiteles\u00edt\u00e9st a tan\u00fas\u00edtv\u00e1nnyal.
+AUTHENTICATE_NOT_SUPPORTED.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a lerakat t\u00e1mogatja-e a hiteles\u00edt\u00e9st a tan\u00fas\u00edtv\u00e1nnyal.
+
+CERTIFICATE_MAP_FAILED=CWIML3011E: A bejelentkez\u00e9si m\u0171velet nem hajthat\u00f3 v\u00e9gre. A tan\u00fas\u00edtv\u00e1nylek\u00e9pez\u00e9s meghi\u00fasult. Adja meg a helyes tan\u00fas\u00edtv\u00e1nylek\u00e9pez\u00e9st a server.xml f\u00e1jlban, vagy haszn\u00e1ljon \u00e9rv\u00e9nyes tan\u00fas\u00edtv\u00e1nyt.
+CERTIFICATE_MAP_FAILED.explanation=Hiba t\u00f6rt\u00e9nt az adott tan\u00fas\u00edtv\u00e1ny a felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1sra t\u00f6rt\u00e9n\u0151 lek\u00e9pz\u00e9se sor\u00e1n.
+CERTIFICATE_MAP_FAILED.useraction=Jav\u00edtsa a tan\u00fas\u00edtv\u00e1nylek\u00e9pez\u00e9st a serve.xml f\u00e1jlban, vagy jelentkezzen be \u00e9rv\u00e9nyes tan\u00fas\u00edtv\u00e1nnyal.
+
+PRINCIPAL_NOT_FOUND=CWIML4537E: A bejelentkez\u00e9si m\u0171velet nem hajthat\u00f3 v\u00e9gre. A megadott {0} azonos\u00edt\u00f3n\u00e9v nem tal\u00e1lhat\u00f3 a h\u00e1tt\u00e9rlerakatban.
+PRINCIPAL_NOT_FOUND.explanation=Az azonos\u00edt\u00f3n\u00e9v nem tal\u00e1lhat\u00f3 a lerakatban. A bejelentkez\u00e9si folyamat nem folytathat\u00f3.
+PRINCIPAL_NOT_FOUND.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a helyes azonos\u00edt\u00f3n\u00e9v van megadva.
+
+NON_EXISTING_SEARCH_BASE=CWIML1042E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A megadott {0} keres\u00e9si alap nem l\u00e9tezik az aktu\u00e1lis be\u00e1ll\u00edtott tartom\u00e1nyban. Adja meg az \u00e9rv\u00e9nyes keres\u00e9si alapot, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alapbejegyz\u00e9s be van-e \u00e1ll\u00edtva az aktu\u00e1lis tartom\u00e1nyban.
+NON_EXISTING_SEARCH_BASE.explanation=A megadott keres\u00e9si alap nem l\u00e9tezik az aktu\u00e1lis tartom\u00e1nyban.
+NON_EXISTING_SEARCH_BASE.useraction=Ellen\u0151rizze a megadott keres\u00e9si alapot, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megfelel\u0151 alapbejegyz\u00e9s be van \u00e1ll\u00edtva az aktu\u00e1lis tartom\u00e1nyban.
+
+ENTITY_NOT_FOUND=CWIML4001E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) {0} entit\u00e1s nem tal\u00e1lhat\u00f3. Adja meg a helyes entit\u00e1st vagy hozza l\u00e9tre a hi\u00e1nyz\u00f3 entit\u00e1st.
+ENTITY_NOT_FOUND.explanation=A megadott entit\u00e1sn\u00e9v, amely lehet uniqueName vagy uniqueId, nem tal\u00e1lhat\u00f3 az alapul szolg\u00e1l\u00f3 lerakatban. A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem folytat\u00f3dhat az entit\u00e1s megtal\u00e1l\u00e1sa n\u00e9lk\u00fcl.
+ENTITY_NOT_FOUND.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az entit\u00e1s l\u00e9tezik az alapul szolg\u00e1l\u00f3 lerakatban. Ha az entit\u00e1s l\u00e9tezik, akkor ellen\u0151rizze, hogy be van \u00e1ll\u00edtva az olvas\u00e1si jogosults\u00e1g az entit\u00e1shoz, \u00e9s pr\u00f3b\u00e1lkozzon \u00fajra.
+
+INVALID_LEVEL_IN_CONTROL=CWIML4514E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) {0} level tulajdons\u00e1ga sz\u00e1m\u00e1ra helytelen \u00e9rt\u00e9k van megadva itt: {1}. A level tulajdons\u00e1g \u00e9rt\u00e9k\u00e9nek 0-nak vagy pozit\u00edv eg\u00e9sznek kell lennie.
+INVALID_LEVEL_IN_CONTROL.explanation=A level tulajdons\u00e1g \u00e9rt\u00e9ke negat\u00edv sz\u00e1mk\u00e9nt van megadva.
+INVALID_LEVEL_IN_CONTROL.useraction=A level tulajdons\u00e1g \u00e9rt\u00e9k\u00e9nek 0-nak vagy pozit\u00edv eg\u00e9sznek kell lennie. M\u00f3dos\u00edtsa a level tulajdons\u00e1g \u00e9rt\u00e9k\u00e9t, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+
+NAMING_EXCEPTION=CWIML4520E: Az LDAP m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) {0} LDAP elnevez\u00e9si kiv\u00e9tel t\u00f6rt\u00e9nt a feldolgoz\u00e1s sor\u00e1n.
+NAMING_EXCEPTION.explanation=Az \u00fczenet azt jelzi, hogy \u00e1ltal\u00e1nos elnevez\u00e9si kiv\u00e9tel t\u00f6rt\u00e9nt egy LDAP m\u0171velet sor\u00e1n. Tov\u00e1bbi r\u00e9szletek\u00e9rt tekintse meg a kiv\u00e9telt. 
+NAMING_EXCEPTION.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kapcsol\u00f3d\u00f3 lerakat (p\u00e9ld\u00e1ul: egy LDAP kiszolg\u00e1l\u00f3n l\u00e9v\u0151 adatb\u00e1zis) el van ind\u00edtva \u00e9s helyesen van be\u00e1ll\u00edtva.
+
+SYSTEM_EXCEPTION=CWIML1998E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A k\u00f6vetkez\u0151 rendszerkiv\u00e9tel t\u00f6rt\u00e9nt a felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet feldolgoz\u00e1sa sor\u00e1n: {0} 
+SYSTEM_EXCEPTION.explanation=A program rendszerkiv\u00e9telt \u00e9szlelt a felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet v\u00e9grehajt\u00e1sa sor\u00e1n. 
+SYSTEM_EXCEPTION.useraction= Tekintse \u00e1t a napl\u00f3kat a hiba ok\u00e1\u00e9rt, \u00e9s tegye meg a megfelel\u0151 jav\u00edt\u00f3 int\u00e9zked\u00e9seket.
+
+INVALID_PROPERTY_VALUE=CWIML1013E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) {0} tulajdons\u00e1g megadott \u00e9rt\u00e9ke nem \u00e9rv\u00e9nyes a(z) {1} entit\u00e1sra. A tulajdons\u00e1g \u00e9rt\u00e9k\u00e9nek helyesnek \u00e9s megfelel\u0151 adatt\u00edpus\u00fanak kell lennie.
+INVALID_PROPERTY_VALUE.explanation=A tulajdons\u00e1g \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen. P\u00e9ld\u00e1ul egy azonos\u00edt\u00f3 t\u00edpus\u00fa tulajdons\u00e1g helytelen bejegyz\u00e9sre mutat.
+INVALID_PROPERTY_VALUE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a tulajdons\u00e1g \u00e9rt\u00e9ke helyes, \u00e9s az adatt\u00edpusa megfelel\u0151. Ha azonos\u00edt\u00f3 t\u00edpus\u00fa tulajdons\u00e1gokat pr\u00f3b\u00e1l lek\u00e9rni m\u00e1s tulajdons\u00e1gokkal egy\u00fctt, ossza fel azokat k\u00e9t h\u00edv\u00e1sra. Az egyik h\u00edv\u00e1ssal a nem azonos\u00edt\u00f3 t\u00edpus\u00fa tulajdons\u00e1gokat, a m\u00e1sikkal pedig az azonos\u00edt\u00f3 t\u00edpus\u00fa tulajdons\u00e1gokat k\u00e9rje le.
+
+GENERIC=CWIML1999E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. Fut\u00e1s k\u00f6zbeni hiba t\u00f6rt\u00e9nt a feldolgoz\u00e1s sor\u00e1n: {0}
+GENERIC.explanation=A programban a m\u0171k\u00f6d\u00e9s sor\u00e1n a megadott hiba t\u00f6rt\u00e9nt.
+GENERIC.useraction= Tekintse \u00e1t a napl\u00f3kat a hiba ok\u00e1\u00e9rt, \u00e9s tegye meg a megfelel\u0151 jav\u00edt\u00f3 int\u00e9zked\u00e9seket.
+
+MISSING_MANDATORY_PROPERTY=CWIML1028E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A k\u00f6telez\u0151 {0} tulajdons\u00e1g \u00e9rt\u00e9ke hi\u00e1nyzik. Biztos\u00edtson \u00e9rt\u00e9ket a k\u00f6telez\u0151 tulajdons\u00e1ghoz.
+MISSING_MANDATORY_PROPERTY.explanation=A m\u0171velet nem hajthat\u00f3 v\u00e9gre, mert a k\u00f6telez\u0151 tulajdons\u00e1g \u00e9rt\u00e9ke hi\u00e1nyzik. P\u00e9ld\u00e1ul az RDN (relat\u00edv megk\u00fcl\u00f6nb\u00f6ztetett n\u00e9v) tulajdons\u00e1g nincs megadva az entit\u00e1s l\u00e9trehoz\u00e1sakor; esetleg a propertyName vagy a entityTypeName hi\u00e1nyzik a PropertyDefinitionControl vagyExtensionPropertyDefinitionControl be\u00e1ll\u00edt\u00e1sb\u00f3l; esetleg az entityName nem szerepel az entitySchema be\u00e1ll\u00edt\u00e1sban.
+MISSING_MANDATORY_PROPERTY.useraction=Biztos\u00edtson \u00e9rt\u00e9ket a k\u00f6telez\u0151 tulajdons\u00e1ghoz.
+
+CANNOT_DELETE_LOGGED_IN_USER=CWIML5504E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) {0} uniqueName attrib\u00fatummal rendelkez\u0151 felhaszn\u00e1l\u00f3 nem t\u00f6r\u00f6lhet\u0151, mivel a felhaszn\u00e1l\u00f3 be van jelentkezve. A felhaszn\u00e1l\u00f3 t\u00f6rl\u00e9s\u00e9hez m\u00e1s felhaszn\u00e1l\u00f3k\u00e9nt kell bejelentkezni.
+CANNOT_DELETE_LOGGED_IN_USER.explanation=A felhaszn\u00e1l\u00f3 saj\u00e1t mag\u00e1t pr\u00f3b\u00e1lta t\u00f6r\u00f6lni a virtu\u00e1lis tagkezel\u0151b\u0151l. Ez a tev\u00e9kenys\u00e9g nem enged\u00e9lyezett.
+CANNOT_DELETE_LOGGED_IN_USER.useraction=Az aktu\u00e1lis felhaszn\u00e1l\u00f3 t\u00f6rl\u00e9s\u00e9hez m\u00e1s felhaszn\u00e1l\u00f3k\u00e9nt kell bejelentkezni .
+
+AUTH_SUBJECT_CRED_FAILURE=CWIML2005E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. V\u00e1ratlan hiba t\u00f6rt\u00e9nt a t\u00e1rgy hiteles\u00edt\u00e9si adatainak beolvas\u00e1sakor. Keresse meg a hiba eredeti ok\u00e1t a nyomk\u00f6vet\u00e9si napl\u00f3kban.
+AUTH_SUBJECT_CRED_FAILURE.explanation=A t\u00e1rgy hiteles\u00edt\u00e9si adatai ismeretlen hiba miatt nem olvashat\u00f3k be.
+AUTH_SUBJECT_CRED_FAILURE.useraction=Keresse meg a hiba eredeti ok\u00e1t a nyomk\u00f6vet\u00e9si napl\u00f3kban. Probl\u00e9ma lehet a WebSphere biztons\u00e1gi konfigur\u00e1ci\u00f3j\u00e1val.
+
+AUTH_SUBJECT_FAILURE=CWIML2004E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. V\u00e1ratlan hiba t\u00f6rt\u00e9nt a h\u00edv\u00f3 t\u00e1rgy\u00e1nak beolvas\u00e1sakor. Keresse meg a hiba eredeti ok\u00e1t a nyomk\u00f6vet\u00e9si napl\u00f3kban.
+AUTH_SUBJECT_FAILURE.explanation=A h\u00edv\u00f3 t\u00e1rgya ismeretlen hiba miatt nem olvashat\u00f3 be.
+AUTH_SUBJECT_FAILURE.useraction=Keresse meg a hiba eredeti ok\u00e1t a nyomk\u00f6vet\u00e9si napl\u00f3kban. Probl\u00e9ma lehet a WebSphere biztons\u00e1gi konfigur\u00e1ci\u00f3j\u00e1val.
+
+INVALID_PARENT_UNIQUE_ID=CWIML1014E: A sz\u00fcl\u0151 {0} uniqueId tulajdons\u00e1ga \u00e9rv\u00e9nytelen.
+INVALID_PARENT_UNIQUE_ID.explanation=A sz\u00fcl\u0151 entit\u00e1s megadott uniqueId azonos\u00edt\u00f3ja \u00e9rv\u00e9nytelen. Adjon meg egy \u00e9rv\u00e9nyes unique Id tulajdons\u00e1got.
+INVALID_PARENT_UNIQUE_ID.useraction=Ellen\u0151rizze, hogy megtal\u00e1lhat\u00f3-e a lerakatban a sz\u00fcl\u0151 entit\u00e1s uniqueId tulajdons\u00e1ga, \u00e9s \u00e9rv\u00e9nyes-e.
+
+DEFAULT_PARENT_NOT_FOUND=CWIML0516E: A(z) {0} alap\u00e9rtelmezett sz\u00fcl\u0151je nem hat\u00e1rozhat\u00f3 meg. Ellen\u0151rizze, hogy a(z) {1} tartom\u00e1ny konfigur\u00e1ci\u00f3ja helyes-e.
+DEFAULT_PARENT_NOT_FOUND.explanation=A m\u0171velet nem hajthat\u00f3 v\u00e9gre, mert az entit\u00e1st\u00edpus alap\u00e9rtelmezett sz\u00fcl\u0151je nem hat\u00e1rozhat\u00f3 meg.
+DEFAULT_PARENT_NOT_FOUND.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az entit\u00e1st\u00edpus alap\u00e9rtelmezett sz\u00fcl\u0151je konfigur\u00e1lva van az egyes\u00edtett lerakatok vagy tartom\u00e1ny sz\u00e1m\u00e1ra. A sz\u00fcl\u0151 megadhat\u00f3 a bemenet r\u00e9szek\u00e9nt is.
+
+MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION=CWIML1034E: Hi\u00e1nyz\u00f3 repositoriesForGroups konfigur\u00e1ci\u00f3 a(z) {0} lerakat eset\u00e9ben.
+MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION.explanation=Nincs meghat\u00e1rozva lerakatk\u00f6zi csoportkonfigur\u00e1ci\u00f3 a lerakathoz.
+MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION.useraction=Tekintse meg a napl\u00f3f\u00e1jlt a meghib\u00e1sod\u00e1s ok\u00e1\u00e9rt. Ellen\u0151rizze a lerakat konfigur\u00e1ci\u00f3j\u00e1t.
+
+ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: A megadott {0} entit\u00e1st\u00edpus nem \u00e9rv\u00e9nyes entit\u00e1st\u00edpus a m\u0171velet eset\u00e9ben.
+ENTITY_TYPE_NOT_SUPPORTED.explanation=Egy m\u0171veletet k\u00e9rt egy entit\u00e1son, de a m\u0171velet nem t\u00e1mogatja a megadott entit\u00e1st\u00edpust.
+ENTITY_TYPE_NOT_SUPPORTED.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a bemenetben megadott entit\u00e1sok t\u00e1mogatott entit\u00e1st\u00edpusok, \u00e9s t\u00e1vol\u00edtson el minden nem t\u00e1mogatott entit\u00e1st\u00edpust a bemenetb\u0151l.
+
+CAN_NOT_CONSTRUCT_UNIQUE_NAME=CWIML1008E: A(z) {1} entit\u00e1s {0} RDN tulajdons\u00e1ga ker\u00fclt megad\u00e1sra a bemenetben. Az egyedi n\u00e9v nem hozhat\u00f3 l\u00e9tre az alapul szolg\u00e1l\u00f3 lerakatban, mert a bemenetben megadott RDN inform\u00e1ci\u00f3k f\u00e9lre\u00e9rthet\u0151ek.
+CAN_NOT_CONSTRUCT_UNIQUE_NAME.explanation=Egy entit\u00e1s l\u00e9trehoz\u00e1sakor a relat\u00edv megk\u00fcl\u00f6nb\u00f6ztetett n\u00e9vnek (RDN) megfelel\u0151 form\u00e1z\u00e1s\u00fanak kell lennie, \u00e9s nem tartalmazhat k\u00e9t\u00e9rtelm\u0171 tulajdons\u00e1gokat. P\u00e9ld\u00e1ul az OrgContainer entit\u00e1st\u00edpus k\u00e9pviselhet egy szervezetet (ami az "o" RDN tulajdons\u00e1got haszn\u00e1lja) vagy egy szervezeti egys\u00e9get (ami az "ou" RDN tulajdons\u00e1got haszn\u00e1lja) az alapul szolg\u00e1l\u00f3 lerakatban. Ha a bemeneti adatobjektum RDN tulajdons\u00e1g\u00e1ban az "o" \u00e9s az "ou" is meg van adva az \u00faj entit\u00e1shoz, akkor nem hozhat\u00f3 l\u00e9tre egyedi n\u00e9v az \u00faj entit\u00e1shoz.
+CAN_NOT_CONSTRUCT_UNIQUE_NAME.useraction=Hat\u00e1rozza meg az alapul szolg\u00e1l\u00f3 lerakatban l\u00e9trehozni k\u00edv\u00e1nt entit\u00e1st\u00edpust, \u00e9s adja meg az ahhoz a t\u00edpushoz megfelel\u0151 RDN tulajdons\u00e1got. Ha p\u00e9ld\u00e1ul egy szervezetet szeretne l\u00e9trehozni, akkor csak az "o" tulajdons\u00e1g\u00e9rt\u00e9ket adja meg.
+
+REPOSITORY_INITIALIZATION_FAILED=CWIML4510E: A konfigur\u00e1lt {0} lerakat az alapul szolg\u00e1l\u00f3 hiba miatt nem inicializ\u00e1lhat\u00f3: {1}
+REPOSITORY_INITIALIZATION_FAILED.explanation=Az alapul szolg\u00e1l\u00f3 miatt az egyes\u00edtett lerakat nem inicializ\u00e1lhat\u00f3.
+REPOSITORY_INITIALIZATION_FAILED.useraction=A hiba ok\u00e1nak meg\u00e1llap\u00edt\u00e1s\u00e1hoz tekintse \u00e1t az ok \u00fczenet\u00e9t \u00e9s vizsg\u00e1lja meg a nyomk\u00f6vet\u00e9si f\u00e1jlt. Jav\u00edtsa ki a hib\u00e1t, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+
+CUSTOM_REGISTRY_EXCEPTION=CWIML3010E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velete nem hajthat\u00f3 v\u00e9gre. A(z) {0} sz\u00e1m\u00e1ra be\u00e1ll\u00edtott egy\u00e9ni nyilv\u00e1ntart\u00e1sban kiv\u00e9tel t\u00f6rt\u00e9nt
+CUSTOM_REGISTRY_EXCEPTION.explanation=Az egy\u00e9ni nyilv\u00e1ntart\u00e1s eset\u00e9ben kiv\u00e9tel t\u00f6rt\u00e9nt. El\u0151fordulhat, hogy az egy\u00e9ni nyilv\u00e1ntart\u00e1s nem \u00e9rhet\u0151 el, vagy nem tudja v\u00e9grehajtani a m\u0171veletet.
+CUSTOM_REGISTRY_EXCEPTION.useraction=A hiba ok\u00e1nak meg\u00e1llap\u00edt\u00e1s\u00e1hoz tekintse \u00e1t az ok \u00fczenet\u00e9t \u00e9s vizsg\u00e1lja meg a nyomk\u00f6vet\u00e9si f\u00e1jlt. Jav\u00edtsa ki a hib\u00e1t, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+
+ENTITY_GET_FAILED=CWIML4505E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s az alapul szolg\u00e1l\u00f3 hiba miatt nem tudta lek\u00e9rdezni a(z) {0} entit\u00e1st: {1}
+ENTITY_GET_FAILED.explanation=Az entit\u00e1s az alapul szolg\u00e1l\u00f3 lerakat \u00e1ltal megadott okb\u00f3l nem k\u00e9rhet\u0151 le.
+ENTITY_GET_FAILED.useraction=A hiba ok\u00e1nak meg\u00e1llap\u00edt\u00e1s\u00e1hoz tekintse \u00e1t az ok \u00fczenet\u00e9t \u00e9s vizsg\u00e1lja meg a nyomk\u00f6vet\u00e9si f\u00e1jlt. Jav\u00edtsa ki a hib\u00e1t, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+
+PROPERTY_NOT_DEFINED_FOR_ENTITY=CWIML4516E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) {0} tulajdons\u00e1g a(z) {1} eset\u00e9ben nincs meghat\u00e1rozva
+PROPERTY_NOT_DEFINED_FOR_ENTITY.explanation=A megadott tulajdons\u00e1g az adott entit\u00e1st\u00edpus eset\u00e9ben nincs meghat\u00e1rozva.
+PROPERTY_NOT_DEFINED_FOR_ENTITY.useraction=Ellen\u0151rizze a tulajdons\u00e1gn\u00e9v helyess\u00e9g\u00e9t.
+
+MALFORMED_SEARCH_EXPRESSION=CWIML3006W: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velete nem hajthat\u00f3 v\u00e9gre, mivel a(z) {0} keres\u00e9si kifejez\u00e9s \u00e9rv\u00e9nytelen. Adja meg a keres\u00e9si kifejez\u00e9s helyes szintaxis\u00e1t.
+MALFORMED_SEARCH_EXPRESSION.explanation=A keres\u00e9si m\u0171velet nem hajthat\u00f3 v\u00e9gre, mert a keres\u00e9si kifejez\u00e9s \u00e9rv\u00e9nytelen.
+MALFORMED_SEARCH_EXPRESSION.useraction=\u00c9rv\u00e9nyes keres\u00e9si kifejez\u00e9st adjon meg.
+
+ENTITY_SEARCH_FAILED=CWIML4506E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velete nem hajthat\u00f3 v\u00e9gre, mivel a felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s az alapul szolg\u00e1l\u00f3 hib\u00e1ba \u00fctk\u00f6z\u00f6tt: {1}
+ENTITY_SEARCH_FAILED.explanation=Az entit\u00e1s keres\u00e9se az alapul szolg\u00e1l\u00f3 nyilv\u00e1ntart\u00e1s \u00e1ltal megadott okb\u00f3l nem hajthat\u00f3 v\u00e9gre.
+ENTITY_SEARCH_FAILED.useraction=A hiba ok\u00e1nak meg\u00e1llap\u00edt\u00e1s\u00e1hoz tekintse \u00e1t az ok \u00fczenet\u00e9t \u00e9s vizsg\u00e1lja meg a nyomk\u00f6vet\u00e9si f\u00e1jlt. Jav\u00edtsa ki a hib\u00e1t, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+
+MISSING_OR_EMPTY_PASSWORD=CWIML4541E: A bejelentkez\u00e9si m\u0171velet nem hajthat\u00f3 v\u00e9gre, mivel a jelsz\u00f3 hi\u00e1nyzik vagy \u00fcres.
+MISSING_OR_EMPTY_PASSWORD.explanation=Ha az azonos\u00edt\u00f3n\u00e9v megad\u00e1sra ker\u00fclt a bejelentkez\u00e9si folyamat sor\u00e1n, akkor a jelsz\u00f3 nem lehet null\u00e9rt\u00e9k\u0171 vagy \u00fcres.
+MISSING_OR_EMPTY_PASSWORD.useraction=Adja meg a jelsz\u00f3t.
+
+CERTIFICATE_GENERATE_FAILED=CWIML3012E: A bejelentkez\u00e9si m\u0171velet nem hajthat\u00f3 v\u00e9gre, mivel a tan\u00fas\u00edtv\u00e1ny el\u0151\u00e1ll\u00edt\u00e1sa meghi\u00fasult.
+CERTIFICATE_GENERATE_FAILED.explanation=Hiba t\u00f6rt\u00e9nt a tan\u00fas\u00edtv\u00e1ny bemeneti tan\u00fas\u00edtv\u00e1nyf\u00e1jlb\u00f3l t\u00f6rt\u00e9n\u0151 el\u0151\u00e1ll\u00edt\u00e1sa sor\u00e1n.
+CERTIFICATE_GENERATE_FAILED.useraction=Jelentkezzen be \u00e9rv\u00e9nyes tan\u00fas\u00edtv\u00e1nnyal.
+
+AUTHENTICATION_WITH_CERT_NOT_SUPPORTED=CWIML4542E: A bejelentkez\u00e9si m\u0171velet nem hajthat\u00f3 v\u00e9gre, mivel a felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s nem t\u00e1mogatja a tan\u00fas\u00edtv\u00e1nnyal t\u00f6rt\u00e9n\u0151 bejelentkez\u00e9st.
+AUTHENTICATION_WITH_CERT_NOT_SUPPORTED.explanation=Az alapul szolg\u00e1l\u00f3 felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s nem enged\u00e9lyezi a tan\u00fas\u00edtv\u00e1nnyal t\u00f6rt\u00e9n\u0151 hiteles\u00edt\u00e9st.
+AUTHENTICATION_WITH_CERT_NOT_SUPPORTED.useraction=A hiteles\u00edt\u00e9st tan\u00fas\u00edtv\u00e1ny helyett felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 \u00e9s jelsz\u00f3 seg\u00edts\u00e9g\u00e9vel v\u00e9gezze el.
+
+CANNOT_WRITE_TO_READ_ONLY_REPOSITORY=CWIML1027E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velete nem hajthat\u00f3 v\u00e9gre, mivel a(z) {0} csak olvashat\u00f3 lerakat. Nem t\u00e1mogatja az \u00edr\u00e1si m\u0171veleteket. 
+CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.explanation=A lerakat csak olvashat\u00f3. Nem t\u00e1mogatja a l\u00e9trehoz\u00e1si, friss\u00edt\u00e9si vagy t\u00f6rl\u00e9si m\u0171veletet.
+CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.useraction=Gondoskodj\u00e9k r\u00f3la, hogy \u00edr\u00e1si m\u0171velet ne ker\u00fclj\u00f6n megh\u00edv\u00e1sra a csak olvashat\u00f3 lerakaton.

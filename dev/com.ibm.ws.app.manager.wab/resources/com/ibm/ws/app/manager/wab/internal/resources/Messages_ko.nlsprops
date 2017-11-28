@@ -1,0 +1,63 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.wab/resources/com/ibm/ws/app/manager/wab/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKZ
+#COMPONENTNAMEFOR CWWKZ Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+#   Reserving message prefixes CWWKZ0201 to CWWKZ0300
+
+bundle.tracker.init.fail=CWWKZ0201E: WAB \uc124\uce58 \ud504\ub85c\uadf8\ub7a8\uc744 \ucd08\uae30\ud654\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+bundle.tracker.init.fail.explanation=\uc11c\ubc84\uac00 \uc6f9 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ubc88\ub4e4(WAB)\uc744 \ucd08\uae30\ud654\ud560 \uc218 \uc5c6\uc73c\ubbc0\ub85c WAB\uac00 \uc124\uce58\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+bundle.tracker.init.fail.useraction=\ucd94\uac00 \uc815\ubcf4\ub294 \ub85c\uadf8 \ubc0f FFDC \ud30c\uc77c\uc744 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+wab.install.fail=CWWKZ0202E: \uc6f9 \ucee8\ud14c\uc774\ub108\uc5d0 {1} \ucee8\ud14d\uc2a4\ud2b8 \ub8e8\ud2b8\ub97c \uac16\ub294 {0} \ubc88\ub4e4\uc744 \uc124\uce58\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+wab.install.fail.explanation=\uc11c\ubc84\uac00 \uc6f9 \ucee8\ud14c\uc774\ub108\uc5d0 \uc6f9 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ubc88\ub4e4(WAB)\uc744 \uc124\uce58\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+wab.install.fail.useraction=\ucd94\uac00 \uc815\ubcf4\ub294 \ub85c\uadf8 \ubc0f FFDC \ud30c\uc77c\uc744 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+wab.install.fail.adapt=CWWKZ0203E: \uc6f9 \ucee8\ud14c\uc774\ub108\uc5d0 {1} \ucee8\ud14d\uc2a4\ud2b8 \ub8e8\ud2b8\ub97c \uac16\ub294 {0} \ubc88\ub4e4\uc744 \uc124\uce58\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+wab.install.fail.adapt.explanation=\uc11c\ubc84\uac00 \uc6f9 \ucee8\ud14c\uc774\ub108\uc5d0 \uc6f9 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ubc88\ub4e4(WAB)\uc744 \uc124\uce58\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+wab.install.fail.adapt.useraction=\ucd94\uac00 \uc815\ubcf4\ub294 \ub85c\uadf8 \ubc0f FFDC \ud30c\uc77c\uc744 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+wab.install.fail.overlay=CWWKZ0204E: \uc6f9 \ucee8\ud14c\uc774\ub108\uc5d0 {1} \ucee8\ud14d\uc2a4\ud2b8 \ub8e8\ud2b8\ub97c \uac16\ub294 {0} \ubc88\ub4e4\uc744 \uc124\uce58\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+wab.install.fail.overlay.explanation=\uc11c\ubc84\uac00 \uc6f9 \ucee8\ud14c\uc774\ub108\uc5d0 \uc6f9 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ubc88\ub4e4(WAB)\uc744 \uc124\uce58\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+wab.install.fail.overlay.useraction=\ucd94\uac00 \uc815\ubcf4\ub294 \ub85c\uadf8 \ubc0f FFDC \ud30c\uc77c\uc744 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+wab.install.fail.cache=CWWKZ0205E: \uc6f9 \ucee8\ud14c\uc774\ub108\uc5d0 {1} \ucee8\ud14d\uc2a4\ud2b8 \ub8e8\ud2b8\ub97c \uac16\ub294 {0} \ubc88\ub4e4\uc744 \uc124\uce58\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+wab.install.fail.cache.explanation=\uc11c\ubc84\uac00 \uc6f9 \ucee8\ud14c\uc774\ub108\uc5d0 \uc6f9 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ubc88\ub4e4(WAB)\uc744 \uc124\uce58\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+wab.install.fail.cache.useraction=\ucd94\uac00 \uc815\ubcf4\ub294 \ub85c\uadf8 \ubc0f FFDC \ud30c\uc77c\uc744 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+wab.install.fail.container=CWWKZ0206E: \uc6f9 \ucee8\ud14c\uc774\ub108\uc5d0 {1} \ucee8\ud14d\uc2a4\ud2b8 \ub8e8\ud2b8\ub97c \uac16\ub294 {0} \ubc88\ub4e4\uc744 \uc124\uce58\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+wab.install.fail.container.explanation=\uc11c\ubc84\uac00 \uc6f9 \ucee8\ud14c\uc774\ub108\uc5d0 \uc6f9 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ubc88\ub4e4(WAB)\uc744 \uc124\uce58\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+wab.install.fail.container.useraction=\ucd94\uac00 \uc815\ubcf4\ub294 \ub85c\uadf8 \ubc0f FFDC \ud30c\uc77c\uc744 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+wab.install.fail.wiring=CWWKZ0207E: \uc6f9 \ucee8\ud14c\uc774\ub108\uc5d0 {1} \ucee8\ud14d\uc2a4\ud2b8 \ub8e8\ud2b8\ub97c \uac16\ub294 {0} \ubc88\ub4e4\uc744 \uc124\uce58\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+wab.install.fail.wiring.explanation=\uc11c\ubc84\uac00 \uc6f9 \ucee8\ud14c\uc774\ub108\uc5d0 \uc6f9 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ubc88\ub4e4(WAB)\uc744 \uc124\uce58\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+wab.install.fail.wiring.useraction=\ucd94\uac00 \uc815\ubcf4\ub294 \ub85c\uadf8 \ubc0f FFDC \ud30c\uc77c\uc744 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+wab.install.fail.clash=CWWKZ0208E: {1} \ucee8\ud14d\uc2a4\ud2b8 \ub8e8\ud2b8\ub97c \uac16\ub294 {0} \ubc88\ub4e4\uc740 {2} \ubc88\ub4e4\uacfc \ub3d9\uc77c\ud55c \ucee8\ud14d\uc2a4\ud2b8 \ub8e8\ud2b8\ub97c \uac00\uc9c0\ubbc0\ub85c \uc6f9 \ucee8\ud14c\uc774\ub108\uc5d0 \uc124\uce58\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+wab.install.fail.clash.explanation=\uc6f9 \ucee8\ud14c\uc774\ub108\uc5d0\uc11c \uac01 WAB(Web Application Bundle)\uc758 \ucee8\ud14d\uc2a4\ud2b8 \ub8e8\ud2b8\ub294 \uace0\uc720\ud574\uc57c \ud569\ub2c8\ub2e4. \ucee8\ud14d\uc2a4\ud2b8 \ub8e8\ud2b8\uac00 \ubc30\uce58\ub41c \ub2e4\ub978 \ubc88\ub4e4\uacfc \ub3d9\uc77c\ud558\ubbc0\ub85c \uc11c\ubc84\ub294 \uc6f9 \ucee8\ud14c\uc774\ub108\uc5d0 WAB\ub97c \uc124\uce58\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+wab.install.fail.clash.useraction=\ub2e4\ub978 \ucee8\ud14d\uc2a4\ud2b8 \ub8e8\ud2b8\ub97c \uc0ac\uc6a9\ud558\uc2ed\uc2dc\uc624.

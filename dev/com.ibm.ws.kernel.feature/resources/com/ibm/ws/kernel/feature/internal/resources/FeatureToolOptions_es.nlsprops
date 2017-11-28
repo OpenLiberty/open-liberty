@@ -1,0 +1,155 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.kernel.boot/resources/com/ibm/ws/kernel/feature/internal/resources/FeatureToolOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Uso:  {0}
+
+global.description=Descripci\u00f3n:
+global.actions=Acciones:
+global.options=Opciones:
+global.options.lower=opciones
+global.usage=Uso:
+global.options.statement=\tUtilice help [nombreAcci\u00f3n] para obtener informaci\u00f3n de opciones detalladas de cada acci\u00f3n.
+task.unknown=Acci\u00f3n desconocida: {0}
+
+# -------- ACTIONS ----------------------------------------------------#
+# List of descriptive text for actions. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+help.desc=\tImprimir informaci\u00f3n de ayuda para la acci\u00f3n especificada.
+install.desc=\tInstalar una caracter\u00edstica empaquetada como archivador de subsistema (ESA) en el tiempo de ejecuci\u00f3n.
+uninstall.desc=\tDesinstalar una caracter\u00edstica del tiempo de ejecuci\u00f3n.
+featureList.desc=\tGenerar un informe XML en todas las caracter\u00edsticas instaladas en el tiempo de ejecuci\u00f3n.
+classpath.desc=\tGenerar un archivo JAR que se puede a\u00f1adir a una v\u00eda de acceso de clases del compilador para\n\
+\tutilizar las API de una lista de caracter\u00edsticas.
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--to=\ \ \ \ --to=[extensi\u00f3n|usr]
+install.option-desc.--to=\tEspecifique d\u00f3nde debe instalarse la caracter\u00edstica. La caracter\u00edstica puede instalarse en\n\
+\tuna ubicaci\u00f3n de ampliaci\u00f3n de producto configurada, o como una caracter\u00edstica de usuario. Si\n\
+\testa opci\u00f3n no se especifica, la caracter\u00edstica se instalar\u00e1 como una\n\
+\tcaracter\u00edstica de usuario.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--user=\ \ \ \ --user
+install.option-desc.--user=\tEspecifique un ID de usuario v\u00e1lido para WebSphere Liberty Repository.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--password=\ \ \ \ --password
+install.option-desc.--password=\tEspecifique la contrase\u00f1a del ID de usuario especificado en la opci\u00f3n --user.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--passwordFile=\ \ \ \ --passwordFile
+install.option-desc.--passwordFile=\tProporcione un archivo que contenga la contrase\u00f1a para el ID de usuario especificado en la opci\u00f3n \n\
+\t--user.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.name=\ \ \ \ name
+install.option-desc.name=\tEspecifique la ubicaci\u00f3n del archivador de subsistema que debe utilizarse.  Puede  \n\
+\tser un subsistema esa, un nombre abreviado de IBM o el nombre simb\u00f3lico de subsistema del\n\
+\tarchivador de subsistema.  El valor puede ser un nombre de archivo o un URL al         \n\
+\tarchivo esa. Si se especifica un nombre abreviado de IBM o un nombre simb\u00f3lico de subsistema,     \n\
+\tel archivo esa se instalar\u00e1 desde un repositorio en l\u00ednea  \n\
+\thospedado por IBM.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--verbose=\ \ \ \ --verbose
+install.option-desc.--verbose=\tUtilice esta opci\u00f3n para mostrar cualquier informaci\u00f3n adicional\n\
+\tdisponible mientras se ejecuta la acci\u00f3n.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.name=\ \ \ \ name
+uninstall.option-desc.name=\tEspecifique la caracter\u00edstica que debe desinstalarse.                                    \n\
+\tPuede ser un un nombre abreviado de IBM o el nombre simb\u00f3lico de subsistema  del   \n\
+\tarchivador de subsistema.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--noPrompts=\ \ \ \ --noPrompts
+uninstall.option-desc.--noPrompts=\tSuprimir mensajes de confirmaci\u00f3n para eliminar caracter\u00edsticas y desinstalar \n\
+\tcaracter\u00edsticas son interacciones de usuario.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--force=\ \ \ \ --force
+uninstall.option-desc.--force=\t Desinstale la caracter\u00edstica independientemente de si otras caracter\u00edsticas\n\
+\tinstalas tienen dependencias sobre la misma. La desinstalaci\u00f3n de una\n\
+\tcaracter\u00edstica que es necesaria para otras caracter\u00edsticas instaladas\n\
+\tpodr\u00eda hacer que dichas caracter\u00edsticas dejen de funcionar e impedir\n\
+\tque los servidores se ejecuten correctamente.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--verbose=\ \ \ \ --verbose
+uninstall.option-desc.--verbose=\tUtilice esta opci\u00f3n para mostrar cualquier informaci\u00f3n adicional\n\
+\tdisponible mientras se ejecuta la acci\u00f3n.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--when-file-exists=\ \ \ \ --when-file-exists=[fail|ignore|replace]
+install.option-desc.--when-file-exists=\tSi ya existe un archivo que es parte del ESA en el sistema, \n\
+\tdebe especificar las acciones que se deben realizar. Las opciones v\u00e1lidas son: fail - terminar \n \tde forma an\u00f3mala la instalaci\u00f3n, ignore - continuar con la instalaci\u00f3n e ignorar que el \n\
+\tarchivo existe; replace - sobrescribir el archivo existente. No utilice \n\
+\tla opci\u00f3n replace para reinstalar las caracter\u00edsticas.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--downloadOnly=\ \ \ \ --downloadOnly=[all|required*|none]
+install.option-desc.--downloadOnly=\tDescargar una caracter\u00edstica en un directorio local sin instalarla. Esta  \n\
+\topci\u00f3n puede configurarse para descargar todas las caracter\u00edsticas dependientes, solo  \n\
+\tlas caracter\u00edsticas dependientes obligatorias o ninguna de las caracter\u00edsticas dependientes.  \n\
+\tEl valor predeterminado descarga todas las caracter\u00edsticas dependientes \n\
+\tobligatorias. El directorio se especifica mediante la opci\u00f3n --location.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--location=\ \ \ \ --location=rutaDirectorio
+install.option-desc.--location=\tSi est\u00e1 instalando una caracter\u00edstica desde un directorio local, utilice esta \n\
+\topci\u00f3n para especificar la ubicaci\u00f3n del directorio local. Si est\u00e1 \n\
+\tdescargando una caracter\u00edstica con la opci\u00f3n --downloadOnly, utilice esta      \n\
+\topci\u00f3n para especificar el directorio de destino de la caracter\u00edstica\n\
+\tdescargada. Esta opci\u00f3n es obligatoria cuando se utiliza --downloadOnly y \n \t--offlineOnly.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--offlineOnly=\ \ \ \ --offlineOnly
+install.option-desc.--offlineOnly=\tEspecifique esta opci\u00f3n si no desea conectar con IBM \n \t WebSphere Liberty Repository y solo est\u00e1 instalando caracter\u00edsticas \n \tdesde el directorio local. El directorio local se especifica mediante la opci\u00f3n \n\t--location.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+
+featureList.option-key.--encoding=\ \ \ \ --encoding=juego de caracteres
+featureList.option-desc.--encoding=\tEspecifique el juego de caracteres que desee utilizar al grabar el archivo xml \n\
+\tde lista de caracter\u00edsticas.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+featureList.option-key.--locale=\ \ \ \ --locale=idioma
+featureList.option-desc.--locale=\tEspecifique el idioma que se debe utilizar al escribir la lista de caracter\u00edsticas. Est\u00e1 formado \n\
+\tpor el c\u00f3digo de idioma de dos letras en min\u00fasculas ISO-639\n\
+\tseguido de manera opcional por un subrayado y el c\u00f3digo de idioma\n\
+\tde dos letras de pa\u00eds en may\u00fasculas ISO-3166.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+featureList.option-key.fileName=\ \ \ \ nombreArchivo
+featureList.option-desc.fileName=\tEl nombre del archivo en el que debe grabarse el xml de lista de caracter\u00edsticas.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+featureList.option-key.--productextension=\ \ \ \ --productExtension=name
+featureList.option-desc.--productextension=\tEspecifique el nombre de ampliaci\u00f3n de producto cuyas caracter\u00edsticas se van a listar.\n\
+\tSi la ampliaci\u00f3n del producto se instala en la ubicaci\u00f3n de usuario por\n\
+\tomisi\u00f3n, utilice la palabra clave: usr. \n\
+\t \
+Si no se especifica esta opci\u00f3n, la acci\u00f3n se realiza en el n\u00facleo de Liberty.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.desc=\tEncontrar las caracter\u00edsticas aplicables de IBM WebSphere Liberty Repository.
+# -------- OPTIONS ----------------------------------------------------#
+find.option-key.searchString=\ \ \ \ searchString
+find.option-desc.searchString=\tUtilizar la serie de b\u00fasqueda para encontrar las caracter\u00edsticas aplicables en IBM         \n\
+\tWebSphere Liberty Repository.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--viewInfo=\ \ \ \ --viewInfo
+find.option-desc.--viewInfo=\tVer informaci\u00f3n detallada.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--verbose=\ \ \ \ --verbose
+find.option-desc.--verbose=\tUtilice esta opci\u00f3n para mostrar cualquier informaci\u00f3n adicional\n\
+\tdisponible mientras se ejecuta la acci\u00f3n.
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+classpath.option-key.--features=\ \ \ \ --features=valor,valor,...
+classpath.option-desc.--features=\tLa lista de caracter\u00edsticas de la que se obtendr\u00e1 la lista de JAR de API.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+classpath.option-key.fileName=\ \ \ \ nombreArchivo
+classpath.option-desc.fileName=\tEl nombre del archivo en el que deben grabarse las v\u00edas de acceso de clases.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#

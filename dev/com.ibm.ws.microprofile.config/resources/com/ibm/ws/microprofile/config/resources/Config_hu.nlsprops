@@ -1,0 +1,104 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMCG
+#COMPONENTNAMEFOR CWMCG MicroProfile Config API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Config Impl -  range is 0000-4999, plus 9999 for the emergency message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# Config is closed.
+config.closed.CWMCG0001E=CWMCG0001E: A konfigur\u00e1ci\u00f3 le van z\u00e1rva.
+config.closed.CWMCG0001E.explanation=Lez\u00e1rt konfigur\u00e1ci\u00f3s p\u00e9ld\u00e1nyon nem hajthat\u00f3k v\u00e9gre m\u0171veletek.
+config.closed.CWMCG0001E.useraction=K\u00e9rjen le egy \u00faj konfigur\u00e1ci\u00f3s p\u00e9ld\u00e1nyt, majd pr\u00f3b\u00e1lja \u00fajra v\u00e9grehajtani a m\u0171veletet.
+
+# ClassLoader must not be null.
+null.classloader.CWMCG0002E=CWMCG0002E: A ClassLoader nem lehet null\u00e9rt\u00e9k.
+null.classloader.CWMCG0002E.explanation=A ConfigBuilder \u00e1ltal haszn\u00e1lt ClassLoader nem lehet null\u00e9rt\u00e9k\u0171.
+null.classloader.CWMCG0002E.useraction=\u00c1ll\u00edtsa be a ClassLoader \u00e9rt\u00e9k\u00e9t null\u00e9rt\u00e9kt\u0151l k\u00fcl\u00f6nb\u00f6z\u0151 \u00e9rt\u00e9kre.
+
+# A Config instance already exists for the specified ClassLoader.
+config.already.exists.CWMCG0003E=CWMCG0003E: A megadott ClassLoader oszt\u00e1lybet\u00f6lt\u0151h\u00f6z m\u00e1r l\u00e9tezik konfigur\u00e1ci\u00f3s p\u00e9ld\u00e1ny.
+config.already.exists.CWMCG0003E.explanation=A megadott ClassLoader oszt\u00e1lybet\u00f6lt\u0151h\u00f6z m\u00e1r be lett \u00e1ll\u00edtva egy konfigur\u00e1ci\u00f3s p\u00e9ld\u00e1ny.
+config.already.exists.CWMCG0003E.useraction=A 'releaseConfig' met\u00f3dus haszn\u00e1lat\u00e1val elt\u00e1vol\u00edthatja a kor\u00e1bbi p\u00e9ld\u00e1nyt, majd pr\u00f3b\u00e1lja \u00fajra a met\u00f3dust.
+
+# Unable to close the Config instance. The exception is: {0}.
+could.not.close.CWMCG0004E=CWMCG0004E: A konfigur\u00e1ci\u00f3s p\u00e9ld\u00e1ny nem z\u00e1rhat\u00f3 le. A kiv\u00e9tel: {0}.
+could.not.close.CWMCG0004E.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt egy konfigur\u00e1ci\u00f3s p\u00e9ld\u00e1ny bez\u00e1r\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n. Lehet, hogy az er\u0151forr\u00e1sai nem lettek felszabad\u00edtva.
+could.not.close.CWMCG0004E.useraction=A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
+
+# Unable to convert the string "{0}" to a value of type {1}.
+unable.to.convert.CWMCG0006E=CWMCG0006E: A(z) "{0}" karakterl\u00e1ncot nem lehet {1} t\u00edpus\u00fa \u00e9rt\u00e9kre \u00e1talak\u00edtani.
+unable.to.convert.CWMCG0006E.explanation=A rendszer nem tal\u00e1lt megfelel\u0151 \u00e1talak\u00edt\u00f3t a megadott t\u00edpushoz.
+unable.to.convert.CWMCG0006E.useraction=Adjon hozz\u00e1 megfelel\u0151 \u00e1talak\u00edt\u00f3t, vagy gondoskodjon r\u00f3la, hogy az oszt\u00e1ly rendelkezzen nyilv\u00e1nos karakterl\u00e1nc szerkeszt\u0151vel, illetve statikus valueOf(String) met\u00f3dussal.
+
+# A Converter of type {0} threw an exception. The input string was: "{1}". The exception is: {2}.
+conversion.exception.CWMCG0007E=CWMCG0007E: Egy {0} t\u00edpus\u00fa \u00e1talak\u00edt\u00f3 kiv\u00e9telt jelentett. A bemeneti karakterl\u00e1nc a k\u00f6vetkez\u0151 volt: "{1}". A kiv\u00e9tel: {2}.
+conversion.exception.CWMCG0007E.explanation=Egy \u00e1talak\u00edt\u00f3 kiv\u00e9telt dobott.
+conversion.exception.CWMCG0007E.useraction=A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
+
+# Unable to convert the string "{0}" to a value of type Boolean. Expected one of [true, yes, on, false, no, off].
+unable.to.convert.boolean.CWMCG0008E=CWMCG0008E: A(z) "{0}" karakterl\u00e1ncot nem lehet logikai t\u00edpus\u00fa \u00e9rt\u00e9kre \u00e1talak\u00edtani. A program a k\u00f6vetkez\u0151k egyik\u00e9t v\u00e1rta: [true, YES, ON, false, NO, OFF ].
+unable.to.convert.boolean.CWMCG0008E.explanation=A bemeneti karakterl\u00e1nc nem \u00e9rv\u00e9nyes logikai \u00e9rt\u00e9k.
+unable.to.convert.boolean.CWMCG0008E.useraction=Friss\u00edtse a forr\u00e1s bemeneti karaktersorozatot, majd pr\u00f3b\u00e1lja \u00fajra a m\u0171veletet.
+
+# Could not determine conversion type of Converter class {0}.
+unable.to.determine.conversion.type.CWMCG0009E=CWMCG0009E: Nem \u00e1llap\u00edthat\u00f3 meg a(z) {0} \u00e1talak\u00edt\u00f3 oszt\u00e1ly \u00e1talak\u00edt\u00e1si t\u00edpusa.
+unable.to.determine.conversion.type.CWMCG0009E.explanation=Az \u00e1talak\u00edt\u00f3 megval\u00f3s\u00edt\u00e1si oszt\u00e1lya nem rendelkezik megfelel\u0151 \u00e1ltal\u00e1nos t\u00edpussal.
+unable.to.determine.conversion.type.CWMCG0009E.useraction=Gondoskodjon r\u00f3la, hogy a megval\u00f3s\u00edt\u00e1si oszt\u00e1ly rendelkezzen megfelel\u0151 \u00e1ltal\u00e1nos t\u00edpus\u00fa v\u00e1ltoz\u00f3val az \u00e1talak\u00edt\u00f3 fel\u00fclet sz\u00e1m\u00e1ra.
+
+# Unable to discover ConfigSources. The exception is: {0}.
+unable.to.discover.config.sources.CWMCG0010E=CWMCG0010E: A ConfigSources nem t\u00e9rk\u00e9pezhet\u0151 fel. A kiv\u00e9tel: {0}.
+unable.to.discover.config.sources.CWMCG0010E.explanation=A Java ServiceLoader kiv\u00e9telt hozott l\u00e9tre. Ennek legval\u00f3sz\u00edn\u0171bb oka, hogy a megnevezett ConfigSource oszt\u00e1lyok egyike nem tal\u00e1lhat\u00f3.
+unable.to.discover.config.sources.CWMCG0010E.useraction=Ellen\u0151rizze a Java szolg\u00e1ltat\u00e1sf\u00e1jlokban megnevezett oszt\u00e1lyokat az alkalmaz\u00e1son bel\u00fcl. A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
+
+# Unable to discover ConfigSourceProviders. The exception is: {0}.
+unable.to.discover.config.source.providers.CWMCG0011E=CWMCG0011E: A ConfigSourceProviders nem t\u00e9rk\u00e9pezhet\u0151 fel. A kiv\u00e9tel: {0}.
+unable.to.discover.config.source.providers.CWMCG0011E.explanation=A Java ServiceLoader kiv\u00e9telt hozott l\u00e9tre. Ennek legval\u00f3sz\u00edn\u0171bb oka, hogy a megnevezett ConfigSourceProvider oszt\u00e1lyok egyike nem tal\u00e1lhat\u00f3.
+unable.to.discover.config.source.providers.CWMCG0011E.useraction=Ellen\u0151rizze a Java szolg\u00e1ltat\u00e1sf\u00e1jlokban megnevezett oszt\u00e1lyokat az alkalmaz\u00e1son bel\u00fcl. A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
+
+# Unable to discover Converters. The exception is: {0}.
+unable.to.discover.converters.CWMCG0012E=CWMCG0012E: A Converters nem t\u00e9rk\u00e9pezhet\u0151 fel. A kiv\u00e9tel: {0}.
+unable.to.discover.converters.CWMCG0012E.explanation=A Java ServiceLoader kiv\u00e9telt hozott l\u00e9tre. Ennek legval\u00f3sz\u00edn\u0171bb oka, hogy a megnevezett Converter oszt\u00e1lyok egyike nem tal\u00e1lhat\u00f3.
+unable.to.discover.converters.CWMCG0012E.useraction=Ellen\u0151rizze a Java szolg\u00e1ltat\u00e1sf\u00e1jlokban megnevezett oszt\u00e1lyokat az alkalmaz\u00e1son bel\u00fcl. A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
+
+# Unable to cancel asynchronous update thread.
+future.update.not.cancelled.CWMCG0013E=CWMCG0013E: A kiszolg\u00e1l\u00f3 nem tudja megszak\u00edtani az aszinkron friss\u00edt\u00e9si sz\u00e1lat.
+future.update.not.cancelled.CWMCG0013E.explanation=Az aszinkron friss\u00edt\u00e9s megszak\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet meghi\u00fasult. Ezt \u00e1ltal\u00e1ban a ConfigSource p\u00e9ld\u00e1nynak k\u00fcld\u00f6tt sok\u00e1ig fut\u00f3 friss\u00edt\u00e9si h\u00edv\u00e1s okozza.
+future.update.not.cancelled.CWMCG0013E.useraction=A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
+
+# A Converter could not be found for type {0}.
+could.not.find.converter.CWMCG0014E=CWMCG0014E: A(z) {0} szolg\u00e1ltat\u00e1shoz nem tal\u00e1lhat\u00f3 \u00e1talak\u00edt\u00f3.
+could.not.find.converter.CWMCG0014E.explanation=Nem tal\u00e1lhat\u00f3 \u00e1talak\u00edt\u00f3 az eredeti karaktersorozat tulajdons\u00e1g konvert\u00e1l\u00e1s\u00e1hoz a k\u00e9rt t\u00edpusra.
+could.not.find.converter.CWMCG0014E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megfelel\u0151 Converter \u00e1talak\u00edt\u00f3 el\u00e9rhet\u0151 \u00e9s fel van sorolva a Java szolg\u00e1ltat\u00e1sf\u00e1jlban.
+
+# The property {0} was not found in the configuration.
+no.such.element.CWMCG0015E=CWMCG0015E: A(z) {0} tulajdons\u00e1g nem tal\u00e1lhat\u00f3 a konfigur\u00e1ci\u00f3ban.
+no.such.element.CWMCG0015E.explanation=A k\u00e9rt tulajdons\u00e1g egyik konfigur\u00e1lt forr\u00e1sban sem l\u00e9tezik.
+no.such.element.CWMCG0015E.useraction=Adja hozz\u00e1 a tulajdons\u00e1got az egyik l\u00e9tez\u0151 forr\u00e1shoz vagy adjon hozz\u00e1 olyan \u00faj forr\u00e1st, amely tartalmazza a tulajdons\u00e1got.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Config error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Config API error has occurred: {0}
+temporary.CWMCG9999E=CWMCG9999E: Konfigur\u00e1ci\u00f3s API hiba t\u00f6rt\u00e9nt: {0}.
+temporary.CWMCG9999E.explanation=A norm\u00e1l m\u0171k\u00f6d\u00e9st megakad\u00e1lyoz\u00f3 konfigur\u00e1ci\u00f3s API hiba t\u00f6rt\u00e9nt.
+temporary.CWMCG9999E.useraction=A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.

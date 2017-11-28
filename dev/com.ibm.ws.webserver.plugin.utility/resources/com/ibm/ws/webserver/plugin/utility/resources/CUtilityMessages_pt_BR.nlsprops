@@ -1,0 +1,459 @@
+###############################################################################
+# Copyright (c) 2010, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.collective.utility/resources/com/ibm/ws/collective/utility/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+
+# Generic messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+error=Erro: {0}
+error.inputConsoleNotAvailable=O console de entrada n\u00e3o est\u00e1 dispon\u00edvel.
+error.missingIO=Erro, dispositivo de E/S ausente: {0}.
+name=Nome
+days=dia(s)
+serverNotFound=O servidor especificado {0} n\u00e3o foi localizado no local {1}
+userDirNotFound=O userDir especificado {0} n\u00e3o foi localizado
+installDirNotFound=O diret\u00f3rio de instala\u00e7\u00e3o {0} n\u00e3o foi localizado
+
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+tooManyArgs=Argumentos em excesso.
+insufficientArgs=Argumentos insuficientes.
+missingServerName=O destino para a tarefa n\u00e3o foi especificado.
+invalidArg=Argumento inv\u00e1lido {0}.
+missingArg=Argumento ausente {0}.
+missingValue=Valor ausente para o argumento {0}.
+missingPasswordArg=Deve-se especificar {0} ou os argumentos de senha restantes {1}
+
+
+# Messages for FileUtility
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+fileUtility.failedDirCreate=Falha ao criar diret\u00f3rio {0}
+fileUtility.deleteSuccess={0} exclu\u00eddo com \u00eaxito
+fileUtility.deleteFailure=Falha ao excluir {0}
+
+
+# Messages for HelpTask
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Uso: {0} action target [options]
+task.unknown=Tarefa desconhecida: {0}
+
+
+# Messages for reading in a password
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+password.enterText=Insira a senha {0}:
+password.reenterText=Insira novamente a senha {0}:
+password.readError=Erro ao ler senha.
+password.entriesDidNotMatch=As senhas n\u00e3o corresponderam.
+
+
+# Messages common to collective utility tasks
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+common.encodeError=\n\
+N\u00e3o foi poss\u00edvel codificar a senha para o argumento: {0}
+
+common.hostError=\n O nome do host especificado n\u00e3o parece ser v\u00e1lido: {0}\n Confirme o nome do host est\u00e1 correto e se o sistema possui uma conex\u00e3o de rede.
+
+common.portError=\n A porta especificada {0} n\u00e3o p\u00f4de ser alcan\u00e7ado. Confirme a porta esteja correta.
+
+common.connectionError=\n\
+N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o do MBean.\n\
+Erro: {0}
+
+common.compatibilityError=\n\
+N\u00e3o \u00e9 poss\u00edvel acessar a opera\u00e7\u00e3o do MBean, pois n\u00e3o est\u00e1 definida no controlador. O controlador provavelmente tem uma vers\u00e3o anterior \u00e0 do membro.\n\
+Erro: {0}
+
+common.renameFailed=\n\
+N\u00e3o foi poss\u00edvel renomear {0} para {1}
+
+common.regenerateKey=O arquivo keystore HTTPS padr\u00e3o existe em {0}.\n\
+Este certificado ser\u00e1 regenerado e o original ser\u00e1 preservado.\n
+
+common.regenerateTrust=O arquivo de armazenamento confi\u00e1vel HTTPS padr\u00e3o existe em {0}.\n\
+Este certificado ser\u00e1 regenerado e o original ser\u00e1 preservado.\n
+
+common.validityTooShort=\n\
+A validade especificada {0} \u00e9 muito curta. A validade m\u00ednima \u00e9 de 365 dias.
+
+common.invalidDN=\n\
+O DN especificado para {0} \u00e9 inv\u00e1lido: {1}
+
+common.invalidEndpoint=O terminal de destino \
+da r\u00e9plica {0} n\u00e3o est\u00e1 no formato requerido.\n\
+O destino \u00e9 a porta de replica\u00e7\u00e3o da r\u00e9plica e deve estar no formato \
+\n host:port.
+
+common.updateServerXML=Inclua as linhas a seguir no \
+server.xml para ativar:\n
+
+
+# Messages for establishing SSL trust
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+sslTrust.autoAccept=Aceitando automaticamente a cadeia de certificados para o servidor de destino.\n\
+DN do sujeito do certificado: {0}
+
+sslTrust.genDigestError=N\u00e3o \u00e9 poss\u00edvel gerar a compila\u00e7\u00e3o {0}. \
+Erro: {1}
+
+sslTrust.noDefaultTrust=A confian\u00e7a de SSL n\u00e3o foi estabelecida com o servidor de destino.
+
+sslTrust.certInfo=Informa\u00e7\u00f5es da cadeia de certificados:
+
+sslTrust.cert=Certificado {0}
+
+sslTrust.certSubjectDN=DN do sujeito: {0}
+
+sslTrust.certIssueDN=DN do emissor: {0}
+
+sslTrust.certSerial=N\u00famero de S\u00e9rie: {0}
+
+sslTrust.certExpires=Expira: {0}
+
+sslTrust.certSHADigest=Compila\u00e7\u00e3o SHA-1: {0}
+
+sslTrust.certMD5Digest=Compila\u00e7\u00e3o MD5: {0}
+
+sslTrust.promptToAcceptTrust=Deseja aceitar a cadeia de certificados acima? \
+(s/n) 
+# Note to translator this value must be the same as the translation for y in the sslTrust.promptToAcceptTrust brackets.
+yes.response.short=s
+yes.response.full=sim
+
+
+
+sslTrust.rejectTrust=O usu\u00e1rio rejeitou a solicita\u00e7\u00e3o para confiar na cadeia de certificados.
+
+
+# Messages for registering a host to the collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+hostAuthInfo.bothCredentialsSet=Ambos, {0} e {1} est\u00e3o configurados. Escolha um.\n\
+Apenas um meio de autentica\u00e7\u00e3o deve ser especificado.
+
+hostAuthInfo.sshKeyPasswordWithoutKey=Senha da chave privada SSH especificada sem a chave privada correspondente.
+
+hostAuthInfo.useSudoFalseWithSudoOptions=useSudo configurado para falso, mas h\u00e1 outras op\u00e7\u00f5es de sudo configuradas.
+
+# Messages for registering a host to the collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+encoding.aesRequiresKey=A codifica\u00e7\u00e3o aes requer uma chave. \
+Especifique uma usando --key.
+
+encoding.xorDoesNotSupportKey=A codifica\u00e7\u00e3o xor n\u00e3o suporta uma chave. \
+N\u00e3o especifique --key.
+
+encoding.unsupportedEncoding=Valor de codifica\u00e7\u00e3o n\u00e3o suportado {0}.
+
+# Messages for registering a host to the collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+ssh.invalidSSHKeyPair=\n\
+O par de chaves SSH especificado n\u00e3o era v\u00e1lido.\n\
+Erro: {0}
+
+ssh.couldNotCreateSSHKeys=\n\
+N\u00e3o \u00e9 poss\u00edvel criar as chaves SSH padr\u00e3o para autentica\u00e7\u00e3o do host.\n\
+Erro: {0}
+
+ssh.couldNotReadSSHKeys=\n\
+N\u00e3o \u00e9 poss\u00edvel ler (ou gravar) as chaves SSH.\n\
+Erro: {0}
+
+ssh.updateAuthorizedKeys=Atualizando chaves autorizadas com a nova chave p\u00fablica...
+
+ssh.cannotUpdateAuthorizedKeys=\n\
+N\u00e3o \u00e9 poss\u00edvel atualizar o arquivo de chaves autorizadas para o usu\u00e1rio: {0}\n\
+Verificado o arquivo de chaves autorizadas no in\u00edcio do usu\u00e1rio: {1}\n\
+Atualize o arquivo de chaves autorizadas com a seguinte chave p\u00fablica:\n\
+{2}\n\
+Erro: {3}
+
+
+# Messages for creation of a collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+create.start=Criando os certificados requeridos para estabelecer um coletivo.\n\
+Isso pode levar algum tempo.
+
+create.abort=\n\
+Interrompendo a configura\u00e7\u00e3o do servidor do controlador coletivo.
+
+create.errGetHostName=\n N\u00e3o \u00e9 poss\u00edvel determinar o nome do host. Assumindo por padr\u00e3o {0}.\n\
+Causa: {1}\n Para configurar explicitamente o nome do host, utilize o --hostName op\u00e7\u00e3o.
+
+create.errorAlreadyHasResources=\n\
+O diret\u00f3rio resources/collective do servidor j\u00e1 existe.\n\
+Para recriar o coletivo, remova o diret\u00f3rio inteiro.\n\
+Para ampliar um coletivo existente, use a tarefa de r\u00e9plica.
+
+create.configLocationInDefaults=\n O local \
+especificado pela op\u00e7\u00e3o --createConfigFile est\u00e1 no\n diret\u00f3rio \
+configDropins/defaults do servidor. Este n\u00e3o \u00e9 um local\n v\u00e1lido para \
+a configura\u00e7\u00e3o coletiva gerada porque todos os\n controladores \
+compartilham o mesmo local. Especifique um local diferente.
+
+create.genCertControllerRoot=O certificado raiz do controlador foi gerado com \u00eaxito.
+
+create.genCertMemberRoot=O certificado raiz do membro foi gerado com \u00eaxito.
+
+create.genCertServerIdentity=O certificado de identidade do servidor foi gerado com \u00eaxito.
+
+create.genCertHTTPS=O certificado de HTTPS foi gerado com \u00eaxito.
+
+create.failedKSSave=\n\
+N\u00e3o foi poss\u00edvel salvar o keystore {0}
+
+create.cleanupFail=\n\
+Erro ao limpar os arquivos gerados. N\u00e3o foi poss\u00edvel excluir {0}\n\
+Remova o diret\u00f3rio manualmente, verifique as permiss\u00f5es de arquivos\n\
+\ e tente novamente.
+
+create.successful=Defina com sucesso a \
+configura\u00e7\u00e3o do controlador coletivo para o {0}.\n
+
+create.configureSecurity=Assegure-se de que a seguran\u00e7a administrativa esteja configurada para o servidor.\n\
+Um usu\u00e1rio administrativo \u00e9 requerido para associar membros ao coletivo.
+
+create.certUtil.NotAvailable=Opera\u00e7\u00e3o solicitada n\u00e3o dispon\u00edvel com esta edi\u00e7\u00e3o do WebSphere.
+
+# Messages for joining a collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+join.start=Associando o coletivo ao controlador de destino {0}:{1}...\n\
+Isso pode levar algum tempo.
+
+join.abort=\n\
+Interrompendo a associa\u00e7\u00e3o ao coletivo.
+
+join.errorAlreadyHasResources=O diret\u00f3rio resources/collective j\u00e1 existe para este servidor.\n\
+O servidor pode j\u00e1 ser um membro.\n\
+Para associar novamente o coletivo, execute a tarefa de remo\u00e7\u00e3o ou \n\
+exclua manualmente o diret\u00f3rio resources/collective e tente novamente.
+
+join.writeKeystoreFail=\n\
+Erro ao gravar o keystore requerido no disco {0}
+
+join.cleanupFail=\n\
+Erro ao limpar os arquivos gerados. N\u00e3o foi poss\u00edvel excluir {0}\n\
+Remova o diret\u00f3rio manualmente, verifique as permiss\u00f5es de arquivos\ne tente novamente.
+
+join.mbeanComplete=Solicita\u00e7\u00e3o de MBean conclu\u00edda com \u00eaxito para o controlador.
+
+join.registeredAlready=O servidor especificado {0} j\u00e1 parece ser um membro.\n\
+Para unir novamente o coletivo, execute a tarefa de remo\u00e7\u00e3o e tente novamente.
+
+join.successful=Associe com sucesso o coletivo \
+para o servidor {0}.\n
+
+join.useHostCredentialsButOtherCtedentialsAreSet=Se useHostCredentials estiver configurado, n\u00e3o forne\u00e7a outras credenciais de host.
+
+deployAdminMetadata.mbeanComplete=Solicita\u00e7\u00e3o de AdminMetadataManagerMBean conclu\u00edda com \u00eaxito para o controlador.
+
+deployAdminMetadata.start=Implementando metadados administrativos no reposit\u00f3rio coletivo...\n\
+Isso pode levar algum tempo.
+
+allocateDeployVariables.mbeanComplete=Solicita\u00e7\u00e3o de CollectiveRepositoryMBean conclu\u00edda com \u00eaxito para o controlador.
+
+allocateDeployVariables.start=Alocando vari\u00e1veis de implementa\u00e7\u00e3o no reposit\u00f3rio coletivo...\n\
+Isso pode levar algum tempo.
+
+AllocatedDeployVars=A vari\u00e1vel de implementa\u00e7\u00e3o alocada:
+deployVarsNotFound=A vari\u00e1vel de implementa\u00e7\u00e3o indefinida: {0}
+deployVarsAreAllocated=Vari\u00e1veis de implementa\u00e7\u00e3o foram alocadas e deployVariables.xml foi criada no diret\u00f3rio servidor /configDropins/overrides.
+
+# Messages for generating a collective key
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+genKey.start=Gerando keystore com o controlador de destino {0}:{1}...\n
+genKey.abort=\n\
+Interrompendo o genKey.
+
+genKey.writeKeystoreFail=\n\
+Erro ao gravar o keystore requerido no disco {0}
+
+genKey.cleanupFail=\n\
+Erro ao limpar os arquivos gerados. N\u00e3o \u00e9 poss\u00edvel excluir {0}\n\
+Remova o arquivo manualmente, verifique as permiss\u00f5es de arquivos\n\
+e tente novamente.
+
+genKey.mbeanComplete=Solicita\u00e7\u00e3o de MBean conclu\u00edda com \u00eaxito para o controlador.
+
+genKey.generatedKeystore=Keystore {0} gerado com \u00eaxito.
+
+
+# Messages for replicating a controller 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+replicate.start=Replicando o controlador coletivo de destino {0}:{1}...\n\
+Isso pode levar algum tempo.
+
+replicate.abort=\n\
+Interrompendo o controlador de r\u00e9plica.
+
+replicate.errorAlreadyHasResources=O diret\u00f3rio resources/collective j\u00e1 existe para este servidor.\n\
+O servidor j\u00e1 pode ser um controlador.\n\
+Para replicar o controlador, execute a tarefa de remo\u00e7\u00e3o ou exclua manualmente o\n\
+diret\u00f3rio resources/collective e tente novamente.
+
+replicate.writeKeystoreFail=\n\
+Erro ao gravar o keystore requerido no disco {0}
+
+replicate.writeFileFail=\n\
+Erro ao gravar o arquivo necess\u00e1rio no disco {0}
+
+replicate.cleanupFail=\n\
+Erro ao limpar os arquivos gerados. N\u00e3o foi poss\u00edvel excluir {0}\n\
+Remova o diret\u00f3rio manualmente, verifique as permiss\u00f5es de arquivos\ne tente novamente.
+
+replicate.mbeanComplete=Solicita\u00e7\u00e3o de MBean conclu\u00edda com \u00eaxito para o controlador.
+
+replicate.registeredAlready=O servidor especificado {0} j\u00e1 parece ser um membro.\n\
+Para replicar o controlador, execute a tarefa de remo\u00e7\u00e3o e tente novamente.
+
+replicate.success=Replique com sucesso o \
+controlador como o servidor {0}.\n
+
+
+replicate.configureSecurity=Assegure-se de que a seguran\u00e7a administrativa esteja configurada para o novo servidor\n\
+exatamente como o controlador coletivo atual. Al\u00e9m disso, configure a senha para\n\
+o collectiveRootKeys com a senha correta.\n
+
+# Messages for leaving a collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+remove.attemptUnregister=Tentando cancelar registro do servidor do coletivo...
+
+remove.unregisteredAlready=Servidor {0} n\u00e3o est\u00e1 registrado.\n\
+Pode ser registrado sob outro nome de host.
+
+remove.unregisterFailed=O registro do servidor {0} n\u00e3o p\u00f4de ser cancelado devido a um erro.
+
+remove.unregisterSuccess=Registro do servidor {0} cancelado com \u00eaxito.
+
+remove.attemptResourceDelete=Tentando remover recursos para o coletivo do servidor...
+
+remove.noFilesRemoved=Nenhum recurso coletivo foi removido.
+remove.noResources=Nenhum recurso coletivo foi localizado.
+
+remove.manuallyRemove=Alguns dos arquivos sob {0} n\u00e3o puderam ser removidos.\n\
+Ser\u00e1 necess\u00e1rio remov\u00ea-los manualmente.
+
+remove.filesSuccess=Os recursos para associa\u00e7\u00e3o ao coletivo foram removidos com \u00eaxito.
+
+remove.updateXML=\n\
+Atualize o server.xml e remova quaisquer dos seguintes elementos:
+
+removeAllAdminMetadata.mbeanComplete=Solicita\u00e7\u00e3o de AdminMetadataManagerMBean conclu\u00edda com \u00eaxito para o controlador.
+
+removeAllAdminMetadata.start=Removendo todos os metadados administrativos do reposit\u00f3rio coletivo...\n\
+Isso pode levar algum tempo.
+
+remove.removeAllAdminMetadataFailed=Os metadados administrativos com o tipo de recurso {0} e identidade {1} n\u00e3o podem ser removidos do reposit\u00f3rio coletivo devido a um erro.
+
+getAdminMetadata.mbeanComplete=Solicita\u00e7\u00e3o de AdminMetadataManagerMBean conclu\u00edda com \u00eaxito para o controlador.
+
+releaseDeployVariables.start=Liberando todas as vari\u00e1veis de implementa\u00e7\u00e3o do reposit\u00f3rio coletivo...\n\
+Isso pode levar algum tempo.
+
+releaseDeployVariables.mbeanComplete=Solicita\u00e7\u00e3o de CollectiveRepositoryMBean conclu\u00edda com \u00eaxito para o controlador.
+
+remove.releaseDeployVariablesFailed=Vari\u00e1veis de implementa\u00e7\u00e3o {0} no nome do host {1} n\u00e3o podem ser removidas do reposit\u00f3rio coletivo devido a um erro.
+
+# Messages for registering a host to the collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+registerHost.abort=\n\
+Interrompendo registerHost.
+
+registerHost.attemptRegister=Registrando o host para o coletivo...
+
+registerHost.registeredAlready=O host {0} j\u00e1 est\u00e1 registrado.
+
+registerHost.registerFailed=O host {0} n\u00e3o p\u00f4de ser registrado devido a um erro.
+
+registerHost.registerSuccess=Host {0} registrado com \u00eaxito.
+
+
+# Messages for updating a host to the collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+updateHost.abort=\n\
+Interrompendo updateHost.
+
+updateHost.attemptRegister=Atualizando as informa\u00e7\u00f5es de autentica\u00e7\u00e3o para o host...
+
+updateHost.notRegistered=O host {0} n\u00e3o est\u00e1 registrado.
+updateHost.updateFailed=O host {0} n\u00e3o p\u00f4de ser atualizado devido a um erro.
+updateHost.updateSuccess=As informa\u00e7\u00f5es sobre autentica\u00e7\u00e3o do host {0} foram atualizadas com \u00eaxito.
+
+
+# Messages for leaving a collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+unregisterHost.attemptUnregister=Removendo o host a partir do coletivo...
+
+unregisterHost.unregisteredAlready=O host {0} n\u00e3o est\u00e1 registrado.
+
+unregisterHost.unregisterFailed=N\u00e3o foi poss\u00edvel cancelar registro do host {0} devido a um erro.
+
+unregisterHost.unregisterSuccess=Registro do host {0} cancelado com \u00eaxito.
+
+
+# Messages for adding a replica endpoint
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+addReplica.attempt=Incluindo o n\u00f3 de extremidade para o conjunto de r\u00e9plicas ...
+
+addReplica.alreadyAdded=R\u00e9plica do n\u00f3 de extremidade {0} est\u00e1 j\u00e1 faz parte do conjunto de r\u00e9plicas.
+
+addReplica.invalidEndpoint=terminal de R\u00e9plica {0} n\u00e3o pode ser inclu\u00eddo no conjunto de r\u00e9plicas.\n\
+Confirme se o terminal r\u00e9plica est\u00e1 correta e se a r\u00e9plica est\u00e1 em execu\u00e7\u00e3o.
+
+addReplica.error=O terminal de r\u00e9plica {0} n\u00e3o p\u00f4de ser inclu\u00eddo devido a um erro.
+
+addReplica.success=inclu\u00eddo com \u00eaxito de r\u00e9plicas do n\u00f3 de extremidade {0} para o conjunto de r\u00e9plicas.
+
+
+# Messages for removing a replica endpoint
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+removeReplica.attemptUnregister=Tentando remover o terminal do conjunto de r\u00e9plicas...
+
+removeReplica.alreadyRemoved=O terminal de r\u00e9plica {0} n\u00e3o faz parte do conjunto de r\u00e9plicas ou o conjunto resultante da opera\u00e7\u00e3o n\u00e3o \u00e9 v\u00e1lido.
+
+removeReplica.error=O terminal de r\u00e9plica {0} n\u00e3o p\u00f4de ser removida devido a um erro.
+
+removeReplica.success=removido com \u00eaxito de r\u00e9plicas do n\u00f3 de extremidade {0} do conjunto de r\u00e9plicas.
+
+# Message for setting a host/server into maintenance mode
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+setMaintenanceMode.connectionError=N\u00e3o foi poss\u00edvel configurar o modo de manuten\u00e7\u00e3o devido a um erro durante a conex\u00e3o com a m\u00e1quina de destino  {0}.
+
+setMaintenanceMode.error=N\u00e3o foi poss\u00edvel configurar o modo de manuten\u00e7\u00e3o para {0} devido a um erro.
+
+setMaintenanceMode.success=Modo de manuten\u00e7\u00e3o configurado com \u00eaxito para {0}.
+
+setMaintenanceMode.alt=Um servidor alternativo deve ser iniciado. \
+O modo de manuten\u00e7\u00e3o ser\u00e1 configurado para {0} quando o servidor alternativo for iniciado.
+
+setMaintenanceMode.noAltServer=N\u00e3o foi poss\u00edvel configurar o modo de manuten\u00e7\u00e3o para {0} porque um servidor alternativo n\u00e3o est\u00e1 dispon\u00edvel.
+
+# Message for taking a host/server out of maintenance mode
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+unsetMaintenanceMode.error=N\u00e3o foi poss\u00edvel desconfigurar o modo de manuten\u00e7\u00e3o para {0} devido a um erro.
+
+unsetMaintenanceMode.success=Modo de manuten\u00e7\u00e3o desconfigurado com \u00eaxito para {0}.
+
+unsetMaintenanceMode.connectionError=N\u00e3o foi poss\u00edvel desconfigurar o modo de manuten\u00e7\u00e3o devido a um erro durante a conex\u00e3o com a m\u00e1quina de destino {0}.
+
+# Message for displaying if a host/server is in maintenance mode
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+getMaintenanceMode.connectionError=N\u00e3o foi poss\u00edvel obter o modo de manuten\u00e7\u00e3o devido a um erro ao se conectar \u00e0 m\u00e1quina de destino {0}.
+
+getMaintenanceMode.inMM={0} est\u00e1 no modo de manuten\u00e7\u00e3o.
+
+getMaintenanceMode.notInMM={0} n\u00e3o est\u00e1 no modo de manuten\u00e7\u00e3o.
+
+getMaintenanceMode.alt=Um servidor alternativo deve ser iniciado. \
+O modo de manuten\u00e7\u00e3o ser\u00e1 configurado para {0} quando o servidor alternativo for iniciado.
+
+getMaintenanceMode.error=Imposs\u00edvel obter o modo de manuten\u00e7\u00e3o para {0} devido a um erro.

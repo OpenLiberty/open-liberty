@@ -1,0 +1,144 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMFT
+#COMPONENTNAMEFOR CWMFT MicroProfile FaultTolerance API
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by FaultTolerance CDI Auto Feature -  range is 5000-5999
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#An asynchronous message does not return Future.
+asynchronous.class.not.returning.future.CWMFT5000E=CWMFT5000E: O m\u00e9todo ass\u00edncrono {0} n\u00e3o tem um tipo de retorno de Futuro.
+asynchronous.class.not.returning.future.CWMFT5000E.explanation=Todos os m\u00e9todos em uma classe que s\u00e3o anotados com org.eclipse.microprofile.faulttolerance.Asynchronous devem ter um tipo de retorno atribu\u00edvel em java.util.concurrent.Future.
+asynchronous.class.not.returning.future.CWMFT5000E.useraction=Atualize o tipo de retorno.
+
+asynchronous.method.not.returning.future.CWMFT5001E=CWMFT5001E: O m\u00e9todo ass\u00edncrono {0} n\u00e3o tem um tipo de retorno de Futuro.
+asynchronous.method.not.returning.future.CWMFT5001E.explanation=Todos os m\u00e9todos que s\u00e3o anotados com org.eclipse.microprofile.faulttolerance.Asynchronous devem ter um tipo de retorno atribu\u00edvel em java.util.concurrent.Future.
+asynchronous.method.not.returning.future.CWMFT5001E.useraction=Atualize o tipo de retorno.
+
+#A fallback method does not match the return type of the method that falls back to it.
+fallback.policy.return.type.not.match.CWMFT5002E=CWMFT5002E: O m\u00e9todo de fallback {0} tem o tipo de retorno errado. O tipo de retorno deve corresponder ao tipo de retorno do m\u00e9todo {1}.
+fallback.policy.return.type.not.match.CWMFT5002E.explanation=Um m\u00e9todo de fallback deve ter o mesmo tipo de retorno que o m\u00e9todo que ele manipula. 
+fallback.policy.return.type.not.match.CWMFT5002E.useraction=Atualize o tipo de retorno.
+
+#A fallback method that should exist cannot be found.
+fallback.method.not.found.CWMFT5003E=CWMFT5003E: O m\u00e9todo de fallback {1} com par\u00e2metros {2} n\u00e3o foi localizado na classe {0}.
+fallback.method.not.found.CWMFT5003E.explanation=Um m\u00e9todo de fallback foi declarado para o m\u00e9todo {1}. No entanto, esse m\u00e9todo n\u00e3o existe na classe {0}.
+fallback.method.not.found.CWMFT5003E.useraction=Remova a anota\u00e7\u00e3o de fallback ou inclua o m\u00e9todo ausente.
+
+#A security exception was thrown while trying to create a fallback policy.
+security.exception.acquiring.fallback.method.CWMFT5004E=CWMFT5004E: Ocorreu uma exce\u00e7\u00e3o de seguran\u00e7a quando o servidor de aplicativos tentou processar anota\u00e7\u00f5es de fallback.
+security.exception.acquiring.fallback.method.CWMFT5004E.explanation=Para criar uma pol\u00edtica de fallback, o servidor de aplicativos requer permiss\u00e3o para adquirir e examinar m\u00e9todos Java.
+security.exception.acquiring.fallback.method.CWMFT5004E.useraction=Revise a pol\u00edtica de seguran\u00e7a de seu servidor de aplicativos e forne\u00e7a as permiss\u00f5es.
+
+#A problem occurred while converting a system property {0} to type {1}. The raw string value is {2}. The exception is {3}.
+conversion.error.CWMFT5005E=CWMFT5005E: Ocorreu um problema ao converter uma propriedade de sistema {0} para o tipo {1}. O valor da sequ\u00eancia de caracteres \u00e9 {2}. A exce\u00e7\u00e3o \u00e9 {3}.
+conversion.error.CWMFT5005E.explanation=Qualquer valor de configura\u00e7\u00e3o fornecido por meio de propriedades do sistema deve ser capaz de ser convertido para o tipo apropriado. Por exemplo, usando Long.valueOf(String)
+conversion.error.CWMFT5005E.useraction=Verifique se o valor especificado est\u00e1 no formato correto para o tipo da propriedade que ele est\u00e1 substituindo.
+
+#A problem occurred while converting a system property to type {0}. The raw string value is {1}. The exception is {2}.
+conversion.error.CWMFT5006E=CWMFT5006E: Ocorreu um problema ao converter uma propriedade de sistema para o tipo {0}. O valor da sequ\u00eancia de caracteres \u00e9 {1}. A exce\u00e7\u00e3o \u00e9 {2}.
+conversion.error.CWMFT5006E.explanation=Qualquer valor de configura\u00e7\u00e3o fornecido por meio de propriedades do sistema deve ser capaz de ser convertido para o tipo apropriado. Por exemplo, usando Long.valueOf(String)
+conversion.error.CWMFT5006E.useraction=Verifique se o valor especificado est\u00e1 no formato correto para o tipo da propriedade que ele est\u00e1 substituindo.
+
+#A problem occurred while converting a system property to type {0}. The raw string value is {1}.
+conversion.error.CWMFT5007E=CWMFT5007E: Ocorreu um problema ao converter uma propriedade de sistema para o tipo {0}. O valor da sequ\u00eancia de caracteres \u00e9 {1}.
+conversion.error.CWMFT5007E.explanation=Qualquer valor de configura\u00e7\u00e3o fornecido por meio de propriedades do sistema deve ser capaz de ser convertido para o tipo apropriado. Por exemplo, usando Long.valueOf(String)
+conversion.error.CWMFT5007E.useraction=Verifique se o valor especificado est\u00e1 no formato correto para o tipo da propriedade que ele est\u00e1 substituindo.
+
+#The value parameter on the Fallback is not valid.
+fallback.policy.invalid.CWMFT5008E=CWMFT5008E: A pol\u00edtica de fallback para o m\u00e9todo {0} n\u00e3o \u00e9 v\u00e1lida porque o tipo da classe de implementa\u00e7\u00e3o FallbackHandler {1} deve ser compat\u00edvel com o tipo de retorno {2} no m\u00e9todo original {3}.
+fallback.policy.invalid.CWMFT5008E.explanation=O tipo de implementa\u00e7\u00e3o FallbackHandler deve ser compat\u00edvel com o tipo de retorno do m\u00e9todo original.
+fallback.policy.invalid.CWMFT5008E.useraction=Atualize o tipo da classe de implementa\u00e7\u00e3o FallbackHandler para que ele seja compat\u00edvel com o tipo de retorno do m\u00e9todo original.
+
+
+#The fallback policies are conflicting.
+fallback.policy.conflicts.CWMFT5009E=CWMFT5009E: A pol\u00edtica de fallback para o m\u00e9todo {0} n\u00e3o \u00e9 v\u00e1lida porque a classe FallbackHandler {1} e o fallbackMethod {2} foram especificados. Especifique somente um deles.
+fallback.policy.conflicts.CWMFT5009E.explanation=Deve-se configurar o fallbackMethod ou o valor, n\u00e3o ambos. 
+fallback.policy.conflicts.CWMFT5009E.useraction=Remova o fallbackMethod ou o valor da anota\u00e7\u00e3o de fallback.
+
+#Incorrect value on FT Retry parameters
+retry.parameter.invalid.value.CWMFT5010E=CWMFT5010E: O valor {1} do par\u00e2metro de pol\u00edtica Retry {0} para {2} n\u00e3o \u00e9 v\u00e1lido, pois deve ser maior ou igual a {3}.
+retry.parameter.invalid.value.CWMFT5010E.explanation=O valor especificado ou o valor configurado, se configurado para o par\u00e2metro de pol\u00edtica Retry, n\u00e3o \u00e9 v\u00e1lido.
+retry.parameter.invalid.value.CWMFT5010E.useraction=Corrija o valor para o par\u00e2metro especificado.
+
+#Incorrect value on FT Timeout parameters
+timeout.parameter.invalid.value.CWMFT5011E=CWMFT5011E: O valor de Tempo limite {0} especificado em {1} n\u00e3o \u00e9 v\u00e1lido, pois deve ser maior ou igual a 0.
+timeout.parameter.invalid.value.CWMFT5011E.explanation=O valor especificado ou o valor configurado, se configurado para o par\u00e2metro de valor de pol\u00edtica Timeout, n\u00e3o \u00e9 v\u00e1lido.
+timeout.parameter.invalid.value.CWMFT5011E.useraction=Corrija o valor para o par\u00e2metro especificado.
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.delay.invalid.value.CWMFT5012E=CWMFT5012E: O valor {1} do par\u00e2metro de pol\u00edtica CircuitBreaker {0} para o {2} n\u00e3o \u00e9 v\u00e1lido, pois o valor de par\u00e2metro n\u00e3o deve ser um n\u00famero negativo.
+circuitBreaker.parameter.delay.invalid.value.CWMFT5012E.explanation=O valor especificado ou o valor configurado, se configurado para o par\u00e2metro de pol\u00edtica CircuitBreaker delay, n\u00e3o \u00e9 v\u00e1lido.
+circuitBreaker.parameter.delay.invalid.value.CWMFT5012E.useraction=Corrija o valor para o par\u00e2metro especificado.
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.failureRatio.invalid.value.CWMFT5013E=CWMFT5013E: O valor {1} do par\u00e2metro de pol\u00edtica CircuitBreaker {0} para o {2} n\u00e3o \u00e9 v\u00e1lido, pois deve estar entre 0 e 1, de forma inclusiva.
+circuitBreaker.parameter.failureRatio.invalid.value.CWMFT5013E.explanation=O valor especificado ou o valor configurado, se configurado para o par\u00e2metro de pol\u00edtica CircuitBreaker failureRatio, n\u00e3o \u00e9 v\u00e1lido.
+circuitBreaker.parameter.failureRatio.invalid.value.CWMFT5013E.useraction=Corrija o valor para o par\u00e2metro especificado.
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.requestVolumeThreshold.invalid.value.CWMFT5014E=CWMFT5014E: O valor {1} do par\u00e2metro de pol\u00edtica CircuitBreaker {0} para o {2} n\u00e3o \u00e9 v\u00e1lido, pois o par\u00e2metro n\u00e3o deve ser um n\u00famero negativo.
+circuitBreaker.parameter.requestVolumeThreshold.invalid.value.CWMFT5014E.explanation=O valor especificado ou o valor configurado, se configurado para o par\u00e2metro de pol\u00edtica CircuitBreaker requestVolumeThreshold, n\u00e3o \u00e9 v\u00e1lido.
+circuitBreaker.parameter.requestVolumeThreshold.invalid.value.CWMFT5014E.useraction=Corrija o valor para o par\u00e2metro especificado.
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.successThreshold.invalid.value.CWMFT5015E=CWMFT5015E: O valor {1} do par\u00e2metro de pol\u00edtica CircuitBreaker {0} para o {2} n\u00e3o \u00e9 v\u00e1lido, pois o par\u00e2metro n\u00e3o deve ser um n\u00famero negativo.
+circuitBreaker.parameter.successThreshold.invalid.value.CWMFT5015E.explanation=O valor especificado ou o valor configurado, se configurado para o par\u00e2metro de pol\u00edtica CircuitBreaker successThreshold, n\u00e3o \u00e9 v\u00e1lido.
+circuitBreaker.parameter.successThreshold.invalid.value.CWMFT5015E.useraction=Corrija o valor para o par\u00e2metro especificado.
+
+#Incorrect value on FT Bulkhead parameters
+bulkhead.parameter.invalid.value.CWMFT5016E=CWMFT5016E: O valor {1} do par\u00e2metro de pol\u00edtica Bulkhead {0} para o {2} n\u00e3o \u00e9 v\u00e1lido, pois o par\u00e2metro deve ser maior ou igual a 1.
+bulkhead.parameter.invalid.value.CWMFT5016E.explanation=O valor especificado ou o valor configurado, se configurado para o par\u00e2metro de pol\u00edtica Bulkhead, n\u00e3o \u00e9 v\u00e1lido.
+bulkhead.parameter.invalid.value.CWMFT5016E.useraction=Corrija o valor para o par\u00e2metro especificado.
+
+#Incorrect value on FT Retry parameters, the passed in values are: {0} - maxDuration, {1} - durationUnit, {2} - target, {3} - delay, {4} - delayUnit
+retry.parameter.invalid.value.CWMFT5017E=CWMFT5017E: A dura\u00e7\u00e3o m\u00e1xima da pol\u00edtica Retry de {0} {1} para o destino {2} n\u00e3o \u00e9 v\u00e1lida, pois deve ser maior que a dura\u00e7\u00e3o do atraso de {3} {4}.
+retry.parameter.invalid.value.CWMFT5017E.explanation=A dura\u00e7\u00e3o m\u00e1xima deve ser maior que o atraso. A dura\u00e7\u00e3o m\u00e1xima consiste nos par\u00e2metros maxDuration e durationUnit. O atraso consiste nos par\u00e2metros delay e delayUnit.
+retry.parameter.invalid.value.CWMFT5017E.useraction=Corrija o valor de um ou mais dos par\u00e2metros.
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.failOn.invalid.value.CWMFT5018E=CWMFT5018E: O par\u00e2metro {0} da pol\u00edtica CircuitBreaker para {1} n\u00e3o \u00e9 v\u00e1lido porque seu valor est\u00e1 vazio.
+circuitBreaker.parameter.failOn.invalid.value.CWMFT5018E.explanation=O valor especificado ou o valor configurado para o par\u00e2metro failOn da pol\u00edtica CircuitBreaker n\u00e3o \u00e9 v\u00e1lido.
+circuitBreaker.parameter.failOn.invalid.value.CWMFT5018E.useraction=Corrija o valor para o par\u00e2metro especificado.
+
+#Incorrect value on FT Retry parameters, the passed in values are: {0} - jitter, {1} - jitterDelayUnit, {2} - target, {3} - delay, {4} - delayUnit
+retry.parameter.invalid.value.CWMFT5019W=CWMFT5019W: O atraso de jitter da pol\u00edtica Retry de {0} {1} para o destino {2} n\u00e3o \u00e9 v\u00e1lido porque o atraso de jitter deve ser menor que a dura\u00e7\u00e3o do atraso de {3} {4}.
+retry.parameter.invalid.value.CWMFT5019W.explanation=O atraso de jitter deve ser menor que o atraso. O atraso de jitter consiste nos par\u00e2metros jitter e jitterDelayUnit. O atraso consiste nos par\u00e2metros delay e delayUnit.
+retry.parameter.invalid.value.CWMFT5019W.useraction=Corrija o valor de um ou mais dos par\u00e2metros para que a dura\u00e7\u00e3o do atraso de jitter seja menor que a dura\u00e7\u00e3o do atraso.
+
+#Generic error for internal failures. 
+internal.error.CWMFT5997E=CWMFT5997E: Ocorreu um erro interno A exce\u00e7\u00e3o era {0}.
+internal.error.CWMFT5997E.explanation=O servidor de aplicativos sofreu um erro interno.
+internal.error.CWMFT5997E.useraction=Re\u00fana um conjunto de rastreios e abra uma nova emiss\u00e3o em seu servidor de aplicativos.
+
+#Generic error for internal failures.
+internal.error.CWMFT5998E=CWMFT5998E: Ocorreu um erro interno.
+internal.error.CWMFT5998E.explanation=O servidor de aplicativos sofreu um erro interno.
+internal.error.CWMFT5998E.useraction=Re\u00fana um conjunto de rastreios e abra uma nova emiss\u00e3o em seu servidor de aplicativos.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency FaultTolerance error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Fault Tolerance API error has occurred: {0}
+temporary.CWMFT5999E=CWMFT9999E: Ocorreu um erro de API de toler\u00e2ncia a falhas: {0}
+temporary.CWMFT5999E.explanation=Ocorreu um erro de API de toler\u00e2ncia a falhas que impede a opera\u00e7\u00e3o normal.
+temporary.CWMFT5999E.useraction=Revise os logs FFDC e o texto de exce\u00e7\u00e3o para identificar o problema.

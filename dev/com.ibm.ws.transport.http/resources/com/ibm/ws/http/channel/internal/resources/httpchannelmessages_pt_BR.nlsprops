@@ -1,0 +1,141 @@
+###############################################################################
+# Copyright (c) 2002, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT WebSphere kernel transport http channel
+#CMVCPATHNAME com.ibm.ws.transport.http/resources/com/ibm/ws/http/channel/internal/resources/httpchannelmessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+config.maxpersist=CWWKT0001E: HTPC0801E: O n\u00famero m\u00e1ximo de pedidos ({0}) permitido por soquete n\u00e3o \u00e9 v\u00e1lido. Os valores v\u00e1lidos incluem {1} para ilimitado ou qualquer n\u00famero positivo.
+config.maxpersist.explanation=O valor configurado para o n\u00famero m\u00e1ximo de solicita\u00e7\u00f5es permitidas por soquete n\u00e3o \u00e9 v\u00e1lido.
+config.maxpersist.useraction=Configure um valor v\u00e1lido para o n\u00famero m\u00e1ximo de solicita\u00e7\u00f5es permitidas por soquete.
+
+config.incomingbody=CWWKT0002E: O tamanho do buffer de entrada de {0} n\u00e3o \u00e9 v\u00e1lido. Os tamanhos devem estar entre {1} e {2}.
+config.incomingbody.explanation=O valor configurado para o tamanho do buffer recebido n\u00e3o \u00e9 v\u00e1lido.
+config.incomingbody.useraction=Configure um valor v\u00e1lido para o tamanho do buffer recebido.
+
+config.incomingheader=CWWKT0003E: O tamanho do buffer do cabe\u00e7alho de {0} n\u00e3o \u00e9 v\u00e1lido. Os tamanhos devem estar entre {1} e {2}.
+config.incomingheader.explanation=O valor configurado para o tamanho do buffer do cabe\u00e7alho n\u00e3o \u00e9 v\u00e1lido.
+config.incomingheader.useraction=Configure um valor v\u00e1lido para o tamanho do buffer do cabe\u00e7alho.
+
+config.outgoingbuffer=CWWKT0004E: O tamanho do buffer de sa\u00edda de {0} n\u00e3o \u00e9 v\u00e1lido. Os tamanhos devem estar entre {1} e {2}.
+config.outgoingbuffer.explanation=O valor configurado para o tamanho do buffer de sa\u00edda n\u00e3o \u00e9 v\u00e1lido.
+config.outgoingbuffer.useraction=Configure um valor v\u00e1lido para o tamanho do buffer de sa\u00edda.
+
+config.persisttimeout=CWWKT0005E: O tempo de espera persistente {0} n\u00e1o \u00e9 v\u00e1lido. Os tempos limites devem ser maiores que {1}.
+config.persisttimeout.explanation=O valor configurado para o par\u00e2metro de tempo limite persistente n\u00e3o \u00e9 v\u00e1lido.
+config.persisttimeout.useraction=Configure um valor v\u00e1lido para o par\u00e2metro de tempo limite persistente.
+
+config.readtimeout=CWWKT0006E: O tempo de leitura de espera de {0} n\u00e3o \u00e9 v\u00e1lido. Os tempos limites devem ser maiores que {1}.
+config.readtimeout.explanation=O valor configurado para o par\u00e2metro de tempo limite de leitura n\u00e3o \u00e9 v\u00e1lido.
+config.readtimeout.useraction=Configure um valor v\u00e1lido para o par\u00e2metro de tempo limite de leitura.
+
+config.writetimeout=CWWKT0007E: A escrita do tempo de espera de {0} n\u00e3o \u00e9 v\u00e1lida. Os tempos limites devem ser maiores que {1}.
+config.writetimeout.explanation=O valor configurado para o par\u00e2metro de tempo limite de grava\u00e7\u00e3o n\u00e3o \u00e9 v\u00e1lido.
+config.writetimeout.useraction=Configure um valor v\u00e1lido para o par\u00e2metro de tempo limite de grava\u00e7\u00e3o.
+
+config.fieldsize=CWWKT0008E: O limite de tamanho do campo de {0} n\u00e3o \u00e9 v\u00e1lido. Esse tamanho deve estar entre {1} e {2}.
+config.fieldsize.explanation=O valor configurado para o limite do tamanho do campo n\u00e3o \u00e9 v\u00e1lido.
+config.fieldsize.useraction=Configure um valor v\u00e1lido para o limite do tamanho do campo.
+
+config.numheaders=CWWKT0009E: HTPC0809E: O n\u00famero de limite de cabe\u00e7alhos {0} n\u00e3o \u00e9 v\u00e1lido. Esse tamanho deve estar entre {1} e {2}.
+config.numheaders.explanation=O valor configurado para o limite de n\u00famero de cabe\u00e7alhos n\u00e3o \u00e9 v\u00e1lido.
+config.numheaders.useraction=Configure um valor v\u00e1lido para o limite de n\u00famero de cabe\u00e7alhos.
+
+config.incomingbodymaxsize=CWWKT0010E: O n\u00famero m\u00e1ximo de bytes para um corpo de mensagem recebida de {0} n\u00e3o \u00e9 v\u00e1lido. Esse tamanho deve ser maior ou igual {1}.
+config.incomingbodymaxsize.explanation=O valor configurado para o n\u00famero m\u00e1ximo de bytes para um corpo de mensagem recebida n\u00e3o \u00e9 v\u00e1lido.
+config.incomingbodymaxsize.useraction=Configure um valor v\u00e1lido para o n\u00famero m\u00e1ximo de bytes para um corpo de mensagem recebida.
+
+NO_DEFAULT_CONFIGURATION=CWWKT0011W: Imposs\u00edvel localizar uma configura\u00e7\u00e3o padr\u00e3o para {0} usando o ID {1}
+NO_DEFAULT_CONFIGURATION.explanation=A configura\u00e7\u00e3o padr\u00e3o especificada n\u00e3o pode ser localizada para o ID especificado.
+NO_DEFAULT_CONFIGURATION.useraction=Verifique a configura\u00e7\u00e3o do servidor, em seguida, execute uma reinicializa\u00e7\u00e3o limpa.
+
+DEFAULT_OPTIONS_ERROR=CWWKT0012E: Um erro interno ocorreu. Imposs\u00edvel criar configura\u00e7\u00e3o padr\u00e3o. Exce\u00e7\u00e3o {0}
+DEFAULT_OPTIONS_ERROR.explanation=CMSG0001
+DEFAULT_OPTIONS_ERROR.useraction=CMSG0002
+
+DEFAULT_ENDPOINT_ERROR=CWWKT0013E: Um erro interno ocorreu. Imposs\u00edvel criar terminal padr\u00e3o. Exce\u00e7\u00e3o {0}
+DEFAULT_ENDPOINT_ERROR.explanation=CMSG0001
+DEFAULT_ENDPOINT_ERROR.useraction=CMSG0002
+
+DEFAULT_VHOST_ERROR=CWWKT0014E: Um erro interno ocorreu. N\u00e3o foi poss\u00edvel criar o host virtual padr\u00e3o.  Exce\u00e7\u00e3o {0}
+DEFAULT_VHOST_ERROR.explanation=CMSG0001
+DEFAULT_VHOST_ERROR.useraction=CMSG0002
+
+missingPorts.endpointDisabled=CWWKT0015W: Nenhuma porta foi configurada para o terminal {0}. O terminal foi desativado.
+missingPorts.endpointDisabled.explanation=Um terminal HTTP requer que pelo menos uma porta seja configurada.
+missingPorts.endpointDisabled.useraction=Designe um valor de porta v\u00e1lido para httpPort ou httpsPort ou ambas.
+
+context.root.added=CWWKT0016I: Aplicativo da Web dispon\u00edvel ({0}): {1}
+context.root.added.explanation=Essa mensagem \u00e9 apenas informativa.
+context.root.added.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+context.root.removed=CWWKT0017I: Aplicativo da Web removido ({0}): {1}
+context.root.removed.explanation=Essa mensagem \u00e9 apenas informativa.
+context.root.removed.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+Missing.App.Or.Context.Root=CWWKT0018E: O aplicativo ou a raiz de contexto para essa solicita\u00e7\u00e3o n\u00e3o foi localizada: {0}
+Missing.App.Or.Context.Root.explanation=A solicita\u00e7\u00e3o n\u00e3o pode ser manipulada por um aplicativo no servidor.
+Missing.App.Or.Context.Root.useraction=Assegure-se de que o aplicativo esteja definido e implementado e tenha sido corretamente referenciado pelo cliente.
+
+#Cannot remove above due to service rules, but we do not need a message key as this is never logged
+#only output to the browser on our 404 page - removing it means we give away less server implementation info
+Missing.App.Or.Context.Root.No.Error.Code=O aplicativo ou a raiz de contexto para essa solicita\u00e7\u00e3o n\u00e3o foi localizada: {0}
+Missing.App.Or.Context.Root.No.Error.Code.explanation=A solicita\u00e7\u00e3o n\u00e3o pode ser manipulada por um aplicativo no servidor.
+Missing.App.Or.Context.Root.No.Error.Code.useraction=Assegure-se de que o aplicativo esteja definido e implementado e tenha sido corretamente referenciado pelo cliente.
+
+config.httpChain.error=CWWKT0019E: Ocorreu um problema ao configurar o terminal {0}: {1}.
+config.httpChain.error.explanation=O terminal HTTP n\u00e3o p\u00f4de ser iniciado devido a um problema de configura\u00e7\u00e3o.
+config.httpChain.error.useraction=Examine os logs de mensagens e de exce\u00e7\u00f5es para obter os erros relacionados. 
+
+start.httpChain.error=CWWKT0020E: Ocorreu um problema ao iniciar o terminal {0}: {1}.
+start.httpChain.error.explanation=O terminal HTTP n\u00e3o p\u00f4de ser iniciado devido a um problema inesperado. 
+start.httpChain.error.useraction=Examine os logs de mensagens e de exce\u00e7\u00f5es para obter os erros relacionados. 
+
+httpChain.error.shutdown=CWWKT0021I: O servidor est\u00e1 parando por causa de um poss\u00edvel erro de configura\u00e7\u00e3o. \
+O terminal {0} n\u00e3o pode ser iniciado; isso poder\u00e1 ocorrer se a porta configurada j\u00e1 estiver em uso.
+httpChain.error.shutdown.explanation=O terminal HTTP foi configurado com onError=FAIL, que faz o servidor parar se houver um problema para iniciar o terminal. 
+httpChain.error.shutdown.useraction=Examine os logs de mensagens e de exce\u00e7\u00f5es para obter os erros relacionados. \
+Para evitar que o servidor pare devido a um problema na inicializa\u00e7\u00e3o do terminal, certifique-se de que onError esteja configurado para WARN ou IGNORE.
+
+unresolveableHost=CWWKT0022E: O host configurado {0} para o terminal HTTP {1} n\u00e3o p\u00f4de ser resolvido. O terminal foi desativado.
+unresolveableHost.explanation=Um terminal HTTP requer um valor de host que possa ser resolvido para uma interface de rede ativa.
+unresolveableHost.useraction=Assegure-se de que o valor do host se refira a uma interface de rede ativa ou use * para se conectar a todas as interfaces.
+
+unresolveableDefaultHost=CWWKT0023W: A defaultHostName configurada {0} n\u00e3o p\u00f4de ser resolvida usando localhost.
+unresolveableDefaultHost.explanation=A vari\u00e1vel defaultHostName especifica um valor do host que n\u00e3o p\u00f4de ser resolvido para uma interface de rede ativa.
+unresolveableDefaultHost.useraction=Assegure-se de que o valor de defaultHostName configurado se refira a uma interface de rede ativa.
+
+defaultHostDisabled=CWWKT0024W: O host virtual padr\u00e3o (default_host) n\u00e3o pode ser desativado.
+defaultHostDisabled.explanation=O host virtual padr\u00e3o \u00e9 requerido pelo ambiente de tempo de execu\u00e7\u00e3o. 
+defaultHostDisabled.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+noHostAliases=CWWKT0025W: O host virtual {0} n\u00e3o tem alias de host configurados; ele n\u00e3o receber\u00e1 solicita\u00e7\u00f5es de entrada.
+noHostAliases.explanation=Todos os hosts virtuais n\u00e3o padr\u00e3o dever\u00e3o definir pelo menos um alias de host (host:port) para identificar solicita\u00e7\u00f5es de entrada que devem ser roteadas para o host virtual. \
+O host virtual especificado n\u00e3o tem nenhum alias de host definido, o que evitar\u00e1 que todas as solicita\u00e7\u00f5es sejam roteadas para ele.
+noHostAliases.useraction=Atualize o elemento virtualHost no arquivo server.xml para definir pelo menos um atributo hostAlias.
+
+invalidAlias=CWWKT0026W: Um alias de host configurado para o host virtual {0} \u00e9 inv\u00e1lido e ser\u00e1 ignorado. {1}
+invalidAlias.explanation=O alias de host configurado cont\u00e9m caracteres inv\u00e1lidos ou sintaxe incorreta.
+invalidAlias.useraction=Atualize o elemento do host virtual no arquivo server.xml para correto ou remova o alias de host inv\u00e1lido. Observe que os endere\u00e7os IPv6 devem ser colocados entre [].
+
+wildcardReason=O caractere curinga * n\u00e3o pode ser combinado com outros caracteres no alias do host.
+badHostPortReason=O host especificado n\u00e3o \u00e9 um nome do host ou endere\u00e7o IP v\u00e1lido ou a porta especificada n\u00e3o \u00e9 um n\u00famero inteiro.
+
+duplicateAlias=CWWKT0027W: O alias do host {0} para o host virtual {1} entra em conflito com um alias de host existente e ser\u00e1 ignorado.
+duplicateAlias.explanation=O alias de host especificado entre em conflito com um alias de host existente.
+duplicateAlias.useraction=Assegure-se de que todos os alias de host definidos como elementos de host virtuais no arquivo server.xml sejam exclusivos.
+
+context.root.changed=CWWKT0028I: Aplicativo da web movido ({0}): {1}
+context.root.changed.explanation=Essa mensagem \u00e9 apenas informativa.
+context.root.changed.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.

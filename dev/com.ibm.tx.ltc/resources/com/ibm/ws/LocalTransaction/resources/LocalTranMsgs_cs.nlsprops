@@ -1,0 +1,361 @@
+###############################################################################
+# Copyright (c) 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#  10-22-01  ihodges               Creation
+#  10-24-01  irobins   113516      Added ERR_BEGIN_LTC_ACT
+#  27/02/02  gareth  LIDB1436.01.1 Use new RAS format
+#  14-03-02 amulholl    121351     Add message def ERR_DEPLOY
+#  25-04-02 beavenj    126204      Add message defs ERR_DEPLOY_...
+#  27-05-02 dmatthew   130828      Add message defs for cleanup failures
+#  23-08-02 irobins    143408      Use common messages
+#  17-06-03 ihodges    151542      New message ERR_BEGIN_GLOBAL_TX
+#  02-02-04 irobins    165735      Update explanation text
+#  01-06-04 dmatthew   207915      Change errors to warnings for unresolved
+#  26-02-07 awilkins   422999      Message review: updates to useraction and explanation
+#  11-02-08 mallam     496337      PII additions
+#  29-02-08 johawkes   501807      Style changes
+#-----------------------------------------------------------------------
+#
+# DEVELOPER INSTRUCTIONS
+# ----------------------
+#
+# To add a new message, define the key string in LTCTrace.java, then create
+# the message text below using that key.  Fill in the comment block above the
+# message to assist in translation of the message, particularly to aid in the
+# appropriate positioning of any message inserts within the translated text.
+# To issue the message, use the LTCTrace.Message method.
+#
+# USE OF PROPERTIES FILE FOR MESSAGES:
+#
+# - Each property in the property file is terminated by the line termination character.
+# - If a line contains only whitespace or if the first non-whitespace character of a
+# line is # or !, the line is ignored. (comments start with # or !)
+# - Every line in the properties file other than whitespace lines or comment lines
+# denotes a single property. A \ is treated as a line continuation character. Lines
+# should be terminated with the line termination character.
+# - Correct grammar for a property line is <key><separator><element>. A valid separator
+# is any one of equal, colon or whitespace ( =: ).
+# - The key consists of all the characters on the line starting from the first
+# non-whitespace up to the first separator. Separator characters can be included in the
+# key by escaping them (e.g. \:) This is not recommended because it is error prone and
+# confusing.
+# - Whitespace after the key is skipped until the first non-whitespace character is
+# found. All remaining characters up to the appropriate line termination character
+# define the element.
+#
+# MESSAGE INSERTS
+#
+#  Primitives
+# Primitives, such as int and long are not recognized as subclasses of Object
+# and cannot be directly passed to one of these methods. A primitive value must
+# be transformed to its proper type (e.g Integer, Long) before being passed as
+# a parameter.
+#
+#  Object
+# For normal Objects, toString() is called on the object and the resulting String
+# is displayed. For exceptions, the stack trace will be printed.For Objects that
+# implement the Traceable interface, the toTraceString() method is called instead.
+# To provide the proper trace representation for the Object, provide the proper
+# implementation for the appropriate method.
+#
+#  Object[]
+# Since Object[] is a proper subclass of Object, Object[] can be passed. Use
+# Object[] when more than one parameter should be passed to a message logging
+# or trace method. The appropriate method (toString() or toTraceString()) is
+# called on each Object in the array. This array should contain only
+# standalone normal Objects and should not contain other arrays. Passing nested
+# array may result in the following Strings being displayed :
+#  "[B@924586a0b" - This is deciphered as a byte array at location X.
+# This is typically returned when an array of primitives is passed as a member
+# of an Object[]. It is the result of calling toString() on the byte[].
+#  "[Ljava.lang.Object;@9136fa0b" : An array of objects.
+# Typically this is seen when an array containing nested arrays is passed.
+#
+#  Array of Primitives
+# An array of primitive (e.g. byte[], int[] is recognized as an Object, but is
+# treated somewhat as a second cousin of Object by Java. The results you see
+# will depend on the type of array passed and the API used. For consistent results,
+# user code should preprocess and format the primitive array into some type of
+# String form before passing it to the method. If such preprocessing is not
+# performed, you may see something results something like the following:
+#  "Illegal trace argument : array of long."
+# This is typically returned when an array of primitives is passed to a method
+# taking an Object and the Tr service does not provide special parsing for
+# primitive arrays of this type.
+#  "01040703..." : the hex representation of an array of bytes.
+# Typically this may be seen when a byte array is passed to a method taking a
+# single Object. This behavior is subject to change and should not be relied on.
+#  " '1' '2' ..." : The String representation of the members of an int[] formed
+# by converting each element to an Integer and calling toString on the Integers.
+# This behavior is subject to change and should not be relied on.
+#
+#  Common messages
+# The following common messages are used in this file:
+#
+#         CMSG0001       This is an unexpected exception. The cause can not be immediately determined.
+#         CMSG0002       For further information on resolving this error, please consult the IBM WebSphere Application Server Support website available
+#                        at: http://www-3.ibm.com/software/webservers/appserv/support.html. The site provides searchable databases of technotes,
+#                        solutions, and e-fixes. Information on contacting the WebSphere Support team is also provided.
+#
+# During the build, the WebSphere Message Tool will recognize the common message keywords, and replace them with text defined in the
+#                Common Messages Table.
+#
+#
+#
+#
+#-----------------------------------------------------------------------
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells Java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+#
+#-----------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+#CMVCPATHNAME ws/code/transaction.impl/src/com/ibm/ws/LocalTransaction/resources/LocalTransactionMessages.nlsprops
+#COMPONENTPREFIX WLTC
+#COMPONENTNAMEFOR WLTC WebSphere Transaction Monitor
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+#-----------------------------------------------------------------------
+ERR_INT_ERROR=WLTC0001E: Do\u0161lo k intern\u00ed chyb\u011b v metod\u011b {0} ve t\u0159\u00edd\u011b {1}; n\u00e1sleduje trasov\u00e1n\u00ed z\u00e1sobn\u00edku v\u00fdjimky: {2}.
+ERR_INT_ERROR.explanation=CMSG0001
+ERR_INT_ERROR.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_BEGIN_TX_GLB_ACT=WLTC0002E: Nelze zah\u00e1jit prost\u0159ed\u00ed LocalTransactionContainment, proto\u017ee je aktivn\u00ed glob\u00e1ln\u00ed transakce.
+ERR_BEGIN_TX_GLB_ACT.explanation=Do\u0161lo k nepovolen\u00e9mu pokusu o spu\u0161t\u011bn\u00ed lok\u00e1ln\u00ed transakce, zat\u00edmco je aktivn\u00ed glob\u00e1ln\u00ed transakce.
+ERR_BEGIN_TX_GLB_ACT.useraction=P\u0159ed proveden\u00edm pr\u00e1ce v lok\u00e1ln\u00ed transakce dokon\u010dete v\u0161echny glob\u00e1ln\u00ed transakce.
+
+#-----------------------------------------------------------------------
+ERR_RESUME_TX_GLB_ACT=WLTC0003E: Nelze obnovit prost\u0159ed\u00ed LocalTransactionContainment, proto\u017ee glob\u00e1ln\u00ed transakce je aktivn\u00ed.
+ERR_RESUME_TX_GLB_ACT.explanation=Kontejner nem\u016f\u017ee obnovit prost\u0159ed\u00ed LocalTransactionContainment, proto\u017ee v sou\u010dasn\u00e9 dob\u011b je aktivn\u00ed glob\u00e1ln\u00ed transakce.
+ERR_RESUME_TX_GLB_ACT.useraction=P\u0159ed obnoven\u00edm prost\u0159ed\u00ed LocalTransactionContainment ov\u011b\u0159te, zda byly v\u0161echny glob\u00e1ln\u00ed transakce dokon\u010deny nebo pozastaveny.
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_TX_GLB_ACT=WLTC0004E: Nelze uv\u00e9st prost\u0159edek lok\u00e1ln\u00ed transakce, proto\u017ee je aktivn\u00ed glob\u00e1ln\u00ed transakce.
+ERR_ENLIST_TX_GLB_ACT.explanation=P\u0159ipojen\u00ed lok\u00e1ln\u00ed transakce nelze pou\u017e\u00edt, proto\u017ee je aktu\u00e1ln\u011b aktivn\u00ed glob\u00e1ln\u00ed transakce.
+ERR_ENLIST_TX_GLB_ACT.useraction=P\u0159ed proveden\u00edm pr\u00e1ce v lok\u00e1ln\u00ed transakci zajist\u011bte dokon\u010den\u00ed v\u0161ech glob\u00e1ln\u00edch transakc\u00ed.
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_TX_CLEANUP=WLTC0005E: Nelze uv\u00e9st prost\u0159edek. Hodnota \u0159\u00edzen\u00ed rozli\u0161en\u00ed lok\u00e1ln\u00ed transakce je Aplikace, a proto lze prost\u0159edky uv\u00e9st pouze pro \u010di\u0161t\u011bn\u00ed.
+ERR_ENLIST_TX_CLEANUP.explanation=Kontejner se pokusil uv\u00e9st prost\u0159edek, kdy\u017e hodnota \u0159\u00edzen\u00ed rozli\u0161en\u00ed nen\u00ed ContainerAtBoundary.
+ERR_ENLIST_TX_CLEANUP.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_LTC_COMPLETE=WLTC0006E: Nelze uv\u00e9st prost\u0159edek. Prost\u0159ed\u00ed LocalTransactionContainment se dokon\u010duje nebo je dokon\u010deno.
+ERR_ENLIST_LTC_COMPLETE.explanation=Prost\u0159ed\u00ed LocalTransactionContainment nen\u00ed ve stavu, kdy lze uv\u00e9st prost\u0159edek.
+ERR_ENLIST_LTC_COMPLETE.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_CLN_TX_GLB_ACT=WLTC0007E: Nelze uv\u00e9st prost\u0159edek pro \u010di\u0161t\u011bn\u00ed, proto\u017ee je aktivn\u00ed glob\u00e1ln\u00ed transakce.
+ERR_ENLIST_CLN_TX_GLB_ACT.explanation=P\u0159ipojen\u00ed lok\u00e1ln\u00ed transakce nelze pou\u017e\u00edt, proto\u017ee je aktu\u00e1ln\u011b aktivn\u00ed glob\u00e1ln\u00ed transakce.
+ERR_ENLIST_CLN_TX_GLB_ACT.useraction=P\u0159ed proveden\u00edm pr\u00e1ce v lok\u00e1ln\u00ed transakci zajist\u011bte dokon\u010den\u00ed v\u0161ech glob\u00e1ln\u00edch transakc\u00ed.
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_CLN_TX_CLEANUP=WLTC0008E: Nelze uv\u00e9st prost\u0159edek pro \u010di\u0161t\u011bn\u00ed. Hodnota \u0159\u00edzen\u00ed rozli\u0161en\u00ed lok\u00e1ln\u00ed transakce je ContainerAtBoundary, a proto nelze prost\u0159edky uv\u00e9st pro \u010di\u0161t\u011bn\u00ed.
+ERR_ENLIST_CLN_TX_CLEANUP.explanation=Aplikace pou\u017e\u00edvaj\u00edc\u00ed p\u0159ipojen\u00ed lok\u00e1ln\u00ed transakce je konfigurov\u00e1na pro kontejner, kter\u00fd m\u00e1 b\u00fdt zodpov\u011bdn\u00fd za spu\u0161t\u011bn\u00ed a p\u0159elo\u017een\u00ed lok\u00e1ln\u00ed transakce, ale aplikace sama spustila lok\u00e1ln\u00ed transakci.
+ERR_ENLIST_CLN_TX_CLEANUP.useraction=Aplikace by p\u0159i pou\u017e\u00edv\u00e1n\u00ed lok\u00e1ln\u00edch transakc\u00ed p\u0159elo\u017een\u00fdch kontejnerem m\u011bla postupovat podle modelu z\u00edsk\u00e1n\u00ed-pou\u017eit\u00ed.
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_CLN_LTC_COMPLETE=WLTC0009E: Nelze uv\u00e9st prost\u0159edek pro \u010di\u0161t\u011bn\u00ed. Prost\u0159ed\u00ed LocalTransactionContainment se dokon\u010duje nebo je dokon\u010deno.
+ERR_ENLIST_CLN_LTC_COMPLETE.explanation=Prost\u0159ed\u00ed LocalTransactionContainment nen\u00ed ve stavu, kdy lze uv\u00e9st prost\u0159edek.
+ERR_ENLIST_CLN_LTC_COMPLETE.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_DELIST_TX_GLB_ACT=WLTC0010E: Nelze vy\u0159adit prost\u0159edek, proto\u017ee je aktivn\u00ed glob\u00e1ln\u00ed transakce.
+ERR_DELIST_TX_GLB_ACT.explanation=Prost\u0159ed\u00ed LocalTransactionContainment nem\u016f\u017ee vy\u0159adit prost\u0159edek, proto\u017ee je aktu\u00e1ln\u011b aktivn\u00ed glob\u00e1ln\u00ed transakce.
+ERR_DELIST_TX_GLB_ACT.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_DELIST_NOT_ENLISTED=WLTC0011E: Nelze vy\u0159adit prost\u0159edek. Nen\u00ed uveden pro \u010di\u0161t\u011bn\u00ed v prost\u0159ed\u00ed LocalTransactionContainment.
+ERR_DELIST_NOT_ENLISTED.explanation=Prost\u0159ed\u00ed LocalTransactionContainment nem\u016f\u017ee vy\u0159adit prost\u0159edek, kter\u00fd nebyl uveden pro \u010di\u0161t\u011bn\u00ed.
+ERR_DELIST_NOT_ENLISTED.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_DELIST_LTC_COMPLETE=WLTC0012E: Nelze vy\u0159adit prost\u0159edek. Prost\u0159ed\u00ed LocalTransactionContainment se dokon\u010duje nebo je dokon\u010deno.
+ERR_DELIST_LTC_COMPLETE.explanation=Prost\u0159ed\u00ed LocalTransactionContainment nen\u00ed ve stavu, kdy lze vy\u0159adit prost\u0159edek.
+ERR_DELIST_LTC_COMPLETE.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_SYNCH_TX_GLB_ACT=WLTC0013E: Nelze uv\u00e9st synchronizaci, proto\u017ee je aktivn\u00ed glob\u00e1ln\u00ed transakce.
+ERR_ENLIST_SYNCH_TX_GLB_ACT.explanation=Nelze uv\u00e9st synchronizaci s prost\u0159ed\u00edm LocalTransactionContainment, proto\u017ee je aktu\u00e1ln\u011b aktivn\u00ed glob\u00e1ln\u00ed transakce.
+ERR_ENLIST_SYNCH_TX_GLB_ACT.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_SYNCH_LTC_COMPLETE=WLTC0014E: Nelze uv\u00e9st synchronizaci. Prost\u0159ed\u00ed LocalTransactionContainment se dokon\u010duje nebo je dokon\u010deno.
+ERR_ENLIST_SYNCH_LTC_COMPLETE.explanation=Prost\u0159ed\u00ed LocalTransactionContainment nen\u00ed ve stavu, kdy lze uv\u00e9st synchronizaci.
+ERR_ENLIST_SYNCH_LTC_COMPLETE.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_XA_RESOURCE_START=WLTC0015E: Prost\u0159edek {0} se nepoda\u0159ilo spustit. N\u00e1sleduje trasov\u00e1n\u00ed z\u00e1sobn\u00edku v\u00fdjimek: {1}
+ERR_XA_RESOURCE_START.explanation=Kontejner nemohl spustit lok\u00e1ln\u00ed transakci.
+ERR_XA_RESOURCE_START.useraction=Prozkoumejte spr\u00e1vce prost\u0159edk\u016f.
+
+#-----------------------------------------------------------------------
+ERR_XA_RESOURCE_COMPLETE=WLTC0016E: Prost\u0159edek {0} se nepoda\u0159ilo dokon\u010dit. N\u00e1sleduje trasov\u00e1n\u00ed z\u00e1sobn\u00edku v\u00fdjimek: {1}
+ERR_XA_RESOURCE_COMPLETE.explanation=Kontejner nem\u016f\u017ee dokon\u010dit lok\u00e1ln\u00ed transakci.
+ERR_XA_RESOURCE_COMPLETE.useraction=Prozkoumejte spr\u00e1vce prost\u0159edk\u016f.
+
+#-----------------------------------------------------------------------
+ERR_XA_RESOURCE_ROLLEDBACK=WLTC0017E: Prost\u0159edky byly odvol\u00e1ny kv\u016fli vol\u00e1n\u00ed setRollbackOnly().
+ERR_XA_RESOURCE_ROLLEDBACK.explanation=Prost\u0159edky uveden\u00e9 s prost\u0159ed\u00edm LTC (LocalTransactionContainment) byly odvol\u00e1ny m\u00edsto potvrzen\u00ed vzhledem k vol\u00e1n\u00ed metody setRollbackOnly() prost\u0159ed\u00ed LTC.
+ERR_XA_RESOURCE_ROLLEDBACK.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce. Tato zpr\u00e1va je pouze informativn\u00ed.
+
+#-----------------------------------------------------------------------
+ERR_BEGIN_LTC_ACT=WLTC0018E: Nelze zah\u00e1jit prost\u0159ed\u00ed LocalTransactionContainment. Prost\u0159ed\u00ed LocalTransactionContainment ji\u017e je aktivn\u00ed.
+ERR_BEGIN_LTC_ACT.explanation=Prost\u0159ed\u00ed LocalTransactionContainment ji\u017e bylo aktivn\u00ed, kdy\u017e do\u0161lo k pokusu o spu\u0161t\u011bn\u00ed nov\u00e9ho.
+ERR_BEGIN_LTC_ACT.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_STATE_RB_ONLY=WLTC0019E: Operaci nelze prov\u00e9st. Prost\u0159ed\u00ed LocalTransactionContainment bylo ozna\u010deno pouze pro odvol\u00e1n\u00ed.
+ERR_STATE_RB_ONLY.explanation=Prost\u0159ed\u00ed LocalTransactionContainment, v r\u00e1mci kter\u00e9ho byla provedena operace, je\u017e se nezda\u0159ila, bylo ozna\u010deno kontejnerem jako pouze pro odvol\u00e1n\u00ed.
+ERR_STATE_RB_ONLY.useraction=Pomoc\u00ed trasov\u00e1n\u00ed ur\u010dete, pro\u010d bylo prost\u0159ed\u00ed LocalTransactionContainment ozna\u010deno pouze pro odvol\u00e1n\u00ed.
+
+#-----------------------------------------------------------------------
+ERR_LTC_COMPLETE=WLTC0020E: Operaci nelze prov\u00e9st. Prost\u0159ed\u00ed LocalTransactionContainment se dokon\u010duje nebo je dokon\u010deno.
+ERR_LTC_COMPLETE.explanation=Prost\u0159ed\u00ed LocalTransactionContainment, v r\u00e1mci kter\u00e9ho byla provedena operace, je\u017e se nezda\u0159ila, se dokon\u010duje nebo je dokon\u010deno.
+ERR_LTC_COMPLETE.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_NP_INCONSISTENT=WLTC0021E: Stav dokon\u010den\u00ed prost\u0159edku je nekonzistentn\u00ed.
+ERR_NP_INCONSISTENT.explanation=Prost\u0159ed\u00ed LocalTransactionCoordinator uveden\u00e9 jako prost\u0159edek ActivitySessionResource bylo dokon\u010deno s nekonzistentn\u00edmi v\u00fdsledky.
+ERR_NP_INCONSISTENT.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_NP_ROLLEDBACK=WLTC0022E: Prost\u0159edek byl resetov\u00e1n kv\u016fli vol\u00e1n\u00ed metody setRollbackOnly v prost\u0159ed\u00ed LTC
+ERR_NP_ROLLEDBACK.explanation=Prost\u0159ed\u00ed LocalTransactionCoordinator uveden\u00e9 jako prost\u0159edek ActivitySessionResource bylo resetov\u00e1no vzhledem k vol\u00e1n\u00ed metody setRollbackOnly prost\u0159ed\u00ed LocalTransactionContainment.
+ERR_NP_ROLLEDBACK.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce. Tato zpr\u00e1va je pouze informativn\u00ed.
+
+#-----------------------------------------------------------------------
+ERR_NP_ILLEGAL=WLTC0023E: Selhalo dokon\u010den\u00ed prost\u0159edku kv\u016fli nepovolen\u00e9mu stavu.
+ERR_NP_ILLEGAL.explanation=Prost\u0159ed\u00ed LocalTransactionCoordinator uveden\u00e9 jako prost\u0159edek ActivitySessionResource nen\u00ed v platn\u00e9m stavu pro dokon\u010den\u00ed.
+ERR_NP_ILLEGAL.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_AS_LOOKUP_ASM=WLTC0024E: Nelze kontaktovat slu\u017ebu ActivitySession. Selhalo vyhled\u00e1n\u00ed atributu ActivitySessionManager.
+ERR_AS_LOOKUP_ASM.explanation=Objekt ActivitySessionManager nebyl nalezen v oboru n\u00e1zv\u016f rozhran\u00ed JNDI.
+ERR_AS_LOOKUP_ASM.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_AS_ILLEGAL_STATE=WLTC0025E: Nelze uv\u00e9st u slu\u017eby ActivitySession. Slu\u017eba ActivitySession m\u00e1 nepovolen\u00fd stav.
+ERR_AS_ILLEGAL_STATE.explanation=Aktu\u00e1ln\u00ed relace ActivitySession nen\u00ed ve spr\u00e1vn\u00e9m stavu pro prost\u0159ed\u00ed LocalTransactionContainment, aby bylo uvedeno jako prost\u0159edek.
+ERR_AS_ILLEGAL_STATE.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_AS_UNEXPECTED=WLTC0026E: Do\u0161lo k neo\u010dek\u00e1van\u00e9 chyb\u011b p\u0159i interakci se slu\u017ebou ActivitySession.
+ERR_AS_UNEXPECTED.explanation=Do\u0161lo k neo\u010dek\u00e1van\u00e9 chyb\u011b p\u0159i pokusu o uveden\u00ed prost\u0159ed\u00ed LocalTransactionContainment se slu\u017ebou ActivitySession.
+ERR_AS_UNEXPECTED.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_NO_LTC_CLEANUP=WLTC0027E: Neexistuje \u017e\u00e1dn\u00fd modul LocalTransactionCoordinator k \u010di\u0161t\u011bn\u00ed.
+ERR_NO_LTC_CLEANUP.explanation=Modul LocalTransactionCoordinator nen\u00ed p\u0159idru\u017een k aktu\u00e1ln\u00edmu podprocesu, a nelze jej tedy vy\u010distit.
+ERR_NO_LTC_CLEANUP.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_NO_LTC_COMPLETE=WLTC0028E: Nen\u00ed k dispozici \u017e\u00e1dn\u00fd modul LocalTransactionCoordinator pro dokon\u010den\u00ed.
+ERR_NO_LTC_COMPLETE.explanation=Modul LocalTransactionCoordinator nen\u00ed p\u0159idru\u017een k aktu\u00e1ln\u00edmu podprocesu, a nelze jej tedy dokon\u010dit.
+ERR_NO_LTC_COMPLETE.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_DEPLOY=WLTC0029E: Instalace aplikace selhala; komponenta aplikace {0} m\u00e1 p\u0159\u00edpony deskriptoru implementace WebSphere, kter\u00e9 nejsou povoleny v instalovan\u00e9 verzi serveru WebSphere Application Server; v\u00fdsledkem jejich pou\u017eit\u00ed m\u016f\u017ee b\u00fdt ztr\u00e1ta integrity dat: z\u00e1sada aktivace je {1}; hranice lok\u00e1ln\u00ed transakce je {2}.
+ERR_DEPLOY.explanation=Aplikace ozna\u010den\u00e1 ve zpr\u00e1v\u011b byla sestavena s p\u0159\u00edponami, kter\u00e9 nejsou podporov\u00e1ny v instalovan\u00e9 verzi produktu. \
+Pokud produkt umo\u017enil spu\u0161t\u011bn\u00ed aplikace v nep\u0159\u00edtomnosti o\u010dek\u00e1van\u00e9 podpory p\u0159\u00edpon, m\u016f\u017ee se chov\u00e1n\u00ed zm\u011bnit zp\u016fsobem, kter\u00fd ovlivn\u00ed integritu dat; aktualizace dat transakc\u00ed se nap\u0159\u00edklad mohou odehr\u00e1t v r\u00e1mci n\u011bkolika transakc\u00ed v p\u0159\u00edpad\u011b, \u017ee by p\u0159\u00edtomnost podpory p\u0159\u00edpon zajistila jejich v\u00fdskyt ve stejn\u00e9 transakci. \
+Instalace aplikace proto nen\u00ed bezpe\u010dn\u00e1.
+ERR_DEPLOY.useraction=Prov\u011b\u0159te aplikaci, jej\u00ed\u017e instalace selhala. \
+Pokud ji nelze spustit bez podpory p\u0159\u00edpon, znovu sestavte aplikaci bez zad\u00e1n\u00ed p\u0159\u00edpon. \
+Pokud aplikace vy\u017eaduje roz\u0161\u00ed\u0159enou podporu, instalujte ji pouze na aplika\u010dn\u00edch serverech, kter\u00e9 tuto podporu poskytuj\u00ed.
+
+#-----------------------------------------------------------------------
+ERR_DEPLOY_RESOLUTION=WLTC0030E: Instalace aplikace selhala, objekt typu bean aplikace {0} je konfigurov\u00e1n pro spr\u00e1vu vlastn\u00edch transakc\u00ed, ale m\u00e1 nastaven\u00ed nekompatibiln\u00edho rozli\u0161en\u00ed lok\u00e1ln\u00edch transakc\u00ed ContainerAtBoundary.
+ERR_DEPLOY_RESOLUTION.explanation=Objekt typu bean ozna\u010den\u00fd ve zpr\u00e1v\u011b byl sestaven s p\u0159\u00edponami, kter\u00e9 nejsou podporov\u00e1ny. Z tohoto d\u016fvodu nebyla aplikace nainstalov\u00e1na.
+ERR_DEPLOY_RESOLUTION.useraction=Aplikace, jej\u00ed\u017e instalace selhala, mus\u00ed b\u00fdt znovu sestavena s alternativn\u00ed konfigurac\u00ed pro objekt typu bean.
+
+#-----------------------------------------------------------------------
+ERR_DEPLOY_FAILURE=WLTC0031E: Instalace aplikace selhala; aplika\u010dn\u00ed komponentu {0} nelze nainstalovat.
+ERR_DEPLOY_FAILURE.explanation=Aplikaci ozna\u010denou ve zpr\u00e1v\u011b se nepoda\u0159ilo spr\u00e1vn\u011b nainstalovat. Aplikace nen\u00ed k dispozici.
+ERR_DEPLOY_FAILURE.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+WRN_LTC_UNRESOLVED_ROLLEDBACK=WLTC0032W: B\u011bhem \u010di\u0161t\u011bn\u00ed prost\u0159ed\u00ed LocalTransactionContainment byl odvol\u00e1n jeden nebo v\u00edce lok\u00e1ln\u00edch prost\u0159edk\u016f transakce.
+WRN_LTC_UNRESOLVED_ROLLEDBACK.explanation=Prost\u0159ed\u00ed LocalTransactionContainment s nedokon\u010den\u00fdmi lok\u00e1ln\u00edmi prost\u0159edky transakce bylo ukon\u010deno a zp\u016fsobilo odvol\u00e1n\u00ed prost\u0159edk\u016f.
+WRN_LTC_UNRESOLVED_ROLLEDBACK.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce. Tato zpr\u00e1va je pouze informativn\u00ed.
+
+#-----------------------------------------------------------------------
+WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK=WLTC0033W: Prost\u0159edek {0} byl odvol\u00e1n\u00ed p\u0159i \u010di\u0161t\u011bn\u00ed prost\u0159ed\u00ed LocalTransactionContainment.
+WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK.explanation=Prost\u0159edek lok\u00e1ln\u00ed transakce nebyl p\u0159elo\u017een p\u0159i dokon\u010den\u00ed prost\u0159ed\u00ed LocalTransactionContainment a byl odvol\u00e1n.
+WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce. Tato zpr\u00e1va je pouze informativn\u00ed.
+
+#-----------------------------------------------------------------------
+ERR_NP_INCONSISTENT_CLEANUP=WLTC0034E: Stav dokon\u010den\u00ed prost\u0159ed\u00ed LocalTransactionContainment je b\u011bhem \u010di\u0161t\u011bn\u00ed nekonzistentn\u00ed.
+ERR_NP_INCONSISTENT_CLEANUP.explanation=Prost\u0159ed\u00ed LocalTransactionCoordinator uveden\u00e9 jako prost\u0159edek ActivitySessionSynchronization bylo b\u011bhem \u010di\u0161t\u011bn\u00ed dokon\u010deno s nekonzistentn\u00edmi v\u00fdsledky.
+ERR_NP_INCONSISTENT_CLEANUP.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+WRN_NP_ROLLEDBACK_CLEANUP=WLTC0035W: Nevy\u0159e\u0161en\u00e9 prost\u0159ed\u00ed LocalTransactionContainment bylo b\u011bhem \u010di\u0161t\u011bn\u00ed obnoveno.
+WRN_NP_ROLLEDBACK_CLEANUP.explanation=Prost\u0159ed\u00ed LocalTransactionCoordinator uveden\u00e9 jako atribut ActivitySessionSynchronization bylo obnoveno.
+WRN_NP_ROLLEDBACK_CLEANUP.useraction=Je mo\u017en\u00e9, \u017ee do\u0161lo k chyb\u011b aplikace. Prozkoumejte v\u0161echny souvisej\u00edc\u00ed zpr\u00e1vy a ur\u010dete d\u016fvod resetov\u00e1n\u00ed.
+
+#-----------------------------------------------------------------------
+ERR_NP_ILLEGAL_CLEANUP=WLTC0036E: Jeden nebo v\u00edce prost\u0159edk\u016f registrovan\u00fdch v prost\u0159ed\u00ed LocalTransactionContainment se nepoda\u0159ilo dokon\u010dit b\u011bhem \u010di\u0161t\u011bn\u00ed v d\u016fsledku nepovolen\u00e9ho stavu.
+ERR_NP_ILLEGAL_CLEANUP.explanation=Prost\u0159ed\u00ed LocalTransactionCoordinator uveden\u00e9 jako objekt ActivitySessionSynchronization obsahuje b\u011bhem \u010di\u0161t\u011bn\u00ed jeden nebo v\u00edce prost\u0159edk\u016f v neplatn\u00e9m stavu pro dokon\u010den\u00ed.
+ERR_NP_ILLEGAL_CLEANUP.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_BEGIN_GLOBAL_TX=WLTC0037E: Nelze spustit glob\u00e1ln\u00ed transakci. Prost\u0159ed\u00ed LocalTransactionContainment je ji\u017e aktivn\u00ed pro pr\u00e1ci.
+ERR_BEGIN_GLOBAL_TX.explanation=Prost\u0159ed\u00ed LocalTransactionContainment ji\u017e bylo aktivn\u00ed, kdy\u017e do\u0161lo k pokusu o spu\u0161t\u011bn\u00ed glob\u00e1ln\u00ed transakce.
+ERR_BEGIN_GLOBAL_TX.useraction=CMSG0002
+

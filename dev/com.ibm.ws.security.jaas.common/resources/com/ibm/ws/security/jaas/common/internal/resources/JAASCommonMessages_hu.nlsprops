@@ -1,0 +1,69 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authentication.builtin/resources/com/ibm/ws/security/jaas/common/internal/resources/JAASCommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Authentication Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# JAAS Message prefix block: CWWKS1133 - CWWKS1166
+
+# Only the following message falls outside of the allocated block above 
+# because it was moved as-is from another package for a refactor
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET=CWWKS1108E: A WSLoginModuleProxy delegate param\u00e9tere nincs be\u00e1ll\u00edtva.
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.explanation=A hiteles\u00edt\u00e9s sikertelen, mert a WSLoginModuleProxy delegate param\u00e9tere nincs be\u00e1ll\u00edtva.
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.useraction=Ellen\u0151rizze, hogy a WSLoginModuleProxy konfigur\u00e1ci\u00f3 tartalmazza-e a delegate param\u00e9tert.
+
+# NOTE!! Any messages added here should start at CWWKS1133
+
+# Start msgs from cWAS
+security.jaas.open.URL=CWWKS1133E: Az URL c\u00edm nem nyithat\u00f3 meg: {0}. A kiv\u00e9tel: {1}
+security.jaas.open.URL.explanation=A megadott URL c\u00edmhez val\u00f3 csatlakoz\u00e1sra tett k\u00eds\u00e9rlet sor\u00e1n MalformedURLException kiv\u00e9tel t\u00f6rt\u00e9nt. 
+security.jaas.open.URL.useraction=Vizsg\u00e1lja meg a kiv\u00e9telt. Ellen\u0151rizze a megadott URL c\u00edmet.
+# -------------------------------------------------------------------------------------------------
+security.jaas.create.URL=CWWKS1134E: Az URL c\u00edm nem hozhat\u00f3 l\u00e9tre: {0}. A kiv\u00e9tel: {1}
+security.jaas.create.URL.explanation=A megadott URL c\u00edmhez val\u00f3 csatlakoz\u00e1sra tett k\u00eds\u00e9rlet sor\u00e1n IOException kiv\u00e9tel t\u00f6rt\u00e9nt.
+security.jaas.create.URL.useraction=Vizsg\u00e1lja meg a kiv\u00e9telt. Ellen\u0151rizze a megadott URL c\u00edmet.
+# -------------------------------------------------------------------------------------------------
+security.jaas.parser.URL=CWWKS1135E: F\u00e1jl\u00e9rtelmez\u0151-kiv\u00e9tel t\u00f6rt\u00e9nt a k\u00f6vetkez\u0151 f\u00e1jllal kapcsolatban: {0}. A kiv\u00e9tel: {1}
+security.jaas.parser.URL.explanation=A megadott URL c\u00edmhez val\u00f3 csatlakoz\u00e1sra tett k\u00eds\u00e9rlet sor\u00e1n IOException kiv\u00e9tel t\u00f6rt\u00e9nt.
+security.jaas.parser.URL.useraction=Vizsg\u00e1lja meg a kiv\u00e9telt. Ellen\u0151rizze a megadott URL c\u00edmet.
+# -------------------------------------------------------------------------------------------------
+security.jaas.duplicate.config=CWWKS1136E: T\u00f6bbsz\u00f6r\u00f6s bejelentkez\u00e9si be\u00e1ll\u00edt\u00e1sn\u00e9v: {0}. Fel\u00fcl lesz \u00edrva.
+security.jaas.duplicate.config.explanation=A konfigur\u00e1ci\u00f3s adatokban t\u00f6bbsz\u00f6r\u00f6s bejelentkez\u00e9si be\u00e1ll\u00edt\u00e1snevet adtak meg.
+security.jaas.duplicate.config.useraction=Ellen\u0151rizze a konfigur\u00e1ci\u00f3s adatokat.
+# -------------------------------------------------------------------------------------------------
+security.jaas.app.parseIO=CWWKS1137E: A JAAS alkalmaz\u00e1skonfigur\u00e1ci\u00f3 \u00e9rtelmez\u00e9se sor\u00e1n IOException kiv\u00e9tel t\u00f6rt\u00e9nt. A kiv\u00e9tel: {0}.
+security.jaas.app.parseIO.explanation=A JAAS alkalmaz\u00e1skonfigur\u00e1ci\u00f3 \u00e9rtelmez\u00e9se sor\u00e1n IOException kiv\u00e9tel t\u00f6rt\u00e9nt.
+security.jaas.app.parseIO.useraction=Ellen\u0151rizze a konfigur\u00e1ci\u00f3s f\u00e1jlt. Vizsg\u00e1lja meg a kiv\u00e9telt. 
+# -------------------------------------------------------------------------------------------------
+security.jaas.app.parse=CWWKS1138E: A JAAS alkalmaz\u00e1skonfigur\u00e1ci\u00f3 \u00e9rtelmez\u00e9se sor\u00e1n ParserException kiv\u00e9tel t\u00f6rt\u00e9nt. A kiv\u00e9tel: {0}.
+security.jaas.app.parse.explanation=A JAAS alkalmaz\u00e1skonfigur\u00e1ci\u00f3 \u00e9rtelmez\u00e9se sor\u00e1n ParserException kiv\u00e9tel t\u00f6rt\u00e9nt.
+security.jaas.app.parse.useraction=Vizsg\u00e1lja meg a kiv\u00e9telt, amelyben megtal\u00e1lhat\u00f3k a konfigur\u00e1ci\u00f3s f\u00e1jlban szerepl\u0151 szintaktikai hiba inform\u00e1ci\u00f3i.
+# -------------------------------------------------------------------------------------------------
+# End msgs from cWAS
+DEFAULT_JAAS_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1139W: Az alap\u00e9rtelmezett {0} jaasLoginContextEntry \u00e9rt\u00e9k nem adhat\u00f3 meg a(z) {1} JAAS konfigur\u00e1ci\u00f3s f\u00e1jlban. Az alap\u00e9rtelmezett jaasLoginContextEntry \u00e9rt\u00e9ket a server.xml vagy a client.xml f\u00e1jlban kell megadni.
+DEFAULT_JAAS_LOGIN_CONTEXT_ENTRY_SKIP.explanation=Az alap\u00e9rtelmezett jaasLoginContextEntry \u00e9rt\u00e9k nem adhat\u00f3 meg a JAAS konfigur\u00e1ci\u00f3s f\u00e1jlban.
+DEFAULT_JAAS_LOGIN_CONTEXT_ENTRY_SKIP.useraction=Ellen\u0151rizze, hogy a JAAS konfigur\u00e1ci\u00f3s f\u00e1jl nem rendelkezik alap\u00e9rtelmezett jaasLoginContextEntry \u00e9rt\u00e9kkel.
+
+OSGI_SERVICE_ERROR=CWWKS1140E: A(z) {0} OSGi szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.
+OSGI_SERVICE_ERROR.explanation=A megadott OSGi szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.
+OSGI_SERVICE_ERROR.useraction=Ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t a "clean" param\u00e9terrel.
+
+JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND=CWWKS1141E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} nev\u00e9hez tartoz\u00f3 oszt\u00e1ly v\u00e9grehajt\u00e1sakor. V\u00e1ratlan kiv\u00e9tel: {1}. 
+JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a n\u00e9vhez tartoz\u00f3 oszt\u00e1ly v\u00e9grehajt\u00e1sakor.
+JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND.useraction=Ellen\u0151rizze, hogy a JAAS konfigur\u00e1ci\u00f3s f\u00e1jlban megadott minden egy\u00e9ni JAAS bejelentkez\u00e9si modul l\u00e9tezik az alap\u00e9rtelmezett JAAS k\u00f6nyvt\u00e1rban. A kiszolg\u00e1l\u00f3 alap\u00e9rtelmezett JAAS k\u00f6nyvt\u00e1ra: ${server.config.dir}/resources/security/jaas; az \u00fcgyf\u00e9l alap\u00e9rtelmezett JAAS k\u00f6nyvt\u00e1ra: ${client.config.dir}/resources/security/jaas.
+
+JAAS_DUPLICATE_ENTRY_NAME=CWWKS1142W: A(z) {0} t\u00f6bbsz\u00f6r\u00f6s bejelentkez\u00e9si be\u00e1ll\u00edt\u00e1sn\u00e9v ker\u00fclt megad\u00e1sra a JAAS konfigur\u00e1ci\u00f3ban \u00e9s a server.xml/client.xml f\u00e1jlban. A rendszer a server.xml/client.xml f\u00e1jlban szerepl\u0151 bejelentkez\u00e9si be\u00e1ll\u00edt\u00e1snevet fogja haszn\u00e1lni.
+JAAS_DUPLICATE_ENTRY_NAME.explanation=A JAAS konfigur\u00e1ci\u00f3s f\u00e1jlban \u00e9s a server.xml/client.xml f\u00e1jlban t\u00f6bbsz\u00f6r\u00f6s bejelentkez\u00e9si be\u00e1ll\u00edt\u00e1sn\u00e9v ker\u00fclt megad\u00e1sra.
+JAAS_DUPLICATE_ENTRY_NAME.useraction=Ellen\u0151rizze a JAAS konfigur\u00e1ci\u00f3s f\u00e1jlt \u00e9s a server.xml/client.xml f\u00e1jlt.

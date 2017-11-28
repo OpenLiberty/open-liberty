@@ -1,0 +1,104 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMCG
+#COMPONENTNAMEFOR CWMCG MicroProfile Config API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Config Impl -  range is 0000-4999, plus 9999 for the emergency message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# Config is closed.
+config.closed.CWMCG0001E=CWMCG0001E: Config este \u00eenchis\u0103.
+config.closed.CWMCG0001E.explanation=Opera\u0163iile nu pot fi realizate pe o instan\u0163\u0103 Config care a fost \u00eenchis\u0103.
+config.closed.CWMCG0001E.useraction=Ob\u0163ine\u0163i o nou\u0103 instan\u0163\u0103 Config \u015fi \u00eencerca\u0163i opera\u0163ia din nou.
+
+# ClassLoader must not be null.
+null.classloader.CWMCG0002E=CWMCG0002E: ClassLoader nu trebuie s\u0103 fie null.
+null.classloader.CWMCG0002E.explanation=ClassLoader utilizat de un ConfigBuilder nu trebuie s\u0103 fie null.
+null.classloader.CWMCG0002E.useraction=Seta\u0163i ClassLoader la o valoare non-null.
+
+# A Config instance already exists for the specified ClassLoader.
+config.already.exists.CWMCG0003E=CWMCG0003E: O instan\u0163a Config exist\u0103 deja pentru ClassLoader-ul specificat.
+config.already.exists.CWMCG0003E.explanation=O instan\u0163a Config a fost deja setat\u0103 pentru ClassLoader-ul specificat.
+config.already.exists.CWMCG0003E.useraction=Utiliza\u0163i metoda 'releaseConfig' pentru a \u00eenl\u0103tura instan\u0163a anterioar\u0103 \u015fi apoi re\u00eencerca\u0163i metoda.
+
+# Unable to close the Config instance. The exception is: {0}.
+could.not.close.CWMCG0004E=CWMCG0004E: Nu se poate \u00eenchide instan\u0163a Config. Excep\u0163ia este: {0}
+could.not.close.CWMCG0004E.explanation=A ap\u0103rut o excep\u0163ie la \u00eencercarea de a \u00eenchide o instan\u0163\u0103 Config. E posibil ca resursele sale s\u0103 nu fi fost eliberate.
+could.not.close.CWMCG0004E.useraction=Examina\u0163i istoricele de server message.log \u015fi FFDC pentru a identifica problema.
+
+# Unable to convert the string "{0}" to a value of type {1}.
+unable.to.convert.CWMCG0006E=CWMCG0006E: Nu s-a putut converti \u015firul "{0}" la o valoare de tip {1}.
+unable.to.convert.CWMCG0006E.explanation=Nu a fost g\u0103sit niciun Convertor potrivit pentru tipul dat.
+unable.to.convert.CWMCG0006E.useraction=Ad\u0103uga\u0163i un Convertor potrivit sau asigura\u0163i-v\u0103 c\u0103 clasa are un constructor public \u015eir sau o metod\u0103 static\u0103 valueOf(String).
+
+# A Converter of type {0} threw an exception. The input string was: "{1}". The exception is: {2}.
+conversion.exception.CWMCG0007E=CWMCG0007E: Un Convertor de tip {0} a aruncat o excep\u0163ie. \u015eirul de intrare a fost: "{1}". Excep\u0163ia este: {2}
+conversion.exception.CWMCG0007E.explanation=Un Convertor a aruncat o excep\u0163ie.
+conversion.exception.CWMCG0007E.useraction=Examina\u0163i istoricele de server message.log \u015fi FFDC pentru a identifica problema.
+
+# Unable to convert the string "{0}" to a value of type Boolean. Expected one of [true, yes, on, false, no, off].
+unable.to.convert.boolean.CWMCG0008E=CWMCG0008E: Nu s-a putut converti \u015firul "{0}" la o valoare de tip boolean. S-a a\u015fteptat una din valorile [true, yes, on, false, no, off].
+unable.to.convert.boolean.CWMCG0008E.explanation=\u015eirul de intrare nu a fost o valoare boolean\u0103 valid\u0103.
+unable.to.convert.boolean.CWMCG0008E.useraction=Actualiza\u0163i \u015firul de intrare surs\u0103 \u015fi \u00eencerca\u0163i din nou opera\u0163ia.
+
+# Could not determine conversion type of Converter class {0}.
+unable.to.determine.conversion.type.CWMCG0009E=CWMCG0009E: Nu s-a putut determina tipul de conversie al clasei Convertorului {0}.
+unable.to.determine.conversion.type.CWMCG0009E.explanation=Clasa de implementare Convertor nu a avut un tip generic potrivit.
+unable.to.determine.conversion.type.CWMCG0009E.useraction=Asigura\u0163i-v\u0103 c\u0103 clasa de implementare are o variabil\u0103 de tip generic potrivit pentru interfa\u0163a Convertor.
+
+# Unable to discover ConfigSources. The exception is: {0}.
+unable.to.discover.config.sources.CWMCG0010E=CWMCG0010E: Nu se pot descoperi ConfigSources. Excep\u0163ia este: {0}
+unable.to.discover.config.sources.CWMCG0010E.explanation=Java ServiceLoader a creat o excep\u0163ie. Cea mai probabil\u0103 cauz\u0103 este c\u0103 una dintre clasele ConfigSource numite nu a putut fi g\u0103sit\u0103.
+unable.to.discover.config.sources.CWMCG0010E.useraction=Verifica\u0163i clasele numite \u00een fi\u015fierele de servicii Java din aplica\u0163ia dumneavoastr\u0103. Examina\u0163i istoricele de server message.log \u015fi FFDC pentru a identifica problema.
+
+# Unable to discover ConfigSourceProviders. The exception is: {0}.
+unable.to.discover.config.source.providers.CWMCG0011E=CWMCG0011E: Nu se pot descoperi ConfigSourceProviders. Excep\u0163ia este: {0}
+unable.to.discover.config.source.providers.CWMCG0011E.explanation=Java ServiceLoader a creat o excep\u0163ie. Cea mai probabil\u0103 cauz\u0103 este c\u0103 una dintre clasele ConfigSourceProvider numite nu a putut fi g\u0103sit\u0103.
+unable.to.discover.config.source.providers.CWMCG0011E.useraction=Verifica\u0163i clasele numite \u00een fi\u015fierele de servicii Java din aplica\u0163ia dumneavoastr\u0103. Examina\u0163i istoricele de server message.log \u015fi FFDC pentru a identifica problema.
+
+# Unable to discover Converters. The exception is: {0}.
+unable.to.discover.converters.CWMCG0012E=CWMCG0012E: Nu se pot descoperi Converters. Excep\u0163ia este: {0}
+unable.to.discover.converters.CWMCG0012E.explanation=Java ServiceLoader a creat o excep\u0163ie. Cea mai probabil\u0103 cauz\u0103 este c\u0103 una dintre clasele Converter numite nu a putut fi g\u0103sit\u0103.
+unable.to.discover.converters.CWMCG0012E.useraction=Verifica\u0163i clasele numite \u00een fi\u015fierele de servicii Java din aplica\u0163ia dumneavoastr\u0103. Examina\u0163i istoricele de server message.log \u015fi FFDC pentru a identifica problema.
+
+# Unable to cancel asynchronous update thread.
+future.update.not.cancelled.CWMCG0013E=CWMCG0013E: Serverul nu poate anula firul de execu\u0163ie de actualizare asincron\u0103.
+future.update.not.cancelled.CWMCG0013E.explanation=A e\u015fuat \u00eencercarea de a anula o actualizare asincron\u0103 viitoare. \u00cen mod normal, acest lucru este cauzat de un apel lung de actualizare la rulare la instan\u0163a ConfigSource.
+future.update.not.cancelled.CWMCG0013E.useraction=Examina\u0163i istoricele de server message.log \u015fi FFDC pentru a identifica problema.
+
+# A Converter could not be found for type {0}.
+could.not.find.converter.CWMCG0014E=CWMCG0014E: Nu a putut fi g\u0103sit un Convertor pentru tipul {0}.
+could.not.find.converter.CWMCG0014E.explanation=Nu a putut fi g\u0103sit un Convertor pentru a converti \u015firul brut de proprietate \u00een tipul necesar.
+could.not.find.converter.CWMCG0014E.useraction=Asigura\u0163i-v\u0103 c\u0103 este disponibil\u0103 o clas\u0103 potrivit\u0103 de Convertor listat\u0103 \u00een fi\u015fierul de servicii Java.
+
+# The property {0} was not found in the configuration.
+no.such.element.CWMCG0015E=CWMCG0015E: Proprietatea {0} nu a fost g\u0103sit\u0103 \u00een configura\u0163ie.
+no.such.element.CWMCG0015E.explanation=Proprietatea cerut\u0103 nu a existat \u00een niciuna din sursele configurate.
+no.such.element.CWMCG0015E.useraction=Ad\u0103uga\u0163i proprietatea la una din sursele existente sau ad\u0103uga\u0163i o surs\u0103 nou\u0103 care con\u0163ine proprietatea.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Config error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Config API error has occurred: {0}
+temporary.CWMCG9999E=CWMCG9999E: A ap\u0103rut o eroare de API Config: {0}
+temporary.CWMCG9999E.explanation=A ap\u0103rut o eroare de API Config care \u00eempiedic\u0103 func\u0163ionarea normal\u0103.
+temporary.CWMCG9999E.useraction=Examina\u0163i istoricele de server message.log \u015fi FFDC pentru a identifica problema.

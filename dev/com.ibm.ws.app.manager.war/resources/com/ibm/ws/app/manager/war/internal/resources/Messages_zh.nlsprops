@@ -1,0 +1,214 @@
+###############################################################################
+# Copyright (c) 2011, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.war/resources/com/ibm/ws/app/manager/war/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKZ
+#COMPONENTNAMEFOR CWWKZ Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+# Reserving message prefixes CWWKZ0101 to CWWKZ0200
+
+# Now unused, but preserved for the Infocenter:
+#   error.file.copy.failed
+#   error.ear.extraction.exception
+#   error.ear.extraction.failed
+#   error.dir.creation.failed
+#   error.bundle.context.unavailable
+#{0} is source file name 
+#{1} is destination file name 
+#{2} is application name
+error.file.copy.failed=CWWKZ0101E: \u5728\u542f\u52a8 {2} \u5e94\u7528\u7a0b\u5e8f\u671f\u95f4\uff0c\u65e0\u6cd5\u5c06\u6587\u4ef6 {0} \u590d\u5236\u5230\u4f4d\u7f6e {1}\u3002
+error.file.copy.failed.explanation=\u5728\u6b64\u5e94\u7528\u7a0b\u5e8f\u542f\u52a8\u4e4b\u524d\uff0c\u4f1a\u5c06\u6b64\u5e94\u7528\u7a0b\u5e8f\u6587\u4ef6\u590d\u5236\u5230\u65b0\u7684\u4f4d\u7f6e\u3002\u6587\u4ef6\u590d\u5236\u64cd\u4f5c\u672a\u6210\u529f\uff0c\u56e0\u6b64\u8be5\u5e94\u7528\u7a0b\u5e8f\u672a\u542f\u52a8\u3002
+error.file.copy.failed.useraction=\u8bf7\u68c0\u67e5\u6e90\u6587\u4ef6\u4f4d\u7f6e\u548c\u76ee\u6807\u6587\u4ef6\u4f4d\u7f6e\uff0c\u4ee5\u67e5\u770b\u662f\u5426\u53ef\u4ee5\u89e3\u51b3\u95ee\u9898\u3002
+
+#{0} is ear file name
+#{1} is extract destination
+#{2} is exception message
+error.ear.extraction.exception=CWWKZ0102E: \u65e0\u6cd5\u5c06 EAR \u6587\u4ef6 {0} \u89e3\u538b\u81f3\u4f4d\u7f6e {1}\u3002\u5f02\u5e38\u6d88\u606f\u4e3a\uff1a{2}
+error.ear.extraction.exception.explanation=\u670d\u52a1\u5668\u65e0\u6cd5\u542f\u52a8\u5e94\u7528\u7a0b\u5e8f\uff0c\u56e0\u4e3a\u65e0\u6cd5\u89e3\u538b EAR \u6587\u4ef6\u3002
+error.ear.extraction.exception.useraction=\u8bf7\u9605\u8bfb\u5f02\u5e38\u6d88\u606f\u4ee5\u83b7\u53d6\u4fe1\u606f\u3002\u5f02\u5e38\u65e5\u5fd7\u4e2d\u53ef\u80fd\u63d0\u4f9b\u66f4\u591a\u8be6\u7ec6\u4fe1\u606f\u3002
+
+#{0} is ear file name
+#{1} is extract destination
+error.ear.extraction.failed=CWWKZ0103E: \u65e0\u6cd5\u5c06 EAR \u6587\u4ef6 {0} \u89e3\u538b\u81f3\u4f4d\u7f6e {1}\u3002
+error.ear.extraction.failed.explanation=\u670d\u52a1\u5668\u65e0\u6cd5\u542f\u52a8\u5e94\u7528\u7a0b\u5e8f\uff0c\u56e0\u4e3a\u65e0\u6cd5\u89e3\u538b EAR \u6587\u4ef6\u3002
+error.ear.extraction.failed.useraction=\u8bf7\u68c0\u67e5 EAR \u6587\u4ef6\u4ee5\u786e\u4fdd\u5b83\u662f\u6709\u6548\u7684\u5f52\u6863\u3002
+
+#{0} is directory name
+#{1} is application name
+error.dir.creation.failed=CWWKZ0104E: \u5728\u542f\u52a8 {1} \u5e94\u7528\u7a0b\u5e8f\u671f\u95f4\uff0c\u65e0\u6cd5\u521b\u5efa\u76ee\u5f55 {0}\u3002
+error.dir.creation.failed.explanation=\u76ee\u5f55\u5728\u8be5\u5e94\u7528\u7a0b\u5e8f\u542f\u52a8\u4e4b\u524d\u521b\u5efa\u3002\u76ee\u5f55\u521b\u5efa\u64cd\u4f5c\u672a\u6210\u529f\uff0c\u56e0\u6b64\u8be5\u5e94\u7528\u7a0b\u5e8f\u672a\u542f\u52a8\u3002
+error.dir.creation.failed.useraction=\u8bf7\u68c0\u67e5\u76ee\u5f55\u4f4d\u7f6e\uff0c\u4ee5\u67e5\u770b\u662f\u5426\u53ef\u4ee5\u89e3\u51b3\u95ee\u9898\u3002
+
+#{0} is application name
+error.bundle.context.unavailable=CWWKZ0105E: \u672a\u63d0\u4f9b\u6346\u7ed1\u8f6f\u4ef6\u4e0a\u4e0b\u6587\u6765\u542f\u52a8 {0} \u5e94\u7528\u7a0b\u5e8f\u3002
+error.bundle.context.unavailable.explanation=\u670d\u52a1\u5668\u65e0\u6cd5\u542f\u52a8\u8be5\u5e94\u7528\u7a0b\u5e8f\u3002\u8fd9\u53ef\u80fd\u662f\u5185\u90e8\u9519\u8bef\u3002
+error.bundle.context.unavailable.useraction=\u8bf7\u68c0\u67e5\u6d88\u606f\u548c\u5f02\u5e38\u65e5\u5fd7\u4ee5\u4e86\u89e3\u76f8\u5173\u9519\u8bef\u3002
+
+# Leaving these (for now); there are catch points which seem
+# to have uses for them.
+#   error.not.installed
+#   error.cache.adapt
+
+#{0} is the application name
+error.not.installed=CWWKZ0106E: \u65e0\u6cd5\u542f\u52a8 Web \u5e94\u7528\u7a0b\u5e8f {0}\u3002
+error.not.installed.explanation=\u4e4b\u524d\u7684\u9519\u8bef\u5bfc\u81f4\u65e0\u6cd5\u5b89\u88c5\u8be5\u5e94\u7528\u7a0b\u5e8f\u3002
+error.not.installed.useraction=\u8bf7\u68c0\u67e5\u8be5\u5e94\u7528\u7a0b\u5e8f\u914d\u7f6e\u4e2d\u7684\u4f4d\u7f6e\u3002
+
+# RESERVED: CWWKZ0107E is used by com.ibm.ws.app.manager.module
+error.cache.adapt=CWWKZ0107E: \u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002\u65e0\u6cd5\u4e3a Web \u6a21\u5757 {0} \u6539\u5199\u9ad8\u901f\u7f13\u5b58\u3002
+error.cache.adapt.explanation=CMSG0001
+error.cache.adapt.useraction=CMSG0002
+
+# RESERVED: CWWKZ0108E is used by com.ibm.ws.app.manager.module
+
+# Added by task 73569:
+#
+# The codes for modules types are current (WAR, EJB).  These are untranslated text values
+# used to indicate the type of the module which is being processed.  The type corresponds to
+# the archive, not to the presence of function within the module.
+
+#{0} is the application name
+#{1} is the library relative path
+#{2} is the exception message
+error.application.library.container=CWWKZ0111E: \u8bbf\u95ee\u5e94\u7528\u7a0b\u5e8f\u5e93 {1} \u65f6\u5e94\u7528\u7a0b\u5e8f {0} \u9047\u5230\u4e86\u9519\u8bef\uff1a{2}
+error.application.library.container.explanation=\u8bbf\u95ee\u5e93\u5185\u5bb9\u65f6\u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002\u8be5\u5e93\u5c06\u4e0d\u53ef\u7528\u3002
+error.application.library.container.useraction=\u8bf7\u67e5\u770b\u5e94\u7528\u7a0b\u5e8f\u7684\u5185\u5bb9\u4ee5\u786e\u4fdd\u8be5\u5e93\u5b58\u5728\u5f52\u6863\u3002
+
+#{0} is the application name
+#{1} is the exception message
+error.application.libraries=CWWKZ0112E: \u5217\u793a\u5e94\u7528\u7a0b\u5e8f\u5e93\u65f6\u5e94\u7528\u7a0b\u5e8f {0} \u9047\u5230\u4e86\u9519\u8bef\uff1a{1}
+error.application.libraries.explanation=\u5217\u793a\u5e94\u7528\u7a0b\u5e8f\u5e93\u65f6\u53d1\u751f\u4e86\u9519\u8bef\u3002\u5e94\u7528\u7a0b\u5e8f\u5e93\u5217\u8868\u5c06\u4e0d\u5b8c\u6574\u3002
+error.application.libraries.useraction=\u6709\u5173\u5176\u4ed6\u8be6\u7ec6\u4fe1\u606f\uff0c\u8bf7\u67e5\u770b\u5f02\u5e38\u4fe1\u606f\u3002
+
+#{0} is the application name
+#{1} is the relative path to the application descriptor
+#{2} is the exception message
+error.application.parse.descriptor=CWWKZ0113E: \u5904\u7406\u5e94\u7528\u7a0b\u5e8f\u63cf\u8ff0\u7b26 {1} \u65f6\u5e94\u7528\u7a0b\u5e8f {0} \u9047\u5230\u4e86\u89e3\u6790\u9519\u8bef\uff1a{2}
+error.application.parse.descriptor.explanation=\u89e3\u6790\u5e94\u7528\u7a0b\u5e8f\u63cf\u8ff0\u7b26\u65f6\u53d1\u751f\u4e86\u9519\u8bef\u3002\u8be5\u5e94\u7528\u7a0b\u5e8f\u5c06\u6ca1\u6709\u53ef\u7528\u6a21\u5757\u3002
+error.application.parse.descriptor.useraction=\u6709\u5173\u5176\u4ed6\u8be6\u7ec6\u4fe1\u606f\uff0c\u8bf7\u67e5\u770b\u5f02\u5e38\u4fe1\u606f\u3002\u67e5\u770b\u5e94\u7528\u7a0b\u5e8f\u63cf\u8ff0\u7b26\u7684\u5185\u5bb9\u4ee5\u786e\u4fdd\u5185\u5bb9\u5728\u4f5c\u4e3a XML \u6570\u636e\u65f6\u662f\u6709\u6548\u7684\u3002
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+#{3} is the exception message
+error.module.container=CWWKZ0114E: \u8bbf\u95ee\u7c7b\u578b\u4e3a {2} \u7684\u6a21\u5757 {1} \u7684\u5185\u5bb9\u65f6\uff0c\u5e94\u7528\u7a0b\u5e8f {0} \u9047\u5230\u4e86\u9519\u8bef\uff1a{3}
+error.module.container.explanation=\u8bbf\u95ee\u6a21\u5757\u5185\u5bb9\u65f6\u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002\u8be5\u6a21\u5757\u5c06\u4e0d\u53ef\u7528\u3002
+error.module.container.useraction=\u6709\u5173\u5176\u4ed6\u8be6\u7ec6\u4fe1\u606f\uff0c\u8bf7\u67e5\u770b\u5f02\u5e38\u4fe1\u606f\u3002
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+error.module.container.null=CWWKZ0115E: \u8bbf\u95ee\u7c7b\u578b\u4e3a {2} \u7684\u5019\u9009\u6a21\u5757 {1} \u7684\u5185\u5bb9\u65f6\uff0c\u5e94\u7528\u7a0b\u5e8f {0} \u83b7\u5f97\u4e86\u7a7a\u503c
+error.module.container.null.explanation=\u8bbf\u95ee\u6a21\u5757\u5185\u5bb9\u65f6\u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002\u8be5\u5e94\u7528\u7a0b\u5e8f\u53ef\u80fd\u7f3a\u5c11\u8be5\u6a21\u5757\u7684\u5f52\u6863\u3002\u8be5\u6a21\u5757\u5c06\u4e0d\u53ef\u7528\u3002
+error.module.container.null.useraction=\u8bf7\u67e5\u770b\u5e94\u7528\u7a0b\u5e8f\u7684\u5185\u5bb9\u4ee5\u786e\u4fdd\u8be5\u6a21\u5757\u5b58\u5728\u5f52\u6863\u3002
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+#{3} is the exception message
+error.module.create=CWWKZ0116E: \u5e94\u7528\u7a0b\u5e8f {0} \u672a\u80fd\u5b8c\u6210\u7c7b\u578b\u4e3a {2} \u7684\u6a21\u5757 {1} \u7684\u521b\u5efa\uff1a{3}
+error.module.create.explanation=\u5b8c\u6210\u6a21\u5757\u521b\u5efa\u65f6\u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002\u8be5\u6a21\u5757\u5c06\u4e0d\u53ef\u7528\u3002
+error.module.create.useraction=\u6709\u5173\u5176\u4ed6\u8be6\u7ec6\u4fe1\u606f\uff0c\u8bf7\u67e5\u770b\u5f02\u5e38\u4fe1\u606f\u3002
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+error.module.locate.failed=CWWKZ0117E: \u5e94\u7528\u7a0b\u5e8f {0} \u672a\u80fd\u627e\u5230\u7c7b\u578b\u4e3a {2} \u7684\u6a21\u5757 {1}
+error.module.locate.failed.explanation=\u5e94\u7528\u7a0b\u5e8f\u63cf\u8ff0\u7b26\u4e2d\u5217\u793a\u7684\u6a21\u5757\u6ca1\u6709\u53ef\u7528\u5f52\u6863\u3002\u8be5\u6a21\u5757\u5c06\u4e0d\u53ef\u7528\u3002
+error.module.locate.failed.useraction=\u6709\u5173\u5176\u4ed6\u8be6\u7ec6\u4fe1\u606f\uff0c\u8bf7\u67e5\u770b\u5f02\u5e38\u4fe1\u606f\u3002\u8bf7\u67e5\u770b\u5e94\u7528\u7a0b\u5e8f\u7684\u5185\u5bb9\u4ee5\u786e\u4fdd\u8be5\u6a21\u5757\u5b58\u5728\u5f52\u6863\u3002
+
+#{0} is the application name
+#{1} is the descriptor relative path
+#{2} is the module relative path
+#{3} is a code for the module type (WAR, EJB)
+#{4} is the exception message
+error.module.parse.descriptor=CWWKZ0118E: \u5904\u7406\u7c7b\u578b\u4e3a {3} \u7684\u6a21\u5757 {2} \u7684\u63cf\u8ff0\u7b26 {1} \u65f6\uff0c\u5e94\u7528\u7a0b\u5e8f {0} \u9047\u5230\u4e86\u89e3\u6790\u9519\u8bef\uff1a{4}
+error.module.parse.descriptor.explanation=\u89e3\u6790\u6a21\u5757\u90e8\u7f72\u63cf\u8ff0\u7b26\u65f6\u53d1\u751f\u4e86\u9519\u8bef\u3002\u8be5\u6a21\u5757\u5c06\u4e0d\u53ef\u7528\u3002
+error.module.parse.descriptor.useraction=\u6709\u5173\u5176\u4ed6\u8be6\u7ec6\u4fe1\u606f\uff0c\u8bf7\u67e5\u770b\u5f02\u5e38\u4fe1\u606f\u3002\u67e5\u770b\u5e94\u7528\u7a0b\u5e8f\u63cf\u8ff0\u7b26\u7684\u5185\u5bb9\u4ee5\u786e\u4fdd\u5185\u5bb9\u5728\u4f5c\u4e3a XML \u6570\u636e\u65f6\u662f\u6709\u6548\u7684\u3002
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+#{3} is the exception message
+error.module.class.source=CWWKZ0120E: \u5e94\u7528\u7a0b\u5e8f {0} \u672a\u80fd\u8bbf\u95ee\u7c7b\u578b\u4e3a {2} \u7684\u6a21\u5757 {1} \u7684\u7c7b\uff1a{3}
+error.module.class.source.explanation=\u5c1d\u8bd5\u626b\u63cf EJB \u6ce8\u91ca\u7684 JAR \u6587\u4ef6\u65f6\u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002\u8be5 JAR \u5c06\u4e0d\u4f1a\u4ee5 EJB JAR \u5f62\u5f0f\u63d0\u4f9b\u3002
+error.module.class.source.useraction=\u6709\u5173\u5176\u4ed6\u8be6\u7ec6\u4fe1\u606f\uff0c\u8bf7\u67e5\u770b\u5f02\u5e38\u4fe1\u606f\u3002
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+#{3} is the exception message
+error.module.annotation.targets=CWWKZ0121E: \u5e94\u7528\u7a0b\u5e8f {0} \u672a\u80fd\u8bbf\u95ee\u7c7b\u578b\u4e3a {2} \u7684\u6a21\u5757 {1} \u7684\u6ce8\u91ca\uff1a{3}
+error.module.annotation.targets.explanation=\u5c1d\u8bd5\u626b\u63cf EJB \u6ce8\u91ca\u7684 JAR \u6587\u4ef6\u65f6\u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002\u8be5 JAR \u5c06\u4e0d\u4f1a\u4ee5 EJB JAR \u5f62\u5f0f\u63d0\u4f9b\u3002
+error.module.annotation.targets.useraction=\u6709\u5173\u5176\u4ed6\u8be6\u7ec6\u4fe1\u606f\uff0c\u8bf7\u67e5\u770b\u5f02\u5e38\u4fe1\u606f\u3002
+#{0} is the application name
+#{1} is the module relative path
+error.module.uri.duplicate=CWWKZ0122W: \u5e94\u7528\u7a0b\u5e8f {0} \u5728 META-INF/application.xml \u4e2d\u58f0\u660e\u4e86 URI \u4e3a {1} \u7684\u591a\u4e2a\u6a21\u5757\u3002
+error.module.uri.duplicate.explanation=\u591a\u4e2a\u6a21\u5757\u6307\u5411\u540c\u4e00\u5f52\u6863\u3002\u4ec5\u4f1a\u4f7f\u4e00\u4e2a\u6a21\u5757\u53ef\u4f9b\u4f7f\u7528\u3002
+error.module.uri.duplicate.useraction=\u8bf7\u67e5\u770b\u5e94\u7528\u7a0b\u5e8f\u63cf\u8ff0\u7b26\u7684\u5185\u5bb9\uff0c\u4ee5\u786e\u4fdd\u6bcf\u4e2a\u6a21\u5757\u90fd\u6307\u5411\u552f\u4e00\u7684\u5f52\u6863\u3002
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is the exception message
+error.module.manifest.read.failed=CWWKZ0123E: \u5e94\u7528\u7a0b\u5e8f {0} \u672a\u80fd\u8bfb\u53d6 {1} \u6a21\u5757\u7684 META-INF/MANIFEST.MF \u6587\u4ef6\u3002\u5f02\u5e38\uff1a{2}
+error.module.manifest.read.failed.explanation=\u8bd5\u56fe\u786e\u5b9a\u6a21\u5757\u662f EJB \u8fd8\u662f\u5e94\u7528\u7a0b\u5e8f\u5ba2\u6237\u673a\u6a21\u5757\u671f\u95f4\uff0c\u5c1d\u8bd5\u8bfb\u53d6 META-INF/MANIFEST.MF \u6587\u4ef6\u65f6\u53d1\u751f\u4e86\u9519\u8bef\u3002\u6b64\u6a21\u5757\u4e0d\u4f1a\u88ab\u89c6\u4e3a\u5e94\u7528\u7a0b\u5e8f\u5ba2\u6237\u673a\u6a21\u5757\u3002
+error.module.manifest.read.failed.useraction=\u6709\u5173\u5176\u4ed6\u8be6\u7ec6\u4fe1\u606f\uff0c\u8bf7\u67e5\u770b\u5f02\u5e38\u4fe1\u606f\u3002\u67e5\u770b\u8be5\u5e94\u7528\u7a0b\u5e8f\u7684\u5185\u5bb9\u4ee5\u786e\u4fdd META-INF/MANIFEST.MF \u8def\u5f84\u662f\u6587\u4ef6\u800c\u975e\u76ee\u5f55\uff0c\u5e76\u786e\u4fdd MANIFEST.MF \u6587\u4ef6\u6709\u6548\u3002
+
+#{0} is the application name
+error.no.modules=CWWKZ0124E: \u5e94\u7528\u7a0b\u5e8f {0} \u672a\u5305\u542b\u4efb\u4f55\u6a21\u5757\u3002
+error.no.modules.explanation=\u6b64\u5e94\u7528\u7a0b\u5e8f\u672a\u5728 application.xml \u6587\u4ef6\u4e2d\u58f0\u660e\u4efb\u4f55\u6a21\u5757\uff0c\u5e76\u4e14\u672a\u5305\u542b\u4efb\u4f55\u6a21\u5757\u5f52\u6863\u3002
+error.no.modules.useraction=\u8bf7\u5411\u6b64\u5e94\u7528\u7a0b\u5e8f\u6dfb\u52a0\u6a21\u5757\u5f52\u6863\uff0c\u7136\u540e\u91cd\u65b0\u542f\u52a8\u6b64\u5e94\u7528\u7a0b\u5e8f\u3002
+
+#{0} is the application name
+#{1} is the module relative path
+error.module.manifest.read.no.mainclass=CWWKZ0125E: \u5e94\u7528\u7a0b\u5e8f {0} \u6ca1\u6709\u5c06 Main-Class \u5c5e\u6027\u5305\u542b\u5728 {1} \u6a21\u5757\u7684 META-INF/MANIFEST.MF \u6587\u4ef6\u4e2d\u3002
+error.module.manifest.read.no.mainclass.explanation=\u8be5\u6a21\u5757\u4e2d\u7684 META-INF/MANIFEST.MF \u6587\u4ef6\u4e0d\u5b58\u5728\u6216\u6ca1\u6709\u5305\u542b Main-Class \u5c5e\u6027\u3002\u6b64\u6a21\u5757\u4e0d\u4f1a\u88ab\u89c6\u4e3a\u5e94\u7528\u7a0b\u5e8f\u5ba2\u6237\u673a\u6a21\u5757\u3002
+error.module.manifest.read.no.mainclass.useraction=\u8bf7\u786e\u4fdd\u8be5\u5e94\u7528\u7a0b\u5e8f\u7684 META-INF/MANIFEST.MF \u6587\u4ef6\u5305\u542b Main-Class \u5c5e\u6027\u3002
+
+#{0} is the context root specified in server.xml on the application element
+#{1} is the name of the application where context-root is specified
+warning.context.root.not.used=CWWKZ0126W:  {1} \u5e94\u7528\u7a0b\u5e8f\u4e0a\u6307\u5b9a\u7684 {0} \u4e0a\u4e0b\u6587\u6839\u503c\u6ca1\u6709\u4efb\u4f55\u6548\u679c\u3002
+warning.context.root.not.used.explanation=\u8be5\u4e0a\u4e0b\u6587\u6839\u5c5e\u6027\u5bf9\u4f01\u4e1a\u5e94\u7528\u7a0b\u5e8f\u65e0\u6548\u3002\u8be5\u503c\u5c06\u4e0d\u4f1a\u7528\u4e8e\u4f01\u4e1a\u5e94\u7528\u7a0b\u5e8f\u5185\u5305\u542b\u7684\u4efb\u4f55 Web \u6a21\u5757\u3002
+warning.context.root.not.used.useraction=\u8bf7\u4ece\u670d\u52a1\u5668\u914d\u7f6e\u4e2d\u7684\u5e94\u7528\u7a0b\u5e8f\u5143\u7d20\u79fb\u9664\u8be5\u4e0a\u4e0b\u6587\u6839\u5c5e\u6027\u3002
+
+error.module.no.defaultclient=CWWKZ0127E: \u5e94\u7528\u7a0b\u5e8f\u4e2d\u5177\u6709\u591a\u4e2a\u5ba2\u6237\u673a\u6a21\u5757\u3002\u63d0\u4f9b\u7f3a\u7701\u5ba2\u6237\u673a\u6a21\u5757\u540d\u79f0\u3002
+error.module.no.defaultclient.explanation=\u5982\u679c\u5728\u5e94\u7528\u7a0b\u5e8f\u4e2d\u6253\u5305\u4e86\u591a\u4e2a\u5ba2\u6237\u673a\u6a21\u5757\uff0c\u8bf7\u63d0\u4f9b\u8981\u8fd0\u884c\u7684\u5ba2\u6237\u673a\u6a21\u5757\u540d\u79f0\u3002
+error.module.no.defaultclient.useraction=\u6307\u5b9a\u8981\u8fd0\u884c\u7684\u5ba2\u6237\u673a\u6a21\u5757\uff0c\u65b9\u6cd5\u662f\u901a\u8fc7\u5728 <enterpriseApplication/> \u4e2d\u4f7f\u7528 defaultClientModule \u5c5e\u6027\u63d0\u4f9b\u5176\u540d\u79f0\u3002
+
+error.module.dup.client=CWWKZ0128E: \u5177\u6709\u591a\u4e2a\u5ba2\u6237\u673a\u6a21\u5757\uff0c\u8fd9\u4e9b\u6a21\u5757\u5177\u6709\u76f8\u540c\u540d\u79f0 {0}\u3002
+error.module.dup.client.explanation=\u5177\u6709\u591a\u4e2a\u5ba2\u6237\u673a\u6a21\u5757\uff0c\u4e14\u5176\u4e2d\u4e00\u4e9b\u6a21\u5757\u6b63\u4f7f\u7528\u76f8\u540c\u540d\u79f0\u3002
+error.module.dup.client.useraction=\u4e3a\u5e94\u7528\u7a0b\u5e8f\u4e2d\u5ba2\u6237\u673a\u6a21\u5757\u63d0\u4f9b\u552f\u4e00\u540d\u79f0\u3002
+
+error.module.client.notfound=CWWKZ0129E: \u5728\u5e94\u7528\u7a0b\u5e8f\u4e2d\u627e\u4e0d\u5230\u5ba2\u6237\u673a\u6a21\u5757 {0}\u3002
+error.module.client.notfound.explanation=\u6307\u5b9a\u7684\u5ba2\u6237\u673a\u6a21\u5757\u5728\u5e94\u7528\u7a0b\u5e8f\u4e2d\u4e0d\u5b58\u5728\u3002
+error.module.client.notfound.useraction=\u786e\u4fdd\u5e94\u7528\u7a0b\u5e8f\u4e2d\u5b58\u5728\u5ba2\u6237\u673a\u6a21\u5757\u3002
+
+#{0} is the application name
+error.client.not.installed=CWWKZ0130E: \u65e0\u6cd5\u542f\u52a8\u5e94\u7528\u7a0b\u5e8f\u5ba2\u6237\u673a {0}\u3002
+error.client.not.installed.explanation=\u4e4b\u524d\u7684\u9519\u8bef\u5bfc\u81f4\u65e0\u6cd5\u5b89\u88c5\u8be5\u5e94\u7528\u7a0b\u5e8f\u3002
+error.client.not.installed.useraction=\u8bf7\u68c0\u67e5\u8be5\u5e94\u7528\u7a0b\u5e8f\u914d\u7f6e\u4e2d\u7684\u4f4d\u7f6e\u3002
+
+#{0} is the application name, {1} is the exception (likely disk space, write permissions, file lock, or some other IO issue.) 
+warning.could.not.expand.application=CWWKZ0131W: \u7531\u4e8e\u53d1\u751f\u4e86\u5f02\u5e38 {1} \u800c\u672a\u80fd\u6269\u5c55\u5e94\u7528\u7a0b\u5e8f {0}\u3002
+warning.could.not.expand.application.explanation=\u672a\u80fd\u5c06\u8be5\u5e94\u7528\u7a0b\u5e8f\u6269\u5c55\u5230\u4e34\u65f6\u76ee\u5f55\u3002\u8be5\u5e94\u7528\u7a0b\u5e8f\u5c06\u7ee7\u7eed\u8fd0\u884c\uff0c\u4f46\u662f\u7528\u4e8e\u8bbf\u95ee\u5e94\u7528\u7a0b\u5e8f\u6587\u4ef6\u7684\u67d0\u4e9b\u65b9\u6cd5\u7684\u884c\u4e3a\u53ef\u80fd\u4f1a\u53d7\u5f71\u54cd\u3002
+warning.could.not.expand.application.useraction=\u8bf7\u5c1d\u8bd5\u89e3\u51b3\u5f02\u5e38\u6d88\u606f\u4e2d\u7684\u95ee\u9898\uff0c\u7136\u540e\u91cd\u65b0\u542f\u52a8\u670d\u52a1\u5668\u6216\u8005\u66f4\u65b0\u8be5\u5e94\u7528\u7a0b\u5e8f\u3002

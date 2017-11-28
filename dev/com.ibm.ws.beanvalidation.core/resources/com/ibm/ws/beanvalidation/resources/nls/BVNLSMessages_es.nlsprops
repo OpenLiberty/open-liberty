@@ -1,0 +1,89 @@
+###############################################################################
+# Copyright (c) 2007, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the message text
+#           must be followed by a 2nd apostrophe to work correctly.
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     MTDT (Metadata Framework)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# -----------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# cmvc_en_version_level=
+#
+#
+#CMVCPATHNAME ws/code/beanvalidation/src/com/ibm/ws/beanvalidation/resources/nls/BVNLSMessages.nlsprops
+#COMPONENTPREFIX CWNBV
+#COMPONENTNAMEFOR CWNBV Bean Validation
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the exception that caused this message to be displayed
+# -----------------------------------------------------------------------
+BVKEY_UNABLE_TO_REGISTER_WITH_INJECTION_ENGINE=CWNBV0001E: Durante el inicio del servidor, el servicio BeanValidationService no ha podido registrarse con el servicio de inyecci\u00f3n. Las aplicaciones que requieran la inyecci\u00f3n de una clase ValidatorFactory o de una clase Validator fallar\u00e1n. Se ha producido el siguiente error: {0}.
+BVKEY_UNABLE_TO_REGISTER_WITH_INJECTION_ENGINE.explanation=El servicio BeanValidationService no se ha podido registrar con el motor de inyecci\u00f3n cuando se ha iniciado el servidor de aplicaciones.  Esta anomal\u00eda es inesperada. Una causa posible es que el servicio de inyecci\u00f3n no se ha iniciado.
+BVKEY_UNABLE_TO_REGISTER_WITH_INJECTION_ENGINE.useraction=Corrija los errores anteriores y aseg\u00farese de que el servicio de inyecci\u00f3n se ha iniciado. Si el servicio de inyecci\u00f3n est\u00e1 disponible y se repite el problema, consulte la informaci\u00f3n de determinaci\u00f3n de problemas. Esta informaci\u00f3n est\u00e1 disponible en la p\u00e1gina Web de soporte de WebSphere Application Server http://www.ibm.com/software/webservers/appserv/was/support.
+
+BVKEY_UNABLE_TO_CREATE_VALIDATION_FACTORY=CWNBV0002E: El servicio BeanValidationService no puede crear una clase ValidatorFactory.
+BVKEY_UNABLE_TO_CREATE_VALIDATION_FACTORY.explanation=El servicio BeanValidationService no puede crear una f\u00e1brica de validadores. Esta anomal\u00eda es inesperada. Consulte la descripci\u00f3n de la excepci\u00f3n especificada para obtener m\u00e1s informaci\u00f3n. El problema puede deberse al archivo validation.xml proporcionado con la aplicaci\u00f3n.
+BVKEY_UNABLE_TO_CREATE_VALIDATION_FACTORY.useraction=Aseg\u00farese de que el archivo validation.xml proporcionado sea v\u00e1lido y de que el proveedor de validaci\u00f3n por omisi\u00f3n, el interpolador de mensajes o el resolutor de cruce especificados est\u00e9n disponible en la classpath. Si el archivo validation.xml es v\u00e1lido y est\u00e1 disponible la informaci\u00f3n adecuada en la classpath pero contin\u00faa teniendo el problema, consulte la informaci\u00f3n de determinaci\u00f3n de problemas. Esta informaci\u00f3n est\u00e1 disponible en la p\u00e1gina Web de soporte de WebSphere Application Server http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path of module
+#    {1} is the name of the class that was trying to be loaded or instantiatedd
+#    {2} is the exception that caused this message to be displayed
+# -----------------------------------------------------------------------
+BVKEY_CLASS_NOT_FOUND=CWNBV0003E: El servicio BeanValidationService no puede crear una clase ValidationFactory porque no ha podido cargar la clase: {0} ni crear una instancia de ella en la v\u00eda de acceso {1} debido al error: {2}
+BVKEY_CLASS_NOT_FOUND.explanation=El servicio BeanValidationService no puede cargar la clase utilizada para crear ValidationFactory ni crear una instancia de ella. El problema puede deberse a que la clase no existe o a que no est\u00e1 disponible en la v\u00eda de acceso de clases de la aplicaci\u00f3n.
+BVKEY_CLASS_NOT_FOUND.useraction=Aseg\u00farese de que la clase est\u00e9 disponible y en la v\u00eda de acceso de clases de la aplicaci\u00f3n. Si la clase es v\u00e1lida y est\u00e1 disponible en la v\u00eda de acceso de clases pero sigue teniendo el mismo problema, consulte la informaci\u00f3n de determinaci\u00f3n de problemas. Esta informaci\u00f3n est\u00e1 disponible en la p\u00e1gina Web de soporte de WebSphere Application Server http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path of module
+#    {1} is the exception that caused this message to be displayed
+# -----------------------------------------------------------------------
+BVKEY_SYNTAX_ERROR_IN_VALIDATION_XML=CWNBV0004E: Se ha detectado un error o una sintaxis incorrecta en el archivo validation.xml encontrado en {0}. Se ha producido el siguiente error asociado: {1}
+BVKEY_SYNTAX_ERROR_IN_VALIDATION_XML.explanation=El archivo validation.xml contiene errores y no se ajusta a la definici\u00f3n de esquema.
+BVKEY_SYNTAX_ERROR_IN_VALIDATION_XML.useraction=Corrija los errores del archivo validation.xml e int\u00e9ntelo de nuevo.
+
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path name for the module
+# -----------------------------------------------------------------------
+BVKEY_NOT_A_BEAN_VALIDATION_XML=CWNBV0005W: Se ha encontrado un archivo validation.xml para el m\u00f3dulo {0}. No obstante, dicho archivo validation.xml no se ha configurado para la validaci\u00f3n y, por tanto, se ignora.
+BVKEY_NOT_A_BEAN_VALIDATION_XML.explanation=El servicio BeanValidationService no puede crear una clase ValidatorFactory porque se ha producido un error al analizar el archivo validation.xml con el archivo de esquema validation-configuration-1.0.xsd. Este error puede indicar que el archivo validation.xml no est\u00e1 pensado para su uso en un tiempo de ejecuci\u00f3n de validaci\u00f3n de beans y, por tanto, se ignora.
+BVKEY_NOT_A_BEAN_VALIDATION_XML.useraction=Si el archivo validation.xml no se ha dise\u00f1ado para crear una instancia ValidatorFactory, ignore el mensaje. No obstante, si el archivo validation.xml s\u00ed se ha dise\u00f1ado para crear una instancia ValidatorFactory, significa que hay un problema. Habilite el rastreo de tiempo de ejecuci\u00f3n de validaci\u00f3n de beans en el servidor de aplicaciones, detenga y reinicie la aplicaci\u00f3n, y busque en el archivo de salida de rastreo un suceso de rastreo parecido al siguiente: Excepci\u00f3n inesperada al tratar de desclasificar el archivo validation.xml. Examine el rastreo de la pila de excepciones para obtener ayuda sobre la depuraci\u00f3n.
+
+# -----------------------------------------------------------------------
+JNDI_NON_JEE_THREAD_CWNBV0006E=CWNBV0006E: Una operaci\u00f3n JNDI en un nombre java:comp/env no puede completarse porque la hebra actual no est\u00e1 asociada a un componente de la aplicaci\u00f3n Java Enterprise Edition. Esta condici\u00f3n puede producirse cuando el cliente JNDI que utiliza el nombre java:comp/env no se ejecuta en la hebra de una solicitud de aplicaci\u00f3n de servidor. Aseg\u00farese de que la aplicaci\u00f3n Java EE no ejecute operaciones JNDI en nombres java:comp/env dentro de bloques de c\u00f3digo est\u00e1tico o en hebras creadas por la aplicaci\u00f3n. Dicho c\u00f3digo no se ejecuta necesariamente en la hebra de una solicitud de aplicaci\u00f3n de servidor y, por lo tanto, las operaciones JNDI en nombres java:comp/env no le dan soporte.
+JNDI_NON_JEE_THREAD_CWNBV0006E.explanation=Las operaciones JNDI en un nombre java:comp/env solo reciben soporte en hebras asociadas a un componente de aplicaci\u00f3n Java EE.
+JNDI_NON_JEE_THREAD_CWNBV0006E.useraction=Modifique la aplicaci\u00f3n, de modo que dicha operaci\u00f3n JNDI se produzca en una hebra asociada con un componente de aplicaci\u00f3n Java EE.
+
+# -----------------------------------------------------------------------

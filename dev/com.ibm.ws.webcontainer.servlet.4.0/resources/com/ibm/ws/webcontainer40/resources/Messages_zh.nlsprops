@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+#CMVCPATHNAME 
+#COMPONENTPREFIX CWWWC
+#COMPONENTNAMEFOR CWWWC Servlet Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# --------------------------------
+
+# Since servlet 4.0.  Use the registered and reserved prefix CWWWC from now on.  
+# 0001 - 0199 for Base
+# 0200 - 0299 for Servlet 3.0
+# 0300 - 0399 for Servlet 3.1
+# 0400 - 0499 for Servlet 4
+name.is.null=CWWWC0400E: \u5c5e\u6027\u540d\u79f0\u6216\u521d\u59cb\u53c2\u6570\u540d\u79f0\u4e3a\u7a7a\u3002
+name.is.null.explanation=\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002\u6b64\u540d\u79f0\u5728\u4e0a\u4e0b\u6587 getAttribute()\u3001setAttribute()\u3001getInitParameter() \u6216 setInitParameter() \u4e2d\u4e3a\u7a7a\u3002
+name.is.null.useraction=\u4f7f\u7528\u975e\u7a7a\u503c\u6765\u66f4\u65b0\u5c5e\u6027\u540d\u79f0\u6216\u521d\u59cb\u53c2\u6570\u540d\u79f0\u3002
+
+# -----------------------------------------------
+unsupported.response.encoding.[{0}]=CWWWC0401E: \u65e0\u6cd5\u8bbe\u7f6e\u54cd\u5e94\u5b57\u7b26\u7f16\u7801\uff1a[{0}]\u3002
+unsupported.response.encoding.[{0}].explanation=\u5728\u54cd\u5e94\u4e0a\u6307\u5b9a\u54cd\u5e94\u7f16\u7801\u65e0\u6548\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+unsupported.response.encoding.[{0}].useraction=\u8bf7\u67e5\u770b\u65e5\u5fd7\u4ee5\u786e\u5b9a\u6307\u5b9a\u7684\u7f16\u7801\u662f\u5426\u4e3a\u6709\u6548\u7f16\u7801\u3002
+

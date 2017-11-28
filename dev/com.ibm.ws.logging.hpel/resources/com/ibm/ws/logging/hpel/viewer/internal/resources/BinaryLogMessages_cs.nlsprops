@@ -1,0 +1,214 @@
+###############################################################################
+# Copyright (c) 2013, 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME ws/code/ras/src/com/ibm/ws/logging/hpel/resources/BinaryLogMessages.nlsprops
+#COMPONENTPREFIX CWTRA
+#COMPONENTNAMEFOR CWTRA WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+BL_INVALID_ACTION=Zadan\u00e1 akce {0} je neplatn\u00e1. 
+
+# do not translate "--minDate"
+BL_INVALID_MINDATE=Nelze analyzovat hodnotu parametru --minDate.
+
+# do not translate "--maxDate"
+BL_INVALID_MAXDATE=Nelze analyzovat hodnotu parametru --maxDate.
+
+BL_INVALID_REPOSITORYDIR=Cesta k \u00falo\u017ei\u0161ti {0} nen\u00ed platn\u00fdm n\u00e1zvem cesty.
+BL_INVALID_TARGETDIR=C\u00edlov\u00e1 cesta {0} nen\u00ed platn\u00fdm n\u00e1zvem cesty.
+BL_UNABLE_TO_COPY=Nelze vytvo\u0159it \u00falo\u017ei\u0161t\u011b v c\u00edlov\u00e9m um\u00edst\u011bn\u00ed. Ov\u011b\u0159te, \u017ee je ur\u010den\u00fd adres\u00e1\u0159 pr\u00e1zdn\u00fd a jsou pro n\u011bj k dispozici opr\u00e1vn\u011bn\u00ed k z\u00e1pisu.
+BL_NO_FILES_FOUND_MONITOR=Ur\u010den\u00fd adres\u00e1\u0159 aktu\u00e1ln\u011b neobsahuje \u017e\u00e1dn\u00e9 soubory protokolu ani trasovac\u00ed soubory. Monitorov\u00e1n\u00ed tohoto adres\u00e1\u0159e pokra\u010duje.
+BL_NO_FILES_FOUND=Ur\u010den\u00fd adres\u00e1\u0159 logs serveru \u010di adres\u00e1\u0159 \u00falo\u017ei\u0161t\u011b neobsahuje \u017e\u00e1dn\u00fd protokol \u010di trasovac\u00ed soubor.
+BL_OPTION_REQUIRES_A_VALUE=Volba {0} vy\u017eaduje hodnotu.
+BL_UNKNOWN_OPTION=Volba {0} nebyla rozpozn\u00e1na.
+BL_BAD_FORMAT=Form\u00e1t {0} nebyl rozpozn\u00e1n.
+
+# do not translate "--minDate" or "--maxDate"
+BL_MINDATE_AFTER_MAXDATE=Datum, kter\u00e9 ur\u010duje parametr --minDate, se nach\u00e1z\u00ed za datem, kter\u00e9 ur\u010duje parametr --maxDate.
+
+# do not translate "--minLevel" or "--maxLevel"
+BL_MINLEVEL_GREATER_THAN_MAXLEVEL=Parametr --minLevel ur\u010duje vy\u0161\u0161\u00ed \u00farove\u0148 ne\u017e parametr --maxLevel.
+
+# do not translate "binaryLog help"
+BL_USE_HELP=Informace o pou\u017eit\u00ed viz n\u00e1pov\u011bda protokolu binaryLog.
+
+BL_REPOSITORY_DIRECTORY=Adres\u00e1\u0159 {0} je pou\u017e\u00edv\u00e1n jako adres\u00e1\u0159 \u00falo\u017ei\u0161t\u011b. 
+BL_TARGET_DIRECTORY=Adres\u00e1\u0159 {0} je pou\u017e\u00edv\u00e1n jako c\u00edlov\u00fd adres\u00e1\u0159.
+
+# do not translate "serverName", "repositoryPath", "targetPath"
+BL_COPY_REQUIRES_TARGETDIR=Pro akci kop\u00edrov\u00e1n\u00ed je t\u0159eba ur\u010dit parametry {serverName | repositoryPath} spole\u010dn\u011b s parametrem targetPath.
+#--------------------------------------------------------------------------------------------------
+
+# do not translate "binaryLog", "action", "serverName", "repositoryPath"
+BL_MAIN_USAGE_001=Pou\u017eit\u00ed: binaryLog action {serverName | repositoryPath} [volby]
+
+# do not translate "serverName"
+BL_MAIN_USAGE_004=\ \ \ \ n\u00e1zev_serveru
+BL_MAIN_USAGE_005=\tUr\u010dete n\u00e1zev serveru Liberty, spole\u010dn\u011b s \u00falo\u017ei\u0161t\u011bm, ze kter\u00e9ho se m\u00e1 \u010d\u00edst.
+
+# do not translate "repositoryPath"
+BL_MAIN_USAGE_006=\ \ \ \ repositoryPath
+
+# do not translate "logdata", "tracedata"
+BL_MAIN_USAGE_007=\tUr\u010dete cestu k \u00falo\u017ei\u0161ti, ze kter\u00e9ho se m\u00e1 \u010d\u00edst. Zpravidla se jedn\u00e1 o\n\
+\tadres\u00e1\u0159 obsahuj\u00edc\u00ed adres\u00e1\u0159e logdata a tracedata.
+
+BL_MAIN_USAGE_008=Popis:
+BL_MAIN_USAGE_009=\tZobrazit nebo zkop\u00edrovat obsah \u00falo\u017ei\u0161t\u011b High Performance Extensible Logging,   \n\
+\tnebo vypsat seznam dostupn\u00fdch instanc\u00ed procesu serveru v   \n \t\u00falo\u017ei\u0161ti.
+
+BL_MAIN_USAGE_010=Akce:
+
+# do not translate "view"
+BL_MAIN_USAGE_011=\ \ \ \ view
+BL_MAIN_USAGE_012=\t\u010c\u00edst z \u00falo\u017ei\u0161t\u011b, voliteln\u011b jej filtrovat a vytvo\u0159it verzi \u010ditelnou pro \n\
+\t\u010dlov\u011bka.
+
+# do not translate "copy"
+BL_MAIN_USAGE_013=\ \ \ \ copy
+BL_MAIN_USAGE_014=\t\u010c\u00edst z \u00falo\u017ei\u0161t\u011b, voliteln\u011b jej filtrovat, a zapsat obsah do \n\
+\tnov\u00e9ho \u00falo\u017ei\u0161t\u011b.
+
+# do not translate "listInstances"
+BL_MAIN_USAGE_015=\ \ \ \ listInstances
+BL_MAIN_USAGE_016=\tVypsat instance proces\u016f serveru z \u00falo\u017ei\u0161t\u011b.
+
+BL_MAIN_USAGE_017=Volby:
+
+# do not translate "help [action]"
+BL_MAIN_USAGE_018=\tPomoc\u00ed p\u0159\u00edkazu help [akce] z\u00edsk\u00e1te podrobn\u00e9 informace o volb\u00e1ch jednotliv\u00fdch akc\u00ed.
+
+#--------------------------------------------------------------------------------------------------
+
+# do not translate "binaryLog view", "serverName", "repositoryPath"
+BL_VIEW_USAGE_001=Pou\u017eit\u00ed: binaryLog view {serverName | repositoryPath} [volby]
+
+BL_VIEW_USAGE_002=\t\u010c\u00edst z \u00falo\u017ei\u0161t\u011b, voliteln\u011b jej filtrovat a vytvo\u0159it verzi \u010ditelnou pro \n\
+\t\u010dlov\u011bka.
+
+BL_VIEW_USAGE_003=Volby filtrov\u00e1n\u00ed:
+BL_VIEW_USAGE_004=\tV\u0161echny filtry jsou voliteln\u00e9. Pokud pou\u017eijete v\u00edce filtr\u016f, budou propojeny   \n\
+\tlogick\u00fdm oper\u00e1torem AND.
+
+# do not translate "--minDate=value"
+BL_VIEW_USAGE_005=\ \ \ \ --minDate=value
+
+# do not translate "--minDate="
+BL_VIEW_USAGE_006=\tFiltr zalo\u017een\u00fd na minim\u00e1ln\u00edm datu vytvo\u0159en\u00ed z\u00e1znamu. Hodnota mus\u00ed b\u00fdt         \n\
+\tuvedena jako datum (nap\u0159\u00edklad --minDate=\"{0}\"), nebo jako datum \n\
+\ta \u010das (nap\u0159\u00edklad --minDate=\"{1}\"). M\u016f\u017eete tak\u00e9 zadat     \n\
+\tdatum a \u010das ve form\u00e1tu ISO-8601; nap\u0159\u00edklad --minDate=\"{2}\" nebo  \n\
+\t--minDate=\"{3}\".
+
+# do not translate "--maxDate=value"
+BL_VIEW_USAGE_007=\ \ \ \ --maxDate=value
+
+# do not translate "--maxDate="
+BL_VIEW_USAGE_008=\tFiltr zalo\u017een\u00fd na maxim\u00e1ln\u00edm datu vytvo\u0159en\u00ed z\u00e1znamu. Hodnota mus\u00ed b\u00fdt         \n\
+\tuvedena bu\u010f jako datum (nap\u0159\u00edklad --maxDate=\"{0}\"), nebo jako datum \n\
+\ta \u010das (nap\u0159\u00edklad --maxDate=\"{1}\"). M\u016f\u017eete tak\u00e9 zadat     \n\
+\tdatum a \u010das ve form\u00e1tu ISO-8601; nap\u0159\u00edklad --maxDate=\"{2}\" nebo  \n\
+\t--maxDate=\"{3}\".
+
+# do not translate "--minLevel=value"
+BL_VIEW_USAGE_009=\ \ \ \ --minLevel=value
+BL_VIEW_USAGE_010=\tFiltr zalo\u017een\u00fd na minim\u00e1ln\u00ed \u00farovni. Mus\u00ed m\u00edt jednu z t\u011bchto hodnot:                 \n\
+\t{0}.
+
+# do not translate "--maxLevel=value"
+BL_VIEW_USAGE_011=\ \ \ \ --maxLevel=value
+BL_VIEW_USAGE_012=\tFiltr zalo\u017een\u00fd na maxim\u00e1ln\u00ed \u00farovni. Mus\u00ed m\u00edt jednu z t\u011bchto hodnot:                 \n\
+\t{0}.
+
+# do not translate "--includeLogger=value[,value]*"
+BL_VIEW_USAGE_013=\ \ \ \ --includeLogger=value[,value]*
+BL_VIEW_USAGE_014=\tZahrnout z\u00e1znamy s ur\u010den\u00fdm n\u00e1zvem modulu protokolov\u00e1n\u00ed. Hodnota m\u016f\u017ee obsahovat znak * nebo ? coby\n\
+\tz\u00e1stupn\u00fd znak.
+
+# do not translate "--excludeLogger=value[,value]*"
+BL_VIEW_USAGE_015=\ \ \ \ --excludeLogger=value[,value]*
+BL_VIEW_USAGE_016=\tVylou\u010dit z\u00e1znamy s ur\u010den\u00fdm n\u00e1zvem modulu protokolov\u00e1n\u00ed. Hodnota m\u016f\u017ee obsahovat znak * nebo ? coby\n\
+\tz\u00e1stupn\u00fd znak.
+
+# do not translate "--includeMessage=value"
+BL_VIEW_USAGE_017=\ \ \ \ --includeMessage=value
+BL_VIEW_USAGE_018=\tFiltr zalo\u017een\u00fd na n\u00e1zvu zpr\u00e1vy. \
+Hodnota m\u016f\u017ee obsahovat znak * nebo ? \
+coby z\u00e1stupn\u00fd znak.
+
+# do not translate "--includeThread=value"
+BL_VIEW_USAGE_019=\ \ \ \ --includeThread=value
+
+# do not translate "--includeThread=2a"
+BL_VIEW_USAGE_020=\tZahrnout z\u00e1znamy s ur\u010den\u00fdm ID podprocesu. Hodnoty mus\u00ed b\u00fdt          \n\
+\thexadecim\u00e1ln\u00ed (nap\u0159. --includeThread=2a).
+
+# do not translate "--includeExtension=name=value[,name=value]*"
+BL_VIEW_USAGE_021=\ \ \ \ --includeExtension=name=value[,name=value]*
+BL_VIEW_USAGE_022=\tZahrnout z\u00e1znamy s ur\u010den\u00fdm n\u00e1zvem roz\u0161\u00ed\u0159en\u00ed a jeho hodnotou. Hodnota m\u016f\u017ee obsahovat znak * nebo ? coby\n\
+\tz\u00e1stupn\u00fd znak.
+
+# do not translate "--includeInstance=value"
+BL_VIEW_USAGE_023=\ \ \ \ --includeInstance=value
+
+# do not translate "latest", "listInstances"
+BL_VIEW_USAGE_024=\tZahrnout z\u00e1znamy z ur\u010den\u00e9 instance serveru. Hodnota           \n\
+\tmus\u00ed b\u00fdt "latest" nebo se mus\u00ed jednat o platn\u00e9 ID instance. Pokud tento p\u0159\u00edkaz \n\
+\tspust\u00edte za pou\u017eit\u00ed akce listInstances, zobraz\u00ed se v\u00e1m seznam platn\u00fdch ID instance.
+
+BL_VIEW_USAGE_025=Volba sledov\u00e1n\u00ed:
+
+# do not translate "--monitor"
+BL_VIEW_USAGE_026=\ \ \ \ --monitor
+BL_VIEW_USAGE_027=\tNep\u0159etr\u017eit\u011b sledovat \u00falo\u017ei\u0161t\u011b a pr\u016fb\u011b\u017en\u011b poskytovat v\u00fdstup s nov\u011b generovan\u00fdm  \n\
+\tobsahem.
+			
+BL_VIEW_USAGE_028=Volby v\u00fdstupu:
+
+# do not translate "--format={basic | advanced | CBE-1.0.1}"
+BL_VIEW_USAGE_029=\ \ \ \ --format={basic | advanced | CBE-1.0.1}
+BL_VIEW_USAGE_030=\tUr\u010dete v\u00fdstupn\u00ed form\u00e1t, kter\u00fd se m\u00e1 pou\u017e\u00edt. \
+V\u00fdchoz\u00ed form\u00e1t je "basic".
+		
+# do not translate "--encoding=value"
+BL_VIEW_USAGE_031=\ \ \ \ --encoding=value
+BL_VIEW_USAGE_032=\tUr\u010dete k\u00f3dov\u00e1n\u00ed znak\u016f, kter\u00e9 se m\u00e1 pou\u017e\u00edt pro v\u00fdstup.
+
+# do not translate "--isoDateFormat"
+BL_VIEW_USAGE_033=\ \ \ \ --isoDateFormat
+BL_VIEW_USAGE_034=\tUr\u010dete, \u017ee se ve v\u00fdstupu m\u00e1 pou\u017e\u00edvat form\u00e1t ISO-8601 pro datum a \u010das.
+#--------------------------------------------------------------------------------------------------
+
+# do not translate "binaryLog", "listInstances", "serverName", "repositoryPath"
+BL_LISTINSTANCES_USAGE_001=Pou\u017eit\u00ed: binaryLog listInstances {n\u00e1zev_serveru | repositoryPath} [volby]
+
+# do not translate "--includeInstance", "binaryLog view"
+BL_LISTINSTANCES_USAGE_002=\tVyp\u00ed\u0161e ID instanc\u00ed serveru z \u00falo\u017ei\u0161t\u011b. Instance        \n\
+\tserveru je kolekce v\u0161ech z\u00e1znam\u016f protokolu/trasov\u00e1n\u00ed zapsan\u00fdch \n\
+\tod doby spu\u0161t\u011bn\u00ed serveru do jeho zastaven\u00ed. ID instance serveru   \n\
+\tlze pou\u017e\u00edt s volbou --includeInstance nebo s akc\u00ed zobrazen\u00ed protokolu  \n\
+\tbinaryLog.
+
+#--------------------------------------------------------------------------------------------------
+
+# do not translate "binaryLog", "copy", "serverName", "repositoryPath", "targetPath"
+BL_COPY_USAGE_001=Pou\u017eit\u00ed: binaryLog copy {serverName | repositoryPath} targetPath [volby]
+
+# do not translate "targetPath"
+BL_COPY_USAGE_002=\ \ \ \ targetPath
+BL_COPY_USAGE_003=\tUr\u010dete cestu pro vytvo\u0159en\u00ed nov\u00e9ho \u00falo\u017ei\u0161t\u011b.
+
+
+BL_COPY_USAGE_004=\t\u010c\u00edst z \u00falo\u017ei\u0161t\u011b, voliteln\u011b jej filtrovat, a zapsat obsah do \n\
+\tnov\u00e9ho \u00falo\u017ei\u0161t\u011b.

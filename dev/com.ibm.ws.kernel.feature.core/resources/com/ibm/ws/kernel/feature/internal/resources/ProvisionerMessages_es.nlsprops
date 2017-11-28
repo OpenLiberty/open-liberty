@@ -1,0 +1,320 @@
+###############################################################################
+# Copyright (c) 2010, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.feature/resources/com/ibm/ws/kernel/feature/internal/resources/ProvisionerMessages.nlsprops
+#COMPONENTPREFIX CWWKF
+#COMPONENTNAMEFOR CWWKF Liberty Feature Manager
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+#   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
+# -------------------------------------------------------------------------------------------------
+
+UPDATE_MISSING_FEATURE_ERROR=CWWKF0001E: No se ha podido encontrar una definici\u00f3n de caracter\u00edstica para {0}
+UPDATE_MISSING_FEATURE_ERROR.explanation=El gestor de caracter\u00edsticas no ha podido encontrar una definici\u00f3n para la caracter\u00edstica especificada.
+UPDATE_MISSING_FEATURE_ERROR.useraction=Compruebe que el nombre de la caracter\u00edstica especificada est\u00e1 escrito correctamente y que la definici\u00f3n de caracter\u00edstica existe y se puede leer en el directorio lib/caracter\u00edsticas.
+
+UPDATE_MISSING_BUNDLE_ERROR=CWWKF0002E: No se ha podido encontrar un paquete para {0}.
+UPDATE_MISSING_BUNDLE_ERROR.explanation=El gestor de caracter\u00edsticas no ha podido encontrar un paquete necesario para una caracter\u00edstica habilitada.
+UPDATE_MISSING_BUNDLE_ERROR.useraction=Aseg\u00farese de que los paquetes del directorio lib sean legibles, y de que la imagen de instalaci\u00f3n se haya completado.
+
+UPDATE_INSTALL_EXCEPTIONS_ERROR=CWWKF0003E: Se ha generado una excepci\u00f3n al instalar o desinstalar el paquete {0}. Excepci\u00f3n: {1}
+UPDATE_INSTALL_EXCEPTIONS_ERROR.explanation=El gestor de caracter\u00edsticas no ha podido instalar o desinstalar el paquete especificado.
+UPDATE_INSTALL_EXCEPTIONS_ERROR.useraction=Consulte la excepci\u00f3n referenciada y los mensajes FFDC generados para cada anomal\u00eda.
+
+UPDATE_OTHER_EXCEPTION_ERROR=CWWKF0004E: Se ha producido una excepci\u00f3n desconocida al instalar o eliminar caracter\u00edsticas. Excepci\u00f3n: {0}
+UPDATE_OTHER_EXCEPTION_ERROR.explanation=Se ha producido una excepci\u00f3n inesperada al a\u00f1adir o eliminar una o m\u00e1s caracter\u00edsticas del tiempo de ejecuci\u00f3n.
+UPDATE_OTHER_EXCEPTION_ERROR.useraction=Consulte la excepci\u00f3n referenciada y los mensajes FFDC generados para obtener m\u00e1s informaci\u00f3n.
+
+UPDATE_LIFECYCLE_EXCEPTIONS_ERROR=CWWKF0005E: Se ha generado una excepci\u00f3n al iniciar, detener o desinstalar el paquete {0}. Excepci\u00f3n: {1}
+UPDATE_LIFECYCLE_EXCEPTIONS_ERROR.explanation=Se ha producido una excepci\u00f3n al cambiar el estado de un paquete gestionado por el gestor de caracter\u00edsticas.
+UPDATE_LIFECYCLE_EXCEPTIONS_ERROR.useraction=Consulte la excepci\u00f3n referenciada y los registros de FFDC asociados para obtener m\u00e1s detalles.
+
+UPDATE_BUNDLE_CACHE_WARNING=CWWKF0006W: El sistema no ha podido leer ni persistir la lista de paquetes de caracter\u00edsticas cargadas para esta instancia de servidor en {0}, por lo que la memoria cach\u00e9 de paquete de inicio en caliente se ha inhabilitado. Excepci\u00f3n: {1}
+UPDATE_BUNDLE_CACHE_WARNING.explanation=No se ha podido crear ni leer el archivo de memoria cach\u00e9 de paquete. Consulte la excepci\u00f3n referenciada para obtener m\u00e1s informaci\u00f3n. 
+UPDATE_BUNDLE_CACHE_WARNING.useraction=Aseg\u00farese de que se puede escribir en el directorio del servidor y el subdirectorio del \u00e1rea de trabajo. 
+
+STARTING_AUDIT=CWWKF0007I: La actualizaci\u00f3n de caracter\u00edsticas se ha iniciado.
+STARTING_AUDIT.explanation=El gestor de caracter\u00edsticas ha empezado a procesar caracter\u00edsticas habilitadas. El intervalo (en segundos) es relativo al inicio de la plataforma.
+STARTING_AUDIT.useraction=No se requiere ninguna acci\u00f3n.
+
+COMPLETE_AUDIT=CWWKF0008I: La actualizaci\u00f3n de caracter\u00edsticas se ha completado en {0} segundos.
+COMPLETE_AUDIT.explanation=El gestor de caracter\u00edsticas ha terminado de procesar caracter\u00edsticas habilitadas. El intervalo (en segundos) es relativo al inicio de la plataforma.
+COMPLETE_AUDIT.useraction=No se requiere ninguna acci\u00f3n.
+
+EMPTY_FEATURES_WARNING=CWWKF0009W: El servidor no se ha configurado para instalar ninguna caracter\u00edstica.
+EMPTY_FEATURES_WARNING.explanation=No se ha configurado ninguna caracter\u00edstica para instalar. 
+EMPTY_FEATURES_WARNING.useraction=Actualice la configuraci\u00f3n para a\u00f1adir las caracter\u00edsticas necesarias. 
+
+BUNDLE_MATCH_WARNING=CWWKF0010W: M\u00e1s de un paquete coincide con el filtro especificado ({0}), utilizando {1}. Coincidencias: {2} 
+BUNDLE_MATCH_WARNING.explanation=Un elemento de definici\u00f3n de caracter\u00edstica coincide con m\u00e1s de un paquete. Esto puede deberse a que el filtro es demasiado general, o a que hay paquetes antiguos en la imagen que coinciden con el filtro.
+BUNDLE_MATCH_WARNING.useraction=Aseg\u00farese de que el filtro es suficientemente espec\u00edfico y de que se utiliza una imagen de instalaci\u00f3n limpia.
+
+SERVER_STARTED=CWWKF0011I: El servidor {0} est\u00e1 preparado para ejecutar un planeta m\u00e1s inteligente.
+SERVER_STARTED.explanation=El servidor se ha iniciado satisfactoriamente.
+SERVER_STARTED.useraction=No se requiere ninguna acci\u00f3n.
+
+FEATURES_ADDED=CWWKF0012I: El servidor ha instalado las caracter\u00edsticas siguientes: {0}.
+FEATURES_ADDED.explanation=El servidor ha instalado un conjunto de caracter\u00edsticas.
+FEATURES_ADDED.useraction=No se requiere ninguna acci\u00f3n.
+
+FEATURES_REMOVED=CWWKF0013I: El servidor ha eliminado las caracter\u00edsticas siguientes: {0}.
+FEATURES_REMOVED.explanation=El servidor ha eliminado un conjunto de caracter\u00edsticas.
+FEATURES_REMOVED.useraction=No se requiere ninguna acci\u00f3n.
+
+TEST_FIX_DETECTED=CWWKF0014W: El servidor tiene los arreglos de prueba siguientes en el tiempo de ejecuci\u00f3n: {0}.  Para obtener un listado completo de los arreglos instalados, ejecute: productInfo version --ifixes
+TEST_FIX_DETECTED.explanation=Los paquetes OSGi cargados en el tiempo de ejecuci\u00f3n los ha modificado alguno de los arreglos de prueba instalados. Se puede obtener un listado de todos los arreglos instalados utilizando el mandato: productInfo version --ifixes
+TEST_FIX_DETECTED.useraction=Un servidor de producci\u00f3n no debe tener instalados arreglos de prueba. Si se trata de un servidor de producci\u00f3n, elimine los arreglos de prueba y reinicie el servidor.
+
+INTERIM_FIX_DETECTED=CWWKF0015I: El servidor tiene los siguientes arreglos temporales activos en el tiempo de ejecuci\u00f3n: {0}. Para obtener un listado completo de los arreglos instalados, ejecute: productInfo version --ifixes
+INTERIM_FIX_DETECTED.explanation=Los paquetes OSGi cargados en el tiempo de ejecuci\u00f3n los ha modificado alguno de los arreglos temporales instalados. Se puede obtener un listado de todos los arreglos instalados utilizando el mandato: productInfo version --ifixes
+INTERIM_FIX_DETECTED.useraction=No se requiere ninguna acci\u00f3n.
+
+# IBM-Provision-Capability is a manifest header name and should not be translated.
+INVALID_PROVISION_CAPABILITY_FILTER=CWWKF0016I: El filtro {0} de la cabecera de manifiesto de la caracter\u00edstica {1} es incorrecto: {2}
+INVALID_PROVISION_CAPABILITY_FILTER.explanation=La cabecera IBM-Provision-Capability contiene uno o m\u00e1s filtros OSGi con sintaxis no v\u00e1lida.
+INVALID_PROVISION_CAPABILITY_FILTER.useraction=Corrija la sintaxis del filtro de la cabecera IBM-Provision-Capability.
+
+PRODUCT_FEATURE_INSTALL_PATH_ERROR=CWWKF0017E: No se ha encontrado la v\u00eda de acceso de instalaci\u00f3n del producto {0} especificada en el archivo de propiedades del producto {1}.
+PRODUCT_FEATURE_INSTALL_PATH_ERROR.explanation=El gestor de caracter\u00edsticas no ha podido encontrar la v\u00eda de acceso de instalaci\u00f3n del producto especificada.
+PRODUCT_FEATURE_INSTALL_PATH_ERROR.useraction=Compruebe que la v\u00eda de acceso de instalaci\u00f3n del producto especificada en el archivo de propiedades del producto en com.ibm.websphere.productInstall se haya escrito correctamente.
+
+PRODUCT_FEATURE_PROPERTIES_FILE_ERROR=CWWKF0018E: No se ha encontrado la propiedad com.ibm.websphere.productInstall en el archivo de propiedades del producto {0}.
+PRODUCT_FEATURE_PROPERTIES_FILE_ERROR.explanation=El gestor de caracter\u00edsticas ha encontrado un archivo de propiedades del producto que no contiene com.ibm.websphere.productInstall.
+PRODUCT_FEATURE_PROPERTIES_FILE_ERROR.useraction=A\u00f1ada com.ibm.websphere.productInstall al archivo de propiedades del producto en etc/extensions.
+
+PRODUCT_FEATURE_LOAD_ERROR=CWWKF0019E: Se ha generado una excepci\u00f3n al cargar el archivo de propiedades del producto {0}. Excepci\u00f3n: {1}
+PRODUCT_FEATURE_LOAD_ERROR.explanation=Se ha producido una excepci\u00f3n cuando el gestor de caracter\u00edsticas ha intentado leer las propiedades del archivo de propiedades del producto.
+PRODUCT_FEATURE_LOAD_ERROR.useraction=Consulte la excepci\u00f3n referenciada y los registros de FFDC asociados para obtener m\u00e1s detalles.
+
+#SUPERCEDED FEATURES
+SUPERSEDED_CONFIGURATION_ERROR=CWWKF0020E: La caracter\u00edstica de {0} tiene el atributo superseded establecido en false, pero el atributo superseded-by es {1}. 
+SUPERSEDED_CONFIGURATION_ERROR.explanation=La cabecera Symbolic-Name en una caracter\u00edstica tiene configurado el atributo superseded-by, pero su atributo superseded est\u00e1 establecido en false.
+SUPERSEDED_CONFIGURATION_ERROR.useraction=Aseg\u00farese de que la cabecera Symbolic-Name tenga los atributos superseded y superseded-by configurados correctamente.
+
+UPDATE_NOT_PUBLIC_FEATURE_ERROR=CWWKF0021E: La caracter\u00edstica {0} especificada en server.xml no es una caracter\u00edstica p\u00fablica, por lo que el servidor no la ejecutar\u00e1.
+UPDATE_NOT_PUBLIC_FEATURE_ERROR.explanation=S\u00f3lo pueden especificarse caracter\u00edsticas p\u00fablicas en server.xml.
+UPDATE_NOT_PUBLIC_FEATURE_ERROR.useraction=Cambie la configuraci\u00f3n del servidor para especificar una caracter\u00edstica p\u00fablica que proporcione la funci\u00f3n necesaria.  Si est\u00e1 desarrollando una caracter\u00edstica que los usuarios deben especificar en su configuraci\u00f3n de servidor, cambie la caracter\u00edstica para que tenga visibilidad p\u00fablica mediante la adici\u00f3n de visibility=public como atributo al Subsystem-SymbolicName para la caracter\u00edstica.
+
+UNSUPPORTED_FEATURE_VERSION=CWWKF0022E: La caracter\u00edstica {0} no est\u00e1 soportada. La cabecera IBM-Feature-Version se ha establecido en {1}.
+UNSUPPORTED_FEATURE_VERSION.explanation=El servidor s\u00f3lo da soporte a caracter\u00edsticas cuya IBM-Feature-Version est\u00e1 establecida en 2. Un n\u00famero superior a 2 indica que la caracter\u00edstica est\u00e1 destinada a una versi\u00f3n posterior del producto.
+UNSUPPORTED_FEATURE_VERSION.useraction=P\u00f3ngase en contacto con el autor de la caracter\u00edstica para obtener una copia dise\u00f1ada para esta versi\u00f3n del producto.
+
+#Minify feature query messages
+ERROR_OPENING_JAR_FOR_CLASSPATH=CWWKF0023W: Una caracter\u00edstica hace referencia a un archivo {1} que no ha podido procesarse durante una consulta de empaquetado. Excepci\u00f3n: {2}
+ERROR_OPENING_JAR_FOR_CLASSPATH.explanation=Se ha producido una excepci\u00f3n al leer el archivo jar de caracter\u00edstica durante una consulta de empaquetado.
+ERROR_OPENING_JAR_FOR_CLASSPATH.useraction=Consulte la excepci\u00f3n referenciada y los registros de FFDC asociados para obtener m\u00e1s detalles.
+
+ERROR_MISSING_FEATURE_RESOURCE=CWWKF0024W: La caracter\u00edstica {0} hace referencia a un recurso {1} que no ha podido encontrarse durante una consulta de empaquetado. 
+ERROR_MISSING_FEATURE_RESOURCE.explanation=El gestor de caracter\u00edsticas no ha podido encontrar el contenido de la caracter\u00edstica especificada.
+ERROR_MISSING_FEATURE_RESOURCE.useraction=Compruebe que el producto se ha instalado correctamente. Si el problema persiste, p\u00f3ngase en contacto con el representante de servicio.
+
+ERROR_UNKNOWN_FEATURE_RESOURCE_TYPE=CWWKF0025W: La caracter\u00edstica {0} hace referencia a un recurso {1} de un tipo desconocido {2} durante una consulta de empaquetado. 
+ERROR_UNKNOWN_FEATURE_RESOURCE_TYPE.explanation=El gestor de caracter\u00edsticas no ha podido entender el contenido de la caracter\u00edstica especificada.
+ERROR_UNKNOWN_FEATURE_RESOURCE_TYPE.useraction=Compruebe que el producto se ha instalado correctamente. Si el problema persiste, p\u00f3ngase en contacto con el representante de servicio.
+
+SERVER_MINIFY=CWWKF0026I: El servidor {0} est\u00e1 preparado para crear un paquete m\u00e1s peque\u00f1o.
+SERVER_MINIFY.explanation=El servidor est\u00e1 preparando informaci\u00f3n para una operaci\u00f3n de empaquetado de servidor pendiente.
+SERVER_MINIFY.useraction=No se requiere ninguna acci\u00f3n.
+# end Minify feature query messages
+
+PRODUCT_FEATURE_INSTALL_PATH_SYMBOL_ERROR=CWWKF0027E: Las caracter\u00edsticas de ampliaci\u00f3n del producto no se instalar\u00e1n porque la v\u00eda de acceso de instalaci\u00f3n de ampliaci\u00f3n del producto especificada en el archivo de propiedades de ampliaci\u00f3n de producto {0} contiene la ubicaci\u00f3n simb\u00f3lica {1}.
+PRODUCT_FEATURE_INSTALL_PATH_SYMBOL_ERROR.explanation=Una v\u00eda de acceso de instalaci\u00f3n de ampliaci\u00f3n del producto no puede contener ubicaciones simb\u00f3licas.
+PRODUCT_FEATURE_INSTALL_PATH_SYMBOL_ERROR.useraction=Actualice la propiedad com.ibm.websphere.productInstall en el archivo de propiedades de ampliaci\u00f3n de producto especificado para que no contenga ubicaciones simb\u00f3licas.
+
+PRODUCT_FEATURE_INSTALL_PATH_WLP_ERROR=CWWKF0028E: Las caracter\u00edsticas de ampliaci\u00f3n del producto no se instalar\u00e1n porque la v\u00eda de acceso de instalaci\u00f3n de ampliaci\u00f3n del producto especificada en el archivo de propiedades de ampliaci\u00f3n de producto {0} es la misma que la de wlp.install.dir.
+PRODUCT_FEATURE_INSTALL_PATH_WLP_ERROR.explanation=Una v\u00eda de acceso de instalaci\u00f3n de ampliaci\u00f3n del producto no puede ser la misma que la de wlp.install.dir.
+PRODUCT_FEATURE_INSTALL_PATH_WLP_ERROR.useraction=Actualice la propiedad com.ibm.websphere.productInstall en el archivo de propiedades de ampliaci\u00f3n de producto especificado para que no sea la misma que la de wlp.install.dir.
+
+BUNDLE_EXCEPTION_ERROR=CWWKF0029E: {0}
+BUNDLE_EXCEPTION_ERROR.explanation=La infraestructura OSGi ha generado una BundleException.
+BUNDLE_EXCEPTION_ERROR.useraction=Consulte el mensaje de excepci\u00f3n para obtener m\u00e1s informaci\u00f3n.
+
+INVALID_START_PHASE_WARNING=CWWKF0030W: La fase de inicio {0} especificada para el paquete {1} en la caracter\u00edstica {2} no es v\u00e1lida.
+INVALID_START_PHASE_WARNING.explanation=Se ha especificado un valor no v\u00e1lido para la fase de inicio.
+INVALID_START_PHASE_WARNING.useraction=Especifique un valor v\u00e1lido para la fase de inicio. 
+
+FEATURE_NOT_INSTALLED=CWWKF0031I: El servidor ha omitido la caracter\u00edstica de carga {0} debido a que ya existe una funci\u00f3n equivalente.
+FEATURE_NOT_INSTALLED.explanation=Si se especifican dos versiones de la misma caracter\u00edstica en el archivo server.xml o si el archivo server.xml especifica las caracter\u00edsticas que incluyen subcaracter\u00edsticas con funciones duplicadas, el servidor omite la carga de la segunda versi\u00f3n.
+FEATURE_NOT_INSTALLED.useraction=Si en el archivo server.xml se especifican de forma expl\u00edcita dos versiones de la misma caracter\u00edstica, suprima la versi\u00f3n que no sea necesaria.
+
+FEATURE_JAVA_LEVEL_NOT_MET_ERROR=CWWKF0032E: La caracter\u00edstica {0} requiere una versi\u00f3n m\u00ednima del entorno de ejecuci\u00f3n Java de {1}.
+FEATURE_JAVA_LEVEL_NOT_MET_ERROR.explanation=Para utilizar la caracter\u00edstica en la lista, debe tener la versi\u00f3n especificada o una versi\u00f3n posterior del entorno de ejecuci\u00f3n Java (JRE) instalado en el entorno.
+FEATURE_JAVA_LEVEL_NOT_MET_ERROR.useraction=Actualice el entorno de ejecuci\u00f3n Java a la versi\u00f3n especificada o a una posterior.
+
+UPDATE_CONFLICT_FEATURE_ERROR=CWWKF0033E: Las caracter\u00edsticas de monoinstancia {0} y {1} no se pueden cargar a la vez.  Las caracter\u00edsticas configuradas {2} y {3} incluyen una o m\u00e1s caracter\u00edsticas que provocan el conflicto. La configuraci\u00f3n no est\u00e1 soportada; actualice server.xml para eliminar caracter\u00edsticas incompatibles.
+UPDATE_CONFLICT_FEATURE_ERROR.explanation=Se pueden cargar varias versiones de una caracter\u00edstica de monoinstancia a la vez.  Este conflicto se puede producir si dos versiones de una caracter\u00edstica de monoinstancia se han configurado directamente en la configuraci\u00f3n del servidor. O bien, si las caracter\u00edsticas configuradas incluyen distintas versiones de una caracter\u00edstica de monoinstancia y no pueden tolerar una versi\u00f3n com\u00fan de la caracter\u00edstica de monoinstancia.
+UPDATE_CONFLICT_FEATURE_ERROR.useraction=Intente especificar una versi\u00f3n diferente de las caracter\u00edsticas configuradas que han provocado el conflicto en server.xml.  Si no hay disponible ninguna otra versi\u00f3n, las caracter\u00edsticas configuradas no son compatibles entre s\u00ed y no se pueden configurar a la vez.
+
+FEATURES_ADDED_CLIENT=CWWKF0034I: El cliente ha instalado las caracter\u00edsticas siguientes: {0}.
+FEATURES_ADDED_CLIENT.explanation=El cliente ha instalado un conjunto de caracter\u00edsticas.
+FEATURES_ADDED_CLIENT.useraction=No se requiere ninguna acci\u00f3n.
+
+CLIENT_STARTED=CWWKF0035I: El cliente {0} se est\u00e1 ejecutando.
+CLIENT_STARTED.explanation=El cliente se ha iniciado satisfactoriamente.
+CLIENT_STARTED.useraction=No se requiere ninguna acci\u00f3n.
+
+#Required feature gather query messages
+SERVER_GATHER_FEATURES=CWWKF0036I: El servidor {0} ha terminado de reunir una lista de caracter\u00edsticas necesarias.
+SERVER_GATHER_FEATURES.explanation=El servidor ha compilado una lista de caracter\u00edsticas necesarias.
+SERVER_GATHER_FEATURES.useraction=No se requiere ninguna acci\u00f3n.
+#End required feature gather query messages
+
+UPDATE_NOT_PUBLIC_FEATURE_CLIENT_ERROR=CWWKF0037E: La caracter\u00edstica {0} especificada en el archivo client.xml no es una funci\u00f3n p\u00fablica y el cliente no la ejecutar\u00e1.
+UPDATE_NOT_PUBLIC_FEATURE_CLIENT_ERROR.explanation=Puede especificar s\u00f3lo funciones p\u00fablicas en el archivo client.xml.
+UPDATE_NOT_PUBLIC_FEATURE_CLIENT_ERROR.useraction=Cambie la configuraci\u00f3n del cliente para especificar una caracter\u00edstica p\u00fablica que proporcione la funci\u00f3n necesaria.  Si est\u00e1 desarrollando una caracter\u00edstica que los usuarios deben especificar en su configuraci\u00f3n de cliente, cambie la caracter\u00edstica para que tenga visibilidad p\u00fablica mediante la adici\u00f3n de visibility=public como atributo al Subsystem-SymbolicName para la caracter\u00edstica.
+
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_ERROR=CWWKF0038E: La caracter\u00edstica {0} que se ha especificado en el archivo {1} s\u00f3lo da soporte a tipos de proceso de cliente que dar\u00e1n como resultado que el proceso de servidor no ejecute esta caracter\u00edstica.
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_ERROR.explanation=La caracter\u00edstica configurada no da soporte al tipo de proceso especificado.
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_ERROR.useraction=Elimine la caracter\u00edstica de la configuraci\u00f3n o cambie el archivo de manifiesto de caracter\u00edstica para habilitar el soporte para el tipo de proceso que desee.
+
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_ERROR=CWWKF0039E: La caracter\u00edstica {0} s\u00f3lo da soporte a los tipos de proceso de cliente que dar\u00e1n como resultado que el proceso de servidor no ejecute esta caracter\u00edstica.  La caracter\u00edstica {1} que se ha especificado en el archivo {2} no funciona correctamente debido a una dependencia de la caracter\u00edstica {0}.
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_ERROR.explanation=La caracter\u00edstica configurada no da soporte al tipo de proceso especificado.
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_ERROR.useraction=Elimine la caracter\u00edstica de la configuraci\u00f3n o cambie el archivo de manifiesto de caracter\u00edstica para habilitar el soporte para el tipo de proceso que desee.
+
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_CLIENT_ERROR=CWWKF0040E: La caracter\u00edstica {0} que se ha especificado en el archivo {1} s\u00f3lo da soporte a tipos de proceso de servidor que dar\u00e1n como resultado que el proceso de cliente no ejecute esta caracter\u00edstica.
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_CLIENT_ERROR.explanation=La caracter\u00edstica configurada no da soporte al tipo de proceso especificado.
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_CLIENT_ERROR.useraction=Elimine la caracter\u00edstica de la configuraci\u00f3n o cambie el archivo de manifiesto de caracter\u00edstica para habilitar el soporte para el tipo de proceso que desee.
+
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR=CWWKF0041E: La caracter\u00edstica {0} s\u00f3lo da soporte a los tipos de proceso de servidor que dar\u00e1n como resultado que el proceso de cliente no ejecute esta caracter\u00edstica.  La caracter\u00edstica {1} que se ha especificado en el archivo {2} no funciona correctamente debido a una dependencia de la caracter\u00edstica {0}.
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.explanation=La caracter\u00edstica configurada no da soporte al tipo de proceso especificado.
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.useraction=Elimine la caracter\u00edstica de la configuraci\u00f3n o cambie el archivo de manifiesto de caracter\u00edstica para habilitar el soporte para el tipo de proceso que desee.
+
+# CWWK042E  {0} = feature Name: {1} = server name 
+UPDATE_MISSING_CORE_FEATURE_ERROR=CWWKF0042E: No se puede encontrar una definici\u00f3n de caracter\u00edstica para la caracter\u00edstica {0}.  Intente ejecutar el mandato, bin/installUtility install {0}, para instalar la caracter\u00edstica. Otra posibilidad es ejecutar el mandato, bin/installUtility install {1}, para instalar todas las caracter\u00edsticas a las que hace referencia esta configuraci\u00f3n.
+UPDATE_MISSING_CORE_FEATURE_ERROR.explanation=El gestor de caracter\u00edsticas no ha podido encontrar una definici\u00f3n para la caracter\u00edstica especificada.
+UPDATE_MISSING_CORE_FEATURE_ERROR.useraction=Compruebe que el nombre de la caracter\u00edstica especificada est\u00e9 bien escrito.  \
+Compruebe tambi\u00e9n que la definici\u00f3n de la caracter\u00edstica existe y que se puede leer en el directorio lib/features. \
+Si la caracter\u00edstica no existe, intente ejecutar el mandato, bin/installUtility install nombre_caracter\u00edstica, para instalar la caracter\u00edstica o intente ejecutar el mandato, bin/installUtility install nombre_servidor, para instalar todas las caracter\u00edsticas a las que hace referencia esta configuraci\u00f3n. 
+
+#   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
+
+tool.feature.exists=CWWKF1000I: La caracter\u00edstica {0} ya existe. No se reinstalar\u00e1. Para modificar una caracter\u00edstica existente, primero debe desinstalarla manualmente.
+tool.feature.exists.explanation=La caracter\u00edstica que se va a instalar ya existe.
+tool.feature.exists.useraction=No se requiere ninguna acci\u00f3n.
+tool.missing.args=CWWKF1001E: {0} requiere {1} argumentos, pero se han suministrado {2}.
+tool.missing.args.explanation=Se ha utilizado un n\u00famero incorrecto de argumentos para invocar la acci\u00f3n.
+tool.missing.args.useraction=Vuelva a ejecutar el mandato con los argumentos correctos.
+tool.unknown.options=CWWKF1002E: {0} no admite las opciones: {1}.
+tool.unknown.options.explanation=Se ha intentado ejecutar un mandato utilizando argumentos no v\u00e1lidos.
+tool.unknown.options.useraction=Vuelva a ejecutar el mandato sin los argumentos no v\u00e1lidos.
+
+tool.install.bad.extension=CWWKF1003E: La ampliaci\u00f3n de producto {0} no existe.
+tool.install.bad.extension.explanation=La ampliaci\u00f3n de producto en la que debe instalarse la caracter\u00edstica no est\u00e1 registrada.
+tool.install.bad.extension.useraction=Instale la caracter\u00edstica en una ampliaci\u00f3n de producto que est\u00e9 registrada o registre la ampliaci\u00f3n de producto que falta.
+tool.install.invalid.extension=CWWKF1004E: La ampliaci\u00f3n de producto {0} no especifica una ubicaci\u00f3n.
+tool.install.invalid.extension.explanation=La ampliaci\u00f3n de producto no se puede encontrar porque el archivo de registro no contiene una ubicaci\u00f3n.
+tool.install.invalid.extension.useraction=Corrija el registro de ampliaci\u00f3n de producto para que contenga la ubicaci\u00f3n de la ampliaci\u00f3n.
+tool.install.ioexception.extension=CWWKF1005E: Se ha producido un error inesperado al leer la ampliaci\u00f3n del producto {0}; la excepci\u00f3n es: {1}
+tool.install.ioexception.extension.explanation=Se ha producido un error inesperado al intentar leer el archivo de propiedades para la ampliaci\u00f3n del producto que se proporciona en el mensaje de error.
+tool.install.ioexception.extension.useraction=Revise el mensaje de excepci\u00f3n para obtener una explicaci\u00f3n de por qu\u00e9 no se ha podido leer el archivo y vuelva a intentarlo.
+tool.install.no.dir=CWWKF1006E: No es posible instalar la caracter\u00edstica porque el directorio {0} no existe.
+tool.install.no.dir.explanation=El directorio de ampliaci\u00f3n del producto no existe, por lo que la caracter\u00edstica no puede instalarse en \u00e9l.
+tool.install.no.dir.useraction=Aseg\u00farese de que el directorio existe e intente de nuevo instalar la caracter\u00edstica.
+tool.install.download.esa=CWWKF1007E: Se ha producido un error al descargar el archivador de subsistema en {0}; la excepci\u00f3n es: {1}
+tool.install.download.esa.explanation=Se ha producido un error al descargar el archivador de subsistema. Esto podr\u00eda ser debido a que el URL no es v\u00e1lido o a un problema de red temporal. La segunda frase del mensaje de error podr\u00eda proporcionar informaci\u00f3n m\u00e1s detallada sobre la causa del error.
+tool.install.download.esa.useraction=Compruebe que el URL al archivador de subsistema sea correcto y vuelva a intentarlo.
+tool.install.download.tmpFile=CWWKF1008E: No se puede crear un archivo temporal para descargar el archivador de subsistema; la excepci\u00f3n es: {0}
+tool.install.download.tmpFile.explanation=La operaci\u00f3n de instalaci\u00f3n de la caracter\u00edstica descarga el archivador de subsistema en un archivo temporal, pero no ha podido crearse un archivo temporal. Esto se debe probablemente a una restricci\u00f3n de la m\u00e1quina. La segunda frase del mensaje de error podr\u00eda proporcionar informaci\u00f3n m\u00e1s detallada sobre la causa del error.
+tool.install.download.tmpFile.useraction=Es posible que el sistema de archivos temporal est\u00e9 lleno. Si es as\u00ed, la obtenci\u00f3n de espacio resolver\u00e1 el problema.
+tool.install.file.notexist=CWWKF1009E: El archivo {0} no existe.
+tool.install.file.notexist.explanation=El archivo de archivador de subsistema suministrado a la operaci\u00f3n de instalaci\u00f3n no existe.
+tool.install.file.notexist.useraction=Aseg\u00farese de que el nombre del archivo de archivador de subsistema se ha especificado correctamente y vuelva a ejecutar la operaci\u00f3n de instalaci\u00f3n.
+tool.install.file.notafile=CWWKF1010E: {0} no es un archivo.
+tool.install.file.notafile.explanation=El nombre de archivo especificado identifica a un directorio en lugar de un archivador de subsistema.
+tool.install.file.notafile.useraction=Aseg\u00farese de que el nombre del archivo de archivador de subsistema se ha especificado correctamente y vuelva a ejecutar la operaci\u00f3n de instalaci\u00f3n.
+tool.install.missing.feature=CWWKF1011E: La caracter\u00edstica {0} depende de {1}, que no est\u00e1 instalado.
+tool.install.missing.feature.explanation=La caracter\u00edstica que se est\u00e1 instalando depende de otras caracter\u00edsticas que a\u00fan no se han instalado. La caracter\u00edstica no se puede utilizar hasta que la caracter\u00edstica indicada en el mensaje de error est\u00e9 instalada.
+tool.install.missing.feature.useraction=Instale la caracter\u00edstica que falta y vuelva a ejecutar la instalaci\u00f3n.
+tool.install.missing.content=CWWKF1012E: El recurso {0} no existe en el archivador de subsistema en la ubicaci\u00f3n {1}.
+tool.install.missing.content.explanation=Al procesar el contenido del subsistema, se hac\u00eda referencia a un archivo que no se ha encontrado en el archivador.
+tool.install.missing.content.useraction=P\u00f3ngase en contacto con el autor del subsistema para obtener un archivador actualizado que incluya el contenido necesario.
+tool.install.content.notfound=CWWKF1013E: El contenido {0} del subsistema no se ha encontrado en el archivador de subsistema.
+tool.install.content.notfound.explanation=Al procesar el contenido del subsistema, no se han encontrado algunos paquetes necesarios en el archivador de subsistema.
+tool.install.content.notfound.useraction=P\u00f3ngase en contacto con el autor del subsistema para obtener un archivador actualizado que incluya el contenido necesario.
+tool.install.bad.zip=CWWKF1014E: Se ha producido un error al leer el archivo de archivador {0}; la excepci\u00f3n es {1}
+tool.install.bad.zip.explanation=No ha sido posible leer el archivador de subsistema.
+tool.install.bad.zip.useraction=Compruebe que el archivador de subsistema sea v\u00e1lido y complete el archivador. Si no es v\u00e1lido, obtenga un nuevo archivador del proveedor.
+tool.install.file.exists=CWWKF1015E: El archivo {0} ya existe.
+tool.install.file.exists.explanation=La instalaci\u00f3n del archivador de subsistema ha fallado debido a que un archivo del archivador ya existe en la instalaci\u00f3n.
+tool.install.file.exists.useraction=Revise los archivos que ya existan. Si la operaci\u00f3n de instalaci\u00f3n puede continuar, vuelva a ejecutar la operaci\u00f3n utilizando la opci\u00f3n --when-file-exists=replace para sustituir los archivos existentes, o la opci\u00f3n --when-file-exists=ignore para continuar sin el archivo existente.
+tool.install.dir.create.fail=CWWKF1016E: No se puede crear la estructura de directorios {0}.
+tool.install.dir.create.fail.explanation=No se han podido crear los directorios necesarios para la caracter\u00edstica que se est\u00e1 instalando.
+tool.install.dir.create.fail.useraction=Aseg\u00farese de que el directorio proporcionado exista y que los permisos necesarios est\u00e9n aplicados para permitir la creaci\u00f3n de la estructura de directorios. Ejecute de nuevo la operaci\u00f3n de instalaci\u00f3n.
+tool.install.feature.ok=CWWKF1017I: Una o varias caracter\u00edsticas se han instalado correctamente: {0}.
+tool.install.feature.ok.explanation=Este mensaje es meramente informativo.
+tool.install.feature.ok.useraction=No se requiere ninguna acci\u00f3n.
+tool.install.invalid.when.file.exists.value=CWWKF1018E: El valor {0} no es una opci\u00f3n v\u00e1lida para --when-file-exists. Las opciones v\u00e1lidas son fail, replace o ignore.
+tool.install.invalid.when.file.exists.value.explanation=La opci\u00f3n --when-file-exists debe ser fail, replace, ignore.
+tool.install.invalid.when.file.exists.value.useraction=Especifique uno de los valores v\u00e1lidos: fail, replace o ignore.
+tool.product.ext.features.not.found=CWWKF1019E: La ampliaci\u00f3n del producto {0} no contiene ninguna caracter\u00edstica.
+tool.product.ext.features.not.found.explanation=No se han encontrado los archivos de manifiesto de caracter\u00edstica asociados con la ampliaci\u00f3n del producto especificada.
+tool.product.ext.features.not.found.useraction=Verifique que el directorio donde est\u00e1n ubicados los manifiestos de caracter\u00edsticas sea v\u00e1lido.
+tool.product.ext.not.found=CWWKF1020E: La ampliaci\u00f3n del producto {0} no se encuentra en la ubicaci\u00f3n {1}.
+tool.product.ext.not.found.explanation=La ampliaci\u00f3n del producto no se encuentra en la ubicaci\u00f3n especificada.
+tool.product.ext.not.found.useraction=Verifique que la ubicaci\u00f3n de instalaci\u00f3n del producto se haya definido correctamente en el archivo de propiedades para la instalaci\u00f3n del producto.
+tool.product.ext.not.defined=CWWKF1021E: La ampliaci\u00f3n del producto con el nombre {0} no existe.
+tool.product.ext.not.defined.explanation=La ampliaci\u00f3n del producto con el nombre especificado no existe.
+tool.product.ext.not.defined.useraction=Verifique que el nombre de ampliaci\u00f3n del producto especificado sea v\u00e1lido.
+tool.install.content.no.subsystem.manifest=CWWKF1022E: El archivo OSGI-INF/SUBSYSTEM.MF no se ha encontrado en el archivador.
+tool.install.content.no.subsystem.manifest.explanation=El archivador de subsistema no contiene el archivo OSGI-INF/SUBSYSTEM.MF, que contiene metadatos sobre el subsistema.
+tool.install.content.no.subsystem.manifest.useraction=A\u00f1ada el archivo OSGI-INF/SUBSYSTEM.MF al archivador.
+# {0} is the path to the file being used
+tool.install.two.subsystem.manifests=CWWKF1023W: Hay dos archivos con la v\u00eda de acceso OSGI-INF/SUBSYSTEM.MF, pero se han especificado con may\u00fasculas y min\u00fasculas diferentes. Se utilizar\u00e1 el archivo {0}. 
+tool.install.two.subsystem.manifests.explanation=Debe utilizar s\u00f3lo un archivo OSGI-INF/SUBSYSTEM.MF para definir una caracter\u00edstica, pero el archivador contiene dos archivos OSGI-INF/SUBSYSTEM.MF que se han especificado con may\u00fasculas y min\u00fasculas diferentes.
+tool.install.two.subsystem.manifests.useraction=Suprima uno de los archivos SUBSYSTEM.MF.
+
+# {0} is the path to the (missing) feature directory
+tool.feature.dir.not.found=CWWKF1024E: El mandato featureManager no ha podido encontrar el directorio features y no ha podido crear uno en la v\u00eda de acceso del directorio {0}.
+tool.feature.dir.not.found.explanation=El directorio features para este servidor no existe. El directorio previsto con el nombre de features puede haberse creado inadvertidamente como archivo.   El mandato featureManager ha intentado crear el directorio features, pero no ha podido. Si el directorio features no se puede crear, a menudo el usuario no dispone de los permisos de escritura para la v\u00eda de acceso del directorio. 
+tool.feature.dir.not.found.useraction=Realice una de las acciones siguientes : (1) Cree manualmente el directorio especificado y vuelva a ejecutar el mandato featureManager. (2) Vuelva a ejecutar el mandato featureManager como usuario con acceso de grabaci\u00f3n suficiente para la v\u00eda de acceso al directorio especificado.  
+
+tool.find.view.info.name=\ \ \ \ Nombre: {0}
+tool.find.view.info.symbolic.name=\ \ \ \ Nombre simb\u00f3lico: {0}
+tool.find.view.info.description=\ \ \ \ Descripci\u00f3n: {0}
+tool.find.view.info.enabled.by=\ \ \ \ Habilitado por:
+tool.find.no.feature=No se ha encontrado ninguna caracter\u00edstica.
+
+tool.missing.option=CWWKF1025E: La acci\u00f3n {0} requiere la opci\u00f3n {1}, pero no se ha proporcionado la opci\u00f3n necesaria.
+tool.missing.option.explanation=Se ha intentado ejecutar un mandato sin especificar una opci\u00f3n necesaria.
+tool.missing.option.useraction=Vuelva a ejecutar el mandato con la opci\u00f3n necesaria.
+
+tool.classpath.feature.not.found=CWWKF1026E: La caracter\u00edstica {0} no existe.
+tool.classpath.feature.not.found.explanation=Se ha especificado una caracter\u00edstica que no existe.
+tool.classpath.feature.not.found.useraction=Ejecute el mandato de nuevo sin especificar la caracter\u00edstica. 
+
+tool.classpath.feature.not.public=CWWKF1027E: La caracter\u00edstica {0} no es p\u00fablica.
+tool.classpath.feature.not.public.explanation=Se ha especificado una caracter\u00edstica que no es p\u00fablica.
+tool.classpath.feature.not.public.useraction=Ejecute el mandato de nuevo sin especificar la caracter\u00edstica.
+
+tool.classpath.wrong.drive=CWWKF1028E: El archivo de salida {0} debe estar ubicado en la misma unidad que el archivo {1}.
+tool.classpath.wrong.drive.explanation=El archivo de salida debe estar ubicado en la misma unidad que todos los archivos referenciados por las caracter\u00edsticas especificadas.
+tool.classpath.wrong.drive.useraction=Vuelva a ejecutar el mandato con un archivo de salida que se encuentra en la misma unidad que el archivo especificado.
+
+tool.classpath.create.fail=CWWKF1029E: No se ha podido crear el archivo de salida {0}. Se ha recibido el siguiente error: {1}
+tool.classpath.create.fail.explanation=Se ha producido un error al crear el archivo de salida.
+tool.classpath.create.fail.useraction=Consulte el mensaje de error, corrija el problema y vuelva a ejecutar el mandato. 
+
+tool.userfeature.install.location.invalid=CWWKF1036E: La caracter\u00edstica de usuario {0} no se puede instalar en el n\u00facleo.
+tool.userfeature.install.location.invalid.explanation= La caracter\u00edstica de usuario no es una caracter\u00edstica del n\u00facleo por lo tanto no se puede instalar en el n\u00facleo.
+tool.userfeature.install.location.invalid.useraction= Instale la caracter\u00edstica de usuario en usr. 
+

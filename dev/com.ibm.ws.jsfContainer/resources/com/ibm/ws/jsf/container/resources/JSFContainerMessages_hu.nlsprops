@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME none
+#COMPONENTPREFIX JSFG
+#COMPONENTNAMEFOR JSFG jsf
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+# -------------------------------------------------------------------------------------------------
+
+# JSFG0100-JSFG0199 reserved for jsfContainer-2.X features
+
+# 0: JSF provider type (will be either MOJARRA or MYFACES)
+# 1: application name
+jsf.container.init=JSFG0100I: A Liberty inicializ\u00e1lta a JSF integr\u00e1ci\u00f3kat a(z) {0} JSF szolg\u00e1ltat\u00f3 sz\u00e1m\u00e1ra a(z) {1} alkalmaz\u00e1sban.
+jsf.container.init.explanation=A megadott alkalmaz\u00e1sok eset\u00e9n inicializ\u00e1l\u00e1sra ker\u00fcltek a Liberty JSF integr\u00e1ci\u00f3k, ami lehet\u0151v\u00e9 teszi a CDI \u00e9s JSF integr\u00e1ci\u00f3k m\u0171k\u00f6d\u00e9s\u00e9t.
+jsf.container.init.useraction=Inform\u00e1ci\u00f3s \u00fczenet. Nincs sz\u00fcks\u00e9g felhaszn\u00e1l\u00f3i beavatkoz\u00e1sra.
+
+# 0: application name
+# 1: required ApplicationFactory implementations
+jsf.container.no.jsf.impl=JSFG0101E: A(z) {0} alkalmaz\u00e1sban nem tal\u00e1lhat\u00f3k JSF megval\u00f3s\u00edt\u00e1sok.  Az al\u00e1bbi javax.faces.application.ApplicationFactory megval\u00f3s\u00edt\u00e1sok egyik\u00e9t tartalmaz\u00f3 JSF megval\u00f3s\u00edt\u00e1snak rendelkez\u00e9sre kell \u00e1llnia a(z) {1} alkalmaz\u00e1shoz.
+jsf.container.no.jsf.impl.explanation=A Liberty JSF integr\u00e1ci\u00f3k csak meghat\u00e1rozott harmadik f\u00e9lt\u0151l sz\u00e1rmaz\u00f3 JSF megval\u00f3s\u00edt\u00e1sk\u00e9szletek eset\u00e9n t\u00e1mogatottak. A megadott alkalmaz\u00e1shoz a list\u00e1ban szerepl\u0151 ApplicationFactory megval\u00f3s\u00edt\u00e1sok egyik\u00e9nek rendelkez\u00e9sre kell \u00e1llnia.
+jsf.container.no.jsf.impl.useraction=Szerepeltesse vagy az Apache MyFaces, vagy a Mojarra JSF megval\u00f3s\u00edt\u00e1st a megadott alkalmaz\u00e1sban.  Ha viszont a Liberty \u00e1ltal biztos\u00edtott alap\u00e9rtelmezett JSF megval\u00f3s\u00edt\u00e1st szeretn\u00e9 haszn\u00e1lni (Apache MyFaces), akkor haszn\u00e1lja a jsf-2.2 szolg\u00e1ltat\u00e1st a jsfContainer-2.2 helyett.
+
+# 0: application name
+jsf.container.no.app.name=JSFG0102E: A Liberty nem tudja lek\u00e9rdezni az alkalmaz\u00e1s nev\u00e9t a(z) {0} JSF alkalmaz\u00e1sb\u00f3l JNDI seg\u00edts\u00e9g\u00e9vel.
+jsf.container.no.app.name.explanation=Az alkalmaz\u00e1s regisztr\u00e1ci\u00f3j\u00e1hoz a Liberty JSF t\u00e1rol\u00f3val az alkalmaz\u00e1s nev\u00e9nek rendelkez\u00e9sre kell \u00e1llnia a "java:app/AppName" JNDI keres\u00e9s v\u00e9grehajt\u00e1sakor.
+jsf.container.no.app.name.useraction=Ellen\u0151rizze, hogy a jndi-1.0 szolg\u00e1ltat\u00e1s enged\u00e9lyezve van-e, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a JNDI keres\u00e9s, mint p\u00e9ld\u00e1ul az InitialContext.doLookup("java:app/AppName"), m\u0171k\u00f6dik az alkalmaz\u00e1son bel\u00fclr\u0151l v\u00e9grehajtva.
+
+# 0: application name
+# 1: expected JSF spec API version range
+# 2: actual JSF spec API version used in app
+jsf.container.bad.spec.api.version=JSFG0103E: A(z) {0} alkalmaz\u00e1shoz el\u00e9rhet\u0151 JSF specifik\u00e1ci\u00f3 API v\u00e1ltozat a(z) {2}, de a(z) {1} v\u00e1ltozattartom\u00e1nyban kell lennie. Gondoskodj\u00e9k r\u00f3la, hogy a megadott alkalmaz\u00e1sba csomagolt JSF API megfeleljen az enged\u00e9lyezett jsfContainer v\u00e1ltozatnak. A Liberty a .jar f\u00e1jlban tal\u00e1lhat\u00f3 JSF API oszt\u00e1ly specifik\u00e1ci\u00f3v\u00e1ltozat le\u00edr\u00f3f\u00e1jl attrib\u00fatum\u00e1nak ellen\u0151rz\u00e9s\u00e9vel \u00e1llap\u00edtja meg a JSF API v\u00e1ltozatot.
+jsf.container.bad.spec.api.version.explanation=Az enged\u00e9lyezett jsfContainer v\u00e1ltozatnak meg kell felelnie a megadott alkalmaz\u00e1sba csomagolt megfelel\u0151 JSF API v\u00e1ltozatnak.
+jsf.container.bad.spec.api.version.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a megadott alkalmaz\u00e1sba csomagolt JSF API megfeleljen az enged\u00e9lyezett jsfContainer v\u00e1ltozatnak. A Liberty a .jar f\u00e1jlban tal\u00e1lhat\u00f3 JSF API oszt\u00e1ly specifik\u00e1ci\u00f3v\u00e1ltozat le\u00edr\u00f3f\u00e1jl attrib\u00fatum\u00e1nak ellen\u0151rz\u00e9s\u00e9vel \u00e1llap\u00edtja meg a JSF API v\u00e1ltozatot.
+
+# 0: application name
+# 1: expected JSF spec API version range
+# 2: actual JSF spec API version used in app
+jsf.container.bad.impl.version=JSFG0104E: A(z) {0} alkalmaz\u00e1shoz el\u00e9rhet\u0151 JSF megval\u00f3s\u00edt\u00e1s v\u00e1ltozat a(z) {2}, de a(z) {1} v\u00e1ltozattartom\u00e1nyban kell lennie. Gondoskodj\u00e9k r\u00f3la, hogy a megadott alkalmaz\u00e1sba csomagolt JSF megval\u00f3s\u00edt\u00e1s megfeleljen az enged\u00e9lyezett jsfContainer v\u00e1ltozatnak.  A Liberty a .jar f\u00e1jlban tal\u00e1lhat\u00f3 MyFaces vagy Mojarra ApplicationFactory oszt\u00e1ly le\u00edr\u00f3f\u00e1jl attrib\u00fatum\u00e1nak ellen\u0151rz\u00e9s\u00e9vel \u00e1llap\u00edtja meg a JSF megval\u00f3s\u00edt\u00e1s v\u00e1ltozatot.
+jsf.container.bad.impl.version.explanation=Az enged\u00e9lyezett jsfContainer v\u00e1ltozatnak meg kell felelnie a megadott alkalmaz\u00e1sba csomagolt JSF megval\u00f3s\u00edt\u00e1s v\u00e1ltozat\u00e1nak.
+jsf.container.bad.impl.version.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a megadott alkalmaz\u00e1sba csomagolt JSF megval\u00f3s\u00edt\u00e1s megfeleljen az enged\u00e9lyezett jsfContainer v\u00e1ltozatnak.  A Liberty a .jar f\u00e1jlban tal\u00e1lhat\u00f3 MyFaces vagy Mojarra ApplicationFactory oszt\u00e1ly le\u00edr\u00f3f\u00e1jl attrib\u00fatum\u00e1nak ellen\u0151rz\u00e9s\u00e9vel \u00e1llap\u00edtja meg a JSF megval\u00f3s\u00edt\u00e1s v\u00e1ltozatot.

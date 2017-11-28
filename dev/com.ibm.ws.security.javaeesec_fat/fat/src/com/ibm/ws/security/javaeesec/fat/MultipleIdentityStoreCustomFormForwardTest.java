@@ -80,7 +80,7 @@ public class MultipleIdentityStoreCustomFormForwardTest extends JavaEESecTestBas
         ldapServer = new LocalLdapServer();
         ldapServer.start();
 
-        WCApplicationHelper.addWarToServerApps(myServer, WAR_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.customform", "web.war.servlets.customform.forward", "web.war.identitystores.ldap.ldap1","web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly");
+        WCApplicationHelper.addWarToServerApps(myServer, WAR_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.customform", "web.war.servlets.customform.get.forward", "web.war.identitystores.ldap.ldap1","web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly");
         myServer.setServerConfigurationFile(XML_NAME);
         myServer.startServer(true);
         myServer.addInstalledAppForValidation(APP_NAME);
@@ -239,6 +239,7 @@ public class MultipleIdentityStoreCustomFormForwardTest extends JavaEESecTestBas
     @Test
     public void testMultipleISCustomFormForwardWith1stISuccess_DeniedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        myServer.setMarkToEndOfLog();
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
         String response = getFormLoginPage(httpclient, urlBase + queryString, REDIRECT, urlBase + loginUri, TITLE_LOGIN_PAGE);
 
@@ -269,6 +270,7 @@ public class MultipleIdentityStoreCustomFormForwardTest extends JavaEESecTestBas
     @Test
     public void testMultipleISCustomFormForwardWith1st2ndFail_DeniedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        myServer.setMarkToEndOfLog();
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
         String response = getFormLoginPage(httpclient, urlBase + queryString, REDIRECT, urlBase + loginUri, TITLE_LOGIN_PAGE);
 

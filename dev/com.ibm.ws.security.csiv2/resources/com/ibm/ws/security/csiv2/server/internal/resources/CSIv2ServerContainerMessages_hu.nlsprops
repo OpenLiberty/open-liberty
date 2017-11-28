@@ -1,0 +1,79 @@
+###############################################################################
+# Copyright (c) 2014, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.csiv2/resources/com/ibm/ws/security/csiv2/server/internal/resources/CSIv2ServerContainerMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server CSIv2 for the server container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9600 - CWWKS9699
+
+# Client CSIv2 Configuration related messages CWWKS9600 - CWWKS9619
+# -------------------------------------------------------------------------------------------------
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID=CWWKS9600E: \u00c9rv\u00e9nytelen hiteles\u00edt\u00e9sir\u00e9teg-mechanizmus(ok) vannak megadva a(z) {0} \u00fcgyf\u00e9lbiztons\u00e1gban. Az \u00e9rv\u00e9nyes \u00e9rt\u00e9kek GSSUP vagy LTPA vagy GSSUP, LTPA.
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.explanation=Az \u00fcgyf\u00e9lbiztons\u00e1g megadott hiteles\u00edt\u00e9sir\u00e9teg-mechanizmusa(i) nem t\u00e1mogatott(ak).
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az \u00fcgyf\u00e9lbiztons\u00e1g megadott hiteles\u00edt\u00e9sir\u00e9teg-mechanizmusa vagy GSSUP vagy LTPA vagy GSSUP, LTPA legyen.
+
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL=CWWKS9601W: Az \u00fcgyf\u00e9lbiztons\u00e1gban megadott hiteles\u00edt\u00e9sir\u00e9teg-mechanizmus(ok) \u00e9rt\u00e9ke null.
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.explanation=Az \u00fcgyf\u00e9lbiztons\u00e1g megadott hiteles\u00edt\u00e9sir\u00e9teg-mechanizmusa(i) null\u00e9rt\u00e9k\u0171(ek).
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az \u00fcgyf\u00e9lbiztons\u00e1g megadott hiteles\u00edt\u00e9sir\u00e9teg-mechanizmusa vagy GSSUP vagy LTPA vagy GSSUP, LTPA legyen.
+
+
+# Server CSIv2 Configuration related messages CWWKS9620 - CWWKS9639
+# -------------------------------------------------------------------------------------------------
+CSIv2_SERVER_AUTH_MECHANISM_INVALID=CWWKS9620E: \u00c9rv\u00e9nytelen hiteles\u00edt\u00e9sir\u00e9teg-mechanizmus(ok) vannak megadva a(z) {0} kiszolg\u00e1l\u00f3biztons\u00e1gi ir\u00e1nyelvben. Az \u00e9rv\u00e9nyes \u00e9rt\u00e9kek GSSUP vagy LTPA vagy GSSUP, LTPA.
+CSIv2_SERVER_AUTH_MECHANISM_INVALID.explanation=A megadott kiszolg\u00e1l\u00f3biztons\u00e1gi ir\u00e1nyelv hiteles\u00edt\u00e9sir\u00e9teg-mechanizmusa(i) nem t\u00e1mogatott(ak).
+CSIv2_SERVER_AUTH_MECHANISM_INVALID.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a megadott kiszolg\u00e1l\u00f3biztons\u00e1gi ir\u00e1nyelv hiteles\u00edt\u00e9sir\u00e9teg-mechanizmusa vagy GSSUP vagy LTPA vagy GSSUP, LTPA legyen.
+
+CSIv2_SERVER_AUTH_MECHANISMS_NULL=CWWKS9621W: Az \u00fcgyf\u00e9lbiztons\u00e1gban megadott hiteles\u00edt\u00e9sir\u00e9teg-mechanizmus(ok) \u00e9rt\u00e9ke null.
+CSIv2_SERVER_AUTH_MECHANISMS_NULL.explanation=Az \u00fcgyf\u00e9lbiztons\u00e1g megadott hiteles\u00edt\u00e9sir\u00e9teg-mechanizmusa(i) null\u00e9rt\u00e9k\u0171(ek).
+CSIv2_SERVER_AUTH_MECHANISMS_NULL.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az \u00fcgyf\u00e9lbiztons\u00e1g megadott hiteles\u00edt\u00e9sir\u00e9teg-mechanizmusa vagy GSSUP vagy LTPA vagy GSSUP, LTPA legyen.
+
+CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG=CWWKS9622E: A(z) {0} SSL konfigur\u00e1ci\u00f3 a bej\u00f6v\u0151 CSIv2 sz\u00e1ll\u00edt\u00e1si r\u00e9tegben nem felel meg SSL konfigur\u00e1ci\u00f3nak az IIOP v\u00e9gpontban.
+CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG.explanation=A bej\u00f6v\u0151 CSIv2 sz\u00e1ll\u00edt\u00e1si r\u00e9teg haszn\u00e1l SSL konfigur\u00e1ci\u00f3t, de az IIOP v\u00e9gpont nem ugyanazt az SSL konfigur\u00e1ci\u00f3t haszn\u00e1lja.
+CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG.useraction=Biztos\u00edtsa, hogy a bej\u00f6v\u0151 CSIv2 sz\u00e1ll\u00edt\u00e1si r\u00e9teg SSL konfigur\u00e1ci\u00f3ja a server.xml f\u00e1jlban az IIOP v\u00e9gpont \u00e1ltal haszn\u00e1lt SSL konfigur\u00e1ci\u00f3k egyike legyen.
+
+#Do not translate iiopsOptions
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT=CWWKS9623E: Az IIOP v\u00e9gpont nem rendelkezik SSL konfigur\u00e1ci\u00f3val, \u00e9s a bej\u00f6v\u0151 CSIv2 sz\u00e1ll\u00edt\u00e1si r\u00e9teg a(z) {0} SSL konfigur\u00e1ci\u00f3t ig\u00e9nyli az IIOP v\u00e9gponton.
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT.explanation=Az IIOP v\u00e9gpontnak nincs egyetlen SSL konfigur\u00e1ci\u00f3val rendelkez\u0151 iiopsOptions eleme sem, amire a bej\u00f6v\u0151 CSIv2 sz\u00e1ll\u00edt\u00e1si r\u00e9teg hivatkozhat.
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT.useraction=Gondoskodjon r\u00f3la, hogy az IIOP v\u00e9gpont rendelkezzen legal\u00e1bb egy iiopsOptions elemmel, amely ugyanazt az SSL konfigur\u00e1ci\u00f3t haszn\u00e1lja, mint a bej\u00f6v\u0151 CSIv2 sz\u00e1ll\u00edt\u00e1si r\u00e9teg.
+
+# Client CSIv2 runtime related messages CWWKS9640 - CWWKS9659
+# -------------------------------------------------------------------------------------------------
+# Do not translate ITTDistinguishedName
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_DN=CWWKS9640E: Az \u00fcgyf\u00e9l nem tudja l\u00e9trehozni az ITTDistinguishedName azonoss\u00e1g-ellen\u0151rz\u00e9si tokent a(z) {0} megk\u00fcl\u00f6nb\u00f6ztetett n\u00e9vhez. A kiv\u00e9tel\u00fczenet: {1}
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_DN.explanation=Az ellen\u0151rz\u00f6tt felhaszn\u00e1l\u00f3 t\u00e1rgya nem tartalmaz \u00e9rv\u00e9nyes megk\u00fcl\u00f6nb\u00f6ztetett nevet \u00e9s az azonoss\u00e1g-ellen\u0151rz\u00e9st nem lehet elv\u00e9gezni. 
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_DN.useraction=Tekintse \u00e1t a kiv\u00e9tel\u00fczenetet \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a server.xml f\u00e1jlban be\u00e1ll\u00edtott felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s t\u00e1mogatja a megk\u00fcl\u00f6nb\u00f6ztetett neveket, majd hiteles\u00edtse \u00fajra a felhaszn\u00e1l\u00f3t.
+
+# Do not translate ITTX509CertChain
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_CC=CWWKS9641E: Az \u00fcgyf\u00e9l nem tudja l\u00e9trehozni az ITTX509CertChain azonoss\u00e1g igazol\u00e1s tokent. A kiv\u00e9tel\u00fczenet: {0}
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_CC.explanation=Az ellen\u0151rz\u00f6tt felhaszn\u00e1l\u00f3 t\u00e1rgya nem tartalmaz \u00e9rv\u00e9nyes tan\u00fas\u00edtv\u00e1nyt, \u00e9s az azonoss\u00e1g-ellen\u0151rz\u00e9st nem lehet elv\u00e9gezni. 
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_CC.useraction=Tekintse \u00e1t a kiv\u00e9tel\u00fczenetet, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kulcst\u00e1rol\u00f3, az SSL \u00e9s a kiszolg\u00e1l\u00f3 ir\u00e1nyelv sz\u00e1ll\u00edt\u00e1si r\u00e9teg konfigur\u00e1lva van a server.xml f\u00e1jlban, majd hiteles\u00edt\u00e9se \u00fajra a felhaszn\u00e1l\u00f3t.
+
+CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID=CWWKS9642E: Az \u00fcgyf\u00e9ltan\u00fas\u00edtv\u00e1ny-l\u00e1nc nem \u00e9rhet\u0151 el az azonoss\u00e1g-ellen\u0151rz\u00e9s folytat\u00e1s\u00e1hoz.
+CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID.explanation=Az ellen\u0151rz\u00f6tt felhaszn\u00e1l\u00f3 t\u00e1rgya nem tartalmaz \u00e9rv\u00e9nyes tan\u00fas\u00edtv\u00e1nyt, \u00e9s az azonoss\u00e1g-ellen\u0151rz\u00e9st nem lehet elv\u00e9gezni. 
+CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kulcst\u00e1rol\u00f3, az SSL \u00e9s a kiszolg\u00e1l\u00f3 ir\u00e1nyelv sz\u00e1ll\u00edt\u00e1si r\u00e9teg konfigur\u00e1lva van a server.xml f\u00e1jlban, majd hiteles\u00edt\u00e9se \u00fajra a felhaszn\u00e1l\u00f3t.
+
+# Server CSIv2 runtime related messages CWWKS9660 - CWWKS9679
+# -------------------------------------------------------------------------------------------------
+NO_USER_REGISTRY=CWWKS9660E: A(z) {0} azonos\u00edt\u00f3 attrib\u00fatum\u00fa orb elem egy felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1st ig\u00e9nyel, azonban {1} m\u00e1sodpercen bel\u00fcl egyetlen felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s sem v\u00e1lt el\u00e9rhet\u0151v\u00e9.   Ennek eredm\u00e9nyek\u00e9nt nem fognak elindulni alkalmaz\u00e1sok. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy konfigur\u00e1lt egy megfelel\u0151 felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1st a server.xml f\u00e1jlban.
+NO_USER_REGISTRY.explanation=Egyetlen alkalmaz\u00e1s sem indult el, mert egy v\u00e9dett Objektumk\u00e9r\u00e9s k\u00f6zvet\u00edt\u0151 (ORB) egy kiszolg\u00e1l\u00f3n felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1st ig\u00e9nyel, azonban nem tal\u00e1lhat\u00f3 felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s. Egy megfelel\u0151 felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s konfigur\u00e1l\u00e1sa ut\u00e1n az alkalmaz\u00e1sok el fognak indulni.
+NO_USER_REGISTRY.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy konfigur\u00e1lt egy k\u00f6rnyezetnek megfelel\u0151 felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1st.
+
+# Common CSIv2  related messages CWWKS9680 - CWWKS9699
+# -------------------------------------------------------------------------------------------------
+CSIv2_COMMON_AUTH_LAYER_DISABLED=CWWKS9680W: A CSIv2 hiteles\u00edt\u00e9si r\u00e9tege tiltott, mert az establishTrustInClient param\u00e9ter \u00e9rt\u00e9ke {0}.
+CSIv2_COMMON_AUTH_LAYER_DISABLED.explanation=Ha az establishTrustInClient param\u00e9ter a Never (soha) \u00e9rt\u00e9kre van be\u00e1ll\u00edtva, akkor a CSIv2 hiteles\u00edt\u00e9si r\u00e9tege tiltott.  
+CSIv2_COMMON_AUTH_LAYER_DISABLED.useraction=A CSIv2 hiteles\u00edt\u00e9si r\u00e9teg\u00e9nek enged\u00e9lyez\u00e9s\u00e9hez \u00e1ll\u00edtsa be az establishTrustInClient param\u00e9tert a Supported (t\u00e1mogatott) vagy a Required (k\u00f6telez\u0151) \u00e9rt\u00e9kre.
+
+

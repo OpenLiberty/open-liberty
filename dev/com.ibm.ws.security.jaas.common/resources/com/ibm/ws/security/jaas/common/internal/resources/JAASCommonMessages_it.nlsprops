@@ -1,0 +1,69 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authentication.builtin/resources/com/ibm/ws/security/jaas/common/internal/resources/JAASCommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Authentication Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# JAAS Message prefix block: CWWKS1133 - CWWKS1166
+
+# Only the following message falls outside of the allocated block above 
+# because it was moved as-is from another package for a refactor
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET=CWWKS1108E: L'opzione delegate di WSLoginModuleProxy non \u00e8 impostata.
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.explanation=L'autenticazione non \u00e8 riuscita perch\u00e9 l'opzione delegate di WSLoginModuleProxy non \u00e8 impostata.
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.useraction=Verificare che la configurazione di WSLoginModuleProxy includa l'opzione delegate.
+
+# NOTE!! Any messages added here should start at CWWKS1133
+
+# Start msgs from cWAS
+security.jaas.open.URL=CWWKS1133E: Impossibile aprire l''URL: {0}. L''eccezione \u00e8 {1}
+security.jaas.open.URL.explanation=Si \u00e8 verificata una MalformedURLException nel tentativo di connessione all'URL specificato. 
+security.jaas.open.URL.useraction=Esaminare l'eccezione. Verificare l'URL specificato.
+# -------------------------------------------------------------------------------------------------
+security.jaas.create.URL=CWWKS1134E: Impossibile creare l''URL: {0}. L''eccezione \u00e8 {1}
+security.jaas.create.URL.explanation=Si \u00e8 verificata una IOException nel tentativo di connessione all'URL specificato.
+security.jaas.create.URL.useraction=Esaminare l'eccezione. Verificare l'URL specificato.
+# -------------------------------------------------------------------------------------------------
+security.jaas.parser.URL=CWWKS1135E: Si \u00e8 verificata un''eccezione del parser file con il file : {0}. L''eccezione \u00e8 {1}
+security.jaas.parser.URL.explanation=Si \u00e8 verificata una IOException nel tentativo di connessione all'URL specificato.
+security.jaas.parser.URL.useraction=Esaminare l'eccezione. Verificare l'URL specificato.
+# -------------------------------------------------------------------------------------------------
+security.jaas.duplicate.config=CWWKS1136E: Nome configurazione login duplicato {0}. Sovrascrittura.
+security.jaas.duplicate.config.explanation=Nei dati di configurazione \u00e8 stato specificato un nome configurazione login duplicato.
+security.jaas.duplicate.config.useraction=Controllare i dati di configurazione.
+# -------------------------------------------------------------------------------------------------
+security.jaas.app.parseIO=CWWKS1137E: Si \u00e8 verificata un''eccezione IOException durante l''analisi della configurazione dell''applicazione JAAS. L''eccezione \u00e8 {0}.
+security.jaas.app.parseIO.explanation=Si \u00e8 verificata un'eccezione IOException durante l'analisi della configurazione dell'applicazione JAAS.
+security.jaas.app.parseIO.useraction=Controllare il file di configurazione. Esaminare l'eccezione. 
+# -------------------------------------------------------------------------------------------------
+security.jaas.app.parse=CWWKS1138E: Si \u00e8 verificata un''eccezione ParserException durante l''analisi della configurazione dell''applicazione JAAS. L''eccezione \u00e8 {0}.
+security.jaas.app.parse.explanation=Si \u00e8 verificata un'eccezione ParserException durante l'analisi della configurazione dell'applicazione JAAS.
+security.jaas.app.parse.useraction=Esaminare l'eccezione, che contiene informazioni sull'errore di sintassi nel file di configurazione.
+# -------------------------------------------------------------------------------------------------
+# End msgs from cWAS
+DEFAULT_JAAS_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1139W: Impossibile specificare una jaasLoginContextEntry {0} predefinita nel file di configurazione JAAS  {1}. Una jaasLoginContextEntry predefinita deve essere specificata nel file server.xml o client.xml.
+DEFAULT_JAAS_LOGIN_CONTEXT_ENTRY_SKIP.explanation=Impossibile specificare la jaasLoginContextEntry predefinita nel file di configurazione JAAS.
+DEFAULT_JAAS_LOGIN_CONTEXT_ENTRY_SKIP.useraction=Verificare che il file di configurazione JAAS non abbia una jaasLoginContextEntry predefinita.
+
+OSGI_SERVICE_ERROR=CWWKS1140E: Il servizio OSGi {0} non \u00e8 disponibile.
+OSGI_SERVICE_ERROR.explanation=Il servizio OSGi specificato non \u00e8 disponibile.
+OSGI_SERVICE_ERROR.useraction=Riavviare il server con l'opzione "clean".
+
+JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND=CWWKS1141E: Eccezione nell''esecuzione della classe per il nome per {0}. Eccezione non prevista {1}.  
+JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND.explanation=Eccezione nell'esecuzione della classe per il nome.
+JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND.useraction=Verificare che tutti i moduli di login JAAS personalizzati specificati nel file di configurazione JAAS esistano nella directory JAAS predefinita. La directory JAAS predefinita per il server \u00e8 ${server.config.dir}/resources/security/jaas; La directory JAAS predefinita per il client \u00e8 ${client.config.dir}/resources/security/jaas.
+
+JAAS_DUPLICATE_ENTRY_NAME=CWWKS1142W: Nei file di configurazione JAAS e server.xml/client.xml \u00e8 stato specificato il nome configurazione login duplicato {0}. Verr\u00e0 utilizzato il nome configurazione di accesso nel file server.xml/client.xml.
+JAAS_DUPLICATE_ENTRY_NAME.explanation=Nei file di configurazione JAAS e server.xml/client.xml \u00e8 stato specificato un nome configurazione login duplicato.
+JAAS_DUPLICATE_ENTRY_NAME.useraction=Controllare il file di configurazione JAAS e il file server.xml/client.xml.

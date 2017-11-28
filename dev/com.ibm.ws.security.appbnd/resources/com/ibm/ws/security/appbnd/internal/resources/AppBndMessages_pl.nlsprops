@@ -1,0 +1,31 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.appbnd/resources/com/ibm/ws/security/appbnd/internal/resources/AppBndMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Application Bindings
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9100 - CWWKS9199
+
+AUTHZ_TABLE_DUPLICATE_APP_NAME=CWWKS9110E: Uruchomienie aplikacji nie powiod\u0142o si\u0119, poniewa\u017c znaleziono wiele aplikacji o nazwie {0}. Strategie autoryzacji zabezpiecze\u0144 wymagaj\u0105, aby nazwy by\u0142y unikalne. Przejrzyj konfiguracj\u0119 aplikacji w pliku server.xml.
+AUTHZ_TABLE_DUPLICATE_APP_NAME.explanation=Nazwy aplikacji musz\u0105 by\u0107 unikalne, aby mo\u017cliwe by\u0142o wymuszenie strategii autoryzacji na potrzeby zabezpiecze\u0144.
+AUTHZ_TABLE_DUPLICATE_APP_NAME.useraction=Przejrzyj konfiguracj\u0119, aby sprawdzi\u0107, czy aplikacje maj\u0105 unikalne nazwy, a nast\u0119pnie zrestartuj aplikacj\u0119. 
+
+AUTHZ_TABLE_NOT_CREATED=CWWKS9111E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny podczas uruchamiania aplikacji. Nie mo\u017cna utworzy\u0107 tabeli autoryzacji dla aplikacji {0} i dlatego \u017caden u\u017cytkownik nie zostanie autoryzowany do zasob\u00f3w zabezpieczonych.
+AUTHZ_TABLE_NOT_CREATED.explanation=Tabela autoryzacji dla aplikacji nie zosta\u0142a utworzona i dlatego \u017caden u\u017cytkownik nie zostanie autoryzowany do zasob\u00f3w zabezpieczonych.
+AUTHZ_TABLE_NOT_CREATED.useraction=Sprawd\u017a konfiguracj\u0119 autoryzacji aplikacji, aby okre\u015bli\u0107, dlaczego nie utworzono tabeli autoryzacji.
+
+RUNAS_INVALID_CONFIG=CWWKS9112W: Niepoprawna konfiguracja to\u017csamo\u015bci run-as dla nazwy roli zabezpiecze\u0144 {0} w aplikacji {1}. Sprawd\u017a konfiguracj\u0119 dla to\u017csamo\u015bci run-as i upewnij si\u0119, \u017ce identyfikator u\u017cytkownika i has\u0142o s\u0105 poprawnie skonfigurowane. Na potrzeby autoryzacji b\u0119dzie u\u017cywana pocz\u0105tkowa to\u017csamo\u015b\u0107 programu wywo\u0142uj\u0105cego, poniewa\u017c nie mo\u017cna zastosowa\u0107 roli runAs.
+RUNAS_INVALID_CONFIG.explanation= Konfiguracja to\u017csamo\u015bci run-as dla tej nazwy roli zabezpiecze\u0144 jest niepoprawna dla tej aplikacji. Sprawd\u017a konfiguracj\u0119 to\u017csamo\u015bci run-as i upewnij si\u0119, \u017ce identyfikator u\u017cytkownika i has\u0142o s\u0105 poprawnie skonfigurowane.
+RUNAS_INVALID_CONFIG.useraction=Przejrzyj konfiguracj\u0119 to\u017csamo\u015bci run-as aplikacji dla nazwy roli zabezpiecze\u0144, aby upewni\u0107 si\u0119, \u017ce nazwa u\u017cytkownika i has\u0142o s\u0105 poprawnie skonfigurowane.

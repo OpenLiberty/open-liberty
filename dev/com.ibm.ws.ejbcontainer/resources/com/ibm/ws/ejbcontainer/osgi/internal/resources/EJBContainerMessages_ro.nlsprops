@@ -1,0 +1,196 @@
+###############################################################################
+# Copyright (c) 2011, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWNEN (Injection Engine)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME com.ibm.ws.injection/resources/com/ibm/ws/osgi/internal/resources/EJBContainerMessages.nlsprops
+#COMPONENTPREFIX CNTR
+#COMPONENTNAMEFOR CNTR EJB Container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# NOTE: CNTR4000-CNTR4999 are reserved for use in this message file. All other
+#       CNTR ranges are reserved by com/ibm/ejs/container/container.nlsprops
+#
+#  		CNTR4000-CNTR4099 - general EJB messages
+#       CNTR4100+ - Metadata messages
+#-------------------------------------------------------------------------------
+
+STARTING_MODULE_CNTR4000I=CNTR4000I: Modulul EJB {0} din aplica\u0163ia {1} porne\u015fte.
+STARTING_MODULE_CNTR4000I.explanation=Serverul porne\u015fte modulul EJB.
+STARTING_MODULE_CNTR4000I.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+STARTED_MODULE_CNTR4001I=CNTR4001I: Modulul EJB {0} din aplica\u0163ia {1} a pornit cu succes.
+STARTED_MODULE_CNTR4001I.explanation=Serverul a pornit modulul EJB.
+STARTED_MODULE_CNTR4001I.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+ERROR_STARTING_MODULE_CNTR4002E=CNTR4002E: Modulul EJB {0} din aplica\u0163ia {1} a e\u015fuat s\u0103 porneasc\u0103. Excep\u0163ia: {2}
+ERROR_STARTING_MODULE_CNTR4002E.explanation=Serverul nu a putut porni modulul EJB.
+ERROR_STARTING_MODULE_CNTR4002E.useraction=Folosi\u0163i informa\u0163iile excep\u0163iei pentru a identifica sursa problemei \u015fi pentru a rezolva problema. Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+STOPPING_MODULE_CNTR4003I=CNTR4003I: Modulul EJB {0} din aplica\u0163ia {1} se opre\u015fte.
+STOPPING_MODULE_CNTR4003I.explanation=Serverul opre\u015fte modulul EJB.
+STOPPING_MODULE_CNTR4003I.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+STOPPED_MODULE_CNTR4004I=CNTR4004I: Modulul EJB {0} din aplica\u0163ia {1} s-a oprit cu succes.
+STOPPED_MODULE_CNTR4004I.explanation=Serverul a oprit modulul EJB.
+STOPPED_MODULE_CNTR4004I.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+ERROR_STOPPING_MODULE_CNTR4005E=CNTR4005E: Modulul EJB {0} din aplica\u0163ia {1} a e\u015fuat la oprire. Excep\u0163ia: {2}
+ERROR_STOPPING_MODULE_CNTR4005E.explanation=Serverul nu a putut opri modulul EJB.
+ERROR_STOPPING_MODULE_CNTR4005E.useraction=Folosi\u0163i informa\u0163iile excep\u0163iei pentru a identifica sursa problemei \u015fi pentru a rezolva problema. Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_STARTING_EJB_CNTR4006E=CNTR4006E: Bean-ul de \u00eentreprindere {0} din modulul {1} al aplica\u0163iei {2} a e\u015fuat s\u0103 porneasc\u0103. Excep\u0163ie: {3}
+ERROR_STARTING_EJB_CNTR4006E.explanation=Bean-ul de \u00eentreprindere a fost configurat s\u0103 porneasc\u0103 la prima pornire, \u00een loc de la pornirea modulului s\u0103u. Bean-ul de \u00eentreprindere a e\u015fuat s\u0103 porneasc\u0103 atunci c\u00e2nd a fost folosit prima dat\u0103.
+ERROR_STARTING_EJB_CNTR4006E.useraction=Folosi\u0163i informa\u0163iile excep\u0163iei pentru a identifica sursa problemei \u015fi pentru a rezolva problema. Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+JNDI_CANNOT_INSTANTIATE_OBJECT_CNTR4007E=CNTR4007E: A ap\u0103rut o eroare la crearea interfe\u0163ei {0} pentru bean-ul de \u00eentreprindere {1} din modulul {2} din aplica\u0163ia {3}. C\u0103utarea bean-ului de \u00eentreprindere a e\u015fuat folosind numele JNDI {4}. Excep\u0163ia: {5}
+JNDI_CANNOT_INSTANTIATE_OBJECT_CNTR4007E.explanation=A ap\u0103rut o eroare la crearea unei instan\u0163e a bean-ului de \u00eentreprindere cu numele JNDI specificat.
+JNDI_CANNOT_INSTANTIATE_OBJECT_CNTR4007E.useraction=Vede\u0163i excep\u0163ia imbricat\u0103 sau o eroare anterioar\u0103 pentru informa\u0163ii suplimentare despre eroare.
+
+JNDI_CANNOT_INSTANTIATE_HOME_CNTR4008E=CNTR4008E: Interfa\u0163a de baz\u0103 (home) {0} pentru bean-ul enterprise {1} din modulul {2} al aplica\u0163iei {3} nu a putut fi ob\u0163inut\u0103 pentru numele JNDI {4} deoarece interfa\u0163ele de baz\u0103 (home) nu sunt suportate de niciuna din caracteristicile configurate \u00een fi\u015fierul server.xml.
+JNDI_CANNOT_INSTANTIATE_HOME_CNTR4008E.explanation=Caracteristicile ejbLite nu suport\u0103 interfe\u0163ele home \u015fi component\u0103 ale bean-ului enterprise. Doar interfe\u0163e opera\u0163ionale (business) sunt suportate \u00een caracteristicile ejbLite.
+JNDI_CANNOT_INSTANTIATE_HOME_CNTR4008E.useraction=Modifica\u0163i aplica\u0163ia pentru a \u00eenl\u0103tura utilizarea interfe\u0163elor home \u015fi component\u0103 ale bean-ului enterprise sau ad\u0103uga\u0163i o caracteristic\u0103 ejbHome la fi\u015fierul server.xml.
+
+JNDI_CANNOT_INSTANTIATE_REMOTE_CNTR4009E=CNTR4009E: Interfa\u0163a la distan\u0163\u0103 {0} pentru bean-ul enterprise {1} din modulul {2} al aplica\u0163iei {3} nu a putut fi ob\u0163inut\u0103 pentru numele JNDI {4} deoarece interfa\u0163ele la distan\u0163\u0103 (remote) nu sunt suportate de niciuna din caracteristicile configurate \u00een fi\u015fierul server.xml.
+JNDI_CANNOT_INSTANTIATE_REMOTE_CNTR4009E.explanation=Caracteristicile ejbLite nu suport\u0103 interfe\u0163ele la distan\u0163\u0103 (remote) ale bean-ului enterprise. Doar interfe\u0163e locale sunt suportate \u00een caracteristicile ejbLite.
+JNDI_CANNOT_INSTANTIATE_REMOTE_CNTR4009E.useraction=Modifica\u0163i aplica\u0163ia pentru a \u00eenl\u0103tura utilizarea interfe\u0163elor la distan\u0163\u0103 (remote) ale bean-ului enterprise sau ad\u0103uga\u0163i o caracteristic\u0103 ejbRemote la fi\u015fierul server.xml.
+
+AUTOMATIC_TIMERS_NOT_SUPPORTED_CNTR4010W=CNTR4010W: Bean-ul enterprise {0} din modulul {1} al aplica\u0163iei {2} declar\u0103 cronometre automate nepersistente. Cronometrele automate nepersistente nu sunt suportate de niciuna dintre caracteristicile configurate \u00een fi\u015fierul server.xml \u015fi vor fi ignorate.
+AUTOMATIC_TIMERS_NOT_SUPPORTED_CNTR4010W.explanation=Cronometrele automate nepersistente ale bean-ului enterprise declarate \u00eentr-un descriptor de implementare sau \u00eentr-o adnotare nu sunt suportate de caracteristica ejbLite-3.1 \u015fi vor fi ignorate la momentul rul\u0103rii. \u00cen func\u0163ie de utilizarea inten\u0163ionat\u0103 de aplica\u0163ie pentru cronometrele bean-ului enterprise, aplica\u0163ia ar putea sau nu s\u0103 ruleze conform a\u015ftept\u0103rilor.
+AUTOMATIC_TIMERS_NOT_SUPPORTED_CNTR4010W.useraction=\u00cenl\u0103tura\u0163i folosirea cronometrelor automate nesuportate din aplica\u0163ie sau ad\u0103uga\u0163i o versiune a caracteristicii ejbLite care suport\u0103 cronometre automate nepersistente la fi\u015fierul server.xml.
+
+INJECTION_CANNOT_INSTANTIATE_HOME_CNTR4011E=CNTR4011E: Interfa\u0163a de baz\u0103 (home) {0} pentru bean-ul enterprise {1} din modulul {2} al aplica\u0163iei {3} nu a putut fi ob\u0163inut\u0103 pentru injec\u0163ie deoarece interfa\u0163ele de baz\u0103 (home) nu sunt suportate de niciuna din caracteristicile configurate \u00een fi\u015fierul server.xml.
+INJECTION_CANNOT_INSTANTIATE_HOME_CNTR4011E.explanation=Caracteristicile ejbLite nu suport\u0103 interfe\u0163ele home \u015fi component\u0103 ale bean-ului enterprise. Doar interfe\u0163e opera\u0163ionale (business) sunt suportate \u00een caracteristicile ejbLite.
+INJECTION_CANNOT_INSTANTIATE_HOME_CNTR4011E.useraction=Modifica\u0163i aplica\u0163ia pentru a \u00eenl\u0103tura utilizarea interfe\u0163elor home \u015fi component\u0103 ale bean-ului enterprise sau ad\u0103uga\u0163i o caracteristic\u0103 ejbHome la fi\u015fierul server.xml.
+
+INJECTION_CANNOT_INSTANTIATE_REMOTE_CNTR4012E=CNTR4012E: Interfa\u0163a la distan\u0163\u0103 (remote) {0} pentru bean-ul enterprise {1} din modulul {2} al aplica\u0163iei {3} nu a putut fi ob\u0163inut\u0103 pentru injec\u0163ie deoarece interfa\u0163ele la distan\u0163\u0103 (remote) nu sunt suportate de niciuna din caracteristicile configurate \u00een fi\u015fierul server.xml.
+INJECTION_CANNOT_INSTANTIATE_REMOTE_CNTR4012E.explanation=Caracteristicile ejbLite nu suport\u0103 interfe\u0163ele la distan\u0163\u0103 (remote) ale bean-ului enterprise. Doar interfe\u0163e locale sunt suportate \u00een caracteristicile ejbLite.
+INJECTION_CANNOT_INSTANTIATE_REMOTE_CNTR4012E.useraction=Modifica\u0163i aplica\u0163ia pentru a \u00eenl\u0103tura utilizarea interfe\u0163elor la distan\u0163\u0103 (remote) ale bean-ului enterprise sau ad\u0103uga\u0163i o caracteristic\u0103 ejbRemote la fi\u015fierul server.xml.
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_ACTIVATED_CNTR4013I 
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_DEACTIVATED_CNTR4014I
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_DESTINATION_NOT_FOUND_CNTR4016W
+
+ASYNC_METHODS_NOT_SUPPORTED_CNTR4017E=CNTR4017E: Metoda asincron\u0103 {0} a bean-ului enterprise {1} din modulul {2} al aplica\u0163iei {3} nu a putut fi planificat. Metodele EJB asincrone nu sunt suportate de niciuna dintre caracteristicile configurate \u00een fi\u015fierul server.xml.
+ASYNC_METHODS_NOT_SUPPORTED_CNTR4017E.explanation=Metodele EJB asincrone nu sunt suportate de caracteristica ejbLite-3.1.
+ASYNC_METHODS_NOT_SUPPORTED_CNTR4017E.useraction=\u00cenl\u0103tura\u0163i folosirea metodelor asincrone nesuportate din aplica\u0163ie sau ad\u0103uga\u0163i o versiune a caracteristicii ejbLite care suport\u0103 metode asincrone la fi\u015fierul server.xml.
+
+NON_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4018E=CNTR4018E: Nu pot fi create sau accesate cronometre nepersistente. Cronometrele EJB nepersistente nu sunt suportate de niciuna dintre caracteristicile configurate \u00een fi\u015fierul server.xml.
+NON_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4018E.explanation=Cronometrele EJB nepersistente nu sunt suportate de caracteristica ejbLite-3.1.
+NON_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4018E.useraction=\u00cenl\u0103tura\u0163i folosirea cronometrelor nepersistente nesuportate din aplica\u0163ie sau ad\u0103uga\u0163i o versiune a caracteristicii ejbLite care suport\u0103 cronometre nepersistente la fi\u015fierul server.xml. 
+
+PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E=CNTR4019E: Nu pot fi create sau accesate cronometre persistente. Cronometrele EJB persistente nu sunt suportate de niciuna dintre caracteristicile configurate \u00een fi\u015fierul server.xml.
+PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E.explanation=Cronometrele EJB persistente nu sunt suportate de caracteristica ejbLite.
+PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E.useraction=\u00cenl\u0103tura\u0163i folosirea cronometrelor persistente nesuportate din aplica\u0163ie sau ad\u0103uga\u0163i o caracteristic\u0103 ejbPersistentTimer la fi\u015fierul server.xml. 
+
+DUPLICATE_EJB_CNTR4100E=CNTR4100E: Valoarea {0} pentru elementul <ejb-name> din fi\u015fierul ejb-jar.xml nu este unic\u0103.
+DUPLICATE_EJB_CNTR4100E.explanation=Mai multe bean-uri de \u00eentreprindere au fost definite cu acela\u015fi nume \u00een fi\u015fierul ejb-jar.xml. Fiecare bean de \u00eentreprindere trebuie s\u0103 aib\u0103 un nume unic.
+DUPLICATE_EJB_CNTR4100E.useraction=\u00cenl\u0103tura\u0163i defini\u0163iile de bean de \u00eentreprindere duplicate.
+
+UNSPECIFIED_CLASS_CNTR4101E=CNTR4101E: Elementul <ejb-class> nu a fost specificat pentru bean-ul de \u00eentreprindere {0} \u00een fi\u015fierul ejb-jar.xml.
+UNSPECIFIED_CLASS_CNTR4101E.explanation=Elementul <ejb-class> nu a fost specificat \u00een fi\u015fierul ejb-jar.xml. Acest element este necesar pentru bean-urile de \u00eentreprindere definite f\u0103r\u0103 a folosi o adnotare.
+UNSPECIFIED_CLASS_CNTR4101E.useraction=Ad\u0103uga\u0163i elementul <ejb-class> la defini\u0163ia bean-ului de \u00eentreprindere \u00een fi\u015fierul ejb-jar.xml.
+
+UNSPECIFIED_SESSION_TYPE_CNTR4102E=CNTR4102E: Elementul <session-type> nu a fost specificat pentru bean-ul de sesiune {0} \u00een fi\u015fierul ejb-jar.xml.
+UNSPECIFIED_SESSION_TYPE_CNTR4102E.explanation=Elementul <session-type> nu a fost specificat \u00een fi\u015fierul ejb-jar.xml. Acest element este necesar pentru bean-urile de sesiune definite f\u0103r\u0103 a folosi o adnotare.
+UNSPECIFIED_SESSION_TYPE_CNTR4102E.useraction=Ad\u00eeuga\u0163i elementul <session-type> la defini\u0163ia bean-ului de sesiune.
+
+INCOMPATIBLE_KIND_CNTR4103E=CNTR4103E: Bean-ul de \u00eentreprindere {0} a fost definit cu tipuri de bean incompatibile. Elementul {1} a fost folosit \u00een fi\u015fierul ejb-jar.xml, iar adnotarea {2} a fost specificat\u0103 pe clasa {3}.
+INCOMPATIBLE_KIND_CNTR4103E.explanation=Un bean de \u00eentreprindere poate avea un singur tip, dar s-au specificat tipuri incompatibile \u00een fi\u015fierul ejb-jar.xml \u015fi prin adnotare.
+INCOMPATIBLE_KIND_CNTR4103E.useraction=Modifica\u0163i tipul elementului sau tipul adnot\u0103rii pentru bean-ul de \u00eentreprindere.
+
+INCOMPATIBLE_ANN_TYPE_CNTR4104E=CNTR4104E: Bean-ul de \u00eentreprindere {0} a fost definit cu tipuri de bean incompatibile. Adnot\u0103rile {1} \u015fi {2} au fost ambele specificate pe clasa {3}.
+INCOMPATIBLE_ANN_TYPE_CNTR4104E.explanation=Un bean de \u00eentreprindere poate avea un singur tip, dar s-au specificat mai multe adnot\u0103ri de definire a componentelor.
+INCOMPATIBLE_ANN_TYPE_CNTR4104E.useraction=\u00cenl\u0103tura\u0163i una din adnot\u0103rile component-defining.
+
+INCOMPATIBLE_SESSION_TYPE_CNTR4105E=CNTR4105E: Bean-ul de \u00eentreprindere {0} a fost definit cu tipuri de bean incompatibile. Elementul <session-type>{1}</session-type> a fost folosit \u00een fi\u015fierul ejb-jar.xml \u015fi adnotarea {2} a fost specificat\u0103 pe clasa {3}.
+INCOMPATIBLE_SESSION_TYPE_CNTR4105E.explanation=Un bean de \u00eentreprindere poate avea un singur tip, dar s-au specificat tipuri incompatibile \u00een fi\u015fierul ejb-jar.xml \u015fi prin adnotare.
+INCOMPATIBLE_SESSION_TYPE_CNTR4105E.useraction=Modifica\u0163i tipul elementului sau tipul adnot\u0103rii pentru bean-ul de \u00eentreprindere.
+
+INCOMPATIBLE_CLASS_ANN_ANN_CNTR4106E=CNTR4106E: Bean-ul de \u00eentreprindere {0} a fost declarat cu mai multe clase: dup\u0103 adnotarea {1} pe clasa {2} \u015fi dup\u0103 adnotarea {3} pe clasa {4}.
+INCOMPATIBLE_CLASS_ANN_ANN_CNTR4106E.explanation=Un bean de \u00eentreprindere poate fi declarat numai cu o clas\u0103, dar a fost declarat cu clase diferite dup\u0103 adnot\u0103ri pe dou\u0103 clase separate.
+INCOMPATIBLE_CLASS_ANN_ANN_CNTR4106E.useraction=\u00cenl\u0103tura\u0163i una din adnot\u0103ri sau modifica\u0163i unul din numele bean-ului de \u00eentreprindere.
+
+INCOMPATIBLE_DEFAULT_BUSINESS_INTERFACE_TYPE_CNTR4107E=CNTR4107E: Adnot\u0103rile @Remote \u015fi @Local au fost am\u00e2ndou\u0103 specificate f\u0103r\u0103 o valoare pe clasa {0} a bean-ului de \u00eentreprindere {1}.
+INCOMPATIBLE_DEFAULT_BUSINESS_INTERFACE_TYPE_CNTR4107E.explanation=Specificarea adnot\u0103rii @Remote sau @Local f\u0103r\u0103 o valoare indic\u0103 faptul c\u0103 interfe\u0163ele opera\u0163ionale de pe clauza implements ar trebui considerate la distan\u0163\u0103, respectiv local\u0103, a\u015fa c\u0103 nu se pot specifica ambele adnot\u0103ri f\u0103r\u0103 valoare.
+INCOMPATIBLE_DEFAULT_BUSINESS_INTERFACE_TYPE_CNTR4107E.useraction=\u00cenl\u0103tura\u0163i adnotarea sau specifica\u0163i adnot\u0103rile cu interfe\u0163ele opera\u0163ionale.
+
+DEFAULT_IMPLEMENTS_NONE_CNTR4108E=CNTR4108E: Adnotarea {0} a fost specificat\u0103 f\u0103r\u0103 o valoare pe clasa {1} a bean-ului de \u00eentreprindere {2}, dar clauza implements nu con\u0163ine nici o interfa\u0163\u0103 opera\u0163ional\u0103.
+DEFAULT_IMPLEMENTS_NONE_CNTR4108E.explanation=Specificarea adnot\u0103rii @Remote sau @Local f\u0103r\u0103 o valoare indic\u0103 faptul c\u0103 interfe\u0163ele opera\u0163ionale de pe clauza implements ar trebui considerate la distan\u0163\u0103, respectiv local\u0103, dar clasa nu are nici o interfa\u0163\u0103 opera\u0163ional\u0103 pe clauza sa implements.
+DEFAULT_IMPLEMENTS_NONE_CNTR4108E.useraction=Ad\u0103uga\u0163i o interfa\u0163\u0103 opera\u0163ional\u0103 clauzei implements, \u00eenl\u0103tura\u0163i adnotarea sau specifica\u0163i adnotarea cu interfe\u0163ele opera\u0163ionale.
+
+# Note: This message was added in 8.5.5 but is no longer used.
+DEFAULT_IMPLEMENTS_MULTIPLE_CNTR4109E=CNTR4109E: Adnotarea {0} a fost specificat\u0103 f\u0103r\u0103 o valoare pe clasa {1} a bean-ului de \u00eentreprindere {2}, dar clauza implements con\u0163ine mai multe interfe\u0163e opera\u0163ionale: {3} \u015fi {4}.
+DEFAULT_IMPLEMENTS_MULTIPLE_CNTR4109E.explanation=Specificarea adnot\u0103rii @Remote sau @Local f\u0103r\u0103 o valoare indic\u0103 faptul c\u0103 interfa\u0163a opera\u0163ional\u0103 din clauza implements ar trebui considerat\u0103 la distan\u0163\u0103 sau, respectiv, local\u0103, dar clasa are mai multe interfa\u0163e opera\u0163ionale pe clauza sa implements.
+DEFAULT_IMPLEMENTS_MULTIPLE_CNTR4109E.useraction=\u00cenl\u0103tura\u0163i toate interfe\u0163ele opera\u0163ionale de pe clauza implements, cu excep\u0163ia uneia, sau specifica\u0163i adnotarea cu toate interfe\u0163ele opera\u0163ionale.
+
+INCOMPATIBLE_INTERFACE_TYPE_CNTR4110E=CNTR4110E: Bean-ul de \u00eentreprindere {0} a specificat clasa {1} at\u00e2t ca interfa\u0163\u0103 opera\u0163ional\u0103 local\u0103, c\u00e2t \u015fi ca interfa\u0163\u0103 opera\u0163ional\u0103 la distan\u0163\u0103.
+INCOMPATIBLE_INTERFACE_TYPE_CNTR4110E.explanation=O clas\u0103 poate fi specificat\u0103 pentru un bean de \u00eentreprindere fie ca interfa\u0163\u0103 opera\u0163ional\u0103 local\u0103, fie ca interfa\u0163\u0103 opera\u0163ional\u0103 la distan\u0163\u0103, dar nu ambele.
+INCOMPATIBLE_INTERFACE_TYPE_CNTR4110E.useraction=Actualiza\u0163i clasa bean-ului de \u00eentreprindere, clasa de interfa\u0163\u0103 sau descriptorul de implementare, pentru ca interfa\u0163a s\u0103 fie specificat\u0103 fie ca interfa\u0163\u0103 opera\u0163ional\u0103 local\u0103, fie ca interfa\u0163\u0103 opera\u0163ional\u0103 la distan\u0163\u0103, dar nu ambele.
+
+IMPLEMENTS_INTERFACE_TYPE_VALUE_CNTR4111E=CNTR4111E: Adnotarea {0} a fost specificat\u0103 cu o valoare pe interfa\u0163a {1}. Interfa\u0163a a fost specificat\u0103 \u00een clauza implements a clasei {2} a bean-ului de \u00eentreprindere {3}.
+IMPLEMENTS_INTERFACE_TYPE_VALUE_CNTR4111E.explanation=Adnot\u0103rile @Remote \u015fi @Local pot avea o valoare numai c\u00e2nd sunt specificate pe o clas\u0103 de bean de \u00eentreprindere.
+IMPLEMENTS_INTERFACE_TYPE_VALUE_CNTR4111E.useraction=\u00cenl\u0103tura\u0163i valoarea din adnotarea @Remote sau @Local pe interfa\u0163\u0103.
+
+ORPHAN_EXTENSION_ENTRY_CNTR4112W=CNTR4112W: O extensie {0} din fi\u015fierul ibm-ejb-jar-ext.xml din modulul {1} face referire la bean-ul de \u00eentreprindere {2}, care nu exist\u0103.
+ORPHAN_EXTENSION_ENTRY_CNTR4112W.explanation=Numele bean-ului de \u00eentreprindere ar putea fi incorect sau s-a specificat o extensie pentru un bean de \u00eentreprindere care nu exist\u0103.
+ORPHAN_EXTENSION_ENTRY_CNTR4112W.useraction=Corecta\u0163i numele bean-ului de \u00eentreprindere \u00een fi\u015fierul ibm-ejb-jar-ext.xml.
+
+RESOLVER_ACTIVITY_SESSION_NOT_SUPPORTED_CNTR4113E=CNTR4113E: Bean-ul de \u00eentreprindere {0} din modulul {1} din aplica\u0163ia {2} este configurat \u00een fi\u015fierul ibm-ejb-jar-ext.xml s\u0103 foloseasc\u0103 grani\u0163a de tranzac\u0163ie local\u0103 {3}, care nu este suportat\u0103 \u00een profilul Liberty.
+RESOLVER_ACTIVITY_SESSION_NOT_SUPPORTED_CNTR4113E.explanation=Valoarea atributului grani\u0163\u0103 ACTIVITY_SESSION al extensiei <local-transaction> nu este suportat\u0103 \u00een profilul Liberty.
+RESOLVER_ACTIVITY_SESSION_NOT_SUPPORTED_CNTR4113E.useraction=Actualiza\u0163i fi\u015fierul ibm-ejb-jar-ext.xml pentru a specifica BEAN_METHOD pentru grani\u0163\u0103 sau \u00eenl\u0103tura\u0163i atributul grani\u0163\u0103 pentru a folosi valoarea implicit\u0103, care este BEAN_METHOD.
+
+INCOMPATIBLE_CLASS_XML_ANN_CNTR4114E=CNTR4114E: Bean-ul de \u00eentreprindere {0} a fost declarat cu mai multe clase: cu valoarea {1} \u00een elementul <ejb-class> \u00een fi\u015fierul ejb-jar.xml \u015fi prin adnotarea {2} pe clasa {3}.
+INCOMPATIBLE_CLASS_XML_ANN_CNTR4114E.explanation=Un bean de \u00eentreprindere poate fi declarat numai cu o clas\u0103, dar a fost declarat cu clase diferite \u00een XML \u015fi dup\u0103 o adnotare.
+INCOMPATIBLE_CLASS_XML_ANN_CNTR4114E.useraction=\u00cenl\u0103tura\u0163i clasa din ejb-jar.xml, \u00eenl\u0103tura\u0163i adnotarea sau modifica\u0163i unul din numele bean-ului de \u00eentreprindere.
+
+INVALID_CLASS_CNTR4115E=CNTR4115E: Elementul <ejb-class> din fi\u015fierul ejb-jar.xml specific\u0103 numele clasei {0} pentru bean-ul de \u00eentreprindere {1}, dar fi\u015fierul clasei nu a fost g\u0103sit.
+INVALID_CLASS_CNTR4115E.explanation=Fie fi\u015fierul ejb-jar.xml specific\u0103 un nume de clas\u0103 invalid, fie fi\u015fierul clasei nu a fost \u00eempachetat \u00een aplica\u0163ie.
+INVALID_CLASS_CNTR4115E.useraction=Corecta\u0163i numele clasei \u00een fi\u015fierul ejb-jar.xml sau \u00eempacheta\u0163i fi\u015fierul clasei \u00een aplica\u0163ie.

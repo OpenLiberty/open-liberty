@@ -1,0 +1,35 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.ready.service/resources/com/ibm/ws/security/internal/resources/SecurityReadyServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS0007 - CWWKS0009
+
+#
+# NOTE: CWWKS0007 through CWWKS0009 have been moved from com.ibm.ws.security project, they should not be retranslated!
+#
+
+SECURITY_SERVICE_STARTING=CWWKS0007I: Uruchamianie us\u0142ugi zabezpiecze\u0144...
+SECURITY_SERVICE_STARTING.explanation=Trwa proces uruchamiania us\u0142ugi zabezpiecze\u0144. Je\u015bli niezb\u0119dne jest przeprowadzenie jednorazowego inicjowania, mo\u017ce to troch\u0119 potrwa\u0107.
+SECURITY_SERVICE_STARTING.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+SECURITY_SERVICE_READY=CWWKS0008I: Us\u0142uga zabezpiecze\u0144 jest gotowa.
+SECURITY_SERVICE_READY.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+SECURITY_SERVICE_READY.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+SECURITY_SERVICE_STOPPED=CWWKS0009I: Us\u0142uga zabezpiecze\u0144 zosta\u0142a zatrzymana.
+SECURITY_SERVICE_STOPPED.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+SECURITY_SERVICE_STOPPED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.

@@ -1,0 +1,152 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/mp/jwt/resources/MicroProfileJwtMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server MicroProfile JWT
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS5500 - CWWKS5599
+
+MPJWT_CONFIG_PROCESSED=CWWKS5500I: Die MicroProfile-JWT-Konfiguration [{0}] wurde erfolgreich verarbeitet.
+MPJWT_CONFIG_PROCESSED.explanation=Die angegebene Konfiguration wurde erfolgreich verarbeitet.
+MPJWT_CONFIG_PROCESSED.useraction=Es ist keine Aktion erforderlich.
+
+MPJWT_CONFIG_MODIFIED=CWWKS5501I: Die MicroProfile-JWT-Konfiguration [{0}] wurde erfolgreich verarbeitet.
+MPJWT_CONFIG_MODIFIED.explanation=Die angegebene Konfiguration wurde erfolgreich verarbeitet.
+MPJWT_CONFIG_MODIFIED.useraction=Es ist keine Aktion erforderlich.
+
+MPJWT_CONFIG_DEACTIVATED=CWWKS5502I: Die MicroProfile-JWT-Konfiguration [{0}] wurde erfolgreich inaktiviert.
+MPJWT_CONFIG_DEACTIVATED.explanation=Die angegebene Konfiguration wurde erfolgreich inaktiviert.
+MPJWT_CONFIG_DEACTIVATED.useraction=Es ist keine Aktion erforderlich.
+
+# 0=Exception message
+ERROR_GETTING_CLAIMS_FROM_JWT_STRING=CWWKS5503E: Das MicroProfile-JWT-Feature hat beim Abrufen von Anspr\u00fcchen aus der bereitgestellten JWT-Zeichenfolge ein Problem festgestellt. {0}
+ERROR_GETTING_CLAIMS_FROM_JWT_STRING.explanation=Die JWT-Zeichenfolge ist wahrscheinlich fehlerhaft und kann nicht geparst werden.
+ERROR_GETTING_CLAIMS_FROM_JWT_STRING.useraction=Vergewissern Sie sich, dass die JWT-Zeichenfolge ein g\u00fcltiges JSON-Objekt ist.
+
+# Do not translate "JsonWebToken"
+# 0=List of principal names
+TOO_MANY_JWT_PRINCIPALS=CWWKS5504W: Das angegebene Subjekt enth\u00e4lt mehr als einen Principal des Typs JsonWebToken. Es ist nur ein einziger JsonWebToken-Principal pro Subjekt zul\u00e4ssig. Die Namen der JsonWebToken-Principals sind: {0}
+TOO_MANY_JWT_PRINCIPALS.explanation=Das Subjekt enth\u00e4lt zu viele Principals des Typs JsonWebToken. Es wird nur ein einziger Principal dieses Typs unterst\u00fctzt.
+TOO_MANY_JWT_PRINCIPALS.useraction=Vergewissern Sie sich, dass die Anwendung keine zus\u00e4tzlichen JsonWebToken-Principals in das Subjekt einf\u00fcgt.
+
+# Do not translate "mpjwt_login_hint"
+# 0=mpJwt configuration ID
+MPJWT_NO_SUCH_PROVIDER=CWWKS5505E: Die MicroProfile-JWT-Konfiguration [{0}], die in der Anforderung angegeben ist, fehlt, oder sie ist nicht f\u00fcr die Verarbeitung dieser Anforderung konfiguriert.
+MPJWT_NO_SUCH_PROVIDER.explanation=Die Anforderung enth\u00e4lt einen Parameter oder Header mit dem Namen 'mpjwt_login_hint', der eine f\u00fcr diese Anforderung zu verwendende MicroProfile-JWT-Konfigurations-ID angibt. Es ist jedoch keine MicroProfile-JWT-Konfiguration vorhanden, die dieser ID entspricht, oder sie ist nicht f\u00fcr die Verarbeitung dieser Anforderung konfiguriert.
+MPJWT_NO_SUCH_PROVIDER.useraction=Vergewissern Sie sich, dass ein MicroProfile-JWT-Service mit der angegebenen ID konfiguriert ist.
+
+USERNAME_NOT_FOUND=CWWKS5506E: Der Benutzername kann nicht aus dem Token extrahiert werden.
+USERNAME_NOT_FOUND.explanation=Das Token enth\u00e4lt keinen Anspruch, der mit dem Wert des Konfigurationsattributs userNameAttribute \u00fcbereinstimmt, oder der \u00fcber das Konfigurationsattribut userNameAttribute angegebene Wert ist falsch.
+USERNAME_NOT_FOUND.useraction=Vergewissern Sie sich, dass das Token einen Anspruch enth\u00e4lt, der mit dem Wert des Konfigurationsattributs userNameAttribute \u00fcbereinstimmt.
+
+# 0=Claim name, 1=Exception message
+CANNOT_GET_CLAIM_FROM_JSON=CWWKS5507E: Das MicroProfile-JWT-Feature hat beim Abrufen des Anspruchs [{0}] aus den bereitgestellten JSON-Daten ein Problem festgestellt. {1}
+CANNOT_GET_CLAIM_FROM_JSON.explanation=Die bereitgestellten JSON-Daten fehlen wahrscheinlich oder sind fehlerhaft.
+CANNOT_GET_CLAIM_FROM_JSON.useraction=Vergewissern Sie sich, dass die bereitgestellten JSON-Daten als g\u00fcltiges JSON-Objekt formatiert sind.
+
+# 0=mpJwt element ID, 1=Error message
+ERROR_CREATING_RESULT=CWWKS5508E: Das MicroProfile-JWT-Feature kann mit der MicroProfile-JWT-Konfiguration [{0}] kein Subjekt f\u00fcr den Benutzer mit dem bereitgestellten Token erstellen. {1}
+ERROR_CREATING_RESULT.explanation=Einige der Daten, die zum Erstellen des Subjekts f\u00fcr den angegebenen Benutzer verwendet wurden, k\u00f6nnten fehlen oder fehlerhaft sein.
+ERROR_CREATING_RESULT.useraction=Sehen Sie sich die Benutzeraktion f\u00fcr den Fehler an, der in der Nachricht angezeigt wird. Suchen Sie in den Serverprotokollen nach zus\u00e4tzlichen Fehlernachrichten.
+
+# 0=Claim name, 1=Exception message
+CLAIM_MALFORMED=CWWKS5509W: Der Wert des Anspruchs [{0}] ist nicht ordnungsgem\u00e4\u00df formatiert. {1}
+CLAIM_MALFORMED.explanation=Der Wert des angegebenen Anspruchs stimmt nicht mit dem erwarteten Datentyp \u00fcberein.
+CLAIM_MALFORMED.useraction=Vergewissern Sie sich, dass der angegebene Anspruch vorhanden ist und dass der zugeh\u00f6rige Wert ordnungsgem\u00e4\u00df formatiert ist.
+
+# 0=mpJwt element ID, 1=Error message
+FAILED_TO_GET_SSL_CONTEXT=CWWKS5510E: Der SSL-Kontext f\u00fcr die MicroProfile-JWT-Konfiguration [{0}] kann nicht geladen werden. {1}
+FAILED_TO_GET_SSL_CONTEXT.explanation=Die von der angegebenen Konfiguration verwendete SSL-Konfiguration fehlt m\u00f6glicherweise oder sie ist falsch.
+FAILED_TO_GET_SSL_CONTEXT.useraction=Suchen Sie in der Fehlernachricht nach weiteren Informationen. Vergewissern Sie sich, dass die SSL-Informationen f\u00fcr die angegebene Konfiguration korrekt sind. Wenn das sslRef-Konfigurationsattribut in der MicroProfile-JWT-Konfiguration angegeben ist, vergewissern Sie sich, dass die entsprechende SSL-Konfiguration korrekt ist. Stellen Sie andernfalls sicher, dass die Standard-SSL-Konfiguration f\u00fcr den Server ordnungsgem\u00e4\u00df konfiguriert ist.
+
+# Do not translate "JSON", "JSON Web Token", or "JWT"
+# 0=mpJwt element ID
+SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE=CWWKS5511E: Die JWT-Konsumentenfunktion (JSON Web Token) ist f\u00fcr die MicroProfile-JWT-Konfiguration [{0}] m\u00f6glicherweise nicht verf\u00fcgbar, weil der Service f\u00fcr die angegebene Konfiguration nicht gefunden wurde.
+SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE.explanation=Die angegebene MicroProfile-JWT-Konfiguration ist m\u00f6glicherweise noch nicht verf\u00fcgbar oder der Service f\u00fcr die Konfiguration wurde gestoppt.
+SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE.useraction=Vergewissern Sie sich, dass die angegebene Konfiguration konfiguriert und verf\u00fcgbar ist.
+
+# 0=Exception message
+ERROR_LOADING_SSL_PROPS=CWWKS5512E: Die SSL-Referenzinformationen f\u00fcr das MicroProfile-JWT-Feature k\u00f6nnen nicht geladen werden, weil beim Laden der SSL-Eigenschaften ein Fehler aufgetreten ist. {0}
+ERROR_LOADING_SSL_PROPS.explanation=Die von der MicroProfile-JWT-Konfiguration verwendete SSL-Konfiguration ist nicht verf\u00fcgbar oder beim Laden der Eigenschaften f\u00fcr die SSL-Konfiguration ist ein Fehler aufgetreten.
+ERROR_LOADING_SSL_PROPS.useraction=Vergewissern Sie sich, dass die vom MicroProfile-JWT-Service verwendete SSL-Konfiguration ordnungsgem\u00e4\u00df konfiguriert ist und erfolgreich gestartet wurde.
+
+KEYSTORE_SERVICE_NOT_FOUND=CWWKS5513E: Der Keystore-Service wurde nicht gefunden.
+KEYSTORE_SERVICE_NOT_FOUND.explanation=Der Keystore-Service f\u00fcr das MicroProfile-JWT-Feature ist nicht verf\u00fcgbar.
+KEYSTORE_SERVICE_NOT_FOUND.useraction=Vergewissern Sie sich, dass der vom MicroProfile-JWT-Service verwendete Keystore-Service ordnungsgem\u00e4\u00df konfiguriert ist und erfolgreich gestartet wurde.
+
+# 0=Trust store name, 1=Exception message
+FAILED_TO_LOAD_PUBLIC_KEYS=CWWKS5514E: \u00d6ffentliche Schl\u00fcssel k\u00f6nnen nicht aus dem angegebenen Truststore [{0}] geladen werden. {1}
+FAILED_TO_LOAD_PUBLIC_KEYS.explanation=Der Truststore-Service ist nicht verf\u00fcgbar oder beim Laden der Zertifikate aus dem Truststore ist ein Fehler aufgetreten.
+FAILED_TO_LOAD_PUBLIC_KEYS.useraction=Sehen Sie sich die Benutzeraktion f\u00fcr den Fehler an, der in der Nachricht angezeigt wird. Suchen Sie in den Serverprotokollen nach zus\u00e4tzlichen Fehlernachrichten.
+
+# 0=Trust store name, 1=Exception message
+FAILED_TO_LOAD_PUBLIC_KEY=CWWKS5515E: Ein \u00f6ffentlicher Schl\u00fcssel kann nicht aus dem angegebenen Truststore [{0}] geladen werden. {1}
+FAILED_TO_LOAD_PUBLIC_KEY.explanation=Entweder kann der \u00fcber das Konfigurationsattribut keyAlias angegebene Schl\u00fcssel nicht geladen werden oder beim Laden des ersten verf\u00fcgbaren \u00f6ffentlichen Schl\u00fcssels ist ein Fehler aufgetreten.
+FAILED_TO_LOAD_PUBLIC_KEY.useraction=Sehen Sie sich die Benutzeraktion f\u00fcr den Fehler an, der in der Nachricht angezeigt wird. Suchen Sie in den Serverprotokollen nach zus\u00e4tzlichen Fehlernachrichten.
+
+# Intended to be a child of FAILED_TO_LOAD_PUBLIC_KEYS
+# 0=Trust store name, 1=Exception message
+ERROR_LOADING_KEYSTORE_CERTIFICATES=CWWKS5516E: Das MicroProfile-JWT-Feature hat beim Abrufen von Zertifikaten aus dem Truststore [{0}] ein Problem festgestellt. {1}
+ERROR_LOADING_KEYSTORE_CERTIFICATES.explanation=Der angegebene Truststore ist m\u00f6glicherweise nicht vorhanden oder beim Abrufen von vertrauensw\u00fcrdigen Zertifikaten aus dem Truststore ist ein Fehler aufgetreten.
+ERROR_LOADING_KEYSTORE_CERTIFICATES.useraction=Vergewissern Sie sich, dass der angegebene Truststore in der Serverkonfiguration vorhanden ist. Vergewissern Sie sich, dass der vom MicroProfile-JWT-Service verwendete Keystore-Service ordnungsgem\u00e4\u00df konfiguriert ist und erfolgreich gestartet wurde.
+
+# Intended to be a child of FAILED_TO_LOAD_PUBLIC_KEYS or FAILED_TO_LOAD_PUBLIC_KEY
+# 0=Certificate alias name, 1=Trust store name, 2=Exception message
+ERROR_LOADING_CERTIFICATE=CWWKS5517E: Das Zertifikat mit dem Alias [{0}] kann nicht aus dem Truststore [{1}] geladen werden. {2}
+ERROR_LOADING_CERTIFICATE.explanation=Der angegebene Truststore ist entweder nicht vorhanden oder der Truststore enth\u00e4lt kein Zertifikat mit dem angegebenen Alias.
+ERROR_LOADING_CERTIFICATE.useraction=Vergewissern Sie sich, dass der angegebene Truststore in der Serverkonfiguration vorhanden ist. Vergewissern Sie sich, dass der Truststore ein Zertifikat mit dem angegebenen Alias enth\u00e4lt.
+
+# Intended to be a child of FAILED_TO_LOAD_PUBLIC_KEY
+# 0=Trust store name, 1=Exception message
+FAILED_TO_LOAD_FIRST_AVAILABLE_KEY=CWWKS5518E: Der erste \u00f6ffentliche Schl\u00fcssel, der im angegebenen Truststore [{0}] gefunden wurde, kann nicht geladen werden. {1}
+FAILED_TO_LOAD_FIRST_AVAILABLE_KEY.explanation=Beim Laden der \u00f6ffentlichen Schl\u00fcssel in den angegebenen Truststore ist sehr wahrscheinlich ein Fehler aufgetreten.
+FAILED_TO_LOAD_FIRST_AVAILABLE_KEY.useraction=Sehen Sie sich die Benutzeraktion f\u00fcr den Fehler an, der in der Nachricht angezeigt wird. Suchen Sie in den Serverprotokollen nach zus\u00e4tzlichen Fehlernachrichten.
+
+# 0=Claim name, 1=Name of the configuration attribute that specifies which claim to use
+PRINCIPAL_MAPPING_MISSING_ATTR=CWWKS5519E: Die Informationen zum authentifizierten Benutzer enthalten nicht den Anspruch [{0}], der \u00fcber das Attribut [{1}] in der MicroProfile-JWT-Konfiguration angegeben wurde.
+PRINCIPAL_MAPPING_MISSING_ATTR.explanation=Es wird erwartet, dass der angegebene Anspruch in den Informationen zum authentifizierten Benutzer gefunden wird. Der Anspruch wurde jedoch nicht gefunden. Die Benutzerinformationen fehlen m\u00f6glicherweise oder sind fehlerhaft, das angegebene Konfigurationsattribut fehlt m\u00f6glicherweise oder ist leer, oder der angegebene Anspruch ist in den Benutzerinformationen nicht vorhanden.
+PRINCIPAL_MAPPING_MISSING_ATTR.useraction=F\u00fchren Sie eine der folgenden Aktionen aus: 1) Geben Sie einen anderen Anspruch als Wert f\u00fcr das angegebene Attribut in der MicroProfile-JWT-Konfiguration an. 2) Vergewissern Sie sich, dass der Provider die Informationen zum authentifizierten Benutzer mit dem angegebenen Anspruch ausgibt.
+
+# 0=Claim name, 1=Name of the configuration attribute that specifies which claim to use
+PRINCIPAL_MAPPING_INCORRECT_CLAIM_TYPE=CWWKS5520E: Der Datentyp des Anspruchs [{0}] in den Informationen zum authentifizierten Benutzer ist nicht g\u00fcltig. Der angegebene Anspruch ist dem Attribut [{1}] in der MicroProfile-JWT-Konfiguration zugeordnet.
+PRINCIPAL_MAPPING_INCORRECT_CLAIM_TYPE.explanation=Der angegebene Anspruch in den Informationen zum authentifizierten Benutzer stimmt nicht mit dem erwarteten Datentyp \u00fcberein. Daher kann der Anspruchswert nicht f\u00fcr die Principalzuordnung verwendet werden.
+PRINCIPAL_MAPPING_INCORRECT_CLAIM_TYPE.useraction=Vergewissern Sie sich, dass in der MicroProfile-JWT-Konfiguration der richtige Anspruchsname f\u00fcr das angegebene Konfigurationsattribut angegeben ist.
+
+# 0=List of configuration IDs
+TOO_MANY_MP_JWT_PROVIDERS=CWWKS5521E: Es sind zu viele MicroProfile-JWT-Services [{0}] f\u00fcr die Verarbeitung der Anforderung qualifiziert.
+TOO_MANY_MP_JWT_PROVIDERS.explanation=Das MicroProfile-JWT-Feature kann keinen MicroProfile-JWT-Service ausw\u00e4hlen, um die Anforderung zu verarbeiten, wenn mehr als ein Service f\u00fcr die Verarbeitung der Anforderung qualifiziert ist.
+TOO_MANY_MP_JWT_PROVIDERS.useraction=Stellen Sie sicher, dass nur ein einziger MicroProfile-JWT-Service in der Serverkonfiguration f\u00fcr die Verarbeitung der Anforderung konfiguriert ist.
+
+# Do not translate "Authorization", "Bearer", or "POST"
+JWT_NOT_FOUND_IN_REQUEST=CWWKS5522E: Das MicroProfile-JWT-Feature kann die Authentifizierung nicht durchf\u00fchren, weil in der Anforderung MicroProfile-JWT gefunden wurde.
+JWT_NOT_FOUND_IN_REQUEST.explanation=Zur Durchf\u00fchrung der Authentifizierung muss ein MicroProfile-JWT entweder im Authorization-Header unter Verwendung des Bearer-Berechtigungsschemas oder als POST-Parameter enthalten sein. Der Authorization-Header fehlt, das Berechtigungsschema f\u00fcr den Authorization-Header ist nicht auf Bearer gesetzt, die Anforderung ist keine POST-Anforderung oder ein MicroProfile-JWT ist nicht als Parameter enthalten.
+JWT_NOT_FOUND_IN_REQUEST.useraction=Stellen Sie sicher, dass ein MicroProfile-JWT im Authorization-Header oder als POST-Parameter der Anforderung enthalten ist.
+
+# 0=Exception message
+ERROR_CREATING_JWT_USING_TOKEN_IN_REQ=CWWKS5523E: Das MicroProfile-JWT-Feature kann die Anforderung nicht authentifizieren, weil aus dem in der Anforderung enthaltenen Token kein g\u00fcltiges JWT erstellt werden kann. {0}
+ERROR_CREATING_JWT_USING_TOKEN_IN_REQ.explanation=Das MicroProfile-JWT-Feature hat beim Erstellen eines JWT aus der angegebenen Tokenzeichenfolge einen Fehler festgestellt. Entweder konnte ein JWT-Konsument nicht erstellt werden, oder der JWT-Konsument hat beim Parsing und Validieren der Tokenzeichenfolge einen Fehler festgestellt.
+ERROR_CREATING_JWT_USING_TOKEN_IN_REQ.useraction=Sehen Sie sich die Benutzeraktion f\u00fcr den Fehler an, der in der Nachricht angezeigt wird. Suchen Sie in den Serverprotokollen nach zus\u00e4tzlichen Fehlernachrichten.
+
+# 0=Configuration ID, 1=Exception message
+ERROR_CREATING_JWT=CWWKS5524E: Das MicroProfile-JWT-Feature hat beim Erstellen eines JWT mit der Konfiguration [{0}] und dem in der Anforderung enthaltenen Token einen Fehler festgestellt. {1}
+ERROR_CREATING_JWT.explanation=Entweder konnte ein JWT-Konsument nicht erstellt werden, oder der JWT-Konsument hat beim Parsing und Validieren der Tokenzeichenfolge einen Fehler festgestellt.
+ERROR_CREATING_JWT.useraction=Vergewissern Sie sich, dass die angegebene MicroProfile-JWT-Konfiguration in der Serverkonfiguration vorhanden ist. Vergewissern Sie sich au\u00dferdem, dass die angegebene Tokenzeichenfolge ordnungsgem\u00e4\u00df formatiert ist. Sehen Sie sich die Benutzeraktion f\u00fcr den Fehler an, der in der Nachricht angezeigt wird. Suchen Sie in den Serverprotokollen nach zus\u00e4tzlichen Fehlernachrichten.
+
+MP_JWT_FRONT_END_ERROR=CWWKS5525E: Bei der Authentifizierung eines Benutzers mithilfe des MicroProfile-JWT (JSON Web Token) ist ein Fehler aufgetreten.
+MP_JWT_FRONT_END_ERROR.explanation=Bei der Authentifizierung eines Benutzers ist ein Problem aufgetreten. M\u00f6glicherweise liegt ein Verbindungsproblem zwischen der Anwendung und dem Service-Provider eines anderen Anbieters vor, oder es liegt ein Fehler mit den Authentifizierungsdaten vor.
+MP_JWT_FRONT_END_ERROR.useraction=Bitten Sie Ihren Systemadministrator, das Problem zu beheben.
+
+MPJWT_NOT_FOUND_IN_APPLICATION=CWWKS5526W: Das Feature MicroProfile JWT kann die Authentifizierung nicht durchf\u00fchren, weil es den Authentifizierungstyp [{0}] in der Anwendung erwartet, aber [{1}] gefunden hat. Das Attribut [{2}] ist auf [{3}] gesetzt.  
+MPJWT_NOT_FOUND_IN_APPLICATION.explanation=Damit die Authentifizierung erfolgreich durchgef\u00fchrt werden kann, m\u00fcssen Sie eine der folgenden Aktionen ausf\u00fchren. a) Stellen Sie sicher, dass das Attribut ignoreApplicationAuthMethod in der Anwendung auf "true" gesetzt ist und b) dass die Annotation loginConfig auf MP-JWT gesetzt ist.
+MPJWT_NOT_FOUND_IN_APPLICATION.useraction=Stellen Sie sicher, dass die Server- oder Anwendungskonfiguration aktualisiert wird.

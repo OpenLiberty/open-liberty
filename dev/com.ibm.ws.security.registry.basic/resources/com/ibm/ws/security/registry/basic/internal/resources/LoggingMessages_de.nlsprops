@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.registry.basic/resources/com/ibm/ws/security/registry/basic/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Basic User Registry Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS3100 - CWWKS3199
+
+BASIC_REGISTRY_INVALID_USER_DEFINITION=CWWKS3100E: Die Benutzerdefinition ist nicht g\u00fcltig: {0}
+BASIC_REGISTRY_INVALID_USER_DEFINITION.explanation=Die Syntax f\u00fcr die Definition eines Benutzers ist <user name="..." password="..." />.
+BASIC_REGISTRY_INVALID_USER_DEFINITION.useraction=\u00c4ndern Sie die Benutzerdefinition in der Konfiguration.
+USER_MUST_DEFINE_NAME=Ein Benutzerelement muss einen Namen definieren.
+USER_MUST_DEFINE_PASSWORD=Das Benutzerelement mit dem Namen ''{0}'' muss ein Kennwort definieren.
+
+BASIC_REGISTRY_INVALID_GROUP_DEFINITION=CWWKS3101E: Die Gruppendefinition ist nicht g\u00fcltig: {0}
+BASIC_REGISTRY_INVALID_GROUP_DEFINITION.explanation=Die Syntax f\u00fcr die Definition einer Gruppe ist <group name="..." password="..." />.
+BASIC_REGISTRY_INVALID_GROUP_DEFINITION.useraction=\u00c4ndern Sie die Gruppendefinition in der Konfiguration.
+GROUP_MUST_DEFINE_NAME=Ein Gruppenelement muss einen Namen definieren.
+
+BASIC_REGISTRY_INVALID_MEMBER_DEFINITION=CWWKS3102E: Die Memberdefinition ist nicht g\u00fcltig: {0}
+BASIC_REGISTRY_INVALID_MEMBER_DEFINITION.explanation=Die Syntax f\u00fcr die Definition eines Members ist <member name="..." password="..." />.
+BASIC_REGISTRY_INVALID_MEMBER_DEFINITION.useraction=\u00c4ndern Sie die Memberdefinition in der Konfiguration.
+MEMBER_MUST_DEFINE_NAME=Ein Memberelement muss einen Namen definieren.
+
+BASIC_REGISTRY_NO_USERS_DEFINED=CWWKS3103W: Es sind keine Benutzer f\u00fcr die BasicRegistry-Konfiguration der ID {0} definiert.
+BASIC_REGISTRY_NO_USERS_DEFINED.explanation=Es sind keine Benutzer f\u00fcr die Konfiguration definiert. Dies kann beabsichtigt sein, aber wahrscheinlicht handelt es sich um einen Konfigurationsfehler.
+BASIC_REGISTRY_NO_USERS_DEFINED.useraction=Definieren Sie, sofern erforderlich, mindestens einen Benutzer in der Konfiguration.
+
+BASIC_REGISTRY_SAME_USER_DEFINITION=CWWKS3104E: Es sind mehrere Benutzer mit dem Namen ''{0}'' definiert. Die Eintr\u00e4ge f\u00fcr diesen Benutzer werden nicht verwendet.
+BASIC_REGISTRY_SAME_USER_DEFINITION.explanation=Benutzernamen m\u00fcssen eindeutig sein.
+BASIC_REGISTRY_SAME_USER_DEFINITION.useraction=Definieren Sie nur eine einzige Gruppe mit dem angegebenen Namen.
+
+BASIC_REGISTRY_SAME_GROUP_DEFINITION=CWWKS3105E: Es sind mehrere Gruppen mit dem Namen ''{0}'' definiert. Die Eintr\u00e4ge f\u00fcr diese Gruppe werden nicht verwendet.
+BASIC_REGISTRY_SAME_GROUP_DEFINITION.explanation=Gruppennamen m\u00fcssen eindeutig sein.
+BASIC_REGISTRY_SAME_GROUP_DEFINITION.useraction=Definieren Sie nur eine einzige Gruppe mit dem angegebenen Namen.
+
+BASIC_REGISTRY_SAME_MEMBER_DEFINITION=CWWKS3106W: Es sind mehrere Membereintr\u00e4ge mit dem Namen ''{0}'' f\u00fcr die Gruppe ''{1}'' definiert.
+BASIC_REGISTRY_SAME_MEMBER_DEFINITION.explanation=Gruppen unterst\u00fctzen nur einen einzigen Membereintrag pro Benutzername.
+BASIC_REGISTRY_SAME_MEMBER_DEFINITION.useraction=Definieren Sie nur einen einzigen Membereintrag f\u00fcr den Benutzer in den angegebenen Gruppen.
+
+BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION=CWWKS3107W: Der Membereintrag mit dem Namen ''{0}'' f\u00fcr die Gruppe ''{1}'' stimmt nicht mit einem definierten Benutzer \u00fcberein.
+BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.explanation=Der f\u00fcr den Membereintrag angegebene Name stimmt mit keinem definierten Benutzer \u00fcberein.
+BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.useraction=Pr\u00fcfen Sie die Schreibweise des Membernamens, und stellen Sie sicher, dass er mit einem in der Registry definierten Benutzer \u00fcbereinstimmt.

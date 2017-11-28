@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+#CMVCPATHNAME 
+#COMPONENTPREFIX CWWWC
+#COMPONENTNAMEFOR CWWWC Servlet Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# --------------------------------
+
+# Since servlet 4.0.  Use the registered and reserved prefix CWWWC from now on.  
+# 0001 - 0199 for Base
+# 0200 - 0299 for Servlet 3.0
+# 0300 - 0399 for Servlet 3.1
+# 0400 - 0499 for Servlet 4
+name.is.null=CWWWC0400E: Un nom d'attribut ou de param\u00e8tre initial a la valeur null.
+name.is.null.explanation=Il s'agit d'une erreur d'application. Le nom a pour valeur Null dans l'un des contextes suivants : getAttribute(), setAttribute(), getInitParameter() ou setInitParameter().
+name.is.null.useraction=Mettez \u00e0 jour le nom d'attribut ou de param\u00e8tre initial en lui attribuant une valeur non Null.
+
+# -----------------------------------------------
+unsupported.response.encoding.[{0}]=CWWWC0401E: Echec de la d\u00e9finition du codage de caract\u00e8res : [{0}].
+unsupported.response.encoding.[{0}].explanation=Le codage de r\u00e9ponse sp\u00e9cifi\u00e9 sur la r\u00e9ponse n'est pas valide. Il s'agit d'une erreur d'application.
+unsupported.response.encoding.[{0}].useraction=V\u00e9rifiez les fichiers journaux pour d\u00e9terminer si le codage sp\u00e9cifi\u00e9 est valide.
+

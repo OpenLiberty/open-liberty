@@ -1,0 +1,26 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#COMPONENTPREFIX CWWKJ
+#COMPONENTNAMEFOR CWWKJ J2EE JavaMail
+#CMVCPATHNAME com.ibm.ws.javamail.management.j2ee/resources/com/ibm/ws/javamail/management/j2ee/internal/resources/JavaMailMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#
+# Message prefix block: CWWKJ0300 - CWWKJ0309
+
+#-----  MailSessionRegistrarImpl
+
+OSGI_SERVICE_ERROR=CWWKJ0300E: O servi\u00e7o OSGi {0} n\u00e3o est\u00e1 dispon\u00edvel.  Tente reiniciar o servidor com a op\u00e7\u00e3o --clean.
+OSGI_SERVICE_ERROR.explanation=O servi\u00e7o especificado n\u00e3o est\u00e1 dispon\u00edvel, o que causa esse erro de servidor interno.
+OSGI_SERVICE_ERROR.useraction=Reinicie o servidor com a op\u00e7\u00e3o --clean.
+

@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS0000 - CWWKS0099
+
+SECURITY_CONFIG_ERROR_MISSING_ATTRIBUTE=CWWKS0000E: Se ha producido una excepci\u00f3n de configuraci\u00f3n. No hay ning\u00fan atributo {0} definido para un elemento <securityConfiguration>.
+SECURITY_CONFIG_ERROR_MISSING_ATTRIBUTE.explanation=El atributo que falta es necesario para el elemento <securityConfiguration>.
+SECURITY_CONFIG_ERROR_MISSING_ATTRIBUTE.useraction=Especifique el atributo que falta para el elemento <securityConfiguration>.
+
+SECURITY_SERVICE_REQUIRED_SERVICE_WITHOUT_ID=CWWKS0001E: Se ha producido una excepci\u00f3n de configuraci\u00f3n. Un elemento de configuraci\u00f3n de tipo {0} no define un atributo de ID.
+SECURITY_SERVICE_REQUIRED_SERVICE_WITHOUT_ID.explanation=El tipo de elemento de configuraci\u00f3n especificado necesita un atributo de ID para que otros elementos puedan hacer referencia a \u00e9l en la configuraci\u00f3n.
+SECURITY_SERVICE_REQUIRED_SERVICE_WITHOUT_ID.useraction=Defina un atributo de ID para el tipo de elemento de configuraci\u00f3n especificado.
+
+SECURITY_SERVICE_ERROR_MISSING_ATTRIBUTE=CWWKS0002E: Se ha producido una excepci\u00f3n de configuraci\u00f3n. No hay ning\u00fan atributo {0} definido para el elemento <security>.
+SECURITY_SERVICE_ERROR_MISSING_ATTRIBUTE.explanation=El atributo que falta es necesario para el elemento <security>.
+SECURITY_SERVICE_ERROR_MISSING_ATTRIBUTE.useraction=Especifique el atributo que falta para el elemento <security>.
+
+SECURITY_SERVICE_ERROR_BAD_DOMAIN=CWWKS0003E: Se ha producido una excepci\u00f3n de configuraci\u00f3n. No se ha definido la configuraci\u00f3n de seguridad especificada, a la que hace referencia el identificador {0} para el atributo {1} del elemento <security>.
+SECURITY_SERVICE_ERROR_BAD_DOMAIN.explanation=No se ha definido la configuraci\u00f3n de seguridad especificada. El nombre del identificador podr\u00eda ser incorrecto, o bien hace referencia a una configuraci\u00f3n de seguridad que no existe.
+SECURITY_SERVICE_ERROR_BAD_DOMAIN.useraction=Defina una configuraci\u00f3n de seguridad v\u00e1lida para el atributo especificado en el elemento <security>.
+
+SECURITY_SERVICE_ERROR_BAD_REFERENCE=CWWKS0004E: Se ha producido una excepci\u00f3n de configuraci\u00f3n. No se ha definido el elemento especificado al que hace referencia el identificador {0} para el atributo {1} del elemento <securityConfiguration>.
+SECURITY_SERVICE_ERROR_BAD_REFERENCE.explanation=El identificador de referencia configurado no es v\u00e1lido. El nombre del identificador podr\u00eda ser incorrecto o bien podr\u00eda hacer referencia a una configuraci\u00f3n de servicio que no existe.
+SECURITY_SERVICE_ERROR_BAD_REFERENCE.useraction=Especifique un identificador de configuraci\u00f3n de servicio v\u00e1lido para el elemento <securityConfiguration>.
+
+SECURITY_SERVICE_NO_SERVICE_AVAILABLE=CWWKS0005E: Se ha producido una excepci\u00f3n de configuraci\u00f3n. El servicio {0} no est\u00e1 disponible.
+SECURITY_SERVICE_NO_SERVICE_AVAILABLE.explanation=Ning\u00fan servicio del tipo especificado est\u00e1 disponible a trav\u00e9s del registro de servicios OSGi.
+SECURITY_SERVICE_NO_SERVICE_AVAILABLE.useraction=Especifique una caracter\u00edstica de implementaci\u00f3n de servicio del tipo especificado.
+
+SECURITY_SERVICE_MULTIPLE_SERVICE_AVAILABLE=CWWKS0006E: Se ha producido una excepci\u00f3n de configuraci\u00f3n. Hay varios servicios {0} disponibles; el sistema no puede determinar cu\u00e1l utilizar.
+SECURITY_SERVICE_MULTIPLE_SERVICE_AVAILABLE.explanation=Hay varios servicios disponibles del tipo especificado a trav\u00e9s del registro de servicios OSGi y no existe ninguna configuraci\u00f3n expl\u00edcita que indique cu\u00e1l utilizar.
+SECURITY_SERVICE_MULTIPLE_SERVICE_AVAILABLE.useraction=Especifique s\u00f3lo una caracter\u00edstica de implementaci\u00f3n de servicio del tipo especificado, o defina qu\u00e9 servicio se debe utilizar en la configuraci\u00f3n.
+
+#
+# NOTE: CWWKS0007 through CWWKS0009 have been moved to com.ibm.ws.security.ready.service project
+#
+
+SEC_TOO_MANY_PRINCIPALS=CWWKS0010E: Cuando se obtuvo el principal del interlocutor, el asunto del interlocutor ten\u00eda m\u00e1s de un principal del tipo WSPrincipal. S\u00f3lo puede existir un WSPrincipal en el asunto. Los nombres de los WSPrincipals son: {}
+SEC_TOO_MANY_PRINCIPALS.explanation=El asunto del interlocutor tiene demasiados principales de tipo WSPrincipal. S\u00f3lo se da soporte a un principal de este tipo.
+SEC_TOO_MANY_PRINCIPALS.useraction=Revise la aplicaci\u00f3n para comprender por qu\u00e9 el asunto tiene m\u00e1s de un WSPrincipal.

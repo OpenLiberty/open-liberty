@@ -1,0 +1,159 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME 
+#COMPONENTPREFIX SRVE
+#COMPONENTNAMEFOR SRVE Servlet Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+failed.to.create.httpupgradehandler=SRVE9000E: A HttpUpgradeHandler l\u00e9trehoz\u00e1sa nem siker\u00fclt: {0}.  Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy rendelkezik alap\u00e9rtelmezett konstruktorral \u00e9s p\u00e9ld\u00e1nyos\u00edthat\u00f3.
+failed.to.create.httpupgradehandler.explanation=A HttpUpgradeHandler l\u00e9trehoz\u00e1sa nem siker\u00fclt.
+failed.to.create.httpupgradehandler.useraction=A hiba tov\u00e1bbi r\u00e9szleteinek a megtekint\u00e9s\u00e9hez ellen\u0151rizze az FFDC napl\u00f3kat.
+# --------------------------------
+servlet.31.not.in.use=SRVE9001E: A servlet-3.1 \u00f6sszetev\u0151 nincs haszn\u00e1latban.
+servlet.31.not.in.use.explanation=A servlet-3.1 \u00f6sszetev\u0151 nincs haszn\u00e1latban.  Lehet, hogy a szervlet egy kor\u00e1bbi v\u00e1ltozata m\u00e1r haszn\u00e1latban van.
+servlet.31.not.in.use.useraction=Adja hozz\u00e1 a servlet-3.1 \u00f6sszetev\u0151t a server.xml f\u00e1jlhoz.
+# --------------------------------
+# Translation note: {0} = operation being performed, {1} = the listener that called the operation, {2} = the application that contains the listener: SRVE9002E: You cannot start this operation from a programmatically added listener when using servlet-3.1 feature. (Operation: {0} | Listener: {1} | Application: {2})
+Unsupported.op.from.servlet.context.listener.31=SRVE9002E: Ezt a m\u0171veletet programozottan hozz\u00e1adott figyel\u0151b\u0151l nem ind\u00edthatja servlet-3.1 \u00f6sszetev\u0151 haszn\u00e1lata eset\u00e9n. (M\u0171velet: {0} | Figyel\u0151: {1} | Alkalmaz\u00e1s: {2})
+Unsupported.op.from.servlet.context.listener.31.explanation=Bizonyos m\u0171veletek nem ind\u00edthat\u00f3k el egy programoz\u00e1s \u00fatj\u00e1n hozz\u00e1adott figyel\u0151r\u0151l, mivel nincs olyan konfigur\u00e1ci\u00f3s be\u00e1ll\u00edt\u00e1s, amely megtiltan\u00e1 azok v\u00e9grehajt\u00e1s\u00e1t, amikor egy c\u00edmkek\u00f6nyvt\u00e1r le\u00edr\u00f3ban (TLD) meg vannak hat\u00e1rozva.
+Unsupported.op.from.servlet.context.listener.31.useraction=A met\u00f3dus elind\u00edt\u00e1s\u00e1nak enged\u00e9lyez\u00e9s\u00e9hez adja hozz\u00e1 a figyel\u0151t egy annot\u00e1ci\u00f3 haszn\u00e1lat\u00e1val vagy a web.xml f\u00e1jlban.
+# --------------------------------
+# 
+# Notes for translation:
+# {0} is the application name
+handlerClass.is.null==SRVE9003E: Az \u00e1tadott HttpUpgradeHandler objektum null a webalkalmaz\u00e1ssal: {0}.
+handlerClass.is.null.explanation=A k\u00e9r\u00e9s nem friss\u00edthet\u0151, mert az \u00e1tadott HttpUpgradeHandler objektum null.
+handlerClass.is.null.useraction= Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a helyes HttpUpgradeHandler objektumot adta meg.
+# --------------------------------
+# -------------------------------- -------------------------------- --------------------------------
+# Following messages are added for Read and Write Listener per Java Servlet Specification 
+# -------------------------------- -------------------------------- --------------------------------
+readlistener.is.null=SRVE9004E: Egy ReadListener be\u00e1ll\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet meghi\u00fasult, mert a ReadListener objektum null\u00e9rt\u00e9k\u0171.
+readlistener.is.null.explanation=A setReadListener API fel\u00e9 \u00e1tadott v\u00e1ltoz\u00f3 argumentumnak \u00e9rv\u00e9nyes readListener objektumnak kell lennie.
+readlistener.is.null.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1s k\u00f3dj\u00e1t a hibamagyar\u00e1zatnak megfelel\u0151en.
+# --------------------------------
+writelistener.is.null=SRVE9005E: Egy WriteListener be\u00e1ll\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet meghi\u00fasult, mert a WriteListener objektum null\u00e9rt\u00e9k\u0171.
+writelistener.is.null.explanation=A WriteListener API fel\u00e9 \u00e1tadott v\u00e1ltoz\u00f3 argumentumnak \u00e9rv\u00e9nyes writeListener objektumnak kell lennie.
+writelistener.is.null.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1s k\u00f3dj\u00e1t a hibamagyar\u00e1zatnak megfelel\u0151en.
+# --------------------------------
+readlistener.async.not.started=SRVE9006E: Egy ReadListener be\u00e1ll\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet meghi\u00fasult, mert a kapcsolatos k\u00e9r\u00e9s nem rendelkezik ind\u00edtott aszinkron met\u00f3dussal, vagy a k\u00e9r\u00e9s nincs friss\u00edtve.
+readlistener.async.not.started.explanation=A k\u00e9r\u00e9s ReadListener objektuma csak akkor \u00e1ll\u00edthat\u00f3 be, ha aszinkron met\u00f3dus el van ind\u00edtva, vagy egy UpgradeHandler inicializ\u00e1l\u00e1si met\u00f3dusa meg van h\u00edvva.
+readlistener.async.not.started.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1s k\u00f3dj\u00e1t a hibamagyar\u00e1zatnak megfelel\u0151en.
+# --------------------------------
+writelistener.async.not.started=SRVE9007E: Egy WriteListener be\u00e1ll\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet meghi\u00fasult, mert a kapcsolatos k\u00e9r\u00e9s nem rendelkezik ind\u00edtott aszinkron met\u00f3dussal, vagy a k\u00e9r\u00e9s nincs friss\u00edtve.
+writelistener.async.not.started.explanation=A k\u00e9r\u00e9s WriteListener objektuma csak akkor \u00e1ll\u00edthat\u00f3 be, ha aszinkron met\u00f3dus el van ind\u00edtva, vagy egy UpgradeHandler inicializ\u00e1l\u00e1si met\u00f3dusa meg van h\u00edvva.
+writelistener.async.not.started.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1s k\u00f3dj\u00e1t a hibamagyar\u00e1zatnak megfelel\u0151en.
+# --------------------------------
+readlistener.already.started=SRVE9008E: Egy ReadListener be\u00e1ll\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet meghi\u00fasult, mert a ReadListener m\u00e1r be van \u00e1ll\u00edtva.
+readlistener.already.started.explanation=A ReadListener nem \u00e1ll\u00edthat\u00f3 be t\u00f6bbsz\u00f6r.
+readlistener.already.started.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1s k\u00f3dj\u00e1t a hibamagyar\u00e1zatnak megfelel\u0151en.
+# --------------------------------
+writelistener.already.started=SRVE9009E: Egy WriteListener be\u00e1ll\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet meghi\u00fasult, mert a WriteListener m\u00e1r be van \u00e1ll\u00edtva.
+writelistener.already.started.explanation=A WriteListener nem \u00e1ll\u00edthat\u00f3 be t\u00f6bbsz\u00f6r.
+writelistener.already.started.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1s k\u00f3dj\u00e1t a hibamagyar\u00e1zatnak megfelel\u0151en.
+# --------------------------------
+read.failed.isReady.false=SRVE9010E: Egy olvas\u00e1si k\u00eds\u00e9rlet meghi\u00fasult, mert az isReady API false \u00e9rt\u00e9ket adott vissza.
+read.failed.isReady.false.explanation= Ha az isReady false \u00e9rt\u00e9ket ad vissza, akkor az olvas\u00e1si met\u00f3dus h\u00edv\u00e1sa illeg\u00e1lis.
+read.failed.isReady.false.useraction= M\u00f3dos\u00edtsa az alkalmaz\u00e1s k\u00f3dj\u00e1t a hibamagyar\u00e1zatnak megfelel\u0151en.
+# --------------------------------
+# -------------------------------- -------------------------------- --------------------------------
+# Following messages for read in SRTUpgradeInputStream31 and write in SRTOutputStream31 per OutputStream Java doc
+# -------------------------------- -------------------------------- --------------------------------
+read.write.bytearray.null=SRVE9011E: Egy InputStream olvas\u00e1s\u00e1ra vagy egy OutputStream \u00edr\u00e1s\u00e1ra tett k\u00eds\u00e9rlet meghi\u00fasult, mert egy byte[] v\u00e1ltoz\u00f3 argumentum null\u00e9rt\u00e9k\u0171.
+read.write.bytearray.null.explanation=Az olvas\u00e1si vagy \u00edr\u00e1si API sz\u00e1m\u00e1ra \u00e1tadott byte[] v\u00e1ltoz\u00f3 argumentum nem lehet null\u00e9rt\u00e9k\u0171.
+read.write.bytearray.null.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1s k\u00f3dj\u00e1t a hibamagyar\u00e1zatnak megfelel\u0151en.
+# --------------------------------
+# 
+# Notes for translation:
+# {0} is the offset as number
+# {1} is the length as number
+# {2} is the array length as number
+read.write.offset.length.bytearraylength= SRVE9012E: Egy olvas\u00e1si vagy \u00edr\u00e1si k\u00eds\u00e9rlet meghi\u00fasult, mert a v\u00e1ltoz\u00f3 argumentumok eltol\u00e1sa: {0} vagy hossza: {1} negat\u00edv \u00e9rt\u00e9k\u0171, vagy az eltol\u00e1s+hossz nagyobb, mint a megadott byte[] hossz: {2}.
+read.write.offset.length.bytearraylength.explanation= A v\u00e1ltoz\u00f3 argumentumok eltol\u00e1sa negat\u00edv, vagy a hossz negat\u00edv, vagy a hossz nagyobb, mint a byte[] hossz - eltol\u00e1s.
+read.write.offset.length.bytearraylength.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1sk\u00f3dot, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az olvas\u00e1si vagy \u00edr\u00e1si API sz\u00e1m\u00e1ra megadott eltol\u00e1s \u00e9rt\u00e9k nem negat\u00edv. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az olvas\u00e1si API sz\u00e1m\u00e1ra megadott hossz \u00e9rt\u00e9ke nem negat\u00edv. Arr\u00f3l is gy\u0151z\u0151dj\u00f6n meg, hogy a megadott hossz \u00e9rt\u00e9k nagyobb, mint a byte[] hossz m\u00ednusz a megadott eltol\u00e1s \u00e9rt\u00e9k.
+# --------------------------------
+# -------------------------------- --------------------------------
+# Following SEVERE messages for SRTInputStream31
+# -------------------------------- --------------------------------
+# 
+# Notes for translation:
+# {0} is the exception as String
+setReadListener.initialread.failed= SRVE9013E: Egy friss\u00edtett k\u00e9r\u00e9sen a ReadListener be\u00e1ll\u00edt\u00e1skor kiv\u00e9tel t\u00f6rt\u00e9nt a kezdeti olvas\u00e1s sor\u00e1n: {0}
+setReadListener.initialread.failed.explanation=A ReadListener be\u00e1ll\u00edt\u00e1sa sor\u00e1n a figyel\u0151 olvas\u00e1st k\u00eds\u00e9relt meg, ami meghi\u00fasult.
+setReadListener.initialread.failed.useraction=A kiv\u00e9tel\u00e9rt tekintse \u00e1t a JVM napl\u00f3kat.
+# --------------------------------
+# -------------------------------- --------------------------------
+# Following SEVERE messages for Session
+# -------------------------------- --------------------------------
+# 
+# Notes for translation:
+# {0} is the path as String
+changeSessionId.no.session.associated.with.request= SRVE9014E: A munkamenet-azonos\u00edt\u00f3 m\u00f3dos\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet meghi\u00fasult, mert nem volt munkamenet t\u00e1rs\u00edtva a k\u00f6vetkez\u0151 k\u00e9r\u00e9s\u00e9vel: {0}
+changeSessionId.no.session.associated.with.request.explanation=Egy k\u00e9r\u00e9s munkamenet-azonos\u00edt\u00f3j\u00e1nak m\u00f3dos\u00edt\u00e1s\u00e1hoz el\u0151sz\u00f6r gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a haszn\u00e1lt k\u00e9r\u00e9s rendelkezik-e hozz\u00e1 t\u00e1rs\u00edtott munkamenettel.
+changeSessionId.no.session.associated.with.request.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1s k\u00f3dj\u00e1t a hibamagyar\u00e1zatnak megfelel\u0151en.
+# --------------------------------
+# -------------------------------- --------------------------------
+# Following SEVERE messages for AysncContext31Impl
+# -------------------------------- --------------------------------
+# 
+# Notes for translation:
+# Do not translate the following terms: AsyncContext.dispatch(),AsyncContext.complete(),AsyncContext.getRequest(),AsyncContext.getResponse(), IllegalStateException, complete(), dispatch()
+asynccontext.getRequestResponse.illegalstateexception= SRVE9015E: A k\u00e9r\u00e9s- vagy v\u00e1laszobjektum nem k\u00e9rhet\u0151 le AsyncContext.dispatch() vagy AsyncContext.complete() ut\u00e1n.
+asynccontext.getRequestResponse.illegalstateexception.explanation= A Servlet 3.1 v\u00e1ltozatt\u00f3l az AsyncContext.getRequest() \u00e9s az AsyncContext.getResponse() IllegalStateException kiv\u00e9telt dob, ha a complete() vagy valamelyik dispatch() met\u00f3dus aszinkron ciklusban ker\u00fcl megh\u00edv\u00e1sra. 
+asynccontext.getRequestResponse.illegalstateexception.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1s k\u00f3dj\u00e1t a hibamagyar\u00e1zatnak megfelel\u0151en.
+# ---------------------------------
+#
+# NOTE: Message number SRVE9016E: is used in com.ibm.ws.webcontainer-8.0, see LShimMessages.
+#       Skip to message number SRVE9017 for next message. 
+# 
+# --------------------------------
+# --------------------------------
+stream.is.closed.no.read.write= SRVE9017E: Egy olvas\u00e1sra vagy \u00edr\u00e1sra tett k\u00eds\u00e9rlet meghi\u00fasult, mert a folyam le lett z\u00e1rva.
+stream.is.closed.no.read.write.explanation=Az OutputStream objektum \u00edr\u00e1si API-ja \u00e9s az InputStream objektum API-ja azt \u00e1ll\u00edtja, hogy ha a folyam be lett z\u00e1rva, akkor IOException kiv\u00e9tel t\u00f6rt\u00e9nhet.
+stream.is.closed.no.read.write.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1s k\u00f3dj\u00e1t a hibamagyar\u00e1zatnak megfelel\u0151en.
+# -----------------------------------------------
+# -------------------------------- --------------------------------
+# Following SEVERE messages for AysncContext31Impl
+# -------------------------------- --------------------------------
+#
+# Notes for translation:
+# Do not translate the following terms: content-length
+post.body.contains.less.bytes.than.specified=SRVE0216E: Az \u00fczenet t\u00f6rzse a tartalomhossz \u00e1ltal megadottn\u00e1l kevesebb byte-ot tartalmaz.
+post.body.contains.less.bytes.than.specified.explanation=Lehet, hogy a bej\u00f6v\u0151 k\u00e9r\u00e9s form\u00e1tuma helytelen, vagy egy \u00fcgyf\u00e9loldali alkalmaz\u00e1s vagy a h\u00e1l\u00f3zat hib\u00e1ja miatt megs\u00e9r\u00fclt.
+post.body.contains.less.bytes.than.specified.useraction=Az \u00fcgyf\u00e9loldali alkalmaz\u00e1st \u00e9s a h\u00e1l\u00f3zatot \u00e1tn\u00e9zve \u00e1llap\u00edtsa meg, hogy a k\u00e9r\u00e9s mi\u00e9rt lett csonk\u00edtva.
+# --------------------------------
+#
+# NOTE: Message number SRVE9018E is used as SRV0216E in com.ibm.ws.webcontainer-8.0, see Messages.nlsprops.
+#       Skip to message number SRVE9018 for next message. 
+# 
+# --------------------------------
+# 
+# Notes for translation:
+# {0} WriteListener class name
+# 
+blocking.write.not.allowed=SRVE0918E: A megk\u00eds\u00e9relt blokkol\u00f3 \u00edr\u00e1s nem enged\u00e9lyezett, mivel a nem blokkol\u00f3 I/O m\u00e1r elind\u00edt\u00e1sra ker\u00fclt a WriteListener [{0}] elemet bejegyz\u0151 alkalmaz\u00e1s \u00e1ltal.
+blocking.write.not.allowed.explanation=A k\u00e9rt blokkol\u00f3 \u00edr\u00e1s nem hajthat\u00f3 v\u00e9gre, mivel a nem blokkol\u00f3 I/O m\u00e1r elind\u00edt\u00e1sra ker\u00fclt.
+blocking.write.not.allowed.useraction=Az alkalmaz\u00e1s fel\u00fclvizsg\u00e1lat\u00e1val hat\u00e1rozza meg a blokkol\u00f3 \u00edr\u00e1s v\u00e9grehajt\u00e1s\u00e1nak hely\u00e9t. Ez p\u00e9ld\u00e1ul egy kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1st\u00f3l sz\u00e1rmazhat a WriteListener bejegyz\u00e9se ut\u00e1n, vagy egy WriteListener elemt\u0151l, amely az isReady() API megh\u00edv\u00e1s\u00e1t k\u00f6vet\u0151en m\u00e1sodik \u00edr\u00e1st v\u00e9gez. A blokkol\u00f3 \u00edr\u00e1s meghat\u00e1roz\u00e1sa ut\u00e1n az alkalmaz\u00e1s m\u00f3dos\u00edt\u00e1s\u00e1val gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a m\u0171velet a WriteListener r\u00e9szek\u00e9nt \u00e9s/vagy az isReady() h\u00edv\u00e1s ut\u00e1n ker\u00fclj\u00f6n v\u00e9grehajt\u00e1sra.
+# --------------------------------
+# 
+# Notes for translation:
+# {0} WriteListener class name
+# {1} is the Exception String
+#
+writeListener.onError.failed=SRVE0919E: Kiv\u00e9tel t\u00f6rt\u00e9nt az alkalmaz\u00e1s WriteListener [{0}] elem\u00e9nek onError() API h\u00edv\u00e1s\u00e1ban, a kiv\u00e9tel: [{1}]
+writeListener.onError.failed.explanation= Kiv\u00e9tel t\u00f6rt\u00e9nt az alkalmaz\u00e1s WriteListener onError() API h\u00edv\u00e1s\u00e1ban.
+writeListener.onError.failed.useraction=A napl\u00f3k fel\u00fclvizsg\u00e1lat\u00e1val \u00e1llap\u00edtsa meg az onError() API alkalmaz\u00e1sbeli megval\u00f3s\u00edt\u00e1s\u00e1ban t\u00f6rt\u00e9nt kiv\u00e9telt, valamint a probl\u00e9ma megold\u00e1s\u00e1nak m\u00f3dj\u00e1t. Vegye figyelembe, hogy I/O kiv\u00e9tel fell\u00e9p\u00e9se eset\u00e9n az onError() API nem tud kimenetet ki\u00edrni.
+# --------------------------------
+ 

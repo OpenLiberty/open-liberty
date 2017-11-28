@@ -1,0 +1,311 @@
+###############################################################################
+# Copyright (c) 2016, 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/jwt/resources/JWTMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server JWT
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS6000 - CWWKS6100
+JWT_BUILDER_CONFIG_PROCESSED=CWWKS6000I: Configura\u0163ia JWT {0} s-a procesat cu succes.
+JWT_BUILDER_CONFIG_PROCESSED.explanation=Configura\u0163ia JWT (builder de jetoane web json) a fost procesat\u0103 cu succes.
+JWT_BUILDER_CONFIG_PROCESSED.useraction=F\u0103r\u0103
+
+JWT_BUILDER_CONFIG_MODIFIED=CWWKS6001I: Modificarea configura\u0163iei JWT {0} s-a procesat cu succes.
+JWT_BUILDER_CONFIG_MODIFIED.explanation=Configura\u0163ia JWT (builder de jetoane web json) a fost modificat\u0103 cu succes.
+JWT_BUILDER_CONFIG_MODIFIED.useraction=F\u0103r\u0103.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_ENDPOINT_SERVICE_ACTIVATED=CWWKS6002I: Serviciul de punct final JWT (JSON Web Token) este disponibil.
+JWT_ENDPOINT_SERVICE_ACTIVATED.explanation=Acest mesaj este pur informativ.
+JWT_ENDPOINT_SERVICE_ACTIVATED.useraction=Nu este nevoie de realizarea niciunei ac\u0163iuni.
+
+# Do not translate "JSON Web Token", "JWT", "jwt-1.0"
+JWT_OSGI_ENDPOINT_SERVICE_ERROR=CWWKS6003E: A ap\u0103rut o eroare de configurare. Serviciul de punct final JWT (JSON Web Token) nu este disponibil. Asigura\u0163i-v\u0103 c\u0103 este configurat\u0103 caracteristica jwt-1.0.
+JWT_OSGI_ENDPOINT_SERVICE_ERROR.explanation=Serviciul JWT (JSON Web Token) nu este disponibil prin intermediul registrului de servicii OSGi.
+JWT_OSGI_ENDPOINT_SERVICE_ERROR.useraction=Include\u0163i caracteristica jwt-1.0 \u00een configura\u0163ia serverului.
+
+# Do not translate "jwt-1.0"
+# 0=URL to which the request was directed
+JWT_ENDPOINT_FILTER_MATCH_NOT_FOUND=CWWKS6004W: Cererea direc\u0163ionat\u0103 la URL-ul de punct final [{0}] nu a fost recunoscut\u0103 ca o cerere valid\u0103.
+JWT_ENDPOINT_FILTER_MATCH_NOT_FOUND.explanation=URL-ul specificat nu se potrive\u015fte cu modelul de URL a\u015fteptat al unei cereri, care are inten\u0163ia s\u0103 fie servit\u0103 de acest filtru.
+JWT_ENDPOINT_FILTER_MATCH_NOT_FOUND.useraction=Verifica\u0163i c\u0103 URL-ul prin calea sa indic\u0103 la punctul final a\u015fteptat \u015fi c\u0103 se potrive\u015fte cu un punct final care este furnizat de caracteristica jwt-1.0.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Config ID of JWT provider
+JWT_CONFIG_SERVICE_NOT_AVAILABLE=CWWKS6005E: Serviciul de configura\u0163ie JWT (JSON Web Token) nu este disponibil pentru furnizorul [{0}].
+JWT_CONFIG_SERVICE_NOT_AVAILABLE.explanation=Furnizorul specificat \u00een mesaj fie nu exist\u0103 \u00een configura\u0163ia serverului, fie configura\u0163ia pentru furnizorul specificat nu a fost procesat\u0103 de c\u0103tre serviciul de configura\u0163ie.
+JWT_CONFIG_SERVICE_NOT_AVAILABLE.useraction=Inspecta\u0163i configura\u0163ia serverului pentru a v\u0103 asigura c\u0103 furnizorul specificat este configurat.
+
+# 0=URL to which the request was directed, 1=Required attribute name
+JWT_REQUEST_ATTRIBUTE_MISSING=CWWKS6006E: Cererea direc\u0163ionat\u0103 c\u0103tre punctul final [{0}] nu are un atribut [{1}].
+JWT_REQUEST_ATTRIBUTE_MISSING.explanation=Posibil ca cererea s\u0103 nu fi fost tratat\u0103 de un filtru corespunz\u0103tor \u00eenainte ca cererea s\u0103 fie procesat\u0103. Filtru de cerere ar fi creat atributul specificat pe baza informa\u0163iilor cererii. Filtru apoi \u00eenainteaz\u0103 cererea pentru procesare \u00een continuare.
+JWT_REQUEST_ATTRIBUTE_MISSING.useraction=Verifica\u0163i c\u0103 cererea a fost direc\u0163ionat\u0103 c\u0103tre punctul final a\u015fteptat.
+
+# Do not translate "JSON Web Token", "JWT", "JSON Web Key"
+#0=signatureAlgorithm, 1=key, 2=exception or error message if any
+JWT_NULL_SIGNING_KEY_WITH_ERROR=CWWKS6007E: Nu sunt disponibile cheia de semnare care este cerut\u0103 de c\u0103tre algoritmul de semn\u0103tur\u0103 [{0}] \u015fi tipul de cheie [{1}]. Verifica\u0163i c\u0103 algoritmul \u015fi cheia de semn\u0103tur\u0103 sunt configurate corect. {2}
+JWT_NULL_SIGNING_KEY_WITH_ERROR.explanation=Nu poate fi g\u0103sit\u0103 o cheie de semnare sau nu poate fi g\u0103sit\u0103 o cheie care utilizeaz\u0103 algoritmul de semn\u0103tur\u0103 configurat. Aceast\u0103 eroare ar putea surveni din cauza lipsei de informa\u0163ii sau a informa\u0163iilor incorecte din configura\u0163ia JWT.
+JWT_NULL_SIGNING_KEY_WITH_ERROR.useraction=Efectua\u0163i una dintre urm\u0103toarele ac\u0163iuni: 1) Dac\u0103 folosi\u0163i JSON Web Key (JWK) pentru a semna, asigura\u0163i-v\u0103 c\u0103 RS256 este configurat pe atributul signatureAlgorithm. 2) Dac\u0103 folosi\u0163i certificate X.509 pentru a semna, asigura\u0163i-v\u0103 c\u0103 atributele signatureAlgorithm, KeyStoreRef \u015fi KeyStoreAlias sunt configurate corespunz\u0103tor. 3) Dac\u0103 folosi\u0163i chei partajate pentru a semna, asigura\u0163i-v\u0103 c\u0103 atributele signatureAlgorithm \u015fi sharedKey sunt configurate corespunz\u0103tor.
+
+# Do not translate "JSON Web Token", "JWT", "jwtBuilder"
+JWT_BUILDER_INVALID=CWWKS6008E: ID-ul de builder JWT (JSON Web Token) [{0}] specificat nu este valid. Verifica\u0163i c\u0103 este configurat un builder JWT cu ID-ul specificat.
+JWT_BUILDER_INVALID.explanation=Nu exist\u0103 un builder de jeton web JSON (JWT) cu ID-ul specificat \u00een configura\u0163ia serverului.
+JWT_BUILDER_INVALID.useraction=\u00cen fi\u015fierul server.xml, configura\u0163i un element jwtBuilder cu ID-ul specificat.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_INVALID_CLAIM_VALUE_ERR=CWWKS6009E: Valoarea [{1}] din revendicarea de jeton JWT [{0}] nu este valid\u0103.
+JWT_INVALID_CLAIM_VALUE_ERR.explanation=Valoarea specificat\u0103 \u00een revendicarea de jeton web JSON (JWT) nu \u00eendepline\u015fte specifica\u0163ia JWT.
+JWT_INVALID_CLAIM_VALUE_ERR.useraction=Furniza\u0163i o valoare valid\u0103 pentru revendicarea specificat\u0103. Pentru informa\u0163ii suplimentare, vede\u0163i specifica\u0163ia JWT.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_BUILDER_NOT_ACTIVE=CWWKS6010E: API-ul de builder JWT (JSON Web Token) nu a putut crea un obiect de builder valid folosind ID-ul [{0}]. Verifica\u0163i c\u0103 este configurat\u0103 caracteristica jwt-1.0.
+JWT_BUILDER_NOT_ACTIVE.explanation=API-ul de builder JWT (JSON Web Token) nu a putut crea un obiect de builder valid deoarece nu este disponibil serviciul de builder.
+JWT_BUILDER_NOT_ACTIVE.useraction=Asigura\u0163i-v\u0103 c\u0103 este configurat\u0103 caracteristica jwt-1.0.
+
+JWT_CLAIMSMAP_NULL_KEY_OR_VALUE=CWWKS6011W: Maparea revendic\u0103rilor JWT (JSON Web Token) furnizate are un nume sau o valoare de revendicare care nu sunt valide.
+JWT_CLAIMSMAP_NULL_KEY_OR_VALUE.explanation=Builder-ul JSON Web Token nu a modificat revendic\u0103rile existente deoarece maparea revendic\u0103rilor furnizate specific\u0103 null \u015fi pentru numele revendic\u0103rii \u015fi pentru valoarea revendic\u0103rii.
+JWT_CLAIMSMAP_NULL_KEY_OR_VALUE.useraction=Asigura\u0163i-v\u0103 c\u0103 transmite\u0163i o mapare valid\u0103 de revendic\u0103ri.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_CONSUMER_SERVICE_ACTIVATED=CWWKS6012I: Serviciul consumator JWT (JSON Web Token) este disponibil.
+JWT_CONSUMER_SERVICE_ACTIVATED.explanation=Acest mesaj este pur informativ.
+JWT_CONSUMER_SERVICE_ACTIVATED.useraction=Nu este nevoie de realizarea niciunei ac\u0163iuni.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_CONSUMER_SERVICE_NOT_ACTIVATED=CWWKS6013E: Nu poate fi creat un consumator JWT (JSON Web Token) deoarece serviciul de consumator nu a fost activat.
+JWT_CONSUMER_SERVICE_NOT_ACTIVATED.explanation=Trebuie s\u0103 fie activat serviciul consumator JWT \u00eenainte de a putea fi utilizat. Fie serviciul nu a fost \u00eenc\u0103 pornit, sau serviciul a fost dezactivat prin \u00eenl\u0103turarea caracteristicii jwt-1.0.
+JWT_CONSUMER_SERVICE_NOT_ACTIVATED.useraction=Asigura\u0163i-v\u0103 c\u0103 caracteristica jwt-1.0 este configurat\u0103 \u015fi c\u0103 serviciul consumator JWT este gata pentru a fi utilizat.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_CONSUMER_NULL_ID=CWWKS6014E: Nu poate fi creat un consumator JWT (JSON Web Token) deoarece ID-ul de configurare specificat este null.
+JWT_CONSUMER_NULL_ID.explanation=Nu poate fi creat un consumator JWT utiliz\u00e2nd un ID de configurare nul. Trebuie s\u0103 fie specificat un ID valid pentru a procesa configura\u0163ia de consumator corespunz\u0103toare JWT.
+JWT_CONSUMER_NULL_ID.useraction=Specifica\u0163i un ID care nu este null \u015fi care se potrive\u015fte cu ID-ul unui consumator JWT care exist\u0103 \u00een configura\u0163ia dumneavoastr\u0103 de server.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_INVALID_CLAIM_ERR=CWWKS6015E: Revendicarea JWT (JSON Web Token) [{0}] nu este valid\u0103. Specifica\u0163i un nume valid de revendicare.
+JWT_INVALID_CLAIM_ERR.explanation=Revendicarea specificat\u0103 este goal\u0103 sau nul\u0103, deci API-ul de builder JSON Web Token nu poate continua procesarea.
+JWT_INVALID_CLAIM_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 este transmis un nume valid de revendicare.
+
+# Do not translate "JSON Web Token", "JWT", "JSON Web Key"
+#0=signatureAlgorithm, 1=jwkEnabled, 2=exception or error message if any
+JWT_NO_SIGNING_KEY_WITH_ERROR=CWWKS6016E: Cheia de semnare care este cerut\u0103 de c\u0103tre algoritmul de semn\u0103tur\u0103 [{0}] nu este disponibil\u0103. Verifica\u0163i c\u0103 algoritmul de semn\u0103tur\u0103 \u015fi jwkEnabled [ {1} ] sunt configurate corespunz\u0103tor. {2}
+JWT_NO_SIGNING_KEY_WITH_ERROR.explanation=Nu poate fi g\u0103sit\u0103 o cheie de semnare sau nu poate fi g\u0103sit\u0103 o cheie care utilizeaz\u0103 algoritmul de semn\u0103tur\u0103 configurat. Aceast\u0103 eroare ar putea surveni din cauza lipsei de informa\u0163ii sau a informa\u0163iilor incorecte din configura\u0163ia JWT.
+JWT_NO_SIGNING_KEY_WITH_ERROR.useraction=Efectua\u0163i una dintre urm\u0103toarele ac\u0163iuni: 1) Dac\u0103 folosi\u0163i JSON Web Key (JWK) pentru a semna, asigura\u0163i-v\u0103 c\u0103 RS256 este configurat pe atributul signatureAlgorithm. 2) Dac\u0103 nu este utilizat JWK, asigura\u0163i-v\u0103 c\u0103 atributele KeyStoreRef \u015fi KeyStoreAlias sunt configurate corespunz\u0103tor pentru RS256. 3) Dac\u0103 folosi\u0163i chei partajate pentru a semna, asigura\u0163i-v\u0103 c\u0103 atributele signatureAlgorithm \u015fi sharedKey sunt configurate corespunz\u0103tor.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_INVALID_TOKEN_ERR=CWWKS6017E: Parte din con\u0163inutul din JWT (JSON Web Token) este gol, nul sau nu este valid.
+JWT_INVALID_TOKEN_ERR.explanation=Con\u0163inut de jeton specificat nu este valid, deci API-ul de builder JSON Web Token nu poate continua procesarea.
+JWT_INVALID_TOKEN_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 URL-urile care sunt configurate pentru partea intermediar\u0103 de \u00eencredere sunt valide. Asigura\u0163i-v\u0103 c\u0103 este transmis con\u0163inut valid c\u0103tre jeton. Pentru informa\u0163ii suplimentare, vede\u0163i documenta\u0163ia de API.
+
+JWT_INVALID_TIME_CLAIM_ERR=CWWKS6018E: Revendicarea [{0}] trebuie s\u0103 fie un num\u0103r mai mare dec\u00e2t zero.
+JWT_INVALID_TIME_CLAIM_ERR.explanation=Valoarea de revendicare specificat\u0103 nu este valid\u0103, deci API-ul de builder JSON Web Token nu poate continua procesarea.
+JWT_INVALID_TIME_CLAIM_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea pentru revendicarea specificat\u0103 este un num\u0103r pozitiv nenul.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_INVALID_CLAIM_VALUE_TYPE=CWWKS6019E: Tipul de date al revendic\u0103rii JWT (JSON Web Token) [{0}] nu este valid pentru valoare. 
+JWT_INVALID_CLAIM_VALUE_TYPE.explanation=Valoarea de revendicare specificat\u0103 nu este valid\u0103 pentru revendicarea specificat\u0103, deci API-ul de builder JWT (JSON Web Token) nu poate continua procesarea.
+JWT_INVALID_CLAIM_VALUE_TYPE.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea revendic\u0103rii are tipul corect de date. Pentru informa\u0163ii suplimentare, vede\u0163i documenta\u0163ia de API.
+
+# Do not translate "JSON Web Token", "JWT"
+#0=exception or error message
+JWT_CREATE_FAIL=CWWKS6020E: API-ul de builder JSON Web Token e\u015fueaz\u0103 s\u0103 creeze un JWT (JSON Web Token) din cauza [{0}]
+JWT_CREATE_FAIL.explanation=API-ul de builder JSON Web Token a \u00eent\u00e2lnit o eroare care \u00eempiedic\u0103 crearea jetonului JWT.
+JWT_CREATE_FAIL.useraction=Vede\u0163i ac\u0163iunea de utilizator pentru eroarea care apare \u00eenainte de acest mesaj.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_INVALID_CLAIMS_ERR=CWWKS6021E: Revendic\u0103rile JWT (JSON Web Token) furnizate nu sunt valide. Specifica\u0163i o revendicare valid\u0103.
+JWT_INVALID_CLAIMS_ERR.explanation=Revendic\u0103rile furnizate nu sunt valide, deci API-ul de builder JSON Web Token nu poate continua procesarea.
+JWT_INVALID_CLAIMS_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 este furnizat setul corect de revendic\u0103ri. Pentru informa\u0163ii suplimentare, vede\u0163i documenta\u0163ia de API.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Issuer claim of the token, 1=JWT configuration ID, 2=Trusted issuers specified in server configuration
+JWT_ISSUER_NOT_TRUSTED=CWWKS6022E: Emitentul [{0}] al jetonului web JSON (JWT) nu este listat ca emitent de \u00eencredere \u00een configura\u0163ia JWT [{1}]. Emiten\u0163ii de \u00eencredere sunt [{2}].
+JWT_ISSUER_NOT_TRUSTED.explanation=Configura\u0163ia de server specific\u0103 emiten\u0163ii de \u00eencredere la validarea JWT-urilor. Jetonul furnizat nu provine de la un emitent de \u00eencredere, prin urmare jetonul nu poate fi validat.
+JWT_ISSUER_NOT_TRUSTED.useraction=Ob\u0163ine\u0163i un nou jeton de la unul dintre emiten\u0163ii de \u00eencredere specifica\u0163i \u00een configura\u0163ia dumneavoastr\u0103 de JWT sau ad\u0103uga\u0163i emitentul specificat \u00een mesaj ca emitent de \u00eencredere \u00een configura\u0163ia dumneavoastr\u0103 JWT.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Audience claim of the token, 1=JWT configuration ID, 2=Trusted audiences specified in server configuration
+JWT_AUDIENCE_NOT_TRUSTED=CWWKS6023E: Audien\u0163a [{0}] jetonului web JSON (JWT) nu este listat\u0103 ca audien\u0163\u0103 de \u00eencredere \u00een configura\u0163ia JWT [{1}] JWT. Audien\u0163ele de \u00eencredere sunt [{2}].
+JWT_AUDIENCE_NOT_TRUSTED.explanation=Configura\u0163ia de server specific\u0103 ce audien\u0163e sunt de \u00eencredere la validarea JWT-urilor. Jetonul furnizat nu este destinat unei audien\u0163e de \u00eencredere, prin urmare jetonul nu poate fi validat.
+JWT_AUDIENCE_NOT_TRUSTED.useraction=Ob\u0163ine\u0163i un nou jeton dedicat pentru una dintre audien\u0163ele de \u00eencredere specificate \u00een configura\u0163ia dumneavoastr\u0103 de JWT sau ad\u0103uga\u0163i audien\u0163a specificat\u0103 \u00een mesaj ca audien\u0163\u0103 de \u00eencredere \u00een configura\u0163ia dumneavoastr\u0103 JWT.
+
+# Do not translate "JSON Web Token", "JWT", "iat", "exp"
+# 0=iat date, 1=exp date
+JWT_IAT_AFTER_EXP=CWWKS6024E: Jetonul JWT (JSON Web Token) nu este valid deoarece revendicarea emis\u0103 la (''iat'') specific\u0103 o dat\u0103 ulterioar\u0103 expir\u0103rii revendic\u0103rii (''exp''). Ora revendic\u0103rii ''iat'' este [{0}] \u015fi ora revendic\u0103rii ''exp'' este [{1}].
+JWT_IAT_AFTER_EXP.explanation=Jenonul JWT nu este valid deoarece a fost emis dup\u0103 propria sa dat\u0103 de expirare.
+JWT_IAT_AFTER_EXP.useraction=Ob\u0163ine\u0163i un nou jeton cu o revendicare valid\u0103 'iat' care specific\u0103 o or\u0103 anterioar\u0103 orei specificate de revendicarea 'exp'.
+
+# Do not translate "JSON Web Token", "JWT", "exp"
+# 0=exp claim date, 1=Current time, 2=Clock skew in seconds
+JWT_TOKEN_EXPIRED=CWWKS6025E: Jetonul JWT (JSON Web Token) nu este valid deoarece revendicarea de expirare (''exp'') fie lipse\u015fte, fie jetonul a expirat. Revendicarea de expirare este [{0}]. Ora curent\u0103 minus corec\u0163ia de ceas este [{1}]. \u00cent\u00e2rzierea configurat\u0103 este [{2}] secunde.
+JWT_TOKEN_EXPIRED.explanation=Jetoanele care sunt expirate sau nu specific\u0103 o revendicare 'exp' nu sunt valide.
+JWT_TOKEN_EXPIRED.useraction=Ob\u0163ine\u0163i un nou jeton care con\u0163ine o revendicare 'exp' \u015fi care nu este expirat. Sincroniza\u0163i orele de ceas \u00eentre emitentul \u015fi consumatorul de jetoane sau cre\u015fte\u0163i \u00eent\u00e2rzierea \u00een configura\u0163ia dumneavoastr\u0103 JWT.
+
+# Do not translate "JSON Web Token", "JWT", "nbf"
+# 0=nbf claim date, 1=Current time, 2=Clock skew in seconds
+JWT_TOKEN_BEFORE_NBF=CWWKS6026E: Jetonul JWT (JSON Web Token) nu poate fi utilizat deoarece valoarea revendic\u0103rii ''nbf'' [{0}] specific\u0103 o or\u0103 care este ulterioar\u0103 orei curente. Ora curent\u0103 plus \u00eent\u00e2rzierea este [{1}]. \u00cent\u00e2rzierea configurat\u0103 este [{2}] secunde.
+JWT_TOKEN_BEFORE_NBF.explanation=Jetonul JWT are o revendicare 'nbf' (nu-\u00eenainte) care specific\u0103 ora c\u00e2nd jetonul devine valid. Ora curent\u0103 este \u00eenainte de ora 'nbf', astfel c\u0103 jetonul nu este \u00eenc\u0103 valid.
+JWT_TOKEN_BEFORE_NBF.useraction=A\u015ftepta\u0163i p\u00e2n\u0103 trece ora specificat\u0103 de revendicarea 'nbf' \u00eenainte de a folosi acest jeton sau ob\u0163ine\u0163i un nou jeton cu o revendicare 'nbf' setat\u0103 la o or\u0103 \u00eenainte de ora curent\u0103. Sincroniza\u0163i orele de ceas \u00eentre emitentul \u015fi consumatorul de jetoane sau cre\u015fte\u0163i \u00eent\u00e2rzierea \u00een configura\u0163ia dumneavoastr\u0103 JWT.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Signature algorithm (e.g. RS256)
+JWT_MISSING_ALG_HEADER=CWWKS6027E: Jetonul JWT (JSON Web Token) nu este valid deoarece trebuie s\u0103 fie semnat folosind algoritmul [{0}], dar jetonul nu a con\u0163inut nicio informa\u0163ie de semn\u0103tur\u0103.
+JWT_MISSING_ALG_HEADER.explanation=Jetonul este fie incorect format, fie nesemnat, fie nu are informa\u0163ii de semnare. Jetoanele trebuie s\u0103 fie semnate de algoritmul specificat.
+JWT_MISSING_ALG_HEADER.useraction=Ob\u0163ine\u0163i un nou jeton care este semnat utiliz\u00e2nd algoritmul specificat.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Signature algorithm used to sign the token (e.g. RS256), 1=Signature algorithm required for signing (e.g. RS256)
+JWT_ALGORITHM_MISMATCH=CWWKS6028E: Jetonul JWT (JSON Web Token) nu este valid deoarece a fost semnat folosind algoritmul [{0}]. Jetoanele trebuie s\u0103 fie semnate folosind algoritmul [{1}].
+JWT_ALGORITHM_MISMATCH.explanation=Jetoanele trebuie s\u0103 fie semnate de algoritmul specificat \u00een mesaj. Jetoanele care sunt semnate cu orice alt algoritm de semn\u0103tur\u0103 nu poate fi validat.
+JWT_ALGORITHM_MISMATCH.useraction=Ob\u0163ine\u0163i un nou jeton care este semnat utiliz\u00e2nd algoritmul necesar specificat \u00een mesaj sau actualiza\u0163i-v\u0103 configura\u0163ia JWT pentru a permite jetoanele care sunt semnate folosind alt algoritm de semn\u0103tur\u0103.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Signature algorithm required for signing (e.g. RS256)
+JWT_MISSING_KEY=CWWKS6029E: Jetonul JWT (JSON Web Token) nu poate fi validat deoarece nu poate fi g\u0103sit\u0103 o cheie de semnare. Algoritmul de semn\u0103tur\u0103 configurat [{0}] necesit\u0103 o cheie pentru a valida jetonul.
+JWT_MISSING_KEY.explanation=Dac\u0103 utiliza\u0163i algoritmul de semn\u0103tur\u0103 HS256, e posibil s\u0103 nu fie specificat\u0103 o cheie partajat\u0103 \u00een configura\u0163ia consumatorului JWT sau s\u0103 fie specificat\u0103 o valoare goal\u0103. Dac\u0103 utiliza\u0163i algoritmul de semn\u0103tur\u0103 RS256, e posibil ca serviciul de depozit de chei s\u0103 nu fie disponibil sau s\u0103 nu poat\u0103 fi g\u0103sit\u0103 o cheie \u00een depozitul de chei care s\u0103 se potriveasc\u0103 cu aliasul de \u00eencredere specificat de configura\u0163ia consumatorului JWT.
+JWT_MISSING_KEY.useraction=Verifica\u0163i istoricele de server pentru mesajele suplimentare de erori care explic\u0103 de ce nu poate fi g\u0103sit\u0103 o cheie. Dac\u0103 utiliza\u0163i algoritmul de semn\u0103tur\u0103 HS256, asigura\u0163i-v\u0103 c\u0103 este specificat\u0103 o cheie partajat\u0103 \u00een configura\u0163ia dumneavoastr\u0103 de consumator JWT. Dac\u0103 utiliza\u0163i algoritmul de semn\u0103tur\u0103 RS256, asigura\u0163i-v\u0103 c\u0103 depozitul de \u00eencrederi \u015fi aliasul de \u00eencredere din configura\u0163ia dumneavoastr\u0103 de consumator sunt configurate corect.
+
+# Do not translate "JSON Web Token", "JWT", "jwtConsumer"
+# 0=JWT config identifier ("id" attribute)
+JWT_CONSUMER_CONFIG_NOT_FOUND=CWWKS6030E: Nu poate fi g\u0103sit\u0103 configura\u0163ia consumatorului JWT (JSON Web Token) cu un ID de [{0}]. Verifica\u0163i c\u0103 este configurat un consumator JWT cu ID-ul specificat \u00een configura\u0163ia serverului.
+JWT_CONSUMER_CONFIG_NOT_FOUND.explanation=Nu poate fi g\u0103sit\u0103 o configura\u0163ie de consumator JWT cu identificatorul specificat \u00een configura\u0163ia serverului.
+JWT_CONSUMER_CONFIG_NOT_FOUND.useraction=Asigura\u0163i-v\u0103 c\u0103 exist\u0103 un element jwtConsumer configurat cu ID-ul specificat \u00een configura\u0163ia serverului.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=JWT consumer config ID, 1=Error message (if present)
+JWT_ERROR_PROCESSING_JWT=CWWKS6031E: Consumatorul JWT (JSON Web Token) [{0}] nu poate procesa \u015firul de jeton. {1} 
+JWT_ERROR_PROCESSING_JWT.explanation=A ap\u0103rut o eroare care a \u00eempiedicat consumatorul s\u0103 proceseze cu succes \u015firul de jeton.
+JWT_ERROR_PROCESSING_JWT.useraction=Vede\u0163i ac\u0163iunea de utilizator pentru eroarea specificat\u0103 \u00een mesaj.
+
+# 0=Error message (if present)
+JWT_ERROR_GETTING_SHARED_KEY=CWWKS6032E: Nu poate fi extras\u0103 cheia partajat\u0103. {0}
+JWT_ERROR_GETTING_SHARED_KEY.explanation=Nu poate fi extras\u0103 cheia partajat\u0103 din cauza unei erori.
+JWT_ERROR_GETTING_SHARED_KEY.useraction=Vede\u0163i ac\u0163iunea de utilizator pentru eroarea specificat\u0103 \u00een mesaj. Verifica\u0163i c\u0103 este configurat\u0103 o cheie partajat\u0103 \u00een configura\u0163ia de consumator JWT.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Trusted alias, 1=truststore reference, 2=Error message (if present)
+JWT_ERROR_GETTING_PUBLIC_KEY=CWWKS6033E: Nu poate fi extras\u0103 cheia public\u0103 potrivit\u0103 cu aliasul [{0}] din depozitul de \u00eencrederi [{1}]. {2}
+JWT_ERROR_GETTING_PUBLIC_KEY.explanation=Aceast\u0103 eroare poate fi cauzat\u0103 de o problem\u0103 la ob\u0163inerea depozitului de \u00eencrederi sau la g\u0103sirea unei chei care s\u0103 se potriveasc\u0103 cu aliasul specificat \u00een mesaj.
+JWT_ERROR_GETTING_PUBLIC_KEY.useraction=Vede\u0163i ac\u0163iunea de utilizator pentru eroarea specificat\u0103 \u00een mesaj. Verifica\u0163i c\u0103 sunt configurate aliasul de \u00eencredere \u015fi depozitul de \u00eencrederi corespunz\u0103toare \u00een configura\u0163ia de consumator JWT (JSON Web Token). .
+
+# Intended to be a child of JWT_ERROR_GETTING_SHARED_KEY
+# Do not translate "JSON Web Token", "JWT", "sharedKey"
+JWT_MISSING_SHARED_KEY=CWWKS6034E: Nu a fost specificat\u0103 o cheie partajat\u0103 \u00een configura\u0163ia de consumator JWT (JSON Web Token).
+JWT_MISSING_SHARED_KEY.explanation=Atributul sharedKey din configura\u0163ia de consumator JWT fie lipse\u015fte, fie nu i-a fost dat\u0103 o valoare.
+JWT_MISSING_SHARED_KEY.useraction=Verifica\u0163i c\u0103 este configurat\u0103 o valoare sharedKey care nu este goal\u0103 \u00een configura\u0163ia dumneavoastr\u0103 de consumator JWT.
+
+# Intended to be a child of JWT_ERROR_GETTING_PUBLIC_KEY
+JWT_TRUSTSTORE_SERVICE_NOT_AVAILABLE=CWWKS6035E: Serviciul de depozit de \u00eencrederi nu este disponibil. Verifica\u0163i c\u0103 este specificat\u0103 o referin\u0163\u0103 de depozit de \u00eencrederi \u00een configura\u0163ia dumneavoastr\u0103 de consumator JWT.
+JWT_TRUSTSTORE_SERVICE_NOT_AVAILABLE.explanation=Fie nu a fost configurat un depozit de \u00eencrederi, fie depozitul de \u00eencrederi configurat nu a fost procesat de serviciul de configurare.
+JWT_TRUSTSTORE_SERVICE_NOT_AVAILABLE.useraction=Verifica\u0163i c\u0103 este specificat\u0103 o referin\u0163\u0103 de depozit de \u00eencrederi \u00een configura\u0163ia dumneavoastr\u0103 de consumator JWT.
+
+# 0=Signature algorithm (HS256, RS256), 1=Key object (string or Java object)
+# Do not translate "HS256", "RS256", "java.security.interfaces.RSAPrivateKey"
+JWT_INVALID_KEY_ERR=CWWKS6036E: Algoritmul de semn\u0103tur\u0103 [{0}] necesit\u0103 o cheie valid\u0103 pentru a semna jetonul, dar cheia furnizat\u0103 [{1}] nu este valid\u0103.
+JWT_INVALID_KEY_ERR.explanation=Dac\u0103 folosi\u0163i algoritmul de semn\u0103tur\u0103 HS256, cheia partajat\u0103 a fost fie null, fie un \u015fir gol. Dac\u0103 folosi\u0163i algoritmul de semn\u0103tur\u0103 RS256, cheia partajat\u0103 a fost fie null, fie nu a fost o instan\u0163\u0103 a java.security.interfaces.RSAPrivateKey.
+JWT_INVALID_KEY_ERR.useraction=Dac\u0103 folosi\u0163i algoritmul de semn\u0103tur\u0103 HS256, asigura\u0163i-v\u0103 c\u0103 este furnizat un \u015fir non-null \u015fi care nu este gol este furnizat ca \u015fi cheie de semnare. Dac\u0103 folosi\u0163i algoritmul de semn\u0103tur\u0103 RS256, asigura\u0163i-v\u0103 c\u0103 este furnizat\u0103 ca \u015fi cheie de semnare o instan\u0163\u0103 non-null a clasei care implementeaz\u0103 interfa\u0163a java.security.interfaces.RSAPrivateKey.
+
+# 0=Signature algorithm string (null, empty, HS256, RS256), 1=Valid signature algorithm string (HS256, RS256)
+JWT_INVALID_ALGORITHM_ERR=CWWKS6037E: Algoritmul de semn\u0103tur\u0103 furnizat [{0}] nu este valid. Setul de algoritmi valizi este [{1}].
+JWT_INVALID_ALGORITHM_ERR.explanation=Algoritmul de semn\u0103tur\u0103 furnizat este null, gol sau nu se potrive\u015fte cu setul de algoritmi cerut care este specificat \u00een mesaj.
+JWT_INVALID_ALGORITHM_ERR.useraction=Verifica\u0163i c\u0103 algoritmul de semn\u0103tur\u0103 furnizat se potrive\u015fte cu setul de algoritmi valizi.
+
+# Do not translate "JSON Web Key", "JWK", "JSON Web Token", "JWT", "jwkEnabled"
+# 0=JWT builder config ID
+JWK_ENDPOINT_JWK_NOT_ENABLED=CWWKS6038E: Punctul final de validare JWK (JSON Web Key) nu poate fi folosit deoarece suportul JWK nu este activat pentru configura\u0163ia de builder JWT (JSON Web Token) [{0}].
+JWK_ENDPOINT_JWK_NOT_ENABLED.explanation=Suportul pentru JWK trebuie activat s\u0103 foloseasc\u0103 punctul final de validare JWK. Atributul jwkEnabled s-ar putea s\u0103 nu fi fost configurat \u00een configura\u0163ia de builder JWT specificat\u0103 sau este setat la false.
+JWK_ENDPOINT_JWK_NOT_ENABLED.useraction=Verifica\u0163i ca atributul de configura\u0163ie jwkEnabled s\u0103 fie setat la true pentru configura\u0163ia de builder JWT specificat\u0103.
+
+# Do not translate "JSON Web Key", "JWK", "JSON Web Token", "JWT"
+# 0=JWT builder config ID, 1=JWT builder's configured signature algorithm (HS256, RS256), 2=Valid signature algorithm (RS256)
+JWK_ENDPOINT_WRONG_ALGORITHM=CWWKS6039E: Pentru a valida folosind punctul final de validare JWK (JSON Web Key), configura\u0163ia de builder JWT (JSON Web Token) [{0}] trebuie s\u0103 foloseasc\u0103 algoritmul de semn\u0103tur\u0103 [{2}]. Configura\u0163ia de builder JWT este setat\u0103 s\u0103 foloseasc\u0103 algoritmul de semn\u0103tur\u0103 [{1}].
+JWK_ENDPOINT_WRONG_ALGORITHM.explanation=Func\u0163ionalitatea JWK necesit\u0103 utilizarea algoritmului de semn\u0103tur\u0103 specificat \u00een mesaj. Configura\u0163ia de builder JWT nu utilizeaz\u0103 algoritmul de semn\u0103tur\u0103 cerut.
+JWK_ENDPOINT_WRONG_ALGORITHM.useraction=Modifica\u0163i configura\u0163ia de builder JWT s\u0103 utilizeze algoritmul de semn\u0103tur\u0103 cerut.
+
+# Do not translate "JSON Web Token", "JWT", "Base64"
+# 0=JWT consumer config ID, 1=JWT string
+JWT_CONSUMER_NULL_OR_EMPTY_STRING=CWWKS6040E: Consumatorul de JWT (JSON Web Token) [{0}] nu poate crea un JWT deoarece \u015firul furnizat [{1}] a fost null sau gol.
+JWT_CONSUMER_NULL_OR_EMPTY_STRING.explanation=Pentru a crea un obiect JWT, trebuie s\u0103 furniza\u0163i un jeton codificat corespunz\u0103tor.
+JWT_CONSUMER_NULL_OR_EMPTY_STRING.useraction=Specifica\u0163i un \u015fir JWT codificat corect. \u015eirul trebuie s\u0103 fie \u00een formatul descris \u00een https://tools.ietf.org/html/rfc7519#section-3, unde \u015firul este o secven\u0163\u0103 de p\u0103r\u0163i URL-safe codificate Base64 separate de caractere punct ('.').
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Exception message, if present
+JWT_INVALID_SIGNATURE=CWWKS6041E: Semn\u0103tura JWT (JSON Web Token) nu este valid\u0103. {0}
+JWT_INVALID_SIGNATURE.explanation=A ap\u0103rut o eroare la procesarea semn\u0103turii \u015firului JWT furnizat.
+JWT_INVALID_SIGNATURE.useraction=Vede\u0163i ac\u0163iunea de utilizator pentru eroarea specificat\u0103 \u00een mesaj. Verifica\u0163i c\u0103 JWT a fost semnat utiliz\u00e2nd algoritmul de semn\u0103tur\u0103 \u015fi cheia corecte.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0="exp", 1=exp claim value, 2=exp claim converted to readable date, 3=Current time
+JWT_INVALID_EXP_CLAIM_ERR=CWWKS6042E: Valoarea de cerere (claim) [{0}] [{1}] [{2}] trebuie s\u0103 fie egal\u0103 sau dup\u0103 timpul curent [{3}].
+JWT_INVALID_EXP_CLAIM_ERR.explanation=Tipul de expirare JWT (JSON Web Token) trebuie setat fie la momentul de timp curent, fie la un moment de timp \u00een viitor. A fost specificat un timp din trecut.
+JWT_INVALID_EXP_CLAIM_ERR.useraction=Seta\u0163i timpul de expirare jeton la timpul curent sau la un timp din viitor.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Claim that is malformed ("exp", "iat", "sub", etc.), 1=Exception message, if present
+JWT_CONSUMER_MALFORMED_CLAIM=CWWKS6043E: Consumatorul de JWT (JSON Web Token) nu poate procesa un jeton deoarece cererea [{0}] este formatat\u0103 gre\u015fit. [ {1} ]
+JWT_CONSUMER_MALFORMED_CLAIM.explanation=Valoarea pentru cererea specificat\u0103 nu este formatat\u0103 corect sau nu este de tipul a\u015fteptat.
+JWT_CONSUMER_MALFORMED_CLAIM.useraction=Vede\u0163i ac\u0163iunea de utilizator pentru eroarea specificat\u0103 \u00een mesaj. Asigura\u0163i-v\u0103 c\u0103 valoarea pentru cererea specificat\u0103 este de tipul corespunz\u0103tor.
+
+# Do not translate "JSON Web Token", "JWT", "iat"
+# 0=iat claim time value (date), 1=Current time, 2=Clock skew configuration value
+JWT_IAT_AFTER_CURRENT_TIME=CWWKS6044E: Jetonul JWT (JSON Web Token) nu este valid deoarece cererea ''iat'' (issued at) specific\u0103 o dat\u0103 ulterioar\u0103 timpului curent. Timpul cererii ''iat'' este [{0}]. Ora curent\u0103 plus \u00eent\u00e2rzierea este [{1}]. \u00cent\u00e2rzierea configurat\u0103 este [{2}] secunde.
+JWT_IAT_AFTER_CURRENT_TIME.explanation=Un jeton este corect doar dac\u0103 cererea (claim) sa 'iat' specific\u0103 un timp \u00een trecut. Cererea 'iat' a jetonului furnizat specific\u0103 un timp \u00een viitor, astfel \u00eenc\u00e2t jetonul nu este \u00eenc\u0103 valid.
+JWT_IAT_AFTER_CURRENT_TIME.useraction=A\u015ftepta\u0163i dup\u0103 momentul de timp specificat \u00een cererea 'iat' \u00eenainte de a folosi acest jeton, sau ob\u0163ine\u0163i un nou jeton cu o valoare 'iat' care specific\u0103 o dat\u0103 din trecut.
+
+# Do not translate "JSON Web Token", "JWT", "iss", "jti"
+# 0=iss claim value (string), 1=jti claim value (string)
+JWT_DUP_JTI_ERR=CWWKS6045E: Un jeton JWT (JSON Web Token)cu aceea\u015fi cerere ''iss'' [{0}] \u015fi aceea\u015fi cerere ''jti'' [{1}] a fost primit deja, ceea ce poate indica un atac de tip replay. Asigura\u0163i-v\u0103 c\u0103 emitentul jetonului furnizeaz\u0103 un jeton cu o cerere ''jti'' unic\u0103.
+JWT_DUP_JTI_ERR.explanation=Jetonul furnizat include o cerere 'jti' care identific\u0103 \u00een mod unic jetonul. Un alt jeton cu acelea\u015fi valori 'iss' \u015fi 'jti' a fost primit \u015fi procesat anterior. Cererile duplicate pot indica un posibil atac de tip replay.
+JWT_DUP_JTI_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 emitentul jetonului furnizeaz\u0103 un jeton nou cu o cerere 'jti' unic\u0103.
+
+# Do not translate "JWT", "trustStoreRef" 
+# Intended to be a child of JWT_ERROR_GETTING_PUBLIC_KEY
+JWT_SIGNER_CERT_NOT_AVAILABLE=CWWKS6046E: Nu se poate extrage o cheie de semn\u0103tur\u0103 din depozitul de \u00eencrederi. Nu exist\u0103 niciun certificat de semnatar \u00een depozitul de \u00eencrederi care este specificat.
+JWT_SIGNER_CERT_NOT_AVAILABLE.explanation=Depozitul de \u00eencrederi specificat de configura\u0163ia de consumator JWT nu con\u0163ine niciun certificat de semnatar. Este necesar un certificat de semnatar pentru a valida jetonul JWT.
+JWT_SIGNER_CERT_NOT_AVAILABLE.useraction=Verifica\u0163i c\u0103 depozitul de \u00eencrederi utilizat de configura\u0163ia de consumator JWT con\u0163ine cel pu\u0163in un certificat de semnatar. Depozitul de \u00eencrederi poate fi configurat utiliz\u00e2nd atributul 'trustStoreRef' \u00een configura\u0163ia de consumator JWT sau ca parte a configura\u0163iei generale SSL a serverului.
+
+# Do not translate "JWT", "trustedAlias"
+# single quoted terms do NOT use double single quotes when there are no replacement variables
+# Intended to be a child of JWT_ERROR_GETTING_PUBLIC_KEY
+JWT_SIGNER_CERT_AMBIGUOUS=CWWKS6047E: Nu se poate extrage o cheie de semn\u0103tur\u0103 din depozitul de \u00eencrederi. Atributul 'trustedAlias' nu a fost specificat \u00een configura\u0163ia de consumator JWT \u015fi exist\u0103 multiple certificate de semnatar \u00een depozitul de \u00eencrederi.
+JWT_SIGNER_CERT_AMBIGUOUS.explanation=Au fost g\u0103site mai multe certificate de semnatar \u00een depozitul de \u00eencrederi configurat. C\u00e2nd exist\u0103 multiple certificate de semnatar \u00een depozitul de \u00eencrederi, atributul 'trustedAlias' trebuie s\u0103 fie specificat \u00een configura\u0163ia de consumator JWT pentru a stabili ce certificate s\u0103 se utilizeze.
+JWT_SIGNER_CERT_AMBIGUOUS.useraction=Specifica\u0163i atributul 'trustedAlias' al configura\u0163iei de consumator JWT cu aliasul certificatului de semnatar corespunz\u0103tor.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_PROPAGATION_INVALID_TOKEN_ERR=CWWKS6048E: API-ul filtrului de cereri de client nu propag\u0103 Jetonul web JSON (JWT).
+JWT_PROPAGATION_INVALID_TOKEN_ERR.explanation=API-ul filtrului de cereri de client nu a ob\u0163inut un jeton valid JWT de la subiectul autentificat. API-ul nu poate continua propagarea jetonului JWT deoarece acesta nu este valid.
+JWT_PROPAGATION_INVALID_TOKEN_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 fluxul de autentificare care a survenit \u00eenainte de propagare are succes. Verifica\u0163i fi\u015fierele istoric pentru toate erorile de autentificare sau autorizare care ar fi putut \u00eempiedica crearea jetonului \u015fi includerea jetonului \u00een subiect.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0: jwk url, 1:http status, 2: error message or the responding content
+JWT_JWK_RETRIEVE_FAILED=CWWKS6049E: Nu a fost returnat\u0103 o Cheie web JSON (JWK) din URL-ul [{0}]. Status-ul r\u0103spunsului a fost [{1}] \u015fi con\u0163inutul returnat a fost [{2}].
+JWT_JWK_RETRIEVE_FAILED.explanation=Extragerea JWK-ului prin intermediul URL-ului indicat a e\u015fuat. Codul de status \u015fi con\u0163inutul r\u0103spunsului sunt, de asemenea, indicate \u00een mesajul de eroare.
+JWT_JWK_RETRIEVE_FAILED.useraction=Asigura\u0163i-v\u0103 c\u0103 lucrul \u00een re\u0163ea este setat corespunz\u0103tor \u015fi verifica\u0163i URL-ul JWK \u00een configura\u0163ie.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0: error
+JWT_HTTPS_WITH_SSLCONTEXT_NULL=CWWKS6050E: Utilizatorul de Jeton web JSON (JWT) [{1}] nu a putut crea un context SSL datorit\u0103 [{0}]. Asigura\u0163i-v\u0103 c\u0103 este configurat\u0103 corespunz\u0103tor caracteristica SSL.
+JWT_HTTPS_WITH_SSLCONTEXT_NULL.explanation=Configura\u0163ia consumatorului de JWT este configurat\u0103 s\u0103 utilizeze scheme HTTPS, dar e posibil ca o conexiune HTTPS s\u0103 nu fi fost stabilit\u0103. Caracteristica SSL nu poate fi activat\u0103. Elementul keyStore ar putea s\u0103 lipseasc\u0103 sau s\u0103 fie specificat incorect.  
+JWT_HTTPS_WITH_SSLCONTEXT_NULL.useraction=Asigura\u0163i-v\u0103 c\u0103 ave\u0163i informa\u0163iile SSL corecte \u00een server.xml. Vede\u0163i ac\u0163iunea de utilizator pentru eroarea care apare \u00eenainte de acest mesaj.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=jwks uri, 1=Error message (if present)
+JWT_ERROR_GETTING_JWK_KEY=CWWKS6051E: Nu se poate extrage Cheia web JSON (JWK) din URL-ul [{0}]. {1}
+JWT_ERROR_GETTING_JWK_KEY.explanation=Extragerea JWK-ului prin intermediul URL-ului indicat a e\u015fuat.
+JWT_ERROR_GETTING_JWK_KEY.useraction=Asigura\u0163i-v\u0103 c\u0103 lucrul \u00een re\u0163ea este setat corespunz\u0103tor \u015fi verifica\u0163i URL-ul JWK \u00een configura\u0163ie.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Issuer claim of the token, 1=JWT configuration ID
+JWT_TRUSTED_ISSUERS_NULL=CWWKS6052E: Emitentul [{0}] al jetonului JWT (JSON Web Token) nu este de \u00eencredere deoarece configura\u0163ia JWT [{1}] nu specific\u0103 niciun emitent de \u00eencredere.
+JWT_TRUSTED_ISSUERS_NULL.explanation=Configura\u0163ia de server specific\u0103 ce emiten\u0163i sunt de \u00eencredere pentru validarea jetoanelor JWT. Configura\u0163ia JWT nu specific\u0103 niciun emitent de \u00eencredere, a\u015fa c\u0103 jetonul nu poate fi validat.
+JWT_TRUSTED_ISSUERS_NULL.useraction=Asigura\u0163i-v\u0103 c\u0103 \u00een configura\u0163ia JWT care este specificat\u0103 \u00een mesaj este definit cel pu\u0163in un emitent de \u00eencredere. Asigura\u0163i-v\u0103 c\u0103 emitentul se potrive\u015fte cu unul din emiten\u0163ii de \u00eencredere specifica\u0163i \u00een configura\u0163ia dumneavoastr\u0103 JWT.

@@ -69,7 +69,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 VMMAPIs_TDSLDAPTest.class,
                 OutboundSSLLDAPTest.class,
                 URAPIs_PropertiesNotSupportedTest.class,
-                SearchPagingTest.class
+                SearchPagingTest.class,
+                GetUserSecurityCustomLDAP.class
 })
 public class FATSuite extends CommonLocalLDAPServerSuite {
 

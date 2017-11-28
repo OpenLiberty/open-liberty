@@ -1,0 +1,32 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.management.j2ee.mejb/resources/com/ibm/ws/management/j2ee/mejb/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKJ
+#COMPONENTNAMEFOR JSR77
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKJ0200 - CWWKJ0299
+
+MANAGEMENT_EJB_SERVICE_ACTIVATED=CWWKJ0200I: Slu\u017eba ManagementEJB byla spu\u0161t\u011bna.
+MANAGEMENT_EJB_SERVICE_ACTIVATED.explanation=Slu\u017eba ManagementEJB byla \u00fasp\u011b\u0161n\u011b spu\u0161t\u011bna.
+MANAGEMENT_EJB_SERVICE_ACTIVATED.useraction=Tato zpr\u00e1va je pouze informativn\u00ed. Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+MANAGEMENT_EJB_SERVICE_DEACTIVATED=CWWKJ0201I: Slu\u017eba ManagementEJB byla zastavena.
+MANAGEMENT_EJB_SERVICE_DEACTIVATED.explanation=Slu\u017eba ManagementEJB byla \u00fasp\u011b\u0161n\u011b zastavena.
+MANAGEMENT_EJB_SERVICE_DEACTIVATED.useraction=Tato zpr\u00e1va je pouze informativn\u00ed. Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+MANAGEMENT_EJB_START_ERROR=CWWKJ0202E: Syst\u00e9mov\u00fd modul EJB nelze spustit. Chyba: {0} 
+MANAGEMENT_EJB_START_ERROR.explanation=Produkt nem\u016f\u017ee spustit syst\u00e9mov\u00fd modul EJB, proto\u017ee do\u0161lo k chyb\u011b.
+MANAGEMENT_EJB_START_ERROR.useraction=Zkontrolujte, zda je modul EJB spr\u00e1vn\u011b nakonfigurov\u00e1n. 
+

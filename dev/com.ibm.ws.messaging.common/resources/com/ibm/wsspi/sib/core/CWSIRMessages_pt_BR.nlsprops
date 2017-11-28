@@ -1,0 +1,187 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.wsspi.sib.core.CWSIRMessages.nlsprops
+#
+# SIB.common component file for logging messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIR0001=CWSIR0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - CWSIR9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=%I%
+#
+#CMVCPATHNAME com.ibm.ws.messaging.common/resources/com/ibm/wsspi/sib/core/CWSIRMessages.nlsprops
+#COMPONENTPREFIX CWSIR
+#COMPONENTNAMEFOR CWSIR SIBus Core
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+BROWSE_METHOD_CWSIR0001=CWSIR0001E: o argumento destinationAddress \u00e9 nulo.
+BROWSE_METHOD_CWSIR0001.explanation=A chamada para createBrowserSession forneceu um valor nulo para o argumento destinationAddress.  O destinationAddress n\u00e3o deve ser nulo
+BROWSE_METHOD_CWSIR0001.useraction=Forne\u00e7a um valor de destinationAddress v\u00e1lido.
+
+# -------------------------------------------------------------------------------------------------
+# destAddr is a argument name for a method call
+CREATE_CONSUMER_CWSIR0021=CWSIR0021E: O argumento destAddr \u00e9 nulo
+CREATE_CONSUMER_CWSIR0021.explanation=A chamada para createConsumerSession forneceu um valor nulo para o argumento destAddr.  O destAddr n\u00e3o deve ser nulo
+CREATE_CONSUMER_CWSIR0021.useraction=Forne\u00e7a um valor para destAddr.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+CREATE_DURABLE_SUB_CWSIR0031=CWSIR0031E: O argumento destinationAddress \u00e9 nulo
+CREATE_DURABLE_SUB_CWSIR0031.explanation=A chamada para createConsumerSessionForDurableSubscription forneceu um valor nulo para o argumento destinationAddress.  O destinationAddress n\u00e3o deve ser nulo
+CREATE_DURABLE_SUB_CWSIR0031.useraction=Forne\u00e7a um valor de destinationAddress v\u00e1lido.
+
+# -------------------------------------------------------------------------------------------------
+# subscriptionName is a argument name for a method call
+CREATE_DURABLE_SUB_CWSIR0032=CWSIR0032E: O argumento subscriptionName \u00e9 nulo
+CREATE_DURABLE_SUB_CWSIR0032.explanation=A chamada para createConsumerSessionForDurableSubscription forneceu um valor nulo para o argumento subscriptionName.  O subscriptionName n\u00e3o deve ser nulo
+CREATE_DURABLE_SUB_CWSIR0032.useraction=Forne\u00e7a um valor v\u00e1lido para subscriptionName.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+CREATE_DURABLE_SUB_CWSIR0041=CWSIR0041E: O argumento destinationAddress \u00e9 nulo
+CREATE_DURABLE_SUB_CWSIR0041.explanation=A chamada para createDurableSubscription forneceu um valor nulo para o argumento destinationAddress.  O destinationAddress n\u00e3o deve ser nulo
+CREATE_DURABLE_SUB_CWSIR0041.useraction=Forne\u00e7a um valor de destinationAddress v\u00e1lido.
+
+# -------------------------------------------------------------------------------------------------
+# subscriptionName is a argument name for a method call
+CREATE_DURABLE_SUB_CWSIR0042=CWSIR0042E: O argumento subscriptionName \u00e9 nulo
+CREATE_DURABLE_SUB_CWSIR0042.explanation=A chamada para createDurableSubscription forneceu um valor nulo para o argumento subscriptionName.  O subscriptionName n\u00e3o deve ser nulo
+CREATE_DURABLE_SUB_CWSIR0042.useraction=Forne\u00e7a um valor v\u00e1lido para subscriptionName.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+CREATE_PRODUCER_CWSIR0051=CWSIR0051E: O argumento destAddr \u00e9 nulo
+CREATE_PRODUCER_CWSIR0051.explanation=A chamada para checkDestinationAccess forneceu um valor nulo para o argumento destAddr.  O destAddr n\u00e3o deve ser nulo
+CREATE_PRODUCER_CWSIR0051.useraction=Forne\u00e7a um valor para destAddr.
+
+# -------------------------------------------------------------------------------------------------
+# subscriptionName is a argument name for a method call
+DELETE_DURABLE_SUB_CWSIR0061=CWSIR0061E: O argumento subscriptionName \u00e9 nulo
+DELETE_DURABLE_SUB_CWSIR0061.explanation=A chamada para deleteDurableSubscription forneceu um valor nulo para o argumento subscriptionName.  O subscriptionName n\u00e3o deve ser nulo
+DELETE_DURABLE_SUB_CWSIR0061.useraction=Forne\u00e7a um valor v\u00e1lido para subscriptionName.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+CREATE_PRODUCER_CWSIR0071=CWSIR0071E: O argumento destAddr \u00e9 nulo
+CREATE_PRODUCER_CWSIR0071.explanation=A chamada para deleteTemporaryDestination forneceu um valor nulo para o argumento destAddr.  O destAddr n\u00e3o deve ser nulo
+CREATE_PRODUCER_CWSIR0071.useraction=Forne\u00e7a um valor para destAddr.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+GET_DEST_CONFIG_CWSIR0081=CWSIR0081E: O argumento destAddr \u00e9 nulo
+GET_DEST_CONFIG_CWSIR0081.explanation=A chamada para checkDestinationAccess forneceu um valor nulo para o argumento destAddr.  O destAddr n\u00e3o deve ser nulo
+GET_DEST_CONFIG_CWSIR0081.useraction=Forne\u00e7a um valor para destAddr.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+RECEIVE_NO_WAIT_CWSIR0091=CWSIR0091E: O argumento destAddr \u00e9 nulo
+RECEIVE_NO_WAIT_CWSIR0091.explanation=A chamada para receiveNoWait forneceu um valor nulo para o argumento destAddr.  O destAddr n\u00e3o deve ser nulo
+RECEIVE_NO_WAIT_CWSIR0091.useraction=Forne\u00e7a um valor para destAddr.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+RECEIVE_WITH_WAIT_CWSIR0101=CWSIR0101E: O argumento destAddr \u00e9 nulo
+RECEIVE_WITH_WAIT_CWSIR0101.explanation=A chamada para receiveWithWait forneceu um valor nulo para o argumento destAddr.  O destAddr n\u00e3o deve ser nulo
+RECEIVE_WITH_WAIT_CWSIR0101.useraction=Forne\u00e7a um valor para destAddr.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+SEND_CWSIR0111=CWSIR0111E: O argumento destAddr \u00e9 nulo
+SEND_CWSIR0111.explanation=A chamada para receiveWithWait forneceu um valor nulo para o argumento destAddr.  O destAddr n\u00e3o deve ser nulo
+SEND_CWSIR0111.useraction=Forne\u00e7a um valor para destAddr.
+
+# -------------------------------------------------------------------------------------------------
+# msg is a argument name for a method call
+SEND_CWSIR0112=CWSIR0112E: O argumento de mensagem \u00e9 nulo.
+SEND_CWSIR0112.explanation=A chamada para enviar forneceu um valor nulo para o argumento de mensagem.  A mensagem n\u00e3o deve ser nula.
+SEND_CWSIR0112.useraction=Forne\u00e7a um valor de mensagem v\u00e1lido.
+
+# -------------------------------------------------------------------------------------------------
+# msg is a argument name for a method call
+SEND_EXCEPTION_DEST_CWSIR0121=CWSIR0121E: O argumento de mensagem \u00e9 nulo.
+SEND_EXCEPTION_DEST_CWSIR0121.explanation=A chamada para sendToExceptionDestination forneceu um valor nulo para o argumento de mensagem.  A mensagem n\u00e3o deve ser nula.
+SEND_EXCEPTION_DEST_CWSIR0121.useraction=Forne\u00e7a um valor de mensagem v\u00e1lido.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the internal method name called on the SPI.
+LME_ERROR_CWSIR0131=CWSIR0131E: A chamada para o m\u00e9todo {0} n\u00e3o \u00e9 v\u00e1lida neste momento.
+LME_ERROR_CWSIR0131.explanation=A chamada especificada \u00e9 v\u00e1lida apenas de dentro do m\u00e9todo AsynchConsumerCallback.consumeMessages.
+LME_ERROR_CWSIR0131.useraction=Emita a chamada novamente de dentro do m\u00e9todo AsynchConsumerCallback.consumeMessages ou utilize uma chamada de ConsumerSession apropriada, se poss\u00edvel.
+
+# -------------------------------------------------------------------------------------------------
+# 
+LME_ERROR_CWSIR0132=CWSIR0132E: Um ou mais valores na matriz msgHandles s\u00e3o nulos.
+LME_ERROR_CWSIR0132.explanation=A matriz de argumento msgHandles n\u00e3o deve conter elementos nulos, de forma que a chamada para ConsumerSession ou BifurcatedConsumerSession foi rejeitada.
+LME_ERROR_CWSIR0132.useraction=Emita a chamada depois de remover quaisquer elementos nulos da matriz
+
+# -------------------------------------------------------------------------------------------------
+# 
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0141=CWSIR0141E: O argumento maxActiveMessages {0} n\u00e3o era um valor v\u00e1lido.
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0141.explanation=O valor de maxActiveMessages deve ser >=0
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0141.useraction=Forne\u00e7a um valor v\u00e1lido de maxActiveMessages.
+
+# -------------------------------------------------------------------------------------------------
+# 
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0142=CWSIR0142E: O argumento messageLockExpiry {0} n\u00e3o era um valor v\u00e1lido.
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0142.explanation=O valor de messageLockExpiry deve ser >=0
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0142.useraction=Forne\u00e7a um valor de messageLockExpiry v\u00e1lido.
+
+# -------------------------------------------------------------------------------------------------
+# 
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0143=CWSIR0143E: O argumento maxBatchSize {0} n\u00e3o era um valor v\u00e1lido.
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0143.explanation=O valor de maxBatchSize deve ser >0
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0143.useraction=Forne\u00e7a um valor v\u00e1lido de maxBatchSize.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIR9999=CWSIR9999E: {0}
+TEMPORARY_CWSIR9999.explanation=Se a mensagem n\u00e3o oferecer informa\u00e7\u00f5es suficientes, consulte as mensagens anteriores para obter mais ajuda.
+TEMPORARY_CWSIR9999.useraction=Consulte as mensagens anteriores para obter informa\u00e7\u00f5es adicionais.

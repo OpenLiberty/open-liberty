@@ -1,0 +1,56 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.service/resources/com/ibm/ws/kernel/service/location/internal/resources/LocServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0200 - 0299 com.ibm.ws.kernel.service.location.internal.resources.LocServiceMessages
+# -------------------------------------------------------------------------------------------------
+unreachableLocation=CWWKE0200E: La ubicaci\u00f3n especificada no se puede alcanzar. No es un hijo de una v\u00eda de acceso conocida o configurada; v\u00eda de acceso={0}.
+unreachableLocation.explanation=La plataforma utiliza v\u00edas de acceso simb\u00f3licas para proporcionar una protecci\u00f3n rudimentaria frente al acceso arbitrario al sistema de archivos cuando el servicio de ubicaci\u00f3n se utiliza para resolver v\u00edas de acceso especificadas. \
+README.TXT contiene informaci\u00f3n sobre la forma de configurar v\u00edas de acceso simb\u00f3licas.
+unreachableLocation.useraction=Compruebe bootstrap.properties para ver las v\u00edas de acceso configuradas y aseg\u00farese de que la v\u00eda de acceso configurada es un hijo de s\u00edmbolos existentes o est\u00e1 asociada a un s\u00edmbolo definido expl\u00edcitamente.
+
+invalidResourceType=CWWKE0201E: No se ha podido crear el s\u00edmbolo; la ubicaci\u00f3n especificada existe y est\u00e1 en conflicto con el tipo solicitado: {0}={1}.
+invalidResourceType.explanation=La v\u00eda de acceso especificada para un s\u00edmbolo existe y es un tipo de recurso diferente de la v\u00eda de acceso especificada (por ejemplo, el s\u00edmbolo describe un archivo, pero el recurso es un directorio).
+invalidResourceType.useraction=Aseg\u00farese de que la v\u00eda de acceso est\u00e9 especificada correctamente. \
+Las v\u00edas de acceso de directorio debe terminar con una /. \
+Aseg\u00farese de que la v\u00eda de acceso hace referencia a un recurso que no existe o que existe y es del tipo solicitado.
+
+missingTmpDir=CWWKE0202E: La ubicaci\u00f3n del directorio temporal especificado no existe y no se ha podido crear: {0}.
+missingTmpDir.explanation=El directorio especificado como java.io.tmpdir (a trav\u00e9s de la propiedad del sistema o a trav\u00e9s de la variable de entorno espec\u00edfica de plataforma) no existe y no se ha podido crear.
+missingTmpDir.useraction=Aseg\u00farese de que el directorio especificado existe y de que tiene permisos de lectura/escritura.
+
+relativeTmpDir=CWWKE0203I: El directorio java.io.tempdir se ha especificado con una v\u00eda de acceso relativa. La v\u00eda de acceso resuelta es {0}.
+relativeTmpDir.explanation=El directorio especificado como java.io.tmpdir (a trav\u00e9s de la propiedad del sistema o a trav\u00e9s de la variable de entorno espec\u00edfica de plataforma) es relativo y se ha resuelto en relaci\u00f3n al directorio de inicio.
+relativeTmpDir.useraction=No se requiere ninguna acci\u00f3n.
+
+locationInitializationError=CWWKE0204E: No se ha podido inicializar el servicio de ubicaci\u00f3n de plataforma; motivo={0}.
+locationInitializationError.explanation=CMSG0001
+locationInitializationError.useraction=CMSG0002
+
+frameworkShutdown=CWWKE0205W: La infraestructura est\u00e1 concluyendo debido a un error de inicializaci\u00f3n anterior.
+frameworkShutdown.explanation=La infraestructura est\u00e1 concluyendo debido a un error anterior durante la inicializaci\u00f3n.
+frameworkShutdown.useraction=Resuelva el error y reinicie el servidor.

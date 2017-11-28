@@ -1,0 +1,172 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.utility/resources/com/ibm/ws/security/utility/resources/UtilityOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_ALL
+
+global.description=Popis:
+global.actions=Akce:
+global.options=Volby:
+global.usage=Pou\u017eit\u00ed:
+global.required=Vy\u017eadov\u00e1no:
+global.options.statement=\tPomoc\u00ed p\u0159\u00edkazu help [n\u00e1zev_akce] z\u00edsk\u00e1te podrobn\u00e9 informace o volb\u00e1ch jednotliv\u00fdch akc\u00ed.
+
+
+
+# -------- GENERAL OPTIONS -----------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+#Note to translator, please make sure that the the length of the line should
+# not exceed 80 characters. Therefore the \n (CRLF) needs to be placed at or
+# before 72th characters if the line starts with \t.
+# And this statement is applied after the sentences are translated.
+# So please feel free to place \n character at or before 72th characters if
+# the translated sentence is longer than the original sentence.
+
+help.desc=\tVytisknout informace n\u00e1pov\u011bdy pro ur\u010denou akci.
+#Note to translator the word "help" should not be translated
+help.usage.options=\t{0} help [n\u00e1zev_akce]
+
+# -------- ENCODE OPTIONS ------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+encode.desc=\tZak\u00f3dovat zadan\u00fd text.
+#Note to translator the word "encode" should not be translated
+encode.usage.options=\t{0} encode [volby]
+encode.option-key.text=\ \ \ \ text_k_zak\u00f3dov\u00e1n\u00ed
+encode.option-desc.text=\tPokud nejsou zad\u00e1ny \u017e\u00e1dn\u00e9 argumenty, p\u0159ejde n\u00e1stroj do interaktivn\u00edho \n\
+\tre\u017eimu. Jinak bude zak\u00f3dov\u00e1n zadan\u00fd text.\n\
+\tPokud je jako argument zad\u00e1n text s mezerami, mus\u00ed b\u00fdt cel\u00fd uzav\u0159en\u00fd do uvozovek.
+encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|hash{1}]
+encode.option-desc.encoding=\tUr\u010dete zp\u016fsob zak\u00f3dov\u00e1n\u00ed hesla. Podporovan\u00e1 k\u00f3dov\u00e1n\u00ed: xor, aes,\n\
+\ta hash. V\u00fdchoz\u00ed k\u00f3dov\u00e1n\u00ed je xor. {2}
+encode.option-key.key=\ \ \ \ --key=[kl\u00ed\u010d]
+encode.option-desc.key=\tUr\u010dete kl\u00ed\u010d, kter\u00fd m\u00e1 b\u00fdt pou\u017eit pro zak\u00f3dov\u00e1n\u00ed metodou AES. Tento \u0159et\u011bzec bude\n\
+\tha\u0161ov\u00e1n za \u00fa\u010delem vytvo\u0159en\u00ed \u0161ifrovac\u00edho kl\u00ed\u010de, kter\u00fd bude pou\u017eit k \u0161ifrov\u00e1n\u00ed\n\
+\ta de\u0161ifrov\u00e1n\u00ed hesla. Kl\u00ed\u010d lze poskytnout serveru definov\u00e1n\u00edm prom\u011bnn\u00e9\n\
+\twlp.password.encryption.key, jej\u00ed\u017e hodnotou bude\n\
+\tkl\u00ed\u010d. Nen\u00ed-li tato volba zad\u00e1na, pou\u017eije se v\u00fdchoz\u00ed kl\u00ed\u010d.
+encode.option-key.notrim=\ \ \ \ --notrim
+encode.option-desc.notrim=\tUr\u010duje, zda se maj\u00ed ze za\u010d\u00e1tku a konce uveden\u00e9ho textu odebrat znaky\n\
+\tmezer. Je-li uvedena tato volba, bude poskytnut\u00fd text\n\
+\tzak\u00f3dov\u00e1n tak, jak je. \n\
+\tNen\u00ed-li tato volba uvedena, odeberou se znaky mezer ze za\u010d\u00e1tku a \n\
+\tkonce uveden\u00e9ho textu. 
+encode.option-key.listCustom=\ \ \ \ --listCustom
+encode.option-desc.listCustom=\tZobrazit informace o vlastn\u00edm \u0161ifrov\u00e1n\u00ed hesla ve form\u00e1tu \n\
+\tJavaScript Object Notation (JSON).\n\
+\tTyto informace se skl\u00e1daj\u00ed z:\n\
+\tname : n\u00e1zev vlastn\u00edho \u0161ifrovac\u00edho algoritmu hesel\n\
+\tfeaturename : n\u00e1zev funkce\n\
+\tdescription : popis vlastn\u00edho \u0161ifrov\u00e1n\u00ed hesel
+
+
+
+# -------- CREATE SSL CERTIFICATE OPTIONS --------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+sslCert.desc=\tVytvo\u0159it v\u00fdchoz\u00ed certifik\u00e1t SSL, kter\u00fd bude pou\u017e\u00edv\u00e1n serverem nebo             \n\
+\tkonfigurac\u00ed klienta. 
+#Note to translator the word "createSSLCertificate" should not be translated
+sslCert.usage.options=\t{0} createSSLCertificate '{--server n\u00e1zev_serveru|--client jm\u00e9no_klienta'}  \n\
+\t--password heslo [volby]
+sslCert.required-key.server=\ \ \ \ --server=n\u00e1zev
+sslCert.required-desc.server=\tServer, pro kter\u00fd m\u00e1 b\u00fdt certifik\u00e1t vytvo\u0159en. Tento argument nem\u016f\u017ee    \n\
+\tb\u00fdt pou\u017eit, pokud se pou\u017e\u00edv\u00e1 argument --client.
+sslCert.required-key.client=\ \ \ \ --client=jm\u00e9no
+sslCert.required-desc.client=\tKlient, pro kter\u00fd m\u00e1 b\u00fdt certifik\u00e1t vytvo\u0159en. Tento argument nem\u016f\u017ee   \n\
+\tb\u00fdt pou\u017eit, pokud se pou\u017e\u00edv\u00e1 argument --server.
+sslCert.required-key.password=\ \ \ \ --password[=heslo]
+sslCert.required-desc.password=\tHeslo \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f, minim\u00e1ln\u011b {1} znak\u016f.\n\
+\tNen\u00ed-li zad\u00e1na \u017e\u00e1dn\u00e1 hodnota, zobraz\u00ed se v\u00fdzva k zad\u00e1n\u00ed.
+sslCert.option-key.validity=\ \ \ \ --validity=dny
+sslCert.option-desc.validity=\tPo\u010det dn\u016f, po kter\u00e9 bude certifik\u00e1t platn\u00fd. V\u00fdchoz\u00ed obdob\u00ed platnosti je \n\
+\t{2}. Minim\u00e1ln\u00ed obdob\u00ed platnosti je {3}.
+sslCert.option-key.subject=\ \ \ \ --subject=DN
+sslCert.option-desc.subject=\tDN pro p\u0159edm\u011bt a vydavatele certifik\u00e1tu. V\u00fdchoz\u00ed DN je zalo\u017eeno na \n\
+\tn\u00e1zvu hostitele.
+sslCert.option.addon=Certifik\u00e1t bude vytvo\u0159en s aliasem {4}.\n\
+Algoritmus kl\u00ed\u010de je {5} a algoritmus podpisu je {6}.\n\
+Chcete-li m\u00edt nad vytvo\u0159en\u00edm certifik\u00e1tu v\u011bt\u0161\u00ed kontrolu, pou\u017eijte p\u0159\u00edmo n\u00e1stroj keytool.
+sslCert.option-key.password.encoding=\ \ \ \ --passwordEncoding=[xor|aes]
+sslCert.option-desc.password.encoding=\tUr\u010dete metodu zak\u00f3dov\u00e1n\u00ed hesla \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f. Podporovan\u00e1 k\u00f3dov\u00e1n\u00ed:\n\
+\txor a aes. V\u00fdchoz\u00ed k\u00f3dov\u00e1n\u00ed je xor. \n\
+\tP\u0159\u00edkazem securityUtility encode --listCustom zjist\u00edte, zda se podporuje \n\
+\tn\u011bkter\u00e9 z dal\u0161\u00edch vlastn\u00edch \u0161ifrov\u00e1n\u00ed.
+sslCert.option-key.password.key=\ \ \ \ --passwordKey=[kl\u00ed\u010d]
+sslCert.option-desc.password.key=\tUr\u010dete kl\u00ed\u010d, kter\u00fd bude pou\u017eit p\u0159i zak\u00f3dov\u00e1n\u00ed hesla \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f metodou\n\
+\tAES. Tento \u0159et\u011bzec bude ha\u0161ov\u00e1n za \u00fa\u010delem vytvo\u0159en\u00ed \u0161ifrovac\u00edho kl\u00ed\u010de, kter\u00fd\n\
+\tbude pou\u017e\u00edv\u00e1n k \u0161ifrov\u00e1n\u00ed a de\u0161ifrov\u00e1n\u00ed hesla. Kl\u00ed\u010d lze poskytnout\n\
+\tserveru definov\u00e1n\u00edm prom\u011bnn\u00e9\n\
+\twlp.password.encryption.key, jej\u00ed\u017e hodnotou bude kl\u00ed\u010d. Nen\u00ed-li tato volba zad\u00e1na,\n\
+\tpou\u017eije se v\u00fdchoz\u00ed kl\u00ed\u010d.
+
+sslCert.option-key.createConfigFile=\ \ \ \ --createConfigFile=file
+sslCert.option-desc.createConfigFile=\tVoliteln\u00e9. \u00dasek k\u00f3du se zap\u00ed\u0161e do ur\u010den\u00e9ho\n\
+\tsouboru nam\u00edsto obrazovky konzoly. Soubor lze potom zahrnout do\n\
+\tkonfigurace server.xml pomoc\u00ed poskytnut\u00e9ho \u00faseku k\u00f3du.
+
+sslCert.option-key.keySize=\ \ \ \ --keySize=size
+sslCert.option-desc.keySize=\tVelikost kl\u00ed\u010de certifik\u00e1tu. \
+V\u00fdchoz\u00ed velikost kl\u00ed\u010de je {7}.
+
+sslCert.option-key.sigAlg=\ \ \ \ --sigAlg=signature algorithm
+sslCert.option-desc.sigAlg=\tPodpisov\u00fd algoritmus certifik\u00e1tu.\n\
+\tV\u00fdchoz\u00ed podpisov\u00fd algoritmus je {8}.
+
+
+# -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+# Note to translator: the words 'LTPA' and 'ltpa.keys' should not be translated 
+createLTPAKeys.desc=\tVytvo\u0159te sadu kl\u00ed\u010d\u016f LTPA, kter\u00e1 se m\u00e1 pou\u017e\u00edt serverem, nebo kterou lze sd\u00edlet\n\
+\ts v\u00edce servery. Nen\u00ed-li ur\u010den \u017e\u00e1dn\u00fd server nebo soubor, vytvo\u0159\u00ed se \n\
+\tsoubor ltpa.keys v aktu\u00e1ln\u00edm pracovn\u00edm adres\u00e1\u0159i.
+#Note to translator the word "createLTPAKeys" should not be translated
+createLTPAKeys.usage.options=\t{0} createLTPAKeys --password[=pwd] [volby]
+createLTPAKeys.required-key.password=\ \ \ \ --password[=heslo]
+createLTPAKeys.required-desc.password=\tHeslo ke kl\u00ed\u010d\u016fm LTPA. \
+Nen\u00ed-li zad\u00e1na \u017e\u00e1dn\u00e1 hodnota, zobraz\u00ed se v\u00fdzva k zad\u00e1n\u00ed.
+createLTPAKeys.option-key.server=\ \ \ \ --server=n\u00e1zev
+createLTPAKeys.option-desc.server=\tServer, pro kter\u00fd maj\u00ed b\u00fdt vytvo\u0159eny kl\u00ed\u010de LTPA.\n\
+\tTento argument nelze pou\u017e\u00edt, pokud se pou\u017e\u00edv\u00e1 argument --file.
+createLTPAKeys.option-key.file=\ \ \ \ --file=name
+createLTPAKeys.option-desc.file=\tSoubor, do kter\u00e9 se zapisuj\u00ed kl\u00ed\u010de LTPA.\n\
+\tTento argument nelze pou\u017e\u00edt, pokud se pou\u017e\u00edv\u00e1 argument --server.
+createLTPAKeys.option-key.password.encoding=\ \ \ \ --passwordEncoding=[xor|aes]
+createLTPAKeys.option-desc.password.encoding=\tUr\u010dete zp\u016fsob k\u00f3dov\u00e1n\u00ed hesla ke kl\u00ed\u010d\u016fm LTPA v souboru server.xml.\n\
+\tPodporovan\u00e1 k\u00f3dov\u00e1n\u00ed jsou xor a aes. V\u00fdchoz\u00ed k\u00f3dov\u00e1n\u00ed je xor. \n\
+\tP\u0159\u00edkazem securityUtility encode --listCustom zjist\u00edte, zda se podporuje \n\
+\tn\u011bkter\u00e9 z dal\u0161\u00edch vlastn\u00edch \u0161ifrov\u00e1n\u00ed.
+createLTPAKeys.option-key.password.key=\ \ \ \ --passwordKey=[kl\u00ed\u010d]
+createLTPAKeys.option-desc.password.key=\tUr\u010dete kl\u00ed\u010d, kter\u00fd bude pou\u017eit p\u0159i k\u00f3dov\u00e1n\u00ed hesla ke kl\u00ed\u010d\u016fm LTPA metodou \n\
+\tAES. Tento \u0159et\u011bzec bude ha\u0161ov\u00e1n za \u00fa\u010delem vytvo\u0159en\u00ed \u0161ifrovac\u00edho kl\u00ed\u010de, kter\u00fd\n\
+\tbude pou\u017e\u00edv\u00e1n k \u0161ifrov\u00e1n\u00ed a de\u0161ifrov\u00e1n\u00ed hesla. Kl\u00ed\u010d lze poskytnout\n\
+\tserveru definov\u00e1n\u00edm prom\u011bnn\u00e9\n\
+\twlp.password.encryption.key, jej\u00ed\u017e hodnotou bude kl\u00ed\u010d. Nen\u00ed-li tato volba zad\u00e1na,\n\
+\tpou\u017eije se v\u00fdchoz\u00ed kl\u00ed\u010d.

@@ -1,0 +1,62 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.artifact.api.loose/resources/com/ibm/ws/artifact/api/loose/internal/resources/LooseApiMessages.nlsprops
+#COMPONENTPREFIX CWWKM
+#COMPONENTNAMEFOR CWWKM Loose Config
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+# 0000-0999: in-use or reserved
+# 1001-1100: Loose api
+# -------------------------------------------------------------------------------------------------
+
+#{0} is xml file location
+XML_NOT_FOUND=CWWKM1001E: Die XML-Datei in {0} wurde nicht gefunden.
+XML_NOT_FOUND.explanation=Die angegebene XML-Datei wurde nicht gefunden.
+XML_NOT_FOUND.useraction=Stellen Sie sicher, dass sich die Datei an der richtigen Position befindet und nicht verschoben wurde.
+
+#{0} is xml file location
+XML_STREAM_ERROR=CWWKM1002E: Die XML-Datei in {0} konnte nicht gelesen werden.
+XML_STREAM_ERROR.explanation=Die angegebene XML-Datei konnte nicht gelesen werden.
+XML_STREAM_ERROR.useraction=Stellen Sie sicher, dass die Datei ordnungsgem\u00e4\u00df als XML formatiert ist.
+
+#{0} is location of file on disk
+EXCLUDES_ON_FILE=CWWKM1003W: Die in einer Arbeitsbereichsanwendung deklarierte XML-Datei referenziert eine Datei in {0} und enth\u00e4lt ein Attribut excludes, das nicht g\u00fcltig ist. 
+EXCLUDES_ON_FILE.explanation=Das XML-Dateielement hat ein Attribut "excludes", das nicht g\u00fcltig ist. Das Attribut wurde ignoriert.
+EXCLUDES_ON_FILE.useraction=Entfernen Sie das Attribut excludes aus dem Element.
+
+#{0} is name of the archive
+EXCLUDES_ON_ARCHIVE=CWWKM1004W: Die in einer Arbeitsbereichsanwendung deklarierte XML-Datei referenziert ein Archiv mit dem Namen {0} und enth\u00e4lt ein Attribut excludes, das nicht g\u00fcltig ist. 
+EXCLUDES_ON_ARCHIVE.explanation=Das XML-Element archive hat ein Attribut excludes, das nicht g\u00fcltig ist. Das Attribut wurde ignoriert.
+EXCLUDES_ON_ARCHIVE.useraction=Entfernen Sie das Attribut excludes aus dem Element.
+
+#{0} is the pattern
+INVALID_EXCLUDE_PATTERN=CWWKM1005E: Die in einer Arbeitsbereichsanwendung deklarierte XML-Datei enth\u00e4lt ein Attribut excludes, das nicht g\u00fcltig ist: {0}
+INVALID_EXCLUDE_PATTERN.explanation=Das Attribut excludes ist nicht g\u00fcltig und kann nicht nicht interpretiert werden.
+INVALID_EXCLUDE_PATTERN.useraction=Korrigieren Sie die Syntax des Attributs, oder entfernen Sie das Attribut, falls es nicht erforderlich ist.
+
+#{0} is the filename of the missing file
+DECLARED_FILE_NOT_FOUND=CWWKM1006I: Die in einer Arbeitsbereichsanwendung deklarierte XML-Datei referenziert eine Datei {0}, die nicht nicht gefunden wurde.
+DECLARED_FILE_NOT_FOUND.explanation=Die f\u00fcr die Arbeitsbereichsanwendung deklarierte Datei wurde nicht gefunden.
+DECLARED_FILE_NOT_FOUND.useraction=Stellen Sie sicher, dass sich die Datei an der referenzierten Position befindet bzw. dass die referenzierte Position mit der Position der Datei \u00fcbereinstimmt.

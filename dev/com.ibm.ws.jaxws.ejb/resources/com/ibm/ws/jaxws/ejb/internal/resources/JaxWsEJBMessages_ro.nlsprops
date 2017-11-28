@@ -1,0 +1,29 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxws.ejb/resources/com/ibm/ws/jaxws/ejb/internal/resources/JaxWsEJBMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXWS EJB Code
+#RANGE 0500 - 0599
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+
+#{0} is the handler class name
+#{1} is the exception message
+warn.could.not.find.handler=CWWKW0500W: Nu se poate g\u0103si clasa handler {0} din cauza {1}.
+warn.could.not.find.handler.explanation=Clasa handler specificat\u0103 nu poate fi \u00eenc\u0103rcat\u0103.
+warn.could.not.find.handler.useraction=Actualiza\u0163i aplica\u0163ia pentru a include clasa handler.
+

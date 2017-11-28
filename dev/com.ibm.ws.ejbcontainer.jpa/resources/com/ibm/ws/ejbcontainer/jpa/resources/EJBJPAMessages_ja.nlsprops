@@ -1,0 +1,47 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the message text
+#           must be followed by a 2nd apostrophe to work correctly.
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CNTR (EJB Container)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=1.30,0,02/04/15,09:57:59
+#
+#CMVCPATHNAME com.ibm.ws.ejbcontainer.jpa/resources/EJBJPAMessages.nlsprops
+#COMPONENTPREFIX CNTR
+#COMPONENTNAMEFOR CNTR EJB Container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# --------------------------------
+PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E=CNTR0315E: {2} \u30a2\u30d7\u30ea\u30b1\u30fc\u30b7\u30e7\u30f3\u306e {1} \u30e2\u30b8\u30e5\u30fc\u30eb\u5185\u306e {0} \u30b9\u30c6\u30fc\u30c8\u30d5\u30eb\u30fb\u30bb\u30c3\u30b7\u30e7\u30f3 Bean \u304c\u3001{3} \u30d1\u30fc\u30b7\u30b9\u30bf\u30f3\u30b9\u53c2\u7167\u3067\u306e\u4f9d\u5b58\u95a2\u4fc2\u3092\u5ba3\u8a00\u3057\u3066\u3044\u307e\u305b\u3093\u3002
+PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.explanation=\u30b9\u30c6\u30fc\u30c8\u30d5\u30eb\u30fb\u30bb\u30c3\u30b7\u30e7\u30f3 Bean \u306f\u3001WAR \u5185\u306b\u3042\u308b\u5834\u5408\u3001\u305d\u306e\u30a2\u30af\u30bb\u30b9\u5bfe\u8c61\u306e\u3059\u3079\u3066\u306e\u30d1\u30fc\u30b7\u30b9\u30bf\u30f3\u30b9\u30fb\u30b3\u30f3\u30c6\u30ad\u30b9\u30c8\u53c2\u7167\u304a\u3088\u3073\u30d1\u30fc\u30b7\u30b9\u30bf\u30f3\u30b9\u30fb\u30e6\u30cb\u30c3\u30c8\u53c2\u7167\u3067\u306e\u4f9d\u5b58\u95a2\u4fc2\u3092\u5ba3\u8a00\u3059\u308b\u5fc5\u8981\u304c\u3042\u308a\u307e\u3059\u3002
+PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.useraction=\u9069\u5207\u306a @PersistenceContext \u307e\u305f\u306f @PersistenceUnit \u30bd\u30fc\u30b9\u30fb\u30b3\u30fc\u30c9\u30fb\u30a2\u30ce\u30c6\u30fc\u30b7\u30e7\u30f3\u3092\u30b9\u30c6\u30fc\u30c8\u30d5\u30eb\u30fb\u30bb\u30c3\u30b7\u30e7\u30f3 Bean \u306b\u8ffd\u52a0\u3059\u308b\u304b\u3001\u9069\u5207\u306a <persistence-context-ref> \u307e\u305f\u306f <persistence-unit-ref> \u30a8\u30ec\u30e1\u30f3\u30c8\u3092 ejb-jar.xml \u30d5\u30a1\u30a4\u30eb\u5185\u306e\u9069\u5207\u306a <session> \u30a8\u30ec\u30e1\u30f3\u30c8\u306b\u8ffd\u52a0\u3057\u3066\u304f\u3060\u3055\u3044\u3002

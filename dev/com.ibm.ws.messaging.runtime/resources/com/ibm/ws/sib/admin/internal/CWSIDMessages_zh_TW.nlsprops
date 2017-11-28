@@ -1,0 +1,358 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# Change activity:
+#
+# Reason          Date       Origin   Description
+# --------------- ---------- -------- ------------------------------------------
+# 88661           2012-12-07 chetbhat Modifying the nls based on review
+# 89424           2012-12-12 chetbhat Simplifying metatype.xml for messaging
+# 91146           2013-01-21 sharath  Changing the filestore error messages after property changes
+# 91384           2013-01-23 sharath  Adding message for duplicate alias destination name
+# 92315           2013-08-02 chetbhat Nls changes
+# 91944           2013-02-19 Romil    L2 review changes
+# 94952           2013-02-27 Romil    Changing invalid filestore error message after changing code and properties
+# 95341           2013-02-28 Romil    Removing duplicate CWSID0117E entries in error
+# 95981           2013-03-20 Chetan   Changing the error message for filestore and log size comparision
+# ------------------------------------------------------------------------------
+# File com.ibm.ws.sib.example.CWSIDMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem
+# determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSID0000=CWSID0001I: This is a message with insert {0}
+# MSG_DESCRIPTIVE_NAME_CWSID0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSID0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you want them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Messages in the range SIAS0001-SIAS0049 belong to class com.ibm.ws.sib.???
+#   - SIAS9999 is for emergency use if any new messages are required after the messages file is finalised
+#   - Messages starting from SIAS0100 is reserved for liberty 
+# -------------------------------------------------------------------------------------------------
+#
+# cmvc_en_version_level=1.62,0,07/02/06,04:18:47
+#
+#CMVCPATHNAME com.ibm.ws.messaging.runtime/resources/com/ibm/ws/sib/admin/internal/CWSIDMessages.nlsprops
+#COMPONENTPREFIX CWSID
+#COMPONENTNAMEFOR CWSID Admin
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+ 
+### Search on "TBD" for messages that need information from other components ###
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+ME_INITIALIZING_SIAS0001=CWSID0001I: \u50b3\u8a0a\u5f15\u64ce {0} \u6b63\u5728\u8d77\u59cb\u8a2d\u5b9a\u3002
+ME_INITIALIZING_SIAS0001.explanation=\u6307\u5b9a\u7684\u50b3\u8a0a\u5f15\u64ce\u6b63\u958b\u59cb\u8d77\u59cb\u8a2d\u5b9a\u3002
+ME_INITIALIZING_SIAS0001.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Internal reason string
+INTERNAL_ERROR_SIAS0003=CWSID0003E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\uff1b\u7406\u7531\uff1a{0}
+INTERNAL_ERROR_SIAS0003.explanation=\u5728\u7cfb\u7d71\u4f5c\u696d\u671f\u9593\uff0c\u767c\u751f\u975e\u9810\u671f\u7684\u5167\u90e8\u932f\u8aa4\u3002
+INTERNAL_ERROR_SIAS0003.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} SIBDestination name
+CREATE_DESTINATION_FAILED_SIAS0009=CWSID0009E: \u7121\u6cd5\u5efa\u7acb\u76ee\u7684\u5730 {0}\u3002
+CREATE_DESTINATION_FAILED_SIAS0009.explanation=\u7121\u6cd5\u5efa\u7acb\u6307\u5b9a\u7684\u76ee\u7684\u5730\u3002\u5982\u679c\u5229\u7528 JACL Script \u6216\u81ea\u8a02 JMX \u7a0b\u5f0f\u4f86\u5efa\u7acb\u914d\u7f6e\uff0c\u8acb\u6aa2\u67e5\u5b83\u5011\u4f86\u627e\u51fa\u932f\u8aa4\u3002
+CREATE_DESTINATION_FAILED_SIAS0009.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} JMX MBean type
+# {1} JMX MBean name
+MBEAN_ACTIVATION_FAILED_SIAS0011=CWSID0011W: \u7121\u6cd5\u555f\u52d5\u540d\u7a31\u70ba {1} \u7684 JMX {0} MBean\u3002
+MBEAN_ACTIVATION_FAILED_SIAS0011.explanation=\u7121\u6cd5\u555f\u7528\u6307\u5b9a\u985e\u578b\u548c\u540d\u7a31\u7684 JMX MBean\u3002\u96d6\u7136\u9019\u4e0d\u6703\u4f7f\u50b3\u8a0a\u4f3a\u670d\u5668\u7121\u6cd5\u555f\u52d5\uff0c\u4f46\u5b83\u8868\u793a\u4efb\u4f55\u9700\u8981\u9019\u500b MBean \u7684\u7ba1\u7406\u529f\u80fd\u90fd\u53ef\u80fd\u7121\u6cd5\u4f9d\u7167\u9810\u671f\u4f86\u904b\u4f5c\u3002
+MBEAN_ACTIVATION_FAILED_SIAS0011.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} JMX MBean type
+# {1} JMX MBean name
+MBEAN_DEACTIVATION_FAILED_SIAS0012=CWSID0012W: \u7121\u6cd5\u53d6\u6d88\u555f\u52d5\u540d\u7a31\u70ba {1} \u7684 JMX {0} MBean\u3002
+MBEAN_DEACTIVATION_FAILED_SIAS0012.explanation=\u7121\u6cd5\u53d6\u6d88\u555f\u52d5\u6307\u5b9a\u7684 JMX MBean\u3002
+MBEAN_DEACTIVATION_FAILED_SIAS0012.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Java package and class
+CLASS_LOAD_FAILURE_SIAS0013=CWSID0013W: \u7121\u6cd5\u8f09\u5165\u985e\u5225 {0}\u3002
+CLASS_LOAD_FAILURE_SIAS0013.explanation=\u7121\u6cd5\u8f09\u5165\u6307\u5b9a\u7684\u985e\u5225\u3002
+CLASS_LOAD_FAILURE_SIAS0013.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+
+# {0} Messaging engine name
+ME_RESTART_CHECK_SIAS0027=CWSID0027E: \u7121\u6cd5\u91cd\u65b0\u555f\u52d5\u50b3\u8a0a\u5f15\u64ce {0}\uff0c\u56e0\u70ba\u5831\u544a\u767c\u751f\u4e86\u56b4\u91cd\u932f\u8aa4\u3002
+ME_RESTART_CHECK_SIAS0027.explanation=\u8a66\u5716\u555f\u52d5\u6307\u5b9a\u7684\u50b3\u8a0a\u5f15\u64ce\uff0c\u4f46\u5148\u524d\u5831\u544a\u767c\u751f\u56b4\u91cd\u932f\u8aa4\u72c0\u6cc1\uff0c\u56e0\u6b64\uff0c\u5c07\u7121\u6cd5\u91cd\u65b0\u555f\u52d5\u50b3\u8a0a\u5f15\u64ce\u3002
+ME_RESTART_CHECK_SIAS0027.useraction=\u8acb\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\uff0c\u6216\u5c07\u50b3\u8a0a\u5f15\u64ce\u79fb\u81f3\u66ff\u4ee3\u7684\u53e2\u96c6\u4f3a\u670d\u5668\u3002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} State of the messaging engine
+ME_STATE_CHECK_SIAS0028=CWSID0028W: \u50b3\u8a0a\u5f15\u64ce {0} \u7121\u6cd5\u5f9e\u73fe\u884c\u72c0\u614b {1} \u505c\u6b62\u3002
+ME_STATE_CHECK_SIAS0028.explanation=\u8a66\u5716\u505c\u6b62\u6307\u5b9a\u7684\u50b3\u8a0a\u5f15\u64ce\uff0c\u4f46\u7576\u50b3\u8a0a\u5f15\u64ce\u5728\u73fe\u884c\u72c0\u614b\u4e2d\uff0c\u505c\u6b62\u4e0d\u662f\u6709\u6548\u4f5c\u696d\u3002
+ME_STATE_CHECK_SIAS0028.useraction=\u8acb\u6aa2\u67e5\u50b3\u8a0a\u5f15\u64ce\u7684\u72c0\u614b\uff0c\u7576\u6709\u6548\u6642\uff0c\u518d\u91cd\u65b0\u767c\u51fa\u4f5c\u696d\u3002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+ME_ERROR_REPORTED_SIAS0029=CWSID0029E: \u50b3\u8a0a\u5f15\u64ce {0} \u767c\u751f\u4e00\u822c\u6a21\u5f0f\u932f\u8aa4\u3002
+ME_ERROR_REPORTED_SIAS0029.explanation=\u50b3\u8a0a\u5f15\u64ce\u5075\u6e2c\u5230\u932f\u8aa4\uff0c\u9019\u500b\u932f\u8aa4\u6709\u53ef\u80fd\u5728\u66ff\u4ee3\u4f3a\u670d\u5668\u4e2d\u91cd\u8907\u51fa\u73fe\uff0c\u56e0\u6b64\uff0c\u4e0d\u6703\u5617\u8a66\u5931\u6548\u63a5\u624b\u3002
+ME_ERROR_REPORTED_SIAS0029.useraction=\u8acb\u6aa2\u67e5\u65e5\u8a8c\u4f86\u5224\u65b7\u932f\u8aa4\u3001\u66f4\u6b63\u932f\u8aa4\u539f\u56e0\uff0c\u518d\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+ME_ERROR_STOPPED_SIAS0031=CWSID0031E: \u50b3\u8a0a\u5f15\u64ce {0} \u767c\u751f\u4e00\u822c\u6a21\u5f0f\u932f\u8aa4\uff0c\u5df2\u505c\u6b62\u3002
+ME_ERROR_STOPPED_SIAS0031.explanation=\u50b3\u8a0a\u5f15\u64ce\u5075\u6e2c\u5230\u4e00\u822c\u6a21\u5f0f\u7684\u932f\u8aa4\uff0c\u5df2\u81ea\u52d5\u505c\u6b62\u3002\u4e0d\u6703\u5617\u8a66\u9032\u4e00\u6b65\u7684\u5931\u6548\u63a5\u624b\u3002
+ME_ERROR_STOPPED_SIAS0031.useraction=\u8acb\u6aa2\u67e5\u65e5\u8a8c\u4f86\u5224\u65b7\u932f\u8aa4\u3001\u66f4\u6b63\u932f\u8aa4\u539f\u56e0\uff0c\u518d\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_CANNOT_BE_INITIALIZED_SIAS0033=CWSID0033E: \u7121\u6cd5\u8d77\u59cb\u8a2d\u5b9a\u50b3\u8a0a\u5f15\u64ce {0}\uff1b\u6355\u6349\u5230 {1} {2} \u7522\u751f\u7684\u7570\u5e38\u72c0\u6cc1
+ME_CANNOT_BE_INITIALIZED_SIAS0033.explanation=\u5728\u8d77\u59cb\u8a2d\u5b9a\u5f15\u64ce\u671f\u9593\uff0c\u767c\u751f\u975e\u9810\u671f\u7684\u932f\u8aa4\u3002
+ME_CANNOT_BE_INITIALIZED_SIAS0033.useraction=\u8acb\u6aa2\u67e5\u65e5\u8a8c\u4f86\u5224\u65b7\u932f\u8aa4\u3001\u66f4\u6b63\u932f\u8aa4\u539f\u56e0\uff0c\u518d\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_CANNOT_BE_STARTED_SIAS0034=CWSID0034E: \u7121\u6cd5\u555f\u52d5\u50b3\u8a0a\u5f15\u64ce {0}\uff1b\u6355\u6349\u5230 {1} {2} \u7522\u751f\u7684\u7570\u5e38\u72c0\u6cc1
+ME_CANNOT_BE_STARTED_SIAS0034.explanation=\u5728\u8d77\u59cb\u8a2d\u5b9a\u5f15\u64ce\u671f\u9593\uff0c\u767c\u751f\u975e\u9810\u671f\u7684\u932f\u8aa4\u3002\u555f\u52d5\u968e\u6bb5\u7d42\u6b62\uff0c\u5df2\u505c\u6b62\u5df2\u555f\u52d5\u7684\u5f15\u64ce\u5143\u4ef6\u3002
+ME_CANNOT_BE_STARTED_SIAS0034.useraction=\u8acb\u6aa2\u67e5\u65e5\u8a8c\u4f86\u5224\u65b7\u932f\u8aa4\u3001\u66f4\u6b63\u932f\u8aa4\u539f\u56e0\uff0c\u518d\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_CANNOT_BE_STARTED_SIAS0035=CWSID0035E: \u7121\u6cd5\u555f\u52d5\u50b3\u8a0a\u5f15\u64ce {0}\uff1b\u5075\u6e2c\u5230 {1} {2} \u671f\u9593\u5831\u544a\u7684\u932f\u8aa4
+ME_CANNOT_BE_STARTED_SIAS0035.explanation=\u7121\u6cd5\u555f\u52d5\u50b3\u8a0a\u5f15\u64ce\u5143\u4ef6\u3002\u4e0d\u6703\u555f\u52d5\u4efb\u4f55\u5176\u4ed6\u5f15\u64ce\u5143\u4ef6\u3002
+ME_CANNOT_BE_STARTED_SIAS0035.useraction=\u8acb\u6aa2\u67e5\u65e5\u8a8c\u4f86\u5224\u65b7\u932f\u8aa4\u3001\u66f4\u6b63\u932f\u8aa4\u539f\u56e0\uff0c\u518d\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_EXCEPTION_CAUGHT_SIAS0036=CWSID0036E: \u5728\u6e05\u7406\u5931\u6557\u7684\u555f\u52d5\u671f\u9593\uff0c\u50b3\u8a0a\u5f15\u64ce {0} \u6355\u6349\u5230 {1} {2} \u65b9\u6cd5\u6240\u7522\u751f\u7684\u7570\u5e38\u72c0\u6cc1
+ME_EXCEPTION_CAUGHT_SIAS0036.explanation=\u7121\u6cd5\u505c\u6b62\u6307\u5b9a\u7684\u50b3\u8a0a\u5f15\u64ce\u3002
+ME_EXCEPTION_CAUGHT_SIAS0036.useraction=\u8acb\u6aa2\u67e5\u65e5\u8a8c\u4f86\u5224\u65b7\u932f\u8aa4\u3001\u66f4\u6b63\u932f\u8aa4\u539f\u56e0\uff0c\u518d\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_EXCEPTION_CAUGHT_SIAS0037=CWSID0037E: \u50b3\u8a0a\u5f15\u64ce {0} \u6355\u6349\u5230 {1} {2} \u65b9\u6cd5\u6240\u7522\u751f\u7684\u7570\u5e38\u72c0\u6cc1
+ME_EXCEPTION_CAUGHT_SIAS0037.explanation=\u5f15\u64ce\u5143\u4ef6\u5075\u6e2c\u5230\u932f\u8aa4\u3002
+ME_EXCEPTION_CAUGHT_SIAS0037.useraction=\u8acb\u6aa2\u67e5\u65e5\u8a8c\u4f86\u5224\u65b7\u932f\u8aa4\u3001\u66f4\u6b63\u932f\u8aa4\u539f\u56e0\uff0c\u518d\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} JMX MBean type
+# {1} JMX MBean name
+MBEAN_SEND_NOTIFICATION_FAILED_SIAS0043=CWSID0043W: \u7121\u6cd5\u5f9e\u540d\u7a31\u70ba {1} \u7684 JMX {0} MBean \u50b3\u9001\u4e8b\u4ef6\u901a\u77e5\u3002
+MBEAN_SEND_NOTIFICATION_FAILED_SIAS0043.explanation=\u7121\u6cd5\u5f9e\u5177\u6709\u6307\u5b9a\u7684\u985e\u578b\u548c\u540d\u7a31\u7684 JMX MBean \u50b3\u9001\u4e8b\u4ef6\u901a\u77e5\u3002\u96d6\u7136\u9019\u4e0d\u6703\u9632\u6b62\u50b3\u8a0a\u4f3a\u670d\u5668\u7e7c\u7e8c\u4f5c\u696d\uff0c\u4f46\u5b83\u4ee3\u8868\u9019\u500b MBean \u7121\u6cd5\u5411\u63a5\u807d\u5668\u901a\u77e5\u91cd\u8981\u7684\u50b3\u8a0a\u7cfb\u7d71\u4e8b\u4ef6\u3002
+MBEAN_SEND_NOTIFICATION_FAILED_SIAS0043.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_START_SIAS0044=CWSID0044I: \u5df2\u555f\u52d5\u5177\u6709 UUID {1} \u7684\u50b3\u8a0a\u5f15\u64ce {0}\u3002
+NOTIFY_MESSAGING_ENGINE_START_SIAS0044.explanation=\u50b3\u8a0a\u5f15\u64ce\u53ef\u4f9b\u4f7f\u7528\u3002
+NOTIFY_MESSAGING_ENGINE_START_SIAS0044.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_STOP_SIAS0045=CWSID0045I: \u5df2\u505c\u6b62\u5177\u6709 UUID {1} \u7684\u50b3\u8a0a\u5f15\u64ce {0}\u3002
+NOTIFY_MESSAGING_ENGINE_STOP_SIAS0045.explanation=\u5df2\u7121\u6cd5\u518d\u4f7f\u7528\u50b3\u8a0a\u5f15\u64ce\u3002
+NOTIFY_MESSAGING_ENGINE_STOP_SIAS0045.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+ME_ERROR_LOCAL_SIAS0046=CWSID0046E: \u50b3\u8a0a\u5f15\u64ce {0} \u5075\u6e2c\u5230\u932f\u8aa4\uff0c\u7121\u6cd5\u7e7c\u7e8c\u5728\u9019\u90e8\u4f3a\u670d\u5668\u4e2d\u57f7\u884c\u3002
+ME_ERROR_LOCAL_SIAS0046.explanation=\u50b3\u8a0a\u5f15\u64ce\u6b63\u5728\u5411 HAManager \u5831\u544a\u932f\u8aa4\uff0cHAManager \u5c07\u505c\u6b62\u4f3a\u670d\u5668\u3002\u7576\u4f7f\u7528 Application Server Network Deployment \u6642\uff0c\u5982\u679c\u7bc0\u9ede\u4ee3\u7406\u7a0b\u5f0f\u5728\u76e3\u8996\u7684\u8a71\uff0c\u4fbf\u6703\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002\u7576\u4f7f\u7528 Network Deployment \u53e2\u96c6\u6642\uff0c\u5982\u679c\u6240\u914d\u7f6e\u7684\u539f\u5247\u5141\u8a31\u7684\u8a71\uff0c\u50b3\u8a0a\u5f15\u64ce\u5c07\u7531\u66ff\u4ee3\u7684\u53e2\u96c6\u4f3a\u670d\u5668\u9032\u884c\u5931\u6548\u63a5\u624b\u3002
+ME_ERROR_LOCAL_SIAS0046.useraction=\u8acb\u6aa2\u67e5\u65e5\u8a8c\u4f86\u5224\u65b7\u932f\u8aa4\u7684\u539f\u56e0\uff0c\u4e26\u52a0\u4ee5\u66f4\u6b63\uff0c\u4ee5\u514d\u518d\u767c\u751f\u932f\u8aa4\u3002\u8acb\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\uff0c\u6216\u8005\uff0c\u5982\u679c\u4f7f\u7528 Network Deployment\uff0c\u8acb\u6aa2\u67e5\u662f\u5426\u5df2\u9806\u5229\u5b8c\u6210\u81ea\u52d5\u91cd\u65b0\u555f\u52d5\u6216\u5931\u6548\u63a5\u624b\uff0c\u4e14\u50b3\u8a0a\u5f15\u64ce\u5728\u57f7\u884c\u4e2d\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name
+RECEIVE_EXCLUSIVE_OVERRIDE_WARNING_SIAS0048=CWSID0048W: \u5c0d\u65bc {0} \u76ee\u7684\u5730\uff0creceiveExclusive \u5c6c\u6027\u7684\u503c\u5df2\u7f6e\u63db\u70ba "true"\u3002
+RECEIVE_EXCLUSIVE_OVERRIDE_WARNING_SIAS0048.explanation=\u76ee\u7684\u5730\u5df2\u8a2d\u70ba\u7dad\u6301\u8a0a\u606f\u6392\u5e8f\u3002\u56e0\u6b64\uff0creceiveExclusive \u5c6c\u6027\u7684\u503c\u5df2\u7f6e\u63db\u70ba true\u3002
+RECEIVE_EXCLUSIVE_OVERRIDE_WARNING_SIAS0048.useraction=\u5982\u679c\u4e0d\u9700\u8981\u6392\u5e8f\uff0c\u8acb\u53d6\u6d88\u8a2d\u5b9a maintainMessageOrder \u5c6c\u6027\uff0c\u4ee5\u505c\u7528 receiveExclusive \u5c6c\u6027\u7f6e\u63db\u3002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_STARTING_SIAS0049=CWSID0049I: \u5177\u6709 UUID {1} \u7684\u50b3\u8a0a\u5f15\u64ce {0} \u6b63\u5728\u555f\u52d5\u3002
+NOTIFY_MESSAGING_ENGINE_STARTING_SIAS0049.explanation=\u6b63\u5728\u555f\u52d5\u50b3\u8a0a\u5f15\u64ce\u3002
+NOTIFY_MESSAGING_ENGINE_STARTING_SIAS0049.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_STOPPING_SIAS0050=CWSID0050I: \u5177\u6709 UUID {1} \u7684\u50b3\u8a0a\u5f15\u64ce {0} \u6b63\u5728\u505c\u6b62\u3002
+NOTIFY_MESSAGING_ENGINE_STOPPING_SIAS0050.explanation=\u6b63\u5728\u505c\u6b62\u50b3\u8a0a\u5f15\u64ce\u3002
+NOTIFY_MESSAGING_ENGINE_STOPPING_SIAS0050.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_STOP_FAILED_SIAS0052=CWSID0052I: \u5177\u6709 UUID {1} \u7684\u50b3\u8a0a\u5f15\u64ce {0} \u7121\u6cd5\u505c\u6b62\u3002
+NOTIFY_MESSAGING_ENGINE_STOP_FAILED_SIAS0052.explanation=\u50b3\u8a0a\u5f15\u64ce\u7121\u6cd5\u505c\u6b62\u3002
+NOTIFY_MESSAGING_ENGINE_STOP_FAILED_SIAS0052.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_SIAS9999=CWSID9999E: {0}
+TEMPORARY_SIAS9999.explanation=\u5982\u679c\u8a0a\u606f\u6c92\u6709\u63d0\u4f9b\u8db3\u5920\u7684\u8cc7\u8a0a\uff0c\u8acb\u6aa2\u67e5\u5148\u524d\u7684\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8aaa\u660e\u3002
+TEMPORARY_SIAS9999.useraction=\u8acb\u53c3\u95b1\u96a8\u9644\u7684\u932f\u8aa4\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} default ME ID
+NO_ID_PROVIDED_SIAS0100=CWSID0100I: \u672a\u5728\u4f3a\u670d\u5668\u914d\u7f6e\u6a94\u4e2d\u63d0\u4f9b messagingEngine \u6a19\u7c64\u7684 ID\u3002\u5c07\u8003\u616e\u4f7f\u7528\u9810\u8a2d ID {0}\u3002
+NO_ID_PROVIDED_SIAS0100.explanation=\u672a\u63d0\u4f9b messagingEngine \u6a19\u7c64\u7684 ID\u3002
+NO_ID_PROVIDED_SIAS0100.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination Type
+NO_ID_PROVIDED_SIAS0102=CWSID0102E: \u672a\u5728\u4f3a\u670d\u5668\u914d\u7f6e\u6a94\u4e2d\u5b9a\u7fa9 {0} \u985e\u578b\u4e4b\u76ee\u7684\u5730\u7684 ID\u3002
+NO_ID_PROVIDED_SIAS0102.explanation=\u672a\u6307\u5b9a\u76ee\u7684\u5730\u7684 ID\uff0c\u56e0\u6b64\uff0c\u4e0d\u6703\u5efa\u7acb\u76ee\u7684\u5730\u3002
+NO_ID_PROVIDED_SIAS0102.useraction=\u8acb\u63d0\u4f9b\u76ee\u7684\u5730\u7684 ID\u3002
+
+# -------------------------------------------------------------------------------------------------
+NO_FILESTOR_DEFINED_SIAS0104=CWSID0104I: \u672a\u5728\u4f3a\u670d\u5668\u914d\u7f6e\u6a94\u4e2d\u5b9a\u7fa9 fileStore \u6a19\u7c64\uff0c\u56e0\u6b64\uff0c\u5c07\u4f7f\u7528\u9810\u8a2d\u503c\u3002
+NO_FILESTOR_DEFINED_SIAS0104.explanation=\u672a\u63d0\u4f9b fileStore \u6a19\u7c64\uff0c\u56e0\u6b64\u5728\u5efa\u7acb\u6a94\u6848\u5132\u5b58\u5eab\u6642\uff0c\u6703\u4f7f\u7528\u9810\u8a2d\u503c\u3002
+NO_FILESTOR_DEFINED_SIAS0104.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+ME_ID_CHANGE_SIAS0105=CWSID0105I: \u4f3a\u670d\u5668\u555f\u52d5\u4e4b\u5f8c\uff0c\u7121\u6cd5\u8b8a\u66f4\u50b3\u8a0a\u5f15\u64ce ID\u3002
+ME_ID_CHANGE_SIAS0105.explanation=\u50b3\u8a0a\u5f15\u64ce ID \u662f\u50b3\u8a0a\u5f15\u64ce\u5c08\u5c6c\u7684\uff0c\u7576\u4f3a\u670d\u5668\u5728\u4f5c\u7528\u4e2d\uff0c\u7121\u6cd5\u8b8a\u66f4\u3002
+ME_ID_CHANGE_SIAS0105.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+RESTART_ME_SIAS0106=CWSID0106I: \u6b63\u5728\u5617\u8a66\u555f\u52d5\u50b3\u8a0a\u5f15\u64ce\u3002
+RESTART_ME_SIAS0106.explanation=\u5728 activate() \u547c\u53eb\u671f\u9593\uff0c\u672a\u555f\u52d5\u50b3\u8a0a\u5f15\u64ce\u3002\u4f7f\u7528\u8005\u5df2\u4fee\u6539\u4f3a\u670d\u5668\u914d\u7f6e\u6a94\uff0c\u56e0\u6b64\uff0c\u5c07\u5617\u8a66\u555f\u52d5\u50b3\u8a0a\u5f15\u64ce\u3002
+RESTART_ME_SIAS0106.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+START_ME_SIAS0107=CWSID0107I: \u6b63\u5728\u555f\u52d5 JMS \u4f3a\u670d\u5668\u3002
+START_ME_SIAS0107.explanation=JMS \u4f3a\u670d\u5668\u555f\u52d5\u8d77\u59cb\u4e2d\u3002
+START_ME_SIAS0107.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+ME_STARTED_SIAS0108=CWSID0108I: JMS \u4f3a\u670d\u5668\u5df2\u555f\u52d5\u3002
+ME_STARTED_SIAS0108.explanation=\u555f\u52d5 JMS \u4f3a\u670d\u5668\u5df2\u9806\u5229\u5b8c\u6210\u3002
+ME_STARTED_SIAS0108.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+ME_STOPPED_SIAS0109=CWSID0109E: \u767c\u751f\u5167\u90e8\u50b3\u8a0a\u932f\u8aa4\u3002\u7121\u6cd5\u555f\u52d5 JMS \u4f3a\u670d\u5668\u3002
+ME_STOPPED_SIAS0109.explanation=\u7121\u6cd5\u555f\u52d5 JMS \u4f3a\u670d\u5668\u3002
+ME_STOPPED_SIAS0109.useraction=\u8acb\u53c3\u95b1\u300c\u50b3\u8a0a\u5f15\u64ce\u300d\u555f\u52d5\u671f\u9593\u5148\u524d\u7684\u5404\u932f\u8aa4\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002
+
+# -------------------------------------------------------------------------------------------------
+#{0} Alias destination Name
+INVALID_TARGET_DEST_SIAS0110=CWSID0110E: \u672a\u63d0\u4f9b\u300c\u5225\u540d\u76ee\u7684\u5730\u300d{0} \u7684\u76ee\u6a19\u300c\u76ee\u7684\u5730\u300d\u3002
+INVALID_TARGET_DEST_SIAS0110.explanation=\u672a\u63d0\u4f9b\u5225\u540d\u76ee\u7684\u5730\u7684\u76ee\u6a19\u76ee\u7684\u5730\u3002
+INVALID_TARGET_DEST_SIAS0110.useraction= \u8acb\u5728\u4f3a\u670d\u5668\u914d\u7f6e\u6a94\u4e2d\u63d0\u4f9b\u6709\u6548\u7684\u76ee\u6a19\u76ee\u7684\u5730\u3002
+
+# -------------------------------------------------------------------------------------------------
+LOCALIZATION_EXCEPTION_SIAS0113=CWSID0113E: \u5728\u76ee\u7684\u5730 {0} \u672c\u5730\u5316\u671f\u9593\uff0c\u767c\u73fe\u7570\u5e38\u72c0\u6cc1\u3002
+LOCALIZATION_EXCEPTION_SIAS0113.explanation=\u5c07\u76ee\u7684\u5730\u672c\u5730\u5316\u671f\u9593\uff0c\u767c\u73fe\u7570\u5e38\u72c0\u6cc1\u3002
+LOCALIZATION_EXCEPTION_SIAS0113.useraction=\u8acb\u53c3\u95b1\u5148\u524d\u7684\u8a0a\u606f\u53ca\u50b3\u8a0a\u5f15\u64ce\u7684\u72c0\u614b\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} SIBDestination population
+POPULATE_DESTINATION_FAILED_SIAS0114=CWSID0114E: \u5728\u5feb\u53d6\u4e2d\uff0c\u7121\u6cd5\u79fb\u5165\u76ee\u7684\u5730 {0}\u3002
+POPULATE_DESTINATION_FAILED_SIAS0114.explanation=\u7121\u6cd5\u5c07\u6307\u5b9a\u7684\u76ee\u7684\u5730\u79fb\u5165\u5feb\u53d6\u4e2d\u3002
+POPULATE_DESTINATION_FAILED_SIAS0114.useraction=\u8acb\u53c3\u95b1\u5148\u524d\u7684\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002
+
+# -------------------------------------------------------------------------------------------------
+NULL_SERVICE_PID_SIAS0115=CWSID0115E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\uff0c\u56e0\u70ba\u6c92\u6709\u6536\u5230\u50b3\u8a0a\u5f15\u64ce\u914d\u7f6e\u5167\u5bb9\u3002\u56e0\u6b64\uff0c\u4e0d\u6703\u555f\u52d5\u50b3\u8a0a\u5f15\u64ce\u3002
+NULL_SERVICE_PID_SIAS0115.explanation=\u672a\u5f9e server.xml \u6a94\u4e2d\u6536\u5230\u914d\u7f6e\uff0c\u56e0\u70ba\u5b83\u7528\u4f86\u5411\u300c\u914d\u7f6e\u7ba1\u7406\u300d\u670d\u52d9\u8b58\u5225\u300c\u53d7\u7ba1\u7406\u670d\u52d9\u300d\u6216\u300c\u53d7\u7ba1\u7406\u670d\u52d9 Factory\u300d\u7684\u767b\u9304\u5167\u5bb9 (service.pid) \u662f\u7a7a\u503c\uff0c\u9019\u4ee3\u8868\u8edf\u9ad4\u7d44\u7121\u6cd5\u4f7f\u7528\u5df2\u5ba3\u544a\u7684\u670d\u52d9
+NULL_SERVICE_PID_SIAS0115.useraction=\u8acb\u53c3\u95b1\u96a8\u9644\u7684\u932f\u8aa4\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u50b3\u8a0a\u5f15\u64ce\u7121\u6cd5\u555f\u52d5\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002
+
+# -------------------------------------------------------------------------------------------------
+NULL_SERVICE_PID_SIAS0116=CWSID0116E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\uff0c\u56e0\u70ba\u6c92\u6709\u6536\u5230\u50b3\u8a0a\u5f15\u64ce\u914d\u7f6e\u5167\u5bb9\u3002\u56e0\u6b64\uff0c\u5c07\u4e0d\u6703\u5c0d\u50b3\u8a0a\u5f15\u64ce\u9032\u884c\u4efb\u4f55\u4fee\u6539\u3002
+NULL_SERVICE_PID_SIAS0116.explanation=\u50b3\u8a0a\u5f15\u64ce\u5df2\u555f\u52d5\uff0c\u4f46\u662f\u4e0d\u63a5\u53d7\u5c0d\u50b3\u8a0a\u5f15\u64ce\u6240\u505a\u7684\u8b8a\u66f4\uff0c\u56e0\u70ba service.pid \u503c\u70ba\u7a7a\u503c\u3002\u56e0\u6b64\uff0c\u672a\u547c\u53eb\u670d\u52d9\u3002
+NULL_SERVICE_PID_SIAS0116.useraction=\u8acb\u53c3\u95b1\u96a8\u9644\u7684\u300c\u50b3\u8a0a\u5f15\u64ce\u300d\u555f\u52d5\u76f8\u95dc\u932f\u8aa4\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002
+
+
+# -------------------------------------------------------------------------------------------------
+MODIFICATION_UNSUCCESSFUL_SIAS0117=CWSID0117E: \u672a\u80fd\u9806\u5229\u5b8c\u6210\u50b3\u8a0a\u5f15\u64ce\u914d\u7f6e\u7684\u4fee\u6539\uff0c\u4e4b\u5f8c\u7cfb\u7d71\u6536\u5230\u4e86\u5167\u90e8\u932f\u8aa4\u3002
+MODIFICATION_UNSUCCESSFUL_SIAS0117.explanation=\u672a\u80fd\u9806\u5229\u5b8c\u6210\u50b3\u8a0a\u5f15\u64ce\u914d\u7f6e\u7684\u66f4\u65b0\uff0c\u56e0\u800c\u9020\u6210\u5167\u90e8\u7cfb\u7d71\u932f\u8aa4\u3002
+MODIFICATION_UNSUCCESSFUL_SIAS0117.useraction=\u8acb\u53c3\u95b1\u96a8\u9644\u7684\u932f\u8aa4\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002
+
+
+# -------------------------------------------------------------------------------------------------
+BAD_RELIABILITY_VALUE_SIAS0118=CWSID0118E: \u6307\u5b9a\u7d66 defaultReliability \u7684\u503c\u5927\u65bc\u6307\u5b9a\u7d66 maxReliability \u7684\u503c\u3002
+BAD_RELIABILITY_VALUE_SIAS0118.explanation=\u6307\u5b9a\u7d66 defaultReliability \u53c3\u6578\u7684\u503c\u5fc5\u9808\u5c0f\u65bc\u6216\u7b49\u65bc\u63d0\u4f9b\u7d66 maxReliability \u53c3\u6578\u7684\u503c\u3002
+BAD_RELIABILITY_VALUE_SIAS0118.useraction=\u8acb\u91cd\u65b0\u57f7\u884c\u6307\u4ee4\uff0c\u6307\u5b9a\u5c0f\u65bc\u6216\u7b49\u65bc maxReliability \u503c\u7684 defaultReliability \u503c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} filestore path
+FILESTORE_PATH_SIAS0119=CWSID0119I: \u6a94\u6848\u5132\u5b58\u5eab\u8def\u5f91\uff1a{0}
+FILESTORE_PATH_SIAS0119.explanation=\u6307\u5b9a\u7684\u6a94\u6848\u5132\u5b58\u5eab\u8def\u5f91\u3002
+FILESTORE_PATH_SIAS0119.useraction=\u6b64\u8a0a\u606f\u50c5\u4f9b\u53c3\u8003\u3002\u4e0d\u9700\u8981\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+#Invalid path specified in server configuration file
+INVALID_FS_PATH_SIAS0120=CWSID0120E: \u7121\u6cd5\u555f\u52d5\u50b3\u8a0a\u5f15\u64ce\uff0c\u56e0\u70ba\u5728\u4f3a\u670d\u5668\u914d\u7f6e\u6a94\u4e2d\u6307\u5b9a\u4e86\u7121\u6548\u7684\u6a94\u6848\u8def\u5f91 {0}\u3002
+INVALID_FS_PATH_SIAS0120.explanation=\u5728\u80fd\u5920\u555f\u52d5\u300c\u50b3\u8a0a\u5f15\u64ce\u300d\u4e4b\u524d\uff0c\u5728\u4f3a\u670d\u5668\u914d\u7f6e\u6a94\u4e2d\uff0c\u9700\u8981\u6709\u6548\u7684\u6a94\u6848\u8def\u5f91\u3002
+INVALID_FS_PATH_SIAS0120.useraction=\u8acb\u5728\u4f3a\u670d\u5668\u914d\u7f6e\u6a94\u4e2d\u66f4\u6b63\u6a94\u6848\u8def\u5f91\u3002
+
+# -------------------------------------------------------------------------------------------------
+ME_STOPPED_SIAS0121=CWSID0121I: JMS \u4f3a\u670d\u5668\u5df2\u505c\u6b62\u3002
+ME_STOPPED_SIAS0121.explanation=JMS \u4f3a\u670d\u5668\u5df2\u505c\u6b62\u3002
+ME_STOPPED_SIAS0121.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+NULL_ME_ID_SIAS0122=CWSID0122I: \u672a\u5728\u4f3a\u670d\u5668\u914d\u7f6e\u6a94\u4e2d\u63d0\u4f9b\u50b3\u8a0a\u5f15\u64ce ID\u3002
+NULL_ME_ID_SIAS0122.explanation=\u5728\u4fee\u6539\u4f3a\u670d\u5668\u914d\u7f6e\u6a94\u671f\u9593\uff0c\u5df2\u7d93\u79fb\u9664\u50b3\u8a0a\u5f15\u64ce ID\u3002\u7576\u300c\u50b3\u8a0a\u5f15\u64ce\u300d\u4ecd\u5728\u4f5c\u7528\u6642\uff0c\u6703\u5ffd\u7565\u300c\u50b3\u8a0a\u5f15\u64ce ID\u300d\u8b8a\u66f4\u3002
+NULL_ME_ID_SIAS0122.useraction= \u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name or ID
+SAME_DEST_ID_SIAS0123=CWSID0123W: \u591a\u500b\u76ee\u7684\u5730\u4f7f\u7528 {0}\u3002
+SAME_DEST_ID_SIAS0123.explanation=\u76f8\u540c\u7684 ID \u7121\u6cd5\u7528\u65bc\u591a\u500b\u76ee\u7684\u5730\uff0c\u5c07\u5efa\u7acb\u91cd\u8907\u7684\u76ee\u7684\u5730\u3002
+SAME_DEST_ID_SIAS0123.useraction= \u8acb\u6307\u5b9a\u552f\u4e00\u7684\u76ee\u7684\u5730 ID\u3002
+# -------------------------------------------------------------------------------------------------
+INVALID_FILE_SIZE_SIAS0124=CWSID0124E: \u65e5\u8a8c\u6a94\u5927\u5c0f\u662f {0} MB\uff0c\u9019\u500b\u503c\u61c9\u8a72\u5c0f\u65bc\u6a94\u6848\u5132\u5b58\u5eab\u5927\u5c0f {1} MB \u7684\u4e00\u534a\u3002\u8acb\u589e\u52a0\u6a94\u6848\u5132\u5b58\u5eab\u5927\u5c0f\uff0c\u6216\u6e1b\u5c11\u65e5\u8a8c\u6a94\u5927\u5c0f\u3002
+INVALID_FILE_SIZE_SIAS0124.explanation=\u65e5\u8a8c\u6a94\u5927\u5c0f\u8d85\u51fa\u6c38\u4e45\u6a94\u6848\u5132\u5b58\u5eab\u5927\u5c0f\u3002\u6a94\u6848\u5132\u5b58\u5eab\u5927\u5c0f\u4ee3\u8868\u6c38\u4e45\u548c\u66ab\u6642\u5132\u5b58\u5eab\u7684\u7d44\u5408\u5927\u5c0f (MB)\u3002\u6c38\u4e45\u548c\u66ab\u6642\u5132\u5b58\u5eab\u61c9\u5e73\u5747\u5206\u914d\u6a94\u6848\u5132\u5b58\u5eab\u5927\u5c0f\uff0c\u56e0\u6b64\uff0c\u65e5\u8a8c\u6a94\u5927\u5c0f\u5fc5\u9808\u5c0f\u65bc\u6a94\u6848\u5132\u5b58\u5eab\u5927\u5c0f\u7684\u4e00\u534a\u3002
+INVALID_FILE_SIZE_SIAS0124.useraction=\u8acb\u589e\u52a0\u6a94\u6848\u5132\u5b58\u5eab\u5927\u5c0f\u6216\u6e1b\u5c11\u65e5\u8a8c\u6a94\u5927\u5c0f\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name or ID
+ALIAS_SAME_DEST_ID_SIAS0125=CWSID0125E: \u5df2\u5c07\u5225\u540d\u76ee\u7684\u5730 ID {0} \u5b9a\u7fa9\u7d66 Queue \u6216 TopicSpace\uff0c\u56e0\u6b64\u4e0d\u6703\u5efa\u7acb\u5225\u540d\u76ee\u7684\u5730\u3002
+ALIAS_SAME_DEST_ID_SIAS0125.explanation=\u5225\u540d\u76ee\u7684\u5730 ID \u5fc5\u9808\u662f\u552f\u4e00\u7684\u3002
+ALIAS_SAME_DEST_ID_SIAS0125.useraction=\u8acb\u78ba\u5b9a\u60a8\u5b9a\u7fa9\u7d66\u5225\u540d\u76ee\u7684\u5730\u7684 ID \u662f\u552f\u4e00\u7684\u3002

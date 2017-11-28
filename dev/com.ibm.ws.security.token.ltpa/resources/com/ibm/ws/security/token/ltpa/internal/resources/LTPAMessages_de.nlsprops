@@ -1,0 +1,57 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.token.ltpa/resources/com/ibm/ws/security/token/ltpa/internal/resources/LTPAMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Token Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS4100 - CWWKS4199
+
+LTPA_TOKEN_SERVICE_INVALID_FACTORY=CWWKS4100E: Es ist keine initialisierte Token-Factory vorhanden.
+LTPA_TOKEN_SERVICE_INVALID_FACTORY.explanation=Die Token-Factory wurde nicht initialisiert.
+LTPA_TOKEN_SERVICE_INVALID_FACTORY.useraction=\u00dcberpr\u00fcfen Sie die Token-Manager-Konfiguration in der Datei server.xml und jeder anderen Ressource, die in der Konfiguration angegeben ist.
+
+LTPA_TOKEN_SERVICE_INVALID_UNIQUE_ID=CWWKS4101E: Es ist keine eindeutige ID vorhanden, mit der das Token erstellt werden kann.
+LTPA_TOKEN_SERVICE_INVALID_UNIQUE_ID.explanation=Der Parameter unique_id ist null oder wurde nicht in den Tokendaten angegeben.
+LTPA_TOKEN_SERVICE_INVALID_UNIQUE_ID.useraction=Vergewissern Sie sich, dass die Benutzer-ID eine eindeutige ID hat. Wenn Sie eine angepasste Benutzerregistry verwenden, \u00fcberpr\u00fcfen Sie, ob die Tokendaten einen Wert f\u00fcr den Parameter unique_id enthalten.
+
+LTPA_TOKEN_SERVICE_MISSING_KEY=CWWKS4102E: Das System kann das LTPA-Token nicht erstellen, weil die erforderliche Eigenschaft {0} fehlt.
+LTPA_TOKEN_SERVICE_MISSING_KEY.explanation=Der angegebene Schl\u00fcssel fehlt. Deshalb kann das LTPA-Token nicht erstellt werden.
+LTPA_TOKEN_SERVICE_MISSING_KEY.useraction=Untersuchen Sie die Eigenschaftendatei, in der die LTPA-Schl\u00fcsselinformationen gespeichert sind, und stellen Sie sicher, dass die Schl\u00fcsseldaten einen geheimen Schl\u00fcssel, einen privaten Schl\u00fcssel und einen \u00f6ffentlichen Schl\u00fcssel enthalten.
+
+LTPA_CREATE_KEYS_START=CWWKS4103I: Die LTPA-Schl\u00fcssel werden erstellt. Dieser Vorgang kann einige Sekunden dauern.
+LTPA_CREATE_KEYS_START.explanation=Die LTPA-Schl\u00fcssel sind nicht vorhanden und werden automatisch generiert. Die Services, die LTPA erfordern, werden erst gestartet, wenn die LTPA-Schl\u00fcssel generiert wurden und die Konfiguration bereit ist.
+LTPA_CREATE_KEYS_START.useraction=Es ist keine Aktion erforderlich.
+
+LTPA_CREATE_KEYS_COMPLETE=CWWKS4104A: Die LTPA-Schl\u00fcssel wurden in {0} Sekunden erstellt. LTPA-Schl\u00fcsseldatei: {1}
+LTPA_CREATE_KEYS_COMPLETE.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+LTPA_CREATE_KEYS_COMPLETE.useraction=Es ist keine Aktion erforderlich.
+
+LTPA_CONFIG_READY=CWWKS4105I: Die LTPA-Konfiguration ist nach {0} Sekunden bereit.
+LTPA_CONFIG_READY.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+LTPA_CONFIG_READY.useraction=Es ist keine Aktion erforderlich.
+
+LTPA_CONFIG_ERROR=CWWKS4106E: LTPA-Konfigurationsfehler. Die LTPA-Schl\u00fcsseldatei {0} kann nicht erstellt oder gelesen werden.
+LTPA_CONFIG_ERROR.explanation=Die LTPA-Schl\u00fcssel konnten nicht an der angegebenen Position gelesen oder erstellt werden.
+LTPA_CONFIG_ERROR.useraction=Stellen Sie sicher, dass die Position f\u00fcr den Serverprozess zug\u00e4nglich ist. Alle FFDCs k\u00f6nnen auf einen schwerwiegenden Fehler bei der Generierung oder beim Laden der Schl\u00fcssel hinweisen.
+
+LTPA_KEYS_TO_LOAD=CWWKS4107A: Die LTPA-Schl\u00fcsseldatei oder -Konfiguration wurde ge\u00e4ndert. Die LTPA-Schl\u00fcssel werden erneut aus der Datei {0} geladen.
+LTPA_KEYS_TO_LOAD.explanation=Die LTPA-Schl\u00fcssel m\u00fcssen erneut geladen werden, weil eine \u00c4nderung an der Datei mit den LTPA-Schl\u00fcsseln oder an der Konfiguration vorgenommen wurde.
+LTPA_KEYS_TO_LOAD.useraction=Stellen Sie sicher, dass alle Server, die am Single Sign-on (SSO) teilnehmen, dieselben LTPA-Schl\u00fcssel und dasselbe Kennwort verwenden.
+
+LTPA_KEY_CREATE_ERROR=CWWKS4108E: Das System kann den LTPA-Schl\u00fcssel nicht erstellen.
+LTPA_KEY_CREATE_ERROR.explanation=Der LTPA-Schl\u00fcssel kann nicht erstellt werden.
+LTPA_KEY_CREATE_ERROR.useraction=Alle FFDCs k\u00f6nnen auf einen schwerwiegenden Fehler bei der Generierung der Schl\u00fcssel hinweisen.
+
+

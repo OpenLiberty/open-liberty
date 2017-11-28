@@ -1,0 +1,1144 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# 94218          2013-19-02  Venu     L2 review changes 
+# -------------------------------------------------------------------------------------------------
+# File com.ibm.ws.sib.trm.CWSITMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIT0000=CWSIT0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSIT0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSIT0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - CWSIT9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+#
+# cmvc_en_version_level=1.139,0,08/02/28,08:29:16
+#
+#CMVCPATHNAME ws/code/sib.trm.impl/src/com/ibm/ws/sib/trm/CWSITMessages.nlsprops
+#COMPONENTPREFIX CWSIT
+#COMPONENTNAMEFOR CWSIT TRM
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the class that cannot be loaded
+# {1} is the exception created when the class cannot be loaded
+
+EXCP_DURING_INIT_CWSIT0000=CWSIT0000E: Si \u00e8 verificato un errore interno. Non \u00e8 possibile creare un oggetto di classe {0} a causa dell''eccezione: {1}
+EXCP_DURING_INIT_CWSIT0000.explanation=CMSG0001
+EXCP_DURING_INIT_CWSIT0000.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of parameter which is null
+# {1} name of object being created
+
+NULL_USED_TO_CREATE_CWSIT0001=CWSIT0001E: Si \u00e8 verificato un errore interno. \u00c8 stato utilizzato {0} null per creare un''istanza {1}.
+NULL_USED_TO_CREATE_CWSIT0001.explanation=CMSG0001
+NULL_USED_TO_CREATE_CWSIT0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of parameter which is null
+# {1} name of method
+
+NULL_USED_ON_CWSIT0002=CWSIT0002E: Si \u00e8 verificato un errore interno. \u00c8 stato trasmesso {0} null su una chiamata del metodo {1}.
+NULL_USED_ON_CWSIT0002.explanation=CMSG0001
+NULL_USED_ON_CWSIT0002.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property that cannot be found
+
+NULL_PROPERTY_CWSIT0003=CWSIT0003E: Nessuna propriet\u00e0 {0} rilevata nelle propriet\u00e0 di connessione.
+NULL_PROPERTY_CWSIT0003.explanation=Non \u00e8 stata trovata una propriet\u00e0 necessaria tra le propriet\u00e0 di connessione durante la creazione di una connessione client.
+NULL_PROPERTY_CWSIT0003.useraction=Verificare che la propriet\u00e0 necessaria sia indicata correttamente durante la creazione di una connessione.
+
+# -------------------------------------------------------------------------------------------------
+
+NO_CCF_CWSIT0004=CWSIT0004E: Si \u00e8 verificato un errore interno. Non \u00e8 possibile creare un oggetto di classe ClientConnectionFactory.
+NO_CCF_CWSIT0004.explanation=CMSG0001
+NO_CCF_CWSIT0004.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_CC_CWSIT0005=CWSIT0005E: Si \u00e8 verificato un errore interno. Non \u00e8 possibile creare un oggetto di classe ClientConnection.
+NO_CC_CWSIT0005.explanation=CMSG0001
+NO_CC_CWSIT0005.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} List of bootstrap endpoints to which we tried to connect
+
+NO_BOOTSTRAP_CWSIT0006=CWSIT0006E: Non \u00e8 stato possibile contattare alcun server di avvio specificato. Per ulteriori dettagli, consultare l''eccezione collegata. Le connessioni di avvio sono state utilizzate per: {0}
+NO_BOOTSTRAP_CWSIT0006.explanation=Il client non riesce a collegarsi al bus. Questa situazione si \u00e8 verificata a causa di problemi di configurazione, problemi di rete o perch\u00e9 nessuno dei server di avvio richiesti sono attualmente disponibili.
+NO_BOOTSTRAP_CWSIT0006.useraction=Verificare che la rete funzioni correttamente e che i server di avvio necessari siano disponibili. Per ulteriori dettagli sulla configurazione di una connessione ad un server di avvio, consultare il centro informazioni.
+
+# -------------------------------------------------------------------------------------------------
+# {0} EndPoint of the bootstrap server which cannot be contacted
+# {1} Exception
+
+BOOTSTRAP_FAILED_CWSIT0007=CWSIT0007W: Impossibile contattare il server di avvio in {0} a causa dell''eccezione: {1}.
+BOOTSTRAP_FAILED_CWSIT0007.explanation=Il client non riesce a stabilire contatti con il server di avvio specificato. Ci\u00f2 pu\u00f2 essere dovuto a problemi di configurazione, problemi di rete o al fatto che il server di avvio necessario non \u00e8 al momento disponibile. Il processo di avvio del client continua con l'endpoint del provider successivo nell'elenco di endpoint del provider.
+BOOTSTRAP_FAILED_CWSIT0007.useraction=Verificare che la rete funzioni correttamente e che il server di avvio necessario sia disponibile. Il server di avvio viene specificato dalla propriet\u00e0 relativa all'endpoint del provider di factory di connessione JMS. L'indirizzo endpoint possiede il modulo host_name:port_number:chain_name (ad esempio, localhost:7276:BootstrapBasicMessaging). Il factory di connessione deve specificare la propriet\u00e0 relativa all'endpoint del provider se viene utilizzato un server di avvio non predefinito.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Endpoint of the bootstrap server
+# {1} Failure message from the bootstrap reply message
+
+BOOTSTRAP_FAILURE_CWSIT0008=CWSIT0008E: \u00c8 stata eseguita in modo corretto una connessione ad un server di avvio in {0}, ma il server ha restituito una condizione di errore: {1}
+BOOTSTRAP_FAILURE_CWSIT0008.explanation=Il client \u00e8 collegato ad un bus, ma si \u00e8 verificato un problema durante l'utilizzo del servizio. Questa situazione si \u00e8 verificata a causa di problemi di rete o il servizio richiesto \u00e8 attualmente non disponibile.
+BOOTSTRAP_FAILURE_CWSIT0008.useraction=Verificare che la rete funzioni correttamente e che il servizio richiesto sia disponibile. Per ulteriori dettagli sulla configurazione di una connessione ad un server di avvio, consultare il centro informazioni.
+
+# -------------------------------------------------------------------------------------------------
+# {0} EndPoint of application server that failed
+# {1} Name of bus
+# {2} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0009=CWSIT0009W: Una connessione client al bus {1} non \u00e8 riuscita nel server di avvio con endpoint {0}; causa: {2}.
+MIRRORED_FAILURE_CWSIT0009.explanation=Una richiesta di avvio client non \u00e8 riuscita a causa di un problema in un server di avvio. Viene restituita la causa dell'errore nel server di avvio. Il processo di avvio del client continua con l'endpoint del provider successivo nell'elenco di endpoint del provider.
+MIRRORED_FAILURE_CWSIT0009.useraction=Individuare e risolvere l'errore indicato nel messaggio di errore, quindi provare ad eseguire nuovamente l'operazione. 
+
+# -------------------------------------------------------------------------------------------------
+#                                                                       242799.1
+# {0} Name of messaging engine which failed
+# {1} Name of bus
+# {2} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0010=CWSIT0010E: Una richiesta client per il motore di messaggistica {0} nel bus {1} ha avuto esito negativo; causa {2}.
+MIRRORED_FAILURE_CWSIT0010.explanation=Un client non \u00e8 riuscito a collegarsi ad un bus a causa di un malfunzionamento in un server. Viene restituita la causa dell'errore nel server.
+MIRRORED_FAILURE_CWSIT0010.useraction=Individuare e risolvere l'errore indicato nel messaggio di errore, quindi provare ad eseguire nuovamente l'operazione. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Name of messaging engine which cannot be contacted
+# {1} Name of bus
+
+ATTACH_FAILED_CWSIT0011=CWSIT0011E: Non \u00e8 possibile collegarsi al motore di messaggistica {0} nel bus {1}. La connessione \u00e8 stata interrotta.
+ATTACH_FAILED_CWSIT0011.explanation=Il client non riesce a stabilire contatti con il motore di messaggistica denominato. Ci\u00f2 pu\u00f2 essere dovuto a problemi di rete o al fatto che il motore di messaggistica necessario non \u00e8 al momento disponibile.
+ATTACH_FAILED_CWSIT0011.useraction=Verificare che la rete funzioni correttamente e che il motore di messaggistica necessari sia disponibile.
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of parameter which is null
+# {1} name of object being created
+
+NULL_USED_TO_CREATE_CWSIT0012=CWSIT0012E: Si \u00e8 verificato un errore interno. \u00c8 stato utilizzato {0} null per creare un''istanza {1}.
+NULL_USED_TO_CREATE_CWSIT0012.explanation=CMSG0001
+NULL_USED_TO_CREATE_CWSIT0012.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of parameter which is null
+# {1} name of object being created
+
+NULL_USED_TO_CREATE_CWSIT0013=CWSIT0013E: Si \u00e8 verificato un errore interno. \u00c8 stato utilizzato {0} null per creare un''istanza {1}.
+NULL_USED_TO_CREATE_CWSIT0013.explanation=CMSG0001
+NULL_USED_TO_CREATE_CWSIT0013.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} EndPoint of messaging engine which failed
+# {3} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0014=CWSIT0014E: Una richiesta da motore di messaggistica a motore di messaggistica ha avuto esito negativo nel motore di messaggistica {0} nel bus {1}, endpoint {2}; causa: {3}.
+MIRRORED_FAILURE_CWSIT0014.explanation=Una richiesta da motore di messaggistica a motore di messaggistica ha avuto esito negativo a causa di un errore nel motore di messaggistica remoto.
+MIRRORED_FAILURE_CWSIT0014.useraction=Individuare e risolvere l'errore indicato nel messaggio di errore, quindi provare ad eseguire nuovamente l'operazione. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+CONNECT_FAILED_CWSIT0015=CWSIT0015W: Non \u00e8 possibile collegarsi al motore di messaggistica {0} nel bus {1}.
+CONNECT_FAILED_CWSIT0015.explanation=Il motore di messaggistica non \u00e8 in grado di collegarsi a un altro motore di messaggistica. Questa situazione potrebbe essere determinata da problemi di rete oppure il motore di messaggistica richiesto \u00e8 attualmente non disponibile.
+CONNECT_FAILED_CWSIT0015.useraction=Verificare che la rete funzioni correttamente e che il motore di messaggistica necessario sia disponibile.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHENTICATION_CWSIT0016=CWSIT0016E: L''autenticazione dell''ID utente {0} non \u00e8 riuscita nel bus {1}
+FAILED_AUTHENTICATION_CWSIT0016.explanation=L'ID utente utilizzato per creare una connessione client con un motore di messaggistica non \u00e8 stato autenticato dal motore di messaggistica remoto. L'errore di autenticazione \u00e8 probabilmente dovuto ad un valore ID utente o password non corretto.
+FAILED_AUTHENTICATION_CWSIT0016.useraction=Verificare che entrambi i valori ID utente e password siano corretti.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} host of messaging engine
+# {3} port of messaging engine
+# {4} transport chain to connect over
+
+LINK_FAILED_CWSIT0017=CWSIT0017W: Impossibile creare una connessione all''interno del bus con il motore di messaggistica {0} nel bus {1} sull''host {2} porta {3} mediante la catena di trasporto {4}.
+LINK_FAILED_CWSIT0017.explanation=Il motore di messaggistica non \u00e8 in grado di collegarsi a un altro motore di messaggistica. Questa situazione potrebbe essere determinata da problemi di rete oppure il motore di messaggistica richiesto \u00e8 attualmente non disponibile.
+LINK_FAILED_CWSIT0017.useraction=Verificare che la rete funzioni correttamente e che il motore di messaggistica necessario sia disponibile.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine name
+# {2} Bus name
+# {3} host of messaging engine
+# {4} port of messaging engine
+# {5} transport chain to connect over
+
+BRIDGE_FAILED_CWSIT0018=CWSIT0018W: Impossibile creare il link SIB (service integration bus) {0} al motore di messaggistica {1} nel bus {2}, sull''host {3} porta {4} mediante la catena di trasporto {5}.
+BRIDGE_FAILED_CWSIT0018.explanation=Il motore di messaggistica non \u00e8 in grado di collegarsi a un altro motore di messaggistica. Questa situazione potrebbe essere determinata da problemi di rete oppure il motore di messaggistica richiesto \u00e8 attualmente non disponibile.
+BRIDGE_FAILED_CWSIT0018.useraction=Verificare che la rete funzioni correttamente e che il motore di messaggistica necessario sia disponibile.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Connection properties
+# {2} Text of failure reason
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NO_SUITABLE_ME_CWSIT0019=CWSIT0019E: Sul bus {0} non \u00e8 disponibile alcun motore di messaggistica adatto, corrispondente alle propriet\u00e0 di connessione specificate {1}. Causa dell''errore: {2}
+NO_SUITABLE_ME_CWSIT0019.explanation=Non \u00e8 stato possibile collegare un client al bus perch\u00e9 attualmente non \u00e8 disponibile alcun motore di messaggistica adatto che corrisponde ai criteri di collegamento specificati dalle propriet\u00e0 di connessione.
+NO_SUITABLE_ME_CWSIT0019.useraction=Ripetere l'operazione. Se il problema persiste, rivolgersi all'amministratore del sistema per controllare se \u00e8 disponibile un motore di messaggistica adatto. Altrimenti, ignorare i criteri indicati nelle propriet\u00e0 di connessione e ripetere l'operazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} Exception
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+EXCEPTION_CWSIT0020=CWSIT0020E: Si \u00e8 verificata un''eccezione non prevista nel motore di messaggistica {0} del bus {1} durante la creazione di una connessione, eccezione: {2}
+EXCEPTION_CWSIT0020.explanation=CMSG0001
+EXCEPTION_CWSIT0020.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Engine name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_FOUND_CWSIT0021=CWSIT0021E: Il motore di messaggistica necessario {0} nel bus {1} non \u00e8 stato trovato in questo processo
+NOT_FOUND_CWSIT0021.explanation=Non \u00e8 possibile collegare un client al bus perch\u00e9 non \u00e8 stato trovato il motore di messaggistica necessario nel processo a cui il client \u00e8 collegato.
+NOT_FOUND_CWSIT0021.useraction=Generalmente, questo errore \u00e8 causato da una condizione transitoria, come, ad esempio, l'errore di un server durante un reindirizzamento del client. La ripetizione dell'operazione dovrebbe risolvere l'errore.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+FAILED_AUTHENTICATION_CWSIT0022=CWSIT0022E: L''autenticazione dell''ID utente {0} non \u00e8 riuscita nel bus {1}.
+FAILED_AUTHENTICATION_CWSIT0022.explanation=L'ID utente utilizzato per creare una connessione a un motore di messaggistica all'interno del bus non \u00e8 stato autenticato dal motore di messaggistica remoto. L'errore di autenticazione \u00e8 probabilmente dovuto ad un valore ID utente o password non corretto.
+FAILED_AUTHENTICATION_CWSIT0022.useraction=Verificare che entrambi i valori ID utente e password siano corretti.
+
+# -------------------------------------------------------------------------------------------------
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_ALLOWED_CWSIT0023=CWSIT0023E: Le regole di topologia non consentono connessioni tra motori di messaggistica con lo stesso nome
+NOT_ALLOWED_CWSIT0023.explanation=Un motore di messaggistica con lo stesso nome ha tentato di connettersi a questo motore di messaggistica. Non \u00e8 possibile avere due motori di messaggistica con lo stesso nome all'interno di uno stesso bus.
+NOT_ALLOWED_CWSIT0023.useraction=Controllare la topologia del bus e i nomi dei motori di messaggistica.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the class that cannot be loaded
+# {1} is the exception created when the class cannot be loaded
+
+EXCP_DURING_INIT_CWSIT0024=CWSIT0024E: Si \u00e8 verificato un errore interno. Non \u00e8 possibile creare un oggetto di classe {0} a causa dell''eccezione: {1}
+EXCP_DURING_INIT_CWSIT0024.explanation=CMSG0001
+EXCP_DURING_INIT_CWSIT0024.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Remote messaging engine name
+# {1} Bus name
+# {2} Name of this messaging engine
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_ALLOWED_CWSIT0026=CWSIT0026E: Il motore di messaggistica {0} nel bus {1} ha provato a creare un link SIB (service integration bus) al motore di messaggistica {2}
+NOT_ALLOWED_CWSIT0026.explanation=Un motore di messaggistica nello stesso bus ha provato a creare un link SIB (service integration bus) a questo motore di messaggistica. Le regole di topologia non consentono i link SIB (service integration bus) tra motori di messaggistica nello stesso bus.
+NOT_ALLOWED_CWSIT0026.useraction=Verificare la topologia del bus.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine issuing the message
+# {1} Bus name
+# {2} Name of connected messaging engine
+
+INFO_CWSIT0028=CWSIT0028I: La connessione dal motore di messaggistica {0} nel bus {1} al motore di messaggistica {2} \u00e8 stata avviata.
+INFO_CWSIT0028.explanation=\u00c8 stata avviata una connessione da motore di messaggistica a motore di messaggistica.
+INFO_CWSIT0028.useraction=Non \u00e8 richiesta alcuna azione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine issuing the message
+# {1} Bus name
+# {2} Name of disconnected messaging engine
+
+INFO_CWSIT0029=CWSIT0029I: La connessione dal motore di messaggistica {0} nel bus {1} al motore di messaggistica {2} \u00e8 stata arrestata.
+INFO_CWSIT0029.explanation=\u00c8 stata arrestata una connessione da motore di messaggistica a motore di messaggistica.
+INFO_CWSIT0029.useraction=Non \u00e8 richiesta alcuna azione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine issuing the message
+# {1} Subnet name
+# {2} Bus name
+# {3} Name of remote messaging engine
+# {4} Subnet name of remote messaging engine
+
+INFO_CWSIT0030=CWSIT0030I: La connessione all''interno del bus dal motore di messaggistica {0} nella sottorete {1} nel bus {2} al motore di messaggistica {3} nella sottorete {4} \u00e8 stata avviata.
+INFO_CWSIT0030.explanation=\u00c8 stata avviata una connessione all'interno del bus da motore di messaggistica a motore di messaggistica.
+INFO_CWSIT0030.useraction=Non \u00e8 richiesta alcuna azione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine issuing the message
+# {1} Subnet name
+# {2} Bus name
+# {3} Name of remote messaging engine
+# {4} Subnet name of remote messaging engine
+
+INFO_CWSIT0031=CWSIT0031I: La connessione all''interno del bus dal motore di messaggistica {0} nella sottorete {1} nel bus {2} al motore di messaggistica {3} nella sottorete {4} \u00e8 stata arrestata.
+INFO_CWSIT0031.explanation=\u00c8 stata arrestata una connessione all'interno del bus da motore di messaggistica a motore di messaggistica.
+INFO_CWSIT0031.useraction=Non \u00e8 richiesta alcuna azione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine issuing the message
+# {2} Bus name
+# {3} Name of remote messaging engine
+# {4} Bus name of remote messaging engine
+
+INFO_CWSIT0032=CWSIT0032I: Il link SIB (service integration bus) {0} dal motore di messaggistica {1} nel bus {2} al motore di messaggistica {3} nel bus {4} \u00e8 stato avviato.
+INFO_CWSIT0032.explanation=\u00c8 stato avviato un link SIB (service integration bus) tra due motori di messaggistica.
+INFO_CWSIT0032.useraction=Non \u00e8 richiesta alcuna azione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine issuing the message
+# {2} Bus name
+# {3} Name of remote messaging engine
+# {4} Bus name of remote messaging engine
+
+INFO_CWSIT0033=CWSIT0033I: Il link SIB (service integration bus) {0} dal motore di messaggistica {1} nel bus {2} al motore di messaggistica {3} nel bus {4} \u00e8 stato arrestato.
+INFO_CWSIT0033.explanation=\u00c8 stato arrestato un link SIB (service integration bus) tra due motori di messaggistica.
+INFO_CWSIT0033.useraction=Non \u00e8 richiesta alcuna azione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0034=CWSIT0034E: Una richiesta da motore di messaggistica a motore di messaggistica ha avuto esito negativo nel motore di messaggistica {0} nel bus {1}; causa: {2}.
+MIRRORED_FAILURE_CWSIT0034.explanation=Una richiesta da motore di messaggistica a motore di messaggistica ha avuto esito negativo a causa di un errore nel motore di messaggistica remoto. La causa dell'errore viene restituita nel motore di messaggistica remoto.
+MIRRORED_FAILURE_CWSIT0034.useraction=Chiedere all'amministratore del sistema di cercare nei log il motore di messaggistica remoto per poter stabilire la causa dell'errore.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHENTICATION_CWSIT0035=CWSIT0035E: L''autenticazione dell''ID utente {0} non \u00e8 riuscita nel bus {1}
+FAILED_AUTHENTICATION_CWSIT0035.explanation=L'ID utente utilizzato per creare una connessione a un motore di messaggistica all'interno del bus non \u00e8 stato autenticato dal motore di messaggistica remoto. L'errore di autenticazione \u00e8 probabilmente dovuto ad un valore ID utente o password non corretto.
+FAILED_AUTHENTICATION_CWSIT0035.useraction=Verificare che entrambi i valori ID utente e password siano corretti.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0036=CWSIT0036E: Si \u00e8 verificato un errore interno. Si registra un errore di protocollo client durante la comunicazione con il motore di messaggistica {0} nel bus {1}, il tipo di messaggio ricevuto \u00e8 {2} ma il tipo di messaggio previsto \u00e8 {3}.
+PROTOCOL_ERROR_CWSIT0036.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0036.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} received message type
+# {2} expected message type
+
+PROTOCOL_ERROR_CWSIT0038=CWSIT0038E: Si \u00e8 verificato un errore interno. Si registra un errore di protocollo di avvio client durante la comunicazione con un motore di messaggistica nel bus {0}, il tipo di messaggio ricevuto \u00e8 {1} ma il tipo di messaggio previsto \u00e8 {2}.
+PROTOCOL_ERROR_CWSIT0038.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0038.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0039=CWSIT0039E: Si \u00e8 verificato un errore interno. Si registra un errore di protocollo di connessione durante la comunicazione con il motore di messaggistica {0} nel bus {1}, il tipo di messaggio ricevuto \u00e8 {2} ma il tipo di messaggio previsto \u00e8 {3}.
+PROTOCOL_ERROR_CWSIT0039.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0039.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0040=CWSIT0040E: Si \u00e8 verificato un errore interno. Si registra un errore di protocollo di connessione all''interno del bus durante la comunicazione con il motore di messaggistica {0} nel bus {1}, il tipo di messaggio ricevuto \u00e8 {2} ma il tipo di messaggio previsto \u00e8 {3}.
+PROTOCOL_ERROR_CWSIT0040.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0040.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0041=CWSIT0041E: Si \u00e8 verificato un errore interno. Si \u00e8 verificato un errore del protocollo di link SIB (service integration bus) durante le comunicazioni con il motore di messaggistica {0} nel bus {1}, il tipo di messaggio ricevuto \u00e8 {2} ma il tipo di messaggio previsto \u00e8 {3}.
+PROTOCOL_ERROR_CWSIT0041.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0041.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0042=CWSIT0042E: Si \u00e8 verificato un errore interno. Si registra un errore di protocollo di connessione durante la comunicazione con il motore di messaggistica {0} nel bus {1}, il tipo di messaggio ricevuto \u00e8 {2} ma il tipo di messaggio previsto \u00e8 {3}.
+PROTOCOL_ERROR_CWSIT0042.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0042.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0043=CWSIT0043E: Si \u00e8 verificato un errore interno. Si registra un errore di protocollo di connessione all''interno del bus durante la comunicazione con il motore di messaggistica {0} nel bus {1}, il tipo di messaggio ricevuto \u00e8 {2} ma il tipo di messaggio previsto \u00e8 {3}.
+PROTOCOL_ERROR_CWSIT0043.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0043.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MCF_CWSIT0044=CWSIT0044E: Si \u00e8 verificato un errore interno. Non \u00e8 possibile creare un oggetto di classe MEConnectionFactory.
+NO_MCF_CWSIT0044.explanation=CMSG0001
+NO_MCF_CWSIT0044.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MCF_CWSIT0045=CWSIT0045E: Si \u00e8 verificato un errore interno. Non \u00e8 possibile creare un oggetto di classe MEConnectionFactory.
+NO_MCF_CWSIT0045.explanation=CMSG0001
+NO_MCF_CWSIT0045.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MCF_CWSIT0046=CWSIT0046E: Si \u00e8 verificato un errore interno. Non \u00e8 possibile creare un oggetto di classe MEConnectionFactory.
+NO_MCF_CWSIT0046.explanation=CMSG0001
+NO_MCF_CWSIT0046.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MC_CWSIT0047=CWSIT0047E: Si \u00e8 verificato un errore interno. Non \u00e8 possibile creare un oggetto di classe MEConnection.
+NO_MC_CWSIT0047.explanation=CMSG0001
+NO_MC_CWSIT0047.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MC_CWSIT0048=CWSIT0048E: Si \u00e8 verificato un errore interno. Non \u00e8 possibile creare un oggetto di classe MEConnection.
+NO_MC_CWSIT0048.explanation=CMSG0001
+NO_MC_CWSIT0048.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MC_CWSIT0049=CWSIT0049E: Si \u00e8 verificato un errore interno. Non \u00e8 possibile creare un oggetto di classe MEConnection.
+NO_MC_CWSIT0049.explanation=CMSG0001
+NO_MC_CWSIT0049.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Expected byte value
+# {1} Actual byte value
+
+INVALID_BYTE_VALUE_CWSIT0053=CWSIT0053E: Si \u00e8 verificato un errore interno. Il tipo di byte previsto {0} non \u00e8 stato trovato, mentre \u00e8 stato trovato un valore byte di {1}.
+INVALID_BYTE_VALUE_CWSIT0053.explanation=CMSG0001
+INVALID_BYTE_VALUE_CWSIT0053.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Expected byte value
+# {1} Actual byte value
+
+INVALID_BYTE_VALUE_CWSIT0054=CWSIT0054E: Si \u00e8 verificato un errore interno. Il tipo di byte previsto {0} non \u00e8 stato trovato, mentre \u00e8 stato trovato un valore byte di {1}.
+INVALID_BYTE_VALUE_CWSIT0054.explanation=CMSG0001
+INVALID_BYTE_VALUE_CWSIT0054.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Incorrect value
+# {1} Name of connection property
+# {2} Correct values
+
+INVALID_TARGET_TYPE_CWSIT0055=CWSIT0055E: \u00c8 stato trasmesso un valore {0} non corretto per la propriet\u00e0 di connessione {1}, i valori validi sono {2}.
+INVALID_TARGET_TYPE_CWSIT0055.explanation=L'applicazione ha fornito un valore della propriet\u00e0 di connessione non corretto; la connessione non \u00e8 stata creata.
+INVALID_TARGET_TYPE_CWSIT0055.useraction=Utilizzare un valore valido per la propriet\u00e0 di connessione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHENTICATION_CWSIT0056=CWSIT0056E: L''autenticazione dell''ID utente {0} non \u00e8 riuscita nel bus {1}
+FAILED_AUTHENTICATION_CWSIT0056.explanation=L'ID utente utilizzato per creare un link SIB (service integration bus) non \u00e8 stato autenticato dal motore di messaggistica remoto. L'errore di autenticazione \u00e8 probabilmente dovuto ad un valore ID utente o password non corretto.
+FAILED_AUTHENTICATION_CWSIT0056.useraction=Verificare che entrambi i valori ID utente e password siano corretti.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Host name
+# {2} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0057=CWSIT0057E: Il link SIB (service integration bus) {0} ha avuto esito negativo nel motore di messaggistica remoto sull''host {1}; causa: {2}.
+MIRRORED_FAILURE_CWSIT0057.explanation=Una richiesta di link SIB (service integration bus) ha avuto esito negativo a causa di un errore nel motore di messaggistica remoto.
+MIRRORED_FAILURE_CWSIT0057.useraction=Individuare e risolvere l'errore indicato nel messaggio di errore, quindi provare ad eseguire nuovamente l'operazione. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Expected messaging engine name
+# {2} Bus name
+# {3} Unexpected messaging engine name
+
+BRIDGE_FAILED_CWSIT0058=CWSIT0058E: Impossibile completare il link SIB (service integration bus) {0} perch\u00e9 il bus remoto {2} ha restituito un nome di motore di messaggistica non previsto {3}, il nome del motore di messaggistica previsto era {1}.
+BRIDGE_FAILED_CWSIT0058.explanation=I link SIB (Service integration bus) richiedono che il nome del motore di messaggistica nel bus remoto corrisponda al nome del motore di messaggistica configurato per il link SIB (service integration bus).
+BRIDGE_FAILED_CWSIT0058.useraction=Controllare la configurazione del link SIB (service integration bus) per verificare che per entrambi i bus sia configurato il nome del motore di messaggistica corretto.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine name
+# {2} Bus name
+
+BRIDGE_FAILED_CWSIT0059=CWSIT0059E: Impossibile stabilire il link SIB (service integration bus) {0} al motore di messaggistica {1} nel bus {2}.
+BRIDGE_FAILED_CWSIT0059.explanation=Non \u00e8 possibile stabilire un collegamento con il motore di messaggistica indicato. Questa situazione potrebbe essere determinata da problemi di rete oppure il motore di messaggistica richiesto \u00e8 attualmente non disponibile.
+BRIDGE_FAILED_CWSIT0059.useraction=Verificare che la rete funzioni correttamente e che il motore di messaggistica necessari sia disponibile.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Received Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHORISATION_CWSIT0060=CWSIT0060E: L''id utente {0} non \u00e8 autorizzato a creare una connessione all''interno del bus al motore di messaggistica nel bus {1}
+FAILED_AUTHORISATION_CWSIT0060.explanation=L'ID utente utilizzato per creare una connessione al motore di messaggistica all'interno del bus non \u00e8 lo stesso ID utente autorizzato dal motore di messaggistica remoto per la creazione di connessioni al motore di messaggistica all'interno del bus.
+FAILED_AUTHORISATION_CWSIT0060.useraction=Verificare che entrambi i motori di messaggistica abbiano configurato lo stesso ID utente per le connessioni al motore di messaggistica all'interno del bus.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0061=CWSIT0061E: Si \u00e8 verificato un errore interno. Si \u00e8 verificato un errore del protocollo di link SIB (service integration bus) durante le comunicazioni con il motore di messaggistica {0} nel bus {1}, il tipo di messaggio ricevuto \u00e8 {2} ma il tipo di messaggio previsto \u00e8 {3}.
+PROTOCOL_ERROR_CWSIT0061.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0061.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0062=CWSIT0062E: Si \u00e8 verificato un errore interno. Si \u00e8 verificato un errore del protocollo di link SIB (service integration bus) durante le comunicazioni con il motore di messaggistica {0} nel bus {1}, il tipo di messaggio ricevuto \u00e8 {2} ma il tipo di messaggio previsto \u00e8 {3}.
+PROTOCOL_ERROR_CWSIT0062.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0062.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Engine name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_FOUND_CWSIT0063=CWSIT0063E: Il motore di messaggistica necessario {0} nel bus {1} non \u00e8 stato trovato in questo processo
+NOT_FOUND_CWSIT0063.explanation=Il motore di messaggistica non \u00e8 stato in grado di comunicare con un motore di messaggistica adiacente perch\u00e9 non \u00e8 stato possibile trovare il motore di messaggistica adiacente nel processo a cui questo motore di messaggistica \u00e8 connesso.
+NOT_FOUND_CWSIT0063.useraction=Ripetere l'operazione. Verificare che il motore di messaggistica necessario sia disponibile nell'ubicazione corrente.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Engine name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_FOUND_CWSIT0064=CWSIT0064E: Il motore di messaggistica necessario {0} nel bus {1} non \u00e8 stato trovato in questo processo
+NOT_FOUND_CWSIT0064.explanation=Il motore di messaggistica non \u00e8 stato in grado di comunicare con un motore di messaggistica adiacente perch\u00e9 non \u00e8 stato possibile trovare il motore di messaggistica adiacente nel processo a cui questo motore di messaggistica \u00e8 connesso.
+NOT_FOUND_CWSIT0064.useraction=Ripetere l'operazione. Verificare che il motore di messaggistica necessario sia disponibile nell'ubicazione corrente.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Engine name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_FOUND_CWSIT0065=CWSIT0065E: Il motore di messaggistica necessario {0} nel bus {1} non \u00e8 stato trovato in questo processo
+NOT_FOUND_CWSIT0065.explanation=Il motore di messaggistica non \u00e8 stato in grado di comunicare con un motore di messaggistica adiacente perch\u00e9 non \u00e8 stato possibile trovare il motore di messaggistica adiacente nel processo a cui questo motore di messaggistica \u00e8 connesso.
+NOT_FOUND_CWSIT0065.useraction=Ripetere l'operazione. Verificare che il motore di messaggistica necessario sia disponibile nell'ubicazione corrente.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Bus Name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+INVALID_REQUEST_CWSIT0066=CWSIT0066E: Impossibile completare il link SIB (service integration bus) {0}, perch\u00e9 il motore di messaggistica nel bus di richiesta {1} sta provando ad effettuare la connessione ad un motore di messaggistica nello stesso bus
+INVALID_REQUEST_CWSIT0066.explanation=Un motore di messaggistica ha provato a stabilire un link SIB (service integration bus) ad un motore di messaggistica nello stesso bus. I link SIB (Service integration bus) tra motori di messaggistica nello stesso bus non sono consentiti.
+INVALID_REQUEST_CWSIT0066.useraction=Controllare la configurazione del link SIB (service integration bus) per verificare che gli endpoint di avvio siano indirizzati correttamente ad un bus remoto.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+UNABLE_TO_FIND_CWSIT0067=CWSIT0067E: Link SIB (Service integration bus) {0} nel bus {1} non disponibile
+UNABLE_TO_FIND_CWSIT0067.explanation=\u00c8 stata ricevuta una richiesta di link SIB (service integration bus) da un altro bus, ma non \u00e8 disponibile alcun motore di messaggistica per accettare la richiesta nel bus di destinazione.
+UNABLE_TO_FIND_CWSIT0067.useraction=Verificare che il motore di messaggistica configurato per la gestione del link SIB (service integration bus) sia disponibile.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Bus name
+# {2} Engine name
+
+UNABLE_TO_FIND_CWSIT0068=CWSIT0068E: \u00c8 stata ricevuta una richiesta di link SIB (service integration bus) per {0} dal bus {1} motore di messaggistica {2} ma non \u00e8 stato possibile trovare alcuna definizione di configurazione corrispondente.
+UNABLE_TO_FIND_CWSIT0068.explanation=\u00c8 stata ricevuta una richiesta di link SIB (service integration bus) da un altro bus ma non \u00e8 stato possibile trovare alcuna definizione di configurazione corrispondente a tale richiesta, per cui la richiesta \u00e8 stata rifiutata.
+UNABLE_TO_FIND_CWSIT0068.useraction=Verificare che le configurazioni del link SIB (service integration bus) in entrambi i bus siano corrette.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+UNABLE_TO_FIND_CWSIT0069=CWSIT0069E: Non \u00e8 stata trovata alcuna configurazione corrispondente per la connessione del link SIB (service integration bus) {0} nel bus {1}
+UNABLE_TO_FIND_CWSIT0069.explanation=Una richiesta di link SIB (service integration bus) \u00e8 stata rifiutata da un altro bus perch\u00e9 non \u00e8 stato possibile trovare alcuna definizione di configurazione che corrisponde a questa richiesta.
+UNABLE_TO_FIND_CWSIT0069.useraction=Verificare che le configurazioni del link SIB (service integration bus) in entrambi i bus siano corrette.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Requesting bus name
+# {2} Requesting engine name
+# {3} Expected engine name
+
+NOT_ALLOWED_CWSIT0070=CWSIT0070E: \u00c8 stata ricevuta una richiesta di link SIB (service integration bus) per {0} dal bus {1} motore di messaggistica {2} ma la definizione di configurazione prevede il motore di messaggistica {3}.
+NOT_ALLOWED_CWSIT0070.explanation=\u00c8 stata ricevuta una richiesta di link SIB (service integration bus) da un motore di messaggistica in un altro bus che non \u00e8 il motore di messaggistica indicato nella definizione di configurazione in questo bus; la richiesta \u00e8 stata rifiutata.
+NOT_ALLOWED_CWSIT0070.useraction=Verificare che le configurazioni del link SIB (service integration bus) in entrambi i bus siano corrette.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Remote bus name
+# {2} Requesting engine name
+# {3} Expected engine name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_ALLOWED_CWSIT0071=CWSIT0071E: La richiesta di link SIB (service integration bus) per il link {0} \u00e8 stata rifiutata dal bus {1} perch\u00e9 il motore di messaggistica di richiesta {2} non corrisponde al motore di messaggistica previsto {3}
+NOT_ALLOWED_CWSIT0071.explanation=Il bus remoto ha rilevato un'incongruenza nel motore di messaggistica indicato nella richiesta di link SIB (service integration bus) eseguita da questo bus e la propria definizione di configurazione del link SIB (service integration bus).
+NOT_ALLOWED_CWSIT0071.useraction=Verificare che le configurazioni del link SIB (service integration bus) in entrambi i bus siano corrette.
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of authentication alias
+
+UNABLE_TO_OBTAIN_AUTHDATA_CWSIT0072=CWSIT0072W: Impossibile ottenere dati di autenticazione dall''alias di autenticazione del motore di messaggistica all''interno del bus {0}.
+UNABLE_TO_OBTAIN_AUTHDATA_CWSIT0072.explanation=Se l'alias di autenticazione non esiste oppure \u00e8 configurato in modo errato, non sar\u00e0 possibile ottenere i dati di autenticazione. Verranno assunti i valori predefiniti delle stringhe vuote per i dati di autenticazione richiesti per le connessioni al motore di messaggistica all'interno del bus. Se la protezione \u00e8 abilitata, questo problema impedisce la connessione al motore di messaggistica.
+UNABLE_TO_OBTAIN_AUTHDATA_CWSIT0072.useraction=Verificare che l'alias di autenticazione al motore di messaggistica all'interno del bus sia configurato correttamente.
+
+# -------------------------------------------------------------------------------------------------
+#                                                                                          237937.1
+
+NO_AUTHALIAS_CWSIT0073=CWSIT0073W: Non risulta configurato alcun alias di autenticazione del motore di messaggistica all'interno del bus.
+NO_AUTHALIAS_CWSIT0073.explanation=Quando non risulta configurato alcun alias di autenticazione del motore di messaggistica all'interno del bus, non sar\u00e0 eseguito alcun controllo di autenticazione per le connessioni del motore di messaggistica all'interno del bus. Per autenticare le connessioni del motore di messaggistica all'interno del bus, configurare un alias di autenticazione al motore di messaggistica all'interno del bus.
+NO_AUTHALIAS_CWSIT0073.useraction=Configurare l'alias di autenticazione al motore di messaggistica all'interno del bus.
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+ALREADY_DEFINED_CWSIT0074=CWSIT0074E: Si \u00e8 verificato un errore interno. L''UUID di link {0} \u00e8 gi\u00e0 definito.
+ALREADY_DEFINED_CWSIT0074.explanation=CMSG0001
+ALREADY_DEFINED_CWSIT0074.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+ALREADY_DEFINED_CWSIT0075=CWSIT0075E: Si \u00e8 verificato un errore interno. L''UUID di link {0} \u00e8 gi\u00e0 definito.
+ALREADY_DEFINED_CWSIT0075.explanation=CMSG0001
+ALREADY_DEFINED_CWSIT0075.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+UNDEFINED_CWSIT0076=CWSIT0076E: Si \u00e8 verificato un errore interno. L''UUID di link {0} non \u00e8 stato definito.
+UNDEFINED_CWSIT0076.explanation=CMSG0001
+UNDEFINED_CWSIT0076.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+UNDEFINED_CWSIT0077=CWSIT0077E: Si \u00e8 verificato un errore interno. L''UUID di link {0} non \u00e8 stato definito.
+UNDEFINED_CWSIT0077.explanation=CMSG0001
+UNDEFINED_CWSIT0077.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+NOT_STARTED_CWSIT0078=CWSIT0078E: Si \u00e8 verificato un errore interno. L''UUID di link {0} non pu\u00f2 essere registrato perch\u00e9 il link non \u00e8 avviato.
+NOT_STARTED_CWSIT0078.explanation=CMSG0001
+NOT_STARTED_CWSIT0078.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+NOT_ACTIVE_CWSIT0079=CWSIT0079E: Si \u00e8 verificato un errore interno. L''UUID di link {0} non pu\u00f2 essere registrato perch\u00e9 il link non \u00e8 attivo.
+NOT_ACTIVE_CWSIT0079.explanation=CMSG0001
+NOT_ACTIVE_CWSIT0079.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link name
+# {1} originating bus name
+# {2} receiving bus name
+# {3} receiving bus name
+
+NOT_STARTED_CWSIT0080=CWSIT0080W: Impossibile stabilire il link SIB (service integration bus) {0} dal bus {1} al bus {2}, perch\u00e9 il link nel bus {3} non \u00e8 avviato.
+NOT_STARTED_CWSIT0080.explanation=Il link SIB (service integration bus) \u00e8 attualmente avviato in un bus ma non \u00e8 avviato nell'altro bus; prima che sia possibile eseguire la connessione, il link deve essere avviato in entrambi i bus.
+NOT_STARTED_CWSIT0080.useraction=Arrestare il link SIB (service integration bus) nel bus di origine oppure avviare il link nel bus ricevente.
+
+# -------------------------------------------------------------------------------------------------
+# {0} bridge neighbour UUID
+
+NEIGHBOUR_NOT_FOUND_CWSIT0081=CWSIT0081E: Si \u00e8 verificato un errore interno. La risorsa bridge con UUID {0} non \u00e8 stata trovata fra le risorse.
+NEIGHBOUR_NOT_FOUND_CWSIT0081.explanation=CMSG0001
+NEIGHBOUR_NOT_FOUND_CWSIT0081.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} neighbour UUID
+
+NEIGHBOUR_NOT_FOUND_CWSIT0082=CWSIT0082E: Si \u00e8 verificato un errore interno. La risorsa con UUID {0} non \u00e8 stata trovata fra le risorse.
+NEIGHBOUR_NOT_FOUND_CWSIT0082.explanation=CMSG0001
+NEIGHBOUR_NOT_FOUND_CWSIT0082.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Received Userid
+# {1} Link name
+# {2} Requesting Bus name
+# {3} Required Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHORISATION_CWSIT0085=CWSIT0085E: L''ID utente {0} non dispone dell''autorizzazione per la creazione della connessione del link SIB (service integration bus) {1} tra il bus {2} e il bus {3}
+FAILED_AUTHORISATION_CWSIT0085.explanation=L'ID utente utilizzato per creare una connessione del link SIB (service integration bus) non era lo stesso ID utente autorizzato dal motore di messaggistica remoto per la creazione delle connessioni del link SIB (service integration bus).
+FAILED_AUTHORISATION_CWSIT0085.useraction=Verificare che per entrambi i motori di messaggistica sia configurato lo stesso ID utente per questo link SIB (service integration bus).
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+BUS_NOT_FOUND_CWSIT0086=CWSIT0086E: Bus {0} non trovato
+BUS_NOT_FOUND_CWSIT0086.explanation=Il bus richiesto non \u00e8 configurato nel server quindi non \u00e8 possibile utilizzare il server per connettersi al bus.
+BUS_NOT_FOUND_CWSIT0086.useraction=Verificare che il nome del bus sia corretto e utilizzare un server in cui \u00e8 configurato il bus richiesto.
+
+# -------------------------------------------------------------------------------------------------
+# {1} Remote engine name
+
+UNABLE_TO_FIND_CWSIT0087=CWSIT0087E: \u00c8 stata inviata una richiesta di connessione all''interno del bus dal motore di messaggistica {1} ma non \u00e8 stata trovata alcuna definizione di configurazione corrispondente.
+UNABLE_TO_FIND_CWSIT0087.explanation=\u00c8 stata inviata una richiesta di connessione all'interno del bus da un altro motore di messaggistica ma non \u00e8 stata trovata alcuna definizione di configurazione corrispondente a tale richiesta, che quindi \u00e8 stata respinta.
+UNABLE_TO_FIND_CWSIT0087.useraction=Verificare che le configurazioni di connessione all'interno del bus in entrambi i motori di messaggistica siano corrette.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name                                                                               248188
+# {1} Text of failure reason
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NO_MES_STARTED_CWSIT0088=CWSIT0088E: Attualmente non esistono motori di messaggistica in esecuzione nel bus {0}. Ulteriori informazioni sull''errore: {1}
+NO_MES_STARTED_CWSIT0088.explanation=Non \u00e8 stato possibile allegare il client al bus perch\u00e9 al momento non ci sono motori di messaggistica in esecuzione nel bus richiesto.
+NO_MES_STARTED_CWSIT0088.useraction=Ripetere l'operazione. Avviare un motore di messaggistica nel bus richiesto.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+FAILED_AUTHENTICATION_CWSIT0089=CWSIT0089E: L''autenticazione dell''ID utente {0} non \u00e8 riuscita nel bus {1}.
+FAILED_AUTHENTICATION_CWSIT0089.explanation=L'ID utente utilizzato per creare una connessione client con un motore di messaggistica non \u00e8 stato autenticato dal motore di messaggistica remoto. L'errore di autenticazione \u00e8 probabilmente dovuto ad un valore ID utente o password non corretto.
+FAILED_AUTHENTICATION_CWSIT0089.useraction=Verificare che entrambi i valori ID utente e password siano corretti.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Channel chain name
+
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0090=CWSIT0090E: \u00c8 stata eseguita una richiesta di avvio al bus {0} utilizzando la catena di canale {1}. L''utilizzo di questa catena non \u00e8 consentita dal bus {0}.
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0090.explanation=Un client ha tentato di inviare una richiesta di avvio per collegarsi ad un bus, ma il bus non consente alle richieste di avvio di utilizzare quel canale.
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0090.useraction=Configurare nuovamente il client in modo che l'endpoint di avvio utilizzi una catena consentita.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+NO_AUTHALIAS_CWSIT0091=CWSIT0091W: \u00c8 stata correttamente creata una connessione del link SIB (service integration bus) al motore di messaggistica {0} sul bus {1} senza specificare un alias di autenticazione del link SIB (service integration bus). Si consiglia di configurare un alias di autenticazione per motivi di sicurezza.
+NO_AUTHALIAS_CWSIT0091.explanation=Quando un alias di autenticazione SIB (service integration bus) non \u00e8 configurato su un link SIB (service integration bus), \u00e8 possibile creare un link SIB (service integration bus) tra un bus sicuro ed un bus non sicuro senza eseguire un controllo di autenticazione.
+NO_AUTHALIAS_CWSIT0091.useraction=Configurare l'alias di autenticazione del link SIB (service integration bus) se si desidera utilizzare un controllo di autenticazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Channel chain name
+
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0092=CWSIT0092E: \u00c8 stato effettuato un tentativo di connessione al bus {0} utilizzando la catena di canale {1}. L''utilizzo di questa catena non \u00e8 consentita dal bus {0}.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0092.explanation=Un client ha tentato di inviare una richiesta di avvio per collegarsi ad un bus, ma il bus non consente alle connessioni di utilizzare quella catena di canali.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0092.useraction=Configurare nuovamente il client in modo che si possa collegarsi utilizzando una catena consentita.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting bus name
+# {1} Required bus name
+# {2} Channel chain name
+
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0093=CWSIT0093E: Il bus {0} ha provato a creare un link SIB (service integration bus) al bus esterno {1} utilizzando la catena di canale di avvio {2}. L''utilizzo di questa catena non \u00e8 consentito dal bus esterno {1}.
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0093.explanation=Un bus ha tentato di utilizzare una catena di canali di trasporto di avvio non supportata dal bus esterno.
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0093.useraction=Configurare nuovamente il bus in modo che l'endpoint di avvio utilizzi una catena consentita dal bus esterno.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Endpoint of the bootstrap server
+# {2} Failure message from the bootstrap reply message
+
+NOT_AUTHORIZED_CWSIT0094=CWSIT0094E: Il client non era autorizzato a connettersi al bus {0} utilizzando il server di avvio con l''endpoint {1}. Causa: {2}.
+NOT_AUTHORIZED_CWSIT0094.explanation=L'ID utente utilizzato per creare una connessione con il bus non disponeva dell'autorizzazione per la connessione al bus.
+NOT_AUTHORIZED_CWSIT0094.useraction=Assicurarsi che l'ID utente disponga del ruolo bus connector per il bus.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting messaging engine name
+# {1} Requesting bus name
+# {2} Required messaging engine name
+# {3} Required bus name
+# {4} Channel chain name
+
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0095=CWSIT0095E: Il motore di messaggistica {0} nel bus {1} ha provato a creare un link SIB (service integration bus) al motore di messaggistica {2} nel bus esterno {3} utilizzando la catena di canale in entrata {4}. L''utilizzo di questa catena non \u00e8 consentito dal bus esterno {3}.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0095.explanation=Un bus ha tentato di utilizzare una catena di trasporto di entrata non supportata dal bus esterno.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0095.useraction=Configurare nuovamente il bus in modo che possa collegarsi ad una catena consentita dal bus esterno.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting messaging engine name
+# {1} Bus name
+# {2} Required messaging engine name
+# {3} Channel chain name
+
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0096=CWSIT0096E: Il motore di messaggistica {0} nel bus {1} ha tentato di collegarsi al motore di messaggistica {2} utilizzando la catena di canale in entrata {3}. L''utilizzo di questa catena non \u00e8 consentito dal bus {1}.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0096.explanation=Il bus \u00e8 stato configurato per utilizzare una catena del canale di trasporto che non \u00e8 consentita per la comunicazione tra motori di messaggistica.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0096.useraction=Configurare nuovamente il bus in modo che specifichi una catena consentita come la catena di trasporto fra motori. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting messaging engine name
+# {1} Requesting subnet name
+# {2} Required messaging engine name
+# {3} Required subnet name
+# {4} Channel chain name
+# {5} Required bus name
+
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0097=CWSIT0097E: Il motore di messaggistica {0} nella sottorete {1} ha tentato di collegarsi al motore di messaggistica {2} nella sottorete {3} utilizzando la catena di canale in entrata {4}. L''utilizzo di questa catena non \u00e8 consentito dal bus {5}.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0097.explanation=Un bus ha tentato di utilizzare una catena del canale di trasporto non consentita.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0097.useraction=Configurare nuovamente il bus in modo che possa collegarsi su una catena del canale di trasporto consentita.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Endpoint of the bootstrap server
+# {2} Failure message from the bootstrap reply message
+
+FAILED_AUTHENTICATION_CWSIT0098=CWSIT0098E: L''autenticazione di una connessione client al bus {0} mediante il server di avvio con endpoint {1} non \u00e8 riuscita; causa: {2}
+FAILED_AUTHENTICATION_CWSIT0098.explanation=L'ID utente utilizzato per creare una connessione client con un motore di messaggistica non \u00e8 stato autenticato dal motore di messaggistica remoto. L'errore di autenticazione \u00e8 probabilmente dovuto ad un valore ID utente o password non corretto.
+FAILED_AUTHENTICATION_CWSIT0098.useraction=Verificare che entrambi i valori ID utente e password siano corretti.
+
+# -------------------------------------------------------------------------------------------------
+# {0} EndPoint of the successful bootstrap server
+# {1} Name of messaging engine
+# {2} EndPoint of the original bootstrap server
+# {3} Text of failure reason
+
+REDIRECT_FAILURE_CWSIT0099=CWSIT0099E: Il client ha contattato con esito positivo il server di avvio nell''endpoint {0} ed \u00e8 stato reindirizzato al motore di messaggistica {1} nell''endpoint {2}. Il tentativo di contattare questo endpoint non \u00e8 riuscito con la causa: {3}.
+REDIRECT_FAILURE_CWSIT0099.explanation=Un client non \u00e8 riuscito a collegarsi ad un bus dopo un reindirizzamento, a causa di un malfunzionamento in un server. Viene restituita la causa dell'errore nel server.
+REDIRECT_FAILURE_CWSIT0099.useraction=Individuare e risolvere l'errore indicato nel messaggio di errore, quindi provare ad eseguire nuovamente l'operazione. 
+
+# -------------------------------------------------------------------------------------------------
+
+BAD_SELECT_CWSIT0100=CWSIT0100E: Si \u00e8 previsto di ottenere un CFEndpoint dalla selezione, ma non era presente alcun valore (errore interno).
+BAD_SELECT_CWSIT0100.explanation=La richiesta di risolvere un motore di messaggistica di destinazione ha avuto esito negativo.
+BAD_SELECT_CWSIT0100.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+INVALID_PARAMETER_CWSIT0101=CWSIT0101E: \u00c8 stato riscontrato un parametro non valido.
+INVALID_PARAMETER_CWSIT0101.explanation=La richiesta di risolvere un motore di messaggistica di destinazione ha avuto esito negativo.
+INVALID_PARAMETER_CWSIT0101.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Selection's MessagingEngine name
+# {1} Proximity constraint
+
+UNSATISFIED_PROXIMITY_CWSIT0102=CWSIT0102E: \u00c8 stata trovata una selezione del motore di messaggistica {0}, ma \u00e8 stato necessario eliminarla perch\u00e9 non soddisfa il vincolo di prossimit\u00e0 di connessione {1} specificato dall''applicazione.
+UNSATISFIED_PROXIMITY_CWSIT0102.explanation=La richiesta di risolvere un motore di messaggistica di destinazione ha avuto esito negativo.
+UNSATISFIED_PROXIMITY_CWSIT0102.useraction=Se si desiderava eseguire la connessione al motore di messaggistica indicato nel messaggio di errore, ignorare la prossimit\u00e0 della connessione nel factory di connessione o specifica di attivazione e riprovare l'operazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Group
+# {2} Type
+# {3} Significance
+# {4} TransportChain
+# {5} Proximity
+
+NULL_SELECTION_CWSIT0103=CWSIT0103E: Non \u00e8 stato trovato alcun motore di messaggistica corrispondente ai seguenti parametri: bus={0}, targetGroup={1}, targetType={2}, targetSignificance={3}, transportChain={4}, proximity={5}.
+NULL_SELECTION_CWSIT0103.explanation=La richiesta di risolvere un motore di messaggistica di destinazione ha avuto esito negativo.
+NULL_SELECTION_CWSIT0103.useraction=Verificare che lo stato del motore di messaggistica a cui si desidera effettuare la connessione sia in esecuzione. In alternativa, modificare le propriet\u00e0 della connessione in modo da consentire la selezione di un motore di messaggistica attivo.
+
+# -------------------------------------------------------------------------------------------------
+# {0} MessagingEngine name
+# {1} Bus name
+
+ME_NOT_STARTED_CWSIT0104=CWSIT0104E: Il client ha tentato di collegarsi al motore di messaggistica {0} sul bus {1}, ma non \u00e8 stato possibile creare la connessione perch\u00e9 il motore di messaggistica non \u00e8 stato avviato.
+ME_NOT_STARTED_CWSIT0104.explanation=Il motore di messaggistica esiste ma non \u00e8 avviato.
+ME_NOT_STARTED_CWSIT0104.useraction=Avviare il motore di messaggistica a cui si desidera effettuare la connessione e riprovare l'operazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHENTICATION_CWSIT0105=CWSIT0105E: L''applicazione non ha specificato un ID utente durante il tentativo di autenticazione con il bus {0}
+FAILED_AUTHENTICATION_CWSIT0105.explanation=L'autenticazione con il motore di messaggistica remoto ha avuto esito negativo poich\u00e9 l'applicazione non ha specificato un ID utente.
+FAILED_AUTHENTICATION_CWSIT0105.useraction=Verificare che entrambi i valori ID utente e password siano corretti.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine name
+# {2} Bus name
+# {3} Host of messaging engine
+# {4} Port of messaging engine
+# {5} Transport chain to connect over
+
+BRIDGE_ESTABLISHED_CWSIT0106=CWSIT0106I: \u00c8 stato creato correttamente il link SIB (service integration bus) {0} al motore di messaggistica {1} nel bus {2}, sull''host {3} porta {4} mediante la catena di trasporto {5}.
+BRIDGE_ESTABLISHED_CWSIT0106.explanation=\u00c8 stato stabilito un bridge con un altro motore di messaggistica in un altro bus.
+BRIDGE_ESTABLISHED_CWSIT0106.useraction=Non \u00e8 richiesta alcuna azione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Port value
+# {1} Chain name
+
+UNENCRYPTED_PASSWORD_CWSIT0107=CWSIT0107W: La porta {0} specificata, nell''endpoint, implica l''utilizzo della catena di trasporto {1}. Ci\u00f2 risulter\u00e0 nella trasmissione di una password non codificata tra il client e il server. Per motivi di sicurezza ci\u00f2 non \u00e8 consigliabile.
+UNENCRYPTED_PASSWORD_CWSIT0107.explanation=\u00c8 selezionata la porta predefinita ed il nome della catena non \u00e8 stato specificato nell'endpoint del provider. Ci\u00f2 determina una catena di trasporto non sicura; specificare la sicurezza su questa connessione.
+UNENCRYPTED_PASSWORD_CWSIT0107.useraction=Per evitare questo rischio, specificare manualmente la catena di trasporto richiesta (sicura o non sicura) oppure omettere la password durante la creazione di una connessione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHORIZATION_CWSIT0108=CWSIT0108E: L''autorizzazione dell''ID utente {0} nel bus {1} non \u00e8 riuscita
+FAILED_AUTHORIZATION_CWSIT0108.explanation=L'ID utente utilizzato per creare una connessione client con un motore di messaggistica, non \u00e8 stato autorizzato dal motore di messaggistica remoto. L'errore di autorizzazione \u00e8 probabilmente dovuto ad un valore ID utente o password non corretto.
+FAILED_AUTHORIZATION_CWSIT0108.useraction=Verificare che entrambi i valori ID utente e password siano corretti.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHORIZATION_CWSIT0109=CWSIT0109E: L''applicazione non ha specificato un ID utente durante il tentativo di autorizzazione con il bus {0}
+FAILED_AUTHORIZATION_CWSIT0109.explanation=L'autorizzazione con il motore di messaggistica remoto ha avuto esito negativo poich\u00e9 l'applicazione non ha specificato un ID utente.
+FAILED_AUTHORIZATION_CWSIT0109.useraction=Verificare che entrambi i valori ID utente e password siano corretti.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+TOKEN_FAILED_AUTHENTICATION_CWSIT0110=CWSIT0110E: Autenticazione del token di sicurezza fornito dal motore di messaggistica {0} nel bus {1} non riuscita.
+TOKEN_FAILED_AUTHENTICATION_CWSIT0110.explanation=Il token di sicurezza utilizzato per la creazione di una connessione al motore di messaggistica all'interno del bus non \u00e8 stato autenticato.
+TOKEN_FAILED_AUTHENTICATION_CWSIT0110.useraction=Consultare i log di errore sui motori di messaggistica coinvolti nel tentativo di connessione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+TOKEN_INCONSISTENT_CWSIT0111=CWSIT0111E: Le informazioni relative all''identit\u00e0 fornite nel token di sicurezza non corrispondono ai dati nella richiesta di connessione eseguita dal motore di messaggistica {0} nel bus {1}
+TOKEN_INCONSISTENT_CWSIT0111.explanation=Ci\u00f2 potrebbe indicare che un utente non autorizzato sta provando ad eseguire la connessione al sistema.
+TOKEN_INCONSISTENT_CWSIT0111.useraction=Consultare i log di errore sui motori di messaggistica coinvolti nel tentativo di connessione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The string name of the token type that is unsupported
+# {1} Messaging engine name
+# {2} Bus name
+ 
+TOKEN_TYPE_UNSUPPORTED_CWSIT0112=CWSIT0112E: Il tipo di token di sicurezza {0} fornito dal motore di messaggistica {1} nel bus {2} non \u00e8 supportato.
+TOKEN_TYPE_UNSUPPORTED_CWSIT0112.explanation=Non \u00e8 stato possibile eseguire l'autenticazione del motore di messaggistica remoto perch\u00e9 il tipo di token di sicurezza non \u00e8 supportato.
+TOKEN_TYPE_UNSUPPORTED_CWSIT0112.useraction=Consultare i log di errore sui motori di messaggistica coinvolti nel tentativo di connessione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+MISSING_SECURITY_TOKEN_CWSIT0113=CWSIT0113E: La richiesta di connessione dal motore di messaggistica {0} nel bus {1} non specifica un tipo di token di sicurezza.
+MISSING_SECURITY_TOKEN_CWSIT0113.explanation=Ci\u00f2 potrebbe indicare che un utente non autorizzato sta provando ad eseguire la connessione al sistema.
+MISSING_SECURITY_TOKEN_CWSIT0113.useraction=Consultare i log di errore sui motori di messaggistica coinvolti nel tentativo di connessione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+TOKEN_INCONSISTENT_CWSIT0115=CWSIT0115E: Le informazioni relative all''identit\u00e0 fornite nel token di sicurezza non corrispondono ai dati nella risposta della connessione dal motore di messaggistica {0} nel bus {1}
+TOKEN_INCONSISTENT_CWSIT0115.explanation=Ci\u00f2 potrebbe indicare che un utente non autorizzato sta provando ad eseguire la connessione al sistema.
+TOKEN_INCONSISTENT_CWSIT0115.useraction=Consultare i log di errore sui motori di messaggistica coinvolti nel tentativo di connessione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The string name of the token type that is unsupported
+# {1} Messaging engine name
+# {2} Bus name
+
+TOKEN_TYPE_UNSUPPORTED_CWSIT0116=CWSIT0116E: Il tipo di token di sicurezza {0} fornito dal motore di messaggistica {1} nel bus {2} per l''autenticazione reciproca non \u00e8 supportato.
+TOKEN_TYPE_UNSUPPORTED_CWSIT0116.explanation=Non \u00e8 stato possibile eseguire l'autenticazione del motore di messaggistica remoto perch\u00e9 il tipo di token di sicurezza non \u00e8 supportato.
+TOKEN_TYPE_UNSUPPORTED_CWSIT0116.useraction=Consultare i log di errore sui motori di messaggistica coinvolti nel tentativo di connessione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+MISSING_SECURITY_TOKEN_CWSIT0117=CWSIT0117E: La risposta della connessione dal motore di messaggistica {0} nel bus {1} non specifica un tipo di token di sicurezza.
+MISSING_SECURITY_TOKEN_CWSIT0117.explanation=Ci\u00f2 potrebbe indicare che un utente non autorizzato sta provando ad eseguire la connessione al sistema.
+MISSING_SECURITY_TOKEN_CWSIT0117.useraction=Consultare i log di errore sui motori di messaggistica coinvolti nel tentativo di connessione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+INCOMPLETE_ME_INFO_CWSIT0118=CWSIT0118E: Durante un tentativo di connessione ad un motore di messaggistica remoto {0} sul bus {1}, informazioni incomplete non hanno consentito di convalidare l''identit\u00e0 del motore di messaggistica remoto
+INCOMPLETE_ME_INFO_CWSIT0118.explanation=Ci\u00f2 potrebbe essere causato da un problema relativo alla sincronizzazione oppure potrebbe indicare che un utente non autorizzato sta provando ad eseguire la connessione al sistema.
+INCOMPLETE_ME_INFO_CWSIT0118.useraction=Attendere che venga eseguito un nuovo tentativo oppure individuare la possibilit\u00e0 di un attacco alla sicurezza consultando i log di errore e del sistema associati ai motori di messaggistica coinvolti nel tentativo di connessione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+INCOMPLETE_ME_INFO_CWSIT0119=CWSIT0119E: \u00c8 stato eseguito un tentativo di connessione da parte del motore di messaggistica remoto {0} sul bus {1}, ma informazioni incomplete non hanno consentito di convalidare l''identit\u00e0 del motore di messaggistica remoto
+INCOMPLETE_ME_INFO_CWSIT0119.explanation=Ci\u00f2 potrebbe essere causato da un problema relativo alla sincronizzazione oppure potrebbe indicare che un utente non autorizzato sta provando ad eseguire la connessione al sistema.
+INCOMPLETE_ME_INFO_CWSIT0119.useraction=Attendere che venga eseguito un nuovo tentativo oppure individuare la possibilit\u00e0 di un attacco alla sicurezza consultando i log di errore e del sistema associati ai motori di messaggistica coinvolti nel tentativo di connessione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+TARGET_NOT_FOUND_CWSIT0120=CWSIT0120E: Impossibile convalidare l''identit\u00e0 del motore di messaggistica di connessione {0} sul bus {1}
+TARGET_NOT_FOUND_CWSIT0120.explanation=Ci\u00f2 potrebbe essere causato da un problema relativo alla sincronizzazione oppure potrebbe indicare che un utente non autorizzato sta provando ad eseguire la connessione al sistema.
+TARGET_NOT_FOUND_CWSIT0120.useraction=Attendere che venga eseguito un nuovo tentativo oppure individuare la possibilit\u00e0 di un attacco alla sicurezza consultando i log di errore e del sistema associati ai motori di messaggistica coinvolti nel tentativo di connessione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The host name which is not valid
+INVALID_HOST_CWSIT0121=CWSIT0121E: \u00c8 stata generata un''eccezione java.net.UnknownHostException durante il tentativo di risoluzione del nome host {0}
+INVALID_HOST_CWSIT0121.explanation=Ci\u00f2 potrebbe essere causato dalla ricezione da parte di un client di un nome host che non \u00e8 stato possibile risolvere in DNS (Domain Name System).
+INVALID_HOST_CWSIT0121.useraction=Provare a registrare il nome host sul DNS (Domain Name Server) locale oppure ad aggiungere una voce al file 'hosts' del client, quindi provare ad eseguire nuovamente l'operazione.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} The host name which is not valid
+STATIC_ROUTING_TABLE_IN_USE_CWSIT0122=CWSIT0122W: Una tabella di instradamento statico viene utilizzata per questo cluster - normalmente, l'utilizzo dell'instradamento statico impedisce il corretto funzionamento del SIB (service integration bus) e non \u00e8 consigliato.
+STATIC_ROUTING_TABLE_IN_USE_CWSIT0122.explanation=L'abilitazione dell'instradamento statico impedisce la condivisione dinamica di informazioni, come l'ubicazione di un motore di messaggistica, all'interno della cella impedendo alle applicazioni di eseguire la connessione al bus.
+STATIC_ROUTING_TABLE_IN_USE_CWSIT0122.useraction=In caso di problemi durante l'utilizzo del SIB (service integration bus), per tornare al normale instradamento eliminare la tabella di instradamento statico e riavviare i server.
+
+# -------------------------------------------------------------------------------------------------
+# {0} bus name
+BOOTSTRAP_NOT_PERMITTED_CWSIT0123=CWSIT0123E: Il server non \u00e8 configurato in modo da consentire l''avvio per il bus {0}.
+BOOTSTRAP_NOT_PERMITTED_CWSIT0123.explanation=Il client ha provato ad eseguire l'avvio ad un bus utilizzando un server non configurato in modo da consentire l'avvio per il bus. 
+BOOTSTRAP_NOT_PERMITTED_CWSIT0123.useraction=Configurare nuovamente il bus in modo che il server possa essere utilizzato per l'avvio oppure aggiornare gli endpoint del provider dei client in modo da utilizzare un server differente.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting bus name
+# {1} Required bus name
+# {2} Channel chain name
+
+BOOTSTRAP_NOT_PERMITTED_CWSIT0124=CWSIT0124E: Il bus {0} ha provato ad individuare il bus esterno {1} utilizzando un server non configurato in modo da consentire l''avvio per il bus {0}.
+BOOTSTRAP_NOT_PERMITTED_CWSIT0124.explanation=Il bus ha provato ad eseguire l'avvio ad un bus esterno utilizzando un server che non supporta l'avvio per il bus esterno.
+BOOTSTRAP_NOT_PERMITTED_CWSIT0124.useraction=Configurare nuovamente il bus in modo che l'endpoint di avvio utilizzi un altro server specificando una combinazione di host e porta differente.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIT9999=CWSIT9999E: {0}
+TEMPORARY_CWSIT9999.explanation=Se questo messaggio non fornisce informazioni sufficienti, consultare i messaggi di errore di accompagnamento per ulteriori informazioni.
+TEMPORARY_CWSIT9999.useraction=Per ulteriori informazioni relative alla risoluzione di questo errore, consultare le informazioni relative alla determinazione dei problemi nella pagina Web di supporto di WebSphere Application Server all'indirizzo: http://www.ibm.com/software/webservers/appserv/was/support.
+# -------------------------------------------------------------------------------------------------
+# {0} Endpoint of the Remote Messaging Engine
+# {1} Failure message from the Remote Messaging Engine reply message 
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0126=CWSIT0126E: La connessione al motore di messaggistica di destinazione in {0} \u00e8 riuscita, ma il motore di messaggistica ha restituito una condizione di errore: {1}
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0126.explanation=Il client si \u00e8 connesso al motore di messaggistica, ma c'\u00e8 un problema a stabilire una connessione al motore di messaggistica di destinazione. 
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0126.useraction=Assicurarsi che il motore di messaggistica di destinazione sia configurato e funzioni correttamente per accettare le connessioni remote in arrivo. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} List of Target Messaging Engines to which we tried to connect
+LIBERTY_NO_BOOTSTRAP_CWSIT0127=CWSIT0127E: Impossibile contattare i motori di messaggistica di destinazione specificati. Per ulteriori dettagli, consultare l''eccezione collegata. Sono stati eseguiti dei tentativi di connessione del client a: {0}
+LIBERTY_NO_BOOTSTRAP_CWSIT0127.explanation=Il client non \u00e8 in grado di effettuare la connessione. La connessione potrebbe non essere riuscita a causa dell'indisponibilit\u00e0 dei motori di messaggistica di destinazione richiesti o a causa di qualche problema di configurazione o di rete. 
+LIBERTY_NO_BOOTSTRAP_CWSIT0127.useraction=Assicurarsi che la rete funzioni correttamente e che i motori di messaggistica di destinazione richiesti siano disponibili. Consultare la documentazione del prodotto per informazioni sulla configurazione di una connessione al motore di messaggistica di destinazione. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Endpoint of the bootstrap server # {2} Failure message from the bootstrap reply message 
+
+LIBERTY_FAILED_AUTHENTICATION_CWSIT0128=CWSIT0128E: L''autenticazione client con il motore di messaggistica di destinazione non \u00e8 riuscita con errore: {2}
+LIBERTY_FAILED_AUTHENTICATION_CWSIT0128.explanation=Il motore di messaggistica remoto non \u00e8 riuscito ad autenticare l'ID utente utilizzato per stabilire la connessione client al motore di messaggistica di destinazione. L'errore di autenticazione potrebbe essere dovuto a un ID utente o una password errata.
+LIBERTY_FAILED_AUTHENTICATION_CWSIT0128.useraction=Assicurarsi che entrambi l'ID utente e la password immessi siano corretti. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Endpoint of the bootstrap server # {2} Failure message from the bootstrap reply message 
+
+LIBERTY_NOT_AUTHORIZED_CWSIT0129=CWSIT0129E: Il client non \u00e8 stato autorizzato a connettersi al motore di messaggistica di destinazione. Causa: {2}
+LIBERTY_NOT_AUTHORIZED_CWSIT0129.explanation=L'ID utente utilizzato per creare una connessione non \u00e8 stato autorizzato per connettersi al motore di messaggistica di destinazione.
+LIBERTY_NOT_AUTHORIZED_CWSIT0129.useraction=Assicurarsi che l'ID utente disponga delle autorizzazioni richieste. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} EndPoint of application server that failed
+# {1} Name of bus # {2} text of failure reason 
+
+LIBERTY_MIRRORED_FAILURE_CWSIT0130=CWSIT0130W: Una richiesta di connessione client al motore di messaggistica di destinazione non \u00e8 riuscita con errore: {2}
+LIBERTY_MIRRORED_FAILURE_CWSIT0130.explanation=Una richiesta di connessione client non \u00e8 riuscita a causa di un problema nel motore di messaggistica di destinazione. Viene restituito il motivo del problema nel motore di messaggistica di destinazione.
+LIBERTY_MIRRORED_FAILURE_CWSIT0130.useraction=Indagare e risolvere il problema descritto nel messaggio di errore, quindi provare ad eseguire di nuovo l'operazione.  
+
+# -------------------------------------------------------------------------------------------------
+# {0} Remote Messaging Engine which cannot be contacted
+# {1} Exception 
+
+LIBERTY_BOOTSTRAP_FAILED_CWSIT0131=CWSIT0131W: Impossibile connettersi al motore di messaggistica di destinazione in {0} a causa dell''eccezione: {1}
+LIBERTY_BOOTSTRAP_FAILED_CWSIT0131.explanation=Il client non pu\u00f2 stabilire la connessione al motore di messaggistica di destinazione specificato. La connessione potrebbe non essere riuscita a causa dell'indisponibilit\u00e0 dei motori di messaggistica di destinazione richiesti o a causa di qualche problema di configurazione o di rete. 
+LIBERTY_BOOTSTRAP_FAILED_CWSIT0131.useraction=Assicurarsi che la rete funzioni correttamente e che il motore di messaggistica di destinazione richiesto sia disponibile. Il motore di messaggistica remoto viene specificato dalla propriet\u00e0 Indirizzo server remoto del factory di connessione JMS. Il formato dell'indirizzo \u00e8 nome_host:numero_porta:nome_catena (ad esempio, localhost:7276:BootstrapBasicMessaging).  
+
+# -------------------------------------------------------------------------------------------------
+# {0} Name of the messaging engine runtime feature,  eg wasJmsServer-1.0
+
+LIBERTY_BINDING_FAILED_CWSIT0132=CWSIT0132E: Nessun motore di messaggistica locale a cui connettersi. Per abilitare il motore di messaggistica locale aggiungere la funzione {0}.
+LIBERTY_BINDING_FAILED_CWSIT0132.explanation=Il client non pu\u00f2 stabilire una connessione al motore di messaggistica locale. Questo problema potrebbe essere dovuto al fatto che il motore di messaggistica non \u00e8 configurato o attivo nel server Liberty Profile o perch\u00e9 il motore di messaggistica non \u00e8 in grado di accettare alcuna connessione.
+LIBERTY_BINDING_FAILED_CWSIT0132.useraction=Assicurarsi che il motore di messaggistica sia in esecuzione nel server Liberty Profile corrente.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Remote Messaging Engine hostname/ipaddess:port:chain combination
+
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0133=CWSIT0133E: Il client \u00e8 stato in grado di stabilire una connessione al server di destinazione in {0}, ma il server ha rifiutato la connessione.
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0133.explanation=Il client si \u00e8 connesso al server di destinazione correttamente, ma il server di destinazione ha rifiutato la connessione perch\u00e9 il motore di messaggistica in esecuzione sul server di destinazione non soddisfa le propriet\u00e0 definite nelle propriet\u00e0 del factory di connessione.
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0133.useraction= Configurare le propriet\u00e0 del factory di connessione in modo che il motore di messaggistica in esecuzione nel server di destinazione soddisfi le propriet\u00e0 del factory di connessione configurate.
+
+# -------------------------------------------------------------------------------------------------
+
+LIBERTY_BINDING_FAILED_CWSIT0134=CWSIT0134E: Impossibile connettersi al motore di messaggistica a causa di un errore durante l'avvio.
+LIBERTY_BINDING_FAILED_CWSIT0134.explanation=Il client non ha potuto stabilire una connessione al motore di messaggistica locale. Questo problema \u00e8 dovuto al fatto che il motore di messaggistica \u00e8 configurato nel server Liberty Profile corrente, ma si \u00e8 verificato un errore durante l'avvio.
+LIBERTY_BINDING_FAILED_CWSIT0134.useraction=Assicurarsi che il motore di messaggistica sia in esecuzione nel server Liberty Profile corrente. Controllare i log degli errori o l'FFDC per meglio determinare il problema.

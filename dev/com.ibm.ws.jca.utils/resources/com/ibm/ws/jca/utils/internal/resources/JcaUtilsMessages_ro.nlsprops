@@ -1,0 +1,199 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jca.utils/resources/com/ibm/ws/jca/utils/internal/resources/JcaUtilsMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA JCA
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+# Range: 9900 - 9999
+
+# {0} = resource adapter class name
+# {1} = annotation used on the class
+# {2} = name of interface that the class is required to implement with this annotation
+J2CA9902.required.rainterface.for.anno.missing=J2CA9902E: Clasa de adaptoare de resurse {0} adnotat\u0103 cu {1} nu implementeaz\u0103 interfa\u0163a {2}.
+J2CA9902.required.rainterface.for.anno.missing.explanation=Clasa de adaptoare de resurse adnotat\u0103 nu implementeaz\u0103 interfa\u0163a cerut\u0103.
+J2CA9902.required.rainterface.for.anno.missing.useraction=Investiga\u0163i documenta\u0163ia v\u00e2nz\u0103torului de adaptoare de resurse \u015fi procesele de determinare a problemelor.
+
+# {0} = resource adapter class name
+# {1} = name of interface that the class is required to implement for this deployment descriptor entry type
+J2CA9903.required.rainterface.missing=J2CA9903E: Clasa de adaptoare de resurse {0} nu implementeaz\u0103 interfa\u0163a {1}.
+J2CA9903.required.rainterface.missing.explanation=Clasa de adaptoare de resurse specificat\u0103 \u00een descriptorul de implementare nu implementeaz\u0103 interfa\u0163a cerut\u0103.
+J2CA9903.required.rainterface.missing.useraction=Investiga\u0163i documenta\u0163ia v\u00e2nz\u0103torului de adaptoare de resurse \u015fi procesele de determinare a problemelor.
+
+# {0} = resource adapter class name
+# {1} = resource adapter name
+J2CA9904.required.raclass.missing=J2CA9904E: Clasa de adaptoare de resurse {0} este specificat\u0103; totu\u015fi, clasa nu a putut fi g\u0103sit\u0103 \u00een adaptorul de resurse {1}.
+J2CA9904.required.raclass.missing.explanation=Clasa de adaptoare de resurse care este specificat\u0103 \u00een <resourceadapter-class> \u00een fi\u015fierul ra.xml file sau \u00eentr-o clas\u0103 cu adnotarea @Connector nu a putut fi g\u0103sit\u0103 \u00een adaptorul de resurse.
+J2CA9904.required.raclass.missing.useraction=Investiga\u0163i documenta\u0163ia v\u00e2nz\u0103torului de adaptoare de resurse \u015fi procesele de determinare a problemelor.
+
+# {0} = config property name
+# {1} = resource adapter name
+J2CA9905.required.prop.missing=J2CA9905W: Proprietatea de configurare {0} este necesar\u0103, totu\u015fi nu a putut fi g\u0103sit\u0103 o defini\u0163ie de proprietate \u00een adaptorul de resurse {1}.
+J2CA9905.required.prop.missing.explanation=Nu a putut fi g\u0103sit\u0103 o defini\u0163ie de proprietate pentru proprietatea de configurare necesar\u0103 \u00een adaptorul de resurse.
+J2CA9905.required.prop.missing.useraction=Investiga\u0163i documenta\u0163ia v\u00e2nz\u0103torului de adaptoare de resurse \u015fi procesele de determinare a problemelor.
+
+# {0} = config property type specified
+# {1} = config property name
+J2CA9906.invalid.type=J2CA9906E: Tipul de proprietate {0} specificat pentru proprietatea de configurare {1} nu este valid.
+J2CA9906.invalid.type.explanation=Un tip de proprietate de configurare trebuie s\u0103 fie unul dintre urm\u0103toarele: \u015eir, Lung, Dublu, Flotant, \u00centreg, Octet, Caracter, Boolean sau Scurt.
+J2CA9906.invalid.type.useraction=Investiga\u0163i documenta\u0163ia v\u00e2nz\u0103torului de adaptoare de resurse \u015fi procesele de determinare a problemelor.
+
+# {0} = config property name
+# {1} = resource adapter name
+J2CA9908.duplicate.copy=J2CA9908E: Proprietatea de configurare {0} a fost g\u0103sit\u0103 de mai multe ori \u00een acela\u015fi domeniu \u00een adaptorul de resurse {1}. Propriet\u0103\u0163ile duplicate sunt ignorate.
+J2CA9908.duplicate.copy.explanation=O proprietate de configurare a fost definit\u0103 de mai multe ori \u00eentr-un domeniu dat, cum ar fi \u00eentr-o specifica\u0163ie de activare.
+J2CA9908.duplicate.copy.useraction=Investiga\u0163i documenta\u0163ia v\u00e2nz\u0103torului de adaptoare de resurse \u015fi procesele de determinare a problemelor.
+
+# {0} = config property name
+# {1} = resource adapter name
+J2CA9909.missing.matching.config.prop=J2CA9909E: Proprietatea de configurare {0} este specificat\u0103 \u00een fi\u015fierul wlp-ra.xml, dar nu este g\u0103sit\u0103 o adnotare corespunz\u0103toare ConfigProperty, o intrare de descriptor de implementare sau o proprietate Java Bean \u00een adaptorul de resurse {1}.
+J2CA9909.missing.matching.config.prop.explanation=O proprietate de configurare a fost utilizat\u0103 \u00een fi\u015fierul wlp-ra.xml, dar nu a fost g\u0103sit\u0103 o defini\u0163ie pentru proprietate \u00een adaptorul de resurse.
+J2CA9909.missing.matching.config.prop.useraction=Investiga\u0163i documenta\u0163ia v\u00e2nz\u0103torului de adaptoare de resurse \u015fi procesele de determinare a problemelor.
+
+# {0} = admin object interface
+# {1} = admin object class
+# {2} = resource adapter name
+J2CA9910.missing.matching.adminobject=J2CA9910E: Un element <adminobject> cu interfa\u0163a {0} \u015fi clasa {1} este  specificat \u00een fi\u015fierul wlp-ra.xml, dar nu este g\u0103sit\u0103 o adnotare corespunz\u0103toare AdministeredObject sau o intrare de descriptor de implementare \u00een adaptorul de resurse {2}.
+J2CA9910.missing.matching.adminobject.explanation=A fost utilizat un element <adminobject> \u00een fi\u015fierul wlp-ra.xml, dar nu a putut fi g\u0103sit\u0103 o defini\u0163ie \u00een adaptorul de resurse.
+J2CA9910.missing.matching.adminobject.useraction=Investiga\u0163i documenta\u0163ia v\u00e2nz\u0103torului de adaptoare de resurse \u015fi procesele de determinare a problemelor.
+
+# {0} = wlp-ra.xml element name
+# {1} = interface of connection factory or message listener
+# {2} = annotation type
+# {3} = resource adapter name
+J2CA9911.missing.matching.type=J2CA9911E: Un element {0} pentru tipul {1} este  specificat \u00een fi\u015fierul wlp-ra.xml, dar nu este g\u0103sit\u0103 o adnotare corespunz\u0103toare {2}  sau o intrare de descriptor de implementare \u00een adaptorul de resurse {3}.
+J2CA9911.missing.matching.type.explanation=A fost utilizat un element <connection-definition> sau <messagelistener> \u00een fi\u015fierul wlp-ra.xml, dar nu a putut fi g\u0103sit\u0103 o defini\u0163ie corespunz\u0103toare pentru el \u00een adaptorul de resurse.
+J2CA9911.missing.matching.type.useraction=Investiga\u0163i documenta\u0163ia v\u00e2nz\u0103torului de adaptoare de resurse \u015fi procesele de determinare a problemelor.
+   
+J2CA9912.conn.defn.required=J2CA9912E: Nu exist\u0103 nici o <connection-definition> sau clas\u0103 adnotate cu @ConnectionDefinition, de\u015fi au fost specificate suportul pentru tranzac\u0163ii, mecanismele de autentificare sau suportul de reautentificare.
+J2CA9912.conn.defn.required.explanation=Suportul pentru tranzac\u0163ii, mecanismele de autentificare sau suportul de reautentificare nu pot fi specificate \u00een afar\u0103 de cazul \u00een care exist\u0103 cel pu\u0163in o <connection-definition> \u00een ra.xml sau dac\u0103 exist\u0103 cel pu\u0163in o clas\u0103 adnotat\u0103 cu @ConnectionDefinition.
+J2CA9912.conn.defn.required.useraction=Investiga\u0163i documenta\u0163ia v\u00e2nz\u0103torului de adaptoare de resurse \u015fi procesele de determinare a problemelor.
+
+# {0} = nls file name
+# {1} = resource adapter name
+# {2} = message key
+J2CA9916.duplicate.nls.key=J2CA9916W: Fi\u015fierul de mesaje translatabile {0} pentru adaptorul de resurse {1} define\u015fte mesaje multiple pentru aceea\u015fi cheie: {2}.
+J2CA9916.duplicate.nls.key.explanation=\u00cen timpul proces\u0103rii fi\u015fierului de translatare, a fost g\u0103sit\u0103 o singur\u0103 cheie NLS care este utilizat\u0103 pentru mesaje multiple.
+J2CA9916.duplicate.nls.key.useraction=Investiga\u0163i documenta\u0163ia v\u00e2nz\u0103torului de adaptoare de resurse \u015fi procesele de determinare a problemelor.
+
+# {0} = nls file name
+# {1} = resource adapter name
+# {2} = message key
+J2CA9917.missing.nls.msg=J2CA9917W: Fi\u015fierul de mesaje translatabile {0} pentru adaptorul de resurse {1} nu are un mesaj de translatare pentru cheia {2} care este specificat\u0103 \u00een fi\u015fierul wlp-ra.xml.
+J2CA9917.missing.nls.msg.explanation=Nu a fost g\u0103sit niciun mesaj de translatare pentru cheia specificat\u0103.
+J2CA9917.missing.nls.msg.useraction=Investiga\u0163i documenta\u0163ia v\u00e2nz\u0103torului de adaptoare de resurse \u015fi procesele de determinare a problemelor.
+
+# {0} = attribute name
+# {1} = resource adapter name
+J2CA9918.attrdef.already.processed=J2CA9918W: Adaptorul de resurse {1} define\u015fte propriet\u0103\u0163i duplicate de configurare numite {0} \u00een acela\u015fi domeniu. Duplicatele sunt ignorate.
+J2CA9918.attrdef.already.processed.explanation=Un adaptor de resurse, o specifica\u0163ie de activare, un obiect administrat sau o defini\u0163ie de fabric\u0103 de conexiuni specific\u0103 propriet\u0103\u0163i duplicate de configurare cu acela\u015fi nume.
+J2CA9918.attrdef.already.processed.useraction=Investiga\u0163i documenta\u0163ia v\u00e2nz\u0103torului de adaptoare de resurse \u015fi procesele de determinare a problemelor.
+
+J2CA9919.class.not.found=J2CA9919W: \u00cenc\u0103rc\u0103torul de clase pentru adaptorul de resurse {1} nu poate \u00eenc\u0103rca {0}. Verifica\u0163i dac\u0103 adaptorul de resurse necesit\u0103 o caracteristic\u0103 care nu este activat\u0103 sau o bibliotec\u0103 care nu este accesibil\u0103 pentru el.
+J2CA9919.class.not.found.explanation=Clasa specificat\u0103 nu a putut fi \u00eenc\u0103rcat\u0103, posibil deoarece clasa sau o clas\u0103 de care depinde este furnizat\u0103 de o caracteristic\u0103 care nu este activat\u0103 sau de o bibliotec\u0103 care nu este disponibil\u0103 pentru adaptorul de resurse.
+J2CA9919.class.not.found.useraction=Activa\u0163i toate caracteristicile cerute de adaptorul de resurse \u015fi configura\u0163i adaptorul de resurse pentru a avea acces la toate bibliotecile necesare.
+
+# {0} = type of object
+# {1} = possible ra.xml entry
+# {2} = possible annotation class
+J2CA9920.duplicate.type=J2CA9920W: Un tip duplicat {0} a fost specificat \u00een {1} \u015fi \u00een alt\u0103 intrare \u00een fi\u015fierul ra.xml sau \u00een una sau mai multe clase adnotate cu {2}.
+J2CA9920.duplicate.type.explanation=Un adaptor de resurse, o specifica\u0163ie de activare, un obiect administrat sau o defini\u0163ie de fabric\u0103 de conexiuni au fost specificate mai mult dec\u00e2t o dat\u0103 cu acela\u015fi tip.
+J2CA9920.duplicate.type.useraction=Investiga\u0163i documenta\u0163ia v\u00e2nz\u0103torului de adaptoare de resurse \u015fi procesele de determinare a problemelor.
+
+# {0} = resource adapter name
+J2CA9922.multiple.connector.anno.found=J2CA9922E: Adaptorul de resurse {0} are clase multiple adnotate cu @Connector, dar nu specific\u0103 pe care s\u0103 o utiliza\u0163i via un descriptor de implementare.
+J2CA9922.multiple.connector.anno.found.explanation=\u00cen timp ce sunt permise clase adnotate multiple @Connector, clasa de utilizat pentru a utiliza adaptorul de resurse trebuie s\u0103 fie specificat\u0103 explicit \u00een descriptorul de implementare.
+J2CA9922.multiple.connector.anno.found.useraction=Investiga\u0163i documenta\u0163ia v\u00e2nz\u0103torului de adaptoare de resurse \u015fi procesele de determinare a problemelor.
+
+# {0} = message listener type
+# {1} = annotated activation specification class
+J2CA9924.listener.actspec.missing=J2CA9924E: Ascult\u0103torul de mesaje definit \u00een fi\u015fierul ra.xml cu tipul  {0} ar trebui s\u0103 \u00eenlocuiasc\u0103 clasa adnotat\u0103 @Activare {1} dar ascult\u0103torul nu con\u0163ine o specifica\u0163ie de activare.
+J2CA9924.listener.actspec.missing.explanation=Fi\u015fierul ra.xml con\u0163ine un tip de ascult\u0103tor de mesaje \u015fi exist\u0103 o clas\u0103 adnotat\u0103 pentru tip, dar fi\u015fierul ra.xml nu are o intrare de specifica\u0163ie de activare potrivit\u0103.
+J2CA9924.listener.actspec.missing.useraction=Investiga\u0163i documenta\u0163ia v\u00e2nz\u0103torului de adaptoare de resurse \u015fi procesele de determinare a problemelor.
+
+# {0} = class annotated with @AdministeredObject
+J2CA9925.admobj.interface.missing=J2CA9925E: Interfe\u0163ele de obiecte administrate nu au fost definite via adnotarea @AdministeredObject \u015fi clasa {0} nu a implementat nici o interfa\u0163\u0103.
+J2CA9925.admobj.interface.missing.explanation=Clasa adnotat\u0103 trebuie fie s\u0103 furnizeze interfe\u0163ele din adnotare fie s\u0103 implementeze interfe\u0163ele.
+J2CA9925.admobj.interface.missing.useraction=Investiga\u0163i documenta\u0163ia v\u00e2nz\u0103torului de adaptoare de resurse \u015fi procesele de determinare a problemelor.
+
+# {0} = class annotated with @AdministeredObject
+J2CA9926.admobj.multiple.interfaces=J2CA9926E: Interfe\u0163ele de obiecte administrate nu au fost definite via @AdministeredObject deci vor fi utilizate interfe\u0163ele definite pe clas\u0103; totu\u015fi, exist\u0103 multiple interfe\u0163e pe clasa {0}.
+J2CA9926.admobj.multiple.interfaces.explanation=Interfe\u0163ele trebuie s\u0103 fie definite \u00een adnotare.
+J2CA9926.admobj.multiple.interfaces.useraction=Investiga\u0163i documenta\u0163ia v\u00e2nz\u0103torului de adaptoare de resurse \u015fi procesele de determinare a problemelor.
+
+# {0} = method with invalid name
+J2CA9927.cfgprop.invalid.method=J2CA9927E: Adnotarea @ConfigProperty poate fi utilizat\u0103 numai pe metode de setare dar a fost g\u0103sit\u0103 pe {0}.
+J2CA9927.cfgprop.invalid.method.explanation=Adnotarea @ConfigProperty a fost specificat\u0103 pe o metod\u0103 al c\u0103rei nume nu \u00eencepe cu setarea.
+J2CA9927.cfgprop.invalid.method.useraction=Investiga\u0163i documenta\u0163ia v\u00e2nz\u0103torului de adaptoare de resurse \u015fi procesele de determinare a problemelor.
+
+J2CA9930.value.too.small=J2CA9930W: Valoarea {0} este mai mic\u0103 dec\u00e2t minimul {1} pentru atributul {2}
+J2CA9930.value.too.small.explanation=Valoarea configurat\u0103 nu \u00eendepline\u015fte condi\u0163ia de dimensiune minim\u0103 pentru atribut.
+J2CA9930.value.too.small.useraction=Alege\u0163i o valoare mai mare sau egal\u0103 dec\u00e2t valoarea minim\u0103.
+
+J2CA9931.value.too.large=J2CA9931W: Valoarea {0} dep\u0103\u015fe\u015fte valoarea maxim\u0103 de {1} pentru atributul {2}
+J2CA9931.value.too.large.explanation=Valoarea configurat\u0103 dep\u0103\u015fe\u015fte condi\u0163ia de dimensiune maxim\u0103 pentru atribut.
+J2CA9931.value.too.large.useraction=Alege\u0163i o valoare mai mic\u0103 sau egal\u0103 dec\u00e2t valoarea maxim\u0103.
+
+J2CA9932.value.too.short=J2CA9932W: Valoarea {0} este mai mic\u0103 dec\u00e2t lungimea minim\u0103 {1} pentru atributul {2}
+J2CA9932.value.too.short.explanation=Valoarea configurat\u0103 nu \u00eendepline\u015fte condi\u0163ia de lungime minim\u0103 pentru atribut.
+J2CA9932.value.too.short.useraction=Alege\u0163i o valoare mai mare sau egal\u0103 \u00een lungime dec\u00e2t valoarea minim\u0103.
+
+J2CA9933.value.too.long=J2CA9933W: Valoarea {0} dep\u0103\u015fe\u015fte lungimea maxim\u0103 de {1} pentru atributul {2}
+J2CA9933.value.too.long.explanation=Valoarea configurat\u0103 dep\u0103\u015fe\u015fte condi\u0163ia de lungime maxim\u0103 pentru atribut.
+J2CA9933.value.too.long.useraction=Alege\u0163i o valoare mai mic\u0103 sau egal\u0103 \u00een lungime dec\u00e2t valoarea maxim\u0103.
+
+J2CA9934.not.a.valid.option=J2CA9934E: Valoarea {0} nu este o op\u0163iune valid\u0103 pentru atributul {1}. Op\u0163iunile valide sunt {2}
+J2CA9934.not.a.valid.option.explanation=Valoarea configurat\u0103 este \u00een afara intervalului de op\u0163iuni valide pentru atribut.
+J2CA9934.not.a.valid.option.useraction=Alege\u0163i o valoare din lista de op\u0163iuni valide.
+
+J2CA9935.secperm.not.supported=J2CA9935I: Permisiunile de securitate Java 2 specificate \u00een descriptorul de implementare pentru adaptorul de resurse {0} nu vor fi impuse.
+J2CA9935.secperm.not.supported.explanation=Securitatea Java 2 nu este activat\u0103 \u00een profilul Liberty, astfel \u00eenc\u00e2t verific\u0103rile de securitate Java 2 nu sunt realizate pentru adaptorul de resurse.
+J2CA9935.secperm.not.supported.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+J2CA9936.default.value.error=J2CA9936W: Valoarea implicit\u0103 pentru proprietatea {0} nu a putut fi ob\u0163inut\u0103 dintr-o instan\u0163\u0103 de clas\u0103 {1} \u00een adaptorul de resurse {2} deoarece a ap\u0103rut o eroare: {3}
+J2CA9936.default.value.error.explanation=A ap\u0103rut o eroare \u00een timpul \u00eencerc\u0103rii de a accesa valoarea implicit\u0103 a propriet\u0103\u0163ii JavaBean a adaptorului de resurse.
+J2CA9936.default.value.error.useraction=Examina\u0163i eroarea \u015fi ajusta\u0163i adaptorul de resurse dup\u0103 cum este necesar.
+
+J2CA9937.cfgprop.invalid.return=J2CA9937E: Proprietatea de configura\u0163ie {1} a Javabean-ului {0} adnotat\u0103 cu @ConfigProperty are un tip de returnare pentru metoda getter de {2}, care nu se potrive\u015fte cu tipul de proprietate de configura\u0163ie {3}. 
+J2CA9937.cfgprop.invalid.return.explanation=O proprietate de configura\u0163ie adnotat\u0103 cu @ConfigProperty trebuie s\u0103 aib\u0103 un tip de returnare pentru metada getter care s\u0103 se potriveasc\u0103 cu tipul de proprietate de configura\u0163ie.
+J2CA9937.cfgprop.invalid.return.useraction=Investiga\u0163i documenta\u0163ia v\u00e2nz\u0103torului de adaptoare de resurse \u015fi procesele de determinare a problemelor.
+
+J2CA9938.cfgprop.no.getter=J2CA9938E: Proprietatea de configura\u0163ie {1} a Javabean-ului {0} adnotat\u0103 cu @ConfigProperty nu are un tip de returnare pentru metoda getter de {2}.
+J2CA9938.cfgprop.no.getter.explanation=O proprietate de configura\u0163ie adnotat\u0103 cu @ConfigProperty trebuie s\u0103 aib\u0103 un tip de returnare pentru metada getter care s\u0103 se potriveasc\u0103 cu tipul de proprietate de configura\u0163ie.
+J2CA9938.cfgprop.no.getter.useraction=Investiga\u0163i documenta\u0163ia v\u00e2nz\u0103torului de adaptoare de resurse \u015fi procesele de determinare a problemelor.
+
+J2CA9939.cfgprop.no.setter=J2CA9939E: Proprietatea de configura\u0163ie {1} a Javabean-ului {0} adnotat\u0103 cu @ConfigProperty nu are un o metod\u0103 setter cu un singur parametru de tipul de {2}.
+J2CA9939.cfgprop.no.setter.explanation=O proprietate de configura\u0163ie adnotat\u0103 cu @ConfigProperty trebuie s\u0103 aib\u0103 o metod\u0103 setter cu un singur parametru de un tip care s\u0103 se potriveasc\u0103 cu tipul de proprietate de configura\u0163ie.
+J2CA9939.cfgprop.no.setter.useraction=Investiga\u0163i documenta\u0163ia v\u00e2nz\u0103torului de adaptoare de resurse \u015fi procesele de determinare a problemelor.
+
+J2CA9940.cfgprop.type.mismatch.field=J2CA9940E: Proprietatea de configura\u0163ie {1} a Javabean-ului {0} adnotat\u0103 cu @ConfigProperty are tipul {2} setat \u00een adnotare, care nu se potrive\u015fte cu tipul {3} al c\u00e2mpului.
+J2CA9940.cfgprop.type.mismatch.field.explanation=Tipul setat \u00een adnotarea @ConfigProperty trebuie s\u0103 se potriveasc\u0103 cu tipul c\u00e2mpului unde este folosit.
+J2CA9940.cfgprop.type.mismatch.field.useraction=Investiga\u0163i documenta\u0163ia v\u00e2nz\u0103torului de adaptoare de resurse \u015fi procesele de determinare a problemelor.
+
+J2CA9941.cfgprop.type.mismatch.setter=J2CA9941E: Proprietatea de configura\u0163ie {1} a Javabean-ului {0} adnotat\u0103 cu @ConfigProperty are tipul {2} setat \u00een adnotare, care nu se potrive\u015fte cu tipul {4} al parametrului din metoda setter.
+J2CA9941.cfgprop.type.mismatch.setter.explanation=Tipul setat \u00een adnotarea @ConfigProperty trebuie s\u0103 se potriveasc\u0103 cu tipul din metoda setter unde este folosit.
+J2CA9941.cfgprop.type.mismatch.setter.useraction=Investiga\u0163i documenta\u0163ia v\u00e2nz\u0103torului de adaptoare de resurse \u015fi procesele de determinare a problemelor.
+
+J2CA9942.cfgprop.invalid.parameters=J2CA9942E: Adnotarea @ConfigProperty poate fi folosit\u0103 doar pe o metod\u0103 setter cu un parametru, dar a fost g\u0103sit\u0103 pe {0} cu urm\u0103torii parametri: {1}.
+J2CA9942.cfgprop.invalid.parameters.explanation=Adnotarea @ConfigProperty trebuie specificat\u0103 pe o metod\u0103 setter care are doar un parametru.
+J2CA9942.cfgprop.invalid.parameters.useraction=Investiga\u0163i documenta\u0163ia v\u00e2nz\u0103torului de adaptoare de resurse \u015fi procesele de determinare a problemelor.
+
+J2CA9943.missing.connector.dd=J2CA9943E: Adaptorul de resurs\u0103 {0} este valid. Ar trebui s\u0103 con\u0163in\u0103 fie un descriptor de implementare, fie o clas\u0103 JavaBean adnotat\u0103 cu una dintre adnot\u0103rile adaptorului de resurs\u0103.
+J2CA9943.missing.connector.dd.explanation=Un adaptor de resurs\u0103 valid trebuie s\u0103 aib\u0103 fie descriptorul de implementare, fie o cals\u0103 JavaBean adnotate cu una dintre @Connector, @AdministeredObject, @ConnectionDefinition. Adnot\u0103ri @ConnectionDefinitions sau @Activation.
+J2CA9943.missing.connector.dd.useraction=Investiga\u0163i documenta\u0163ia v\u00e2nz\u0103torului de adaptoare de resurse \u015fi procesele de determinare a problemelor.

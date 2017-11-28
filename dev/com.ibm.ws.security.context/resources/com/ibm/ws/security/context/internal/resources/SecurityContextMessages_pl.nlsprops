@@ -1,0 +1,30 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.context/resources/com/ibm/ws/security/context/resources/SecurityContextMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Context
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS0800 - CWWKS0899
+SEC_CONTEXT_DESERIALIZE_AUTHN_ERROR=CWWKS0800E: Wyst\u0105pi\u0142 b\u0142\u0105d uwierzytelniania podczas ponownego tworzenia podmiot\u00f3w kontekstu zabezpiecze\u0144 przekszta\u0142conego z postaci szeregowej. Wyj\u0105tek: {0}. W rezultacie dla tego kontekstu zabezpiecze\u0144 zostanie u\u017cyty podmiot nieuwierzytelniony. 
+SEC_CONTEXT_DESERIALIZE_AUTHN_ERROR.explanation=Podczas ponownego tworzenia podmiot\u00f3w znajduj\u0105cych si\u0119 w kontek\u015bcie zabezpiecze\u0144 wyst\u0105pi\u0142 b\u0142\u0105d uwierzytelniania. W wyniku tego zostanie u\u017cyty podmiot nieuwierzytelniony.
+SEC_CONTEXT_DESERIALIZE_AUTHN_ERROR.useraction=Przejrzyj wyj\u0105tek i dzienniki, aby pozna\u0107 przyczyn\u0119 niepowodzenia uwierzytelniania.
+
+SEC_CONTEXT_DESERIALIZE_TOO_MANY_PRINCIPALS=CWWKS0801E: Podczas pobierania nazwy u\u017cytkownika podmiotu okaza\u0142o si\u0119, \u017ce podmiot ma wi\u0119cej ni\u017c jedn\u0105 nazw\u0119 u\u017cytkownika typu WSPrincipal. W temacie mo\u017ce istnie\u0107 tylko jedna nazwa u\u017cytkownika WSPrincipal. Nazwy typ\u00f3w WSPrincipal to: {0}. W rezultacie kontekst zabezpiecze\u0144 nie zostanie w w\u0105tku przekszta\u0142cony z postaci szeregowej.
+SEC_CONTEXT_DESERIALIZE_TOO_MANY_PRINCIPALS.explanation=Nie mo\u017cna przekszta\u0142ci\u0107 kontekstu zabezpiecze\u0144 z postaci szeregowej, poniewa\u017c podmiot ma wiele nazw u\u017cytkownika typu WSPrincipal. Obs\u0142ugiwana jest tylko jedna nazwa u\u017cytkownika tego typu.
+SEC_CONTEXT_DESERIALIZE_TOO_MANY_PRINCIPALS.useraction=Przejrzyj aplikacj\u0119 i sprawd\u017a, dlaczego temat zawiera wi\u0119cej ni\u017c jedn\u0105 nazw\u0119 u\u017cytkownika WSPrincipal.
+
+SEC_CONTEXT_UNABLE_TO_SERIALIZE=CWWKS0802W: Podczas przekszta\u0142cania kontekstu zabezpiecze\u0144 do postaci szeregowej nie powiod\u0142a si\u0119 pr\u00f3ba przekszta\u0142cenia niestandardowego klucza pami\u0119ci podr\u0119cznej {0} do postaci szeregowej z powodu wyst\u0105pienia nast\u0119puj\u0105cego wyj\u0105tku: {1}. Oznacza to, \u017ce kontekst zabezpiecze\u0144 nie b\u0119dzie zawiera\u0142 niestandardowego klucza pami\u0119ci podr\u0119cznej.
+SEC_CONTEXT_UNABLE_TO_SERIALIZE.explanation=Podczas przekszta\u0142cania kontekstu zabezpiecze\u0144 do postaci szeregowej nie powiod\u0142a si\u0119 pr\u00f3ba przekszta\u0142cenia do postaci szeregowej niestandardowego klucza pami\u0119ci podr\u0119cznej dla podmiotu. Chocia\u017c kontekst zabezpiecze\u0144 nie b\u0119dzie zawiera\u0142 niestandardowego klucza pami\u0119ci podr\u0119cznej, nie b\u0119dzie to mia\u0142o wp\u0142ywu na proces przekszta\u0142cania kontekstu zabezpiecze\u0144 do postaci szeregowej.
+SEC_CONTEXT_UNABLE_TO_SERIALIZE.useraction=Przejrzyj dzienniki, aby dowiedzie\u0107 si\u0119, dlaczego nie powiod\u0142a si\u0119 pr\u00f3ba przekszta\u0142cenia niestandardowego klucza pami\u0119ci podr\u0119cznej do postaci szeregowej.

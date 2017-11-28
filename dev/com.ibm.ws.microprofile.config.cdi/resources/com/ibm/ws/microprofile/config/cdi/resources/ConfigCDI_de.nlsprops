@@ -1,0 +1,61 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMCG
+#COMPONENTNAMEFOR CWMCG MicroProfile Config API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Config CDI Autofeature - range is 5000-5999
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Config CDI autofeature
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# Unable to determine the generic type of the ConfigValue to be injected at "{0}".
+unable.to.determine.injection.type.CWMCG5001E=CWMCG5001E: Der Typ der einzuf\u00fcgenden Eigenschaft kann nicht bestimmt werden. Der Injektionspunkt hat den Typ "{0}".
+unable.to.determine.injection.type.CWMCG5001E.explanation=Der mit dem Qualifikationsmerkmal @ConfigProperty annotierte Injektionspunkt hat keinen g\u00fcltigen Typ.
+unable.to.determine.injection.type.CWMCG5001E.useraction=Stellen Sie sicher, dass der Injektionspunkt einen g\u00fcltigen Typ f\u00fcr die einzuf\u00fcgende Eigenschaft hat.
+
+# The property name must be specified for Constructor and Method configuration property injection.
+unable.to.determine.injection.name.CWMCG5002E=CWMCG5002E: Der Eigenschaftsname muss f\u00fcr das Einf\u00fcgen der Konfigurationseigenschaften Constructor und Method angegeben werden.
+unable.to.determine.injection.name.CWMCG5002E.explanation=Es ist nicht m\u00f6glich, den Standardeigenschaftsnamen f\u00fcr die Parameter Constructor und Method abzuleiten. Es muss ein richtiger Eigenschaftsname an das Qualifikationsmerkmal @ConfigProperty \u00fcbergeben werden. 
+unable.to.determine.injection.name.CWMCG5002E.useraction=Definieren Sie den richtigen Eigenschaftsnamen mit dem Qualifikationsmerkmal @ConfigProperty.
+
+# InjectionPoint dependency could not be resolved: {0}. The exception is {1}.
+unable.to.resolve.injection.point.CWMCG5003E=CWMCG5003E: Die InjectionPoint-Abh\u00e4ngigkeit {0} wurde nicht aufgel\u00f6st. Fehler: {1}
+unable.to.resolve.injection.point.CWMCG5003E.explanation=Eine eingef\u00fcgte Konfigurationseigenschaft wurde nicht aufgel\u00f6st. Entweder wurde die benannte Eigenschaft nicht gefunden oder ein Converter f\u00fcr den erforderlichen Typ wurde nicht aufgel\u00f6st. 
+unable.to.resolve.injection.point.CWMCG5003E.useraction=\u00dcberpr\u00fcfen Sie die Servernachricht und die FFDC-Protokolle, um die Ursache zu ermitteln. Stellen Sie sicher, dass die Eigenschaft in einer der Konfigurationsquellen vorhanden ist und die erforderlichen Converter konfiguriert wurden.
+
+# The configuration property named "{0}" was not found.
+property.not.found.CWMCG5004E=CWMCG5004E: Die Konfigurationseigenschaft "{0}" wurde nicht gefunden.
+property.not.found.CWMCG5004E.explanation=Die benannte Eigenschaft wurde in keiner der konfigurierten Quellen gefunden. 
+property.not.found.CWMCG5004E.useraction=Stellen Sie sicher, dass die Eigenschaft in einer der Konfigurationsquellen vorhanden ist.
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Config error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Config API error has occurred: {0}
+temporary.CWMCG5999E=CWMCG5999E: Es ist ein Fehler in der Config-API aufgetreten: {0}.
+temporary.CWMCG5999E.explanation=Es ist ein Fehler in der Config-API aufgetreten, der eine normale Ausf\u00fchrung verhindert.
+temporary.CWMCG5999E.useraction=Ermitteln Sie das Problem anhand der Protokolldatei f\u00fcr die Servernachrichten (message.log) und der FFDC-Protokolldateien.
+
+

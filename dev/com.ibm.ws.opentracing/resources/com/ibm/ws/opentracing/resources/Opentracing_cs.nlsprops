@@ -1,0 +1,96 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMOT
+#COMPONENTNAMEFOR CWMOT MicroProfile Opentracing API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+# -----------------------------------------------------------------------
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Opentracing Impl -  range is 0000-4999, plus 9999 for the emergency message
+#-----------------------------------------------------------------------------------------------------------------------------
+OPENTRACING_NO_APPNAME_FOUND_IN_JNDI=CWMOT0000E: Vyhled\u00e1n\u00ed n\u00e1zvu aplikace v JNDI nevr\u00e1tilo hodnotu. Pro n\u00e1zev slu\u017eby Opentracing se pou\u017eije v\u00fdchoz\u00ed n\u00e1zev.
+OPENTRACING_NO_APPNAME_FOUND_IN_JNDI.explanation=Funkce poskytuje n\u00e1zev aplikace u\u017eivateli, kter\u00fd byl dod\u00e1n implementac\u00ed OpentracingTracerFactory. N\u00e1zev aplikace nelze ur\u010dit vyhled\u00e1n\u00edm JNDI "java:app/AppName". Uveden byl v\u00fdchoz\u00ed n\u00e1zev slu\u017eby.
+OPENTRACING_NO_APPNAME_FOUND_IN_JNDI.useraction=Zjist\u011bte, pro\u010d n\u00e1zev aplikace nen\u00ed dostupn\u00fd prost\u0159ednictv\u00edm vyhled\u00e1n\u00ed JNDI "java:app/AppName".
+
+OPENTRACING_COULD_NOT_CREATE_TRACER=CWMOT0001E: Vyvol\u00e1n\u00ed u\u017eivatele, kter\u00fd byl dod\u00e1n metodou OpentracingTracerFactory.newInstance(...), se nezda\u0159ilo s v\u00fdjimkou. Zpr\u00e1va = {0}
+OPENTRACING_COULD_NOT_CREATE_TRACER.explanation=Funkce vytv\u00e1\u0159\u00ed implementace modulu trasov\u00e1n\u00ed s u\u017eivatelem, kter\u00fd je dod\u00e1n metodou OpentracingTracerFactory. Metoda OpentracingTracerFactory.newInstance vr\u00e1tila v\u00fdjimku.
+OPENTRACING_COULD_NOT_CREATE_TRACER.useraction=Ur\u010dete, pro\u010d se pro u\u017eivatele dodan\u00e9ho metodou OpentracingTracerFactory newInstance vr\u00e1tila v\u00fdjimka.
+
+OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST=CWMOT0002E: Pro p\u0159\u00edchoz\u00ed po\u017eadavek nen\u00ed k dispozici \u017e\u00e1dn\u00fd modul trasov\u00e1n\u00ed. P\u0159\u00edchoz\u00ed po\u017eadavek nebude korelov\u00e1n s p\u0159edchoz\u00ed slu\u017ebou.
+OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST.explanation=Implementace modulu trasov\u00e1n\u00ed nebyla k dispozici, kdy\u017e po\u017eadavek dorazil do koncov\u00e9ho bodu aplikace. Tento p\u0159\u00edchoz\u00ed po\u017eadavek neposkytne \u017e\u00e1dn\u00e9 informace slu\u017eb\u011b Opentracing.
+OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST.useraction=Prozkoumejte p\u0159edchoz\u00ed chyby a ur\u010dete, pro\u010d nen\u00ed modul trasov\u00e1n\u00ed k dispozici.
+
+OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST=CWMOT0003E: \u00dasek vytvo\u0159en\u00fd pro p\u0159\u00edchoz\u00ed po\u017eadavek nen\u00ed pro odpov\u011b\u010f na po\u017eadavek k dispozici. P\u0159\u00edchoz\u00ed po\u017eadavek nebude korelov\u00e1n s p\u0159edchoz\u00ed slu\u017ebou.
+OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST.explanation=\u00dasek vytvo\u0159en\u00fd p\u0159i p\u0159ijet\u00ed po\u017eadavku nen\u00ed k dispozici, kdy\u017e se vr\u00e1t\u00ed odezva. Nebudou slu\u017eb\u011b Opentracing dod\u00e1ny \u017e\u00e1dn\u00e9 informace o \u00faseku.
+OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST.useraction=Prozkoumejte p\u0159edchoz\u00ed chyby a ur\u010dete, pro\u010d nen\u00ed \u00fasek k dispozici.
+
+OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST=CWMOT0004E: Pro p\u0159\u00edchoz\u00ed po\u017eadavek nebyl nalezen \u017e\u00e1dn\u00fd modul trasov\u00e1n\u00ed. Odchoz\u00ed po\u017eadavek nebude korelov\u00e1n s p\u0159\u00edchoz\u00edm po\u017eadavkem.
+OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST.explanation=Implementace modulu trasov\u00e1n\u00ed nebyla k dispozici, kdy\u017e byl po\u017eadavek odesl\u00e1n z aplikace. Tento odchoz\u00ed po\u017eadavek neposkytne \u017e\u00e1dn\u00e9 informace slu\u017eb\u011b Opentracing.
+OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST.useraction=Prozkoumejte p\u0159edchoz\u00ed chyby a ur\u010dete, pro\u010d nen\u00ed modul trasov\u00e1n\u00ed k dispozici.
+
+OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST=CWMOT0005E: \u00dasek vytvo\u0159en\u00fd pro odchoz\u00ed po\u017eadavek nen\u00ed pro odpov\u011b\u010f na po\u017eadavek k dispozici. Odchoz\u00ed po\u017eadavek nebude korelov\u00e1n s p\u0159\u00edchoz\u00edm po\u017eadavkem.
+OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST.explanation=\u00dasek vytvo\u0159en\u00fd p\u0159i odesl\u00e1n\u00ed po\u017eadavku nen\u00ed k dispozici, kdy\u017e se vr\u00e1t\u00ed odezva. Nebudou slu\u017eb\u011b Opentracing dod\u00e1ny \u017e\u00e1dn\u00e9 informace o \u00faseku.
+OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST.useraction=Prozkoumejte p\u0159edchoz\u00ed chyby a ur\u010dete, pro\u010d nen\u00ed \u00fasek k dispozici.
+
+OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: Vyvol\u00e1n\u00ed u\u017eivatele, kter\u00fd byl dod\u00e1n metodou OpentracingTracerFactory.newInstance(...), vr\u00e1tilo null
+OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=Funkce vytv\u00e1\u0159\u00ed implementace modulu trasov\u00e1n\u00ed s u\u017eivatelem, kter\u00fd je dod\u00e1n metodou OpentracingTracerFactory. Metoda OpentracingTracerFactory.newInstance vr\u00e1tila null.
+OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=Ur\u010dete, pro\u010d se pro u\u017eivatele dodan\u00e9ho metodou OpentracingTracerFactory newInstance vr\u00e1tila hodnota null.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Opentracing error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# An Opentracing API error has occurred: {0}
+temporary.CWMOT9999E=CWMOT9999E: Do\u0161lo k chyb\u011b Opentracing API: {0}
+temporary.CWMOT9999E.explanation=Do\u0161lo k chyb\u011b Opentracing API, kter\u00e1 br\u00e1n\u00ed norm\u00e1ln\u00ed operaci.
+temporary.CWMOT9999E.useraction=Prozkoumejte protokoly FFDC a text v\u00fdjimky a identifikujte p\u0159\u00ed\u010dinu probl\u00e9mu.

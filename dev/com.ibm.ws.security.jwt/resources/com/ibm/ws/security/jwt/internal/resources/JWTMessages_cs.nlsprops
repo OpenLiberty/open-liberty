@@ -1,0 +1,311 @@
+###############################################################################
+# Copyright (c) 2016, 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/jwt/resources/JWTMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server JWT
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS6000 - CWWKS6100
+JWT_BUILDER_CONFIG_PROCESSED=CWWKS6000I: Konfigurace JWT {0} byla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na.
+JWT_BUILDER_CONFIG_PROCESSED.explanation=Konfigurace JWT (json web token builder) byla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na.
+JWT_BUILDER_CONFIG_PROCESSED.useraction=Nen\u00ed
+
+JWT_BUILDER_CONFIG_MODIFIED=CWWKS6001I: Zm\u011bna konfigurace JWT {0} byla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na.
+JWT_BUILDER_CONFIG_MODIFIED.explanation=Konfigurace JWT (json web token builder) byla \u00fasp\u011b\u0161n\u011b upravena.
+JWT_BUILDER_CONFIG_MODIFIED.useraction=Nen\u00ed.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_ENDPOINT_SERVICE_ACTIVATED=CWWKS6002I: Je k dispozici slu\u017eba koncov\u00e9ho bodu webov\u00e9ho tokenu JSON Web Token (JWT).
+JWT_ENDPOINT_SERVICE_ACTIVATED.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+JWT_ENDPOINT_SERVICE_ACTIVATED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# Do not translate "JSON Web Token", "JWT", "jwt-1.0"
+JWT_OSGI_ENDPOINT_SERVICE_ERROR=CWWKS6003E: Do\u0161lo k chyb\u011b konfigurace. Nen\u00ed k dispozici slu\u017eba koncov\u00e9ho bodu webov\u00e9ho tokenu JSON Web Token (JWT). Ujist\u011bte se, \u017ee m\u00e1te nakonfigurov\u00e1nu funkci jwt-1.0.
+JWT_OSGI_ENDPOINT_SERVICE_ERROR.explanation=Slu\u017eba JSON Web Token (JWT) nen\u00ed dostupn\u00e1 p\u0159es registr slu\u017eeb OSGi.
+JWT_OSGI_ENDPOINT_SERVICE_ERROR.useraction=Zahr\u0148te funkci jwt-1.0 do konfigurace serveru.
+
+# Do not translate "jwt-1.0"
+# 0=URL to which the request was directed
+JWT_ENDPOINT_FILTER_MATCH_NOT_FOUND=CWWKS6004W: Po\u017eadavek sm\u011brovan\u00fd na adresu URL koncov\u00e9ho bodu [{0}] nebyl rozpozn\u00e1n jako platn\u00fd po\u017eadavek.
+JWT_ENDPOINT_FILTER_MATCH_NOT_FOUND.explanation=Ur\u010den\u00e1 adresa URL neodpov\u00edd\u00e1 o\u010dek\u00e1van\u00e9mu vzorci adresy URL po\u017eadavku, kter\u00fd m\u00e1 b\u00fdt obslou\u017een t\u00edmto filtrem.
+JWT_ENDPOINT_FILTER_MATCH_NOT_FOUND.useraction=Ov\u011b\u0159te, \u017ee cesta k adrese URL ukazuje na o\u010dek\u00e1van\u00fd koncov\u00fd bod a \u017ee odpov\u00edd\u00e1 koncov\u00e9mu bodu dodan\u00e9mu funkc\u00ed jwt-1.0.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Config ID of JWT provider
+JWT_CONFIG_SERVICE_NOT_AVAILABLE=CWWKS6005E: Slu\u017eba konfigurace webov\u00e9ho tokenu JSON Web Token (JWT) nen\u00ed k dispozici pro poskytovatele [{0}].
+JWT_CONFIG_SERVICE_NOT_AVAILABLE.explanation=Poskytovatel ur\u010den\u00fd ve zpr\u00e1v\u011b bu\u010f neexistuje, nebo konfigurace pro ur\u010den\u00e9ho poskytovatele nebyla zpracov\u00e1na slu\u017ebou konfigurace.
+JWT_CONFIG_SERVICE_NOT_AVAILABLE.useraction=Zkontrolujte konfiguraci serveru a ujist\u011bte se, \u017ee je nakonfigurov\u00e1n ur\u010den\u00fd poskytovatel.
+
+# 0=URL to which the request was directed, 1=Required attribute name
+JWT_REQUEST_ATTRIBUTE_MISSING=CWWKS6006E: Po\u017eadavek p\u0159esm\u011brovan\u00fd na koncov\u00fd bod [{0}] nem\u00e1 atribut [{1}].
+JWT_REQUEST_ATTRIBUTE_MISSING.explanation=Po\u017eadavek nemusel b\u00fdt p\u0159ed zpracov\u00e1n\u00edm po\u017eadavku obslou\u017een p\u0159\u00edslu\u0161n\u00fdm filtrem. Filtr po\u017eadavk\u016f vytvo\u0159\u00ed ur\u010den\u00fd atribut podle informac\u00ed v po\u017eadavku. Filtr potom p\u0159ed\u00e1 dan\u00fd po\u017eadavek k dal\u0161\u00edmu zpracov\u00e1n\u00ed.
+JWT_REQUEST_ATTRIBUTE_MISSING.useraction=Ov\u011b\u0159te, \u017ee byl po\u017eadavek p\u0159esm\u011brov\u00e1n na o\u010dek\u00e1van\u00fd koncov\u00fd bod.
+
+# Do not translate "JSON Web Token", "JWT", "JSON Web Key"
+#0=signatureAlgorithm, 1=key, 2=exception or error message if any
+JWT_NULL_SIGNING_KEY_WITH_ERROR=CWWKS6007E: Podpisov\u00fd kl\u00ed\u010d, kter\u00fd je vy\u017eadov\u00e1n podpisov\u00fdm algoritmem [{0}] a typem kl\u00ed\u010de [{1}] nen\u00ed k dispozici. Ov\u011b\u0159te, \u017ee podpisov\u00fd algoritmus a kl\u00ed\u010d jsou spr\u00e1vn\u011b nakonfigurov\u00e1ny. {2}
+JWT_NULL_SIGNING_KEY_WITH_ERROR.explanation=Podpisov\u00fd kl\u00ed\u010d nelze nal\u00e9zt, nebo nelze nal\u00e9zt kl\u00ed\u010d pou\u017e\u00edvaj\u00edc\u00ed konfigurovan\u00fd podpisov\u00fd algoritmus. K t\u00e9to chyb\u011b m\u016f\u017ee doj\u00edt, proto\u017ee v konfiguraci JWT chyb\u00ed nebo jsou nespr\u00e1vn\u00e9 informace.
+JWT_NULL_SIGNING_KEY_WITH_ERROR.useraction=Prove\u010fte jednu z n\u00e1sleduj\u00edc\u00edch akc\u00ed: 1) Pou\u017e\u00edv\u00e1te-li k podpisu webov\u00fd kl\u00ed\u010d JSON Web Key (JWK), ujist\u011bte se, \u017ee algoritmus RS256 je nakonfigurov\u00e1n na atributu signatureAlgorithm. 2) Pou\u017e\u00edv\u00e1te-li k podpisu certifik\u00e1ty X.509, ujist\u011bte se, \u017ee jsou spr\u00e1vn\u011b nakonfigurov\u00e1ny atributy signatureAlgorithm, KeyStoreRef a KeyStoreAlias. 3) Pou\u017e\u00edv\u00e1te-li k podpisu sd\u00edlen\u00e9 kl\u00ed\u010de, ujist\u011bte se, \u017ee jsou spr\u00e1vn\u011b nakonfigurov\u00e1ny atributy signatureAlgorithm a sharedKey.
+
+# Do not translate "JSON Web Token", "JWT", "jwtBuilder"
+JWT_BUILDER_INVALID=CWWKS6008E: Ur\u010den\u00e9 ID tv\u016frce JSON Web Token (JWT) [{0}] nen\u00ed plan\u00e9. Ov\u011b\u0159te, \u017ee tv\u016frce JWT s ur\u010den\u00fdm ID je nakonfigurov\u00e1n.
+JWT_BUILDER_INVALID.explanation=Tv\u016frce JSON Web Token (JWT) s ur\u010den\u00fdm ID v konfiguraci serveru neexistuje.
+JWT_BUILDER_INVALID.useraction=V souboru server.xml nakonfigurujte prvek jwtBuilder s ur\u010den\u00fdm ID.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_INVALID_CLAIM_VALUE_ERR=CWWKS6009E: Hodnota [{1}] v n\u00e1roku JSON Web Token (JWT) [{0}] nen\u00ed platn\u00e1.
+JWT_INVALID_CLAIM_VALUE_ERR.explanation=Ur\u010den\u00e1 hodnota v n\u00e1roku JSON Web Token (JWT) nespl\u0148uje specifikaci JWT.
+JWT_INVALID_CLAIM_VALUE_ERR.useraction=Zadejte platnou hodnotu ur\u010den\u00e9ho n\u00e1roku. Dal\u0161\u00ed informace viz specifikace JWT.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_BUILDER_NOT_ACTIVE=CWWKS6010E: Rozhran\u00ed API tv\u016frce JSON Web Token (JWT) nem\u016f\u017ee vytvo\u0159it platn\u00fd objekt tv\u016frce pomoc\u00ed ID [{0}]. Ov\u011b\u0159te, \u017ee je nakonfigurov\u00e1na funkce jwt-1.0.
+JWT_BUILDER_NOT_ACTIVE.explanation=Rozhran\u00ed API tv\u016frce JSON Web Token (JWT) nem\u016f\u017ee vytvo\u0159it platn\u00fd objekt tv\u016frce, proto\u017ee slu\u017eba tv\u016frce nen\u00ed k dispozici.
+JWT_BUILDER_NOT_ACTIVE.useraction=Ujist\u011bte se, \u017ee m\u00e1te nakonfigurov\u00e1nu funkci jwt-1.0.
+
+JWT_CLAIMSMAP_NULL_KEY_OR_VALUE=CWWKS6011W: Dodan\u00e1 mapa n\u00e1rok\u016f JSON Web Token (JWT) m\u00e1 n\u00e1zev n\u00e1roku nebo hodnotu, kter\u00e9 nejsou platn\u00e9.
+JWT_CLAIMSMAP_NULL_KEY_OR_VALUE.explanation=Tv\u016frce JSON Web Token nezm\u011bnil existuj\u00edc\u00ed n\u00e1roky, proto\u017ee dodan\u00e1 mapa n\u00e1rok\u016f ur\u010duje hodnotu null pro n\u00e1zev n\u00e1roku nebo pro hodnotu n\u00e1roku.
+JWT_CLAIMSMAP_NULL_KEY_OR_VALUE.useraction=Ujist\u011bte se, \u017ee jste schv\u00e1lili platnou mapu n\u00e1rok\u016f.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_CONSUMER_SERVICE_ACTIVATED=CWWKS6012I: Slu\u017eba spot\u0159ebitele JSON Web Token (JWT) je k dispozici.
+JWT_CONSUMER_SERVICE_ACTIVATED.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+JWT_CONSUMER_SERVICE_ACTIVATED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_CONSUMER_SERVICE_NOT_ACTIVATED=CWWKS6013E: Odb\u011bratele JSON Web Token (JWT) nelze vytvo\u0159it, proto\u017ee slu\u017eba odb\u011bratele nebyla aktivov\u00e1na.
+JWT_CONSUMER_SERVICE_NOT_ACTIVATED.explanation=Slu\u017eba odb\u011bratele JWT mus\u00ed b\u00fdt aktivov\u00e1na p\u0159ed jej\u00edm pou\u017eit\u00edm. Slu\u017eba bu\u010f je\u0161t\u011b nebyla spu\u0161t\u011bna, nebo byla deaktivov\u00e1na odebr\u00e1n\u00edm funkce jwt-1.0.
+JWT_CONSUMER_SERVICE_NOT_ACTIVATED.useraction=Ujist\u011bte se, \u017ee je funkce jwt-1.0 nakonfigurov\u00e1n a \u017ee je slu\u017eba odb\u011bratele JWT p\u0159ipravena k pou\u017eit\u00ed.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_CONSUMER_NULL_ID=CWWKS6014E: Odb\u011bratele JSON Web Token (JWT) nelze vytvo\u0159it, proto\u017ee ur\u010den\u00e9 ID konfigurace je null.
+JWT_CONSUMER_NULL_ID.explanation=Odb\u011bratele JWT nelze vytvo\u0159it pomoc\u00ed nulov\u00e9ho ID konfigurace. Mus\u00ed b\u00fdt ur\u010deno platn\u00e9 ID, abyste zpracovali p\u0159\u00edslu\u0161nou konfiguraci odb\u011bratele JWT.
+JWT_CONSUMER_NULL_ID.useraction=Ur\u010dete ID, kter\u00e9 nen\u00ed null a odpov\u00edd\u00e1 ID odb\u011bratele JWT, kter\u00fd existuje ve va\u0161\u00ed konfiguraci serveru.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_INVALID_CLAIM_ERR=CWWKS6015E: N\u00e1rok JSON Web Token (JWT) [{0}] nen\u00ed platn\u00fd. Zadejte platn\u00fd n\u00e1zev n\u00e1roku.
+JWT_INVALID_CLAIM_ERR.explanation=Ur\u010den\u00fd n\u00e1rok je pr\u00e1zdn\u00fd nebo je null, tak\u017ee rozhran\u00ed API tv\u016frce JSON Web Token nem\u016f\u017ee pokra\u010dovat ve zpracov\u00e1n\u00ed.
+JWT_INVALID_CLAIM_ERR.useraction=Ujist\u011bte se, \u017ee je p\u0159ed\u00e1n platn\u00fd n\u00e1zev n\u00e1roku.
+
+# Do not translate "JSON Web Token", "JWT", "JSON Web Key"
+#0=signatureAlgorithm, 1=jwkEnabled, 2=exception or error message if any
+JWT_NO_SIGNING_KEY_WITH_ERROR=CWWKS6016E: Podpisov\u00fd kl\u00ed\u010d, kter\u00fd je vy\u017eadov\u00e1n podpisov\u00fdm algoritmem [{0}] nen\u00ed k dispozici. 0v\u011b\u0159te, \u017ee podpisov\u00fd algoritmus a parametr jwkEnabled [{1}] jsou spr\u00e1vn\u011b nakonfigurov\u00e1ny. {2}
+JWT_NO_SIGNING_KEY_WITH_ERROR.explanation=Podpisov\u00fd kl\u00ed\u010d nelze nal\u00e9zt, nebo nelze nal\u00e9zt kl\u00ed\u010d pou\u017e\u00edvaj\u00edc\u00ed konfigurovan\u00fd podpisov\u00fd algoritmus. K t\u00e9to chyb\u011b m\u016f\u017ee doj\u00edt, proto\u017ee v konfiguraci JWT chyb\u00ed nebo jsou nespr\u00e1vn\u00e9 informace.
+JWT_NO_SIGNING_KEY_WITH_ERROR.useraction=Prove\u010fte jednu z n\u00e1sleduj\u00edc\u00edch akc\u00ed: 1) Pou\u017e\u00edv\u00e1te-li k podpisu webov\u00fd kl\u00ed\u010d JSON Web Key (JWK), ujist\u011bte se, \u017ee algoritmus RS256 je nakonfigurov\u00e1n na atributu signatureAlgorithm. 2) Jestli\u017ee se JWK nepou\u017e\u00edv\u00e1, ujist\u011bte se, \u017ee jsou pro RS256 spr\u00e1vn\u011b nakonfigurov\u00e1ny atributy KeyStoreRef a KeyStoreAlias. 3) Pou\u017e\u00edv\u00e1te-li k podpisu sd\u00edlen\u00e9 kl\u00ed\u010de, ujist\u011bte se, \u017ee jsou spr\u00e1vn\u011b nakonfigurov\u00e1ny atributy signatureAlgorithm a sharedKey.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_INVALID_TOKEN_ERR=CWWKS6017E: N\u011bjak\u00e1 \u010d\u00e1st obsahu v tokenu JSON Web Token (JWT) je pr\u00e1zdn\u00e1, null nebo nen\u00ed platn\u00e1.
+JWT_INVALID_TOKEN_ERR.explanation=Ur\u010den\u00fd obsah tokenu nen\u00ed platn\u00fd, tak\u017ee rozhran\u00ed API tv\u016frce JSON Web Token nem\u016f\u017ee pokra\u010dovat ve zpracov\u00e1n\u00ed.
+JWT_INVALID_TOKEN_ERR.useraction=Ujist\u011bte se, \u017ee adresy URL nakonfigurovan\u00e9 pro z\u00e1vislou stranu jsou platn\u00e9. Ujist\u011bte se, \u017ee je pro token p\u0159ed\u00e1n platn\u00fd obsah. Dal\u0161\u00ed informace viz dokumentace k rozhran\u00ed API.
+
+JWT_INVALID_TIME_CLAIM_ERR=CWWKS6018E: N\u00e1rok [{0}] mus\u00ed b\u00fdt \u010d\u00edslo v\u011bt\u0161\u00ed ne\u017e nula.
+JWT_INVALID_TIME_CLAIM_ERR.explanation=Ur\u010den\u00e1 hodnota n\u00e1roku nen\u00ed platn\u00e1, tak\u017ee rozhran\u00ed API tv\u016frce JSON Web Token nem\u016f\u017ee pokra\u010dovat ve zpracov\u00e1n\u00ed.
+JWT_INVALID_TIME_CLAIM_ERR.useraction=Ujist\u011bte se, \u017ee hodnota pro ur\u010den\u00fd n\u00e1rok je nenulov\u00e9 kladn\u00e9 \u010d\u00edslo.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_INVALID_CLAIM_VALUE_TYPE=CWWKS6019E: Datov\u00fd typ n\u00e1roku JSON Web Token (JWT) [{0}] nen\u00ed pro hodnotu platn\u00fd. 
+JWT_INVALID_CLAIM_VALUE_TYPE.explanation=Ur\u010den\u00e1 hodnota n\u00e1roku nen\u00ed platn\u00e1, tak\u017ee rozhran\u00ed API tv\u016frce JSON Web Token nem\u016f\u017ee pokra\u010dovat ve zpracov\u00e1n\u00ed.
+JWT_INVALID_CLAIM_VALUE_TYPE.useraction=Ujist\u011bte se, \u017ee hodnota n\u00e1roku je spr\u00e1vn\u00fd datov\u00fd typ. Dal\u0161\u00ed informace viz dokumentace k rozhran\u00ed API.
+
+# Do not translate "JSON Web Token", "JWT"
+#0=exception or error message
+JWT_CREATE_FAIL=CWWKS6020E: Rozhran\u00ed API tv\u016frce JSON Web Token se nezda\u0159ilo vytvo\u0159it token JSON Web Token (JWT) kv\u016fli [{0}]
+JWT_CREATE_FAIL.explanation=Rozhran\u00ed API tv\u016frce JSON Web Token rozpoznalo chybu, kter\u00e1 br\u00e1n\u00ed vytvo\u0159en\u00ed tokenu JWT.
+JWT_CREATE_FAIL.useraction=Projd\u011bte si akce u\u017eivatele pro tuto chybu, kter\u00e9 se zobrazily p\u0159ed touto zpr\u00e1vou.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_INVALID_CLAIMS_ERR=CWWKS6021E: Zadan\u00e9 n\u00e1roky JSON Web Token (JWT) nejsou platn\u00e9. Ur\u010dete platn\u00fd n\u00e1rok.
+JWT_INVALID_CLAIMS_ERR.explanation=Dodan\u00e9 n\u00e1roky nejsou platn\u00e9, tak\u017ee rozhran\u00ed API tv\u016frce JSON Web Token nem\u016f\u017ee pokra\u010dovat ve zpracov\u00e1n\u00ed.
+JWT_INVALID_CLAIMS_ERR.useraction=Ujist\u011bte se, \u017ee je dod\u00e1na spr\u00e1vn\u00e1 sada n\u00e1rok\u016f. Dal\u0161\u00ed informace viz dokumentace k rozhran\u00ed API.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Issuer claim of the token, 1=JWT configuration ID, 2=Trusted issuers specified in server configuration
+JWT_ISSUER_NOT_TRUSTED=CWWKS6022E: Vydavatel [{0}] zadan\u00e9ho tokenu JSON Web Token (JWT) nen\u00ed v konfiguraci JWT [{1}] uveden jako d\u016fv\u011bryhodn\u00fd vydavatel. D\u016fv\u011bryhodn\u00ed vydavatel\u00e9 jsou [{2}].
+JWT_ISSUER_NOT_TRUSTED.explanation=Konfigurace serveru ur\u010duje, kte\u0159\u00ed vydavatel\u00e9 jsou p\u0159i ov\u011b\u0159ov\u00e1n\u00ed JWT d\u016fv\u011bryhodn\u00ed. Dodan\u00fd token nepoch\u00e1zel od d\u016fv\u011bryhodn\u00e9ho vydavatele, tak\u017ee token nelze ov\u011b\u0159it.
+JWT_ISSUER_NOT_TRUSTED.useraction=Z\u00edskejte nov\u00fd token od jednoho z d\u016fv\u011bryhodn\u00fdch vydavatel\u016f ur\u010den\u00fdch v konfiguraci JWT, nebo p\u0159idejte vydavatele ur\u010den\u00e9ho ve zpr\u00e1v\u011b jako d\u016fv\u011bryhodn\u00e9ho vydavatele v konfiguraci JWT.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Audience claim of the token, 1=JWT configuration ID, 2=Trusted audiences specified in server configuration
+JWT_AUDIENCE_NOT_TRUSTED=CWWKS6023E: P\u0159\u00edjemce [{0}] zadan\u00e9ho tokenu JSON Web Token (JWT) nen\u00ed v konfiguraci JWT [{1}] uveden jako d\u016fv\u011bryhodn\u00fd p\u0159\u00edjemce. D\u016fv\u011bryhodn\u00ed p\u0159\u00edjemci jsou [{2}].
+JWT_AUDIENCE_NOT_TRUSTED.explanation=Konfigurace serveru ur\u010duje, kte\u0159\u00ed p\u0159\u00edjemci jsou p\u0159i ov\u011b\u0159ov\u00e1n\u00ed JWT d\u016fv\u011bryhodn\u00ed. Dodan\u00fd token nen\u00ed ur\u010den pro d\u016fv\u011bryhodn\u00e9ho p\u0159\u00edjemce, tak\u017ee token nelze ov\u011b\u0159it.
+JWT_AUDIENCE_NOT_TRUSTED.useraction=Z\u00edskejte nov\u00fd token ur\u010den\u00fd pro jednoho z d\u016fv\u011bryhodn\u00fdch p\u0159\u00edjemc\u016f ur\u010den\u00fdch v konfiguraci JWT, nebo p\u0159idejte p\u0159\u00edjemce ur\u010den\u00e9 ve zpr\u00e1v\u011b jako d\u016fv\u011bryhodn\u00e9ho p\u0159\u00edjemce v konfiguraci JWT.
+
+# Do not translate "JSON Web Token", "JWT", "iat", "exp"
+# 0=iat date, 1=exp date
+JWT_IAT_AFTER_EXP=CWWKS6024E: Token JSON Web Token (JWT) nen\u00ed platn\u00fd, proto\u017ee vydan\u00fd n\u00e1rok @ (''iat'') ur\u010duje datum pozd\u011bj\u0161\u00ed ne\u017e jeho n\u00e1rok vypr\u0161en\u00ed platnosti (''exp''). \u010cas n\u00e1roku ''iat'' je [{0}] a \u010das n\u00e1roku ''exp'' je [{1}].
+JWT_IAT_AFTER_EXP.explanation=Token JWT nen\u00ed platn\u00fd, proto\u017ee byl zad\u00e1n po vlastn\u00edm datu vypr\u0161en\u00ed platnosti.
+JWT_IAT_AFTER_EXP.useraction=Z\u00edskejte nov\u00fd token s platn\u00fdm n\u00e1rokem 'iat', kter\u00fd ur\u010duje \u010das d\u0159\u00edv\u011bj\u0161\u00ed ne\u017e \u010das ur\u010den\u00fd n\u00e1rokem 'exp'.
+
+# Do not translate "JSON Web Token", "JWT", "exp"
+# 0=exp claim date, 1=Current time, 2=Clock skew in seconds
+JWT_TOKEN_EXPIRED=CWWKS6025E: Token JSON Web Token (JWT) nen\u00ed platn\u00fd, proto\u017ee jeho n\u00e1rok vypr\u0161en\u00ed platnosti (''exp'') bu\u010f chyb\u00ed, nebo tokenu vypr\u0161ela platnost. N\u00e1rok vypr\u0161en\u00ed platnosti je [{0}]. Aktu\u00e1ln\u00ed \u010das minus posun hodin je [{1}]. Nakonfigurovan\u00fd posun hodin je [{2}] s.
+JWT_TOKEN_EXPIRED.explanation=Tokeny, kter\u00e9 maj\u00ed vypr\u0161enou platnost, nebo neur\u010duj\u00ed n\u00e1rok 'exp' nejsou platn\u00e9.
+JWT_TOKEN_EXPIRED.useraction=Z\u00edskejte nov\u00fd token, kter\u00fd obsahuje n\u00e1rok 'exp' a nem\u00e1 vypr\u0161enou platnost. Prove\u010fte synchronizaci hodin mezi vydavatelem a odb\u011bratelem tokenu, nebo zvy\u0161te posun hodin v konfiguraci JWT.
+
+# Do not translate "JSON Web Token", "JWT", "nbf"
+# 0=nbf claim date, 1=Current time, 2=Clock skew in seconds
+JWT_TOKEN_BEFORE_NBF=CWWKS6026E: Token JSON Web Token (JWT) nelze pou\u017e\u00edt, proto\u017ee hodnota n\u00e1roku ''nbf'' [{0}] ur\u010duje \u010das, kter\u00fd je pozd\u011bj\u0161\u00ed ne\u017e aktu\u00e1ln\u00ed \u010das. Aktu\u00e1ln\u00ed \u010das plus posun hodin je [{1}]. Nakonfigurovan\u00fd posun hodin je [{2}] s.
+JWT_TOKEN_BEFORE_NBF.explanation=Token JWT m\u00e1 n\u00e1rok 'nbf' (not-before), kter\u00fd ur\u010duje \u010das, kdy se token st\u00e1v\u00e1 platn\u00fdm. Aktu\u00e1ln\u00ed \u010das je p\u0159ed 'nbf', tak\u017ee token nen\u00ed je\u0161t\u011b platn\u00fd.
+JWT_TOKEN_BEFORE_NBF.useraction=P\u0159ed pou\u017eit\u00edm tohoto tokenu vy\u010dkejte na \u010das po \u010dase ur\u010den\u00e9m n\u00e1rokem 'nbf', nebo z\u00edskejte nov\u00fd token s n\u00e1rokem 'nbf' nastaven\u00fdm na \u010das p\u0159ed aktu\u00e1ln\u00edm \u010dasem. Prove\u010fte synchronizaci hodin mezi vydavatelem a odb\u011bratelem tokenu, nebo zvy\u0161te posun hodin v konfiguraci JWT.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Signature algorithm (e.g. RS256)
+JWT_MISSING_ALG_HEADER=CWWKS6027E: Token JSON Web Token (JWT) nen\u00ed platn\u00fd, proto\u017ee mus\u00ed b\u00fdt podeps\u00e1n pomoc\u00ed algoritmu [{0}], ale token neobsahoval \u017e\u00e1dn\u00e9 informace o podpisu.
+JWT_MISSING_ALG_HEADER.explanation=Token je bu\u010f chybn\u00fd, nebo nen\u00ed podeps\u00e1n, nebo chyb\u00ed informace o podpisu. Tokeny mus\u00ed b\u00fdt podeps\u00e1ny ur\u010den\u00fdm algoritmem.
+JWT_MISSING_ALG_HEADER.useraction=Z\u00edskejte nov\u00fd token, kter\u00fd je podeps\u00e1n pomoc\u00ed ur\u010den\u00e9ho algoritmu.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Signature algorithm used to sign the token (e.g. RS256), 1=Signature algorithm required for signing (e.g. RS256)
+JWT_ALGORITHM_MISMATCH=CWWKS6028E: Token JSON Web Token (JWT) nen\u00ed platn\u00fd, proto\u017ee byl podeps\u00e1n pomoc\u00ed algoritmu [{0}]. Tokeny mus\u00ed b\u00fdt podeps\u00e1ny algoritmem [{1}].
+JWT_ALGORITHM_MISMATCH.explanation=Tokeny mus\u00ed b\u00fdt podeps\u00e1ny algoritmem ur\u010den\u00fdm ve zpr\u00e1v\u011b. Tokeny podepsan\u00e9 pomoc\u00ed jin\u00e9ho podpisov\u00e9ho algoritmu nelze ov\u011b\u0159it.
+JWT_ALGORITHM_MISMATCH.useraction=Z\u00edskejte nov\u00fd token, kter\u00fd je podeps\u00e1n pomoc\u00ed po\u017eadovan\u00e9ho algoritmu ur\u010den\u00e9ho ve zpr\u00e1v\u011b, nebo aktualizujte konfiguraci JW , chcete-li povolit tokeny podepsan\u00e9 pomoc\u00ed jin\u00e9ho podpisov\u00e9ho algoritmu.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Signature algorithm required for signing (e.g. RS256)
+JWT_MISSING_KEY=CWWKS6029E: Token JSON Web Token (JWT) nelze ov\u011b\u0159it, proto\u017ee podpisov\u00fd kl\u00ed\u010d nelze nal\u00e9zt. Nakonfigurovan\u00fd podpisov\u00fd algoritmus [{0}] vy\u017eaduje kl\u00ed\u010d k ov\u011b\u0159en\u00ed tokenu.
+JWT_MISSING_KEY.explanation=Pou\u017e\u00edv\u00e1te-li podpisov\u00fd algoritmus HS256, nemus\u00ed b\u00fdt sd\u00edlen\u00fd kl\u00ed\u010d ur\u010den ve va\u0161\u00ed konfiguraci odb\u011bratele JWT, nebo je ur\u010dena pr\u00e1zdn\u00e1 hodnota. Pokud pou\u017e\u00edv\u00e1te podpisov\u00fd algoritmus RS256, nemus\u00ed b\u00fdt slu\u017eba \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f k dostupn\u00e1, nebo kl\u00ed\u010d nelze nal\u00e9zt v \u00falo\u017ei\u0161ti \u00fadaj\u016f o d\u016fv\u011bryhodnosti, kter\u00e9 odpov\u00edd\u00e1 d\u016fv\u011bryhodn\u00e9mu aliasu ur\u010den\u00e9mu konfigurac\u00ed odb\u011bratele JWT.
+JWT_MISSING_KEY.useraction=Zkontrolujte protokoly serveru, kde jsou dal\u0161\u00ed chybov\u00e9 zpr\u00e1vy, kter\u00e9 vysv\u011btluj\u00ed, pro\u010d kl\u00ed\u010d nelze nal\u00e9zt. Pou\u017e\u00edv\u00e1te-li podpisov\u00fd algoritmus HS256, ujist\u011bte se, \u017ee je sd\u00edlen\u00fd kl\u00ed\u010d ur\u010den v konfiguraci odb\u011bratele JWT. Pokud pou\u017e\u00edv\u00e1te podpisov\u00fd algoritmus RS256, ujist\u011bte se, \u017ee alias \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti a alias d\u016fv\u011bryhodnosti v konfiguraci odb\u011bratele jsou spr\u00e1vn\u011b nakonfigurov\u00e1ny.
+
+# Do not translate "JSON Web Token", "JWT", "jwtConsumer"
+# 0=JWT config identifier ("id" attribute)
+JWT_CONSUMER_CONFIG_NOT_FOUND=CWWKS6030E: Konfigurace odb\u011bratele JSON Web Token (JWT) s ID [{0}] nelze nal\u00e9zt. Ov\u011b\u0159te, \u017ee odb\u011bratel JWT s ur\u010den\u00fdm ID je nakonfigurov\u00e1n v konfiguraci serveru.
+JWT_CONSUMER_CONFIG_NOT_FOUND.explanation=Konfiguraci odb\u011bratele JWT s ur\u010den\u00fdm identifik\u00e1torem nelze v konfiguraci serveru nal\u00e9zt.
+JWT_CONSUMER_CONFIG_NOT_FOUND.useraction=Ujist\u011bte se, \u017ee v konfiguraci serveru existuje prvek jwtConsumer nakonfigurovan\u00fd s ur\u010den\u00fdm ID.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=JWT consumer config ID, 1=Error message (if present)
+JWT_ERROR_PROCESSING_JWT=CWWKS6031E: Odb\u011bratel JSON Web Token (JWT) [{0}] nem\u016f\u017ee zpracovat \u0159et\u011bzec tokenu. {1} 
+JWT_ERROR_PROCESSING_JWT.explanation=Do\u0161lo k chyb\u011b, kter\u00e1 zabr\u00e1nila odb\u011brateli v \u00fasp\u011b\u0161n\u00e9m zpracov\u00e1n\u00ed \u0159et\u011bzce tokenu.
+JWT_ERROR_PROCESSING_JWT.useraction=Projd\u011bte si akce u\u017eivatele pro chybu, kter\u00e1 je ur\u010dena ve zpr\u00e1v\u011b.
+
+# 0=Error message (if present)
+JWT_ERROR_GETTING_SHARED_KEY=CWWKS6032E: Sd\u00edlen\u00fd kl\u00ed\u010d nelze na\u010d\u00edst. {0}
+JWT_ERROR_GETTING_SHARED_KEY.explanation=Sd\u00edlen\u00fd kl\u00ed\u010d nelze na\u010d\u00edst kv\u016fli chyb\u011b.
+JWT_ERROR_GETTING_SHARED_KEY.useraction=Projd\u011bte si akce u\u017eivatele pro chybu, kter\u00e1 je ur\u010dena ve zpr\u00e1v\u011b. Ov\u011b\u0159te, \u017ee sd\u00edlen\u00fd kl\u00ed\u010d je nakonfigurov\u00e1n v konfiguraci odb\u011bratele JWT.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Trusted alias, 1=truststore reference, 2=Error message (if present)
+JWT_ERROR_GETTING_PUBLIC_KEY=CWWKS6033E: Ve\u0159ejn\u00fd kl\u00ed\u010d, kter\u00fd odpov\u00edd\u00e1 aliasu [{0}] v \u00falo\u017ei\u0161ti \u00fadaj\u016f o d\u016fv\u011bryhodnosti [{1}] nelze na\u010d\u00edst. {2}
+JWT_ERROR_GETTING_PUBLIC_KEY.explanation=Tato chyba m\u016f\u017ee b\u00fdt zp\u016fsobena probl\u00e9mem p\u0159i z\u00edsk\u00e1v\u00e1n\u00ed \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti nebo vyhled\u00e1n\u00ed kl\u00ed\u010de, kter\u00fd odpov\u00edd\u00e1 aliasu ur\u010den\u00e9ho ve zpr\u00e1v\u011b.
+JWT_ERROR_GETTING_PUBLIC_KEY.useraction=Projd\u011bte si akce u\u017eivatele pro chybu, kter\u00e1 je ur\u010dena ve zpr\u00e1v\u011b. Ov\u011b\u0159te, \u017ee je odpov\u00eddaj\u00edc\u00ed alias d\u016fv\u011bryhodnosti a \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti jsou konfigurov\u00e1ny v konfiguraci odb\u011bratele JSON Web Token (JWT).
+
+# Intended to be a child of JWT_ERROR_GETTING_SHARED_KEY
+# Do not translate "JSON Web Token", "JWT", "sharedKey"
+JWT_MISSING_SHARED_KEY=CWWKS6034E: Sd\u00edlen\u00fd kl\u00ed\u010d nebyl uveden v konfiguraci odb\u011bratele JSON Web Token (JWT).
+JWT_MISSING_SHARED_KEY.explanation=Atribut sharedKey v konfiguraci odb\u011bratele JWT bu\u010f chyb\u00ed, nebo nebyla zad\u00e1na hodnota.
+JWT_MISSING_SHARED_KEY.useraction=Ov\u011b\u0159te, \u017ee je v konfiguraci odb\u011bratele JWT nakonfigurov\u00e1na nepr\u00e1zdn\u00e1 hodnota sharedKey.
+
+# Intended to be a child of JWT_ERROR_GETTING_PUBLIC_KEY
+JWT_TRUSTSTORE_SERVICE_NOT_AVAILABLE=CWWKS6035E: Slu\u017eba \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti nen\u00ed k dispozici. Ov\u011b\u0159te, \u017ee odkaz na \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti je ur\u010den v konfiguraci odb\u011bratele JWT.
+JWT_TRUSTSTORE_SERVICE_NOT_AVAILABLE.explanation=Bu\u010f nebylo nakonfigurov\u00e1no \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti, nebo nebylo \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti zpracov\u00e1no slu\u017ebou konfigurace.
+JWT_TRUSTSTORE_SERVICE_NOT_AVAILABLE.useraction=Ov\u011b\u0159te, \u017ee m\u00e1te odkaz na \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti ur\u010den\u00fd v konfiguraci odb\u011bratele JWT.
+
+# 0=Signature algorithm (HS256, RS256), 1=Key object (string or Java object)
+# Do not translate "HS256", "RS256", "java.security.interfaces.RSAPrivateKey"
+JWT_INVALID_KEY_ERR=CWWKS6036E: Podpisov\u00fd algoritmus [{0}] vy\u017eaduje platn\u00fd kl\u00ed\u010d k podpisu tokenu, ale dodan\u00fd kl\u00ed\u010d [{1}] nen\u00ed platn\u00fd.
+JWT_INVALID_KEY_ERR.explanation=Pou\u017e\u00edv\u00e1te-li podpisov\u00fd algoritmus HS256, byl sd\u00edlen\u00fd kl\u00ed\u010d bu\u010f null, nebo pr\u00e1zdn\u00fd \u0159et\u011bzec. Pou\u017e\u00edv\u00e1te-li podpisov\u00fd algoritmus RS256, byl kl\u00ed\u010d bu\u010f null, nebo nebyl instanc\u00ed java.security.interfaces.RSAPrivateKey.
+JWT_INVALID_KEY_ERR.useraction=Pou\u017e\u00edv\u00e1te-li podpisov\u00fd algoritmus HS256, ujist\u011bte se, \u017ee byl dod\u00e1n nenulov\u00fd \u0159et\u011bzec a nepr\u00e1zdn\u00fd \u0159et\u011bzec jako podpisov\u00fd kl\u00ed\u010d. Pou\u017e\u00edv\u00e1te-li podpisov\u00fd algoritmus RS256, ujist\u011bte se, \u017ee nenulov\u00e1 instance t\u0159\u00eddy, kter\u00e1 implementuje rozhran\u00ed java.security.interfaces.RSAPrivateKey, je dod\u00e1na jako podpisov\u00fd kl\u00ed\u010d.
+
+# 0=Signature algorithm string (null, empty, HS256, RS256), 1=Valid signature algorithm string (HS256, RS256)
+JWT_INVALID_ALGORITHM_ERR=CWWKS6037E: Dodan\u00fd podpisov\u00fd algoritmus [{0}] nen\u00ed platn\u00fd. Sada platn\u00fdch algoritm\u016f je [{1}].
+JWT_INVALID_ALGORITHM_ERR.explanation=Dodan\u00fd podpisov\u00fd algoritmus je bu\u010f null, empty, nebo neodpov\u00edd\u00e1 nezbytn\u00e9 sad\u011b algoritm\u016f ur\u010den\u00e9 ve zpr\u00e1v\u011b.
+JWT_INVALID_ALGORITHM_ERR.useraction=Ov\u011b\u0159te, \u017ee dodan\u00fd podpisov\u00fd algoritmus odpov\u00edd\u00e1 platn\u00e9 sad\u011b algoritm\u016f.
+
+# Do not translate "JSON Web Key", "JWK", "JSON Web Token", "JWT", "jwkEnabled"
+# 0=JWT builder config ID
+JWK_ENDPOINT_JWK_NOT_ENABLED=CWWKS6038E: Koncov\u00fd bod ov\u011b\u0159en\u00ed JSON Web Key (JWK) nelze pou\u017e\u00edt, proto\u017ee podpora JWK nen\u00ed povolena pro konfiguraci tv\u016frce JSON Web Token (JWT) [{0}].
+JWK_ENDPOINT_JWK_NOT_ENABLED.explanation=Podpora pro JWK mus\u00ed b\u00fdt povolena pro pou\u017eit\u00ed koncov\u00e9ho bodu ov\u011b\u0159en\u00ed JWK. Atribut jwkEnabled byl pravd\u011bpodobn\u011b nakonfigurov\u00e1n v ur\u010den\u00e9 konfiguraci tv\u016frce JWT, nebo je atribut nastaven na false.
+JWK_ENDPOINT_JWK_NOT_ENABLED.useraction=Ov\u011b\u0159te, \u017ee atribut konfigurace jwkEnabled je nastaven na true pro ur\u010denou konfiguraci tv\u016frce JWT.
+
+# Do not translate "JSON Web Key", "JWK", "JSON Web Token", "JWT"
+# 0=JWT builder config ID, 1=JWT builder's configured signature algorithm (HS256, RS256), 2=Valid signature algorithm (RS256)
+JWK_ENDPOINT_WRONG_ALGORITHM=CWWKS6039E: Chcete-li prov\u00e9st ov\u011b\u0159en\u00ed pomoc\u00ed koncov\u00e9ho bodu ov\u011b\u0159en\u00ed JSON Web Key (JWK), mus\u00ed konfigurace tv\u016frce JSON Web Token (JWT) [{0}] pou\u017e\u00edvat podpisov\u00fd algoritmus [{2}]. Konfigurace tv\u016frce JWT je nakonfigurov\u00e1na pro pou\u017eit\u00ed podpisov\u00e9ho algoritmu [{1}].
+JWK_ENDPOINT_WRONG_ALGORITHM.explanation=Funk\u010dnost JWK vy\u017eaduje pou\u017eit\u00ed podpisov\u00e9ho algoritmu ur\u010den\u00e9ho ve zpr\u00e1v\u011b. Ur\u010den\u00e1 konfigurace tv\u016frce JWT nepou\u017e\u00edv\u00e1 povinn\u00fd podpisov\u00fd algoritmus.
+JWK_ENDPOINT_WRONG_ALGORITHM.useraction=Upravte konfiguraci tv\u016frce JWT pro pou\u017eit\u00ed povinn\u00e9ho podpisov\u00e9ho algoritmu.
+
+# Do not translate "JSON Web Token", "JWT", "Base64"
+# 0=JWT consumer config ID, 1=JWT string
+JWT_CONSUMER_NULL_OR_EMPTY_STRING=CWWKS6040E: Odb\u011bratel JSON Web Token (JWT) [{0}] nem\u016f\u017ee vytvo\u0159it JWT, proto\u017ee dodan\u00fd \u0159et\u011bzec [{1}] byl null nebo pr\u00e1zdn\u00fd.
+JWT_CONSUMER_NULL_OR_EMPTY_STRING.explanation=Chcete-li vytvo\u0159it objekt JWT, mus\u00edte dodat odpov\u00eddaj\u00edc\u00ed zak\u00f3dovan\u00fd \u0159et\u011bzec tokenu.
+JWT_CONSUMER_NULL_OR_EMPTY_STRING.useraction=Ur\u010dete \u0159\u00e1dn\u011b k\u00f3dovan\u00fd \u0159et\u011bzec JWT. \u0158et\u011bzec mus\u00ed odpov\u00eddat form\u00e1tu popsan\u00e9mu na str\u00e1nce https://tools.ietf.org/html/rfc7519#section-3, kde \u0159et\u011bzec je posloupnost bezpe\u010dn\u00fdch \u010d\u00e1st\u00ed adresy URL v k\u00f3dov\u00e1n\u00ed Base64 odd\u011blen\u00fdch znakem te\u010dka ('.').
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Exception message, if present
+JWT_INVALID_SIGNATURE=CWWKS6041E: Podpis JSON Web Token (JWT) nen\u00ed platn\u00fd. {0}
+JWT_INVALID_SIGNATURE.explanation=Do\u0161lo k chyb\u011b p\u0159i zpracov\u00e1n\u00ed podpisu dodan\u00e9ho \u0159et\u011bzce JWT.
+JWT_INVALID_SIGNATURE.useraction=Projd\u011bte si akce u\u017eivatele pro chybu, kter\u00e1 je ur\u010dena ve zpr\u00e1v\u011b. Ov\u011b\u0159te, \u017ee JWT byl podeps\u00e1n pomoc\u00ed spr\u00e1vn\u00e9ho podpisov\u00e9ho algoritmu a kl\u00ed\u010de.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0="exp", 1=exp claim value, 2=exp claim converted to readable date, 3=Current time
+JWT_INVALID_EXP_CLAIM_ERR=CWWKS6042E: Hodnota n\u00e1roku [{0}] [{1}] [{2}] mus\u00ed b\u00fdt rovna nebo nov\u011bj\u0161\u00ed ne\u017e aktu\u00e1ln\u00ed \u010das [{3}].
+JWT_INVALID_EXP_CLAIM_ERR.explanation=\u010cas vypr\u0161en\u00ed platnosti tokenu JSON Web Token (JWT) mus\u00ed b\u00fdt nastaven bu\u010f na aktu\u00e1ln\u00ed \u010das, nebo \u010das v budoucnosti. Byl ur\u010den \u010das v minulosti.
+JWT_INVALID_EXP_CLAIM_ERR.useraction=Nastavte \u010das vypr\u0161en\u00ed platnosti tokenu na aktu\u00e1ln\u00ed \u010das nebo \u010das v budoucnosti.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Claim that is malformed ("exp", "iat", "sub", etc.), 1=Exception message, if present
+JWT_CONSUMER_MALFORMED_CLAIM=CWWKS6043E: Odb\u011bratel JSON Web Token (JWT) nem\u016f\u017ee zpracovat token, proto\u017ee n\u00e1rok [{0}] byl chybn\u00fd. [{1}]
+JWT_CONSUMER_MALFORMED_CLAIM.explanation=Hodnota pro ur\u010den\u00fd n\u00e1rok nen\u00ed spr\u00e1vn\u011b naform\u00e1tov\u00e1na nebo nen\u00ed o\u010dek\u00e1van\u00e9ho typu.
+JWT_CONSUMER_MALFORMED_CLAIM.useraction=Projd\u011bte si akce u\u017eivatele pro chybu, kter\u00e1 je ur\u010dena ve zpr\u00e1v\u011b. Ujist\u011bte se, \u017ee hodnota pro ur\u010den\u00fd n\u00e1rok je p\u0159\u00edslu\u0161n\u00e9ho typu.
+
+# Do not translate "JSON Web Token", "JWT", "iat"
+# 0=iat claim time value (date), 1=Current time, 2=Clock skew configuration value
+JWT_IAT_AFTER_CURRENT_TIME=CWWKS6044E: Token JSON Web Token (JWT) nen\u00ed platn\u00fd, proto\u017ee vydan\u00fd n\u00e1rok (''iat'') ur\u010duje datum pozd\u011bj\u0161\u00ed ne\u017e aktu\u00e1ln\u00ed \u010das. \u010cas n\u00e1roku ''iat'' je [{0}]. Aktu\u00e1ln\u00ed \u010das plus posun hodin je [{1}]. Nakonfigurovan\u00fd posun hodin je [{2}] s.
+JWT_IAT_AFTER_CURRENT_TIME.explanation=Token je platn\u00fd pouze, pokud jeho n\u00e1rok 'iat' ur\u010duje \u010das v minulosti. N\u00e1rok 'iat' dodan\u00e9ho tokenu je \u010das v budoucnosti, tak\u017ee token nen\u00ed je\u0161t\u011b platn\u00fd.
+JWT_IAT_AFTER_CURRENT_TIME.useraction=P\u0159ed pou\u017eit\u00edm tohoto tokenu vy\u010dkejte na \u010das po \u010dase ur\u010den\u00e9m n\u00e1rokem 'iat', nebo z\u00edskejte nov\u00fd token s hodnotou 'iat', kter\u00e1 ur\u010duje datum v minulosti.
+
+# Do not translate "JSON Web Token", "JWT", "iss", "jti"
+# 0=iss claim value (string), 1=jti claim value (string)
+JWT_DUP_JTI_ERR=CWWKS6045E: Token JSON Web Token (JWT) se stejn\u00fdm n\u00e1rokem ''iss'' [{0}] a n\u00e1rokem ''jti'' [{1}] byl ji\u017e p\u0159ijat, co\u017e m\u016f\u017ee zna\u010dit \u00fatok p\u0159ehr\u00e1n\u00edm. Ujist\u011bte se, \u017ee vydavatel tokenu poskytuje token s jedine\u010dn\u00fdm n\u00e1rokem ''jti''.
+JWT_DUP_JTI_ERR.explanation=Zadan\u00fd token zahrnuje n\u00e1rok 'jti', kter\u00fd jedine\u010dn\u011b identifikuje token. Jin\u00fd token se stejnou hodnotou 'iss' a hodnotou 'jti' byl ji\u017e d\u0159\u00edve p\u0159ijat a zpracov\u00e1n. Duplikace n\u00e1rok\u016f m\u016f\u017ee zna\u010dit mo\u017en\u00fd \u00fatok p\u0159ehr\u00e1n\u00edm.
+JWT_DUP_JTI_ERR.useraction=Ujist\u011bte se, \u017ee vydavatel tokenu poskytuje nov\u00fd token s jedine\u010dn\u00fdm n\u00e1rokem 'jti'.
+
+# Do not translate "JWT", "trustStoreRef" 
+# Intended to be a child of JWT_ERROR_GETTING_PUBLIC_KEY
+JWT_SIGNER_CERT_NOT_AVAILABLE=CWWKS6046E: Nelze na\u010d\u00edst podpisov\u00fd kl\u00ed\u010d z \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti. V ur\u010den\u00e9m \u00falo\u017ei\u0161ti \u00fadaj\u016f o d\u016fv\u011bryhodnosti neexistuj\u00ed \u017e\u00e1dn\u00e9 certifik\u00e1ty podepsan\u00e9ho.
+JWT_SIGNER_CERT_NOT_AVAILABLE.explanation=\u00dalo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti ur\u010den\u00e9 konfigurac\u00ed odb\u011bratele JWT neobsahuje \u017e\u00e1dn\u00e9 certifik\u00e1ty podepsan\u00e9ho. Certifik\u00e1t podepsan\u00e9ho je nezbytn\u00fd o v\u011b\u0159en\u00ed tokenu JWT.
+JWT_SIGNER_CERT_NOT_AVAILABLE.useraction=Ov\u011b\u0159te, \u017ee \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti, kter\u00e9 je pou\u017eit\u00e9 konfigurac\u00ed odb\u011bratele JWT, obsahuje alespo\u0148 jeden certifik\u00e1t podepsan\u00e9ho. \u00dalo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti m\u016f\u017ee b\u00fdt nakonfigurov\u00e1no pomoc\u00ed atributu 'trustStoreRef' v konfiguraci odb\u011bratele JWT nebo jako sou\u010d\u00e1st celkov\u00e9 konfigurace SSL serveru.
+
+# Do not translate "JWT", "trustedAlias"
+# single quoted terms do NOT use double single quotes when there are no replacement variables
+# Intended to be a child of JWT_ERROR_GETTING_PUBLIC_KEY
+JWT_SIGNER_CERT_AMBIGUOUS=CWWKS6047E: Nelze na\u010d\u00edst podpisov\u00fd kl\u00ed\u010d z \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti. Atribut 'trustedAlias' nebyl ur\u010den v konfiguraci odb\u011bratele JWT a v \u00falo\u017ei\u0161ti \u00fadaj\u016f o d\u016fv\u011bryhodnosti je v\u00edce certifik\u00e1t\u016f podepsan\u00e9ho.
+JWT_SIGNER_CERT_AMBIGUOUS.explanation=V nakonfigurovan\u00e9m \u00falo\u017ei\u0161ti \u00fadaj\u016f o d\u016fv\u011bryhodnosti bylo nalezeno v\u00edce certifik\u00e1t\u016f podepsan\u00e9ho. Pokud je v \u00falo\u017ei\u0161ti \u00fadaj\u016f o d\u016fv\u011bryhodnosti v\u00edce certifik\u00e1t\u016f, mus\u00ed b\u00fdt atribut 'trustedAlias' ur\u010den v konfiguraci odb\u011bratele JWT, aby se zjistilo, kter\u00e9 certifik\u00e1ty pou\u017e\u00edt.
+JWT_SIGNER_CERT_AMBIGUOUS.useraction=Ur\u010dete atribut konfigurace odb\u011bratele JWT 'trustedAlias' s aliasem p\u0159\u00edslu\u0161n\u00e9ho certifik\u00e1tu podepsan\u00e9ho.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_PROPAGATION_INVALID_TOKEN_ERR=CWWKS6048E: Rozhran\u00ed API filtru po\u017eadavk\u016f klienta nezajistilo \u0161\u00ed\u0159en\u00ed tokenu JWT (JSON Web Token).
+JWT_PROPAGATION_INVALID_TOKEN_ERR.explanation=Rozhran\u00ed API filtru po\u017eadavk\u016f klienta nez\u00edskalo platn\u00fd token JWT z ov\u011b\u0159en\u00e9ho p\u0159edm\u011btu. Rozhran\u00ed API nem\u016f\u017ee pokra\u010dovat v \u0161\u00ed\u0159en\u00ed tokenu JWT, proto\u017ee token je neplatn\u00fd.
+JWT_PROPAGATION_INVALID_TOKEN_ERR.useraction=Zajist\u011bte \u00fasp\u011b\u0161nost toku ov\u011b\u0159ov\u00e1n\u00ed, k n\u011bmu\u017e doch\u00e1z\u00ed p\u0159ed \u0161\u00ed\u0159en\u00edm. Vyhledejte v protokolech p\u0159\u00edpadn\u00e9 chyby ov\u011b\u0159ov\u00e1n\u00ed \u010di autorizace, kter\u00e9 mohly zabr\u00e1nit vytvo\u0159en\u00ed tokenu a jeho zahrnut\u00ed do p\u0159edm\u011btu.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0: jwk url, 1:http status, 2: error message or the responding content
+JWT_JWK_RETRIEVE_FAILED=CWWKS6049E: A Z adresy URL [{0}] nebyl vr\u00e1cen kl\u00ed\u010d JWK (JSON Web Key). Stav odezvy: [{1}], vr\u00e1cen\u00fd obsah: [{2}].
+JWT_JWK_RETRIEVE_FAILED.explanation=Na\u010dten\u00ed kl\u00ed\u010de JWK prost\u0159ednictv\u00edm uveden\u00e9 adresy URL se nezda\u0159ilo. Stavov\u00fd k\u00f3d a obsah odezvy jsou obsa\u017eeny i v chybov\u00e9 zpr\u00e1v\u011b.
+JWT_JWK_RETRIEVE_FAILED.useraction=Ujist\u011bte se, \u017ee je spr\u00e1vn\u011b nastaveno s\u00ed\u0165ov\u00e9 prost\u0159ed\u00ed a ov\u011b\u0159te adresu URL kl\u00ed\u010de JWK v konfiguraci.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0: error
+JWT_HTTPS_WITH_SSLCONTEXT_NULL=CWWKS6050E: Odb\u011bratel tokenu JWT (JSON Web Token) [{1}] nemohl vytvo\u0159it kontext SSL kv\u016fli [{0}]. Zkontrolujte, zda je funkce SSL spr\u00e1vn\u011b nakonfigurovan\u00e1.
+JWT_HTTPS_WITH_SSLCONTEXT_NULL.explanation=Konfigurace odb\u011bratele JWT je nakonfigurov\u00e1na, aby vyu\u017e\u00edvala sch\u00e9ma HTTPS, ale p\u0159ipojen\u00ed prost\u0159ednictv\u00edm protokolu HTTPS nelze nav\u00e1zat. Je mo\u017en\u00e9, \u017ee nen\u00ed povolena funkce SSL. Je mo\u017en\u00e9, \u017ee chyb\u00ed prvek keyStore nebo \u017ee je tento prvek nespr\u00e1vn\u011b zad\u00e1n. 
+JWT_HTTPS_WITH_SSLCONTEXT_NULL.useraction=Zkontrolujte, zda jsou v souboru server.xml spr\u00e1vn\u00e9 informace o SSL. Projd\u011bte si akce u\u017eivatele pro tuto chybu, kter\u00e9 se zobrazily p\u0159ed touto zpr\u00e1vou.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=jwks uri, 1=Error message (if present)
+JWT_ERROR_GETTING_JWK_KEY=CWWKS6051E: Nelze na\u010d\u00edst kl\u00ed\u010d JWK (JSON Web Key) z adresy URL [{0}]. {1}
+JWT_ERROR_GETTING_JWK_KEY.explanation=Na\u010dten\u00ed kl\u00ed\u010de JWK prost\u0159ednictv\u00edm uveden\u00e9 adresy URL se nezda\u0159ilo.
+JWT_ERROR_GETTING_JWK_KEY.useraction=Ujist\u011bte se, \u017ee je spr\u00e1vn\u011b nastaveno s\u00ed\u0165ov\u00e9 prost\u0159ed\u00ed a ov\u011b\u0159te adresu URL kl\u00ed\u010de JWK v konfiguraci.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Issuer claim of the token, 1=JWT configuration ID
+JWT_TRUSTED_ISSUERS_NULL=CWWKS6052E: Vydavatel [{0}] zadan\u00e9ho tokenu JSON Web Token (JWT) nen\u00ed d\u016fv\u011bryhodn\u00fd, proto\u017ee konfigurace JWT [{1}] neuv\u00e1d\u00ed \u017e\u00e1dn\u00e9 d\u016fv\u011bryhodn\u00e9 vydavatele.
+JWT_TRUSTED_ISSUERS_NULL.explanation=Konfigurace serveru specifikuje, kte\u0159\u00ed vydavatel\u00e9 jsou d\u016fv\u011bryhodn\u00ed pro ov\u011b\u0159en\u00ed token\u016f JWT. Konfigurace tokenu JWT nespecifikuje \u017e\u00e1dn\u00e9 d\u016fv\u011bryhodn\u00e9 u\u017eivatele, a proto token nem\u016f\u017ee b\u00fdt ov\u011b\u0159en.
+JWT_TRUSTED_ISSUERS_NULL.useraction=Ujist\u011bte se, \u017ee konfigurace tokenu JWT specifikovan\u00e1 ve zpr\u00e1v\u011b definuje alespo\u0148 jednoho d\u016fv\u011bryhodn\u00e9ho vydavatele. Ujist\u011bte se, \u017ee vydavatel tokenu JWT odpov\u00edd\u00e1 jednomu z d\u016fv\u011bryhodn\u00fdch vydavatel\u016f specifikovan\u00fdch ve va\u0161\u00ed konfiguraci tokenu JWT.

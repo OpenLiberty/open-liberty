@@ -1,0 +1,41 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs-2.0.ejb/resources/com/ibm/ws/jaxrs20/ejb/internal/resources/JaxRsEJBMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS EJB Code
+#RANGE 1100 - 1199
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+
+
+warning.jaxrs.ejb.resource.mismatch=CWWKW1100W: JAXRS-2.0 Resource {0} \ubc94\uc704 {1}\uc774(\uac00) EJB \ubc94\uc704 {2}\uacfc(\uc640) \uc77c\uce58\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. Liberty\uac00 {3}\uc5d0\uc11c \uc790\uc6d0 \uc778\uc2a4\ud134\uc2a4\ub97c \uac00\uc838\uc635\ub2c8\ub2e4.
+warning.jaxrs.ejb.resource.mismatch.explanation=JAXRS-2.0 Resource \ubc94\uc704\uac00 EJB \ubc94\uc704\uc640 \uc77c\uce58\ud558\uc9c0 \uc54a\uace0 \uc790\uc6d0 \uc778\uc2a4\ud134\uc2a4\uac00 EJB\uc5d0 \uc788\uc73c\uba74 Liberty\uac00 EJB\uc5d0\uc11c \uc790\uc6d0 \uc778\uc2a4\ud134\uc2a4\ub97c \uac00\uc838\uc635\ub2c8\ub2e4.
+warning.jaxrs.ejb.resource.mismatch.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc74c
+
+
+warning.jaxrs.ejb.provider.mismatch=CWWKW1102W: JAXRS-2.0 Provider {0}\uc758 EJB \ubc94\uc704\ub294 {1}\uc785\ub2c8\ub2e4. Liberty\uac00 {2}\uc5d0\uc11c \uc81c\uacf5\uc790 \uc778\uc2a4\ud134\uc2a4\ub97c \uac00\uc838\uc635\ub2c8\ub2e4.
+warning.jaxrs.ejb.provider.mismatch.explanation=\uc81c\uacf5\uc790 \uc778\uc2a4\ud134\uc2a4\ub294 \uc2f1\uae00\ud1a4 \uc804\uc6a9\uc785\ub2c8\ub2e4. \uc81c\uacf5\uc790\uc758 EJB \ubc94\uc704\uac00 Dependent \ub610\ub294 ApplicationScoped\uc778 \uacbd\uc6b0 Liberty\uac00 EJB\uc5d0\uc11c \uc81c\uacf5\uc790 \uc778\uc2a4\ud134\uc2a4\ub97c \uac00\uc838\uc635\ub2c8\ub2e4.
+warning.jaxrs.ejb.provider.mismatch.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc74c
+
+warning.failed.instantiate.ejb.instance=CWWKW1103W: {0} \ud074\ub798\uc2a4\uc758 EJB \uc778\uc2a4\ud134\uc2a4\ub97c \uc778\uc2a4\ud134\uc2a4\ud654\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. Liberty\uac00 JAXRS\uc5d0\uc11c \uc778\uc2a4\ud134\uc2a4\ub97c \uac00\uc838\uc635\ub2c8\ub2e4.
+warning.failed.instantiate.ejb.instance.explanation= EJB \ud074\ub798\uc2a4 {0}\uc5d0 \uae30\ubcf8 \uc0dd\uc131\uc790\uac00 \uc5c6\uc2b5\ub2c8\ub2e4. Liberty\uc5d0\uc11c EJB \uc778\uc2a4\ud134\uc2a4\ub97c \uc778\uc2a4\ud134\uc2a4\ud654\ud558\ub824\uace0 \ud560 \ub54c InstantiationException \uc608\uc678\uac00 \ubc1c\uc0dd\ud569\ub2c8\ub2e4.
+warning.failed.instantiate.ejb.instance.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc74c
+
+error.failed.toloadejbclass=CWWKW1104W: EJB \ud074\ub798\uc2a4 {0}\uc744(\ub97c) \ub85c\ub4dc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+error.failed.toloadejbclass.explanation= EJB \ud074\ub798\uc2a4 {0}\uc744(\ub97c) \ub85c\ub4dc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+error.failed.toloadejbclass.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \uc815\uc815\ud558\uc5ec \ubb38\uc81c\ub97c \ud574\uacb0\ud558\uc2ed\uc2dc\uc624.

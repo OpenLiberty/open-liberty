@@ -1,0 +1,135 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.webcontainer.security/resources/com/ibm/ws/webcontainer/security/resources/WebAppSecurityMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Web Application Security Collaborator
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9100 - CWWKS9199
+
+MISSING_SEC_ROLE_REF_ROLE_LINK=CWWKS9100W: Nel servlet {0}, nell''elemento <security-role-ref> per <role-name>{1}</role-name> manca l''elemento <role-link> corrispondente.
+MISSING_SEC_ROLE_REF_ROLE_LINK.explanation=La voce <role-link> per l'elemento <security-role-ref> \u00e8 necessaria per associare l'elemento <role-name> ad un ruolo di sicurezza reale.
+MISSING_SEC_ROLE_REF_ROLE_LINK.useraction=Definire la voce <role-link> mancante per l'elemento <security-role-ref>.
+
+INVALID_SEC_ROLE_REF_ROLE_LINK=CWWKS9101W: Nel servlet {0}, l''elemento <role-link>{1}</role-link> per <role-name>{2}</role-name> non \u00e8 un elemento <security-role> definito.
+INVALID_SEC_ROLE_REF_ROLE_LINK.explanation=La voce <role-link> per l'elemento <security-role-ref> \u00e8 necessaria per associare l'elemento <role-name> ad un ruolo di sicurezza reale.
+INVALID_SEC_ROLE_REF_ROLE_LINK.useraction=Creare un elemento <security-role> per il nome <role-link> oppure modificare la voce <role-link> in modo da indicare un nome <security-role> esistente.
+
+MULTIPLE_URL_PATTERN_DEFINED=CWWKS9102W: Pi\u00f9 elementi <url-pattern>{0}</url-pattern> definiti per <servlet-name>{1}</servlet-name> e <servlet-name>{2}</servlet-name>.
+MULTIPLE_URL_PATTERN_DEFINED.explanation=La voce <url-pattern> nell'elemento <servlet-mapping> associa un elemento <servlet-name> al pattern specificato. L'utilizzo dello stesso pattern crea un'associazione ambigua.
+MULTIPLE_URL_PATTERN_DEFINED.useraction=Modificare l'elemento <url-pattern>, in modo che sia univoco.
+
+AUTHZ_TABLE_NOT_CREATED=CWWKS9103E: Impossibile creare la tabella di autorizzazione per l''applicazione {0}.
+AUTHZ_TABLE_NOT_CREATED.explanation=La tabella di autorizzazione per un'applicazione non \u00e8 stata creata, pertanto nessun utente sar\u00e0 autorizzato.
+AUTHZ_TABLE_NOT_CREATED.useraction=Esaminare i log per determinare il motivo per cui la tabella di autorizzazione non \u00e8 stata creata.
+
+SEC_AUTHZ_FAILED=CWWKS9104A: Autorizzazione non riuscita per l''utente {0} durante il richiamo di {1} su {2}. L''utente non ha accesso ad alcuno dei ruoli richiesti: {3}.
+SEC_AUTHZ_FAILED.explanation=L'utente non dispone delle autorizzazioni necessarie per accedere alla risorsa.
+SEC_AUTHZ_FAILED.useraction=Se questo errore non \u00e8 previsto, rivolgersi all'amministratore della sicurezza. Se \u00e8 richiesto l'accesso alla risorsa protetta, l'utente deve essere associato ad uno dei ruoli che proteggono la risorsa.
+
+SSL_CAN_NOT_DETERMINE_PORT=CWWKS9105E: Non \u00e8 stato possibile determinare la porta SSL per il reindirizzamento automatico. Controllare i log per verificare che la porta HTTPS (SSL) sia stata avviata o controllare eventuali errori correlati alla configurazione SSL, ad esempio verificare che non manchi o non sia corretto un elemento keyStore.
+SSL_CAN_NOT_DETERMINE_PORT.explanation=Si \u00e8 verificato un errore interno. Non \u00e8 stato possibile determinare la porta SSL.
+SSL_CAN_NOT_DETERMINE_PORT.useraction=Non \u00e8 possibile intraprendere alcuna azione.
+
+SEC_FORM_LOGIN_BAD_CONFIG=CWWKS9106E: Errore di configurazione SSO. FormLogin \u00e8 configurato per l''applicazione Web {0} ma SSO non \u00e8 abilitato nelle impostazioni di sicurezza.  SSO deve essere abilitato per l''utilizzo di FormLogin.
+SEC_FORM_LOGIN_BAD_CONFIG.explanation=Quando il meccanismo di autenticazione \u00e8 LTPA, \u00e8 necessario abilitare anche SSO, se una qualsiasi delle applicazioni Web utilizza il login FORM.
+SEC_FORM_LOGIN_BAD_CONFIG.useraction=Abilitare SSO nelle impostazioni di sicurezza, quindi riavviare il server delle applicazioni.
+
+SEC_FORM_POST_NULL_OR_TOO_LARGE=CWWKS9107W: I parametri post sono null o troppo grandi per essere memorizzati in un cookie.
+SEC_FORM_POST_NULL_OR_TOO_LARGE.explanation=I parametri post sono null oppure sono pi\u00f9 grandi della dimensione massima configurata per l'opzione di autenticazione dell'applicazione Web, postParamCookieSize.
+SEC_FORM_POST_NULL_OR_TOO_LARGE.useraction=Se i parametri post sono troppo grandi, incrementare la dimensione dell'opzione postParamCookieSize.
+
+SEC_TAI_VALIDATE_FAILED=CWWKS9107E: TAI (Trust Association Init) non \u00e8 in grado di caricare la classe di associazione trust {0}.
+SEC_TAI_VALIDATE_FAILED.explanation=Quando per una determinata richiesta viene individuato l'intercettatore appropriato, questo convalida il trust con il server proxy inverso. \
+Questo messaggio di errore suggerisce che la convalida non \u00e8 riuscita e che, quindi, il proxy inverso non pu\u00f2 essere considerato affidabile. \
+Ad esempio, \u00e8 possibile che sia stata fornita una password non corretta o scaduta.
+SEC_TAI_VALIDATE_FAILED.useraction=In un ambiente di produzione, l'utente potrebbe essere avvisato per verificare se c'\u00e8 un intruso nel sistema. \
+In un ambiente di sviluppo in cui \u00e8 in corso il test, verificare che gli input previsti dal server proxy inverso vengano passati correttamente all'intercettatore.  \
+La natura di tali input dipende dal modo in cui viene stabilita l'associazione trust. \
+Ad esempio, il metodo pi\u00f9 semplice consiste nel fornire un nome utente e una password mediante l'intestazione Autenticazione di base.  
+
+SEC_TAI_USER_EXCEPTION=CWWKS9108E: Impossibile trovare un utente valido per l'associazione trust.
+SEC_TAI_USER_EXCEPTION.explanation=Un intercettatore restituisce il nome utente di autenticazione. \
+Tale nome utente non \u00e8 stato restituito.
+SEC_TAI_USER_EXCEPTION.useraction=Verificare che il server proxy inverso stia inserendo il nome utente corretto nella richiesta HTTP, prima che invii la richiesta al server delle applicazioni.
+
+SEC_TAI_GENERAL_EXCEPTION=CWWKS9109E: Si \u00e8 verificata un''eccezione imprevista durante l''associazione trust. L''eccezione \u00e8 {0}.
+SEC_TAI_GENERAL_EXCEPTION.explanation=Questa eccezione fa riferimento a tutte le altre eccezioni che possono essere create da un intercettatore, durante la convalida del trust con il server proxy inverso e durante l'acquisizione del nome utente autenticato, ad eccezione di WebTrustAssociationFailedException e WebTrustAssociationUserException.
+SEC_TAI_GENERAL_EXCEPTION.useraction=Eseguire il debug del problema dalla traccia di stack che viene stampata insieme a questo messaggio di errore. \
+\u00c8 anche possibile attivare la traccia di debug per ottenere ulteriori informazioni sulla natura dell'eccezione.
+
+AUTHZ_TABLE_DUPLICATE_APP_NAME=CWWKS9110E: Pi\u00f9 applicazioni hanno il nome {0}. Le politiche di autorizzazione della sicurezza richiedono che i nomi siano univoci.
+AUTHZ_TABLE_DUPLICATE_APP_NAME.explanation=I nomi applicazione devono essere univoci affinch\u00e9 la politica di autorizzazione della sicurezza possa essere applicata.
+AUTHZ_TABLE_DUPLICATE_APP_NAME.useraction=Modificare le applicazioni in modo che abbiano dei nomi univoci e riavviare l'applicazione.
+
+AUTHZ_INVALID_SECURITYROLE_CONFIG=CWWKS9111E: L''oggetto utilizzato per creare la tabella di autorizzazione, {0}, non \u00e8 valido e la tabella non verr\u00e0 creata. L''oggetto deve essere un''istanza della classe SecurityRoles.
+AUTHZ_INVALID_SECURITYROLE_CONFIG.explanation=L'oggetto utilizzato per creare la tabella di autorizzazione deve essere un'istanza della classe SecurityRoles.
+AUTHZ_INVALID_SECURITYROLE_CONFIG.useraction=Verificare che l'oggetto passato all'API per la creazione della tabella di autorizzazione sia un'istanza della classe SecurityRoles.
+
+WEB_APP_SECURITY_CONFIGURATION_UPDATED=CWWKS9112A: Le impostazioni di sicurezza dell''applicazione Web sono state modificate. Sono state modificate le seguenti propriet\u00e0: {0}
+WEB_APP_SECURITY_CONFIGURATION_UPDATED.explanation=Sono state modificate le impostazioni di sicurezza dell'applicazione Web. Il valore della propriet\u00e0 nel messaggio sono i nuovi valori.
+WEB_APP_SECURITY_CONFIGURATION_UPDATED.useraction=Non \u00e8 richiesta alcuna azione.
+
+SSL_PORT_IS_NULL=CWWKS9113E: La porta SSL non \u00e8 attiva. La richiesta http in entrata non pu\u00f2 essere reindirizzata ad una porta sicura. Controllare il file server.xml per individuare gli errori di configurazione. Probabilmente la porta https \u00e8 disabilitata. L'elemento keyStore potrebbe essere mancante o specificato in modo non corretto. La funzione SSL non pu\u00f2 essere abilitata. 
+SSL_PORT_IS_NULL.explanation=Non \u00e8 stato possibile determinare la porta SSL, ci\u00f2 ha impedito il reindirizzamento della richiesta HTTP in entrata alla porta HTTPS. Ci\u00f2 pu\u00f2 accadere se vi \u00e8 un errore di configurazione nell'elemento keyStore o se la funzione SSL \u00e8 mancante.
+SSL_PORT_IS_NULL.useraction=Assicurarsi di disporre delle informazioni SSL corrette nel file server.xml.
+
+SSL_REQ_URL_MALFORMED_EXCEPTION=CWWKS9114E: La richiesta http in entrata non pu\u00f2 essere reindirizzata ad una porta sicura perch\u00e9 l''URL della richiesta servlet {0} non \u00e8 stato formato correttamente. Verificare che l''URL della richiesta sia corretto.
+SSL_REQ_URL_MALFORMED_EXCEPTION.explanation=l'URL della richiesta servlet non \u00e8 stato formato correttamente, ci\u00f2 ha impedito il reindirizzamento della richiesta HTTP in entrata alla porta HTTPS.
+SSL_REQ_URL_MALFORMED_EXCEPTION.useraction=Verificare che l'URL della richiesta servlet sia corretto.
+
+SEC_WEB_INTERNAL_SERVER_ERROR=CWWKS9115E: Il server ha rilevato una condizione non prevista che ha impedito di soddisfare la richiesta del metodo {0} per l''URL {1}. Per ulteriori informazioni, esaminare i log del server.
+SEC_WEB_INTERNAL_SERVER_ERROR.explanation=Una risposta del servlet indica che si \u00e8 verificato un errore interno del server.
+SEC_WEB_INTERNAL_SERVER_ERROR.useraction=Per ulteriori informazioni, esaminare i log del server. Se il problema persiste, consultare le informazioni relative alla determinazione dei problemi sulla pagina di supporto di WebSphere Application Server all'indirizzo http://www.ibm.com/software/webservers/appserv/was/support/. 
+
+SEC_WEB_NULL_AUTHENTICATOR=CWWKS9116E: Il login all''URL {0} non \u00e8 riuscito per l''utente {1} a causa di un errore interno. Per ulteriori informazioni, esaminare i log del server.
+SEC_WEB_NULL_AUTHENTICATOR.explanation=Il processo di login non \u00e8 stato completato a causa di un errore interno. 
+SEC_WEB_NULL_AUTHENTICATOR.useraction=Per ulteriori informazioni, esaminare i log del server. Se il problema persiste, consultare le informazioni relative alla determinazione dei problemi sulla pagina di supporto di WebSphere Application Server all'indirizzo http://www.ibm.com/software/webservers/appserv/was/support/. 
+
+SEC_WEB_ILLEGAL_REQUEST=CWWKS9117E: Il metodo {0} non \u00e8 consentito per il processo per l''URL {1}. Se questo errore non \u00e8 previsto, accertarsi che l''applicazione consenta di utilizzare i metodi che sta richiedendo il client.
+SEC_WEB_ILLEGAL_REQUEST.explanation=L'elaborazione di un metodo richiesto \u00e8 proibita.
+SEC_WEB_ILLEGAL_REQUEST.useraction=Se questo errore non \u00e8 previsto, accertarsi che l'applicazione consenta di utilizzare i metodi che sta richiedendo il client.
+
+GETFORMLOGOUTEXTENSIONPROCESSOR_EXCEPTION=CWWKS9118E: Si \u00e8 verificato un errore interno. Eccezione {0}
+GETFORMLOGOUTEXTENSIONPROCESSOR_EXCEPTION.explanation=CMSG0001
+GETFORMLOGOUTEXTENSIONPROCESSOR_EXCEPTION.useraction=CMSG0002
+
+AUTHENTICATE_CACHE_REMOVAL_EXCEPTION=CWWKS9119W: L''utente {0} non ha completato correttamente lo scollegamento perch\u00e9 si \u00e8 verificata un''eccezione imprevista durante la rimozione dei cookie dell''utente dalla cache di autenticazione. L''eccezione \u00e8 {1}. Consultare i log del server per ulteriori informazioni, quindi scollegare nuovamente l''utente, se possibile.
+AUTHENTICATE_CACHE_REMOVAL_EXCEPTION.explanation=Lo scollegamento dell'utente non \u00e8 stato completato correttamente perch\u00e9 si \u00e8 verificata un'eccezione imprevista durante la rimozione dei cookie dell'utente dalla cache di autenticazione.
+AUTHENTICATE_CACHE_REMOVAL_EXCEPTION.useraction=Consultare i log del server per ulteriori informazioni, quindi scollegare nuovamente l'utente, se possibile. Se il problema persiste, consultare le informazioni relative alla determinazione dei problemi sulla pagina di supporto di WebSphere Application Server all'indirizzo http://www.ibm.com/software/webservers/appserv/was/support/. 
+
+INVALID_FORM_LOGIN_CONFIGURATION=CWWKS9120W: Nella configurazione di login del modulo manca la definizione per {0} 
+INVALID_FORM_LOGIN_CONFIGURATION.explanation=Nella configurazione di login del modulo manca la pagina di login o la pagina di errore o entrambe.
+INVALID_FORM_LOGIN_CONFIGURATION.useraction=Verificare che la configurazione di login del modulo includa le definizioni sia per la pagina di login che per una pagina di errore.
+
+OSGI_SERVICE_ERROR=CWWKS9121E: Il servizio OSGi {0} non \u00e8 disponibile.
+OSGI_SERVICE_ERROR.explanation=Il servizio OSGi specificato non \u00e8 disponibile.
+OSGI_SERVICE_ERROR.useraction=Riavviare il server con l'opzione "clean".
+
+UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED=CWWKS9122I:  Per l''URL {0} nell''applicazione {1}, i seguenti metodi HTTP non sono coperti e sono accessibili: {2}
+UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED.explanation=L'elemento deny-uncovered-http-methods non \u00e8 specificato nel file web.xml per il servlet e ci sono dei metodi HTTP per un pattern URL che sono non protetti. Questi metodi non protetti saranno accessibili.
+UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED.useraction=Assicurarsi che tutti i metodi HTTP a tutti i pattern URL vincolati abbiano le protezioni di sicurezza previste.
+
+UNCOVERED_HTTP_METHODS_FOUND=CWWKS9123I:  Per l''URL {0} nell''applicazione {1}, i seguenti metodi HTTP non sono coperti e non sono accessibili: {2}
+UNCOVERED_HTTP_METHODS_FOUND.explanation=L'elemento deny-uncovered-http-methods \u00e8 specificato nel file web.xml per il servlet e ci sono dei metodi HTTP per un pattern URL che sono non protetti. Questi metodi non protetti non saranno accessibili.
+UNCOVERED_HTTP_METHODS_FOUND.useraction=Assicurarsi che tutti i metodi HTTP a tutti i pattern URL vincolati abbiano le protezioni di sicurezza previste.
+
+SEC_JACC_AUTHZ_FAILED=CWWKS9124A: Autorizzazione dal provider JACC non riuscita per l''utente {0} durante il richiamo di {1} su {2}.
+SEC_JACC_AUTHZ_FAILED.explanation=L'utente non dispone delle autorizzazioni necessarie per accedere alla risorsa. Questa decisione di autorizzazione \u00e8 stata presa dal provider JACC (Java Authorization Contract for Containers) definito dall'utente. 
+SEC_JACC_AUTHZ_FAILED.useraction=Se questo errore non \u00e8 previsto, rivolgersi all'amministratore della sicurezza. Se \u00e8 richiesto l'accesso alla risorsa protetta, l'utente deve essere associato ad uno dei ruoli che proteggono la risorsa. \u00c8 possibile configurare questa autorizzazione tramite il provider JACC (Java Authorization Contract for Containers) definito dall'utente. 
+
+
+SEC_FORM_LOGOUTEXITPAGE_INVALID=CWWKS9125E: L''URL fornito nella logoutExitPage personalizzata del servizio Form-Logout non pu\u00f2 essere visualizzato,requestURL={0}, logoutExitPage={1}. Il logout \u00e8 riuscito ed \u00e8 stata visualizzata la pagina Form-Logout predefinita.
+SEC_FORM_LOGOUTEXITPAGE_INVALID.explanation=Il servizio Form-Logout non \u00e8 riuscito ad eseguire correttamente il reindirizzamento alla pagina specificata nel parametro servelt logoutExitPage. L'URL specificato \u00e8 un URL con formato non corretto oppure il nome host non \u00e8 specificato nella propriet\u00e0 com.ibm.websphere.security.logoutExitPageDomainList.
+SEC_FORM_LOGOUTEXITPAGE_INVALID.useraction=Correggere l'URL specificato nel parametro logoutExitPage.

@@ -1,0 +1,61 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMCG
+#COMPONENTNAMEFOR CWMCG MicroProfile Config API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Config CDI Autofeature - range is 5000-5999
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Config CDI autofeature
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# Unable to determine the generic type of the ConfigValue to be injected at "{0}".
+unable.to.determine.injection.type.CWMCG5001E=CWMCG5001E: Nu se poate determina tipul de proprietate de injectat. Tipul punctului de injec\u0163ie a fost "{0}".
+unable.to.determine.injection.type.CWMCG5001E.explanation=Punctul de injec\u0163ie adnotat cu calificativul @ConfigProperty nu a avut un tip valid.
+unable.to.determine.injection.type.CWMCG5001E.useraction=Asigura\u0163i-v\u0103 c\u0103 punctul de injec\u0163ie are un tip valid pentru proprietatea pe care dori\u0163i s\u0103 o injecta\u0163i.
+
+# The property name must be specified for Constructor and Method configuration property injection.
+unable.to.determine.injection.name.CWMCG5002E=CWMCG5002E: Proprietatea nume trebuie s\u0103 fie specificat\u0103 pentru Constructor \u015fi pentru injectarea propriet\u0103\u0163ii de configurare Metod\u0103.
+unable.to.determine.injection.name.CWMCG5002E.explanation=Nu este posibil s\u0103 se ob\u0163in\u0103 numele implicit al propriet\u0103\u0163ii pentru parametrii Constructors \u015fi Method. Numele corect de proprietate trebuie s\u0103 fie transmis la calificativul @ConfigProperty. 
+unable.to.determine.injection.name.CWMCG5002E.useraction=Seta\u0163i numele corect al propriet\u0103\u0163ii utiliz\u00e2nd calificativul @ConfigProperty.
+
+# InjectionPoint dependency could not be resolved: {0}. The exception is {1}.
+unable.to.resolve.injection.point.CWMCG5003E=CWMCG5003E: Dependen\u0163a InjectionPoint {0} nu a fost rezolvat\u0103. Eroare: {1}
+unable.to.resolve.injection.point.CWMCG5003E.explanation=O proprietate Config injectat\u0103 nu a fost rezolvat\u0103. Fie proprietatea numit\u0103 nu a putut fi g\u0103sit\u0103 sau un Convertor pentru tipul cerut nu a putut rezolva. 
+unable.to.resolve.injection.point.CWMCG5003E.useraction=Verifica\u0163i mesajul serverului \u015fi istoricele FFDC pentru a determina cauza. Asigura\u0163i-v\u0103 c\u0103 proprietatea exist\u0103 \u00een una dintre surse de configurare \u015fi c\u0103 au fost configurate Convertoarele necesare.
+
+# The configuration property named "{0}" was not found.
+property.not.found.CWMCG5004E=CWMCG5004E: Proprietatea de configura\u0163ie "{0}" nu a fost g\u0103sit\u0103.
+property.not.found.CWMCG5004E.explanation=Proprietatea numit\u0103 nu a fost g\u0103sit\u0103 \u00een niciuna din sursele configurate. 
+property.not.found.CWMCG5004E.useraction=Asigura\u0163i-v\u0103 c\u0103 proprietatea exist\u0103 \u00een una dintre surse de configurare.
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Config error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Config API error has occurred: {0}
+temporary.CWMCG5999E=CWMCG5999E: A ap\u0103rut o eroare de API Config: {0}
+temporary.CWMCG5999E.explanation=A ap\u0103rut o eroare de API Config care \u00eempiedic\u0103 func\u0163ionarea normal\u0103.
+temporary.CWMCG5999E.useraction=Examina\u0163i istoricele de server message.log \u015fi FFDC pentru a identifica problema.
+
+

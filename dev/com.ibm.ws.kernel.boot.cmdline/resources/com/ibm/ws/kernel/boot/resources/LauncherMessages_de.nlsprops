@@ -1,0 +1,724 @@
+###############################################################################
+# Copyright (c) 2010, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.boot/resources/com/ibm/ws/kernel/boot/resources/LauncherMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0001 - 0099 com.ibm.ws.kernel.boot.resources.LauncherMessages
+# 0900 - 0999 com.ibm.ws.kernel.boot.resources.LauncherMessages
+# 1000 - 1099 com.ibm.ws.kernel.boot.resources.LauncherMessages
+# ---------- ERROR msgs ----------------------------
+
+audit.launchTime=CWWKE0001I: Der Server {0} wurde gestartet.
+audit.launchTime.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+audit.launchTime.useraction=Es ist keine Aktion erforderlich.
+
+audit.kernelStartTime=CWWKE0002I: Der Kernel wurde nach  {0} gestartet.
+audit.kernelStartTime.explanation=Der Kernel wurde gestartet. Das Intervall (in Sekunden) ist relativ zum Start der Plattform.
+audit.kernelStartTime.useraction=Es ist keine Aktion erforderlich.
+
+info.bootstrapChange=CWWKE0003I: Die Bootstrappositionen wurden ge\u00e4ndert. Deshalb wird ein bereinigter Start des Servers durchgef\u00fchrt.
+info.bootstrapChange.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+info.bootstrapChange.useraction=Es ist keine Aktion erforderlich.
+
+error.badLocation=CWWKE0004E: Das System konnte Positionen f\u00fcr die Serverinstallation nicht aufl\u00f6sen.
+error.badLocation.explanation=Es wurde keine Serverinstallation an einer angegebenen Position gefunden.
+error.badLocation.useraction=Installieren Sie Liberty Profile erneut oder reparieren Sie es. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
+
+
+error.unableToLaunch=CWWKE0005E: Die Laufzeitumgebung konnte nicht gestartet werden.
+error.unableToLaunch.explanation=Es ist ein Problem aufgetreten, das den Start der Laufzeitumgebung verhindert.
+error.unableToLaunch.useraction=\u00dcberpr\u00fcfen Sie die verf\u00fcgbaren Protokolle, um das Problem zu identifizieren und zu beheben.
+
+error.enableIIOPTransport=CWWKE0006E: Aktivieren Sie das ORB-Feature f\u00fcr die ORB-Unterst\u00fctzung.
+error.enableIIOPTransport.explanation=Die ORB-Unterst\u00fctzung (Object Request Broker) setzt das ORB-Feature (Object Request Broker) voraus.
+error.enableIIOPTransport.useraction=Aktivieren Sie das ORB-Feature, um die ORB-Unterst\u00fctzung zu aktivieren.
+ 
+error.cannotConvertEbcdicToAscii=CWWKE0007E: Das System hat die folgende Datei nicht von EBCDIC nach ASCII konvertiert: {0}
+error.cannotConvertEbcdicToAscii.explanation=W\u00e4hrend der Verarbeitung der angegebenen Datei ist ein Fehler aufgetreten, der die Konvertierung vom EBCDIC-Format in das ASCII-Format durch das System verhindert hat. Die EBCDIC-Version der Datei bleibt unbesch\u00e4digt.
+error.cannotConvertEbcdicToAscii.useraction=Konvertieren Sie die Datei manuell, wenn Sie sie auf einem ASCII-basierten System anzeigen m\u00f6chten. Es ist keine Aktion erforderlich, wenn diese Datei vom IBM Support verarbeitet wird.
+
+error.bootPropsURI=CWWKE0008E: Der URI f\u00fcr die Bootstrapeigenschaften hat ein ung\u00fcltiges Format. URI={0}, Ursache={1}
+error.bootPropsURI.explanation=Der URI f\u00fcr die angegebene Datei mit den Bootstrapeigenschaften enth\u00e4lt einen Fehler.
+error.bootPropsURI.useraction=Korrigieren Sie den URI f\u00fcr die Bootstrapeigenschaften und wiederholen Sie dann den Befehl.
+
+# {0} is the path to the missing Java dump file
+error.missingDumpFile=CWWKE0009E: Das System hat die folgende Datei nicht gefunden und deshalb wird die Datei nicht in das Serverspeicherauszugsarchiv eingeschlossen: {0}
+error.missingDumpFile.explanation=Das System ist f\u00fcr die Anforderung und Erfassung von Java-Speicherausz\u00fcgen im Serverspeicherauszugsarchiv konfiguriert. Der angeforderte Java-Speicherauszug wurde nicht im Dateisystem an der angegebenen Position gefunden und wird deshalb nicht im Serverspeicherauszugsarchiv erfasst.
+error.missingDumpFile.useraction=Stellen Sie mithilfe der Serverprotokolle, der Datei console.log und/oder der Datei messages.log fest, ob die angeforderten Java-Speicherausz\u00fcge an einer anderen Position verf\u00fcgbar sind bzw. warum der Java-Speicherauszug fehlgeschlagen ist. Versuchen Sie, alle fehlenden Java-Speicherausz\u00fcge manuell anzufordern und zu erfassen. Suchen Sie in der Dokumentation zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server Support nach Informationen zur manuellen Generierung von Java-Kernspeicherausz\u00fcgen: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.badConfigRoot=CWWKE0010E: Die erforderliche Datei server.xml muss vorhanden und lesbar sein. Pfad: {0} Ursache: {1}
+error.badConfigRoot.explanation=Die Datei server.xml kann nicht gelesen werden oder sie ist nicht vorhanden.
+error.badConfigRoot.useraction=Stellen Sie sicher, dass die Datei server.xml vorhanden ist und vom aktuellen Benutzer gelesen werden kann.
+
+error.archiveTarget=CWWKE0011E: Der Parameter --archive erfordert ein Argument: --archive="<zu archivierende Datei>"
+error.archiveTarget.explanation=Ein erforderliches Argument wurde nicht angegeben.
+error.archiveTarget.useraction=Geben Sie das richtige Argument an und wiederholen Sie dann den Befehl. Verwenden Sie ggf. --help, um eine Beschreibung der Argumente f\u00fcr die angegebene Option anzuzeigen.
+
+error.serverNameCharacter=CWWKE0012E: Der angegebene Servername enth\u00e4lt ein Zeichen, das nicht g\u00fcltig ist (name={0}). \
+Die g\u00fcltigen Zeichen sind alphanumerische Unicode-Zeichen (z. B. \
+0-9, a-z, A-Z), Unterstreichungszeichen (_), Minuszeichen (-), Pluszeichen (+) und Punkte (.). \
+Ein Servername darf nicht mit einem Minuszeichen (-) oder mit einem Punkt (.) beginnen.
+error.serverNameCharacter.explanation=Es wurde ein ung\u00fcltiges Zeichen im Servernamen verwendet.
+error.serverNameCharacter.useraction=Benennen Sie den Server um und verwenden Sie nur g\u00fcltige Zeichen, d. h. alphanumerische Unicode-Zeichen (z. B. 0-9, a-z, A-Z), Unterstreichungszeichen (_), Minuszeichen (-), Pluszeichen (+) und Punkte (.).
+
+error.unknownArgument=CWWKE0013E: Unbekannte Option: {0}
+error.unknownArgument.explanation=Die angegebene Option ist nicht bekannt.
+error.unknownArgument.useraction=Wiederholen Sie den Befehl mit g\u00fcltigen Optionen. Mit --help k\u00f6nnen Sie eine Liste der g\u00fcltigen Optionen anzeigen.
+
+error.bootPropsStream=CWWKE0014E: Das System konnte die angegebenen Bootstrapeigenschaften nicht \u00f6ffnen oder lesen. Pfad: {0} Ursache: {1}
+error.bootPropsStream.explanation=Die Datei bootstrap.properties kann nicht gelesen werden oder sie ist nicht vorhanden.
+error.bootPropsStream.useraction=Stellen Sie sicher, dass die angegebene Datei vorhanden ist und vom aktuellen Benutzer gelesen werden kann.
+
+error.platformBundleException=CWWKE0015E: Beim Starten des Servers sind interne Fehler aufgetreten. 
+error.platformBundleException.explanation=Beim Installieren oder Starten des Servers ist mindestens eine Ausnahme eingetreten. 
+error.platformBundleException.useraction=Stellen Sie sicher, dass das Produkt ordnungsgem\u00e4\u00df installiert wurde. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
+
+error.secPermission=CWWKE0016E: Die Bootstrap-JAR-Datei erfordert die Sicherheitskonfiguration AllPermission, um die Laufzeitumgebung und das OSGi-Framework ({0}) zu starten.
+error.secPermission.explanation=Die Java 2 Security-Berechtigungen reichen nicht aus, um die Laufzeitumgebung und das OSGi-Framework \u00fcber die Bootstrap-JAR-Datei zu starten.
+error.secPermission.useraction=Stellen Sie sicher, dass der Bootstrap-JAR-Datei die Berechtigung AllPermission in der Richtliniendatei f\u00fcr die Java 2 Security erteilt wurde.
+
+error.badBitmode=CWWKE0017E: Der Prozess hat eine 31-Bit-JVM gefunden, die nicht unterst\u00fctzt wird. Die Laufzeitumgebung setzt die 64-Bit-Version von Java 7 oder h\u00f6her voraus.
+error.badBitmode.explanation=Die Systemvariable JAVA_HOME ist so gesetzt, dass sie auf eine 31-Bit-Version von Java verweist.
+error.badBitmode.useraction=Passen Sie die Systemvariable JAVA_HOME so an, dass sie auf eine 64-Bit-Version von Java 7 oder h\u00f6her verweist.
+
+error.unknownException=CWWKE0018E: Beim Starten der Laufzeitumgebung ist eine Ausnahme eingetreten: {0}
+error.unknownException.explanation=Die Ausnahme verhindert das Starten des Servers.
+error.unknownException.useraction=Beheben Sie die Ausnahme, sofern m\u00f6glich, und wiederholen Sie die Aktion. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
+
+error.frameworkDef=CWWKE0019E: Die erforderliche Frameworkdefinition wurde nicht angegeben.
+error.frameworkDef.explanation=Der Serverinstallation fehlen erforderliche Dateien, und der Server konnte nicht gestartet werden.
+error.frameworkDef.useraction=Stellen Sie sicher, dass das Produkt ordnungsgem\u00e4\u00df installiert wurde. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
+
+error.frameworkDefFile=CWWKE0020E: Die angegebene Frameworkdefinition ({0}) ist nicht vorhanden.
+error.frameworkDefFile.explanation=Die Frameworkdefinitionsdatei wurde nicht gefunden.
+error.frameworkDefFile.useraction=Stellen Sie sicher, dass die Frameworkdefinitionsressource vorhanden ist und vom aktuellen Benutzer gelesen werden kann.
+
+error.frameworkJarFile=CWWKE0021E: Das angegebene Framework-Bundle ({0}) ist nicht vorhanden.
+error.frameworkJarFile.explanation=Da angegebene Framework-Bundle-Artefakt wurde nicht gefunden.
+error.frameworkJarFile.useraction=Stellen Sie sicher, dass die Ressource vorhanden ist und vom aktuellen Benutzer gelesen werden kann.
+
+error.kernelDef=CWWKE0022E: Die erforderliche Kerneldefinition wurde nicht angegeben.
+error.kernelDef.explanation=Der Serverinstallation fehlen erforderliche Dateien, und der Server konnte nicht gestartet werden.
+error.kernelDef.useraction=Stellen Sie sicher, dass das Produkt ordnungsgem\u00e4\u00df installiert wurde. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
+
+error.kernelDefFile=CWWKE0023E: Die angegebene Kerneldefinition ({0}) ist nicht vorhanden.
+error.kernelDefFile.explanation=Die angegebene Kerneldefinition wurde nicht gefunden.
+error.kernelDefFile.useraction=Stellen Sie sicher, dass die Kerneldefinitionsressource vorhanden ist und vom aktuellen Benutzer gelesen werden kann.
+
+error.specifiedLocation=CWWKE0025E: Der Wert von {0} muss auf ein Verzeichnis verweisen. \
+Der angegebene Wert verweist auf eine vorhandene Dateiressource. \
+Wert: {1}
+error.specifiedLocation.explanation=Die angegebene Position verweist auf eine vorhandene Datei und nicht auf ein Verzeichnis.
+error.specifiedLocation.useraction=\u00c4ndern Sie die angegebene Position in ein Verzeichnis und wiederholen Sie dann die Aktion.
+
+warning.noPlatformCache=CWWKE0026W: Das System konnte die Plattformcachedatei ({0}) nicht schreiben. Ausnahme: {1}
+warning.noPlatformCache.explanation=Die angegebene Plattformcachedatei konnte nicht geschrieben werden.
+warning.noPlatformCache.useraction=\u00dcberpr\u00fcfen und beheben Sie die Ausnahme und wiederholen Sie dann die Aktion.
+
+warning.singleServer=CWWKE0027W: Es kann nur ein einziger Server in der Befehlszeile angegeben werden. Weitere Namen werden ignoriert (Server={0}, ignoriert={1}).
+warning.singleServer.explanation=Sie k\u00f6nnen nur einen einzigen Server in der Befehlszeile angeben. Der erste Servername wurde verarbeitet. Die verbleibenden Namen wurden ignoriert.
+warning.singleServer.useraction=Es ist keine Aktion erforderlich. Geben Sie nur einen einzigen Server an, um diese Warnung zu vermeiden.
+  
+error.serverAlreadyRunning=CWWKE0029E: Es ist bereits eine Instanz des Servers {0} aktiv.
+error.serverAlreadyRunning.explanation=Sie versuchen, einen Server zu starten, der bereits aktiv ist.
+error.serverAlreadyRunning.useraction=Stoppen Sie die vorhandene Serverinstanz, bevor Sie den Server starten, oder starten Sie einen anderen Server.
+
+# {0} The server name
+# {1} The server directory path
+# {2} The exception thrown when trying to create
+error.creatingNewServer=CWWKE0030E: Beim Erstellen des Servers {0} ist eine Ausnahme eingetreten. Serverpfad: {1} Ursache: {2}
+error.creatingNewServer.explanation=Der angegebene Server konnte nicht erstellt werden.
+error.creatingNewServer.useraction=\u00dcberpr\u00fcfen und beheben Sie die Ausnahme und versuchen Sie dann erneut, den Server zu erstellen.
+
+error.noExistingServer=CWWKE0031E: Der angegebene Server {0} ist nicht vorhanden. Verwenden Sie die Option --create, um einen neuen Server zu erstellen. Serverpfad: {1}
+error.noExistingServer.explanation=Der angegebene Server ist nicht vorhanden. Deshalb kann keine Aktion f\u00fcr diesen Server ausgef\u00fchrt werden.
+error.noExistingServer.useraction=\u00dcberpr\u00fcfen Sie den Namen des Servers oder erstellen Sie einen Server mit dem angegebenen Server und wiederholen Sie dann den Befehl.
+
+## No longer used
+error.bundleInstallException=CWWKE0032E: Beim Installieren der Plattformbundles ist mindestens eine Ausnahme eingetreten.
+error.bundleInstallException.explanation=Beim Installieren der Plattformbundles ist mindestens eine Ausnahme eingetreten.
+error.bundleInstallException.useraction=Identifizieren und beheben Sie die Ausnahmen mithilfe der Protokolle und wiederholen Sie dann die Installation der Bundles.
+
+error.missingBundleException=CWWKE0033E: Plattformbundles wurden nicht gefunden.
+error.missingBundleException.explanation=Mindestens ein Plattformbundle wurde nicht gefunden.
+error.missingBundleException.useraction=Stellen Sie sicher, dass die Plattformressourcen vorhanden sind und vom aktuellen Benutzer gelesen werden k\u00f6nnen.
+
+error.noStartedBundles=CWWKE0034E: Es wurden keine Bundles installiert. \u00dcberpr\u00fcfen Sie das Installationsimage.
+error.noStartedBundles.explanation=Das Installationsimage ist m\u00f6glicherweise nicht vollst\u00e4ndig.
+error.noStartedBundles.useraction=\u00dcberpr\u00fcfen Sie die Installation erneut und versuchen Sie dann erneut, die Bundles zu installieren.
+
+error.initLog=CWWKE0035E: Es ist ein Problem mit der angegebenen Anfangsprotokolldatei aufgetreten. Protokollpfad={0}
+error.initLog.explanation=Die Position der Anfangsprotokolldatei wurde nicht ordnungsgem\u00e4\u00df angegeben oder die Datei ist nicht lesbar.
+error.initLog.useraction=\u00dcberpr\u00fcfen Sie die Position und den Status der Anfangsprotokolldatei.
+
+audit.kernelUpTime=CWWKE0036I: Der Server {0} wurde nach {1} gestoppt.
+audit.kernelUpTime.explanation=Der Kernel wurde nach dem angegebenen Zeitraum (in Sekunden) gestoppt. Das Intervall (in Sekunden) ist relativ zum Start der Plattform.
+audit.kernelUpTime.useraction=Es ist keine Aktion erforderlich.
+
+error.unknown.console.protocol=CWWKE0037E: {0} ist kein unterst\u00fctztes Konsolprotokoll. Stattdessen wird das Protokoll telnet verwendet. 
+error.unknown.console.protocol.explanation=Das angegebene Protokoll wird nicht unterst\u00fctzt. Deshalb verwendet das System das Standardprotokoll (telnet).
+error.unknown.console.protocol.useraction=Es ist keine Aktion erforderlich, um das Standardprotokoll zu verwenden. Andernfalls \u00e4ndern Sie die Konfiguration so, dass ein unterst\u00fctztes Protokoll verwendet wird.
+
+error.rasProvider=CWWKE0038E: Der erforderliche Protokollprovider wurde nicht angegeben.
+error.rasProvider.explanation=Der Serverinstallation fehlen erforderliche Dateien, und der Server konnte nicht gestartet werden.
+error.rasProvider.useraction=Stellen Sie sicher, dass das Produkt ordnungsgem\u00e4\u00df installiert wurde. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
+
+error.rasProviderResolve=CWWKE0039E: Die angegebene JAR-Datei bzw. das angegebene Bundle f\u00fcr den Protokollprovider ({0}) ist nicht vorhanden.
+error.rasProviderResolve.explanation=Die angegebene Protokollproviderressource wurde nicht gefunden.
+error.rasProviderResolve.useraction=Stellen Sie sicher, dass die Protokollproviderressource vorhanden ist und vom aktuellen Benutzer gelesen werden kann.
+
+error.frameworkRestart=CWWKE0040E: Die Plattformbundles konnten nicht \u00fcber den Cache aufgel\u00f6st werden. Starten Sie den Server mit einem bereinigten Start erneut.
+error.frameworkRestart.explanation=Die Plattformbundles konnten nicht \u00fcber den Plattformcache aufgel\u00f6st werden. Dieses Problem kann normalerweise mit einem bereinigten Neustart gel\u00f6st werden.
+error.frameworkRestart.useraction=Starten Sie den Server mit der Option --clean erneut, um den Cache zu bereinigen.
+
+info.frameworkRestart=CWWKE0041I: Der Plattformcache ist nicht synchron. Starten Sie das Framework erneut.
+info.frameworkRestart.explanation=Das Framework wurde erneut gestartet, weil der Plattformcache nicht synchron ist.
+info.frameworkRestart.useraction=Es ist keine Aktion erforderlich.
+
+error.badVersion=CWWKE0042E: Die aktive Java-Version ist nicht korrekt. Die Laufzeitumgebung setzt Java 7 oder h\u00f6her voraus.
+error.badVersion.explanation=Entweder ist eine nicht unterst\u00fctzte Java-Version aktiv oder die Systemvariable JAVA_HOME wurde so definiert, dass sie auf eine \u00e4ltere Version von Java verweist.
+error.badVersion.useraction= F\u00fchren Sie ein Upgrade der Java-Version auf Java 7 durch, oder passen Sie die Systemvariable JAVA_HOME so an, dass sie auf Java 7 verweist.
+
+error.unsupportedLaunch=CWWKE0043E: Die Startposition ist keine lokale Datei. ({0})
+error.unsupportedLaunch.explanation=Die Laufzeitumgebung muss \u00fcber eine lokale Datei gestartet werden, z. B. eine JAR-Datei.
+error.unsupportedLaunch.useraction=Vergewissern Sie sich, dass der verwendete Befehl java -jar <lokale_JAR-Datei> verwendet, um die Laufzeitumgebung zu starten. 
+
+error.serverDirPermission=CWWKE0044E: Es liegt keine Schreibberechtigung f\u00fcr das Serververzeichnis {0} vor.
+error.serverDirPermission.explanation=Das Serververzeichnis muss beschreibbar sein, damit der Server gestartet werden kann.
+error.serverDirPermission.useraction=Vergewissern Sie sich, dass Sie Schreibzugriff auf das Serververzeichnis und den Arbeitsbereich haben.
+
+error.serverDirExists=CWWKE0045E: Der Server {0} konnte nicht erstellt werden, weil das Serververzeichnis {1} bereits vorhanden ist.
+error.serverDirExists.explanation=Das Serververzeichnis darf noch nicht vorhanden sein, wenn ein Server erstellt wird.
+error.serverDirExists.useraction=W\u00e4hlen Sie einen neuen Servernamen aus oder l\u00f6schen Sie das Verzeichnis. F\u00fchren Sie anschlie\u00dfend den Befehl erneut aus.
+
+error.noAttachAPI=CWWKE0046E: Es wurde keine Implementierung der Java-API Attach gefunden.
+error.noAttachAPI.explanation=Die angeforderte Funktion setzt die Java-API voraus, aber es wurde keine Implementierung gefunden.
+error.noAttachAPI.useraction=Geben Sie die Position der Java-API Attach im Klassenpfad an.
+
+error.shutdownClientException=CWWKE0047E: Der Prozesssteuerungsagent wurde mit einer unerwarteten Ausnahme gestoppt: {0}
+error.shutdownClientException.explanation=Die angegebene Ausnahme verhindert eine ordnungsgem\u00e4\u00dfe Ausf\u00fchrung des Prozesssteuerungsagenten.
+error.shutdownClientException.useraction=Beheben Sie die Ausnahme und wiederholen Sie die Aktion.
+
+warning.serverNotFound=CWWKE0048W: Es wurde keine aktive Instanz des Servers mit dem Namen {0} und dem Serververzeichnis {1} gefunden.
+warning.serverNotFound.explanation=Der Prozesssteuerungsagent hat keine aktive Instanz des angegebenen Servers gefunden.
+warning.serverNotFound.useraction=Vergewissern Sie sich, dass eine Instanz des angegebenen Servers aktiv ist und dass diese Instanz unter derselben JRE-Implementierung ausgef\u00fchrt wird.
+
+error.stopServerError=CWWKE0049E: Der Server {0} konnte nicht gestoppt werden. 
+error.stopServerError.explanation=Es wurde zwar eine aktive Instanz des angegebenen Servers gefunden, aber diese wurde nicht ordnungsgem\u00e4\u00df in der Antwort auf einen Stoppbefehl angezeigt. 
+error.stopServerError.useraction=Suchen Sie in den Serverprotokollen nach weiteren Informationen zu dem Grund, aus dem der Server nicht ordnungsgem\u00e4\u00df beendet wurde.
+
+error.invalid.directory=CWWKE0050E: Der Befehlslistener des Servers konnte nicht initialisiert werden. Das Serververzeichnis {0} ist nicht g\u00fcltig.
+error.invalid.directory.explanation=Das Verzeichnis ist nicht vorhanden oder nicht lesbar.
+error.invalid.directory.useraction=Pr\u00fcfen Sie die Konfiguration.
+
+error.packageServerError=CWWKE0051E: Der Server {0} konnte nicht gepackt werden.
+error.packageServerError.explanation=Der angegebene Server konnte nicht gepackt werden.
+error.packageServerError.useraction=Suchen Sie in den Serverprotokollen nach weiteren Informationen. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
+
+error.serverCommand.init=CWWKE0052E: Der Befehlslistener des Servers konnte nicht initialisiert werden, weil eine Ein-/Ausgabe eingetreten ist: {0}
+error.serverCommand.init.explanation=Bei der Initialisierung des Befehlslisteners des Servers ist eine unerwartete Ausnahme eingetreten.
+error.serverCommand.init.useraction=Suchen Sie in den Serverprotokollen nach weiteren Informationen zu dem Grund, aus dem der Befehl fehlgeschlagen ist. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
+
+warning.unrecognized.command=CWWKE0053W: Befehl {0} nicht erkannt
+warning.unrecognized.command.explanation=Der Befehl wurde ignoriert, weil er nicht erkannt wurde.
+warning.unrecognized.command.useraction=Verwenden Sie die Hilfeaktion, um sicherzustellen, dass Sie einen g\u00fcltigen Befehl mit g\u00fcltigen Aktionen ausf\u00fchren. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
+
+error.fileNotFound=CWWKE0054E: Die Datei {0} kann nicht ge\u00f6ffnet werden. 
+error.fileNotFound.explanation=Beim \u00d6ffnen der Datei ist eine Ausnahme des Typs FileNotFoundException eingetreten. 
+error.fileNotFound.useraction=Vergewissern Sie sich, dass der Pfad vorhanden ist, dass Sie Schreibzugriff haben und dass ausreichender Plattenspeicherplatz verf\u00fcgbar ist.
+
+# {0} The date the server was shutdown. 
+# Note {0,date,full} tells the message formatter to expand in the form of Wednesday, Feb 14, 2012 using the server locale (so it'll be location specific)
+# Note {0,time,short} tells the message formatter to expand
+info.stop.request.received=CWWKE0055I: Herunterfahren des Servers angefordert am {0,date,full} um {0,time,short}. Der Server {1} wird beendet.
+info.stop.request.received.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+info.stop.request.received.useraction=Es ist keine Aktion erforderlich.
+
+error.unableZipDir=CWWKE0056E: Das Verzeichnis konnte wegen der folgenden E/A-Ausnahme nicht komprimiert werden: {0} 
+error.unableZipDir.explanation=Es ist eine Ausnahme des Typs IOException eingetreten.
+error.unableZipDir.useraction=Wiederholen Sie die Operation. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
+
+info.introspect.request.received=CWWKE0057I: Es wurde eine Selbst\u00fcberwachungsanforderung empfangen. Der Server gibt den Status aus.
+info.introspect.request.received.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+info.introspect.request.received.useraction=Es ist keine Aktion erforderlich.
+
+warn.packageServer.include.unknownOption=CWWKE0058W: Die Option --include={0} konnte nicht verwendet werden. Es wird stattdessen die Option --include=all verwendet.
+warn.packageServer.include.unknownOption.explanation=Die Option wurde ignoriert, da sie nicht erkannt wurde.
+warn.packageServer.include.unknownOption.useraction=Wiederholen Sie den Befehl mit g\u00fcltigen Optionen. Mit --help k\u00f6nnen Sie eine Liste der g\u00fcltigen Optionen anzeigen.
+
+warn.unableWriteFile=CWWKE0059W: Die Datei {0}kann wegen der folgenden E/A-Ausnahme nicht geschrieben werden: {1} 
+warn.unableWriteFile.explanation=Es ist eine E/A-Ausnahme eingetreten.
+warn.unableWriteFile.useraction=Wiederholen Sie die Operation. Wenn der Fehler weiterhin auftritt, melden Sie das Problem dem IBM Service.
+
+# {0} The name of an iFix jar file
+# {1} The name of a base jar file
+warn.ifix.ignored=CWWKE0060W: Die JAR-Datei {0} f\u00fcr den vorl\u00e4ufigen Fix wird ignoriert, weil die Basis-JAR-Datei {1} nicht vorhanden ist.
+warn.ifix.ignored.explanation=Es wurde eine JAR-Datei f\u00fcr einen vorl\u00e4ufigen Fix gefunden, aber die Basis-JAR-Datei, die der vorl\u00e4ufige Fix anwendet, wurde nicht installiert.
+warn.ifix.ignored.useraction=Fordern Sie einen vorl\u00e4ufigen f\u00fcr die installierte Fixpackversion an oder f\u00fchren Sie eine Aktualisierung auf die entsprechende Fixpackversion durch oder l\u00f6schen Sie die JAR-Datei f\u00fcr den vorl\u00e4ufigen Fix.
+
+warn.fileEncodingNotFound=CWWKE0061W: Die z/OS-CCSID f\u00fcr die Codierung {0} ist nicht vorhanden. Textdateien werden nicht mit Kennungen versehen. 
+warn.fileEncodingNotFound.explanation=Textdateien werden nicht mit den Kennungen der angegebenen Codierung versehen.
+warn.fileEncodingNotFound.useraction=Die Datei muss m\u00f6glicherweise in die Codierung IBM-1047 umgesetzt werden, bevor sie mit Standardeditoren und Textdienstprogrammen angezeigt werden kann.
+
+warn.unableTagFile=CWWKE0062W: Textdateien werden nicht mit Kennungen versehen, weil der Service __chattr mit errno {0} fehlgeschlagen ist. 
+warn.unableTagFile.explanation=Textdateien werden nicht mit den Kennungen der angegebenen Codierung versehen.
+warn.unableTagFile.useraction=Die Datei muss m\u00f6glicherweise in die Codierung IBM-1047 umgesetzt werden, bevor sie mit Standardeditoren und Textdienstprogrammen angezeigt werden kann.
+
+warn.registerNative=CWWKE0063W: Die native Methode mit dem Deskriptornamen {0} kann nicht registriert werden. 
+warn.registerNative.explanation=Die Registrierung der nativen Methode ist fehlgeschlagen.
+warn.registerNative.useraction=Vergewissern Sie sich, dass die native Methode vorhanden ist.
+
+error.loadNativeLibrary=CWWKE0064E: Die native z/OS-Bibliothek kann nicht aus {0} geladen werden.
+error.loadNativeLibrary.explanation=Die native z/OS-Bibliothek kann nicht geladen werden.
+error.loadNativeLibrary.useraction=Vergewissern Sie sich, dass der Pfad vorhanden ist, und wiederholen Sie die Operation. 
+
+# {0} The server name
+# {1} The server directory path
+error.creatingNewServerExists=CWWKE0065E: Beim Erstellen des Servers {0} ist eine Ausnahme eingetreten. Es wurden externe Aktivit\u00e4ten unter dem Serverpfad ({1}) erkannt. Deshalb wurde die Servererstellung gestoppt.
+error.creatingNewServerExists.explanation=Der angegebene Server konnte nicht erstellt werden, weil eine andere Anwendung Dateioperationen im Verzeichnis des neuen Servers ausgef\u00fchrt.
+error.creatingNewServerExists.useraction=\u00dcberpr\u00fcfen Sie, warum Dateiaktivit\u00e4ten in dem Serververzeichnis ausgef\u00fchrt werden, die nicht in den Kontext des Erstellungsbefehls geh\u00f6ren. L\u00f6schen Sie dann das Serververzeichnis und versuchen Sie erneut, den Server zu erstellen.
+
+# {0} The server name
+# {1} The server directory path
+error.creatingNewServerMkDirFail=CWWKE0066E: Es kann kein Verzeichnis f\u00fcr den Server {0} an der folgenden Position erstellt werden: {1}.
+error.creatingNewServerMkDirFail.explanation=er angegebene Server kann nicht erstellt werden, weil entweder nicht genug Speicherplatz zum Erstellen des Servers vorhanden ist oder das System nicht an die Position schreiben kann.
+error.creatingNewServerMkDirFail.useraction=Stellen Sie sicher, dass gen\u00fcgend Plattenspeicherplatz zum Erstellen des Servers verf\u00fcgbar ist und dass Schreibberechtigungen zum Schreiben von Daten in die Position vorhanden sind, bevor Sie erneut versuchen, den Server zu erstellen.
+
+info.javadump.request.received=CWWKE0067I: Es wurde eine Java-Speicherauszugsanforderung empfangen.
+info.javadump.request.received.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+info.javadump.request.received.useraction=Es ist keine Aktion erforderlich.
+
+info.javadump.created=CWWKE0068I: Java-Speicherauszug erstellt: {0}
+info.javadump.created.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+info.javadump.created.useraction=Es ist keine Aktion erforderlich.
+
+warn.javadump.unsupported=CWWKE0069W: Der Java-Speicherauszugstyp {0} wird nicht unterst\u00fctzt.
+warn.javadump.unsupported.explanation=Es wurde ein Speicherauszug angefordert, aber die Server-JVM unterst\u00fctzt den Speicherauszugstyp nicht.
+warn.javadump.unsupported.useraction=Es ist keine Aktion erforderlich.
+
+warn.package.invalid.looseFile=CWWKE0070W: Die nicht deklarierte Datei {0} ist ung\u00fcltig.
+warn.package.invalid.looseFile.explanation= Die Datei wurde nicht gefunden oder das Format der Datei ist falsch.
+warn.package.invalid.looseFile.useraction=Stellen Sie sicher, dass die Datei vorhanden ist und ein g\u00fcltiges Dateiformat hat.
+
+# {0} The name of an interim fix resource
+# {1} The name of a base resource
+warn.ifix.resource.ignored=CWWKE0071W: Der vorl\u00e4ufige Fix {0} wird ignoriert, weil die Basisversion {1} nicht vorhanden ist.
+warn.ifix.resource.ignored.explanation=Es wurde eine Ressource mit einem vorl\u00e4ufigen Fix gefunden, aber die Basisressource, auf die sich der vorl\u00e4ufige Fix bezieht, wurde nicht installiert.
+warn.ifix.resource.ignored.useraction=Fordern Sie einen vorl\u00e4ufigen Fix f\u00fcr die installierte Fixpackstufe an oder f\u00fchren Sie ein Update auf die entsprechende Fixpackstufe durch oder l\u00f6schen Sie die Ressource f\u00fcr den vorl\u00e4ufigen Fix.
+
+# {0} The invalid BLST specification string
+error.blst.spec.invalid=CWWKE0072E: Die BLST-Spezifikationszeichenfolge {0} ist ung\u00fcltig. Die Spezifikation muss das folgende Format haben: <symbolischer_Name>;version="<Versionsbereich>".
+error.blst.spec.invalid.explanation=Die Spezifikationszeichenfolge f\u00fcr die BLST-Datei hat nicht die erforderliche Syntax. Der Server wird nicht gestartet.
+error.blst.spec.invalid.useraction=Geben Sie den symbolischen Namen und den Versionsbereich der BLST-Datei im folgenden Format an: <symbolischer_Name>;version="<Versionsbereich>". Der symbolische Name muss ein g\u00fcltiges OSGi-Token sein. Der Versionsbereich muss ein g\u00fcltiger OSGi-Versionsbereich sein. Au\u00dferdem muss der Versionsbereich eine Ober- und eine Untergrenze, die inklusiv oder exklusiv sein k\u00f6nnen, und ein Qualifikationsmerkmal haben.
+
+# {0} The BLST filename
+error.blst.failed.to.resolve=CWWKE0073E: Die BLST-Datei f\u00fcr {0} kann nicht aufgel\u00f6st werden.
+error.blst.failed.to.resolve.explanation=Die angegebene BLST-Datei wurde nicht gefunden. Der Serverinstallation fehlen erforderliche Dateien, und der Server konnte nicht gestartet werden.
+error.blst.failed.to.resolve.useraction=Geben Sie eine aufl\u00f6sbare BLST-Datei in der Serverdatei bootstrap.properties des Server an.
+
+error.platform.dir.not.found=CWWKE0074E: Das Plattformverzeichnis wurde nicht gefunden.
+error.platform.dir.not.found.explanation=Das Plattformverzeichnis wurde nicht gefunden Der Serverinstallation fehlen erforderliche Dateien, und der Server konnte nicht gestartet werden.
+error.platform.dir.not.found.useraction=Stellen Sie sicher, dass das Produkt ordnungsgem\u00e4\u00df installiert wurde. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
+
+error.unknown.kernel.version=CWWKE0075E: Der Kernelversionsbereich konnte nicht aus dem Bootstrapmanifest gelesen werden.
+error.unknown.kernel.version.explanation=Der Versionsbereich des Kernels konnte nicht gelesen werden. Der Serverinstallation fehlen erforderliche Dateien, und der Server konnte nicht gestartet werden.
+error.unknown.kernel.version.useraction=Stellen Sie sicher, dass das Produkt ordnungsgem\u00e4\u00df installiert wurde. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
+
+# Messages for minify.. 
+error.minify.unable.to.start.server=CWWKE0076E: Eine Abfrage des Servers {0} zur Bestimmung der beizubehaltenden Features ist nicht m\u00f6glich.
+error.minify.unable.to.start.server.explanation=Der angegebene Server konnte nicht abgefragt werden, um die w\u00e4hrend des Packens beizubehaltenden Features zu bestimmen. Das generierte Paketarchiv ist m\u00f6glicherweise ung\u00fcltig.
+error.minify.unable.to.start.server.useraction=Vergewissern Sie sich, dass der angegebene Server gestartet werden kann, und versuchen Sie erneut, das Paket zu packen. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
+
+error.minify.unable.to.stop.server=CWWKE0077E: Der Server {0}, der zur Bestimmung der beizubehaltenden Features gestartet wurde, kann nicht gestoppt werden.
+error.minify.unable.to.stop.server.explanation=Der angegebene Server wurde nach den momentan konfigurierten Features abgefragt, aber nicht wie angefordert heruntergefahren.
+error.minify.unable.to.stop.server.useraction=Vergewissern Sie sich, dass der angegebene Server gestartet werden kann. Stoppen Sie die Packoperation und wiederholen Sie sie anschlie\u00dfend. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
+
+error.minify.unable.to.determine.features=CWWKE0078E: Die f\u00fcr den Server {0} beizubehaltenden Features k\u00f6nnen nicht bestimmt werden.
+error.minify.unable.to.determine.features.explanation=Der Server kann nicht mit den ausgew\u00e4hlten Optionen gepackt werden, weil die konfigurierten Features f\u00fcr den Server nicht bestimmt werden konnten.
+error.minify.unable.to.determine.features.useraction=\u00dcberpr\u00fcfen Sie die Serverkonfiguration und stellen Sie sicher, dass der Server gestartet und gestoppt werden kann. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
+
+error.minify.missing.manifest=CWWKE0079E: Das Packen des Servers {0} ist wegen eines fehlenden Servermanifests fehlgeschlagen.
+error.minify.missing.manifest.explanation=Der Server konnte nicht gepackt werden, weil das Servermanifest fehlt.
+error.minify.missing.manifest.useraction=Stellen Sie sicher, dass das Produkt ordnungsgem\u00e4\u00df installiert wurde. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
+
+error.unable.load.property=CWWKE0080E: Die Eigenschaft {0} in der Datei {1} konnte nicht geladen werden.
+error.unable.load.property.explanation=Die Eigenschaft wurde nicht in der angegebenen Eigenschaftendatei gefunden.
+error.unable.load.property.useraction=Stellen Sie sicher, dass der Eigenschaftsname vorhanden und ordnungsgem\u00e4\u00df angegeben ist.
+
+unable.to.package.missing.file=CWWKE0081E: Der Server {0} kann mit dem angeforderten Betriebssystemfilter {1} nicht gepackt werden, weil die Ressource {2} fehlt.
+unable.to.package.missing.file.explanation=Die Anforderung zum Packen des Servers mit dem angeforderten Betriebssystemfilter wurde wegen einer fehlenden Ressource verhindert.
+unable.to.package.missing.file.useraction=Pr\u00fcfen Sie, ob der angeforderte Betriebssysteminhalt im zu packenden Server durch eine fr\u00fchere Packoperation mit der Option --include=minify entfernt wurde. Wenn ja, wiederholen Sie die Packoperation auf einem Server, dessen Inhalt nicht durch eine fr\u00fchere Packoperation entfernt wurde. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
+
+
+error.unable.to.package=CWWKE0082E: Der Server {0} kann wegen der folgenden E/A-Ausnahme nicht gepackt werden: {1}
+error.unable.to.package.explanation=Beim Packen des erforderlichen Liberty-Inhalts ist eine E/A-Ausnahme eingetreten.
+error.unable.to.package.useraction=Wiederholen Sie die Packoperation auf einem neu installierten Server. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
+
+error.os.without.include=CWWKE0083E: Der Parameter --os kann nur zusammen mit --include=minify verwendet werden.
+error.os.without.include.explanation=Der Parameter --os muss zusammen mit --include=minify verwendet werden, um die w\u00e4hrend einer Packoperation zu unterst\u00fctzenden Betriebssysteme anzugeben.
+error.os.without.include.useraction=Ziehen Sie die Dokumentation zu Rate und entfernen Sie entweder den Parameter --os aus dem Befehl oder f\u00fcgen Sie den Parameter --include=minify hinzu. Wiederholen sie die Operation anschlie\u00dfend.
+
+audit.system.exit=CWWKE0084I: Der Server {0} wird gerade gestoppt, weil der Thread {1} ({2}) die Methode {3} aufgerufen hat: {4}
+audit.system.exit.explanation=Der angegebene Thread hat eine Methode zum Beenden der JVM aufgerufen. Der Server hat die Anforderung abgefangen und versucht, die JVM ordnungsgem\u00e4\u00df zu stoppen.
+audit.system.exit.useraction=Wenn das Stoppen des Servers unerwartet ist, stellen Sie fest, warum der angegebene Thread die Methode aufgerufen hat.
+
+audit.jvm.shutdown=CWWKE0085I: Der Server {0} wird gerade gestoppt, weil die JVM beendet wird.
+audit.jvm.shutdown.explanation=Der Server hat eine Anforderung zum Stoppen der JVM abgefangen und versucht, die JVM ordnungsgem\u00e4\u00df zu stoppen. Die JVM wird m\u00f6glicherweise beendet, weil das Betriebssystem ein Beendigungssignal an den Serverprozess gesendet hat.
+audit.jvm.shutdown.useraction=Wenn das Stoppen des Servers unerwartet ist, stellen Sie fest, ob ein Beendigungssignal an den Serverprozess gesendet wurde.
+
+warning.serverStartedCommandPortDisabled=CWWKE0087W: Der Serverstart f\u00fcr den Server {0} wurde eingeleitet. Es ist nicht bekannt, ob der Start erfolgreich war, da der Serverbefehlsport inaktiviert ist.
+warning.serverStartedCommandPortDisabled.explanation=Der Serverbefehlsport ist f\u00fcr die Kommunikation mit einem aktiven Server erforderlich.  Der Befehlsport f\u00fcr diesen Server wurde explizit inaktiviert. Daher ist nicht bekannt, ob der Serverstart ausgef\u00fchrt wurde.
+warning.serverStartedCommandPortDisabled.useraction=Pr\u00fcfen Sie manuell anhand der Serverprotokolle, ob der Server erfolgreich gestartet wurde.
+
+warning.serverStartedWithPIDCommandPortDisabled=CWWKE0088W: Der Serverstart f\u00fcr den Server {0} mit der Prozess-ID {1} wurde eingeleitet. Es ist nicht bekannt, ob der Start ausgef\u00fchrt wurde, da der Serverbefehlsport inaktiviert ist.
+warning.serverStartedWithPIDCommandPortDisabled.explanation=Der Serverbefehlsport ist f\u00fcr die Kommunikation mit einem aktiven Server erforderlich.  Der Befehlsport f\u00fcr diesen Server wurde explizit inaktiviert. Daher ist nicht bekannt, ob der Serverstart ausgef\u00fchrt wurde.
+warning.serverStartedWithPIDCommandPortDisabled.useraction=Pr\u00fcfen Sie manuell anhand der Serverprotokolle, ob der Server erfolgreich gestartet wurde.
+
+error.serverStopCommandPortDisabled=CWWKE0089E: Der Server {0} konnte nicht gestoppt werden, da der Serverbefehlsport inaktiviert ist.
+error.serverStopCommandPortDisabled.explanation=Der Serverbefehlsport ist f\u00fcr die Kommunikation mit einem aktiven Server erforderlich.  Der Befehlsport f\u00fcr diesen Server ist inaktiviert. Daher kann er nicht \u00fcber dieses Script gestoppt werden.  Beachten Sie, dass der Befehlsport standardm\u00e4\u00dfig inaktiviert ist, wenn ein Server als gestartete Task unter z/OS gestartet wird.
+error.serverStopCommandPortDisabled.useraction=Wenn der Server als gestartete Task unter z/OS ausgef\u00fchrt wird, kann der Server \u00fcber die Bedienerkonsole gestoppt werden.  Andernfalls kann der Serverprozess \u00fcber eine Shell gestoppt werden.
+
+warning.serverDumpCompleteCommandPortDisabled=CWWKE0090W: Der Speicherauszug des Servers {0} in {1} ist abgeschlossen.  Einige Informationen konnten nicht abgerufen werden, da der Serverbefehlsport inaktiviert ist und eine direkte Kommunikation mit dem aktiven Server daher nicht m\u00f6glich ist.
+warning.serverDumpCompleteCommandPortDisabled.explanation=Der Serverbefehlsport ist f\u00fcr die Kommunikation mit einem aktiven Server erforderlich. Der Befehlsport f\u00fcr diesen Server ist inaktiviert. Daher k\u00f6nnen einige Teile des Serverspeicherauszugs nicht abgerufen werden, da hierf\u00fcr eine direkte Kommunikation zum Server erforderlich ist. Beachten Sie, dass der Befehlsport standardm\u00e4\u00dfig inaktiviert ist, wenn ein Server als gestartete Task unter z/OS gestartet wird.
+warning.serverDumpCompleteCommandPortDisabled.useraction=Wenn der Server als gestartete Task unter z/OS ausgef\u00fchrt wird, k\u00f6nnen Sie \u00fcber die Bedienerkonsole einen vollst\u00e4ndigen Serverspeicherauszug anfordern. N\u00e4here Einzelheiten finden Sie im Information Center.
+
+error.serverJavaDumpCommandPortDisabled=CWWKE0091E: Der Speicherauszug des Servers {0} konnte nicht abgerufen werden, da der Serverbefehlsport inaktiviert ist.
+error.serverJavaDumpCommandPortDisabled.explanation=Der Serverbefehlsport ist f\u00fcr die Kommunikation mit einem aktiven Server erforderlich. Der Befehlsport f\u00fcr diesen Server ist inaktiviert. Daher konnte der angeforderte Speicherauszug nicht abgerufen werden. Beachten Sie, dass der Befehlsport standardm\u00e4\u00dfig inaktiviert ist, wenn ein Server als gestartete Task unter z/OS gestartet wird.
+error.serverJavaDumpCommandPortDisabled.useraction=Wenn der Server als gestartete Task unter z/OS ausgef\u00fchrt wird, k\u00f6nnen Sie \u00fcber die Bedienerkonsole diesen Speicherauszug anfordern.  N\u00e4here Einzelheiten finden Sie im Information Center.
+
+info.javadump.zos.system.created=CWWKE0092I: SYSTDUMP (Java System Transaction Dump) ist abgeschlossen.
+info.javadump.zos.system.created.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt. Ausf\u00fchrliche Informationen zum Dateinamen und Datentr\u00e4ger mit der Ausgabe des Java-Systemspeicherauszugs finden Sie im Systemprotokoll.
+info.javadump.zos.system.created.useraction=Es ist keine Aktion erforderlich.
+
+warn.fingerprintUnableToMkDirs=CWWKE0093W: Der Server konnte die Position {0} beim Schreiben der Datei {1} nicht erstellen. 
+warn.fingerprintUnableToMkDirs.explanation=Die Operation zum Erstellen des Verzeichnisses war nicht erfolgreich. M\u00f6glicherweise ist die Speicherkapazit\u00e4t der Platte ersch\u00f6pft oder der Server hat nicht die erforderlichen Berechtigungen zum Schreiben an die Position.
+warn.fingerprintUnableToMkDirs.useraction=\u00dcberpr\u00fcfen Sie die Verzeichnisposition und die Berechtigungen, um festzustellen, ob das Problem behoben werden kann.
+
+warning.unableToPackageLooseConfigFileCannotResolveLocSymbol=CWWKE0094W: Der Server kann die Anwendungsdateien nicht packen, weil mindestens ein Positionssymbol in der Datei {0} unbekannt ist.
+warning.unableToPackageLooseConfigFileCannotResolveLocSymbol.explanation=Der Server speichert die Paketdatei, die er erstellt, in dem Pfad, der in der XML-Anwendungsdatei f\u00fcr lose Konfiguration angegeben ist. Der Pfad in der XML-Anwendungsdatei f\u00fcr lose Konfiguration enth\u00e4lt jedoch mindestens ein unbekanntes Symbol. Sie finden die bekannten Symbole in der Datei WLP_HOME/README.TXT. Die Positionssymbole sind in den Text ${...} eingeschlossen.
+warning.unableToPackageLooseConfigFileCannotResolveLocSymbol.useraction=\u00c4ndern Sie den Pfad in der XML-Anwendungsdatei f\u00fcr lose Konfiguration so, dass bekannte Positionssymbole verwendet werden.
+
+warning.unableToPackageLooseConfigFileMissingPath=CWWKE0095W: Der Server kann die in der XML-Anwendungsdatei f\u00fcr lose Konfiguration, {0}, angegebenen Anwendungsdateien nicht packen, weil er sie nicht findet.
+warning.unableToPackageLooseConfigFileMissingPath.explanation=Die angegebene XML-Anwendungsdatei f\u00fcr lose Konfiguration enth\u00e4lt ung\u00fcltige Informationen zur Position der Dateien. Die Informationen k\u00f6nnen beispielsweise ein Verzeichnis enthalten, das nicht vorhanden ist. Die Pfad in dieser XML-Datei m\u00fcssen relativ zum Konfigurationsverzeichnis des Servers angegeben werden. Das von dieser Datei dargestellte Archiv wird nicht in die gepackte Serverausgabe eingeschlossen.
+warning.unableToPackageLooseConfigFileMissingPath.useraction=\u00c4ndern Sie die Pfade in der XML-Anwendungsdatei f\u00fcr lose Konfiguration so, dass sie auf die richtige Position verweisen, die die Anwendungsdateien enth\u00e4lt. 
+
+warn.packageRuntime.include.unknownOption=CWWKE0099W: Die Option --include={0} konnte nicht verwendet werden. Es wird stattdessen die Option --include=wlp verwendet.
+warn.packageRuntime.include.unknownOption.explanation=Die Option wurde ignoriert, da sie nicht erkannt wurde.
+warn.packageRuntime.include.unknownOption.useraction=Wiederholen Sie den Befehl mit g\u00fcltigen Optionen. Mit --help k\u00f6nnen Sie eine Liste der g\u00fcltigen Optionen anzeigen.
+
+audit.licenseRestriction.base_ilan.ilan=CWWKE0100I: Dieses Produkt ist f\u00fcr den Entwicklungseinsatz und einen beschr\u00e4nkten Produktionseinsatz lizenziert. Die vollst\u00e4ndigen Lizenzbedingungen finden Sie unter {0}.
+audit.licenseRestriction.base_ilan.ilan.explanation=Dieses Produkt ist f\u00fcr Entwicklungsumgebungen und die eingeschr\u00e4nkte Nutzung in Produktionsumgebungen lizenziert. Lesen Sie die Produktlizenzdateien, um sich mit der Definition der Nutzung in Entwicklungsumgebungen und den Einschr\u00e4nkungen bez\u00fcglich des Einsatzes in Produktionsumgebungen vertraut zu machen.
+audit.licenseRestriction.base_ilan.ilan.useraction=Es ist keine Aktion erforderlich.
+
+audit.licenseRestriction.developers.ilan=CWWKE0101I: Dieses Produkt ist f\u00fcr den Entwicklungseinsatz lizenziert. Die vollst\u00e4ndigen Lizenzbedingungen finden Sie unter {0}.
+audit.licenseRestriction.developers.ilan.explanation=Dieses Produkt ist f\u00fcr die Nutzung in Entwicklungsumgebung lizenziert. Lesen Sie die Produktlizenzdateien, um sich mit der Definition der Nutzung in Entwicklungsumgebungen und den Einschr\u00e4nkungen vertraut zu machen.
+audit.licenseRestriction.developers.ilan.useraction=Es ist keine Aktion erforderlich.
+
+error.create.unknownJavaLevel=CWWKE0102E: Das System ist nicht in der Lage, anhand der Systemeigenschaften die Java-Spezifikationsstufe zu bestimmen. Der Wert ist nicht angegeben oder nicht ordnungsgem\u00e4\u00df angegeben. Die Systemeigenschaften enthalten den folgenden Wert f\u00fcr java.specification.level: {0}
+error.create.unknownJavaLevel.explanation=Der Prozess, der gerade versucht, den Server zu erstellen, war nicht in der Lage, die verwendete Java-Stufe zu bestimmen. Diese Stufe ist erforderlich, um die optimalen Einstellungen f\u00fcr den Server zu bestimmen.
+error.create.unknownJavaLevel.useraction=Stellen Sie sicher, dass Sie ein unterst\u00fctztes JDK verwenden. M\u00f6glicherweise m\u00fcssen Sie auch Ihre Umgebungsvariable JAVA_HOME \u00e4ndern, sodass sie auf eine unterst\u00fctzte JDK-Installation verweist.
+
+error.create.java8serverenv=CWWKE0103E: Es kann keine Datei server.env an der folgenden Position erstellt werden: {0}
+error.create.java8serverenv.explanation=Der Prozess, der gerade versucht, den Server zu erstellen, war nicht in der Lage, eine Datei server.env an der angegebenen Position zu generieren. Diese Datei enth\u00e4lt die erforderlichen JVM-Argumente f\u00fcr eine ordnungsgem\u00e4\u00dfe Funktionsweise des Servers.
+error.create.java8serverenv.useraction=Stellen Sie sicher, dass Sie Schreibzugriff auf das Serververzeichnis und ausreichenden Plattenspeicherplatz haben. Au\u00dferdem k\u00f6nnen Sie die Datei server.env mit dem folgenden Wert manuell erstellen: WLP_SKIP_MAXPERMSIZE=true. Sie m\u00fcssen sicherstellen, dass der Serverprozess Lesezugriff auf diese Datei hat.
+
+audit.licenseRestriction.early_access.ilar=CWWKE0104I: Dieses Produkt ist eine Betaversion und kann nicht in Produktionsumgebungen genutzt werden. Die vollst\u00e4ndigen Lizenzbedingungen k\u00f6nnen hier eingesehen werden: {0}
+audit.licenseRestriction.early_access.ilar.explanation=Dieses Produkt ist eine Betaversion und muss entsprechend den Bedingungen der Betalizenz genutzt werden.
+audit.licenseRestriction.early_access.ilar.useraction=Es ist keine Aktion erforderlich.
+
+error.zosProcStart.create.pidfile=CWWKE0105E: Das Starten des Servers {0} mit der z/OS-STC-Prozedur {1} ist m\u00f6glicherweise vor der Erstellung der PID-Datei fehlgeschlagen. Sehen Sie sich zur \u00dcberpr\u00fcfung die STC-Ausgabe an.
+error.zosProcStart.create.pidfile.explanation=Die PID-Datei f\u00fcr diesen Server wurde innerhalb der Wartezeit nicht erstellt. Der Startstatus des Servers konnte nicht verifiziert werden.
+error.zosProcStart.create.pidfile.useraction=\u00dcberpr\u00fcfen Sie den Status des neu gestarteten Servers manuell.
+
+error.zosProcStart.mvs.start=CWWKE0106E: Die z/OS-STC-Prozedur {0} konnte nicht gestartet werden. Die Startprozedur ist mit dem MGCRE-R\u00fcckgabecode {1} zur\u00fcckgekehrt.
+error.zosProcStart.mvs.start.explanation=Die mit der Eigenschaft WLP_ZOS_PROCEDURE in der Datei server.env angegebene STC-Prozedur konnte nicht gestartet werden. 
+error.zosProcStart.mvs.start.useraction=Vergewissern Sie sich, dass der angegebene Prozedurname vorhanden und nicht in einfache oder doppelte Anf\u00fchrungszeichen eingeschlossen ist. \u00dcberpr\u00fcfen Sie den MCGRE-R\u00fcckgabecode auf weitere Einzelheiten und Aktionen.
+
+error.zosProcStart.start.length=CWWKE0107E: Die z/OS-STC-Prozedur {0} konnte nicht gestartet werden. Die maximal zul\u00e4ssige L\u00e4nge des Startbefehls wurde \u00fcberschritten.
+error.zosProcStart.start.length.explanation=Der Prozedurname, der Servername und die Startparameter, die zum Starten des Servers als gestartete Task angegeben wurden, \u00fcberschreiten die maximal zul\u00e4ssige L\u00e4nge f\u00fcr MVS-Konsolenbefehle.
+error.zosProcStart.start.length.useraction=K\u00fcrzen Sie den Servernamen und den Prozedurnamen so, dass der MVS-Startbefehl k\u00fcrzer ist als 126 Zeichen.
+
+info.addProductExtension=CWWKE0108I: Die Produkterweiterung {0} wurde programmgesteuert aktiviert. Die Produkt-ID der Produkterweiterung ist {1}. Die Produktinstallationsposition der Produkterweiterung ist {2}.
+info.addProductExtension.explanation= Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt. Die Produkterweiterung wurde durch einen Aufruf der SPI com.ibm.wsspi.kernel.embeddable.ServerBuilder.addProductExtension hinzugef\u00fcgt.
+info.addProductExtension.useraction=Es ist keine Aktion erforderlich. 
+# CWWKE0109W removed because it's no longer used - do not reuse 
+
+#
+# W A R N I N G:   Do not use CWWKE0100 - CCWKE0199 they are reserved in ServiceMessages.nlsprops
+#
+# Too Late for CWWKE0101 - CWWKE0107 they have dual use currently and CWWKE0108 and CWWKE0109 are only used here.
+#
+
+error.clientNameCharacter=CWWKE0900E: Der angegebene Clientname enth\u00e4lt ein Zeichen, das nicht g\u00fcltig ist (Name={0}). \
+Die g\u00fcltigen Zeichen sind alphanumerische Unicode-Zeichen (z. B. \
+0-9, a-z, A-Z), Unterstreichungszeichen (_), Minuszeichen (-), Pluszeichen (+) und Punkte (.). \
+Ein Clientname darf nicht mit einem Minuszeichen (-) oder mit einem Punkt (.) beginnen.
+error.clientNameCharacter.explanation=Es wurde ein ung\u00fcltiges Zeichen im Clientnamen verwendet.
+error.clientNameCharacter.useraction=Benennen Sie den Client um und verwenden Sie nur g\u00fcltige Zeichen, d. h. alphanumerische Unicode-Zeichen (z. B. 0-9, a-z, A-Z), Unterstreichungszeichen (_), Minuszeichen (-), Pluszeichen (+) und Punkte (.). 
+warning.singleClient=CWWKE0901W: Es kann nur ein einziger Client in der Befehlszeile angegeben werden. Die nachfolgenden Namen werden ignoriert (Client={0}, ignoriert={1}).
+warning.singleClient.explanation=Sie k\u00f6nnen nur einen einzigen Client in der Befehlszeile angeben. Der erste Clientname wurde verarbeitet. Die verbleibenden Namen wurden ignoriert.
+warning.singleClient.useraction=Es ist keine Aktion erforderlich. Geben Sie nur einen einzigen Client an, um diese Warnung zu vermeiden.
+
+# {0} The client name
+# {1} The client directory path
+# {2} The exception thrown when trying to create
+error.creatingNewClient=CWWKE0902E: Beim Erstellen des Clients {0} ist eine Ausnahme eingetreten. Clientpfad: {1} Ursache: {2}
+error.creatingNewClient.explanation=Der angegebene Client konnte nicht erstellt werden.
+error.creatingNewClient.useraction=\u00dcberpr\u00fcfen und beheben Sie die Ausnahme. Versuchen Sie dann erneut, den Client zu erstellen.
+
+error.noExistingClient=CWWKE0903E: Der angegebene Client {0} ist nicht vorhanden. Verwenden Sie die Option --create, um einen neuen Client zu erstellen. Clientpfad: {1}
+error.noExistingClient.explanation=Der angegebene Client ist nicht vorhanden. Deshalb kann keine Aktion f\u00fcr diesen Client ausgef\u00fchrt werden.
+error.noExistingClient.useraction=\u00dcberpr\u00fcfen Sie den Namen des Clients oder erstellen Sie einen Client mit dem angegebenen Namen und setzen Sie den Befehl erneut ab.
+
+error.clientDirExists=CWWKE0904E: Der Client {0} konnte nicht erstellt werden, weil das Clientverzeichnis {1} bereits vorhanden ist.
+error.clientDirExists.explanation=Das Clientverzeichnis darf noch nicht vorhanden sein, wenn ein Client erstellt wird.
+error.clientDirExists.useraction=W\u00e4hlen Sie einen neuen Clientnamen aus oder l\u00f6schen Sie das Verzeichnis. F\u00fchren Sie anschlie\u00dfend den Befehl erneut aus.
+
+# {0} The client name
+# {1} The client directory path
+error.creatingNewClientExists=CWWKE0905E: Beim Erstellen des Clients {0} ist eine Ausnahme eingetreten. Es wurden externe Aktivit\u00e4ten unter dem Clientpfad ({1}) erkannt. Deshalb wurde die Clienterstellung gestoppt.
+error.creatingNewClientExists.explanation=Der angegebene Client kann nicht erstellt werden, da eine andere Anwendung Dateioperationen im neuen Clientverzeichnis ausf\u00fchrt.
+error.creatingNewClientExists.useraction=Untersuchen Sie, warum im Clientverzeichnis au\u00dferhalb des Erstellungsbefehls Dateiaktivit\u00e4t vorhanden war. L\u00f6schen Sie dann das Clientverzeichnis und versuchen Sie, den Client erneut zu erstellen.
+
+# {0} The client name
+# {1} The client directory path
+error.creatingNewClientMkDirFail=CWWKE0906E: Beim Erstellen des Clients {0} an der Position {1} ist eine Ausnahme eingetreten.
+error.creatingNewClientMkDirFail.explanation=Der angegebene Client kann nicht erstellt werden, weil nicht gen\u00fcgend Speicherplatz zum Erstellen des Clients verf\u00fcgbar ist oder weil keine Daten an die Position geschrieben werden k\u00f6nnen.
+error.creatingNewClientMkDirFail.useraction=Stellen Sie sicher, dass gen\u00fcgend Plattenspeicherplatz zum Erstellen des Clients verf\u00fcgbar ist und dass Daten an die Position geschrieben werden k\u00f6nnen. Wiederholen Sie anschlie\u00dfend die Operation.
+
+audit.launchTime.client=CWWKE0907I: Der Client {0} wurde gestartet.
+audit.launchTime.client.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+audit.launchTime.client.useraction=Es ist keine Aktion erforderlich.
+
+audit.kernelUpTime.client=CWWKE0908I: Der Client {0} wurde nach {1} gestoppt.
+audit.kernelUpTime.client.explanation=Der Kernel wurde nach dem angegebenen Zeitraum (in Sekunden) gestoppt. Das Intervall (in Sekunden) ist relativ zum Start der Plattform.
+audit.kernelUpTime.client.useraction=Es ist keine Aktion erforderlich.
+
+# {0} The server name 
+info.java2security.started=CWWKE0909I: Der Server {0} wurde mit aktivierter Java 2 Security gestartet.
+info.java2security.started.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+info.java2security.started.useraction=Es ist keine Aktion erforderlich.
+
+#{0} Cause of exception
+error.set.securitymanager=CWWKE0910E: Der Standard-Security-Manager konnte wegen der folgenden Ausnahme nicht festgelegt werden: {0}. Dieser Fehler tritt auf, wenn der Sicherheitsmanager bereits definiert ist und dessen checkPermission-Methode keine Ersetzung zul\u00e4sst.
+error.set.securitymanager.explanation=Java 2 Security ist zwar aktiviert, aber beim Festlegen des Standard-Security-Manager ist ein Fehler aufgetreten.
+error.set.securitymanager.useraction=Stellen Sie sicher, dass der Sicherheitsmanager noch definiert wurde, indem Sie den Server mit der Option -Djava.security.manager starten. \
+Wenn der Sicherheitsmanager bereits definiert ist, entfernen Sie die Option -Djava.security.manager und starten Sie dann den Server mit aktivierter Java 2 Security erneut, indem Sie die Eigenschaft websphere.java.security in der Datei bootstrap.properties angeben. 
+
+#{0} Cause of exception
+error.set.trace.securitymanager=CWWKE0911E: Der NoRethrow Security Manager konnte wegen der folgenden Ausnahme nicht festgelegt werden: {0}. Dieser Fehler tritt auf, wenn der Sicherheitsmanager bereits definiert ist und dessen checkPermission-Methode keine Ersetzung zul\u00e4sst.
+error.set.trace.securitymanager.explanation=Java 2 Security ist zwar aktiviert, aber beim Festlegen des NoRethrow Security Manager ist ein Fehler aufgetreten.
+error.set.trace.securitymanager.useraction=Stellen Sie sicher, dass der Sicherheitsmanager noch definiert wurde, indem Sie den Server mit der Option -Djava.security.manager starten. \
+Wenn der Sicherheitsmanager bereits definiert ist, entfernen Sie die Option -Djava.security.manager und starten Sie dann den Server mit aktivierter Java 2 Security erneut, indem Sie die Eigenschaft websphere.java.security in der Datei bootstrap.properties angeben. 
+
+warning.java.security.permdenied=CWWKE0912W: Die aktuelle Java 2 Security-Richtlinie hat einen potenziellen Versto\u00df gegen die Java 2 Security-Berechtigung gemeldet. {0} Berechtigung: {1} Code: {2}{3} Stack-Trace: {4} Position der Codebasis: {5}
+warning.java.security.permdenied.explanation=Die Java Security Manager-Methode checkPermission() hat eine Ausnahme des Typs SecurityException in Bezug auf die Subjektberechtigung ausgel\u00f6st.
+warning.java.security.permdenied.useraction=Vergewissern Sie sich, dass die versuchte Operation zul\u00e4ssig ist, und aktualisieren Sie die Berechtigungsrichtliniendatei f\u00fcr das Bundle bzw. die Anwendung nach Bedarf.
+
+error.java.security.exception.codebase=CWWKE0913E: Beim Versuch, die Position der Codebasis zu bestimmen, wurde eine unerwartete Ausnahme abgefangen. Ausnahme: {0}
+
+error.java.security.exception.codebase.explanation=Beim Bestimmen der Position der Codebasisposition des Codes, der eine Ausnahme in der Zugriffssteuerung f\u00fcr die Java 2 Security-Berechtigungen ausgel\u00f6st hat, ist ein Fehler aufgetreten.
+error.java.security.exception.codebase.useraction=Suchen Sie in den Ausnahme- und Serverprotokollen nach Details. \
+\
+\ Stellen Sie sicher, dass der Sicherheitsmanager noch definiert wurde, indem Sie den Server mit der Option -Djava.security.manager starten und die Option -Djava.security.policy angeben. \
+Wenn eine oder beide Optionen angegeben sind, entfernen Sie die Einstellungen und starten Sie dann den Server mit aktivierter Java 2 Security erneut, indem Sie die Eigenschaft websphere.java.security in der Datei bootstrap.properties angeben.
+
+warning.zOS.java.security.permdenied1=CWWKE0914W: Die aktuelle Java 2 Security-Richtlinie hat einen potenziellen Versto\u00df gegen eine Java 2 Security-Berechtigung gemeldet. Weitere Informationen finden Sie im Knowledge Center: {0} Berechtigung: {1} Code: {2} Codebasis: {3}
+warning.zOS.java.security.permdenied1.explanation=Die Java Security Manager-Methode checkPermission() hat eine Ausnahme des Typs SecurityException in Bezug auf die Subjektberechtigung ausgel\u00f6st. Ein aufrufendes Modul im Aufrufstack hat nicht die erforderliche Berechtigung. Dies ist m\u00f6glicherweise kein Problem, wenn der Aufrufende diese Ausnahme ordnungsgem\u00e4\u00df behandelt.
+warning.zOS.java.security.permdenied1.useraction=Vergewissern Sie sich, dass die versuchte Operation zul\u00e4ssig ist, indem Sie alle Java 2 Security-Richtliniendateien und den Anwendungscode untersuchen. Es k\u00f6nnen zus\u00e4tzliche Berechtigungen erforderlich sein oder es k\u00f6nnte ein AccessController.doPrivileged-Aufruf in einem Code des Aufrufstacks erforderlich sein. M\u00f6glich ist auch, dass der Security Manager den Zugriff auf eine Ressource ordnungsgem\u00e4\u00df verhindert hat, f\u00fcr die ein aufrufendes Modul keine Zugriffsberechtigungen hat.
+
+warning.zOS.java.security.permdenied2=CWWKE0915W: Die aktuelle Java 2 Security-Richtlinie meldet einen potenziellen Versto\u00df gegen eine Java 2 Security-Berechtigung. Stack-Trace:{0} 
+warning.zOS.java.security.permdenied2.explanation=Die Java Security Manager-Methode checkPermission() hat eine Ausnahme des Typs SecurityException ausgel\u00f6st. Ein aufrufendes Modul im Aufrufstack hat nicht die erforderliche Berechtigung.
+warning.zOS.java.security.permdenied2.useraction=Vergewissern Sie sich, dass die versuchte Operation zul\u00e4ssig ist, indem Sie alle Java 2 Security-Dateien und den Anwendungscode untersuchen. Es sind m\u00f6glicherweise zus\u00e4tzliche Berechtigungen erforderlich. 
+
+error.client.runner.missing=CWWKE0916E: CWWKE0916E: Das Client-Feature wurde nicht aktiviert. Sehen Sie sich die Fehlernachrichten an.
+error.client.runner.missing.explanation=Es wurde kein Client-Feature aktiviert oder beim Laden des Features ist ein Fehler aufgetreten.
+error.client.runner.missing.useraction=Stellen Sie sicher, dass ein Client-Feature aktiviert ist, und suchen Sie nach Fehlernachrichten.
+
+error.client.runner=CWWKE0917E: Die Clientanwendung hat einen Fehler gemeldet.
+error.client.runner.explanation=Das Produkt hat einen Fehler von der aktiven Clientanwendung empfangen.
+error.client.runner.useraction=Suchen Sie in den Fehlernachrichten nach Details zum Fehler in der Clientanwendung.
+
+# {0} server name
+# {1} host name
+# {2} logs location
+# {3} unique request id
+error.mbean.operation.failure=CWWKE0918E:  Die angeforderte Operation kann nicht ausgef\u00fchrt werden. Suchen Sie in den Protokollen des Liberty Profile-Servers {0} auf dem Host {1} an der Position {2} f\u00fcr die Anforderung {3} nach Einzelheiten.
+error.mbean.operation.failure.explanation=Beim Ausf\u00fchren der angeforderten Operation ist ein Fehler aufgetreten.
+error.mbean.operation.failure.useraction=Suchen Sie in den Serverprotokollen nach Einzelheiten zu dem Operationsfehler.
+
+java.security.permdenied.class.info=CWWKE0919I: Ung\u00fcltige Klasse: {0}
+java.security.permdenied.class.info.explanation=Die Java Security Manager-Methode checkPermission() hat eine Ausnahme des Typs SecurityException ausgel\u00f6st, weil die Klasse nicht die erforderlichen Berechtigungen hat.
+java.security.permdenied.class.info.useraction=Vergewissern Sie sich, dass die versuchte Operation zul\u00e4ssig ist, und aktualisieren Sie die Berechtigungsrichtliniendatei f\u00fcr das Bundle bzw. die Anwendung nach Bedarf.
+
+java.security.permdenied.codebaseloc.info=CWWKE0920I: An Codebasisposition: {0}
+java.security.permdenied.codebaseloc.info.explanation=Die Java Security Manager-Methode checkPermission() hat eine Ausnahme des Typs SecurityException f\u00fcr eine Klasse an der angegebenen Codebasisposition ausgel\u00f6st.
+java.security.permdenied.codebaseloc.info.useraction=Vergewissern Sie sich, dass die versuchte Operation zul\u00e4ssig ist, und aktualisieren Sie die Berechtigungsrichtliniendatei f\u00fcr das Bundle bzw. die Anwendung nach Bedarf.
+
+warning.java.security.permdenied.quickmsg=CWWKE0921W: Die aktuelle Java 2 Security-Richtlinie hat einen potenziellen Versto\u00df gegen die Java 2 Security-Berechtigung gemeldet. {0}
+warning.java.security.permdenied.quickmsg.explanation=Die Java Security Manager-Methode checkPermission() hat eine Ausnahme des Typs SecurityException in Bezug auf die Subjektberechtigung ausgel\u00f6st.
+warning.java.security.permdenied.quickmsg.useraction=Vergewissern Sie sich, dass die versuchte Operation zul\u00e4ssig ist, und aktualisieren Sie die Berechtigungsrichtliniendatei f\u00fcr das Bundle bzw. die Anwendung nach Bedarf.
+
+error.package.missingLibExtractDir=CWWKE0922E: Der Paketbefehl kann nicht ausgef\u00fchrt werden, weil die Installation im Verzeichnis lib/extract fehlt.
+error.package.missingLibExtractDir.explanation=Das Verzeichnis lib/extract enth\u00e4lt Metadaten und selbst extrahierende Klassen, die f\u00fcr die Ausf\u00fchrung des Paketbefehls erforderlich sind. Wenn dieses Verzeichnis fehlt, k\u00f6nnte dies ein Hinweis darauf sein, dass die Installation von WebSphere Liberty Profile unvollst\u00e4ndig ist oder dass das Verzeichnis gel\u00f6scht wurde.
+error.package.missingLibExtractDir.useraction=Installieren Sie WebSphere Liberty Profile erneut und stellen Sie sicher, dass das Verzeichnis lib/extract im Verzeichnis WLP_HOME vorhanden ist.
+
+info.server.pause.all.request.received=CWWKE0923I: Es wurde eine Anforderung empfangen, alle anhaltbaren Komponenten im Server anzuhalten.
+info.server.pause.all.request.received.explanation=Ein Benutzer hat eine Anforderung zum Anhalten aller anhaltbaren Komponenten im Server abgesetzt. Der Server wird versuchen, diese Komponenten anzuhalten. 
+info.server.pause.all.request.received.useraction=Es ist keine Aktion erforderlich. 
+info.server.pause.request.received=CWWKE0924I: Es wurde eine Anforderung empfangen, die folgenden Komponenten im Server anzuhalten: {0}
+info.server.pause.request.received.explanation=Ein Benutzer hat eine Anforderung abgesetzt, bestimmte Komponenten im Server anzuhalten. Der Server wird versuchen, diese Komponenten anzuhalten. 
+info.server.pause.request.received.useraction=Es ist keine Aktion erforderlich. 
+info.server.resume.all.request.received=CWWKE0925I: Es wurde eine Anforderung empfangen, alle angehaltenen Komponenten im Server wiederaufzunehmen.
+info.server.resume.all.request.received.explanation=Ein Benutzer hat eine Anforderung zur Wiederaufnahme aller angehaltenen Komponenten im Server abgesetzt. Der Server wird versuchen, diese Komponenten wiederaufzunehmen.
+info.server.resume.all.request.received.useraction=Es ist keine Aktion erforderlich. 
+info.server.resume.request.received=CWWKE0926I: Es wurde eine Anforderung empfangen, die folgenden Komponenten im Server wiederaufzunehmen: {0}
+info.server.resume.request.received.explanation=Ein Benutzer hat eine Anforderung abgesetzt, bestimmte Komponenten im Server wiederaufzunehmen. Der Server wird versuchen, diese Komponenten wiederaufzunehmen, sofern sie angehalten wurden.
+info.server.resume.request.received.useraction=Es ist keine Aktion erforderlich. 
+error.pause.request.failed=CWWKE0927E: Es wurde eine Anforderung zum Anhalten empfangen, die Infrastruktur zum Anhalten von Komponenten ist jedoch nicht verf\u00fcgbar. Die Anforderung kann nicht verarbeitet werden. 
+error.pause.request.failed.explanation=Ein Benutzer hat eine Anforderung zum Anhalten abgesetzt. Die Anforderung konnte jedoch nicht verarbeitet werden. Der Server hat m\u00f6glicherweise die Initialisierung noch nicht abgeschlossen oder wird heruntergefahren.
+error.pause.request.failed.useraction=\u00dcberpr\u00fcfen Sie, dass die Initialisierung des Servers vollst\u00e4ndig abgeschlossen ist und das System nicht gerade heruntergefahren wird.
+
+error.resume.request.failed=CWWKE0928E: Es wurde eine Anforderung zur Wiederaufnahme empfangen, die Infrastruktur zum Anhalten von Komponenten ist jedoch nicht verf\u00fcgbar. Die Anforderung kann nicht verarbeitet werden. 
+error.resume.request.failed.explanation=Ein Benutzer hat eine Wiederaufnahmeanforderung abgesetzt, die Anforderung konnte jedoch nicht verarbeitet werden. Der Server hat m\u00f6glicherweise die Initialisierung noch nicht abgeschlossen oder wird heruntergefahren.
+error.resume.request.failed.useraction=\u00dcberpr\u00fcfen Sie, dass die Initialisierung des Servers vollst\u00e4ndig abgeschlossen ist und das System nicht gerade heruntergefahren wird.
+
+error.server.pause.failed=CWWKE0929E: Eine Anforderung zum Anhalten wurde ausgef\u00fchrt, die folgenden Komponenten konnten jedoch nicht angehalten werden: {0}
+error.server.pause.failed.explanation=Der Server hat eine Anforderung zum Anhalten verarbeitet, aber einige Komponenten konnten nicht angehalten werden. Alle anderen anhaltbaren Komponenten wurden erfolgreich angehalten.
+error.server.pause.failed.useraction=Suchen Sie in den Serverprotokollen nach weiteren Fehlern zu den fehlgeschlagenen Komponenten.
+
+error.server.resume.failed=CWWKE0930E: Eine Wiederaufnahmeanforderung wurde ausgef\u00fchrt, die folgenden Komponenten konnten jedoch nicht wiederaufgenommen werden: {0}
+error.server.resume.failed.explanation=Der Server hat eine Wiederaufnahmeanforderung verarbeitet, aber einige angehaltene Komponenten konnten nicht wiederaufgenommen werden. Alle anderen angehaltenen Komponenten wurden erfolgreich wiederaufgenommen.
+error.server.resume.failed.useraction=Suchen Sie in den Serverprotokollen nach weiteren Fehlern zu den fehlgeschlagenen Komponenten.
+
+warning.server.pause.invalid.targets=CWWKE0931W: Es wurde eine Anforderung zum Anhalten bestimmter Komponenten empfangen, die Komponentenliste f\u00fcr die Zieloption war jedoch leer. Es wurde keine Aktion ausgef\u00fchrt.
+warning.server.pause.invalid.targets.explanation=Ein Benutzer hat eine Anforderung zum Anhalten mit einer leeren Zielliste f\u00fcr die Zieloption abgesetzt. Die Anforderung wurde zwar ausgef\u00fchrt, es wurde jedoch keine Aktion ausgef\u00fchrt.
+warning.server.pause.invalid.targets.useraction=Geben Sie f\u00fcr die Zieloption eine Liste mit anzuhaltenden Komponente an. Wenn Sie alle im Server anhaltbaren Komponenten anhalten m\u00f6chten, setzen Sie eine Anforderung zum Anhalten ohne Angabe der Zieloption ab.
+
+warning.server.resume.invalid.targets=CWWKE0932W: Es wurde eine Anforderung zur Wiederaufnahme bestimmter Komponenten empfangen, die Komponentenliste f\u00fcr die Zieloption war jedoch leer. Es wurde keine Aktion ausgef\u00fchrt.
+warning.server.resume.invalid.targets.explanation=Ein Benutzer hat eine Anforderung zur Wiederaufnahme mit einer leeren Zielliste f\u00fcr die Zieloption abgesetzt. Die Anforderung wurde zwar ausgef\u00fchrt, es wurde jedoch keine Aktion ausgef\u00fchrt.
+warning.server.resume.invalid.targets.useraction=Geben Sie f\u00fcr die Zieloption eine Liste mit wiederaufzunehmenden Komponente an. Wenn Sie alle im Server angehaltenen Komponenten wiederaufnehmen m\u00f6chten, setzen Sie eine Wiederaufnahmeanforderung ohne Angabe der Zieloption ab.
+
+warning.server.pause.no.targets=CWWKE0933W: Es wurde eine Anforderung zum Anhalten empfangen, es wurden jedoch im Server keine anhaltbaren Komponenten gefunden. Es wurde keine Aktion ausgef\u00fchrt.
+warning.server.pause.no.targets.explanation=Der Server hat eine Anforderung zum Anhalten verarbeitet, es wurden jedoch im Server keine anhaltbaren Komponenten gefunden. Es wurde keine Aktion ausgef\u00fchrt.
+warning.server.pause.no.targets.useraction=\u00dcberpr\u00fcfen Sie, dass anhaltbare Komponenten im Server vorhanden sind.
+
+warning.server.resume.no.targets=CWWKE0934W: Es wurde eine Wiederaufnahmeanforderung empfangen, es wurden jedoch im Server keine anhaltbaren Komponenten gefunden. Es wurde keine Aktion ausgef\u00fchrt.
+warning.server.resume.no.targets.explanation=Der Server hat eine Wiederaufnahmeanforderung verarbeitet, es wurden jedoch keine anhaltbaren Komponenten gefunden. Es wurde keine Aktion ausgef\u00fchrt.
+warning.server.resume.no.targets.useraction=\u00dcberpr\u00fcfen Sie, dass anhaltbare Komponenten im Server vorhanden sind.
+
+warning.server.pause.missing.targets=CWWKE0935W: Es wurde eine Anforderung zum Anhalten empfangen, die folgenden Komponenten wurden jedoch nicht gefunden: {0}
+warning.server.pause.missing.targets.explanation=Der Server hat eine Anforderung zum Anhalten verarbeitet, einige bestimmte Komponenten wurden jedoch nicht gefunden. Die Anforderung wurde f\u00fcr alle anderen angegebenen Komponenten verarbeitet.
+warning.server.pause.missing.targets.useraction=\u00dcberpr\u00fcfen Sie, dass die angegebenen Komponentennamen richtig und die Komponenten im Server registriert und anhaltbar sind.
+
+warning.server.resume.missing.targets=CWWKE0936W: Es wurde eine Wiederaufnahmeanforderung empfangen, die folgenden Komponenten wurden jedoch nicht gefunden: {0}
+warning.server.resume.missing.targets.explanation=Der Server hat eine Wiederaufnahmeanforderung verarbeitet, einige bestimmte Komponenten wurden jedoch nicht gefunden. Die Anforderung wurde f\u00fcr alle anderen angegebenen Komponenten verarbeitet.
+warning.server.resume.missing.targets.useraction=\u00dcberpr\u00fcfen Sie, dass die angegebenen Komponentennamen richtig und die Komponenten im Server registriert und anhaltbar sind.
+
+warning.server.status.missing.targets=CWWKE0937W: Es wurde eine Statusanforderung empfangen, die folgenden Komponenten wurden jedoch nicht gefunden: {0}
+warning.server.status.missing.targets.explanation=Der Server hat eine Statusanforderung verarbeitet, einige bestimmte Komponenten wurden jedoch nicht gefunden. Die Anforderung wurde f\u00fcr alle anderen angegebenen Komponenten verarbeitet.
+warning.server.status.missing.targets.useraction=\u00dcberpr\u00fcfen Sie, dass die angegebenen Komponentennamen richtig und die Komponenten im Server registriert und anhaltbar sind.
+
+info.server.pause.request.completed=CWWKE0938I: Eine Anforderung zum Anhalten wurde ausgef\u00fchrt.
+info.server.pause.request.completed.explanation=Eine Anforderung zum Anhalten wurde ausgef\u00fchrt.
+info.server.pause.request.completed.useraction=Es ist keine Aktion erforderlich. 
+info.server.resume.request.completed=CWWKE0939I: Eine Wiederaufnahmeanforderung wurde ausgef\u00fchrt.
+info.server.resume.request.completed.explanation=Eine Wiederaufnahmeanforderung wurde ausgef\u00fchrt.
+info.server.resume.request.completed.useraction=Es ist keine Aktion erforderlich. 
+info.envProductExtension=CWWKE0940I: Die Produkterweiterung {0} hat die Produkt-ID {1} und das Produktinstallationsverzeichnis {2}. Diese Produkterweiterung wurde mit der Umgebungsvariablen WLP_PRODUCT_EXT_DIR angegeben. 
+info.envProductExtension.explanation= Die Umgebungsvariable WLP_PRODUCT_EXT_DIR verweist auf die Position der Produkterweiterung. Der Server hat die Produkterweiterung gefunden und verwendet sie.
+info.envProductExtension.useraction=Es ist keine Aktion erforderlich. 
+warning.variable.invalid=CWWKE0941W: Die in der Datei server.env angegebene Variablendeklaration {0} ist ung\u00fcltig, weil der Variablenname nicht alphanumerische Zeichen enth\u00e4lt. Der Wert wird nicht verwendet.
+
+warning.variable.invalid.explanation=In der Datei server.env angegebene Variablennamen d\u00fcrfen nur alphanumerische Zeichen enthalten.
+warning.variable.invalid.useraction=\u00c4ndern Sie entweder den Variablennamen so, dass nur alphanumerische Zeichen verwendet werden, oder verschieben Sie die Definition der Variable in die Datei bootstrap.properties.
+
+info.serverStarting=Server {0} wird gestartet.
+info.serverStarted=Der Server {0} wurde gestartet.
+info.serverStartedWithPID=Der Server {0} wurde mit der Prozess-ID {1} gestartet.
+info.serverIsRunning=Der Server {0} ist aktiv.
+info.clientIsRunning=Der Client {0} ist aktiv.
+info.serverIsAlreadyRunning=Der Server {0} ist bereits aktiv.
+info.serverIsRunningWithPID=Der Server {0} wird mit der Prozess-ID {1} ausgef\u00fchrt.
+info.serverIsAlreadyRunningWithPID=Der Server {0} wird bereits mit der Prozess-ID {1} ausgef\u00fchrt.
+info.serverNotRunning=Der Server {0} ist nicht aktiv.
+info.serverStopping=Server {0} wird gestoppt.
+info.serverStopped=Der Server {0} wurde gestoppt.
+info.serverNotExist=Der Server {0} ist nicht vorhanden.
+info.clientNotExist=Der Client {0} ist nicht vorhanden.
+info.serverPackaging=Server {0} wird gepackt.
+info.clientPackaging=Der Client {0} wird gepackt.
+info.serverPackagingCollectingInformation=Der Inhalt des Servers {0} wird abgefragt.
+info.serverPackagingBuildingArchive=Das Archiv f\u00fcr den Server {0} wird erstellt.
+info.serverPackageComplete=Das Packen des Servers {0} in {1} ist abgeschlossen.
+info.clientPackageComplete=Das Packen des Clients {0} in {1} ist abgeschlossen.
+info.serverDumping=Speicherauszug f\u00fcr Server {0} wird erstellt.
+info.serverDumpComplete=Der Speicherauszug des Servers {0} in {1} ist abgeschlossen.
+info.serverDumpCompleteZos=SYSTDUMP (System Transaction Dump) des Servers {0} ist abgeschlossen.
+info.serverStartException=Das Starten des Servers {0} ist fehlgeschlagen. Suchen Sie in den Serverprotokollen nach Einzelheiten.
+info.serverStartUnreachable=Der Status des Servers {0} konnte nicht bestimmt werden. Entfernen Sie die Datei {1}, wenn die Prozess-ID {2} nicht der Serverprozess ist.
+info.serverStatusException=Der Status des Servers {0} konnte nicht bestimmt werden. Suchen Sie in den Serverprotokollen nach Einzelheiten.
+info.serverStopException=Das Stoppen des Servers {0} ist fehlgeschlagen. Suchen Sie in den Serverprotokollen nach Einzelheiten.
+info.serverPackageException=Das Packen des Servers {0} ist fehlgeschlagen. Suchen Sie in den Serverprotokollen nach Einzelheiten.
+info.serverPackageUnreachable=Das Packen des Servers {0} ist fehlgeschlagen. Sie m\u00fcssen den Server stoppen, bevor er gepackt werden kann.
+info.clientPackageException=Das Packen des Clients {0} ist fehlgeschlagen. Suchen Sie in den Clientprotokollen nach Einzelheiten.
+info.clientPackageUnreachable=Das Packen des Clients {0} ist fehlgeschlagen. Sie m\u00fcssen den Client stoppen, damit er gepackt werden kann.
+info.serverDumpOptionUnsupported=Der Server {0} unterst\u00fctzt den Java-Speicherauszugstyp {1} nicht.
+info.serverDumpException=Das Erstellen des Serverspeicherauszugs {0} ist fehlgeschlagen. Suchen Sie in den Serverprotokollen nach Einzelheiten.
+info.unableZipFile=Die Datei {0} konnte aus dem folgenden Grund nicht archiviert werden: {1}
+info.LibInventoryGenerationException=W\u00e4hrend der Speicherauszugserstellung des Servers {0} kann kein Bibliotheksverzeichnis erstellt werden.
+info.defaultServer=Der Server wurde nicht angegeben. Es werden die Standardwerte verwendet: {0}
+info.defaultClient=Der Client wurde nicht angegeben. Es werden die Standardwerte verwendet: {0}
+info.runtimePackaging=Die Liberty-Laufzeit wird gepackt.
+info.runtimePackageComplete=Das Packen der Laufzeit ist in {0} abgeschlossen.
+info.runtimePackageException=Das Packen der Laufzeit ist fehlgeschlagen. Suchen Sie in den Serverprotokollen nach Einzelheiten.
+
+# For info.serverLaunch and info.serverVersion: 
+# {0} version (build and/or product name)
+# {1} java.vm.name, e.g. IBM J9 VM
+# {2} java.runtime.version, e.g. pxp3260_26sr2ifx-20120419_02 (SR2) (en_US)
+# {3} server name, only applicable for info.serverLaunch
+# The order of the inserts is important and must be preserved
+info.serverLaunch=Start von {3} ({0}) auf {1}, Version {2}
+info.serverVersion={0} auf {1}, Version {2}
+
+info.configRoot=Konfigurationsdokument: {0}
+info.bootProp=Booteigenschaften: {0}
+info.cmdArgs=Parameter: {0}
+info.consolePort=Empfangsbereit an Port {0}... 
+info.newServerCreated=Der Server {0} wurde erstellt.
+info.newClientCreated=Der Client {0} wurde erstellt.
+info.days={0} Tage
+info.hours={0} Stunden
+info.minutes={0} Minuten
+info.seconds={0} Sekunden
+info.configNotExist=Die Datei server.xml wurde nicht angegeben.
+info.syslogs=Die Ausgabe wurde an SystemOut.log und SystemErr.log in {0} umgeleitet.
+info.initlogs=Umleitung von stdout und stderr an die Datei {0} 
+
+info.no.servers.defined=Es sind keine Server im Benutzerverzeichnis {0} definiert.
+info.list.of.defined.servers=Die folgenden Server sind relativ zum Benutzerverzeichnis {0} definiert.
+info.communicate.server=Es ist ein Kommunikationsfehler zwischen dem Befehl {0} und dem Server {1} aufgetreten.

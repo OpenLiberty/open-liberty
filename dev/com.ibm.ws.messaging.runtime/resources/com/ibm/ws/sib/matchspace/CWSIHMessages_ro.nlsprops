@@ -1,0 +1,110 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.processor.SIMPMessages.props
+#
+# SIB.processor component file for logging messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIH0001=CWSIH0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Msgs in the range CWSIH0001-CWSIH0050 belong to class com.ibm.ws.sib.matchspace.impl.MatchSpaceImpl
+#   - CWSIH9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.19
+#
+#CMVCPATHNAME com.ibm.ws.messaging.runtime/resources/com/ibm/ws/sib/matchspace/CWSIHMessages.nlsprops
+#COMPONENTPREFIX CWSIH
+#COMPONENTNAMEFOR CWSIH MatchSpace
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name    .
+INVALID_TOPIC_ERROR_CWSIH0001=CWSIH0001E: Sintaxa subiectului, {0}, este incorect\u0103. Un caracter neobi\u015fnuit ''*'' s''a g\u0103sit la caracterul {1}.
+INVALID_TOPIC_ERROR_CWSIH0001.explanation=Subiectul este formatat incorect. Metacaracterul de nivel unic '*' poate ap\u0103rea numai drept caracter unic \u00eentr-un nivel pentru un subiect, de ex. : */a sau a/*/b sau a/* .
+INVALID_TOPIC_ERROR_CWSIH0001.useraction=Corecta\u0163i specifica\u0163ia incorect\u0103 de subiect.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name    .
+INVALID_TOPIC_ERROR_CWSIH0002=CWSIH0002E: Sintaxa subiectului, {0}, este incorect\u0103. Un caracter neobi\u015fnuit ''.'' s''a g\u0103sit la caracterul {1}.
+INVALID_TOPIC_ERROR_CWSIH0002.explanation=Subiectul este formatat incorect. Caracterul '.' poate ap\u0103rea numai drepr caracter unic \u00eentr-un nivel pentru un subiect, de ex.: /./a sau a//. .
+INVALID_TOPIC_ERROR_CWSIH0002.useraction=Corecta\u0163i specifica\u0163ia incorect\u0103 de subiect.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name    .
+INVALID_TOPIC_ERROR_CWSIH0003=CWSIH0003E: Sintaxa subiectului, {0}, este incorect\u0103. Un caracter neobi\u015fnuit ''/'' s''a g\u0103sit la caracterul {1}.
+INVALID_TOPIC_ERROR_CWSIH0003.explanation=Subiectul este incorect formatat. Nu pot exista 3 caractere '/' unul dup+ altul.
+INVALID_TOPIC_ERROR_CWSIH0003.useraction=Corecta\u0163i specifica\u0163ia incorect\u0103 de subiect.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name    .
+INVALID_TOPIC_ERROR_CWSIH0004=CWSIH0004E: Sintaxa subiectului, {0}, este incorect\u0103. Un caracter neobi\u015fnuit a fost g\u0103sit dup\u0103 caracterul ''/'' la caracterul {1}.
+INVALID_TOPIC_ERROR_CWSIH0004.explanation=Subiectul este formatat incorect. Metacaracterele nu pot fi urmate de alte caractere cu excep\u0163ia caracterului '/'.  Exemple de subiecte incorecte sunt a//.a or a/*b . 
+INVALID_TOPIC_ERROR_CWSIH0004.useraction=Corecta\u0163i specifica\u0163ia incorect\u0103 de subiect.
+
+# -------------------------------------------------------------------------------------------------
+# 
+INVALID_TOPIC_ERROR_CWSIH0005=CWSIH0005E: Subiectul nu este valid.
+INVALID_TOPIC_ERROR_CWSIH0005.explanation=Subiectul furnizat ne este activ pentru c\u0103 este nul, ceea ce nu este permis.
+INVALID_TOPIC_ERROR_CWSIH0005.useraction=Asigura\u0163i-v\u0103 c\u0103 subiectul este un obiect String valid.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name.
+INVALID_TOPIC_ERROR_CWSIH0006=CWSIH0006E: Sintaxa subiectului pentru un mesaj publicat este incorect\u0103: {0}.
+INVALID_TOPIC_ERROR_CWSIH0006.explanation=Subiectul furnizat nu poate con\u0163ine metacaractere \u00eentruc\u00e2t aceasta este o publicare.
+INVALID_TOPIC_ERROR_CWSIH0006.useraction=\u00cenl\u0103tura\u0163i metacaracterele din mesajele publicate.  
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name.
+UNABLE_TO_CREATE_MATCHING_INSTANCE_CWSIH0007=CWSIH0007E: O instan\u0163\u0103 Matching nu poate fi creat\u0103: excep\u0163ie {0}.
+UNABLE_TO_CREATE_MATCHING_INSTANCE_CWSIH0007.explanation=O instan\u0163\u0103 Matching nu poate fi creat\u0103 \u00eentruc\u00e2t sib.matchspaceImpl.jar lipse\u015fte sau este alterat\u0103.
+UNABLE_TO_CREATE_MATCHING_INSTANCE_CWSIH0007.useraction=CMSG0002  
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIH9999=CWSIH9999E: ''{0}''
+TEMPORARY_CWSIH9999.explanation=Dac\u0103 acest mesaj nu v\u0103 d\u0103 suficiente informa\u0163ii, verifica\u0163i mesajele anterioare pentru ajutor suplimentar.
+TEMPORARY_CWSIH9999.useraction=Pentru informa\u0163ii suplimentare vede\u0163i mesajele anterioare.

@@ -1,0 +1,199 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jca.utils/resources/com/ibm/ws/jca/utils/internal/resources/JcaUtilsMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA JCA
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+# Range: 9900 - 9999
+
+# {0} = resource adapter class name
+# {1} = annotation used on the class
+# {2} = name of interface that the class is required to implement with this annotation
+J2CA9902.required.rainterface.for.anno.missing=J2CA9902E: A(z) {1} annot\u00e1ci\u00f3val ell\u00e1tott {0} er\u0151forr\u00e1s-illeszt\u0151 oszt\u00e1ly nem val\u00f3s\u00edtja meg a(z) {2} fel\u00fcletet.
+J2CA9902.required.rainterface.for.anno.missing.explanation=Az annot\u00e1ci\u00f3val ell\u00e1tott er\u0151forr\u00e1s-illeszt\u0151 oszt\u00e1ly nem val\u00f3s\u00edtja meg a sz\u00fcks\u00e9ges fel\u00fcletet.
+J2CA9902.required.rainterface.for.anno.missing.useraction=Vizsg\u00e1lja meg az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1ll\u00edt\u00f3i dokument\u00e1ci\u00f3j\u00e1t \u00e9s hibafelder\u00edt\u00e9si folyamatait.
+
+# {0} = resource adapter class name
+# {1} = name of interface that the class is required to implement for this deployment descriptor entry type
+J2CA9903.required.rainterface.missing=J2CA9903E: A(z) {0} er\u0151forr\u00e1s-illeszt\u0151 oszt\u00e1ly nem val\u00f3s\u00edtja meg a(z) {1} fel\u00fcletet.
+J2CA9903.required.rainterface.missing.explanation=A telep\u00edt\u00e9si le\u00edr\u00f3ban megadott er\u0151forr\u00e1s-illeszt\u0151 oszt\u00e1ly nem val\u00f3s\u00edtja meg a sz\u00fcks\u00e9ges fel\u00fcletet.
+J2CA9903.required.rainterface.missing.useraction=Vizsg\u00e1lja meg az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1ll\u00edt\u00f3i dokument\u00e1ci\u00f3j\u00e1t \u00e9s hibafelder\u00edt\u00e9si folyamatait.
+
+# {0} = resource adapter class name
+# {1} = resource adapter name
+J2CA9904.required.raclass.missing=J2CA9904E: A(z) {0} er\u0151forr\u00e1s-illeszt\u0151 oszt\u00e1ly van megadva; az oszt\u00e1ly azonban nem tal\u00e1lhat\u00f3 a(z) {1} er\u0151forr\u00e1s-illeszt\u0151ben.
+J2CA9904.required.raclass.missing.explanation=Az ra.xml f\u00e1jl <resourceadapter-class> szakasz\u00e1ban vagy a @Connector annot\u00e1ci\u00f3val ell\u00e1tott oszt\u00e1lyban megadott er\u0151forr\u00e1s-illeszt\u0151 oszt\u00e1ly nem tal\u00e1lhat\u00f3 az er\u0151forr\u00e1s-illeszt\u0151ben.
+J2CA9904.required.raclass.missing.useraction=Vizsg\u00e1lja meg az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1ll\u00edt\u00f3i dokument\u00e1ci\u00f3j\u00e1t \u00e9s hibafelder\u00edt\u00e9si folyamatait.
+
+# {0} = config property name
+# {1} = resource adapter name
+J2CA9905.required.prop.missing=J2CA9905W: A(z) {0} konfigur\u00e1ci\u00f3s tulajdons\u00e1g k\u00f6telez\u0151, a(z) {1} er\u0151forr\u00e1s-illeszt\u0151ben azonban nem tal\u00e1lhat\u00f3 tulajdons\u00e1gmeghat\u00e1roz\u00e1s.
+J2CA9905.required.prop.missing.explanation=Egy k\u00f6telez\u0151 konfigur\u00e1ci\u00f3s tulajdons\u00e1g tulajdons\u00e1gmeghat\u00e1roz\u00e1sa nem tal\u00e1lhat\u00f3 az er\u0151forr\u00e1s-illeszt\u0151ben.
+J2CA9905.required.prop.missing.useraction=Vizsg\u00e1lja meg az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1ll\u00edt\u00f3i dokument\u00e1ci\u00f3j\u00e1t \u00e9s hibafelder\u00edt\u00e9si folyamatait.
+
+# {0} = config property type specified
+# {1} = config property name
+J2CA9906.invalid.type=J2CA9906E: A(z) {1} konfigur\u00e1ci\u00f3s tulajdons\u00e1ghoz megadott {0} tulajdons\u00e1gt\u00edpus \u00e9rv\u00e9nytelen.
+J2CA9906.invalid.type.explanation=A konfigur\u00e1ci\u00f3s tulajdons\u00e1g t\u00edpusa csak a k\u00f6vetkez\u0151k valamelyike lehet: Karaktersorozat, Hossz\u00fa eg\u00e9sz, Dupla pontoss\u00e1g\u00fa, Lebeg\u0151pontos, Eg\u00e9sz, Byte, Karakter, Logikai vagy R\u00f6vid eg\u00e9sz.
+J2CA9906.invalid.type.useraction=Vizsg\u00e1lja meg az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1ll\u00edt\u00f3i dokument\u00e1ci\u00f3j\u00e1t \u00e9s hibafelder\u00edt\u00e9si folyamatait.
+
+# {0} = config property name
+# {1} = resource adapter name
+J2CA9908.duplicate.copy=J2CA9908E: A(z) {0} konfigur\u00e1ci\u00f3s tulajdons\u00e1g t\u00f6bbsz\u00f6r is megtal\u00e1lhat\u00f3 ugyanazon a hat\u00f3k\u00f6r\u00f6n bel\u00fcl a(z) {1} er\u0151forr\u00e1s-illeszt\u0151ben. A t\u00f6bbsz\u00f6r szerepl\u0151 tulajdons\u00e1gok figyelmen k\u00edv\u00fcl maradnak.
+J2CA9908.duplicate.copy.explanation=Egy konfigur\u00e1ci\u00f3s tulajdons\u00e1got t\u00f6bbsz\u00f6r hat\u00e1roztak meg adott hat\u00f3k\u00f6r\u00f6n (p\u00e9ld\u00e1ul aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son) bel\u00fcl.
+J2CA9908.duplicate.copy.useraction=Vizsg\u00e1lja meg az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1ll\u00edt\u00f3i dokument\u00e1ci\u00f3j\u00e1t \u00e9s hibafelder\u00edt\u00e9si folyamatait.
+
+# {0} = config property name
+# {1} = resource adapter name
+J2CA9909.missing.matching.config.prop=J2CA9909E: A(z) {0} konfigur\u00e1ci\u00f3s tulajdons\u00e1g meg van adva a wlp-ra.xml f\u00e1jlban, de a megfelel\u0151 ConfigProperty annot\u00e1ci\u00f3, telep\u00edt\u00e9si le\u00edr\u00f3 bejegyz\u00e9s vagy Java Bean tulajdons\u00e1g nem tal\u00e1lhat\u00f3 a(z) {1} er\u0151forr\u00e1s-illeszt\u0151ben.
+J2CA9909.missing.matching.config.prop.explanation=A wlp-ra.xml f\u00e1jlban haszn\u00e1lt konfigur\u00e1ci\u00f3s tulajdons\u00e1g meghat\u00e1roz\u00e1sa nem tal\u00e1lhat\u00f3 az er\u0151forr\u00e1s-illeszt\u0151ben.
+J2CA9909.missing.matching.config.prop.useraction=Vizsg\u00e1lja meg az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1ll\u00edt\u00f3i dokument\u00e1ci\u00f3j\u00e1t \u00e9s hibafelder\u00edt\u00e9si folyamatait.
+
+# {0} = admin object interface
+# {1} = admin object class
+# {2} = resource adapter name
+J2CA9910.missing.matching.adminobject=J2CA9910E: A wlp-ra.xml f\u00e1jlban <adminobject> elem van megadva a(z) {0} fel\u00fclettel \u00e9s {1} oszt\u00e1llyal, de a megfelel\u0151 AdministeredObject annot\u00e1ci\u00f3 vagy telep\u00edt\u00e9si le\u00edr\u00f3 bejegyz\u00e9s nem tal\u00e1lhat\u00f3 a(z) {2} er\u0151forr\u00e1s-illeszt\u0151ben.
+J2CA9910.missing.matching.adminobject.explanation=A wlp-ra.xml f\u00e1jlban haszn\u00e1lt <adminobject> elem meghat\u00e1roz\u00e1sa nem tal\u00e1lhat\u00f3 az er\u0151forr\u00e1s-illeszt\u0151ben.
+J2CA9910.missing.matching.adminobject.useraction=Vizsg\u00e1lja meg az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1ll\u00edt\u00f3i dokument\u00e1ci\u00f3j\u00e1t \u00e9s hibafelder\u00edt\u00e9si folyamatait.
+
+# {0} = wlp-ra.xml element name
+# {1} = interface of connection factory or message listener
+# {2} = annotation type
+# {3} = resource adapter name
+J2CA9911.missing.matching.type=J2CA9911E: {0} elem van megadva a(z) {1} t\u00edpushoz a wlp-ra.xml f\u00e1jlban, de a megfelel\u0151 {2} annot\u00e1ci\u00f3 vagy telep\u00edt\u00e9si le\u00edr\u00f3 bejegyz\u00e9s nem tal\u00e1lhat\u00f3 a(z) {3} er\u0151forr\u00e1s-illeszt\u0151ben.
+J2CA9911.missing.matching.type.explanation=A wlp-ra.xml f\u00e1jlban haszn\u00e1lt <connection-definition> vagy <messagelistener> elemnek megfelel\u0151 meghat\u00e1roz\u00e1s nem tal\u00e1lhat\u00f3 az er\u0151forr\u00e1s-illeszt\u0151ben.
+J2CA9911.missing.matching.type.useraction=Vizsg\u00e1lja meg az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1ll\u00edt\u00f3i dokument\u00e1ci\u00f3j\u00e1t \u00e9s hibafelder\u00edt\u00e9si folyamatait.
+   
+J2CA9912.conn.defn.required=J2CA9912E: Nem tal\u00e1lhat\u00f3 <connection-definition> vagy oszt\u00e1ly @ConnectionDefinition annot\u00e1ci\u00f3val, b\u00e1r tranzakci\u00f3t\u00e1mogat\u00e1s, hiteles\u00edt\u00e9si mechanizmusok vagy \u00fajrahiteles\u00edt\u00e9s t\u00e1mogat\u00e1s lett megadva.
+J2CA9912.conn.defn.required.explanation=Nem adhat\u00f3 meg tranzakci\u00f3t\u00e1mogat\u00e1s, hiteles\u00edt\u00e9si mechanizmusok vagy \u00fajrahiteles\u00edt\u00e9s t\u00e1mogat\u00e1s, kiv\u00e9ve, ha l\u00e9tezik legal\u00e1bb egy <connection-definition> elem az ra.xml f\u00e1jlban vagy legal\u00e1bb egy oszt\u00e1ly @ConnectionDefinition annot\u00e1ci\u00f3val.
+J2CA9912.conn.defn.required.useraction=Vizsg\u00e1lja meg az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1ll\u00edt\u00f3i dokument\u00e1ci\u00f3j\u00e1t \u00e9s hibafelder\u00edt\u00e9si folyamatait.
+
+# {0} = nls file name
+# {1} = resource adapter name
+# {2} = message key
+J2CA9916.duplicate.nls.key=J2CA9916W: A(z) {1} er\u0151forr\u00e1s-illeszt\u0151 leford\u00edthat\u00f3 \u00fczenetf\u00e1jlja ({0}) t\u00f6bb \u00fczenetet ad meg ugyanahhoz a kulcshoz: {2}.
+J2CA9916.duplicate.nls.key.explanation=A ford\u00edt\u00e1sf\u00e1jl feldolgoz\u00e1sa sor\u00e1n a rendszer egyetlen NLS kulcsot tal\u00e1lt, amelyet t\u00f6bb \u00fczenethez haszn\u00e1lnak.
+J2CA9916.duplicate.nls.key.useraction=Vizsg\u00e1lja meg az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1ll\u00edt\u00f3i dokument\u00e1ci\u00f3j\u00e1t \u00e9s hibafelder\u00edt\u00e9si folyamatait.
+
+# {0} = nls file name
+# {1} = resource adapter name
+# {2} = message key
+J2CA9917.missing.nls.msg=J2CA9917W: A(z) {1} er\u0151forr\u00e1s-illeszt\u0151 leford\u00edthat\u00f3 \u00fczeneteket tartalmaz\u00f3 f\u00e1jlja ({0}) nem tartalmaz ford\u00edt\u00e1si \u00fczenetet a wlp-ra.xml f\u00e1jlban megadott {2} kulcshoz.
+J2CA9917.missing.nls.msg.explanation=Nem tal\u00e1lhat\u00f3 ford\u00edt\u00e1si \u00fczenet a megadott kulcshoz.
+J2CA9917.missing.nls.msg.useraction=Vizsg\u00e1lja meg az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1ll\u00edt\u00f3i dokument\u00e1ci\u00f3j\u00e1t \u00e9s hibafelder\u00edt\u00e9si folyamatait.
+
+# {0} = attribute name
+# {1} = resource adapter name
+J2CA9918.attrdef.already.processed=J2CA9918W: A(z) {1} er\u0151forr\u00e1s-illeszt\u0151 t\u00f6bb {0} nev\u0171 konfigur\u00e1ci\u00f3s tulajdons\u00e1got hat\u00e1roz meg ugyanazon a hat\u00f3k\u00f6r\u00f6n bel\u00fcl. A m\u00e1sodp\u00e9ld\u00e1nyok figyelmen k\u00edv\u00fcl maradnak.
+J2CA9918.attrdef.already.processed.explanation=Er\u0151forr\u00e1s-illeszt\u0151, aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1s, fel\u00fcgyelt objektum vagy kapcsolatgy\u00e1r t\u00f6bb azonos nev\u0171 konfigur\u00e1ci\u00f3s tulajdons\u00e1got ad meg.
+J2CA9918.attrdef.already.processed.useraction=Vizsg\u00e1lja meg az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1ll\u00edt\u00f3i dokument\u00e1ci\u00f3j\u00e1t \u00e9s hibafelder\u00edt\u00e9si folyamatait.
+
+J2CA9919.class.not.found=J2CA9919W: A(z) {1} er\u0151forr\u00e1s-illeszt\u0151 oszt\u00e1lybet\u00f6lt\u0151je nem tudja bet\u00f6lteni a k\u00f6vetkez\u0151t: {0}. Vizsg\u00e1lja meg, hogy az er\u0151forr\u00e1s-illeszt\u0151 nem ig\u00e9nyel-e olyan szolg\u00e1ltat\u00e1st, amely nem enged\u00e9lyezett vagy olyan k\u00f6nyvt\u00e1rat, amely sz\u00e1m\u00e1ra nem el\u00e9rhet\u0151.
+J2CA9919.class.not.found.explanation=A megadott oszt\u00e1ly nem t\u00f6lthet\u0151 be; ennek az lehet az oka, hogy az oszt\u00e1lyt vagy azt az oszt\u00e1lyt, amelyt\u0151l f\u00fcgg, olyan szolg\u00e1ltat\u00e1s biztos\u00edtja, amely nem enged\u00e9lyezett vagy olyan k\u00f6nyvt\u00e1r, amely az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1m\u00e1ra nem el\u00e9rhet\u0151.
+J2CA9919.class.not.found.useraction=Enged\u00e9lyezze az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1m\u00e1ra sz\u00fcks\u00e9ges szolg\u00e1ltat\u00e1sokat \u00e9s \u00e1ll\u00edtsa be az er\u0151forr\u00e1s-illeszt\u0151t \u00fagy, hogy minden k\u00f6nyvt\u00e1rhoz hozz\u00e1f\u00e9rjen, amelyre sz\u00fcks\u00e9ge van.
+
+# {0} = type of object
+# {1} = possible ra.xml entry
+# {2} = possible annotation class
+J2CA9920.duplicate.type=J2CA9920W: T\u00f6bbsz\u00f6r szerepl\u0151 t\u00edpus ({0}) lett megadva a(z) {1} bejegyz\u00e9sben \u00e9s az ra.xml f\u00e1jl m\u00e1sik bejegyz\u00e9s\u00e9ben vagy legal\u00e1bb egy, {2} annot\u00e1ci\u00f3val ell\u00e1tott oszt\u00e1lyban.
+J2CA9920.duplicate.type.explanation=Egy er\u0151forr\u00e1s-illeszt\u0151, aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1s, fel\u00fcgyelt objektum vagy kapcsolatgy\u00e1r t\u00f6bbsz\u00f6r lett megadva ugyanazzal a t\u00edpussal.
+J2CA9920.duplicate.type.useraction=Vizsg\u00e1lja meg az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1ll\u00edt\u00f3i dokument\u00e1ci\u00f3j\u00e1t \u00e9s hibafelder\u00edt\u00e9si folyamatait.
+
+# {0} = resource adapter name
+J2CA9922.multiple.connector.anno.found=J2CA9922E: A(z) {0} er\u0151forr\u00e1s-illeszt\u0151 t\u00f6bb @Connector annot\u00e1ci\u00f3val ell\u00e1tott oszt\u00e1llyal rendelkezik, de nem adja meg telep\u00edt\u00e9si le\u00edr\u00f3n kereszt\u00fcl, hogy melyiket kell haszn\u00e1lni.
+J2CA9922.multiple.connector.anno.found.explanation=B\u00e1r a @Connector annot\u00e1ci\u00f3val ell\u00e1tott oszt\u00e1lyok haszn\u00e1lata megengedett, az er\u0151forr\u00e1s-illeszt\u0151 eset\u00e9ben haszn\u00e1land\u00f3 oszt\u00e1lyt a telep\u00edt\u00e9si le\u00edr\u00f3ban kifejezetten meg kell adni.
+J2CA9922.multiple.connector.anno.found.useraction=Vizsg\u00e1lja meg az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1ll\u00edt\u00f3i dokument\u00e1ci\u00f3j\u00e1t \u00e9s hibafelder\u00edt\u00e9si folyamatait.
+
+# {0} = message listener type
+# {1} = annotated activation specification class
+J2CA9924.listener.actspec.missing=J2CA9924E: Az ra.xml f\u00e1jlban {0} t\u00edpussal meghat\u00e1rozott \u00fczenetfigyel\u0151nek fel\u00fcl kellene b\u00edr\u00e1lnia az @Activation annot\u00e1ci\u00f3val ell\u00e1tott {1} oszt\u00e1lyt, de a figyel\u0151 nem tartalmaz aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1st.
+J2CA9924.listener.actspec.missing.explanation=Az ra.xml f\u00e1jl tartalmaz egy \u00fczenetfigyel\u0151-t\u00edpust \u00e9s a t\u00edpushoz tartozik egy annot\u00e1ci\u00f3val ell\u00e1tott oszt\u00e1ly, de az ra.xml f\u00e1jl nem tartalmaz megfelel\u0151 aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1s bejegyz\u00e9st.
+J2CA9924.listener.actspec.missing.useraction=Vizsg\u00e1lja meg az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1ll\u00edt\u00f3i dokument\u00e1ci\u00f3j\u00e1t \u00e9s hibafelder\u00edt\u00e9si folyamatait.
+
+# {0} = class annotated with @AdministeredObject
+J2CA9925.admobj.interface.missing=J2CA9925E: A fel\u00fcgyelt objektum fel\u00fcletek nem lettek meghat\u00e1rozva @AdministeredObject annot\u00e1ci\u00f3n kereszt\u00fcl \u00e9s a(z) {0} oszt\u00e1ly nem val\u00f3s\u00edtott meg semmilyen fel\u00fcletet.
+J2CA9925.admobj.interface.missing.explanation=Az annot\u00e1ci\u00f3kkal ell\u00e1tott oszt\u00e1lynak biztos\u00edtania kell a fel\u00fcleteket az annot\u00e1ci\u00f3ban vagy meg kell val\u00f3s\u00edtania a fel\u00fcleteket.
+J2CA9925.admobj.interface.missing.useraction=Vizsg\u00e1lja meg az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1ll\u00edt\u00f3i dokument\u00e1ci\u00f3j\u00e1t \u00e9s hibafelder\u00edt\u00e9si folyamatait.
+
+# {0} = class annotated with @AdministeredObject
+J2CA9926.admobj.multiple.interfaces=J2CA9926E: Nem lettek fel\u00fcgyelt objektum fel\u00fcletek meghat\u00e1rozva az @AdministeredObject annot\u00e1ci\u00f3n kereszt\u00fcl, ez\u00e9rt az oszt\u00e1lyban meghat\u00e1rozott fel\u00fcletek ker\u00fclnek felhaszn\u00e1l\u00e1sra; a(z) {0} oszt\u00e1lyban azonban t\u00f6bb fel\u00fclet is van.
+J2CA9926.admobj.multiple.interfaces.explanation=A fel\u00fcleteket az annot\u00e1ci\u00f3ban kell megadni.
+J2CA9926.admobj.multiple.interfaces.useraction=Vizsg\u00e1lja meg az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1ll\u00edt\u00f3i dokument\u00e1ci\u00f3j\u00e1t \u00e9s hibafelder\u00edt\u00e9si folyamatait.
+
+# {0} = method with invalid name
+J2CA9927.cfgprop.invalid.method=J2CA9927E: A @ConfigProperty annot\u00e1ci\u00f3 csak be\u00e1ll\u00edt\u00f3 met\u00f3dusokban haszn\u00e1lhat\u00f3, de megtal\u00e1lhat\u00f3 a(z) {0} met\u00f3dusban.
+J2CA9927.cfgprop.invalid.method.explanation=A @ConfigProperty annot\u00e1ci\u00f3 olyan met\u00f3dusban lett megadva, amelynek neve nem set el\u0151taggal kezd\u0151dik.
+J2CA9927.cfgprop.invalid.method.useraction=Vizsg\u00e1lja meg az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1ll\u00edt\u00f3i dokument\u00e1ci\u00f3j\u00e1t \u00e9s hibafelder\u00edt\u00e9si folyamatait.
+
+J2CA9930.value.too.small=J2CA9930W: A(z) {0} \u00e9rt\u00e9k kisebb, mint a(z) {2} attrib\u00fatum minim\u00e1lis \u00e9rt\u00e9ke ({1})
+J2CA9930.value.too.small.explanation=A be\u00e1ll\u00edtott \u00e9rt\u00e9k nem felel meg az attrib\u00fatum minim\u00e1lis m\u00e9ret megszor\u00edt\u00e1s\u00e1nak.
+J2CA9930.value.too.small.useraction=V\u00e1lasszon olyan \u00e9rt\u00e9ket, amely nem kisebb, mint a minim\u00e1lis \u00e9rt\u00e9k.
+
+J2CA9931.value.too.large=J2CA9931W: A(z) {0} \u00e9rt\u00e9k meghaladja a(z) {2} attrib\u00fatum maxim\u00e1lis \u00e9rt\u00e9k\u00e9t ({1})
+J2CA9931.value.too.large.explanation=A be\u00e1ll\u00edtott \u00e9rt\u00e9k meghaladja az attrib\u00fatum maxim\u00e1lis m\u00e9ret megszor\u00edt\u00e1s\u00e1t.
+J2CA9931.value.too.large.useraction=V\u00e1lasszon olyan \u00e9rt\u00e9ket, amely nem nagyobb, mint a maxim\u00e1lis \u00e9rt\u00e9k.
+
+J2CA9932.value.too.short=J2CA9932W: A(z) {0} \u00e9rt\u00e9k kisebb, mint a(z) {2} attrib\u00fatum minim\u00e1lis hossza ({1})
+J2CA9932.value.too.short.explanation=A be\u00e1ll\u00edtott \u00e9rt\u00e9k nem felel meg az attrib\u00fatum minim\u00e1lis hossz megszor\u00edt\u00e1s\u00e1nak.
+J2CA9932.value.too.short.useraction=V\u00e1lasszon olyan \u00e9rt\u00e9ket, amely nem kisebb, mint a minim\u00e1lis hossz.
+
+J2CA9933.value.too.long=J2CA9933W: A(z) {0} \u00e9rt\u00e9k meghaladja a(z) {2} attrib\u00fatum maxim\u00e1lis hossz\u00e1t ({1})
+J2CA9933.value.too.long.explanation=A be\u00e1ll\u00edtott \u00e9rt\u00e9k meghaladja az attrib\u00fatum maxim\u00e1lis hossz megszor\u00edt\u00e1s\u00e1t.
+J2CA9933.value.too.long.useraction=V\u00e1lasszon olyan \u00e9rt\u00e9ket, amely nem nagyobb, mint a maxim\u00e1lis hossz.
+
+J2CA9934.not.a.valid.option=J2CA9934E: A(z) {0} \u00e9rt\u00e9k a(z) {1} attrib\u00fatum eset\u00e9ben \u00e9rv\u00e9nytelen be\u00e1ll\u00edt\u00e1s. Az \u00e9rv\u00e9nyes be\u00e1ll\u00edt\u00e1sok a k\u00f6vetkez\u0151k: {2}
+J2CA9934.not.a.valid.option.explanation=A be\u00e1ll\u00edtott \u00e9rt\u00e9k k\u00edv\u00fcl esik az attrib\u00fatum \u00e9rv\u00e9nyes be\u00e1ll\u00edt\u00e1sainak tartom\u00e1ny\u00e1n.
+J2CA9934.not.a.valid.option.useraction=V\u00e1lasszon egy \u00e9rt\u00e9ket az \u00e9rv\u00e9nyes be\u00e1ll\u00edt\u00e1sok list\u00e1j\u00e1b\u00f3l.
+
+J2CA9935.secperm.not.supported=J2CA9935I: A(z) {0} er\u0151forr\u00e1s-illeszt\u0151 telep\u00edt\u00e9si le\u00edr\u00f3j\u00e1ban megadott Java 2 biztons\u00e1gi enged\u00e9lyek nem lesznek betartatva.
+J2CA9935.secperm.not.supported.explanation=A Java 2 biztons\u00e1g a Liberty profilban nem enged\u00e9lyezett, \u00edgy az er\u0151forr\u00e1s-illeszt\u0151n nem lesznek Java 2 biztons\u00e1gi ellen\u0151rz\u00e9sek v\u00e9grehajtva.
+J2CA9935.secperm.not.supported.useraction=Semmit sem kell tennie.
+
+J2CA9936.default.value.error=J2CA9936W: A(z) {0} tulajdons\u00e1g alap\u00e9rtelmezett \u00e9rt\u00e9ke nem k\u00e9rdezhet\u0151 le a(z) {1} oszt\u00e1ly p\u00e9ld\u00e1ny\u00e1b\u00f3l a(z) {2} er\u0151forr\u00e1s-illeszt\u0151ben, mert hiba t\u00f6rt\u00e9nt: {3}
+J2CA9936.default.value.error.explanation=Hiba t\u00f6rt\u00e9nt, mik\u00f6zben a rendszer megk\u00eds\u00e9relte el\u00e9rni egy er\u0151forr\u00e1s-illeszt\u0151 JavaBean tulajdons\u00e1g alap\u00e9rtelmezett \u00e9rt\u00e9k\u00e9t.
+J2CA9936.default.value.error.useraction=Tekintse \u00e1t a hib\u00e1t, \u00e9s sz\u00fcks\u00e9g szerint \u00e1ll\u00edtsa be az er\u0151forr\u00e1s-illeszt\u0151t.
+
+J2CA9937.cfgprop.invalid.return=J2CA9937E: A(z) {0} JavaBean @ConfigProperty annot\u00e1ci\u00f3val megjel\u00f6lt {1} konfigur\u00e1ci\u00f3s tulajdons\u00e1ga beolvas\u00f3 met\u00f3dus\u00e1nak visszat\u00e9r\u00e9si t\u00edpusa {2}, ami nem egyezik meg a(z) {3} konfigur\u00e1ci\u00f3s tulajdons\u00e1g t\u00edpus\u00e1val. 
+J2CA9937.cfgprop.invalid.return.explanation=A @ConfigProperty annot\u00e1ci\u00f3val megjel\u00f6lt konfigur\u00e1ci\u00f3s tulajdons\u00e1g beolvas\u00f3 met\u00f3dus\u00e1nak csak olyan visszat\u00e9r\u00e9si t\u00edpusa lehet, amely megegyezik a konfigur\u00e1ci\u00f3s tulajdons\u00e1g t\u00edpus\u00e1val.
+J2CA9937.cfgprop.invalid.return.useraction=Vizsg\u00e1lja meg az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1ll\u00edt\u00f3i dokument\u00e1ci\u00f3j\u00e1t \u00e9s hibafelder\u00edt\u00e9si folyamatait.
+
+J2CA9938.cfgprop.no.getter=J2CA9938E: A(z) {0} JavaBean @ConfigProperty annot\u00e1ci\u00f3val megjel\u00f6lt {1} konfigur\u00e1ci\u00f3s tulajdons\u00e1g\u00e1nak nincs {2} visszat\u00e9r\u00e9si t\u00edpus\u00fa beolvas\u00f3 met\u00f3dusa.
+J2CA9938.cfgprop.no.getter.explanation=A @ConfigProperty annot\u00e1ci\u00f3val megjel\u00f6lt konfigur\u00e1ci\u00f3s tulajdons\u00e1g beolvas\u00f3 met\u00f3dus\u00e1nak csak olyan visszat\u00e9r\u00e9si t\u00edpusa lehet, amely megegyezik a konfigur\u00e1ci\u00f3s tulajdons\u00e1g t\u00edpus\u00e1val.
+J2CA9938.cfgprop.no.getter.useraction=Vizsg\u00e1lja meg az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1ll\u00edt\u00f3i dokument\u00e1ci\u00f3j\u00e1t \u00e9s hibafelder\u00edt\u00e9si folyamatait.
+
+J2CA9939.cfgprop.no.setter=J2CA9939E: A(z) {0} JavaBean @ConfigProperty annot\u00e1ci\u00f3val megjel\u00f6lt {1} konfigur\u00e1ci\u00f3s tulajdons\u00e1g\u00e1nak nincs olyan be\u00e1ll\u00edt\u00f3 met\u00f3dusa, amelynek egyetlen, {2} t\u00edpus\u00fa param\u00e9tere van.
+J2CA9939.cfgprop.no.setter.explanation=A @ConfigProperty annot\u00e1ci\u00f3val megjel\u00f6lt konfigur\u00e1ci\u00f3s tulajdons\u00e1g be\u00e1ll\u00edt\u00f3 met\u00f3dus\u00e1nak csak egyetlen, olyan t\u00edpus\u00fa param\u00e9tere lehet, amely megegyezik a konfigur\u00e1ci\u00f3s tulajdons\u00e1g t\u00edpus\u00e1val.
+J2CA9939.cfgprop.no.setter.useraction=Vizsg\u00e1lja meg az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1ll\u00edt\u00f3i dokument\u00e1ci\u00f3j\u00e1t \u00e9s hibafelder\u00edt\u00e9si folyamatait.
+
+J2CA9940.cfgprop.type.mismatch.field=J2CA9940E: A(z) {0} JavaBean @ConfigProperty annot\u00e1ci\u00f3val megjel\u00f6lt {1} konfigur\u00e1ci\u00f3s tulajdons\u00e1g\u00e1nak a(z) {2} t\u00edpus van be\u00e1ll\u00edtva az annot\u00e1ci\u00f3ban, ami nem egyezik meg a mez\u0151 {3} t\u00edpus\u00e1val.
+J2CA9940.cfgprop.type.mismatch.field.explanation=A @ConfigProperty annot\u00e1ci\u00f3ban be\u00e1ll\u00edtott t\u00edpusnak meg kell egyeznie a mez\u0151 t\u00edpus\u00e1val, amelyben felhaszn\u00e1l\u00e1sra ker\u00fcl.
+J2CA9940.cfgprop.type.mismatch.field.useraction=Vizsg\u00e1lja meg az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1ll\u00edt\u00f3i dokument\u00e1ci\u00f3j\u00e1t \u00e9s hibafelder\u00edt\u00e9si folyamatait.
+
+J2CA9941.cfgprop.type.mismatch.setter=J2CA9941E: A(z) {0} JavaBean @ConfigProperty annot\u00e1ci\u00f3val megjel\u00f6lt {1} konfigur\u00e1ci\u00f3s tulajdons\u00e1g\u00e1nak a(z) {2} t\u00edpus van be\u00e1ll\u00edtva az annot\u00e1ci\u00f3ban, ami nem egyezik meg a be\u00e1ll\u00edt\u00f3 met\u00f3dusban l\u00e9v\u0151 param\u00e9ter {4} t\u00edpus\u00e1val.
+J2CA9941.cfgprop.type.mismatch.setter.explanation=A @ConfigProperty annot\u00e1ci\u00f3ban be\u00e1ll\u00edtott t\u00edpusnak meg kell egyeznie a be\u00e1ll\u00edt\u00f3 met\u00f3dusban l\u00e9v\u0151 param\u00e9ter t\u00edpus\u00e1val, amelyben felhaszn\u00e1l\u00e1sra ker\u00fcl.
+J2CA9941.cfgprop.type.mismatch.setter.useraction=Vizsg\u00e1lja meg az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1ll\u00edt\u00f3i dokument\u00e1ci\u00f3j\u00e1t \u00e9s hibafelder\u00edt\u00e9si folyamatait.
+
+J2CA9942.cfgprop.invalid.parameters=J2CA9942E: A @ConfigProperty annot\u00e1ci\u00f3 csak olyan be\u00e1ll\u00edt\u00f3 met\u00f3dusokban haszn\u00e1lhat\u00f3, amelyeknek egyetlen param\u00e9ter\u00fck van, de megtal\u00e1lhat\u00f3 a(z) {0} met\u00f3dusban, amelynek param\u00e9terei a k\u00f6vetkez\u0151k: {1}.
+J2CA9942.cfgprop.invalid.parameters.explanation=A @ConfigProperty annot\u00e1ci\u00f3t olyan be\u00e1ll\u00edt\u00f3 met\u00f3dusban kell megadni, amelynek csak egytelen param\u00e9tere van.
+J2CA9942.cfgprop.invalid.parameters.useraction=Vizsg\u00e1lja meg az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1ll\u00edt\u00f3i dokument\u00e1ci\u00f3j\u00e1t \u00e9s hibafelder\u00edt\u00e9si folyamatait.
+
+J2CA9943.missing.connector.dd=J2CA9943E: A(z) {0} er\u0151forr\u00e1s-illeszt\u0151 \u00e9rv\u00e9nytelen. Tartalmaznia kellene vagy egy telep\u00edt\u00e9sle\u00edr\u00f3t, vagy pedig egy az er\u0151forr\u00e1s-illeszt\u0151 feljegyz\u00e9sek egyik\u00e9vel feljegyzett JavaBean oszt\u00e1lyt.
+J2CA9943.missing.connector.dd.explanation=Az \u00e9rv\u00e9nyes er\u0151forr\u00e1s-illeszt\u0151nek rendelkeznie kell vagy egy telep\u00edt\u00e9sle\u00edr\u00f3val, vagy pedig egy a @Connector, @AdministeredObject, @ConnectionDefinition, @ConnectionDefinitions vagy @Activation feljegyz\u00e9sek egyik\u00e9vel feljegyzett JavaBean oszt\u00e1llyal.
+J2CA9943.missing.connector.dd.useraction=Vizsg\u00e1lja meg az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1ll\u00edt\u00f3i dokument\u00e1ci\u00f3j\u00e1t \u00e9s hibafelder\u00edt\u00e9si folyamatait.

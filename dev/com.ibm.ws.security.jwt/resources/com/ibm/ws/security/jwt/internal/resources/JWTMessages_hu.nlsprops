@@ -1,0 +1,311 @@
+###############################################################################
+# Copyright (c) 2016, 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/jwt/resources/JWTMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server JWT
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS6000 - CWWKS6100
+JWT_BUILDER_CONFIG_PROCESSED=CWWKS6000I: A(z) {0} JWT konfigur\u00e1ci\u00f3 sikeresen feldolgozva.
+JWT_BUILDER_CONFIG_PROCESSED.explanation=A JWT (json webtoken-\u00f6ssze\u00e1ll\u00edt\u00f3) konfigur\u00e1ci\u00f3 sikeresen feldolgoz\u00e1sra ker\u00fclt.
+JWT_BUILDER_CONFIG_PROCESSED.useraction=Nincs
+
+JWT_BUILDER_CONFIG_MODIFIED=CWWKS6001I: A(z) {0} JWT konfigur\u00e1ci\u00f3 m\u00f3dos\u00edt\u00e1sa sikeresen feldolgoz\u00e1sra ker\u00fclt.
+JWT_BUILDER_CONFIG_MODIFIED.explanation=A JWT (json webtoken-\u00f6ssze\u00e1ll\u00edt\u00f3) konfigur\u00e1ci\u00f3 sikeresen m\u00f3dos\u00edt\u00e1sra ker\u00fclt.
+JWT_BUILDER_CONFIG_MODIFIED.useraction=Nincs.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_ENDPOINT_SERVICE_ACTIVATED=CWWKS6002I: A JSON Web Token (JWT) v\u00e9gpont szolg\u00e1ltat\u00e1s el\u00e9rhet\u0151.
+JWT_ENDPOINT_SERVICE_ACTIVATED.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+JWT_ENDPOINT_SERVICE_ACTIVATED.useraction=Nem kell semmit tennie.
+
+# Do not translate "JSON Web Token", "JWT", "jwt-1.0"
+JWT_OSGI_ENDPOINT_SERVICE_ERROR=CWWKS6003E: Konfigur\u00e1ci\u00f3s hiba t\u00f6rt\u00e9nt. A JSON Web Token (JWT) v\u00e9gpont szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy rendelkezik konfigur\u00e1lt jwt-1.0 szolg\u00e1ltat\u00e1ssal.
+JWT_OSGI_ENDPOINT_SERVICE_ERROR.explanation=A JSON Web Token (JWT) szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el az OSGi szolg\u00e1ltat\u00e1snyilv\u00e1ntart\u00e1son kereszt\u00fcl.
+JWT_OSGI_ENDPOINT_SERVICE_ERROR.useraction=Foglalja bele a jwt-1.0 szolg\u00e1ltat\u00e1st a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ba.
+
+# Do not translate "jwt-1.0"
+# 0=URL to which the request was directed
+JWT_ENDPOINT_FILTER_MATCH_NOT_FOUND=CWWKS6004W: A(z) [{0}] v\u00e9gpont URL fel\u00e9 ir\u00e1ny\u00edtott k\u00e9r\u00e9s nem ismerhet\u0151 fel \u00e9rv\u00e9nyes k\u00e9r\u00e9sk\u00e9nt.
+JWT_ENDPOINT_FILTER_MATCH_NOT_FOUND.explanation=A megadott URL nem egyezett meg egy k\u00e9r\u00e9s v\u00e1rt URL mint\u00e1j\u00e1val, amelyet ennek a sz\u0171r\u0151nek kellene kiszolg\u00e1lnia.
+JWT_ENDPOINT_FILTER_MATCH_NOT_FOUND.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az URL \u00fatvonal a v\u00e1rt v\u00e9gpontra mutat, \u00e9s hogy az megfelel egy v\u00e9gpontnak, amelyet a jwt-1.0 szolg\u00e1ltat\u00e1s biztos\u00edt.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Config ID of JWT provider
+JWT_CONFIG_SERVICE_NOT_AVAILABLE=CWWKS6005E: A JSON Web Token (JWT) konfigur\u00e1ci\u00f3s szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el a(z) [{0}] szolg\u00e1ltat\u00f3hoz.
+JWT_CONFIG_SERVICE_NOT_AVAILABLE.explanation=Az \u00fczenetben megadott szolg\u00e1ltat\u00f3 nem l\u00e9tezik a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban, vagy a megadott szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3j\u00e1t a konfigur\u00e1ci\u00f3s szolg\u00e1ltat\u00e1s nem dolgozta fel.
+JWT_CONFIG_SERVICE_NOT_AVAILABLE.useraction=Vizsg\u00e1lja meg a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3t, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott szolg\u00e1ltat\u00f3 konfigur\u00e1lva van.
+
+# 0=URL to which the request was directed, 1=Required attribute name
+JWT_REQUEST_ATTRIBUTE_MISSING=CWWKS6006E: A(z) [{0}] v\u00e9gpontra \u00e1tir\u00e1ny\u00edtott k\u00e9r\u00e9snek nincs [{1}] attrib\u00fatuma.
+JWT_REQUEST_ATTRIBUTE_MISSING.explanation=Lehets\u00e9ges, hogy a k\u00e9r\u00e9st a megfelel\u0151 sz\u0171r\u0151 nem kezelte a k\u00e9r\u00e9s feldolgoz\u00e1sa el\u0151tt. A k\u00e9r\u00e9s sz\u0171r\u0151 l\u00e9tre fogja hozni a megadott attrib\u00fatumot a k\u00e9r\u00e9sben tal\u00e1lhat\u00f3 inform\u00e1ci\u00f3k alapj\u00e1n. A sz\u0171r\u0151 ezut\u00e1n tov\u00e1bb\u00edtja a k\u00e9r\u00e9st tov\u00e1bbi feldolgoz\u00e1sra.
+JWT_REQUEST_ATTRIBUTE_MISSING.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00e9r\u00e9s a v\u00e1rt v\u00e9gpontra lett ir\u00e1ny\u00edtva.
+
+# Do not translate "JSON Web Token", "JWT", "JSON Web Key"
+#0=signatureAlgorithm, 1=key, 2=exception or error message if any
+JWT_NULL_SIGNING_KEY_WITH_ERROR=CWWKS6007E: A(z) [{0}] al\u00e1\u00edr\u00e1si algoritmus \u00e9s [{1}] kulcst\u00edpus \u00e1ltal ig\u00e9nyelt al\u00e1\u00edr\u00f3kulcs nem el\u00e9rhet\u0151. Ellen\u0151rizze, hogy az al\u00e1\u00edr\u00f3 algoritmus \u00e9s kulcs megfelel\u0151en van-e be\u00e1ll\u00edtva. {2}
+JWT_NULL_SIGNING_KEY_WITH_ERROR.explanation=Nem tal\u00e1lhat\u00f3 al\u00e1\u00edr\u00f3kulcs, vagy nem tal\u00e1lhat\u00f3 olyan kulcs, ami a be\u00e1ll\u00edtott al\u00e1\u00edr\u00e1si algoritmust haszn\u00e1lja. Ez a hiba a JWT be\u00e1ll\u00edt\u00e1s hi\u00e1nyz\u00f3, vagy pontatlan inform\u00e1ci\u00f3i miatt bek\u00f6vetkezhet be.
+JWT_NULL_SIGNING_KEY_WITH_ERROR.useraction=Tegye a k\u00f6vetkez\u0151t: 1) Ha JSON Web Key (JWK) kulcsot haszn\u00e1l al\u00e1\u00edr\u00e1sra, gondoskodjon arr\u00f3l, hogy az RS256 algoritmus legyen be\u00e1ll\u00edtva a signatureAlgorithm attrib\u00fatumban. 2) Ha X.509 tan\u00fas\u00edtv\u00e1nyokat haszn\u00e1l al\u00e1\u00edr\u00e1sra, akkor gondoskodjon arr\u00f3l, hogy a signatureAlgorithm, KeyStoreRef \u00e9s KeyStoreAlias attrib\u00fatumok megfelel\u0151en legyenek be\u00e1ll\u00edtva. 3) Ha az al\u00e1\u00edr\u00e1sra megosztott kulcsokat haszn\u00e1l, akkor gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a signatureAlgorithm \u00e9s sharedKey attrib\u00fatumok be\u00e1ll\u00edt\u00e1sa helyes-e.
+
+# Do not translate "JSON Web Token", "JWT", "jwtBuilder"
+JWT_BUILDER_INVALID=CWWKS6008E: A megadott [{0}] JSON Web Token (JWT) \u00f6ssze\u00e1ll\u00edt\u00f3 azonos\u00edt\u00f3 nem \u00e9rv\u00e9nyes. Ellen\u0151rizze, hogy van-e be\u00e1ll\u00edtva JWT \u00f6ssze\u00e1ll\u00edt\u00f3 a megadott azonos\u00edt\u00f3val.
+JWT_BUILDER_INVALID.explanation=A megadott azonos\u00edt\u00f3val nem l\u00e9tezik  JSON Web Token (JWT) \u00f6ssze\u00e1ll\u00edt\u00f3 a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban.
+JWT_BUILDER_INVALID.useraction=A megadott azonos\u00edt\u00f3val \u00e1ll\u00edtson be egy jwtBuilder elemet a server.xml f\u00e1jlban.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_INVALID_CLAIM_VALUE_ERR=CWWKS6009E: A(z) [{1}] \u00e9rt\u00e9k a(z) [{0}] JSON Web Token (JWT) ig\u00e9nyben nem \u00e9rv\u00e9nyes.
+JWT_INVALID_CLAIM_VALUE_ERR.explanation=A JSON Web Token (JWT) ig\u00e9nyben megadott \u00e9rt\u00e9k nem felel meg a JWT specifik\u00e1ci\u00f3nak.
+JWT_INVALID_CLAIM_VALUE_ERR.useraction=Adjon megfelel\u0151 \u00e9rt\u00e9ket a jelzett ig\u00e9nynek. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt l\u00e1sd a JWT specifik\u00e1ci\u00f3t.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_BUILDER_NOT_ACTIVE=CWWKS6010E: A JSON Web Token (JWT) \u00f6ssze\u00e1ll\u00edt\u00f3 API nem tudott \u00e9rv\u00e9nyes \u00f6ssze\u00e1ll\u00edt\u00f3 objektumot l\u00e9trehozni a(z) [{0}] azonos\u00edt\u00f3 haszn\u00e1lat\u00e1val. Ellen\u0151rizze, hogy a jwt-1.0 szolg\u00e1ltat\u00e1s be van-e \u00e1ll\u00edtva.
+JWT_BUILDER_NOT_ACTIVE.explanation=A JSON Web Token (JWT) \u00f6ssze\u00e1ll\u00edt\u00f3 API nem tudott \u00e9rv\u00e9nyes \u00f6ssze\u00e1ll\u00edt\u00f3 objektumot l\u00e9trehozni, mert az \u00f6ssze\u00e1ll\u00edt\u00f3 szolg\u00e1ltat\u00e1s nem el\u00e9rhet\u0151.
+JWT_BUILDER_NOT_ACTIVE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy rendelkezik konfigur\u00e1lt jwt-1.0 szolg\u00e1ltat\u00e1ssal.
+
+JWT_CLAIMSMAP_NULL_KEY_OR_VALUE=CWWKS6011W: A megadott JSON Web Token (JWT) ig\u00e9ny lek\u00e9pez\u00e9se \u00e9rv\u00e9nytelen ig\u00e9nyl\u00e9snevet vagy \u00e9rt\u00e9ket tartalmaz.
+JWT_CLAIMSMAP_NULL_KEY_OR_VALUE.explanation=A JSON Web Token \u00f6ssze\u00e1ll\u00edt\u00f3 nem m\u00f3dos\u00edtotta a megl\u00e9v\u0151 ig\u00e9nyt, mert a megadott ig\u00e9nylek\u00e9pez\u00e9s null\u00e9rt\u00e9ket ad meg ig\u00e9nyl\u00e9sn\u00e9vk\u00e9nt vagy az ig\u00e9ny \u00e9rt\u00e9kek\u00e9nt.
+JWT_CLAIMSMAP_NULL_KEY_OR_VALUE.useraction=Gondoskodjon \u00e9rv\u00e9nyes ig\u00e9nylek\u00e9pez\u00e9s biztos\u00edt\u00e1s\u00e1r\u00f3l.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_CONSUMER_SERVICE_ACTIVATED=CWWKS6012I: A JSON Web Token (JWT) fogyaszt\u00f3i szolg\u00e1ltat\u00e1s el\u00e9rhet\u0151.
+JWT_CONSUMER_SERVICE_ACTIVATED.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+JWT_CONSUMER_SERVICE_ACTIVATED.useraction=Nem kell semmit tennie.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_CONSUMER_SERVICE_NOT_ACTIVATED=CWWKS6013E: A JSON Web Token (JWT) fogyaszt\u00f3t nem lehet l\u00e9trehozni, mert a fogyaszt\u00f3i szolg\u00e1ltat\u00e1s nincs aktiv\u00e1lva.
+JWT_CONSUMER_SERVICE_NOT_ACTIVATED.explanation=Haszn\u00e1lat el\u0151tt a JWT fogyaszt\u00f3i szolg\u00e1ltat\u00e1st aktiv\u00e1lni kell. A szolg\u00e1ltat\u00e1s m\u00e9g nem indult el, vagy le\u00e1ll\u00edt\u00e1sra ker\u00fclt a jwt-1.0 szolg\u00e1ltat\u00e1s elt\u00e1vol\u00edt\u00e1s\u00e1val.
+JWT_CONSUMER_SERVICE_NOT_ACTIVATED.useraction=Gondoskodjon r\u00f3la, hogy a jwt-1.0 szolg\u00e1ltat\u00e1s be legyen \u00e1ll\u00edtva, \u00e9s hogy a JWT fogyaszt\u00f3i szolg\u00e1ltat\u00e1s haszn\u00e1latra k\u00e9sz legyen.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_CONSUMER_NULL_ID=CWWKS6014E: A JSON Web Token (JWT) fogyaszt\u00f3t nem lehet l\u00e9trehozni, mert a megadott konfigur\u00e1ci\u00f3azonos\u00edt\u00f3 null\u00e9rt\u00e9k\u0171.
+JWT_CONSUMER_NULL_ID.explanation=JWT fogyaszt\u00f3t nem lehet l\u00e9trehozni null\u00e9rt\u00e9k\u0171 konfigur\u00e1ci\u00f3azonos\u00edt\u00f3val. A megfelel\u0151 JWT fogyaszt\u00f3i konfigur\u00e1ci\u00f3 feldolgoz\u00e1s\u00e1hoz \u00e9rv\u00e9nyes azonos\u00edt\u00f3t kell megadni.
+JWT_CONSUMER_NULL_ID.useraction=Adjon meg egy nem null\u00e9rt\u00e9k\u0171 azonos\u00edt\u00f3t, amely megfelel a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban a JWT fogyaszt\u00f3kra megadott azonos\u00edt\u00f3nak.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_INVALID_CLAIM_ERR=CWWKS6015E: A(z) [{0}] JSON Web Token (JWT) ig\u00e9ny nem \u00e9rv\u00e9nyes. Adjon meg \u00e9rv\u00e9nyes ig\u00e9nyl\u00e9snevet.
+JWT_INVALID_CLAIM_ERR.explanation=A megadott ig\u00e9ny \u00fcres vagy null\u00e9rt\u00e9k\u0171, ez\u00e9rt a JSON Web Token \u00f6ssze\u00e1ll\u00edt\u00f3 API nem tudja folytatni a feldolgoz\u00e1st.
+JWT_INVALID_CLAIM_ERR.useraction=Gondoskodjon r\u00f3la, hogy \u00e9rv\u00e9nyes ig\u00e9nyl\u00e9sn\u00e9v legyen megadva.
+
+# Do not translate "JSON Web Token", "JWT", "JSON Web Key"
+#0=signatureAlgorithm, 1=jwkEnabled, 2=exception or error message if any
+JWT_NO_SIGNING_KEY_WITH_ERROR=CWWKS6016E: A(z) [{0}] al\u00e1\u00edr\u00e1si algoritmus \u00e1ltal ig\u00e9nyelt al\u00e1\u00edr\u00f3kulcs nem el\u00e9rhet\u0151. Ellen\u0151rizze, hogy az al\u00e1\u00edr\u00e1si algoritmus \u00e9s a(z) [{1}] jwkEnabled param\u00e9ter megfelel\u0151en van-e be\u00e1ll\u00edtva. {2}
+JWT_NO_SIGNING_KEY_WITH_ERROR.explanation=Nem tal\u00e1lhat\u00f3 al\u00e1\u00edr\u00f3kulcs, vagy nem tal\u00e1lhat\u00f3 olyan kulcs, ami a be\u00e1ll\u00edtott al\u00e1\u00edr\u00e1si algoritmust haszn\u00e1lja. Ez a hiba a JWT be\u00e1ll\u00edt\u00e1s hi\u00e1nyz\u00f3, vagy pontatlan inform\u00e1ci\u00f3i miatt bek\u00f6vetkezhet be.
+JWT_NO_SIGNING_KEY_WITH_ERROR.useraction=Tegye a k\u00f6vetkez\u0151t: 1) Ha JSON Web Key (JWK) kulcsot haszn\u00e1l al\u00e1\u00edr\u00e1sra, gondoskodjon arr\u00f3l, hogy az RS256 algoritmus legyen be\u00e1ll\u00edtva a signatureAlgorithm attrib\u00fatumban. 2) Ha nem haszn\u00e1l JWK-t, gondoskodjon r\u00f3la, hogy a KeyStoreRef \u00e9s KeyStoreAlias attrib\u00fatumok megfelel\u0151en legyenek be\u00e1ll\u00edtva az RS256 algoritmusra. 3) Ha az al\u00e1\u00edr\u00e1sra megosztott kulcsokat haszn\u00e1l, akkor gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a signatureAlgorithm \u00e9s sharedKey attrib\u00fatumok be\u00e1ll\u00edt\u00e1sa helyes-e.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_INVALID_TOKEN_ERR=CWWKS6017E: A JSON Web Token (JWT) egyes tartalma \u00fcres, null\u00e9rt\u00e9k\u0171 vagy nem \u00e9rv\u00e9nyes.
+JWT_INVALID_TOKEN_ERR.explanation=A megadott token tartalom nem \u00e9rv\u00e9nyes, ez\u00e9rt a JSON Web Token \u00f6ssze\u00e1ll\u00edt\u00f3 API nem tudja folytatni a feldolgoz\u00e1st.
+JWT_INVALID_TOKEN_ERR.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a megb\u00edzhat\u00f3 partnerhez be\u00e1ll\u00edtott URL-c\u00edmek \u00e9rv\u00e9nyesek legyenek. Gondoskodjon r\u00f3la, hogy \u00e9rv\u00e9nyes tartalom ker\u00fclj\u00f6n \u00e1tad\u00e1sra a tokenben. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az API dokument\u00e1ci\u00f3j\u00e1t.
+
+JWT_INVALID_TIME_CLAIM_ERR=CWWKS6018E: A(z) [{0}] ig\u00e9ny sz\u00e1m\u00e1nak null\u00e1n\u00e1l nagyobbnak kell lennie.
+JWT_INVALID_TIME_CLAIM_ERR.explanation=A megadott ig\u00e9ny\u00e9rt\u00e9k nem \u00e9rv\u00e9nyes, ez\u00e9rt a JSON Web Token \u00f6ssze\u00e1ll\u00edt\u00f3 API nem tudja folytatni a feldolgoz\u00e1st.
+JWT_INVALID_TIME_CLAIM_ERR.useraction=Gondoskodjon arr\u00f3l, hogy a megadott ig\u00e9ny \u00e9rt\u00e9ke egy nem nulla pozit\u00edv sz\u00e1m legyen.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_INVALID_CLAIM_VALUE_TYPE=CWWKS6019E: A(z) [{0}] JSON Web Token (JWT) ig\u00e9ny adatt\u00edpus\u00e1nak \u00e9rt\u00e9ke nem \u00e9rv\u00e9nyes. 
+JWT_INVALID_CLAIM_VALUE_TYPE.explanation=A megadott ig\u00e9ny\u00e9rt\u00e9k nem \u00e9rv\u00e9nyes az adott ig\u00e9ny eset\u00e9ben, ez\u00e9rt a JSON Web Token \u00f6ssze\u00e1ll\u00edt\u00f3 API nem tudja folytatni a feldolgoz\u00e1st.
+JWT_INVALID_CLAIM_VALUE_TYPE.useraction=Gondoskodjon r\u00f3la, hogy az ig\u00e9ny\u00e9rt\u00e9k a helyes adatt\u00edpus legyen. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az API dokument\u00e1ci\u00f3j\u00e1t.
+
+# Do not translate "JSON Web Token", "JWT"
+#0=exception or error message
+JWT_CREATE_FAIL=CWWKS6020E: A JSON Web Token \u00f6ssze\u00e1ll\u00edt\u00f3 API nem tudja a JSON Web Tokent (JWT) l\u00e9trehozni a k\u00f6vetkez\u0151 miatt: [{0}]
+JWT_CREATE_FAIL.explanation=A JSON Web Token \u00f6ssze\u00e1ll\u00edt\u00f3 API hib\u00e1ba \u00fctk\u00f6z\u00f6tt, amely megakad\u00e1lyozza a JWT l\u00e9trehoz\u00e1s\u00e1t.
+JWT_CREATE_FAIL.useraction=Tekintse meg az \u00fczenet el\u0151tt megjelen\u0151 hiba felhaszn\u00e1l\u00f3i int\u00e9zked\u00e9s\u00e9t.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_INVALID_CLAIMS_ERR=CWWKS6021E: A megadott JSON Web Token (JWT) ig\u00e9nyek nem \u00e9rv\u00e9nyesek. Adjon meg \u00e9rv\u00e9nyes ig\u00e9nyt.
+JWT_INVALID_CLAIMS_ERR.explanation=A megadott ig\u00e9nyek nem \u00e9rv\u00e9nyesek, ez\u00e9rt a JSON Web Token \u00f6ssze\u00e1ll\u00edt\u00f3 API nem tudja folytatni a feldolgoz\u00e1st.
+JWT_INVALID_CLAIMS_ERR.useraction=Gondoskodjon megfelel\u0151 ig\u00e9nyk\u00e9szlet megad\u00e1s\u00e1r\u00f3l. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az API dokument\u00e1ci\u00f3j\u00e1t.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Issuer claim of the token, 1=JWT configuration ID, 2=Trusted issuers specified in server configuration
+JWT_ISSUER_NOT_TRUSTED=CWWKS6022E: A megadott JSON web token (JWT) kibocs\u00e1t\u00f3ja [{0}] nem szerepel megb\u00edzhat\u00f3 kibocs\u00e1t\u00f3k\u00e9nt a(z) [{1}] JWT konfigur\u00e1ci\u00f3ban. Megb\u00edzhat\u00f3 kibocs\u00e1t\u00f3k a k\u00f6vetkez\u0151k: [{2}].
+JWT_ISSUER_NOT_TRUSTED.explanation=A kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 meghat\u00e1rozza a JWT-k \u00e9rv\u00e9nyes\u00edt\u00e9se sor\u00e1n haszn\u00e1lt megb\u00edzhat\u00f3 kibocs\u00e1t\u00f3kat. A megadott token nem megb\u00edzhat\u00f3 kibocs\u00e1t\u00f3t\u00f3l sz\u00e1rmazik, ez\u00e9rt a tokent nem lehet \u00e9rv\u00e9nyes\u00edteni.
+JWT_ISSUER_NOT_TRUSTED.useraction=Szerezzen be \u00faj tokent egy, a JWT konfigur\u00e1ci\u00f3ban szerepl\u0151 megb\u00edzhat\u00f3 kibocs\u00e1t\u00f3t\u00f3l, vagy vegye fel az \u00fczenetben szerepl\u0151 kibocs\u00e1t\u00f3t a JWT konfigur\u00e1ci\u00f3ba megb\u00edzhat\u00f3 kibocs\u00e1t\u00f3k\u00e9nt.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Audience claim of the token, 1=JWT configuration ID, 2=Trusted audiences specified in server configuration
+JWT_AUDIENCE_NOT_TRUSTED=CWWKS6023E: A megadott JSON web token (JWT) k\u00f6z\u00f6ns\u00e9ge [{0}] nem szerepel megb\u00edzhat\u00f3 k\u00f6z\u00f6ns\u00e9gk\u00e9nt a(z) [{1}] JWT konfigur\u00e1ci\u00f3ban. Megb\u00edzhat\u00f3 k\u00f6z\u00f6ns\u00e9gek a k\u00f6vetkez\u0151k: [{2}].
+JWT_AUDIENCE_NOT_TRUSTED.explanation=A kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 meghat\u00e1rozza a JWT-k \u00e9rv\u00e9nyes\u00edt\u00e9se sor\u00e1n haszn\u00e1lt megb\u00edzhat\u00f3 k\u00f6z\u00f6ns\u00e9geket. A megadott token nem megb\u00edzhat\u00f3 k\u00f6z\u00f6ns\u00e9gnek sz\u00f3l, ez\u00e9rt a tokent nem lehet \u00e9rv\u00e9nyes\u00edteni.
+JWT_AUDIENCE_NOT_TRUSTED.useraction=Szerezzen be egy, a JWT konfigur\u00e1ci\u00f3ban szerepl\u0151 megb\u00edzhat\u00f3 k\u00f6z\u00f6ns\u00e9gnek sz\u00e1nt \u00faj tokent, vagy vegye fel az \u00fczenetben szerepl\u0151 k\u00f6z\u00f6ns\u00e9get a JWT konfigur\u00e1ci\u00f3ba megb\u00edzhat\u00f3 k\u00f6z\u00f6ns\u00e9gk\u00e9nt.
+
+# Do not translate "JSON Web Token", "JWT", "iat", "exp"
+# 0=iat date, 1=exp date
+JWT_IAT_AFTER_EXP=CWWKS6024E: A JSON Web Token (JWT) nem \u00e9rv\u00e9nyes, mert a kibocs\u00e1t\u00e1si (''iat'') ig\u00e9ny d\u00e1tuma k\u00e9s\u0151bbi, mint a lej\u00e1rati (''exp'') ig\u00e9ny d\u00e1tuma. Az ''iat'' ig\u00e9ny id\u0151pontja: [{0}] \u00e9s az ''exp'' ig\u00e9ny id\u0151pontja: [{1}].
+JWT_IAT_AFTER_EXP.explanation=A JWT nem \u00e9rv\u00e9nyes, mert saj\u00e1t lej\u00e1rati d\u00e1tuma ut\u00e1n lett kibocs\u00e1tva.
+JWT_IAT_AFTER_EXP.useraction=Szerezzen be egy \u00faj, \u00e9rv\u00e9nyes 'iat' ig\u00e9nyt tartalmaz\u00f3 tokent, amely az 'exp' ig\u00e9nyn\u00e9l kor\u00e1bbi id\u0151pontot tartalmaz.
+
+# Do not translate "JSON Web Token", "JWT", "exp"
+# 0=exp claim date, 1=Current time, 2=Clock skew in seconds
+JWT_TOKEN_EXPIRED=CWWKS6025E: A JSON Web Token (JWT) nem \u00e9rv\u00e9nyes, mert a lej\u00e1rati (''exp'') ig\u00e9nye hi\u00e1nyzik, vagy a token m\u00e1r lej\u00e9rt. A lej\u00e1rati ig\u00e9ny: [{0}]. Az aktu\u00e1lis id\u0151, m\u00ednusz az \u00f3rajel elt\u00e9r\u00e9se: [{1}]. A be\u00e1ll\u00edtott \u00f3raelt\u00e9r\u00e9s [{2}] m\u00e1sodperc.
+JWT_TOKEN_EXPIRED.explanation=A tokenek lej\u00e1rtak, vagy az 'exp' ig\u00e9ny nem ker\u00fclt megad\u00e1sra, ami \u00e9rv\u00e9nytelen.
+JWT_TOKEN_EXPIRED.useraction=Szerezzen be \u00faj tokent, amely tartalmaz 'exp' ig\u00e9nyt, \u00e9s nincs lej\u00e1rva. Szinkroniz\u00e1lja az \u00f3raid\u0151ket a token kibocs\u00e1t\u00f3ja \u00e9s fogyaszt\u00f3ja k\u00f6z\u00f6tt, vagy n\u00f6velje az \u00f3raelt\u00e9r\u00e9st a JWT konfigur\u00e1ci\u00f3ban.
+
+# Do not translate "JSON Web Token", "JWT", "nbf"
+# 0=nbf claim date, 1=Current time, 2=Clock skew in seconds
+JWT_TOKEN_BEFORE_NBF=CWWKS6026E: A JSON Web Token (JWT) nem haszn\u00e1lhat\u00f3, mert a(z) [{0}] ''nbf'' ig\u00e9ny\u00e9rt\u00e9k k\u00e9s\u0151bbi id\u0151pontot hat\u00e1roz meg, mint az aktu\u00e1lis id\u0151. Az aktu\u00e1lis id\u0151 plusz az \u00f3rajel elt\u00e9r\u00e9se: [{1}]. A be\u00e1ll\u00edtott \u00f3raelt\u00e9r\u00e9s [{2}] m\u00e1sodperc.
+JWT_TOKEN_BEFORE_NBF.explanation=A JWT rendelkezik 'nbf' (eddig nem) ig\u00e9nnyel, amely megadja az id\u0151pontot, amikor a token \u00e9rv\u00e9nyess\u00e9 v\u00e1lik. Az aktu\u00e1lis id\u0151 kor\u00e1bbi az 'nbf' id\u0151n\u00e9l, ez\u00e9rt a token m\u00e9g nem \u00e9rv\u00e9nyes.
+JWT_TOKEN_BEFORE_NBF.useraction=V\u00e1rjon a token haszn\u00e1lat\u00e1val az 'nbf' ig\u00e9nyben megadott ideig, vagy szerezzen be egy \u00faj tokent az aktu\u00e1lis id\u0151pontn\u00e1l kor\u00e1bbi id\u0151pontra \u00e1ll\u00edtott 'nbf' ig\u00e9nnyel. Szinkroniz\u00e1lja az \u00f3raid\u0151ket a token kibocs\u00e1t\u00f3ja \u00e9s fogyaszt\u00f3ja k\u00f6z\u00f6tt, vagy n\u00f6velje az \u00f3raelt\u00e9r\u00e9st a JWT konfigur\u00e1ci\u00f3ban.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Signature algorithm (e.g. RS256)
+JWT_MISSING_ALG_HEADER=CWWKS6027E: A JSON Web Token (JWT) nem \u00e9rv\u00e9nyes, mert a(z) [{0}] algoritmus haszn\u00e1lat\u00e1val kell al\u00e1\u00edrni, de a token nem tartalmaz semmilyen al\u00e1\u00edr\u00e1si inform\u00e1ci\u00f3t.
+JWT_MISSING_ALG_HEADER.explanation=A token vagy rosszul form\u00e1zott, nincs al\u00e1\u00edrva, vagy hi\u00e1nyoznak az al\u00e1\u00edr\u00e1si inform\u00e1ci\u00f3k. A tokeneket a meghat\u00e1rozott algoritmus szerint al\u00e1 kell \u00edrni.
+JWT_MISSING_ALG_HEADER.useraction=Szerezzen be \u00faj, a megadott algoritmus szerint al\u00e1\u00edrt tokent .
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Signature algorithm used to sign the token (e.g. RS256), 1=Signature algorithm required for signing (e.g. RS256)
+JWT_ALGORITHM_MISMATCH=CWWKS6028E: A JSON Web Token (JWT) nem \u00e9rv\u00e9nyes, mert a(z) [{0}] algoritmus haszn\u00e1lat\u00e1val lett al\u00e1\u00edrva. A tokeneket a(z) [{1}] algoritmus alapj\u00e1n kell al\u00e1\u00edrni.
+JWT_ALGORITHM_MISMATCH.explanation=A tokeneket az \u00fczenetben meghat\u00e1rozott algoritmus szerint al\u00e1 kell \u00edrni. Az elt\u00e9r\u0151 algoritmus szerint al\u00e1\u00edrt tokeneket nem lehet \u00e9rv\u00e9nyes\u00edteni.
+JWT_ALGORITHM_MISMATCH.useraction=Szerezzen be \u00faj, az \u00fczenet \u00e1ltal megadott algoritmus szerint al\u00e1\u00edrt tokent, vagy friss\u00edtse a JWT konfigur\u00e1ci\u00f3t, hogy lehet\u0151v\u00e9 tegye a m\u00e1sik al\u00e1\u00edr\u00e1si algoritmus haszn\u00e1lat\u00e1val al\u00e1\u00edrt tokenek haszn\u00e1lat\u00e1t.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Signature algorithm required for signing (e.g. RS256)
+JWT_MISSING_KEY=CWWKS6029E: A JSON Web Token (JWT) nem \u00e9rv\u00e9nyes\u00edthet\u0151, mert nem tal\u00e1lhat\u00f3 al\u00e1\u00edr\u00f3kulcs. A be\u00e1ll\u00edtott [{0}] al\u00e1\u00edr\u00e1si algoritmus kulcsot ig\u00e9nyel a token \u00e9rv\u00e9nyes\u00edt\u00e9s\u00e9hez.
+JWT_MISSING_KEY.explanation=Ha a HS256 al\u00e1\u00edr\u00e1si algoritmust haszn\u00e1lja, akkor lehet, hogy nincs megosztott kulcsot megadva a JWT fogyaszt\u00f3i konfigur\u00e1ci\u00f3ban, illetve \u00fcres \u00e9rt\u00e9k lett megadva. Ha az RS256 al\u00e1\u00edr\u00e1si algoritmust haszn\u00e1lja, akkor a kulcst\u00e1rol\u00f3 szolg\u00e1ltat\u00e1s lehet, hogy nem lesz el\u00e9rhet\u0151, illetve nem lehet a JWT fogyaszt\u00f3i konfigur\u00e1ci\u00f3ban megadott megb\u00edzhat\u00f3 \u00e1ln\u00e9vnek megfelel\u0151 kulcsot tal\u00e1lni a tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3ban.
+JWT_MISSING_KEY.useraction=Keressen olyan tov\u00e1bbi hiba\u00fczeneteket a kiszolg\u00e1l\u00f3napl\u00f3kban, amelyek megmagyar\u00e1zz\u00e1k, hogy a kulcs mi\u00e9rt nem tal\u00e1lhat\u00f3. Ha a HS256 al\u00e1\u00edr\u00e1si algoritmust haszn\u00e1lja, akkor gondoskodjon arr\u00f3l, hogy a JWT fogyaszt\u00f3i konfigur\u00e1ci\u00f3ban legyen megadva megosztott kulcs. Ha az RS256 al\u00e1\u00edr\u00e1si algoritmust haszn\u00e1lja, akkor gondoskodjon r\u00f3la, hogy a tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 \u00e9s a megb\u00edzhat\u00f3 \u00e1ln\u00e9v helyesen legyen be\u00e1ll\u00edtva a fogyaszt\u00f3i konfigur\u00e1ci\u00f3ban.
+
+# Do not translate "JSON Web Token", "JWT", "jwtConsumer"
+# 0=JWT config identifier ("id" attribute)
+JWT_CONSUMER_CONFIG_NOT_FOUND=CWWKS6030E: A(z) [{0}] azonos\u00edt\u00f3j\u00fa JSON Web Token (JWT) fogyaszt\u00f3i konfigur\u00e1ci\u00f3 nem tal\u00e1lhat\u00f3. Ellen\u0151rizze, hogy van-e be\u00e1ll\u00edtva JWT fogyaszt\u00f3 a megadott azonos\u00edt\u00f3val a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban.
+JWT_CONSUMER_CONFIG_NOT_FOUND.explanation=A kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban nem tal\u00e1lhat\u00f3 JWT fogyaszt\u00f3i konfigur\u00e1ci\u00f3 a megadott azonos\u00edt\u00f3val.
+JWT_CONSUMER_CONFIG_NOT_FOUND.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy l\u00e9tezik a megadott azonos\u00edt\u00f3val be\u00e1ll\u00edtott jwtConsumer elem a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=JWT consumer config ID, 1=Error message (if present)
+JWT_ERROR_PROCESSING_JWT=CWWKS6031E: A(z) [{0}] JSON Web Token (JWT) fogyaszt\u00f3 nem tudja feldolgozni a token jelsor\u00e1t. {1} 
+JWT_ERROR_PROCESSING_JWT.explanation=Hiba t\u00f6rt\u00e9nt, ami megakad\u00e1lyozta, hogy a fogyaszt\u00f3 sikeresen feldolgozza a token jelsor\u00e1t.
+JWT_ERROR_PROCESSING_JWT.useraction=L\u00e1sd az \u00fczenetben megadott hib\u00e1val kapcsolatos felhaszn\u00e1l\u00f3i teend\u0151ket.
+
+# 0=Error message (if present)
+JWT_ERROR_GETTING_SHARED_KEY=CWWKS6032E: A megosztott kulcsot nem lehet lek\u00e9rni. {0}
+JWT_ERROR_GETTING_SHARED_KEY.explanation=A megosztott kulcsot nem lehet lek\u00e9rni egy hiba k\u00f6vetkezt\u00e9ben.
+JWT_ERROR_GETTING_SHARED_KEY.useraction=L\u00e1sd az \u00fczenetben megadott hib\u00e1val kapcsolatos felhaszn\u00e1l\u00f3i teend\u0151ket. Ellen\u0151rizze, hogy van-e megosztott kulcs be\u00e1ll\u00edtva a JWT fogyaszt\u00f3i konfigur\u00e1ci\u00f3ban.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Trusted alias, 1=truststore reference, 2=Error message (if present)
+JWT_ERROR_GETTING_PUBLIC_KEY=CWWKS6033E: Nem lehet lek\u00e9rni a(z) [{0}] \u00e1ln\u00e9vnek megfelel\u0151 nyilv\u00e1nos kulcsot a(z) [{1}] tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3b\u00f3l. {2}
+JWT_ERROR_GETTING_PUBLIC_KEY.explanation=A hiba oka a tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 lek\u00e9r\u00e9se, illetve az \u00fczenetben megadott \u00e1ln\u00e9vnek megfelel\u0151 kulcs megtal\u00e1l\u00e1sa sor\u00e1n el\u0151\u00e1llt probl\u00e9ma.
+JWT_ERROR_GETTING_PUBLIC_KEY.useraction=L\u00e1sd az \u00fczenetben megadott hib\u00e1val kapcsolatos felhaszn\u00e1l\u00f3i teend\u0151ket. Ellen\u0151rizze, hogy a megfelel\u0151 megb\u00edzhat\u00f3 \u00e1ln\u00e9v \u00e9s tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 ker\u00fclt be\u00e1ll\u00edt\u00e1sra a JSON Web Token (JWT) fogyaszt\u00f3i konfigur\u00e1ci\u00f3ban.
+
+# Intended to be a child of JWT_ERROR_GETTING_SHARED_KEY
+# Do not translate "JSON Web Token", "JWT", "sharedKey"
+JWT_MISSING_SHARED_KEY=CWWKS6034E: Nincs megadva megosztott kulcs a JSON Web Token (JWT) fogyaszt\u00f3i konfigur\u00e1ci\u00f3ban.
+JWT_MISSING_SHARED_KEY.explanation=A sharedKey attrib\u00fatum hi\u00e1nyzik a JWT fogyaszt\u00f3i konfigur\u00e1ci\u00f3b\u00f3l, vagy nem kapott \u00e9rt\u00e9ket.
+JWT_MISSING_SHARED_KEY.useraction=Ellen\u0151rizze, hogy egy nem \u00fcres sharedKey \u00e9rt\u00e9k ker\u00fclj\u00f6n be\u00e1ll\u00edt\u00e1sra a JWT fogyaszt\u00f3i konfigur\u00e1ci\u00f3ban.
+
+# Intended to be a child of JWT_ERROR_GETTING_PUBLIC_KEY
+JWT_TRUSTSTORE_SERVICE_NOT_AVAILABLE=CWWKS6035E: A megb\u00edzhat\u00f3 t\u00e1rol\u00f3 szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el. Ellen\u0151rizze, hogy egy megb\u00edzhat\u00f3 t\u00e1rol\u00f3 hivatkoz\u00e1s megad\u00e1sra ker\u00fclt-e a JWT fogyaszt\u00f3i konfigur\u00e1ci\u00f3ban.
+JWT_TRUSTSTORE_SERVICE_NOT_AVAILABLE.explanation=Nincs be\u00e1ll\u00edtva tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3, vagy a be\u00e1ll\u00edtott tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3t nem dolgozta fel a konfigur\u00e1ci\u00f3s szolg\u00e1ltat\u00e1s.
+JWT_TRUSTSTORE_SERVICE_NOT_AVAILABLE.useraction=Ellen\u0151rizze, hogy meg lett-e adva tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 hivatkoz\u00e1s a JWT fogyaszt\u00f3i konfigur\u00e1ci\u00f3ban.
+
+# 0=Signature algorithm (HS256, RS256), 1=Key object (string or Java object)
+# Do not translate "HS256", "RS256", "java.security.interfaces.RSAPrivateKey"
+JWT_INVALID_KEY_ERR=CWWKS6036E: A(z) [{0}] al\u00e1\u00edr\u00e1si algoritmus \u00e9rv\u00e9nyes kulcsot ig\u00e9nyel a token al\u00e1\u00edr\u00e1s\u00e1hoz, de a megadott [{1}] kulcs nem \u00e9rv\u00e9nyes.
+JWT_INVALID_KEY_ERR.explanation=Ha a HS256 al\u00e1\u00edr\u00e1si algoritmust haszn\u00e1l, akkor a megadott megosztott kulcs \u00e9rt\u00e9ke null\u00e9rt\u00e9k vagy \u00fcres jelsor. Ha a RS256 al\u00e1\u00edr\u00e1si algoritmust haszn\u00e1l, akkor a megadott kulcs null\u00e9rt\u00e9k vagy nem java.security.interfaces.RSAPrivateKey p\u00e9ld\u00e1ny.
+JWT_INVALID_KEY_ERR.useraction=Ha a HS256 al\u00e1\u00edr\u00e1si algoritmust haszn\u00e1l, akkor gondoskodjon r\u00f3la, hogy ne null\u00e9rt\u00e9k \u00e9s ne \u00fcres jelsor ker\u00fclj\u00f6n megad\u00e1sra al\u00e1\u00edr\u00f3kulcsk\u00e9nt. Ha a RS256 al\u00e1\u00edr\u00e1si algoritmust haszn\u00e1l, akkor gondoskodjon r\u00f3la, hogy egy nem null\u00e9rt\u00e9k\u0171 java.security.interfaces.RSAPrivateKey fel\u00fcletet megval\u00f3s\u00edt\u00f3 oszt\u00e1ly p\u00e9ld\u00e1ny legyen megadva al\u00e1\u00edr\u00f3kulcsk\u00e9nt.
+
+# 0=Signature algorithm string (null, empty, HS256, RS256), 1=Valid signature algorithm string (HS256, RS256)
+JWT_INVALID_ALGORITHM_ERR=CWWKS6037E: A megadott [{0}] al\u00e1\u00edr\u00e1si algoritmus nem \u00e9rv\u00e9nyes. Az \u00e9rv\u00e9nyes algoritmusok k\u00e9szlete: [{1}].
+JWT_INVALID_ALGORITHM_ERR.explanation=A megadott al\u00e1\u00edr\u00e1si algoritmus null\u00e9rt\u00e9k, \u00fcres vagy nem felel meg az \u00fczenetben megadott k\u00f6telez\u0151 algoritmus k\u00e9szletnek.
+JWT_INVALID_ALGORITHM_ERR.useraction=Ellen\u0151rizze, hogy a megadott al\u00e1\u00edr\u00e1si algoritmus megfelel-e az \u00e9rv\u00e9nyes algoritmus k\u00e9szletnek.
+
+# Do not translate "JSON Web Key", "JWK", "JSON Web Token", "JWT", "jwkEnabled"
+# 0=JWT builder config ID
+JWK_ENDPOINT_JWK_NOT_ENABLED=CWWKS6038E: A JSON webkulcs (JWK) \u00e9rv\u00e9nyes\u00edt\u00e9si v\u00e9gpont nem haszn\u00e1lhat\u00f3, mert a JWK t\u00e1mogat\u00e1s nincs enged\u00e9lyezve a(z) [{0}] JSON Web Token (JWT) \u00f6ssze\u00e1ll\u00edt\u00f3 konfigur\u00e1ci\u00f3ban.
+JWK_ENDPOINT_JWK_NOT_ENABLED.explanation=A JWK t\u00e1mogat\u00e1st enged\u00e9lyezni kell a JWK \u00e9rv\u00e9nyes\u00edt\u00e9si v\u00e9gpont haszn\u00e1lat\u00e1hoz. Lehet, hogy nincs be\u00e1ll\u00edtva a jwkEnabled attrib\u00fatum a megadott JWT \u00f6ssze\u00e1ll\u00edt\u00f3 konfigur\u00e1ci\u00f3ban, vagy az attrib\u00fatum false \u00e9rt\u00e9kre van \u00e1ll\u00edtva.
+JWK_ENDPOINT_JWK_NOT_ENABLED.useraction=Ellen\u0151rizze, hogy a jwkEnabled konfigur\u00e1ci\u00f3s attrib\u00fatum true \u00e9rt\u00e9kre van-e \u00e1ll\u00edtva a megadott JWT \u00f6ssze\u00e1ll\u00edt\u00f3 konfigur\u00e1ci\u00f3ban.
+
+# Do not translate "JSON Web Key", "JWK", "JSON Web Token", "JWT"
+# 0=JWT builder config ID, 1=JWT builder's configured signature algorithm (HS256, RS256), 2=Valid signature algorithm (RS256)
+JWK_ENDPOINT_WRONG_ALGORITHM=CWWKS6039E: Ha a JSON webkulcs (JWK) \u00e9rv\u00e9nyes\u00edt\u00e9si v\u00e9gpontot k\u00edv\u00e1nja haszn\u00e1lni az \u00e9rv\u00e9nyes\u00edt\u00e9s\u00e9re, a(z) [{0}] JSON Web Token (JWT) \u00f6ssze\u00e1ll\u00edt\u00f3 konfigur\u00e1ci\u00f3nak a(z) [{2}] al\u00e1\u00edr\u00e1si algoritmust kell haszn\u00e1lnia. A JWT \u00f6ssze\u00e1ll\u00edt\u00f3 konfigur\u00e1ci\u00f3 a(z) [{1}] al\u00e1\u00edr\u00e1si algoritmus haszn\u00e1lat\u00e1ra van konfigur\u00e1lva.
+JWK_ENDPOINT_WRONG_ALGORITHM.explanation=A JWK funkcionalit\u00e1s megk\u00f6veteli az \u00fczenetben meghat\u00e1rozott algoritmus haszn\u00e1lat\u00e1t. A megadott JWT \u00f6ssze\u00e1ll\u00edt\u00f3 konfigur\u00e1ci\u00f3 nem az el\u0151\u00edrt al\u00e1\u00edr\u00e1si algoritmust haszn\u00e1lja.
+JWK_ENDPOINT_WRONG_ALGORITHM.useraction=M\u00f3dos\u00edtsa a JWT \u00f6ssze\u00e1ll\u00edt\u00f3 konfigur\u00e1ci\u00f3t az el\u0151\u00edrt al\u00e1\u00edr\u00e1si algoritmus haszn\u00e1lat\u00e1ra.
+
+# Do not translate "JSON Web Token", "JWT", "Base64"
+# 0=JWT consumer config ID, 1=JWT string
+JWT_CONSUMER_NULL_OR_EMPTY_STRING=CWWKS6040E: A(z) [{0}] JSON Web Token (JWT) fogyaszt\u00f3 nem tud JSON webtokent l\u00e9trehozni, mert a megadott [{1}] jelsor null\u00e9rt\u00e9k\u0171 vagy \u00fcres.
+JWT_CONSUMER_NULL_OR_EMPTY_STRING.explanation=JWT objektum l\u00e9trehoz\u00e1s\u00e1hoz biztos\u00edtania kell egy megfelel\u0151en k\u00f3dolt token jelsort.
+JWT_CONSUMER_NULL_OR_EMPTY_STRING.useraction=Adjon meg egy megfelel\u0151en k\u00f3dolt JWT jelsort. A jelsornak meg kell felelnie a k\u00f6vetkez\u0151kben ismertetett form\u00e1tumnak: https://tools.ietf.org/html/rfc7519#section-3, ahol a jelsor Base64 k\u00f3dolt URL-biztos r\u00e9szek ponttal ('.') elv\u00e1lasztott sora.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Exception message, if present
+JWT_INVALID_SIGNATURE=CWWKS6041E: A JSON Web Token (JWT) al\u00e1\u00edr\u00e1s nem \u00e9rv\u00e9nyes. {0}
+JWT_INVALID_SIGNATURE.explanation=Hiba t\u00f6rt\u00e9nt a megadott JWT jelsor al\u00e1\u00edr\u00e1s\u00e1nak feldolgoz\u00e1sa sor\u00e1n:
+JWT_INVALID_SIGNATURE.useraction=L\u00e1sd az \u00fczenetben megadott hib\u00e1val kapcsolatos felhaszn\u00e1l\u00f3i teend\u0151ket. Ellen\u0151rizze, hogy a JWT a megfelel\u0151 al\u00e1\u00edr\u00e1si algoritmus \u00e9s kulcs haszn\u00e1lat\u00e1val lett-e al\u00e1\u00edrva.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0="exp", 1=exp claim value, 2=exp claim converted to readable date, 3=Current time
+JWT_INVALID_EXP_CLAIM_ERR=CWWKS6042E: A(z) [{0}] ig\u00e9ny\u00e9rt\u00e9k [{1}] [{2}] egyenl\u0151 vagy k\u00e9s\u0151bbi lehet, mint az aktu\u00e1lis id\u0151 [{3}].
+JWT_INVALID_EXP_CLAIM_ERR.explanation=A JSON Web Token (JWT) lej\u00e1rati id\u0151t vagy az aktu\u00e1lis vagy egy j\u00f6v\u0151beni id\u0151pontra kell be\u00e1ll\u00edtani. M\u00faltbeli id\u0151pont lett megadva.
+JWT_INVALID_EXP_CLAIM_ERR.useraction=\u00c1ll\u00edtsa a token lej\u00e1rati idej\u00e9t az aktu\u00e1lis id\u0151re vagy egy j\u00f6v\u0151beni id\u0151pontra.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Claim that is malformed ("exp", "iat", "sub", etc.), 1=Exception message, if present
+JWT_CONSUMER_MALFORMED_CLAIM=CWWKS6043E: A JSON Web Token (JWT) nem tudja feldolgozni a tokent, mert a(z) [{0}] ig\u00e9ny form\u00e1tuma nem megfelel\u0151. [ {1} ]
+JWT_CONSUMER_MALFORMED_CLAIM.explanation=A megadott ig\u00e9ny \u00e9rt\u00e9ke nem megfelel\u0151 form\u00e1tum\u00fa vagy nem v\u00e1rt t\u00edpus\u00fa.
+JWT_CONSUMER_MALFORMED_CLAIM.useraction=L\u00e1sd az \u00fczenetben megadott hib\u00e1val kapcsolatos felhaszn\u00e1l\u00f3i teend\u0151ket. Gondoskodjon r\u00f3la, hogy a megadott ig\u00e9ny \u00e9rt\u00e9ke megfelel\u0151 t\u00edpus\u00fa legyen.
+
+# Do not translate "JSON Web Token", "JWT", "iat"
+# 0=iat claim time value (date), 1=Current time, 2=Clock skew configuration value
+JWT_IAT_AFTER_CURRENT_TIME=CWWKS6044E: A JSON Web Token (JWT) nem \u00e9rv\u00e9nyes, mert a kibocs\u00e1t\u00e1si (''iat'') ig\u00e9ny az aktu\u00e1lis id\u0151n\u00e9l k\u00e9s\u0151bbi d\u00e1tumot hat\u00e1roz meg. Az ''iat'' ig\u00e9ny id\u0151pontja: [{0}]. Az aktu\u00e1lis id\u0151 plusz az \u00f3rajel elt\u00e9r\u00e9se: [{1}]. A be\u00e1ll\u00edtott \u00f3raelt\u00e9r\u00e9s [{2}] m\u00e1sodperc.
+JWT_IAT_AFTER_CURRENT_TIME.explanation=Egy token csak akkor \u00e9rv\u00e9nyes, ha az 'iat' ig\u00e9nye m\u00faltbeli d\u00e1tumot ad meg. A megadott token 'iat' ig\u00e9nye egy j\u00f6v\u0151beni d\u00e1tum, ez\u00e9rt a token m\u00e9g nem \u00e9rv\u00e9nyes.
+JWT_IAT_AFTER_CURRENT_TIME.useraction=V\u00e1rjon a token haszn\u00e1lat\u00e1val az 'iat' ig\u00e9nyben megadott ideig, vagy szerezzen be egy \u00faj tokent m\u00faltbeli d\u00e1tumra be\u00e1ll\u00edtott 'iat' \u00e9rt\u00e9kkel.
+
+# Do not translate "JSON Web Token", "JWT", "iss", "jti"
+# 0=iss claim value (string), 1=jti claim value (string)
+JWT_DUP_JTI_ERR=CWWKS6045E: M\u00e1r \u00e9rkezett JSON Web Token (JWT) ugyanazzal a(z) [{0}] ''iss'' ig\u00e9nnyel \u00e9s [{1}] ''jti'' ig\u00e9nnyel, ami ism\u00e9tl\u0151 t\u00e1mad\u00e1st jelenthet. Gondoskodjon r\u00f3la, hogy a token kibocs\u00e1t\u00f3ja egyedi ''jti'' ig\u00e9nyt biztos\u00edtson.
+JWT_DUP_JTI_ERR.explanation=A megadott token olyan 'jti' ig\u00e9nyt tartalmaz, amely egyedileg azonos\u00edtja a tokent. Megegyez\u0151 'iss' \u00e9s 'jti' \u00e9rt\u00e9kkel kor\u00e1bban m\u00e1r \u00e9rkezett \u00e9s feldolgoz\u00e1s\u00e1ra ker\u00fclt egy m\u00e1sik token. A duplik\u00e1lt ig\u00e9nyek egy lehets\u00e9ges ism\u00e9tl\u0151 t\u00e1mad\u00e1st jelenthetnek.
+JWT_DUP_JTI_ERR.useraction=Gondoskodjon r\u00f3la, hogy a token kibocs\u00e1t\u00f3ja \u00faj, egyedi 'jti' ig\u00e9nyt biztos\u00edtson.
+
+# Do not translate "JWT", "trustStoreRef" 
+# Intended to be a child of JWT_ERROR_GETTING_PUBLIC_KEY
+JWT_SIGNER_CERT_NOT_AVAILABLE=CWWKS6046E: Nem lehet lek\u00e9rni al\u00e1\u00edr\u00f3kulcsot a tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3b\u00f3l. A megadott tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3ban nincsenek al\u00e1\u00edr\u00f3kulcsok.
+JWT_SIGNER_CERT_NOT_AVAILABLE.explanation=A JWT konfigur\u00e1ci\u00f3ban megadott tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 nem tartalmaz al\u00e1\u00edr\u00f3kulcsot. A JWT token \u00e9rv\u00e9nyes\u00edt\u00e9s\u00e9hez al\u00e1\u00edr\u00f3kulcs sz\u00fcks\u00e9ges.
+JWT_SIGNER_CERT_NOT_AVAILABLE.useraction=Ellen\u0151rizze, hogy a JWT fogyaszt\u00f3i konfigur\u00e1ci\u00f3 \u00e1ltal haszn\u00e1lt tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 tartalmaz-e legal\u00e1bb egy al\u00e1\u00edr\u00f3kulcsot. A tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 be\u00e1ll\u00edthat\u00f3 \u00fagyis, hogy a JWT fogyaszt\u00f3i konfigur\u00e1ci\u00f3ban a 'trustStoreRef' attrib\u00fatumot haszn\u00e1lja, vagy a teljes kiszolg\u00e1l\u00f3i SSL konfigur\u00e1ci\u00f3 r\u00e9szek\u00e9nt is.
+
+# Do not translate "JWT", "trustedAlias"
+# single quoted terms do NOT use double single quotes when there are no replacement variables
+# Intended to be a child of JWT_ERROR_GETTING_PUBLIC_KEY
+JWT_SIGNER_CERT_AMBIGUOUS=CWWKS6047E: Nem lehet lek\u00e9rni al\u00e1\u00edr\u00f3kulcsot a tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3b\u00f3l. Nem lett megadva a 'trustedAlias' attrib\u00fatum a JWT fogyaszt\u00f3i konfigur\u00e1ci\u00f3ban, \u00e9s a tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3ban t\u00f6bb al\u00e1\u00edr\u00f3kulcs tal\u00e1lhat\u00f3.
+JWT_SIGNER_CERT_AMBIGUOUS.explanation=A be\u00e1ll\u00edtott tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3ban t\u00f6bb al\u00e1\u00edr\u00f3kulcs tal\u00e1lhat\u00f3. Ha a tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 t\u00f6bb al\u00e1\u00edr\u00f3kulcsot tartalmaz, akkor meg kell adni a 'trustedAlias' attrib\u00fatumot a JWT fogyaszt\u00f3 konfigur\u00e1ci\u00f3ban, hogy meg\u00e1llap\u00edthat\u00f3 legyen, melyik kulcsot kell haszn\u00e1lni.
+JWT_SIGNER_CERT_AMBIGUOUS.useraction=Adja meg a JWT fogyaszt\u00f3i konfigur\u00e1ci\u00f3 'trustedAlias' attrib\u00fatum\u00e1t a megfelel\u0151 al\u00e1\u00edr\u00f3kulcs \u00e1lnev\u00e9vel.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_PROPAGATION_INVALID_TOKEN_ERR=CWWKS6048E: Az \u00fcgyf\u00e9l k\u00e9r\u00e9ssz\u0171r\u0151 API nem tov\u00e1bb\u00edtotta a JSON webtokent (JWT).
+JWT_PROPAGATION_INVALID_TOKEN_ERR.explanation=Az \u00fcgyf\u00e9l k\u00e9r\u00e9ssz\u0171r\u0151 API nem kapott \u00e9rv\u00e9nyes JWT tokent a hiteles\u00edtett alanyt\u00f3l. Az API nem tudja folytatni a JWT token tov\u00e1bb\u00edt\u00e1s\u00e1t, mert a token \u00e9rv\u00e9nytelen.
+JWT_PROPAGATION_INVALID_TOKEN_ERR.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a tov\u00e1bb\u00edt\u00e1s el\u0151tt v\u00e9gzett hiteles\u00edt\u00e9si folyamat sikeres volt-e. Ellen\u0151rizze a napl\u00f3kban az esetleges hiteles\u00edt\u00e9si \u00e9s jogosults\u00e1gi hib\u00e1kat, amelyek megakad\u00e1lyozhatt\u00e1k a token l\u00e9trehoz\u00e1s\u00e1t \u00e9s a token befoglal\u00e1s\u00e1t az alanyba.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0: jwk url, 1:http status, 2: error message or the responding content
+JWT_JWK_RETRIEVE_FAILED=CWWKS6049E: A(z) [{0}] URL nem adott vissza JSON webkulcsot (JWK). A v\u00e1lasz \u00e1llapota [{1}], \u00e9s a visszaadott tartalom a k\u00f6vetkez\u0151: [{2}].
+JWT_JWK_RETRIEVE_FAILED.explanation=A JWK lek\u00e9r\u00e9se a megadott URL-c\u00edmr\u0151l meghi\u00fasult. A hiba\u00fczenet az \u00e1llapotk\u00f3dot \u00e9s v\u00e1lasz tartalm\u00e1t is megjelen\u00edti.
+JWT_JWK_RETRIEVE_FAILED.useraction=Gondoskodj\u00e9k a megfelel\u0151 h\u00e1l\u00f3zatkezel\u00e9si be\u00e1ll\u00edt\u00e1sr\u00f3l, \u00e9s ellen\u0151rizze a JWK URL-c\u00edmet a konfigur\u00e1ci\u00f3ban.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0: error
+JWT_HTTPS_WITH_SSLCONTEXT_NULL=CWWKS6050E: A(z) [{1}] JSON webtoken (JWT) fogyaszt\u00f3 nem tudott l\u00e9trehozni SSL kontextust [{0}] miatt. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az SSL szolg\u00e1ltat\u00e1sa megfelel\u0151en be van \u00e1ll\u00edtva.
+JWT_HTTPS_WITH_SSLCONTEXT_NULL.explanation=Az JWT fogyaszt\u00f3 konfigur\u00e1ci\u00f3ja a HTTPS s\u00e9ma haszn\u00e1lat\u00e1ra van be\u00e1ll\u00edtva, de nem l\u00e9tes\u00edthet\u0151 HTTPS kapcsolat. Lehet, hogy az SSL szolg\u00e1ltat\u00e1s nincs enged\u00e9lyezve. Lehet, hogy a keyStore elem hi\u00e1nyzik vagy helytelen\u00fcl van megadva.  
+JWT_HTTPS_WITH_SSLCONTEXT_NULL.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a server.xml f\u00e1jlban a helyes SSL inform\u00e1ci\u00f3k tal\u00e1lhat\u00f3k. Tekintse meg az \u00fczenet el\u0151tt megjelen\u0151 hiba felhaszn\u00e1l\u00f3i int\u00e9zked\u00e9s\u00e9t.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=jwks uri, 1=Error message (if present)
+JWT_ERROR_GETTING_JWK_KEY=CWWKS6051E: A(z) [{0}] URL-c\u00edmr\u0151l nem lehet JSON webkulcsot (JWK) lek\u00e9rni. {1}
+JWT_ERROR_GETTING_JWK_KEY.explanation=A JWK lek\u00e9r\u00e9se a megadott URL-c\u00edmr\u0151l meghi\u00fasult.
+JWT_ERROR_GETTING_JWK_KEY.useraction=Gondoskodj\u00e9k a megfelel\u0151 h\u00e1l\u00f3zatkezel\u00e9si be\u00e1ll\u00edt\u00e1sr\u00f3l, \u00e9s ellen\u0151rizze a JWK URL-c\u00edmet a konfigur\u00e1ci\u00f3ban.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Issuer claim of the token, 1=JWT configuration ID
+JWT_TRUSTED_ISSUERS_NULL=CWWKS6052E: A biztos\u00edtott JSON Web Token (JWT) [{0}] kibocs\u00e1t\u00f3ja nem megb\u00edzhat\u00f3, mert a(z) [{1}] JWT konfigur\u00e1ci\u00f3 nem ad meg megb\u00edzhat\u00f3 kibocs\u00e1t\u00f3kat.
+JWT_TRUSTED_ISSUERS_NULL.explanation=A kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 meghat\u00e1rozza a JWT-k \u00e9rv\u00e9nyes\u00edt\u00e9s\u00e9hez haszn\u00e1lt megb\u00edzhat\u00f3 kibocs\u00e1t\u00f3kat. A JWT konfigur\u00e1ci\u00f3 nem ad meg megb\u00edzhat\u00f3 kibocs\u00e1t\u00f3kat, \u00edgy a token nem \u00e9rv\u00e9nyes\u00edthet\u0151.
+JWT_TRUSTED_ISSUERS_NULL.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetben megadott JWT konfigur\u00e1ci\u00f3 meghat\u00e1roz legal\u00e1bb egy megb\u00edzhat\u00f3 kibocs\u00e1t\u00f3t. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a JWT kibocs\u00e1t\u00f3ja megfelel a JWT konfigur\u00e1ci\u00f3ban megadott megb\u00edzhat\u00f3 kibocs\u00e1t\u00f3k egyik\u00e9nek.

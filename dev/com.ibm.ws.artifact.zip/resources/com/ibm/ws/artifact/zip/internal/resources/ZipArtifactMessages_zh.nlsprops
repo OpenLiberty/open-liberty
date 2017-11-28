@@ -1,0 +1,35 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.artifact.api.zip/resources/com/ibm/ws/artifact/api/zip/internal/resources/ZipArtifactMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKM
+#COMPONENTNAMEFOR CWWKM Module API
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+bad.zip.data=CWWKM0101E: \u7cfb\u7edf\u65e0\u6cd5\u5904\u7406 {0} \u7684\u5f52\u6863\u6570\u636e\u3002
+bad.zip.data.explanation=\u5904\u7406\u5f52\u6863\u7684\u538b\u7f29\u6570\u636e\u65f6\u53d1\u751f\u5f02\u5e38\u3002
+bad.zip.data.useraction=\u8bf7\u68c0\u67e5\u6587\u4ef6\u662f\u5426\u4e3a\u6709\u6548\u7684\u5f52\u6863\u3002
+
+remove.cache.data=CWWKM0102W: \u7cfb\u7edf\u5df2\u6e05\u9664\u4f4d\u7f6e {0} \u4e2d\u7684\u65e0\u6548\u9ad8\u901f\u7f13\u5b58\u6570\u636e
+remove.cache.data.explanation=\u5e94\u7528\u7a0b\u5e8f\u7ed3\u6784\u4f3c\u4e4e\u5df2\u66f4\u6539\uff0c\u9700\u8981\u5220\u9664\u57fa\u4e8e\u5148\u524d\u7ed3\u6784\u7684\u9ad8\u901f\u7f13\u5b58\u6570\u636e\u3002
+remove.cache.data.useraction=\u5982\u679c\u5e94\u7528\u7a0b\u5e8f\u5df2\u66f4\u6539\u7ed3\u6784\uff0c\u90a3\u4e48\u8fd9\u662f\u9884\u671f\u884c\u4e3a\u3002
+
+extract.cache.fail=CWWKM0103E: \u7cfb\u7edf\u65e0\u6cd5\u5c06\u5d4c\u5957\u5f52\u6863\u62bd\u53d6\u81f3\u9ad8\u901f\u7f13\u5b58\u4f4d\u7f6e\uff0c\u56e0\u4e3a {0}
+extract.cache.fail.explanation=\u4e3a\u5e94\u7528\u7a0b\u5e8f\u521b\u5efa\u9ad8\u901f\u7f13\u5b58\u6570\u636e\u671f\u95f4\u53d1\u751f\u9519\u8bef\uff0c\u4ece\u800c\u65e0\u6cd5\u6b63\u786e\u5904\u7406\u8be5\u5e94\u7528\u7a0b\u5e8f\u3002
+extract.cache.fail.useraction=\u8bf7\u68c0\u67e5\u62a5\u544a\u7684\u539f\u56e0\u3002

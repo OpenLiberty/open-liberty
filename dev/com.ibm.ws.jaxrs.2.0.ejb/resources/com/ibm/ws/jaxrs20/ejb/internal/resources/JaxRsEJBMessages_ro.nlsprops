@@ -1,0 +1,40 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs-2.0.ejb/resources/com/ibm/ws/jaxrs20/ejb/internal/resources/JaxRsEJBMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS EJB Code
+#RANGE 1100 - 1199
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+
+
+warning.jaxrs.ejb.resource.mismatch=CWWKW1100W: Domeniul resursei JAXRS-2.0 {0} {1} nu se potrive\u015fte cu domeniul EJB {2}. Liberty ob\u0163ine instan\u0163a resursei de la {3}.
+warning.jaxrs.ejb.resource.mismatch.explanation=Dac\u0103 domeniul resursei JAXRS-2.0 nu se potrive\u015fte cu domeniul EJB \u015fi instan\u0163a resursei exist\u0103 \u00een EJB, Liberty ob\u0163ine instan\u0163a resursei de la EJB.
+warning.jaxrs.ejb.resource.mismatch.useraction=Nicio ac\u0163iune necesar\u0103. 
+
+warning.jaxrs.ejb.provider.mismatch=CWWKW1102W: Domeniul EJB al Furnizorului JAXRS-2.0 {0} este {1}. Liberty ob\u0163ine instan\u0163a furnizorului de la {2}.
+warning.jaxrs.ejb.provider.mismatch.explanation=Instan\u0163a furnizorului este numai Singleton. Liberty ob\u0163ine instan\u0163e de furnizor de la EJB dac\u0103 domeniul EJB al furnizorului este Dependent sau ApplicationScoped.
+warning.jaxrs.ejb.provider.mismatch.useraction=Nicio ac\u0163iune necesar\u0103.
+
+warning.failed.instantiate.ejb.instance=CWWKW1103W: Instan\u0163a EJB pentru clasa {0} nu poate fi instan\u0163iat\u0103. Liberty ob\u0163ine instan\u0163a de la JAXRS.
+warning.failed.instantiate.ejb.instance.explanation= Clasa EJB {0} nu are constructor implicit. Liberty ob\u0163ine excep\u0163ia InstantiationException c\u00e2nd \u00eencearc\u0103 s\u0103 instan\u0163ieze instan\u0163a EJB.
+warning.failed.instantiate.ejb.instance.useraction=Nicio ac\u0163iune necesar\u0103.
+
+error.failed.toloadejbclass=CWWKW1104W: Nu poate fi \u00eenc\u0103rcat\u0103 clasa {0}.
+error.failed.toloadejbclass.explanation= Nu poate fi \u00eenc\u0103rcat\u0103 clasa EJB {0}.
+error.failed.toloadejbclass.useraction=Corecta\u0163i-v\u0103 aplica\u0163ia pentru a rezolva problema.

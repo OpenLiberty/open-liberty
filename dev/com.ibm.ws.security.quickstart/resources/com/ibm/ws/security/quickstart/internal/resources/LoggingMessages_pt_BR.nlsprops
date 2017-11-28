@@ -1,0 +1,31 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.quickstart/resources/com/ibm/ws/security/quickstart/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Quick Start Security Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS0900 - CWWKS0999
+
+QUICK_START_SECURITY_MISSING_ATTIRBUTES=CWWKS0900E:  Os atributos necess\u00e1rios est\u00e3o ausentes no elemento <quickStartSecurity>: {0}. Defina os atributos ausentes.
+QUICK_START_SECURITY_MISSING_ATTIRBUTES.explanation= Os atributos necess\u00e1rios est\u00e3o ausentes no elemento <quickStartSecurity>.
+QUICK_START_SECURITY_MISSING_ATTIRBUTES.useraction=Defina os atributos necess\u00e1rios.
+
+QUICK_START_SECURITY_WITH_ANOTHER_REGISTRY=CWWKS0901E: A configura\u00e7\u00e3o de <quickStartSecurity> ser\u00e1 ignorada porque h\u00e1 outro UserRegistry configurado.
+QUICK_START_SECURITY_WITH_ANOTHER_REGISTRY.explanation=A configura\u00e7\u00e3o de <quickStartSecurity> ser\u00e1 usada apenas quando n\u00e3o houver nenhuma outra configura\u00e7\u00e3o de UserRegistry especificada.
+QUICK_START_SECURITY_WITH_ANOTHER_REGISTRY.useraction=Use apenas uma configura\u00e7\u00e3o de registro do usu\u00e1rio.
+
+QUICK_START_SECURITY_WITH_OTHER_MANAGEMENT_AUTHORIZATION=CWWKS0902E:  A configura\u00e7\u00e3o de <quickStartSecurity> ser\u00e1 ignorada porque as liga\u00e7\u00f5es de autoriza\u00e7\u00e3o de seguran\u00e7a de gerenciamento est\u00e3o definidas explicitamente.
+QUICK_START_SECURITY_WITH_OTHER_MANAGEMENT_AUTHORIZATION.explanation= A configura\u00e7\u00e3o de <quickStartSecurity> ser\u00e1 usada apenas quando n\u00e3o houver nenhuma liga\u00e7\u00e3o de autoriza\u00e7\u00e3o de seguran\u00e7a de gerenciamento expl\u00edcita definida.
+QUICK_START_SECURITY_WITH_OTHER_MANAGEMENT_AUTHORIZATION.useraction= Use <quickStartSecurity> e remova as liga\u00e7\u00f5es de autoriza\u00e7\u00e3o de seguran\u00e7a de gerenciamento expl\u00edcitas ou configure um registro de usu\u00e1rio diferente.

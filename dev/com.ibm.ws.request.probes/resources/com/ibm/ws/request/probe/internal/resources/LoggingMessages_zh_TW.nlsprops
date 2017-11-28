@@ -1,0 +1,30 @@
+###############################################################################
+# Copyright (c) 2014, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.request.probe/resources/com/ibm/ws/request/probe/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+# Messages in the range TRAS3200 to 3399 are reserved for this messages file.
+# The list of prefixes and the range of messages in use (or "reserved") are shown in 
+# http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+
+# updated the old TRAS0116E to TRAS3200E
+INSTR_INST_NOT_AVAILABLE_ERROR=TRAS3200E: Java \u6aa2\u6e2c\u5be6\u4f8b\u7121\u6cd5\u4f7f\u7528\uff0c\u56e0\u6b64\u76e3\u8996\u548c\u8a3a\u65b7\u529f\u80fd\u6c92\u6709\u4f5c\u7528\u3002\u8acb\u4f7f\u7528 -javaagent JVM \u9078\u9805\u4f86\u914d\u7f6e ws-javaagent.jar \u6a94\u3002
+INSTR_INST_NOT_AVAILABLE_ERROR.explanation=\u9700\u8981\u6709\u6aa2\u6e2c\u5be6\u4f8b\uff0c\u624d\u80fd\u6ce8\u5165\u4f4d\u5143\u7d44\u78bc\u4f86\u8f49\u63db\u985e\u5225\u3002Liberty \u63a1\u7528\u4f4d\u5143\u7d44\u78bc\u6ce8\u5165\u7684\u4f5c\u6cd5\u4f86\u7522\u751f\u76e3\u8996\u548c\u8a3a\u65b7\u8cc7\u8a0a\u3002
+INSTR_INST_NOT_AVAILABLE_ERROR.useraction=\u9700\u8981\u5176\u4ed6 JVM \u8a2d\u5b9a\uff0c\u624d\u80fd\u555f\u7528 Java \u6aa2\u6e2c\u3002\u8acb\u4f7f\u7528 -javaagent JVM \u9078\u9805\u4f86\u914d\u7f6e ws-javaagent.jar \u6a94\u3002ws-javaagent.jar \u6a94\u4f4d\u65bc Liberty \u8a2d\u5b9a\u6a94\u5b89\u88dd\u7684 ${wlp.install.dir}/bin/tools \u76ee\u9304\u4e2d\u3002
+
+REQUEST_PROBE_FORMAT_HEADER_DURATION=\u6301\u7e8c\u6642\u9593
+REQUEST_PROBE_FORMAT_HEADER_OPERATION=\u4f5c\u696d

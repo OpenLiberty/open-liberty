@@ -286,6 +286,63 @@ public class JavaEESecTestBase {
     }  
 
     /**
+     * Send HttpClient post request with specified parameters to the given URL, ensure that the user is redirected or forwarded 
+     * to the form login page
+     * Note that in order to use this method properly, HttlClient needs to be set ClientPNames.HANDLE_REDIRECTS=Boolean.FALSE.
+     * This propety let httpclient disable following the redirect automatically.
+     *
+     * @param httpclient HttpClient object to execute request
+     * @param url URL for request, should be protected and redirect to form login page
+     * @param params post parameters.
+     * @param redirect true if redirect is used to go to the login page, otherwise, use forward.
+     * @param formUrl Url of login page. this value is used when redirect is set as true.
+     * @param formTitle Name of Login form.
+     * @throws Exception
+     */
+
+    public String postFormLoginPage(DefaultHttpClient httpclient, String url, List<NameValuePair> params, boolean redirect, String formUrl, String formTitle) throws Exception {
+        String methodName = "postFormLoginPage";
+        Log.info(logClass, methodName, "Form login page url: " + url + ", redirect: " + redirect);
+        String content = null;
+        try {
+            HttpPost postMethod = new HttpPost(url);
+            postMethod.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+
+            HttpResponse response = httpclient.execute(postMethod);
+            Log.info(logClass, methodName, "Form login page result: " + response.getStatusLine());
+            if (redirect) {
+                assertEquals("Expected " + HttpServletResponse.SC_MOVED_TEMPORARILY + " status code for form login page was not returned",
+                             HttpServletResponse.SC_MOVED_TEMPORARILY, response.getStatusLine().getStatusCode());
+                // check page url.
+                String location = response.getFirstHeader("Location").getValue();
+                assertTrue("Expected " + formUrl + " location for form login page was not returned", location.equals(formUrl));
+                // now get the contents of the redirect url.
+                EntityUtils.consume(response.getEntity());
+                Log.info(logClass, methodName, "Form login page redirect location : " + location);
+                response = httpclient.execute(new HttpPost(location));
+            }
+            assertEquals("Expected " + HttpServletResponse.SC_OK + " status code for form login page was not returned",
+                         HttpServletResponse.SC_OK, response.getStatusLine().getStatusCode());
+
+            content = EntityUtils.toString(response.getEntity());
+
+            Log.info(logClass, methodName, "Form login page content: " + content);
+            EntityUtils.consume(response.getEntity());
+
+            if (response.getStatusLine().getStatusCode() == HttpServletResponse.SC_OK) {
+                // Verify we get the form login JSP
+                assertTrue("Did not find expected form login page: " + formTitle,
+                           content.contains(formTitle));
+                Log.info(logClass, methodName, "Found expected Form login page title: " + formTitle);
+            }
+            
+        } catch (IOException e) {
+            fail("Caught unexpected exception: " + e);
+        }
+        return content;
+    }  
+
+    /**
      * Post HttpClient request to execute a form login on the given page, using the given username and password
      *
      * @param httpclient HttpClient object to execute login
@@ -387,10 +444,10 @@ public class JavaEESecTestBase {
         Log.info(logClass, methodName, "accessPageNoChallenge: location =  " + location + " expectedStatusCode =" + expectedStatusCode);
 
         try {
+            HttpResponse response;
             // Get method on form login page
             HttpGet getMethod = new HttpGet(location);
-            HttpResponse response = client.execute(getMethod);
-
+            response = client.execute(getMethod);
             Log.info(logClass, methodName, "getMethod status:  " + response.getStatusLine());
 
             assertEquals("Expected " + expectedStatusCode + " was not returned",
@@ -481,6 +538,15 @@ public class JavaEESecTestBase {
     protected void verifyGroupIdsResponse(String response, String realmName, String groupName) {
         Log.info(logClass, "verifyGroupIdsResponse", "Verify groupIds in public credential contains: " + realmName + "//" + groupName);
         mustMatch(response, assembleRegExPublicCredentialGroupIds(realmName, groupName));
+    }
+
+    protected void verifyPostResponse(String response, String user, String firstName, String lastName, String eMailAddr, String phoneNumber) {
+        Log.info(logClass, "verifyPostResponse", "Verify response shows: user : " + user + ", firstName : " + firstName + ", lastName : "  + lastName + ", eMailAddr : " + eMailAddr + ", phoneNum : " + phoneNumber);
+        mustContain(response, "RemoteUser : " + user);
+        mustContain(response, "firstName : " + firstName);
+        mustContain(response, "lastName : "  + lastName);
+        mustContain(response, "eMailAddr : " + eMailAddr);
+        mustContain(response, "phoneNum : " + phoneNumber);
     }
 
     public static String assembleRegExPublicCredentialGroupIds(String realmName, String groupName) {

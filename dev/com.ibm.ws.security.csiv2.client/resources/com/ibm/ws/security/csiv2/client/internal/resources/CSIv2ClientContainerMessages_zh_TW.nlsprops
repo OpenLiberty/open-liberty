@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.csiv2.client/resources/com/ibm/ws/security/csiv2/client/internal/resources/CSIv2ClientContainerMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server CSIv2 for the client container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9700 - CWWKS9749
+
+# Client CSIv2 Configuration related messages CWWKS9700 - CWWKS9719
+# -------------------------------------------------------------------------------------------------
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID=CWWKS9700E: \u7528\u6236\u7aef\u5b89\u5168\u6027 {0} \u4e2d\u6307\u5b9a\u4e86\u7121\u6548\u9451\u5225\u5c64\u6a5f\u5236\u3002\u6709\u6548\u503c\u662f GSSUP\u3002
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.explanation=\u4e0d\u652f\u63f4\u6307\u5b9a\u7684\u7528\u6236\u7aef\u5b89\u5168\u6027\u9451\u5225\u5c64\u6a5f\u5236\u3002
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.useraction=\u8acb\u78ba\u5b9a\u6307\u5b9a\u7684\u7528\u6236\u7aef\u5b89\u5168\u6027\u9451\u5225\u5c64\u6a5f\u5236\u70ba GSSUP\u3002
+
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL=CWWKS9701W: \u7528\u6236\u7aef\u5b89\u5168\u6027\u4e2d\u6307\u5b9a\u7684\u9451\u5225\u5c64\u6a5f\u5236\u662f\u7a7a\u503c\u3002
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.explanation=\u6307\u5b9a\u7684\u7528\u6236\u7aef\u5b89\u5168\u6027\u9451\u5225\u5c64\u6a5f\u5236\u662f\u7a7a\u503c\u3002
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.useraction=\u8acb\u78ba\u5b9a\u6307\u5b9a\u7684\u7528\u6236\u7aef\u5b89\u5168\u6027\u9451\u5225\u5c64\u6a5f\u5236\u70ba GSSUP\u3002
+
+CSIv2_CLIENT_MISSING_AUTH_MECH_PROPERTIES=CWWKS9702W: IIOP \u7528\u6236\u7aef\u539f\u5247\u4e2d\u907a\u6f0f\u4e0b\u5217\u5c6c\u6027\u3002\u907a\u6f0f\u7684\u5c6c\u6027\u662f [{0}]\u3002\u9664\u975e\u61c9\u7528\u7a0b\u5f0f\u5be6\u4f5c\u7a0b\u5f0f\u5316\u767b\u5165\uff0c\u5426\u5247\u8acb\u78ba\u5b9a client.xml \u6a94\u4e2d\u6709\u6307\u5b9a\u8a72\u5c6c\u6027\u3002
+
+CSIv2_CLIENT_MISSING_AUTH_MECH_PROPERTIES.explanation=IIOP \u7528\u6236\u7aef\u539f\u5247\u9451\u5225\u5c64\u6a5f\u5236\u4e2d\u907a\u6f0f\u4e86\u6307\u5b9a\u7684\u5c6c\u6027\u3002
+CSIv2_CLIENT_MISSING_AUTH_MECH_PROPERTIES.useraction=\u8acb\u78ba\u5b9a\u5df2\u8a2d\u5b9a\u5fc5\u8981\u5c6c\u6027\uff0c\u6216\u662f\u4f7f\u7528\u7a0b\u5f0f\u5316\u767b\u5165\u4f86\u63d0\u4f9b\u503c\u3002
+
+# Client CSIv2 runtime related messages CWWKS9720 - CWWKS9729
+# -------------------------------------------------------------------------------------------------
+
+# Common CSIv2  related messages CWWKS9730 - CWWKS9749
+# -------------------------------------------------------------------------------------------------
+CSIv2_COMMON_AUTH_LAYER_DISABLED=CWWKS9730W: \u300cCSI \u7b2c 2 \u7248\u9451\u5225\u5c64\u300d\u5df2\u505c\u7528\uff0c\u56e0\u70ba establishTrustInClient \u7684\u503c\u70ba {0}\u3002
+CSIv2_COMMON_AUTH_LAYER_DISABLED.explanation=\u7576 establishTrustInClient \u8a2d\u5b9a\u70ba\u300c\u4e0d\u4f7f\u7528\u300d\u6642\uff0c\u5c31\u6703\u505c\u7528\u300cCSI \u7b2c 2 \u7248\u9451\u5225\u5c64\u300d\u3002
+CSIv2_COMMON_AUTH_LAYER_DISABLED.useraction=\u5982\u679c\u8981\u555f\u7528\u300cCSI \u7b2c 2 \u7248\u9451\u5225\u5c64\u300d\uff0c\u8acb\u5c07 establishTrustInClient \u503c\u8a2d\u5b9a\u70ba\u300c\u652f\u63f4\u300d\u6216\u300c\u5fc5\u8981\u300d\u3002
+
+

@@ -1,0 +1,157 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service: tcp channel
+#CMVCPATHNAME com.ibm.ws.channelfw/resources/com/ibm/ws/tcpchannel/internal/resources/TCPChannelMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#ISMESSAGEFILE TRUE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+### TCP channel will use message numbers 0200-0399
+
+#Configuration and initialization errors
+MAX_OPEN_CONNECTIONS_INVALID=CWWKO0200E: Le nombre maximum de connexions ouvertes {0} n''est pas valide. Les valeur valides sont comprises entre {1} au minimum et {2} au maximum.
+MAX_OPEN_CONNECTIONS_INVALID.explanation=Pas d'informations suppl\u00e9mentaires.
+MAX_OPEN_CONNECTIONS_INVALID.useraction=Corrigez l'erreur de configuration.
+
+INACTIVITY_TIMEOUT_INVALID=CWWKO0201E: Le d\u00e9lai d''inactivit\u00e9 {0} n''est pas valide. Les valeur valides sont comprises entre {1} au minimum et {2} au maximum.
+INACTIVITY_TIMEOUT_INVALID.explanation=Pas d'informations suppl\u00e9mentaires.
+INACTIVITY_TIMEOUT_INVALID.useraction=Corrigez l'erreur de configuration.
+
+ADDRESS_EXCLUDE_LIST_INVALID=CWWKO0202E: Une entr\u00e9e de la liste d''exclusion d''adresses du canal TCP {0} n''est pas valide. 
+ADDRESS_EXCLUDE_LIST_INVALID.explanation= Chaque entr\u00e9e de la liste doit \u00eatre une cha\u00eene (String) valide.
+ADDRESS_EXCLUDE_LIST_INVALID.useraction=Corrigez l'erreur de configuration.
+
+ADDRESS_INCLUDE_LIST_INVALID=CWWKO0203E: Une entr\u00e9e de la liste d''inclusion d''adresses d\u00e9finie pour le canal TCP {0} n''est pas valide.
+ADDRESS_INCLUDE_LIST_INVALID.explanation= Chaque entr\u00e9e de la liste doit \u00eatre une cha\u00eene (String) valide.
+ADDRESS_INCLUDE_LIST_INVALID.useraction=Corrigez l'erreur de configuration.
+
+HOST_NAME_EXCLUDE_LIST_INVALID=CWWKO0204E: Une entr\u00e9e de la liste d''exclusion de noms d''h\u00f4te du canal TCP {0} n''est pas valide.
+HOST_NAME_EXCLUDE_LIST_INVALID.explanation= Chaque entr\u00e9e de la liste doit \u00eatre une cha\u00eene (String) valide.
+HOST_NAME_EXCLUDE_LIST_INVALID.useraction=Corrigez l'erreur de configuration.
+
+HOST_NAME_INCLUDE_LIST_INVALID=CWWKO0205E: Une entr\u00e9e de la liste d''inclusion de noms d''h\u00f4te d\u00e9finie pour le canal TCP {0} n''est pas valide. 
+HOST_NAME_INCLUDE_LIST_INVALID.explanation= Chaque entr\u00e9e de la liste doit \u00eatre une cha\u00eene (String) valide.
+HOST_NAME_INCLUDE_LIST_INVALID.useraction=Corrigez l'erreur de configuration.
+
+NOT_VALID_CUSTOM_PROPERTY=CWWKO0206E: Le canal TCP {0} contient la propri\u00e9t\u00e9 personnalis\u00e9e {1} dont la valeur est {2}. Cette valeur est incorrecte.
+NOT_VALID_CUSTOM_PROPERTY.explanation=Une propri\u00e9t\u00e9 personnalis\u00e9e a \u00e9t\u00e9 sp\u00e9cifi\u00e9e avec une valeur non comprise dans l'intervalle des valeurs valides.
+NOT_VALID_CUSTOM_PROPERTY.useraction=Corrigez l'erreur de configuration.
+
+CONFIG_VALUE_NUMBER_EXCEPTION=CWWKO0207E: Le canal TCP {0} a \u00e9t\u00e9 configur\u00e9 avec une valeur num\u00e9rique incorrecte pour une propri\u00e9t\u00e9. Nom de la propri\u00e9t\u00e9 : {1}  Valeur : {2}
+CONFIG_VALUE_NUMBER_EXCEPTION.explanation=Le canal TCP indiqu\u00e9 est configur\u00e9 avec une propri\u00e9t\u00e9 dont la valeur n'est pas un nombre valide.
+CONFIG_VALUE_NUMBER_EXCEPTION.useraction=Corrigez l'erreur de configuration.
+
+CONFIG_VALUE_NOT_VALID_STRING=CWWKO0208E: Le canal TCP {0} a \u00e9t\u00e9 construit avec une valeur de propri\u00e9t\u00e9 de configuration incorrecte. Nom : {1}  Valeur : {2}
+CONFIG_VALUE_NOT_VALID_STRING.explanation=La valeur d'une propri\u00e9t\u00e9 du canal TCP indiqu\u00e9 n'est pas comprise dans la plage valide pour cette propri\u00e9t\u00e9.
+CONFIG_VALUE_NOT_VALID_STRING.useraction=Corrigez l'erreur de configuration.
+
+CONFIG_VALUE_NOT_VALID_NULL_STRING=CWWKO0209E: Le canal TCP {0} a \u00e9t\u00e9 construit avec une valeur de propri\u00e9t\u00e9 de configuration Null. Nom : {1}
+CONFIG_VALUE_NOT_VALID_NULL_STRING.explanation=La valeur d'une propri\u00e9t\u00e9 du canal TCP indiqu\u00e9 n'est pas comprise dans la plage valide pour cette propri\u00e9t\u00e9.
+CONFIG_VALUE_NOT_VALID_NULL_STRING.useraction=Corrigez l'erreur de configuration.
+
+CONFIG_VALUE_NOT_VALID_BOOLEAN=CWWKO0210E: Le canal TCP {0} a \u00e9t\u00e9 construit avec une valeur de propri\u00e9t\u00e9 de configuration incorrecte. Nom : {1}  Valeur : {2} Plage valide : false, true.
+CONFIG_VALUE_NOT_VALID_BOOLEAN.explanation=La valeur d'une propri\u00e9t\u00e9 du canal TCP indiqu\u00e9 n'est pas comprise dans la plage valide pour cette propri\u00e9t\u00e9.
+CONFIG_VALUE_NOT_VALID_BOOLEAN.useraction=Corrigez l'erreur de configuration.
+
+CONFIG_VALUE_NOT_VALID_INT=CWWKO0211E: Le canal TCP {0} a \u00e9t\u00e9 construit avec une valeur de propri\u00e9t\u00e9 de configuration incorrecte. Nom : {1}  Valeur : {2} Plage valide : Minimum {3}, Maximum {4}
+CONFIG_VALUE_NOT_VALID_INT.explanation=La valeur d'une propri\u00e9t\u00e9 du canal TCP indiqu\u00e9 n'est pas comprise dans la plage valide pour cette propri\u00e9t\u00e9.
+CONFIG_VALUE_NOT_VALID_INT.useraction=Corrigez l'erreur de configuration.
+
+CONFIG_KEY_NOT_VALID=CWWKO0212W: Le canal TCP {0} a \u00e9t\u00e9 construit avec une propri\u00e9t\u00e9 de configuration incorrecte. Nom de la propri\u00e9t\u00e9 : {1}  Valeur : {2}
+CONFIG_KEY_NOT_VALID.explanation=Une propri\u00e9t\u00e9 du canal TCP sp\u00e9cifi\u00e9 a un nom ou une valeur qui ne sont pas reconnus.
+CONFIG_KEY_NOT_VALID.useraction=Corrigez l'erreur de configuration.
+
+UNRECOGNIZED_CUSTOM_PROPERTY=CWWKO0213W: Le canal TCP {0} a une propri\u00e9t\u00e9 personnalis\u00e9e configur\u00e9e qui n''est pas une propri\u00e9t\u00e9 reconnue. Nom de la propri\u00e9t\u00e9 : {1}
+UNRECOGNIZED_CUSTOM_PROPERTY.explanation=Une propri\u00e9t\u00e9 personnalis\u00e9e a \u00e9t\u00e9 sp\u00e9cifi\u00e9e de mani\u00e8re incorrecte.
+UNRECOGNIZED_CUSTOM_PROPERTY.useraction=Corrigez l'erreur de configuration.
+
+NEW_CONFIG_VALUE_NOT_EQUAL=CWWKO0214E: Une tentative de mise \u00e0 jour du canal TCP {0} n''a pas r\u00e9ussi. Cette mise \u00e0 jour consistait \u00e0 changer la valeur d''une propri\u00e9t\u00e9 qui ne peut \u00eatre chang\u00e9e \u00e0 l''ex\u00e9cution. Nom de la propri\u00e9t\u00e9 : {1}  Valeur actuelle : {2}  Nouvelle valeur dont l''affectation a \u00e9chou\u00e9 : {3}
+NEW_CONFIG_VALUE_NOT_EQUAL.explanation=Dans le cadre d'une mise \u00e0 jour de la configuration, le syst\u00e8me a tent\u00e9 d'affecter une nouvelle valeur \u00e0 une propri\u00e9t\u00e9 d'un canal TCP. Or, cette propri\u00e9t\u00e9 ne peut \u00eatre modifi\u00e9e \u00e0 l'ex\u00e9cution.
+NEW_CONFIG_VALUE_NOT_EQUAL.useraction=Corrigez l'erreur de configuration.
+
+UPDATED_CONFIG_NOT_IMPLEMENTED=CWWKO0215E: Une tentative de mise \u00e0 jour du canal TCP {0} n''a pas r\u00e9ussi.
+UPDATED_CONFIG_NOT_IMPLEMENTED.explanation=Le canal TCP sp\u00e9cifi\u00e9 n'a pas pu \u00eatre mis \u00e0 jour car la nouvelle configuration n'\u00e9tait pas valide.
+UPDATED_CONFIG_NOT_IMPLEMENTED.useraction=Corrigez l'erreur de configuration.
+
+NO_ENDPOINT_NAME=CWWKO0216E: Aucun nom de point d''extr\u00e9mit\u00e9 (endpoint) n''a \u00e9t\u00e9 affect\u00e9 au canal TCP {0}.
+NO_ENDPOINT_NAME.explanation=Pas d'informations suppl\u00e9mentaires.
+NO_ENDPOINT_NAME.useraction=Corrigez l'erreur de configuration.
+
+USER_ID_NOT_VALID=CWWKO0217E: L''ID utilisateur configur\u00e9 pour \u00eatre utilis\u00e9 apr\u00e8s le d\u00e9marrage n''\u00e9tait pas valide.  ID utilisateur : {0}
+USER_ID_NOT_VALID.explanation=Apr\u00e8s le d\u00e9marrage, le syst\u00e8me a \u00e9t\u00e9 configur\u00e9 pour basculer sur un ID utilisateur qui n'\u00e9tait pas valide.
+USER_ID_NOT_VALID.useraction=Indiquez une nouvelle valeur pour l'ID utilisateur configur\u00e9.
+
+GROUP_ID_NOT_VALID=CWWKO0218E: L''ID groupe configur\u00e9 pour \u00eatre utilis\u00e9 apr\u00e8s le d\u00e9marrage n''\u00e9tait pas valide.  ID groupe : {0}
+GROUP_ID_NOT_VALID.explanation=Apr\u00e8s le d\u00e9marrage, le syst\u00e8me a \u00e9t\u00e9 configur\u00e9 pour basculer sur un ID groupe qui n'\u00e9tait pas valide.
+GROUP_ID_NOT_VALID.useraction=Indiquez une nouvelle valeur pour l'ID groupe configur\u00e9.
+
+#Runtime messages
+
+TCP_CHANNEL_STARTED=CWWKO0219I: Le canal TCP {0} a \u00e9t\u00e9 d\u00e9marr\u00e9 et \u00e9coute \u00e0 pr\u00e9sent les demandes parvenant \u00e0 l''h\u00f4te {1}, sur le port {2}.
+TCP_CHANNEL_STARTED.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+TCP_CHANNEL_STARTED.useraction=Aucune action n'est requise.
+
+TCP_CHANNEL_STOPPED=CWWKO0220I: Le canal TCP {0} a arr\u00eat\u00e9 l''\u00e9coute des demandes parvenant \u00e0 l''h\u00f4te {1}, sur le port {2}.
+TCP_CHANNEL_STOPPED.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+TCP_CHANNEL_STOPPED.useraction=Aucune action n'est requise.
+
+BIND_ERROR=CWWKO0221E: L''initialisation du canal TCP {0} n''a pas r\u00e9ussi.  La liaison de socket n''a pas abouti pour l''h\u00f4te {1} et le port {2}.  Le port est peut-\u00eatre d\u00e9j\u00e0 utilis\u00e9.
+BIND_ERROR.explanation=L'op\u00e9ration de liaison de socket n'a pas r\u00e9ussi. La cause la plus courante est que le port indiqu\u00e9 est d\u00e9j\u00e0 utilis\u00e9.
+BIND_ERROR.useraction=V\u00e9rifiez que le canal TCP a \u00e9t\u00e9 configur\u00e9 pour utiliser le num\u00e9ro de port correct.
+
+MAX_CONNS_EXCEEDED=CWWKO0222W: Le canal TCP {0} a d\u00e9pass\u00e9 le nombre maximum de connexions ouvertes autoris\u00e9 {1}.
+MAX_CONNS_EXCEEDED.explanation=Le canal TCP indiqu\u00e9 a d\u00e9pass\u00e9 le nombre maximum de connexions ouvertes autoris\u00e9 et rejette les nouvelles demandes de connexion.
+MAX_CONNS_EXCEEDED.useraction=Si un plus grand nombre de connexions est n\u00e9cessaire, mettez \u00e0 jour le nombre de connexions autoris\u00e9es.
+
+THREAD_DISPATCH_FAILED=CWWKO0223W: Le canal TCP {0} n''a pas obtenu d''unit\u00e9 d''ex\u00e9cution depuis le pool d''unit\u00e9s d''ex\u00e9cution {1}.
+THREAD_DISPATCH_FAILED.explanation=Le canal TCP indiqu\u00e9 n'a pas pu obtenir d'unit\u00e9 d'ex\u00e9cution du pool d'unit\u00e9s d'ex\u00e9cution. Le traitement des nouvelles demandes risque donc d'\u00eatre retard\u00e9.
+THREAD_DISPATCH_FAILED.useraction=Si la CPU n'est pas utilis\u00e9e au maximum de sa capacit\u00e9, augmentez le nombre maximum d'unit\u00e9s d'ex\u00e9cution disponibles dans le pool d'unit\u00e9s d'ex\u00e9cution.  Sinon, r\u00e9duisez le nombre de demandes entrantes.
+
+LOCAL_HOST_UNRESOLVED=CWWKO0224E: L''initialisation du canal TCP {0} a \u00e9chou\u00e9.  L''h\u00f4te {1} et le port {2} ne peuvent pas \u00eatre r\u00e9solus.
+LOCAL_HOST_UNRESOLVED.explanation=Le nom d'h\u00f4te sp\u00e9cifi\u00e9 n'a pas pu \u00eatre r\u00e9solu.  Le nom d'h\u00f4te a \u00e9t\u00e9 sp\u00e9cifi\u00e9 de mani\u00e8re incorrecte ou n'a pas \u00e9t\u00e9 d\u00e9fini sur ce syst\u00e8me.
+LOCAL_HOST_UNRESOLVED.useraction=V\u00e9rifiez que le canal TCP a \u00e9t\u00e9 configur\u00e9 de mani\u00e8re \u00e0 utiliser le nom d'h\u00f4te correct.
+
+PORT_NOT_ACCEPTING=CWWKO0225E: Le canal TCP {0} qui \u00e9coute sur l''h\u00f4te {1}, port {2}, n''accepte plus de connexions.
+PORT_NOT_ACCEPTING.explanation=Le canal TCP indiqu\u00e9 n'accepte plus de connexions sur le port sp\u00e9cifi\u00e9.  Le port semble d\u00e9sactiv\u00e9.
+PORT_NOT_ACCEPTING.useraction=Pour utiliser le port, activez-le et red\u00e9marrez l'application.
+
+EVENT_SVC_MISSING=CWWKO0226E: Le service d'\u00e9v\u00e9nement demand\u00e9 est absent.
+EVENT_SVC_MISSING.explanation=TCP a besoin du service d'\u00e9v\u00e9nement pour ex\u00e9cuter les entr\u00e9es-sorties de socket.
+EVENT_SVC_MISSING.useraction=V\u00e9rifiez que le service d'\u00e9v\u00e9nement fonctionne normalement.
+
+EXECUTOR_SVC_MISSING=CWWKO0227E: Le service ex\u00e9cuteur demand\u00e9 est manquant.
+EXECUTOR_SVC_MISSING.explanation=TCP a besoin d'un service ex\u00e9cuteur pour ex\u00e9cuter les entr\u00e9es-sorties de socket.
+EXECUTOR_SVC_MISSING.useraction=Assurez-vous que le bundle "threading" est actif.
+
+TCP_NOT_ACCEPTING=CWWKO0228E: Le serveur n'accepte plus les connexions TCP en raison d'erreurs. Le serveur attend 10 minutes avant de faire une nouvelle tentative, mais il pourra \u00eatre n\u00e9cessaire de le red\u00e9marrer.
+TCP_NOT_ACCEPTING.explanation=Le serveur n'accepte plus les connexions en raison d'un grand nombre d'exceptions. Ceci peut signifier qu'il existe un probl\u00e8me dans votre machine virtuelle Java ou votre syst\u00e8me d'exploitation. Le serveur acceptera \u00e0 nouveau les connexions dans 10 minutes.
+TCP_NOT_ACCEPTING.useraction=V\u00e9rifiez dans les fichiers journaux de messages et d'exceptions si des erreurs de connexion ou de gestion des fichiers se sont produites. Il peut \u00eatre n\u00e9cessaire de red\u00e9marrer le serveur. Si le probl\u00e8me persiste, contactez le support IBM.
+
+ZOSAIO_ACTIVATED=CWWKO0229I: La prise en charge d'E-S asynchrone native pour z/OS a \u00e9t\u00e9 activ\u00e9e.
+ZOSAIO_ACTIVATED.explanation=Le service Asynchronous TCP/IP sockets I/O for Liberty (AsyncIO) on z/OS, qui fournit des capacit\u00e9s \u00e9l\u00e9mentaires de package d'E-S asynchrone au niveau du syst\u00e8me d'exploitation, a \u00e9t\u00e9 activ\u00e9.
+ZOSAIO_ACTIVATED.useraction=Aucune action n'est requise.
+
+ZOSAIO_DEACTIVATED=CWWKO0230I: La prise en charge d'E-S asynchrone native pour z/OS a \u00e9t\u00e9 d\u00e9sactiv\u00e9e.
+ZOSAIO_DEACTIVATED.explanation=Le service Asynchronous TCP/IP sockets I/O for Liberty (AsyncIO) on z/OS, qui fournit des capacit\u00e9s \u00e9l\u00e9mentaires de  package d'E-S asynchrone au niveau du syst\u00e8me d'exploitation, a \u00e9t\u00e9 d\u00e9sactiv\u00e9.
+ZOSAIO_DEACTIVATED.useraction=Aucune action n'est requise.

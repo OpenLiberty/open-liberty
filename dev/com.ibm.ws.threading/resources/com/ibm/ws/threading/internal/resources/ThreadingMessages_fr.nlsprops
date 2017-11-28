@@ -1,0 +1,57 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME=CWWKExxxxI: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.threading/resources/com/ibm/ws/threading/internal/resources/ThreadingMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 1200 - 1299 com.ibm.ws.threading.internal.resources.ThreadingMessages
+# -------------------------------------------------------------------------------------------------
+
+# {0} size of the pool when a deadlock was first detected
+# {1} current size of the pool
+unbreakableExecutorHang=CWWKE1200W:  Toutes les unit\u00e9s d''ex\u00e9cution de l''ex\u00e9cuteur par d\u00e9faut Liberty semblent \u00eatre bloqu\u00e9es. Liberty a automatiquement augment\u00e9 le nombre d''unit\u00e9s d''ex\u00e9cution ({0} \u00e0 {1}). Toutefois, toutes les unit\u00e9s d''ex\u00e9cution semblent \u00eatre bloqu\u00e9es.
+unbreakableExecutorHang.explanation=Une erreur s'est produite qui a provoqu\u00e9 le blocage d'un ex\u00e9cuteur et l'environnement d'ex\u00e9cution Liberty a ajout\u00e9 un nombre important d'unit\u00e9s d'ex\u00e9cution lors d'une tentative d'arr\u00eat de la condition bloqu\u00e9e. Toutefois, l'ex\u00e9cuteur ne r\u00e9pond toujours pas.  
+unbreakableExecutorHang.useraction=D\u00e9terminez s'il existe un goulot d'\u00e9tranglement (table de base de donn\u00e9es verrouill\u00e9e, par exemple) pouvant emp\u00eacher la r\u00e9solution des unit\u00e9s d'ex\u00e9cution dans le serveur. S'il n'existe aucun goulot d'\u00e9tranglement et que le serveur demande des unit\u00e9s d'ex\u00e9cution suppl\u00e9mentaires, r\u00e9glez l'attribut coreThreads de l'\u00e9l\u00e9ment de configuration de l'ex\u00e9cuteur.
+
+CWWKE1201.queue.full.abort=CWWKE1201E: Une t\u00e2che ne peut pas \u00eatre soumise \u00e0 l''ex\u00e9cuteur {0} car la file d''attente de t\u00e2ches dont l''attribut maxQueueSize est de {1} conserve sa valeur maximale apr\u00e8s une attente de {2} nanosecondes.
+CWWKE1201.queue.full.abort.explanation=L'attribut maxQueueSize d\u00e9termine combien de soumissions de t\u00e2che peuvent s'accumuler dans la file d'attente. L'attribut maxWaitForEnqueue d\u00e9termine combien de temps patienter pour une position disponible dans la file d'attente, mais cet intervalle peut \u00eatre raccourci compte tenu du d\u00e9lai d'attente restant si vous utilisez les m\u00e9thodes chronom\u00e9tr\u00e9es invokeAll ou invokeAny pour soumettre des t\u00e2ches. l'attribut queueFullAction d\u00e9termine l'action \u00e0 engager \u00e0 l'expiration de ce d\u00e9lai si aucune position ne s'est lib\u00e9r\u00e9e dans la file d'attente. Pour \u00e9viter d'exc\u00e9der le nombre d'acc\u00e8s concurrent ou pour respecter le de d\u00e9lai d'attente sp\u00e9cifi\u00e9, les m\u00e9thodes invokeAll et invokeAny peuvent pr\u00e9valoir sur l'attribut queueFullAction et avorter la soumission de t\u00e2che lorsqu'elle ne peut pas \u00eatre plac\u00e9e n file d'attente.
+CWWKE1201.queue.full.abort.useraction=Aucune action n'est n\u00e9cessaire si l'application traite RejectedExecutionException. Sinon, utilisez l'une des combinaisons des actions suivantes : increase maxQueueSize, increase maxWaitForEnqueue, utilisez un attribut queueFullAction diff\u00e9rent, ou encore augmentez le d\u00e9lai d'attente sp\u00e9cifi\u00e9 pour l'appel de m\u00e9thode invokeAll ou invokeAny.
+
+CWWKE1202.submit.after.shutdown=CWWKE1202E: Une t\u00e2che ne peut pas \u00eatre soumise car l''ex\u00e9cuteur {0} a \u00e9t\u00e9 arr\u00eat\u00e9.
+CWWKE1202.submit.after.shutdown.explanation=Les soumissions de t\u00e2ches ne sont pas permises apr\u00e8s une demande de fermeture du service d'ex\u00e9cution.
+CWWKE1202.submit.after.shutdown.useraction=Vous ne devez soumettre des taches que sur une instance de service de programme d'ex\u00e9cution dont la fermeture n'a pas \u00e9t\u00e9 demand\u00e9e.
+
+CWWKE1203.config.update.after.shutdown=CWWKE1203E: La mise \u00e0 jour de la configuration en {0} n''est pas permise vu que le programme d''ex\u00e9cution {1} a \u00e9t\u00e9 arr\u00eat\u00e9.
+CWWKE1203.config.update.after.shutdown.explanation=Il n'est pas possible de mettre \u00e0 jour la configuration apr\u00e8s une demande de fermeture du service de programme d'ex\u00e9cution.
+CWWKE1203.config.update.after.shutdown.useraction=Vous ne pouvez mettre \u00e0 jour la configuration d'un service de programme d'ex\u00e9cution que si sa fermeture n'a pas \u00e9t\u00e9 demand\u00e9e.
+
+# {4} is the value of the time unit enum constant that was supplied to invokeAll/invokeAny. For example, MINUTES
+CWWKE1204.unable.to.invoke=CWWKE1204E: Le programme d''ex\u00e9cution {0} n''est pas parvenu \u00e0 soumettre {1} des {2} t\u00e2ches dans l''intervalle imparti de {3} {4}.
+CWWKE1204.unable.to.invoke.explanation=Le programme d'ex\u00e9cution a rejet\u00e9 l'op\u00e9ration invokeAll ou invokeAny en raison d'un temps insuffisant ou de la capacit\u00e9 de file d'attente disponible pour la soumission de toutes les t\u00e2ches demand\u00e9es dans l'intervalle sp\u00e9cifi\u00e9.
+CWWKE1204.unable.to.invoke.useraction=Aucune action n'est n\u00e9cessaire si l'application g\u00e8re l'exception RejectedExecutionException. Autrement, utilisez une combinaison des actions suivantes : augmentez l'attribut maxQueueSize, l'attribut maxConcurrency ou la valeur de d\u00e9lai d'expiration fournie pour la m\u00e9thode invokeAll ou invokeAny.
+
+CWWKE1205.start.timeout=CWWKE1205E: L''ex\u00e9cuteur {0} n''a pas pu d\u00e9marrer la t\u00e2che {1} apr\u00e8s {2} nanosecondes, car la t\u00e2che d\u00e9passe la valeur startTimeout de {3} nanosecondes.
+CWWKE1205.start.timeout.explanation=Lorsqu'une valeur startTimeout est configur\u00e9e sur un ex\u00e9cuteur ou demand\u00e9e par voie de programmation pour une t\u00e2che, l'ex\u00e9cuteur suit le d\u00e9lai \u00e9coul\u00e9 entre l'envoi de la t\u00e2che et le moment o\u00f9 il est possible d'ex\u00e9cuter la t\u00e2che. Si le temps \u00e9coul\u00e9 d\u00e9passe la valeur startTimeout, l'ex\u00e9cuteur abandonne la t\u00e2che au lieu de la d\u00e9marrer. 
+CWWKE1205.start.timeout.useraction=Aucune action n'est n\u00e9cessaire si l'application attend que certaines t\u00e2ches soient abandonn\u00e9es en raison du d\u00e9passement de la valeur startTimeout. Autrement, utilisez une combinaison des actions suivantes : augmentez l'attribut startTimeout ou l'attribut maxConcurrency.

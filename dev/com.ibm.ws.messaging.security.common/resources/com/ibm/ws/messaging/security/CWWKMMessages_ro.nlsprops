@@ -1,0 +1,136 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# Change activity:
+#
+# Reason          Date       Origin   Description
+# --------------- ---------- -------- ------------------------------------------
+# 114580          06-11-13   balgirid Fixing username not displayed in FFDC for unsuccessful login
+#
+#
+# File com.ibm.ws.messaging.security.CWWKMMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem
+# determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWWKM0000=CWWKM0001I: This is a message with insert {0}
+# MSG_DESCRIPTIVE_NAME_CWWKM0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKM0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you want them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Messages in the range CWWKM3001-CWWKM3101 belong to class com.ibm.ws.messaging.security
+# -------------------------------------------------------------------------------------------------
+#
+#CMVCPATHNAME New_File_For_Liberty
+#COMPONENTPREFIX CWWKM
+#COMPONENTNAMEFOR CWWKM Liberty Messaging Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+ 
+# -------------------------------------------------------------------------------------------------
+EXCEPTION_OCCURED_DURING_AUTHENTICATION_MSE1001=CWWKM3001E: Autentificarea utilizatorului a e\u015fuat.
+EXCEPTION_OCCURED_DURING_AUTHENTICATION_MSE1001.explanation=Numele de utilizator sau parola introdus\u0103 este incorect(\u0103).
+EXCEPTION_OCCURED_DURING_AUTHENTICATION_MSE1001.useraction=Specifica\u0163i un nume de utilizator \u015fi o parol\u0103 valide.
+
+# -------------------------------------------------------------------------------------------------
+# {0} - Token Type
+SECURITY_TOKEN_TYPE_NOT_SUPPORTED_MSE1002=CWWKM3002E: Tipul specificat de token {0} nu este suportat.
+SECURITY_TOKEN_TYPE_NOT_SUPPORTED_MSE1002.explanation=Tipul token specificat de aplica\u0163ia clientului nu este suportat. Doar tokenurile LTPA sunt suportate.
+SECURITY_TOKEN_TYPE_NOT_SUPPORTED_MSE1002.useraction=Specifica\u0163i un jeton LTPA, pentru c\u0103 numai jetoanele LTPA sunt suportate.
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_FIND_CONFIG_ADMIN_SERVICE_MSE1003=CWWKM3003E: Serviciul administrativ de configurare nu este disponibil.
+CANNOT_FIND_CONFIG_ADMIN_SERVICE_MSE1003.explanation=Serviciul administrativ de configurare nu este disponibil.
+CANNOT_FIND_CONFIG_ADMIN_SERVICE_MSE1003.useraction=Verifica\u0163i dac\u0103 ruleaz\u0103 serviciul de configurare.
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_FIND_SECURITY_SERVICE_MSE1004=CWWKM3004E: Serviciul de securitate nu este disponibil.
+CANNOT_FIND_SECURITY_SERVICE_MSE1004.explanation=Serviciul de securitate nu este disponibil.
+CANNOT_FIND_SECURITY_SERVICE_MSE1004.useraction=Verifica\u0163i dac\u0103 serviciul de securitate ruleaz\u0103.
+
+# -------------------------------------------------------------------------------------------------
+USER_REGISTRY_NOT_CONFIGURED_MSE1005=CWWKM3005E: Registrul de utilizatori nu este configurat.
+USER_REGISTRY_NOT_CONFIGURED_MSE1005.explanation=Trebuie s\u0103 fie un registru de utilizatori configurat pentru acest server.
+USER_REGISTRY_NOT_CONFIGURED_MSE1005.useraction=Configura\u0163i cel pu\u0163in un registru de utilizatori (e.g., LDAP, BasicUserRegistry, or QuickStartSecurity) pentru server.
+
+# -------------------------------------------------------------------------------------------------
+USER_REGISTRY_EXCEPTION_MSE1006=CWWKM3006E: A ap\u0103rut o excep\u0163ie la accesarea registrului de utilizatori.
+USER_REGISTRY_EXCEPTION_MSE1006.explanation=A ap\u0103rut o excep\u0163ie la accesarea registrului de utilizatori.
+USER_REGISTRY_EXCEPTION_MSE1006.useraction=Verifica\u0163i dac\u0103 registrul de utilizatori este configurat corect.
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_FIND_CONFIG_ADMIN_OBJECT_MSE1007=CWWKM3007E: Obiectul administrativ definit al configura\u0163iei nu a putut fi g\u0103sit.
+CANNOT_FIND_CONFIG_ADMIN_OBJECT_MSE1007.explanation=Obiectul administrativ definit al configura\u0163iei nu a putut fi g\u0103sit.
+CANNOT_FIND_CONFIG_ADMIN_OBJECT_MSE1007.useraction=Ar putea fi o eroare \u00een defini\u0163ia propriet\u0103\u0163ii. Asigura\u0163i-v\u0103 c\u0103 defini\u0163iile propriet\u0103\u0163ii din fi\u015fierul de configurare al serverului sunt corecte.
+
+# -------------------------------------------------------------------------------------------------
+IO_EXCEPTION_READING_CONFIGURATION_MSE1008=CWWKM3008E: A ap\u0103rut o IOException \u00een timp ce se citeau datele din fi\u015fierul de configurare.
+IO_EXCEPTION_READING_CONFIGURATION_MSE1008.explanation=A fost o IOException \u00een timp ce se citeau date din fi\u015fierul server.xml.
+IO_EXCEPTION_READING_CONFIGURATION_MSE1008.useraction=Valida\u0163i configura\u0163iile specificate \u00een fi\u015fierul server.xml.
+
+# -------------------------------------------------------------------------------------------------
+USER_NOT_AUTHENTICATED_MSE1009=CWWKM3009E: Utilizatorul {0} nu este autentificat pentru a accesa serviciul de mesagerie Liberty.
+USER_NOT_AUTHENTICATED_MSE1009.explanation=Utilizatorul nu permisiunea de a accesa serviciul de mesagerie Liberty.
+USER_NOT_AUTHENTICATED_MSE1009.useraction=Specifica\u0163i un nume utilizator valid care este autentificat s\u0103 se conecteze la serviciul de mesagerie Liberty.
+
+# -------------------------------------------------------------------------------------------------
+# {0} - User name
+# {1} - Action Name
+# {2} - Destination
+USER_NOT_AUTHORIZED_MSE1010=CWWKM3010W: Utilizatorul {0} nu este autorizat s\u0103 efectueze ac\u0163iunea {1} pe destina\u0163ia {2}.
+USER_NOT_AUTHORIZED_MSE1010.explanation=Utilizatorul specificat nu este autorizat s\u0103 efectueze ac\u0163iunea desemnat\u0103 pe destina\u0163ia indicat\u0103.
+USER_NOT_AUTHORIZED_MSE1010.useraction=Specifica\u0163i un utilizator care este autorizat s\u0103 efectueze ac\u0163iunea specificat\u0103 pe destina\u0163ia indicat\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} - User name
+USER_NOT_AUTHORIZED_TO_CONNECT_MSE1011=CWWKM3011E: Utilizatorul nu are autoritatea de a se conecta la serviciul de mesagerie Liberty.
+USER_NOT_AUTHORIZED_TO_CONNECT_MSE1011.explanation=Utilizatorul nu este autorizat s\u0103 se conecteze la serviciile de mesagerie Liberty.
+USER_NOT_AUTHORIZED_TO_CONNECT_MSE1011.useraction=Specifica\u0163i un utilizator care este autorizat s\u0103 se conecteze la serviciul de mesagerie Liberty.
+
+# -------------------------------------------------------------------------------------------------
+# {0} - Role name which has duplicate entry
+DUPLICATE_ROLE_NAME_EXISTS_MSE1012=CWWKM3012W: Numele {0} este deja folosit pentru un alt rol.
+DUPLICATE_ROLE_NAME_EXISTS_MSE1012.explanation=Nu este permis ca un nume s\u0103 fie folosit pentru roluri multiple.
+DUPLICATE_ROLE_NAME_EXISTS_MSE1012.useraction=Furniza\u0163i un alt nume pentru a evita intr\u0103rile duplicate pentru un rol.
+
+# -------------------------------------------------------------------------------------------------
+# {0} - Action Name
+# {1} - Destination
+USER_NOT_AUTHORIZED_MSE1013=CWWKM3013W: Utilizatorul nu este autorizat s\u0103 efectueze ac\u0163iunea {0} pe destina\u0163ia {1}.
+USER_NOT_AUTHORIZED_MSE1013.explanation=Acest utilizator nu este autorizat s\u0103 efectueze ac\u0163iunea specificat\u0103 pe destina\u0163ia indicat\u0103.
+USER_NOT_AUTHORIZED_MSE1013.useraction=Specifica\u0163i un utilizator care este autorizat s\u0103 efectueze ac\u0163iunea specificat\u0103 pe destina\u0163ia indicat\u0103.

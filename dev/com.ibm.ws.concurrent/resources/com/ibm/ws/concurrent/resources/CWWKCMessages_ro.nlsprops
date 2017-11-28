@@ -1,0 +1,81 @@
+###############################################################################
+# Copyright (c) 2012, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.concurrent/resources/com/ibm/ws/concurrent/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC EE Managed Concurrency
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1100 to CWWCK1199 except those specifically identified as moved
+
+# Moved from com.ibm.ws.context
+CWWKC1000.unrecognized.property=CWWKC1000E: Elementul de configurare {0} con\u0163ine un atribut nerecunoscut {1}.
+CWWKC1000.unrecognized.property.explanation=O proprietate nerecunoscut\u0103 este configurat\u0103 pe un serviciu context.
+CWWKC1000.unrecognized.property.useraction=\u00cenl\u0103tura\u0163i sau corecta\u0163i proprietatea nerecunoscut\u0103.
+
+# Moved from com.ibm.ws.context
+CWWKC1001.context.providers.unavailable=CWWKC1001E: Contextul firului de execu\u0163ie configurat {0} este indisponibil pentru elementul de configurare {1}.
+CWWKC1001.context.providers.unavailable.explanation=Serverul de aplica\u0163ii nu poate g\u0103si furnizorii de tipurile specificate pentru contextul firului de execu\u0163ie.
+CWWKC1001.context.providers.unavailable.useraction=Asigura\u0163i-v\u0103 c\u0103 furnizorii contextului de fir de execu\u0163ie cerut sunt activa\u0163i.
+
+# Moved from com.ibm.ws.context
+CWWKC1002.provider.cardinality.violation=CWWKC1002E: Elementul de configurare {0} nu poate avea mai mult de un sub-element de tipul {1}.
+CWWKC1002.provider.cardinality.violation.explanation=Cel mult un element din fiecare tip de furnizor de context poate fi configurat sub un serviciu de context.
+CWWKC1002.provider.cardinality.violation.useraction=\u00cenl\u0103tura\u0163i elementele furnizorului de context duplicate din configura\u0163ia serviciului context.
+
+# Moved from com.ibm.ws.context
+CWWKC1020.baseContextRef.infinite=CWWKC1020E: Atributul baseContextRef al elementului de configurare {0} determin\u0103 un lan\u0163 infinit de dependen\u0163e.
+CWWKC1020.baseContextRef.infinite.explanation=Exist\u0103 un lan\u0163 infinit de dependen\u0163e pentru c\u0103 baseContextRef indic\u0103 direct sau indirect spre aceea\u015fi instan\u0163\u0103 de serviciu context.
+CWWKC1020.baseContextRef.infinite.useraction=Actualiza\u0163i configura\u0163ia serviciului context pentru a rupe lan\u0163ul infinit de dependen\u0163e.
+
+CWWKC1100.resource.unavailable=CWWKC1100E: Resursa {0} este indisponibil\u0103.
+CWWKC1100.resource.unavailable.explanation=O resurs\u0103 ar putea deveni indisponibil\u0103 din cauza opririi activit\u0103\u0163ii serverului sau a unei modific\u0103ri de configura\u0163ie, fie asupra sa, fie a altui serviciu de care depinde.
+CWWKC1100.resource.unavailable.useraction=Verifica\u0163i configura\u0163ia resursei \u015fi a tuturor resurselor de care depinde.
+
+CWWKC1110.task.canceled=CWWKC1110I: Taskul {0}, care a fost lansat la serviciul executor {1}, este anulat.
+CWWKC1110.task.canceled.explanation=Execu\u0163ia taskului a fost anulat\u0103.
+CWWKC1110.task.canceled.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+CWWKC1101.task.failed=CWWKC1101E: Taskul {0}, care a fost lansat c\u0103tre serviciul executor {1}, a e\u015fuat cu urm\u0103toarea eroare: {2}.
+CWWKC1101.task.failed.explanation=Un task lansat c\u0103tre un executor a e\u015fuat. Consulta\u0163i mesajul excep\u0163iei pentru cauz\u0103.
+CWWKC1101.task.failed.useraction=Corecta\u0163i cauza e\u015fu\u0103rii \u015fi relansa\u0163i taskul.
+
+CWWKC1102.listener.failed=CWWKC1102E: Ascult\u0103torul de taskuri gestionate pentru taskul {0}, care a fost lansat c\u0103tre serviciul executor {1}, a e\u015fuat cu urm\u0103toarea eroare: {2}.
+CWWKC1102.listener.failed.explanation=A e\u015fuat opera\u0163ia ascult\u0103torului de taskuri gestionate. Consulta\u0163i mesajul excep\u0163iei pentru cauz\u0103.
+CWWKC1102.listener.failed.useraction=Corecta\u0163i cauza e\u015fu\u0103rii \u015fi decide\u0163i dac\u0103 relansa\u0163i sau nu taskul.
+
+CWWKC1103.skip.run.failed=CWWKC1103E: Execu\u0163ia taskului {0}, care a fost lansat c\u0103tre serviciul executor {1}, este s\u0103rit deoarece opera\u0163ia Trigger.skipRun a e\u015fuat cu urm\u0103toarea eroare: {2}.
+CWWKC1103.skip.run.failed.explanation=Opera\u0163ia skipRun pentru Trigger a e\u015fuat, f\u0103c\u00e2nd s\u0103 fie s\u0103rit\u0103 \u00eencercarea execu\u0163iei curente pentru task.
+CWWKC1103.skip.run.failed.useraction=Corecta\u0163i cauza e\u015fu\u0103rii \u015fi decide\u0163i dac\u0103 relansa\u0163i sau nu taskul.
+
+CWWKC1111.task.invalid=CWWKC1111E: Taskul {0} nu este valid.
+CWWKC1111.task.invalid.explanation=Taskul nu poate fi lansat pentru c\u0103 nu este valid.
+CWWKC1111.task.invalid.useraction=Actualiza\u0163i aplica\u0163ia pentru a lansa un task valid la ExecutorService.
+
+CWWKC1112.all.tasks.canceled=CWWKC1112I: Toate taskurile sunt anulate.
+CWWKC1112.all.tasks.canceled.explanation=Toate taskurile au fost anulate \u00eenainte de a putea fi invocat vreun task.
+CWWKC1112.all.tasks.canceled.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+CWWKC1120.future.get.rejected=CWWKC1120E: Viitorul furnizat la metodele ManagedTaskListener taskSubmitted \u015fi taskStarting nu poate fi folosit pentru a a\u015ftepta finalizarea taskului.
+CWWKC1120.future.get.rejected.explanation=Metodele ManagedTaskListener taskSubmitted \u015fi taskStarting ruleaz\u0103 pe firul de execu\u0163ie care va lansa sau porni taskul. Prin urmare, Viitorul furnizat la aceste metode nu trebuie folosit pentru a a\u015ftepta taskul.
+CWWKC1120.future.get.rejected.useraction=Actualiza\u0163i aplica\u0163ia pentru a evita invocarea ob\u0163inerii pe Viitorul care este furnizat la taskSubmitted \u015fi taskStarting.
+
+CWWKC1130.xprop.value.invalid=CWWKC1130E: Un task lansat la executorul gestionat {0} con\u0163ine o proprietate de execu\u0163ie {1} cu valoarea {2} care nu este valid\u0103 pentru executorii gestiona\u0163i.
+CWWKC1130.xprop.value.invalid.explanation=Unele valori de propriet\u0103\u0163i de execu\u0163ie nu sunt valide pentru executori gestiona\u0163i, dar ar putea fi valide pentru alte tipuri de resurse ca serviciul de context sau fabrica de fire de execu\u0163ie gestionate.
+CWWKC1130.xprop.value.invalid.useraction=Actualiza\u0163i aplica\u0163ia pentru a omite proprietatea de execu\u0163ie sau seta\u0163i-o la o valoare valid\u0103.

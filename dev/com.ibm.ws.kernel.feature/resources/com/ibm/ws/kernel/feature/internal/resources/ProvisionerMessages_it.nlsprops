@@ -1,0 +1,326 @@
+###############################################################################
+# Copyright (c) 2010, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.feature/resources/com/ibm/ws/kernel/feature/internal/resources/ProvisionerMessages.nlsprops
+#COMPONENTPREFIX CWWKF
+#COMPONENTNAMEFOR CWWKF Liberty Feature Manager
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+#   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
+# -------------------------------------------------------------------------------------------------
+
+UPDATE_MISSING_FEATURE_ERROR=CWWKF0001E: Impossibile trovare una definizione di funzione per {0}
+UPDATE_MISSING_FEATURE_ERROR.explanation=Il gestore funzioni non \u00e8 stato in grado di trovare una definizione per la funzione specificata.
+UPDATE_MISSING_FEATURE_ERROR.useraction=Verificare che il nome della funzione specificata sia indicato correttamente e che la definizione di funzione esista e sia leggibile nella directory lib/features.
+
+UPDATE_MISSING_BUNDLE_ERROR=CWWKF0002E: Impossibile trovare un bundle per {0}.
+UPDATE_MISSING_BUNDLE_ERROR.explanation=Il gestore funzioni non \u00e8 stato in grado di trovare un bundle richiesto da una funzione abilitata.
+UPDATE_MISSING_BUNDLE_ERROR.useraction=Verificare che i bundle nella directory lib siano leggibili e che l'immagine di installazione sia completa.
+
+UPDATE_INSTALL_EXCEPTIONS_ERROR=CWWKF0003E: \u00c8 stata generata un''eccezione durante l''installazione o la disinstallazione del bundle {0}. Eccezione: {1}
+UPDATE_INSTALL_EXCEPTIONS_ERROR.explanation=Il gestore funzioni non \u00e8 stato in grado di installare o disinstallare il bundle specificato.
+UPDATE_INSTALL_EXCEPTIONS_ERROR.useraction=Consultare l'eccezione di riferimento ed i messaggi FFDC generati per ciascun errore.
+
+UPDATE_OTHER_EXCEPTION_ERROR=CWWKF0004E: Si \u00e8 verificata un''eccezione sconosciuta durante l''installazione o la rimozione delle funzioni. Eccezione: {0}
+UPDATE_OTHER_EXCEPTION_ERROR.explanation=Si \u00e8 verificata un'eccezione non prevista durante l'aggiunta o la rimozione di una o pi\u00f9 funzioni dal runtime.
+UPDATE_OTHER_EXCEPTION_ERROR.useraction=Per ulteriori informazioni, consultare l'eccezione di riferimento ed il messaggio FFDC generato.
+
+UPDATE_LIFECYCLE_EXCEPTIONS_ERROR=CWWKF0005E: \u00c8 stata generata un''eccezione durante l''avvio, l''arresto o la disinstallazione del bundle {0}. Eccezione: {1}
+UPDATE_LIFECYCLE_EXCEPTIONS_ERROR.explanation=Si \u00e8 verificata un'eccezione durante la modifica dello stato di un bundle gestito dal gestore funzioni.
+UPDATE_LIFECYCLE_EXCEPTIONS_ERROR.useraction=Per i dettagli, consultare l'eccezione di riferimento ed i record FFDC associati.
+
+UPDATE_BUNDLE_CACHE_WARNING=CWWKF0006W: Il sistema non \u00e8 stato in grado di leggere o rendere permanente l''elenco di bundle di funzioni caricato per questa istanza del server in {0}, per cui la cache del bundle per l''avvio da sistema acceso \u00e8 stata disabilitata. Eccezione: {1}
+UPDATE_BUNDLE_CACHE_WARNING.explanation=Non \u00e8 stato possibile creare o leggere il file della cache del bundle. Per ulteriori informazioni, consultare l'eccezione di riferimento. 
+UPDATE_BUNDLE_CACHE_WARNING.useraction=Verificare che sia possibile scrivere nella directory del server e nella directory secondaria dell'area di lavoro. 
+
+STARTING_AUDIT=CWWKF0007I: Aggiornamento funzioni avviato.
+STARTING_AUDIT.explanation=Il gestore funzioni ha avviato l'elaborazione delle funzioni abilitate. L'intervallo (in secondi) \u00e8 relativo al momento in cui \u00e8 stata avviata la piattaforma.
+STARTING_AUDIT.useraction=Non \u00e8 richiesta alcuna azione.
+
+COMPLETE_AUDIT=CWWKF0008I: Aggiornamento funzioni completato in {0} secondi.
+COMPLETE_AUDIT.explanation=Il gestore funzioni ha terminato l'elaborazione delle funzioni abilitate. L'intervallo (in secondi) \u00e8 relativo al momento in cui \u00e8 stata avviata la piattaforma.
+COMPLETE_AUDIT.useraction=Non \u00e8 richiesta alcuna azione.
+
+EMPTY_FEATURES_WARNING=CWWKF0009W: Il server non \u00e8 stato configurato per installare funzioni.
+EMPTY_FEATURES_WARNING.explanation=Non \u00e8 stata configurata alcuna funzione per l'installazione. 
+EMPTY_FEATURES_WARNING.useraction=Aggiornare la configurazione per aggiungere eventuali funzioni richieste. 
+
+BUNDLE_MATCH_WARNING=CWWKF0010W: \u00c8 presente pi\u00f9 di un bundle corrispondente al filtro specificato ({0}), viene utilizzato {1}. Corrispondenze: {2} 
+BUNDLE_MATCH_WARNING.explanation=Un elemento di definizione della funzione corrisponde a pi\u00f9 bundle. Ci\u00f2 potrebbe verificarsi perch\u00e9 il filtro \u00e8 troppo generico o perch\u00e9 nell'immagine sono presenti bundle obsoleti che corrispondono al filtro.
+BUNDLE_MATCH_WARNING.useraction=Verificare che il filtro sia sufficientemente specifico e che venga utilizzata un'immagine di installazione pulita.
+
+SERVER_STARTED=CWWKF0011I: Il server {0} \u00e8 pronto per "un pianeta pi\u00f9 intelligente".
+SERVER_STARTED.explanation=Il server \u00e8 stato avviato correttamente.
+SERVER_STARTED.useraction=Non \u00e8 richiesta alcuna azione.
+
+FEATURES_ADDED=CWWKF0012I: Il server ha installato le seguenti funzioni: {0}.
+FEATURES_ADDED.explanation=Il server ha installato un insieme di funzioni.
+FEATURES_ADDED.useraction=Non \u00e8 richiesta alcuna azione.
+
+FEATURES_REMOVED=CWWKF0013I: Il server ha rimosso le seguenti funzioni: {0}.
+FEATURES_REMOVED.explanation=Il server ha rimosso un insieme di funzioni.
+FEATURES_REMOVED.useraction=Non \u00e8 richiesta alcuna azione.
+
+TEST_FIX_DETECTED=CWWKF0014W: Sul server sono attive le seguenti fix di test nel runtime: {0}. \
+Per un elenco completo di fix installate eseguire: productInfo version --ifixes
+TEST_FIX_DETECTED.explanation=I bundle OSGi caricati nel runtime  sono stati modificati da alcune delle fix di test installate. \u00c8 possibile ottenere un elenco di tutte le fix installate utilizzando il comando: productInfo version --ifixes
+TEST_FIX_DETECTED.useraction=Su un server di produzione non devono essere installate fix di test. Se questo \u00e8 un server di produzione, rimuovere le fix di test e riavviare il server.
+
+INTERIM_FIX_DETECTED=CWWKF0015I: Sul server sono attive le seguenti fix temporanee nel runtime: {0}. \
+Per un elenco completo di fix installate eseguire: productInfo version --ifixes
+INTERIM_FIX_DETECTED.explanation=I bundle OSGi caricati nel runtime  sono stati modificati da alcune delle fix temporanee installate. \u00c8 possibile ottenere un elenco di tutte le fix installate utilizzando il comando: productInfo version --ifixes
+INTERIM_FIX_DETECTED.useraction=Non \u00e8 richiesta alcuna azione.
+
+# IBM-Provision-Capability is a manifest header name and should not be translated.
+INVALID_PROVISION_CAPABILITY_FILTER=CWWKF0016I: Il filtro {0} nell''intestazione manifest della funzione {1} non \u00e8 corretto: {2}
+INVALID_PROVISION_CAPABILITY_FILTER.explanation=L'intestazione IBM-Provision-Capability contiene uno o pi\u00f9 filtri OSGi con una sintassi che non \u00e8 valida.
+INVALID_PROVISION_CAPABILITY_FILTER.useraction=Correggere la sintassi del filtro nell'intestazione IBM-Provision-Capability.
+
+PRODUCT_FEATURE_INSTALL_PATH_ERROR=CWWKF0017E: Impossibile trovare il percorso di installazione del prodotto {0} specificato nel file delle propriet\u00e0 {1} del prodotto.
+PRODUCT_FEATURE_INSTALL_PATH_ERROR.explanation=Il gestore funzioni non \u00e8 riuscito a trovare il percorso di installazione del prodotto specificato.
+PRODUCT_FEATURE_INSTALL_PATH_ERROR.useraction=Verificare che sia definito un percorso del prodotto valido per la propriet\u00e0 com.ibm.websphere.productInstall nel file delle propriet\u00e0 del prodotto.
+
+PRODUCT_FEATURE_PROPERTIES_FILE_ERROR=CWWKF0018E: Propriet\u00e0 com.ibm.websphere.productInstall non trovata nel file delle propriet\u00e0 del prodotto {0}.
+PRODUCT_FEATURE_PROPERTIES_FILE_ERROR.explanation=Il gestore funzioni ha trovato un file delle propriet\u00e0 del prodotto che non contiene la propriet\u00e0 com.ibm.websphere.productInstall.
+PRODUCT_FEATURE_PROPERTIES_FILE_ERROR.useraction=Aggiungere la propriet\u00e0 com.ibm.websphere.productInstall al file delle propriet\u00e0 del prodotto in etc/extensions.
+
+PRODUCT_FEATURE_LOAD_ERROR=CWWKF0019E: Eccezione: {1} generata durante il caricamento del file delle propriet\u00e0 del prodotto {0}.
+PRODUCT_FEATURE_LOAD_ERROR.explanation=Si \u00e8 verificata l'eccezione specificata quando il gestore funzioni ha tentato di leggere le propriet\u00e0 dal file delle propriet\u00e0 del prodotto.
+PRODUCT_FEATURE_LOAD_ERROR.useraction=Per i dettagli, consultare l'eccezione di riferimento ed i record FFDC associati.
+
+#SUPERCEDED FEATURES
+SUPERSEDED_CONFIGURATION_ERROR=CWWKF0020E: La funzione di {0} ha l''attributo superseded impostato su false, ma l''attributo superseded-by \u00e8 {1}. 
+SUPERSEDED_CONFIGURATION_ERROR.explanation=L'intestazione Symbolic-Name in una funzione ha l'attributo superseded-by configurato, ma l'attributo superseded \u00e8 impostato su false.
+SUPERSEDED_CONFIGURATION_ERROR.useraction=Assicurarsi che l'intestazione Symbolic-Name abbia gli attributi superseded e superseded-by configurati correttamente.
+
+UPDATE_NOT_PUBLIC_FEATURE_ERROR=CWWKF0021E: La funzione {0} specificata nel file server.xml non \u00e8 una funzione pubblica, pertanto non verr\u00e0 eseguita dal server.
+UPDATE_NOT_PUBLIC_FEATURE_ERROR.explanation=Solo le funzioni pubbliche possono essere specificate nel file server.xml.
+UPDATE_NOT_PUBLIC_FEATURE_ERROR.useraction=Modificare la configurazione del server per specificare una funzione pubblica che fornisce la funzione richiesta.  Se si sta sviluppando una funzione che gli utenti devono specificare nella propria configurazione del server, modificare la funzione in modo che abbia visibilit\u00e0 pubblica, aggiungendo visibility=public come attributo per Subsystem-SymbolicName per la funzione.
+
+UNSUPPORTED_FEATURE_VERSION=CWWKF0022E: La funzione {0} non \u00e8 supportata. L''intestazione IBM-Feature-Version \u00e8 impostata su {1}.
+UNSUPPORTED_FEATURE_VERSION.explanation=Il server supporta solo le funzioni la cui intestazione IBM-Feature-Version \u00e8 impostata su 2. Un numero maggiore di 2 indica che la funzione \u00e8 destinata ad una versione successiva del prodotto.
+UNSUPPORTED_FEATURE_VERSION.useraction=Rivolgersi all'autore della funzione per ottenere una copia progettata per questa versione del prodotto.
+
+#Minify feature query messages
+ERROR_OPENING_JAR_FOR_CLASSPATH=CWWKF0023W: Una funzione faceva riferimento ad un archivio {1} che non \u00e8 stato possibile elaborati durante una query di creazione package. Eccezione: {2}
+ERROR_OPENING_JAR_FOR_CLASSPATH.explanation=Si \u00e8 verificata un'eccezione quando il file jar della funzione \u00e8 stato letto durante una query di creazione package.
+ERROR_OPENING_JAR_FOR_CLASSPATH.useraction=Per i dettagli, consultare l'eccezione di riferimento ed i record FFDC associati.
+
+ERROR_MISSING_FEATURE_RESOURCE=CWWKF0024W: La funzione {0} faceva riferimento ad una risorsa {1} che non \u00e8 stato possibile individuare durante una query di creazione package. 
+ERROR_MISSING_FEATURE_RESOURCE.explanation=Il gestore funzioni non \u00e8 riuscito a trovare il contenuto della funzione specificato.
+ERROR_MISSING_FEATURE_RESOURCE.useraction=Verificare che il prodotto sia stato installato correttamente. Se il problema persiste, contattare il servizio di assistenza.
+
+ERROR_UNKNOWN_FEATURE_RESOURCE_TYPE=CWWKF0025W: La funzione {0} faceva riferimento ad una risorsa {1} di un tipo sconosciuto {2} durante una query di creazione package. 
+ERROR_UNKNOWN_FEATURE_RESOURCE_TYPE.explanation=Il gestore funzioni non \u00e8 riuscito a comprendere il contenuto della funzione specificato.
+ERROR_UNKNOWN_FEATURE_RESOURCE_TYPE.useraction=Verificare che il prodotto sia stato installato correttamente. Se il problema persiste, contattare il servizio di assistenza.
+
+SERVER_MINIFY=CWWKF0026I: Il server {0} \u00e8 pronto per creare un package pi\u00f9 piccolo.
+SERVER_MINIFY.explanation=Il server sta preparando le informazioni per un'operazione del package del server in sospeso.
+SERVER_MINIFY.useraction=Non \u00e8 richiesta alcuna azione.
+# end Minify feature query messages
+
+PRODUCT_FEATURE_INSTALL_PATH_SYMBOL_ERROR=CWWKF0027E: Le funzioni di estensione del prodotto non verranno installate perch\u00e9 il percorso di installazione delle estensioni del prodotto specificato nel file di propriet\u00e0 delle estensioni del prodotto {0} contiene l''ubicazione simbolica {1}.
+PRODUCT_FEATURE_INSTALL_PATH_SYMBOL_ERROR.explanation=Un percorso di installazione di estensioni del prodotto non pu\u00f2 contenere ubicazioni simboliche.
+PRODUCT_FEATURE_INSTALL_PATH_SYMBOL_ERROR.useraction=Aggiornare la propriet\u00e0 com.ibm.websphere.productInstall nel file delle propriet\u00e0 delle estensioni del prodotto specificato in modo che non includa alcuna ubicazione simbolica.
+
+PRODUCT_FEATURE_INSTALL_PATH_WLP_ERROR=CWWKF0028E: Le funzioni di estensione del prodotto non verranno installate perch\u00e9 il percorso di installazione delle estensioni del prodotto specificato nel file delle propriet\u00e0 delle estensioni del prodotto {0} \u00e8 lo stesso di wlp.install.dir.
+PRODUCT_FEATURE_INSTALL_PATH_WLP_ERROR.explanation=Un percorso di installazione delle estensioni del prodotto non pu\u00f2 essere lo stesso di wlp.install.dir.
+PRODUCT_FEATURE_INSTALL_PATH_WLP_ERROR.useraction=Aggiornare la propriet\u00e0 com.ibm.websphere.productInstall nel file delle propriet\u00e0 delle estensioni del prodotto specificato in modo che non sia la stessa di wlp.install.dir.
+
+BUNDLE_EXCEPTION_ERROR=CWWKF0029E: {0}
+BUNDLE_EXCEPTION_ERROR.explanation=Una BundleException \u00e8 stata generata dal framework OSGi.
+BUNDLE_EXCEPTION_ERROR.useraction=Vedere il messaggio dell'eccezione per informazioni.
+
+INVALID_START_PHASE_WARNING=CWWKF0030W: Il valore start-phase {0} specificato per il bundle {1} nella funzione {2} non \u00e8 valido.
+INVALID_START_PHASE_WARNING.explanation=\u00c8 stato specificato un valore non valido per start-phase.
+INVALID_START_PHASE_WARNING.useraction=Specificare un valore valido per start-phase. 
+
+FEATURE_NOT_INSTALLED=CWWKF0031I: Il server non ha installato la funzione {0} poich\u00e9 esiste gi\u00e0 una funzionalit\u00e0 equivalente.
+FEATURE_NOT_INSTALLED.explanation=Se due versioni della stessa funzione sono esplicitamente specificate nel file server.xml, o il file server.xml specifica funzioni che includono sottofunzioni con funzionalit\u00e0 duplicate, il server ignora il caricamento della seconda versione.
+FEATURE_NOT_INSTALLED.useraction=Se due versioni della stessa funzione sono esplicitamente specificate nel file server.xml, eliminare la versione non necessaria.
+
+FEATURE_JAVA_LEVEL_NOT_MET_ERROR=CWWKF0032E: La funzione {0} richiede una versione di JRE (Java runtime environment) minima di {1}.
+FEATURE_JAVA_LEVEL_NOT_MET_ERROR.explanation=Per utilizzare la funzione elencata, \u00e8 necessario disporre della versione specificata o di una versione successiva del JRE (Java runtime environment) installata nel proprio ambiente.
+FEATURE_JAVA_LEVEL_NOT_MET_ERROR.useraction=Aggiornare il JRE (Java runtime environment) alla versione specificata o successive.
+
+UPDATE_CONFLICT_FEATURE_ERROR=CWWKF0033E: Le funzioni singleton {0} e {1} non possono essere caricate contemporaneamente.  Le funzioni configurate {2} e {3} includono una o pi\u00f9 funzioni che provocano un conflitto. La configurazione non \u00e8 supportata; aggiornare il file server.xml per rimuovere le funzioni incompatibili.
+UPDATE_CONFLICT_FEATURE_ERROR.explanation=Non \u00e8 possibile caricare contemporaneamente pi\u00f9 versioni di una funzione singleton.  Questo conflitto pu\u00f2 verificarsi se due funzioni di una funzione singleton sono configurate direttamente nella configurazione del server. Oppure, se le funzioni configurate includono versioni differenti di una funzione singleton e non sono in grado di tollerare una versione comune della funzione singleton.
+UPDATE_CONFLICT_FEATURE_ERROR.useraction=Tentare specificando una versione differente delle funzioni configurate che hanno causato il conflitto nel file server.xml.  Se non sono disponibili altre versioni, le funzioni configurate non sono compatibili tra loro e non possono essere configurate contemporaneamente.
+
+FEATURES_ADDED_CLIENT=CWWKF0034I: Il client ha installato le seguenti funzioni: {0}.
+FEATURES_ADDED_CLIENT.explanation=Il client ha installato un insieme di funzioni.
+FEATURES_ADDED_CLIENT.useraction=Non \u00e8 richiesta alcuna azione.
+
+CLIENT_STARTED=CWWKF0035I: Il client {0} \u00e8 in esecuzione.
+CLIENT_STARTED.explanation=Il client \u00e8 stato avviato correttamente.
+CLIENT_STARTED.useraction=Non \u00e8 richiesta alcuna azione.
+
+#Required feature gather query messages
+SERVER_GATHER_FEATURES=CWWKF0036I: Il server {0} ha finito di raccogliere un elenco di funzioni richieste.
+SERVER_GATHER_FEATURES.explanation=Il server ha compilato un elenco di funzioni richieste.
+SERVER_GATHER_FEATURES.useraction=Non \u00e8 richiesta alcuna azione.
+#End required feature gather query messages
+
+UPDATE_NOT_PUBLIC_FEATURE_CLIENT_ERROR=CWWKF0037E: La funzione {0} specificata nel file client.xml non \u00e8 una funzione pubblica e non verr\u00e0 eseguita dal client.
+UPDATE_NOT_PUBLIC_FEATURE_CLIENT_ERROR.explanation=\u00c8 possibile specificare solo funzioni pubbliche nel file client.xml.
+UPDATE_NOT_PUBLIC_FEATURE_CLIENT_ERROR.useraction=Modificare la configurazione del client per specificare una funzione pubblica che fornisce la funzione richiesta.  Se si sta sviluppando una funzione che gli utenti devono specificare nella propria configurazione del client, modificare la funzione in modo che abbia visibilit\u00e0 pubblica, aggiungendo visibility=public come attributo per Subsystem-SymbolicName per la funzione.
+
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_ERROR=CWWKF0038E: La funzione {0} specificata nel file {1} supporta solo tipi di processo client, di conseguenza questa funzione non viene eseguita dal processo server.
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_ERROR.explanation=La funzione configurata non supporta il tipo di processo specificato.
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_ERROR.useraction=Rimuovere la funzione dalla configurazione o modificare il file manifest della funzione per abilitare il supporto per il tipo di processo desiderato.
+
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_ERROR=CWWKF0039E: La funzione {0} supporta solo tipi di processo client, di conseguenza questa funzione non viene eseguita dal processo server.  La funzione {1} specificata nel file {2} potrebbe non funzionare correttamente a causa di una dipendenza sulla funzione {0}.
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_ERROR.explanation=La funzione configurata non supporta il tipo di processo specificato.
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_ERROR.useraction=Rimuovere la funzione dalla configurazione o modificare il file manifest della funzione per abilitare il supporto per il tipo di processo desiderato.
+
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_CLIENT_ERROR=CWWKF0040E: La funzione {0} specificata nel file {1} supporta solo tipi di processo server, di conseguenza questa funzione non viene eseguita dal processo client.
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_CLIENT_ERROR.explanation=La funzione configurata non supporta il tipo di processo specificato.
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_CLIENT_ERROR.useraction=Rimuovere la funzione dalla configurazione o modificare il file manifest della funzione per abilitare il supporto per il tipo di processo desiderato.
+
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR=CWWKF0041E: La funzione {0} supporta solo tipi di processo server, di conseguenza questa funzione non viene eseguita dal processo client.  La funzione {1} specificata nel file {2} potrebbe non funzionare correttamente a causa di una dipendenza sulla funzione {0}.
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.explanation=La funzione configurata non supporta il tipo di processo specificato.
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.useraction=Rimuovere la funzione dalla configurazione o modificare il file manifest della funzione per abilitare il supporto per il tipo di processo desiderato.
+
+# CWWK042E  {0} = feature Name: {1} = server name 
+UPDATE_MISSING_CORE_FEATURE_ERROR=CWWKF0042E: Impossibile trovare una definizione di funzione per la funzione {0}. Provare ad eseguire il comando bin/installUtility install {0},  per installare la funzione. In alternativa \u00e8 possibile eseguire il comando bin/installUtility install {1},  per installare tutte le funzioni cui fa riferimento questa configurazione.
+UPDATE_MISSING_CORE_FEATURE_ERROR.explanation=Il gestore funzioni non \u00e8 stato in grado di trovare una definizione per la funzione specificata.
+UPDATE_MISSING_CORE_FEATURE_ERROR.useraction=Verificare che il nome della funzione specificata sia scritto correttamente.  \
+Verificare anche che  la definizione di funzione esista e sia leggibile nella directory lib/features. \
+Se la funzione non esiste, tentare di eseguire il comando bin/installUtility install nome_funzione,  per installare tutte le funzioni cui fa riferimento questa configurazione. 
+
+#   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
+
+tool.feature.exists=CWWKF1000I: La funzione {0} esiste gi\u00e0. Essa non sar\u00e0 reinstallata. Per modificare una funzione esistente, \u00e8 necessario prima disinstallarla manualmente.
+tool.feature.exists.explanation=La funzione in fase di installazione esiste gi\u00e0.
+tool.feature.exists.useraction=Non \u00e8 richiesta alcuna azione.
+tool.missing.args=CWWKF1001E: {0} richiede {1} argomenti, ma ne sono stati forniti {2}.
+tool.missing.args.explanation=Per richiamare l'azione \u00e8 stato usato il numero errato di argomenti.
+tool.missing.args.useraction=Rieseguire il comando con gli argomenti corretti.
+tool.unknown.options=CWWKF1002E: {0} non supporta le opzioni: {1}.
+tool.unknown.options.explanation=\u00c8 stato effettuato un tentativo di eseguire un comando utilizzando argomenti non validi.
+tool.unknown.options.useraction=Rieseguire il comando senza gli argomenti non validi.
+
+tool.install.bad.extension=CWWKF1003E: L''estensione del prodotto {0} non esiste.
+tool.install.bad.extension.explanation=L'estensione del prodotto in cui deve essere installata la funzione non \u00e8 registrata.
+tool.install.bad.extension.useraction=Installare la funzione in un'estensione del prodotto registrata oppure registrare l'estensione del prodotto mancante.
+tool.install.invalid.extension=CWWKF1004E: L''estensione del prodotto {0} non specifica un''ubicazione.
+tool.install.invalid.extension.explanation=Impossibile trovare l'estensione del prodotto perch\u00e9 il file di registrazione non contiene un'ubicazione.
+tool.install.invalid.extension.useraction=Correggere la registrazione dell'estensione del prodotto in modo che contenga l'ubicazione dell'estensione.
+tool.install.ioexception.extension=CWWKF1005E: Si \u00e8 verificato un errore imprevisto durante la lettura dell''estensione del prodotto {0}, eccezione: {1}
+tool.install.ioexception.extension.explanation=Si \u00e8 verificato un errore imprevisto durante il tentativo di lettura del file delle propriet\u00e0 per l'estensione del prodotto indicata nel messaggio di errore.
+tool.install.ioexception.extension.useraction=Esaminare il messaggio di eccezione per una spiegazione del perch\u00e9 non sia stato possibile leggere il file e provare di nuovo.
+tool.install.no.dir=CWWKF1006E: Impossibile installare la funzione perch\u00e9 la directory {0} non esiste.
+tool.install.no.dir.explanation=La directory dell'estensione del prodotto non esiste, pertanto la funzione non pu\u00f2 essere installata al suo interno.
+tool.install.no.dir.useraction=Verificare che la directory esista e provare ad installare nuovamente la funzione.
+tool.install.download.esa=CWWKF1007E: Si \u00e8 verificato un errore durante lo scaricamento dell''archivio del sottosistema in {0}, eccezione {1}
+tool.install.download.esa.explanation=Si \u00e8 verificato un errore durante lo scaricamento dell'archivio del sottosistema. Probabilmente l'URL non \u00e8 valido o si \u00e8 verificato un problema di rete temporaneo. La seconda frase del messaggio di errore potrebbe fornire informazioni pi\u00f9 dettagliate sulla causa dell'errore.
+tool.install.download.esa.useraction=Verificare che l'URL per l'archivio del sottosistema sia corretto e ripetere l'operazione.
+tool.install.download.tmpFile=CWWKF1008E: Impossibile creare un file temporaneo per scaricare l''archivio del sottosistema, eccezione {0}
+tool.install.download.tmpFile.explanation=L'operazione di installazione della funzione scarica l'archivio del sottosistema in un file temporaneo, ma non \u00e8 stato possibile creare un file temporaneo. Ci\u00f2 potrebbe essere causato da un vincolo della macchina. La seconda frase del messaggio di errore potrebbe fornire informazioni pi\u00f9 dettagliate sulla causa dell'errore.
+tool.install.download.tmpFile.useraction=\u00c8 possibile che il file system temporaneo sia pieno. In tal caso, per risolvere il problema liberare spazio.
+tool.install.file.notexist=CWWKF1009E: Il file {0} non esiste.
+tool.install.file.notexist.explanation=Il file di archivio del sottosistema fornito all'operazione di installazione non esiste.
+tool.install.file.notexist.useraction=Assicurarsi che il nome del file di archivio del sottosistema sia stato fornito correttamente ed eseguire nuovamente l'operazione di installazione.
+tool.install.file.notafile=CWWKF1010E: {0} non \u00e8 un file.
+tool.install.file.notafile.explanation=Il nome file fornito identificava una directory invece di un archivio del sottosistema.
+tool.install.file.notafile.useraction=Assicurarsi che il nome del file di archivio del sottosistema sia stato fornito correttamente ed eseguire nuovamente l'operazione di installazione.
+tool.install.missing.feature=CWWKF1011E: La funzione {0} dipende da {1}, che non \u00e8 installato.
+tool.install.missing.feature.explanation=La funzione che si sta installando dipende da altre funzioni che non sono state ancora installate. La funzione non pu\u00f2 essere utilizzata finch\u00e9 non viene installata la funzione indicata nel messaggio di errore.
+tool.install.missing.feature.useraction=Installare la funzione mancante ed eseguire di nuovo l'installazione.
+tool.install.missing.content=CWWKF1012E: La risorsa {0} non esiste nell''archivio del sottosistema nell''ubicazione {1}.
+tool.install.missing.content.explanation=Durante l'elaborazione del contenuto del sottosistema \u00e8 stato indicato un file, ma non \u00e8 stato trovato nell'archivio.
+tool.install.missing.content.useraction=Rivolgersi all'autore del sottosistema per ottenere un archivio aggiornato in cui sia presente il contenuto richiesto.
+tool.install.content.notfound=CWWKF1013E: Il contenuto {0} nel sottosistema non \u00e8 stato trovato nell''archivio del sottosistema.
+tool.install.content.notfound.explanation=Durante l'elaborazione del contenuto del sottosistema, alcuni bundle richiesti non sono stati trovati nell'archivio del sottosistema.
+tool.install.content.notfound.useraction=Rivolgersi all'autore del sottosistema per ottenere un archivio aggiornato in cui sia presente il contenuto richiesto.
+tool.install.bad.zip=CWWKF1014E: Si \u00e8 verificato un errore durante la lettura del file di archivio {0}, eccezione {1}
+tool.install.bad.zip.explanation=Non \u00e8 stato possibile leggere l'archivio del sottosistema.
+tool.install.bad.zip.useraction=Verificare che l'archivio del sottosistema sia valido e completo. Se non \u00e8 valido, richiedere un nuovo archivio al provider.
+tool.install.file.exists=CWWKF1015E: Il file {0} gi\u00e0 esiste.
+tool.install.file.exists.explanation=L'installazione dell'archivio del sottosistema non \u00e8 riuscita perch\u00e9 un file dell'archivio gi\u00e0 esiste nell'installazione.
+tool.install.file.exists.useraction=Esaminare i file gi\u00e0 esistenti. Se \u00e8 possibile proseguire con l'installazione, eseguire nuovamente l'operazione utilizzando l'opzione --when-file-exists=replace per sostituire i file esistenti oppure l'opzione --when-file-exists=ignore per continuare senza il file esistente.
+tool.install.dir.create.fail=CWWKF1016E: Impossibile creare la struttura di directory {0}.
+tool.install.dir.create.fail.explanation=Non \u00e8 stato possibile creare le directory richieste dalla funzione che si sta installando.
+tool.install.dir.create.fail.useraction=Assicurarsi che la directory fornita esista e che le autorizzazioni necessarie siano presenti per consentire la creazione della struttura di directory. Eseguire di nuovo l'operazione di installazione.
+tool.install.feature.ok=CWWKF1017I: Una o pi\u00f9 funzioni installate con esito positivo: {0}.
+tool.install.feature.ok.explanation=Messaggio a solo scopo informativo.
+tool.install.feature.ok.useraction=Non \u00e8 richiesta alcuna azione.
+tool.install.invalid.when.file.exists.value=CWWKF1018E: Il valore {0} non \u00e8 un''opzione valida per --when-file-exists. Le opzioni valide sono fail, replace o ignore.
+tool.install.invalid.when.file.exists.value.explanation=L'opzione --when-file-exists deve essere una delle seguenti: fail, replace, ignore.
+tool.install.invalid.when.file.exists.value.useraction=Fornire uno dei valori validi fail, replace o ignore.
+tool.product.ext.features.not.found=CWWKF1019E: L''estensione del prodotto {0} non contiene alcuna funzione.
+tool.product.ext.features.not.found.explanation=I file manifest della funzione associati all'estensione del prodotto specificata non sono stati trovati.
+tool.product.ext.features.not.found.useraction=Verificare che la directory in cui si trovano i manifest della funzione sia valida.
+tool.product.ext.not.found=CWWKF1020E: Impossibile trovare l''estensione del prodotto {0} nell''ubicazione {1}.
+tool.product.ext.not.found.explanation=Non \u00e8 possibile trovare l'estensione del prodotto nell'ubicazione indicata.
+tool.product.ext.not.found.useraction=Verificare che l'ubicazione di installazione del prodotto sia definita correttamente nel file delle propriet\u00e0 per l'installazione del prodotto.
+tool.product.ext.not.defined=CWWKF1021E: L''estensione del prodotto con il nome {0} non esiste.
+tool.product.ext.not.defined.explanation=L'estensione del prodotto con il nome specificato non esiste.
+tool.product.ext.not.defined.useraction=Verificare che il nome dell'estensione del prodotto specificato sia valido.
+tool.install.content.no.subsystem.manifest=CWWKF1022E: Il file OSGI-INF/SUBSYSTEM.MF non \u00e8 stato trovato nell'archivio.
+tool.install.content.no.subsystem.manifest.explanation=L'archivio del sottosistema non contiene il file OSGI-INF/SUBSYSTEM.MF, nel quale si trovano i metadati relativi al sottosistema.
+tool.install.content.no.subsystem.manifest.useraction=Aggiungere il file OSGI-INF/SUBSYSTEM.MF all'archivio.
+# {0} is the path to the file being used
+tool.install.two.subsystem.manifests=CWWKF1023W: Ci sono due file con il percorso OSGI-INF/SUBSYSTEM.MF, ma sono specificati con un uso diverso di maiuscole e minuscole. Verr\u00e0 utilizzato il file {0}. 
+tool.install.two.subsystem.manifests.explanation=\u00c8 necessario utilizzare un solo file OSGI-INF/SUBSYSTEM.MF per definire una funzione, ma l'archivio contiene due file OSGI-INF/SUBSYSTEM.MF che sono specificati con un uso diverso di maiuscole e minuscole.
+tool.install.two.subsystem.manifests.useraction=Eliminare uno dei file SUBSYSTEM.MF.
+
+# {0} is the path to the (missing) feature directory
+tool.feature.dir.not.found=CWWKF1024E: Il comando featureManager non \u00e8 riuscito a trovare la directory delle funzioni e non \u00e8 riuscito a crearne una nel percorso di directory {0}.
+tool.feature.dir.not.found.explanation=La directory delle funzioni per questo server non esiste. La directory desiderata con il nome delle funzioni potrebbe essere stata creata per errore come un file.   Il comando featureManager ha tentato di creare la directory delle funzioni, ma ha avuto esito negativo. Quando non \u00e8 possibile creare la directory delle funzioni, l'utente spesso non dispone delle autorizzazioni per la scrittura nel percorso di directory. 
+tool.feature.dir.not.found.useraction=Completare una delle seguenti azioni: (1) Creare manualmente la directory specificata ed eseguire nuovamente il comando featureManager. (2) Eseguire nuovamente il comando featureManager come utente con accesso in scrittura sufficiente per il percorso di directory specificato.  
+
+tool.find.view.info.name=\ \ \ \ Nome: {0}
+tool.find.view.info.symbolic.name=\ \ \ \ Nome simbolico: {0}
+tool.find.view.info.description=\ \ \ \ Descrizione: {0}
+tool.find.view.info.enabled.by=\ \ \ \ Abilitato da:
+tool.find.no.feature=Non \u00e8 stata trovata alcuna funzione.
+
+tool.missing.option=CWWKF1025E: L''azione {0} richiede l''opzione {1}, ma l''opzione richiesta non \u00e8 stata fornita.
+tool.missing.option.explanation=\u00c8 stato effettuato un tentativo di eseguire un comando senza specificare l'opzione richiesta.
+tool.missing.option.useraction=Eseguire di nuovo il comando con l'opzione richiesta.
+
+tool.classpath.feature.not.found=CWWKF1026E: La funzione {0} non esiste.
+tool.classpath.feature.not.found.explanation=\u00c8 stata specificata una funzione che non esiste.
+tool.classpath.feature.not.found.useraction=Eseguire di nuovo il comando senza specificare la funzione. 
+
+tool.classpath.feature.not.public=CWWKF1027E: La funzione {0} non \u00e8 pubblica.
+tool.classpath.feature.not.public.explanation=\u00c8 stata specificata una funzione che non \u00e8 pubblica.
+tool.classpath.feature.not.public.useraction=Eseguire di nuovo il comando senza specificare la funzione.
+
+tool.classpath.wrong.drive=CWWKF1028E: Il file di output {0} deve essere situato sulla stessa unit\u00e0 del file {1}.
+tool.classpath.wrong.drive.explanation=Il file di output deve trovarsi sulla stessa unit\u00e0 di tutti i file cui viene fatto riferimento dalle funzioni specificate.
+tool.classpath.wrong.drive.useraction=Eseguire nuovamente il comando con un file di output che si trovi nella stessa unit\u00e0 del file specificato.
+
+tool.classpath.create.fail=CWWKF1029E: Impossibile creare il file di output {0}. \u00c8 stato emesso il seguente errore: {1}
+tool.classpath.create.fail.explanation=Si \u00e8 verificato un errore durante la creazione del file di output.
+tool.classpath.create.fail.useraction=Esaminare il messaggio di errore, risolvere il problema ed eseguire nuovamente il comando. 
+
+
+tool.userfeature.install.location.invalid=CWWKF1036E: La funzione utente {0} non pu\u00f2 essere installata nel componente principale.
+tool.userfeature.install.location.invalid.explanation= La funzione utente non \u00e8 una funzione principale pertanto non pu\u00f2 essere installata nel componente principale.
+tool.userfeature.install.location.invalid.useraction= Installare la funzione utente in usr. 
+
+
+
+

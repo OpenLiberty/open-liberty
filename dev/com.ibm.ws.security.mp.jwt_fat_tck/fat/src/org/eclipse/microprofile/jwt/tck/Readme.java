@@ -21,8 +21,6 @@ public class Readme {
  *
  * Web.xml has been adapted for the Liberty implementation.
  *
- * As of September 2017, a known issue prevents @RolesAllowed from working in JAX-RS
- * endpoints unless a @DeclareRoles annotation or web.xml is present to declare the roles.
  *
  * To create a signer certificate from the raw keys used in the TCK, the
  * following commands were used:

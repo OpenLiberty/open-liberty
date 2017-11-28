@@ -48,7 +48,7 @@ Our [CONTRIBUTING](https://github.com/OpenLiberty/open-liberty/blob/master/CONTR
 
    ```./gradlew test``` for unit tests
    
-   ```./gradlew buildandrun``` for FAT tests
+   ```./gradlew build.example_fat:buildandrun``` to run a [FAT project](https://github.com/OpenLiberty/open-liberty/wiki/FAT-tests)
    
    **NOTE:** ```./gradlew build``` runs assemble and test targets
    

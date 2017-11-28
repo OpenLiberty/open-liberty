@@ -1,0 +1,141 @@
+###############################################################################
+# Copyright (c) 2002, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT WebSphere kernel transport http channel
+#CMVCPATHNAME com.ibm.ws.transport.http/resources/com/ibm/ws/http/channel/internal/resources/httpchannelmessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+config.maxpersist=CWWKT0001E: El m\u00e1ximo n\u00famero de solicitudes ({0}) permitidas por socket no es v\u00e1lido. Los valores v\u00e1lidos incluyen {1} para indicar un n\u00famero ilimitado o positivo.
+config.maxpersist.explanation=El valor configurado para el n\u00famero m\u00e1ximo de solicitudes permitidas por socket no es v\u00e1lido.
+config.maxpersist.useraction=Configure un valor v\u00e1lido para el n\u00famero m\u00e1ximo de solicitudes permitidas por socket.
+
+config.incomingbody=CWWKT0002E: El tama\u00f1o del almacenamiento intermedio entrante de {0} no es v\u00e1lido. Los tama\u00f1os deben oscilar entre {1} y {2}.
+config.incomingbody.explanation=El valor configurado para el tama\u00f1o del almacenamiento intermedio entrante no es v\u00e1lido.
+config.incomingbody.useraction=Configure un valor v\u00e1lido para el tama\u00f1o del almacenamiento intermedio entrante.
+
+config.incomingheader=CWWKT0003E: El tama\u00f1o del almacenamiento intermedio de cabecera de {0} no es v\u00e1lido. Los tama\u00f1os deben oscilar entre {1} y {2}.
+config.incomingheader.explanation=El valor configurado para el tama\u00f1o del almacenamiento intermedio de cabecera no es v\u00e1lido.
+config.incomingheader.useraction=Configure un valor v\u00e1lido para el tama\u00f1o del almacenamiento intermedio de cabecera.
+
+config.outgoingbuffer=CWWKT0004E: El tama\u00f1o del almacenamiento intermedio de salida de {0} no es v\u00e1lido. Los tama\u00f1os deben oscilar entre {1} y {2}.
+config.outgoingbuffer.explanation=El valor configurado para el tama\u00f1o del almacenamiento intermedio de salida no es v\u00e1lido.
+config.outgoingbuffer.useraction=Configure un valor v\u00e1lido para el tama\u00f1o del almacenamiento intermedio de salida.
+
+config.persisttimeout=CWWKT0005E: El tiempo de espera persistente de {0} no es v\u00e1lido. Los tiempos de espera deben ser superiores a {1}.
+config.persisttimeout.explanation=El valor configurado para el par\u00e1metro de tiempo de espera persistente no es v\u00e1lido.
+config.persisttimeout.useraction=Configure un valor v\u00e1lido para el par\u00e1metro de tiempo de espera persistente.
+
+config.readtimeout=CWWKT0006E: El tiempo de espera de lectura de {0} no es v\u00e1lido. Los tiempos de espera deben ser superiores a {1}.
+config.readtimeout.explanation=El valor configurado para el par\u00e1metro de tiempo de espera de lectura no es v\u00e1lido.
+config.readtimeout.useraction=Configure un valor v\u00e1lido para el par\u00e1metro de tiempo de espera de lectura.
+
+config.writetimeout=CWWKT0007E: El tiempo de espera de escritura de {0} no es v\u00e1lido. Los tiempos de espera deben ser superiores a {1}.
+config.writetimeout.explanation=El valor configurado para el par\u00e1metro de tiempo de escritura no es v\u00e1lido.
+config.writetimeout.useraction=Configure un valor v\u00e1lido para el par\u00e1metro de tiempo de espera de escritura.
+
+config.fieldsize=CWWKT0008E: El l\u00edmite de tama\u00f1o de campo de {0} no es v\u00e1lido. Este tama\u00f1o debe oscilar entre {1} y {2}.
+config.fieldsize.explanation=El valor configurado para el l\u00edmite de tama\u00f1o de campo no es v\u00e1lido.
+config.fieldsize.useraction=Configure un valor v\u00e1lido para el l\u00edmite de tama\u00f1o de campo.
+
+config.numheaders=CWWKT0009E: El n\u00famero de l\u00edmite de cabeceras de {0} no es v\u00e1lido. Este tama\u00f1o debe oscilar entre {1} y {2}.
+config.numheaders.explanation=El valor configurado para el n\u00famero l\u00edmite de cabeceras no es v\u00e1lido.
+config.numheaders.useraction=Configure un valor v\u00e1lido para el n\u00famero l\u00edmite de cabeceras.
+
+config.incomingbodymaxsize=CWWKT0010E: El n\u00famero m\u00e1ximo de bytes de un cuerpo de mensaje de entrada de {0} no es v\u00e1lido. Este tama\u00f1o debe ser mayor o igual a {1}.
+config.incomingbodymaxsize.explanation=El valor configurado para el n\u00famero m\u00e1ximo de bytes de un cuerpo de mensaje de entrada no es v\u00e1lido.
+config.incomingbodymaxsize.useraction=Configure un valor v\u00e1lido para el n\u00famero m\u00e1ximo de bytes de un cuerpo de mensaje de entrada.
+
+NO_DEFAULT_CONFIGURATION=CWWKT0011W: No se ha podido encontrar una configuraci\u00f3n predeterminada para {0} utilizando el ID {1}
+NO_DEFAULT_CONFIGURATION.explanation=La configuraci\u00f3n predeterminada especificada no se puede encontrar para el ID especificado.
+NO_DEFAULT_CONFIGURATION.useraction=Verifique la configuraci\u00f3n del servidor y realice un reinicio limpio.
+
+DEFAULT_OPTIONS_ERROR=CWWKT0012E: Se ha producido un error interno. No se ha podido crear una configuraci\u00f3n por omisi\u00f3n. Excepci\u00f3n {0}
+DEFAULT_OPTIONS_ERROR.explanation=CMSG0001
+DEFAULT_OPTIONS_ERROR.useraction=CMSG0002
+
+DEFAULT_ENDPOINT_ERROR=CWWKT0013E: Se ha producido un error interno. No se ha podido crear un punto final por omisi\u00f3n. Excepci\u00f3n {0}
+DEFAULT_ENDPOINT_ERROR.explanation=CMSG0001
+DEFAULT_ENDPOINT_ERROR.useraction=CMSG0002
+
+DEFAULT_VHOST_ERROR=CWWKT0014E: Se ha producido un error interno. No se ha podido crear un host virtual por omisi\u00f3n.  Excepci\u00f3n {0}
+DEFAULT_VHOST_ERROR.explanation=CMSG0001
+DEFAULT_VHOST_ERROR.useraction=CMSG0002
+
+missingPorts.endpointDisabled=CWWKT0015W: No se ha configurado ning\u00fan puerto para el punto final {0}. Se ha inhabilitado el punto final.
+missingPorts.endpointDisabled.explanation=Se debe configurar al menos un puerto para un punto final http.
+missingPorts.endpointDisabled.useraction=Asigne un valor de puerto v\u00e1lido a httpPort, httpsPort o a ambos.
+
+context.root.added=CWWKT0016I: Aplicaci\u00f3n web disponible ({0}): {1}
+context.root.added.explanation=Este mensaje es meramente informativo.
+context.root.added.useraction=No se requiere ninguna acci\u00f3n.
+
+context.root.removed=CWWKT0017I: Aplicaci\u00f3n web eliminada ({0}): {1}
+context.root.removed.explanation=Este mensaje es meramente informativo.
+context.root.removed.useraction=No se requiere ninguna acci\u00f3n.
+
+Missing.App.Or.Context.Root=CWWKT0018E: No se ha encontrado la aplicaci\u00f3n o ra\u00edz de contexto para esta solicitud: {0}
+Missing.App.Or.Context.Root.explanation=Una aplicaci\u00f3n en el servidor no puede gestionar la solicitud.
+Missing.App.Or.Context.Root.useraction=Compruebe que la aplicaci\u00f3n se haya definido y desplegado, y que el cliente haya realizado una referencia correcta a ella.
+
+#Cannot remove above due to service rules, but we do not need a message key as this is never logged
+#only output to the browser on our 404 page - removing it means we give away less server implementation info
+Missing.App.Or.Context.Root.No.Error.Code=No se ha encontrado la aplicaci\u00f3n o ra\u00edz de contexto para esta solicitud: {0}
+Missing.App.Or.Context.Root.No.Error.Code.explanation=Una aplicaci\u00f3n en el servidor no puede gestionar la solicitud.
+Missing.App.Or.Context.Root.No.Error.Code.useraction=Compruebe que la aplicaci\u00f3n se haya definido y desplegado, y que el cliente haya realizado una referencia correcta a ella.
+
+config.httpChain.error=CWWKT0019E: Se ha producido un problema al configurar el punto final {0}: {1}.
+config.httpChain.error.explanation=El punto final HTTP no se ha podido iniciar debido a un problema de configuraci\u00f3n.
+config.httpChain.error.useraction=Examine los registros de mensajes y de excepci\u00f3n para buscar errores relacionados.
+
+start.httpChain.error=CWWKT0020E: Se ha producido un problema al iniciar el punto final {0}: {1}.
+start.httpChain.error.explanation=El punto final HTTP no se ha podido iniciar debido a un problema inesperado. 
+start.httpChain.error.useraction=Examine los registros de mensajes y de excepci\u00f3n para buscar errores relacionados.
+
+httpChain.error.shutdown=CWWKT0021I: El servidor se detiene debido a un posible error de configuraci\u00f3n. \
+No se puede iniciar el punto final {0}; esto podr\u00eda suceder si el puerto configurado ya est\u00e1 en uso.
+httpChain.error.shutdown.explanation=El punto final HTTP se ha configurado con onError=FAIL, que provoca que el servidor se detenga si hay un problema al iniciar el punto final. 
+httpChain.error.shutdown.useraction=Examine los registros de mensajes y de excepci\u00f3n para buscar errores relacionados. \
+Para evitar que el servidor se detenga debido a un problema al iniciar el punto final, aseg\u00farese de que onError est\u00e1 establecido en WARN o IGNORE.
+
+unresolveableHost=CWWKT0022E: No se ha podido resolver el host configurado {0} para el punto final HTTP {1}. Se ha inhabilitado el punto final.
+unresolveableHost.explanation=Un punto final HTTP necesita un valor de host que se pueda resolver como una interfaz de red activa.
+unresolveableHost.useraction=Aseg\u00farese de que el valor de host hace referencia a una interfaz de red activa, o utilice * para enlazar con todas las interfaces.
+
+unresolveableDefaultHost=CWWKT0023W: No se ha podido resolver el defaultHostName configurado {0}; se utiliza localhost en su lugar.
+unresolveableDefaultHost.explanation=La variable defaultHostName especifica un valor de host que no se ha podido resolver como una interfaz de red activa.
+unresolveableDefaultHost.useraction=Aseg\u00farese de que el valor defaultHostName configurado hace referencia a una interfaz de red activa.
+
+defaultHostDisabled=CWWKT0024W: No se puede inhabilitar el host virtual predeterminado (default_host).
+defaultHostDisabled.explanation=Se necesita el host virtual predeterminado para el entorno de tiempo de ejecuci\u00f3n. 
+defaultHostDisabled.useraction=No se requiere ninguna acci\u00f3n.
+
+noHostAliases=CWWKT0025W: El host virtual {0} no tiene ning\u00fan alias de host configurado; no recibir\u00e1 solicitudes de entrada.
+noHostAliases.explanation=Todos los hosts virtuales no predeterminados deben definir al menos un alias de host (host:puerto) para identificar las solicitudes de entrada que se deben direccionar hacia dicho host virtual. \
+El host virtual especificado no tiene ning\u00fan alias de host definido, lo que impedir\u00e1 que se direccionen solicitudes hacia \u00e9l.
+noHostAliases.useraction=Actualice el elemento virtualHost en el archivo server.xml para definir al menos un atributo hostAlias.
+
+invalidAlias=CWWKT0026W: Un alias de host configurado para el host virtual {0} no es v\u00e1lido y se ignorar\u00e1. {1}
+invalidAlias.explanation=El alias de host configurado contiene caracteres no v\u00e1lidos o sintaxis que no es correcta.
+invalidAlias.useraction=Actualice el elemento del host virtual en el archivo server.xml para que sea correcta o elimine el alias de host que no es v\u00e1lido. Tenga en cuenta que las direcciones IPv6 deben ir entre [].
+
+wildcardReason=El car\u00e1cter comod\u00edn * no se puede combinar con otros caracteres en el alias de host.
+badHostPortReason=El host especificado no es una direcci\u00f3n IP v\u00e1lida o el nombre de host, o el puerto especificado, no es un entero.
+
+duplicateAlias=CWWKT0027W: El alias de host {0} para el host virtual {1} entra en conflicto con un alias de host existente y se ignorar\u00e1.
+duplicateAlias.explanation=El alias de host especificado entra en conflicto con un alias de host existente.
+duplicateAlias.useraction=Aseg\u00farese de que todos los alias de host definidos como elementos de host virtual en el archivo server.xml son exclusivos.
+
+context.root.changed=CWWKT0028I: La aplicaci\u00f3n web se ha movido ({0}): {1}
+context.root.changed.explanation=Este mensaje es meramente informativo.
+context.root.changed.useraction=No se requiere ninguna acci\u00f3n.

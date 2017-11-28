@@ -1,0 +1,61 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMCG
+#COMPONENTNAMEFOR CWMCG MicroProfile Config API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Config CDI Autofeature - range is 5000-5999
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Config CDI autofeature
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# Unable to determine the generic type of the ConfigValue to be injected at "{0}".
+unable.to.determine.injection.type.CWMCG5001E=CWMCG5001E: Impossible de d\u00e9terminer le type de propri\u00e9t\u00e9 \u00e0 injecter. Le type de point d'injection \u00e9tait le suivant : "{0}".
+unable.to.determine.injection.type.CWMCG5001E.explanation=Le type du point d'injection annot\u00e9 avec le qualificateur @ConfigProperty n'\u00e9tait pas valide.
+unable.to.determine.injection.type.CWMCG5001E.useraction=V\u00e9rifiez que le point d'injection a un type valide pour la propri\u00e9t\u00e9 que vous d\u00e9sirez injecter.
+
+# The property name must be specified for Constructor and Method configuration property injection.
+unable.to.determine.injection.name.CWMCG5002E=CWMCG5002E: Le nom de propri\u00e9t\u00e9 doit \u00eatre sp\u00e9cifi\u00e9 pour l'injection des propri\u00e9t\u00e9s de configuration Constructor et Method.
+unable.to.determine.injection.name.CWMCG5002E.explanation=Il n'est pas possible de d\u00e9river les noms de propri\u00e9t\u00e9 par d\u00e9faut pour les param\u00e8tres Constructor et Method. Le nom de propri\u00e9t\u00e9 correct doit \u00eatre pass\u00e9 au qualificateur @ConfigProperty. 
+unable.to.determine.injection.name.CWMCG5002E.useraction=Sp\u00e9cifiez le nom de propri\u00e9t\u00e9 correct en utilisant le qualificateur @ConfigProperty.
+
+# InjectionPoint dependency could not be resolved: {0}. The exception is {1}.
+unable.to.resolve.injection.point.CWMCG5003E=CWMCG5003E: La d\u00e9pendance InjectionPoint {0} n'a pas pu \u00eatre r\u00e9solue. Erreur : {1}
+unable.to.resolve.injection.point.CWMCG5003E.explanation=Une propri\u00e9t\u00e9 Config inject\u00e9e n'a pas pu \u00eatre r\u00e9solue. La propri\u00e9t\u00e9 nomm\u00e9e est introuvable ou un convertisseur pour le type requis n'a pas pu \u00eatre r\u00e9solu. 
+unable.to.resolve.injection.point.CWMCG5003E.useraction=Examinez le message du serveur et les journaux ffdc pour d\u00e9terminer la cause du probl\u00e8me. V\u00e9rifiez que la propri\u00e9t\u00e9 existe dans l'une des sources et que les convertisseurs requis ont \u00e9t\u00e9 configur\u00e9s.
+
+# The configuration property named "{0}" was not found.
+property.not.found.CWMCG5004E=CWMCG5004E: La propri\u00e9t\u00e9 de configuration "{0}" est introuvable.
+property.not.found.CWMCG5004E.explanation=La propri\u00e9t\u00e9 nomm\u00e9e est introuvable dans toutes les sources configur\u00e9es. 
+property.not.found.CWMCG5004E.useraction=V\u00e9rifiez que la propri\u00e9t\u00e9 existe dans l'une des sources Config.
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Config error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Config API error has occurred: {0}
+temporary.CWMCG5999E=CWMCG5999E: Une erreur d'API Config s'est produite : {0}.
+temporary.CWMCG5999E.explanation=Une erreur de l'API Config s'est produite, qui emp\u00eache le fonctionnement normal.
+temporary.CWMCG5999E.useraction=Consultez le fichier message.log du serveur et les journaux FFDC pour identifier le probl\u00e8me.
+
+

@@ -1,0 +1,334 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+##########################################################################
+#
+# %Z% %I% %W% %G% %U% [%H% %T%]                                                
+#
+#
+#  COMPONENT_NAME: WAS.transactions
+#
+#  ORIGINS: 27
+#
+#  DESCRIPTION:
+#
+#  Change Log:
+#  Date      Pgmr      Defect     Description
+#  --------  --------  --------   ------------------------------------------
+#  05-01-20  mdobbie   LI3603     Creation
+#  05-02-28  hursdlg   254615     Msgs 26-28
+#  05-03-03  hursdlg   254326     Msgs 29-30
+#  07-02-26  awilkins  422999     Message review: updates to useraction and explanation
+#  07-03-02  awilkins  424163     Message review: improve contact IBM support user action
+#  08-02-11  mallam    496337     PII additions
+#  29-02-08 johawkes   501807     Style changes
+#  -------------------------------------------------------------------------
+#
+# DEVELOPER INSTRUCTIONS
+# ----------------------
+#
+# To add a new message, define the key string in LTCTrace.java, then create
+# the message text below using that key.  Fill in the comment block above the
+# message to assist in translation of the message, particularly to aid in the
+# appropriate positioning of any message inserts within the translated text.
+# To issue the message, use the LTCTrace.Message method.
+#
+# USE OF PROPERTIES FILE FOR MESSAGES:
+#
+# - Each property in the property file is terminated by the line termination character.
+# - If a line contains only whitespace or if the first non-whitespace character of a
+# line is # or !, the line is ignored. (comments start with # or !)
+# - Every line in the properties file other than whitespace lines or comment lines
+# denotes a single property. A \ is treated as a line continuation character. Lines
+# should be terminated with the line termination character.
+# - Correct grammar for a property line is <key><separator><element>. A valid separator
+# is any one of equal, colon or whitespace ( =: ).
+# - The key consists of all the characters on the line starting from the first
+# non-whitespace up to the first separator. Separator characters can be included in the
+# key by escaping them (e.g. \:) This is not recommended because it is error prone and
+# confusing.
+# - Whitespace after the key is skipped until the first non-whitespace character is
+# found. All remaining characters up to the appropriate line termination character
+# define the element.
+#
+# MESSAGE INSERTS
+#
+#  Primitives
+# Primitives, such as int and long are not recognized as subclasses of Object
+# and cannot be directly passed to one of these methods. A primitive value must
+# be transformed to its proper type (e.g Integer, Long) before being passed as
+# a parameter.
+#
+#  Object
+# For normal Objects, toString() is called on the object and the resulting String
+# is displayed. For exceptions, the stack trace will be printed.For Objects that
+# implement the Traceable interface, the toTraceString() method is called instead.
+# To provide the proper trace representation for the Object, provide the proper
+# implementation for the appropriate method.
+#
+#  Object[]
+# Since Object[] is a proper subclass of Object, Object[] can be passed. Use
+# Object[] when more than one parameter should be passed to a message logging
+# or trace method. The appropriate method (toString() or toTraceString()) is
+# called on each Object in the array. This array should contain only
+# standalone normal Objects and should not contain other arrays. Passing nested
+# array may result in the following Strings being displayed :
+#  "[B@924586a0b" - This is deciphered as a byte array at location X.
+# This is typically returned when an array of primitives is passed as a member
+# of an Object[]. It is the result of calling toString() on the byte[].
+#  "[Ljava.lang.Object;@9136fa0b" : An array of objects.
+# Typically this is seen when an array containing nested arrays is passed.
+#
+#  Array of Primitives
+# An array of primitive (e.g. byte[], int[] is recognized as an Object, but is
+# treated somewhat as a second cousin of Object by Java. The results you see
+# will depend on the type of array passed and the API used. For consistent results,
+# user code should preprocess and format the primitive array into some type of
+# String form before passing it to the method. If such preprocessing is not
+# performed, you may see something results something like the following:
+#  "Illegal trace argument : array of long."
+# This is typically returned when an array of primitives is passed to a method
+# taking an Object and the Tr service does not provide special parsing for
+# primitive arrays of this type.
+#  "01040703..." : the hex representation of an array of bytes.
+# Typically this may be seen when a byte array is passed to a method taking a
+# single Object. This behavior is subject to change and should not be relied on.
+#  " '1' '2' ..." : The String representation of the members of an int[] formed
+# by converting each element to an Integer and calling toString on the Integers.
+# This behavior is subject to change and should not be relied on.
+#
+#  Common messages
+# The following common messages are used in this file:
+#
+#         CMSG0001       This is an unexpected exception. The cause can not be immediately determined.
+#         CMSG0002       For further information on resolving this error, please consult the IBM WebSphere Application Server Support website available
+#                        at: http://www-3.ibm.com/software/webservers/appserv/support.html. The site provides searchable databases of technotes,
+#                        solutions, and e-fixes. Information on contacting the WebSphere Support team is also provided.
+#
+# During the build, the WebSphere Message Tool will recognize the common message keywords, and replace them with text defined in the
+#                Common Messages Table.
+#
+#
+#
+#
+#-----------------------------------------------------------------------
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells Java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+#
+#-----------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines. 
+# For more information, visit: 
+#     http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.6,0,05/12/08,09:47:34
+#
+#CMVCPATHNAME ws/code/recovery.log.impl/src/com/ibm/ws/recoverylog/resources/RecoveryLogMsgs.nlsprops
+#COMPONENTPREFIX WRLS CWRLS
+#COMPONENTNAMEFOR WRLS WebSphere Recovery Log Service
+#COMPONENTNAMEFOR CWRLS WebSphere Recovery Log Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------
+# All new V6 msgs should use the prefix CWRLS
+
+#-----------------------------------------------------------------------
+CWRLS0001_SUSPEND_RLS=CWRLS0001I: Il servizio log di ripristino \u00e8 stato sospeso ({0}).
+CWRLS0001_SUSPEND_RLS.explanation=Il servizio log di ripristino \u00e8 in stato di sospensione per consentire al sistema di eseguire il backup dei file di log di ripristino.
+CWRLS0001_SUSPEND_RLS.useraction=Non \u00e8 richiesta alcuna azione.
+
+#-----------------------------------------------------------------------
+CWRLS0002_RESUME_RLS=CWRLS0002I: Il servizio log di ripristino \u00e8 stato ripristinato ({0}).
+CWRLS0002_RESUME_RLS.explanation=Il servizio log di ripristino sospeso precedentemente viene ripristinato allo stato di esecuzione.
+CWRLS0002_RESUME_RLS.useraction=Non \u00e8 richiesta alcuna azione.
+
+#-----------------------------------------------------------------------
+CWRLS0003_GENERIC_ERROR=CWRLS0003E: {0}
+CWRLS0003_GENERIC_ERROR.explanation=Questo codice messaggio viene utilizzato per supportare messaggi a cui non \u00e8 stato ancora assegnato il relativo codice.
+CWRLS0003_GENERIC_ERROR.useraction=Per ulteriori informazioni fare riferimento al testo del messaggio.
+
+#-----------------------------------------------------------------------
+CWRLS0004_RECOVERY_LOG_CREATE_FAILED=CWRLS0004E: Impossibile creare un file di log di ripristino {0}.
+CWRLS0004_RECOVERY_LOG_CREATE_FAILED.explanation=Il servizio log di ripristino non \u00e8 stato in grado di creare il file indicato nel messaggio. La directory di destinazione non \u00e8 accessibile oppure il sistema non dispone delle autorizzazioni sufficienti per creare il file richiesto.
+CWRLS0004_RECOVERY_LOG_CREATE_FAILED.useraction=Assicurarsi che la gerarchia della directory richiesta sia valida e accessibile al servizio log di ripristino.
+
+#-----------------------------------------------------------------------
+CWRLS0005_RECOVERY_LOG_LOCK_FAILED=CWRLS0005E: Impossibile ottenere un blocco file esclusivo su {0}.
+CWRLS0005_RECOVERY_LOG_LOCK_FAILED.explanation=Il servizio log di ripristino non \u00e8 stato in grado di bloccare in modo esclusivo il file indicato nel messaggio.
+CWRLS0005_RECOVERY_LOG_LOCK_FAILED.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+CWRLS0006_RECOVERY_LOG_CREATE=CWRLS0006I: Creazione di un nuovo file di log di ripristino {0}.
+CWRLS0006_RECOVERY_LOG_CREATE.explanation=\u00c8 stato stabilito un nuovo file di log di ripristino per memorizzare i dati permanenti.
+CWRLS0006_RECOVERY_LOG_CREATE.useraction=Non \u00e8 richiesta alcuna azione.
+
+#-----------------------------------------------------------------------
+CWRLS0007_RECOVERY_LOG_NOT_EXIST=CWRLS0007I: Non \u00e8 stato trovato alcun file di log di ripristino esistente in {0}. Avvio a freddo del log di ripristino.
+CWRLS0007_RECOVERY_LOG_NOT_EXIST.explanation=I precedenti file di log di ripristino sono stati eliminati oppure questa \u00e8 la prima volta che i file di log di ripristino vengono memorizzati in questa ubicazione. In entrambi i casi, il servizio associato non avvier\u00e0 n\u00e9 eseguir\u00e0 alcuna elaborazione di ripristino.
+CWRLS0007_RECOVERY_LOG_NOT_EXIST.useraction=Non \u00e8 richiesta alcuna azione.
+
+#-----------------------------------------------------------------------
+CWRLS0008_RECOVERY_LOG_FAILED=CWRLS0008E: Il log di ripristino \u00e8 stato contrassegnato come non riuscito. [ {0} {1} ]
+CWRLS0008_RECOVERY_LOG_FAILED.explanation=Il log di ripristino ha avuto esito negativo e non \u00e8 possibile accedervi ulteriormente. Il messaggio mostra il componente e la relativa eccezione.
+CWRLS0008_RECOVERY_LOG_FAILED.useraction=Per riparare il log, \u00e8 necessario riavviare il server. Tentare di correggere le condizioni indicate dall'eccezione nel messaggio.
+
+#-----------------------------------------------------------------------
+CWRLS0009_RECOVERY_LOG_FAILED_DETAIL=CWRLS0009E: Dettagli dell''errore del log di ripristino: {0}
+CWRLS0009_RECOVERY_LOG_FAILED_DETAIL.explanation=Questo messaggio viene emesso con il messaggio CWRLS0008E per indicare i dettagli del fallimento del log di ripristino.
+CWRLS0009_RECOVERY_LOG_FAILED_DETAIL.useraction=Utilizzare le informazioni in questo messaggio e nel messaggio CWRLS0008E per correggere la condizione che ha provocato l'esito negativo del log di ripristino.
+
+#-----------------------------------------------------------------------
+CWRLS0010_PERFORM_LOCAL_RECOVERY=CWRLS0010I: Esecuzione dell''elaborazione di ripristino del server locale WebSphere ({0}).
+CWRLS0010_PERFORM_LOCAL_RECOVERY.explanation=Il servizio log di ripristino sta guidando l'elaborazione di ripristino dei servizi client associati.
+CWRLS0010_PERFORM_LOCAL_RECOVERY.useraction=Non \u00e8 richiesta alcuna azione.
+
+#-----------------------------------------------------------------------
+CWRLS0011_PERFORM_PEER_RECOVERY=CWRLS0011I: Esecuzione dell''elaborazione di ripristino del server peer WebSphere ({0}).
+CWRLS0011_PERFORM_PEER_RECOVERY.explanation=Il servizio log di ripristino sta guidando l'elaborazione di ripristino dei servizi client associati del server peer.
+CWRLS0011_PERFORM_PEER_RECOVERY.useraction=Non \u00e8 richiesta alcuna azione.
+
+#-----------------------------------------------------------------------
+CWRLS0012_DIRECT_LOCAL_RECOVERY=CWRLS0012I: Tutti i servizi permanenti sono stati indirizzati a eseguire l''elaborazione di ripristino di questo server WebSphere ({0}).
+CWRLS0012_DIRECT_LOCAL_RECOVERY.explanation=Il servizio log di ripristino ha richiesto a tutti i servizi client associati di iniziare il ripristino.
+CWRLS0012_DIRECT_LOCAL_RECOVERY.useraction=Non \u00e8 richiesta alcuna azione.
+
+#-----------------------------------------------------------------------
+CWRLS0013_DIRECT_PEER_RECOVERY=CWRLS0013I: Tutti i servizi permanenti sono stati indirizzati a eseguire l''elaborazione di ripristino di un server peer WebSphere ({0}).
+CWRLS0013_DIRECT_PEER_RECOVERY.explanation=Il servizio log di ripristino ha richiesto a tutti i servizi client associati di iniziare il ripristino del server peer.
+CWRLS0013_DIRECT_PEER_RECOVERY.useraction=Non \u00e8 richiesta alcuna azione.
+
+#-----------------------------------------------------------------------
+CWRLS0014_HALT_PEER_RECOVERY=CWRLS0014I: Arresto di qualsiasi elaborazione di ripristino corrente per un server peer WebSphere ({0}).
+CWRLS0014_HALT_PEER_RECOVERY.explanation=L'elaborazione di ripristino viene trasferita a un server delle applicazioni alternativo. Di solito questo accade quando un server viene riavviato e riottiene la propriet\u00e0 dei suoi log di ripristino.
+CWRLS0014_HALT_PEER_RECOVERY.useraction=Non \u00e8 richiesta alcuna azione.
+
+#-----------------------------------------------------------------------
+CWRLS0015_DISABLE_FILE_LOCKING=CWRLS0015I: Il blocco del file di log di ripristino \u00e8 stato disabilitato nelle propriet\u00e0 personalizzate del servizio di transazione.
+CWRLS0015_DISABLE_FILE_LOCKING.explanation=Il meccanismo di blocco file utilizzato dal servizio log di ripristino per assicurare l'accesso esclusivo ai file di log di ripristino \u00e8 stato esplicitamente disabilitato.
+CWRLS0015_DISABLE_FILE_LOCKING.useraction=Verificare che siano presenti i vincoli appropriati per il supporto di questa impostazione di configurazione.
+
+#-----------------------------------------------------------------------
+CWRLS0016_RECOVERY_PROCESSING_FAILED=CWRLS0016E: Impossibile ottenere un blocco file esclusivo necessario per eseguire l''elaborazione di ripristino del server {0}.
+CWRLS0016_RECOVERY_PROCESSING_FAILED.explanation=Il server di destinazione \u00e8 attivo oppure la configurazione del log di ripristino non \u00e8 corretta.
+CWRLS0016_RECOVERY_PROCESSING_FAILED.useraction=Verificare che la configurazione del log di ripristino sia valida.
+
+#-----------------------------------------------------------------------
+CWRLS0017_RECOVERY_PROCESSING_INTERRUPTED=CWRLS0017I: \u00c8 stato interrotto un tentativo di ottenere un blocco file esclusivo necessario per l''esecuzione dell''elaborazione di ripristino del server {0}.   Un altro server \u00e8 stato attivato per eseguire questa elaborazione di ripristino.
+CWRLS0017_RECOVERY_PROCESSING_INTERRUPTED.explanation=Il controllo di un log di ripristino \u00e8 stato inviato tra due server delle applicazioni.
+CWRLS0017_RECOVERY_PROCESSING_INTERRUPTED.useraction=Non \u00e8 richiesta alcuna azione.
+
+#-----------------------------------------------------------------------
+CWRLS0018_RECOVERY_PROCESSING_FAILED=CWRLS0018E: \u00c8 stato interrotto un tentativo di arresto dell''elaborazione di inoltro e ripristino di transazione del server locale ({0}).
+CWRLS0018_RECOVERY_PROCESSING_FAILED.explanation=Il servizio log di ripristino ha impedito al server locale di cedere il controllo dei propri log di ripristino. La causa potrebbe essere la configurazione della politica del gruppo principale.
+CWRLS0018_RECOVERY_PROCESSING_FAILED.useraction=Verificare che la configurazione della politica non assegni la propriet\u00e0 del log di ripristino di un server attivo a un server alternativo.
+
+#-----------------------------------------------------------------------
+CWRLS0019_SNAPSHOT_SAFE=CWRLS0019I: Il servizio log di ripristino \u00e8 stato configurato come cassaforte dell'istantanea nelle propriet\u00e0 personalizzate del servizio di transazione.
+CWRLS0019_SNAPSHOT_SAFE.explanation=Quando viene richiesta un'istantanea dei file di log, viene sospesa l'intera attivit\u00e0 di registrazione transazioni nel momento in cui viene creata l'istantanea, per verificare che i file di log siano in uno stato conosciuto coerente con altri sistemi coinvolti nell'istantanea.
+CWRLS0019_SNAPSHOT_SAFE.useraction=Non \u00e8 richiesta alcuna azione.
+
+#-----------------------------------------------------------------------
+CWRLS0020_SNAPSHOT_SAFE=CWRLS0020W: Il servizio log di ripristino NON \u00e8 stato configurato come cassaforte dell'istantanea nelle propriet\u00e0 personalizzate del servizio di transazione.
+CWRLS0020_SNAPSHOT_SAFE.explanation=Se viene creata un'istantanea dei file di log, tali file potrebbero non trovarsi in uno stato coerente con altri sistemi coinvolti nell'istantanea.
+CWRLS0020_SNAPSHOT_SAFE.useraction=Non \u00e8 richiesta alcuna azione.
+
+#-----------------------------------------------------------------------
+CWRLS0021_RESUME_ATTEMPT_RLS=CWRLS0021I: Il servizio log di ripristino \u00e8 stato richiamato per riprendere l''esecuzione ({0}), ma vi sono altre sospensioni in attesa.
+CWRLS0021_RESUME_ATTEMPT_RLS.explanation=Il servizio log di ripristino verr\u00e0 ripristinato solo quando non vi saranno pi\u00f9 operazioni di attesa in sospeso.
+CWRLS0021_RESUME_ATTEMPT_RLS.useraction=Non \u00e8 richiesta alcuna azione.
+
+#-----------------------------------------------------------------------
+CWRLS0022_RLS_SUSPEND_TIMEOUT=CWRLS0022I: Un''operazione di sospensione del servizio log di ripristino \u00e8 andata in timeout ({0}).
+CWRLS0022_RLS_SUSPEND_TIMEOUT.explanation=Se non sono presenti operazioni di sospensione in attesa, il servizio log di ripristino verr\u00e0 ripristinato.
+CWRLS0022_RLS_SUSPEND_TIMEOUT.useraction=Non \u00e8 richiesta alcuna azione.
+
+#-----------------------------------------------------------------------
+CWRLS0023_RESUME_RLS=CWRLS0023I: Il servizio log di ripristino \u00e8 stato ripristinato dopo il timeout di un'operazione di sospensione.
+CWRLS0023_RESUME_RLS.explanation=Questo messaggio \u00e8 solo a scopo informativo.
+CWRLS0023_RESUME_RLS.useraction=Non \u00e8 richiesta alcuna azione.
+
+#-----------------------------------------------------------------------
+CWRLS0024_EXC_DURING_RECOVERY=CWRLS0024E: Rilevata eccezione durante il ripristino! {0}
+CWRLS0024_EXC_DURING_RECOVERY.explanation= \u00c8 stata rilevata un'eccezione durante il tentativo di ripristino da un precedente errore del server.
+CWRLS0024_EXC_DURING_RECOVERY.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+CWRLS0025_RECOVER_MODE_NOT_COMPATIBLE=CWRLS0025E: L'avvio in modalit\u00e0 ripristino del server non \u00e8 compatibile con l'abilitazione alta disponibilit\u00e0.
+CWRLS0025_RECOVER_MODE_NOT_COMPATIBLE.explanation=In una configurazione HA, il ripristino del server potrebbe essere avviato automaticamente su un server peer.
+CWRLS0025_RECOVER_MODE_NOT_COMPATIBLE.useraction=Non tentare di avviare un server in modalit\u00e0 ripristino se abilitato per l'HA.
+
+#-----------------------------------------------------------------------
+CWRLS0026_RECOVERY_LOG_LOCK_RETRY=CWRLS0026W: Impossibile ottenere un blocco file esclusivo su {0} - nuovo tentativo in corso.
+CWRLS0026_RECOVERY_LOG_LOCK_RETRY.explanation=Il servizio log di ripristino non pu\u00f2 bloccare in modo esclusivo il file indicato nel messaggio durante il ripristino, poich\u00e9 il file sembra in uso. Il servizio di ripristino tenter\u00e0 periodicamente di ottenere il blocco esclusivo in modo da poter procedere con il ripristino. Se il file di log di ripristino \u00e8 uno dei principali log di ripristino del server, l'avvio viene sospeso finch\u00e9 l'accesso ai log sar\u00e0 possibile.  Se il file di log di ripristino appartiene a un altro server peer, un altro server potrebbe ottenere i blocchi ed eseguire il ripristino peer; in questa situazione, questo server interromper\u00e0 i tentativi di ripristino.
+CWRLS0026_RECOVERY_LOG_LOCK_RETRY.useraction=Esaminare i messaggi correlati per individuare la causa del problema. Se non esistono messaggi correlati, controllare l'ubicazione dei log di ripristino e verificare un altro server non che non vi acceda. Ad esempio, questa situazione si verifica se viene configurato pi\u00f9 di un server per l'utilizzo dei log di ripristino di un altro server.
+
+#-----------------------------------------------------------------------
+CWRLS0027_COMMON_TRANLOG_DIRS=CWRLS0027W: La directory comune dei log di transazione {0} \u00e8 stata definita per i server {1} e {2}
+CWRLS0027_COMMON_TRANLOG_DIRS.explanation=I log di transazione provenienti da due server stanno utilizzando una configurazione di directory comune. Questo potrebbe causare una contesa di blocco ripristino o un errore di integrit\u00e0 di dati. 
+CWRLS0027_COMMON_TRANLOG_DIRS.useraction=Configurare dei percorsi directory di log separati per ciascun server.
+
+#-----------------------------------------------------------------------
+CWRLS0028_COMMON_COMPLOG_DIRS=CWRLS0028W: La directory comune dei log di compensazione {0} \u00e8 stata definita per i server {1} e {2}
+CWRLS0028_COMMON_COMPLOG_DIRS.explanation=I log di compensazione provenienti da due server stanno utilizzando una configurazione di directory comune. Questo potrebbe comportare una contesa di blocco ripristino o un errore di integrit\u00e0 di dati. 
+CWRLS0028_COMMON_COMPLOG_DIRS.useraction=Configurare dei percorsi directory di log separati per ciascun server.
+
+#-----------------------------------------------------------------------
+CWRLS0029_LOCAL_RECOVERY_FAILED=CWRLS0029W: Impossibile eseguire l'elaborazione di ripristino per il server locale WebSphere - server terminato
+CWRLS0029_LOCAL_RECOVERY_FAILED.explanation=Il servizio log di ripristino non pu\u00f2 eseguire o completare il ripristino per il server locale e non \u00e8 possibile procedere con alcun lavoro, in questo modo il server verr\u00e0 arrestato.
+CWRLS0029_LOCAL_RECOVERY_FAILED.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+CWRLS0030_WAITING_FOR_HAM_ACTIVATE=CWRLS0030W: In attesa che HAManager attivi l'elaborazione di ripristino per il server locale WebSphere
+CWRLS0030_WAITING_FOR_HAM_ACTIVATE.explanation=Il servizio log di ripristino non \u00e8 in grado di avviare l'elaborazione di ripristino per il server locale, poich\u00e9 \u00e8 in attesa che HAManager attivi l'appartenenza al gruppo per i log di ripristino di questo server locale.
+CWRLS0030_WAITING_FOR_HAM_ACTIVATE.useraction=Esaminare i messaggi correlati per individuare la causa del problema. Se non sono presenti dei messaggi correlati, controllare la configurazione delle impostazioni DefaultCoreGroup e le definizioni della politica associata per il servizio log di ripristino per il server. Ad esempio, se la politica Clustered TM viene impostata per non supportare il failback, un altro server potrebbe avere accesso ai log e bloccher\u00e0 l'attivazione di questo server.
+

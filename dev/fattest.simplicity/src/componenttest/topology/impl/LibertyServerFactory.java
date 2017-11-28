@@ -13,8 +13,6 @@ package componenttest.topology.impl;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -29,8 +27,10 @@ import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.common.apiservices.Bootstrap;
 import componenttest.exception.TopologyException;
+import componenttest.topology.utils.PrivHelper;
 
 public class LibertyServerFactory {
     //track the known Liberty servers by test class name, so that suites don't clean up servers from other test classes in the suite
@@ -44,20 +44,11 @@ public class LibertyServerFactory {
         OFF
     }
 
-    private static final boolean DELETE_RUN_FATS =
-                    Boolean.parseBoolean(AccessController.doPrivileged(new PrivilegedAction<String>() {
-                        @Override
-                        public String run() {
-                            // Default is false if not set
-                            //nb the default passed in is ${delete.run.fats} but
-                            //parseBoolean does default that to false.
-                            return System.getProperty("delete.run.fats", "false");
-                        }
-                    }));
+    private static final boolean DELETE_RUN_FATS = PrivHelper.getBoolean("delete.run.fats");
 
     /**
      * This method will return a newly created LibertyServer instance with the specified server name
-     * 
+     *
      * @return A stopped Liberty Server instance
      * @throws Exception
      */
@@ -67,7 +58,7 @@ public class LibertyServerFactory {
 
     /**
      * This method will return a newly created LibertyServer instance with the specified server name
-     * 
+     *
      * @param serverName The name of the server
      * @param testClassName The name of the class to associate with the server.
      * @return A stopped Liberty Server instance
@@ -80,7 +71,7 @@ public class LibertyServerFactory {
      * This method will return a newly created LibertyServer instance with the specified server name.
      * Note if the ignoreCache parameter is set to false, then the returned LibertyServer instance may
      * not be newly-created.
-     * 
+     *
      * @return A stopped Liberty Server instance
      * @throws Exception
      */
@@ -168,8 +159,7 @@ public class LibertyServerFactory {
                     }
                     ls = new LibertyServer(serverName, bootstrap, ignoreCache, usePreviouslyConfigured, windowsServiceOption);
 
-                    if (!usePreviouslyConfigured)
-                    {
+                    if (!usePreviouslyConfigured) {
                         if (installServerFromSampleJar) {
                             if (!LibertyFileManager.libertyFileExists(ls.getMachine(), ls.getServerRoot())) {
                                 //Samples don't overwrite, so only bother running it if the server directory isn't already there
@@ -272,7 +262,7 @@ public class LibertyServerFactory {
 
     /**
      * This method will return a newly created LibertyServer instance with the specified server name
-     * 
+     *
      * @return A started Liberty Server instance
      * @throws Exception
      */
@@ -291,13 +281,13 @@ public class LibertyServerFactory {
      * This method will install a sample server and download any external dependencies defined in it. Once the server is installed the server.xml will be exchanged with a default
      * server XML, that includes fatTestPorts.xml and the sample server.xml. The bootstrap.properties will be exchanged with a default properties file that includes the
      * "../testports.properties" file and the sample properties file. The server will then be added to the list of known servers and returned.
-     * 
+     *
      * @param serverName The name of the server to install, must be matched by a local file named serverName.jar in the lib/LibertyFATTestFiles folder (populated from publish/files
      *            in a FAT test project)
      * @param bootstrap The bootstrap to use on the server
      * @param ignoreCache <code>false</code> if we should load a cached server if available
      * @return The server
-     * 
+     *
      */
     public static LibertyServer installSampleServer(String serverName, Bootstrap bootstrap, boolean ignoreCache) {
         return getLibertyServer(serverName, bootstrap, ignoreCache, true, false, null);
@@ -311,12 +301,12 @@ public class LibertyServerFactory {
      * This method should not be ran by the user, it is ran by the JUnit
      * runner at the end of each test to ensure that post test tidying is
      * done.
-     * 
+     *
      * Once a server has under gone the tidy action, it needs to be removed
      * from the list of known servers, or subsequent cleanups will fail.
      * This will happen in the case of FATSuite being the entry point with
      * multiple test classes.
-     * 
+     *
      * @param testClassName, the name of the test class for which servers should be tidied
      * @throws Exception
      */
@@ -352,7 +342,7 @@ public class LibertyServerFactory {
     /**
      * This method should not be ran by the user, it is ran by the JUnit runner at the end of each test
      * to recover the servers.
-     * 
+     *
      * @param testClassName the name of the FAT test class to recover known servers for
      * @throws Exception
      */
@@ -647,7 +637,7 @@ public class LibertyServerFactory {
 
     /**
      * Hack to get the calling test class name from the stack.
-     * 
+     *
      * @param methodName the name of the method that is being called
      */
     private static String getCallerClassNameFromStack() {

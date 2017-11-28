@@ -1,0 +1,161 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.webserver.plugin.utility/resources/com/ibm/ws/webserver/plugin/utility/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+error=Errore: {0}
+error.inputConsoleNotAvailable=La console di input non \u00e8 disponibile.
+error.missingIO=Errore; manca l''unit\u00e0 I/O: {0}.
+
+serverNotFound=Non \u00e8 stato possibile trovare il server specificato {0} all''ubicazione {1}
+jmx.local.connector.file.notfound=Impossibile trovare il file indirizzo connettore locale JMX in {0}
+jmx.local.connector.file.invalid=Impossibile leggere il file indirizzo connettore locale JMX in {0}
+
+#------------------------------------------------------------------------------
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+tooManyArgs=Troppi argomenti.
+insufficientArgs=Argomenti insufficienti.
+missingServerName=La destinazione per questa attivit\u00e0 non \u00e8 stata specificata.
+invalidArg=Argomento non valido {0}.
+missingArg=Argomento mancante {0}.
+missingValue=Valore mancante per l''argomento {0}.
+
+#------------------------------------------------------------------------------
+# Messages for HelpTask
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Utilizzo: {0} action [opzioni]
+task.unknown=Attivit\u00e0 sconosciuta: {0}
+
+common.encodeError=\n\
+Impossibile codificare la password per l''argomento: {0}
+
+common.hostError=\n Il nome host specificato non sembra essere valido: {0}\n Verificare che il nome host sia corretto e che il sistema disponga della connessione di rete.
+
+common.portError=\n La porta specificata {0} non pu\u00f2 essere raggiunta. Verificare che la porta sia corretta.
+
+common.connectionError=\n\
+Impossibile completare l''operazione.\n\
+Errore: {0}
+
+#------------------------------------------------------------------------------
+# Messages for get and generate operations
+#------------------------------------------------------------------------------
+
+generateWebServerPluginTask.abort=\n\
+Arresto in corso...
+
+generateWebServerPluginTask.cleanupFail=\n\
+Errore durante la ripulitura dei file generati. Impossibile eliminare {0}\n\
+Rimuovere il file manualmente, controllare le autorizzazioni del file e ripetere l''operazione.
+
+generateWebServerPluginTask.complete.collective=\n\
+La generazione del file di configurazione plug-in server Web \u00e8 riuscita per il collective controller di destinazione.
+
+generateWebServerPluginTask.fail.collective=\n\
+La generazione del file di configurazione plug-in server Web non \u00e8 riuscita per il collective controller di destinazione.\n\
+Analizzare i log del collective controller di destinazione per diagnosticare il problema.
+
+generateWebServerPluginTask.start.server.local=\n\
+Il server di destinazione locale {0} verr\u00e0 utilizzato per generare il file di configurazione plug-in server Web.
+
+generateWebServerPluginTask.start.server.remote=\n\
+Il server di destinazione remoto {0} verr\u00e0 utilizzato per generare il file di configurazione plug-in server Web.
+
+generateWebServerPluginTask.complete.server=\n\
+La generazione del file di configurazione plug-in server Web \u00e8 riuscita per il server di destinazione.
+
+generateWebServerPluginTask.fail.server=\n\
+La generazione del file di configurazione plug-in server Web non \u00e8 riuscita per il server di destinazione.\n\
+Analizzare i log del server di destinazione per diagnosticare il problema.
+
+generateWebServerPluginTask.notEnabled=\n\
+La funzione Collective controller non \u00e8 abilitata. Abilitare la funzione e \nripetere il comando.
+
+generateWebServerPluginTask.start.server=\n Avvio del server {0} poich\u00e9 non \u00e8 attualmente in esecuzione.
+
+generateWebServerPluginTask.stop.server=\n Arresto in corso del server {0} perch\u00e9 il suo stato iniziale era arrestato.
+
+generateWebServerPluginTask.server.started=\nServer {0} avviato correttamente.
+
+generateWebServerPluginTask.server.not.started=\n\
+Impossibile avviare il server {0}.
+
+generateWebServerPluginTask.server.plugin=Creazione del file di configurazione plugin da WebSphere Liberty Server.
+
+generateWebServerPluginTask.target.directory.not.exists=\n La directory specificata per --targetPath: {0} non esiste.
+
+generateWebServerPluginTask.server.plugin.generated=\n\
+Il file plug-in viene generato nell''ubicazione {0} sul server.
+
+generateWebServerPluginTask.complete.next.step=\n Copiare il file di configurazione plugin nella directory specificata \nnella direttiva WebSpherePluginConfig nel file httpd.conf di IBM HTTP Server.
+
+#------------------------------------------------------------------------------
+# Messages for merge operation
+#------------------------------------------------------------------------------
+
+MergePluginFilesTask.merging.plugin.dir=\n Unione in corso dei file plugin con il file *plugin-cfg*.xml dalla directory {0}. 
+
+MergePluginFilesTask.merging.plugin.list=\n\
+Unione in corso dell'elenco fornito di file plug-in.
+
+MergePluginFilesTask.merging.plugin.file.not.exists=\n\
+Il file {0} non esiste. Controllare se il file esiste ed \u00e8 \nun file di configurazione plugin valido.
+
+MergePluginFilesTask.merging.plugin.file.is.directory=\n\
+Il file {0} \u00e8 una directory. Durante l''unione non \u00e8 possibile combinare \ndirectory e file normali.
+
+MergePluginFilesTask.merging.plugin.targetdir.not.exists=\n La directory {0}, in cui deve essere generato il file di configurazione unito\n non esiste.
+
+MergePluginFilesTask.merging.plugin.source.dir.not.exists=\n La directory di origine {0} non esiste.
+
+MergePluginFilesTask.merging.plugin.source.file.not.directory=\n\
+L''origine {0} non \u00e8 una directory.
+
+MergePluginFilesTask.merging.plugin.source.file.selected=\n Il file {0} \u00e8 selezionato per l''unione. 
+
+MergePluginFilesTask.merging.plugin.target.file.generating=\n Creazione del file di configurazione unito in {0}.
+
+MergePluginFilesTask.merging.plugin.target.file.generated=\n\
+File di configurazione unito creato correttamente.
+
+MergePluginFilesTask.merging.plugin.insufficent.number.of.source.files=\n\
+Fornire almeno due file di configurazione plug-in per effettuare l'unione.
+
+#------------------------------------------------------------------------------
+# Messages for pluginUtility generate option 
+#------------------------------------------------------------------------------
+# reading in a password
+#-----------------------------------------
+password.enterText=Immettere {0}:
+password.reenterText=Immettere nuovamente {0}:
+password.readError=Errore di lettura della password.
+password.entriesDidNotMatch=Le password non corrispondevano.
+
+#-----------------------------------------
+# reading in a user 
+#-----------------------------------------
+user.enterText=Immettere {0}:
+user.readError=Errore durante la lettura dell'utente.
+
+#----------------------------------------- 
+# Missing Argument Messages 
+#-----------------------------------------
+invalidPortArg=\u00c8 stato fornito un valore non valido per [porta]={0} nell''argomento per {1}, \u00e8 richiesto un valore numerico.
+missingUsernameValue=Valore mancante per [utente] nell''argomento per {0}.
+missingPasswordValue=Valore mancante per [password] nell''argomento per {0}.
+missingHostValue=Valore mancante per [host] nell''argomento per {0}.
+missingPortValue=Valore mancante per [porta] nell''argomento per {0}.
+missingHostorPortValue=Valore mancante per [host o porta] nell''argomento per {0}.
+
+#------------------------------------------------------------------------------

@@ -1,0 +1,31 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX J2EE SM related MBeans
+#CMVCPATHNAME com.ibm.ws.management.j2ee.mbeans/resources/com/ibm/ws/management/j2ee/mbeans/internal/resources/SMMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#
+# Message prefix block: CWWKX7500 - CWWKX7524
+
+#-----  JVMMBeanImpl
+
+DETERMINE_HOST_ERROR=CWWKX7500E: Produkt nie mo\u017ce okre\u015bli\u0107 pe\u0142nej nazwy domeny hosta. Nazwa hosta zostanie ustawiona na warto\u015b\u0107 domy\u015bln\u0105 {0}. B\u0142\u0105d: {1}
+DETERMINE_HOST_ERROR.explanation=Nie mo\u017cna okre\u015bli\u0107 adresu IP lub nazwy hosta serwera.
+DETERMINE_HOST_ERROR.useraction=Sprawd\u017a konfiguracj\u0119 sieci serwera i zrestartuj serwer, u\u017cywaj\u0105c opcji --clean.
+
+#-----  SMActivator
+
+OSGI_SERVICE_ERROR=CWWKX7501E: Us\u0142uga OSGi {0} nie jest dost\u0119pna. Spr\u00f3buj zrestartowa\u0107 serwer za pomoc\u0105 opcji --clean.
+OSGI_SERVICE_ERROR.explanation=Okre\u015blona us\u0142uga nie jest dost\u0119pna, co powoduje wyst\u0105pienie b\u0142\u0119du wewn\u0119trznego serwera.
+OSGI_SERVICE_ERROR.useraction=Zrestartuj serwer za pomoc\u0105 opcji --clean.

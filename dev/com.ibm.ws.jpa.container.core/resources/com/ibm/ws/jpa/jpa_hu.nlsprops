@@ -1,0 +1,329 @@
+###############################################################################
+# Copyright (c) 2006, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the message text
+#           must be followed by a 2nd apostrophe to work correctly.
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWWJP (Java Persistence API)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+#CMVCPATHNAME ws/code/jpa.impl/src/com/ibm/ws/jpa/jpa.nlsprops
+#COMPONENTPREFIX CWWJP
+#COMPONENTNAMEFOR CWWJP Java Persistence API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+
+#-------------------------------------------------------------------------------
+UNABLE_TO_LOAD_JPA_PROVIDER_CWWJP0001E=CWWJP0001E: A kiszolg\u00e1l\u00f3 nem tudja bet\u00f6lteni a(z) {1} Java Persistence API (JPA) szolg\u00e1ltat\u00f3t a(z) {0} k\u00f6tegben, amely a(z) {2} f\u00e1jlban tal\u00e1lhat\u00f3. A k\u00f6vetkez\u0151 hiba t\u00f6rt\u00e9nt: {3}
+UNABLE_TO_LOAD_JPA_PROVIDER_CWWJP0001E.explanation=Az alap\u00e9rtelmezett JPA szolg\u00e1ltat\u00f3 feldolgoz\u00e1sa k\u00f6zben a kiszolg\u00e1l\u00f3 nem tal\u00e1lta a szolg\u00e1ltat\u00f3 f\u00e1jlj\u00e1t a k\u00f6tegben.
+UNABLE_TO_LOAD_JPA_PROVIDER_CWWJP0001E.useraction=Vizsg\u00e1lja meg a JPA szolg\u00e1ltat\u00f3 k\u00f6teget, hogy meggy\u0151z\u0151dj\u00f6n r\u00f3la, hogy a k\u00f6vetkez\u0151 inform\u00e1ci\u00f3k l\u00e9teznek:\n  A META-INF/services/javax.persistence.spi.PersistenceProvider f\u00e1jl meghat\u00e1rozza a helyes szolg\u00e1ltat\u00e1si megval\u00f3s\u00edt\u00e1si oszt\u00e1lyt.\n A kivitelez\u00e9si oszt\u00e1ly l\u00e9tezik a csomagban.\n A szolg\u00e1ltat\u00f3 Java arch\u00edvum (JAR) f\u00e1jl a META-INF/MANIFEST.MF f\u00e1jlban a Bundle-ClassPath tulajdons\u00e1gban van megadva.
+
+#-------------------------------------------------------------------------------
+UNABLE_TO_READ_JPA_PROVIDER_SPI_METADATA_CWWJP0002E=CWWJP0002E: A kiszolg\u00e1l\u00f3 nem tudja a(z) {1} f\u00e1jl tartalm\u00e1t beolvasni a(z) {0} Java Persistence API (JPA) szolg\u00e1ltat\u00f3 k\u00f6tegben. A k\u00f6vetkez\u0151 hiba t\u00f6rt\u00e9nt: {2}
+UNABLE_TO_READ_JPA_PROVIDER_SPI_METADATA_CWWJP0002E.explanation=Az alap\u00e9rtelmezett JPA szolg\u00e1ltat\u00f3 feldolgoz\u00e1sa k\u00f6zben a kiszolg\u00e1l\u00f3 nem tudta beolvasni a JPA szolg\u00e1ltat\u00f3i k\u00f6teg egyik f\u00e1jlj\u00e1nak tartalm\u00e1t.
+UNABLE_TO_READ_JPA_PROVIDER_SPI_METADATA_CWWJP0002E.useraction=Vizsg\u00e1lja meg a JPA szolg\u00e1ltat\u00f3i k\u00f6teget, hogy meggy\u0151z\u0151dj\u00f6n r\u00f3la, hogy a META-INF/services/javax.persistence.spi.PersistenceProvider f\u00e1jl l\u00e9tezik \u00e9s megfelel\u0151en van form\u00e1zva.
+
+#-------------------------------------------------------------------------------
+EXTEND_PC_NOT_IN_SFSB_CWWJP0003E=CWWJP0003E: A(z) {0} kiterjesztett megmarad\u00e1si kontextus csak az \u00e1llapot\u0151rz\u0151 munkamenet-komponens hat\u00f3k\u00f6r\u00e9ben kezdem\u00e9nyezhet\u0151.
+EXTEND_PC_NOT_IN_SFSB_CWWJP0003E.explanation=A Java Persistence API (JPA) meghat\u00e1roz\u00e1s megk\u00f6veteli, hogy egy kiterjesztett megmarad\u00e1si kontextus csak egy \u00e1llapot\u0151rz\u0151 munkamenet-komponens hat\u00f3k\u00f6r\u00e9ben kezdem\u00e9nyezhet\u0151, de az alkalmaz\u00e1s egy elt\u00e9r\u0151 komponenst\u00edpus hat\u00f3k\u00f6r\u00e9ben k\u00eds\u00e9relt meg kiterjesztett megmarad\u00e1si kontextust kezdem\u00e9nyezni.
+EXTEND_PC_NOT_IN_SFSB_CWWJP0003E.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1st, hogy kezdem\u00e9nyezze a kiterjesztett megmarad\u00e1si kontextust az \u00e1llapot\u0151rz\u0151 munkamenet-komponens hat\u00f3k\u00f6r\u00e9n bel\u00fcl, vagy m\u00f3dos\u00edtsa a megmarad\u00e1si kontextust.
+
+#-------------------------------------------------------------------------------
+NO_DEFAULT_PERSISTENCE_PROVIDER_CWWJP0004E=CWWJP0004E: A kiszolg\u00e1l\u00f3 nem tal\u00e1lja a(z) {0} Java Persistence API (JPA) szolg\u00e1ltat\u00f3 rendszer alap\u00e9rt\u00e9ket. Az alap\u00e9rtelmezett JPA szolg\u00e1ltat\u00f3 funkci\u00f3 tilt\u00e1sra ker\u00fclt.
+NO_DEFAULT_PERSISTENCE_PROVIDER_CWWJP0004E.explanation=A Java Persistence API for WebSphere term\u00e9kszolg\u00e1ltat\u00f3 a alkalmaz\u00e1skiszolg\u00e1l\u00f3ra ker\u00fcl telep\u00edt\u00e9sre a rendszer alap\u00e9rtelmezett JPA szolg\u00e1ltat\u00f3hoz. Mindemellett, az alap\u00e9rtelmezett szolg\u00e1ltat\u00f3 nem tal\u00e1lhat\u00f3. Ez\u00e9rt, az alap\u00e9rtelmezett JPA funkci\u00f3 tiltott.
+NO_DEFAULT_PERSISTENCE_PROVIDER_CWWJP0004E.useraction=L\u00e9pjen kapcsolatba a rendszeradminisztr\u00e1torral, hogy az alkalmaz\u00e1sfelhaszn\u00e1l\u00f3 el tudja \u00e9rni egy felhaszn\u00e1l\u00f3 \u00e1ltal megadott vagy alap\u00e9rtelmezett rendszer WSJPA megval\u00f3s\u00edt\u00e1st.
+
+#-------------------------------------------------------------------------------
+APPL_CLASSLOADER_USE_HAS_NO_JPA_SUPPORT_CWWJP0005W=CWWJP0005W: A(z) {0} megmarad\u00e1si egys\u00e9g a(z) {1} modulban a(z) {2} ClassLoader t\u00edpust haszn\u00e1lja. A Java Persistence API (JPA) p\u00e9ld\u00e1nyfunkci\u00f3 nem biztos, hogy az elv\u00e1r\u00e1sok szerint m\u0171k\u00f6dik.
+APPL_CLASSLOADER_USE_HAS_NO_JPA_SUPPORT_CWWJP0005W.explanation=A teljes JPA t\u00e1mogat\u00e1s enged\u00e9lyez\u00e9s\u00e9hez egy megmarad\u00e1si szolg\u00e1ltat\u00f3nak lehet, hogy k\u00f3dot kell behelyeznie egy JPA p\u00e9ld\u00e1nyba. A akt\u00edv ClassLoader t\u00edpus nem t\u00e1mogatja a JPA k\u00f3d behelyez\u00e9st. Ez\u00e9rt egy JPA p\u00e9ld\u00e1ny lehet, hogy nem a v\u00e1rtak szerint m\u0171k\u00f6dik.
+APPL_CLASSLOADER_USE_HAS_NO_JPA_SUPPORT_CWWJP0005W.useraction=Nincs teend\u0151.
+
+#-------------------------------------------------------------------------------
+DEFAULT_PERSISTENCE_PROVIDER_LOADED_CWWJP0006I=CWWJP0006I: A(z) {0} oszt\u00e1ly bet\u00f6lt\u00e9sre ker\u00fcl, mint az alap\u00e9rtelmezett Java Persistence API (JPA) szolg\u00e1ltat\u00f3.
+DEFAULT_PERSISTENCE_PROVIDER_LOADED_CWWJP0006I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+DEFAULT_PERSISTENCE_PROVIDER_LOADED_CWWJP0006I.useraction=Nincs teend\u0151.
+
+#-------------------------------------------------------------------------------
+DUPLICATE_PERSISTENCE_UNIT_DEFINED_CWWJP0007W=CWWJP0007W: A(z) {0} megmarad\u00e1si egys\u00e9g a(z) {1} alkalmaz\u00e1s {2} modulj\u00e1ban m\u00e1r meg van hat\u00e1rozva.
+DUPLICATE_PERSISTENCE_UNIT_DEFINED_CWWJP0007W.explanation=Amint az a Java Persistence API (JPA) meghat\u00e1roz\u00e1s 6.2 r\u00e9sz\u00e9ben ki van jelentve, a megmarad\u00e1si egys\u00e9g nev\u00e9nek egyedinek kell lennie egy JavaBeans-Java arch\u00edvum (EJB-JAR) f\u00e1jlban, egy webarch\u00edvum (WAR) f\u00e1jlban, egy alkalmaz\u00e1skiszolg\u00e1l\u00f3 JAR f\u00e1jlban, vagy egy EAR f\u00e1jlban.  A megmarad\u00e1si egys\u00e9g m\u00e1sodp\u00e9ld\u00e1nyai figyelmen k\u00edv\u00fcl maradnak.
+DUPLICATE_PERSISTENCE_UNIT_DEFINED_CWWJP0007W.useraction=Miel\u0151tt \u00fajrapr\u00f3b\u00e1ln\u00e1, nevezze \u00e1t, vagy t\u00e1vol\u00edtsa el a megmarad\u00e1si egys\u00e9g m\u00e1sodp\u00e9ld\u00e1ny\u00e1t.
+
+#-------------------------------------------------------------------------------
+NO_JTA_TX_SYNC_REGISTRY_CWWJP0008E=CWWJP0008E: A kiszolg\u00e1l\u00f3 nem k\u00e9pes megkeresni a Java tranzakci\u00f3 API (JTA) nyilv\u00e1ntart\u00e1st a(z) {0} n\u00e9v JNDI kikeres\u00e9s\u00e9vel. A k\u00f6vetkez\u0151 hiba t\u00f6rt\u00e9nt: {1}
+NO_JTA_TX_SYNC_REGISTRY_CWWJP0008E.explanation=A kiszolg\u00e1l\u00f3 fut\u00e1si k\u00f6rnyezete nem k\u00e9pes a m\u0171velet sz\u00e1l t\u00e1rs\u00edt\u00e1s\u00e1ra egyetlen Java Platform, Enterprise Edition 5 (Java EE 5) alkalmaz\u00e1s \u00f6sszetev\u0151vel.  Ez a helyzet akkor \u00e1llhat el\u0151, amikor a java: nevet haszn\u00e1l\u00f3 JNDI \u00fcgyf\u00e9l nem a kiszolg\u00e1l\u00f3 alkalmaz\u00e1s k\u00e9r\u00e9s\u00e9nek sz\u00e1l\u00e1n fut.
+NO_JTA_TX_SYNC_REGISTRY_CWWJP0008E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a Java EE 5 alkalmaz\u00e1s nem futtat JNDI m\u0171veleteket java: neveken statikus k\u00f3dblokkok belsej\u00e9ben vagy a Java EE 5 alkalmaz\u00e1s \u00e1ltal l\u00e9trehozott sz\u00e1lakban.  Az ilyen k\u00f3d nem felt\u00e9tlen\u00fcl a kiszolg\u00e1l\u00f3 alkalmaz\u00e1s k\u00e9r\u00e9s\u00e9nek sz\u00e1l\u00e1n fut, \u00e9s ebb\u0151l ered\u0151en a java: neveken v\u00e9gzett JNDI m\u0171veletek sem t\u00e1mogatj\u00e1k.
+
+#-------------------------------------------------------------------------------
+UNABLE_TO_CREATE_ENTITY_MANAGER_FACTORY_CWWJP0009E=CWWJP0009E: A kiszolg\u00e1l\u00f3 nem k\u00e9pes l\u00e9trehozni egy EntityManagerFactory gy\u00e1rat a(z) {0} perzisztens egys\u00e9ghez a(z) {1} szolg\u00e1ltat\u00f3b\u00f3l a(z) {2} modulban.
+UNABLE_TO_CREATE_ENTITY_MANAGER_FACTORY_CWWJP0009E.explanation=A Java Persistence API (JPA) szolg\u00e1ltat\u00f3 createContainerEntityManagerFactory met\u00f3dusnak nem siker\u00fclt egy EntityManagerFactory gy\u00e1r visszaad\u00e1sa. Ez akkor t\u00f6rt\u00e9nhet meg, ha helytelen JPA szolg\u00e1ltat\u00f3 van haszn\u00e1latban a perzisztens egys\u00e9ghez, vagy hiba keletkezett a JPA szolg\u00e1ltat\u00f3ban.
+UNABLE_TO_CREATE_ENTITY_MANAGER_FACTORY_CWWJP0009E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a helyes JPA szolg\u00e1ltat\u00f3 ker\u00fclt konfigur\u00e1l\u00e1sra a perzisztens egys\u00e9ghez, \u00e9s ellen\u0151rizzen minden kor\u00e1bbi hib\u00e1t a JPA szolg\u00e1ltat\u00f3b\u00f3l.
+
+#-------------------------------------------------------------------------------
+APPL_NOT_FOUND_DURING_PU_LOOKUP_CWWJP0010W=CWWJP0010W: A kiszolg\u00e1l\u00f3 nem tal\u00e1lja a(z) {0} nev\u0171 bevezetett alkalmaz\u00e1st, amikor megpr\u00f3b\u00e1lja megtal\u00e1lni a(z) {2} perzisztens egys\u00e9get a(z) {1} modulban.
+APPL_NOT_FOUND_DURING_PU_LOOKUP_CWWJP0010W.explanation=Az alkalmaz\u00e1s vagy nincs telep\u00edtve vagy nem ker\u00fclt elind\u00edt\u00e1sra.
+APPL_NOT_FOUND_DURING_PU_LOOKUP_CWWJP0010W.useraction=Telep\u00edtse vagy ind\u00edtsa el az alkalmaz\u00e1st.
+
+#-------------------------------------------------------------------------------
+PU_NOT_SPECIFIED_AND_NO_UNIQUE_PU_FOUND_CWWJP0012E=CWWJP0012E: A perzisztens egys\u00e9g neve nincs megadva, \u00e9s nem tal\u00e1lhat\u00f3 egyedi perzisztens egys\u00e9g a(z) {0} alkalmaz\u00e1sban \u00e9s {1} modulban.
+PU_NOT_SPECIFIED_AND_NO_UNIQUE_PU_FOUND_CWWJP0012E.explanation=Az alkalmaz\u00e1s meghat\u00e1rozott egy perzisztens egys\u00e9get, vagy perzisztens kontextus hivatkoz\u00e1st egy perzisztens egys\u00e9gn\u00e9v n\u00e9lk\u00fcl, \u00e9s egy egyedi perzisztens egys\u00e9g nem tal\u00e1lhat\u00f3.
+PU_NOT_SPECIFIED_AND_NO_UNIQUE_PU_FOUND_CWWJP0012E.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1st \u00fagy, hogy megadjon egy perzisztens egys\u00e9g nevet a hivatkoz\u00e1shoz, vagy adjon meg egy egyedi perzisztenci\u00e1t.
+
+#-------------------------------------------------------------------------------
+UNABLE_TO_GET_DATASOURCE_FOR_PU_CWWJP0013E=CWWJP0013E: A kiszolg\u00e1l\u00f3 nem k\u00e9pes a(z) {0} adatforr\u00e1s kikeres\u00e9s\u00e9re a(z) {1} perzisztens egys\u00e9ghez, mivel  k\u00f6vetkez\u0151 kiv\u00e9telt kapta: \n {2}.
+UNABLE_TO_GET_DATASOURCE_FOR_PU_CWWJP0013E.explanation=A kiszolg\u00e1l\u00f3 megk\u00eds\u00e9relte a perzisztens egys\u00e9ghez megkeresni az adatforr\u00e1st. De az adatforr\u00e1s nem tal\u00e1lhat\u00f3.
+UNABLE_TO_GET_DATASOURCE_FOR_PU_CWWJP0013E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00e9rt adatforr\u00e1s l\u00e9trej\u00f6tt \u00e9s k\u00f6t\u00e9sre ker\u00fclt.
+
+#-------------------------------------------------------------------------------
+ILLEGAL_CLASS_FORMAT_IN_CLASS_TRANSFORMATION_CWWJP0014E=CWWJP0014E: Egy illeg\u00e1lis form\u00e1tum lett \u00e9szlelve a(z) {0} oszt\u00e1ly \u00e1talak\u00edt\u00e1sa sor\u00e1n. Az oszt\u00e1ly nem ker\u00fclt \u00e1talak\u00edt\u00e1sra.
+ILLEGAL_CLASS_FORMAT_IN_CLASS_TRANSFORMATION_CWWJP0014E.explanation=A Java Persistence API (JPA) szolg\u00e1ltat\u00f3 megk\u00eds\u00e9relt egy oszt\u00e1lyt \u00e1talak\u00edtani, de a pr\u00f3b\u00e1lkoz\u00e1s IllegalClassFormatException kiv\u00e9tellel meghi\u00fasult. Vagy az oszt\u00e1lyf\u00e1jl s\u00e9r\u00fclt, vagy a JPA szolg\u00e1ltat\u00f3nak van probl\u00e9m\u00e1ja.
+ILLEGAL_CLASS_FORMAT_IN_CLASS_TRANSFORMATION_CWWJP0014E.useraction=Jav\u00edtsa ki a s\u00e9r\u00fclt oszt\u00e1lyf\u00e1jlt, vagy keresse meg a JPA szolg\u00e1ltat\u00f3t seg\u00edts\u00e9g\u00e9rt.
+
+#-------------------------------------------------------------------------------
+CREATE_CONTAINER_ENTITYMANAGER_FACTORY_ERROR_CWWJP0015E=CWWJP0015E: Hiba t\u00f6rt\u00e9nt a(z) {0} perzisztencia szolg\u00e1ltat\u00f3ban, amikor megk\u00eds\u00e9relte l\u00e9trehozni a t\u00e1rol\u00f3 p\u00e9ld\u00e1nykezel\u0151 gy\u00e1rat a(z) {1} perzisztencia egys\u00e9ghez. A k\u00f6vetkez\u0151 hiba t\u00f6rt\u00e9nt: {2}
+CREATE_CONTAINER_ENTITYMANAGER_FACTORY_ERROR_CWWJP0015E.explanation=A Java Persistence API (JPA) szolg\u00e1ltat\u00f3 createContainerEntityManagerFactory met\u00f3dus meghi\u00fasult.
+CREATE_CONTAINER_ENTITYMANAGER_FACTORY_ERROR_CWWJP0015E.useraction=Keresse meg seg\u00edts\u00e9g\u00e9rt a JPA szolg\u00e1ltat\u00f3t.
+
+#-------------------------------------------------------------------------------
+DUPL_PCTXT_REF_CWWJP0016W=CWWJP0016W: T\u00f6bb persistence-context-ref ker\u00fclt meghat\u00e1roz\u00e1sra {0} n\u00e9vvel a(z) {1} bevezet\u00e9si le\u00edr\u00e1s f\u00e1jlban.
+DUPL_PCTXT_REF_CWWJP0016W.explanation=T\u00f6bb perzisztens kontextus hivatkoz\u00e1s ker\u00fclt deklar\u00e1l\u00e1sra a bevezet\u00e9s le\u00edr\u00e1si f\u00e1jlba. Minden p\u00e9ld\u00e1ny, az els\u0151 kiv\u00e9tel\u00e9vel, figyelmen k\u00edv\u00fcl marad.
+DUPL_PCTXT_REF_CWWJP0016W.useraction=Miel\u0151tt \u00fajrapr\u00f3b\u00e1ln\u00e1, nevezze \u00e1t, vagy t\u00e1vol\u00edtsa el a megmarad\u00e1si kontextus hivatkoz\u00e1s m\u00e1sodp\u00e9ld\u00e1ny\u00e1t.
+
+#-------------------------------------------------------------------------------
+JPA_HAS_STARTED_CWWJP0017I=CWWJP0017I: A Java Persistence API (JPA) \u00f6sszetev\u0151 elindult.
+JPA_HAS_STARTED_CWWJP0017I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+JPA_HAS_STARTED_CWWJP0017I.useraction=Nincs teend\u0151.
+
+#-------------------------------------------------------------------------------
+MALFORMED_PERSISTENCE_XML_CWWJP0018E=CWWJP0018E: Helytelen szintaxis vagy hiba a(z) {0} f\u00e1jlban. A k\u00f6vetkez\u0151 t\u00e1rs\u00edtott hiba\u00fczenet jelentkezett: {1}
+MALFORMED_PERSISTENCE_XML_CWWJP0018E.explanation=Az XML f\u00e1jl hib\u00e1kat tartalmaz \u00e9s nem felel meg a s\u00e9mameghat\u00e1roz\u00e1snak. Lehet, hogy az alkalmaz\u00e1s nem a v\u00e1rt m\u00f3don m\u0171k\u00f6dik.
+MALFORMED_PERSISTENCE_XML_CWWJP0018E.useraction=Jav\u00edtsa ki a hib\u00e1kat a persistence.xml f\u00e1jlban \u00e9s pr\u00f3b\u00e1lkozzon \u00fajra.
+
+#-------------------------------------------------------------------------------
+APPL_STARTED_CWWJP0019W=CWWJP0019W: A(z) {0} alkalmaz\u00e1s m\u00e1r elindult.
+APPL_STARTED_CWWJP0019W.explanation=CMSG0001
+APPL_STARTED_CWWJP0019W.useraction=CMSG0002
+
+#-------------------------------------------------------------------------------
+STARTING_MODULE_IN_UNDEPLOYED_APPL_CWWJP0020E=CWWJP0020E: Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 nem k\u00e9pes elind\u00edtani a(z) {1} alkalmaz\u00e1s {0} modulj\u00e1t, mert az alkalmaz\u00e1s nincs telep\u00edtve.
+STARTING_MODULE_IN_UNDEPLOYED_APPL_CWWJP0020E.explanation=Ellen\u0151rizze, hogy az alkalmaz\u00e1s helyesen lett a modullal \u00f6ssze\u00e1ll\u00edtva \u00e9s telep\u00edtve.
+STARTING_MODULE_IN_UNDEPLOYED_APPL_CWWJP0020E.useraction=Haszn\u00e1ljon alkalmaz\u00e1s \u00f6ssze\u00e1ll\u00edt\u00e1si eszk\u00f6zt az alkalmaz\u00e1s konfigur\u00e1ci\u00f3j\u00e1nak ellen\u0151rz\u00e9s\u00e9hez, az alkalmaz\u00e1s telep\u00edt\u00e9s\u00e9hez, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+
+#-------------------------------------------------------------------------------
+JPA_IS_DISABLED_CWWJP0022I=CWWJP0022I: A Java Persistence API (JPA) \u00f6sszetev\u0151 le van tiltva.
+JPA_IS_DISABLED_CWWJP0022I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+JPA_IS_DISABLED_CWWJP0022I.useraction=Nincs teend\u0151.
+
+#-------------------------------------------------------------------------------
+UNABLE_TO_CREATE_EMF_FOR_INJECTION_CWWJP0023E=CWWJP0023E: A kiszolg\u00e1l\u00f3 nem k\u00e9pes l\u00e9trehozni egy EntityManagerFactory p\u00e9ld\u00e1nyt a(z) {0} perzisztens egys\u00e9ghez f\u00fcgg\u0151s\u00e9gi besz\u00far\u00e1shoz a(z) {1}  alkalmaz\u00e1s {2} modulj\u00e1ba.
+UNABLE_TO_CREATE_EMF_FOR_INJECTION_CWWJP0023E.explanation=A megmarad\u00e1si egys\u00e9get \u00e9s f\u00fcgg\u0151s\u00e9gbesz\u00far\u00e1si feljegyz\u00e9st megfelel\u0151en kell megadni.
+UNABLE_TO_CREATE_EMF_FOR_INJECTION_CWWJP0023E.useraction=Ellen\u0151rizze, hogy az megmarad\u00e1si egys\u00e9g \u00e9s a f\u00fcgg\u0151s\u00e9gbesz\u00far\u00e1si feljegyz\u00e9s megfelel\u0151en van-e megadva. Pr\u00f3b\u00e1lja \u00fajra a folyamatot.
+
+#-------------------------------------------------------------------------------
+INCORRECT_PU_JARFILE_URL_SPEC_CWWJP0024E=CWWJP0024E: A(z) {0} Java arch\u00edvum (JAR) f\u00e1jl meghat\u00e1roz\u00e1s a(z) {1} perzisztens egys\u00e9ghez helytelen.
+INCORRECT_PU_JARFILE_URL_SPEC_CWWJP0024E.explanation=A perzisztens egys\u00e9g JAR f\u00e1jlmeghat\u00e1roz\u00e1sa rosszul form\u00e1zott. Ez\u00e9rt a Java Persistence API (JPA) \u00f6sszetev\u0151 nem k\u00e9pes ezen adatok biztos\u00edt\u00e1s\u00e1ra a perzisztencia szolg\u00e1ltat\u00f3nak.
+INCORRECT_PU_JARFILE_URL_SPEC_CWWJP0024E.useraction=Jav\u00edtsa ki a JAR f\u00e1jl specifik\u00e1ci\u00f3t, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+
+#-------------------------------------------------------------------------------
+INCORRECT_PU_ROOT_URL_SPEC_CWWJP0025E=CWWJP0025E: A kiszolg\u00e1l\u00f3 nem k\u00e9pes azonos\u00edtani a(z) {0} Java Persistence API (JPA) gy\u00f6k\u00e9r URL c\u00edmet a(z) {2} modulhoz a(z) {1} alkalmaz\u00e1sban.
+INCORRECT_PU_ROOT_URL_SPEC_CWWJP0025E.explanation=Az alkalmaz\u00e1s egyik modulj\u00e1nak JPA gy\u00f6k\u00e9r URL c\u00edme rosszul form\u00e1zott.
+INCORRECT_PU_ROOT_URL_SPEC_CWWJP0025E.useraction=CMSG0002
+
+#-------------------------------------------------------------------------------
+JPA_IS_INITIALIZING_CWWJP0026I=CWWJP0026I: A Java Persistence API (JPA) \u00f6sszetev\u0151 inicializ\u00e1l\u00e1s alatt van.
+JPA_IS_INITIALIZING_CWWJP0026I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+JPA_IS_INITIALIZING_CWWJP0026I.useraction=Nincs teend\u0151.
+
+#-------------------------------------------------------------------------------
+JPA_HAS_INITIALIZED_CWWJP0027I=CWWJP0027I: A Java Persistence API (JPA) \u00f6sszetev\u0151 inicializ\u00e1l\u00e1sra ker\u00fclt.
+JPA_HAS_INITIALIZED_CWWJP0027I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+JPA_HAS_INITIALIZED_CWWJP0027I.useraction=Nincs teend\u0151.
+
+#-------------------------------------------------------------------------------
+JPA_IS_STARTING_CWWJP0028I=CWWJP0028I: A Java Persistence API (JPA) \u00f6sszetev\u0151 ind\u00edt\u00e1s alatt van.
+JPA_IS_STARTING_CWWJP0028I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+JPA_IS_STARTING_CWWJP0028I.useraction=Nincs teend\u0151.
+
+#-------------------------------------------------------------------------------
+PU_NOT_FOUND_CWWJP0029E=CWWJP0029E: A kiszolg\u00e1l\u00f3 nem tal\u00e1lja a(z) {2} perzisztens egys\u00e9get a(z) {1} modulban \u00e9s a(z) {0} alkalmaz\u00e1sban.
+PU_NOT_FOUND_CWWJP0029E.explanation=Egy alkalmaz\u00e1s olyan megmarad\u00f3egys\u00e9g-hivatkoz\u00e1st hat\u00e1rozott meg egy megmarad\u00f3 egys\u00e9ghez, amely nem tal\u00e1lhat\u00f3 a META-INF/persistence.xml f\u00e1jlt az oszt\u00e1lyel\u00e9r\u00e9si \u00faton l\u00e9v\u0151 \u00f6sszes f\u00e1jlban \u00e9s k\u00f6nyvt\u00e1rban keresve sem.
+PU_NOT_FOUND_CWWJP0029E.useraction=Ellen\u0151rizze, hogy helyesen van-e megadva a megmarad\u00f3 egys\u00e9g neve, \u00e9s hogy helyesen van-e \u00f6ssze\u00e1ll\u00edtva a megmarad\u00f3 egys\u00e9g az alkalmaz\u00e1sban. Ehhez ellen\u0151rizze, hogy a megmarad\u00f3 egys\u00e9g olyan META-INF/persistence.xml f\u00e1jlban van-e meghat\u00e1rozva, amely az oszt\u00e1lyel\u00e9r\u00e9si \u00faton el\u00e9rhet\u0151 JAR arch\u00edvumban vagy k\u00f6nyvt\u00e1rban tal\u00e1lhat\u00f3.
+
+#-------------------------------------------------------------------------------
+DATASOURCE_NOT_FOUND_IN_COMPONENT_NAMESPACE_CWWJP0030E=CWWJP0030E: A kiszolg\u00e1l\u00f3 nem k\u00e9pes a(z) {0} adatforr\u00e1s kikeres\u00e9s\u00e9re a(z) {1} perzisztens egys\u00e9g \u00f6sszetev\u0151 n\u00e9vter\u00e9ben. A k\u00f6vetkez\u0151 hiba t\u00f6rt\u00e9nt: {2}
+DATASOURCE_NOT_FOUND_IN_COMPONENT_NAMESPACE_CWWJP0030E.explanation=Ehhez a perzisztens egys\u00e9ghez meghat\u00e1rozott adatforr\u00e1snak k\u00f6tve kell lennie az \u00f6sszetev\u0151 n\u00e9vt\u00e9rben.
+DATASOURCE_NOT_FOUND_IN_COMPONENT_NAMESPACE_CWWJP0030E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00e9rt adatforr\u00e1s l\u00e9trej\u00f6tt \u00e9s k\u00f6t\u00e9sre ker\u00fclt a java:comp/env n\u00e9vt\u00e9rben.
+
+#-------------------------------------------------------------------------------
+DATASOURCE_NOT_FOUND_IN_GLOBAL_NAMESPACE_CWWJP0031E=CWWJP0031E: A kiszolg\u00e1l\u00f3 nem k\u00e9pes a(z) {0} adatforr\u00e1s kikeres\u00e9s\u00e9re a(z) {1} perzisztens egys\u00e9g glob\u00e1lis n\u00e9vter\u00e9ben. A k\u00f6vetkez\u0151 hiba t\u00f6rt\u00e9nt: {2}
+DATASOURCE_NOT_FOUND_IN_GLOBAL_NAMESPACE_CWWJP0031E.explanation=Ehhez a perzisztens egys\u00e9ghez meghat\u00e1rozott adatforr\u00e1snak k\u00f6tve kell lennie a glob\u00e1lis n\u00e9vt\u00e9rben.
+DATASOURCE_NOT_FOUND_IN_GLOBAL_NAMESPACE_CWWJP0031E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00e9rt adatforr\u00e1s l\u00e9trej\u00f6tt \u00e9s k\u00f6t\u00e9sre ker\u00fclt a glob\u00e1lis n\u00e9vt\u00e9rben.
+
+#-------------------------------------------------------------------------------
+CONNECTION_NOT_FOUND_CWWJP0032E=CWWJP0032E: A java.sql.Connection met\u00f3dus h\u00edv\u00e1s meghi\u00fasult a k\u00f6vetkez\u0151 hib\u00e1val: {0}
+CONNECTION_NOT_FOUND_CWWJP0032E.explanation=A lez\u00e1r\u00f3 met\u00f3duson \u00e9s az isClosed met\u00f3duson k\u00edv\u00fcl m\u00e1s java.sql.Connection met\u00f3dus nem h\u00edvhat\u00f3 meg, mert a kiszolg\u00e1l\u00f3 fut\u00e1si k\u00f6rnyezete nem k\u00e9pes a m\u0171velet sz\u00e1l t\u00e1rs\u00edt\u00e1s\u00e1ra egyetlen Java Platform, Enterprise Edition 5 (Java EE 5) alkalmaz\u00e1s \u00f6sszetev\u0151vel.  Ez a helyzet akkor \u00e1llhat el\u0151, amikor a java: nevet haszn\u00e1l\u00f3 JNDI \u00fcgyf\u00e9l nem a kiszolg\u00e1l\u00f3 alkalmaz\u00e1s k\u00e9r\u00e9s\u00e9nek sz\u00e1l\u00e1n fut.
+CONNECTION_NOT_FOUND_CWWJP0032E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a Java EE 5 alkalmaz\u00e1s nem futtat JNDI m\u0171veleteket java: neveken statikus k\u00f3dblokkok belsej\u00e9ben vagy a Java EE 5 alkalmaz\u00e1s \u00e1ltal l\u00e9trehozott sz\u00e1lakban.  Ez a k\u00f3d nem felt\u00e9tlen\u00fcl a kiszolg\u00e1l\u00f3 alkalmaz\u00e1s k\u00e9r\u00e9s\u00e9nek sz\u00e1l\u00e1n fut.  Ez\u00e9rt a k\u00f3dot a JNDI m\u0171veletek sem t\u00e1mogatj\u00e1k java: neveken.
+
+#-------------------------------------------------------------------------------
+NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E=CWWJP0033E: A kiszolg\u00e1l\u00f3 nem k\u00e9pes a(z) {0} adatforr\u00e1s kikeres\u00e9s\u00e9re a(z) {1} perzisztens egys\u00e9g \u00f6sszetev\u0151 n\u00e9vter\u00e9ben, mivel nem l\u00e9tezik \u00f6sszetev\u0151 kontextus a sz\u00e1lon.
+NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.explanation=Az adatforr\u00e1s nem tal\u00e1lhat\u00f3, mert a kiszolg\u00e1l\u00f3 fut\u00e1si k\u00f6rnyezete nem k\u00e9pes a m\u0171velet sz\u00e1lat egy Java Platform, Enterprise Edition 5 (Java EE 5) alkalmaz\u00e1s \u00f6sszetev\u0151h\u00f6z t\u00e1rs\u00edtani.  Ez a helyzet akkor \u00e1llhat el\u0151, amikor a \"java:\" nevet haszn\u00e1l\u00f3 JNDI \u00fcgyf\u00e9l nem a kiszolg\u00e1l\u00f3 alkalmaz\u00e1s k\u00e9r\u00e9s\u00e9nek sz\u00e1l\u00e1n ker\u00fcl futtat\u00e1sra.
+NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a Java EE 5 alkalmaz\u00e1s nem futtat JNDI m\u0171veleteket java: neveken statikus k\u00f3dblokkok belsej\u00e9ben vagy a Java EE 5 alkalmaz\u00e1s \u00e1ltal l\u00e9trehozott sz\u00e1lakban.  Ez a k\u00f3d nem felt\u00e9tlen\u00fcl a kiszolg\u00e1l\u00f3 alkalmaz\u00e1s k\u00e9r\u00e9s\u00e9nek sz\u00e1l\u00e1n fut.  Ez\u00e9rt a k\u00f3dot a JNDI m\u0171veletek sem t\u00e1mogatj\u00e1k java: neveken.
+
+#----------------------------------
+ENGLISH_ONLY_INFO_MESSAGE_CWWJP0034I=CWWJP0034I: Ez az \u00fczenet egy kiz\u00e1r\u00f3lag angol nyelv\u0171 inform\u00e1ci\u00f3s \u00fczenet: {0}.
+ENGLISH_ONLY_INFO_MESSAGE_CWWJP0034I.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet nem ker\u00fclt leford\u00edt\u00e1sra.
+ENGLISH_ONLY_INFO_MESSAGE_CWWJP0034I.useraction=R\u00e9szletek\u00e9rt tekintse meg az \u00fczenetet.
+
+# ---------------------------------
+ENGLISH_ONLY_WARN_MESSAGE_CWWJP0035W=CWWJP0035W: Ez az \u00fczenet egy kiz\u00e1r\u00f3lag angol nyelv\u0171 figyelmeztet\u0151 \u00fczenet: {0}.
+ENGLISH_ONLY_WARN_MESSAGE_CWWJP0035W.explanation=Ez a figyelmeztet\u0151 \u00fczenet nem ker\u00fclt leford\u00edt\u00e1sra.
+ENGLISH_ONLY_WARN_MESSAGE_CWWJP0035W.useraction=R\u00e9szletek\u00e9rt tekintse meg az \u00fczenetet.
+
+# ---------------------------------
+ENGLISH_ONLY_ERROR_MESSAGE_CWWJP0036E=CWWJP0036E: Ez az \u00fczenet egy kiz\u00e1r\u00f3lag angol nyelv\u0171 hiba\u00fczenet: {0}.
+ENGLISH_ONLY_ERROR_MESSAGE_CWWJP0036E.explanation=Ez a hiba\u00fczenet nem ker\u00fclt leford\u00edt\u00e1sra.
+ENGLISH_ONLY_ERROR_MESSAGE_CWWJP0036E.useraction=R\u00e9szletek\u00e9rt tekintse meg az \u00fczenetet.
+
+# ---------------------------------
+NO_UOW_SYNC_REGISTRY_CWWJP0037E=CWWJP0037E: A Munkaegys\u00e9g szinkroniz\u00e1l\u00e1si nyilv\u00e1ntart\u00e1s nem tal\u00e1lhat\u00f3 a(z) {0} a glob\u00e1lis n\u00e9vt\u00e9rben a k\u00f6vetkez\u0151 kiv\u00e9tel miatt: {1}
+NO_UOW_SYNC_REGISTRY_CWWJP0037E.explanation=A Java Persistence API (JPA) szolg\u00e1ltat\u00f3 nem k\u00e9pes megfelel\u0151en m\u0171k\u00f6dni, ha nincs hozz\u00e1f\u00e9r\u00e9se a UOWSynchronizationRegistry nyilv\u00e1ntart\u00e1shoz, mellyel k\u00e9pes r\u00e9szt venni a tranzakci\u00f3kban.
+NO_UOW_SYNC_REGISTRY_CWWJP0037E.useraction=CMSG0002
+
+# ---------------------------------
+NO_COMPONENT_CONTEXT_CWWJP0038E=CWWJP0038E: A k\u00e9rt Java Persistence API (JPA) met\u00f3dus befejez\u00e9se a(z) {0} megmarad\u00e1si kontextushoz sikertelen, mert  az  Java Platform, Enterprise Edition 5 (Java EE 5) alkalmaz\u00e1s \u00f6sszetev\u0151 hat\u00f3k\u00f6r\u00e9n k\u00edv\u00fclr\u0151l ker\u00fcl h\u00edv\u00e1sra.
+NO_COMPONENT_CONTEXT_CWWJP0038E.explanation=Az \u00f6sszetev\u0151 kontextus nem l\u00e9tezik a sz\u00e1lon. A kiszolg\u00e1l\u00f3 fut\u00e1si k\u00f6rnyezete nem k\u00e9pes a m\u0171velet sz\u00e1lat egy Java Platform, Enterprise Edition 5 (Java EE 5) alkalmaz\u00e1s \u00f6sszetev\u0151h\u00f6z t\u00e1rs\u00edtani. Ez a helyzet akkor fordulhat el\u0151, ha az \u00fcgyf\u00e9l EntityManager m\u0171veleteket k\u00eds\u00e9rel meg egy nem kiszolg\u00e1l\u00f3 alkalmaz\u00e1s sz\u00e1lon.
+NO_COMPONENT_CONTEXT_CWWJP0038E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a Java EE 5 alkalmaz\u00e1s nem futtat EntityManager m\u0171veleteket statikus k\u00f3dblokkokon bel\u00fcl vagy a Java EE alkalmaz\u00e1s \u00e1ltal l\u00e9trehozott sz\u00e1lakban.
+
+# ---------------------------------
+PROPERTY_SYNTAX_ERROR_IN_PERSISTENCE_XML_CWWJP0039E=CWWJP0039E: Szintaktikai hiba tal\u00e1lhat\u00f3 a perzisztens egys\u00e9g persistence.xml f\u00e1jlj\u00e1nak tulajdons\u00e1gaiban :  {0}  (tulajdons\u00e1g = {1}, \u00e9rt\u00e9k = {2}).  A k\u00f6vetkez\u0151 hiba t\u00f6rt\u00e9nt: {3}.
+PROPERTY_SYNTAX_ERROR_IN_PERSISTENCE_XML_CWWJP0039E.explanation= A perzisztens egys\u00e9g persistence.xml f\u00e1jlja szintaktikai hib\u00e1t tartalmaz.  Sem a tulajdons\u00e1g, sem az \u00e9rt\u00e9k nem lehet "null".
+PROPERTY_SYNTAX_ERROR_IN_PERSISTENCE_XML_CWWJP0039E.useraction= Jav\u00edtsa a persistence.xml f\u00e1jl szintaktikai hib\u00e1j\u00e1t.
+
+#-------------------------------------------------------------------------------
+SYNTAX_ERROR_IN_PERSISTENCE_XML_CWWJP0040E=CWWJP0040E: Helytelen szintaxis vagy hiba tal\u00e1lhat\u00f3 a persistence.xml f\u00e1jlban. Alkalmaz\u00e1s: {0}, modul: {1}, sorsz\u00e1m: {2}, oszlopsz\u00e1m: {3}. A k\u00f6vetkez\u0151 t\u00e1rs\u00edtott hiba\u00fczenet jelentkezett: {4}
+SYNTAX_ERROR_IN_PERSISTENCE_XML_CWWJP0040E.explanation=A persistence f\u00e1jl hib\u00e1kat tartalmaz \u00e9s nem felel meg a s\u00e9mameghat\u00e1roz\u00e1snak. Lehet, hogy az alkalmaz\u00e1s nem a v\u00e1rt m\u00f3don m\u0171k\u00f6dik.
+SYNTAX_ERROR_IN_PERSISTENCE_XML_CWWJP0040E.useraction=Jav\u00edtsa ki a hib\u00e1kat a persistence.xml f\u00e1jlban \u00e9s pr\u00f3b\u00e1lkozzon \u00fajra.
+
+#-------------------------------------------------------------------------------
+CONFLICTING_XML_VALUES_CWWJP0041E=CWWJP0041E: A(z) {1} alkalmaz\u00e1s {0} modulja \u00fctk\u00f6z\u0151 be\u00e1ll\u00edt\u00e1si adatokat tartalmaz az XML telep\u00edt\u00e9sle\u00edr\u00f3ban. \u00dctk\u00f6z\u0151 {2} elem\u00e9rt\u00e9kek tal\u00e1lhat\u00f3k t\u00f6bb {3} elem eset\u00e9ben azonos {4} elem\u00e9rt\u00e9kkel: {5}. Az \u00fctk\u00f6z\u0151 {2} elem \u00e9rt\u00e9kei {6} \u00e9s {7}.
+CONFLICTING_XML_VALUES_CWWJP0041E.explanation=Ha ugyanahhoz az \u00f6sszetev\u0151n\u00e9vt\u00e9rhez t\u00f6bb azonos nev\u0171 \u00e1lland\u00f3 egys\u00e9g vagy \u00e1lland\u00f3 kontextushivatkoz\u00e1s van meghat\u00e1rozva az XML telep\u00edt\u00e9sle\u00edr\u00f3ban, a hivatkoz\u00e1s minden attrib\u00fatum\u00e1nak azonosnak kell lennie. A jellemz\u0151 helyzet, ahol ez el\u0151fordulhat, az, amikor hivatkoz\u00e1sokat hat\u00e1roz meg egy v\u00e1llalati komponenshez \u00e9s a hozz\u00e1 tartoz\u00f3 elfog\u00f3oszt\u00e1lyhoz. A komponens \u00e9s az elfog\u00f3 ugyanazon az \u00f6sszetev\u0151n\u00e9vt\u00e9ren osztozik, ez\u00e9rt a kett\u0151 k\u00f6z\u00f6s hivatkoz\u00e1sainak kompatibiliseknek kell lenni\u00fck.
+CONFLICTING_XML_VALUES_CWWJP0041E.useraction=Az XML telep\u00edt\u00e9sle\u00edr\u00f3ban v\u00e1ltoztassa meg a hivatkoz\u00e1sok valamelyik\u00e9nek nev\u00e9t vagy az \u00fctk\u00f6z\u0151 \u00e9rt\u00e9kek valamelyik\u00e9t \u00fagy, hogy az \u00e9rt\u00e9kek egyezzenek.
+
+#-------------------------------------------------------------------------------
+CONFLICTING_ANNOTATION_VALUES_CWWJP0042E=CWWJP0042E: A(z) {2} alkalmaz\u00e1s {1} modulj\u00e1ban tal\u00e1lhat\u00f3 {0} \u00f6sszetev\u0151 forr\u00e1sk\u00f3d feljegyz\u00e9seiben konfigur\u00e1ci\u00f3s adat \u00fctk\u00f6z\u00e9s tal\u00e1lhat\u00f3. \u00dctk\u00f6z\u0151 {3} attrib\u00fatum\u00e9rt\u00e9kek tal\u00e1lhat\u00f3k t\u00f6bb {4} feljegyz\u00e9s eset\u00e9ben azonos {5} attrib\u00fatum\u00e9rt\u00e9kkel: {6}. A(z) {3} \u00fctk\u00f6z\u0151 attrib\u00fatum\u00e9rt\u00e9kek: {7} \u00e9s {8}.
+CONFLICTING_ANNOTATION_VALUES_CWWJP0042E.explanation=Ha t\u00f6bb megmarad\u00f3 egys\u00e9g vagy megmarad\u00f3 kontextus-hivatkoz\u00e1s van megadva azonos n\u00e9vvel rendelkez\u0151 azonos \u00f6sszetev\u0151-n\u00e9vterek forr\u00e1sk\u00f3d feljegyz\u00e9seiben, akkor a hivatkoz\u00e1s \u00f6sszes attrib\u00fatum\u00e1nak azonosnak vagy egym\u00e1shoz rendelhet\u0151nek kell lennie.
+CONFLICTING_ANNOTATION_VALUES_CWWJP0042E.useraction=V\u00e1ltoztassa meg az egyik hivatkoz\u00e1s nev\u00e9t a forr\u00e1sk\u00f3d feljegyz\u00e9seiben, vagy \u00e1ll\u00edtsa az \u00fctk\u00f6z\u0151 \u00e9rt\u00e9keket azonosra vagy egym\u00e1shoz rendelhet\u0151re.
+
+#-------------------------------------------------------------------------------
+INVALID_JAVA_GLOBAL_REF_CWWJP0043E=CWWJP0043E: A(z) {3} alkalmaz\u00e1s {2} modulj\u00e1ban l\u00e9v\u0151 {1} komponens a(z) {0} perzisztens hivatkoz\u00e1st deklar\u00e1lja, de a java:global perzisztens hivatkoz\u00e1sok \u00e9rv\u00e9nytelenek.
+INVALID_JAVA_GLOBAL_REF_CWWJP0043E.explanation=A perzisztens egys\u00e9gek hat\u00f3k\u00f6re egyetlen alkalmaz\u00e1s, ez\u00e9rt a java:global perzisztens hivatkoz\u00e1snak nincs jelent\u00e9se.
+INVALID_JAVA_GLOBAL_REF_CWWJP0043E.useraction=M\u00f3dos\u00edtsa a perzisztens hivatkoz\u00e1s nev\u00e9t, hogy a java:app vagy a java:module el\u0151tagot haszn\u00e1lja, vagy t\u00e1vol\u00edtsa el a java:global el\u0151tagot az alap\u00e9rtelmezett java:comp n\u00e9vt\u00e9r haszn\u00e1lat\u00e1hoz.
+
+#-------------------------------------------------------------------------------
+JPATXSYNC_INCOMPATIBLE_CWWJP0044E=CWWJP0044E: A(z) {0} perzisztens egys\u00e9g t\u00f6bb kiterjesztett perzisztenskontextus-meghat\u00e1roz\u00e1sa ker\u00fclt deklar\u00e1l\u00e1sra elt\u00e9r\u0151 szinkroniz\u00e1l\u00e1si konfigur\u00e1ci\u00f3val.
+JPATXSYNC_INCOMPATIBLE_CWWJP0044E.explanation=A k\u00e9rd\u00e9ses perzisztensegys\u00e9g-meghat\u00e1roz\u00e1st kiterjesztett perzisztens kontextusk\u00e9nt t\u00f6bbsz\u00f6r besz\u00far\u00f3 adott \u00e1llapot\u0151rz\u0151 munkamenet-komponens eset\u00e9ben minden besz\u00far\u00e1si p\u00e9ld\u00e1ny szinkroniz\u00e1l\u00e1si t\u00edpus\u00e1nak SYNCHRONIZED vagy UNSYCHRONIZED \u00e9rt\u00e9k\u0171nek kell lennie.
+JPATXSYNC_INCOMPATIBLE_CWWJP0044E.useraction=M\u00f3dos\u00edtsa a perzisztens egys\u00e9g valamennyi besz\u00far\u00e1si p\u00e9ld\u00e1ny\u00e1nak szinkroniz\u00e1l\u00e1s\u00e1t SYNCHRONIZED vagy UNSYNCHRONIZED \u00e9rt\u00e9k\u0171re.
+
+#-------------------------------------------------------------------------------
+JPATXSYNC_INCOMPATIBLE_INHERITANCE_CWWJP0045E=CWWJP0045E: A sz\u00fcl\u0151oszt\u00e1ly a(z) {0} perzisztens egys\u00e9g olyan kiterjesztett perzisztens kontextus\u00e1t sz\u00farta be, amelynek szinkroniz\u00e1l\u00e1si attrib\u00fatuma nem kompatibilis a sz\u00fcl\u0151oszt\u00e1lyban szerepl\u0151 kiterjesztett perzisztens kontextusbesz\u00far\u00e1ssal.
+JPATXSYNC_INCOMPATIBLE_INHERITANCE_CWWJP0045E.explanation= Az \u00e1llapot\u0151rz\u0151 munkamenet-komponens olyan oszt\u00e1lyt terjesztett ki, amely egy \u00e1ltal\u00e1nos perzisztens egys\u00e9g kiterjesztett perzisztens kontextus\u00e1t sz\u00farja be, de a sz\u00fcl\u0151oszt\u00e1ly besz\u00far\u00e1s\u00e1nak szinkroniz\u00e1l\u00e1si t\u00edpusa nem egyezik meg az aloszt\u00e1ly besz\u00far\u00e1s\u00e1nak szinkroniz\u00e1l\u00e1si t\u00edpus\u00e1val.
+JPATXSYNC_INCOMPATIBLE_INHERITANCE_CWWJP0045E.useraction=M\u00f3dos\u00edtsa a perzisztens egys\u00e9g valamennyi besz\u00far\u00e1si p\u00e9ld\u00e1ny\u00e1nak szinkroniz\u00e1l\u00e1s\u00e1t SYNCHRONIZED vagy UNSYNCHRONIZED \u00e9rt\u00e9k\u0171re.
+
+#-------------------------------------------------------------------------------
+JPATXSYNC_ILLEGAL_PROPAGATION_CWWJP0046E=CWWJP0046E: Az UNSYNCHRONIZED JPA perzisztens kontextust nem lehet SYNCHRONIZED EntityManager komponensbe tov\u00e1bb\u00edtani.
+JPATXSYNC_ILLEGAL_PROPAGATION_CWWJP0046E.explanation=Az UNSYNCHRONIED szinkroniz\u00e1l\u00e1si t\u00edpussal rendelkez\u0151 perzisztens kontextust nem lehet olyan komponensbe tov\u00e1bb\u00edtani, amely ugyanazt a perzisztens kontextust SYNCHRONIZED szinkroniz\u00e1l\u00e1si t\u00edpussal sz\u00farta be. 
+JPATXSYNC_ILLEGAL_PROPAGATION_CWWJP0046E.useraction=M\u00f3dos\u00edtsa \u00fagy a h\u00edv\u00f3 \u00e9s a h\u00edvott komponens @PersistenceContext besz\u00far\u00e1s\u00e1t, hogy azok azonos szinkroniz\u00e1l\u00e1si t\u00edpussal rendelkezzenek.
+
+#-------------------------------------------------------------------------------
+JPATXSYNC_INCOMPATIBLE_PROPAGATION_CWWJP0047E=CWWJP0047E: A(z) {0} perzisztens egys\u00e9ghez t\u00e1rs\u00edtott perzisztens kontextus {1} SynchronizationType t\u00edpussal rendelkezik, amely nem kompatibilis a(z) {2} \u00e1ltal deklar\u00e1lt kiterjesztett perzisztens kontextussal.
+JPATXSYNC_INCOMPATIBLE_PROPAGATION_CWWJP0047E.explanation=Az UNSYNCHRONIED szinkroniz\u00e1l\u00e1si t\u00edpussal rendelkez\u0151 perzisztens kontextust nem lehet olyan komponensbe tov\u00e1bb\u00edtani, amely ugyanazt a perzisztens kontextust SYNCHRONIZED szinkroniz\u00e1l\u00e1si t\u00edpussal sz\u00farta be.
+JPATXSYNC_INCOMPATIBLE_PROPAGATION_CWWJP0047E.useraction=M\u00f3dos\u00edtsa \u00fagy a h\u00edv\u00f3 \u00e9s a h\u00edvott komponens @PersistenceContext besz\u00far\u00e1s\u00e1t, hogy azok azonos szinkroniz\u00e1l\u00e1si t\u00edpussal rendelkezzenek.
+
+#-------------------------------------------------------------------------------
+REPORT_JPARUNTIME_CWWJP0048I=CWWJP0048I: JPA szolg\u00e1ltat\u00e1s inicializ\u00e1lva a JPA {0} specifik\u00e1ci\u00f3 szinthez.
+REPORT_JPARUNTIME_CWWJP0048I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+REPORT_JPARUNTIME_CWWJP0048I.useraction=Nincs teend\u0151.
+
+#-------------------------------------------------------------------------------
+# 0=providerClass, 1=providerJPALevel, 2=currentJPALevel, 3=currentProviderClasses
+INCORRECT_JPA_LEVEL_CWWJP0049E=CWWJP0049E: A(z) {0} oszt\u00e1ly nem tal\u00e1lhat\u00f3, amely a JPA {1} be\u00e9p\u00edtett perzisztencia szolg\u00e1ltat\u00f3ja. A kiszolg\u00e1l\u00f3 jelenleg a JPA {2} szinthez van konfigur\u00e1lva, amely a k\u00f6vetkez\u0151 be\u00e9p\u00edtett perzisztencia szolg\u00e1ltat\u00f3(k)nak felel meg: {3}. Egy kiszolg\u00e1l\u00f3 vagy f\u00fcrt JPA szintje az Adminisztr\u00e1ci\u00f3s konzolon vagy a modifyJPASpecLevel AdminTask seg\u00edts\u00e9g\u00e9vel m\u00f3dos\u00edthat\u00f3. Alternat\u00edv megold\u00e1sk\u00e9nt friss\u00edtse az alkalmaz\u00e1st, hogy olyan perzisztencia szolg\u00e1ltat\u00f3t haszn\u00e1ljon, amely kompatibilis a JPA {2} szinttel.
+INCORRECT_JPA_LEVEL_CWWJP0049E.explanation=A JPA szolg\u00e1ltat\u00f3 oszt\u00e1ly nem tal\u00e1lhat\u00f3.
+INCORRECT_JPA_LEVEL_CWWJP0049E.useraction=Az Adminisztr\u00e1ci\u00f3s konzolon vagy a modifyJPASpecLevel AdminTask seg\u00edts\u00e9g\u00e9vel m\u00f3dos\u00edtsa a kiszolg\u00e1l\u00f3t vagy a konfigur\u00e1ci\u00f3t, hogy a jelenlegi perzisztencia szolg\u00e1ltat\u00f3 \u00e1ltal t\u00e1mogatott JPA szintet haszn\u00e1ljon.  Alternat\u00edv megold\u00e1sk\u00e9nt friss\u00edtse az alkalmaz\u00e1st, hogy olyan perzisztencia szolg\u00e1ltat\u00f3t haszn\u00e1ljon, amely kompatibilis az aktu\u00e1lis JPA szinttel.
+
+#-------------------------------------------------------------------------------
+JPA_PROVIDER_NOT_FOUND_CWWJP0050E=CWWJP0050E: A(z) {0} perzisztencia szolg\u00e1ltat\u00f3 nem tal\u00e1lhat\u00f3.
+JPA_PROVIDER_NOT_FOUND_CWWJP0050E.explanation=A JPA szolg\u00e1ltat\u00f3 oszt\u00e1ly nem tal\u00e1lhat\u00f3.
+JPA_PROVIDER_NOT_FOUND_CWWJP0050E.useraction=M\u00f3dos\u00edtsa a kiszolg\u00e1l\u00f3t vagy a konfigur\u00e1ci\u00f3t, hogy a jelzett perzisztencia szolg\u00e1ltat\u00f3 \u00e1ltal t\u00e1mogatott JPA szintet haszn\u00e1ljon.
+
+#-------------------------------------------------------------------------------
+# DO NOT TRANSLATE: <jpa defaultPersistenceProvider="com.acme.PersistenceProviderImpl"/>, bells-1.0, <bell>, <library>, JPA, or javax.persistence.spi.PersistenceProvider
+NO_JPA_PROVIDER_FOUND_CWWJP0051E=CWWJP0051E: Nem tal\u00e1lhat\u00f3 alap\u00e9rtelmezett perzisztencia szolg\u00e1ltat\u00f3 a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban.  Alap\u00e9rtelmezett perzisztencia szolg\u00e1ltat\u00f3 be\u00e1ll\u00edt\u00e1s\u00e1hoz haszn\u00e1lja a <jpa defaultPersistenceProvider="com.acme.PersistenceProviderImpl"/> konfigur\u00e1ci\u00f3t, vagy enged\u00e9lyezze a bells-1.0 szolg\u00e1ltat\u00e1st \u00e9s \u00e1ll\u00edtson be egy <bell> elemet a JPA szolg\u00e1ltat\u00f3t tartalmaz\u00f3 <library> sz\u00e1m\u00e1ra. 
+NO_JPA_PROVIDER_FOUND_CWWJP0051E.explanation=A javax.persistence.spi.PersistenceProvider megval\u00f3s\u00edt\u00e1sa nem tal\u00e1lhat\u00f3.
+NO_JPA_PROVIDER_FOUND_CWWJP0051E.useraction=Alap\u00e9rtelmezett perzisztencia szolg\u00e1ltat\u00f3 be\u00e1ll\u00edt\u00e1s\u00e1hoz haszn\u00e1lja a <jpa defaultPersistenceProvider="com.acme.PersistenceProviderImpl"/> konfigur\u00e1ci\u00f3t, vagy enged\u00e9lyezze a bells-1.0 szolg\u00e1ltat\u00e1st \u00e9s \u00e1ll\u00edtson be egy <bell> elemet a JPA szolg\u00e1ltat\u00f3t tartalmaz\u00f3 <library> sz\u00e1m\u00e1ra.
+
+#-------------------------------------------------------------------------------
+JPA_THIRD_PARTY_PROV_NAME_CWWJP0052I=CWWJP0052I: Harmadik f\u00e9lt\u0151l sz\u00e1rmaz\u00f3 JPA szolg\u00e1ltat\u00f3 ({0}) van haszn\u00e1latban.
+JPA_THIRD_PARTY_PROV_NAME_CWWJP0052I.explanation=A haszn\u00e1lt k\u00fcls\u0151 JPA megval\u00f3s\u00edt\u00e1s perzisztencia szolg\u00e1ltat\u00f3 oszt\u00e1lynev\u00e9t jelzi.
+JPA_THIRD_PARTY_PROV_NAME_CWWJP0052I.useraction=Nincs teend\u0151.
+
+#-------------------------------------------------------------------------------
+JPA_THIRD_PARTY_PROV_INFO_CWWJP0053I=CWWJP0053I: K\u00fcls\u0151 JPA szolg\u00e1ltat\u00f3k\u00e9nt a(z) {0} van haszn\u00e1latban. V\u00e1ltozat inform\u00e1ci\u00f3k: {1}. 
+JPA_THIRD_PARTY_PROV_INFO_CWWJP0053I.explanation=A haszn\u00e1lt k\u00fcls\u0151 JPA megval\u00f3s\u00edt\u00e1s nev\u00e9t \u00e9s v\u00e1ltozat inform\u00e1ci\u00f3it jelzi.
+JPA_THIRD_PARTY_PROV_INFO_CWWJP0053I.useraction=Nincs teend\u0151.
+
+#-------------------------------------------------------------------------------
+NOT_COMPLIANT_WITH_JPA21_CWWJP0054E=CWWJP0054E: A(z) {0} megval\u00f3s\u00edt\u00e1s ({1}) nem felel meg a JPA 2.1 specifik\u00e1ci\u00f3nak, ez\u00e9rt nem haszn\u00e1lhat\u00f3. Szerezze be a JPA perzisztencia szolg\u00e1ltat\u00f3 \u00fajabb v\u00e1ltozat\u00e1t, amely a JPA 2.1 specifik\u00e1ci\u00f3t val\u00f3s\u00edtja meg.
+NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.explanation=A JPA perzisztencia szolg\u00e1ltat\u00f3 nem haszn\u00e1lhat\u00f3, mert hi\u00e1nyoznak bel\u0151le a JPA 2.1 specifik\u00e1ci\u00f3 \u00e1ltal megk\u00f6vetelt met\u00f3dusok megval\u00f3s\u00edt\u00e1sai.
+NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.useraction=Szerezze be a JPA perzisztencia szolg\u00e1ltat\u00f3 \u00fajabb v\u00e1ltozat\u00e1t, amely megfelel a JPA 2.1 specifik\u00e1ci\u00f3nak.
+
+#-------------------------------------------------------------------------------
+# Error messages from the JPA Provider below this point
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+PROVIDER_INFO_CWWJP9990I=CWWJP9990I: {0}
+PROVIDER_INFO_CWWJP9990I.explanation=A Java Persistence API (JPA) szolg\u00e1ltat\u00f3 napl\u00f3zta ezt az inform\u00e1ci\u00f3s \u00fczenetet.
+PROVIDER_INFO_CWWJP9990I.useraction=Tekintse meg a JPA szolg\u00e1ltat\u00f3 dokument\u00e1ci\u00f3j\u00e1t.
+
+#-------------------------------------------------------------------------------
+PROVIDER_WARNING_CWWJP9991W=CWWJP9991W: {0}
+PROVIDER_WARNING_CWWJP9991W.explanation=A Java Persistence API (JPA) szolg\u00e1ltat\u00f3 napl\u00f3zta ezt a figyelmeztet\u0151 \u00fczenetet.
+PROVIDER_WARNING_CWWJP9991W.useraction=Tekintse meg a JPA szolg\u00e1ltat\u00f3 dokument\u00e1ci\u00f3j\u00e1t.
+
+#-------------------------------------------------------------------------------
+PROVIDER_ERROR_CWWJP9992E=CWWJP9992E: {0}
+PROVIDER_ERROR_CWWJP9992E.explanation=A Java Persistence API (JPA) szolg\u00e1ltat\u00f3 napl\u00f3zta ezt a hiba\u00fczenetet.
+PROVIDER_ERROR_CWWJP9992E.useraction=Tekintse meg a JPA szolg\u00e1ltat\u00f3 dokument\u00e1ci\u00f3j\u00e1t.
+
+#-------------------------------------------------------------------------------
+PROVIDER_FATAL_CWWJP9993E=CWWJP9993E: {0}
+PROVIDER_FATAL_CWWJP9993E.explanation=A Java Persistence API (JPA) szolg\u00e1ltat\u00f3 napl\u00f3zta ezt a v\u00e9gzetes \u00fczenetet.
+PROVIDER_FATAL_CWWJP9993E.useraction=Tekintse meg a JPA szolg\u00e1ltat\u00f3 dokument\u00e1ci\u00f3j\u00e1t.
+
+#-------------------------------------------------------------------------------

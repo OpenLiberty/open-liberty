@@ -1,0 +1,1144 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# 94218          2013-19-02  Venu     L2 review changes 
+# -------------------------------------------------------------------------------------------------
+# File com.ibm.ws.sib.trm.CWSITMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIT0000=CWSIT0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSIT0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSIT0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - CWSIT9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+#
+# cmvc_en_version_level=1.139,0,08/02/28,08:29:16
+#
+#CMVCPATHNAME ws/code/sib.trm.impl/src/com/ibm/ws/sib/trm/CWSITMessages.nlsprops
+#COMPONENTPREFIX CWSIT
+#COMPONENTNAMEFOR CWSIT TRM
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the class that cannot be loaded
+# {1} is the exception created when the class cannot be loaded
+
+EXCP_DURING_INIT_CWSIT0000=CWSIT0000E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Nie mo\u017cna utworzy\u0107 obiektu klasy {0} z powodu wyj\u0105tku: {1}
+EXCP_DURING_INIT_CWSIT0000.explanation=CMSG0001
+EXCP_DURING_INIT_CWSIT0000.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of parameter which is null
+# {1} name of object being created
+
+NULL_USED_TO_CREATE_CWSIT0001=CWSIT0001E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. U\u017cyto parametru {0} o warto\u015bci NULL w celu utworzenia instancji obiektu {1}.
+NULL_USED_TO_CREATE_CWSIT0001.explanation=CMSG0001
+NULL_USED_TO_CREATE_CWSIT0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of parameter which is null
+# {1} name of method
+
+NULL_USED_ON_CWSIT0002=CWSIT0002E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. W wywo\u0142aniu metody {1} przekazano parametr {0} o warto\u015bci NULL.
+NULL_USED_ON_CWSIT0002.explanation=CMSG0001
+NULL_USED_ON_CWSIT0002.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property that cannot be found
+
+NULL_PROPERTY_CWSIT0003=CWSIT0003E: We w\u0142a\u015bciwo\u015bciach po\u0142\u0105czenia nie znaleziono w\u0142a\u015bciwo\u015bci {0}.
+NULL_PROPERTY_CWSIT0003.explanation=Podczas tworzenia po\u0142\u0105czenia klienta nie znaleziono wymaganej w\u0142a\u015bciwo\u015bci we w\u0142a\u015bciwo\u015bciach po\u0142\u0105czenia.
+NULL_PROPERTY_CWSIT0003.useraction=Sprawd\u017a, czy wymagana w\u0142a\u015bciwo\u015b\u0107 zosta\u0142a poprawnie okre\u015blona podczas tworzenia po\u0142\u0105czenia.
+
+# -------------------------------------------------------------------------------------------------
+
+NO_CCF_CWSIT0004=CWSIT0004E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Nie mo\u017cna utworzy\u0107 obiektu klasy ClientConnectionFactory.
+NO_CCF_CWSIT0004.explanation=CMSG0001
+NO_CCF_CWSIT0004.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_CC_CWSIT0005=CWSIT0005E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Nie mo\u017cna utworzy\u0107 obiektu klasy ClientConnection.
+NO_CC_CWSIT0005.explanation=CMSG0001
+NO_CC_CWSIT0005.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} List of bootstrap endpoints to which we tried to connect
+
+NO_BOOTSTRAP_CWSIT0006=CWSIT0006E: Nie mo\u017cna by\u0142o nawi\u0105za\u0107 po\u0142\u0105czenia z \u017cadnym okre\u015blonym serwerem startowym. Dodatkowe informacje zawiera powi\u0105zany komunikat wyj\u0105tku. Pr\u00f3bowano nawi\u0105za\u0107 po\u0142\u0105czenia z nast\u0119puj\u0105cymi punktami ko\u0144cowymi serwer\u00f3w startowych: {0}
+NO_BOOTSTRAP_CWSIT0006.explanation=Klient nie mo\u017ce nawi\u0105za\u0107 po\u0142\u0105czenia z magistral\u0105. Ta sytuacja mo\u017ce by\u0107 spowodowana problemami zwi\u0105zanymi z konfiguracj\u0105, problemami zwi\u0105zanymi z sieci\u0105 lub tym, \u017ce \u017caden z wymaganych serwer\u00f3w startowych nie jest aktualnie dost\u0119pny.
+NO_BOOTSTRAP_CWSIT0006.useraction=Sprawd\u017a, czy sie\u0107 dzia\u0142a poprawnie i czy s\u0105 dost\u0119pne wymagane serwery startowe. Szczeg\u00f3\u0142owe informacje na temat konfigurowania po\u0142\u0105czenia z serwerem startowym mo\u017cna znale\u017a\u0107 w Centrum informacyjnym.
+
+# -------------------------------------------------------------------------------------------------
+# {0} EndPoint of the bootstrap server which cannot be contacted
+# {1} Exception
+
+BOOTSTRAP_FAILED_CWSIT0007=CWSIT0007W: Nie mo\u017cna skontaktowa\u0107 si\u0119 z serwerem startowym {0} z powodu nast\u0119puj\u0105cego wyj\u0105tku: {1}.
+BOOTSTRAP_FAILED_CWSIT0007.explanation=Klient nie mo\u017ce nawi\u0105za\u0107 kontaktu z okre\u015blonym serwerem startowym. Ta sytuacja mo\u017ce by\u0107 spowodowana problemami zwi\u0105zanymi z konfiguracj\u0105, problemami zwi\u0105zanymi z sieci\u0105 lub tym, \u017ce wymagany serwer startowy nie jest aktualnie dost\u0119pny. Proces startowy klienta b\u0119dzie kontynuowany przy u\u017cyciu nast\u0119pnego punktu ko\u0144cowego dostawcy uwzgl\u0119dnionego na li\u015bcie punkt\u00f3w ko\u0144cowych dostawcy.
+BOOTSTRAP_FAILED_CWSIT0007.useraction=Sprawd\u017a, czy sie\u0107 dzia\u0142a poprawnie i czy jest dost\u0119pny wymagany serwer startowy. Serwer startowy jest okre\u015blony przez w\u0142a\u015bciwo\u015b\u0107 punktu ko\u0144cowego dostawcy fabryki po\u0142\u0105cze\u0144 JMS. Format adresu punktu ko\u0144cowego jest nast\u0119puj\u0105cy: nazwa_hosta:numer_portu:nazwa_\u0142a\u0144cucha (na przyk\u0142ad localhost:7276:BootstrapBasicMessaging). Je\u015bli jest u\u017cywany serwer startowy inny ni\u017c domy\u015blny, fabryka po\u0142\u0105cze\u0144 musi okre\u015bli\u0107 w\u0142a\u015bciwo\u015b\u0107 punktu ko\u0144cowego dostawcy.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Endpoint of the bootstrap server
+# {1} Failure message from the bootstrap reply message
+
+BOOTSTRAP_FAILURE_CWSIT0008=CWSIT0008E: Pomy\u015blnie nawi\u0105zano po\u0142\u0105czenie z serwerem startowym (punkt ko\u0144cowy: {0}), ale serwer zwr\u00f3ci\u0142 nast\u0119puj\u0105cy warunek b\u0142\u0119du: {1}
+BOOTSTRAP_FAILURE_CWSIT0008.explanation=Klient nawi\u0105za\u0142 po\u0142\u0105czenie z magistral\u0105, ale wyst\u0105pi\u0142 problem zwi\u0105zany z korzystaniem z us\u0142ugi. Ta sytuacja mo\u017ce by\u0107 spowodowana problemami zwi\u0105zanymi z sieci\u0105 lub tym, \u017ce wymagana us\u0142uga nie jest aktualnie dost\u0119pna.
+BOOTSTRAP_FAILURE_CWSIT0008.useraction=Sprawd\u017a, czy sie\u0107 dzia\u0142a poprawnie i czy jest dost\u0119pna wymagana us\u0142uga. Szczeg\u00f3\u0142owe informacje na temat konfigurowania po\u0142\u0105czenia z serwerem startowym mo\u017cna znale\u017a\u0107 w Centrum informacyjnym.
+
+# -------------------------------------------------------------------------------------------------
+# {0} EndPoint of application server that failed
+# {1} Name of bus
+# {2} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0009=CWSIT0009W: Pr\u00f3ba nawi\u0105zania po\u0142\u0105czenia mi\u0119dzy klientem a magistral\u0105 {1} nie powiod\u0142a si\u0119 na serwerze startowym z punktem ko\u0144cowym {0}. Przyczyna: {2}.
+MIRRORED_FAILURE_CWSIT0009.explanation=\u017b\u0105danie startowe klienta nie powiod\u0142o si\u0119 z powodu problemu na serwerze startowym. Zwr\u00f3cono przyczyn\u0119 niepowodzenia dotycz\u0105c\u0105 serwera startowego. Proces startowy klienta b\u0119dzie kontynuowany przy u\u017cyciu nast\u0119pnego punktu ko\u0144cowego dostawcy uwzgl\u0119dnionego na li\u015bcie punkt\u00f3w ko\u0144cowych dostawcy.
+MIRRORED_FAILURE_CWSIT0009.useraction=Przeanalizuj i rozwi\u0105\u017c awari\u0119 opisan\u0105 w komunikacie o b\u0142\u0119dzie, a nast\u0119pnie pon\u00f3w operacj\u0119. 
+
+# -------------------------------------------------------------------------------------------------
+#                                                                       242799.1
+# {0} Name of messaging engine which failed
+# {1} Name of bus
+# {2} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0010=CWSIT0010E: \u017b\u0105danie klienta dotycz\u0105ce mechanizmu przesy\u0142ania komunikat\u00f3w {0} na magistrali {1} nie powiod\u0142o si\u0119. Przyczyna: {2}.
+MIRRORED_FAILURE_CWSIT0010.explanation=Pr\u00f3ba przy\u0142\u0105czenia klienta do magistrali nie powiod\u0142a si\u0119 z powodu niepowodzenia na serwerze. Zwr\u00f3cono przyczyn\u0119 niepowodzenia dotycz\u0105c\u0105 serwera.
+MIRRORED_FAILURE_CWSIT0010.useraction=Przeanalizuj i rozwi\u0105\u017c awari\u0119 opisan\u0105 w komunikacie o b\u0142\u0119dzie, a nast\u0119pnie pon\u00f3w operacj\u0119. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Name of messaging engine which cannot be contacted
+# {1} Name of bus
+
+ATTACH_FAILED_CWSIT0011=CWSIT0011E: Nie mo\u017cna przy\u0142\u0105czy\u0107 si\u0119 do mechanizmu przesy\u0142ania komunikat\u00f3w {0} na magistrali {1}. Po\u0142\u0105czenie zosta\u0142o utracone.
+ATTACH_FAILED_CWSIT0011.explanation=Klient nie mo\u017ce nawi\u0105za\u0107 kontaktu z danym mechanizmem przesy\u0142ania komunikat\u00f3w. Ta sytuacja mo\u017ce by\u0107 spowodowana problemami zwi\u0105zanymi z sieci\u0105 lub wymagany mechanizm przesy\u0142ania komunikat\u00f3w mo\u017ce nie by\u0107 aktualnie dost\u0119pny.
+ATTACH_FAILED_CWSIT0011.useraction=Sprawd\u017a, czy sie\u0107 dzia\u0142a poprawnie i czy jest dost\u0119pny wymagany mechanizm przesy\u0142ania komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of parameter which is null
+# {1} name of object being created
+
+NULL_USED_TO_CREATE_CWSIT0012=CWSIT0012E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. U\u017cyto parametru {0} o warto\u015bci NULL w celu utworzenia instancji obiektu {1}.
+NULL_USED_TO_CREATE_CWSIT0012.explanation=CMSG0001
+NULL_USED_TO_CREATE_CWSIT0012.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of parameter which is null
+# {1} name of object being created
+
+NULL_USED_TO_CREATE_CWSIT0013=CWSIT0013E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. U\u017cyto parametru {0} o warto\u015bci NULL w celu utworzenia instancji obiektu {1}.
+NULL_USED_TO_CREATE_CWSIT0013.explanation=CMSG0001
+NULL_USED_TO_CREATE_CWSIT0013.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} EndPoint of messaging engine which failed
+# {3} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0014=CWSIT0014E: \u017b\u0105danie mechanizmu przesy\u0142ania komunikat\u00f3w skierowane do innego mechanizmu przesy\u0142ania komunikat\u00f3w nie powiod\u0142o si\u0119 w mechanizmie przesy\u0142ania komunikat\u00f3w {0} na magistrali {1} (punkt ko\u0144cowy: {2}). Przyczyna: {3}.
+MIRRORED_FAILURE_CWSIT0014.explanation=\u017b\u0105danie mechanizmu przesy\u0142ania komunikat\u00f3w skierowane do innego mechanizmu przesy\u0142ania komunikat\u00f3w nie powiod\u0142o si\u0119 z powodu niepowodzenia w zdalnym mechanizmie przesy\u0142ania komunikat\u00f3w.
+MIRRORED_FAILURE_CWSIT0014.useraction=Przeanalizuj i rozwi\u0105\u017c awari\u0119 opisan\u0105 w komunikacie o b\u0142\u0119dzie, a nast\u0119pnie pon\u00f3w operacj\u0119. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+CONNECT_FAILED_CWSIT0015=CWSIT0015W: Nie mo\u017cna nawi\u0105za\u0107 po\u0142\u0105czenia z mechanizmem przesy\u0142ania komunikat\u00f3w {0} na magistrali {1}.
+CONNECT_FAILED_CWSIT0015.explanation=Mechanizm przesy\u0142ania komunikat\u00f3w nie mo\u017ce nawi\u0105za\u0107 kontaktu z innym mechanizmem przesy\u0142ania komunikat\u00f3w. Ta sytuacja mo\u017ce by\u0107 spowodowana problemami zwi\u0105zanymi z sieci\u0105 lub wymagany mechanizm przesy\u0142ania komunikat\u00f3w mo\u017ce nie by\u0107 aktualnie dost\u0119pny.
+CONNECT_FAILED_CWSIT0015.useraction=Sprawd\u017a, czy sie\u0107 dzia\u0142a poprawnie i czy jest dost\u0119pny wymagany mechanizm przesy\u0142ania komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHENTICATION_CWSIT0016=CWSIT0016E: Nie powiod\u0142a si\u0119 pr\u00f3ba uwierzytelnienia ID u\u017cytkownika {0} na magistrali {1}
+FAILED_AUTHENTICATION_CWSIT0016.explanation=ID u\u017cytkownika, kt\u00f3rego u\u017cyto do utworzenia po\u0142\u0105czenia klienckiego z mechanizmem przesy\u0142ania komunikat\u00f3w, nie m\u00f3g\u0142 zosta\u0107 uwierzytelniony przez zdalny mechanizm przesy\u0142ania komunikat\u00f3w. Niepowodzenie uwierzytelnienia by\u0142o prawdopodobnie spowodowane niepoprawnym ID u\u017cytkownika lub has\u0142em.
+FAILED_AUTHENTICATION_CWSIT0016.useraction=Sprawd\u017a, czy ID u\u017cytkownika i has\u0142o s\u0105 poprawne.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} host of messaging engine
+# {3} port of messaging engine
+# {4} transport chain to connect over
+
+LINK_FAILED_CWSIT0017=CWSIT0017W: Nie mo\u017cna utworzy\u0107 po\u0142\u0105czenia wewn\u0105trzmagistralowego z mechanizmem przesy\u0142ania komunikat\u00f3w {0} na magistrali {1} na ho\u015bcie {2} (port: {3}) przy u\u017cyciu \u0142a\u0144cucha transportowego {4}.
+LINK_FAILED_CWSIT0017.explanation=Mechanizm przesy\u0142ania komunikat\u00f3w nie mo\u017ce nawi\u0105za\u0107 kontaktu z innym mechanizmem przesy\u0142ania komunikat\u00f3w. Ta sytuacja mo\u017ce by\u0107 spowodowana problemami zwi\u0105zanymi z sieci\u0105 lub wymagany mechanizm przesy\u0142ania komunikat\u00f3w mo\u017ce nie by\u0107 aktualnie dost\u0119pny.
+LINK_FAILED_CWSIT0017.useraction=Sprawd\u017a, czy sie\u0107 dzia\u0142a poprawnie i czy jest dost\u0119pny wymagany mechanizm przesy\u0142ania komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine name
+# {2} Bus name
+# {3} host of messaging engine
+# {4} port of messaging engine
+# {5} transport chain to connect over
+
+BRIDGE_FAILED_CWSIT0018=CWSIT0018W: Nie mo\u017cna utworzy\u0107 po\u0142\u0105czenia magistrali integracji us\u0142ug {0} z mechanizmem przesy\u0142ania komunikat\u00f3w {1} na magistrali {2} na ho\u015bcie {3} (port: {4}) przy u\u017cyciu \u0142a\u0144cucha transportowego {5}.
+BRIDGE_FAILED_CWSIT0018.explanation=Mechanizm przesy\u0142ania komunikat\u00f3w nie mo\u017ce nawi\u0105za\u0107 kontaktu z innym mechanizmem przesy\u0142ania komunikat\u00f3w. Ta sytuacja mo\u017ce by\u0107 spowodowana problemami zwi\u0105zanymi z sieci\u0105 lub wymagany mechanizm przesy\u0142ania komunikat\u00f3w mo\u017ce nie by\u0107 aktualnie dost\u0119pny.
+BRIDGE_FAILED_CWSIT0018.useraction=Sprawd\u017a, czy sie\u0107 dzia\u0142a poprawnie i czy jest dost\u0119pny wymagany mechanizm przesy\u0142ania komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Connection properties
+# {2} Text of failure reason
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NO_SUITABLE_ME_CWSIT0019=CWSIT0019E: Na magistrali {0} nie ma odpowiedniego mechanizmu przesy\u0142ania komunikat\u00f3w zgodnego z okre\u015blonymi w\u0142a\u015bciwo\u015bciom po\u0142\u0105czenia {1}. Przyczyna niepowodzenia: {2}
+NO_SUITABLE_ME_CWSIT0019.explanation=Nie mo\u017cna przy\u0142\u0105czy\u0107 klienta do magistrali, poniewa\u017c w danym momencie nie jest dost\u0119pny odpowiedni mechanizm przesy\u0142ania komunikat\u00f3w, kt\u00f3ry by spe\u0142nia\u0142 kryteria okre\u015blone przez w\u0142a\u015bciwo\u015bci po\u0142\u0105czenia.
+NO_SUITABLE_ME_CWSIT0019.useraction=Powt\u00f3rz operacj\u0119. Je\u015bli problem b\u0119dzie nadal wyst\u0119powa\u0142, popro\u015b administratora systemu o sprawdzenie, czy jest dost\u0119pny odpowiedni mechanizm przesy\u0142ania komunikat\u00f3w. Ewentualnie okre\u015bl mniej szczeg\u00f3\u0142owe kryteria przy\u0142\u0105czania we w\u0142a\u015bciwo\u015bciach po\u0142\u0105czenia i powt\u00f3rz operacj\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} Exception
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+EXCEPTION_CWSIT0020=CWSIT0020E: Podczas tworzenia po\u0142\u0105czenia wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek w mechanizmie przesy\u0142ania komunikat\u00f3w {0} na magistrali {1}. Wyj\u0105tek: {2}
+EXCEPTION_CWSIT0020.explanation=CMSG0001
+EXCEPTION_CWSIT0020.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Engine name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_FOUND_CWSIT0021=CWSIT0021E: W tym procesie nie znaleziono wymaganego mechanizmu przesy\u0142ania komunikat\u00f3w {0} na magistrali {1}
+NOT_FOUND_CWSIT0021.explanation=Nie mo\u017cna przy\u0142\u0105czy\u0107 klienta do magistrali, poniewa\u017c w procesie, do kt\u00f3rego przy\u0142\u0105czy\u0142 si\u0119 klient, nie mo\u017cna znale\u017a\u0107 wymaganego mechanizmu przesy\u0142ania komunikat\u00f3w.
+NOT_FOUND_CWSIT0021.useraction=Przyczyn\u0105 tego b\u0142\u0119du jest na og\u00f3\u0142 stan przej\u015bciowy, taki jak awaria serwera podczas przekierowywania klienta. Ponowienie pr\u00f3by wykonania operacji powinno usun\u0105\u0107 b\u0142\u0105d.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+FAILED_AUTHENTICATION_CWSIT0022=CWSIT0022E: Nie powiod\u0142a si\u0119 pr\u00f3ba uwierzytelnienia ID u\u017cytkownika {0} na magistrali {1}.
+FAILED_AUTHENTICATION_CWSIT0022.explanation=Nie powiod\u0142a si\u0119 pr\u00f3ba uwierzytelnienia (przez zdalny mechanizm przesy\u0142ania komunikat\u00f3w) ID u\u017cytkownika u\u017cytego w celu utworzenia po\u0142\u0105czenia wewn\u0105trzmagistralowego z mechanizmem przesy\u0142ania komunikat\u00f3w. Niepowodzenie uwierzytelnienia by\u0142o prawdopodobnie spowodowane niepoprawnym ID u\u017cytkownika lub has\u0142em.
+FAILED_AUTHENTICATION_CWSIT0022.useraction=Sprawd\u017a, czy ID u\u017cytkownika i has\u0142o s\u0105 poprawne.
+
+# -------------------------------------------------------------------------------------------------
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_ALLOWED_CWSIT0023=CWSIT0023E: Regu\u0142y topologii nie zezwalaj\u0105 na po\u0142\u0105czenia mi\u0119dzy mechanizmami przesy\u0142ania komunikat\u00f3w o takiej samej nazwie
+NOT_ALLOWED_CWSIT0023.explanation=Z tym mechanizmem przesy\u0142ania komunikat\u00f3w pr\u00f3bowa\u0142 nawi\u0105za\u0107 po\u0142\u0105czenie mechanizm przesy\u0142ania komunikat\u00f3w o takiej samej nazwie. Na tej samej magistrali nie mog\u0105 wyst\u0119powa\u0107 mechanizmy przesy\u0142ania komunikat\u00f3w o takiej samej nazwie.
+NOT_ALLOWED_CWSIT0023.useraction=Sprawd\u017a topologi\u0119 magistrali i nazwy mechanizm\u00f3w przesy\u0142ania komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the class that cannot be loaded
+# {1} is the exception created when the class cannot be loaded
+
+EXCP_DURING_INIT_CWSIT0024=CWSIT0024E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Nie mo\u017cna utworzy\u0107 obiektu klasy {0} z powodu wyj\u0105tku: {1}
+EXCP_DURING_INIT_CWSIT0024.explanation=CMSG0001
+EXCP_DURING_INIT_CWSIT0024.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Remote messaging engine name
+# {1} Bus name
+# {2} Name of this messaging engine
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_ALLOWED_CWSIT0026=CWSIT0026E: Mechanizm przesy\u0142ania komunikat\u00f3w {0} na magistrali {1} podj\u0105\u0142 pr\u00f3b\u0119 utworzenia po\u0142\u0105czenia magistrali integracji us\u0142ug z mechanizmem przesy\u0142ania komunikat\u00f3w {2} .
+NOT_ALLOWED_CWSIT0026.explanation=Mechanizm przesy\u0142ania komunikat\u00f3w z tej samej magistrali pr\u00f3bowa\u0142 utworzy\u0107 po\u0142\u0105czenie magistrali integracji us\u0142ug z tym mechanizmem przesy\u0142ania komunikat\u00f3w. Regu\u0142y topologiczne nie zezwalaj\u0105 na tworzenie po\u0142\u0105cze\u0144 magistrali integracji us\u0142ug mi\u0119dzy mechanizmami przesy\u0142ania komunikat\u00f3w funkcjonuj\u0105cymi na tej samej magistrali.
+NOT_ALLOWED_CWSIT0026.useraction=Sprawd\u017a topologi\u0119 magistrali.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine issuing the message
+# {1} Bus name
+# {2} Name of connected messaging engine
+
+INFO_CWSIT0028=CWSIT0028I: Uruchomiono po\u0142\u0105czenie mi\u0119dzy mechanizmem przesy\u0142ania komunikat\u00f3w {0} na magistrali {1} i mechanizmem przesy\u0142ania komunikat\u00f3w {2}.
+INFO_CWSIT0028.explanation=Zosta\u0142o uruchomione po\u0142\u0105czenie mi\u0119dzy mechanizmami przesy\u0142ania komunikat\u00f3w.
+INFO_CWSIT0028.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine issuing the message
+# {1} Bus name
+# {2} Name of disconnected messaging engine
+
+INFO_CWSIT0029=CWSIT0029I: Zatrzymano po\u0142\u0105czenie mi\u0119dzy mechanizmem przesy\u0142ania komunikat\u00f3w {0} na magistrali {1} i mechanizmem przesy\u0142ania komunikat\u00f3w {2}.
+INFO_CWSIT0029.explanation=Zosta\u0142o zatrzymane po\u0142\u0105czenie mi\u0119dzy mechanizmami przesy\u0142ania komunikat\u00f3w.
+INFO_CWSIT0029.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine issuing the message
+# {1} Subnet name
+# {2} Bus name
+# {3} Name of remote messaging engine
+# {4} Subnet name of remote messaging engine
+
+INFO_CWSIT0030=CWSIT0030I: Uruchomiono po\u0142\u0105czenie wewn\u0105trzmagistralowe mi\u0119dzy mechanizmem przesy\u0142ania komunikat\u00f3w {0} w podsieci {1} na magistrali {2} i mechanizmem przesy\u0142ania komunikat\u00f3w {3} w podsieci {4}.
+INFO_CWSIT0030.explanation=Zosta\u0142o uruchomione po\u0142\u0105czenie wewn\u0105trzmagistralowe mi\u0119dzy mechanizmami przesy\u0142ania komunikat\u00f3w.
+INFO_CWSIT0030.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine issuing the message
+# {1} Subnet name
+# {2} Bus name
+# {3} Name of remote messaging engine
+# {4} Subnet name of remote messaging engine
+
+INFO_CWSIT0031=CWSIT0031I: Zatrzymano po\u0142\u0105czenie wewn\u0105trzmagistralowe mi\u0119dzy mechanizmem przesy\u0142ania komunikat\u00f3w {0} w podsieci {1} na magistrali {2} i mechanizmem przesy\u0142ania komunikat\u00f3w {3} w podsieci {4}.
+INFO_CWSIT0031.explanation=Zosta\u0142o zatrzymane po\u0142\u0105czenie wewn\u0105trzmagistralowe mi\u0119dzy mechanizmami przesy\u0142ania komunikat\u00f3w.
+INFO_CWSIT0031.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine issuing the message
+# {2} Bus name
+# {3} Name of remote messaging engine
+# {4} Bus name of remote messaging engine
+
+INFO_CWSIT0032=CWSIT0032I: Uruchomiono po\u0142\u0105czenie magistrali integracji us\u0142ug {0} z mechanizmu przesy\u0142ania komunikat\u00f3w {1} na magistrali {2} do mechanizmu przesy\u0142ania komunikat\u00f3w {3} na magistrali {4}.
+INFO_CWSIT0032.explanation=Uruchomiono po\u0142\u0105czenie magistrali integracji us\u0142ug mi\u0119dzy dwoma mechanizmami przesy\u0142ania komunikat\u00f3w.
+INFO_CWSIT0032.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine issuing the message
+# {2} Bus name
+# {3} Name of remote messaging engine
+# {4} Bus name of remote messaging engine
+
+INFO_CWSIT0033=CWSIT0033I: Zatrzymano po\u0142\u0105czenie magistrali integracji us\u0142ug {0} z mechanizmu przesy\u0142ania komunikat\u00f3w {1} na magistrali {2} do mechanizmu przesy\u0142ania komunikat\u00f3w {3} na magistrali {4}.
+INFO_CWSIT0033.explanation=Zatrzymano po\u0142\u0105czenie magistrali integracji us\u0142ug mi\u0119dzy dwoma mechanizmami przesy\u0142ania komunikat\u00f3w.
+INFO_CWSIT0033.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0034=CWSIT0034E: \u017b\u0105danie mechanizmu przesy\u0142ania komunikat\u00f3w skierowane do innego mechanizmu przesy\u0142ania komunikat\u00f3w nie powiod\u0142o si\u0119 w mechanizmie przesy\u0142ania komunikat\u00f3w {0} na magistrali {1}. Przyczyna: {2}.
+MIRRORED_FAILURE_CWSIT0034.explanation=\u017b\u0105danie mechanizmu przesy\u0142ania komunikat\u00f3w skierowane do innego mechanizmu przesy\u0142ania komunikat\u00f3w nie powiod\u0142o si\u0119 z powodu niepowodzenia w zdalnym mechanizmie przesy\u0142ania komunikat\u00f3w. Zwr\u00f3cono przyczyn\u0119 niepowodzenia dotycz\u0105c\u0105 zdalnego mechanizmu przesy\u0142ania komunikat\u00f3w.
+MIRRORED_FAILURE_CWSIT0034.useraction=Popro\u015b administratora systemu o przeanalizowanie dziennik\u00f3w zdalnego mechanizmu przesy\u0142ania komunikat\u00f3w w celu okre\u015blenia przyczyny problemu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHENTICATION_CWSIT0035=CWSIT0035E: Nie powiod\u0142a si\u0119 pr\u00f3ba uwierzytelnienia ID u\u017cytkownika {0} na magistrali {1}
+FAILED_AUTHENTICATION_CWSIT0035.explanation=Nie powiod\u0142a si\u0119 pr\u00f3ba uwierzytelnienia (przez zdalny mechanizm przesy\u0142ania komunikat\u00f3w) ID u\u017cytkownika u\u017cytego w celu utworzenia po\u0142\u0105czenia wewn\u0105trzmagistralowego z mechanizmem przesy\u0142ania komunikat\u00f3w. Niepowodzenie uwierzytelnienia by\u0142o prawdopodobnie spowodowane niepoprawnym ID u\u017cytkownika lub has\u0142em.
+FAILED_AUTHENTICATION_CWSIT0035.useraction=Sprawd\u017a, czy ID u\u017cytkownika i has\u0142o s\u0105 poprawne.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0036=CWSIT0036E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Wyst\u0105pi\u0142 b\u0142\u0105d protoko\u0142u klienta podczas komunikacji z mechanizmem przesy\u0142ania komunikat\u00f3w {0} na magistrali {1} - odebrano komunikat typu {2}, ale oczekiwano komunikatu typu {3}.
+PROTOCOL_ERROR_CWSIT0036.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0036.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} received message type
+# {2} expected message type
+
+PROTOCOL_ERROR_CWSIT0038=CWSIT0038E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Wyst\u0105pi\u0142 b\u0142\u0105d protoko\u0142u Bootstrap Protocol klienta podczas komunikacji z mechanizmem przesy\u0142ania komunikat\u00f3w na magistrali {0} - odebrano komunikat typu {1}, ale oczekiwano komunikatu typu {2}.
+PROTOCOL_ERROR_CWSIT0038.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0038.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0039=CWSIT0039E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Wyst\u0105pi\u0142 b\u0142\u0105d protoko\u0142u po\u0142\u0105czenia podczas komunikacji z mechanizmem przesy\u0142ania komunikat\u00f3w {0} na magistrali {1} - odebrano komunikat typu {2}, ale oczekiwano komunikatu typu {3}.
+PROTOCOL_ERROR_CWSIT0039.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0039.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0040=CWSIT0040E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Wyst\u0105pi\u0142 b\u0142\u0105d protoko\u0142u po\u0142\u0105czenia wewn\u0105trzmagistralowego podczas komunikacji z mechanizmem przesy\u0142ania komunikat\u00f3w {0} na magistrali {1} - odebrano komunikat typu {2}, ale oczekiwano komunikatu typu {3}.
+PROTOCOL_ERROR_CWSIT0040.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0040.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0041=CWSIT0041E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Podczas komunikacji z mechanizmem przesy\u0142ania komunikat\u00f3w {0} na magistrali {1} wyst\u0105pi\u0142 b\u0142\u0105d protoko\u0142u po\u0142\u0105czenia magistrali integracji us\u0142ug. Typ odebranego komunikatu to {2}, podczas gdy oczekiwano typu {3}.
+PROTOCOL_ERROR_CWSIT0041.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0041.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0042=CWSIT0042E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Wyst\u0105pi\u0142 b\u0142\u0105d protoko\u0142u po\u0142\u0105czenia podczas komunikacji z mechanizmem przesy\u0142ania komunikat\u00f3w {0} na magistrali {1} - odebrano komunikat typu {2}, ale oczekiwano komunikatu typu {3}.
+PROTOCOL_ERROR_CWSIT0042.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0042.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0043=CWSIT0043E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Wyst\u0105pi\u0142 b\u0142\u0105d protoko\u0142u po\u0142\u0105czenia wewn\u0105trzmagistralowego podczas komunikacji z mechanizmem przesy\u0142ania komunikat\u00f3w {0} na magistrali {1} - odebrano komunikat typu {2}, ale oczekiwano komunikatu typu {3}.
+PROTOCOL_ERROR_CWSIT0043.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0043.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MCF_CWSIT0044=CWSIT0044E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Nie mo\u017cna utworzy\u0107 obiektu klasy MEConnectionFactory.
+NO_MCF_CWSIT0044.explanation=CMSG0001
+NO_MCF_CWSIT0044.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MCF_CWSIT0045=CWSIT0045E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Nie mo\u017cna utworzy\u0107 obiektu klasy MEConnectionFactory.
+NO_MCF_CWSIT0045.explanation=CMSG0001
+NO_MCF_CWSIT0045.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MCF_CWSIT0046=CWSIT0046E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Nie mo\u017cna utworzy\u0107 obiektu klasy MEConnectionFactory.
+NO_MCF_CWSIT0046.explanation=CMSG0001
+NO_MCF_CWSIT0046.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MC_CWSIT0047=CWSIT0047E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Nie mo\u017cna utworzy\u0107 obiektu klasy MEConnection.
+NO_MC_CWSIT0047.explanation=CMSG0001
+NO_MC_CWSIT0047.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MC_CWSIT0048=CWSIT0048E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Nie mo\u017cna utworzy\u0107 obiektu klasy MEConnection.
+NO_MC_CWSIT0048.explanation=CMSG0001
+NO_MC_CWSIT0048.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MC_CWSIT0049=CWSIT0049E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Nie mo\u017cna utworzy\u0107 obiektu klasy MEConnection.
+NO_MC_CWSIT0049.explanation=CMSG0001
+NO_MC_CWSIT0049.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Expected byte value
+# {1} Actual byte value
+
+INVALID_BYTE_VALUE_CWSIT0053=CWSIT0053E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Nie znaleziono oczekiwanej warto\u015bci bajtowej {0} - zamiast niej znaleziono warto\u015b\u0107 bajtow\u0105 {1}.
+INVALID_BYTE_VALUE_CWSIT0053.explanation=CMSG0001
+INVALID_BYTE_VALUE_CWSIT0053.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Expected byte value
+# {1} Actual byte value
+
+INVALID_BYTE_VALUE_CWSIT0054=CWSIT0054E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Nie znaleziono oczekiwanej warto\u015bci bajtowej {0} - zamiast niej znaleziono warto\u015b\u0107 bajtow\u0105 {1}.
+INVALID_BYTE_VALUE_CWSIT0054.explanation=CMSG0001
+INVALID_BYTE_VALUE_CWSIT0054.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Incorrect value
+# {1} Name of connection property
+# {2} Correct values
+
+INVALID_TARGET_TYPE_CWSIT0055=CWSIT0055E: Przekazano niepoprawn\u0105 warto\u015b\u0107 {0} w\u0142a\u015bciwo\u015bci po\u0142\u0105czenia {1}. Poprawne warto\u015bci: {2}.
+INVALID_TARGET_TYPE_CWSIT0055.explanation=Aplikacja przekaza\u0142a niepoprawn\u0105 warto\u015b\u0107 w\u0142a\u015bciwo\u015bci po\u0142\u0105czenia. Po\u0142\u0105czenie nie zosta\u0142o utworzone.
+INVALID_TARGET_TYPE_CWSIT0055.useraction=U\u017cyj poprawnej warto\u015bci w\u0142a\u015bciwo\u015bci po\u0142\u0105czenia.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHENTICATION_CWSIT0056=CWSIT0056E: Nie powiod\u0142a si\u0119 pr\u00f3ba uwierzytelnienia ID u\u017cytkownika {0} na magistrali {1}
+FAILED_AUTHENTICATION_CWSIT0056.explanation=Zdalny mechanizm przesy\u0142ania komunikat\u00f3w nie m\u00f3g\u0142 uwierzytelni\u0107 ID u\u017cytkownika, kt\u00f3rego u\u017cyto do utworzenia po\u0142\u0105czenia magistrali integracji us\u0142ug. Niepowodzenie uwierzytelnienia by\u0142o prawdopodobnie spowodowane niepoprawnym ID u\u017cytkownika lub has\u0142em.
+FAILED_AUTHENTICATION_CWSIT0056.useraction=Sprawd\u017a, czy ID u\u017cytkownika i has\u0142o s\u0105 poprawne.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Host name
+# {2} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0057=CWSIT0057E: Nie powiod\u0142a si\u0119 pr\u00f3ba utworzenia po\u0142\u0105czenia magistrali integracji us\u0142ug {0}. Awaria wyst\u0105pi\u0142a w zdalnym mechanizmie przesy\u0142ania komunikat\u00f3w na ho\u015bcie {1}. Podano nast\u0119puj\u0105c\u0105 przyczyn\u0119: {2}.
+MIRRORED_FAILURE_CWSIT0057.explanation=\u017b\u0105danie utworzenia po\u0142\u0105czenia magistrali integracji us\u0142ug nie powiod\u0142o si\u0119 z powodu awarii w zdalnym mechanizmie przesy\u0142ania komunikat\u00f3w.
+MIRRORED_FAILURE_CWSIT0057.useraction=Przeanalizuj i rozwi\u0105\u017c awari\u0119 opisan\u0105 w komunikacie o b\u0142\u0119dzie, a nast\u0119pnie pon\u00f3w operacj\u0119. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Expected messaging engine name
+# {2} Bus name
+# {3} Unexpected messaging engine name
+
+BRIDGE_FAILED_CWSIT0058=CWSIT0058E: Nie mo\u017cna zako\u0144czy\u0107 po\u0142\u0105czenia magistrali integracji us\u0142ug {0}, poniewa\u017c magistrala zdalna {2} zwr\u00f3ci\u0142a nieoczekiwan\u0105 nazw\u0119 mechanizmu przesy\u0142ania komunikat\u00f3w: {3}. Oczekiwano nast\u0119puj\u0105cej nazwy mechanizmu przesy\u0142ania komunikat\u00f3w: {1}.
+BRIDGE_FAILED_CWSIT0058.explanation=Po\u0142\u0105czenia magistrali integracji us\u0142ug wymagaj\u0105, aby nazwa mechanizmu przesy\u0142ania komunikat\u00f3w na magistrali zdalnej by\u0142a zgodna z nazw\u0105 mechanizmu skonfigurowanego dla danego po\u0142\u0105czenia magistrali integracji us\u0142ug.
+BRIDGE_FAILED_CWSIT0058.useraction=Przeanalizuj konfiguracj\u0119 po\u0142\u0105czenia magistrali integracji us\u0142ug, aby sprawdzi\u0107, czy na obu magistralach ustawiono poprawn\u0105 nazw\u0119 mechanizmu przesy\u0142ania komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine name
+# {2} Bus name
+
+BRIDGE_FAILED_CWSIT0059=CWSIT0059E: CWSIT0059E: Nie mo\u017cna nawi\u0105za\u0107 po\u0142\u0105czenia magistrali integracji us\u0142ug {0} z mechanizmem przesy\u0142ania komunikat\u00f3w {1} na magistrali {2}.
+BRIDGE_FAILED_CWSIT0059.explanation=Nie mo\u017cna skontaktowa\u0107 si\u0119 z mechanizmem przesy\u0142ania komunikat\u00f3w o podanej nazwie. Ta sytuacja mo\u017ce by\u0107 spowodowana problemami zwi\u0105zanymi z sieci\u0105 lub wymagany mechanizm przesy\u0142ania komunikat\u00f3w mo\u017ce nie by\u0107 aktualnie dost\u0119pny.
+BRIDGE_FAILED_CWSIT0059.useraction=Sprawd\u017a, czy sie\u0107 dzia\u0142a poprawnie i czy jest dost\u0119pny wymagany mechanizm przesy\u0142ania komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Received Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHORISATION_CWSIT0060=CWSIT0060E: U\u017cytkownik o identyfikatorze {0} nie ma uprawnie\u0144 do tworzenia po\u0142\u0105czenia wewn\u0105trzmagistralowego z mechanizmem przesy\u0142ania komunikat\u00f3w na magistrali {1}
+FAILED_AUTHORISATION_CWSIT0060.explanation=ID u\u017cytkownika, za pomoc\u0105 kt\u00f3rego utworzono wewn\u0105trzmagistralowe po\u0142\u0105czenie z mechanizmem przesy\u0142ania komunikat\u00f3w, r\u00f3\u017cni si\u0119 od ID u\u017cytkownika, kt\u00f3ry zosta\u0142 uwierzytelniony na zdalnym mechanizmie przesy\u0142ania komunikat\u00f3w do tworzenia takich po\u0142\u0105cze\u0144.
+FAILED_AUTHORISATION_CWSIT0060.useraction=Sprawd\u017a, czy w przypadku obu mechanizm\u00f3w przesy\u0142ania komunikat\u00f3w skonfigurowano ten sam ID u\u017cytkownika na potrzeby po\u0142\u0105cze\u0144 wewn\u0105trzmagistralowych z mechanizmami przesy\u0142ania komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0061=CWSIT0061E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Podczas komunikacji z mechanizmem przesy\u0142ania komunikat\u00f3w {0} na magistrali {1} wyst\u0105pi\u0142 b\u0142\u0105d protoko\u0142u po\u0142\u0105czenia magistrali integracji us\u0142ug. Typ odebranego komunikatu to {2}, podczas gdy oczekiwano typu {3}.
+PROTOCOL_ERROR_CWSIT0061.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0061.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0062=CWSIT0062E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Podczas komunikacji z mechanizmem przesy\u0142ania komunikat\u00f3w {0} na magistrali {1} wyst\u0105pi\u0142 b\u0142\u0105d protoko\u0142u po\u0142\u0105czenia magistrali integracji us\u0142ug. Typ odebranego komunikatu to {2}, podczas gdy oczekiwano typu {3}.
+PROTOCOL_ERROR_CWSIT0062.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0062.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Engine name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_FOUND_CWSIT0063=CWSIT0063E: W tym procesie nie znaleziono wymaganego mechanizmu przesy\u0142ania komunikat\u00f3w {0} na magistrali {1}
+NOT_FOUND_CWSIT0063.explanation=Ten mechanizm przesy\u0142ania komunikat\u00f3w nie mo\u017ce komunikowa\u0107 si\u0119 z s\u0105siednim mechanizmem przesy\u0142ania komunikat\u00f3w, poniewa\u017c w procesie, z kt\u00f3rym si\u0119 po\u0142\u0105czy\u0142, nie znaleziono wymaganego s\u0105siedniego mechanizmu przesy\u0142ania komunikat\u00f3w.
+NOT_FOUND_CWSIT0063.useraction=Powt\u00f3rz operacj\u0119. Sprawd\u017a, czy wymagany mechanizm przesy\u0142ania komunikat\u00f3w jest dost\u0119pny w poprawnym miejscu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Engine name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_FOUND_CWSIT0064=CWSIT0064E: W tym procesie nie znaleziono wymaganego mechanizmu przesy\u0142ania komunikat\u00f3w {0} na magistrali {1}
+NOT_FOUND_CWSIT0064.explanation=Ten mechanizm przesy\u0142ania komunikat\u00f3w nie mo\u017ce komunikowa\u0107 si\u0119 z s\u0105siednim mechanizmem przesy\u0142ania komunikat\u00f3w, poniewa\u017c w procesie, z kt\u00f3rym si\u0119 po\u0142\u0105czy\u0142, nie znaleziono wymaganego s\u0105siedniego mechanizmu przesy\u0142ania komunikat\u00f3w.
+NOT_FOUND_CWSIT0064.useraction=Powt\u00f3rz operacj\u0119. Sprawd\u017a, czy wymagany mechanizm przesy\u0142ania komunikat\u00f3w jest dost\u0119pny w poprawnym miejscu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Engine name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_FOUND_CWSIT0065=CWSIT0065E: W tym procesie nie znaleziono wymaganego mechanizmu przesy\u0142ania komunikat\u00f3w {0} na magistrali {1}
+NOT_FOUND_CWSIT0065.explanation=Ten mechanizm przesy\u0142ania komunikat\u00f3w nie mo\u017ce komunikowa\u0107 si\u0119 z s\u0105siednim mechanizmem przesy\u0142ania komunikat\u00f3w, poniewa\u017c w procesie, z kt\u00f3rym si\u0119 po\u0142\u0105czy\u0142, nie znaleziono wymaganego s\u0105siedniego mechanizmu przesy\u0142ania komunikat\u00f3w.
+NOT_FOUND_CWSIT0065.useraction=Powt\u00f3rz operacj\u0119. Sprawd\u017a, czy wymagany mechanizm przesy\u0142ania komunikat\u00f3w jest dost\u0119pny w poprawnym miejscu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Bus Name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+INVALID_REQUEST_CWSIT0066=CWSIT0066E: Nie mo\u017cna zako\u0144czy\u0107 po\u0142\u0105czenia magistrali integracji us\u0142ug {0}, poniewa\u017c mechanizm przesy\u0142ania komunikat\u00f3w na magistrali wysy\u0142aj\u0105cej \u017c\u0105danie {1} pr\u00f3buje po\u0142\u0105czy\u0107 si\u0119 z mechanizmem przesy\u0142ania komunikat\u00f3w na tej samej magistrali.
+INVALID_REQUEST_CWSIT0066.explanation=Mechanizm przesy\u0142ania komunikat\u00f3w pr\u00f3bowa\u0142 nawi\u0105za\u0107 po\u0142\u0105czenie magistrali integracji us\u0142ug z innym mechanizmem przesy\u0142ania komunikat\u00f3w na tej samej magistrali. Tworzenie po\u0142\u0105cze\u0144 magistrali integracji us\u0142ug mi\u0119dzy mechanizmami przesy\u0142ania komunikat\u00f3w funkcjonuj\u0105cymi na tej samej magistrali jest niedozwolone.
+INVALID_REQUEST_CWSIT0066.useraction=Przeanalizuj konfiguracj\u0119 po\u0142\u0105czenia magistrali integracji us\u0142ug, aby sprawdzi\u0107, czy punkty ko\u0144cowe serwera startowego zawieraj\u0105 poprawne adresy magistrali zdalnej.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+UNABLE_TO_FIND_CWSIT0067=CWSIT0067E: Po\u0142\u0105czenie magistrali integracji us\u0142ug {0} na magistrali {1} jest niedost\u0119pne.
+UNABLE_TO_FIND_CWSIT0067.explanation=Z innej magistrali odebrano \u017c\u0105danie utworzenia po\u0142\u0105czenia magistrali integracji us\u0142ug, ale na magistrali docelowej nie ma dost\u0119pnego mechanizmu przesy\u0142ania komunikat\u00f3w, kt\u00f3ry m\u00f3g\u0142by przyj\u0105\u0107 to \u017c\u0105danie.
+UNABLE_TO_FIND_CWSIT0067.useraction=Sprawd\u017a, czy mechanizm przesy\u0142ania komunikat\u00f3w skonfigurowany do obs\u0142ugi po\u0142\u0105czenia magistrali integracji us\u0142ug jest dost\u0119pny.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Bus name
+# {2} Engine name
+
+UNABLE_TO_FIND_CWSIT0068=CWSIT0068E: Odebrano \u017c\u0105danie utworzenia po\u0142\u0105czenia magistrali integracji us\u0142ug dla {0}, pochodz\u0105ce z magistrali {1} (mechanizm przesy\u0142ania komunikat\u00f3w {2}). Nie znaleziono jednak zgodnej definicji konfiguracji.
+UNABLE_TO_FIND_CWSIT0068.explanation=Odebrano z innej magistrali \u017c\u0105danie utworzenia po\u0142\u0105czenia magistrali integracji us\u0142ug, ale nie znaleziono \u017cadnych definicji konfiguracji zgodnych z tym \u017c\u0105daniem. \u017b\u0105danie zosta\u0142o odrzucone.
+UNABLE_TO_FIND_CWSIT0068.useraction=Sprawd\u017a, czy konfiguracje po\u0142\u0105czenia magistrali integracji us\u0142ug na obu magistralach s\u0105 poprawne.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+UNABLE_TO_FIND_CWSIT0069=CWSIT0069E: Nie znaleziono zgodnej konfiguracji dla po\u0142\u0105czenia magistrali integracji us\u0142ug {0} na magistrali {1}.
+UNABLE_TO_FIND_CWSIT0069.explanation=Inna magistrala odrzuci\u0142a \u017c\u0105danie utworzenia po\u0142\u0105czenia magistrali integracji us\u0142ug, poniewa\u017c nie znaleziono \u017cadnej definicji konfiguracji zgodnej z tym \u017c\u0105daniem.
+UNABLE_TO_FIND_CWSIT0069.useraction=Sprawd\u017a, czy konfiguracje po\u0142\u0105czenia magistrali integracji us\u0142ug na obu magistralach s\u0105 poprawne.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Requesting bus name
+# {2} Requesting engine name
+# {3} Expected engine name
+
+NOT_ALLOWED_CWSIT0070=CWSIT0070E: Odebrano \u017c\u0105danie utworzenia po\u0142\u0105czenia magistrali integracji us\u0142ug dla {0} z magistrali {1} (mechanizm przesy\u0142ania komunikat\u00f3w {2}), ale definicja konfiguracji oczekuje mechanizmu przesy\u0142ania komunikat\u00f3w {3}.
+NOT_ALLOWED_CWSIT0070.explanation=Odebrano \u017c\u0105danie utworzenia po\u0142\u0105czenia magistrali integracji us\u0142ug wys\u0142ane z mechanizmu przesy\u0142ania komunikat\u00f3w na innej magistrali, kt\u00f3ry nie jest mechanizmem wskazanym w definicji konfiguracji tej magistrali. \u017b\u0105danie zosta\u0142o odrzucone.
+NOT_ALLOWED_CWSIT0070.useraction=Sprawd\u017a, czy konfiguracje po\u0142\u0105czenia magistrali integracji us\u0142ug na obu magistralach s\u0105 poprawne.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Remote bus name
+# {2} Requesting engine name
+# {3} Expected engine name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_ALLOWED_CWSIT0071=CWSIT0071E: \u017b\u0105danie utworzenia po\u0142\u0105czenia magistrali integracji us\u0142ug dla po\u0142\u0105czenia {0} zosta\u0142o odrzucone przez magistral\u0119 {1}, poniewa\u017c mechanizm przesy\u0142ania komunikat\u00f3w {2}, kt\u00f3ry zg\u0142osi\u0142 \u017c\u0105danie, nie jest zgodny z oczekiwanym mechanizmem przesy\u0142ania komunikat\u00f3w {3}.
+NOT_ALLOWED_CWSIT0071.explanation=Magistrala zdalna wykry\u0142a niezgodno\u015b\u0107 mechanizmu przesy\u0142ania komunikat\u00f3w wskazanego w \u017c\u0105daniu utworzenia po\u0142\u0105czenia magistrali integracji us\u0142ug zg\u0142oszonego przez niniejsz\u0105 magistral\u0119 z w\u0142asn\u0105 definicj\u0105 konfiguracji po\u0142\u0105czenia magistrali integracji us\u0142ug.
+NOT_ALLOWED_CWSIT0071.useraction=Sprawd\u017a, czy konfiguracje po\u0142\u0105czenia magistrali integracji us\u0142ug na obu magistralach s\u0105 poprawne.
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of authentication alias
+
+UNABLE_TO_OBTAIN_AUTHDATA_CWSIT0072=CWSIT0072W: Nie mo\u017cna uzyska\u0107 danych uwierzytelniania z wewn\u0105trzmagistralowego aliasu uwierzytelniania mechanizmu przesy\u0142ania komunikat\u00f3w {0}.
+UNABLE_TO_OBTAIN_AUTHDATA_CWSIT0072.explanation=Je\u015bli alias uwierzytelniania nie istnieje lub jest niepoprawnie skonfigurowany, uzyskanie z niego danych uwierzytelniania nie b\u0119dzie mo\u017cliwe. Jako dane uwierzytelniania, kt\u00f3re s\u0105 wymagane przez wewn\u0105trzmagistralowe po\u0142\u0105czenia mechanizmu przesy\u0142ania komunikat\u00f3w, zostan\u0105 u\u017cyte domy\u015blne puste warto\u015bci \u0142a\u0144cuchowe. Je\u015bli w\u0142\u0105czone s\u0105 zabezpieczenia, problem ten uniemo\u017cliwi nawi\u0105zywanie po\u0142\u0105cze\u0144 mi\u0119dzy mechanizmami przesy\u0142ania komunikat\u00f3w.
+UNABLE_TO_OBTAIN_AUTHDATA_CWSIT0072.useraction=Sprawd\u017a, czy wewn\u0105trzmagistralowy alias uwierzytelniania mechanizmu przesy\u0142ania komunikat\u00f3w jest poprawnie skonfigurowany.
+
+# -------------------------------------------------------------------------------------------------
+#                                                                                          237937.1
+
+NO_AUTHALIAS_CWSIT0073=CWSIT0073W: Nie skonfigurowano \u017cadnego wewn\u0105trzmagistralowego aliasu uwierzytelniania mechanizmu przesy\u0142ania komunikat\u00f3w.
+NO_AUTHALIAS_CWSIT0073.explanation=Je\u015bli nie ma skonfigurowanego \u017cadnego wewn\u0105trzmagistralowego aliasu uwierzytelniania mechanizmu przesy\u0142ania komunikat\u00f3w, nie mo\u017cna uwierzytelnia\u0107 wewn\u0105trzmagistralowych po\u0142\u0105cze\u0144 mechanizmu przesy\u0142ania komunikat\u00f3w. Aby uwierzytelnia\u0107 wewn\u0105trzmagistralowe po\u0142\u0105czenia mechanizmu przesy\u0142ania komunikat\u00f3w, skonfiguruj wewn\u0105trzmagistralowy alias uwierzytelniania mechanizmu przesy\u0142ania komunikat\u00f3w.
+NO_AUTHALIAS_CWSIT0073.useraction=Skonfiguruj wewn\u0105trzmagistralowy alias uwierzytelniania mechanizmu przesy\u0142ania komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+ALREADY_DEFINED_CWSIT0074=CWSIT0074E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Identyfikator UUID \u0142\u0105cza {0} jest ju\u017c zdefiniowany.
+ALREADY_DEFINED_CWSIT0074.explanation=CMSG0001
+ALREADY_DEFINED_CWSIT0074.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+ALREADY_DEFINED_CWSIT0075=CWSIT0075E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Identyfikator UUID \u0142\u0105cza {0} jest ju\u017c zdefiniowany.
+ALREADY_DEFINED_CWSIT0075.explanation=CMSG0001
+ALREADY_DEFINED_CWSIT0075.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+UNDEFINED_CWSIT0076=CWSIT0076E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Identyfikator UUID \u0142\u0105cza {0} nie zosta\u0142 zdefiniowany.
+UNDEFINED_CWSIT0076.explanation=CMSG0001
+UNDEFINED_CWSIT0076.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+UNDEFINED_CWSIT0077=CWSIT0077E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Identyfikator UUID \u0142\u0105cza {0} nie zosta\u0142 zdefiniowany.
+UNDEFINED_CWSIT0077.explanation=CMSG0001
+UNDEFINED_CWSIT0077.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+NOT_STARTED_CWSIT0078=CWSIT0078E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Nie mo\u017cna zarejestrowa\u0107 identyfikatora UUID \u0142\u0105cza {0}, poniewa\u017c \u0142\u0105cze nie zosta\u0142o uruchomione.
+NOT_STARTED_CWSIT0078.explanation=CMSG0001
+NOT_STARTED_CWSIT0078.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+NOT_ACTIVE_CWSIT0079=CWSIT0079E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Nie mo\u017cna zarejestrowa\u0107 identyfikatora UUID \u0142\u0105cza {0}, poniewa\u017c \u0142\u0105cze nie jest aktywne.
+NOT_ACTIVE_CWSIT0079.explanation=CMSG0001
+NOT_ACTIVE_CWSIT0079.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link name
+# {1} originating bus name
+# {2} receiving bus name
+# {3} receiving bus name
+
+NOT_STARTED_CWSIT0080=CWSIT0080W: Nie mo\u017cna nawi\u0105za\u0107 po\u0142\u0105czenia magistrali integracji us\u0142ug {0} z magistrali {1} do magistrali {2}, poniewa\u017c po\u0142\u0105czenie na magistrali {3} nie zosta\u0142o uruchomione.
+NOT_STARTED_CWSIT0080.explanation=Po\u0142\u0105czenie magistrali integracji us\u0142ug jest obecnie uruchomione tylko na jednej magistrali. Po\u0142\u0105czenie to musi by\u0107 uruchomione na obu magistralach.
+NOT_STARTED_CWSIT0080.useraction=Zatrzymaj po\u0142\u0105czenia magistrali integracji us\u0142ug na magistrali \u017ar\u00f3d\u0142owej albo uruchom je na magistrali odbiorczej.
+
+# -------------------------------------------------------------------------------------------------
+# {0} bridge neighbour UUID
+
+NEIGHBOUR_NOT_FOUND_CWSIT0081=CWSIT0081E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Nie znaleziono s\u0105siada mostu o identyfikatorze UUID {0}.
+NEIGHBOUR_NOT_FOUND_CWSIT0081.explanation=CMSG0001
+NEIGHBOUR_NOT_FOUND_CWSIT0081.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} neighbour UUID
+
+NEIGHBOUR_NOT_FOUND_CWSIT0082=CWSIT0082E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Nie znaleziono s\u0105siada o identyfikatorze UUID {0}.
+NEIGHBOUR_NOT_FOUND_CWSIT0082.explanation=CMSG0001
+NEIGHBOUR_NOT_FOUND_CWSIT0082.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Received Userid
+# {1} Link name
+# {2} Requesting Bus name
+# {3} Required Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHORISATION_CWSIT0085=CWSIT0085E: ID u\u017cytkownika {0} nie ma uprawnie\u0144 do tworzenia po\u0142\u0105czenia magistrali integracji us\u0142ug {1} mi\u0119dzy magistral\u0105 {2} a magistral\u0105 {3}.
+FAILED_AUTHORISATION_CWSIT0085.explanation=ID u\u017cytkownika, za pomoc\u0105 kt\u00f3rego utworzono po\u0142\u0105czenie magistrali integracji us\u0142ug, r\u00f3\u017cni si\u0119 od ID u\u017cytkownika, kt\u00f3ry zosta\u0142 uwierzytelniony na zdalnym mechanizmie przesy\u0142ania komunikat\u00f3w do tworzenia takich po\u0142\u0105cze\u0144.
+FAILED_AUTHORISATION_CWSIT0085.useraction=Sprawd\u017a, czy w obu mechanizmach przesy\u0142ania komunikat\u00f3w skonfigurowano ten sam ID u\u017cytkownika dla danego po\u0142\u0105czenia magistrali integracji us\u0142ug.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+BUS_NOT_FOUND_CWSIT0086=CWSIT0086E: Nie znaleziono magistrali {0}
+BUS_NOT_FOUND_CWSIT0086.explanation=Wymagana magistrala nie zosta\u0142a skonfigurowana na serwerze, dlatego nie mo\u017cna u\u017cy\u0107 tego serwera w celu nawi\u0105zania po\u0142\u0105czenia z wymagan\u0105 magistral\u0105.
+BUS_NOT_FOUND_CWSIT0086.useraction=Sprawd\u017a, czy nazwa magistrali jest poprawna i u\u017cyj serwera, na kt\u00f3rym skonfigurowano wymagan\u0105 magistral\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# {1} Remote engine name
+
+UNABLE_TO_FIND_CWSIT0087=CWSIT0087E: Z mechanizmu przesy\u0142ania komunikat\u00f3w {1} odebrano \u017c\u0105danie nawi\u0105zania po\u0142\u0105czenia wewn\u0105trzmagistralowego, ale nie znaleziono definicji konfiguracji zgodnej z \u017c\u0105daniem.
+UNABLE_TO_FIND_CWSIT0087.explanation=Z innego mechanizmu przesy\u0142ania komunikat\u00f3w odebrano \u017c\u0105danie nawi\u0105zania po\u0142\u0105czenia wewn\u0105trzmagistralowego, ale nie znaleziono definicji konfiguracji zgodnej z tym \u017c\u0105daniem. \u017b\u0105danie zosta\u0142o odrzucone.
+UNABLE_TO_FIND_CWSIT0087.useraction=Sprawd\u017a, czy konfiguracje po\u0142\u0105cze\u0144 wewn\u0105trzmagistralowych s\u0105 poprawne w przypadku obu mechanizm\u00f3w przesy\u0142ania komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name                                                                               248188
+# {1} Text of failure reason
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NO_MES_STARTED_CWSIT0088=CWSIT0088E: Na magistrali {0} nie ma aktualnie \u017cadnych dzia\u0142aj\u0105cych mechanizm\u00f3w przesy\u0142ania komunikat\u00f3w Dodatkowe informacje o niepowodzeniu: {1}
+NO_MES_STARTED_CWSIT0088.explanation=Nie mo\u017cna przy\u0142\u0105czy\u0107 klienta do magistrali, poniewa\u017c na wymaganej magistrali nie ma aktualnie \u017cadnych dzia\u0142aj\u0105cych mechanizm\u00f3w przesy\u0142ania komunikat\u00f3w.
+NO_MES_STARTED_CWSIT0088.useraction=Powt\u00f3rz operacj\u0119. Uruchom mechanizm przesy\u0142ania komunikat\u00f3w na wymaganej magistrali.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+FAILED_AUTHENTICATION_CWSIT0089=CWSIT0089E: Nie powiod\u0142a si\u0119 pr\u00f3ba uwierzytelnienia ID u\u017cytkownika {0} na magistrali {1}.
+FAILED_AUTHENTICATION_CWSIT0089.explanation=Nie powiod\u0142a si\u0119 pr\u00f3ba uwierzytelnienia (przez zdalny mechanizm przesy\u0142ania komunikat\u00f3w) ID u\u017cytkownika u\u017cytego w celu utworzenia po\u0142\u0105czenia klienta z mechanizmem przesy\u0142ania komunikat\u00f3w. Niepowodzenie uwierzytelnienia by\u0142o prawdopodobnie spowodowane niepoprawnym ID u\u017cytkownika lub has\u0142em.
+FAILED_AUTHENTICATION_CWSIT0089.useraction=Sprawd\u017a, czy ID u\u017cytkownika i has\u0142o s\u0105 poprawne.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Channel chain name
+
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0090=CWSIT0090E: Przy u\u017cyciu \u0142a\u0144cucha kana\u0142u {1} wys\u0142ano \u017c\u0105danie serwera startowego do magistrali {0}. U\u017cycie tego \u0142a\u0144cucha nie jest dozwolone przez magistral\u0119 {0}.
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0090.explanation=Klient pr\u00f3bowa\u0142 wys\u0142a\u0107 \u017c\u0105danie serwera startowego, aby nawi\u0105za\u0107 po\u0142\u0105czenie z magistral\u0105, ale magistrala nie zezwala na wysy\u0142anie \u017c\u0105da\u0144 serwera startowego przy u\u017cyciu tego kana\u0142u.
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0090.useraction=Zmie\u0144 konfiguracj\u0119 klienta w taki spos\u00f3b, aby punkt ko\u0144cowy serwera startowego u\u017cywa\u0142 dozwolonego \u0142a\u0144cucha.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+NO_AUTHALIAS_CWSIT0091=CWSIT0091W: Pr\u00f3ba utworzenia po\u0142\u0105czenia magistrali integracji us\u0142ug z mechanizmem przesy\u0142ania komunikat\u00f3w {0} na magistrali {1} bez podawania aliasu uwierzytelniania po\u0142\u0105czenia magistrali integracji us\u0142ug zako\u0144czy\u0142a si\u0119 pomy\u015blnie. Ze wzgl\u0119d\u00f3w bezpiecze\u0144stwa zaleca si\u0119 skonfigurowanie aliasu uwierzytelniania.
+NO_AUTHALIAS_CWSIT0091.explanation=W sytuacji, gdy dla po\u0142\u0105czenia magistrali integracji us\u0142ug nie skonfigurowano aliasu uwierzytelniania, mo\u017cliwe jest utworzenie takiego po\u0142\u0105czenia mi\u0119dzy magistral\u0105 chronion\u0105 a magistral\u0105 niechronion\u0105 bez przeprowadzania kontroli uwierzytelniania.
+NO_AUTHALIAS_CWSIT0091.useraction=Je\u015bli chcesz wymusi\u0107 kontrol\u0119 uwierzytelniania, skonfiguruj alias uwierzytelniania po\u0142\u0105czenia magistrali integracji us\u0142ug.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Channel chain name
+
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0092=CWSIT0092E: Pr\u00f3bowano nawi\u0105za\u0107 po\u0142\u0105czenie z magistral\u0105 {0} przy u\u017cyciu \u0142a\u0144cucha kana\u0142u {1}. U\u017cycie tego \u0142a\u0144cucha nie jest dozwolone przez magistral\u0119 {0}.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0092.explanation=Klient pr\u00f3bowa\u0142 wys\u0142a\u0107 \u017c\u0105danie, aby nawi\u0105za\u0107 po\u0142\u0105czenie z magistral\u0105, ale magistrala nie zezwala na nawi\u0105zywanie po\u0142\u0105cze\u0144 przy u\u017cyciu tego \u0142a\u0144cucha kana\u0142u.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0092.useraction=Zmie\u0144 konfiguracj\u0119 klienta w taki spos\u00f3b, aby nawi\u0105zywa\u0142 po\u0142\u0105czenie przy u\u017cyciu dozwolonego \u0142a\u0144cucha.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting bus name
+# {1} Required bus name
+# {2} Channel chain name
+
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0093=CWSIT0093E: Magistrala {0} pr\u00f3bowa\u0142a utworzy\u0107 po\u0142\u0105czenie magistrali integracji us\u0142ug do magistrali obcej {1}, u\u017cywaj\u0105c \u0142a\u0144cucha kana\u0142u startowego {2}. U\u017cycie tego \u0142a\u0144cucha nie jest dozwolone przez obc\u0105 magistral\u0119 {1}.
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0093.explanation=Magistrala pr\u00f3bowa\u0142a u\u017cy\u0107 \u0142a\u0144cucha transportowego serwera startowego, kt\u00f3ry nie jest obs\u0142ugiwany przez obc\u0105 magistral\u0119.
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0093.useraction=Zmie\u0144 konfiguracj\u0119 magistrali w taki spos\u00f3b, aby punkt ko\u0144cowy serwera startowego u\u017cywa\u0142 \u0142a\u0144cucha dozwolonego przez obc\u0105 magistral\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Endpoint of the bootstrap server
+# {2} Failure message from the bootstrap reply message
+
+NOT_AUTHORIZED_CWSIT0094=CWSIT0094E: Klient nie ma uprawnie\u0144 wymaganych do nawi\u0105zywania po\u0142\u0105czenia z magistral\u0105 {0} przy u\u017cyciu serwera startowego z punktem ko\u0144cowym {1}. Przyczyna: {2}.
+NOT_AUTHORIZED_CWSIT0094.explanation=ID u\u017cytkownika, za pomoc\u0105 kt\u00f3rego utworzono po\u0142\u0105czenie z magistral\u0105, nie jest uprawniony do \u0142\u0105czenia si\u0119 z t\u0105 magistral\u0105.
+NOT_AUTHORIZED_CWSIT0094.useraction=Upewnij si\u0119, \u017ce identyfikatorowi u\u017cytkownika nadano rol\u0119 konektora magistrali w przypadku tej magistrali.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting messaging engine name
+# {1} Requesting bus name
+# {2} Required messaging engine name
+# {3} Required bus name
+# {4} Channel chain name
+
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0095=CWSIT0095E: Mechanizm przesy\u0142ania komunikat\u00f3w {0} na magistrali {1} pr\u00f3bowa\u0142 utworzy\u0107 po\u0142\u0105czenie magistrali integracji us\u0142ug z mechanizmem przesy\u0142ania komunikat\u00f3w {2} na magistrali obcej {3}, u\u017cywaj\u0105c \u0142a\u0144cucha kana\u0142u danych przychodz\u0105cych {4}. U\u017cycie tego \u0142a\u0144cucha nie jest dozwolone przez obc\u0105 magistral\u0119 {3}.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0095.explanation=Magistrala pr\u00f3bowa\u0142a u\u017cy\u0107 \u0142a\u0144cucha transportowego danych przychodz\u0105cych, kt\u00f3ry nie jest obs\u0142ugiwany przez obc\u0105 magistral\u0119.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0095.useraction=Zmie\u0144 konfiguracj\u0119 magistrali w taki spos\u00f3b, aby \u0142\u0105czy\u0142a si\u0119 przy u\u017cyciu \u0142a\u0144cucha dozwolonego przez obc\u0105 magistral\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting messaging engine name
+# {1} Bus name
+# {2} Required messaging engine name
+# {3} Channel chain name
+
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0096=CWSIT0096E: Mechanizm przesy\u0142ania komunikat\u00f3w {0} na magistrali {1} pr\u00f3bowa\u0142 nawi\u0105za\u0107 po\u0142\u0105czenie z mechanizmem przesy\u0142ania komunikat\u00f3w {2} przy u\u017cyciu \u0142a\u0144cucha kana\u0142u danych przychodz\u0105cych {3}. U\u017cycie tego \u0142a\u0144cucha nie jest dozwolone przez magistral\u0119 {1}.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0096.explanation=Magistrala zosta\u0142a skonfigurowana w taki spos\u00f3b, aby by\u0142 u\u017cywany \u0142a\u0144cuch kana\u0142u transportowego, kt\u00f3ry nie jest dozwolony w przypadku komunikacji mi\u0119dzy mechanizmami przesy\u0142ania komunikat\u00f3w.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0096.useraction=Zmie\u0144 konfiguracj\u0119 magistrali w taki spos\u00f3b, aby jako mi\u0119dzymechanizmowy \u0142a\u0144cuch transportowy by\u0142 u\u017cywany dozwolony \u0142a\u0144cuch. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting messaging engine name
+# {1} Requesting subnet name
+# {2} Required messaging engine name
+# {3} Required subnet name
+# {4} Channel chain name
+# {5} Required bus name
+
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0097=CWSIT0097E: Mechanizm przesy\u0142ania komunikat\u00f3w {0} w podsieci {1} pr\u00f3bowa\u0142 nawi\u0105za\u0107 po\u0142\u0105czenie z mechanizmem przesy\u0142ania komunikat\u00f3w {2} w podsieci {3} przy u\u017cyciu \u0142a\u0144cucha kana\u0142u danych przychodz\u0105cych {4}. U\u017cycie tego \u0142a\u0144cucha nie jest dozwolone przez magistral\u0119 {5}.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0097.explanation=Magistrala pr\u00f3bowa\u0142a u\u017cy\u0107 \u0142a\u0144cucha kana\u0142u transportowego, kt\u00f3ry nie jest dozwolony.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0097.useraction=Zmie\u0144 konfiguracj\u0119 magistrali w taki spos\u00f3b, aby \u0142\u0105czy\u0142a si\u0119 przy u\u017cyciu dozwolonego \u0142a\u0144cucha kana\u0142u transportowego.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Endpoint of the bootstrap server
+# {2} Failure message from the bootstrap reply message
+
+FAILED_AUTHENTICATION_CWSIT0098=CWSIT0098E: Nie powiod\u0142a si\u0119 pr\u00f3ba uwierzytelnienia klienta podczas nawi\u0105zywania po\u0142\u0105czenia z magistral\u0105 {0} przy u\u017cyciu serwera startowego z punktem ko\u0144cowym {1}. Przyczyna: {2}.
+FAILED_AUTHENTICATION_CWSIT0098.explanation=Nie powiod\u0142a si\u0119 pr\u00f3ba uwierzytelnienia (przez zdalny mechanizm przesy\u0142ania komunikat\u00f3w) ID u\u017cytkownika u\u017cytego w celu utworzenia po\u0142\u0105czenia klienta z mechanizmem przesy\u0142ania komunikat\u00f3w. Niepowodzenie uwierzytelnienia by\u0142o prawdopodobnie spowodowane niepoprawnym ID u\u017cytkownika lub has\u0142em.
+FAILED_AUTHENTICATION_CWSIT0098.useraction=Sprawd\u017a, czy ID u\u017cytkownika i has\u0142o s\u0105 poprawne.
+
+# -------------------------------------------------------------------------------------------------
+# {0} EndPoint of the successful bootstrap server
+# {1} Name of messaging engine
+# {2} EndPoint of the original bootstrap server
+# {3} Text of failure reason
+
+REDIRECT_FAILURE_CWSIT0099=CWSIT0099E: Klient pomy\u015blnie nawi\u0105za\u0142 kontakt z serwerem startowym w punkcie ko\u0144cowym {0} i zosta\u0142 przekierowany do mechanizmu przesy\u0142ania komunikat\u00f3w {1} w punkcie ko\u0144cowym {2}. Pr\u00f3ba nawi\u0105zania kontaktu z tym punktem ko\u0144cowym nie powiod\u0142a si\u0119 z nast\u0119puj\u0105cej przyczyny: {3}.
+REDIRECT_FAILURE_CWSIT0099.explanation=Po przekierowaniu nie powiod\u0142a si\u0119 pr\u00f3ba przy\u0142\u0105czenia klienta do magistrali z powodu niepowodzenia na serwerze. Zwr\u00f3cono przyczyn\u0119 niepowodzenia dotycz\u0105c\u0105 serwera.
+REDIRECT_FAILURE_CWSIT0099.useraction=Przeanalizuj i rozwi\u0105\u017c awari\u0119 opisan\u0105 w komunikacie o b\u0142\u0119dzie, a nast\u0119pnie pon\u00f3w operacj\u0119. 
+
+# -------------------------------------------------------------------------------------------------
+
+BAD_SELECT_CWSIT0100=CWSIT0100E: Oczekiwano, \u017ce punkt ko\u0144cowy CFEndpoint zostanie uzyskany na podstawie wybranego elementu, ale go nie znaleziono (b\u0142\u0105d wewn\u0119trzny).
+BAD_SELECT_CWSIT0100.explanation=\u017b\u0105danie rozstrzygni\u0119cia docelowego mechanizmu przesy\u0142ania komunikat\u00f3w nie powiod\u0142o si\u0119.
+BAD_SELECT_CWSIT0100.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+INVALID_PARAMETER_CWSIT0101=CWSIT0101E: Napotkano niepoprawny parametr.
+INVALID_PARAMETER_CWSIT0101.explanation=\u017b\u0105danie rozstrzygni\u0119cia docelowego mechanizmu przesy\u0142ania komunikat\u00f3w nie powiod\u0142o si\u0119.
+INVALID_PARAMETER_CWSIT0101.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Selection's MessagingEngine name
+# {1} Proximity constraint
+
+UNSATISFIED_PROXIMITY_CWSIT0102=CWSIT0102E: Znaleziono wybrany mechanizm przesy\u0142ania komunikat\u00f3w {0}, ale musia\u0142 on zosta\u0107 odrzucony, poniewa\u017c nie spe\u0142nia\u0142 warunku blisko\u015bci po\u0142\u0105czenia {1} okre\u015blonego przez aplikacj\u0119.
+UNSATISFIED_PROXIMITY_CWSIT0102.explanation=\u017b\u0105danie rozstrzygni\u0119cia docelowego mechanizmu przesy\u0142ania komunikat\u00f3w nie powiod\u0142o si\u0119.
+UNSATISFIED_PROXIMITY_CWSIT0102.useraction=Je\u015bli zamierzasz utworzy\u0107 po\u0142\u0105czenie do mechanizmu przesy\u0142ania komunikat\u00f3w wskazanego w komunikacie o b\u0142\u0119dzie, musisz obni\u017cy\u0107 ustawienie blisko\u015bci po\u0142\u0105cze\u0144 w fabryce po\u0142\u0105cze\u0144 lub specyfikacji aktywowania i ponowi\u0107 operacj\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Group
+# {2} Type
+# {3} Significance
+# {4} TransportChain
+# {5} Proximity
+
+NULL_SELECTION_CWSIT0103=CWSIT0103E: Nie znaleziono mechanizmu przesy\u0142ania komunikat\u00f3w zgodnego z nast\u0119puj\u0105cymi parametrami: magistrala {0}, grupa docelowa {1}, typ docelowy {2}, znaczenie elementu docelowego {3}, \u0142a\u0144cuch transportowy {4}, blisko\u015b\u0107 {5}.
+NULL_SELECTION_CWSIT0103.explanation=\u017b\u0105danie rozstrzygni\u0119cia docelowego mechanizmu przesy\u0142ania komunikat\u00f3w nie powiod\u0142o si\u0119.
+NULL_SELECTION_CWSIT0103.useraction=Sprawd\u017a status mechanizmu przesy\u0142ania komunikat\u00f3w, z kt\u00f3rym chcesz si\u0119 po\u0142\u0105czy\u0107, aby si\u0119 upewni\u0107, czy dzia\u0142a. Mo\u017cesz te\u017c zmodyfikowa\u0107 w\u0142a\u015bciwo\u015bci po\u0142\u0105czenia, aby umo\u017cliwi\u0107 wybieranie aktywnego mechanizmu przesy\u0142ania komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# {0} MessagingEngine name
+# {1} Bus name
+
+ME_NOT_STARTED_CWSIT0104=CWSIT0104E: Klient pr\u00f3bowa\u0142 nawi\u0105za\u0107 po\u0142\u0105czenie z mechanizmem przesy\u0142ania komunikat\u00f3w {0} na magistrali {1}, ale nie mo\u017cna by\u0142o utworzy\u0107 po\u0142\u0105czenia, poniewa\u017c mechanizm przesy\u0142ania komunikat\u00f3w nie by\u0142 uruchomiony.
+ME_NOT_STARTED_CWSIT0104.explanation=Mechanizm przesy\u0142ania komunikat\u00f3w istnieje, ale nie zosta\u0142 uruchomiony.
+ME_NOT_STARTED_CWSIT0104.useraction=Uruchom mechanizm przesy\u0142ania komunikat\u00f3w, z kt\u00f3rym chcesz si\u0119 po\u0142\u0105czy\u0107, i pon\u00f3w operacj\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHENTICATION_CWSIT0105=CWSIT0105E: Aplikacja nie okre\u015bli\u0142a ID u\u017cytkownika podczas pr\u00f3by uwierzytelnienia na magistrali {0}
+FAILED_AUTHENTICATION_CWSIT0105.explanation=Nie powiod\u0142a si\u0119 pr\u00f3ba uwierzytelnienia w zdalnym mechanizmie przesy\u0142ania komunikat\u00f3w, poniewa\u017c aplikacja nie okre\u015bli\u0142a ID u\u017cytkownika.
+FAILED_AUTHENTICATION_CWSIT0105.useraction=Sprawd\u017a, czy ID u\u017cytkownika i has\u0142o s\u0105 poprawne.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine name
+# {2} Bus name
+# {3} Host of messaging engine
+# {4} Port of messaging engine
+# {5} Transport chain to connect over
+
+BRIDGE_ESTABLISHED_CWSIT0106=CWSIT0106I: Pr\u00f3ba utworzenia po\u0142\u0105czenia magistrali integracji us\u0142ug {0} z mechanizmem przesy\u0142ania komunikat\u00f3w {1} na magistrali {2} (host: {3}, port: {4}) z u\u017cyciem \u0142a\u0144cucha transportowego {5} zako\u0144czy\u0142a si\u0119 pomy\u015blnie.
+BRIDGE_ESTABLISHED_CWSIT0106.explanation=Ustanowiono most do innego mechanizmu przesy\u0142ania komunikat\u00f3w znajduj\u0105cego si\u0119 na innej magistrali.
+BRIDGE_ESTABLISHED_CWSIT0106.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Port value
+# {1} Chain name
+
+UNENCRYPTED_PASSWORD_CWSIT0107=CWSIT0107W: Okre\u015blony port {0} w punkcie ko\u0144cowym spowodowa\u0142 u\u017cycie \u0142a\u0144cucha transportowego {1}. W rezultacie mi\u0119dzy klientem i serwerem zostan\u0105 przekazane niezaszyfrowane has\u0142a. Ze wzgl\u0119d\u00f3w bezpiecze\u0144stwa nie jest to zalecane.
+UNENCRYPTED_PASSWORD_CWSIT0107.explanation=Wybrano domy\u015blny port, a nazwa \u0142a\u0144cucha nie zosta\u0142a okre\u015blona w punkcie ko\u0144cowym dostawcy. Powoduj to powstanie niechronionego \u0142a\u0144cucha transportowego. Zaleca si\u0119 okre\u015blenie zabezpiecze\u0144 dla tego po\u0142\u0105czenia.
+UNENCRYPTED_PASSWORD_CWSIT0107.useraction=Mo\u017cna zapobiec temu ostrze\u017ceniu, r\u0119cznie okre\u015blaj\u0105c wymagany \u0142a\u0144cuch transportowy (zabezpieczony lub niezabezpieczony) lub pomijaj\u0105c has\u0142o podczas tworzenia po\u0142\u0105czenia.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHORIZATION_CWSIT0108=CWSIT0108E: Nie powiod\u0142a si\u0119 pr\u00f3ba autoryzacji ID u\u017cytkownika {0} na magistrali {1}
+FAILED_AUTHORIZATION_CWSIT0108.explanation=Nie powiod\u0142a si\u0119 pr\u00f3ba autoryzacji (przez zdalny mechanizm przesy\u0142ania komunikat\u00f3w) ID u\u017cytkownika u\u017cytego w celu utworzenia po\u0142\u0105czenia klienta z mechanizmem przesy\u0142ania komunikat\u00f3w. Niepowodzenie autoryzacji by\u0142o prawdopodobnie spowodowane niepoprawnym ID u\u017cytkownika lub has\u0142em.
+FAILED_AUTHORIZATION_CWSIT0108.useraction=Sprawd\u017a, czy ID u\u017cytkownika i has\u0142o s\u0105 poprawne.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHORIZATION_CWSIT0109=CWSIT0109E: Aplikacja nie okre\u015bli\u0142a ID u\u017cytkownika podczas pr\u00f3by autoryzacji na magistrali {0}
+FAILED_AUTHORIZATION_CWSIT0109.explanation=Nie powiod\u0142a si\u0119 pr\u00f3ba autoryzacji w zdalnym mechanizmie przesy\u0142ania komunikat\u00f3w, poniewa\u017c aplikacja nie okre\u015bli\u0142a ID u\u017cytkownika.
+FAILED_AUTHORIZATION_CWSIT0109.useraction=Sprawd\u017a, czy ID u\u017cytkownika i has\u0142o s\u0105 poprawne.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+TOKEN_FAILED_AUTHENTICATION_CWSIT0110=CWSIT0110E: Nie powiod\u0142a si\u0119 pr\u00f3ba uwierzytelnienia znacznika bezpiecze\u0144stwa udost\u0119pnionego przez mechanizm przesy\u0142ania komunikat\u00f3w {0} na magistrali {1}.
+TOKEN_FAILED_AUTHENTICATION_CWSIT0110.explanation=Nie powiod\u0142a si\u0119 pr\u00f3ba uwierzytelnienia znacznika bezpiecze\u0144stwa, za pomoc\u0105 kt\u00f3rego utworzono wewn\u0105trzmagistralowe po\u0142\u0105czenie z mechanizmem przesy\u0142ania komunikat\u00f3w.
+TOKEN_FAILED_AUTHENTICATION_CWSIT0110.useraction=Sprawd\u017a dzienniki b\u0142\u0119d\u00f3w w mechanizmach przesy\u0142ania komunikat\u00f3w, kt\u00f3re uczestniczy\u0142y w pr\u00f3bie nawi\u0105zania tego po\u0142\u0105czenia.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+TOKEN_INCONSISTENT_CWSIT0111=CWSIT0111E: Informacje o to\u017csamo\u015bci podane w tym znaczniku bezpiecze\u0144stwa nie s\u0105 zgodne z danymi zawartymi w \u017c\u0105daniu utworzenia po\u0142\u0105czenia wys\u0142anym przez mechanizm przesy\u0142ania komunikat\u00f3w {0} na magistrali {1}.
+TOKEN_INCONSISTENT_CWSIT0111.explanation=Mo\u017ce to oznacza\u0107, \u017ce z systemem pr\u00f3buje si\u0119 po\u0142\u0105czy\u0107 nieuprawniony u\u017cytkownik.
+TOKEN_INCONSISTENT_CWSIT0111.useraction=Sprawd\u017a dzienniki b\u0142\u0119d\u00f3w w mechanizmach przesy\u0142ania komunikat\u00f3w, kt\u00f3re uczestniczy\u0142y w pr\u00f3bie nawi\u0105zania tego po\u0142\u0105czenia.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The string name of the token type that is unsupported
+# {1} Messaging engine name
+# {2} Bus name
+ 
+TOKEN_TYPE_UNSUPPORTED_CWSIT0112=CWSIT0112E: CWSIT0112E: Typ znacznika bezpiecze\u0144stwa {0} udost\u0119pniony przez mechanizm przesy\u0142ania komunikat\u00f3w {1} na magistrali {2} nie jest obs\u0142ugiwany.
+TOKEN_TYPE_UNSUPPORTED_CWSIT0112.explanation=Pr\u00f3ba uwierzytelnienia zdalnego mechanizmu przesy\u0142ania komunikat\u00f3w nie powiod\u0142a si\u0119, poniewa\u017c podany typ znacznika bezpiecze\u0144stwa nie jest obs\u0142ugiwany.
+TOKEN_TYPE_UNSUPPORTED_CWSIT0112.useraction=Sprawd\u017a dzienniki b\u0142\u0119d\u00f3w w mechanizmach przesy\u0142ania komunikat\u00f3w, kt\u00f3re uczestniczy\u0142y w pr\u00f3bie nawi\u0105zania tego po\u0142\u0105czenia.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+MISSING_SECURITY_TOKEN_CWSIT0113=CWSIT0113E: \u017b\u0105danie utworzenia po\u0142\u0105czenia przekazane przez mechanizm przesy\u0142ania komunikat\u00f3w {0} na magistrali {1} nie zawiera\u0142o okre\u015blenia typu znacznika bezpiecze\u0144stwa.
+MISSING_SECURITY_TOKEN_CWSIT0113.explanation=Mo\u017ce to oznacza\u0107, \u017ce z systemem pr\u00f3buje si\u0119 po\u0142\u0105czy\u0107 nieuprawniony u\u017cytkownik.
+MISSING_SECURITY_TOKEN_CWSIT0113.useraction=Sprawd\u017a dzienniki b\u0142\u0119d\u00f3w w mechanizmach przesy\u0142ania komunikat\u00f3w, kt\u00f3re uczestniczy\u0142y w pr\u00f3bie nawi\u0105zania tego po\u0142\u0105czenia.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+TOKEN_INCONSISTENT_CWSIT0115=CWSIT0115E: Informacje o to\u017csamo\u015bci podane w tym znaczniku bezpiecze\u0144stwa nie s\u0105 zgodne z danymi zawartymi w odpowiedzi na \u017c\u0105danie utworzenia po\u0142\u0105czenia wys\u0142anej przez mechanizm przesy\u0142ania komunikat\u00f3w {0} na magistrali {1}.
+TOKEN_INCONSISTENT_CWSIT0115.explanation=Mo\u017ce to oznacza\u0107, \u017ce z systemem pr\u00f3buje si\u0119 po\u0142\u0105czy\u0107 nieuprawniony u\u017cytkownik.
+TOKEN_INCONSISTENT_CWSIT0115.useraction=Sprawd\u017a dzienniki b\u0142\u0119d\u00f3w w mechanizmach przesy\u0142ania komunikat\u00f3w, kt\u00f3re uczestniczy\u0142y w pr\u00f3bie nawi\u0105zania tego po\u0142\u0105czenia.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The string name of the token type that is unsupported
+# {1} Messaging engine name
+# {2} Bus name
+
+TOKEN_TYPE_UNSUPPORTED_CWSIT0116=CWSIT0116E: Typ znacznika bezpiecze\u0144stwa {0} udost\u0119pniony przez mechanizm przesy\u0142ania komunikat\u00f3w {1} na magistrali {2} na potrzeby uwierzytelniania wzajemnego nie jest obs\u0142ugiwany.
+TOKEN_TYPE_UNSUPPORTED_CWSIT0116.explanation=Pr\u00f3ba uwierzytelnienia zdalnego mechanizmu przesy\u0142ania komunikat\u00f3w nie powiod\u0142a si\u0119, poniewa\u017c podany typ znacznika bezpiecze\u0144stwa nie jest obs\u0142ugiwany.
+TOKEN_TYPE_UNSUPPORTED_CWSIT0116.useraction=Sprawd\u017a dzienniki b\u0142\u0119d\u00f3w w mechanizmach przesy\u0142ania komunikat\u00f3w, kt\u00f3re uczestniczy\u0142y w pr\u00f3bie nawi\u0105zania tego po\u0142\u0105czenia.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+MISSING_SECURITY_TOKEN_CWSIT0117=CWSIT0117E: Odpowied\u017a na \u017c\u0105danie utworzenia po\u0142\u0105czenia przekazana przez mechanizm przesy\u0142ania komunikat\u00f3w {0} na magistrali {1} nie zawiera\u0142a okre\u015blenia typu znacznika bezpiecze\u0144stwa.
+MISSING_SECURITY_TOKEN_CWSIT0117.explanation=Mo\u017ce to oznacza\u0107, \u017ce z systemem pr\u00f3buje si\u0119 po\u0142\u0105czy\u0107 nieuprawniony u\u017cytkownik.
+MISSING_SECURITY_TOKEN_CWSIT0117.useraction=Sprawd\u017a dzienniki b\u0142\u0119d\u00f3w w mechanizmach przesy\u0142ania komunikat\u00f3w, kt\u00f3re uczestniczy\u0142y w pr\u00f3bie nawi\u0105zania tego po\u0142\u0105czenia.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+INCOMPLETE_ME_INFO_CWSIT0118=CWSIT0118E: Brak pe\u0142nych informacji podczas pr\u00f3by utworzenia po\u0142\u0105czenia ze zdalnym mechanizmem przesy\u0142ania komunikat\u00f3w {0} na magistrali {1} spowodowa\u0142, \u017ce sprawdzenie poprawno\u015bci to\u017csamo\u015bci zdalnego mechanizmu przesy\u0142ania komunikat\u00f3w nie by\u0142o mo\u017cliwe.
+INCOMPLETE_ME_INFO_CWSIT0118.explanation=Mo\u017ce to by\u0107 spowodowane z problemami z koordynacj\u0105 w czasie lub mo\u017ce wskazywa\u0107, \u017ce z systemem pr\u00f3buje si\u0119 po\u0142\u0105czy\u0107 nieuprawniony u\u017cytkownik.
+INCOMPLETE_ME_INFO_CWSIT0118.useraction=Poczekaj na ponown\u0105 pr\u00f3b\u0119 lub sprawd\u017a, czy nie zosta\u0142a podj\u0119ta pr\u00f3ba ataku. W tym celu sprawd\u017a dzienniki systemowe i dzienniki b\u0142\u0119d\u00f3w powi\u0105zane z mechanizmami przesy\u0142ania komunikat\u00f3w, kt\u00f3re bior\u0105 udzia\u0142 w pr\u00f3bie po\u0142\u0105czenia.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+INCOMPLETE_ME_INFO_CWSIT0119=CWSIT0119E: Brak pe\u0142nych informacji spowodowa\u0142, \u017ce podczas pr\u00f3by utworzenia po\u0142\u0105czenia przez zdalny mechanizm przesy\u0142ania komunikat\u00f3w {0} na magistrali {1} sprawdzenie poprawno\u015bci to\u017csamo\u015bci zdalnego mechanizmu przesy\u0142ania komunikat\u00f3w nie by\u0142o mo\u017cliwe.
+INCOMPLETE_ME_INFO_CWSIT0119.explanation=Mo\u017ce to by\u0107 spowodowane z problemami z koordynacj\u0105 w czasie lub mo\u017ce wskazywa\u0107, \u017ce z systemem pr\u00f3buje si\u0119 po\u0142\u0105czy\u0107 nieuprawniony u\u017cytkownik.
+INCOMPLETE_ME_INFO_CWSIT0119.useraction=Poczekaj na ponown\u0105 pr\u00f3b\u0119 lub sprawd\u017a, czy nie zosta\u0142a podj\u0119ta pr\u00f3ba ataku. W tym celu sprawd\u017a dzienniki systemowe i dzienniki b\u0142\u0119d\u00f3w powi\u0105zane z mechanizmami przesy\u0142ania komunikat\u00f3w, kt\u00f3re bior\u0105 udzia\u0142 w pr\u00f3bie po\u0142\u0105czenia.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+TARGET_NOT_FOUND_CWSIT0120=CWSIT0120E: Sprawdzenie poprawno\u015bci to\u017csamo\u015bci mechanizmu przesy\u0142ania komunikat\u00f3w {0} na magistrali {1}, kt\u00f3ry pr\u00f3bowa\u0142 utworzy\u0107 po\u0142\u0105czenie, nie by\u0142o mo\u017cliwe.
+TARGET_NOT_FOUND_CWSIT0120.explanation=Mo\u017ce to by\u0107 spowodowane z problemami z koordynacj\u0105 w czasie lub mo\u017ce wskazywa\u0107, \u017ce z systemem pr\u00f3buje si\u0119 po\u0142\u0105czy\u0107 nieuprawniony u\u017cytkownik.
+TARGET_NOT_FOUND_CWSIT0120.useraction=Poczekaj na ponown\u0105 pr\u00f3b\u0119 lub sprawd\u017a, czy nie zosta\u0142a podj\u0119ta pr\u00f3ba ataku. W tym celu sprawd\u017a dzienniki systemowe i dzienniki b\u0142\u0119d\u00f3w powi\u0105zane z mechanizmami przesy\u0142ania komunikat\u00f3w, kt\u00f3re bior\u0105 udzia\u0142 w pr\u00f3bie po\u0142\u0105czenia.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The host name which is not valid
+INVALID_HOST_CWSIT0121=CWSIT0121E: Podczas pr\u00f3by rozstrzygni\u0119cia nazwy hosta {0} wyst\u0105pi\u0142 wyj\u0105tek java.net.UnknownHostException (nieznany host).
+INVALID_HOST_CWSIT0121.explanation=Problem mo\u017ce wynika\u0107 z tego, \u017ce klient odebra\u0142 nazw\u0119 hosta, kt\u00f3rej nie m\u00f3g\u0142 rozstrzygn\u0105\u0107 w systemie nazw domen (DNS).
+INVALID_HOST_CWSIT0121.useraction=Spr\u00f3buj zarejestrowa\u0107 nazw\u0119 hosta na lokalnym serwerze nazw domen lub doda\u0107 wpis do pliku hosts na kliencie. Nast\u0119pnie pon\u00f3w operacj\u0119.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} The host name which is not valid
+STATIC_ROUTING_TABLE_IN_USE_CWSIT0122=CWSIT0122W: Dla tego klastra stosowana jest tabela routingu statycznego. U\u017cycie routingu statycznego zazwyczaj uniemo\u017cliwia prawid\u0142owe dzia\u0142anie magistrali integracji us\u0142ug i nie jest zalecane.
+STATIC_ROUTING_TABLE_IN_USE_CWSIT0122.explanation=W\u0142\u0105czenie routingu statycznego uniemo\u017cliwia dynamiczn\u0105 wymian\u0119 informacji (takich jak po\u0142o\u017cenie mechanizmu przesy\u0142ania komunikat\u00f3w) z kom\u00f3rk\u0105. Z tego powodu aplikacje nie mog\u0105 \u0142\u0105czy\u0107 si\u0119 z magistral\u0105.
+STATIC_ROUTING_TABLE_IN_USE_CWSIT0122.useraction=Je\u015bli podczas korzystania z magistrali integracji us\u0142ug wyst\u0119puj\u0105 problemy, nale\u017cy usun\u0105\u0107 tabel\u0119 routingu statycznego i zrestartowa\u0107 serwery, aby przywr\u00f3ci\u0107 normalny routing.
+
+# -------------------------------------------------------------------------------------------------
+# {0} bus name
+BOOTSTRAP_NOT_PERMITTED_CWSIT0123=CWSIT0123E: Konfiguracja serwera nie zezwala na uruchamianie programu startowego dla magistrali {0}.
+BOOTSTRAP_NOT_PERMITTED_CWSIT0123.explanation=Klient pr\u00f3bowa\u0142 uruchomi\u0107 program startowy na magistrali za po\u015brednictwem serwera, kt\u00f3rego konfiguracja nie zezwala na uruchamianie programu startowego danej magistrali. 
+BOOTSTRAP_NOT_PERMITTED_CWSIT0123.useraction=Zmie\u0144 konfiguracj\u0119 magistrali w taki spos\u00f3b, aby mo\u017cna by\u0142o u\u017cy\u0107 tego serwera do uruchomienia programu startowego, albo zaktualizuj klienckie punkty ko\u0144cowe dostawcy w taki spos\u00f3b, aby korzysta\u0142y z innego serwera.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting bus name
+# {1} Required bus name
+# {2} Channel chain name
+
+BOOTSTRAP_NOT_PERMITTED_CWSIT0124=CWSIT0124E: Magistrala {0} pr\u00f3bowa\u0142a znale\u017a\u0107 obc\u0105 magistral\u0119 {1} za pomoc\u0105 serwera, kt\u00f3rego konfiguracja nie zezwala na uruchamianie programu startowego dla magistrali {0}.
+BOOTSTRAP_NOT_PERMITTED_CWSIT0124.explanation=Magistrala pr\u00f3bowa\u0142a uruchomi\u0107 program startowy do obcej magistrali za po\u015brednictwem serwera, kt\u00f3ry nie obs\u0142uguje programu startowego danej magistrali obcej.
+BOOTSTRAP_NOT_PERMITTED_CWSIT0124.useraction=Zmie\u0144 konfiguracj\u0119 magistrali w taki spos\u00f3b, aby startowy punkt ko\u0144cowy u\u017cywa\u0142 innego serwera. W tym celu podaj inn\u0105 kombinacj\u0119 hosta i portu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIT9999=CWSIT9999E: {0}
+TEMPORARY_CWSIT9999.explanation=Je\u015bli ten komunikat nie podaje dostatecznych informacji, zapoznaj si\u0119 z towarzysz\u0105cymi mu komunikatami o b\u0142\u0119dach.
+TEMPORARY_CWSIT9999.useraction=Dodatkowe informacje o rozwi\u0105zaniu tego b\u0142\u0119du zawieraj\u0105 artyku\u0142y na temat okre\u015blania problem\u00f3w na stronie WWW wsparcia dla serwera WebSphere Application Server pod adresem http://www.ibm.com/software/webservers/appserv/was/support.
+# -------------------------------------------------------------------------------------------------
+# {0} Endpoint of the Remote Messaging Engine
+# {1} Failure message from the Remote Messaging Engine reply message 
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0126=CWSIT0126E: Pomy\u015blnie nawi\u0105zano po\u0142\u0105czenie z docelowym mechanizmem przesy\u0142ania komunikat\u00f3w w punkcie {0}, jednak mechanizm przesy\u0142ania komunikat\u00f3w zwr\u00f3ci\u0142 warunek b\u0142\u0119du: {1}
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0126.explanation=Klient nawi\u0105za\u0142 po\u0142\u0105czenie z mechanizmem przesy\u0142ania komunikat\u00f3w, ale wyst\u0105pi\u0142 problem podczas nawi\u0105zywania pomy\u015blnego po\u0142\u0105czenia z docelowym mechanizmem przesy\u0142ania komunikat\u00f3w. 
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0126.useraction=Upewnij si\u0119, \u017ce docelowy mechanizm przesy\u0142ania komunikat\u00f3w jest poprawnie skonfigurowany, dzia\u0142a i mo\u017ce akceptowa\u0107 przychodz\u0105ce po\u0142\u0105czenia zdalne. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} List of Target Messaging Engines to which we tried to connect
+LIBERTY_NO_BOOTSTRAP_CWSIT0127=CWSIT0127E: Nie mo\u017cna nawi\u0105za\u0107 kontaktu z okre\u015blonymi docelowymi mechanizmami przesy\u0142ania komunikat\u00f3w. Dodatkowe informacje zawiera powi\u0105zany komunikat wyj\u0105tku. Wykonano pr\u00f3by nawi\u0105zania po\u0142\u0105cze\u0144 klienckich z nast\u0119puj\u0105cymi mechanizmami: {0}
+LIBERTY_NO_BOOTSTRAP_CWSIT0127.explanation=Klient nie mo\u017ce nawi\u0105za\u0107 po\u0142\u0105czenia. Po\u0142\u0105czenie mog\u0142o si\u0119 nie powie\u015b\u0107 z powodu niedost\u0119pno\u015bci wymaganych docelowych mechanizm\u00f3w przesy\u0142ania komunikat\u00f3w albo z powodu problem\u00f3w z konfiguracj\u0105 lub z sieci\u0105. 
+LIBERTY_NO_BOOTSTRAP_CWSIT0127.useraction=Sprawd\u017a, czy sie\u0107 dzia\u0142a poprawnie oraz czy s\u0105 dost\u0119pne wymagane mechanizmy przesy\u0142ania komunikat\u00f3w. Informacje na temat konfigurowania po\u0142\u0105czenia dla docelowego mechanizmu przesy\u0142ania komunikat\u00f3w zawiera dokumentacja produktu. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Endpoint of the bootstrap server # {2} Failure message from the bootstrap reply message 
+
+LIBERTY_FAILED_AUTHENTICATION_CWSIT0128=CWSIT0128E: Uwierzytelnianie klienta w docelowym mechanizmie przesy\u0142ania komunikat\u00f3w nie powiod\u0142o si\u0119 z nast\u0119puj\u0105cej przyczyny: {2}.
+LIBERTY_FAILED_AUTHENTICATION_CWSIT0128.explanation=Zdalny mechanizm przesy\u0142ania komunikat\u00f3w nie m\u00f3g\u0142 uwierzytelni\u0107 identyfikatora u\u017cytkownika, kt\u00f3ry zosta\u0142 u\u017cyty do nawi\u0105zania po\u0142\u0105czenia klienta z docelowym mechanizmem przesy\u0142ania komunikat\u00f3w. Niepowodzenie uwierzytelnienia by\u0142o prawdopodobnie spowodowane niepoprawnym identyfikatorem u\u017cytkownika lub has\u0142em.
+LIBERTY_FAILED_AUTHENTICATION_CWSIT0128.useraction=Sprawd\u017a, czy wprowadzono poprawny identyfikator u\u017cytkownika i has\u0142o. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Endpoint of the bootstrap server # {2} Failure message from the bootstrap reply message 
+
+LIBERTY_NOT_AUTHORIZED_CWSIT0129=CWSIT0129E: Klient nie uzyska\u0142 autoryzacji do nawi\u0105zania po\u0142\u0105czenia z docelowym mechanizmem przesy\u0142ania komunikat\u00f3w. Przyczyna: {2}
+LIBERTY_NOT_AUTHORIZED_CWSIT0129.explanation=Identyfikator u\u017cytkownika, za pomoc\u0105 kt\u00f3rego utworzono po\u0142\u0105czenie, nie jest autoryzowany do nawi\u0105zania po\u0142\u0105czenia z docelowym mechanizmem przesy\u0142ania komunikat\u00f3w.
+LIBERTY_NOT_AUTHORIZED_CWSIT0129.useraction=Upewnij si\u0119, \u017ce identyfikator u\u017cytkownika ma wymagane uprawnienia. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} EndPoint of application server that failed
+# {1} Name of bus # {2} text of failure reason 
+
+LIBERTY_MIRRORED_FAILURE_CWSIT0130=CWSIT0130W: \u017b\u0105danie po\u0142\u0105czenia klienta z docelowym mechanizmem przesy\u0142ania komunikat\u00f3w nie powiod\u0142o si\u0119 z nast\u0119puj\u0105cej przyczyny: {2}.
+LIBERTY_MIRRORED_FAILURE_CWSIT0130.explanation=\u017b\u0105danie nawi\u0105zania po\u0142\u0105czenia klienta nie powiod\u0142o si\u0119 z powodu problemu w docelowym mechanizmie przesy\u0142ania komunikat\u00f3w. Zwr\u00f3cono przyczyn\u0119 niepowodzenia dotycz\u0105c\u0105 docelowego mechanizmu przesy\u0142ania komunikat\u00f3w.
+LIBERTY_MIRRORED_FAILURE_CWSIT0130.useraction=Przeanalizuj niepowodzenie opisane w komunikacie o b\u0142\u0119dzie i usu\u0144 jego przyczyn\u0119, a nast\u0119pnie pon\u00f3w operacj\u0119.  
+
+# -------------------------------------------------------------------------------------------------
+# {0} Remote Messaging Engine which cannot be contacted
+# {1} Exception 
+
+LIBERTY_BOOTSTRAP_FAILED_CWSIT0131=CWSIT0131W: Nie nawi\u0105za\u0107 po\u0142\u0105czenia z docelowym mechanizmem przesy\u0142ania komunikat\u00f3w {0} z powodu nast\u0119puj\u0105cego wyj\u0105tku: {1}.
+LIBERTY_BOOTSTRAP_FAILED_CWSIT0131.explanation=Klient nie mo\u017ce nawi\u0105za\u0107 po\u0142\u0105czenia z okre\u015blonym docelowym mechanizmem przesy\u0142ania komunikat\u00f3w. Po\u0142\u0105czenie mog\u0142o si\u0119 nie powie\u015b\u0107 z powodu niedost\u0119pno\u015bci wymaganych docelowych mechanizm\u00f3w przesy\u0142ania komunikat\u00f3w albo z powodu problem\u00f3w z konfiguracj\u0105 lub z sieci\u0105. 
+LIBERTY_BOOTSTRAP_FAILED_CWSIT0131.useraction=Sprawd\u017a, czy sie\u0107 dzia\u0142a poprawnie i czy wymagany docelowy mechanizm przesy\u0142ania komunikat\u00f3w jest dost\u0119pny. Zdalny mechanizm przesy\u0142ania komunikat\u00f3w jest okre\u015blany przez w\u0142a\u015bciwo\u015b\u0107 adresu serwera zdalnego fabryki po\u0142\u0105cze\u0144 JMS. Format adresu jest nast\u0119puj\u0105cy: nazwa_hosta:numer_portu:nazwa_\u0142a\u0144cucha (na przyk\u0142ad localhost:7276:BootstrapBasicMessaging).  
+
+# -------------------------------------------------------------------------------------------------
+# {0} Name of the messaging engine runtime feature,  eg wasJmsServer-1.0
+
+LIBERTY_BINDING_FAILED_CWSIT0132=CWSIT0132E: Brak lokalnych mechanizm\u00f3w przesy\u0142ania komunikat\u00f3w, z kt\u00f3rymi mo\u017cna nawi\u0105za\u0107 po\u0142\u0105czenie. Aby w\u0142\u0105czy\u0107 lokalny mechanizm przesy\u0142ania komunikat\u00f3w, dodaj sk\u0142adnik {0}.
+LIBERTY_BINDING_FAILED_CWSIT0132.explanation=Klient nie mo\u017ce nawi\u0105za\u0107 po\u0142\u0105czenia z lokalnym mechanizmem przesy\u0142ania komunikat\u00f3w. Prawdopodobnie mechanizm przesy\u0142ania komunikat\u00f3w nie jest skonfigurowany lub nie jest aktywny na bie\u017c\u0105cym serwerze profilu Liberty albo mechanizm przesy\u0142ania komunikat\u00f3w nie mo\u017ce akceptowa\u0107 po\u0142\u0105cze\u0144.
+LIBERTY_BINDING_FAILED_CWSIT0132.useraction=Sprawd\u017a, czy mechanizm przesy\u0142ania komunikat\u00f3w dzia\u0142a na bie\u017c\u0105cym serwerze profilu Liberty.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Remote Messaging Engine hostname/ipaddess:port:chain combination
+
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0133=CWSIT0133E: Klient nawi\u0105za\u0142 po\u0142\u0105czenie z serwerem docelowym {0}, ale serwer odrzuci\u0142 po\u0142\u0105czenie.
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0133.explanation=Klient pomy\u015blnie nawi\u0105za\u0142 po\u0142\u0105czenie z serwerem docelowym, ale serwer docelowy odrzuci\u0142 po\u0142\u0105czenie, poniewa\u017c mechanizm przesy\u0142ania komunikat\u00f3w dzia\u0142aj\u0105cy na serwerze docelowym nie by\u0142 zgodny z w\u0142a\u015bciwo\u015bciami zdefiniowanymi w fabryce po\u0142\u0105cze\u0144.
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0133.useraction= Skonfiguruj w\u0142a\u015bciwo\u015bci fabryki po\u0142\u0105cze\u0144 w taki spos\u00f3b, aby mechanizm przesy\u0142ania komunikat\u00f3w dzia\u0142aj\u0105cy na serwerze docelowym by\u0142 z nimi zgodny.
+
+# -------------------------------------------------------------------------------------------------
+
+LIBERTY_BINDING_FAILED_CWSIT0134=CWSIT0134E: Nie mo\u017cna nawi\u0105za\u0107 po\u0142\u0105czenia z lokalnym mechanizmem przesy\u0142ania komunikat\u00f3w, poniewa\u017c nie powiod\u0142o si\u0119 jego uruchomienie.
+LIBERTY_BINDING_FAILED_CWSIT0134.explanation=Klient nie m\u00f3g\u0142 nawi\u0105za\u0107 po\u0142\u0105czenia z lokalnym mechanizmem przesy\u0142ania komunikat\u00f3w. Jest to spowodowane faktem, \u017ce mechanizm przesy\u0142ania komunikat\u00f3w jest skonfigurowany w bie\u017c\u0105cym serwerze profilu Liberty, ale nie powiod\u0142o si\u0119 uruchomienie mechanizmu przesy\u0142ania komunikat\u00f3w.
+LIBERTY_BINDING_FAILED_CWSIT0134.useraction=Sprawd\u017a, czy mechanizm przesy\u0142ania komunikat\u00f3w dzia\u0142a na bie\u017c\u0105cym serwerze profilu Liberty. Sprawd\u017a dzienniki b\u0142\u0119d\u00f3w lub dzienniki FFDC, aby kontynuowa\u0107 okre\u015blanie problemu.

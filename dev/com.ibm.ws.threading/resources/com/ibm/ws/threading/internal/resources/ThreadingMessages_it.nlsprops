@@ -1,0 +1,57 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME=CWWKExxxxI: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.threading/resources/com/ibm/ws/threading/internal/resources/ThreadingMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 1200 - 1299 com.ibm.ws.threading.internal.resources.ThreadingMessages
+# -------------------------------------------------------------------------------------------------
+
+# {0} size of the pool when a deadlock was first detected
+# {1} current size of the pool
+unbreakableExecutorHang=CWWKE1200W:  Tutti i thread nell''executor predefinito Liberty sembrano essere bloccati. Liberty ha aumentato automaticamente il numero di thread da {0} a {1}.  Tuttavia, tutti i thread sembrano ancora bloccati.
+unbreakableExecutorHang.explanation=Si \u00e8 verificato un errore che ha causato il blocco di un executor e il runtime Liberty ha aggiunto un significativo numero di thread per tentare di terminare la condizione di blocco. Tuttavia, l'executor rimane in stato di i nattivit\u00e0.
+unbreakableExecutorHang.useraction=Determinare se \u00e8 presente un collo di bottiglia, ad esempio una tabella di database bloccata, che impedisce la risoluzione dei thread nel server. Se non \u00e8 presente un collo di bottiglia e il server richiede legittimamente thread aggiuntivi, adattare l'attributo coreThreads dell'elemento di configurazione executor.
+
+CWWKE1201.queue.full.abort=CWWKE1201E: Impossibile inoltrare un''attivit\u00e0 all''executor {0} perch\u00e9 la coda attivit\u00e0 con maxQueueSize di {1} rimane piena dopo un attesa di {2} nanosecondi.
+CWWKE1201.queue.full.abort.explanation=L'attributo maxQueueSize controlla quanti inoltri di attivit\u00e0 \u00e8 possibile accodare. L'attributo maxWaitForEnqueue controlla il tempo di attesa che diventi disponibile una posizione nella coda, ma questo intervallo pu\u00f2 essere ridotto del timeout rimanente se si utilizzano i metodi a tempo invokeAll o invokeAny per inoltrare le attivit\u00e0. L'attributo queueFullAction determina l'azione da intraprendere alla scadenza dell'intervallo di tempo se non diventano disponibili posizioni nella coda. Per evitare il superamento della simultaneit\u00e0 massima o per rispettare il timeout specificato, i metodi invokeAll e invokeAny possono sovrascrivere queueFullAction e interrompere l'inoltro dell'attivit\u00e0 quando non \u00e8 possibile accodarla.
+CWWKE1201.queue.full.abort.useraction=Non \u00e8 necessaria alcuna azione se l'applicazione gestisce RejectedExecutionException. Altrimenti, effettuare una qualsiasi combinazione delle seguenti azioni: aumentare maxQueueSize, aumentare maxWaitForEnqueue, utilizzare una queueFullAction diversa o aumentare il timeout fornito ai metodi invokeAll o invokeAny.
+
+CWWKE1202.submit.after.shutdown=CWWKE1202E: Non \u00e8 possibile inoltrare un''attivit\u00e0 perch\u00e9 l''executor {0} \u00e8 stato arrestato.
+CWWKE1202.submit.after.shutdown.explanation=Gli inoltri di attivit\u00e0 non sono consentiti dopo che \u00e8 stato richiesto l'arresto del servizio executor.
+CWWKE1202.submit.after.shutdown.useraction=Inoltrare le attivit\u00e0 solo su un'istanza del  servizio executor per cui non sia stato richiesto l'arresto.
+
+CWWKE1203.config.update.after.shutdown=CWWKE1203E: L''aggiornamento della configurazione a {0} non \u00e8 consentito perch\u00e9 l''executor {1} \u00e8 stato arrestato.
+CWWKE1203.config.update.after.shutdown.explanation=Non \u00e8 possibile aggiornare la configurazione dopo che \u00e8 stato richiesto l'arresto del servizio executor.
+CWWKE1203.config.update.after.shutdown.useraction=Aggiornare la configurazione solo di un'istanza del  servizio executor per cui non sia stato richiesto l'arresto.
+
+# {4} is the value of the time unit enum constant that was supplied to invokeAll/invokeAny. For example, MINUTES
+CWWKE1204.unable.to.invoke=CWWKE1204E: L''executor {0} non \u00e8 stato in grado di inoltrare {1} di {2} attivit\u00e0 nell''intervallo di tempo assegnato di {3} {4}.
+CWWKE1204.unable.to.invoke.explanation=L'executor ha rifiutato l'operazione invokeAll o invokeAny a causa di tempo insufficiente o la capacit\u00e0 della coda disponibile non era sufficiente per inoltrare tutte le attivit\u00e0 richieste nell'intervallo specificato.
+CWWKE1204.unable.to.invoke.useraction=Non \u00e8 necessaria alcuna azione se l'applicazione gestisce RejectedExecutionException. Altrimenti, effettuare una qualsiasi combinazione delle seguenti azioni: aumentare maxQueueSize, aumentare maxConcurrency o aumentare il valore di timeout fornito ai metodi invokeAll o invokeAny.
+
+CWWKE1205.start.timeout=CWWKE1205E: L''executor {0} non \u00e8 riuscito ad avviare l''attivit\u00e0 {1} dopo {2} nanosecondi perch\u00e9 ha superato il valore startTimeout di {3} nanosecondi.
+CWWKE1205.start.timeout.explanation=Quando \u00e8 configurato un startTimeout su un executor o \u00e8 programmaticamente richiesto per un'attivit\u00e0, l'executor traccia il tempo trascorso tra il momento in cui viene inoltrata l'attivit\u00e0 e il momento in cui \u00e8 possibile eseguirla. Se il tempo trascorso supera il valore startTimeout,  l'executor interrompe l'attivit\u00e0 invece di avviarla. 
+CWWKE1205.start.timeout.useraction=Non \u00e8 necessaria alcuna azione se l'applicazione p revede che alcune attivit\u00e0 si interrompano a causa del superamento di startTimeout. Altrimenti, effettuare una qualsiasi combinazione delle seguenti azioni: aumentare startTimeout, aumentare maxConcurrency.

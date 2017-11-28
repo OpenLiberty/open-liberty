@@ -1,0 +1,64 @@
+###############################################################################
+# Copyright (c) 2009 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSInn0000=CWSIO0001I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSInn0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSInn0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+#COMPONENTPREFIX CWLIB
+#COMPONENTNAMEFOR CWLIB WebSphere Composable Server (Transaction server)
+#CMVCPATHNAME com.ibm.ws.transaction/resources/com/ibm/ws/transaction/services/TransactionMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+
+# -----------------------------------------------------------------------
+# Message:       CWLIB0001E: UserTransaction service reference is null.
+# -----------------------------------------------------------------------
+USERTRAN_IS_NULL=CWLIB0001E: Referin\u0163a serviciului UserTransaction este nul\u0103.
+USERTRAN_IS_NULL.explanation=S-a f\u0103cut o cerere pentru a ob\u0163ine serviciul UserTransaction, dar nici un serviciu UserTransaction nu a fost conectat la acest bundle.
+USERTRAN_IS_NULL.useraction=Dac\u0103 este necesar accesul la UserTransaction, folosi\u0163i consola OSGi pentru a investiga de ce nu a fost conectat nici un serviciu UserTransaction la acest bundle. 
+
+
+# {0} is the error that happened
+UNEXPECTED_TRAN_ERROR=CWLIB0002E: A ap\u0103rut o eroare de tranzac\u0163ie nea\u015fteptat\u0103: {0}
+UNEXPECTED_TRAN_ERROR.explanation=S-a f\u0103cut o cerere de a aduce obiectul Transaction dar a ap\u0103rut o eroare nea\u015fteptat\u0103. 
+UNEXPECTED_TRAN_ERROR.useraction=Verifica\u0163i istoricele pentru erori anterioare sau FFDC-uri.
+
+# {0} is the TransactionRolledbackException thrown
+GLOBAL_TRAN_ROLLBACK=CWLIB0003E: Tranzac\u0163ia global\u0103 a fost derulat\u0103 \u00eenapoi din cauza timeout-ului: {0}
+GLOBAL_TRAN_ROLLBACK.explanation=Tranzac\u0163ia global\u0103 curent\u0103 a expirat \u015fi, prin urmare, a fost derulat\u0103 \u00eenapoi.
+GLOBAL_TRAN_ROLLBACK.useraction=Asigura\u0163i-v\u0103 c\u0103 tranzac\u0163ia global\u0103 se termin\u0103 \u00een cadrul de timp permis sau cre\u015fte\u0163i timeout-ul.
