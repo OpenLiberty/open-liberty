@@ -32,6 +32,7 @@ test.project: true
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.thirdparty.equinox;version=latest, \
 	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.ws.kernel.boot.nested;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.kernel.service.location;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\
