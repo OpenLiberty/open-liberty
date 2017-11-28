@@ -68,6 +68,13 @@ public class ObserverMethodConfiguratorTest extends ConfiguratorTestBase {
     @Inject
     Event<Square> squareEvent;
 
+    /*
+     * This tests that the SquareObservers are called in an expected order
+     * Each SquareObserver is configured with a priority by a configurator in the ProcessObserverMethodObserver class
+     * The priorities used for each observer are taken from the squareObserverPriorities array which is initialized and randomized above
+     * Each observer records that it executed by appending its identity to the squareObservations Vector
+     * This test method checks that order of execution recorded in the squareObservations Vector matches the random priorities in the squareObserverPriorities array.
+     */
     @Test
     public void testSquareObserverOrdering() {
 
@@ -87,6 +94,13 @@ public class ObserverMethodConfiguratorTest extends ConfiguratorTestBase {
     @Inject
     Event<Circle> circleEvent;
 
+    /*
+     * This tests that the priorities set on the circle observers (via @Priority) work as expected
+     * Each circle observer has a hard coded priority assigned via @Priority in the individual observer classes
+     * Those priorities are also represented by the circleObserverOrder array above.
+     * Each observer records that it executed by appending its identity to the circleObservations Vector
+     * This test method checks that the order of execution recorded in the circleObservations Vector matches the order represented by the circleObserverOrder array.
+     */
     @Test
     public void testCircleObserverOrdering() {
 
