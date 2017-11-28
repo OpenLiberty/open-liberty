@@ -12,9 +12,5 @@
 		<feature>cdi-1.2</feature>
 		<feature>mpConfig-1.1</feature>
 	</featureManager>
-
 	<include location="../fatTestPorts.xml" />
-
-	<application location="app1.war" />
-
 </server>

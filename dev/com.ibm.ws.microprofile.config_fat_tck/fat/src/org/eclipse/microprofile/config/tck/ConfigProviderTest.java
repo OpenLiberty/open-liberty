@@ -40,7 +40,7 @@ import componenttest.topology.impl.LibertyServer;
 @RunWith(FATRunner.class)
 public class ConfigProviderTest {
 
-    public static final String APP_NAME = "app1";
+    //public static final String APP_NAME = "app1";
 
     @Server("FATServer")
     //@TestServlet(servlet = TestServletA.class, contextRoot = APP_NAME)

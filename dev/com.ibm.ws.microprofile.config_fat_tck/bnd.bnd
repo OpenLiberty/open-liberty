@@ -16,7 +16,6 @@ javac.target: 1.8
 
 src: \
 	fat/src,\
-	test-applications/app1/src
 
 test.project: true
 
