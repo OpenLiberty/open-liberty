@@ -18,11 +18,12 @@ import java.util.Dictionary;
 import java.util.List;
 import java.util.Map;
 
+import javax.security.auth.login.Configuration;
+
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationAdmin;
-import org.osgi.service.cm.Configuration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -74,6 +75,10 @@ public class OpentracingService {
         // in the main path in `process`.
         List<SpanFilter> filters = new ArrayList<SpanFilter>();
 
+        /*
+         * Removing filter processing until microprofile spec for it is approved. Expect to add this code
+         * back in in 1Q18 - smf
+         */
 //        processFilters(filters, map, configAdmin, "excludeSpans", ExcludeFilter.class);
 //        processFilters(filters, map, configAdmin, "includeSpans", IncludeFilter.class);
 

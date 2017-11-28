@@ -31,8 +31,8 @@ import io.opentracing.ActiveSpan;
 import io.opentracing.Span;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
-import io.opentracing.propagation.TextMap;
 import io.opentracing.propagation.Format;
+import io.opentracing.propagation.TextMap;
 import io.opentracing.tag.Tags;
 
 /**
@@ -98,7 +98,12 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
             Tr.debug(tc, methodName + " parent", priorIncomingSpan);
         }
 
-        boolean process = true; //OpentracingService.process(outgoingUri, SpanFilterType.OUTGOING);
+        /*
+         * Removing filter processing until microprofile spec for it is approved. Expect to add this code
+         * back in in 1Q18 - smf
+         */
+//        boolean process = OpentracingService.process(outgoingUri, SpanFilterType.OUTGOING);
+        boolean process = true;
 
         SpanContext nextContext;
 
