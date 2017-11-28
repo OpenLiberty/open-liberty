@@ -1511,6 +1511,10 @@ public class FATOpentracing implements FATOpentracingConstants {
             requestPath );
     }
 
+    /*
+     * Removed filter processing until microprofile spec for it is approved. Expect to add back in 1Q18 - smf
+     * Disable the tests until we add the code back in.
+     */
     //@Test
     public void testExcludes() throws Exception {
         testExcludedPath("simple");
