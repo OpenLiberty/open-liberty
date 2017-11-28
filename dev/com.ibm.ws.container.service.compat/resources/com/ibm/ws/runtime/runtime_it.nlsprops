@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 1997, 2008 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# Standard Server runtime messages
+#
+#  Notes:
+#
+#   - DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+#   - WSVR0025I - WSVR0028I are reserved for TimeBomb (bootstrap*.nlsprops)
+#   - WSVR0300x - WSVR0314x are reserved for config (config*.nlsprops)
+#   - WSVR0313E is used for a MDB related error message by EJB component (see runtime.nlsprops)
+#   - WSVR0330x - WSVR0399x are reserved for class loader (this file)
+#   - WSVR0614x - WSVR0620x are reserved for bootstrap (bootstrap*.nlsprops.)
+#   - WSVR0631x - WSVR0650x are reserved for selective bundle provider extension
+#   - WSVR0700x - WSVR0720x are reserved for ThinRegistry (bootstrap*.nlsprops)
+#   - WSVR0800x - WSVR0899x are reserved for config (config*.nlsprops)
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://seaux.raleigh.ibm.com/g11n/was/seae/45/messages/index.html
+# or contact Dennis Hebert/Raleigh/IBM (hebert@us.ibm.com)
+#
+# cmvc_en_version_level=1.128,0,10/05/13,15:15:23
+#
+#CMVCPATHNAME com.ibm.ws.compat/resources/com/ibm/ws/runtime/runtime.nlsprops
+#COMPONENTPREFIX WSVR
+#COMPONENTNAMEFOR WSVR WebSphere Server
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+WSVR0603E=WSVR0603E: Il metodo beginContext di ComponentMetaDataAccessor ha ricevuto un ComponentMetaData NULL.
+WSVR0603E.explanation=CMSG0001
+WSVR0603E.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# PK39527 - Update message text
+# -------------------------------------------------------------------------------------------------
+WSVR0623W=WSVR0623W: Si \u00e8 verificata una eccezione non prevista: \"{0}\". La propriet\u00e0 com.ibm.websphere.threadpool.clearThreadLocal \u00e8 stata impostata e verr\u00e0 applicata al pool di thread {0}. Questa opzione \u00e8 obsoleta.
+WSVR0623W.explanation=La propriet\u00e0 com.ibm.websphere.threadpool.clearThreadLocal viene ancora utilizzata in questa release ma verr\u00e0 rimossa nelle release future.
+WSVR0623W.useraction=Rimuovere la propriet\u00e0 com.ibm.websphere.threadpool.clearThreadLocal dalle propriet\u00e0 JVM (Java Virtual Machine).
+
+# F743-24122
+WSVR0629I=WSVR0629I: Il buffer di richieste per il pool di thread \"{0}\" ha raggiunto il limite della capacit\u00e0.
+WSVR0629I.explanation=La coda delle richieste di lavoro in sospeso sul pool di thread specificato ha raggiunto il limite, ci\u00f2 pu\u00f2 portare a problemi nelle prestazioni.
+WSVR0629I.useraction=Non \u00e8 richiesta alcuna azione immediata, tuttavia, per prevenire la situazione in futuro, potrebbe essere necessario aumentare la dimensione del buffer di richieste del pool di thread.
+
+# PM13147 - Log growth of thread pool beyond maximum size
+WSVR0630I=WSVR0630I: Il pool di thread espandibile \"{0}\" \u00e8 stato ampliato oltre la capacit\u00e0 massima definita inizialmente.  La dimensione del pool attualmente \u00e8 \"{1}\".
+WSVR0630I.explanation=Il pool di thread specificato ha raggiunto la dimensione massima precedentemente definita e verr\u00e0 espanso.
+WSVR0630I.useraction=Non \u00e8 richiesta alcuna azione immediata, tuttavia il pool continuer\u00e0 a crescere mano amano che le richieste di lavoro superano il numero corrente di thread disponibili.

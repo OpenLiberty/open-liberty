@@ -1,0 +1,73 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.filetransfer/resources/com/ibm/ws/filetransfer/resources/FileServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR WebSphere File Transfer
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKX7900 - CWWKX7950
+
+#-----  FileService MBean
+
+ACCESS_DENIED_ERROR=CWWKX7900E: Acceso denegado a la v\u00eda de acceso {0}.
+ACCESS_DENIED_ERROR.explanation=Se ha intentado acceder a una v\u00eda de acceso que est\u00e1 fuera de la regi\u00f3n de lectura/grabaci\u00f3n configurada.
+ACCESS_DENIED_ERROR.useraction=Aseg\u00farese de que la v\u00eda de acceso solicitada est\u00e9 dentro de la regi\u00f3n de lectura/grabaci\u00f3n configurada.
+
+PATH_ERROR=CWWKX7901E: La v\u00eda de acceso al sistema de archivos {0} no es v\u00e1lida.
+PATH_ERROR.explanation=La v\u00eda de acceso del sistema de archivos especificada no se puede resolver.
+PATH_ERROR.useraction=Especifique una v\u00eda de sistema de archivos v\u00e1lida.
+
+ARCHIVE_CREATE_SOURCE_DENIED_WARNING=CWWKX7902W: Se ha rechazado la creaci\u00f3n de archivado mediante el MBean de transferencia de archivos para la v\u00eda de acceso de origen {0}.
+ARCHIVE_CREATE_SOURCE_DENIED_WARNING.explanation=Se ha realizado un intento de leer informaci\u00f3n en una v\u00eda de acceso que est\u00e1 fuera de la regi\u00f3n de lectura configurada.
+ARCHIVE_CREATE_SOURCE_DENIED_WARNING.useraction=Este mensaje es s\u00f3lo informativo. No es necesaria ninguna acci\u00f3n.
+
+ARCHIVE_CREATE_TARGET_DENIED_WARNING=CWWKX7903W: Se ha rechazado el acceso a la consulta mediante el MBean de transferencia de archivos para la v\u00eda de destino {0}.
+ARCHIVE_CREATE_TARGET_DENIED_WARNING.explanation=Se ha realizado un intento de escribir informaci\u00f3n en una v\u00eda de acceso que est\u00e1 fuera de la regi\u00f3n de escritura configurada.
+ARCHIVE_CREATE_TARGET_DENIED_WARNING.useraction=Este mensaje es s\u00f3lo informativo. No es necesaria ninguna acci\u00f3n.
+
+ARCHIVE_CREATE_SUCCESS_INFO=CWWKX7904I: El archivado {1} se ha creado satisfactoriamente a partir de {0}.
+ARCHIVE_CREATE_SUCCESS_INFO.explanation=El archivado se ha creado satisfactoriamente.
+ARCHIVE_CREATE_SUCCESS_INFO.useraction=Este mensaje es s\u00f3lo informativo. No es necesaria ninguna acci\u00f3n.
+
+ARCHIVE_CREATE_FAILURE_WARNING=CWWKX7905W: No se ha podido crear el archivado {1} a partir de {0}.
+ARCHIVE_CREATE_FAILURE_WARNING.explanation=La solicitud de creaci\u00f3n de archivado ha fallado.
+ARCHIVE_CREATE_FAILURE_WARNING.useraction=Este mensaje es s\u00f3lo informativo. No es necesaria ninguna acci\u00f3n.
+
+ARCHIVE_EXPAND_SOURCE_DENIED_WARNING=CWWKX7906W: Se ha rechazado la expansi\u00f3n de archivado para la v\u00eda de acceso de origen {0}.
+ARCHIVE_EXPAND_SOURCE_DENIED_WARNING.explanation=Se ha realizado un intento de leer informaci\u00f3n en una v\u00eda de acceso que est\u00e1 fuera de la regi\u00f3n de lectura configurada.
+ARCHIVE_EXPAND_SOURCE_DENIED_WARNING.useraction=Este mensaje es s\u00f3lo informativo. No es necesaria ninguna acci\u00f3n.
+
+ARCHIVE_EXPAND_TARGET_DENIED_WARNING=CWWKX7907W: Se ha rechazado la expansi\u00f3n de archivado para la v\u00eda de acceso de destino {0}.
+ARCHIVE_EXPAND_TARGET_DENIED_WARNING.explanation=Se ha realizado un intento de escribir informaci\u00f3n en una v\u00eda de acceso que est\u00e1 fuera de la regi\u00f3n de escritura configurada.
+ARCHIVE_EXPAND_TARGET_DENIED_WARNING.useraction=Este mensaje es s\u00f3lo informativo. No es necesaria ninguna acci\u00f3n.
+
+ARCHIVE_EXPAND_SUCCESS_INFO=CWWKX7908I: El archivado {0} se ha expandido satisfactoriamente a {1}.
+ARCHIVE_EXPAND_SUCCESS_INFO.explanation=El archivado se ha expandido satisfactoriamente.
+ARCHIVE_EXPAND_SUCCESS_INFO.useraction=Este mensaje es s\u00f3lo informativo. No es necesaria ninguna acci\u00f3n.
+
+ARCHIVE_EXPAND_FAILURE_WARNING=CWWKX7909W: No se ha podido expandir el archivado {0} a {1}.
+ARCHIVE_EXPAND_FAILURE_WARNING.explanation=La solicitud de expansi\u00f3n de archivado ha fallado.
+ARCHIVE_EXPAND_FAILURE_WARNING.useraction=Este mensaje es s\u00f3lo informativo. No es necesaria ninguna acci\u00f3n.
+
+UNSUPPORTED_MBEAN_OPERATION_ERROR=CWWKX7910W: La operaci\u00f3n ''{0}'' s\u00f3lo est\u00e1 disponible cuando se accede a este MBean a trav\u00e9s de JMX REST Connector de IBM.
+UNSUPPORTED_MBEAN_OPERATION_ERROR.explanation=El acceso a la operaci\u00f3n de MBean especificada s\u00f3lo est\u00e1 disponible cuando se accede a ella a trav\u00e9s de JMX REST Connector de IBM.
+UNSUPPORTED_MBEAN_OPERATION_ERROR.useraction=Acceda a este MBean a trav\u00e9s de JMX REST Connector de IBM.
+
+OSGI_SERVICE_ERROR=CWWKX7911E: El servicio OSGi {0} no est\u00e1 disponible.
+OSGI_SERVICE_ERROR.explanation=Ha recibido este error de servidor interno porque el servicio especificado no est\u00e1 disponible.
+OSGI_SERVICE_ERROR.useraction=Reinicie el servidor con la opci\u00f3n "clean".
+
+ATTRIBUTE_UPDATED=CWWKX7912I: El atributo de FileServiceMXBean {0} se ha actualizado correctamente.
+ATTRIBUTE_UPDATED.explanation=El atributo especificado de FileServiceMXBean se ha actualizado satisfactoriamente.
+ATTRIBUTE_UPDATED.useraction=No se requiere ninguna acci\u00f3n.

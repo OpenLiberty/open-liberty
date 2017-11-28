@@ -1,0 +1,744 @@
+###############################################################################
+# Copyright (c) 1997, 2008 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=1.42,0,02/04/15,16:52:49
+#
+#CMVCPATHNAME com.ibm.ws.ssl/resources/com/ibm/ws/ssl/resources/ssl.nlsprops
+#COMPONENTPREFIX CWPKI
+#COMPONENTNAMEFOR CWPKI WebSphere SSL
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+################################################################################
+# Range 100-110 reserved for TrustManager Prompt
+# Range 200-299 reserved for KeySet Messages
+# Range 300-399 reserved for Signer Util Messages
+# Range 400-599 reserved for CA Pure Client Util and Impls
+# Range 600-799 reserved for Command Tasks located in sslCommandTask.nlsprops file
+# Range 800-899 reserved for Liberty specific messages
+################################################################################
+
+# -------------------------------------------------------------------------------------------------
+ssl.init.startinit.CWPKI0001I=CWPKI0001I: Le service SSL initialise la configuration.
+ssl.init.startinit.CWPKI0001I.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+ssl.init.startinit.CWPKI0001I.useraction=Aucune action n'est requise.
+# -------------------------------------------------------------------------------------------------
+ssl.init.startcomplete.CWPKI0002I=CWPKI0002I: L'initialisation du service SSL a abouti.
+ssl.init.startcomplete.CWPKI0002I.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+ssl.init.startcomplete.CWPKI0002I.useraction=Aucune action n'est requise.
+# -------------------------------------------------------------------------------------------------
+ssl.init.svcstart.CWPKI0003I=CWPKI0003I: Le service SSL est en cours de d\u00e9marrage.
+ssl.init.svcstart.CWPKI0003I.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+ssl.init.svcstart.CWPKI0003I.useraction=Aucune action n'est requise.
+# -------------------------------------------------------------------------------------------------
+ssl.init.svcstartcomplete.CWPKI0004I=CWPKI0004I: Le service SSL a correctement d\u00e9marr\u00e9.
+ssl.init.svcstartcomplete.CWPKI0004I.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+ssl.init.svcstartcomplete.CWPKI0004I.useraction=Aucune action n'est requise.
+# -------------------------------------------------------------------------------------------------
+ssl.init.startfail.CWPKI0005I=CWPKI0005I: L'initialisation du service SSL n'a pas r\u00e9ussi.
+ssl.init.startfail.CWPKI0005I.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+ssl.init.startfail.CWPKI0005I.useraction=Aucune action n'est requise.
+# -------------------------------------------------------------------------------------------------
+ssl.init.mbeanerror.CWPKI0006E=CWPKI0006E: Une exception s''est produite pendant la \
+cr\u00e9ation ou l''enregistrement du bean g\u00e9r\u00e9 {0}. Exception : {1}
+ssl.init.mbeanerror.CWPKI0006E.explanation=Une exception impr\u00e9vue s'est produite en tentant de cr\u00e9er ou d'enregistrer un bean g\u00e9r\u00e9.
+ssl.init.mbeanerror.CWPKI0006E.useraction=Cette configuration n'est peut-\u00eatre pas correcte.  L'exception peut contenir des informations.
+# -------------------------------------------------------------------------------------------------
+ssl.init.svcstartfail.CWPKI0007I=CWPKI0007I: Le service SSL n'a pas d\u00e9marr\u00e9 correctement.
+ssl.init.svcstartfail.CWPKI0007I.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+ssl.init.svcstartfail.CWPKI0007I.useraction=Aucune action n'est requise.
+# -------------------------------------------------------------------------------------------------
+ssl.init.error.CWPKI0008E=CWPKI0008E: Une erreur s''est produite lors de l''initialisation de SSL. Exception : {0}
+ssl.init.error.CWPKI0008E.explanation=Une erreur inattendue s'est produite pendant l'initialisation de la s\u00e9curit\u00e9.
+ssl.init.error.CWPKI0008E.useraction=Il s'agit d'une erreur g\u00e9n\u00e9rale. \
+Recherchez, dans les messages \u00e9mis ant\u00e9rieurement, ceux qui ont un lien avec l'initialisation de SSL ou qui t\u00e9moignent \
+d'un probl\u00e8me de configuration.  \
+L'activation de la trace de d\u00e9bogage SSL=all=enabled pourrait fournir des informations suppl\u00e9mentaires.
+# -------------------------------------------------------------------------------------------------
+ssl.init.nullsecobject.CWPKI0009E=CWPKI0009E: Le syst\u00e8me ne peut pas cr\u00e9er l'objet de s\u00e9curit\u00e9 lors de l'initialisation.
+ssl.init.nullsecobject.CWPKI0009E.explanation=L'objet s\u00e9curit\u00e9 ne peut pas \u00eatre cr\u00e9\u00e9 depuis le r\u00e9f\u00e9rentiel. Il s'agit d'une erreur interne. Le \
+fichier security.xml est peut-\u00eatre endommag\u00e9 ou manquant. 
+ssl.init.nullsecobject.CWPKI0009E.useraction=Contactez votre technicien de maintenance.
+# -------------------------------------------------------------------------------------------------
+ssl.init.nullprocesstype.CWPKI0010E=CWPKI0010E: Le syst\u00e8me ne peut pas obtenir \
+le type de processus WebSphere Application Server lors de l'initialisation.
+ssl.init.nullprocesstype.CWPKI0010E.explanation=CMSG0001
+ssl.init.nullprocesstype.CWPKI0010E.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ssl.loadresource.error.CWPKI0011E=CWPKI0011E: La ressource {0} n''a pas pu \u00eatre charg\u00e9e \u00e0 partir de \
+la cellule.  Exception : {1}
+ssl.loadresource.error.CWPKI0011E.explanation=La ressource sp\u00e9cifi\u00e9e n'a pas pu \u00eatre charg\u00e9e en raison d'une exception.
+ssl.loadresource.error.CWPKI0011E.useraction=Recherchez un probl\u00e8me de configuration en rapport avec la ressource.
+# -------------------------------------------------------------------------------------------------
+ssl.fips.enabled.CWPKI0012I=CWPKI0012I: FIPS est activ\u00e9. Le serveur s'ex\u00e9cute en mode FIPS \u00e0 l'aide du fournisseur IBMJCEFIPS.
+ssl.fips.enabled.CWPKI0012I.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+ssl.fips.enabled.CWPKI0012I.useraction=Aucune action n'est requise.
+#--------------------------------------------------------------------------------------------------
+ssl.checkProviderList.warning.CWPKI0013W=CWPKI0013W: FIPS est activ\u00e9, mais le fournisseur IBMJCEFIPS \
+n'est pas actif dans le fichier java.security. Le fichier java.security doit \u00eatre modifi\u00e9 de mani\u00e8re que le fournisseur IBMJCEFIPS figure dans la liste des \
+fournisseurs avant le fournisseur IBMJCE.
+ssl.checkProviderList.warning.CWPKI0013W.explanation=Lorsque le serveur s'ex\u00e9cute en mode FIPS, le \
+fournisseur IBMJCEFIPS doit \u00eatre list\u00e9 dans le fichier java.security et figurer avant le fournisseur IBMJCE dans la liste.
+ssl.checkProviderList.warning.CWPKI0013W.useraction=Pour garantir l'utilisation des algorithmes FIPS \
+pour tous les types de processus WebSphere Application Server, supprimez la mise en commentaire du fournisseur \
+IBMJCEFIPS dans le fichier java.security, v\u00e9rifiez qu'il figure avant le fournisseur IBMJCE dans la liste et renum\u00e9rotez \
+cette derni\u00e8re de mani\u00e8re s\u00e9quentielle.
+# -------------------------------------------------------------------------------------------------
+ssl.init.ssldm.init.CWPKI0014I=CWPKI0014I: Le module de diagnostic FFDC {0} pour le \
+composant SSL s''est enregistr\u00e9 correctement : {1}
+ssl.init.ssldm.init.CWPKI0014I.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+ssl.init.ssldm.init.CWPKI0014I.useraction=Aucune action n'est requise.
+# -------------------------------------------------------------------------------------------------
+ssl.stop.error.CWPKI0015E=CWPKI0015E: Une erreur s''est produite pendant l''arr\u00eat du composant SSL. Exception : {0}
+ssl.stop.error.CWPKI0015E.explanation=Une erreur inattendue s'est produite lors de l'arr\u00eat du composant SSL.
+ssl.stop.error.CWPKI0015E.useraction=Il s'agit d'une erreur g\u00e9n\u00e9rale. \
+Recherchez, dans les messages \u00e9mis ant\u00e9rieurement, ceux qui ont un lien avec cette erreur ou qui t\u00e9moignent \
+d'un probl\u00e8me de configuration.  \
+L'activation de la trace de d\u00e9bogage SSL=all=enabled pourrait fournir des informations suppl\u00e9mentaires.
+# -------------------------------------------------------------------------------------------------
+ssl.expiration.warning.CWPKI0016W=CWPKI0016W: Le certificat avec l''alias {0} du fichier de cl\u00e9s {1} expirera dans {2} jours.
+ssl.expiration.warning.CWPKI0016W.explanation=Un certificat est sur le point d'expirer dans le fichier de cl\u00e9s.
+ssl.expiration.warning.CWPKI0016W.useraction=Ouvrez le fichier de cl\u00e9s et v\u00e9rifiez les dates d'expiration de tous les certificats.  G\u00e9n\u00e9rez de nouveaux certificats, si n\u00e9cessaire.
+# -------------------------------------------------------------------------------------------------
+ssl.expiration.expired.CWPKI0017E=CWPKI0017E: Le certificat avec l''alias {1} du fichier de cl\u00e9s {2} a expir\u00e9.
+ssl.expiration.expired.CWPKI0017E.explanation=Un certificat est expir\u00e9 dans le fichier de cl\u00e9s.
+ssl.expiration.expired.CWPKI0017E.useraction=Ouvrez le fichier de cl\u00e9s et v\u00e9rifiez les dates d'expiration de tous les certificats.  Supprimez les certificats expir\u00e9s. 
+# -------------------------------------------------------------------------------------------------
+ssl.keystore.type.invalid.CWPKI0018W=CWPKI0018W: Le type de fichier de cl\u00e9s {0} n''est pas \
+valide pour l''alias de configuration SSL {1}.
+ssl.keystore.type.invalid.CWPKI0018W.explanation=Le type de fichier de cl\u00e9s qui a \u00e9t\u00e9 configur\u00e9 \
+n'est pas valide pour l'alias sp\u00e9cifi\u00e9.
+ssl.keystore.type.invalid.CWPKI0018W.useraction=Changez le type de fichier de cl\u00e9s dans la configuration SSL.
+# -------------------------------------------------------------------------------------------------
+ssl.client.config.parse.CWPKI0019E=CWPKI0019E: Une erreur s''est produite \
+lors de l''analyse syntaxique du fichier de configuration du client SSL {0}.  Exception : {1}
+ssl.client.config.parse.CWPKI0019E.explanation=Il y a peut-\u00eatre un probl\u00e8me de syntaxe \
+dans le fichier ssl.client.props, ou alors son emplacement n'est pas valide.
+ssl.client.config.parse.CWPKI0019E.useraction=Consultez le message d'erreur renvoy\u00e9 et v\u00e9rifiez la \
+syntaxe et l'emplacement du fichier ssl.client.props.
+# -------------------------------------------------------------------------------------------------
+ssl.load.trustmanager.error.CWPKI0020E=CWPKI0020E: Une erreur s''est produite au \
+chargement de la classe du gestionnaire de relations de confiance personnalis\u00e9 {0}.  Exception : {1}
+ssl.load.trustmanager.error.CWPKI0020E.explanation=Une erreur de chargement de classe s'est \
+produite lors du chargement du gestionnaire de relations de confiance personnalis\u00e9 qui est configur\u00e9.
+ssl.load.trustmanager.error.CWPKI0020E.useraction=Assurez-vous que la classe peut \u00eatre trouv\u00e9e dans l'environnement.
+# -------------------------------------------------------------------------------------------------
+ssl.load.keymanager.error.CWPKI0021E=CWPKI0021E: Une erreur s''est produite au \
+chargement de la classe du gestionnaire de cl\u00e9s personnalis\u00e9 {0}.  Exception : {1}
+ssl.load.keymanager.error.CWPKI0021E.explanation=Une erreur de chargement de classe s'est \
+produite lors du chargement du gestionnaire de cl\u00e9s personnalis\u00e9 qui est configur\u00e9.
+ssl.load.keymanager.error.CWPKI0021E.useraction=Assurez-vous que la classe peut \u00eatre trouv\u00e9e dans l'environnement.
+# -------------------------------------------------------------------------------------------------
+ssl.client.handshake.error.CWPKI0022E=CWPKI0022E: ECHEC D''ETABLISSEMENT DE LIAISON : un signataire avec le SubjectDN {0} a \u00e9t\u00e9 envoy\u00e9 depuis l''h\u00f4te cible.  Il est peut-\u00eatre n\u00e9cessaire d''ajouter le signataire au magasin de cl\u00e9s de confiance local  {1}, situ\u00e9 dans l''alias de configuration SSL {2}.  Message d''erreur d\u00e9taill\u00e9 g\u00e9n\u00e9r\u00e9 par l''exception d''\u00e9tablissement de liaison SSL : {3}
+ssl.client.handshake.error.CWPKI0022E.explanation=Une erreur s'est produite lors de l'\u00e9tablissement de la liaison SSL.  Il est possible que vous deviez exporter le signataire depuis l'h\u00f4te cible pour le r\u00e9importer ensuite dans le fichiers de cl\u00e9s certifi\u00e9es (TrustStore) \
+du client.
+ssl.client.handshake.error.CWPKI0022E.useraction=Consultez le message d'erreur d\u00e9taill\u00e9 \u00e9mis par le \
+gestionnaire de relations de confiance (TrustManager) afin de d\u00e9terminer ce qui doit \u00eatre chang\u00e9 entre la configuration SSL de la cible et la \
+configuration SSL du client.
+# -------------------------------------------------------------------------------------------------
+ssl.client.alias.not.found.CWPKI0023E=CWPKI0023E: L''alias du certificat {0} sp\u00e9cifi\u00e9 par la propri\u00e9t\u00e9 com.ibm.ssl.keyStoreClientAlias n''a pas \u00e9t\u00e9 trouv\u00e9 dans le fichier de cl\u00e9s {1}.
+ssl.client.alias.not.found.CWPKI0023E.explanation=L'alias du certificat sp\u00e9cifi\u00e9 pour cette configuration SSL ne se trouve pas dans le fichier de cl\u00e9s sp\u00e9cifi\u00e9. 
+ssl.client.alias.not.found.CWPKI0023E.useraction=Ajoutez un certificat dans le fichier de cl\u00e9s avec l'alias du certificat sp\u00e9cifi\u00e9 ou changez l'alias du certificat sp\u00e9cifi\u00e9 pour qu'il corresponde \u00e0 un alias se trouvant dans le fichier de cl\u00e9s du client.
+# -------------------------------------------------------------------------------------------------
+ssl.server.alias.not.found.CWPKI0024E=CWPKI0024E: L''alias du certificat {0} sp\u00e9cifi\u00e9 par la propri\u00e9t\u00e9 com.ibm.ssl.keyStoreServerAlias n''a pas \u00e9t\u00e9 trouv\u00e9 dans le fichier de cl\u00e9s {1}.
+ssl.server.alias.not.found.CWPKI0024E.explanation=L'alias du certificat sp\u00e9cifi\u00e9 pour cette configuration SSL ne se trouve pas dans le fichier de cl\u00e9s sp\u00e9cifi\u00e9. 
+ssl.server.alias.not.found.CWPKI0024E.useraction=Ajoutez un certificat dans le fichier de cl\u00e9s avec l'alias du certificat sp\u00e9cifi\u00e9 ou changez l'alias du certificat sp\u00e9cifi\u00e9 pour qu'il corresponde \u00e0 un alias se trouvant dans le fichier de cl\u00e9s du client.
+# -------------------------------------------------------------------------------------------------
+ssl.load.https.stream.handler.CWPKI0025E=CWPKI0025E: Le syst\u00e8me n''a pas pu charger la classe gestionnaire https {0}. Message d''erreur \
+d\u00e9taill\u00e9 : {1}
+ssl.load.https.stream.handler.CWPKI0025E.explanation=Le syst\u00e8me a rencontr\u00e9 une erreur de chargement de classe \
+en tentant de charger l'impl\u00e9mentation HTTPS de la classe URLStreamHandler. 
+ssl.load.https.stream.handler.CWPKI0025E.useraction=V\u00e9rifiez la configuration SSL et assurez-vous que le fournisseur de contexte est correct pour la plateforme.
+# -------------------------------------------------------------------------------------------------
+ssl.reinitialize.config.error.CWPKI0026E=CWPKI0026E: Une erreur s''est produite pendant la \
+r\u00e9initialisation de la configuration SSL apr\u00e8s une modification du fichier security.xml.  Message d''erreur \
+d\u00e9taill\u00e9 : {0}
+ssl.reinitialize.config.error.CWPKI0026E.explanation=Un changement a \u00e9t\u00e9 apport\u00e9 \
+au fichier security.xml. Une erreur s'est produite lorsque le syst\u00e8me a tent\u00e9 de lire la configuration modifi\u00e9e.
+ssl.reinitialize.config.error.CWPKI0026E.useraction=Consultez le texte du message de l'exception et v\u00e9rifiez que les param\u00e8tres de configuration SSL sont valides.  
+# -------------------------------------------------------------------------------------------------
+ssl.disable.url.hostname.verification.CWPKI0027I=CWPKI0027I: La v\u00e9rification du nom \
+d'h\u00f4te par d\u00e9faut est d\u00e9sactiv\u00e9e pour les connexions avec URL HTTPS.
+ssl.disable.url.hostname.verification.CWPKI0027I.explanation=La v\u00e9rification par JSSE du nom d'h\u00f4te dans les URL \
+vise \u00e0 s'assurer que le nom usuel (CN) du certificat X509 correspond bien au nom du syst\u00e8me h\u00f4te dont il provient. Cette v\u00e9rification est sur le point d'\u00eatre configur\u00e9e pour \u00eatre d\u00e9sactiv\u00e9e par d\u00e9faut pour les connexions par URL.  
+ssl.disable.url.hostname.verification.CWPKI0027I.useraction=Pour que les noms d'h\u00f4te soient v\u00e9rifi\u00e9s par d\u00e9faut \
+dans les URL, mettez \u00e0 true la propri\u00e9t\u00e9 com.ibm.ssl.performURLHostNameVerification.
+# -------------------------------------------------------------------------------------------------
+ssl.no.such.algorithm.CWPKI0028E=CWPKI0028E: Le protocole d''\u00e9tablissement de liaison SSL {0} n''est pas valide.  Ce protocole est sp\u00e9cifi\u00e9 dans la configuration SSL ayant l''alias {1}, charg\u00e9e \u00e0 partir du fichier de configuration SSL \
+{2}.  Message d''erreur \
+d\u00e9taill\u00e9 : {3}
+ssl.no.such.algorithm.CWPKI0028E.explanation=Le protocole d'\u00e9tablissement de liaison sp\u00e9cifi\u00e9 n'est pas reconnu comme un protocole d'\u00e9tablissement de liaison valide. 
+ssl.no.such.algorithm.CWPKI0028E.useraction=V\u00e9rifiez la configuration SSL et assurez-vous que le \
+protocole d'\u00e9tablissement de liaison correct est sp\u00e9cifi\u00e9.
+# -------------------------------------------------------------------------------------------------
+ssl.invalid.context.provider.CWPKI0029E=CWPKI0029E: Le fournisseur de contexte SSL {0} n''est pas valide.  Ce fournisseur est sp\u00e9cifi\u00e9 dans la configuration SSL ayant l''alias {1}, charg\u00e9e \u00e0 partir du fichier de configuration \
+SSL {2}.  Message d''erreur \
+d\u00e9taill\u00e9 : {3}
+ssl.invalid.context.provider.CWPKI0029E.explanation=Le fournisseur de contexte SSL sp\u00e9cifi\u00e9 n'est pas reconnu comme un fournisseur de contexte valide. 
+ssl.invalid.context.provider.CWPKI0029E.useraction=V\u00e9rifiez la configuration SSL et assurez-vous que le fournisseur de contexte SSL correct est sp\u00e9cifi\u00e9.
+# -------------------------------------------------------------------------------------------------
+ssl.signer.exchange.error.CWPKI0030E=CWPKI0030E: Une erreur s''est produite lors de l''\u00e9change des \
+signataires entre la cellule et le noeud.  Exception : {0}
+ssl.signer.exchange.error.CWPKI0030E.explanation=Les DefaultKeyStores entre la cellule et le \
+noeud auront des \u00e9changes de signataires avec les DefaultTrustStores correspondants.  Une erreur s'est produite au cours de ce processus.
+ssl.signer.exchange.error.CWPKI0030E.useraction=Cette situation peut demander un \u00e9change de signataires manuel.
+# -------------------------------------------------------------------------------------------------
+ssl.client.keystore.create.error.CWPKI0031E=CWPKI0031E: Une erreur s''est produite au cours de l''initialisation, pendant la \
+phase de cr\u00e9ation du fichier de cl\u00e9s ou du fichier de cl\u00e9s certifi\u00e9es (truststore) du client.  Exception : {0}
+ssl.client.keystore.create.error.CWPKI0031E.explanation=Une erreur s'est produite au cours de l'initialisation du processus, \
+pendant la cr\u00e9ation du fichier de cl\u00e9s certifi\u00e9es ou du fichier de cl\u00e9s.
+ssl.client.keystore.create.error.CWPKI0031E.useraction=V\u00e9rifiez, dans le fichier ssl.client.props, \
+que les propri\u00e9t\u00e9s du fichier de cl\u00e9s \
+certifi\u00e9es (*.trustStore*) et celles du fichier de cl\u00e9s (*.keyStore*) sont \u00e0 jour et valides.
+# -------------------------------------------------------------------------------------------------
+ssl.self.signed.create.error.CWPKI0032E=CWPKI0032E: Une erreur s''est produite lors de la cr\u00e9ation \
+d''un certificat autosign\u00e9.  Exception : {0}
+ssl.self.signed.create.error.CWPKI0032E.explanation=Une erreur s'est produite au d\u00e9marrage du processus, lors de la cr\u00e9ation \
+de ce certificat.
+ssl.self.signed.create.error.CWPKI0032E.useraction=V\u00e9rifiez que les valeurs des propri\u00e9t\u00e9s du certificat autosign\u00e9 (com.ibm.ssl.defaultCertReq*) sont correctes.
+# -------------------------------------------------------------------------------------------------
+ssl.keystore.load.error.CWPKI0033E=CWPKI0033E: Le fichier de cl\u00e9s situ\u00e9 \u00e0 l''emplacement {0} ne s''est pas charg\u00e9 en \
+raison de l''erreur suivante : {1}
+ssl.keystore.load.error.CWPKI0033E.explanation=Une erreur s'est produite lors de la cr\u00e9ation ou de l'ouverture du fichier de cl\u00e9s.
+ssl.keystore.load.error.CWPKI0033E.useraction=V\u00e9rifiez que le fichier de cl\u00e9s existe bien et que les \
+propri\u00e9t\u00e9s d\u00e9finies dans sa configuration sont valides.
+# -------------------------------------------------------------------------------------------------
+ssl.schedule.init.error.CWPKI0034E=CWPKI0034E: Initialisation impossible du calendrier {0} \u00e0 cause de l''erreur suivante : {1}
+ssl.schedule.init.error.CWPKI0034E.explanation=Une erreur s'est produite lors de l'initialisation du calendrier.
+ssl.schedule.init.error.CWPKI0034E.useraction=V\u00e9rifiez que les propri\u00e9t\u00e9s du planificateur sont correctes.  V\u00e9rifiez que le r\u00e9pertoire /etc est inscriptible.
+# -------------------------------------------------------------------------------------------------
+ssl.schedule.read.error.CWPKI0035E=CWPKI0035E: Le calendrier {0} n''a pas r\u00e9ussi \u00e0 la lire la prochaine date planifi\u00e9e.  L''alarme est initialis\u00e9e \u00e0 la date suivante : {1}
+ssl.schedule.read.error.CWPKI0035E.explanation=Une erreur s'est produite lors de la lecture de la date dans le fichier \
+du calendrier (schedule) dans /etc.
+ssl.schedule.read.error.CWPKI0035E.useraction=V\u00e9rifiez que le r\u00e9pertoire /etc est accessible en \u00e9criture et \
+que le fichier n'a pas \u00e9t\u00e9 modifi\u00e9.
+# -------------------------------------------------------------------------------------------------
+ssl.notification.send.error.CWPKI0036E=CWPKI0036E: Erreur lors de l''envoi d''un e-mail \u00e0 {0} en passant \
+par le serveur SMTP {1}.  Exception : {2}
+ssl.notification.send.error.CWPKI0036E.explanation=Une erreur s'est produite pendant l'envoi \
+d'un e-mail en utilisant le serveur SMTP indiqu\u00e9.
+ssl.notification.send.error.CWPKI0036E.useraction=V\u00e9rifiez que le serveur SMTP sp\u00e9cifi\u00e9 est correct et \
+que les r\u00e8gles du pare-feu de votre soci\u00e9t\u00e9 autorisent l'envoi aux ports SMTP.
+# -------------------------------------------------------------------------------------------------
+ssl.notification.send.info.CWPKI0037I=CWPKI0037I: Le moniteur d''expiration fait \u00e9tat des informations suivantes : {0}.
+ssl.notification.send.info.CWPKI0037I.explanation=Ces informations concernent l'expiration des certificats.
+ssl.notification.send.info.CWPKI0037I.useraction=Vous devez g\u00e9rer les certificats pour r\u00e9soudre les probl\u00e8mes signal\u00e9s.
+# -------------------------------------------------------------------------------------------------
+ssl.expiration.monitor.start.error.CWPKI0038E=CWPKI0038E: Le moniteur d''expiration n''a pas d\u00e9marr\u00e9. Erreur : {0}
+ssl.expiration.monitor.start.error.CWPKI0038E.explanation=Un incident s'est produit au \
+d\u00e9marrage de la t\u00e2che de commande du moniteur d'expiration.
+ssl.expiration.monitor.start.error.CWPKI0038E.useraction=Essayez de d\u00e9marrer directement \
+le moniteur d'expiration pour obtenir plus d'informations sur l'erreur.
+# -------------------------------------------------------------------------------------------------
+ssl.cannot.find.node.from.hostlist.CWPKI0039E=CWPKI0039E: Impossible de trouver les propri\u00e9t\u00e9s \
+de connecteur de noeud pour le nom d''h\u00f4te {0} dans la liste d''h\u00f4tes du fichier de cl\u00e9s {1}.
+ssl.cannot.find.node.from.hostlist.CWPKI0039E.explanation=Le nom d'h\u00f4te doit \u00eatre entr\u00e9, dans la \
+liste d'h\u00f4tes, avec le m\u00eame format canonique que dans le fichier serverindex.xml.
+ssl.cannot.find.node.from.hostlist.CWPKI0039E.useraction=Modifiez la liste d'h\u00f4tes pour la convertir au format canonique appropri\u00e9.
+# -------------------------------------------------------------------------------------------------
+ssl.handshake.failure.info.CWPKI0040I=CWPKI0040I: Une erreur s'est produite lors d'un \u00e9tablissement de liaison (handshake) \
+SSL avec un client demandant l'authentification du serveur.  Le signataire SSL du serveur doit \u00eatre ajout\u00e9 au fichier de cl\u00e9s certifi\u00e9es (truststore) \
+du client.  Un utilitaire de r\u00e9cup\u00e9ration de signataires (retrieveSigners) est fourni pour permettre le t\u00e9l\u00e9chargement des signataires \u00e0 partir du \
+serveur, mais il n\u00e9cessite un droit administratif.  Demandez \u00e0 votre administrateur d'ex\u00e9cuter cet utilitaire afin de mettre en place l'environnement s\u00e9curis\u00e9 avant d'ex\u00e9cuter le \
+client.  Une autre solution consiste \u00e0 mettre \u00e0 true la propri\u00e9t\u00e9 \
+com.ibm.ssl.enableSignerExchangePrompt, dans le fichier ssl.client.props de la \
+configuration par d\u00e9faut (alias \"DefaultSSLSettings\"), afin de que lors des \
+tentatives de connexion, une invite s'affiche pour permettre \u00e0 l'utilisateur d'accepter ou non \
+le certificat du signataire.
+ssl.handshake.failure.info.CWPKI0040I.explanation=Le signataire SSL du serveur doit \u00eatre ajout\u00e9 au fichier de cl\u00e9s certifi\u00e9es (truststore) \
+du client. Les signataires peuvent \u00eatre t\u00e9l\u00e9charg\u00e9s automatiquement depuis le serveur ou fournis manuellement \
+durant la tentative de connexion.
+ssl.handshake.failure.info.CWPKI0040I.useraction=Ex\u00e9cutez l'utilitaire de r\u00e9cup\u00e9ration des signataires (retrieveSigners) \
+ou activez l'affichage de l'invite d'\u00e9change de signataires.
+# -------------------------------------------------------------------------------------------------
+ssl.default.password.in.use.CWPKI0041W=CWPKI0041W: Un ou plusieurs magasins de cl\u00e9s utilisent le mot de passe par d\u00e9faut.
+ssl.default.password.in.use.CWPKI0041W.explanation=A son premier d\u00e9marrage \
+en tant que serveur d'applications autonome ou comme membre d'une configuration de d\u00e9ploiement r\u00e9seau, chaque serveur cr\u00e9e un \
+fichier de cl\u00e9s et un fichier de cl\u00e9s certifi\u00e9es pour sa configuration SSL \
+par d\u00e9faut. Quand le serveur cr\u00e9e ces fichiers, il utilise WebAS comme mot de passe par d\u00e9faut.
+ssl.default.password.in.use.CWPKI0041W.useraction=N'utilisez pas ce mot de passe dans un environnement de production. Changez le mot de passe par d\u00e9faut du fichier de cl\u00e9s et du fichier de cl\u00e9s certifi\u00e9es en \u00e9ditant le fichier ssl.client.props. Lorsque vous changez les mots de passe dans le fichier ssl.client.props, vous devez utiliser l'utilitaire PropFilePasswordEncoder \
+pour r\u00e9encoder les nouveaux mots de passe.
+# -------------------------------------------------------------------------------------------------
+ssl.error.issue.CWPKI0042E=CWPKI0042E: Une exception s''est produite pendant l''enregistrement \
+d''un certificat dans le fichier de cl\u00e9s des certificats \u00e9mis. Exception : {0}
+ssl.error.issue.CWPKI0042E.explanation=Apr\u00e8s la cr\u00e9ation d'un certificat autosign\u00e9 ou cha\u00een\u00e9, \
+le certificat de signataire correspondant n'a pas pu \u00eatre stock\u00e9 dans le fichier de cl\u00e9s des certificats \u00e9mis.
+ssl.error.issue.CWPKI0042E.useraction=Consultez les informations du message d'erreur associ\u00e9 pour identifier la cause du probl\u00e8me.
+# -------------------------------------------------------------------------------------------------
+ssl.chained.create.error.CWPKI0043E=CWPKI0043E: Une erreur s''est produite lors de la cr\u00e9ation \
+d''un certificat cha\u00een\u00e9.  Exception : {0}
+ssl.chained.create.error.CWPKI0043E.explanation=Une erreur s'est produite lors de la cr\u00e9ation d'un certificat cha\u00een\u00e9 au cours du d\u00e9marrage du processus.
+ssl.chained.create.error.CWPKI0043E.useraction=V\u00e9rifiez que les valeurs des propri\u00e9t\u00e9s du certificat \
+cha\u00een\u00e9 (com.ibm.ssl.defaultCertReq*) sont correctes et que le fichier de cl\u00e9s racine contient un certificat valide.
+# -------------------------------------------------------------------------------------------------
+ssl.password.custom.encryption.failed.CWPKI0044E=CWPKI0044E: Une exception PasswordEncryptException a \u00e9t\u00e9 \
+g\u00e9n\u00e9r\u00e9e lors d''un chiffrement personnalis\u00e9. Exception : {1}
+ssl.password.custom.encryption.failed.CWPKI0044E.explanation=Il y a un probl\u00e8me de configuration avec le chiffrement personnalis\u00e9.
+ssl.password.custom.encryption.failed.CWPKI0044E.useraction=Examinez l'exception et les journaux \
+pour identifier la cause du probl\u00e8me et la traiter.
+# -------------------------------------------------------------------------------------------------
+ssl.password.custom.encryption.failed.CWPKI0045E=CWPKI0045E: Un mot de passe a \u00e9t\u00e9 re\u00e7u \
+chiffr\u00e9 avec un algorithme personnalis\u00e9 qui n'est pas actuellement configur\u00e9.
+ssl.password.custom.encryption.failed.CWPKI0045E.explanation=Un mot de passe chiffr\u00e9 avec \
+un algorithme personnalis\u00e9 a \u00e9t\u00e9 re\u00e7u, mais l'algorithme n\u00e9cessaire \u00e0 son utilisation n'est pas configur\u00e9.
+ssl.password.custom.encryption.failed.CWPKI0045E.useraction=Configurez l'algorithme personnalis\u00e9 n\u00e9cessaire.
+# -------------------------------------------------------------------------------------------------
+ssl.crypto.hw.init.status.uncertain.CWPKI0046E=CWPKI0046E: Le syst\u00e8me n''a pas pu obtenir le statut d''initialisation de la cryptographie mat\u00e9rielle : {1}
+ssl.crypto.hw.init.status.uncertain.CWPKI0046E.explanation=Il n'a pas \u00e9t\u00e9 \
+possible d'obtenir le statut d'initialisation du fournisseur de cryptographie mat\u00e9rielle sp\u00e9cifi\u00e9. 
+ssl.crypto.hw.init.status.uncertain.CWPKI0046E.useraction=V\u00e9rifiez que le fournisseur de cryptographie mat\u00e9rielle \
+fonctionne et est configur\u00e9 correctement.
+# -------------------------------------------------------------------------------------------------
+ssl.crypto.hw.provider.unavailable.CWPKI0047E=CWPKI0047E: Le syst\u00e8me n''a pas pu obtenir \
+l''instance de fournisseur de cryptographie mat\u00e9rielle : {1}
+ssl.crypto.hw.provider.unavailable.CWPKI0047E.explanation=Il n'a pas \u00e9t\u00e9 \
+possible d'obtenir une instance du fournisseur de cryptographie mat\u00e9rielle sp\u00e9cifi\u00e9.
+ssl.crypto.hw.provider.unavailable.CWPKI0047E.useraction=V\u00e9rifiez que le fournisseur de cryptographie mat\u00e9rielle \
+fonctionne et est configur\u00e9 correctement.
+# -------------------------------------------------------------------------------------------------
+ssl.crypto.hw.provider.unavailable.CWPKI0048E=CWPKI0048E: Le syst\u00e8me n''a pas pu obtenir \
+l''instance de fournisseur de cryptographie mat\u00e9rielle : tokenLib: {1}, tokenSlot: {2}, exception: {3} 
+ssl.crypto.hw.provider.unavailable.CWPKI0048E.explanation=Il n'a pas \u00e9t\u00e9 \
+possible d'obtenir une instance du fournisseur de cryptographie mat\u00e9rielle sp\u00e9cifi\u00e9 pour les raisons indiqu\u00e9es.
+ssl.crypto.hw.provider.unavailable.CWPKI0048E.useraction=V\u00e9rifiez que le fournisseur de cryptographie mat\u00e9rielle \
+fonctionne et est configur\u00e9 correctement.
+# -------------------------------------------------------------------------------------------------
+ssl.config.not.using.fips.CWPKI0049W=CWPKI0049W: UseFIPS est activ\u00e9, mais la \
+configuration SSL n'utilise pas de fournisseur JSSE certifi\u00e9 FIPS. Les algorithmes de cryptographie certifi\u00e9s FIPS ne seront donc pas utilis\u00e9s.
+ssl.config.not.using.fips.CWPKI0049W.explanation=Bien que l'option UseFIPS ait \u00e9t\u00e9 activ\u00e9e, les \
+algorithmes de cryptographie certifi\u00e9s FIPS ne peuvent pas \u00eatre utilis\u00e9s car la configuration SSL n'utilise pas de \
+fournisseur JSSE certifi\u00e9 FIPS.
+ssl.config.not.using.fips.CWPKI0049W.useraction=Pour permettre l'utilisation d'algorithmes de cryptographie \
+certifi\u00e9s FIPS, modifiez la configuration SSL afin qu'elle utilise un fournisseur JSSE certifi\u00e9 FIPS.
+# -------------------------------------------------------------------------------------------------
+
+
+################################################################################
+# Range 100-110 reserved for TrustManager Prompt
+################################################################################
+# -------------------------------------------------------------------------------------------------
+ssl.trustmanager.signer.prompt.CWPKI0100I=*** INVITE D'ECHANGE DE SIGNATAIRE SSL ***
+ssl.trustmanager.signer.prompt.CWPKI0101I=Le signataire SSL de l''h\u00f4te cible est introuvable dans le magasin de cl\u00e9s de confiance {0}.\n\
+\n\
+Voici les informations du signataire (v\u00e9rifiez que la valeur de digest correspond \u00e0 ce qui est affich\u00e9 sur le serveur) : 
+ssl.trustmanager.signer.prompt.CWPKI0102I=  Nom distinctif (DN) du sujet :    
+ssl.trustmanager.signer.prompt.CWPKI0103I=  Nom distinctif (DN) de l'\u00e9metteur :     
+ssl.trustmanager.signer.prompt.CWPKI0104I=  Num\u00e9ro de s\u00e9rie : 
+ssl.trustmanager.signer.prompt.CWPKI0105I=  Digest SHA-1 :  
+ssl.trustmanager.signer.prompt.CWPKI0106I=  Digest MD5 :    
+ssl.trustmanager.signer.prompt.CWPKI0107I=Ajouter le signataire au fichier de cl\u00e9s certifi\u00e9es ? (o/n) 
+# Note to translators: The 2 messages below (ssl.trustmanager.signer.prompt.answer.yes and ssl.trustmanager.signer.prompt.answer.no)
+# should be the first letter of the words that correspond to the answers for "yes" and "no". For example,
+# "y" for "yes" in English, "o" for "oui" in French, etc.
+# Also note that these must match the letters in parenthesis in the above prompt message "ssl.trustmanager.signer.prompt.CWPKI0107I".
+ssl.trustmanager.signer.prompt.answer.yes=o
+ssl.trustmanager.signer.prompt.answer.no=n
+ssl.trustmanager.signer.prompt.answer.full.yes=oui
+ssl.trustmanager.signer.prompt.CWPKI0108I=Vous devrez relancer la demande si le socket arrive \u00e0 \
+expiration avant la saisie de la r\u00e9ponse.  En cas de relance, notez que l'invite ne r\u00e9appara\u00eetra pas si vous avez entr\u00e9 \
+(o), car cela veut dire que le signataire a d\u00e9j\u00e0 \u00e9t\u00e9 ajout\u00e9 au fichier de cl\u00e9s certifi\u00e9es.
+ssl.trustmanager.signer.prompt.CWPKI0109I=  Expire dans :       
+
+################################################################################
+# Range 200-299 reserved for KeySet Messages
+################################################################################
+# -------------------------------------------------------------------------------------------------
+crypto.key.generate.configuration.error.CWPKI0200E=CWPKI0200E: Une tentative de g\u00e9n\u00e9ration des cl\u00e9s avec KeySet {0} s''est produite alors que le KeySet n''est pas configur\u00e9 pour g\u00e9n\u00e9rer les cl\u00e9s.  Message :  {1}
+crypto.key.generate.configuration.error.CWPKI0200E.explanation=Aucune classe keyGenerationClass \
+n'est d\u00e9finie pour le jeu de cl\u00e9s, ce dernier ne peut pas trouver la classe keyGenerationClass, un fichier de cl\u00e9s en \
+lecture seule est associ\u00e9 au jeu de cl\u00e9s ou le fichier de cl\u00e9s ne permet pas l'\u00e9criture de cl\u00e9s secr\u00e8tes.
+crypto.key.generate.configuration.error.CWPKI0200E.useraction=Modifiez la configuration pour qu'une \
+classe keyGenerationClass correcte soit configur\u00e9e et qu'un type de fichier de cl\u00e9s permettant l'\u00e9criture de cl\u00e9s \
+secr\u00e8tes soit configur\u00e9.
+# -------------------------------------------------------------------------------------------------
+crypto.key.getkey.error.CWPKI0201E=CWPKI0201E: Une erreur s''est produite pendant la r\u00e9cup\u00e9ration \
+de l''alias de cl\u00e9 {0} dans le jeu de cl\u00e9s {1}.  Exception : {2}
+crypto.key.getkey.error.CWPKI0201E.explanation=Une erreur s'est produite lors de la r\u00e9cup\u00e9ration des cl\u00e9s du KeyStore pour le KeySet sp\u00e9cifi\u00e9.
+crypto.key.getkey.error.CWPKI0201E.useraction=V\u00e9rifiez que la configuration du KeySet est correcte.
+# -------------------------------------------------------------------------------------------------
+crypto.key.generate.class.load.error.CWPKI0202E=CWPKI0202E: Une erreur s''est produite lors de la tentative d''instanciation de la classe de g\u00e9n\u00e9ration de cl\u00e9 {0} configur\u00e9e dans KeySet {1}.  Message :  {2}
+crypto.key.generate.class.load.error.CWPKI0202E.explanation=Soit l'ex\u00e9cution n'a pas \
+trouv\u00e9 la classe de g\u00e9n\u00e9ration de cl\u00e9 configur\u00e9e pour le jeu de cl\u00e9s (KeySet), soit la classe n'impl\u00e9mente pas \
+com.ibm.websphere.crypto.KeyGenerator ou com.ibm.websphere.crypto.KeyPairGenerator.
+crypto.key.generate.class.load.error.CWPKI0202E.useraction=V\u00e9rifiez que la classe de g\u00e9n\u00e9ration de cl\u00e9 \
+configur\u00e9e est sp\u00e9cifi\u00e9e dans un emplacement susceptible d'\u00eatre trouv\u00e9 par l'environnement d'ex\u00e9cution du serveur d'applications.  Consultez le centre de documentation pour savoir comment sp\u00e9cifier des classes personnalis\u00e9es de telle mani\u00e8re que \
+l'environnement d'ex\u00e9cution puisse les trouver.
+# -------------------------------------------------------------------------------------------------
+crypto.key.import.error.CWPKI0203E=CWPKI0203E: Une tentative d''importation de cl\u00e9s dans le jeu de cl\u00e9s {0} a \u00e9chou\u00e9.  Exception : {1}
+crypto.key.import.error.CWPKI0203E.explanation=Soit la syntaxe des cl\u00e9s pass\u00e9es en entr\u00e9e est \
+incorrecte, soit il est impossible d'acc\u00e9der au fichier de cl\u00e9s pour les stocker.
+crypto.key.import.error.CWPKI0203E.useraction=Utilisez les informations du message d'exception pour \
+identifier la cause du probl\u00e8me et modifiez la configuration comme il convient.
+# -------------------------------------------------------------------------------------------------
+crypto.key.auto.generate.error.CWPKI0204E=CWPKI0204E: Une erreur s''est produite pendant une \
+g\u00e9n\u00e9ration de cl\u00e9s planifi\u00e9e pour le groupe de jeux de cl\u00e9s {0}.  Exception : {1}
+crypto.key.auto.generate.error.CWPKI0204E.explanation=Un probl\u00e8me s'est produit alors qu'une \
+nouvelle r\u00e9f\u00e9rence de cl\u00e9 a \u00e9t\u00e9 cr\u00e9\u00e9e pour le groupe de jeux de cl\u00e9s sp\u00e9cifi\u00e9.  La cl\u00e9 a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e apr\u00e8s la cr\u00e9ation de la r\u00e9f\u00e9rence de cl\u00e9 dans la configuration.  L'une de ces \u00e9tapes a \u00e9chou\u00e9.
+crypto.key.auto.generate.error.CWPKI0204E.useraction=Utilisez les informations du message d'exception pour \
+identifier la cause du probl\u00e8me et modifiez la configuration comme il convient.
+
+################################################################################
+# Range 300-399 reserved for Signer Util Messages
+################################################################################
+# -------------------------------------------------------------------------------------------------
+ssl.signer.retrieval.usage.CWPKI0300I=CWPKI0300I: Utilisez les options -listRemoteKeyStoreNames et -listLocalKeyStoreNames pour obtenir la liste des noms pour <magasin_cl\u00e9s_distant> et <magasin_cl\u00e9s_local>, respectivement.\n\
+\n\
+Syntaxe : retrieveSigners <nom_magasin_cl\u00e9s_distant> <nom_magasin_cl\u00e9s_local> [options]\n\
+\ \
+        options: [-profileName <nom_profil>] [-remoteAlias <alias_de_magasin_distant>] [-localAlias <magasin_comme_alias>] [-listRemoteKeyStoreNames] [-listLocalKeyStoreNames] [-autoAcceptBootstrapSigner] [-uploadSigners] [-host <h\u00f4te>] [-port <port>] [-conntype <RMI|SOAP>] [-user <utilisateur>] [-password <mot_de_passe>] [-trace] [-logfile <nom_fichier>] [-replacelog] [-quiet] [-help]\n
+ssl.signer.retrieval.usage.CWPKI0300I.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+ssl.signer.retrieval.usage.CWPKI0300I.useraction=Aucune action n'est requise.
+# -------------------------------------------------------------------------------------------------
+ssl.signer.retrieval.tracemodeon.CWPKI0301I=CWPKI0301I: Le mode trace est actif.
+ssl.signer.retrieval.tracemodeon.CWPKI0301I.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+ssl.signer.retrieval.tracemodeon.CWPKI0301I.useraction=Aucune action n'est requise.
+# -------------------------------------------------------------------------------------------------
+ssl.signer.retrieval.logfile.error.CWPKI0302E=CWPKI0302E: Le syst\u00e8me ne peut pas \u00e9crire dans le fichier journal de trace \u00e0 l''emplacement suivant : {0}
+ssl.signer.retrieval.logfile.error.CWPKI0302E.explanation=Un probl\u00e8me emp\u00eache l'\u00e9criture de donn\u00e9es dans le fichier journal indiqu\u00e9.
+ssl.signer.retrieval.logfile.error.CWPKI0302E.useraction=Modifiez le chemin du fichier journal ou v\u00e9rifiez que le fichier journal n'est pas en cours d'utilisation.
+# -------------------------------------------------------------------------------------------------
+ssl.signer.retrieval.logfile.location.CWPKI0303I=CWPKI0303I: La trace est consign\u00e9e \u00e0 l''emplacement suivant : {0}
+ssl.signer.retrieval.logfile.location.CWPKI0303I.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+ssl.signer.retrieval.logfile.location.CWPKI0303I.useraction=Aucune action n'est requise.
+# -------------------------------------------------------------------------------------------------
+ssl.signer.remote.truststore.not.found.CWPKI0304E=CWPKI0304E: Le <magasin_cl\u00e9s_distant> sp\u00e9cifi\u00e9 comme {0} n''a pas \u00e9t\u00e9 trouv\u00e9 sur le serveur.
+ssl.signer.remote.truststore.not.found.CWPKI0304E.explanation=Le fichier de cl\u00e9s distant est introuvable.  
+ssl.signer.remote.truststore.not.found.CWPKI0304E.useraction=Ex\u00e9cutez la commande -listRemoteKeyStoreNames pour obtenir la liste des noms.
+# -------------------------------------------------------------------------------------------------
+ssl.signer.alias.not.found.CWPKI0305E=CWPKI0305E: Le <alias_de_magasin_distant> sp\u00e9cifi\u00e9 comme {0} n''a pas \u00e9t\u00e9 trouv\u00e9 dans le fichier de cl\u00e9s certifi\u00e9es (truststore) {1} sur le serveur.
+ssl.signer.alias.not.found.CWPKI0305E.explanation=L'alias sp\u00e9cifi\u00e9 n'a pas \u00e9t\u00e9 trouv\u00e9 dans le fichier de cl\u00e9s certifi\u00e9es.
+ssl.signer.alias.not.found.CWPKI0305E.useraction=Ex\u00e9cutez la commande -listRemoteKeyStoreNames pour obtenir la liste des noms.
+# -------------------------------------------------------------------------------------------------
+ssl.signer.remote.truststore.list.CWPKI0306I=CWPKI0306I: Les magasins de cl\u00e9s distants suivants existent sur le serveur sp\u00e9cifi\u00e9 : {0}
+ssl.signer.remote.truststore.list.CWPKI0306I.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+ssl.signer.remote.truststore.list.CWPKI0306I.useraction=Aucune action n'est requise.
+# -------------------------------------------------------------------------------------------------
+ssl.signer.local.truststore.list.CWPKI0307I=CWPKI0307I: Les magasins de cl\u00e9s locaux suivants existent sur le client : {0}
+ssl.signer.local.truststore.list.CWPKI0307I.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+ssl.signer.local.truststore.list.CWPKI0307I.useraction=Aucune action n'est requise.
+# -------------------------------------------------------------------------------------------------
+ssl.signer.add.to.local.truststore.CWPKI0308I=CWPKI0308I: Le syst\u00e8me ajoute l''alias de signataire {0} au fichier de cl\u00e9s local {1} avec le Digest SHA suivant : {2}
+ssl.signer.add.to.local.truststore.CWPKI0308I.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+ssl.signer.add.to.local.truststore.CWPKI0308I.useraction=Aucune action n'est requise.
+# -------------------------------------------------------------------------------------------------
+ssl.signer.no.signers.added.CWPKI0309I=CWPKI0309I: Tous les signataires du fichier de cl\u00e9s distant existent d\u00e9j\u00e0 dans le fichier de cl\u00e9s local.
+ssl.signer.no.signers.added.CWPKI0309I.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+ssl.signer.no.signers.added.CWPKI0309I.useraction=Aucune action n'est requise.
+# -------------------------------------------------------------------------------------------------
+ssl.signer.local.truststore.not.found.CWPKI0310E=CWPKI0310E: Le <nom_magasin_cl\u00e9s_local> sp\u00e9cifi\u00e9 comme {0} n''a pas \u00e9t\u00e9 trouv\u00e9 sur le client.
+ssl.signer.local.truststore.not.found.CWPKI0310E.explanation=Le fichier de cl\u00e9s local est introuvable.  
+ssl.signer.local.truststore.not.found.CWPKI0310E.useraction=Essayez de lancer la commande -listLocalKeyStoreNames pour obtenir la liste des noms.
+# -------------------------------------------------------------------------------------------------
+ssl.certificate.before.date.invalid.CWPKI0311E=CWPKI0311E: Le certificat avec le nom distinctif \
+(DN) de sujet {0} pr\u00e9sente une date de d\u00e9but {1} qui est valide apr\u00e8s la date et l''heure courantes.  Cela peut arriver si l''horloge du client est r\u00e9gl\u00e9e plus t\u00f4t que celle du serveur.   V\u00e9rifiez que les horloges sont synchronis\u00e9es entre ce client et ce serveur et renouvelez la demande.
+ssl.certificate.before.date.invalid.CWPKI0311E.explanation=La date de d\u00e9but du certificat n'est pas valide.
+ssl.certificate.before.date.invalid.CWPKI0311E.useraction=V\u00e9rifiez que l'heure du client est identique \u00e0 celle du serveur. Sinon, cr\u00e9ez un certificat avec la date de d\u00e9but appropri\u00e9e.
+# -------------------------------------------------------------------------------------------------
+ssl.certificate.end.date.invalid.CWPKI0312E=CWPKI0312E: Le certificat avec le nom distinctif (DN) de sujet {0} pr\u00e9sente une date de fin {1} qui n''est plus valide.
+ssl.certificate.end.date.invalid.CWPKI0312E.explanation=Le certificat a expir\u00e9.
+ssl.certificate.end.date.invalid.CWPKI0312E.useraction=Remplacez le certificat par un certificat valide.
+# -------------------------------------------------------------------------------------------------
+ssl.signer.invalid.option.CWPKI0313W=CWPKI0313W: L''option suivante n''est pas valide : {0}
+ssl.signer.invalid.option.CWPKI0313W.explanation=V\u00e9rifiez que l'option d\u00e9finie est correcte dans la ligne de commande.
+ssl.signer.invalid.option.CWPKI0313W.useraction=Consultez l'aide de la syntaxe et r\u00e9essayez une fois l'option corrig\u00e9e.
+# -------------------------------------------------------------------------------------------------
+ssl.signer.general.error.CWPKI0314E=CWPKI0314E: L''erreur suivante est retourn\u00e9e \u00e0 partir d''une exception : {0}
+ssl.signer.general.error.CWPKI0314E.explanation=V\u00e9rifiez que les options d\u00e9finies sont correctes dans la ligne de commande.
+ssl.signer.general.error.CWPKI0314E.useraction=Consultez l'aide de la syntaxe et r\u00e9essayez une fois l'option corrig\u00e9e.
+# -------------------------------------------------------------------------------------------------
+ssl.no.properties.error.CWPKI0315E=CWPKI0315E: Les propri\u00e9t\u00e9s de configuration SSL sont null. Il peut s'agir d'un probl\u00e8me de lecture/interpr\u00e9tation de la configuration du client SSL.
+ssl.no.properties.error.CWPKI0315E.explanation=Aucune propri\u00e9t\u00e9 de configuration SSL n'est d\u00e9finie.  La propri\u00e9t\u00e9 \'com.ibm.SSL.ConfigURL\' n'est peut-\u00eatre pas d\u00e9finie correctement ou une erreur peut s'\u00eatre produite lors \
+de la lecture de la configuration du client SSL.
+ssl.no.properties.error.CWPKI0315E.useraction=V\u00e9rifiez que le fichier ssl.client.props ne contient pas d'erreurs et que la propri\u00e9t\u00e9 \'com.ibm.SSL.ConfigURL\' est correctement d\u00e9finie.
+
+################################################################################
+# Range 400-599 reserved for CA Pure Client Util and Impls
+################################################################################
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.usage=CWPKI0400I: 
+ssl.ca.client.usage.explanation=Informations de syntaxe sur les param\u00e8tres pour l'ex\u00e9cution de ce script.
+ssl.ca.client.usage.useraction=Aucune action n'est requise.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.tracemodeon=CWPKI0401I: Le mode trace est actif.
+ssl.ca.client.tracemodeon.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+ssl.ca.client.tracemodeon.useraction=Aucune action n'est requise.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.logfile.error=CWPKI0402E: Le syst\u00e8me ne peut pas \u00e9crire dans le fichier journal de trace \u00e0 l''emplacement suivant : {0}
+ssl.ca.client.logfile.error.explanation=Un probl\u00e8me emp\u00eache l'\u00e9criture de donn\u00e9es dans le fichier journal indiqu\u00e9.
+ssl.ca.client.logfile.error.useraction=Modifiez le chemin du fichier journal ou v\u00e9rifiez que le fichier journal n'est pas en cours d'utilisation.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.logfile.location=CWPKI0403I: La trace est consign\u00e9e \u00e0 l''emplacement suivant : {0}
+ssl.ca.client.logfile.location.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+ssl.ca.client.logfile.location.useraction=Aucune action n'est requise.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.invalid.option=CWPKI0404W: L''option suivante n''est pas valide : {0}
+ssl.ca.client.invalid.option.explanation=L'option sp\u00e9cifi\u00e9e n'est pas correcte.
+ssl.ca.client.invalid.option.useraction=Consultez l'aide de la syntaxe et r\u00e9essayez une fois l'option corrig\u00e9e.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.general.error=CWPKI0405E: L''erreur suivante est retourn\u00e9e \u00e0 partir d''une exception : {0}
+ssl.ca.client.general.error.explanation=Une option sp\u00e9cifi\u00e9e n'est pas correcte.
+ssl.ca.client.general.error.useraction=Consultez l'aide de la syntaxe et r\u00e9essayez une fois l'option corrig\u00e9e.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.custom.class.not.found=CWPKI0406E: La classe d''impl\u00e9mentation {0} du client PKI est introuvable.
+ssl.ca.client.custom.class.not.found.explanation=Le chargement de l'impl\u00e9mentation personnalis\u00e9e du client PKI a \u00e9chou\u00e9 car le chargeur de classe n'a pas trouv\u00e9 la classe correspondante.
+ssl.ca.client.custom.class.not.found.useraction=V\u00e9rifiez que la classe personnalis\u00e9e existe dans le r\u00e9pertoire des classes de votre installation.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.custom.class.invalid=CWPKI0407E: La classe d''impl\u00e9mentation du client PKI {0} n''est pas une instance de com.ibm.ws.ssl.WSPKIClient.
+ssl.ca.client.custom.class.invalid.explanation=Le chargement de l'impl\u00e9mentation personnalis\u00e9e du client PKI a \u00e9chou\u00e9 car la classe n'est pas une instance de com.ibm.ws.ssl.WSPKIClient.
+ssl.ca.client.custom.class.invalid.useraction=V\u00e9rifiez que la classe personnalis\u00e9e impl\u00e9mente com.ibm.ws.ssl.WSPKIClient.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.not.personal.cert=CWPKI0408E: Le certificat {0} n''est pas un certificat personnel.
+ssl.ca.client.not.personal.cert.explanation=Le certificat sp\u00e9cifi\u00e9 n'est pas un certificat personnel. 
+ssl.ca.client.not.personal.cert.useraction=R\u00e9ex\u00e9cutez la commande avec un nom d'alias de certificat personnel.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.cert.does.not.exist=CWPKI0409E: L''alias de certificat {0} n''existe pas dans le fichier de cl\u00e9s {1}.
+ssl.ca.client.cert.does.not.exist.explanation=Le syst\u00e8me n'a pas pu recevoir le certificat de l'autorit\u00e9 de certification, car les cl\u00e9s publiques ne correspondent pas.
+ssl.ca.client.cert.does.not.exist.useraction=R\u00e9ex\u00e9cutez la commande en utilisant un certificat \
+provenant d'une autorit\u00e9 de certification et ayant \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9 avec la demande de certificat provenant de l'alias sp\u00e9cifi\u00e9 dans ce \
+fichier de cl\u00e9s.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.keystore.not.found=CWPKI0410E: Le fichier de cl\u00e9s local sp\u00e9cifi\u00e9 comme alias {0} est introuvable sur le client.
+ssl.ca.client.keystore.not.found.explanation=Le fichier de cl\u00e9s local est introuvable.  
+ssl.ca.client.keystore.not.found.useraction=V\u00e9rifiez que le fichier de cl\u00e9s existe sur le client et qu'il poss\u00e8de un alias dans le fichier ssl.client.props.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.cert.publickey.not.found=CWPKI0411E: Un certificat ayant une cl\u00e9 publique \
+correspondant \u00e0 la cl\u00e9 publique dans le certificat \u00e9mis par l''autorit\u00e9 de certification est introuvable dans le fichier de cl\u00e9s {0}.
+ssl.ca.client.cert.publickey.not.found.explanation=Pour recevoir un certificat dans un fichier de cl\u00e9s, la cl\u00e9 publique de ce certificat doit \u00eatre identique \u00e0 la cl\u00e9 publique d'un autre certificat contenu dans le \
+fichier de cl\u00e9s. 
+ssl.ca.client.cert.publickey.not.found.useraction=Ex\u00e9cutez la commande avec un certificat dont la \
+cl\u00e9 publique soit identique \u00e0 la cl\u00e9 publique d'un certificat pr\u00e9sent dans le fichier de cl\u00e9s.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.request.out.of.band=CWPKI0412I: Le certificat renvoy\u00e9 par l'autorit\u00e9 de certification est Null.  La demande de certificat n'a pas \u00e9t\u00e9 trait\u00e9e imm\u00e9diatement et elle doit \u00eatre obtenue de mani\u00e8re externe en utilisant la commande queryCertificate.
+ssl.ca.client.request.out.of.band.explanation=La demande de certificat n'a pas \u00e9t\u00e9 trait\u00e9e \
+imm\u00e9diatement par l'autorit\u00e9 de certification et elle doit \u00eatre obtenue de mani\u00e8re externe.
+ssl.ca.client.request.out.of.band.useraction=Ex\u00e9cutez queryCertificate pour v\u00e9rifier l'\u00e9tat du certificat et recevez-le si la demande a \u00e9t\u00e9 trait\u00e9e.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.invalid.option.type=CWPKI0413E: D\u00e9finissez la valeur {0} pour {1}.
+ssl.ca.client.invalid.option.type.explanation=La valeur fournie n'est pas du type correct.
+ssl.ca.client.invalid.option.type.useraction=Consultez l'aide de la syntaxe et r\u00e9essayez apr\u00e8s avoir corrig\u00e9 le type de la valeur.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.invalid.option.value=CWPKI0414E: Vous devez entrer l''option {0} avec une valeur. 
+ssl.ca.client.invalid.option.value.explanation=Vous n'avez pas entr\u00e9 de valeur appropri\u00e9e sur la ligne de commande.
+ssl.ca.client.invalid.option.value.useraction=Consultez l'aide de la syntaxe et r\u00e9essayez une fois l'option corrig\u00e9e.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.error.init=CWPKI0415E: L''erreur suivante s''est produite lors de l''initialisation de l''impl\u00e9mentation de l''autorit\u00e9 de certification : {0}
+ssl.ca.client.error.init.explanation= Une erreur s'est produite lors de l'initialisation de l'impl\u00e9mentation de l'autorit\u00e9 de certification.
+ssl.ca.client.error.init.useraction= Consultez le message d'erreur correspondant.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.error.create=CWPKI0416E: L''erreur suivante s''est produite lors de la cr\u00e9ation d''un certificat sign\u00e9 par l''autorit\u00e9 de certification : {0}
+ssl.ca.client.error.create.explanation= Une erreur s'est produite lors de la cr\u00e9ation d'un certificat sign\u00e9 par l'autorit\u00e9 de certification.
+ssl.ca.client.error.create.useraction= Consultez le message d'erreur correspondant.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.error.revoke=CWPKI0417E: L''erreur suivante s''est produite lors de la r\u00e9vocation d''un certificat sign\u00e9 par l''autorit\u00e9 de certification : {0}
+ssl.ca.client.error.revoke.explanation=Une erreur s'est produite lors de la r\u00e9vocation d'un certificat sign\u00e9 par l'autorit\u00e9 de certification.
+ssl.ca.client.error.revoke.useraction=Consultez le message d'erreur correspondant.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.error.query=CWPKI0418E: L''erreur suivante s''est produite lors de la demande d''un certificat sign\u00e9 \u00e0 l''autorit\u00e9 de certification : {0}
+ssl.ca.client.error.query.explanation=Une erreur s'est produite lors de la demande d'un certificat sign\u00e9 \u00e0 l'autorit\u00e9 de certification.
+ssl.ca.client.error.query.useraction=Consultez le message d'erreur correspondant.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.keystore.readonly=CWPKI0419E: Le syst\u00e8me n'a pas pu recevoir le certificat car le fichier de cl\u00e9s indiqu\u00e9 est en lecture seule.
+ssl.ca.client.keystore.readonly.explanation=Le syst\u00e8me tente d'\u00e9crire un certificat re\u00e7u dans un fichier de cl\u00e9s en lecture seule.
+ssl.ca.client.keystore.readonly.useraction=Indiquez un fichier de cl\u00e9s accessible en \u00e9criture.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.receive.failed=CWPKI0420E: La demande de certificat a \u00e9t\u00e9 trait\u00e9e par l'autorit\u00e9 de \
+certification, mais le certificat n'a pas pu \u00eatre stock\u00e9 dans le fichier de cl\u00e9s sp\u00e9cifi\u00e9.  Le certificat sera r\u00e9voqu\u00e9 et vous devrez refaire une demande.  Consultez les messages d'erreur pr\u00e9c\u00e9dents et corrigez \
+les erreurs avant de redemander le certificat. 
+ssl.ca.client.receive.failed.explanation=Le certificat demand\u00e9 et renvoy\u00e9 par l'autorit\u00e9 de \
+certification n'a pas pu \u00eatre stock\u00e9 correctement dans le fichier de cl\u00e9s indiqu\u00e9.  Le certificat a donc \u00e9t\u00e9 r\u00e9voqu\u00e9 et vous devez refaire une demande pour en obtenir un autre.
+ssl.ca.client.receive.failed.useraction=Consultez les messages d'erreur pr\u00e9c\u00e9dents relatifs au \
+stockage dans le fichier de cl\u00e9s et corrigez les erreurs avant de redemander le certificat. 
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.pkcs10.request.created=CWPKI0421I: La demande de certificat PKCS10 avec l''alias {0} a \u00e9t\u00e9 cr\u00e9\u00e9e.  La demande est enregistr\u00e9e dans le fichier suivant : {1} 
+ssl.ca.client.pkcs10.request.created.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+ssl.ca.client.pkcs10.request.created.useraction=Aucune action n'est requise.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.pkcs10.request.sending=CWPKI0422I: Le syst\u00e8me g\u00e9n\u00e8re une demande de certificat PKCS10.
+ssl.ca.client.pkcs10.request.sending.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+ssl.ca.client.pkcs10.request.sending.useraction=Aucune action n'est requise.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.pkcs10.request.failed=CWPKI0423E: La demande de certificat PKCS10 n''a pas pu \u00eatre cr\u00e9\u00e9e en raison de l''erreur suivante : {0}
+ssl.ca.client.pkcs10.request.failed.explanation=La demande de certificat PKCS10 n'a pas pu \u00eatre cr\u00e9\u00e9e en raison de l'erreur indiqu\u00e9e.
+ssl.ca.client.pkcs10.request.failed.useraction=V\u00e9rifiez les journaux de messages pour plus de d\u00e9tails.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.alias.exists=CWPKI0424E: L''alias de certificat {0} existe d\u00e9j\u00e0 dans le fichier de cl\u00e9s {1}.
+ssl.ca.client.alias.exists.explanation=Le syst\u00e8me n'a pas pu cr\u00e9er la demande de certificat, car \
+l'alias indiqu\u00e9 existe d\u00e9j\u00e0 dans le fichier de cl\u00e9s.
+ssl.ca.client.alias.exists.useraction=D\u00e9finissez un alias diff\u00e9rent.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.subjectdn.invalid=CWPKI0425E: Le nom distinctif de sujet (subjectDN) fourni n'est pas correct.
+ssl.ca.client.subjectdn.invalid.explanation=Le nom distinctif de sujet (subjectDN) indiqu\u00e9 n'est pas conforme au standard X500Principal.
+ssl.ca.client.subjectdn.invalid.useraction=V\u00e9rifiez que le DN de sujet indiqu\u00e9 et assurez-vous qu'il est au format correct.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.ignored.arguments=CWPKI0426W: Les options suivantes n''ont pas \u00e9t\u00e9 reconnues et seront ignor\u00e9es : {0}
+ssl.ca.client.ignored.arguments.explanation=Une ou plusieurs options fournies n'ont pas \u00e9t\u00e9 reconnues et seront ignor\u00e9es.
+ssl.ca.client.ignored.arguments.useraction=Contr\u00f4lez la syntaxe de la commande et v\u00e9rifiez que \
+les arguments fournis sont corrects.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.invalid.custom.attrs=CWPKI0427E: Les attributs personnalis\u00e9s ne peuvent pas \u00eatre interpr\u00e9t\u00e9s. 
+ssl.ca.client.invalid.custom.attrs.explanation=Les attributs personnalis\u00e9s n'ont pas \u00e9t\u00e9 entr\u00e9s dans le format appropri\u00e9.
+ssl.ca.client.invalid.custom.attrs.useraction=Consultez l'aide de la syntaxe et r\u00e9essayez une fois les attributs personnalis\u00e9s corrig\u00e9s.
+
+
+
+
+#  CA CMP Client Impl
+ssl.ca.cmp.impl.invalid.attribute=CWPKI0450E:  L''attribut {0} est absent ou d''un type incorrect.  Le type correct est {1}.
+ssl.ca.cmp.impl.invalid.attribute.explanation=L'attribut pass\u00e9 \u00e0 l'impl\u00e9mentation est Null ou n'est pas du type correct.
+ssl.ca.cmp.impl.invalid.attribute.useraction=V\u00e9rifiez que l'attribut n\u00e9cessaire est pass\u00e9 \u00e0 l'impl\u00e9mentation.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.invalid.certificate.request=CWPKI0451E: La demande de certificat est Null.
+ssl.ca.cmp.impl.invalid.certificate.request.explanation=Le tableau d'octets de la demande de certificat est Null.
+ssl.ca.cmp.impl.invalid.certificate.request.useraction=V\u00e9rifiez que, pour la demande de certificat, un tableau d'octets valide \
+est pass\u00e9 \u00e0 l'impl\u00e9mentation.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.invalid.revocation.reason=CWPKI0452E:  Le mot de passe de r\u00e9vocation de cette demande est Null.
+ssl.ca.cmp.impl.invalid.revocation.reason.explanation=Le tableau d'octets du mot de passe de r\u00e9vocation de cette demande est Null.
+ssl.ca.cmp.impl.invalid.revocation.reason.useraction=V\u00e9rifiez que, pour le mot de passe de r\u00e9vocation, un tableau d'octets valide \
+est pass\u00e9 \u00e0 l'impl\u00e9mentation.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.general.error=CWPKI0453E:  L''exception inattendue suivante s''est produite : {0}
+ssl.ca.cmp.impl.general.error.explanation=CMSG0001
+ssl.ca.cmp.impl.general.error.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.tempfile.error=CWPKI0454E: Le syst\u00e8me n''a pas pu cr\u00e9er le fichier temporaire {0}.
+ssl.ca.cmp.impl.tempfile.error.explanation= Le fichier temporaire n'a pas pu \u00eatre \u00e9crit dans le syst\u00e8me de fichiers.
+ssl.ca.cmp.impl.tempfile.error.useraction= V\u00e9rifiez que l'emplacement du fichier temporaire \
+existe, qu'il est accessible en \u00e9criture et dispose d'assez d'espace.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.request.created=CWPKI0455I: Demande d'un certificat sign\u00e9 \u00e0 l'autorit\u00e9 de certification.
+ssl.ca.cmp.impl.request.created.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+ssl.ca.cmp.impl.request.created.useraction=Aucune action n'est requise.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.create.error=CWPKI0456E: Une exception s''est produite pendant la demande du certificat : {0}
+ssl.ca.cmp.impl.create.error.explanation=L'erreur indiqu\u00e9e s'est produite lors de la demande du certificat.
+ssl.ca.cmp.impl.create.error.useraction=Consultez les informations d'erreur dans le fichier journal.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.revoke.error=CWPKI0457E: Une exception s''est produite lors de la r\u00e9vocation du certificat : {0}
+ssl.ca.cmp.impl.revoke.error.explanation=L'erreur indiqu\u00e9e s'est produite lors de la r\u00e9vocation du certificat.
+ssl.ca.cmp.impl.revoke.error.useraction=Consultez les informations d'erreur dans le fichier journal.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.query.error=CWPKI0458E: Une exception s''est produite lors de l''interrogation du certificat : {0}
+ssl.ca.cmp.impl.query.error.explanation=L'erreur indiqu\u00e9e s'est produite lors de l'interrogation du certificat.
+ssl.ca.cmp.impl.query.error.useraction=Consultez les informations d'erreur dans le fichier journal.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.invalid.certificate.chain=CWPKI0459E: La cha\u00eene de certificats est Null.
+ssl.ca.cmp.impl.invalid.certificate.chain.explanation=Aucune cha\u00eene de certificats valide n'est disponible pour l'impl\u00e9mentation.
+ssl.ca.cmp.impl.invalid.certificate.chain.useraction=V\u00e9rifiez qu'une cha\u00eene de certificats valide est pass\u00e9e \u00e0 l'impl\u00e9mentation.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.revoke.request.created=CWPKI0460I: R\u00e9vocation d'un certificat sign\u00e9 de l'autorit\u00e9 de certification
+ssl.ca.cmp.impl.revoke.request.created.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+ssl.ca.cmp.impl.revoke.request.created.useraction=Aucune action n'est requise.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.action.not.supported=CWPKI0461I: L''action {0} n''est pas compatible avec cette impl\u00e9mentation.
+ssl.ca.cmp.impl.action.not.supported.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+ssl.ca.cmp.impl.action.not.supported.useraction=Aucune action n'est requise.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.revoke.request.processed=CWPKI0462I: Une demande de r\u00e9vocation de certificat pour l''alias de certificat {0} \
+a \u00e9t\u00e9 \u00e9mise. Motif : {1}
+ssl.ca.cmp.impl.revoke.request.processed.explanation=Une demande de r\u00e9vocation d'un certificat sign\u00e9 de l'autorit\u00e9 de certification a \u00e9t\u00e9 \u00e9mise.
+ssl.ca.cmp.impl.revoke.request.processed.useraction=V\u00e9rifiez aupr\u00e8s de l'autorit\u00e9 de certification externe que le certificat a bien \u00e9t\u00e9 r\u00e9voqu\u00e9.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.certificate.received=CWPKI0463I: Le certificat a \u00e9t\u00e9 re\u00e7u et stock\u00e9 dans le fichier de cl\u00e9s {0} en tant qu''alias {1}.
+ssl.ca.cmp.impl.certificate.received.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+ssl.ca.cmp.impl.certificate.received.useraction=Aucune action n'est requise.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.certificate.received.header=*** CERTIFICAT ***
+ssl.ca.cmp.impl.certificate.received.subject=Propri\u00e9taire :
+ssl.ca.cmp.impl.certificate.received.issuer=Emetteur :
+ssl.ca.cmp.impl.certificate.received.serial=Num\u00e9ro de s\u00e9rie :
+ssl.ca.cmp.impl.certificate.received.fingerprints=Empreinte de certificat :
+ssl.ca.cmp.impl.certificate.received.shadigest=Digest SHA-1 :
+ssl.ca.cmp.impl.certificate.received.md5digest=Digest MD5 :
+# -------------------------------------------------------------------------------------------------
+
+################################################################################
+# Range 600-799 reserved for Command Tasks located in sslCommandTask.nlsprops file
+################################################################################
+
+################################################################################
+# Range 800-899 reserved for Liberty specific messages
+################################################################################
+security.addprovider.error=CWPKI0800E: Une erreur interne s''est produite. Exception intercept\u00e9e \
+lors de l''ajout du fournisseur IBMJCEFIPS. Exception : {0}
+security.addprovider.error.explanation=Une erreur s'est produite lors de l'ajout du module cryptographique IBMJCEFIPS. L'initialisation du serveur va continuer, mais le support SSL ne sera pas disponible.
+security.addprovider.error.useraction=CMSG0002
+#--------------------------------------------------------------------------------------------------
+DEFAULT_OPTIONS_ERROR=CWPKI0801E: Impossible de cr\u00e9er la configuration SSL par d\u00e9faut. Exception : {0}.
+DEFAULT_OPTIONS_ERROR.explanation=Une erreur a \u00e9t\u00e9 d\u00e9tect\u00e9e lors de la cr\u00e9ation de la configuration SSL par d\u00e9faut.
+DEFAULT_OPTIONS_ERROR.useraction=CMSG0002
+#--------------------------------------------------------------------------------------------------
+ssl.create.certificate.start=CWPKI0802I: Cr\u00e9ation du certificat SSL. Cela peut prendre quelques secondes.
+ssl.create.certificate.start.explanation=Le certificat SSL n'existe pas et sera g\u00e9n\u00e9r\u00e9 automatiquement. Cela peut prendre quelques secondes. Les services n\u00e9cessitant SSL ne d\u00e9marreront que lorsque les cl\u00e9s SSL auront \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9es et que la configuration sera pr\u00eate.
+ssl.create.certificate.start.useraction=Aucune action n'est requise.
+#--------------------------------------------------------------------------------------------------
+ssl.create.certificate.end=CWPKI0803A: Certificats SSL cr\u00e9\u00e9s en {0} secondes. Fichier de cl\u00e9s SSL : {1}
+ssl.create.certificate.end.explanation=Le certificat SSL a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9 dans le d\u00e9lai d\u00e9fini.
+ssl.create.certificate.end.useraction=Aucune action n'est requise.
+#--------------------------------------------------------------------------------------------------
+ssl.create.certificate.error=CWPKI0804E: Erreur de cr\u00e9ation de certificat SSL. Impossible de cr\u00e9er le fichier de cl\u00e9s SSL : {0}
+ssl.create.certificate.error.explanation=Le certificat SSL n'a pas pu \u00eatre cr\u00e9\u00e9 \u00e0 l'emplacement indiqu\u00e9.
+ssl.create.certificate.error.useraction=Assurez-vous que l'emplacement indiqu\u00e9 dans le message est accessible au \
+processus du serveur. Les \u00e9ventuelles donn\u00e9es FFDC (diagnostic de premier niveau) g\u00e9n\u00e9r\u00e9es peuvent r\u00e9v\u00e9ler qu'une erreur fatale s'est produite lors de la \
+g\u00e9n\u00e9ration ou du chargement des cl\u00e9s.
+#--------------------------------------------------------------------------------------------------
+ssl.default.keystore.config.error=CWPKI0805E: Un mot de passe est requis pour le fichier de cl\u00e9s par d\u00e9faut mais ce mot de passe manque.
+ssl.default.keystore.config.error.explanation=La configuration du fichier de cl\u00e9s ne sp\u00e9cifie pas de mot de passe pour le fichier de cl\u00e9s par d\u00e9faut.
+ssl.default.keystore.config.error.useraction=Modifiez la configuration du fichier de cl\u00e9s par d\u00e9faut afin de sp\u00e9cifier un mot de passe.
+#--------------------------------------------------------------------------------------------------
+ssl.keystore.config.error=CWPKI0806E: La configuration du fichier de cl\u00e9s est incompl\u00e8te, l'emplacement et le type doivent \u00eatre sp\u00e9cifi\u00e9s.
+ssl.keystore.config.error.explanation=La configuration du fichier de cl\u00e9s ne contient pas toutes les informations n\u00e9cessaires.
+ssl.keystore.config.error.useraction=Modifiez l'objet de configuration de fichier de cl\u00e9s de telle sorte qu'il contienne le type et l'emplacement du fichier de cl\u00e9s.
+#--------------------------------------------------------------------------------------------------
+ssl.keystore.not.found.warning=CWPKI0807W: L''emplacement du fichier de cl\u00e9s {0} n''a pas pu \u00eatre trouv\u00e9 pour l''\u00e9l\u00e9ment ayant l''attribut id {1}.
+ssl.keystore.not.found.warning.explanation=L'emplacement du fichier de cl\u00e9s r\u00e9f\u00e9rence un emplacement qui n'existe pas.
+ssl.keystore.not.found.warning.useraction=Changez l'emplacement du fichier de cl\u00e9s en un fichier dont le chemin est valide.
+#--------------------------------------------------------------------------------------------------
+ssl.create.certificate.password.error=CWPKI0808E: Un mot de passe d'au moins 6 caract\u00e8res est n\u00e9cessaire pour cr\u00e9er le fichier de cl\u00e9s par d\u00e9faut. Le fichier de cl\u00e9s par d\u00e9faut n'est pas cr\u00e9\u00e9.
+ssl.create.certificate.password.error.explanation=La configuration de fichier de cl\u00e9s requiert un mot de passe d'au moins 6 caract\u00e8res pour la cr\u00e9ation du fichier de cl\u00e9s par d\u00e9faut.
+ssl.create.certificate.password.error.useraction=Modifiez la configuration du fichier de cl\u00e9s par d\u00e9faut afin de sp\u00e9cifier un mot de passe d'au moins 6 caract\u00e8res.
+#--------------------------------------------------------------------------------------------------
+ssl.config.not.used.CWPKI0809W=CWPKI0809W: Le chargement du fichier de cl\u00e9s {0} se traduit par un \u00e9chec. Si une configuration SSL r\u00e9f\u00e9rence le fichier de cl\u00e9s {1}, l''initialisation de la configuration SSL \u00e9choue.  
+ssl.config.not.used.CWPKI0809W.explanation=Le fichier de cl\u00e9s n'existe pas ou le type de fichier de cl\u00e9s ou le mot de passe sont incorrects, ainsi, toute configuration SSL faisant r\u00e9f\u00e9rence \u00e0 ce fichier de cl\u00e9s sera inutilisable.
+ssl.config.not.used.CWPKI0809W.useraction=Corrigez le probl\u00e8me au niveau de la configuration du fichier de cl\u00e9s.
+#--------------------------------------------------------------------------------------------------
+ssl.keystore.readonly.CWPKI0810I=CWPKI0810I: Le magasin de cl\u00e9s {0} est en lecture seule et le certificat ne sera pas \u00e9crit dans le fichier de cl\u00e9s.  La confiance sera accept\u00e9e uniquement pour cette connexion. 
+ssl.keystore.readonly.CWPKI0810I.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+ssl.keystore.readonly.CWPKI0810I.useraction=Aucune action n'est requise.
+#--------------------------------------------------------------------------------------------------
+ssl.keystore.modified.CWPKI0811I=CWPKI0811I: Le fichier de cl\u00e9s {0} a \u00e9t\u00e9 modifi\u00e9.  Le fichier de cl\u00e9s va \u00eatre recharg\u00e9 de sorte que le fichier de cl\u00e9s mis \u00e0 jour puisse \u00eatre utilis\u00e9.
+ssl.keystore.modified.CWPKI0811I.explanation=Le fichier de cl\u00e9s sp\u00e9cifi\u00e9 a \u00e9t\u00e9 modifi\u00e9 et l'ex\u00e9cution d\u00e9marrera avec le fichier de cl\u00e9s mis \u00e0 jour. 
+ssl.keystore.modified.CWPKI0811I.useraction=Aucune action n'est requise.
+#--------------------------------------------------------------------------------------------------
+ssl.key.error.CWPKI0812E=CWPKI0812E: Erreur lors de la tentative d''obtention de la cl\u00e9 [{0}] depuis le magasin de cl\u00e9s [{1}]. V\u00e9rifiez que l''entr\u00e9e est une cl\u00e9 et que le mot de passe de cl\u00e9 est correct. Exception retourn\u00e9e : [{2}].
+ssl.key.error.CWPKI0812E.explanation=Une erreur s'est produite lors de la tentative de r\u00e9cup\u00e9ration de cl\u00e9 depuis le fichier de cl\u00e9s. Il y a peut-\u00eatre un probl\u00e8me avec la cl\u00e9 ou bien le mot de passe de cl\u00e9 est incorrect. 
+ssl.key.error.CWPKI0812E.useraction=V\u00e9rifiez magasin de cl\u00e9s afin de vous assurer que l'entr\u00e9e de cl\u00e9 existe et que le mot de passe est configur\u00e9 pour l'acc\u00e8s \u00e0 l'entr\u00e9e de cl\u00e9.
+#--------------------------------------------------------------------------------------------------
+ssl.unrecoverablekey.error.CWPKI0813E=CWPKI0813E: Erreur lors de la tentative d''initialisation du gestionnaire de cl\u00e9s pour le magasin de cl\u00e9s [{0}. Le mot de passe de cl\u00e9 priv\u00e9e n''est pas correct ou le magasin de cl\u00e9s comporte plusieurs cl\u00e9s priv\u00e9es avec diff\u00e9rents mots de passe.  Ce magasin de cl\u00e9s ne peut pas \u00eatre utilis\u00e9 pour SSL.  Le message d''exception est : [{1}].
+ssl.unrecoverablekey.error.CWPKI0813E.explanation=Une erreur s'est produite lors de la tentative d'initialisation du gestionnaire de cl\u00e9s.  Impossible de cr\u00e9er un SSLContext lorsque le mot de passe de cl\u00e9 priv\u00e9e est correct ou lorsqu'un magasin de cl\u00e9s comporte plusieurs cl\u00e9s avec diff\u00e9rents mots de passe. 
+ssl.unrecoverablekey.error.CWPKI0813E.useraction=Assure-vous que le mot de passe de cl\u00e9 priv\u00e9e est correct et que le magasin de cl\u00e9s ne comporte pas plusieurs cl\u00e9s avec diff\u00e9rents mots de passe avant d'utiliser le magasin de cl\u00e9s pour les connexions SSL.
+#--------------------------------------------------------------------------------------------------
+ssl.hwkeystore.load.error.CWPKI0814E=CWPKI0814E: Erreur lors de l''initialisation du magasin de cl\u00e9s mat\u00e9rielles [{0}]. V\u00e9rifiez le fichier \
+de configuration mat\u00e9rielle {1} pour vous assurer que les attributs ont \u00e9t\u00e9 d\u00e9finis correctement. L''exception renvoy\u00e9e par le fournisseur est la suivante : {2}.
+ssl.hwkeystore.load.error.CWPKI0814E.explanation=Une erreur dans la configuration mat\u00e9rielle emp\u00eache l'utilisation du magasin de \
+cl\u00e9s. S'il \
+s'agit d'une configuration SSL qui r\u00e9f\u00e9rence ce magasin de cl\u00e9s, elle ne sera pas utilisable.
+ssl.hwkeystore.load.error.CWPKI0814E.useraction=V\u00e9rifiez que le fichier de configuration mat\u00e9rielle contient les attributs, le nom et la \
+biblioth\u00e8que requis. V\u00e9rifiez que les autres attributs dans le fichier de configuration se conforment \u00e0 la sp\u00e9cification de l'unit\u00e9 mat\u00e9rielle.
+#--------------------------------------------------------------------------------------------------
+ssl.dynamicSelection.conflict.CWPKI0815W=CWPKI0815W: Plusieurs \u00e9l\u00e9ments OutboundConnection sp\u00e9cifient l''h\u00f4te [{0}] et le port [{1}] comme filtre. L''\u00e9l\u00e9ment OutboundConnection configur\u00e9 dans l''\u00e9l\u00e9ment SSL [{2}] sera utilis\u00e9.
+ssl.dynamicSelection.conflict.CWPKI0815W.explanation=Des \u00e9l\u00e9ments OutboundConnection en conflit sont d\u00e9finis dans la configuration du serveur. Pour d\u00e9terminer la configuration SSL sortante, le serveur utilise le premier \u00e9l\u00e9ment OutboundConnection qu'il traite.
+ssl.dynamicSelection.conflict.CWPKI0815W.useraction=Examinez les \u00e9l\u00e9ments OutboundConnection en conflit dans la configuration du serveur et supprimez celui dont vous n'avez pas besoin.
+#--------------------------------------------------------------------------------------------------
+ssl.defaultOutbound.conflict.CWPKI0816W=CWPKI0816W: L''\u00e9l\u00e9ment outboundConnection signal\u00e9 par un ast\u00e9risque (*) comme h\u00f4te et port est configur\u00e9 pour la configuration SSL [{0}]. Ce param\u00e8tre entre en conflit avec le param\u00e8tre de l''attribut outboundSSLRef. La configuration SSL {1} sp\u00e9cifi\u00e9e par l''attribut outboundSSLRef sera utilis\u00e9e.
+ssl.defaultOutbound.conflict.CWPKI0816W.explanation=L'\u00e9l\u00e9ment outboundConnection signal\u00e9 par un ast\u00e9risque (*) comme h\u00f4te et port est en conflit avec l'attribut outboundSSLRef qui est configur\u00e9. Le serveur utilisera la configuration SSL sp\u00e9cifi\u00e9e par l'attribut outboundSSLRef.
+ssl.defaultOutbound.conflict.CWPKI0816W.useraction=Examinez la configuration conflictuelle et d\u00e9terminez quelle configuration utiliser comme configuration SSL par d\u00e9faut. Supprimez la configuration superflue.
+

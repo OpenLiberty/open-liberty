@@ -1,0 +1,35 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.artifact.api.zip/resources/com/ibm/ws/artifact/api/zip/internal/resources/ZipArtifactMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKM
+#COMPONENTNAMEFOR CWWKM Module API
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+bad.zip.data=CWWKM0101E: Syst\u00e9m nem\u016f\u017ee zpracovat archivn\u00ed data pro {0}.
+bad.zip.data.explanation=Do\u0161lo k v\u00fdjimce p\u0159i zpracov\u00e1n\u00ed komprimovan\u00fdch dat pro archiv. 
+bad.zip.data.useraction=Zkontrolujte, \u017ee je soubor v platn\u00e9m archivu.
+
+remove.cache.data=CWWKM0102W: Syst\u00e9m vy\u010distil neplatn\u00e1 data mezipam\u011bti z um\u00edst\u011bn\u00ed {0}
+remove.cache.data.explanation=Zd\u00e1 se, \u017ee struktura aplikace byla zm\u011bn\u011bna, co\u017e vy\u017eaduje odstran\u011bn\u00ed dat mezipam\u011bti zalo\u017een\u00fdch na p\u0159edch\u00e1zej\u00edc\u00ed struktu\u0159e.
+remove.cache.data.useraction=Pokud va\u0161e aplikace m\u011bnila strukturu, je tato zpr\u00e1va o\u010dek\u00e1van\u00e1.
+
+extract.cache.fail=CWWKM0103E: Syst\u00e9m nem\u016f\u017ee extrahovat vno\u0159en\u00fd archiv do um\u00edst\u011bn\u00ed mezipam\u011bti v d\u016fsledku {0}
+extract.cache.fail.explanation=Do\u0161lo k chyb\u011b p\u0159i vytv\u00e1\u0159en\u00ed dat mezipam\u011bti pro aplikaci, co\u017e aplikaci br\u00e1n\u00ed ve spr\u00e1vn\u00e9m zpracov\u00e1n\u00ed. 
+extract.cache.fail.useraction=Zkontrolujte hl\u00e1\u0161enou p\u0159\u00ed\u010dinu.

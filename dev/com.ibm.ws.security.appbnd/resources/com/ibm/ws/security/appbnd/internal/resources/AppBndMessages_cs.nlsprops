@@ -1,0 +1,31 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.appbnd/resources/com/ibm/ws/security/appbnd/internal/resources/AppBndMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Application Bindings
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9100 - CWWKS9199
+
+AUTHZ_TABLE_DUPLICATE_APP_NAME=CWWKS9110E: B\u011bhem spou\u0161t\u011bn\u00ed aplikace se aplikaci nezda\u0159ilo spustit, proto\u017ee bylo nalezeno v\u00edce aplikac\u00ed s n\u00e1zvem {0}. Z\u00e1sady zabezpe\u010den\u00ed autorizace vy\u017eaduj\u00ed, aby tyto n\u00e1zvy byly jedine\u010dn\u00e9. Zkontrolujte konfiguraci aplikace v souboru server.xml.
+AUTHZ_TABLE_DUPLICATE_APP_NAME.explanation=Aby mohly b\u00fdt pou\u017eity z\u00e1sady zabezpe\u010den\u00ed autorizace, musej\u00ed b\u00fdt n\u00e1zvy aplikac\u00ed jedine\u010dn\u00e9.
+AUTHZ_TABLE_DUPLICATE_APP_NAME.useraction=Zkontrolujte konfiguraci a ov\u011b\u0159te jedine\u010dnost n\u00e1zv\u016f aplikac\u00ed a restartujte aplikaci.
+
+AUTHZ_TABLE_NOT_CREATED=CWWKS9111E: B\u011bhem spou\u0161t\u011bn\u00ed aplikace do\u0161lo k intern\u00ed chyb\u011b. Autoriza\u010dn\u00ed tabulka pro aplikaci {0} nebyla vytvo\u0159ena, proto nebudou k ochran\u011b prost\u0159edk\u016f autorizov\u00e1ni \u017e\u00e1dn\u00ed u\u017eivatel\u00e9.
+AUTHZ_TABLE_NOT_CREATED.explanation=Autoriza\u010dn\u00ed tabulka pro aplikaci nebyla vytvo\u0159ena, proto nebudou k ochran\u011b prost\u0159edk\u016f autorizov\u00e1ni \u017e\u00e1dn\u00ed u\u017eivatel\u00e9.
+AUTHZ_TABLE_NOT_CREATED.useraction=Prozkoumejte konfiguraci autorizace aplikace a ur\u010dete, pro\u010d nebyla autoriza\u010dn\u00ed tabulka vytvo\u0159ena.
+
+RUNAS_INVALID_CONFIG=CWWKS9112W: Neplatn\u00e1 konfigurace "run-as" pro n\u00e1zev role zabezpe\u010den\u00ed {0} v aplikaci {1}. Zkontrolujte konfiguraci u\u017eivatele, pod jeho\u017e ID se m\u00e1 prov\u00e1d\u011bt spu\u0161t\u011bn\u00ed, a ov\u011b\u0159te, zda je spr\u00e1vn\u011b nakonfigurovan\u00e9 ID u\u017eivatele a heslo. K autorizaci se pou\u017eije identita po\u010d\u00e1te\u010dn\u00edho volaj\u00edc\u00edho, proto\u017ee roli runAs nelze pou\u017e\u00edt.
+RUNAS_INVALID_CONFIG.explanation= Konfigurace "run-as" pro n\u00e1zev role zabezpe\u010den\u00ed je pro aplikaci neplatn\u00e1. Zkontrolujte konfiguraci u\u017eivatele, pod jeho\u017e ID se m\u00e1 prov\u00e1d\u011bt spu\u0161t\u011bn\u00ed, a ov\u011b\u0159te, zda je spr\u00e1vn\u011b nakonfigurovan\u00e9 ID u\u017eivatele a heslo.
+RUNAS_INVALID_CONFIG.useraction=Zkontrolujte konfiguraci "run-as" aplikace pro n\u00e1zev role zabezpe\u010den\u00ed a ujist\u011bte se, zda je spr\u00e1vn\u011b nakonfigurovan\u00e9 jm\u00e9no u\u017eivatele a heslo.

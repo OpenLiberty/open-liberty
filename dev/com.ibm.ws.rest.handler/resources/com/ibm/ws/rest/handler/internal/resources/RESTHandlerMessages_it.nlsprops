@@ -1,0 +1,53 @@
+###############################################################################
+# Copyright (c) 2012, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO 
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKO1000 - CWWKO1099
+
+HANDLER_NOT_FOUND_ERROR=CWWKO1000E: Non vi sono gestori registrati che corrispondono all''URL richiesto {0}.
+HANDLER_NOT_FOUND_ERROR.explanation=Si \u00e8 tentato di accedere a un URL che non corrisponde ad alcuno dei gestori registrati.
+HANDLER_NOT_FOUND_ERROR.useraction=Correggere l'URL in modo che corrisponda a un gestore registrato.
+
+OSGI_SERVICE_ERROR=CWWKO1001E: Il servizio OSGi {0} non \u00e8 disponibile.
+OSGI_SERVICE_ERROR.explanation=Questo errore interno del server viene generato perch\u00e9 il servizio specificato non \u00e8 disponibile.
+OSGI_SERVICE_ERROR.useraction=Riavviare il server con l'opzione clean.
+ 
+SSL_CONTEXT_NOT_AVAILABLE=CWWKO1002E: Rilevata la seguente eccezione durante la risoluzione del contesto SSL di un membro del Collective: {0}
+SSL_CONTEXT_NOT_AVAILABLE.explanation=Non \u00e8 stato possibile creare un contesto SSL con il certificato SSL del membro.
+SSL_CONTEXT_NOT_AVAILABLE.useraction=Controllare la configurazione SSL del Collective, compreso membro di destinazione e controllore.
+
+MISSING_PARAMETER=CWWKO1003E: Un parametro obbligatorio, {0}, manca dalla richiesta https.
+MISSING_PARAMETER.explanation=Il parametro obbligatorio specificato manca dalla richiesta. 
+MISSING_PARAMETER.useraction=Includere nella richiesta il parametro specificato e riprovare.
+
+MISSING_HEADER=CWWKO1004E: Un''intestazione obbligatoria, {0}, manca dalla richiesta https.
+MISSING_HEADER.explanation=L'intestazione obbligatoria specificata manca dalla richiesta. 
+MISSING_HEADER.useraction=Includere nella richiesta l'intestazione specificata e riprovare.
+
+INVALID_INPUT_VALUE=CWWKO1005E: Il campo di input con nome {0} contiene un valore non corretto.
+INVALID_INPUT_VALUE.explanation=La richiesta contiene un campo di input con un valore non corretto. Il campo di input non corrisponde ad alcun record nel sistema. 
+INVALID_INPUT_VALUE.useraction=Correggere il valore del campo di input e ripetere la richiesta.
+
+UNSUPPORTED_MEDIA_TYPE=CWWKO1006E: Il tipo MIME della richiesta, {0}, non \u00e8 supportato. 
+UNSUPPORTED_MEDIA_TYPE.explanation=Il server non \u00e8 in grado di utilizzare il tipo MIME della richiesta. Il tipo MIME non corrisponde ad alcun tipo MIME previsto. 
+UNSUPPORTED_MEDIA_TYPE.useraction=Correggere il valore del tipo di contenuto e inviare di nuovo la richiesta.
+

@@ -1,0 +1,139 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.webcontainer.security/resources/com/ibm/ws/webcontainer/security/resources/WebAppSecurityMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Web Application Security Collaborator
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9100 - CWWKS9199
+
+MISSING_SEC_ROLE_REF_ROLE_LINK=CWWKS9100W: \u00cen servetul {0}, elementului <security-role-ref> pentru <role-name>{1}</role-name> \u00eei lipse\u015fte elementul  <role-link> corespunz\u0103tor.
+MISSING_SEC_ROLE_REF_ROLE_LINK.explanation=Intrarea <role-link> pentru elementul <security-role-ref> este necesar\u0103 s\u0103 mapeze <role-name> la un rol de  securitate real.
+MISSING_SEC_ROLE_REF_ROLE_LINK.useraction=Defini\u0163i intrarea <role-link> lips\u0103 pentru elementul <security-role-ref>.
+
+INVALID_SEC_ROLE_REF_ROLE_LINK=CWWKS9101W: \u00cen servletul {0}, <role-link>{1}</role-link> pentru <role-name>{2}</role-name> nu este un <security-role> definit.
+INVALID_SEC_ROLE_REF_ROLE_LINK.explanation=Intrarea <role-link> pentru elementul <security-role-ref> este necesar s\u0103 mapeze <role-name> la un rol de securitate real.
+INVALID_SEC_ROLE_REF_ROLE_LINK.useraction=Fie crea\u0163i un element <security-role> pentru <role-link> fie modifica\u0163i intrarea <role-link> s\u0103 numeasc\u0103 un nume <security-role> existent.
+
+MULTIPLE_URL_PATTERN_DEFINED=CWWKS9102W: rl-pattern>{0}</url-pattern> multiple definite pentru <servlet-name>{1}</servlet-name> \u015fi<servlet-name>{2}</servlet-name>.
+MULTIPLE_URL_PATTERN_DEFINED.explanation=Intrarea <url-pattern> din elementul <servlet-mapping> mapeaz\u0103 un anumit <servlet-name> la modelul specificat. Utilizarea aceluia\u015fi model creeaz\u0103 o mapare ambigu\u0103.
+MULTIPLE_URL_PATTERN_DEFINED.useraction=Modifica\u0163i <url-pattern> s\u0103 fie unic.
+
+AUTHZ_TABLE_NOT_CREATED=CWWKS9103E: Tabela de autoriza\u0163ii pentru aplica\u0163ia {0} nu a putut fi creat\u0103.
+AUTHZ_TABLE_NOT_CREATED.explanation=O tabel\u0103 de autoriza\u0163ie pentru o aplica\u0163ie nu a fost creat\u0103 \u015fi de aceea nu va fi autorizat niciun utilizator.
+AUTHZ_TABLE_NOT_CREATED.useraction=Examina\u0163i istoricele pentru a determina de ce nu a fost creat\u0103 tabela de autoriza\u0163ii.
+
+SEC_AUTHZ_FAILED=CWWKS9104A: Autorizarea a e\u015fuat pentru utilizatorul {0} \u00een timp ce se invoca {1} pe {2}. Utilizatorului nu \u00eei este acordat acces la niciunul din rolurile necesare: {3}.
+SEC_AUTHZ_FAILED.explanation=Utilizatorul nu are permisiunea necesar\u0103 pentru a accesa resursa.
+SEC_AUTHZ_FAILED.useraction=Contacta\u0163i-v\u0103 administratorul de securitate dac\u0103 acest lucru este nea\u015fteptat. Utilizatorul dumneavoastr\u0103 trebuie s\u0103 fie mapat la unul din rolurile care protejeaz\u0103 resursa dac\u0103 este necesar accesul la resursa protejat\u0103.
+
+SSL_CAN_NOT_DETERMINE_PORT=CWWKS9105E: Nu a putut fi determinat portul SSL pentru redirec\u0163ionarea automat\u0103. Verifica\u0163i istoricele pentru a v\u0103 asigura c\u0103 este pornit portul HTTPS (SSL) sau pentru erorile posibile \u00eenrudite cu configura\u0163ia SSL cum ar fi o lips\u0103 sau un element incorect keyStore.
+SSL_CAN_NOT_DETERMINE_PORT.explanation=A ap\u0103rut o eroare intern\u0103. Portul SSL nu a putut fi determinat.
+SSL_CAN_NOT_DETERMINE_PORT.useraction=Nu poate fi executat\u0103 nicio ac\u0163iune.
+
+SEC_FORM_LOGIN_BAD_CONFIG=CWWKS9106E: Eroare de configurare SSO. FormLogin este configurat pentru aplica\u0163ia web {0} dar SSO nu este activat \u00een setprile de securitate.  SSO trebuie activat pentru a utiliza FormLogin.
+SEC_FORM_LOGIN_BAD_CONFIG.explanation=C\u00e2nd LTPA este mecanismul de autentificare, SSO trebuie de asemenea s\u0103 fie activat dac\u0103 orice aplica\u0163ii web folosesc logarea FORM.
+SEC_FORM_LOGIN_BAD_CONFIG.useraction=Activa\u0163i SSO \u00een set\u0103rile de securitate, apoi reporni\u0163i serverul de aplica\u0163ii.
+
+SEC_FORM_POST_NULL_OR_TOO_LARGE=CWWKS9107W: Post parametri sunt nuli sau prea mari de stocat \u00eentr-un cookie.
+SEC_FORM_POST_NULL_OR_TOO_LARGE.explanation=Post parametri sunt nuli sau sunt mai mari dec\u00e2t dimensiunea maxim\u0103 configurat\u0103 pentru op\u0163iunea de autentificare a aplica\u0163iei Web postParamCookieSize.
+SEC_FORM_POST_NULL_OR_TOO_LARGE.useraction=Dac\u0103 post parametri sunt prea mari, m\u0103ri\u0163i dimensiunea pentru op\u0163iunea postParamCookieSize.
+
+SEC_TAI_VALIDATE_FAILED=CWWKS9107E: Trust Association Init nu poate \u00eenc\u0103rca clasa Trust Association {0}.
+SEC_TAI_VALIDATE_FAILED.explanation=C\u00e2nd interceptorul corespunz\u0103tor este g\u0103sit pentru o cerere dat\u0103, acel interceptor \u00ee\u015fi valideaz\u0103 apoi \u00eencrederea cu serverul proxy invers. \
+Acest mesaj de eroare sugereaz\u0103 c\u0103 validarea a e\u015fuat \u015fi de aceea proxy-ul invers nu poate fi crezut. \
+De exemplu, o parol\u0103 incorect\u0103 sau expirat\u0103 ar fi putut fi furnizat\u0103.
+SEC_TAI_VALIDATE_FAILED.useraction=\u00centr-un mediu de produc\u0163ie, utilizatorul poate fi alertat s\u0103 verifice dac\u0103 exist\u0103 un intrus \u00een sistem. \
+\u00centr-un mediu de produc\u0163ie \u00een care testarea este pe drum, verifica\u0163i c\u0103 intr\u0103rile a\u015fteptate de la serverul proxy invers sunt transmise interceptorului corect.  \
+Natura acestor intr\u0103ri depinde de cum este stabilit\u0103 asocierea \u00eencrederii. \
+De exemplu, cea mai simpl\u0103 metod\u0103 este de a transmite un nume de utilizator \u015fi o parol\u0103 prin antetul Autentificare de baz\u0103.  
+
+SEC_TAI_USER_EXCEPTION=CWWKS9108E: Nu se poate g\u0103si un utilizator valid pentru Asocierea de \u00eencredere.
+SEC_TAI_USER_EXCEPTION.explanation=Un interceptor returneaz\u0103 numele de utilizator autentificat. \
+Nu a fots returnat niciun astfel de nume de utilizator.
+SEC_TAI_USER_EXCEPTION.useraction=Verifica\u0163i c\u0103 serverul proxy invers insereaz\u0103 numele de utilizator corect \u00een cererea HTTP \u00eenainte s\u0103 trimit\u0103 cererea serverului de aplica\u0163ii.
+
+SEC_TAI_GENERAL_EXCEPTION=CWWKS9109E: A avut loc o excep\u0163ie nea\u015fteptat\u0103 \u00een timpul Asocierii de \u00eencredere. Excep\u0163ia este {0}.
+SEC_TAI_GENERAL_EXCEPTION.explanation=Aceast\u0103 excep\u0163ie se refer\u0103 la toate celelalte excep\u0163ii ce pot fi create de un interceptor, la validarea \u00eencrederii cu serverul proxy invers \u015fi la ob\u0163inerea numelui de utilizator, cu excep\u0163ia WebTrustAssociationFailedException \u015fi WebTrustAssociationUserException.
+SEC_TAI_GENERAL_EXCEPTION.useraction=Depana\u0163i problema din urm\u0103rirea de stiv\u0103 ce este printat\u0103 \u00eempreun\u0103 cu acest mesaj de eroare. \
+Pute\u0163i de asemenea porni urm\u0103rirea de depanare pentru a ob\u0163ine informa\u0163ii suplimentare despre natura excep\u0163iei.
+
+AUTHZ_TABLE_DUPLICATE_APP_NAME=CWWKS9110E: Mai multe aplica\u0163ii au numele {0}. Politicile de autoriza\u0163ie de securitate cer ca numele s\u0103 fie unice.
+AUTHZ_TABLE_DUPLICATE_APP_NAME.explanation=Numele aplica\u0163iilor trebuie s\u0103 fie unice pentru ca politica de autoriza\u0163ie de securitate s\u0103 fie aplicat\u0103.
+AUTHZ_TABLE_DUPLICATE_APP_NAME.useraction=Modifica\u0163i aplica\u0163iile pentru a avea nume unice \u015fi reporni\u0163i aplica\u0163ia.
+
+AUTHZ_INVALID_SECURITYROLE_CONFIG=CWWKS9111E: Obiectul utilizat pentru a crea tabela de autoriza\u0163ii, {0}, este nevalid \u015fi tabela nu va fi creat\u0103. Obiectul trebuie s\u0103 fie o instan\u0163\u0103 a clasei SecurityRoles.
+AUTHZ_INVALID_SECURITYROLE_CONFIG.explanation=Obiectul folosit pentru a crea tabela de autoriza\u0163ii trebuie s\u0103 fie o instan\u0163\u0103 a clasei SecurityRoles.
+AUTHZ_INVALID_SECURITYROLE_CONFIG.useraction=Asigura\u0163i-v\u0103 c\u0103 obiectul transmis API-ului pentru crearea tabelei de autoriza\u0163ie este o instan\u0163\u0103 a clasei   SecurityRoles.
+
+WEB_APP_SECURITY_CONFIGURATION_UPDATED=CWWKS9112A: S-au modificat set\u0103rile de securitate pentru aplica\u0163ia web. Au fost modificate urm\u0103toarele propriet\u0103\u0163i: {0}
+WEB_APP_SECURITY_CONFIGURATION_UPDATED.explanation=S-au modificat set\u0103rile de securitate pentru aplica\u0163ia web. Valorile propriet\u0103\u0163ilor din mesaj sunt valori noi.
+WEB_APP_SECURITY_CONFIGURATION_UPDATED.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+SSL_PORT_IS_NULL=CWWKS9113E: Portul SSL nu este activ. Cererea http de intrare nu poate fi redirec\u0163ionat\u0103 la un port sigur. Verifica\u0163i fi\u015fierul server.xml pentru erori de configurare. Portul https ar putea fi dezactivat. Elementul keyStore ar putea s\u0103 lipseasc\u0103 sau s\u0103 fie specificat incorect. Caracteristica SSL nu poate fi activat\u0103. 
+SSL_PORT_IS_NULL.explanation=Portul SSL nu a putut fi determinat, ceea ce a \u00eempiedicat cererea HTTP de intrare s\u0103 fie redirec\u0163ionat\u0103 la portul HTTPS. Asta s-ar putea \u00eent\u00e2mpla dac\u0103 este o eroare de configurare \u00een elementul keyStore sau lipse\u015fte caracteristica SSL.
+SSL_PORT_IS_NULL.useraction=Asigura\u0163i-v\u0103 c\u0103 ave\u0163i informa\u0163iile SSL corecte \u00een server.xml.
+
+SSL_REQ_URL_MALFORMED_EXCEPTION=CWWKS9114E: Cererea http de intrare nu poate fi redirec\u0163ionat\u0103 c\u0103tre un port securizat deoarece URL-ul cererii de servlet {0} este deformat. Asigura\u0163i-v\u0103 c\u0103 este corect\u0103 cererea URL.
+SSL_REQ_URL_MALFORMED_EXCEPTION.explanation=URL-ul cererii servlet este deformat\u0103, ceea ce a \u00eempiedicat cererea HTTP de intrare de la a fi redirec\u0163ionat\u0103 c\u0103tre portul HTTPS.
+SSL_REQ_URL_MALFORMED_EXCEPTION.useraction=Asigura\u0163i-v\u0103 c\u0103 URL-ul cererii de servlet este corect.
+
+SEC_WEB_INTERNAL_SERVER_ERROR=CWWKS9115E: Serverul a \u00eent\u00e2lnit o condi\u0163ie nea\u015fteptat\u0103 care l-a \u00eempiedicat s\u0103 \u00eendeplineasc\u0103 cererea metodei {0} pentru URL-ul {1}. Revizui\u0163i jurnalele serverului pentru informa\u0163ii suplimentare.
+SEC_WEB_INTERNAL_SERVER_ERROR.explanation=Un r\u0103spuns de servlet indic\u0103 faptul c\u0103 a ap\u0103rut o eroare de server intern\u0103.
+SEC_WEB_INTERNAL_SERVER_ERROR.useraction=Revizui\u0163i jurnalele serverului pentru informa\u0163ii suplimentare. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei pe pagina de suport WebSphere Application Server la http://www.ibm.com/software/webservers/appserv/was/support/. 
+
+SEC_WEB_NULL_AUTHENTICATOR=CWWKS9116E: Logarea la URL-ul {0} a e\u015fuat pentru utilizatorul {1} din cauza unei erori interne. Revizui\u0163i jurnalele serverului pentru informa\u0163ii suplimentare.
+SEC_WEB_NULL_AUTHENTICATOR.explanation=Procesul de logare nu s-a finalizat din cauza unei erori interne. 
+SEC_WEB_NULL_AUTHENTICATOR.useraction=Revizui\u0163i jurnalele serverului pentru informa\u0163ii suplimentare. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei pe pagina de suport WebSphere Application Server la http://www.ibm.com/software/webservers/appserv/was/support/. 
+
+SEC_WEB_ILLEGAL_REQUEST=CWWKS9117E: Metoda {0} nu este permis\u0103 s\u0103 proceseze pentru URL-ul {1}. Dac\u0103 aceast\u0103 eroare este nea\u015fteptat\u0103, asigura\u0163i-v\u0103 c\u0103 aplica\u0163ia permite metodele pe care le cere clientul.
+SEC_WEB_ILLEGAL_REQUEST.explanation=Procesarea unei metode cerute este interzis\u0103.
+SEC_WEB_ILLEGAL_REQUEST.useraction=Dac\u0103 aceast\u0103 eroare este nea\u015fteptat\u0103, asigura\u0163i-v\u0103 c\u0103 aplica\u0163ia permite metodele pe care le cere clientul.
+
+GETFORMLOGOUTEXTENSIONPROCESSOR_EXCEPTION=CWWKS9118E: A ap\u0103rut o eroare intern\u0103. Excep\u0163ia {0}
+GETFORMLOGOUTEXTENSIONPROCESSOR_EXCEPTION.explanation=MSG0001
+GETFORMLOGOUTEXTENSIONPROCESSOR_EXCEPTION.useraction=CMSG0002
+
+AUTHENTICATE_CACHE_REMOVAL_EXCEPTION=CWWKS9119W: Delogarea utilizatorului {0} nu s-a finaliza cu succes deoarece a survenit o excep\u0163ie nea\u015fteptat\u0103 \u00een timpul \u00eenl\u0103tur\u0103rii cookie-urilor utilizatorului din cache-ul de autentificare. Excep\u0163ia este {1}. Revede\u0163i jurnalele de server pentru informa\u0163ii suplimentare \u015fi deloga\u0163i din nou utilizatorul dac\u0103 este posibil.
+AUTHENTICATE_CACHE_REMOVAL_EXCEPTION.explanation=Delogarea utilizatorului nu s-a finalizat complet cu succes deoarece a survenit o excep\u0163ie nea\u015fteptat\u0103 la \u00eenl\u0103turarea cookie-urilor utilizatorului din cache-ul de autentificare.
+AUTHENTICATE_CACHE_REMOVAL_EXCEPTION.useraction=Revede\u0163i jurnalele de server pentru informa\u0163ii suplimentare \u015fi deloga\u0163i utilizatorul din nou dac\u0103 este posibil. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei pe pagina de suport WebSphere Application Server la http://www.ibm.com/software/webservers/appserv/was/support/. 
+
+INVALID_FORM_LOGIN_CONFIGURATION=CWWKS9120W: Configura\u0163iei \
+de logare formulare \u00eei lipse\u015fte defini\u0163ia pentru {0} 
+INVALID_FORM_LOGIN_CONFIGURATION.explanation=Configura\u0163iei de logare formulare \u00eei lipse\u015fte fie pagina de logare fie pagina de \
+erori, fie ambele.
+INVALID_FORM_LOGIN_CONFIGURATION.useraction=Asigura\u0163i-v\u0103 \
+c\u0103 configura\u0163ia de logare formulare include defini\u0163ii at\u00e2t pentru \
+pagina de logare precum \u015fi c\u00e2t \u015fi o pagin\u0103 de erori.
+
+OSGI_SERVICE_ERROR=CWWKS9121E: Serviciul OSGi {0} nu este disponibil.
+OSGI_SERVICE_ERROR.explanation=Serviciul OSGi specificat nu este disponibil.
+OSGI_SERVICE_ERROR.useraction=Reporni\u0163i serverul cu op\u0163iunea "clean" (cur\u0103\u0163are).
+
+UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED=CWWKS9122I:  Pentru URL-ul {0} din aplica\u0163ia {1}, urm\u0103toarele metode HTTP sunt descoperite \u015fi accesibile: {2}
+UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED.explanation=Elementul deny-uncovered-http-methods nu este specificat \u00een fi\u015fierul web.xml pentru servlet, \u015fi exist\u0103 metode HTTP pentru un tipar URL care sunt neprotejate. Aceste metode neprotejate vor fi accesibile.
+UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED.useraction=Asigura\u0163i-v\u0103 c\u0103 toate metodele HTTP la toate tiparele URL constr\u00e2nse au protec\u0163iile de securitate inten\u0163ionate.
+
+UNCOVERED_HTTP_METHODS_FOUND=CWWKS9123I:  Pentru URL-ul {0} din aplica\u0163ia {1}, urm\u0103toarele metode HTTP sunt descoperite, dar nu accesibile: {2}
+UNCOVERED_HTTP_METHODS_FOUND.explanation=Elementul deny-uncovered-http-methods nu este specificat \u00een fi\u015fierul web.xml pentru servlet, \u015fi exist\u0103 metode HTTP pentru un tipar URL care sunt neprotejate. Aceste metode neprotejate nu vor fi accesibile.
+UNCOVERED_HTTP_METHODS_FOUND.useraction=Asigura\u0163i-v\u0103 c\u0103 toate metodele HTTP la toate tiparele URL constr\u00e2nse au protec\u0163iile de securitate inten\u0163ionate.
+
+SEC_JACC_AUTHZ_FAILED=CWWKS9124A: Autorizarea dup\u0103 furnizorul JACC a e\u015fuat pentru utilizatorul {0} \u00een timpul invoc\u0103rii {1} pe {2}.
+SEC_JACC_AUTHZ_FAILED.explanation=Utilizatorul nu are permisiunea necesar\u0103 pentru a accesa resursa. Aceast\u0103 decizie de autorizare a fost luat\u0103 de furnizorul JACC (Java Authorization Contract for Containers) definit de utilizator.  
+SEC_JACC_AUTHZ_FAILED.useraction=Contacta\u0163i-v\u0103 administratorul de securitate dac\u0103 acest lucru este nea\u015fteptat. Utilizatorul dumneavoastr\u0103 trebuie s\u0103 fie mapat la unul din rolurile care protejeaz\u0103 resursa dac\u0103 este necesar accesul la resursa protejat\u0103. Pute\u0163i configura aceast\u0103 autorizare prin intermediul furnizorului JACC (Java Authorization Contract for Containers) definit de utilizator.
+
+
+SEC_FORM_LOGOUTEXITPAGE_INVALID=CWWKS9125E: URL-ul furnizat pe logoutExitPage personalizat al serviciului Delogare cu formular nu poate fi afi\u015fat, requestURL={0}, logoutExitPage={1}. Delogarea s-a f\u0103cut cu succes \u015fi a fost afi\u015fat\u0103 pagina implicit\u0103 Delogare cu formular.
+SEC_FORM_LOGOUTEXITPAGE_INVALID.explanation=Serviciul de Delogare cu formular a e\u015fuat redirec\u0163ionarea la pagina specificat\u0103 pe parametrul de servlet logoutExitPage. URL-ul specificat este fie un URL formatat invalid fie numele de gazd\u0103 nu este specificat pe proprietatea com.ibm.websphere.security.logoutExitPageDomainList.
+SEC_FORM_LOGOUTEXITPAGE_INVALID.useraction=Corecta\u0163i URL-ul specificat pe parametrul logoutExitPage.

@@ -1,0 +1,31 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.appbnd/resources/com/ibm/ws/security/appbnd/internal/resources/AppBndMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Application Bindings
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9100 - CWWKS9199
+
+AUTHZ_TABLE_DUPLICATE_APP_NAME=CWWKS9110E: W\u00e4hrend des Anwendungsstarts konnte die Anwendung nicht gestartet werden, weil mehrere Anwendungen gefunden wurden, die den Namen {0} haben. Die Richtlinien f\u00fcr Sicherheitsberechtigung erfordern eindeutige Namen. \u00dcberpr\u00fcfen Sie die Anwendungskonfiguration in der Datei server.xml.
+AUTHZ_TABLE_DUPLICATE_APP_NAME.explanation=Anwendungsnamen m\u00fcssen eindeutig sein, damit die Richtlinien f\u00fcr Sicherheitsberechtigung durchgesetzt werden k\u00f6nnen.
+AUTHZ_TABLE_DUPLICATE_APP_NAME.useraction=\u00dcberpr\u00fcfen Sie die Konfiguration, um sicherzustellen, dass Anwendungen eindeutige Namen haben, und starten Sie die Anwendung anschlie\u00dfend erneut.
+
+AUTHZ_TABLE_NOT_CREATED=CWWKS9111E: W\u00e4hrend des Anwendungsstarts ist ein interner Fehler aufgetreten. Die Berechtigungstabelle f\u00fcr die Anwendung {0} konnte nicht erstellt werden, und deshalb sind die Benutzer nicht f\u00fcr gesch\u00fctzte Ressourcen berechtigt.
+AUTHZ_TABLE_NOT_CREATED.explanation=Die Berechtigungstabelle f\u00fcr eine Anwendung wurde nicht erstellt, und deshalb sind Benutzer nicht f\u00fcr gesch\u00fctzte Ressourcen berechtigt.
+AUTHZ_TABLE_NOT_CREATED.useraction=\u00dcberpr\u00fcfen Sie die Berechtigungskonfiguration der Anwendung, um festzustellen, warum die Berechtigungstabelle nicht erstellt wurde.
+
+RUNAS_INVALID_CONFIG=CWWKS9112W: Ung\u00fcltige RunAs-Konfiguration f\u00fcr den security-role-Namen {0} in der Anwendung {1}. \u00dcberpr\u00fcfen Sie die RunAs-Konfiguration und vergewissern Sie sich, dass die Benutzer-ID und das Kennwort ordnungsgem\u00e4\u00df konfiguriert sind. Die ID des urspr\u00fcnglichen Aufrufenden wird f\u00fcr die Berechtigung verwendet, weil die runAs-Rolle nicht angewendet werden konnte.
+RUNAS_INVALID_CONFIG.explanation= Die RunAs-Konfiguration f\u00fcr den security-role-Namen ist f\u00fcr die Anwendung ung\u00fcltig. \u00dcberpr\u00fcfen Sie die RunAs-Konfiguration und stellen Sie sicher, dass die Benutzer-ID und das Kennwort ordnungsgem\u00e4\u00df konfiguriert sind.
+RUNAS_INVALID_CONFIG.useraction=\u00dcberpr\u00fcfen Sie die RunAs-Konfiguration der Anwendung f\u00fcr den security-role-Namen, um sicherzustellen, dass der Benutzername und das Kennwort ordnungsgem\u00e4\u00df konfiguriert sind.

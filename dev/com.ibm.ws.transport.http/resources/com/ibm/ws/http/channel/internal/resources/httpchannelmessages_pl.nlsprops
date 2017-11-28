@@ -1,0 +1,142 @@
+###############################################################################
+# Copyright (c) 2002, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT WebSphere kernel transport http channel
+#CMVCPATHNAME com.ibm.ws.transport.http/resources/com/ibm/ws/http/channel/internal/resources/httpchannelmessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+config.maxpersist=CWWKT0001E: Maksymalna liczba \u017c\u0105da\u0144 ({0}) dozwolonych dla jednego gniazda nie jest poprawna. Poprawne warto\u015bci to {1} oznaczaj\u0105ca brak ograniczenia lub dowolna liczba dodatnia.
+config.maxpersist.explanation=Skonfigurowana warto\u015b\u0107 dla maksymalnej liczby \u017c\u0105da\u0144 dozwolonych dla jednego gniazda nie jest poprawna.
+config.maxpersist.useraction=Skonfiguruj poprawn\u0105 warto\u015b\u0107 dla maksymalnej liczby \u017c\u0105da\u0144 dozwolonych dla jednego gniazda.
+
+config.incomingbody=CWWKT0002E: Wielko\u015b\u0107 buforu wej\u015bciowego {0} nie jest poprawna. Wielko\u015b\u0107 musi zawiera\u0107 si\u0119 w przedziale od {1} do {2}.
+config.incomingbody.explanation=Skonfigurowana warto\u015b\u0107 dla wielko\u015bci buforu wej\u015bciowego nie jest poprawna.
+config.incomingbody.useraction=Skonfiguruj poprawn\u0105 warto\u015b\u0107 dla wielko\u015bci buforu wej\u015bciowego.
+
+config.incomingheader=CWWKT0003E: Wielko\u015b\u0107 buforu nag\u0142\u00f3wka {0} nie jest poprawna. Wielko\u015b\u0107 musi zawiera\u0107 si\u0119 w przedziale od {1} do {2}.
+config.incomingheader.explanation=Skonfigurowana warto\u015b\u0107 dla wielko\u015bci buforu nag\u0142\u00f3wka nie jest poprawna.
+config.incomingheader.useraction=Skonfiguruj poprawn\u0105 warto\u015b\u0107 dla wielko\u015bci buforu nag\u0142\u00f3wka.
+
+config.outgoingbuffer=CWWKT0004E: Wielko\u015b\u0107 buforu wyj\u015bciowego {0} nie jest poprawna. Wielko\u015b\u0107 musi zawiera\u0107 si\u0119 w przedziale od {1} do {2}.
+config.outgoingbuffer.explanation=Skonfigurowana warto\u015b\u0107 dla wielko\u015bci buforu wyj\u015bciowego nie jest poprawna.
+config.outgoingbuffer.useraction=Skonfiguruj poprawn\u0105 warto\u015b\u0107 dla wielko\u015bci buforu wyj\u015bciowego.
+
+config.persisttimeout=CWWKT0005E: Limit czasu dla trwa\u0142ych po\u0142\u0105cze\u0144 {0} nie jest poprawny. Warto\u015b\u0107 limitu czasu musi by\u0107 wi\u0119ksza ni\u017c {1}.
+config.persisttimeout.explanation=Skonfigurowana warto\u015b\u0107 parametru limitu czasu dla trwa\u0142ych po\u0142\u0105cze\u0144 nie jest poprawna.
+config.persisttimeout.useraction=Skonfiguruj poprawn\u0105 warto\u015b\u0107 parametru limitu czasu dla trwa\u0142ych po\u0142\u0105cze\u0144.
+
+config.readtimeout=CWWKT0006E: Limit czasu odczytu {0} nie jest poprawny. Warto\u015b\u0107 limitu czasu musi by\u0107 wi\u0119ksza ni\u017c {1}.
+config.readtimeout.explanation=Skonfigurowana warto\u015b\u0107 parametru limitu czasu odczytu nie jest poprawna.
+config.readtimeout.useraction=Skonfiguruj poprawn\u0105 warto\u015b\u0107 parametru limitu czasu odczytu.
+
+config.writetimeout=CWWKT0007E: Limit czasu zapisu {0} nie jest poprawny. Warto\u015b\u0107 limitu czasu musi by\u0107 wi\u0119ksza ni\u017c {1}.
+config.writetimeout.explanation=Skonfigurowana warto\u015b\u0107 parametru limitu czasu zapisu nie jest poprawna.
+config.writetimeout.useraction=Skonfiguruj poprawn\u0105 warto\u015b\u0107 parametru limitu czasu zapisu.
+
+config.fieldsize=CWWKT0008E: Ograniczenie wielko\u015bci pola {0} nie jest poprawne. Ta wielko\u015b\u0107 musi zawiera\u0107 si\u0119 w przedziale od {1} do {2}.
+config.fieldsize.explanation=Skonfigurowana warto\u015b\u0107 ograniczenia wielko\u015bci pola nie jest poprawna.
+config.fieldsize.useraction=Skonfiguruj poprawn\u0105 warto\u015b\u0107 ograniczenia wielko\u015bci pola.
+
+config.numheaders=CWWKT0009E: Ograniczenie liczby nag\u0142\u00f3wk\u00f3w {0} nie jest poprawne. Ta wielko\u015b\u0107 musi zawiera\u0107 si\u0119 w przedziale od {1} do {2}.
+config.numheaders.explanation=Skonfigurowana warto\u015b\u0107 ograniczenia liczby nag\u0142\u00f3wk\u00f3w nie jest poprawna.
+config.numheaders.useraction=Skonfiguruj poprawn\u0105 warto\u015b\u0107 ograniczenia liczby nag\u0142\u00f3wk\u00f3w.
+
+config.incomingbodymaxsize=CWWKT0010E: Maksymalna liczba bajt\u00f3w tre\u015bci komunikatu przychodz\u0105cego ({0}) jest niepoprawna. Ta wielko\u015b\u0107 musi by\u0107 wi\u0119ksza lub r\u00f3wna {1}.
+config.incomingbodymaxsize.explanation=Skonfigurowana warto\u015b\u0107 maksymalnej liczby bajt\u00f3w tre\u015bci komunikatu przychodz\u0105cego jest niepoprawna.
+config.incomingbodymaxsize.useraction=Skonfiguruj poprawn\u0105 warto\u015b\u0107 maksymalnej liczby bajt\u00f3w tre\u015bci komunikatu przychodz\u0105cego.
+
+NO_DEFAULT_CONFIGURATION=CWWKT0011W: Nie mo\u017cna znale\u017a\u0107 konfiguracji domy\u015blnej dla {0} - u\u017cycie identyfikatora {1}
+NO_DEFAULT_CONFIGURATION.explanation=Nie mo\u017cna znale\u017a\u0107 okre\u015blonej konfiguracji domy\u015blnej dla okre\u015blonego identyfikatora.
+NO_DEFAULT_CONFIGURATION.useraction=Sprawd\u017a konfiguracj\u0119 serwera, a nast\u0119pnie wykonaj czysty restart.
+
+DEFAULT_OPTIONS_ERROR=CWWKT0012E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Nie mo\u017cna utworzy\u0107 konfiguracji domy\u015blnej. Wyj\u0105tek {0}
+DEFAULT_OPTIONS_ERROR.explanation=CMSG0001
+DEFAULT_OPTIONS_ERROR.useraction=CMSG0002
+
+DEFAULT_ENDPOINT_ERROR=CWWKT0013E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Nie mo\u017cna utworzy\u0107 domy\u015blnego punktu ko\u0144cowego. Wyj\u0105tek {0}
+DEFAULT_ENDPOINT_ERROR.explanation=CMSG0001
+DEFAULT_ENDPOINT_ERROR.useraction=CMSG0002
+
+DEFAULT_VHOST_ERROR=CWWKT0014E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Nie mo\u017cna utworzy\u0107 domy\u015blnego hosta wirtualnego.  Wyj\u0105tek {0}
+DEFAULT_VHOST_ERROR.explanation=CMSG0001
+DEFAULT_VHOST_ERROR.useraction=CMSG0002
+
+missingPorts.endpointDisabled=CWWKT0015W: Nie skonfigurowano port\u00f3w dla punktu ko\u0144cowego {0}. Punkt ko\u0144cowy zosta\u0142 wy\u0142\u0105czony.
+missingPorts.endpointDisabled.explanation=Punkt ko\u0144cowy HTTP wymaga skonfigurowania co najmniej jednego portu.
+missingPorts.endpointDisabled.useraction=Przypisz poprawn\u0105 warto\u015b\u0107 portu do w\u0142a\u015bciwo\u015bci httpPort i/lub httpsPort.
+
+context.root.added=CWWKT0016I: Dost\u0119pna aplikacja WWW ({0}): {1}
+context.root.added.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+context.root.added.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+context.root.removed=CWWKT0017I: Usuni\u0119ta aplikacja WWW ({0}): {1}
+context.root.removed.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+context.root.removed.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+Missing.App.Or.Context.Root=CWWKT0018E: Nie znaleziono aplikacji lub kontekstowego katalogu g\u0142\u00f3wnego dla tego \u017c\u0105dania: {0}
+Missing.App.Or.Context.Root.explanation=Aplikacja na serwerze nie mo\u017ce obs\u0142u\u017cy\u0107 \u017c\u0105dania.
+Missing.App.Or.Context.Root.useraction=Upewnij si\u0119, \u017ce aplikacja zosta\u0142a zdefiniowana i wdro\u017cona oraz \u017ce jest prawid\u0142owo przywo\u0142ywana przez klienta.
+
+#Cannot remove above due to service rules, but we do not need a message key as this is never logged
+#only output to the browser on our 404 page - removing it means we give away less server implementation info
+Missing.App.Or.Context.Root.No.Error.Code=Nie znaleziono aplikacji lub kontekstowego katalogu g\u0142\u00f3wnego dla tego \u017c\u0105dania: {0}
+Missing.App.Or.Context.Root.No.Error.Code.explanation=Aplikacja na serwerze nie mo\u017ce obs\u0142u\u017cy\u0107 \u017c\u0105dania.
+Missing.App.Or.Context.Root.No.Error.Code.useraction=Upewnij si\u0119, \u017ce aplikacja zosta\u0142a zdefiniowana i wdro\u017cona oraz \u017ce jest prawid\u0142owo przywo\u0142ywana przez klienta.
+
+config.httpChain.error=CWWKT0019E: Wyst\u0105pi\u0142 problem podczas konfigurowania punktu ko\u0144cowego {0}: {1}.
+config.httpChain.error.explanation=Nie mo\u017cna uruchomi\u0107 punktu ko\u0144cowego HTTP z powodu problemu z konfiguracj\u0105.
+config.httpChain.error.useraction=Sprawd\u017a, czy dzienniki komunikat\u00f3w i wyj\u0105tk\u00f3w nie zawieraj\u0105 pokrewnych b\u0142\u0119d\u00f3w. 
+
+start.httpChain.error=CWWKT0020E: Wyst\u0105pi\u0142 problem podczas uruchamiania punktu ko\u0144cowego {0}: {1}.
+start.httpChain.error.explanation=Nie mo\u017cna uruchomi\u0107 punktu ko\u0144cowego HTTP z powodu nieoczekiwanego problemu.
+start.httpChain.error.useraction=Sprawd\u017a, czy dzienniki komunikat\u00f3w i wyj\u0105tk\u00f3w nie zawieraj\u0105 pokrewnych b\u0142\u0119d\u00f3w. 
+
+httpChain.error.shutdown=CWWKT0021I: Serwer jest zatrzymywany z powodu mo\u017cliwego b\u0142\u0119du konfiguracji. \
+Nie mo\u017cna uruchomi\u0107 punktu ko\u0144cowego {0}. Mo\u017ce tak si\u0119 zdarzy\u0107 w przypadku, gdy skonfigurowany port jest ju\u017c w u\u017cyciu.
+httpChain.error.shutdown.explanation=Punkt ko\u0144cowy HTTP zosta\u0142 skonfigurowany z w\u0142a\u015bciwo\u015bci\u0105 onError=FAIL, co powoduje zatrzymanie serwera w przypadku wyst\u0105pienia problemu z uruchomieniem punktu ko\u0144cowego. 
+httpChain.error.shutdown.useraction=Sprawd\u017a, czy dzienniki komunikat\u00f3w i wyj\u0105tk\u00f3w nie zawieraj\u0105 \
+pokrewnych b\u0142\u0119d\u00f3w. \
+Aby zapobiec zatrzymaniu serwera ze wzgl\u0119du na problem zwi\u0105zany z uruchamianiem punktu ko\u0144cowego, upewnij si\u0119, \u017ce w\u0142a\u015bciwo\u015b\u0107 onError ma warto\u015b\u0107 WARN lub IGNORE.
+
+unresolveableHost=CWWKT0022E: Nie mo\u017cna rozstrzygn\u0105\u0107 skonfigurowanego hosta {0} dla punktu ko\u0144cowego HTTP {1}. Punkt ko\u0144cowy zosta\u0142 wy\u0142\u0105czony.
+unresolveableHost.explanation=Punkt ko\u0144cowy HTTP wymaga warto\u015bci hosta, kt\u00f3r\u0105 mo\u017cna rozstrzygn\u0105\u0107 na aktywny interfejs sieciowy.
+unresolveableHost.useraction=Upewnij si\u0119, \u017ce warto\u015b\u0107 hosta odwo\u0142uje si\u0119 do aktywnego interfejsu sieciowego lub u\u017cyj warto\u015bci * do powi\u0105zania ze wszystkimi interfejsami.
+
+unresolveableDefaultHost=CWWKT0023W: Nie mo\u017cna rozstrzygn\u0105\u0107 skonfigurowanej warto\u015bci zmiennej defaultHostName {0}. U\u017cyta zostanie warto\u015b\u0107 localhost.
+unresolveableDefaultHost.explanation=Zmienna defaultHostName okre\u015bla warto\u015b\u0107 hosta, kt\u00f3rej nie mo\u017cna rozstrzygn\u0105\u0107 na aktywny interfejs sieciowy.
+unresolveableDefaultHost.useraction=Upewnij si\u0119, \u017ce skonfigurowana warto\u015b\u0107 zmiennej defaultHostName odwo\u0142uje si\u0119 do istniej\u0105cego interfejsu sieciowego.
+
+defaultHostDisabled=CWWKT0024W: Nie mo\u017cna wy\u0142\u0105czy\u0107 domy\u015blnego hosta wirtualnego (default_host).
+defaultHostDisabled.explanation=Domy\u015blny host wirtualny jest wymagany przez \u015brodowisko wykonawcze. 
+defaultHostDisabled.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+noHostAliases=CWWKT0025W: Host wirtualny {0} nie ma skonfigurowanych alias\u00f3w hosta. Nie b\u0119dzie on otrzymywa\u0142 \u017c\u0105da\u0144 przychodz\u0105cych.
+noHostAliases.explanation=Wszystkie hosty wirtualne inne ni\u017c domy\u015blny musz\u0105 definiowa\u0107 co najmniej jeden alias hosta (host:port) na potrzeby identyfikowania \u017c\u0105da\u0144 przychodz\u0105cych, kt\u00f3re powinny by\u0107 kierowane do tego hosta wirtualnego. \
+Okre\u015blony host wirtualny nie ma zdefiniowanych \u017cadnych alias\u00f3w hosta, co uniemo\u017cliwi kierowanie do niego jakichkolwiek \u017c\u0105da\u0144.
+noHostAliases.useraction=Zaktualizuj element virtualHost w pliku server.xml, aby definiowa\u0142 co najmniej jeden atrybut hostAlias.
+
+invalidAlias=CWWKT0026W: Skonfigurowany alias hosta dla hosta wirtualnego {0} jest niepoprawny i zostanie zignorowany. {1}
+invalidAlias.explanation=Skonfigurowany alias hosta zawiera niepoprawne znaki lub niepoprawn\u0105 sk\u0142adni\u0119.
+invalidAlias.useraction=Zaktualizuj element hosta wirtualnego w pliku server.xml, poprawiaj\u0105c lub usuwaj\u0105c niepoprawny alias hosta. Adresy IPv6 musz\u0105 by\u0107 uj\u0119te w nawiasy [].
+
+wildcardReason=Znaku wieloznacznego * nie mo\u017cna \u0142\u0105czy\u0107 z innymi znakami w aliasie hosta.
+badHostPortReason=Okre\u015blony host nie ma poprawnego adresu IP ani nazwy hosta lub okre\u015blony port nie jest liczb\u0105 ca\u0142kowit\u0105.
+
+duplicateAlias=CWWKT0027W: Alias hosta {0} dla hosta wirtualnego {1} powoduje konflikt z istniej\u0105cym aliasem hosta i zostanie zignorowany.
+duplicateAlias.explanation=Okre\u015blony alias hosta powoduje konflikt z istniej\u0105cym aliasem hosta.
+duplicateAlias.useraction=Upewnij si\u0119, \u017ce wszystkie aliasy hosta zdefiniowane jako elementy host\u00f3w wirtualnych w pliku server.xml s\u0105 unikalne.
+
+context.root.changed=CWWKT0028I: Przeniesiona aplikacja WWW ({0}): {1}
+context.root.changed.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+context.root.changed.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.

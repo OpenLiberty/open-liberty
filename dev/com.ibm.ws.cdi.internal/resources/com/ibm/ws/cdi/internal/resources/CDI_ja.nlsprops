@@ -1,0 +1,71 @@
+#CMVCPATHNAME SERV1/ws/code/prereq.jcdi/src/com/ibm/ws/webbeans/resources/jcdi.nlsprops
+#COMPONENTPREFIX CWOWB
+#COMPONENTNAMEFOR CWOWB Java EE Contexts and Dependency Injection 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by JCDI
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A CDI error has occurred: {0}
+cdi.resource.injection.error.CWOWB1000E=CWOWB1000E: CDI \u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002{0}
+cdi.resource.injection.error.CWOWB1000E.explanation=\u6b63\u5e38\u306a\u64cd\u4f5c\u306e\u969c\u5bb3\u3068\u306a\u308b CDI \u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002
+cdi.resource.injection.error.CWOWB1000E.useraction=FFDC \u30ed\u30b0\u3068\u4f8b\u5916\u30c6\u30ad\u30b9\u30c8\u3092\u8abf\u3079\u3066\u3001\u554f\u984c\u3092\u7279\u5b9a\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+# Web Application Archive "{0}" contains more than one beans.xml file. Using "{1}". Ignoring "{2}".
+multiple.beans.xml.warning.CWOWB1001W=CWOWB1001W: Web \u30a2\u30d7\u30ea\u30b1\u30fc\u30b7\u30e7\u30f3\u30fb\u30a2\u30fc\u30ab\u30a4\u30d6 {0} \u306b\u8907\u6570\u306e beans.xml \u30d5\u30a1\u30a4\u30eb\u304c\u542b\u307e\u308c\u3066\u3044\u307e\u3059\u3002 {1} \u3092\u4f7f\u7528\u3057\u307e\u3059\u3002 {2} \u306f\u7121\u8996\u3057\u307e\u3059\u3002
+multiple.beans.xml.warning.CWOWB1001W.explanation=CDI \u306f\u8907\u6570\u306e beans.xml \u30d5\u30a1\u30a4\u30eb\u3092\u691c\u51fa\u3057\u307e\u3057\u305f\u3002
+multiple.beans.xml.warning.CWOWB1001W.useraction=\u30a2\u30d7\u30ea\u30b1\u30fc\u30b7\u30e7\u30f3\u30fb\u30a2\u30fc\u30ab\u30a4\u30d6\u306b\u542b\u307e\u308c\u308b beans.xml \u30d5\u30a1\u30a4\u30eb\u306f 1 \u3064\u306e\u307f\u306b\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+
+managed.class.bean.class.mismatch.CWOWB1002E=CWOWB1002E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1}
+managed.class.bean.class.mismatch.CWOWB1002E.explanation=CMSG0001
+managed.class.bean.class.mismatch.CWOWB1002E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+
+error.loading.class.CWOWB1003E=CWOWB1003E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1}
+error.loading.class.CWOWB1003E.explanation=CMSG0001
+error.loading.class.CWOWB1003E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+
+unknown.container.type.CWOWB1004E=CWOWB1004E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0}
+unknown.container.type.CWOWB1004E.explanation=CMSG0001
+unknown.container.type.CWOWB1004E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+
+error.loading.resource.CWOWB1005E=CWOWB1005E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0}
+error.loading.resource.CWOWB1005E.explanation=CMSG0001
+error.loading.resource.CWOWB1005E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+no.injection.target.context.CWOWB1006E=CWOWB1006E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0}
+no.injection.target.context.CWOWB1006E.explanation=CMSG0001
+no.injection.target.context.CWOWB1006E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+resource.producer.validation.error.CWOWB1007E=CWOWB1007E: \u30d7\u30ed\u30c7\u30e5\u30fc\u30b5\u30fc\u30fb\u30d5\u30a3\u30fc\u30eb\u30c9 {0} \u306e\u30bf\u30a4\u30d7\u304c {1} \u3067\u3059\u3002\u3053\u308c\u306f\u3001\u6ce8\u5165\u3055\u308c\u305f\u30aa\u30d6\u30b8\u30a7\u30af\u30c8\u306e\u30bf\u30a4\u30d7\u306b\u4e00\u81f4\u3057\u3066\u3044\u307e\u305b\u3093\u3002
+resource.producer.validation.error.CWOWB1007E.explanation=CDI \u3067\u691c\u51fa\u3055\u308c\u305f\u30ea\u30bd\u30fc\u30b9\u30fb\u30d7\u30ed\u30c7\u30e5\u30fc\u30b5\u30fc\u30fb\u30d5\u30a3\u30fc\u30eb\u30c9\u306e\u30d5\u30a3\u30fc\u30eb\u30c9\u30fb\u30bf\u30a4\u30d7\u304c\u3001\u6ce8\u5165\u3055\u308c\u305f Java EE \u30ea\u30bd\u30fc\u30b9\u306e\u30bf\u30a4\u30d7\u306b\u4e00\u81f4\u3057\u3066\u3044\u307e\u305b\u3093\u3002
+resource.producer.validation.error.CWOWB1007E.useraction=\u6b63\u3057\u3044 Java EE \u30ea\u30bd\u30fc\u30b9\u304c\u30ea\u30bd\u30fc\u30b9\u30fb\u30d7\u30ed\u30c7\u30e5\u30fc\u30b5\u30fc\u30fb\u30d5\u30a3\u30fc\u30eb\u30c9\u306b\u6ce8\u5165\u3055\u308c\u3066\u3044\u308b\u3053\u3068\u3001\u304a\u3088\u3073\u6ce8\u5165\u3055\u308c\u305f\u30ea\u30bd\u30fc\u30b9\u306e\u30bf\u30a4\u30d7\u306b\u30d5\u30a3\u30fc\u30eb\u30c9\u306e\u30bf\u30a4\u30d7\u304c\u4e00\u81f4\u3057\u3066\u3044\u308b\u3053\u3068\u3092\u78ba\u8a8d\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+no.injection.target.CWOWB1008E=CWOWB1008E: \u30af\u30e9\u30b9 {1} \u304c Bean \u30a2\u30fc\u30ab\u30a4\u30d6\u5185\u306b\u306a\u3044\u305f\u3081\u3001\u30af\u30e9\u30b9 {1} \u306e\u30e1\u30f3\u30d0\u30fc {0} \u3092\u6ce8\u5165\u3067\u304d\u307e\u305b\u3093\u3002
+no.injection.target.CWOWB1008E.explanation=\u30af\u30e9\u30b9\u304c\u5c5e\u3059\u308b\u30a2\u30fc\u30ab\u30a4\u30d6\u306e Bean \u30de\u30cd\u30fc\u30b8\u30e3\u30fc\u304c\u30cc\u30eb\u306e\u305f\u3081\u3001\u6ce8\u5165\u304c\u6210\u529f\u3057\u307e\u305b\u3093\u3067\u3057\u305f\u3002
+no.injection.target.CWOWB1008E.useraction=\u30af\u30e9\u30b9\u304c\u5c5e\u3059\u308b\u30a2\u30fc\u30ab\u30a4\u30d6\u304c Bean \u30a2\u30fc\u30ab\u30a4\u30d6\u3067\u3042\u308b\u3053\u3068\u3092\u78ba\u8a8d\u3057\u3066\u304f\u3060\u3055\u3044\u3002 \u30a2\u30fc\u30ab\u30a4\u30d6\u3092 Bean \u30a2\u30fc\u30ab\u30a4\u30d6\u306b\u3059\u308b\u65b9\u6cd5\u306b\u3064\u3044\u3066\u306f\u3001CDI \u306e\u4ed5\u69d8\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+implicit.bean.scanning.disabled.CWOWB1009W=CWOWB1009W: \u6697\u9ed9\u7684\u306a Bean \u30a2\u30fc\u30ab\u30a4\u30d6\u306f\u4f7f\u7528\u4e0d\u53ef\u3067\u3059\u3002
+implicit.bean.scanning.disabled.CWOWB1009W.explanation=\u30a2\u30fc\u30ab\u30a4\u30d6\u306b beans.xml \u30d5\u30a1\u30a4\u30eb\u304c\u542b\u307e\u308c\u3066\u3044\u306a\u3051\u308c\u3070\u3001CDI Bean \u691c\u51fa\u306e\u305f\u3081\u306b\u30a2\u30fc\u30ab\u30a4\u30d6\u304c\u30b9\u30ad\u30e3\u30f3\u3055\u308c\u308b\u3053\u3068\u306f\u3042\u308a\u307e\u305b\u3093\u3002
+implicit.bean.scanning.disabled.CWOWB1009W.useraction=CDI \u3092\u4f7f\u7528\u3059\u308b\u3059\u3079\u3066\u306e\u30a2\u30fc\u30ab\u30a4\u30d6\u304c beans.xml \u30d5\u30a1\u30a4\u30eb\u3092\u542b\u3080\u3088\u3046\u306b\u3059\u308b\u304b\u3001\u3054\u4f7f\u7528\u306e server.xml \u30d5\u30a1\u30a4\u30eb\u3067\u6697\u9ed9\u7684\u306a Bean \u30b9\u30ad\u30e3\u30f3\u3092\u518d\u5ea6\u6709\u52b9\u5316\u3057\u3066\u304f\u3060\u3055\u3044\u3002

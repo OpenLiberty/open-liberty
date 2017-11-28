@@ -1,0 +1,642 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# 284561          10-Aug-05 pnickoll Added extra data to the exception thrown when validating an activation spec
+# 320291                  04-Nov-05 ajw          Problem in message 1181
+# 344741                  08-Feb-06 ajw          Removed msgs CWSJR1115 and CWSJR1116
+# 342029                  09-Feb-06 ajw          Removed unused msgs
+# 352462          04-Jul-06 matrober SVT:CWSJR1067E has a misspelling
+# 387921          04-Sep-06 pnickoll Fixed misspellings and incorrect message ID
+# SIB0048c.ra.6   22-Jan-07 vaughton Tidy up policing of xa connections msgs
+# 446227          18-Jun-07 pnickoll merge updated from UT
+# 468221          19-Sep-07 pnickoll Changed 1072 so that it uses {0} instead of {1}
+# 99986           13-Jun-13 Chetan   Correcting nls message
+# -------------------------------------------------------------------------------------------------
+# File com.ibm.ws.sib.api.jmsra.CWSJRMessages.nlsprops
+#
+# SIB.api.jmsra component file for logging _external_ messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJR0001=CWSJR0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you want them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes: TODO: CONFIRM THIS RANGE DOESN'T OVERLAP THE JMS API TEAMS RANGE
+#   Message Range        Owning class
+#   ----------------------------------------------------
+#   CWSJR1000-CWSJR1500   JMS api usage only (within API team)
+#   ----------------------------------------------------
+#   CWSJR1001-CWSJR1020   com.ibm.ws.sib.api.jmsra.impl.JmsJcaResourceAdapterImpl
+#   CWSJR1021-CWSJR1040   com.ibm.ws.sib.api.jmsra.impl.JmsJcaManagedConnectionFactoryImpl
+#   CWSJR1041-CWSJR1060   com.ibm.ws.sib.api.jmsra.impl.JmsJcaManagedQueueConnectionFactoryImpl / JmsJcaManagedTopicConnectionFactoryImpl
+#   CWSJR1061-CWSJR1080   com.ibm.ws.sib.api.jmsra.impl.JmsJcaConnectionFactoryImpl
+#   CWSJR1081-CWSJR1100   com.ibm.ws.sib.api.jmsra.impl.JmsJcaConnectionImpl
+#   CWSJR1101-CWSJR1120   com.ibm.ws.sib.api.jmsra.impl.JmsJcaManagedConnection
+#   CWSJR1121-CWSJR1160   com.ibm.ws.sib.api.jmsra.impl.JmsJcaSessionImpl
+#   CWSJR1161-CWSJR1180   com.ibm.ws.sib.api.jmsra.JmsJcaReferenceUtils
+#   CWSJR1181-CWSJR1200   com.ibm.ws.sib.api.jmsra.impl.JmsJcaActivationSpecImpl
+#   CWSJR1201-CWSJR1220   com.ibm.ws.sib.api.jmsra.impl.JmsJcaDispatcher
+#   CWSJR1221-CWSJR1240   com.ibm.ws.sib.api.jmsra.impl.JmsJcaEndpointActivation
+#   CWSJR1241-CWSJR1260   com.ibm.ws.sib.api.jmsra.impl.JmsJcaTransactionalDispatcher
+#   CWSJR1441-CWSJR1460   com.ibm.ws.sib.api.jmsra.JmsJcaFactory
+#   CWSJR1461-CWSJR1480   com.ibm.ws.sib.api.jmsra.impl.JmsJcaManagedConnectionSynchronizationProvider
+#   CWSJR1481-CWSJR1500   com.ibm.ws.sib.api.jmsra.impl.JmsJcaEndpointInvokerImpl
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.61,0,07/01/24,10:58:20
+#
+#CMVCPATHNAME com.ibm.ws.messaging.jms/resources/com/ibm/ws/sib/api/jmsra/CWSJRMessages.nlsprops
+#COMPONENTPREFIX CWSJR
+#COMPONENTNAMEFOR CWSJR SIbus
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+#
+# JmsJcaResourceAdapterImpl
+# -------------------------------------------------------------------------------------------------
+
+#
+# JmsJcaManagedConnectionFactoryImpl
+#
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1021=CWSJR1021E: S-a creat o excep\u0163ie intern\u0103. Excep\u0163ia {0} \u00een metoda {1}.
+EXCEPTION_RECEIVED_CWSJR1021.explanation=Informa\u0163iile incluse \u00een except\u0163ie pot fi utilizate pentru diagnosticare.
+EXCEPTION_RECEIVED_CWSJR1021.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+# {1} the type of object we were expecting
+# {2} the type of object we received
+EXCEPTION_RECEIVED_CWSJR1022=CWSJR1022E: O excep\u0163ie nea\u015fteptat\u0103 a avut loc \u00een timpul apelului la metoda {0}. S-a primit un tip nea\u015fteptat de obiect ConnectionRequest, {2}, \u00een loc de {1}.
+EXCEPTION_RECEIVED_CWSJR1022.explanation=S-a creat o excep\u0163ie intern\u0103. Informa\u0163iile incluse \u00een except\u0163ie pot fi utilizate pentru diagnosticare.
+EXCEPTION_RECEIVED_CWSJR1022.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+SICORECONNECTION_ERROR_CWSJR1023=CWSJR1023E: A survenit o eroare intern\u0103. Nu s-a putut extrage un SICoreConnectionFactory valid \u00een timpul apel\u0103rii metodei {0}.
+SICORECONNECTION_ERROR_CWSJR1023.explanation=CMSG0001
+SICORECONNECTION_ERROR_CWSJR1023.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+# {1} the type of object we were expecting
+# {2} the type of object we received
+JMS_CONNECTION_FAIL_CWSJR1024=CWSJR1024E: A survenit o eroare intern\u0103. \u00cen timpul apel\u0103rii metodei {0} s-a primit un tip de obiect nea\u015fteptat, {2}, \u00een loc de {1}.
+JMS_CONNECTION_FAIL_CWSJR1024.explanation=S-a creat o excep\u0163ie intern\u0103. Metoda JmsFactoryFactory.getInstance() nu a primit un tip corect JMSRAFactoryFactory, a\u015fa cum a\u015ftepta.
+JMS_CONNECTION_FAIL_CWSJR1024.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} the prefix that was trying to be set
+DESTINATION_PREFIX_LONG_CWSJR1025=CWSJR1025E: Prefixul {0} este mai lung de 12 caractere.
+DESTINATION_PREFIX_LONG_CWSJR1025.explanation=Prefixul pentru numele de destina\u0163ii temporare nu pot fi mai lungi de doisprezece caractere.
+DESTINATION_PREFIX_LONG_CWSJR1025.useraction=Specifica\u0163i un prefix care este de doisprezece caractere sau mai scurt.
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1026=CWSJR1026E: A survenit o eroare intern\u0103. Excep\u0163ia {0} s-a primit \u00een metoda {1}.
+EXCEPTION_RECEIVED_CWSJR1026.explanation=Informa\u0163iile incluse \u00een except\u0163ie pot fi utilizate pentru diagnosticare.
+EXCEPTION_RECEIVED_CWSJR1026.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1027=CWSJR1027E: A survenit o eroare intern\u0103. Excep\u0163ia {0} s-a primit \u00een metoda {1}.
+EXCEPTION_RECEIVED_CWSJR1027.explanation=Informa\u0163iile incluse \u00een except\u0163ie pot fi utilizate pentru diagnosticare.
+EXCEPTION_RECEIVED_CWSJR1027.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1028=CWSJR1028E: A survenit o eroare intern\u0103. Excep\u0163ia {0} s-a primit \u00een metoda {1}.
+EXCEPTION_RECEIVED_CWSJR1028.explanation=Informa\u0163iile incluse \u00een except\u0163ie pot fi utilizate pentru diagnosticare.
+EXCEPTION_RECEIVED_CWSJR1028.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} the prefix that was trying to be set
+DESTINATION_PREFIX_LONG_CWSJR1029=CWSJR1029E: Prefixul {0} este mai lung de 12 caractere.
+DESTINATION_PREFIX_LONG_CWSJR1029.explanation=Prefixul pentru numele de destina\u0163ii temporare nu pot fi mai lungi de doisprezece caractere.
+DESTINATION_PREFIX_LONG_CWSJR1029.useraction=Specifica\u0163i un prefix care este de doisprezece caractere sau mai scurt.
+
+#
+# JmsJcaConnectionFactoryImpl
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+# {1} the type of object we were expecting
+# {2} the type of object we received
+EXCEPTION_RECEIVED_CWSJR1061=CWSJR1061E: A avut loc o eroare intern\u0103 \u00een metoda {0}. Nu s-a creat o conexiune valid\u0103; s-a primit obiectul {2} \u00een loc de {1}.
+EXCEPTION_RECEIVED_CWSJR1061.explanation=CMSG0001
+EXCEPTION_RECEIVED_CWSJR1061.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1064=CWSJR1064E: A survenit o eroare intern\u0103. Excep\u0163ia {0} s-a primit \u00een metoda {1}.
+EXCEPTION_RECEIVED_CWSJR1064.explanation=Informa\u0163iile incluse \u00een except\u0163ie pot fi utilizate pentru diagnosticare.
+EXCEPTION_RECEIVED_CWSJR1064.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1065=CWSJR1065E: A survenit o eroare intern\u0103. Excep\u0163ia {0} s-a primit \u00een metoda {1}.
+EXCEPTION_RECEIVED_CWSJR1065.explanation=Informa\u0163iile incluse \u00een except\u0163ie pot fi utilizate pentru diagnosticare.
+EXCEPTION_RECEIVED_CWSJR1065.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+SICORECONNECTION_ERROR_CWSJR1066=CWSJR1066E: Nu s-a putut extrage un SICoreConnectionFactory valid \u00een timpul apel\u0103rii metodei {0}.
+SICORECONNECTION_ERROR_CWSJR1066.explanation=CMSG0001
+SICORECONNECTION_ERROR_CWSJR1066.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the JCA exception
+CONNECTION_ERROR_RETRY_CWSJR1067=CWSJR1067E: Urm\u0103toarea eroare de Conexiune JCA a avut loc la \u00eencercarea de ob\u0163inere a conexiunii. Se va re\u00eencerca extragerea conexiunii. Excep\u0163ia este {0}.
+CONNECTION_ERROR_RETRY_CWSJR1067.explanation=S-a creat o excep\u0163ie \u00een timpul ob\u0163inerii conexiunii. Sistemul va epura conexiunea, apoi apoi va \u00eencerca s\u0103 ob\u0163in\u0103 alta.
+CONNECTION_ERROR_RETRY_CWSJR1067.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The authentication alias name
+CONTAINER_AUTHENTICATION_EXCEPTION_1068=CWSJR1068E: Nu a fost posibila autentificarea folosind aliasul de autentificare livrat, {0}.
+CONTAINER_AUTHENTICATION_EXCEPTION_1068.explanation=O aplica\u0163ie a folosit o referin\u0163\u0103 pentru a c\u0103uta o fabric\u0103 de conexiuni. Referin\u0163a resurs\u0103 a fost configurat\u0103 sa utilizeze autentificare gestionat\u0103 container, dar datele de autentificare asociate nu au fost valide.
+CONTAINER_AUTHENTICATION_EXCEPTION_1068.useraction=Asigura\u0163i-v\u0103 c\u0103 aliasul de autentificare asociat cu referin\u0163a resursei con\u0163ine acredit\u0103ri valide pentru magistral\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The user name
+APPLICATION_AUTHENTICATION_EXCEPTION_1069=CWSJR1069E: Numele de utilizator livrat, {0}, nu a putut fi autentificat.
+APPLICATION_AUTHENTICATION_EXCEPTION_1069.explanation=O aplica\u0163ie a folosit o referin\u0163\u0103 resurs\u0103 pentru a c\u0103uta o fabric\u0103 de conexiuni. Referin\u0163a resurs\u0103 a fost configurat\u0103 sa utilizeze autentificare gestionat\u0103 aplica\u0163ie, dar datele alias de autentificare componente asociate nu au fost valide.
+APPLICATION_AUTHENTICATION_EXCEPTION_1069.useraction=Asigura\u0163i-v\u0103 c\u0103 aliasul de autentificare componente con\u0163ine acredit\u0103ri valide pentru magistral\u0103.
+
+# -------------------------------------------------------------------------------------------------
+CONTAINER_AUTHORIZATION_EXCEPTION_1070=CWSJR1070E: Nu a fost posibil\u0103 autentificarea deoarece niciun alias de autentificare nu a fost specificat.
+CONTAINER_AUTHORIZATION_EXCEPTION_1070.explanation=O aplica\u0163ie a folosit o referin\u0163\u0103 resurs\u0103 pentru a c\u0103uta o fabric\u0103 de conexiuni. Referin\u0163a resurs\u0103 a fost configurat\u0103 sa utilizeze autentificare gestionat\u0103 container, dar nu a fost asociat un alias de autentificare cu referin\u0163a resurs\u0103.
+CONTAINER_AUTHORIZATION_EXCEPTION_1070.useraction=Asigura\u0163i-v\u0103 c\u0103 este asociat un alias de autentificare cu referin\u0163a resurs\u0103.
+
+# -------------------------------------------------------------------------------------------------
+APPLICATION_AUTHORIZATION_EXCEPTION_1071=CWSJR1071E: Nu a fost posibil\u0103 autentificarea deoarece nu au fost furnizate acredit\u0103ri.
+APPLICATION_AUTHORIZATION_EXCEPTION_1071.explanation=O aplica\u0163ie a folosit o referin\u0163\u0103 resurs\u0103 pentru a c\u0103uta o fabric\u0103 de conexiuni. Referin\u0163a resurs\u0103 a fost configurat\u0103 sa utilizeze autentificare gestionat\u0103 aplica\u0163ie, dar nu au fost livrate date alias de autentificare componente.
+APPLICATION_AUTHORIZATION_EXCEPTION_1071.useraction=Asigura\u0163i-v\u0103 c\u0103 este asociat un alias de autentificare cu aceast\u0103 referin\u0163a resurs\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The user name
+APPLICATION_AUTHENTICATION_EXCEPTION_1072=CWSJR1072E: Numele de utilizator livrat, {0}, nu a putut fi autentificat.
+APPLICATION_AUTHENTICATION_EXCEPTION_1072.explanation=O aplica\u0163ie a folosit o referin\u0163\u0103 resurs\u0103 pentru a c\u0103uta o fabric\u0103 de conexiuni. Referin\u0163a resurs\u0103 a fost configurat\u0103 sa utilizeze autentificare gestionat\u0103 aplica\u0163ie, dar aplica\u0163ia a livrat acredit\u0103ri care nu sunt valide. 
+APPLICATION_AUTHENTICATION_EXCEPTION_1072.useraction=Asigura\u0163i-v\u0103 c\u0103 sunt livrate acredit\u0103ri corecte la crearea unei conexiuni.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The authentication alias name
+CONTAINER_AUTHENTICATION_EXCEPTION_1073=CWSJR1073E: Nu a fost posibila autentificarea folosind aliasul de autentificare livrat, {0}.
+CONTAINER_AUTHENTICATION_EXCEPTION_1073.explanation=O aplica\u0163ie a folosit o referin\u0163\u0103 resurs\u0103 pentru a c\u0103uta o fabric\u0103 de conexiuni. Referin\u0163a resurs\u0103 a fost configurat\u0103 sa utilizeze autentificare gestionat\u0103 container, dar datele de autentificare asociate nu au fost valide.
+CONTAINER_AUTHENTICATION_EXCEPTION_1073.useraction=Asigura\u0163i-v\u0103 c\u0103 aliasul de autentificare asociat cu aceast\u0103 referin\u0163\u0103 resurs\u0103 con\u0163ine acredit\u0103ri valide pentru magistral\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The user name
+APPLICATION_AUTHENTICATION_EXCEPTION_1074=CWSJR1074E: Numele de utilizator livrat, {0}, nu a putut fi autentificat.
+APPLICATION_AUTHENTICATION_EXCEPTION_1074.explanation=O aplica\u0163ie a folosit o referin\u0163\u0103 resurs\u0103 pentru a c\u0103uta o fabric\u0103 de conexiuni. Referin\u0163a resurs\u0103 a fost configurat\u0103 sa utilizeze autentificare gestionat\u0103 aplica\u0163ie, dar datele alias de autentificare componente asociate nu au fost valide.
+APPLICATION_AUTHENTICATION_EXCEPTION_1074.useraction=Asigura\u0163i-v\u0103 c\u0103 aliasul de autentificare componente con\u0163ine acredit\u0103ri valide pentru magistral\u0103.
+
+# -------------------------------------------------------------------------------------------------
+CONTAINER_AUTHORIZATION_EXCEPTION_1075=CWSJR1075E: Nu a fost posibil\u0103 autentificarea deoarece niciun alias de autentificare nu a fost specificat.
+CONTAINER_AUTHORIZATION_EXCEPTION_1075.explanation=O aplica\u0163ie a folosit o referin\u0163\u0103 resurs\u0103 pentru a c\u0103uta o fabric\u0103 de conexiuni. Referin\u0163a resurs\u0103 a fost configurat\u0103 sa utilizeze autentificare gestionat\u0103 container, dar nu a fost asociat un alias de autentificare cu referin\u0163a resurs\u0103.
+CONTAINER_AUTHORIZATION_EXCEPTION_1075.useraction=Asigura\u0163i-v\u0103 c\u0103 este asociat un alias de autentificare cu aceast\u0103 referin\u0163a resurs\u0103.
+
+# -------------------------------------------------------------------------------------------------
+APPLICATION_AUTHORIZATION_EXCEPTION_1076=CWSJR1076E: Nu a fost posibil\u0103 autentificarea deoarece nu au fost furnizate acredit\u0103ri.
+APPLICATION_AUTHORIZATION_EXCEPTION_1076.explanation=O aplica\u0163ie a folosit o referin\u0163\u0103 resurs\u0103 pentru a c\u0103uta o fabric\u0103 de conexiuni. Referin\u0163a resurs\u0103 a fost configurat\u0103 sa utilizeze autentificare gestionat\u0103 aplica\u0163ie, dar nu au fost livrate date alias de autentificare componente.
+APPLICATION_AUTHORIZATION_EXCEPTION_1076.useraction=Asigura\u0163i-v\u0103 c\u0103 este asociat un alias de autentificare cu aceast\u0103 referin\u0163a resurs\u0103.
+# -------------------------------------------------------------------------------------------------
+AUTHENTICATION_EXCEPTION_1077=CWSJR1077E: Autentificarea pentru numele de utilizator furnizat nu a avut succes.
+AUTHENTICATION_EXCEPTION_1077.explanation=Autentificarea utiliz\u00e2nd detaliile furnizate a e\u015fuat, deoarece numele de utilizator sau parola sunt incorecte.
+AUTHENTICATION_EXCEPTION_1077.useraction=Vede\u0163i mesajul de eroare legat pentru mai multe informa\u0163ii.Verifica\u0163i c\u0103 numele de utilizator \u015fi parola sunt corecte \u015fi au fost definite \u00een sistem.
+
+#
+# JmsJcaConnectionImpl
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+# {1} is the number of sessions found
+EXCEPTION_RECEIVED_CWSJR1082=CWSJR1082E: A avut loc o eroare intern\u0103 \u00een timpul apelului la metoda {0}. S-a a\u015fteptat exact o sesiune, dar s-au g\u0103sit {1} sesiuni.
+EXCEPTION_RECEIVED_CWSJR1082.explanation=Setul de sesiuni din conexiune are mai mult de o sesiune, c\u00e2nd ar fi trebuit s\u0103 fie numai una.
+EXCEPTION_RECEIVED_CWSJR1082.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+# {1} is the object type that was found
+# {2} is the object type that was expected
+EXCEPTION_RECEIVED_CWSJR1083=CWSJR1083E: A avut loc o eroare intern\u0103 \u00een timpul apelului la metoda {0}. S-a g\u0103sit un obiect {1}, c\u00e2nd se a\u015ftepta un obiect {2}.
+EXCEPTION_RECEIVED_CWSJR1083.explanation=Un obiect g\u0103sit in setul de sesiuni nu a fost de tipul cerut.
+EXCEPTION_RECEIVED_CWSJR1083.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+# {1} is the object type that was found
+# {2} is the object type that was expected
+EXCEPTION_RECEIVED_CWSJR1084=CWSJR1084E: A avut loc o eroare intern\u0103 \u00een timpul apelului la metoda {0}. S-a g\u0103sit un obiect {1}, c\u00e2nd se a\u015ftepta un obiect {2}.
+EXCEPTION_RECEIVED_CWSJR1084.explanation=Un obiect g\u0103sit in setul de sesiuni nu a fost de tipul cerut.
+EXCEPTION_RECEIVED_CWSJR1084.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+ILLEGAL_STATE_CWSJR1085=CWSJR1085E: A survenit o eroare intern\u0103. S-a apelat metoda {0} dup\u0103 ce conexiunea a fost \u00eenchis\u0103.
+ILLEGAL_STATE_CWSJR1085.explanation=Metoda nu poate fi apelat\u0103 dup\u0103 ce conexiunea este inchis\u0103.
+ILLEGAL_STATE_CWSJR1085.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+ILLEGAL_STATE_CWSJR1086=CWSJR1086E: A survenit o eroare intern\u0103. S-a apelat metoda {0} dup\u0103 ce conexiunea a fost \u00eenchis\u0103.
+ILLEGAL_STATE_CWSJR1086.explanation=Metoda nu poate fi apelat\u0103 dup\u0103 ce conexiunea este inchis\u0103.
+ILLEGAL_STATE_CWSJR1086.useraction=CMSG0002
+
+#
+# JmsJcaManagedConnection
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+# {1} is the object type that was expected
+# {2} is the object type that was found
+EXCEPTION_RECEIVED_CWSJR1101=CWSJR1101E: A avut loc o eroare intern\u0103 \u00een timpul apelului la metoda {0}. Conexiunea a e\u015fuat pentru c\u0103 s-a g\u0103sit un obiect {2}, c\u00e2nd se a\u015ftepta un obiect {1}.
+EXCEPTION_RECEIVED_CWSJR1101.explanation=Informa\u0163ia cerut\u0103 nu este de tipul corect.
+EXCEPTION_RECEIVED_CWSJR1101.useraction=CMSG0002
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+EXCEPTION_RECEIVED_CWSJR1102=CWSJR1102E: A survenit o eroare intern\u0103. A fost aruncat\u0103 excep\u0163ia {0}.
+EXCEPTION_RECEIVED_CWSJR1102.explanation=Apelarea metodei lazyEnlist pe managerul de conexiuni nu a fost cu succes.
+EXCEPTION_RECEIVED_CWSJR1102.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} The method that is called.
+# {1} The username that was used in the objects constructor
+# {2} The username passed to the method
+AUTHENTICATION_ERROR_CWSJR1103=CWSJR1103E: Acredit\u0103rile ({2}) transmise la metoda {0} nu s-au potrivit cu cele transmise la constructorul ({1}).
+AUTHENTICATION_ERROR_CWSJR1103.explanation=Acreditivele livrate nu au trecut de verificarea de autentificare.
+AUTHENTICATION_ERROR_CWSJR1103.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+# {1} is the object type that was expected
+# {2} is the object type that was found
+INVALID_SESSION_CWSJR1104=CWSJR1104E: A avut loc o eroare intern\u0103 \u00een timpul apelului la metoda {0}. S-a primit un obiect {2}, c\u00e2nd se a\u015ftepta un obiect {1}.
+INVALID_SESSION_CWSJR1104.explanation=S-a primit un tip de obiect eronat.
+INVALID_SESSION_CWSJR1104.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+INVALID_SESSION_CWSJR1105=CWSJR1105E: A survenit o eroare intern\u0103. S-a facut o \u00eencercare de pornire a unei tranzac\u0163ii locale, c\u00e2nd o astfel de tranzac\u0163ie exista deja.
+INVALID_SESSION_CWSJR1105.explanation=Nu este posibil s\u0103 porn\u015fti o tranzac\u0163ie local\u0103 dac\u0103 exist\u0103 deja una.
+INVALID_SESSION_CWSJR1105.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+EXCEPTION_RECEIVED_CWSJR1106=CWSJR1106E: A avut loc o eroare intern\u0103 \u00een timpul apelului la metoda {0}. Un obiect necesar SICoreConnection nu a fost g\u0103sit.
+EXCEPTION_RECEIVED_CWSJR1106.explanation=Este necesar un obiect SICoreConnection, dar nu poate fi g\u0103sit.
+EXCEPTION_RECEIVED_CWSJR1106.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+EXCEPTION_RECEIVED_CWSJR1107=CWSJR1107E: A avut loc o eroare intern\u0103 \u00een timpul apelului la metoda {0}. Un obiect necesar SICoreConnection nu a fost g\u0103sit.
+EXCEPTION_RECEIVED_CWSJR1107.explanation=Este necesar un obiect SICoreConnection, dar nu poate fi g\u0103sit.
+EXCEPTION_RECEIVED_CWSJR1107.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is a connection property name, eg targetType
+# {1} is the required connection property value
+ME_NAME_REQUIRED_CWSJR1108=CWSJR1108E: Un anumit motor de mesagerie trebuie specificat s\u0103 foloseasc\u0103 resurse JMS \u00eentr-o tranzac\u0163ie. Proprietatea de conexiune {0} trebuie setat\u0103 la {1}.
+ME_NAME_REQUIRED_CWSJR1108.explanation=Pentru a permite recuperarea tranzac\u0163iilor, o fabric\u0103 de conexiuni trebuie s\u0103 vizeze un anumit motor de mesagerie din magistral\u0103.
+ME_NAME_REQUIRED_CWSJR1108.useraction=Modifica\u0163i valoarea propriet\u0103\u0163ii fabricii 'Destina\u0163ie' cu valoarea numelui motorului de mesagerie destin\u0163ie, 'Tip destina\u0163ie' cu valoarea din lista derulant\u0103 'Nume motor de mesagerie' \u015fi 'Semnifica\u0163ie destina\u0163ie' cu valoarea din lista derulant\u0103 'Necesar'.
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1110=CWSJR1110E: A survenit o eroare intern\u0103. Excep\u0163ie: {0} \u00een metoda {1}
+EXCEPTION_RECEIVED_CWSJR1110.explanation=Informa\u0163iile incluse \u00een except\u0163ie pot fi utilizate pentru diagnosticare.
+EXCEPTION_RECEIVED_CWSJR1110.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1111=CWSJR1111E: A survenit o eroare intern\u0103. Excep\u0163ie: {0} \u00een metoda {1}
+EXCEPTION_RECEIVED_CWSJR1111.explanation=Informa\u0163iile incluse \u00een except\u0163ie pot fi utilizate pentru diagnosticare.
+EXCEPTION_RECEIVED_CWSJR1111.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1112=CWSJR1112E: A survenit o eroare intern\u0103. Excep\u0163ie: {0} \u00een metoda {1}
+EXCEPTION_RECEIVED_CWSJR1112.explanation=Informa\u0163iile incluse \u00een except\u0163ie pot fi utilizate pentru diagnosticare.
+EXCEPTION_RECEIVED_CWSJR1112.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1113=CWSJR1113E: A survenit o eroare intern\u0103. Excep\u0163ie: {0} \u00een metoda {1}
+EXCEPTION_RECEIVED_CWSJR1113.explanation=Informa\u0163iile incluse \u00een except\u0163ie pot fi utilizate pentru diagnosticare.
+EXCEPTION_RECEIVED_CWSJR1113.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1114=CWSJR1114E: A survenit o eroare intern\u0103. Excep\u0163ie: {0} \u00een metoda {1}
+EXCEPTION_RECEIVED_CWSJR1114.explanation=Informa\u0163iile incluse \u00een except\u0163ie pot fi utilizate pentru diagnosticare.
+EXCEPTION_RECEIVED_CWSJR1114.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} The method that is called.
+AUTHENTICATION_ERROR_CWSJR1117=CWSJR1117E: A survenit o eroare intern\u0103. Acredit\u0103rile transmise metodei {0} nu s-au potrivit celor transmise constructorului.
+AUTHENTICATION_ERROR_CWSJR1117.explanation=Acreditivele livrate nu au trecut de verificarea de autentificare.
+AUTHENTICATION_ERROR_CWSJR1117.useraction=CMSG0002
+
+#
+# JmsJcaSessionImpl
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+# {1} is the linked exception
+EXCEPTION_RECEIVED_CWSJR1121=CWSJR1121E: A survenit o eroare intern\u0103. \u00cen timpul apel\u0103rii metodei {0} s-a aruncat excep\u0163ia {1}.
+EXCEPTION_RECEIVED_CWSJR1121.explanation=S-a creat o excep\u0163ie nea\u015fteptat\u0103 c\u00e2nd sesiunea a \u00eencercat s\u0103 se re-asocieze cu un manager de conexiuni.
+EXCEPTION_RECEIVED_CWSJR1121.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+# {1} is the object we received
+# {2} is the object type we expected.
+EXCEPTION_RECEIVED_CWSJR1122=CWSJR1122E: A survenit o eroare intern\u0103. \u00cen timpul apel\u0103rii metodei {0} s-a a\u015fteptat s\u0103 se primeasc\u0103 {2}, dar s-a primit {1}
+EXCEPTION_RECEIVED_CWSJR1122.explanation=Managerul de conexiuni nu este listat lent.
+EXCEPTION_RECEIVED_CWSJR1122.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+ILLEGAL_STATE_CWSJR1123=CWSJR1123E: A survenit o eroare intern\u0103. S-a f\u0103cut un apel la {0} dup\u0103 ce sesiunea s-a \u00eenchis.
+ILLEGAL_STATE_CWSJR1123.explanation=Metoda nu poate fi apelat\u0103 dup\u0103 ce conexiunea este inchis\u0103.
+ILLEGAL_STATE_CWSJR1123.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+ILLEGAL_STATE_CWSJR1124=CWSJR1124E: A survenit o eroare intern\u0103. S-a f\u0103cut un apel la {0} dup\u0103 ce sesiunea a fost invalidat\u0103.
+ILLEGAL_STATE_CWSJR1124.explanation=Apelul de metod\u0103 nu este permis c\u00e2nd sesiunea nu mai este valid\u0103.
+ILLEGAL_STATE_CWSJR1124.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+ILLEGAL_STATE_CWSJR1125=CWSJR1125E: A survenit o eroare intern\u0103. S-a f\u0103cut un apel la {0}, dar nu exist\u0103 tranzac\u0163ii locale.
+ILLEGAL_STATE_CWSJR1125.explanation=Apelul de metod\u0103 nu este permis c\u00e2nd nu exist\u0103 tranzac\u0163ii locale.
+ILLEGAL_STATE_CWSJR1125.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+EXCEPTION_RECEIVED_CWSJR1126=CWSJR1126E: A survenit o eroare intern\u0103. Apelarea metodei {0} nu este permis\u0103 deoarece mediul nu este gestionat. 
+EXCEPTION_RECEIVED_CWSJR1126.explanation=Apelul nu este permis \u00eentr-un mediu negestionat.
+EXCEPTION_RECEIVED_CWSJR1126.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1130=CWSJR1130E: A survenit o eroare intern\u0103. S-a f\u0103cut un apel la {0} dup\u0103 ce sesiunea s-a \u00eenchis.
+ILLEGAL_STATE_CWSJR1130.explanation=Metoda nu poate fi apelat\u0103 dup\u0103 ce conexiunea este inchis\u0103.
+ILLEGAL_STATE_CWSJR1130.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1131=CWSJR1131E: A survenit o eroare intern\u0103. S-a f\u0103cut un apel la {0} dup\u0103 ce sesiunea s-a \u00eenchis.
+ILLEGAL_STATE_CWSJR1131.explanation=Metoda nu poate fi apelat\u0103 dup\u0103 ce conexiunea este inchis\u0103.
+ILLEGAL_STATE_CWSJR1131.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1132=CWSJR1132E: A survenit o eroare intern\u0103. S-a f\u0103cut un apel la {0} dup\u0103 ce sesiunea s-a \u00eenchis.
+ILLEGAL_STATE_CWSJR1132.explanation=Metoda nu poate fi apelat\u0103 dup\u0103 ce conexiunea este inchis\u0103.
+ILLEGAL_STATE_CWSJR1132.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1133=CWSJR1133E: A survenit o eroare intern\u0103. S-a f\u0103cut un apel la {0} dup\u0103 ce sesiunea s-a \u00eenchis.
+ILLEGAL_STATE_CWSJR1133.explanation=Metoda nu poate fi apelat\u0103 dup\u0103 ce conexiunea este inchis\u0103.
+ILLEGAL_STATE_CWSJR1133.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1134=CWSJR1134E: A survenit o eroare intern\u0103. S-a f\u0103cut un apel la {0} dup\u0103 ce sesiunea a fost invalidat\u0103.
+ILLEGAL_STATE_CWSJR1134.explanation=Apelul de metod\u0103 nu este permis c\u00e2nd sesiunea nu mai este valid\u0103.
+ILLEGAL_STATE_CWSJR1134.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1135=CWSJR1135E: A survenit o eroare intern\u0103. S-a f\u0103cut un apel la {0} dup\u0103 ce sesiunea a fost invalidat\u0103.
+ILLEGAL_STATE_CWSJR1135.explanation=Apelul de metod\u0103 nu este permis c\u00e2nd sesiunea nu mai este valid\u0103.
+ILLEGAL_STATE_CWSJR1135.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1136=CWSJR1136E: A survenit o eroare intern\u0103. S-a f\u0103cut un apel la {0} dup\u0103 ce sesiunea a fost invalidat\u0103.
+ILLEGAL_STATE_CWSJR1136.explanation=Apelul de metod\u0103 nu este permis c\u00e2nd sesiunea nu mai este valid\u0103.
+ILLEGAL_STATE_CWSJR1136.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1137=CWSJR1137E: A survenit o eroare intern\u0103. S-a f\u0103cut un apel la {0} dup\u0103 ce sesiunea a fost invalidat\u0103.
+ILLEGAL_STATE_CWSJR1137.explanation=Apelul de metod\u0103 nu este permis c\u00e2nd sesiunea nu mai este valid\u0103.
+ILLEGAL_STATE_CWSJR1137.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1138=CWSJR1138E: A survenit o eroare intern\u0103. A survenit o eroare intern\u0103. S-a f\u0103cut un apel la {0}, dar nu exist\u0103 tranzac\u0163ii locale.
+ILLEGAL_STATE_CWSJR1138.explanation=Apelul de metod\u0103 nu este permis c\u00e2nd este activ\u0103 o tranzac\u0163ie global\u0103.
+ILLEGAL_STATE_CWSJR1138.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1139=CWSJR1139E: A survenit o eroare intern\u0103. A ap\u0103rut o eroare intern\u0103. S-a f\u0103cut un apel la {0}, dar nu exist\u0103 tranzac\u0163ii locale.
+ILLEGAL_STATE_CWSJR1139.explanation=Apelul de metod\u0103 nu este permis c\u00e2nd nu exist\u0103 tranzac\u0163ii locale.
+ILLEGAL_STATE_CWSJR1139.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1140=CWSJR1140E: A survenit o eroare intern\u0103. A ap\u0103rut o excep\u0163ie nea\u015fteptat\u0103. S-a f\u0103cut un apel la {0}, dar nu exist\u0103 tranzac\u0163ii locale.
+ILLEGAL_STATE_CWSJR1140.explanation=Apelul de metod\u0103 nu este permis c\u00e2nd este activ\u0103 o tranzac\u0163ie global\u0103.
+ILLEGAL_STATE_CWSJR1140.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1141=CWSJR1141E: A survenit o eroare intern\u0103. A ap\u0103rut o excep\u0163ie nea\u015fteptat\u0103. S-a f\u0103cut un apel la {0}, dar nu exist\u0103 tranzac\u0163ii locale.
+ILLEGAL_STATE_CWSJR1141.explanation=Apelul de metod\u0103 nu este permis c\u00e2nd nu exist\u0103 tranzac\u0163ii locale.
+ILLEGAL_STATE_CWSJR1141.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1142=CWSJR1142E: A survenit o eroare intern\u0103. A ap\u0103rut o excep\u0163ie nea\u015fteptat\u0103. S-a f\u0103cut un apel la {0}, dar nu exist\u0103 tranzac\u0163ii locale.
+ILLEGAL_STATE_CWSJR1142.explanation=Apelul de metod\u0103 nu este permis c\u00e2nd nu exist\u0103 tranzac\u0163ii locale.
+ILLEGAL_STATE_CWSJR1142.useraction=CMSG0002
+
+#
+# JmsJcaReferenceUtils
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+# {1} is the class where the error occurred
+EXCEPTION_RECEIVED_CWSJR1161=CWSJR1161E: A avut loc o eroare intern\u0103 \u00een timpul ini\u0163ializ\u0103rii clasei {1}. Excep\u0163ie: {0}.
+EXCEPTION_RECEIVED_CWSJR1161.explanation=Clasa JmsJcaReferenceUtils nu s-a ini\u0163ializat.
+EXCEPTION_RECEIVED_CWSJR1161.useraction=CMSG0002
+
+#
+# JmsJcaActivationSpecImpl
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is the value of the target significance
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSJR1179=CWSJR1179E: Urm\u0103torul c\u00e2mp de semnifica\u0163ie destina\u0163ie pe o specifica\u0163ie de activare JMS este nevalid [{2}]. Sunt a\u015fteptate valorile [{0}] sau [{1}].
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSJR1179.explanation=\u00cen timpul valid\u0103rii propriet\u0103\u0163ilor configurate pe o specifica\u0163ie de activare JMS, s-a g\u0103sit proprietate semnifica\u0163ie destina\u0163ie nevalid\u0103.
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSJR1179.useraction=Corecta\u0163i valoarea propriet\u0103\u0163ii semnifica\u0163ie destina\u0163ie \u00een specifica\u0163ia de activare, apoi reporni\u0163i serverul.
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the target type
+INVALID_PROPERTY_TARGET_TYPE_CWSJR1180=CWSJR1180E: Urm\u0103torul c\u00e2mp de tip destina\u0163ie pe o specifica\u0163ie de activare JMS este nevalid [{3}]. Sunt a\u015fteptate valorile [{0}], [{1}] sau [{2}].
+INVALID_PROPERTY_TARGET_TYPE_CWSJR1180.explanation=\u00cen timpul valid\u0103rii propriet\u0103\u0163ilor configurate pe o specifica\u0163ie de activare JMS, s-a g\u0103sit tip destina\u0163ie nevalid.
+INVALID_PROPERTY_TARGET_TYPE_CWSJR1180.useraction=Corecta\u0163i valoarea propriet\u0103\u0163ii tip destina\u0163ie \u00een specifica\u0163ia de activare, apoi reporni\u0163i serverul.
+# -------------------------------------------------------------------------------------------------
+# {0} is a list of invalid properties
+INVALID_PROPERTIES_CWSJR1181=CWSJR1181E: Specifica\u0163ia activare JMS are valori nevalide - motivul/motivele pentru e\u015fuarea de a valida specifica\u0163ia de activare JMS sunt: {0}
+INVALID_PROPERTIES_CWSJR1181.explanation=\u00cen timpul valid\u0103rii propriet\u0103\u0163ilor configurate pe o specifica\u0163ie de activare JMS, s-au g\u0103sit una sau mai multe propriet\u0103\u0163i nevalide.
+INVALID_PROPERTIES_CWSJR1181.useraction=Corecta\u0163i valorile propriet\u0103\u0163ilor specifica\u0163iei de activare, apoi reporni\u0163i serverul.
+# -------------------------------------------------------------------------------------------------
+# {0} The exception that was thrown
+EXCEPTION_RECEIVED_CWSJR1182=CWSJR1182E: O eroare intern\u0103.  S-a aruncat urm\u0103toarea excpe\u0163ie \u00een timp ce se \u00eencerca ob\u0163inerea unei clase de utilitate: {0}
+EXCEPTION_RECEIVED_CWSJR1182.explanation=\u00cen timpul activ\u0103rii punctului final, adaptorul de resurse JMS a \u00eencercat s\u0103 ob\u0163in\u0103 o clas\u0103 de utilitate \u015fi s-a primit o excep\u0163ie nea\u015fteptat\u0103.
+EXCEPTION_RECEIVED_CWSJR1182.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_CLIENTID_CWSJR1183=CWSJR1183E: C\u00e2mpul ID client pe o specifica\u0163ie de activare JMS trebuie setat
+INVALID_PROPERTY_CLIENTID_CWSJR1183.explanation=\u00cen timpul valid\u0103rii propriet\u0103\u0163ilor configurate pe o specifica\u0163ie de activare JMS, s-a g\u0103sit ID client nevalid.
+INVALID_PROPERTY_CLIENTID_CWSJR1183.useraction=Corecta\u0163i valoarea propriet\u0103\u0163ii ID client \u00een specifica\u0163ia de activare, apoi reporni\u0163i serverul.
+# -------------------------------------------------------------------------------------------------
+# {0} The exception that was thrown
+EXCEPTION_RECEIVED_CWSJR1185=CWSJR1185E: A avut loc o eroare intern\u0103 \u00een timpul valid\u0103rii unei specifica\u0163ii de activare JMS: {0}.
+EXCEPTION_RECEIVED_CWSJR1185.explanation=S-a primit o excep\u0163ie nea\u015fteptat\u0103 in timpul valid\u0103rii unei specifica\u0163ii de activare JMS.
+EXCEPTION_RECEIVED_CWSJR1185.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} The exception that was thrown
+WLM_CLASSIFIER_REG_CWSJR1186=CWSJR1186E: A avut loc o eroare intern\u0103 \u00een timpul \u00eenregistr\u0103rii clasificatorului WLM pentru adaptorul de resurse JMS: {0}.
+WLM_CLASSIFIER_REG_CWSJR1186.explanation=A ap\u0103rut o excep\u0163ie nea\u015fteptat\u0103 in timpul \u00eenregistr\u0103rii clasificatorului WLM pentru adaptorul de resurs\u0103 cu registrul rutinelor de tratare.
+WLM_CLASSIFIER_REG_CWSJR1186.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_BUSNAME_CWSJR1187=CWSJR1187E: Numele magistralei pe o specifica\u0163ie de activare JMS trebuie s\u0103 primeasc\u0103 o valoare
+INVALID_PROPERTY_BUSNAME_CWSJR1187.explanation=\u00cen timpul valid\u0103rii propriet\u0103\u0163ilor configurate pe o specifica\u0163ie de activare JMS, s-a g\u0103sit nume magistral\u0103 nevalid.
+INVALID_PROPERTY_BUSNAME_CWSJR1187.useraction=Corecta\u0163i valoarea propriet\u0103\u0163ii nume magistral\u0103 \u00een specifica\u0163ia de activare, apoi reporni\u0163i serverul.
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_DESTINATION_CWSJR1188=CWSJR1188E: Destina\u0163ia pe o specifica\u0163ie de activare JMS trebuie s\u0103 primeasc\u0103 o valoare
+INVALID_PROPERTY_DESTINATION_CWSJR1188.explanation=\u00cen timpul valid\u0103rii propriet\u0103\u0163ilor configurate pe o specifica\u0163ie de activare JMS, s-a g\u0103sit destina\u0163ie nevalid\u0103.
+INVALID_PROPERTY_DESTINATION_CWSJR1188.useraction=Corecta\u0163i valoarea propriet\u0103\u0163ii destina\u0163ie \u00een specifica\u0163ia de activare, apoi reporni\u0163i serverul.
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is the other allowed value
+# {2} is the value of the destination type
+INVALID_PROPERTY_DESTINATION_TYPE_CWSJR1189=CWSJR1189E: Urm\u0103torul tip de destina\u0163ie pe o specifica\u0163ie de activare JMS este nevalid [{2}]. Sunt a\u015fteptate valorile [{0}] sau [{1}].
+INVALID_PROPERTY_DESTINATION_TYPE_CWSJR1189.explanation=\u00cen timpul valid\u0103rii propriet\u0103\u0163ilor configurate pe o specifica\u0163ie de activare JMS, s-a g\u0103sit tip destina\u0163ie nevalid.
+INVALID_PROPERTY_DESTINATION_TYPE_CWSJR1189.useraction=Corecta\u0163i valoarea propriet\u0103\u0163ii tip destina\u0163ie \u00een specifica\u0163ia de activare, apoi reporni\u0163i serverul.
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is the other allowed value
+# {2} is the value of the acknowledge mode
+INVALID_PROPERTY_ACKNOWLEDGE_MODE_CWSJR1190=CWSJR1190E: Urm\u0103torul mod de confirmare pe o specifica\u0163ie de activare JMS este nevalid [{2}]. Sunt a\u015fteptate valorile [{0}] sau [{1}].
+INVALID_PROPERTY_ACKNOWLEDGE_MODE_CWSJR1190.explanation=\u00cen timpul valid\u0103rii propriet\u0103\u0163ilor configurate pe o specifica\u0163ie de activare JMS, s-a g\u0103sit mod confirmare nevalid.
+INVALID_PROPERTY_ACKNOWLEDGE_MODE_CWSJR1190.useraction=Corecta\u0163i valoarea propriet\u0103\u0163ii mod confirmare \u00een specifica\u0163ia de activare, apoi reporni\u0163i serverul.
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the read ahead
+INVALID_PROPERTY_READ_AHEAD_CWSJR1191=CWSJR1191E: Urm\u0103toarea valoare citire \u00eenainte pe o specifica\u0163ie de activare JMS este nevalid\u0103 [{3}]. Sunt a\u015fteptate valorile [{0}], [{1}] sau [{2}].
+INVALID_PROPERTY_READ_AHEAD_CWSJR1191.explanation=\u00cen timpul valid\u0103rii propriet\u0103\u0163ilor configurate pe o specifica\u0163ie de activare JMS, s-a g\u0103sit valoare citire \u00eenainte nevalid\u0103.
+INVALID_PROPERTY_READ_AHEAD_CWSJR1191.useraction=Corecta\u0163i valoarea propriet\u0103\u0163ii citire \u00eenainte \u00een specifica\u0163ia de activare, apoi reporni\u0163i serverul.
+# -------------------------------------------------------------------------------------------------
+# {0} is the queue class expected
+# {1} is the queue class we were passed
+INVALID_PROPERTY_QUEUE_CWSJR1192=CWSJR1192E: Specifica\u0163iile de activare JMS ce folosesc un tip de destina\u0163ie coad\u0103 trebuie s\u0103 aib\u0103 o destina\u0163ie de tipul [{0}] dar destina\u0163ia transmis\u0103 a fost de tipul [{1}]
+INVALID_PROPERTY_QUEUE_CWSJR1192.explanation=\u00cen timpul valid\u0103rii propriet\u0103\u0163ilor configurate pe o specifica\u0163ie de activare JMS, s-a g\u0103sit destina\u0163ie nevalid\u0103.
+INVALID_PROPERTY_QUEUE_CWSJR1192.useraction=Corecta\u0163i valoarea propriet\u0103\u0163ii destina\u0163ie \u00een specifica\u0163ia de activare, apoi reporni\u0163i serverul.
+# -------------------------------------------------------------------------------------------------
+# {0} is the topic class expected
+# {1} is the topic class we were passed
+INVALID_PROPERTY_TOPIC_CWSJR1193=CWSJR1193E: Specifica\u0163iile de activare JMS ce folosesc un tip de destina\u0163ie subiect trebuie s\u0103 aib\u0103 o destina\u0163ie de tipul [{0}] dar destina\u0163ia transmis\u0103 a fost de tipul [{1}]
+INVALID_PROPERTY_TOPIC_CWSJR1193.explanation=\u00cen timpul valid\u0103rii propriet\u0103\u0163ilor configurate pe o specifica\u0163ie de activare JMS, s-a g\u0103sit destina\u0163ie nevalid\u0103.
+INVALID_PROPERTY_TOPIC_CWSJR1193.useraction=Corecta\u0163i valoarea propriet\u0103\u0163ii destina\u0163ie \u00een specifica\u0163ia de activare, apoi reporni\u0163i serverul.
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is the other allowed value
+# {2} is the value of the subscription durability
+INVALID_PROPERTY_SUBDUR_CWSJR1194=CWSJR1194E: Urm\u0103toarea durabilitate de abonament pe o specifica\u0163ie de activare JMS este nevalid\u0103 [{2}]. Sunt a\u015fteptate valorile [{0}] sau [{1}].
+INVALID_PROPERTY_SUBDUR_CWSJR1194.explanation=\u00cen timpul valid\u0103rii propriet\u0103\u0163ilor configurate pe o specifica\u0163ie de activare JMS, s-a g\u0103sit durabulitate abonamnet nevalid\u0103.
+INVALID_PROPERTY_SUBDUR_CWSJR1194.useraction=Corecta\u0163i valoarea propriet\u0103\u0163ii durabilitate abonament \u00een specifica\u0163ia de activare, apoi reporni\u0163i serverul.
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_DURSUBHOME_CWSJR1195=CWSJR1195E: Domiciliul abonamentului durabil pe o specifica\u0163ie de activare JMS trebuie s\u0103 aib\u0103 o valoare atunci c\u00e2nd sunt folosite abonamente durabile.
+INVALID_PROPERTY_DURSUBHOME_CWSJR1195.explanation=\u00cen timpul valid\u0103rii propriet\u0103\u0163ilor configurate pe o specifica\u0163ie de activare JMS, s-a g\u0103sit abonament stabil domiciliu nevalid.
+INVALID_PROPERTY_DURSUBHOME_CWSJR1195.useraction=Corecta\u0163i valoarea propriet\u0103\u0163ii abonament stabil domiciliu \u00een specifica\u0163ia de activare, apoi reporni\u0163i serverul.
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_SUBNAME_CWSJR1196=CWSJR1196E: Numele abonamentului pe o specifica\u0163ie de activare JMS trebuie s\u0103 aib\u0103 o valoare atunci c\u00e2nd sunt folosite abonamente durabile.
+INVALID_PROPERTY_SUBNAME_CWSJR1196.explanation=\u00cen timpul valid\u0103rii propriet\u0103\u0163ilor configurate pe o specifica\u0163ie de activare JMS, s-a g\u0103sit nume abonament nevalid.
+INVALID_PROPERTY_SUBNAME_CWSJR1196.useraction=Corecta\u0163i valoarea propriet\u0103\u0163ii nume abonament \u00een specifica\u0163ia de activare, apoi reporni\u0163i serverul.
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the subscription durability
+INVALID_PROPERTY_SHARE_DURSUB_CWSJR1197=CWSJR1197E: Urm\u0103torul c\u00e2mp de partajare abonament durabil pe o specifica\u0163ie de activare JMS este nevalid [{3}]. Sunt a\u015fteptate valorile [{0}], [{1}] sau [{2}].
+INVALID_PROPERTY_SHARE_DURSUB_CWSJR1197.explanation=\u00cen timpul valid\u0103rii propriet\u0103\u0163ilor configurate pe o specifica\u0163ie de activare JMS, s-a g\u0103sit proprietate abonament stabil partajat nevalid.
+INVALID_PROPERTY_SHARE_DURSUB_CWSJR1197.useraction=Corecta\u0163i valoarea propriet\u0103\u0163ii abonament stabil partajat \u00een specifica\u0163ia de activare, apoi reporni\u0163i serverul.
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_MAXCONC_CWSJR1198=CWSJR1198E: Concuren\u0163a maxim\u0103 pe o specifica\u0163ie de activare JMS trebuie s\u0103 primeasc\u0103 o valoare pozitiv\u0103
+INVALID_PROPERTY_MAXCONC_CWSJR1198.explanation=\u00cen timpul valid\u0103rii propriet\u0103\u0163ilor configurate pe o specifica\u0163ie de activare JMS, s-a g\u0103sit valoare num\u0103r maxim de concuren\u0103 nevalid\u0103.
+INVALID_PROPERTY_MAXCONC_CWSJR1198.useraction=Corecta\u0163i valoarea propriet\u0103\u0163ii num\u0103r maxim de concure\u0163\u0103 \u00een specifica\u0163ia de activare, apoi reporni\u0163i serverul.
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_MAXBATCH_CWSJR1199=CWSJR1199E: Dimensiunea maxim\u0103 batch pe o specifica\u0163ie de activare JMS trebuie s\u0103 primeasc\u0103 o valoare pozitiv\u0103
+INVALID_PROPERTY_MAXBATCH_CWSJR1199.explanation=\u00cen timpul valid\u0103rii propriet\u0103\u0163ilor configurate pe o specifica\u0163ie de activare JMS, s-a g\u0103sit dimensiune maxim\u0103 lot nevalid\u0103.
+INVALID_PROPERTY_MAXBATCH_CWSJR1199.useraction=Corecta\u0163i valoarea propriet\u0103\u0163ii dimensiune maxim\u0103 loc \u00een specifica\u0163ia de activare, apoi reporni\u0163i serverul.
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_SHARECMP_CWSJR1200=CWSJR1200E: C\u00e2mpul partajare surs\u0103 de date cu CMP pe o specifica\u0163ie de activare JMS trebuie setat
+INVALID_PROPERTY_SHARECMP_CWSJR1200.explanation=\u00cen timpul valid\u0103rii propriet\u0103\u0163ilor configurate pe o specifica\u0163ie de activare JMS, s-a g\u0103sit proprietate partajare surs\u0103 de date cu CMP nevalid\u0103.
+INVALID_PROPERTY_SHARECMP_CWSJR1200.useraction=Corecta\u0163i valoarea propriet\u0103\u0163ii partajare surs\u0103 de date cu CMP \u00een specifica\u0163ia de activare, apoi reporni\u0163i serverul.
+
+#
+# JmsJcaFactory
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the exception thrown
+EXCEPTION_DURING_INIT_CWSJR1441=CWSJR1441E: A survenit o eroare intern\u0103. Crearea obiectului JmsJcaFactory a e\u015fuat cu excep\u0163ia: {0}.
+EXCEPTION_DURING_INIT_CWSJR1441.explanation=A ap\u0103rut o problem\u0103 la crearea obiectului JmsJcaFactory. Verifica\u0163i mesajele de eroare care acompaniaz\u0103 acest mesaj pentru mai multe informa\u0163ii.
+EXCEPTION_DURING_INIT_CWSJR1441.useraction=CMSG0002
+
+#
+# JmsJcaManagedConnectionSynchronizationProvider
+#
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+CREATE_UNCOORDINATED_TRANSACTION_CWSJR1461=CWSJR1461E: A ap\u0103rut o eroare intern\u0103.  Crearea obiectului SIUncoordinatedTransaction a e\u015fuat cu excep\u0163ia: {0}.
+CREATE_UNCOORDINATED_TRANSACTION_CWSJR1461.explanation=S-a primit o excep\u0163ie c\u00e2nd adaptorul de resurse JMS tehnologii de integrare servicii a \u00eencercat s\u0103 creeze o SIUncoordinatedTransaction pentru a \u00eenregistra \u00eentr-o tranzac\u0163ie ca Synchronization.
+CREATE_UNCOORDINATED_TRANSACTION_CWSJR1461.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+NOT_SUPPORTED_EXCEPTION_CWSJR1462=CWSJR1462E: Conexiunea la motorul de mesagerie nu suport\u0103 optimizarea partaj\u0103rii persisten\u0163ei gestionate de container.
+NOT_SUPPORTED_EXCEPTION_CWSJR1462.explanation=Conexiunea pe care adaptorul de resurse JMS pentru tehnologii de integrare servicii a ob\u0163inut-o nu suport\u0103 optimizare persisten\u0163\u0103 gestionat\u0103 container pentru c\u0103 este pe un motor de mesagerie la distan\u0163\u0103.
+NOT_SUPPORTED_EXCEPTION_CWSJR1462.useraction=Asigura\u0163i-v\u0103 ca exist\u0103 o fabric\u0103 local\u0103 de mesaje disponibil\u0103 la care se poate conecta adaptorul de resurse, sau dezactiva\u0163i optimizarea de partajare \u00een defini\u0163ia fabricii de conexiuni folosind consola de administrare.
+# -------------------------------------------------------------------------------------------------
+# {0} the managed connection
+ACTIVE_SYNCHRONIZATION_EXCEPTION_CWSJR1463=CWSJR1463E: A ap\u0103rut o eroare intern\u0103.  Conexiunea gestionat\u0103 {0} este deja \u00eenregistrat\u0103 ca o sincronizare \u00een o tranzac\u0163ie.
+ACTIVE_SYNCHRONIZATION_EXCEPTION_CWSJR1463.explanation=A a p\u0103rut un apel la getSynchronization c\u00e2nd conexiunea gestionat\u0103 este deja \u00eenregistrat\u0103 ca o sincronizare \u00eentr-o tranzac\u0163ie.
+ACTIVE_SYNCHRONIZATION_EXCEPTION_CWSJR1463.useraction=CMSG0002
+
+#
+# JmsJcaEndpointInvokerImpl
+#
+# -------------------------------------------------------------------------------------------------
+# {0} The exception that was thrown
+UTILITY_CLASS_CWSJR1481=CWSJR1481E: O eroare intern\u0103.  S-a aruncat urm\u0103toarea excepe\u0163ie \u00een timp ce se \u00eencerca ob\u0163inerea unei clase de utilitate: {0}
+UTILITY_CLASS_CWSJR1481.explanation=\u00cen timpul activ\u0103rii punctului final, adaptorul de resurse JMS a \u00eencercat s\u0103 ob\u0163in\u0103 o clas\u0103 de utilitate \u015fi s-a primit o excep\u0163ie nea\u015fteptat\u0103.
+UTILITY_CLASS_CWSJR1481.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint
+# {1} the expected interface
+UNEXPECTED_ENDPOINT_CWSJR1482=CWSJR1482E: A survenit o eroare intern\u0103. Punctul final de mesaj {0} nu implementeaz\u0103 interfa\u0163a a\u015fteptat\u0103 {1}.
+UNEXPECTED_ENDPOINT_CWSJR1482.explanation=Fabrica de puncte finale mesaje a returnat un punct final de mesaje care nu implementeaz\u0103 interfa\u0163aMessageListener cum s-a a\u015fteptat.
+UNEXPECTED_ENDPOINT_CWSJR1482.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+ON_MESSAGE_CWSJR1483=CWSJR1483E: A survenit o eroare intern\u0103. S-a aruncat excep\u0163ia {0} la \u00eencercarea de ob\u0163inere a unei instan\u0163e a metodei onMessage.
+ON_MESSAGE_CWSJR1483.explanation=S-a creat o excep\u0163ie \u00een timpul \u00eencerc\u0103rii de ob\u0163inere a unei instan\u0163e a metodei onMessage.
+ON_MESSAGE_CWSJR1483.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSJR9999=CWSJR9999E: ''{0}''
+TEMPORARY_CWSJR9999.explanation=Dac\u0103 mesajul nu v\u0103 d\u0103 suficiente informa\u0163ii, verifica\u0163i mesajele de eroare care acompaniaz\u0103 acest mesaj pentru mai multe informa\u0163ii.
+TEMPORARY_CWSJR9999.useraction=Verifica\u0163i mesajele de eroare care acompaniaz\u0103 acest mesaj pentru mai multe informa\u0163ii.

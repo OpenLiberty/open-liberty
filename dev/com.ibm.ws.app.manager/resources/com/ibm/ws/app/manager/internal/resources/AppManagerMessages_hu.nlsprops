@@ -1,0 +1,204 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager/resources/com/ibm/ws/app/manager/internal/resources/AppManagerMessages.nlsprops
+#COMPONENTPREFIX CWWKZ
+#COMPONENTNAMEFOR CWWKZ App Manager
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0001-0050: app manager
+#0051-0099: app manager monitor and update monitor
+#0101-0200: Project: com.ibm.ws.app.manager.war
+#0301-0400: Project: com.ibm.ws.app.manager.eba
+# -------------------------------------------------------------------------------------------------
+
+#{0} is application name
+APPLICATION_START_SUCCESSFUL=CWWKZ0001I: A(z) {0} alkalmaz\u00e1s {1} m\u00e1sodperc alatt elindult.
+APPLICATION_START_SUCCESSFUL.explanation=A kiszolg\u00e1l\u00f3 sikeresen elind\u00edtotta az alkalmaz\u00e1st.
+APPLICATION_START_SUCCESSFUL.useraction=Semmit sem kell tennie.
+
+#{0} is application name
+#{1} is exception message
+APPLICATION_START_FAILED=CWWKZ0002E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} alkalmaz\u00e1s ind\u00edt\u00e1sa sor\u00e1n. A kiv\u00e9tel \u00fczenet: {1}
+APPLICATION_START_FAILED.explanation=A kiszolg\u00e1l\u00f3 nem tudta elind\u00edtani az alkalmaz\u00e1st.
+APPLICATION_START_FAILED.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt olvassa el a kiv\u00e9tel \u00fczenetet.
+
+#{0} is application name
+APPLICATION_UPDATE_SUCCESSFUL=CWWKZ0003I: A(z) {0} alkalmaz\u00e1s {1} m\u00e1sodperc alatt friss\u00fclt.
+APPLICATION_UPDATE_SUCCESSFUL.explanation=A kiszolg\u00e1l\u00f3 sikeresen friss\u00edtette az alkalmaz\u00e1st.
+APPLICATION_UPDATE_SUCCESSFUL.useraction=Semmit sem kell tennie.
+
+#{0} is application name
+#{1} is exception message
+APPLICATION_UPDATE_FAILED=CWWKZ0004E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} alkalmaz\u00e1s ind\u00edt\u00e1sa sor\u00e1n. A kiv\u00e9tel \u00fczenet: {1}
+APPLICATION_UPDATE_FAILED.explanation=A kiszolg\u00e1l\u00f3 nem tudta friss\u00edteni az alkalmaz\u00e1st.
+APPLICATION_UPDATE_FAILED.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt olvassa el a kiv\u00e9tel \u00fczenetet.
+
+#Existing message changed per resolution to design issue 117781
+#{0} is the location of the file
+NO_APPLICATION_HANDLER=CWWKZ0005E: A kiszolg\u00e1l\u00f3 nincs be\u00e1ll\u00edtva a(z) {0} helyen tal\u00e1lhat\u00f3 er\u0151forr\u00e1s kezel\u00e9s\u00e9re.
+NO_APPLICATION_HANDLER.explanation=A kiszolg\u00e1l\u00f3 jelenleg nincs konfigur\u00e1lva az ilyen t\u00edpus\u00fa er\u0151forr\u00e1sokhoz sz\u00fcks\u00e9ges \u00f6sszes szolg\u00e1ltat\u00e1sra, \u00e9s \u00edgy nem tudta elind\u00edtani az er\u0151forr\u00e1st.
+NO_APPLICATION_HANDLER.useraction=M\u00f3dos\u00edtsa a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3j\u00e1t, hogy tartalmazza az ilyen t\u00edpus\u00fa er\u0151forr\u00e1sok t\u00e1mogat\u00e1s\u00e1hoz sz\u00fcks\u00e9ges valamennyi szolg\u00e1ltat\u00e1st.
+
+#{0) is directory path
+#{1} is the application name
+CANNOT_CREATE_DIRECTORY=CWWKZ0006E: A kiszolg\u00e1l\u00f3 nem tudott l\u00e9trehozni egy let\u00f6lt\u00e9si helyet a(z) {1} alkalmaz\u00e1shoz a k\u00f6vetkez\u0151 helyen: {0}
+CANNOT_CREATE_DIRECTORY.explanation=Amikor a kiszolg\u00e1l\u00f3 megk\u00eds\u00e9relte let\u00f6lteni a telep\u00edtend\u0151 alkalmaz\u00e1st, nem tudta l\u00e9trehozni a let\u00f6lt\u00e9si k\u00f6nyvt\u00e1rat.
+CANNOT_CREATE_DIRECTORY.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy van elegend\u0151 szabad lemezter\u00fclet a let\u00f6lt\u00e9shez.
+
+#{0} is url
+#{1} is error message
+DOWNLOAD_EXCEPTION_ENCOUNTERED=CWWKZ0007W: Kiv\u00e9tel t\u00f6rt\u00e9nt a f\u00e1jl let\u00f6lt\u00e9sekor a k\u00f6vetkez\u0151 helyr\u0151l: {0}. A kiv\u00e9tel \u00fczenet: {1}
+DOWNLOAD_EXCEPTION_ENCOUNTERED.explanation=A kiszolg\u00e1l\u00f3 nem tudta let\u00f6lteni az alkalmaz\u00e1st.
+DOWNLOAD_EXCEPTION_ENCOUNTERED.useraction=Ha azt szerette volna, hogy a kiszolg\u00e1l\u00f3 t\u00f6ltse le az alkalmaz\u00e1st, akkor ellen\u0151rizze, hogy a f\u00e1jl let\u00f6lthet\u0151-e.
+
+#CMSG0001 AND 0002 are predefined as basically "an error happened, contact support."
+LOCATION_SERVICE_NOT_FOUND=CWWKZ0008E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A rendszer nem tudta lek\u00e9rdezni a f\u00e1jlhelyek felold\u00e1s\u00e1hoz sz\u00fcks\u00e9ges hely szolg\u00e1ltat\u00e1st.
+LOCATION_SERVICE_NOT_FOUND.explanation=CMSG0001
+LOCATION_SERVICE_NOT_FOUND.useraction=CMSG0002
+
+#{0} is application name
+APPLICATION_STOPPED=CWWKZ0009I: A(z) {0} alkalmaz\u00e1s sikeresen le\u00e1llt.
+APPLICATION_STOPPED.explanation=A kiszolg\u00e1l\u00f3 sikeresen le\u00e1ll\u00edtotta az alkalmaz\u00e1st.
+APPLICATION_STOPPED.useraction=Semmit sem kell tennie.
+
+#{0} is application name
+#{1} is excaption message
+APPLICATION_STOP_FAILED=CWWKZ0010E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} alkalmaz\u00e1s le\u00e1ll\u00edt\u00e1sa sor\u00e1n. A kiv\u00e9tel \u00fczenet: {1}
+APPLICATION_STOP_FAILED.explanation=A kiszolg\u00e1l\u00f3 nem tudta le\u00e1ll\u00edtani az alkalmaz\u00e1st.
+APPLICATION_STOP_FAILED.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1s egy olyan \u00e1llapotban van, amelyben le\u00e1ll\u00edthat\u00f3.
+
+#CMSG0001 AND 0002 are predefined as basically "an error happened, contact support." 
+#{0} is file name
+#{1} is exception message
+FIND_FILE_EXCEPTION_ENCOUNTERED=CWWKZ0011E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} f\u00e1jl keres\u00e9se sor\u00e1n. A kiv\u00e9tel \u00fczenet: {1}
+FIND_FILE_EXCEPTION_ENCOUNTERED.explanation=CMSG0001
+FIND_FILE_EXCEPTION_ENCOUNTERED.useraction=CMSG0002
+
+#{0} is application name
+APPLICATION_NOT_STARTED=CWWKZ0012I: A(z) {0} alkalmaz\u00e1s nincs elind\u00edtva.
+APPLICATION_NOT_STARTED.explanation=Az alkalmaz\u00e1s kor\u00e1bbi hib\u00e1k miatt nem ind\u00edthat\u00f3 el. 
+APPLICATION_NOT_STARTED.useraction=Ellen\u0151rizze az alkalmaz\u00e1skonfigur\u00e1ci\u00f3t, valamint az alkalmaz\u00e1s ind\u00edt\u00e1sa sor\u00e1n a napl\u00f3kba \u00edrt hib\u00e1kat.
+
+#{0} the application name
+DUPLICATE_APPLICATION_NAME=CWWKZ0013E: K\u00e9t {0} nev\u0171 alkalmaz\u00e1s nem ind\u00edthat\u00f3 el.
+DUPLICATE_APPLICATION_NAME.explanation=Az alkalmaz\u00e1sneveknek egyedieknek kell lenni\u00fck.  Ennek az lehet az oka, hogy k\u00e9t alkalmaz\u00e1s lett azonos n\u00e9vvel be\u00e1ll\u00edtva, vagy egy alkalmaz\u00e1s a server.xml f\u00e1jlban megadott be\u00e1ll\u00edt\u00e1sok alapj\u00e1n \u00e9s az alkalmaz\u00e1s dropins k\u00f6nyvt\u00e1rba helyez\u00e9s\u00e9vel egyar\u00e1nt telep\u00edt\u00e9sre ker\u00fclt.
+DUPLICATE_APPLICATION_NAME.useraction=Ha k\u00e9t alkalmaz\u00e1s rendelkezik ugyanazzal a n\u00e9vvel, akkor t\u00e1vol\u00edtsa el vagy nevezze \u00e1t az egyik alkalmaz\u00e1st. Ha egyetlen alkalmaz\u00e1s lett k\u00e9tf\u00e9lek\u00e9ppen telep\u00edtve, akkor m\u00f3dos\u00edtsa a be\u00e1ll\u00edt\u00e1sokat \u00fagy, hogy csak az egyik telep\u00edt\u00e9si m\u00f3dszer ker\u00fclj\u00f6n felhaszn\u00e1l\u00e1sra.
+
+#{0} the application name
+#{1} the application location that cannot be found
+APPLICATION_NOT_FOUND=CWWKZ0014W: A(z) {0} alkalmaz\u00e1s nem ind\u00edthat\u00f3, mert nem tal\u00e1lhat\u00f3 a k\u00f6vetkez\u0151 helyen: {1}.
+APPLICATION_NOT_FOUND.explanation=Az alkalmaz\u00e1s ind\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rletkor a kiszolg\u00e1l\u00f3 nem tal\u00e1lta az alkalmaz\u00e1st a megadott helyen (vagy relat\u00edv helyeken, ha relat\u00edv el\u00e9r\u00e9si \u00fatr\u00f3l van sz\u00f3).
+APPLICATION_NOT_FOUND.useraction=Ellen\u0151rizze, hogy a megadott hely helyes-e az alkalmaz\u00e1s eset\u00e9ben.
+
+APPLICATION_NO_LOCATION_NO_NAME=CWWKZ0015E: Az alkalmaz\u00e1s hely vagy n\u00e9v n\u00e9lk\u00fcl lett be\u00e1ll\u00edtva.
+APPLICATION_NO_LOCATION_NO_NAME.explanation=Az alkalmaz\u00e1s hely vagy n\u00e9v megad\u00e1sa n\u00e9lk\u00fcl lett be\u00e1ll\u00edtva.
+APPLICATION_NO_LOCATION_NO_NAME.useraction=Hely hozz\u00e1ad\u00e1s\u00e1hoz friss\u00edtse a konfigur\u00e1ci\u00f3t.
+
+APPLICATION_NO_LOCATION=CWWKZ0016E: A(z) {0} alkalmaz\u00e1s hely n\u00e9lk\u00fcl lett be\u00e1ll\u00edtva.
+APPLICATION_NO_LOCATION.explanation=Az alkalmaz\u00e1s hely megad\u00e1sa n\u00e9lk\u00fcl lett be\u00e1ll\u00edtva.
+APPLICATION_NO_LOCATION.useraction=Hely hozz\u00e1ad\u00e1s\u00e1hoz friss\u00edtse a konfigur\u00e1ci\u00f3t.
+
+APPLICATION_NO_TYPE=CWWKZ0017E: Nem lehetett meg\u00e1llap\u00edtani a(z) {1} helyb\u0151l a(z) {0} alkalmaz\u00e1s t\u00edpus\u00e1t.
+APPLICATION_NO_TYPE.explanation=Az alkalmaz\u00e1s t\u00edpus megad\u00e1sa n\u00e9lk\u00fcl lett be\u00e1ll\u00edtva. A t\u00edpust nem lehetett a helyb\u0151l meg\u00e1llap\u00edtani.
+APPLICATION_NO_TYPE.useraction=T\u00edpus hozz\u00e1ad\u00e1s\u00e1hoz friss\u00edtse a konfigur\u00e1ci\u00f3t.
+
+STARTING_APPLICATION=CWWKZ0018I: A(z) {0} alkalmaz\u00e1s ind\u00edt\u00e1sa.
+STARTING_APPLICATION.explanation=Az alkalmaz\u00e1s elindul.
+STARTING_APPLICATION.useraction=Semmit sem kell tennie.
+
+PARTIAL_START=CWWKZ0019I: A(z) {0} alkalmaz\u00e1s {1} m\u00e1sodperc alatt r\u00e9szlegesen elindult. A kiszolg\u00e1l\u00f3 folytatja a h\u00e1tt\u00e9rben az alkalmaz\u00e1s ind\u00edt\u00e1s\u00e1t.
+PARTIAL_START.explanation=A teljes alkalmaz\u00e1s nem tudott elindulni. Ez el\u0151fordulhat olyan ear f\u00e1jl eset\u00e9n, amely k\u00e9t war f\u00e1jlt tartalmaz, \u00e9s csak egy war f\u00e1jl indul el.
+PARTIAL_START.useraction=Oldja meg az alkalmaz\u00e1s azon r\u00e9sze eset\u00e9ben felmer\u00fclt probl\u00e9m\u00e1t, amely nem tudott elindulni, \u00e9s telep\u00edtse \u00fajra az alkalmaz\u00e1st.
+
+#{0} is application name
+APPLICATION_NOT_UPDATED=CWWKZ0020I: A(z) {0} alkalmaz\u00e1s nem friss\u00fclt.
+APPLICATION_NOT_UPDATED.explanation=Az alkalmaz\u00e1s kor\u00e1bbi hib\u00e1k miatt nem ind\u00edthat\u00f3 el. 
+APPLICATION_NOT_UPDATED.useraction=Ellen\u0151rizze az alkalmaz\u00e1skonfigur\u00e1ci\u00f3t, valamint az alkalmaz\u00e1s ind\u00edt\u00e1sa sor\u00e1n a napl\u00f3kba \u00edrt hib\u00e1kat.
+
+#Existing message changed per resolution to design issue 117781
+#{0} is the location of the file
+APPLICATION_AT_LOCATION_NOT_VALID=CWWKZ0021E: A kiszolg\u00e1l\u00f3 nincs be\u00e1ll\u00edtva a(z) {0} helyen tal\u00e1lhat\u00f3 er\u0151forr\u00e1s kezel\u00e9s\u00e9re.
+APPLICATION_AT_LOCATION_NOT_VALID.explanation=A kiszolg\u00e1l\u00f3 jelenleg nincs konfigur\u00e1lva az ilyen t\u00edpus\u00fa er\u0151forr\u00e1sokhoz sz\u00fcks\u00e9ges \u00f6sszes szolg\u00e1ltat\u00e1sra, \u00e9s \u00edgy nem tudta elind\u00edtani az er\u0151forr\u00e1st.
+APPLICATION_AT_LOCATION_NOT_VALID.useraction=M\u00f3dos\u00edtsa a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3j\u00e1t, hogy tartalmazza az ilyen t\u00edpus\u00fa er\u0151forr\u00e1sok t\u00e1mogat\u00e1s\u00e1hoz sz\u00fcks\u00e9ges valamennyi szolg\u00e1ltat\u00e1st.
+
+APPLICATION_SLOW_STARTUP=CWWKZ0022W: A(z) {0} alkalmaz\u00e1s nem indult el {1} m\u00e1sodperc alatt.
+APPLICATION_SLOW_STARTUP.explanation=Az alkalmaz\u00e1s nem indult el a v\u00e1rt id\u0151 alatt. Ennek oka az lehet, hogy a kiszolg\u00e1l\u00f3 t\u00falterhelt vagy az alkalmaz\u00e1s nagy m\u00e9ret\u0171. Ha az alkalmaz\u00e1s a kiszolg\u00e1l\u00f3ind\u00edt\u00e1s r\u00e9szek\u00e9nt indul, akkor a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa befejez\u0151dik an\u00e9lk\u00fcl, hogy megv\u00e1rn\u00e1 az alkalmaz\u00e1s elindul\u00e1s\u00e1t.
+APPLICATION_SLOW_STARTUP.useraction=Ha az alkalmaz\u00e1s indul\u00e1sa sok id\u0151t vesz ig\u00e9nybe, akkor nincs teend\u0151. Egy\u00e9b esetben ellen\u0151rizze a kiszolg\u00e1l\u00f3 napl\u00f3iban, hogy egy\u00e9b \u00fczenetek jelzik-e az okot.
+
+#{0} is application name
+MONITOR_APP_STOP_FAIL=CWWKZ0053E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} alkalmas automatikus le\u00e1ll\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
+MONITOR_APP_STOP_FAIL.explanation=Az alkalmaz\u00e1sfigyel\u0151 nem tal\u00e1lta a fut\u00f3 alkalmaz\u00e1st a kiszolg\u00e1l\u00f3n.
+MONITOR_APP_STOP_FAIL.useraction=Semmit sem kell tennie.
+
+#{0} is application name
+INVALID_FILE_NAME=CWWKZ0054E: Az alkalmaz\u00e1sfigyel\u0151 szolg\u00e1ltat\u00e1s nem tal\u00e1lt megfelel\u0151 nevet a(z) {0} alkalmaz\u00e1shoz.
+INVALID_FILE_NAME.explanation=Az alkalmaz\u00e1sfigyel\u0151 szolg\u00e1ltat\u00e1s a kiterjeszt\u00e9s n\u00e9lk\u00fcli f\u00e1jlnevet haszn\u00e1lja az alkalmaz\u00e1sn\u00e9v el\u0151\u00e1ll\u00edt\u00e1s\u00e1hoz. Az alkalmaz\u00e1sfigyel\u0151 szolg\u00e1ltat\u00e1s nem tudta meg\u00e1llap\u00edtani az alkalmaz\u00e1snevet, miut\u00e1n elt\u00e1vol\u00edtotta a kiterjeszt\u00e9st a f\u00e1jln\u00e9vb\u0151l.
+INVALID_FILE_NAME.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1s f\u00e1jlneve nem pont (.) karakterrel kezd\u0151dik, \u00e9s a f\u00e1jlkiterjeszt\u00e9s el\u0151tt van egy n\u00e9v.
+
+#{0} is application name
+UNABLE_TO_DETERMINE_APPLICATION_TYPE=CWWKZ0055E: Az alkalmaz\u00e1sfigyel\u0151 szolg\u00e1ltat\u00e1s nem tudta meg\u00e1llap\u00edtani a(z) {0} alkalmaz\u00e1s t\u00edpus\u00e1t.
+UNABLE_TO_DETERMINE_APPLICATION_TYPE.explanation=Az alkalmaz\u00e1sfigyel\u0151 szolg\u00e1ltat\u00e1s nem tudta meg\u00e1llap\u00edtani az alkalmaz\u00e1s t\u00edpus\u00e1t a f\u00e1jlkiterjeszt\u00e9s vagy a sz\u00fcl\u0151k\u00f6nyvt\u00e1r alapj\u00e1n.
+UNABLE_TO_DETERMINE_APPLICATION_TYPE.useraction=Biztos\u00edtsa, hogy az alkalmaz\u00e1shoz tartoz\u00f3 f\u00e1jl kiterjeszt\u00e9se vagy a tartalmaz\u00f3 k\u00f6nyvt\u00e1r neve azonos\u00edtsa az alkalmaz\u00e1s t\u00edpus\u00e1t.
+
+#{0} is application name
+MONITOR_APP_START_FAIL=CWWKZ0056E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} alkalmaz\u00e1s automatikus elind\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
+MONITOR_APP_START_FAIL.explanation=Az alkalmaz\u00e1sfigyel\u0151 nem tudta elind\u00edtani az alkalmaz\u00e1st.
+MONITOR_APP_START_FAIL.useraction=Semmit sem kell tennie.
+
+#{0} is file name
+#{1} is line number
+#{2} is the line which is broken
+MONITOR_INVALID_CACHE_FILE_ENTRY=CWWKZ0057E: Az elind\u00edtott alkalmaz\u00e1sok gyors\u00edt\u00f3t\u00e1razott list\u00e1j\u00e1nak beolvas\u00e1sakor az alkalmaz\u00e1sfigyel\u0151b\u0151l ({0}), a(z) {1} sz\u00e1m\u00fa sor \u00e9rv\u00e9nytelen volt. A sor: {2}.
+MONITOR_INVALID_CACHE_FILE_ENTRY.explanation=Az alkalmaz\u00e1sfigyel\u0151 nem tudta beolvasni az \u00f6sszes elind\u00edtott alkalmaz\u00e1s list\u00e1j\u00e1t.
+MONITOR_INVALID_CACHE_FILE_ENTRY.useraction=Ind\u00edtsa el a kiszolg\u00e1l\u00f3t hideg ind\u00edt\u00e1ssal.
+
+#{0} is the start time in seconds
+APPLICATION_MONITOR_STARTED=CWWKZ0058I: {0} megfigyel\u00e9se alkalmaz\u00e1sok eset\u00e9ben. 
+APPLICATION_MONITOR_STARTED.explanation=A kiszolg\u00e1l\u00f3 megfigyeli a telep\u00edtend\u0151 alkalmaz\u00e1sok egy k\u00f6nyvt\u00e1r\u00e1t.
+APPLICATION_MONITOR_STARTED.useraction=Semmit sem kell tennie.
+
+#{0} is application name
+#{1} is application location
+INVALID_DELETE_OF_APPLICATION=CWWKZ0059E: A(z) {1} helyr\u0151l telep\u00edtett {0} alkalmaz\u00e1s t\u00f6r\u00f6lve lett, mik\u00f6zben m\u00e9g mindig konfigur\u00e1lva van.
+INVALID_DELETE_OF_APPLICATION.explanation=A server.xml f\u00e1jlban pillanatnyilag be\u00e1ll\u00edtott alkalmaz\u00e1st t\u00f6r\u00f6lt\u00e9k.
+INVALID_DELETE_OF_APPLICATION.useraction=Ha a t\u00f6rl\u00e9s sz\u00e1nd\u00e9kos volt, akkor t\u00e1vol\u00edtsa el az alkalmaz\u00e1skonfigur\u00e1ci\u00f3t a server.xml f\u00e1jlb\u00f3l.
+
+#{0} is the location of the directory we should have removed, but couldn't.
+MONITOR_DIR_CLEANUP_FAIL=CWWKZ0060E: A kiszolg\u00e1l\u00f3 nem tudja ki\u00fcr\u00edteni a r\u00e9gi megfigyelt k\u00f6nyvt\u00e1rat a k\u00f6vetkez\u0151 helyen: {0}.
+MONITOR_DIR_CLEANUP_FAIL.explanation=A r\u00e9gi k\u00f6nyvt\u00e1r nem t\u00e1vol\u00edthat\u00f3 el, b\u00e1r m\u00e1r nincs haszn\u00e1latban.
+MONITOR_DIR_CLEANUP_FAIL.useraction=Ha a r\u00e9gi k\u00f6nyvt\u00e1rra m\u00e1r nincs sz\u00fcks\u00e9g, akkor t\u00e1vol\u00edtsa el azt. Ha a k\u00f6nyvt\u00e1rra tov\u00e1bbra is sz\u00fcks\u00e9g van, akkor nincs teend\u0151je.
+
+#{0} is application name
+APPLICATION_MONITORING_FAIL=CWWKZ0060W: A(z) {0} alkalmaz\u00e1s nem figyelhet\u0151 meg.
+APPLICATION_MONITORING_FAIL.explanation=Az alkalmaz\u00e1s telep\u00edt\u00e9sre ker\u00fclt, de a megfigyel\u00e9se nem indult el, \u00edgy ha egy f\u00e1jl friss\u00edt\u00e9sre ker\u00fcl egy alkalmaz\u00e1son bel\u00fcl, akkor a v\u00e1ltoz\u00e1st a kiszolg\u00e1l\u00f3 nem fogja \u00e9rz\u00e9kelni. 
+APPLICATION_MONITORING_FAIL.useraction=Amikor az alkalmaz\u00e1sban f\u00e1jlokat friss\u00edt, az alkalmaz\u00e1st el kell t\u00e1vol\u00edtani, majd \u00fajra kell telep\u00edteni a kiszolg\u00e1l\u00f3ra.
+
+APPLICATION_LOCATION_INSIDE_DROPINS=CWWKZ0061E: A(z) {0} alkalmaz\u00e1s a(z) {1} helyen a megfigyelt {2} k\u00f6nyvt\u00e1ron bel\u00fcl van. Az alkalmaz\u00e1s figyelmen k\u00edv\u00fcl marad.
+APPLICATION_LOCATION_INSIDE_DROPINS.explanation=A kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3ban egy alkalmaz\u00e1selem az alkalmaz\u00e1s hely\u00e9t azon a k\u00f6nyvt\u00e1ron bel\u00fcl hat\u00e1rozta meg, amelyik az alkalmaz\u00e1sok megfigyelt k\u00f6nyvt\u00e1ra. Ennek eredm\u00e9nyek\u00e9pp az alkalmaz\u00e1selem figyelmen k\u00edv\u00fcl marad, \u00e9s az alkalmaz\u00e1s a megfigyelt k\u00f6nyvt\u00e1r tartalm\u00e1val ker\u00fcl ind\u00edt\u00e1sra, ha az alkalmaz\u00e1s jelen van a megfigyelt k\u00f6nyvt\u00e1rban.
+APPLICATION_LOCATION_INSIDE_DROPINS.useraction=Jav\u00edtsa az alkalmaz\u00e1selemet, vagy m\u00f3dos\u00edtsa a megfigyelt k\u00f6nyvt\u00e1r hely\u00e9t.
+
+APPLICATION_UPDATED=CWWKZ0062I: A(z) {0} alkalmaz\u00e1s friss\u00edt\u00e9sre ker\u00fclt, de nem lett \u00fajraind\u00edtva.
+APPLICATION_UPDATED.explanation=Kisebb m\u00f3dos\u00edt\u00e1s t\u00f6rt\u00e9nt a megadott alkalmaz\u00e1sban, ami nem ig\u00e9nyli az alkalmaz\u00e1s \u00fajraind\u00edt\u00e1s\u00e1t.
+APPLICATION_UPDATED.useraction=Semmit sem kell tennie.

@@ -1,0 +1,831 @@
+###############################################################################
+# Copyright (c) 1997, 2003 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=1.21.6.11
+#CMVCPATHNAME SERV1/ws/code/dynacache/src/com/ibm/ws/cache/resources/dynacache.nlsprops
+#COMPONENTPREFIX DYNA
+#COMPONENTNAMEFOR DYNA WebSphere Dynacache
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# No Comment Provided
+dynacache.priority=DYNA0001E: Warto\u015b\u0107 priorytetu dla wpisu {0} nie jest poprawn\u0105 liczb\u0105. Nale\u017cy u\u017cy\u0107 liczby ca\u0142kowitej zamiast {1}.
+dynacache.priority.explanation=Dla priorytetu u\u017cytkownik wprowadzi\u0142 liczb\u0119 inn\u0105 ni\u017c liczba ca\u0142kowita lub niedodatni\u0105 liczb\u0119 ca\u0142kowit\u0105.
+dynacache.priority.useraction=Zmie\u0144 warto\u015b\u0107 priorytetu na dodatni\u0105 liczb\u0119 ca\u0142kowit\u0105.
+
+# No Comment Provided
+dynacache.timeout=DYNA0002E: Warto\u015b\u0107 limitu czasu dla wpisu {0} nie jest poprawn\u0105 liczb\u0105. Nale\u017cy u\u017cy\u0107 liczby ca\u0142kowitej zamiast {1}.
+dynacache.timeout.explanation=Dla limitu czasu u\u017cytkownik wprowadzi\u0142 liczb\u0119 inn\u0105 ni\u017c liczba ca\u0142kowita.
+dynacache.timeout.useraction=Zmie\u0144 warto\u015b\u0107 limitu czasu na liczb\u0119 ca\u0142kowit\u0105.
+
+# No Comment Provided
+dynacache.badconfig=DYNA0003E: Serwlet {0} nie b\u0119dzie buforowany z powodu b\u0142\u0119dnej konfiguracji.
+dynacache.badconfig.explanation=Okre\u015blony serwlet zosta\u0142 niepoprawnie skonfigurowany.
+dynacache.badconfig.useraction=Sprawd\u017a, czy wprowadzono dozwolone warto\u015bci oraz czy nie s\u0105 one sprzeczne, a tak\u017ce upewnij si\u0119, \u017ce okre\u015blono wszystkie wymagane pola.
+
+# No Comment Provided
+dynacache.questionconfig=DYNA0004E: Utworzono domy\u015blny generator wpis\u00f3w w pami\u0119ci podr\u0119cznej, ale nie podano informacji konfiguracyjnych. Generator u\u017cyje identyfikatora URI bez parametr\u00f3w w celu wygenerowania identyfikator\u00f3w pami\u0119ci podr\u0119cznej. Te informacje nale\u017cy ustawi\u0107 w pliku servletcache.xml.
+dynacache.questionconfig.explanation=Skonfigurowano serwlet z prost\u0105 informacj\u0105 o konfiguracji. Jest to dozwolone, lecz niepoprawne (poza najprostszymi przypadkami).
+dynacache.questionconfig.useraction=Upewnij si\u0119, \u017ce serwlet do buforowania wymaga tylko wywo\u0142ania identyfikatora URI w celu okre\u015blenia unikalno\u015bci.
+
+# No Comment Provided
+dynacache.externaldup=DYNA0005E: Zduplikowany wpis ExternalCacheGroup dla adresu {0}.
+dynacache.externaldup.explanation=W konfiguracji wprowadzono duplikat grupy ExternalCacheGroup.
+dynacache.externaldup.useraction=Usu\u0144 zduplikowan\u0105 grup\u0119.
+
+# No Comment Provided
+dynacache.externalnotfound=DYNA0006E: Nie znaleziono wpisu ExternalCacheGroup {0}.
+dynacache.externalnotfound.explanation=Grupa zewn\u0119trznych pami\u0119ci podr\u0119cznych, do kt\u00f3rej nale\u017cy przekaza\u0107 dane wyj\u015bciowe tego serwletu, nie zosta\u0142a zarejestrowana w konfiguracji globalnej pami\u0119ci podr\u0119cznej.
+dynacache.externalnotfound.useraction=Sprawd\u017a poprawno\u015b\u0107 pisowni grupy zewn\u0119trznych pami\u0119ci podr\u0119cznych. Je\u015bli pisownia jest poprawna, zdefiniuj t\u0119 grup\u0119 we w\u0142a\u015bciwo\u015bciach globalnej pami\u0119ci podr\u0119cznej.
+
+# No Comment Provided
+dynacache.externaladaptererror=DYNA0007E: B\u0142\u0105d podczas inicjowania adaptera zewn\u0119trznej pami\u0119ci podr\u0119cznej: {0}
+dynacache.externaladaptererror.explanation=Podczas inicjowania adaptera zewn\u0119trznej pami\u0119ci podr\u0119cznej zg\u0142oszono podany b\u0142\u0105d.
+dynacache.externaladaptererror.useraction=Okre\u015bl przyczyn\u0119 b\u0142\u0119du na podstawie informacji dotycz\u0105cych b\u0142\u0119du zawartych w komunikacie.
+
+# No Comment Provided
+dynacache.notexist=DYNA0008E: Jednostka pami\u0119ci podr\u0119cznej ju\u017c nie istnieje.
+dynacache.notexist.explanation=Jednostka pami\u0119ci podr\u0119cznej, kt\u00f3ra nie jest ju\u017c zarejestrowana w grupie replikacji, wys\u0142a\u0142a komunikat lub zosta\u0142 on od niej odebrany.
+dynacache.notexist.useraction=Sprawd\u017a, czy podana jednostka pami\u0119ci podr\u0119cznej jest aktywna. Je\u015bli tak, zrestartuj serwer.
+
+# No Comment Provided
+dynacache.xmlnodoc=DYNA0009E: Brak elementu o nazwie {0} w dokumencie {1}.
+dynacache.xmlnodoc.explanation=Podczas analizowania podanego dokumentu nie znaleziono oczekiwanego elementu XML.
+dynacache.xmlnodoc.useraction=Por\u00f3wnaj format pliku XML z dokumentacj\u0105 produktu w celu znalezienia b\u0142\u0119du w konfiguracji.
+
+# No Comment Provided
+dynacache.xmlnoelem=DYNA0010E: Brak elementu o nazwie {0} w {1}.
+dynacache.xmlnoelem.explanation=Podczas analizowania plik\u00f3w XML konfiguracji nie znaleziono oczekiwanego elementu XML.
+dynacache.xmlnoelem.useraction=Por\u00f3wnaj format pliku XML z dokumentacj\u0105 produktu w celu znalezienia b\u0142\u0119du w konfiguracji.
+
+# No Comment Provided
+dynacache.fileNotFound=DYNA0011E: Nie znaleziono pliku pami\u0119ci podr\u0119cznej serwletu {0}. Buforowanie jest wy\u0142\u0105czone.
+dynacache.fileNotFound.explanation=Podane w\u0142a\u015bciwo\u015bci buforowania nie zosta\u0142y okre\u015blone dla tego serwera aplikacji. Buforowanie jest wy\u0142\u0105czone.
+dynacache.fileNotFound.useraction=Zbuduj plik XML konfiguracji pami\u0119ci podr\u0119cznej o podanej nazwie. Instrukcje dotycz\u0105ce budowania pliku XML konfiguracji pami\u0119ci podr\u0119cznej zawiera dokumentacja produktu.
+
+# No Comment Provided
+dynacache.cachingEnabled=DYNA0012I: Buforowanie dynamiczne serwletu jest w\u0142\u0105czone
+dynacache.cachingEnabled.explanation=Buforowanie dynamiczne serwletu jest w\u0142\u0105czone.
+dynacache.cachingEnabled.useraction=Brak.
+
+# No Comment Provided
+dynacache.cachingDisabled=DYNA0013I: Buforowanie dynamiczne serwletu jest wy\u0142\u0105czone
+dynacache.cachingDisabled.explanation=Buforowanie dynamiczne serwletu jest wy\u0142\u0105czone.
+dynacache.cachingDisabled.useraction=Brak.
+
+# No Comment Provided
+dynacache.uriMatched=DYNA0014I: {0} to identyfikator URI, kt\u00f3ry mo\u017ce by\u0107 buforowany.
+dynacache.uriMatched.explanation=Zainicjowano serwlet lub stron\u0119 JSP o skonfigurowanej poprawnej strategii pami\u0119ci podr\u0119cznej.
+dynacache.uriMatched.useraction=Brak.
+
+# No Comment Provided
+dynacache.error=DYNA0015I: Buforowanie dynamiczne serwlet\u00f3w napotka\u0142o b\u0142\u0105d: {0}
+dynacache.error.explanation=Og\u00f3lny komunikat o b\u0142\u0119dzie.
+dynacache.error.useraction=Debuguj udost\u0119pniony b\u0142\u0105d.
+
+# No Comment Provided
+dynacache.stats.dump=DYNA0016I: Statystyki dynamicznego buforowania serwlet\u00f3w zosta\u0142y zrzucone do: {0}
+dynacache.stats.dump.explanation=Statystyki pami\u0119ci podr\u0119cznej zosta\u0142y zapisane do podanego pliku.
+dynacache.stats.dump.useraction=Brak.
+
+# No Comment Provided
+dynacache.joingroup=DYNA0017I: Do\u0142\u0105czono do grupy {0}
+dynacache.joingroup.explanation=Jednostka pami\u0119ci podr\u0119cznej zosta\u0142a pomy\u015blnie do\u0142\u0105czona do grupy wsp\u00f3\u0142pracuj\u0105cych pami\u0119ci podr\u0119cznych.
+dynacache.joingroup.useraction=Brak.
+
+# No Comment Provided
+dynacache.idgeneratorerror=DYNA0018E: B\u0142\u0105d podczas \u0142adowania generatora identyfikator\u00f3w {0}
+dynacache.idgeneratorerror.explanation=B\u0142\u0105d podczas \u0142adowania generatora identyfikator\u00f3w.
+dynacache.idgeneratorerror.useraction=Debuguj problem, korzystaj\u0105c z udost\u0119pnionego komunikatu o b\u0142\u0119dzie.
+
+# No Comment Provided
+dynacache.metadatageneratorerror=DYNA0019E: B\u0142\u0105d podczas \u0142adowania generatora metadanych {0}
+dynacache.metadatageneratorerror.explanation=B\u0142\u0105d podczas \u0142adowania generatora metadanych.
+dynacache.metadatageneratorerror.useraction=Debuguj problem, korzystaj\u0105c z udost\u0119pnionego komunikatu o b\u0142\u0119dzie.
+
+# No Comment Provided
+dynacache.notSerializable=DYNA0020E: Nie mo\u017cna buforowa\u0107 {0}. Nie mo\u017cna przekszta\u0142ci\u0107 atrybut\u00f3w \u017c\u0105dania do postaci szeregowej.
+dynacache.notSerializable.explanation=Dane wyj\u015bciowe serwletu zosta\u0142y oznaczone jako przeznaczone do replikacji mi\u0119dzy pami\u0119ciami podr\u0119cznymi. Wymaga to mo\u017cliwo\u015bci przekszta\u0142cenia wszystkich atrybut\u00f3w \u017c\u0105dania do postaci szeregowej.
+dynacache.notSerializable.useraction=Zmodyfikuj strategi\u0119 pami\u0119ci podr\u0119cznej dla tego serwletu tak, aby jej dane wyj\u015bciowe nie by\u0142y replikowane lub zmodyfikuj aplikacj\u0119, umo\u017cliwiaj\u0105c przekszta\u0142cenie wszystkich atrybut\u00f3w \u017c\u0105dania do postaci szeregowej.
+
+# No Comment Provided
+dynacache.cacheInitFailed=DYNA0021E: Nie mo\u017cna zainicjowa\u0107 jednostki pami\u0119ci podr\u0119cznej {0}: {1}
+dynacache.cacheInitFailed.explanation=Nieoczekiwany b\u0142\u0105d podczas inicjowania pami\u0119ci podr\u0119cznej.
+dynacache.cacheInitFailed.useraction=Debuguj problem, korzystaj\u0105c z udost\u0119pnionego komunikatu o b\u0142\u0119dzie.
+
+# No Comment Provided
+dynacache.configerror=DYNA0022E: B\u0142\u0105d podczas przetwarzania konfiguracji dynamicznej pami\u0119ci podr\u0119cznej: {0}
+dynacache.configerror.explanation=Nieoczekiwany b\u0142\u0105d podczas przetwarzania konfiguracji pami\u0119ci podr\u0119cznej.
+dynacache.configerror.useraction=Debuguj problem, korzystaj\u0105c z udost\u0119pnionego komunikatu o b\u0142\u0119dzie.
+
+# No Comment Provided
+dynacache.nullServletMapping=DYNA0023E: B\u0142\u0105d podczas budowania strategii pami\u0119ci podr\u0119cznej {0}.  Nie zdefiniowano przypisa\u0144 serwletu {1}
+dynacache.nullServletMapping.explanation=Nie mo\u017cna znale\u017a\u0107 odwzorowania serwletu dla serwletu pami\u0119ci podr\u0119cznej lub strony JSP.
+dynacache.nullServletMapping.useraction=Napraw b\u0142\u0105d w konfiguracji za pomoc\u0105 narz\u0119dzia Application Assembly Tool.
+
+# No Comment Provided
+dynacache.excludeerror=DYNA0024E: B\u0142\u0105d podczas budowania strategii pami\u0119ci podr\u0119cznej {0}.  Zmienne exclude by\u0142y zduplikowane lub zdefiniowano je niepoprawnie dla zmiennej pami\u0119ci podr\u0119cznej {1}.
+dynacache.excludeerror.explanation=Obecne by\u0142y zduplikowane zmienne exclude.
+dynacache.excludeerror.useraction=Usu\u0144 zduplikowane zmienne lub niepoprawnie zdefiniowane zmienne exclude, kt\u00f3re zosta\u0142y okre\u015blone.
+
+# No Comment Provided
+dynacache.badexternalconfig=DYNA0025E: Zewn\u0119trzne buforowanie serwletu automatycznie korzysta ze wszystkich parametr\u00f3w \u017c\u0105da\u0144 (i z \u017cadnych innych) podczas budowania identyfikator\u00f3w pami\u0119ci podr\u0119cznej.  Parametry \u017c\u0105dania mog\u0105 by\u0107 definiowane dla wpis\u00f3w z mo\u017cliwo\u015bci\u0105 zewn\u0119trznego buforowania TYLKO do u\u017cytku z funkcjami exclude, invalidate oraz dataid.
+dynacache.badexternalconfig.explanation=Wpis jest oznaczony jako mo\u017cliwy do buforowania zewn\u0119trznego i zawiera dodatkowe regu\u0142y generowania identyfikator\u00f3w.
+dynacache.badexternalconfig.useraction=Usu\u0144 dodatkowe regu\u0142y.
+
+# No Comment Provided
+DYNA0026E=DYNA0026E: B\u0142\u0105d podczas odczytywania elementu {0}.  Odebrano wyj\u0105tek podczas przetwarzania warto\u015bci {1}: {2}.
+DYNA0026E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas odczytywania pliku konfiguracyjnego pami\u0119ci podr\u0119cznej.
+DYNA0026E.useraction=Popraw b\u0142\u0105d na podstawie informacji zawartych w komunikacie o b\u0142\u0119dzie.
+
+# No Comment Provided
+DYNA0027E=DYNA0027E: Nierozpoznana strategia replikacji: {0}.
+DYNA0027E.explanation=Okre\u015blono nierozpoznan\u0105 strategi\u0119 replikacji.
+DYNA0027E.useraction=Poprawne strategie replikacji to not-shared, shared-push, shared-pull oraz shared-push-pull.
+
+# No Comment Provided
+DYNA0028E=DYNA0028E: Niedozwolone u\u017cycie komponentu {0} po zdefiniowaniu generatora identyfikator\u00f3w {1}.
+DYNA0028E.explanation=W strategii pami\u0119ci podr\u0119cznej okre\u015blono zar\u00f3wno komponent, jak i generator identyfikator\u00f3w dla tej samej regu\u0142y identyfikatora pami\u0119ci podr\u0119cznej.
+DYNA0028E.useraction=U\u017cyj albo znacznik\u00f3w komponentu, albo generatora identyfikator\u00f3w, ale nie obu r\u00f3wnocze\u015bnie.
+
+# No Comment Provided
+DYNA0029E=DYNA0029E: Niedozwolone u\u017cycie generatora identyfikator\u00f3w {0} po zdefiniowaniu komponentu {1}.
+DYNA0029E.explanation=W strategii pami\u0119ci podr\u0119cznej okre\u015blono zar\u00f3wno komponent, jak i generator identyfikator\u00f3w dla tej samej regu\u0142y identyfikatora pami\u0119ci podr\u0119cznej.
+DYNA0029E.useraction=U\u017cyj albo znacznik\u00f3w komponentu, albo generatora identyfikator\u00f3w, ale nie obu r\u00f3wnocze\u015bnie.
+
+# No Comment Provided
+DYNA0030E=DYNA0030E: Brak wymaganego atrybutu {1} w elemencie {0}.
+DYNA0030E.explanation=Brak wymaganego atrybutu w konfiguracji pami\u0119ci podr\u0119cznej.
+DYNA0030E.useraction=Dodaj wymagany atrybut do pliku konfiguracyjnego pami\u0119ci podr\u0119cznej.
+
+# No Comment Provided
+DYNA0031E=DYNA0031E: Niedozwolone u\u017cycie elementu {0} o identyfikatorze {1}.  Pole lub element metody ju\u017c istnieje.
+DYNA0031E.explanation=W pliku konfiguracyjnym okre\u015blono wiele znacznik\u00f3w metody lub pola dla tego samego komponentu.
+DYNA0031E.useraction=Usu\u0144 podw\u00f3jne elementy metody i/lub pola z komponentu w pliku konfiguracyjnym.
+
+# No Comment Provided
+DYNA0032E=DYNA0032E: Element lub atrybut {0} musi mie\u0107 warto\u015b\u0107 true lub false. Obecna warto\u015b\u0107: {0}.
+DYNA0032E.explanation=Podany element musi mie\u0107 warto\u015b\u0107 true lub false, lecz okre\u015blono inn\u0105 warto\u015b\u0107.
+DYNA0032E.useraction=Popraw element tak, aby mia\u0142 warto\u015b\u0107 true lub false.
+
+# No Comment Provided
+DYNA0033E=DYNA0033E: Nie mo\u017cna przeprowadzi\u0107 introspekcji metody {0} z klasy {1}.  Wyj\u0105tek: {2}
+DYNA0033E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by znalezienia metody okre\u015blonej w pliku konfiguracyjnym pami\u0119ci podr\u0119cznej.
+DYNA0033E.useraction=Sprawd\u017a, czy metoda okre\u015blona w pliku konfiguracyjnym pami\u0119ci podr\u0119cznej istnieje w wywo\u0142ywanym obiekcie oraz czy ta metoda jest publiczna.
+
+# No Comment Provided
+DYNA0034E=DYNA0034E: Wyj\u0105tek podczas wywo\u0142ywania metody {0} dla klasy {1}.  Wyj\u0105tek: {2}
+DYNA0034E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas wywo\u0142ywania podanej metody w celu wygenerowania identyfikatora pami\u0119ci podr\u0119cznej.
+DYNA0034E.useraction=Debuguj problem, korzystaj\u0105c z informacji zawartych w komunikacie o b\u0142\u0119dzie.
+
+# No Comment Provided
+DYNA0035E=DYNA0035E: Nie mo\u017cna przeprowadzi\u0107 introspekcji pola {0} z klasy {1}.  Wyj\u0105tek: {2}
+DYNA0035E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by znalezienia pola okre\u015blonego w pliku konfiguracyjnym pami\u0119ci podr\u0119cznej.
+DYNA0035E.useraction=Sprawd\u017a, czy pole okre\u015blone w pliku konfiguracyjnym pami\u0119ci podr\u0119cznej istnieje w wywo\u0142ywanym obiekcie oraz czy to pole jest publiczne.
+
+# No Comment Provided
+DYNA0036E=DYNA0036E: B\u0142\u0105d podczas wydobywania pola {0} z klasy {1}.  Wyj\u0105tek: {2}
+DYNA0036E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas wydobywania podanego pola w celu wygenerowania identyfikatora pami\u0119ci podr\u0119cznej.
+DYNA0036E.useraction=Debuguj problem, korzystaj\u0105c z informacji zawartych w komunikacie o b\u0142\u0119dzie.
+
+# No Comment Provided
+DYNA0037E=DYNA0037E: Nierozpoznany element {0} podczas przetwarzania elementu {1}.
+DYNA0037E.explanation=Podczas analizowania pliku konfiguracyjnego pami\u0119ci podr\u0119cznej napotkano nierozpoznany element.
+DYNA0037E.useraction=Popraw dokument tak, aby by\u0142 zgodny z plikiem cachespec.dtd.
+
+# No Comment Provided
+DYNA0038E=DYNA0038E: Nierozpoznany typ komponentu {0} dla komendy {1}.
+DYNA0038E.explanation=Podany typ komponentu nie jest poprawny dla buforowania komend.
+DYNA0038E.useraction=Poprawne typy komponentu dla komend to method (metoda) oraz field (pole).
+
+# No Comment Provided
+DYNA0039E=DYNA0039E: Komendy nie obs\u0142uguj\u0105 niestandardowych klas generuj\u0105cych metadane.  Nale\u017cy przes\u0142oni\u0107 metod\u0119 prepareMetaData().
+DYNA0039E.explanation=W pliku konfiguracyjnym pami\u0119ci podr\u0119cznej okre\u015blono niestandardowy generator metadanych dla komendy, lecz nie jest to obs\u0142ugiwane.
+DYNA0039E.useraction=Informacje na temat implementowania metody CacheableCommand.prepareMetaData zawiera dokumentacja produktu.
+
+# No Comment Provided
+DYNA0040E=DYNA0040E: Napotkano niedozwolony typ komponentu {0} podczas obs\u0142ugiwania {1}.
+DYNA0040E.explanation=Podczas przetwarzania podanego obiektu napotkano nieobs\u0142ugiwany typ komponentu.
+DYNA0040E.useraction=Popraw strategi\u0119 konfiguracji pami\u0119ci podr\u0119cznej tak, aby zawiera\u0142a tylko poprawne typy komponentu dla podanego obiektu.
+
+# No Comment Provided
+DYNA0041E=DYNA0041E: Niepoprawny typ komponentu {0} dla fragmentu z mo\u017cliwo\u015bci\u0105 przetwarzania przez serwer brzegowy {1}.
+DYNA0041E.explanation=Serwlet lub strona JSP zosta\u0142a oznaczona jako mo\u017cliwa do przetworzenia przez serwer brzegowy, lecz strategia pami\u0119ci podr\u0119cznej zawiera regu\u0142y komponentu, kt\u00f3re nie s\u0105 poprawne na serwerze brzegowym.
+DYNA0041E.useraction=Popraw strategi\u0119 pami\u0119ci podr\u0119cznej w taki spos\u00f3b, aby usun\u0105\u0107 regu\u0142y, kt\u00f3re nie s\u0105 uruchamiane na serwerze brzegowym firmy IBM, albo oznacz serwlet lub stron\u0119 JSP jako niemo\u017cliw\u0105 do przetworzenia przez serwer brzegowy.
+
+# No Comment Provided
+DYNA0042E=DYNA0042E: Niepoprawny typ komponentu {0} dla fragmentu serwletu/strony JSP {1}.
+DYNA0042E.explanation=Podczas przetwarzania podanego serwletu lub pliku JSP napotkano nieobs\u0142ugiwany typ komponentu.
+DYNA0042E.useraction=Popraw strategi\u0119 konfiguracji pami\u0119ci podr\u0119cznej tak, aby zawiera\u0142a tylko poprawne typy komponentu dla podanego obiektu.
+
+# No Comment Provided
+DYNA0043E=DYNA0043E: Plik konfiguracyjny {0} zawiera b\u0142\u0119dy i nie zostanie u\u017cyty.
+DYNA0043E.explanation=Podany plik konfiguracyjny zawiera b\u0142\u0119dy krytyczne i nie mo\u017ce by\u0107 u\u017cyty.
+DYNA0043E.useraction=Napraw podane b\u0142\u0119dy w pliku konfiguracyjnym.
+
+# No Comment Provided
+DYNA0044E=DYNA0044E: Ostrze\u017cenie analizowania pliku XML: {0} podczas analizowania pliku {1}, wiersz {2}, kolumna {3}.
+DYNA0044E.explanation=Wyst\u0105pi\u0142o ostrze\u017cenie analizowania pliku XML podczas przetwarzania pliku konfiguracyjnego pami\u0119ci podr\u0119cznej.
+DYNA0044E.useraction=Napraw problem podany w komunikacie.
+
+# No Comment Provided
+DYNA0045E=DYNA0045E: B\u0142\u0105d analizowania pliku XML: {0} podczas analizowania pliku {1}, wiersz {2}, kolumna {3}.
+DYNA0045E.explanation=Wyst\u0105pi\u0142o ostrze\u017cenie analizowania pliku XML podczas przetwarzania pliku konfiguracyjnego pami\u0119ci podr\u0119cznej.
+DYNA0045E.useraction=Napraw problem podany w komunikacie.
+
+# No Comment Provided
+DYNA0046E=DYNA0046E: Podczas przetwarzania pliku konfiguracyjnego {1} wyst\u0105pi\u0142 wyj\u0105tek we/wy {0}.
+DYNA0046E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas odczytywania pliku konfiguracyjnego pami\u0119ci podr\u0119cznej.
+DYNA0046E.useraction=Napraw problem podany w komunikacie.
+
+# No Comment Provided
+DYNA0047I=DYNA0047I: Wpisy pami\u0119ci podr\u0119cznej zosta\u0142y pomy\u015blnie za\u0142adowane z pliku konfiguracyjnego pami\u0119ci podr\u0119cznej {0}.
+DYNA0047I.explanation=Pomy\u015blnie przetworzono wpisy pami\u0119ci podr\u0119cznej z pliku konfiguracyjnego pami\u0119ci podr\u0119cznej znajduj\u0105cego si\u0119 w okre\u015blonym po\u0142o\u017ceniu.
+DYNA0047I.useraction=Brak.
+
+# No Comment Provided
+DYNA0048I=DYNA0048I: Us\u0142uga WebSphere Dynamic Cache zosta\u0142a zainicjowana pomy\u015blnie.
+DYNA0048I.explanation=Us\u0142ugi dynamicznej pami\u0119ci podr\u0119cznej zosta\u0142y zainicjowane pomy\u015blnie.
+DYNA0048I.useraction=Brak.
+
+# No Comment Provided
+DYNA0049E=DYNA0049E: Nierozpoznany typ komponentu {0}.
+DYNA0049E.explanation=Podany typ komponentu istnieje w pliku konfiguracyjnym pami\u0119ci podr\u0119cznej, lecz nie jest on rozpoznawany przez pami\u0119\u0107 podr\u0119czn\u0105.
+DYNA0049E.useraction=Usu\u0144 nierozpoznany typ komponentu z pliku konfiguracyjnego pami\u0119ci podr\u0119cznej.
+
+# No Comment Provided
+DYNA0050E=DYNA0050E: Nierozpoznana warto\u015b\u0107 {0} elementu {1}.
+DYNA0050E.explanation=Podany element w pliku konfiguracyjnym pami\u0119ci podr\u0119cznej zawiera nierozpoznan\u0105 warto\u015b\u0107.
+DYNA0050E.useraction=Informacje na temat poprawnych warto\u015bci dla podanego elementu mo\u017cna znale\u017a\u0107 w dokumentacji produktu.
+
+# No Comment Provided
+DYNA0051E=DYNA0051E: Nie mo\u017cna buforowa\u0107 komendy CacheableCommand, poniewa\u017c us\u0142uga WebSphere Dynamic Caching jest wy\u0142\u0105czona.
+DYNA0051E.explanation=Podj\u0119to pr\u00f3b\u0119 u\u017cycia komendy CacheableCommand, ale buforowanie serwletu zosta\u0142o wy\u0142\u0105czone w ustawieniach kontenera WWW.
+DYNA0051E.useraction=Za pomoc\u0105 Konsoli administracyjnej w\u0142\u0105cz buforowanie serwletu w ustawieniach kontenera WWW.
+
+# No Comment Provided
+DYNA0052E=DYNA0052E: Nie mo\u017cna replikowa\u0107 buforowanego obiektu ani zapisa\u0107 go na dysk.  CacheID={0}   ClassName={1}   Type={2}    Exception={3}
+DYNA0052E.explanation=Obiekt zosta\u0142 oznaczony do replikacji mi\u0119dzy pami\u0119ciami podr\u0119cznymi lub do zapisania na dysk. W tym celu obiekt oraz wszystkie przywo\u0142ywane obiekty wewn\u0105trz tego obiektu musz\u0105 by\u0107 przekszta\u0142calne do postaci szeregowej.  CacheID to identyfikator wpisu w pami\u0119ci podr\u0119cznej, kt\u00f3rego nie mo\u017cna przekszta\u0142ci\u0107 do postaci szeregowej.  ClassName to nazwa klasy buforowanego obiektu, kt\u00f3rego nie mo\u017cna przekszta\u0142ci\u0107 do postaci szeregowej.  Type okre\u015bla typ danych wskazuj\u0105cy, jakie dane s\u0105 przekszta\u0142cane do postaci szeregowej.  Exception to wyj\u0105tek odebrany podczas pr\u00f3by przekszta\u0142cenia do postaci szeregowej.
+DYNA0052E.useraction=Modyfikuj strategi\u0119 pami\u0119ci podr\u0119cznej dla tego obiektu tak, aby nie by\u0142 on replikowany ani zapisywany na dysk lub modyfikuj aplikacj\u0119 tak, aby obiekt oraz wszystkie przywo\u0142ywane obiekty by\u0142y przekszta\u0142calne do postaci szeregowej.
+
+# No Comment Provided
+DYNA0053I=DYNA0053I: Przenoszenie na dysk jest w\u0142\u0105czone dla pami\u0119ci podr\u0119cznej o nazwie {0} w katalogu {1}.
+DYNA0053I.explanation=Funkcja przenoszenia na dysk zosta\u0142a w\u0142\u0105czona dla okre\u015blonej pami\u0119ci podr\u0119cznej. Pami\u0119\u0107 podr\u0119czna dysku zosta\u0142a zapisana w podanym katalogu.
+DYNA0053I.useraction=Brak.
+
+# No Comment Provided
+DYNA0054W=DYNA0054W: Przenoszenie na dysk jest w\u0142\u0105czone dla pami\u0119ci podr\u0119cznej o nazwie {0}. Nie mo\u017cna utworzy\u0107 po\u0142o\u017cenia {1}. U\u017cyte zostanie domy\u015blne alternatywne po\u0142o\u017cenie {2}.
+DYNA0054W.explanation=Funkcja przenoszenia na dysk zosta\u0142a w\u0142\u0105czona dla okre\u015blonej pami\u0119ci podr\u0119cznej. Pami\u0119\u0107 podr\u0119czna dysku jest zapisywana w alternatywnym po\u0142o\u017ceniu, poniewa\u017c nie mo\u017cna utworzy\u0107 podanego katalogu.
+DYNA0054W.useraction=Brak.
+
+# No Comment Provided
+DYNA0055E=DYNA0055E: Przenoszenie na dysk jest wy\u0142\u0105czone dla pami\u0119ci podr\u0119cznej o nazwie {0}, poniewa\u017c nie mo\u017cna utworzy\u0107 po\u0142o\u017cenia {1} lub {2}. 
+DYNA0055E.explanation=Przenoszenie na dysk zosta\u0142o wy\u0142\u0105czone dla podanej nazwy pami\u0119ci podr\u0119cznej, poniewa\u017c nie mo\u017cna utworzy\u0107 po\u0142o\u017cenia dla przenoszenia ani domy\u015blnego alternatywnego po\u0142o\u017cenia.
+DYNA0055E.useraction=Sprawd\u017a, czy po\u0142o\u017cenie przenoszenia na dysk ma wystarczaj\u0105ce uprawnienia dost\u0119pu.
+
+# No Comment Provided
+DYNA0056W=DYNA0056W: Pliki pami\u0119ci podr\u0119cznej dysku zosta\u0142y zainicjowane ponownie z powodu uszkodzonych danych. 
+DYNA0056W.explanation=Pliki pami\u0119ci podr\u0119cznej dysku zosta\u0142y ponownie zainicjowane po restarcie serwera z powodu uszkodzonych danych. Mog\u0142o to by\u0107 spowodowane nieoczekiwanym zako\u0144czeniem dzia\u0142ania wirtualnej maszyny j\u0119zyka Java (JVM) lub wyst\u0105pieniem wyj\u0105tku dysku. Ca\u0142a stara tre\u015b\u0107 pami\u0119ci podr\u0119cznej dysku zosta\u0142a utracona.
+DYNA0056W.useraction=Brak.
+
+# No Comment Provided
+DYNA0057I=DYNA0057I: Rozpocz\u0119to procedur\u0119 czyszcz\u0105c\u0105 pami\u0119\u0107 podr\u0119czn\u0105 dysku dla pami\u0119ci podr\u0119cznej o nazwie {0}. Statystyki: {1} 
+DYNA0057I.explanation=Procedura czyszcz\u0105ca rozpocz\u0119\u0142a usuwanie wpis\u00f3w w pami\u0119ci podr\u0119cznej, kt\u00f3re utraci\u0142y wa\u017cno\u015b\u0107.
+DYNA0057I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# No Comment Provided
+DYNA0058I=DYNA0058I: Zako\u0144czono procedur\u0119 czyszcz\u0105c\u0105 pami\u0119\u0107 podr\u0119czn\u0105 dysku dla pami\u0119ci podr\u0119cznej o nazwie {0}. Statystyki: {1}
+DYNA0058I.explanation=Zako\u0144czono procedur\u0119 czyszcz\u0105c\u0105 pami\u0119\u0107 podr\u0119czn\u0105 dysku.
+DYNA0058I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# No Comment Provided
+DYNA0059I=DYNA0059I: Konfiguracja pami\u0119ci podr\u0119cznej dysku dla pami\u0119ci podr\u0119cznej o nazwie {0}. Konfiguracja: {1}
+DYNA0059I.explanation=Ten komunikat wskazuje konfiguracj\u0119 pami\u0119ci podr\u0119cznej dysku.
+DYNA0059I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# No Comment Provided
+DYNA0060I=DYNA0060I: Opcja Opr\u00f3\u017cnij na dysk po zatrzymaniu jest w\u0142\u0105czona dla pami\u0119ci podr\u0119cznej o nazwie {0}.
+DYNA0060I.explanation=Opcja Opr\u00f3\u017cnij na dysk po zatrzymaniu jest w\u0142\u0105czona dla okre\u015blonej nazwy pami\u0119ci podr\u0119cznej.
+DYNA0060I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# No Comment Provided
+DYNA0061I=DYNA0061I: Opcja Opr\u00f3\u017cnij na dysk po zatrzymaniu jest wy\u0142\u0105czona dla pami\u0119ci podr\u0119cznej o nazwie {0}.
+DYNA0061I.explanation=Opcja Opr\u00f3\u017cnij na dysk po zatrzymaniu jest wy\u0142\u0105czona dla okre\u015blonej nazwy pami\u0119ci podr\u0119cznej.
+DYNA0061I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# No Comment Provided
+DYNA0062I=DYNA0062I: Instancje pami\u0119ci podr\u0119cznej zosta\u0142y pomy\u015blnie za\u0142adowane z pliku konfiguracyjnego {0}.
+DYNA0062I.explanation=Pomy\u015blnie przetworzono instancje pami\u0119ci podr\u0119cznej z pliku konfiguracyjnego pami\u0119ci podr\u0119cznej znajduj\u0105cego si\u0119 w okre\u015blonym po\u0142o\u017ceniu.
+DYNA0062I.useraction=Brak.
+
+# No Comment Provided
+DYNA0063W=DYNA0063W: Wielko\u015b\u0107 pami\u0119ci podr\u0119cznej dysku osi\u0105gn\u0119\u0142a limit {0} GB dla pami\u0119ci podr\u0119cznej o nazwie {1}. Liczba wpis\u00f3w pami\u0119ci podr\u0119cznej, kt\u00f3re zosta\u0142y usuni\u0119te z pami\u0119ci, ale nie zosta\u0142y przeniesione na dysk: {2}.
+DYNA0063W.explanation=Obiekt znajduj\u0105cy si\u0119 w pami\u0119ci podr\u0119cznej nie zostanie przeniesiony na dysk, poniewa\u017c przekroczono ograniczenie wielko\u015bci pami\u0119ci podr\u0119cznej dysku (okre\u015blone w gigabajtach).
+DYNA0063W.useraction=Zmie\u0144 warto\u015b\u0107 w\u0142a\u015bciwo\u015bci niestandardowej diskCacheSizeInGB na wi\u0119ksz\u0105, aby na dysku mo\u017cna by\u0142o przechowywa\u0107 wi\u0119ksz\u0105 liczb\u0119 wpis\u00f3w pami\u0119ci podr\u0119cznej.
+
+# No Comment Provided
+DYNA0064W=DYNA0064W: Wielko\u015b\u0107 wpisu pami\u0119ci podr\u0119cznej przekracza ograniczenie {0} MB dla pami\u0119ci podr\u0119cznej o nazwie {1}. Liczba wpis\u00f3w pami\u0119ci podr\u0119cznej, kt\u00f3re zosta\u0142y usuni\u0119te z pami\u0119ci, ale nie zosta\u0142y przeniesione na dysk: {2}.
+DYNA0064W.explanation=Obiekt znajduj\u0105cy si\u0119 w pami\u0119ci podr\u0119cznej nie zostanie przeniesiony na dysk, poniewa\u017c przekroczono ograniczenie wielko\u015bci pami\u0119ci podr\u0119cznej dysku (okre\u015blone w megabajtach).
+DYNA0064W.useraction=Zmie\u0144 warto\u015b\u0107 w\u0142a\u015bciwo\u015bci niestandardowej diskCacheEntrySizeInMB na wi\u0119ksz\u0105, aby na dysku mo\u017cna by\u0142o przechowywa\u0107 wi\u0119ksz\u0105 liczb\u0119 wpis\u00f3w pami\u0119ci podr\u0119cznej.
+
+# No Comment Provided
+DYNA0065W=DYNA0065W: Wielko\u015b\u0107 pami\u0119ci podr\u0119cznej dysku przekracza ograniczenie {0} dla pami\u0119ci podr\u0119cznej o nazwie {1}. Liczba wpis\u00f3w pami\u0119ci podr\u0119cznej, kt\u00f3re zosta\u0142y usuni\u0119te z pami\u0119ci, ale nie zosta\u0142y przeniesione na dysk: {2}.
+DYNA0065W.explanation=Obiekt znajduj\u0105cy si\u0119 w pami\u0119ci podr\u0119cznej nie zostanie przeniesiony na dysk, poniewa\u017c przekroczono ograniczenie wielko\u015bci pami\u0119ci podr\u0119cznej dysku.
+DYNA0065W.useraction=Zmie\u0144 warto\u015b\u0107 w\u0142a\u015bciwo\u015bci niestandardowej diskCacheSize na wi\u0119ksz\u0105, aby na dysku mo\u017cna by\u0142o przechowywa\u0107 wi\u0119ksz\u0105 liczb\u0119 wpis\u00f3w pami\u0119ci podr\u0119cznej.
+
+# No Comment Provided
+DYNA0066W=DYNA0066W: Opcja ograniczania wielko\u015bci pami\u0119ci podr\u0119cznej dysku (okre\u015blana w GB) jest wy\u0142\u0105czona dla pami\u0119ci podr\u0119cznej o nazwie {0}. W\u0142a\u015bciwo\u015b\u0107 niestandardowa diskCacheSizeInGB jest ustawiona na warto\u015b\u0107 0. Przed w\u0142\u0105czeniem tej opcji nale\u017cy usun\u0105\u0107 wszystkie pliki pami\u0119ci podr\u0119cznej dysku znajduj\u0105ce si\u0119 w katalogu {1}.
+DYNA0066W.explanation=Pliki dyskowe systemu s\u0105 zapisane w starym formacie, a opcja ograniczania wielko\u015bci pami\u0119ci podr\u0119cznej dysku (okre\u015blana w GB) korzysta z nowego formatu dysku. Przed jej w\u0142\u0105czeniem usu\u0144 wszystkie pliki pami\u0119ci podr\u0119cznej dysku w systemie.
+DYNA0066W.useraction=Usu\u0144 wszystkie pliki pami\u0119ci podr\u0119cznej dysku i zrestartuj serwer.
+
+# No Comment Provided
+DYNA0067W=DYNA0067W: Funkcja czyszczenia pami\u0119ci podr\u0119cznej dysku jest wy\u0142\u0105czona, a strategia oczyszczania jest ustawiona na warto\u015b\u0107 NONE dla pami\u0119ci podr\u0119cznej o nazwie {0}. Przed w\u0142\u0105czeniem tej opcji nale\u017cy usun\u0105\u0107 wszystkie pliki pami\u0119ci podr\u0119cznej dysku znajduj\u0105ce si\u0119 w katalogu {1}.
+DYNA0067W.explanation=Pliki dyskowe systemu s\u0105 zapisane w starym formacie, a funkcja czyszczenia pami\u0119ci podr\u0119cznej dysku u\u017cywa nowego formatu dysku. Przed jej w\u0142\u0105czeniem usu\u0144 wszystkie pliki pami\u0119ci podr\u0119cznej dysku w systemie.
+DYNA0067W.useraction=Usu\u0144 wszystkie pliki pami\u0119ci podr\u0119cznej dysku i zrestartuj serwer.
+
+# No Comment Provided
+DYNA0068W=DYNA0068W: Ustawiono niepoprawny pr\u00f3g ograniczenia pami\u0119ci podr\u0119cznej dysku o nazwie {0}. Zostan\u0105 u\u017cyte warto\u015bci domy\u015blne: 80% dla g\u00f3rnego progu ograniczenia i 70% dla dolnego progu ograniczenia.
+DYNA0068W.explanation=Pr\u00f3g ograniczenia pami\u0119ci podr\u0119cznej dysku jest liczb\u0105 ujemn\u0105 lub g\u00f3rny pr\u00f3g ograniczenia jest mniejszy ni\u017c dolny pr\u00f3g ograniczenia.
+DYNA0068W.useraction=Pr\u00f3g pami\u0119ci podr\u0119cznej dysku musi by\u0107 wi\u0119kszy od zera, a g\u00f3rny pr\u00f3g ograniczenia musi by\u0107 wi\u0119kszy ni\u017c dolny pr\u00f3g ograniczenia.
+
+# No Comment Provided
+DYNA0069W=DYNA0069W: Niepoprawna warto\u015b\u0107 {0} w\u0142a\u015bciwo\u015bci niestandardowej {1} w pami\u0119ci podr\u0119cznej o nazwie {2}. Poprawny zakres: dolna warto\u015b\u0107 - {3}, g\u00f3rna warto\u015b\u0107 - {4}. W\u0142a\u015bciwo\u015b\u0107 niestandardowa jest ustawiona na warto\u015b\u0107 {5}.
+DYNA0069W.explanation=Niepoprawna warto\u015b\u0107 w\u0142a\u015bciwo\u015bci niestandardowej. Popraw t\u0119 warto\u015b\u0107 zgodnie z doln\u0105 i g\u00f3rn\u0105 warto\u015bci\u0105 zakresu podanego w komunikacie ostrzegawczym.
+DYNA0069W.useraction=Popraw t\u0119 warto\u015b\u0107 zgodnie z doln\u0105 i g\u00f3rn\u0105 warto\u015bci\u0105 zakresu podanego w komunikacie ostrzegawczym.
+
+# No Comment Provided
+DYNA0070W=DYNA0070W: Funkcja czyszczenia pami\u0119ci podr\u0119cznej dysku jest wy\u0142\u0105czona, a strategia oczyszczania jest ustawiona na warto\u015b\u0107 NONE dla pami\u0119ci podr\u0119cznej o nazwie {0}. Dzieje si\u0119 tak, poniewa\u017c nie ustawiono wielko\u015bci pami\u0119ci podr\u0119cznej dysku lub ograniczenia wielko\u015bci pami\u0119ci podr\u0119cznej dysku (w gigabajtach).
+DYNA0070W.explanation=Aby mo\u017cna by\u0142o korzysta\u0107 z funkcji czyszczenia pami\u0119ci podr\u0119cznej dysku, wymagane jest ustawienie w\u0142a\u015bciwo\u015bci niestandardowych diskCacheSize lub diskCacheSizeInGB.
+DYNA0070W.useraction=Ustaw w\u0142a\u015bciwo\u015b\u0107 niestandardow\u0105 diskCacheSize lub diskCacheSizeInGB i zrestartuj serwer.
+
+# No Comment Provided
+DYNA0071W=DYNA0071W: W\u0142a\u015bciwo\u015b\u0107 niestandardowa diskCacheSizeInGB dla pami\u0119ci podr\u0119cznej o nazwie {0} jest ustawiona na wi\u0119ksz\u0105 warto\u015b\u0107 ({1}), poniewa\u017c \u0142\u0105czna wielko\u015b\u0107 plik\u00f3w pami\u0119ci podr\u0119cznej dysku ma wi\u0119ksz\u0105 warto\u015b\u0107. Aby ustawi\u0107 mniejsz\u0105 warto\u015b\u0107 w\u0142a\u015bciwo\u015bci niestandardowej diskCacheSizeInGB, nale\u017cy usun\u0105\u0107 wszystkie pliki pami\u0119ci podr\u0119cznej dysku znajduj\u0105ce si\u0119 w katalogu {2}.
+DYNA0071W.explanation=Nie mo\u017cna zmniejszy\u0107 wielko\u015bci plik\u00f3w pami\u0119ci podr\u0119cznej. 
+DYNA0071W.useraction=Aby ustawi\u0107 mniejsz\u0105 warto\u015b\u0107 w\u0142a\u015bciwo\u015bci niestandardowej diskCacheSizeInGB, usu\u0144 wszystkie pliki pami\u0119ci podr\u0119cznej dysku i zrestartuj serwer.
+
+# No Comment Provided
+DYNA0072E=DYNA0072E: Przenoszenie na dysk jest wy\u0142\u0105czone dla pami\u0119ci podr\u0119cznej o nazwie {0}, poniewa\u017c wyst\u0105pi\u0142 wyj\u0105tek dysku. Po\u0142o\u017cenie tre\u015bci przenoszonej na dysk: {1}. Wyj\u0105tek: {2}. 
+DYNA0072E.explanation=Przenoszenie na dysk zosta\u0142o wy\u0142\u0105czone dla podanej nazwy pami\u0119ci podr\u0119cznej, poniewa\u017c wyst\u0105pi\u0142 wyj\u0105tek dysku.
+DYNA0072E.useraction=Pliki pami\u0119ci podr\u0119cznej dysku dla tej instancji pami\u0119ci podr\u0119cznej zostan\u0105 usuni\u0119te po zrestartowaniu serwera.
+
+# No Comment Provided
+DYNA0073I=DYNA0073I: Operacja opr\u00f3\u017cniania na dysk po zatrzymaniu dla pami\u0119ci podr\u0119cznej o nazwie {0} zosta\u0142a zako\u0144czona. Statystyki: {1}
+DYNA0073I.explanation=Operacja opr\u00f3\u017cniania na dysk po zatrzymaniu zosta\u0142a zako\u0144czona i udost\u0119pniono statystyki. 
+DYNA0073I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# No Comment Provided
+DYNA1001I=DYNA1001I: Instancja us\u0142ugi WebSphere Dynamic Cache o nazwie {0} zosta\u0142a zainicjowana pomy\u015blnie.
+DYNA1001I.explanation=Okre\u015blona instancja us\u0142ugi Dynamic Cache zosta\u0142a zainicjowana pomy\u015blnie.
+DYNA1001I.useraction=Brak.
+
+# No Comment Provided
+DYNA1002E=DYNA1002E: Nie mo\u017cna zainicjowa\u0107 instancji us\u0142ugi WebSphere Dynamic Cache z powodu b\u0142\u0119du {0}.
+DYNA1002E.explanation=Nie mo\u017cna zainicjowa\u0107 instancji dynamicznej pami\u0119ci podr\u0119cznej.  Nie s\u0105 dost\u0119pne \u017cadne instancje pami\u0119ci podr\u0119cznej.
+DYNA1002E.useraction=Debuguj problem, korzystaj\u0105c z komunikatu o b\u0142\u0119dzie.  Dodatkowe informacje zawieraj\u0105 dzienniki serwera aplikacji.
+
+# No Comment Provided
+DYNA1003E=DYNA1003E: Nie mo\u017cna zainicjowa\u0107 instancji us\u0142ugi WebSphere Dynamic Cache o nazwie {0} z powodu b\u0142\u0119du {1}.
+DYNA1003E.explanation=Nie mo\u017cna zainicjowa\u0107 instancji dynamicznej pami\u0119ci podr\u0119cznej o podanej nazwie.  Okre\u015blona instancja jest niedost\u0119pna.
+DYNA1003E.useraction=Debuguj problem, korzystaj\u0105c z komunikatu o b\u0142\u0119dzie.  Dodatkowe informacje zawieraj\u0105 dzienniki serwera aplikacji.
+
+# No Comment Provided
+DYNA1004E=DYNA1004E: Nie mo\u017cna zainicjowa\u0107 instancji us\u0142ugi WebSphere Dynamic Cache o nazwie {0}, poniewa\u017c nie jest ona skonfigurowana.
+DYNA1004E.explanation=Nie mo\u017cna zainicjowa\u0107 instancji dynamicznej pami\u0119ci podr\u0119cznej o podanej nazwie.  Buforowanie dynamiczne jest wy\u0142\u0105czone dla okre\u015blonej instancji.
+DYNA1004E.useraction=Za pomoc\u0105 Konsoli administracyjnej skonfiguruj zas\u00f3b instancji pami\u0119ci podr\u0119cznej.
+
+# No Comment Provided
+DYNA1005E=DYNA1005E: Nie mo\u017cna uzyska\u0107 dost\u0119pu do instancji us\u0142ugi WebSphere Dynamic Cache o nazwie {0}, poniewa\u017c jej typ jest niepoprawny.
+DYNA1005E.explanation=Nie mo\u017cna u\u017cy\u0107 instancji dynamicznej pami\u0119ci podr\u0119cznej o podanej nazwie.  Buforowanie dynamiczne jest wy\u0142\u0105czone dla okre\u015blonej instancji.
+DYNA1005E.useraction=Za pomoc\u0105 Konsoli administracyjnej skonfiguruj zas\u00f3b instancji pami\u0119ci podr\u0119cznej, okre\u015blaj\u0105c poprawny typ.
+
+# No Comment Provided
+DYNA1006E=DYNA1006E: Metoda {0} wychwyci\u0142a wyj\u0105tek: {1}.
+DYNA1006E.explanation=W okre\u015blonej metodzie zosta\u0142 wychwycony wyj\u0105tek.
+DYNA1006E.useraction=Brak.
+
+# No Comment Provided
+DYNA1007I=DYNA1007I:  Us\u0142uga {0} zosta\u0142a zainicjowana pomy\u015blnie. 
+DYNA1007I.explanation=Us\u0142uga kontrolera systemu z/OS dla us\u0142ugi dynamicznej pami\u0119ci podr\u0119cznej zosta\u0142a zainicjowana pomy\u015blnie.
+DYNA1007I.useraction=Brak.
+
+# No Comment Provided
+DYNA1008E=DYNA1008E: Metoda {0}: delegacja uprawnie\u0144 ma warto\u015b\u0107 NULL.
+DYNA1008E.explanation=Podana metoda nie mog\u0142a uzyska\u0107 elementu podrz\u0119dnego delegacji uprawnie\u0144 dla us\u0142ugi DRS.
+DYNA1008E.useraction=Brak.
+
+# No Comment Provided
+DYNA1009E=DYNA1009E: Metoda {0}: element ma warto\u015b\u0107 NULL.
+DYNA1009E.explanation=Do okre\u015blonej metody przekazano znacznik elementu podrz\u0119dnego o warto\u015bci NULL. 
+DYNA1009E.useraction=Brak.
+
+# No Comment Provided
+DYNA1010E=DYNA1010E: Metoda {0}: b\u0142\u0105d parametru. Parametr entryKey ma warto\u015b\u0107 NULL.
+DYNA1010E.explanation=Do okre\u015blonej metody zosta\u0142 przekazany parametr entryKey o pustej warto\u015bci. 
+DYNA1010E.useraction=Brak.
+
+# No Comment Provided
+DYNA1011E=DYNA1011E: Metoda {0}: parametr tokenBytes ma warto\u015b\u0107 NULL (token = {1} tokenBytes = {2})
+DYNA1011E.explanation=Podana metoda nie mo\u017ce wywo\u0142a\u0107 serwera proxy, poniewa\u017c parametr tokenBytes ma warto\u015b\u0107 NULL. 
+DYNA1011E.useraction=Brak.
+
+# No Comment Provided
+DYNA1012E=DYNA1012E: Metoda {0}: parametr eventBytes ma warto\u015b\u0107 NULL (event = {1} eventBytes = {2})
+DYNA1012E.explanation=Podana metoda nie mo\u017ce wywo\u0142a\u0107 serwera proxy, poniewa\u017c parametr eventBytes ma warto\u015b\u0107 NULL.
+DYNA1012E.useraction=Brak.
+
+# No Comment Provided
+DYNA1013E=DYNA1013E: Metoda {0}: parametr entryKeyBytes ma warto\u015b\u0107 NULL (entryKey = {1} entryKeyBytes = {2})
+DYNA1013E.explanation=Podana metoda nie mo\u017ce wywo\u0142a\u0107 serwera proxy, poniewa\u017c parametr entryKeyBytes ma warto\u015b\u0107 NULL.
+DYNA1013E.useraction=Brak.
+
+# No Comment Provided
+DYNA1014E=DYNA1014E: Metoda {0}: wpis powinien znajdowa\u0107 si\u0119 w tabeli przekazywania/pobierania, ale element podrz\u0119dny ma warto\u015b\u0107 NULL. entryKey = {1}
+DYNA1014E.explanation=Podana metoda nie mog\u0142a wydoby\u0107 wpisu cacheEntry z tabeli przekazywania/pobierania, poniewa\u017c element w\u0142a\u015bciciela elementu podrz\u0119dnego ma warto\u015b\u0107 NULL.
+DYNA1014E.useraction=Brak.
+
+# No Comment Provided
+DYNA1015E=DYNA1015E: Metoda {0}: parametr propKeyBytes ma warto\u015b\u0107 NULL (propKey = {1} propKeyBytes = {2})
+DYNA1015E.explanation=Podana metoda nie mo\u017ce wywo\u0142a\u0107 serwera proxy, poniewa\u017c parametr propKeyBytes ma warto\u015b\u0107 NULL.
+DYNA1015E.useraction=Brak.
+
+# No Comment Provided
+DYNA1016E=DYNA1016E: Metoda {0}: parametr dbmBytes ma warto\u015b\u0107 NULL (dbm = {1} dbmBytes = {2})
+DYNA1016E.explanation=Podana metoda nie mo\u017ce wywo\u0142a\u0107 serwera proxy, poniewa\u017c parametr DRSBootstrapMsg po konwersji na bajty ma warto\u015b\u0107 NULL.
+DYNA1016E.useraction=Brak.
+                                         
+# No Comment Provided
+DYNA1017E=DYNA1017E: Metoda {0}: b\u0142\u0105d parametru. Parametr dbm ma warto\u015b\u0107 NULL.
+DYNA1017E.explanation=Do podanej metody przekazano pusty obiekt dbm. 
+DYNA1017E.useraction=Brak.
+
+# No Comment Provided
+DYNA1018E=DYNA1018E: Metoda {0}: warto\u015b\u0107 tmp zwr\u00f3cona przez \u017c\u0105danie proxy.handleBootstrapRequest to NULL (tmp = {1}, token = {2}) 
+DYNA1018E.explanation=Dla podanej metody warto\u015b\u0107 zwr\u00f3cona przez \u017c\u0105danie proxy.handleBootstrapRequest to NULL.
+DYNA1018E.useraction=Brak.
+
+# No Comment Provided
+DYNA1019E=DYNA1019E: Metoda {0}: b\u0142\u0105d parametru. Parametr propKey ma warto\u015b\u0107 NULL.
+DYNA1019E.explanation=Do podanej metody przekazano parametr propKey o warto\u015bci NULL. 
+DYNA1019E.useraction=Brak. 
+
+# No Comment Provided
+DYNA1020E=DYNA1020E: Metoda {0}: b\u0142\u0105d parametru. Parametr value ma warto\u015b\u0107 NULL.
+DYNA1020E.explanation=Do podanej metody przekazano warto\u015b\u0107 NULL dla parametru value. 
+DYNA1020E.useraction=Brak.
+
+# No Comment Provided
+DYNA1021E=DYNA1021E: Metoda {0}: nie mo\u017cna przekszta\u0142ci\u0107 parametru value w bajty.
+DYNA1021E.explanation=Podana metoda nie mo\u017ce przekszta\u0142ci\u0107 parametru value w bajty. 
+DYNA1021E.useraction=Brak.
+
+# No Comment Provided
+DYNA1022E=DYNA1022E: Metoda {0}: b\u0142\u0105d parametru. Informacja o przep\u0142ywie DRSJvmId ma warto\u015b\u0107 NULL.
+DYNA1022E.explanation=Do podanej metody przekazano warto\u015b\u0107 NULL dla parametru przep\u0142ywu DRSJvmId. 
+DYNA1022E.useraction=Brak.
+
+# No Comment Provided
+DYNA1023E=DYNA1023E: Metoda {0}: b\u0142\u0105d parametru. Parametr entryKeyList ma warto\u015b\u0107 NULL.
+DYNA1023E.explanation=Do podanej metody przekazano warto\u015b\u0107 NULL dla parametru entryKeyList. 
+DYNA1023E.useraction=Brak.
+
+# No Comment Provided
+DYNA1024E=DYNA1024E: Metoda {0}: nie mo\u017cna przekszta\u0142ci\u0107 parametru entryKeyList w bajty (entryKeyList = {1} entryKeyListBytes = {2})
+DYNA1024E.explanation=Podana metoda nie mo\u017ce przekszta\u0142ci\u0107 parametru entryKeyList w tablic\u0119 bajt\u00f3w.
+DYNA1024E.useraction=Brak.
+
+# No Comment Provided
+DYNA1025E=DYNA1025E: Metoda {0}: nie mo\u017cna przekszta\u0142ci\u0107 parametru DRSJvmId w bajty (jvmId = {1} jvmIdBytes = {2})
+DYNA1025E.explanation=Podana metoda nie mo\u017ce przekszta\u0142ci\u0107 parametru DRSJvmID w tablic\u0119 bajt\u00f3w.
+DYNA1025E.useraction=Brak.
+
+# No Comment Provided
+DYNA1026I=DYNA1026I: Instancja us\u0142ugi DRS DynacacheDRSController {0} odebra\u0142a zdarzenie REPLICATION_UP.
+DYNA1026I.explanation=Podana instancja us\u0142ugi DRS DynacacheDRSController odebra\u0142a zdarzenie REPLICATION_UP.
+DYNA1026I.useraction=Brak.
+
+# No Comment Provided
+DYNA1027I=DYNA1027I: Instancja us\u0142ugi DRS DynacacheDRSController {0} odebra\u0142a zdarzenie REPLICATION_DOWN.
+DYNA1027I.explanation=Podana instancja us\u0142ugi DRS DynacacheDRSController odebra\u0142a zdarzenie REPLICATION_DOWN.
+DYNA1027I.useraction=Brak.
+
+# No Comment Provided
+DYNA1028I=DYNA1028I: Instancja us\u0142ugi DRS DynacacheDRSController {0} odebra\u0142a zdarzenie IS_CONGESTED.
+DYNA1028I.explanation=Podana instancja us\u0142ugi DRS DynacacheDRSController odebra\u0142a zdarzenie IS_CONGESTED.
+DYNA1028I.useraction=Brak.
+
+# No Comment Provided
+DYNA1029I=DYNA1029I: Instancja us\u0142ugi DRS DynacacheDRSController {0} odebra\u0142a zdarzenie NOT_CONGESTED.
+DYNA1029I.explanation=Podana instancja us\u0142ugi DRS DynacacheDRSController odebra\u0142a zdarzenie NOT_CONGESTED.
+DYNA1029I.useraction=Brak.
+
+# No Comment Provided
+DYNA1030E=DYNA1030E: Niepoprawny zakres warto\u015bci. Dolna warto\u015b\u0107 ({0}) i g\u00f3rna warto\u015b\u0107 ({1}) musz\u0105 by\u0107 liczbami ca\u0142kowitymi.
+DYNA1030E.explanation=Brak wymaganego atrybutu w konfiguracji pami\u0119ci podr\u0119cznej.
+DYNA1030E.useraction=Dodaj wymagany atrybut do pliku konfiguracyjnego pami\u0119ci podr\u0119cznej.
+
+# No Comment Provided
+DYNA1031E=DYNA1031E: Niepoprawny zakres. Dolna warto\u015b\u0107 atrybutu ({0}) jest wi\u0119ksza ni\u017c g\u00f3rna warto\u015b\u0107 atrybutu ({1}).
+DYNA1031E.explanation=Okre\u015blone dla zakresu dolna i g\u00f3rna warto\u015b\u0107 atrybutu s\u0105 niepoprawne.
+DYNA1031E.useraction=Popraw te warto\u015bci atrybut\u00f3w w taki spos\u00f3b, aby dolna warto\u015b\u0107 by\u0142a mniejsza ni\u017c g\u00f3rna warto\u015b\u0107.
+
+# No Comment Provided
+DYNA1032E=DYNA1032E: W\u0142a\u015bciwo\u015b\u0107 o nazwie primary-storage musi by\u0107 ustawiona na warto\u015b\u0107 memory lub disk.  Obecna warto\u015b\u0107: {0}.
+DYNA1032E.explanation=Okre\u015blony element musi mie\u0107 warto\u015b\u0107 memory lub disk, ale podano inn\u0105 warto\u015b\u0107.
+DYNA1032E.useraction=Popraw element w taki spos\u00f3b, aby jego warto\u015b\u0107 by\u0142a ustawiona na memory lub disk.
+
+
+# No Comment Provided
+DYNA1033W=DYNA1033W: W\u0142a\u015bciwo\u015b\u0107 niestandardowa disableDependencyId jest ustawiona na warto\u015b\u0107 {0}, kt\u00f3ra nie jest zgodna z bie\u017c\u0105cym stanem plik\u00f3w dyskowych pami\u0119ci podr\u0119cznej o nazwie {1}. W\u0142a\u015bciwo\u015b\u0107 niestandardowa disableDependencyId jest ustawiona na warto\u015b\u0107 {2}. 
+DYNA1033W.explanation=Ustawienie w\u0142a\u015bciwo\u015bci niestandardowej disableDependencyId nie jest zgodne z bie\u017c\u0105cym stanem plik\u00f3w dyskowych.
+DYNA1033W.useraction=Aby wprowadzi\u0107 wymagane ustawienia w\u0142a\u015bciwo\u015bci niestandardowej disableDependencyId, usu\u0144 wszystkie pliki pami\u0119ci podr\u0119cznej dysku i zrestartuj serwer.
+
+# No Comment Provided
+DYNA1034W=DYNA1034W: W\u0142a\u015bciwo\u015b\u0107 niestandardowa disableTemplatesSupport jest ustawiona na warto\u015b\u0107 {0}, kt\u00f3ra nie jest zgodna z bie\u017c\u0105cym stanem plik\u00f3w dyskowych pami\u0119ci podr\u0119cznej o nazwie {1}. W\u0142a\u015bciwo\u015b\u0107 niestandardowa disableTemplatesSupport jest ustawiona na warto\u015b\u0107 {2}. 
+DYNA1034W.explanation=Ustawienie w\u0142a\u015bciwo\u015bci niestandardowej disableTemplatesSupport nie jest zgodne z bie\u017c\u0105cym stanem plik\u00f3w dyskowych.
+DYNA1034W.useraction=Aby wprowadzi\u0107 wymagane ustawienia w\u0142a\u015bciwo\u015bci niestandardowej disableTemplatesSupport, usu\u0144 wszystkie pliki pami\u0119ci podr\u0119cznej dysku i zrestartuj serwer.
+
+# No Comment Provided
+DYNA1035I=DYNA1035I: Lista kluczy pami\u0119ci podr\u0119cznej {0} i ich metod hashcode zawartych w pami\u0119ci podr\u0119cznej o nazwie {1}: {2} 
+DYNA1035I.explanation=Wy\u015bwietla poszczeg\u00f3lne klucze pami\u0119ci podr\u0119cznej wraz z ich metodami hashcode zawarte w pami\u0119ci podr\u0119cznej.
+DYNA1035I.useraction=Brak.
+
+# No Comment Provided
+DYNA1036I=DYNA1036I: Lista kluczy pami\u0119ci podr\u0119cznej {0} i ich metod hashcode zawartych w pami\u0119ci podr\u0119cznej dysku o nazwie {1}: {2} 
+DYNA1036I.explanation=Wy\u015bwietla poszczeg\u00f3lne klucze pami\u0119ci podr\u0119cznej wraz z ich metodami hashcode zawarte w pami\u0119ci podr\u0119cznej dysku.
+DYNA1036I.useraction=Brak.
+
+# No Comment Provided
+DYNA1037I=DYNA1037I: Lista kluczy pami\u0119ci podr\u0119cznej {0} i ich metod hashcode zawartych w tabeli PushPullTable dla pami\u0119ci podr\u0119cznej o nazwie {1}: {2} 
+DYNA1037I.explanation=Wy\u015bwietla poszczeg\u00f3lne klucze pami\u0119ci podr\u0119cznej wraz z ich metodami hashcode zawarte w tabeli PushPullTable.
+DYNA1037I.useraction=Brak.
+
+# No Comment Provided
+DYNA1038I=DYNA1038I: Ca\u0142kowita liczba wpis\u00f3w pami\u0119ci podr\u0119cznej dla pami\u0119ci podr\u0119cznej o nazwie {1}wynosi {0}.
+DYNA1038I.explanation=Wy\u015bwietla ca\u0142kowit\u0105 liczb\u0119 wpis\u00f3w w pami\u0119ci podr\u0119cznej.
+DYNA1038I.useraction=Brak.
+
+# No Comment Provided
+DYNA1039I=DYNA1039I: Ca\u0142kowita liczba wpis\u00f3w pami\u0119ci podr\u0119cznej dla pami\u0119ci podr\u0119cznej dysku o nazwie {1} wynosi {0}.
+DYNA1039I.explanation=Wy\u015bwietla ca\u0142kowit\u0105 liczb\u0119 wpis\u00f3w w pami\u0119ci podr\u0119cznej dysku.
+DYNA1039I.useraction=Brak.
+
+
+# No Comment Provided
+DYNA1040I=DYNA1040I: Ca\u0142kowita liczba identyfikator\u00f3w pami\u0119ci podr\u0119cznej w tabeli PushPullTable dla pami\u0119ci podr\u0119cznej o nazwie {1} wynosi {0}.
+DYNA1040I.explanation=Wy\u015bwietla ca\u0142kowit\u0105 liczb\u0119 identyfikator\u00f3w pami\u0119ci podr\u0119cznej w tabeli PushPullTable.
+DYNA1040I.useraction=Brak.
+
+# No Comment Provided
+DYNA1041W=DYNA1041W: Por\u00f3wnanie pami\u0119ci podr\u0119cznej mi\u0119dzy serwerem server1 {0}a serwerem server2 {1}dla pami\u0119ci podr\u0119cznej o nazwie {2}nie powiod\u0142o si\u0119.
+DYNA1041W.explanation=Niepowodzenie por\u00f3wnania pami\u0119ci podr\u0119cznej mog\u0142o by\u0107 spowodowane nast\u0119puj\u0105cymi czynnikami: (1) Przenoszenie na dysk jest w\u0142\u0105czone. Je\u015bli instancje pami\u0119ci podr\u0119cznej s\u0105 uruchamiane \u0142\u0105cznie w trakcie uruchamiania serwera, wpisy pami\u0119ci podr\u0119cznej dysku nie s\u0105 mi\u0119dzy sob\u0105 replikowane. (2) Stan przeci\u0105\u017cenia w ramach us\u0142ugi DRS mo\u017ce spowodowa\u0107 usuni\u0119cie niekt\u00f3rych aktualizacji pami\u0119ci podr\u0119cznej. (3) Niekt\u00f3re wpisy pami\u0119ci podr\u0119cznej nie mog\u0105 by\u0107 wsp\u00f3\u0142u\u017cytkowane w ramach domeny replikacji. (4) Komenda compareCaches() nie dzia\u0142a w po\u0142\u0105czeniu ze strategi\u0105 wsp\u00f3\u0142u\u017cytkowania Push-Pull (Przekazuj-pobieraj). U\u017cyj komendy compareCacheKeys.
+DYNA1041W.useraction=Brak.
+
+# No Comment Provided
+DYNA1042E=DYNA1042E: Wej\u015bciowa instancja pami\u0119ci podr\u0119cznej {0}jest niepoprawna lub nie zosta\u0142a skonfigurowana.
+DYNA1042E.explanation=Wej\u015bciowa instancja pami\u0119ci podr\u0119cznej jest niepoprawna. Skonfiguruj instancj\u0119 pami\u0119ci podr\u0119cznej za pomoc\u0105 Konsoli administracyjnej lub pliku cacheinstances.properties. 
+DYNA1042E.useraction=Upewnij si\u0119, \u017ce instancja pami\u0119ci podr\u0119cznej jest poprawnie skonfigurowana i ma poprawn\u0105 nazw\u0119.
+
+# No Comment Provided
+DYNA1043E=DYNA1043E: Wzorzec wej\u015bciowy {0}nie jest poprawnym wyra\u017ceniem regularnym. Wyj\u0105tek: {1}
+DYNA1043E.explanation=Wzorzec wej\u015bciowy nie jest poprawnym wyra\u017ceniem regularnym.
+DYNA1043E.useraction=Sprawd\u017a klas\u0119 java.util.regex.Pattern.
+
+# No Comment Provided
+DYNA1044E=DYNA1044E: B\u0142\u0105d wewn\u0119trzny: Utworzenie obiektu MessageDigest dla algorytmu MD5 nie powiod\u0142o si\u0119. Wyj\u0105tek: {0}
+DYNA1044E.explanation=B\u0142\u0105d wewn\u0119trzny: Utworzenie obiektu MessageDigest dla algorytmu MD5 nie powiod\u0142o si\u0119.
+DYNA1044E.useraction=Skontaktuj si\u0119 z dzia\u0142em wsparcia IBM w celu debugowania tego problemu.
+
+# No Comment Provided
+DYNA1045E=DYNA1045E: Nazwa w\u0119z\u0142a wej\u015bciowego {0}nie jest poprawn\u0105 nazw\u0105 w\u0119z\u0142a.
+DYNA1045E.explanation=Nazwa w\u0119z\u0142a wej\u015bciowego jest niepoprawna.
+DYNA1045E.useraction=Upewnij si\u0119, \u017ce w\u0119ze\u0142 istnieje, a jego nazwa jest poprawna.
+
+# No Comment Provided
+DYNA1046E=DYNA1046E: Nazwa serwera wej\u015bciowego {0}nie jest poprawn\u0105 nazw\u0105 serwera.
+DYNA1046E.explanation=Nazwa serwera wej\u015bciowego jest niepoprawna.
+DYNA1046E.useraction=Upewnij si\u0119, \u017ce serwer istnieje, a jego nazwa jest poprawna.
+
+# No Comment Provided
+DYNA1047E=DYNA1047E: B\u0142\u0105d wewn\u0119trzny: Utworzenie obiektu AdminService nie powiod\u0142o si\u0119. Wyj\u0105tek: {0}
+DYNA1047E.explanation=B\u0142\u0105d wewn\u0119trzny: Utworzenie obiektu AdminService nie powiod\u0142o si\u0119.
+DYNA1047E.useraction=Skontaktuj si\u0119 z dzia\u0142em wsparcia IBM w celu debugowania tego problemu.
+
+# No Comment Provided
+DYNA1048E=DYNA1048E: Komenda MBean {0} mo\u017ce by\u0107 uruchamiana jedynie w ramach mened\u017cera wdra\u017cania.
+DYNA1048E.explanation=Komenda CompareCaches komponentu MBean mo\u017ce by\u0107 uruchamiana jedynie w ramach mened\u017cera wdra\u017cania.
+DYNA1048E.useraction=Uruchom komend\u0119 CompareCaches z poziomu komponentu MBean us\u0142ugi Dynacache mened\u017cera wdra\u017cania.
+
+# No Comment Provided
+DYNA1049E=DYNA1049E: Nie znaleziono komponentu MBean us\u0142ugi DynaCache w w\u0119\u017ale {0} zawieraj\u0105cym serwer {1}.
+DYNA1049E.explanation=Nie znaleziono komponentu MBean us\u0142ugi DynaCache w w\u0119\u017ale zawieraj\u0105cym serwer.
+DYNA1049E.useraction=Sprawd\u017a wyra\u017cenie zapytania dla komponentu MBean. Upewnij si\u0119, \u017ce podane nazwy w\u0119z\u0142a i serwera istniej\u0105.
+
+# No Comment Provided
+DYNA1050E=DYNA1050E: Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by wywo\u0142ania komendy {0} komponentu MBean na serwerze {1}. Wyj\u0105tek: {2}
+DYNA1050E.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by wywo\u0142ania komendy komponentu MBean.
+DYNA1050E.useraction=Znajd\u017a wyja\u015bnienie wyj\u0105tku w pliku SystemOut.log serwera.
+
+# No Comment Provided
+DYNA1051E=DYNA1051E: Nie mo\u017cna wykona\u0107 komendy {0} komponentu MBean, poniewa\u017c funkcja przenoszenia na dysk nie zosta\u0142a w\u0142\u0105czona dla nazwanej instancji pami\u0119ci podr\u0119cznej {1}. 
+DYNA1051E.explanation=Nie mo\u017cna wywo\u0142a\u0107 komendy komponentu MBean, poniewa\u017c funkcja przenoszenia na dysk nie zosta\u0142a w\u0142\u0105czona dla nazwanej instancji pami\u0119ci podr\u0119cznej. 
+DYNA1051E.useraction=Upewnij si\u0119, \u017ce funkcja przenoszenia na dysk zosta\u0142a w\u0142\u0105czona dla nazwanej instancji pami\u0119ci podr\u0119cznej. Informacje na ten temat zawiera artyku\u0142 w dokumentacji produktu zatytu\u0142owany Konfigurowanie przenoszenia dynamicznej pami\u0119ci podr\u0119cznej na dysk.
+
+# No Comment Provided
+DYNA1052E=DYNA1052E: Nazwa wej\u015bciowa {0} nie jest poprawn\u0105 nazw\u0105 statystyki pami\u0119ci podr\u0119cznej.
+DYNA1052E.explanation=Wej\u015bciowa nazwa statystyki pami\u0119ci podr\u0119cznej jest niepoprawna.
+DYNA1052E.useraction=Upewnij si\u0119, \u017ce nazwa statystyki pami\u0119ci podr\u0119cznej jest poprawna.
+
+# No Comment Provided
+DYNA1053E=DYNA1053E: Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by wywo\u0142ania komendy {0} komponentu MBean. Wyj\u0105tek: {1}
+DYNA1053E.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by wywo\u0142ania komendy komponentu MBean.
+DYNA1053E.useraction=Wyja\u015bnienie wyj\u0105tku jest umieszczone w komunikacie o b\u0142\u0119dzie.
+
+# No Comment Provided
+DYNA1054I=DYNA1054I: Us\u0142uga Dynamic Cache (podstawowa pami\u0119\u0107 podr\u0119czna) zosta\u0142a pomy\u015blnie zainicjowana.
+DYNA1054I.explanation=Us\u0142uga Dynamic Cache (podstawowa pami\u0119\u0107 podr\u0119czna) zosta\u0142a pomy\u015blnie zainicjowana.
+DYNA1054I.useraction=Brak.
+
+# No Comment Provided
+DYNA1055I=DYNA1055I: Us\u0142uga Dynamic Cache (pami\u0119\u0107 podr\u0119czna serwlet\u00f3w) zosta\u0142a pomy\u015blnie zainicjowana.
+DYNA1055I.explanation=Us\u0142uga Dynamic Cache (pami\u0119\u0107 podr\u0119czna serwlet\u00f3w) zosta\u0142a pomy\u015blnie zainicjowana.
+DYNA1055I.useraction=Brak.
+
+# No Comment Provided
+DYNA1056I=DYNA1056I: Us\u0142uga Dynamic Cache (pami\u0119\u0107 podr\u0119czna obiekt\u00f3w) zosta\u0142a pomy\u015blnie zainicjowana.
+DYNA1056I.explanation=Us\u0142uga Dynamic Cache (pami\u0119\u0107 podr\u0119czna obiekt\u00f3w) zosta\u0142a pomy\u015blnie zainicjowana.
+DYNA1056I.useraction=Brak.
+
+# No Comment Provided
+DYNA1057W=DYNA1057W: Instancja pami\u0119ci podr\u0119cznej {0} zdefiniowana w ramach elementu {1} nie zosta\u0142a dodana, poniewa\u017c pami\u0119\u0107 podr\u0119czna o takiej nazwie ju\u017c istnieje. 
+DYNA1057W.explanation=Instancja pami\u0119ci podr\u0119cznej nie zosta\u0142a dodana, poniewa\u017c pami\u0119\u0107 podr\u0119czna o takiej nazwie ju\u017c istnieje.
+DYNA1057W.useraction=Upewnij si\u0119, \u017ce instancja pami\u0119ci podr\u0119cznej nie jest definiowana wi\u0119cej ni\u017c jeden raz w plikach w\u0142a\u015bciwo\u015bci.
+
+# No Comment Provided
+DYNA1058W=DYNA1058W: Replikacja pami\u0119ci podr\u0119cznej jest wy\u0142\u0105czona dla instancji pami\u0119ci podr\u0119cznej {0}, poniewa\u017c us\u0142uga Dynamic Cache dzia\u0142a na serwerze autonomicznym.
+DYNA1058W.explanation=Replikacja pami\u0119ci podr\u0119cznej jest wy\u0142\u0105czona dla instancji pami\u0119ci podr\u0119cznej, poniewa\u017c us\u0142uga Dynamic Cache dzia\u0142a na serwerze autonomicznym.
+DYNA1058W.useraction=Brak.
+
+# No Comment Provided
+DYNA1059W=DYNA1059W: Nie mo\u017cna u\u017cy\u0107 instancji us\u0142ugi Dynamic Cache o nazwie {0}, poniewa\u017c us\u0142uga Dynamic Servlet Cache nie zosta\u0142a uruchomiona.
+DYNA1059W.explanation=Uruchomienie nazwanej us\u0142ugi Dynamic Servlet Cache nie by\u0142o mo\u017cliwe. Instancje pami\u0119ci podr\u0119cznej serwlet\u00f3w nie mog\u0105 by\u0107 u\u017cywane.
+DYNA1059W.useraction=Upewnij si\u0119, \u017ce buforowanie dynamiczne serwlet\u00f3w zosta\u0142o w\u0142\u0105czone w ramach Konsoli administracyjnej.
+
+# No Comment Provided
+DYNA1060W=DYNA1060W: Nie mo\u017cna u\u017cy\u0107 instancji us\u0142ugi Dynamic Cache o nazwie {0}, poniewa\u017c us\u0142uga Dynamic Object Cache nie zosta\u0142a uruchomiona.
+DYNA1060W.explanation=Uruchomienie nazwanej us\u0142ugi Dynamic Object Cache nie by\u0142o mo\u017cliwe. Instancje pami\u0119ci podr\u0119cznej obiekt\u00f3w nie mog\u0105 by\u0107 u\u017cywane.
+DYNA1060W.useraction=Brak.
+
+# No Comment Provided
+DYNA1061E=DYNA1061E: Buforowanie serwlet\u00f3w ani obiekt\u00f3w nie zosta\u0142o w\u0142\u0105czone.
+DYNA1061E.explanation=Buforowanie serwlet\u00f3w ani obiekt\u00f3w nie zosta\u0142o w\u0142\u0105czone.
+DYNA1061E.useraction=Upewnij si\u0119, \u017ce buforowanie dynamiczne serwlet\u00f3w zosta\u0142o w\u0142\u0105czone w ramach Konsoli administracyjnej.
+
+# No Comment Provided
+DYNA1062E=DYNA1062E: Inicjowanie us\u0142ugi Dynamic Cache (podstawowa pami\u0119\u0107 podr\u0119czna) nie powiod\u0142o si\u0119. Wyj\u0105tek: {0}
+DYNA1062E.explanation=Inicjowanie us\u0142ugi Dynamic Cache (podstawowa pami\u0119\u0107 podr\u0119czna) nie powiod\u0142o si\u0119.
+DYNA1062E.useraction=Debuguj problem, korzystaj\u0105c z udost\u0119pnionego komunikatu o b\u0142\u0119dzie.
+
+# No Comment Provided
+DYNA1063E=DYNA1063E: Nie mo\u017cna wykona\u0107 operacji {0} dla pami\u0119ci podr\u0119cznej o nazwie {1} poniewa\u017c dostawca pami\u0119ci podr\u0119cznej {2} nie obs\u0142uguje funkcji aliasu.
+DYNA1063E.explanation=Okre\u015blona operacja nie mo\u017ce zosta\u0107 wykonana, poniewa\u017c dostawca pami\u0119ci podr\u0119cznej nie obs\u0142uguje funkcji aliasu.
+DYNA1063E.useraction=Brak.
+
+# No Comment Provided
+DYNA1064E=DYNA1064E: Nie mo\u017cna wykona\u0107 operacji {0} dla pami\u0119ci podr\u0119cznej o nazwie {1} poniewa\u017c dostawca pami\u0119ci podr\u0119cznej {2} nie obs\u0142uguje funkcji przenoszenia pami\u0119ci podr\u0119cznej na dysk.
+DYNA1064E.explanation=Nie mo\u017cna wykona\u0107 okre\u015blonej operacji, poniewa\u017c dostawca pami\u0119ci podr\u0119cznej nie obs\u0142uguje funkcji przenoszenia pami\u0119ci podr\u0119cznej na dysk.
+DYNA1064E.useraction=Brak.
+
+# No Comment Provided
+DYNA1065E=DYNA1065E: Nie mo\u017cna wykona\u0107 operacji {0} dla pami\u0119ci podr\u0119cznej o nazwie {1} poniewa\u017c dostawca pami\u0119ci podr\u0119cznej {2} nie obs\u0142uguje funkcji replikacji DRS.
+DYNA1065E.explanation=Nie mo\u017cna wykona\u0107 okre\u015blonej operacji, poniewa\u017c dostawca pami\u0119ci podr\u0119cznej nie obs\u0142uguje funkcji replikacji DRS.
+DYNA1065E.useraction=Brak.
+
+# No Comment Provided
+DYNA1066E=DYNA1066E: Nie mo\u017cna zainicjowa\u0107 dostawcy pami\u0119ci podr\u0119cznej {0}. Zamiast skonfigurowanego dostawcy pami\u0119ci podr\u0119cznej do utworzenia instancji pami\u0119ci podr\u0119cznej {1} zostanie u\u017cyta us\u0142uga Dynamic Cache.
+DYNA1066E.explanation=Podczas inicjowania skonfigurowanego dostawcy pami\u0119ci podr\u0119cznej wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d. Zamiast skonfigurowanego dostawcy pami\u0119ci podr\u0119cznej do utworzenia instancji pami\u0119ci podr\u0119cznej zostanie u\u017cyta us\u0142uga Dynamic Cache. 
+DYNA1066E.useraction=Upewnij si\u0119, \u017ce dostawca pami\u0119ci podr\u0119cznej jest udost\u0119pniony jako pakunek \u015brodowiska wykonawczego produktu serwera aplikacji lub jako biblioteka umieszczona w katalogu lib produktu serwera aplikacji. 
+
+# No Comment Provided
+DYNA1067E=DYNA1067E: Funkcja wielko\u015bci pami\u0119ci podr\u0119cznej w MB jest wy\u0142\u0105czona, poniewa\u017c wielko\u015b\u0107 obiektu zapisanego w pami\u0119ci podr\u0119cznej nie mo\u017ce by\u0107 mierzona.  ClassName={0}   Type={1}
+DYNA1067E.explanation=Funkcja wielko\u015bci pami\u0119ci podr\u0119cznej w MB jest wy\u0142\u0105czona, poniewa\u017c obiekt zapisany w pami\u0119ci podr\u0119cznej nie zosta\u0142 zaimplementowany jako umo\u017cliwiaj\u0105cy pomiar wielko\u015bci. 
+DYNA1067E.useraction=Upewnij si\u0119, \u017ce klasa obiektu zapisanego w pami\u0119ci podr\u0119cznej implementuje interfejs com.ibm.websphere.cache.Sizable.
+
+# No Comment Provided
+DYNA1068E=DYNA1068E: Funkcja wielko\u015bci pami\u0119ci podr\u0119cznej w MB jest wy\u0142\u0105czona, poniewa\u017c skonfigurowany dostawca pami\u0119ci podr\u0119cznej {0}nie obs\u0142uguje tej funkcji dla instancji pami\u0119ci podr\u0119cznej {1}.
+DYNA1068E.explanation=Funkcja wielko\u015bci pami\u0119ci podr\u0119cznej w MB jest wy\u0142\u0105czona, poniewa\u017c skonfigurowany dostawca pami\u0119ci podr\u0119cznej nie obs\u0142uguje tej funkcji.
+DYNA1068E.useraction=Brak.
+
+# No Comment Provided
+DYNA1069I=DYNA1069I: Warto\u015b\u0107 w\u0142a\u015bciwo\u015bci niestandardowej lruToDiskTriggerTime zostanie ustawiona na {0}w celu uzyskania lepszej wydajno\u015bci.
+DYNA1069I.explanation=Poniewa\u017c funkcja wielko\u015bci pami\u0119ci podr\u0119cznej w megabajtach lub procent wyzwalacza LRU jest w\u0142\u0105czona, warto\u015b\u0107 w\u0142a\u015bciwo\u015bci niestandardowej lruToDiskTriggerTime zostanie zmieniona w celu uzyskania lepszej wydajno\u015bci.
+DYNA1069I.useraction=Brak.
+
+DYNA1070I=DYNA1070I: Instancja pami\u0119ci podr\u0119cznej {0}jest pe\u0142na i osi\u0105gn\u0119\u0142a skonfigurowan\u0105 maksymaln\u0105 warto\u015b\u0107 wielko\u015bci wpis\u00f3w ({1}). Przestrze\u0144 dla nowych wpis\u00f3w w stercie wirtualnej maszyny j\u0119zyka Java zostanie uzyskana dzi\u0119ki usuni\u0119ciu istniej\u0105cych wpis\u00f3w pami\u0119ci podr\u0119cznej przy u\u017cyciu algorytmu LRU. Rozwa\u017c w\u0142\u0105czenie opcji przenoszenia pami\u0119ci podr\u0119cznej na dysk w celu unikni\u0119cia usuwania wpis\u00f3w pami\u0119ci podr\u0119cznej z pami\u0119ci.
+DYNA1070I.explanation=Poniewa\u017c opcja przenoszenia na dysk jest wy\u0142\u0105czona i instancja pami\u0119ci podr\u0119cznej jest pe\u0142na, przestrze\u0144 dla nowych wpis\u00f3w w stercie wirtualnej maszyny j\u0119zyka Java zostanie uzyskana dzi\u0119ki usuni\u0119ciu istniej\u0105cych wpis\u00f3w pami\u0119ci podr\u0119cznej przy u\u017cyciu algorytmu LRU.
+DYNA1070I.useraction=W\u0142\u0105cz opcj\u0119 przenoszenia pami\u0119ci podr\u0119cznej na dysk w celu unikni\u0119cia usuwania wpis\u00f3w pami\u0119ci podr\u0119cznej z pami\u0119ci.
+
+# No Comment Provided
+DYNA1071I=DYNA1071I: Dostawca pami\u0119ci podr\u0119cznej {0} jest u\u017cywany.
+DYNA1071I.explanation=Ten komunikat wskazuje nazw\u0119 u\u017cywanego dostawcy pami\u0119ci podr\u0119cznej.
+DYNA1071I.useraction=Brak.
+
+# No Comment Provided
+DYNA1072W=DYNA1072W: Identyfikator pami\u0119ci podr\u0119cznej {0} nie b\u0119dzie replikowany na inne serwery, poniewa\u017c w\u0142a\u015bciwo\u015b\u0107 skipMemoryWriteToDisk jest ustawiona na opcj\u0119 true. Strategia wsp\u00f3\u0142u\u017cytkowania zostanie ustawiona na opcj\u0119 not-shared.
+DYNA1072W.explanation=Okre\u015blony identyfikator pami\u0119ci podr\u0119cznej nie b\u0119dzie replikowany na inne serwery, poniewa\u017c w\u0142a\u015bciwo\u015b\u0107 skipMemoryWriteToDisk jest ustawiona na opcj\u0119 true. 
+DYNA1072W.useraction=Brak.
+
+# RemoteJMSInvalidator external cache group is configured incorrectly
+DYNA1073E=DYNA1073E: Grupa zewn\u0119trznych pami\u0119ci podr\u0119cznych RemoteJMSInvalidator nie jest poprawnie skonfigurowana. Do elementu grupy zewn\u0119trznych pami\u0119ci podr\u0119cznych zosta\u0142 przekazany nast\u0119puj\u0105cy adres: {0}
+DYNA1073E.explanation=Aby okre\u015blona grupa zewn\u0119trznych pami\u0119ci podr\u0119cznych dzia\u0142a\u0142a poprawnie, nale\u017cy usun\u0105\u0107 b\u0142\u0105d konfiguracji.
+DYNA1073E.useraction=Brak.
+
+# RemoteInvalidator is no longer connected to SIB servers in the remote cell or core group
+DYNA1074W=DYNA1074W: Grupa zewn\u0119trznych pami\u0119ci podr\u0119cznych RemoteJMSInvalidator nie jest ju\u017c pod\u0142\u0105czona. Nazwa JNDI skonfigurowana dla fabryki po\u0142\u0105cze\u0144 kolejki to {0}. Nazwa JNDI miejsca docelowego to {1}.
+DYNA1074W.explanation=Serwery magistrali integracji us\u0142ug w okre\u015blonej fabryce po\u0142\u0105cze\u0144 kolejki nie s\u0105 ju\u017c dost\u0119pne.
+DYNA1074W.useraction=Brak.
+
+# RemoteInvalidator has successfully connected to the SIB servers in the remote cell or core group
+DYNA1075I=DYNA1075I: Grupa zewn\u0119trznych pami\u0119ci podr\u0119cznych RemoteJMSInvalidator jest pod\u0142\u0105czona. Nazwa JNDI skonfigurowana dla fabryki po\u0142\u0105cze\u0144 kolejki to {0}. Nazwa JNDI miejsca docelowego to {1}.
+DYNA1075I.explanation=Grupa zewn\u0119trznych pami\u0119ci podr\u0119cznych jest teraz pod\u0142\u0105czona do serwer\u00f3w magistrali SIB, kt\u00f3re zosta\u0142y zdefiniowane w fabryce po\u0142\u0105cze\u0144 kolejki.
+DYNA1075I.useraction=Brak.
+
+# RemoteInvalidator has successfully connected to the SIB servers in the remote cell or core group
+DYNA1076W=DYNA1076W: Nie mo\u017cna nawi\u0105za\u0107 po\u0142\u0105czenia z grup\u0105 zewn\u0119trznych pami\u0119ci podr\u0119cznych RemoteJMSInvalidator. Nazwa JNDI skonfigurowana dla fabryki po\u0142\u0105cze\u0144 kolejki to {0}. Nazwa JNDI miejsca docelowego to {1}.
+DYNA1076W.explanation=Grupa zewn\u0119trznych pami\u0119ci podr\u0119cznych nie mo\u017ce nawi\u0105za\u0107 po\u0142\u0105czenia z serwerami magistrali integracji us\u0142ug zdefiniowanymi w fabryce po\u0142\u0105cze\u0144 kolejki.
+DYNA1076W.useraction=Konieczne mo\u017ce by\u0107 zrestartowanie docelowych serwer\u00f3w magistrali integracji us\u0142ug.
+
+# displays defined custom property
+DYNA1077I=DYNA1077I: Wykryto w\u0142a\u015bciwo\u015b\u0107 niestandardow\u0105, nazwa: {0}, warto\u015b\u0107: {1}.
+DYNA1077I.explanation=Nazwa i warto\u015b\u0107 zdefiniowanej warto\u015bci niestandardowej.
+DYNA1077I.useraction=Brak.
+
+# Dynacache openjpa messages
+
+queryCache-instance-created=DYNA1080I: Instancja us\u0142ugi OpenJPA L2 QueryCache Dynacache {0} zosta\u0142a pomy\u015blnie utworzona lub odtworzona dla jednostki trwa\u0142ej {1}.
+queryCache-instance-created.explanation=Instancja us\u0142ugi OpenJPA L2 QueryCache Dynacache zosta\u0142a pomy\u015blnie utworzona.
+queryCache-instance-created.useraction=Brak.
+
+dataCache-instance-created=DYNA1081I: Instancja us\u0142ugi OpenJPA L2 DataCache Dynacache {0} zosta\u0142a pomy\u015blnie utworzona lub odtworzona dla jednostki trwa\u0142ej {1}.
+dataCache-instance-created.explanation=Instancja us\u0142ugi OpenJPA L2 DataCache Dynacache zosta\u0142a pomy\u015blnie utworzona.
+dataCache-instance-created.useraction=Brak.
+
+specify-replication-domain=DYNA1082W: Nie okre\u015blono domeny replikacji.
+specify-replication-domain.explanation=Wymuszenie ustawienia w\u0142a\u015bciwo\u015bci enableCacheReplication na opcj\u0119 false.
+specify-replication-domain.useraction=Skonfiguruj domen\u0119 replikacji WebSphere w celu powi\u0105zania z instancj\u0105 pami\u0119ci podr\u0119cznej.
+
+no-cache-name=DYNA1083W: Nie okre\u015blono nazwanej pami\u0119ci podr\u0119cznej dla instancji pami\u0119ci podr\u0119cznej L2 interfejsu open-jpa. Jako nazwa instancji pami\u0119ci podr\u0119cznej stosowana jest nazwa jednostki trwa\u0142ej ({0}).
+no-cache-name.explanation=Brak.
+no-cache-name.useraction=Skonfiguruj nazw\u0119 dla instancji pami\u0119ci podr\u0119cznej L2 interfejsu open-jpa.
+
+no-cache-size=DYNA1084W: Nie okre\u015blono wielko\u015bci pami\u0119ci podr\u0119cznej dla instancji pami\u0119ci podr\u0119cznej L2 interfejsu open-jpa {0}.  Ustawianie wielko\u015bci pami\u0119ci podr\u0119cznej na {1}.
+no-cache-size.explanation=Brak.
+no-cache-size.useraction=Skonfiguruj wielko\u015b\u0107 dla instancji pami\u0119ci podr\u0119cznej L2 interfejsu open-jpa.
+
+incompatible-configuration=DYNA1085W: W\u0142a\u015bciwo\u015b\u0107 {0} zosta\u0142a skonfigurowana na warto\u015b\u0107 niezgodn\u0105 z {1}. Wymuszenie warto\u015bci {2}.
+incompatible-configuration.explanation=Brak.
+incompatible-configuration.useraction=Dokonaj sp\u00f3jnej konfiguracji instancji pami\u0119ci podr\u0119cznej L2 interfejsu open-jpa.
+incompatible-configuration1=DYNA1086I: Poniewa\u017c w\u0142a\u015bciwo\u015b\u0107 openjpa.DataCacheManager jest ustawiona na warto\u015b\u0107 dynacache, to dostawca pami\u0119ci podr\u0119cznej L2 Dynacache OpenJPA WYMUSI ustawienie w\u0142a\u015bciwo\u015bci openjpa.DataCache na warto\u015b\u0107 dynacache.
+incompatible-configuration1.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+incompatible-configuration1.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+incompatible-configuration2=DYNA1087I: Poniewa\u017c w\u0142a\u015bciwo\u015b\u0107 openjpa.DataCacheManager jest ustawiona na warto\u015b\u0107 dynacache, to dostawca pami\u0119ci podr\u0119cznej L2 Dynacache OpenJPA WYMUSI ustawienie w\u0142a\u015bciwo\u015bci openjpa.RemoteCommitProvider na warto\u015b\u0107 none.
+incompatible-configuration2.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+incompatible-configuration2.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+incompatible-configuration3=DYNA1088I: Poniewa\u017c w\u0142a\u015bciwo\u015b\u0107 openjpa.Datacache jest ustawiona na warto\u015b\u0107 dynacache, to dostawca pami\u0119ci podr\u0119cznej L2 Dynacache OpenJPA WYMUSI ustawienie w\u0142a\u015bciwo\u015bci openjpa.RemoteCommitProvider na warto\u015b\u0107 none.
+incompatible-configuration3.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+incompatible-configuration3.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+incompatible-configuration4=DYNA1089I: Poniewa\u017c w\u0142a\u015bciwo\u015b\u0107 openjpa.Querycache jest ustawiona na warto\u015b\u0107 dynacache, to dostawca pami\u0119ci podr\u0119cznej L2 Dynacache OpenJPA WYMUSI ustawienie w\u0142a\u015bciwo\u015bci openjpa.DataCache na warto\u015b\u0107 dynacache.
+incompatible-configuration4.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+incompatible-configuration4.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+DYNA1090I=DYNA1090I: Us\u0142uga dynamicznej pami\u0119ci podr\u0119cznej zosta\u0142a wy\u0142\u0105czona.
+DYNA1090I.explanation=Us\u0142ugi dynamicznej pami\u0119ci podr\u0119cznej, pami\u0119ci podr\u0119cznej obiekt\u00f3w i pami\u0119ci podr\u0119cznej serwlet\u00f3w zosta\u0142y wy\u0142\u0105czone w Konsoli administracyjnej lub za pomoc\u0105 skrypt\u00f3w. 
+DYNA1090I.useraction=W\u0142\u0105cz us\u0142ug\u0119 dynamicznej pami\u0119ci podr\u0119cznej, ustawiaj\u0105c atrybut enable dla elementu DynamicCache o zasi\u0119gu serwera w obiekcie AdminConfig lub wybieraj\u0105c odpowiedni\u0105 opcj\u0119 na panelu Konsoli administracyjnej dost\u0119pnym po wybraniu opcji Serwery aplikacji > <nazwa_serwera> > Us\u0142uga dynamicznej pami\u0119ci podr\u0119cznej.
+
+DYNA1091E=DYNA1091E: Nie rozpoznano konfiguracji dla instancji pami\u0119ci podr\u0119cznej {0} z powodu wyst\u0105pienia wyj\u0105tku {0}.
+DYNA1091E.explanation=Konfiguracja dynamicznej pami\u0119ci podr\u0119cznej jest niepoprawna dla tej instancji pami\u0119ci podr\u0119cznej z powodu zg\u0142oszonego wyj\u0105tku.
+DYNA1091E.useraction=Znajd\u017a i popraw przyczyn\u0119 wyj\u0105tku, aby mo\u017cna by\u0142o doda\u0107 konfiguracj\u0119 pami\u0119ci podr\u0119cznej do \u015brodowiska wykonawczego dynamicznej pami\u0119ci podr\u0119cznej.
+                     
+no-jpa-cache-exists-with-this-name=DYNA1092E: Pami\u0119\u0107 podr\u0119czna danych o nazwie {0}nie istnieje.
+no-jpa-cache-exists-with-this-name.explanation=Sprawd\u017a, czy pami\u0119\u0107 podr\u0119czna danych L2 zosta\u0142a pomy\u015blnie utworzona.
+no-jpa-cache-exists-with-this-name.useraction=Sprawd\u017a, czy pami\u0119\u0107 podr\u0119czna danych L2 jest poprawna.
+
+no-dynacache-manager-configured=DYNA1093E: Dla pami\u0119ci podr\u0119cznej danych {0}nie skonfigurowano poprawnego mened\u017cera w jednostce trwa\u0142o\u015bci {1}. 
+no-dynacache-manager-configured.explanation=W\u0142a\u015bciwo\u015b\u0107 openjpa.DataCacheManager nale\u017cy ustawi\u0107 na warto\u015b\u0107 dynacache. 
+no-dynacache-manager-configured.useraction=Popraw t\u0119 w\u0142a\u015bciwo\u015b\u0107 w pliku persistence.xml.
+
+incorrect-class-name=DYNA1094E: Klasa obiektu {0} nie mo\u017ce zosta\u0107 za\u0142adowana przez program \u0142aduj\u0105cy klasy {1}. 
+incorrect-class-name.explanation=Sprawd\u017a, czy klasa istnieje w aplikacji i czy jest widoczna dla programu \u0142aduj\u0105cego klasy serwera aplikacji.
+incorrect-class-name.useraction=Podaj poprawn\u0105 nazw\u0119 klasy obiektu i skonfiguruj bibliotek\u0119 wsp\u00f3\u0142u\u017cytkowan\u0105 o zasi\u0119gu serwera zawieraj\u0105c\u0105 klasy powi\u0105zane z serwerem.
+
+unable-to-retrieve-OpenJPA-configuration-for-cache-instance=DYNA1095E: Jednostki trwa\u0142o\u015bci {0} nie znaleziono w aplikacji {1}, modu\u0142 {2}.
+unable-to-retrieve-OpenJPA-configuration-for-cache-instance.explanation= Kodu XML jednostki trwa\u0142o\u015bci nie mo\u017cna znale\u017a\u0107 w podanym po\u0142o\u017ceniu.
+unable-to-retrieve-OpenJPA-configuration-for-cache-instance.useraction= Upewnij si\u0119, \u017ce jednostka trwa\u0142o\u015bci jest rzeczywi\u015bcie umieszczona w po\u0142o\u017ceniu okre\u015blonym za pomoc\u0105 parametr\u00f3w komponentu MBean.
+                   

@@ -1,0 +1,43 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.client/resources/com/ibm/ws/security/client/internal/resources/SecurityClientMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Service for Client
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# JAAS Message prefix block: CWWKS1167 - CWWKS1199
+
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_NO_LOGIN_MODULE=CWWKS1167E: jaasLoginContextEntry {0} nu are niciun modul de logare  specificat \u00een loginModuleRef.
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_NO_LOGIN_MODULE.explanation=jassLoginContextEntry nu are specificat nici un modul de logare \u00een loginModuleRef.
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_NO_LOGIN_MODULE.useraction=Asigura\u0163i-v\u0103 c\u0103 exist\u0103 cel pu\u0163in un modul de logare specificat \u00een loginModuleRef.  
+
+JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF=CWWKS1168W: LoginModuleRef {0} nu are niciun loginModule personalizat JAAS definit.
+JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF.explanation=Autentificarea nu a avut succes deoarece nu exist\u0103 niciun modul de logare pentru referin\u0163a modulului de logare.
+JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF.useraction=Asigura\u0163i-v\u0103 c\u0103 elementul loginModuleRef are o proprietate loginModule configurat\u0103.
+
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_DUPLICATE_NAME=CWWKS1169W: Din cauza numelui duplicat, numele jaasLoginContextEntry {0}, care este definit de id-ul {1}, este \u00eenlocuit de valoarea id-ului {2}. 
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_DUPLICATE_NAME.explanation=Acela\u015fi nume este definit de mai mult de o jassLoginContextEntry. Drept urmare, valoarea original\u0103 este \u00eenlocuit\u0103 de alt\u0103 valoare.
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_DUPLICATE_NAME.useraction=Asigura\u0163i-v\u0103 c\u0103 fiecare jaasLoginContextEntry are un nume \u015fi ID unic.
+
+JAAS_LOGIN_NO_CALLBACK_HANDLER=CWWKS1170E: Logarea pe aplica\u0163ia client a e\u015fuat deoarece implementarea CallbackHandler este nul\u0103. Asigura\u0163i-v\u0103 c\u0103 este specificat\u0103 o implementare CallbackHandler valid\u0103 fie \u00een constructorul LoginContext fie \u00een descriptorul de implementare a aplica\u0163iei. 
+JAAS_LOGIN_NO_CALLBACK_HANDLER.explanation=Logarea pe aplica\u0163ia client a e\u015fuat pentru c\u0103 clasa care implementeaz\u0103 interfa\u0163a CallbackHandler este nul\u0103. Pentru c\u0103 nu exist\u0103 niciun CallbackHandler, nu exist\u0103 nicio cale de a str\u00e2nge acredit\u0103ri pentru un utilizator care dore\u015fte s\u0103 se logheze. Asigura\u0163i-v\u0103 c\u0103 este specificat\u0103 o implementare CallbackHandler valid\u0103 fie \u00een constructorul LoginContext fie \u00een descriptorul de implementare al aplica\u0163iei.
+JAAS_LOGIN_NO_CALLBACK_HANDLER.useraction=Asigura\u0163i-v\u0103 c\u0103 este specificat\u0103 o implementare CallbackHandler valid\u0103 fie ca argument la constructorul LoginContext constructor fie \u00een descriptorul de implementare a aplica\u0163iei.
+
+JAAS_LOGIN_MISSING_CREDENTIALS=CWWKS1171E: Logarea pe aplica\u0163ia client a e\u015fuat deoarece este nul numele utilizator sau parola. Asigura\u0163i-v\u0103 c\u0103 implementarea CallbackHandler adun\u0103 acredit\u0103rile necesare. 
+JAAS_LOGIN_MISSING_CREDENTIALS.explanation=Logarea pe aplica\u0163ia client a e\u015fuat deoarece este nul numele utilizator sau parola. Asigura\u0163i-v\u0103 c\u0103 implementarea CallbackHandler adun\u0103 acredit\u0103rile necesare. CallbackHandler poate fi specificat fie \u00een constructorul LoginContext fie \u00een descriptorul de implementare a aplica\u0163iei.
+JAAS_LOGIN_MISSING_CREDENTIALS.useraction=Asigura\u0163i-v\u0103 c\u0103 implementarea CallbackHandler str\u00e2nge numele de utilizator \u015fi parola.
+
+JAAS_LOGIN_UNEXPECTED_EXCEPTION=CWWKS1172E: Logarea pe aplica\u0163ia client a e\u015fuat din cauza unei excep\u0163ii nea\u015fteptate. Examina\u0163i istoricele pentru a \u00een\u0163elege cauza excep\u0163iei. Excep\u0163ia este: {0}. 
+JAAS_LOGIN_UNEXPECTED_EXCEPTION.explanation=Logarea pe aplica\u0163ia client a e\u015fuat din cauza unei excep\u0163ii nea\u015fteptate. Examina\u0163i istoricele \u015fi intr\u0103rile FFDC pentru a \u00een\u0163elege \u015fi corecta cauza excep\u0163iei.
+JAAS_LOGIN_UNEXPECTED_EXCEPTION.useraction=Examina\u0163i istoricele \u015fi intr\u0103rile FFDC pentru a \u00een\u0163elege \u015fi corecta cauza excep\u0163iei.

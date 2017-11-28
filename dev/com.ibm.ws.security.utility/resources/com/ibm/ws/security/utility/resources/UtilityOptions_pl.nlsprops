@@ -1,0 +1,177 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.utility/resources/com/ibm/ws/security/utility/resources/UtilityOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_ALL
+
+global.description=Opis:
+global.actions=Dzia\u0142ania:
+global.options=Opcje:
+global.usage=Sk\u0142adnia:
+global.required=Wymagane:
+global.options.statement=\tU\u017cyj komendy help [nazwa_akcji] w celu uzyskania szczeg\u00f3\u0142owych informacji o opcjach danej akcji.
+
+
+
+# -------- GENERAL OPTIONS -----------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+#Note to translator, please make sure that the the length of the line should
+# not exceed 80 characters. Therefore the \n (CRLF) needs to be placed at or
+# before 72th characters if the line starts with \t.
+# And this statement is applied after the sentences are translated.
+# So please feel free to place \n character at or before 72th characters if
+# the translated sentence is longer than the original sentence.
+
+help.desc=\tWy\u015bwietl informacje pomocy dla okre\u015blonego dzia\u0142ania.
+#Note to translator the word "help" should not be translated
+help.usage.options=\t{0} help [nazwa_akcji]
+
+# -------- ENCODE OPTIONS ------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+encode.desc=\tZakoduj podany tekst.
+#Note to translator the word "encode" should not be translated
+encode.usage.options=\t{0} encode [opcje]
+encode.option-key.text=\ \ \ \ tekst_do_zakodowania
+encode.option-desc.text=\tJe\u015bli nie zostan\u0105 podane \u017cadne argumenty, narz\u0119dzie przejdzie w tryb\n\
+\tinteraktywny. W przeciwnym razie zakodowany zostanie podany tekst.\n\
+\tJe\u015bli tekst zawieraj\u0105cy spacje ma by\u0107 podany jako argument,\n\
+\tnale\u017cy go uj\u0105\u0107 w cudzys\u0142\u00f3w.
+encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|hash{1}]
+encode.option-desc.encoding=\tOkre\u015bl spos\u00f3b kodowania has\u0142a. Obs\u0142ugiwane kodowania to xor, aes\n\
+\ti hash. Kodowanie domy\u015blne to xor. {2}
+encode.option-key.key=\ \ \ \ --key=[klucz]
+encode.option-desc.key=\tOkre\u015bl klucz, kt\u00f3ry ma by\u0107 u\u017cywany w przypadku kodowania AES. \n \tTen \u0142a\u0144cuch zostanie przetworzony przy u\u017cyciu funkcji mieszaj\u0105cej\n\
+\tw celu uzyskania klucza szyfrowania u\u017cywanego do szyfrowania\n\
+\ti deszyfrowania has\u0142a. Ten klucz mo\u017cna udost\u0119pni\u0107 dla serwera,\n\
+\tdefiniuj\u0105c zmienn\u0105 wlp.password.encryption.key, kt\u00f3rej warto\u015bci\u0105\n\
+\tb\u0119dzie ten klucz. Je\u015bli ta opcja nie zostanie podana, powinien zosta\u0107\n\
+\tu\u017cyty klucz domy\u015blny.
+encode.option-key.notrim=\ \ \ \ --notrim
+encode.option-desc.notrim=\tOkre\u015bl, czy znaki spacji s\u0105 usuwane z pocz\u0105tku i ko\u0144ca\n\tokre\u015blonego tekstu. Je\u015bli ta opcja jest okre\u015blona, podany tekst\n\tzostanie zakodowany w postaci niezmienionej.\n\
+\tJe\u015bli ta opcja nie zostanie podana, spacje na pocz\u0105tku i na ko\u0144cu\n\tpodanego tekstu zostan\u0105 usuni\u0119te. 
+encode.option-key.listCustom=\ \ \ \ --listCustom
+encode.option-desc.listCustom=\tWy\u015bwietl informacje o niestandardowym szyfrowaniu has\u0142a\n\
+\tw formacie JavaScript Object Notation (JSON).\n\
+\tInformacje zawieraj\u0105 elementy:\n\
+\tname : nazwa algorytmu niestandardowego szyfrowania has\u0142a\n\
+\tfeaturename : nazwa sk\u0142adnika\n\
+\tdescription : opis niestandardowego szyfrowania has\u0142a
+
+
+
+# -------- CREATE SSL CERTIFICATE OPTIONS --------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+sslCert.desc=\tUtw\u00f3rz domy\u015blny certyfikat SSL na potrzeby konfiguracji serwera\n\
+\tlub klienta. 
+#Note to translator the word "createSSLCertificate" should not be translated
+sslCert.usage.options=\t{0} createSSLCertificate '{--server nazwa_serwera --client nazwa_klienta'}  \n\
+\t--password has\u0142o [opcje]
+sslCert.required-key.server=\ \ \ \ --server=nazwa
+sslCert.required-desc.server=\tSerwer, dla kt\u00f3rego tworzony jest certyfikat.  Tego argumentu nie mo\u017cna     \n\
+\tu\u017cy\u0107, je\u015bli u\u017cyto argumentu --client.
+sslCert.required-key.client=\ \ \ \ --client=nazwa
+sslCert.required-desc.client=\tKlient, dla kt\u00f3rego tworzony jest certyfikat.  Tego argumentu nie mo\u017cna     \n\
+\tu\u017cy\u0107, je\u015bli u\u017cyto argumentu --server.
+sslCert.required-key.password=\ \ \ \ --password[=has\u0142o]
+sslCert.required-desc.password=\tHas\u0142o magazynu kluczy - minimum {1} znak\u00f3w.\n\
+\tJe\u015bli warto\u015b\u0107 nie zostanie zdefiniowana, b\u0119dzie wy\u015bwietlana zach\u0119ta.
+sslCert.option-key.validity=\ \ \ \ --validity=dni
+sslCert.option-desc.validity=\tLiczba dni wa\u017cno\u015bci certyfikatu. Domy\u015blny okres wa\u017cno\u015bci: \n\
+\t{2}. Minimalny okres wa\u017cno\u015bci: {3}.
+sslCert.option-key.subject=\ \ \ \ --subject=nazwa_wyr\u00f3\u017cniaj\u0105ca
+sslCert.option-desc.subject=\tNazwa wyr\u00f3\u017cniaj\u0105ca podmiotu i wystawcy certyfikatu. Domy\u015blna nazwa wyr\u00f3\u017cniaj\u0105ca jest oparta\n \tna nazwie hosta.
+sslCert.option.addon=Certyfikat zostanie utworzony z aliasem {4}.\n\
+Algorytm klucza: {5}. Algorytm podpisu: {6}.\n\
+Aby m\u00f3c lepiej sterowa\u0107 tworzeniem certyfikatu, u\u017cyj bezpo\u015brednio\n\
+narz\u0119dzia keytool.
+sslCert.option-key.password.encoding=\ \ \ \ --passwordEncoding=[xor|aes]
+sslCert.option-desc.password.encoding=\tOkre\u015bl spos\u00f3b kodowania has\u0142a do magazynu kluczy. Obs\u0142ugiwane kodowania\n\
+\tto xor i aes. Kodowanie domy\u015blne to xor. \n\
+\tU\u017cyj komendy --listCustom kodowania securityUtility, aby sprawdzi\u0107\n\
+\tczy s\u0105 dost\u0119pne dodatkowe szyfrowania niestandardowe.
+sslCert.option-key.password.key=\ \ \ \ --passwordKey=[klucz]
+sslCert.option-desc.password.key=\tOkre\u015bl klucz, kt\u00f3ry ma by\u0107 u\u017cywany do kodowania has\u0142a magazynu\n\
+\tkluczy za pomoc\u0105 algorytmu AES. Ten \u0142a\u0144cuch zostanie przetworzony przy\n\
+\tu\u017cyciu funkcji mieszaj\u0105cej w celu uzyskania klucza szyfrowania\n\
+\tu\u017cywanego do szyfrowania i deszyfrowania has\u0142a. Ten klucz mo\u017cna\n\
+\tudost\u0119pni\u0107 na serwerze, definiuj\u0105c zmienn\u0105\n\
+\twlp.password.encryption.key, kt\u00f3rej warto\u015bci\u0105 b\u0119dzie ten klucz.\n \tJe\u015bli ta opcja nie zostanie podana, powinien zosta\u0107 u\u017cyty klucz\n\
+\tdomy\u015blny.
+
+sslCert.option-key.createConfigFile=\ \ \ \ --createConfigFile=plik
+sslCert.option-desc.createConfigFile=\tOpcjonalna. Fragment kodu zostanie zapisany do podanego pliku \n\
+\tzamiast na ekran konsoli. Plik ten mo\u017ce zosta\u0107 nast\u0119pnie uwzgl\u0119dniony w\n\
+\tkonfiguracji w pliku server.xml za pomoc\u0105 dostarczonego fragmentu kodu.
+
+sslCert.option-key.keySize=\ \ \ \ --keySize=wielko\u015b\u0107
+sslCert.option-desc.keySize=\tWielko\u015b\u0107 klucza certyfikatu.  \
+Warto\u015bci\u0105 domy\u015bln\u0105 klucza jest {7}.
+
+sslCert.option-key.sigAlg=\ \ \ \ --sigAlg=algorytm podpisu
+sslCert.option-desc.sigAlg=\tAlgorytm podpisu dla certyfikatu.\n\
+\tDomy\u015blny algorytm podpisu to {8}.
+
+
+# -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+# Note to translator: the words 'LTPA' and 'ltpa.keys' should not be translated 
+createLTPAKeys.desc=\tUtw\u00f3rz zestaw kluczy LTPA, kt\u00f3ry \
+mo\u017ce by\u0107 u\u017cywany przez serwer lub wsp\u00f3\u0142u\u017cytkowany\n \tprzez wiele serwer\u00f3w. Je\u015bli \
+nie zostanie podany \u017caden serwer lub plik, plik ltpa.keys\n \tzostanie \
+utworzony w bie\u017c\u0105cym katalogu roboczym.
+#Note to translator the word "createLTPAKeys" should not be translated
+createLTPAKeys.usage.options=\t{0} createLTPAKeys --password[=has\u0142o] [opcje]
+createLTPAKeys.required-key.password=\ \ \ \ --password[=has\u0142o]
+createLTPAKeys.required-desc.password=\tHas\u0142o kluczy LTPA. \
+Je\u015bli warto\u015b\u0107 nie zostanie zdefiniowana, b\u0119dzie wy\u015bwietlana zach\u0119ta.
+createLTPAKeys.option-key.server=\ \ \ \ --server=nazwa
+createLTPAKeys.option-desc.server=\tSerwer, dla kt\u00f3rego maj\u0105 zosta\u0107 utworzone klucz LTPA.\n\
+\tTego argumentu nie mo\u017cna u\u017cy\u0107, je\u015bli u\u017cyto argumentu --file.
+createLTPAKeys.option-key.file=\ \ \ \ --file=nazwa
+createLTPAKeys.option-desc.file=\tPlik, w kt\u00f3rym \
+maj\u0105 zosta\u0107 zapisane klucze LTPA.\n\
+\tTego argumentu nie mo\u017cna u\u017cy\u0107, je\u015bli u\u017cyto argumentu --server.
+createLTPAKeys.option-key.password.encoding=\ \ \ \ --passwordEncoding=[xor|aes]
+createLTPAKeys.option-desc.password.encoding= \
+\tOkre\u015bl spos\u00f3b kodowania has\u0142a kluczy LTPA w pliku server.xml.\n\
+\tObs\u0142ugiwane s\u0105 kodowania xor i aes. Kodowanie domy\u015blne to xor. \n\
+\tU\u017cyj komendy --listCustom kodowania securityUtility, aby sprawdzi\u0107\n\
+\tczy s\u0105 dost\u0119pne dodatkowe szyfrowania niestandardowe.
+createLTPAKeys.option-key.password.key=\ \ \ \ --passwordKey=[klucz]
+createLTPAKeys.option-desc.password.key=\tOkre\u015bl \
+klucz, kt\u00f3ry ma by\u0107 u\u017cywany do kodowania has\u0142a kluczy LTPA\n\
+\tza pomoc\u0105 algorytmu AES. Ten \u0142a\u0144cuch zostanie przetworzony przy\n\
+\tu\u017cyciu funkcji mieszaj\u0105cej w celu uzyskania klucza szyfrowania\n\
+\tu\u017cywanego do szyfrowania i deszyfrowania has\u0142a. Ten klucz mo\u017cna\n\
+\tudost\u0119pni\u0107 na serwerze, definiuj\u0105c zmienn\u0105\n\
+\twlp.password.encryption.key, kt\u00f3rej warto\u015bci\u0105 b\u0119dzie ten klucz.\n \tJe\u015bli ta opcja nie zostanie podana, powinien zosta\u0107 u\u017cyty klucz\n\
+\tdomy\u015blny.

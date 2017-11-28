@@ -1,0 +1,54 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.security/resources/com/ibm/ws/jbatch/security/resources/BatchSecurityMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0300 - 0349: com.ibm.ws.jbatch.security
+# 
+
+#No fill-ins
+BATCH_SECURITY_ENABLED=CWWKY0300I: \u5df2\u555f\u7528\u6279\u6b21\u5b89\u5168\u3002
+BATCH_SECURITY_ENABLED.explanation=\u4f7f\u7528\u8005\u5728\u57f7\u884c\u6240\u6709\u6279\u6b21\u4f5c\u696d\u6642\uff0c\u5df2\u7372\u5f97\u6279\u6b21\u89d2\u8272\u7684\u6388\u6b0a\u3002
+BATCH_SECURITY_ENABLED.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+
+#No fill-ins
+BATCH_SECURITY_DISABLED=CWWKY0301I: \u5df2\u505c\u7528\u6279\u6b21\u5b89\u5168\u3002
+BATCH_SECURITY_DISABLED.explanation=\u4f7f\u7528\u8005\u672a\u7372\u5f97\u6279\u6b21\u89d2\u8272\u3002
+BATCH_SECURITY_DISABLED.useraction=\u5982\u679c\u9019\u9805\u4f3a\u670d\u5668\u914d\u7f6e\u4e2d\u4e0d\u9700\u8981\u6279\u6b21\u89d2\u8272\u578b\u6388\u6b0a\uff0c\u5c31\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+#{0} The invocation subject on the thread.
+#{1} The job instance id.
+USER_UNAUTHORIZED_JOB_INSTANCE=CWWKY0302W: \u4f7f\u7528\u8005 {0} \u672a\u7372\u6388\u6b0a\u57f7\u884c\u5de5\u4f5c\u5be6\u4f8b {1} \u76f8\u95dc\u806f\u7684\u6279\u6b21\u4f5c\u696d\u3002
+USER_UNAUTHORIZED_JOB_INSTANCE.explanation=\u4f7f\u7528\u8005\u4e0d\u5c6c\u65bc\u6279\u6b21\u89d2\u8272\uff0c\u8a72\u6279\u6b21\u89d2\u8272\u7372\u6388\u6b0a\u5c0d\u9019\u9805\u5de5\u4f5c\u5be6\u4f8b\u57f7\u884c\u6240\u8981\u6c42\u7684\u6279\u6b21\u4f5c\u696d\u3002
+USER_UNAUTHORIZED_JOB_INSTANCE.useraction=\u5982\u679c\u4f7f\u7528\u8005\u7372\u6388\u6b0a\u57f7\u884c\u6240\u8981\u6c42\u7684\u6279\u6b21\u4f5c\u696d\uff0c\u8acb\u914d\u7f6e\u6279\u6b21\u5b89\u5168\u6388\u6b0a\uff0c\u4e26\u5c07\u9019\u500b\u4f7f\u7528\u8005\u65b0\u589e\u81f3\u5fc5\u8981\u7684\u6279\u6b21\u89d2\u8272\u3002
+
+#{0} The invocation subject on the thread.
+USER_UNAUTHORIZED_NO_BATCH_ROLES=CWWKY0303W: \u4f7f\u7528\u8005 {0} \u672a\u7372\u6388\u6b0a\u57f7\u884c\u4efb\u4f55\u6279\u6b21\u4f5c\u696d\u3002
+USER_UNAUTHORIZED_NO_BATCH_ROLES.explanation=\u4f7f\u7528\u8005\u4e0d\u5c6c\u65bc\u4efb\u4f55\u6279\u6b21\u89d2\u8272\uff0c\u4e14\u672a\u7372\u6388\u6b0a\u57f7\u884c\u6279\u6b21\u4f5c\u696d\u3002
+USER_UNAUTHORIZED_NO_BATCH_ROLES.useraction=\u5982\u679c\u4f7f\u7528\u8005\u672a\u7372\u6388\u6b0a\u6210\u70ba\u6279\u6b21\u4f7f\u7528\u8005\uff0c\u5247\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002\u5982\u679c\u4f7f\u7528\u8005\u7372\u6388\u6b0a\u57f7\u884c\u6279\u6b21\u4f5c\u696d\uff0c\u4e14\u5df2\u555f\u7528\u6279\u6b21\u5b89\u5168\uff0c\u8acb\u914d\u7f6e\u6279\u6b21\u5b89\u5168\u6388\u6b0a\uff0c\u4e26\u5c07\u9019\u500b\u4f7f\u7528\u8005\u65b0\u589e\u81f3\u5fc5\u8981\u7684\u6279\u6b21\u89d2\u8272\u3002
+#{0} The invocation subject on the thread.
+USER_UNAUTHORIZED_TO_START_JOB=CWWKY0304W: \u4f7f\u7528\u8005 {0} \u672a\u7372\u6388\u6b0a\u555f\u52d5\u6279\u6b21\u5de5\u4f5c\u3002
+USER_UNAUTHORIZED_TO_START_JOB.explanation=\u4f7f\u7528\u8005\u4e0d\u5c6c\u65bc\u7372\u6388\u6b0a\u555f\u52d5\u6279\u6b21\u5de5\u4f5c\u7684\u6279\u6b21\u89d2\u8272\u3002
+USER_UNAUTHORIZED_TO_START_JOB.useraction=\u5982\u679c\u4f7f\u7528\u8005\u672a\u7372\u6388\u6b0a\u555f\u52d5\u6279\u6b21\u5de5\u4f5c\uff0c\u5247\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002\u5982\u679c\u4f7f\u7528\u8005\u7372\u6388\u6b0a\u57f7\u884c\u6240\u8981\u6c42\u7684\u6279\u6b21\u4f5c\u696d\uff0c\u8acb\u914d\u7f6e\u6279\u6b21\u5b89\u5168\u6388\u6b0a\uff0c\u4e26\u5c07\u9019\u500b\u4f7f\u7528\u8005\u65b0\u589e\u81f3\u5fc5\u8981\u7684\u6279\u6b21\u89d2\u8272\u3002

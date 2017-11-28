@@ -1,0 +1,30 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.context/resources/com/ibm/ws/security/context/resources/SecurityContextMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Context
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS0800 - CWWKS0899
+SEC_CONTEXT_DESERIALIZE_AUTHN_ERROR=CWWKS0800E: Une erreur d''authentification s''est produite lors de la recr\u00e9ation des sujets du contexte de s\u00e9curit\u00e9 d\u00e9s\u00e9rialis\u00e9. L''exception est : {0}. Par cons\u00e9quent, le sujet non authentifi\u00e9 sera utilis\u00e9 pour ce contexte de s\u00e9curit\u00e9. 
+SEC_CONTEXT_DESERIALIZE_AUTHN_ERROR.explanation=Une erreur d'authentification s'est produite lors de la recr\u00e9ation des sujets qui \u00e9taient pr\u00e9sents dans le contexte de s\u00e9curit\u00e9. Par cons\u00e9quent, le sujet non authentifi\u00e9 sera utilis\u00e9 \u00e0 la place.
+SEC_CONTEXT_DESERIALIZE_AUTHN_ERROR.useraction=Examinez l'exception et les journaux pour d\u00e9terminer la cause de l'\u00e9chec de l'authentification.
+
+SEC_CONTEXT_DESERIALIZE_TOO_MANY_PRINCIPALS=CWWKS0801E: Lors de l''extraction du principal du sujet, plusieurs principaux de type WSPrincipal ont \u00e9t\u00e9 d\u00e9tect\u00e9s pour le sujet. Un seul \u00e9l\u00e9ment WSPrincipal peut exister dans le sujet. Les noms des principaux WSPrincipals sont les suivants : {0}. Par cons\u00e9quent, le contexte de s\u00e9curit\u00e9 ne sera pas d\u00e9s\u00e9rialis\u00e9 sur l''unit\u00e9 d''ex\u00e9cution.
+SEC_CONTEXT_DESERIALIZE_TOO_MANY_PRINCIPALS.explanation=Le contexte de s\u00e9curit\u00e9 n'a pas pu \u00eatre d\u00e9s\u00e9rialis\u00e9 car le sujet a trop de principaux de type WSPrincipal. Seul un principal de ce type est pris en charge.
+SEC_CONTEXT_DESERIALIZE_TOO_MANY_PRINCIPALS.useraction=Consultez l'application pour savoir pourquoi le sujet comporte plusieurs \u00e9l\u00e9ments WSPrincipal.
+
+SEC_CONTEXT_UNABLE_TO_SERIALIZE=CWWKS0802W: Lors de la s\u00e9rialisation du contexte de s\u00e9curit\u00e9, la cl\u00e9 de m\u00e9moire cache personnalis\u00e9e {0} n''a pas pu \u00eatre s\u00e9rialis\u00e9e, en raison de l''exception suivante : {1}. De ce fait, le contexte de s\u00e9curit\u00e9 ne contiendra pas de cl\u00e9 de m\u00e9moire cache personnalis\u00e9e.
+SEC_CONTEXT_UNABLE_TO_SERIALIZE.explanation=La cl\u00e9 de m\u00e9moire cache personnalis\u00e9e pour cet objet n'a pu \u00eatre s\u00e9rialis\u00e9e lors de la s\u00e9rialisation du contexte de s\u00e9curit\u00e9. Bien que le contexte de s\u00e9curit\u00e9 ne contiendra pas de cl\u00e9 de m\u00e9moire cache personnalis\u00e9e, ceci n'affectera pas la s\u00e9rialisation du contexte de s\u00e9curit\u00e9 lui-m\u00eame.
+SEC_CONTEXT_UNABLE_TO_SERIALIZE.useraction=Consultez les journaux pour conna\u00eetre les raisons de l'\u00e9chec de la s\u00e9rialisation de la cl\u00e9 de m\u00e9moire cache personnalis\u00e9e.

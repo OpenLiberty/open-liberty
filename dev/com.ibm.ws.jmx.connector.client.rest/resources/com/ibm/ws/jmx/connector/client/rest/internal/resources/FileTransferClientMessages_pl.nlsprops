@@ -1,0 +1,59 @@
+###############################################################################
+# Copyright (c) 2011, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.client/resources/com/ibm/ws/jmx/connector/client/rest/internal/resources/FileTransferClientMessages.nlsprops
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR WebSphere Management File Transfer Client
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKX7951 - CWWKX7999
+
+filetransfer.client.init=CWWKX7951I: Nowy klient przesy\u0142ania plik\u00f3w nawi\u0105za\u0142 po\u0142\u0105czenie o identyfikatorze {0}.
+filetransfer.client.init.explanation=Nowy klient przesy\u0142ania plik\u00f3w nawi\u0105za\u0142 po\u0142\u0105czenie o okre\u015blonym identyfikatorze.
+filetransfer.client.init.useraction=To jest komunikat informacyjny i nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+filetransfer.client.error=CWWKX7952E: Wyst\u0105pi\u0142 komunikat o b\u0142\u0119dzie po stronie klienta {0} dla po\u0142\u0105czenia {1}.
+filetransfer.client.error.explanation=Konektor JMX REST po stronie klienta napotka\u0142 b\u0142\u0105d i zosta\u0142 wygenerowany okre\u015blony komunikat.
+filetransfer.client.error.useraction=U\u017cyj wygenerowanego komunikatu o b\u0142\u0119dzie, aby zidenytfikowa\u0107 i rozwi\u0105za\u0107 problem spowodowany b\u0142\u0119dem, a nast\u0119pnie uruchom ponownie operacj\u0119.
+
+filetransfer.server.error=CWWKX7953E: Wyst\u0105pi\u0142 komunikat o b\u0142\u0119dzie po stronie serwera ({0}) dla po\u0142\u0105czenia {1}.
+filetransfer.server.error.explanation=Konektor JMX REST po stronie serwera napotka\u0142 b\u0142\u0105d i wygenerowa\u0142 podany komunikat.
+filetransfer.server.error.useraction=U\u017cyj wygenerowanego komunikatu o b\u0142\u0119dzie, aby zidenytfikowa\u0107 i rozwi\u0105za\u0107 problem spowodowany b\u0142\u0119dem, a nast\u0119pnie uruchom ponownie operacj\u0119.
+
+filetransfer.client.bad.credentials=CWWKX7954E: Podana nazwa u\u017cytkownika lub has\u0142o nie zosta\u0142y autoryzowane. Serwer zwr\u00f3ci\u0142 kod {0} i komunikat \u201e{1}\u201d dla po\u0142\u0105czenia {2}.
+filetransfer.client.bad.credentials.explanation=Referencje podane podczas nawi\u0105zywania po\u0142\u0105czenia s\u0105 niepoprawne. Prawdopodobnie u\u017cytkownik nie istnieje, nie ma uprawnie\u0144 niezb\u0119dnych do uzyskania dost\u0119pu do serwera lub has\u0142o jest niepoprawne.
+filetransfer.client.bad.credentials.useraction=Popraw nazw\u0119 u\u017cytkownika lub has\u0142o, a nast\u0119pnie nawi\u0105\u017c nowe po\u0142\u0105czenie.
+
+filetransfer.response.code.error=CWWKX7955E: Klient przesy\u0142ania plik\u00f3w odebra\u0142 kod odpowiedzi {0} z komunikatem \u201e{1}\u201d dla po\u0142\u0105czenia {2}.
+filetransfer.response.code.error.explanation=Klient przesy\u0142ania plik\u00f3w odebra\u0142 nieoczekiwany kod odpowiedzi z serwera.
+filetransfer.response.code.error.useraction=U\u017cyj kodu odpowiedzi klienta, aby zidentyfikowa\u0107 i usun\u0105\u0107 przyczyn\u0119 problemu, a nast\u0119pnie uruchom ponownie operacj\u0119.
+
+filetransfer.download.file=CWWKX7956I: \u017b\u0105danie pobrania pliku {0} zosta\u0142o wykonane pomy\u015blnie, a jego zawarto\u015b\u0107 zosta\u0142a zapisana w pliku {1} przy u\u017cyciu po\u0142\u0105czenia {2}.
+filetransfer.download.file.explanation=\u017b\u0105danie pobrania podanego pliku zako\u0144czy\u0142o si\u0119 powodzeniem.
+filetransfer.download.file.useraction=To jest komunikat informacyjny i nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+filetransfer.unsupported.operation=CWWKX7957E: Operacja {0} nie jest obs\u0142ugiwana przez klient przesy\u0142ania plik\u00f3w dla po\u0142\u0105czenia {1}.
+filetransfer.unsupported.operation.explanation=Okre\u015blona operacja nie jest obs\u0142ugiwana przez klient przesy\u0142ania plik\u00f3w.
+filetransfer.unsupported.operation.useraction=Za\u017c\u0105daj operacji, kt\u00f3ra jest obs\u0142ugiwana przez klient przesy\u0142ania plik\u00f3w.
+
+filetransfer.upload.file=CWWKX7958I: \u017b\u0105danie przes\u0142ania pliku {0} zosta\u0142o wykonane pomy\u015blnie, a jego zawarto\u015b\u0107 zosta\u0142a zapisana w pliku {1} przy u\u017cyciu po\u0142\u0105czenia {2}.
+filetransfer.upload.file.explanation=\u017b\u0105danie przes\u0142ania podanego pliku zako\u0144czy\u0142o si\u0119 powodzeniem.
+filetransfer.upload.file.useraction=To jest komunikat informacyjny i nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+filetransfer.delete.file=CWWKX7959I: \u017b\u0105danie usuni\u0119cia pliku {0} zosta\u0142o wykonane pomy\u015blnie przy u\u017cyciu po\u0142\u0105czenia {1}.
+filetransfer.delete.file.explanation=\u017b\u0105danie usuni\u0119cia podanego pliku zako\u0144czy\u0142o si\u0119 powodzeniem.
+filetransfer.delete.file.useraction=To jest komunikat informacyjny i nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+filetransfer.delete.all=CWWKX7960I: \u017b\u0105danie usuni\u0119cia wszystkich plik\u00f3w i folder\u00f3w z kolekcji {0} zosta\u0142o wykonane pomy\u015blnie przy u\u017cyciu po\u0142\u0105czenia {1}.
+filetransfer.delete.all.explanation=\u017b\u0105danie usuni\u0119cia podanej kolekcji zako\u0144czy\u0142o si\u0119 powodzeniem.
+filetransfer.delete.all.useraction=To jest komunikat informacyjny i nie jest wymagana \u017cadna czynno\u015b\u0107.

@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.mp.jwt.cdi/resources/com/ibm/ws/security/mp/jwt/cdi/resources/JwtCDI.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Microprofile JWT CDI
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS5600 - CWWKS5649
+
+# Do not translate Claim.
+MPJWT_CDI_INVALID_INJECTION_TYPE=CWWKS5600E: Non \u00e8 possibile determinare il tipo di asserzione da inserire. Il tipo di punto di injection \u00e8 {0}.
+MPJWT_CDI_INVALID_INJECTION_TYPE.explanation=Il punto di injection annotato con il qualificatore Asserzione non ha un tipo valido.
+MPJWT_CDI_INVALID_INJECTION_TYPE.useraction=Accertarsi che il punto di injection abbia un tipo valido per l'asserzione che si desidera inserire.
+
+MPJWT_CDI_CANNOT_RESOLVE_INJECTION_POINT=CWWKS5601E: La dipendenza del punto di injection {0} non \u00e8 stata risolta, il che risulta nell''errore {1}.
+MPJWT_CDI_CANNOT_RESOLVE_INJECTION_POINT.explanation=Un'asserzione inserita non \u00e8 stata risolta.
+MPJWT_CDI_CANNOT_RESOLVE_INJECTION_POINT.useraction=Controllare il messaggio del server e i log FFDC (First-Failure Data Capture) per determinare la causa.
+
+# Do not translate Claim, value, and standard. The value and standard are members of the Claim annotation.
+MPJWT_CDI_CONFLICTING_CLAIM_NAMES=CWWKS5602E: Il qualificatore Asserzione per il punto di injection {0} ha valori incoerenti sia per il valore che per gli elementi standard. L''elemento del valore presenta {1} mentre l''elemento standard presenta {2}.
+MPJWT_CDI_CONFLICTING_CLAIM_NAMES.explanation=Il punto di injection annotato con il qualificatore Asserzione ha elementi in conflitto.
+MPJWT_CDI_CONFLICTING_CLAIM_NAMES.useraction=Accertarsi che il punto di injection abbia un qualificatore Asserzione valido per l'asserzione che si desidera inserire.
+
+# Do not translate ApplicationScoped, SessionScoped, RequestScoped, and Claim.
+MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE=CWWKS5603E: Impossibile inserire l''asserzione nel punto di injection {0} per gli ambiti ApplicationScoped o SessionScoped.
+MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.explanation=Il punto di injection annotato con il qualificatore Asserzione per un tipo non elaborato deve appartenere a una classe con l'annotazione di ambito RequestScoped.
+MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.useraction=Accertarsi che il punto di injection sia membro di una classe nell'ambito RequestScoped per l'asserzione che si desidera inserire.

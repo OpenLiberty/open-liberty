@@ -1,0 +1,25 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxws.ejb/resources/com/ibm/ws/jaxb/tools/internal/resources/JaxbToolsMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXB Tools Code
+#RANGE 0700 - 0799
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+error.parameter.target.missed=CWWKW0700E: Das erforderliche Zielparameter wurde nicht angegeben.
+error.parameter.target.missed.explanation=Wenn der Zielparameter angegeben ist, k\u00f6nnen vorhandene Anwendung neu generiert werden, ohne deren Verhalten \u00e4ndern zu m\u00fcssen, wenn die vom Liberty-Profil unterst\u00fctzte JAXB-Spezifikationsstufe aktualisiert wird.
+error.parameter.target.missed.useraction=Geben Sie die JAXB-Spezifikationsstufe an, der der generierte Code entspricht. Die g\u00fcltigen Werte sind 2.0, 2.1 und 2.2.

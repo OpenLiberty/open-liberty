@@ -1,0 +1,73 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.filetransfer/resources/com/ibm/ws/filetransfer/resources/FileServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR WebSphere File Transfer
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKX7900 - CWWKX7950
+
+#-----  FileService MBean
+
+ACCESS_DENIED_ERROR=CWWKX7900E: Acc\u00e8s refus\u00e9 au chemin d''acc\u00e8s {0}.
+ACCESS_DENIED_ERROR.explanation=Une tentative d'acc\u00e8s a \u00e9t\u00e9 effectu\u00e9e pour un chemin qui se trouve en dehors de la r\u00e9gion de lecture/\u00e9criture configur\u00e9e.
+ACCESS_DENIED_ERROR.useraction=V\u00e9rifiez que le chemin demand\u00e9 se trouve dans la r\u00e9gion de lecture/\u00e9criture configur\u00e9e.
+
+PATH_ERROR=CWWKX7901E: Le chemin d''acc\u00e8s de syst\u00e8me de fichiers {0} n''est pas valide.
+PATH_ERROR.explanation=Le chemin d'acc\u00e8s de syst\u00e8me de fichiers sp\u00e9cifi\u00e9 ne peut pas \u00eatre r\u00e9solu.
+PATH_ERROR.useraction=Indiquez un chemin d'acc\u00e8s de syst\u00e8me de fichiers valide.
+
+ARCHIVE_CREATE_SOURCE_DENIED_WARNING=CWWKX7902W: La cr\u00e9ation d''archive via le bean g\u00e9r\u00e9 de transfert de fichier a \u00e9t\u00e9 refus\u00e9e pour le chemin source {0}.
+ARCHIVE_CREATE_SOURCE_DENIED_WARNING.explanation=Une tentative de lecture d'informations a \u00e9t\u00e9 effectu\u00e9e dans un chemin qui se trouve hors de la r\u00e9gion de lecture configur\u00e9e.
+ARCHIVE_CREATE_SOURCE_DENIED_WARNING.useraction=Ce message est fourni \u00e0 titre d'information uniquement. Aucune action n'est requise.
+
+ARCHIVE_CREATE_TARGET_DENIED_WARNING=CWWKX7903W: La cr\u00e9ation d''archive via le bean g\u00e9r\u00e9 de transfert de fichier a \u00e9t\u00e9 refus\u00e9e pour le chemin cible {0}.
+ARCHIVE_CREATE_TARGET_DENIED_WARNING.explanation=Une tentative d'\u00e9criture d'informations a \u00e9t\u00e9 effectu\u00e9e dans un chemin qui se trouve hors de la r\u00e9gion d'\u00e9criture configur\u00e9e.
+ARCHIVE_CREATE_TARGET_DENIED_WARNING.useraction=Ce message est fourni \u00e0 titre d'information uniquement. Aucune action n'est requise.
+
+ARCHIVE_CREATE_SUCCESS_INFO=CWWKX7904I: L''archive {1} a \u00e9t\u00e9 cr\u00e9\u00e9e \u00e0 partir de l''\u00e9l\u00e9ment {0}.
+ARCHIVE_CREATE_SUCCESS_INFO.explanation=La cr\u00e9ation de l'archive a abouti.
+ARCHIVE_CREATE_SUCCESS_INFO.useraction=Ce message est fourni \u00e0 titre d'information uniquement. Aucune action n'est requise.
+
+ARCHIVE_CREATE_FAILURE_WARNING=CWWKX7905W: L''archive {1} n''a pas pu \u00eatre cr\u00e9\u00e9e \u00e0 partir de l''\u00e9l\u00e9ment {0}.
+ARCHIVE_CREATE_FAILURE_WARNING.explanation=La demande de cr\u00e9ation d'archive a \u00e9chou\u00e9.
+ARCHIVE_CREATE_FAILURE_WARNING.useraction=Ce message est fourni \u00e0 titre d'information uniquement. Aucune action n'est requise.
+
+ARCHIVE_EXPAND_SOURCE_DENIED_WARNING=CWWKX7906W: L''extension d''archive a \u00e9t\u00e9 refus\u00e9e pour le chemin source {0}.
+ARCHIVE_EXPAND_SOURCE_DENIED_WARNING.explanation=Une tentative de lecture d'informations a \u00e9t\u00e9 effectu\u00e9e dans un chemin qui se trouve hors de la r\u00e9gion de lecture configur\u00e9e.
+ARCHIVE_EXPAND_SOURCE_DENIED_WARNING.useraction=Ce message est fourni \u00e0 titre d'information uniquement. Aucune action n'est requise.
+
+ARCHIVE_EXPAND_TARGET_DENIED_WARNING=CWWKX7907W: L''extension d''archive a \u00e9t\u00e9 refus\u00e9e pour le chemin cible {0}.
+ARCHIVE_EXPAND_TARGET_DENIED_WARNING.explanation=Une tentative d'\u00e9criture d'informations a \u00e9t\u00e9 effectu\u00e9e dans un chemin qui se trouve hors de la r\u00e9gion d'\u00e9criture configur\u00e9e.
+ARCHIVE_EXPAND_TARGET_DENIED_WARNING.useraction=Ce message est fourni \u00e0 titre d'information uniquement. Aucune action n'est requise.
+
+ARCHIVE_EXPAND_SUCCESS_INFO=CWWKX7908I: L''archive {0} a \u00e9t\u00e9 \u00e9tendue vers l''\u00e9l\u00e9ment {1}.
+ARCHIVE_EXPAND_SUCCESS_INFO.explanation=L'extension de l'archive a abouti.
+ARCHIVE_EXPAND_SUCCESS_INFO.useraction=Ce message est fourni \u00e0 titre d'information uniquement. Aucune action n'est requise.
+
+ARCHIVE_EXPAND_FAILURE_WARNING=CWWKX7909W: L''archive {0} n''a pas pu \u00eatre d\u00e9velopp\u00e9e vers {1}.
+ARCHIVE_EXPAND_FAILURE_WARNING.explanation=La demande de d\u00e9veloppement de l'archive a \u00e9chou\u00e9.
+ARCHIVE_EXPAND_FAILURE_WARNING.useraction=Ce message est fourni \u00e0 titre d'information uniquement. Aucune action n'est requise.
+
+UNSUPPORTED_MBEAN_OPERATION_ERROR=CWWKX7910W: L''op\u00e9ration ''{0}'' est disponible uniquement lorsque ce bean g\u00e9r\u00e9 est accessible via le connecteur JMX REST d''IBM.
+UNSUPPORTED_MBEAN_OPERATION_ERROR.explanation=L'acc\u00e8s \u00e0 l'op\u00e9ration MBean sp\u00e9cifi\u00e9e est disponible uniquement via le connecteur JMX REST d'IBM.
+UNSUPPORTED_MBEAN_OPERATION_ERROR.useraction=Acc\u00e9dez \u00e0 ce bean g\u00e9r\u00e9 via le connecteur JMX REST d'IBM.
+
+OSGI_SERVICE_ERROR=CWWKX7911E: Le service OSGi {0} n''est pas disponible.
+OSGI_SERVICE_ERROR.explanation=Vous avez re\u00e7u cette erreur de serveur interne car le service indiqu\u00e9 n'est pas disponible.
+OSGI_SERVICE_ERROR.useraction=Red\u00e9marrez le serveur en utilisant l'option "clean".
+
+ATTRIBUTE_UPDATED=CWWKX7912I: L''attribut FileServiceMXBean {0} n''a pas pu \u00eatre mis \u00e0 jour.
+ATTRIBUTE_UPDATED.explanation=L'attribut indiqu\u00e9 \u00e0 partir de FileServiceMXBean a \u00e9t\u00e9 mis \u00e0 jour.
+ATTRIBUTE_UPDATED.useraction=Aucune action n'est requise.

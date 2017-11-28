@@ -1,0 +1,27 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.management.security/resources/com/ibm/ws/management/security/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR WebSphere Management Security Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKX0000-CWWKX0099	
+
+MANAGEMENT_SECURITY_AUTHZ_FAILED=CWWKX0001A: L''autorisation a \u00e9chou\u00e9 pour l''utilisateur {0} lors de l''appel de l''op\u00e9ration de gestion {1}. Aucun des r\u00f4les requis n''est affect\u00e9 \u00e0 l''utilisateur : {2}.
+MANAGEMENT_SECURITY_AUTHZ_FAILED.explanation=L'utilisateur sp\u00e9cifi\u00e9 ne dispose pas des droits d'acc\u00e8s appropri\u00e9s pour acc\u00e9der \u00e0 l'op\u00e9ration de gestion sp\u00e9cifi\u00e9e.
+MANAGEMENT_SECURITY_AUTHZ_FAILED.useraction=Aucune action de l'utilisateur n'est n\u00e9cessaire.
+
+ROLE_ENTRY_DUPLICATE=CWWKX0002E: Une entr\u00e9e en double a \u00e9t\u00e9 d\u00e9tect\u00e9e dans la liaison de r\u00f4le {0}. L''entr\u00e9e en double {1} est {2}.
+ROLE_ENTRY_DUPLICATE.explanation=L'entr\u00e9e sp\u00e9cifi\u00e9e est d\u00e9j\u00e0 d\u00e9finie pour la liaison de r\u00f4le sp\u00e9cifi\u00e9e. Les entr\u00e9es en double ne sont pas prises en charge.
+ROLE_ENTRY_DUPLICATE.useraction=Supprimez l'entr\u00e9e en double.

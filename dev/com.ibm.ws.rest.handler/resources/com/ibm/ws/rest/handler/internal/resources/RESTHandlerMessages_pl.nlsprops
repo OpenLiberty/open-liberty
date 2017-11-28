@@ -1,0 +1,53 @@
+###############################################################################
+# Copyright (c) 2012, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO 
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKO1000 - CWWKO1099
+
+HANDLER_NOT_FOUND_ERROR=CWWKO1000E: Brak zarejestrowanych procedur obs\u0142ugi zgodnych z \u017c\u0105danym adresem URL {0}.
+HANDLER_NOT_FOUND_ERROR.explanation=Podj\u0119to pr\u00f3b\u0119 uzyskania dost\u0119pu do adresu URL, kt\u00f3ry nie by\u0142 zgodny z \u017cadn\u0105 z zarejestrowanych procedur obs\u0142ugi.
+HANDLER_NOT_FOUND_ERROR.useraction=Popraw adres URL, aby by\u0142 zgodny z zarejestrowan\u0105 procedur\u0105 obs\u0142ugi.
+
+OSGI_SERVICE_ERROR=CWWKO1001E: Us\u0142uga OSGi {0} nie jest dost\u0119pna.
+OSGI_SERVICE_ERROR.explanation=Jest to wewn\u0119trzny b\u0142\u0105d serwera zg\u0142aszany w zwi\u0105zku z niedost\u0119pno\u015bci\u0105 okre\u015blonej us\u0142ugi.
+OSGI_SERVICE_ERROR.useraction=Zrestartuj serwer, u\u017cywaj\u0105c opcji clean.
+ 
+SSL_CONTEXT_NOT_AVAILABLE=CWWKO1002E: Wyst\u0105pi\u0142 nast\u0119puj\u0105cy wyj\u0105tek podczas rozstrzygania kontekstu SSL elementu kolektywu: {0}
+SSL_CONTEXT_NOT_AVAILABLE.explanation=Nie mo\u017cna utworzy\u0107 kontekstu SSL przy u\u017cyciu certyfikatu SSL elementu.
+SSL_CONTEXT_NOT_AVAILABLE.useraction=Sprawd\u017a konfiguracj\u0119 SSL kolektywu, w tym kontrolera i elementu docelowego.
+
+MISSING_PARAMETER=CWWKO1003E: Brak wymaganego parametru {0} w \u017c\u0105daniu https.
+MISSING_PARAMETER.explanation=W \u017c\u0105daniu brak okre\u015blonego wymaganego parametru. 
+MISSING_PARAMETER.useraction=Dodaj okre\u015blony parametr do \u017c\u0105dania i pon\u00f3w \u017c\u0105danie.
+
+MISSING_HEADER=CWWKO1004E: Brak wymaganego nag\u0142\u00f3wka {0} w \u017c\u0105daniu https.
+MISSING_HEADER.explanation=W \u017c\u0105daniu brak okre\u015blonego wymaganego nag\u0142\u00f3wka. 
+MISSING_HEADER.useraction=Dodaj okre\u015blony nag\u0142\u00f3wek do \u017c\u0105dania i pon\u00f3w \u017c\u0105danie.
+
+INVALID_INPUT_VALUE=CWWKO1005E: Pole wej\u015bciowe o nazwie {0} zawiera niepoprawn\u0105 warto\u015b\u0107.
+INVALID_INPUT_VALUE.explanation=\u017b\u0105danie zawiera pole wej\u015bciowe o niepoprawnej warto\u015bci. Pole wej\u015bciowe nie jest zgodne z \u017cadnymi rekordami w systemie. 
+INVALID_INPUT_VALUE.useraction=Popraw warto\u015b\u0107 w polu wej\u015bciowym i pon\u00f3w \u017c\u0105danie.
+
+UNSUPPORTED_MEDIA_TYPE=CWWKO1006E: Typ MIME \u017c\u0105dania, {0}, nie jest obs\u0142ugiwany. 
+UNSUPPORTED_MEDIA_TYPE.explanation=Serwer nie mo\u017ce u\u017cy\u0107 typu MIME \u017c\u0105dania. Typ MIME \u017c\u0105dania nie jest zgodny z \u017cadnym z oczekiwanych typ\u00f3w MIME. 
+UNSUPPORTED_MEDIA_TYPE.useraction=Popraw warto\u015b\u0107 typu tre\u015bci i ponownie wy\u015blij \u017c\u0105danie.
+

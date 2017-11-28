@@ -117,7 +117,7 @@ public class ModulePropertiesUtils {
 
     public boolean isImmediateEval(String elExpression) {
         if (elExpression != null) {
-            return elExpression.startsWith("#{");
+            return elExpression.startsWith("${");
         }
         return false;
     }

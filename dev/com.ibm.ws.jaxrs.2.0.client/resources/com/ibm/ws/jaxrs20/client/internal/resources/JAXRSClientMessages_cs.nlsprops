@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs20.client/resources/com/ibm/ws/jaxrs20/client/internal/resources/JAXRSClientMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS20 Client Code
+#RANGE 0700 - 0799
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# JAXRS 2.0 Client Configuration Message ------------------------
+error.jaxrs.client.configuration.timeout.valueinvalid=CWWKW0700E: Hodnota \u010dasov\u00e9ho limitu {0}, kterou jste uvedli ve vlastnosti {1} na stran\u011b klienta JAX-RS, je neplatn\u00e1. Hodnota je nastavena na p\u0159edvolbu {2}. {3} 
+error.jaxrs.client.configuration.timeout.valueinvalid.explanation=Hodnota \u010dasov\u00e9ho limitu mus\u00ed b\u00fdt typu long nebo int. 
+error.jaxrs.client.configuration.timeout.valueinvalid.useraction=Nastavte typ hodnoty na long nebo int.
+
+error.jaxrs.client.configuration.proxy.portinvalid=CWWKW0701E: Hodnota portu serveru proxy {0}, kterou jste uvedli ve vlastnosti {1} na stran\u011b klienta JAX-RS, je neplatn\u00e1. Hodnota je nastavena na p\u0159edvolbu {2}. {3}
+error.jaxrs.client.configuration.proxy.portinvalid.explanation=Hodnota portu serveru proxy mus\u00ed b\u00fdt typu int. 
+error.jaxrs.client.configuration.proxy.portinvalid.useraction=Nastavte typ hodnoty na int.
+
+error.jaxrs.client.configuration.proxy.typeinvalid=CWWKW0702E: Hodnota typu serveru proxy {0}, kterou jste uvedli ve vlastnosti {1} na stran\u011b klienta JAX-RS, je neplatn\u00e1. Hodnota je nastavena na p\u0159edvolbu {2}. {3}
+error.jaxrs.client.configuration.proxy.typeinvalid.explanation=Hodnota typu serveru proxy mus\u00ed b\u00fdt HTTP nebo SOCKS. 
+error.jaxrs.client.configuration.proxy.typeinvalid.useraction=Nastavte hodnotu na HTTP nebo SOCKS.
+
+#{0} is the ssl ref id configured in server.xml
+error.jaxrs.client.ssl.invalidsslconfig=CWWKW0703E: Tov\u00e1rnu soket\u016f SSL nelze vytvo\u0159it, proto\u017ee referen\u010dn\u00ed ID SSL {0} v souboru server.xml neexistuje.
+error.jaxrs.client.ssl.invalidsslconfig.explanation= K vygenerov\u00e1n\u00ed tov\u00e1rny soket\u016f SSL je nezbytn\u00e9 platn\u00e9 referen\u010dn\u00ed ID. V souboru server.xml nen\u00ed \u017e\u00e1dn\u00e1 konfigurace SSL s ID {0}. 
+error.jaxrs.client.ssl.invalidsslconfig.useraction= Nastavte platn\u00e9 referen\u010dn\u00ed ID SSL v souboru server.xml.
+
+no_saml_found_in_subject=CWWKW0704W: V p\u0159edm\u011btu chyb\u00ed nezbytn\u00fd token SAML.
+no_saml_found_in_subject.explanation=P\u0159i extrakci tokenu SAML z p\u0159edm\u011btu do\u0161lo chyb\u011b, nebo nebyl v aktu\u00e1ln\u00edm p\u0159edm\u011btu nalezen prvek SAML.
+no_saml_found_in_subject.useraction=Vytv\u00e1\u0159\u00edte-li p\u0159edm\u011bt run-as, zajist\u011bte, aby byl do n\u011bj p\u0159id\u00e1n token SAML. Jinak se kontrolou atributu includeTokenInSubject v konfiguraci SAML ujist\u011bte, \u017ee konfigurace serveru podporuje p\u0159id\u00e1v\u00e1n\u00ed tokenu SAML do p\u0159edm\u011btu.
+
+failed_to_extract_saml_token_from_subject=CWWKW0705W: Do\u0161lo k v\u00fdjimce p\u0159i pokusu pou\u017e\u00edt rozhran\u00ed SAML PropagationHelper API. V\u00fdjimka: [{0}]
+failed_to_extract_saml_token_from_subject.explanation=Do\u0161lo k v\u00fdjimce p\u0159i vyvol\u00e1n\u00ed rozhran\u00ed PropagationHelper API k na\u010dten\u00ed tokenu SAML z p\u0159edm\u011btu.
+failed_to_extract_saml_token_from_subject.useraction=Ujist\u011bte se, \u017ee server.xml m\u00e1 ur\u010denou funkci samlWeb-2.0. Rovn\u011b\u017e zkontrolujte protokoly serveru, kde jsou dal\u0161\u00ed informace k v\u00fdjimce. 
+
+failed_run_as_subject=CWWKW0706E: Do\u0161lo k v\u00fdjimce p\u0159i pokusu z\u00edskat RunAsSubject. V\u00fdjimka: [{0}].
+failed_run_as_subject.explanation=Do\u0161lo k v\u00fdjimce p\u0159i z\u00edsk\u00e1v\u00e1n\u00ed RunAsSubject.
+failed_run_as_subject.useraction=Ujist\u011bte se, \u017ee je server spr\u00e1vn\u011b nakonfigurov\u00e1n a spu\u0161t\u011bn.

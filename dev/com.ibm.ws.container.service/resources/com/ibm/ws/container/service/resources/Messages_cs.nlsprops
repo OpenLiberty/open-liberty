@@ -1,0 +1,167 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME ws/code/webcontainer/src/com/ibm/ws/webcontainer/resources/Messages.nlsprops
+#COMPONENTPREFIX SRVE
+#COMPONENTNAMEFOR SRVE Servlet Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# The first three messages in this file have a SRVE code prefix since they were ported from the old
+# WAS Classic Servlet Engine (see CMVC info above).
+#
+# The rest of the messages are new to Liberty and use the new Liberty message codes.
+# See http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+# The range assigned to the Container Service is CWWKM 0451-0550.
+#
+#COMPONENTPREFIX CWWKM
+
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION=SRVE9968W: Byla nalezena neplatn\u00e1 cesta ke t\u0159\u00edd\u011b souboru typu manifest {0} v souboru JAR {1}.
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION.explanation=Cesta ke t\u0159\u00edd\u011b nen\u00ed zad\u00e1na spr\u00e1vn\u011b. Mus\u00ed b\u00fdt zad\u00e1n \u0159et\u011bzec relativn\u00edho identifik\u00e1toru URI, kter\u00fd ukazuje na soubor JAR nebo na slo\u017eku.
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION.useraction=Aktualizujte soubor MANIFEST.MF v souboru JAR zad\u00e1n\u00edm spr\u00e1vn\u00e9 definice cesty ke t\u0159\u00edd\u011b.
+
+WARN_MANIFEST_CLASSPATH_NOT_FOUND=SRVE9967W: Cestu ke t\u0159\u00edd\u011b souboru typu manifest {0} nebyla nalezena v souboru JAR {1} nebo v nad\u0159\u00edzen\u00e9 polo\u017ece.
+WARN_MANIFEST_CLASSPATH_NOT_FOUND.explanation=Cesta ke t\u0159\u00edd\u011b souboru typu manifest nebyla nalezena v souboru JAR nebo v archivu, v n\u011bm\u017e je soubor JAR ulo\u017een.
+WARN_MANIFEST_CLASSPATH_NOT_FOUND.useraction=P\u0159idejte do archivu c\u00edl cesty ke t\u0159\u00edd\u011b.
+
+NO_UNIQUE_WEB_FRAGMENT_NAMES=SRVE9964E: Duplicitn\u00ed n\u00e1zvy {0} jsou pou\u017eity v souborech web-fragment.xml {1} a {2} p\u0159i pou\u017eit\u00ed relativn\u00edho \u0159azen\u00ed.
+NO_UNIQUE_WEB_FRAGMENT_NAMES.explanation=Pro prvek v ka\u017ed\u00e9m souboru web-fragment.xml je p\u0159i pou\u017eit\u00ed relativn\u00edho \u0159azen\u00ed povinn\u00fd jedine\u010dn\u00fd n\u00e1zev.
+NO_UNIQUE_WEB_FRAGMENT_NAMES.useraction=P\u0159i\u0159a\u010fte jedine\u010dn\u00fd n\u00e1zev pro ka\u017ed\u00fd soubor web-fragment.xml p\u0159i pou\u017eit\u00ed relativn\u00edho \u0159azen\u00ed nebo nakonfigurujte pou\u017eit\u00ed absolutn\u00edho \u0159azen\u00ed, tj. prvek <absolute-ordering> v souboru web.xml.
+
+annotation.service.not.available.CWWKM0451E=CWWKM0451E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1}
+annotation.service.not.available.CWWKM0451E.explanation=CMSG0001
+annotation.service.not.available.CWWKM0451E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+annotation.service.not.available.CWWKM0452E=CWWKM0452E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1}
+annotation.service.not.available.CWWKM0452E.explanation=CMSG0001
+annotation.service.not.available.CWWKM0452E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+container.is.not.a.module.CWWKM0453E=CWWKM0453E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1}
+container.is.not.a.module.CWWKM0453E.explanation=CMSG0001
+container.is.not.a.module.CWWKM0453E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.create.module.class.source.CWWKM0454E=CWWKM0454E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1} {2}
+failed.to.create.module.class.source.CWWKM0454E.explanation=CMSG0001
+failed.to.create.module.class.source.CWWKM0454E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.create.module.class.source.CWWKM0455E=CWWKM0455E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1} {2}
+failed.to.create.module.class.source.CWWKM0455E.explanation=CMSG0001
+failed.to.create.module.class.source.CWWKM0455E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0456E=CWWKM0456E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0456E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0456E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0457E=CWWKM0457E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0457E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0457E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.info.store.CWWKM0458E=CWWKM0458E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1}
+failed.to.obtain.module.info.store.CWWKM0458E.explanation=CMSG0001
+failed.to.obtain.module.info.store.CWWKM0458E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0459E=CWWKM0459E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0459E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0459E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0460E=CWWKM0460E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0460E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0460E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.open.web.module.info.store.CWWKM0461E=CWWKM0461E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1}
+failed.to.open.web.module.info.store.CWWKM0461E.explanation=CMSG0001
+failed.to.open.web.module.info.store.CWWKM0461E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.close.web.module.info.store.CWWKM0462E=CWWKM0462E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1}
+failed.to.close.web.module.info.store.CWWKM0462E.explanation=CMSG0001
+failed.to.close.web.module.info.store.CWWKM0462E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+annotation.service.not.available.CWWKM0463E=CWWKM0463E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1}
+annotation.service.not.available.CWWKM0463E.explanation=CMSG0001
+annotation.service.not.available.CWWKM0463E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+container.is.not.a.web.module.CWWKM0464E=CWWKM0464E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1}
+container.is.not.a.web.module.CWWKM0464E.explanation=CMSG0001
+container.is.not.a.web.module.CWWKM0464E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.create.module.class.source.CWWKM0465E=CWWKM0465E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1} {2}
+failed.to.create.module.class.source.CWWKM0465E.explanation=CMSG0001
+failed.to.create.module.class.source.CWWKM0465E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+canonical.name.does.not.match.original.name.for.module.CWWKM0466E=CWWKM0466E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1} {2}
+canonical.name.does.not.match.original.name.for.module.CWWKM0466E.explanation=CMSG0001
+canonical.name.does.not.match.original.name.for.module.CWWKM0466E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.create.module.fragment.class.source.CWWKM0467E=CWWKM0467E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1} {2} {3}
+failed.to.create.module.fragment.class.source.CWWKM0467E.explanation=CMSG0001
+failed.to.create.module.fragment.class.source.CWWKM0467E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.create.module.fragment.class.source.CWWKM0468E=CWWKM0468E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1} {2} {3}
+failed.to.create.module.fragment.class.source.CWWKM0468E.explanation=CMSG0001
+failed.to.create.module.fragment.class.source.CWWKM0468E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.create.class.source.for.module.classloader.CWWKM0469E=CWWKM0469E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1} {2} {3}
+failed.to.create.class.source.for.module.classloader.CWWKM0469E.explanation=CMSG0001
+failed.to.create.class.source.for.module.classloader.CWWKM0469E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0470E=CWWKM0470E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0470E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0470E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0471E=CWWKM0471E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0471E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0471E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0472E=CWWKM0472E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0472E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0472E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0473E=CWWKM0473E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0473E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0473E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0474E=CWWKM0474E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1} {2}
+failed.to.obtain.module.annotation.targets.CWWKM0474E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0474E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.open.web.module.info.store.CWWKM0475E=CWWKM0475E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1}
+failed.to.open.web.module.info.store.CWWKM0475E.explanation=CMSG0001
+failed.to.open.web.module.info.store.CWWKM0475E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.close.web.module.info.store.CWWKM0476E=CWWKM0476E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1}
+failed.to.close.web.module.info.store.CWWKM0476E.explanation=CMSG0001
+failed.to.close.web.module.info.store.CWWKM0476E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+duplicate.names.found.in.relative.ordering.metadata.CWWKM0477E=CWWKM0477E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1}
+duplicate.names.found.in.relative.ordering.metadata.CWWKM0477E.explanation=CMSG0001
+duplicate.names.found.in.relative.ordering.metadata.CWWKM0477E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+relative.ordering.metadata.is.before.and.after.others.CWWKM0478E=CWWKM0478E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1}
+relative.ordering.metadata.is.before.and.after.others.CWWKM0478E.explanation=CMSG0001
+relative.ordering.metadata.is.before.and.after.others.CWWKM0478E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+two.fragments.have.the.same.name.CWWKM0479E=CWWKM0479E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1}
+two.fragments.have.the.same.name.CWWKM0479E.explanation=CMSG0001
+two.fragments.have.the.same.name.CWWKM0479E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+conflicting.relative.order.metadata.CWWKM0480E=CWWKM0480E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1} {2}
+conflicting.relative.order.metadata.CWWKM0480E.explanation=CMSG0001
+conflicting.relative.order.metadata.CWWKM0480E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+loop.found.in.list.CWWKM0481E=CWWKM0481E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0}
+loop.found.in.list.CWWKM0481E.explanation=CMSG0001
+loop.found.in.list.CWWKM0481E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ordered.list.already.contains.CWWKM0482E=CWWKM0482E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1}
+ordered.list.already.contains.CWWKM0482E.explanation=CMSG0001
+ordered.list.already.contains.CWWKM0482E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+

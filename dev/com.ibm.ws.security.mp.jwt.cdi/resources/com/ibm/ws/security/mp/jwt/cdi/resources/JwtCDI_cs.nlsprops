@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.mp.jwt.cdi/resources/com/ibm/ws/security/mp/jwt/cdi/resources/JwtCDI.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Microprofile JWT CDI
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS5600 - CWWKS5649
+
+# Do not translate Claim.
+MPJWT_CDI_INVALID_INJECTION_TYPE=CWWKS5600E: Nelze ur\u010dit typ n\u00e1roku, kter\u00fd m\u00e1 b\u00fdt vlo\u017een. Typ bodu vlo\u017een\u00ed je {0}.
+MPJWT_CDI_INVALID_INJECTION_TYPE.explanation=Bod vlo\u017een\u00ed, kter\u00fd je anotovan\u00fd s kvalifik\u00e1torem n\u00e1roku, nem\u00e1 platn\u00fd typ.
+MPJWT_CDI_INVALID_INJECTION_TYPE.useraction=Ujist\u011bte se, \u017ee bod vlo\u017een\u00ed m\u00e1 platn\u00fd typ pro n\u00e1rok, kter\u00fd chcete vlo\u017eit.
+
+MPJWT_CDI_CANNOT_RESOLVE_INJECTION_POINT=CWWKS5601E: Z\u00e1vislost bodu vlo\u017een\u00ed {0} nen\u00ed vy\u0159e\u0161ena, co\u017e m\u00e1 za n\u00e1sledek chybu {1}.
+MPJWT_CDI_CANNOT_RESOLVE_INJECTION_POINT.explanation=Vlo\u017een\u00fd n\u00e1rok se nebyl vy\u0159e\u0161en.
+MPJWT_CDI_CANNOT_RESOLVE_INJECTION_POINT.useraction=Zkontrolujte zpr\u00e1vu serveru a protokoly FFDC (first-failure data capture) a ur\u010dete p\u0159\u00ed\u010dinu.
+
+# Do not translate Claim, value, and standard. The value and standard are members of the Claim annotation.
+MPJWT_CDI_CONFLICTING_CLAIM_NAMES=CWWKS5602E: Kvalifik\u00e1tor n\u00e1roku pro bod vlo\u017een\u00ed {0} m\u00e1 nekonzistentn\u00ed hodnoty pro hodnotu i standardn\u00ed prvky. Prvek hodnoty m\u00e1 {1}, zat\u00edmco standardn\u00ed prvek m\u00e1 {2}.
+MPJWT_CDI_CONFLICTING_CLAIM_NAMES.explanation=Bod vlo\u017een\u00ed anotovan\u00fd s kvalifik\u00e1torem n\u00e1roku m\u00e1 prvky s konfliktem.
+MPJWT_CDI_CONFLICTING_CLAIM_NAMES.useraction=Ujist\u011bte se, \u017ee bod vlo\u017een\u00ed m\u00e1 platn\u00fd kvalifik\u00e1tor n\u00e1roku pro n\u00e1rok, kter\u00fd chcete vlo\u017eit.
+
+# Do not translate ApplicationScoped, SessionScoped, RequestScoped, and Claim.
+MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE=CWWKS5603E: N\u00e1rok nelze vkl\u00e1dat do bodu vlo\u017een\u00ed {0} pro rozsahy ApplicationScoped nebo SessionScoped.
+MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.explanation=Bod vlo\u017een\u00ed anotovan\u00fd s kvalifik\u00e1torem n\u00e1roku pro z\u00e1kladn\u00ed typ mus\u00ed pat\u0159it t\u0159\u00edd\u011b anotovan\u00e9 s anotac\u00ed rozsahu RequestScoped.
+MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.useraction=Ujist\u011bte se, \u017ee bod vlo\u017een\u00ed je \u010dlenem t\u0159\u00eddy v rozsahu RequestScoped pro n\u00e1rok, kter\u00fd chcete vlo\u017eit.

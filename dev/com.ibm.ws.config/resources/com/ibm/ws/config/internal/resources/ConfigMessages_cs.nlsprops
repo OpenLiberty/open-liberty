@@ -1,0 +1,460 @@
+###############################################################################
+# Copyright (c) 2010, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKG
+#COMPONENTNAMEFOR CWWKG WebSphere kernel config service messages
+#CMVCPATHNAME com.ibm.ws.config/resources/com/ibm/ws/config/internal/resources/ConfigMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+# Message prefix block: CWWKG0001 - CWWKG1000
+# -------------------------------------------------------------------------------------------------
+
+copyright=\n\
+Licencovan\u00e9 materi\u00e1ly - vlastnictv\u00ed IBM. \n\
+(C) COPYRIGHT International Business Machines Corp. 2010 - V\u0161echna pr\u00e1va vyhrazena.\n\
+US Government Users Restricted Rights - Use, duplication or disclosure\n\
+restricted by GSA ADP Schedule Contract with IBM Corp.
+
+error.parse.server=CWWKG0001E: Syntaktick\u00fd analyz\u00e1tor konfigurace zjistil chybu p\u0159i syntaktick\u00e9 anal\u00fdze ko\u0159ene konfigurace a v odkazovan\u00fdch dokumentech typu Konfigurace. Chyba: {0}
+error.parse.server.explanation=Konfiguraci serveru nelze p\u0159e\u010d\u00edst, proto\u017ee v jednom z konfigura\u010dn\u00edch soubor\u016f je chyba.
+error.parse.server.useraction=Vy\u0159e\u0161te chybu v konfigura\u010dn\u00edm souboru a pot\u00e9 restartujte server.
+
+error.parse.bundle=CWWKG0002E: Syntaktick\u00fd analyz\u00e1tor konfigurace zjistil chybu p\u0159i zpracov\u00e1n\u00ed bal\u00edku, verze nebo p\u0159etrv\u00e1vaj\u00edc\u00ed identity (PID). Chyba: {0} Chyba: {1} P\u0159\u00ed\u010dina: {2}
+error.parse.bundle.explanation=Do\u0161lo k chyb\u011b p\u0159i syntaktick\u00e9 anal\u00fdze ur\u010den\u00e9 konfigurace.
+error.parse.bundle.useraction=Vy\u0159e\u0161te chybu konfigurace a pot\u00e9 akci opakujte.
+
+info.prop.ignored=CWWKG0003I: Oper\u00e1tor nen\u00ed zad\u00e1n nebo je zadan\u00e1 hodnota pr\u00e1zdn\u00e1 \u010di null. Vlastnost je ignorov\u00e1na. Vlastnost: {0} Soubor: {1}
+info.prop.ignored.explanation=O\u010dek\u00e1van\u00fd konfigura\u010dn\u00ed vlastnost chyb\u00ed nebo nen\u00ed specifikov\u00e1na a byla ignorov\u00e1na.
+info.prop.ignored.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+info.unsupported.api=CWWKG0004I: Toto rozhran\u00ed API nen\u00ed podporov\u00e1no: {0}
+info.unsupported.api.explanation=Ur\u010den\u00e9 rozhran\u00ed API nen\u00ed podporov\u00e1no.
+info.unsupported.api.useraction=Pou\u017eijte podporovan\u00e9 rozhran\u00ed API.
+
+info.ignore.unresolved.optional.include=CWWKG0005I: Ignorov\u00e1n\u00ed nevy\u0159e\u0161en\u00e9ho voliteln\u00e9ho {0} prost\u0159edku ({1}). \u0158\u00e1dek: {2}, {3}
+info.ignore.unresolved.optional.include.explanation=Voliteln\u00fd konfigura\u010dn\u00ed soubor nelze naj\u00edt a bude ignorov\u00e1n.
+info.ignore.unresolved.optional.include.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+info.ignore.invalid.optional.include=CWWKG0006I: Ignorov\u00e1n\u00ed @za\u010dlen\u011bn\u00ed? prost\u0159edku ({0}), kter\u00fd nen\u00ed platn\u00fd. \u0158\u00e1dek: {1}. {2}
+info.ignore.invalid.optional.include.explanation=Ur\u010den\u00fd prost\u0159edek nen\u00ed platn\u00fd a byl ignorov\u00e1n.
+info.ignore.invalid.optional.include.useraction=Pokud nechcete, aby byl ignorov\u00e1n, u\u010di\u0148te prost\u0159edek platn\u00fdm.
+
+warn.file.delete.failed=CWWKG0007W: Syst\u00e9m nem\u016f\u017ee odstranit {0}
+warn.file.delete.failed.explanation=Nebylo mo\u017en\u00e9 odstranit ur\u010den\u00fd prost\u0159edek.
+warn.file.delete.failed.useraction=Vy\u0159e\u0161te v\u0161echny probl\u00e9my br\u00e1n\u00edc\u00ed odstran\u011bn\u00ed prost\u0159edku, pot\u00e9 akci opakujte.
+
+warn.file.mkdirs.failed=CWWKG0008W: Syst\u00e9m nem\u016f\u017ee vytvo\u0159it adres\u00e1\u0159e pro {0}.
+warn.file.mkdirs.failed.explanation=Nebylo mo\u017en\u00e9 vytvo\u0159it ur\u010den\u00e9 adres\u00e1\u0159e.
+warn.file.mkdirs.failed.useraction=Vy\u0159e\u0161te v\u0161echny probl\u00e9my br\u00e1n\u00edc\u00ed vytvo\u0159en\u00ed adres\u00e1\u0159\u016f, pot\u00e9 akci opakujte.
+
+warn.bundle.factory.noinstance=CWWKG0009W: Konfigurace {0} v bal\u00edku {1} ur\u010duje konfiguraci tov\u00e1rny bez ID.
+warn.bundle.factory.noinstance.explanation=Ur\u010den\u00e1 konfigurace tov\u00e1rny nem\u00e1 ID.
+warn.bundle.factory.noinstance.useraction=Ur\u010dete ID pro konfiguraci tov\u00e1rny.
+
+frameworkShutdown=CWWKG0010I: Server {0} se vyp\u00edn\u00e1 v d\u016fsledku p\u0159edchoz\u00ed chyby inicializace.
+frameworkShutdown.explanation=P\u0159edchoz\u00ed chyba inicializace zp\u016fsobila vypnut\u00ed serveru.
+frameworkShutdown.useraction=Vy\u0159e\u0161te chybu inicializace, pot\u00e9 restartujte server.
+
+config.validator.foundConflictSingleton=Nalezeno konfliktn\u00ed nastaven\u00ed pro konfiguraci {0}.
+config.validator.foundConflictInstance=Nalezena konfliktn\u00ed nastaven\u00ed pro instanci {1} konfigurace {0}.
+config.validator.attributeConflict=Vlastnost {0} m\u00e1 konfliktn\u00ed hodnoty:
+config.validator.valueConflict=Hodnota {0} je nastavena v {1}.
+config.validator.valueConflictNull=V r\u00e1mci {0} nen\u00ed nastavena \u017e\u00e1dn\u00e1 hodnota.
+config.validator.valueConflictSecure=V r\u00e1mci {0} je nastavena zabezpe\u010den\u00e1 hodnota.
+config.validator.activeValue=Vlastnost {0} bude nastavena na hodnotu {1}.
+config.validator.activeValueNull=Vlastnost {0} nebude nastavena na \u017e\u00e1dnou hodnotu.
+config.validator.activeValueSecure=Vlastnost {0} bude nastavena na hodnotu definovanou v {1}.
+
+warn.config.validate.failed=CWWKG0011W: Ov\u011b\u0159en\u00ed konfigurace nebylo \u00fasp\u011b\u0161n\u00e9. {0}
+warn.config.validate.failed.explanation=Konfigurace nen\u00ed platn\u00e1 v d\u016fsledku ur\u010den\u00fdch probl\u00e9m\u016f.
+warn.config.validate.failed.useraction=Opravte konfiguraci.
+
+warn.config.delete.failed=CWWKG0012W: Syst\u00e9m nem\u016f\u017ee odstranit konfiguraci {0}.
+warn.config.delete.failed.explanation=Konfigurace nebyla odebr\u00e1na ze slu\u017eby ConfigurationAdmin.
+warn.config.delete.failed.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+warn.config.delete.failed.multiple=CWWKG0013W: Syst\u00e9m neodstranil konfiguraci {0}. Bylo nalezeno v\u00edce vyhovuj\u00edc\u00edch konfigurac\u00ed.
+warn.config.delete.failed.multiple.explanation=Ur\u010denou konfiguraci nelze bezpe\u010dn\u011b odebrat ze slu\u017eby ConfigurationAdmin, proto\u017ee bylo nalezeno v\u00edce vyhovuj\u00edc\u00edch konfigurac\u00ed.
+warn.config.delete.failed.multiple.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.syntax.parse.server=CWWKG0014E: Syntaktick\u00fd analyz\u00e1tor konfigurace zjistil chybu syntaxe XML p\u0159i syntaktick\u00e9 anal\u00fdze ko\u0159ene konfigurace a odkazovan\u00fdch dokumentech typu Konfigurace. Chyba: {0} Soubor: {1} \u0158\u00e1dek: {2} Sloupec: {3}
+error.syntax.parse.server.explanation=Konfiguraci serveru nelze p\u0159e\u010d\u00edst, proto\u017ee existuje chyba syntaxe XML v jednom z konfigura\u010dn\u00edch soubor\u016f.
+error.syntax.parse.server.useraction=Vy\u0159e\u0161te chybu syntaxe XML v dokumentu typu Konfigurace, potom restartujte server.
+
+error.config.update.init=CWWKG0015E: Syst\u00e9m nem\u016f\u017ee aktualizovat minim\u00e1ln\u011b jednu konfiguraci. Chyba: {0}
+error.config.update.init.explanation=Minim\u00e1ln\u011b jednu konfiguraci nelze aktualizovat ve slu\u017eb\u011b ConfigurationAdmin.
+error.config.update.init.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+info.config.refresh.start=CWWKG0016I: Spou\u0161t\u011bn\u00ed aktualizace konfigurace serveru.
+info.config.refresh.start.explanation=Konfigura\u010dn\u00ed soubory serveru byly zm\u011bn\u011bny a syst\u00e9m se pokou\u0161\u00ed aktualizovat konfiguraci serveru o nov\u00e9 informace.
+info.config.refresh.start.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+info.config.refresh.stop=CWWKG0017I: Konfigurace serveru byla \u00fasp\u011b\u0161n\u011b aktualizov\u00e1na za {0} sekund.
+info.config.refresh.stop.explanation=Syst\u00e9m zjistil zm\u011bny v konfigura\u010dn\u00edch souborech serveru a aktualizoval konfiguraci serveru o nov\u00e9 informace.
+info.config.refresh.stop.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+info.config.refresh.nochanges=CWWKG0018I: Konfigurace serveru nebyla aktualizov\u00e1na. Nebyly zji\u0161t\u011bny \u017e\u00e1dn\u00e9 zm\u011bny funkc\u00ed.
+info.config.refresh.nochanges.explanation=Konfigura\u010dn\u00ed soubory serveru byly zm\u011bn\u011bny, ale nebyly zji\u0161t\u011bny \u017e\u00e1dn\u00e9 zm\u011bny funkc\u00ed v konfiguraci.
+info.config.refresh.nochanges.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+schemagen.noextensions=CWWKG0019E: Nad\u0159\u00edzen\u00e1 konfigurace {0} ur\u010den\u00e1 v {1} nepodporuje roz\u0161\u00ed\u0159en\u00ed.
+schemagen.noextensions.explanation=Roz\u0161\u00ed\u0159en\u00ed metatypu mus\u00ed b\u00fdt pro vno\u0159en\u00e9 konfigurace povoleny.
+schemagen.noextensions.useraction=P\u0159idejte ibm:supportExtensions="true" do souboru metatype.xml.
+
+schemagen.invalid.parent=CWWKG0020E: Nad\u0159\u00edzen\u00e1 konfigurace {0} ur\u010den\u00e1 v {1} nen\u00ed platn\u00e1.
+schemagen.invalid.parent.explanation=Nad\u0159\u00edzen\u00e1 konfigurace ur\u010den\u00e1 v atributu ibm:parentPid neexistuje.
+schemagen.invalid.parent.useraction=Opravte atribut ibm:parentPid v souboru metatype.xml.
+
+schemagen.duplicate.pid=CWWKG0021E: Stejn\u00e9 PID {0} je definov\u00e1no ve v\u00edce souborech metatype.xml.
+schemagen.duplicate.pid.explanation=Konfigurace atribut\u016f pid a factoryPid mus\u00ed b\u00fdt jedine\u010dn\u00e1.
+schemagen.duplicate.pid.useraction=Upravte soubory metatype.xml tak, aby v\u0161echny atributy pid a factoryPid byly jedine\u010dn\u00e9.
+
+schemagen.alias.required=CWWKG0022E: Pro vno\u0159enou konfiguraci {0} je vy\u017eadov\u00e1n alias konfigurace.
+schemagen.alias.required.explanation=Vno\u0159en\u00e1 konfigurace nem\u00e1 alias konfigurace.
+schemagen.alias.required.useraction=Konfigurujte atribut config.alias v souboru metatype.xml.
+
+schemagen.invalid.child=CWWKG0023E: Pod\u0159\u00edzen\u00e1 konfigurace {0} mus\u00ed b\u00fdt konfigurac\u00ed tov\u00e1rny.
+schemagen.invalid.child.explanation=Konfigurace mus\u00ed b\u00fdt konfigurac\u00ed tov\u00e1rny.
+schemagen.invalid.child.useraction=Chcete-li definovat konfiguraci tov\u00e1rny, pou\u017eijte atribut factoryPid nam\u00edsto atributu pid.
+
+error.config.update.disk=CWWKG0024E: Konfigurace serveru {0} nebyla aktualizov\u00e1na na disk. Chyba: {1}
+error.config.update.disk.explanation=Konfigura\u010dn\u00ed data serveru nebyla \u00fasp\u011b\u0161n\u011b ulo\u017eena na disk.
+error.config.update.disk.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.config.update.event=CWWKG0025E: Ud\u00e1losti aktualizace konfigurace serveru nebyly emitov\u00e1ny pro {0}. Chyba: {1}
+error.config.update.event.explanation=Ud\u00e1losti aktualizace konfigurace serveru nebyly emitov\u00e1ny.
+error.config.update.event.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.alias.collision=CWWKG0026E: Dv\u011b nebo v\u00edce definic metatypu sd\u00edlej\u00ed stejn\u00e9 PID nebo alias. PID nebo alias {0} je sd\u00edlen {1} definicemi t\u0159\u00edd objekt\u016f.
+error.alias.collision.explanation=V\u00edce definic metatypu sd\u00edl\u00ed stejnou hodnotu aliasu. D\u016fsledkem m\u016f\u017ee b\u00fdt neo\u010dek\u00e1van\u00e9 chov\u00e1n\u00ed p\u0159i b\u011bhu.
+error.alias.collision.useraction=Ohlaste probl\u00e9m servisu spole\u010dnosti IBM.
+
+info.config.refresh.timeout=CWWKG0027W: Do\u0161lo k vypr\u0161en\u00ed \u010dasov\u00e9ho limitu syst\u00e9mu p\u0159i aktualizaci konfigurace serveru.
+info.config.refresh.timeout.explanation=K vypr\u0161en\u00ed \u010dasov\u00e9ho limitu syst\u00e9mu do\u0161lo p\u0159i \u010dek\u00e1n\u00ed ne\u017e komponenty zpracuj\u00ed novou konfiguraci serveru.
+info.config.refresh.timeout.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+audit.include.being.processed=CWWKG0028A: Zpracov\u00e1n\u00ed zahrnovalo konfigura\u010dn\u00ed prost\u0159edek: {0}.
+audit.include.being.processed.explanation=Obsah ur\u010den\u00e9ho prost\u0159edku bude vlo\u017een do konfigurace serveru.
+audit.include.being.processed.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+schemagen.bad.reference.extension=CWWKG0029E: Atribut {0} nem\u00e1 roz\u0161\u00ed\u0159en\u00ed ibm:reference nebo toto roz\u0161\u00ed\u0159en\u00ed neur\u010duje ID procesu (PID).
+schemagen.bad.reference.extension.explanation=Roz\u0161\u00ed\u0159en\u00ed ibm:reference je pro atributy definovan\u00e9 pomoc\u00ed ibm:type=pid povinn\u00e9.
+schemagen.bad.reference.extension.useraction=Upravte p\u0159\u00edslu\u0161n\u00fd soubor metatype.xml a p\u0159idejte nebo opravte roz\u0161\u00ed\u0159en\u00ed ibm:reference.
+
+schemagen.bad.reference.pid=CWWKG0030E: Odkaz na ID procesu (PID) {0} uveden\u00fd v roz\u0161\u00ed\u0159en\u00ed ibm:reference neexistuje.
+schemagen.bad.reference.pid.explanation=Odkaz na ID procesu (PID) zadan\u00fd v roz\u0161\u00ed\u0159en\u00ed ibm:reference neexistuje nebo je neplatn\u00fd.
+schemagen.bad.reference.pid.useraction=Upravte p\u0159\u00edslu\u0161n\u00fd soubor metatype.xml a opravte n\u00e1zev ID procesu (PID) v roz\u0161\u00ed\u0159en\u00ed ibm:reference.
+
+error.unique.value.conflict=CWWKG0031E: Hodnota {1} zadan\u00e1 pro jedine\u010dn\u00fd atribut {0} je ji\u017e pou\u017e\u00edv\u00e1na.
+error.unique.value.conflict.explanation=Hodnota pro zadan\u00fd atribut mus\u00ed b\u00fdt jedine\u010dn\u00e1, ale je ji\u017e pou\u017e\u00edv\u00e1na.
+error.unique.value.conflict.useraction=Zm\u011b\u0148te hodnotu atributu tak, aby byla jedine\u010dn\u00e1.
+
+warn.config.invalid.value=CWWKG0032W: Neo\u010dek\u00e1van\u00e1 hodnota vlastnosti [{0}], hodnota = [{1}]. O\u010dek\u00e1van\u00e9 hodnoty jsou: {2}.
+warn.config.invalid.value.explanation=Zadanou hodnotu vlastnosti nelze pou\u017e\u00edt.
+warn.config.invalid.value.useraction=Opravte hodnotu vlastnosti tak, aby pou\u017e\u00edvala o\u010dek\u00e1vanou hodnotu.
+
+warning.pid.not.found=CWWKG0033W: Hodnota [{1}] zadan\u00e1 pro atribut odkazu [{0}] nebyla v konfiguraci nalezena.
+warning.pid.not.found.explanation=Zadan\u00e1 hodnota mus\u00ed b\u00fdt prvkem v konfiguraci.
+warning.pid.not.found.useraction=Zm\u011b\u0148te hodnotu atributu tak, aby odkazovala na platn\u00fd prvek konfigurace.
+
+error.targetRequired=CWWKG0034E: Mus\u00ed b\u00fdt zad\u00e1n c\u00edlov\u00fd soubor
+error.targetRequired.explanation=Na p\u0159\u00edkazov\u00e9m \u0159\u00e1dku mus\u00ed b\u00fdt zad\u00e1n c\u00edlov\u00fd soubor.
+error.targetRequired.useraction=Zopakujte zad\u00e1n\u00ed p\u0159\u00edkazu a zadejte c\u00edlov\u00fd soubor. Zkuste pou\u017e\u00edt p\u0159\u00edkaz --help, kter\u00fdm vyp\u00ed\u0161ete seznam platn\u00fdch voleb.
+
+error.unknownArgument=CWWKG0035E: Nezn\u00e1m\u00e1 volba: {0}.
+error.unknownArgument.explanation=Zadan\u00e1 volba nebyla rozpozn\u00e1na.
+error.unknownArgument.useraction=Zopakujte p\u0159\u00edkaz s pou\u017eit\u00edm platn\u00fdch voleb. Zkuste pou\u017e\u00edt p\u0159\u00edkaz --help, kter\u00fdm vyp\u00ed\u0161ete seznam platn\u00fdch voleb.
+
+error.schemaGenException=CWWKG0036E: Chyba generov\u00e1n\u00ed sch\u00e9matu: {0}
+error.schemaGenException.explanation=Byl zji\u0161t\u011bn v\u00fdskyt chyby p\u0159i generov\u00e1n\u00ed sch\u00e9matu.
+error.schemaGenException.useraction=Prozkoumejte v\u00fdjimku
+
+error.schemaGenInvalidJarLocation=CWWKG0037E: Neplatn\u00e9 um\u00edst\u011bn\u00ed souboru JAR.
+error.schemaGenInvalidJarLocation.explanation=Um\u00edst\u011bn\u00ed konfigura\u010dn\u00edho souboru JAR je nespr\u00e1vn\u00e9.
+error.schemaGenInvalidJarLocation.useraction=Ov\u011b\u0159te, zda je konfigura\u010dn\u00ed soubor JAR um\u00edst\u011bn v adres\u00e1\u0159i wlp/lib.
+
+error.ocdExists=CWWKG0038E: T\u0159\u00edda objekt\u016f s {0} je ji\u017e registrov\u00e1na.
+error.ocdExists.explanation=T\u0159\u00eddu objekt\u016f nelze registrovat dvakr\u00e1t.
+error.ocdExists.useraction=Odeberte duplicitn\u00ed t\u0159\u00eddu objekt\u016f.
+
+error.dsExists=CWWKG0039E: Ur\u010dovac\u00ed t\u0159\u00edda s {0} je ji\u017e registrov\u00e1na.
+error.dsExists.explanation=Ur\u010dovac\u00ed t\u0159\u00eddu nelze registrovat dvakr\u00e1t.
+error.dsExists.useraction=Odeberte duplicitn\u00ed ur\u010dovac\u00ed t\u0159\u00eddu.
+
+error.fileNotFound=CWWKG0040E: Soubor {0} nebyl nalezen.
+error.fileNotFound.explanation=Soubor obsahuj\u00edc\u00ed seznam pid, kter\u00fd se m\u00e1 vylou\u010dit, nebyl nalezen.
+error.fileNotFound.useraction=Opravte n\u00e1zev souboru a zopakujte p\u0159\u00edkaz.
+
+error.invalidArgument=CWWKG0041E: Neplatn\u00fd argument {0}. Hodnota mus\u00ed b\u00fdt ur\u010dena.
+error.invalidArgument.explanation=Hodnota pro argument nebyla nalezena
+error.invalidArgument.useraction=Zopakujte p\u0159\u00edkaz s ur\u010denou hodnotou.
+
+warn.parse.circular.include=CWWKG0042W: Obsa\u017een\u00e9 prost\u0159edky konfigurace tvo\u0159\u00ed kruhovou z\u00e1vislost: {0}.
+warn.parse.circular.include.explanation=Nejm\u00e9n\u011b jedno vol\u00e1n\u00ed include v konfiguraci vytv\u00e1\u0159\u00ed kruhovou z\u00e1vislost.
+warn.parse.circular.include.useraction=Odeberte vol\u00e1n\u00ed include, kter\u00e1 zp\u016fsobuj\u00ed kruhovou z\u00e1vislost.
+
+info.configValidator.validator=CWWKG0043I: Pou\u017e\u00edvan\u00e1 t\u0159\u00edda valid\u00e1toru konfigurace: {0}.
+info.configValidator.validator.explanation=K validaci konfigurace se pou\u017eije ur\u010den\u00e1 t\u0159\u00edda.
+info.configValidator.validator.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+fatal.configValidator.documentNotValid=CWWKG0044E: Ukon\u010den\u00ed pr\u00e1ce serveru, proto\u017ee dokument typu Konfigurace neobsahuje platn\u00fd podpis: {0}.
+fatal.configValidator.documentNotValid.explanation=Ur\u010den\u00fd dokument typu Konfigurace neobsahuje platn\u00fd podpis nebo byla zm\u011bn\u011bna \u010d\u00e1st dokumentu, kter\u00e1 je chr\u00e1n\u011bn\u00e1 podpisem. T\u00e9to zpr\u00e1v\u011b p\u0159edch\u00e1z\u00ed chybov\u00e1 zpr\u00e1va s dal\u0161\u00edmi informacemi o specifick\u00e9 chyb\u011b v dokumentu.
+fatal.configValidator.documentNotValid.useraction=Opravte chybu v dokumentu typu Konfigurace, kter\u00e1 byla identifikov\u00e1na v p\u0159edch\u00e1zej\u00edc\u00ed chybov\u00e9 zpr\u00e1v\u011b.
+
+error.configValidator.parseFailed=CWWKG0045E: Nelze analyzovat dokument typu Konfigurace: {0}, {1}.
+error.configValidator.parseFailed.explanation=P\u0159i pokusu o anal\u00fdzu ur\u010den\u00e9ho dokumentu typu Konfigurace do\u0161lo k v\u00fdjimce.
+error.configValidator.parseFailed.useraction=Opravte v dokumentu typu Konfigurace chybu, kter\u00e1 zp\u016fsobuje v\u00fdjimku, a pot\u00e9 se pokuste znovu spustit server.
+
+error.configValidator.unmarshalFailed=CWWKG0046E: Nelze vy\u0159adit podpis obsa\u017een\u00fd v dokumentu typu Konfigurace: {0}, {1}.
+error.configValidator.unmarshalFailed.explanation=P\u0159i pokusu o vy\u0159azen\u00ed ur\u010den\u00e9ho dokumentu typu Konfigurace do\u0161lo k v\u00fdjimce.
+error.configValidator.unmarshalFailed.useraction=Opravte v dokumentu typu Konfigurace chybu, kter\u00e1 zp\u016fsobuje v\u00fdjimku, a pot\u00e9 se pokuste znovu spustit server.
+
+error.configValidator.error=CWWKG0047E: P\u0159i pokusu o ov\u011b\u0159en\u00ed dokumentu typu Konfigurace se vyskytla chyba: {0}, {1}.
+error.configValidator.error.explanation=P\u0159i pokusu o ov\u011b\u0159en\u00ed, zda ur\u010den\u00fd dokument typu Konfigurace obsahuje platn\u00fd podpis, do\u0161lo k v\u00fdjimce.
+error.configValidator.error.useraction=Opravte v dokumentu typu Konfigurace chybu, kter\u00e1 zp\u016fsobuje v\u00fdjimku, a pot\u00e9 se pokuste znovu spustit server.
+
+error.configValidator.signatureMissing=CWWKG0048E: Dokument typu Konfigurace neobsahuje podpis: {0}.
+error.configValidator.signatureMissing.explanation=Ur\u010den\u00fd dokument typu Konfigurace neobsahuje podpis.
+error.configValidator.signatureMissing.useraction=Nahra\u010fte ur\u010den\u00fd dokument typu Konfigurace verz\u00ed dokumentu, kter\u00e1 obsahuje platn\u00fd podpis, a restartujte server.
+
+error.configValidator.keyInfoMissing=CWWKG0049E: V podpisu obsa\u017een\u00e9m v dokumentu typu Konfigurace nebyl nalezen prvek KeyInfo: {0}.
+error.configValidator.keyInfoMissing.explanation=Podpis v ur\u010den\u00e9m dokumentu typu Konfigurace neobsahuje prvek KeyInfo.
+error.configValidator.keyInfoMissing.useraction=Nahra\u010fte ur\u010den\u00fd dokument typu Konfigurace verz\u00ed dokumentu, kter\u00e1 obsahuje platn\u00fd podpis, a restartujte server.
+
+error.configValidator.signerNotAuthorized=CWWKG0050E: Dokument typu Konfigurace byl podeps\u00e1n neautorizovanou entitou: {0}.
+error.configValidator.signerNotAuthorized.explanation=Podpis v ur\u010den\u00e9m dokumentu typu Konfigurace obsahuje neautorizovan\u00fd certifik\u00e1t.
+error.configValidator.signerNotAuthorized.useraction=Nahra\u010fte ur\u010den\u00fd dokument typu Konfigurace verz\u00ed dokumentu, kter\u00e1 obsahuje platn\u00fd podpis, a restartujte server.
+
+error.configValidator.x509DataMissing=CWWKG0051E: V podpisu obsa\u017een\u00e9m v dokumentu typu Konfigurace nebyl nalezen prvek X509Data: {0}.
+error.configValidator.x509DataMissing.explanation=Podpis v ur\u010den\u00e9m dokumentu typu Konfigurace neobsahuje prvek X509Data.
+error.configValidator.x509DataMissing.useraction=Nahra\u010fte ur\u010den\u00fd dokument typu Konfigurace verz\u00ed dokumentu, kter\u00e1 obsahuje platn\u00fd podpis, a restartujte server.
+
+error.configValidator.x509CertificateMissing=CWWKG0052E: V podpisu obsa\u017een\u00e9m v dokumentu typu Konfigurace nebyl nalezen prvek X509Certificate: {0}.
+error.configValidator.x509CertificateMissing.explanation=Podpis v ur\u010den\u00e9m dokumentu typu Konfigurace neobsahuje prvek X509Certificate.
+error.configValidator.x509CertificateMissing.useraction=Nahra\u010fte ur\u010den\u00fd dokument typu Konfigurace verz\u00ed dokumentu, kter\u00e1 obsahuje platn\u00fd podpis, a restartujte server.
+
+error.configValidator.protectedSectionModified=CWWKG0053E: Byla zm\u011bn\u011bna \u010d\u00e1st dokumentu typu Konfigurace, kter\u00e1 je chr\u00e1n\u011bn\u00e1 podpisem: {0}.
+error.configValidator.protectedSectionModified.explanation=Chr\u00e1n\u011bn\u00e1 \u010d\u00e1st ur\u010den\u00e9ho dokumentu typu Konfigurace byla aktualizov\u00e1na.
+error.configValidator.protectedSectionModified.useraction=Odeberte aktualizaci chr\u00e1n\u011bn\u00e9 \u010d\u00e1sti ur\u010den\u00e9ho dokumentu typu Konfigurace a pot\u00e9 restartujte server.
+
+error.configValidator.signatureNotValid=CWWKG0054E: Podpis v dokumentu typu Konfigurace je neplatn\u00fd: {0}.
+error.configValidator.signatureNotValid.explanation=Podpis v ur\u010den\u00e9m dokumentu typu Konfigurace je neplatn\u00fd.
+error.configValidator.signatureNotValid.useraction=Nahra\u010fte ur\u010den\u00fd dokument typu Konfigurace verz\u00ed dokumentu, kter\u00e1 obsahuje platn\u00fd podpis, a restartujte server.
+
+info.configValidator.documentValid=CWWKG0055I: Dokument typu Konfigurace obsahuje platn\u00fd podpis: {0}.
+info.configValidator.documentValid.explanation=Ur\u010den\u00fd dokument typu Konfigurace obsahuje platn\u00fd podpis.
+info.configValidator.documentValid.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+fatal.configValidator.dropinsEnabled=CWWKG0056E: Ukon\u010den\u00ed pr\u00e1ce serveru kv\u016fli povolen\u00ed vkl\u00e1d\u00e1n\u00ed.
+fatal.configValidator.dropinsEnabled.explanation=Dokumenty typu Konfigurace pou\u017e\u00edvan\u00e9 ke spu\u0161t\u011bn\u00ed vestav\u011bn\u00e9ho serveru bu\u010f neobsahovaly prvek applicationMonitor, nebo obsahovaly prvek applicationMonitor, kter\u00fd nezakazoval vkl\u00e1d\u00e1n\u00ed.
+fatal.configValidator.dropinsEnabled.useraction=Do prvku applicationMonitor v jednom z dokument\u016f typu Konfigurace zadejte "dropinsEnabled=false".
+
+warn.configValidator.refreshFailed=CWWKG0057W: Nov\u00e1 konfigurace nebyla na\u010dtena kv\u016fli neplatn\u00e9mu podpisu.
+warn.configValidator.refreshFailed.explanation=Nov\u00fd dokument typu Konfigurace neobsahuje platn\u00fd podpis, tak\u017ee se konfigurace nezm\u011bn\u00ed.
+warn.configValidator.refreshFailed.useraction=Nahra\u010fte aktualizovan\u00fd dokument typu Konfigurace verz\u00ed dokumentu, kter\u00e1 obsahuje platn\u00fd podpis, a pot\u00e9 pokus o aktualizaci zopakujte.
+
+error.missing.required.attribute=CWWKG0058E: Prvku {0} s jedine\u010dn\u00fdm identifik\u00e1torem {2} chyb\u00ed povinn\u00fd atribut {1}.
+error.missing.required.attribute.explanation=Chyb\u011bj\u00edc\u00ed atribut je povinn\u00fd v konfigura\u010dn\u00edm souboru server.xml nebo v jednom z jeho odkazovan\u00fdch konfigura\u010dn\u00edch soubor\u016f.
+error.missing.required.attribute.useraction=P\u0159idejte atribut do konfigura\u010dn\u00edho souboru server.xml nebo do jednoho z jeho odkazovan\u00fdch konfigura\u010dn\u00edch soubor\u016f.
+
+error.missingSuper=CWWKG0059E: P\u0159etrv\u00e1vaj\u00edc\u00ed identitu {0} nelze zpracovat, proto\u017ee roz\u0161i\u0159uje nedostupnou p\u0159etrv\u00e1vaj\u00edc\u00ed identitu {1}.
+error.missingSuper.explanation=P\u0159i pokusu o konfiguraci uveden\u00e9 p\u0159etrv\u00e1vaj\u00edc\u00ed identity do\u0161lo k nezdaru, proto\u017ee tato identita roz\u0161i\u0159uje jinou p\u0159etrv\u00e1vaj\u00edc\u00ed identitu, kter\u00e1 byla nedostupn\u00e1.
+error.missingSuper.useraction=Zajist\u011bte, aby funkce \u010di bal\u00edk poskytuj\u00edc\u00ed chyb\u011bj\u00edc\u00ed p\u0159etrv\u00e1vaj\u00edc\u00ed identitu byla dostupn\u00e1 (resp. byl dostupn\u00fd) v dob\u011b b\u011bhu programu. Jedn\u00e1 se o intern\u00ed chybu. \u0158i\u010fte se standardn\u00edmi postupy pro ur\u010den\u00ed probl\u00e9mu s produktem WebSphere.
+
+error.final.override=CWWKG0060E: Potla\u010den\u00ed \u010di p\u0159ejmenov\u00e1n\u00ed atributu {0} pro p\u0159etrv\u00e1vaj\u00edc\u00ed identitu {1} je neplatn\u00e9, proto\u017ee je tento atribut p\u0159etrv\u00e1vaj\u00edc\u00ed identitou {2} deklarov\u00e1n jako typ final.
+error.final.override.explanation=Atribut je deklarov\u00e1n jako typ final. Ve\u0161ker\u00e9 pokusy o zm\u011bnu konfigurace budou ignorov\u00e1ny.
+error.final.override.useraction=Nepokou\u0161ejte se m\u011bnit konfiguraci atributu, kter\u00fd byl ozna\u010den jako final. Jedn\u00e1 se o intern\u00ed chybu. \u0158i\u010fte se standardn\u00edmi postupy pro ur\u010den\u00ed probl\u00e9mu s produktem WebSphere.
+
+#"ibm:extends" is an xml attribute name and should not be translated
+#TODO could this be renamed error.factoryOnly.extends?
+error.factoryOnly=CWWKG0061E: P\u0159etrv\u00e1vaj\u00edc\u00ed identita {0} nen\u00ed identitou p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1rny a nelze ji pou\u017e\u00edt k roz\u0161\u00ed\u0159en\u00ed p\u0159etrv\u00e1vaj\u00edc\u00ed identity {1}.
+error.factoryOnly.explanation=Atribut ibm:extends lze pou\u017e\u00edt pouze pro identity p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1rny.
+error.factoryOnly.useraction=Zm\u011b\u0148te konfiguraci p\u0159etrv\u00e1vaj\u00edc\u00ed identity tak, aby pou\u017e\u00edvala identitu p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1rny nebo odeberte atribut ibm:extends z definice komponenty objektu. Jedn\u00e1 se o intern\u00ed chybu. \u0158i\u010fte se standardn\u00edmi postupy pro ur\u010den\u00ed probl\u00e9mu s produktem WebSphere.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.factoryOnly.extendsAlias=CWWKG0096E: P\u0159etrv\u00e1vaj\u00edc\u00ed identita {0} nen\u00ed identitou p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1rny, a tak nem\u016f\u017ee m\u00edt atribut ibm:extendsAlias pro {1}. Zm\u011b\u0148te \
+konfiguraci p\u0159etrv\u00e1vaj\u00edc\u00ed identity tak, aby pou\u017e\u00edvala identitu p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1rny, nebo z p\u0159etrv\u00e1vaj\u00edc\u00ed identity odeberte atribut ibm:extendsAlias.
+error.factoryOnly.extendsAlias.explanation=Atribut ibm:extendsAlias lze pou\u017e\u00edt pouze na identity p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1ren, kter\u00e9 roz\u0161i\u0159uj\u00ed jinou identitu p\u0159etrv\u00e1vaj\u00edc\u00ed \
+prost\u0159ednictv\u00edm tov\u00e1rny.
+error.factoryOnly.extendsAlias.useraction=Zm\u011b\u0148te konfiguraci p\u0159etrv\u00e1vaj\u00edc\u00ed identity tak, aby pou\u017e\u00edvala identitu p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1rny, nebo z p\u0159etrv\u00e1vaj\u00edc\u00ed identity odeberte \
+atribut ibm:extendsAlias.
+
+#"ibm:extends" is an xml attribute name and should not be translated
+error.superFactoryOnly=CWWKG0062E: P\u0159etrv\u00e1vaj\u00edc\u00ed identita {0} nen\u00ed identitou p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1rny, a proto ji nelze roz\u0161\u00ed\u0159it p\u0159etrv\u00e1vaj\u00edc\u00ed identitou {1}.
+error.superFactoryOnly.explanation=Atribut ibm:extends lze pou\u017e\u00edt pouze pro identity p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1rny.
+error.superFactoryOnly.useraction=Zm\u011b\u0148te konfiguraci p\u0159etrv\u00e1vaj\u00edc\u00ed identity tak, aby pou\u017e\u00edvala identitu p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1rny nebo odeberte atribut ibm:extends z definice komponenty objektu. Jedn\u00e1 se o intern\u00ed chybu. \u0158i\u010fte se standardn\u00edmi postupy pro ur\u010den\u00ed probl\u00e9mu s produktem WebSphere.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.ExtendsAliasMustExtend=CWWKG0097E: P\u0159etrv\u00e1vaj\u00edc\u00ed identita {0} ur\u010duje atribut ibm:extendsAlias pro {1}, a proto mus\u00ed ur\u010dovat atribut ibm:extends.
+error.ExtendsAliasMustExtend.explanation=Kdy\u017e ur\u010d\u00edte atribut ibm:extendsAlias, mus\u00edte ur\u010dit i atribut ibm:extends.
+error.ExtendsAliasMustExtend.useraction=Ur\u010dete atribut ibm:extends.
+
+#"ibm:parentPid" and "ibm:childAlias" are xml attribute names and should not be translated
+error.parentpid.and.childalias=CWWKG0098E: P\u0159etrv\u00e1vaj\u00edc\u00ed identita {0} ur\u010duje atribut {1} pro {2}, a proto mus\u00ed ur\u010dovat atribut {3}.
+error.parentpid.and.childalias.explanation=Metatyp ud\u00e1v\u00e1, \u017ee byl \u010d\u00e1ste\u010dn\u011b ur\u010den vno\u0159en\u00fd prvek child-first. Vno\u0159en\u00e9 prvky child-first mus\u00ed ur\u010dovat atribut ibm:parentPid i atribut \
+ibm:childAlias.
+error.parentpid.and.childalias.useraction=Pokud je tento metatyp ur\u010den\u00fd pro vno\u0159en\u00fd prvek child-first, zadejte chyb\u011bj\u00edc\u00ed atribut. Jinak odeberte zadan\u00fd atribut. 
+
+#"ibm:rename" is an xml attribute name and should not be translated
+schemagen.rename.attribute.missing=CWWKG0063E: Nelze p\u0159ejmenovat definici atributu {1} podle atributu ibm:rename {2} v p\u0159etrv\u00e1vaj\u00edc\u00ed identit\u011b {0}.
+schemagen.rename.attribute.missing.explanation=Atribut v roz\u0161i\u0159uj\u00edc\u00edm metatypu se pokou\u0161\u00ed o p\u0159ejmenov\u00e1n\u00ed neexistuj\u00edc\u00edho atributu.
+schemagen.rename.attribute.missing.useraction=Opravte roz\u0161\u00ed\u0159en\u00ed p\u0159ejmenov\u00e1n\u00ed tak, aby ur\u010dovalo existuj\u00edc\u00ed atribut. Jedn\u00e1 se o intern\u00ed chybu. \u0158i\u010fte se standardn\u00edmi postupy pro ur\u010den\u00ed probl\u00e9mu s produktem WebSphere.
+
+schemagen.invalid.type.override=CWWKG0064E: Neplatn\u00e9 p\u0159eps\u00e1n\u00ed typu atributu atributem {0} v metatypu {1}. M\u00edsto toho bude pou\u017eit p\u016fvodn\u00ed typ {2}.
+schemagen.invalid.type.override.explanation=Ur\u010dit\u00fd atribut se pokou\u0161\u00ed o potla\u010den\u00ed typu roz\u0161\u00ed\u0159en\u00e9ho atributu, av\u0161ak typy atribut\u016f nemohou b\u00fdt m\u011bn\u011bny atributy roz\u0161\u00ed\u0159en\u00ed.
+schemagen.invalid.type.override.useraction=Typ atributu bude automaticky nastaven na p\u016fvodn\u00ed typ. Chcete-li se vyhnout opakov\u00e1n\u00ed t\u00e9to chyby, opravte hodnotu typu v atributu roz\u0161\u00ed\u0159en\u00edm p\u0159ejmenov\u00e1n\u00ed. Jedn\u00e1 se o intern\u00ed chybu. \u0158i\u010fte se standardn\u00edmi postupy pro ur\u010den\u00ed probl\u00e9mu s produktem WebSphere.
+
+schemagen.non.factorypid.extension=CWWKG0065E: Identita p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1rny {0} se pokou\u0161\u00ed o roz\u0161\u00ed\u0159en\u00ed jin\u00e9ho metatypu.
+schemagen.non.factorypid.extension.explanation=Identita p\u0159etrv\u00e1vaj\u00edc\u00ed bez tov\u00e1rny se pokou\u0161\u00ed o roz\u0161\u00ed\u0159en\u00ed jin\u00e9ho metatypu. Roz\u0161\u00ed\u0159en\u00ed mohou pou\u017e\u00edvat pouze identity p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1rny.
+schemagen.non.factorypid.extension.useraction=Zm\u011b\u0148te metatyp tak, aby se jednalo o tov\u00e1rnu, nebo odeberte roz\u0161\u00ed\u0159en\u00ed z definice metatypu. Jedn\u00e1 se o intern\u00ed chybu. \u0158i\u010fte se standardn\u00edmi postupy pro ur\u010den\u00ed probl\u00e9mu s produktem WebSphere.
+
+schemagen.invalid.extension.pid=CWWKG0066E: Metatyp p\u0159etrv\u00e1vaj\u00edc\u00ed identity {0} se pokou\u0161\u00ed o roz\u0161\u00ed\u0159en\u00ed neexistuj\u00edc\u00ed p\u0159etrv\u00e1vaj\u00edc\u00ed identity {1}
+schemagen.invalid.extension.pid.explanation=Metatyp se pokou\u0161\u00ed o roz\u0161\u00ed\u0159en\u00ed jin\u00e9ho metatypu, kter\u00fd neexistuje.
+schemagen.invalid.extension.pid.useraction=Zm\u011b\u0148te roz\u0161\u00ed\u0159en\u00ed metatypu tak, aby ur\u010doval existuj\u00edc\u00ed p\u0159etrv\u00e1vaj\u00edc\u00ed identitu. Jedn\u00e1 se o intern\u00ed chybu. \u0158i\u010fte se standardn\u00edmi postupy pro ur\u010den\u00ed probl\u00e9mu s produktem WebSphere.
+
+#"ibm:rename" is an xml attribute name and should not be translated
+error.rename.attribute.missing=CWWKG0067E: Nelze p\u0159ejmenovat definici atributu {1} ur\u010denou atributem ibm:rename {2} v p\u0159etrv\u00e1vaj\u00edc\u00ed identit\u011b {0}.
+error.rename.attribute.missing.explanation=Atribut v roz\u0161i\u0159uj\u00edc\u00edm metatypu se pokou\u0161\u00ed o p\u0159ejmenov\u00e1n\u00ed neexistuj\u00edc\u00edho atributu.
+error.rename.attribute.missing.useraction=Opravte n\u00e1zev atributu identifikovan\u00fd v roz\u0161\u00ed\u0159en\u00ed p\u0159ejmenov\u00e1n\u00ed tak, aby ur\u010doval existuj\u00edc\u00ed atribut. Jedn\u00e1 se o intern\u00ed chybu. \u0158i\u010fte se standardn\u00edmi postupy pro ur\u010den\u00ed probl\u00e9mu s produktem WebSphere.
+
+#"ibm:rename" is an xml attribute name and should not be translated
+error.conflicting.rename.attribute=CWWKG0068E: Nelze p\u0159ejmenovat atribut {0} na {1} v p\u0159etrv\u00e1vaj\u00edc\u00ed identit\u011b {2}, proto\u017ee tento atribut ji\u017e byl p\u0159ejmenov\u00e1n roz\u0161\u00ed\u0159en\u00fdm metatypem.
+error.conflicting.rename.attribute.explanation=Atribut ibm:rename aktu\u00e1ln\u00edho metatypu odkazuje na ID definice atributu, kter\u00e9 ji\u017e bylo p\u0159ejmenov\u00e1no roz\u0161\u00ed\u0159en\u00fdm metatypem.
+error.conflicting.rename.attribute.useraction=Zm\u011b\u0148te atribut ibm:rename ur\u010den\u00edm platn\u00e9ho ID definice atributu. Jedn\u00e1 se o intern\u00ed chybu. \u0158i\u010fte se standardn\u00edmi postupy pro ur\u010den\u00ed probl\u00e9mu s produktem WebSphere.
+
+schemagen.unresolved.attrib.desc=CWWKG0069W: Atribut {0} definice t\u0159\u00eddy objekt\u016f {1} v bal\u00edku {2} m\u00e1 nevy\u0159e\u0161en\u00fd popis atributu.
+schemagen.unresolved.attrib.desc.explanation=Atribut v metatypu m\u00e1 lokalizovan\u00fd popis, av\u0161ak zpr\u00e1vu nelze vy\u0159e\u0161it. V\u00fdsledkem bude, \u017ee atribut nebude ve zpr\u00e1v\u011b zobrazen.
+schemagen.unresolved.attrib.desc.useraction=Pou\u017eijte nelokalizovan\u00fd popis metatypu nebo zajist\u011bte, aby lokaliza\u010dn\u00ed soubor obsahoval lokalizovan\u00fd popis.
+
+schemagen.unresolved.attrib.name=CWWKG0070W: Atribut {0} definice t\u0159\u00eddy objekt\u016f {1} v bal\u00edku {2} m\u00e1 nevy\u0159e\u0161en\u00fd n\u00e1zev atributu.
+schemagen.unresolved.attrib.name.explanation=Atribut v metatypu m\u00e1 lokalizovan\u00fd n\u00e1zev, av\u0161ak zpr\u00e1vu nelze vy\u0159e\u0161it.
+schemagen.unresolved.attrib.name.useraction=Pou\u017eijte nelokalizovan\u00fd n\u00e1zev metatypu nebo zajist\u011bte, aby lokaliza\u010dn\u00ed soubor obsahoval lokalizovan\u00fd n\u00e1zev.
+
+schemagen.no.attrib.desc=CWWKG0071W: Atribut {0} definice t\u0159\u00eddy objekt\u016f {1} v bal\u00edku {2} nem\u00e1 popis atributu.
+schemagen.no.attrib.desc.explanation=Atribut v metatypu postr\u00e1d\u00e1 popis.
+schemagen.no.attrib.desc.useraction=Zadejte popis pro atribut metatypu.
+
+schemagen.no.attrib.name=CWWKG0072W: Atribut {0} definice t\u0159\u00eddy objekt\u016f {1} v bal\u00edku {2} nem\u00e1 n\u00e1zev atributu.
+schemagen.no.attrib.name.explanation=Atribut v metatypu postr\u00e1d\u00e1 n\u00e1zev.
+schemagen.no.attrib.name.useraction=Zadejte n\u00e1zev pro atribut metatypu.
+
+missing.metatype.file=CWWKG0073W: Nebyly nalezeny lokaliza\u010dn\u00ed soubory metatyp\u016f v bal\u00edku {0}.
+missing.metatype.file.explanation=Uveden\u00fd soubor JAR neobsahuje po\u017eadovan\u00e9 lokaliza\u010dn\u00ed soubory metatyp\u016f.
+missing.metatype.file.useraction=Obra\u0165te se na autora bal\u00edku a po\u017e\u00e1dejte jej o bal\u00edk s po\u017eadovan\u00fdmi lokaliza\u010dn\u00edmi soubory.
+
+error.config.update.exception=CWWKG0074E: Nelze aktualizovat konfiguraci pro {0} s jedine\u010dn\u00fdm identifik\u00e1torem {2} z d\u016fvodu v\u00fdjimky: {1}.
+error.config.update.exception.explanation=Do\u0161lo k v\u00fdjimce p\u0159i pokusu o aktualizaci konfigurace.
+error.config.update.exception.useraction=Zkontrolujte, zda p\u0159i konfiguraci nedo\u0161lo k chyb\u00e1m, a zkuste aktualizaci opakovat.
+
+error.attribute.validation.exception=CWWKG0075E: Hodnota {2} nen\u00ed platn\u00e1 pro atribut {1} prvku konfigurace {0}. Zpr\u00e1va ov\u011b\u0159en\u00ed platnosti: {3}.
+error.attribute.validation.exception.explanation=Ov\u011b\u0159en\u00ed atributu se nezda\u0159ilo.
+error.attribute.validation.exception.useraction=Aktualizujte konfiguraci, aby byla pro atribut pou\u017eita platn\u00e1 hodnota.
+
+warning.old.config.still.in.use=CWWKG0076W: St\u00e1le je pou\u017e\u00edv\u00e1na p\u0159edchoz\u00ed konfigurace pro {0} s ID {1}.
+warning.old.config.still.in.use.explanation=Aktualizace prvku konfigurace se nezda\u0159ila, ale nad\u00e1le je pou\u017e\u00edv\u00e1na p\u0159edchoz\u00ed hodnota.
+warning.old.config.still.in.use.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.specify.parentpid=CWWKG0077E: Definice metatypu pro {0} definuje pod\u0159\u00edzen\u00fd alias, ale nedefinuje nad\u0159\u00edzen\u00fd prvek.
+error.specify.parentpid.explanation=Jedn\u00e1 se intern\u00ed chybu, kde je atribut childAlias platn\u00fd pouze v p\u0159\u00edpad\u011b, \u017ee je zad\u00e1n i atribut parentPID.
+error.specify.parentpid.useraction=Definujte atribut parentPID do definice metatypu. Jedn\u00e1 se o intern\u00ed chybu. \u0158i\u010fte se postupy pro ur\u010den\u00ed probl\u00e9mu s produktem WebSphere.
+
+error.prod.ext.features.not.found=CWWKG0078E: Roz\u0161\u00ed\u0159en\u00ed produktu {0} neobsahuje \u017e\u00e1dn\u00e9 funkce.
+error.prod.ext.features.not.found.explanation=Nelze naj\u00edt soubory typu manifest funkce p\u0159idru\u017een\u00e9 k ur\u010den\u00e9mu roz\u0161\u00ed\u0159en\u00ed produktu.
+error.prod.ext.features.not.found.useraction=Ov\u011b\u0159te, \u017ee adres\u00e1\u0159, kde jsou soubory typu manifest funkce um\u00edst\u011bny, je platn\u00fd.
+
+error.prod.ext.not.found=CWWKG0079E: Roz\u0161\u00ed\u0159en\u00ed produktu {0} nelze naj\u00edt v um\u00edst\u011bn\u00ed {1}.
+error.prod.ext.not.found.explanation=Roz\u0161\u00ed\u0159en\u00ed produktu nelze v uveden\u00e9m um\u00edst\u011bn\u00ed naj\u00edt.
+error.prod.ext.not.found.useraction=Ov\u011b\u0159te, \u017ee um\u00edst\u011bn\u00ed instalace produktu je spr\u00e1vn\u011b definov\u00e1no v souboru vlastnost\u00ed pro instalaci produktu.
+
+error.prod.ext.not.defined=CWWKG0080E: Roz\u0161\u00ed\u0159en\u00ed produktu s n\u00e1zvem {0} neexistuje.
+error.prod.ext.not.defined.explanation=Roz\u0161\u00ed\u0159en\u00ed produktu se zadan\u00fdm n\u00e1zvem neexistuje.
+error.prod.ext.not.defined.useraction=Ov\u011b\u0159te, \u017ee je zadan\u00fd n\u00e1zev roz\u0161\u00ed\u0159en\u00ed produktu platn\u00fd.
+
+error.invalid.boolean.attribute=CWWKG0081E: Hodnota {0} logick\u00e9ho atributu {1} nen\u00ed platn\u00e1. Platn\u00e9 hodnoty jsou "true" a "false". Bude pou\u017eita v\u00fdchoz\u00ed hodnota {2}.
+error.invalid.boolean.attribute.explanation=Ov\u011b\u0159en\u00ed atributu se nezda\u0159ilo.
+error.invalid.boolean.attribute.useraction=Aktualizujte konfiguraci, aby byla pro atribut pou\u017eita platn\u00e1 hodnota.
+
+warning.invalid.boolean.attribute=CWWKG0082W: Hodnota {0} pro atribut {1} bude interpretov\u00e1na jako "false".
+warning.invalid.boolean.attribute.explanation=Ov\u011b\u0159en\u00ed atributu se nezda\u0159ilo.
+warning.invalid.boolean.attribute.useraction=Aktualizujte konfiguraci, aby byla pro atribut pou\u017eita platn\u00e1 hodnota.
+
+warn.config.invalid.using.default.value=CWWKG0083W: Do\u0161lo k selh\u00e1n\u00ed ov\u011b\u0159en\u00ed platnosti p\u0159i zpracov\u00e1n\u00ed vlastnosti [{0}], hodnota = [{1}]. Pou\u017e\u00edvan\u00e1 v\u00fdchoz\u00ed hodnota: {2}. 
+warn.config.invalid.using.default.value.explanation=Uveden\u00e1 hodnota vlastnosti je neplatn\u00e1 a nelze ji pou\u017e\u00edt. Bude pou\u017eita v\u00fdchoz\u00ed hodnota.
+warn.config.invalid.using.default.value.useraction=Syst\u00e9m pou\u017eije v\u00fdchoz\u00ed hodnotu, nebo m\u016f\u017eete hodnotu vlastnosti opravit na platnou hodnotu.
+
+warn.cannot.resolve.optional.include=CWWKG0084W: Nelze interpretovat konfigura\u010dn\u00ed soubor s nepovinn\u00fdm za\u010dlen\u011bn\u00edm: {0}
+warn.cannot.resolve.optional.include.explanation=Uveden\u00fd konfigura\u010dn\u00ed soubor je neplatn\u00fd. Tato chyba obvykle znamen\u00e1, \u017ee adresa URL nem\u00e1 spr\u00e1vnou formu nebo obsahuje nezn\u00e1m\u00fd protokol.
+warn.cannot.resolve.optional.include.useraction=Zkontrolujte adresu URL, zda je platn\u00e1 a pou\u017e\u00edv\u00e1 zn\u00e1m\u00fd protokol, nap\u0159. souborov\u00fd, http nebo https.
+
+warning.unexpected.server.element=CWWKG0085W: Dokument typu Konfigurace serveru obsahuje vno\u0159en\u00fd prvek serveru. Vno\u0159en\u00e1 konfigurace je ignorov\u00e1na.
+warning.unexpected.server.element.explanation=V prvku serveru nejvy\u0161\u0161\u00ed \u00farovn\u011b v dokumentu XML typu Konfigurace je vno\u0159en prvek serveru. Obsah vno\u0159en\u00e9ho serveru bude ignorov\u00e1n. 
+warning.unexpected.server.element.useraction=Aktualizujte dokument typu Konfigurace serveru a vno\u0159en\u00fd prvek serveru odeberte.
+
+warn.bad.reference.filter=CWWKG0086W: Filtr odkaz\u016f {0} nen\u00ed platn\u00fd.
+warn.bad.reference.filter.explanation=Jedn\u00e1 se o intern\u00ed chybu. Filtr odkaz\u016f ur\u010den\u00fd v definici atributu m\u00e1 neplatnou syntaxi. 
+warn.bad.reference.filter.useraction=Autor definice metatypu by m\u011bl ur\u010dovat platn\u00fd filtr odkaz\u016f. Jedn\u00e1 se o intern\u00ed chybu.
+
+warning.multiple.matches=CWWKG0087W: Hodnota [{1}] ur\u010den\u00e1 pro atribut odkazu [{0}] nen\u00ed platn\u00e1, proto\u017ee porovn\u00e1v\u00e1 v\u00edce konfigurac\u00ed.
+warning.multiple.matches.explanation=V\u00edce prvk\u016f v konfiguraci pou\u017e\u00edvaj\u00ed stejn\u00fd atribut ID. Server nem\u016f\u017ee ur\u010dovat, jak\u00fd prvek je ur\u010den k porovn\u00e1n\u00ed odkazu.
+warning.multiple.matches.useraction=Aktualizujte konfiguraci tak, aby ka\u017ed\u00fd prvek pou\u017e\u00edval jin\u00fd atribut ID. 
+
+error.breaking.include.conflict=CWWKG0088E: Prvek konfigurace {1} je ur\u010den ve dvou r\u016fzn\u00fdch prost\u0159edc\u00edch konfigurace: {0} a {2}.
+error.breaking.include.conflict.explanation=Obsa\u017een\u00fd prost\u0159edek konfigurace byl nakonfigurov\u00e1n tak, \u017ee konflikty v prvc\u00edch konfigurace byly vy\u0159e\u0161eny bu\u010f ukon\u010den\u00edm \u010dinnosti serveru, nebo povolen\u00edm proveden\u00ed aktualizace konfigurace za b\u011bhu.
+error.breaking.include.conflict.useraction=Bu\u010f aktualizujte obsa\u017een\u00fd prost\u0159edek konfigurace a odeberte koliduj\u00edc\u00ed prvek, nebo zm\u011b\u0148te chov\u00e1n\u00ed \u0159e\u0161en\u00ed konfliktu na slou\u010den\u00ed, n\u00e1hradu nebo ignorov\u00e1n\u00ed, a nikoli na p\u0159eru\u0161en\u00ed.
+ 
+error.include.location.not.specified=CWWKG0089E: Mus\u00ed b\u00fdt uveden atribut um\u00edst\u011bn\u00ed, aby bylo mo\u017en\u00e9 zahrnout prvek konfigurace uveden\u00fd na \u0159\u00e1dku {0} prost\u0159edku {1}
+error.include.location.not.specified.explanation=V konfiguraci serveru je uveden zahrnut\u00fd prvek konfigurace, ale tento prvek neuv\u00e1d\u00ed um\u00edst\u011bn\u00ed.
+error.include.location.not.specified.useraction=P\u0159idejte atribut um\u00edst\u011bn\u00ed do prvku konfigurace.
+ 
+error.cannot.read.location=CWWKG0090E: Prost\u0159edek konfigurace {0} neexistuje, nebo ho nelze p\u0159e\u010d\u00edst. 
+error.cannot.read.location.explanation=Prost\u0159edek nen\u00ed v uveden\u00e9m m\u00edst\u011b k dispozici.
+error.cannot.read.location.useraction=Ov\u011b\u0159te spr\u00e1vnost zad\u00e1n\u00ed atributu um\u00edst\u011bn\u00ed a ujist\u011bte se, \u017ee je prost\u0159edek dostupn\u00fd.
+
+error.variable.name.missing=CWWKG0091E: Mus\u00ed b\u00fdt uveden atribut n\u00e1zvu pro prom\u011bnnou na \u0159\u00e1dku {0} prost\u0159edku {1}
+error.variable.name.missing.explanation=Konfigurace serveru obsahuje prvek konfigurace prom\u011bnn\u00e9, kter\u00fd nem\u00e1 atribut n\u00e1zvu.
+error.variable.name.missing.useraction=P\u0159idejte do prom\u011bnn\u00e9 atribut n\u00e1zvu.
+
+error.variable.value.missing=CWWKG0092E: Mus\u00ed b\u00fdt uveden atribut hodnoty pro prom\u011bnnou na \u0159\u00e1dku {0} prost\u0159edku {1}
+error.variable.value.missing.explanation=Konfigurace serveru obsahuje prvek konfigurace prom\u011bnn\u00e9, kter\u00fd nem\u00e1 atribut hodnoty.
+error.variable.value.missing.useraction=P\u0159idejte do prom\u011bnn\u00e9 atribut hodnoty.
+
+audit.dropin.being.processed=CWWKG0093A: Zpracov\u00e1n\u00ed prost\u0159edku vkl\u00e1d\u00e1n\u00ed konfigurace: {0}
+audit.dropin.being.processed.explanation=Obsah ur\u010den\u00e9ho prost\u0159edku bude vlo\u017een do konfigurace serveru.
+audit.dropin.being.processed.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+warning.unrecognized.merge.behavior=CWWKG0094W: Hodnota {0} ur\u010den\u00e1 pro chov\u00e1n\u00ed slou\u010den\u00ed na prvku konfigurace zahrnut\u00ed nen\u00ed platn\u00e1. Syst\u00e9m pou\u017eijete v\u00fdchoz\u00ed hodnotu slou\u010den\u00ed.
+warning.unrecognized.merge.behavior.explanation=Prvek konfigurace zahrnut\u00ed ur\u010duje neplatnou hodnotu. Platn\u00e9 hodnoty jsou:  merge, replace a ignore.
+warning.unrecognized.merge.behavior.useraction=Aktualizac\u00ed konfigurace serveru oprav\u00edte chov\u00e1n\u00ed slou\u010den\u00ed.
+
+error.missing.required.attribute.singleton=CWWKG0095E: Prvku {0} chyb\u00ed povinn\u00fd atribut {1}.
+error.missing.required.attribute.singleton.explanation=Chyb\u011bj\u00edc\u00ed atribut je povinn\u00fd v konfigura\u010dn\u00edm souboru server.xml nebo v jednom z jeho odkazovan\u00fdch konfigura\u010dn\u00edch soubor\u016f.
+error.missing.required.attribute.singleton.useraction=P\u0159idejte atribut do konfigura\u010dn\u00edho souboru server.xml nebo do jednoho z jeho odkazovan\u00fdch konfigura\u010dn\u00edch soubor\u016f.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.extendsAlias.collision=CWWKG0100E: V jedn\u00e9 hierarchii prvk\u016f extends je duplicitn\u00ed atribut ibm:extendsAlias {2}. Identifik\u00e1tory PID jsou {0} a {1}. Ka\u017ed\u00fd atribut \
+ibm:extendsAlias mus\u00ed b\u00fdt v r\u00e1mci hierarchie prvk\u016f extends jedine\u010dn\u00fd.
+error.extendsAlias.collision.explanation=V r\u00e1mci jedn\u00e9 hierarchie prvk\u016f extends mus\u00ed b\u00fdt atribut ibm:extendsAlias jedine\u010dn\u00fd.
+error.extendsAlias.collision.useraction=Ka\u017ed\u00fd atribut ibm:extendsAlias mus\u00ed b\u00fdt v r\u00e1mci hierarchie prvk\u016f extends jedine\u010dn\u00fd.
+
+# Non-TR message
+error.invalidOCDRef=CHYBA: PID metatypu [{0}] ur\u010duje neexistuj\u00edc\u00ed ID definice t\u0159\u00eddy objekt\u016f [{1}].

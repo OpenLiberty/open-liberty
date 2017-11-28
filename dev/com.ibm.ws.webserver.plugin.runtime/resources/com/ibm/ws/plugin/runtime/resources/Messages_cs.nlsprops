@@ -1,0 +1,27 @@
+###############################################################################
+# Copyright (c) 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME 
+#COMPONENTPREFIX CWWKU
+#COMPONENTNAMEFOR Plugin Utility Runtime
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+collective.mbean.not.available=CWWKU0101E: Po\u017eadavek ke generov\u00e1n\u00ed konfigura\u010dn\u00edho souboru modulu plug-in webov\u00e9ho serveru nen\u00ed zpracov\u00e1n pro klastr {0}, proto\u017ee nebyl nalezen objekt MBean po\u017eadovan\u00e9 funkce kolektivn\u00edho \u0159adi\u010de.
+collective.mbean.not.available.explanation=Funkce kolektivn\u00edho \u0159adi\u010de mus\u00ed b\u00fdt ke zpracov\u00e1n\u00ed po\u017eadavku povolena pro server. 
+collective.mbean.not.available.useraction=Povolte funkci kolektivn\u00edho \u0159adi\u010de na c\u00edlov\u00e9m serveru nebo p\u0159esm\u011brujte po\u017eadavek na server, kter\u00fd m\u00e1 funkci kolektivn\u00edho \u0159adi\u010de ji\u017e povolenu.
+# --------------------------------
+# --------------------------------
+appserver.mbean.not.available=CWWKU0102E: Po\u017eadavek ke generov\u00e1n\u00ed konfigura\u010dn\u00edho souboru modulu plug-in webov\u00e9ho serveru nen\u00ed zpracov\u00e1n\u00ed pro tento server, proto\u017ee nebyl nalezen objekt MBean funkce servletu Java.
+appserver.mbean.not.available.explanation=Funkce servletu Java, 3.3.0 nebo 1, mus\u00ed b\u00fdt pro server ke zpracov\u00e1n\u00ed po\u017eadavku povolena.
+appserver.mbean.not.available.useraction=Povolte funkci servletu Java, 3.3.0 nebo 1, v c\u00edlov\u00e9m serveru nebo p\u0159esm\u011brujte po\u017eadavek na server, kter\u00fd m\u00e1 funkci servletu Java ji\u017e povolenu.
+# -------------------------------- 

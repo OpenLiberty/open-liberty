@@ -1,0 +1,51 @@
+###############################################################################
+# Copyright (c) 2012, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.context/resources/com/ibm/ws/context/service/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Context Propagation Service
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# CWWKC1000, CWWKC1001, CWWKC1002 have been moved to another file. Do not reuse them.
+
+CWWKC1003.not.serializable=CWWKC1003E: Prvek konfigurace {0} mus\u00ed m\u00edt jedine\u010dn\u00fd identifik\u00e1tor (id) nebo n\u00e1zev jndiName, aby ji bylo mo\u017en\u00e9 serializovat.
+CWWKC1003.not.serializable.explanation=Kv\u016fli serializaci mus\u00ed m\u00edt kontextov\u00e1 slu\u017eba jedine\u010dn\u00fd atribut id nebo atribut jndiName.
+CWWKC1003.not.serializable.useraction=P\u0159idejte do konfigurace kontextov\u00e9 slu\u017eby atribut id nebo jndiName.
+
+CWWKC1004.context.provider.unavailable=CWWKC1004E: Poskytovatel kontextu podproces\u016f {0} je nedostupn\u00fd.
+CWWKC1004.context.provider.unavailable.explanation=Aplika\u010dn\u00ed server nem\u016f\u017ee naj\u00edt poskytovatele uveden\u00e9ho typu kontextu podproces\u016f.
+CWWKC1004.context.provider.unavailable.useraction=Ujist\u011bte se, \u017ee je povolena funkce, kter\u00e1 uveden\u00fd typ kontextu podprocesu zaji\u0161\u0165uje.
+
+CWWKC1010.context.service.unavailable=CWWKC1010E: Prvek konfigurace s jedine\u010dn\u00fdm identifik\u00e1torem nebo atributem jndiName {0} nelze v konfiguraci serveru naj\u00edt.
+CWWKC1010.context.service.unavailable.explanation=Kontextov\u00e1 slu\u017eba s uveden\u00fdm ID nebo atributem jndiName nebyla v konfiguraci nalezena.
+CWWKC1010.context.service.unavailable.useraction=Zkontrolujte, zda kontextov\u00e1 slu\u017eba s uveden\u00fdm ID nebo atributem jndiName existuje v konfiguraci a je platn\u00e1.
+
+CWWKC1011.app.unavailable=CWWKC1011E: Nelze spustit \u00falohu {0}, proto\u017ee nen\u00ed dostupn\u00e1 aplikace {1}, kter\u00e1 ji odeslala.
+CWWKC1011.app.unavailable.explanation=Aby bylo mo\u017en\u00e9 \u00falohu spustit, mus\u00ed b\u00fdt dostupn\u00e1 aplikace, kter\u00e1 tuto \u00falohu odeslala.
+CWWKC1011.app.unavailable.useraction=Ov\u011b\u0159te, zda je aplikace spu\u0161t\u011bn\u00e1, a znovu ode\u0161lete \u00falohu.
+
+CWWKC1012.module.unavailable=CWWKC1012E: Nelze spustit \u00falohu {0}, proto\u017ee nen\u00ed dostupn\u00fd modul {1} aplikace {2}, kter\u00fd ji odeslal.
+CWWKC1012.module.unavailable.explanation=Aby bylo mo\u017en\u00e9 \u00falohu spustit, mus\u00ed b\u00fdt dostupn\u00fd modul, kter\u00fd tuto \u00falohu odeslal.
+CWWKC1012.module.unavailable.useraction=Ov\u011b\u0159te, zda je modul spu\u0161t\u011bn\u00fd, a znovu ode\u0161lete \u00falohu.
+
+CWWKC1013.component.unavailable=CWWKC1013E: Neleze spustit \u00falohu {0}, proto\u017ee nen\u00ed dostupn\u00e1 komponenta {1} modulu {2} v aplikaci {3}, kter\u00e1 ji odeslala.
+CWWKC1013.component.unavailable.explanation=Aby bylo mo\u017en\u00e9 \u00falohu spustit, mus\u00ed b\u00fdt dostupn\u00e1 aplika\u010dn\u00ed komponenta, kter\u00e1 tuto \u00falohu odeslala.
+CWWKC1013.component.unavailable.useraction=Ov\u011b\u0159te, zda je aplika\u010dn\u00ed komponenta spu\u0161t\u011bn\u00e1, a znovu ode\u0161lete \u00falohu.
+
+# CWWKC1020 has been moved to another file. Do not reuse it.

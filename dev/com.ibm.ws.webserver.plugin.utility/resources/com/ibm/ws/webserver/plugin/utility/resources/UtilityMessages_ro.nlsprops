@@ -1,0 +1,179 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.webserver.plugin.utility/resources/com/ibm/ws/webserver/plugin/utility/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+error=Eroare: {0}
+error.inputConsoleNotAvailable=Consola de intrare nu este disponibil\u0103.
+error.missingIO=Eroare, dispozitiv I/E lips\u0103: {0}.
+
+serverNotFound=Serverul specificat {0} nu a putut fi g\u0103sit \u00een loca\u0163ia {1}
+jmx.local.connector.file.notfound=Nu s-a putut g\u0103si fi\u015fierul de adrese de conectori JMX locali la {0}
+jmx.local.connector.file.invalid=Nu s-a putut citi fi\u015fierul de adrese de conectori JMX locali la {0}
+
+#------------------------------------------------------------------------------
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+tooManyArgs=Prea multe argumente.
+insufficientArgs=Argumente insuficiente.
+missingServerName=Nu s-a specificat \u0163inta pentru task.
+invalidArg=Argument invalid {0}.
+missingArg=Argument lips\u0103 {0}.
+missingValue=Valoare lips\u0103 pentru argumentul {0}.
+
+#------------------------------------------------------------------------------
+# Messages for HelpTask
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Utilizare: ac\u0163iune {0} [op\u0163iuni]
+task.unknown=Task necunoscut: {0}
+
+common.encodeError=\n\
+Nu se poate codifica parola pentru argumentul: {0}
+
+common.hostError=\n\
+Numele de gazd\u0103 specificat nu pare s\u0103 fie valid: {0}\n\
+Verifica\u0163i c\u0103 numele de gazd\u0103 este corect \u015fi c\u0103 sistemul are conexiune la re\u0163ea.
+
+common.portError=\n\
+Nu s-a putut ajunge la portul specificat {0}. Verifica\u0163i dac\u0103 portul este corect.
+
+common.connectionError=\n\
+Nu se poate finaliza opera\u0163ia.\n\
+Eroare: {0}
+
+#------------------------------------------------------------------------------
+# Messages for get and generate operations
+#------------------------------------------------------------------------------
+
+generateWebServerPluginTask.abort=\n\
+Oprire...
+
+generateWebServerPluginTask.cleanupFail=\n\
+Eroare la cur\u0103\u0163area fi\u015fierelor generate. Nu se poate \u015fterge {0}\n\
+\u00cenl\u0103tura\u0163i fi\u015fierul manual, verifica\u0163i permisiunile de fi\u015fier \u015fi \u00eencerca\u0163i din nou.
+
+generateWebServerPluginTask.complete.collective=\n\
+Generarea fi\u015fierului de configura\u0163ie a plugin-ului de server web a avut succes pentru controlerul de colectiv \u0163int\u0103.
+
+generateWebServerPluginTask.fail.collective=\n\
+Generarea fi\u015fierului de configura\u0163ie a plugin-ului de server web a e\u015fuat pentru controlerul de colectiv \u0163int\u0103. \n\
+Analiza\u0163i istoricele controlerului de colectiv \u0163int\u0103 pentru a diagnostica problema.
+
+generateWebServerPluginTask.start.server.local=\n\
+Serverul \u0163int\u0103 local {0} va fi folosit pentru a genera fi\u015fierul de configura\u0163ie a plugin-ului de server web.
+
+generateWebServerPluginTask.start.server.remote=\n\
+Serverul \u0163int\u0103 de la distan\u0163\u0103 {0} va fi folosit pentru a genera fi\u015fierul de configura\u0163ie a plugin-ului de server web.
+
+generateWebServerPluginTask.complete.server=\n\
+Generarea fi\u015fierului de configura\u0163ie a plugin-ului de server web a avut succes pentru serverul \u0163int\u0103.
+
+generateWebServerPluginTask.fail.server=\n\
+Generarea fi\u015fierului de configura\u0163ie a plugin-ului de server web a e\u015fuat pentru serverul \u0163int\u0103. \n\
+Analiza\u0163i istoricele serverului \u0163int\u0103 pentru a diagnostica problema.
+
+generateWebServerPluginTask.notEnabled=\n\
+Caracteristica de controler de colectiv nu este activat\u0103. Activa\u0163i caracteristica\n\
+\u015fi re\u00eencerca\u0163i comanda.
+
+generateWebServerPluginTask.start.server=\n\
+Pornirea serverului {0} deoarece momentan nu ruleaz\u0103.
+
+generateWebServerPluginTask.stop.server=\n\
+Se opre\u015fte serverul {0} deoarece starea sa ini\u0163ial\u0103 a fost oprit\u0103.
+
+generateWebServerPluginTask.server.started=\n\
+Serverul {0} a pornit cu succes.
+
+generateWebServerPluginTask.server.not.started=\n\
+Serverul {0} nu a putut fi pornit.
+
+generateWebServerPluginTask.server.plugin=Generarea fi\u015fierului de configura\u0163ie plug-in din serverul WebSphere Liberty.
+
+generateWebServerPluginTask.target.directory.not.exists=\n\
+Directorul specificat pentru --targetPath: {0} nu exist\u0103.
+
+generateWebServerPluginTask.server.plugin.generated=\n\
+Fi\u015fierul de plug-in este generat la loca\u0163ia {0} pe server.
+
+generateWebServerPluginTask.complete.next.step=\n\
+Copia\u0163i fi\u015fierul de configura\u0163ie plug-in \u00een directorul specificat \u00een\n\
+directiva WebSpherePluginConfig din fi\u015fierul IBM HTTP Server httpd.conf.
+
+#------------------------------------------------------------------------------
+# Messages for merge operation
+#------------------------------------------------------------------------------
+
+MergePluginFilesTask.merging.plugin.dir=\n\
+Combinarea fi\u015fierelor de plug-in-uri cu tiparul *plugin-cfg*.xml din directorul {0}. 
+
+MergePluginFilesTask.merging.plugin.list=\n\
+Combinarea listei furnizate de fi\u015fiere de plug-in-uri.
+
+MergePluginFilesTask.merging.plugin.file.not.exists=\n\
+Fi\u015fierul {0} nu exist\u0103. Verifica\u0163i dac\u0103 fi\u015fierul exist\u0103 \u015fi este un\n\
+fi\u015fier valid de configurare plug-in.
+
+MergePluginFilesTask.merging.plugin.file.is.directory=\n\
+Fi\u015fierul {0} este un director. Directoarele \u015fi fi\u015fierele normale nu pot fi\n\
+amestecate la combinare.
+
+MergePluginFilesTask.merging.plugin.targetdir.not.exists=\n\
+Directorul {0}, unde fi\u015fierul de configura\u0163ie combinat ar trebui generat\n\
+nu exist\u0103.
+
+MergePluginFilesTask.merging.plugin.source.dir.not.exists=\n\
+Directorul surs\u0103 {0} nu exist\u0103.
+
+MergePluginFilesTask.merging.plugin.source.file.not.directory=\n\
+Sursa {0} nu este un director.
+
+MergePluginFilesTask.merging.plugin.source.file.selected=\n\
+Fi\u015fierul {0} este selectat pentru combinare. 
+
+MergePluginFilesTask.merging.plugin.target.file.generating=\n\
+Generarea fi\u015fierului de configura\u0163ie combinat la {0}.
+
+MergePluginFilesTask.merging.plugin.target.file.generated=\n\
+S-a generat cu succes fi\u015fierul de configura\u0163ie combinat.
+
+MergePluginFilesTask.merging.plugin.insufficent.number.of.source.files=\n\
+Furniza\u0163i cel pu\u0163in dou\u0103 fi\u015fiere de configurare plug-in-uri pentru a face combinarea.
+
+#------------------------------------------------------------------------------
+# Messages for pluginUtility generate option 
+#------------------------------------------------------------------------------
+# reading in a password
+#-----------------------------------------
+password.enterText=Introduce\u0163i {0}:
+password.reenterText=Introduce\u0163i din nou {0}:
+password.readError=Eroare citire parol\u0103.
+password.entriesDidNotMatch=Parolele nu s-au potrivit.
+
+#-----------------------------------------
+# reading in a user 
+#-----------------------------------------
+user.enterText=Introduce\u0163i {0}:
+user.readError=Eroare la citirea utilizatorului.
+
+#----------------------------------------- 
+# Missing Argument Messages 
+#-----------------------------------------
+invalidPortArg=A fost furnizat\u0103 o valoare invalid\u0103 pentru [port]={0} \u00een argumentul pentru {1}, este necesar\u0103 o valoare numeric\u0103.
+missingUsernameValue=Lipse\u015fte valoarea pentru [user] \u00een argumentul pentru {0}.
+missingPasswordValue=Lipse\u015fte valoarea pentru [password] \u00een argumentul pentru {0}.
+missingHostValue=Lipse\u015fte valoarea pentru [host] \u00een argumentul pentru {0}.
+missingPortValue=Lipse\u015fte valoarea pentru [port] \u00een argumentul pentru {0}.
+missingHostorPortValue=Lipse\u015fte valoarea pentru [host sau port] \u00een argumentul pentru {0}.
+
+#------------------------------------------------------------------------------

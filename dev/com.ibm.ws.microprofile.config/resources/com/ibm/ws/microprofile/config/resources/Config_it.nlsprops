@@ -1,0 +1,104 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMCG
+#COMPONENTNAMEFOR CWMCG MicroProfile Config API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Config Impl -  range is 0000-4999, plus 9999 for the emergency message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# Config is closed.
+config.closed.CWMCG0001E=CWMCG0001E: Configurazione chiusa.
+config.closed.CWMCG0001E.explanation=Le operazioni non possono essere eseguite su un'istanza di configurazione che \u00e8 stata chiusa.
+config.closed.CWMCG0001E.useraction=Ottenere una nuova istanza di configurazione e tentare di nuovo l'operazione.
+
+# ClassLoader must not be null.
+null.classloader.CWMCG0002E=CWMCG0002E: Il programma di caricamento classe non pu\u00f2 essere null.
+null.classloader.CWMCG0002E.explanation=Il programma di caricamento classe utilizzato da un builder di configurazione non deve essere null.
+null.classloader.CWMCG0002E.useraction=Impostare il programma di caricamento classe su un valore non null.
+
+# A Config instance already exists for the specified ClassLoader.
+config.already.exists.CWMCG0003E=CWMCG0003E: Un'istanza di configurazione esiste gi\u00e0 per il programma di caricamento classe specificato.
+config.already.exists.CWMCG0003E.explanation=Un'istanza di configurazione \u00e8 gi\u00e0 stata impostata per il programma di caricamento classe specificato.
+config.already.exists.CWMCG0003E.useraction=Utilizzare il metodo 'releaseConfig' per rimuovere l'istanza precedente e riprovare il metodo.
+
+# Unable to close the Config instance. The exception is: {0}.
+could.not.close.CWMCG0004E=CWMCG0004E: Impossibile chiudere l'istanza di configurazione. L'eccezione \u00e8:  {0}.
+could.not.close.CWMCG0004E.explanation=Si \u00e8 verificata un'eccezione durante il tentativo di chiudere un'istanza di configurazione. \u00c8 possibile che le relative risorse non siano state rilasciate.
+could.not.close.CWMCG0004E.useraction=Esaminare il file message.log del server e i log FFDC per identificare il problema.
+
+# Unable to convert the string "{0}" to a value of type {1}.
+unable.to.convert.CWMCG0006E=CWMCG0006E: Impossibile convertire la stringa "{0}" in un valore di tipo {1}.
+unable.to.convert.CWMCG0006E.explanation=Nessun converter adatto trovato per il tipo fornito.
+unable.to.convert.CWMCG0006E.useraction=Aggiungere un converter adatto o assicurarsi che la classe abbia un costruttore stringa pubblico o un metodo statico valueOf(String).
+
+# A Converter of type {0} threw an exception. The input string was: "{1}". The exception is: {2}.
+conversion.exception.CWMCG0007E=CWMCG0007E: Un converter di tipo {0} ha emesso un'eccezione. La stringa di input era: "{1}". L'eccezione \u00e8:  {2}.
+conversion.exception.CWMCG0007E.explanation=Un converterha emesso un'eccezione.
+conversion.exception.CWMCG0007E.useraction=Esaminare il file message.log del server e i log FFDC per identificare il problema.
+
+# Unable to convert the string "{0}" to a value of type Boolean. Expected one of [true, yes, on, false, no, off].
+unable.to.convert.boolean.CWMCG0008E=CWMCG0008E: Impossibile convertire la stringa "{0}" in un valore di tipo booleano. Previsto uno di [true, yes, on, false, no, off].
+unable.to.convert.boolean.CWMCG0008E.explanation=La stringa di input non era un valore booleano valido.
+unable.to.convert.boolean.CWMCG0008E.useraction=Aggiornare la stringa di input di origine e riprovare l'operazione.
+
+# Could not determine conversion type of Converter class {0}.
+unable.to.determine.conversion.type.CWMCG0009E=CWMCG0009E: Impossibile determinare il tipo di conversione della classe converter {0}.
+unable.to.determine.conversion.type.CWMCG0009E.explanation=La classe di implementazione del converter non aveva un tipo generico adatto.
+unable.to.determine.conversion.type.CWMCG0009E.useraction=Accertarsi che la classe di implementazione disponga di una variabile di tipo generica adeguata per l'interfaccia del Converter.
+
+# Unable to discover ConfigSources. The exception is: {0}.
+unable.to.discover.config.sources.CWMCG0010E=CWMCG0010E: Impossibile rilevare ConfigSources. L'eccezione \u00e8:  {0}.
+unable.to.discover.config.sources.CWMCG0010E.explanation=Java ServiceLoader ha creato un'eccezione. La causa pi\u00f9 probabile \u00e8 che non sia stato possibile trovare una delle classi ConfigSource indicate.
+unable.to.discover.config.sources.CWMCG0010E.useraction=Controllare le classi indicate nei file di servizio Java nell'applicazione. Esaminare il file message.log del server e i log FFDC per identificare ulteriormente il problema.
+
+# Unable to discover ConfigSourceProviders. The exception is: {0}.
+unable.to.discover.config.source.providers.CWMCG0011E=CWMCG0011E: Impossibile rilevare ConfigSourceProviders. L'eccezione \u00e8:  {0}.
+unable.to.discover.config.source.providers.CWMCG0011E.explanation=Java ServiceLoader ha creato un'eccezione. La causa pi\u00f9 probabile \u00e8 che non sia stato possibile trovare una delle classi ConfigSourceProvider indicate.
+unable.to.discover.config.source.providers.CWMCG0011E.useraction=Controllare le classi indicate nei file di servizio Java nell'applicazione. Esaminare il file message.log del server e i log FFDC per identificare ulteriormente il problema.
+
+# Unable to discover Converters. The exception is: {0}.
+unable.to.discover.converters.CWMCG0012E=CWMCG0012E: Impossibile rilevare Converters. L'eccezione \u00e8:  {0}.
+unable.to.discover.converters.CWMCG0012E.explanation=Java ServiceLoader ha creato un'eccezione. La causa pi\u00f9 probabile \u00e8 che non sia stata trovata una delle classi Converter indicate.
+unable.to.discover.converters.CWMCG0012E.useraction=Controllare le classi indicate nei file di servizio Java nell'applicazione. Esaminare il file message.log del server e i log FFDC per identificare ulteriormente il problema.
+
+# Unable to cancel asynchronous update thread.
+future.update.not.cancelled.CWMCG0013E=CWMCG0013E: Il server non \u00e8 in grado di annullare il thread di aggiornamento asincrono.
+future.update.not.cancelled.CWMCG0013E.explanation=Il tentativo di annullare un aggiornamento asincrono futuro ha avuto esito negativo. In genere, ci\u00f2 si verifica a causa di una chiamata di aggiornamento a un'istanza ConfigSource in esecuzione da molto tempo.
+future.update.not.cancelled.CWMCG0013E.useraction=Esaminare il file message.log del server e i log FFDC per identificare il problema.
+
+# A Converter could not be found for type {0}.
+could.not.find.converter.CWMCG0014E=CWMCG0014E: Impossibile trovare un Converter per il tipo {0}.
+could.not.find.converter.CWMCG0014E.explanation=Impossibile trovare un Converter per convertire la stringa della propriet\u00e0 non elaborata nel tipo richiesto.
+could.not.find.converter.CWMCG0014E.useraction=Accertarsi che una classe Converter adeguata sia disponibile ed elencata nel file di servizio Java.
+
+# The property {0} was not found in the configuration.
+no.such.element.CWMCG0015E=CWMCG0015E: La propriet\u00e0 {0} non \u00e8 stata trovata nella configurazione.
+no.such.element.CWMCG0015E.explanation=La propriet\u00e0 richiesta non esiste in alcuna delle origini configurate.
+no.such.element.CWMCG0015E.useraction=Aggiungere la propriet\u00e0 a una delle origini esistenti oppure aggiungere una nuova origine che contiene la propriet\u00e0.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Config error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Config API error has occurred: {0}
+temporary.CWMCG9999E=CWMCG9999E: Si \u00e8 verificato un errore API di configurazione: {0}.
+temporary.CWMCG9999E.explanation=Si \u00e8 verificato un errore API di configurazione che ha impedito la regolare elaborazione.
+temporary.CWMCG9999E.useraction=Esaminare il file message.log del server e i log FFDC per identificare il problema.

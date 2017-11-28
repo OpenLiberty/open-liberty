@@ -1,0 +1,63 @@
+###############################################################################
+# Copyright (c) 2009 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSInn0000=CWSIO0001I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSInn0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSInn0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+#COMPONENTPREFIX CWLIB
+#COMPONENTNAMEFOR CWLIB WebSphere Composable Server (Transaction server)
+#CMVCPATHNAME com.ibm.ws.transaction/resources/com/ibm/ws/transaction/services/TransactionMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+
+# -----------------------------------------------------------------------
+# Message:       CWLIB0001E: UserTransaction service reference is null.
+# -----------------------------------------------------------------------
+USERTRAN_IS_NULL=CWLIB0001E: UserTransaction \uc11c\ube44\uc2a4 \ucc38\uc870\uac00 \ub110\uc785\ub2c8\ub2e4.
+USERTRAN_IS_NULL.explanation=UserTransaction \uc11c\ube44\uc2a4\ub97c \uc5bb\uae30 \uc704\ud55c \uc694\uccad\uc774 \uc788\uc5c8\uc9c0\ub9cc, UserTransaction \uc11c\ube44\uc2a4\uac00 \uc774 \ubc88\ub4e4\uc5d0 \uc5f0\uacb0\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+USERTRAN_IS_NULL.useraction=UserTransaction \uc561\uc138\uc2a4\uac00 \ud544\uc694\ud55c \uacbd\uc6b0 OSGi \ucf58\uc194\uc744 \uc0ac\uc6a9\ud558\uc5ec UserTransaction \uc11c\ube44\uc2a4\uac00 \uc774 \ubc88\ub4e4\uc5d0 \uc5f0\uacb0\ub418\uc9c0 \uc54a\uc740 \uc774\uc720\ub97c \uc870\uc0ac\ud558\uc2ed\uc2dc\uc624. 
+
+
+# {0} is the error that happened
+UNEXPECTED_TRAN_ERROR=CWLIB0002E: \uc608\uae30\uce58 \uc54a\uc740 \ud2b8\ub79c\uc7ad\uc158 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc74c:  {0}
+UNEXPECTED_TRAN_ERROR.explanation=\ud2b8\ub79c\uc7ad\uc158 \uc624\ube0c\uc81d\ud2b8\ub97c \ud398\uce58\ud558\ub824\uace0 \uc694\uccad\ud588\uc9c0\ub9cc \uc608\uae30\uce58 \uc54a\uc740 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. 
+UNEXPECTED_TRAN_ERROR.useraction=\uc774\uc804 \uc624\ub958\ub098 FFDC\uac00 \uc788\ub294\uc9c0 \ub85c\uadf8\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+# {0} is the TransactionRolledbackException thrown
+GLOBAL_TRAN_ROLLBACK=CWLIB0003E: \uc81c\ud55c\uc2dc\uac04 \ucd08\uacfc\ub85c \uc778\ud574 \uae00\ub85c\ubc8c \ud2b8\ub79c\uc7ad\uc158\uc774 \ub864\ubc31\ub418\uc5c8\uc74c: {0}
+GLOBAL_TRAN_ROLLBACK.explanation=\ud604\uc7ac \uae00\ub85c\ubc8c \ud2b8\ub79c\uc7ad\uc158\uc774 \uc81c\ud55c\uc2dc\uac04 \ucd08\uacfc\ub418\uc5c8\uc73c\ubbc0\ub85c \ub864\ubc31\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+GLOBAL_TRAN_ROLLBACK.useraction=\uae00\ub85c\ubc8c \ud2b8\ub79c\uc7ad\uc158\uc774 \ud5c8\uc6a9\ub418\ub294 \uc2dc\uac04 \ud504\ub808\uc784 \ub0b4\uc5d0 \uc644\ub8cc\ud558\ub294\uc9c0 \ud655\uc778\ud558\uace0, \uadf8\ub807\uc9c0 \uc54a\uc73c\uba74 \uc81c\ud55c\uc2dc\uac04\uc744 \ub298\ub9ac\uc2ed\uc2dc\uc624.

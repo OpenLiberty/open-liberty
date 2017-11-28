@@ -1,0 +1,144 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMFT
+#COMPONENTNAMEFOR CWMFT MicroProfile FaultTolerance API
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by FaultTolerance CDI Auto Feature -  range is 5000-5999
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#An asynchronous message does not return Future.
+asynchronous.class.not.returning.future.CWMFT5000E=CWMFT5000E: Asynchronn\u00ed metoda {0} nem\u00e1 do budoucna n\u00e1vratov\u00fd typ.
+asynchronous.class.not.returning.future.CWMFT5000E.explanation=V\u0161echny metody ve t\u0159\u00edd\u011b anotovan\u00e1 s org.eclipse.microprofile.faulttolerance.Asynchronous mus\u00ed m\u00edt n\u00e1vratov\u00fd typ, kter\u00fd je p\u0159i\u0159aditeln\u00fd z java.util.concurrent.Future.
+asynchronous.class.not.returning.future.CWMFT5000E.useraction=Aktualizujte n\u00e1vratov\u00fd typ.
+
+asynchronous.method.not.returning.future.CWMFT5001E=CWMFT5001E: Asynchronn\u00ed metoda {0} nem\u00e1 do budoucna n\u00e1vratov\u00fd typ.
+asynchronous.method.not.returning.future.CWMFT5001E.explanation=V\u0161echny metody anotovan\u00e9 s org.eclipse.microprofile.faulttolerance.Asynchronous mus\u00ed m\u00edt n\u00e1vratov\u00fd typ, kter\u00fd je p\u0159i\u0159aditeln\u00fd z java.util.concurrent.Future.
+asynchronous.method.not.returning.future.CWMFT5001E.useraction=Aktualizujte n\u00e1vratov\u00fd typ.
+
+#A fallback method does not match the return type of the method that falls back to it.
+fallback.policy.return.type.not.match.CWMFT5002E=CWMFT5002E: N\u00e1hradn\u00ed metoda {0} m\u00e1 chybn\u00fd n\u00e1vratov\u00fd typ. N\u00e1vratov\u00fd typ mus\u00ed odpov\u00eddat n\u00e1vratov\u00e9mu typu metody {1}.
+fallback.policy.return.type.not.match.CWMFT5002E.explanation=N\u00e1hradn\u00ed metoda mus\u00ed m\u00edt stejn\u00fd n\u00e1vratov\u00fd typ jako metoda, kterou zpracov\u00e1v\u00e1. 
+fallback.policy.return.type.not.match.CWMFT5002E.useraction=Aktualizujte n\u00e1vratov\u00fd typ.
+
+#A fallback method that should exist cannot be found.
+fallback.method.not.found.CWMFT5003E=CWMFT5003E: N\u00e1hradn\u00ed metoda {1} s parametry {2} nebyla ve t\u0159\u00edd\u011b {0} nalezena.
+fallback.method.not.found.CWMFT5003E.explanation=N\u00e1hradn\u00ed metoda byla deklarov\u00e1na pro metodu {1}. Nicm\u00e9n\u011b tato metoda ve t\u0159\u00edd\u011b {0} neexistuje.
+fallback.method.not.found.CWMFT5003E.useraction=Bu\u010f odeberte n\u00e1hradn\u00ed anotaci, nebo p\u0159idejte chyb\u011bj\u00edc\u00ed metodu.
+
+#A security exception was thrown while trying to create a fallback policy.
+security.exception.acquiring.fallback.method.CWMFT5004E=CWMFT5004E: Do\u0161lo k v\u00fdjimce zabezpe\u010den\u00ed, kdy\u017e se aplika\u010dn\u00ed server pokou\u0161el zpracovat n\u00e1hradn\u00ed anotace.
+security.exception.acquiring.fallback.method.CWMFT5004E.explanation=Chcete-li vytvo\u0159it n\u00e1hradn\u00ed z\u00e1sadu, vy\u017eaduje aplika\u010dn\u00ed server opr\u00e1vn\u011bn\u00ed k z\u00edsk\u00e1n\u00ed a kontrole metod Java.
+security.exception.acquiring.fallback.method.CWMFT5004E.useraction=Zkontrolujte bezpe\u010dnostn\u00ed z\u00e1sadu aplika\u010dn\u00edho serveru a poskytn\u011bte opr\u00e1vn\u011bn\u00ed.
+
+#A problem occurred while converting a system property {0} to type {1}. The raw string value is {2}. The exception is {3}.
+conversion.error.CWMFT5005E=CWMFT5005E: Do\u0161lo k probl\u00e9mu b\u011bhem p\u0159evodu syst\u00e9mov\u00e9 vlastnosti {0} na typ {1}. Nezpracovan\u00e1 hodnota typu string je {2}. V\u00fdjimka: {3}.
+conversion.error.CWMFT5005E.explanation=Jak\u00e9koli konfigura\u010dn\u00ed hodnoty dodan\u00e9 p\u0159es syst\u00e9mov\u00e9 vlastnosti mus\u00ed b\u00fdt p\u0159evediteln\u00e9 na p\u0159\u00edslu\u0161n\u00fd typ. Nap\u0159. Long.valueOf(String)
+conversion.error.CWMFT5005E.useraction=Zkontrolujte, \u017ee ur\u010den\u00e1 hodnota je ve spr\u00e1vn\u00e9m form\u00e1tu pro typ vlastnosti, kter\u00fd nahrazuje.
+
+#A problem occurred while converting a system property to type {0}. The raw string value is {1}. The exception is {2}.
+conversion.error.CWMFT5006E=CWMFT5006E: Do\u0161lo k probl\u00e9mu b\u011bhem p\u0159evodu syst\u00e9mov\u00e9 vlastnosti na typ {0}. Nezpracovan\u00e1 hodnota typu string je {1}. V\u00fdjimka: {2}.
+conversion.error.CWMFT5006E.explanation=Jak\u00e9koli konfigura\u010dn\u00ed hodnoty dodan\u00e9 p\u0159es syst\u00e9mov\u00e9 vlastnosti mus\u00ed b\u00fdt p\u0159evediteln\u00e9 na p\u0159\u00edslu\u0161n\u00fd typ. nap\u0159. Long.valueOf(String)
+conversion.error.CWMFT5006E.useraction=Zkontrolujte, \u017ee ur\u010den\u00e1 hodnota je ve spr\u00e1vn\u00e9m form\u00e1tu pro typ vlastnosti, kter\u00fd nahrazuje.
+
+#A problem occurred while converting a system property to type {0}. The raw string value is {1}.
+conversion.error.CWMFT5007E=CWMFT5007E: Do\u0161lo k probl\u00e9mu b\u011bhem p\u0159evodu syst\u00e9mov\u00e9 vlastnosti na typ {0}. Nezpracovan\u00e1 hodnota typu string je {1}.
+conversion.error.CWMFT5007E.explanation=Jak\u00e9koli konfigura\u010dn\u00ed hodnoty dodan\u00e9 p\u0159es syst\u00e9mov\u00e9 vlastnosti mus\u00ed b\u00fdt p\u0159evediteln\u00e9 na p\u0159\u00edslu\u0161n\u00fd typ. nap\u0159. Long.valueOf(String)
+conversion.error.CWMFT5007E.useraction=Zkontrolujte, \u017ee ur\u010den\u00e1 hodnota je ve spr\u00e1vn\u00e9m form\u00e1tu pro typ vlastnosti, kter\u00fd nahrazuje.
+
+#The value parameter on the Fallback is not valid.
+fallback.policy.invalid.CWMFT5008E=CWMFT5008E: Z\u00e1sada n\u00e1vratu pro metodu {0} nen\u00ed platn\u00e1, proto\u017ee typ implementa\u010dn\u00ed t\u0159\u00eddy FallbackHandler {1} mus\u00ed b\u00fdt kompatibiln\u00ed s n\u00e1vratov\u00fdm typem {2} na p\u016fvodn\u00ed metod\u011b {3}.
+fallback.policy.invalid.CWMFT5008E.explanation=Typ implementace FallbackHandler mus\u00ed b\u00fdt kompatibiln\u00ed s n\u00e1vratov\u00fdm typem p\u016fvodn\u00ed metody.
+fallback.policy.invalid.CWMFT5008E.useraction=Aktualizujte typ implementa\u010dn\u00ed t\u0159\u00eddy FallbackHandler, aby byl kompatibiln\u00ed s n\u00e1vratov\u00fdm typem p\u016fvodn\u00ed metody.
+
+
+#The fallback policies are conflicting.
+fallback.policy.conflicts.CWMFT5009E=CWMFT5009E: Z\u00e1sada n\u00e1vratu pro metodu {0} nen\u00ed platn\u00e1, proto\u017ee byly ur\u010deny t\u0159\u00edda FallbackHandler {1} a t\u0159\u00edda fallbackMethod {2}. Zadejte pouze jednu z nich.
+fallback.policy.conflicts.CWMFT5009E.explanation=Bu\u010f m\u011bla b\u00fdt nastavena metoda fallbackMethod, nebo hodnota, nikoli oboj\u00ed. 
+fallback.policy.conflicts.CWMFT5009E.useraction=Odeberte bu\u010f metodu fallbackMethod, nebo hodnota z anotace Fallback.
+
+#Incorrect value on FT Retry parameters
+retry.parameter.invalid.value.CWMFT5010E=CWMFT5010E: Hodnota parametru z\u00e1sady opakovan\u00fdch pokus\u016f {0} {1} pro {2} nen\u00ed platn\u00e1, proto\u017ee mus\u00ed b\u00fdt v\u011bt\u0161\u00ed nebo rovna {3}.
+retry.parameter.invalid.value.CWMFT5010E.explanation=Zadan\u00e1 hodnota nebo nakonfigurovan\u00e1 hodnota, je-li nakonfigurovan\u00e1 pro parametr z\u00e1sady opakovan\u00fdch pokus\u016f,  nen\u00ed platn\u00e1.
+retry.parameter.invalid.value.CWMFT5010E.useraction=Opravte hodnotu pro ur\u010den\u00fd parametr.
+
+#Incorrect value on FT Timeout parameters
+timeout.parameter.invalid.value.CWMFT5011E=CWMFT5011E: Hodnota \u010dasov\u00e9ho limitu {0} zadan\u00e1 na {1} nen\u00ed platn\u00e1, proto\u017ee hodnota mus\u00ed b\u00fdt v\u011bt\u0161\u00ed nebo rovna 0.
+timeout.parameter.invalid.value.CWMFT5011E.explanation=Zadan\u00e1 hodnota nebo nakonfigurovan\u00e1 hodnota, je-li nakonfigurovan\u00e1 pro parametr hodnoty z\u00e1sady \u010dasov\u00e9ho limitu, nen\u00ed platn\u00e1.
+timeout.parameter.invalid.value.CWMFT5011E.useraction=Opravte hodnotu pro ur\u010den\u00fd parametr.
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.delay.invalid.value.CWMFT5012E=CWMFT5012E: Hodnota parametru z\u00e1sady CircuitBreaker {0} {1} pro {2} nen\u00ed platn\u00e1, proto\u017ee hodnota parametru nesm\u00ed b\u00fdt z\u00e1porn\u00e9 \u010d\u00edslo.
+circuitBreaker.parameter.delay.invalid.value.CWMFT5012E.explanation=Zadan\u00e1 hodnota nebo nakonfigurovan\u00e1 hodnota, je-li nakonfigurovan\u00e1 pro parametr z\u00e1sady CircuitBreaker, nen\u00ed platn\u00e1.
+circuitBreaker.parameter.delay.invalid.value.CWMFT5012E.useraction=Opravte hodnotu pro ur\u010den\u00fd parametr.
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.failureRatio.invalid.value.CWMFT5013E=CWMFT5013E: Hodnota parametru z\u00e1sady CircuitBreaker {0} {1} pro {2} nen\u00ed platn\u00e1, proto\u017ee hodnota mus\u00ed b\u00fdt mezi 0 a 1 (v\u010detn\u011b).
+circuitBreaker.parameter.failureRatio.invalid.value.CWMFT5013E.explanation=Zadan\u00e1 hodnota nebo nakonfigurovan\u00e1 hodnota, je-li nakonfigurovan\u00e1 pro parametr z\u00e1sady failureRatio CircuitBreaker, nen\u00ed platn\u00e1.
+circuitBreaker.parameter.failureRatio.invalid.value.CWMFT5013E.useraction=Opravte hodnotu pro ur\u010den\u00fd parametr.
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.requestVolumeThreshold.invalid.value.CWMFT5014E=CWMFT5014E: Hodnota parametru z\u00e1sady CircuitBreaker {0} {1} pro {2} nen\u00ed platn\u00e1, proto\u017ee parametr nesm\u00ed b\u00fdt z\u00e1porn\u00e9 \u010d\u00edslo.
+circuitBreaker.parameter.requestVolumeThreshold.invalid.value.CWMFT5014E.explanation=Zadan\u00e1 hodnota nebo nakonfigurovan\u00e1 hodnota, je-li nakonfigurovan\u00e1 pro parametr z\u00e1sady requestVolumeThreshold CircuitBreaker, nen\u00ed platn\u00e1.
+circuitBreaker.parameter.requestVolumeThreshold.invalid.value.CWMFT5014E.useraction=Opravte hodnotu pro ur\u010den\u00fd parametr.
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.successThreshold.invalid.value.CWMFT5015E=CWMFT5015E: Hodnota parametru z\u00e1sady CircuitBreaker {0} {1} pro {2} nen\u00ed platn\u00e1, proto\u017ee parametr nesm\u00ed b\u00fdt z\u00e1porn\u00e9 \u010d\u00edslo.
+circuitBreaker.parameter.successThreshold.invalid.value.CWMFT5015E.explanation=Zadan\u00e1 hodnota nebo nakonfigurovan\u00e1 hodnota, je-li nakonfigurovan\u00e1 pro parametr z\u00e1sady successThreshold CircuitBreaker, nen\u00ed platn\u00e1.
+circuitBreaker.parameter.successThreshold.invalid.value.CWMFT5015E.useraction=Opravte hodnotu pro ur\u010den\u00fd parametr.
+
+#Incorrect value on FT Bulkhead parameters
+bulkhead.parameter.invalid.value.CWMFT5016E=CWMFT5016E: Hodnota parametru z\u00e1sady Bulkhead {0} {1} pro {2} nen\u00ed platn\u00e1, proto\u017ee parametr mus\u00ed b\u00fdt v\u011bt\u0161\u00ed nebo roven 1.
+bulkhead.parameter.invalid.value.CWMFT5016E.explanation=Zadan\u00e1 hodnota nebo nakonfigurovan\u00e1 hodnota, je-li nakonfigurovan\u00e1 pro parametr z\u00e1sady Bulkhead, nen\u00ed platn\u00e1.
+bulkhead.parameter.invalid.value.CWMFT5016E.useraction=Opravte hodnotu pro ur\u010den\u00fd parametr.
+
+#Incorrect value on FT Retry parameters, the passed in values are: {0} - maxDuration, {1} - durationUnit, {2} - target, {3} - delay, {4} - delayUnit
+retry.parameter.invalid.value.CWMFT5017E=CWMFT5017E: Maxim\u00e1ln\u00ed trv\u00e1n\u00ed z\u00e1sady Retry {0} {1} pro c\u00edl {2} nen\u00ed platn\u00fd, proto\u017ee mus\u00ed b\u00fdt v\u011bt\u0161\u00ed ne\u017e trv\u00e1n\u00ed zpo\u017ed\u011bn\u00ed {3} {4}.
+retry.parameter.invalid.value.CWMFT5017E.explanation=Maxim\u00e1ln\u00ed trv\u00e1n\u00ed mus\u00ed b\u00fdt v\u011bt\u0161\u00ed ne\u017e zpo\u017ed\u011bn\u00ed. Maxim\u00e1ln\u00ed trv\u00e1n\u00ed tvo\u0159\u00ed parametr maxDuration a parametr durationUnit. Zpo\u017ed\u011bn\u00ed se skl\u00e1d\u00e1 z parametru delay a parametru delayUnit.
+retry.parameter.invalid.value.CWMFT5017E.useraction=Opravte hodnotu jednoho nebo v\u00edce parametr\u016f.
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.failOn.invalid.value.CWMFT5018E=CWMFT5018E: Parametr z\u00e1sady CircuitBreaker {0} pro {1} nen\u00ed platn\u00fd, proto\u017ee jeho hodnota je pr\u00e1zdn\u00e1.
+circuitBreaker.parameter.failOn.invalid.value.CWMFT5018E.explanation=Ur\u010den\u00e1 hodnota nebo nakonfigurovan\u00e1 hodnota pro parametr failOn z\u00e1sady CircuitBreaker nen\u00ed platn\u00e1.
+circuitBreaker.parameter.failOn.invalid.value.CWMFT5018E.useraction=Opravte hodnotu pro ur\u010den\u00fd parametr.
+
+#Incorrect value on FT Retry parameters, the passed in values are: {0} - jitter, {1} - jitterDelayUnit, {2} - target, {3} - delay, {4} - delayUnit
+retry.parameter.invalid.value.CWMFT5019W=CWMFT5019W: Zpo\u017ed\u011bn\u00ed jitter z\u00e1sady Retry {0} {1} pro c\u00edl {2} nen\u00ed platn\u00e9, proto\u017ee zpo\u017ed\u011bn\u00ed jitter mus\u00ed b\u00fdt men\u0161\u00ed ne\u017e trv\u00e1n\u00ed zpo\u017ed\u011bn\u00ed {3} {4}.
+retry.parameter.invalid.value.CWMFT5019W.explanation=Zpo\u017ed\u011bn\u00ed jitter mus\u00ed b\u00fdt men\u0161\u00ed  ne\u017e zpo\u017ed\u011bn\u00ed. Zpo\u017ed\u011bn\u00ed jitter se skl\u00e1d\u00e1 z parametru jitter a parametru jitterDelayUnit. Zpo\u017ed\u011bn\u00ed se skl\u00e1d\u00e1 z parametru delay a parametru delayUnit.
+retry.parameter.invalid.value.CWMFT5019W.useraction=Opravte hodnotu jednoho nebo v\u00edce parametr\u016f tak, aby doba trv\u00e1n\u00ed pro zpo\u017ed\u011bn\u00ed jitter byla men\u0161\u00ed ne\u017e trv\u00e1n\u00ed zpo\u017ed\u011bn\u00ed.
+
+#Generic error for internal failures. 
+internal.error.CWMFT5997E=CWMFT5997E: Do\u0161lo k intern\u00ed chyb\u011b. V\u00fdjimka: {0}.
+internal.error.CWMFT5997E.explanation=Aplika\u010dn\u00ed server zaznamenal intern\u00ed chybu.
+internal.error.CWMFT5997E.useraction=Shrom\u00e1\u017ed\u011bte sadu trasov\u00e1n\u00ed a otev\u0159ete nov\u00fd probl\u00e9m k aplika\u010dn\u00edmu serveru.
+
+#Generic error for internal failures.
+internal.error.CWMFT5998E=CWMFT5998E: Do\u0161lo k intern\u00ed chyb\u011b.
+internal.error.CWMFT5998E.explanation=Aplika\u010dn\u00ed server zaznamenal intern\u00ed chybu.
+internal.error.CWMFT5998E.useraction=Shrom\u00e1\u017ed\u011bte sadu trasov\u00e1n\u00ed a otev\u0159ete nov\u00fd probl\u00e9m k aplika\u010dn\u00edmu serveru.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency FaultTolerance error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Fault Tolerance API error has occurred: {0}
+temporary.CWMFT5999E=CWMFT9999E: Do\u0161lo k chyb\u011b rozhran\u00ed API odolnosti proti poruch\u00e1m: {0}
+temporary.CWMFT5999E.explanation=Do\u0161lo k chyb\u011b rozhran\u00ed API odolnosti proti poruch\u00e1m, kter\u00e1 br\u00e1n\u00ed norm\u00e1ln\u00ed operaci.
+temporary.CWMFT5999E.useraction=Prozkoumejte protokoly FFDC a text v\u00fdjimky a identifikujte p\u0159\u00ed\u010dinu probl\u00e9mu.

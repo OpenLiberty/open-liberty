@@ -1,0 +1,157 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service: tcp channel
+#CMVCPATHNAME com.ibm.ws.channelfw/resources/com/ibm/ws/tcpchannel/internal/resources/TCPChannelMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#ISMESSAGEFILE TRUE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+### TCP channel will use message numbers 0200-0399
+
+#Configuration and initialization errors
+MAX_OPEN_CONNECTIONS_INVALID=CWWKO0200E: Maksymalna liczba otwartych po\u0142\u0105cze\u0144 ({0}) jest niepoprawna. Poprawne warto\u015bci nie mog\u0105 by\u0107 mniejsze ni\u017c {1} ani wi\u0119ksze ni\u017c {2}.
+MAX_OPEN_CONNECTIONS_INVALID.explanation=Brak informacji dodatkowych.
+MAX_OPEN_CONNECTIONS_INVALID.useraction=Popraw b\u0142\u0105d konfiguracji.
+
+INACTIVITY_TIMEOUT_INVALID=CWWKO0201E: Limit czasu nieaktywno\u015bci wynosz\u0105cy {0} jest niepoprawny. Poprawne warto\u015bci nie mog\u0105 by\u0107 mniejsze ni\u017c {1} ani wi\u0119ksze ni\u017c {2}.
+INACTIVITY_TIMEOUT_INVALID.explanation=Brak informacji dodatkowych.
+INACTIVITY_TIMEOUT_INVALID.useraction=Popraw b\u0142\u0105d konfiguracji.
+
+ADDRESS_EXCLUDE_LIST_INVALID=CWWKO0202E: Wpis na li\u015bcie wykluczonych adres\u00f3w dla kana\u0142u TCP {0} jest niepoprawny. 
+ADDRESS_EXCLUDE_LIST_INVALID.explanation= Ka\u017cdy wpis na li\u015bcie musi by\u0107 poprawnym \u0142a\u0144cuchem.
+ADDRESS_EXCLUDE_LIST_INVALID.useraction=Popraw b\u0142\u0105d konfiguracji.
+
+ADDRESS_INCLUDE_LIST_INVALID=CWWKO0203E: Wpis na li\u015bcie w\u0142\u0105czonych adres\u00f3w dla kana\u0142u TCP {0} jest niepoprawny.
+ADDRESS_INCLUDE_LIST_INVALID.explanation= Ka\u017cdy wpis na li\u015bcie musi by\u0107 poprawnym \u0142a\u0144cuchem.
+ADDRESS_INCLUDE_LIST_INVALID.useraction=Popraw b\u0142\u0105d konfiguracji.
+
+HOST_NAME_EXCLUDE_LIST_INVALID=CWWKO0204E: Wpis na li\u015bcie wykluczonych nazw host\u00f3w dla kana\u0142u TCP {0} jest niepoprawny.
+HOST_NAME_EXCLUDE_LIST_INVALID.explanation= Ka\u017cdy wpis na li\u015bcie musi by\u0107 poprawnym \u0142a\u0144cuchem.
+HOST_NAME_EXCLUDE_LIST_INVALID.useraction=Popraw b\u0142\u0105d konfiguracji.
+
+HOST_NAME_INCLUDE_LIST_INVALID=CWWKO0205E: Wpis na li\u015bcie w\u0142\u0105czonych nazw host\u00f3w dla kana\u0142u TCP {0} jest niepoprawny. 
+HOST_NAME_INCLUDE_LIST_INVALID.explanation= Ka\u017cdy wpis na li\u015bcie musi by\u0107 poprawnym \u0142a\u0144cuchem.
+HOST_NAME_INCLUDE_LIST_INVALID.useraction=Popraw b\u0142\u0105d konfiguracji.
+
+NOT_VALID_CUSTOM_PROPERTY=CWWKO0206E: W\u0142a\u015bciwo\u015b\u0107 niestandardowa {1} kana\u0142u TCP {0} ma warto\u015b\u0107 {2}. Ta warto\u015b\u0107 jest niepoprawna.
+NOT_VALID_CUSTOM_PROPERTY.explanation=Okre\u015blono w\u0142a\u015bciwo\u015b\u0107 niestandardow\u0105, u\u017cywaj\u0105c warto\u015bci, kt\u00f3ra nie mie\u015bci si\u0119 w zakresie poprawnych warto\u015bci.
+NOT_VALID_CUSTOM_PROPERTY.useraction=Popraw b\u0142\u0105d konfiguracji.
+
+CONFIG_VALUE_NUMBER_EXCEPTION=CWWKO0207E: Skonfigurowano kana\u0142 TCP {0}, u\u017cywaj\u0105c niepoprawnej warto\u015bci liczbowej dla w\u0142a\u015bciwo\u015bci. Nazwa w\u0142a\u015bciwo\u015bci: {1}, warto\u015b\u0107: {2}
+CONFIG_VALUE_NUMBER_EXCEPTION.explanation=Podana warto\u015b\u0107 w\u0142a\u015bciwo\u015bci kana\u0142u TCP nie jest poprawn\u0105 liczb\u0105.
+CONFIG_VALUE_NUMBER_EXCEPTION.useraction=Popraw b\u0142\u0105d konfiguracji.
+
+CONFIG_VALUE_NOT_VALID_STRING=CWWKO0208E: Utworzono kana\u0142 TCP {0}, u\u017cywaj\u0105c niepoprawnej warto\u015bci w\u0142a\u015bciwo\u015bci konfiguracyjnej. Nazwa: {1}, warto\u015b\u0107: {2}
+CONFIG_VALUE_NOT_VALID_STRING.explanation=Podana warto\u015b\u0107 w\u0142a\u015bciwo\u015bci kana\u0142u TCP nie nale\u017cy do poprawnego zakresu dla tej w\u0142a\u015bciwo\u015bci.
+CONFIG_VALUE_NOT_VALID_STRING.useraction=Popraw b\u0142\u0105d konfiguracji.
+
+CONFIG_VALUE_NOT_VALID_NULL_STRING=CWWKO0209E: Utworzono kana\u0142 TCP {0}, u\u017cywaj\u0105c w\u0142a\u015bciwo\u015bci konfiguracyjnej o warto\u015bci NULL. Nazwa: {1}
+CONFIG_VALUE_NOT_VALID_NULL_STRING.explanation=Podana warto\u015b\u0107 w\u0142a\u015bciwo\u015bci kana\u0142u TCP nie nale\u017cy do poprawnego zakresu dla tej w\u0142a\u015bciwo\u015bci.
+CONFIG_VALUE_NOT_VALID_NULL_STRING.useraction=Popraw b\u0142\u0105d konfiguracji.
+
+CONFIG_VALUE_NOT_VALID_BOOLEAN=CWWKO0210E: Utworzono kana\u0142 TCP {0}, u\u017cywaj\u0105c niepoprawnej warto\u015bci w\u0142a\u015bciwo\u015bci konfiguracyjnej. Nazwa: {1}, warto\u015b\u0107: {2}, poprawny zakres: false, true
+CONFIG_VALUE_NOT_VALID_BOOLEAN.explanation=Podana warto\u015b\u0107 w\u0142a\u015bciwo\u015bci kana\u0142u TCP nie nale\u017cy do poprawnego zakresu dla tej w\u0142a\u015bciwo\u015bci.
+CONFIG_VALUE_NOT_VALID_BOOLEAN.useraction=Popraw b\u0142\u0105d konfiguracji.
+
+CONFIG_VALUE_NOT_VALID_INT=CWWKO0211E: Utworzono kana\u0142 TCP {0}, u\u017cywaj\u0105c niepoprawnej warto\u015bci w\u0142a\u015bciwo\u015bci konfiguracyjnej. Nazwa: {1}, warto\u015b\u0107: {2}, poprawny zakres: minimum {3}, maksimum {4}
+CONFIG_VALUE_NOT_VALID_INT.explanation=Podana warto\u015b\u0107 w\u0142a\u015bciwo\u015bci kana\u0142u TCP nie nale\u017cy do poprawnego zakresu dla tej w\u0142a\u015bciwo\u015bci.
+CONFIG_VALUE_NOT_VALID_INT.useraction=Popraw b\u0142\u0105d konfiguracji.
+
+CONFIG_KEY_NOT_VALID=CWWKO0212W: Utworzono kana\u0142 TCP {0}, u\u017cywaj\u0105c niepoprawnej w\u0142a\u015bciwo\u015bci konfiguracyjnej. Nazwa w\u0142a\u015bciwo\u015bci: {1}, warto\u015b\u0107: {2}
+CONFIG_KEY_NOT_VALID.explanation=Podana w\u0142a\u015bciwo\u015b\u0107 kana\u0142u TCP ma nierozpoznan\u0105 nazw\u0119 lub warto\u015b\u0107.
+CONFIG_KEY_NOT_VALID.useraction=Popraw b\u0142\u0105d konfiguracji.
+
+UNRECOGNIZED_CUSTOM_PROPERTY=CWWKO0213W: Kana\u0142 TCP {0} ma skonfigurowan\u0105 w\u0142a\u015bciwo\u015b\u0107 niestandardow\u0105, kt\u00f3ra jest nierozpoznana. Nazwa w\u0142a\u015bciwo\u015bci: {1}
+UNRECOGNIZED_CUSTOM_PROPERTY.explanation=W\u0142a\u015bciwo\u015b\u0107 niestandardowa zosta\u0142a okre\u015blona niepoprawnie.
+UNRECOGNIZED_CUSTOM_PROPERTY.useraction=Popraw b\u0142\u0105d konfiguracji.
+
+NEW_CONFIG_VALUE_NOT_EQUAL=CWWKO0214E: Pr\u00f3ba aktualizacji kana\u0142u TCP {0} nie powiod\u0142a si\u0119. Pr\u00f3bowano zmieni\u0107 warto\u015b\u0107 w\u0142a\u015bciwo\u015bci, kt\u00f3rej nie mo\u017cna zaktualizowa\u0107 w czasie wykonywania. Nazwa w\u0142a\u015bciwo\u015bci: {1}, bie\u017c\u0105ca warto\u015b\u0107: {2}, warto\u015b\u0107 nieudanej aktualizacji: {3}
+NEW_CONFIG_VALUE_NOT_EQUAL.explanation=Podczas pr\u00f3by aktualizacji konfiguracji nadano now\u0105 warto\u015b\u0107 w\u0142a\u015bciwo\u015bci kana\u0142u TCP. Jednak tej w\u0142a\u015bciwo\u015bci nie mo\u017cna nada\u0107 nowej warto\u015bci w czasie wykonywania.
+NEW_CONFIG_VALUE_NOT_EQUAL.useraction=Popraw b\u0142\u0105d konfiguracji.
+
+UPDATED_CONFIG_NOT_IMPLEMENTED=CWWKO0215E: Pr\u00f3ba aktualizacji kana\u0142u TCP {0} nie powiod\u0142a si\u0119.
+UPDATED_CONFIG_NOT_IMPLEMENTED.explanation=Aktualizacja okre\u015blonego kana\u0142u TCP nie by\u0142a mo\u017cliwa, poniewa\u017c nowa konfiguracja nie by\u0142a poprawna.
+UPDATED_CONFIG_NOT_IMPLEMENTED.useraction=Popraw b\u0142\u0105d konfiguracji.
+
+NO_ENDPOINT_NAME=CWWKO0216E: Kana\u0142owi TCP {0} nie przypisano nazwy punktu ko\u0144cowego.
+NO_ENDPOINT_NAME.explanation=Brak informacji dodatkowych.
+NO_ENDPOINT_NAME.useraction=Popraw b\u0142\u0105d konfiguracji.
+
+USER_ID_NOT_VALID=CWWKO0217E: Skonfigurowany identyfikator u\u017cytkownika, na kt\u00f3ry mia\u0142o nast\u0105pi\u0107 prze\u0142\u0105czenie po uruchomieniu, by\u0142 niepoprawny.  Identyfikator u\u017cytkownika: {0}
+USER_ID_NOT_VALID.explanation=Po uruchomieniu system zosta\u0142 skonfigurowany w celu prze\u0142\u0105czenia na identyfikator u\u017cytkownika, kt\u00f3ry by\u0142 niepoprawny.
+USER_ID_NOT_VALID.useraction=Zmie\u0144 skonfigurowany identyfikator u\u017cytkownika na now\u0105 warto\u015b\u0107.
+
+GROUP_ID_NOT_VALID=CWWKO0218E: Skonfigurowany identyfikator grupy, na kt\u00f3ry mia\u0142o nast\u0105pi\u0107 prze\u0142\u0105czenie po uruchomieniu, by\u0142 niepoprawny.  Identyfikator grupy: {0}
+GROUP_ID_NOT_VALID.explanation=Po uruchomieniu system zosta\u0142 skonfigurowany w celu prze\u0142\u0105czenia na identyfikator grupy, kt\u00f3ry by\u0142 niepoprawny.
+GROUP_ID_NOT_VALID.useraction=Zmie\u0144 skonfigurowany identyfikator grupy na now\u0105 warto\u015b\u0107.
+
+#Runtime messages
+
+TCP_CHANNEL_STARTED=CWWKO0219I: Kana\u0142 TCP {0} zosta\u0142 uruchomiony i obecnie nas\u0142uchuje \u017c\u0105da\u0144 na ho\u015bcie {1} (port {2}).
+TCP_CHANNEL_STARTED.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+TCP_CHANNEL_STARTED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+TCP_CHANNEL_STOPPED=CWWKO0220I: Dla kana\u0142u TCP {0} zatrzymano nas\u0142uchiwanie \u017c\u0105da\u0144 na ho\u015bcie {1} (port {2}).
+TCP_CHANNEL_STOPPED.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+TCP_CHANNEL_STOPPED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+BIND_ERROR=CWWKO0221E: Zainicjowanie kana\u0142u TCP {0} nie powiod\u0142o si\u0119.  Powi\u0105zanie gniazda nie powiod\u0142o si\u0119 dla hosta {1} i portu {2}.  Port mo\u017ce by\u0107 ju\u017c u\u017cywany.
+BIND_ERROR.explanation=Operacja powi\u0105zania gniazda nie powiod\u0142a si\u0119. Zwykle przyczyn\u0105 jest to, \u017ce dany port jest ju\u017c u\u017cywany.
+BIND_ERROR.useraction=Sprawd\u017a, czy skonfigurowano kana\u0142 TCP do u\u017cywania poprawnego numeru portu.
+
+MAX_CONNS_EXCEEDED=CWWKO0222W: Kana\u0142 TCP {0} przekroczy\u0142 maksymaln\u0105 liczb\u0119 otwartych po\u0142\u0105cze\u0144 ({1}).
+MAX_CONNS_EXCEEDED.explanation=Okre\u015blony kana\u0142 TCP przekroczy\u0142 maksymaln\u0105 liczb\u0119 otwartych po\u0142\u0105cze\u0144, co powoduje odrzucanie po\u0142\u0105cze\u0144.
+MAX_CONNS_EXCEEDED.useraction=Je\u015bli wymagana jest wi\u0119ksza liczba po\u0142\u0105cze\u0144, zaktualizuj maksymaln\u0105 liczb\u0119 dozwolonych po\u0142\u0105cze\u0144.
+
+THREAD_DISPATCH_FAILED=CWWKO0223W: Kana\u0142 TCP {0} nie mo\u017ce pobra\u0107 w\u0105tku z puli w\u0105tk\u00f3w {1}.
+THREAD_DISPATCH_FAILED.explanation=Okre\u015blony kana\u0142 TCP nie mo\u017ce pobra\u0107 w\u0105tku z puli w\u0105tk\u00f3w, co mo\u017ce powodowa\u0107 op\u00f3\u017anienie przetwarzania dodatkowych \u017c\u0105da\u0144.
+THREAD_DISPATCH_FAILED.useraction=Je\u015bli procesor nie jest w pe\u0142ni wykorzystywany, zwi\u0119ksz maksymaln\u0105 liczb\u0119 w\u0105tk\u00f3w w puli w\u0105tk\u00f3w.  W przeciwnym razie zmniejsz liczb\u0119 przychodz\u0105cych \u017c\u0105da\u0144.
+
+LOCAL_HOST_UNRESOLVED=CWWKO0224E: Pr\u00f3ba zainicjowania kana\u0142u TCP {0} nie powiod\u0142a si\u0119.  Nie rozpoznano hosta {1} i portu {2}.
+LOCAL_HOST_UNRESOLVED.explanation=Nie mo\u017cna rozpozna\u0107 okre\u015blonej nazwy hosta.  Nazwa hosta zosta\u0142a okre\u015blona niepoprawnie lub nie zosta\u0142a zdefiniowana w tym systemie.
+LOCAL_HOST_UNRESOLVED.useraction=Sprawd\u017a, czy kana\u0142 TCP skonfigurowano do u\u017cywania poprawnej nazwy hosta.
+
+PORT_NOT_ACCEPTING=CWWKO0225E: Kana\u0142 TCP {0} nas\u0142uchuj\u0105cy na ho\u015bcie {1} (port: {2}) przesta\u0142 akceptowa\u0107 po\u0142\u0105czenia.
+PORT_NOT_ACCEPTING.explanation=Okre\u015blony kana\u0142 TCP nie mo\u017ce ju\u017c akceptowa\u0107 po\u0142\u0105cze\u0144 na porcie.  Prawdopodobnie port zosta\u0142 wy\u0142\u0105czony.
+PORT_NOT_ACCEPTING.useraction=Aby u\u017cywa\u0107 danego portu, w\u0142\u0105cz go, a nast\u0119pnie zrestartuj aplikacj\u0119.
+
+EVENT_SVC_MISSING=CWWKO0226E: Brak wymaganej us\u0142ugi zdarze\u0144.
+EVENT_SVC_MISSING.explanation=Protok\u00f3\u0142 TCP wymaga, aby us\u0142uga zdarze\u0144 by\u0142a dost\u0119pna w celu zako\u0144czenia operacji we/wy gniazda.
+EVENT_SVC_MISSING.useraction=Upewnij si\u0119, \u017ce us\u0142uga zdarze\u0144 dzia\u0142a.
+
+EXECUTOR_SVC_MISSING=CWWKO0227E: Brak wymaganej us\u0142ugi wykonawcy.
+EXECUTOR_SVC_MISSING.explanation=Protok\u00f3\u0142 TCP wymaga, aby us\u0142uga wykonawcy by\u0142a dost\u0119pna w celu zako\u0144czenia operacji we/wy gniazda.
+EXECUTOR_SVC_MISSING.useraction=Upewnij si\u0119, \u017ce pakunek threading jest aktywny.
+
+TCP_NOT_ACCEPTING=CWWKO0228E: Serwer przesta\u0142 akceptowa\u0107 po\u0142\u0105czenia TCP z powodu b\u0142\u0119d\u00f3w. Serwer b\u0119dzie oczekiwa\u0107 10 minut przed ponowieniem pr\u00f3by, ale mo\u017ce by\u0107 konieczne jego zrestartowanie.
+TCP_NOT_ACCEPTING.explanation=Serwer przesta\u0142 akceptowa\u0107 po\u0142\u0105czenia ze wzgl\u0119du na du\u017c\u0105 liczb\u0119 wyj\u0105tk\u00f3w. Mo\u017ce to wskazywa\u0107 na problem z maszyn\u0105 JVM lub z systemem operacyjnym. Serwer spr\u00f3buje zaakceptowa\u0107 po\u0142\u0105czenia za 10 minut.
+TCP_NOT_ACCEPTING.useraction=Sprawd\u017a komunikat i dzienniki wyj\u0105tk\u00f3w dla po\u0142\u0105czenia lub b\u0142\u0119dy obs\u0142ugi plik\u00f3w. Mo\u017ce by\u0107 konieczne zrestartowanie serwera. Je\u015bli problem b\u0119dzie nadal wyst\u0119powa\u0142, skontaktuj si\u0119 z dzia\u0142em wsparcia IBM.
+
+ZOSAIO_ACTIVATED=CWWKO0229I: Aktywowano obs\u0142ug\u0119 rodzimych asynchronicznych we/wy dla systemu z/OS.
+ZOSAIO_ACTIVATED.explanation=Aktywowano asynchroniczne we/wy gniazd TCP/IP dla serwera Liberty (AsyncIO) w systemie z/OS udost\u0119pniaj\u0105ce podstawowe mo\u017cliwo\u015bci pakietu asynchronicznych we/wy na poziomie systemu operacyjnego.
+ZOSAIO_ACTIVATED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+ZOSAIO_DEACTIVATED=CWWKO0230I: Dezaktywowano obs\u0142ug\u0119 rodzimych asynchronicznych we/wy dla systemu z/OS.
+ZOSAIO_DEACTIVATED.explanation=Dezaktywowano asynchroniczne we/wy gniazd TCP/IP dla serwera Liberty (AsyncIO) w systemie z/OS udost\u0119pniaj\u0105ce podstawowe mo\u017cliwo\u015bci pakietu asynchronicznych we/wy na poziomie systemu operacyjnego.
+ZOSAIO_DEACTIVATED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.

@@ -1,0 +1,322 @@
+###############################################################################
+# Copyright (c) 2001, 2004 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=1.11,0,02/04/01,10:58:32
+#
+#
+#CMVCPATHNAME com.ibm.ws.monitor/resources/com/ibm/ws/pmi/properties/PMIMessages.nlsprops
+#COMPONENTPREFIX CWPMI
+#COMPONENTNAMEFOR CWPMI WebSphere Performance Monitoring Instrumentation
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+# NLS_ENCODING=UNICODE
+# Warning message when a null path is passed to PMI
+PMI0001W=CWPMI0001W: Do infrastruktury PMI byla p\u0159ed\u00e1na cesta s hodnotou Null: {0}
+PMI0001W.explanation=Do infrastruktury PMI (Performance Monitoring Infrastructure) je p\u0159ed\u00e1v\u00e1na cesta, kter\u00e1 je neplatn\u00e1 nebo m\u00e1 hodnotu Null. Infrastruktura PMI pou\u017e\u00edv\u00e1 identifik\u00e1tor cesty k uspo\u0159\u00e1d\u00e1n\u00ed \u010d\u00edta\u010d\u016f pou\u017eit\u00fdch pro sledov\u00e1n\u00ed statistik aplikac\u00ed. Infrastruktura PMI je spu\u0161t\u011bna s ko\u0159enovou cestou a v\u0161echny komponenty a aplikace platformy WebSphere ukl\u00e1daj\u00ed sv\u00e9 statistiky nav\u00e1zan\u00e9 na ko\u0159enovou cestu. Pokud je do infrastruktury PMI p\u0159ed\u00e1na cesta s hodnotou Null, nem\u016f\u017ee infrastruktura PMI zpracovat po\u017eadavek, kter\u00fd je pro ni vytvo\u0159en, proto\u017ee nedok\u00e1\u017ee vyhledat ur\u010denou polo\u017eku.
+PMI0001W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when PMI cannot find a PMI module the mbean
+PMI0002W=CWPMI0002W: Nebyl nalezen n\u00e1zev modulu architektury PMI pro objekt typu MBean: {0}
+PMI0002W.explanation=N\u00e1zev objektu typu MBean (Managed Bean) ur\u010den\u00fd volaj\u00edc\u00edm modulem architektury PMI (Performance Monitoring Infrastructure) se neshoduje s intern\u00edm n\u00e1zvem architektury PMI. V r\u00e1mci specifikace JMX (Java Management Extensions) jsou objekty typu MBean objekty prost\u0159ed\u00ed java, kter\u00e9 reprezentuj\u00ed spravovateln\u00fd prost\u0159edek. Prost\u0159edky architektury PMI lze adresovat prost\u0159ednictv\u00edm rozhran\u00ed pro objekty typu MBean. Pokud se n\u00e1zev ur\u010den\u00fd pro objekt typu MBean neshoduje s aktu\u00e1ln\u011b na\u010dten\u00fdm n\u00e1zvem architektury PMI, je vygenerov\u00e1no varov\u00e1n\u00ed. P\u0159\u00ed\u010dinou tohoto probl\u00e9mu je chyba ve volaj\u00edc\u00ed aplikaci nebo skute\u010dnost, \u017ee se volaj\u00edc\u00ed aplikace pokou\u0161\u00ed odkazovat na n\u00e1zev architektury PMI, kter\u00fd aplika\u010dn\u00edm serverem nebyl na\u010dten.
+PMI0002W.useraction=Tato zpr\u00e1va se zobrazuje v p\u0159\u00edpad\u011b, \u017ee je pro zobrazen\u00ed statistiky architektury PMI pou\u017eit n\u00e1stroj pro monitorov\u00e1n\u00ed v\u00fdkonu jin\u00e9ho dodavatele. Zkontrolujte, \u017ee je konfigurace pro tento n\u00e1stroj spr\u00e1vn\u00e1.
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when multiple ObjectNames are found but only a single is expected
+PMI0003W=CWPMI0003W: MultipleObjectNamesExistException: Kl\u00ed\u010dem objektu typu MBean je: {0}
+PMI0003W.explanation=N\u00e1zev objektu typu MBean (Managed Bean) ur\u010den\u00fd volaj\u00edc\u00edm modulem architektury PMI (Performance Monitoring Infrastructure) se shoduje s v\u00edce ne\u017e jedn\u00edm intern\u00edm n\u00e1zvem architektury PMI. V r\u00e1mci specifikace JMX (Java Management Extensions) jsou objekty typu MBean objekty prost\u0159ed\u00ed java, kter\u00e9 reprezentuj\u00ed spravovateln\u00fd prost\u0159edek. Prost\u0159edky architektury PMI lze adresovat prost\u0159ednictv\u00edm rozhran\u00ed pro objekty typu MBean. Pokud se ur\u010den\u00fd n\u00e1zev objektu typu MBean shoduje s v\u00edce ne\u017e jedn\u00edm n\u00e1zvem infrastruktury PMI, nastane tato chyba.
+PMI0003W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when there is an exception to create AdminUtilImpl
+PMI0004W=CWPMI0004W: P\u0159i z\u00edsk\u00e1v\u00e1n\u00ed objektu AdminUtilImpl ve t\u0159\u00edd\u011b PmiJmxMapper do\u0161lo k v\u00fdjimce: {0}
+PMI0004W.explanation=T\u0159\u00edda PmiJmxMapper nem\u016f\u017ee vytvo\u0159it novou t\u0159\u00eddu AdminUtil. Rozhran\u00ed AdminUtil umo\u017e\u0148uje infrastruktu\u0159e PMI p\u0159istupovat k administrativn\u00edmu objektu, kter\u00fd je roz\u0161\u00ed\u0159en\u00edm JMX (Java Management Extensions) vy\u017eadov\u00e1n za \u00fa\u010delem konektivity.
+PMI0004W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when an unexpected null parameter is passed to PMI
+PMI0005W=CWPMI0005W: Do infrastruktury PMI byl p\u0159ed\u00e1n parametr s hodnotou Null: {0}
+PMI0005W.explanation=Tato ud\u00e1lost je aktivov\u00e1na v p\u0159\u00edpad\u011b, \u017ee infrastruktura PMI (Performance Monitoring Infrastructure) provede aktualizaci a jeden z parametr\u016f odeslan\u00fdch klientem PMI m\u00e1 hodnotu Null.
+PMI0005W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when PMI cannot a mbean for the given data descriptor
+PMI0006W=CWPMI0006W: Nebyl nalezen objekt typu MBean pro deskriptor dat infrastruktury PMI: {0}
+PMI0006W.explanation=Infrastruktura PMI (Performance Monitoring Infrastructure) nem\u016f\u017ee zjistit shodu n\u00e1zvu infrastruktury PMI s p\u0159idru\u017een\u00fdm spravovan\u00fdm objektem typu bean (MBean). V r\u00e1mci specifikace JMX (Java Management Extensions) jsou objekty typu MBean objekty prost\u0159ed\u00ed java, kter\u00e9 reprezentuj\u00ed spravovateln\u00fd prost\u0159edek. Prost\u0159edky rozhran\u00ed PMI lze adresovat prost\u0159ednictv\u00edm rozhran\u00ed pro objekty typu MBean.
+PMI0006W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when the module config object is null
+PMI0007W=CWPMI0007W: Nebyla nalezena \u017e\u00e1dn\u00e1 konfigurace modulu PMI: {0}
+PMI0007W.explanation=Tato chyba identifikuje podm\u00ednku, kdy v infrastruktu\u0159e PMI (Performance Monitoring Infrastructure) nelze vyhledat konfiguraci ur\u010den\u00e9ho modulu. Moduly jsou organiza\u010dn\u00ed jednotky, kter\u00e9 jsou v infrastruktu\u0159e PMI pou\u017eity k odd\u011blen\u00ed funk\u010dn\u00edch komponent v r\u00e1mci aplika\u010dn\u00edho serveru. 
+PMI0007W.useraction=Tato v\u00fdjimka nebyla o\u010dek\u00e1v\u00e1na. P\u0159\u00ed\u010dina nen\u00ed bezprost\u0159edn\u011b zn\u00e1ma. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, naleznete informace t\u00fdkaj\u00edc\u00ed se ur\u010den\u00ed probl\u00e9mu na str\u00e1nce podpory pro server WebSphere Application Server na adrese http://www.ibm.com/software/webservers/appserv/was/support/.
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when an invalid data ID is using in PMI
+PMI0008W=CWPMI0008W: Neplatn\u00fd identifik\u00e1tor dat: {0}
+PMI0008W.explanation=Infrastruktura PMI (Performance Monitoring Infrastructure) nem\u016f\u017ee identifikovat datov\u00fd objekt zpracov\u00e1van\u00fd modulem. Ka\u017ed\u00fd modul PMI je konfigurov\u00e1n pro omezenou sadu datov\u00fdch objekt\u016f. Zpr\u00e1va obsahuje ur\u010den\u00ed identity neplatn\u00fdch dat.
+PMI0008W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when wrong parameter is passed to updateData method
+PMI0009W=CWPMI0009W: Do metody updateData v modulu PmiAbstractModule byl p\u0159ed\u00e1n neplatn\u00fd parametr: {0}
+PMI0009W.explanation=Objekt PmiAbstractModule je nastaven tak, aby prov\u00e1d\u011bl nedefinovanou funkci v ur\u010den\u00e9m datov\u00e9m objektu.
+PMI0009W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when PMI cannot find the XML file to read
+PMI0010W=CWPMI0010W: Nebyl nalezen soubor: {0}
+PMI0010W.explanation=Infrastruktura PMI (Performance Monitoring Infrastructure) nenalezla soubor pro intern\u00ed zpracov\u00e1n\u00ed prov\u00e1d\u011bn\u00e9 p\u0159i inicializaci infrastruktury PMI. Zpr\u00e1va obsahuje identifikaci n\u00e1zvu souboru, kter\u00fd nebyl nalezen.
+PMI0010W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when pmiSpec in WCCM config file is ill-formatted
+PMI0011W=CWPMI0011W: Chybn\u00fd parametr pmiSpec v objektu PmiUtil: {0}
+PMI0011W.explanation=Infrastruktura PMI (Performance Monitoring Infrastructure) nastavuje \u00farove\u0148 monitorov\u00e1n\u00ed v\u00fdkonu na neplatnou hodnotu. Infrastruktura PMI pou\u017e\u00edv\u00e1 \u00farove\u0148 monitorov\u00e1n\u00ed v\u00fdkonu k ur\u010den\u00ed modul\u016f, submodul\u016f a statistik zahrnut\u00fdch do aktu\u00e1ln\u00ed sady sledov\u00e1n\u00ed.
+PMI0011W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when wrong number of parameters is passed to PmiFactory
+PMI0012W=CWPMI0012W: Do objektu PmiFactory byl p\u0159ed\u00e1n chybn\u00fd po\u010det parametr\u016f: {0}
+PMI0012W.explanation=Infrastruktura PMI (Performance Monitoring Infrastructure) vytv\u00e1\u0159\u00ed modul, parametry p\u0159ed\u00e1van\u00e9 do infrastruktury PMI v\u0161ak neodpov\u00eddaj\u00ed po\u017eadavk\u016fm vytv\u00e1\u0159en\u00e9ho modulu.
+PMI0012W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when wrong type of parameters is passed to PmiFactory
+PMI0013W=CWPMI0013W: Do objektu PmiFactory byl p\u0159ed\u00e1n chybn\u00fd typ parametr\u016f: {0}
+PMI0013W.explanation=Infrastruktura PMI (Performance Monitoring Infrastructure) vytv\u00e1\u0159\u00ed modul, jeden z parametr\u016f p\u0159ed\u00e1van\u00fdch do infrastruktury PMI v\u0161ak nen\u00ed o\u010dek\u00e1van\u00e9ho typu objektu. 
+PMI0013W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when PMI failed to create TransactionModule
+PMI0014W=CWPMI0014W: Objektu PmiFactory se nepoda\u0159ilo vytvo\u0159it modul TransactionModule: {0}
+PMI0014W.explanation=Infrastruktura PMI (Performance Monitoring Infrastructure) nem\u016f\u017ee vytvo\u0159it objekt spravuj\u00edc\u00ed statistiku v\u00fdkonu transak\u010dn\u00edho modulu.
+PMI0014W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when there is an exception to connect to AdminClient or AdminService
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0015W=CWPMI0015W: Ve funkci AdminUtilImpl do\u0161lo k v\u00fdjimce p\u0159i p\u0159ipojen\u00ed k objektu AdminClient/AdminService: {0}
+PMI0015W.explanation=Ve funkci AdminUtilImpl do\u0161lo k v\u00fdjimce p\u0159i p\u0159ipojov\u00e1n\u00ed k objektu AdminClient nebo AdminService.
+PMI0015W.useraction=Tato v\u00fdjimka nebyla o\u010dek\u00e1v\u00e1na. P\u0159\u00ed\u010dina nen\u00ed bezprost\u0159edn\u011b zn\u00e1ma. CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when there is an exception to find the ObjectNames
+PMI0016W=CWPMI0016W: Ve funkci AdminUtilImpl do\u0161lo k v\u00fdjimce p\u0159i hled\u00e1n\u00ed nebo v\u00fdpisu parametru ObjectNames: {0}
+PMI0016W.explanation=Infrastruktura PMI (Performance Monitoring Infrastructure) nem\u016f\u017ee zjistit shodu n\u00e1zvu infrastruktury PMI s odpov\u00eddaj\u00edc\u00edm n\u00e1zvem spravovan\u00e9ho objektu typu bean (MBean). V r\u00e1mci specifikace JMX (Java Management Extensions) jsou objekty typu MBean objekty prost\u0159ed\u00ed java, kter\u00e9 reprezentuj\u00ed spravovateln\u00fd prost\u0159edek. Rozhran\u00ed objektu MBean adresuje prost\u0159edky infrastruktury PMI.
+PMI0016W.useraction=Tato zpr\u00e1va se zobrazuje v p\u0159\u00edpad\u011b, \u017ee je pro zobrazen\u00ed statistiky architektury PMI pou\u017eit n\u00e1stroj pro monitorov\u00e1n\u00ed v\u00fdkonu jin\u00e9ho dodavatele. Zkontrolujte, \u017ee je konfigurace pro tento n\u00e1stroj spr\u00e1vn\u00e1.
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when there is an exception to get status from NodeAgent or AppServer
+PMI0017W=CWPMI0017W: Ve funkci AdminUtilImpl do\u0161lo k v\u00fdjimce p\u0159i z\u00edsk\u00e1n\u00ed objektu getAdminState: {0}
+PMI0017W.explanation=Infrastruktura PMI nem\u016f\u017ee komunikovat s administrativn\u00edm klientem. Je mo\u017en\u00e9, \u017ee administrativn\u00ed klient ji\u017e nem\u016f\u017ee komunikovat s c\u00edlov\u00fdm agentem uzlu nebo aplika\u010dn\u00edm serverem.
+PMI0017W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when no ObjectName is returned from query
+PMI0018W=CWPMI0018W: Funkce AdminUtilImpl neobsahuje \u017e\u00e1dn\u00fd parametr ObjectName vr\u00e1cen\u00fd z dotazu: {0}
+PMI0018W.explanation= Infrastruktura PMI (Performance Monitoring Infrastructure) vygenerovala varovnou zpr\u00e1vu v situaci, kdy nem\u016f\u017ee zjistit shodu n\u00e1zvu infrastruktury PMI s odpov\u00eddaj\u00edc\u00edm n\u00e1zvem spravovan\u00e9ho objektu typu bean (MBean). V r\u00e1mci specifikace JMX (Java Management Extensions) jsou objekty typu MBean objekty prost\u0159ed\u00ed java, kter\u00e9 reprezentuj\u00ed spravovateln\u00fd prost\u0159edek. Rozhran\u00ed objektu MBean adresuje prost\u0159edky infrastruktury PMI. 
+PMI0018W.useraction=Tato zpr\u00e1va se zobrazuje v p\u0159\u00edpad\u011b, \u017ee je pro zobrazen\u00ed statistiky architektury PMI pou\u017eit n\u00e1stroj pro monitorov\u00e1n\u00ed v\u00fdkonu jin\u00e9ho dodavatele. Zkontrolujte, \u017ee je konfigurace pro tento n\u00e1stroj spr\u00e1vn\u00e1.
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when an unexpected runtime config attribute name passed to PMI
+PMI0019W=CWPMI0019W: Neo\u010dek\u00e1van\u00fd n\u00e1zev atributu b\u011bhov\u00e9 konfigurace: {0}
+PMI0019W.explanation=Konfigura\u010dn\u00ed parametr ur\u010den\u00fd pro modul fondu p\u0159ipojen\u00ed nen\u00ed platn\u00fd. Jedin\u00fdm platn\u00fdm parametrem t\u00e9to volby je parametr PoolSize.
+PMI0019W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI counter is obviously wrong, e.g., a negative number
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0020W=CWPMI0020W: \u010c\u00edta\u010d nen\u00ed synchronizov\u00e1n: {0}
+PMI0020W.explanation=\u010c\u00edta\u010d nen\u00ed synchronizov\u00e1n.
+PMI0020W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a wrong data type is used in PMI
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0021W=CWPMI0021W: Chybn\u00fd datov\u00fd typ: {0}
+PMI0021W.explanation=Tento datov\u00fd typ je nespr\u00e1vn\u00fd.
+PMI0021W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a wrong data type is used in PMI
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0022W=CWPMI0022W: Duplicitn\u00ed n\u00e1zev modulu: {0}
+PMI0022W.explanation=Tento n\u00e1zev modulu je duplicitn\u00ed.
+PMI0022W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI module cannot be created
+PMI0023W=CWPMI0023W: Vzhledem k duplicitn\u00edmu n\u00e1zvu nelze registrovat modul PMI: {0}
+PMI0023W.explanation=Infrastruktura PMI (Performance Monitoring Infrastructure) nem\u016f\u017ee vzhledem ke konfliktu n\u00e1zv\u016f registrovat modul. V r\u00e1mci infrastruktury PMI jsou v\u0161echny moduly a submoduly sledov\u00e1ny prost\u0159ednictv\u00edm jedine\u010dn\u00e9ho n\u00e1zvu v ur\u010den\u00e9 cest\u011b. Pokud je zobrazena tato zpr\u00e1va, nelze v infrastruktu\u0159e PMI p\u0159idat modul, proto\u017ee modul se stejn\u00fdm n\u00e1zvem ji\u017e existuje.
+PMI0023W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI module cannot be created
+PMI0024W=CWPMI0024W: Mapov\u00e1n\u00ed objektu typu MBean na modul PMI je p\u0159eps\u00e1no pro: {0}
+PMI0024W.explanation=Tato zpr\u00e1va je zobrazena v p\u0159\u00edpad\u011b, kdy je cesta spravovan\u00e9ho objektu typu bean (MBean) ukl\u00e1d\u00e1na pro odkaz, kter\u00fd ji\u017e v mezipam\u011bti existuje. V r\u00e1mci specifikace JMX (Java Management Extensions) jsou objekty typu MBean objekty prost\u0159ed\u00ed java, kter\u00e9 reprezentuj\u00ed spravovateln\u00fd prost\u0159edek. Rozhran\u00ed objektu MBean adresuje prost\u0159edky infrastruktury PMI. V t\u00e9to instanci prov\u00e1d\u00ed infrastruktura PMI p\u0159idru\u017een\u00ed cesty objektu typu MBean k existuj\u00edc\u00edmu intern\u00edmu objektu infrastruktury PMI.
+PMI0024W.useraction=Tato zpr\u00e1va se zobrazuje v p\u0159\u00edpad\u011b, \u017ee je pro zobrazen\u00ed statistiky architektury PMI pou\u017eit n\u00e1stroj pro monitorov\u00e1n\u00ed v\u00fdkonu jin\u00e9ho dodavatele. Zkontrolujte, \u017ee je konfigurace pro tento n\u00e1stroj spr\u00e1vn\u00e1.
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI module cannot be created
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0025W=CWPMI0025W: P\u0159i trval\u00e9m ukl\u00e1d\u00e1n\u00ed konfigurace infrastruktury PMI do souboru pmi-config.xml do\u0161lo k chyb\u011b: {0}
+PMI0025W.explanation=P\u0159i trval\u00e9m ukl\u00e1d\u00e1n\u00ed konfigurace infrastruktury PMI (Performance Monitoring Infrastructure) do souboru pmi-config.xml do\u0161lo k chyb\u011b.
+PMI0025W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI module cannot be created
+PMI0026W=CWPMI0026W: P\u0159i \u010dten\u00ed konfigurace infrastruktury PMI ze souboru pmi-config.xml do\u0161lo k chyb\u011b: {0}
+PMI0026W.explanation=Infrastruktura PMI (Performance Monitoring Infrastructure) nem\u016f\u017ee \u010d\u00edst soubor pmi-config.xml z o\u010dek\u00e1van\u00e9ho um\u00edst\u011bn\u00ed.
+PMI0026W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI module cannot be created
+PMI0027W=CWPMI0027W: P\u0159i trval\u00e9m ukl\u00e1d\u00e1n\u00ed konfigurace infrastruktury PMI do souboru server.xml do\u0161lo k chyb\u011b: {0}
+PMI0027W.explanation=V r\u00e1mci infrastruktury PMI (Performance Monitoring Infrastructure) se nezda\u0159il pokus o ulo\u017een\u00ed aktu\u00e1ln\u00edch konfigura\u010dn\u00edch informac\u00ed infrastruktury PMI. Selh\u00e1n\u00ed je zachycenou v\u00fdjimkou vygenerovanou p\u0159i pokusu infrastruktury PMI o fyzick\u00e9 ulo\u017een\u00ed informac\u00ed.
+PMI0027W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI module cannot be created
+PMI0028W=CWPMI0028W: P\u0159i z\u00edsk\u00e1v\u00e1n\u00ed konfigura\u010dn\u00ed slu\u017eby do\u0161lo k chyb\u011b.
+PMI0028W.explanation= Infrastruktura PMI (Performance Monitoring Infrastructure) nenalezla konfigura\u010dn\u00ed slu\u017ebu. Infrastruktura PMI vyu\u017e\u00edv\u00e1 konfigura\u010dn\u00ed slu\u017ebu k zaji\u0161t\u011bn\u00ed interakce s konfigura\u010dn\u00edmi informacemi.
+PMI0028W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message 
+PMI0030W=CWPMI0030W: P\u0159i na\u010d\u00edt\u00e1n\u00ed vlastn\u00edho bal\u00edku prost\u0159edk\u016f infrastruktury PMI do\u0161lo k chyb\u011b: {0}
+PMI0030W.explanation=Infrastruktura PMI (Performance Monitoring Infrastructure) nenalezla lokalizovan\u00fd bal\u00edk prost\u0159edk\u016f. Bal\u00edkem prost\u0159edk\u016f je sada informac\u00ed specifick\u00e1 pro konkr\u00e9tn\u00ed jazyk, kter\u00e1 je v infrastruktu\u0159e PMI pou\u017eita p\u0159i zobrazov\u00e1n\u00ed informac\u00ed pro u\u017eivatele aplika\u010dn\u00edho serveru.
+PMI0030W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message 
+PMI0031W=CWPMI0031W: Byla zji\u0161t\u011bna konfigurace infrastruktury PMI verze 5.0 i 6.0. Slu\u017eba PMI bude spu\u0161t\u011bna pomoc\u00ed konfigurace verze 6.0. Atribut initialSpecLevel v souboru server.xml je ve verzi 6.0 zam\u00edtnut.
+PMI0031W.explanation=Infrastruktura PMI (Performance Monitoring Infrastructure) je inicializov\u00e1na pro aplika\u010dn\u00ed server verze 6.x, nalezla v\u0161ak konfigura\u010dn\u00ed parametry verze 5.x. Atribut initialSpecLevel v konfigura\u010dn\u00edm souboru server.xml je ve verzi 6.0 zam\u00edtnut.
+PMI0031W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message 
+PMI0032W=CWPMI0032W: Slu\u017eba PMI nen\u00ed v procesu spr\u00e1vce implementace k dispozici.
+PMI0032W.explanation=Infrastrukturu PMI (Performance Monitoring Infrastructure) nelze inicializovat v r\u00e1mci procesu spr\u00e1vce implementace pro konfiguraci s produktem Network Deployment. Infrastruktura PMI nen\u00ed v r\u00e1mci spr\u00e1vce implementace funk\u010dn\u00ed. V\u0161echny pokusy o jej\u00ed inicializaci proto pravd\u011bpodobn\u011b sel\u017eou.
+PMI0032W.useraction=Slu\u017eba PMI nen\u00ed v procesu spr\u00e1vce implementace k dispozici. Zkontrolujte konfigura\u010dn\u00ed soubory spr\u00e1vce implementace a vypn\u011bte slu\u017ebu PMI.
+
+# ************* CUSTOM PMI MESSAGES *************
+# -------------------------------------------------------------------------------------------------
+# Warning message
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0101W=CWPMI0101W: Nelze vytvo\u0159it v\u00fdchoz\u00ed objekt typu MBean pro vlastn\u00ed modul PMI: {0}
+PMI0101W.explanation=Nelze vytvo\u0159it v\u00fdchoz\u00ed spravovan\u00fd objekt typu bean (MBean) pro vlastn\u00ed modul infrastruktury PMI (Performance Monitoring Infrastructure).
+PMI0101W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message
+PMI0102W=CWPMI0102W: Nelze \u010d\u00edst konfiguraci vlastn\u00edho modulu PMI: {0}
+PMI0102W.explanation=Infrastruktura PMI (Performance Monitoring Infrastructure) nem\u016f\u017ee \u010d\u00edst zdrojov\u00fd soubor XML pou\u017eit\u00fd pro konfiguraci vlastn\u00edho modulu PMI. Vlastn\u00edm modulem PMI je rozhran\u00ed API (Application Programming Interface) pou\u017eit\u00e9 poskytovateli PMI k registrov\u00e1n\u00ed modulu v infrastruktu\u0159e PMI. Je-li inicializov\u00e1n vlastn\u00ed modul PMI, infrastruktura PMI na\u010dte soubor XML, z n\u011bho\u017e jsou ur\u010deny konfigura\u010dn\u00ed informace modulu.
+PMI0102W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message
+PMI0103W=CWPMI0103W: Vzhledem k duplicitn\u00edmu n\u00e1zvu v r\u00e1mci stejn\u00e9ho nad\u0159\u00edzen\u00e9ho objektu nebo neplatn\u00e9 cest\u011b ve stromu modul\u016f PMI nelze registrovat vlastn\u00ed modul PMI: {0}
+PMI0103W.explanation=Infrastruktura PMI (Performance Monitoring Infrastructure) vytv\u00e1\u0159\u00ed nov\u00fd modul v neplatn\u00e9 cest\u011b nad\u0159\u00edzen\u00e9ho objektu nebo v cest\u011b k nad\u0159\u00edzen\u00e9mu objektu, kter\u00e1 ji\u017e obsahuje modul se stejn\u00fdm n\u00e1zvem. Pro ka\u017edou cestu k nad\u0159\u00edzen\u00e9mu objektu ve stromu modul\u016f PMI mus\u00ed b\u00fdt n\u00e1zvy modul\u016f PMI jedine\u010dn\u00e9.
+PMI0103W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0104W=CWPMI0104W: Nelze nal\u00e9zt nad\u0159\u00edzen\u00fd objekt typu MBean pro vlastn\u00ed modul PMI: {0}
+PMI0104W.explanation=Nebyl nalezen nad\u0159\u00edzen\u00fd spravovan\u00fd objekt typu bean (MBean) pro vlastn\u00ed modul infrastruktury PMI (Performance Monitoring Infrastructure).
+PMI0104W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message
+PMI0105W=CWPMI0105W: Nelze nal\u00e9zt polo\u017eku modulu PMI pro: {0}
+PMI0105W.explanation=Infrastruktura PMI (Performance Monitoring Infrastructure) nenalezla modul identifikovan\u00fd cestou zobrazenou ve varovn\u00e9 zpr\u00e1v\u011b. Infrastruktura PMI se pokou\u0161\u00ed modul vyhledat, aby v n\u011bm mohla prov\u00e9st \u00falohu.
+PMI0105W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0106W=CWPMI0106W: P\u0159i deaktivaci vlastn\u00edho objektu typu MBean infrastruktury PMI do\u0161lo k chyb\u011b: {0}
+PMI0106W.explanation=P\u0159i deaktivaci vlastn\u00edho spravovan\u00e9ho objektu typu bean (MBean) infrastruktury PMI (Performance Monitoring Infrastructure) do\u0161lo k chyb\u011b.
+PMI0106W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message
+PMI0107W=CWPMI0107W: Nelze registrovat vlastn\u00ed modul PMI, proto\u017ee slu\u017eba PMI nen\u00ed povolena: {0}
+PMI0107W.explanation=Infrastruktura PMI (Performance Monitoring Infrastructure) 1e zak\u00e1z\u00e1na a komponenta nebo aplikace se pokou\u0161\u00ed o vytvo\u0159en\u00ed objektu PMI. Tato zpr\u00e1va informuje vlastn\u00edka klienta PMI o p\u0159\u00ed\u010din\u011b nemo\u017enosti dokon\u010den\u00ed zpracov\u00e1n\u00ed po\u017eadavku.
+PMI0107W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message
+PMI0108W=CWPMI0108W: Vzhledem k duplicitn\u00edmu ID statistiky v nad\u0159\u00edzen\u00e9 skupin\u011b \u010di instanci statistik nelze registrovat vlastn\u00ed modul PMI: ID={0}, nad\u0159\u00edzen\u00e9 statistiky={1}.
+PMI0108W.explanation=Infrastruktura PMI (Performance Monitoring Infrastructure) vygenerovala zpr\u00e1vu p\u0159i inicializaci vlastn\u00edho modulu PMI. V infrastruktu\u0159e PMI nelze vytvo\u0159it identitu statistiky pro vlastn\u00ed modul PMI, proto\u017ee ur\u010den\u00e1 identita statistiky ji\u017e pro modul existuje. P\u0159\u00ed\u010dinou probl\u00e9mu m\u016f\u017ee b\u00fdt chyba v \u0161ablon\u011b XML vlastn\u00edho modulu PMI.
+PMI0108W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Debug message when the queried object is found in the cache
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0201I=CWPMI0201I: Prob\u00edh\u00e1 deaktivace objektu typu MBean vlastn\u00edho modulu PMI pro: {0}
+PMI0201I.explanation=Prob\u00edh\u00e1 deaktivace objektu typu MBean vlastn\u00edho modulu PMI.
+PMI0201I.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# Debug message when the queried object is found in the cache
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0001I=CWPMI1101I: Nalezeno v mezipam\u011bti: {0}
+PMI0001I.explanation=Nalezeno v mezipam\u011bti.
+PMI0001I.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# Debug message when the queried object is not found in the cache
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0002I=CWPMI1102I: Nenalezeno v mezipam\u011bti: {0}
+PMI0002I.explanation=Nenalezeno v mezipam\u011bti.
+PMI0002I.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# Information
+PMI0001A=CWPMI1001I: Infrastruktura PMI je povolena.
+PMI0001A.explanation=Jedn\u00e1 se o auditn\u00ed zpr\u00e1vu, kter\u00e1 potvrzuje, \u017ee infrastruktura PMI (Performance Monitoring Infrastructure) je povolena a funk\u010dn\u00ed.
+PMI0001A.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# Debug message when the queried object is not found in the cache
+PMI0002A=CWPMI1002I: Infrastruktura PMI je zak\u00e1z\u00e1na.
+PMI0002A.explanation=Infrastruktura PMI (Performance Monitoring Infrastructure) je zak\u00e1z\u00e1na.
+PMI0002A.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# Indicates and internal error in PMI
+PMI9999E=CWPMI9999E: Intern\u00ed chyba: {0}
+PMI9999E.explanation=Infrastruktura PMI (Performance Monitoring Infrastructure) indikuje \u0161irok\u00fd rozsah probl\u00e9m\u016f. Jedine\u010dn\u00fd charakter probl\u00e9mu je ur\u010den v textu zpr\u00e1vy.
+PMI9999E.useraction=CMSG0002
+
+

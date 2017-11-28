@@ -1,0 +1,71 @@
+#CMVCPATHNAME SERV1/ws/code/prereq.jcdi/src/com/ibm/ws/webbeans/resources/jcdi.nlsprops
+#COMPONENTPREFIX CWOWB
+#COMPONENTNAMEFOR CWOWB Java EE Contexts and Dependency Injection 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by JCDI
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A CDI error has occurred: {0}
+cdi.resource.injection.error.CWOWB1000E=CWOWB1000E: A ap\u0103rut o eroare CDI: {0}
+cdi.resource.injection.error.CWOWB1000E.explanation=A ap\u0103rut o eroare CDI care va \u00eempiedica func\u0163ionarea normal\u0103.
+cdi.resource.injection.error.CWOWB1000E.useraction=Examina\u0163i istoricele FFDC \u015fi textul excep\u0163iei pentru a identifica problema.
+
+# Web Application Archive "{0}" contains more than one beans.xml file. Using "{1}". Ignoring "{2}".
+multiple.beans.xml.warning.CWOWB1001W=CWOWB1001W: Arhiva aplica\u0163ie web {0} con\u0163ine mai mult de un fi\u015fier beans.xml. Se folose\u015fte {1}. Se ignor\u0103 {2}.
+multiple.beans.xml.warning.CWOWB1001W.explanation=CDI a g\u0103sit mai mult de un fi\u015fier beans.xml.
+multiple.beans.xml.warning.CWOWB1001W.useraction=Asigura\u0163i-v\u0103 c\u0103 arhiva aplica\u0163iei con\u0163ine doar un fi\u015fier beans.xml.
+
+
+managed.class.bean.class.mismatch.CWOWB1002E=CWOWB1002E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1}
+managed.class.bean.class.mismatch.CWOWB1002E.explanation=MSG0001
+managed.class.bean.class.mismatch.CWOWB1002E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+
+error.loading.class.CWOWB1003E=CWOWB1003E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1}
+error.loading.class.CWOWB1003E.explanation=MSG0001
+error.loading.class.CWOWB1003E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+
+unknown.container.type.CWOWB1004E=CWOWB1004E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0}
+unknown.container.type.CWOWB1004E.explanation=MSG0001
+unknown.container.type.CWOWB1004E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+
+error.loading.resource.CWOWB1005E=CWOWB1005E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0}
+error.loading.resource.CWOWB1005E.explanation=MSG0001
+error.loading.resource.CWOWB1005E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+no.injection.target.context.CWOWB1006E=CWOWB1006E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0}
+no.injection.target.context.CWOWB1006E.explanation=MSG0001
+no.injection.target.context.CWOWB1006E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+resource.producer.validation.error.CWOWB1007E=CWOWB1007E: C\u00e2mpul produc\u0103tor, {0}, are tipul {1}, care nu se potrive\u015fte cu tipul de obiect injectat.
+resource.producer.validation.error.CWOWB1007E.explanation=CDI a g\u0103sit un c\u00e2mp produc\u0103tor de resurse unde tipul c\u00e2mpului nu s-a potrivit cu tipul de resurs\u0103 Java EE injectat\u0103 \u00een el.
+resource.producer.validation.error.CWOWB1007E.useraction=Asigura\u0163i-v\u0103 c\u0103 resursa Java EE corect\u0103 este injectat\u0103 \u00een c\u00e2mpul produc\u0103tor de resurse \u015fi c\u0103 tipul c\u00e2mpului se potrive\u015fte cu tipul de resurs\u0103 injectat \u00een acesta.
+
+no.injection.target.CWOWB1008E=CWOWB1008E: Membrul {0} al clasei {1} nu poate fi injectat deoarece clasa {1} nu este o arhiv\u0103 de bean.
+no.injection.target.CWOWB1008E.explanation=Injec\u0163ia nu a reu\u015fit deoarece managerul de bean-uri al arhivei de care clasa apar\u0163ine este null.
+no.injection.target.CWOWB1008E.useraction=Asigura\u0163i-v\u0103 c\u0103 arhiva de care apar\u0163ine clasa este o arhiv\u0103 de bean. Vede\u0163i specifica\u0163ia CDI despre cum s\u0103 se fac\u0103 o arhiv\u0103 o arhiv\u0103 de bean.
+
+implicit.bean.scanning.disabled.CWOWB1009W=CWOWB1009W: Sunt dezactivate arhivele bean implicite.
+implicit.bean.scanning.disabled.CWOWB1009W.explanation=Arhivele nu sunt scanate pentru bean-uri CDI \u00een afar\u0103 de cazul au un fi\u015fier beans.xml.
+implicit.bean.scanning.disabled.CWOWB1009W.useraction=Asigura\u0163i-v\u0103 c\u0103 fiecare arhiv\u0103 care utilizeaz\u0103 CDI are fi\u015fierul beans.xml sau c\u0103 re-activa\u0163i bean-urile implicite scan\u00e2nd \u00een fi\u015fierul dumneavoastr\u0103 server.xml.

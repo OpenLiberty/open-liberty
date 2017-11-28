@@ -1,0 +1,28 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO 
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKO1350 - CWWKO1399
+
+OSGI_SERVICE_ERROR=CWWKO1350E: A(z) {0} OSGi szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.
+OSGI_SERVICE_ERROR.explanation=Ezt a bels\u0151 kiszolg\u00e1l\u00f3hib\u00e1t az\u00e9rt dobja a rendszer, mert a megadott szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.
+OSGI_SERVICE_ERROR.useraction=Ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t a clean param\u00e9terrel.

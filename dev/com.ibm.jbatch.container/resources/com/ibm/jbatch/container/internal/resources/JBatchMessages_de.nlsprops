@@ -1,0 +1,297 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.jbatch.container/resources/com/ibm/jbatch/container/internal/resources/JBatchMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# NLS message prefix registry: http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+#
+# This file contains the messages in use.
+#
+# The range of messages "reserved":
+# 0001 - 0100: com.ibm.jbatch.container
+# 
+
+stopping.job.at.shutdown=CWWKY0001I: Es wird eine Stoppanforderung f\u00fcr die Jobausf\u00fchrung {0} abgesetzt, weil die Stackkomponente gerade inaktiviert wird.
+stopping.job.at.shutdown.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+stopping.job.at.shutdown.useraction=Es ist keine Aktion erforderlich.
+
+jobs.running.at.shutdown=CWWKY0002I: Die Stackkomponente wird gerade inaktiviert. \
+Es wurden Stoppanforderungen f\u00fcr alle aktiven Jobausf\u00fchrungen abgesetzt. \
+Die folgenden Jobausf\u00fchrungen waren zum Zeitpunkt der Inaktivierung noch aktiv: {0}.
+jobs.running.at.shutdown.explanation=Sobald die Stapelkomponente inaktiviert ist, setzt sie Stoppanforderungen f\u00fcr alle aktiven Jobausf\u00fchrungen ab und wartet kurz, bis diese gestoppt sind. \
+Jobausf\u00fchrungen, die nicht gestoppt wurden, sind in der Nachricht aufgelistet. \
+Jobausf\u00fchrungen, die auch nach der Inaktivierung der Stapelkomponente ausgef\u00fchrt wurden, k\u00f6nnen ein unvorhersehbares Verhalten aufweisen.
+jobs.running.at.shutdown.useraction=Es wird empfohlen, den Abschluss aller Jobs abzuwarten, bevor die Stapelkomponente inaktiviert wird. \
+Die Stapelkomponente wird inaktiviert, wenn der Server gestoppt wird, wenn das Feature f\u00fcr die Stapelausf\u00fchrung entfernt wird oder wenn die Stapelkonfiguration aktualisiert wird.
+ 
+jsl.schema.invalid=CWWKY0003E: Das Job-XML-Dokument (JSL) an der URL {0} ist gem\u00e4\u00df dem Job-XML-Schema nicht g\u00fcltig. \
+Der erste vom JAXB-Validator protokollierte G\u00fcltigkeitsfehler ist: {1}.
+jsl.schema.invalid.explanation=Das XML-Dokument entspricht nicht dem XSD-Schema.
+jsl.schema.invalid.useraction=Verwenden Sie ein XML-Validierungstool, um nachzuvollziehen, welches Konstrukt die Schemaanforderungen nicht einh\u00e4lt.
+
+jsl.not.found.batch-jobs=CWWKY0004E: Der JSL-Name (Job-XML-Dokument) {0} wurde an der Position {1} im Anwendungsarchiv nicht gefunden.
+jsl.not.found.batch-jobs.explanation=Das Dokument wurde nicht an der Position gefunden, die \u00fcber die Parameter angegeben wurden, die \
+f\u00fcr die \u00dcbergabe (z. B. zum Starten) des Jobs verwendet wurden.
+jsl.not.found.batch-jobs.useraction=Vergewissern Sie sich, dass die f\u00fcr die Angabe der JSL-Position verwendeten Parameter richtig sind.\
+Wenn Sie eine Fernjob\u00fcbergabe zum \u00dcbergeben eines Jobs verwenden, der in einer JSL definiert ist, die in einem Anwendungsmodulpaket enthalten ist, stellen Sie sicher, dass das Anwendungsmodul ordnungsgem\u00e4\u00df in den (direkt oder mit dem Befehlszeilendienstprogramm) an die REST-Schnittstelle \u00fcbergebenen Parametern angegeben ist.
+
+persistence.service.status=CWWKY0005I: Der Persistenzservice f\u00fcr den Stapel {0} hat den Status {1}.
+persistence.service.status.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+persistence.service.status.useraction=Es ist keine Aktion erforderlich.
+
+job.recovery.failed=CWWKY0006W: Der Wiederherstellungsservice f\u00fcr Stapeljobs kann den Stapelstatus f\u00fcr die zuvor aktive Jobinstanz {0}, die beendet wurde, nicht korrigieren. Die Korrektur ist wegen der folgenden Ausnahme fehlgeschlagen: {1}
+job.recovery.failed.explanation=Der Wiederherstellungsservice f\u00fcr Stapeljobs, der den Status von Jobs korrigiert, die aktiv waren, als eine vorherige Instanz dieses Servers abnormal beendet wurde, konnte den Status der angegebenen Jobinstanz wegen der angegebenen Ausnahme nicht korrigieren.
+job.recovery.failed.useraction=Beheben Sie, sofern m\u00f6glich, die Ausnahmeursache und starten Sie dann den Server erneut, um den Wiederherstellungsservice f\u00fcr Stapeljobs erneut zu starten.
+
+recovery.failed=CWWKY0007W: Der Wiederherstellungsservice f\u00fcr Stapeljobs kann den Stapelstatus f\u00fcr die zuvor aktive Jobs, die beendet wurden, nicht korrigieren. Die Korrektur ist wegen der folgenden Ausnahme fehlgeschlagen: {0}
+recovery.failed.explanation=Der Wiederherstellungsservice f\u00fcr Stapeljobs, der den Status von Jobs korrigiert, die aktiv waren, als eine vorherige Instanz dieses Servers abnormal beendet wurde, ist wegen der angegebenen Ausnahme fehlgeschlagen.
+recovery.failed.useraction=Beheben Sie, sofern m\u00f6glich, die Ausnahmeursache und starten Sie dann den Server erneut, um den Wiederherstellungsservice f\u00fcr Stapeljobs erneut zu starten.
+
+batch.kernel.persistence=CWWKY0008I: Das Stapelverarbeitungsfeature verwendet den Persistenztyp {0}.
+batch.kernel.persistence.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+batch.kernel.persistence.useraction=Es ist keine Aktion erforderlich.
+
+#{0} The job name
+#{1} The job instance id
+#{2} The job execution id
+job.started=CWWKY0009I: Der Job {0} f\u00fcr die Jobinstanz {1} und die Jobausf\u00fchrung {2} wurde gestartet.
+job.started.explanation=Es wurde ein neuer Jobausf\u00fchrungsthread gestartet.
+job.started.useraction=Es ist keine Aktion erforderlich.
+
+#{0} The job name
+#{1} The batch status of the job
+#{2} The exit status of the job
+#{3} The job instance id
+#{4} The job execution id
+job.ended=CWWKY0010I: Der Job {0} wurde mit dem Stapelstatus {1} und dem Exitstatus {2} f\u00fcr die Jobinstanz {3} und die Jobausf\u00fchrung {4} beendet.
+job.ended.explanation=Die Jobausf\u00fchrung wurde beendet.
+job.ended.useraction=Es ist keine Aktion erforderlich.
+
+#{0} The job name
+#{1} The batch status of the job
+#{2} The exit status of the job
+#{3} The job instance id
+#{4} The job execution id
+job.failed=CWWKY0011W: Der Job {0} ist mit dem Stapelstatus {1} und dem Exitstatus {2} f\u00fcr die Jobinstanz {3} und die Jobausf\u00fchrung {4} fehlgeschlagen.
+job.failed.explanation=Die Jobausf\u00fchrung ist fehlgeschlagen.
+job.failed.useraction=Bestimmen Sie die Fehlerursache anhand der Jobprotokolle der zugeh\u00f6rigen Jobausf\u00fchrung.
+
+#{0} The partition number
+#{1} The step name
+#{2} The job instance id
+#{3} The job execution id
+partition.started=CWWKY0012I: Die Partition {0} wurde f\u00fcr den Schritt {1} f\u00fcr die Jobinstanz {2} und die Jobausf\u00fchrung {3} gestartet.
+partition.started.explanation=Es wurde eine neue Partition gestartet.
+partition.started.useraction=Es ist keine Aktion erforderlich.
+
+#{0} The step name
+#{1} The partition number
+#{2} The batch status of the partition
+#{3} The exit status of the partition
+#{4} The job instance id
+#{5} The job execution id
+partition.ended=CWWKY0013I: Die Partition {0} wurde mit dem Stapelstatus {1} und dem Exitstatus {2} f\u00fcr den Schritt {3} f\u00fcr die Jobinstanz {4} und die Jobausf\u00fchrung {5} beendet.
+partition.ended.explanation=Die Partition wurde beendet.
+partition.ended.useraction=Es ist keine Aktion erforderlich.
+
+#{0} The step name
+#{1} The partition number
+#{2} The batch status of the partition
+#{3} The exit status of the partition
+#{4} The job instance id
+#{5} The job execution id
+partition.failed=CWWKY0014W: Die Partition {0} ist mit dem Stapelstatus {1} und dem Exitstatus {2} f\u00fcr den Schritt {3} f\u00fcr die Jobinstanz {4} und die Jobausf\u00fchrung {5} fehlgeschlagen.
+partition.failed.explanation=Die Partition ist fehlgeschlagen.
+partition.failed.useraction=Bestimmen Sie die Fehlerursache anhand der Jobprotokolle der zugeh\u00f6rigen Jobausf\u00fchrung.
+
+#{0} The flow name
+#{1} The job instance id
+#{2} The job execution id
+flow.started=CWWKY0015I: Der Datenfluss {0} wurde f\u00fcr die Jobinstanz {1} und die Jobausf\u00fchrung {2} gestartet.
+flow.started.explanation=Der Datenfluss wurde gestartet.
+flow.started.useraction=Es ist keine Aktion erforderlich.
+
+#{0} The flow name
+#{1} The job instance id
+#{2} The job execution id
+flow.ended=CWWKY0016I: Der Datenfluss {0} wurde f\u00fcr die Jobinstanz {1} und die Jobausf\u00fchrung {2} beendet.
+flow.ended.explanation=Der Datenfluss wurde beendet.
+flow.ended.useraction=Es ist keine Aktion erforderlich.
+
+#{0} The flow name
+#{1} The job instance id
+#{2} The job execution id
+flow.failed=CWWKY0017W: Der Datenfluss {0} f\u00fcr die Jobinstanz {1} und die Jobausf\u00fchrung {2} ist fehlgeschlagen.
+flow.failed.explanation=Der Datenfluss ist fehlgeschlagen.
+flow.failed.useraction=Bestimmen Sie die Fehlerursache anhand der Jobprotokolle der zugeh\u00f6rigen Jobausf\u00fchrung.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+step.started=CWWKY0018I: Der Schritt {0} wurde f\u00fcr die Jobinstanz {1} und die Jobausf\u00fchrung {2} gestartet.
+step.started.explanation=Die Ausf\u00fchrung des angegebenen Schritts wurde in einem Thread gestartet.
+step.started.useraction=Es ist keine Aktion erforderlich.
+
+#{0} The step name
+#{1} The batch status of the step
+#{2} The exit status of the step
+#{3} The job instance id
+#{4} The job execution id
+step.failed=CWWKY0019W: Der Schritt {0} ist mit dem Stapelstatus {1} und dem Exitstatus {2} f\u00fcr die Jobinstanz {3} und die Jobausf\u00fchrung {4} fehlgeschlagen.
+step.failed.explanation=Der Schritt ist fehlgeschlagen.
+step.failed.useraction=Bestimmen Sie die Fehlerursache anhand der Jobprotokolle der zugeh\u00f6rigen Schrittausf\u00fchrung.
+
+#{0} The step name
+#{1} The batch status of the step
+#{2} The exit status of the step
+#{3} The job instance id
+#{4} The job execution id
+step.ended=CWWKY0020I: Der Schritt {0} wurde mit dem Stapelstatus {1} und dem Exitstatus {2} f\u00fcr die Jobinstanz {3} und die Jobausf\u00fchrung {4} beendet.
+step.ended.explanation=Die Verarbeitung des Schritts wurde beendet.
+step.ended.useraction=Es ist keine Aktion erforderlich.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.started=CWWKY0021I: Es wurde ein neuer Chunk f\u00fcr den Schritt {0} in der Jobinstanz {1} und der Jobausf\u00fchrung {2} gestartet. Schrittmetriken: = {3}
+chunk.started.explanation= Es wurde eine neue Transaktion f\u00fcr die Verarbeitung dieses Chunks gestartet.
+chunk.started.useraction=Es ist keine Aktion erforderlich.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.ended=CWWKY0022I: Der Chunk f\u00fcr den Schritt {0} in der Jobinstanz {1} und der Jobausf\u00fchrung {2} wurde erfolgreich beendet. Schrittmetriken: = {3}
+chunk.ended.explanation= Die Transaktion, die diesem Chunk zugeordnet ist, wurde erfolgreich festgeschrieben.
+chunk.ended.useraction=Es ist keine Aktion erforderlich.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.rollback=CWWKY0024W: Der aktuelle Chunk wurde auf den vorherigen Pr\u00fcfpunkt f\u00fcr den Schritt {0} in der Jobinstanz {1} und der Jobausf\u00fchrung {2} zur\u00fcckgesetzt. Schrittmetriken: = {3}
+chunk.rollback.explanation= Bei der Verarbeitung des aktuellen Chunks ist ein Fehler aufgetreten, der dazu gef\u00fchrt hat, dass eine Transaktion auf den vorherigen Pr\u00fcfpunkt zur\u00fcckgesetzt wurde.
+chunk.rollback.useraction=Bestimmen Sie die Fehlerursache anhand der Jobprotokolle der zugeh\u00f6rigen Jobausf\u00fchrung.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.rollback.and.retry=CWWKY0025W: Der Rollback f\u00fcr den aktuellen Chunk wird verarbeitet, nachdem eine Ausnahme mit Wiederholungsm\u00f6glichkeit f\u00fcr den Schritt {0} in der Jobinstanz {1} und der Jobausf\u00fchrung {2} eingetreten ist. Schrittmetriken: = {3}
+chunk.rollback.and.retry.explanation= W\u00e4hrend der Chunkverarbeitung ist eine Ausnahme mit Wiederholungsm\u00f6glichkeit eingetreten, die dazu gef\u00fchrt hat, dass ein Rollback auf den vorherigen Pr\u00fcfpunkt durchgef\u00fchrt und die Operation anschlie\u00dfend wiederholt wird.
+chunk.rollback.and.retry.useraction=Bestimmen Sie die Fehlerursache anhand der Jobprotokolle der zugeh\u00f6rigen Jobausf\u00fchrung.
+
+#{0} The step name that is associated with this reader
+item.reader.opened=CWWKY0026I: Der Elementreader f\u00fcr den Schritt {0} wurde ge\u00f6ffnet.
+item.reader.opened.explanation=Der diesem Schritt zugeordnete Elementreader wurde ge\u00f6ffnet.
+item.reader.opened.useraction=Es ist keine Aktion erforderlich.
+
+#{0} The step name that is associated with this reader
+item.reader.closed=CWWKY0027I: Der Elementreader f\u00fcr den Schritt {0} wurde geschlossen.
+item.reader.closed.explanation=Der diesem Schritt zugeordnete Elementreader wurde geschlossen.
+item.reader.closed.useraction=Es ist keine Aktion erforderlich.
+
+#{0} The step name that is associated with this writer
+item.writer.opened=CWWKY0028I: Der Elementwriter f\u00fcr den Schritt {0} wurde ge\u00f6ffnet.
+item.writer.opened.explanation=Der diesem Schritt zugeordnete Elementwriter wurde ge\u00f6ffnet.
+item.writer.opened.useraction=Es ist keine Aktion erforderlich.
+
+#{0} The step name that is associated with this writer
+item.writer.closed=CWWKY0029I: Der Elementwriter f\u00fcr den Schritt {0} wurde geschlossen.
+item.writer.closed.explanation=Der diesem Schritt zugeordnete Elementwriter wurde geschlossen.
+item.writer.closed.useraction=Es ist keine Aktion erforderlich.
+
+#{0} The step name that is associated with this writer
+#{1} The exception that occurred
+exception.executing.step=CWWKY0030I: Beim Ausf\u00fchren des Schritts {0} ist eine Ausnahme eingetreten.\n\
+{1}
+exception.executing.step.explanation=Dies kann ein Anwendungsfehler sein. Beim Ausf\u00fchren des Kernteils des Schritts ist nach dem Aufruf der relevanten Stapelanwendungsartefakte durch den Stapelcontainer eine Ausnahme eingetreten.
+exception.executing.step.useraction=Bestimmen Sie die Fehlerursache anhand der Jobprotokolle der zugeh\u00f6rigen Jobausf\u00fchrung. Dazu kann das Debugging der Anwendung geh\u00f6ren.
+
+#{0} The step name that is associated with this writer
+#{1} The exception that occurred
+exception.after.step=CWWKY0031I: Beim Ausf\u00fchren des letzten Teils des Schritts {0} ist eine Ausnahme eingetreten.\n\
+{1}
+exception.after.step.explanation=Dies kann ein Anwendungsfehler sein. Beim Ausf\u00fchren des letzten Teils des Schritts (z. B. nach der StepListener-Methode afterStep()) ist nach dem Aufruf der relevanten Stapelanwendungsartefakte durch den Stapelcontainer eine Ausnahme eingetreten.
+exception.after.step.useraction=Bestimmen Sie die Fehlerursache anhand der Jobprotokolle der zugeh\u00f6rigen Jobausf\u00fchrung. Dazu kann das Debugging der Anwendung geh\u00f6ren.
+
+#{0} The exception that occurred
+error.persisting.stepExecution=CWWKY0032I: Beim persistenten Speichern des Schrittausf\u00fchrungsstatus und der zugeh\u00f6rigen Daten ist eine Ausnahme eingetreten.\n\
+{0}
+error.persisting.stepExecution.explanation=Wenn dieser Fall eintritt, wird der Status des letzten Schritts gew\u00f6hnlich nicht persistent in der Datenbank gespeichert und der Stapelstatus kann trotz der Tatsache, dass der Schritt nicht mehr ausgef\u00fchrt wird, im Status GESTARTET verbleiben. Dies kann zu St\u00f6rungen bei Neustartversuchen f\u00fchren, weil es zu Fehlern aufgrund von Statusinkonsistenzen kommen kann. 
+error.persisting.stepExecution.useraction=Stellen Sie sicher, dass die Datenbank ordnungsgem\u00e4\u00df konfiguriert und verbunden ist. Danach k\u00f6nnen Sie bei Bedarf den Ausf\u00fchrungsserver (den Server, auf dem der Job ausgef\u00fchrt wird) erneut starten, woraufhin die Wiederherstellung ausgel\u00f6st wird und die zugeordneten Jobs und Schritte als fehlgeschlagen markiert werden, damit ein Jobneustart durchgef\u00fchrt werden kann. 
+
+#{0} The exception that occurred
+exception.executing.job=CWWKY0033I: Beim Ausf\u00fchren des Jobs ist eine Ausnahme eingetreten. \n\
+{0}
+exception.executing.job.explanation=Dies kann ein Anwendungsfehler sein. Beim Ausf\u00fchren des Kernteils des Jobs ist nach dem Aufruf der relevanten Stapelanwendungsartefakte durch den Stapelcontainer eine Ausnahme eingetreten.
+exception.executing.job.useraction=Bestimmen Sie die Fehlerursache anhand der Jobprotokolle der zugeh\u00f6rigen Jobausf\u00fchrung. Dazu kann das Debugging der Anwendung geh\u00f6ren.
+
+#{0} The exception that occurred
+exception.after.job=CWWKY0034I: Beim Ausf\u00fchren des letzten Teils des Jobs ist eine Ausnahme eingetreten.\n\
+{0}
+exception.after.job.explanation=Dies kann ein Anwendungsfehler sein. Beim Ausf\u00fchren des letzten Teils des Jobs (z. B. nach der JobListener-Methode afterJob()) ist nach dem Aufruf der relevanten Stapelanwendungsartefakte durch den Stapelcontainer eine Ausnahme eingetreten.
+exception.after.job.useraction=Bestimmen Sie die Fehlerursache anhand der Jobprotokolle der zugeh\u00f6rigen Jobausf\u00fchrung. Dazu kann das Debugging der Anwendung geh\u00f6ren.
+
+#{0} The exception that occurred
+error.persisting.jobExecution=CWWKY0035I: Beim persistenten Speichern des Jobausf\u00fchrungsstatus und der zugeh\u00f6rigen Daten ist eine Ausnahme eingetreten.\n\
+{0}
+error.persisting.jobExecution.explanation=Wenn dieser Fall eintritt, wird der Status des letzten Jobs gew\u00f6hnlich nicht persistent in der Datenbank gespeichert und der Stapelstatus kann trotz der Tatsache, dass der Schritt nicht mehr ausgef\u00fchrt wird, im Status GESTARTET verbleiben. Dies kann zu St\u00f6rungen bei Neustartversuchen f\u00fchren, weil es zu Fehlern aufgrund von Statusinkonsistenzen kommen kann.
+error.persisting.jobExecution.useraction=Stellen Sie sicher, dass die Datenbank ordnungsgem\u00e4\u00df konfiguriert und verbunden ist. Danach k\u00f6nnen Sie bei Bedarf den Ausf\u00fchrungsserver (den Server, auf dem der Job ausgef\u00fchrt wird) erneut starten, woraufhin die Wiederherstellung ausgel\u00f6st wird und die zugeordneten Jobs und Schritte als fehlgeschlagen markiert werden, damit ein Jobneustart durchgef\u00fchrt werden kann. 
+
+#{0} The invalid job instance id.
+#{1} The persistence exception.
+error.invalid.persisted.job.id=CWWKY0036E: Die als Prim\u00e4rschl\u00fcsselwert f\u00fcr eine Stapeltabelle generierte Jobinstanz-ID {0} ist ung\u00fcltig. Der ID-Wert muss eine positive ganze Zahl sein.\n\
+{1}
+error.invalid.persisted.job.id.explanation=Die Jobausf\u00fchrung ist fehlgeschlagen, weil eine ung\u00fcltige ID in der Stapeltabelle generiert wurde. Eine Stapel-ID muss eine positive ganze Zahl sein.
+error.invalid.persisted.job.id.useraction=Stellen Sie sicher, dass die verwendete Stapeldatenbanktabellendefinition nur positive ganze Zahlen f\u00fcr die als Prim\u00e4rschl\u00fcssel verwendeten ID-Werte zul\u00e4sst.
+
+#{0} The invalid execution id.
+#{1} The persistence exception.
+error.invalid.persisted.exe.id=CWWKY0037E: Die als Prim\u00e4rschl\u00fcsselwert f\u00fcr eine Stapeltabelle generierte Jobausf\u00fchrungs-ID {0} ist ung\u00fcltig. Der ID-Wert muss eine positive ganze Zahl sein.\n\
+{1}
+error.invalid.persisted.exe.id.explanation=Die Jobausf\u00fchrung ist fehlgeschlagen, weil eine ung\u00fcltige ID in der Stapeltabelle generiert wurde. Eine Stapel-ID muss eine positive ganze Zahl sein.
+error.invalid.persisted.exe.id.useraction=Stellen Sie sicher, dass die verwendete Stapeldatenbanktabellendefinition nur positive ganze Zahlen f\u00fcr die als Prim\u00e4rschl\u00fcssel verwendeten ID-Werte zul\u00e4sst.
+
+#{0} The invalid step execution id.
+#{1} The persistence exception.
+error.invalid.persisted.step.id=CWWKY0038E: Die als Prim\u00e4rschl\u00fcsselwert f\u00fcr eine Stapeltabelle generierte Schrittausf\u00fchrungs-ID {0} ist ung\u00fcltig. Der ID-Wert muss eine positive ganze Zahl sein.\n\
+{1}
+error.invalid.persisted.step.id.explanation=Die Jobausf\u00fchrung ist fehlgeschlagen, weil eine ung\u00fcltige ID in der Stapeltabelle generiert wurde. Eine Stapel-ID muss eine positive ganze Zahl sein.
+error.invalid.persisted.step.id.useraction=Stellen Sie sicher, dass die verwendete Stapeldatenbanktabellendefinition nur positive ganze Zahlen f\u00fcr die als Prim\u00e4rschl\u00fcssel verwendeten ID-Werte zul\u00e4sst.
+
+partition.recovery.failed=CWWKY0039W: Der Wiederherstellungsservice f\u00fcr Stapeljobs kann den Stapelstatus f\u00fcr die zuvor aktive Partition {0}, die beendet wurde, nicht korrigieren. Die Korrektur ist wegen der folgenden Ausnahme fehlgeschlagen: {1}
+partition.recovery.failed.explanation=Der Wiederherstellungsservice f\u00fcr Stapeljobs, der den Status von Partitionen korrigiert, die aktiv waren, als eine vorherige Instanz dieses Servers abnormal beendet wurde, konnte den Status der angegebenen Partition wegen der angegebenen Ausnahme nicht korrigieren.
+partition.recovery.failed.useraction=Beheben Sie, sofern m\u00f6glich, die Ausnahmeursache und starten Sie dann den Server erneut, um den Wiederherstellungsservice f\u00fcr Stapeljobs erneut zu starten.
+
+info.batch.events.publish.topic=CWWKY0040I: Die Stapellaufzeit ver\u00f6ffentlicht Ereignisse an das JMS-Topic-Stammverzeichnis {0}.
+info.batch.events.publish.topic.explanation=Nur f\u00fcr Informationszwecke. Die Stapellaufzeit ver\u00f6ffentlicht Ereignisse an das aufgelistete JMS-Topic-Stammverzeichnis.
+info.batch.events.publish.topic.useraction=Das JMS-Topic-Stammverzeichnis f\u00fcr den Stapel kann ge\u00e4ndert werden. \u00dcberpr\u00fcfen Sie die konfigurierten Optionen, die f\u00fcr batchJmsEvents verwendet werden.
+
+cdi.ambiguous.artifact.names=CWWKY0041W: Der Batch-Container wird mit einem aktivem CDI-Feature ausgef\u00fchrt, aber die CDI-Engine konnte das Batch-Artefakt nicht als CDI-Managed-Bean laden und weitere CDI-Injektionen ausf\u00fchren. Dieses Problem k\u00f6nnte auf eine fehlende beandefinierende Annotation wie @Dependent, einen nicht beabsichtigten Beanerkennungsmodus oder einen mehrdeutigen 'ref'-Wert zur\u00fcckzuf\u00fchren sein.
+cdi.ambiguous.artifact.names.explanation=Wenn die Batch-Laufzeitumgebung Artefakte mit der CDI-Engine l\u00e4dt, werden die Batch-Eigenschaften (@BatchProperty) und Batch-Kontexte (JobContext and StepContext) eingef\u00fcgt und die Funktionalit\u00e4t von CDI uneingeschr\u00e4nkt bereitgestellt. Zu dieser Funktionalit\u00e4t geh\u00f6ren die Injektion weiterer Managed Beans entsprechend den Qualifikationsmerkmalen und alle weiteren Features des CDI-Programmiermodells. Wenn die Batch-Laufzeitumgebung Artefakte ohne die CDI-Engine l\u00e4dt, werden nur die Batch-Eigenschaften und -Kontexte eingef\u00fcgt. Da es sich nicht um eine CDI-Managed-Bean in diesem Pfad handelt, sind keine weiteren Injektionen und anderen Features des CDI-Programmiermodells im Batch-Artefakt verf\u00fcgbar. Diese Nachricht zeigt an, dass das Batch-Artefakt trotz aktiviertem CDI-Feature im Server nicht als CDI-Managed-Bean geladen werden kann, weil der Wert des Attributs 'ref', das dieser Artefaktreferenz in der XML entspricht, nicht auf eine einzelne eindeutige CDI-Managed-Bean verweist.
+cdi.ambiguous.artifact.names.useraction=F\u00fcgen Sie die Annotation @Dependent oder eine andere passende beandefinierende Annotation zu Ihrem Batch-Artefakt hinzu. Alternativ k\u00f6nnen Sie den Beanerkennungsmodus in der Datei beans.xml auf 'all' setzen, obwohl diese L\u00f6sung Ihre Anwendung verlangsamen kann. Wenn die mehrdeutigen Artefakte alle nicht erforderlich sind, k\u00f6nnen Sie auch die mehrdeutigen 'ref'-Attribute aus der Anwendung entfernen, sodass nur eine einzige eindeutige Referenz \u00fcbrig bleibt.

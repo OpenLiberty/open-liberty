@@ -1,0 +1,50 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMH
+#COMPONENTNAMEFOR CWMH MicroProfile Health API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Health Impl -  range is 0000-4999, plus 9999 for the emergency message
+# The range 0000-0049 has been reserved for messages issued above the HealthCheckExecutor within the call stack
+# The range 0050-0099 has been reserved for messages issued at or below the HealthCheckExecutor within the call stack
+#-----------------------------------------------------------------------------------------------------------------------------
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Health error message
+#-----------------------------------------------------------------------------------------------------------------------------
+OSGI_SERVICE_ERROR=CWMH0000E: Slu\u017eba OSGi {0} je nedostupn\u00e1.
+OSGI_SERVICE_ERROR.explanation=Tato intern\u00ed chyba serveru je generovan\u00e1 v d\u016fsledku nedostupnosti uveden\u00e9 slu\u017eby.
+OSGI_SERVICE_ERROR.useraction=Restartujte server s volbou clean.
+
+# A Health API error has occurred: {0}
+temporary.CWMH9999E=CWMH9999E: Do\u0161lo k n\u00e1sleduj\u00edc\u00ed chyb\u011b rozhran\u00ed Health API: {0}
+temporary.CWMH9999E.explanation=Do\u0161lo k chyb\u011b rozhran\u00ed Health API, kter\u00e1 br\u00e1n\u00ed norm\u00e1ln\u00ed operaci.
+temporary.CWMH9999E.useraction=Prozkoumejte protokoly FFDC a text v\u00fdjimky a identifikujte p\u0159\u00ed\u010dinu probl\u00e9mu.
+
+# The HealthCheck bean call method had an exception
+healthcheck.bean.call.exception.CWMH0050E=CWMH0050E: Metoda HealthCheck {0} v aplikaci {1} z modulu {2} vyvolal v\u00fdjimku {3} s n\u00e1sleduj\u00edc\u00ed zpr\u00e1vou: {4}
+healthcheck.bean.call.exception.CWMH0050E.explanation=Ur\u010den\u00e1 metoda vol\u00e1n\u00ed vygenerovala v\u00fdjimku.
+healthcheck.bean.call.exception.CWMH0050E.useraction=P\u0159ezkoumejte metodu vol\u00e1n\u00ed v r\u00e1mci objektu typu HealthCheck bean, abyste identifikovali v\u00fdjimku, ke kter\u00e9 do\u0161lo.
+
+# The HealthCheck bean call method had a DOWN outcome
+healthcheck.application.down.CWMH0051W=CWMH0051W: Metoda {0} implementuj\u00edc\u00ed HealthCheckResponse v aplikaci {1} v modulu {2} m\u00e1 v\u00fdstup DOWN {3} s daty {4}.
+healthcheck.application.down.CWMH0051W.explanation=V\u00fdstup DOWN m\u016f\u017ee zp\u016fsobit, \u017ee slu\u017eba monitorov\u00e1n\u00ed provede na tomto serveru akci.
+healthcheck.application.down.CWMH0051W.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele. Toto varov\u00e1n\u00ed je z\u00e1znamem v\u00fdstupu DOWN.

@@ -1,0 +1,297 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.jbatch.container/resources/com/ibm/jbatch/container/internal/resources/JBatchMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# NLS message prefix registry: http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+#
+# This file contains the messages in use.
+#
+# The range of messages "reserved":
+# 0001 - 0100: com.ibm.jbatch.container
+# 
+
+stopping.job.at.shutdown=CWWKY0001I: A(z) {0} feladatv\u00e9grehajt\u00e1s le\u00e1ll\u00edt\u00e1s\u00e1nak kiad\u00e1sa, mert a k\u00f6teg \u00f6sszetev\u0151 le\u00e1ll.
+stopping.job.at.shutdown.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+stopping.job.at.shutdown.useraction=Nincs teend\u0151.
+
+jobs.running.at.shutdown=CWWKY0002I: A k\u00f6teg \u00f6sszetev\u0151 le\u00e1ll. \
+Minden akt\u00edv feladatv\u00e9grehajt\u00e1sra le\u00e1ll\u00edt\u00e1si k\u00e9r\u00e9sek lettek kiadva. \
+A k\u00f6vetkez\u0151 feladatv\u00e9grehajt\u00e1sok futottak m\u00e9g a le\u00e1ll\u00e1s id\u0151pontj\u00e1ban: {0}. 
+jobs.running.at.shutdown.explanation=Amikor a k\u00f6teg \u00f6sszetev\u0151 le\u00e1ll, le\u00e1ll\u00edt\u00e1si k\u00e9r\u00e9st ad ki minden akt\u00edv feladatv\u00e9grehajt\u00e1sra, \u00e9s r\u00f6vid ideig v\u00e1rakozik a le\u00e1ll\u00e1sukra.  \
+A le nem \u00e1llt feladatv\u00e9grehajt\u00e1sok az \u00fczenetben vannak jelentve. \
+A k\u00f6teg \u00f6sszetev\u0151 le\u00e1ll\u00e1s\u00e1n t\u00fal fut\u00f3 feladatv\u00e9grehajt\u00e1sok el\u0151re nem l\u00e1that\u00f3 viselked\u00e9st eredm\u00e9nyezhetnek.
+jobs.running.at.shutdown.useraction=A k\u00f6teg \u00f6sszetev\u0151 le\u00e1ll\u00e1sa el\u0151tt javasolt megv\u00e1rni az \u00f6sszes feladat befejez\u0151d\u00e9s\u00e9t. \
+A k\u00f6teg \u00f6sszetev\u0151 le\u00e1ll, amikor a kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1sra ker\u00fcl, amikor a k\u00f6teg funkci\u00f3 elt\u00e1vol\u00edt\u00e1sra ker\u00fcl, illetve amikor a k\u00f6teg konfigur\u00e1ci\u00f3ja friss\u00edt\u00e9sre ker\u00fcl.
+ 
+jsl.schema.invalid=CWWKY0003E: A JSL (feladat XML dokumentum) a(z) {0} URL c\u00edmen a feladat XML s\u00e9ma szerint \u00e9rv\u00e9nytelen. \
+A JAXB \u00e9rv\u00e9nyes\u00edt\u0151 \u00e1ltal napl\u00f3zott els\u0151 \u00e9rv\u00e9nyes\u00edt\u00e9si hiba: {1}.
+jsl.schema.invalid.explanation=Az XML dokumentum nem felel meg az XSD s\u00e9m\u00e1nak.
+jsl.schema.invalid.useraction=Egy XML \u00e9rv\u00e9nyes\u00edt\u00e9si eszk\u00f6z haszn\u00e1lat\u00e1val ismerje meg, hogy mely szerkezet s\u00e9rti a s\u00e9mak\u00f6vetelm\u00e9nyeket.
+
+jsl.not.found.batch-jobs=CWWKY0004E: A(z) {0} JSL (feladat XML dokumentum) n\u00e9v nem tal\u00e1lhat\u00f3 az alkalmaz\u00e1s arch\u00edvumban a k\u00f6vetkez\u0151 helyen: {1}.
+jsl.not.found.batch-jobs.explanation=A dokumentum nem tal\u00e1lhat\u00f3 a param\u00e9ter \u00e1ltal azonos\u00edtott helyen, amely \
+a feladat beny\u00fajt\u00e1s\u00e1ra (pl. ind\u00edt\u00e1s\u00e1ra) szolg\u00e1lt.
+jsl.not.found.batch-jobs.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a JSL hely azonos\u00edt\u00e1s\u00e1hoz haszn\u00e1lt param\u00e9terek helyesek. \
+Amikor t\u00e1voli feladatbek\u00fcld\u00e9st haszn\u00e1l egy alkalmaz\u00e1smodulon bel\u00fcl becsomagolt JSL dokumentumban meghat\u00e1rozott feladat elk\u00fcld\u00e9s\u00e9hez, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1smodul helyesen van azonos\u00edtva a REST fel\u00fclethez \u00e1tadott param\u00e9tereken kereszt\u00fcl (k\u00f6zvetlen\u00fcl vagy a parancssoros seg\u00e9dprogram haszn\u00e1lat\u00e1val).
+
+persistence.service.status=CWWKY0005I: A(z) {0} k\u00f6teg perzisztens szolg\u00e1ltat\u00e1sa: {1}.
+persistence.service.status.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+persistence.service.status.useraction=Nincs teend\u0151.
+
+job.recovery.failed=CWWKY0006W: A k\u00f6tegeltfeladat-helyre\u00e1ll\u00edt\u00e1si szolg\u00e1ltat\u00e1s nem tudja kijav\u00edtani a(z) {0} kor\u00e1bban fut\u00f3, majd le\u00e1ll\u00edtott feladatp\u00e9ld\u00e1ny k\u00f6teg\u00e1llapot\u00e1t. A jav\u00edt\u00e1s a k\u00f6vetkez\u0151 kiv\u00e9tel miatt hi\u00fasult meg: {1}.
+job.recovery.failed.explanation=A jelen kiszolg\u00e1l\u00f3 el\u0151z\u0151 p\u00e9ld\u00e1ny\u00e1nak rendellenes le\u00e1ll\u00e1sa sor\u00e1n fut\u00f3 feladatok \u00e1llapot\u00e1t jav\u00edt\u00f3 k\u00f6tegeltfeladat-helyre\u00e1ll\u00edt\u00e1si szolg\u00e1ltat\u00e1s a jelzett kiv\u00e9tel miatt nem tudta kijav\u00edtani az adott feladatp\u00e9ld\u00e1ny \u00e1llapot\u00e1t.
+job.recovery.failed.useraction=Kezelje a kiv\u00e9tel ok\u00e1t, ha lehets\u00e9ges, majd a k\u00f6tegeltfeladat-helyre\u00e1ll\u00edt\u00e1si szolg\u00e1ltat\u00e1s ism\u00e9telt futtat\u00e1sa \u00e9rdek\u00e9ben ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+recovery.failed=CWWKY0007W: A k\u00f6tegeltfeladat-helyre\u00e1ll\u00edt\u00e1si szolg\u00e1ltat\u00e1s nem tudja kijav\u00edtani a kor\u00e1bban fut\u00f3, majd le\u00e1ll\u00edtott feladatok k\u00f6teg\u00e1llapot\u00e1t. A jav\u00edt\u00e1s a k\u00f6vetkez\u0151 kiv\u00e9tel miatt hi\u00fasult meg: {0}.
+recovery.failed.explanation=A jelen kiszolg\u00e1l\u00f3 el\u0151z\u0151 p\u00e9ld\u00e1ny\u00e1nak rendellenes le\u00e1ll\u00e1sa sor\u00e1n fut\u00f3 feladatok \u00e1llapot\u00e1t jav\u00edt\u00f3 k\u00f6tegeltfeladat-helyre\u00e1ll\u00edt\u00e1si szolg\u00e1ltat\u00e1s a jelzett kiv\u00e9tel miatt sikertelen.
+recovery.failed.useraction=Kezelje a kiv\u00e9tel ok\u00e1t, ha lehets\u00e9ges, majd a k\u00f6tegeltfeladat-helyre\u00e1ll\u00edt\u00e1si szolg\u00e1ltat\u00e1s ism\u00e9telt futtat\u00e1sa \u00e9rdek\u00e9ben ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+batch.kernel.persistence=CWWKY0008I: A k\u00f6tegszolg\u00e1ltat\u00e1s a(z) {0} perzisztenciat\u00edpust haszn\u00e1lja.
+batch.kernel.persistence.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+batch.kernel.persistence.useraction=Nincs teend\u0151.
+
+#{0} The job name
+#{1} The job instance id
+#{2} The job execution id
+job.started=CWWKY0009I: A(z) {0} feladat elind\u00edt\u00e1sra ker\u00fclt a(z) {1} feladatp\u00e9ld\u00e1ny \u00e9s {2} feladat-v\u00e9grehajt\u00e1s sz\u00e1m\u00e1ra.
+job.started.explanation=\u00daj feladat-v\u00e9grehajt\u00e1si sz\u00e1l ker\u00fclt elind\u00edt\u00e1sra.
+job.started.useraction=Nincs teend\u0151.
+
+#{0} The job name
+#{1} The batch status of the job
+#{2} The exit status of the job
+#{3} The job instance id
+#{4} The job execution id
+job.ended=CWWKY0010I: A(z) {0} feladat {1} k\u00f6teg\u00e1llapottal \u00e9s {2} kil\u00e9p\u00e9si \u00e1llapottal fejez\u0151d\u00f6tt be a(z) {3} feladatp\u00e9ld\u00e1ny \u00e9s {4} feladat-v\u00e9grehajt\u00e1s eset\u00e9ben.
+job.ended.explanation=A feladat-v\u00e9grehajt\u00e1s befejez\u0151d\u00f6tt.
+job.ended.useraction=Nincs teend\u0151.
+
+#{0} The job name
+#{1} The batch status of the job
+#{2} The exit status of the job
+#{3} The job instance id
+#{4} The job execution id
+job.failed=CWWKY0011W: A(z) {0} feladat {1} k\u00f6teg\u00e1llapottal \u00e9s {2} kil\u00e9p\u00e9si \u00e1llapottal meghi\u00fasult a(z) {3} feladatp\u00e9ld\u00e1ny \u00e9s {4} feladat-v\u00e9grehajt\u00e1s eset\u00e9ben.
+job.failed.explanation=A feladat-v\u00e9grehajt\u00e1st nem lehetett sikeresen le\u00e1ll\u00edtani.
+job.failed.useraction=A hiba ok\u00e1nak meg\u00e1llap\u00edt\u00e1sa \u00e9rdek\u00e9ben tekintse \u00e1t a kapcsol\u00f3d\u00f3 feladat-v\u00e9grehajt\u00e1s feladatnapl\u00f3it.
+
+#{0} The partition number
+#{1} The step name
+#{2} The job instance id
+#{3} The job execution id
+partition.started=CWWKY0012I: A(z) {0} part\u00edci\u00f3 elind\u00edt\u00e1sra ker\u00fclt a(z) {1} l\u00e9p\u00e9s, {2} feladatp\u00e9ld\u00e1ny \u00e9s {3} feladat-v\u00e9grehajt\u00e1s sz\u00e1m\u00e1ra.
+partition.started.explanation=Az \u00faj part\u00edci\u00f3 elind\u00edt\u00e1sra ker\u00fclt.
+partition.started.useraction=Nincs teend\u0151.
+
+#{0} The step name
+#{1} The partition number
+#{2} The batch status of the partition
+#{3} The exit status of the partition
+#{4} The job instance id
+#{5} The job execution id
+partition.ended=CWWKY0013I: A(z) {0} part\u00edci\u00f3 {1} k\u00f6teg\u00e1llapottal \u00e9s {2} kil\u00e9p\u00e9si \u00e1llapottal \u00e1llt le a(z) {3} l\u00e9p\u00e9s, {4} feladatp\u00e9ld\u00e1ny \u00e9s {5} feladat-v\u00e9grehajt\u00e1s eset\u00e9ben.
+partition.ended.explanation=A part\u00edci\u00f3 le\u00e1llt.
+partition.ended.useraction=Nincs teend\u0151.
+
+#{0} The step name
+#{1} The partition number
+#{2} The batch status of the partition
+#{3} The exit status of the partition
+#{4} The job instance id
+#{5} The job execution id
+partition.failed=CWWKY0014W: A(z) {0} part\u00edci\u00f3 {1} k\u00f6teg\u00e1llapottal \u00e9s {2} kil\u00e9p\u00e9si \u00e1llapottal meghi\u00fasult a(z) {3} l\u00e9p\u00e9s, {4} feladatp\u00e9ld\u00e1ny \u00e9s {5} feladat-v\u00e9grehajt\u00e1s eset\u00e9ben.
+partition.failed.explanation=A part\u00edci\u00f3t nem lehetett sikeresen le\u00e1ll\u00edtani.
+partition.failed.useraction=A hiba ok\u00e1nak meg\u00e1llap\u00edt\u00e1sa \u00e9rdek\u00e9ben tekintse \u00e1t a kapcsol\u00f3d\u00f3 feladat-v\u00e9grehajt\u00e1s feladatnapl\u00f3it.
+
+#{0} The flow name
+#{1} The job instance id
+#{2} The job execution id
+flow.started=CWWKY0015I: A(z) {0} folyam elind\u00edt\u00e1sra ker\u00fclt a(z) {1} feladatp\u00e9ld\u00e1ny \u00e9s {2} feladat-v\u00e9grehajt\u00e1s sz\u00e1m\u00e1ra.
+flow.started.explanation=A folyam elindult.
+flow.started.useraction=Nincs teend\u0151.
+
+#{0} The flow name
+#{1} The job instance id
+#{2} The job execution id
+flow.ended=CWWKY0016I: A(z) {0} folyam le\u00e1ll\u00edt\u00e1sra ker\u00fclt a(z) {1} feladatp\u00e9ld\u00e1ny \u00e9s {2} feladat-v\u00e9grehajt\u00e1s sz\u00e1m\u00e1ra.
+flow.ended.explanation=A folyam le\u00e1llt.
+flow.ended.useraction=Nincs teend\u0151.
+
+#{0} The flow name
+#{1} The job instance id
+#{2} The job execution id
+flow.failed=CWWKY0017W: A(z) {0} folyam meghi\u00fasult a(z) {1} feladatp\u00e9ld\u00e1ny \u00e9s {2} feladat-v\u00e9grehajt\u00e1s eset\u00e9ben.
+flow.failed.explanation=A folyamot nem lehetett sikeresen le\u00e1ll\u00edtani.
+flow.failed.useraction=A hiba ok\u00e1nak meg\u00e1llap\u00edt\u00e1sa \u00e9rdek\u00e9ben tekintse \u00e1t a kapcsol\u00f3d\u00f3 feladat-v\u00e9grehajt\u00e1s feladatnapl\u00f3it.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+step.started=CWWKY0018I: A(z) {0} l\u00e9p\u00e9s elind\u00edt\u00e1sra ker\u00fclt a(z) {1} feladatp\u00e9ld\u00e1ny \u00e9s {2} feladat-v\u00e9grehajt\u00e1s sz\u00e1m\u00e1ra.
+step.started.explanation=A megnevezett l\u00e9p\u00e9s v\u00e9grehajt\u00e1sa elind\u00edt\u00e1sra ker\u00fclt egy sz\u00e1lon.
+step.started.useraction=Nincs teend\u0151.
+
+#{0} The step name
+#{1} The batch status of the step
+#{2} The exit status of the step
+#{3} The job instance id
+#{4} The job execution id
+step.failed=CWWKY0019W: A(z) {0} l\u00e9p\u00e9s {1} k\u00f6teg\u00e1llapottal \u00e9s {2} kil\u00e9p\u00e9si \u00e1llapottal meghi\u00fasult a(z) {3} feladatp\u00e9ld\u00e1ny \u00e9s {4} feladat-v\u00e9grehajt\u00e1s eset\u00e9ben.
+step.failed.explanation=A l\u00e9p\u00e9st nem lehetett sikeresen le\u00e1ll\u00edtani.
+step.failed.useraction=A hiba ok\u00e1nak meg\u00e1llap\u00edt\u00e1sa \u00e9rdek\u00e9ben tekintse \u00e1t a kapcsol\u00f3d\u00f3 l\u00e9p\u00e9sv\u00e9grehajt\u00e1s feladatnapl\u00f3it.
+
+#{0} The step name
+#{1} The batch status of the step
+#{2} The exit status of the step
+#{3} The job instance id
+#{4} The job execution id
+step.ended=CWWKY0020I: A(z) {0} l\u00e9p\u00e9s {1} k\u00f6teg\u00e1llapottal \u00e9s {2} kil\u00e9p\u00e9si \u00e1llapottal le\u00e1ll\u00edt\u00e1sra ker\u00fclt a(z) {3} feladatp\u00e9ld\u00e1ny \u00e9s {4} feladat-v\u00e9grehajt\u00e1s eset\u00e9ben.
+step.ended.explanation=A l\u00e9p\u00e9s feldolgoz\u00e1sa befejez\u0151d\u00f6tt.
+step.ended.useraction=Nincs teend\u0151.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.started=CWWKY0021I: \u00daj csonk ker\u00fclt elind\u00edt\u00e1sra a(z) {0} l\u00e9p\u00e9s sz\u00e1m\u00e1ra a(z) {1} feladatp\u00e9ld\u00e1ny \u00e9s {2} feladat-v\u00e9grehajt\u00e1s eset\u00e9ben. L\u00e9p\u00e9sm\u00e9r\u0151sz\u00e1m = {3}
+chunk.started.explanation= A csonk feldolgoz\u00e1sa \u00e9rdek\u00e9ben \u00faj tranzakci\u00f3 ker\u00fclt elind\u00edt\u00e1sra.
+chunk.started.useraction=Nincs teend\u0151.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.ended=CWWKY0022I: A csonk sikeresen le\u00e1ll\u00edt\u00e1sra ker\u00fclt a(z) {0} l\u00e9p\u00e9s sz\u00e1m\u00e1ra a(z) {1} feladatp\u00e9ld\u00e1ny \u00e9s {2} feladat-v\u00e9grehajt\u00e1s eset\u00e9ben. L\u00e9p\u00e9sm\u00e9r\u0151sz\u00e1m = {3}
+chunk.ended.explanation= A csonkhoz t\u00e1rs\u00edtott tranzakci\u00f3 sikeresen v\u00e9gleges\u00edt\u00e9sre ker\u00fclt.
+chunk.ended.useraction=Nincs teend\u0151.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.rollback=CWWKY0024W: Az aktu\u00e1lis csonk visszag\u00f6rget\u00e9sre ker\u00fclt az el\u0151z\u0151 ellen\u0151rz\u00e9si pontra a(z) {0} l\u00e9p\u00e9s sz\u00e1m\u00e1ra a(z) {1} feladatp\u00e9ld\u00e1ny \u00e9s {2} feladat-v\u00e9grehajt\u00e1s eset\u00e9ben. L\u00e9p\u00e9sm\u00e9r\u0151sz\u00e1m = {3}
+chunk.rollback.explanation= Hiba t\u00f6rt\u00e9nt az aktu\u00e1lis csonkban, amely a tranzakci\u00f3 el\u0151z\u0151 ellen\u0151rz\u00e9si pontra val\u00f3 visszag\u00f6rget\u00e9s\u00e9t okozta.
+chunk.rollback.useraction=A hiba ok\u00e1nak meg\u00e1llap\u00edt\u00e1sa \u00e9rdek\u00e9ben tekintse \u00e1t a kapcsol\u00f3d\u00f3 feladat-v\u00e9grehajt\u00e1s feladatnapl\u00f3it.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.rollback.and.retry=CWWKY0025W: Az aktu\u00e1lis csonk visszag\u00f6rget\u00e9se feldolgoz\u00e1sra ker\u00fcl az \u00fajrapr\u00f3b\u00e1lhat\u00f3 kiv\u00e9tel ut\u00e1n a(z) {0} l\u00e9p\u00e9s sz\u00e1m\u00e1ra a(z) {1} feladatp\u00e9ld\u00e1ny \u00e9s {2} feladat-v\u00e9grehajt\u00e1s eset\u00e9ben. L\u00e9p\u00e9sm\u00e9r\u0151sz\u00e1m = {3}
+chunk.rollback.and.retry.explanation= \u00dajrapr\u00f3b\u00e1lhat\u00f3 kiv\u00e9tel t\u00f6rt\u00e9nt a csonk feldolgoz\u00e1sa sor\u00e1n, amely visszag\u00f6rget\u00e9sre ker\u00fcl az el\u0151z\u0151 ellen\u0151rz\u00e9si pontra, majd a rendszer ism\u00e9t pr\u00f3b\u00e1lkozik.
+chunk.rollback.and.retry.useraction=A hiba ok\u00e1nak meg\u00e1llap\u00edt\u00e1sa \u00e9rdek\u00e9ben tekintse \u00e1t a kapcsol\u00f3d\u00f3 feladat-v\u00e9grehajt\u00e1s feladatnapl\u00f3it.
+
+#{0} The step name that is associated with this reader
+item.reader.opened=CWWKY0026I: A(z) {0} l\u00e9p\u00e9s elemolvas\u00f3ja megnyit\u00e1sra ker\u00fclt.
+item.reader.opened.explanation=A l\u00e9p\u00e9shez t\u00e1rs\u00edtott elemolvas\u00f3 megnyit\u00e1sra ker\u00fclt.
+item.reader.opened.useraction=Nincs teend\u0151.
+
+#{0} The step name that is associated with this reader
+item.reader.closed=CWWKY0027I: A(z) {0} l\u00e9p\u00e9s elemolvas\u00f3ja bez\u00e1r\u00e1sra ker\u00fclt.
+item.reader.closed.explanation=A l\u00e9p\u00e9shez t\u00e1rs\u00edtott elemolvas\u00f3 bez\u00e1r\u00e1sra ker\u00fclt.
+item.reader.closed.useraction=Nincs teend\u0151.
+
+#{0} The step name that is associated with this writer
+item.writer.opened=CWWKY0028I: A(z) {0} l\u00e9p\u00e9s elem\u00edr\u00f3ja megnyit\u00e1sra ker\u00fclt.
+item.writer.opened.explanation=A l\u00e9p\u00e9shez t\u00e1rs\u00edtott elem\u00edr\u00f3 megnyit\u00e1sra ker\u00fclt.
+item.writer.opened.useraction=Nincs teend\u0151.
+
+#{0} The step name that is associated with this writer
+item.writer.closed=CWWKY0029I: A(z) {0} l\u00e9p\u00e9s elem\u00edr\u00f3ja bez\u00e1r\u00e1sra ker\u00fclt.
+item.writer.closed.explanation=A l\u00e9p\u00e9shez t\u00e1rs\u00edtott elem\u00edr\u00f3 bez\u00e1r\u00e1sra ker\u00fclt.
+item.writer.closed.useraction=Nincs teend\u0151.
+
+#{0} The step name that is associated with this writer
+#{1} The exception that occurred
+exception.executing.step=CWWKY0030I: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} l\u00e9p\u00e9s futtat\u00e1sa sor\u00e1n.\n\
+{1}
+exception.executing.step.explanation=Ez alkalmaz\u00e1shiba lehet. Kiv\u00e9tel t\u00f6rt\u00e9nt a l\u00e9p\u00e9s k\u00f6zponti r\u00e9sz\u00e9nek v\u00e9grehajt\u00e1sakor, miut\u00e1n a k\u00f6tegelt t\u00e1rol\u00f3 megh\u00edvta az \u00e9rintett k\u00f6tegeltalkalmaz\u00e1s-m\u0171term\u00e9keket.
+exception.executing.step.useraction=A hiba ok\u00e1nak meg\u00e1llap\u00edt\u00e1sa \u00e9rdek\u00e9ben tekintse \u00e1t a kapcsol\u00f3d\u00f3 feladat-v\u00e9grehajt\u00e1s feladatnapl\u00f3it.  Ez mag\u00e1ban foglalhatja az alkalmaz\u00e1s hibakeres\u00e9s\u00e9t.
+
+#{0} The step name that is associated with this writer
+#{1} The exception that occurred
+exception.after.step=CWWKY0031I: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} l\u00e9p\u00e9s v\u00e9gs\u0151 r\u00e9sz\u00e9nek futtat\u00e1sa sor\u00e1n.\n\
+{1}
+exception.after.step.explanation=Ez alkalmaz\u00e1shiba lehet. Kiv\u00e9tel t\u00f6rt\u00e9nt a l\u00e9p\u00e9s utols\u00f3 r\u00e9sz\u00e9nek (p\u00e9ld\u00e1ul a StepListener afterStep() met\u00f3dus belefoglal\u00e1s\u00e1nak) v\u00e9grehajt\u00e1sakor, miut\u00e1n a a k\u00f6tegelt t\u00e1rol\u00f3 megh\u00edvta az \u00e9rintett k\u00f6tegeltalkalmaz\u00e1s-m\u0171term\u00e9keket.
+exception.after.step.useraction=A hiba ok\u00e1nak meg\u00e1llap\u00edt\u00e1sa \u00e9rdek\u00e9ben tekintse \u00e1t a kapcsol\u00f3d\u00f3 feladat-v\u00e9grehajt\u00e1s feladatnapl\u00f3it.  Ez mag\u00e1ban foglalhatja az alkalmaz\u00e1s hibakeres\u00e9s\u00e9t.
+
+#{0} The exception that occurred
+error.persisting.stepExecution=CWWKY0032I: Kiv\u00e9tel t\u00f6rt\u00e9nt a l\u00e9p\u00e9sv\u00e9grehajt\u00e1s \u00e1llapot\u00e1nak \u00e9s a kapcsol\u00f3d\u00f3 adatoknak a t\u00e1rol\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.\n\
+{0}
+error.persisting.stepExecution.explanation=Ha ez t\u00f6rt\u00e9nik, a v\u00e9gs\u0151 l\u00e9p\u00e9s \u00e1llapota \u00e1ltal\u00e1ban nem ker\u00fcl megfelel\u0151en t\u00e1rol\u00e1sra az adatb\u00e1zisban, a k\u00f6teg\u00e1llapot pedig STARTED (elind\u00edtott) st\u00e1tuszban ragadhat annak ellen\u00e9re, hogy a k\u00f6teg t\u00e9nylegesen m\u00e1r nem fut. Ez \u00fctk\u00f6zhet az \u00fajraind\u00edt\u00e1si k\u00eds\u00e9rlettel, ami \u00e1llapotk\u00f6vetkezetlens\u00e9gi hib\u00e1kat okoz az  \u00fajraind\u00edt\u00e1s sor\u00e1n. 
+error.persisting.stepExecution.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az adatb\u00e1zis megfelel\u0151en van  konfigur\u00e1lva \u00e9s csatlakoztatva.   Ezut\u00e1n sz\u00fcks\u00e9g szerint \u00fajraind\u00edthatja a v\u00e9grehajt\u00f3 kiszolg\u00e1l\u00f3t (azt a kiszolg\u00e1l\u00f3t, amelyen a feladat v\u00e9grehajt\u00e1sra ker\u00fcl), ami aktiv\u00e1lja a helyre\u00e1ll\u00edt\u00e1st, valamint FAILED (meghi\u00fasult) \u00e1llapot\u00fak\u00e9nt jel\u00f6li meg a kapcsol\u00f3d\u00f3 feladatokat \u00e9s l\u00e9p\u00e9seket, \u00edgy sikeresen v\u00e9gre lehet hajtani a feladat-\u00fajraind\u00edt\u00e1st. 
+
+#{0} The exception that occurred
+exception.executing.job=CWWKY0033I: Kiv\u00e9tel t\u00f6rt\u00e9nt a feladat v\u00e9grehajt\u00e1sa sor\u00e1n.\n\
+{0}
+exception.executing.job.explanation=Ez alkalmaz\u00e1shiba lehet. Kiv\u00e9tel t\u00f6rt\u00e9nt a feladat k\u00f6zponti r\u00e9sz\u00e9nek v\u00e9grehajt\u00e1sakor, miut\u00e1n a k\u00f6tegelt t\u00e1rol\u00f3 megh\u00edvta az \u00e9rintett k\u00f6tegeltalkalmaz\u00e1s-m\u0171term\u00e9keket.
+exception.executing.job.useraction=A hiba ok\u00e1nak meg\u00e1llap\u00edt\u00e1sa \u00e9rdek\u00e9ben tekintse \u00e1t a kapcsol\u00f3d\u00f3 feladat-v\u00e9grehajt\u00e1s feladatnapl\u00f3it.  Ez mag\u00e1ban foglalhatja az alkalmaz\u00e1s hibakeres\u00e9s\u00e9t.
+
+#{0} The exception that occurred
+exception.after.job=CWWKY0034I: Kiv\u00e9tel t\u00f6rt\u00e9nt a feladat v\u00e9gs\u0151 r\u00e9sz\u00e9nek futtat\u00e1sa sor\u00e1n.\n\
+{0}
+exception.after.job.explanation=Ez alkalmaz\u00e1shiba lehet. Kiv\u00e9tel t\u00f6rt\u00e9nt a feladat utols\u00f3 r\u00e9sz\u00e9nek (p\u00e9ld\u00e1ul a JobListener afterJob() met\u00f3dus belefoglal\u00e1s\u00e1nak) v\u00e9grehajt\u00e1sakor, miut\u00e1n a a k\u00f6tegelt t\u00e1rol\u00f3 megh\u00edvta az \u00e9rintett k\u00f6tegeltalkalmaz\u00e1s-m\u0171term\u00e9keket.
+exception.after.job.useraction=A hiba ok\u00e1nak meg\u00e1llap\u00edt\u00e1sa \u00e9rdek\u00e9ben tekintse \u00e1t a kapcsol\u00f3d\u00f3 feladathoz tartoz\u00f3 feladatnapl\u00f3kat.  Ez mag\u00e1ban foglalhatja az alkalmaz\u00e1s hibakeres\u00e9s\u00e9t.
+
+#{0} The exception that occurred
+error.persisting.jobExecution=CWWKY0035I: Kiv\u00e9tel t\u00f6rt\u00e9nt a feladat-v\u00e9grehajt\u00e1s \u00e1llapot\u00e1nak \u00e9s a kapcsol\u00f3d\u00f3 adatoknak a t\u00e1rol\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.\n\
+{0}
+error.persisting.jobExecution.explanation=Ha ez t\u00f6rt\u00e9nik, a v\u00e9gs\u0151 feladat k\u00f6teg\u00e1llapota \u00e1ltal\u00e1ban nem ker\u00fcl megfelel\u0151en t\u00e1rol\u00e1sra az adatb\u00e1zisban, a k\u00f6teg\u00e1llapot pedig STARTED (elind\u00edtott) st\u00e1tuszban ragadhat annak ellen\u00e9re, hogy a k\u00f6teg t\u00e9nylegesen m\u00e1r nem fut. Ez \u00fctk\u00f6zhet az \u00fajraind\u00edt\u00e1si k\u00eds\u00e9rlettel, ami \u00e1llapotk\u00f6vetkezetlens\u00e9gi hib\u00e1kat okoz az  \u00fajraind\u00edt\u00e1s sor\u00e1n.
+error.persisting.jobExecution.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az adatb\u00e1zis megfelel\u0151en van  konfigur\u00e1lva \u00e9s csatlakoztatva.   Ezut\u00e1n sz\u00fcks\u00e9g szerint \u00fajraind\u00edthatja a v\u00e9grehajt\u00f3 kiszolg\u00e1l\u00f3t (azt a kiszolg\u00e1l\u00f3t, amelyen a feladat v\u00e9grehajt\u00e1sra ker\u00fcl), ami aktiv\u00e1lja a helyre\u00e1ll\u00edt\u00e1st, valamint FAILED (meghi\u00fasult) \u00e1llapot\u00fak\u00e9nt jel\u00f6li meg a kapcsol\u00f3d\u00f3 feladatokat \u00e9s l\u00e9p\u00e9seket, \u00edgy sikeresen v\u00e9gre lehet hajtani a feladat-\u00fajraind\u00edt\u00e1st.
+
+#{0} The invalid job instance id.
+#{1} The persistence exception.
+error.invalid.persisted.job.id=CWWKY0036E: A(z) {0} \u00e9rv\u00e9nytelen feladatp\u00e9ld\u00e1ny-azonos\u00edt\u00f3 lett els\u0151dleges kulcsk\u00e9nt l\u00e9trehozva egy k\u00f6tegt\u00e1bl\u00e1hoz. Az azonos\u00edt\u00f3 \u00e9rt\u00e9k\u00e9nek pozit\u00edv eg\u00e9sz sz\u00e1mnak kell lennie. \n\
+{1}
+error.invalid.persisted.job.id.explanation=A feladat v\u00e9grehajt\u00e1sa meghi\u00fasult, mert \u00e9rv\u00e9nytelen azonos\u00edt\u00f3 ker\u00fclt el\u0151\u00e1ll\u00edt\u00e1sra egy k\u00f6tegt\u00e1bl\u00e1ban. A k\u00f6tegazonos\u00edt\u00f3nak pozit\u00edv eg\u00e9sz sz\u00e1mnak kell lennie.
+error.invalid.persisted.job.id.useraction=Gondoskodjon r\u00f3la, hogy a k\u00f6teg adatb\u00e1zist\u00e1bla defin\u00edci\u00f3ja csak pozit\u00edv eg\u00e9sz sz\u00e1mok haszn\u00e1lat\u00e1t tegye lehet\u0151v\u00e9 els\u0151dleges kulcsk\u00e9nt haszn\u00e1lt azonos\u00edt\u00f3 \u00e9rt\u00e9kek eset\u00e9ben.
+
+#{0} The invalid execution id.
+#{1} The persistence exception.
+error.invalid.persisted.exe.id=CWWKY0037E: A(z) {0} \u00e9rv\u00e9nytelen feladatv\u00e9grehajt\u00e1si azonos\u00edt\u00f3 lett els\u0151dleges kulcsk\u00e9nt l\u00e9trehozva egy k\u00f6tegt\u00e1bl\u00e1hoz. Az azonos\u00edt\u00f3 \u00e9rt\u00e9k\u00e9nek pozit\u00edv eg\u00e9sz sz\u00e1mnak kell lennie. \n\
+{1}
+error.invalid.persisted.exe.id.explanation=A feladat v\u00e9grehajt\u00e1sa meghi\u00fasult, mert \u00e9rv\u00e9nytelen azonos\u00edt\u00f3 ker\u00fclt el\u0151\u00e1ll\u00edt\u00e1sra egy k\u00f6tegt\u00e1bl\u00e1ban. A k\u00f6tegazonos\u00edt\u00f3nak pozit\u00edv eg\u00e9sz sz\u00e1mnak kell lennie.
+error.invalid.persisted.exe.id.useraction=Gondoskodjon r\u00f3la, hogy a k\u00f6teg adatb\u00e1zist\u00e1bla defin\u00edci\u00f3ja csak pozit\u00edv eg\u00e9sz sz\u00e1mok haszn\u00e1lat\u00e1t tegye lehet\u0151v\u00e9 els\u0151dleges kulcsk\u00e9nt haszn\u00e1lt azonos\u00edt\u00f3 \u00e9rt\u00e9kek eset\u00e9ben.
+
+#{0} The invalid step execution id.
+#{1} The persistence exception.
+error.invalid.persisted.step.id=CWWKY0038E: A(z) {0} \u00e9rv\u00e9nytelen l\u00e9p\u00e9sv\u00e9grehajt\u00e1si azonos\u00edt\u00f3 lett els\u0151dleges kulcsk\u00e9nt l\u00e9trehozva egy k\u00f6tegt\u00e1bl\u00e1hoz. Az azonos\u00edt\u00f3 \u00e9rt\u00e9k\u00e9nek pozit\u00edv eg\u00e9sz sz\u00e1mnak kell lennie. \n\
+{1}
+error.invalid.persisted.step.id.explanation=A feladat v\u00e9grehajt\u00e1sa meghi\u00fasult, mert \u00e9rv\u00e9nytelen azonos\u00edt\u00f3 ker\u00fclt el\u0151\u00e1ll\u00edt\u00e1sra egy k\u00f6tegt\u00e1bl\u00e1ban. A k\u00f6tegazonos\u00edt\u00f3nak pozit\u00edv eg\u00e9sz sz\u00e1mnak kell lennie.
+error.invalid.persisted.step.id.useraction=Gondoskodjon r\u00f3la, hogy a k\u00f6teg adatb\u00e1zist\u00e1bla defin\u00edci\u00f3ja csak pozit\u00edv eg\u00e9sz sz\u00e1mok haszn\u00e1lat\u00e1t tegye lehet\u0151v\u00e9 els\u0151dleges kulcsk\u00e9nt haszn\u00e1lt azonos\u00edt\u00f3 \u00e9rt\u00e9kek eset\u00e9ben.
+
+partition.recovery.failed=CWWKY0039W: A k\u00f6tegeltfeladat-helyre\u00e1ll\u00edt\u00e1si szolg\u00e1ltat\u00e1s nem tudja kijav\u00edtani a(z) {0} kor\u00e1bban fut\u00f3, majd le\u00e1ll\u00edtott part\u00edci\u00f3 k\u00f6teg\u00e1llapot\u00e1t. A jav\u00edt\u00e1s a k\u00f6vetkez\u0151 kiv\u00e9tel miatt hi\u00fasult meg: {1}.
+partition.recovery.failed.explanation=A jelen kiszolg\u00e1l\u00f3 el\u0151z\u0151 p\u00e9ld\u00e1ny\u00e1nak rendellenes le\u00e1ll\u00e1sa sor\u00e1n fut\u00f3 part\u00edci\u00f3k \u00e1llapot\u00e1t jav\u00edt\u00f3 k\u00f6tegeltfeladat-helyre\u00e1ll\u00edt\u00e1si szolg\u00e1ltat\u00e1s a jelzett kiv\u00e9tel miatt nem tudta kijav\u00edtani az adott part\u00edci\u00f3 \u00e1llapot\u00e1t.
+partition.recovery.failed.useraction=Kezelje a kiv\u00e9tel ok\u00e1t, ha lehets\u00e9ges, majd a k\u00f6tegeltfeladat-helyre\u00e1ll\u00edt\u00e1si szolg\u00e1ltat\u00e1s ism\u00e9telt futtat\u00e1sa \u00e9rdek\u00e9ben ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+info.batch.events.publish.topic=CWWKY0040I: A k\u00f6tegelt fut\u00e1si k\u00f6rnyezet esem\u00e9nyeket fog k\u00f6zz\u00e9tenni a(z) {0} JMS t\u00e9mak\u00f6rgy\u00f6k\u00e9rbe.
+info.batch.events.publish.topic.explanation=Inform\u00e1ci\u00f3s \u00fczenet. A k\u00f6tegelt fut\u00e1si k\u00f6rnyezet esem\u00e9nyeket fog k\u00f6zz\u00e9tenni a figyelt k\u00f6teg t\u00e9mak\u00f6rgy\u00f6ker\u00e9be.
+info.batch.events.publish.topic.useraction=A k\u00f6teg JMS t\u00e9mak\u00f6rgy\u00f6kere m\u00f3dos\u00edthat\u00f3. Ellen\u0151rizze a batchJmsEvents \u00e1ltal haszn\u00e1lt konfigur\u00e1lt be\u00e1ll\u00edt\u00e1sokat.
+
+cdi.ambiguous.artifact.names=CWWKY0041W: A k\u00f6teg t\u00e1rol\u00f3 egy akt\u00edv CDI szolg\u00e1ltat\u00e1ssal fut, azonban a CDI alrendszer nem tudta bet\u00f6lteni a k\u00f6teg m\u0171term\u00e9ket CDI fel\u00fcgyelt beank\u00e9nt \u00e9s v\u00e9grehajtani m\u00e1s m\u00e1s CDI besz\u00far\u00e1sokat. Ezt a probl\u00e9m\u00e1t egy hi\u00e1nyz\u00f3 bean meghat\u00e1roz\u00f3 annot\u00e1ci\u00f3 (p\u00e9ld\u00e1ul @Dependent), egy nem sz\u00e1nd\u00e9kos bean felt\u00e9rk\u00e9pez\u00e9si m\u00f3d vagy egy k\u00e9t\u00e9rtelm\u0171 'ref' \u00e9rt\u00e9k okozhatta.
+cdi.ambiguous.artifact.names.explanation=Amikor a k\u00f6teg fut\u00e1si k\u00f6rnyezet a CDI alrendszer haszn\u00e1lat\u00e1val t\u00f6lti be a m\u0171term\u00e9keket, a k\u00f6teg tulajdons\u00e1gok (@BatchProperty) \u00e9s a k\u00f6teg kontextusok (JobContext \u00e9s StepContext) be vannak sz\u00farva, \u00e9s a CDI \u00f6sszes k\u00e9pess\u00e9ge el\u00e9rhet\u0151v\u00e9 v\u00e1lik. Ezek a k\u00e9pess\u00e9gek magukban foglalj\u00e1k m\u00e1s fel\u00fcgyelt beanek besz\u00far\u00e1s\u00e1t a min\u0151s\u00edt\u0151knek megfelel\u0151en, valamint a CDI programoz\u00e1si modell \u00f6sszes t\u00f6bbi szolg\u00e1ltat\u00e1s\u00e1t. Amikor a k\u00f6teg fut\u00e1si k\u00f6rnyezet a CDI alrendszer haszn\u00e1lata n\u00e9lk\u00fcl t\u00f6lti be a m\u0171term\u00e9keket, csak a k\u00f6teg tulajdons\u00e1gokat \u00e9s kontextusokat sz\u00farja be. Mivel ez nem egy CDI fel\u00fcgyelt bean ezen az \u00fatvonalon, m\u00e1s besz\u00far\u00e1sok vagy a CDI programoz\u00e1si modell egy\u00e9b szolg\u00e1ltat\u00e1sai nem \u00e9rhet\u0151k el az adott k\u00f6teg m\u0171term\u00e9kben. Ez az \u00fczenet azt jelzi, hogy b\u00e1r a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3ja szerint a CDI szolg\u00e1ltat\u00e1s akt\u00edv, a k\u00f6teg m\u0171term\u00e9k nem t\u00f6lthet\u0151 be CDI fel\u00fcgyelt beank\u00e9nt, mert a 'ref' attrib\u00fatum \u00e9rt\u00e9ke, amely az XML-ben megfelel egy erre a m\u0171term\u00e9kre mutat\u00f3 referenci\u00e1nak, nem egyetlen, egy\u00e9rtelm\u0171 CDI fel\u00fcgyelt beanre mutat.
+cdi.ambiguous.artifact.names.useraction=Adja hozz\u00e1 a @Dependent annot\u00e1ci\u00f3t vagy egy m\u00e1sik megfelel\u0151, bean meghat\u00e1roz\u00e1s\u00e1ra szolg\u00e1l\u00f3 annot\u00e1ci\u00f3t a k\u00f6teg m\u0171term\u00e9khez. Ennek alternat\u00edv\u00e1jak\u00e9nt be\u00e1ll\u00edthatja a bean felt\u00e9rk\u00e9pez\u00e9si m\u00f3dot 'all' \u00e9rt\u00e9kre a beans.xml f\u00e1jlban, hab\u00e1r ez a megold\u00e1s lelass\u00edthatja az alkalmaz\u00e1st. Ha egyetlen k\u00e9t\u00e9rtelm\u0171 m\u0171term\u00e9kre sincs sz\u00fcks\u00e9ge, akkor el kell t\u00e1vol\u00edtania a k\u00e9t\u00e9rtelm\u0171 'ref' attrib\u00fatumokat az alkalmaz\u00e1sb\u00f3l, hogy csak egyetlen, egy\u00e9rtelm\u0171 hivatkoz\u00e1s maradjon.

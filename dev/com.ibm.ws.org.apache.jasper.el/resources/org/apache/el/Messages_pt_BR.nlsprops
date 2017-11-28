@@ -1,0 +1,67 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+#CMVCPATHNAME com.ibm.ws.apache.el-3.0/resources/org/apache/el/Messages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+
+# General Errors
+error.convert=N\u00e3o \u00e9 poss\u00edvel converter {0} do tipo {1} to {2}
+error.compare=N\u00e3o \u00e9 poss\u00edvel comparar {0} com {1}
+error.function=Problema ao chamar a fun\u00e7\u00e3o ''{0}''
+error.unreachable.base=N\u00e3o alcan\u00e7\u00e1vel no destino, identificador ''{0}'' resolvido como nulo
+error.unreachable.property=N\u00e3o alcan\u00e7\u00e1vel no destino, ''{0}'' retornou nulo
+error.resolver.unhandled=ELResolver n\u00e3o manipula o tipo: {0} com propriedade de ''{1}''
+error.resolver.unhandled.null=ELResolver n\u00e3o pode manipular um Objeto base nulo com o identificador ''{0}''
+
+# ValueExpressionLiteral
+error.value.literal.write=ValueExpression \u00e9 um literal e n\u00e3o \u00e9 grav\u00e1vel: {0}
+
+# ExpressionFactoryImpl
+error.null=A express\u00e3o n\u00e3o pode ser nula
+error.mixed=A express\u00e3o n\u00e3o pode conter ''#''{..}'' e ''$''{..}'' : {0}
+error.method=N\u00e3o \u00e9 uma MethodExpression v\u00e1lida: {0}
+error.method.nullParms=Os tipos de par\u00e2metro n\u00e3o podem ser nulos
+error.value.expectedType=O tipo esperado n\u00e3o pode ser nulo
+
+# ExpressionBuilder
+error.parseFail=Falha ao analisar a express\u00e3o [{0}]
+
+# ValueSetVisitor
+error.syntax.set=Sintaxe ilegal para configurar opera\u00e7\u00e3o
+
+# ReflectionUtil
+error.method.notfound=M\u00e9todo n\u00e3o localizado: {0}.{1}({2})
+error.method.ambiguous=N\u00e3o \u00e9 poss\u00edvel localizar m\u00e9todo inequ\u00edvoco: {0}.{1}({2})
+
+# ValidatingVisitor
+error.fnMapper.null=A express\u00e3o usa fun\u00e7\u00f5es, mas nenhum FunctionMapper foi fornecido
+error.fnMapper.method=Fun\u00e7\u00e3o ''{0}'' n\u00e3o localizada
+error.fnMapper.paramcount=A fun\u00e7\u00e3o ''{0}'' especifica {1} par\u00e2metros, mas {2} foram declarados
+
+# ExpressionImpl
+error.context.null=ELContext era nulo
+
+# Parser
+error.funciton.tooManyMethodParameterSets=H\u00e1 v\u00e1rios conjuntos de par\u00e2metros especificados para a fun\u00e7\u00e3o [{0}]
+error.identifier.notjava=O identificador [{0}] n\u00e3o \u00e9 um identificador Java v\u00e1lido, conforme requerido pela se\u00e7\u00e3o 1.19 da especifica\u00e7\u00e3o EL (Identificador ::= identificador de linguagem Java). Essa verifica\u00e7\u00e3o pode ser desativada configurando a propriedade do sistema org.apache.el.parser.SKIP_IDENTIFIER_CHECK como verdadeira.
+error.lambda.tooManyMethodParameterSets=H\u00e1 mais conjuntos de par\u00e2metros do m\u00e9todo especificados do que h\u00e1 express\u00f5es lambda aninhadas
+
+# Stream
+stream.compare.notComparable=Elementos de fluxo devem implementar Compar\u00e1vel
+stream.optional.empty=\u00c9 ilegal chamar get() em um opcional vazio
+stream.optional.paramNotLambda=O par\u00e2metro para o m\u00e9todo [{0}] deve ser uma express\u00e3o lambda

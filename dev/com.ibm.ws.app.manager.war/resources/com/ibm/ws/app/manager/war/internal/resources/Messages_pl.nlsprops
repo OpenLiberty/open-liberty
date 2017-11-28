@@ -1,0 +1,218 @@
+###############################################################################
+# Copyright (c) 2011, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.war/resources/com/ibm/ws/app/manager/war/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKZ
+#COMPONENTNAMEFOR CWWKZ Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+# Reserving message prefixes CWWKZ0101 to CWWKZ0200
+
+# Now unused, but preserved for the Infocenter:
+#   error.file.copy.failed
+#   error.ear.extraction.exception
+#   error.ear.extraction.failed
+#   error.dir.creation.failed
+#   error.bundle.context.unavailable
+#{0} is source file name 
+#{1} is destination file name 
+#{2} is application name
+error.file.copy.failed=CWWKZ0101E: Nie mo\u017cna by\u0142o skopiowa\u0107 pliku {0} w miejsce {1} podczas uruchamiania aplikacji {2}. 
+error.file.copy.failed.explanation=Przed uruchomieniem aplikacji plik aplikacji jest kopiowany w nowe miejsce. Operacja kopiowania pliku nie powiod\u0142a si\u0119, dlatego aplikacja nie zosta\u0142a uruchomiona.
+error.file.copy.failed.useraction=Sprawd\u017a po\u0142o\u017cenie plik\u00f3w \u017ar\u00f3d\u0142owych i docelowych, aby okre\u015bli\u0107, czy mo\u017cna rozwi\u0105za\u0107 problem.
+
+#{0} is ear file name
+#{1} is extract destination
+#{2} is exception message
+error.ear.extraction.exception=CWWKZ0102E: Nie mo\u017cna rozpakowa\u0107 pliku EAR {0} w miejscu {1}. Komunikat o wyj\u0105tku to: {2}
+error.ear.extraction.exception.explanation=Serwer nie m\u00f3g\u0142 uruchomi\u0107 aplikacji, poniewa\u017c nie mo\u017cna by\u0142o rozpakowa\u0107 pliku EAR.
+error.ear.extraction.exception.useraction=Informacje zawiera komunikat o wyj\u0105tku.  Wi\u0119cej szczeg\u00f3\u0142\u00f3w mo\u017cna znale\u017a\u0107 w dzienniku wyj\u0105tk\u00f3w.
+
+#{0} is ear file name
+#{1} is extract destination
+error.ear.extraction.failed=CWWKZ0103E: Nie mo\u017cna rozpakowa\u0107 pliku EAR {0} w miejscu {1}. 
+error.ear.extraction.failed.explanation=Serwer nie m\u00f3g\u0142 uruchomi\u0107 aplikacji, poniewa\u017c nie mo\u017cna by\u0142o rozpakowa\u0107 pliku EAR.
+error.ear.extraction.failed.useraction=Sprawd\u017a, czy plik EAR jest poprawnym archiwum.
+
+#{0} is directory name
+#{1} is application name
+error.dir.creation.failed=CWWKZ0104E: Nie mo\u017cna by\u0142o utworzy\u0107 katalogu {0} podczas uruchamiania aplikacji {1}.
+error.dir.creation.failed.explanation=Przed uruchomieniem aplikacji tworzony jest katalog. Operacja tworzenia katalogu nie powiod\u0142a si\u0119, dlatego aplikacja nie zosta\u0142a uruchomiona.
+error.dir.creation.failed.useraction=Sprawd\u017a po\u0142o\u017cenie katalogu, aby okre\u015bli\u0107, czy mo\u017cna rozwi\u0105za\u0107 problem.
+
+#{0} is application name
+error.bundle.context.unavailable=CWWKZ0105E: Kontekst pakunku by\u0142 niedost\u0119pny i nie mo\u017cna by\u0142o uruchomi\u0107 aplikacji {0}.
+error.bundle.context.unavailable.explanation=Serwer nie m\u00f3g\u0142 uruchomi\u0107 aplikacji.  Przyczyn\u0105 mo\u017ce by\u0107 b\u0142\u0105d wewn\u0119trzny.
+error.bundle.context.unavailable.useraction=Sprawd\u017a, czy dzienniki komunikat\u00f3w i wyj\u0105tk\u00f3w nie zawieraj\u0105 pokrewnych b\u0142\u0119d\u00f3w.
+
+# Leaving these (for now); there are catch points which seem
+# to have uses for them.
+#   error.not.installed
+#   error.cache.adapt
+
+#{0} is the application name
+error.not.installed=CWWKZ0106E: Nie mo\u017cna uruchomi\u0107 aplikacji WWW {0}.
+error.not.installed.explanation=Wcze\u015bniejszy b\u0142\u0105d uniemo\u017cliwi\u0142 zainstalowanie aplikacji.
+error.not.installed.useraction=Sprawd\u017a miejsce w konfiguracji aplikacji.
+
+# RESERVED: CWWKZ0107E is used by com.ibm.ws.app.manager.module
+error.cache.adapt=CWWKZ0107E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Nie mo\u017cna adaptowa\u0107 pami\u0119ci podr\u0119cznej dla modu\u0142u WWW {0}.
+error.cache.adapt.explanation=CMSG0001
+error.cache.adapt.useraction=CMSG0002
+
+# RESERVED: CWWKZ0108E is used by com.ibm.ws.app.manager.module
+
+# Added by task 73569:
+#
+# The codes for modules types are current (WAR, EJB).  These are untranslated text values
+# used to indicate the type of the module which is being processed.  The type corresponds to
+# the archive, not to the presence of function within the module.
+
+#{0} is the application name
+#{1} is the library relative path
+#{2} is the exception message
+error.application.library.container=CWWKZ0111E: Aplikacja {0} napotka\u0142a b\u0142\u0105d podczas uzyskiwania dost\u0119pu do biblioteki aplikacji {1}: {2}
+error.application.library.container.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny podczas uzyskiwania dost\u0119pu do tre\u015bci biblioteki.  Biblioteka nie b\u0119dzie dost\u0119pna do u\u017cytku.
+error.application.library.container.useraction=Przejrzyj tre\u015b\u0107 aplikacji i upewnij si\u0119, \u017ce istnieje archiwum dla biblioteki.
+
+#{0} is the application name
+#{1} is the exception message
+error.application.libraries=CWWKZ0112E: Aplikacja {0} napotka\u0142a b\u0142\u0105d podczas zwracania listy bibliotek aplikacji: {1}
+error.application.libraries.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas zwracania listy bibliotek aplikacji.  Lista bibliotek aplikacji b\u0119dzie niekompletna.
+error.application.libraries.useraction=Informacje o wyj\u0105tku zawieraj\u0105 dodatkowe szczeg\u00f3\u0142y.
+
+#{0} is the application name
+#{1} is the relative path to the application descriptor
+#{2} is the exception message
+error.application.parse.descriptor=CWWKZ0113E: Aplikacja {0} napotka\u0142a b\u0142\u0105d analizowania podczas przetwarzania deskryptora aplikacji {1}: {2}
+error.application.parse.descriptor.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas analizowania deskryptora aplikacji.  Dla aplikacji nie b\u0119d\u0105 dost\u0119pne \u017cadne modu\u0142y.
+error.application.parse.descriptor.useraction=Informacje o wyj\u0105tku zawieraj\u0105 dodatkowe szczeg\u00f3\u0142y.  Przejrzyj tre\u015b\u0107 deskryptora aplikacji, aby upewni\u0107 si\u0119, \u017ce s\u0105 to poprawne dane XML.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+#{3} is the exception message
+error.module.container=CWWKZ0114E: Aplikacja {0} napotka\u0142a b\u0142\u0105d podczas uzyskiwania dost\u0119pu do tre\u015bci modu\u0142u {1} typu {2}: {3}
+error.module.container.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny podczas uzyskiwania dost\u0119pu do tre\u015bci modu\u0142u.  Modu\u0142 nie zostanie udost\u0119pniony do u\u017cytku.
+error.module.container.useraction=Informacje o wyj\u0105tku zawieraj\u0105 dodatkowe szczeg\u00f3\u0142y.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+error.module.container.null=CWWKZ0115E: Aplikacja {0} odebra\u0142a warto\u015b\u0107 NULL podczas uzyskiwania dost\u0119pu do tre\u015bci modu\u0142u kandydata {1} typu {2}
+error.module.container.null.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny podczas uzyskiwania dost\u0119pu do tre\u015bci modu\u0142u.  W aplikacji mo\u017ce brakowa\u0107 archiwum dla modu\u0142u.  Modu\u0142 nie zostanie udost\u0119pniony do u\u017cytku.
+error.module.container.null.useraction=Przejrzyj tre\u015b\u0107 aplikacji i upewnij si\u0119, \u017ce istnieje archiwum dla modu\u0142u.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+#{3} is the exception message
+error.module.create=CWWKZ0116E: Nie powiod\u0142o si\u0119 zako\u0144czenie tworzenia modu\u0142u {1} typu {2} przez aplikacj\u0119 {0}: {3}
+error.module.create.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny podczas ko\u0144czenia tworzenia modu\u0142u.  Modu\u0142 nie zostanie udost\u0119pniony do u\u017cytku.
+error.module.create.useraction=Informacje o wyj\u0105tku zawieraj\u0105 dodatkowe szczeg\u00f3\u0142y.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+error.module.locate.failed=CWWKZ0117E: Aplikacja {0} nie mo\u017ce znale\u017a\u0107 modu\u0142u {1} typu {2}
+error.module.locate.failed.explanation=Brak archiwum dla modu\u0142u wymienionego w deskryptorze aplikacji.  Modu\u0142 nie zostanie udost\u0119pniony do u\u017cytku.
+error.module.locate.failed.useraction=Informacje o wyj\u0105tku zawieraj\u0105 dodatkowe szczeg\u00f3\u0142y.  Przejrzyj tre\u015b\u0107 aplikacji i upewnij si\u0119, \u017ce istnieje archiwum dla modu\u0142u.
+
+#{0} is the application name
+#{1} is the descriptor relative path
+#{2} is the module relative path
+#{3} is a code for the module type (WAR, EJB)
+#{4} is the exception message
+error.module.parse.descriptor=CWWKZ0118E: Aplikacja {0} napotka\u0142a b\u0142\u0105d analizowania podczas przetwarzania deskryptora {1} modu\u0142u {2} typu {3}: {4}
+error.module.parse.descriptor.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas analizowania deskryptora wdra\u017cania modu\u0142u.  Modu\u0142 nie zostanie udost\u0119pniony do u\u017cytku.
+error.module.parse.descriptor.useraction=Informacje o wyj\u0105tku zawieraj\u0105 dodatkowe szczeg\u00f3\u0142y.  Przejrzyj tre\u015b\u0107 deskryptora aplikacji, aby upewni\u0107 si\u0119, \u017ce s\u0105 to poprawne dane XML.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+#{3} is the exception message
+error.module.class.source=CWWKZ0120E: Nie powiod\u0142o si\u0119 uzyskanie przez aplikacj\u0119 {0} dost\u0119pu do klas modu\u0142u {1} typu {2}: {3}
+error.module.class.source.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny podczas pr\u00f3by skanowania pliku JAR pod k\u0105tem adnotacji EJB.  Plik JAR nie b\u0119dzie dost\u0119pny w postaci pliku JAR komponentu EJB.
+error.module.class.source.useraction=Informacje o wyj\u0105tku zawieraj\u0105 dodatkowe szczeg\u00f3\u0142y.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+#{3} is the exception message
+error.module.annotation.targets=CWWKZ0121E: Nie powiod\u0142o si\u0119 uzyskanie przez aplikacj\u0119 {0} dost\u0119pu do adnotacji modu\u0142u {1} typu {2}: {3}
+error.module.annotation.targets.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny podczas pr\u00f3by skanowania pliku JAR pod k\u0105tem adnotacji EJB.  Plik JAR nie b\u0119dzie dost\u0119pny w postaci pliku JAR komponentu EJB.
+error.module.annotation.targets.useraction=Informacje o wyj\u0105tku zawieraj\u0105 dodatkowe szczeg\u00f3\u0142y.
+
+#{0} is the application name
+#{1} is the module relative path
+error.module.uri.duplicate=CWWKZ0122W: Aplikacja {0} deklaruje wiele modu\u0142\u00f3w o identyfikatorze URI {1} w pliku META-INF/application.xml.
+error.module.uri.duplicate.explanation=Wiele modu\u0142\u00f3w wskazuje to samo archiwum.  Tylko jeden modu\u0142 zostanie udost\u0119pniony do u\u017cycia.
+error.module.uri.duplicate.useraction=Przejrzyj zawarto\u015b\u0107 deskryptora aplikacji, aby upewni\u0107 si\u0119, \u017ce ka\u017cdy modu\u0142 wskazuje unikalne archiwum.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is the exception message
+error.module.manifest.read.failed=CWWKZ0123E: Aplikacja {0} nie mo\u017ce odczyta\u0107 pliku META-INF/MANIFEST.MF dla modu\u0142u {1}. Wyj\u0105tek: {2}
+error.module.manifest.read.failed.explanation=Podczas okre\u015blania, czy modu\u0142 jest komponentem EJB, czy modu\u0142em klienta aplikacji, wyst\u0105pi\u0142 b\u0142\u0105d przy pr\u00f3bie odczytu pliku META-INF/MANIFEST.MF. Ten modu\u0142 nie b\u0119dzie traktowany jako modu\u0142 klienta aplikacji.
+error.module.manifest.read.failed.useraction=Informacje o wyj\u0105tku zawieraj\u0105 dodatkowe szczeg\u00f3\u0142y. Przejrzyj zawarto\u015b\u0107 aplikacji w celu upewnienia si\u0119, \u017ce \u015bcie\u017cka META-INF/MANIFEST.MF wskazuje plik, a nie katalog, a nast\u0119pnie sprawd\u017a, czy plik MANIFEST.MF jest poprawny.
+
+#{0} is the application name
+error.no.modules=CWWKZ0124E: Aplikacja {0} nie zawiera \u017cadnych modu\u0142\u00f3w.
+error.no.modules.explanation=Aplikacja nie deklaruje \u017cadnych modu\u0142\u00f3w w pliku application.xml i nie zawiera \u017cadnych archiw\u00f3w modu\u0142\u00f3w.
+error.no.modules.useraction=Dodaj archiwum modu\u0142u do aplikacji i zrestartuj aplikacj\u0119.
+
+#{0} is the application name
+#{1} is the module relative path
+error.module.manifest.read.no.mainclass=CWWKZ0125E: Aplikacja {0} nie zawiera atrybutu Main-Class w pliku META-INF/MANIFEST.MF modu\u0142u {1}.
+error.module.manifest.read.no.mainclass.explanation=Plik META-INF/MANIFEST.MF w module nie istnieje lub nie zawiera atrybutu Main-Class. Ten modu\u0142 nie b\u0119dzie traktowany jako modu\u0142 klienta aplikacji.
+error.module.manifest.read.no.mainclass.useraction=Upewnij si\u0119, \u017ce plik META-INF/MANIFEST.MF aplikacji zawiera atrybut Main-Class.
+
+#{0} is the context root specified in server.xml on the application element
+#{1} is the name of the application where context-root is specified
+warning.context.root.not.used=CWWKZ0126W:  Warto\u015b\u0107 kontekstowego katalogu g\u0142\u00f3wnego {0} okre\u015blona w aplikacji {1} nie jest uwzgl\u0119dniana.
+warning.context.root.not.used.explanation=W\u0142a\u015bciwo\u015b\u0107 context-root nie jest poprawna dla aplikacji korporacyjnej. Warto\u015b\u0107 nie b\u0119dzie u\u017cywana dla \u017cadnego modu\u0142u WWW zawartego w aplikacji korporacyjnej.
+warning.context.root.not.used.useraction=Usu\u0144 w\u0142a\u015bciwo\u015b\u0107 context-root z elementu aplikacji w konfiguracji serwera.
+
+error.module.no.defaultclient=CWWKZ0127E: Istnieje wiele modu\u0142\u00f3w klienta w aplikacji. Podaj domy\u015bln\u0105 nazw\u0119 modu\u0142u klienta.
+error.module.no.defaultclient.explanation=Je\u015bli w pakiecie aplikacji istnieje wiele modu\u0142\u00f3w klienta, wymagane jest podanie nazwy modu\u0142u klienta do uruchomienia.
+error.module.no.defaultclient.useraction=Okre\u015bl modu\u0142 klienta do uruchomienia, podaj\u0105c jego nazw\u0119 przy u\u017cyciu atrybutu defaultClientModule w znaczniku <enterpriseApplication/>.
+
+error.module.dup.client=CWWKZ0128E: Istnieje wiele modu\u0142\u00f3w klienta o tej samej nazwie {0}.
+error.module.dup.client.explanation=Istnieje wiele modu\u0142\u00f3w klienta, a niekt\u00f3re z nich u\u017cywaj\u0105 tej samej nazwy.
+error.module.dup.client.useraction=Podaj unikalne nazwy dla modu\u0142\u00f3w klienta w aplikacji.
+
+error.module.client.notfound=CWWKZ0129E: Nie mo\u017cna znale\u017a\u0107 modu\u0142u klienta {0} w aplikacji.
+error.module.client.notfound.explanation=Okre\u015blony modu\u0142 klienta nie istnieje w aplikacji.
+error.module.client.notfound.useraction=Upewnij si\u0119, \u017ce modu\u0142 klienta istnieje w aplikacji.
+
+#{0} is the application name
+error.client.not.installed=CWWKZ0130E: Nie mo\u017cna uruchomi\u0107 klienta aplikacji {0}.
+error.client.not.installed.explanation=Wcze\u015bniejszy b\u0142\u0105d uniemo\u017cliwi\u0142 zainstalowanie aplikacji.
+error.client.not.installed.useraction=Sprawd\u017a miejsce w konfiguracji aplikacji.
+
+#{0} is the application name, {1} is the exception (likely disk space, write permissions, file lock, or some other IO issue.) 
+warning.could.not.expand.application=CWWKZ0131W: Nie mo\u017cna rozwin\u0105\u0107 aplikacji {0} z powodu wyj\u0105tku {1}.
+warning.could.not.expand.application.explanation=Nie mo\u017cna rozwin\u0105\u0107 aplikacji do katalogu tymczasowego. Aplikacja b\u0119dzie kontynuowa\u0107 dzia\u0142anie, ale mo\u017ce to mie\u0107 wp\u0142yw na zachowanie niekt\u00f3rych metod, kt\u00f3re uzyskuj\u0105 dost\u0119p do plik\u00f3w aplikacji. 
+warning.could.not.expand.application.useraction=Spr\u00f3buj rozwi\u0105za\u0107 problem zg\u0142oszony w komunikacie o wyj\u0105tku i zrestartuj serwer lub zaktualizuj aplikacj\u0119. 

@@ -1,0 +1,141 @@
+###############################################################################
+# Copyright (c) 2011, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.classloading/resources/com/ibm/ws/classloading/internal/resources/ClassLoadingServiceMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKL
+#COMPONENTNAMEFOR CWWKL Class Loading Service
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+cls.class.file.not.found=CWWKL0001E: A rendszer nem tal\u00e1lta a(z) [{0}] oszt\u00e1lyt, mint [{1}] er\u0151forr\u00e1st.
+cls.class.file.not.found.explanation=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy oszt\u00e1lyf\u00e1jl bet\u00f6lt\u00e9s\u00e9re egy alkalmaz\u00e1s er\u0151forr\u00e1sak\u00e9nt, de ez sikertelen volt.
+cls.class.file.not.found.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az oszt\u00e1ly el\u00e9rhet\u0151 az alkalmaz\u00e1s sz\u00e1m\u00e1ra.
+
+cls.class.file.not.readable=CWWKL0002E: A rendszer nem tudta beolvasni a(z) [{0}] oszt\u00e1lyt, mint [{1}] er\u0151forr\u00e1st.
+cls.class.file.not.readable.explanation=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt az oszt\u00e1lyf\u00e1jl beolvas\u00e1s\u00e1ra egy alkalmaz\u00e1s er\u0151forr\u00e1sak\u00e9nt, de ez sikertelen volt.
+cls.class.file.not.readable.useraction=Ellen\u0151rizze a f\u00e1jlrendszer integrit\u00e1s\u00e1t. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, akkor tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server t\u00e1mogat\u00e1si oldalon (http://www.ibm.com/software/webservers/appserv/was/support/)
+
+cls.gateway.not.resolvable=CWWKL0003E: A rendszer nem tudta l\u00e9trehozni a(z) [{1}] v\u00e1ltozat\u00fa [{0}] alkalmaz\u00e1s oszt\u00e1lybet\u00f6lt\u0151j\u00e9t.
+cls.gateway.not.resolvable.explanation=A rendszer megpr\u00f3b\u00e1lta egy alkalmaz\u00e1s oszt\u00e1lybet\u00f6lt\u0151j\u00e9t l\u00e9trehozni, de a kiszolg\u00e1l\u00f3 nem biztos\u00edtja a sz\u00fcks\u00e9ges Java csomagokat. 
+cls.gateway.not.resolvable.useraction=Ellen\u0151rizze, hogy a kiszolg\u00e1l\u00f3n be van-e \u00e1ll\u00edtva minden olyan szolg\u00e1ltat\u00e1s, amely az alkalmaz\u00e1s t\u00e1mogat\u00e1s\u00e1hoz sz\u00fcks\u00e9ges.
+
+cls.library.id.missing=CWWKL0004E: A rendszer nem tudott l\u00e9trehozni egy megosztott f\u00fcggv\u00e9nyt\u00e1rat.
+cls.library.id.missing.explanation=Ha a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban meg szeretne hat\u00e1rozni egy megosztott f\u00fcggv\u00e9nyt\u00e1rat, akkor meg kell adnia egy ID attrib\u00fatumot. 
+cls.library.id.missing.useraction=Szerkessze a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3t \u00e9s adjon hozz\u00e1 egy ID attrib\u00fatumot a library elemhez.
+
+cls.library.missing=CWWKL0005E: A rendszer nem tal\u00e1lja a(z) [{0}] azonos\u00edt\u00f3j\u00fa megosztott k\u00f6nyvt\u00e1rat.
+cls.library.missing.explanation=Ha a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban megosztott f\u00fcggv\u00e9nyt\u00e1rra k\u00edv\u00e1n hivatkozni, akkor meg kell adnia egy l\u00e9tez\u0151 f\u00fcggv\u00e9nyt\u00e1r azonos\u00edt\u00f3j\u00e1t. 
+cls.library.missing.useraction=Szerkessze a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3t \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy hivatkozott f\u00fcggv\u00e9nyt\u00e1r meghat\u00e1roz\u00e1sra ker\u00fclt \u00e9s az azonos\u00edt\u00f3 helyes.
+
+cls.library.id.invalid=CWWKL0006E: Egy megosztott f\u00fcggv\u00e9nyt\u00e1r [{0}] azonos\u00edt\u00f3ja egy [{1}] hiba miatt \u00e9rv\u00e9nytelen 
+cls.library.id.invalid.explanation=Ha megosztott f\u00fcggv\u00e9nyt\u00e1r azonos\u00edt\u00f3j\u00e1t k\u00edv\u00e1nja megadni a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban, akkor k\u00f6vetnie kell az attrib\u00fatum elnevez\u00e9si meg\u00e1llapod\u00e1sokat.
+cls.library.id.invalid.useraction=Szerkessze a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3t \u00e9s m\u00f3dos\u00edtsa a library elem ID attrib\u00fatum\u00e1t.
+
+cls.fileset.missing=CWWKL0007E: A(z) [{0}] megosztott k\u00f6nyvt\u00e1r a(z) [{1}] f\u00e1jlk\u00e9szletre hivatkozik, amely nem l\u00e9tezik.
+cls.fileset.missing.explanation=Ha a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban megosztott f\u00fcggv\u00e9nyt\u00e1rb\u00f3l f\u00e1jlk\u00e9szletre k\u00edv\u00e1n hivatkozni, akkor meg kell adnia egy l\u00e9tez\u0151 f\u00e1jlk\u00e9szlet azonos\u00edt\u00f3j\u00e1t.
+cls.fileset.missing.useraction=Ellen\u0151rizze a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban a library elemet \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a hivatkozott f\u00e1jlk\u00e9szlet l\u00e9tezik.
+
+# {0} - application identifier
+# {1} - application classloader allowedApiTypes
+# {2} - library identifier
+# {3} - library allowedApiTypes
+cls.class.space.conflict=CWWKL0008W: A(z) [{0}] alkalmaz\u00e1s nem kompatibilis a k\u00f6z\u00f6s oszt\u00e1lybet\u00f6lt\u0151vel a(z) [{2}] f\u00fcggv\u00e9nyt\u00e1rhoz, mert \u00f6sszef\u00e9rhetetlen API l\u00e1that\u00f3s\u00e1gi konfigur\u00e1ci\u00f3val rendelkeznek. A(z) [{2}] f\u00fcggv\u00e9nyt\u00e1r [{3}] konfigur\u00e1ci\u00f3val rendelkezik, m\u00edg a(z) [{0}] alkalmaz\u00e1s [{1}] konfigur\u00e1ci\u00f3val.
+cls.class.space.conflict.explanation=Egy alkalmaz\u00e1s egy k\u00f6z\u00f6s oszt\u00e1lybet\u00f6lt\u0151n kereszt\u00fcl hivatkozik egy f\u00fcggv\u00e9nyt\u00e1rra, emiatt osztoznia kell az oszt\u00e1lyp\u00e9ld\u00e1nyokon; \u00e1m azok \u00fagy vannak be\u00e1ll\u00edtva, hogy elt\u00e9r\u0151 API k\u00e9szleteket l\u00e1ssanak. Az alkalmaz\u00e1st \u00e9s a f\u00fcggv\u00e9nyt\u00e1rat \u00fagy kell konfigur\u00e1lni, hogy az alkalmaz\u00e1sprogramoz\u00e1si fel\u00fcletek ugyanazon k\u00e9szlet\u00e9t l\u00e1ss\u00e1k, ezzel biztos\u00edtva az alkalmaz\u00e1s konzisztens viselked\u00e9s\u00e9t.
+cls.class.space.conflict.useraction=Vagy friss\u00edtse a konfigur\u00e1ci\u00f3t \u00fagy, hogy az alkalmaz\u00e1s \u00e9s a f\u00fcggv\u00e9nyt\u00e1r ugyanazt az API k\u00e9szletet l\u00e1ssa, vagy pedig \u00fagy \u00e1ll\u00edtsa be az alkalmaz\u00e1st, hogy mag\u00e1n m\u00f3don haszn\u00e1lja a f\u00fcggv\u00e9nyt\u00e1rat.
+
+cls.api.type.unknown=CWWKL0009W: A(z) [{0}] alkalmaz\u00e1s \u00fagy van be\u00e1ll\u00edtva, hogy az ismeretlen [{1}] API t\u00edpust haszn\u00e1lja, amely figyelmen k\u00edv\u00fcl marad.  Az \u00e9rv\u00e9nyes t\u00edpusok a k\u00f6vetkez\u0151k: [{2}].
+cls.api.type.unknown.explanation=Az alkalmaz\u00e1sok be\u00e1ll\u00edthat\u00f3k \u00fagy, hogy megadj\u00e1k, mely API t\u00edpusokat sz\u00e1nd\u00e9koznak haszn\u00e1lni.
+cls.api.type.unknown.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a konfigur\u00e1ci\u00f3s lista csak \u00e9rv\u00e9nyes t\u00edpusokat tartalmaz.
+
+cls.classloader.missing=CWWKL0010E: A rendszer nem tal\u00e1lja a(z) [{0}] azonos\u00edt\u00f3j\u00fa oszt\u00e1lybet\u00f6lt\u0151t.
+cls.classloader.missing.explanation=Ha a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban oszt\u00e1lybet\u00f6lt\u0151re k\u00edv\u00e1n hivatkozni, akkor egy l\u00e9tez\u0151 oszt\u00e1lybet\u00f6lt\u0151 azonos\u00edt\u00f3j\u00e1t kell megadnia. 
+cls.classloader.missing.useraction=Ellen\u0151rizze a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3t \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy hivatkozott oszt\u00e1lybet\u00f6lt\u0151 meghat\u00e1roz\u00e1sra ker\u00fclt \u00e9s az azonos\u00edt\u00f3 helyes.
+
+cls.fileset.not.ready=CWWKL0011W: A rendszer nem tudta beolvasni a(z) [{0}] f\u00e1jlk\u00e9szletet a(z) [{1}] megosztott k\u00f6nyvt\u00e1rhoz.
+cls.fileset.not.ready.explanation=Egy megosztott k\u00f6nyvt\u00e1r haszn\u00e1latban van, de az egyik kapcsol\u00f3d\u00f3 f\u00e1jlk\u00e9szletet nem siker\u00fclt id\u0151ben beolvasni.
+cls.fileset.not.ready.useraction=Ellen\u0151rizze \u00e9s jav\u00edtsa a f\u00e1jlk\u00e9szlettel kapcsolatos hib\u00e1kat vagy figyelmeztet\u00e9seket.
+
+cls.library.file.invalid=CWWKL0012W: A(z) [{0}] k\u00f6nyvt\u00e1r megad egy [{1}] nev\u0171 f\u00e1jlt. A f\u00e1jl vagy nem l\u00e9tezik, vagy helytelen\u00fcl van megadva.
+cls.library.file.invalid.explanation=Ha fel akar venni egy f\u00e1jlt egy k\u00f6nyvt\u00e1rba a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban, akkor egy megl\u00e9v\u0151 f\u00e1jl teljes k\u00e9pz\u00e9s\u0171 nev\u00e9t kell megadnia.
+cls.library.file.invalid.useraction=Szerkessze a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3t \u00e9s m\u00f3dos\u00edtsa a library elem file attrib\u00fatum\u00e1t.
+
+cls.library.folder.invalid=CWWKL0013W: A(z) [{0}] k\u00f6nyvt\u00e1r megad egy [{1}] nev\u0171 mapp\u00e1t. A mappa vagy nem l\u00e9tezik, vagy nem \u00e9rv\u00e9nyes mappa.
+cls.library.folder.invalid.explanation=Ha fel akar venni egy f\u00e1jlt egy k\u00f6nyvt\u00e1rba a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban, akkor egy megl\u00e9v\u0151 mappa teljes k\u00e9pz\u00e9s\u0171 el\u00e9r\u00e9si \u00fatj\u00e1t kell megadnia.
+cls.library.folder.invalid.useraction=Szerkessze a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3t \u00e9s m\u00f3dos\u00edtsa a library elem folder attrib\u00fatum\u00e1t.
+
+cls.library.file.forbidden=CWWKL0014I: A(z) [{0}] f\u00e1jl nem vehet\u0151 fel oszt\u00e1ly\u00fatvonalra.
+cls.library.file.forbidden.explanation=Ahhoz, hogy felvehessen egy f\u00e1jlt az oszt\u00e1ly\u00fatvonalra, a f\u00e1jlnak oszt\u00e1lyok \u00e9s er\u0151forr\u00e1sok \u00e9rv\u00e9nyes t\u00e1rol\u00f3j\u00e1nak, p\u00e9ld\u00e1ul jar f\u00e1jlnak kell lennie.
+cls.library.file.forbidden.useraction=Szerkessze a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3t \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a file vagy fileset attrib\u00fatumok \u00e9rv\u00e9nyes oszt\u00e1ly- \u00e9s er\u0151forr\u00e1st\u00e1rol\u00f3kra hivatkoznak.
+
+cls.library.created=CWWKL0015I: A f\u00fcggv\u00e9nyt\u00e1r [{0}] haszn\u00e1lhat\u00f3.
+cls.library.created.explanation=A f\u00fcggv\u00e9nyt\u00e1r el\u00e9rhet\u0151v\u00e9 v\u00e1lt, p\u00e9ld\u00e1ul a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3 feldolgoz\u00e1s\u00e1nak eredm\u00e9nyek\u00e9ppen.
+cls.library.created.useraction=Semmit sem kell tennie.
+
+WARN_JARS_STILL_CACHED=CWWKL0016W: A JAR f\u00e1jlok nem k\u00e9sz\u00edthet\u0151k el\u0151 t\u00f6rl\u00e9sre, a JAR f\u00e1jlokat tartalmaz\u00f3 alkalmaz\u00e1sok nem t\u00f6r\u00f6lhet\u0151k.
+WARN_JARS_STILL_CACHED.explanation=A kiszolg\u00e1l\u00f3 nem tudja megakad\u00e1lyozni a JAR f\u00e1jlok z\u00e1rol\u00e1s\u00e1t a telep\u00edtett alkalmaz\u00e1sokon bel\u00fcl. A JAR f\u00e1jlok z\u00e1roltak maradhatnak a kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1s\u00e1ig.
+WARN_JARS_STILL_CACHED.useraction=Ahhoz, hogy egy telep\u00edtett alkalmaz\u00e1son bel\u00fcl a JAR f\u00e1jlok t\u00f6r\u00f6lhet\u0151k legyenek, a t\u00f6rl\u00e9s el\u0151tt le kell \u00e1ll\u00edtani a kiszolg\u00e1l\u00f3t.
+
+cls.library.archive=CWWKL0017W: A(z) [{0}] nem vehet\u0151 fel az oszt\u00e1ly\u00fatvonalra [{1}] hiba miatt.
+cls.library.archive.explanation=Csak arch\u00edv f\u00e1jlok, p\u00e9ld\u00e1ul jar vagy zip f\u00e1jlok vehet\u0151k fel az oszt\u00e1ly\u00fatvonalra.
+cls.library.archive.useraction=Szerkessze a kiszolg\u00e1l\u00f3 be\u00e1ll\u00edt\u00e1st, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az oszt\u00e1lybet\u00f6lt\u0151 elemb\u0151l hivatkozozz \u00f6sszes f\u00e1jl arch\u00edv f\u00e1jl.
+
+cls.library.destroyed=CWWKL0018I: A f\u00fcggv\u00e9nyt\u00e1r [{0}] nem \u00e9rhet\u0151 el.
+cls.library.destroyed.explanation=A f\u00fcggv\u00e9nyt\u00e1r el\u00e9rhetetlenn\u00e9 v\u00e1lt, p\u00e9ld\u00e1ul mert elt\u00e1vol\u00edt\u00e1sra ker\u00fclt a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3b\u00f3l.
+cls.library.destroyed.useraction=Ha a f\u00fcggv\u00e9nyt\u00e1rra m\u00e9g sz\u00fcks\u00e9g van, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy helyesen van be\u00e1ll\u00edtva.
+####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
+#################################################################################
+
+# {0} - class loader id
+# {1} - provider id
+# {2} - syntax exception message
+cls.provider.id.invalid=CWWKL0030E: A(z) [{0}] oszt\u00e1lybet\u00f6lt\u0151 nem tal\u00e1lja a(z) [{1}] oszt\u00e1lyszolg\u00e1ltat\u00f3t. A keres\u00e9s a k\u00f6vetkez\u0151 szintaktikai hiba\u00fczenettel meghi\u00fasult: [{2}].
+cls.provider.id.invalid.explanation=Egy oszt\u00e1lybet\u00f6lt\u0151 \u00fagy lett be\u00e1ll\u00edtva, hogy deleg\u00e1lva legyen egy oszt\u00e1lyszolg\u00e1ltat\u00f3hoz, de nem tudta lek\u00e9rni a megfelel\u0151 oszt\u00e1lyszolg\u00e1ltat\u00f3t. Az oszt\u00e1lybet\u00f6lt\u0151 m\u0171k\u00f6d\u0151k\u00e9pes lesz, viszont nem fog tudni lek\u00e9rni oszt\u00e1lyokat vagy er\u0151forr\u00e1sokat a megadott oszt\u00e1lyszolg\u00e1ltat\u00f3t\u00f3l.
+cls.provider.id.invalid.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# {0} - class loader id
+# {1} - provider id
+# {2} - provider service vendor
+cls.provider.loader.null=CWWKL0031E: A(z) [{0}] oszt\u00e1lybet\u00f6lt\u0151 nem deleg\u00e1lhat\u00f3 a(z) [{1}] oszt\u00e1lyszolg\u00e1ltat\u00f3hoz.  Az oszt\u00e1lyszolg\u00e1ltat\u00f3 null\u00e9rt\u00e9k\u0171 oszt\u00e1lybet\u00f6lt\u0151t adott vissza. Az oszt\u00e1lyszolg\u00e1ltat\u00f3 sz\u00e1ll\u00edt\u00f3ja: [{2}].
+cls.provider.loader.null.explanation=Egy oszt\u00e1lybet\u00f6lt\u0151 \u00fagy lett be\u00e1ll\u00edtva, hogy deleg\u00e1lva legyen egy oszt\u00e1lyszolg\u00e1ltat\u00f3hoz, de az oszt\u00e1lyszolg\u00e1ltat\u00f3 nem biztos\u00edtott kompatibilis oszt\u00e1lybet\u00f6lt\u0151t, \u00e9s nem haszn\u00e1lhat\u00f3. Az oszt\u00e1lybet\u00f6lt\u0151 m\u0171k\u00f6d\u0151k\u00e9pes lesz, viszont nem fog tudni lek\u00e9rni oszt\u00e1lyokat vagy er\u0151forr\u00e1sokat a megadott oszt\u00e1lyszolg\u00e1ltat\u00f3t\u00f3l.
+cls.provider.loader.null.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support, vagy egyeztessen az oszt\u00e1lyszolg\u00e1ltat\u00f3 sz\u00e1ll\u00edt\u00f3j\u00e1val.
+
+# {0} - class loader id
+# {1} - provider id
+# {2} - provider type
+# {3} - provider service vendor
+cls.provider.loader.unknown=CWWKL0032E: A(z) [{0}] oszt\u00e1lybet\u00f6lt\u0151 nem deleg\u00e1lhat\u00f3 a(z) [{1}] oszt\u00e1lyszolg\u00e1ltat\u00f3hoz. Az oszt\u00e1lyszolg\u00e1ltat\u00f3 nem v\u00e1rt [{2}] t\u00edpus\u00fa oszt\u00e1lybet\u00f6lt\u0151t adott vissza. Az oszt\u00e1lyszolg\u00e1ltat\u00f3 sz\u00e1ll\u00edt\u00f3ja: [{3}].
+cls.provider.loader.unknown.explanation=Egy oszt\u00e1lybet\u00f6lt\u0151 \u00fagy lett be\u00e1ll\u00edtva, hogy deleg\u00e1lva legyen egy oszt\u00e1lyszolg\u00e1ltat\u00f3hoz, de az oszt\u00e1lyszolg\u00e1ltat\u00f3 nem biztos\u00edtott kompatibilis oszt\u00e1lybet\u00f6lt\u0151t, \u00e9s nem haszn\u00e1lhat\u00f3. Az oszt\u00e1lybet\u00f6lt\u0151 m\u0171k\u00f6d\u0151k\u00e9pes lesz, viszont nem fog tudni lek\u00e9rni oszt\u00e1lyokat vagy er\u0151forr\u00e1sokat a megadott oszt\u00e1lyszolg\u00e1ltat\u00f3t\u00f3l.
+cls.provider.loader.unknown.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support, vagy egyeztessen az oszt\u00e1lyszolg\u00e1ltat\u00f3 sz\u00e1ll\u00edt\u00f3j\u00e1val.
+
+# {0} - class loader id
+# {1} - class loader api types
+# {2} - provider id
+# {3} - provider api types
+cls.provider.class.space.conflict=CWWKL0033W: A(z) [{0}] oszt\u00e1lybet\u00f6lt\u0151 nem kompatibilis a(z) [{2}] oszt\u00e1lyszolg\u00e1ltat\u00f3val, mert az API l\u00e1that\u00f3s\u00e1gi be\u00e1ll\u00edt\u00e1saik ellentmond\u00f3ak. Az oszt\u00e1lybet\u00f6lt\u0151 [{1}] API-val, az oszt\u00e1lyszolg\u00e1ltat\u00f3 viszont [{3}] API t\u00edpussal lett be\u00e1ll\u00edtva.
+cls.provider.class.space.conflict.explanation=Egy oszt\u00e1lybet\u00f6lt\u0151 \u00fagy lett be\u00e1ll\u00edtva, hogy egy megadott oszt\u00e1lyszolg\u00e1ltat\u00f3hoz legyen deleg\u00e1lva, \u00e9s megosszon oszt\u00e1lyp\u00e9ld\u00e1nyokat. A konfigur\u00e1ci\u00f3juk szerint azonban elt\u00e9r\u0151 API k\u00e9szleteket l\u00e1tnak. A deleg\u00e1lt oszt\u00e1lybet\u00f6lt\u0151t \u00e9s az oszt\u00e1lyszolg\u00e1ltat\u00f3t a konzisztens alkalmaz\u00e1sviselked\u00e9s \u00e9rdek\u00e9ben \u00fagy kell be\u00e1ll\u00edtani, hogy ugyanazt az API k\u00e9szletet l\u00e1ss\u00e1k.
+cls.provider.class.space.conflict.useraction=Friss\u00edtse \u00fagy a konfigur\u00e1ci\u00f3t, hogy a deleg\u00e1lt oszt\u00e1lybet\u00f6lt\u0151 \u00e9s az oszt\u00e1lyszolg\u00e1ltat\u00f3 ugyanazt az API k\u00e9szletet l\u00e1ssa.
+
+slf.no.cache=CWWKL0070E: A gyors\u00edt\u00f3t\u00e1r k\u00f6nyvt\u00e1r\u00e1nak l\u00e9trehoz\u00e1sa nem siker\u00fclt.
+slf.no.cache.explanation=A rendszer nem tudott mapp\u00e1t l\u00e9trehozni a lemezen.
+slf.no.cache.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a meghajt\u00f3 rendelkezik a megfelel\u0151 \u00edr\u00e1si enged\u00e9lyekkel, \u00e9s el\u00e9g hely van a lemezen.
+slf.no.acf=CWWKL0071E: Null \u00e9rt\u00e9k fordult el\u0151 az ArtifactContainerFactory objektumn\u00e1l.
+slf.no.acf.explanation=Az ArtifactContainerFactory objektum nem lehet null \u00e9rt\u00e9k\u0171, ha a kiszolg\u00e1l\u00f3 fut.
+slf.no.acf.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support, vagy egyeztessen az oszt\u00e1lyszolg\u00e1ltat\u00f3 sz\u00e1ll\u00edt\u00f3j\u00e1val.
+slf.failed.delete=CWWKL0072W: A(z) [{0}] gyors\u00edt\u00f3t\u00e1r f\u00e1jlja nem t\u00f6r\u00f6lhet\u0151. Ez az egym\u00e1sba \u00e1gyazott arch\u00edvumok s\u00e9r\u00fcl\u00e9s\u00e9hez vezethet.
+slf.failed.delete.explanation=A rendszer nem tudta t\u00f6r\u00f6lni a gyors\u00edt\u00f3t\u00e1r f\u00e1jlj\u00e1t. Mivel a f\u00e1jl tov\u00e1bbra is l\u00e9tezik a rendszeren, ez a be\u00e1gyazott arch\u00edvumok s\u00e9r\u00fcl\u00e9s\u00e9t okozhatja.
+slf.failed.delete.useraction=Ellen\u0151rizze, hogy a gyors\u00edt\u00f3t\u00e1r f\u00e1jlja nincs-e z\u00e1rolt \u00e1llapotban, ami a f\u00e1jl t\u00f6rl\u00e9s\u00e9nek meghi\u00fasul\u00e1s\u00e1t okozhatja.

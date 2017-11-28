@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+#CMVCPATHNAME 
+#COMPONENTPREFIX CWWWC
+#COMPONENTNAMEFOR CWWWC Servlet Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# --------------------------------
+
+# Since servlet 4.0.  Use the registered and reserved prefix CWWWC from now on.  
+# 0001 - 0199 for Base
+# 0200 - 0299 for Servlet 3.0
+# 0300 - 0399 for Servlet 3.1
+# 0400 - 0499 for Servlet 4
+name.is.null=CWWWC0400E: \u5c6c\u6027\u540d\u7a31\u6216\u8d77\u59cb\u53c3\u6578\u540d\u7a31\u662f\u7a7a\u503c\u3002
+name.is.null.explanation=\u9019\u662f\u61c9\u7528\u7a0b\u5f0f\u932f\u8aa4\u3002\u5728 context getAttribute()\u3001setAttribute()\u3001getInitParameter() \u6216 setInitParameter() \u4e2d\uff0c\u540d\u7a31\u662f\u7a7a\u503c\u3002
+name.is.null.useraction=\u8acb\u4ee5\u975e\u7a7a\u503c\u4f86\u66f4\u65b0\u5c6c\u6027\u540d\u7a31\u6216\u8d77\u59cb\u53c3\u6578\u540d\u7a31\u3002
+
+# -----------------------------------------------
+unsupported.response.encoding.[{0}]=CWWWC0401E: \u7121\u6cd5\u8a2d\u5b9a\u56de\u61c9\u5b57\u5143\u7de8\u78bc\uff1a[{0}]\u3002
+unsupported.response.encoding.[{0}].explanation=\u56de\u61c9\u4e2d\u6307\u5b9a\u7684\u56de\u61c9\u7de8\u78bc\u7121\u6548\u3002\u9019\u662f\u61c9\u7528\u7a0b\u5f0f\u932f\u8aa4\u3002
+unsupported.response.encoding.[{0}].useraction=\u8acb\u6aa2\u8996\u65e5\u8a8c\u4f86\u5224\u65b7\u6307\u5b9a\u7684\u7de8\u78bc\u662f\u5426\u70ba\u6709\u6548\u7684\u7de8\u78bc\u3002
+

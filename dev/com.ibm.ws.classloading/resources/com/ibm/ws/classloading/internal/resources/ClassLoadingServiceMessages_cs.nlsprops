@@ -1,0 +1,141 @@
+###############################################################################
+# Copyright (c) 2011, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.classloading/resources/com/ibm/ws/classloading/internal/resources/ClassLoadingServiceMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKL
+#COMPONENTNAMEFOR CWWKL Class Loading Service
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+cls.class.file.not.found=CWWKL0001E: Syst\u00e9m nemohl naj\u00edt t\u0159\u00eddu [{0}] jako prost\u0159edek [{1}].
+cls.class.file.not.found.explanation=Pokus o na\u010dten\u00ed souboru t\u0159\u00eddy jako prost\u0159edku pro aplikaci nebyl \u00fasp\u011b\u0161n\u00fd.
+cls.class.file.not.found.useraction=Ujist\u011bte se, \u017ee je t\u0159\u00edda aplikaci k dispozici.
+
+cls.class.file.not.readable=CWWKL0002E: Syst\u00e9m nemohl na\u010d\u00edst t\u0159\u00eddu [{0}] jako prost\u0159edek [{1}].
+cls.class.file.not.readable.explanation=Pokus o \u010dten\u00ed souboru t\u0159\u00eddy jako prost\u0159edku pro aplikaci nebyl \u00fasp\u011b\u0161n\u00fd.
+cls.class.file.not.readable.useraction=Zkontrolujte integritu syst\u00e9mu soubor\u016f. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, viz informace o ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f na str\u00e1nce podpory serveru WebSphere Application Server na adrese http://www.ibm.com/software/webservers/appserv/was/support/
+
+cls.gateway.not.resolvable=CWWKL0003E: Syst\u00e9m nemohl vytvo\u0159it zavad\u011b\u010d t\u0159\u00edd pro aplikaci [{0}] ve verzi [{1}].
+cls.gateway.not.resolvable.explanation=Syst\u00e9m se pokusil vytvo\u0159it zavad\u011b\u010d t\u0159\u00edd aplikace, ale server neposkytuje po\u017eadovan\u00e9 bal\u00edky jazyka Java. 
+cls.gateway.not.resolvable.useraction=Zkontrolujte, \u017ee je server konfigurov\u00e1n se v\u0161emi funkcemi, kter\u00e9 jsou pot\u0159eba k podpo\u0159e t\u00e9to aplikace.
+
+cls.library.id.missing=CWWKL0004E: Syst\u00e9m nemohl vytvo\u0159it sd\u00edlenou knihovnu.
+cls.library.id.missing.explanation=Chcete-li definovat sd\u00edlenou knihovnu v konfiguraci serveru, mus\u00edte zadat atribut ID. 
+cls.library.id.missing.useraction=Upravte konfiguraci serveru a p\u0159idejte atribut ID do prvku knihovny.
+
+cls.library.missing=CWWKL0005E: Syst\u00e9m nemohl naj\u00edt sd\u00edlenou knihovnu s ID [{0}].
+cls.library.missing.explanation=Chcete-li odkazovat na knihovnu v konfiguraci serveru, mus\u00edte zadat ID existuj\u00edc\u00ed knihovny. 
+cls.library.missing.useraction=Upravte konfiguraci serveru a ujist\u011bte se, \u017ee byla odkazovan\u00e1 knihovna definov\u00e1na a ID je spr\u00e1vn\u00e9.
+
+cls.library.id.invalid=CWWKL0006E: Sd\u00edlen\u00e1 knihovna m\u00e1 neplatn\u00e9 ID [{0}] kv\u016fli chyb\u011b [{1}] 
+cls.library.id.invalid.explanation=Chcete-li ur\u010dit ID pro sd\u00edlenou knihovnu v konfiguraci serveru, mus\u00edte dodr\u017eet konvence pojmenov\u00e1n\u00ed atributu.
+cls.library.id.invalid.useraction=Upravte konfiguraci serveru a zm\u011b\u0148te atribut ID prvku knihovny.
+
+cls.fileset.missing=CWWKL0007E: Sd\u00edlen\u00e1 knihovna [{0}] odkazuje na sadu soubor\u016f [{1}], kter\u00e1 neexistuje.
+cls.fileset.missing.explanation=Chcete-li odkazovat na sadu soubor\u016f ze sd\u00edlen\u00e9 knihovny v konfiguraci serveru, mus\u00edte zadat ID existuj\u00edc\u00ed sady soubor\u016f.
+cls.fileset.missing.useraction=Zkontrolujte prvek knihovny v konfiguraci serveru a ujist\u011bte se, zda odkazovan\u00e1 sada soubor\u016f existuje.
+
+# {0} - application identifier
+# {1} - application classloader allowedApiTypes
+# {2} - library identifier
+# {3} - library allowedApiTypes
+cls.class.space.conflict=CWWKL0008W: Aplikace [{0}] je nekompatibiln\u00ed s obecn\u00fdm zavad\u011b\u010dem t\u0159\u00edd pro knihovnu [{2}], proto\u017ee jsou zde nekonzistentn\u00ed konfigurace viditelnosti rozhran\u00ed API. Knihovna [{2}] je nakonfigurov\u00e1na s [{3}], zat\u00edmco aplikace [{0}] je nakonfigurov\u00e1na s [{1}].
+cls.class.space.conflict.explanation=Aplikace odkazuje na knihovnu prost\u0159ednictv\u00edm b\u011b\u017en\u00e9ho zavad\u011b\u010de t\u0159\u00edd, a proto bude pot\u0159ebovat sd\u00edlet instance t\u0159\u00edd. Je v\u0161ak nakonfigurov\u00e1na tak, \u017ee vid\u00ed jin\u00e9 sady rozhran\u00ed API. K zaji\u0161t\u011bn\u00ed konzistentn\u00edho chov\u00e1n\u00ed aplikac\u00ed mus\u00ed b\u00fdt aplikace i knihovna nakonfigurov\u00e1ny tak, aby se jim zobrazovala p\u0159esn\u011b stejn\u00e1 sada rozhran\u00ed API.
+cls.class.space.conflict.useraction=Aktualizujte konfiguraci aplikace a knihovny tak, aby vid\u011bly stejnou sadu rozhran\u00ed API nebo nakonfigurujte aplikaci k soukrom\u00e9mu pou\u017e\u00edv\u00e1n\u00ed knihovny.
+
+cls.api.type.unknown=CWWKL0009W: Aplikace [{0}] je nakonfigurov\u00e1na k pou\u017eit\u00ed nezn\u00e1m\u00e9ho typu rozhran\u00ed API [{1}], kter\u00fd bude ignorov\u00e1n. Platn\u00e9 typy: [{2}].
+cls.api.type.unknown.explanation=Nakonfigurov\u00e1n\u00edm aplikac\u00ed lze ur\u010dit, k jak\u00fdm typ\u016fm rozhran\u00ed API budou p\u0159istupovat.
+cls.api.type.unknown.useraction=Ov\u011b\u0159te, zda jsou v konfiguraci uvedeny pouze platn\u00e9 typy.
+
+cls.classloader.missing=CWWKL0010E: Syst\u00e9m nenalezl zavad\u011b\u010d t\u0159\u00edd s ID [{0}].
+cls.classloader.missing.explanation=Chcete-li odkazovat na zavad\u011b\u010d t\u0159\u00edd v konfiguraci serveru, mus\u00edte zadat ID existuj\u00edc\u00edho zavad\u011b\u010de t\u0159\u00edd. 
+cls.classloader.missing.useraction=Zkontrolujte konfiguraci serveru a ujist\u011bte se, \u017ee byl zavad\u011b\u010d t\u0159\u00edd definov\u00e1n a \u017ee je pou\u017eito spr\u00e1vn\u00e9 ID.
+
+cls.fileset.not.ready=CWWKL0011W: Syst\u00e9m nem\u016f\u017ee na\u010d\u00edst sadu soubor\u016f [{0}] pro sd\u00edlenou knihovnu [{1}].
+cls.fileset.not.ready.explanation=Sd\u00edlen\u00e1 knihovna je pou\u017e\u00edv\u00e1na, ale jednu z p\u0159idru\u017een\u00fdch sad soubor\u016f nelze na\u010d\u00edst v\u010das.
+cls.fileset.not.ready.useraction=Vyhledejte a opravte v\u0161echny chyby a varov\u00e1n\u00ed p\u0159idru\u017een\u00e1 k t\u00e9to sad\u011b soubor\u016f.
+
+cls.library.file.invalid=CWWKL0012W: Knihovna [{0}] ur\u010duje soubor s n\u00e1zvem [{1}]. Tento soubor bu\u010f neexistuje, nebo je nespr\u00e1vn\u011b zad\u00e1n.
+cls.library.file.invalid.explanation=Chcete-li p\u0159idat soubor do knihovny v konfiguraci serveru, mus\u00edte uv\u00e9st \u00fapln\u00fd n\u00e1zev existuj\u00edc\u00edho souboru.
+cls.library.file.invalid.useraction=Upravte konfiguraci serveru a zm\u011b\u0148te atribut souboru prvku knihovny.
+
+cls.library.folder.invalid=CWWKL0013W: Knihovna [{0}] ur\u010duje slo\u017eku s n\u00e1zvem [{1}]. Tato slo\u017eka bu\u010f neexistuje, nebo se nejedn\u00e1 o platnou slo\u017eku.
+cls.library.folder.invalid.explanation=Chcete-li p\u0159idat soubor do knihovny v konfiguraci serveru, mus\u00edte uv\u00e9st \u00faplnou cestu k existuj\u00edc\u00ed slo\u017ece.
+cls.library.folder.invalid.useraction=Upravte konfiguraci serveru a zm\u011b\u0148te atribut slo\u017eky prvku knihovny.
+
+cls.library.file.forbidden=CWWKL0014I: Soubor [{0}] nelze p\u0159idat do cesty ke t\u0159\u00edd\u011b.
+cls.library.file.forbidden.explanation=Chcete-li p\u0159idat soubor do cesty ke t\u0159\u00edd\u011b, mus\u00ed se jednat o platn\u00fd kontejner t\u0159\u00edd a prost\u0159edk\u016f, jako nap\u0159\u00edklad soubor JAR.
+cls.library.file.forbidden.useraction=Upravte konfiguraci serveru a zkontrolujte, zda v\u0161echny atributy souboru nebo sady soubor\u016f odkazuj\u00ed na platn\u00e9 kontejnery t\u0159\u00edd a prost\u0159edk\u016f.
+
+cls.library.created=CWWKL0015I: Knihovna [{0}] je k dispozici pro pou\u017eit\u00ed.
+cls.library.created.explanation=Knihovna je dostupn\u00e1, nap\u0159\u00edklad v\u00fdsledkem zpracov\u00e1n\u00ed konfigurace serveru.
+cls.library.created.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+WARN_JARS_STILL_CACHED=CWWKL0016W: Nelze p\u0159ipravit soubory JAR k odstran\u011bn\u00ed. Aplikace obsahuj\u00ed soubory JAR, kter\u00e9 nelze odstranit.
+WARN_JARS_STILL_CACHED.explanation=Serveru se nepoda\u0159ilo zabr\u00e1nit uzam\u010den\u00ed soubor\u016f JAR v r\u00e1mci instalovan\u00fdch aplikac\u00ed. Soubory JAR mohou z\u016fstat uzam\u010deny a\u017e do zastaven\u00ed serveru.
+WARN_JARS_STILL_CACHED.useraction=Chcete-li odstranit soubory JAR v r\u00e1mci instalovan\u00e9 aplikace, je t\u0159eba p\u0159ed odstran\u011bn\u00edm zastavit server.
+
+cls.library.archive=CWWKL0017W: Soubor [{0}] nelze p\u0159idat do cesty ke t\u0159\u00edd\u011b kv\u016fli chyb\u011b [{1}].
+cls.library.archive.explanation=Do cesty ke t\u0159\u00edd\u011b lze p\u0159id\u00e1vat pouze archivn\u00ed soubory, tj. nap\u0159\u00edklad JAR nebo ZIP.
+cls.library.archive.useraction=Upravte konfiguraci serveru a zajist\u011bte, aby ve\u0161ker\u00e9 soubory, na n\u011b\u017e odkazuje prvek classloader, byly archivn\u00edmi soubory.
+
+cls.library.destroyed=CWWKL0018I: Knihovna [{0}] je nedostupn\u00e1.
+cls.library.destroyed.explanation=Knihovna je nedostupn\u00e1, nap\u0159\u00edklad proto, \u017ee byla odebr\u00e1na z konfigurace serveru.
+cls.library.destroyed.useraction=Pokud je knihovna st\u00e1le po\u017eadov\u00e1na, ujist\u011bte se, \u017ee je st\u00e1le spr\u00e1vn\u011b konfigurov\u00e1na.
+####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
+#################################################################################
+
+# {0} - class loader id
+# {1} - provider id
+# {2} - syntax exception message
+cls.provider.id.invalid=CWWKL0030E: Zavad\u011b\u010d t\u0159\u00edd [{0}] nem\u016f\u017ee naj\u00edt poskytovatele t\u0159\u00edd [{1}]. Vyhled\u00e1v\u00e1n\u00ed se nezda\u0159ilo s chybovou zpr\u00e1vou chyby syntaxe [{2}].
+cls.provider.id.invalid.explanation=Zavad\u011b\u010d t\u0159\u00edd byl nakonfigurov\u00e1n, aby delegoval \u00falohy poskytovateli t\u0159\u00edd, ale nem\u016f\u017ee p\u0159\u00edslu\u0161n\u00e9ho poskytovatele t\u0159\u00edd na\u010d\u00edst. Zavad\u011b\u010d t\u0159\u00edd bude pracovat, ale nebude schopen na\u010d\u00edtat \u017e\u00e1dn\u00e9 t\u0159\u00eddy ani prost\u0159edky z uveden\u00e9ho poskytovatele t\u0159\u00edd.
+cls.provider.id.invalid.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# {0} - class loader id
+# {1} - provider id
+# {2} - provider service vendor
+cls.provider.loader.null=CWWKL0031E: Zavad\u011b\u010d t\u0159\u00edd [{0}] nem\u016f\u017ee delegovat \u00falohy poskytovateli t\u0159\u00edd [{1}]. Poskytovatel t\u0159\u00edd vr\u00e1til zavad\u011b\u010d t\u0159\u00edd s hodnotou Null. Dodavatelem tohoto poskytovatele t\u0159\u00edd je [{2}].
+cls.provider.loader.null.explanation=Zavad\u011b\u010d t\u0159\u00edd byl nakonfigurov\u00e1n, aby delegoval \u00falohy poskytovateli t\u0159\u00edd, ale tento poskytovatel t\u0159\u00edd neposkytl kompatibiln\u00ed zavad\u011b\u010d t\u0159\u00edd a nelze jej pou\u017e\u00edt. Zavad\u011b\u010d t\u0159\u00edd bude pracovat, ale nebude schopen na\u010d\u00edtat \u017e\u00e1dn\u00e9 t\u0159\u00eddy ani prost\u0159edky z uveden\u00e9ho poskytovatele t\u0159\u00edd.
+cls.provider.loader.null.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support nebo kontaktujte p\u0159\u00edslu\u0161n\u00e9ho dodavatele slu\u017eeb poskytovatele t\u0159\u00edd.
+
+# {0} - class loader id
+# {1} - provider id
+# {2} - provider type
+# {3} - provider service vendor
+cls.provider.loader.unknown=CWWKL0032E: Zavad\u011b\u010d t\u0159\u00edd [{0}] nem\u016f\u017ee delegovat \u00falohy poskytovateli t\u0159\u00edd [{1}]. Poskytovatel t\u0159\u00edd vr\u00e1til neo\u010dek\u00e1van\u00fd zavad\u011b\u010d t\u0159\u00edd typu [{2}]. Dodavatelem tohoto poskytovatele t\u0159\u00edd je [{3}].
+cls.provider.loader.unknown.explanation=Zavad\u011b\u010d t\u0159\u00edd byl nakonfigurov\u00e1n, aby delegoval \u00falohy poskytovateli t\u0159\u00edd, ale tento poskytovatel t\u0159\u00edd neposkytl kompatibiln\u00ed zavad\u011b\u010d t\u0159\u00edd a nelze jej pou\u017e\u00edt. Zavad\u011b\u010d t\u0159\u00edd bude pracovat, ale nebude schopen na\u010d\u00edtat \u017e\u00e1dn\u00e9 t\u0159\u00eddy ani prost\u0159edky z uveden\u00e9ho poskytovatele t\u0159\u00edd.
+cls.provider.loader.unknown.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support nebo kontaktujte p\u0159\u00edslu\u0161n\u00e9ho dodavatele slu\u017eeb poskytovatele t\u0159\u00edd.
+
+# {0} - class loader id
+# {1} - class loader api types
+# {2} - provider id
+# {3} - provider api types
+cls.provider.class.space.conflict=CWWKL0033W: Zavad\u011b\u010d t\u0159\u00edd [{0}] je nekompatibiln\u00ed s poskytovatel t\u0159\u00edd [{2}], proto\u017ee jejich rozhran\u00ed API nemaj\u00ed konzistentn\u00ed konfigurace viditelnosti. Zavad\u011b\u010d t\u0159\u00edd je nakonfigurov\u00e1n s [{1}] a poskytovatel t\u0159\u00edd je nakonfigurov\u00e1n s [{3}].
+cls.provider.class.space.conflict.explanation=Zavad\u011b\u010d t\u0159\u00edd byl nakonfigurov\u00e1n, aby delegoval \u00falohy ur\u010den\u00e9mu poskytovateli t\u0159\u00edd, a bude sd\u00edlet instance t\u0159\u00edd. Byli v\u0161ak nakonfigurov\u00e1ni, aby pracovali s r\u016fzn\u00fdmi sadami rozhran\u00ed API. Aby m\u011bli konzistentn\u00ed chov\u00e1n\u00ed, mus\u00ed b\u00fdt deleguj\u00edc\u00ed zavad\u011b\u010d t\u0159\u00edd a poskytovatel t\u0159\u00edd nakonfigurov\u00e1ni tak, aby pracovali se stejnou sadou rozhran\u00ed API.
+cls.provider.class.space.conflict.useraction=Aktualizujte konfiguraci tak, aby deleguj\u00edc\u00ed zavad\u011b\u010d t\u0159\u00edd a poskytovatel t\u0159\u00edd pracovali se stejnou sadou rozhran\u00ed API.
+
+slf.no.cache=CWWKL0070E: Adres\u00e1\u0159 mezipam\u011bti nebyl \u00fasp\u011b\u0161n\u011b vytvo\u0159en.
+slf.no.cache.explanation=Syst\u00e9m nemohl vytvo\u0159it slo\u017eku na disku.
+slf.no.cache.useraction=Ujist\u011bte se, \u017ee jednotka m\u00e1 spr\u00e1vn\u00e1 opr\u00e1vn\u011bn\u00ed k z\u00e1pisu a na disku je dostatek prostoru.
+slf.no.acf=CWWKL0071E: Pro objekt ArtifactContainerFactory byla nalezena hodnota null.
+slf.no.acf.explanation=Objekt ArtifactContainerFactory nesm\u00ed m\u00edt za b\u011bhu serveru hodnotu null.
+slf.no.acf.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support nebo kontaktujte p\u0159\u00edslu\u0161n\u00e9ho dodavatele slu\u017eeb poskytovatele t\u0159\u00edd.
+slf.failed.delete=CWWKL0072W: Soubor mezipam\u011bti [{0}] nelze odstranit. Tento v\u00fdsledek m\u016f\u017ee v\u00e9st k po\u0161kozen\u00ed vno\u0159en\u00fdch archiv\u016f.
+slf.failed.delete.explanation=Syst\u00e9mu se nezda\u0159ilo odstranit soubor mezipam\u011bti. Jeliko\u017e tento soubor v syst\u00e9mu i nad\u00e1le existuje, mohl by zp\u016fsobit po\u0161kozen\u00ed ve vno\u0159en\u00fdch archivech.
+slf.failed.delete.useraction=Ov\u011b\u0159te, zda nen\u00ed soubor mezipam\u011bti v uzam\u010den\u00e9m stavu, kter\u00fd by mohl zp\u016fsobit selh\u00e1n\u00ed odstran\u011bn\u00ed tohoto souboru.

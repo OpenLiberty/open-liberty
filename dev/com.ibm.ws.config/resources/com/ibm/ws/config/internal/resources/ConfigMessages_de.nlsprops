@@ -1,0 +1,453 @@
+###############################################################################
+# Copyright (c) 2010, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKG
+#COMPONENTNAMEFOR CWWKG WebSphere kernel config service messages
+#CMVCPATHNAME com.ibm.ws.config/resources/com/ibm/ws/config/internal/resources/ConfigMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+# Message prefix block: CWWKG0001 - CWWKG1000
+# -------------------------------------------------------------------------------------------------
+
+copyright=\n\
+Licensed Material - Property of IBM\n\
+(C) COPYRIGHT International Business Machines Corp. 2010 - All Rights Reserved.\n\
+US Government Users Restricted Rights - Use, duplication or disclosure\n\
+restricted by GSA ADP Schedule Contract with IBM Corp.
+
+error.parse.server=CWWKG0001E: Der Konfigurationsparser hat beim Parsen des Konfigurationsstammverzeichnisses und der referenzierten Konfigurationsdokumente einen Fehler festgestellt. Fehler: {0}
+error.parse.server.explanation=Die Serverkonfiguration konnte nicht gelesen werden, weil in einer der Konfigurationsdateien ein Fehler gefunden wurde.
+error.parse.server.useraction=Beheben Sie den Fehler in der Konfigurationsdatei und starten Sie dann den Server erneut.
+
+error.parse.bundle=CWWKG0002E: Der Konfigurationsparser hat bei der Verarbeitung des Bundles, der Version oder der PID (Persisted Identity) einen Fehler festgestellt. Fehler: {0} Fehler: {1} Ursache: {2}
+error.parse.bundle.explanation=Beim Parsing der angegebenen Konfiguration ist ein Fehler aufgetreten.
+error.parse.bundle.useraction=Beheben Sie den Konfigurationsfehler und wiederholen Sie dann die Aktion.
+
+info.prop.ignored=CWWKG0003I: Es wurde kein Operator angegeben, oder der angegebene Wert ist null oder leer. Die Eigenschaft wird ignoriert. Eigenschaft: {0} Datei: {1}
+info.prop.ignored.explanation=Eine erwartete Konfigurationseigenschaft fehlt oder wurde nicht angegeben und wird deshalb ignoriert.
+info.prop.ignored.useraction=Es ist keine Aktion erforderlich.
+info.unsupported.api=CWWKG0004I: Diese API wird nicht unterst\u00fctzt: {0}
+info.unsupported.api.explanation=Die angegebene API wird nicht unterst\u00fctzt.
+info.unsupported.api.useraction=Verwenden Sie eine unterst\u00fctzte API.
+
+info.ignore.unresolved.optional.include=CWWKG0005I: Die nicht aufgel\u00f6ste optionale {0}-Ressource ({1}) wird ignoriert. Zeile: {2}, {3}
+info.ignore.unresolved.optional.include.explanation=Eine optionale Konfigurationsdatei wurde nicht gefunden und wird ignoriert.
+info.ignore.unresolved.optional.include.useraction=Es ist keine Aktion erforderlich.
+
+info.ignore.invalid.optional.include=CWWKG0006I: Die ung\u00fcltige @include?-Ressource ({0}) wird ignoriert. Zeile: {1}. {2}
+info.ignore.invalid.optional.include.explanation=Die angegebene Ressource ist nicht g\u00fcltig und wurde ignoriert.
+info.ignore.invalid.optional.include.useraction=Stellen Sie sicher, dass die Ressource g\u00fcltig ist, wenn sie nicht ignoriert werden soll.
+
+warn.file.delete.failed=CWWKG0007W: Das System konnte nicht gel\u00f6scht werden: {0}
+warn.file.delete.failed.explanation=Es war nicht m\u00f6glich, die angegebene Ressource zu l\u00f6schen.
+warn.file.delete.failed.useraction=Beheben Sie alle Probleme, die das L\u00f6schen der Ressource verhindern, und wiederholen Sie dann die Aktion.
+
+warn.file.mkdirs.failed=CWWKG0008W: Das System konnte keine Verzeichnisse f\u00fcr {0} erstellen.
+warn.file.mkdirs.failed.explanation=Es war nicht m\u00f6glich, die angegebenen Verzeichnisse zu erstellen.
+warn.file.mkdirs.failed.useraction=Beheben Sie alle Probleme, die das Erstellen der Verzeichnisse verhindern, und wiederholen Sie dann die Aktion.
+
+warn.bundle.factory.noinstance=CWWKG0009W: Die Konfiguration {0} im Bundle {1} gibt eine Factory-Konfiguration ohne ID an.
+warn.bundle.factory.noinstance.explanation=Die angegebene Factory-Konfiguration hat keine ID.
+warn.bundle.factory.noinstance.useraction=Geben Sie eine ID f\u00fcr die Factory-Konfiguration an.
+
+frameworkShutdown=CWWKG0010I: Der Server {0} wird wegen eines vorherigen Initialisierungsfehlers beendet.
+frameworkShutdown.explanation=Ein vorheriger Initialisierungsfehler hat bewirkt, dass der Server beendet wird.
+frameworkShutdown.useraction=Beheben Sie den Initialisierungsfehler und starten Sie dann den Server erneut.
+
+config.validator.foundConflictSingleton=Es wurden widerspr\u00fcchliche Einstellungen f\u00fcr die Konfiguration {0} gefunden.
+config.validator.foundConflictInstance=Es wurden widerspr\u00fcchliche Einstellungen f\u00fcr die Instanz {1} der Konfiguration {0} gefunden.
+config.validator.attributeConflict=Die Eigenschaft {0} hat widerspr\u00fcchliche Werte:
+config.validator.valueConflict=Der Wert {0} ist in {1} definiert.
+config.validator.valueConflictNull=Es ist kein Wert in {0} definiert.
+config.validator.valueConflictSecure=Es ist ein sicherer Wert in {0} definiert.
+config.validator.activeValue=Die Eigenschaft {0} wird auf {1} gesetzt.
+config.validator.activeValueNull=Die Eigenschaft {0} wird auf keine Wert gesetzt.
+config.validator.activeValueSecure=Die Eigenschaft {0} wird auf den in {1} definierten Wert gesetzt.
+
+warn.config.validate.failed=CWWKG0011W: Die Konfigurationsvalidierung war nicht erfolgreich. {0}
+warn.config.validate.failed.explanation=Die Konfiguration ist aufgrund der angegebenen Probleme nicht g\u00fcltig.
+warn.config.validate.failed.useraction=Korrigieren Sie die Konfiguration.
+
+warn.config.delete.failed=CWWKG0012W: Das System konnte die Konfiguration {0} nicht l\u00f6schen.
+warn.config.delete.failed.explanation=Die Konfiguration wurde aus dem Service ConfigurationAdmin entfernt.
+warn.config.delete.failed.useraction=Es ist keine Aktion erforderlich.
+
+warn.config.delete.failed.multiple=CWWKG0013W: Das System hat die Konfiguration {0} nicht gel\u00f6scht. Es wurden mehrere \u00fcbereinstimmende Konfigurationen gefunden.
+warn.config.delete.failed.multiple.explanation=Die angegebene Konfiguration konnte nicht aus dem Service ConfigurationAdmin entfernt werden, weil mehrere \u00fcbereinstimmende Konfigurationen gefunden wurden.
+warn.config.delete.failed.multiple.useraction=Es ist keine Aktion erforderlich.
+
+error.syntax.parse.server=CWWKG0014E: Der Konfigurationsparser hat einen XML-Syntaxfehler beim Parsing des Konfigurationsstamms und der referenzierten Konfigurationsdokumente gefunden. Fehler: {0} Datei: {1} Zeile: {2} Spalte: {3}
+error.syntax.parse.server.explanation=Die Serverkonfiguration konnte nicht gelesen werden, weil eine der Konfigurationsdateien einen XML-Syntaxfehler enth\u00e4lt.
+error.syntax.parse.server.useraction=Beheben Sie den XML-Syntaxfehler im Konfigurationsdokument und starten Sie anschlie\u00dfend den Server erneut.
+
+error.config.update.init=CWWKG0015E: Das System konnte mindestens eine Konfiguration nicht aktualisieren. Fehler: {0}
+error.config.update.init.explanation=Mindestens eine Konfiguration konnte nicht im Service ConfigurationAdmin aktualisiert werden.
+error.config.update.init.useraction=Es ist keine Aktion erforderlich.
+
+info.config.refresh.start=CWWKG0016I: Die Aktualisierung der Serverkonfiguration wird gestartet.
+info.config.refresh.start.explanation=Die Serverkonfigurationsdateien wurden ge\u00e4ndert und das System versucht, die Serverkonfiguration mit den neuen Informationen zu aktualisieren.
+info.config.refresh.start.useraction=Es ist keine Aktion erforderlich.
+
+info.config.refresh.stop=CWWKG0017I: Die Serverkonfiguration wurde erfolgreich in {0} Sekunden aktualisiert.
+info.config.refresh.stop.explanation=Das System hat \u00c4nderungen an den Serverkonfigurationsdateien erkannt und die Serverkonfiguration mit den neuen Informationen aktualisiert.
+info.config.refresh.stop.useraction=Es ist keine Aktion erforderlich.
+
+info.config.refresh.nochanges=CWWKG0018I: Die Serverkonfiguration wurde nicht aktualisiert. Es wurden keine funktionalen \u00c4nderungen erkannt.
+info.config.refresh.nochanges.explanation=Die Serverkonfigurationsdateien wurden ge\u00e4ndert, aber es wurden keine funktionalen Konfigurations\u00e4nderungen erkannt.
+info.config.refresh.nochanges.useraction=Es ist keine Aktion erforderlich.
+
+schemagen.noextensions=CWWKG0019E: Die \u00fcbergeordnete Konfiguration {0}, die in {1} angegeben wurde, unterst\u00fctzt keine Erweiterungen.
+schemagen.noextensions.explanation=Metatyperweiterungen m\u00fcssen aktiviert werden, damit verschachtelte Konfigurationen zugelassen werden.
+schemagen.noextensions.useraction=F\u00fcgen Sie der Datei metatype.xml den Eintrag ibm:supportExtensions="true" hinzu.
+
+schemagen.invalid.parent=CWWKG0020E: Die \u00fcbergeordnete Konfiguration {0}, die in {1} angegeben ist, ist nicht g\u00fcltig.
+schemagen.invalid.parent.explanation=Die im Attribut ibm:parentPid angegebene \u00fcbergeordnete Konfiguration ist nicht vorhanden.
+schemagen.invalid.parent.useraction=Korrigieren Sie das Attribut ibm:parentPid in der Datei metatype.xml.
+
+schemagen.duplicate.pid=CWWKG0021E: Die Konfigurations-PID (persistent gespeicherte ID) {0} ist in mehreren Dateien metatype.xml definiert.
+schemagen.duplicate.pid.explanation=Die Konfiguration der Attribute pid und factoryPid muss eindeutig sein.
+schemagen.duplicate.pid.useraction=Bearbeiten Sie die Datei metatype.xml so, dass alle Attribute pid und factoryPid eindeutig sind.
+
+schemagen.alias.required=CWWKG0022E: Der Konfigurationsalias ist f\u00fcr die verschachtelte Konfiguration {0} erforderlich.
+schemagen.alias.required.explanation=Die verschachtelte Konfiguration hat keinen Konfigurationsalias.
+schemagen.alias.required.useraction=Konfigurieren Sie ein Attribut config.alias in der Datei metatype.xml.
+
+schemagen.invalid.child=CWWKG0023E: Die untergeordnete Konfiguration {0} muss eine Factory-Konfiguration sein.
+schemagen.invalid.child.explanation=Die Konfiguration muss eine Factory-Konfiguration sein.
+schemagen.invalid.child.useraction=Verwenden Sie zum Definieren einer Factory-Konfiguration ein Attribut factoryPid anstelle eines Attributs pid.
+error.config.update.disk=CWWKG0024E: Die Serverkonfiguration {0} wurde nicht auf der Platte aktualisiert. Fehler: {1}
+error.config.update.disk.explanation=Die Serverkonfigurationsdaten wurden nicht erfolgreich auf der Platte gespeichert.
+error.config.update.disk.useraction=Es ist keine Aktion erforderlich.
+
+error.config.update.event=CWWKG0025E: Die Aktualisierungsereignisse zur Serverkonfiguration f\u00fcr {0} wurden nicht ausgegeben. Fehler: {1}
+error.config.update.event.explanation=Die Aktualisierungsereignisse zur Serverkonfiguration wurden nicht ausgegeben.
+error.config.update.event.useraction=Es ist keine Aktion erforderlich.
+
+error.alias.collision=CWWKG0026E: Mindestens zwei Metatypdefinitionen haben dieselbe persistent gespeicherte ID (PID) oder denselben Alias. Die PID bzw. der Alias {0} wird von den Objektklassendefinitionen {1} gemeinsam genutzt.
+error.alias.collision.explanation=Es sind mehrere Metatypdefinitionen vorhanden, die denselben Aliaswert verwenden. Dies kann zu einem unvorhersehbaren Laufzeitverhalten f\u00fchren.
+error.alias.collision.useraction=Melden Sie das Problem dem IBM Service.
+
+info.config.refresh.timeout=CWWKG0027W: Zeitlimit\u00fcberschreitung beim Aktualisieren der Serverkonfiguration.
+info.config.refresh.timeout.explanation=Das System hat beim Warten auf die Verarbeitung der neuen Serverkonfiguration durch Komponenten das zul\u00e4ssige Zeitlimit \u00fcberschritten.
+info.config.refresh.timeout.useraction=Es ist keine Aktion erforderlich.
+
+audit.include.being.processed=CWWKG0028A: Verarbeitung beinhaltet die folgende Konfigurationsressource: {0}
+audit.include.being.processed.explanation=Der Inhalt der angegebenen Ressource wird in die Serverkonfiguration eingeschlossen.
+audit.include.being.processed.useraction=Es ist keine Aktion erforderlich.
+
+schemagen.bad.reference.extension=CWWKG0029E: Das Attribut {0} hat keine Erweiterung vom Typ ibm:reference oder die Erweiterung gibt keine pid an.
+schemagen.bad.reference.extension.explanation=Die Erweiterung ibm:reference ist f\u00fcr Attribute erforderlich, die mit ibm:type=pid definiert wurden.
+schemagen.bad.reference.extension.useraction=Bearbeiten Sie die Datei metatype.xml und f\u00fcgen Sie die Erweiterung ibm:reference extension hinzu oder korrigieren Sie sie.
+
+schemagen.bad.reference.pid=CWWKG0030E: Die in der Erweiterung ibm:reference aufgelistete Pid-Referenz {0} ist nicht vorhanden.
+schemagen.bad.reference.pid.explanation=Die angegebene pid-Referenz in der Erweiterung ibm:reference ist nicht vorhanden oder ung\u00fcltig.
+schemagen.bad.reference.pid.useraction=Bearbeiten Sie die entsprechende Datei metatype.xml und korrigieren Sie den pid-Namen in der Erweiterung ibm:reference.
+
+error.unique.value.conflict=CWWKG0031E: Der Wert {1}, der f\u00fcr das eindeutige Attribut {0} angegeben wurde, wird bereits verwendet.
+error.unique.value.conflict.explanation=Der Wert f\u00fcr das angegebene Attribut muss eindeutig sein, es wird jedoch bereits verwendet.
+error.unique.value.conflict.useraction=\u00c4ndern Sie den Attributwert in einen eindeutigen Wert.
+
+warn.config.invalid.value=CWWKG0032W: F\u00fcr die Eigenschaft [{0}] wurde ein unerwarteter Wert angegeben. Wert = [{1}]. Die erwarteten Werte sind {2}.
+warn.config.invalid.value.explanation=Der f\u00fcr die Eigenschaft angegebene Wert kann nicht verwendet werden.
+warn.config.invalid.value.useraction=Korrigieren Sie den Wert der Eigenschaft so, dass ein erwarteter Wert verwendet wird.
+
+warning.pid.not.found=CWWKG0033W: Der Wert [{1}], der f\u00fcr das Referenzattribut [{0}] angegeben wurde, wurde in der Konfiguration nicht gefunden.
+warning.pid.not.found.explanation=Der angegebene Wert muss ein Element in der Konfiguration sein.
+warning.pid.not.found.useraction=\u00c4ndern Sie den Attributwert so, dass ein g\u00fcltiges Konfigurationselement referenziert wird. 
+error.targetRequired=CWWKG0034E: Die Zieldatei muss angegeben werden.
+error.targetRequired.explanation=Die Zieldatei muss in der Befehlszeile angegeben werden.
+error.targetRequired.useraction=Wiederholen Sie den Befehl und geben Sie eine Zieldatei an. Mit --help k\u00f6nnen Sie eine Liste der g\u00fcltigen Optionen anzeigen.
+
+error.unknownArgument=CWWKG0035E: Unbekannte Option: {0}
+error.unknownArgument.explanation=Die angegebene Option ist nicht bekannt.
+error.unknownArgument.useraction=Wiederholen Sie den Befehl mit g\u00fcltigen Optionen. Mit --help k\u00f6nnen Sie eine Liste der g\u00fcltigen Optionen anzeigen.
+
+error.schemaGenException=CWWKG0036E: Fehler beim Generieren des Schemas: {0}
+error.schemaGenException.explanation=W\u00e4hrend der Schemagenerierung ist ein Fehler aufgetreten.
+error.schemaGenException.useraction=Untersuchen Sie die Ausnahme.
+
+error.schemaGenInvalidJarLocation=CWWKG0037E: Ung\u00fcltige JAR-Position.
+error.schemaGenInvalidJarLocation.explanation=Die Position der Konfigurations-JAR-Datei ist ung\u00fcltig.
+error.schemaGenInvalidJarLocation.useraction=Vergewissern Sie sich, dass die Konfigurations-JAR-Datei in wlp/lib vorhanden ist.
+
+error.ocdExists=CWWKG0038E: Objektklasse mit {0} ist bereits registriert.
+error.ocdExists.explanation=Eine Objektklasse kann nicht ein zweites Mal registriert werden.
+error.ocdExists.useraction=Entfernen Sie die doppelte Objektklasse.
+
+error.dsExists=CWWKG0039E: Designierte Klasse mit {0} ist bereits registriert.
+error.dsExists.explanation=Eine designierte Klasse kann nicht ein zweites Mal registriert werden.
+error.dsExists.useraction=Entfernen Sie die doppelte designierte Klasse.
+
+error.fileNotFound=CWWKG0040E: Die Datei {0} wurde nicht gefunden.
+error.fileNotFound.explanation=Die Datei, die die Liste der auszuschlie\u00dfenden PIDs enth\u00e4lt, wurde nicht gefunden.
+error.fileNotFound.useraction=Korrigieren Sie den Dateinamen und wiederholen Sie den Befehl.
+
+error.invalidArgument=CWWKG0041E: Das Argument {0} ist ung\u00fcltig. \
+Der Wert muss angegeben werden.
+error.invalidArgument.explanation=Es wurde kein Wert f\u00fcr das Argument gefunden.
+error.invalidArgument.useraction=Wiederholen Sie den Befehl mit angegebenem Wert.
+
+warn.parse.circular.include=CWWKG0042W: Die enthaltenen Konfigurationsressourcen bilden eine Schleifenabh\u00e4ngigkeit: {0}
+warn.parse.circular.include.explanation=Mindestens ein Konfigurationsinclude erstellt eine Schleifenabh\u00e4ngigkeit.
+warn.parse.circular.include.useraction=Entfernen Sie die Include-Dateien, die die Schleifenabh\u00e4ngigkeit verursachen.
+
+info.configValidator.validator=CWWKG0043I: Verwendete Konfigurationsvalidatorklasse: {0}
+info.configValidator.validator.explanation=Die angegebene Klasse wird zum Validieren der Konfiguration verwendet.
+info.configValidator.validator.useraction=Es ist keine Aktion erforderlich.
+
+fatal.configValidator.documentNotValid=CWWKG0044E: Der Server wird heruntergefahren, weil ein Konfigurationsdokument keine g\u00fcltige Signatur enth\u00e4lt: {0}
+fatal.configValidator.documentNotValid.explanation=Das angegebene konfigurationsdokument enth\u00e4lt keine g\u00fcltige Signatur oder ein Teil des Dokuments, der durch die Signatur gesch\u00fctzt ist, wurde ge\u00e4ndert. Dieser Nachricht geht eine Fehlernachricht voraus, die mehr Informationen zu dem Fehler im Dokument enth\u00e4lt.
+fatal.configValidator.documentNotValid.useraction=Beheben Sie den Fehler im Konfigurationsdokument, der in der vorausgehenden Fehlernachricht angegeben ist.
+
+error.configValidator.parseFailed=CWWKG0045E: Ein Konfigurationsdokument konnte nicht geparst werden: {0}, {1}.
+error.configValidator.parseFailed.explanation=Beim Parsen des angegebenen Konfigurationsdokuments wurde eine Ausnahme ausgel\u00f6st.
+error.configValidator.parseFailed.useraction=Beheben Sie den Fehler im Konfigurationsdokument, der die Ausnahme ausl\u00f6st, und starten Sie dann den Server erneut.
+
+error.configValidator.unmarshalFailed=CWWKG0046E: Das Unmarshalling der in einem Konfigurationsdokument enthaltenen Signatur ist nicht m\u00f6glich: {0}, {1}.
+error.configValidator.unmarshalFailed.explanation=Beim Unmarshalling des angegebenen Konfigurationsdokuments wurde eine Ausnahme ausgel\u00f6st.
+error.configValidator.unmarshalFailed.useraction=Beheben Sie den Fehler im Konfigurationsdokument, der die Ausnahme ausl\u00f6st, und starten Sie dann den Server erneut.
+
+error.configValidator.error=CWWKG0047E: Beim Versuch, ein Konfigurationsdokument zu pr\u00fcfen, ist ein Fehler aufgetreten: {0}, {1}.
+error.configValidator.error.explanation=Es wurde eine Ausnahme ausgel\u00f6st, als gepr\u00fcft wurde, ob das angegebene Konfigurationsdokument eine g\u00fcltige Signatur enth\u00e4lt.
+error.configValidator.error.useraction=Beheben Sie den Fehler im Konfigurationsdokument, der die Ausnahme ausl\u00f6st, und starten Sie dann den Server erneut.
+
+error.configValidator.signatureMissing=CWWKG0048E: Ein Konfigurationsdokument enth\u00e4lt keine Signatur: {0}
+error.configValidator.signatureMissing.explanation=Ein angegebenes Konfigurationsdokument enth\u00e4lt keine Signatur.
+error.configValidator.signatureMissing.useraction=Ersetzen Sie das angegebene Konfigurationsdokument durch eine Version des Dokuments, die eine g\u00fcltige Signatur enth\u00e4lt, und starten Sie den Server anschlie\u00dfend erneut.
+
+error.configValidator.keyInfoMissing=CWWKG0049E: Es wurde kein KeyInfo-Element in der Signatur in einem Konfigurationsdokument gefunden: {0}
+error.configValidator.keyInfoMissing.explanation=Die Signatur im angegebenen Konfigurationsdokument enth\u00e4lt kein KeyInfo-Element.
+error.configValidator.keyInfoMissing.useraction=Ersetzen Sie das angegebene Konfigurationsdokument durch eine Version des Dokuments, die eine g\u00fcltige Signatur enth\u00e4lt, und starten Sie den Server anschlie\u00dfend erneut.
+
+error.configValidator.signerNotAuthorized=CWWKG0050E: Ein Konfigurationsdokument wurde von einer nicht berechtigten Entit\u00e4t signiert: {0}
+error.configValidator.signerNotAuthorized.explanation=Die Signatur im angegebenen Konfigurationsdokument enth\u00e4lt ein nicht berechtigtes Zertifikat.
+error.configValidator.signerNotAuthorized.useraction=Ersetzen Sie das angegebene Konfigurationsdokument durch eine Version des Dokuments, die eine g\u00fcltige Signatur enth\u00e4lt, und starten Sie den Server anschlie\u00dfend erneut.
+
+error.configValidator.x509DataMissing=CWWKG0051E: Das Element X509Data wurde nicht in der Signatur in einem Konfigurationsdokument gefunden: {0}
+error.configValidator.x509DataMissing.explanation=Die Signatur im angegebenen Konfigurationsdokument enth\u00e4lt kein X509Data-Element.
+error.configValidator.x509DataMissing.useraction=Ersetzen Sie das angegebene Konfigurationsdokument durch eine Version des Dokuments, die eine g\u00fcltige Signatur enth\u00e4lt, und starten Sie den Server anschlie\u00dfend erneut.
+
+error.configValidator.x509CertificateMissing=CWWKG0052E: Das Element X509Certificate wurde nicht in der Signatur in einem Konfigurationsdokument gefunden: {0}
+error.configValidator.x509CertificateMissing.explanation=Die Signatur im angegebenen Konfigurationsdokument enth\u00e4lt kein X509Certificate-Element.
+error.configValidator.x509CertificateMissing.useraction=Ersetzen Sie das angegebene Konfigurationsdokument durch eine Version des Dokuments, die eine g\u00fcltige Signatur enth\u00e4lt, und starten Sie den Server anschlie\u00dfend erneut.
+
+error.configValidator.protectedSectionModified=CWWKG0053E: Ein Abschnitt in einem Konfigurationsdokument, der durch eine Signatur gesch\u00fctzt ist, wurde ge\u00e4ndert: {0}
+error.configValidator.protectedSectionModified.explanation=Der gesch\u00fctzte Abschnitt im angegebenen Konfigurationsdokument wurde aktualisiert.
+error.configValidator.protectedSectionModified.useraction=Machen Sie die Aktualisierung des gesch\u00fctzten Abschnitts im angegebenen Konfigurationsdokument r\u00fcckg\u00e4ngig und starten Sie dann den Server erneut.
+
+error.configValidator.signatureNotValid=CWWKG0054E: Die Signatur in einem Konfigurationsdokument ist nicht g\u00fcltig: {0}
+error.configValidator.signatureNotValid.explanation=Die Signatur im angegebenen Konfigurationsdokument ist nicht g\u00fcltig.
+error.configValidator.signatureNotValid.useraction=Ersetzen Sie das angegebene Konfigurationsdokument durch eine Version des Dokuments, die eine g\u00fcltige Signatur enth\u00e4lt, und starten Sie den Server anschlie\u00dfend erneut.
+
+info.configValidator.documentValid=CWWKG0055I: Das Konfigurationsdokument enth\u00e4lt eine g\u00fcltige Signatur: {0}
+info.configValidator.documentValid.explanation=Das angegebene Konfigurationsdokument enth\u00e4lt eine g\u00fcltige Signatur.
+info.configValidator.documentValid.useraction=Es ist keine Aktion erforderlich.
+
+fatal.configValidator.dropinsEnabled=CWWKG0056E: Der Server wird heruntergefahren, weil Drop-ins aktiviert sind.
+fatal.configValidator.dropinsEnabled.explanation=Die zum Starten eines integrierten Servers verwendeten Konfigurationsdokumente enthalten kein applicationMonitor-Element oder sie enthalten ein applicationMonitor-Element, das Drop-ins nicht inaktiviert.
+fatal.configValidator.dropinsEnabled.useraction=Geben Sie "dropinsEnabled=false" in einem applicationMonitor-Element in einem der Konfigurationsdokumente an.
+
+warn.configValidator.refreshFailed=CWWKG0057W: Die neue Konfiguration wurde wegen einer ung\u00fcltigen Signatur nicht geladen.
+warn.configValidator.refreshFailed.explanation=Das neue Konfigurationsdokument enth\u00e4lt keine g\u00fcltige Signatur. Deshalb wird die Konfiguration nicht ge\u00e4ndert.
+warn.configValidator.refreshFailed.useraction=Ersetzen Sie das aktualisierte Konfigurationsdokument durch eine Version des Dokuments, die eine g\u00fcltige Signatur enth\u00e4lt, und wiederholen Sie dann die Aktualisierung.
+
+error.missing.required.attribute=CWWKG0058E: Im Element {0} mit der eindeutigen ID {2} fehlt das erforderliche Attribut {1}.
+error.missing.required.attribute.explanation=Das fehlende Attribut ist in der Konfigurationsdatei server.xml oder einer der zugeh\u00f6rigen referenzierten Konfigurationsdateien erforderlich.
+error.missing.required.attribute.useraction=F\u00fcgen Sie der Konfigurationsdatei server.xml oder einer der referenzierten Konfigurationsdateien das Attribut hinzu.
+
+error.missingSuper=CWWKG0059E: Die persistent definierte ID {0} konnte nicht verarbeitet werden, weil sie eine nicht verf\u00fcgbare persistent definierte ID {1} erweitert.
+error.missingSuper.explanation=Die Konfiguration der angegebenen persistent definierten ID ist mit einem internen Fehler fehlgeschlagen, weil sie eine andere persistent definierte ID erweitert, die nicht verf\u00fcgbar ist.
+error.missingSuper.useraction=Stellen Sie sicher, dass das Feature bzw. Bundle, das die fehlende persistent definierte ID bereitstellt, in der Laufzeitumgebung verf\u00fcgbar ist. Dies ist ein interner Fehler. Folgen Sie den Standardprozeduren f\u00fcr die Problembestimmung in WebSphere.
+
+error.final.override=CWWKG0060E: Es ist nicht zul\u00e4ssig, das Attribut {0} f\u00fcr die persistente ID {1} zu \u00fcberschreiben oder umzubenennen, weil das Attribut von der persistent definierten ID {2} als final deklariert wird.
+error.final.override.explanation=Das Attribut ist mit final deklariert. Alle Rekonfigurationsversuche werden ignoriert.
+error.final.override.useraction=Versuchen Sie nicht, Attribute zu rekonfigurieren, die mit final gekennzeichnet sind. Dies ist ein interner Fehler. Folgen Sie den Standardprozeduren f\u00fcr die Problembestimmung in WebSphere.
+
+#"ibm:extends" is an xml attribute name and should not be translated
+#TODO could this be renamed error.factoryOnly.extends?
+error.factoryOnly=CWWKG0061E: Die persistent definierte ID {0} ist keine persistent definierte Factory-ID und kann deshalb nicht zur Erweiterung der persistent definierten ID {1} verwendet werden.
+error.factoryOnly.explanation=Das Attribut ibm:extends ist nur f\u00fcr persistent definierte Factory-IDs g\u00fcltig.
+error.factoryOnly.useraction=\u00c4ndern Sie die Konfiguration der persistent definierten ID so, dass eine persistent definierte Factory-ID verwendet wird, oder entfernen Sie das Attribut ibm:extends aus der Objektkomponentendefinition. Dies ist ein interner Fehler. Folgen Sie den Standardprozeduren f\u00fcr die Problembestimmung in WebSphere.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.factoryOnly.extendsAlias=CWWKG0096E: Die persistent definierte ID {0} ist keine persistent definierte Factory-ID und kann deshalb kein ibm:extendsAlias-Attribut mit dem Wert {1} haben. \u00c4ndern Sie die Konfiguration der persistent definierten ID so, dass eine persistent definierte Factory-ID verwendet wird, oder entfernen Sie das Attribut ibm:extendsAlias aus der persistent definierten ID.
+error.factoryOnly.extendsAlias.explanation=Das Attribut ibm:extendsAlias ist nur f\u00fcr persistent definierte Factory-IDs g\u00fcltig, die eine andere persistent definierte Factory-ID erweitern.
+error.factoryOnly.extendsAlias.useraction=\u00c4ndern Sie die Konfiguration der persistent definierten ID so, dass eine persistent definierte Factory-ID verwendet wird, oder entfernen Sie das Attribut ibm:extendsAlias aus der persistent definierten ID.
+
+#"ibm:extends" is an xml attribute name and should not be translated
+error.superFactoryOnly=CWWKG0062E: Die persistent definierte ID {0} ist keine persistent definierte Factory-ID und kann deshalb nicht von der persistent definierten ID {1} erweitert werden.
+error.superFactoryOnly.explanation=Das Attribut ibm:extends ist nur f\u00fcr persistent definierte Factory-IDs g\u00fcltig.
+error.superFactoryOnly.useraction=\u00c4ndern Sie die Konfiguration der persistent definierten ID so, dass eine persistent definierte Factory-ID verwendet wird, oder entfernen Sie das Attribut ibm:extends aus der Objektkomponentendefinition. Dies ist ein interner Fehler. Folgen Sie den Standardprozeduren f\u00fcr die Problembestimmung in WebSphere.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.ExtendsAliasMustExtend=CWWKG0097E: Die persistent definierte ID {0} gibt ein Attribut ibm:extendsAlias mit dem Wert {1} an und muss deshalb auch das Attribut ibm:extends angeben.
+error.ExtendsAliasMustExtend.explanation=Wenn Sie das Attribut ibm:extendsAlias angeben, m\u00fcssen Sie auch das Attribut ibm:extends angeben.
+error.ExtendsAliasMustExtend.useraction=Geben Sie das Attribut ibm:extends an.
+
+#"ibm:parentPid" and "ibm:childAlias" are xml attribute names and should not be translated
+error.parentpid.and.childalias=CWWKG0098E: Die persistent definierte ID {0} gibt ein Attribut {1} mit dem Wert {2} an und muss deshalb auch das Attribut {3} angeben.
+error.parentpid.and.childalias.explanation=Der Metatyp gibt an, dass ein verschachteltes Element des Typs child-first nur teilweise angegeben wurde. Verschachtelte Elemente des Typs child-first m\u00fcssen sowohl das Attribut ibm:parentPid als auch das Attribut ibm:childAlias angeben.
+error.parentpid.and.childalias.useraction=Wenn diese Metatyp f\u00fcr ein verschachteltes Element des Typs child-first bestimmt ist, geben Sie das fehlende Attribut an. Andernfalls entfernen Sie das angegebene Attribut. 
+
+#"ibm:rename" is an xml attribute name and should not be translated
+schemagen.rename.attribute.missing=CWWKG0063E: Die Attributdefinition {1}, die mit dem ibm:rename-Attribut {2} in der persistent definierten ID {0} angegeben wurde, kann nicht umbenannt werden.
+schemagen.rename.attribute.missing.explanation=Ein Attribut in einem erweiternden Metatyp versucht, ein nicht vorhandenes Attribut umzubenennen.
+schemagen.rename.attribute.missing.useraction=Korrigieren Sie die Umbenennungserweiterung und geben Sie ein vorhandenes Attribut an. Dies ist ein interner Fehler. Folgen Sie den Standardprozeduren f\u00fcr die Problembestimmung in WebSphere.
+
+schemagen.invalid.type.override=CWWKG0064E: Ung\u00fcltige \u00dcberschreibung eines Attributtyps durch das Attribut {0} im Metatyp {1}. Stattdessen wird der urspr\u00fcngliche Typ {2} verwendet.
+schemagen.invalid.type.override.explanation=Ein Attribut versucht, den Typ eines erweiterten Attributs zu \u00fcberschreiben, aber Attributtypen k\u00f6nnen nicht von Erweiterungsattributen ge\u00e4ndert werden.
+schemagen.invalid.type.override.useraction=Der Attributtyp wird automatisch auf den urspr\u00fcnglichen Typ gesetzt. Um zu verhindern, dass dieser Fehler erneut auftritt, korrigieren Sie den Typwert in dem Attribut mit der rename-Erweiterung. Dies ist ein interner Fehler. Folgen Sie den Standardprozeduren f\u00fcr die Problembestimmung in WebSphere.
+
+schemagen.non.factorypid.extension=CWWKG0065E: Eine nicht aus der Factory stammende persistent definierte ID {0} versucht, einen anderen Metatyp zu erweitern.
+schemagen.non.factorypid.extension.explanation=Eine nicht aus der Factory stammende persistent definierte ID versucht, einen anderen Metatyp zu erweitern. Erweiterungen k\u00f6nnen nur von persistent definierten IDs, die aus der Factory stammen, verwendet werden.
+schemagen.non.factorypid.extension.useraction=\u00c4ndern Sie den Metatyp in factory oder entfernen Sie die Erweiterungen aus der Metatypdefinition. Dies ist ein interner Fehler. Folgen Sie den Standardprozeduren f\u00fcr die Problembestimmung in WebSphere.
+
+schemagen.invalid.extension.pid=CWWKG0066E: Die persistent definierte Metatyp-ID {0} versucht, eine nicht vorhandene persistent definierte ID {1} zu erweitern.
+schemagen.invalid.extension.pid.explanation=Der Metatyp versucht, einen anderen Metatyp zu erweitern, der nicht vorhanden ist.
+schemagen.invalid.extension.pid.useraction=\u00c4ndern Sie die Metatyperweiterung und geben Sie eine vorhandene persistent definierte ID an. Dies ist ein interner Fehler. Folgen Sie den Standardprozeduren f\u00fcr die Problembestimmung in WebSphere.
+
+#"ibm:rename" is an xml attribute name and should not be translated
+error.rename.attribute.missing=CWWKG0067E: Die Attributdefinition {1}, die mit dem ibm:rename-Attribut {2} in der persistent definierten ID {0} angegeben wurde, kann nicht umbenannt werden.
+error.rename.attribute.missing.explanation=Ein Attribut in einem erweiternden Metatyp versucht, ein nicht vorhandenes Attribut umzubenennen.
+error.rename.attribute.missing.useraction=Korrigieren Sie den in der Umbenennungserweiterung angegebenen Attributnamen und geben Sie ein vorhandenes Attribut an. Dies ist ein interner Fehler. Folgen Sie den Standardprozeduren f\u00fcr die Problembestimmung in WebSphere.
+
+#"ibm:rename" is an xml attribute name and should not be translated
+error.conflicting.rename.attribute=CWWKG0068E: Das Umbennen des Attributs {0} in {1} in der persistent definierten ID {2} ist nicht m\u00f6glich, weil dieses Attribut bereits von einem erweiterten Metatyp umbenannt wurde.
+error.conflicting.rename.attribute.explanation=Der aktuelle Metatyp hat ein Attribut ibm:rename, das auf eine Attributdefinitions-ID verweist, die bereits von einem erweiterten Metatyp umbenannt wurde.
+error.conflicting.rename.attribute.useraction=\u00c4ndern Sie das Attribut ibm:rename und geben Sie eine g\u00fcltige Attributdefinitions-ID an. Dies ist ein interner Fehler. Folgen Sie den Standardprozeduren f\u00fcr die Problembestimmung in WebSphere.
+
+schemagen.unresolved.attrib.desc=CWWKG0069W: Das Attribut {0} der Objektklassendefinition {1} im Bundle {2} enth\u00e4lt eine nicht aufgel\u00f6ste Attributbeschreibung.
+schemagen.unresolved.attrib.desc.explanation=Ein Attribut im Metatyp hat eine lokalisierte Beschreibung, aber die Nachricht kann nicht aufgel\u00f6st werden. Deshalb wird das Attribut nicht in der Nachricht angezeigt.
+schemagen.unresolved.attrib.desc.useraction=Verwenden Sie eine nicht lokalisierte Metatypbeschreibung oder stellen Sie sicher, dass die Lokalisierungsdatei die lokalisierte Beschreibung enth\u00e4lt.
+
+schemagen.unresolved.attrib.name=CWWKG0070W: Das Attribut {0} der Objektklassendefinition {1} im Bundle {2} enth\u00e4lt einen nicht aufgel\u00f6sten Attributnamen.
+schemagen.unresolved.attrib.name.explanation=Ein Attribut im Metatyp hat einen lokalisierten Namen, aber die Nachricht kann nicht aufgel\u00f6st werden.
+schemagen.unresolved.attrib.name.useraction=Verwenden Sie einen nicht lokalisierten Metatypnamen oder stellen Sie sicher, dass die Lokalisierungsdatei den lokalisierten Namen enth\u00e4lt.
+
+schemagen.no.attrib.desc=CWWKG0071W: Das Attribut {0} der Objektklassendefinition {1} im Bundle {2} enth\u00e4lt keine Attributbeschreibung.
+schemagen.no.attrib.desc.explanation=Ein Attribut im Metatyp hat keine Beschreibung.
+schemagen.no.attrib.desc.useraction=Geben Sie eine Beschreibung f\u00fcr das Metatypattribut an.
+
+schemagen.no.attrib.name=CWWKG0072W: Das Attribut {0} der Objektklassendefinition {1} im Bundle {2} hat keinen Attributnamen.
+schemagen.no.attrib.name.explanation=Ein Attribut im Metatyp hat keinen Namen.
+schemagen.no.attrib.name.useraction=Geben Sie einen Namen f\u00fcr das Metatypattribut an.
+
+missing.metatype.file=CWWKG0073W: Die Lokalisierungsdateien f\u00fcr den Metatyp wurden nicht im Bundle {0} gefunden.
+missing.metatype.file.explanation=Die angegebene JAR-Datei enth\u00e4lt die erforderlichen Lokalisierungsdateien f\u00fcr den Metatyp nicht.
+missing.metatype.file.useraction=Fordern Sie beim Bundleautor ein Bundle mit den erforderlichen Lokalisierungsdateien an.
+
+error.config.update.exception=CWWKG0074E: Die Konfiguration f\u00fcr {0} mit der eindeutigen ID {2} kann nicht aktualisiert werden, weil die folgende Ausnahme eingetreten ist: {1}
+error.config.update.exception.explanation=Beim Versuch, die Konfiguration zu aktualisieren, ist eine Ausnahme eingetreten.
+error.config.update.exception.useraction=Pr\u00fcfen Sie, ob die Konfiguration Fehler enth\u00e4lt, und wiederholen Sie dann die Aktualisierung.
+
+error.attribute.validation.exception=CWWKG0075E: Der Wert {2} ist f\u00fcr das Attribut {1} des Konfigurationselements {0} nicht g\u00fcltig. Nachricht \u00fcber G\u00fcltigkeitspr\u00fcfung: {3}
+error.attribute.validation.exception.explanation=Die Validierung des Attributs ist fehlgeschlagen.
+error.attribute.validation.exception.useraction=Aktualisieren Sie die Konfiguration so, dass ein g\u00fcltiger Wert f\u00fcr das Attribut verwendet wird.
+
+warning.old.config.still.in.use=CWWKG0076W: Die vorherige Konfiguration f\u00fcr {0} mit der ID {1} ist immer noch im Gebrauch.
+warning.old.config.still.in.use.explanation=Die Aktualisierung des Konfigurationselements ist fehlgeschlagen, aber der vorherige Wert wird weiterhin verwendet.
+warning.old.config.still.in.use.useraction=Es ist keine Aktion erforderlich.
+
+error.specify.parentpid=CWWKG0077E: Die Metatypdefinition f\u00fcr {0} definiert einen untergeordneten Alias, aber kein \u00fcbergeordnetes Element.
+error.specify.parentpid.explanation=Dies ist ein interner Fehler. Das Attribut childAlias ist nur g\u00fcltig, wenn auch ein Attribut parentPID angegeben ist.
+error.specify.parentpid.useraction=Definieren Sie das Attribut parentPID in der Metatypdefinition. Dies ist ein interner Fehler. Folgen Sie den Problembestimmungsprozeduren f\u00fcr WebSphere.
+
+error.prod.ext.features.not.found=CWWKG0078E: Die Produkterweiterung {0} enth\u00e4lt keine Features.
+error.prod.ext.features.not.found.explanation=Die Featuremanifestdateien f\u00fcr die angegebene Produkterweiterung wurden nicht gefunden.
+error.prod.ext.features.not.found.useraction=Vergewissern Sie sich, dass das Verzeichnis, in dem sich die Featuremanifeste befinden, g\u00fcltig ist.
+
+error.prod.ext.not.found=CWWKG0079E: Die Produkterweiterung {0} wurde nicht an der Position {1} gefunden.
+error.prod.ext.not.found.explanation=Die Produkterweiterung wurde nicht an der angegebenen Position gefunden.
+error.prod.ext.not.found.useraction=Vergewissern Sie sich, dass die Produktinstallationsposition in der Eigenschaftendatei f\u00fcr die Produktinstallation ordnungsgem\u00e4\u00df definiert ist.
+
+error.prod.ext.not.defined=CWWKG0080E: Die Produkterweiterung mit dem Namen {0} ist nicht vorhanden.
+error.prod.ext.not.defined.explanation=Die Produkterweiterung mit dem angegebenen Namen ist nicht vorhanden.
+error.prod.ext.not.defined.useraction=Vergewissern Sie sich, dass der angegebene Produkterweiterungsname g\u00fcltig ist.
+
+error.invalid.boolean.attribute=CWWKG0081E: Der Wert {0} f\u00fcr das boolesche Attribut {1} ist nicht g\u00fcltig. Die g\u00fcltigen Werte sind "true" und "false". Der Standardwert {2} wird verwendet.
+error.invalid.boolean.attribute.explanation=Die Validierung des Attributs ist fehlgeschlagen.
+error.invalid.boolean.attribute.useraction=Aktualisieren Sie die Konfiguration so, dass ein g\u00fcltiger Wert f\u00fcr das Attribut verwendet wird.
+
+warning.invalid.boolean.attribute=CWWKG0082W: Der Wert {0} f\u00fcr das boolesche Attribut {1} wird als "false" interpretiert.
+warning.invalid.boolean.attribute.explanation=Die Validierung des Attributs ist fehlgeschlagen.
+warning.invalid.boolean.attribute.useraction=Aktualisieren Sie die Konfiguration so, dass ein g\u00fcltiger Wert f\u00fcr das Attribut verwendet wird.
+
+warn.config.invalid.using.default.value=CWWKG0083W: Bei der Verarbeitung von Eigenschaft [{0}], Wert [{1}] ist ein Validierungsfehler aufgetreten. Der verwendete Standardwert ist {2}. 
+warn.config.invalid.using.default.value.explanation=Der angegebene Wert f\u00fcr die Eigenschaft ist nicht g\u00fcltig und kann nicht verwendet werden. Es wird stattdessen der Standardwert verwendet.
+warn.config.invalid.using.default.value.useraction=Das System verwendet den Standardwert. Alternativ k\u00f6nnen Sie den Wert der Eigenschaft so korrigieren, dass ein g\u00fcltiger Wert verwendet wird.
+
+warn.cannot.resolve.optional.include=CWWKG0084W: Die optionale Include-Konfigurationsdatei kann nicht aufgel\u00f6st werden: {0}
+warn.cannot.resolve.optional.include.explanation=Die angegebene Konfigurationsdatei ist nicht g\u00fcltig. Gew\u00f6hnlich weist dieser Fehler darauf hin, dass die URL nicht ordnungsgem\u00e4\u00df formatiert ist oder ein unbekanntes Protokoll enth\u00e4lt.
+warn.cannot.resolve.optional.include.useraction=\u00dcberpr\u00fcfen Sie die URL, um sicherzustellen, dass sie g\u00fcltig ist und ein bekanntes Protokoll wie file, http oder https verwendet.
+
+warning.unexpected.server.element=CWWKG0085W: Das Serverkonfigurationsdokument enth\u00e4lt ein verschachteltes Element server. Die verschachtelte Konfiguration wird ignoriert.
+warning.unexpected.server.element.explanation=Ein server-Element ist im server-Element der Ausgangsebene im XML-Konfigurationsdokument verschachtelt. Der Inhalt im verschachtelten server-Element wird ignoriert. 
+warning.unexpected.server.element.useraction=Aktualisieren Sie das Serverkonfigurationsdokument, um das verschachtelte server-Element zu entfernen.
+
+warn.bad.reference.filter=CWWKG0086W: Der Referenzfilter {0} ist nicht g\u00fcltig.
+warn.bad.reference.filter.explanation=Dies ist ein interner Fehler. Der in der Attributdefinition angegebene Referenzfilter hat eine ung\u00fcltige Syntax. 
+warn.bad.reference.filter.useraction=Der Autor der Metatypdefinition muss einen g\u00fcltigen Referenzfilter angeben. Dies ist ein interner Fehler.
+
+warning.multiple.matches=CWWKG0087W: Der Wert [{1}], der f\u00fcr das Referenzattribut [{0}] angegeben wurde, ist nicht g\u00fcltig, weil er mehreren Konfigurationen entspricht.
+warning.multiple.matches.explanation=Mehrere Elemente in der Konfiguration verwenden dasselbe ID-Attribut. Der Server kann nicht bestimmen, welches Element der Referenz entsprechen soll.
+warning.multiple.matches.useraction=Aktualisieren Sie die Konfiguration so, dass jedes Element ein anderes ID-Attribut verwendet. 
+
+error.breaking.include.conflict=CWWKG0088E: Das Konfigurationselement {1} wurde in zwei verschiedenen Konfigurationsressourcen angegeben: {0} und {2}.
+error.breaking.include.conflict.explanation=Die eingeschlossene Konfigurationsressource wurde so konfiguriert, dass Konflikte in Konfigurationselementen so gel\u00f6st werden, dass der Server entweder heruntergefahren wird oder die Durchf\u00fchrung einer Konfigurationsaktualisierung nicht zugelassen wird.
+error.breaking.include.conflict.useraction=Aktualisieren Sie die eingeschlossene Konfigurationsressource, um das widerspr\u00fcchliche Element zu entfernen, oder \u00e4ndern Sie das Verhalten f\u00fcr die Konfliktl\u00f6sung in merge, replace oder ignore anstelle von break.
+ 
+error.include.location.not.specified=CWWKG0089E: Das Positionsattribut muss in dem Konfigurationselement include in Zeile {0} der Ressource {1} angegeben werden.
+error.include.location.not.specified.explanation=Es ist ein Konfigurationselement include in der Serverkonfiguration angegeben, aber das Element enth\u00e4lt keine Position.
+error.include.location.not.specified.useraction=F\u00fcgen Sie dem Konfigurationselement ein Positionsattribut hinzu.
+ 
+error.cannot.read.location=CWWKG0090E: Die Konfigurationsressource {0} ist nicht vorhanden oder kann nicht gelesen werden. 
+error.cannot.read.location.explanation=Die Ressource an der angegebenen Position ist nicht verf\u00fcgbar.
+error.cannot.read.location.useraction=Vergewissern Sie sich, dass das Positionsattribut korrekt angegeben ist, und stellen Sie sicher, dass die Ressource verf\u00fcgbar ist.
+
+error.variable.name.missing=CWWKG0091E: Es muss ein Namensattribut f\u00fcr die Variable in Zeile {0} der Ressource {1} angegeben werden.
+error.variable.name.missing.explanation=Die Serverkonfiguration enth\u00e4lt ein Variablenkonfigurationselement, das kein Namensattribut hat.
+error.variable.name.missing.useraction=F\u00fcgen Sie der Variablen ein Namensattribut hinzu.
+
+error.variable.value.missing=CWWKG0092E: Es muss ein Wertattribut f\u00fcr die Variable in Zeile {0} der Ressource {1} angegeben werden.
+error.variable.value.missing.explanation=Die Serverkonfiguration enth\u00e4lt ein Variablenkonfigurationselement, das ein Wertattribut hat.
+error.variable.value.missing.useraction=F\u00fcgen Sie der Variablen ein Wertattribut hinzu.
+
+audit.dropin.being.processed=CWWKG0093A: Konfigurations-Drop-in-Ressource wird verarbeitet: {0}
+audit.dropin.being.processed.explanation=Der Inhalt der angegebenen Ressource wird in die Serverkonfiguration eingeschlossen.
+audit.dropin.being.processed.useraction=Es ist keine Aktion erforderlich.
+
+warning.unrecognized.merge.behavior=CWWKG0094W: Der f\u00fcr das Zusammenf\u00fchrungsverhalten im Konfigurationselement include angegebene Wert {0} ist nicht g\u00fcltig. Das System verwendet den Standardwert merge.
+warning.unrecognized.merge.behavior.explanation=Das Konfigurationselement include gibt einen Wert an, der nicht g\u00fcltig ist. Die g\u00fcltigen Werte sind merge, replace und ignore.
+warning.unrecognized.merge.behavior.useraction=Aktualisieren Sie die Serverkonfiguration und korrigieren Sie das Zusammenf\u00fchrungsverhalten.
+
+error.missing.required.attribute.singleton=CWWKG0095E: Im Element {0} fehlt das erforderliche Attribut {1}.
+error.missing.required.attribute.singleton.explanation=Das fehlende Attribut ist in der Konfigurationsdatei server.xml oder einer der zugeh\u00f6rigen referenzierten Konfigurationsdateien erforderlich.
+error.missing.required.attribute.singleton.useraction=F\u00fcgen Sie der Konfigurationsdatei server.xml oder einer der referenzierten Konfigurationsdateien das Attribut hinzu.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.extendsAlias.collision=CWWKG0100E: Das ibm:extendsAlias-Attribut {2} ist in einer einzigen extends-Hierarchie doppelt vorhanden. Die PIDs sind {0} und {1}. Verwenden Sie in der extends-Hierarchie nur eindeutige ibm:extendsAlias-Attribute.
+error.extendsAlias.collision.explanation=Das ibm:extendsAlias-Attribut muss in einer extends-Hierarchie eindeutig sein.
+error.extendsAlias.collision.useraction=Verwenden Sie in der extends-Hierarchie nur eindeutige ibm:extendsAlias-Attribute.
+
+# Non-TR message
+error.invalidOCDRef=FEHLER: Die Metatyp-PID [{0}] gibt die ID einer nicht vorhandenen Objektklassendefinition [{1}] an.

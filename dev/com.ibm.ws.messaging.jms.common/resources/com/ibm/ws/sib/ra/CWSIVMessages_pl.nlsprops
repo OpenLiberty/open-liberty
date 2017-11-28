@@ -1,0 +1,1227 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.ra.CWSIVMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIV0001=CWSIV0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you want them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Msgs in the range CWSIV0001-CWSIV0049 belong to class com.ibm.ws.sib.ra.recovery.impl.SibRaXaResourceInfo
+#   - Msgs in the range CWSIV0050-CWSIV0099 belong to class com.ibm.ws.sib.ra.SibRaFactory
+#   - Msgs in the range CWSIV0100-CWSIV0149 belong to class com.ibm.ws.sib.ra.impl.SibRaConnectionFactory
+#   - Msgs in the range CWSIV0150-CWSIV0199 belong to class com.ibm.ws.sib.ra.impl.SibRaConnection
+#   - Msgs in the range CWSIV0200-CWSIV0249 belong to class com.ibm.ws.sib.ra.impl.SibRaDestinationSession
+#   - Msgs in the range CWSIV0250-CWSIV0299 belong to class com.ibm.ws.sib.ra.impl.SibRaConsumerSession
+#   - Msgs in the range CWSIV0300-CWSIV0349 belong to class com.ibm.ws.sib.ra.impl.SibRaConnectionInfo
+#   - Msgs in the range CWSIV0350-CWSIV0399 belong to class com.ibm.ws.sib.ra.impl.SibRaManagedConnectionFactory
+#   - Msgs in the range CWSIV0400-CWSIV0449 belong to class com.ibm.ws.sib.ra.impl.SibRaManagedConnection
+#   - Msgs in the range CWSIV0450-CWSIV0499 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaResourceAdapterImpl
+#   - Msgs in the range CWSIV0500-CWSIV0549 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaActivationSpecImpl
+#   - Msgs in the range CWSIV0550-CWSIV0599 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaEndpointActivation
+#   - Msgs in the range CWSIV0600-CWSIV0649 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaDispatcher
+#   - Msgs in the range CWSIV0650-CWSIV0699 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaTransactionalDispatcher
+#   - Msgs in the range CWSIV0700-CWSIV0749 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaConsumerSession
+#   - Msgs in the range CWSIV0750-CWSIV0799 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaStaticDestinationEndpointActivation
+#   - Msgs in the range CWSIV0800-CWSIV0849 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaDynamicDestinationEndpointActivation
+#   - Msgs in the range CWSIV0850-CWSIV0899 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaEndpointInvokerImpl
+#   - Msgs in the range CWSIV0900-CWSIV0949 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaListener
+#   - Msgs in the range CWSIV0950-CWSIV0999 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaMessagingEngineConnection
+#   - Msgs in the range CWSIV1000-CWSIV1049 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaDispatchEndpointActivation
+#   - Msgs in the range CWSIV1050-CWSIV1099 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaDispatchTarget
+#   - Msgs in the range CWSIV1100-CWSIV1149 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaSingleProcessListener
+#   - Msgs in the range CWSIV1150-CWSIV1199 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaMultiProcessListener
+#   - Msgs in the range CWSIV1200-CWSIV1249 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaSynchronizedDispatcher
+#   - CWSIV9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+#
+# cmvc_en_version_level=1.29,0,05/04/28,09:28:22
+#
+#CMVCPATHNAME com.ibm.ws.messaging.jms/resources/com/ibm/ws/sib/ra/CWSIVMessages.nlsprops
+#COMPONENTPREFIX CWSIV
+#COMPONENTNAMEFOR CWSIV SIBus Resource Adapter
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} the security alias that could not be resolved
+RECOVERY_ALIAS_NOT_RESOLVED_CWSIV0001=CWSIV0001W: Nie powiod\u0142a si\u0119 pr\u00f3ba przet\u0142umaczenia aliasu zabezpiecze\u0144 {0} podczas odtwarzania.
+RECOVERY_ALIAS_NOT_RESOLVED_CWSIV0001.explanation=Nie mo\u017cna przet\u0142umaczy\u0107 aliasu zabezpiecze\u0144 okre\u015blonego dla zasobu, w przypadku kt\u00f3rego jest przetwarzane odtwarzanie.  Przetwarzanie b\u0119dzie kontynuowane przy u\u017cyciu nazwy i has\u0142a u\u017cytkownika o warto\u015bci NULL.
+RECOVERY_ALIAS_NOT_RESOLVED_CWSIV0001.useraction=Upewnij si\u0119, \u017ce podany alias zosta\u0142 zdefiniowany dla serwera aplikacji, w przypadku kt\u00f3rego jest przetwarzane odtwarzanie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was received
+CONNECTION_FACTORY_EXCEPTION_CWSIV0050=CWSIV0050E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Podczas pr\u00f3by uzyskania fabryki po\u0142\u0105cze\u0144 odebrano wyj\u0105tek {0} ze \u015brodowiska wykonawczego JCA.
+CONNECTION_FACTORY_EXCEPTION_CWSIV0050.explanation=Podczas pr\u00f3by uzyskania obiektu SICoreConnectionFactory za po\u015brednictwem \u015brodowiska wykonawczego JCA odebrano nieoczekiwany wyj\u0105tek.
+CONNECTION_FACTORY_EXCEPTION_CWSIV0050.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection factory that was returned
+INCORRECT_FACTORY_TYPE_CWSIV0051=CWSIV0051E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Fabryka po\u0142\u0105cze\u0144 zwr\u00f3cona ze \u015brodowiska wykonawczego JCA {0} nie implementuje obiektu SICoreConnectionFactory.
+INCORRECT_FACTORY_TYPE_CWSIV0051.explanation=Fabryka po\u0142\u0105cze\u0144 zwr\u00f3cona ze \u015brodowiska wykonawczego JCA nie zaimplementowa\u0142a obiektu SICoreConnectionFactory zgodnie z oczekiwaniami.
+INCORRECT_FACTORY_TYPE_CWSIV0051.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the invalid value
+# {1} the name of the property
+# {2} the first valid value
+# {3} the second valid value
+INVALID_PROPERTY_CWSIV0052=CWSIV0052E: Warto\u015b\u0107 {0} jest niepoprawna w przypadku w\u0142a\u015bciwo\u015bci {1} fabryki po\u0142\u0105cze\u0144. Poprawne warto\u015bci to {2} i {3}.
+INVALID_PROPERTY_CWSIV0052.explanation=Mapa w\u0142a\u015bciwo\u015bci przekazana do metody getConnectionFactory w obiekcie SICoreConnectionFactorySelector zawiera\u0142a niepoprawn\u0105 warto\u015b\u0107 danej w\u0142a\u015bciwo\u015bci.
+INVALID_PROPERTY_CWSIV0052.useraction=Sprawd\u017a, czy zestaw w\u0142a\u015bciwo\u015bci przekazany do metody getConnectionFactory w obiekcie SICoreConnectionFactorySelector jest poprawny.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the property
+# {1} the required type
+INVALID_PROPERTY_TYPE_CWSIV0053=CWSIV0053E: W\u0142a\u015bciwo\u015b\u0107 {0} fabryki po\u0142\u0105cze\u0144 nie nale\u017cy do wymaganego typu {1}.
+INVALID_PROPERTY_TYPE_CWSIV0053.explanation=Mapa w\u0142a\u015bciwo\u015bci przekazana do metody getConnectionFactory w obiekcie SICoreConnectionFactorySelector zawiera\u0142a warto\u015b\u0107 w\u0142a\u015bciwo\u015bci, kt\u00f3rej typ by\u0142 inny ni\u017c wymagany.
+INVALID_PROPERTY_TYPE_CWSIV0053.useraction=Sprawd\u017a, czy zestaw w\u0142a\u015bciwo\u015bci przekazany do metody getConnectionFactory w obiekcie SICoreConnectionFactorySelector jest poprawny.
+
+# -------------------------------------------------------------------------------------------------
+ALIAS_REQUIRED_CWSIV0054=CWSIV0054E: W\u0142a\u015bciwo\u015bci fabryki po\u0142\u0105cze\u0144 musz\u0105 zawiera\u0107 warto\u015b\u0107 w\u0142a\u015bciwo\u015bci CONTAINER_AUTHENTICATION_ALIAS.
+ALIAS_REQUIRED_CWSIV0054.explanation=Mapa w\u0142a\u015bciwo\u015bci przekazana do metody getConnectionFactory w obiekcie SICoreConnectionFactorySelector wymaga\u0142a, aby kontener udost\u0119pni\u0142 referencje przy u\u017cyciu domy\u015blnego odwzorowania element\u00f3w g\u0142\u00f3wnych, ale nie okre\u015bli\u0142a aliasu uwierzytelniania kontenera.
+ALIAS_REQUIRED_CWSIV0054.useraction=Sprawd\u017a, czy zestaw w\u0142a\u015bciwo\u015bci przekazany do metody getConnectionFactory w obiekcie SICoreConnectionFactorySelector zawiera warto\u015b\u0107 w\u0142a\u015bciwo\u015bci CONTAINER_AUTHENTICATION_ALIAS.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the invalid value
+# {1} the name of the property
+# {2} the first valid value
+# {3} the second valid value
+INVALID_PROPERTY_CWSIV0055=CWSIV0055E: Warto\u015b\u0107 {0} jest niepoprawna w przypadku w\u0142a\u015bciwo\u015bci {1} fabryki po\u0142\u0105cze\u0144. Poprawne warto\u015bci to {2} i {3}.
+INVALID_PROPERTY_CWSIV0055.explanation=Mapa w\u0142a\u015bciwo\u015bci przekazana do metody getConnectionFactory w obiekcie SICoreConnectionFactorySelector zawiera\u0142a niepoprawn\u0105 warto\u015b\u0107 danej w\u0142a\u015bciwo\u015bci.
+INVALID_PROPERTY_CWSIV0055.useraction=Sprawd\u017a, czy zestaw w\u0142a\u015bciwo\u015bci przekazany do metody getConnectionFactory w obiekcie SICoreConnectionFactorySelector jest poprawny.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection that was returned
+# {1} the expected type for the connection
+INCORRECT_CONNECTION_TYPE_CWSIV0101=CWSIV0101E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Mened\u017cer po\u0142\u0105cze\u0144 JCA zwr\u00f3ci\u0142 po\u0142\u0105czenie {0}, kt\u00f3rego typ by\u0142 inny ni\u017c oczekiwany typ {1}.
+INCORRECT_CONNECTION_TYPE_CWSIV0101.explanation=Podczas pr\u00f3by uzyskania po\u0142\u0105czenia za po\u015brednictwem mened\u017cera po\u0142\u0105cze\u0144 JCA zwr\u00f3cono po\u0142\u0105czenie nieoczekiwanego typu.
+INCORRECT_CONNECTION_TYPE_CWSIV0101.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+ACTIVE_LOCAL_TRAN_CWSIV0150=CWSIV0150E: Istniej\u0105cy obiekt SIUncoordinatedTransaction nie zosta\u0142 zako\u0144czony.
+ACTIVE_LOCAL_TRAN_CWSIV0150.explanation=Podj\u0119to pr\u00f3b\u0119 utworzenia nowego obiektu SIUncoordinatedTransaction, podczas gdy bie\u017c\u0105cy obiekt nie zosta\u0142 zako\u0144czony.
+ACTIVE_LOCAL_TRAN_CWSIV0150.useraction=Przed utworzeniem nowego obiektu sprawd\u017a, czy dla bie\u017c\u0105cego obiektu SIUncoordinatedTransaction wywo\u0142ano operacj\u0119 zatwierdzania lub wycofywania.
+
+# -------------------------------------------------------------------------------------------------
+ACTIVE_CONTAINER_TRAN_CWSIV0151=CWSIV0151E: W w\u0105tku istnieje transakcja zarz\u0105dzana przez kontener.
+ACTIVE_CONTAINER_TRAN_CWSIV0151.explanation=Podj\u0119to pr\u00f3b\u0119 utworzenia nowego obiektu SIUncoordinatedTransaction, podczas gdy w w\u0105tku istnieje transakcja zarz\u0105dzana przez kontener.
+ACTIVE_CONTAINER_TRAN_CWSIV0151.useraction=Zmodyfikuj aplikacj\u0119 w taki spos\u00f3b, aby wywo\u0142anie by\u0142o wykonywane w \u015brodowisku, w kt\u00f3rym w w\u0105tku nie ma transakcji zarz\u0105dzanej przez kontener.
+
+# -------------------------------------------------------------------------------------------------
+XARESOURCE_NOT_SUPPORTED_CWSIV0152=CWSIV0152E: Operacja tworzenia obiektu SIXAResource nie jest obs\u0142ugiwana.
+XARESOURCE_NOT_SUPPORTED_CWSIV0152.explanation=Tworzenie obiektu SIXAResource nie jest obs\u0142ugiwane, je\u015bli u\u017cywana jest implementacja RA_CONNECTION podstawowego interfejsu SPI mechanizmu przesy\u0142ania komunikat\u00f3w platformy, poniewa\u017c transakcje globalne s\u0105 obs\u0142ugiwane przez adapter zasob\u00f3w.
+XARESOURCE_NOT_SUPPORTED_CWSIV0152.useraction=Je\u015bli aplikacja musi obs\u0142ugiwa\u0107 transakcje globalne w spos\u00f3b jawny, u\u017cyj innej implementacji podstawowego interfejsu SPI mechanizmu przesy\u0142ania komunikat\u00f3w platformy. W przeciwnym razie usu\u0144 wywo\u0142anie metody getSIXAResource.
+
+# -------------------------------------------------------------------------------------------------
+CLONE_NOT_SUPPORTED_CWSIV0153=CWSIV0153E: Operacja klonowania po\u0142\u0105czenia nie jest obs\u0142ugiwana.
+CLONE_NOT_SUPPORTED_CWSIV0153.explanation=Je\u015bli jest u\u017cywana implementacja RA_CONNECTION podstawowego interfejsu SPI, operacja klonowania po\u0142\u0105czenia nie jest obs\u0142ugiwana.
+CLONE_NOT_SUPPORTED_CWSIV0153.useraction=Zastan\u00f3w si\u0119, czy jest konieczne klonowanie po\u0142\u0105czenia. By\u0107 mo\u017ce wystarczy po prostu utworzy\u0107 inne po\u0142\u0105czenie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection manager
+LAZY_ENLIST_NOT_SUPPORTED_CWSIV0154=CWSIV0154E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Mened\u017cer po\u0142\u0105cze\u0144 {0} nie obs\u0142uguje op\u00f3\u017anionego rejestrowania.
+LAZY_ENLIST_NOT_SUPPORTED_CWSIV0154.explanation=W przypadku bie\u017c\u0105cego po\u0142\u0105czenia usuni\u0119to jego powi\u0105zanie z zarz\u0105dzanym po\u0142\u0105czeniem, a mened\u017cer po\u0142\u0105cze\u0144 nie obs\u0142uguje op\u00f3\u017anionego rejestrowania na potrzeby ponownego tworzenia powi\u0105zania.
+LAZY_ENLIST_NOT_SUPPORTED_CWSIV0154.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+REASSOCIATION_FAILED_CWSIV0155=CWSIV0155E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Zg\u0142oszono wyj\u0105tek {0} podczas pr\u00f3by ponownego utworzenia powi\u0105zania z zarz\u0105dzanym po\u0142\u0105czeniem.
+REASSOCIATION_FAILED_CWSIV0155.explanation=Usuni\u0119to powi\u0105zanie bie\u017c\u0105cego po\u0142\u0105czenia z jego po\u0142\u0105czeniem zarz\u0105dzanym. Podczas pr\u00f3by przywr\u00f3cenia powi\u0105zania wyst\u0105pi\u0142 wyj\u0105tek.
+REASSOCIATION_FAILED_CWSIV0155.useraction=Wi\u0119cej informacji na ten temat zawiera do\u0142\u0105czony wyj\u0105tek.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_CONNECTION_CWSIV0156=CWSIV0156E: Po\u0142\u0105czenie zosta\u0142o uniewa\u017cnione.
+INVALID_CONNECTION_CWSIV0156.explanation=Wcze\u015bniejszy b\u0142\u0105d spowodowa\u0142, \u017ce po\u0142\u0105czenie utraci\u0142o wa\u017cno\u015b\u0107.
+INVALID_CONNECTION_CWSIV0156.useraction=Sprawd\u017a dzienniki b\u0142\u0119d\u00f3w w celu okre\u015blenia przyczyny poprzedniego b\u0142\u0119du.  Aplikacja powinna utworzy\u0107 nowe po\u0142\u0105czenie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONTAINER_TRAN_CWSIV0157=CWSIV0157E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.  Zg\u0142oszono wyj\u0105tek {0} podczas pr\u00f3by uzyskania bie\u017c\u0105cej transakcji kontenera.
+CONTAINER_TRAN_CWSIV0157.explanation=Podczas pr\u00f3by uzyskania bie\u017c\u0105cej transakcji kontenera wyst\u0105pi\u0142 wyj\u0105tek.
+CONTAINER_TRAN_CWSIV0157.useraction=Wi\u0119cej informacji na ten temat zawiera do\u0142\u0105czony wyj\u0105tek.
+
+# -------------------------------------------------------------------------------------------------
+ACTIVE_LOCAL_TRAN_CWSIV0158=CWSIV0158E: Istnieje aktywny obiekt SIUncoordinatedTransaction powi\u0105zany z tym po\u0142\u0105czeniem.
+ACTIVE_LOCAL_TRAN_CWSIV0158.explanation=Podj\u0119to pr\u00f3b\u0119 u\u017cycia parametru transakcji o warto\u015bci NULL, podczas gdy nadal istnieje aktywny obiekt SIUncoordinatedTransaction powi\u0105zany z tym po\u0142\u0105czeniem.
+ACTIVE_LOCAL_TRAN_CWSIV0158.useraction=Przeka\u017c aktywny obiekt SIUncoordinatedTransaction jako parametr transakcji lub wywo\u0142aj dla tego obiektu operacj\u0119 zatwierdzania lub wycofywania przed przekazaniem warto\u015bci NULL.
+
+# -------------------------------------------------------------------------------------------------
+INCORRECT_LOCAL_TRAN_CWSIV0159=CWSIV0159E: Nie przekazano aktywnego obiektu SIUncoordinatedTransaction powi\u0105zanego z tym po\u0142\u0105czeniem.
+INCORRECT_LOCAL_TRAN_CWSIV0159.explanation=Podj\u0119to pr\u00f3b\u0119 u\u017cycia obiektu SIUncoordinatedTransaction jako parametru transakcji, podczas gdy z tym po\u0142\u0105czeniem jest powi\u0105zany inny aktywny obiekt SIUncoordinatedTransaction.
+INCORRECT_LOCAL_TRAN_CWSIV0159.useraction=Sprawd\u017a, czy aplikacja przekazuje bie\u017c\u0105cy aktywny obiekt SIUncoordinatedTransaction powi\u0105zany z po\u0142\u0105czeniem lub warto\u015b\u0107 NULL (je\u015bli operacja powinna zosta\u0107 wykonana poza transakcj\u0105).
+
+# -------------------------------------------------------------------------------------------------
+INVALID_XARESOURCE_CWSIV0160=CWSIV0160E: Obiekt SIXAResource nie jest poprawnym parametrem transakcji.
+INVALID_XARESOURCE_CWSIV0160.explanation=U\u017cywanie obiektu SIXAResource jako parametru transakcji nie jest obs\u0142ugiwane, je\u015bli u\u017cywana jest implementacja RA_CONNECTION podstawowego interfejsu SPI mechanizmu przesy\u0142ania komunikat\u00f3w platformy, poniewa\u017c transakcje globalne s\u0105 obs\u0142ugiwane przez adapter zasob\u00f3w.
+INVALID_XARESOURCE_CWSIV0160.useraction=Je\u015bli aplikacja musi obs\u0142ugiwa\u0107 transakcje globalne w spos\u00f3b jawny, u\u017cyj innej implementacji podstawowego interfejsu SPI mechanizmu przesy\u0142ania komunikat\u00f3w platformy. W przeciwnym razie przeka\u017c warto\u015b\u0107 NULL jako parametr transakcji.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the transaction parameter
+UNRECOGNISED_TRAN_CWSIV0161=CWSIV0161E: Nie rozpoznano typu parametru transakcji {0}.
+UNRECOGNISED_TRAN_CWSIV0161.explanation=Nie rozpoznano typu obiektu przekazanego jako parametr transakcji.
+UNRECOGNISED_TRAN_CWSIV0161.useraction=Sprawd\u017a, czy parametr transakcji ma warto\u015b\u0107 NULL, jest obiektem SIUncoordinatedTransaction uzyskanym z tego po\u0142\u0105czenia lub obiektem SibRaAutoCommitTransaction.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONTAINER_COMMIT_FAILED_CWSIV0162=CWSIV0162E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.  Zg\u0142oszono wyj\u0105tek {0} podczas pr\u00f3by zatwierdzenia lokalnej transakcji aplikacji przez kontener.
+CONTAINER_COMMIT_FAILED_CWSIV0162.explanation=Kontener wykry\u0142 niezako\u0144czon\u0105 transakcj\u0119 lokaln\u0105 aplikacji na ko\u0144cu zasi\u0119gu wsp\u00f3\u0142u\u017cytkowania. Podczas pr\u00f3by zatwierdzenia tej transakcji wyst\u0105pi\u0142 wyj\u0105tek.
+CONTAINER_COMMIT_FAILED_CWSIV0162.useraction=Wi\u0119cej informacji na ten temat zawiera do\u0142\u0105czony wyj\u0105tek.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONTAINER_ROLLBACK_FAILED_CWSIV0163=CWSIV0163E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.  Zg\u0142oszono wyj\u0105tek {0} podczas pr\u00f3by wycofania lokalnej transakcji aplikacji przez kontener.
+CONTAINER_ROLLBACK_FAILED_CWSIV0163.explanation=Kontener wykry\u0142 niezako\u0144czon\u0105 transakcj\u0119 lokaln\u0105 aplikacji na ko\u0144cu zasi\u0119gu wsp\u00f3\u0142u\u017cytkowania. Podczas pr\u00f3by wycofania tej transakcji wyst\u0105pi\u0142 wyj\u0105tek.
+CONTAINER_ROLLBACK_FAILED_CWSIV0163.useraction=Wi\u0119cej informacji na ten temat zawiera do\u0142\u0105czony wyj\u0105tek.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_SESSION_CWSIV0200=CWSIV0200E: Po\u0142\u0105czenie, na podstawie kt\u00f3rego utworzono t\u0119 sesj\u0119, zosta\u0142o uniewa\u017cnione.
+INVALID_SESSION_CWSIV0200.explanation=Wcze\u015bniejszy b\u0142\u0105d spowodowa\u0142, \u017ce po\u0142\u0105czenie utraci\u0142o wa\u017cno\u015b\u0107.
+INVALID_SESSION_CWSIV0200.useraction=Sprawd\u017a dzienniki b\u0142\u0119d\u00f3w w celu okre\u015blenia przyczyny poprzedniego b\u0142\u0119du.  Aplikacja powinna utworzy\u0107 nowe po\u0142\u0105czenie i sesj\u0119.
+
+# -------------------------------------------------------------------------------------------------
+ASYNCHRONOUS_METHOD_CWSIV0250=CWSIV0250E: Metody zwi\u0105zane z asynchronicznym odbieraniem komunikat\u00f3w nie s\u0105 obs\u0142ugiwane.
+ASYNCHRONOUS_METHOD_CWSIV0250.explanation=U\u017cycie metod obiektu ConsumerSession zwi\u0105zanych z asynchronicznym odbieraniem komunikat\u00f3w nie jest obs\u0142ugiwane, je\u015bli jest u\u017cywana implementacja RA_CONNECTION podstawowego interfejsu SPI mechanizmu przesy\u0142ania komunikat\u00f3w platformy.
+ASYNCHRONOUS_METHOD_CWSIV0250.useraction=Je\u015bli wymagany jest asynchroniczny odbi\u00f3r komunikat\u00f3w, u\u017cyj innej implementacji podstawowego interfejsu SPI mechanizmu przesy\u0142ania komunikat\u00f3w platformy.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONNECTION_CREATION_CWSIV0300=CWSIV0300E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Zg\u0142oszono wyj\u0105tek {0} podczas pr\u00f3by utworzenia po\u0142\u0105czenia z mechanizmem przesy\u0142ania komunikat\u00f3w.
+CONNECTION_CREATION_CWSIV0300.explanation=Podczas pr\u00f3by utworzenia po\u0142\u0105czenia z mechanizmem przesy\u0142ania komunikat\u00f3w wyst\u0105pi\u0142 wyj\u0105tek.
+CONNECTION_CREATION_CWSIV0300.useraction=Wi\u0119cej informacji na ten temat zawiera do\u0142\u0105czony wyj\u0105tek.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONNECTION_FACTORY_ERROR_CWSIV0350=CWSIV0350E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Zg\u0142oszono wyj\u0105tek {0} podczas pr\u00f3by utworzenia fabryki po\u0142\u0105cze\u0144 podstawowego interfejsu SPI.
+CONNECTION_FACTORY_ERROR_CWSIV0350.explanation=Podczas pr\u00f3by utworzenia fabryki po\u0142\u0105cze\u0144 podstawowego interfejsu SPI o typie TRM_CONNECTION wyst\u0105pi\u0142 wyj\u0105tek.
+CONNECTION_FACTORY_ERROR_CWSIV0350.useraction=Wi\u0119cej informacji na ten temat zawiera do\u0142\u0105czony wyj\u0105tek.
+
+# -------------------------------------------------------------------------------------------------
+NON_MANAGED_ENVIRONMENT_CWSIV0351=CWSIV0351E: Operacja tworzenia fabryki po\u0142\u0105cze\u0144 w \u015brodowisku niezarz\u0105dzanym nie jest obs\u0142ugiwana.
+NON_MANAGED_ENVIRONMENT_CWSIV0351.explanation=Tworzenie fabryki po\u0142\u0105cze\u0144 w niezarz\u0105dzanym \u015brodowisku nie jest obs\u0142ugiwane, gdy u\u017cywana jest implementacja RA_CONNECTION podstawowego interfejsu SPI. Wynika to z faktu, \u017ce do zapewnienia obs\u0142ugi transakcji kontenera niezb\u0119dny jest mened\u017cer po\u0142\u0105cze\u0144.
+NON_MANAGED_ENVIRONMENT_CWSIV0351.useraction=W \u015brodowisku niezarz\u0105dzanym utw\u00f3rz fabryk\u0119 po\u0142\u0105cze\u0144, u\u017cywaj\u0105c obiektu SICoreConnectionFactorySelector z argumentem FactoryType innym ni\u017c RA_CONNECTION.
+
+# -------------------------------------------------------------------------------------------------
+NULL_REQUEST_INFO_CWSIV0352=CWSIV0352E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. W celu utworzenia zarz\u0105dzanego po\u0142\u0105czenia wymagane s\u0105 informacje o \u017c\u0105daniu nawi\u0105zania po\u0142\u0105czenia.
+NULL_REQUEST_INFO_CWSIV0352.explanation=Mened\u017cer po\u0142\u0105cze\u0144 podj\u0105\u0142 pr\u00f3b\u0119 utworzenia zarz\u0105dzanego po\u0142\u0105czenia bez okre\u015blania informacji o \u017c\u0105daniu nawi\u0105zania po\u0142\u0105czenia.
+NULL_REQUEST_INFO_CWSIV0352.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONNECTION_CLONE_CWSIV0353=CWSIV0353E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Zg\u0142oszono wyj\u0105tek {0} podczas pr\u00f3by sklonowania po\u0142\u0105czenia z mechanizmem przesy\u0142ania komunikat\u00f3w.
+CONNECTION_CLONE_CWSIV0353.explanation=Podczas pr\u00f3by sklonowania po\u0142\u0105czenia z mechanizmem przesy\u0142ania komunikat\u00f3w wyst\u0105pi\u0142 wyj\u0105tek na etapie tworzenia po\u0142\u0105czenia zarz\u0105dzanego.
+CONNECTION_CLONE_CWSIV0353.useraction=Wi\u0119cej informacji na ten temat zawiera do\u0142\u0105czony wyj\u0105tek.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection request information object passed
+# {1} the expected type for the object
+UNRECOGNISED_REQUEST_INFO_CWSIV0354=CWSIV0354E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Typ obiektu z informacjami o \u017c\u0105daniu nawi\u0105zania po\u0142\u0105czenia {0} by\u0142 inny ni\u017c oczekiwany typ {1}.
+UNRECOGNISED_REQUEST_INFO_CWSIV0354.explanation=Typ obiektu przekazanego jako parametr informacji o \u017c\u0105daniu nawi\u0105zania po\u0142\u0105czenia nie zosta\u0142 rozpoznany.
+UNRECOGNISED_REQUEST_INFO_CWSIV0354.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CREATE_MANAGED_CONNECTION_CWSIV0355=CWSIV0355E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Podczas tworzenia zarz\u0105dzanego po\u0142\u0105czenia zg\u0142oszono nast\u0119puj\u0105cy wyj\u0105tek: {0}
+CREATE_MANAGED_CONNECTION_CWSIV0355.explanation=Podczas pr\u00f3by utworzenia po\u0142\u0105czenia zarz\u0105dzanego wyst\u0105pi\u0142 wyj\u0105tek.
+CREATE_MANAGED_CONNECTION_CWSIV0355.useraction=Wi\u0119cej informacji na ten temat zawiera do\u0142\u0105czony wyj\u0105tek.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the JCA exception
+CONNECTION_ERROR_RETRY_CWSIV0356=CWSIV0356W: Podczas pr\u00f3by uzyskania po\u0142\u0105czenia wyst\u0105pi\u0142 nast\u0119puj\u0105cy b\u0142\u0105d po\u0142\u0105czenia JCA. Pr\u00f3ba pobrania po\u0142\u0105czenia zostanie ponowiona. Wyj\u0105tek: {0}.
+CONNECTION_ERROR_RETRY_CWSIV0356.explanation=Podczas uzyskiwania po\u0142\u0105czenia wyst\u0105pi\u0142 b\u0142\u0105d. System wyczy\u015bci to po\u0142\u0105czenie i podejmie pr\u00f3b\u0119 uzyskania innego po\u0142\u0105czenia.
+CONNECTION_ERROR_RETRY_CWSIV0356.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection request information object passed
+# {1} the expected type for the object
+UNRECOGNISED_REQUEST_INFO_CWSIV0401=CWSIV0401E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Typ obiektu z informacjami o \u017c\u0105daniu nawi\u0105zania po\u0142\u0105czenia {0} by\u0142 inny ni\u017c oczekiwany typ {1}.
+UNRECOGNISED_REQUEST_INFO_CWSIV0401.explanation=Typ obiektu przekazanego jako parametr informacji o \u017c\u0105daniu nawi\u0105zania po\u0142\u0105czenia nie zosta\u0142 rozpoznany.
+UNRECOGNISED_REQUEST_INFO_CWSIV0401.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONNECTION_CLOSE_CWSIV0402=CWSIV0402E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Zg\u0142oszono wyj\u0105tek {0} podczas pr\u00f3by zamkni\u0119cia po\u0142\u0105czenia z mechanizmem przesy\u0142ania komunikat\u00f3w.
+CONNECTION_CLOSE_CWSIV0402.explanation=Podczas pr\u00f3by zamkni\u0119cia po\u0142\u0105czenia z mechanizmem przesy\u0142ania komunikat\u00f3w wyst\u0105pi\u0142 wyj\u0105tek.
+CONNECTION_CLOSE_CWSIV0402.useraction=Wi\u0119cej informacji na ten temat zawiera do\u0142\u0105czony wyj\u0105tek.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection object passed
+# {1} the expected type for the object
+UNRECOGNISED_CONNECTION_CWSIV0403=CWSIV0403E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Typ obiektu po\u0142\u0105czenia {0} by\u0142 inny ni\u017c oczekiwany typ {1}.
+UNRECOGNISED_CONNECTION_CWSIV0403.explanation=Typ obiektu przekazanego jako parametr po\u0142\u0105czenia by\u0142 inny ni\u017c typ oczekiwany przez ten adapter zasob\u00f3w.
+UNRECOGNISED_CONNECTION_CWSIV0403.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+ACTIVE_LOCAL_TRAN_CWSIV0404=CWSIV0404E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Ju\u017c istnieje aktywna lokalna transakcja kontenera.
+ACTIVE_LOCAL_TRAN_CWSIV0404.explanation=Kontener podj\u0105\u0142 pr\u00f3b\u0119 rozpocz\u0119cia lokalnej transakcji, podczas gdy istnieje ju\u017c jedna aktywna transakcja.
+ACTIVE_LOCAL_TRAN_CWSIV0404.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+LOCAL_TRAN_BEGIN_CWSIV0405=CWSIV0405E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Zg\u0142oszono wyj\u0105tek {0} podczas pr\u00f3by rozpocz\u0119cia lokalnej transakcji przez kontener.
+LOCAL_TRAN_BEGIN_CWSIV0405.explanation=Podczas pr\u00f3by rozpocz\u0119cia transakcji lokalnej przez kontener wyst\u0105pi\u0142 wyj\u0105tek.
+LOCAL_TRAN_BEGIN_CWSIV0405.useraction=Wi\u0119cej informacji na ten temat zawiera do\u0142\u0105czony wyj\u0105tek.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+LOCAL_TRAN_COMMIT_CWSIV0406=CWSIV0406E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Zg\u0142oszono wyj\u0105tek {0} podczas pr\u00f3by zatwierdzenia lokalnej transakcji przez kontener.
+LOCAL_TRAN_COMMIT_CWSIV0406.explanation=Podczas pr\u00f3by zatwierdzenia transakcji lokalnej przez kontener wyst\u0105pi\u0142 wyj\u0105tek.
+LOCAL_TRAN_COMMIT_CWSIV0406.useraction=Wi\u0119cej informacji na ten temat zawiera do\u0142\u0105czony wyj\u0105tek.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+LOCAL_TRAN_ROLLBACK_CWSIV0407=CWSIV0407E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Zg\u0142oszono wyj\u0105tek {0} podczas pr\u00f3by wycofania lokalnej transakcji przez kontener.
+LOCAL_TRAN_ROLLBACK_CWSIV0407.explanation=Podczas pr\u00f3by wycofania transakcji lokalnej przez kontener wyst\u0105pi\u0142 wyj\u0105tek.
+LOCAL_TRAN_ROLLBACK_CWSIV0407.useraction=Wi\u0119cej informacji na ten temat zawiera do\u0142\u0105czony wyj\u0105tek.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+XARESOURCE_CREATE_CWSIV0408=CWSIV0408E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Zg\u0142oszono wyj\u0105tek {0} podczas pr\u00f3by uzyskania obiektu SIXAResource.
+XARESOURCE_CREATE_CWSIV0408.explanation=Podczas pr\u00f3by uzyskania obiektu SIXAResource wyst\u0105pi\u0142 wyj\u0105tek.
+XARESOURCE_CREATE_CWSIV0408.useraction=Wi\u0119cej informacji na ten temat zawiera do\u0142\u0105czony wyj\u0105tek.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the unexpected activation specification
+# {1} the expected type
+UNEXPECTED_ACTIVATION_SPEC_CWSIV0451=CWSIV0451E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Specyfikacja aktywowania {0} przekazana podczas aktywacji punktu ko\u0144cowego by\u0142a innego typu ni\u017c oczekiwany typ {1}.
+UNEXPECTED_ACTIVATION_SPEC_CWSIV0451.explanation=Specyfikacja aktywowania przekazana podczas aktywacji punktu ko\u0144cowego by\u0142a innego typu ni\u017c typ oczekiwany przez adapter zasob\u00f3w.
+UNEXPECTED_ACTIVATION_SPEC_CWSIV0451.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the invalid activation specification
+# {1} the exception thrown during validation
+INVALID_ACTIVATION_SPEC_CWSIV0452=CWSIV0452E: Zg\u0142oszono wyj\u0105tek {1} podczas pr\u00f3by sprawdzenia poprawno\u015bci specyfikacji aktywowania {0} w czasie aktywacji punktu ko\u0144cowego.
+INVALID_ACTIVATION_SPEC_CWSIV0452.explanation=Podczas aktywacji punktu ko\u0144cowego podana specyfikacja aktywowania okaza\u0142a si\u0119 niepoprawna.
+INVALID_ACTIVATION_SPEC_CWSIV0452.useraction=W do\u0142\u0105czonym wyj\u0105tku mo\u017cna znale\u017a\u0107 niepoprawne w\u0142a\u015bciwo\u015bci i poprawne warto\u015bci dla administrowanej specyfikacji aktywowania lub deskryptora wdra\u017cania komponentu bean sterowanego komunikatami.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the invalid activation specification
+# {1} the list of messages showing invalid properties
+INVALID_PROPERTIES_CWSIV0501=CWSIV0501E: Podczas sprawdzania poprawno\u015bci w\u0142a\u015bciwo\u015bci zdefiniowanych w specyfikacji aktywowania wykryto nast\u0119puj\u0105ce problemy: {1}. Specyfikacja aktywowania to: {0}.
+INVALID_PROPERTIES_CWSIV0501.explanation=Podczas sprawdzania poprawno\u015bci podanej specyfikacji aktywowania co najmniej jedna w\u0142a\u015bciwo\u015b\u0107 okaza\u0142a si\u0119 niepoprawna.
+INVALID_PROPERTIES_CWSIV0501.useraction=Popraw warto\u015bci danych w\u0142a\u015bciwo\u015bci w administrowanej specyfikacji aktywowania lub w konfiguracji aktywowania komponentu bean sterowanego komunikatami, a nast\u0119pnie uruchom aplikacj\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The exception that was thrown
+DEST_FACTORY_CWSIV0502=CWSIV0502E: B\u0142\u0105d wewn\u0119trzny.  Podczas pr\u00f3by uzyskania obiektu SIDestinationAddressFactory zg\u0142oszono nast\u0119puj\u0105cy wyj\u0105tek: {0}.
+DEST_FACTORY_CWSIV0502.explanation=Podczas aktywowania punktu ko\u0144cowego adapter zasob\u00f3w podstawowego interfejsu SPI pr\u00f3bowa\u0142 uzyska\u0107 obiekt SIDestinationAddressFactory, ale odebrano nieoczekiwany wyj\u0105tek.
+DEST_FACTORY_CWSIV0502.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The exception that was thrown
+WLM_CLASSIFIER_REG_CWSIV0503=CWSIV0503E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny podczas pr\u00f3by zarejestrowania klasyfikatora WLM dla adaptera zasob\u00f3w podstawowego interfejsu SPI: {0}.
+WLM_CLASSIFIER_REG_CWSIV0503.explanation=Odebrano nieoczekiwany wyj\u0105tek podczas rejestrowania klasyfikatora WLM dla adaptera zasob\u00f3w podstawowego interfejsu SPI w rejestrze procedury obs\u0142ugi.
+WLM_CLASSIFIER_REG_CWSIV0503.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_BUSNAME_CWSIV0504=CWSIV0504E: Nazwa magistrali w specyfikacji aktywowania podstawowego interfejsu SPI musi otrzyma\u0107 warto\u015b\u0107.
+INVALID_PROPERTY_BUSNAME_CWSIV0504.explanation=Podczas sprawdzania poprawno\u015bci w\u0142a\u015bciwo\u015bci skonfigurowanych w specyfikacji aktywowania podstawowego interfejsu SPI stwierdzono, \u017ce nazwa magistrali jest niepoprawna.
+INVALID_PROPERTY_BUSNAME_CWSIV0504.useraction=Popraw warto\u015b\u0107 w\u0142a\u015bciwo\u015bci z nazw\u0105 magistrali w specyfikacji aktywowania i zrestartuj serwer.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is another allowed value
+# {4} is the value of the destination type
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0505=CWSIV0505E: Nast\u0119puj\u0105cy typ docelowy w specyfikacji aktywowania podstawowego interfejsu SPI jest niepoprawny: [{4}]. Oczekiwane warto\u015bci to: [{0}], [{1}], [{2}] lub [{3}].
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0505.explanation=Podczas sprawdzania poprawno\u015bci w\u0142a\u015bciwo\u015bci skonfigurowanych w specyfikacji aktywowania podstawowego interfejsu SPI stwierdzono, \u017ce typ docelowy jest niepoprawny.
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0505.useraction=Popraw warto\u015b\u0107 w\u0142a\u015bciwo\u015bci z typem docelowym w specyfikacji aktywowania i zrestartuj serwer.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the subscription durability
+INVALID_PROPERTY_SHARE_DURSUB_CWSIV0506=CWSIV0506E: CWSIV0506E: Nast\u0119puj\u0105ce pole trwa\u0142ej subskrypcji zasobu wsp\u00f3\u0142u\u017cytkowanego w specyfikacji aktywowania podstawowego interfejsu SPI jest niepoprawne: [{3}]. Oczekiwane warto\u015bci: [{0}], [{1}] lub [{2}].
+INVALID_PROPERTY_SHARE_DURSUB_CWSIV0506.explanation=Podczas sprawdzania poprawno\u015bci w\u0142a\u015bciwo\u015bci skonfigurowanych w specyfikacji aktywowania podstawowego interfejsu SPI stwierdzono, \u017ce trwa\u0142a subskrypcja zasobu wsp\u00f3\u0142u\u017cytkowanego jest niepoprawna.
+INVALID_PROPERTY_SHARE_DURSUB_CWSIV0506.useraction=Popraw warto\u015b\u0107 w\u0142a\u015bciwo\u015bci zawieraj\u0105cej trwa\u0142\u0105 subskrypcj\u0119 zasobu wsp\u00f3\u0142u\u017cytkowanego w specyfikacji aktywowania i zrestartuj serwer.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_DURSUBHOME_CWSIV0507=CWSIV0507E: Je\u015bli u\u017cywane s\u0105 subskrypcje trwa\u0142e, punkt subskrypcji trwa\u0142ej w specyfikacji aktywowania interfejsu podstawowego SPI musi mie\u0107 okre\u015blon\u0105 warto\u015b\u0107.
+INVALID_PROPERTY_DURSUBHOME_CWSIV0507.explanation=Podczas sprawdzania poprawno\u015bci w\u0142a\u015bciwo\u015bci skonfigurowanych w specyfikacji aktywowania podstawowego interfejsu SPI stwierdzono, \u017ce punkt subskrypcji trwa\u0142ej jest niepoprawny.
+INVALID_PROPERTY_DURSUBHOME_CWSIV0507.useraction=Popraw warto\u015b\u0107 w\u0142a\u015bciwo\u015bci zawieraj\u0105cej punkt subskrypcji trwa\u0142ej w specyfikacji aktywowania i zrestartuj serwer.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the destination type
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0508=CWSIV0508E: Nast\u0119puj\u0105cy typ docelowy w specyfikacji aktywowania podstawowego interfejsu SPI jest niepoprawny: [{3}]. Oczekiwane warto\u015bci to:  [{0}], [{1}] lub [{2}].
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0508.explanation=Podczas sprawdzania poprawno\u015bci w\u0142a\u015bciwo\u015bci skonfigurowanych w specyfikacji aktywowania podstawowego interfejsu SPI stwierdzono, \u017ce typ docelowy jest niepoprawny. Tematy s\u0105 niedozwolone, poniewa\u017c nie podano nazwy docelowej.
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0508.useraction=Popraw warto\u015b\u0107 w\u0142a\u015bciwo\u015bci z typem docelowym w specyfikacji aktywowania i zrestartuj serwer.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_MAXBATCH_CWSIV0509=CWSIV0509E: Maksymalny rozmiar zadania wsadowego w specyfikacji aktywowania podstawowego interfejsu SPI musi mie\u0107 warto\u015b\u0107 dodatni\u0105.
+INVALID_PROPERTY_MAXBATCH_CWSIV0509.explanation=Podczas sprawdzania poprawno\u015bci w\u0142a\u015bciwo\u015bci skonfigurowanych w specyfikacji aktywowania podstawowego interfejsu SPI stwierdzono, \u017ce maksymalna wielko\u015b\u0107 zadania wsadowego jest niepoprawna.
+INVALID_PROPERTY_MAXBATCH_CWSIV0509.useraction=Popraw warto\u015b\u0107 w\u0142a\u015bciwo\u015bci zawieraj\u0105cej maksymaln\u0105 wielko\u015b\u0107 partii w specyfikacji aktywowania i zrestartuj serwer.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the deletion mode
+INVALID_PROPERTY_DELETION_MODE_CWSIV0510=CWSIV0510E: Nast\u0119puj\u0105cy tryb usuwania w specyfikacji aktywowania podstawowego interfejsu SPI jest niepoprawny: [{3}]. Oczekiwane warto\u015bci to:  [{0}], [{1}] lub [{2}].
+INVALID_PROPERTY_DELETION_MODE_CWSIV0510.explanation=Podczas sprawdzania poprawno\u015bci w\u0142a\u015bciwo\u015bci skonfigurowanych w specyfikacji aktywowania podstawowego interfejsu SPI stwierdzono, \u017ce tryb usuwania jest niepoprawny.
+INVALID_PROPERTY_DELETION_MODE_CWSIV0510.useraction=Popraw warto\u015b\u0107 w\u0142a\u015bciwo\u015bci zawieraj\u0105cej tryb usuwania w specyfikacji aktywowania i zrestartuj serwer.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_MAXCONC_CWSIV0511=CWSIV0511E: Maksymalna wsp\u00f3\u0142bie\u017cno\u015b\u0107 w specyfikacji aktywowania podstawowego interfejsu SPI musi mie\u0107 warto\u015b\u0107 dodatni\u0105.
+INVALID_PROPERTY_MAXCONC_CWSIV0511.explanation=Podczas sprawdzania poprawno\u015bci w\u0142a\u015bciwo\u015bci skonfigurowanych w specyfikacji aktywowania podstawowego interfejsu SPI stwierdzono, \u017ce warto\u015b\u0107 maksymalnej wsp\u00f3\u0142bie\u017cno\u015bci jest niepoprawna.
+INVALID_PROPERTY_MAXCONC_CWSIV0511.useraction=Popraw warto\u015b\u0107 w\u0142a\u015bciwo\u015bci zawieraj\u0105cej maksymaln\u0105 wsp\u00f3\u0142bie\u017cno\u015b\u0107 w specyfikacji aktywowania i zrestartuj serwer.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the target type
+INVALID_PROPERTY_TARGET_TYPE_CWSIV0512=CWSIV0512E: W specyfikacji aktywowania podstawowego interfejsu SPI znajduje si\u0119 nast\u0119puj\u0105ce niepoprawne pole typu celu: [{3}]. Oczekiwane warto\u015bci: [{0}], [{1}] lub [{2}].
+INVALID_PROPERTY_TARGET_TYPE_CWSIV0512.explanation=Podczas sprawdzania poprawno\u015bci w\u0142a\u015bciwo\u015bci skonfigurowanych w specyfikacji aktywowania podstawowego interfejsu SPI stwierdzono, \u017ce typ celu jest niepoprawny.
+INVALID_PROPERTY_TARGET_TYPE_CWSIV0512.useraction=Popraw warto\u015b\u0107 w\u0142a\u015bciwo\u015bci z typem celu w specyfikacji aktywowania i zrestartuj serwer.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is the value of the target significance
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSIV0513=CWSIV0513E: W specyfikacji aktywowania podstawowego interfejsu SPI znajduje si\u0119 nast\u0119puj\u0105ce niepoprawne pole znaczenia celu: [{2}]. Oczekiwane warto\u015bci: [{0}] lub [{1}].
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSIV0513.explanation=Podczas sprawdzania poprawno\u015bci w\u0142a\u015bciwo\u015bci skonfigurowanych w specyfikacji aktywowania podstawowego interfejsu SPI stwierdzono, \u017ce znaczenie celu jest niepoprawne.
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSIV0513.useraction=Popraw warto\u015b\u0107 w\u0142a\u015bciwo\u015bci zawieraj\u0105cej znaczenie celu w specyfikacji aktywowania i zrestartuj serwer.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the provider endpoints
+INVALID_PROPERTY_PROVIDER_ENDPOINTS_CWSIV0514=CWSIV0514E: W specyfikacji aktywowania podstawowego interfejsu SPI ustawiono punkty ko\u0144cowe dostawcy o warto\u015bci {0}. Punkty ko\u0144cowe dostawcy nie s\u0105 obs\u0142ugiwane przy ustawionej w\u0142a\u015bciwo\u015bci "u\u017cyj podmiotu serwera".
+INVALID_PROPERTY_PROVIDER_ENDPOINTS_CWSIV0514.explanation=Podczas sprawdzania poprawno\u015bci w\u0142a\u015bciwo\u015bci skonfigurowanych w specyfikacji aktywowania podstawowego interfejsu SPI stwierdzono, \u017ce punkt ko\u0144cowy dostawcy jest niepoprawny. Wynika to z faktu, \u017ce ustawiona zosta\u0142a w\u0142a\u015bciwo\u015b\u0107 u\u017cywania podmiotu serwera.
+INVALID_PROPERTY_PROVIDER_ENDPOINTS_CWSIV0514.useraction=Upewnij si\u0119, \u017ce w\u0142a\u015bciwo\u015b\u0107 punkt\u00f3w ko\u0144cowych nie jest ustawiona, je\u015bli ustawiono w\u0142a\u015bciwo\u015b\u0107 u\u017cywania podmiotu serwera. Popraw warto\u015b\u0107 tej w\u0142a\u015bciwo\u015bci w specyfikacji aktywowania i zrestartuj serwer.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_USEDESTWILDCARD_CWSIV0515=CWSIV0515E: W specyfikacji aktywowania podstawowego interfejsu SPI ustawiono w\u0142a\u015bciwo\u015b\u0107 "u\u017cyj znaku wieloznacznego miejsca docelowego", podczas gdy u\u017cywany jest obszar temat\u00f3w. W\u0142a\u015bciwo\u015b\u0107 "u\u017cyj znaku wieloznacznego miejsca docelowego" nie jest obs\u0142ugiwana, gdy u\u017cywany jest obszar tematu.
+INVALID_PROPERTY_USEDESTWILDCARD_CWSIV0515.explanation=Podczas sprawdzania poprawno\u015bci w\u0142a\u015bciwo\u015bci skonfigurowanych w specyfikacji aktywowania podstawowego interfejsu SPI stwierdzono, \u017ce w\u0142a\u015bciwo\u015b\u0107 "u\u017cyj znaku wieloznacznego miejsca docelowego" jest niepoprawna. Wynika to z faktu, \u017ce u\u017cywany jest obszar tematu.
+INVALID_PROPERTY_USEDESTWILDCARD_CWSIV0515.useraction=Upewnij si\u0119, \u017ce w\u0142a\u015bciwo\u015b\u0107 "u\u017cyj znaku wieloznacznego miejsca docelowego" nie jest ustawiona, gdy u\u017cywany jest obszar temat\u00f3w. Popraw warto\u015b\u0107 tej w\u0142a\u015bciwo\u015bci w specyfikacji aktywowania i zrestartuj serwer.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint factory throwing the exception
+# {1} the exception thrown
+NO_METHOD_CWSIV0550=CWSIV0550E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Fabryka punkt\u00f3w ko\u0144cowych komunikat\u00f3w {0} zg\u0142osi\u0142a wyj\u0105tek {1} podczas pr\u00f3by okre\u015blenia, czy metoda onMessage jest transakcyjna.
+NO_METHOD_CWSIV0550.explanation=Podczas aktywowania punktu ko\u0144cowego odebrano wyj\u0105tek z fabryki punkt\u00f3w ko\u0144cowych komunikat\u00f3w informuj\u0105cy, \u017ce w przypadku tego punktu ko\u0144cowego nie ma metody onMessage. Brak tej metody wykryto, gdy pr\u00f3bowano okre\u015bli\u0107 jej transakcyjno\u015b\u0107.
+NO_METHOD_CWSIV0550.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the MDB that had the problem
+# {1} the max concurrency on the MDB
+# {2} the max pool size JCA is using
+# {3} the new max concurrency to use
+MAX_CONCURRENCY_CWSIV0551=CWSIV0551W: W specyfikacji komponentu MDB {0} ustawiono maksymaln\u0105 wsp\u00f3\u0142bie\u017cno\u015b\u0107 r\u00f3wn\u0105 {1}. Jest to warto\u015b\u0107 wy\u017csza, ni\u017c maksymalna wielko\u015b\u0107 puli JCA ({2}), dlatego te\u017c maksymaln\u0105 wsp\u00f3\u0142bie\u017cno\u015b\u0107 tego komponentu MDB obni\u017cono do warto\u015bci {3}.
+MAX_CONCURRENCY_CWSIV0551.explanation=W specyfikacji aktywowania ustawiono zbyt wysok\u0105 wsp\u00f3\u0142bie\u017cno\u015b\u0107 maksymaln\u0105 albo maksymalna wsp\u00f3\u0142bie\u017cno\u015b\u0107 w maksymalnej wielko\u015bci puli JCA zosta\u0142a skonfigurowana na zbyt nisk\u0105 warto\u015b\u0107. Nie powinno to powodowa\u0107 problem\u00f3w, poniewa\u017c mechanizm przesy\u0142ania komunikat\u00f3w platformy obni\u017cy maksymaln\u0105 wsp\u00f3\u0142bie\u017cno\u015b\u0107 w specyfikacji aktywowania. Zostanie jednak\u017ce wy\u015bwietlone ostrze\u017cenie informuj\u0105ce o tym, \u017ce skonfigurowana przez u\u017cytkownika warto\u015b\u0107 maksymalnej wsp\u00f3\u0142bie\u017cno\u015bci nie b\u0119dzie u\u017cywana.
+MAX_CONCURRENCY_CWSIV0551.useraction=Ostrze\u017cenie to b\u0119dzie wy\u015bwietlane przy ka\u017cdym uruchomieniu danego komponentu MDB. Aby je usun\u0105\u0107, nale\u017cy obni\u017cy\u0107 maksymaln\u0105 wsp\u00f3\u0142bie\u017cno\u015b\u0107 w specyfikacji aktywowania albo zwi\u0119kszy\u0107 maksymaln\u0105 wielko\u015b\u0107 puli punktu ko\u0144cowego JCA (s\u0142u\u017cy do tego w\u0142a\u015bciwo\u015b\u0107 systemowa JVM o nazwie com.ibm.websphere.ejbcontainer.poolSize).
+
+# -------------------------------------------------------------------------------------------------
+# {0} the messaging engine UUID
+# {1} the bus name
+# {2} the endpoint
+ENDPOINT_DEACTIVATED_CWSIV0554=CWSIV0554E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Podj\u0119to pr\u00f3b\u0119 uzyskania po\u0142\u0105czenia z mechanizmem przesy\u0142ania komunikat\u00f3w o identyfikatorze UUID {0} na magistrali {1} po dezaktywowaniu punktu ko\u0144cowego {2}.
+ENDPOINT_DEACTIVATED_CWSIV0554.explanation=Za\u017c\u0105dano nawi\u0105zania po\u0142\u0105czenia z danym mechanizmem przesy\u0142ania komunikat\u00f3w, ale aktywacja punktu ko\u0144cowego zosta\u0142a dezaktywowana.
+ENDPOINT_DEACTIVATED_CWSIV0554.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the ME name
+# (2) the bus name
+# {3} the endpoint activation
+MESSAGING_ENGINE_STARTING_CWSIV0555=CWSIV0555E: Zg\u0142oszono wyj\u0105tek {0} podczas uruchamiania mechanizmu przesy\u0142ania komunikat\u00f3w {1} na magistrali {2} dla aktywacji punktu ko\u0144cowego {3}.
+MESSAGING_ENGINE_STARTING_CWSIV0555.explanation=Adapter zasob\u00f3w przychodz\u0105cych pr\u00f3bowa\u0142 przetworzy\u0107 dany mechanizm przesy\u0142ania komunikat\u00f3w i odebra\u0142 wyj\u0105tek.  Komunikaty z miejsc docelowych znajduj\u0105cych si\u0119 w tym mechanizmie przesy\u0142ania komunikat\u00f3w nie b\u0119d\u0105 odbierane przez komponent bean sterowany komunikatami. Je\u015bli po\u0142\u0105czony wyj\u0105tek stanowi wyj\u0105tek uwierzytelniania, w\u00f3wczas nale\u017cy sprawdzi\u0107, czy specyfikacj\u0119 aktywowania powi\u0105zano z poprawnym aliasem uwierzytelniania.
+MESSAGING_ENGINE_STARTING_CWSIV0555.useraction=Wi\u0119cej informacji na ten temat zawiera do\u0142\u0105czony wyj\u0105tek.  Po rozwi\u0105zaniu problemu zrestartuj mechanizm przesy\u0142ania komunikat\u00f3w, adapter zasob\u00f3w lub aplikacj\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Activation Specification ID
+# {1} Destination Name
+TARGETTED_CONNECTION_SUCCESSFUL_CWSIV0556=CWSIV0556I: Po\u0142\u0105czenie z mechanizmem przesy\u0142ania komunikat\u00f3w powiod\u0142o si\u0119. Komponent bean sterowany komunikatami ze specyfikacj\u0105 aktywowania {0} b\u0119dzie m\u00f3g\u0142 teraz odbiera\u0107 komunikaty z miejsca docelowego {1}.
+TARGETTED_CONNECTION_SUCCESSFUL_CWSIV0556.explanation=Adapter zasob\u00f3w JMS pomy\u015blnie nawi\u0105za\u0142 po\u0142\u0105czenie z mechanizmem przesy\u0142ania komunikat\u00f3w. Pozwala to komponentowi bean sterowanemu komunikatami odbiera\u0107 komunikaty z miejsca docelowego.
+TARGETTED_CONNECTION_SUCCESSFUL_CWSIV0556.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+# -------------------------------------------------------------------------------------------------
+
+
+
+# {0} the exception thrown
+# {1} the list of messages
+UNLOCK_EXCEPTION_CWSIV0601=CWSIV0601E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Odebrano wyj\u0105tek {0} podczas pr\u00f3by odblokowania komunikat\u00f3w {1}.
+UNLOCK_EXCEPTION_CWSIV0601.explanation=Adapter zasob\u00f3w odebra\u0142 wyj\u0105tek podczas pr\u00f3by odblokowania zestawu komunikat\u00f3w.
+UNLOCK_EXCEPTION_CWSIV0601.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the message being deleted
+# {2} the transaction under which the message was being deleted
+DELETE_EXCEPTION_CWSIV0602=CWSIV0602E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Odebrano wyj\u0105tek {0} podczas pr\u00f3by usuni\u0119cia komunikatu {1} w ramach transakcji {2}.
+DELETE_EXCEPTION_CWSIV0602.explanation=Adapter zasob\u00f3w odebra\u0142 wyj\u0105tek podczas pr\u00f3by usuni\u0119cia komunikatu w ramach danej transakcji.
+DELETE_EXCEPTION_CWSIV0602.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the messages being deleted
+# {2} the transaction under which the messages were being deleted
+DELETE_SET_EXCEPTION_CWSIV0603=CWSIV0603E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Odebrano wyj\u0105tek {0} podczas pr\u00f3by usuni\u0119cia komunikat\u00f3w {1} w ramach transakcji {2}.
+DELETE_SET_EXCEPTION_CWSIV0603.explanation=Adapter zasob\u00f3w odebra\u0142 wyj\u0105tek podczas pr\u00f3by usuni\u0119cia komunikat\u00f3w w ramach danej transakcji.
+DELETE_SET_EXCEPTION_CWSIV0603.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+REQUEST_METRICS_CWSIV0604=CWSIV0604E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Odebrano wyj\u0105tek {0} podczas pr\u00f3by uzyskania instancji metryki \u017c\u0105dania.
+REQUEST_METRICS_CWSIV0604.explanation=Adapter zasob\u00f3w odebra\u0142 wyj\u0105tek podczas pr\u00f3by uzyskania instancji metryki \u017c\u0105dania.
+REQUEST_METRICS_CWSIV0604.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint
+# {1} the destination the message endpoint is attached to
+MESSAGE_ENDPOINT_SHOULD_BE_DEACTIVATED_CWSIV0605=CWSIV0605W: Punkt ko\u0144cowy komunikatu {0}, kt\u00f3ry nas\u0142uchiwa\u0142 miejsca docelowego {1}, powinien zosta\u0107 dezaktywowany, poniewa\u017c zosta\u0142a osi\u0105gni\u0119ta maksymalna liczba sekwencyjnych niepowodze\u0144.
+MESSAGE_ENDPOINT_SHOULD_BE_DEACTIVATED_CWSIV0605.explanation=System natrafi\u0142 na potencjalny problem z komponentem MDB powi\u0105zanym z tym punktem ko\u0144cowym komunikat\u00f3w.
+MESSAGE_ENDPOINT_SHOULD_BE_DEACTIVATED_CWSIV0605.useraction=Sprawd\u017a te mo\u017cliwe problemy zwi\u0105zane z komponentem MDB, kt\u00f3re mog\u0142y spowodowa\u0107 sekwencyjne niepowodzenia. Mo\u017cesz dezaktywowa\u0107 punkt ko\u0144cowy komunikat\u00f3w, aby zapobiec dalszemu wyst\u0119powaniu b\u0142\u0119d\u00f3w. W tym celu u\u017cyj komponentu MBean punktu ko\u0144cowego komunikat\u00f3w, przekazuj\u0105c w komunikacie nazw\u0119 punktu ko\u0144cowego do dezaktywacji lub zatrzymaj aplikacj\u0119 zawieraj\u0105c\u0105 komponent Bean sterowany komunikatami.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the session
+# {1} the message handle
+# {2} the transaction
+# {3} the bifurcated consumer session class name
+INVALID_SESSION_CWSIV0606=CWSIV0606E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Podczas \
+pr\u00f3by usuni\u0119cia uchwytu komunikatu {1} w ramach transakcji {2} typ sesji {0} \
+by\u0142 inny ni\u017c wymagany {3}.
+INVALID_SESSION_CWSIV0606.explanation=Adapter zasob\u00f3w napotka\u0142 problem \
+podczas pr\u00f3by usuni\u0119cia uchwytu komunikatu.
+INVALID_SESSION_CWSIV0606.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the number of messagesin the list
+# {1} the message list
+# {2} the handle
+# {3} the transaction
+MESSAGE_LIST_INCORRECT_CWSIV0607=CWSIV0607E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Podczas pr\u00f3by usuni\u0119cia uchwytu komunikatu {2} w ramach transakcji {3} \
+oczekiwano, \u017ce lista komunikat\u00f3w {1} b\u0119dzie zawiera\u0142a jeden komunikat. Lista ta \
+zawiera\u0142a jednak nast\u0119puj\u0105c\u0105 liczb\u0119 komunikat\u00f3w: {0}.
+MESSAGE_LIST_INCORRECT_CWSIV0607.explanation=Adapter zasob\u00f3w napotka\u0142 problem \
+podczas pr\u00f3by usuni\u0119cia uchwytu komunikatu.
+MESSAGE_LIST_INCORRECT_CWSIV0607.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the message handle
+# {2} the transaction
+DELETE_EXCEPTION_CWSIV0608=CWSIV0608E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Podczas \
+pr\u00f3by usuni\u0119cia uchwytu komunikatu {1} w ramach transakcji {2} zg\u0142oszono \
+nast\u0119puj\u0105cy wyj\u0105tek: {0}.
+DELETE_EXCEPTION_CWSIV0608.explanation=Adapter zasob\u00f3w napotka\u0142 problem \
+podczas pr\u00f3by usuni\u0119cia uchwytu komunikatu.
+DELETE_EXCEPTION_CWSIV0608.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the connection throwing the exception
+XARESOURCE_EXCEPTION_CWSIV0650=CWSIV0650E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Odebrano wyj\u0105tek {0} podczas pr\u00f3by uzyskania obiektu XAResource z po\u0142\u0105czenia {1}.
+XARESOURCE_EXCEPTION_CWSIV0650.explanation=Adapter zasob\u00f3w odebra\u0142 wyj\u0105tek podczas pr\u00f3by uzyskania obiektu XAResource z po\u0142\u0105czenia w celu przekazania go podczas tworzenia punktu ko\u0144cowego.
+XARESOURCE_EXCEPTION_CWSIV0650.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the endpoint on which beforeDelivery is being invoked
+BEFORE_DELIVERY_CWSIV0651=CWSIV0651E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Odebrano wyj\u0105tek {0} podczas pr\u00f3by wywo\u0142ania metody beforeDelivery wzgl\u0119dem punktu ko\u0144cowego {1}.
+BEFORE_DELIVERY_CWSIV0651.explanation=Adapter zasob\u00f3w odebra\u0142 wyj\u0105tek podczas pr\u00f3by wywo\u0142ania metody beforeDelivery wzgl\u0119dem punktu ko\u0144cowego przed wywo\u0142aniem metody onMessage.
+BEFORE_DELIVERY_CWSIV0651.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is a connection property name, eg targetType
+# {1} is the required connection property value
+ME_NAME_REQUIRED_CWSIV0652=CWSIV0652E: Aby korzystanie z zasob\u00f3w JMS w ramach transakcji by\u0142o mo\u017cliwe, nale\u017cy okre\u015bli\u0107 konkretny mechanizm przesy\u0142ania komunikat\u00f3w. W\u0142a\u015bciwo\u015b\u0107 po\u0142\u0105czenia {0} musi mie\u0107 warto\u015b\u0107 {1}.
+ME_NAME_REQUIRED_CWSIV0652.explanation=Aby mo\u017cliwe by\u0142o odtwarzanie transakcji, fabryka po\u0142\u0105cze\u0144 musi kierowa\u0107 do konkretnego mechanizmu przekazywania komunikat\u00f3w w magistrali.
+ME_NAME_REQUIRED_CWSIV0652.useraction=Zmie\u0144 w\u0142a\u015bciwo\u015bci fabryki po\u0142\u0105cze\u0144: 'targetGroup' na 'nazwa mechanizmu przekazywania komunikat\u00f3w w ramach magistrali', 'targetType' na 'ME' oraz 'targetSignificance' na 'Required'.
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the ConsumerSession whose parent connection is throwing the exception
+CLONE_EXCEPTION_CWSIV0700=CWSIV0700E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Odebrano wyj\u0105tek {0} podczas pr\u00f3by sklonowania nadrz\u0119dnego po\u0142\u0105czenia dla sesji {1}.
+CLONE_EXCEPTION_CWSIV0700.explanation=Adapter zasob\u00f3w odebra\u0142 wyj\u0105tek podczas pr\u00f3by sklonowania po\u0142\u0105czenia, kt\u00f3re mia\u0142o zosta\u0107 zwr\u00f3cone z metody getConnection dla sesji przekazywanej do punktu ko\u0144cowego.
+CLONE_EXCEPTION_CWSIV0700.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the method that is not supported
+NOT_SUPPORTED_CWSIV0701=CWSIV0701E: Metoda {0} nie jest obs\u0142ugiwana.
+NOT_SUPPORTED_CWSIV0701.explanation=Dana metoda nie mo\u017ce zosta\u0107 wywo\u0142ana w ramach sesji przekazanej do metody onMessage komponentu MDB w podstawowym interfejsie SPI mechanizmu przesy\u0142ania komunikat\u00f3w platformy.
+NOT_SUPPORTED_CWSIV0701.useraction=Usu\u0144 niepo\u017c\u0105dane wywo\u0142anie i w razie potrzeby utw\u00f3rz osobn\u0105 sesj\u0119 podstawowego interfejsu SPI mechanizmu przesy\u0142ania komunikat\u00f3w platformy.
+
+# -------------------------------------------------------------------------------------------------
+OUT_OF_SCOPE_CWSIV0702=CWSIV0702E: Sesja nie jest ju\u017c w zasi\u0119gu.
+OUT_OF_SCOPE_CWSIV0702.explanation=Sesji przekazanej do metody onMessage komponentu MDB w podstawowym interfejsie SPI mechanizmu przesy\u0142ania komunikat\u00f3w platformy nie mo\u017cna u\u017cywa\u0107 po zako\u0144czeniu wykonywania tej metody.
+OUT_OF_SCOPE_CWSIV0702.useraction=Usu\u0144 niepo\u017c\u0105dane wywo\u0142anie i w razie potrzeby utw\u00f3rz osobn\u0105 sesj\u0119 podstawowego interfejsu SPI mechanizmu przesy\u0142ania komunikat\u00f3w platformy.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the destination UUID
+DESTINATION_LOCALITY_CWSIV0753=CWSIV0753E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Podczas pr\u00f3by okre\u015blenia zbioru punkt\u00f3w kolejek dla miejsca docelowego {1} zosta\u0142 zg\u0142oszony nast\u0119puj\u0105cy wyj\u0105tek: {0}.
+DESTINATION_LOCALITY_CWSIV0753.explanation=Odebrano nieoczekiwany wyj\u0105tek podczas pr\u00f3by okre\u015blenia zbioru mechanizm\u00f3w przesy\u0142ania komunikat\u00f3w z punktami kolejek dla danego miejsca docelowego.
+DESTINATION_LOCALITY_CWSIV0753.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+FOREIGN_DESTINATION_CWSIV0754=CWSIV0754E: Miejsce docelowe {0} w magistrali {1} nie zosta\u0142o zdefiniowane jako punkt kolejki w magistrali, z kt\u00f3r\u0105 po\u0142\u0105czony jest komponent MDB.
+FOREIGN_DESTINATION_CWSIV0754.explanation=Komponent MDB musi by\u0107 po\u0142\u0105czony z magistral\u0105 udost\u0119pniaj\u0105c\u0105 miejsce docelowe, z kt\u00f3rego komponent pobiera komunikaty.  Obce magistrale nie s\u0105 obs\u0142ugiwane.
+FOREIGN_DESTINATION_CWSIV0754.useraction=Zmodyfikuj specyfikacj\u0119 aktywowania dla komponentu bean sterowanego komunikatami w taki spos\u00f3b, aby \u0142\u0105czy\u0142 si\u0119 on z wymagan\u0105 magistral\u0105, lub przenie\u015b miejsce docelowe na magistral\u0119, z kt\u00f3r\u0105 komponent bean sterowany komunikatami nawi\u0105zuje po\u0142\u0105czenie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the required destination type
+# {3} the actual destination type
+INCORRECT_TYPE_CWSIV0755=CWSIV0755E: Miejsce docelowe {0} na magistrali {1} nale\u017cy do typu {3}, a nie do typu {2}, kt\u00f3ry jest wymagany.
+INCORRECT_TYPE_CWSIV0755.explanation=Typ miejsca docelowego zdefiniowany w specyfikacji aktywowania komponentu bean sterowanego komunikatami jest niezgodny z typem skonfigurowanego miejsca docelowego.
+INCORRECT_TYPE_CWSIV0755.useraction=Sprawd\u017a, czy w specyfikacji aktywowania komponentu bean sterowanego komunikatami skonfigurowano poprawne miejsce docelowe i/lub jego typ.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+UNKNOWN_TYPE_CWSIV0756=CWSIV0756E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Miejsce docelowe {0} na magistrali {1} ma definicj\u0119 nieoczekiwanego typu.
+UNKNOWN_TYPE_CWSIV0756.explanation=Dane miejsce docelowe nie by\u0142o lokalne, obce ani nie by\u0142o miejscem docelowym okre\u015blonym przez alias.
+UNKNOWN_TYPE_CWSIV0756.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+NOT_FOUND_CWSIV0757=CWSIV0757E: Nie znaleziono miejsca docelowego {0} na magistrali {1}.
+NOT_FOUND_CWSIV0757.explanation=Miejsce docelowe skonfigurowane dla komponentu bean sterowanego komunikatami nie istnieje na danej magistrali.
+NOT_FOUND_CWSIV0757.useraction=Sprawd\u017a powi\u0105zania lub definicj\u0119 miejsca docelowego w specyfikacji aktywowania komponentu bean sterowanego komunikatami.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the exception
+UNEXPECTED_EXCEPTION_CWSIV0758=CWSIV0758E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Podczas pr\u00f3by uzyskania definicji miejsca docelowego {0} na magistrali {1} zg\u0142oszono nast\u0119puj\u0105cy wyj\u0105tek: {2}.
+UNEXPECTED_EXCEPTION_CWSIV0758.explanation=Odebrano nieoczekiwany wyj\u0105tek podczas pr\u00f3by uzyskania definicji danego miejsca docelowego.
+UNEXPECTED_EXCEPTION_CWSIV0758.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the bus
+NO_ACTIVE_MES_CWSIV0759=CWSIV0759W: Podczas aktywowania komponentu bean sterowanego komunikatami nie znaleziono \u017cadnego odpowiedniego, aktywnego mechanizmu przesy\u0142ania komunikat\u00f3w na serwerze lokalnym na magistrali {0}.
+NO_ACTIVE_MES_CWSIV0759.explanation=Komponent MDB skonfigurowano tak, aby \u0142\u0105czy\u0142 si\u0119 z podan\u0105 magistral\u0105. W ramach serwera lokalnego nie ma jednak odpowiednich, aktywnych mechanizm\u00f3w przesy\u0142ania komunikat\u00f3w.  Pobieranie komunikat\u00f3w rozpocznie si\u0119, gdy odpowiedni, lokalny mechanizm przesy\u0142ania komunikat\u00f3w b\u0119dzie aktywny.
+NO_ACTIVE_MES_CWSIV0759.useraction=Sprawd\u017a, czy odpowiedni mechanizm przesy\u0142ania komunikat\u00f3w zosta\u0142 uruchomiony. Po udanym nawi\u0105zaniu po\u0142\u0105czenia zostanie wy\u015bwietlony stosowny komunikat.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the bus
+# {1} the name of the messaging engine
+# {2} the name of the destination
+NEW_CONSUMER_CWSIV0764=CWSIV0764I: Po aktywowaniu mechanizmu przesy\u0142ania komunikat\u00f3w {1} na potrzeby komponentu bean sterowanego komunikatami utworzono konsumenta dla miejsca docelowego {2} na magistrali {0}.
+NEW_CONSUMER_CWSIV0764.explanation=Aktywowanie mechanizmu przesy\u0142ania komunikat\u00f3w na wymaganej magistrali spowodowa\u0142o utworzenie nowego konsumenta dla danego miejsca docelowego.
+NEW_CONSUMER_CWSIV0764.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the ME name
+# (2) the bus name
+MESSAGING_ENGINE_STOPPING_CWSIV0765=CWSIV0765E: Zg\u0142oszono wyj\u0105tek {0} podczas pr\u00f3by utworzenia po\u0142\u0105czenia z innym mechanizmem przesy\u0142ania komunikat\u00f3w w czasie zatrzymywania mechanizmu przesy\u0142ania komunikat\u00f3w {1} na magistrali {2}.
+MESSAGING_ENGINE_STOPPING_CWSIV0765.explanation=W czasie zatrzymywania danego mechanizmu przesy\u0142ania komunikat\u00f3w adapter zasob\u00f3w odebra\u0142 wyj\u0105tek podczas pr\u00f3by nawi\u0105zania po\u0142\u0105czenia z innym mechanizmem przesy\u0142ania komunikat\u00f3w.
+MESSAGING_ENGINE_STOPPING_CWSIV0765.useraction=Wi\u0119cej informacji na ten temat zawiera do\u0142\u0105czony wyj\u0105tek.  Po rozwi\u0105zaniu problemu zrestartuj mechanizm przesy\u0142ania komunikat\u00f3w lub adapter zasob\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the destination
+# {2} the messaging engine name
+# {3} the bus name
+# {4} the endpoint activation
+SESSION_ERROR_CWSIV0766=CWSIV0766E: Konsument odebra\u0142 wyj\u0105tek {0} dotycz\u0105cy miejsca docelowego {1} w mechanizmie przesy\u0142ania komunikat\u00f3w {2} na magistrali {3} dla aktywacji punktu ko\u0144cowego {4}.
+SESSION_ERROR_CWSIV0766.explanation=Odebrano asynchroniczny wyj\u0105tek dla danego konsumenta.  Odpowiedni komponent bean sterowany komunikatami zostanie zdezaktywowany i nie b\u0119dzie odbiera\u0142 kolejnych komunikat\u00f3w.
+SESSION_ERROR_CWSIV0766.useraction=Informacje na temat przyczyny zawiera wyj\u0105tek.  Po rozwi\u0105zaniu problemu zrestartuj mechanizm przesy\u0142ania komunikat\u00f3w, adapter zasob\u00f3w lub aplikacj\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the messaging engine name
+# {2} the endpoint activation
+CONNECTION_ERROR_CWSIV0767=CWSIV0767E: Zg\u0142oszono wyj\u0105tek {0} dotycz\u0105cy po\u0142\u0105czenia z mechanizmem przesy\u0142ania komunikat\u00f3w {1} dla aktywacji punktu ko\u0144cowego {2}.
+CONNECTION_ERROR_CWSIV0767.explanation=Odebrano wyj\u0105tek dla danego po\u0142\u0105czenia.  Odpowiedni komponent bean sterowany komunikatami zostanie zdezaktywowany i nie b\u0119dzie odbiera\u0142 kolejnych komunikat\u00f3w.
+CONNECTION_ERROR_CWSIV0767.useraction=Informacje na temat przyczyny zawiera wyj\u0105tek.  Po rozwi\u0105zaniu problemu zrestartuj mechanizm przesy\u0142ania komunikat\u00f3w, adapter zasob\u00f3w lub aplikacj\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+# {2} the endpoint activation
+LAST_ME_CWSIV0768=CWSIV0768I: Jest zatrzymywany ostatni lokalny mechanizm przesy\u0142ania komunikat\u00f3w {0} na magistrali {1} u\u017cywany przez aktywacj\u0119 punktu ko\u0144cowego {2}.
+LAST_ME_CWSIV0768.explanation=Dane aktywowanie punktu ko\u0144cowego u\u017cywa\u0142o mechanizmu przesy\u0142ania komunikat\u00f3w, kt\u00f3ry zosta\u0142 w\u0142a\u015bnie zatrzymany.  Nie ma innych mechanizm\u00f3w przesy\u0142ania komunikat\u00f3w, z kt\u00f3rymi mo\u017cna nawi\u0105za\u0107 po\u0142\u0105czenie.  Powi\u0105zany komponent bean sterowany komunikatami ponownie rozpocznie odbieranie komunikat\u00f3w, gdy b\u0119dzie dost\u0119pny odpowiedni mechanizm przesy\u0142ania komunikat\u00f3w.
+LAST_ME_CWSIV0768.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+ATTACH_FAILED_CWSIV0769=CWSIV0769W: Nie powiod\u0142a si\u0119 pr\u00f3ba utworzenia konsumenta na potrzeby zdalnego miejsca docelowego {0} na magistrali {1} dla aktywacji punktu ko\u0144cowego {2}. Zg\u0142oszony wyj\u0105tek: {3}.
+ATTACH_FAILED_CWSIV0769.explanation=Adapter zasob\u00f3w przychodz\u0105cych pomy\u015blnie nawi\u0105za\u0142 po\u0142\u0105czenie z lokalnym mechanizmem przesy\u0142ania komunikat\u00f3w, ale nast\u0119pnie odebra\u0142 wyj\u0105tek podczas pr\u00f3by utworzenia konsumenta na potrzeby zdalnego punktu kolejki.
+ATTACH_FAILED_CWSIV0769.useraction=Sprawd\u017a, czy jest dost\u0119pny mechanizm przesy\u0142ania komunikat\u00f3w z punktem kolejki dla danego miejsca docelowego.  Adapter zasob\u00f3w b\u0119dzie okresowo podejmowa\u0142 kolejne automatyczne pr\u00f3by utworzenia konsumenta.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+CONSUMER_FAILED_CWSIV0770=CWSIV0770W: Wyst\u0105pi\u0142 wyj\u0105tek {3} podczas dzia\u0142ania konsumenta w przypadku zdalnego miejsca docelowego {0} na magistrali {1} dla aktywacji punktu ko\u0144cowego {2}.
+CONSUMER_FAILED_CWSIV0770.explanation=Adapter zasob\u00f3w przychodz\u0105cych odebra\u0142 wyj\u0105tek dotycz\u0105cy istniej\u0105cego konsumenta w zdalnym punkcie kolejki.
+CONSUMER_FAILED_CWSIV0770.useraction=Sprawd\u017a, czy jest dost\u0119pny mechanizm przesy\u0142ania komunikat\u00f3w z punktem kolejki dla danego miejsca docelowego.  Adapter zasob\u00f3w b\u0119dzie okresowo podejmowa\u0142 kolejne automatyczne pr\u00f3by utworzenia konsumenta.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the name of the messaging engine
+# {2} the name of the bus
+# {3} the endpoint activation
+RELOAD_FAILED_CWSIV0773=CWSIV0773E: Zg\u0142oszono wyj\u0105tek {0} podczas przetwarzania zaktualizowanej konfiguracji mechanizmu przesy\u0142ania komunikat\u00f3w {1} na magistrali {2} dla aktywacji punktu ko\u0144cowego {3}.
+RELOAD_FAILED_CWSIV0773.explanation=Odebrano wyj\u0105tek podczas przetwarzania zaktualizowanej konfiguracji dla danego mechanizmu przesy\u0142ania komunikat\u00f3w.  Komunikaty wysy\u0142ane do punktu kolejki w tym mechanizmie przesy\u0142ania komunikat\u00f3w nie mog\u0105 zosta\u0107 odebrane przez odpowiedni komponent MDB.
+RELOAD_FAILED_CWSIV0773.useraction=Informacje na temat przyczyny zawiera wyj\u0105tek.  Po rozwi\u0105zaniu problemu zrestartuj mechanizm przesy\u0142ania komunikat\u00f3w, adapter zasob\u00f3w lub aplikacj\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the name of the destination
+# {2} the name of the messaging engine
+# {3} the name of the bus
+# {4} the endpoint activation
+FAILURE_DURING_RELOAD_CWSIV0774=CWSIV0774W: Gdy mechanizm przesy\u0142ania komunikat\u00f3w prze\u0142adowywa\u0142 swoj\u0105 konfiguracj\u0119, konsument odebra\u0142 wyj\u0105tek {0} dotycz\u0105cy miejsca docelowego {1} w mechanizmie przesy\u0142ania komunikat\u00f3w {2} na magistrali {3} dla aktywacji punktu ko\u0144cowego {4}.
+FAILURE_DURING_RELOAD_CWSIV0774.explanation=Podany wyj\u0105tek zosta\u0142 odebrany dla konsumenta, gdy odpowiedni mechanizm przesy\u0142ania komunikat\u00f3w prze\u0142adowywa\u0142 swoj\u0105 konfiguracj\u0119.
+FAILURE_DURING_RELOAD_CWSIV0774.useraction=Ostrze\u017cenie to mo\u017cna zignorowa\u0107, je\u015bli punkt kolejki, do kt\u00f3rego przy\u0142\u0105czono odbiorc\u0119, zosta\u0142 celowo usuni\u0119ty w ramach aktualizowania konfiguracji. Je\u015bli zdefiniowano zast\u0119pczy punkt kolejki, po zako\u0144czeniu aktualizacji zostanie utworzony nowy konsument.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+CONNECT_FAILED_CWSIV0775=CWSIV0775W: Nie powiod\u0142a si\u0119 pr\u00f3ba utworzenia po\u0142\u0105czenia na potrzeby miejsca docelowego {0} na magistrali {1} dla aktywacji punktu ko\u0144cowego {2}. Zg\u0142oszony wyj\u0105tek: {3}.
+CONNECT_FAILED_CWSIV0775.explanation=Adapter zasob\u00f3w przychodz\u0105cych odebra\u0142 wyj\u0105tek podczas pr\u00f3by nawi\u0105zania po\u0142\u0105czenia ze zdalnym mechanizmem przesy\u0142ania komunikat\u00f3w.
+CONNECT_FAILED_CWSIV0775.useraction=Sprawd\u017a, czy na danej magistrali jest dost\u0119pny mechanizm przesy\u0142ania komunikat\u00f3w.  Adapter zasob\u00f3w b\u0119dzie okresowo podejmowa\u0142 automatyczne pr\u00f3by nawi\u0105zania po\u0142\u0105czenia z magistral\u0105.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+CONNECTION_ERROR_CWSIV0776=CWSIV0776W: Wyst\u0105pi\u0142 b\u0142\u0105d w przypadku po\u0142\u0105czenia ze zdalnym mechanizmem przesy\u0142ania komunikat\u00f3w {0} na magistrali {1} dla aktywacji punktu ko\u0144cowego {2}. Zg\u0142oszony wyj\u0105tek: {3}.
+CONNECTION_ERROR_CWSIV0776.explanation=Adapter zasob\u00f3w przychodz\u0105cych odebra\u0142 wyj\u0105tek dotycz\u0105cy istniej\u0105cego po\u0142\u0105czenia z mechanizmem przesy\u0142ania komunikat\u00f3w.
+CONNECTION_ERROR_CWSIV0776.useraction=Sprawd\u017a, czy na danej magistrali jest dost\u0119pny mechanizm przesy\u0142ania komunikat\u00f3w.  Adapter zasob\u00f3w b\u0119dzie okresowo podejmowa\u0142 automatyczne pr\u00f3by nawi\u0105zania po\u0142\u0105czenia z magistral\u0105.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the destination
+# {2} the name of the bus
+CONNECTED_CWSIV0777=CWSIV0777I: Pr\u00f3ba utworzenia po\u0142\u0105czenia z mechanizmem przesy\u0142ania komunikat\u00f3w {0} dla miejsca docelowego {1} na magistrali {2} zako\u0144czy\u0142a si\u0119 pomy\u015blnie.
+CONNECTED_CWSIV0777.explanation=Adapter zasob\u00f3w przychodz\u0105cych utworzy\u0142 po\u0142\u0105czenie z mechanizmem przesy\u0142ania komunikat\u00f3w dla danego aktywowania punktu ko\u0144cowego.
+CONNECTED_CWSIV0777.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+# {2} the endpoint activation
+ME_INITIALIZING_CWSIV0778=CWSIV0778I: Lokalny mechanizm przesy\u0142ania komunikat\u00f3w {0} na magistrali {1}, kt\u00f3ry jest wymagany przez aktywacj\u0119 punktu ko\u0144cowego {2}, jest aktualnie dost\u0119pny.
+ME_INITIALIZING_CWSIV0778.explanation=Dana aktywacja punktu ko\u0144cowego nawi\u0105zywa\u0142a po\u0142\u0105czenia zdalnie, poniewa\u017c \u017caden lokalny mechanizm przesy\u0142ania komunikat\u00f3w nie by\u0142 w\u0142\u0105czony.  Wszystkie zdalne po\u0142\u0105czenia s\u0105 teraz zamkni\u0119te.  Gdy lokalny mechanizm przesy\u0142ania komunikat\u00f3w jest aktywny, podejmowana jest pr\u00f3ba utworzenia nowego po\u0142\u0105czenia.
+ME_INITIALIZING_CWSIV0778.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+ME_DESTROYED_CWSIV0779=CWSIV0779I: Ostatni lokalny mechanizm przesy\u0142ania komunikat\u00f3w {0} dla magistrali {1} zosta\u0142 zniszczony.
+ME_DESTROYED_CWSIV0779.explanation=Dana aktywacja punktu ko\u0144cowego nawi\u0105zywa\u0142a po\u0142\u0105czenia lokalnie, ale \u017caden z pozosta\u0142ych lokalnych mechanizm\u00f3w przesy\u0142ania komunikat\u00f3w nie jest w\u0142\u0105czony.  Adapter zasob\u00f3w pr\u00f3buje nawi\u0105za\u0107 po\u0142\u0105czenie ze zdalnym mechanizmem przesy\u0142ania komunikat\u00f3w.
+ME_DESTROYED_CWSIV0779.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+# {2} the endpoint activation
+ME_TERMINATED_CWSIV0780=CWSIV0780W: Zdalny mechanizm przesy\u0142ania komunikat\u00f3w {0} na magistrali {1}, z kt\u00f3rym by\u0142a po\u0142\u0105czona aktywacja punktu ko\u0144cowego {2}, zosta\u0142 zako\u0144czony.
+ME_TERMINATED_CWSIV0780.explanation=Adapter zasob\u00f3w przychodz\u0105cych odebra\u0142 powiadomienie, \u017ce zdalny mechanizm przesy\u0142ania komunikat\u00f3w, z kt\u00f3rym by\u0142 on po\u0142\u0105czony, zosta\u0142 zako\u0144czony.
+ME_TERMINATED_CWSIV0780.useraction=Sprawd\u017a, czy na danej magistrali jest dost\u0119pny mechanizm przesy\u0142ania komunikat\u00f3w.  Adapter zasob\u00f3w b\u0119dzie okresowo podejmowa\u0142 automatyczne pr\u00f3by nawi\u0105zania po\u0142\u0105czenia z magistral\u0105.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+# {2} the endpoint activation
+ME_QUIESCING_CWSIV0781=CWSIV0781W: Zdalny mechanizm przesy\u0142ania komunikat\u00f3w {0} na magistrali {1}, z kt\u00f3rym by\u0142a po\u0142\u0105czona aktywacja punktu ko\u0144cowego {2}, zosta\u0142 wyciszony.
+ME_QUIESCING_CWSIV0781.explanation=Adapter zasob\u00f3w przychodz\u0105cych odebra\u0142 powiadomienie, \u017ce zdalny mechanizm przesy\u0142ania komunikat\u00f3w, z kt\u00f3rym by\u0142 on po\u0142\u0105czony, zosta\u0142 wyciszony i roz\u0142\u0105czony.
+ME_QUIESCING_CWSIV0781.useraction=Sprawd\u017a, czy na danej magistrali jest dost\u0119pny mechanizm przesy\u0142ania komunikat\u00f3w.  Adapter zasob\u00f3w b\u0119dzie okresowo podejmowa\u0142 automatyczne pr\u00f3by nawi\u0105zania po\u0142\u0105czenia z magistral\u0105.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+CONNECT_FAILED_CWSIV0782=CWSIV0782W: Nie powiod\u0142a si\u0119 pr\u00f3ba utworzenia po\u0142\u0105czenia na potrzeby miejsca docelowego {0} na magistrali {1} dla aktywacji punktu ko\u0144cowego {2}. Zg\u0142oszony wyj\u0105tek: {3}. Przejrzyj specyfikacj\u0119 aktywowania punktu ko\u0144cowego {2}.
+CONNECT_FAILED_CWSIV0782.explanation=Adapter zasob\u00f3w przychodz\u0105cych odebra\u0142 wyj\u0105tek podczas \u0142\u0105czenia si\u0119 z mechanizmem przesy\u0142ania komunikat\u00f3w.
+CONNECT_FAILED_CWSIV0782.useraction=Sprawd\u017a, czy na danej magistrali jest dost\u0119pny mechanizm przesy\u0142ania komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+CONNECT_FAILED_CWSIV0783=CWSIV0783E: Nie powiod\u0142a si\u0119 pr\u00f3ba utworzenia po\u0142\u0105czenia na potrzeby miejsca docelowego {0} na magistrali {1} dla aktywacji punktu ko\u0144cowego {2}. Zg\u0142oszony wyj\u0105tek: {3}.
+CONNECT_FAILED_CWSIV0783.explanation=Adapter zasob\u00f3w przychodz\u0105cych odebra\u0142 wyj\u0105tek podczas pr\u00f3by nawi\u0105zania po\u0142\u0105czenia z mechanizmem przesy\u0142ania komunikat\u00f3w.  Odpowiedni komponent bean sterowany komunikatami jest dezaktywowany i nie mo\u017ce odbiera\u0107 kolejnych komunikat\u00f3w.
+CONNECT_FAILED_CWSIV0783.useraction=Informacje na temat przyczyny zawiera wyj\u0105tek.  Po rozwi\u0105zaniu problemu zrestartuj adapter zasob\u00f3w lub aplikacj\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+ME_STOPPING_CWSIV0784=CWSIV0784I: Lokalny mechanizm przesy\u0142ania komunikat\u00f3w {0} na magistrali {1} jest zatrzymywany.
+ME_STOPPING_CWSIV0784.explanation=Dane aktywowanie punktu ko\u0144cowego u\u017cywa\u0142o mechanizmu przesy\u0142ania komunikat\u00f3w, kt\u00f3ry zosta\u0142 w\u0142a\u015bnie zatrzymany. Adapter zasob\u00f3w podejmie pr\u00f3b\u0119 nawi\u0105zania po\u0142\u0105czenia z innym mechanizmem przesy\u0142ania komunikat\u00f3w.
+ME_STOPPING_CWSIV0784.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+ME_QUIESCING_CWSIV0785=CWSIV0785I: Mechanizm przesy\u0142ania komunikat\u00f3w {0} na magistrali {1} jest w trakcie wyciszania.
+ME_QUIESCING_CWSIV0785.explanation=Adapter zasob\u00f3w przychodz\u0105cych odebra\u0142 powiadomienie, \u017ce mechanizm przesy\u0142ania komunikat\u00f3w, z kt\u00f3rym by\u0142 po\u0142\u0105czony, jest wyciszany i zosta\u0142 roz\u0142\u0105czony.
+ME_QUIESCING_CWSIV0785.useraction=Sprawd\u017a, czy na danej magistrali jest dost\u0119pny mechanizm przesy\u0142ania komunikat\u00f3w.  Adapter zasob\u00f3w b\u0119dzie okresowo podejmowa\u0142 automatyczne pr\u00f3by nawi\u0105zania po\u0142\u0105czenia z magistral\u0105.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+ME_TERMINATED_CWSIV0786=CWSIV0786I: Mechanizm przesy\u0142ania komunikat\u00f3w {0} na magistrali {1} zosta\u0142 zako\u0144czony.
+ME_TERMINATED_CWSIV0786.explanation=Adapter zasob\u00f3w przychodz\u0105cych odebra\u0142 powiadomienie, \u017ce mechanizm przesy\u0142ania komunikat\u00f3w, z kt\u00f3rym by\u0142 po\u0142\u0105czony, zosta\u0142 zako\u0144czony.
+ME_TERMINATED_CWSIV0786.useraction=Sprawd\u017a, czy na danej magistrali jest dost\u0119pny mechanizm przesy\u0142ania komunikat\u00f3w.  Adapter zasob\u00f3w b\u0119dzie okresowo podejmowa\u0142 automatyczne pr\u00f3by nawi\u0105zania po\u0142\u0105czenia z magistral\u0105.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the target type
+# {1} the target significance
+# {2} the target
+# {3} the busname
+TARGETTED_CONNECTION_FAILED_CWSIV0787=CWSIV0787I: Nie powiod\u0142o si\u0119 utworzenie po\u0142\u0105czenia z mechanizmem przesy\u0142ania komunikat\u00f3w podczas okre\u015blania elementu docelowego, z kt\u00f3rym ma zosta\u0107 nawi\u0105zane po\u0142\u0105czenie. Typ elementu docelowego {0}, \
+jego znaczenie {1} i nazwa {2}. Magistrala docelowa: {3}
+TARGETTED_CONNECTION_FAILED_CWSIV0787.explanation=System nie m\u00f3g\u0142 nawi\u0105za\u0107 \
+po\u0142\u0105czenia z mechanizmem przesy\u0142ania komunikat\u00f3w po okre\u015bleniu zestawu informacji o \
+elemencie docelowym. \
+Mo\u017ce to by\u0107 tymczasowy problem z po\u0142\u0105czeniem (je\u015bli nie jest dost\u0119pny \u017caden mechanizm \
+przesy\u0142ania komunikat\u00f3w zgodny z danymi docelowymi) lub problem z konfiguracj\u0105 \
+dotycz\u0105cy u\u017cywanej specyfikacji aktywowania.
+TARGETTED_CONNECTION_FAILED_CWSIV0787.useraction=Upewnij si\u0119, \u017ce na danej magistrali \
+jest dost\u0119pny mechanizm przesy\u0142ania komunikat\u00f3w zgodny z udost\u0119pnionymi informacjami o celu.  \
+Adapter zasob\u00f3w b\u0119dzie okresowo podejmowa\u0142 automatyczne pr\u00f3by nawi\u0105zania po\u0142\u0105czenia z magistral\u0105. \
+Je\u015bli mechanizm przesy\u0142ania komunikat\u00f3w jest dost\u0119pny sprawd\u017a, czy ustawienia \
+konfiguracji aktywowania s\u0105 poprawne, w szczeg\u00f3lno\u015bci nazw\u0119 magistrali i informacje o \
+elemencie docelowym.
+           
+# -------------------------------------------------------------------------------------------------
+# {0} the busname
+CONNECTION_FAILED_CWSIV0788=CWSIV0788I: Nie powiod\u0142o si\u0119 utworzenie po\u0142\u0105czenia z mechanizmem przesy\u0142ania komunikat\u00f3w. Magistrala docelowa: {0}
+CONNECTION_FAILED_CWSIV0788.explanation=System nie m\u00f3g\u0142 nawi\u0105za\u0107 po\u0142\u0105czenia z mechanizmem przesy\u0142ania komunikat\u00f3w. \
+Mo\u017ce to by\u0107 tymczasowy problem z po\u0142\u0105czeniem (je\u015bli na magistrali nie jest dost\u0119pny \
+\u017caden mechanizm przesy\u0142ania komunikat\u00f3w) lub problem z konfiguracj\u0105 dotycz\u0105cy \
+u\u017cywanej specyfikacji aktywowania.
+CONNECTION_FAILED_CWSIV0788.useraction=Sprawd\u017a, czy na danej magistrali jest dost\u0119pny mechanizm przesy\u0142ania komunikat\u00f3w.  \
+Adapter zasob\u00f3w b\u0119dzie okresowo podejmowa\u0142 automatyczne pr\u00f3by nawi\u0105zania po\u0142\u0105czenia z magistral\u0105. \
+Je\u015bli mechanizm przesy\u0142ania komunikat\u00f3w jest dost\u0119pny sprawd\u017a, czy ustawienia \
+konfiguracji aktywowania s\u0105 poprawne, w szczeg\u00f3lno\u015bci nazwa magistrali.
+           
+# -------------------------------------------------------------------------------------------------
+# {0} the busname
+# {1} the durable subscription home
+DURSUB_CONNECTION_FAILED_CWSIV0789=CWSIV0789I: Nie powiod\u0142o si\u0119 utworzenie po\u0142\u0105czenia z mechanizmem przesy\u0142ania komunikat\u00f3w obs\u0142uguj\u0105cym subskrypcj\u0119 trwa\u0142\u0105. Magistrala \
+docelowa: {0}. Punkt trwa\u0142ej subskrypcji {1}.
+DURSUB_CONNECTION_FAILED_CWSIV0789.explanation=System nie m\u00f3g\u0142 nawi\u0105za\u0107 \
+po\u0142\u0105czenia z mechanizmem przesy\u0142ania komunikat\u00f3w obs\u0142uguj\u0105cym punkt trwa\u0142ej subskrypcji. \
+Mo\u017ce to by\u0107 tymczasowy problem z po\u0142\u0105czeniem (je\u015bli na magistrali nie jest dost\u0119pny \
+mechanizm przesy\u0142ania komunikat\u00f3w) lub problem z konfiguracj\u0105 dotycz\u0105cy u\u017cywanej \
+specyfikacji aktywowania.
+DURSUB_CONNECTION_FAILED_CWSIV0789.useraction=Upewnij si\u0119, \u017ce mechanizm przesy\u0142ania \
+komunikat\u00f3w obs\u0142uguj\u0105cy punkt subskrypcji trwa\u0142ej na danej magistrali jest dost\u0119pny.  \
+Adapter zasob\u00f3w b\u0119dzie okresowo podejmowa\u0142 automatyczne pr\u00f3by nawi\u0105zania po\u0142\u0105czenia z magistral\u0105. \
+Je\u015bli mechanizm przesy\u0142ania komunikat\u00f3w jest dost\u0119pny, sprawd\u017a, czy ustawienia konfiguracji aktywowania s\u0105 poprawne, w szczeg\u00f3lno\u015bci nazwa magistrali i punkt subskrypcji trwa\u0142ej.
+           
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the ME name
+# (2) the bus name
+CREATE_CONNECTION_FAILED_CWSIV0801=CWSIV0801E: Zg\u0142oszono wyj\u0105tek {0} podczas tworzenia po\u0142\u0105czenia z mechanizmem przesy\u0142ania komunikat\u00f3w {1} na magistrali {2}.
+CREATE_CONNECTION_FAILED_CWSIV0801.explanation=Adapter zasob\u00f3w przychodz\u0105cych podstawowego interfejsu SPI pr\u00f3bowa\u0142 utworzy\u0107 po\u0142\u0105czenie dla danego mechanizmu przesy\u0142ania komunikat\u00f3w i odebra\u0142 wyj\u0105tek.  Komunikaty z miejsc docelowych znajduj\u0105cych si\u0119 w tym mechanizmie przesy\u0142ania komunikat\u00f3w nie b\u0119d\u0105 odbierane przez komponent bean sterowany komunikatami.
+CREATE_CONNECTION_FAILED_CWSIV0801.useraction=Wi\u0119cej informacji na ten temat zawiera do\u0142\u0105czony wyj\u0105tek.  Po rozwi\u0105zaniu problemu zrestartuj mechanizm przesy\u0142ania komunikat\u00f3w, adapter zasob\u00f3w lub aplikacj\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the destination name
+# {2} the ME name
+# (3) the bus name
+CREATE_LISTENER_FAILED_CWSIV0803=CWSIV0803E: Zg\u0142oszono wyj\u0105tek {0} podczas tworzenia konsumenta dla miejsca docelowego {1} w mechanizmie przesy\u0142ania komunikat\u00f3w {2} na magistrali {3}.
+CREATE_LISTENER_FAILED_CWSIV0803.explanation=Adapter zasob\u00f3w przychodz\u0105cych pr\u00f3bowa\u0142 utworzy\u0107 konsumenta dla danego miejsca docelowego i odebra\u0142 wyj\u0105tek.  Komunikaty z tego miejsca docelowego nie b\u0119d\u0105 odbierane przez komponent bean sterowany komunikatami.
+CREATE_LISTENER_FAILED_CWSIV0803.useraction=Wi\u0119cej informacji na ten temat zawiera do\u0142\u0105czony wyj\u0105tek.  Po rozwi\u0105zaniu problemu zrestartuj mechanizm przesy\u0142ania komunikat\u00f3w, adapter zasob\u00f3w lub aplikacj\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the ME name
+# (2) the bus name
+ADD_DESTINATION_LISTENER_FAILED_CWSIV0804=CWSIV0804E: Zg\u0142oszono wyj\u0105tek {0} podczas dodawania obiektu nas\u0142uchiwania miejsca docelowego dla mechanizmu przesy\u0142ania komunikat\u00f3w {1} na magistrali {2}.
+ADD_DESTINATION_LISTENER_FAILED_CWSIV0804.explanation=Adapter zasob\u00f3w przychodz\u0105cych pr\u00f3bowa\u0142 doda\u0107 program nas\u0142uchuj\u0105cy miejsca docelowego dla danego mechanizmu przesy\u0142ania komunikat\u00f3w i odebra\u0142 wyj\u0105tek.  Komunikaty z punkt\u00f3w kolejek w tym mechanizmie przesy\u0142ania komunikat\u00f3w nie b\u0119d\u0105 odbierane przez komponent bean sterowany komunikatami.
+ADD_DESTINATION_LISTENER_FAILED_CWSIV0804.useraction=Informacje na temat przyczyny zawiera do\u0142\u0105czony wyj\u0105tek.  Po rozwi\u0105zaniu problemu zrestartuj mechanizm przesy\u0142ania komunikat\u00f3w, adapter zasob\u00f3w lub aplikacj\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the destination name
+# {2} the ME name
+# (3) the bus name
+CREATE_LISTENER_FAILED_CWSIV0805=CWSIV0805E: Zg\u0142oszono wyj\u0105tek {0} podczas tworzenia konsumenta dla nowego miejsca docelowego {1} w mechanizmie przesy\u0142ania komunikat\u00f3w {2} na magistrali {3}.
+CREATE_LISTENER_FAILED_CWSIV0805.explanation=Adapter zasob\u00f3w przychodz\u0105cych pr\u00f3bowa\u0142 utworzy\u0107 konsumenta dla danego nowego miejsca docelowego i odebra\u0142 wyj\u0105tek.  Komunikaty z danego punktu kolejki nie b\u0119d\u0105 odbierane przez komponent bean sterowany komunikatami.
+CREATE_LISTENER_FAILED_CWSIV0805.useraction=Informacje na temat przyczyny zawiera do\u0142\u0105czony wyj\u0105tek.  Po rozwi\u0105zaniu problemu zrestartuj mechanizm przesy\u0142ania komunikat\u00f3w, adapter zasob\u00f3w lub aplikacj\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the destination
+# {2} the messaging engine name
+# {3} the bus name
+# {4} the endpoint activation
+SESSION_ERROR_CWSIV0806=CWSIV0806E: Konsument odebra\u0142 wyj\u0105tek {0} dotycz\u0105cy miejsca docelowego {1} w mechanizmie przesy\u0142ania komunikat\u00f3w {2} na magistrali {3} dla aktywacji punktu ko\u0144cowego {4}.
+SESSION_ERROR_CWSIV0806.explanation=Odebrano asynchroniczny wyj\u0105tek dla danego konsumenta.  Odpowiedni komponent bean sterowany komunikatami zostanie zdezaktywowany i nie b\u0119dzie odbiera\u0142 kolejnych komunikat\u00f3w.
+SESSION_ERROR_CWSIV0806.useraction=Informacje na temat przyczyny zawiera wyj\u0105tek.  Po rozwi\u0105zaniu problemu zrestartuj mechanizm przesy\u0142ania komunikat\u00f3w, adapter zasob\u00f3w lub aplikacj\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the messaging engine name
+# {2} the endpoint activation
+CONNECTION_ERROR_CWSIV0807=CWSIV0807E: Zg\u0142oszono wyj\u0105tek {0} dotycz\u0105cy po\u0142\u0105czenia z mechanizmem przesy\u0142ania komunikat\u00f3w {1} dla aktywacji punktu ko\u0144cowego {2}.
+CONNECTION_ERROR_CWSIV0807.explanation=Odebrano wyj\u0105tek dla danego po\u0142\u0105czenia.  Odpowiedni komponent bean sterowany komunikatami zostanie zdezaktywowany i nie b\u0119dzie odbiera\u0142 kolejnych komunikat\u00f3w.
+CONNECTION_ERROR_CWSIV0807.useraction=Informacje na temat przyczyny zawiera wyj\u0105tek.  Po rozwi\u0105zaniu problemu zrestartuj mechanizm przesy\u0142ania komunikat\u00f3w, adapter zasob\u00f3w lub aplikacj\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the destination
+# {1} the messaging engine name
+# {2} the bus name
+# {3} the exception
+SESSION_DROPPED_CWSIV0808=CWSIV0808W: Odbieranie komunikat\u00f3w z miejsca docelowego {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} na magistrali {2} zosta\u0142o zatrzymane z powodu zerwania sesji. Wyj\u0105tek: {3}
+SESSION_DROPPED_CWSIV0808.explanation=Przyczyna zerwania sesji zosta\u0142a podana w wyj\u0105tku. Podane miejsce docelowe mog\u0142o zosta\u0107 usuni\u0119te lub oznaczone jako "tylko do wysy\u0142ania".  Odpowiedni komponent bean sterowany komunikatami zostanie zdezaktywowany i nie b\u0119dzie odbiera\u0142 kolejnych komunikat\u00f3w.
+SESSION_DROPPED_CWSIV0808.useraction=Je\u015bli to ostrze\u017cenie jest nieoczekiwane, rozwi\u0105\u017c problem i zrestartuj odpowiednio aplikacj\u0119, adapter zasob\u00f3w albo mechanizm przesy\u0142ania komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the destination wildcard string
+# {1} the messaging engine name
+# {2} the bus name
+NO_LISTENERS_CREATED_CWSIV0809=CWSIV0809W: Wieloznaczna nazwa miejsca docelowego {0} nie odpowiada \u017cadnemu z miejsc docelowych do pobierania komunikat\u00f3w w mechanizmie przesy\u0142ania komunikat\u00f3w {1} na magistrali {2}.
+NO_LISTENERS_CREATED_CWSIV0809.explanation=Specyfikacja aktywowania zawiera wieloznaczn\u0105 nazw\u0119 miejsca docelowego, aby umo\u017cliwi\u0107 odbieranie komunikat\u00f3w z wielu miejsc. Podana nazwa wieloznaczna nie odpowiada jednak\u017ce \u017cadnemu z dost\u0119pnych miejsc docelowych.
+NO_LISTENERS_CREATED_CWSIV0809.useraction=Sprawd\u017a, czy specyfikacja aktywowania powinna zawiera\u0107 nazw\u0119 wieloznaczn\u0105, czy nazwa ze znakiem wieloznacznym b\u0119dzie pasowa\u0107 do jednego lub kilku miejsc docelowych i czy dane szczeg\u00f3\u0142owe u\u017cytkownika umo\u017cliwiaj\u0105 odbieranie komunikat\u00f3w z tych miejsc docelowych.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint
+# {1} the expected interface
+UNEXPECTED_ENDPOINT_CWSIV0850=CWSIV0850E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Punkt ko\u0144cowy komunikatu {0} nie implementuje oczekiwanego interfejsu {1}.
+UNEXPECTED_ENDPOINT_CWSIV0850.explanation=Fabryka punkt\u00f3w ko\u0144cowych komunikat\u00f3w zwr\u00f3ci\u0142a punkt ko\u0144cowy komunikatu, kt\u00f3ry nie implementuje oczekiwanego interfejsu SibRaMessageListener.
+UNEXPECTED_ENDPOINT_CWSIV0850.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+ON_MESSAGE_CWSIV0851=CWSIV0851E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Zg\u0142oszono wyj\u0105tek {0} podczas pr\u00f3by uzyskania instancji metody onMessage.
+ON_MESSAGE_CWSIV0851.explanation=Zg\u0142oszono wyj\u0105tek podczas pr\u00f3by uzyskania instancji metody onMessage.
+ON_MESSAGE_CWSIV0851.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the destination name
+# {2} the bus name
+# {3} the connection
+LISTENER_CREATION_CWSIV0900=CWSIV0900E: Zg\u0142oszono wyj\u0105tek {0} podczas pr\u00f3by utworzenia obiektu nas\u0142uchiwania dla miejsca docelowego {1} na magistrali {2} przy u\u017cyciu po\u0142\u0105czenia {3}.
+LISTENER_CREATION_CWSIV0900.explanation=Utworzono wyj\u0105tek, gdy adapter zasob\u00f3w przychodz\u0105cych pr\u00f3bowa\u0142 utworzy\u0107 program nas\u0142uchuj\u0105cy dla danego miejsca docelowego.
+LISTENER_CREATION_CWSIV0900.useraction=Wi\u0119cej informacji na ten temat zawiera do\u0142\u0105czony wyj\u0105tek.  Rozwi\u0105\u017c problem i zrestartuj odpowiednio aplikacj\u0119, adapter zasob\u00f3w albo mechanizm przesy\u0142ania komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+SELECTION_FACTORY_CWSIV0901=CWSIV0901E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Zg\u0142oszono wyj\u0105tek {0} podczas pr\u00f3by uzyskania instancji obiektu SelectionCriteriaFactory.
+SELECTION_FACTORY_CWSIV0901.explanation=Utworzono wyj\u0105tek podczas pr\u00f3by uzyskania instancji obiektu SelectionCriteriaFactory.
+SELECTION_FACTORY_CWSIV0901.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the message endpoint
+# {1} the destination the message endpoint was listening too
+MESSAGE_ENDPOINT_PAUSED_AUTONOMICALLY_CWSIV0902=CWSIV0902W: Punkt ko\u0144cowy komunikat\u00f3w {0}, prowadz\u0105cy nas\u0142uch miejsca docelowego {1}, zosta\u0142 wstrzymany przez system.
+MESSAGE_ENDPOINT_PAUSED_AUTONOMICALLY_CWSIV0902.explanation=System wstrzyma\u0142 punkt ko\u0144cowy komunikat\u00f3w, poniewa\u017c wykry\u0142 problem z punktem ko\u0144cowym komunikatu komponentu bean sterowanego komunikatami.
+MESSAGE_ENDPOINT_PAUSED_AUTONOMICALLY_CWSIV0902.useraction=Zbadaj potencjalne problemy zwi\u0105zane z komponentem MDB, kt\u00f3re mog\u0105 powodowa\u0107 b\u0142\u0119dy sekwencyjne. Po zako\u0144czeniu naprawy u\u017cyj Konsoli administracyjnej, aby wznowi\u0107 punkt ko\u0144cowy komunikat\u00f3w. Do wznowienia punktu ko\u0144cowego mo\u017cna r\u00f3wnie\u017c u\u017cy\u0107 komponentu MBean punktu ko\u0144cowego komunikat\u00f3w, przekazuj\u0105c do niego w komunikacie nazw\u0119 punktu ko\u0144cowego.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the message endpoint
+# {1} the destination the message endpoint was listening too
+# {2} the exception thrown from the invoke
+INVOKE_MBEAN_EXCEPTION__CWSIV0903=CWSIV0903W: Podj\u0119to pr\u00f3b\u0119 wstrzymania punktu ko\u0144cowego komunikat\u00f3w {0}, prowadz\u0105cego nas\u0142uch miejsca docelowego {1}. Jednak\u017ce wywo\u0142anie komponentu MBean nie powiod\u0142o si\u0119 i zg\u0142oszony zosta\u0142 nast\u0119puj\u0105cy wyj\u0105tek: {2}.
+INVOKE_MBEAN_EXCEPTION__CWSIV0903.explanation=System wykry\u0142 problem z komponentem bean sterowanym komunikatami nale\u017c\u0105cym do punktu ko\u0144cowego komunikat\u00f3w, ale pr\u00f3ba wstrzymania punktu ko\u0144cowego komunikat\u00f3w nie powiod\u0142a si\u0119.
+INVOKE_MBEAN_EXCEPTION__CWSIV0903.useraction=Sprawd\u017a status punktu ko\u0144cowego komunikat\u00f3w, pos\u0142uguj\u0105c si\u0119 skryptami wsadmin lub konsol\u0105 administracyjn\u0105. Je\u015bli punkt ko\u0144cowy komunikat\u00f3w jest aktywny, wstrzymaj jego dzia\u0142anie i przeanalizuj potencjalne problemy zwi\u0105zane z komponentem bean sterowanym komunikatami. Po zako\u0144czeniu naprawy wzn\u00f3w dzia\u0142anie punktu ko\u0144cowego.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the message endpoint
+# {1} the destination the message endpoint was listening too
+NO_MBEAN_EXCEPTION_CWSIV0904=CWSIV0904W: Podczas pr\u00f3by zatrzymania komponentu MDB nie znaleziono \u017cadnych punkt\u00f3w ko\u0144cowych komunikat\u00f3w dla punktu {0}, prowadz\u0105cego nas\u0142uch miejsca docelowego {1}. 
+NO_MBEAN_EXCEPTION_CWSIV0904.explanation=System nie mo\u017ce znale\u017a\u0107 punktu ko\u0144cowego komunikat\u00f3w.
+NO_MBEAN_EXCEPTION_CWSIV0904.useraction=Sprawd\u017a status punktu ko\u0144cowego komunikat\u00f3w, pos\u0142uguj\u0105c si\u0119 skryptami wsadmin lub konsol\u0105 administracyjn\u0105. Je\u015bli punkt ko\u0144cowy komunikat\u00f3w jest aktywny, wstrzymaj jego dzia\u0142anie i przeanalizuj potencjalne problemy zwi\u0105zane z komponentem bean sterowanym komunikatami. Po zako\u0144czeniu naprawy wzn\u00f3w dzia\u0142anie punktu ko\u0144cowego.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the message endpoint
+# {1} the destination the message endpoint was listening too
+MULTIPLE_MBEAN_EXCEPTION_CWSIV0905=CWSIV0905W: Podczas pr\u00f3by zatrzymania komponentu MDB znaleziono wiele punkt\u00f3w ko\u0144cowych komunikat\u00f3w dla punktu {0}, prowadz\u0105cego nas\u0142uch miejsca docelowego {1}. Powinien istnie\u0107 tylko jeden punkt ko\u0144cowy. Komponent MDB nie zostanie zatrzymany. 
+MULTIPLE_MBEAN_EXCEPTION_CWSIV0905.explanation=System wykry\u0142 wiele punkt\u00f3w ko\u0144cowych komunikat\u00f3w. Nie mo\u017cna zidentyfikowa\u0107 punktu ko\u0144cowego komunikat\u00f3w, kt\u00f3ry ma zosta\u0107 wstrzymany.
+MULTIPLE_MBEAN_EXCEPTION_CWSIV0905.useraction=Sprawd\u017a status wszystkich punkt\u00f3w ko\u0144cowych komunikat\u00f3w tego komponentu bean sterowanego komunikatami, pos\u0142uguj\u0105c si\u0119 skryptami wsadmin lub Konsol\u0105 administracyjn\u0105. Je\u015bli punkt ko\u0144cowy komunikat\u00f3w jest aktywny, wstrzymaj jego dzia\u0142anie i przeanalizuj potencjalne problemy zwi\u0105zane z komponentem bean sterowanym komunikatami. Po zako\u0144czeniu naprawy wzn\u00f3w dzia\u0142anie punktu ko\u0144cowego.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the value it used to be
+# {1} the new value 
+MAXSEQUENTIALMESSAGEFAILURE_CONFIG_VALUE_CHANGED_CWSIV0906=CWSIV0906W: Warto\u015b\u0107 konfiguracyjna maksymalnej sekwencyjnej awarii komunikat\u00f3w dla komponentu MDB zosta\u0142a zmieniona z warto\u015bci {0} na {1}.
+MAXSEQUENTIALMESSAGEFAILURE_CONFIG_VALUE_CHANGED_CWSIV0906.explanation=Warto\u015b\u0107 maksymalnej sekwencyjnej awarii komunikat\u00f3w zosta\u0142a zmieniona, poniewa\u017c w\u0142\u0105czono opcj\u0119 zachowywania \u015bcis\u0142ego porz\u0105dku komunikat\u00f3w.
+MAXSEQUENTIALMESSAGEFAILURE_CONFIG_VALUE_CHANGED_CWSIV0906.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107, chyba \u017ce u\u017cytkownik chce korzysta\u0107 z funkcji sekwencyjnej awarii komunikat\u00f3w. Je\u015bli ta funkcja jest wymagana, wy\u0142\u0105cz opcj\u0119 zachowywania \u015bcis\u0142ego porz\u0105dku komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the value it used to be
+# {1} the new value 
+MAXSEQUENTIALMESSAGEFAILURE_EXCEPTION_DESTINATION_CWSIV0907=CWSIV0907W: Warto\u015b\u0107 konfiguracyjna maksymalnej sekwencyjnej awarii komunikat\u00f3w dla komponentu MDB zosta\u0142a zmieniona z warto\u015bci {0} na {1}.
+MAXSEQUENTIALMESSAGEFAILURE_EXCEPTION_DESTINATION_CWSIV0907.explanation=Warto\u015b\u0107 maksymalnej sekwencyjnej awarii komunikat\u00f3w zosta\u0142a zmieniona, poniewa\u017c dla miejsca docelowego, w kt\u00f3rym nas\u0142uch prowadzi komponent bean sterowany komunikatami, nie zdefiniowano \u017cadnego miejsca docelowego wyj\u0105tk\u00f3w.
+MAXSEQUENTIALMESSAGEFAILURE_EXCEPTION_DESTINATION_CWSIV0907.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107, chyba \u017ce u\u017cytkownik chce korzysta\u0107 z funkcji sekwencyjnej awarii komunikat\u00f3w. Je\u015bli ta funkcja jest wymagana, skonfiguruj dla tego miejsca docelowego miejsce docelowe wyj\u0105tk\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the connection factory
+CREATE_CONNECTION_CWSIV0950=CWSIV0950E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Zg\u0142oszono wyj\u0105tek {0} podczas pr\u00f3by utworzenia po\u0142\u0105czenia w fabryce {1}.
+CREATE_CONNECTION_CWSIV0950.explanation=Adapter zasob\u00f3w przychodz\u0105cych pr\u00f3bowa\u0142 utworzy\u0107 po\u0142\u0105czenie i odebra\u0142 nieoczekiwany wyj\u0105tek.
+CREATE_CONNECTION_CWSIV0950.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the messaging engine UUID
+CREATE_CONNECTION_CWSIV0951=CWSIV0951E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Zg\u0142oszono wyj\u0105tek {0} podczas pr\u00f3by utworzenia po\u0142\u0105czenia z mechanizmem przesy\u0142ania komunikat\u00f3w {1}.
+CREATE_CONNECTION_CWSIV0951.explanation=Adapter zasob\u00f3w przychodz\u0105cych pr\u00f3bowa\u0142 utworzy\u0107 po\u0142\u0105czenie i odebra\u0142 nieoczekiwany wyj\u0105tek.
+CREATE_CONNECTION_CWSIV0951.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+LISTENER_CLOSED_CWSIV0952=CWSIV0952E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Podj\u0119to pr\u00f3b\u0119 utworzenia obiektu nas\u0142uchiwania w po\u0142\u0105czeniu, kt\u00f3re zosta\u0142o zamkni\u0119te.
+LISTENER_CLOSED_CWSIV0952.explanation=Po\u0142\u0105czenie mechanizmu przesy\u0142ania komunikat\u00f3w otrzyma\u0142o \u017c\u0105danie utworzenia programu nas\u0142uchuj\u0105cego, ale zosta\u0142o ju\u017c zamkni\u0119te.
+LISTENER_CLOSED_CWSIV0952.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+LISTENER_CLOSED_CWSIV0953=CWSIV0953E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Podj\u0119to pr\u00f3b\u0119 utworzenia programu nas\u0142uchuj\u0105cego w po\u0142\u0105czeniu, kt\u00f3re zosta\u0142o zamkni\u0119te.
+LISTENER_CLOSED_CWSIV0953.explanation=Po\u0142\u0105czenie mechanizmu przesy\u0142ania komunikat\u00f3w otrzyma\u0142o \u017c\u0105danie utworzenia programu rozsy\u0142aj\u0105cego, ale zosta\u0142o ju\u017c zamkni\u0119te.
+LISTENER_CLOSED_CWSIV0953.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the connection factory
+CREATE_CONNECTION_CWSIV0954=CWSIV0954E: Zg\u0142oszono wyj\u0105tek uwierzytelniania {0} podczas pr\u00f3by utworzenia po\u0142\u0105czenia w fabryce po\u0142\u0105cze\u0144 {1}.
+CREATE_CONNECTION_CWSIV0954.explanation=Adapter zasob\u00f3w przychodz\u0105cych pr\u00f3bowa\u0142 utworzy\u0107 po\u0142\u0105czenie i odebra\u0142 wyj\u0105tek uwierzytelniania.
+CREATE_CONNECTION_CWSIV0954.useraction=Sprawd\u017a, czy w specyfikacji aktywowania (ActivationSpec), z kt\u00f3rej ma korzysta\u0107 dany komponent MDB, podano poprawn\u0105 nazw\u0119 u\u017cytkownika i has\u0142o.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the messaging engine UUID
+CREATE_CONNECTION_CWSIV0955=CWSIV0955E: Zg\u0142oszono wyj\u0105tek uwierzytelniania {0} podczas pr\u00f3by utworzenia po\u0142\u0105czenia z mechanizmem przesy\u0142ania komunikat\u00f3w {1}.
+CREATE_CONNECTION_CWSIV0955.explanation=Adapter zasob\u00f3w przychodz\u0105cych pr\u00f3bowa\u0142 utworzy\u0107 po\u0142\u0105czenie i odebra\u0142 wyj\u0105tek uwierzytelniania.
+CREATE_CONNECTION_CWSIV0955.useraction=Sprawd\u017a, czy w specyfikacji aktywowania (ActivationSpec), z kt\u00f3rej ma korzysta\u0107 dany komponent MDB, podano poprawn\u0105 nazw\u0119 u\u017cytkownika i has\u0142o.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+CREATE_CONNECTION_CWSIV0957=CWSIV0957E: Zg\u0142oszono wyj\u0105tek uwierzytelniania {0} podczas pr\u00f3by uzyskania podmiotu serwera WebSphere.
+CREATE_CONNECTION_CWSIV0957.explanation=Adapter zasob\u00f3w przychodz\u0105cych pr\u00f3bowa\u0142 utworzy\u0107 po\u0142\u0105czenie przy u\u017cyciu podmiotu serwera, ale nie m\u00f3g\u0142 go uzyska\u0107.
+CREATE_CONNECTION_CWSIV0957.useraction=Sprawd\u017a, czy ustawienia zabezpiecze\u0144 serwera aplikacji zosta\u0142y poprawnie skonfigurowane.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the messaging engine UUID
+# {2} the activation specification
+CREATE_CONNECTION_CWSIV0958=CWSIV0958E: Zg\u0142oszono wyj\u0105tek autoryzacji {0} podczas pr\u00f3by utworzenia po\u0142\u0105czenia z mechanizmem przesy\u0142ania komunikat\u00f3w {1} przy u\u017cyciu specyfikacji aktywowania {2}.
+CREATE_CONNECTION_CWSIV0958.explanation=Adapter zasob\u00f3w przychodz\u0105cych pr\u00f3bowa\u0142 utworzy\u0107 po\u0142\u0105czenie i odebra\u0142 wyj\u0105tek autoryzacji.
+CREATE_CONNECTION_CWSIV0958.useraction=Sprawd\u017a, czy w specyfikacji aktywowania, z kt\u00f3rej ma korzysta\u0107 dany komponent MDB, skonfigurowano poprawny alias uwierzytelniania.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the messaging engine UUID
+# {2} the activation specification
+CREATE_CONNECTION_CWSIV0959=CWSIV0959E: Zg\u0142oszono wyj\u0105tek autoryzacji {0} podczas pr\u00f3by utworzenia po\u0142\u0105czenia z mechanizmem przesy\u0142ania komunikat\u00f3w {1} przy u\u017cyciu specyfikacji aktywowania {2}.
+CREATE_CONNECTION_CWSIV0959.explanation=Adapter zasob\u00f3w przychodz\u0105cych pr\u00f3bowa\u0142 utworzy\u0107 po\u0142\u0105czenie i odebra\u0142 wyj\u0105tek autoryzacji.
+CREATE_CONNECTION_CWSIV0959.useraction=Sprawd\u017a, czy w specyfikacji aktywowania, z kt\u00f3rej ma korzysta\u0107 dany komponent MDB, skonfigurowano alias uwierzytelniania uprawniony do \u0142\u0105czenia si\u0119 z danym mechanizmem przesy\u0142ania komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the bus name
+# {2} the activation specification
+CREATE_CONNECTION_CWSIV0960=CWSIV0960E: Zg\u0142oszono wyj\u0105tek autoryzacji {0} podczas pr\u00f3by utworzenia po\u0142\u0105czenia z magistral\u0105 {1} przy u\u017cyciu specyfikacji aktywowania {2}.
+CREATE_CONNECTION_CWSIV0960.explanation=Adapter zasob\u00f3w przychodz\u0105cych pr\u00f3bowa\u0142 utworzy\u0107 po\u0142\u0105czenie i odebra\u0142 wyj\u0105tek autoryzacji.
+CREATE_CONNECTION_CWSIV0960.useraction=Sprawd\u017a, czy w specyfikacji aktywowania, z kt\u00f3rej ma korzysta\u0107 dany komponent MDB, skonfigurowano poprawny alias uwierzytelniania.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the bus name
+# {2} the activation specifcation
+CREATE_CONNECTION_CWSIV0961=CWSIV0961E: Zg\u0142oszono wyj\u0105tek autoryzacji {0} podczas pr\u00f3by utworzenia po\u0142\u0105czenia z magistral\u0105 {1} przy u\u017cyciu specyfikacji aktywowania {2}.
+CREATE_CONNECTION_CWSIV0961.explanation=Adapter zasob\u00f3w przychodz\u0105cych pr\u00f3bowa\u0142 utworzy\u0107 po\u0142\u0105czenie i odebra\u0142 wyj\u0105tek autoryzacji.
+CREATE_CONNECTION_CWSIV0961.useraction=Sprawd\u017a, czy w specyfikacji aktywowania, z kt\u00f3rej ma korzysta\u0107 dany komponent MDB, skonfigurowano alias uwierzytelniania uprawniony do \u0142\u0105czenia si\u0119 z magistral\u0105.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the bus name
+# {2} the activation specifcation
+CREATE_CONNECTION_CWSIV0962=CWSIV0962E: Wyst\u0105pi\u0142 wyj\u0105tek uwierzytelniania {0} podczas pr\u00f3by utworzenia po\u0142\u0105czenia z magistral\u0105 {1} przy u\u017cyciu specyfikacji aktywowania {2}.
+CREATE_CONNECTION_CWSIV0962.explanation=Adapter zasob\u00f3w przychodz\u0105cych pr\u00f3bowa\u0142 utworzy\u0107 po\u0142\u0105czenie i odebra\u0142 wyj\u0105tek uwierzytelniania.
+CREATE_CONNECTION_CWSIV0962.useraction=Sprawd\u017a, czy w specyfikacji aktywowania, z kt\u00f3rej ma korzysta\u0107 dany komponent MDB, skonfigurowano alias uwierzytelniania uwierzytelniony do \u0142\u0105czenia si\u0119 z magistral\u0105.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint factory passed
+# {1} the expected interface
+WAS_ENDPOINT_FACTORY_CWSIV1000=CWSIV1000E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Fabryka punkt\u00f3w ko\u0144cowych komunikat\u00f3w {0} przekazana do adaptera zasob\u00f3w nie zaimplementowa\u0142a oczekiwanego interfejsu {1}.
+WAS_ENDPOINT_FACTORY_CWSIV1000.explanation=Adapter zasob\u00f3w przychodz\u0105cych wymaga, aby fabryka punkt\u00f3w ko\u0144cowych komunikat\u00f3w implementowa\u0142a dany interfejs w celu uzyskania unikalnej nazwy komponentu bean sterowanego komunikatami.
+WAS_ENDPOINT_FACTORY_CWSIV1000.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the request object passed
+# {1} the expected interface
+MSG_TOKEN_CWSIV1050=CWSIV1050E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Obiekt \u017c\u0105dania {0} przekazany do adaptera zasob\u00f3w nie zaimplementowa\u0142 oczekiwanego interfejsu {1}.
+MSG_TOKEN_CWSIV1050.explanation=Element docelowy rozsy\u0142ania adaptera zasob\u00f3w przychodz\u0105cych odebra\u0142 obiekt \u017c\u0105dania, kt\u00f3rego typ by\u0142 inny ni\u017c oczekiwany.
+MSG_TOKEN_CWSIV1050.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the session ID
+# {1} the messaging engine UUID
+# {2} the message handle
+# {3} the messages
+READ_SET_CWSIV1051=CWSIV1051E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Tablica komunikat\u00f3w {3} zwr\u00f3cona dla uchwytu komunikatu {2} z sesji {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} nie zawiera pojedynczego komunikatu.
+READ_SET_CWSIV1051.explanation=Element docelowy rozsy\u0142ania adaptera zasob\u00f3w przychodz\u0105cych w wyniku wymiany nie odebra\u0142 pojedynczego komunikatu dla danego uchwytu komunikatu.
+READ_SET_CWSIV1051.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the session ID
+# {1} the messaging engine UUID
+# {2} the message handle
+# {3} the exception thrown
+EXCEPTION_CWSIV1052=CWSIV1052W: Adapter zasob\u00f3w przychodz\u0105cych odebra\u0142 wyj\u0105tek {3} podczas przetwarzania uchwytu komunikatu {2} z sesji {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1}.
+EXCEPTION_CWSIV1052.explanation=Adapter zasob\u00f3w przychodz\u0105cych nie m\u00f3g\u0142 przetworzy\u0107 uchwytu komunikatu odebranego z dope\u0142nienia regionu kontrolnego.
+EXCEPTION_CWSIV1052.useraction=Informacje na temat przyczyny zawiera wyj\u0105tek.  Gdy blokada komunikatu utraci wa\u017cno\u015b\u0107, zostanie podj\u0119ta ponowna pr\u00f3ba dostarczenia komunikatu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the j2eeName (MDB Name)
+NO_POOL_CWSIV1053=CWSIV1053E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Adapter zasob\u00f3w przychodz\u0105cych nie znalaz\u0142 puli aktywacji punkt\u00f3w ko\u0144cowych dla komponentu {0}, dlatego nie m\u00f3g\u0142 pobra\u0107 aktywacji punktu ko\u0144cowego
+NO_POOL_CWSIV1053.explanation=Adapter zasob\u00f3w przychodz\u0105cych nie m\u00f3g\u0142 pobra\u0107 aktywacji punktu ko\u0144cowego z puli, poniewa\u017c nie znalaz\u0142 samej puli.
+NO_POOL_CWSIV1053.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the locked message enumeration
+RETRIEVE_MESSAGES_CWSIV1100=CWSIV1100E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Zg\u0142oszono wyj\u0105tek {0} podczas pr\u00f3by pobrania komunikat\u00f3w z wyliczenia {1}.
+RETRIEVE_MESSAGES_CWSIV1100.explanation=Odebrano nieoczekiwany wyj\u0105tek podczas pr\u00f3by pobrania komunikat\u00f3w przez adapter zasob\u00f3w przychodz\u0105cych.
+RETRIEVE_MESSAGES_CWSIV1100.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the value it used to be
+# {1} the new value
+MAXCONCURRENCY_CONFIG_VALUE_CHANGED_CWSIV1101=CWSIV1101W: Warto\u015b\u0107 konfiguracyjna maksymalnej wsp\u00f3\u0142bie\u017cno\u015bci komponent\u00f3w MDB zosta\u0142a zmieniona z warto\u015bci {0} na {1}.
+MAXCONCURRENCY_CONFIG_VALUE_CHANGED_CWSIV1101.explanation=Warto\u015b\u0107 maksymalnej wsp\u00f3\u0142bie\u017cno\u015bci zosta\u0142a zmieniona, poniewa\u017c w\u0142\u0105czono opcj\u0119 zachowywania \u015bcis\u0142ego porz\u0105dku komunikat\u00f3w.
+MAXCONCURRENCY_CONFIG_VALUE_CHANGED_CWSIV1101.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107, chyba \u017ce komponenty bean sterowane komunikatami s\u0105 niezb\u0119dne. Je\u015bli tak jest, wy\u0142\u0105cz opcj\u0119 \u015bcis\u0142ego porz\u0105dkowania komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the locked message enumeration
+RETRIEVE_MESSAGES_CWSIV1150=CWSIV1150E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Zg\u0142oszono wyj\u0105tek {0} podczas pr\u00f3by pobrania komunikat\u00f3w z wyliczenia {1}.
+RETRIEVE_MESSAGES_CWSIV1150.explanation=Odebrano nieoczekiwany wyj\u0105tek podczas pr\u00f3by pobrania komunikat\u00f3w przez adapter zasob\u00f3w przychodz\u0105cych.
+RETRIEVE_MESSAGES_CWSIV1150.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the session
+# {1} the connection
+GET_ID_CWSIV1151=CWSIV1151E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Zg\u0142oszono wyj\u0105tek {0} podczas pr\u00f3by uzyskania identyfikatora dla sesji {0} utworzonej z po\u0142\u0105czenia {1}.
+GET_ID_CWSIV1151.explanation=Odebrano nieoczekiwany wyj\u0105tek podczas pr\u00f3by uzyskania identyfikator dla sesji przez adapter zasob\u00f3w przychodz\u0105cych.
+GET_ID_CWSIV1151.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint factory passed
+# {1} the expected interface
+WAS_ENDPOINT_FACTORY_CWSIV1152=CWSIV1152E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Fabryka punkt\u00f3w ko\u0144cowych komunikat\u00f3w {0} przekazana do adaptera zasob\u00f3w nie zaimplementowa\u0142a oczekiwanego interfejsu {1}.
+WAS_ENDPOINT_FACTORY_CWSIV1152.explanation=Adapter zasob\u00f3w przychodz\u0105cych wymaga, aby fabryka punkt\u00f3w ko\u0144cowych komunikat\u00f3w implementowa\u0142a dany interfejs w celu uzyskania unikalnej nazwy komponentu bean sterowanego komunikatami.
+WAS_ENDPOINT_FACTORY_CWSIV1152.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The default value for message lock expiry.
+UNABLE_TO_LOCATE_SERVER_CWSIV1153=CWSIV1153W: Nie mo\u017cna odczyta\u0107 niestandardowej w\u0142a\u015bciwo\u015bci MessageLockExpiry, poniewa\u017c platforma przesy\u0142ania komunikat\u00f3w nie mo\u017ce znale\u017a\u0107 serwera. U\u017cyta zostanie warto\u015b\u0107 domy\u015blna: {0}.
+UNABLE_TO_LOCATE_SERVER_CWSIV1153.explanation=Adapter zasob\u00f3w przychodz\u0105cych nie znalaz\u0142 serwera, dlatego do w\u0142a\u015bciwo\u015bci MessageLockExpiry przypisano warto\u015b\u0107 domy\u015bln\u0105.
+UNABLE_TO_LOCATE_SERVER_CWSIV1153.useraction=CMSG0002
+
+#
+# {0} The value the message lock expiry was set to
+# {1} The default value for message lock expiry.
+INVALID_MESSAGELOCKEXPIRY_CWSIV1154=CWSIV1154W: CWSIV1154W: Warto\u015b\u0107 w\u0142a\u015bciwo\u015bci MessageLockExpiry wydaje si\u0119 wynosi\u0107 {0}. Nie mo\u017cna dokona\u0107 konwersji na liczb\u0119 ca\u0142kowit\u0105. U\u017cyta zostanie warto\u015b\u0107 domy\u015blna: {1}.
+INVALID_MESSAGELOCKEXPIRY_CWSIV1154.explanation=Podczas odczytywania warto\u015bci w\u0142a\u015bciwo\u015bci MessageLockExpiry nie mo\u017cna by\u0142o przekszta\u0142ci\u0107 tej warto\u015bci w liczb\u0119 ca\u0142kowit\u0105.
+INVALID_MESSAGELOCKEXPIRY_CWSIV1154.useraction=Sprawd\u017a, czy warto\u015b\u0107 przypisana do niestandardowej w\u0142a\u015bciwo\u015bci MessageLockExpiry jest liczb\u0105 ca\u0142kowit\u0105. Nast\u0119pnie zrestartuj serwer, aby wprowadzone zmiany zacz\u0119\u0142y obowi\u0105zywa\u0107.
+
+#
+# {0} The value the message lock expiry was set to
+# {1} The default value for message lock expiry.
+NEGATIVE_MESSAGELOCKEXPIRY_CWSIV1155=CWSIV1155W: CWSIV1155W: Warto\u015b\u0107 w\u0142a\u015bciwo\u015bci MessageLockExpiry wydaje si\u0119 wynosi\u0107 {0}. Ta warto\u015b\u0107 nie mo\u017ce by\u0107 liczb\u0105 ujemn\u0105. U\u017cyta zostanie warto\u015b\u0107 domy\u015blna: {1}.
+NEGATIVE_MESSAGELOCKEXPIRY_CWSIV1155.explanation=Warto\u015b\u0107 czasu blokady utraty wa\u017cno\u015bci komunikatu nie mo\u017ce by\u0107 ujemna.
+NEGATIVE_MESSAGELOCKEXPIRY_CWSIV1155.useraction=Sprawd\u017a, czy warto\u015b\u0107 przypisana do niestandardowej w\u0142a\u015bciwo\u015bci MessageLockExpiry jest liczb\u0105 dodatni\u0105 lub jest r\u00f3wna zero. Nast\u0119pnie zrestartuj serwer, aby wprowadzone zmiany zacz\u0119\u0142y obowi\u0105zywa\u0107.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the endpoint on which beforeDelivery is being invoked
+BEFORE_DELIVERY_CWSIV1200=CWSIV1200E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Odebrano wyj\u0105tek {0} podczas pr\u00f3by wywo\u0142ania metody beforeDelivery wzgl\u0119dem punktu ko\u0144cowego {1}.
+BEFORE_DELIVERY_CWSIV1200.explanation=Adapter zasob\u00f3w odebra\u0142 wyj\u0105tek podczas pr\u00f3by wywo\u0142ania metody beforeDelivery wzgl\u0119dem punktu ko\u0144cowego przed wywo\u0142aniem metody onMessage.
+BEFORE_DELIVERY_CWSIV1200.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection on which the create was attempted
+# {1} the exception thrown
+UNCOORD_TRAN_CWSIV1201=CWSIV1201E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Odebrano wyj\u0105tek {1} podczas pr\u00f3by utworzenia nieskoordynowanej transakcji w po\u0142\u0105czeniu {0}.
+UNCOORD_TRAN_CWSIV1201.explanation=Adapter zasob\u00f3w odebra\u0142 wyj\u0105tek podczas pr\u00f3by utworzenia nieskoordynowanej transakcji w danym po\u0142\u0105czeniu.
+UNCOORD_TRAN_CWSIV1201.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the synchronization that was being registered
+# {1} the exception thrown
+REGISTER_SYNC_CWSIV1202=CWSIV1202E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Odebrano wyj\u0105tek {1} podczas pr\u00f3by zarejestrowania synchronizacji {0}.
+REGISTER_SYNC_CWSIV1202.explanation=Adapter zasob\u00f3w odebra\u0142 wyj\u0105tek podczas pr\u00f3by zarejestrowania danej synchronizacji w mened\u017cerze transakcji.
+REGISTER_SYNC_CWSIV1202.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the transaction
+# {1} the expected interface
+SYNC_CWSIV1203=CWSIV1203E: Transakcja {0} zwr\u00f3cona z po\u0142\u0105czenia nie zaimplementowa\u0142a oczekiwanego interfejsu {1}.
+SYNC_CWSIV1203.explanation=Adapter zasob\u00f3w przychodz\u0105cych wymaga, aby nieskoordynowana transakcja implementowa\u0142a dany interfejs, poniewa\u017c jest to konieczne w celu wykonania optymalizacji procesu jednofazowego zatwierdzania.
+SYNC_CWSIV1203.useraction=Sprawd\u017a, czy system jest odpowiednio skonfigurowany, tak aby m\u00f3g\u0142 wykorzysta\u0107 optymalizacj\u0119 procesu jednofazowego zatwierdzania mi\u0119dzy mechanizmem przesy\u0142ania komunikat\u00f3w a baz\u0105 danych przy jednoczesnym stosowaniu komponent\u00f3w bean obiektu korzystaj\u0105cych z zarz\u0105dzania trwa\u0142o\u015bci\u0105 przez kontener.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The object name
+# {1} The method name
+NULL_XA_RESOURCE_CWSIV1210=CWSIV1210E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Do metody {1} w obiekcie {0} przekazano warto\u015b\u0107 NULL. Nale\u017cy \
+przekaza\u0107 poprawny obiekt XAResource.
+NULL_XA_RESOURCE_CWSIV1210.explanation=CMSG0001
+NULL_XA_RESOURCE_CWSIV1210.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIV9999=CWSIV9999E: {0}
+TEMPORARY_CWSIV9999.explanation=Je\u015bli komunikat nie podaje dostatecznych informacji, zapoznaj si\u0119 z towarzysz\u0105cymi mu komunikatami o b\u0142\u0119dach.
+TEMPORARY_CWSIV9999.useraction=Wi\u0119cej informacji zawieraj\u0105 do\u0142\u0105czone komunikaty o b\u0142\u0119dach.
+

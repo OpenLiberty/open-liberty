@@ -1,0 +1,27 @@
+###############################################################################
+# Copyright (c) 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME 
+#COMPONENTPREFIX CWWKU
+#COMPONENTNAMEFOR Plugin Utility Runtime
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+collective.mbean.not.available=CWWKU0101E: Una solicitud para generar un archivo de configuraci\u00f3n de plugin de servidor web no se ha procesado para el cl\u00faster {0} porque no se ha encontrado el MBean de la caracter\u00edstica de controlador colectivo necesario.
+collective.mbean.not.available.explanation=Para que el servidor procese la solicitud, la caracter\u00edstica de controlador colectivo debe estar habilitada. 
+collective.mbean.not.available.useraction=Habilite la caracter\u00edstica de controlador colectivo en el servidor de destino, o dirija la solicitud a un servidor que tenga la caracter\u00edstica de controlador colectivo ya habilitada.
+# --------------------------------
+# --------------------------------
+appserver.mbean.not.available=CWWKU0102E: Una solicitud para generar un archivo de configuraci\u00f3n de plugin de servidor web no se ha procesado para el servidor porque no se ha encontrado el MBean de la caracter\u00edstica de Java Servlet necesario.
+appserver.mbean.not.available.explanation=Para que el servidor procese la solicitud, la caracter\u00edstica de Java Servlet, 3.0 o 3.1, debe estar habilitada.
+appserver.mbean.not.available.useraction=Habilite la caracter\u00edstica de Java Servlet, 3.0 o 3.1, en el servidor de destino, o dirija la solicitud a un servidor que tenga la caracter\u00edstica de Java Servlet ya habilitada.
+# -------------------------------- 

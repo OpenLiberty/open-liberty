@@ -1,0 +1,309 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.jbatch.container/resources/com/ibm/jbatch/container/internal/resources/JBatchMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# NLS message prefix registry: http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+#
+# This file contains the messages in use.
+#
+# The range of messages "reserved":
+# 0001 - 0100: com.ibm.jbatch.container
+# 
+
+stopping.job.at.shutdown=CWWKY0001I: Se emite \
+oprirea execu\u0163iei jobului {0} \u00eentruc\u00e2t componenta batch se \
+dezactiveaz\u0103.
+stopping.job.at.shutdown.explanation=Acest mesaj este doar \u00een scop informa\u0163ional.
+stopping.job.at.shutdown.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+jobs.running.at.shutdown=CWWKY0002I: Componenta \
+batch se dezactiveaz\u0103. \
+Cererile de oprire au fost emise pentru toate execu\u0163iile de job \
+active. \
+Urm\u0103toarele execu\u0163ii de job \u00eenc\u0103 rulau la momentul dezactiv\u0103rii: {0}.
+jobs.running.at.shutdown.explanation=C\u00e2nd \
+componenta batch este dezactivat\u0103, aceasta emite cereri de oprire \
+pentru toate execu\u0163iile de job active \u015fi a\u015fteapt\u0103 pu\u0163in ca ele s\u0103 se \
+opreasc\u0103.  \
+Execu\u0163iile de job care nu s-au oprit sunt raportate \u00een mesaj. \
+Execu\u0163iile de job care ruleaz\u0103 dincolo de dezactivarea componentei \
+batch ar putea experimenta un comportament imprevizibil.
+jobs.running.at.shutdown.useraction=Se recomand\u0103 s\u0103 \
+a\u015ftepta\u0163i ca toate joburile s\u0103 se finalizeze \u00eenainte de a dezactiva \
+componenta batch. \
+Componenta batch este dezactivat\u0103 c\u00e2nd este oprit serverul, c\u00e2nd este \
+\u00eenl\u0103turat\u0103 caracteristica batch-ului sau c\u00e2nd este actualizat\u0103 \
+configura\u0163ia batch-ului.
+ 
+jsl.schema.invalid=CWWKY0003E: JSL (documentul de job XML) de la URL-ul {0} nu este valid conform schemei de job XML. \
+Prima eroare de validare \u00eenregistrat\u0103 \u00een istoric de validatorul JAXB a fost: {1}.
+jsl.schema.invalid.explanation=Documentul XML nu s-a conformat schemei XSD.
+jsl.schema.invalid.useraction=Folosi\u0163i o unealt\u0103 de validare XML pentru a \u00een\u0163elege ce construc\u0163ie \u00eencalc\u0103 cerin\u0163ele schemei.
+
+jsl.not.found.batch-jobs=CWWKY0004E: Numele JSL (document de job XML): {0} nu a fost g\u0103sit \u00een loca\u0163in: {1} \u00een arhiva aplica\u0163iei.
+jsl.not.found.batch-jobs.explanation=Documentul nu a putut fi localizat la loca\u0163ia identificat\u0103 de parametrii utiliza\u0163i la trimitere (de ex. \
+start) jobul.
+jsl.not.found.batch-jobs.useraction=Asigura\u0163i-v\u0103 c\u0103 parametrii utiliza\u0163i pentru a identifica loca\u0163ia JSL sunt corec\u0163i. \
+La utilizarea lans\u0103rii la distan\u0163\u0103 a joburilor pentru a trimite un job definit \u00eentr-un JSL \u00eempachetat \u00eentr-un modul de aplica\u0163ii, asigura\u0163i-v\u0103 c\u0103 modulul de aplica\u0163ii a fost identificat corect de parametrii transmi\u015fi c\u0103tre interfa\u0163a REST (direct sau utiliz\u00e2nd utilitarul linie de comand\u0103).
+
+persistence.service.status=CWWKY0005I: Serviciul de persisten\u0163\u0103 a batch-ului {0} este {1}.
+persistence.service.status.explanation=Acest mesaj este doar \u00een scop informa\u0163ional.
+persistence.service.status.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+job.recovery.failed=CWWKY0006W: Serviciul de recuperare a joburilor de batch nu poate corecta starea de batch pentru o instan\u0163\u0103 de job care rula anterior {0} care s-a terminat. Corec\u0163ia a e\u015fuat din cauza excep\u0163iei {1}.
+job.recovery.failed.explanation=Serviciul de recuperare a joburilor de batch, care corecteaz\u0103 starea joburilor care rulau c\u00e2nd s-a terminat anormal o instan\u0163\u0103 anterioar\u0103 a acestui server, nu a putut corecta starea instan\u0163ei date de job din cauza excep\u0163iei date.
+job.recovery.failed.useraction=Adresa\u0163i-v\u0103 cauzei excep\u0163iei, dac\u0103 este posibil, \u015fi reporni\u0163i serverul pentru a rula din nou serviciul de recuperare joburi de batch.
+
+recovery.failed=CWWKY0007W: Serviciul de recuperare a joburilor de batch nu poate corecta starea de batch pentru joburile care rulau anterior \u015fi care s-au terminat. Corec\u0163ia a e\u015fuat din cauza excep\u0163iei {0}.
+recovery.failed.explanation=Serviciul de recuperare a joburilor de batch, care corecteaz\u0103 starea joburilor care rulau c\u00e2nd s-a terminat anormal o instan\u0163\u0103 anterioar\u0103 a acestui server, nu a putut corecta starea instan\u0163ei date de job din cauza excep\u0163iei date.
+recovery.failed.useraction=Adresa\u0163i-v\u0103 cauzei excep\u0163iei, dac\u0103 este posibil, \u015fi reporni\u0163i serverul pentru a rula din nou serviciul de recuperare joburi de batch.
+
+batch.kernel.persistence=CWWKY0008I: Caracteristica de batch utilizeaz\u0103 tipul de persisten\u0163\u0103 {0}.
+batch.kernel.persistence.explanation=Acest mesaj este doar \u00een scop informa\u0163ional.
+batch.kernel.persistence.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+#{0} The job name
+#{1} The job instance id
+#{2} The job execution id
+job.started=CWWKY0009I: Jobul {0} a pornit pentru instan\u0163a de job {1} \u015fi execu\u0163ia de job {2}.
+job.started.explanation=A fost pornit un nou fir de execu\u0163ie job.
+job.started.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+#{0} The job name
+#{1} The batch status of the job
+#{2} The exit status of the job
+#{3} The job instance id
+#{4} The job execution id
+job.ended=CWWKY0010I: Jobul {0} s-a terminat cu starea batch {1} \u015fi starea de ie\u015fire {2} pentru instan\u0163a de joburi {3} \u015fi execu\u0163ia jobului {4}.
+job.ended.explanation=Execu\u0163ia jobului s-a terminat.
+job.ended.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+#{0} The job name
+#{1} The batch status of the job
+#{2} The exit status of the job
+#{3} The job instance id
+#{4} The job execution id
+job.failed=CWWKY0011W: Jobul {0} s-a terminat cu starea batch {1} \u015fi starea de ie\u015fire {2} pentru instan\u0163a de joburi {3} \u015fi execu\u0163ia jobului {4}.
+job.failed.explanation=Execu\u0163ia jobului a e\u015fuat s\u0103 se opreasc\u0103 cu succes.
+job.failed.useraction=Examina\u0163i istoricele de job ale execu\u0163iei joburilor asociate pentru a determina cauza e\u015fu\u0103rii.
+
+#{0} The partition number
+#{1} The step name
+#{2} The job instance id
+#{3} The job execution id
+partition.started=CWWKY0012I: Parti\u0163ia {0} a pornit pentru pasul {1} pentru instan\u0163a de joburi {2} \u015fi execu\u0163ia jobului {3}.
+partition.started.explanation=A fost pornit\u0103 o nou\u0103 parti\u0163ie.
+partition.started.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+#{0} The step name
+#{1} The partition number
+#{2} The batch status of the partition
+#{3} The exit status of the partition
+#{4} The job instance id
+#{5} The job execution id
+partition.ended=CWWKY0013I: Parti\u0163ia {0} s-a terminat cu starea batch {1} \u015fi starea de ie\u015fire {2} pentru pasul {3} pentru instan\u0163a de joburi {4} \u015fi execu\u0163ia jobului {5}.
+partition.ended.explanation=Parti\u0163ia s-a terminat.
+partition.ended.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+#{0} The step name
+#{1} The partition number
+#{2} The batch status of the partition
+#{3} The exit status of the partition
+#{4} The job instance id
+#{5} The job execution id
+partition.failed=CWWKY0014W: Parti\u0163ia {0} s-a terminat cu starea batch {1} \u015fi starea de ie\u015fire {2} pentru pasul {3} pentru instan\u0163a de joburi {4} \u015fi execu\u0163ia jobului {5}.
+partition.failed.explanation=Parti\u0163ia a e\u015fuat s\u0103 se opreasc\u0103 cu succes.
+partition.failed.useraction=Examina\u0163i istoricele de job ale execu\u0163iei joburilor asociate pentru a determina cauza e\u015fu\u0103rii.
+
+#{0} The flow name
+#{1} The job instance id
+#{2} The job execution id
+flow.started=CWWKY0015I: Fluxul {0} a pornit pentru instan\u0163a de joburi {1} \u015fi execu\u0163ia jobului {2}.
+flow.started.explanation=Fluxul a pornit.
+flow.started.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+#{0} The flow name
+#{1} The job instance id
+#{2} The job execution id
+flow.ended=CWWKY0016I: Fluxul  {0}  s-a terminat pentru instan\u0163a de joburi {1} \u015fi execu\u0163ia jobului {2}.
+flow.ended.explanation=Fluxul s-a terminat.
+flow.ended.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+#{0} The flow name
+#{1} The job instance id
+#{2} The job execution id
+flow.failed=CWWKY0017W: Fluxul {0} a e\u015fuat pentru instan\u0163a de joburi {1} \u015fi execu\u0163ia jobului {2}.
+flow.failed.explanation=Fluxul a e\u015fuat s\u0103 se opreasc\u0103 cu succes.
+flow.failed.useraction=Examina\u0163i istoricele de job ale execu\u0163iei joburilor asociate pentru a determina cauza e\u015fu\u0103rii.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+step.started=CWWKY0018I: Pasul {0} a pornit pentru instan\u0163a de joburi {1} \u015fi execu\u0163ia jobului {2}.
+step.started.explanation=Pasul indicat a pornit execu\u0163ia pe un fir de execu\u0163ie.
+step.started.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+#{0} The step name
+#{1} The batch status of the step
+#{2} The exit status of the step
+#{3} The job instance id
+#{4} The job execution id
+step.failed=CWWKY0019W: Pasul {0} a e\u015fuat cu starea batch {1} \u015fi starea de ie\u015fire {2} pentru instan\u0163a de joburi {3} \u015fi execu\u0163ia jobului {4}.
+step.failed.explanation=Pasul a e\u015fuat s\u0103 se opreasc\u0103 cu succes.
+step.failed.useraction=Examina\u0163i istoricele de job ale execu\u0163iei joburilor asociate pentru a determina cauza e\u015fu\u0103rii.
+
+#{0} The step name
+#{1} The batch status of the step
+#{2} The exit status of the step
+#{3} The job instance id
+#{4} The job execution id
+step.ended=CWWKY0020I: Pasul {0} s-a terminat cu starea batch {1} \u015fi starea de ie\u015fire {2} pentru instan\u0163a de joburi {3} \u015fi execu\u0163ia jobului {4}.
+step.ended.explanation=Pasul a terminat procesarea.
+step.ended.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.started=CWWKY0021I: O nou\u0103 parte a fost pornit\u0103 pentru pasul {0} \u00een instan\u0163a de joburi {1} \u015fi execu\u0163ia jobului {2}. Indici de m\u0103surare pas = {3}
+chunk.started.explanation= O nou\u0103 tranzac\u0163ie a fost pornit\u0103 pentru a procesa aceast\u0103 parte.
+chunk.started.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.ended=CWWKY0022I: Partea s-a terminat cu succes pentru pasul {0} \u00een instan\u0163a de joburi {1} \u015fi execu\u0163ia jobului {2}. Indici de m\u0103surare pas = {3}
+chunk.ended.explanation= Tranzac\u0163ia asociat\u0103 cu aceast\u0103 parte a fost comis\u0103 cu succes.
+chunk.ended.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.rollback=CWWKY0024W: Bucata curent\u0103 a fost derulat\u0103 \u00eenapoi la punctul de control anterior pentru pasul {0} \u00een instan\u0163a de joburi {1} \u015fi execu\u0163ia jobului {2}. Indici de m\u0103surare pas = {3}
+chunk.rollback.explanation= Nu a existat o e\u015fuare \u00een timpul buc\u0103\u0163ii curente care a cauzat o derulare \u00eenapoi a tranzac\u0163iei la punctul de control anterior.
+chunk.rollback.useraction=Examina\u0163i istoricele de job ale execu\u0163iei joburilor asociate pentru a determina cauza e\u015fu\u0103rii.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.rollback.and.retry=CWWKY0025W: Procesarea derul\u0103rii \u00eenapoi pentru bucata curent\u0103 dup\u0103 o excep\u0163ie re\u00eencercabil\u0103 pentru pasul {0} din instan\u0163a de joburi {1} \u015fi execu\u0163ia jobului {2}. Indici de m\u0103surare pas = {3}
+chunk.rollback.and.retry.explanation= A existat o excep\u0163ie re\u00eencercabil\u0103 care a ap\u0103rut \u00een timpul proces\u0103rii buc\u0103\u0163ii care va fi derulat\u0103 \u00eenapoi la punctul de control anterior \u015fi re\u00eencercat\u0103.
+chunk.rollback.and.retry.useraction=Examina\u0163i istoricele de job ale execu\u0163iei joburilor asociate pentru a determina cauza e\u015fu\u0103rii.
+
+#{0} The step name that is associated with this reader
+item.reader.opened=CWWKY0026I: A fost deschis cititorul de articole pentru pasul {0}.
+item.reader.opened.explanation=Cititorul de articole care este asociat cu acest pas a fost deschis.
+item.reader.opened.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+#{0} The step name that is associated with this reader
+item.reader.closed=CWWKY0027I: Cititorul de articole pentru pasul {0} a fost \u00eenchis.
+item.reader.closed.explanation=Cititorul de articole care este asociat cu acest pas a fost \u00eenchis.
+item.reader.closed.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+#{0} The step name that is associated with this writer
+item.writer.opened=CWWKY0028I: A fost deschis scriitorul de articole pentru pasul {0}.
+item.writer.opened.explanation=Scriitorul de articole care este asociat cu acest pas a fost deschis.
+item.writer.opened.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+#{0} The step name that is associated with this writer
+item.writer.closed=CWWKY0029I: Scriitorul de articole pentru pasul {0} a fost \u00eenchis.
+item.writer.closed.explanation=Scriitorul de articole care este asociat cu acest pas a fost \u00eenchis.
+item.writer.closed.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+#{0} The step name that is associated with this writer
+#{1} The exception that occurred
+exception.executing.step=CWWKY0030I: A ap\u0103rut o excep\u0163ie la executarea pasului {0}.\n\
+{1}
+exception.executing.step.explanation=Ar putea fi o eroare de aplica\u0163ie. A ap\u0103rut o excep\u0163ie a \u00een timpul execut\u0103rii por\u0163iunii de baz\u0103 a pasului, dup\u0103 ce containerul batch a invocat artefacte de aplica\u0163ie batch relevante.
+exception.executing.step.useraction=Examina\u0163i istoricele de job ale execu\u0163iei joburilor asociate pentru a determina cauza e\u015fu\u0103rii.  Aceasta ar putea implica depanarea aplica\u0163iei dumneavoastr\u0103.
+
+#{0} The step name that is associated with this writer
+#{1} The exception that occurred
+exception.after.step=CWWKY0031I: A ap\u0103rut o excep\u0163ie la executarea por\u0163iunii finale a pasului {0}.\n\
+{1}
+exception.after.step.explanation=Ar putea fi o eroare de aplica\u0163ie. A ap\u0103rut o excep\u0163ie \u00een timpul execut\u0103rii por\u0163iunii finale a pasului (de ex. includerea metodei StepListener afterStep()), dup\u0103 ce containerul batch a invocat artefacte de aplica\u0163ie batch relevante.
+exception.after.step.useraction=Examina\u0163i istoricele de job ale execu\u0163iei joburilor asociate pentru a determina cauza e\u015fu\u0103rii.  Aceasta ar putea implica depanarea aplica\u0163iei dumneavoastr\u0103.
+
+#{0} The exception that occurred
+error.persisting.stepExecution=CWWKY0032I: A ap\u0103rut o excep\u0163ie la \u00eencercarea de a persista starea de execu\u0163ie a pasului \u015fi datele asociate.\n\
+''{0}''
+error.persisting.stepExecution.explanation=Dac\u0103 acest lucru se \u00eent\u00e2mpl\u0103, \u00een mod normal starea pasului final nu este persistat\u0103 corect \u00een baza de date, iar starea batch-ului ar putea r\u0103m\u00e2ne ag\u0103\u0163at\u0103 \u00eentr-o stare STARTED \u00een ciuda faptului c\u0103 nu se mai execut\u0103. Aceasta ar putea interfera cu o \u00eencercare de repornire cauz\u00e2nd erori de inconsisten\u0163\u0103 a st\u0103rii dup\u0103 repornire. 
+error.persisting.stepExecution.useraction=Asigura\u0163i-v\u0103 c\u0103 baza de date este configurat\u0103 corect \u015fi este conectat\u0103.   Dup\u0103 ce face\u0163i aceasta, dac\u0103 este necesar pute\u0163i reporni serverul executor (server pe care se execut\u0103 job), ceea ce va declan\u015fa recuperarea \u015fi va marca joburile \u015fi pa\u015fii asocia\u0163i ca FAILED, astfel \u00eenc\u00e2t s\u0103 se poat\u0103 face cu succes o repornire a jobului. 
+
+#{0} The exception that occurred
+exception.executing.job=CWWKY0033I: A ap\u0103rut o excep\u0163ie la executarea jobului.\n\
+''{0}''
+exception.executing.job.explanation=Ar putea fi o eroare de aplica\u0163ie. A ap\u0103rut o excep\u0163ie a \u00een timpul execut\u0103rii por\u0163iunii de baz\u0103 a jobului, dup\u0103 ce containerul batch a invocat artefacte de aplica\u0163ie batch relevante.
+exception.executing.job.useraction=Examina\u0163i istoricele de job ale execu\u0163iei joburilor asociate pentru a determina cauza e\u015fu\u0103rii.  Aceasta ar putea implica depanarea aplica\u0163iei dumneavoastr\u0103.
+
+#{0} The exception that occurred
+exception.after.job=CWWKY0034I: A ap\u0103rut o excep\u0163ie la executarea por\u0163iunii finale a jobului.\n\
+''{0}''
+exception.after.job.explanation=Ar putea fi o eroare de aplica\u0163ie. A ap\u0103rut o excep\u0163ie \u00een timpul execut\u0103rii por\u0163iunii finale a jobului (de ex. includerea metodei JobListener afterJob()), dup\u0103 ce containerul batch a invocat artefacte de aplica\u0163ie batch relevante.
+exception.after.job.useraction=Examina\u0163i istoricele de job ale jobului asociat pentru a determina cauza e\u015fecului.  Aceasta ar putea implica depanarea aplica\u0163iei dumneavoastr\u0103.
+
+#{0} The exception that occurred
+error.persisting.jobExecution=CWWKY0035I: A ap\u0103rut o excep\u0163ie la \u00eencercarea de a persista starea de execu\u0163ie a jobului \u015fi datele asociate.\n\
+''{0}''
+error.persisting.jobExecution.explanation=Dac\u0103 acest lucru se \u00eent\u00e2mpl\u0103, \u00een mod normal starea jobului final nu este persistat\u0103 corect \u00een baza de date, iar starea batch-ului ar putea r\u0103m\u00e2ne ag\u0103\u0163at\u0103 \u00eentr-o stare STARTED \u00een ciuda faptului c\u0103 nu se mai execut\u0103. Aceasta ar putea interfera cu o \u00eencercare de repornire cauz\u00e2nd erori de inconsisten\u0163\u0103 a st\u0103rii dup\u0103 repornire.
+error.persisting.jobExecution.useraction=Asigura\u0163i-v\u0103 c\u0103 baza de date este configurat\u0103 corect \u015fi este conectat\u0103.   Dup\u0103 ce face\u0163i aceasta, dac\u0103 este necesar pute\u0163i reporni serverul executor (server pe care se execut\u0103 job), ceea ce va declan\u015fa recuperarea \u015fi va marca joburile \u015fi pa\u015fii asocia\u0163i ca FAILED, astfel \u00eenc\u00e2t s\u0103 se poat\u0103 face cu succes o repornire a jobului.
+
+#{0} The invalid job instance id.
+#{1} The persistence exception.
+error.invalid.persisted.job.id=CWWKY0036E: Valoare invalid\u0103 de ID instan\u0163\u0103 de job {0} generat\u0103 ca valoare de cheie primar\u0103 pentru o tabel\u0103 de batch. Valoarea de ID trebuie s\u0103 fie un num\u0103r \u00eentreg pozitiv.\n\
+{1}
+error.invalid.persisted.job.id.explanation=Execu\u0163ia jobului a e\u015fuat deoarece a fost generat un ID invalid \u00eentr-o tabel\u0103 de batch. Un ID de batch trebuie s\u0103 fie un num\u0103r \u00eentreg pozitiv.
+error.invalid.persisted.job.id.useraction=Asigura\u0163i-v\u0103 c\u0103 defini\u0163ia de tabel\u0103 de baz\u0103 de date de batch utilizat\u0103 permite numai numere \u00eentregi pozitive pentru valorile de ID-uri utilizate ca chei primare.
+
+#{0} The invalid execution id.
+#{1} The persistence exception.
+error.invalid.persisted.exe.id=CWWKY0037E: Valoare invalid\u0103 de ID execu\u0163ie de job {0} generat\u0103 ca valoare de cheie primar\u0103 pentru o tabel\u0103 de batch. Valoarea de ID trebuie s\u0103 fie un num\u0103r \u00eentreg pozitiv.\n\
+{1}
+error.invalid.persisted.exe.id.explanation=Execu\u0163ia jobului a e\u015fuat deoarece a fost generat un ID invalid \u00eentr-o tabel\u0103 de batch. Un ID de batch trebuie s\u0103 fie un num\u0103r \u00eentreg pozitiv.
+error.invalid.persisted.exe.id.useraction=Asigura\u0163i-v\u0103 c\u0103 defini\u0163ia de tabel\u0103 de baz\u0103 de date de batch utilizat\u0103 permite numai numere \u00eentregi pozitive pentru valorile de ID-uri utilizate ca chei primare.
+
+#{0} The invalid step execution id.
+#{1} The persistence exception.
+error.invalid.persisted.step.id=CWWKY0038E: Valoare invalid\u0103 de ID execu\u0163ie de pas {0} enerat\u0103 ca valoare de cheie primar\u0103 pentru o tabel\u0103 de batch. Valoarea de ID trebuie s\u0103 fie un num\u0103r \u00eentreg pozitiv.\n\
+{1}
+error.invalid.persisted.step.id.explanation=Execu\u0163ia jobului a e\u015fuat deoarece a fost generat un ID invalid \u00eentr-o tabel\u0103 de batch. Un ID de batch trebuie s\u0103 fie un num\u0103r \u00eentreg pozitiv.
+error.invalid.persisted.step.id.useraction=Asigura\u0163i-v\u0103 c\u0103 defini\u0163ia de tabel\u0103 de baz\u0103 de date de batch utilizat\u0103 permite numai numere \u00eentregi pozitive pentru valorile de ID-uri utilizate ca chei primare.
+
+partition.recovery.failed=CWWKY0039W: Serviciul de recuperare a jobului batch nu a putut corecta starea batch pentru parti\u0163ia {0} care a rulat anterior \u015fi care a fost terminat\u0103. Corec\u0163ia a e\u015fuat din cauza excep\u0163iei {1}.
+partition.recovery.failed.explanation=Serviciul de recuperare job batch, care corecteaz\u0103 starea parti\u0163iilor care rulau c\u00e2nd o instan\u0163\u0103 anterioar\u0103 a acestui server s-a terminat anormal.
+partition.recovery.failed.useraction=Adresa\u0163i-v\u0103 cauzei excep\u0163iei, dac\u0103 este posibil, \u015fi reporni\u0163i serverul pentru a rula din nou serviciul de recuperare joburi de batch.
+
+info.batch.events.publish.topic=CWWKY0040I: Runtime-ul de batch va publica evenimente \u00een root-ul de subiecte JMS {0}.
+info.batch.events.publish.topic.explanation=Informativ. Runtime-ul de batch va publica evenimente \u00een root-ul de subiecte JMS listate.
+info.batch.events.publish.topic.useraction=Root-ul de subiecte JMS poate fi modificat. Verifica\u0163i op\u0163iunile configurate care sunt utilizate pentru batchJmsEvents.
+
+cdi.ambiguous.artifact.names=CWWKY0041W: Containerul de batch ruleaz\u0103 cu o caracteristic\u0103 activ\u0103 CDI, dar motorul CDI nu a putut \u00eenc\u0103rca artefactul de batch ca bean gestionat de CDI \u015fi realizeaz\u0103 alte injec\u0163ii CDI. Aceast\u0103 problem\u0103 ar putea fi cauzat\u0103 de o adnotare definit\u0103 de bean lips\u0103 cum ar fi @Dependent, un mod neinten\u0163ionat de descoperire bean sau o valoare 'ref' ambigu\u0103.
+cdi.ambiguous.artifact.names.explanation=C\u00e2nd runtime-ul de batch \u00eencarc\u0103 artefacte utiliz\u00e2nd motorul CDI, sunt injectate propriet\u0103\u0163ile de batch (@BatchProperty) \u015fi contextele de batch (JobContext \u015fi StepContext) \u015fi sunt f\u0103cute disponibile toate capabilit\u0103\u0163ile de CDI. Aceste capabilit\u0103\u0163i includ injec\u0163ia altor bean-uri gestionate, \u00een concordan\u0163\u0103 cu calificativele \u015fi toate celelalte caracteristici ale modelului de programare CDI. C\u00e2nd runtime-ul de batch \u00eencarc\u0103 artefactele f\u0103r\u0103 utilizarea motorului de CDI, el injecteaz\u0103 numai propriet\u0103\u0163ile \u015fi contextele de batch. \u00centruc\u00e2t nu exist\u0103 un bean gestionat de CDI \u00een aceast\u0103 cale, nu sunt disponibile nicio alt\u0103 injec\u0163ie sau alt\u0103 caracteristic\u0103 ale modelului de programare CDI \u00een acel artefact de batch. Acest mesaj indic\u0103 faptul c\u0103, de\u015fi serverul este configurat astfel \u00eenc\u00e2t caracteristica CDI s\u0103 fie activ\u0103, artefactul de batch nu poate fi \u00eenc\u0103rcat ca bean gestionat de CDI deoarece valoarea atributului 'ref' care corespunde acestei referin\u0163e de artefact \u00een XML nu indic\u0103 un singur, neambiguu bean gestionat de CDI.
+cdi.ambiguous.artifact.names.useraction=Ad\u0103uga\u0163i adnotarea @Dependent sau alt\u0103 adnotare de definire bean potrivit\u0103 la artefactul dumneavoastr\u0103 de batch. Sau, pute\u0163i seta modul de descoperire de bean la 'all' \u00een fi\u015fierul beans.xml, de\u015fi aceast\u0103 solu\u0163ie poate \u00eencetini aplica\u0163ia dumneavoastr\u0103. Dac\u0103 nu sunt necesare toate artefactele ambigue, pute\u0163i de asemenea s\u0103 \u00eenl\u0103tura\u0163i atributele 'ref' ambigue din aplica\u0163ie, astfel \u00eenc\u00e2t s\u0103 r\u0103m\u00e2n\u0103 numai o singur\u0103 referin\u0163\u0103, neambigu\u0103.

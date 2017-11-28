@@ -1,0 +1,141 @@
+###############################################################################
+# Copyright (c) 2002, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT WebSphere kernel transport http channel
+#CMVCPATHNAME com.ibm.ws.transport.http/resources/com/ibm/ws/http/channel/internal/resources/httpchannelmessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+config.maxpersist=CWWKT0001E: Num\u0103rul maxim de cereri ({0}) permis per socket nu este valid. Valorile valide includ {1} pentru nelimitat sau orice num\u0103r pozitiv.
+config.maxpersist.explanation=Valoarea configurat\u0103 pentru num\u0103rul maxim de cereri permise pe socket nu este valid\u0103.
+config.maxpersist.useraction=Configura\u0163i o valoare valid\u0103 pentru num\u0103rul maxim de cereri permise pe socket.
+
+config.incomingbody=CWWKT0002E: Dimensiunea buffer de intrare {0} nu este valid\u0103. Dimensiunile trebuie s\u0103 fie \u00eentre {1} \u015fi {2}.
+config.incomingbody.explanation=Valoarea configurat\u0103 pentru dimensiunea buffer-ului de intrare nu este valid\u0103.
+config.incomingbody.useraction=Configura\u0163i o valoare valid\u0103 pentru dimensiunea buffer-ului de intrare.
+
+config.incomingheader=CWWKT0003E: Dimensiunea buffer header {0} nu este valid\u0103. Dimensiunile trebuie s\u0103 fie \u00eentre {1} \u015fi {2}.
+config.incomingheader.explanation=Valoarea configurat\u0103 pentru dimensiunea buffer-ului header nu este valid\u0103.
+config.incomingheader.useraction=Configura\u0163i o valoare valid\u0103 pentru dimensiunea buffer-ului header.
+
+config.outgoingbuffer=CWWKT0004E: Dimensiunea buffer de ie\u015fire {0} nu este valid\u0103. Dimensiunile trebuie s\u0103 fie \u00eentre {1} \u015fi {2}.
+config.outgoingbuffer.explanation=Valoarea configurat\u0103 pentru dimensiunea buffer-ului de ie\u015fire nu este valid\u0103.
+config.outgoingbuffer.useraction=Configura\u0163i o valoare valid\u0103 pentru dimensiunea buffer-ului de ie\u015fire.
+
+config.persisttimeout=CWWKT0005E: Timeout-ul persistent {0} nu este valid. Timeout-urile trebuie s\u0103 fie mai mari de {1}.
+config.persisttimeout.explanation=Valoarea configurat\u0103 pentru parametrul timeout persistent nu este valid\u0103.
+config.persisttimeout.useraction=Configura\u0163i o valoare valid\u0103 pentru parametrul timeout persistent.
+
+config.readtimeout=CWWKT0006E: Timeout-ul de citire {0} nu este valid. Timeout-urile trebuie s\u0103 fie mai mari de {1}.
+config.readtimeout.explanation=Valoarea configurat\u0103 pentru parametrul timeout citire nu este valid\u0103.
+config.readtimeout.useraction=Configura\u0163i o valoare valid\u0103 pentru parametrul timeout citire.
+
+config.writetimeout=CWWKT0007E: Timeout-ul de scriere {0} nu este valid. Timeout-urile trebuie s\u0103 fie mai mari de {1}.
+config.writetimeout.explanation=Valoarea configurat\u0103 pentru parametrul timeout scriere nu este valid\u0103.
+config.writetimeout.useraction=Configura\u0163i o valoare valid\u0103 pentru parametrul timeout scriere.
+
+config.fieldsize=CWWKT0008E: Limita dimensiunii c\u00e2mpului {0} nu este valid\u0103. Dimensiunea trebuie s\u0103 fie \u00eentre {1} \u015fi {2}.
+config.fieldsize.explanation=Valoarea configurat\u0103 pentru limita dimensiunii c\u00e2mpului nu este valid\u0103.
+config.fieldsize.useraction=Configura\u0163i o valoare valid\u0103 pentru limita dimensiunii c\u00e2mpului.
+
+config.numheaders=CWWKT0009E: Limita num\u0103rului de anteturi {0} nu este valid\u0103. Dimensiunea trebuie s\u0103 fie \u00eentre {1} \u015fi {2}.
+config.numheaders.explanation=Valoarea configurat\u0103 pentru limita num\u0103rului de anteturi nu este valid\u0103.
+config.numheaders.useraction=Configura\u0163i o valoare valid\u0103 pentru limita num\u0103rului de anteturi.
+
+config.incomingbodymaxsize=CWWKT0010E: Num\u0103rul maxim de octe\u0163i pentru corpul unui mesaj de intrare {0} nu este valid. Aceast\u0103 dimensiune trebuie s\u0103 fie mai mare sau egal\u0103 cu {1}.
+config.incomingbodymaxsize.explanation=Valoarea configurat\u0103 pentru num\u0103rul maxim de octe\u0163i pentru corpul unui mesaj de intrare nu este valid.
+config.incomingbodymaxsize.useraction=Configura\u0163i o valoare valid\u0103 pentru num\u0103rul maxim de octe\u0163i pentru corpul unui mesaj de intrare.
+
+NO_DEFAULT_CONFIGURATION=CWWKT0011W: Nu poate s\u0103 g\u0103seasc\u0103 o configura\u0163ie implicit\u0103 pentru {0} utiliz\u00e2nd ID-ul {1}
+NO_DEFAULT_CONFIGURATION.explanation=Configura\u0163ia implicit\u0103 specificat\u0103 nu poate fi g\u0103sit\u0103 pentru ID-ul specificat.
+NO_DEFAULT_CONFIGURATION.useraction=Verifica\u0163i configura\u0163ia serverului, apoi realiza\u0163i o repornire de cur\u0103\u0163are.
+
+DEFAULT_OPTIONS_ERROR=CWWKT0012E: A ap\u0103rut o eroare intern\u0103. Nu se poate crea configura\u0163ia implicit\u0103. Excep\u0163ia {0}
+DEFAULT_OPTIONS_ERROR.explanation=CMSG0001
+DEFAULT_OPTIONS_ERROR.useraction=CMSG0002
+
+DEFAULT_ENDPOINT_ERROR=CWWKT0013E: A ap\u0103rut o eroare intern\u0103. Nu se poate crea punctul final implicit. Excep\u0163ia {0}
+DEFAULT_ENDPOINT_ERROR.explanation=CMSG0001
+DEFAULT_ENDPOINT_ERROR.useraction=CMSG0002
+
+DEFAULT_VHOST_ERROR=CWWKT0014E: A ap\u0103rut o eroare intern\u0103. Nu se poate crea gazda virtual\u0103 implicit\u0103.  Excep\u0163ia {0}
+DEFAULT_VHOST_ERROR.explanation=CMSG0001
+DEFAULT_VHOST_ERROR.useraction=CMSG0002
+
+missingPorts.endpointDisabled=CWWKT0015W: Nu a fost configurat niciun port pentru punctul final {0}. Punctul final a fost dezactivat.
+missingPorts.endpointDisabled.explanation=Un punct final HTTP necesit\u0103 configurarea a cel pu\u0163in un port.
+missingPorts.endpointDisabled.useraction=Atribui\u0163i o valoare de port valid\u0103 pentru httpPort sau httpsPort sau ambele.
+
+context.root.added=CWWKT0016I: Aplica\u0163ie Web disponibil\u0103 ({0}): {1}
+context.root.added.explanation=Acest mesaj este pur informativ.
+context.root.added.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+context.root.removed=CWWKT0017I: Aplica\u0163ie Web \u00eenl\u0103turat\u0103 ({0}): {1}
+context.root.removed.explanation=Acest mesaj este pur informativ.
+context.root.removed.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+Missing.App.Or.Context.Root=CWWKT0018E: Nu a fost g\u0103sit\u0103 r\u0103d\u0103cina de context sau aplica\u0163ia pentru aceast\u0103 cerere: {0}
+Missing.App.Or.Context.Root.explanation=Cererea nu poate fi manipulat\u0103 de o aplica\u0163ie pe server.
+Missing.App.Or.Context.Root.useraction=Asigura\u0163i-v\u0103 c\u0103 aplica\u0163ia este definit\u0103 \u015fi implementat\u0103 \u015fi c\u0103 clientul a f\u0103cut referirea corect.
+
+#Cannot remove above due to service rules, but we do not need a message key as this is never logged
+#only output to the browser on our 404 page - removing it means we give away less server implementation info
+Missing.App.Or.Context.Root.No.Error.Code=Nu a fost g\u0103sit\u0103 r\u0103d\u0103cina de context sau aplica\u0163ia pentru aceast\u0103 cerere: {0}
+Missing.App.Or.Context.Root.No.Error.Code.explanation=Cererea nu poate fi manipulat\u0103 de o aplica\u0163ie pe server.
+Missing.App.Or.Context.Root.No.Error.Code.useraction=Asigura\u0163i-v\u0103 c\u0103 aplica\u0163ia este definit\u0103 \u015fi implementat\u0103 \u015fi c\u0103 clientul a f\u0103cut referirea corect.
+
+config.httpChain.error=CWWKT0019E: A ap\u0103rut o problem\u0103 \u00een timpul configur\u0103rii punctului final {0}: {1}.
+config.httpChain.error.explanation=Punctul final HTTP nu a putut fi pornit datorit\u0103 unei probleme de configurare.
+config.httpChain.error.useraction=Examina\u0163i mesajul \u015fi istoricele de excep\u0163ii pentru erori \u00eenrudite. 
+
+start.httpChain.error=CWWKT0020E: A ap\u0103rut o problem\u0103 \u00een timpul pornirii punctului final {0}: {1}.
+start.httpChain.error.explanation=Punctul final HTTP nu a putut fi pornit datorit\u0103 unei probleme nea\u015fteptate. 
+start.httpChain.error.useraction=Examina\u0163i mesajul \u015fi istoricele de excep\u0163ii pentru erori \u00eenrudite. 
+
+httpChain.error.shutdown=CWWKT0021I: Serverul se opre\u015fte din cauza unei posibile erori de configurare. \
+Punctul final {0} nu poate fi pornit; asta s-ar putea \u00eent\u00e2mpla dac\u0103 portul configurat este deja \u00een uz.
+httpChain.error.shutdown.explanation=Punctul final HTTP a fost configurat cu onError=FAIL, ceea ce face ca serverul s\u0103 se opreasc\u0103 dac\u0103 exist\u0103 o problem\u0103 cu pornirea punctului final. 
+httpChain.error.shutdown.useraction=Examina\u0163i mesajul \u015fi istoricele de excep\u0163ii pentru erori \u00eenrudite. \
+Pentru a \u00eempiedica serverul s\u0103 se opreasc\u0103 datorit\u0103 unei probleme la pornirea punctului final, asigura\u0163i-v\u0103 c\u0103 onError este setat la WARN sau IGNORE.
+
+unresolveableHost=CWWKT0022E: Gazda configurat\u0103 {0} pentru punctul final HTTP {1} nu a putut fi rezolvat\u0103. Punctul final a fost dezactivat.
+unresolveableHost.explanation=Un punct final HTTP necesit\u0103 o valoare de gazd\u0103 care poate fi rezolvat\u0103 \u00eentr-o interfa\u0163\u0103 activ\u0103 de re\u0163ea.
+unresolveableHost.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea gazdei se refer\u0103 la o interfa\u0163\u0103 activ\u0103 de re\u0163ea, sau utiliza\u0163i * pentru legare la toate interfe\u0163ele.
+
+unresolveableDefaultHost=CWWKT0023W: defaultHostName configurat {0} nu a putut fi rezolvat, utiliz\u00e2nd \u00een loc localhost.
+unresolveableDefaultHost.explanation=Variabila defaultHostName specific\u0103 o valoare de gazd\u0103 care nu ar putea fi rezolvat\u0103 \u00eentr-o interfa\u0163\u0103 activ\u0103 de re\u0163ea.
+unresolveableDefaultHost.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea configurat\u0103 defaultHostName se refer\u0103 la o interfa\u0163\u0103 activ\u0103 de re\u0163ea.
+
+defaultHostDisabled=CWWKT0024W: Gazda implicit\u0103 virtual\u0103 (default_host) nu a putut fi dezactivat\u0103.
+defaultHostDisabled.explanation=Gazda implicit\u0103 virtual\u0103 este cerut\u0103 de mediul de runtime. 
+defaultHostDisabled.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+noHostAliases=CWWKT0025W: Gazda virtual\u0103 {0} nu are niciun alias gazd\u0103 configurat, nu va primi cereri de intrare.
+noHostAliases.explanation=Toate gazdele virtuale care nu sunt implicite trebuie s\u0103 defineasc\u0103 cel pu\u0163in un alias gazd\u0103 (host:port) pentru a identifica cererile de intrare care ar trebui rutate la acea gazd\u0103 virtual\u0103. \
+Gazda virtual\u0103 specificat\u0103 nu are definit niciun alias gazd\u0103, ceea ce va \u00eempiedica rutarea oric\u0103rei cereri la ea.
+noHostAliases.useraction=Actualiza\u0163i elementul virtualHost element \u00een fi\u015fierul server.xml pentru a defini cel pu\u0163in un atribut hostAlias.
+
+invalidAlias=CWWKT0026W: Un alias gazd\u0103 configurat pentru gazda virtual\u0103 {0} este invalid \u015fi va fi ignorat. {1}
+invalidAlias.explanation=Aliasul configurat de gazd\u0103 con\u0163ine caractere invalide sau sintax\u0103 care este incorect\u0103.
+invalidAlias.useraction=Actualiza\u0163i elementul gazd\u0103 virtual\u0103 \u00een fi\u015fierul server.xml fie corecta\u0163i sau \u00eenl\u0103tura\u0163i aliasul invalid de gazd\u0103. Observa\u0163i c\u0103 adresele IPv6 trebuie s\u0103 fie \u00eentre [].
+
+wildcardReason=Metacaracterul * nu poate fi combinat cu alte caractere \u00een aliasul de gazd\u0103.
+badHostPortReason=Gazda specificat\u0103 nu este o adres\u0103 valid\u0103 IP sau un nume de gazd\u0103, sau portul specificat nu este un num\u0103r \u00eentreg.
+
+duplicateAlias=CWWKT0027W: Aliasul gazd\u0103 {0} pentru gazda virtual\u0103 {1} este \u00een conflict cu un alias existent de gazd\u0103 \u015fi va fi ignorat.
+duplicateAlias.explanation=Aliasul gazd\u0103 specificat este \u00een conflict cu un alias existent de gazd\u0103.
+duplicateAlias.useraction=Asigura\u0163i-v\u0103 c\u0103 toate aliasurile gazd\u0103 definite ca elemente de gazde virtuale din fi\u015fierul server.xml sunt unice.
+
+context.root.changed=CWWKT0028I: Aplica\u0163ie Web mutat\u0103 ({0}): {1}
+context.root.changed.explanation=Acest mesaj este pur informativ.
+context.root.changed.useraction=Nu este necesar\u0103 nicio ac\u0163iune.

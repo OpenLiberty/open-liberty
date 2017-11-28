@@ -1,0 +1,62 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.filemonitor/resources/com/ibm/ws/kernel/filemonitor/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0400 - 0499 com.ibm.ws.kernel.filemonitor.internal.resources.FileMonitorMessages
+# -------------------------------------------------------------------------------------------------
+
+badFilter=CWWKE0400W: A megadott param\u00e9ter nem egy \u00e9rv\u00e9nyes f\u00e1jln\u00e9vsz\u0171r\u0151t hat\u00e1roz meg. {0} = {1}
+badFilter.explanation=A megadott konfigur\u00e1ci\u00f3s param\u00e9ter \u00e9rt\u00e9ke nem volt \u00e1talak\u00edthat\u00f3 egy karaktersorozat \u00e9rt\u00e9kre.
+badFilter.useraction=Ellen\u0151rizze a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban megadott \u00e9rt\u00e9ket.
+
+badInterval=CWWKE0401W: A megadott param\u00e9ter nem egy \u00e9rv\u00e9nyes megfigyel\u00e9si id\u0151tartamot \u00e1br\u00e1zol. {0} = {1}
+badInterval.explanation=A megadott konfigur\u00e1ci\u00f3s param\u00e9ter \u00e9rt\u00e9ke nem \u00e9rtelmezhet\u0151 megfigyel\u00e9si id\u0151tartamk\u00e9nt.
+badInterval.useraction=Ellen\u0151rizze a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban megadott \u00e9rt\u00e9ket, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00e9rt\u00e9k egy \u00e9rv\u00e9nyes megfigyel\u00e9si id\u0151tartam. \
+P\u00e9ld\u00e1ul: 1s - egy m\u00e1sodperc. \
+Az \u00e9rv\u00e9nyes egys\u00e9gek: ms=ezredm\u00e1sodperc, s=m\u00e1sodperc, m=perc, h=\u00f3ra.
+
+## unused as of 8.5.0.1
+badDiskCache=CWWKE0402W: A megadott gyors\u00edt\u00f3t\u00e1r hely nem foglalhat\u00f3 le, \u00edgy a megfigyelt f\u00e1jlok minden inform\u00e1ci\u00f3ja a mem\u00f3ri\u00e1ban lesz t\u00e1rolva. {0} = {1}
+badDiskCache.explanation=A szolg\u00e1ltat\u00e1s nem tudott l\u00e9trehozni egy gyors\u00edt\u00f3t\u00e1r helyet a megfigyelt er\u0151forr\u00e1sok k\u00e9szlete sz\u00e1m\u00e1ra.
+badDiskCache.useraction=Ellen\u0151rizze, hogy rendelkezik-e \u00edr\u00e1si hozz\u00e1f\u00e9r\u00e9ssel a kiszolg\u00e1l\u00f3 k\u00f6nyvt\u00e1rhoz \u00e9s munkater\u00fclethez.
+
+createMonitorException=CWWKE0403W: Kiv\u00e9tel t\u00f6rt\u00e9nt a figyel\u0151 l\u00e9trehoz\u00e1sakor a k\u00f6vetkez\u0151h\u00f6z: {0}. A megfigyel\u00e9s az adott er\u0151forr\u00e1shoz tiltott. A kiv\u00e9tel \u00fczenet: {1}
+createMonitorException.explanation=V\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt a figyel\u0151 l\u00e9trehoz\u00e1sa k\u00f6zben a megadott er\u0151forr\u00e1shoz. Az er\u0151forr\u00e1s nem lesz megfigyelve. 
+createMonitorException.useraction=Ellen\u0151rizze, hogy rendelkezik olvas\u00e1si hozz\u00e1f\u00e9r\u00e9ssel a megadott er\u0151forr\u00e1shoz. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+
+## unreachable in 8.5 GM -- cache file never used
+UNABLE_TO_DELETE_CACHE_FILE=CWWKE0404E: A(z) {0} gyors\u00edt\u00f3t\u00e1r f\u00e1jl nem t\u00f6r\u00f6lhet\u0151.
+UNABLE_TO_DELETE_CACHE_FILE.explanation=A szolg\u00e1ltat\u00e1s nem tudott t\u00f6r\u00f6lni egy gyors\u00edt\u00f3t\u00e1r helyet a megfigyelt er\u0151forr\u00e1sok k\u00e9szlete sz\u00e1m\u00e1ra.
+UNABLE_TO_DELETE_CACHE_FILE.useraction=Ellen\u0151rizze, hogy rendelkezik-e \u00edr\u00e1si hozz\u00e1f\u00e9r\u00e9ssel a kiszolg\u00e1l\u00f3 k\u00f6nyvt\u00e1rhoz \u00e9s munkater\u00fclethez.
+
+fileMonitorException=CWWKE0405W: Kiv\u00e9tel t\u00f6rt\u00e9nt a figyel\u0151 \u00e9rtes\u00edt\u00e9sekor az al\u00e1bbi f\u00e1jll\u00e9trehoz\u00e1sokr\u00f3l, -m\u00f3dos\u00edt\u00e1sokr\u00f3l \u00e9s -t\u00f6rl\u00e9sekr\u0151l: {0}, {1}, {2}. A figyel\u0151oszt\u00e1ly: {3}. A kiv\u00e9tel \u00fczenet: {4}
+fileMonitorException.explanation=V\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt a figyel\u0151 l\u00e9trehoz\u00e1sa k\u00f6zben a megadott er\u0151forr\u00e1shoz. 
+fileMonitorException.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
+
+fileMonitorDisabled=CWWKE0406W: T\u00f6bb, mint {0} kiv\u00e9tel t\u00f6rt\u00e9nt a figyel\u0151 \u00e9rtes\u00edt\u00e9se sor\u00e1n a v\u00e1ltoz\u00e1sokr\u00f3l. A figyel\u0151oszt\u00e1ly: {1}. A FileMonitor le lett tiltva. 
+fileMonitorDisabled.explanation=T\u00fal sok egym\u00e1st k\u00f6vet\u0151 kiv\u00e9tel t\u00f6rt\u00e9nt a megadott er\u0151forr\u00e1s figyel\u0151j\u00e9nek \u00e9rtes\u00edt\u00e9sekor. Az er\u0151forr\u00e1s ezut\u00e1n nem lesz megfigyelve. 
+fileMonitorDisabled.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9teleket \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczeneteket.

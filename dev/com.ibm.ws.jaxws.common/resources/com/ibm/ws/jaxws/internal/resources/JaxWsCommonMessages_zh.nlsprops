@@ -1,0 +1,206 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxws.common/resources/com/ibm/ws/jaxws/internal/resources/JaxWsCommonMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXWS Common Code
+#RANGE 0000 - 0099
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# Deployment Descriptor validation messages ------------------------
+
+warn.service.ref.dd.service.interface.not.set=CWWKW0000W: \u90e8\u7f72\u63cf\u8ff0\u7b26\u5b9a\u4e49\u4e86 service-ref \u5143\u7d20 {0}\uff0c\u8be5\u5143\u7d20\u672a\u5305\u542b service-interface \u5143\u7d20\u3002\u56e0\u6b64\uff0c\u670d\u52a1\u5f15\u7528\u4f1a\u88ab\u5ffd\u7565\u3002
+warn.service.ref.dd.service.interface.not.set.explanation=service-ref \u5143\u7d20\u5fc5\u987b\u5305\u542b service-interface \u5143\u7d20\u3002
+warn.service.ref.dd.service.interface.not.set.useraction=\u8bf7\u6dfb\u52a0 service-interface \u5143\u7d20\u5e76\u91cd\u65b0\u90e8\u7f72\u5e94\u7528\u7a0b\u5e8f\u3002
+
+warn.service.ref.dd.service.interface.class.not.found=CWWKW0001W: \u90e8\u7f72\u63cf\u8ff0\u7b26\u5b9a\u4e49\u4e86 service-ref \u5143\u7d20 {0}\uff0c\u4f46\u627e\u4e0d\u5230 service-interface \u5143\u7d20\u4e2d\u6307\u5b9a\u7684\u7c7b {1}\u3002\u56e0\u6b64\uff0c\u670d\u52a1\u5f15\u7528\u4f1a\u88ab\u5ffd\u7565\u3002
+warn.service.ref.dd.service.interface.class.not.found.explanation=service-interface \u5143\u7d20\u6307\u5b9a\u4e86\u65e0\u6cd5\u627e\u5230\u6216\u88c5\u5165\u7684\u7c7b\u3002
+warn.service.ref.dd.service.interface.class.not.found.useraction=\u8bf7\u786e\u4fdd\u8be5\u7c7b\u5728\u5e94\u7528\u7a0b\u5e8f\u7c7b\u8def\u5f84\u4e2d\u3002
+
+warn.service.ref.dd.service.interface.wrong.value=CWWKW0002W: \u90e8\u7f72\u63cf\u8ff0\u7b26\u5b9a\u4e49\u4e86 service-ref \u5143\u7d20 {0}\uff0c\u4f46 service-interface \u5143\u7d20\u4e2d\u6307\u5b9a\u7684\u7c7b {1} \u5e76\u975e javax.xml.ws.Service \u7c7b\u7684\u5b50\u7c7b\u3002\u56e0\u6b64\uff0c\u670d\u52a1\u5f15\u7528\u4f1a\u88ab\u5ffd\u7565\u3002
+warn.service.ref.dd.service.interface.wrong.value.explanation=service-interface \u5143\u7d20\u5fc5\u987b\u6307\u5b9a javax.xml.ws.Service \u7c7b\u7684\u5b50\u7c7b\u3002
+warn.service.ref.dd.service.interface.wrong.value.useraction=\u8bf7\u5728 service-interface \u5143\u7d20\u4e2d\u6307\u5b9a javax.xml.ws.Service \u7c7b\u7684\u5b50\u7c7b\u3002
+
+# Merge mismatch check messages ------------------------------------
+
+error.service.interface.mismatch.for.member=CWWKW0003E: {2} \u7c7b\u4e2d\u7684 {1} \u6210\u5458\u4e0a\u7684 {0} \u670d\u52a1\u5f15\u7528\u6307\u5b9a\u4e86 {3} service-interface \u7c7b\u3002\u4f46\u662f\uff0c\u6307\u5b9a\u4e86 {4} service-interface \u7c7b\u7684\u6b64\u670d\u52a1\u5f15\u7528\u5b58\u5728\u5176\u4ed6\u5143\u6570\u636e\u3002
+error.service.interface.mismatch.for.member.explanation=\u5728\u591a\u4e2a\u4f4d\u7f6e\u5bf9\u76f8\u540c\u670d\u52a1\u5f15\u7528\u58f0\u660e\u7684 service-interface \u7c7b\u5fc5\u987b\u76f8\u540c\u3002 
+error.service.interface.mismatch.for.member.useraction=\u8bf7\u66f4\u6b63\u670d\u52a1\u5f15\u7528\u4ee5\u6807\u8bc6\u76f8\u540c\u7684 service-interface \u7c7b\u3002
+
+error.service.interface.mismatch.for.class=CWWKW0004E: \u7c7b\u7ea7\u522b\u670d\u52a1\u5f15\u7528 {0} \u6307\u5b9a\u4e86 {1} service-interface \u7c7b\u3002\u4f46\u662f\uff0c\u6307\u5b9a\u4e86 {2} service-interface \u7c7b\u7684\u6b64\u670d\u52a1\u5f15\u7528\u5b58\u5728\u5176\u4ed6\u5143\u6570\u636e\u3002
+error.service.interface.mismatch.for.class.explanation=\u5728\u591a\u4e2a\u4f4d\u7f6e\u5bf9\u76f8\u540c\u670d\u52a1\u5f15\u7528\u58f0\u660e\u7684 service-interface \u7c7b\u5fc5\u987b\u76f8\u540c\u3002 
+error.service.interface.mismatch.for.class.useraction=\u8bf7\u66f4\u6b63\u670d\u52a1\u5f15\u7528\u4ee5\u6807\u8bc6\u76f8\u540c\u7684 service-interface \u7c7b\u3002
+
+error.service.ref.type.mismatch.for.member=CWWKW0005E: {2} \u7c7b\u4e2d\u7684 {1} \u6210\u5458\u4e0a\u7684 {0} \u670d\u52a1\u5f15\u7528\u6307\u5b9a\u4e86 {3} service-ref-type \u7c7b\u3002\u4f46\u662f\uff0c\u6307\u5b9a\u4e86 {4} service-ref-type \u7c7b\u7684\u6b64\u670d\u52a1\u5f15\u7528\u5b58\u5728\u5176\u4ed6\u5143\u6570\u636e\u3002
+error.service.ref.type.mismatch.for.member.explanation=\u5728\u591a\u4e2a\u4f4d\u7f6e\u5bf9\u76f8\u540c\u670d\u52a1\u5f15\u7528\u58f0\u660e\u7684 service-ref-type \u7c7b\u5fc5\u987b\u76f8\u540c\u3002 
+error.service.ref.type.mismatch.for.member.useraction=\u8bf7\u66f4\u6b63\u670d\u52a1\u5f15\u7528\u4ee5\u6807\u8bc6\u76f8\u540c\u7684 service-ref-type \u7c7b\u3002
+
+error.service.ref.type.mismatch.for.class=CWWKW0006E: \u7c7b\u7ea7\u522b\u670d\u52a1\u5f15\u7528 {0} \u6307\u5b9a\u4e86 {1} service-ref-type \u7c7b\u3002\u4f46\u662f\uff0c\u6307\u5b9a\u4e86 {2} service-ref-type \u7c7b\u7684\u6b64\u670d\u52a1\u5f15\u7528\u5b58\u5728\u5176\u4ed6\u5143\u6570\u636e\u3002
+error.service.ref.type.mismatch.for.class.explanation=\u5728\u591a\u4e2a\u4f4d\u7f6e\u5bf9\u76f8\u540c\u670d\u52a1\u5f15\u7528\u58f0\u660e\u7684 service-ref-type \u7c7b\u5fc5\u987b\u76f8\u540c\u3002 
+error.service.ref.type.mismatch.for.class.useraction=\u8bf7\u66f4\u6b63\u670d\u52a1\u5f15\u7528\u4ee5\u6807\u8bc6\u76f8\u540c\u7684 service-ref-type \u7c7b\u3002
+
+# Merge validation messages ------------------------------------------
+
+error.service.ref.class.level.merge.service.ref.type.absent=CWWKW0007E: \u5728 {0} \u7c7b\u4e0a\u53d1\u73b0 @WebServiceRef \u6216 @Resource \u6ce8\u91ca\uff0c\u4f46\u65e0\u6cd5\u6807\u8bc6\u7c7b\u578b\u5c5e\u6027\u3002
+error.service.ref.class.level.merge.service.ref.type.absent.explanation=\u5982\u679c\u5728\u7c7b\u7ea7\u522b\u53d1\u73b0 @WebServiceRef \u6216 @Resource \u6ce8\u91ca\uff0c\u90a3\u4e48\u5fc5\u987b\u6807\u8bc6\u7c7b\u578b\u5c5e\u6027\u3002\u5fc5\u987b\u5728 @WebServiceRef \u6ce8\u91ca\u5185\u6216\u901a\u8fc7\u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u7684 service-ref-type \u5143\u7d20\u6307\u5b9a\u7c7b\u578b\u5c5e\u6027\u3002
+error.service.ref.class.level.merge.service.ref.type.absent.useraction=\u8bf7\u6307\u5b9a\u6240\u7f3a\u7c7b\u578b\u5c5e\u6027\u3002
+
+error.service.ref.class.level.merge.service.interface.wrong.value=CWWKW0008E: \u5728 {0} \u7c7b\u4e0a\u53d1\u73b0 @WebServiceRef \u6216 @Resource \u6ce8\u91ca\uff0c\u4f46\u6807\u8bc6\u7684\u503c\u5c5e\u6027\u4e3a {1} \u7c7b\uff0c\u5b83\u4e0d\u662f javax.xml.ws.Service \u7684\u5b50\u7c7b\u3002
+error.service.ref.class.level.merge.service.interface.wrong.value.explanation=\u503c\u5c5e\u6027\u5fc5\u987b\u662f javax.xml.ws.Service \u7c7b\u7684\u5b50\u7c7b\uff0c\u9664\u975e\u6807\u8bc6\u7684\u7c7b\u578b\u5c5e\u6027\u6307\u793a\u670d\u52a1\u7aef\u70b9\u63a5\u53e3 (SEI) \u6ce8\u5165\u3002\u53ef\u5728\u6ce8\u91ca\u5185\u6216\u901a\u8fc7\u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u7684 service-interface \u5143\u7d20\u6307\u5b9a\u503c\u5c5e\u6027\u3002
+error.service.ref.class.level.merge.service.interface.wrong.value.useraction=\u8bf7\u6307\u5b9a javax.xml.ws.Service \u7c7b\u7684\u5b50\u7c7b\u3002
+
+error.service.ref.class.level.merge.service.interface.and.service.ref.type.not.same=CWWKW0009E: \u5728 {0} \u7c7b\u4e0a\u53d1\u73b0 @WebServiceRef \u6216 @Resource \u6ce8\u91ca\uff0c\u4f46\u6807\u8bc6\u7684\u7c7b\u578b\u548c\u503c\u5c5e\u6027\u5e76\u975e\u76f8\u540c\u7c7b\u3002
+error.service.ref.class.level.merge.service.interface.and.service.ref.type.not.same.explanation=\u5982\u679c\u6ce8\u91ca\u6307\u793a\u670d\u52a1\u7c7b\u578b\u6ce8\u5165\uff0c\u5e76\u4e14\u503c\u5c5e\u6027\u672a\u6307\u5b9a javax.xml.ws.Service \u7c7b\uff0c\u90a3\u4e48\u7c7b\u578b\u548c\u503c\u5c5e\u6027\u5fc5\u987b\u4e3a\u76f8\u540c\u7c7b\u3002\u53ef\u5728\u6ce8\u91ca\u5185\u6216\u901a\u8fc7\u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u7684 service-interface \u5143\u7d20\u6307\u5b9a\u503c\u5c5e\u6027\uff0c\u5e76\u5728 @WebServiceRef \u6ce8\u91ca\u5185\u6216\u901a\u8fc7\u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u7684 service-ref-type \u5143\u7d20\u6307\u5b9a\u7c7b\u578b\u5c5e\u6027\u3002
+error.service.ref.class.level.merge.service.interface.and.service.ref.type.not.same.useraction=\u5bf9\u503c\u548c\u7c7b\u578b\u5c5e\u6027\u6307\u5b9a\u76f8\u540c\u7c7b\u3002
+
+error.service.ref.member.level.merge.service.ref.type.not.inferred=CWWKW0010E: \u5728 {1} \u7c7b\u4e2d\u7684 {0} \u6210\u5458\u4e0a\u53d1\u73b0 @WebServiceRef \u6216 @Resource \u6ce8\u91ca\uff0c\u4f46\u65e0\u6cd5\u6839\u636e\u7c7b\u6210\u5458\u7c7b\u578b\u6216\u7c7b\u578b\u5c5e\u6027\u63a8\u65ad\u6ce8\u5165\u7c7b\u578b\u3002
+error.service.ref.member.level.merge.service.ref.type.not.inferred.explanation=\u5982\u679c\u7c7b\u6210\u5458\u7c7b\u578b\u4e3a\u201c\u5bf9\u8c61\u201d\uff0c\u90a3\u4e48\u5fc5\u987b\u6307\u5b9a\u7c7b\u578b\u5c5e\u6027\u5e76\u4e14\u8be5\u5c5e\u6027\u4e0d\u80fd\u4e3a\u201c\u5bf9\u8c61\u201d\u3002\u53ef\u5728 @WebServiceRef \u6ce8\u91ca\u5185\u6216\u901a\u8fc7\u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u7684 service-ref-type \u5143\u7d20\u6307\u5b9a\u7c7b\u6210\u5458\u7c7b\u578b\u3002
+error.service.ref.member.level.merge.service.ref.type.not.inferred.useraction=\u8bf7\u6307\u5b9a\u201c\u5bf9\u8c61\u201d\u4ee5\u5916\u7684\u7c7b\u578b\u5c5e\u6027\u3002
+
+error.service.ref.member.level.merge.service.ref.type.not.compatible=CWWKW0011E: \u5728 {1} \u7c7b\u4e2d\u7684 {0} \u6210\u5458\u4e0a\u53d1\u73b0 @WebServiceRef \u6216 @Resource \u6ce8\u91ca\uff0c\u4f46\u6807\u8bc6\u7684\u7c7b\u578b\u5c5e\u6027\u4e3a {2} \u7c7b\uff0c\u5b83\u4e0e\u6ce8\u91ca\u7684\u6210\u5458\u7684 {3} \u7c7b\u4e0d\u517c\u5bb9\u3002
+error.service.ref.member.level.merge.service.ref.type.not.compatible.explanation=\u7c7b\u578b\u5c5e\u6027\u5fc5\u987b\u4e0e\u7c7b\u6210\u5458\u7c7b\u578b\u517c\u5bb9\u3002\u53ef\u5728 @WebServiceRef \u6ce8\u91ca\u5185\u6216\u901a\u8fc7\u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u7684 service-ref-type \u5143\u7d20\u6307\u5b9a\u7c7b\u578b\u5c5e\u6027\u3002
+error.service.ref.member.level.merge.service.ref.type.not.compatible.useraction=\u8bf7\u6307\u5b9a\u4e0e\u7c7b\u6210\u5458\u7c7b\u578b\u517c\u5bb9\u7684\u76f8\u5e94\u7c7b\u578b\u5c5e\u6027\u3002
+
+error.service.ref.member.level.merge.service.interface.wrong.value=CWWKW0012E: \u5728 {1} \u7c7b\u4e2d\u7684 {0} \u6210\u5458\u4e0a\u53d1\u73b0 @WebServiceRef \u6216 @Resource \u6ce8\u91ca\uff0c\u4f46\u6807\u8bc6\u7684\u503c\u5c5e\u6027\u4e3a {2} \u7c7b\uff0c\u5b83\u4e0d\u662f javax.xml.ws.Service \u7684\u5b50\u7c7b\u3002
+error.service.ref.member.level.merge.service.interface.wrong.value.explanation=\u503c\u5c5e\u6027\u5fc5\u987b\u662f javax.xml.ws.Service \u7c7b\u7684\u5b50\u7c7b\uff0c\u9664\u975e\u6807\u8bc6\u7684\u7c7b\u578b\u5c5e\u6027\u6307\u793a\u670d\u52a1\u7aef\u70b9\u63a5\u53e3 (SEI) \u6ce8\u5165\u3002\u53ef\u5728\u6ce8\u91ca\u5185\u6216\u901a\u8fc7\u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u7684 service-interface \u5143\u7d20\u6307\u5b9a\u503c\u5c5e\u6027\u3002
+error.service.ref.member.level.merge.service.interface.wrong.value.useraction=\u8bf7\u6307\u5b9a javax.xml.ws.Service \u7c7b\u7684\u5b50\u7c7b\u3002
+
+error.service.ref.member.level.merge.service.interface.and.service.ref.type.not.same=CWWKW0013E: \u5728 {1} \u7c7b\u4e2d\u7684 {0} \u6210\u5458\u4e0a\u53d1\u73b0 @WebServiceRef \u6216 @Resource \u6ce8\u91ca\uff0c\u4f46\u6807\u8bc6\u7684\u7c7b\u578b\u548c\u503c\u5c5e\u6027\u5e76\u975e\u76f8\u540c\u7c7b\u3002
+error.service.ref.member.level.merge.service.interface.and.service.ref.type.not.same.explanation=\u5982\u679c\u6ce8\u91ca\u6307\u793a\u670d\u52a1\u7c7b\u578b\u6ce8\u5165\uff0c\u5e76\u4e14\u503c\u5c5e\u6027\u672a\u6307\u5b9a javax.xml.ws.Service \u7c7b\uff0c\u90a3\u4e48\u7c7b\u578b\u548c\u503c\u5c5e\u6027\u5fc5\u987b\u4e3a\u76f8\u540c\u7c7b\u3002\u53ef\u5728\u6ce8\u91ca\u5185\u6216\u901a\u8fc7\u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u7684 service-interface \u5143\u7d20\u6307\u5b9a\u503c\u5c5e\u6027\uff0c\u5e76\u5728 @WebServiceRef \u6ce8\u91ca\u5185\u6216\u901a\u8fc7\u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u7684 service-ref-type \u5143\u7d20\u6307\u5b9a\u7c7b\u578b\u5c5e\u6027\u3002
+error.service.ref.member.level.merge.service.interface.and.service.ref.type.not.same.useraction=\u5bf9\u503c\u548c\u7c7b\u578b\u5c5e\u6027\u6307\u5b9a\u76f8\u540c\u7c7b\u3002
+
+# Annotation validation messages ----------------------------------------
+
+error.service.ref.annotation.lookup.redundant.attributes=CWWKW0014E: \u9664\u4e86\u5176\u4ed6\u5c5e\u6027\u5916\uff0c@WebServiceRef \u6ce8\u91ca\u8fd8\u9519\u8bef\u5730\u6307\u5b9a\u4e86\u67e5\u627e\u5c5e\u6027\u3002
+error.service.ref.annotation.lookup.redundant.attributes.explanation=\u5982\u679c\u6307\u5b9a\u4e86 @WebServiceRef \u6ce8\u91ca\u7684\u67e5\u627e\u5c5e\u6027\uff0c\u90a3\u4e48\u4e0d\u5141\u8bb8\u6307\u5b9a\u4efb\u4f55\u5176\u4ed6\u5c5e\u6027\u3002
+error.service.ref.annotation.lookup.redundant.attributes.useraction=\u8bf7\u9664\u53bb\u67e5\u627e\u5c5e\u6027\u6216\u5176\u4ed6\u5c5e\u6027\u3002
+
+error.service.ref.class.level.annotation.name.or.type.absent=CWWKW0015E: {0} \u7c7b\u4e0a\u7684 @WebServiceRef \u6ce8\u91ca\u672a\u6307\u5b9a\u540d\u79f0\u6216\u7c7b\u578b\u5c5e\u6027\u7684\u503c\u3002
+error.service.ref.class.level.annotation.name.or.type.absent.explanation=\u5982\u679c\u5728\u7c7b\u7ea7\u522b\u53d1\u73b0 @WebServiceRef \u6ce8\u91ca\uff0c\u90a3\u4e48\u5fc5\u987b\u6307\u5b9a\u540d\u79f0\u548c\u7c7b\u578b\u5c5e\u6027\u3002
+error.service.ref.class.level.annotation.name.or.type.absent.useraction=\u8bf7\u6307\u5b9a\u6240\u7f3a\u540d\u79f0\u6216\u7c7b\u578b\u5c5e\u6027\u3002
+
+error.service.ref.class.level.annotation.wrong.value=CWWKW0016E: \u5728 {0} \u7c7b\u4e0a\u53d1\u73b0 @WebServiceRef \u6ce8\u91ca\u3002\u4f46\u662f\uff0c\u672a\u6307\u5b9a\u503c\u5c5e\u6027\u6216\u5728 javax.xml.ws.Service \u7c7b\u7684\u5b50\u7c7b\u4ee5\u5916\u7684 {1} \u7c7b\u4e0a\u6307\u5b9a\u4e86\u503c\u5c5e\u6027\u3002
+error.service.ref.class.level.annotation.wrong.value.explanation=@WebServiceRef \u6ce8\u91ca\u7684\u503c\u5c5e\u6027\u5fc5\u987b\u6307\u5b9a javax.xml.ws.Service \u7c7b\u7684\u5b50\u7c7b\uff0c\u9664\u975e\u7c7b\u578b\u5c5e\u6027\u6307\u793a\u670d\u52a1\u7aef\u70b9\u63a5\u53e3 (SEI) \u6ce8\u5165\u3002
+error.service.ref.class.level.annotation.wrong.value.useraction=\u5bf9\u503c\u5c5e\u6027\u6307\u5b9a javax.xml.ws.Service \u7c7b\u7684\u5b50\u7c7b\u3002
+
+error.service.ref.class.level.annotation.value.and.type.not.same=CWWKW0017E: \u5728 {0} \u7c7b\u4e0a\u53d1\u73b0 @WebServiceRef \u6ce8\u91ca\uff0c\u4f46\u7c7b\u578b\u548c\u503c\u5c5e\u6027\u672a\u6307\u5b9a\u76f8\u540c\u7c7b\u3002
+error.service.ref.class.level.annotation.value.and.type.not.same.explanation=\u5982\u679c @WebServiceRef \u6ce8\u91ca\u6307\u793a\u670d\u52a1\u7c7b\u578b\u6ce8\u5165\uff0c\u5e76\u4e14\u503c\u5c5e\u6027\u672a\u6307\u5b9a javax.xml.ws.Service \u7c7b\uff0c\u90a3\u4e48\u7c7b\u578b\u548c\u503c\u5c5e\u6027\u6307\u5b9a\u7684\u7c7b\u5fc5\u987b\u76f8\u540c\u3002
+error.service.ref.class.level.annotation.value.and.type.not.same.useraction=\u5bf9\u503c\u548c\u7c7b\u578b\u5c5e\u6027\u6307\u5b9a\u76f8\u540c\u7c7b\u3002
+
+error.service.ref.member.level.annotation.wrong.method.name=CWWKW0018E: \u5728 {1} \u7c7b\u4e2d\u7684 {0} \u65b9\u6cd5\u4e0a\u53d1\u73b0 @WebServiceRef \u6ce8\u91ca\uff0c\u4f46\u65b9\u6cd5\u540d\u672a\u9075\u5faa\u6807\u51c6 JavaBeans \u7ea6\u5b9a\u3002
+error.service.ref.member.level.annotation.wrong.method.name.explanation=\u5bf9\u4e8e JAX-WS \u670d\u52a1\u5f15\u7528\uff0c\u5982\u679c\u5728\u65b9\u6cd5\u4e0a\u6307\u5b9a\u4e86 @WebServiceRef \u6ce8\u91ca\uff0c\u90a3\u4e48\u65b9\u6cd5\u540d\u5fc5\u987b\u9075\u5faa\u6807\u51c6 JavaBeans \u7ea6\u5b9a\uff0c\u4f8b\u5982\uff0csetHelloWorld \u6216 getHelloWorld\u3002
+error.service.ref.member.level.annotation.wrong.method.name.useraction=\u8bf7\u786e\u4fdd\u65b9\u6cd5\u540d\u9075\u5faa\u6807\u51c6 JavaBeans \u7ea6\u5b9a\u3002
+
+error.service.ref.member.level.annotation.type.not.inferred=CWWKW0019E: \u5728 {1} \u7c7b\u4e2d\u7684 {0} \u6210\u5458\u4e0a\u53d1\u73b0 @WebServiceRef \u6ce8\u91ca\uff0c\u4f46\u65e0\u6cd5\u6839\u636e\u7c7b\u578b\u5c5e\u6027\u6216\u7c7b\u6210\u5458\u7c7b\u578b\u63a8\u65ad\u6ce8\u5165\u7c7b\u578b\u3002
+error.service.ref.member.level.annotation.type.not.inferred.explanation=\u5982\u679c\u7c7b\u6210\u5458\u7c7b\u578b\u4e3a\u201c\u5bf9\u8c61\u201d\uff0c\u90a3\u4e48\u5fc5\u987b\u6307\u5b9a @WebServiceRef \u6ce8\u91ca\u7684\u7c7b\u578b\u5c5e\u6027\u5e76\u4e14\u8be5\u5c5e\u6027\u4e0d\u80fd\u4e3a\u201c\u5bf9\u8c61\u201d\u3002
+error.service.ref.member.level.annotation.type.not.inferred.useraction=\u8bf7\u6307\u5b9a\u201c\u5bf9\u8c61\u201d\u4ee5\u5916\u7684\u7c7b\u578b\u5c5e\u6027\u3002
+
+error.service.ref.member.level.annotation.type.not.compatible=CWWKW0020E: \u5728 {1} \u7c7b\u4e2d\u7684 {0} \u6210\u5458\u4e0a\u53d1\u73b0 @WebServiceRef \u6ce8\u91ca\uff0c\u4f46\u7c7b\u578b\u5c5e\u6027\u4e2d\u6307\u5b9a\u7684 {2} \u7c7b\u4e0e\u6ce8\u91ca\u7684\u6210\u5458\u7684 {3} \u7c7b\u4e0d\u517c\u5bb9\u3002
+error.service.ref.member.level.annotation.type.not.compatible.explanation=\u7c7b\u578b\u5c5e\u6027\u5fc5\u987b\u4e0e\u7c7b\u6210\u5458\u7c7b\u578b\u517c\u5bb9\u3002
+error.service.ref.member.level.annotation.type.not.compatible.useraction=\u8bf7\u786e\u4fdd\u7c7b\u578b\u5c5e\u6027\u4e0e\u7c7b\u6210\u5458\u7c7b\u578b\u517c\u5bb9\u3002
+
+error.service.ref.member.level.annotation.wrong.value=CWWKW0021E: \u5728 {1} \u7c7b\u4e2d\u7684 {0} \u6210\u5458\u4e0a\u53d1\u73b0 @WebServiceRef \u6ce8\u91ca\u3002\u4f46\u662f\uff0c\u672a\u6307\u5b9a\u503c\u5c5e\u6027\u6216\u5728 javax.xml.ws.Service \u7c7b\u7684\u5b50\u7c7b\u4ee5\u5916\u7684 {2} \u7c7b\u4e0a\u6307\u5b9a\u4e86\u503c\u5c5e\u6027\u3002
+error.service.ref.member.level.annotation.wrong.value.explanation=@WebServiceRef \u6ce8\u91ca\u7684\u503c\u5c5e\u6027\u5fc5\u987b\u6307\u5b9a javax.xml.ws.Service \u7c7b\u7684\u5b50\u7c7b\uff0c\u9664\u975e\u7c7b\u578b\u5c5e\u6027\u6307\u793a\u670d\u52a1\u7aef\u70b9\u63a5\u53e3 (SEI) \u6ce8\u5165\u3002
+error.service.ref.member.level.annotation.wrong.value.useraction=\u5bf9\u503c\u5c5e\u6027\u6307\u5b9a javax.xml.ws.Service \u7c7b\u7684\u5b50\u7c7b\u3002
+
+error.service.ref.member.level.annotation.value.and.type.not.same=CWWKW0022E: \u5728 {1} \u7c7b\u4e2d\u7684 {0} \u6210\u5458\u4e0a\u53d1\u73b0 @WebServiceRef \u6ce8\u91ca\uff0c\u4f46\u7c7b\u578b\u548c\u503c\u5c5e\u6027\u672a\u6307\u5b9a\u76f8\u540c\u7c7b\u3002
+error.service.ref.member.level.annotation.value.and.type.not.same.explanation=\u5982\u679c @WebServiceRef \u6ce8\u91ca\u6307\u793a\u670d\u52a1\u7c7b\u578b\u6ce8\u5165\uff0c\u5e76\u4e14\u503c\u5c5e\u6027\u672a\u6307\u5b9a javax.xml.ws.Service \u7c7b\uff0c\u90a3\u4e48\u7c7b\u578b\u548c\u503c\u5c5e\u6027\u6307\u5b9a\u7684\u7c7b\u5fc5\u987b\u76f8\u540c\u3002
+error.service.ref.member.level.annotation.value.and.type.not.same.useraction=\u5bf9\u503c\u548c\u7c7b\u578b\u5c5e\u6027\u6307\u5b9a\u76f8\u540c\u7c7b\u3002
+
+
+#{0}=handlerChain file name
+error.no.handlerChainFile.found=CWWKW0030E: \u627e\u4e0d\u5230\u5904\u7406\u7a0b\u5e8f\u94fe\u5b9a\u4e49\u6587\u4ef6 {0}\u3002
+error.no.handlerChainFile.found.explanation=\u5728 handlerChain \u6ce8\u91ca\u7684\u6587\u4ef6\u5c5e\u6027\u4e2d\u627e\u4e0d\u5230\u5904\u7406\u7a0b\u5e8f\u94fe\u5b9a\u4e49\u6587\u4ef6\u3002
+error.no.handlerChainFile.found.useraction=\u8bf7\u6307\u5b9a\u73b0\u6709\u5904\u7406\u7a0b\u5e8f\u94fe\u5b9a\u4e49\u6587\u4ef6\u7684\u8def\u5f84\u3002\u8be5\u8def\u5f84\u53ef\u4ee5\u662f\u7edd\u5bf9\u6587\u4ef6\u8def\u5f84\u6216\u76f8\u5bf9\u4e8e\u4f7f\u7528 handlerChain \u6ce8\u91ca\u8fdb\u884c\u6ce8\u91ca\u7684\u7c7b\u7684\u8def\u5f84\u3002
+
+#{0}=handlerChain file content
+error.invalid.handlerChainFile.content=CWWKW0031E: handlerChain \u6587\u4ef6\u7684\u6839\u5143\u7d20\u65e0\u6548\uff1a{0}\u3002
+error.invalid.handlerChainFile.content.explanation=\u6839\u5143\u7d20\u7684\u547d\u540d\u7a7a\u95f4\u4e0d\u7b49\u4e8e\u201chttp://java.sun.com/xml/ns/javaee\u201d\uff0c\u6216\u6839\u5143\u7d20\u7684\u5c40\u90e8\u540d\u4e0d\u7b49\u4e8e\u201chandler-chain\u201d\u3002
+error.invalid.handlerChainFile.content.useraction=\u8bf7\u5c06\u6839\u5143\u7d20\u7684\u547d\u540d\u7a7a\u95f4\u4fee\u6539\u4e3a\u201chttp://java.sun.com/xml/ns/javaee\u201d\u6216\u5c06\u6839\u5143\u7d20\u7684\u5c40\u90e8\u540d\u4fee\u6539\u4e3a\u201chandler-chain\u201d\uff0c\u7136\u540e\u91cd\u8bd5\u3002
+
+#{0}=the unknown exception
+error.unknown.exception=CWWKW0032E: \u65e0\u6cd5\u89e3\u6790\u5904\u7406\u7a0b\u5e8f\u94fe\u6587\u4ef6\uff0c\u56e0\u4e3a\u53d1\u751f\u5f02\u5e38 {0}\u3002
+error.unknown.exception.explanation=\u89e3\u6790\u5904\u7406\u7a0b\u5e8f\u94fe\u6587\u4ef6\u65f6\u9047\u5230\u610f\u5916\u5f02\u5e38\u3002
+error.unknown.exception.useraction=\u8bf7\u9a8c\u8bc1\u5904\u7406\u7a0b\u5e8f\u6587\u4ef6\u7684\u683c\u5f0f\u662f\u5426\u6b63\u786e\uff0c\u5e76\u68c0\u67e5\u670d\u52a1\u5668\u7684\u76f8\u5e94 logs/ffdc \u76ee\u5f55\u4e2d\u7684 ffdc \u65e5\u5fd7\u4ee5\u4e86\u89e3\u66f4\u591a\u8be6\u7ec6\u4fe1\u606f\u3002
+
+#{0}=the qualified name of the class which the handlerChain annotation is on.
+error.handlerChain.annotation.without.file=CWWKW0033E: \u7c7b {0} \u4e0a\u7684 handlerChain \u6ce8\u91ca\u6ca1\u6709\u6587\u4ef6\u5c5e\u6027\u3002
+error.handlerChain.annotation.without.file.explanation=handlerChain \u6ce8\u91ca\u4e2d\u9700\u8981\u6587\u4ef6\u5c5e\u6027\u3002
+error.handlerChain.annotation.without.file.useraction=\u8bf7\u5728 handlerChain \u6ce8\u91ca\u4e2d\u6307\u5b9a\u76f8\u5e94\u6587\u4ef6\u540d\u3002
+
+#{0}=the IOException exception
+warn.catalog.load.exception=CWWKW0034E: \u65e0\u6cd5\u88c5\u5165 JAX-WS \u76ee\u5f55\u6587\u4ef6\uff0c\u56e0\u4e3a\u53d1\u751f\u5f02\u5e38 {0}\u3002
+warn.catalog.load.exception.explanation=\u88c5\u5165\u76ee\u5f55\u6587\u4ef6\u65f6\u53d1\u751f IOException\u3002
+warn.catalog.load.exception.useraction=\u8bf7\u786e\u4fdd JAX-WS \u76ee\u5f55\u6587\u4ef6\u5b58\u5728\u5e76\u4e14\u5176\u8bed\u6cd5\u7b26\u5408 XML \u76ee\u5f55\u89c4\u8303\u3002
+
+#{0}=service impl class
+warn.no.wsdl.generate=CWWKW0035E: \u5b9e\u73b0\u7c7b {0} \u672a\u5305\u542b wsdlLocation \u6216 SOAP/1.1 \u6ce8\u91ca\u3002\u56e0\u6b64\uff0c\u65e0\u6cd5\u751f\u6210 WSDL \u5b9a\u4e49\u3002
+warn.no.wsdl.generate.explanation=Web Service \u672a\u5305\u542b wsdlLocation \u6216 SOAP/1.1 \u6ce8\u91ca\u3002
+warn.no.wsdl.generate.useraction=\u8bf7\u5bf9 Web Service \u6307\u5b9a wsdlLocation \u6216 SOAP/1.1 \u6ce8\u91ca\u3002
+
+#{0}=IOException_message
+error.write.wsdl.stream=CWWKW0036E: \u65e0\u6cd5\u5c06\u5b8c\u6574 WSDL \u5b9a\u4e49\u5199\u81f3\u6d41\uff0c\u56e0\u4e3a {0}\u3002
+error.write.wsdl.stream.explanation=\u5c06\u5b8c\u6574 WSDL \u5b9a\u4e49\u5199\u81f3\u6d41\u65f6\u53d1\u751f IOException\u3002
+error.write.wsdl.stream.useraction=\u8bf7\u5bf9 Web Service \u6307\u5b9a wsdlLocation \u6216 SOAP/1.1 \u6ce8\u91ca\u3002
+
+
+error.no.wsdl.per.specification=CWWKW0037E: \u65e0\u6cd5\u751f\u6210\u7b26\u5408 JAX-WS 2.2 \u89c4\u8303\u7684 WSDL\u3002
+error.no.wsdl.per.specification.explanation=Web Service \u672a\u5305\u542b wsdlLocation \u6216 SOAP/1.1 \u6ce8\u91ca\u3002
+error.no.wsdl.per.specification.useraction=\u8bf7\u5bf9 Web Service \u6307\u5b9a wsdlLocation \u6216 SOAP/1.1 \u6ce8\u91ca\u3002
+
+#reuse CWWKW0038~50!
+
+#{0}=the exception message
+warn.could.not.create.handler=CWWKW0051W: \u65e0\u6cd5\u521b\u5efa\u5904\u7406\u7a0b\u5e8f\uff0c\u56e0\u4e3a {0}\u3002
+warn.could.not.create.handler.explanation=\u65e0\u6cd5\u521b\u5efa\u6216\u521d\u59cb\u5316\u5904\u7406\u7a0b\u5e8f\u3002
+warn.could.not.create.handler.useraction=\u8bf7\u786e\u4fdd\u5904\u7406\u7a0b\u5e8f\u7c7b\u5728\u5e94\u7528\u7a0b\u5e8f\u7684\u7c7b\u8def\u5f84\u4e2d\u6216\u5904\u7406\u7a0b\u5e8f\u7c7b\u63d0\u4f9b\u7a7a\u6784\u9020\u51fd\u6570\u3002
+
+#{0}=the handler class name
+#{1}=the exception message
+warn.invoke.handler.predestory=CWWKW0052W: \u672a\u80fd\u8c03\u7528\u5904\u7406\u7a0b\u5e8f {0} \u7684 preDestory \u65b9\u6cd5\uff0c\u56e0\u4e3a {1}\u3002
+warn.invoke.handler.predestory.explanation=preDestory \u65b9\u6cd5\u7684\u8fd4\u56de\u7c7b\u578b\u5fc5\u987b\u4e3a\u7a7a\uff0c\u5e76\u4e14\u5fc5\u987b\u91ca\u653e\u5904\u7406\u7a0b\u5e8f\u4f7f\u7528\u7684\u8d44\u6e90\u3002
+warn.invoke.handler.predestory.useraction=\u8bf7\u786e\u4fdd preDestory \u65b9\u6cd5\u7684\u8fd4\u56de\u7c7b\u578b\u4e3a\u7a7a\uff0c\u5e76\u4e14\u5904\u7406\u7a0b\u5e8f\u7c7b\u4f7f\u7528\u7684\u6240\u6709\u8d44\u6e90\u5df2\u91ca\u653e\u3002\u6709\u5173\u66f4\u591a\u8be6\u7ec6\u4fe1\u606f\uff0c\u8bf7\u68c0\u67e5 server_name/logs/ffdc \u76ee\u5f55\u4e2d\u7684\u65e5\u5fd7\u6587\u4ef6\u3002
+
+#{0}=service class name
+err.unable.set.serviceclass=CWWKW0053E: \u672a\u6b63\u786e\u8bbe\u7f6e\u670d\u52a1\u7c7b {0}\u3002
+err.unable.set.serviceclass.explanation=\u5e94\u7528\u7a0b\u5e8f\u7684\u7c7b\u8def\u5f84\u4e2d\u627e\u4e0d\u5230\u8be5\u670d\u52a1\u7c7b\u3002
+err.unable.set.serviceclass.useraction=\u8bf7\u786e\u4fdd\u8be5\u670d\u52a1\u7c7b\u5728\u5e94\u7528\u7a0b\u5e8f\u7684\u7c7b\u8def\u5f84\u4e2d\u3002
+
+#reuse CWWKW0054~55!
+
+#{0}=the Web service implement class name
+#{1}=the WSDL location
+warn.endpoint.absolute.wsdllocation=CWWKW0056W: Web service \u5b9e\u73b0\u7c7b {0} \u901a\u8fc7\u6ce8\u91ca\u6216\u90e8\u7f72\u8ba1\u5212\u5f15\u7528\u7edd\u5bf9 WSDL \u4f4d\u7f6e {1}\u3002\u6839\u636e JAX-WS \u89c4\u8303\uff0c\u4e0d\u5141\u8bb8\u5728 @WebService \u6216 @WebServiceProvider \u6ce8\u91ca\u4e2d\u4f7f\u7528\u7edd\u5bf9 WSDL \u5f15\u7528\u3002
+warn.endpoint.absolute.wsdllocation.explanation=\u5fc5\u987b\u4e3a WSDL \u4f4d\u7f6e\u4f7f\u7528\u76f8\u5bf9 URL\uff0c\u76f8\u5bf9 URL \u4e0d\u4f1a\u5f3a\u5236 JAX-WS \u5b9e\u73b0\u68c0\u7d22\u8fdc\u7a0b\u4f4d\u7f6e\u3002
+warn.endpoint.absolute.wsdllocation.useraction=\u901a\u8fc7\u6ce8\u91ca\u6216\u90e8\u7f72\u8ba1\u5212\u5c06 WSDL \u4f4d\u7f6e\u66f4\u65b0\u4e3a\u76f8\u5bf9 URL\u3002
+
+#{0}=the value of wsdlLocation 
+#{1}=the implementation class
+error.no.wsdl.find=CWWKW0057E: \u627e\u4e0d\u5230\u5bf9\u5b9e\u73b0\u7c7b {1} \u6307\u5b9a\u7684 WSDL \u6587\u4ef6 {0}\u3002
+error.no.wsdl.find.explanation=\u627e\u4e0d\u5230\u5bf9\u5b9e\u73b0\u7c7b\u6307\u5b9a\u7684 WSDL \u6587\u4ef6\u3002
+error.no.wsdl.find.useraction=\u8bf7\u5bf9 Web Service \u6307\u5b9a\u73b0\u6709 WSDL \u6587\u4ef6\u3002
+
+#{0}=the specified binding type
+#{1}=the port component name
+#{2}=the WSDL document
+error.endpointinfo.validation.bindingtype.and.wsdl.mismatch=CWWKW0058E: \u6307\u5b9a\u7684\u7ed1\u5b9a\u7c7b\u578b {0} \u4e0e WSDL \u6587\u6863 {1} \u4e2d\u7684\u7ed1\u5b9a\u7c7b\u578b\u4e0d\u5339\u914d\u3002
+error.endpointinfo.validation.bindingtype.and.wsdl.mismatch.explanation=\u5982\u679c\u8be5\u7ed1\u5b9a\u7c7b\u578b\u662f\u4f7f\u7528 BindingType \u6ce8\u91ca\u6216\u901a\u8fc7\u90e8\u7f72\u63cf\u8ff0\u7b26\u6307\u5b9a\u7684\uff0c\u90a3\u4e48\u5176\u503c\u5fc5\u987b\u4e0e WSDL \u6587\u6863\u4e2d\u7684\u7ed1\u5b9a\u7c7b\u578b\u76f8\u5339\u914d\u3002
+error.endpointinfo.validation.bindingtype.and.wsdl.mismatch.useraction=\u8bf7\u66f4\u65b0\u7ed1\u5b9a\u7c7b\u578b\u7684\u503c\u4ee5\u4e0e WSDL \u6587\u6863\u4e2d\u7684\u7ed1\u5b9a\u7c7b\u578b\u76f8\u5339\u914d\u3002
+
+#{0}=name of JMX operation
+err.unsupported.jmx.operation=CWWKW0059E: \u4e0d\u652f\u6301\u64cd\u4f5c {0}\u3002
+err.unsupported.jmx.operation.explanation=\u4e0d\u5141\u8bb8\u6267\u884c\u6240\u9700\u7684\u64cd\u4f5c\u3002
+err.unsupported.jmx.operation.useraction=\u4e0d\u8981\u8fd0\u884c\u4e0d\u53d7\u652f\u6301\u7684\u64cd\u4f5c\u3002

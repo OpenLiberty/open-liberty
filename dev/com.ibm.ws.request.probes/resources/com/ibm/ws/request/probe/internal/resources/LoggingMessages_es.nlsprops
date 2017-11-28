@@ -1,0 +1,30 @@
+###############################################################################
+# Copyright (c) 2014, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.request.probe/resources/com/ibm/ws/request/probe/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+# Messages in the range TRAS3200 to 3399 are reserved for this messages file.
+# The list of prefixes and the range of messages in use (or "reserved") are shown in 
+# http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+
+# updated the old TRAS0116E to TRAS3200E
+INSTR_INST_NOT_AVAILABLE_ERROR=TRAS3200E: La instancia de instrumentaci\u00f3n Java no est\u00e1 disponible, por lo tanto las prestaciones de supervisi\u00f3n y diagn\u00f3stico no funcionan. Configure el archivo ws-javaagent.jar con la opci\u00f3n de JVM -javaagent.
+INSTR_INST_NOT_AVAILABLE_ERROR.explanation=La instancia de instrumentaci\u00f3n es necesaria para transformar clases inyectando c\u00f3digo de bytes. La inyecci\u00f3n de c\u00f3digo de bytes la utiliza Liberty para generar informaci\u00f3n de supervisi\u00f3n y diagn\u00f3stico.
+INSTR_INST_NOT_AVAILABLE_ERROR.useraction=Para habilitar la instrumentaci\u00f3n Java son necesarios valores de JVM adicionales. Configure el archivo ws-javaagent.jar con la opci\u00f3n de JVM-javaagent. El archivo ws-javaagent.jar es el directorio ${wlp.install.dir}/bin/tools de la instalaci\u00f3n de perfil de Liberty.
+
+REQUEST_PROBE_FORMAT_HEADER_DURATION=Duraci\u00f3n
+REQUEST_PROBE_FORMAT_HEADER_OPERATION=Operaci\u00f3n 

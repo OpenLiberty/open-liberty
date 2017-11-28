@@ -1,0 +1,196 @@
+###############################################################################
+# Copyright (c) 2011, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWNEN (Injection Engine)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME com.ibm.ws.injection/resources/com/ibm/ws/osgi/internal/resources/EJBContainerMessages.nlsprops
+#COMPONENTPREFIX CNTR
+#COMPONENTNAMEFOR CNTR EJB Container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# NOTE: CNTR4000-CNTR4999 are reserved for use in this message file. All other
+#       CNTR ranges are reserved by com/ibm/ejs/container/container.nlsprops
+#
+#  		CNTR4000-CNTR4099 - general EJB messages
+#       CNTR4100+ - Metadata messages
+#-------------------------------------------------------------------------------
+
+STARTING_MODULE_CNTR4000I=CNTR4000I: Spou\u0161t\u00ed se modul EJB {0} v aplikaci {1}.
+STARTING_MODULE_CNTR4000I.explanation=Server spou\u0161t\u00ed modul EJB.
+STARTING_MODULE_CNTR4000I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+STARTED_MODULE_CNTR4001I=CNTR4001I: Modul EJB {0} v aplikaci {1} byl \u00fasp\u011b\u0161n\u011b spu\u0161t\u011bn.
+STARTED_MODULE_CNTR4001I.explanation=Server spustil modul EJB.
+STARTED_MODULE_CNTR4001I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+ERROR_STARTING_MODULE_CNTR4002E=CNTR4002E: Modul EJB {0} v aplikaci {1} se nepoda\u0159ilo spustit. V\u00fdjimka: {2}
+ERROR_STARTING_MODULE_CNTR4002E.explanation=Serveru se nepoda\u0159ilo spustit modul EJB.
+ERROR_STARTING_MODULE_CNTR4002E.useraction=Pomoc\u00ed informac\u00ed o v\u00fdjimce identifikujte zdroj probl\u00e9mu vy\u0159e\u0161te jej. Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+STOPPING_MODULE_CNTR4003I=CNTR4003I: Prob\u00edh\u00e1 ukon\u010den\u00ed modulu EJB {0} v aplikaci {1}.
+STOPPING_MODULE_CNTR4003I.explanation=Server ukon\u010duje modul EJB.
+STOPPING_MODULE_CNTR4003I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+STOPPED_MODULE_CNTR4004I=CNTR4004I: Modul EJB {0} v aplikaci {1} byl \u00fasp\u011b\u0161n\u011b zastaven.
+STOPPED_MODULE_CNTR4004I.explanation=Server zastavit modul EJB.
+STOPPED_MODULE_CNTR4004I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+ERROR_STOPPING_MODULE_CNTR4005E=CNTR4005E: Modul EJB {0} v aplikaci {1} se nepoda\u0159ilo zastavit. V\u00fdjimka: {2}
+ERROR_STOPPING_MODULE_CNTR4005E.explanation=Serveru se nepoda\u0159ilo zastavit modul EJB.
+ERROR_STOPPING_MODULE_CNTR4005E.useraction=Pomoc\u00ed informac\u00ed o v\u00fdjimce identifikujte zdroj probl\u00e9mu vy\u0159e\u0161te jej. Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_STARTING_EJB_CNTR4006E=CNTR4006E: Objekt enterprise bean {0} v modulu {1} aplikace {2} se nezda\u0159ilo spustit. V\u00fdjimka: {3}
+ERROR_STARTING_EJB_CNTR4006E.explanation=Objekt enterprise bean byl nakonfigurov\u00e1n ke spu\u0161t\u011bn\u00ed p\u0159i prvn\u00edm pou\u017eit\u00ed, nikoli p\u0159i spu\u0161t\u011bn\u00ed jeho modulu. Objekt enterprise bean se p\u0159i prvn\u00edm pou\u017eit\u00ed nezda\u0159ilo spustit.
+ERROR_STARTING_EJB_CNTR4006E.useraction=Pomoc\u00ed informac\u00ed o v\u00fdjimce identifikujte zdroj probl\u00e9mu vy\u0159e\u0161te jej. Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+JNDI_CANNOT_INSTANTIATE_OBJECT_CNTR4007E=CNTR4007E: Do\u0161lo k chyb\u011b p\u0159i vytv\u00e1\u0159en\u00ed rozhran\u00ed {0} pro objekt enterprise bean {1} v modulu {2} v aplikaci {3}. Nezda\u0159ilo se vyhled\u00e1n\u00ed objektu enterprise bean pomoc\u00ed n\u00e1zvu rozhran\u00ed JNDI {4}. V\u00fdjimka: {5}
+JNDI_CANNOT_INSTANTIATE_OBJECT_CNTR4007E.explanation=Do\u0161lo k chyb\u011b p\u0159i vytv\u00e1\u0159en\u00ed instance objektu enterprise bean s uveden\u00fdm n\u00e1zvem rozhran\u00ed JNDI.
+JNDI_CANNOT_INSTANTIATE_OBJECT_CNTR4007E.useraction=Dal\u0161\u00ed informace o chyb\u011b viz vno\u0159en\u00e1 v\u00fdjimka nebo hlavn\u00ed chyba.
+
+JNDI_CANNOT_INSTANTIATE_HOME_CNTR4008E=CNTR4008E: Domovsk\u00e9 rozhran\u00ed {0} pro objekt enterprise bean {1} v modulu {2} v aplikaci {3} nelze pro n\u00e1zev rozhran\u00ed JNDI {4} obdr\u017eet, proto\u017ee domovsk\u00e1 rozhran\u00ed nepodporuje \u017e\u00e1dn\u00e1 z funkc\u00ed nakonfigurovan\u00fdch v souboru server.xml.
+JNDI_CANNOT_INSTANTIATE_HOME_CNTR4008E.explanation=Funkce ejbLite nepodporuj\u00ed domovsk\u00e1 rozhran\u00ed nebo rozhran\u00ed komponent objekt\u016f enterprise bean. Ve funkc\u00edch ejbLite se podporuj\u00ed pouze obchodn\u00ed rozhran\u00ed.
+JNDI_CANNOT_INSTANTIATE_HOME_CNTR4008E.useraction=Upravte aplikaci odebr\u00e1n\u00edm pou\u017eit\u00ed domovsk\u00fdch rozhran\u00ed a rozhran\u00ed komponent objekt\u016f enterprise bean, nebo p\u0159idejte do souboru server.xml funkci ejbHome.
+
+JNDI_CANNOT_INSTANTIATE_REMOTE_CNTR4009E=CNTR4009E: Vzd\u00e1len\u00e9 rozhran\u00ed {0} pro objekt enterprise bean {1} v modulu {2} v aplikaci {3} nelze pro n\u00e1zev rozhran\u00ed JNDI {4} z\u00edskat, proto\u017ee vzd\u00e1len\u00e1 rozhran\u00ed nejsou v \u017e\u00e1dn\u00e9 z funkc\u00ed nakonfigurovan\u00fdch v souboru server.xml podporovan\u00e1.
+JNDI_CANNOT_INSTANTIATE_REMOTE_CNTR4009E.explanation=Funkce ejbLite nepodporuj\u00ed vzd\u00e1len\u00e1 rozhran\u00ed objekt\u016f enterprise bean. Ve funkc\u00edch ejbLite se podporuj\u00ed pouze m\u00edstn\u00ed rozhran\u00ed.
+JNDI_CANNOT_INSTANTIATE_REMOTE_CNTR4009E.useraction=Upravte aplikaci odebr\u00e1n\u00edm pou\u017eit\u00ed vzd\u00e1len\u00fdch rozhran\u00ed objekt\u016f enterprise bean, nebo p\u0159idejte do souboru server.xml funkci ejbRemote.
+
+AUTOMATIC_TIMERS_NOT_SUPPORTED_CNTR4010W=CNTR4010W: Objekt enterprise bean {0} v modulu {1} v aplikaci {2} deklaruje do\u010dasn\u00e9 automatick\u00e9 \u010dasova\u010de. Do\u010dasn\u00e9 automatick\u00e9 \u010dasova\u010de nepodporuje \u017e\u00e1dn\u00e1 z funkc\u00ed nakonfigurovan\u00fdch v souboru server.xml, a budou tedy ignorov\u00e1na.
+AUTOMATIC_TIMERS_NOT_SUPPORTED_CNTR4010W.explanation=Do\u010dasn\u00e9 automatick\u00e9 \u010dasova\u010de objekt\u016f enterprise bean deklarovan\u00e9 v popisova\u010di implementace nebo v anotaci funkce ejbLite-3.1 nepodporuje, a budou se tedy za b\u011bhu ignorovat. V z\u00e1vislosti na tom, jak aplikace pl\u00e1nuje \u010dasova\u010de objekt\u016f enterprise bean pou\u017e\u00edt, m\u016f\u017ee a nemus\u00ed doj\u00edt k p\u0159edpokl\u00e1dan\u00e9mu spu\u0161t\u011bn\u00ed aplikace.
+AUTOMATIC_TIMERS_NOT_SUPPORTED_CNTR4010W.useraction=Odeberte pou\u017eit\u00ed nepodporovan\u00fdch automatick\u00fdch \u010dasova\u010d\u016f z aplikace, nebo p\u0159idejte do souboru server.xml takovou verzi funkce ejbLite, kter\u00e1 podporuje do\u010dasn\u00e9 automatick\u00e9 \u010dasova\u010de. 
+
+INJECTION_CANNOT_INSTANTIATE_HOME_CNTR4011E=CNTR4011E: Domovsk\u00e9 rozhran\u00ed {0} pro objekt enterprise bean {1} v modulu {2} v aplikaci {3} nebylo pro vlo\u017een\u00ed z\u00edsk\u00e1no, nebo\u0165 domovsk\u00e1 rozhran\u00ed nejsou \u017e\u00e1dnou funkc\u00ed nakonfigurovanou v souboru server.xml podporov\u00e1na.
+INJECTION_CANNOT_INSTANTIATE_HOME_CNTR4011E.explanation=Funkce ejbLite nepodporuj\u00ed domovsk\u00e1 rozhran\u00ed nebo rozhran\u00ed komponent objekt\u016f enterprise bean. Ve funkc\u00edch ejbLite se podporuj\u00ed pouze obchodn\u00ed rozhran\u00ed.
+INJECTION_CANNOT_INSTANTIATE_HOME_CNTR4011E.useraction=Upravte aplikaci odebr\u00e1n\u00edm pou\u017eit\u00ed domovsk\u00fdch rozhran\u00ed a rozhran\u00ed komponent objekt\u016f enterprise bean, nebo p\u0159idejte do souboru server.xml funkci ejbHome.
+
+INJECTION_CANNOT_INSTANTIATE_REMOTE_CNTR4012E=CNTR4012E: Vzd\u00e1len\u00e9 rozhran\u00ed {0} objektu enterprise bean {1} v modulu {2} v aplikaci {3} nebylo pro vlo\u017een\u00ed z\u00edsk\u00e1no, nebo\u0165 vzd\u00e1len\u00e1 rozhran\u00ed nejsou \u017e\u00e1dnou funkc\u00ed nakonfigurovanou v souboru server.xml podporov\u00e1na.
+INJECTION_CANNOT_INSTANTIATE_REMOTE_CNTR4012E.explanation=Funkce ejbLite nepodporuj\u00ed vzd\u00e1len\u00e1 rozhran\u00ed objekt\u016f enterprise bean. Ve funkc\u00edch ejbLite se podporuj\u00ed pouze m\u00edstn\u00ed rozhran\u00ed.
+INJECTION_CANNOT_INSTANTIATE_REMOTE_CNTR4012E.useraction=Upravte aplikaci odebr\u00e1n\u00edm pou\u017eit\u00ed vzd\u00e1len\u00fdch rozhran\u00ed objekt\u016f enterprise bean, nebo p\u0159idejte do souboru server.xml funkci ejbRemote.
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_ACTIVATED_CNTR4013I 
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_DEACTIVATED_CNTR4014I
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_DESTINATION_NOT_FOUND_CNTR4016W
+
+ASYNC_METHODS_NOT_SUPPORTED_CNTR4017E=CNTR4017E: Asynchronn\u00ed metoda {0} objektu enterprise bean {1} v modulu {2} v aplikaci {3} nebyla napl\u00e1nov\u00e1na. Asynchronn\u00ed metody objekt\u016f EJB nepodporuje \u017e\u00e1dn\u00e1 z funkc\u00ed nakonfigurovan\u00fdch v souboru server.xml.
+ASYNC_METHODS_NOT_SUPPORTED_CNTR4017E.explanation=Asynchronn\u00ed metody EJB funkce ejbLite-3.1 nepodporuje.
+ASYNC_METHODS_NOT_SUPPORTED_CNTR4017E.useraction=Odeberte pou\u017eit\u00ed nepodporovan\u00fdch asynchronn\u00edch metod z aplikace, nebo p\u0159idejte do souboru server.xml takovou verzi funkce ejbLite, kter\u00e1 asynchronn\u00ed metody podporuje. 
+
+NON_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4018E=CNTR4018E: Do\u010dasn\u00e9 \u010dasova\u010de nelze vytvo\u0159it, ani k nim p\u0159istoupit. Do\u010dasn\u00e9 \u010dasova\u010de objekt\u016f EJB nepodporuje \u017e\u00e1dn\u00e1 z funkc\u00ed nakonfigurovan\u00fdch v souboru server.xml.
+NON_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4018E.explanation=Do\u010dasn\u00e9 \u010dasova\u010de objekt\u016f EJB funkce ejbLite-3.1 nepodporuje.
+NON_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4018E.useraction=Odeberte pou\u017eit\u00ed nepodporovan\u00fdch do\u010dasn\u00fdch \u010dasova\u010d\u016f z aplikace, nebo p\u0159idejte do souboru server.xml takovou verzi funkce ejbLite, kter\u00e1 tyto do\u010dasn\u00e9 \u010dasova\u010de podporuje. 
+
+PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E=CNTR4019E: Trval\u00e9 \u010dasova\u010de nelze vytvo\u0159it, ani k nim p\u0159istoupit. Trval\u00e9 \u010dasova\u010de objekt\u016f EJB nepodporuje \u017e\u00e1dn\u00e1 z funkc\u00ed nakonfigurovan\u00fdch v souboru server.xml.
+PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E.explanation=Trval\u00e9 \u010dasova\u010de objekt\u016f EJB funkce ejbLite nepodporuje.
+PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E.useraction=Odeberte pou\u017eit\u00ed nepodporovan\u00fdch trval\u00fdch \u010dasova\u010d\u016f z aplikace, nebo p\u0159idejte do souboru server.xml takovou verzi funkce ejbLite, kter\u00e1 tyto trval\u00e9 \u010dasova\u010de podporuje. 
+
+DUPLICATE_EJB_CNTR4100E=CNTR4100E: Hodnota {0} pro prvek <ejb-name> v souboru ejb-jar.xml nen\u00ed jedine\u010dn\u00e1.
+DUPLICATE_EJB_CNTR4100E.explanation=V souboru ejb-jar.xml bylo definov\u00e1no v\u00edce objekt\u016f enterprise bean se stejn\u00fdm n\u00e1zvem. Ka\u017ed\u00fd enterprise bean mus\u00ed m\u00edt jedine\u010dn\u00fd n\u00e1zev.
+DUPLICATE_EJB_CNTR4100E.useraction=Odeberte duplicitn\u00ed definice objektu enterprise bean.
+
+UNSPECIFIED_CLASS_CNTR4101E=CNTR4101E: Prvek <ejb-class> nebyl ur\u010den pro objekt enterprise bean {0} v souboru ejb-jar.xml.
+UNSPECIFIED_CLASS_CNTR4101E.explanation=Prvek <ejb-class> nebyl ur\u010den v souboru ejb-jar.xml. Tento prvek je vy\u017eadov\u00e1n pro objekty enterprise bean definovan\u00e9 bez pou\u017eit\u00ed anotace.
+UNSPECIFIED_CLASS_CNTR4101E.useraction=P\u0159idejte prvek <ejb-class> do definice objektu enterprise bean v souboru ejb-jar.xml.
+
+UNSPECIFIED_SESSION_TYPE_CNTR4102E=CNTR4102E: Prvek <session-type> nebyl ur\u010den pro objekt session bean {0} v souboru ejb-jar.xml.
+UNSPECIFIED_SESSION_TYPE_CNTR4102E.explanation=Prvek <session-type> nebyl ur\u010den v souboru ejb-jar.xml. Tento prvek je vy\u017eadov\u00e1n pro objekty session bean definovan\u00e9 bez pou\u017eit\u00ed anotace.
+UNSPECIFIED_SESSION_TYPE_CNTR4102E.useraction=P\u0159idejte prvek <session-type> do definice objektu session bean.
+
+INCOMPATIBLE_KIND_CNTR4103E=CNTR4103E: Prvek enterprise bean {0} byl definov\u00e1n s nekonzistencemi v typech objekt\u016f typu bean. V souboru ejb-jar.xml byl pou\u017eit prvek {1} a ve t\u0159\u00edd\u011b {3} byla ur\u010dena anotace {2}.
+INCOMPATIBLE_KIND_CNTR4103E.explanation=Objekt enterprise m\u016f\u017ee m\u00edt pouze jeden typ, ale v souboru ejb-jar.xml a anotaci byly uvedeny nekompatibiln\u00ed typy.
+INCOMPATIBLE_KIND_CNTR4103E.useraction=Zm\u011b\u0148te typ prvku nebo typ anotace pro objekt enterprise bean.
+
+INCOMPATIBLE_ANN_TYPE_CNTR4104E=CNTR4104E: Prvek enterprise bean {0} byl definov\u00e1n s nekonzistencemi v typech objekt\u016f typu bean. Anotace {1} a {2} byly ob\u011b ur\u010deny v t\u0159\u00edd\u011b {3}.
+INCOMPATIBLE_ANN_TYPE_CNTR4104E.explanation=Objekt enterprise bean m\u016f\u017ee m\u00edt pouze jeden typ, bylo v\u0161ak zad\u00e1no n\u011bkolik anotac\u00ed definuj\u00edc\u00edch komponenty.
+INCOMPATIBLE_ANN_TYPE_CNTR4104E.useraction=Odeberte jednu z anotac\u00ed definuj\u00edc\u00edch komponenty.
+
+INCOMPATIBLE_SESSION_TYPE_CNTR4105E=CNTR4105E: Prvek enterprise bean {0} byl definov\u00e1n s nekonzistencemi v typech objekt\u016f typu bean. V souboru ejb-jar.xml byl pou\u017eit prvek <session-type>{1}</session-type> a ve t\u0159\u00edd\u011b {3} byla ur\u010dena anotace {2}.
+INCOMPATIBLE_SESSION_TYPE_CNTR4105E.explanation=Objekt enterprise m\u016f\u017ee m\u00edt pouze jeden typ, ale v souboru ejb-jar.xml a anotaci byly uvedeny nekompatibiln\u00ed typy.
+INCOMPATIBLE_SESSION_TYPE_CNTR4105E.useraction=Zm\u011b\u0148te typ prvku nebo typ anotace pro objekt enterprise bean.
+
+INCOMPATIBLE_CLASS_ANN_ANN_CNTR4106E=CNTR4106E: Objekt enterprise bean {0} byl deklarov\u00e1n s v\u00edce t\u0159\u00eddami: pomoc\u00ed anotace {1} ve t\u0159\u00edd\u011b {2} a pomoc\u00ed anotace {3} ve t\u0159\u00edd\u011b {4}.
+INCOMPATIBLE_CLASS_ANN_ANN_CNTR4106E.explanation=Objekt enterprise bean lze deklarovat pouze s jednou t\u0159\u00eddou, ale on byl deklarov\u00e1n s r\u016fzn\u00fdmi t\u0159\u00eddami pomoc\u00ed anotac\u00ed na dvou samostatn\u00fdch t\u0159\u00edd\u00e1ch.
+INCOMPATIBLE_CLASS_ANN_ANN_CNTR4106E.useraction=Odeberte jednu z anotac\u00ed nebo zm\u011b\u0148te jeden z n\u00e1zv\u016f objekt\u016f enterprise bean.
+
+INCOMPATIBLE_DEFAULT_BUSINESS_INTERFACE_TYPE_CNTR4107E=CNTR4107E: Anotace @Remote i @Local byly zad\u00e1ny bez hodnoty na t\u0159\u00edd\u011b {0} objektu enterprise bean {1}.
+INCOMPATIBLE_DEFAULT_BUSINESS_INTERFACE_TYPE_CNTR4107E.explanation=Zad\u00e1n\u00ed anotace @Remote nebo @Local bez hodnoty ozna\u010duje, \u017ee obchodn\u00ed rozhran\u00ed na klauzuli implements se m\u00e1 pova\u017eovat za vzd\u00e1len\u00e9, resp. lok\u00e1ln\u00ed, tak\u017ee nelze zadat ob\u011b anotace bez hodnoty.
+INCOMPATIBLE_DEFAULT_BUSINESS_INTERFACE_TYPE_CNTR4107E.useraction=Odeberte anotaci nebo zadejte anotace s obchodn\u00edmi rozhran\u00edmi.
+
+DEFAULT_IMPLEMENTS_NONE_CNTR4108E=CNTR4108E: Byla zad\u00e1na anotace {0} bez hodnoty na t\u0159\u00edd\u011b {1} objektu enterprise bean {2}, av\u0161ak klauzule implements neobsahuje \u017e\u00e1dn\u00e1 obchodn\u00ed rozhran\u00ed.
+DEFAULT_IMPLEMENTS_NONE_CNTR4108E.explanation=Zad\u00e1n\u00ed anotace @Remote nebo @Local bez hodnoty ozna\u010duje, \u017ee obchodn\u00ed rozhran\u00ed na klauzuli implements se m\u00e1 pova\u017eovat za vzd\u00e1len\u00e9, resp. lok\u00e1ln\u00ed, t\u0159\u00edda v\u0161ak ve sv\u00e9 klauzuli implements neobsahuje \u017e\u00e1dn\u00e1 obchodn\u00ed rozhran\u00ed.
+DEFAULT_IMPLEMENTS_NONE_CNTR4108E.useraction=P\u0159idejte obchodn\u00ed rozhran\u00ed do klauzule implements, odeberte anotaci nebo zadejte anotaci s obchodn\u00edch rozhran\u00edmi.
+
+# Note: This message was added in 8.5.5 but is no longer used.
+DEFAULT_IMPLEMENTS_MULTIPLE_CNTR4109E=CNTR4109E: Anotace {0} byla zad\u00e1na bez hodnoty na t\u0159\u00edd\u011b {1} objektu enterprise bean {2}, ale klauzule implements obsahuje n\u011bkolik obchodn\u00edch rozhran\u00ed: {3} a {4}.
+DEFAULT_IMPLEMENTS_MULTIPLE_CNTR4109E.explanation=Zad\u00e1n\u00ed anotace @Remote nebo @Local bez hodnoty ozna\u010duje, \u017ee obchodn\u00ed rozhran\u00ed na klauzuli implements se m\u00e1 pova\u017eovat za vzd\u00e1len\u00e9, resp. lok\u00e1ln\u00ed, t\u0159\u00edda v\u0161ak ve sv\u00e9 klauzuli implements obsahuje n\u011bkolik obchodn\u00edch rozhran\u00ed.
+DEFAULT_IMPLEMENTS_MULTIPLE_CNTR4109E.useraction=Odeberte v\u0161echna obchodn\u00ed rozhran\u00ed v klauzuli implements krom\u011b jednoho, nebo zadejte anotaci se v\u0161emi obchodn\u00edmi rozhran\u00edmi.
+
+INCOMPATIBLE_INTERFACE_TYPE_CNTR4110E=CNTR4110E: Objekt enterprise bean {0} ur\u010duje t\u0159\u00eddu {1} jako lok\u00e1ln\u00ed obchodn\u00ed rozhran\u00ed i jako vzd\u00e1len\u00e9 obchodn\u00ed rozhran\u00ed.
+INCOMPATIBLE_INTERFACE_TYPE_CNTR4110E.explanation=Ur\u010dit\u00e1 t\u0159\u00edda m\u016f\u017ee b\u00fdt pro ur\u010dit\u00fd objekt enterprise bean zad\u00e1na jako lok\u00e1ln\u00ed obchodn\u00ed rozhran\u00ed nebo jako vzd\u00e1len\u00e9 obchodn\u00ed rozhran\u00ed, nikoli v\u0161ak jako ob\u011b tato rozhran\u00ed.
+INCOMPATIBLE_INTERFACE_TYPE_CNTR4110E.useraction=Aktualizujte t\u0159\u00eddu objekt\u016f enterprise bean, t\u0159\u00eddu rozhran\u00ed nebo deskriptor implementace tak, aby rozhran\u00ed bylo zad\u00e1no jako lok\u00e1ln\u00ed obchodn\u00ed rozhran\u00ed nebo vzd\u00e1len\u00e9 obchodn\u00ed rozhran\u00ed, a nikoli jako ob\u011b tato rozhran\u00ed.
+
+IMPLEMENTS_INTERFACE_TYPE_VALUE_CNTR4111E=CNTR4111E: Anotace {0} byla zad\u00e1na s hodnotou v rozhran\u00ed {1}. Rozhran\u00ed bylo ur\u010deno v klauzuli implements t\u0159\u00eddy {2} objektu enterprise bean {3}.
+IMPLEMENTS_INTERFACE_TYPE_VALUE_CNTR4111E.explanation=Anotace @Remote a @Local mohou m\u00edt hodnotu pouze v p\u0159\u00edpad\u011b, \u017ee jsou zad\u00e1ny ve t\u0159\u00edd\u011b objekt\u016f enterprise bean.
+IMPLEMENTS_INTERFACE_TYPE_VALUE_CNTR4111E.useraction=Odeberte hodnotu z anotace @Remote nebo @Local v rozhran\u00ed.
+
+ORPHAN_EXTENSION_ENTRY_CNTR4112W=CNTR4112W: Roz\u0161\u00ed\u0159en\u00ed {0} v souboru ibm-ejb-jar-ext.xml v modulu {1} odkazuje na objekt enterprise bean {2}, kter\u00fd neexistuje.
+ORPHAN_EXTENSION_ENTRY_CNTR4112W.explanation=Je mo\u017en\u00e9, \u017ee byl zad\u00e1n nespr\u00e1vn\u00fd n\u00e1zev objektu enterprise bean nebo \u017ee byla zad\u00e1no roz\u0161\u00ed\u0159en\u00ed pro neexistuj\u00edc\u00ed objekt typu enterprise bean.
+ORPHAN_EXTENSION_ENTRY_CNTR4112W.useraction=Opravte n\u00e1zev objektu enterprise bean v souboru ibm-ejb-jar-ext.xml.
+
+RESOLVER_ACTIVITY_SESSION_NOT_SUPPORTED_CNTR4113E=CNTR4113E: Objekt enterprise bean {0} v modulu {1} v aplikaci {2} je konfigurov\u00e1n v souboru ibm-ejb-jar-ext.xml pro pou\u017eit\u00ed hranice lok\u00e1ln\u00ed transakce {3}, kter\u00e1 nen\u00ed podporov\u00e1na v profilu Liberty.
+RESOLVER_ACTIVITY_SESSION_NOT_SUPPORTED_CNTR4113E.explanation=Hodnota hrani\u010dn\u00edho atributu ACTIVITY_SESSION roz\u0161\u00ed\u0159en\u00ed <local- ransaction> nen\u00ed v profilu Liberty podporov\u00e1na.
+RESOLVER_ACTIVITY_SESSION_NOT_SUPPORTED_CNTR4113E.useraction=Aktualizujte soubor ibm-ejb-jar-ext.xml tak, aby pro hranici ur\u010doval BEAN_METHOD, nebo odeberte hrani\u010dn\u00ed atribut, aby byl pou\u017eit v\u00fdchoz\u00ed, tedy BEAN_METHOD.
+
+INCOMPATIBLE_CLASS_XML_ANN_CNTR4114E=CNTR4114E: Objekt enterprise bean {0} byl deklarov\u00e1n s v\u00edce t\u0159\u00eddami: s hodnotou {1} v prvku <ejb-class> v souboru ejb-jar.xml a pomoc\u00ed anotace {2} na t\u0159\u00edd\u011b {3}.
+INCOMPATIBLE_CLASS_XML_ANN_CNTR4114E.explanation=Objekt enterprise bean lze definovat pouze s jednou t\u0159\u00eddou, ale on byl deklarov\u00e1n s r\u016fzn\u00fdmi t\u0159\u00eddami v XML a pomoc\u00ed anotace.
+INCOMPATIBLE_CLASS_XML_ANN_CNTR4114E.useraction=Odeberte t\u0159\u00eddu ze souboru ejb-jar.xml, odeberte anotaci nebo zm\u011b\u0148te jeden z n\u00e1zv\u016f objekt\u016f enterprise bean.
+
+INVALID_CLASS_CNTR4115E=CNTR4115E: Prvek <ejb-class> v souboru ejb-jar.xml ur\u010duje n\u00e1zev t\u0159\u00eddy {0} pro objekt typu enterprise bean {1}, ale soubor t\u0159\u00eddy nebyl nalezen.
+INVALID_CLASS_CNTR4115E.explanation=Bu\u010f soubor ejb-jar.xml ur\u010duje neplatn\u00fd n\u00e1zev t\u0159\u00eddy, nebo nebyl do aplikace zabalen soubor t\u0159\u00eddy.
+INVALID_CLASS_CNTR4115E.useraction=Opravte n\u00e1zev t\u0159\u00eddy v souboru ejb-jar.xml nebo zabalte soubor t\u0159\u00eddy do aplikace.

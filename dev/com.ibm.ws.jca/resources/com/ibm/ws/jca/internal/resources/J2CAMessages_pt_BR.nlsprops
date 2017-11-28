@@ -1,0 +1,160 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jca/resources/com/ibm/ws/jca/internal/resources/J2CAMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA JCA
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+J2CA8500.config.prop.error=J2CA8500E: Ocorreu um erro ao tentar configurar uma propriedade {0} do elemento de configura\u00e7\u00e3o {1} na classe {2}: {3}.
+J2CA8500.config.prop.error.explanation=Uma propriedade n\u00e3o p\u00f4de ser configurada no recurso especificado devido a um erro.
+J2CA8500.config.prop.error.useraction=Fa\u00e7a corre\u00e7\u00f5es na configura\u00e7\u00e3o do recurso especificado e tente novamente.
+ 
+J2CA8501.config.prop.unknown=J2CA8501E: A propriedade {0} do elemento de configura\u00e7\u00e3o {1} n\u00e3o pode ser configurada porque n\u00e3o foi localizada na classe {2}.
+J2CA8501.config.prop.unknown.explanation=Uma propriedade n\u00e3o p\u00f4de ser localizada no recurso especificado.
+J2CA8501.config.prop.unknown.useraction=Fa\u00e7a corre\u00e7\u00f5es na configura\u00e7\u00e3o do recurso.
+
+# {1} is the unique identifier for a configuration element, such as jmsTopicConnectionFactory[cf1] or jmsQueue[queue1] 
+J2CA8504.incorrect.props.list=J2CA8504E: O subelemento {0} n\u00e3o est\u00e1 correto para o elemento de configura\u00e7\u00e3o {1}.
+J2CA8504.incorrect.props.list.explanation=O tipo de lista de propriedades de configura\u00e7\u00e3o est\u00e1 incorreto para o elemento de configura\u00e7\u00e3o especificado.
+J2CA8504.incorrect.props.list.useraction=Atualize a configura\u00e7\u00e3o para usar uma lista de propriedades de configura\u00e7\u00e3o que corresponda ao tipo de recurso desejado.
+
+J2CA8505.destination.type.mismatch=J2CA8505E: a propriedade de destino n\u00e3o pode ser configurada na especifica\u00e7\u00e3o de ativa\u00e7\u00e3o porque o destino {0} n\u00e3o \u00e9 uma inst\u00e2ncia da interface que \u00e9 especificada como o destinationType: {1}.
+J2CA8505.destination.type.mismatch.explanation=Foi especificado um tipo de destino que n\u00e3o corresponde ao destino.
+J2CA8505.destination.type.mismatch.useraction=Atualize a configura\u00e7\u00e3o do servidor ou o aplicativo para especificar um tipo de destino que seja consistente com o destino.
+
+J2CA8510.create.timed.out=J2CA8510E: Um cron\u00f4metro n\u00e3o p\u00f4de ser criado para o adaptador de recursos {0} em {1} milissegundos.
+J2CA8510.create.timed.out.explanation=Est\u00e1 levando mais tempo do que esperado para criar o cron\u00f4metro.
+J2CA8510.create.timed.out.useraction=Verifique se h\u00e1 uma carga alta no sistema e considere sua diminui\u00e7\u00e3o.
+
+J2CA8600.work.start.timeout=J2CA8600E: O trabalho {0} enviado pelo adaptador de recursos {1} n\u00e3o iniciou em {2} milissegundos.
+J2CA8600.work.start.timeout.explanation=A tentativa de iniciar o trabalho atingiu tempo limite.
+J2CA8600.work.start.timeout.useraction=Verifique se h\u00e1 uma carga alta no sistema e considere sua diminui\u00e7\u00e3o, ou entre em contato com o fornecedor do adaptador de recursos para analisar se eles devem aumentar o tempo limite de trabalho usado ao enviar o trabalho para o gerenciador de trabalho JCA.
+
+# 8622 deleted
+
+J2CA8623.execution.context.conflict=J2CA8623E: O adaptador de recursos {0} tentou enviar trabalho com ExecutionContext e WorkContext. A combina\u00e7\u00e3o de ExecutionContext e WorkContext n\u00e3o \u00e9 suportada.
+J2CA8623.execution.context.conflict.explanation=O adaptador de recursos enviou trabalho que implementa o WorkContextProvider e tamb\u00e9m especificou um ExecutionContext. N\u00e3o \u00e9 v\u00e1lido usar ambos.
+J2CA8623.execution.context.conflict.useraction=O adaptador de recursos precisa ser atualizado para escolher entre o WorkContextProvider ou o ExecutionContext.
+
+J2CA8624.work.context.duplicate=J2CA8624E: O adaptador de recursos {0} tentou enviar trabalho com v\u00e1rias c\u00f3pias do tipo WorkContext {1}. Apenas um WorkContext de cada tipo \u00e9 suportado em um \u00fanico envio de trabalho.
+J2CA8624.work.context.duplicate.explanation=O adaptador de recursos enviou trabalho com diversas inst\u00e2ncias do WorkContext do mesmo tipo.
+J2CA8624.work.context.duplicate.useraction=O adaptador de recursos precisa ser atualizado para eliminar inst\u00e2ncias duplicadas de WorkContext do WorkContextProvider.
+
+J2CA8625.work.context.unavailable=J2CA8625E: O adaptador de recursos {0} tentou enviar trabalho com um tipo de contexto de trabalho {1} que n\u00e3o \u00e9 suportado ou o recurso n\u00e3o est\u00e1 ativado.
+J2CA8625.work.context.unavailable.explanation=O tipo de contexto de trabalho n\u00e3o \u00e9 suportado pelo servidor de aplicativos ou o recurso que o suporta n\u00e3o est\u00e1 ativado.
+J2CA8625.work.context.unavailable.useraction=Verifique se o tipo de contexto de trabalho \u00e9 suportado. Se for, verifique se o recurso que o suporta est\u00e1 ativado.
+
+J2CA8687.hint.datatype.invalid=J2CA8687E: Os valores de sugest\u00e3o para {0} devem ser do tipo {1}. O adaptador de recursos {2} especificou um valor {3} do tipo {4}.
+J2CA8687.hint.datatype.invalid.explanation=O valor de sugest\u00e3o especificado pelo adaptador de recursos \u00e9 do tipo de dados incorreto.
+J2CA8687.hint.datatype.invalid.useraction=Entre em contato com o fornecedor do adaptador de recursos para corrigir o tipo de dados da sugest\u00e3o.
+
+J2CA8688.work.setup.failed=J2CA8688E: O gerenciador de trabalho n\u00e3o \u00e9 capaz de executar o item de trabalho. Consulte a exce\u00e7\u00e3o de causa: {0}.
+J2CA8688.work.setup.failed.explanation=Ocorreu um erro ao preparar para executar o item de trabalho.
+J2CA8688.work.setup.failed.useraction=Consulte a exce\u00e7\u00e3o de causa para obter informa\u00e7\u00f5es adicionais.
+
+J2CA8800.multiple.xa.resources=J2CA8800E: Mais de um recurso XA foi retornado pelo adaptador de recursos {0} para a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o {1}.
+J2CA8800.multiple.xa.resources.explanation=O adaptador de recursos deve retornar apenas um recurso XA para a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o fornecida.
+J2CA8800.multiple.xa.resources.useraction=Entre em contato com o fornecedor do adaptador de recursos e pe\u00e7a que corrijam a implementa\u00e7\u00e3o da API getXAResources para que seja compat\u00edvel com a especifica\u00e7\u00e3o JCA.
+
+J2CA8801.act.spec.active=J2CA8801I: O terminal de mensagens para a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o {0} e o aplicativo de bean acionado por mensagens {1} est\u00e1 ativado.
+J2CA8801.act.spec.active.explanation=O terminal de mensagem foi ativado e est\u00e1 pronto para manipular mensagens recebidas.
+J2CA8801.act.spec.active.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+J2CA8802.activation.failed=J2CA8802E: A ativa\u00e7\u00e3o do endpoint de mensagem falhou para o adaptador de recursos {0} devido \u00e0 exce\u00e7\u00e3o: {1}.
+J2CA8802.activation.failed.explanation=A exce\u00e7\u00e3o especificada foi gerada durante a ativa\u00e7\u00e3o do endpoint de mensagem.
+J2CA8802.activation.failed.useraction=Verifique a exce\u00e7\u00e3o especificada para ajudar na determina\u00e7\u00e3o da causa do erro.
+
+J2CA8803.deactivation.failed=J2CA8803E: A desativa\u00e7\u00e3o do endpoint de mensagem falhou para o adaptador de recursos {0} devido \u00e0 exce\u00e7\u00e3o: {1}.
+J2CA8803.deactivation.failed.explanation=A exce\u00e7\u00e3o especificada foi gerada durante a desativa\u00e7\u00e3o do endpoint de mensagem.
+J2CA8803.deactivation.failed.useraction=Verifique a exce\u00e7\u00e3o especificada para ajudar na determina\u00e7\u00e3o da causa do erro.
+
+J2CA8804.act.spec.inactive=J2CA8804I: O terminal de mensagens para a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o {0} e o aplicativo acionado por mensagens {1} est\u00e1 desativado.
+J2CA8804.act.spec.inactive.explanation=O terminal de mensagem foi desativado e n\u00e3o ir\u00e1 mais manipular mensagens recebidas.
+J2CA8804.act.spec.inactive.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+# 8806 deleted
+
+J2CA8807.native.rrs.not.available=J2CA8807E: O servi\u00e7o que fornece suporte transacional de RRS n\u00e3o est\u00e1 ativo. O registro de recurso foi rejeitado.
+J2CA8807.native.rrs.not.available.explanation=O servi\u00e7o que fornece suporte transacional de RRS n\u00e3o est\u00e1 ativo. As tentativas de registro do recurso com o gerenciador de transa\u00e7\u00f5es foram rejeitadas. 
+J2CA8807.native.rrs.not.available.useraction=Verifique se o processo angel est\u00e1 ativo. Verifique se o ID de usu\u00e1rio do MVS do processo Liberty possui a autoridade SAF apropriada para chamar o conjunto de servi\u00e7os autorizados usado para integra\u00e7\u00e3o do RRS. Verifique se o recurso que fornece integra\u00e7\u00e3o de RRS foi configurado. 
+
+J2CA8809.embedded.lookup.failed=J2CA8809E: O recurso {0} do adaptador de recursos integrado {1} est\u00e1 dispon\u00edvel apenas para o aplicativo {2}. Foi feita uma tentativa de acess\u00e1-lo a partir do aplicativo {3}.
+J2CA8809.embedded.lookup.failed.explanation=Um adaptador de recursos integrado e todos os recursos que ele define podem ser acessados apenas do aplicativo ao qual ele est\u00e1 integrado. 
+J2CA8809.embedded.lookup.failed.useraction=Assegure-se de que o aplicativo consulte apenas os recursos que est\u00e3o definidos no escopo do servidor ou dentro do mesmo aplicativo.
+
+J2CA8810.embedded.activation.failed=J2CA8810E: O endpoint {0} do adaptador de recursos integrado {1} pode ser ativado apenas a partir do aplicativo {2}. Foi feita uma tentativa de ativ\u00e1-lo de outro aplicativo {3}.
+J2CA8810.embedded.activation.failed.explanation=A ativa\u00e7\u00e3o de terminal falhou porque ela aponta para uma especifica\u00e7\u00e3o de ativa\u00e7\u00e3o integrada em outro aplicativo.
+J2CA8810.embedded.activation.failed.useraction=Atualize a configura\u00e7\u00e3o do servidor de modo que o endpoint use uma especifica\u00e7\u00e3o de ativa\u00e7\u00e3o que seja com escopo definido no servidor ou integrado ao mesmo aplicativo.
+
+J2CA8811.embedded.lookup.failed=J2CA8811E: O recurso {0} do adaptador de recursos integrado {1} est\u00e1 dispon\u00edvel apenas para o aplicativo {2}.
+J2CA8811.embedded.lookup.failed.explanation=Um adaptador de recursos integrado e todos os recursos que ele define podem ser acessados apenas do aplicativo ao qual ele est\u00e1 integrado.
+J2CA8811.embedded.lookup.failed.useraction=Modifique seu aplicativo ou servi\u00e7o para consultar os recursos definidos no escopo do servidor.
+
+J2CA8812.embedded.activation.failed=J2CA8812E: O endpoint {0} do adaptador de recursos integrado {1} pode ser ativado apenas a partir do aplicativo {2}.
+J2CA8812.embedded.activation.failed.explanation=A ativa\u00e7\u00e3o de terminal falhou porque ela aponta para uma especifica\u00e7\u00e3o de ativa\u00e7\u00e3o integrada em outro aplicativo.
+J2CA8812.embedded.activation.failed.useraction=Atualize a configura\u00e7\u00e3o do servidor de modo que o endpoint use uma especifica\u00e7\u00e3o de ativa\u00e7\u00e3o que seja definida no escopo do servidor.
+
+J2CA8813.required.activation.prop.not.set=J2CA8813E: A propriedade obrigat\u00f3ria {0} est\u00e1 ausente para a especifica\u00e7\u00e3o da ativa\u00e7\u00e3o {1} do adaptador de recursos {2}.
+J2CA8813.required.activation.prop.not.set.explanation=O adaptador de recursos marca determinadas propriedades de especifica\u00e7\u00e3o de ativa\u00e7\u00e3o como obrigat\u00f3rias e o valor n\u00e3o foi fornecido. Essas propriedades podem ser configuradas a partir de dois locais diferentes: (1) ao criar um objeto de configura\u00e7\u00e3o de especifica\u00e7\u00e3o de ativa\u00e7\u00e3o no adaptador de recursos instalado e (2) a partir do pr\u00f3prio aplicativo, como uma  <activation-config-property>.
+J2CA8813.required.activation.prop.not.set.useraction=Forne\u00e7a o valor obrigat\u00f3rio na especifica\u00e7\u00e3o de ativa\u00e7\u00e3o na configura\u00e7\u00e3o do servidor ou em uma entrada activation-config-property dentro do aplicativo.
+
+J2CA8814.resource.adapter.install.failed=J2CA8814E: O atributo do id do elemento resourceAdapter para o m\u00f3dulo do adaptador de recursos {0} cont\u00e9m caracteres n\u00e3o suportados.
+J2CA8814.resource.adapter.install.failed.explanation=O atributo do id do elemento resourceAdapter pode conter apenas os caracteres '.', '-' e '_', al\u00e9m de caracteres alfanum\u00e9ricos. O ID especificado na configura\u00e7\u00e3o ou derivado do nome do m\u00f3dulo cont\u00e9m caracteres n\u00e3o suportados.
+J2CA8814.resource.adapter.install.failed.useraction=Forne\u00e7a um valor v\u00e1lido para o atributo do id do elemento resourceAdapter na configura\u00e7\u00e3o do servidor.
+
+J2CA8815.duplicate.resource.adapter.id=J2CA8815E: V\u00e1rios adaptadores de recursos n\u00e3o podem ter o mesmo identificador exclusivo {0}.
+J2CA8815.duplicate.resource.adapter.id.explanation=V\u00e1rios adaptadores de recursos est\u00e3o configurados ou terminam implicitamente com o mesmo identificador exclusivo (id).
+J2CA8815.duplicate.resource.adapter.id.useraction=Atribua identificadores exclusivos a um ou mais dos adaptadores de recursos para que n\u00e3o haja mais um conflito.
+
+# Do not translate the term "Bean Validation"
+# Do not translate the term "Validator"
+# ---------------------------------
+# {0} The Validator type and instance hashcode
+# {1} The Validation exception
+# {2} The JavaBean type and instance hashcode
+BEAN_VALIDATION_VALIDATOR_FAILED_J2CA1008=J2CA1008E: Ocorreu uma exce\u00e7\u00e3o quando o Validator {0} estava tentando validar a inst\u00e2ncia do JavaBean RAR {2} : {1}. As restri\u00e7\u00f5es de Bean Validation n\u00e3o ser\u00e3o validadas antes de colocar a inst\u00e2ncia em servi\u00e7o.
+BEAN_VALIDATION_VALIDATOR_FAILED_J2CA1008.explanation=Essa exce\u00e7\u00e3o \u00e9 inesperada e indica um problema com a implementa\u00e7\u00e3o do Validator.  A causa pode n\u00e3o ser determinada imediatamente.  
+BEAN_VALIDATION_VALIDATOR_FAILED_J2CA1008.useraction=Verifique os logs do FFDC e do sistema. Se o sintoma indicar uma falha em uma implementa\u00e7\u00e3o do Validator diferente daquela fornecida pelo WebSphere Application Server, entre em contato com o provedor de Bean Validation. CMSG0002
+
+# Do not translate the term "Bean Validation"
+# ---------------------------------
+# {0} A JavaBean type and instance hashcode, in hexadecimal
+# {1} A newline-delimited list of constraints violated by the JavaBean instance
+BEAN_VALIDATION_FAILED_J2CA0238=J2CA0238E: O JavaBean {0} falhou na Bean Validation devido a uma ou mais defini\u00e7\u00f5es de configura\u00e7\u00e3o inv\u00e1lidas indicadas na seguinte lista de viola\u00e7\u00f5es de restri\u00e7\u00e3o: {1}
+BEAN_VALIDATION_FAILED_J2CA0238.explanation=O valor de uma ou mais propriedades de configura\u00e7\u00e3o da inst\u00e2ncia do JavaBean viola as restri\u00e7\u00f5es do Bean Validation especificadas.
+BEAN_VALIDATION_FAILED_J2CA0238.useraction=Consulte a documenta\u00e7\u00e3o do provedor de Adaptador de Recursos para determinar os valores v\u00e1lidos para cada propriedade de configura\u00e7\u00e3o indicada pelas viola\u00e7\u00f5es de restri\u00e7\u00e3o e configure cada propriedade adequadamente.
+
+#--------------------------------------------------------------------------------
+# J2CA0239 is unused (it was previously used by beta-only code that was removed).
+
+#--------------------------------------------------------------------------------
+# J2CA0240 is unused (it was previously used by beta-only code that was removed).
+
+#--------------------------------------------------------------------------------
+BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241=J2CA0241W: Os Archives de Beans de Adaptadores de Recursos n\u00e3o s\u00e3o suportados.
+BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241.explanation=O arquivo beans.xml no diret\u00f3rio META-INF ser\u00e1 ignorado, pois os Adaptadores de Recursos de Archive do Bean Gerenciado do CDI n\u00e3o s\u00e3o suportados.
+BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241.useraction=Remova o arquivo beans.xml do diret\u00f3rio META-INF, pois os Adaptadores de Recursos de Archive do Bean Gerenciado do CDI n\u00e3o s\u00e3o suportados.
+
+
+

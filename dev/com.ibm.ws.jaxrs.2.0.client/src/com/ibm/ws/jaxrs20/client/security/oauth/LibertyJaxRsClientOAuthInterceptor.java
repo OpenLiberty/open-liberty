@@ -70,9 +70,8 @@ public class LibertyJaxRsClientOAuthInterceptor extends AbstractPhaseInterceptor
         if (mpJwt != null && !mpJwt.isEmpty()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Got MpJwt token from the subject. Set it on the request" + mpJwt);
-
-                addAuthnHeader(mpJwt, message);
             }
+            addAuthnHeader(mpJwt, message);
         } else {
             String msg = Tr.formatMessage(tc, "warn_missing_mpjwt_token", new Object[] { AUTHN_TOKEN, WEB_TARGET, "mpjwt" });
             Tr.warning(tc, msg);

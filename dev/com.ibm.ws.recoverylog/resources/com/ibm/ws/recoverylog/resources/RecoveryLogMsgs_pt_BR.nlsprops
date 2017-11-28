@@ -1,0 +1,334 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+##########################################################################
+#
+# %Z% %I% %W% %G% %U% [%H% %T%]                                                
+#
+#
+#  COMPONENT_NAME: WAS.transactions
+#
+#  ORIGINS: 27
+#
+#  DESCRIPTION:
+#
+#  Change Log:
+#  Date      Pgmr      Defect     Description
+#  --------  --------  --------   ------------------------------------------
+#  05-01-20  mdobbie   LI3603     Creation
+#  05-02-28  hursdlg   254615     Msgs 26-28
+#  05-03-03  hursdlg   254326     Msgs 29-30
+#  07-02-26  awilkins  422999     Message review: updates to useraction and explanation
+#  07-03-02  awilkins  424163     Message review: improve contact IBM support user action
+#  08-02-11  mallam    496337     PII additions
+#  29-02-08 johawkes   501807     Style changes
+#  -------------------------------------------------------------------------
+#
+# DEVELOPER INSTRUCTIONS
+# ----------------------
+#
+# To add a new message, define the key string in LTCTrace.java, then create
+# the message text below using that key.  Fill in the comment block above the
+# message to assist in translation of the message, particularly to aid in the
+# appropriate positioning of any message inserts within the translated text.
+# To issue the message, use the LTCTrace.Message method.
+#
+# USE OF PROPERTIES FILE FOR MESSAGES:
+#
+# - Each property in the property file is terminated by the line termination character.
+# - If a line contains only whitespace or if the first non-whitespace character of a
+# line is # or !, the line is ignored. (comments start with # or !)
+# - Every line in the properties file other than whitespace lines or comment lines
+# denotes a single property. A \ is treated as a line continuation character. Lines
+# should be terminated with the line termination character.
+# - Correct grammar for a property line is <key><separator><element>. A valid separator
+# is any one of equal, colon or whitespace ( =: ).
+# - The key consists of all the characters on the line starting from the first
+# non-whitespace up to the first separator. Separator characters can be included in the
+# key by escaping them (e.g. \:) This is not recommended because it is error prone and
+# confusing.
+# - Whitespace after the key is skipped until the first non-whitespace character is
+# found. All remaining characters up to the appropriate line termination character
+# define the element.
+#
+# MESSAGE INSERTS
+#
+#  Primitives
+# Primitives, such as int and long are not recognized as subclasses of Object
+# and cannot be directly passed to one of these methods. A primitive value must
+# be transformed to its proper type (e.g Integer, Long) before being passed as
+# a parameter.
+#
+#  Object
+# For normal Objects, toString() is called on the object and the resulting String
+# is displayed. For exceptions, the stack trace will be printed.For Objects that
+# implement the Traceable interface, the toTraceString() method is called instead.
+# To provide the proper trace representation for the Object, provide the proper
+# implementation for the appropriate method.
+#
+#  Object[]
+# Since Object[] is a proper subclass of Object, Object[] can be passed. Use
+# Object[] when more than one parameter should be passed to a message logging
+# or trace method. The appropriate method (toString() or toTraceString()) is
+# called on each Object in the array. This array should contain only
+# standalone normal Objects and should not contain other arrays. Passing nested
+# array may result in the following Strings being displayed :
+#  "[B@924586a0b" - This is deciphered as a byte array at location X.
+# This is typically returned when an array of primitives is passed as a member
+# of an Object[]. It is the result of calling toString() on the byte[].
+#  "[Ljava.lang.Object;@9136fa0b" : An array of objects.
+# Typically this is seen when an array containing nested arrays is passed.
+#
+#  Array of Primitives
+# An array of primitive (e.g. byte[], int[] is recognized as an Object, but is
+# treated somewhat as a second cousin of Object by Java. The results you see
+# will depend on the type of array passed and the API used. For consistent results,
+# user code should preprocess and format the primitive array into some type of
+# String form before passing it to the method. If such preprocessing is not
+# performed, you may see something results something like the following:
+#  "Illegal trace argument : array of long."
+# This is typically returned when an array of primitives is passed to a method
+# taking an Object and the Tr service does not provide special parsing for
+# primitive arrays of this type.
+#  "01040703..." : the hex representation of an array of bytes.
+# Typically this may be seen when a byte array is passed to a method taking a
+# single Object. This behavior is subject to change and should not be relied on.
+#  " '1' '2' ..." : The String representation of the members of an int[] formed
+# by converting each element to an Integer and calling toString on the Integers.
+# This behavior is subject to change and should not be relied on.
+#
+#  Common messages
+# The following common messages are used in this file:
+#
+#         CMSG0001       This is an unexpected exception. The cause can not be immediately determined.
+#         CMSG0002       For further information on resolving this error, please consult the IBM WebSphere Application Server Support website available
+#                        at: http://www-3.ibm.com/software/webservers/appserv/support.html. The site provides searchable databases of technotes,
+#                        solutions, and e-fixes. Information on contacting the WebSphere Support team is also provided.
+#
+# During the build, the WebSphere Message Tool will recognize the common message keywords, and replace them with text defined in the
+#                Common Messages Table.
+#
+#
+#
+#
+#-----------------------------------------------------------------------
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells Java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+#
+#-----------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines. 
+# For more information, visit: 
+#     http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.6,0,05/12/08,09:47:34
+#
+#CMVCPATHNAME ws/code/recovery.log.impl/src/com/ibm/ws/recoverylog/resources/RecoveryLogMsgs.nlsprops
+#COMPONENTPREFIX WRLS CWRLS
+#COMPONENTNAMEFOR WRLS WebSphere Recovery Log Service
+#COMPONENTNAMEFOR CWRLS WebSphere Recovery Log Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------
+# All new V6 msgs should use the prefix CWRLS
+
+#-----------------------------------------------------------------------
+CWRLS0001_SUSPEND_RLS=CWRLS0001I: O Recovery Log Service foi suspenso ({0}).
+CWRLS0001_SUSPEND_RLS.explanation=O Recovery Log Service est\u00e1 em estado pendente para permitir que o sistema fa\u00e7a backup dos arquivos de log de recupera\u00e7\u00e3o.
+CWRLS0001_SUSPEND_RLS.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#-----------------------------------------------------------------------
+CWRLS0002_RESUME_RLS=CWRLS0002I: O Recovery Log Service foi resumido ({0}).
+CWRLS0002_RESUME_RLS.explanation=O Recovery Log Service que foi suspenso anteriormente \u00e9 restaurado para o estado de execu\u00e7\u00e3o.
+CWRLS0002_RESUME_RLS.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#-----------------------------------------------------------------------
+CWRLS0003_GENERIC_ERROR=CWRLS0003E: {0}
+CWRLS0003_GENERIC_ERROR.explanation=Este c\u00f3digo de mensagem \u00e9 utilizado para suportar mensagens que ainda n\u00e3o alocaram seu pr\u00f3prio c\u00f3digo de mensagem.
+CWRLS0003_GENERIC_ERROR.useraction=Consulte o texto da mensagem para obter informa\u00e7\u00f5es adicionais.
+
+#-----------------------------------------------------------------------
+CWRLS0004_RECOVERY_LOG_CREATE_FAILED=CWRLS0004E: n\u00e3o foi poss\u00edvel criar um arquivo de log de recupera\u00e7\u00e3o {0}.
+CWRLS0004_RECOVERY_LOG_CREATE_FAILED.explanation=O servi\u00e7o de log de recupera\u00e7\u00e3o n\u00e3o p\u00f4de criar o arquivo indicado na mensagem. O diret\u00f3rio de destino est\u00e1 inacess\u00edvel ou o sistema n\u00e3o tem permiss\u00f5es suficientes para criar o arquivo necess\u00e1rio.
+CWRLS0004_RECOVERY_LOG_CREATE_FAILED.useraction=Assegure-se de que a hierarquia de diret\u00f3rios necess\u00e1ria seja v\u00e1lida e esteja acess\u00edvel para o servi\u00e7o de log de recupera\u00e7\u00e3o.
+
+#-----------------------------------------------------------------------
+CWRLS0005_RECOVERY_LOG_LOCK_FAILED=CWRLS0005E: n\u00e3o foi poss\u00edvel obter uma trava de arquivo exclusiva {0}.
+CWRLS0005_RECOVERY_LOG_LOCK_FAILED.explanation=O servi\u00e7o de log de recupera\u00e7\u00e3o n\u00e3o p\u00f4de bloquear exclusivamente o arquivo indicado na mensagem.
+CWRLS0005_RECOVERY_LOG_LOCK_FAILED.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+CWRLS0006_RECOVERY_LOG_CREATE=CWRLS0006I: Criando o novo arquivo de registro de recupera\u00e7\u00e3o {0}.
+CWRLS0006_RECOVERY_LOG_CREATE.explanation=Um novo arquivo de log de recupera\u00e7\u00e3o foi estabelecido para armazenar dados persistentes.
+CWRLS0006_RECOVERY_LOG_CREATE.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#-----------------------------------------------------------------------
+CWRLS0007_RECOVERY_LOG_NOT_EXIST=CWRLS0007I: Nenhum arquivo de registro de recupera\u00e7\u00e3o existente localizado em {0}. Inicializa\u00e7\u00e3o a frio do log de recupera\u00e7\u00e3o.
+CWRLS0007_RECOVERY_LOG_NOT_EXIST.explanation=Os arquivos de log de recupera\u00e7\u00e3o anteriores foram exclu\u00eddos ou esta \u00e9 a primeira vez que os arquivos de log de recupera\u00e7\u00e3o foram armazenados neste local. Em qualquer um dos casos, o servi\u00e7o associado ser\u00e1 iniciado e nenhum processamento de recupera\u00e7\u00e3o ser\u00e1 executado.
+CWRLS0007_RECOVERY_LOG_NOT_EXIST.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#-----------------------------------------------------------------------
+CWRLS0008_RECOVERY_LOG_FAILED=CWRLS0008E: O log de recupera\u00e7\u00e3o est\u00e1 sendo marcado como com falha. [ {0} {1} ]
+CWRLS0008_RECOVERY_LOG_FAILED.explanation=O log de recupera\u00e7\u00e3o falhou e n\u00e3o h\u00e1 acesso adicional ao log de recupera\u00e7\u00e3o. A mensagem mostra o componente e a exce\u00e7\u00e3o relevante.
+CWRLS0008_RECOVERY_LOG_FAILED.useraction=Reinicie o servidor para que o log possa ser corrigido. Tente corrigir qualquer condi\u00e7\u00e3o indicada pela exce\u00e7\u00e3o na mensagem.
+
+#-----------------------------------------------------------------------
+CWRLS0009_RECOVERY_LOG_FAILED_DETAIL=CWRLS0009E: Detalhes da falha do log de recupera\u00e7\u00e3o: {0}
+CWRLS0009_RECOVERY_LOG_FAILED_DETAIL.explanation=Essa mensagem \u00e9 emitida com a mensagem CWRLS0008E, para indicar os detalhes da falha do registro de recupera\u00e7\u00e3o.
+CWRLS0009_RECOVERY_LOG_FAILED_DETAIL.useraction=Utilize as informa\u00e7\u00f5es dessa mensagem e da mensagem CWRLS0008E para corrigir a condi\u00e7\u00e3o que causou a falha no log de recupera\u00e7\u00e3o.
+
+#-----------------------------------------------------------------------
+CWRLS0010_PERFORM_LOCAL_RECOVERY=CWRLS0010I: Realizando processamento de recupera\u00e7\u00e3o para o servidor WebSphere local ({0}).
+CWRLS0010_PERFORM_LOCAL_RECOVERY.explanation=O servi\u00e7o de registro de recupera\u00e7\u00e3o est\u00e1 direcionando o processamento de recupera\u00e7\u00e3o de servi\u00e7os de clientes associados.
+CWRLS0010_PERFORM_LOCAL_RECOVERY.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#-----------------------------------------------------------------------
+CWRLS0011_PERFORM_PEER_RECOVERY=CWRLS0011I: Realizando processamento de recupera\u00e7\u00e3o para o servidor WebSphere de ponto a ponto ({0}).
+CWRLS0011_PERFORM_PEER_RECOVERY.explanation=O servi\u00e7o de registro de recupera\u00e7\u00e3o est\u00e1 direcionando o processamento de recupera\u00e7\u00e3o de servi\u00e7os de clientes associados para o servidor no mesmo n\u00edvel.
+CWRLS0011_PERFORM_PEER_RECOVERY.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#-----------------------------------------------------------------------
+CWRLS0012_DIRECT_LOCAL_RECOVERY=CWRLS0012I: Todos os servi\u00e7os persistentes foram direcionados para realizar o processamento de recupera\u00e7\u00e3o para este servidor WebSphere ({0}).
+CWRLS0012_DIRECT_LOCAL_RECOVERY.explanation=O servi\u00e7o de registro de recupera\u00e7\u00e3o solicitou a todos os servi\u00e7os de clientes associados o in\u00edcio da recupera\u00e7\u00e3o.
+CWRLS0012_DIRECT_LOCAL_RECOVERY.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#-----------------------------------------------------------------------
+CWRLS0013_DIRECT_PEER_RECOVERY=CWRLS0013I: Todos os servi\u00e7os persistentes foram direcionados para realizar o processamento para um servidor WebSphere de ponto a ponto ({0}).
+CWRLS0013_DIRECT_PEER_RECOVERY.explanation=O servi\u00e7o de registro de recupera\u00e7\u00e3o solicitou a todos os servi\u00e7os de clientes associados o in\u00edcio da recupera\u00e7\u00e3o para o servidor no mesmo n\u00edvel.
+CWRLS0013_DIRECT_PEER_RECOVERY.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#-----------------------------------------------------------------------
+CWRLS0014_HALT_PEER_RECOVERY=CWRLS0014I: Realizando intermit\u00eancia de qualquer processamento de recupera\u00e7\u00e3o atual para um servidor WebSphere de ponto a ponto ({0}).
+CWRLS0014_HALT_PEER_RECOVERY.explanation=O processamento de recupera\u00e7\u00e3o est\u00e1 sendo transferido para um servidor de aplicativos alternativo . Normalmente, isso ocorre quando um servidor \u00e9 reiniciado e retoma o direito \u00e0 propriedade de seus registros de recupera\u00e7\u00e3o.
+CWRLS0014_HALT_PEER_RECOVERY.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#-----------------------------------------------------------------------
+CWRLS0015_DISABLE_FILE_LOCKING=CWRLS0015I: O travamento do recupera\u00e7\u00e3o de recupera\u00e7\u00e3o foi desativado nas propriedades personalizadas do servi\u00e7o de transa\u00e7\u00f5es.
+CWRLS0015_DISABLE_FILE_LOCKING.explanation=O mecanismo de bloqueio de arquivo que o servi\u00e7o de log de recupera\u00e7\u00e3o utiliza para garantir acesso exclusivo aos arquivos de log de recupera\u00e7\u00e3o foi desativado explicitamente.
+CWRLS0015_DISABLE_FILE_LOCKING.useraction=Assegure-se de que as restri\u00e7\u00f5es adequadas estejam no local para suportar essa defini\u00e7\u00e3o de configura\u00e7\u00e3o.
+
+#-----------------------------------------------------------------------
+CWRLS0016_RECOVERY_PROCESSING_FAILED=CWRLS0016E: N\u00e3o foi poss\u00edvel obter uma trava de arquivo exclusiva para realizar o processamento de recupera\u00e7\u00e3o para o servidor {0}.
+CWRLS0016_RECOVERY_PROCESSING_FAILED.explanation=O servidor de destino est\u00e1 ativo ou a configura\u00e7\u00e3o do log de recupera\u00e7\u00e3o est\u00e1 incorreta.
+CWRLS0016_RECOVERY_PROCESSING_FAILED.useraction=Certifique-se de que a configura\u00e7\u00e3o do log de recupera\u00e7\u00e3o seja v\u00e1lida.
+
+#-----------------------------------------------------------------------
+CWRLS0017_RECOVERY_PROCESSING_INTERRUPTED=CWRLS0017I: Uma tentativa para obter uma trava de arquivo exclusiva para realizar o processamento de recupera\u00e7\u00e3o para o servidor {0}foi interrompida.   Outro servidor est\u00e1 ativado para realizar o processamento de recupera\u00e7\u00e3o.
+CWRLS0017_RECOVERY_PROCESSING_INTERRUPTED.explanation=O controle de um log de recupera\u00e7\u00e3o foi transmitido entre dois servidores de aplicativos.
+CWRLS0017_RECOVERY_PROCESSING_INTERRUPTED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#-----------------------------------------------------------------------
+CWRLS0018_RECOVERY_PROCESSING_FAILED=CWRLS0018E: uma tentativa de intermit\u00eancia de recupera\u00e7\u00e3o de transa\u00e7\u00e3o e de redirecionamento do processamento para um servidor local {0}) foi interrompida.
+CWRLS0018_RECOVERY_PROCESSING_FAILED.explanation=O servi\u00e7o de log de recupera\u00e7\u00e3o fez com que o servidor local n\u00e3o abandonasse o controle de seus pr\u00f3prios logs de recupera\u00e7\u00e3o. Isto pode ser causado pela configura\u00e7\u00e3o da pol\u00edtica do grupo principal.
+CWRLS0018_RECOVERY_PROCESSING_FAILED.useraction=Assegure-se de que a configura\u00e7\u00e3o de pol\u00edtica n\u00e3o designe a propriedade do log de recupera\u00e7\u00e3o de um servidor ativo para um servidor alternativo.
+
+#-----------------------------------------------------------------------
+CWRLS0019_SNAPSHOT_SAFE=CWRLS0019I: O Recovery Log Service foi configurado como uma captura instant\u00e2nea segura nas propriedades personalizadas do servi\u00e7o de transa\u00e7\u00f5es.
+CWRLS0019_SNAPSHOT_SAFE.explanation=Quando uma captura instant\u00e2nea dos arquivos de log \u00e9 solicitada, todas as atividades de cria\u00e7\u00e3o de log de transa\u00e7\u00f5es s\u00e3o suspensas enquanto a captura instant\u00e2nea \u00e9 obtida, a fim de assegurar que os arquivos de log estejam em um estado conhecido que seja consistente com outros sistemas envolvidos na captura instant\u00e2nea.
+CWRLS0019_SNAPSHOT_SAFE.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#-----------------------------------------------------------------------
+CWRLS0020_SNAPSHOT_SAFE=CWRLS0020W: O Recovery Log Service N\u00c3O foi configurado como uma captura instant\u00e2nea segura nas propriedades personalizadas do servi\u00e7o de transa\u00e7\u00f5es.
+CWRLS0020_SNAPSHOT_SAFE.explanation=Se uma captura instant\u00e2nea dos arquivos de log for obtida, os arquivos de log poder\u00e3o n\u00e3o estar em um estado que seja consistente com outros sistemas envolvidos na captura instant\u00e2nea.
+CWRLS0020_SNAPSHOT_SAFE.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#-----------------------------------------------------------------------
+CWRLS0021_RESUME_ATTEMPT_RLS=CWRLS0021I: O Recovery Log Service foi chamado para resumir ({0}), mas h\u00e1 outros processos importantes suspensos.
+CWRLS0021_RESUME_ATTEMPT_RLS.explanation=O servi\u00e7o de log de recupera\u00e7\u00e3o ser\u00e1 retomado apenas quando n\u00e3o houver opera\u00e7\u00f5es de suspens\u00e3o pendentes.
+CWRLS0021_RESUME_ATTEMPT_RLS.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#-----------------------------------------------------------------------
+CWRLS0022_RLS_SUSPEND_TIMEOUT=CWRLS0022I: Uma opera\u00e7\u00e3o suspensa do Recovery Log Service atingiu o tempo limite ({0}).
+CWRLS0022_RLS_SUSPEND_TIMEOUT.explanation=Se n\u00e3o houver opera\u00e7\u00f5es de suspens\u00e3o pendentes, o servi\u00e7o de log de recupera\u00e7\u00e3o ser\u00e1 retomado.
+CWRLS0022_RLS_SUSPEND_TIMEOUT.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#-----------------------------------------------------------------------
+CWRLS0023_RESUME_RLS=CWRLS0023I: O Recovery Log Service foi resumido depois de atingir o tempo limite de uma opera\u00e7\u00e3o suspensa.
+CWRLS0023_RESUME_RLS.explanation=Essa mensagem \u00e9 apenas informativa.
+CWRLS0023_RESUME_RLS.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#-----------------------------------------------------------------------
+CWRLS0024_EXC_DURING_RECOVERY=CWRLS0024E: Exce\u00e7\u00e3o capturada durante recupera\u00e7\u00e3o! {0}
+CWRLS0024_EXC_DURING_RECOVERY.explanation= Foi detectada uma exce\u00e7\u00e3o ao tentar se recuperar de uma falha anterior do servidor.
+CWRLS0024_EXC_DURING_RECOVERY.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+CWRLS0025_RECOVER_MODE_NOT_COMPATIBLE=CWRLS0025E: A inicializa\u00e7\u00e3o do modo de recupera\u00e7\u00e3o do servidor n\u00e3o \u00e9 compat\u00edvel com o ativamento HA.
+CWRLS0025_RECOVER_MODE_NOT_COMPATIBLE.explanation=Em uma configura\u00e7\u00e3o de alta disponibilidade, a recupera\u00e7\u00e3o do servidor poder\u00e1 ser automaticamente iniciada em um servidor no mesmo n\u00edvel.
+CWRLS0025_RECOVER_MODE_NOT_COMPATIBLE.useraction=N\u00e3o tente iniciar um servidor no modo de recupera\u00e7\u00e3o se ele estiver ativado para alta disponibilidade.
+
+#-----------------------------------------------------------------------
+CWRLS0026_RECOVERY_LOG_LOCK_RETRY=CWRLS0026W: N\u00e3o foi poss\u00edvel obter uma trava de arquivo exclusiva em {0} - tentando novamente.
+CWRLS0026_RECOVERY_LOG_LOCK_RETRY.explanation=O servi\u00e7o de log de recupera\u00e7\u00e3o n\u00e3o pode bloquear exclusivamente o arquivo indicado na mensagem durante a recupera\u00e7\u00e3o, pois o arquivo parece estar em uso. O servi\u00e7o de recupera\u00e7\u00e3o tentar\u00e1 obter periodicamente o bloqueio restrito para que a recupera\u00e7\u00e3o possa continuar. Se o arquivo de log de recupera\u00e7\u00e3o for um dos logs de recupera\u00e7\u00e3o do servidor principal, a inicializa\u00e7\u00e3o ser\u00e1 suspensa at\u00e9 o acesso aos logs ser poss\u00edvel.  Se o arquivo de log de recupera\u00e7\u00e3o pertencer a outro servidor no mesmo n\u00edvel, outro servidor poder\u00e1 obter os bloqueios e executar a recupera\u00e7\u00e3o no mesmo n\u00edvel; nesta situa\u00e7\u00e3o, esse servidor interromper\u00e1 a tentativa de recupera\u00e7\u00e3o.
+CWRLS0026_RECOVERY_LOG_LOCK_RETRY.useraction=Examine quaisquer mensagens relacionadas, para determinar a causa do problema. Se n\u00e3o houver mensagens relacionadas, verifique o local dos arquivos de recupera\u00e7\u00e3o e assegure-se de que eles n\u00e3o estejam sendo acessados por outro servidor. Por exemplo, essa situa\u00e7\u00e3o poder\u00e1 ocorrer se mais de um servidor estiver configurado para utilizar os logs de recupera\u00e7\u00e3o de outro servidor.
+
+#-----------------------------------------------------------------------
+CWRLS0027_COMMON_TRANLOG_DIRS=CWRLS0027W: O diret\u00f3rio do log de transa\u00e7\u00f5es comuns {0} foi definido para os servidores {1} e {2}
+CWRLS0027_COMMON_TRANLOG_DIRS.explanation=Os logs de transa\u00e7\u00f5es de dois servidores est\u00e3o utilizando uma configura\u00e7\u00e3o de diret\u00f3rio comum. Isto pode causar a conten\u00e7\u00e3o do bloqueio de recupera\u00e7\u00e3o ou uma falha de integridade de dados. 
+CWRLS0027_COMMON_TRANLOG_DIRS.useraction=Configure caminhos de diret\u00f3rios de log separados para cada servidor.
+
+#-----------------------------------------------------------------------
+CWRLS0028_COMMON_COMPLOG_DIRS=CWRLS0028W: O diret\u00f3rio de log de compensa\u00e7\u00e3o comum {0} foi definido para os servidores {1} e {2}
+CWRLS0028_COMMON_COMPLOG_DIRS.explanation=Os logs de compensa\u00e7\u00e3o de dois servidores est\u00e3o utilizando uma configura\u00e7\u00e3o de diret\u00f3rio comum. Isto pode causar a conten\u00e7\u00e3o do bloqueio de recupera\u00e7\u00e3o ou uma falha de integridade de dados. 
+CWRLS0028_COMMON_COMPLOG_DIRS.useraction=Configure caminhos de diret\u00f3rios de log separados para cada servidor.
+
+#-----------------------------------------------------------------------
+CWRLS0029_LOCAL_RECOVERY_FAILED=CWRLS0029W: Imposs\u00edvel realizar o processamento de recupera\u00e7\u00e3o para o servidor WebSphere local - o servidor est\u00e1 encerrado.
+CWRLS0029_LOCAL_RECOVERY_FAILED.explanation=O servi\u00e7o de log de recupera\u00e7\u00e3o n\u00e3o pode executar nem concluir a recupera\u00e7\u00e3o do servidor local e nenhum trabalho adicional poder\u00e1 continuar, de forma que o servidor seja interrompido.
+CWRLS0029_LOCAL_RECOVERY_FAILED.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+CWRLS0030_WAITING_FOR_HAM_ACTIVATE=CWRLS0030W: Aguardando que o HAManager ative o processamento de recupera\u00e7\u00e3o para o servidor WebSphere local.
+CWRLS0030_WAITING_FOR_HAM_ACTIVATE.explanation=O servi\u00e7o de log de recupera\u00e7\u00e3o n\u00e3o pode iniciar o processamento de recupera\u00e7\u00e3o para o servidor local, porque ele est\u00e1 aguardando o HAManager para ativar a associa\u00e7\u00e3o do grupo para os logs de recupera\u00e7\u00e3o desse servidor local.
+CWRLS0030_WAITING_FOR_HAM_ACTIVATE.useraction=Examine quaisquer mensagens relacionadas, para determinar a causa do problema. Se n\u00e3o houver mensagens relacionadas, verifique a configura\u00e7\u00e3o das defini\u00e7\u00f5es de DefaultCoreGroup e das defini\u00e7\u00f5es de pol\u00edtica associadas para o servi\u00e7o de log de recupera\u00e7\u00e3o do servidor. Por exemplo, se a pol\u00edtica Clustered TM estiver configurada para n\u00e3o suportar falha novamente, outro servidor poder\u00e1 ter uma suspens\u00e3o nos logs e n\u00e3o ser mais ativado.
+

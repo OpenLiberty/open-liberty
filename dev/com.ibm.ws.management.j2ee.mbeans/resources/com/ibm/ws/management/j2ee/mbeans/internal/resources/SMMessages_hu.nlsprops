@@ -1,0 +1,31 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX J2EE SM related MBeans
+#CMVCPATHNAME com.ibm.ws.management.j2ee.mbeans/resources/com/ibm/ws/management/j2ee/mbeans/internal/resources/SMMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#
+# Message prefix block: CWWKX7500 - CWWKX7524
+
+#-----  JVMMBeanImpl
+
+DETERMINE_HOST_ERROR=CWWKX7500E: A term\u00e9k nem k\u00e9pes meg\u00e1llap\u00edtani a hoszt teljes k\u00e9pz\u00e9s\u0171 tartom\u00e1nynev\u00e9t. A hosztn\u00e9v alap\u00e9rtelmez\u00e9sben {0} lesz. A hiba: {1}
+DETERMINE_HOST_ERROR.explanation=A kiszolg\u00e1l\u00f3 IP c\u00edme vagy hosztneve nem \u00e1llap\u00edthat\u00f3 meg.
+DETERMINE_HOST_ERROR.useraction=Vizsg\u00e1lja meg a kiszolg\u00e1l\u00f3 h\u00e1l\u00f3zati be\u00e1ll\u00edt\u00e1sait \u00e9s ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t a --clean param\u00e9terrel.
+
+#-----  SMActivator
+
+OSGI_SERVICE_ERROR=CWWKX7501E: A(z) {0} OSGi szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.  Pr\u00f3b\u00e1lja meg a kiszolg\u00e1l\u00f3 \u00fajraind\u00edt\u00e1s\u00e1t a --clean param\u00e9terrel.
+OSGI_SERVICE_ERROR.explanation=A megadott szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el, ezt a bels\u0151 kiszolg\u00e1l\u00f3hib\u00e1t eredm\u00e9nyezve.
+OSGI_SERVICE_ERROR.useraction=Ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t a --clean param\u00e9terrel.

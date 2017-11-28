@@ -1,0 +1,334 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+##########################################################################
+#
+# %Z% %I% %W% %G% %U% [%H% %T%]                                                
+#
+#
+#  COMPONENT_NAME: WAS.transactions
+#
+#  ORIGINS: 27
+#
+#  DESCRIPTION:
+#
+#  Change Log:
+#  Date      Pgmr      Defect     Description
+#  --------  --------  --------   ------------------------------------------
+#  05-01-20  mdobbie   LI3603     Creation
+#  05-02-28  hursdlg   254615     Msgs 26-28
+#  05-03-03  hursdlg   254326     Msgs 29-30
+#  07-02-26  awilkins  422999     Message review: updates to useraction and explanation
+#  07-03-02  awilkins  424163     Message review: improve contact IBM support user action
+#  08-02-11  mallam    496337     PII additions
+#  29-02-08 johawkes   501807     Style changes
+#  -------------------------------------------------------------------------
+#
+# DEVELOPER INSTRUCTIONS
+# ----------------------
+#
+# To add a new message, define the key string in LTCTrace.java, then create
+# the message text below using that key.  Fill in the comment block above the
+# message to assist in translation of the message, particularly to aid in the
+# appropriate positioning of any message inserts within the translated text.
+# To issue the message, use the LTCTrace.Message method.
+#
+# USE OF PROPERTIES FILE FOR MESSAGES:
+#
+# - Each property in the property file is terminated by the line termination character.
+# - If a line contains only whitespace or if the first non-whitespace character of a
+# line is # or !, the line is ignored. (comments start with # or !)
+# - Every line in the properties file other than whitespace lines or comment lines
+# denotes a single property. A \ is treated as a line continuation character. Lines
+# should be terminated with the line termination character.
+# - Correct grammar for a property line is <key><separator><element>. A valid separator
+# is any one of equal, colon or whitespace ( =: ).
+# - The key consists of all the characters on the line starting from the first
+# non-whitespace up to the first separator. Separator characters can be included in the
+# key by escaping them (e.g. \:) This is not recommended because it is error prone and
+# confusing.
+# - Whitespace after the key is skipped until the first non-whitespace character is
+# found. All remaining characters up to the appropriate line termination character
+# define the element.
+#
+# MESSAGE INSERTS
+#
+#  Primitives
+# Primitives, such as int and long are not recognized as subclasses of Object
+# and cannot be directly passed to one of these methods. A primitive value must
+# be transformed to its proper type (e.g Integer, Long) before being passed as
+# a parameter.
+#
+#  Object
+# For normal Objects, toString() is called on the object and the resulting String
+# is displayed. For exceptions, the stack trace will be printed.For Objects that
+# implement the Traceable interface, the toTraceString() method is called instead.
+# To provide the proper trace representation for the Object, provide the proper
+# implementation for the appropriate method.
+#
+#  Object[]
+# Since Object[] is a proper subclass of Object, Object[] can be passed. Use
+# Object[] when more than one parameter should be passed to a message logging
+# or trace method. The appropriate method (toString() or toTraceString()) is
+# called on each Object in the array. This array should contain only
+# standalone normal Objects and should not contain other arrays. Passing nested
+# array may result in the following Strings being displayed :
+#  "[B@924586a0b" - This is deciphered as a byte array at location X.
+# This is typically returned when an array of primitives is passed as a member
+# of an Object[]. It is the result of calling toString() on the byte[].
+#  "[Ljava.lang.Object;@9136fa0b" : An array of objects.
+# Typically this is seen when an array containing nested arrays is passed.
+#
+#  Array of Primitives
+# An array of primitive (e.g. byte[], int[] is recognized as an Object, but is
+# treated somewhat as a second cousin of Object by Java. The results you see
+# will depend on the type of array passed and the API used. For consistent results,
+# user code should preprocess and format the primitive array into some type of
+# String form before passing it to the method. If such preprocessing is not
+# performed, you may see something results something like the following:
+#  "Illegal trace argument : array of long."
+# This is typically returned when an array of primitives is passed to a method
+# taking an Object and the Tr service does not provide special parsing for
+# primitive arrays of this type.
+#  "01040703..." : the hex representation of an array of bytes.
+# Typically this may be seen when a byte array is passed to a method taking a
+# single Object. This behavior is subject to change and should not be relied on.
+#  " '1' '2' ..." : The String representation of the members of an int[] formed
+# by converting each element to an Integer and calling toString on the Integers.
+# This behavior is subject to change and should not be relied on.
+#
+#  Common messages
+# The following common messages are used in this file:
+#
+#         CMSG0001       This is an unexpected exception. The cause can not be immediately determined.
+#         CMSG0002       For further information on resolving this error, please consult the IBM WebSphere Application Server Support website available
+#                        at: http://www-3.ibm.com/software/webservers/appserv/support.html. The site provides searchable databases of technotes,
+#                        solutions, and e-fixes. Information on contacting the WebSphere Support team is also provided.
+#
+# During the build, the WebSphere Message Tool will recognize the common message keywords, and replace them with text defined in the
+#                Common Messages Table.
+#
+#
+#
+#
+#-----------------------------------------------------------------------
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells Java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+#
+#-----------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines. 
+# For more information, visit: 
+#     http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.6,0,05/12/08,09:47:34
+#
+#CMVCPATHNAME ws/code/recovery.log.impl/src/com/ibm/ws/recoverylog/resources/RecoveryLogMsgs.nlsprops
+#COMPONENTPREFIX WRLS CWRLS
+#COMPONENTNAMEFOR WRLS WebSphere Recovery Log Service
+#COMPONENTNAMEFOR CWRLS WebSphere Recovery Log Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------
+# All new V6 msgs should use the prefix CWRLS
+
+#-----------------------------------------------------------------------
+CWRLS0001_SUSPEND_RLS=CWRLS0001I: Serviciul istoricului de recuperare a fost suspendat ({0}).
+CWRLS0001_SUSPEND_RLS.explanation=Serviciul de recuperare istoric este \u00een stare de a\u015fteptare pentru a permite sistemului s\u0103 fac\u0103 copii de rezerv\u0103 pentru fi\u015fierele istoric de recuperare.
+CWRLS0001_SUSPEND_RLS.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#-----------------------------------------------------------------------
+CWRLS0002_RESUME_RLS=CWRLS0002I: Serviciul istoricului de recuperare a fost continuat ({0}).
+CWRLS0002_RESUME_RLS.explanation=Serviciul de recuperare istoric care a fost suspendat mai devreme este restaurat \u00een starea de rulaj.
+CWRLS0002_RESUME_RLS.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#-----------------------------------------------------------------------
+CWRLS0003_GENERIC_ERROR=CWRLS0003E: {0}
+CWRLS0003_GENERIC_ERROR.explanation=Acest mesaj este folosit pentru a sus\u0163ine mesajele c\u0103rora nu le-au fost \u00eenc\u0103 alocate coduri proprii de mesaj.
+CWRLS0003_GENERIC_ERROR.useraction=Verifica\u015fi textul mesajului pentru informa\u0163ii suplimentare.
+
+#-----------------------------------------------------------------------
+CWRLS0004_RECOVERY_LOG_CREATE_FAILED=CWRLS0004E: Nu poate s\u0103 creeze fi\u015fierul istoric de recuperare {0}.
+CWRLS0004_RECOVERY_LOG_CREATE_FAILED.explanation=Acest serviciu de recuperare istoric nu a putut crea fi\u015fierul indicat \u00een mesaj. Fie directorul destina\u0163ie nu este accesibil, fie sistemul nu are permisiuni suficiente pentru a crea fi\u015fierul specificat.
+CWRLS0004_RECOVERY_LOG_CREATE_FAILED.useraction=Asigura\u0163i-v\u0103 c\u0103 ierarhia necesar\u0103 este valid\u0103 \u015fi accesibil\u0103 pentru serviciul de recuperare istoric.
+
+#-----------------------------------------------------------------------
+CWRLS0005_RECOVERY_LOG_LOCK_FAILED=CWRLS0005E: Nu poate s\u0103 ob\u0163in\u0103 o blocare exclusiv\u0103 a fi\u015fierului {0}.
+CWRLS0005_RECOVERY_LOG_LOCK_FAILED.explanation=Serviciul de recuperare istoric nu a putut bloca exclusiv fi\u015fierul indicat \u00een mesaj.
+CWRLS0005_RECOVERY_LOG_LOCK_FAILED.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+CWRLS0006_RECOVERY_LOG_CREATE=CWRLS0006I: Crearea unui nou fi\u015fier istoric de recuperare {0}.
+CWRLS0006_RECOVERY_LOG_CREATE.explanation=A fost stabilit un nou fi\u015fier de recuperare istoric pentru datele persistente de depozit.
+CWRLS0006_RECOVERY_LOG_CREATE.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#-----------------------------------------------------------------------
+CWRLS0007_RECOVERY_LOG_NOT_EXIST=CWRLS0007I: Nu a fost g\u0103sit nici un fi\u015fier istoric de recuperare existent \u00een {0}. Nu s-a putut porni istoricul recuperare.
+CWRLS0007_RECOVERY_LOG_NOT_EXIST.explanation=Fie fi\u015fierele istoricului recuperare au fost \u015fterse, fie aceasta este prima dat\u0103 c\u00e2nd fi\u015fierele istoric recuperare sunt stocate \u00een aceast\u0103 loca\u0163ie. \u00cen ambele cazuri, serviciul asociat va \u00eencepe \u015fi va rula procesarea recuper\u0103rii.
+CWRLS0007_RECOVERY_LOG_NOT_EXIST.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#-----------------------------------------------------------------------
+CWRLS0008_RECOVERY_LOG_FAILED=CWRLS0008E: Istoricul de recuperare este marcat ca e\u015fuat. [ {0} {1} ]
+CWRLS0008_RECOVERY_LOG_FAILED.explanation=Istoricul recuperare a e\u015fuat, \u015fi nu mai exist\u0103 acces la istoricul recuperare. Acest mesaj arat\u0103 componenta \u015fi excep\u0163ia relevant\u0103.
+CWRLS0008_RECOVERY_LOG_FAILED.useraction=Reporni\u0163i serverul astfel \u00eenc\u00e2t istoricul s\u0103 poat\u0103 fi reparat. \u00cencerca\u0163i s\u0103 repara\u0163i toate condi\u0163iile indicate de excep\u0163ia din mesaj.
+
+#-----------------------------------------------------------------------
+CWRLS0009_RECOVERY_LOG_FAILED_DETAIL=CWRLS0009E: Detalii despre e\u015fuarea istoricului de recuperare: {0}
+CWRLS0009_RECOVERY_LOG_FAILED_DETAIL.explanation=Acest mesaj este emis cu mesajul CWRLS0008E pentru a indica detaliile e\u015fu\u0103rii istoricului recuperare.
+CWRLS0009_RECOVERY_LOG_FAILED_DETAIL.useraction=Folosi\u0163i informa\u0163iile din acest mesaj \u015fi din mesajul CWRLS0008E pentru a corecta condi\u0163ia care a cauzat e\u015fuarea istoricului recuperare.
+
+#-----------------------------------------------------------------------
+CWRLS0010_PERFORM_LOCAL_RECOVERY=CWRLS0010I: Realizarea proces\u0103rii recuper\u0103rii pentru serverul WebSphere local ({0}).
+CWRLS0010_PERFORM_LOCAL_RECOVERY.explanation=SErviciul de recuperare istoric direc\u0163ioneaz\u0103 procesarea de recuperare de servicii client asociate.
+CWRLS0010_PERFORM_LOCAL_RECOVERY.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#-----------------------------------------------------------------------
+CWRLS0011_PERFORM_PEER_RECOVERY=CWRLS0011I: Realizarea proces\u0103rii recuper\u0103rii pentru un server WebSphere peer ({0}).
+CWRLS0011_PERFORM_PEER_RECOVERY.explanation=SErviciul de recuperare istoric direc\u0163ioneaz\u0103 procesarea de recuperare de servicii client asociate pentru serverul peer.
+CWRLS0011_PERFORM_PEER_RECOVERY.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#-----------------------------------------------------------------------
+CWRLS0012_DIRECT_LOCAL_RECOVERY=CWRLS0012I: Toate serviciile persistente au fost direc\u0163ionate s\u0103 realizeze procesarea recuper\u0103rii pentru acest server WebSphere ({0}).
+CWRLS0012_DIRECT_LOCAL_RECOVERY.explanation=Serviciul de istoric recuperare a promptat toate serviciile de client asociate pentru a \u00eencepe recuperarea.
+CWRLS0012_DIRECT_LOCAL_RECOVERY.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#-----------------------------------------------------------------------
+CWRLS0013_DIRECT_PEER_RECOVERY=CWRLS0013I: Toate serviciile persistente au fost direc\u0163ionate s\u0103 realizeze procesarea recuper\u0103rii pentru un  server WebSphere peer ({0}).
+CWRLS0013_DIRECT_PEER_RECOVERY.explanation=Serviciul de istoric recuperare a promptat toate serviciile de client asociate pentru a \u00eencepe recuperarea pentru serverul peer.
+CWRLS0013_DIRECT_PEER_RECOVERY.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#-----------------------------------------------------------------------
+CWRLS0014_HALT_PEER_RECOVERY=CWRLS0014I: Suspendarea oric\u0103rei proces\u0103ri de recuperare curent\u0103 pentru un server peer WebSphere ({0}).
+CWRLS0014_HALT_PEER_RECOVERY.explanation=Procesarea de recuperare este transferat\u0103 c\u0103tre un server de aplica\u0163ii alternativ. \u00cen mod tipic, acest lucru se \u00eent\u00e2mpl\u0103 c\u00e2nd un server este repornit \u015fi preia posesiunea asupra istoricelor sale de recuperare.
+CWRLS0014_HALT_PEER_RECOVERY.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#-----------------------------------------------------------------------
+CWRLS0015_DISABLE_FILE_LOCKING=CWRLS0015I: Blocarea fi\u015fierului istoric de recuperare a fost dezactivat \u00een propriet\u0103\u0163ile personalizate ale serviciului de tranzac\u0163ii.
+CWRLS0015_DISABLE_FILE_LOCKING.explanation=Mecanismul de blocare fi\u015fiere pe care \u00eel folose\u015fte recuperarea pentru a asigura acces exclusiv la fi\u015fierele istoric de recuperare a fost dezactivat \u00een mod explicit.
+CWRLS0015_DISABLE_FILE_LOCKING.useraction=Asigura\u0163i-v\u0103 c\u0103 constr\u00e2ngerile adecvate pot sus\u0163ine aceast\u0103 setare de configurare.
+
+#-----------------------------------------------------------------------
+CWRLS0016_RECOVERY_PROCESSING_FAILED=CWRLS0016E: Nu poate s\u0103 ob\u0163in\u0103 o blocare exclusiv\u0103 a fi\u015fierului necesar\u0103 pentru realizarea proces\u0103rii recuper\u0103rii pentru serverul {0}.
+CWRLS0016_RECOVERY_PROCESSING_FAILED.explanation=Fie serverul destina\u0163ie este activ, fie configura\u0163ia de recuperare istoric nu este corect\u0103.
+CWRLS0016_RECOVERY_PROCESSING_FAILED.useraction=Asigura\u0163i-v\u0103 c\u0103 configura\u0163ia de recuperare istoric este valid\u0103.
+
+#-----------------------------------------------------------------------
+CWRLS0017_RECOVERY_PROCESSING_INTERRUPTED=CWRLS0017I: O \u00eencercare de ob\u0163inere a bloc\u0103rii unui fi\u015fier exclusiv necesar\u0103 pentru realizarea proces\u0103rii recuper\u0103rii pentru serverul {0} a fost \u00eentrerupt\u0103.   S-a activat un alt server pentru a realiza aceast\u0103 procesare de recuperare.
+CWRLS0017_RECOVERY_PROCESSING_INTERRUPTED.explanation=Controlul asupra istoricului de recuperare a fost pasat \u00eentre cele dou\u0103 servere de aplica\u0163ii.
+CWRLS0017_RECOVERY_PROCESSING_INTERRUPTED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#-----------------------------------------------------------------------
+CWRLS0018_RECOVERY_PROCESSING_FAILED=CWRLS0018E: O \u00eencercare de suspendare a recuper\u0103rii tranzac\u0163ionale \u015fi de \u00eenaintare a proces\u0103rii pentru serverul local ({0}) a fost abandonat\u0103.
+CWRLS0018_RECOVERY_PROCESSING_FAILED.explanation=SErviciul de recuperare istoric a oprit serverul local de la reThe recovery log service has stopped the local server from renun\u0163area la propriile istorice de recuperare. Aceasta poate cauzat\u0103 de configura\u0163ia politicii de grup nucleu.
+CWRLS0018_RECOVERY_PROCESSING_FAILED.useraction=Asigura\u0163i-v\u0103 c\u0103 configura\u0163ia de politic\u0103 nu asigneaz\u0103 proprietatea istoricului de recuperare al unui server activ unui server alternativ.
+
+#-----------------------------------------------------------------------
+CWRLS0019_SNAPSHOT_SAFE=CWRLS0019I: Serviciul istoric recuperare a fost configurat ca instantaneu sigur \u00een propriet\u0103\u0163ile personalizate ale serviciului tranzac\u0163ional.
+CWRLS0019_SNAPSHOT_SAFE.explanation=Atunci c\u00e2nd un instantaneu este solicitat, toat\u0103 activitatea de \u00eenregistrare \u00een istoric tranzac\u0163ional\u0103 se suspend\u0103 pe perioada \u00een care se realizeaz\u0103 instantaneul, pentru a se asigura existen\u0163a fi\u015fierelor istoric \u00eentr-o stare cunoscut\u0103 care s\u0103 fie consistent\u0103 cu celelalte sisteme implicate \u00een realizarea instantaneului.
+CWRLS0019_SNAPSHOT_SAFE.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#-----------------------------------------------------------------------
+CWRLS0020_SNAPSHOT_SAFE=CWRLS0020W: Serviciul istoric recuperare nu a fost configurat ca instantaneu sigur \u00een propriet\u0103\u0163ile personalizate ale serviciului tranzac\u0163ional.
+CWRLS0020_SNAPSHOT_SAFE.explanation=Atunci c\u00e2nd un instantaneu este realizat, fi\u015fierele de istoric pot s\u0103 nu fie \u00eentr-o stare consistent\u0103 cu celelalte sisteme implicate \u00een realizarea instantaneului.
+CWRLS0020_SNAPSHOT_SAFE.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#-----------------------------------------------------------------------
+CWRLS0021_RESUME_ATTEMPT_RLS=CWRLS0021I: Serviciul istoric recuperare a fost apelat pentru a continua ({0}) dar exist\u0103 alte suspend\u0103ri de rezolvat.
+CWRLS0021_RESUME_ATTEMPT_RLS.explanation=Serviciul de recuperare istoric va fi reluat doar atunci c\u00e2nd nu mai exist\u0103 opera\u0163ii de surpendare remarcabile.
+CWRLS0021_RESUME_ATTEMPT_RLS.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#-----------------------------------------------------------------------
+CWRLS0022_RLS_SUSPEND_TIMEOUT=CWRLS0022I: O opera\u0163ie de suspendare a Serviciului istoric recuperare a expirat ({0}).
+CWRLS0022_RLS_SUSPEND_TIMEOUT.explanation=Dac\u0103 nu exist\u0103 opera\u0163ii remarcabile de suspendare atunci serviciul de istoric recuperare se va relua.
+CWRLS0022_RLS_SUSPEND_TIMEOUT.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#-----------------------------------------------------------------------
+CWRLS0023_RESUME_RLS=CWRLS0023I: Serviciul istoric de recuperare a fost continuat dup\u0103 expirarea unei opera\u0163ii de suspendare.
+CWRLS0023_RESUME_RLS.explanation=Acest mesaj are doar scop informa\u0163ional.
+CWRLS0023_RESUME_RLS.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#-----------------------------------------------------------------------
+CWRLS0024_EXC_DURING_RECOVERY=CWRLS0024E: Excep\u0163ie aruncat\u0103 \u00een timpul recuper\u0103rii! {0}
+CWRLS0024_EXC_DURING_RECOVERY.explanation= A fost detectat\u0103 o excep\u0163ie la \u00eencercarea de recuperare dintr-o e\u015fuare anterioar\u0103 de server.
+CWRLS0024_EXC_DURING_RECOVERY.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+CWRLS0025_RECOVER_MODE_NOT_COMPATIBLE=CWRLS0025E: Pornirea serverului \u00een modul recuperare nu este compatibil\u0103 cu activarea HA.
+CWRLS0025_RECOVER_MODE_NOT_COMPATIBLE.explanation=\u00centr-o configura\u0163ie de \u00eenalt\u0103 disponibilitate, recuperarea de server poate fi ini\u0163ializat\u0103 \u00een mod automat pe un server peer.
+CWRLS0025_RECOVER_MODE_NOT_COMPATIBLE.useraction=Nu \u00eencerca\u0163i s\u0103 porni\u0163i un server \u00een modul recuperare dac\u0103 acesta este activat pentru disponibilitate \u00eenalt\u0103.
+
+#-----------------------------------------------------------------------
+CWRLS0026_RECOVERY_LOG_LOCK_RETRY=CWRLS0026W: Nu poate s\u0103 ob\u0163in\u0103 o blocare exclusiv\u0103 a fi\u015fierului {0} - re\u00eencercare.
+CWRLS0026_RECOVERY_LOG_LOCK_RETRY.explanation=Serviciul de istoric recuperare nu poate bloca exclusiv fi\u015fierul indicat \u00een mesaj la recuperare, din cauz\u0103 c\u0103 fi\u015fierul pare a fi \u00een folosin\u0163\u0103. Serviciul de recuperare va \u00eencerca \u00een mod periodic s\u0103 c\u00e2\u015ftige blocarea exclusiv\u0103, astfel \u00eenc\u00e2t recuperarea s\u0103 poat\u0103 \u00eencepe. Dac\u0103 fi\u015fierul istoric este unul dintre istoricele principale de recuperare server, atunci pornirea va fi suspendat\u0103 p\u00e2n\u0103 ce accesul la istorice va fi posibil.  Dac\u0103 fi\u015fierul de recuperare istoric apar\u0163ine unui alt server, atunci cel\u0103lalt serve c\u00e2\u015ftig\u0103 bloc\u0103rile \u015fi realizeaz\u0103 recuperarea de peer; \u00een aceast\u0103 situa\u0163ie, acest serv er va renun\u0163a s\u0103 \u00eencerce s\u0103 realizeze recuperarea.
+CWRLS0026_RECOVERY_LOG_LOCK_RETRY.useraction=Examina\u0163i mesajele \u00eenrudite pentru a determina cauza problemei. Dac\u0103 nu exist\u0103 mesaje \u00eenrudite, atunci verifica\u0163i loca\u0163ia istoricelor de recuperare \u015fi asigura\u0163i-v\u0103 c\u0103 acestea nu sunt accesate de c\u0103tre un alt server. De exemplu, aceast\u0103 situa\u0163ie ar putea surveni dac\u0103 mai mult de un singur server este configurat pentru folosirea istoricelor de recuperare ale altui server.
+
+#-----------------------------------------------------------------------
+CWRLS0027_COMMON_TRANLOG_DIRS=CWRLS0027W: Directorul istoric tranzac\u0163ie obi\u015fnuit {0} a fost definit pentru serverele {1} \u015fi {2}
+CWRLS0027_COMMON_TRANLOG_DIRS.explanation=Istoricele de tranzac\u0163ie pentru cele dou\u0103 servere folosesc o configura\u0163ie director comun\u0103. Aceasta poate determina re\u0163inerea bloc\u0103rii de recuperare sau o e\u015fuare a integrit\u0103\u0163ii datelor. 
+CWRLS0027_COMMON_TRANLOG_DIRS.useraction=Configura\u0163i c\u0103i de director separate pentru fiecare server.
+
+#-----------------------------------------------------------------------
+CWRLS0028_COMMON_COMPLOG_DIRS=CWRLS0028W: Directorul istoric de compensare obi\u015fnuit {0} a fost definit pentru serverele {1} \u015fi {2}
+CWRLS0028_COMMON_COMPLOG_DIRS.explanation=Istoricele de compensa\u0163ie pentru cele dou\u0103 servere folosesc o configura\u0163ie director comun\u0103. Aceasta poate determina re\u0163inerea bloc\u0103rii de compensa\u0163ie sau o e\u015fuare a integrit\u0103\u0163ii datelor. 
+CWRLS0028_COMMON_COMPLOG_DIRS.useraction=Configura\u0163i c\u0103i de director separate pentru fiecare server.
+
+#-----------------------------------------------------------------------
+CWRLS0029_LOCAL_RECOVERY_FAILED=CWRLS0029W: Nu poate s\u0103 realizeze procesarea de recuperare pentru serverul WebSphere local - serverul este oprit
+CWRLS0029_LOCAL_RECOVERY_FAILED.explanation=Serviciul de istoric recuperare nu poate realiza sau finaliza recuperarea pentru serverul local iar lucrul nu poate continua, astfel \u00eenc\u00e2t serverul va fi oprit.
+CWRLS0029_LOCAL_RECOVERY_FAILED.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+CWRLS0030_WAITING_FOR_HAM_ACTIVATE=CWRLS0030W: Se a\u015fteapt\u0103 ca HAManager s\u0103 activeze procesarea de recuperare pentru serverul WebSphere local
+CWRLS0030_WAITING_FOR_HAM_ACTIVATE.explanation=Serviciul de istoric recuperare nu poate ini\u0163ializa procesarea de recuperare pentru serverul local, deoarece a\u015fteapt\u0103 la HAManager s\u0103 activeze apartenen\u0163a la grup a istoricelor de recuperare ale acestui server local.
+CWRLS0030_WAITING_FOR_HAM_ACTIVATE.useraction=Examina\u0163i mesajele \u00eenrudite pentru a determina cauza problemei. Dac\u0103 nu exist\u0103 mesaje \u00eenrudite, atunci verifica\u0163i  configura\u0163ia pentru set\u0103rile DefaultCoreGroup \u015fi defini\u0163iile de politici asociate pentru serviciul de istoric recuperare pentru server. De exemplu, dac\u0103 politica pus\u0103 \u00een cluster TM este setat\u0103 s\u0103 nu suporte e\u015fuarea, atunci un alt server ar putea con\u0163ine istoricele \u015fi va \u00eempiedica activarea acestui server.
+

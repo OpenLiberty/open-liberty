@@ -1,0 +1,629 @@
+###############################################################################
+# Copyright (c) 1997, 2008 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=1.42,0,02/04/15,16:52:49
+#
+#CMVCPATHNAME com.ibm.ws.ssl/resources/com/ibm/ws/ssl/resources/ssl.nlsprops
+#COMPONENTPREFIX CWPKI
+#COMPONENTNAMEFOR CWPKI WebSphere SSL
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+################################################################################
+# Range 100-110 reserved for TrustManager Prompt
+# Range 200-299 reserved for KeySet Messages
+# Range 300-399 reserved for Signer Util Messages
+# Range 400-599 reserved for CA Pure Client Util and Impls
+# Range 600-799 reserved for Command Tasks located in sslCommandTask.nlsprops file
+# Range 800-899 reserved for Liberty specific messages
+################################################################################
+
+# -------------------------------------------------------------------------------------------------
+ssl.init.startinit.CWPKI0001I=CWPKI0001I: SSL \u670d\u52d9\u6b63\u5728\u8d77\u59cb\u8a2d\u5b9a\u914d\u7f6e\u3002
+ssl.init.startinit.CWPKI0001I.explanation=\u9019\u5247\u8a0a\u606f\u53ea\u4f9b\u53c3\u8003\u7528\u3002
+ssl.init.startinit.CWPKI0001I.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.init.startcomplete.CWPKI0002I=CWPKI0002I: \u5df2\u9806\u5229\u5b8c\u6210 SSL \u670d\u52d9\u8d77\u59cb\u8a2d\u5b9a\u3002
+ssl.init.startcomplete.CWPKI0002I.explanation=\u9019\u5247\u8a0a\u606f\u53ea\u4f9b\u53c3\u8003\u7528\u3002
+ssl.init.startcomplete.CWPKI0002I.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.init.svcstart.CWPKI0003I=CWPKI0003I: SSL \u670d\u52d9\u6b63\u5728\u555f\u52d5\u3002
+ssl.init.svcstart.CWPKI0003I.explanation=\u9019\u5247\u8a0a\u606f\u53ea\u4f9b\u53c3\u8003\u7528\u3002
+ssl.init.svcstart.CWPKI0003I.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.init.svcstartcomplete.CWPKI0004I=CWPKI0004I: \u5df2\u9806\u5229\u555f\u52d5 SSL \u670d\u52d9\u3002
+ssl.init.svcstartcomplete.CWPKI0004I.explanation=\u9019\u5247\u8a0a\u606f\u53ea\u4f9b\u53c3\u8003\u7528\u3002
+ssl.init.svcstartcomplete.CWPKI0004I.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.init.startfail.CWPKI0005I=CWPKI0005I: SSL \u670d\u52d9\u8d77\u59cb\u8a2d\u5b9a\u5931\u6557\u3002
+ssl.init.startfail.CWPKI0005I.explanation=\u9019\u5247\u8a0a\u606f\u53ea\u4f9b\u53c3\u8003\u7528\u3002
+ssl.init.startfail.CWPKI0005I.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.init.mbeanerror.CWPKI0006E=CWPKI0006E: \u5617\u8a66\u5efa\u7acb\u6216\u767b\u9304 {0} MBean \u6642\u767c\u751f\u7570\u5e38\u72c0\u6cc1\u3002\u7570\u5e38\u72c0\u6cc1\uff1a{1}
+ssl.init.mbeanerror.CWPKI0006E.explanation=\u8a66\u5716\u5efa\u7acb\u6216\u767b\u9304 MBean \u6642\uff0c\u767c\u751f\u975e\u9810\u671f\u7684\u7570\u5e38\u72c0\u6cc1\u3002
+ssl.init.mbeanerror.CWPKI0006E.useraction=\u914d\u7f6e\u53ef\u80fd\u6709\u554f\u984c\u3002\u7570\u5e38\u72c0\u6cc1\u53ef\u80fd\u5305\u542b\u8a73\u7d30\u8cc7\u6599\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.init.svcstartfail.CWPKI0007I=CWPKI0007I: \u672a\u9806\u5229\u555f\u52d5 SSL \u670d\u52d9\u3002
+ssl.init.svcstartfail.CWPKI0007I.explanation=\u9019\u5247\u8a0a\u606f\u53ea\u4f9b\u53c3\u8003\u7528\u3002
+ssl.init.svcstartfail.CWPKI0007I.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.init.error.CWPKI0008E=CWPKI0008E: SSL \u8d77\u59cb\u8a2d\u5b9a\u671f\u9593\u767c\u751f\u932f\u8aa4\u3002\u7570\u5e38\u72c0\u6cc1\uff1a{0}
+ssl.init.error.CWPKI0008E.explanation=\u5b89\u5168\u8d77\u59cb\u8a2d\u5b9a\u671f\u9593\uff0c\u767c\u751f\u7570\u5e38\u932f\u8aa4\u3002
+ssl.init.error.CWPKI0008E.useraction=\u767c\u751f\u4e00\u822c\u932f\u8aa4\u3002\
+\u8acb\u5c0b\u627e\u8207 SSL \u8d77\u59cb\u8a2d\u5b9a\u6216\u914d\u7f6e\u554f\u984c\u76f8\u95dc\u7684\u5148\u524d\u8a0a\u606f\u3002\
+\u555f\u7528 SSL=all=enabled \u9664\u932f\u8ffd\u8e64\uff0c\u53ef\u80fd\u6703\u7522\u751f\u5176\u4ed6\u8cc7\u8a0a\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.init.nullsecobject.CWPKI0009E=CWPKI0009E: \u5728\u8d77\u59cb\u8a2d\u5b9a\u671f\u9593\uff0c\u7cfb\u7d71\u7121\u6cd5\u5efa\u7acb\u5b89\u5168\u7269\u4ef6\u3002
+ssl.init.nullsecobject.CWPKI0009E.explanation=\u7121\u6cd5\u5f9e\u5132\u5b58\u5eab\u5efa\u7acb\u5b89\u5168\u7269\u4ef6\u3002\u9019\u662f\u5167\u90e8\u932f\u8aa4\u3002security.xml \u6a94\u53ef\u80fd\u5df2\u6bc0\u640d\u6216\u907a\u6f0f\u3002
+ssl.init.nullsecobject.CWPKI0009E.useraction=\u8acb\u6d3d\u8a62\u60a8\u7684\u5ba2\u6236\u670d\u52d9\u4ee3\u8868\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.init.nullprocesstype.CWPKI0010E=CWPKI0010E: \u5728\u8d77\u59cb\u8a2d\u5b9a\u671f\u9593\uff0c\u7cfb\u7d71\u7121\u6cd5\u53d6\u5f97 WebSphere Application Server \u7a0b\u5e8f\u985e\u578b\u3002
+ssl.init.nullprocesstype.CWPKI0010E.explanation=CMSG0001
+ssl.init.nullprocesstype.CWPKI0010E.useraction=CMSG0002                                                   
+# -------------------------------------------------------------------------------------------------
+ssl.loadresource.error.CWPKI0011E=CWPKI0011E: \u7121\u6cd5\u5f9e Cell \u8f09\u5165\u8cc7\u6e90 {0}\u3002\u7570\u5e38\u72c0\u6cc1\uff1a{1}
+ssl.loadresource.error.CWPKI0011E.explanation=\u56e0\u7570\u5e38\u72c0\u6cc1\u800c\u7121\u6cd5\u8f09\u5165\u6307\u5b9a\u7684\u8cc7\u6e90\u3002
+ssl.loadresource.error.CWPKI0011E.useraction=\u8acb\u6aa2\u67e5\u8207\u8cc7\u6e90\u76f8\u95dc\u7684\u914d\u7f6e\u554f\u984c\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.fips.enabled.CWPKI0012I=CWPKI0012I: FIPS \u5df2\u555f\u7528\u3002\
+\u4f3a\u670d\u5668\u6b63\u5728 FIPS \u6a21\u5f0f\u4e2d\u57f7\u884c\uff0c\u4e26\u4e14\u4f7f\u7528 IBMJCEFIPS \u63d0\u4f9b\u8005\u3002
+ssl.fips.enabled.CWPKI0012I.explanation=\u9019\u5247\u8a0a\u606f\u53ea\u4f9b\u53c3\u8003\u7528\u3002
+ssl.fips.enabled.CWPKI0012I.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+#--------------------------------------------------------------------------------------------------
+ssl.checkProviderList.warning.CWPKI0013W=CWPKI0013W: FIPS \u5df2\u555f\u7528\uff0c\u4f46\u662f IBMJCEFIPS \u63d0\u4f9b\u8005\u5728 java.security \u6a94\u4e2d\u8655\u65bc\u975e\u4f5c\u7528\u4e2d\u3002\u5fc5\u9808\u8b8a\u66f4\u6b64\u6a94\u6848\uff0c\u5c07 IBMJCEFIPS \u63d0\u4f9b\u8005\u4f75\u5165\u63d0\u4f9b\u8005\u6e05\u55ae\u4e2d\uff0c\u4e14\u52a0\u5728 IBMJCE \u63d0\u4f9b\u8005\u524d\u9762\u3002
+ssl.checkProviderList.warning.CWPKI0013W.explanation=\u7576\u4f3a\u670d\u5668\u5728 FIPS \u6a21\u5f0f\u4e2d\u57f7\u884c\u6642\uff0cIBMJCEFIPS \u63d0\u4f9b\u8005\u61c9\u8a72\u5217\u5728 java.security \u6a94\u4e2d\uff0c\u4e26\u4e14\u7f6e\u65bc\u6e05\u55ae\u4e2d IBMJCE \u63d0\u4f9b\u8005\u7684\u524d\u9762\u3002
+ssl.checkProviderList.warning.CWPKI0013W.useraction=\u5982\u679c\u8981\u78ba\u5b9a\u6240\u6709 WebSphere Application Server \u7a0b\u5e8f\u985e\u578b\u7684 FIPS \u6f14\u7b97\u6cd5\u7528\u6cd5\uff0c\u8acb\u5c07 java.security \u6a94\u4e2d\u7684 IBMJCEFIPS \u63d0\u4f9b\u8005\u89e3\u9664\u8a3b\u89e3\uff0c\u6aa2\u67e5\u5176\u7f6e\u65bc\u6e05\u55ae\u4e2d IBMJCE \u63d0\u4f9b\u8005\u7684\u524d\u9762\uff0c\u518d\u5faa\u5e8f\u5c07\u63d0\u4f9b\u8005\u6e05\u55ae\u91cd\u65b0\u7de8\u865f\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.init.ssldm.init.CWPKI0014I=CWPKI0014I: \u5df2\u9806\u5229\u767b\u9304 SSL \u5143\u4ef6\u7684 FFDC \u8a3a\u65b7\u6a21\u7d44 {0}\uff1a{1}
+ssl.init.ssldm.init.CWPKI0014I.explanation=\u9019\u5247\u8a0a\u606f\u53ea\u4f9b\u53c3\u8003\u7528\u3002
+ssl.init.ssldm.init.CWPKI0014I.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.stop.error.CWPKI0015E=CWPKI0015E: \u505c\u6b62 SSL \u5143\u4ef6\u6642\u767c\u751f\u932f\u8aa4\u3002\u7570\u5e38\u72c0\u6cc1\uff1a{0}
+ssl.stop.error.CWPKI0015E.explanation=\u505c\u6b62 SSL \u5143\u4ef6\u6642\u767c\u751f\u975e\u9810\u671f\u7684\u932f\u8aa4\u3002
+ssl.stop.error.CWPKI0015E.useraction=\u767c\u751f\u4e00\u822c\u932f\u8aa4\u3002\
+\u8acb\u5c0b\u627e\u8207\u932f\u8aa4\u6216\u914d\u7f6e\u554f\u984c\u76f8\u95dc\u7684\u5148\u524d\u8a0a\u606f\u3002\
+\u555f\u7528 SSL=all=enabled \u9664\u932f\u8ffd\u8e64\uff0c\u53ef\u80fd\u6703\u7522\u751f\u5176\u4ed6\u8cc7\u8a0a\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.expiration.warning.CWPKI0016W=CWPKI0016W: {1} \u91d1\u9470\u5132\u5b58\u5eab\u4e2d\u5225\u540d\u70ba {0} \u7684\u6191\u8b49\u5c07\u5728 {2} \u5167\u5230\u671f\u3002
+ssl.expiration.warning.CWPKI0016W.explanation=\u91d1\u9470\u5132\u5b58\u5eab\u4e2d\u7684\u6191\u8b49\u5373\u5c07\u904e\u671f\u3002
+ssl.expiration.warning.CWPKI0016W.useraction=\u8acb\u958b\u555f\u91d1\u9470\u5132\u5b58\u5eab\uff0c\u9a57\u8b49\u91d1\u9470\u5132\u5b58\u5eab\u4e2d\u6240\u6709\u6191\u8b49\u7684\u5230\u671f\u65e5\u3002\u5fc5\u8981\u7684\u8a71\uff0c\u8acb\u7522\u751f\u65b0\u7684\u6191\u8b49\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.expiration.expired.CWPKI0017E=CWPKI0017E: {2} \u91d1\u9470\u5132\u5b58\u5eab\u4e2d\u5225\u540d\u70ba {1} \u7684\u6191\u8b49\u5df2\u904e\u671f\u3002
+ssl.expiration.expired.CWPKI0017E.explanation=\u91d1\u9470\u5132\u5b58\u5eab\u4e2d\u7684\u6191\u8b49\u904e\u671f\u3002
+ssl.expiration.expired.CWPKI0017E.useraction=\u8acb\u958b\u555f\u91d1\u9470\u5132\u5b58\u5eab\uff0c\u9a57\u8b49\u91d1\u9470\u5132\u5b58\u5eab\u4e2d\u6240\u6709\u6191\u8b49\u7684\u5230\u671f\u65e5\u3002\u8acb\u79fb\u9664\u4efb\u4f55\u5df2\u904e\u671f\u7684\u6191\u8b49\u3002
+
+# -------------------------------------------------------------------------------------------------
+ssl.keystore.type.invalid.CWPKI0018W=CWPKI0018W: \u91d1\u9470\u5132\u5b58\u5eab\u985e\u578b {0} \u5c0d SSL \u914d\u7f6e\u5225\u540d {1} \u800c\u8a00\u7121\u6548\u3002
+ssl.keystore.type.invalid.CWPKI0018W.explanation=\u5c0d\u6307\u5b9a\u7684\u5225\u540d\u800c\u8a00\uff0c\u5df2\u914d\u7f6e\u7684\u91d1\u9470\u5132\u5b58\u5eab\u985e\u578b\u7121\u6548\u3002
+ssl.keystore.type.invalid.CWPKI0018W.useraction=\u8acb\u8b8a\u66f4 SSL \u914d\u7f6e\u4e2d\u7684\u91d1\u9470\u5132\u5b58\u5eab\u985e\u578b\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.client.config.parse.CWPKI0019E=CWPKI0019E: \u5256\u6790 SSL \u7528\u6236\u7aef\u914d\u7f6e\u6a94 {0} \u6642\u767c\u751f\u932f\u8aa4\u3002\u7570\u5e38\u72c0\u6cc1\uff1a{1}
+ssl.client.config.parse.CWPKI0019E.explanation=ssl.client.props \u6a94\u7684\u8a9e\u6cd5\u53ef\u80fd\u6709\u554f\u984c\uff0c\u6216\u8005\u6a94\u6848\u4f4d\u7f6e\u53ef\u80fd\u7121\u6548\u3002
+ssl.client.config.parse.CWPKI0019E.useraction=\u8acb\u6aa2\u8996\u50b3\u56de\u7684\u932f\u8aa4\uff0c\u4e26\u6aa2\u67e5 ssl.client.props \u6a94\u7684\u8a9e\u6cd5\u548c\u4f4d\u7f6e\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.load.trustmanager.error.CWPKI0020E=CWPKI0020E: \u8f09\u5165\u81ea\u8a02\u4fe1\u4efb\u7ba1\u7406\u7a0b\u5f0f\u985e\u5225 {0} \u6642\u767c\u751f\u932f\u8aa4\u3002\u7570\u5e38\u72c0\u6cc1\uff1a{1}
+ssl.load.trustmanager.error.CWPKI0020E.explanation=\u8f09\u5165\u6240\u914d\u7f6e\u7684\u81ea\u8a02\u4fe1\u4efb\u7ba1\u7406\u7a0b\u5f0f\u6642\u767c\u751f\u985e\u5225\u8f09\u5165\u932f\u8aa4\u3002
+ssl.load.trustmanager.error.CWPKI0020E.useraction=\u8acb\u78ba\u5b9a\u53ef\u5728\u74b0\u5883\u4e2d\u627e\u5230\u985e\u5225\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.load.keymanager.error.CWPKI0021E=CWPKI0021E: \u8f09\u5165\u81ea\u8a02\u91d1\u9470\u7ba1\u7406\u7a0b\u5f0f\u985e\u5225 {0} \u6642\u767c\u751f\u932f\u8aa4\u3002\u7570\u5e38\u72c0\u6cc1\uff1a{1}
+ssl.load.keymanager.error.CWPKI0021E.explanation=\u8f09\u5165\u6240\u914d\u7f6e\u7684\u81ea\u8a02\u91d1\u9470\u7ba1\u7406\u7a0b\u5f0f\u6642\u767c\u751f\u985e\u5225\u8f09\u5165\u932f\u8aa4\u3002
+ssl.load.keymanager.error.CWPKI0021E.useraction=\u8acb\u78ba\u5b9a\u53ef\u5728\u74b0\u5883\u4e2d\u627e\u5230\u985e\u5225\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.client.handshake.error.CWPKI0022E=CWPKI0022E: SSL \u8a0a\u606f\u4ea4\u63db\u5931\u6557\uff1a\u5df2\u5f9e\u76ee\u6a19\u4e3b\u6a5f\u50b3\u9001 SubjectDN \u70ba {0} \u7684\u7c3d\u7ae0\u8005\u3002\u53ef\u80fd\u9700\u8981\u5c07\u7c3d\u7ae0\u8005\u65b0\u589e\u5230\u672c\u7aef\u4fe1\u4efb\u5132\u5b58\u5eab {1}\uff0c\u5176\u4f4d\u65bc SSL \u914d\u7f6e\u5225\u540d {2} \u4e2d\u3002\u5f9e SSL \u4fe1\u865f\u4ea4\u63db\u7570\u5e38\u72c0\u6cc1\u5ef6\u4f38\u800c\u4f86\u7684\u932f\u8aa4\u8a0a\u606f\u70ba {3}
+ssl.client.handshake.error.CWPKI0022E.explanation=\u5728 SSL \u4fe1\u865f\u4ea4\u63db\u671f\u9593\u767c\u751f\u932f\u8aa4\u3002\u53ef\u80fd\u9700\u8981\u5f9e\u76ee\u6a19\u4e3b\u6a5f\u5c07\u7c3d\u7ae0\u8005\u532f\u51fa/\u532f\u5165\u81f3\u7528\u6236\u7aef\u7684\u4fe1\u4efb\u5132\u5b58\u5eab\u4e2d\u3002
+ssl.client.handshake.error.CWPKI0022E.useraction=\u8acb\u6aa2\u8996 TrustManager \u6240\u767c\u51fa\u7684\u5ef6\u4f38\u932f\u8aa4\u8a0a\u606f\uff0c\u4ee5\u5224\u65b7\u76ee\u6a19 SSL \u914d\u7f6e\u548c\u7528\u6236\u7aef SSL \u914d\u7f6e\u9593\u4f55\u8005\u9700\u8981\u8b8a\u66f4\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.client.alias.not.found.CWPKI0023E=CWPKI0023E: \u5728\u91d1\u9470\u5132\u5b58\u5eab {1} \u4e2d\u627e\u4e0d\u5230 com.ibm.ssl.keyStoreClientAlias \u5167\u5bb9\u6240\u6307\u5b9a\u7684\u6191\u8b49\u5225\u540d {0}\u3002
+ssl.client.alias.not.found.CWPKI0023E.explanation=\u6307\u5b9a\u7d66\u9019\u9805 SSL \u914d\u7f6e\u7684\u6191\u8b49\u5225\u540d\u6c92\u6709\u4f4d\u65bc\u6307\u5b9a\u7684\u91d1\u9470\u5132\u5b58\u5eab\u4e2d\u3002
+
+ssl.client.alias.not.found.CWPKI0023E.useraction=\u8acb\u5728\u91d1\u9470\u5132\u5b58\u5eab\u4e2d\u65b0\u589e\u4e00\u4efd\u63a1\u7528\u6307\u5b9a\u6191\u8b49\u5225\u540d\u7684\u6191\u8b49\uff0c\u6216\u8b8a\u66f4\u6307\u5b9a\u7684\u6191\u8b49\u5225\u540d\uff0c\u4f7f\u5176\u548c\u7528\u6236\u7aef\u91d1\u9470\u5132\u5b58\u5eab\u4e2d\u7684\u5225\u540d\u76f8\u7b26\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.server.alias.not.found.CWPKI0024E=CWPKI0024E: \u5728\u91d1\u9470\u5132\u5b58\u5eab {1} \u4e2d\u627e\u4e0d\u5230 com.ibm.ssl.keyStoreServerAlias \u5167\u5bb9\u6240\u6307\u5b9a\u7684\u6191\u8b49\u5225\u540d {0}\u3002
+ssl.server.alias.not.found.CWPKI0024E.explanation=\u6307\u5b9a\u7d66\u9019\u9805 SSL \u914d\u7f6e\u7684\u6191\u8b49\u5225\u540d\u6c92\u6709\u4f4d\u65bc\u6307\u5b9a\u7684\u91d1\u9470\u5132\u5b58\u5eab\u4e2d\u3002
+
+ssl.server.alias.not.found.CWPKI0024E.useraction=\u8acb\u5728\u91d1\u9470\u5132\u5b58\u5eab\u4e2d\u65b0\u589e\u4e00\u4efd\u63a1\u7528\u6307\u5b9a\u6191\u8b49\u5225\u540d\u7684\u6191\u8b49\uff0c\u6216\u8b8a\u66f4\u6307\u5b9a\u7684\u6191\u8b49\u5225\u540d\uff0c\u4f7f\u5176\u548c\u4f3a\u670d\u5668\u91d1\u9470\u5132\u5b58\u5eab\u4e2d\u7684\u5225\u540d\u76f8\u7b26\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.load.https.stream.handler.CWPKI0025E=CWPKI0025E: \u7cfb\u7d71\u7121\u6cd5\u8f09\u5165 HTTPS Handler \u985e\u5225 {0}\u3002\u5ef6\u4f38\u7684\u932f\u8aa4\u8a0a\u606f\uff1a{1}
+ssl.load.https.stream.handler.CWPKI0025E.explanation=\u5617\u8a66\u8f09\u5165 HTTPS URLStreamHandler \u985e\u5225\u6642\uff0c\u767c\u751f\u985e\u5225\u8f09\u5165\u932f\u8aa4\u3002
+
+ssl.load.https.stream.handler.CWPKI0025E.useraction=\u8acb\u6aa2\u67e5 SSL \u914d\u7f6e\uff0c\u78ba\u5b9a\u5e73\u53f0\u7684\u74b0\u5883\u5b9a\u7fa9\u63d0\u4f9b\u8005\u7121\u8aa4\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.reinitialize.config.error.CWPKI0026E=CWPKI0026E: \u5728\u8b8a\u66f4 security.xml \u6a94\u5f8c\uff0c\u91cd\u65b0\u8d77\u59cb\u8a2d\u5b9a SSL \u914d\u7f6e\u6642\u767c\u751f\u932f\u8aa4\u3002\u5ef6\u4f38\u7684\u932f\u8aa4\u8a0a\u606f\uff1a{0}
+ssl.reinitialize.config.error.CWPKI0026E.explanation=\u5df2\u8b8a\u66f4 security.xml \u6a94\u3002\u7cfb\u7d71\u63a5\u8457\u5617\u8a66\u8b80\u53d6\u8b8a\u66f4\u7684\u914d\u7f6e\u6642\u767c\u751f\u932f\u8aa4\u3002
+ssl.reinitialize.config.error.CWPKI0026E.useraction=\u8acb\u6aa2\u8996\u7570\u5e38\u72c0\u6cc1\u8a0a\u606f\u6587\u5b57\uff0c\u4e26\u9a57\u8b49 SSL \u914d\u7f6e\u53c3\u6578\u70ba\u6709\u6548\u7684\u3002
+
+# -------------------------------------------------------------------------------------------------
+ssl.disable.url.hostname.verification.CWPKI0027I=CWPKI0027I: \u5df2\u505c\u7528 HTTPS URL \u9023\u7dda\u7684\u9810\u8a2d\u4e3b\u6a5f\u540d\u7a31\u9a57\u8b49\u3002
+ssl.disable.url.hostname.verification.CWPKI0027I.explanation=JSSE URL \u4e3b\u6a5f\u540d\u7a31\u9a57\u8b49\u4f5c\u696d\uff0c\u6703\u6aa2\u67e5 X509 \u6191\u8b49\u901a\u7528\u540d\u7a31 (CN) \u662f\u5426\u8207\u5176\u4f86\u6e90\u4e3b\u6a5f\u540d\u7a31\u76f8\u7b26\u3002\u4f9d\u9810\u8a2d\uff0c\u6703\u5c07 URL \u9023\u7dda\u7684\u9019\u9805\u4e3b\u6a5f\u540d\u7a31\u9a57\u8b49\u6aa2\u67e5\u8a2d\u70ba\u505c\u7528\u3002
+ssl.disable.url.hostname.verification.CWPKI0027I.useraction=\u5982\u679c\u8981\u555f\u7528\u9810\u8a2d JSSE URL \u4e3b\u6a5f\u540d\u7a31\u9a57\u8b49\uff0c\u8acb\u5c07 com.ibm.ssl.performURLHostNameVerification \u5167\u5bb9\u8a2d\u70ba true\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.no.such.algorithm.CWPKI0028E=CWPKI0028E: SSL \u4fe1\u865f\u4ea4\u63db\u901a\u8a0a\u5354\u5b9a {0} \u7121\u6548\u3002\u6b64\u901a\u8a0a\u5354\u5b9a\u6307\u5b9a\u65bc SSL SSL \u914d\u7f6e\u5225\u540d {1}\uff08\u8f09\u5165\u81ea SSL \u914d\u7f6e\u6a94 {2}\uff09\u4e2d\u3002\u5ef6\u4f38\u7684\u932f\u8aa4\u8a0a\u606f\uff1a{3}
+ssl.no.such.algorithm.CWPKI0028E.explanation=\u6307\u5b9a\u7684\u4fe1\u865f\u4ea4\u63db\u901a\u8a0a\u5354\u5b9a\u7121\u6cd5\u8fa8\u8b58\u6210\u6709\u6548\u7684\u4fe1\u865f\u4ea4\u63db\u901a\u8a0a\u5354\u5b9a\u3002
+
+ssl.no.such.algorithm.CWPKI0028E.useraction=\u8acb\u6aa2\u67e5 SSL \u914d\u7f6e\uff0c\u78ba\u5b9a\u6240\u6307\u5b9a\u7684\u662f\u6b63\u78ba\u7684\u4fe1\u865f\u4ea4\u63db\u901a\u8a0a\u5354\u5b9a\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.invalid.context.provider.CWPKI0029E=CWPKI0029E: SSL \u74b0\u5883\u5b9a\u7fa9\u63d0\u4f9b\u8005 {0} \u7121\u6548\u3002\u6b64\u63d0\u4f9b\u8005\u6307\u5b9a\u65bc SSL SSL \u914d\u7f6e\u5225\u540d {1}\uff08\u8f09\u5165\u81ea SSL \u914d\u7f6e\u6a94 {2}\uff09\u4e2d\u3002\u5ef6\u4f38\u7684\u932f\u8aa4\u8a0a\u606f\uff1a{3}
+ssl.invalid.context.provider.CWPKI0029E.explanation=\u6307\u5b9a\u7684 SSL \u74b0\u5883\u5b9a\u7fa9\u63d0\u4f9b\u8005\u7121\u6cd5\u8fa8\u8b58\u6210\u6709\u6548\u7684\u74b0\u5883\u5b9a\u7fa9\u63d0\u4f9b\u8005\u3002
+
+ssl.invalid.context.provider.CWPKI0029E.useraction=\u8acb\u6aa2\u67e5 SSL \u914d\u7f6e\uff0c\u78ba\u5b9a\u6307\u5b9a\u7684 SSL \u74b0\u5883\u5b9a\u7fa9\u63d0\u4f9b\u8005\u7121\u8aa4\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.signer.exchange.error.CWPKI0030E=CWPKI0030E: \u5728 Cell \u548c\u7bc0\u9ede\u4e4b\u9593\u4ea4\u63db\u7c3d\u7ae0\u8005\u6642\u767c\u751f\u932f\u8aa4\u3002\u7570\u5e38\u72c0\u6cc1\uff1a{0}
+ssl.signer.exchange.error.CWPKI0030E.explanation=Cell \u548c\u7bc0\u9ede\u4e4b\u9593\u7684 DefaultKeyStores \u5c07\u6703\u4ea4\u63db\u7c3d\u7ae0\u8005\u4ee5\u53ca\u5c0d\u61c9\u7684 DefaultTrustStores\u3002\u5728\u9019\u500b\u7a0b\u5e8f\u671f\u9593\u767c\u751f\u932f\u8aa4\u3002
+ssl.signer.exchange.error.CWPKI0030E.useraction=\u53ef\u80fd\u9700\u8981\u624b\u52d5\u4ea4\u63db\u7c3d\u7ae0\u8005\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.client.keystore.create.error.CWPKI0031E=CWPKI0031E: \u5728\u8d77\u59cb\u8a2d\u5b9a\u671f\u9593\u5efa\u7acb\u7528\u6236\u7aef\u91d1\u9470\u5132\u5b58\u5eab\u6216\u4fe1\u4efb\u5132\u5b58\u5eab\u6642\u767c\u751f\u932f\u8aa4\u3002\u7570\u5e38\u72c0\u6cc1\uff1a{0}
+ssl.client.keystore.create.error.CWPKI0031E.explanation=\u5728\u7a0b\u5e8f\u8d77\u59cb\u8a2d\u5b9a\u671f\u9593\uff0c\u5728\u5efa\u7acb\u6a94\u6848\u578b\u91d1\u9470\u5132\u5b58\u5eab\u6216\u4fe1\u4efb\u5132\u5b58\u5eab\u6642\u767c\u751f\u932f\u8aa4\u3002
+ssl.client.keystore.create.error.CWPKI0031E.useraction=\u8acb\u6aa2\u67e5 ssl.client.props \u4e2d\u7684\u91d1\u9470\u5132\u5b58\u5eab\u6216\u4fe1\u4efb\u5132\u5b58\u5eab\u8a2d\u5b9a\u662f\u5426\u70ba\u73fe\u884c\u4e14\u6709\u6548\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.self.signed.create.error.CWPKI0032E=CWPKI0032E: \u5efa\u7acb\u81ea\u7c3d\u6191\u8b49\u6642\u767c\u751f\u932f\u8aa4\u3002\u7570\u5e38\u72c0\u6cc1\uff1a{0}
+ssl.self.signed.create.error.CWPKI0032E.explanation=\u5728\u5efa\u7acb\u6b64\u6191\u8b49\u7684\u7a0b\u5e8f\u555f\u52d5\u671f\u9593\u767c\u751f\u932f\u8aa4\u3002
+ssl.self.signed.create.error.CWPKI0032E.useraction=\u8acb\u6aa2\u67e5\u9810\u8a2d\u7684\u81ea\u7c3d\u6191\u8b49\u5167\u5bb9\u503c (com.ibm.ssl.defaultCertReq*) \u662f\u6709\u6548\u7684\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.keystore.load.error.CWPKI0033E=CWPKI0033E: \u672a\u8f09\u5165\u4f4d\u65bc {0} \u7684\u91d1\u9470\u5132\u5b58\u5eab\uff0c\u56e0\u70ba\u767c\u751f\u4e0b\u5217\u932f\u8aa4\uff1a{1}
+ssl.keystore.load.error.CWPKI0033E.explanation=\u5728\u5efa\u7acb\u6216\u958b\u555f\u91d1\u9470\u5132\u5b58\u5eab\u6642\u767c\u751f\u932f\u8aa4\u3002
+ssl.keystore.load.error.CWPKI0033E.useraction=\u8acb\u6aa2\u67e5\u91d1\u9470\u5132\u5b58\u5eab\u914d\u7f6e\u4e2d\u7684\u5167\u5bb9\uff0c\u4e26\u78ba\u5b9a\u91d1\u9470\u5132\u5b58\u5eab\u5b58\u5728\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.schedule.init.error.CWPKI0034E=CWPKI0034E: \u7121\u6cd5\u8d77\u59cb\u8a2d\u5b9a\u6392\u7a0b {0}\uff0c\u56e0\u70ba\u767c\u751f\u4e0b\u5217\u932f\u8aa4\uff1a{1}
+ssl.schedule.init.error.CWPKI0034E.explanation=\u8d77\u59cb\u8a2d\u5b9a\u6392\u7a0b\u6642\u767c\u751f\u932f\u8aa4\u3002
+ssl.schedule.init.error.CWPKI0034E.useraction=\u8acb\u6aa2\u67e5\u6392\u7a0b\u5668\u7684\u5167\u5bb9\u662f\u6709\u6548\u7684\u3002\u8acb\u78ba\u5b9a /etc \u76ee\u9304\u53ef\u4ee5\u5beb\u5165\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.schedule.read.error.CWPKI0035E=CWPKI0035E: \u6392\u7a0b {0} \u7121\u6cd5\u8b80\u53d6\u4e0b\u4e00\u500b\u6392\u5b9a\u65e5\u671f\u3002\u6b63\u5728\u91dd\u5c0d\u4e0b\u5217\u65e5\u671f\u8d77\u59cb\u8a2d\u5b9a\u8b66\u793a\uff1a{1}
+ssl.schedule.read.error.CWPKI0035E.explanation=\u5f9e /etc \u4e2d\u7684\u6392\u7a0b\u6a94\u8b80\u53d6\u65e5\u671f\u6642\u767c\u751f\u932f\u8aa4\u3002
+ssl.schedule.read.error.CWPKI0035E.useraction=\u8acb\u78ba\u5b9a /etc \u76ee\u9304\u53ef\u4ee5\u5beb\u5165\uff0c\u4e26\u4e14\u6a94\u6848\u5c1a\u672a\u4fee\u6539\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.notification.send.error.CWPKI0036E=CWPKI0036E: \u4f7f\u7528 SMTP \u4f3a\u670d\u5668 {1} \u50b3\u9001\u96fb\u5b50\u90f5\u4ef6\u81f3 {0} \u6642\u767c\u751f\u932f\u8aa4\u3002\u7570\u5e38\u72c0\u6cc1\uff1a{2}
+ssl.notification.send.error.CWPKI0036E.explanation=\u50b3\u9001\u96fb\u5b50\u90f5\u4ef6\u81f3\u6307\u5b9a\u7684 SMTP \u4f3a\u670d\u5668\u6642\u767c\u751f\u932f\u8aa4\u3002
+ssl.notification.send.error.CWPKI0036E.useraction=\u8acb\u78ba\u5b9a\u6307\u5b9a\u7684 SMTP \u4f3a\u670d\u5668\u662f\u6709\u6548\u7684\uff0c\u800c\u4e14\u60a8\u7684\u516c\u53f8\u9632\u706b\u7246\u539f\u5247\u5bb9\u8a31\u50b3\u9001\u81f3 SMTP \u57e0\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.notification.send.info.CWPKI0037I=CWPKI0037I: \u6709\u6548\u671f\u9650\u76e3\u8996\u5668\u5831\u544a\u4e0b\u5217\u8cc7\u8a0a\uff1a{0}
+ssl.notification.send.info.CWPKI0037I.explanation=\u6b64\u8cc7\u8a0a\u548c\u6191\u8b49\u6709\u6548\u671f\u9650\u6709\u95dc\u3002
+ssl.notification.send.info.CWPKI0037I.useraction=\u60a8\u53ef\u80fd\u9700\u8981\u7ba1\u7406\u6191\u8b49\uff0c\u4ee5\u89e3\u6c7a\u6240\u5831\u544a\u7684\u554f\u984c\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.expiration.monitor.start.error.CWPKI0038E=CWPKI0038E: \u6709\u6548\u671f\u9650\u76e3\u8996\u5668\u6c92\u6709\u555f\u52d5\u3002\u932f\u8aa4\uff1a{0}
+ssl.expiration.monitor.start.error.CWPKI0038E.explanation=\u555f\u52d5\u671f\u9650\u76e3\u8996\u5668\u6307\u4ee4\u4f5c\u696d\u6642\u767c\u751f\u554f\u984c\u3002
+ssl.expiration.monitor.start.error.CWPKI0038E.useraction=\u8acb\u5617\u8a66\u76f4\u63a5\u555f\u52d5\u6709\u6548\u671f\u9650\u76e3\u8996\u5668\uff0c\u4ee5\u5224\u65b7\u932f\u8aa4\u7684\u76f8\u95dc\u8cc7\u8a0a\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.cannot.find.node.from.hostlist.CWPKI0039E=CWPKI0039E: \u627e\u4e0d\u5230\u91d1\u9470\u5132\u5b58\u5eab {1} \u4e3b\u6a5f\u6e05\u55ae\u4e2d\u4e4b\u4e3b\u6a5f\u540d\u7a31 {0} \u7684\u7bc0\u9ede\u9023\u63a5\u5668\u5167\u5bb9\u3002
+ssl.cannot.find.node.from.hostlist.CWPKI0039E.explanation=\u4e3b\u6a5f\u540d\u7a31\u5fc5\u9808\u4ee5\u5176\u51fa\u73fe\u5728 serverindex.xml \u6a94\u4e2d\u7684\u76f8\u540c\u6a19\u6e96\u683c\u5f0f\u8f38\u5165\u4e3b\u6a5f\u6e05\u55ae\u4e2d\u3002
+ssl.cannot.find.node.from.hostlist.CWPKI0039E.useraction=\u8acb\u7de8\u8f2f\u4e3b\u6a5f\u6e05\u55ae\uff0c\u5c07\u5b83\u8f49\u63db\u6210\u6240\u9700\u7684\u6a19\u6e96\u683c\u5f0f\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.handshake.failure.info.CWPKI0040I=CWPKI0040I: \u5b89\u5168\u7528\u6236\u7aef\u767c\u751f SSL \u4fe1\u865f\u4ea4\u63db\u932f\u8aa4\u3002\u4f3a\u670d\u5668 SSL \u7c3d\u7ae0\u8005\u5fc5\u9808\u65b0\u589e\u81f3\u7528\u6236\u7aef\u4fe1\u4efb\u5132\u5b58\u5eab\u4e2d\u3002\u5df2\u63d0\u4f9b\u5f9e\u4f3a\u670d\u5668\u4e0b\u8f09\u7c3d\u7ae0\u8005\u7684 retrieveSigners \u516c\u7528\u7a0b\u5f0f\uff0c\u4f46\u9700\u8981\u7ba1\u7406\u8a31\u53ef\u6b0a\u3002\u5728\u57f7\u884c\u7528\u6236\u7aef\u4e4b\u524d\uff0c\u8acb\u8207\u60a8\u7684\u7ba1\u7406\u8005\u5354\u5546\uff0c\u4ee5\u57f7\u884c\u9019\u500b\u516c\u7528\u7a0b\u5f0f\u4f86\u8a2d\u5b9a\u5b89\u5168\u74b0\u5883\u3002\u53e6\u5916\uff0c\u60a8\u4e5f\u53ef\u4ee5\u5728 ssl.client.props \u4e2d\uff0c\u555f\u7528 \"DefaultSSLSettings\" \u7684 com.ibm.ssl.enableSignerExchangePrompt\uff0c\u4ee5\u4fbf\u5728\u5617\u8a66\u9023\u7dda\u6642\u63a5\u53d7\u7c3d\u7ae0\u8005\u3002
+ssl.handshake.failure.info.CWPKI0040I.explanation=\u4f3a\u670d\u5668 SSL \u7c3d\u7ae0\u8005\u5fc5\u9808\u65b0\u589e\u81f3\u7528\u6236\u7aef\u4fe1\u4efb\u5132\u5b58\u5eab\u4e2d\u3002\u7c3d\u7ae0\u8005\u53ef\u4ee5\u5f9e\u4f3a\u670d\u5668\u81ea\u52d5\u4e0b\u8f09\uff0c\u4e5f\u53ef\u4ee5\u5728\u5617\u8a66\u9023\u7dda\u6642\u624b\u52d5\u63d0\u4f9b\u3002
+ssl.handshake.failure.info.CWPKI0040I.useraction=\u8acb\u57f7\u884c retrieveSigners \u516c\u7528\u7a0b\u5f0f\u6216\u555f\u7528\u7c3d\u7ae0\u8005\u4ea4\u63db\u63d0\u793a\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.default.password.in.use.CWPKI0041W=CWPKI0041W: \u4e00\u6216\u591a\u500b\u91d1\u9470\u5132\u5b58\u5eab\u4f7f\u7528\u7684\u662f\u9810\u8a2d\u5bc6\u78bc\u3002
+ssl.default.password.in.use.CWPKI0041W.explanation=\u7576\u4f3a\u670d\u5668\u4ee5\u7368\u7acb\u5f0f\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u65b9\u5f0f\u6216\u5728 Network Deployment \u914d\u7f6e\u4e2d\u7b2c\u4e00\u6b21\u555f\u52d5\u6642\uff0c\u6bcf\u4e00\u90e8\u4f3a\u670d\u5668\u90fd\u6703\u91dd\u5c0d\u9810\u8a2d Secure Sockets Layer (SSL) \u914d\u7f6e\u5efa\u7acb\u4e00\u500b\u91d1\u9470\u5132\u5b58\u5eab\u548c\u4fe1\u4efb\u5132\u5b58\u5eab\u3002\u5728\u4f3a\u670d\u5668\u5efa\u7acb\u9019\u4e9b\u6a94\u6848\u6642\uff0c\u4f9d\u9810\u8a2d\uff0c\u6703\u4f7f\u7528 WebAS \u4f5c\u70ba\u5bc6\u78bc\u3002
+ssl.default.password.in.use.CWPKI0041W.useraction=\u8acb\u52ff\u5728\u6b63\u5f0f\u4f5c\u696d\u4e2d\u4f7f\u7528\u9810\u8a2d\u5bc6\u78bc\u3002\u8acb\u7de8\u8f2f ssl.client.props \u6a94\uff0c\u4ee5\u8b8a\u66f4\u91d1\u9470\u5132\u5b58\u5eab\u548c\u4fe1\u4efb\u5132\u5b58\u5eab\u7684\u9810\u8a2d\u5bc6\u78bc\u3002\u7576\u60a8\u5728 ssl.client.props \u6a94\u4e2d\u8b8a\u66f4\u5bc6\u78bc\u6642\uff0c\u5fc5\u9808\u4f7f\u7528 PropFilePasswordEncoder \u516c\u7528\u7a0b\u5f0f\u4f86\u91cd\u65b0\u7de8\u78bc\u65b0\u5bc6\u78bc\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.error.issue.CWPKI0042E=CWPKI0042E: \u5c07\u6191\u8b49\u5132\u5b58\u5728\u6240\u767c\u6191\u8b49\u7684\u91d1\u9470\u5132\u5b58\u5eab\u4e2d\u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1\u3002\u7570\u5e38\u72c0\u6cc1\uff1a{0}
+ssl.error.issue.CWPKI0042E.explanation=\u5728\u5efa\u7acb\u93c8\u7d50\u5f0f\u6191\u8b49\u6216\u81ea\u7c3d\u6191\u8b49\u6642\uff0c\u7121\u6cd5\u5c07\u5c0d\u61c9\u7684\u7c3d\u7ae0\u8005\u6191\u8b49\u5132\u5b58\u5728\u6240\u767c\u6191\u8b49\u7684\u91d1\u9470\u5132\u5b58\u5eab\u4e2d\u3002
+ssl.error.issue.CWPKI0042E.useraction=\u8acb\u6aa2\u67e5\u76f8\u95dc\u806f\u7684\u932f\u8aa4\u8cc7\u8a0a\uff0c\u4ee5\u627e\u51fa\u554f\u984c\u7684\u539f\u56e0\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.chained.create.error.CWPKI0043E=CWPKI0043E: \u5efa\u7acb\u93c8\u7d50\u5f0f\u6191\u8b49\u6642\u767c\u751f\u932f\u8aa4\u3002\u7570\u5e38\u72c0\u6cc1\uff1a{0}
+ssl.chained.create.error.CWPKI0043E.explanation=\u5728\u7a0b\u5e8f\u555f\u52d5\u671f\u9593\uff0c\u5728\u5efa\u7acb\u93c8\u7d50\u5f0f\u6191\u8b49\u6642\u767c\u751f\u932f\u8aa4\u3002
+ssl.chained.create.error.CWPKI0043E.useraction=\u8acb\u6aa2\u67e5\u9810\u8a2d\u93c8\u7d50\u5f0f\u6191\u8b49\u5167\u5bb9\u503c (com.ibm.ssl.defaultCertReq*) \u70ba\u6709\u6548\u7684\uff0c\u4e14\u4e3b\u8981\u91d1\u9470\u5132\u5b58\u5eab\u4e2d\u5b58\u5728\u6709\u6548\u7684\u6191\u8b49\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.password.custom.encryption.failed.CWPKI0044E=CWPKI0044E: \u81ea\u8a02\u52a0\u5bc6\u671f\u9593\u7522\u751f PasswordEncryptException \u7570\u5e38\u72c0\u6cc1\u3002\u7570\u5e38\u72c0\u6cc1\uff1a{1}
+ssl.password.custom.encryption.failed.CWPKI0044E.explanation=\u81ea\u8a02\u52a0\u5bc6\u7684\u914d\u7f6e\u6709\u554f\u984c\u3002
+ssl.password.custom.encryption.failed.CWPKI0044E.useraction=\u8acb\u6aa2\u95b1\u7570\u5e38\u72c0\u6cc1\u548c\u65e5\u8a8c\uff0c\u4ee5\u8b58\u5225\u4e26\u89e3\u6c7a\u81ea\u8a02\u52a0\u5bc6\u7684\u554f\u984c\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.password.custom.encryption.failed.CWPKI0045E=CWPKI0045E: \u6240\u6536\u5230\u7684\u5bc6\u78bc\u662f\u4ee5\u76ee\u524d\u672a\u914d\u7f6e\u7684\u81ea\u8a02\u6f14\u7b97\u6cd5\u4f86\u52a0\u5bc6\u3002
+ssl.password.custom.encryption.failed.CWPKI0045E.explanation=\u6536\u5230\u81ea\u8a02\u52a0\u5bc6\u5bc6\u78bc\uff0c\u4f46\u672a\u914d\u7f6e\u4f7f\u7528\u6b64\u5bc6\u78bc\u6240\u9700\u7684\u5fc5\u8981\u81ea\u8a02\u6f14\u7b97\u6cd5\u3002
+ssl.password.custom.encryption.failed.CWPKI0045E.useraction=\u8acb\u914d\u7f6e\u5fc5\u8981\u7684\u81ea\u8a02\u6f14\u7b97\u6cd5\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.crypto.hw.init.status.uncertain.CWPKI0046E=CWPKI0046E: \u7cfb\u7d71\u7121\u6cd5\u53d6\u5f97 HW \u52a0\u5bc6\u8d77\u59cb\u8a2d\u5b9a\u72c0\u614b\uff1a{1}
+ssl.crypto.hw.init.status.uncertain.CWPKI0046E.explanation=\u7121\u6cd5\u53d6\u5f97\u6240\u6307\u5b9a HW \u52a0\u5bc6\u63d0\u4f9b\u8005\u7684\u8d77\u59cb\u8a2d\u5b9a\u72c0\u614b\u3002
+ssl.crypto.hw.init.status.uncertain.CWPKI0046E.useraction=\u8acb\u78ba\u5b9a HW \u52a0\u5bc6\u63d0\u4f9b\u8005\u904b\u4f5c\u6b63\u5e38\u4e14\u914d\u7f6e\u6b63\u78ba\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.crypto.hw.provider.unavailable.CWPKI0047E=CWPKI0047E: \u7cfb\u7d71\u7121\u6cd5\u53d6\u5f97 HW \u52a0\u5bc6\u63d0\u4f9b\u8005\u5be6\u4f8b\uff1a{1}
+ssl.crypto.hw.provider.unavailable.CWPKI0047E.explanation=\u7121\u6cd5\u53d6\u5f97\u6240\u6307\u5b9a HW \u52a0\u5bc6\u63d0\u4f9b\u8005\u7684\u5be6\u4f8b\u3002
+ssl.crypto.hw.provider.unavailable.CWPKI0047E.useraction=\u8acb\u78ba\u5b9a HW \u52a0\u5bc6\u63d0\u4f9b\u8005\u904b\u4f5c\u6b63\u5e38\u4e14\u914d\u7f6e\u6b63\u78ba\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.crypto.hw.provider.unavailable.CWPKI0048E=CWPKI0048E: \u7cfb\u7d71\u7121\u6cd5\u53d6\u5f97 HW \u52a0\u5bc6\u63d0\u4f9b\u8005\u5be6\u4f8b\uff1atokenLib\uff1a{1}\uff0ctokenSlot\uff1a{2}\uff0c\u7570\u5e38\u72c0\u6cc1\uff1a{3}
+ssl.crypto.hw.provider.unavailable.CWPKI0048E.explanation=\u56e0\u70ba\u7d66\u5b9a\u7684\u539f\u56e0\uff0c\u7121\u6cd5\u53d6\u5f97\u6240\u6307\u5b9a HW \u52a0\u5bc6\u63d0\u4f9b\u8005\u7684\u5be6\u4f8b\u3002
+ssl.crypto.hw.provider.unavailable.CWPKI0048E.useraction=\u8acb\u78ba\u5b9a HW \u52a0\u5bc6\u63d0\u4f9b\u8005\u904b\u4f5c\u6b63\u5e38\u4e14\u914d\u7f6e\u6b63\u78ba\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.config.not.using.fips.CWPKI0049W=CWPKI0049W: \u5df2\u555f\u7528 UseFIPS\uff0c\u4f46 SSL \u914d\u7f6e\u4e26\u672a\u4f7f\u7528 FIPS \u6838\u51c6\u7684 JSSE \u63d0\u4f9b\u8005\u3002\u56e0\u6b64\uff0c\u4e0d\u6703\u4f7f\u7528 FIPS \u6838\u51c6\u7684\u52a0\u5bc6\u6f14\u7b97\u6cd5\u3002
+ssl.config.not.using.fips.CWPKI0049W.explanation=\u96d6\u7136\u5df2\u555f\u7528 UseFIPS\uff0c\u4f46\u56e0\u70ba SSL \u914d\u7f6e\u4e26\u672a\u4f7f\u7528 FIPS \u6838\u51c6\u7684 JSSE \u63d0\u4f9b\u8005\uff0c\u6240\u4ee5\u7121\u6cd5\u4f7f\u7528 FIPS \u6838\u51c6\u7684\u52a0\u5bc6\u6f14\u7b97\u6cd5\u3002
+ssl.config.not.using.fips.CWPKI0049W.useraction=\u70ba\u78ba\u4fdd\u4f7f\u7528 FIPS \u6838\u51c6\u7684\u52a0\u5bc6\u6f14\u7b97\u6cd5\uff0c\u8acb\u4fee\u6539 SSL \u914d\u7f6e\u4f86\u4f7f\u7528 FIPS \u6838\u51c6\u7684 JSSE \u63d0\u4f9b\u8005\u3002
+# -------------------------------------------------------------------------------------------------
+
+
+################################################################################
+# Range 100-110 reserved for TrustManager Prompt
+################################################################################
+# -------------------------------------------------------------------------------------------------
+ssl.trustmanager.signer.prompt.CWPKI0100I=*** SSL \u7c3d\u7ae0\u8005\u4ea4\u63db\u63d0\u793a ***
+ssl.trustmanager.signer.prompt.CWPKI0101I=\u5728\u4fe1\u4efb\u5132\u5b58\u5eab {0} \u4e2d\u627e\u4e0d\u5230\u4f86\u81ea\u76ee\u6a19\u4e3b\u6a5f\u7684 SSL \u7c3d\u7ae0\u8005\u3002\n\
+\n\
+\u4ee5\u4e0b\u662f\u7c3d\u7ae0\u8005\u8cc7\u8a0a\uff08\u8acb\u9a57\u8b49\u6458\u8981\u503c\u662f\u5426\u548c\u4f3a\u670d\u5668\u4e2d\u986f\u793a\u7684\u76f8\u7b26\uff09\uff1a
+
+ssl.trustmanager.signer.prompt.CWPKI0102I=  \u4e3b\u9ad4 DN\uff1a
+
+ssl.trustmanager.signer.prompt.CWPKI0103I=  \u7c3d\u767c\u8005 DN\uff1a
+
+ssl.trustmanager.signer.prompt.CWPKI0104I=  \u5e8f\u865f\uff1a
+
+ssl.trustmanager.signer.prompt.CWPKI0105I=  SHA-1 \u6458\u8981\uff1a
+
+ssl.trustmanager.signer.prompt.CWPKI0106I=  MD5 \u6458\u8981\uff1a
+
+ssl.trustmanager.signer.prompt.CWPKI0107I=\u8981\u7acb\u5373\u5c07\u7c3d\u7ae0\u8005\u65b0\u589e\u5230\u4fe1\u4efb\u5132\u5b58\u5eab\u4e2d\u55ce\uff1f(y/n)
+
+# Note to translators: The 2 messages below (ssl.trustmanager.signer.prompt.answer.yes and ssl.trustmanager.signer.prompt.answer.no)
+# should be the first letter of the words that correspond to the answers for "yes" and "no". For example,
+# "y" for "yes" in English, "o" for "oui" in French, etc.
+# Also note that these must match the letters in parenthesis in the above prompt message "ssl.trustmanager.signer.prompt.CWPKI0107I".
+ssl.trustmanager.signer.prompt.answer.yes=y
+ssl.trustmanager.signer.prompt.answer.no=n
+ssl.trustmanager.signer.prompt.answer.full.yes=\u662f
+ssl.trustmanager.signer.prompt.CWPKI0108I=\u5982\u679c\u5728\u7b49\u5f85\u63d0\u793a\u56de\u61c9\u6642 Socket \u903e\u6642\uff0c\u53ef\u80fd\u9700\u8981\u91cd\u8a66\u8981\u6c42\u3002\u5982\u679c\u9700\u8981\u91cd\u8a66\uff0c\u8acb\u6ce8\u610f\uff0c\u5982\u679c\u8f38\u5165 (y)\uff0c\u5247\u4e0d\u6703\u91cd\u65b0\u986f\u793a\u63d0\u793a\uff1b\u9019\u8868\u793a\u7c3d\u7ae0\u8005\u5df2\u52a0\u5165\u4fe1\u4efb\u5132\u5b58\u5eab\u4e2d\u3002
+ssl.trustmanager.signer.prompt.CWPKI0109I=  \u5230\u671f\uff1a
+
+
+################################################################################
+# Range 200-299 reserved for KeySet Messages
+################################################################################
+# -------------------------------------------------------------------------------------------------
+crypto.key.generate.configuration.error.CWPKI0200E=CWPKI0200E: \u7576 KeySet \u4e26\u672a\u914d\u7f6e\u6210\u7522\u751f\u91d1\u9470\u6642\uff0c\u8a66\u5716\u5229\u7528 KeySet {0} \u4f86\u7522\u751f\u91d1\u9470\u3002\u8a0a\u606f\uff1a{1}
+crypto.key.generate.configuration.error.CWPKI0200E.explanation=KeySet \u6c92\u6709\u5b9a\u7fa9 keyGenerationClass\u3001\u6216\u662f\u5b83\u627e\u4e0d\u5230 keyGenerationClass\u3001\u6216\u662f KeySet \u548c\u552f\u8b80\u7684\u91d1\u9470\u5132\u5b58\u5eab\u76f8\u95dc\u806f\u3001\u6216\u662f\u91d1\u9470\u5132\u5b58\u5eab\u4e0d\u5bb9\u8a31\u5beb\u5165\u79c1\u5bc6\u91d1\u9470\u3002
+crypto.key.generate.configuration.error.CWPKI0200E.useraction=\u8acb\u4fee\u6539\u914d\u7f6e\uff0c\u4ee5\u914d\u7f6e\u9069\u7576\u7684 keyGenerationClass\uff0c\u4e26\u4e14\u5c07\u91d1\u9470\u5132\u5b58\u5eab\u985e\u578b\u914d\u7f6e\u6210\u5bb9\u8a31\u5beb\u5165\u79c1\u5bc6\u91d1\u9470\u3002
+# -------------------------------------------------------------------------------------------------
+crypto.key.getkey.error.CWPKI0201E=CWPKI0201E: \u5f9e KeySet {1} \u64f7\u53d6\u91d1\u9470\u5225\u540d {0} \u6642\u767c\u751f\u932f\u8aa4\u3002\u7570\u5e38\u72c0\u6cc1\uff1a{2}
+crypto.key.getkey.error.CWPKI0201E.explanation=\u91dd\u5c0d\u6307\u5b9a\u7684 KeySet \u4f86\u5f9e\u91d1\u9470\u5132\u5b58\u5eab\u64f7\u53d6\u91d1\u9470\u6642\u767c\u751f\u932f\u8aa4\u3002
+crypto.key.getkey.error.CWPKI0201E.useraction=\u8acb\u6aa2\u67e5 KeySet \u914d\u7f6e\u662f\u6b63\u78ba\u7684\u3002
+# -------------------------------------------------------------------------------------------------
+crypto.key.generate.class.load.error.CWPKI0202E=CWPKI0202E: \u5617\u8a66\u70ba KeySet {1} \u4e2d\u6240\u914d\u7f6e\u7684\u91d1\u9470\u7522\u751f\u985e\u5225 {0} \u5efa\u7acb\u5be6\u4f8b\u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002\u8a0a\u606f\uff1a{2}
+crypto.key.generate.class.load.error.CWPKI0202E.explanation=\u53ef\u80fd\u662f\u57f7\u884c\u6642\u671f\u627e\u4e0d\u5230\u914d\u7f6e\u7d66 KeySet \u7684\u91d1\u9470\u7522\u751f\u985e\u5225\uff0c\u6216\u662f\u985e\u5225\u4e26\u672a\u5be6\u4f5c com.ibm.websphere.crypto.KeyGenerator \u6216 com.ibm.websphere.crypto.KeyPairGenerator\u3002
+crypto.key.generate.class.load.error.CWPKI0202E.useraction=\u8acb\u78ba\u5b9a\u6240\u914d\u7f6e\u7684\u91d1\u9470\u7522\u751f\u985e\u5225\uff0c\u662f\u6307\u5b9a\u5728\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u57f7\u884c\u6642\u671f\u74b0\u5883\u53ef\u4ee5\u627e\u5230\u7684\u4f4d\u7f6e\u3002\u8acb\u6aa2\u67e5\u8cc7\u8a0a\u4e2d\u5fc3\uff0c\u77ad\u89e3\u5982\u4f55\u6307\u5b9a\u81ea\u8a02\u985e\u5225\uff0c\u8b93\u57f7\u884c\u6642\u671f\u74b0\u5883\u53ef\u4ee5\u627e\u5230\u5b83\u5011\u3002
+# -------------------------------------------------------------------------------------------------
+crypto.key.import.error.CWPKI0203E=CWPKI0203E: \u8a66\u5716\u5c07\u91d1\u9470\u532f\u5165\u91d1\u9470\u96c6 {0} \u5931\u6557\u3002\u7570\u5e38\u72c0\u6cc1\uff1a{1}
+crypto.key.import.error.CWPKI0203E.explanation=\u4ee5\u8f38\u5165\u65b9\u5f0f\u50b3\u905e\u7684\u91d1\u9470\u683c\u5f0f\u53ef\u80fd\u4e0d\u6b63\u78ba\uff0c\u6216\u7121\u6cd5\u5b58\u53d6\u91d1\u9470\u5132\u5b58\u5eab\u4f86\u5132\u5b58\u5b83\u5011\u3002
+crypto.key.import.error.CWPKI0203E.useraction=\u8acb\u6839\u64da\u7570\u5e38\u72c0\u6cc1\u4f86\u5224\u65b7\u539f\u56e0\uff0c\u7136\u5f8c\u9069\u7576\u8abf\u6574\u914d\u7f6e\u3002
+# -------------------------------------------------------------------------------------------------
+crypto.key.auto.generate.error.CWPKI0204E=CWPKI0204E: \u5728\u6392\u5b9a\u7522\u751f\u91d1\u9470\u96c6\u7fa4\u7d44 {0} \u7684\u91d1\u9470\u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002\u7570\u5e38\u72c0\u6cc1\uff1a{1}
+crypto.key.auto.generate.error.CWPKI0204E.explanation=\u70ba\u6307\u5b9a\u7684 KeySetGroup \u5efa\u7acb\u65b0\u91d1\u9470\u53c3\u7167\u6642\u767c\u751f\u554f\u984c\u3002\u7576\u5728\u914d\u7f6e\u4e2d\u5efa\u7acb\u91d1\u9470\u53c3\u7167\u4e4b\u5f8c\uff0c\u6703\u7522\u751f\u91d1\u9470\u3002\u5176\u4e2d\u4e00\u500b\u6b65\u9a5f\u5931\u6557\u3002
+crypto.key.auto.generate.error.CWPKI0204E.useraction=\u8acb\u6839\u64da\u7570\u5e38\u72c0\u6cc1\u4f86\u5224\u65b7\u539f\u56e0\uff0c\u7136\u5f8c\u9069\u7576\u8abf\u6574\u914d\u7f6e\u3002
+
+################################################################################
+# Range 300-399 reserved for Signer Util Messages
+################################################################################
+# -------------------------------------------------------------------------------------------------
+ssl.signer.retrieval.usage.CWPKI0300I=CWPKI0300I: \u8acb\u5206\u5225\u4f7f\u7528 -listRemoteKeyStoreNames \u548c -listLocalKeyStoreNames \u9078\u9805\u4f86\u53d6\u5f97 <remoteKeyStoreName> \u548c <localKeyStoreName> \u7684\u540d\u7a31\u6e05\u55ae\u3002\n\
+\n\
+\u7528\u6cd5\uff1aretrieveSigners <remoteKeyStoreName> <localKeyStoreName> [options]\n\
+options: [-profileName <profileName>] [-remoteAlias <aliasFromRemoteStore>] [-localAlias <storeAsAlias>] [-listRemoteKeyStoreNames] [-listLocalKeyStoreNames] [-autoAcceptBootstrapSigner] [-uploadSigners] [-host <host>] [-port <port>] [-conntype <RMI|SOAP>] [-user <user>] [-password <password>] [-trace] [-logfile <filename>] [-replacelog] [-quiet] [-help]\n
+ssl.signer.retrieval.usage.CWPKI0300I.explanation=\u9019\u5247\u8a0a\u606f\u53ea\u4f9b\u53c3\u8003\u7528\u3002
+ssl.signer.retrieval.usage.CWPKI0300I.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.signer.retrieval.tracemodeon.CWPKI0301I=CWPKI0301I: \u8ffd\u8e64\u6a21\u5f0f\u5df2\u958b\u555f\u3002
+ssl.signer.retrieval.tracemodeon.CWPKI0301I.explanation=\u9019\u5247\u8a0a\u606f\u53ea\u4f9b\u53c3\u8003\u7528\u3002
+ssl.signer.retrieval.tracemodeon.CWPKI0301I.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.signer.retrieval.logfile.error.CWPKI0302E=CWPKI0302E: \u7cfb\u7d71\u7121\u6cd5\u5beb\u5165\u4f4d\u65bc\u4e0b\u5217\u4f4d\u7f6e\u7684\u8ffd\u8e64\u65e5\u8a8c\u6a94\uff1a{0}
+ssl.signer.retrieval.logfile.error.CWPKI0302E.explanation=\u5728\u5beb\u5165\u6307\u5b9a\u7684\u65e5\u8a8c\u6a94\u6642\u767c\u751f\u554f\u984c\u3002
+ssl.signer.retrieval.logfile.error.CWPKI0302E.useraction=\u8acb\u8b8a\u66f4\u65e5\u8a8c\u6a94\u8def\u5f91\uff0c\u6216\u78ba\u5b9a\u6307\u5b9a\u7684\u6a94\u6848\u4e26\u6c92\u6709\u5728\u4f7f\u7528\u4e2d\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.signer.retrieval.logfile.location.CWPKI0303I=CWPKI0303I: \u8ffd\u8e64\u6b63\u5728\u8a18\u8f09\u81f3\u4e0b\u5217\u4f4d\u7f6e\uff1a{0}
+ssl.signer.retrieval.logfile.location.CWPKI0303I.explanation=\u9019\u5247\u8a0a\u606f\u53ea\u4f9b\u53c3\u8003\u7528\u3002
+ssl.signer.retrieval.logfile.location.CWPKI0303I.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.signer.remote.truststore.not.found.CWPKI0304E=CWPKI0304E: \u5728\u4f3a\u670d\u5668\u4e0a\u627e\u4e0d\u5230\u6307\u5b9a\u70ba {0} \u7684 <remoteKeyStoreName>\u3002
+ssl.signer.remote.truststore.not.found.CWPKI0304E.explanation=\u627e\u4e0d\u5230\u9060\u7aef\u91d1\u9470\u5132\u5b58\u5eab\u3002
+ssl.signer.remote.truststore.not.found.CWPKI0304E.useraction=\u8acb\u767c\u51fa -listRemoteKeyStoreNames \u6307\u4ee4\u4f86\u53d6\u5f97\u540d\u7a31\u6e05\u55ae\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.signer.alias.not.found.CWPKI0305E=CWPKI0305E: \u5728\u4f3a\u670d\u5668\u4e0a\u7684\u4fe1\u4efb\u5132\u5b58\u5eab {1} \u4e2d\u627e\u4e0d\u5230\u6307\u5b9a\u70ba {0} \u7684 <aliasFromRemoteStore>\u3002
+ssl.signer.alias.not.found.CWPKI0305E.explanation=\u5728\u4fe1\u4efb\u5132\u5b58\u5eab\u4e2d\u627e\u4e0d\u5230\u6307\u5b9a\u7684\u5225\u540d\u3002
+ssl.signer.alias.not.found.CWPKI0305E.useraction=\u8acb\u767c\u51fa -listRemoteKeyStoreNames \u6307\u4ee4\u4f86\u53d6\u5f97\u540d\u7a31\u6e05\u55ae\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.signer.remote.truststore.list.CWPKI0306I=CWPKI0306I: \u4e0b\u5217\u9060\u7aef\u91d1\u9470\u5132\u5b58\u5eab\u4f4d\u65bc\u6307\u5b9a\u7684\u4f3a\u670d\u5668\u4e0a\uff1a{0}
+ssl.signer.remote.truststore.list.CWPKI0306I.explanation=\u9019\u5247\u8a0a\u606f\u53ea\u4f9b\u53c3\u8003\u7528\u3002
+ssl.signer.remote.truststore.list.CWPKI0306I.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.signer.local.truststore.list.CWPKI0307I=CWPKI0307I: \u4e0b\u5217\u672c\u7aef\u91d1\u9470\u5132\u5b58\u5eab\u4f4d\u65bc\u7528\u6236\u7aef\u4e2d\uff1a{0}
+ssl.signer.local.truststore.list.CWPKI0307I.explanation=\u9019\u5247\u8a0a\u606f\u53ea\u4f9b\u53c3\u8003\u7528\u3002
+ssl.signer.local.truststore.list.CWPKI0307I.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.signer.add.to.local.truststore.CWPKI0308I=CWPKI0308I: \u7cfb\u7d71\u4f7f\u7528\u4e0b\u5217 SHA \u6458\u8981\u4f86\u65b0\u589e\u7c3d\u7ae0\u8005\u5225\u540d {0} \u81f3\u672c\u7aef\u91d1\u9470\u5132\u5b58\u5eab {1}\uff1a{2}
+ssl.signer.add.to.local.truststore.CWPKI0308I.explanation=\u9019\u5247\u8a0a\u606f\u53ea\u4f9b\u53c3\u8003\u7528\u3002
+ssl.signer.add.to.local.truststore.CWPKI0308I.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.signer.no.signers.added.CWPKI0309I=CWPKI0309I: \u4f86\u81ea\u9060\u7aef\u91d1\u9470\u5132\u5b58\u5eab\u7684\u6240\u6709\u7c3d\u7ae0\u8005\u5df2\u5b58\u5728\u65bc\u672c\u7aef\u91d1\u9470\u5132\u5b58\u5eab\u4e2d\u3002
+ssl.signer.no.signers.added.CWPKI0309I.explanation=\u9019\u5247\u8a0a\u606f\u53ea\u4f9b\u53c3\u8003\u7528\u3002
+ssl.signer.no.signers.added.CWPKI0309I.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.signer.local.truststore.not.found.CWPKI0310E=CWPKI0310E: \u5728\u7528\u6236\u7aef\u4e2d\uff0c\u627e\u4e0d\u5230\u6307\u5b9a\u70ba {0} \u7684 <localKeyStoreName>\u3002
+ssl.signer.local.truststore.not.found.CWPKI0310E.explanation=\u627e\u4e0d\u5230\u672c\u7aef\u91d1\u9470\u5132\u5b58\u5eab\u3002
+ssl.signer.local.truststore.not.found.CWPKI0310E.useraction=\u8acb\u5617\u8a66\u767c\u51fa -listLocalKeyStoreNames \u6307\u4ee4\u4f86\u53d6\u5f97\u540d\u7a31\u6e05\u55ae\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.certificate.before.date.invalid.CWPKI0311E=CWPKI0311E: \u542b\u4e3b\u9ad4 DN {0} \u7684\u6191\u8b49\u5177\u6709\u958b\u59cb\u65e5\u671f {1}\uff0c\u5176\u6703\u5728\u73fe\u884c\u65e5\u671f\u548c\u6642\u9593\u4e4b\u5f8c\u751f\u6548\u3002\u5982\u679c\u7528\u6236\u7aef\u6642\u9418\u7684\u8a2d\u5b9a\u6bd4\u4f3a\u670d\u5668\u6642\u9418\u65e9\uff0c\u5247\u6703\u767c\u751f\u9019\u500b\u60c5\u6cc1\u3002\u8acb\u9a57\u8b49\u9019\u500b\u7528\u6236\u7aef\u8207\u4f3a\u670d\u5668\u4e4b\u9593\u7684\u6642\u9418\u662f\u540c\u6b65\u7684\uff0c\u7136\u5f8c\u91cd\u8a66\u8981\u6c42\u3002
+ssl.certificate.before.date.invalid.CWPKI0311E.explanation=\u6191\u8b49\u7684\u958b\u59cb\u65e5\u671f\u7121\u6548\u3002
+ssl.certificate.before.date.invalid.CWPKI0311E.useraction=\u8acb\u78ba\u5b9a\u7528\u6236\u7aef\u6642\u9418\u7b26\u5408\u4f3a\u670d\u5668\u6642\u9418\u3002\u5426\u5247\uff0c\u8acb\u4ee5\u9069\u7576\u7684\u958b\u59cb\u65e5\u671f\u5efa\u7acb\u6191\u8b49\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.certificate.end.date.invalid.CWPKI0312E=CWPKI0312E: \u542b\u4e3b\u9ad4 DN {0} \u7684\u6191\u8b49\u5177\u6709\u7121\u6548\u7684\u7d50\u675f\u65e5\u671f {1}\u3002
+ssl.certificate.end.date.invalid.CWPKI0312E.explanation=\u6191\u8b49\u5df2\u904e\u671f\u3002
+ssl.certificate.end.date.invalid.CWPKI0312E.useraction=\u8acb\u4ee5\u6709\u6548\u7684\u6191\u8b49\u53d6\u4ee3\u8a72\u6191\u8b49\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.signer.invalid.option.CWPKI0313W=CWPKI0313W: \u4ee5\u4e0b\u9078\u9805\u7121\u6548\uff1a{0}
+ssl.signer.invalid.option.CWPKI0313W.explanation=\u8acb\u6aa2\u67e5\u6307\u4ee4\u884c\uff0c\u78ba\u5b9a\u6307\u5b9a\u7684\u9078\u9805\u7121\u8aa4\u3002
+ssl.signer.invalid.option.CWPKI0313W.useraction=\u8acb\u6aa2\u67e5\u7528\u6cd5\u8aaa\u660e\uff0c\u66f4\u6b63\u9078\u9805\u4e4b\u5f8c\u518d\u91cd\u8a66\u4e00\u6b21\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.signer.general.error.CWPKI0314E=CWPKI0314E: \u5f9e\u7570\u5e38\u72c0\u6cc1\u50b3\u56de\u4ee5\u4e0b\u932f\u8aa4\uff1a{0}
+ssl.signer.general.error.CWPKI0314E.explanation=\u8acb\u6aa2\u67e5\u6307\u4ee4\u884c\uff0c\u78ba\u5b9a\u6307\u5b9a\u7684\u9078\u9805\u7121\u8aa4\u3002
+ssl.signer.general.error.CWPKI0314E.useraction=\u8acb\u6aa2\u67e5\u7528\u6cd5\u8aaa\u660e\uff0c\u66f4\u6b63\u9078\u9805\u4e4b\u5f8c\u518d\u91cd\u8a66\u4e00\u6b21\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.no.properties.error.CWPKI0315E=CWPKI0315E: SSL \u914d\u7f6e\u5167\u5bb9\u70ba\u7a7a\u503c\u3002\u53ef\u80fd\u662f\u5728\u5256\u6790 SSL \u7528\u6236\u7aef\u914d\u7f6e\u6642\u767c\u751f\u554f\u984c\u3002
+ssl.no.properties.error.CWPKI0315E.explanation=\u672a\u8a2d\u5b9a\u4efb\u4f55 SSL \u914d\u7f6e\u5167\u5bb9\u3002\'com.ibm.SSL.ConfigURL\' \u5167\u5bb9\u53ef\u80fd\u672a\u6b63\u78ba\u8a2d\u5b9a\uff0c\u6216\u8005\u5728\u5256\u6790 SSL \u7528\u6236\u7aef\u914d\u7f6e\u6642\u53ef\u80fd\u767c\u751f\u4e86\u932f\u8aa4\u3002
+ssl.no.properties.error.CWPKI0315E.useraction=\u8acb\u6aa2\u67e5 ssl.client.props \u6a94\u662f\u5426\u6709\u932f\u8aa4\uff0c\u4e26\u78ba\u5b9a \'com.ibm.SSL.ConfigURL\' \u7684\u8a2d\u5b9a\u9069\u7576\u3002
+
+################################################################################
+# Range 400-599 reserved for CA Pure Client Util and Impls
+################################################################################
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.usage=CWPKI0400I: 
+ssl.ca.client.usage.explanation=\u7528\u4f86\u57f7\u884c\u9019\u500b Script \u7684\u53c3\u6578\u7684\u7528\u6cd5\u8cc7\u8a0a\u3002
+ssl.ca.client.usage.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.tracemodeon=CWPKI0401I: \u8ffd\u8e64\u6a21\u5f0f\u5df2\u958b\u555f\u3002
+ssl.ca.client.tracemodeon.explanation=\u9019\u5247\u8a0a\u606f\u53ea\u4f9b\u53c3\u8003\u7528\u3002
+ssl.ca.client.tracemodeon.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.logfile.error=CWPKI0402E: \u7cfb\u7d71\u7121\u6cd5\u5beb\u5165\u4f4d\u65bc\u4e0b\u5217\u4f4d\u7f6e\u7684\u8ffd\u8e64\u65e5\u8a8c\u6a94\uff1a{0}
+ssl.ca.client.logfile.error.explanation=\u5728\u5beb\u5165\u6307\u5b9a\u7684\u65e5\u8a8c\u6a94\u6642\u767c\u751f\u554f\u984c\u3002
+ssl.ca.client.logfile.error.useraction=\u8acb\u5c07\u65e5\u8a8c\u6a94\u8def\u5f91\u8b8a\u66f4\u70ba\u6b63\u78ba\u7684\u65e5\u8a8c\u6a94\uff0c\u6216\u78ba\u5b9a\u6307\u5b9a\u7684\u6a94\u6848\u4e26\u6c92\u6709\u5728\u4f7f\u7528\u4e2d\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.logfile.location=CWPKI0403I: \u8ffd\u8e64\u6b63\u5728\u8a18\u8f09\u81f3\u4e0b\u5217\u4f4d\u7f6e\uff1a{0}
+ssl.ca.client.logfile.location.explanation=\u9019\u5247\u8a0a\u606f\u53ea\u4f9b\u53c3\u8003\u7528\u3002
+ssl.ca.client.logfile.location.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.invalid.option=CWPKI0404W: \u4ee5\u4e0b\u9078\u9805\u7121\u6548\uff1a{0}
+ssl.ca.client.invalid.option.explanation=\u6307\u5b9a\u7684\u9078\u9805\u4e0d\u6b63\u78ba\u3002
+ssl.ca.client.invalid.option.useraction=\u8acb\u6aa2\u67e5\u7528\u6cd5\u8aaa\u660e\uff0c\u4e26\u5728\u66f4\u6b63\u9078\u9805\u4e4b\u5f8c\u91cd\u8a66\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.general.error=CWPKI0405E: \u5f9e\u7570\u5e38\u72c0\u6cc1\u50b3\u56de\u4ee5\u4e0b\u932f\u8aa4\uff1a{0}
+ssl.ca.client.general.error.explanation=\u6307\u5b9a\u7684\u9078\u9805\u4e0d\u6b63\u78ba\u3002
+ssl.ca.client.general.error.useraction=\u8acb\u6aa2\u67e5\u7528\u6cd5\u8aaa\u660e\uff0c\u4e26\u5728\u66f4\u6b63\u9078\u9805\u4e4b\u5f8c\u91cd\u8a66\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.custom.class.not.found=CWPKI0406E: \u627e\u4e0d\u5230 PKI \u7528\u6236\u7aef\u5be6\u4f5c\u985e\u5225 {0}\u3002
+ssl.ca.client.custom.class.not.found.explanation=\u8a66\u5716\u8f09\u5165\u81ea\u8a02 PKI \u7528\u6236\u7aef\u5be6\u4f5c\u5931\u6557\uff0c\u56e0\u70ba\u985e\u5225\u8f09\u5165\u5668\u627e\u4e0d\u5230\u8a72\u985e\u5225\u3002
+ssl.ca.client.custom.class.not.found.useraction=\u8acb\u6aa2\u67e5\u81ea\u8a02\u985e\u5225\u662f\u5426\u5b58\u5728\u65bc\u5b89\u88dd\u7684\u985e\u5225\u76ee\u9304\u4e2d\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.custom.class.invalid=CWPKI0407E: PKI \u7528\u6236\u7aef\u5be6\u4f5c\u985e\u5225 {0} \u4e0d\u662f com.ibm.ws.ssl.WSPKIClient \u7684\u5be6\u4f8b\u3002
+ssl.ca.client.custom.class.invalid.explanation=\u8a66\u5716\u8f09\u5165\u81ea\u8a02 PKI \u7528\u6236\u7aef\u5be6\u4f5c\u5931\u6557\uff0c\u56e0\u70ba\u8a72\u985e\u5225\u4e0d\u662f com.ibm.ws.ssl.WSPKIClient \u7684\u5be6\u4f8b\u3002
+ssl.ca.client.custom.class.invalid.useraction=\u8acb\u6aa2\u67e5\u81ea\u8a02\u985e\u5225\u6703\u5be6\u4f5c com.ibm.ws.ssl.WSPKIClient\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.not.personal.cert=CWPKI0408E: \u6191\u8b49 {0} \u4e0d\u662f\u500b\u4eba\u6191\u8b49\u3002
+ssl.ca.client.not.personal.cert.explanation=\u6307\u5b9a\u7684\u6191\u8b49\u4e0d\u662f\u500b\u4eba\u6191\u8b49\u3002
+
+ssl.ca.client.not.personal.cert.useraction=\u8acb\u8a2d\u5b9a\u500b\u4eba\u6191\u8b49\u5225\u540d\u4f86\u91cd\u65b0\u57f7\u884c\u6307\u4ee4\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.cert.does.not.exist=CWPKI0409E: \u6191\u8b49\u5225\u540d {0} \u4e0d\u5728\u91d1\u9470\u5132\u5b58\u5eab {1} \u4e2d\u3002
+ssl.ca.client.cert.does.not.exist.explanation=\u7cfb\u7d71\u7121\u6cd5\u63a5\u6536\u6191\u8b49\u7ba1\u7406\u4e2d\u5fc3 (CA) \u6240\u767c\u7684\u6191\u8b49\uff0c\u56e0\u70ba\u516c\u958b\u91d1\u9470\u4e0d\u76f8\u7b26\u3002
+ssl.ca.client.cert.does.not.exist.useraction=\u8acb\u91cd\u65b0\u57f7\u884c\u6307\u4ee4\uff0c\u4e26\u4f7f\u7528\u64f7\u53d6\u81ea\u6191\u8b49\u7ba1\u7406\u4e2d\u5fc3 (CA) \u7684\u6191\u8b49\uff08\u6b64\u6191\u8b49\u662f\u56e0\u9019\u500b\u91d1\u9470\u5132\u5b58\u5eab\u4e2d\u6307\u5b9a\u5225\u540d\u767c\u51fa\u6191\u8b49\u8981\u6c42\u800c\u7522\u751f\uff09\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.keystore.not.found=CWPKI0410E: \u5728\u7528\u6236\u7aef\u4e2d\u627e\u4e0d\u5230\u6307\u5b9a\u70ba\u5225\u540d {0} \u7684\u672c\u7aef\u91d1\u9470\u5132\u5b58\u5eab\u3002
+ssl.ca.client.keystore.not.found.explanation=\u627e\u4e0d\u5230\u672c\u7aef\u91d1\u9470\u5132\u5b58\u5eab\u3002
+
+ssl.ca.client.keystore.not.found.useraction=\u8acb\u6aa2\u67e5\u91d1\u9470\u5132\u5b58\u5eab\u5b58\u5728\u65bc\u7528\u6236\u7aef\u4e0a\uff0c\u4e14 ssl.client.props \u4e2d\u6709\u5176\u5225\u540d\u5b58\u5728\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.cert.publickey.not.found=CWPKI0411E: \u5728\u91d1\u9470\u5132\u5b58\u5eab {0} \u4e2d\uff0c\u627e\u4e0d\u5230\u5176\u516c\u958b\u91d1\u9470\u7b26\u5408\u6191\u8b49\u7ba1\u7406\u4e2d\u5fc3 (CA) \u6240\u767c\u6191\u8b49\u4e2d\u4e4b\u516c\u958b\u91d1\u9470\u7684\u6191\u8b49\u3002
+ssl.ca.client.cert.publickey.not.found.explanation=\u5982\u679c\u8981\u63a5\u6536\u91d1\u9470\u5132\u5b58\u5eab\u4e2d\u7684\u6191\u8b49\uff0c\u6191\u8b49\u7684\u516c\u958b\u91d1\u9470\u5fc5\u9808\u7b26\u5408\u91d1\u9470\u5132\u5b58\u5eab\u4e2d\u4e4b\u6191\u8b49\u7684\u516c\u958b\u91d1\u9470\u3002
+ssl.ca.client.cert.publickey.not.found.useraction=\u8acb\u4f7f\u7528\u5177\u6709\u516c\u958b\u91d1\u9470\u7684\u6191\u8b49\u4f86\u57f7\u884c\u6307\u4ee4\uff0c\u8a72\u516c\u958b\u91d1\u9470\u5fc5\u9808\u7b26\u5408\u91d1\u9470\u5132\u5b58\u5eab\u4e2d\u4e4b\u6191\u8b49\u7684\u516c\u958b\u91d1\u9470\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.request.out.of.band=CWPKI0412I: \u6191\u8b49\u7ba1\u7406\u4e2d\u5fc3 (CA) \u6240\u50b3\u56de\u7684\u6191\u8b49\u70ba\u7a7a\u503c\u3002\u6191\u8b49\u8981\u6c42\u672a\u7acb\u5373\u8655\u7406\uff0c\u800c\u5fc5\u9808\u4f7f\u7528 queryCertificate \u6307\u4ee4\u5f9e\u983b\u5916\u53d6\u5f97\u3002
+ssl.ca.client.request.out.of.band.explanation=\u6191\u8b49\u7ba1\u7406\u4e2d\u5fc3 (CA) \u672a\u7acb\u5373\u8655\u7406\u6191\u8b49\u8981\u6c42\uff0c\u800c\u5fc5\u9808\u5f9e\u983b\u5916\u53d6\u5f97\u3002
+ssl.ca.client.request.out.of.band.useraction=\u8acb\u57f7\u884c queryCertificate\uff0c\u6aa2\u67e5\u6191\u8b49\u7684\u72c0\u614b\uff0c\u5982\u679c\u5df2\u8655\u7406\u8981\u6c42\uff0c\u5247\u6703\u6536\u5230\u5b83\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.invalid.option.type=CWPKI0413E: \u63d0\u4f9b {0} \u503c\u7d66 {1}\u3002
+ssl.ca.client.invalid.option.type.explanation=\u6240\u63d0\u4f9b\u7684\u503c\u4e0d\u662f\u6b63\u78ba\u7684\u985e\u578b\u3002
+ssl.ca.client.invalid.option.type.useraction=\u8acb\u6aa2\u67e5\u7528\u6cd5\u8aaa\u660e\uff0c\u4e26\u5728\u66f4\u6b63\u503c\u7684\u985e\u578b\u5f8c\u91cd\u8a66\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.invalid.option.value=CWPKI0414E: \u5fc5\u9808\u63d0\u4f9b {0} \u9078\u9805\u7684\u503c\u3002
+
+ssl.ca.client.invalid.option.value.explanation=\u672a\u5728\u6307\u4ee4\u884c\u4e2d\u63d0\u4f9b\u9069\u7576\u7684\u503c\u3002
+ssl.ca.client.invalid.option.value.useraction=\u8acb\u6aa2\u67e5\u7528\u6cd5\u8aaa\u660e\uff0c\u4e26\u5728\u66f4\u6b63\u9078\u9805\u4e4b\u5f8c\u91cd\u8a66\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.error.init=CWPKI0415E: \u5728\u8d77\u59cb\u8a2d\u5b9a\u6191\u8b49\u7ba1\u7406\u4e2d\u5fc3 (CA) \u5be6\u4f5c\u671f\u9593\uff0c\u767c\u751f\u4e0b\u5217\u932f\u8aa4\uff1a{0}
+ssl.ca.client.error.init.explanation= \u5728\u8d77\u59cb\u8a2d\u5b9a\u6191\u8b49\u7ba1\u7406\u4e2d\u5fc3 (CA) \u5be6\u4f5c\u671f\u9593\u767c\u751f\u932f\u8aa4\u3002
+ssl.ca.client.error.init.useraction= \u8acb\u6aa2\u67e5\u76f8\u95dc\u806f\u7684\u932f\u8aa4\u8a0a\u606f\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.error.create=CWPKI0416E: \u5728\u5efa\u7acb\u6191\u8b49\u7ba1\u7406\u4e2d\u5fc3 (CA) \u7c3d\u7ae0\u6191\u8b49\u671f\u9593\uff0c\u767c\u751f\u4e0b\u5217\u932f\u8aa4\uff1a{0}
+ssl.ca.client.error.create.explanation= \u5728\u8a66\u5716\u5efa\u7acb\u6191\u8b49\u7ba1\u7406\u4e2d\u5fc3 (CA) \u7c3d\u7ae0\u6191\u8b49\u671f\u9593\u767c\u751f\u932f\u8aa4\u3002
+ssl.ca.client.error.create.useraction= \u8acb\u6aa2\u67e5\u76f8\u95dc\u806f\u7684\u932f\u8aa4\u8a0a\u606f\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.error.revoke=CWPKI0417E: \u5728\u64a4\u6d88\u6191\u8b49\u7ba1\u7406\u4e2d\u5fc3 (CA) \u7c3d\u7ae0\u6191\u8b49\u671f\u9593\uff0c\u767c\u751f\u4e0b\u5217\u932f\u8aa4\uff1a{0}
+ssl.ca.client.error.revoke.explanation=\u5728\u8a66\u5716\u64a4\u6d88\u6191\u8b49\u7ba1\u7406\u4e2d\u5fc3 (CA) \u7c3d\u7ae0\u6191\u8b49\u671f\u9593\u767c\u751f\u932f\u8aa4\u3002
+ssl.ca.client.error.revoke.useraction=\u8acb\u6aa2\u67e5\u76f8\u95dc\u806f\u7684\u932f\u8aa4\u8a0a\u606f\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.error.query=CWPKI0418E: \u5728\u5411\u6191\u8b49\u7ba1\u7406\u4e2d\u5fc3 (CA) \u67e5\u8a62\u7c3d\u7ae0\u6191\u8b49\u671f\u9593\uff0c\u767c\u751f\u4e0b\u5217\u932f\u8aa4\uff1a{0}
+ssl.ca.client.error.query.explanation=\u5728\u5411\u6191\u8b49\u7ba1\u7406\u4e2d\u5fc3 (CA) \u67e5\u8a62\u7c3d\u7ae0\u6191\u8b49\u671f\u9593\u767c\u751f\u932f\u8aa4\u3002
+ssl.ca.client.error.query.useraction=\u8acb\u6aa2\u67e5\u76f8\u95dc\u806f\u7684\u932f\u8aa4\u8a0a\u606f\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.keystore.readonly=CWPKI0419E: \u7cfb\u7d71\u7121\u6cd5\u63a5\u6536\u6191\u8b49\uff0c\u56e0\u70ba\u6307\u5b9a\u7684\u91d1\u9470\u5132\u5b58\u5eab\u662f\u552f\u8b80\u7684\u3002
+ssl.ca.client.keystore.readonly.explanation=\u7cfb\u7d71\u5617\u8a66\u5c07\u63a5\u6536\u7684\u6191\u8b49\u5beb\u5165\u552f\u8b80\u91d1\u9470\u5132\u5b58\u5eab\u4e2d\u3002
+ssl.ca.client.keystore.readonly.useraction=\u8acb\u6307\u5b9a\u4e00\u500b\u53ef\u5beb\u5165\u7684\u91d1\u9470\u5132\u5b58\u5eab\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.receive.failed=CWPKI0420E: \u6191\u8b49\u7ba1\u7406\u4e2d\u5fc3 (CA) \u5df2\u8655\u7406\u6191\u8b49\u8981\u6c42\uff0c\u4f46\u537b\u7121\u6cd5\u5132\u5b58\u5230\u6307\u5b9a\u7684\u91d1\u9470\u5132\u5b58\u5eab\u4e2d\u3002\u5c07\u64a4\u6d88\u6191\u8b49\uff0c\u4e14\u9700\u8981\u91cd\u8a66\u8981\u6c42\u3002\u8acb\u6aa2\u67e5\u5148\u524d\u7684\u932f\u8aa4\u8a0a\u606f\uff0c\u4e26\u66f4\u6b63\u554f\u984c\uff0c\u7136\u5f8c\u518d\u91cd\u8a66\u6191\u8b49\u8981\u6c42\u3002
+ssl.ca.client.receive.failed.explanation=\u5f9e\u6191\u8b49\u7ba1\u7406\u4e2d\u5fc3 (CA) \u6536\u5230\u7684\u6191\u8b49\u8981\u6c42\uff0c\u7121\u6cd5\u9806\u5229\u5132\u5b58\u5230\u6307\u5b9a\u7684\u91d1\u9470\u5132\u5b58\u5eab\u4e2d\u3002\u56e0\u6b64\u5df2\u64a4\u92b7\u6191\u8b49\uff0c\u60a8\u5fc5\u9808\u91cd\u8a66\u8981\u6c42\u4ee5\u53d6\u5f97\u65b0\u6191\u8b49\u3002
+ssl.ca.client.receive.failed.useraction=\u8acb\u6aa2\u67e5\u5148\u524d\u548c\u5132\u5b58\u91d1\u9470\u5132\u5b58\u5eab\u76f8\u95dc\u7684\u932f\u8aa4\u8a0a\u606f\uff0c\u4e26\u66f4\u6b63\u6240\u767c\u751f\u7684\u554f\u984c\uff0c\u7136\u5f8c\u91cd\u8a66\u6191\u8b49\u8981\u6c42\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.pkcs10.request.created=CWPKI0421I: \u5df2\u9806\u5229\u5efa\u7acb\u5225\u540d\u70ba {0} \u7684 PKCS10 \u6191\u8b49\u8981\u6c42\u3002\u8981\u6c42\u5df2\u5132\u5b58\u5728\u4e0b\u5217\u6a94\u6848\u4e2d\uff1a{1}
+ssl.ca.client.pkcs10.request.created.explanation=\u9019\u5247\u8a0a\u606f\u53ea\u4f9b\u53c3\u8003\u7528\u3002
+ssl.ca.client.pkcs10.request.created.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.pkcs10.request.sending=CWPKI0422I: \u7cfb\u7d71\u6b63\u5728\u7522\u751f PKCS10 \u6191\u8b49\u8981\u6c42\u3002
+ssl.ca.client.pkcs10.request.sending.explanation=\u9019\u5247\u8a0a\u606f\u53ea\u4f9b\u53c3\u8003\u7528\u3002
+ssl.ca.client.pkcs10.request.sending.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.pkcs10.request.failed=CWPKI0423E: \u7121\u6cd5\u5efa\u7acb PKCS10 \u6191\u8b49\u8981\u6c42\uff0c\u56e0\u70ba\u767c\u751f\u4e0b\u5217\u932f\u8aa4\uff1a{0}
+ssl.ca.client.pkcs10.request.failed.explanation=\u7121\u6cd5\u5efa\u7acb PKCS10 \u6191\u8b49\u8981\u6c42\uff0c\u56e0\u70ba\u767c\u751f\u6307\u5b9a\u7684\u932f\u8aa4\u3002
+ssl.ca.client.pkcs10.request.failed.useraction=\u8acb\u6aa2\u67e5\u8a0a\u606f\u65e5\u8a8c\uff0c\u4ee5\u53d6\u5f97\u8a73\u7d30\u8cc7\u6599\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.alias.exists=CWPKI0424E: \u6191\u8b49\u5225\u540d {0} \u5df2\u5b58\u5728\u65bc\u91d1\u9470\u5132\u5b58\u5eab {1} \u4e2d\u3002
+ssl.ca.client.alias.exists.explanation=\u7cfb\u7d71\u7121\u6cd5\u5efa\u7acb\u6191\u8b49\u8981\u6c42\uff0c\u56e0\u70ba\u6307\u5b9a\u7684\u5225\u540d\u5df2\u5b58\u5728\u65bc\u91d1\u9470\u5132\u5b58\u5eab\u4e2d\u3002
+ssl.ca.client.alias.exists.useraction=\u8acb\u6307\u5b9a\u53e6\u4e00\u500b\u5225\u540d\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.subjectdn.invalid=CWPKI0425E: \u6240\u63d0\u4f9b\u7684 subjectDN \u4e0d\u6b63\u78ba\u3002
+ssl.ca.client.subjectdn.invalid.explanation=\u6240\u63d0\u4f9b\u7684 subjectDN \u4e0d\u7b26\u5408 X500Principal \u6a19\u6e96\u3002
+ssl.ca.client.subjectdn.invalid.useraction=\u8acb\u6aa2\u67e5 subjectDN\uff0c\u4e26\u78ba\u5b9a\u5176\u683c\u5f0f\u6b63\u78ba\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.ignored.arguments=CWPKI0426W: \u7121\u6cd5\u8fa8\u8b58\u4e0b\u5217\u9078\u9805\uff0c\u5c07\u6703\u4e88\u4ee5\u5ffd\u7565\uff1a{0}
+ssl.ca.client.ignored.arguments.explanation=\u7121\u6cd5\u8fa8\u8b58\u6240\u63d0\u4f9b\u7684\u4e00\u6216\u591a\u500b\u9078\u9805\uff0c\u5c07\u6703\u4e88\u4ee5\u5ffd\u7565\u3002
+ssl.ca.client.ignored.arguments.useraction=\u8acb\u6aa2\u67e5\u6307\u4ee4\u7528\u6cd5\uff0c\u4e26\u78ba\u5b9a\u6240\u63d0\u4f9b\u7684\u5f15\u6578\u6b63\u78ba\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.invalid.custom.attrs=CWPKI0427E: \u7121\u6cd5\u5256\u6790\u81ea\u8a02\u5c6c\u6027\u3002
+ssl.ca.client.invalid.custom.attrs.explanation=\u672a\u4f7f\u7528\u9069\u7576\u7684\u683c\u5f0f\u4f86\u8f38\u5165\u81ea\u8a02\u5c6c\u6027\u3002
+ssl.ca.client.invalid.custom.attrs.useraction=\u8acb\u6aa2\u67e5\u7528\u6cd5\u8aaa\u660e\uff0c\u4e26\u5728\u66f4\u6b63\u81ea\u8a02\u5c6c\u6027\u4e4b\u5f8c\u91cd\u8a66\u3002
+
+
+
+
+#  CA CMP Client Impl
+ssl.ca.cmp.impl.invalid.attribute=CWPKI0450E:  \u5c6c\u6027 {0} \u907a\u6f0f\u6216\u985e\u578b\u4e0d\u6b63\u78ba\u3002\u6b63\u78ba\u7684\u985e\u578b\u70ba {1}\u3002
+ssl.ca.cmp.impl.invalid.attribute.explanation=\u50b3\u7d66\u5be6\u4f5c\u7684\u5c6c\u6027\u662f\u7a7a\u503c\u6216\u985e\u578b\u4e0d\u6b63\u78ba\u3002
+ssl.ca.cmp.impl.invalid.attribute.useraction=\u8acb\u78ba\u5b9a\u5df2\u5c07\u5fc5\u8981\u7684\u5c6c\u6027\u50b3\u7d66\u5be6\u4f5c\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.invalid.certificate.request=CWPKI0451E: \u6191\u8b49\u8981\u6c42\u70ba\u7a7a\u503c\u3002
+ssl.ca.cmp.impl.invalid.certificate.request.explanation=\u6191\u8b49\u8981\u6c42\u7684\u4f4d\u5143\u7d44\u9663\u5217\u70ba\u7a7a\u503c\u3002
+ssl.ca.cmp.impl.invalid.certificate.request.useraction=\u8acb\u6aa2\u67e5\u50b3\u7d66\u5be6\u4f5c\u7684\u6191\u8b49\u8981\u6c42\u4f4d\u5143\u7d44\u9663\u5217\u70ba\u6709\u6548\u7684\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.invalid.revocation.reason=CWPKI0452E:  \u6b64\u8981\u6c42\u7684\u64a4\u6d88\u5bc6\u78bc\u70ba\u7a7a\u503c\u3002
+ssl.ca.cmp.impl.invalid.revocation.reason.explanation=\u6b64\u8981\u6c42\u7684\u64a4\u6d88\u5bc6\u78bc\u7684\u4f4d\u5143\u7d44\u9663\u5217\u70ba\u7a7a\u503c\u3002
+ssl.ca.cmp.impl.invalid.revocation.reason.useraction=\u8acb\u6aa2\u67e5\u50b3\u7d66\u5be6\u4f5c\u7684\u64a4\u6d88\u5bc6\u78bc\u4f4d\u5143\u7d44\u9663\u5217\u70ba\u6709\u6548\u7684\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.general.error=CWPKI0453E: \u767c\u751f\u4e0b\u5217\u975e\u9810\u671f\u7684\u7570\u5e38\u72c0\u6cc1\uff1a{0}
+ssl.ca.cmp.impl.general.error.explanation=CMSG0001
+ssl.ca.cmp.impl.general.error.useraction=CMSG0002                                                   
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.tempfile.error=CWPKI0454E: \u7cfb\u7d71\u7121\u6cd5\u5efa\u7acb\u66ab\u5b58\u6a94 {0}\u3002
+ssl.ca.cmp.impl.tempfile.error.explanation= \u7121\u6cd5\u5c07\u66ab\u5b58\u6a94\u5beb\u5165\u6a94\u6848\u7cfb\u7d71\u4e2d\u3002
+ssl.ca.cmp.impl.tempfile.error.useraction= \u8acb\u78ba\u5b9a\u66ab\u5b58\u6a94\u8def\u5f91\u5df2\u5b58\u5728\u3001\u53ef\u5beb\u5165\uff0c\u4e14\u6709\u53ef\u7528\u7684\u7a7a\u9593\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.request.created=CWPKI0455I: \u6b63\u5728\u8981\u6c42\u6191\u8b49\u7ba1\u7406\u4e2d\u5fc3 (CA) \u7c3d\u7ae0\u6191\u8b49\u3002
+ssl.ca.cmp.impl.request.created.explanation=\u9019\u5247\u8a0a\u606f\u53ea\u4f9b\u53c3\u8003\u7528\u3002
+ssl.ca.cmp.impl.request.created.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.create.error=CWPKI0456E: \u8981\u6c42\u6191\u8b49\u6642\u767c\u751f\u7570\u5e38\u72c0\u6cc1\uff1a{0}
+ssl.ca.cmp.impl.create.error.explanation=\u8981\u6c42\u6191\u8b49\u6642\u767c\u751f\u6307\u5b9a\u7684\u932f\u8aa4\u3002
+ssl.ca.cmp.impl.create.error.useraction=\u8acb\u6aa2\u67e5\u65e5\u8a8c\u6a94\uff0c\u53d6\u5f97\u8a73\u7d30\u7684\u932f\u8aa4\u8cc7\u8a0a\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.revoke.error=CWPKI0457E: \u64a4\u92b7\u6191\u8b49\u6642\u767c\u751f\u7570\u5e38\u72c0\u6cc1\uff1a{0}
+ssl.ca.cmp.impl.revoke.error.explanation=\u64a4\u92b7\u6191\u8b49\u6642\u767c\u751f\u6307\u5b9a\u7684\u932f\u8aa4\u3002
+ssl.ca.cmp.impl.revoke.error.useraction=\u8acb\u6aa2\u67e5\u65e5\u8a8c\u6a94\uff0c\u53d6\u5f97\u8a73\u7d30\u7684\u932f\u8aa4\u8cc7\u8a0a
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.query.error=CWPKI0458E: \u67e5\u8a62\u6191\u8b49\u6642\u767c\u751f\u7570\u5e38\u72c0\u6cc1\uff1a{0}
+ssl.ca.cmp.impl.query.error.explanation=\u67e5\u8a62\u6191\u8b49\u6642\u767c\u751f\u6307\u5b9a\u7684\u932f\u8aa4\u3002
+ssl.ca.cmp.impl.query.error.useraction=\u8acb\u6aa2\u67e5\u65e5\u8a8c\u6a94\uff0c\u53d6\u5f97\u8a73\u7d30\u7684\u932f\u8aa4\u8cc7\u8a0a\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.invalid.certificate.chain=CWPKI0459E: \u6191\u8b49\u93c8\u70ba\u7a7a\u503c\u3002
+ssl.ca.cmp.impl.invalid.certificate.chain.explanation=\u6c92\u6709\u53ef\u4f9b\u5be6\u4f5c\u4f7f\u7528\u7684\u6709\u6548\u6191\u8b49\u93c8\u7d50\u3002
+ssl.ca.cmp.impl.invalid.certificate.chain.useraction=\u8acb\u6aa2\u67e5\u50b3\u7d66\u5be6\u4f5c\u7684\u6191\u8b49\u93c8\u7d50\u6709\u6548\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.revoke.request.created=CWPKI0460I: \u6b63\u5728\u64a4\u6d88\u6191\u8b49\u7ba1\u7406\u4e2d\u5fc3 (CA) \u7c3d\u7ae0\u6191\u8b49\u3002
+ssl.ca.cmp.impl.revoke.request.created.explanation=\u9019\u5247\u8a0a\u606f\u53ea\u4f9b\u53c3\u8003\u7528\u3002
+ssl.ca.cmp.impl.revoke.request.created.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.action.not.supported=CWPKI0461I: \u9019\u9805\u5be6\u4f5c\u4e0d\u652f\u63f4\u52d5\u4f5c {0}\u3002
+ssl.ca.cmp.impl.action.not.supported.explanation=\u9019\u5247\u8a0a\u606f\u53ea\u4f9b\u53c3\u8003\u7528\u3002
+ssl.ca.cmp.impl.action.not.supported.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.revoke.request.processed=CWPKI0462I: \u5df2\u8d77\u59cb\u6191\u8b49\u5225\u540d {0} \u7684\u6191\u8b49\u64a4\u92b7\u8981\u6c42\u3002\u539f\u56e0\uff1a{1}
+ssl.ca.cmp.impl.revoke.request.processed.explanation=\u5df2\u767c\u51fa\u64a4\u6d88\u6191\u8b49\u7ba1\u7406\u4e2d\u5fc3 (CA) \u7c3d\u7ae0\u6191\u8b49\u7684\u8981\u6c42\u3002
+ssl.ca.cmp.impl.revoke.request.processed.useraction=\u8acb\u5411\u5916\u90e8\u6191\u8b49\u7ba1\u7406\u4e2d\u5fc3 (CA) \u6c42\u8b49\uff0c\u9a57\u8b49\u8a72\u6191\u8b49\u662f\u5426\u5df2\u9806\u5229\u64a4\u6d88\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.certificate.received=CWPKI0463I: \u5df2\u6536\u5230\u6191\u8b49\uff0c\u4e26\u4ee5\u5225\u540d {1} \u5132\u5b58\u5728\u91d1\u9470\u5132\u5b58\u5eab {0} \u4e2d\u3002
+ssl.ca.cmp.impl.certificate.received.explanation=\u9019\u5247\u8a0a\u606f\u53ea\u4f9b\u53c3\u8003\u7528\u3002
+ssl.ca.cmp.impl.certificate.received.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.certificate.received.header=*** \u6191\u8b49 ***
+ssl.ca.cmp.impl.certificate.received.subject=\u64c1\u6709\u8005\uff1a
+ssl.ca.cmp.impl.certificate.received.issuer=\u767c\u8b49\u8005\uff1a
+ssl.ca.cmp.impl.certificate.received.serial=\u5e8f\u865f\uff1a
+ssl.ca.cmp.impl.certificate.received.fingerprints=\u6191\u8b49\u6307\u7d0b\uff1a
+ssl.ca.cmp.impl.certificate.received.shadigest=SHA-1 \u6458\u8981\uff1a
+ssl.ca.cmp.impl.certificate.received.md5digest=MD5 \u6458\u8981\uff1a
+# -------------------------------------------------------------------------------------------------
+
+################################################################################
+# Range 600-799 reserved for Command Tasks located in sslCommandTask.nlsprops file
+################################################################################
+
+################################################################################
+# Range 800-899 reserved for Liberty specific messages
+################################################################################
+security.addprovider.error=CWPKI0800E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u65b0\u589e IBMJCEFIPS \u63d0\u4f9b\u8005\u6642\u6355\u6349\u5230\u7570\u5e38\u72c0\u6cc1\u3002\u7570\u5e38\u72c0\u6cc1\uff1a{0}
+security.addprovider.error.explanation=\u65b0\u589e IBMJCEFIPS \u52a0\u5bc6\u6a21\u7d44\u6642\u767c\u751f\u932f\u8aa4\u3002\u5c07\u6703\u7e7c\u7e8c\u8d77\u59cb\u8a2d\u5b9a\u4f3a\u670d\u5668\uff0c\u4f46\u53ef\u80fd\u7121\u6cd5\u4f7f\u7528 SSL \u652f\u63f4\u3002
+security.addprovider.error.useraction=CMSG0002                                                   
+#--------------------------------------------------------------------------------------------------
+DEFAULT_OPTIONS_ERROR=CWPKI0801E: \u7121\u6cd5\u5efa\u7acb\u9810\u8a2d SSL \u914d\u7f6e\u3002\u7570\u5e38\u72c0\u6cc1\u662f {0}\u3002
+DEFAULT_OPTIONS_ERROR.explanation=\u5efa\u7acb\u9810\u8a2d SSL \u914d\u7f6e\u6642\u767c\u751f\u932f\u8aa4\u3002
+DEFAULT_OPTIONS_ERROR.useraction=CMSG0002
+#--------------------------------------------------------------------------------------------------
+ssl.create.certificate.start=CWPKI0802I: \u6b63\u5728\u5efa\u7acb SSL \u6191\u8b49\u3002\u9019\u53ef\u80fd\u6703\u82b1\u5e7e\u79d2\u9418\u3002
+ssl.create.certificate.start.explanation=SSL \u6191\u8b49\u4e0d\u5b58\u5728\uff0c\u5c07\u81ea\u52d5\u7522\u751f\u3002\u9019\u53ef\u80fd\u6703\u82b1\u5e7e\u79d2\u9418\u3002\u5728 SSL \u6191\u8b49\u7522\u751f\u4e14\u914d\u7f6e\u5099\u59a5\u4e4b\u524d\uff0c\u4efb\u4f55\u9700\u8981 SSL \u7684\u670d\u52d9\u90fd\u4e0d\u6703\u555f\u52d5\u3002
+ssl.create.certificate.start.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+#--------------------------------------------------------------------------------------------------
+ssl.create.certificate.end=CWPKI0803A: \u5df2\u5728 {0} \u79d2\u5167\u5efa\u7acb SSL \u6191\u8b49\u3002SSL \u91d1\u9470\u6a94\uff1a{1}
+ssl.create.certificate.end.explanation=\u5df2\u5728\u6307\u5b9a\u7684\u6642\u9593\u91cf\u5167\u7522\u751f SSL \u6191\u8b49\u3002
+ssl.create.certificate.end.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+#--------------------------------------------------------------------------------------------------
+ssl.create.certificate.error=CWPKI0804E: SSL \u6191\u8b49\u5efa\u7acb\u932f\u8aa4\u3002\u7121\u6cd5\u5efa\u7acb SSL \u91d1\u9470\u6a94\uff1a{0}
+ssl.create.certificate.error.explanation=\u7121\u6cd5\u5728\u6307\u5b9a\u7684\u4f4d\u7f6e\u4e0a\u5efa\u7acb SSL \u6191\u8b49\u3002
+ssl.create.certificate.error.useraction=\u8acb\u78ba\u5b9a\u4f3a\u670d\u5668\u7a0b\u5e8f\u53ef\u5b58\u53d6\u8a72\u4f4d\u7f6e\u3002\u4efb\u4f55 FFDC \u53ef\u80fd\u6703\u6307\u51fa\u5728\u7522\u751f\u6216\u8f09\u5165\u91d1\u9470\u6642\u767c\u751f\u56b4\u91cd\u932f\u8aa4\u3002
+#--------------------------------------------------------------------------------------------------
+ssl.default.keystore.config.error=CWPKI0805E: \u5982\u679c\u907a\u5931\u9810\u8a2d\u91d1\u9470\u5132\u5b58\u5eab\uff0c\u5247\u9700\u8981\u5bc6\u78bc\u3002
+ssl.default.keystore.config.error.explanation=\u91d1\u9470\u5132\u5b58\u5eab\u914d\u7f6e\u6c92\u6709\u6307\u5b9a\u9810\u8a2d\u91d1\u9470\u5132\u5b58\u5eab\u7684\u5bc6\u78bc\u3002
+ssl.default.keystore.config.error.useraction=\u8acb\u4fee\u6539\u9810\u8a2d\u91d1\u9470\u5132\u5b58\u5eab\u914d\u7f6e\u4f86\u6307\u5b9a\u5bc6\u78bc\u3002
+#--------------------------------------------------------------------------------------------------
+ssl.keystore.config.error=CWPKI0806E: \u91d1\u9470\u5132\u5b58\u5eab\u914d\u7f6e\u4e0d\u5b8c\u6574\uff0c\u5fc5\u9808\u6307\u5b9a\u4f4d\u7f6e\u548c\u985e\u578b\u3002
+ssl.keystore.config.error.explanation=\u91d1\u9470\u5132\u5b58\u5eab\u914d\u7f6e\u4e0d\u5305\u542b\u6240\u6709\u6240\u9700\u7684\u8cc7\u8a0a\u3002
+ssl.keystore.config.error.useraction=\u8acb\u4fee\u6539\u91d1\u9470\u5132\u5b58\u5eab\u914d\u7f6e\u7269\u4ef6\u4f86\u5305\u542b\u91d1\u9470\u5132\u5b58\u5eab\u7684\u4f4d\u7f6e\u548c\u985e\u578b\u3002
+#--------------------------------------------------------------------------------------------------
+ssl.keystore.not.found.warning=CWPKI0807W: \u627e\u4e0d\u5230 ID \u5c6c\u6027\u70ba {1} \u4e4b\u5143\u7d20\u7684\u91d1\u9470\u5132\u5b58\u5eab\u4f4d\u7f6e {0}\u3002
+ssl.keystore.not.found.warning.explanation=\u91d1\u9470\u5132\u5b58\u5eab\u4f4d\u7f6e\u53c3\u7167\u4e0d\u5b58\u5728\u7684\u4f4d\u7f6e\u3002
+ssl.keystore.not.found.warning.useraction=\u8acb\u5c07\u91d1\u9470\u5132\u5b58\u5eab\u4f4d\u7f6e\u8b8a\u66f4\u70ba\u5177\u6709\u6709\u6548\u8def\u5f91\u7684\u6a94\u6848\u3002
+#--------------------------------------------------------------------------------------------------
+ssl.create.certificate.password.error=CWPKI0808E: \u9700\u8981\u81f3\u5c11 6 \u500b\u5b57\u5143\u7684\u5bc6\u78bc\uff0c\u624d\u80fd\u5efa\u7acb\u9810\u8a2d\u91d1\u9470\u5132\u5b58\u5eab\u3002\u672a\u5efa\u7acb\u9810\u8a2d\u91d1\u9470\u5132\u5b58\u5eab\u3002
+ssl.create.certificate.password.error.explanation=\u91d1\u9470\u5132\u5b58\u5eab\u914d\u7f6e\u9700\u8981\u81f3\u5c11 6 \u500b\u5b57\u5143\u7684\u5bc6\u78bc\uff0c\u624d\u80fd\u5efa\u7acb\u9810\u8a2d\u91d1\u9470\u5132\u5b58\u5eab\u3002
+ssl.create.certificate.password.error.useraction=\u8acb\u4fee\u6539\u9810\u8a2d\u91d1\u9470\u5132\u5b58\u5eab\u914d\u7f6e\u4f86\u6307\u5b9a\u81f3\u5c11 6 \u500b\u5b57\u5143\u7684\u5bc6\u78bc\u3002
+#--------------------------------------------------------------------------------------------------
+ssl.config.not.used.CWPKI0809W=CWPKI0809W: \u8f09\u5165\u91d1\u9470\u5132\u5b58\u5eab {0} \u5931\u6557\u3002\u5982\u679c SSL \u914d\u7f6e\u6703\u53c3\u7167 {1} \u91d1\u9470\u5132\u5b58\u5eab\uff0c\u5247 SSL \u914d\u7f6e\u7121\u6cd5\u8d77\u59cb\u8a2d\u5b9a\u3002
+ssl.config.not.used.CWPKI0809W.explanation=\u91d1\u9470\u5132\u5b58\u5eab\u6a94\u4e0d\u5b58\u5728\uff0c\u6216\u662f\u91d1\u9470\u5132\u5b58\u5eab\u985e\u578b\u6216\u5bc6\u78bc\u4e0d\u6b63\u78ba\uff0c\u4f7f\u5f97\u53c3\u7167\u8a72\u91d1\u9470\u5132\u5b58\u5eab\u7684\u6240\u6709 SSL \u914d\u7f6e\u90fd\u7121\u6cd5\u4f7f\u7528\u3002
+ssl.config.not.used.CWPKI0809W.useraction=\u8acb\u4fee\u6b63\u91d1\u9470\u5132\u5b58\u5eab\u914d\u7f6e\u7684\u554f\u984c\u3002
+#--------------------------------------------------------------------------------------------------
+ssl.keystore.readonly.CWPKI0810I=CWPKI0810I: {0} \u91d1\u9470\u5132\u5b58\u5eab\u662f\u552f\u8b80\u7684\uff0c\u4e26\u4e0d\u6703\u5c07\u6191\u8b49\u5beb\u5165\u91d1\u9470\u5132\u5b58\u5eab\u6a94\u4e2d\u3002\u50c5\u91dd\u5c0d\u6b64\u9023\u7dda\u63a5\u53d7\u4fe1\u4efb\u3002
+ssl.keystore.readonly.CWPKI0810I.explanation=\u9019\u5247\u8a0a\u606f\u53ea\u4f9b\u53c3\u8003\u3002
+ssl.keystore.readonly.CWPKI0810I.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+#--------------------------------------------------------------------------------------------------
+ssl.keystore.modified.CWPKI0811I=CWPKI0811I: \u91d1\u9470\u5132\u5b58\u5eab\u6a94 {0} \u5df2\u4fee\u6539\u3002\u5c07\u91cd\u65b0\u8f09\u5165\u91d1\u9470\u5132\u5b58\u5eab\u6a94\uff0c\u4ee5\u4fbf\u53ef\u4ee5\u4f7f\u7528\u5df2\u66f4\u65b0\u7684\u91d1\u9470\u5132\u5b58\u5eab\u6a94\u3002
+ssl.keystore.modified.CWPKI0811I.explanation=\u6307\u5b9a\u7684\u91d1\u9470\u5132\u5b58\u5eab\u6a94\u5df2\u4fee\u6539\uff0c\u57f7\u884c\u6642\u671f\u5c07\u958b\u59cb\u4f7f\u7528\u5df2\u66f4\u65b0\u7684\u91d1\u9470\u5132\u5b58\u5eab\u6a94\u3002
+ssl.keystore.modified.CWPKI0811I.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+#--------------------------------------------------------------------------------------------------
+ssl.key.error.CWPKI0812E=CWPKI0812E: \u5617\u8a66\u5f9e [{1}] \u91d1\u9470\u5132\u5b58\u5eab\u53d6\u5f97 [{0}] \u91d1\u9470\u6642\u767c\u751f\u932f\u8aa4\u3002\u8acb\u6aa2\u67e5\u4ee5\u78ba\u5b9a\u8a72\u9805\u76ee\u662f\u91d1\u9470\uff0c\u4e14\u91d1\u9470\u5bc6\u78bc\u6b63\u78ba\u3002\u50b3\u56de\u7684\u7570\u5e38\u72c0\u6cc1\u662f\uff1a[{2}]\u3002
+ssl.key.error.CWPKI0812E.explanation=\u5617\u8a66\u5f9e\u91d1\u9470\u5132\u5b58\u5eab\u6a94\u56de\u5fa9\u91d1\u9470\u6642\u767c\u751f\u932f\u8aa4\u3002\u53ef\u80fd\u662f\u91d1\u9470\u6709\u554f\u984c\uff0c\u6216\u662f\u91d1\u9470\u5bc6\u78bc\u4e0d\u6b63\u78ba\u3002
+ssl.key.error.CWPKI0812E.useraction=\u8acb\u6aa2\u67e5\u91d1\u9470\u5132\u5b58\u5eab\uff0c\u78ba\u5b9a\u8a72\u91d1\u9470\u9805\u76ee\u5df2\u5b58\u5728\uff0c\u4e26\u78ba\u5b9a\u5df2\u914d\u7f6e\u6b63\u78ba\u5bc6\u78bc\u4f86\u5b58\u53d6\u8a72\u91d1\u9470\u9805\u76ee\u3002
+#--------------------------------------------------------------------------------------------------
+ssl.unrecoverablekey.error.CWPKI0813E=CWPKI0813E: \u5617\u8a66\u8d77\u59cb\u8a2d\u5b9a\u91d1\u9470\u5132\u5b58\u5eab [{0}] \u7684\u91d1\u9470\u7ba1\u7406\u7a0b\u5f0f\u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002\u79c1\u5bc6\u91d1\u9470\u7684\u5bc6\u78bc\u4e0d\u6b63\u78ba\uff0c\u6216\u662f\u91d1\u9470\u5132\u5b58\u5eab\u6709\u591a\u500b\u79c1\u5bc6\u91d1\u9470\u4f7f\u7528\u4e0d\u540c\u7684\u5bc6\u78bc\u3002\u9019\u500b\u91d1\u9470\u5132\u5b58\u5eab\u7121\u6cd5\u7528\u65bc SSL\u3002\u7570\u5e38\u72c0\u6cc1\u8a0a\u606f\u662f\uff1a[{1}]\u3002
+ssl.unrecoverablekey.error.CWPKI0813E.explanation=\u5617\u8a66\u8d77\u59cb\u8a2d\u5b9a\u91d1\u9470\u7ba1\u7406\u7a0b\u5f0f\u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002\u7576\u79c1\u5bc6\u91d1\u9470\u7684\u5bc6\u78bc\u4e0d\u6b63\u78ba\uff0c\u6216\u8005\u91d1\u9470\u5132\u5b58\u5eab\u6709\u591a\u500b\u91d1\u9470\u4f7f\u7528\u4e0d\u540c\u7684\u5bc6\u78bc\u6642\uff0c\u5c31\u7121\u6cd5\u5efa\u7acb SSLContext\u3002
+ssl.unrecoverablekey.error.CWPKI0813E.useraction=\u5728 SSL \u9023\u7dda\u4e2d\u4f7f\u7528\u91d1\u9470\u5132\u5b58\u5eab\u4e4b\u524d\uff0c\u8acb\u5148\u78ba\u5b9a\u79c1\u5bc6\u91d1\u9470\u7684\u5bc6\u78bc\u6b63\u78ba\uff0c\u4e14\u91d1\u9470\u5132\u5b58\u5eab\u4e26\u6c92\u6709\u591a\u500b\u91d1\u9470\u4f7f\u7528\u4e0d\u540c\u7684\u5bc6\u78bc\u3002
+#--------------------------------------------------------------------------------------------------
+ssl.hwkeystore.load.error.CWPKI0814E=CWPKI0814E: \u8d77\u59cb\u8a2d\u5b9a\u786c\u9ad4\u91d1\u9470\u5132\u5b58\u5eab [{0}] \u6642\u767c\u751f\u932f\u8aa4\u3002\u8acb\u6aa2\u67e5\u786c\u9ad4\u914d\u7f6e {1} \u6a94\uff0c\u78ba\u5b9a\u5c6c\u6027\u8a2d\u5b9a\u6b63\u78ba\u3002\u63d0\u4f9b\u8005\u50b3\u56de\u7684\u7570\u5e38\u72c0\u6cc1\u662f {2}\u3002
+ssl.hwkeystore.load.error.CWPKI0814E.explanation=\u786c\u9ad4\u914d\u7f6e\u51fa\u73fe\u932f\u8aa4\uff0c\u9020\u6210\u91d1\u9470\u5132\u5b58\u5eab\u7121\u6cd5\u4f7f\u7528\u3002\u82e5\u6709 SSL \u914d\u7f6e\u6b63\u5728\u53c3\u7167\u9019\u500b\u91d1\u9470\u5132\u5b58\u5eab\uff0c\u5b83\u6703\u8b8a\u6210\u7121\u6cd5\u4f7f\u7528\u3002
+ssl.hwkeystore.load.error.CWPKI0814E.useraction=\u8acb\u78ba\u5b9a\u786c\u9ad4\u914d\u7f6e\u6a94\u5305\u542b\u5fc5\u8981\u7684\u5c6c\u6027\u3001\u540d\u7a31\u548c\u7a0b\u5f0f\u5eab\u3002\u8acb\u78ba\u5b9a\u914d\u7f6e\u6a94\u4e2d\u7684\u5176\u4ed6\u5c6c\u6027\u9075\u5faa\u786c\u9ad4\u88dd\u7f6e\u898f\u683c\u3002
+#--------------------------------------------------------------------------------------------------
+ssl.dynamicSelection.conflict.CWPKI0815W=CWPKI0815W: \u6709\u591a\u500b OutboundConnection \u5143\u7d20\u6307\u5b9a [{0}] \u4e3b\u6a5f\u548c [{1}] \u57e0\u4f5c\u70ba\u904e\u6ffe\u5668\u3002\u5c07\u4f7f\u7528 [{2}] SSL \u5143\u7d20\u4e2d\u6240\u914d\u7f6e\u7684 OutboundConnection \u5143\u7d20\u3002
+ssl.dynamicSelection.conflict.CWPKI0815W.explanation=\u4f3a\u670d\u5668\u914d\u7f6e\u4e2d\u5b9a\u7fa9\u4e86\u885d\u7a81\u7684 OutboundConnection \u5143\u7d20\u3002\u70ba\u4e86\u6c7a\u5b9a\u51fa\u57e0 SSL \u914d\u7f6e\uff0c\u4f3a\u670d\u5668\u6703\u4f7f\u7528\u5b83\u6240\u8655\u7406\u7684\u7b2c\u4e00\u500b OutboundConnection \u5143\u7d20\u3002
+ssl.dynamicSelection.conflict.CWPKI0815W.useraction=\u8acb\u6aa2\u95b1\u4f3a\u670d\u5668\u914d\u7f6e\u4e2d\u885d\u7a81\u7684 OutboundConnection \u5143\u7d20\uff0c\u4e26\u79fb\u9664\u60a8\u4e0d\u9700\u8981\u7684\u5143\u7d20\u3002
+#--------------------------------------------------------------------------------------------------
+ssl.defaultOutbound.conflict.CWPKI0816W=CWPKI0816W: \u4f5c\u70ba\u4e3b\u6a5f\u548c\u57e0\u7684\u542b\u6709\u661f\u865f (*) \u7684 outboundConnection \u5143\u7d20\u8a2d\u70ba [{0}] SSL \u914d\u7f6e\u3002\u9019\u9805\u8a2d\u5b9a\u8207 outboundSSLRef \u5c6c\u6027\u8a2d\u5b9a\u76f8\u885d\u7a81\u3002\u6703\u4f7f\u7528 outboundSSLRef \u5c6c\u6027\u6240\u6307\u5b9a\u7684 {1} SSL \u914d\u7f6e\u3002
+ssl.defaultOutbound.conflict.CWPKI0816W.explanation=\u4f5c\u70ba\u4e3b\u6a5f\u548c\u57e0\u7684\u542b\u6709\u661f\u865f (*) \u7684 outboundConnection \u5143\u7d20\u8207\u914d\u7f6e\u7684 outboundSSLRef \u5c6c\u6027\u76f8\u885d\u7a81\u3002\u4f3a\u670d\u5668\u6703\u4f7f\u7528 outboundSSLRef \u5c6c\u6027\u6240\u6307\u5b9a\u7684 SSL \u914d\u7f6e\u3002
+ssl.defaultOutbound.conflict.CWPKI0816W.useraction=\u8acb\u6aa2\u95b1\u885d\u7a81\u7684\u914d\u7f6e\uff0c\u4e26\u6c7a\u5b9a\u4f7f\u7528\u54ea\u4e00\u500b\u914d\u7f6e\u4f86\u4f5c\u70ba\u9810\u8a2d\u7684 SSL \u914d\u7f6e\u3002\u79fb\u9664\u4e0d\u9700\u8981\u7684\u914d\u7f6e\u3002
+

@@ -1,0 +1,31 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX J2EE SM related MBeans
+#CMVCPATHNAME com.ibm.ws.management.j2ee.mbeans/resources/com/ibm/ws/management/j2ee/mbeans/internal/resources/SMMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#
+# Message prefix block: CWWKX7500 - CWWKX7524
+
+#-----  JVMMBeanImpl
+
+DETERMINE_HOST_ERROR=CWWKX7500E: Le produit ne peut pas d\u00e9terminer le nom de domaine complet de l'h\u00f4te. Le nom d'h\u00f4te sera {0} par d\u00e9faut. L'erreur est la suivante : {1}
+DETERMINE_HOST_ERROR.explanation=L'adresse IP ou le nom d'h\u00f4te du serveur ne peut pas \u00eatre d\u00e9termin\u00e9.
+DETERMINE_HOST_ERROR.useraction=V\u00e9rifiez la configuration r\u00e9seau du serveur et essayez de red\u00e9marrer le serveur avec l'option --clean.
+
+#-----  SMActivator
+
+OSGI_SERVICE_ERROR=CWWKX7501E: Le service OSGi {0} n'est pas disponible.  Essayez de red\u00e9marrer le serveur avec l'option --clean.
+OSGI_SERVICE_ERROR.explanation=Le service sp\u00e9cifi\u00e9 n'est pas disponible, ce qui provoque cette erreur de serveur interne.
+OSGI_SERVICE_ERROR.useraction=Red\u00e9marrez le serveur avec l'option --clean.
