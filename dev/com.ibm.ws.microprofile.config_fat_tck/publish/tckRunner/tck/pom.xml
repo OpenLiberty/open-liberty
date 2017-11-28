@@ -20,12 +20,12 @@
 		     specific JARs come from. The rest of the pom will work
 		     as long as ${wlp} is valid, so that is all that needs to be
 		     changed if one is testing a downloaded/installed binary liberty -->
-		<repo>/libertyGit/open-liberty/</repo>
+		<!--  <repo>/libertyGit/open-liberty/</repo> -->
 		<!--  <wlp>${repo}dev${file.separator}build.image${file.separator}wlp${file.separator}</wlp> -->
-		<wlp>${WLP}${file.separator}</wlp>
+		<wlp>${wlp}</wlp>
 		
-		<lib>${wlp}lib${file.separator}</lib>
-		<dev>${wlp}dev${file.separator}</dev>
+		<lib>${wlp}${file.separator}lib${file.separator}</lib>
+		<dev>${wlp}${file.separator}dev${file.separator}</dev>
 		<api.spec>${dev}api${file.separator}spec${file.separator}</api.spec>
 		<api.stable>${dev}api${file.separator}stable${file.separator}</api.stable>
 		<spi.spec>${dev}spi${file.separator}spec${file.separator}</spi.spec>
@@ -39,9 +39,10 @@
 		
 		<arquillian.version>1.1.13.Final</arquillian.version>
 		
-		<mpconfig.version>1.1</config.version>
-		<mpconfig.bundle.version>1.2</config.bundle.version>
-
+		<mpconfig.version>1.1</mpconfig.version>
+		<mpconfig.bundle.version>1.2</mpconfig.bundle.version>
+		<version.qualifier>18</version.qualifier>
+		<liberty.version>1.0.${version.qualifier}</liberty.version>
 		<defaultSuiteFiles>tck-suite.xml</defaultSuiteFiles>
 		<suiteXmlFile>${defaultSuiteFiles}</suiteXmlFile>
 	</properties>
@@ -81,7 +82,7 @@
 				<version>2.17</version>
 				<configuration>
 				<systemPropertyVariables>
-					<wlpDir>${wlpDir}</wlpDir>
+					<wlp>${wlp}</wlp>
 					<tck_server>${tck_server}</tck_server>
 					<tck_server>${tck_port}</tck_server>
 					<methodName>${methodName}</methodName>
@@ -159,15 +160,15 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.microprofile.apis</groupId>
-			<artifactId>microprofile-config_1.0_api</artifactId>
-			<version>1.0-SNAPSHOT</version>
-			<scope>system</scope>
+			<artifactId>microprofile-config_1.1_api</artifactId>
+			<version>1.1-SNAPSHOT</version>
+			<scope>system</scope> <!--  com.ibm.websphere.org.eclipse.microprofile.config.1.1_1.2.18.jar -->
 			<systemPath>${api.stable}com.ibm.websphere.org.eclipse.microprofile.config.${mpconfig.version}_${mpconfig.bundle.version}.${version.qualifier}.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>com.ibm.wlp.lib</groupId>
 			<artifactId>wlp.mpConfig</artifactId>
-			<version>1.0</version>
+			<version>1.1</version>
 			<scope>system</scope>
 			<systemPath>${lib}com.ibm.ws.microprofile.config_${liberty.version}.jar</systemPath>
 		</dependency>

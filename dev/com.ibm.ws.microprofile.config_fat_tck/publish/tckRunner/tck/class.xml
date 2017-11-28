@@ -7,13 +7,11 @@
 	the specific language governing permissions and limitations under the License. -->
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="bulkhead-suite" verbose="2" configfailurepolicy="continue">
-	<test name="DynamicValue">
+<suite name="microprofile-config-1.1-tck" verbose="2"
+	configfailurepolicy="continue">
+	<test name="tck-method-${className}-${methodName}">
 		<classes>
 			<class name=${className}>
-				<methods>
-					<include name=${methodName}/>
-				</methods>
 			</class>
 		</classes>
 	</test>

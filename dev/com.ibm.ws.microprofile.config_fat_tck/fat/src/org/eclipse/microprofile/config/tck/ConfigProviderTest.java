@@ -14,6 +14,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -39,30 +40,31 @@ import componenttest.topology.impl.LibertyServer;
 @RunWith(FATRunner.class)
 public class ConfigProviderTest {
 
-//    public static final String APP_NAME = "app1";
-//
+    public static final String APP_NAME = "app1";
+
     @Server("FATServer")
-//    @TestServlet(servlet = TestServletA.class, contextRoot = APP_NAME)
+    //@TestServlet(servlet = TestServletA.class, contextRoot = APP_NAME)
     public static LibertyServer server;
     private String className;
     private String packageName;
     private File home;
-    private String wlpHome;
+    private String wlp;
     private File tckRunnerDir;
     private File mvnOutput;
     private boolean init;
     private String mvnCliRoot[];
+    private Object mvnCliMethodRoot;
+    private String[] mvnCliPackageRoot;
 
-//    @BeforeClass
-//    public static void setUp() throws Exception {
-//        // Create a WebArchive that will have the file name 'app1.war' once it's written to a file
-//        // Include the 'app1.web' package and all of it's java classes and sub-packages
-//        // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
-//        // Exports the resulting application to the ${server.config.dir}/apps/ directory
-//        ShrinkHelper.defaultApp(server, APP_NAME, "app1.web");
-//
-//        server.startServer();
-//    }
+    @BeforeClass
+    public static void setUp() throws Exception {
+        // Create a WebArchive that will have the file name 'app1.war' once it's written to a file
+        // Include the 'app1.web' package and all of it's java classes and sub-packages
+        // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
+        // Exports the resulting application to the ${server.config.dir}/apps/ directory
+        //ShrinkHelper.defaultApp(server, APP_NAME, "app1.web");
+        server.startServer();
+    }
 //
 //    @AfterClass
 //    public static void tearDown() throws Exception {
@@ -108,38 +110,43 @@ public class ConfigProviderTest {
 //        int exitCode = p.waitFor();
 //    }
 
-    @Test
-    public void testDynamicValueInPropertyConfigSource2() throws Exception {
-        String className = this.getClass().getName();
-        String packageName = this.getClass().getPackage().getName();
-
-        File home = new File(System.getProperty("user.dir"));
-        // String wlpHome = System.getProperty("liberty.location");
-        wlpHome = server.getInstallRoot();
-        System.out.println("GDH X wlpHome is:" + wlpHome);
-
-        String methodName = new Object() {}.getClass().getEnclosingMethod().getName();
-        //String[] cmd = (String[]) ArrayUtils.addAll(mvnCliRoot, new String[] { "-DmethodName=" + methodName });
-        ProcessBuilder pb = new ProcessBuilder("mvn", "test", "-DWLP=" + wlpHome, "-DsuiteXmlFile=method.xml", "-Dtck_server=" + server.getServerName(), "-Dtck_port=" + server
-                        .getPort(PortType.WC_defaulthost), "-DpackageName=" + packageName, "-DclassName=" + className, "-DmethodName=" + methodName);
-
-        File tckRunnerDir = new File("publish/tckRunner");
-        pb.directory(tckRunnerDir);
-
-        File mvnOutput = new File(home, "mvnTestResults");
-        pb.redirectOutput(mvnOutput);
-        Process p = pb.start();
-        int exitCode = p.waitFor();
-    }
+//    @Test
+//    public void testDynamicValueInPropertyConfigSourceLong() throws Exception {
+//        String className = this.getClass().getName();
+//        String packageName = this.getClass().getPackage().getName();
+//
+//        File home = new File(System.getProperty("user.dir"));
+//        wlpHome = server.getInstallRoot();
+//        System.out.println("GDH X wlpHome is:" + wlpHome);
+//
+//        String methodName = new Object() {}.getClass().getEnclosingMethod().getName();
+//        //String[] cmd = (String[]) ArrayUtils.addAll(mvnCliRoot, new String[] { "-DmethodName=" + methodName });
+//        ProcessBuilder pb = new ProcessBuilder("mvn", "test", "-DWLP=" + wlpHome, "-DsuiteXmlFile=method.xml", "-Dtck_server=" + server.getServerName(), "-Dtck_port=" + server
+//                        .getPort(PortType.WC_defaulthost), "-DpackageName=" + packageName, "-DclassName=" + className, "-DmethodName=" + methodName);
+//
+//        File tckRunnerDir = new File("publish/tckRunner");
+//        pb.directory(tckRunnerDir);
+//
+//        File mvnOutput = new File(home, "mvnTestResults");
+//        pb.redirectOutput(mvnOutput);
+//        Process p = pb.start();
+//        int exitCode = p.waitFor();
+//    }
 
     @Test
     public void testDynamicValueInPropertyConfigSource() throws Exception {
+        sameTestMethodInTck(new Object() {}.getClass().getEnclosingMethod().getName());
+    }
+
+    /**
+     * @param methodName
+     * @throws Exception
+     */
+    private void sameTestMethodInTck(String methodName) throws Exception {
         if (!init) {
             init();
         }
-        String methodName = new Object() {}.getClass().getEnclosingMethod().getName();
         String[] methodParm = new String[] { "-DmethodName=" + methodName };
-
         String[] cmd = concatStringArray(mvnCliRoot, methodParm);
         int rc = runCmd(cmd, tckRunnerDir, mvnOutput);
     }
@@ -154,7 +161,6 @@ public class ConfigProviderTest {
     private int runCmd(String[] cmd, File workingDirectory, File outputFile) throws Exception {
 
         ProcessBuilder pb = new ProcessBuilder(cmd);
-
         System.out.println("GDH cmd is:" + Arrays.asList(cmd));
         pb.directory(workingDirectory);
         pb.redirectOutput(outputFile);
@@ -174,10 +180,11 @@ public class ConfigProviderTest {
         packageName = this.getClass().getPackage().getName();
         home = new File(System.getProperty("user.dir"));
         // wlpHome = System.getProperty("wlp.install.dir"); //System.getProperty("liberty.location");
-        wlpHome = server.getInstallRoot();
-        System.out.println("GDH T  wlphome is " + wlpHome);
-        mvnCliRoot = new String[] { "mvn", "test", "-DWLP=" + wlpHome, "-DsuiteXmlFile=method.xml", "-Dtck_server=" + server.getServerName(),
+        wlp = server.getInstallRoot();
+        mvnCliRoot = new String[] { "mvn", "clean", "test", "-Dwlp=" + wlp, "-Dtck_server=" + server.getServerName(),
                                     "-Dtck_port=" + server.getPort(PortType.WC_defaulthost), "-DpackageName=" + packageName, "-DclassName=" + className };
+        mvnCliMethodRoot = concatStringArray(mvnCliRoot, new String[] { "-DsuiteXmlFile=method.xml" });
+        mvnCliPackageRoot = concatStringArray(mvnCliRoot, new String[] { "-DsuiteXmlFile=package.xml" });
         tckRunnerDir = new File("publish/tckRunner");
         mvnOutput = new File(home, "mvnTestResults");
         init = true;
