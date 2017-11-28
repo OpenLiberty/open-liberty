@@ -86,14 +86,6 @@ OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: Invocation of user supplied 
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=The feature constructs Tracer implementations with a user provided OpentracingTracerFactory. The OpentracingTracerFactory.newInstance method returned null.
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=Determine why the user supplied OpentracingTracerFactory newInstance method returned null.
 
-OPENTRACING_FILTER_PATTERN_BLANK=CWMOT0007E: The pattern attribute of an opentracing excludeSpans or includeSpans configuration element is blank.
-OPENTRACING_FILTER_PATTERN_BLANK.explanation=A valid URI pattern must be specified and cannot be blank.
-OPENTRACING_FILTER_PATTERN_BLANK.useraction=Consult the documentation on valid patterns.
-
-OPENTRACING_FILTER_PATTERN_INVALID=CWMOT0008E: The pattern attribute {0} of an opentracing excludeSpans or includeSpans configuration element is an invalid URI (RFC 2396).
-OPENTRACING_FILTER_PATTERN_INVALID.explanation=A valid URI pattern must be specified. The most common problem is not properly % URL-encoding invalid characters.
-OPENTRACING_FILTER_PATTERN_INVALID.useraction=Consult RFC 2396 and ensure that you have correctly % URL-encoding invalid characters.
-
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message
 #-----------------------------------------------------------------------------------------------------------------------------

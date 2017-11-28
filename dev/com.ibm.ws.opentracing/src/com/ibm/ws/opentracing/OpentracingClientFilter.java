@@ -12,6 +12,7 @@ package com.ibm.ws.opentracing;
 
 import java.io.IOException;
 import java.net.URI;
+import java.text.Format;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -26,13 +27,11 @@ import org.osgi.service.component.annotations.Component;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.opentracing.filters.SpanFilterType;
 
 import io.opentracing.ActiveSpan;
 import io.opentracing.Span;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
-import io.opentracing.propagation.Format;
 import io.opentracing.propagation.TextMap;
 import io.opentracing.tag.Tags;
 
@@ -99,7 +98,7 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
             Tr.debug(tc, methodName + " parent", priorIncomingSpan);
         }
 
-        boolean process = OpentracingService.process(outgoingUri, SpanFilterType.OUTGOING);
+        boolean process = true; //OpentracingService.process(outgoingUri, SpanFilterType.OUTGOING);
 
         SpanContext nextContext;
 

@@ -1511,7 +1511,7 @@ public class FATOpentracing implements FATOpentracingConstants {
             requestPath );
     }
 
-    @Test
+    //@Test
     public void testExcludes() throws Exception {
         testExcludedPath("simple");
         testExcludedPath("wildcardTest");
