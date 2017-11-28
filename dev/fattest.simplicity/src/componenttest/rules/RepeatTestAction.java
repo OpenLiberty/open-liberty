@@ -14,6 +14,7 @@ public interface RepeatTestAction {
 
     /**
      * Invoked by the FAT framework to test if the action should be applied or not.
+     * If a RepeatTestAction is disabled, it ought to log a message indicating why.
      */
     public boolean isEnabled();
 

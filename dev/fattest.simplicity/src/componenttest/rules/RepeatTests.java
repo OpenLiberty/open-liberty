@@ -30,11 +30,25 @@ import com.ibm.websphere.simplicity.log.Log;
  * <pre>
  * <code>@ClassRule
  * public static RepeatTests r = new RepeatTests().withoutModification()
- *                                                .with(FeatureReplacementAction.EE8);
+ *                                                .andWith(FeatureReplacementAction.EE8);
  * </code>
  * </pre>
  */
 public class RepeatTests extends ExternalResource {
+
+    /**
+     * Adds an iteration of test execution without making any modifications
+     */
+    public static RepeatTests withoutModification() {
+        return new RepeatTests().andWithoutModification();
+    }
+
+    /**
+     * Adds an iteration of test execution, where the action.setup() is called before repeating the tests.
+     */
+    public static RepeatTests with(RepeatTestAction action) {
+        return new RepeatTests().andWith(action);
+    }
 
     private static final RepeatTestAction NO_MODIFICATION_ACTION = new RepeatTestAction() {
         @Override
@@ -53,12 +67,14 @@ public class RepeatTests extends ExternalResource {
 
     private final List<RepeatTestAction> actions = new ArrayList<>();
 
-    public RepeatTests() {}
+    private RepeatTests() {
+        // private ctor, require static entry point
+    }
 
     /**
      * Adds an iteration of test execution without making any modifications
      */
-    public RepeatTests withoutModification() {
+    public RepeatTests andWithoutModification() {
         actions.add(NO_MODIFICATION_ACTION);
         return this;
     }
@@ -66,7 +82,7 @@ public class RepeatTests extends ExternalResource {
     /**
      * Adds an iteration of test execution, where the action.setup() is called before repeating the tests.
      */
-    public RepeatTests with(RepeatTestAction action) {
+    public RepeatTests andWith(RepeatTestAction action) {
         actions.add(action);
         return this;
     }
