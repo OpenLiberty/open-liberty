@@ -20,7 +20,8 @@ import com.ibm.ws.jpa.jpa22.JPA22FATSuite;
 @RunWith(Suite.class)
 @SuiteClasses({
                 JPABootstrapTest.class,
-                JPA22FATSuite.class
+                JPA22FATSuite.class,
+                JPAAppClientTest.class
 })
 public class FATSuite {
 

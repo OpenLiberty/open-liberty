@@ -1,0 +1,284 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME wlp.lib.extract/resources/wlp/lib/extract/SelfExtractMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_ALL
+#
+#   All strings in the self-extract utility go through MessageFormat: 
+#    single quote must be coded as 2 consecutive single quotes ''.
+#
+
+
+helpAgreement=Zobrazit licen\u010dn\u00ed smlouvu.
+helpInformation=Zobrazit licen\u010dn\u00ed informace.
+helpVerbose=Zobrazit podrobn\u00e9 informace b\u011bhem extrakce archivu.
+helpAcceptLicense=Automaticky indikovat p\u0159ijet\u00ed licen\u010dn\u00edch podm\u00ednek a ujedn\u00e1n\u00ed.
+
+# The following messages are used to tell the user how to run the installer from the command line.
+#
+# usage
+#  
+#   java -jar wlp-liberty-developers-core.jar [options] [installLocation]
+#
+# options
+#    < list of options and descriptions goes here >
+usage=Pou\u017eit\u00ed
+installLocation=um\u00edst\u011bn\u00ed instalace
+options=Volby
+
+
+licenseOptionDescription=Volbou mo\u017enosti "Souhlas\u00edm" n\u00ed\u017ee vyjad\u0159ujete souhlas s podm\u00ednkami licen\u010dn\u00ed smlouvy, p\u0159\u00edpadn\u011b tak\u00e9 podm\u00ednkami jin\u00fdch subjekt\u016f ne\u017e IBM. \
+Pokud nesouhlas\u00edte, vyberte mo\u017enost "Nesouhlas\u00edm".
+
+licenseeAcknowledges=Dr\u017eitel licence potvrzuje a souhlas\u00ed, \u017ee ve\u0161ker\u00fd k\u00f3d (v\u010detn\u011b vlastnost\u00ed, funkc\u00ed a dal\u0161\u00edch sta\u017een\u00ed softwaru) sta\u017een\u00fd dr\u017eitelem licence v souvislosti s t\u00edmto ("K\u00f3d") bude pou\u017e\u00edv\u00e1n pouze s licencovanou verz\u00ed programu IBM WebSphere Application Server Liberty ("Program"). \
+Dr\u017eitel licence rovn\u011b\u017e potvrzuje a souhlas\u00ed, \u017ee pou\u017eit\u00ed K\u00f3du je p\u0159edm\u011btem podm\u00ednek licen\u010dn\u00edch smluv, kter\u00e9 ur\u010duj\u00ed pou\u017e\u00edv\u00e1n\u00ed Programu (nap\u0159. International Program    License Agreement, International License Agreement for Non-Warranted Programs, International License Agreement for Evaluation of Programs, International License Agreement for Early Release of Programs), v\u010detn\u011b, je-li to uplatniteln\u00e9, ve\u0161ker\u00fdch Licen\u010dn\u00edch informac\u00ed.
+
+extractPrompt=C\u00edlov\u00fd adres\u00e1\u0159 pro soubory produktu?
+extractSuccess=V\u0161echny soubory produktu byly \u00fasp\u011b\u0161n\u011b rozbaleny.
+extractLicenseSuccess=\u00dasp\u011b\u0161n\u011b aplikov\u00e1ny soubory s licencemi.
+licenseNotFound=Nelze naj\u00edt soubory s licen\u010dn\u00edmi smlouvami.
+
+promptAgreement=Stisknut\u00edm tla\u010d\u00edtka Enter zobraz\u00edte licen\u010dn\u00ed podm\u00ednky, stisknut\u00edm symbolu ''x'' volbu vynech\u00e1te.
+promptInfo=Stisknut\u00edm tla\u010d\u00edtka Enter zobraz\u00edte dal\u0161\u00ed licen\u010dn\u00ed informace, stisknut\u00edm symbolu ''x'' volbu vynech\u00e1te.
+
+#
+# {0} [1]
+# {1} [2]
+# 
+licensePrompt=Vyberte mo\u017enost {0} Souhlas\u00edm nebo {1} Nesouhlas\u00edm: 
+
+#
+# {0} IBM WebSphere Application Server Network Deployment Version 8.5 (EXAMPLE)
+# {1} International Program License Agreement
+#
+licenseStatement=Chcete-li pou\u017e\u00edt, extrahovat nebo instalovat {0}, mus\u00edte p\u0159ijmout podm\u00ednky {1} a dodate\u010dn\u00e9 licen\u010dn\u00ed informace. \
+P\u0159e\u010dt\u011bte si pe\u010dliv\u011b n\u00e1sleduj\u00edc\u00ed licen\u010dn\u00ed smlouvy.
+
+#
+# {0} --viewLicenseAgreement
+# 
+showAgreement=Licen\u010dn\u00ed smlouvu lze samostatn\u011b zobrazit pomoc\u00ed volby {0}. 
+
+#
+# {0} --viewLicenseInfo
+# 
+showInformation=Dodate\u010dn\u00e9 licen\u010dn\u00ed informace lze samostatn\u011b zobrazit pomoc\u00ed {0}.
+
+#
+# {0} --acceptLicense
+# 
+licenseAccepted=Byl zji\u0161t\u011bn argument {0}. Tento argument ozna\u010duje, \u017ee jste souhlasili s podm\u00ednkami licen\u010dn\u00ed smlouvy.
+
+#
+# {0} c:/full/directory/path
+# 
+extractInstruction=Zadejte adres\u00e1\u0159 pro soubory produktu nebo pole ponechejte pr\u00e1zdn\u00e9, a t\u00edm p\u0159ijm\u011bte v\u00fdchoz\u00ed hodnotu.
+extractLicenseInstruction=Ur\u010dete adres\u00e1\u0159 archivu upgradu licence, nebo stisknut\u00edm kl\u00e1vesy Enter p\u0159ijm\u011bte v\u00fdchoz\u00ed adres\u00e1\u0159.
+extractDefault=V\u00fdchoz\u00ed c\u00edlov\u00fd adres\u00e1\u0159: {0}
+extractDirectoryExists=Adres\u00e1\u0159 ji\u017e existuje: {0}.
+extractDirectoryError=Nelze vytvo\u0159it adres\u00e1\u0159: {0}.
+extractDirectory=Extrahov\u00e1n\u00ed soubor\u016f do {0}
+
+#
+# {0} c:/full/directory/path/fileName
+# 
+extractFileError=Nelze extrahovat {0}.
+chmodError=Nelze upravit opr\u00e1vn\u011bn\u00ed skriptu: {0}.
+extractFileExists=Soubor ji\u017e existuje: {0}
+
+#
+# {0} exception message text
+# 
+inputException=Do\u0161lo k v\u00fdjimce p\u0159i zpracov\u00e1n\u00ed vstupu: {0}.
+
+invalidInstall=Adres\u00e1\u0159 {0} nen\u00ed platn\u00fd adres\u00e1\u0159 instalace Liberty.
+invalidVersion=Zadan\u00e1 instalace produktu je verze {0} a tento p\u0159\u00eddavn\u00fd modul produktu lze pou\u017e\u00edt pouze pro verzi {1}.
+invalidEdition=Zadan\u00e1 instalace produktu je vyd\u00e1n\u00ed {0} a tento p\u0159\u00eddavn\u00fd modul produktu lze pou\u017e\u00edt pouze pro vyd\u00e1n\u00ed {1}.
+invalidLicense=Zadan\u00e1 instalace produktu m\u00e1 licenci {0} a tento p\u0159\u00eddavn\u00fd modul je ur\u010den pro produkt s licenc\u00ed {1}.
+invalidInstallType=Zadan\u00e1 instalace produktu byla nainstalov\u00e1na pomoc\u00ed produktu IBM Installation Manager, k instalaci ve\u0161ker\u00fdch p\u0159\u00eddavn\u00fdch modul\u016f produktu pou\u017eijte produkt IBM Installation Manager.
+invalidOption=Volba {0} nebyla rozpozn\u00e1na.
+
+#
+# {0} name of the addon
+# {1} list of features that are missing
+# {2} the install directory on which we are trying to install
+#
+missingRequiredFeatures=Nelze nainstalovat p\u0159\u00eddavn\u00fd modul produktu {0}. V zadan\u00e9 instalaci produktu v {2} chyb\u00ed po\u017eadovan\u00e9 funkce: {1}. 
+
+allFeaturesAlreadyPresent=P\u0159\u00eddavn\u00fd modul produktu {0} nen\u00ed t\u0159eba instalovat. Zadan\u00e1 instalace produktu v {2} ji\u017e m\u00e1 ve\u0161ker\u00e9 funkce p\u0159\u00eddavn\u00e9ho modulu: {1}.
+
+#
+# {0} the install directory
+# {1} the list of addons installed into that installed
+#
+addonsInstalled=Zadan\u00e1 instalace produktu v {0} m\u00e1 nainstalovan\u00e9 tyto p\u0159\u00eddavn\u00e9 moduly: {1}.
+
+#
+# {0} the install directory
+# {1} the list of supported features by that installation
+#
+featuresInstalled=Zadan\u00e1 instalace produktu v {0} podporuje tyto funkce: {1}.
+
+#
+# {0} name of the addon
+# {1} the features included in the addon
+#
+addonFeatures=Tento p\u0159\u00eddavn\u00fd modul produktu {0} obsahuje tyto funkce: {1}.
+
+helpMakeBackups=P\u0159ed spu\u0161t\u011bn\u00edm tohoto n\u00e1stroje je zapot\u0159eb\u00ed zaz\u00e1lohovat n\u011bkter\u00e9 soubory. Postupujte podle pokyn\u016f uveden\u00fdch v sekci ''Directions to apply fix'' (Pokyny k pou\u017eit\u00ed opravy) souboru readme.txt.
+helpInstallLocation=Absolutn\u00ed nebo relativn\u00ed um\u00edst\u011bn\u00ed instala\u010dn\u00edho adres\u00e1\u0159e profilu Liberty.
+helpSupressInfo=Pouze zpr\u00e1vy ze souboru JAR budou chybov\u00fdmi zpr\u00e1vami nebo potvrzen\u00edm, \u017ee instalace oprav je dokon\u010dena.
+
+# {0} is the Liberty install directory, according to the user.
+couldNotFindLiberty=Nelze naj\u00edt adres\u00e1\u0159 {0}.
+
+# {0} is the Liberty install directory.
+patchingStarted=Pou\u017eit\u00ed opravy na instala\u010dn\u00edm adres\u00e1\u0159i Liberty v: {0}.
+patchingStartedWithFix=Prob\u00edh\u00e1 instalace opravy {1} do instala\u010dn\u00edho adres\u00e1\u0159e Liberty v {0}.
+
+patchingSuccessful=Oprava byla pou\u017eita \u00fasp\u011b\u0161n\u011b.
+patchingSuccessfulWithFix=Oprava {1} byla \u00fasp\u011b\u0161n\u011b nainstalov\u00e1na.
+
+patchingNotNeeded=Do instala\u010dn\u00edho adres\u00e1\u0159e Liberty v {0} ji\u017e byla oprava nainstalov\u00e1na.
+patchingNotNeededWithFix=Oprava {1} ji\u017e byla do instala\u010dn\u00edho adres\u00e1\u0159e Liberty v {0} nainstalov\u00e1na.
+
+patchingNotApplicable=\u017d\u00e1dn\u00e1 z funkc\u00ed, na kter\u00e9 se vztahuje oprava, se v instala\u010dn\u00edm adres\u00e1\u0159i Liberty v {0} nenach\u00e1z\u00ed.
+patchingNotApplicableWithFix=\u017d\u00e1dn\u00e1 z funkc\u00ed, na kter\u00e9 se vztahuje oprava {1}, se v instala\u010dn\u00edm adres\u00e1\u0159i Liberty v {0} nenach\u00e1z\u00ed.
+
+invalidPatch=Nelze \u010d\u00edst obsah opravy. Oprava byla zru\u0161ena.
+invalidPatchWithFix=Nelze na\u010d\u00edst obsah opravy {0}. Oprava byla zru\u0161ena.
+
+# {0} directory location does not exist and cannot be created.
+noWriteAccess=Nelze naj\u00edt nebo vytvo\u0159it adres\u00e1\u0159 {0}. Oprava byla zru\u0161ena.
+noWriteAccessWithFix=Nelze naj\u00edt nebo vytvo\u0159it adres\u00e1\u0159 {0}. Prob\u00edh\u00e1 p\u0159ed\u010dasn\u00e9 ukon\u010den\u00ed instalace opravy {1}.
+
+restoreBackupsNeeded=Oprava nebyla \u00fasp\u011b\u0161n\u011b pou\u017eita, a budete muset obnovit p\u0159edchoz\u00ed instalaci Liberty. Postupujte podle pokyn\u016f v sekci ''Directions to remove fix'' (Pokyny k odebr\u00e1n\u00ed opravy) souboru readme.txt. M\u011bjte na pam\u011bti, \u017ee n\u011bkter\u00e9 soubory, kter\u00e9 m\u00e1te odstranit podle t\u011bchto pokyn\u016f, nemusely b\u00fdt vytvo\u0159eny.
+restoreBackupsNeededWithFix=Oprava {1} nebyla \u00fasp\u011b\u0161n\u011b nainstalov\u00e1na, budete muset obnovit p\u0159edchoz\u00ed instalaci Liberty. Postupujte podle pokyn\u016f v sekci ''Directions to remove fix'' (Pokyny k odebr\u00e1n\u00ed opravy) souboru readme.txt. M\u011bjte na pam\u011bti, \u017ee n\u011bkter\u00e9 soubory, kter\u00e9 m\u00e1te odstranit podle t\u011bchto pokyn\u016f, nemusely b\u00fdt vytvo\u0159eny.
+
+noRestoreNeeded=P\u0159esto\u017ee oprava nebyla \u00fasp\u011b\u0161n\u011b pou\u017eita, nemus\u00edte obnovovat nebo odstra\u0148ovat \u017e\u00e1dn\u00e9 soubory.
+noRestoreNeededWithFix=P\u0159esto\u017ee oprava {1} nebyla \u00fasp\u011b\u0161n\u011b nainstalov\u00e1na, nemus\u00edte obnovovat nebo odstra\u0148ovat \u017e\u00e1dn\u00e9 soubory.
+
+# {0} is a file's location
+replacingFile=Nahrazen\u00ed souboru v: ''{0}''.
+
+patchFailed=Opravu nebylo mo\u017en\u00e9 \u00fasp\u011b\u0161n\u011b pou\u017e\u00edt.
+
+# This message was written speculatively and is sadly not what we need. Use addOnNeedsIFixes instead.
+addonsNeedsFix=Instalace produktu {0} m\u00e1 nainstalovan\u00e9 opravy, kter\u00e9 jsou zahrnuty v p\u0159\u00eddavn\u00e9m modulu produktu {1}. Tyto opravy mus\u00ed b\u00fdt nainstalov\u00e1ny znovu, proto\u017ee p\u0159\u00eddavn\u00fd modul produktu tyto opravy neobsahuje. T\u00fdk\u00e1 se to funkc\u00ed: {2}
+
+# This message is terse because it was part of a 2000-character emergency translation. 
+addOnNeedsIFixes=Instalace produktu v {0} byla roz\u0161\u00ed\u0159ena. N\u00e1sleduj\u00edc\u00ed opravy mus\u00ed b\u00fdt znovu pou\u017eity: {1}. 
+
+# This message is for the feature processing in the SelfExtraction code. 
+fileProcessingException=Do\u0161lo k n\u00e1sleduj\u00edc\u00ed v\u00fdjimce b\u011bhem zpracov\u00e1n\u00ed souboru {0}: {1}
+
+#
+helpDownloadDependencies=Automaticky st\u00e1hnout jak\u00e9koli extern\u00ed z\u00e1vislosti.
+# {0} Space-separated list of URLs
+externalDepsInstruction=Tento bal\u00edk m\u00e1 z\u00e1vislosti na n\u00e1sleduj\u00edc\u00edch extern\u00edch knihovn\u00e1ch: {0}
+
+#
+# {0} [1]
+# {1} [2]
+externalDepsPrompt=Chcete tyto z\u00e1vislosti automaticky st\u00e1hnout? Ozna\u010dte volbu {0} Ano (v\u00fdchoz\u00ed) nebo {1} Ne: 
+
+# {0} URL to download the file from, e.g. : http://url-for-download.com/path/to/file.jar
+# {1] Destination file to download the file to, eg c:/path/to/file/download-file.jar
+downloadFileError=Sta\u017een\u00ed vzd\u00e1len\u00e9ho souboru z {0} do {1} se nezda\u0159ilo. 
+downloadingFileNotice=Stahov\u00e1n\u00ed vzd\u00e1len\u00e9ho souboru z {0} do {1}. 
+
+# {0} --verbose
+downloadingBeginNotice=Prob\u00edh\u00e1 stahov\u00e1n\u00ed extern\u00edch z\u00e1vislost\u00ed - dal\u0161\u00ed informace jsou k dispozici v p\u0159\u00edpad\u011b pou\u017eit\u00ed volby {0}.
+
+# {0} Exception description
+readDepsError=Nezda\u0159ilo se na\u010d\u00edt\u00e1n\u00ed souboru metadat extern\u00edch z\u00e1vislost\u00ed, v\u00fdjimka {0}
+
+archiveContainsNoLicense=Tento archivn\u00ed soubor neobsahuje licenci.
+
+# {0} is a path to a directory
+targetUserDirectory=C\u00edlov\u00fd u\u017eivatelsk\u00fd adres\u00e1\u0159 je {0}
+
+#Used when the ifix installer subclass specified by the header in the fix manifest cannot be found/created/invoked.
+# {0} is the error detected, eg class not found, method not found, etc should only happen if the ifix is built incorrectly.
+invalidFixInstaller=P\u0159i prov\u00e1d\u011bn\u00ed instala\u010dn\u00edho programu opravy byla zji\u0161t\u011bna intern\u00ed chyba : {0}. Opravu nelze pou\u017e\u00edt.
+
+#Used if the fix is built missing the required header that specifies the subclass to handle fix installation.
+# {0} is the missing header name.
+missingFixInstallerHeader=Byla zji\u0161t\u011bna intern\u00ed chyba chyb\u011bj\u00edc\u00edho z\u00e1hlav\u00ed opravy {0}. Opravu nelze pou\u017e\u00edt.
+
+#Used if the specified fix installer does not meet the interface requirement.
+# {0} is the bad fix class name
+badFixInstaller=Intern\u00ed chyba, chybn\u00fd instala\u010dn\u00ed program opravy {0}. Opravu nelze pou\u017e\u00edt.
+
+#Used when the lpmf file inside the fix is unabled to be parsed.
+# {0} is the error reported parsing the lpmf
+invalidMetaDataFile=Byla zji\u0161t\u011bna intern\u00ed chyba zpracov\u00e1n\u00ed metadat opravy : {0}. Opravu nelze pou\u017e\u00edt.
+
+#Cannot create the output log file.
+# {0} is the filename of the log that had the error, {1} is the error.
+unableToCreateFixLog=Nelze vytvo\u0159it soubor instala\u010dn\u00edho protokolu opravy {0} kv\u016fli {1}. Opravu nelze pou\u017e\u00edt. 
+
+#Used when the fix installer is unable to understand the content of a manifest contained in the fix.
+#{0} is the manifest with the issue, {1} is the error.
+invalidFixManifest=Byla zji\u0161t\u011bna intern\u00ed chyba zpracov\u00e1n\u00ed dat souboru typu manifest opravy {0} : {1}. Opravu nelze pou\u017e\u00edt.
+
+#The update to the fingerprint could fail.. but the fix will have been applied.
+unableToUpdateFingerprint=Nelze aktualizovat otisk prstu slu\u017eby kv\u016fli {0}, oprava byla pou\u017eita, pou\u017eijte p\u0159i spou\u0161t\u011bn\u00ed serveru parametr --clean.
+
+#Updated not applicable message stating no files have been written.
+patchingNotApplicableNoChange=Nebyl extrahov\u00e1n \u017e\u00e1dn\u00fd obsah, proto\u017ee v b\u011bhov\u00e9m prost\u0159ed\u00ed {0} nejsou \u017e\u00e1dn\u00e9 vyhovuj\u00edc\u00ed vlastnosti
+
+# {0} is the message from the exception that caused us to be unable to create a parser for reading the XML files
+ifixutils.unable.to.create.parser=P\u0159i \u010dten\u00ed informac\u00ed o oprav\u00e1ch iFix pro aktu\u00e1ln\u00ed instalaci do\u0161lo k chyb\u011b. Zpr\u00e1va v\u00fdjimky: {0}.
+# {0} is the path to a file that could not be parsed
+# {1} is the message from the exception that meant we couldn't read the file
+ifixutils.unable.to.read.file=Do\u0161lo k v\u00fdjimce p\u0159i \u010dten\u00ed souboru {0}. Zpr\u00e1va v\u00fdjimky: {1}.
+
+# {0} is the manifest file path and {1} is the exception message
+exception.reading.manifest=Do\u0161lo k v\u00fdjimce p\u0159i \u010dten\u00ed souboru typu manifest {0}. V\u00fdjimka: {1}
+
+# Platform utils messages
+ERROR_UNABLE_TO_SET_EXT_ATTR=Nelze nastavit roz\u0161\u00ed\u0159en\u00e9 atributy {0} pro tyto soubory: {1}
+ERROR_UNABLE_TO_SET_EXECUTE_PERMISSIONS=U n\u00e1sleduj\u00edc\u00edch p\u0159\u00edkaz\u016f nelze nastavit opr\u00e1vn\u011bn\u00ed k prov\u00e1d\u011bn\u00ed: {0}
+ERROR_UNABLE_TO_GET_UMASK=Nastaven\u00ed umask nelze na\u010d\u00edst pomoc\u00ed p\u0159\u00edkazu: {0}
+ERROR_INVALID_EXTATTR_PARMS=Parametry {0} nejsou platn\u00e9 pro p\u0159\u00edkaz extattr. Platn\u00e9 parametry p\u0159\u00edkazu extattr jsou: [+alps] [-alps]
+ERROR_EXECUTING_COMMAND=Do\u0161lo k chyb\u011b p\u0159i spu\u0161t\u011bn\u00ed p\u0159\u00edkazu: {0} P\u0159\u00edkaz vr\u00e1til k\u00f3d ukon\u010den\u00ed {1} a chybovou zpr\u00e1vu: {2}
+ERROR_UNABLE_TO_LOCATE_COMMAND_EXE=Nelze naj\u00edt spustiteln\u00fd soubor {0} po kontrole t\u011bchto um\u00edst\u011bn\u00ed: {1}
+
+# java -jar messages 
+UNABLE_TO_FIND_PID=Nezda\u0159ilo se z\u00edskat ID procesu pro proces java -jar. Do\u010dasn\u00fd adres\u00e1\u0159 extrakce {1} nelze odstranit, dokud ru\u010dn\u011b neukon\u010d\u00edte proces java -jar.
+
+UNABLE_TO_ATTACH_AGENT=Nebylo mo\u017en\u00e9 p\u0159ipojit agenta jazyka Java serveru Liberty. Tento server se spust\u00ed, ale nem\u016f\u017ee prov\u00e1d\u011bt funkce, kter\u00e9 vy\u017eaduj\u00ed agenta jazyka Java, jako je monitorov\u00e1n\u00ed nebo \
+trasov\u00e1n\u00ed. V\u00fdjimka: {0}
+
+UNABLE_TO_FIND_TOOLS_JAR=Nebylo mo\u017en\u00e9 p\u0159ipojit agenta jazyka Java serveru Liberty, proto\u017ee tento server nepou\u017e\u00edv\u00e1 Java SDK, ale JRE. Tento server se spust\u00ed, ale nem\u016f\u017ee prov\u00e1d\u011bt funkce, kter\u00e9 \
+vy\u017eaduj\u00ed agenta jazyka Java, jako je monitorov\u00e1n\u00ed nebo trasov\u00e1n\u00ed.
+
+UNABLE_TO_FIND_JAVA_AGENT=Nelze nal\u00e9zt agenta jazyka Java serveru Liberty. Tento server se spust\u00ed, ale nem\u016f\u017ee prov\u00e1d\u011bt funkce, kter\u00e9 vy\u017eaduj\u00ed agenta jazyka Java, jako je monitorov\u00e1n\u00ed nebo \
+trasov\u00e1n\u00ed.
+
+# messages for LicenseSelfEctractor
+LICENSE_invalidInstall=Adres\u00e1\u0159 {0} nen\u00ed platnou instalac\u00ed Liberty. Ur\u010dete ko\u0159enov\u00fd adres\u00e1\u0159 instalace Liberty, kterou chcete upgradovat.
+LICENSE_invalidVersion=Licenci nelze upgradovat, proto\u017ee ur\u010den\u00e1 instalace produktu je ve verzi {0}, licenci lze upgradovat pouze z verze {1}.
+LICENSE_invalidEdition=Licenci nelze upgradovat, proto\u017ee ur\u010den\u00e1 instalace produktu je ve vyd\u00e1n\u00ed {0}, licence m\u016f\u017ee upgradovat pouze n\u00e1sleduj\u00edc\u00ed vyd\u00e1n\u00ed: {1}
+LICENSE_invalidLicense=Licenci nelze upgradovat, proto\u017ee ur\u010den\u00e1 instalace produktu m\u00e1 licenci {0}, licence m\u016f\u017ee upgradovat pouze produkty s licenc\u00ed {1}.
+LICENSE_invalidInstallType=Licenci nelze upgradovat, proto\u017ee ur\u010den\u00e1 instalace produktu byla nainstalov\u00e1na pomoc\u00ed produktu IBM Installation Manager. Pomoc\u00ed produktu IBM Installation Manager upgradujte instalaci.
+
+# new messages for license upgrade and downgrade
+LICENSE_replace_invalidVersion=Licenci nelze pou\u017e\u00edt, proto\u017ee uveden\u00e1 instalace produktu je ve verzi {0}, ale tuto licenci lze pou\u017e\u00edt pouze z verze {1}.
+LICENSE_replace_invalidInstallType=Licenci nelze pou\u017e\u00edt, proto\u017ee uveden\u00e1 instalace produktu byla nainstalov\u00e1na prost\u0159ednictv\u00edm produktu IBM Installation Manager. Pomoc\u00ed produktu IBM Installation Manager upgradujte instalaci.
+
+LICENSE_replace_invalidEditonFeatures=N\u00e1sleduj\u00edc\u00ed funkce neplat\u00ed pro vyd\u00e1n\u00ed {0}, a mus\u00ed b\u00fdt odinstalov\u00e1ny d\u0159\u00edve, ne\u017e pou\u017eijete licenci: {1}\n\
+\n\
+Pomoc\u00ed n\u00e1sleduj\u00edc\u00edho p\u0159\u00edkazu odinstalujte uveden\u00e9 funkce, teprve pak pou\u017eijte licenci pro vyd\u00e1n\u00ed {2}: {3}
+
+LICENSE_downgrade_block_8557_low=Tuto licenci lze pou\u017e\u00edt pouze na instalace ve verzi {0} a vy\u0161\u0161\u00edch. Aktu\u00e1ln\u00ed instalace je ve verzi {1}. St\u00e1hn\u011bte a aktualizujte na posledn\u00ed \u00farove\u0148, a znovu pou\u017eijte licenci.

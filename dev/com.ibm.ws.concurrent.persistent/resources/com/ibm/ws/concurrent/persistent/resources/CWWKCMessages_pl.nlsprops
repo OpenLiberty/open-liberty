@@ -1,0 +1,97 @@
+###############################################################################
+# Copyright (c) 2014, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.concurrent.persistent/resources/com/ibm/ws/concurrent/persistent/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Persistent Scheduled Executor
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1500 to CWWCK1999 except those specifically identified as moved
+
+# Java class and method names that should not be translated:
+# Future, get, getDelay, getResult, getNextExecutionTime, isCancelled, isDone, ScheduledFuture, TaskStatus
+
+CWWKC1500.task.rollback.retry=CWWKC1500W: Trwa\u0142y program wywo\u0142uj\u0105cy {0} wycofa\u0142 zadanie {1}. Zaplanowano ponowienie zadania po nast\u0119puj\u0105cej liczbie sekund: {2}.
+CWWKC1500.task.rollback.retry.explanation=Wykonanie zadania zosta\u0142o oznaczone do wycofania. Zadanie zostanie ponowione po podanej liczbie sekund.
+CWWKC1500.task.rollback.retry.useraction=Poczekaj na ponowienie zadania.
+
+CWWKC1501.task.failure.retry=CWWKC1501W: Trwa\u0142y program wywo\u0142uj\u0105cy {0} wycofa\u0142 zadanie {1} z powodu niepowodzenia {2}. Zaplanowano ponowienie zadania po nast\u0119puj\u0105cej liczbie sekund: {3}.
+CWWKC1501.task.failure.retry.explanation=Wykonanie zadania nie powiod\u0142o si\u0119 i zosta\u0142o wycofane. Zadanie zostanie ponowione po podanej liczbie sekund.
+CWWKC1501.task.failure.retry.useraction=Je\u015bli niepowodzenie jest przej\u015bciowe, poczekaj na ponowienie zadania. W przeciwnym razie usu\u0144 przyczyn\u0119 niepowodzenia, je\u015bli niepowodzenie by\u0142o nieoczekiwane.
+
+CWWKC1502.task.rollback=CWWKC1502W: Trwa\u0142y program wywo\u0142uj\u0105cy {0} wycofa\u0142 zadanie {1}.
+CWWKC1502.task.rollback.explanation=Wykonanie zadania zosta\u0142o oznaczone do wycofania.
+CWWKC1502.task.rollback.useraction=Je\u015bli wycofanie zmian jest nieoczekiwane, ponownie zaplanuj zadanie.
+
+CWWKC1503.task.failure=CWWKC1503W: Trwa\u0142y program wywo\u0142uj\u0105cy {0} wycofa\u0142 zadanie {1} z powodu niepowodzenia {2}.
+CWWKC1503.task.failure.explanation=Wykonanie zadania nie powiod\u0142o si\u0119 i zosta\u0142o wycofane.
+CWWKC1503.task.failure.useraction=Usu\u0144 przyczyn\u0119 niepowodzenia, je\u015bli niepowodzenie by\u0142o nieoczekiwane, i ponownie zaplanuj zadanie.
+
+CWWKC1510.retry.limit.reached.rollback=CWWKC1510W: Trwa\u0142y program wykonuj\u0105cy {0} przerwa\u0142 zadanie {1}, poniewa\u017c zosta\u0142o ono wycofane lub nie powiod\u0142o si\u0119 {2} razy pod rz\u0105d.
+CWWKC1510.retry.limit.reached.rollback.explanation=Zadanie osi\u0105gn\u0119\u0142o limit kolejnych pr\u00f3b i nie b\u0119dzie wi\u0119cej uruchamiane.
+CWWKC1510.retry.limit.reached.rollback.useraction=Je\u015bli wycofywanie zmian lub niepowodzenia s\u0105 nieoczekiwane, okre\u015bl przyczyn\u0119 i ponownie zaplanuj zadanie. Je\u015bli operacje wycofywania zmian i niepowodzenia powtarzaj\u0105 si\u0119, rozwa\u017c zwi\u0119kszenie limitu liczby pr\u00f3b.
+
+CWWKC1511.retry.limit.reached.failed=CWWKC1511W: Trwa\u0142y program wykonuj\u0105cy {0} przerwa\u0142 zadanie {1}, poniewa\u017c zosta\u0142o ono wycofane lub nie powiod\u0142o si\u0119 {2} razy pod rz\u0105d. Ostateczne niepowodzenie to {3}.
+CWWKC1511.retry.limit.reached.failed.explanation=Zadanie osi\u0105gn\u0119\u0142o limit kolejnych pr\u00f3b i nie b\u0119dzie wi\u0119cej uruchamiane.
+CWWKC1511.retry.limit.reached.failed.useraction=Je\u015bli operacje wycofywania zmian lub niepowodzenia s\u0105 nieoczekiwane, okre\u015bl przyczyn\u0119 i ponownie zaplanuj zadanie. Je\u015bli operacje wycofywania zmian i niepowodzenia powtarzaj\u0105 si\u0119, rozwa\u017c zwi\u0119kszenie limitu liczby pr\u00f3b.
+
+CWWKC1540.thread.cannot.submit.tasks=CWWKC1540E: Nie mo\u017cna planowa\u0107 zada\u0144 trwa\u0142ych z kontekstu bie\u017c\u0105cego w\u0105tku.
+CWWKC1540.thread.cannot.submit.tasks.explanation=Zadania trwa\u0142e mo\u017cna planowa\u0107 tylko z w\u0105tku, kt\u00f3ry jest powi\u0105zany z aplikacj\u0105 lub sk\u0142adnikiem o to\u017csamo\u015bci programu \u0142aduj\u0105cego klasy, kt\u00f3ry mo\u017cna przekszta\u0142ca\u0107 do postaci szeregowej.
+CWWKC1540.thread.cannot.submit.tasks.useraction=Podczas planowania zada\u0144 upewnij si\u0119, \u017ce kontekst dla aplikacji lub sk\u0142adnika jest obecny w w\u0105tku.
+
+# {0} method name: either isDone or isCancelled
+CWWKC1550.status.unavailable.until.ended=CWWKC1550E: Metod\u0119 {0} mo\u017cna wywo\u0142a\u0107 tylko wzgl\u0119dem obiektu TaskStatus, kt\u00f3ry zosta\u0142 uzyskany po zako\u0144czeniu zadania. Okre\u015bl, czy zadanie zosta\u0142o zako\u0144czone w momencie uzyskania instancji klasy TaskStatus, sprawdzaj\u0105c, czy warto\u015b\u0107 getNextExecutionTime ma warto\u015b\u0107 null.
+CWWKC1550.status.unavailable.until.ended.explanation=Obiekt TaskStatus to niezmienialny obraz stanu statusu zadania. Dowolna warto\u015b\u0107 zwr\u00f3cona przez metod\u0119 isDone lub isCancelled przed zako\u0144czeniem zadania stanie si\u0119 niepoprawna po zako\u0144czeniu zadania. W przypadku podj\u0119cia pr\u00f3by przed zako\u0144czeniem zadania zg\u0142aszany jest b\u0142\u0105d w celu unikni\u0119cia zwracania niepoprawnych warto\u015bci.
+CWWKC1550.status.unavailable.until.ended.useraction=Do okre\u015blenia, czy zadanie zosta\u0142o zako\u0144czone, u\u017cyj metody getNextExecutionTime. Metod isDone i isCancelled nale\u017cy u\u017cywa\u0107 tylko wtedy, gdy zadanie zosta\u0142o zako\u0144czone.
+
+CWWKC1551.result.unavailable.until.ended=CWWKC1551E: Metod\u0119 get mo\u017cna wywo\u0142a\u0107 tylko wzgl\u0119dem obiektu TaskStatus, kt\u00f3ry zosta\u0142 uzyskany po zako\u0144czeniu zadania. U\u017cyj metody getResult, aby uzyska\u0107 wynik wykonania, kt\u00f3re by\u0142o najnowsze w momencie otrzymania instancji klasy TaskStatus.
+CWWKC1551.result.unavailable.until.ended.explanation=Obiekt TaskStatus to niezmienialny obraz stanu statusu zadania. Dowolna warto\u015b\u0107 zwr\u00f3cona przez metod\u0119 get przed zako\u0144czeniem zadania stanie si\u0119 niepoprawna po zako\u0144czeniu innej pr\u00f3by wykonania lub po zako\u0144czeniu zadania. W przypadku podj\u0119cia pr\u00f3by przed zako\u0144czeniem zadania zg\u0142aszany jest b\u0142\u0105d w celu unikni\u0119cia zwracania niepoprawnych warto\u015bci.
+CWWKC1551.result.unavailable.until.ended.useraction=U\u017cyj metody getResult, aby uzyska\u0107 wynik pr\u00f3by wykonania, kt\u00f3ra by\u0142a najnowsza w momencie otrzymania instancji klasy TaskStatus. 
+
+CWWKC1552.delay.unavailable=CWWKC1552E: Metod\u0119 getDelay mo\u017cna wywo\u0142a\u0107 tylko wzgl\u0119dem obiekt\u00f3w TaskStatus zada\u0144 wykonywanych jednorazowo. W przypadku zada\u0144 powtarzalnych i zada\u0144 zaplanowanych z wyzwalaczem u\u017cyj metody getNextExecutionTime, aby uzyska\u0107 oczekiwany czas nast\u0119pnego wykonania po wykonaniu, kt\u00f3re by\u0142o najnowsze w momencie otrzymania obiektu TaskStatus.
+CWWKC1552.delay.unavailable.explanation=Obiekt TaskStatus to niezmienialny obraz stanu statusu zadania. Dowolna warto\u015b\u0107 zwr\u00f3cona przez metod\u0119 getDelay przed zako\u0144czeniem zadania stanie si\u0119 niepoprawna po zako\u0144czeniu innej pr\u00f3by wykonania. W przypadku podj\u0119cia pr\u00f3by przed zako\u0144czeniem zadania zg\u0142aszany jest b\u0142\u0105d w celu unikni\u0119cia zwracania niepoprawnych warto\u015bci.
+CWWKC1552.delay.unavailable.useraction=U\u017cyj metody getNextExecutionTime, aby uzyska\u0107 oczekiwany czas nast\u0119pnego wykonania odpowiadaj\u0105cy czasowi otrzymania obiektu TaskStatus.
+
+# {0} persistent executor id
+# {1} task id (and name in parenthesis if any)
+CWWKC1553.result.inaccessible=CWWKC1553E: Trwa\u0142y program wykonuj\u0105cy {0} nie mo\u017ce uzyska\u0107 wyniku zadania {1}. Zapoznaj si\u0119 z wyj\u0105tkiem, kt\u00f3ry to spowodowa\u0142.
+CWWKC1553.result.inaccessible.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d, kt\u00f3ry uniemo\u017cliwi\u0142 uzyskanie wyniku zadania.
+CWWKC1553.result.inaccessible.useraction=Zapoznaj si\u0119 z wyj\u0105tkiem, kt\u00f3ry to spowodowa\u0142, aby rozwi\u0105za\u0107 problem, a nast\u0119pnie ponownie zaplanuj zadanie.
+
+# {0} task id (and name in parenthesis if any)
+CWWKC1554.general.task.failure=CWWKC1554E: Nie powiod\u0142o si\u0119 uruchomienie zadania {0}. Zapoznaj si\u0119 z wyj\u0105tkiem, kt\u00f3ry to spowodowa\u0142.
+CWWKC1554.general.task.failure.explanation=Uruchomienie zadania nie powiod\u0142o si\u0119 z powodu podanego wyj\u0105tku.
+CWWKC1554.general.task.failure.useraction=Zapoznaj si\u0119 z wyj\u0105tkiem, kt\u00f3ry to spowodowa\u0142, aby rozwi\u0105za\u0107 problem, a nast\u0119pnie ponownie zaplanuj zadanie.
+
+# {0} task id (and name in parenthesis if any)
+# {1} number of consecutive failures/rollbacks
+CWWKC1555.retry.limit.reached=CWWKC1555E: Zadanie {0} zosta\u0142o przerwane, poniewa\u017c zosta\u0142o wycofane lub nie powiod\u0142o si\u0119 {1} razy pod rz\u0105d.
+CWWKC1555.retry.limit.reached.explanation=Zadanie osi\u0105gn\u0119\u0142o limit kolejnych pr\u00f3b i nie b\u0119dzie wi\u0119cej uruchamiane.
+CWWKC1555.retry.limit.reached.useraction=Zapoznaj si\u0119 z wyj\u0105tkiem, kt\u00f3ry to spowodowa\u0142, aby rozwi\u0105za\u0107 problem, a nast\u0119pnie ponownie zaplanuj zadanie. Je\u015bli problem powraca, rozwa\u017c zwi\u0119kszenie limitu liczby pr\u00f3b.
+
+# {0} name of application that scheduled the task
+CWWKC1556.task.exec.deferred=CWWKC1556W: Wykonywanie zada\u0144 z aplikacji {0} jest odroczone do czasu, a\u017c dost\u0119pne b\u0119d\u0105 aplikacja i modu\u0142y, kt\u00f3re zaplanowa\u0142y zadania.
+CWWKC1556.task.exec.deferred.explanation=Aplikacja i modu\u0142, kt\u00f3re zaplanowa\u0142y zadanie, musz\u0105 by\u0107 dost\u0119pne, aby mo\u017cliwe by\u0142o uruchomienie zadania.
+CWWKC1556.task.exec.deferred.useraction=Upewnij si\u0119, \u017ce aplikacja i modu\u0142, kt\u00f3re zaplanowa\u0142y zadanie, s\u0105 dost\u0119pne. Mo\u017cna r\u00f3wnie\u017c anulowa\u0107 zadanie, je\u015bli nie jest ju\u017c potrzebne.
+
+# {0} request id
+# {1} stack trace
+CWWKC1559.mbean.operation.failure=CWWKC1559E:  Wyst\u0105pi\u0142 b\u0142\u0105d. \u017b\u0105danie {0}. {1}
+CWWKC1559.mbean.operation.failure.explanation=Podczas pr\u00f3by wykonania \u017c\u0105danej operacji wyst\u0105pi\u0142 b\u0142\u0105d.
+CWWKC1559.mbean.operation.failure.useraction=Szczeg\u00f3\u0142owe informacje na temat b\u0142\u0119du operacji zawieraj\u0105 dzienniki serwera.

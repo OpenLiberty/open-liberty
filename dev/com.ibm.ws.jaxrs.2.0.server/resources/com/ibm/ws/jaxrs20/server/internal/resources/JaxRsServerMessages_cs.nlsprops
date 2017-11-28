@@ -1,0 +1,46 @@
+###############################################################################
+# Copyright (c) 2011, 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# ORIGINS: 27         (used for IBM originated files)
+#
+# Caution: because some text editors automatically convert
+# consecutive runs of spaces to tabs, use the Java "\ " escape
+# sequence to represent each space in a run of multiple spaces.
+#
+# translator:
+# Translate words on the right hand side of the = sign.
+# Do not translate {0}, {1}, %1, %2 etc.
+# Do NOT translate any words when they START with: '-
+# Do NOT translate any words when they START with: @
+# Preserve all spaces after a backslash (\) even at the end of a line.
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs.2.0.server/resources/com/ibm/ws/jaxrs20/server/internal/resources/JaxRsWebServerMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS WebContainer Code
+#RANGE 0100 - 0199
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+
+warn.provider.no.public.ctor=CWWKW0100W: T\u0159\u00edda poskytovatele JAX-RS {0} v aplikaci neobsahuje \u017e\u00e1dn\u00fd konstruktor public. Server bude tohoto poskytovatele ignorovat.
+warn.provider.no.public.ctor.explanation=Specifikace JAX-RS vy\u017eaduje, aby t\u0159\u00eddy poskytovatele obsahovaly alespo\u0148 jeden konstruktor public, aby mohla b\u00fdt vyvol\u00e1na implementace kontejneru JAX-RS. Ur\u010den\u00e1 t\u0159\u00edda poskytovatele neobsahuje konstruktor public, tak\u017ee jej server bude ignorovat.
+warn.provider.no.public.ctor.useraction=Jestli\u017ee aplikace tohoto poskytovatele vy\u017eaduje, mus\u00ed b\u00fdt tato t\u0159\u00edda upravena, tak aby obsahovala alespo\u0148 jeden konstruktor public. Dal\u0161\u00ed informace viz odd\u00edl 4.1.2 specifikace JAX-RS 2.0 (JSR 339).
+
+warn.servlet.specified.without.application=CWWKW0101W: Soubor web.xml v modulu {0} ur\u010duje servlet s n\u00e1zvem {1} a t\u0159\u00eddu {2}, ale neur\u010duje po\u017eadovan\u00fd inicializa\u010dn\u00ed parametr aplikace.
+warn.servlet.specified.without.application.explanation=Soubor web.xml mus\u00ed p\u0159i deklaraci servlet\u016f JAY-RS ur\u010dovat prvek init-param aplikace. Dal\u0161\u00ed informace viz Centrum znalost\u00ed: https://www.ibm.com/support/knowledgecenter/SSAW57_9.0.0/com.ibm.websphere.nd.multiplatform.doc/ae/twbs_jaxrs_configwebxml.html?pos=2
+warn.servlet.specified.without.application.useraction=Aktualizujte soubor web.xml, abyste zahrnuli po\u017eadovan\u00fd prvek init-param k ur\u010den\u00ed t\u0159\u00eddy aplikace v tomto modulu.
+
+warn.servlet.specified.with.invalid.application=CWWKW0102W: Soubor web.xml v modulu {0} ur\u010duje servlet s n\u00e1zvem {1}, kter\u00fd deklaruje neplatnou t\u0159\u00eddu aplikace v inicializa\u010dn\u00edm parametru. T\u0159\u00edda {2} nen\u00ed podt\u0159\u00eddou javax.ws.rs.Application.
+warn.servlet.specified.with.invalid.application.explanation=Soubor web.xml mus\u00ed ur\u010dovat prvek init-param s n\u00e1zvem param-name "javax.ws.rs.Application" a hodnota param-value t\u0159\u00eddy aplikace, kter\u00e1 roz\u0161i\u0159uje javax.ws.rs.Application. Dal\u0161\u00ed informace viz Centrum znalost\u00ed: https://www.ibm.com/support/knowledgecenter/SSAW57_9.0.0/com.ibm.websphere.nd.multiplatform.doc/ae/twbs_jaxrs_configwebxml.html?pos=2
+warn.servlet.specified.with.invalid.application.useraction=Aktualizujte soubor web.xml, abyste zadali podt\u0159\u00eddu aplikace v tomto modulu.

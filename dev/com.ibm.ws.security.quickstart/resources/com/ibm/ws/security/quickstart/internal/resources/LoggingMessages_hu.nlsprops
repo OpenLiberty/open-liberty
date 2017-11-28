@@ -1,0 +1,31 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.quickstart/resources/com/ibm/ws/security/quickstart/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Quick Start Security Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS0900 - CWWKS0999
+
+QUICK_START_SECURITY_MISSING_ATTIRBUTES=CWWKS0900E: A <quickStartSecurity> elemb\u0151l k\u00f6telez\u0151 attrib\u00fatumok hi\u00e1nyoznak: {0}. Hat\u00e1rozza meg a hi\u00e1nyz\u00f3 attrib\u00fatumokat.
+QUICK_START_SECURITY_MISSING_ATTIRBUTES.explanation=A <quickStartSecurity> elemb\u0151l hi\u00e1nyoznak a k\u00f6telez\u0151 attrib\u00fatumok.
+QUICK_START_SECURITY_MISSING_ATTIRBUTES.useraction=Hat\u00e1rozza meg a k\u00f6telez\u0151 attrib\u00fatumokat.
+
+QUICK_START_SECURITY_WITH_ANOTHER_REGISTRY=CWWKS0901E: A <quickStartSecurity> konfigur\u00e1ci\u00f3 figyelmen k\u00edv\u00fcl marad, mert meg van hat\u00e1rozva m\u00e1sik UserRegistry.
+QUICK_START_SECURITY_WITH_ANOTHER_REGISTRY.explanation=A <quickStartSecurity> konfigur\u00e1ci\u00f3t csak akkor haszn\u00e1lja a rendszer, amikor nincs megadva m\u00e1sik UserRegistry konfigur\u00e1ci\u00f3.
+QUICK_START_SECURITY_WITH_ANOTHER_REGISTRY.useraction=Csak egy felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s konfigur\u00e1ci\u00f3t haszn\u00e1ljon.
+
+QUICK_START_SECURITY_WITH_OTHER_MANAGEMENT_AUTHORIZATION=CWWKS0902E: A <quickStartSecurity> konfigur\u00e1ci\u00f3 figyelmen k\u00edv\u00fcl marad, mert a kezel\u00e9si biztons\u00e1gi jogosults\u00e1g k\u00f6t\u00e9sek kifejezetten meg vannak adva.
+QUICK_START_SECURITY_WITH_OTHER_MANAGEMENT_AUTHORIZATION.explanation=A <quickStartSecurity> konfigur\u00e1ci\u00f3t csak akkor haszn\u00e1lja a rendszer, amikor nincsenek megadva kifejezett kezel\u00e9si biztons\u00e1gi jogosults\u00e1g k\u00f6t\u00e9sek.
+QUICK_START_SECURITY_WITH_OTHER_MANAGEMENT_AUTHORIZATION.useraction=A <quickStartSecurity> haszn\u00e1lata mellett t\u00e1vol\u00edtsa el a kifejezett kezel\u00e9si biztons\u00e1gi jogosults\u00e1g k\u00f6t\u00e9seket, vagy \u00e1ll\u00edtson be m\u00e1sik felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1st.

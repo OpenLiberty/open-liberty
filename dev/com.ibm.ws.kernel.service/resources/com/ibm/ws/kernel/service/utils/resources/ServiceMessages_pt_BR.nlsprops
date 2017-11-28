@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.service/resources/com/ibm/ws/kernel/service/utils/resources/ServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0100 - 0199 com.ibm.ws.kernel.service.utils.resources.ServiceMessages
+# -------------------------------------------------------------------------------------------------
+invalidStringArray=CWWKE0101W: O par\u00e2metro especificado n\u00e3o \u00e9 uma sequ\u00eancia ou matriz de sequ\u00eancia. {1}={2} para {0}
+invalidStringArray.explanation=O valor para o par\u00e2metro de configura\u00e7\u00e3o especificado n\u00e3o \u00e9, ou n\u00e3o pode ser convertido para, uma sequ\u00eancia ou matriz de sequ\u00eancia.
+invalidStringArray.useraction=Verifique o valor especificado na configura\u00e7\u00e3o do servidor e assegure que o valor seja uma representa\u00e7\u00e3o v\u00e1lida de uma sequ\u00eancia ou matriz de sequ\u00eancia.
+
+invalidStringCollection=CWWKE0102W: O par\u00e2metro especificado n\u00e3o \u00e9 uma cole\u00e7\u00e3o ou cole\u00e7\u00e3o de sequ\u00eancias. {1}={2} para {0}
+invalidStringCollection.explanation=O valor para o par\u00e2metro de configura\u00e7\u00e3o especificado n\u00e3o \u00e9, ou n\u00e3o pode ser convertido para, uma sequ\u00eancia ou cole\u00e7\u00e3o de sequ\u00eancia.
+invalidStringCollection.useraction=Assegure-se de que o valor especificado na configura\u00e7\u00e3o do servidor seja uma representa\u00e7\u00e3o v\u00e1lida de uma sequ\u00eancia ou cole\u00e7\u00e3o de sequ\u00eancia.
+
+invalidBoolean=CWWKE0103W: O par\u00e2metro especificado n\u00e3o representa um valor booleano. {1}={2} para {0}
+invalidBoolean.explanation=O valor para o par\u00e2metro de configura\u00e7\u00e3o especificado n\u00e3o \u00e9, ou n\u00e3o pode ser convertido para, um valor booleano.
+invalidBoolean.useraction=Assegure-se de que o valor especificado na configura\u00e7\u00e3o do servidor seja uma representa\u00e7\u00e3o v\u00e1lida de um valor booleano.
+
+invalidLong=CWWKE0104W: O par\u00e2metro especificado n\u00e3o representa um valor longo. {1}={2} para {0}
+invalidLong.explanation=O valor para o par\u00e2metro de configura\u00e7\u00e3o especificado n\u00e3o \u00e9, ou n\u00e3o pode ser convertido para, um valor longo.
+invalidLong.useraction=Assegure-se de que o valor especificado na configura\u00e7\u00e3o do servidor seja uma representa\u00e7\u00e3o v\u00e1lida de um valor longo.
+
+invalidInteger=CWWKE0105W: O par\u00e2metro especificado n\u00e3o representa um valor de n\u00famero inteiro. {1}={2} para {0}
+invalidInteger.explanation=O valor para o par\u00e2metro de configura\u00e7\u00e3o especificado n\u00e3o \u00e9, ou n\u00e3o pode ser convertido para, um valor de n\u00famero inteiro.
+invalidInteger.useraction=Assegure-se de que o valor especificado na configura\u00e7\u00e3o do servidor seja uma representa\u00e7\u00e3o v\u00e1lida de um valor de n\u00famero inteiro.
+
+invalidIntegerArray=CWWKE0106W: O par\u00e2metro especificado n\u00e3o representa uma matriz de n\u00famero inteiro. {1}={2} para {0}
+invalidIntegerArray.explanation=O valor para o par\u00e2metro de configura\u00e7\u00e3o especificado n\u00e3o \u00e9, ou n\u00e3o pode ser convertido para, uma matriz de n\u00famero inteiro.
+invalidIntegerArray.useraction=Assegure-se de que o valor especificado na configura\u00e7\u00e3o do servidor seja uma representa\u00e7\u00e3o v\u00e1lida de uma matriz de n\u00famero inteiro.
+
+invalidDuration=CWWKE0107W: O par\u00e2metro especificado n\u00e3o representa um valor de dura\u00e7\u00e3o. {1}={2} para {0}
+invalidDuration.explanation=O valor para o par\u00e2metro de configura\u00e7\u00e3o especificado n\u00e3o \u00e9, ou n\u00e3o pode ser convertido para, um valor de dura\u00e7\u00e3o.
+invalidDuration.useraction=Assegure-se de que o valor especificado na configura\u00e7\u00e3o do servidor seja uma representa\u00e7\u00e3o v\u00e1lida de um valor de dura\u00e7\u00e3o.
+
+#
+# W A R N I N G:   Do not use CWWKE0108 - CCWKE0109 they are currently in use LauncherMessages.nlsprops
+#

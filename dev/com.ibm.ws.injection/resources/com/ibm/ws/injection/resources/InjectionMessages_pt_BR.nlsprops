@@ -1,0 +1,104 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWNEN (Injection Engine)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME com.ibm.ws.injection/resources/com/ibm/ws/injection/resources/InjectionMessages.nlsprops
+#COMPONENTPREFIX CWNEN
+#COMPONENTNAMEFOR CWNEN Injection Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWNEN1xxxI=CWNEN1xxxI: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWNEN1xxxI.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWNEN1xxxI.useraction=User action text for the message
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# NOTE: CWNEN1000-CWNEN1999 are reserved for use in this message file. All other
+#       CWNEN ranges are reserved by com/ibm/wsspi/injection/injection.nlsprops
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+JNDI_NON_JEE_THREAD_CWNEN1000E=CWNEN1000E: Uma opera\u00e7\u00e3o de JNDI em um nome java:comp/env n\u00e3o pode ser conclu\u00edda porque o encadeamento atual n\u00e3o est\u00e1 associado a um componente de aplicativo Java Enterprise Edition. Esta condi\u00e7\u00e3o pode ocorrer quando o cliente JNDI que usa o nome java:comp/env n\u00e3o ocorre no encadeamento de uma solicita\u00e7\u00e3o de aplicativo do servidor. Certifique-se que um aplicativo Java EE n\u00e3o execute opera\u00e7\u00f5es de JNDI em nomes java:comp/env dentro de blocos de c\u00f3digos est\u00e1ticos ou em encadeamentos criados por esse aplicativo. Tal c\u00f3digo n\u00e3o \u00e9 necessariamente executado no encadeamento de uma solicita\u00e7\u00e3o de aplicativo do servidor e, portanto, n\u00e3o \u00e9 suportado pelas opera\u00e7\u00f5es de JNDI em nomes java:comp/env.
+JNDI_NON_JEE_THREAD_CWNEN1000E.explanation=As opera\u00e7\u00f5es de JNDI em um nome java:comp/env s\u00e3o suportadas somente em encadeamentos associados a um componente de aplicativo Java EE.
+JNDI_NON_JEE_THREAD_CWNEN1000E.useraction=Modifique o aplicativo para que a opera\u00e7\u00e3o de JNDI ocorra em um encadeamento associado a um componente de aplicativo Java EE.
+
+#-------------------------------------------------------------------------------
+# {0} the JNDI name that could not be resolved
+JNDI_CANNOT_INSTANTIATE_OBJECT_CWNEN1001E=CWNEN1001E: O objeto referenciado pelo nome JNDI {0} n\u00e3o p\u00f4de ser instanciado. Se o nome de refer\u00eancia mapear para um nome JNDI nas liga\u00e7\u00f5es do descritor de implementa\u00e7\u00e3o para o aplicativo que executa a consulta do JNDI, certifique-se de que o mapeamento de nome JNDI na liga\u00e7\u00e3o do descritor de implementa\u00e7\u00e3o esteja correto. Se o mapeamento de nome JNDI estiver correto, certifique-se de que o recurso de destino possa ser resolvido com o nome especificado relativo ao contexto inicial padr\u00e3o.
+JNDI_CANNOT_INSTANTIATE_OBJECT_CWNEN1001E.explanation=Ocorreu um erro ao criar uma inst\u00e2ncia da refer\u00eancia do objeto pelo nome JNDI especificado.
+JNDI_CANNOT_INSTANTIATE_OBJECT_CWNEN1001E.useraction=Consulte a exce\u00e7\u00e3o aninhada ou um erro anterior para obter informa\u00e7\u00f5es adicionais sobre o erro.
+
+#-------------------------------------------------------------------------------
+APPXML_REF_NAMESPACE_CWNEN1002E=CWNEN1002E: A refer\u00eancia {0} declarada pelo arquivo META-INF/application.xml no aplicativo {1} n\u00e3o est\u00e1 no contexto java:global ou java:app.
+APPXML_REF_NAMESPACE_CWNEN1002E.explanation=Refer\u00eancias declaradas no arquivo META-INF/application.xml s\u00f3 podem usar nomes nos contextos java:global ou java:app.
+APPXML_REF_NAMESPACE_CWNEN1002E.useraction=Remova a refer\u00eancia ou atualize o nome da refer\u00eancia para que tenha um prefixo java:global/ ou java:app/.
+
+#-------------------------------------------------------------------------------
+BINDING_OBJECT_NOT_FOUND_CWNEN1003E=CWNEN1003E: O servidor n\u00e3o p\u00f4de localizar a liga\u00e7\u00e3o {0} com o tipo {1} para a refer\u00eancia {2}.
+BINDING_OBJECT_NOT_FOUND_CWNEN1003E.explanation=O servidor n\u00e3o p\u00f4de localizar uma liga\u00e7\u00e3o com o nome e o tipo especificados.
+BINDING_OBJECT_NOT_FOUND_CWNEN1003E.useraction=Defina um recurso com o nome especificado ou  configure as liga\u00e7\u00f5es do aplicativo para usar um recurso que j\u00e1 esteja definido.
+
+#-------------------------------------------------------------------------------
+DEFAULT_BINDING_OBJECT_NOT_FOUND_CWNEN1004E=CWNEN1004E: O servidor n\u00e3o p\u00f4de localizar a liga\u00e7\u00e3o padr\u00e3o {0} com o tipo {1} para a refer\u00eancia {2}.
+DEFAULT_BINDING_OBJECT_NOT_FOUND_CWNEN1004E.explanation=O servidor n\u00e3o p\u00f4de localizar uma liga\u00e7\u00e3o com o nome e o tipo especificados. O nome da liga\u00e7\u00e3o n\u00e3o foi especificado pelo aplicativo, portanto um nome de liga\u00e7\u00e3o padr\u00e3o foi usado.
+DEFAULT_BINDING_OBJECT_NOT_FOUND_CWNEN1004E.useraction=Defina um recurso com o nome especificado ou configure as liga\u00e7\u00f5es do aplicativo para usar um recurso que j\u00e1 esteja definido.
+
+#-------------------------------------------------------------------------------
+LISTENER_BINDING_OBJECT_NOT_FOUND_CWNEN1005E=CWNEN1005E: O servidor n\u00e3o p\u00f4de localizar a liga\u00e7\u00e3o {0} com o tipo {1} para a refer\u00eancia {2}. A liga\u00e7\u00e3o foi especificada pelo servi\u00e7o {3}.
+LISTENER_BINDING_OBJECT_NOT_FOUND_CWNEN1005E.explanation=O servidor n\u00e3o p\u00f4de localizar uma liga\u00e7\u00e3o com o nome e o tipo especificados.
+LISTENER_BINDING_OBJECT_NOT_FOUND_CWNEN1005E.useraction=Entre em contato com o provedor de servi\u00e7os.
+
+#-------------------------------------------------------------------------------
+INDIRECT_LOOKUP_FAILED_CWNEN1006E=CWNEN1006E: O servidor n\u00e3o p\u00f4de obter um objeto para a liga\u00e7\u00e3o {0} com o tipo {1}. A mensagem de exce\u00e7\u00e3o foi: {2}
+INDIRECT_LOOKUP_FAILED_CWNEN1006E.explanation=O servidor localizou uma liga\u00e7\u00e3o com o nome e o tipo especificados, mas ocorreu um erro ao acess\u00e1-la. 
+INDIRECT_LOOKUP_FAILED_CWNEN1006E.useraction=Consulte o texto da mensagem de exce\u00e7\u00e3o para obter explica\u00e7\u00e3o adicional.
+
+#-------------------------------------------------------------------------------
+EJB_REF_NOT_SUPPORTED_CWNEN1007E=CWNEN1007E: Falta um recurso na configura\u00e7\u00e3o do servidor para suportar a refer\u00eancia EJB {0} no componente {1} no m\u00f3dulo {2} no aplicativo {3}.
+EJB_REF_NOT_SUPPORTED_CWNEN1007E.explanation= O aplicativo declara uma refer\u00eancia a um EJB de sess\u00e3o, mas o servidor n\u00e3o est\u00e1 configurado com um recurso que suporte EJBs de sess\u00e3o.
+EJB_REF_NOT_SUPPORTED_CWNEN1007E.useraction= Modifique a configura\u00e7\u00e3o do servidor para permitir um recurso que suporta os EJBs de sess\u00e3o.  Por exemplo, ative o recurso ejbLite-3.1.
+
+#-------------------------------------------------------------------------------
+INDIRECT_LOOKUP_LOOP_CWNEN1008E=CWNEN1008E: A liga\u00e7\u00e3o cont\u00e9m uma consulta indireta que faz refer\u00eancia a si mesma.
+INDIRECT_LOOKUP_LOOP_CWNEN1008E.explanation=A liga\u00e7\u00e3o cont\u00e9m uma consulta indireta que faz refer\u00eancia a si mesma. Por exemplo, caso seja usada a anota\u00e7\u00e3o @Resource(name="jdbc/ds", lookup="java:comp/env/jdbc/ds") incorreta, o nome ter\u00e1 um prefixo java:comp/env/ impl\u00edcito, portanto o encadeamento de consulta remeter\u00e1 \u00e0 refer\u00eancia de recurso, criando um loop infinito.
+INDIRECT_LOOKUP_LOOP_CWNEN1008E.useraction=Altere a consulta ou o nome da liga\u00e7\u00e3o para o recurso de destino. Por exemplo, caso seja usada a anota\u00e7\u00e3o @Resource(name="jdbc/ds", lookup="java:comp/env/jdbc/ds") incorreta, a consulta poder\u00e1 ser alterada para jdbc/ds, o que localizar\u00e1 o recurso no namespace padr\u00e3o.

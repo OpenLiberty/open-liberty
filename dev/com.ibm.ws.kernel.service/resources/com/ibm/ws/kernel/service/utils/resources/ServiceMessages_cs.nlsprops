@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.service/resources/com/ibm/ws/kernel/service/utils/resources/ServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0100 - 0199 com.ibm.ws.kernel.service.utils.resources.ServiceMessages
+# -------------------------------------------------------------------------------------------------
+invalidStringArray=CWWKE0101W: Zadan\u00fd parametr nen\u00ed \u0159et\u011bzec nebo pole \u0159et\u011bzc\u016f. {1}={2} pro {0}
+invalidStringArray.explanation=Hodnota zadan\u00e9ho konfigura\u010dn\u00edho parametru nen\u00ed nebo nem\u016f\u017ee b\u00fdt p\u0159evedena na \u0159et\u011bzec nebo pole \u0159et\u011bzc\u016f.
+invalidStringArray.useraction=Zkontrolujte hodnotu zadanou v konfiguraci serveru a ujist\u011bte se, \u017ee hodnota je platnou reprezentac\u00ed \u0159et\u011bzce nebo pole \u0159et\u011bzc\u016f.
+
+invalidStringCollection=CWWKE0102W: Zadan\u00fd parametr nen\u00ed \u0159et\u011bzec nebo kolekce \u0159et\u011bzc\u016f. {1}={2} pro {0}
+invalidStringCollection.explanation=Hodnota zadan\u00e9ho konfigura\u010dn\u00edho parametru nen\u00ed nebo nem\u016f\u017ee b\u00fdt p\u0159evedena na \u0159et\u011bzec nebo kolekci \u0159et\u011bzc\u016f.
+invalidStringCollection.useraction=Zkontrolujte, zda hodnota zadan\u00e1 v konfiguraci serveru je platnou reprezentac\u00ed \u0159et\u011bzce nebo kolekce \u0159et\u011bzc\u016f.
+
+invalidBoolean=CWWKE0103W: Zadan\u00fd parametr nep\u0159edstavuje logickou hodnotu. {1}={2} pro {0}
+invalidBoolean.explanation=Hodnota zadan\u00e9ho konfigura\u010dn\u00edho parametru nen\u00ed nebo nem\u016f\u017ee b\u00fdt p\u0159evedena na logickou (boolean) hodnotu.
+invalidBoolean.useraction=Zkontrolujte, zda hodnota zadan\u00e1 v konfiguraci serveru je platnou reprezentac\u00ed logick\u00e9 hodnoty.
+
+invalidLong=CWWKE0104W: Zadan\u00fd parametr nep\u0159edstavuje hodnotu typu long. {1}={2} pro {0}
+invalidLong.explanation=Hodnota zadan\u00e9ho konfigura\u010dn\u00edho parametru nen\u00ed nebo nem\u016f\u017ee b\u00fdt p\u0159evedena na hodnotu typu long.
+invalidLong.useraction=Zkontrolujte, zda hodnota zadan\u00e1 v konfiguraci serveru je platnou reprezentac\u00ed hodnoty typu long.
+
+invalidInteger=CWWKE0105W: Zadan\u00fd parametr nep\u0159edstavuje hodnotu typu integer. {1}={2} pro {0}
+invalidInteger.explanation=Hodnota zadan\u00e9ho konfigura\u010dn\u00edho parametru nen\u00ed nebo nem\u016f\u017ee b\u00fdt p\u0159evedena na hodnotu typu integer.
+invalidInteger.useraction=Zkontrolujte, zda hodnota zadan\u00e1 v konfiguraci serveru je platnou reprezentac\u00ed hodnoty typu integer.
+
+invalidIntegerArray=CWWKE0106W: Zadan\u00fd parametr nep\u0159edstavuje hodnotu pole typu integer. {1}={2} pro {0}
+invalidIntegerArray.explanation=Hodnota zadan\u00e9ho konfigura\u010dn\u00edho parametru nen\u00ed nebo nem\u016f\u017ee b\u00fdt p\u0159evedena na pole typu integer.
+invalidIntegerArray.useraction=Zkontrolujte, zda hodnota zadan\u00e1 v konfiguraci serveru je platnou reprezentac\u00ed pole typu integer.
+
+invalidDuration=CWWKE0107W: Zadan\u00fd parametr nep\u0159edstavuje hodnotu trv\u00e1n\u00ed. {1}={2} pro {0}
+invalidDuration.explanation=Hodnota zadan\u00e9ho konfigura\u010dn\u00edho parametru nen\u00ed nebo nem\u016f\u017ee b\u00fdt p\u0159evedena na hodnotu trv\u00e1n\u00ed.
+invalidDuration.useraction=Zkontrolujte, zda hodnota zadan\u00e1 v konfiguraci serveru je platnou reprezentac\u00ed hodnoty trv\u00e1n\u00ed.
+
+#
+# W A R N I N G:   Do not use CWWKE0108 - CCWKE0109 they are currently in use LauncherMessages.nlsprops
+#

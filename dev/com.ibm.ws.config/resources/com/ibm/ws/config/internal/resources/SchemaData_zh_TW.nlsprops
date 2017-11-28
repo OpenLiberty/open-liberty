@@ -1,0 +1,60 @@
+
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#COMPONENTPREFIX CWWKG
+#COMPONENTNAMEFOR CWWKG WebSphere kernel config schema strings
+#CMVCPATHNAME com.ibm.ws.config/resources/com/ibm/ws/config/internal/resources/SchemaData.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#
+# Message prefix block: CWWKG1001 - CWWKG1020
+
+config.internal.metatype.includeType.documentation=\u6307\u5b9a\u8981\u5305\u542b\u5728\u4f3a\u670d\u5668\u914d\u7f6e\u4e2d\u7684\u914d\u7f6e\u8cc7\u6e90\u3002
+config.internal.metatype.includeType.label=\u4f75\u5165
+config.internal.metatype.includeType.attribute.optional.documentation=\u7576\u627e\u4e0d\u5230\u6240\u5305\u542b\u7684\u8cc7\u6e90\u6642\uff0c\u5bb9\u8a31\u8df3\u904e\u5b83\u3002
+config.internal.metatype.includeType.attribute.optional.label=\u8cc7\u6e90\u662f\u9078\u7528\u7684
+config.internal.metatype.includeType.attribute.location.documentation=\u6307\u5b9a\u8cc7\u6e90\u4f4d\u7f6e\u3002\u9019\u53ef\u4ee5\u662f\u6a94\u6848\u8def\u5f91\u6216\u9060\u7aef\u8cc7\u6e90\u7684 URI\u3002
+config.internal.metatype.includeType.attribute.location.label=\u4f4d\u7f6e
+config.internal.metatype.includeType.attribute.onConflict.documentation=\u6307\u5b9a\u5728\u767c\u73fe\u885d\u7a81\u6642\uff0c\u7528\u4f86\u5408\u4f75\u5143\u7d20\u7684\u884c\u70ba\u3002
+config.internal.metatype.includeType.attribute.onConflict.label=\u885d\u7a81\u6642
+
+config.internal.metatype.variableDefinitionType.documentation=\u85c9\u7531\u6307\u5b9a\u8b8a\u6578\u7684\u540d\u7a31\u548c\u503c\u4f86\u5ba3\u544a\u65b0\u8b8a\u6578\u3002
+config.internal.metatype.variableDefinitionType.label=\u8b8a\u6578\u5ba3\u544a
+config.internal.metatype.variableDefinitionType.name.documentation=\u8b8a\u6578\u7684\u540d\u7a31\u3002
+config.internal.metatype.variableDefinitionType.name.label=\u540d\u7a31
+config.internal.metatype.variableDefinitionType.value.documentation=\u8981\u6307\u6d3e\u7d66\u8b8a\u6578\u7684\u503c\u3002
+config.internal.metatype.variableDefinitionType.value.label=\u503c
+
+config.internal.metatype.duration.desc=\u6307\u5b9a\u6b63\u6574\u6578\u52a0\u4e0a\u6642\u9593\u55ae\u4f4d\uff0c\u6642\u9593\u55ae\u4f4d\u53ef\u4ee5\u662f\u5c0f\u6642 (h)\u3001\u5206\u9418 (m)\u3001\u79d2 (s) \u6216\u6beb\u79d2 (ms)\u3002\u4f8b\u5982\uff0c\u6307\u5b9a 500 \u6beb\u79d2\u70ba 500ms\u3002\u60a8\u53ef\u4ee5\u5728\u55ae\u4e00\u9805\u76ee\u4e2d\u5305\u62ec\u591a\u500b\u503c\u3002\u4f8b\u5982\uff0c1s500ms \u76f8\u7b49\u65bc 1.5 \u79d2\u3002
+config.internal.metatype.duration-s.desc=\u6307\u5b9a\u6b63\u6574\u6578\u52a0\u4e0a\u6642\u9593\u55ae\u4f4d\uff0c\u6642\u9593\u55ae\u4f4d\u53ef\u4ee5\u662f\u5c0f\u6642 (h)\u3001\u5206\u9418 (m) \u6216\u79d2 (s)\u3002\u4f8b\u5982\uff0c\u6307\u5b9a 30 \u79d2\u70ba 30s\u3002\u60a8\u53ef\u4ee5\u5728\u55ae\u4e00\u9805\u76ee\u4e2d\u5305\u62ec\u591a\u500b\u503c\u3002\u4f8b\u5982\uff0c1m30s \u76f8\u7b49\u65bc 90 \u79d2\u3002
+config.internal.metatype.duration-m.desc=\u6307\u5b9a\u6b63\u6574\u6578\u52a0\u4e0a\u6642\u9593\u55ae\u4f4d\uff0c\u6642\u9593\u55ae\u4f4d\u53ef\u4ee5\u662f\u5c0f\u6642 (h) \u6216\u5206\u9418 (m)\u3002\u4f8b\u5982\uff0c\u6307\u5b9a 30 \u5206\u9418\u70ba 30m\u3002\u60a8\u53ef\u4ee5\u5728\u55ae\u4e00\u9805\u76ee\u4e2d\u5305\u62ec\u591a\u500b\u503c\u3002\u4f8b\u5982\uff0c1h30m \u76f8\u7b49\u65bc 90 \u5206\u9418\u3002
+config.internal.metatype.duration-h.desc=\u6307\u5b9a\u6b63\u6574\u6578\u52a0\u4e0a\u6642\u9593\u55ae\u4f4d\uff0c\u6642\u9593\u55ae\u4f4d\u53ef\u4ee5\u662f\u5c0f\u6642 (h)\u3002\u4f8b\u5982\uff0c\u6307\u5b9a 12 \u5c0f\u6642\u70ba 12h\u3002
+
+config.internal.metatype.pid.reference.type={0} \u985e\u578b\uff08\u5b57\u4e32\uff09\u7684\u914d\u7f6e ID\u3002
+config.internal.metatype.pid.reference.list.type={0} \u985e\u578b\uff08\u4ee5\u9017\u9ede\u5340\u9694\u5b57\u4e32\uff09\u7684\u914d\u7f6e ID \u6e05\u55ae\u3002
+config.internal.metatype.pid.reference.nested.type={0} \u985e\u578b\u7684\u5143\u7d20\u3002
+
+config.internal.metatype.type.desc=PID \u70ba {0}\u3002
+config.internal.metatype.type.child.desc=PID \u70ba {0}\uff0c\u540c\u6642\u5b83\u662f\u8907\u5f0f\u985e\u578b <q>{1}</q> \u7684\u5b50\u9805\u3002
+
+config.internal.metatype.id.documentation=\u552f\u4e00\u7684\u914d\u7f6e ID\u3002
+config.internal.metatype.id.label=ID
+
+config.internal.metatype.onConflictType.merge.label=\u885d\u7a81\u7684\u5143\u7d20\u6703\u5408\u4f75\u3002
+config.internal.metatype.onConflictType.replace.label=\u7576\u5143\u7d20\u885d\u7a81\u6642\uff0c\u4f86\u81ea\u4f75\u5165\u6a94\u6848\u7684\u5143\u7d20\u6703\u53d6\u4ee3\u885d\u7a81\u7684\u5143\u7d20\u3002
+config.internal.metatype.onConflictType.ignore.label=\u4f75\u5165\u6a94\u6848\u4e2d\u7684\u885d\u7a81\u5143\u7d20\u6703\u88ab\u5ffd\u7565\u3002
+config.internal.metatype.onConflictType.break.label=\u885d\u7a81\u7684\u5143\u7d20\u6703\u5c0e\u81f4\u914d\u7f6e\u932f\u8aa4\u3002
+
+OSGI_SERVICE_ERROR=CWWKG1001E: OSGi \u670d\u52d9 {0} \u7121\u6cd5\u4f7f\u7528\u3002\u8acb\u5617\u8a66\u4ee5 --clean \u9078\u9805\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+OSGI_SERVICE_ERROR.explanation=\u6307\u5b9a\u7684\u670d\u52d9\u7121\u6cd5\u4f7f\u7528\uff0c\u9020\u6210\u6b64\u5167\u90e8\u4f3a\u670d\u5668\u932f\u8aa4\u3002
+OSGI_SERVICE_ERROR.useraction=\u8acb\u4ee5 --clean \u9078\u9805\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002

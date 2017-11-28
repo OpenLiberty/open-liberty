@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2002, 2003 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://seaux.raleigh.ibm.com/g11n/was/seae/45/messages/index.html
+# or contact Dennis Hebert/Raleigh/IBM (hebert@us.ibm.com)
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service: ssl channel
+#CMVCPATHNAME com.ibm.ws.channel.ssl/resources/com/ibm/ws/channel/ssl/internal/resources/SSLChannelMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#
+#ISMESSAGEFILE TRUE
+# NLS_MESSAGEFORMAT_VAR
+
+### SSL channel is using CHFW bundle ids, values 0800-0899
+
+invalid.security.properties=CWWKO0800E: Canalul SSL nu poate fi pornit din cauza urm\u0103toarelor set\u0103ri incorecte:\n {0}
+invalid.security.properties.explanation=Una sau mai multe set\u0103ri pentru securitatea \u00een canalul SSL nu au fost valide.
+invalid.security.properties.useraction=Set\u0103rile de securitate ale canalului SSL ar trebui modificate la valorile corecte.
+
+handshake.failure=CWWKO0801E: Nu se poate ini\u0163ializa conexiunea SSL. Accesul neautorizat a fost refuzat sau set\u0103rile de securitate au expirat. Excep\u0163ia este {0}.
+handshake.failure.explanation=O nou\u0103 conexiune a e\u015fuat finalizarea unui dialog de confirmare securizat cu succes.
+handshake.failure.useraction=Verifica\u0163i set\u0103rile de securitate.  Certificatul se poate s\u0103 fi expira sau lipse\u015fte.  Alternativ, s-ar putea ca o conexiune de client neautorizat s\u0103 fi fost refuzat\u0103.  Pentru a dezactiva aceste mesaje, seta\u0163i parametrul suppressHandshakeErrors al configura\u0163iei sslOptions la adev\u0103r.
+
+init.failure=CWWKO0802E: Nu se poate ini\u0163ializa bundle-ul SSL. Excep\u0163ia este {0}.
+init.failure.explanation=A ap\u0103rut o eroare \u00een timp ce se \u00eencerca ini\u0163ializarea bundle-ului SSL. Asta e probabil din cauza unei defect\u0103ri de dependen\u0163\u0103.
+init.failure.useraction=Examina\u0163i istoricele de procese pentru informa\u0163ii despre ce a e\u015fuat s\u0103 porneasc\u0103.
+
+DEFAULT_OPTIONS_ERROR=CWWKO0803E: Nu se \u015foate crea configura\u0163ia canalului SSL implicit\u0103. Excep\u0163ia este {0}.
+DEFAULT_OPTIONS_ERROR.explanation=A ap\u0103rut o eroare \u00een timp ce se crea configura\u0163ia implicit\u0103 pentru canalele SSL.
+DEFAULT_OPTIONS_ERROR.useraction=Examina\u0163i excep\u0163ia pentru informa\u0163ii despre cum a e\u015fuat crearea.
+
+handshake.failure.stop.logging=CWWKO0804I: A fost atins num\u0103rul maxim de e\u015fecuri de dialog de confirmare SSL de  \u00eenregistrat \u00een istoric. Aceste mesaje nu vor mai fi \u00eenregistrate \u00een istoric.
+handshake.failure.stop.logging.explanation=Num\u0103rul de e\u015fecuri de dialog de confirmare SSL care sunt \u00eenregistrate \u00een  istoric este limitat pentru a evita intr\u0103ri excesive de \u00eenregistr\u0103ri \u00een istoric.
+handshake.failure.stop.logging.useraction=Nu este necesar\u0103 nici o ac\u0163iune.

@@ -1,0 +1,26 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.logging/resources/com/ibm/ws/logging/internal/resources/FFDCMessages.nlsprops
+#COMPONENTPREFIX FFDC
+#COMPONENTNAMEFOR FFDC WebSphere First Failure Data Capture
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# Shared/reused from tWAS
+INCIDENTSTREAMIMPL_FAILED_TO_OPEN_FILE=FFDC0011I: FFDC nemohl otev\u0159\u00edt nebo vytvo\u0159it soubor proudu ud\u00e1losti {0}. V\u00fdjimka: {1}
+INCIDENTSTREAMIMPL_FAILED_TO_OPEN_FILE.explanation=Soubor proudu ud\u00e1losti nebylo mo\u017en\u00e9 otev\u0159\u00edt nebo vytvo\u0159it. Bu\u010f nen\u00ed k dispozici syst\u00e9m soubor\u016f obsahuj\u00edc\u00ed soubor protokolu, nebo proces spou\u0161t\u011bj\u00edc\u00ed funkci FFDC nem\u00e1 povoleno vytv\u00e1\u0159et a p\u0159istupovat k soubor\u016fm v adres\u00e1\u0159i protokolu.
+INCIDENTSTREAMIMPL_FAILED_TO_OPEN_FILE.useraction=Ov\u011b\u0159te, \u017ee je k dispozici syst\u00e9m soubor\u016f obsahuj\u00edc\u00ed adres\u00e1\u0159 protokolu a proces spou\u0161t\u011bj\u00edc\u00ed funkci FFDC m\u00e1 povoleno vytv\u00e1\u0159et soubory v adres\u00e1\u0159i protokolu a p\u0159istupovat k nim.
+
+# Provided to tWAS
+lwas.FFDCIncidentEmitted=FFDC1015I: Byla vytvo\u0159ena ud\u00e1lost FFDC: "{0}" v {1}.
+lwas.FFDCIncidentEmitted.explanation=Byla vytvo\u0159ena ud\u00e1lost FFDC v konfigurovan\u00e9m um\u00edst\u011bn\u00ed protokolu.
+lwas.FFDCIncidentEmitted.useraction=Nen\u00ed pot\u0159ebn\u00e1 \u017e\u00e1dn\u00e1 akce.

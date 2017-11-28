@@ -1,0 +1,204 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.webcontainer.security/resources/com/ibm/ws/webcontainer/security/resources/WebAppSecurityMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Web Application Security Collaborator
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9100 - CWWKS9199
+
+MISSING_SEC_ROLE_REF_ROLE_LINK=CWWKS9100W: W elemencie \
+<security-role-ref> serwletu {0} dla pozycji <role-name>{1}</role-name> brak \
+odpowiedniego elementu <role-link>.
+MISSING_SEC_ROLE_REF_ROLE_LINK.explanation=Wymagane \
+jest, aby pozycja <role-link> dla elementu <security-role-ref> odwzorowywa\u0142a \
+pozycj\u0119 <role-name> na rzeczywist\u0105 rol\u0119 dost\u0119pu.
+MISSING_SEC_ROLE_REF_ROLE_LINK.useraction=Zdefiniuj brakuj\u0105c\u0105 pozycj\u0119 <role-link> dla elementu <security-role-ref>.
+
+INVALID_SEC_ROLE_REF_ROLE_LINK=CWWKS9101W: W serwlecie {0} pozycja <role-link>{1}</role-link> dla elementu <role-name>{2}</role-name> nie jest zdefiniowanym elementem <security-role>.
+INVALID_SEC_ROLE_REF_ROLE_LINK.explanation=Wymagane \
+jest, aby pozycja <role-link> dla elementu <security-role-ref> odwzorowywa\u0142a \
+pozycj\u0119 <role-name> na rzeczywist\u0105 rol\u0119 dost\u0119pu.
+INVALID_SEC_ROLE_REF_ROLE_LINK.useraction=Utw\u00f3rz element <security-role> dla nazwy <role-link> lub zmie\u0144 pozycj\u0119 <role-link>, aby nazwa\u0107 istniej\u0105cy element <security-role>.
+
+MULTIPLE_URL_PATTERN_DEFINED=CWWKS9102W: Zdefiniowano wiele element\u00f3w <url-pattern>{0}</url-pattern> dla element\u00f3w <servlet-name>{1}</servlet-name> i <servlet-name>{2}</servlet-name>.
+MULTIPLE_URL_PATTERN_DEFINED.explanation=Pozycja <url-pattern> w elemencie <servlet-mapping> odwzorowuje konkretny element <servlet-name> na okre\u015blony wz\u00f3r. U\u017cycie tego samego wzoru powoduje utworzenie niejednoznacznego odwzorowania.
+MULTIPLE_URL_PATTERN_DEFINED.useraction=Zmie\u0144 pozycj\u0119 <url-pattern> na unikaln\u0105.
+
+AUTHZ_TABLE_NOT_CREATED=CWWKS9103E: Nie mo\u017cna utworzy\u0107 tabeli autoryzacji dla aplikacji {0}.
+AUTHZ_TABLE_NOT_CREATED.explanation=Nie utworzono tabeli autoryzacji dla aplikacji i dlatego \u017caden u\u017cytkownik nie zostanie autoryzowany.
+AUTHZ_TABLE_NOT_CREATED.useraction=Sprawd\u017a dzienniki, aby okre\u015bli\u0107, dlaczego nie utworzono tabeli autoryzacji.
+
+SEC_AUTHZ_FAILED=CWWKS9104A: Nie powiod\u0142a si\u0119 autoryzacja dla u\u017cytkownika {0} podczas wywo\u0142ywania ({1}) {2}. U\u017cytkownikowi nie nadano dost\u0119pu do \u017cadnej z wymaganych r\u00f3l: {3}.
+SEC_AUTHZ_FAILED.explanation=U\u017cytkownik nie ma wymaganych uprawnie\u0144 dost\u0119pu do tego zasobu.
+SEC_AUTHZ_FAILED.useraction=Je\u015bli niepowodzenie by\u0142o nieoczekiwane, skontaktuj si\u0119 z administratorem zabezpiecze\u0144. Je\u015bli wymagany jest dost\u0119p do chronionego zasobu, u\u017cytkownik musi by\u0107 odwzorowany na jedn\u0105 z r\u00f3l chroni\u0105cych zas\u00f3b.
+
+SSL_CAN_NOT_DETERMINE_PORT=CWWKS9105E: Nie mo\u017cna okre\u015bli\u0107 portu SSL na potrzeby automatycznego przekierowania. Sprawd\u017a dzienniki, aby upewni\u0107 si\u0119, \u017ce uruchomiono port HTTPS (SSL), lub sprawd\u017a mo\u017cliwe b\u0142\u0119dy zwi\u0105zane z konfiguracj\u0105 protoko\u0142u SSL, np. brakuj\u0105ce lub nieprawid\u0142owe elementy keyStore.
+SSL_CAN_NOT_DETERMINE_PORT.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Nie mo\u017cna okre\u015bli\u0107 portu SSL.
+SSL_CAN_NOT_DETERMINE_PORT.useraction=Nie mo\u017cna wykona\u0107 \u017cadnej czynno\u015bci.
+
+SEC_FORM_LOGIN_BAD_CONFIG=CWWKS9106E: B\u0142\u0105d konfiguracji funkcji \
+pojedynczego logowania (SSO). Dla aplikacji WWW {0} skonfigurowano logowanie przy u\u017cyciu formularza, ale funkcja pojedynczego logowania (SSO) nie jest w\u0142\u0105czona w ustawieniach zabezpiecze\u0144.  Aby mo\u017cna by\u0142o korzysta\u0107 z funkcji logowania przy u\u017cyciu formularza, musi zosta\u0107 w\u0142\u0105czona funkcja pojedynczego logowania (SSO).
+SEC_FORM_LOGIN_BAD_CONFIG.explanation=Je\u015bli jako \
+mechanizm uwierzytelniania wybrano uwierzytelnianie LTPA i istniej\u0105 aplikacje \
+WWW korzystaj\u0105ce z funkcji logowania przy u\u017cyciu formularza, funkcja \
+pojedynczego logowania (SSO) musi r\u00f3wnie\u017c zosta\u0107 w\u0142\u0105czona.
+SEC_FORM_LOGIN_BAD_CONFIG.useraction=W\u0142\u0105cz funkcj\u0119 \
+pojedynczego logowania w ustawieniach zabezpiecze\u0144, a nast\u0119pnie zrestartuj \
+serwer aplikacji.
+
+SEC_FORM_POST_NULL_OR_TOO_LARGE=CWWKS9107W: Parametry metody \
+POST maj\u0105 warto\u015b\u0107 NULL lub ich warto\u015bci s\u0105 zbyt du\u017ce, aby mo\u017cna je by\u0142o zapisa\u0107 \
+w informacji cookie.
+SEC_FORM_POST_NULL_OR_TOO_LARGE.explanation=Parametry metody \
+POST maj\u0105 warto\u015b\u0107 NULL lub ich warto\u015bci s\u0105 wi\u0119ksze ni\u017c wynosi maksymalna \
+skonfigurowana wielko\u015b\u0107 opcji uwierzytelniania aplikacji WWW: \
+postParamCookieSize.
+SEC_FORM_POST_NULL_OR_TOO_LARGE.useraction=Je\u015bli wielko\u015bci \
+parametr\u00f3w metody POST s\u0105 zbyt du\u017ce, zwi\u0119ksz wielko\u015b\u0107 opcji \
+postParamCookieSize.
+
+SEC_TAI_VALIDATE_FAILED=CWWKS9107E: Funkcja Trust \
+Association Init nie mo\u017ce za\u0142adowa\u0107 klasy Trust Association {0}.
+SEC_TAI_VALIDATE_FAILED.explanation=Po znalezieniu odpowiedniego przechwytywacza dla danego \u017c\u0105dania, ten przechwytywacz sprawdza, czy \u017c\u0105danie jest zaufane przy u\u017cyciu odwrotnego serwera proxy. \
+Ten komunikat o b\u0142\u0119dzie sugeruje, \u017ce sprawdzanie poprawno\u015bci nie powiod\u0142o si\u0119 i nie mo\u017cna ufa\u0107 odwrotnemu serwerowi proxy. \
+Przyczyn\u0105 mo\u017ce by\u0107 na przyk\u0142ad wprowadzenie niepoprawnego lub niewa\u017cnego has\u0142a.
+SEC_TAI_VALIDATE_FAILED.useraction=W \u015brodowisku produkcyjnym dla u\u017cytkownika mo\u017ce zosta\u0107 wy\u015bwietlony alert nakazuj\u0105cy sprawdzenie, czy w systemie nie ma intruza. \
+W \u015brodowisku produkcyjnym, w kt\u00f3rym trwa testowanie, sprawd\u017a, czy oczekiwane \
+dane wej\u015bciowe z serwera odwrotnego proxy s\u0105 poprawnie przekazywane do \
+przechwytywacza.  \
+Rodzaj tych danych wej\u015bciowych zale\u017cy od sposobu, w jaki ustanawiane jest \
+zaufane powi\u0105zanie. \
+Na przyk\u0142ad najprostsz\u0105 metod\u0105 jest przekazanie nazwy u\u017cytkownika i has\u0142a przy \
+u\u017cyciu nag\u0142\u00f3wka podstawowego uwierzytelniania.  
+
+SEC_TAI_USER_EXCEPTION=CWWKS9108E: Nie mo\u017cna znale\u017a\u0107 \
+poprawnego u\u017cytkownika dla klasy Trust Association.
+SEC_TAI_USER_EXCEPTION.explanation=Przechwytywacz zwraca nazw\u0119 \
+uwierzytelnionego u\u017cytkownika. \
+Nie zosta\u0142a zwr\u00f3cona taka nazwa u\u017cytkownika.
+SEC_TAI_USER_EXCEPTION.useraction=Sprawd\u017a, czy serwer \
+odwrotnego proxy wstawia w \u017c\u0105daniu HTTP poprawn\u0105 nazw\u0119 u\u017cytkownika przed \
+wys\u0142aniem tego \u017c\u0105dania do serwera aplikacji.
+
+SEC_TAI_GENERAL_EXCEPTION=CWWKS9109E: Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek podczas \
+dzia\u0142ania klasy Trust Association. Wyj\u0105tek: {0}.
+SEC_TAI_GENERAL_EXCEPTION.explanation=Ten wyj\u0105tek \
+dotyczy wszystkich pozosta\u0142ych wyj\u0105tk\u00f3w, kt\u00f3re mog\u0105 zosta\u0107 utworzone przez \
+przechwytywacz podczas sprawdzania zaufania za pomoc\u0105 serwera odwrotnego proxy \
+oraz podczas pobierania nazwy uwierzytelnionego u\u017cytkownika. Nie dotyczy on \
+wyj\u0105tk\u00f3w WebTrustAssociationFailedException i WebTrustAssociationUserException.
+SEC_TAI_GENERAL_EXCEPTION.useraction=Debuguj problem pochodz\u0105cy z danych \u015bledzenia stosu, kt\u00f3ry zosta\u0142 wy\u015bwietlony razem z komunikatem o b\u0142\u0119dzie. \
+Aby uzyska\u0107 wi\u0119cej informacji na temat rodzaju wyj\u0105tku, mo\u017cna r\u00f3wnie\u017c w\u0142\u0105czy\u0107 funkcj\u0119 \u015bledzenia debugowania.
+
+AUTHZ_TABLE_DUPLICATE_APP_NAME=CWWKS9110E: Wiele \
+aplikacji ma nazw\u0119 {0}. Strategie autoryzacji na potrzeby zabezpiecze\u0144 \
+wymagaj\u0105, aby nazwy by\u0142y unikalne.
+AUTHZ_TABLE_DUPLICATE_APP_NAME.explanation=Nazwy \
+aplikacji musz\u0105 by\u0107 unikalne, aby mo\u017cliwe by\u0142o wymuszenie strategii \
+autoryzacji na potrzeby zabezpiecze\u0144.
+AUTHZ_TABLE_DUPLICATE_APP_NAME.useraction=Zmie\u0144 aplikacje w \
+taki spos\u00f3b, aby mia\u0142y unikalne nazwy, a nast\u0119pnie zrestartuj aplikacj\u0119.
+
+AUTHZ_INVALID_SECURITYROLE_CONFIG=CWWKS9111E: Obiekt u\u017cyty do utworzenia tabeli autoryzacji {0} jest niepoprawny i tabela nie zostanie utworzona. Obiekt musi by\u0107 instancj\u0105 klasy SecurityRoles.
+AUTHZ_INVALID_SECURITYROLE_CONFIG.explanation=Obiekt u\u017cyty do utworzenia tabeli autoryzacji musi by\u0107 instancj\u0105 klasy SecurityRoles.
+AUTHZ_INVALID_SECURITYROLE_CONFIG.useraction=Sprawd\u017a, czy obiekt przekazany funkcji API w celu utworzenia tabeli autoryzacji jest instancj\u0105 klasy SecurityRoles.
+
+WEB_APP_SECURITY_CONFIGURATION_UPDATED=CWWKS9112A: Zmieniono ustawienia zabezpiecze\u0144 aplikacji WWW. Zmodyfikowano nast\u0119puj\u0105ce w\u0142a\u015bciwo\u015bci: {0}
+WEB_APP_SECURITY_CONFIGURATION_UPDATED.explanation=Zmieniono ustawienia zabezpiecze\u0144 aplikacji WWW. Nowe warto\u015bci w\u0142a\u015bciwo\u015bci znajduj\u0105 si\u0119 w komunikacie.
+WEB_APP_SECURITY_CONFIGURATION_UPDATED.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+SSL_PORT_IS_NULL=CWWKS9113E: Port SSL nie jest aktywny. Nie mo\u017cna przekierowa\u0107 przychodz\u0105cego \u017c\u0105dania http do bezpiecznego portu. Sprawd\u017a, czy plik server.xml nie zawiera b\u0142\u0119d\u00f3w konfiguracji. Port https mo\u017ce by\u0107 wy\u0142\u0105czony. Element keyStore mo\u017ce by\u0107 niepoprawnie skonfigurowany \
+lub mo\u017ce go brakowa\u0107. Opcja SSL mo\u017ce nie by\u0107 w\u0142\u0105czona. 
+SSL_PORT_IS_NULL.explanation=Nie mo\u017cna by\u0142o okre\u015bli\u0107 portu SSL, co uniemo\u017cliwi\u0142o przekierowanie przychodz\u0105cego \u017c\u0105dania HTTP do portu \
+HTTPS. Taka sytuacja mo\u017ce wyst\u0105pi\u0107 w przypadku b\u0142\u0119du konfiguracji w elemencie keyStore lub braku sk\u0142adnika SSL.
+SSL_PORT_IS_NULL.useraction=Sprawd\u017a, czy plik server.xml zawiera poprawne informacje dotycz\u0105ce protoko\u0142u SSL.
+
+SSL_REQ_URL_MALFORMED_EXCEPTION=CWWKS9114E: Nie mo\u017cna przekierowa\u0107 przychodz\u0105cego \
+\u017c\u0105dania http do bezpiecznego portu, poniewa\u017c adres URL \u017c\u0105dania serwletu {0} jest zniekszta\u0142cony. Upewnij \
+si\u0119, \u017ce adres URL \u017c\u0105dania jest poprawny.
+SSL_REQ_URL_MALFORMED_EXCEPTION.explanation=Adres URL \u017c\u0105dania serwletu jest \
+zniekszta\u0142cony, co uniemo\u017cliwi\u0142o przekierowanie przychodz\u0105cego \u017c\u0105dania HTTP do portu HTTPS.
+SSL_REQ_URL_MALFORMED_EXCEPTION.useraction=Upewnij si\u0119, \u017ce URL \u017c\u0105dania \
+serwletu jest poprawny.
+
+SEC_WEB_INTERNAL_SERVER_ERROR=CWWKS9115E: Serwer \
+napotka\u0142 nieoczekiwany warunek, co uniemo\u017cliwi\u0142o spe\u0142nienie \u017c\u0105dania metody {0} \
+dla adresu URL {1}. Wi\u0119cej informacji zawieraj\u0105 dzienniki serwera.
+SEC_WEB_INTERNAL_SERVER_ERROR.explanation=Odpowied\u017a \
+serwletu wskazuje, \u017ce wyst\u0105pi\u0142 wewn\u0119trzny b\u0142\u0105d serwera.
+SEC_WEB_INTERNAL_SERVER_ERROR.useraction=Wi\u0119cej informacji zawieraj\u0105 dzienniki serwera. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0107, zapoznaj si\u0119 z informacjami dotycz\u0105cymi okre\u015blania problem\u00f3w na stronie wsparcia dla serwera WebSphere Application Server pod adresem http://www.ibm.com/software/webservers/appserv/was/support/. 
+
+SEC_WEB_NULL_AUTHENTICATOR=CWWKS9116E: Logowanie pod \
+adresem URL {0} nie powiod\u0142o si\u0119 dla u\u017cytkownika {1} z powodu b\u0142\u0119du \
+wewn\u0119trznego. Wi\u0119cej informacji zawieraj\u0105 dzienniki serwera.
+SEC_WEB_NULL_AUTHENTICATOR.explanation=Proces \
+logowania nie zosta\u0142 zako\u0144czony z powodu b\u0142\u0119du wewn\u0119trznego. 
+SEC_WEB_NULL_AUTHENTICATOR.useraction=Wi\u0119cej informacji zawieraj\u0105 dzienniki serwera. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0107, zapoznaj si\u0119 z informacjami dotycz\u0105cymi okre\u015blania problem\u00f3w na stronie wsparcia dla serwera WebSphere Application Server pod adresem http://www.ibm.com/software/webservers/appserv/was/support/. 
+
+SEC_WEB_ILLEGAL_REQUEST=CWWKS9117E: Metoda {0} \
+nie mo\u017ce by\u0107 przetwarzana dla adresu URL {1}. Je\u015bli ten b\u0142\u0105d jest \
+nieoczekiwany, upewnij si\u0119, \u017ce aplikacja zezwala na u\u017cycie metod, kt\u00f3rych \u017c\u0105da \
+klient.
+SEC_WEB_ILLEGAL_REQUEST.explanation=Przetwarzanie \
+\u017c\u0105danej metody jest zabronione.
+SEC_WEB_ILLEGAL_REQUEST.useraction=Je\u015bli ten b\u0142\u0105d jest \
+nieoczekiwany, upewnij si\u0119, \u017ce aplikacja zezwala na u\u017cycie metod, kt\u00f3rych \u017c\u0105da \
+klient.
+
+GETFORMLOGOUTEXTENSIONPROCESSOR_EXCEPTION=CWWKS9118E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Wyj\u0105tek {0}
+GETFORMLOGOUTEXTENSIONPROCESSOR_EXCEPTION.explanation=CMSG0001
+GETFORMLOGOUTEXTENSIONPROCESSOR_EXCEPTION.useraction=CMSG0002
+
+AUTHENTICATE_CACHE_REMOVAL_EXCEPTION=CWWKS9119W: Wylogowanie u\u017cytkownika {0} nie \
+zosta\u0142o zako\u0144czone pomy\u015blnie, poniewa\u017c wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek podczas usuwania informacji cookie \
+u\u017cytkownika z pami\u0119ci podr\u0119cznej uwierzytelniania. Wyj\u0105tek: {1}. Przejrzyj dzienniki serwera, aby uzyska\u0107 \
+wi\u0119cej informacji, i ponownie wyloguj u\u017cytkownika, je\u015bli jest to mo\u017cliwe.
+AUTHENTICATE_CACHE_REMOVAL_EXCEPTION.explanation=Wylogowanie u\u017cytkownika nie zosta\u0142o \
+zako\u0144czone pomy\u015blnie, poniewa\u017c wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek podczas usuwania informacji cookie u\u017cytkownika \
+z pami\u0119ci podr\u0119cznej uwierzytelniania.
+AUTHENTICATE_CACHE_REMOVAL_EXCEPTION.useraction=Przejrzyj dzienniki serwera, aby uzyska\u0107 \
+wi\u0119cej informacji, i ponownie wyloguj u\u017cytkownika, je\u015bli jest to mo\u017cliwe. \
+Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0107, zapoznaj si\u0119 z informacjami dotycz\u0105cymi okre\u015blania problem\u00f3w na stronie wsparcia dla serwera WebSphere Application Server pod adresem http://www.ibm.com/software/webservers/appserv/was/support/. 
+
+INVALID_FORM_LOGIN_CONFIGURATION=CWWKS9120W: W \
+konfiguracji logowania przy u\u017cyciu formularza brakuje definicji elementu {0} 
+INVALID_FORM_LOGIN_CONFIGURATION.explanation=W \
+konfiguracji logowania przy u\u017cyciu formularza brakuje strony logowania i/lub \
+strony b\u0142\u0119du.
+INVALID_FORM_LOGIN_CONFIGURATION.useraction=Upewnij si\u0119, \u017ce \
+konfiguracja logowania przy u\u017cyciu formularza uwzgl\u0119dnia definicje zar\u00f3wno \
+strony logowania, jak i strony b\u0142\u0119du.
+
+OSGI_SERVICE_ERROR=CWWKS9121E: Us\u0142uga OSGi {0} nie jest dost\u0119pna.
+OSGI_SERVICE_ERROR.explanation=Okre\u015blona us\u0142uga OSGi nie jest dost\u0119pna.
+OSGI_SERVICE_ERROR.useraction=Zrestartuj serwer z opcj\u0105 clean.
+
+UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED=CWWKS9122I:  Dla adresu URL {0} w aplikacji {1} istniej\u0105 nast\u0119puj\u0105ce metody HTTP, kt\u00f3re s\u0105 ujawnione i dost\u0119pne: {2}
+UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED.explanation=W pliku web.xml dla serwletu nie jest okre\u015blony element deny-uncovered-http-methods, a istniej\u0105 metody HTTP dla wzorca adresu URL, kt\u00f3re nie s\u0105 chronione. Te niechronione metody b\u0119d\u0105 dost\u0119pne.
+UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED.useraction=Upewnij si\u0119, \u017ce wszystkie metody HTTP dla wszystkich ograniczonych wzorc\u00f3w adres\u00f3w URL maj\u0105 odpowiednie zabezpieczenia.
+
+UNCOVERED_HTTP_METHODS_FOUND=CWWKS9123I:  Dla adresu URL {0} w aplikacji {1} istniej\u0105 nast\u0119puj\u0105ce metody HTTP, kt\u00f3re s\u0105 ujawnione i niedost\u0119pne: {2}
+UNCOVERED_HTTP_METHODS_FOUND.explanation=W pliku web.xml dla serwletu okre\u015blony jest element deny-uncovered-http-methods, a istniej\u0105 metody HTTP dla wzorca adresu URL, kt\u00f3re nie s\u0105 chronione. Te niechronione metody nie b\u0119d\u0105 dost\u0119pne.
+UNCOVERED_HTTP_METHODS_FOUND.useraction=Upewnij si\u0119, \u017ce wszystkie metody HTTP dla wszystkich ograniczonych wzorc\u00f3w adres\u00f3w URL maj\u0105 odpowiednie zabezpieczenia.
+
+SEC_JACC_AUTHZ_FAILED=CWWKS9124A: Nie powiod\u0142a si\u0119 autoryzacja przez dostawc\u0119 JACC dla u\u017cytkownika {0} podczas wywo\u0142ywania ({1}) {2}.
+SEC_JACC_AUTHZ_FAILED.explanation=U\u017cytkownik nie ma wymaganych uprawnie\u0144 dost\u0119pu do tego zasobu. Ta decyzja dotycz\u0105ca autoryzacji zosta\u0142a podj\u0119ta przez zdefiniowanego przez u\u017cytkownika dostawc\u0119 specyfikacji Java Authorization Contract for Containers (JACC). 
+SEC_JACC_AUTHZ_FAILED.useraction=Je\u015bli niepowodzenie by\u0142o nieoczekiwane, skontaktuj si\u0119 z administratorem zabezpiecze\u0144. Je\u015bli wymagany jest dost\u0119p do chronionego zasobu, u\u017cytkownik musi by\u0107 odwzorowany na jedn\u0105 z r\u00f3l chroni\u0105cych zas\u00f3b. Autoryzacj\u0119 t\u0119 mo\u017cna skonfigurowa\u0107 za po\u015brednictwem zdefiniowanego przez u\u017cytkownika dostawcy specyfikacji Java Authorization Contract for Containers (JACC).
+
+
+SEC_FORM_LOGOUTEXITPAGE_INVALID=CWWKS9125E: Adres URL podany w niestandardowym parametrze logoutExitPage us\u0142ugi Form-Logout nie mo\u017ce zosta\u0107 wy\u015bwietlony (requestURL={0}, logoutExitPage={1}). Logowanie powiod\u0142o si\u0119 i zosta\u0142a wy\u015bwietlona strona domy\u015blna Form-Logout.
+SEC_FORM_LOGOUTEXITPAGE_INVALID.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez us\u0142ug\u0119 Form-Logout pr\u00f3ba przekierowania do strony podanej w parametrze serwletu logoutExitPage. Podany adres URL ma niepoprawn\u0105 sk\u0142adni\u0119 lub we w\u0142a\u015bciwo\u015bci com.ibm.websphere.security.logoutExitPageDomainList nie podano nazwy hosta.
+SEC_FORM_LOGOUTEXITPAGE_INVALID.useraction=Popraw adres URL podany w parametrze logoutExitPage.  

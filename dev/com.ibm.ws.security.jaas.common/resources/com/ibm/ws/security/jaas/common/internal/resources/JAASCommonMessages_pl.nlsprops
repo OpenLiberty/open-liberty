@@ -1,0 +1,69 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authentication.builtin/resources/com/ibm/ws/security/jaas/common/internal/resources/JAASCommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Authentication Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# JAAS Message prefix block: CWWKS1133 - CWWKS1166
+
+# Only the following message falls outside of the allocated block above 
+# because it was moved as-is from another package for a refactor
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET=CWWKS1108E: Nie ustawiono opcji delegowania elementu WSLoginModuleProxy.
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.explanation=Uwierzytelnianie nie powiod\u0142o si\u0119, poniewa\u017c nie ustawiono opcji delegowania elementu WSLoginModuleProxy.
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.useraction=Sprawd\u017a, czy konfiguracja elementu WSLoginModuleProxy zawiera opcj\u0119 delegowania.
+
+# NOTE!! Any messages added here should start at CWWKS1133
+
+# Start msgs from cWAS
+security.jaas.open.URL=CWWKS1133E: Nie mo\u017cna otworzy\u0107 adresu URL: {0}. Wyj\u0105tek: {1}
+security.jaas.open.URL.explanation=Wyst\u0105pi\u0142 wyj\u0105tek MalformedURLException podczas pr\u00f3by nawi\u0105zania po\u0142\u0105czenia z okre\u015blonym adresem URL. 
+security.jaas.open.URL.useraction=Sprawd\u017a wyj\u0105tek. Sprawd\u017a okre\u015blony adres URL.
+# -------------------------------------------------------------------------------------------------
+security.jaas.create.URL=CWWKS1134E: Nie mo\u017cna utworzy\u0107 adresu URL: {0}. Wyj\u0105tek: {1}
+security.jaas.create.URL.explanation=Wyst\u0105pi\u0142 wyj\u0105tek IOException podczas pr\u00f3by nawi\u0105zania po\u0142\u0105czenia z okre\u015blonym adresem URL.
+security.jaas.create.URL.useraction=Sprawd\u017a wyj\u0105tek. Sprawd\u017a okre\u015blony adres URL.
+# -------------------------------------------------------------------------------------------------
+security.jaas.parser.URL=CWWKS1135E: Wyst\u0105pi\u0142 wyj\u0105tek analizatora sk\u0142adni w przypadku pliku: {0}. Wyj\u0105tek: {1}
+security.jaas.parser.URL.explanation=Wyst\u0105pi\u0142 wyj\u0105tek IOException podczas pr\u00f3by nawi\u0105zania po\u0142\u0105czenia z okre\u015blonym adresem URL.
+security.jaas.parser.URL.useraction=Sprawd\u017a wyj\u0105tek. Sprawd\u017a okre\u015blony adres URL.
+# -------------------------------------------------------------------------------------------------
+security.jaas.duplicate.config=CWWKS1136E: Zduplikowana nazwa konfiguracji logowania {0}. Zostanie wykonana operacja nadpisywania.
+security.jaas.duplicate.config.explanation=W danych konfiguracyjnych okre\u015blono zduplikowan\u0105 nazw\u0119 konfiguracji logowania.
+security.jaas.duplicate.config.useraction=Sprawd\u017a dane konfiguracyjne.
+# -------------------------------------------------------------------------------------------------
+security.jaas.app.parseIO=CWWKS1137E: Wyst\u0105pi\u0142 wyj\u0105tek IOException podczas analizowania konfiguracji aplikacji JAAS. Wyj\u0105tek: {0}.
+security.jaas.app.parseIO.explanation=Wyst\u0105pi\u0142 wyj\u0105tek IOException podczas analizowania konfiguracji aplikacji JAAS.
+security.jaas.app.parseIO.useraction=Sprawd\u017a plik konfiguracyjny. Sprawd\u017a wyj\u0105tek. 
+# -------------------------------------------------------------------------------------------------
+security.jaas.app.parse=CWWKS1138E: Wyst\u0105pi\u0142 wyj\u0105tek ParserException podczas analizowania konfiguracji aplikacji JAAS. Wyj\u0105tek: {0}.
+security.jaas.app.parse.explanation=Wyst\u0105pi\u0142 wyj\u0105tek ParserException podczas analizowania konfiguracji aplikacji JAAS.
+security.jaas.app.parse.useraction=Sprawd\u017a wyj\u0105tek. Zawiera on informacje o b\u0142\u0119dzie sk\u0142adniowym w pliku konfiguracyjnym.
+# -------------------------------------------------------------------------------------------------
+# End msgs from cWAS
+DEFAULT_JAAS_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1139W: Domy\u015blnej pozycji jaasLoginContextEntry {0} nie mo\u017cna okre\u015bli\u0107 w pliku konfiguracyjnym JAAS {1}. Domy\u015blna pozycja jaasLoginContextEntry musi by\u0107 okre\u015blana w pliku server.xml lub client.xml.
+DEFAULT_JAAS_LOGIN_CONTEXT_ENTRY_SKIP.explanation= Domy\u015blnej pozycji jaasLoginContextEntry nie mo\u017cna okre\u015bli\u0107 w pliku konfiguracyjnym JAAS.
+DEFAULT_JAAS_LOGIN_CONTEXT_ENTRY_SKIP.useraction=Upewnij si\u0119, \u017ce plik konfiguracyjny JAAS nie zawiera domy\u015blnej pozycji jaasLoginContextEntry.
+
+OSGI_SERVICE_ERROR=CWWKS1140E: Us\u0142uga OSGi {0} nie jest dost\u0119pna.
+OSGI_SERVICE_ERROR.explanation=Okre\u015blona us\u0142uga OSGi nie jest dost\u0119pna.
+OSGI_SERVICE_ERROR.useraction=Zrestartuj serwer z opcj\u0105 clean.
+
+JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND=CWWKS1141E: Wyst\u0105pi\u0142 wyj\u0105tek podczas wykonywania klasy dla nazwy elementu {0}. Nieoczekiwany wyj\u0105tek: {1}. 
+JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND.explanation= Wyst\u0105pi\u0142 wyj\u0105tek podczas wykonywania klasy dla nazwy.
+JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND.useraction=Upewnij si\u0119, \u017ce wszystkie niestandardowe modu\u0142y logowania JAAS okre\u015blone w pliku konfiguracyjnym JAAS istniej\u0105 w domy\u015blnym katalogu JAAS. Domy\u015blny katalog JAAS dla serwera to ${server.config.dir}/resources/security/jaas. Domy\u015blny katalog JAAS dla klienta to ${client.config.dir}/resources/security/jaas.
+
+JAAS_DUPLICATE_ENTRY_NAME=CWWKS1142W: W konfiguracji JAAS i plikach server.xml/client.xml okre\u015blono zduplikowan\u0105 nazw\u0119 konfiguracji logowania {0}. Zostanie u\u017cyta nazwa konfiguracji logowania podana w pliku server.xml/client.xml.
+JAAS_DUPLICATE_ENTRY_NAME.explanation=W pliku konfiguracyjnym JAAS i pliku server.xml/client.xml okre\u015blono zduplikowan\u0105 nazw\u0119 konfiguracji logowania.
+JAAS_DUPLICATE_ENTRY_NAME.useraction=Sprawd\u017a plik konfiguracyjny JAAS i plik server.xml/client.xml.

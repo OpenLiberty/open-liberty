@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS0000 - CWWKS0099
+
+SECURITY_CONFIG_ERROR_MISSING_ATTRIBUTE=CWWKS0000E: Es ist eine Konfigurationsausnahme eingetreten. Es ist kein Attribut {0} f\u00fcr ein Element <securityConfiguration> definiert.
+SECURITY_CONFIG_ERROR_MISSING_ATTRIBUTE.explanation=Das fehlende Attribut ist ein erforderliches Attribut des Elements <securityConfiguration>.
+SECURITY_CONFIG_ERROR_MISSING_ATTRIBUTE.useraction=Geben Sie das fehlende Attribut f\u00fcr das Element <securityConfiguration> an.
+
+SECURITY_SERVICE_REQUIRED_SERVICE_WITHOUT_ID=CWWKS0001E: Es ist eine Konfigurationsausnahme eingetreten. Ein Konfigurationselement des Typs {0} definiert kein Attribut id.
+SECURITY_SERVICE_REQUIRED_SERVICE_WITHOUT_ID.explanation=Der angegebene Konfigurationselementtyp erfordert ein Attribut id, damit es von anderen Elementen in der Konfiguration ordnungsgem\u00e4\u00df referenziert werden kann.
+SECURITY_SERVICE_REQUIRED_SERVICE_WITHOUT_ID.useraction=Definieren Sie ein Attribut id f\u00fcr den angegebenen Konfigurationselementtyp.
+
+SECURITY_SERVICE_ERROR_MISSING_ATTRIBUTE=CWWKS0002E: Es ist eine Konfigurationsausnahme eingetreten. Es ist kein Attribut {0} f\u00fcr das Element <security> definiert.
+SECURITY_SERVICE_ERROR_MISSING_ATTRIBUTE.explanation=Das fehlende Attribut ist ein erforderliches Attribut des Elements <security>.
+SECURITY_SERVICE_ERROR_MISSING_ATTRIBUTE.useraction=Geben Sie das fehlende Attribut f\u00fcr das Element <security> an.
+
+SECURITY_SERVICE_ERROR_BAD_DOMAIN=CWWKS0003E: Es ist eine Konfigurationsausnahme eingetreten. Die angegebene Sicherheitskonfiguration, die von der ID {0} f\u00fcr das Attribut {1} im Element <security> referenziert wird, ist nicht definiert.
+SECURITY_SERVICE_ERROR_BAD_DOMAIN.explanation=Die angegebene Sicherheitskonfiguration ist nicht definiert. Der ID-Name kann falsch sein oder auf eine Sicherheitskonfiguration verweisen, die nicht vorhanden ist.
+SECURITY_SERVICE_ERROR_BAD_DOMAIN.useraction=Definieren Sie eine g\u00fcltige Sicherheitskonfiguration f\u00fcr das angegebene Attribut im Element <security>.
+
+SECURITY_SERVICE_ERROR_BAD_REFERENCE=CWWKS0004E: Es ist eine Konfigurationsausnahme eingetreten. Das angegebene Element, das von der ID {0} f\u00fcr das Attribut {1} im Element <securityConfiguration> referenziert wird, ist nicht definiert.
+SECURITY_SERVICE_ERROR_BAD_REFERENCE.explanation=Die konfigurierte Referenz-ID ist nicht g\u00fcltig. Der ID-Name kann falsch sein oder auf eine Servicekonfiguration verweisen, die nicht vorhanden ist.
+SECURITY_SERVICE_ERROR_BAD_REFERENCE.useraction=Geben Sie eine g\u00fcltige Servicekonfigurations-ID f\u00fcr das Element <securityConfiguration> an.
+
+SECURITY_SERVICE_NO_SERVICE_AVAILABLE=CWWKS0005E: Es ist eine Konfigurationsausnahme eingetreten. Es ist kein {0}-Service verf\u00fcgbar.
+SECURITY_SERVICE_NO_SERVICE_AVAILABLE.explanation=Es ist kein Service des angegebenen Typs \u00fcber die OSGi-Service-Registry verf\u00fcgbar.
+SECURITY_SERVICE_NO_SERVICE_AVAILABLE.useraction=Geben Sie ein Serviceimplementierungsfeature des angegebenen Typs an.
+
+SECURITY_SERVICE_MULTIPLE_SERVICE_AVAILABLE=CWWKS0006E: Es ist eine Konfigurationsausnahme eingetreten. Es sind mehrere Services {0} verf\u00fcgbar. Der zu verwendende Service kann vom System nicht bestimmt werden.
+SECURITY_SERVICE_MULTIPLE_SERVICE_AVAILABLE.explanation=Es sind mehrere Services des angegebenen Tyaps \u00fcber die OSGi-Service-Registry verf\u00fcgbar, und es ist keine explizite Konfiguration vorhanden, die den zu verwendenden Service anzeigt.
+SECURITY_SERVICE_MULTIPLE_SERVICE_AVAILABLE.useraction=Geben Sie nur ein einziges Serviceimplementierungsfeature des angegebenen Typs an, oder definieren Sie den zu verwendenden Service in der Konfiguration.
+
+#
+# NOTE: CWWKS0007 through CWWKS0009 have been moved to com.ibm.ws.security.ready.service project
+#
+
+SEC_TOO_MANY_PRINCIPALS=CWWKS0010E: Beim Abrufen des Caller-Principals wurde festgestellt, dass ein Caller-Subjekt mehrere Principals des Typs WSPrincipal hat. Es ist nur ein einziger WSPrincipal pro Subjekt zul\u00e4ssig. Die Namen der WSPrincipals sind {}.
+SEC_TOO_MANY_PRINCIPALS.explanation=Das Caller-Subjekt enth\u00e4lt zu viele Principals des Typs WSPrincipal. Es wird nur ein einziger Principal dieses Typs unterst\u00fctzt.
+SEC_TOO_MANY_PRINCIPALS.useraction=\u00dcberpr\u00fcfen Sie die Anwendung, um festzustellen, warum das Subjekt mehrere WSPrincipals enth\u00e4lt.

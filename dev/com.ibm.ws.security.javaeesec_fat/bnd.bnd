@@ -48,6 +48,6 @@ test.project: true
 	com.ibm.ws.common.encoder,\
 	com.ibm.ws.security.token,\
 	com.ibm.websphere.org.osgi.service.component,\
-	apache_directory_server;version=latest,\
+	com.ibm.ws.org.apache.directory.server;version=latest,\
 	org.apache.directory.server:apacheds-service;version=latest,\
 	com.ibm.ws.webcontainer.security_test.servlets;version=latest

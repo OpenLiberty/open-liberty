@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+#CMVCPATHNAME 
+#COMPONENTPREFIX CWWWC
+#COMPONENTNAMEFOR CWWWC Servlet Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# --------------------------------
+
+# Since servlet 4.0.  Use the registered and reserved prefix CWWWC from now on.  
+# 0001 - 0199 for Base
+# 0200 - 0299 for Servlet 3.0
+# 0300 - 0399 for Servlet 3.1
+# 0400 - 0499 for Servlet 4
+name.is.null=CWWWC0400E: \u041f\u0443\u0441\u0442\u043e\u0435 \u0438\u043c\u044f \u0430\u0442\u0440\u0438\u0431\u0443\u0442\u0430 \u0438\u043b\u0438 \u0438\u043c\u044f \u043d\u0430\u0447\u0430\u043b\u044c\u043d\u043e\u0433\u043e \u043f\u0430\u0440\u0430\u043c\u0435\u0442\u0440\u0430.
+name.is.null.explanation=\u042d\u0442\u043e \u043e\u0448\u0438\u0431\u043a\u0430 \u0432 \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0438.  \u041f\u0443\u0441\u0442\u043e\u0435 \u0438\u043c\u044f \u0432 \u043a\u0430\u043a\u043e\u043c-\u043b\u0438\u0431\u043e \u0438\u0437 \u043a\u043e\u043d\u0442\u0435\u043a\u0441\u0442\u043e\u0432 getAttribute(), setAttribute(), getInitParameter() \u0438\u043b\u0438 setInitParameter().
+name.is.null.useraction=\u0423\u043a\u0430\u0436\u0438\u0442\u0435 \u0434\u043b\u044f \u0438\u043c\u0435\u043d\u0438 \u0430\u0442\u0440\u0438\u0431\u0443\u0442\u0430 \u0438\u043b\u0438 \u0438\u043c\u0435\u043d\u0438 \u043d\u0430\u0447\u0430\u043b\u044c\u043d\u043e\u0433\u043e \u043f\u0430\u0440\u0430\u043c\u0435\u0442\u0440\u0430 \u043d\u0435\u043f\u0443\u0441\u0442\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435.
+
+# -----------------------------------------------
+unsupported.response.encoding.[{0}]=CWWWC0401E: \u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u0437\u0430\u0434\u0430\u0442\u044c \u043a\u043e\u0434\u0438\u0440\u043e\u0432\u043a\u0443 \u0434\u043b\u044f \u0441\u0438\u043c\u0432\u043e\u043b\u043e\u0432 \u043e\u0442\u0432\u0435\u0442\u0430: [{0}].
+unsupported.response.encoding.[{0}].explanation=\u0423\u043a\u0430\u0437\u0430\u043d\u043d\u0430\u044f \u0432 \u043e\u0442\u0432\u0435\u0442\u0435 \u043a\u043e\u0434\u0438\u0440\u043e\u0432\u043a\u0430 \u043e\u0442\u0432\u0435\u0442\u0430 \u043d\u0435\u0434\u043e\u043f\u0443\u0441\u0442\u0438\u043c\u0430. \u042d\u0442\u043e \u043e\u0448\u0438\u0431\u043a\u0430 \u0432 \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0438.
+unsupported.response.encoding.[{0}].useraction=\u041e\u0431\u0440\u0430\u0442\u0438\u0442\u0435\u0441\u044c \u043a \u043f\u0440\u043e\u0442\u043e\u043a\u043e\u043b\u0430\u043c, \u0443\u0431\u0435\u0434\u0438\u0442\u0435\u0441\u044c, \u0447\u0442\u043e \u0443\u043a\u0430\u0437\u0430\u043d\u043d\u0430\u044f \u043a\u043e\u0434\u0438\u0440\u043e\u0432\u043a\u0430 \u0434\u043e\u043f\u0443\u0441\u0442\u0438\u043c\u0430.
+

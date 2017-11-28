@@ -1,0 +1,67 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+#CMVCPATHNAME com.ibm.ws.apache.el-3.0/resources/org/apache/el/Messages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+
+# General Errors
+error.convert=Impossible de convertir {0} de type {1} en {2}
+error.compare=Impossible de comparer {0} \u00e0 {1}
+error.function=Probl\u00e8mes lors de l''appel de la fonction ''{0}''
+error.unreachable.base=Cible inaccessible, identificateur ''{0}'' r\u00e9solu sur null
+error.unreachable.property=Cible inaccessible, ''{0}'' a renvoy\u00e9 null
+error.resolver.unhandled=ELResolver n''a pas trait\u00e9 le type : {0} avec la propri\u00e9t\u00e9 de ''{1}''
+error.resolver.unhandled.null=ELResolver ne peut pas traiter un objet de base null avec l''identificateur ''{0}''
+
+# ValueExpressionLiteral
+error.value.literal.write=ValueExpression est un litt\u00e9ral et n''est pas inscriptible : {0}
+
+# ExpressionFactoryImpl
+error.null=L'expression ne peut pas \u00eatre null
+error.mixed=L''expression ne peut pas contenir \u00e0 la fois ''#''{..}'' et ''$''{..}'' : {0}
+error.method=MethodExpression non valide : {0}
+error.method.nullParms=Les param\u00e8tres ne peuvent pas \u00eatre de type null
+error.value.expectedType=Le type attendu ne peut pas \u00eatre null
+
+# ExpressionBuilder
+error.parseFail=Echec d''analyse syntaxique de l''expression [{0}]
+
+# ValueSetVisitor
+error.syntax.set=Syntaxe interdite pour l'op\u00e9ration Set
+
+# ReflectionUtil
+error.method.notfound=M\u00e9thode non trouv\u00e9e : {0}.{1}({2})
+error.method.ambiguous=M\u00e9thode non ambig\u00fce introuvable : {0}.{1}({2})
+
+# ValidatingVisitor
+error.fnMapper.null=L'expression utilise des fonctions, mais aucun \u00e9l\u00e9ment FunctionMapper n'a \u00e9t\u00e9 fourni
+error.fnMapper.method=Fonction ''{0}'' introuvable
+error.fnMapper.paramcount=La fonction ''{0}'' indique {1} param\u00e8tres, mais {2} ont \u00e9t\u00e9 d\u00e9clar\u00e9s
+
+# ExpressionImpl
+error.context.null=ELContext \u00e9tait null
+
+# Parser
+error.funciton.tooManyMethodParameterSets=Plusieurs ensembles de param\u00e8tres sont sp\u00e9cifi\u00e9s pour la fonction [{0}]
+error.identifier.notjava=L''identificateur [{0}] n''est pas un identificateur Java valide comme l''exige la section 1.19 de la sp\u00e9cification EL (Identifier ::= Java language identifier). Cette v\u00e9rification peut \u00eatre d\u00e9sactiv\u00e9e par la d\u00e9finition de la propri\u00e9t\u00e9 syst\u00e8me org.apache.el.parser.SKIP_IDENTIFIER_CHECK sur true.
+error.lambda.tooManyMethodParameterSets=Il y a plus d'ensembles de param\u00e8tres de m\u00e9thode sp\u00e9cifi\u00e9s que d'expressions lambda imbriqu\u00e9es
+
+# Stream
+stream.compare.notComparable=Les \u00e9l\u00e9ments stream doivent impl\u00e9menter Comparable
+stream.optional.empty=Il est interdit d'appeler get() sur un \u00e9l\u00e9ment en option vide
+stream.optional.paramNotLambda=Le param\u00e8tre de la m\u00e9thode [{0}] doit \u00eatre une expression lambda

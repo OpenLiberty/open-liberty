@@ -1,0 +1,53 @@
+###############################################################################
+# Copyright (c) 2012, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO 
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKO1000 - CWWKO1099
+
+HANDLER_NOT_FOUND_ERROR=CWWKO1000E: \u4e0d\u5b58\u5728\u4e0e\u6240\u8bf7\u6c42 URL {0} \u5339\u914d\u7684\u5df2\u6ce8\u518c\u5904\u7406\u7a0b\u5e8f\u3002
+HANDLER_NOT_FOUND_ERROR.explanation=\u5df2\u5c1d\u8bd5\u8bbf\u95ee\u672a\u4e0e\u4efb\u4f55\u5df2\u6ce8\u518c\u5904\u7406\u7a0b\u5e8f\u5339\u914d\u7684 URL\u3002
+HANDLER_NOT_FOUND_ERROR.useraction=\u8bf7\u5c06\u8be5 URL \u66f4\u6b63\u4e3a\u4e0e\u5df2\u6ce8\u518c\u5904\u7406\u7a0b\u5e8f\u5339\u914d\u3002
+
+OSGI_SERVICE_ERROR=CWWKO1001E: OSGi \u670d\u52a1 {0} \u4e0d\u53ef\u7528\u3002
+OSGI_SERVICE_ERROR.explanation=\u629b\u51fa\u6b64\u5185\u90e8\u670d\u52a1\u5668\u9519\u8bef\u662f\u56e0\u4e3a\u6307\u5b9a\u7684\u670d\u52a1\u4e0d\u53ef\u7528\u3002
+OSGI_SERVICE_ERROR.useraction=\u8bf7\u4f7f\u7528 clean \u9009\u9879\u91cd\u65b0\u542f\u52a8\u670d\u52a1\u5668\u3002
+ 
+SSL_CONTEXT_NOT_AVAILABLE=CWWKO1002E: \u89e3\u6790\u96c6\u5408\u4f53\u6210\u5458\u7684 SSL \u4e0a\u4e0b\u6587\u65f6\u9047\u5230\u4e86\u4ee5\u4e0b\u5f02\u5e38\uff1a{0}
+SSL_CONTEXT_NOT_AVAILABLE.explanation=\u65e0\u6cd5\u4f7f\u7528\u8be5\u6210\u5458\u7684 SSL \u8bc1\u4e66\u6765\u521b\u5efa SSL \u4e0a\u4e0b\u6587\u3002
+SSL_CONTEXT_NOT_AVAILABLE.useraction=\u8bf7\u68c0\u67e5\u96c6\u5408\u4f53\u7684 SSL \u914d\u7f6e\uff0c\u5305\u62ec\u63a7\u5236\u5668\u548c\u76ee\u6807\u6210\u5458\u3002
+
+MISSING_PARAMETER=CWWKO1003E: https \u8bf7\u6c42\u4e2d\u7f3a\u5c11\u5fc5\u9700\u53c2\u6570 {0}\u3002
+MISSING_PARAMETER.explanation=\u8bf7\u6c42\u4e2d\u7f3a\u5c11\u6240\u6307\u5b9a\u5fc5\u9700\u53c2\u6570\u3002
+MISSING_PARAMETER.useraction=\u8bf7\u5728\u8bf7\u6c42\u4e2d\u6dfb\u52a0\u6240\u6307\u5b9a\u53c2\u6570\uff0c\u7136\u540e\u91cd\u8bd5\u8be5\u8bf7\u6c42\u3002
+
+MISSING_HEADER=CWWKO1004E: https \u8bf7\u6c42\u4e2d\u7f3a\u5c11\u6240\u9700\u5934 {0}\u3002
+MISSING_HEADER.explanation=\u8bf7\u6c42\u4e2d\u7f3a\u5c11\u6240\u6307\u5b9a\u5fc5\u9700\u5934\u3002
+MISSING_HEADER.useraction=\u8bf7\u5728\u8bf7\u6c42\u4e2d\u6dfb\u52a0\u6240\u6307\u5b9a\u5934\uff0c\u7136\u540e\u91cd\u8bd5\u8be5\u8bf7\u6c42\u3002
+
+INVALID_INPUT_VALUE=CWWKO1005E: \u540d\u79f0\u4e3a {0} \u7684\u8f93\u5165\u5b57\u6bb5\u5305\u542b\u4e0d\u6b63\u786e\u7684\u503c\u3002
+INVALID_INPUT_VALUE.explanation=\u8bf7\u6c42\u5305\u542b\u7684\u8f93\u5165\u5b57\u6bb5\u5e26\u6709\u4e0d\u6b63\u786e\u7684\u503c\u3002\u6b64\u8f93\u5165\u5b57\u6bb5\u4e0e\u7cfb\u7edf\u4e2d\u7684\u4efb\u4f55\u8bb0\u5f55\u90fd\u4e0d\u5339\u914d\u3002
+INVALID_INPUT_VALUE.useraction=\u8bf7\u66f4\u6b63\u8f93\u5165\u5b57\u6bb5\u7684\u503c\uff0c\u7136\u540e\u91cd\u8bd5\u8be5\u8bf7\u6c42\u3002
+
+UNSUPPORTED_MEDIA_TYPE=CWWKO1006E: \u8bf7\u6c42\u7684 MIME \u7c7b\u578b {0} \u4e0d\u53d7\u652f\u6301\u3002
+UNSUPPORTED_MEDIA_TYPE.explanation=\u670d\u52a1\u5668\u65e0\u6cd5\u4f7f\u7528\u8bf7\u6c42\u7684 MIME \u7c7b\u578b\u3002\u8be5 MIME \u7c7b\u578b\u4e0e\u671f\u671b\u7684\u4efb\u4f55 MIME \u7c7b\u578b\u90fd\u4e0d\u5339\u914d\u3002
+UNSUPPORTED_MEDIA_TYPE.useraction=\u8bf7\u66f4\u6b63\u5185\u5bb9\u7c7b\u578b\u7684\u503c\uff0c\u7136\u540e\u518d\u6b21\u53d1\u9001\u8be5\u8bf7\u6c42\u3002
+

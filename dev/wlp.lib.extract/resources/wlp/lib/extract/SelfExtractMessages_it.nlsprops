@@ -1,0 +1,281 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME wlp.lib.extract/resources/wlp/lib/extract/SelfExtractMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_ALL
+#
+#   All strings in the self-extract utility go through MessageFormat: 
+#    single quote must be coded as 2 consecutive single quotes ''.
+#
+
+
+helpAgreement=Visualizza l''accordo di licenza.
+helpInformation=Visualizza le informazioni sulla licenza.
+helpVerbose=Visualizza informazioni dettagliate durante l''estrazione dell''archivio.
+helpAcceptLicense=Indica automaticamente l''accettazione dei termini e delle condizioni della licenza.
+
+# The following messages are used to tell the user how to run the installer from the command line.
+#
+# usage
+#  
+#   java -jar wlp-liberty-developers-core.jar [options] [installLocation]
+#
+# options
+#    < list of options and descriptions goes here >
+usage=Uso
+installLocation=ubicazione di installazione
+options=Opzioni
+
+
+licenseOptionDescription=Scegliendo l''opzione "Accetto" di seguito, si accettano i termini dell''accordo di licenza e i termini non IBM, se applicabile. \
+Se non si accettano i termini, selezionare "Non accetto".
+
+licenseeAcknowledges=Il licenziatario riconosce e concorda che tutto il codice (tra cui gli scaricamenti di funzioni o di altro software) scaricato dal licenziatario in relazione al presente documento (il "Codice") verr\u00e0 utilizzato con una versione con licenza del programma IBM WebSphere Application Server Liberty (il "Programma"). \
+Inoltre, il licenziatario riconosce e concorda che l''utilizzo del codice \u00e8 soggetto ai termini degli accordi di licenza che regolano l''uso del Programma (ad esempio, International Program License Agreement, International License Agreement per Programmi privi di garanzia, International License Agreement per la Valutazione dei Programmi, International License Agreement per il release anticipato dei Programmi), incluse, se applicabile, le Informazioni relative alla licenza.
+
+extractPrompt=Directory di destinazione per i file di prodotto?
+extractSuccess=Tutti i file di prodotto sono stati correttamente estratti.
+extractLicenseSuccess=File di licenza applicati correttamente.
+licenseNotFound=Impossibile trovare i file dell''accordo di licenza.
+
+promptAgreement=Premere Invio per visualizzare ora i termini della licenza o ''x'' per uscire.
+promptInfo=Premere Invio per visualizzare ora ulteriori informazioni sulla licenza o ''x'' per uscire.
+
+#
+# {0} [1]
+# {1} [2]
+# 
+licensePrompt=Selezionare {0} Accetto o {1} Non accetto: 
+
+#
+# {0} IBM WebSphere Application Server Network Deployment Version 8.5 (EXAMPLE)
+# {1} International Program License Agreement
+#
+licenseStatement=Prima di poter utilizzare, estrarre o installare {0}, \u00e8 necessario accettare i termini di {1} e le informazioni aggiuntive sulla licenza. \
+Leggere attentamente i seguenti accordi di licenza.
+
+#
+# {0} --viewLicenseAgreement
+# 
+showAgreement=L''accordo di licenza \u00e8 visualizzabile separatamente utilizzando l''opzione {0}. 
+
+#
+# {0} --viewLicenseInfo
+# 
+showInformation=Ulteriori informazioni sulla licenza sono visualizzabili separatamente utilizzando l''opzione {0}.
+
+#
+# {0} --acceptLicense
+# 
+licenseAccepted=Trovato argomento {0}. Indica che sono stati accettati i termini dell''accordo di licenza.
+
+#
+# {0} c:/full/directory/path
+# 
+extractInstruction=Immettere la directory per i file di prodotto o lasciare il campo vuoto per accettare i valori predefiniti.
+extractLicenseInstruction=Specificare la directory dell''archivio di aggiornamento della licenza o premere Invio per accettare la directory predefinita.
+extractDefault=La directory di destinazione predefinita \u00e8 {0}
+extractDirectoryExists=Directory gi\u00e0 esistente: {0}
+extractDirectoryError=Impossibile creare la directory: {0}
+extractDirectory=Estrazione dei file in {0}
+
+#
+# {0} c:/full/directory/path/fileName
+# 
+extractFileError=Impossibile estrarre {0}
+chmodError=Impossibile modificare le autorizzazioni script: {0}.
+extractFileExists=Il file gi\u00e0 esiste: {0}
+
+#
+# {0} exception message text
+# 
+inputException=Eccezione di elaborazione input: {0}
+
+invalidInstall=La directory {0} non \u00e8 una directory di installazione Liberty valida.
+invalidVersion=L''installazione del prodotto specificato \u00e8 alla versione {0} e il componente aggiuntivo del prodotto si applica solo alla versione {1}.
+invalidEdition=L''edizione dell''installazione del prodotto specificato \u00e8 {0} e il componente aggiuntivo del prodotto si applica solo alle edizioni {1}.
+invalidLicense=L''installazione del prodotto specificato ha una licenza {0} e questo componente aggiuntivo del prodotto \u00e8 per un prodotto con la licenza {1}.
+invalidInstallType=L''installazione del prodotto specificato \u00e8 stata effettuata utilizzando IBM Installation Manager; utilizzare IBM Installation Manager per installare eventuali componenti aggiuntivi del prodotto.
+invalidOption=L''opzione {0} non \u00e8 riconosciuta.
+
+#
+# {0} name of the addon
+# {1} list of features that are missing
+# {2} the install directory on which we are trying to install
+#
+missingRequiredFeatures=Impossibile installare un componente aggiuntivo del prodotto {0}. L''installazione del prodotto specificato in {2} non dispone delle funzioni richieste: {1}. 
+
+allFeaturesAlreadyPresent=Non \u00e8 necessario installare il componente aggiuntivo {0} del prodotto. L''installazione del prodotto specificato in {2} gi\u00e0 dispone di tutte le funzioni del componente aggiuntivo: {1}.
+
+#
+# {0} the install directory
+# {1} the list of addons installed into that installed
+#
+addonsInstalled=L''installazione del prodotto in {0} dispone dei seguenti componenti aggiuntivi installati: {1}.
+
+#
+# {0} the install directory
+# {1} the list of supported features by that installation
+#
+featuresInstalled=L''installazione del prodotto in {0} supporta le seguenti funzioni: {1}.
+
+#
+# {0} name of the addon
+# {1} the features included in the addon
+#
+addonFeatures=Il componente aggiuntivo {0} di questo prodotto contiene le seguenti funzioni: {1}.
+
+helpMakeBackups=Prima di eseguire questo strumento, potrebbe essere necessario eseguire il backup di alcuni file. Attenersi alle istruzioni fornite nella sezione ''Directions to apply fix'' del file readme.txt.
+helpInstallLocation=L''ubicazione assoluta o relativa della directory di installazione del profilo Liberty.
+helpSupressInfo=L''output di messaggi del file JAR sar\u00e0 composto solo da messaggi di errore o conferma che la patch \u00e8 stata completata.
+
+# {0} is the Liberty install directory, according to the user.
+couldNotFindLiberty=Impossibile trovare la directory {0}.
+
+# {0} is the Liberty install directory.
+patchingStarted=Applicazione della fix alla directory di installazione Liberty in {0} adesso.
+patchingStartedWithFix=Applicazione della fix {1} alla directory di installazione Liberty in {0} adesso.
+
+patchingSuccessful=La fix \u00e8 stata applicata correttamente.
+patchingSuccessfulWithFix=La fix {1} \u00e8 stata applicata correttamente.
+
+patchingNotNeeded=La fix \u00e8 gi\u00e0 stata applicata alla directory di installazione Liberty in {0}.
+patchingNotNeededWithFix=La fix {1} \u00e8 gi\u00e0 stata applicata alla directory di installazione Liberty in {0}.
+
+patchingNotApplicable=Nessuna delle funzioni corrette dalla fix sono presenti nella directory di installazione Liberty in {0}.
+patchingNotApplicableWithFix=Nessuna delle funzioni corrette dalla fix {1} sono presenti nella directory di installazione Liberty in {0}.
+
+invalidPatch=Impossibile leggere il contenuto della fix. Interruzione della fix.
+invalidPatchWithFix=Impossibile leggere il contenuto della fix {0}. Interruzione della fix.
+
+# {0} directory location does not exist and cannot be created.
+noWriteAccess=Impossibile trovare o creare la directory {0}. Interruzione della fix.
+noWriteAccessWithFix=Impossibile trovare o creare la directory {0}. Interruzione dell''installazione della fix {1}.
+
+restoreBackupsNeeded=La fix non \u00e8 stata applicata correttamente ed \u00e8 necessario ripristinare la precedente installazione Liberty. Attenersi alle istruzioni fornite nella sezione ''Directions to remove fix'' del file readme.txt. Notare che alcuni dei file di cui \u00e8 stata richiesta l''eliminazione in tali istruzioni potrebbero non essere stati creati.
+restoreBackupsNeededWithFix=La fix {1} non \u00e8 stata applicata correttamente ed \u00e8 necessario ripristinare la precedente installazione Liberty. Attenersi alle istruzioni fornite nella sezione ''Directions to remove fix'' del file readme.txt. Notare che alcuni dei file di cui \u00e8 stata richiesta l''eliminazione in tali istruzioni potrebbero non essere stati creati.
+
+noRestoreNeeded=Anche se la fix non \u00e8 stata applicata correttamente, non \u00e8 necessario ripristinare o eliminare eventuali file.
+noRestoreNeededWithFix=Anche se la fix {1} non \u00e8 stata applicata correttamente, non \u00e8 necessario ripristinare o eliminare eventuali file.
+
+# {0} is a file's location
+replacingFile=Sostituzione del file in ''{0}''.
+
+patchFailed=Impossibile applicare correttamente la fix.
+
+# This message was written speculatively and is sadly not what we need. Use addOnNeedsIFixes instead.
+addonsNeedsFix=All''installazione del prodotto in {0} sono state applicate alcune fix che non sono incluse nel componente aggiuntivo {1} del prodotto. \u00c8 necessario applicare nuovamente tali fix poich\u00e9 il componente aggiuntivo del prodotto non le include. Le funzioni interessate sono: {2}
+
+# This message is terse because it was part of a 2000-character emergency translation. 
+addOnNeedsIFixes=L''installazione del prodotto in {0} \u00e8 stata estesa. Le seguenti fix devono essere applicate di nuovo {1}.  
+
+# This message is for the feature processing in the SelfExtraction code. 
+fileProcessingException=\u00c8 stata emessa la seguente eccezione durante l''elaborazione del file {0}: {1}
+
+#
+helpDownloadDependencies=Scaricare automaticamente eventuali dipendenze esterne.
+# {0} Space-separated list of URLs
+externalDepsInstruction=Questo package ha dipendenze sulle seguenti librerie esterne: {0}
+
+#
+# {0} [1]
+# {1} [2]
+externalDepsPrompt=Si desidera scaricare automaticamente tali dipendenze? Selezionare {0} S\u00ec (predefinito) o {1} No: 
+
+# {0} URL to download the file from, e.g. : http://url-for-download.com/path/to/file.jar
+# {1] Destination file to download the file to, eg c:/path/to/file/download-file.jar
+downloadFileError=Impossibile scaricare il file remoto da {0} a {1}. 
+downloadingFileNotice=Scaricamento del file remoto da {0} a {1}. 
+
+# {0} --verbose
+downloadingBeginNotice=Scaricamento in corso delle dipendenze esterne - altre informazioni sono disponibili se si utilizza l''opzione {0}.
+
+# {0} Exception description
+readDepsError=Errore durante la lettura del file di metadati delle dipendenze esterne, eccezione {0}
+
+archiveContainsNoLicense=Questo file di archivio non contiene una licenza.
+
+# {0} is a path to a directory
+targetUserDirectory=La directory utente di destinazione \u00e8 {0}
+
+#Used when the ifix installer subclass specified by the header in the fix manifest cannot be found/created/invoked.
+# {0} is the error detected, eg class not found, method not found, etc should only happen if the ifix is built incorrectly.
+invalidFixInstaller=Errore interno rilevato eseguendo il programma di installazione delle fix {0}. Impossibile applicare la fix.
+
+#Used if the fix is built missing the required header that specifies the subclass to handle fix installation.
+# {0} is the missing header name.
+missingFixInstallerHeader=Errore interno rilevato, manca l''intestazione della fix {0}. Impossibile applicare la fix.
+
+#Used if the specified fix installer does not meet the interface requirement.
+# {0} is the bad fix class name
+badFixInstaller=Errore interno rilevato, programma di installazione delle fix {0} non corretto. Impossibile applicare la fix.
+
+#Used when the lpmf file inside the fix is unabled to be parsed.
+# {0} is the error reported parsing the lpmf
+invalidMetaDataFile=Errore interno rilevato elaborando i metadati della fix: {0}. Impossibile applicare la fix.
+
+#Cannot create the output log file.
+# {0} is the filename of the log that had the error, {1} is the error.
+unableToCreateFixLog=Impossibile creare il file di log dell''installazione della fix {0} a causa di {1}. Impossibile applicare la fix. 
+
+#Used when the fix installer is unable to understand the content of a manifest contained in the fix.
+#{0} is the manifest with the issue, {1} is the error.
+invalidFixManifest=Rilevato un errore interno di elaborazione dei dati manifest della fix {0} : {1}. Impossibile applicare la fix.
+
+#The update to the fingerprint could fail.. but the fix will have been applied.
+unableToUpdateFingerprint=Impossibile aggiornare l''impronta digitale del servizio a causa di {0}, la fix \u00e8 stata applicata, utilizzare --clean durante l''avvio del server.
+
+#Updated not applicable message stating no files have been written.
+patchingNotApplicableNoChange=Nessun contenuto estratto perch\u00e9 non sono presenti funzioni corrispondenti nel runtime {0}
+
+# {0} is the message from the exception that caused us to be unable to create a parser for reading the XML files
+ifixutils.unable.to.create.parser=Si \u00e8 verificato un errore durante la lettura delle informazioni sugli iFix per l''installazione corrente. Il messaggio di eccezione \u00e8: {0}.
+# {0} is the path to a file that could not be parsed
+# {1} is the message from the exception that meant we couldn't read the file
+ifixutils.unable.to.read.file=Si \u00e8 verificata un''eccezione durante la lettura del file {0}. Il messaggio di eccezione \u00e8: {1}.
+
+# {0} is the manifest file path and {1} is the exception message
+exception.reading.manifest=Si \u00e8 verificata un''eccezione durante la lettura del file manifest {0}.  Eccezione: {1}
+
+# Platform utils messages
+ERROR_UNABLE_TO_SET_EXT_ATTR=Impossibile impostare gli attributi estesi {0} sui seguenti file: {1}
+ERROR_UNABLE_TO_SET_EXECUTE_PERMISSIONS=Impossibile impostare l''autorizzazione di esecuzione sui seguenti file: {0}
+ERROR_UNABLE_TO_GET_UMASK=Impossibile richiamare l''impostazione umask utilizzando il comando: {0}
+ERROR_INVALID_EXTATTR_PARMS=I parametri {0} non sono validi per il comando extattr.  I parametri validi per il comando extattr sono: [+alps] [-alps]
+ERROR_EXECUTING_COMMAND=Si \u00e8 verificato un errore durante l''esecuzione del comando: {0} Restituzione del comando con codice di uscita {1} e messaggio di errore: {2}
+ERROR_UNABLE_TO_LOCATE_COMMAND_EXE=Impossibile individuare l''eseguibile {0} dopo il controllo delle seguenti ubicazioni: {1}
+
+# java -jar messages 
+UNABLE_TO_FIND_PID=Impossibile ottenere l''ID del processo java -jar. Impossibile eliminare la directory di estrazione temporanea {1} finch\u00e9 non si termina manualmente il processo java -jar.
+
+UNABLE_TO_ATTACH_AGENT=Impossibile collegare l''agent Liberty Java. Questo server funzioner\u00e0, ma non potr\u00e0 eseguire funzioni che richiedono l''agent Java, come monitoraggio e traccia. Eccezione: {0}
+
+UNABLE_TO_FIND_TOOLS_JAR=Impossibile collegare l''agent Liberty Java perch\u00e9 questo server utilizza un JRE piuttosto che un Java SDK. Questo server funzioner\u00e0, ma non potr\u00e0 eseguire funzioni che richiedono l''agent Java, come monitoraggio e traccia.
+
+UNABLE_TO_FIND_JAVA_AGENT=Impossibile individuare l''agent Liberty Java. Questo server funzioner\u00e0, ma non potr\u00e0 eseguire funzioni che richiedono l''agent Java, come monitoraggio e traccia.
+
+# messages for LicenseSelfEctractor
+LICENSE_invalidInstall=La directory {0} non \u00e8 un''installazione Liberty valida. Specificare la directory root dell''installazione Liberty che si desidera aggiornare.
+LICENSE_invalidVersion=Impossibile aggiornare la licenza perch\u00e9 l''installazione del prodotto specificata \u00e8 alla versione {0}, ma la licenza pu\u00f2 essere aggiornata solo dalla versione {1}.
+LICENSE_invalidEdition=Impossibile aggiornare la licenza perch\u00e9 l''installazione del prodotto specificata \u00e8 un''edizione {0}, ma la licenza pu\u00f2 aggiornare solo le seguenti edizioni: {1}
+LICENSE_invalidLicense=Impossibile aggiornare la licenza perch\u00e9 l''installazione del prodotto specificata ha una licenza {0}, ma la licenza pu\u00f2 aggiornare solo prodotti con una licenza {1}.
+LICENSE_invalidInstallType=Impossibile aggiornare la licenza perch\u00e9 l''installazione del prodotto specificato \u00e8 stata effettuata utilizzando IBM Installation Manager. Utilizzare IBM Installation Manager per aggiornare l''installazione.
+
+# new messages for license upgrade and downgrade
+LICENSE_replace_invalidVersion=Impossibile applicare la licenza perch\u00e9 l''installazione del prodotto specificata \u00e8 alla versione {0}, ma la licenza pu\u00f2 essere applicata solo dalla versione {1}.
+LICENSE_replace_invalidInstallType=Impossibile applicare la licenza perch\u00e9 l''installazione del prodotto specificato \u00e8 stata effettuata utilizzando IBM Installation Manager. \
+Utilizzare IBM Installation Manager per aggiornare l''installazione.
+
+LICENSE_replace_invalidEditonFeatures=Le seguenti funzioni non si applicano all''edizione {0} e devono essere disinstallate prima dell''applicazione della licenza: {1}\n \n\
+Utilizzare il seguente comando per disinstallare queste funzioni prima di applicare la licenza per l''edizione {2}: {3}
+
+LICENSE_downgrade_block_8557_low=Questa licenza pu\u00f2 essere applicata solo a {0} o superiore. L''installazione corrente \u00e8 a {1}. Scaricare e aggiornare l''ultimo livello e riapplicare la licenza.

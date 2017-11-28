@@ -1,0 +1,121 @@
+###############################################################################
+# Copyright (c) 2011, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.logging/resources/com/ibm/ws/logging/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# Messages in the range TRAS3000 to 3199 are reserved for this messages file.
+# The list of prefixes and the range of messages in use (or "reserved") are shown in 
+# http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+# -------------------------------------------------------------------------------------------------
+
+FATAL=V\u00c9GZETES
+ERROR=HIBA
+AUDIT=FEL\u00dcLVIZSG\u00c1LAT
+EVENT=ESEM\u00c9NY
+DETAIL=R\u00c9SZLETEK
+
+## Shared with tWAS
+
+# Informational message telling the user the trace state has changed.
+MSG_TRACE_STATE_CHANGED=TRAS0018I: A nyomk\u00f6vet\u00e9s \u00e1llapota megv\u00e1ltozott. A nyomk\u00f6vet\u00e9s \u00faj \u00e1llapota: {0}.
+MSG_TRACE_STATE_CHANGED.explanation=A nyomk\u00f6vet\u00e9s jelenlegi \u00e1llapot\u00e1nak megv\u00e1ltoztat\u00e1s\u00e1ra ir\u00e1nyul\u00f3 k\u00e9relem meg\u00e9rkezett \u00e9s feldolgoz\u00e1sra ker\u00fclt.
+MSG_TRACE_STATE_CHANGED.useraction=Amennyiben a nyomk\u00f6vet\u00e9s jelenlegi \u00e1llapota nem a k\u00edv\u00e1nt \u00e1llapot, v\u00e1ltoztassa azt a k\u00edv\u00e1nt \u00e1llapotra.
+
+#PK509567
+# Warning message telling the user that the rename operation filed while rolling a log file over.
+MSG_ROLLOVER_RENAME_FAILED=TRAS0031W: A napl\u00f3f\u00e1jl v\u00e1lt\u00e1s alatt a(z) {0} nev\u0171 f\u00e1jl nem neveztet\u0151 {1} nev\u0171re. A rendszer megpr\u00f3b\u00e1lja \u00e1tm\u00e1solni a f\u00e1jl tartalm\u00e1t.
+MSG_ROLLOVER_RENAME_FAILED.explanation=A jelzett f\u00e1jl \u00e1tnevez\u00e9se nem siker\u00fclt.  A legval\u00f3sz\u00edn\u0171bb ok az lehet, hogy a napl\u00f3f\u00e1jlt m\u00e1r m\u00e1sik folyamat vagy sz\u00e1l haszn\u00e1lja. A WebSphere megpr\u00f3b\u00e1lja befejezni a napl\u00f3v\u00e1lt\u00e1si m\u0171veletet a napl\u00f3f\u00e1jl tartalm\u00e1nak \u00e1tm\u00e1sol\u00e1s\u00e1val - ez a folyamat lassabb \u00e9s a folyamat sor\u00e1n minden napl\u00f3z\u00e1st megk\u00eds\u00e9rl\u0151 sz\u00e1l meg\u00e1ll\u00edt\u00e1sra ker\u00fcl.
+MSG_ROLLOVER_RENAME_FAILED.useraction=\u00c1llap\u00edtsa meg az \u00e1tnevez\u00e9s meghi\u00fasul\u00e1s\u00e1nak ok\u00e1t \u00e9s pr\u00f3b\u00e1lja meg elh\u00e1r\u00edtani azt - ez az adott napl\u00f3f\u00e1jlhoz hozz\u00e1f\u00e9r\u0151 m\u00e1s folyamatok le\u00e1ll\u00edt\u00e1s\u00e1t is jelentheti.
+
+## new for lWAS
+INSTRUMENTATION_SERVICE_UNAVAILABLE=TRAS0032W: A r\u00e9szletes met\u00f3dus nyomk\u00f6vet\u00e9s fut\u00e1si idej\u0171 besz\u00far\u00e1sa nem el\u00e9rhet\u0151.
+INSTRUMENTATION_SERVICE_UNAVAILABLE.explanation=A met\u00f3dus szint\u0171 nyomk\u00f6vet\u00e9s hozz\u00e1ad\u00e1s\u00e1\u00e9rt felel\u0151 oszt\u00e1lyf\u00e1jl \u00e1talak\u00edt\u00f3 nem telep\u00edthet\u0151, mert nem szerezhet\u0151 be egy megfelel\u0151 java.lang.instrument.Instrumentation referencia.
+INSTRUMENTATION_SERVICE_UNAVAILABLE.useraction=Ind\u00edtsa el a kiszolg\u00e1l\u00f3t a megfelel\u0151 -javaagent parancssori argumentummal.
+
+## Should not be used anymore because of issue 508
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS=TRAS0033E: A r\u00e9szletes met\u00f3dus nyomk\u00f6vet\u00e9s fut\u00e1si idej\u0171 besz\u00far\u00e1sa a(z) {0} oszt\u00e1ly eset\u00e9n {1} kiv\u00e9tellel meghi\u00fasult.
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS.explanation=Hiba t\u00f6rt\u00e9nt a r\u00e9szletes met\u00f3dus nyomk\u00f6vet\u00e9s besz\u00far\u00e1sakor a megadott oszt\u00e1lyba.
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS.useraction=CMSG0002 
+
+## new for lWAS
+TRACE_STRING_BAD_LEVEL=TRAS0034W: A(z) {0} nyomk\u00f6vet\u00e9si szint \u00e9rv\u00e9nytelen a(z) {1} meghat\u00e1roz\u00e1shoz. A nyomk\u00f6vet\u00e9si meghat\u00e1roz\u00e1s figyelmen k\u00edv\u00fcl marad.
+TRACE_STRING_BAD_LEVEL.explanation=A megadott csoport-, oszt\u00e1ly- vagy csomagn\u00e9vhez konfigur\u00e1lt nyomk\u00f6vet\u00e9si szint nem ismerhet\u0151 fel, a n\u00e9vhez tartoz\u00f3 nyomk\u00f6vet\u00e9si be\u00e1ll\u00edt\u00e1s figyelmen k\u00edv\u00fcl marad.
+TRACE_STRING_BAD_LEVEL.useraction=Vizsg\u00e1lja meg a nyomk\u00f6vet\u00e9si konfigur\u00e1ci\u00f3t, \u00e9s jav\u00edtsa a szintet egy felismerhet\u0151 \u00e9rt\u00e9kre. Az \u00e9rv\u00e9nyes nyomk\u00f6vet\u00e9si szintek a dokument\u00e1ci\u00f3ban tal\u00e1lhat\u00f3k, \u00e9s a k\u00f6vetkez\u0151ket tartalmazz\u00e1k: 'all', 'info' \u00e9s 'debug'.
+
+## new for lWAS
+TRACE_STRING_BAD_ACTION=TRAS0035W: A(z) {1} meghat\u00e1roz\u00e1shoz megadott {0} nyomk\u00f6vet\u00e9si be\u00e1ll\u00edt\u00e1s \u00e9rt\u00e9k nem ismerhet\u0151 fel. A nyomk\u00f6vet\u00e9si meghat\u00e1roz\u00e1s figyelmen k\u00edv\u00fcl marad.
+TRACE_STRING_BAD_ACTION.explanation=A megadott csoport-, oszt\u00e1ly- vagy csomagn\u00e9vhez konfigur\u00e1lt nyomk\u00f6vet\u00e9si be\u00e1ll\u00edt\u00e1s \u00e9rt\u00e9k nem ismerhet\u0151 fel, a n\u00e9vhez tartoz\u00f3 nyomk\u00f6vet\u00e9si be\u00e1ll\u00edt\u00e1s figyelmen k\u00edv\u00fcl marad.
+TRACE_STRING_BAD_ACTION.useraction=Nincs teend\u0151, kiv\u00e9ve, ha a sz\u00e1nd\u00e9kolt nyomk\u00f6vet\u00e9si be\u00e1ll\u00edt\u00e1s a 'disabled' (letiltott). Ebben az esetben vizsg\u00e1lja meg a nyomk\u00f6vet\u00e9s konfigur\u00e1ci\u00f3j\u00e1t \u00e9s jav\u00edtsa a be\u00e1ll\u00edt\u00e1st 'disabled' \u00e9rt\u00e9kre.
+
+## new for lWAS
+UNABLE_TO_CREATE_RESOURCE=TRAS0036E: A rendszer a k\u00f6vetkez\u0151 kiv\u00e9tel miatt nem tudta l\u00e9trehozni a(z) {0} f\u00e1jlt: {1}
+UNABLE_TO_CREATE_RESOURCE.explanation=A megadott er\u0151forr\u00e1s megnyit\u00e1s\u00e1ra tett k\u00eds\u00e9rlet meghi\u00fasult. A kiv\u00e9tel jelzi a hiba kiv\u00e1lt\u00f3 ok\u00e1t.
+UNABLE_TO_CREATE_RESOURCE.useraction=Vizsg\u00e1lja meg a kiv\u00e9telt a kiv\u00e1lt\u00f3 ok meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott f\u00e1jln\u00e9v egy \u00e9rv\u00e9nyes f\u00e1jln\u00e9v. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1skiszolg\u00e1l\u00f3 futtat\u00f3k\u00f6rnyezete az er\u0151forr\u00e1shoz rendelkezik \u00edr\u00e1si enged\u00e9llyel, \u00e9s a lemez nincs tele. Ha ez nem oldja fel a probl\u00e9m\u00e1t, akkor tekintse meg a hibafelder\u00edt\u00e9ssel foglalkoz\u00f3 inform\u00e1ci\u00f3kat a WebSphere Application Server t\u00e1mogat\u00e1si webhely\u00e9n: http://www.ibm.com/software/webservers/appserv/was/support.
+
+## new for lWAS
+UNABLE_TO_CREATE_RESOURCE_NOEX=TRAS0037E: A rendszer nem tudta l\u00e9trehozni az \u00faj f\u00e1jlt: {0}
+UNABLE_TO_CREATE_RESOURCE_NOEX.explanation=Egy alkalmaz\u00e1skiszolg\u00e1l\u00f3 \u00f6sszetev\u0151 egy kiv\u00e9tel miatt nem tudta v\u00e9grehajtani a m\u0171veletet egy sz\u00fcks\u00e9ges er\u0151forr\u00e1son.
+UNABLE_TO_CREATE_RESOURCE_NOEX.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott f\u00e1jln\u00e9v egy \u00e9rv\u00e9nyes f\u00e1jln\u00e9v. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1skiszolg\u00e1l\u00f3 futtat\u00f3k\u00f6rnyezete az er\u0151forr\u00e1shoz rendelkezik \u00edr\u00e1si enged\u00e9llyel, \u00e9s a lemez nincs tele. Ha ez nem oldja fel a probl\u00e9m\u00e1t, akkor tekintse meg a hibafelder\u00edt\u00e9ssel foglalkoz\u00f3 inform\u00e1ci\u00f3kat a WebSphere Application Server t\u00e1mogat\u00e1si webhely\u00e9n: http://www.ibm.com/software/webservers/appserv/was/support.
+
+## new for lWAS
+UNABLE_TO_DELETE_RESOURCE_NOEX=TRAS0038E: A rendszer nem tudta t\u00f6r\u00f6lni a(z) {0} f\u00e1jlt.
+UNABLE_TO_DELETE_RESOURCE_NOEX.explanation=Egy alkalmaz\u00e1skiszolg\u00e1l\u00f3 \u00f6sszetev\u0151 egy kiv\u00e9tel miatt nem tudta v\u00e9grehajtani a m\u0171veletet egy sz\u00fcks\u00e9ges er\u0151forr\u00e1son.
+UNABLE_TO_DELETE_RESOURCE_NOEX.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott f\u00e1jln\u00e9v egy \u00e9rv\u00e9nyes f\u00e1jln\u00e9v. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1skiszolg\u00e1l\u00f3 futtat\u00f3k\u00f6rnyezete az er\u0151forr\u00e1shoz rendelkezik \u00edr\u00e1si enged\u00e9llyel, \u00e9s a lemez nincs tele. Ha ez nem oldja fel a probl\u00e9m\u00e1t, akkor tekintse meg a hibafelder\u00edt\u00e9ssel foglalkoz\u00f3 inform\u00e1ci\u00f3kat a WebSphere Application Server t\u00e1mogat\u00e1si webhely\u00e9n: http://www.ibm.com/software/webservers/appserv/was/support.
+
+## new for lWAS
+UNABLE_TO_DELETE_RESOURCE=TRAS0039E: A rendszer a k\u00f6vetkez\u0151 kiv\u00e9tel miatt nem tudta t\u00f6r\u00f6lni a(z) {0} f\u00e1jlt: {1}
+UNABLE_TO_DELETE_RESOURCE.explanation=A megadott er\u0151forr\u00e1s t\u00f6rl\u00e9s\u00e9re tett k\u00eds\u00e9rlet meghi\u00fasult. A kiv\u00e9tel jelzi a hiba kiv\u00e1lt\u00f3 ok\u00e1t.
+UNABLE_TO_DELETE_RESOURCE.useraction=Vizsg\u00e1lja meg a kiv\u00e9telt a kiv\u00e1lt\u00f3 ok meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1skiszolg\u00e1l\u00f3 futtat\u00f3k\u00f6rnyezete az er\u0151forr\u00e1s k\u00f6nyvt\u00e1r\u00e1ra vonatkoz\u00f3an rendelkezik \u00edr\u00e1si enged\u00e9llyel. Ha ez nem oldja fel a probl\u00e9m\u00e1t, akkor tekintse meg a hibafelder\u00edt\u00e9ssel foglalkoz\u00f3 inform\u00e1ci\u00f3kat a WebSphere Application Server t\u00e1mogat\u00e1si webhely\u00e9n: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# common 
+UNKNOWN_TRACE_SPEC=TRAS0040I: A nyomk\u00f6vet\u00e9si \u00e1llapot a k\u00f6vetkez\u0151 meghat\u00e1roz\u00e1sokat tartalmazza, amelyek nem felelnek meg a kiszolg\u00e1l\u00f3n pillanatnyilag regisztr\u00e1lt egyik napl\u00f3z\u00f3nak sem: {0}. Ha a(z) {0} nyomk\u00f6vet\u00e9si specifik\u00e1ci\u00f3k \u00e9r\u00e9vnyesek, akkor hagyja figyelmen k\u00edv\u00fcl ezt az \u00fczenetet.
+UNKNOWN_TRACE_SPEC.explanation=A napl\u00f3z\u00f3k az \u0151ket l\u00e9trehoz\u00f3 k\u00f3d els\u0151 haszn\u00e1latakor ker\u00fclnek bejegyz\u00e9sre a kiszolg\u00e1l\u00f3n. A rendszer azt \u00e9szlelte, hogy bizonyos nyomk\u00f6vet\u00e9s meghat\u00e1roz\u00e1sok olyan napl\u00f3z\u00f3kra vonatkoznak, amelyek m\u00e9g nincsenek regisztr\u00e1lva a kiszolg\u00e1l\u00f3n. A be\u00e1ll\u00edtott nyomk\u00f6vet\u00e9s meghat\u00e1roz\u00e1sok pillanatnyilag m\u00e9g nem regisztr\u00e1lt napl\u00f3z\u00f3kra lehetnek \u00e9rv\u00e9nyesek, vagy hib\u00e1san lettek be\u00edrva. Ez az ellen\u0151rz\u00e9s minden alkalommal v\u00e9grehajt\u00e1sra ker\u00fcl, amikor a nyomk\u00f6vet\u00e9s meghat\u00e1roz\u00e1sa friss\u00fcl a fut\u00f3 kiszolg\u00e1l\u00f3n.
+UNKNOWN_TRACE_SPEC.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a nyomk\u00f6vet\u00e9s meghat\u00e1roz\u00e1s helyesen lett be\u00e1ll\u00edtva. Ha nincsenek hib\u00e1k a nyomk\u00f6vet\u00e9s meghat\u00e1roz\u00e1s karaktersorozat\u00e1ban, akkor semmit sem kell tennie. 
+
+## Should not be used anymore because of issue 508
+MESSAGES_CONFIGURED_HIDDEN=TRAS0041I: A k\u00f6vetkez\u0151 \u00fczenetek rejtettek a console.log \u00e9s a messages.log f\u00e1jlok el\u0151l: {0}
+MESSAGES_CONFIGURED_HIDDEN.explanation=Az \u00fczenetek \u00fagy vannak be\u00e1ll\u00edtva, hogy ne legyenek be\u00edrva a console.log \u00e9s messages.log f\u00e1jlokba. A trace.log f\u00e1jlba azonban ezek is beker\u00fclnek. 
+MESSAGES_CONFIGURED_HIDDEN.useraction=Nem kell semmit tennie
+
+MSG_ROUTER_UPDATED=TRAS0042I: A(z) {0} \u00fczenettov\u00e1bb\u00edt\u00e1si csoport a k\u00f6vetkez\u0151 \u00fczeneteket tartalmazza: {1}
+MSG_ROUTER_UPDATED.explanation=A megadott \u00fczenettov\u00e1bb\u00edt\u00e1si csoporthoz be\u00e1ll\u00edtott \u00fczenetazonos\u00edt\u00f3k megv\u00e1ltoztak. Az \u00fczenettov\u00e1bb\u00edt\u00e1si csoporthoz jelenleg tartoz\u00f3 \u00fczenetazonos\u00edt\u00f3k ker\u00fclnek felsorol\u00e1sra.
+MSG_ROUTER_UPDATED.useraction=Nincs teend\u0151. 
+
+## use new id range
+
+# updated the old TRAS0033E to TRAS3000E
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2=TRAS3000E: A r\u00e9szletes met\u00f3dus nyomk\u00f6vet\u00e9s fut\u00e1si idej\u0171 besz\u00far\u00e1sa a(z) {0} oszt\u00e1ly eset\u00e9n {1} kiv\u00e9tellel meghi\u00fasult
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2.explanation=Hiba t\u00f6rt\u00e9nt a r\u00e9szletes met\u00f3dus nyomk\u00f6vet\u00e9s besz\u00far\u00e1sakor a megadott oszt\u00e1lyba.
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support. 
+
+# updated the old TRAS0041I to TRAS3001I
+MESSAGES_CONFIGURED_HIDDEN_2=TRAS3001I: A k\u00f6vetkez\u0151 \u00fczenetek rejtettek a console.log \u00e9s a messages.log f\u00e1jlok el\u0151l: {0}
+MESSAGES_CONFIGURED_HIDDEN_2.explanation=Az \u00fczenetek \u00fagy vannak be\u00e1ll\u00edtva, hogy ne legyenek be\u00edrva a console.log \u00e9s messages.log f\u00e1jlokba. Ezek a trace.log f\u00e1jlba ker\u00fclnek. 
+MESSAGES_CONFIGURED_HIDDEN_2.useraction=Nem kell semmit tennie
+
+# Note: no 9999 message kept here because saving footprint space is more important
+
+# End of file

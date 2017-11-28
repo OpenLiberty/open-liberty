@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.mp.jwt.cdi/resources/com/ibm/ws/security/mp/jwt/cdi/resources/JwtCDI.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Microprofile JWT CDI
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS5600 - CWWKS5649
+
+# Do not translate Claim.
+MPJWT_CDI_INVALID_INJECTION_TYPE=CWWKS5600E: Impossible de d\u00e9terminer le type de revendication \u00e0 injecter. Le type du point d''injection est {0}.
+MPJWT_CDI_INVALID_INJECTION_TYPE.explanation=Le type du point d'injection annot\u00e9 avec le qualificateur Claim n'est pas valide.
+MPJWT_CDI_INVALID_INJECTION_TYPE.useraction=V\u00e9rifiez que le point d'injection a un type valide pour la revendication que vous souhaitez injecter.
+
+MPJWT_CDI_CANNOT_RESOLVE_INJECTION_POINT=CWWKS5601E: La d\u00e9pendance du point d''injection {0} n''est pas r\u00e9solue, ce qui g\u00e9n\u00e8re l''erreur {1}.
+MPJWT_CDI_CANNOT_RESOLVE_INJECTION_POINT.explanation=Une revendication inject\u00e9e n'a pas \u00e9t\u00e9 r\u00e9solue.
+MPJWT_CDI_CANNOT_RESOLVE_INJECTION_POINT.useraction=V\u00e9rifiez le message du serveur et les journaux de l'outil de diagnostic de premier niveau (FFDC) pour d\u00e9terminer la cause.
+
+# Do not translate Claim, value, and standard. The value and standard are members of the Claim annotation.
+MPJWT_CDI_CONFLICTING_CLAIM_NAMES=CWWKS5602E: Le qualificateur Claim du point d''injection {0} poss\u00e8de des valeurs non coh\u00e9rentes pour l''\u00e9l\u00e9ment valeur et l''\u00e9l\u00e9ment standard. L''\u00e9l\u00e9ment valeur a {1} alors que l''\u00e9l\u00e9ment standard a {2}.
+MPJWT_CDI_CONFLICTING_CLAIM_NAMES.explanation=Le point d'injection annot\u00e9 avec le qualificateur Claim poss\u00e8de des \u00e9l\u00e9ments qui entrent en conflit.
+MPJWT_CDI_CONFLICTING_CLAIM_NAMES.useraction=V\u00e9rifiez que le point d'injection poss\u00e8de un qualificateur Claim valide pour la revendication que vous souhaitez injecter.
+
+# Do not translate ApplicationScoped, SessionScoped, RequestScoped, and Claim.
+MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE=CWWKS5603E: La revendication ne peut pas \u00eatre inject\u00e9e dans le point d''injection {0} pour les port\u00e9es ApplicationScoped ou SessionScoped.
+MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.explanation=Le point d'injection annot\u00e9 avec le qualificateur Claim pour un type brut doit appartenir \u00e0 une classe annot\u00e9e avec l'annotation de port\u00e9e RequestScoped.
+MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.useraction=V\u00e9rifiez que le point d'injection est membre d'une classe dans la port\u00e9e RequestScoped pour la revendication que vous souhaitez injecter.

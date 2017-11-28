@@ -17,11 +17,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
@@ -64,8 +65,8 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 public class JAXRSClientImpl extends ClientImpl {
     private static final TraceComponent tc = Tr.register(JAXRSClientImpl.class);
 
-    protected boolean closed;
-    protected Set<WebClient> baseClients = new HashSet<>();
+    protected final AtomicBoolean closed = new AtomicBoolean(false);
+    protected Set<WebClient> baseClients = Collections.newSetFromMap(new WeakHashMap<WebClient, Boolean>());
     protected boolean hasSSLConfigInfo = false;
     private TLSConfiguration secConfig = null;
     //Defect 202957 move busCache from ClientMetaData to JAXRSClientImpl
@@ -150,6 +151,7 @@ public class JAXRSClientImpl extends ClientImpl {
      */
     @Override
     public WebTarget target(UriBuilder builder) {
+        checkClosed();
         WebTargetImpl wt = (WebTargetImpl) super.target(builder);
 
         //construct our own webclient
@@ -202,8 +204,10 @@ public class JAXRSClientImpl extends ClientImpl {
 
         ccfg.setBus(bus);
 
-        //add the webclient to managed set
-        this.baseClients.add(targetClient);
+        //add the root WebTarget to managed set so we can close it's associated WebClient
+        synchronized (baseClients) {
+            baseClients.add(targetClient);
+        }
 
         return new WebTargetImpl(wt.getUriBuilder(), wt.getConfiguration(), targetClient);
     }
@@ -213,50 +217,33 @@ public class JAXRSClientImpl extends ClientImpl {
      */
     @Override
     public void close() {
-        super.close();
-        for (WebClient wc : baseClients) {
-//defec 202957 don't need bus counter any more, since the bus is not shared between jaxrs client any more
-            //if one webclient is closed, check if its bus is not used by any other webclient, and reduce counter
-//            String id = JaxRSClientUtil.convertURItoBusId(wc.getBaseURI().toString());
-//            synchronized (busCache) {
-//                LibertyApplicationBus bus = busCache.get(id);
-//                if (bus != null) {
-//                    AtomicInteger ai = bus.getBusCounter();
-//                    if (ai != null) {
-//                        //if no webclient uses the bus at this moment, then remove & release it
-//                        if (ai.decrementAndGet() == 0) {
-//                            busCache.remove(id);
-//                            //release bus
-//                            bus.shutdown(false);
-//                        }
-//                    }
-//                }
-//
-//            }
-
-            //close webclient
-            wc.close();
-
-        }
-
-        String moduleName = getModuleName();
-        synchronized (clientsPerModule) {
-            List<JAXRSClientImpl> clients = clientsPerModule.get(moduleName);
-
-            if (clients != null) { // the only way this isn't null is if the same client was closed twice
-                clients.remove(this);
-                if (clients.isEmpty()) {
-                    for (String id : busCache.keySet()) {
-                        if (id.startsWith(moduleName) || id.startsWith("unknown:")) {
-                            busCache.remove(id).shutdown(false);
-                        }
-                    }
-                    clientsPerModule.remove(moduleName);
+        if (closed.compareAndSet(false, true)) {
+            super.close();
+            synchronized (baseClients) {
+                for (WebClient wc : baseClients) {
+                    wc.close();
                 }
             }
-        }
 
-        baseClients = null;
+            String moduleName = getModuleName();
+            synchronized (clientsPerModule) {
+                List<JAXRSClientImpl> clients = clientsPerModule.get(moduleName);
+
+                if (clients != null) { // the only way this isn't null is if the same client was closed twice
+                    clients.remove(this);
+                    if (clients.isEmpty()) {
+                        for (String id : busCache.keySet()) {
+                            if (id.startsWith(moduleName) || id.startsWith("unknown:")) {
+                                busCache.remove(id).shutdown(false);
+                            }
+                        }
+                        clientsPerModule.remove(moduleName);
+                    }
+                }
+            }
+
+            baseClients = null;
+        }
     }
 
     /**
@@ -268,6 +255,7 @@ public class JAXRSClientImpl extends ClientImpl {
 
     @Override
     public Client property(String name, @Sensitive Object value) {
+        checkClosed();
         // need to convert proxy password to ProtectedString
         if (JAXRSClientConstants.PROXY_PASSWORD.equals(name) && value != null &&
             !(value instanceof ProtectedString)) {
@@ -285,5 +273,11 @@ public class JAXRSClientImpl extends ClientImpl {
             }
         }
         return "unknown:";
+    }
+
+    private void checkClosed() {
+        if (closed.get()) {
+            throw new IllegalStateException("client is closed");
+        }
     }
 }

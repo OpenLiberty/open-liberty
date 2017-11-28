@@ -1,0 +1,141 @@
+###############################################################################
+# Copyright (c) 2011, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.classloading/resources/com/ibm/ws/classloading/internal/resources/ClassLoadingServiceMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKL
+#COMPONENTNAMEFOR CWWKL Class Loading Service
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+cls.class.file.not.found=CWWKL0001E: Sistemul nu poate g\u0103si clasa [{0}] ca resurs\u0103 [{1}].
+cls.class.file.not.found.explanation=A e\u015fuat o \u00eencercare de a \u00eenc\u0103rca fi\u015fierul clasei ca resurs\u0103 pentru o aplica\u0163ie.
+cls.class.file.not.found.useraction=Asigura\u0163i-v\u0103 c\u0103 clasa este disponibil\u0103 pentru aplica\u0163ie.
+
+cls.class.file.not.readable=CWWKL0002E: Sistemul nu poate citi clasa [{0}] ca resurs\u0103 [{1}].
+cls.class.file.not.readable.explanation=A e\u015fuat o \u00eencercare de a citi fi\u015fierul clasei ca resurs\u0103 pentru o aplica\u0163ie.
+cls.class.file.not.readable.useraction=Verifica\u0163i integritatea sistemului de fi\u015fiere. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei pe pagina de suport WebSphere Application Server la http://www.ibm.com/software/webservers/appserv/was/support/
+
+cls.gateway.not.resolvable=CWWKL0003E: Sistemul nu poate crea un \u00eenc\u0103rc\u0103tor de clas\u0103pentru aplica\u0163ia [{0}] la versiunea [{1}].
+cls.gateway.not.resolvable.explanation=Sistemul a \u00eencercat s\u0103 creeze un \u00eenc\u0103rc\u0103tor clas\u0103 de aplica\u0163ie, dar serverul nu furnizeaz\u0103 pachetele Java necesare. 
+cls.gateway.not.resolvable.useraction=Verifica\u0163i c\u0103 serverul este configurat cu toate caracteristicile necesare pentru a suporta aceast\u0103 aplica\u0163ie.
+
+cls.library.id.missing=CWWKL0004E: Sistemul nu a putut crea o bibliotec\u0103 partajat\u0103.
+cls.library.id.missing.explanation=Pentru a defini o bibliotec\u0103 partajat\u0103 \u00een configura\u0163ia serverului, trebuie s\u0103 specifica\u0163i un atribut ID. 
+cls.library.id.missing.useraction=Edita\u0163i configura\u0163ia serverului \u015fi ad\u0103uga\u0163i un atribut ID elementului bibliotec\u0103.
+
+cls.library.missing=CWWKL0005E: Sistemul nupoate localiza o bibliotec\u0103 partajat\u0103 cu ID-ul [{0}].
+cls.library.missing.explanation=Pentru a referen\u0163ia o bibliotec\u0103 \u00een configura\u0163ia serverului, trebuie s\u0103 specifica\u0163i ID-ul unei biblioteci existente. 
+cls.library.missing.useraction=Edita\u0163i configura\u0163ia serverului \u015fi asigura\u0163i-v\u0103 c\u0103 biblioteca referen\u0163iat\u0103 a fost definit\u0103 \u015fi c\u0103 ID-ul este corect.
+
+cls.library.id.invalid=CWWKL0006E: O bibliotec\u0103 partajat\u0103 are un ID invalid [{0}] datorit\u0103 erorii [{1}] 
+cls.library.id.invalid.explanation=Pentru a specifica ID-ul pentru o bibliotec\u0103 partajat\u0103 \u00een configura\u0163ia serverului, trebuie s\u0103 urma\u0163i conven\u0163iile numirii atributelor.
+cls.library.id.invalid.useraction=Edita\u0163i configura\u0163ia serverului \u015fi modifica\u0163i atributul ID al elementului bibliotec\u0103.
+
+cls.fileset.missing=CWWKL0007E: Biblioteca partajat\u0103 [{0}] are ca referin\u0163\u0103 un fileset [{1}] care nu exist\u0103.
+cls.fileset.missing.explanation=Pentru a referen\u0163ia un fileset dintr-o bibliotec\u0103 partajat\u0103 \u00een configura\u0163ia serverului, trebuie s\u0103 specifica\u0163i ID-ul unui fileset existent.
+cls.fileset.missing.useraction=Verifica\u0163i configura\u0163ia serverului pentru elementul bibliotec\u0103 \u015fi asigura\u0163i-v\u0103 c\u0103 fileset-ul referen\u0163iat exist\u0103.
+
+# {0} - application identifier
+# {1} - application classloader allowedApiTypes
+# {2} - library identifier
+# {3} - library allowedApiTypes
+cls.class.space.conflict=CWWKL0008W: Aplica\u0163ia [{0}] este incompatibil\u0103 cu \u00eenc\u0103rc\u0103torul de clase comun pentru biblioteca [{2}], deoarece au configura\u0163ii de vizibilitate API neunitare. Biblioteca [{2}] este configurat\u0103 cu [{3}], iar aplica\u0163ia [{0}] este configurat\u0103 cu [{1}].
+cls.class.space.conflict.explanation=O aplica\u0163ie se refer\u0103 la o bibliotec\u0103 printr-un \u00eenc\u0103rc\u0103tor de clase comun \u015fi va avea nevoie, prin urmare, s\u0103 partajeze instan\u0163e de clase; totu\u015fi, aceste au fost configurate s\u0103 vad\u0103 seturi diferite de API-uri. Aplica\u0163ia \u015fi biblioteca trebuie configurate s\u0103 vad\u0103 exact acela\u015fi set de API-uri pentru asigurarea unui comportament consistent de aplica\u0163ie.
+cls.class.space.conflict.useraction=Fie actualiza\u0163i configura\u0163ia astfel \u00eenc\u00e2t aplica\u0163ia \u015fi biblioteca s\u0103 poat\u0103 vedea setul de API-uri, fie configura\u0163i aplica\u0163ia s\u0103 utilizeze biblioteca separat.
+
+cls.api.type.unknown=CWWKL0009W: Aplica\u0163ia [{0}] este configurat\u0103 pentru a utiliza un tip de API necunoscut de [{1}], care va fi ignorat.  Tipurile valide sunt urm\u0103toarele: [{2}].
+cls.api.type.unknown.explanation=Aplica\u0163iile pot fi configurate pentru a specifica ce tipuri de API inten\u0163ioneaz\u0103 s\u0103 acceseze.
+cls.api.type.unknown.useraction=Asigura\u0163i-v\u0103 c\u0103 configura\u0163ia listeaz\u0103 doar tipuri valide.
+
+cls.classloader.missing=CWWKL0010E: Sistemul nu a putut localiza \u00eenc\u0103rc\u0103torul de clase cu ID [{0}].
+cls.classloader.missing.explanation=Pentru a face referire la un \u00eenc\u0103rc\u0103tor de clase din configura\u0163ia de server, trebuie s\u0103 specifica\u0163i ID-ul unui \u00eenc\u0103rc\u0103tor de clase existent. 
+cls.classloader.missing.useraction=Verifica\u0163i configura\u0163ia de server pentru a v\u0103 asigura c\u0103 \u00eenc\u0103rc\u0103torul de clase a fost definit \u015fi c\u0103 ID-ul este corect.
+
+cls.fileset.not.ready=CWWKL0011W: Sistemul nu a putut extrage setul de fi\u015fiere [{0}] pentru biblioteca partajat\u0103 [{1}].
+cls.fileset.not.ready.explanation=Este \u00een utilizare bibliotec\u0103 partajat\u0103, dar unul din seturile de fi\u015fiere asociate nu poate fi extras la timp.
+cls.fileset.not.ready.useraction=Verifica\u0163i \u015fi corecta\u0163i toate erorile sau avertismentele asociate cu setul de fi\u015fiere.
+
+cls.library.file.invalid=CWWKL0012W: Biblioteca [{0}] specific\u0103 un fi\u015fier cu numele [{1}]. Acest fi\u015fier nu exist\u0103 sau este specificat incorect.
+cls.library.file.invalid.explanation=Pentru a ad\u0103uga un fi\u015fier \u00eentr-o bibliotec\u0103 din configura\u0163ia serverului, trebuie s\u0103 specifica\u0163i numele complet calificat al unui fi\u015fier existent.
+cls.library.file.invalid.useraction=Edita\u0163i configura\u0163ia serverului \u015fi modifica\u0163i atributul de fi\u015fier al elementului bibliotecii.
+
+cls.library.folder.invalid=CWWKL0013W: Biblioteca [{0}] specific\u0103 un folder cu numele [{1}]. Acest folder fie nu exist\u0103, fie nu este un folder valid.
+cls.library.folder.invalid.explanation=Pentru a ad\u0103uga un fi\u015fier \u00eentr-o bibliotec\u0103 din configura\u0163ia serverului, trebuie s\u0103 specifica\u0163i calea complet calificat\u0103 a unui folder existent.
+cls.library.folder.invalid.useraction=Edita\u0163i configura\u0163ia serverului \u015fi modifica\u0163i atributul de folder al elementului bibliotecii.
+
+cls.library.file.forbidden=CWWKL0014I: Fi\u015fierul [{0}] nu poate fi ad\u0103ugat la o cale de clase.
+cls.library.file.forbidden.explanation=Pentru a ad\u0103uga un fi\u015fier la o cale de clase, trebuie s\u0103 fie un container valid de clase \u015fi resurse, cum ar fi un fi\u015fier jar.
+cls.library.file.forbidden.useraction=Edita\u0163i configura\u0163ia serverului \u015fi asigura\u0163i-v\u0103 c\u0103 toate atributele de fi\u015fier sau set de fi\u015fiere fac referire la containere de resurse \u015fi clase valide.
+
+cls.library.created=CWWKL0015I: Bibliotca [{0}] este disponibil\u0103 pentru utilizare.
+cls.library.created.explanation=O bibliotec\u0103 a devenit disponibil\u0103, de exemplu, ca urmare a proces\u0103rii configura\u0163iei serverului.
+cls.library.created.useraction=Nu este necesara nicio ac\u0163iune a utilizazorului.
+
+WARN_JARS_STILL_CACHED=CWWKL0016W: Fi\u015fierele JAR pentru \u015ftergere nu pot fi preg\u0103tite, aplica\u0163iile con\u0163in JAR-uri care nu pot fi \u015fterse.
+WARN_JARS_STILL_CACHED.explanation=Server-ul nu a putut \u00eempiedica blocarea fi\u015fierelor JAR din aplica\u0163iile instalate. Este posibil ca fi\u015fierele JAR s\u0103 r\u0103m\u00e2n\u0103 blocate p\u00e2n\u0103 c\u00e2nd serverul se va opri.
+WARN_JARS_STILL_CACHED.useraction=Pentru a \u015fterge fi\u015fiere JAR dintr-o aplica\u0163ie instalat\u0103 serverul trebuie oprit \u00eenainte de \u015ftergere.
+
+cls.library.archive=CWWKL0017W: Fi\u015fierul [{0}] nu poate fi ad\u0103ugat la calea de clase din cauza erorii [{1}].
+cls.library.archive.explanation=Numai fi\u015fierele de arhiv\u0103 jar sau zip pot fi ad\u0103ugate la calea de clase.
+cls.library.archive.useraction=Edita\u0163i configura\u0163ia serverului \u015fi asigura\u0163i-v\u0103 c\u0103 toate fi\u015fierele la care se face referire din elementul \u00eenc\u0103rc\u0103tor de clas\u0103 sunt fi\u015fiere arhiv\u0103.
+
+cls.library.destroyed=CWWKL0018I: Biblioteca [{0}] este indisponibil\u0103.
+cls.library.destroyed.explanation=O bibliotec\u00ee a devenit indisponibil\u0103, de exemplu, pentru c\u0103 a fost \u00eenl\u0103turat\u0103 din configura\u0163ia serverului.
+cls.library.destroyed.useraction=Dac\u0103 biblioteca este \u00eenc\u0103 necesar\u0103, asigura\u0163i-v\u0103 c\u0103 \u00eenc\u0103 e configurat\u0103 corect.
+####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
+#################################################################################
+
+# {0} - class loader id
+# {1} - provider id
+# {2} - syntax exception message
+cls.provider.id.invalid=CWWKL0030E: \u00cenc\u0103rc\u0103torul de clase [{0}] nu poate g\u0103si furnizorul de clase [{1}]. C\u0103utarea a e\u015fuat cu mesajul de eroare de sintax\u0103 [{2}].
+cls.provider.id.invalid.explanation=A fost configurat un \u00eenc\u0103rc\u0103tor de clase pentru a delega la un \u00eenc\u0103rc\u0103tor de clase dar nu s-a putut extrage furnizorul corespunz\u0103tor de clase. \u00cenc\u0103rc\u0103torul de clase va func\u0163iona dar nu va putea extrage nicio clas\u0103 sau resurs\u0103 de la furnizorul specificat de clase.
+cls.provider.id.invalid.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# {0} - class loader id
+# {1} - provider id
+# {2} - provider service vendor
+cls.provider.loader.null=CWWKL0031E: \u00cenc\u0103rc\u0103torul de clase [{0}] nu poate delega la furnizorul de clase [{1}].  Furnizorul de clase returneaz\u0103 un \u00eenc\u0103rc\u0103tor de clase null. V\u00e2nz\u0103torul serviciului furnizor de clase este [{2}].
+cls.provider.loader.null.explanation=A fost configurat un \u00eenc\u0103rc\u0103tor de clase pentru a delega la un furnizor de clase dar furnizorul de clase nu a asigurat un \u00eenc\u0103rc\u0103tor de clase compatibil \u015fi nu poate fi utilizat. \u00cenc\u0103rc\u0103torul de clase va func\u0163iona dar nu va putea extrage nicio clas\u0103 sau resurs\u0103 de la furnizorul specificat de clase.
+cls.provider.loader.null.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support sau verifica\u0163i la v\u00e2nz\u0103torul serviciului furnizor de clase.
+
+# {0} - class loader id
+# {1} - provider id
+# {2} - provider type
+# {3} - provider service vendor
+cls.provider.loader.unknown=CWWKL0032E: \u00cenc\u0103rc\u0103torul de clase [{0}] nu poate delega la furnizorul de clase [{1}]. Furnizorul de clase a returnat un \u00eenc\u0103rc\u0103tor de clase nea\u015fteptat de tip [{2}]. V\u00e2nz\u0103torul serviciului furnizor de clase este [{3}].
+cls.provider.loader.unknown.explanation=A fost configurat un \u00eenc\u0103rc\u0103tor de clase pentru a delega la un furnizor de clase dar furnizorul de clase nu a asigurat un \u00eenc\u0103rc\u0103tor de clase compatibil \u015fi nu poate fi utilizat. \u00cenc\u0103rc\u0103torul de clase va func\u0163iona dar nu va putea extrage nicio clas\u0103 sau resurs\u0103 de la furnizorul specificat de clase.
+cls.provider.loader.unknown.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support sau verifica\u0163i la v\u00e2nz\u0103torul serviciului furnizor de clase.
+
+# {0} - class loader id
+# {1} - class loader api types
+# {2} - provider id
+# {3} - provider api types
+cls.provider.class.space.conflict=CWWKL0033W: \u00cenc\u0103rc\u0103torul de clase [{0}] este incompatibil cu furnizorul de clase [{2}], deoarece configura\u0163iile lor de vizibilitate API sunt neunitare. \u00cenc\u0103rc\u0103torul de clase este configurat cu [{1}], iar furnizorul de clase este configurat cu [{3}].
+cls.provider.class.space.conflict.explanation=A fost configurat un \u00eenc\u0103rc\u0103tor de clase pentru a delega la un \u00eenc\u0103rc\u0103tor de clase specificat \u015fi va partaja instan\u0163ele de clase. Totu\u015fi, acestea au fost configurate pentru a vedea seturi diferite de API-uri. Delegarea \u00eenc\u0103rc\u0103torului de clase \u015fi a furnizorului de clase trebuie s\u0103 fie configurate pentru a vedea acela\u015fi set de API-uri pentru a avea un comportament de aplica\u0163ie consistent.
+cls.provider.class.space.conflict.useraction=Actualiza\u0163i configura\u0163ia astfel \u00eenc\u00e2t delegarea \u00eenc\u0103rc\u0103torului de clase \u015fi a furnizorului de clase s\u0103 poat\u0103 vedea acela\u015fi set de API-uri.
+
+slf.no.cache=CWWKL0070E: Directorul de cache nu a fost creat cu succes.
+slf.no.cache.explanation=Sistemul nu a putut crea un folder pe disc.
+slf.no.cache.useraction=Asigura\u0163i-v\u0103 c\u0103 unitatea are permisiuni de scriere corecte \u015fi c\u0103 exist\u0103 suficient spa\u0163iu pe disc
+slf.no.acf=CWWKL0071E: A fost g\u0103sit\u0103 o valoare null pentru obiectul ArtifactContainerFactory.
+slf.no.acf.explanation=Obiectul ArtifactContainerFactory nu poate fi null c\u00e2nd serverul ruleaz\u0103.
+slf.no.acf.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support sau verifica\u0163i la v\u00e2nz\u0103torul serviciului furnizor de clase.
+slf.failed.delete=CWWKL0072W: Fi\u015fierul cache [{0}] nu poate fi \u015fters. Acest rezultat poate duce la coruperea arhivelor imbricate.
+slf.failed.delete.explanation=Sistemul nu a reu\u015fit s\u0103 \u015ftearg\u0103 fi\u015fierul de cache. Deoarece fi\u015fierul \u00eenc\u0103 exist\u0103 \u00een sistem, poate fi cauzat\u0103 coruperea arhivelor imbricate.
+slf.failed.delete.useraction=Verifica\u0163i c\u0103 fi\u015fierul de cache nu este \u00eentr-o stare de blocare, care ar putea cauza e\u015fuarea \u015ftergerii fi\u015fierului.

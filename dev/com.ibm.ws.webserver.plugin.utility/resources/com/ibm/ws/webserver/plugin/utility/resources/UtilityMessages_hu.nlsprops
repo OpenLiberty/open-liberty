@@ -1,0 +1,175 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.webserver.plugin.utility/resources/com/ibm/ws/webserver/plugin/utility/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+error=Hiba: {0}
+error.inputConsoleNotAvailable=A beviteli konzol nem \u00e9rhet\u0151 el.
+error.missingIO=Hiba, hi\u00e1nyz\u00f3 I/O eszk\u00f6z: {0}.
+
+serverNotFound=A megadott {0} kiszolg\u00e1l\u00f3 nem tal\u00e1lhat\u00f3 a k\u00f6vetkez\u0151 helyen: {1}
+jmx.local.connector.file.notfound=Nem tal\u00e1lhat\u00f3 a JMX helyi csatol\u00f3 c\u00edm f\u00e1jl a k\u00f6vetkez\u0151 helyen: {0}
+jmx.local.connector.file.invalid=A(z) {0} helyen tal\u00e1lhat\u00f3 JMX helyi csatol\u00f3 c\u00edm f\u00e1jl nem olvashat\u00f3 be
+
+#------------------------------------------------------------------------------
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+tooManyArgs=T\u00fal sok param\u00e9ter.
+insufficientArgs=Nem elegend\u0151 param\u00e9ter.
+missingServerName=A feladat c\u00e9lja nincs megadva.
+invalidArg=\u00c9rv\u00e9nytelen param\u00e9ter: {0}.
+missingArg=Hi\u00e1nyz\u00f3 param\u00e9ter: {0}.
+missingValue=Hi\u00e1nyz\u00f3 \u00e9rt\u00e9k a(z) {0} param\u00e9ter eset\u00e9ben.
+
+#------------------------------------------------------------------------------
+# Messages for HelpTask
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Haszn\u00e1lat: {0} action [param\u00e9terek]
+task.unknown=Ismeretlen feladat: {0}
+
+common.encodeError=\n\
+Nem k\u00f3dolhat\u00f3 az argumentum jelszava: {0}
+
+common.hostError=\n\
+A megadott hosztn\u00e9v nem t\u0171nik \u00e9rv\u00e9nyesnek: {0}\n\
+Ellen\u0151rizze, hogy a hosztn\u00e9v helyes-e, \u00e9s hogy a rendszer rendelkezik-e h\u00e1l\u00f3zati kapcsolattal.
+
+common.portError=\n\
+A megadott {0} port nem \u00e9rhet\u0151 el. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a port helyes.
+
+common.connectionError=\n\
+A m\u0171velet nem hajthat\u00f3 v\u00e9gre.\n\
+Hiba: {0}
+
+#------------------------------------------------------------------------------
+# Messages for get and generate operations
+#------------------------------------------------------------------------------
+
+generateWebServerPluginTask.abort=\n\
+Le\u00e1ll\u00edt\u00e1s...
+
+generateWebServerPluginTask.cleanupFail=\n\
+Hiba t\u00f6rt\u00e9nt az el\u0151\u00e1ll\u00edtott f\u00e1jlok takar\u00edt\u00e1sa sor\u00e1n. A(z) {0} nem t\u00e1vol\u00edthat\u00f3 el\n\
+T\u00e1vol\u00edtsa el a f\u00e1jlt saj\u00e1t kez\u0171leg, ellen\u0151rizze a f\u00e1jlenged\u00e9lyeket, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+
+generateWebServerPluginTask.complete.collective=\n A webkiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jl el\u0151\u00e1ll\u00edt\u00e1sa a c\u00e9l egy\u00fcttes vez\u00e9rl\u0151h\u00f6z sikeresen megt\u00f6rt\u00e9nt.
+
+generateWebServerPluginTask.fail.collective=\n A webkiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jl el\u0151\u00e1ll\u00edt\u00e1sa a c\u00e9l egy\u00fcttes vez\u00e9rl\u0151h\u00f6z meghi\u00fasult.\n\
+Elemezze a c\u00e9l egy\u00fcttes vez\u00e9rl\u0151 napl\u00f3it a probl\u00e9ma diagnosztiz\u00e1l\u00e1sa \u00e9rdek\u00e9ben.
+
+generateWebServerPluginTask.start.server.local=\n\
+A webkiszolg\u00e1l\u00f3 bedolgoz\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jl a(z) {0} helyi c\u00e9lkiszolg\u00e1l\u00f3 haszn\u00e1lat\u00e1val ker\u00fcl el\u0151\u00e1ll\u00edt\u00e1sra.
+
+generateWebServerPluginTask.start.server.remote=\n\
+A webkiszolg\u00e1l\u00f3 bedolgoz\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jl a(z) {0} t\u00e1voli c\u00e9lkiszolg\u00e1l\u00f3 haszn\u00e1lat\u00e1val ker\u00fcl el\u0151\u00e1ll\u00edt\u00e1sra.
+
+generateWebServerPluginTask.complete.server=\n A webkiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jl el\u0151\u00e1ll\u00edt\u00e1sa a c\u00e9l kiszolg\u00e1l\u00f3hoz sikeresen megt\u00f6rt\u00e9nt.
+
+generateWebServerPluginTask.fail.server=\n A webkiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jl el\u0151\u00e1ll\u00edt\u00e1sa a c\u00e9lkiszolg\u00e1l\u00f3hoz meghi\u00fasult. \n\
+Elemezze a c\u00e9lkiszolg\u00e1l\u00f3 vez\u00e9rl\u0151 napl\u00f3it a probl\u00e9ma diagnosztiz\u00e1l\u00e1sa \u00e9rdek\u00e9ben.
+
+generateWebServerPluginTask.notEnabled=\n\
+Az egy\u00fcttes vez\u00e9rl\u0151 szolg\u00e1ltat\u00e1s nincs enged\u00e9lyezve. Enged\u00e9lyezze a\n\
+szolg\u00e1ltat\u00e1st, majd pr\u00f3b\u00e1lkozzon \u00fajra a paranccsal.
+
+generateWebServerPluginTask.start.server=\n\
+A(z) {0} kiszolg\u00e1l\u00f3 elind\u00edt\u00e1sa, mivel jelenleg nem fut.
+
+generateWebServerPluginTask.stop.server=\n\
+A(z) {0} kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1sa, mivel a kezdeti \u00e1llapota le\u00e1ll\u00edtott volt.
+
+generateWebServerPluginTask.server.started=\n\
+A(z) {0} kiszolg\u00e1l\u00f3 sikeresen elindult.
+
+generateWebServerPluginTask.server.not.started=\n\
+A(z) {0} kiszolg\u00e1l\u00f3 nem ind\u00edthat\u00f3 el.
+
+generateWebServerPluginTask.server.plugin=A bedolgoz\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jl el\u0151\u00e1ll\u00edt\u00e1sa a WebSphere Liberty kiszolg\u00e1l\u00f3r\u00f3l.
+
+generateWebServerPluginTask.target.directory.not.exists=\n\
+A --targetPath: {0} param\u00e9ter \u00e1ltal megadott k\u00f6nyvt\u00e1r nem l\u00e9tezik.
+
+generateWebServerPluginTask.server.plugin.generated=\n\
+A bedolgoz\u00f3f\u00e1jl el\u0151\u00e1ll\u00edt\u00e1sra ker\u00fclt a kiszolg\u00e1l\u00f3n, a(z) {0} helyen.
+
+generateWebServerPluginTask.complete.next.step=\n\
+M\u00e1solja \u00e1t a bedolgoz\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jlt az IBM HTTP Server httpd.conf f\u00e1jlban tal\u00e1lhat\u00f3\n\
+WebSpherePluginConfig direkt\u00edv\u00e1ban megadott k\u00f6nyvt\u00e1rba.
+
+#------------------------------------------------------------------------------
+# Messages for merge operation
+#------------------------------------------------------------------------------
+
+MergePluginFilesTask.merging.plugin.dir=\n\
+A bedolgoz\u00f3f\u00e1jlok \u00f6sszef\u00e9s\u00fcl\u00e9se a *plugin-cfg*.xml mint\u00e1val a(z) {0} k\u00f6nyvt\u00e1rb\u00f3l. 
+
+MergePluginFilesTask.merging.plugin.list=\n\
+A bedolgoz\u00f3f\u00e1jlok megadott list\u00e1j\u00e1nak \u00f6sszef\u00e9s\u00fcl\u00e9se.
+
+MergePluginFilesTask.merging.plugin.file.not.exists=\n\
+A(z) {0} f\u00e1jl nem l\u00e9tezik. Ellen\u0151rizze, hogy a f\u00e1jl l\u00e9tezik, \u00e9s egy \n\
+\u00e9rv\u00e9nyes bedolgoz\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jl.
+
+MergePluginFilesTask.merging.plugin.file.is.directory=\n\
+A(z) {0} f\u00e1jl egy k\u00f6nyvt\u00e1r. A k\u00f6nyvt\u00e1rak \u00e9s norm\u00e1l f\u00e1jlok nem \n\
+keverhet\u0151k az \u00f6sszef\u00e9s\u00fcl\u00e9skor.
+
+MergePluginFilesTask.merging.plugin.targetdir.not.exists=\n\
+A(z) {0} k\u00f6nyvt\u00e1r, ahol az \u00f6sszef\u00e9s\u00fclt konfigur\u00e1ci\u00f3s f\u00e1jlokat el\u0151 kellene \u00e1ll\u00edtani, \n\
+nem l\u00e9tezik.
+
+MergePluginFilesTask.merging.plugin.source.dir.not.exists=\n\
+A(z) {0} forr\u00e1sk\u00f6nyvt\u00e1r nem l\u00e9tezik.
+
+MergePluginFilesTask.merging.plugin.source.file.not.directory=\n\
+A(z) {0} forr\u00e1sk\u00f6nyvt\u00e1r nem egy k\u00f6nyvt\u00e1r.
+
+MergePluginFilesTask.merging.plugin.source.file.selected=\n\
+A(z) {0} f\u00e1jl ki van v\u00e1lasztva \u00f6sszef\u00e9s\u00fcl\u00e9shez. 
+
+MergePluginFilesTask.merging.plugin.target.file.generating=\n\
+Az \u00f6sszef\u00e9s\u00fclt konfigur\u00e1ci\u00f3s f\u00e1jl el\u0151\u00e1ll\u00edt\u00e1sa a k\u00f6vetkez\u0151 helyen: {0}.
+
+MergePluginFilesTask.merging.plugin.target.file.generated=\n\
+Az \u00f6sszef\u00e9s\u00fclt konfigur\u00e1ci\u00f3s f\u00e1jl el\u0151\u00e1ll\u00edt\u00e1sa siker\u00fclt.
+
+MergePluginFilesTask.merging.plugin.insufficent.number.of.source.files=\n\
+Adjon meg legal\u00e1bb k\u00e9t bedolgoz\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jlt az \u00f6sszef\u00e9s\u00fcl\u00e9s v\u00e9grehajt\u00e1s\u00e1hoz.
+
+#------------------------------------------------------------------------------
+# Messages for pluginUtility generate option 
+#------------------------------------------------------------------------------
+# reading in a password
+#-----------------------------------------
+password.enterText={0} bevitele:
+password.reenterText={0} \u00fajb\u00f3li bevitele:
+password.readError=Hiba a jelsz\u00f3 olvas\u00e1sakor.
+password.entriesDidNotMatch=A jelszavak nem egyeznek.
+
+#-----------------------------------------
+# reading in a user 
+#-----------------------------------------
+user.enterText={0} bevitele:
+user.readError=Felhaszn\u00e1l\u00f3 olvas\u00e1si hiba.
+
+#----------------------------------------- 
+# Missing Argument Messages 
+#-----------------------------------------
+invalidPortArg=\u00c9rv\u00e9nytelen \u00e9rt\u00e9k lett megadva a [port]={0} eset\u00e9n a(z) {1} argumentumban, numerikus \u00e9rt\u00e9ket kell megadnia.
+missingUsernameValue=Hi\u00e1nyz\u00f3 \u00e9rt\u00e9k a [felhaszn\u00e1l\u00f3] eset\u00e9ben a(z) {0} argumentumban.
+missingPasswordValue=Hi\u00e1nyz\u00f3 \u00e9rt\u00e9k a [jelsz\u00f3] eset\u00e9ben a(z) {0} argumentumban.
+missingHostValue=Hi\u00e1nyz\u00f3 \u00e9rt\u00e9k a [hoszt] eset\u00e9ben a(z) {0} argumentumban.
+missingPortValue=Hi\u00e1nyz\u00f3 \u00e9rt\u00e9k a [port] eset\u00e9ben a(z) {0} argumentumban.
+missingHostorPortValue=Hi\u00e1nyz\u00f3 \u00e9rt\u00e9k a [hoszt vagy port] eset\u00e9ben a(z) {0} argumentumban.
+
+#------------------------------------------------------------------------------

@@ -1,0 +1,1197 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.ra.CWSIVMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIV0001=CWSIV0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you want them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Msgs in the range CWSIV0001-CWSIV0049 belong to class com.ibm.ws.sib.ra.recovery.impl.SibRaXaResourceInfo
+#   - Msgs in the range CWSIV0050-CWSIV0099 belong to class com.ibm.ws.sib.ra.SibRaFactory
+#   - Msgs in the range CWSIV0100-CWSIV0149 belong to class com.ibm.ws.sib.ra.impl.SibRaConnectionFactory
+#   - Msgs in the range CWSIV0150-CWSIV0199 belong to class com.ibm.ws.sib.ra.impl.SibRaConnection
+#   - Msgs in the range CWSIV0200-CWSIV0249 belong to class com.ibm.ws.sib.ra.impl.SibRaDestinationSession
+#   - Msgs in the range CWSIV0250-CWSIV0299 belong to class com.ibm.ws.sib.ra.impl.SibRaConsumerSession
+#   - Msgs in the range CWSIV0300-CWSIV0349 belong to class com.ibm.ws.sib.ra.impl.SibRaConnectionInfo
+#   - Msgs in the range CWSIV0350-CWSIV0399 belong to class com.ibm.ws.sib.ra.impl.SibRaManagedConnectionFactory
+#   - Msgs in the range CWSIV0400-CWSIV0449 belong to class com.ibm.ws.sib.ra.impl.SibRaManagedConnection
+#   - Msgs in the range CWSIV0450-CWSIV0499 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaResourceAdapterImpl
+#   - Msgs in the range CWSIV0500-CWSIV0549 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaActivationSpecImpl
+#   - Msgs in the range CWSIV0550-CWSIV0599 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaEndpointActivation
+#   - Msgs in the range CWSIV0600-CWSIV0649 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaDispatcher
+#   - Msgs in the range CWSIV0650-CWSIV0699 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaTransactionalDispatcher
+#   - Msgs in the range CWSIV0700-CWSIV0749 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaConsumerSession
+#   - Msgs in the range CWSIV0750-CWSIV0799 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaStaticDestinationEndpointActivation
+#   - Msgs in the range CWSIV0800-CWSIV0849 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaDynamicDestinationEndpointActivation
+#   - Msgs in the range CWSIV0850-CWSIV0899 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaEndpointInvokerImpl
+#   - Msgs in the range CWSIV0900-CWSIV0949 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaListener
+#   - Msgs in the range CWSIV0950-CWSIV0999 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaMessagingEngineConnection
+#   - Msgs in the range CWSIV1000-CWSIV1049 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaDispatchEndpointActivation
+#   - Msgs in the range CWSIV1050-CWSIV1099 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaDispatchTarget
+#   - Msgs in the range CWSIV1100-CWSIV1149 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaSingleProcessListener
+#   - Msgs in the range CWSIV1150-CWSIV1199 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaMultiProcessListener
+#   - Msgs in the range CWSIV1200-CWSIV1249 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaSynchronizedDispatcher
+#   - CWSIV9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+#
+# cmvc_en_version_level=1.29,0,05/04/28,09:28:22
+#
+#CMVCPATHNAME com.ibm.ws.messaging.jms/resources/com/ibm/ws/sib/ra/CWSIVMessages.nlsprops
+#COMPONENTPREFIX CWSIV
+#COMPONENTNAMEFOR CWSIV SIBus Resource Adapter
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} the security alias that could not be resolved
+RECOVERY_ALIAS_NOT_RESOLVED_CWSIV0001=CWSIV0001W: Falha ao resolver o alias de seguran\u00e7a {0} durante o processamento de recupera\u00e7\u00e3o.
+RECOVERY_ALIAS_NOT_RESOLVED_CWSIV0001.explanation=Um alias de seguran\u00e7a foi especificado no recurso para o qual o processamento de recupera\u00e7\u00e3o est\u00e1 ocorrendo e n\u00e3o p\u00f4de ser resolvido.  O processamento continuar\u00e1 com um nome de usu\u00e1rio e senha nulos.
+RECOVERY_ALIAS_NOT_RESOLVED_CWSIV0001.useraction=Assegure-se de que o alias especificado esteja definido para o servidor de aplicativos, no qual est\u00e1 ocorrendo o processamento de recupera\u00e7\u00e3o.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was received
+CONNECTION_FACTORY_EXCEPTION_CWSIV0050=CWSIV0050E: Um erro interno ocorreu. A exce\u00e7\u00e3o {0} foi recebida a partir do tempo de execu\u00e7\u00e3o JCA, durante a tentativa de obter uma connection factory.
+CONNECTION_FACTORY_EXCEPTION_CWSIV0050.explanation=Durante a tentativa de obter uma SICoreConnectionFactory por meio de um tempo de execu\u00e7\u00e3o JCA, uma exce\u00e7\u00e3o inesperada foi recebida.
+CONNECTION_FACTORY_EXCEPTION_CWSIV0050.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection factory that was returned
+INCORRECT_FACTORY_TYPE_CWSIV0051=CWSIV0051E: Um erro interno ocorreu. A connection factory retornada do tempo de execu\u00e7\u00e3o JCA {0} n\u00e3o implementa SICoreConnectionFactory.
+INCORRECT_FACTORY_TYPE_CWSIV0051.explanation=A connection factory retornada do tempo de execu\u00e7\u00e3o JCA n\u00e3o implementa SICoreConnectionFactory como esperado.
+INCORRECT_FACTORY_TYPE_CWSIV0051.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the invalid value
+# {1} the name of the property
+# {2} the first valid value
+# {3} the second valid value
+INVALID_PROPERTY_CWSIV0052=CWSIV0052E: O valor {0} n\u00e3o \u00e9 v\u00e1lido para a propriedade da connection factory {1}. Os valores v\u00e1lidos s\u00e3o {2} e {3}.
+INVALID_PROPERTY_CWSIV0052.explanation=O mapa de propriedade transmitido para o m\u00e9todo getConnectionFactory em SICoreConnectionFactorySelector, continha um valor incorreto para a propriedade fornecida.
+INVALID_PROPERTY_CWSIV0052.useraction=Assegure que o conjunto de propriedades transmitido para o m\u00e9todo getConnectionFactory em SICoreConnectionFactorySelector seja v\u00e1lido.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the property
+# {1} the required type
+INVALID_PROPERTY_TYPE_CWSIV0053=CWSIV0053E: A propriedade da connection {0} factory  n\u00e3o \u00e9 do tipo exigido {1}.
+INVALID_PROPERTY_TYPE_CWSIV0053.explanation=O mapa de propriedade transmitido para o m\u00e9todo getConnectionFactory em SICoreConnectionFactorySelector, continha um valor para a propriedade determinada que n\u00e3o era do tipo exigido.
+INVALID_PROPERTY_TYPE_CWSIV0053.useraction=Assegure que o conjunto de propriedades transmitido para o m\u00e9todo getConnectionFactory em SICoreConnectionFactorySelector seja v\u00e1lido.
+
+# -------------------------------------------------------------------------------------------------
+ALIAS_REQUIRED_CWSIV0054=CWSIV0054E: As propriedades da connection factory devem conter um valor para CONTAINER_AUTHENTICATION_ALIAS.
+ALIAS_REQUIRED_CWSIV0054.explanation=O mapa de propriedade transmitido para o m\u00e9todo getConnectionFactory em SICoreConnectionFactorySelector, solicitava o fornecimento de credenciais pelo cont\u00eainer, utilizando mapeamento de propriet\u00e1rio padr\u00e3o, mas n\u00e3o especificou um alias de autentica\u00e7\u00e3o de cont\u00eainer.
+ALIAS_REQUIRED_CWSIV0054.useraction=Assegure que o conjunto de propriedades transmitidas para o m\u00e9todo getConnectionFactory no SICoreConnectionFactorySelector, contenha um valor para CONTAINER_AUTHENTICATION_ALIAS.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the invalid value
+# {1} the name of the property
+# {2} the first valid value
+# {3} the second valid value
+INVALID_PROPERTY_CWSIV0055=CWSIV0055E: O valor {0} n\u00e3o \u00e9 v\u00e1lido para a propriedade da connection factory {1}. Os valores v\u00e1lidos s\u00e3o {2} e {3}.
+INVALID_PROPERTY_CWSIV0055.explanation=O mapa de propriedade transmitido para o m\u00e9todo getConnectionFactory em SICoreConnectionFactorySelector, continha um valor incorreto para a propriedade fornecida.
+INVALID_PROPERTY_CWSIV0055.useraction=Assegure que o conjunto de propriedades transmitido para o m\u00e9todo getConnectionFactory em SICoreConnectionFactorySelector seja v\u00e1lido.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection that was returned
+# {1} the expected type for the connection
+INCORRECT_CONNECTION_TYPE_CWSIV0101=CWSIV0101E: Um erro interno ocorreu. O gerenciador de conex\u00f5es JCA retornou uma conex\u00e3o {0} que n\u00e3o era do tipo esperado {1}.
+INCORRECT_CONNECTION_TYPE_CWSIV0101.explanation=Durante a tentativa de obter uma conex\u00e3o por meio do gerenciador de conex\u00f5es JCA, foi retornada uma conex\u00e3o de um tipo inesperado.
+INCORRECT_CONNECTION_TYPE_CWSIV0101.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+ACTIVE_LOCAL_TRAN_CWSIV0150=CWSIV0150E: Uma SIUncoordinatedTransaction existente n\u00e3o foi conclu\u00edda.
+ACTIVE_LOCAL_TRAN_CWSIV0150.explanation=Foi feita uma tentativa de criar uma nova SIUncoordinatedTransaction, quando a atual n\u00e3o foi conclu\u00edda.
+ACTIVE_LOCAL_TRAN_CWSIV0150.useraction=Assegure-se de que a consolida\u00e7\u00e3o ou a revers\u00e3o seja chamada na SIUncoordinatedTransaction atual, antes da cria\u00e7\u00e3o de uma nova.
+
+# -------------------------------------------------------------------------------------------------
+ACTIVE_CONTAINER_TRAN_CWSIV0151=CWSIV0151E: H\u00e1 uma transa\u00e7\u00e3o gerenciada por cont\u00eainer no encadeamento.
+ACTIVE_CONTAINER_TRAN_CWSIV0151.explanation=Foi feita uma tentativa de criar uma nova SIUncoordinatedTransaction enquanto h\u00e1 uma transa\u00e7\u00e3o gerenciada por cont\u00eainer no encadeamento.
+ACTIVE_CONTAINER_TRAN_CWSIV0151.useraction=Modifique o aplicativo para que a chamada seja feita em um ambiente onde n\u00e3o h\u00e1 transa\u00e7\u00e3o gerenciada por cont\u00eainer no encadeamento.
+
+# -------------------------------------------------------------------------------------------------
+XARESOURCE_NOT_SUPPORTED_CWSIV0152=CWSIV0152E: A cria\u00e7\u00e3o de um SIXAResource n\u00e3o \u00e9 suportada.
+XARESOURCE_NOT_SUPPORTED_CWSIV0152.explanation=A cria\u00e7\u00e3o de um SIXAResource n\u00e3o \u00e9 suportada durante o uso da implementa\u00e7\u00e3o RA_CONNECTION da SPI principal do Sistema de Mensagens de Plataforma, pois as transa\u00e7\u00f5es globais s\u00e3o tratadas pelo adaptador de recursos.
+XARESOURCE_NOT_SUPPORTED_CWSIV0152.useraction=Se for necess\u00e1rio que o aplicativo trate de transa\u00e7\u00f5es globais de forma expl\u00edcita, utilize uma implementa\u00e7\u00e3o diferente da SPI principal do Sistema de Mensagens de Plataforma, do contr\u00e1rio, remova a chamada para getSIXAResource.
+
+# -------------------------------------------------------------------------------------------------
+CLONE_NOT_SUPPORTED_CWSIV0153=CWSIV0153E: A c\u00f3pia de uma conex\u00e3o n\u00e3o \u00e9 suportada.
+CLONE_NOT_SUPPORTED_CWSIV0153.explanation=A c\u00f3pia de uma conex\u00e3o n\u00e3o \u00e9 suportada durante o uso da implementa\u00e7\u00e3o RA_CONNECTION da SPI principal.
+CLONE_NOT_SUPPORTED_CWSIV0153.useraction=Considere se a c\u00f3pia de uma conex\u00e3o for requerida ou se apenas criar outra conex\u00e3o seria suficiente.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection manager
+LAZY_ENLIST_NOT_SUPPORTED_CWSIV0154=CWSIV0154E: Um erro interno ocorreu. O gerenciador de conex\u00f5es {0} n\u00e3o suporta inscri\u00e7\u00e3o atrasada.
+LAZY_ENLIST_NOT_SUPPORTED_CWSIV0154.explanation=A conex\u00e3o atual foi desassociada de sua conex\u00e3o gerenciada, mas o gerenciador de conex\u00f5es n\u00e3o suporta inscri\u00e7\u00e3o atrasada para que ocorra a reassocia\u00e7\u00e3o.
+LAZY_ENLIST_NOT_SUPPORTED_CWSIV0154.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+REASSOCIATION_FAILED_CWSIV0155=CWSIV0155E: Um erro interno ocorreu. A exce\u00e7\u00e3o {0} foi emitida durante a tentativa de reassociar com a conex\u00e3o gerenciada.
+REASSOCIATION_FAILED_CWSIV0155.explanation=A conex\u00e3o atual foi desassociada de sua conex\u00e3o gerenciada e a exce\u00e7\u00e3o foi recebida durante a tentativa de reassocia\u00e7\u00e3o.
+REASSOCIATION_FAILED_CWSIV0155.useraction=Consulte a exce\u00e7\u00e3o vinculada para obter informa\u00e7\u00f5es adicionais.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_CONNECTION_CWSIV0156=CWSIV0156E: A conex\u00e3o foi perdida.
+INVALID_CONNECTION_CWSIV0156.explanation=Um erro anterior fez com que a conex\u00e3o deixasse de ser v\u00e1lida.
+INVALID_CONNECTION_CWSIV0156.useraction=Verifique os logs de erros, para determinar a causa do erro anterior.  O aplicativo deve criar uma nova conex\u00e3o.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONTAINER_TRAN_CWSIV0157=CWSIV0157E: Ocorreu um erro interno.  A exce\u00e7\u00e3o {0} foi emitida durante a tentativa de obter a transa\u00e7\u00e3o do cont\u00eainer atual.
+CONTAINER_TRAN_CWSIV0157.explanation=Durante a tentativa de obter a transa\u00e7\u00e3o do cont\u00eainer atual, uma exce\u00e7\u00e3o foi recebida.
+CONTAINER_TRAN_CWSIV0157.useraction=Consulte a exce\u00e7\u00e3o vinculada para obter informa\u00e7\u00f5es adicionais.
+
+# -------------------------------------------------------------------------------------------------
+ACTIVE_LOCAL_TRAN_CWSIV0158=CWSIV0158E: H\u00e1 uma SIUncoordinatedTransaction ativa associada com esta conex\u00e3o.
+ACTIVE_LOCAL_TRAN_CWSIV0158.explanation=Foi feita uma tentativa de utilizar um par\u00e2metro de transa\u00e7\u00e3o nulo, quando ainda havia uma SIUncoordinatedTransaction ativa associada com esta conex\u00e3o.
+ACTIVE_LOCAL_TRAN_CWSIV0158.useraction=Transmita o SIUncoordinatedTransaction ativo como o par\u00e2metro de transa\u00e7\u00e3o ou chame a consolida\u00e7\u00e3o/recupera\u00e7\u00e3o primeiro, antes da transmiss\u00e3o de nulo.
+
+# -------------------------------------------------------------------------------------------------
+INCORRECT_LOCAL_TRAN_CWSIV0159=CWSIV0159E: A SIUncoordinatedTransaction ativa associada com esta conex\u00e3o n\u00e3o foi transmitida.
+INCORRECT_LOCAL_TRAN_CWSIV0159.explanation=Foi feita uma tentativa de utilizar uma SIUncoordinatedTransaction como o par\u00e2metro de transa\u00e7\u00e3o quando havia uma SIUncoordinatedTransaction ativa diferente associada a esta conex\u00e3o.
+INCORRECT_LOCAL_TRAN_CWSIV0159.useraction=Assegure-se de que o aplicativo esteja transmitindo a SIUncoordinatedTransaction ativa atual associada \u00e0 conex\u00e3o ou nula se for necess\u00e1rio executar a opera\u00e7\u00e3o fora da transa\u00e7\u00e3o.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_XARESOURCE_CWSIV0160=CWSIV0160E: Um SIXAResource n\u00e3o \u00e9 um par\u00e2metro de transa\u00e7\u00e3o v\u00e1lido.
+INVALID_XARESOURCE_CWSIV0160.explanation=O uso de um SIXAResource como o par\u00e2metro de transa\u00e7\u00e3o n\u00e3o \u00e9 suportado durante a utiliza\u00e7\u00e3o da implementa\u00e7\u00e3o RA_CONNECTION da SPI principal do Sistema de Mensagens de Plataforma, pois as transa\u00e7\u00f5es globais s\u00e3o manipuladas pelo adaptador de recursos.
+INVALID_XARESOURCE_CWSIV0160.useraction=Se for necess\u00e1rio que o aplicativo trate de transa\u00e7\u00f5es globais de forma expl\u00edcita, utilize uma implementa\u00e7\u00e3o diferente da SPI principal do Sistema de Mensagens de Plataforma, do contr\u00e1rio, transmita nulo como o par\u00e2metro de transa\u00e7\u00e3o.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the transaction parameter
+UNRECOGNISED_TRAN_CWSIV0161=CWSIV0161E: O par\u00e2metro de transa\u00e7\u00e3o {0} n\u00e3o era de um tipo reconhecido.
+UNRECOGNISED_TRAN_CWSIV0161.explanation=O objeto transmitido como o par\u00e2metro de transa\u00e7\u00e3o n\u00e3o era do tipo reconhecido.
+UNRECOGNISED_TRAN_CWSIV0161.useraction=Assegure-se de que o par\u00e2metro de transa\u00e7\u00e3o seja nulo, que uma SIUncoordinatedTransaction seja obtida desta conex\u00e3o ou de uma SibRaAutoCommitTransaction.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONTAINER_COMMIT_FAILED_CWSIV0162=CWSIV0162E: Ocorreu um erro interno.  A exce\u00e7\u00e3o {0} foi emitida enquanto o cont\u00eainer estava tentando consolidar uma transa\u00e7\u00e3o local de aplicativo.
+CONTAINER_COMMIT_FAILED_CWSIV0162.explanation=O cont\u00eainer detectou uma transa\u00e7\u00e3o local de aplicativo pendente no final de um escopo de compartilhamento e uma exce\u00e7\u00e3o foi criada ao tentar consolid\u00e1-la.
+CONTAINER_COMMIT_FAILED_CWSIV0162.useraction=Consulte a exce\u00e7\u00e3o vinculada para obter informa\u00e7\u00f5es adicionais.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONTAINER_ROLLBACK_FAILED_CWSIV0163=CWSIV0163E: Ocorreu um erro interno.  A exce\u00e7\u00e3o {0} foi emitida enquanto o cont\u00eainer estava tentando reverter uma transa\u00e7\u00e3o local do aplicativo.
+CONTAINER_ROLLBACK_FAILED_CWSIV0163.explanation=O cont\u00eainer detectou uma transa\u00e7\u00e3o local de aplicativo pendente no final de um escopo de compartilhamento e uma exce\u00e7\u00e3o foi criada ao tentar recuper\u00e1-la.
+CONTAINER_ROLLBACK_FAILED_CWSIV0163.useraction=Consulte a exce\u00e7\u00e3o vinculada para obter informa\u00e7\u00f5es adicionais.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_SESSION_CWSIV0200=CWSIV0200E: A conex\u00e3o a partir da qual esta sess\u00e3o foi criada foi invalidada.
+INVALID_SESSION_CWSIV0200.explanation=Um erro anterior fez com que a conex\u00e3o deixasse de ser v\u00e1lida.
+INVALID_SESSION_CWSIV0200.useraction=Verifique os logs de erros, para determinar a causa do erro anterior.  O aplicativo deve criar uma nova conex\u00e3o e sess\u00e3o.
+
+# -------------------------------------------------------------------------------------------------
+ASYNCHRONOUS_METHOD_CWSIV0250=CWSIV0250E: M\u00e9todos relacionados ao recebimento de mensagens ass\u00edncronas n\u00e3o s\u00e3o suportados.
+ASYNCHRONOUS_METHOD_CWSIV0250.explanation=O uso de m\u00e9todos ConsumerSession relacionados ao recebimento ass\u00edncrono de mensagens n\u00e3o \u00e9 suportado durante o uso da implementa\u00e7\u00e3o RA_CONNECTION da SPI principal do Sistema de Mensagens de Plataforma.
+ASYNCHRONOUS_METHOD_CWSIV0250.useraction=Se o recebimento ass\u00edncrono de mensagens for requerido, utilize uma implementa\u00e7\u00e3o diferente da SPI principal do Sistema de Mensagens de Plataforma.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONNECTION_CREATION_CWSIV0300=CWSIV0300E: Um erro interno ocorreu. A exce\u00e7\u00e3o {0} foi emitida durante a tentativa de criar uma conex\u00e3o com o mecanismo de sistema de mensagens.
+CONNECTION_CREATION_CWSIV0300.explanation=Uma exce\u00e7\u00e3o foi recebida durante a tentativa de criar uma conex\u00e3o com o mecanismo do sistema de mensagens.
+CONNECTION_CREATION_CWSIV0300.useraction=Consulte a exce\u00e7\u00e3o vinculada para obter informa\u00e7\u00f5es adicionais.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONNECTION_FACTORY_ERROR_CWSIV0350=CWSIV0350E: Um erro interno ocorreu. A exce\u00e7\u00e3o {0} foi emitida durante a tentativa de criar uma connection factory SPI principal.
+CONNECTION_FACTORY_ERROR_CWSIV0350.explanation=Uma exce\u00e7\u00e3o foi criada durante a tentativa de criar uma Connection factory de SPI principal, utilizando o tipo de dep\u00f3sito de informa\u00e7\u00f5es TRM_CONNECTION.
+CONNECTION_FACTORY_ERROR_CWSIV0350.useraction=Consulte a exce\u00e7\u00e3o vinculada para obter informa\u00e7\u00f5es adicionais.
+
+# -------------------------------------------------------------------------------------------------
+NON_MANAGED_ENVIRONMENT_CWSIV0351=CWSIV0351E: N\u00e3o \u00e9 suportada a cria\u00e7\u00e3o de uma connection factory em um ambiente n\u00e3o gerenciado.
+NON_MANAGED_ENVIRONMENT_CWSIV0351.explanation=N\u00e3o \u00e9 suportada a cria\u00e7\u00e3o de uma connection factory em um ambiente n\u00e3o gerenciado, ao utilizar a implementa\u00e7\u00e3o RA_CONNECTION da SPI principal, pois um gerenciador de conex\u00f5es \u00e9 necess\u00e1rio para fornecer suporte a transa\u00e7\u00f5es de cont\u00eainer.
+NON_MANAGED_ENVIRONMENT_CWSIV0351.useraction=Em um ambiente n\u00e3o-gerenciado, crie uma connection factory utilizando o SICoreConnectionFactorySelector com um FactoryType diferente de RA_CONNECTION.
+
+# -------------------------------------------------------------------------------------------------
+NULL_REQUEST_INFO_CWSIV0352=CWSIV0352E: Um erro interno ocorreu. Informa\u00e7\u00f5es sobre pedido de conex\u00e3o s\u00e3o requeridas para criar uma conex\u00e3o gerenciada.
+NULL_REQUEST_INFO_CWSIV0352.explanation=O gerenciador de conex\u00f5es tentou criar uma conex\u00e3o gerenciada, sem especificar quaisquer informa\u00e7\u00f5es sobre pedido de conex\u00e3o.
+NULL_REQUEST_INFO_CWSIV0352.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONNECTION_CLONE_CWSIV0353=CWSIV0353E: Um erro interno ocorreu. A exce\u00e7\u00e3o {0} foi emitida durante a tentativa de clonar uma conex\u00e3o com o mecanismo de sistema de mensagens.
+CONNECTION_CLONE_CWSIV0353.explanation=Uma exce\u00e7\u00e3o foi criada durante a tentativa de clonar uma conex\u00e3o com o mecanismo do sistema de mensagens no decorrer da cria\u00e7\u00e3o de uma conex\u00e3o gerenciada.
+CONNECTION_CLONE_CWSIV0353.useraction=Consulte a exce\u00e7\u00e3o vinculada para obter informa\u00e7\u00f5es adicionais.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection request information object passed
+# {1} the expected type for the object
+UNRECOGNISED_REQUEST_INFO_CWSIV0354=CWSIV0354E: Um erro interno ocorreu. O objeto de informa\u00e7\u00f5es de pedido de conex\u00e3o {0} n\u00e3o era do tipo esperado {1}.
+UNRECOGNISED_REQUEST_INFO_CWSIV0354.explanation=O objeto transmitido como o par\u00e2metro de informa\u00e7\u00f5es de pedido de conex\u00e3o n\u00e3o era do tipo esperado.
+UNRECOGNISED_REQUEST_INFO_CWSIV0354.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CREATE_MANAGED_CONNECTION_CWSIV0355=CWSIV0355E: Um erro interno ocorreu. A seguinte exce\u00e7\u00e3o foi emitida durante a cria\u00e7\u00e3o da conex\u00e3o gerenciada: {0}
+CREATE_MANAGED_CONNECTION_CWSIV0355.explanation=Uma exce\u00e7\u00e3o foi criada durante a tentativa de criar uma conex\u00e3o gerenciada.
+CREATE_MANAGED_CONNECTION_CWSIV0355.useraction=Consulte a exce\u00e7\u00e3o vinculada para obter informa\u00e7\u00f5es adicionais.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the JCA exception
+CONNECTION_ERROR_RETRY_CWSIV0356=CWSIV0356W: Ocorreu o seguinte erro de JCA Connection ao tentar obter a conex\u00e3o. A recupera\u00e7\u00e3o da conex\u00e3o ser\u00e1 repetida. A exce\u00e7\u00e3o \u00e9 {0}.
+CONNECTION_ERROR_RETRY_CWSIV0356.explanation=Foi capturado um erro ao obter uma conex\u00e3o. O sistema limpar\u00e1 a conex\u00e3o e, em seguida, tentar\u00e1 obter outra.
+CONNECTION_ERROR_RETRY_CWSIV0356.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection request information object passed
+# {1} the expected type for the object
+UNRECOGNISED_REQUEST_INFO_CWSIV0401=CWSIV0401E: Um erro interno ocorreu. O objeto de informa\u00e7\u00f5es de pedido de conex\u00e3o {0} n\u00e3o era do tipo esperado {1}.
+UNRECOGNISED_REQUEST_INFO_CWSIV0401.explanation=O objeto transmitido como o par\u00e2metro de informa\u00e7\u00f5es de pedido de conex\u00e3o n\u00e3o era do tipo esperado.
+UNRECOGNISED_REQUEST_INFO_CWSIV0401.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONNECTION_CLOSE_CWSIV0402=CWSIV0402E: Um erro interno ocorreu. A exce\u00e7\u00e3o {0} foi emitida durante a tentativa de fechar uma conex\u00e3o com o mecanismo de sistema de mensagens.
+CONNECTION_CLOSE_CWSIV0402.explanation=Uma exce\u00e7\u00e3o foi criada durante a tentativa de fechar uma conex\u00e3o com o mecanismo do sistema de mensagens.
+CONNECTION_CLOSE_CWSIV0402.useraction=Consulte a exce\u00e7\u00e3o vinculada para obter informa\u00e7\u00f5es adicionais.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection object passed
+# {1} the expected type for the object
+UNRECOGNISED_CONNECTION_CWSIV0403=CWSIV0403E: Um erro interno ocorreu. O objeto de conex\u00e3o {0} n\u00e3o era do tipo esperado {1}.
+UNRECOGNISED_CONNECTION_CWSIV0403.explanation=O objeto transmitido como o par\u00e2metro de conex\u00e3o n\u00e3o era do tipo esperado por este adaptador de recurso.
+UNRECOGNISED_CONNECTION_CWSIV0403.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+ACTIVE_LOCAL_TRAN_CWSIV0404=CWSIV0404E: Um erro interno ocorreu. J\u00e1 existe uma transa\u00e7\u00e3o local do cont\u00eainer ativa.
+ACTIVE_LOCAL_TRAN_CWSIV0404.explanation=O cont\u00eainer est\u00e1 tentando iniciar uma transa\u00e7\u00e3o local, quando j\u00e1 existe uma ativa.
+ACTIVE_LOCAL_TRAN_CWSIV0404.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+LOCAL_TRAN_BEGIN_CWSIV0405=CWSIV0405E: Um erro interno ocorreu. A exce\u00e7\u00e3o {0} foi emitida enquanto o cont\u00eainer estava tentando iniciar uma transa\u00e7\u00e3o local.
+LOCAL_TRAN_BEGIN_CWSIV0405.explanation=Uma exce\u00e7\u00e3o foi criada enquanto o cont\u00eainer estava tentando iniciar uma transa\u00e7\u00e3o local.
+LOCAL_TRAN_BEGIN_CWSIV0405.useraction=Consulte a exce\u00e7\u00e3o vinculada para obter informa\u00e7\u00f5es adicionais.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+LOCAL_TRAN_COMMIT_CWSIV0406=CWSIV0406E: Um erro interno ocorreu. A exce\u00e7\u00e3o {0} foi emitida enquanto o cont\u00eainer estava tentando consolidar uma transa\u00e7\u00e3o local.
+LOCAL_TRAN_COMMIT_CWSIV0406.explanation=Uma exce\u00e7\u00e3o foi criada enquanto o cont\u00eainer estava tentando consolidar uma transa\u00e7\u00e3o local.
+LOCAL_TRAN_COMMIT_CWSIV0406.useraction=Consulte a exce\u00e7\u00e3o vinculada para obter informa\u00e7\u00f5es adicionais.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+LOCAL_TRAN_ROLLBACK_CWSIV0407=CWSIV0407E: Um erro interno ocorreu. A exce\u00e7\u00e3o {0} foi emitida enquanto o cont\u00eainer estava tentando fazer revers\u00e3o de uma transa\u00e7\u00e3o local.
+LOCAL_TRAN_ROLLBACK_CWSIV0407.explanation=Uma exce\u00e7\u00e3o foi criada enquanto o cont\u00eainer estava tentando recuperar uma transa\u00e7\u00e3o local.
+LOCAL_TRAN_ROLLBACK_CWSIV0407.useraction=Consulte a exce\u00e7\u00e3o vinculada para obter informa\u00e7\u00f5es adicionais.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+XARESOURCE_CREATE_CWSIV0408=CWSIV0408E: Um erro interno ocorreu. A exce\u00e7\u00e3o {0} foi emitida durante a tentativa de obter um SIXAResource.
+XARESOURCE_CREATE_CWSIV0408.explanation=Uma exce\u00e7\u00e3o foi criada durante a tentativa de obter um SIXAResource.
+XARESOURCE_CREATE_CWSIV0408.useraction=Consulte a exce\u00e7\u00e3o vinculada para obter informa\u00e7\u00f5es adicionais.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the unexpected activation specification
+# {1} the expected type
+UNEXPECTED_ACTIVATION_SPEC_CWSIV0451=CWSIV0451E: Um erro interno ocorreu. A especifica\u00e7\u00e3o de ativa\u00e7\u00e3o {0} transmitida na ativa\u00e7\u00e3o do n\u00f3 de extremidade n\u00e3o era do tipo esperado {1}.
+UNEXPECTED_ACTIVATION_SPEC_CWSIV0451.explanation=A especifica\u00e7\u00e3o de ativa\u00e7\u00e3o transmitida na ativa\u00e7\u00e3o do n\u00f3 de extremidade n\u00e3o era do tipo esperado pelo adaptador de recurso.
+UNEXPECTED_ACTIVATION_SPEC_CWSIV0451.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the invalid activation specification
+# {1} the exception thrown during validation
+INVALID_ACTIVATION_SPEC_CWSIV0452=CWSIV0452E: A exce\u00e7\u00e3o {1} foi lan\u00e7ada na tentativa de validar a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o {0} durante a ativa\u00e7\u00e3o do n\u00f3 de extremidade.
+INVALID_ACTIVATION_SPEC_CWSIV0452.explanation=Durante a ativa\u00e7\u00e3o de um n\u00f3 de extremidade, a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o fornecida foi determinada como incorreta.
+INVALID_ACTIVATION_SPEC_CWSIV0452.useraction=Consulte a exce\u00e7\u00e3o vinculada para obter as propriedades inv\u00e1lidas e corrija os valores na especifica\u00e7\u00e3o de ativa\u00e7\u00e3o administrada ou no descritor de implementa\u00e7\u00e3o do bean orientado a mensagens.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the invalid activation specification
+# {1} the list of messages showing invalid properties
+INVALID_PROPERTIES_CWSIV0501=CWSIV0501E: Os problemas a seguir foram localizados ao validar as propriedades definidas na especifica\u00e7\u00e3o de ativa\u00e7\u00e3o. Os problemas s\u00e3o {1}. A especifica\u00e7\u00e3o de ativa\u00e7\u00e3o \u00e9: {0}
+INVALID_PROPERTIES_CWSIV0501.explanation=Durante a valida\u00e7\u00e3o da especifica\u00e7\u00e3o de ativa\u00e7\u00e3o fornecida, uma ou mais propriedades foram determinadas como incorretas.
+INVALID_PROPERTIES_CWSIV0501.useraction=Corrija os valores para as propriedades fornecidas na especifica\u00e7\u00e3o de ativa\u00e7\u00e3o administrada, ou na configura\u00e7\u00e3o de ativa\u00e7\u00e3o do bean acionado por mensagens, em seguida, inicie o aplicativo.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The exception that was thrown
+DEST_FACTORY_CWSIV0502=CWSIV0502E: Erro interno.  A exce\u00e7\u00e3o a seguir foi lan\u00e7ada durante a tentativa de obter um SIDestinationAddressFactory: {0}.
+DEST_FACTORY_CWSIV0502.explanation=Durante a ativa\u00e7\u00e3o do n\u00f3 de extremidade, o adaptador de recurso SPI principal estava tentando obter um SIDestinationAddressFactory e foi recebida uma exce\u00e7\u00e3o inesperada.
+DEST_FACTORY_CWSIV0502.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The exception that was thrown
+WLM_CLASSIFIER_REG_CWSIV0503=CWSIV0503E: Ocorreu um erro interno durante o registro do classificador WLM para o adaptador de core do n\u00facleo: {0}.
+WLM_CLASSIFIER_REG_CWSIV0503.explanation=Durante o registro do classificador WLM para o adaptador de recursos SPI do n\u00facleo com o registro da rotina de tratamento, foi recebida uma exce\u00e7\u00e3o inesperada.
+WLM_CLASSIFIER_REG_CWSIV0503.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_BUSNAME_CWSIV0504=CWSIV0504E: O nome do barramento em uma especifica\u00e7\u00e3o de ativa\u00e7\u00e3o de SPI Principal deve receber um valor
+INVALID_PROPERTY_BUSNAME_CWSIV0504.explanation=Durante a valida\u00e7\u00e3o das propriedades configuradas em uma especifica\u00e7\u00e3o de ativa\u00e7\u00e3o de SPI Principal, o nome do barramento foi considerado inv\u00e1lido.
+INVALID_PROPERTY_BUSNAME_CWSIV0504.useraction=Corrija o valor da propriedade de nome do barramento na especifica\u00e7\u00e3o de ativa\u00e7\u00e3o, em seguida, reinicie o servidor.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is another allowed value
+# {4} is the value of the destination type
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0505=CWSIV0505E: O seguinte tipo de destino em uma especifica\u00e7\u00e3o de ativa\u00e7\u00e3o do Core \u00e9 inv\u00e1lido [{4}]. Os valores [{0}] ou [{1}] ou [{2}] ou [{3}] s\u00e3o esperados.
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0505.explanation=Durante a valida\u00e7\u00e3o das propriedades configuradas em uma especifica\u00e7\u00e3o de ativa\u00e7\u00e3o de SPI Principal, o tipo de destino foi considerado inv\u00e1lido.
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0505.useraction=Corrija o valor da propriedade do tipo de destino na especifica\u00e7\u00e3o de ativa\u00e7\u00e3o e, em seguida, reinicie o servidor.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the subscription durability
+INVALID_PROPERTY_SHARE_DURSUB_CWSIV0506=CWSIV0506E: O seguinte campo de assinatura dur\u00e1vel de compartilhamento em uma especifica\u00e7\u00e3o de ativa\u00e7\u00e3o do Core \u00e9 inv\u00e1lido [{3}]. Os valores [{0}], [{1}] ou [{2}] s\u00e3o esperados.
+INVALID_PROPERTY_SHARE_DURSUB_CWSIV0506.explanation=Durante a valida\u00e7\u00e3o das propriedades configuradas em uma especifica\u00e7\u00e3o de ativa\u00e7\u00e3o de SPI Principal, a assinatura dur\u00e1vel de compartilhamento foi considerada inv\u00e1lida.
+INVALID_PROPERTY_SHARE_DURSUB_CWSIV0506.useraction=Corrija o valor da propriedade da assinatura dur\u00e1vel de compartilhamento na especifica\u00e7\u00e3o de ativa\u00e7\u00e3o e, em seguida, reinicie o servidor.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_DURSUBHOME_CWSIV0507=CWSIV0507E: O home de assinatura dur\u00e1vel em uma especifica\u00e7\u00e3o de ativa\u00e7\u00e3o de SPI Principal deve ter um valor ao utilizar assinaturas dur\u00e1veis.
+INVALID_PROPERTY_DURSUBHOME_CWSIV0507.explanation=Durante a valida\u00e7\u00e3o das propriedades configuradas em uma especifica\u00e7\u00e3o de ativa\u00e7\u00e3o de SPI Principal, o home de assinatura dur\u00e1vel foi considerado inv\u00e1lido.
+INVALID_PROPERTY_DURSUBHOME_CWSIV0507.useraction=Corrija o valor da propriedade do home da assinatura dur\u00e1vel na especifica\u00e7\u00e3o de ativa\u00e7\u00e3o e, em seguida, reinicie o servidor.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the destination type
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0508=CWSIV0508E: O seguinte tipo de destino em uma especifica\u00e7\u00e3o de ativa\u00e7\u00e3o do Core \u00e9 inv\u00e1lido [{3}]. Os valores [{0}] ou [{1}] ou [{2}] s\u00e3o esperados.
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0508.explanation=Durante a valida\u00e7\u00e3o das propriedades configuradas em uma especifica\u00e7\u00e3o de ativa\u00e7\u00e3o de SPI Principal, o tipo de destino foi considerado inv\u00e1lido. Como nenhum nome de destino \u00e9 fornecido, os T\u00f3picos n\u00e3o s\u00e3o permitidos
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0508.useraction=Corrija o valor da propriedade do tipo de destino na especifica\u00e7\u00e3o de ativa\u00e7\u00e3o e, em seguida, reinicie o servidor.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_MAXBATCH_CWSIV0509=CWSIV0509E: O tamanho m\u00e1ximo do lote em uma especifica\u00e7\u00e3o de ativa\u00e7\u00e3o de SPI Principal deve receber um valor positivo
+INVALID_PROPERTY_MAXBATCH_CWSIV0509.explanation=Durante a valida\u00e7\u00e3o das propriedades configuradas em uma especifica\u00e7\u00e3o de ativa\u00e7\u00e3o de SPI Principal, o tamanho m\u00e1ximo do lote foi considerado inv\u00e1lido.
+INVALID_PROPERTY_MAXBATCH_CWSIV0509.useraction=Corrija o valor da propriedade de tamanho m\u00e1ximo do lote em uma especifica\u00e7\u00e3o da ativa\u00e7\u00e3o e, em seguida, reinicie o servidor.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the deletion mode
+INVALID_PROPERTY_DELETION_MODE_CWSIV0510=CWSIV0510E: O seguinte tipo de destino em uma especifica\u00e7\u00e3o de ativa\u00e7\u00e3o do Core \u00e9 inv\u00e1lido [{3}]. Os valores [{0}] ou [{1}] ou [{2}] s\u00e3o esperados.
+INVALID_PROPERTY_DELETION_MODE_CWSIV0510.explanation=Durante a valida\u00e7\u00e3o das propriedades configuradas em uma especifica\u00e7\u00e3o de ativa\u00e7\u00e3o de SPI Principal, o modo de exclus\u00e3o foi considerado inv\u00e1lido.
+INVALID_PROPERTY_DELETION_MODE_CWSIV0510.useraction=Corrija o valor da propriedade de modo de exclus\u00e3o na especifica\u00e7\u00e3o de ativa\u00e7\u00e3o, em seguida, reinicie o servidor.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_MAXCONC_CWSIV0511=CWSIV0511E: A simultaneidade m\u00e1xima em uma especifica\u00e7\u00e3o de ativa\u00e7\u00e3o de SPI Principal deve receber um valor positivo
+INVALID_PROPERTY_MAXCONC_CWSIV0511.explanation=Durante a valida\u00e7\u00e3o das propriedades configuradas em uma especifica\u00e7\u00e3o de ativa\u00e7\u00e3o de SPI Principal, a simultaneidade m\u00e1xima foi considerada inv\u00e1lida.
+INVALID_PROPERTY_MAXCONC_CWSIV0511.useraction=Corrija o valor da propriedade de simultaneidade m\u00e1xima na especifica\u00e7\u00e3o de ativa\u00e7\u00e3o, em seguida, reinicie o servidor.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the target type
+INVALID_PROPERTY_TARGET_TYPE_CWSIV0512=CWSIV0512E: O seguinte campo de tipo de destino em uma especifica\u00e7\u00e3o de ativa\u00e7\u00e3o do Core \u00e9 inv\u00e1lido [{3}]. Os valores [{0}], [{1}] ou [{2}] s\u00e3o esperados.
+INVALID_PROPERTY_TARGET_TYPE_CWSIV0512.explanation=Durante a valida\u00e7\u00e3o das propriedades configuradas em uma especifica\u00e7\u00e3o de ativa\u00e7\u00e3o de SPI Principal, o tipo de destino foi considerado inv\u00e1lido.
+INVALID_PROPERTY_TARGET_TYPE_CWSIV0512.useraction=Corrija o valor da propriedade do tipo de destino na especifica\u00e7\u00e3o de ativa\u00e7\u00e3o e, em seguida, reinicie o servidor.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is the value of the target significance
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSIV0513=CWSIV0513E: O seguinte campo de tipo de destino em uma especifica\u00e7\u00e3o de ativa\u00e7\u00e3o do Core \u00e9 inv\u00e1lido [{2}]. Os valores [{0}] ou [{1}] s\u00e3o esperados.
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSIV0513.explanation=Durante a valida\u00e7\u00e3o das propriedades configuradas em uma especifica\u00e7\u00e3o de ativa\u00e7\u00e3o de SPI Principal, a signific\u00e2ncia de destino foi considerada inv\u00e1lida.
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSIV0513.useraction=Corrija o valor da propriedade de signific\u00e2ncia de destino na especifica\u00e7\u00e3o de ativa\u00e7\u00e3o, em seguida, reinicie o servidor.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the provider endpoints
+INVALID_PROPERTY_PROVIDER_ENDPOINTS_CWSIV0514=CWSIV0514E: Os terminais de provedor foram configurados como {0} em uma especifica\u00e7\u00e3o de ativa\u00e7\u00e3o de SPI Principal. Os terminais de provedor n\u00e3o s\u00e3o suportados quando a propriedade "Utilizar Assunto do Servidor" est\u00e1 configurada.
+INVALID_PROPERTY_PROVIDER_ENDPOINTS_CWSIV0514.explanation=Durante a valida\u00e7\u00e3o das propriedades configuradas em uma especifica\u00e7\u00e3o de ativa\u00e7\u00e3o de SPI Principal, o terminal de provedor foi considerado inv\u00e1lido porque a propriedade Utilizar Assunto do Provedor est\u00e1 configurada.
+INVALID_PROPERTY_PROVIDER_ENDPOINTS_CWSIV0514.useraction=Certifique-se de que a propriedade de terminais de provedor n\u00e3o seja configurada se Utilizar Assunto do Servidor estiver configurado. Corrija o valor da propriedade na especifica\u00e7\u00e3o de ativa\u00e7\u00e3o, em seguida, reinicie o servidor.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_USEDESTWILDCARD_CWSIV0515=CWSIV0515E: A propriedade "utilizar curinga de destino" foi configurada em uma especifica\u00e7\u00e3o de ativa\u00e7\u00e3o de SPI Principal ao utilizar um Espa\u00e7o de T\u00f3pico. A propriedade "Utilizar Curinga de Destino" n\u00e3o \u00e9 suportada quando um Espa\u00e7o de T\u00f3pico \u00e9 utilizado.
+INVALID_PROPERTY_USEDESTWILDCARD_CWSIV0515.explanation=Durante a valida\u00e7\u00e3o das propriedades configuradas em uma especifica\u00e7\u00e3o de ativa\u00e7\u00e3o de SPI Principal, "Utilizar Curinga de Destino" foi considerado inv\u00e1lido porque um Espa\u00e7o de T\u00f3pico est\u00e1 sendo utilizado.
+INVALID_PROPERTY_USEDESTWILDCARD_CWSIV0515.useraction=Assegure-se de que a propriedade "utilizar curinga de destino" n\u00e3o esteja configurada ao utilizar um Espa\u00e7o de T\u00f3pico. Corrija o valor da propriedade na especifica\u00e7\u00e3o de ativa\u00e7\u00e3o, em seguida, reinicie o servidor.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint factory throwing the exception
+# {1} the exception thrown
+NO_METHOD_CWSIV0550=CWSIV0550E: Um erro interno ocorreu. A exce\u00e7\u00e3o {1} foi emitida pelo dep\u00f3sito de informa\u00e7\u00f5es do provedor de n\u00f3s de extremidade de mensagens {0}, na tentativa de determinar se \
+o m\u00e9todo onMessage \u00e9 executado.
+NO_METHOD_CWSIV0550.explanation=A ativa\u00e7\u00e3o do n\u00f3 de extremidade recebeu uma exce\u00e7\u00e3o do dep\u00f3sito  de informa\u00e7\u00f5es do provedor de n\u00f3s de extremidade de mensagens, indicando que n\u00e3o h\u00e1 onMessage \
+para este n\u00f3 de extremidade durante a tentativa de determinar sua transa\u00e7\u00e3o.
+NO_METHOD_CWSIV0550.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the MDB that had the problem
+# {1} the max concurrency on the MDB
+# {2} the max pool size JCA is using
+# {3} the new max concurrency to use
+MAX_CONCURRENCY_CWSIV0551=CWSIV0551W: A simultaneidade m\u00e1xima para o MDB {0} foi configurada como {1} em sua especifica\u00e7\u00e3o de ativa\u00e7\u00e3o. Esse \u00e9 um valor mais alto que o tamanho m\u00e1ximo do conjunto {2} do JCA e, portanto, a simultaneidade m\u00e1xima do MDB foi abaixada para {3}
+MAX_CONCURRENCY_CWSIV0551.explanation=A configura\u00e7\u00e3o da simultaneidade m\u00e1xima na especifica\u00e7\u00e3o de ativa\u00e7\u00e3o foi configurada para um valor alto ou a simultaneidade m\u00e1xima no tamanho m\u00e1ximo do conjunto do JCA foi configurada para um valor baixo. Isso n\u00e3o deveria causar um problema porque o Sistema de Mensagens de Plataforma abaixar\u00e1 a simultaneidade m\u00e1xima na especifica\u00e7\u00e3o de ativa\u00e7\u00e3o, mas um aviso ser\u00e1 emitido ao usu\u00e1rio para permitir que ele saiba que a simultaneidade m\u00e1xima configurada n\u00e3o ser\u00e1 utilizada.
+MAX_CONCURRENCY_CWSIV0551.useraction=Esse aviso continuar\u00e1 a ser mostrado sempre que o bean acionado por mensagens for iniciado. Para remover essa mensagem de aviso, diminua a simultaneidade m\u00e1xima de especifica\u00e7\u00e3o de ativa\u00e7\u00e3o ou aumente o tamanho m\u00e1ximo do conjunto de terminais do JCA (utilizando a propriedade de sistema com.ibm.websphere.ejbcontainer.poolSize da JVM)
+
+# -------------------------------------------------------------------------------------------------
+# {0} the messaging engine UUID
+# {1} the bus name
+# {2} the endpoint
+ENDPOINT_DEACTIVATED_CWSIV0554=CWSIV0554E: Um erro interno ocorreu. Foi feita uma tentativa de obter uma conex\u00e3o para o mecanismo de troca de mensagens com o UUID {0} no barramento {1} ap\u00f3s o n\u00f3 de extremidade {2} ser desativado.
+ENDPOINT_DEACTIVATED_CWSIV0554.explanation=Foi feito um pedido de uma conex\u00e3o para o mecanismo de troca de mensagens fornecido mas a ativa\u00e7\u00e3o do n\u00f3 de extremidade foi desativada.
+ENDPOINT_DEACTIVATED_CWSIV0554.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the ME name
+# (2) the bus name
+# {3} the endpoint activation
+MESSAGING_ENGINE_STARTING_CWSIV0555=CWSIV0555E: A exce\u00e7\u00e3o {0} foi emitida durante o processamento da inicializa\u00e7\u00e3o do mecanismo de troca de mensagens {1} no barramento {2} para ativa\u00e7\u00e3o do n\u00f3 de extremidade {3}.
+MESSAGING_ENGINE_STARTING_CWSIV0555.explanation=O adaptador de recursos de entrada tentou processar o mecanismo de troca de mensagens fornecido ao receber uma exce\u00e7\u00e3o.  As mensagens dos destinos localizadas nesse mecanismo do sistema de mensagens, n\u00e3o ser\u00e3o recebidas pelo bean orientado por mensagem. Se a exce\u00e7\u00e3o vinculada for uma exce\u00e7\u00e3o de autentica\u00e7\u00e3o, certifique-se de que a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o tenha sido associada com um alias de autentica\u00e7\u00e3o v\u00e1lido.
+MESSAGING_ENGINE_STARTING_CWSIV0555.useraction=Consulte a exce\u00e7\u00e3o vinculada para obter informa\u00e7\u00f5es adicionais.  Ap\u00f3s a resolu\u00e7\u00e3o do problema, reinicie o mecanismo de sistema de mensagens, o adaptador de recursos ou o aplicativo.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Activation Specification ID
+# {1} Destination Name
+TARGETTED_CONNECTION_SUCCESSFUL_CWSIV0556=CWSIV0556I: A conex\u00e3o com o Mecanismo do Sistema de Mensagens foi bem-sucedida. O bean acionado por mensagens com especifica\u00e7\u00e3o de ativa\u00e7\u00e3o {0} agora poder\u00e1 receber as mensagens do destino {1}.
+TARGETTED_CONNECTION_SUCCESSFUL_CWSIV0556.explanation=O adaptador de recursos JMS p\u00f4de estabelecer com \u00eaxito a conex\u00e3o com o mecanismo do sistema de mensagens. Isso permite que o bean acionado por mensagens receba a mensagem do destino.
+TARGETTED_CONNECTION_SUCCESSFUL_CWSIV0556.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+# -------------------------------------------------------------------------------------------------
+
+
+
+# {0} the exception thrown
+# {1} the list of messages
+UNLOCK_EXCEPTION_CWSIV0601=CWSIV0601E: Um erro interno ocorreu. A exce\u00e7\u00e3o {0} foi recebida durante a tentativa de destravar as mensagens {1}.
+UNLOCK_EXCEPTION_CWSIV0601.explanation=O adaptador de recurso recebeu uma exce\u00e7\u00e3o, durante a tentativa de destravar um conjunto de mensagens.
+UNLOCK_EXCEPTION_CWSIV0601.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the message being deleted
+# {2} the transaction under which the message was being deleted
+DELETE_EXCEPTION_CWSIV0602=CWSIV0602E: Um erro interno ocorreu. A exce\u00e7\u00e3o {0} foi recebida durante a tentativa de excluir a mensagem {1} da transa\u00e7\u00e3o {2}.
+DELETE_EXCEPTION_CWSIV0602.explanation=O adaptador de recurso recebeu uma exce\u00e7\u00e3o, durante a tentativa de excluir uma mensagem da transa\u00e7\u00e3o fornecida.
+DELETE_EXCEPTION_CWSIV0602.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the messages being deleted
+# {2} the transaction under which the messages were being deleted
+DELETE_SET_EXCEPTION_CWSIV0603=CWSIV0603E: Um erro interno ocorreu. A exce\u00e7\u00e3o {0} foi recebida durante a tentativa de excluir as mensagens {1} da transa\u00e7\u00e3o {2}.
+DELETE_SET_EXCEPTION_CWSIV0603.explanation=O adaptador de recurso recebeu uma exce\u00e7\u00e3o, durante a tentativa de excluir mensagens da transa\u00e7\u00e3o fornecida.
+DELETE_SET_EXCEPTION_CWSIV0603.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+REQUEST_METRICS_CWSIV0604=CWSIV0604E: Um erro interno ocorreu. A exce\u00e7\u00e3o {0} foi recebida durante a tentativa de obter a inst\u00e2ncia das m\u00e9tricas de pedido.
+REQUEST_METRICS_CWSIV0604.explanation=O adaptador de recursos recebeu uma exce\u00e7\u00e3o durante a tentativa de obter a inst\u00e2ncia das m\u00e9tricas de pedido.
+REQUEST_METRICS_CWSIV0604.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint
+# {1} the destination the message endpoint is attached to
+MESSAGE_ENDPOINT_SHOULD_BE_DEACTIVATED_CWSIV0605=CWSIV0605W: O Terminal de Mensagem {0} que estava atendendo o destino {1} deve ser desativado j\u00e1 que o n\u00famero m\u00e1ximo de falhas seq\u00fcenciais foi atingido.
+MESSAGE_ENDPOINT_SHOULD_BE_DEACTIVATED_CWSIV0605.explanation=O Sistema determinou que h\u00e1 um poss\u00edvel problema com o MDB associado ao terminal de mensagem.
+MESSAGE_ENDPOINT_SHOULD_BE_DEACTIVATED_CWSIV0605.useraction=Investigue os poss\u00edveis problemas com o MDB que poderiam causar falhas seq\u00fcenciais. O terminal de mensagem pode ser desativado para impedir que ocorram novos erros; utilize o MBean do Terminal de Mensagem que est\u00e1 transmitindo o nome do terminal nesta mensagem para desativar o terminal ou para parar o aplicativo que cont\u00e9m o Bean Orientado a Mensagens.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the session
+# {1} the message handle
+# {2} the transaction
+# {3} the bifurcated consumer session class name
+INVALID_SESSION_CWSIV0606=CWSIV0606E: Um erro interno ocorreu. Ao tentar excluir o identificador de mensagem {1} sob a transa\u00e7\u00e3o {2}, a sess\u00e3o {0} n\u00e3o estava no tipo {3} requerido
+INVALID_SESSION_CWSIV0606.explanation=O adaptador de recursos encontrou um problema ao tentar excluir um identificador de mensagem
+INVALID_SESSION_CWSIV0606.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the number of messagesin the list
+# {1} the message list
+# {2} the handle
+# {3} the transaction
+MESSAGE_LIST_INCORRECT_CWSIV0607=CWSIV0607E: Um erro interno ocorreu. Ao tentar excluir o identificador de mensagem {2} sob a transa\u00e7\u00e3o {3}, esperava-se que houvesse 1 mensagem na lista de mensagens {1}, por\u00e9m ela continha {0} mensagens
+MESSAGE_LIST_INCORRECT_CWSIV0607.explanation=O adaptador de recursos encontrou um problema ao tentar excluir um identificador de mensagem
+MESSAGE_LIST_INCORRECT_CWSIV0607.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the message handle
+# {2} the transaction
+DELETE_EXCEPTION_CWSIV0608=CWSIV0608E: Um erro interno ocorreu. Ao tentar excluir o identificador de mensagem {1} sob a transa\u00e7\u00e3o {2}, a seguinte exce\u00e7\u00e3o foi emitida {0}
+DELETE_EXCEPTION_CWSIV0608.explanation=O adaptador de recursos encontrou um problema ao tentar excluir um identificador de mensagem
+DELETE_EXCEPTION_CWSIV0608.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the connection throwing the exception
+XARESOURCE_EXCEPTION_CWSIV0650=CWSIV0650E: Um erro interno ocorreu. A exce\u00e7\u00e3o {0} foi recebida durante a tentativa de obter o XAResource da conex\u00e3o {1}.
+XARESOURCE_EXCEPTION_CWSIV0650.explanation=O adaptador de recurso recebeu uma exce\u00e7\u00e3o, durante a tentativa de obter o XAResource de uma conex\u00e3o, para transmiti-lo na cria\u00e7\u00e3o do n\u00f3 de extremidade.
+XARESOURCE_EXCEPTION_CWSIV0650.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the endpoint on which beforeDelivery is being invoked
+BEFORE_DELIVERY_CWSIV0651=CWSIV0651E: Um erro interno ocorreu. A exce\u00e7\u00e3o {0} foi recebida durante a tentativa de chamar beforeDelivery no n\u00f3 de extremidade {1}.
+BEFORE_DELIVERY_CWSIV0651.explanation=O adaptador de recurso recebeu uma exce\u00e7\u00e3o, durante a tentativa de chamar beforeDelivery em um n\u00f3 de extremidade anterior \u00e0 chamada onMessage.
+BEFORE_DELIVERY_CWSIV0651.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is a connection property name, eg targetType
+# {1} is the required connection property value
+ME_NAME_REQUIRED_CWSIV0652=CWSIV0652E: Um mecanismo do sistema de mensagens espec\u00edfico deve ser especificado para utilizar recursos JMS em uma transa\u00e7\u00e3o. A propriedade da conex\u00e3o {0} deve ser configurada para {1}.
+ME_NAME_REQUIRED_CWSIV0652.explanation=Para permitir a recupera\u00e7\u00e3o de transa\u00e7\u00f5es, \u00e9 necess\u00e1rio que uma connection factory destine um mecanismo do sistema de mensagens espec\u00edfico no barramento.
+ME_NAME_REQUIRED_CWSIV0652.useraction=Altere as propriedades de connection factory 'targetGroup' para 'o nome do mecanismo do sistema de mensagens no barramento', 'targetType' para 'ME' e 'targetSignificance' para 'Necess\u00e1rio'.
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the ConsumerSession whose parent connection is throwing the exception
+CLONE_EXCEPTION_CWSIV0700=CWSIV0700E: Um erro interno ocorreu. A exce\u00e7\u00e3o {0} foi recebida durante a tentativa de clonar a conex\u00e3o pai para a sess\u00e3o {1}.
+CLONE_EXCEPTION_CWSIV0700.explanation=O adaptador de recurso recebeu uma exce\u00e7\u00e3o, durante a tentativa de clonar uma conex\u00e3o que seria retornada a partir do getConnection na sess\u00e3o a ser transmitida para o n\u00f3 de extremidade.
+CLONE_EXCEPTION_CWSIV0700.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the method that is not supported
+NOT_SUPPORTED_CWSIV0701=CWSIV0701E: O uso do m\u00e9todo {0} n\u00e3o \u00e9 suportado.
+NOT_SUPPORTED_CWSIV0701.explanation=O m\u00e9todo determinado n\u00e3o pode ser chamado na sess\u00e3o transmitida para o m\u00e9todo onMessage de um bean acionado por mensagens de SPI principal do Sistema de Mensagens de Plataforma.
+NOT_SUPPORTED_CWSIV0701.useraction=Remova a chamada incorreta e, se requerido, crie uma sess\u00e3o separada de SPI principal do Sistema de Mensagens de Plataforma.
+
+# -------------------------------------------------------------------------------------------------
+OUT_OF_SCOPE_CWSIV0702=CWSIV0702E: A sess\u00e3o n\u00e3o se encontra mais em escopo.
+OUT_OF_SCOPE_CWSIV0702.explanation=A sess\u00e3o transmitida para o m\u00e9todo onMessage de um bean acionado por mensagens de SPI principal do Sistema de Mensagens de Plataforma n\u00e3o pode ser utilizada quando o m\u00e9todo foi conclu\u00eddo.
+OUT_OF_SCOPE_CWSIV0702.useraction=Remova a chamada incorreta e, se requerido, crie uma sess\u00e3o separada de SPI principal do Sistema de Mensagens de Plataforma.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the destination UUID
+DESTINATION_LOCALITY_CWSIV0753=CWSIV0753E: Um erro interno ocorreu. A exce\u00e7\u00e3o a seguir foi lan\u00e7ada ao tentar determinar o conjunto de pontos de fila para o destino {1}: {0}.
+DESTINATION_LOCALITY_CWSIV0753.explanation=Foi recebida uma exce\u00e7\u00e3o inesperada, durante a tentativa de determinar o conjunto de mecanismos de sistemas de mensagens com os pontos de fila para o destino fornecido.
+DESTINATION_LOCALITY_CWSIV0753.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+FOREIGN_DESTINATION_CWSIV0754=CWSIV0754E: O destino {0}  no barramento {1} n\u00e3o est\u00e1 definido como um ponto de fila no barramento ao qual o bean acionado por mensagens est\u00e1 conectado
+FOREIGN_DESTINATION_CWSIV0754.explanation=Um bean acionado por mensagens deve ser conectado ao barramento que hospeda o destino a partir do qual o bean consome.  Os barramentos externos n\u00e3o s\u00e3o suportados.
+FOREIGN_DESTINATION_CWSIV0754.useraction=Modifique a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o do bean orientado por mensagem, para que ele seja conectado ao barramento necess\u00e1rio ou mova o destino para o barramento, para o qual o bean orientado por mensagem est\u00e1 sendo conectado.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the required destination type
+# {3} the actual destination type
+INCORRECT_TYPE_CWSIV0755=CWSIV0755E: O destino {0} no barramento {1} \u00e9 do tipo {3} n\u00e3o do tipo requerido {2}.
+INCORRECT_TYPE_CWSIV0755.explanation=O tipo de destino definido na especifica\u00e7\u00e3o de ativa\u00e7\u00e3o do bean orientado por mensagem n\u00e3o corresponde ao tipo do destino configurado.
+INCORRECT_TYPE_CWSIV0755.useraction=Verifique se a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o do bean acionado por mensagens est\u00e1 configurada com o destino e/ou tipo corretos.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+UNKNOWN_TYPE_CWSIV0756=CWSIV0756E: Um erro interno ocorreu. O destino {0} no barramento {1} possui uma defini\u00e7\u00e3o de um tipo inesperado.
+UNKNOWN_TYPE_CWSIV0756.explanation=O destino especificado n\u00e3o era um destino local, um destino externo ou um destino do alias.
+UNKNOWN_TYPE_CWSIV0756.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+NOT_FOUND_CWSIV0757=CWSIV0757E: O destino {0} no barramento {1} n\u00e3o foi localizado.
+NOT_FOUND_CWSIV0757.explanation=O destino configurado no bean orientado por mensagem n\u00e3o existe no barramento especificado.
+NOT_FOUND_CWSIV0757.useraction=Verifique a defini\u00e7\u00e3o do destino na especifica\u00e7\u00e3o de ativa\u00e7\u00e3o do bean orientado a mensagens ou liga\u00e7\u00f5es.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the exception
+UNEXPECTED_EXCEPTION_CWSIV0758=CWSIV0758E: Um erro interno ocorreu. A exce\u00e7\u00e3o a seguir foi lan\u00e7ada durante a tentativa de obter a defini\u00e7\u00e3o de destino {0} no barramento {1}: {2}.
+UNEXPECTED_EXCEPTION_CWSIV0758.explanation=Foi recebida uma exce\u00e7\u00e3o inesperada, durante a tentativa de obter a defini\u00e7\u00e3o do destino especificado.
+UNEXPECTED_EXCEPTION_CWSIV0758.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the bus
+NO_ACTIVE_MES_CWSIV0759=CWSIV0759W: Durante a ativa\u00e7\u00e3o de um bean orientado a mensagens, nenhum mecanismo de troca de mensagens adequado ativo foi localizado no servidor local no barramento {0}.
+NO_ACTIVE_MES_CWSIV0759.explanation=Um bean acionado por mensagens foi configurado para conex\u00e3o ao barramento fornecido, mas n\u00e3o h\u00e1 mecanismos de sistema de mensagens ativos adequados dentro do servidor local.  O consumo de mensagens come\u00e7ar\u00e1 quando um mecanismo de troca de mensagens adequado local se tornar ativo.
+NO_ACTIVE_MES_CWSIV0759.useraction=Certifique-se de que um mecanismo do sistema de mensagens apropriado esteja iniciado. Uma mensagem \u00e9 exibida quando uma conex\u00e3o bem-sucedida \u00e9 feita.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the bus
+# {1} the name of the messaging engine
+# {2} the name of the destination
+NEW_CONSUMER_CWSIV0764=CWSIV0764I: Foi criado um consumidor para um bean orientado a mensagens no destino {2}  no barramento {0} ap\u00f3s a ativa\u00e7\u00e3o do mecanismo do sistema de mensagens {1}.
+NEW_CONSUMER_CWSIV0764.explanation=A ativa\u00e7\u00e3o de um mecanismo do sistema de mensagens no barramento requerido causou a cria\u00e7\u00e3o de um novo consumidor para o destino especificado.
+NEW_CONSUMER_CWSIV0764.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the ME name
+# (2) the bus name
+MESSAGING_ENGINE_STOPPING_CWSIV0765=CWSIV0765E: A exce\u00e7\u00e3o {0} foi emitida durante a tentativa de criar uma conex\u00e3o para um ouro mecanismo de troca de mensagens durante a parada do mecanismo de troca de mensagens {1} no barramento {2}.
+MESSAGING_ENGINE_STOPPING_CWSIV0765.explanation=Durante a parada do mecanismo de troca de mensagens fornecido, o adaptador de recursos recebeu uma exce\u00e7\u00e3o durante a tentativa de conex\u00e3o a um mecanismo de troca de mensagens alternativo.
+MESSAGING_ENGINE_STOPPING_CWSIV0765.useraction=Consulte a exce\u00e7\u00e3o vinculada para obter informa\u00e7\u00f5es adicionais.  Ap\u00f3s a resolu\u00e7\u00e3o do problema, reinicie o mecanismo de sistema de mensagens ou o adaptador de recurso.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the destination
+# {2} the messaging engine name
+# {3} the bus name
+# {4} the endpoint activation
+SESSION_ERROR_CWSIV0766=CWSIV0766E: A exce\u00e7\u00e3o {0} foi emitida para o consumidor para o destino {1} no mecanismo de troca de mensagens {2} no barramento {3} para ativa\u00e7\u00e3o do n\u00f3 de extremidade {4}.
+SESSION_ERROR_CWSIV0766.explanation=Uma exce\u00e7\u00e3o ass\u00edncrona foi recebida para o consumidor fornecido.  O bean orientado a mensagens correspondente ser\u00e1 desativado e n\u00e3o receber\u00e1 mais mensagens.
+SESSION_ERROR_CWSIV0766.useraction=Consulte a exce\u00e7\u00e3o para obter detalhe.  Ap\u00f3s a resolu\u00e7\u00e3o do problema, reinicie o mecanismo de sistema de mensagens, o adaptador de recursos ou o aplicativo.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the messaging engine name
+# {2} the endpoint activation
+CONNECTION_ERROR_CWSIV0767=CWSIV0767E: A exce\u00e7\u00e3o {0} foi emitida em uma conex\u00e3o ao mecanismo de troca de mensagens {1} para ativa\u00e7\u00e3o do n\u00f3 de extremidade {2}.
+CONNECTION_ERROR_CWSIV0767.explanation=Uma exce\u00e7\u00e3o foi recebida para a conex\u00e3o fornecida.  O bean orientado a mensagens correspondente ser\u00e1 desativado e n\u00e3o receber\u00e1 mais mensagens.
+CONNECTION_ERROR_CWSIV0767.useraction=Consulte a exce\u00e7\u00e3o para obter detalhe.  Ap\u00f3s a resolu\u00e7\u00e3o do problema, reinicie o mecanismo de sistema de mensagens, o adaptador de recursos ou o aplicativo.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+# {2} the endpoint activation
+LAST_ME_CWSIV0768=CWSIV0768I: O \u00faltimo mecanismo de troca de mensagens local {0} no barramento {1} utilizado pela ativa\u00e7\u00e3o de n\u00f3 de extremidade {2} est\u00e1 parando.
+LAST_ME_CWSIV0768.explanation=A ativa\u00e7\u00e3o de terminal fornecida estava utilizando um mecanismo do sistema de mensagens que agora foi parado.  N\u00e3o existe nenhum outro mecanismo de troca de mensagens ativo para o qual se conectar.  O bean orientado a mensagens associado ser\u00e1 iniciado para receber mensagens novamente quando um mecanismo de troca de mensagens adequado se tornar dispon\u00edvel.
+LAST_ME_CWSIV0768.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+ATTACH_FAILED_CWSIV0769=CWSIV0769W: A cria\u00e7\u00e3o de um consumidor para destino remoto {0} no barramento {1} para ativa\u00e7\u00e3o de n\u00f3 de extremidade {2} falhou com a exce\u00e7\u00e3o {3}.
+ATTACH_FAILED_CWSIV0769.explanation=O adaptador de recursos de entrada conectou-se com sucesso a um mecanismo de sistema de mensagens local, por\u00e9m, recebeu uma exce\u00e7\u00e3o durante a tentativa de criar um consumidor em um ponto de fila remoto.
+ATTACH_FAILED_CWSIV0769.useraction=Verifique se um mecanismo de sistema de mensagens com um ponto de fila para o destino fornecido est\u00e1 dispon\u00edvel.  O adaptador de recursos tentar\u00e1 novamente a cria\u00e7\u00e3o do consumidor, periodicamente, de forma autom\u00e1tica.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+CONSUMER_FAILED_CWSIV0770=CWSIV0770W: A cria\u00e7\u00e3o de um consumidor para destino remoto {0} no barramento {1} para ativa\u00e7\u00e3o de n\u00f3 de extremidade {2} falhou com a exce\u00e7\u00e3o {3}.
+CONSUMER_FAILED_CWSIV0770.explanation=O adaptador de recursos de entrada recebeu uma exce\u00e7\u00e3o para um consumidor existente em um ponto de fila remoto.
+CONSUMER_FAILED_CWSIV0770.useraction=Verifique se um mecanismo de sistema de mensagens com um ponto de fila para o destino fornecido est\u00e1 dispon\u00edvel.  O adaptador de recursos tentar\u00e1 novamente recriar o consumidor, periodicamente, de forma autom\u00e1tica.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the name of the messaging engine
+# {2} the name of the bus
+# {3} the endpoint activation
+RELOAD_FAILED_CWSIV0773=CWSIV0773E: A exce\u00e7\u00e3o {0} foi emitida durante o processamento da inicializa\u00e7\u00e3o do mecanismo de troca de mensagens {1} no barramento {2} para ativa\u00e7\u00e3o do n\u00f3 de extremidade {3}.
+RELOAD_FAILED_CWSIV0773.explanation=Durante o processamento da configura\u00e7\u00e3o atualizada para o mecanismo de sistema de mensagens fornecido, uma exce\u00e7\u00e3o foi recebida.  As mensagens para o ponto de fila nesse mecanismo do sistema de mensagens n\u00e3o podem ser recebidas pelo bean acionado por mensagens correspondente.
+RELOAD_FAILED_CWSIV0773.useraction=Consulte a exce\u00e7\u00e3o para obter a causa.  Ap\u00f3s resolver o problema, reinicie o mecanismo de sistema de mensagens, o adaptador de recursos ou o aplicativo.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the name of the destination
+# {2} the name of the messaging engine
+# {3} the name of the bus
+# {4} the endpoint activation
+FAILURE_DURING_RELOAD_CWSIV0774=CWSIV0774W: A exce\u00e7\u00e3o {0} foi emitida para o consumidor para o destino {1} no mecanismo de sistema de mensagens {2} no barramento {3} para a ativa\u00e7\u00e3o do n\u00f3 de extremidade {4} enquanto o mecanismo de sistema de mensagens estava recarregando sua configura\u00e7\u00e3o.
+FAILURE_DURING_RELOAD_CWSIV0774.explanation=A exce\u00e7\u00e3o fornecida foi recebida para um consumidor enquanto o mecanismo de sistema de mensagens correspondente estava recarregando sua configura\u00e7\u00e3o.
+FAILURE_DURING_RELOAD_CWSIV0774.useraction=Esse aviso poder\u00e1 ser ignorado se o ponto de fila ao qual o consumidor estava anexado foi exclu\u00eddo deliberadamente como parte das atualiza\u00e7\u00f5es da configura\u00e7\u00e3o. Se um ponto de fila de substitui\u00e7\u00e3o foi definido, um novo consumidor ser\u00e1 criado quando a atualiza\u00e7\u00e3o tiver sido conclu\u00edda.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+CONNECT_FAILED_CWSIV0775=CWSIV0775W: A cria\u00e7\u00e3o de um consumidor para destino remoto {0} no barramento {1} para ativa\u00e7\u00e3o de n\u00f3 de extremidade {2} falhou com a exce\u00e7\u00e3o {3}.
+CONNECT_FAILED_CWSIV0775.explanation=O adaptador de recursos de entrada recebeu uma exce\u00e7\u00e3o durante a tentativa de conectar-se com um mecanismo de sistema de mensagens remoto.
+CONNECT_FAILED_CWSIV0775.useraction=Verifique se o mecanismo de sistema de mensagens no barramento fornecido est\u00e1 dispon\u00edvel.  O adaptador de recursos tenta conectar-se periodicamente com o barramento, de forma autom\u00e1tica.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+CONNECTION_ERROR_CWSIV0776=CWSIV0776W: A cria\u00e7\u00e3o de um consumidor para destino remoto {0} no barramento {1} para ativa\u00e7\u00e3o de n\u00f3 de extremidade {2} falhou com a exce\u00e7\u00e3o {3}.
+CONNECTION_ERROR_CWSIV0776.explanation=O adaptador de recursos de entrada recebeu uma exce\u00e7\u00e3o para uma conex\u00e3o existente com um mecanismo do sistema de mensagens.
+CONNECTION_ERROR_CWSIV0776.useraction=Verifique se o mecanismo de sistema de mensagens no barramento fornecido est\u00e1 dispon\u00edvel.  O adaptador de recursos tenta conectar-se periodicamente com o barramento, de forma autom\u00e1tica.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the destination
+# {2} the name of the bus
+CONNECTED_CWSIV0777=CWSIV0777I: Uma conex\u00e3o com o mecanismo do sistema de mensagens {0} do destino {1} no barramento {2} foi criada com \u00eaxito.
+CONNECTED_CWSIV0777.explanation=O adaptador de recursos de entrada criou com \u00eaxito uma conex\u00e3o com um mecanismo do sistema de mensagens para a ativa\u00e7\u00e3o de terminal fornecida.
+CONNECTED_CWSIV0777.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+# {2} the endpoint activation
+ME_INITIALIZING_CWSIV0778=CWSIV0778I: O mecanismo de sistema de mensagens local {0} para o barramento {1} requerido pela ativa\u00e7\u00e3o do n\u00f3 de extremidade {2} est\u00e1 dispon\u00edvel agora.
+ME_INITIALIZING_CWSIV0778.explanation=A ativa\u00e7\u00e3o do n\u00f3 de extremidade fornecido estava conectando-se remotamente porque nenhum mecanismo de sistema de mensagens local estava ativado.  Todas as conex\u00f5es remotas est\u00e3o fechadas agora.  Quando o mecanismo de sistema de mensagens local estiver ativo, ser\u00e1 feita uma nova tentativa de conex\u00e3o.
+ME_INITIALIZING_CWSIV0778.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+ME_DESTROYED_CWSIV0779=CWSIV0779I: O \u00faltimo mecanismo do sistema de mensagens local {0} do barramento {1} foi destru\u00eddo.
+ME_DESTROYED_CWSIV0779.explanation=A ativa\u00e7\u00e3o do n\u00f3 de extremidade fornecido estava conectando-se localmente, mas nenhum mecanismo de sistema de mensagens local restante est\u00e1 ativado.  O adaptador de recursos est\u00e1 tentando conectar-se com um mecanismo de sistema de mensagens remoto.
+ME_DESTROYED_CWSIV0779.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+# {2} the endpoint activation
+ME_TERMINATED_CWSIV0780=CWSIV0780W: O mecanismo do sistema de mensagens remoto {0} no barramento {1} ao qual a ativa\u00e7\u00e3o do n\u00f3 de extremidade {2} estava conectada, terminou.
+ME_TERMINATED_CWSIV0780.explanation=O adaptador de recursos de entrada recebeu a notifica\u00e7\u00e3o de que o mecanismo de sistema de mensagens remoto ao qual estava conectado, terminou.
+ME_TERMINATED_CWSIV0780.useraction=Verifique se o mecanismo de sistema de mensagens no barramento fornecido est\u00e1 dispon\u00edvel.  O adaptador de recursos tenta conectar-se periodicamente com o barramento, de forma autom\u00e1tica.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+# {2} the endpoint activation
+ME_QUIESCING_CWSIV0781=CWSIV0781W: O mecanismo do sistema de mensagens remoto {0} no barramento {1} ao qual a ativa\u00e7\u00e3o do n\u00f3 de extremidade {2} estava conectada, terminou.
+ME_QUIESCING_CWSIV0781.explanation=O adaptador de recursos de entrada recebeu a notifica\u00e7\u00e3o de que o mecanismo de sistema de mensagens remoto ao qual estava conectado est\u00e1 fazendo quiesce e desconectou-se.
+ME_QUIESCING_CWSIV0781.useraction=Verifique se o mecanismo de sistema de mensagens no barramento fornecido est\u00e1 dispon\u00edvel.  O adaptador de recursos tenta conectar-se periodicamente com o barramento, de forma autom\u00e1tica.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+CONNECT_FAILED_CWSIV0782=CWSIV0782W: A cria\u00e7\u00e3o de um consumidor para destino remoto {0} no barramento {1} para ativa\u00e7\u00e3o de n\u00f3 de extremidade {2} falhou com a exce\u00e7\u00e3o {3}. Revise a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o de terminal {2}.
+CONNECT_FAILED_CWSIV0782.explanation=O adaptador de recursos de entrada recebeu uma exce\u00e7\u00e3o durante a conex\u00e3o com um mecanismo do sistema de mensagens.
+CONNECT_FAILED_CWSIV0782.useraction=Verifique se o mecanismo de sistema de mensagens no barramento fornecido est\u00e1 dispon\u00edvel.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+CONNECT_FAILED_CWSIV0783=CWSIV0783E: A cria\u00e7\u00e3o de um consumidor para destino remoto {0} no barramento {1} para ativa\u00e7\u00e3o de n\u00f3 de extremidade {2} falhou com a exce\u00e7\u00e3o {3}.
+CONNECT_FAILED_CWSIV0783.explanation=O adaptador de recursos de entrada recebeu uma exce\u00e7\u00e3o durante a tentativa de conectar-se com um mecanismo do sistema de mensagens.  O bean correspondente, orientado a mensagens, est\u00e1 sendo desativado e n\u00e3o pode receber mensagens adicionais.
+CONNECT_FAILED_CWSIV0783.useraction=Consulte a exce\u00e7\u00e3o para determinar a causa.  Ap\u00f3s resolver o problema, reinicie o adaptador de recursos ou o aplicativo.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+ME_STOPPING_CWSIV0784=CWSIV0784I: O mecanismo do sistema de mensagens local {0} no barramento {1} est\u00e1 parando.
+ME_STOPPING_CWSIV0784.explanation=A ativa\u00e7\u00e3o de terminal fornecida estava utilizando um mecanismo do sistema de mensagens que agora foi parado. O adaptador de recursos tentar\u00e1 conectar-se a um mecanismo do sistema de mensagens diferente.
+ME_STOPPING_CWSIV0784.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+ME_QUIESCING_CWSIV0785=CWSIV0785I: O mecanismo do sistema de mensagens local {0} no barramento {1} est\u00e1 parando.
+ME_QUIESCING_CWSIV0785.explanation=O adaptador de recursos de entrada recebeu a notifica\u00e7\u00e3o de que o mecanismo do sistema de mensagens ao qual estava conectado est\u00e1 sendo encerrado e desconectou-se.
+ME_QUIESCING_CWSIV0785.useraction=Verifique se o mecanismo de sistema de mensagens no barramento fornecido est\u00e1 dispon\u00edvel.  O adaptador de recursos tenta conectar-se periodicamente com o barramento, de forma autom\u00e1tica.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+ME_TERMINATED_CWSIV0786=CWSIV0786I: O mecanismo do sistema de mensagens local {0} no barramento {1} est\u00e1 parando.
+ME_TERMINATED_CWSIV0786.explanation=O adaptador de recursos de entrada recebeu a notifica\u00e7\u00e3o de que o mecanismo do sistema de mensagens remoto ao qual estava conectado foi finalizado.
+ME_TERMINATED_CWSIV0786.useraction=Verifique se o mecanismo de sistema de mensagens no barramento fornecido est\u00e1 dispon\u00edvel.  O adaptador de recursos tenta conectar-se periodicamente com o barramento, de forma autom\u00e1tica.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the target type
+# {1} the target significance
+# {2} the target
+# {3} the busname
+TARGETTED_CONNECTION_FAILED_CWSIV0787=CWSIV0787I: Falha ao criar uma conex\u00e3o a um mecanismo do sistema de mensagens ao especificar um destino ao qual conectar-se. O destino era do tipo {0} e tinha um significado de {1} e foi nomeado {2}. O barramento de destino era {3}
+TARGETTED_CONNECTION_FAILED_CWSIV0787.explanation=O sistema falhou ao conectar-se a um mecanismo do sistema de mensagens quando tiver recebido um conjunto de informa\u00e7\u00f5es de destino. \
+Esse pode ser um problema de conex\u00e3o tempor\u00e1ria, se nenhum mecanismo do sistema de mensagens que corresponda aos dados de destino estiver dispon\u00edvel ou isso pode ser um problema de configura\u00e7\u00e3o com a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o sendo utilizada.
+TARGETTED_CONNECTION_FAILED_CWSIV0787.useraction=Certifique-se de que um mecanismo do sistema de mensagens no barramento fornecido correspondente \u00e0s informa\u00e7\u00f5es de destino fornecidas esteja dispon\u00edvel.  \
+O adaptador de recursos tenta conectar-se periodicamente com o barramento, de forma autom\u00e1tica. \
+Se o mecanismo do sistema de mensagens estiver dispon\u00edvel, verifique se as defini\u00e7\u00f5es de configura\u00e7\u00e3o de ativa\u00e7\u00e3o est\u00e3o corretas, especialmente o nome do barramento e as informa\u00e7\u00f5es de destino.
+           
+# -------------------------------------------------------------------------------------------------
+# {0} the busname
+CONNECTION_FAILED_CWSIV0788=CWSIV0788I: Falha ao criar uma conex\u00e3o a um mecanismo do sistema de mensagens. O barramento de destino era {0}
+CONNECTION_FAILED_CWSIV0788.explanation=O sistema falhou ao conectar-se a um mecanismo do sistema de mensagens. \
+Esse pode ser um problema de conex\u00e3o tempor\u00e1ria, se nenhum mecanismo do sistema de mensagens estiver dispon\u00edvel no barramento ou pode ser um problema de configura\u00e7\u00e3o com a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o sendo utilizada.
+CONNECTION_FAILED_CWSIV0788.useraction=Verifique se o mecanismo de sistema de mensagens no barramento fornecido est\u00e1 dispon\u00edvel.  \
+O adaptador de recursos tenta conectar-se periodicamente com o barramento, de forma autom\u00e1tica. \
+Se o mecanismo do sistema de mensagens estiver dispon\u00edvel, verifique se as defini\u00e7\u00f5es de configura\u00e7\u00e3o de ativa\u00e7\u00e3o est\u00e3o corretas, especialmente o nome do barramento.
+           
+# -------------------------------------------------------------------------------------------------
+# {0} the busname
+# {1} the durable subscription home
+DURSUB_CONNECTION_FAILED_CWSIV0789=CWSIV0789I: Falha ao criar uma conex\u00e3o a um mecanismo do sistema de mensagens que hospeda assinaturas dur\u00e1veis. O barramento de destino era {0} e o in\u00edcio de assinatura dur\u00e1vel era {1}
+DURSUB_CONNECTION_FAILED_CWSIV0789.explanation=O sistema falhou ao conectar-se ao mecanismo do sistema de mensagens que hospeda o in\u00edcio de assinatura dur\u00e1vel. \
+Esse pode ser um problema de conex\u00e3o tempor\u00e1ria, se o mecanismo do sistema de mensagens n\u00e3o estiver dispon\u00edvel no barramento ou pode ser um problema de configura\u00e7\u00e3o com a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o sendo utilizada.
+DURSUB_CONNECTION_FAILED_CWSIV0789.useraction=Assegure-se de que o mecanismo do sistema de mensagens que hospeda o in\u00edcio de assinatura dur\u00e1vel no barramento fornecido esteja dispon\u00edvel.  \
+O adaptador de recursos tenta conectar-se periodicamente com o barramento, de forma autom\u00e1tica. \
+Se o mecanismo do sistema de mensagens estiver dispon\u00edvel, verifique se as defini\u00e7\u00f5es de configura\u00e7\u00e3o de ativa\u00e7\u00e3o est\u00e3o corretas, especialmente o nome do barramento e o in\u00edcio de assinatura dur\u00e1vel
+           
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the ME name
+# (2) the bus name
+CREATE_CONNECTION_FAILED_CWSIV0801=CWSIV0801E: A exce\u00e7\u00e3o {0} foi lan\u00e7ada durante a cria\u00e7\u00e3o de uma conex\u00e3o com o mecanismo do sistema de mensagens {1} no barramento {2}.
+CREATE_CONNECTION_FAILED_CWSIV0801.explanation=O adaptador de recurso SPI principal de entrada estava tentando criar uma conex\u00e3o para o mecanismo do sistema de mensagens especificado, quando recebeu uma exce\u00e7\u00e3o.  As mensagens dos destinos localizadas nesse mecanismo do sistema de mensagens, n\u00e3o ser\u00e3o recebidas pelo bean orientado por mensagem.
+CREATE_CONNECTION_FAILED_CWSIV0801.useraction=Consulte a exce\u00e7\u00e3o vinculada para obter informa\u00e7\u00f5es adicionais.  Ap\u00f3s a resolu\u00e7\u00e3o do problema, reinicie o mecanismo de sistema de mensagens, o adaptador de recursos ou o aplicativo.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the destination name
+# {2} the ME name
+# (3) the bus name
+CREATE_LISTENER_FAILED_CWSIV0803=CWSIV0803E: A exce\u00e7\u00e3o {0} foi emitida durante a cria\u00e7\u00e3o de um consumidor para o destino {1} no mecanismo de troca de mensagens {2} no barramento {3}.
+CREATE_LISTENER_FAILED_CWSIV0803.explanation=O adaptador de recursos de entrada tentou criar um consumidor para o destino fornecido quando recebeu uma exce\u00e7\u00e3o.  Mensagens dessa localiza\u00e7\u00e3o de destino n\u00e3o ser\u00e3o recebidas pelo bean orientado a mensagens.
+CREATE_LISTENER_FAILED_CWSIV0803.useraction=Consulte a exce\u00e7\u00e3o vinculada para obter informa\u00e7\u00f5es adicionais.  Ap\u00f3s a resolu\u00e7\u00e3o do problema, reinicie o mecanismo de sistema de mensagens, o adaptador de recursos ou o aplicativo.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the ME name
+# (2) the bus name
+ADD_DESTINATION_LISTENER_FAILED_CWSIV0804=CWSIV0804E: A exce\u00e7\u00e3o {0} foi lan\u00e7ada durante a cria\u00e7\u00e3o de uma conex\u00e3o com o mecanismo do sistema de mensagens {1} no barramento {2}.
+ADD_DESTINATION_LISTENER_FAILED_CWSIV0804.explanation=O adaptador de recursos de entrada tentou incluir um listener de destino para o mecanismo de troca de mensagens fornecido quando recebeu uma exce\u00e7\u00e3o.  As mensagens dos pontos de fila nesse mecanismo do sistema de mensagens n\u00e3o ser\u00e3o recebidas pelo bean orientado a mensagens.
+ADD_DESTINATION_LISTENER_FAILED_CWSIV0804.useraction=Consulte a exce\u00e7\u00e3o vinculada para obter a causa.  Ap\u00f3s resolver o problema, reinicie o mecanismo de sistema de mensagens, o adaptador de recursos ou o aplicativo.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the destination name
+# {2} the ME name
+# (3) the bus name
+CREATE_LISTENER_FAILED_CWSIV0805=CWSIV0805E: A exce\u00e7\u00e3o {0} foi emitida durante a cria\u00e7\u00e3o de um consumidor para o destino {1} no mecanismo de troca de mensagens {2} no barramento {3}.
+CREATE_LISTENER_FAILED_CWSIV0805.explanation=O adaptador de recurso de entrada tentou criar um consumidor para o novo destino fornecido quando recebeu uma exce\u00e7\u00e3o.  As mensagens desse ponto de fila n\u00e3o ser\u00e3o recebidas pelo bean orientado a mensagens.
+CREATE_LISTENER_FAILED_CWSIV0805.useraction=Consulte a exce\u00e7\u00e3o vinculada para obter a causa.  Ap\u00f3s resolver o problema, reinicie o mecanismo de sistema de mensagens, o adaptador de recursos ou o aplicativo.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the destination
+# {2} the messaging engine name
+# {3} the bus name
+# {4} the endpoint activation
+SESSION_ERROR_CWSIV0806=CWSIV0806E: A exce\u00e7\u00e3o {0} foi emitida para o consumidor para o destino {1} no mecanismo de troca de mensagens {2} no barramento {3} para ativa\u00e7\u00e3o do n\u00f3 de extremidade {4}.
+SESSION_ERROR_CWSIV0806.explanation=Uma exce\u00e7\u00e3o ass\u00edncrona foi recebida para o consumidor fornecido.  O bean orientado a mensagens correspondente ser\u00e1 desativado e n\u00e3o receber\u00e1 mais mensagens.
+SESSION_ERROR_CWSIV0806.useraction=Consulte a exce\u00e7\u00e3o para obter detalhe.  Ap\u00f3s a resolu\u00e7\u00e3o do problema, reinicie o mecanismo de sistema de mensagens, o adaptador de recursos ou o aplicativo.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the messaging engine name
+# {2} the endpoint activation
+CONNECTION_ERROR_CWSIV0807=CWSIV0807E: A exce\u00e7\u00e3o {0} foi emitida em uma conex\u00e3o ao mecanismo de troca de mensagens {1} para ativa\u00e7\u00e3o do n\u00f3 de extremidade {2}.
+CONNECTION_ERROR_CWSIV0807.explanation=Uma exce\u00e7\u00e3o foi recebida para a conex\u00e3o fornecida.  O bean orientado a mensagens correspondente ser\u00e1 desativado e n\u00e3o receber\u00e1 mais mensagens.
+CONNECTION_ERROR_CWSIV0807.useraction=Consulte a exce\u00e7\u00e3o para obter detalhe.  Ap\u00f3s a resolu\u00e7\u00e3o do problema, reinicie o mecanismo de sistema de mensagens, o adaptador de recursos ou o aplicativo.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the destination
+# {1} the messaging engine name
+# {2} the bus name
+# {3} the exception
+SESSION_DROPPED_CWSIV0808=CWSIV0808W: O consumo de mensagens do destino {0} no mecanismo do sistema de mensagens {1} no barramento {2} parou porque a sess\u00e3o foi eliminada. A exce\u00e7\u00e3o era {3}
+SESSION_DROPPED_CWSIV0808.explanation=A sess\u00e3o foi eliminada pela raz\u00e3o declarada na exce\u00e7\u00e3o. Pode ser que o destino especificado tenha sido exclu\u00eddo ou marcado como apenas de envio.  O bean orientado a mensagens correspondente ser\u00e1 desativado e n\u00e3o receber\u00e1 mais mensagens.
+SESSION_DROPPED_CWSIV0808.useraction=Se esse aviso n\u00e3o era esperado, resolva o problema e, em seguida, reinicie o aplicativo, o adaptador de recursos ou o mecanismo do sistema de mensagens, conforme apropriado.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the destination wildcard string
+# {1} the messaging engine name
+# {2} the bus name
+NO_LISTENERS_CREATED_CWSIV0809=CWSIV0809W: O nome do destino curinga {0} correspondeu a zero destinos dispon\u00edveis para consumo de mensagens no mecanismo do sistema de mensagens {1} no barramento {2}
+NO_LISTENERS_CREATED_CWSIV0809.explanation=A especifica\u00e7\u00e3o de ativa\u00e7\u00e3o cont\u00e9m um nome de destino curinga para consumir mensagens de v\u00e1rios destinos, entretanto, o nome curinga corresponde a zero destinos dispon\u00edveis
+NO_LISTENERS_CREATED_CWSIV0809.useraction=Certifique-se de que a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o utilize o nome de destino curinga, que o nome curinga de destino corresponda a alguns destinos e que os detalhes do usu\u00e1rio especificado tenham permiss\u00e3o para consumo a partir dos destinos.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint
+# {1} the expected interface
+UNEXPECTED_ENDPOINT_CWSIV0850=CWSIV0850E: Um erro interno ocorreu. O n\u00f3 de extremidade de mensagem {0} n\u00e3o implementa a interface esperada {1}.
+UNEXPECTED_ENDPOINT_CWSIV0850.explanation=O dep\u00f3sito de informa\u00e7\u00f5es do provedor de n\u00f3s de extremidade de mensagens retornou um n\u00f3 de extremidade de mensagem que n\u00e3o implementa a \
+interface SibRaMessageListener como esperado.
+UNEXPECTED_ENDPOINT_CWSIV0850.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+ON_MESSAGE_CWSIV0851=CWSIV0851E: Um erro interno ocorreu. A exce\u00e7\u00e3o {0} foi emitida durante a tentativa de obter uma inst\u00e2ncia do m\u00e9todo onMessage.
+ON_MESSAGE_CWSIV0851.explanation=Uma exce\u00e7\u00e3o foi criada durante a tentativa de obter uma inst\u00e2ncia do m\u00e9todo onMessage.
+ON_MESSAGE_CWSIV0851.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the destination name
+# {2} the bus name
+# {3} the connection
+LISTENER_CREATION_CWSIV0900=CWSIV0900E: A exce\u00e7\u00e3o {0} foi emitida durante a tentativa de criar um listener para o destino {1} no barramento {2} utilizando a conex\u00e3o {3}.
+LISTENER_CREATION_CWSIV0900.explanation=Foi criada uma exce\u00e7\u00e3o enquanto o adaptador de recursos de entrada estava tentando criar um listener para o destino fornecido.
+LISTENER_CREATION_CWSIV0900.useraction=Consulte a exce\u00e7\u00e3o vinculada para obter informa\u00e7\u00f5es adicionais.  Resolva o problema e, em seguida, reinicie o aplicativo, o adaptador de recursos ou o mecanismo do sistema de mensagens, conforme apropriado.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+SELECTION_FACTORY_CWSIV0901=CWSIV0901E: Um erro interno ocorreu. A exce\u00e7\u00e3o {0} foi emitida durante a tentativa de obter uma inst\u00e2ncia da SelectionCriteriaFactory.
+SELECTION_FACTORY_CWSIV0901.explanation=Foi criada uma exce\u00e7\u00e3o durante a tentativa de obter uma inst\u00e2ncia da SelectionCriteriaFactory.
+SELECTION_FACTORY_CWSIV0901.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the message endpoint
+# {1} the destination the message endpoint was listening too
+MESSAGE_ENDPOINT_PAUSED_AUTONOMICALLY_CWSIV0902=CWSIV0902W: O Terminal de Mensagem {0} que estava atendendo o destino {1} foi pausado pelo sistema.
+MESSAGE_ENDPOINT_PAUSED_AUTONOMICALLY_CWSIV0902.explanation=O sistema pausou o terminal de mensagem porque detectou um problema com o terminal de mensagem do bean acionando por mensagens.
+MESSAGE_ENDPOINT_PAUSED_AUTONOMICALLY_CWSIV0902.useraction=Investigue os poss\u00edveis problemas com o bean acionado por mensagens que poderiam causar erros seq\u00fcenciais. Quando voc\u00ea estiver pronto para retomar o terminal de mensagem, use o console administrativo. Como alternativa, use o terminal de mensagem MBean para retomar o terminal, transmitindo a ele o nome de terminal nessa mensagem.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the message endpoint
+# {1} the destination the message endpoint was listening too
+# {2} the exception thrown from the invoke
+INVOKE_MBEAN_EXCEPTION__CWSIV0903=CWSIV0903W: Houve uma tentativa de pausar o Terminal de Mensagem {0} que estava atendendo no destino {1} mas a chamada do MBean falhou com a seguinte exce\u00e7\u00e3o {2}.
+INVOKE_MBEAN_EXCEPTION__CWSIV0903.explanation=O sistema detectou um problema com um bean acionado por mensagens do terminal de mensagem, mas a tentativa em pausar o terminal de mensagem falhou.
+INVOKE_MBEAN_EXCEPTION__CWSIV0903.useraction=Verifique o status do terminal de mensagem utilizando o script wsadmin ou o console administrativo. Se o terminal de mensagem estiver ativo, pause-o e verifique os poss\u00edveis problemas com o bean acionado por mensagens. Retome o terminal quando voc\u00ea estiver pronto.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the message endpoint
+# {1} the destination the message endpoint was listening too
+NO_MBEAN_EXCEPTION_CWSIV0904=CWSIV0904W: Durante uma tentativa de parar um MDB, nenhum Terminal de Mensagem p\u00f4de ser localizado para o terminal {0} que estava atendendo no destino {1}. 
+NO_MBEAN_EXCEPTION_CWSIV0904.explanation=O sistema n\u00e3o pode localizar um terminal de mensagem.
+NO_MBEAN_EXCEPTION_CWSIV0904.useraction=Verifique o status do terminal de mensagem utilizando o script wsadmin ou o console administrativo. Se o terminal de mensagem estiver ativo, pause-o e verifique os poss\u00edveis problemas com o bean acionado por mensagens. Retome o terminal quando voc\u00ea estiver pronto.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the message endpoint
+# {1} the destination the message endpoint was listening too
+MULTIPLE_MBEAN_EXCEPTION_CWSIV0905=CWSIV0905W: Durante uma tentativa de parar um MDB, v\u00e1rios Terminais de Mensagens foram localizados no terminal {0} que estava atendendo no destino {1}. Apenas um terminal deve existir. O MDB n\u00e3o ser\u00e1 parado. 
+MULTIPLE_MBEAN_EXCEPTION_CWSIV0905.explanation=O sistema detectou v\u00e1rios terminais de mensagem. N\u00e3o foi poss\u00edvel identificar qual terminal de mensagem pausar.
+MULTIPLE_MBEAN_EXCEPTION_CWSIV0905.useraction=Verifique o status de todos os terminais de mensagem nesse bean acionando por mensagens usando o script wsadmin ou o console administrativo. Se um terminal de mensagem estiver ativo, pause-o e verifique os poss\u00edveis problemas no bean acionado por mensagens. Retome o terminal quando voc\u00ea estiver pronto.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the value it used to be
+# {1} the new value 
+MAXSEQUENTIALMESSAGEFAILURE_CONFIG_VALUE_CHANGED_CWSIV0906=CWSIV0906W: O valor m\u00e1ximo de configura\u00e7\u00e3o de falha de mensagem seq\u00fcencial do MDB foi alterado do valor {0} para {1}.
+MAXSEQUENTIALMESSAGEFAILURE_CONFIG_VALUE_CHANGED_CWSIV0906.explanation=O valor m\u00e1ximo de falha de mensagem seq\u00fcencial foi alterado porque a ordena\u00e7\u00e3o exata de mensagens foi ativada.
+MAXSEQUENTIALMESSAGEFAILURE_CONFIG_VALUE_CHANGED_CWSIV0906.useraction=Nenhuma a\u00e7\u00e3o ser\u00e1 necess\u00e1ria, exceto se voc\u00ea exigir a fun\u00e7\u00e3o de falha de mensagem seq\u00fcencial. Se voc\u00ea exigir a fun\u00e7\u00e3o de falha de mensagem seq\u00fcencial, desative a ordem de mensagem estrita.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the value it used to be
+# {1} the new value 
+MAXSEQUENTIALMESSAGEFAILURE_EXCEPTION_DESTINATION_CWSIV0907=CWSIV0907W: O valor m\u00e1ximo de configura\u00e7\u00e3o de falha de mensagem seq\u00fcencial do MDB foi alterado do valor {0} para {1}.
+MAXSEQUENTIALMESSAGEFAILURE_EXCEPTION_DESTINATION_CWSIV0907.explanation=O valor m\u00e1ximo de falha de mensagem seq\u00fcencial foi alterado porque n\u00e3o h\u00e1 nenhum destino de exce\u00e7\u00e3o definido para o destino no qual o bean acionado por mensagens est\u00e1 atendendo.
+MAXSEQUENTIALMESSAGEFAILURE_EXCEPTION_DESTINATION_CWSIV0907.useraction=Nenhuma a\u00e7\u00e3o ser\u00e1 necess\u00e1ria, exceto se voc\u00ea exigir a fun\u00e7\u00e3o de falha de mensagem seq\u00fcencial. Se voc\u00ea exigir a fun\u00e7\u00e3o de falha de mensagem seq\u00fcencial, configure um destino de exce\u00e7\u00e3o para o destino.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the connection factory
+CREATE_CONNECTION_CWSIV0950=CWSIV0950E: Um erro interno ocorreu. A exce\u00e7\u00e3o {0} foi emitida durante a tentativa de criar uma conex\u00e3o no dep\u00f3sito de informa\u00e7\u00f5es {1}.
+CREATE_CONNECTION_CWSIV0950.explanation=O adaptador de recursos de entrada tentou criar uma conex\u00e3o quando uma exce\u00e7\u00e3o inesperada foi recebida.
+CREATE_CONNECTION_CWSIV0950.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the messaging engine UUID
+CREATE_CONNECTION_CWSIV0951=CWSIV0951E: Um erro interno ocorreu. A exce\u00e7\u00e3o {0} foi emitida durante a tentativa de criar uma conex\u00e3o ao mecanismo de troca de mensagens {1}.
+CREATE_CONNECTION_CWSIV0951.explanation=O adaptador de recursos de entrada tentou criar uma conex\u00e3o quando uma exce\u00e7\u00e3o inesperada foi recebida.
+CREATE_CONNECTION_CWSIV0951.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+LISTENER_CLOSED_CWSIV0952=CWSIV0952E: Um erro interno ocorreu. Foi feita uma tentativa de criar um listener em uma conex\u00e3o que foi fechada.
+LISTENER_CLOSED_CWSIV0952.explanation=A conex\u00e3o do mecanismo do sistema de mensagens recebeu um pedido para criar um listener, mas ela j\u00e1 foi fechada.
+LISTENER_CLOSED_CWSIV0952.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+LISTENER_CLOSED_CWSIV0953=CWSIV0953E: Um erro interno ocorreu. Foi feita uma tentativa de criar um dispatcher em uma conex\u00e3o que foi fechada.
+LISTENER_CLOSED_CWSIV0953.explanation=A conex\u00e3o do mecanismo do sistema de mensagens recebeu um pedido para criar um dispatcher, mas ela j\u00e1 foi fechada.
+LISTENER_CLOSED_CWSIV0953.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the connection factory
+CREATE_CONNECTION_CWSIV0954=CWSIV0954E: A exce\u00e7\u00e3o {0} foi emitida durante a tentativa de criar uma conex\u00e3o no dep\u00f3sito de informa\u00e7\u00f5es {1}.
+CREATE_CONNECTION_CWSIV0954.explanation=O adaptador de recursos de entrada tentou criar uma conex\u00e3o quando uma exce\u00e7\u00e3o de autentica\u00e7\u00e3o foi recebida.
+CREATE_CONNECTION_CWSIV0954.useraction=Assegure-se de que sejam fornecidos nome de usu\u00e1rio e senha corretos no ActivationSpec, para cuja utiliza\u00e7\u00e3o o bean acionado por mensagens est\u00e1 configurado
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the messaging engine UUID
+CREATE_CONNECTION_CWSIV0955=CWSIV0955E: A exce\u00e7\u00e3o {0} foi emitida durante a tentativa de criar uma conex\u00e3o ao mecanismo de troca de mensagens {1}.
+CREATE_CONNECTION_CWSIV0955.explanation=O adaptador de recursos de entrada tentou criar uma conex\u00e3o quando uma exce\u00e7\u00e3o de autentica\u00e7\u00e3o foi recebida.
+CREATE_CONNECTION_CWSIV0955.useraction=Assegure-se de que sejam fornecidos nome de usu\u00e1rio e senha corretos no ActivationSpec, para cuja utiliza\u00e7\u00e3o o bean acionado por mensagens est\u00e1 configurado
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+CREATE_CONNECTION_CWSIV0957=CWSIV0957E: E exce\u00e7\u00e3o de autentica\u00e7\u00e3o {0} foi emitida durante a tentativa de obter o Assunto do WebSphere Application Server.
+CREATE_CONNECTION_CWSIV0957.explanation=O adaptador de recursos de entrada estava tentando criar uma conex\u00e3o utilizando o Server Subject, mas n\u00e3o foi poss\u00edvel obter o assunto.
+CREATE_CONNECTION_CWSIV0957.useraction=Verifique se as defini\u00e7\u00f5es de seguran\u00e7a do Application Server est\u00e3o configuradas corretamente.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the messaging engine UUID
+# {2} the activation specification
+CREATE_CONNECTION_CWSIV0958=CWSIV0958E: A exce\u00e7\u00e3o de autoriza\u00e7\u00e3o {0} foi emitida durante a tentativa de criar uma conex\u00e3o com o mecanismo do sistema de mensagens {1} utilizando a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o {2}.
+CREATE_CONNECTION_CWSIV0958.explanation=O adaptador de recursos de entrada estava tentando criar uma conex\u00e3o quando uma exce\u00e7\u00e3o de autentica\u00e7\u00e3o foi recebida.
+CREATE_CONNECTION_CWSIV0958.useraction=Assegure-se de que um alias de autentica\u00e7\u00e3o correto esteja configurado na especifica\u00e7\u00e3o de ativa\u00e7\u00e3o, para cuja utiliza\u00e7\u00e3o o bean acionado por mensagens est\u00e1 configurado.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the messaging engine UUID
+# {2} the activation specification
+CREATE_CONNECTION_CWSIV0959=CWSIV0959E: A exce\u00e7\u00e3o de autoriza\u00e7\u00e3o {0} foi emitida durante a tentativa de criar uma conex\u00e3o com o mecanismo do sistema de mensagens {1} utilizando a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o {2}.
+CREATE_CONNECTION_CWSIV0959.explanation=O adaptador de recursos de entrada estava tentando criar uma conex\u00e3o quando uma exce\u00e7\u00e3o de autentica\u00e7\u00e3o foi recebida.
+CREATE_CONNECTION_CWSIV0959.useraction=Verifique se o alias de autentica\u00e7\u00e3o na especifica\u00e7\u00e3o de ativa\u00e7\u00e3o, para cuja utiliza\u00e7\u00e3o o bean acionado por mensagens est\u00e1 configurado, est\u00e1 autorizado a conectar-se ao mecanismo do sistema de mensagens.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the bus name
+# {2} the activation specification
+CREATE_CONNECTION_CWSIV0960=CWSIV0960E: A exce\u00e7\u00e3o de autoriza\u00e7\u00e3o {0} foi emitida durante a tentativa de criar uma conex\u00e3o com o barramento {1} utilizando a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o {2}.
+CREATE_CONNECTION_CWSIV0960.explanation=O adaptador de recursos de entrada estava tentando criar uma conex\u00e3o quando uma exce\u00e7\u00e3o de autentica\u00e7\u00e3o foi recebida.
+CREATE_CONNECTION_CWSIV0960.useraction=Assegure-se de que um alias de autentica\u00e7\u00e3o correto esteja configurado na especifica\u00e7\u00e3o de ativa\u00e7\u00e3o, para cuja utiliza\u00e7\u00e3o o bean acionado por mensagens est\u00e1 configurado.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the bus name
+# {2} the activation specifcation
+CREATE_CONNECTION_CWSIV0961=CWSIV0961E: A exce\u00e7\u00e3o de autoriza\u00e7\u00e3o {0} foi emitida durante a tentativa de criar uma conex\u00e3o com o barramento {1} utilizando a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o {2}.
+CREATE_CONNECTION_CWSIV0961.explanation=O adaptador de recursos de entrada estava tentando criar uma conex\u00e3o quando uma exce\u00e7\u00e3o de autentica\u00e7\u00e3o foi recebida.
+CREATE_CONNECTION_CWSIV0961.useraction=Verifique se o alias de autentica\u00e7\u00e3o na especifica\u00e7\u00e3o de ativa\u00e7\u00e3o, para cuja utiliza\u00e7\u00e3o o bean acionado por mensagens est\u00e1 configurado, est\u00e1 autorizado a conectar-se ao barramento.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the bus name
+# {2} the activation specifcation
+CREATE_CONNECTION_CWSIV0962=CWSIV0962E: A exce\u00e7\u00e3o de autentica\u00e7\u00e3o {0} ocorreu durante uma tentativa de criar uma conex\u00e3o com o barramento {1} usando a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o {2}.
+CREATE_CONNECTION_CWSIV0962.explanation=O adaptador de recursos de entrada tentou criar uma conex\u00e3o quando uma exce\u00e7\u00e3o de autentica\u00e7\u00e3o foi recebida.
+CREATE_CONNECTION_CWSIV0962.useraction=Assegure-se de que o alias de autentica\u00e7\u00e3o na especifica\u00e7\u00e3o de ativa\u00e7\u00e3o, que o bean acionado por mensagens est\u00e1 configurado para usar, esteja autenticado para se conectar ao barramento.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint factory passed
+# {1} the expected interface
+WAS_ENDPOINT_FACTORY_CWSIV1000=CWSIV1000E: Um erro interno ocorreu. O dep\u00f3sito de informa\u00e7\u00f5es do provedor do n\u00f3 de extremidade da mensagem {0} transmitido para o adaptador de recursos n\u00e3o implementou a interface esperada {1}.
+WAS_ENDPOINT_FACTORY_CWSIV1000.explanation=O adaptador de recursos de entrada requer que o dep\u00f3sito de informa\u00e7\u00f5es do terminal de mensagem implemente a interface especificada para obter o nome exclusivo do bean acionado por mensagens.
+WAS_ENDPOINT_FACTORY_CWSIV1000.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the request object passed
+# {1} the expected interface
+MSG_TOKEN_CWSIV1050=CWSIV1050E: Um erro interno ocorreu. O objeto solicitado {0} transmitido para o adaptador de recursos n\u00e3o implementou a interface esperada {1}.
+MSG_TOKEN_CWSIV1050.explanation=O adaptador de recursos de entrada recebeu um objeto solicitado que n\u00e3o era do tipo esperado.
+MSG_TOKEN_CWSIV1050.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the session ID
+# {1} the messaging engine UUID
+# {2} the message handle
+# {3} the messages
+READ_SET_CWSIV1051=CWSIV1051E: Um erro interno ocorreu. A matriz de mensagens {3} retornada para o manuseio de mensagens {2} da sess\u00e3o {0} no mecanismo do sistema de mensagens {1} n\u00e3o cont\u00e9m uma mensagem \u00fanica.
+READ_SET_CWSIV1051.explanation=O destino do dispatch do adaptador de recursos de entrada n\u00e3o recebeu uma mensagem \u00fanica em troca do manuseio da mensagem determinada.
+READ_SET_CWSIV1051.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the session ID
+# {1} the messaging engine UUID
+# {2} the message handle
+# {3} the exception thrown
+EXCEPTION_CWSIV1052=CWSIV1052W: O adaptador de recursos de entrada recebeu a exce\u00e7\u00e3o {3} ao processar o manuseio da mensagem {2} da sess\u00e3o {0} no mecanismo do sistema de mensagens {1}.
+EXCEPTION_CWSIV1052.explanation=O adaptador de recursos de entrada n\u00e3o conseguiu processar o identificador de mensagens fornecido a partir do adjunto da regi\u00e3o de controle.
+EXCEPTION_CWSIV1052.useraction=Consulte os detalhes da exce\u00e7\u00e3o para obter a causa.  A mensagem entregue ser\u00e1 tentada novamente quando a trava tiver expirado.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the j2eeName (MDB Name)
+NO_POOL_CWSIV1053=CWSIV1053E: Um erro interno ocorreu. O recurso de entrada falhou em localizar um conjunto de ativa\u00e7\u00e3o de n\u00f3 de extremidade para {0}, portanto, n\u00e3o foi poss\u00edvel recuperar uma ativa\u00e7\u00e3o de n\u00f3 de extremidade.
+NO_POOL_CWSIV1053.explanation=O adaptador de recursos de entrada n\u00e3o pode obter uma ativa\u00e7\u00e3o de terminal a partir do conjunto porque n\u00e3o foi poss\u00edvel localizar o conjunto.
+NO_POOL_CWSIV1053.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the locked message enumeration
+RETRIEVE_MESSAGES_CWSIV1100=CWSIV1100E: Um erro interno ocorreu. A exce\u00e7\u00e3o {0} foi emitida durante a tentativa de obter mensagens da enumera\u00e7\u00e3o {1}.
+RETRIEVE_MESSAGES_CWSIV1100.explanation=O adaptador de recursos de entrada tentou recuperar as mensagens de uma enumera\u00e7\u00e3o quando uma exce\u00e7\u00e3o inesperada foi recebida.
+RETRIEVE_MESSAGES_CWSIV1100.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the value it used to be
+# {1} the new value
+MAXCONCURRENCY_CONFIG_VALUE_CHANGED_CWSIV1101=CWSIV1101W: O valor m\u00e1ximo de configura\u00e7\u00e3o de falha de mensagem seq\u00fcencial do MDB foi alterado do valor {0} para {1}.
+MAXCONCURRENCY_CONFIG_VALUE_CHANGED_CWSIV1101.explanation=O valor m\u00e1ximo de simultaneidade foi alterado porque a solicita\u00e7\u00e3o restrita da mensagem foi ativada.
+MAXCONCURRENCY_CONFIG_VALUE_CHANGED_CWSIV1101.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria, a menos que beans acionados por mensagens sejam necess\u00e1rios. Se esse for o caso, desative a solicita\u00e7\u00e3o de mensagens restritas.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the locked message enumeration
+RETRIEVE_MESSAGES_CWSIV1150=CWSIV1150E: Um erro interno ocorreu. A exce\u00e7\u00e3o {0} foi emitida durante a tentativa de obter mensagens da enumera\u00e7\u00e3o {1}.
+RETRIEVE_MESSAGES_CWSIV1150.explanation=O adaptador de recursos de entrada tentou recuperar as mensagens de uma enumera\u00e7\u00e3o quando uma exce\u00e7\u00e3o inesperada foi recebida.
+RETRIEVE_MESSAGES_CWSIV1150.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the session
+# {1} the connection
+GET_ID_CWSIV1151=CWSIV1151E: Um erro interno ocorreu. A exce\u00e7\u00e3o {0} foi emitida durante a tentativa de obter o identificador da sess\u00e3o {0} criada a partir da conex\u00e3o {1}.
+GET_ID_CWSIV1151.explanation=O adaptador de recursos de entrada tentou obter o identificador para a a sess\u00e3o quando uma exce\u00e7\u00e3o inesperada foi recebida.
+GET_ID_CWSIV1151.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint factory passed
+# {1} the expected interface
+WAS_ENDPOINT_FACTORY_CWSIV1152=CWSIV1152E: Um erro interno ocorreu. O dep\u00f3sito de informa\u00e7\u00f5es do provedor do n\u00f3 de extremidade da mensagem {0} transmitido para o adaptador de recursos n\u00e3o implementou a interface esperada {1}.
+WAS_ENDPOINT_FACTORY_CWSIV1152.explanation=O adaptador de recursos de entrada requer que o dep\u00f3sito de informa\u00e7\u00f5es do terminal de mensagem implemente a interface especificada para obter o nome exclusivo do bean acionado por mensagens.
+WAS_ENDPOINT_FACTORY_CWSIV1152.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The default value for message lock expiry.
+UNABLE_TO_LOCATE_SERVER_CWSIV1153=CWSIV1153W: N\u00e3o \u00e9 poss\u00edvel ler a propriedade customizada MessageLockExpiry porque o Sistema de Mensagens da Plataforma n\u00e3o conseguiu localizar o servidor. O valor padr\u00e3o de {0} ser\u00e1 utilizado
+UNABLE_TO_LOCATE_SERVER_CWSIV1153.explanation=O adaptador de recursos de entrada n\u00e3o pode localizar o servidor, portanto a propriedade MessageLockExpiry foi designada a um valor padr\u00e3o.
+UNABLE_TO_LOCATE_SERVER_CWSIV1153.useraction=CMSG0002
+
+#
+# {0} The value the message lock expiry was set to
+# {1} The default value for message lock expiry.
+INVALID_MESSAGELOCKEXPIRY_CWSIV1154=CWSIV1154W: O valor do MessageLockExpiry parece ser {0}; esse valor n\u00e3o pode ser convertido em um n\u00famero inteiro. O valor padr\u00e3o de {1} ser\u00e1 utilizado.
+INVALID_MESSAGELOCKEXPIRY_CWSIV1154.explanation=Ao ler o valor de MessageLockExpiry, n\u00e3o foi poss\u00edvel converter o valor para um n\u00famero inteiro.
+INVALID_MESSAGELOCKEXPIRY_CWSIV1154.useraction=Verifique se o valor designado \u00e0 propriedade customizada MessageLockExpiry \u00e9 um n\u00famero inteiro e reinicie o servidor para que as altera\u00e7\u00f5es tomem efeito.
+
+#
+# {0} The value the message lock expiry was set to
+# {1} The default value for message lock expiry.
+NEGATIVE_MESSAGELOCKEXPIRY_CWSIV1155=CWSIV1155W: O valor do MessageLockExpiry parece ser {0}; esse valor n\u00e3o pode ser negativo. O padr\u00e3o de {1} ser\u00e1 utilizado
+NEGATIVE_MESSAGELOCKEXPIRY_CWSIV1155.explanation=Valores negativos n\u00e3o s\u00e3o permitidos para o tempo de expira\u00e7\u00e3o de bloqueio de mensagem
+NEGATIVE_MESSAGELOCKEXPIRY_CWSIV1155.useraction=Verifique se o valor designado \u00e0 propriedade customizada MessageLockExpiry \u00e9 positivo ou zero, em seguida, reinicie o servidor para que as altera\u00e7\u00f5es tomem efeito.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the endpoint on which beforeDelivery is being invoked
+BEFORE_DELIVERY_CWSIV1200=CWSIV1200E: Um erro interno ocorreu. A exce\u00e7\u00e3o {0} foi recebida durante a tentativa de chamar beforeDelivery no n\u00f3 de extremidade {1}.
+BEFORE_DELIVERY_CWSIV1200.explanation=O adaptador de recurso recebeu uma exce\u00e7\u00e3o, durante a tentativa de chamar beforeDelivery em um n\u00f3 de extremidade anterior \u00e0 chamada onMessage.
+BEFORE_DELIVERY_CWSIV1200.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection on which the create was attempted
+# {1} the exception thrown
+UNCOORD_TRAN_CWSIV1201=CWSIV1201E: Um erro interno ocorreu. A exce\u00e7\u00e3o {1} foi recebida durante a tentativa de criar uma transa\u00e7\u00e3o n\u00e3o coordenada na conex\u00e3o {0}.
+UNCOORD_TRAN_CWSIV1201.explanation=O adaptador de recurso recebeu uma exce\u00e7\u00e3o durante a tentativa de criar uma transa\u00e7\u00e3o n\u00e3o coordenada na conex\u00e3o determinada.
+UNCOORD_TRAN_CWSIV1201.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the synchronization that was being registered
+# {1} the exception thrown
+REGISTER_SYNC_CWSIV1202=CWSIV1202E: Um erro interno ocorreu. A exce\u00e7\u00e3o {1} foi recebida durante a tentativa de registrar a sincroniza\u00e7\u00e3o {0}.
+REGISTER_SYNC_CWSIV1202.explanation=O adaptador de recurso recebeu uma exce\u00e7\u00e3o durante a tentativa de registrar a sincroniza\u00e7\u00e3o determinada com o gerenciador de transa\u00e7\u00f5es.
+REGISTER_SYNC_CWSIV1202.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the transaction
+# {1} the expected interface
+SYNC_CWSIV1203=CWSIV1203E: A transa\u00e7\u00e3o {0} retornada da conex\u00e3o n\u00e3o implementou a interface esperada {1}.
+SYNC_CWSIV1203.explanation=O adaptador de recursos de entrada exige a transa\u00e7\u00e3o n\u00e3o coordenada para implementar a interface especificada para realizar a otimiza\u00e7\u00e3o de comprometimento de fase \u00fanica.
+SYNC_CWSIV1203.useraction=Certifique-se de que o sistema esteja configurado corretamente para aproveitar a otimiza\u00e7\u00e3o de one-phase commit entre um mecanismo do sistema de mensagens e um banco de dados quando tamb\u00e9m utilizar beans de entidade que utilizam persist\u00eancia gerenciada por cont\u00eainer.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The object name
+# {1} The method name
+NULL_XA_RESOURCE_CWSIV1210=CWSIV1210E: Ocorreu um erro interno, um valor nulo foi transmitido para o m\u00e9todo {1} no objeto {0}. Um XAResource v\u00e1lido deve ser transmitido.
+NULL_XA_RESOURCE_CWSIV1210.explanation=CMSG0001
+NULL_XA_RESOURCE_CWSIV1210.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIV9999=CWSIV9999E: {0}
+TEMPORARY_CWSIV9999.explanation=Se a mensagem n\u00e3o oferecer informa\u00e7\u00f5es suficientes, consulte as mensagens de erro associadas para obter informa\u00e7\u00f5es adicionais.
+TEMPORARY_CWSIV9999.useraction=Consulte as mensagens de erro associadas para obter informa\u00e7\u00f5es adicionais.
+

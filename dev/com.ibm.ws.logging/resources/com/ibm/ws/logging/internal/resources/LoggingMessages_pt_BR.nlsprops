@@ -1,0 +1,121 @@
+###############################################################################
+# Copyright (c) 2011, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.logging/resources/com/ibm/ws/logging/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# Messages in the range TRAS3000 to 3199 are reserved for this messages file.
+# The list of prefixes and the range of messages in use (or "reserved") are shown in 
+# http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+# -------------------------------------------------------------------------------------------------
+
+FATAL=FATAL
+ERROR=ERRO
+AUDIT=AUDITORIA
+EVENT=EVENTO
+DETAIL=DETAIL
+
+## Shared with tWAS
+
+# Informational message telling the user the trace state has changed.
+MSG_TRACE_STATE_CHANGED=TRAS0018I: O estado de rastreio foi alterado. O novo estado de rastreio \u00e9 {0}.
+MSG_TRACE_STATE_CHANGED.explanation=Um pedido para alterar o estado de rastreio atual foi recebido e processado.
+MSG_TRACE_STATE_CHANGED.useraction=Se o novo estado de rastreio n\u00e3o for o desejado, altere-o para aquele que desejar.
+
+#PK509567
+# Warning message telling the user that the rename operation filed while rolling a log file over.
+MSG_ROLLOVER_RENAME_FAILED=TRAS0031W: Imposs\u00edvel renomear o arquivo {0} para {1} durante rollover do arquivo de log. Tentando copiar conte\u00fados do arquivo.
+MSG_ROLLOVER_RENAME_FAILED.explanation=Falha ao renomear o arquivo indicado.  A causa mais prov\u00e1vel \u00e9 que outro processo ou encadeamento esteja acessando o arquivo de log. O WebSphere tentar\u00e1 concluir a opera\u00e7\u00e3o de rollover ao copiar os conte\u00fados do arquivo de log - este processo \u00e9 lento, e todos os encadeamentos que estejam tentando acessar o log ser\u00e3o interrompidos durante este processo.
+MSG_ROLLOVER_RENAME_FAILED.useraction=Determine a causa da falha de renomea\u00e7\u00e3o e resolva-a - isto pode envolver o encerramento de outros processos que estejam acessando o mesmo arquivo de log.
+
+## new for lWAS
+INSTRUMENTATION_SERVICE_UNAVAILABLE=TRAS0032W: A inje\u00e7\u00e3o de tempo de execu\u00e7\u00e3o do rastreio de m\u00e9todo detalhado n\u00e3o est\u00e1 dispon\u00edvel.
+INSTRUMENTATION_SERVICE_UNAVAILABLE.explanation=O transformador do arquivo de classe respons\u00e1vel por incluir o rastreio no n\u00edvel do m\u00e9todo n\u00e3o p\u00f4de ser instalado, porque uma refer\u00eancia de java.lang.instrument.Instrumentation adequada n\u00e3o p\u00f4de ser obtida.
+INSTRUMENTATION_SERVICE_UNAVAILABLE.useraction=Inicie o servidor com o argumento de linha de comandos -javaagent apropriado.
+
+## Should not be used anymore because of issue 508
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS=TRAS0033E: Inje\u00e7\u00e3o de tempo de execu\u00e7\u00e3o do rastreio de m\u00e9todo detalhado falhou para a classe {0} com a exce\u00e7\u00e3o {1}
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS.explanation=Ocorreu um erro ao injetar o rastreio de m\u00e9todo detalhado na classe especificada.
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS.useraction=CMSG0002 
+
+## new for lWAS
+TRACE_STRING_BAD_LEVEL=TRAS0034W: O n\u00edvel de rastreio {0} para a especifica\u00e7\u00e3o {1} n\u00e3o \u00e9 v\u00e1lido. A especifica\u00e7\u00e3o de rastreio ser\u00e1 ignorada.
+TRACE_STRING_BAD_LEVEL.explanation=O n\u00edvel de rastreio configurado para o grupo, a classe ou o nome do pacote especificado n\u00e3o foi reconhecido, a configura\u00e7\u00e3o de rastreio para esse nome ser\u00e1 ignorada.
+TRACE_STRING_BAD_LEVEL.useraction=Examine a configura\u00e7\u00e3o do rastreio e corrija o n\u00edvel para um valor reconhecido. Os n\u00edveis de rastreio v\u00e1lidos s\u00e3o listados na documenta\u00e7\u00e3o e incluem 'all', 'info' e 'debug'.
+
+## new for lWAS
+TRACE_STRING_BAD_ACTION=TRAS0035W: O valor da configura\u00e7\u00e3o de rastreio {0} para a especifica\u00e7\u00e3o {1} n\u00e3o foi reconhecido. A especifica\u00e7\u00e3o de rastreio ser\u00e1 ignorada.
+TRACE_STRING_BAD_ACTION.explanation=O valor da configura\u00e7\u00e3o de rastreio configurado para o grupo, a classe ou o nome do pacote especificado n\u00e3o foi reconhecido, a configura\u00e7\u00e3o de rastreio para esse nome ser\u00e1 ignorada.
+TRACE_STRING_BAD_ACTION.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria, a menos que o valor da configura\u00e7\u00e3o de rastreio desejado seja 'disabled'. Neste caso, examine a configura\u00e7\u00e3o de rastreio e corrija a configura\u00e7\u00e3o para 'disabled'.
+
+## new for lWAS
+UNABLE_TO_CREATE_RESOURCE=TRAS0036E: O sistema n\u00e3o p\u00f4de criar o arquivo {0} devido \u00e0 exce\u00e7\u00e3o a seguir: {1}
+UNABLE_TO_CREATE_RESOURCE.explanation=Uma tentativa de abrir o recurso especificado falhou. A exce\u00e7\u00e3o indica a causa raiz da falha.
+UNABLE_TO_CREATE_RESOURCE.useraction=Examine a exce\u00e7\u00e3o para determinar a causa raiz. Certifique-se que o nome do arquivo especificado seja um nome de arquivo v\u00e1lido. Assegure que o tempo de execu\u00e7\u00e3o do Application Server tenha acesso de grava\u00e7\u00e3o permitido ao diret\u00f3rio para o recurso e que o disco n\u00e3o esteja cheio. Se isso n\u00e3o resolver o problema, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da Web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+## new for lWAS
+UNABLE_TO_CREATE_RESOURCE_NOEX=TRAS0037E: O sistema n\u00e3o p\u00f4de criar o novo arquivo {0}
+UNABLE_TO_CREATE_RESOURCE_NOEX.explanation=Um componente do servidor de aplicativos n\u00e3o p\u00f4de executar uma opera\u00e7\u00e3o em um recurso necess\u00e1rio.
+UNABLE_TO_CREATE_RESOURCE_NOEX.useraction=Certifique-se que o nome do arquivo especificado seja um nome de arquivo v\u00e1lido. Assegure que o tempo de execu\u00e7\u00e3o do Application Server tenha acesso de grava\u00e7\u00e3o permitido ao diret\u00f3rio para o recurso e que o disco n\u00e3o esteja cheio. Se isso n\u00e3o resolver o problema, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da Web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+## new for lWAS
+UNABLE_TO_DELETE_RESOURCE_NOEX=TRAS0038E: O sistema n\u00e3o p\u00f4de excluir o arquivo {0}
+UNABLE_TO_DELETE_RESOURCE_NOEX.explanation=Um componente do servidor de aplicativos n\u00e3o p\u00f4de executar uma opera\u00e7\u00e3o em um recurso necess\u00e1rio.
+UNABLE_TO_DELETE_RESOURCE_NOEX.useraction=Certifique-se que o nome do arquivo especificado seja um nome de arquivo v\u00e1lido. Assegure que o tempo de execu\u00e7\u00e3o do Application Server tenha acesso de grava\u00e7\u00e3o permitido ao diret\u00f3rio para o recurso e que o disco n\u00e3o esteja cheio. Se isso n\u00e3o resolver o problema, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da Web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+## new for lWAS
+UNABLE_TO_DELETE_RESOURCE=TRAS0039E: O sistema n\u00e3o p\u00f4de excluir o arquivo {0} por causa da seguinte exce\u00e7\u00e3o: {1}
+UNABLE_TO_DELETE_RESOURCE.explanation=Falha na tentativa de excluir o recurso especificado. A exce\u00e7\u00e3o indica a causa raiz da falha.
+UNABLE_TO_DELETE_RESOURCE.useraction=Examine a exce\u00e7\u00e3o para determinar a causa raiz. Assegure-se de que o tempo de execu\u00e7\u00e3o do Servidor de Aplicativos tenha acesso de grava\u00e7\u00e3o permitido ao diret\u00f3rio para o recurso. Se isso n\u00e3o resolver o problema, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da Web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# common 
+UNKNOWN_TRACE_SPEC=TRAS0040I: O estado de rastreio configurado inclu\u00eda as seguintes especifica\u00e7\u00f5es que n\u00e3o correspondem a nenhum criador de logs registrado atualmente no servidor: {0} Ignorar essa mensagem se as especifica\u00e7\u00f5es do rastreio {0} forem v\u00e1lidas.
+UNKNOWN_TRACE_SPEC.explanation=Criadores de logs s\u00e3o registrados no servidor quando o c\u00f3digo que os cria \u00e9 usado pela primeira vez. O sistema detectou que determinadas especifica\u00e7\u00f5es de rastreio se referem a criadores de logs que n\u00e3o foram registrados no servidor. As especifica\u00e7\u00f5es de rastreio configuradas podem ser v\u00e1lidas para criadores de logs que ainda n\u00e3o est\u00e3o registrados, ou podem ter sido digitadas incorretamente. Essa verifica\u00e7\u00e3o \u00e9 executada sempre que a especifica\u00e7\u00e3o de rastreio \u00e9 atualizada em um servidor em execu\u00e7\u00e3o.
+UNKNOWN_TRACE_SPEC.useraction=Assegure-se de que a especifica\u00e7\u00e3o de rastreio tenha sido configurada corretamente. Se n\u00e3o houver erros na sequ\u00eancia de especifica\u00e7\u00e3o de rastreio, nenhuma a\u00e7\u00e3o ser\u00e1 necess\u00e1ria. 
+
+## Should not be used anymore because of issue 508
+MESSAGES_CONFIGURED_HIDDEN=TRAS0041I: As seguintes mensagens est\u00e3o ocultas dos arquivos console.log e messages.log: {0}
+MESSAGES_CONFIGURED_HIDDEN.explanation=As mensagens que est\u00e3o configuradas para ficarem ocultas n\u00e3o s\u00e3o gravadas nos arquivos console.log e messages.log. Por\u00e9m, s\u00e3o gravadas no arquivo trace.log. 
+MESSAGES_CONFIGURED_HIDDEN.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria
+
+MSG_ROUTER_UPDATED=TRAS0042I: O grupo de roteamento de mensagem {0} cont\u00e9m as seguintes mensagens: {1}
+MSG_ROUTER_UPDATED.explanation=O conjunto de IDs de mensagens configurados para o grupo de roteamento de mensagem especificado mudou. O conjunto de IDs de mensagens atualmente associados a este grupo de roteamento de mensagem \u00e9 listado.
+MSG_ROUTER_UPDATED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+## use new id range
+
+# updated the old TRAS0033E to TRAS3000E
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2=TRAS3000E: A inje\u00e7\u00e3o de tempo de execu\u00e7\u00e3o do rastreio de m\u00e9todo detalhado falhou para a classe {0} com a exce\u00e7\u00e3o {1}.
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2.explanation=Ocorreu um erro ao injetar o rastreio de m\u00e9todo detalhado na classe especificada.
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2.useraction=Veja as informa\u00e7\u00f5es de determina\u00e7\u00e3o de problemas na p\u00e1gina da web de suporte do produto: http://www.ibm.com/software/webservers/appserv/was/support. 
+
+# updated the old TRAS0041I to TRAS3001I
+MESSAGES_CONFIGURED_HIDDEN_2=TRAS3001I: As seguintes mensagens est\u00e3o ocultas dos arquivos console.log e messages.log: {0}
+MESSAGES_CONFIGURED_HIDDEN_2.explanation=As mensagens que est\u00e3o configuradas para ficarem ocultas n\u00e3o s\u00e3o gravadas nos arquivos console.log e messages.log. Elas s\u00e3o gravadas no arquivo trace.log. 
+MESSAGES_CONFIGURED_HIDDEN_2.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria
+
+# Note: no 9999 message kept here because saving footprint space is more important
+
+# End of file

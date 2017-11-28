@@ -1,0 +1,218 @@
+###############################################################################
+# Copyright (c) 2011, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.war/resources/com/ibm/ws/app/manager/war/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKZ
+#COMPONENTNAMEFOR CWWKZ Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+# Reserving message prefixes CWWKZ0101 to CWWKZ0200
+
+# Now unused, but preserved for the Infocenter:
+#   error.file.copy.failed
+#   error.ear.extraction.exception
+#   error.ear.extraction.failed
+#   error.dir.creation.failed
+#   error.bundle.context.unavailable
+#{0} is source file name 
+#{1} is destination file name 
+#{2} is application name
+error.file.copy.failed=CWWKZ0101E: Die Datei {0} konnte nicht an die Position {1} kopiert werden, als die Anwendung {2} gestartet wurde. 
+error.file.copy.failed.explanation=Vor dem Starten der Anwendung wird die Anwendungsdatei an eine neue Position kopiert. Die Operation zum Kopieren der Datei war nicht erfolgreich. Deshalb wurde die Anwendung nicht gestartet.
+error.file.copy.failed.useraction=\u00dcberpr\u00fcfen Sie die Quellen- und Zielpositionen, um festzustellen, ob das Problem behoben werden kann.
+
+#{0} is ear file name
+#{1} is extract destination
+#{2} is exception message
+error.ear.extraction.exception=CWWKZ0102E: Die EAR-Datei {0} konnte nicht an die Position {1} extrahiert werden. Ausnahmenachricht: {2}
+error.ear.extraction.exception.explanation=Der Server konnte nicht Anwendung nicht starten, weil die EAR-Datei nicht extrahiert werden konnte.
+error.ear.extraction.exception.useraction=Suchen Sie in der Ausnahmenachricht nach weiteren Informationen. Im Ausnahmeprotokoll k\u00f6nnen weitere Details verf\u00fcgbar sein.
+
+#{0} is ear file name
+#{1} is extract destination
+error.ear.extraction.failed=CWWKZ0103E: Die EAR-Datei {0} konnte nicht an die Position {1} extrahiert werden. 
+error.ear.extraction.failed.explanation=Der Server konnte nicht Anwendung nicht starten, weil die EAR-Datei nicht extrahiert werden konnte.
+error.ear.extraction.failed.useraction=\u00dcberpr\u00fcfen Sie die EAR-Datei, um sicherzustellen, dass sie ein g\u00fcltiges Archiv ist.
+
+#{0} is directory name
+#{1} is application name
+error.dir.creation.failed=CWWKZ0104E: Das Verzeichnis {0} konnte w\u00e4hrend des Starts der Anwendung {1} nicht erstellt werden.
+error.dir.creation.failed.explanation=Vor dem Starten der Anwendung wird ein Verzeichnis erstellt. Die Operation zum Erstellen des Verzeichnisses war nicht erfolgreich. Deshalb wurde die Anwendung nicht gestartet.
+error.dir.creation.failed.useraction=\u00dcberpr\u00fcfen Sie die Verzeichnisposition, um festzustellen, ob das Problem behoben werden kann.
+
+#{0} is application name
+error.bundle.context.unavailable=CWWKZ0105E: Der Bundlekontext zum Starten der Anwendung {0} war nicht verf\u00fcgbar.
+error.bundle.context.unavailable.explanation=Der Server konnte die Anwendung nicht starten. Dies kann ein interner Fehler sein.
+error.bundle.context.unavailable.useraction=Suchen Sie in den Nachrichten- und Ausnahmeprotokollen nach zugeh\u00f6rigen Fehlern.
+
+# Leaving these (for now); there are catch points which seem
+# to have uses for them.
+#   error.not.installed
+#   error.cache.adapt
+
+#{0} is the application name
+error.not.installed=CWWKZ0106E: Die Webanwendung {0} konnte nicht gestartet werden.
+error.not.installed.explanation=Ein fr\u00fcherer Fehler hat die Installation der Anwendung verhindert.
+error.not.installed.useraction=\u00dcberpr\u00fcfen Sie die Position in der Anwendungskonfiguration.
+
+# RESERVED: CWWKZ0107E is used by com.ibm.ws.app.manager.module
+error.cache.adapt=CWWKZ0107E: Interner Fehler. Der Cache f\u00fcr das Webmodul {0} konnte nicht angepasst werden.
+error.cache.adapt.explanation=CMSG0001 
+error.cache.adapt.useraction=CMSG0002                                                   
+
+# RESERVED: CWWKZ0108E is used by com.ibm.ws.app.manager.module
+
+# Added by task 73569:
+#
+# The codes for modules types are current (WAR, EJB).  These are untranslated text values
+# used to indicate the type of the module which is being processed.  The type corresponds to
+# the archive, not to the presence of function within the module.
+
+#{0} is the application name
+#{1} is the library relative path
+#{2} is the exception message
+error.application.library.container=CWWKZ0111E: In der Anwendung {0} ist beim Zugriff auf die Anwendungsbibliothek {1} ein Fehler aufgetreten: {2}
+error.application.library.container.explanation=Beim Zugriff auf den Inhalt der Bibliothek ist ein interner Fehler aufgetreten. Diese Bibliothek steht nicht zur Verf\u00fcgung.
+error.application.library.container.useraction=\u00dcberpr\u00fcfen Sie den Inhalt der Anwendung, um sicherzustellen, dass ein Archiv f\u00fcr die Bibliothek vorhanden ist.
+
+#{0} is the application name
+#{1} is the exception message
+error.application.libraries=CWWKZ0112E: In der Anwendung {0} ist beim Auflisten der Anwendungsbibliotheken ein Fehler aufgetreten: {1}
+error.application.libraries.explanation=Beim Auflisten der Anwendungsbibliotheken ist ein Fehler aufgetreten. Die Liste der Anwendungsbibliotheken ist unvollst\u00e4ndig.
+error.application.libraries.useraction=Suchen Sie in den Ausnahmeinformationen nach weiteren Einzelheiten.
+
+#{0} is the application name
+#{1} is the relative path to the application descriptor
+#{2} is the exception message
+error.application.parse.descriptor=CWWKZ0113E: In der Anwendung {0} ist bei der Verarbeitung des Anwendungsdeskriptors {1} ein Parsing-Fehler aufgetreten: {2}
+error.application.parse.descriptor.explanation=Beim Parsing des Anwendungsdeskriptors ist ein Fehler aufgetreten. Es sind keine Module f\u00fcr die Anwendung verf\u00fcgbar.
+error.application.parse.descriptor.useraction=Suchen Sie in den Ausnahmeinformationen nach weiteren Einzelheiten. \u00dcberpr\u00fcfen Sie den Inhalt des Anwendungsdeskriptors, um sicherzustellen, dass der Inhalt aus g\u00fcltigen XML-Daten besteht.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+#{3} is the exception message
+error.module.container=CWWKZ0114E: In der Anwendung {0} ist beim Zugriff auf den Inhalt des Moduls {1} des Typs {2} ein Fehler aufgetreten: {3}
+error.module.container.explanation=Beim Zugriff auf den Inhalt des Moduls ist ein interner Fehler aufgetreten. Das Modul steht nicht zur Verf\u00fcgung.
+error.module.container.useraction=Suchen Sie in den Ausnahmeinformationen nach weiteren Einzelheiten.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+error.module.container.null=CWWKZ0115E: Die Anwendung {0} hat beim Zugriff auf das infrage kommende Inhaltsmoduls {1} des Typs {2} einen Nullwert abgerufen.
+error.module.container.null.explanation=Beim Zugriff auf den Inhalt eines Moduls ist ein interner Fehler aufgetreten. In der Anwendung fehlt m\u00f6glicherweise ein Archiv f\u00fcr das Modul. Das Modul steht nicht zur Verf\u00fcgung.
+error.module.container.null.useraction=\u00dcberpr\u00fcfen Sie den Inhalt der Anwendung, um sicherzustellen, dass ein Archiv f\u00fcr das Modul vorhanden ist.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+#{3} is the exception message
+error.module.create=CWWKZ0116E: Die Anwendung {0} konnte die Erstellung des Moduls {1} des Typs {2} nicht abschlie\u00dfen: {3}
+error.module.create.explanation=Beim Abschlie\u00dfen der Erstellung eines Moduls ist ein interner Fehler aufgetreten. Das Modul steht nicht zur Verf\u00fcgung.
+error.module.create.useraction=Suchen Sie in den Ausnahmeinformationen nach weiteren Einzelheiten.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+error.module.locate.failed=CWWKZ0117E: Die Anwendung {0} hat das Modul {1} des Typs {2} nicht gefunden.
+error.module.locate.failed.explanation=Es ist kein Archiv f\u00fcr ein im Anwendungsdeskriptor aufgelistetes Modul verf\u00fcgbar. Das Modul steht nicht zur Verf\u00fcgung.
+error.module.locate.failed.useraction=Suchen Sie in den Ausnahmeinformationen nach weiteren Einzelheiten. \u00dcberpr\u00fcfen Sie den Inhalt der Anwendung, um sicherzustellen, dass ein Archiv f\u00fcr das Modul vorhanden ist.
+
+#{0} is the application name
+#{1} is the descriptor relative path
+#{2} is the module relative path
+#{3} is a code for the module type (WAR, EJB)
+#{4} is the exception message
+error.module.parse.descriptor=CWWKZ0118E: In der Anwendung {0} ist bei der Verarbeitung des Deskriptors {1} des Moduls {2} des Typs {3} ein Parsing-Fehler aufgetreten: {4}
+error.module.parse.descriptor.explanation=Beim Parsing des Modulimplementierungsdeskriptors ist ein Fehler aufgetreten. Das Modul steht nicht zur Verf\u00fcgung.
+error.module.parse.descriptor.useraction=Suchen Sie in den Ausnahmeinformationen nach weiteren Einzelheiten. \u00dcberpr\u00fcfen Sie den Inhalt des Anwendungsdeskriptors, um sicherzustellen, dass der Inhalt aus g\u00fcltigen XML-Daten besteht.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+#{3} is the exception message
+error.module.class.source=CWWKZ0120E: Die Anwendung {0} konnte nicht auf die Klassen f\u00fcr das Modul {1} des Typs {2} zugreifen: {3}
+error.module.class.source.explanation=Beim Scannen einer JAR-Datei nach EJB-Annotationen ist ein interner Fehler aufgetreten. Die JAR-Datei ist nicht als EJB-JAR-Datei verf\u00fcgbar.
+error.module.class.source.useraction=Suchen Sie in den Ausnahmeinformationen nach weiteren Einzelheiten.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+#{3} is the exception message
+error.module.annotation.targets=CWWKZ0121E: Die Anwendung {0} konnte nicht auf die Annotationen f\u00fcr das Modul {1} des Typs {2} zugreifen: {3}
+error.module.annotation.targets.explanation=Beim Scannen einer JAR-Datei nach EJB-Annotationen ist ein interner Fehler aufgetreten. Die JAR-Datei ist nicht als EJB-JAR-Datei verf\u00fcgbar.
+error.module.annotation.targets.useraction=Suchen Sie in den Ausnahmeinformationen nach weiteren Einzelheiten.
+
+#{0} is the application name
+#{1} is the module relative path
+error.module.uri.duplicate=CWWKZ0122W: Die Anwendung {0} deklariert mehrere Module mit dem URI {1} in der Datei META-INF/application.xml.
+error.module.uri.duplicate.explanation=Mehrere Module verweisen auf dasselbe Archiv. Es wird nur ein einziges Modul zur Verf\u00fcgung gestellt.
+error.module.uri.duplicate.useraction=\u00dcberpr\u00fcfen Sie den Inhalt des Anwendungsdeskriptors, um sicherzustellen, dass jedes Modul auf ein eindeutiges Archiv verweist.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is the exception message
+error.module.manifest.read.failed=CWWKZ0123E: Die Anwendung {0} konnte die Datei META-INF/MANIFEST.MF f\u00fcr das Modul {1} nicht lesen. Ausnahme: {2}
+error.module.manifest.read.failed.explanation=Bei dem Versuch festzustellen, ob es sich bei dem Modul um ein EJB- oder ein Anwendungsclientmodul handelt, ist beim Lesen der Datei META-INF/MANIFEST.MF ein Fehler aufgetreten. Dieses Modul wird nicht als Anwendungsclientmodul behandelt.
+error.module.manifest.read.failed.useraction=Suchen Sie in den Ausnahmeinformationen nach weiteren Einzelheiten. \u00dcberpr\u00fcfen Sie den Inhalt der Anwendung, um sicherzustellen, dass der Pfad der Datei META-INF/MANIFEST.MF eine Datei und kein Verzeichnis ist und dass die Datei MANIFEST.MF g\u00fcltig ist.
+
+#{0} is the application name
+error.no.modules=CWWKZ0124E: Die Anwendung {0} enth\u00e4lt keine Module.
+error.no.modules.explanation=Die Anwendung deklariert keine Module in der Datei application.xml und enth\u00e4lt auch keine Modularchive.
+error.no.modules.useraction=F\u00fcgen Sie der Anwendung ein Modularchiv hinzu und starten Sie die Anwendung erneut.
+
+#{0} is the application name
+#{1} is the module relative path
+error.module.manifest.read.no.mainclass=CWWKZ0125E: Die Anwendung {0} enth\u00e4lt kein Attribut Main-Class in der Datei META-INF/MANIFEST.MF des Moduls {1}.
+error.module.manifest.read.no.mainclass.explanation=Die Datei META-INF/MANIFEST.MF im Modul ist nicht vorhanden oder enth\u00e4lt kein Attribut Main-Class. Dieses Modul wird nicht als Anwendungsclientmodul behandelt.
+error.module.manifest.read.no.mainclass.useraction=Stellen Sie sicher, dass die Datei META-INF/MANIFEST.MF f\u00fcr die Anwendung das Attribut Main-Class enth\u00e4lt.
+
+#{0} is the context root specified in server.xml on the application element
+#{1} is the name of the application where context-root is specified
+warning.context.root.not.used=CWWKZ0126W:  Der Stammkontextwert {0}, der in der Anwendung {1} angegeben ist, hat keine Wirkung.
+warning.context.root.not.used.explanation=Die Eigenschaft context-root ist f\u00fcr eine Unternehmensanwendung nicht g\u00fcltig. Der Wert wird f\u00fcr die Webmodule in der Unternehmensanwendung nicht verwendet.
+warning.context.root.not.used.useraction=Entfernen Sie die Eigenschaft context-root aus dem Anwendungselement in der Serverkonfiguration.
+
+error.module.no.defaultclient=CWWKZ0127E: In der Anwendung sind mehrere Clientmodule enthalten. Geben Sie den Standardnamen f\u00fcr das Clientmodul an.
+error.module.no.defaultclient.explanation=Wenn die Anwendung mehrere Clientmodulpakete enth\u00e4lt, geben Sie den Namen des Clientmoduls an, das ausgef\u00fchrt werden soll.
+error.module.no.defaultclient.useraction=Geben Sie das auszuf\u00fchrende Clientmodul an, indem Sie den zugeh\u00f6rigen Namen mit dem Attribut defaultClientModule in <enterpriseApplication/> angeben.
+
+error.module.dup.client=CWWKZ0128E: Es gibt mehrere Clientmodule mit demselben Namen: {0}.
+error.module.dup.client.explanation=Es gibt mehrere Clientmodule und einige verwenden denselben Namen.
+error.module.dup.client.useraction=Geben Sie f\u00fcr die Clientmodule in der Anwendung eindeutige Namen an.
+
+error.module.client.notfound=CWWKZ0129E: Das Clientmodul {0} wurde nicht in der Anwendung gefunden.
+error.module.client.notfound.explanation=Das angegebene Clientmodul ist nicht in der Anwendung vorhanden.
+error.module.client.notfound.useraction=Stellen Sie sicher, dass das Clientmodul in der Anwendung vorhanden ist.
+
+#{0} is the application name
+error.client.not.installed=CWWKZ0130E: Der Anwendungsclient {0} konnte nicht gestartet werden.
+error.client.not.installed.explanation=Ein fr\u00fcherer Fehler hat die Installation der Anwendung verhindert.
+error.client.not.installed.useraction=\u00dcberpr\u00fcfen Sie die Position in der Anwendungskonfiguration.
+
+#{0} is the application name, {1} is the exception (likely disk space, write permissions, file lock, or some other IO issue.) 
+warning.could.not.expand.application=CWWKZ0131W: Die Komprimierung der Anwendung {0} konnte nicht aufgehoben werden, weil die folgende Ausnahme eingetreten ist: {1}.
+warning.could.not.expand.application.explanation=Die Anwendung konnte nicht in einem tempor\u00e4ren Verzeichnis entpackt werden. Die Ausf\u00fchrung der Anwendung wird fortgesetzt, aber das Verhalten bestimmter Methoden, die auf Anwendungsdateien zugreifen, k\u00f6nnte beeintr\u00e4chtigt sein. 
+warning.could.not.expand.application.useraction=Versuchen Sie, dass in der Ausnahmenachricht angegebene Problem zu beheben, und starten Sie dann den Server erneut oder aktualisieren Sie die Anwendung. 

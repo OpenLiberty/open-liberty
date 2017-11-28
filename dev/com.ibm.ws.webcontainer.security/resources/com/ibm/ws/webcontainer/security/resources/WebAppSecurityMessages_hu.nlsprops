@@ -1,0 +1,135 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.webcontainer.security/resources/com/ibm/ws/webcontainer/security/resources/WebAppSecurityMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Web Application Security Collaborator
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9100 - CWWKS9199
+
+MISSING_SEC_ROLE_REF_ROLE_LINK=CWWKS9100W: A(z) {0} szervlet <role-name>{1}</role-name> <security-role-ref> elem\u00e9ben hi\u00e1nyzik a megfelel\u0151 <role-link> elem.
+MISSING_SEC_ROLE_REF_ROLE_LINK.explanation=A <security-role-ref> elem <role-link> bejegyz\u00e9se sz\u00fcks\u00e9ges a <role-name> bejegyz\u00e9s lek\u00e9pz\u00e9s\u00e9hez egy val\u00f3di biztons\u00e1gi szerepre.
+MISSING_SEC_ROLE_REF_ROLE_LINK.useraction=Hat\u00e1rozza meg a hi\u00e1nyz\u00f3 <role-link> bejegyz\u00e9st a <security-role-ref> elemhez.
+
+INVALID_SEC_ROLE_REF_ROLE_LINK=CWWKS9101W: A(z) {0} szervlet <role-name>{2}</role-name> elem\u00e9nek <role-link>{1}</role-link> bejegyz\u00e9s\u00e9ben nincs meghat\u00e1rozva <security-role> elem.
+INVALID_SEC_ROLE_REF_ROLE_LINK.explanation=A <security-role-ref> elem <role-link> bejegyz\u00e9se sz\u00fcks\u00e9ges a <role-name> bejegyz\u00e9s lek\u00e9pz\u00e9s\u00e9hez egy val\u00f3di biztons\u00e1gi szerepre.
+INVALID_SEC_ROLE_REF_ROLE_LINK.useraction=Hozzon l\u00e9tre egy <security-role> elemet a <role-link> n\u00e9vhez, vagy m\u00f3dos\u00edtsa a <role-link> bejegyz\u00e9st egy olyan n\u00e9vre, amely egy l\u00e9tez\u0151 <security-role> nev\u00e9t adja meg.
+
+MULTIPLE_URL_PATTERN_DEFINED=CWWKS9102W: T\u00f6bb <url-pattern>{0}</url-pattern> bejegyz\u00e9s van meghat\u00e1rozva a <servlet-name>{1}</servlet-name> \u00e9s <servlet-name>{2}</servlet-name> elemhez.
+MULTIPLE_URL_PATTERN_DEFINED.explanation=A <servlet-mapping> elem <url-pattern> bejegyz\u00e9se egy adott <servlet-name> elemet k\u00e9pez le a megadott mint\u00e1ra. Egyazon minta haszn\u00e1lata k\u00e9t\u00e9rtelm\u0171 lek\u00e9pez\u00e9st hoz l\u00e9tre.
+MULTIPLE_URL_PATTERN_DEFINED.useraction=M\u00f3dos\u00edtsa az <url-pattern> bejegyz\u00e9st, hogy egyedi legyen.
+
+AUTHZ_TABLE_NOT_CREATED=CWWKS9103E: A(z) {0} alkalmaz\u00e1shoz nem hozhat\u00f3 l\u00e9tre a jogosults\u00e1g t\u00e1bla.
+AUTHZ_TABLE_NOT_CREATED.explanation=Az alkalmaz\u00e1shoz nem lett l\u00e9trehozva jogosults\u00e1g t\u00e1bla, ez\u00e9rt egyetlen felhaszn\u00e1l\u00f3nak sem lesznek jogosults\u00e1gai.
+AUTHZ_TABLE_NOT_CREATED.useraction=Vizsg\u00e1lja meg a napl\u00f3kat \u00e9s \u00e1llap\u00edtsa meg, hogy a jogosults\u00e1g t\u00e1bla mi\u00e9rt nem lett l\u00e9trehozva.
+
+SEC_AUTHZ_FAILED=CWWKS9104A: {0} felhaszn\u00e1l\u00f3 hiteles\u00edt\u00e9se meghi\u00fasult a(z) {1} megh\u00edv\u00e1sakor a k\u00f6vetkez\u0151n: {2}. A felhaszn\u00e1l\u00f3nak nincs megadva hozz\u00e1f\u00e9r\u00e9s a sz\u00fcks\u00e9ges szerepek egyik\u00e9hez sem: {3}.
+SEC_AUTHZ_FAILED.explanation=A felhaszn\u00e1l\u00f3 nem rendelkezik az er\u0151forr\u00e1s el\u00e9r\u00e9s\u00e9hez sz\u00fcks\u00e9ges enged\u00e9lyekkel.
+SEC_AUTHZ_FAILED.useraction=Ha nem ezt v\u00e1rta, akkor l\u00e9pjen kapcsolatba a biztons\u00e1gi adminisztr\u00e1torral. Ha v\u00e9dett er\u0151forr\u00e1shoz szeretne hozz\u00e1f\u00e9rni, a felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3j\u00e1t le kell k\u00e9pezi az er\u0151forr\u00e1st v\u00e9d\u0151 szerepek egyik\u00e9re.
+
+SSL_CAN_NOT_DETERMINE_PORT=CWWKS9105E: Nem siker\u00fclt meghat\u00e1rozni az SSL portot az automatikus \u00e1tir\u00e1ny\u00edt\u00e1shoz. A napl\u00f3k ellen\u0151rz\u00e9s\u00e9vel gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a HTTPS (SSL) port el van ind\u00edtva, valamint keressen az SSL konfigur\u00e1ci\u00f3hoz kapcsol\u00f3d\u00f3 lehets\u00e9ges hib\u00e1kat, p\u00e9ld\u00e1ul hi\u00e1nyz\u00f3 vagy helytelen keyStore elemet.
+SSL_CAN_NOT_DETERMINE_PORT.explanation=Bels\u0151 hiba t\u00f6rt\u00e9nt. Az SSL port nem hat\u00e1rozhat\u00f3 meg.
+SSL_CAN_NOT_DETERMINE_PORT.useraction=Nem tehet semmit.
+
+SEC_FORM_LOGIN_BAD_CONFIG=CWWKS9106E: SSO konfigur\u00e1ci\u00f3s hiba. A FormLogin be van \u00e1ll\u00edtva a(z) {0} webalkalmaz\u00e1shoz, de az SSO nincs enged\u00e9lyezve a biztons\u00e1gi be\u00e1ll\u00edt\u00e1sokban.  A FormLogin haszn\u00e1lat\u00e1hoz az SSO enged\u00e9lyez\u00e9se sz\u00fcks\u00e9ges.
+SEC_FORM_LOGIN_BAD_CONFIG.explanation=LTPA hiteles\u00edt\u00e9si mechanizmus haszn\u00e1lata eset\u00e9n az egypontos bejelentkez\u00e9st (SSO) is enged\u00e9lyezni kell, ha b\u00e1rmely webalkalmaz\u00e1s \u0171rlap alap\u00fa bejelentkez\u00e9st haszn\u00e1l.
+SEC_FORM_LOGIN_BAD_CONFIG.useraction=Enged\u00e9lyezze az egypontos bejelentkez\u00e9st a biztons\u00e1gi be\u00e1ll\u00edt\u00e1sokban, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+SEC_FORM_POST_NULL_OR_TOO_LARGE=CWWKS9107W: A POST param\u00e9terek null\u00e9rt\u00e9k\u0171ek, vagy t\u00fal nagyok ahhoz, hogy cookie-ban legyenek t\u00e1rolva.
+SEC_FORM_POST_NULL_OR_TOO_LARGE.explanation=A POST param\u00e9terek null\u00e9rt\u00e9kek, vagy nagyobbak, mint a postParamCookieSize be\u00e1ll\u00edt hiteles\u00edt\u00e9si param\u00e9terben be\u00e1ll\u00edtott maxim\u00e1lis m\u00e9ret.
+SEC_FORM_POST_NULL_OR_TOO_LARGE.useraction=Ha a POST param\u00e9terek t\u00fal nagyok, akkor n\u00f6velje a postParamCookieSize param\u00e9ter m\u00e9ret\u00e9t.
+
+SEC_TAI_VALIDATE_FAILED=CWWKS9107E: A Megb\u00edzhat\u00f3s\u00e1gt\u00e1rs\u00edt\u00e1s inicializ\u00e1l\u00e1sa nem tudta bet\u00f6lteni a(z) {0} Megb\u00edzhat\u00f3s\u00e1gt\u00e1rs\u00edt\u00e1si oszt\u00e1lyt.
+SEC_TAI_VALIDATE_FAILED.explanation=Ha a rendszer tal\u00e1l egy megfelel\u0151 elfog\u00f3t egy adott k\u00e9r\u00e9shez, akkor ez az elfog\u00f3 ellen\u0151rizteti a megb\u00edzhat\u00f3s\u00e1g\u00e1t a ford\u00edtott proxykiszolg\u00e1l\u00f3val. \
+Ez a hiba\u00fczenet azt jelzi, hogy az ellen\u0151rz\u00e9s meghi\u00fasult, emiatt a ford\u00edtott proxy nem megb\u00edzhat\u00f3. \
+P\u00e9ld\u00e1ul lehets\u00e9ges, hogy helytelen vagy lej\u00e1rt jelsz\u00f3 lett megadva.
+SEC_TAI_VALIDATE_FAILED.useraction=\u00c9les k\u00f6rnyezetben a felhaszn\u00e1l\u00f3 riaszthat\u00f3, hogy ellen\u0151rizze, nincs-e behatol\u00f3 a rendszerben. \
+Tesztel\u00e9s alatt \u00e1ll\u00f3 fejleszt\u0151i k\u00f6rnyezetben ellen\u0151rizze, hogy a ford\u00edtott proxy kiszolg\u00e1l\u00f3t\u00f3l v\u00e1rt bemenet helyesen ker\u00fcl-e \u00e1tad\u00e1sra az elfog\u00f3nak.  \
+A bemenetek jellege att\u00f3l f\u00fcgg, hogy a megb\u00edzhat\u00f3s\u00e1gt\u00e1rs\u00edt\u00e1s hogyan j\u00f6n l\u00e9tre. \
+P\u00e9ld\u00e1ul a legegyszer\u0171bb m\u00f3dszer egy felhaszn\u00e1l\u00f3n\u00e9v/jelsz\u00f3 p\u00e1r \u00e1tad\u00e1sa lenne a Basic Authentication fejl\u00e9cen kereszt\u00fcl.  
+
+SEC_TAI_USER_EXCEPTION=CWWKS9108E: Nem tal\u00e1lhat\u00f3 \u00e9rv\u00e9nyes felhaszn\u00e1l\u00f3 a Megb\u00edzhat\u00f3s\u00e1gt\u00e1rs\u00edt\u00e1shoz.
+SEC_TAI_USER_EXCEPTION.explanation=A hiteles\u00edt\u00e9si felhaszn\u00e1l\u00f3nevet elfog\u00f3 adja vissza. \
+Nem ker\u00fclt sor ilyen felhaszn\u00e1l\u00f3n\u00e9v visszaad\u00e1s\u00e1ra.
+SEC_TAI_USER_EXCEPTION.useraction=Ellen\u0151rizze, hogy a ford\u00edtott proxy kiszolg\u00e1l\u00f3 a helyes felhaszn\u00e1l\u00f3i nevet sz\u00farja-e be a HTTP k\u00e9r\u00e9sbe a k\u00e9r\u00e9s elk\u00fcld\u00e9se el\u0151tt az alkalmaz\u00e1skiszolg\u00e1l\u00f3nak.
+
+SEC_TAI_GENERAL_EXCEPTION=CWWKS9109E: V\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt a Megb\u00edzhat\u00f3s\u00e1gt\u00e1rs\u00edt\u00e1s sor\u00e1n. A kiv\u00e9tel a(z) {0}.
+SEC_TAI_GENERAL_EXCEPTION.explanation=Ez a kiv\u00e9tel az \u00f6sszes tov\u00e1bbi kiv\u00e9telre hivatkozik, amit egy elfog\u00f3 hozhat l\u00e9tre a megb\u00edzhat\u00f3s\u00e1g ellen\u0151rz\u00e9se sor\u00e1n a ford\u00edtott proxykiszolg\u00e1l\u00f3val, \u00e9s a hiteles\u00edtett felhaszn\u00e1l\u00f3i n\u00e9v lek\u00e9r\u00e9se sor\u00e1n, kiv\u00e9ve a WebTrustAssociationFailedException \u00e9s WebTrustAssociationUserException kiv\u00e9teleket.
+SEC_TAI_GENERAL_EXCEPTION.useraction=Keresse meg a hib\u00e1t az ezen \u00fczenet mellett kinyomtatott veremnyomk\u00f6vet\u00e9sb\u0151l. \
+Ha a kiv\u00e9tel jelleg\u00e9r\u0151l tov\u00e1bbi inform\u00e1ci\u00f3kat szeretne kapni, akkor kapcsolja be a nyomk\u00f6vet\u00e9si hibakeres\u00e9st.
+
+AUTHZ_TABLE_DUPLICATE_APP_NAME=CWWKS9110E: T\u00f6bb alkalmaz\u00e1s rendelkezik a(z) {0} n\u00e9vvel. A biztons\u00e1gi jogosults\u00e1gi ir\u00e1nyelvek megk\u00f6vetelik, hogy a nevek egyediek legyenek.
+AUTHZ_TABLE_DUPLICATE_APP_NAME.explanation=Az alkalmaz\u00e1sneveknek egyedieknek kell lenni\u00fck, hogy a biztons\u00e1gi jogosults\u00e1gi ir\u00e1nyelvek betartathat\u00f3ak legyenek.
+AUTHZ_TABLE_DUPLICATE_APP_NAME.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1sokat, hogy egyedi nevekkel rendelkezzenek, \u00e9s ind\u00edtsa \u00fajra az alkalmaz\u00e1st.
+
+AUTHZ_INVALID_SECURITYROLE_CONFIG=CWWKS9111E: A(z) {0} jogosults\u00e1gt\u00e1bla l\u00e9trehoz\u00e1s\u00e1hoz haszn\u00e1lt objektum \u00e9rv\u00e9nytelen, \u00e9s a t\u00e1bla nem lesz l\u00e9trehozva. Az objektumnak a SecurityRoles oszt\u00e1ly egy p\u00e9ld\u00e1ny\u00e1nak kell lennie.
+AUTHZ_INVALID_SECURITYROLE_CONFIG.explanation=A jogosults\u00e1gt\u00e1bla l\u00e9trehoz\u00e1s\u00e1hoz haszn\u00e1lt objektumnak a SecurityRoles oszt\u00e1ly egy p\u00e9ld\u00e1ny\u00e1nak kell lennie.
+AUTHZ_INVALID_SECURITYROLE_CONFIG.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az API-nak a jogosults\u00e1gt\u00e1bla l\u00e9trehoz\u00e1s\u00e1hoz \u00e1tadott objektum a SecurityRoles oszt\u00e1ly p\u00e9ld\u00e1nya.
+
+WEB_APP_SECURITY_CONFIGURATION_UPDATED=CWWKS9112A: A webalkalmaz\u00e1s biztons\u00e1gi be\u00e1ll\u00edt\u00e1sai megv\u00e1ltoztak. Az al\u00e1bbi tulajdons\u00e1gok lettek m\u00f3dos\u00edtva: {0}
+WEB_APP_SECURITY_CONFIGURATION_UPDATED.explanation=A webalkalmaz\u00e1s biztons\u00e1gi be\u00e1ll\u00edt\u00e1sai m\u00f3dos\u00edtva lettek. Az \u00fczenetben szerepl\u0151 tulajdons\u00e1g\u00e9rt\u00e9kek az \u00faj \u00e9rt\u00e9kek.
+WEB_APP_SECURITY_CONFIGURATION_UPDATED.useraction=Nincs teend\u0151.
+
+SSL_PORT_IS_NULL=CWWKS9113E: Az SSL port nem akt\u00edv. A be\u00e9rkez\u0151 http k\u00e9r\u00e9s nem ir\u00e1ny\u00edthat\u00f3 \u00e1t biztons\u00e1gos portra. Keressen a server.xml f\u00e1jlban konfigur\u00e1ci\u00f3s hib\u00e1kat. A https port tiltott lehet. Lehet, hogy a keyStore elem hi\u00e1nyzik vagy helytelen\u00fcl van megadva. Lehet, hogy az SSL szolg\u00e1ltat\u00e1s nincs enged\u00e9lyezve. 
+SSL_PORT_IS_NULL.explanation=Az SSL port nem \u00e1llap\u00edthat\u00f3 meg, ami megakad\u00e1lyozza, hogy a be\u00e9rkez\u0151 HTTP k\u00e9r\u00e9s \u00e1t legyen ir\u00e1ny\u00edtva a HTTPS portra. Ez akkor fordulhat el\u0151, ha konfigur\u00e1ci\u00f3s hiba van a keyStore elemben, vagy az SSL szolg\u00e1ltat\u00e1s hi\u00e1nyzik.
+SSL_PORT_IS_NULL.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a server.xml f\u00e1jlban a helyes SSL inform\u00e1ci\u00f3k tal\u00e1lhat\u00f3k.
+
+SSL_REQ_URL_MALFORMED_EXCEPTION=CWWKS9114E: A be\u00e9rkez\u0151 http k\u00e9r\u00e9s nem ir\u00e1ny\u00edthat\u00f3 \u00e1t biztons\u00e1gos portra, mert a szervlet k\u00e9r\u00e9s {0} URL c\u00edme helytelen\u00fcl k\u00e9pzett. Gondoskodj\u00e9k r\u00f3la, hogy a k\u00e9r\u00e9s URL c\u00edme helyes legyen.
+SSL_REQ_URL_MALFORMED_EXCEPTION.explanation=A szervlet k\u00e9r\u00e9s URL c\u00edme helytelen\u00fcl k\u00e9pzett, ami megakad\u00e1lyozza, hogy a be\u00e9rkez\u0151 HTTP k\u00e9r\u00e9s  \u00e1t legyen ir\u00e1ny\u00edtva a HTTPS portra.
+SSL_REQ_URL_MALFORMED_EXCEPTION.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a szervlet k\u00e9r\u00e9s URL c\u00edme helyes legyen.
+
+SEC_WEB_INTERNAL_SERVER_ERROR=CWWKS9115E: A kiszolg\u00e1l\u00f3 v\u00e1ratlan helyzetet \u00e9szlelt, amely megakad\u00e1lyozta, hogy teljes\u00edtse a(z) {0} met\u00f3dus k\u00e9r\u00e9s\u00e9t a(z) {1} URL c\u00edmhez. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse \u00e1t a kiszolg\u00e1l\u00f3napl\u00f3kat.
+SEC_WEB_INTERNAL_SERVER_ERROR.explanation=A kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s v\u00e1lasza azt jelzi, hogy bels\u0151 kiszolg\u00e1l\u00f3hiba t\u00f6rt\u00e9nt.
+SEC_WEB_INTERNAL_SERVER_ERROR.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse \u00e1t a kiszolg\u00e1l\u00f3napl\u00f3kat. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, akkor tekintse meg a hibafelder\u00edt\u00e9ssel foglalkoz\u00f3 inform\u00e1ci\u00f3kat a WebSphere Application Server t\u00e1mogat\u00e1si webhely\u00e9n: http://www.ibm.com/software/webservers/appserv/was/support/. 
+
+SEC_WEB_NULL_AUTHENTICATOR=CWWKS9116E: A bejelentkez\u00e9s a(z) {0} URL c\u00edmre a(z) {1} felhaszn\u00e1l\u00f3val bels\u0151 hiba miatt meghi\u00fasult. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse \u00e1t a kiszolg\u00e1l\u00f3napl\u00f3kat.
+SEC_WEB_NULL_AUTHENTICATOR.explanation=A bejelentkez\u00e9si folyamat bels\u0151 hiba miatt nem fejez\u0151d\u00f6tt be. 
+SEC_WEB_NULL_AUTHENTICATOR.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse \u00e1t a kiszolg\u00e1l\u00f3napl\u00f3kat. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, akkor tekintse meg a hibafelder\u00edt\u00e9ssel foglalkoz\u00f3 inform\u00e1ci\u00f3kat a WebSphere Application Server t\u00e1mogat\u00e1si webhely\u00e9n: http://www.ibm.com/software/webservers/appserv/was/support/. 
+
+SEC_WEB_ILLEGAL_REQUEST=CWWKS9117E: A(z) {0} met\u00f3dus nem v\u00e9gezhet feldolgoz\u00e1st a(z) {1} URL c\u00edmhez. Ha a hiba v\u00e1ratlan, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1s megengedi az \u00fcgyf\u00e9l \u00e1ltal k\u00e9rt met\u00f3dusokat.
+SEC_WEB_ILLEGAL_REQUEST.explanation=Egy k\u00e9rt met\u00f3dus feldolgoz\u00e1sa tiltott.
+SEC_WEB_ILLEGAL_REQUEST.useraction=Ha a hiba v\u00e1ratlan, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1s megengedi az \u00fcgyf\u00e9l \u00e1ltal k\u00e9rt met\u00f3dusokat.
+
+GETFORMLOGOUTEXTENSIONPROCESSOR_EXCEPTION=CWWKS9118E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Kiv\u00e9tel: {0}
+GETFORMLOGOUTEXTENSIONPROCESSOR_EXCEPTION.explanation=CMSG0001
+GETFORMLOGOUTEXTENSIONPROCESSOR_EXCEPTION.useraction=CMSG0002
+
+AUTHENTICATE_CACHE_REMOVAL_EXCEPTION=CWWKS9119W: A(z) {0} felhaszn\u00e1l\u00f3 kijelentkez\u00e9se sikertelen, mert nem v\u00e1rt kiv\u00e9tel t\u00f6rt\u00e9nt a felhaszn\u00e1l\u00f3 cookie-jainak a hiteles\u00edt\u00e9si gyors\u00edt\u00f3t\u00e1rb\u00f3l t\u00f6rt\u00e9n\u0151 elt\u00e1vol\u00edt\u00e1sa sor\u00e1n. Kiv\u00e9tel: {1}. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse \u00e1t a kiszolg\u00e1l\u00f3 napl\u00f3it, majd l\u00e9ptesse ki \u00fajra a felhaszn\u00e1l\u00f3t, ha lehets\u00e9ges.
+AUTHENTICATE_CACHE_REMOVAL_EXCEPTION.explanation=A felhaszn\u00e1l\u00f3 kijelentkez\u00e9se sikertelen, mert nem v\u00e1rt kiv\u00e9tel t\u00f6rt\u00e9nt a felhaszn\u00e1l\u00f3 cookie-jainak a hiteles\u00edt\u00e9si gyors\u00edt\u00f3t\u00e1rb\u00f3l t\u00f6rt\u00e9n\u0151 elt\u00e1vol\u00edt\u00e1sa sor\u00e1n.
+AUTHENTICATE_CACHE_REMOVAL_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse \u00e1t a kiszolg\u00e1l\u00f3 napl\u00f3it, majd l\u00e9ptesse ki \u00fajra a felhaszn\u00e1l\u00f3t, ha lehets\u00e9ges. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, akkor tekintse meg a hibafelder\u00edt\u00e9ssel foglalkoz\u00f3 inform\u00e1ci\u00f3kat a WebSphere Application Server t\u00e1mogat\u00e1si webhely\u00e9n: http://www.ibm.com/software/webservers/appserv/was/support/. 
+
+INVALID_FORM_LOGIN_CONFIGURATION=CWWKS9120W: Az \u0171rlap alap\u00fa bejelentkez\u00e9si konfigur\u00e1ci\u00f3b\u00f3l hi\u00e1nyzik a(z) {0} meghat\u00e1roz\u00e1sa. 
+INVALID_FORM_LOGIN_CONFIGURATION.explanation=Az \u0171rlap bejelentkez\u00e9si konfigur\u00e1ci\u00f3j\u00e1b\u00f3l hi\u00e1nyzik a bejelentkez\u00e9si oldal vagy a hibaoldal, esetleg mindkett\u0151.
+INVALID_FORM_LOGIN_CONFIGURATION.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az \u0171rlap bejelentkez\u00e9si konfigur\u00e1ci\u00f3ja tartalmazza a bejelentkez\u00e9si oldal \u00e9s a hibaoldal meghat\u00e1roz\u00e1s\u00e1t is.
+
+OSGI_SERVICE_ERROR=CWWKS9121E: A(z) {0} OSGi szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.
+OSGI_SERVICE_ERROR.explanation=A megadott OSGi szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.
+OSGI_SERVICE_ERROR.useraction=Ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t a "clean" param\u00e9terrel.
+
+UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED=CWWKS9122I:  A(z) {1} alkalmaz\u00e1sban tal\u00e1lhat\u00f3 {0} URL eset\u00e9n a k\u00f6vetkez\u0151 HTTP met\u00f3dusok nincsenek lefedve, \u00e9s el\u00e9rhet\u0151k: {2}
+UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED.explanation=A deny-uncovered-http-methods elem nincs megadva a szervlet web.xml f\u00e1jlj\u00e1ban, \u00e9s egy URL mint\u00e1hoz tartoznak olyan HTTP met\u00f3dusok, amelyek nem v\u00e9dettek. Ezek a nem v\u00e9dett met\u00f3dusok el\u00e9rhet\u0151ek lesznek.
+UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00f6sszes korl\u00e1tozott URL mint\u00e1ban l\u00e9v\u0151 \u00f6sszes HTTP met\u00f3dus rendelkezik a sz\u00e1nd\u00e9kolt biztons\u00e1gi v\u00e9delemmel.
+
+UNCOVERED_HTTP_METHODS_FOUND=CWWKS9123I:  A(z) {1} alkalmaz\u00e1sban tal\u00e1lhat\u00f3 {0} URL eset\u00e9n a k\u00f6vetkez\u0151 HTTP met\u00f3dusok nincsenek lefedve, \u00e9s nem el\u00e9rhet\u0151k: {2}
+UNCOVERED_HTTP_METHODS_FOUND.explanation=A deny-uncovered-http-methods elem meg van adva a szervlet web.xml f\u00e1jlj\u00e1ban, \u00e9s egy URL mint\u00e1hoz tartoznak olyan HTTP met\u00f3dusok, amelyek nem v\u00e9dettek. Ezek a nem v\u00e9dett met\u00f3dusok nem lesznek el\u00e9rhet\u0151ek.
+UNCOVERED_HTTP_METHODS_FOUND.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00f6sszes korl\u00e1tozott URL mint\u00e1ban l\u00e9v\u0151 \u00f6sszes HTTP met\u00f3dus rendelkezik a sz\u00e1nd\u00e9kolt biztons\u00e1gi v\u00e9delemmel.
+
+SEC_JACC_AUTHZ_FAILED=CWWKS9124A: {0} felhaszn\u00e1l\u00f3 JACC szolg\u00e1ltat\u00f3 \u00e1ltali hiteles\u00edt\u00e9se meghi\u00fasult a(z) {1} megh\u00edv\u00e1sakor a k\u00f6vetkez\u0151n: {2}.
+SEC_JACC_AUTHZ_FAILED.explanation=A felhaszn\u00e1l\u00f3 nem rendelkezik az er\u0151forr\u00e1s el\u00e9r\u00e9s\u00e9hez sz\u00fcks\u00e9ges enged\u00e9lyekkel. A jogosults\u00e1gi d\u00f6nt\u00e9st a felhaszn\u00e1l\u00f3 \u00e1ltal megadott Java Authorization Contract for Containers (JACC) szolg\u00e1ltat\u00f3 hozta l\u00e9tre.  
+SEC_JACC_AUTHZ_FAILED.useraction=Ha nem ezt v\u00e1rta, akkor l\u00e9pjen kapcsolatba a biztons\u00e1gi adminisztr\u00e1torral. Ha v\u00e9dett er\u0151forr\u00e1shoz szeretne hozz\u00e1f\u00e9rni, a felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3j\u00e1t le kell k\u00e9pezi az er\u0151forr\u00e1st v\u00e9d\u0151 szerepek egyik\u00e9re. A jogosults\u00e1got a felhaszn\u00e1l\u00f3 \u00e1ltal megadott Java Authorization Contract for Containers (JACC) szolg\u00e1ltat\u00f3n kereszt\u00fcl konfigur\u00e1lhatja.
+
+
+SEC_FORM_LOGOUTEXITPAGE_INVALID=CWWKS9125E: A Form-Logout szolg\u00e1ltat\u00e1s egy\u00e9ni logoutExitPage oldal\u00e1n megadott URL c\u00edm nem jelen\u00edthet\u0151 meg; requestURL={0}, logoutExitPage={1}. A kijelentkez\u00e9s sikeres volt \u00e9s az alap\u00e9rtelmezett Form-Logout oldal ker\u00fclt megjelen\u00edt\u00e9sre.
+SEC_FORM_LOGOUTEXITPAGE_INVALID.explanation=A Form-Logout szolg\u00e1ltat\u00e1snak nem siker\u00fclt \u00e1tir\u00e1ny\u00edtania a logoutExitPage szervlet param\u00e9terben megadott oldalra. A megadott URL \u00e9rv\u00e9nytelen form\u00e1tum\u00fa URL vagy nincs megadva a hosztn\u00e9v a com.ibm.websphere.security.logoutExitPageDomainList tulajdons\u00e1gban.
+SEC_FORM_LOGOUTEXITPAGE_INVALID.useraction=Jav\u00edtsa ki a logoutExitPage param\u00e9terben megadott URL c\u00edmet.

@@ -1,0 +1,466 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.example.CWSOMMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+# 
+# Instructions to translation will precede the line to which it applies
+# {0} description of each insert field
+# ClassName_MessageName=CWSOM0001I: This is a message with insert {0}
+# ClassName_MessageName.explanation=Explanation text for the message.
+# ClassName_MessageName.useraction=User action text for the message.
+#
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - CWSOMIS9999 is for emergency use if any new messages are required after the messages file is finalized
+# -------------------------------------------------------------------------------------------------
+#
+#
+#CMVCPATHNAME %Z%%W% %I%
+#COMPONENTPREFIX CWSOM
+#COMPONENTNAMEFOR CWSOM ObjectManager
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+
+# {0} name of the log file.
+ObjectManagerState_ColdStart=CWSOM0001I: Es wurde ein Kaltstart f\u00fcr den ObjectManager durchgef\u00fchrt, der die Protokolldatei {0} verwendet.
+ObjectManagerState_ColdStart.explanation=Es wurde eine leere Protokolldatei an den ObjectManager \u00fcbergeben. Deshalb wurde ein Kaltstart durchgef\u00fchrt.
+ObjectManagerState_ColdStart.useraction= Keine, sofern Sie keinen Warmstart des ObjectManager erwartet haben. \
+In diesem Fall m\u00fcssen Sie untersuchen, warum die Protokolldatei leer war.
+ 
+# {0} name of the log file.
+# {1) The LOG_FILE_TYPE used for the warm start.
+ObjectManagerState_WarmStart=CWSOM0002I: Es wurde ein Warmstart f\u00fcr den ObjectManager durchgef\u00fchrt, der die Protokolldatei {0} verwendet. Typ der Protokolldatei: {1}
+ObjectManagerState_WarmStart.explanation=Es wurde eine g\u00fcltige Protokolldatei an den ObjectManager \u00fcbergeben, mit der ein Warmstart durchgef\u00fchrt werden konnte.
+ObjectManagerState_WarmStart.useraction=Keine, sofern Sie keinen Kaltstart des ObjectManager erwartet haben. \
+In diesem Fall m\u00fcssen Sie untersuchen, warum die Protokolldatei nicht leer war.
+ 
+# {0} name of the log file.
+ObjectManagerState_Shutdown=CWSOM0003I: Der ObjectManager, der die Protokolldatei {0} verwendet, wurde beendet.
+ObjectManagerState_Shutdown.explanation=Die Beendigung des ObjectManager wurde angefordert.
+ObjectManagerState_Shutdown.useraction=Keine, sofern Sie die Beendigung des ObjectManager nicht erwartet haben.
+
+# {0} name of the log file.
+ObjectManagerState_ShutdownFast=CWSOM0004I: Der ObjectManager, der die Protokolldatei {0} verwendet, wurde beendet, ohne einen letzten Pr\u00fcfpunkt auszuf\u00fchren.
+ObjectManagerState_ShutdownFast.explanation=Die Beendigung des ObjectManager wurde angefordert, ohne einen letzten Pr\u00fcfpunkt auszuf\u00fchren, oder er wurde beendet, weil ein Fehler vorausgegangen ist.
+ObjectManagerState_ShutdownFast.useraction=Keine, sofern Sie die Beendigung des ObjectManager ohne letzten Pr\u00fcfpunkt nicht erwartet haben. \
+\
+Untersuchen Sie die Diagnosenachricht, um die Ursache f\u00fcr die unerwartete Beendigung zu ermitteln.
+
+# {0} Descriptive name of the transaction to be backed out.
+ObjectManagerState_LogTooFull=CWSOM0005W: Der ObjectManager hat festgestellt, dass die Protokolldatei zu voll ist, und setzt deshalb die Transaktion {0} zur\u00fcck.
+ObjectManagerState_LogTooFull.explanation=Der ObjectManager hat nach der Ausf\u00fchrung eines Pr\u00fcfpunkts festgestellt, dass der Platz in der Protokolldatei nicht ausreicht, und deshalb die gr\u00f6\u00dfte Transaktion im Protokoll zur\u00fcckgesetzt, um Platz freizugeben.
+ObjectManagerState_LogTooFull.useraction=Der Umfang der Transaktionen ist f\u00fcr die konfigurierte Protokolldateigr\u00f6\u00dfe zu gro\u00df. \
+Stellen Sie fest, ob Ihre Transaktionen zu viele Aktualisierungen durchf\u00fchren, ob Sie zu viele gro\u00dfe Objekte aktualisieren, ob Sie zu viele Transaktionen gleichzeitig ausf\u00fchren oder ob Ihre Protokolldatei einfach nur zu klein ist und vergr\u00f6\u00dfert werden sollte. 
+
+# ----------------------------------------------------------------------------------------------------
+
+# {0} Descriptive name of the transaction to be backed out.
+InternalTransaction_BackoutOrphan=CWSOM0100W: W\u00e4hrend der Garbage-Collection wurde die Transaktion {0} aufgesp\u00fcrt. Diese Transaktion wird zur\u00fcckgesetzt.
+InternalTransaction_BackoutOrphan.explanation=Die Anwendung hat ihren Bezug zu einer Transaktion verloren und kann die Transaktion nicht abschlie\u00dfen.\
+Deshalb setzt der ObjectManager die Transaktion zur\u00fcck, um seine Ressourcen freizugeben.
+InternalTransaction_BackoutOrphan.useraction=Die Anwendung hat die Referenz auf eine Transaktion verloren. \
+Wenn die Anwendung abnormal beendet wird, sind keine weiteren Aktionen erforderlich. \
+Falls die Anwendung die Referenz jedoch ohne abnormale Beendigung verloren hat, k\u00f6nnten dies ein Hinweis auf einen Logikfehler in der Anwendung sein.
+              
+# ----------------------------------------------------------------------------------------------------
+
+# {0} ObjectStore which could not safely be closed.
+ObjectStore_UnsafeToFlush=CWSOM0200W: Der ObjectStore {0} mit der Strategie STRATEGY_SAVE_ONLY_ON_SHUTDOWN konnte nicht ordnungsgem\u00e4\u00df geschlossen werden.
+ObjectStore_UnsafeToFlush.explanation=Wenn w\u00e4hrend der Beendigung aktive Transaktionen vorhanden sind, \
+ObjectStores mit der Strategie STRATEGY_SAVE_ONLY_ON_SHUTDOWN k\u00f6nnen nicht sicher geschlossen werden, weil aktive Transaktionen vorhanden sind.\
+Das Schlie\u00dfen des ObjectStore kann dazu f\u00fchren, dass inkonsistente Daten gespeichert werden.\
+Der Objektspeicher bleibt unver\u00e4ndert.
+ObjectStore_UnsafeToFlush.useraction=Stellen Sie fest, warum aktive Transaktionen vorhanden sind. \
+Diese aktiven Transaktionen k\u00f6nnen vorhanden sein, weil Sie einen externen Transaktionsmanager verwenden.\
+Sollten Sie nicht verhindern k\u00f6nnen, dass bei der Beendigung aktive Transaktionen vorhanden sind, verwenden Sie einen ObjectStore mit einer anderen Speicherstrategie.
+
+# {0} Bytes required in the file system.
+# {1} Bytes currently used in the file system.
+# {2} Exception caught when trying to reserved the bytes.
+ObjectStore_AllocateFileSpaceFailed=CWSOM0201W: Der Objektspeicher hat {0} Bytes Speicher angefordert, der derzeit {1} Bytes betr\u00e4gt. Dabei wurde eine Ausnahme ausgegeben: {2}
+ObjectStore_AllocateFileSpaceFailed.explanation=Das Dateisystem kann den angeforderten Speicherplatz nicht reservieren.\
+Versuche, Objekte im Objektspeicher zuzuordnen, scheitern.
+ObjectStore_AllocateFileSpaceFailed.useraction=Untersuchen Sie die Ausnahme, und stellen Sie fest, warum der Speicherplatz im Dateisystem nicht reserviert werden konnte.
+
+# ---------------------------------------------------------------------------------------------------------------------------------
+# Messages used by ObjectManagerException.
+# ---------------------------------------------------------------------------------------------------------------------------------
+
+# {0} The ClassNotFoundException that was caught by the ObjectManager.
+ClassNotFoundException_info=CWSOM1001E: Der ObjectManager hat beim Entserialisieren eines verwalteten Objekts die Ausnahme ClassNotFoundException={0}(java.lang.ClassNotFoundException) abgefangen.
+
+ClassNotFoundException_info.explanation=Es wurde eine Ausnahme vom Typ "java.lang.ClassNotFoundException" abgefangen, als der ObjectManager versucht hat, ein ManagedObject zu entserialisieren.
+ClassNotFoundException_info.useraction=Diese Ausnahme enth\u00e4lt den Namen der Klasse, die nicht gefunden wurde. \
+Stellen Sie die Klasse dem Klassenlader des ObjectManager zur Verf\u00fcgung, indem Sie beispielsweise die Klassendatei in den Klassenpfad einf\u00fcgen.
+
+# {0} The Name of the new and existing ObjectStore.
+# {1} ObjectStore already using the name.
+DuplicateObjectStoreNameException_info=CWSOM1002E: Es wurde versucht, einen ObjectStore mit storeName={0}(String) zu erstellen, der bereits in ObjectStore={1} verwendet wird.
+DuplicateObjectStoreNameException_info.explanation=Die Namen von Objektspeichern m\u00fcssen in einem ObjectManager eindeutig sein.
+DuplicateObjectStoreNameException_info.useraction=W\u00e4hlen Sie einen anderen Namen f\u00fcr den ObjectStore aus.
+
+# {0} Object which is not in a valid state for the operation.
+# {1} The state the object was in.
+# {2} The descriptive name of the state.
+StateErrorException_info=CWSOM1003E: Das Objekt {0} ist jetzt im Fehlerstatus. Vorheriger ung\u00fcltiger Status: {1} (Integer) {2} (Zeichenfolge).
+StateErrorException_info.explanation=Es wurde eine Operation f\u00fcr ein Objekt angefordert, dessen Status f\u00fcr die Operation nicht g\u00fcltig ist. \
+Die Operation scheitert, und das Objekt wird in den Fehlerstatus versetzt.
+StateErrorException_info.useraction=CMSG0002 
+
+# {0} The IOException that was caught by the ObjectManager.
+PermanentIOException_info=CWSOM1004E: Der ObjectManager hat die Ausnahme IOException={0}(java.io.IOException) abgefangen.
+PermanentIOException_info.explanation=Es wurde eine Ausnahme des Typs IOException vom ObjectManager abgefangen. Die E/A-Operation konnte nicht wiederholt werden und wurde deshalb abgebrochen.
+PermanentIOException_info.useraction=Die Ausnahme des Typs IOException beschreibt den speziellen Fehler.\
+Ermitteln und beheben Sie die Ursache f\u00fcr die Ausnahme.
+
+# {0} The IOException that was caught by the ObjectManager.
+TemporaryIOException_info=CWSOM1005E: Der ObjectManager hat die Ausnahme IOException={0}(java.io.IOException) abgefangen.
+TemporaryIOException_info.explanation=Es wurde eine Ausnahme des Typs "IOException" vom ObjectManager abgefangen. Die E/A-Operation wurde abgebrochen, aber sie kann von der API des ObjectManager wiederholt werden, sobald die Fehlerursache behoben ist.
+TemporaryIOException_info.useraction=Die Ausnahme des Typs IOException beschreibt den speziellen Fehler.\
+Ermitteln und beheben Sie die Ursache f\u00fcr die Ausnahme, und wiederholen Sie anschlie\u00dfend die Operation.
+
+# {0} The ObjectStore being constructed.
+# {1} The name.
+InvalidObjectStoreNameException_info=CWSOM1006E: An den ObjectStore {0} wurde ein ung\u00fcltiger Name {1} \u00fcbergeben.
+InvalidObjectStoreNameException_info.explanation=Es wurde ein ObjectStore mit einem ung\u00fcltigen Namen erstellt. \
+Der ObjectManager hat den ObjectStore nicht erstellt.
+InvalidObjectStoreNameException_info.useraction=\u00dcberpr\u00fcfen Sie den Namen, und stellen Sie fest, warum er nicht g\u00fcltig ist.
+
+# {0} The unrecognized statistics set.
+StatisticsNameNotFoundException_info=CWSOM1007E: Die Statistiken {0} sind nicht bekannt.
+StatisticsNameNotFoundException_info.explanation=Die Anwendung hat einen Satz von Statistiken angefordert, die nicht bekannt sind.
+StatisticsNameNotFoundException_info.useraction=Korrigieren Sie den Namen des angeforderten Statistiksatzes.
+
+# {0} The ObjectStore detecting the error.
+# {1} The ManagedObject.
+InvalidObjectToStoreException_info=CWSOM1008E: Der ObjectStore {0} wurde aufgefordert, das ung\u00fcltige ManagedObject {1} zu speichern.
+InvalidObjectToStoreException_info.explanation=Ein ObjectStore wurde aufgefordert ein ung\u00fcltiges ManagedObject zu speichern. \
+Der Objectstore hat das ManagedObject nicht gespeichert.
+InvalidObjectToStoreException_info.useraction=Untersuchen Sie das ManagedObject, und stellen fest, warum es ung\u00fcltig ist.\
+Es kann beispielsweise ein ManagedObject sein, das null ist.
+
+# {0} The ObjectStore reporting the sequence error.
+# {1} The non unique sequence number.
+# {2} The ManagedObject already using the sequence number.
+StoreSequenceException_info=CWSOM1009E: Der ObjectStore {0} hat die Folgenummer {1}(Long) generiert, das bereits von {2}(ManagedObject) verwendet wird.
+
+StoreSequenceException_info.explanation=Es ist ein interner Fehler im ObjectStore aufgetreten.
+StoreSequenceException_info.useraction=CMSG0002
+
+# {0} ObjectStore throwing the replacementException.
+# {1} The ManagedObject being replaced.
+# {2} The Token referencing the replacement.
+# {3} The existing Token attempting the replacement.
+ReplacementException_info=CWSOM1010E: Der ObjectStore {0} wurde aufgefordert, das verwaltete Objekt {1} zu ersetzen, das von Token {2} referenziert wird, obwohl bereits ein anderes Token {3} im Speicher vorhanden ist.
+
+ReplacementException_info.explanation=Ein Token wird \u00fcber eine objectStoreIdentifier und eine storedObjectIdentifier identifiziert. \
+Es kann kann jeweils nur ein Token jeder ID im Speicher vorhanden sein, aber das neue Token und ein bereits vorhandenes Token verwenden dieselbe ID.
+ReplacementException_info.useraction=CMSG0002 
+
+# {0} Object which is not in a valid state for the operation.
+# {1} The state the object is in.
+# {2} The descriptive name of the state.
+InvalidStateException_info=CWSOM1011E: Es wurde versucht, eine ung\u00fcltige Operation f\u00fcr das Objekt {0} mit dem Status {1}(int) {2}(String) auszuf\u00fchren.
+
+InvalidStateException_info.explanation=Es wurde versucht, eine Operation f\u00fcr das Objekt auszuf\u00fchren.\
+Die Operation kann wegen des aktuellen Status des Objekts nicht ausgef\u00fchrt werden. \
+Beispiel: Sie haben versucht, ein ManagedObject zu l\u00f6schen, das bereits gel\u00f6scht wurde. \
+Die Operation wird zur\u00fcckgewiesen, und das Objekt bleibt unver\u00e4ndert.
+InvalidStateException_info.useraction=\u00dcberpr\u00fcfen Sie den Status des Objekts, und stellen Sie fest, warum versucht wurde, die Operation auszuf\u00fchren.
+
+# {0} ObjecManagerState which has detected the duplicate.
+# {1} The new duplicate InternalTransaction.
+# {2} The old existing InternalTransaction.
+DuplicateTransactionException_info=CWSOM1012E: ObjectManagerState {0} hat versucht, eine neue Transaktion {1} (intern Transaktion) zu registrieren, die dieselbe LogicalUnitOfWork-ID hat wie die Transaktion {2} (interne Transaktion).
+DuplicateTransactionException_info.explanation=Der ObjectManager hat eine neue und eine vorhandene Transaktion mit derselben Transaktions-ID gefunden. Es handelt sich hierbei um einen internen Fehler, der eigentlich nicht auftreten d\u00fcrfte.
+DuplicateTransactionException_info.useraction=CMSG0002 
+
+# {0} The internal transaction trying to unregister.
+NonExistentTransactionException_info=CWSOM1013E: Es wurde versucht, die Registrierung einer Transaktion {0} (interne Transaktion) aufzuheben, die nicht registriert ist.
+
+NonExistentTransactionException_info.explanation=Es wurde in interner Fehler im ObjectManager festgestellt. Es k\u00f6nnen keine weiteren Aktionen in der Transaktion ausgef\u00fchrt werden.
+NonExistentTransactionException_info.useraction=CMG0002
+
+# {0} The ObjectStoreIdentifier of the ObjectStore that was not known to the ObjectManager.
+NonExistentObjectStoreTemporaryIOException_info=CWSOM1014E: Es wurde versucht, einen Objektspeicher zu finden, der nicht registriert ist: Speicher-ID={0} (Integer).
+NonExistentObjectStoreTemporaryIOException_info.explanation=Ein Token referenziert einen Objektspeicher , der dem ObjectManager nicht bekannt ist.
+NonExistentObjectStoreTemporaryIOException_info.useraction=Wenn der ObjectStore aus dem ObjectManager entfernt wurde, wird diese Ausnahme abgefangen, wenn vorhandene Token auf diesen ObjectStore verweisen. \
+Instanzieren Sie den ObjectStore erneut, oder verwenden Sie keine Token, die versuchen, darauf zuzugreifen.
+
+# {0} The Exception that was caught by the ObjectManager.
+UnexpectedExceptionException_info=CWSOM1015E: Der ObjectManager hat die unerwartete Ausnahme {0}(Exception) abgefangen.
+UnexpectedExceptionException_info.explanation=Es wurde eine Ausnahme vom ObjectManager abgefangen. Der ObjectManager war nicht in der Lage, eine angemessene Aktion als Reaktion auf die Ausnahme auszuf\u00fchren.
+UnexpectedExceptionException_info.useraction=Ermitteln und beheben Sie die Ursache f\u00fcr die Ausnahme. 
+# {0} The managedObject being unlocked.
+# {1} Internal transaction trying to release the lock on the ManagedObject.
+# {2} The existing lock on the ManagedObject.
+InvalidTransactionException_info=CWSOM1016E: Es wurde versucht, ein ManagedObject {0} mit InternalTransaction {1} freizugeben oder zu ersetzen, aber das Objekt war bereits unter transactionLock {2} gesperrt.
+InvalidTransactionException_info.explanation=Es wurde versucht, ein ManagedObject in einer anderen Transaktion als der freizugeben oder zu ersetzen, in der das Objekt gesperrt wurde. \
+Der Versuch wurde zur\u00fcckgewiesen.
+InvalidTransactionException_info.useraction=\u00dcberpr\u00fcfen Sie die Logik der Anwendung, die die ObjectManager-Schnittstelle "Transaction.unlock(ManagedObject)" verwendet, und stellen Sie fest, warum die beiden Transaktionen unterschiedlich sind.
+
+# {0} ObjectManagerState which is unable to locate the log file.
+# {1} The exception caught by the ObjectManagerState when trying to locate the log file.
+# {2} The log file name.
+NonExistentLogFileException_info=CWSOM1017E: ObjectManagerState {0} hat die Ausnahme {1} beim Suchen oder Erstellen der Protokolldatei {2} abgefangen.
+NonExistentLogFileException_info.explanation=Es wurde eine Ausnahme abgefangen, als der ObjectManager versucht hat, die angegebene Protokolldatei zu \u00f6ffnen.\
+Der ObjectManager wird nicht gestartet.
+NonExistentLogFileException_info.useraction=Vergewissern Sie sich, dass der Name der Protokolldatei g\u00fcltig ist und dass der ObjectManager die erforderlichen Berechtigungen f\u00fcr das Schreiben in die Datei hat.
+
+# {0} The Object raising the exception.
+# {1} The underlying Exception.
+LogFileExhaustedException_info=CWSOM1018E: Das Objekt {0} hat das Ende der Eingabeprotokolldatei aufgrund einer Ausnahme {1} einer untergeordneten Komponente erkannt.
+LogFileExhaustedException_info.explanation=Der ObjectManager hat das Ende der Eingabeprotokolldatei erkannt.
+LogFileExhaustedException_info.useraction=Es ist keine Aktion erforderlich, falls diese Ausnahme darauf zur\u00fcckzuf\u00fchren ist, dass das Protokoll aufgrund eines Neustart des ObjectManager bis zum Ende gelesen wurde.
+
+# {0} The type of logRecord that was read from the log but not recognized.
+InvalidLogRecordTypeException_info=CWSOM1019E: Es wurde ein ung\u00fcltiger Protokollsatztyp {0}(int) aus dem Transaktionsprotokoll gelesen.
+InvalidLogRecordTypeException_info.explanation=Der ObjectManager hat die Wiederherstellung durchgef\u00fchrt und dabei einen Protokollsatz mit einem unbekannten Typ gefunden. Der ObjectManager wird nicht instanziert.
+InvalidLogRecordTypeException_info.useraction=CMSG0002 
+
+# {0} The name of the ObjectStore that is not registered with the ObjectManager.
+UnknownObjectStoreException_info=CWSOM1020E: Es wurde versucht, einen ObjectStore zu finden, der nicht registriert ist: storeName {0}(String).
+UnknownObjectStoreException_info.explanation=Der ObjectManager wurde aufgefordert, einen ObjectStore zu suchen, der nicht bei ihm registriert ist.
+UnknownObjectStoreException_info.useraction=Der ObjectStore wurde m\u00f6glicherweise aus dem ObjectManager entfernt. Erstellen Sie den ObjectStore erneut.
+
+# {0} The Object detecting the condition that is not valid.
+# {1} The variable name containing the condition that is not valid.
+# {2} The data assigned to the variable giving the condition that is not valid.
+InvalidConditionException_info=CWSOM1021E: Es wurde eine ung\u00fcltige Bedingung von {0}(Object) gefunden. Die Variable {1} enth\u00e4lt den Wert {2}.
+InvalidConditionException_info.explanation=Es ist ein interner Fehler aufgetreten, und es wurde eine ung\u00fcltige Bedingung gefunden.
+InvalidConditionException_info.useraction=CMSG0002 
+
+# {0} The name of the log file.
+LogFileInUseException_info=CWSOM1022E: Die Protokolldatei {0}(String) ist bereits im Gebrauch.
+LogFileInUseException_info.explanation=Der ObjectManager hat versucht, eine exklusive Sperre f\u00fcr die Protokolldatei anzufordern, aber die Protokolldatei ist bereits im Gebrauch.
+LogFileInUseException_info.useraction=Pr\u00fcfen Sie, ob ein anderer ObjectManager oder ein anderes Programm versucht, dieselbe Protokolldatei zu verwenden.
+
+LogFileHeaderCorruptException_info=CWSOM1023E: Die Protokolldatei hat keinen g\u00fcltigen Header.
+LogFileHeaderCorruptException_info.explanation=Die Transaktionsprotokolldatei enth\u00e4lt Daten, die der ObjectManager nicht interpretieren kann.
+LogFileHeaderCorruptException_info.useraction=Pr\u00fcfen Sie, ob die richtige Protokolldatei verwendet wird.
+
+# {0} The current XID.
+# {1} The rejected XID.
+XIDModificationException_info=CWSOM1024E: Es wurde versucht, eine Transaktions-ID zu setzen, die bereits gesetzt ist. Vorhandene XID={0} ([]Byte) zur\u00fcckgewiesene XID={1} ([]Byte).
+XIDModificationException_info.explanation=Eine Transaktion kann nur eine X/Open-Transaktions-ID haben. \
+Diese ID kann nicht mehr ge\u00e4ndert werden, nachdem sie definiert wurde.
+XIDModificationException_info.useraction=Untersuchen Sie die Logik der Anwendung, und stellen Sie fest, warum sie versucht, die XID einer Transaktion zu setzen, die bereits von der Anwendung festgelegt wurde.
+
+# {0} The length of the XID passed to the ObjectManager.
+XIDTooLongException_info=CWSOM1025E: Es wurde versucht, eine Transaktions-ID zu setzen, die zu lang ist: XID-L\u00e4nge={0}(int).
+XIDTooLongException_info.explanation=Die maximale L\u00e4nge von X/Open-Transaktions-IDs wird mit "java.lang.Short.MAX_VALUE" definiert.
+XIDTooLongException_info.useraction=Verwenden Sie eine k\u00fcrzere XID.
+
+# {0} The object containing the disabled interface.
+# {1} The method name of the interface that is disabled.
+InterfaceDisabledExceptionException_info=CWSOM1026E: Es wurde versucht, die inaktivierte Methode methodName={1}(String) in Quelle {0}(Object) zu verwenden.
+InterfaceDisabledExceptionException_info.explanation=Es wurde versucht, eine inaktivierte Schnittstelle zu verwenden.
+InterfaceDisabledExceptionException_info.useraction=Verwenden Sie die Schnittstelle nicht mehr, oder stellen Sie auf eine Version des ObjectManager um, die diese Schnittstelle unterst\u00fctzt.
+
+# {0} The number of bytes to be written to the log.
+# {1} The number of reserved bytes included in the request.
+# {2} The number of bytes available in the log file.
+LogFileFullException_info=CWSOM1027E: Die Protokolldatei ist zu voll, um insgesamt {0}(long) Bytes unterzubringen. Die Anforderung hat {1}(long) zus\u00e4tzliche Bytes reserviert, und der verf\u00fcgbar Speicherplatz betr\u00e4gt {2}(long) Bytes.
+LogFileFullException_info.explanation=Es wurde versucht, mehr Daten in das Protokoll zu schreiben, als der verf\u00fcgbare Speicherplatz erlaubt. \
+Der Versuch wird zur\u00fcckgewiesen, und der Transaktionsstatus bleibt unver\u00e4ndert.
+LogFileFullException_info.useraction=Verringern Sie die Anzahl der Objekte, die Sie in Ihren Transaktionen aktualisieren.\
+Verringern Sie die Anzahl gleichzeitig aktiver Transaktionen.\
+Verringern Sie die Gr\u00f6\u00dfe der ManagedObjects, die Sie aktualisieren.\
+Erh\u00f6hen Sie die Gr\u00f6\u00dfe Ihrer Protokolldatei.
+
+# {0} The part type found in the log that is not valid.
+InvalidLogRecordPartTypeException_info=CWSOM1028E: Typ des Protokollsatzabschnitts ung\u00fcltig: {0} (Byte).
+
+InvalidLogRecordPartTypeException_info.explanation=Ein Typattribut im Protokollsatzabschnitt wurde nicht erkannt.
+InvalidLogRecordPartTypeException_info.useraction=Stelle Sie fest, wie die Protokolldatei besch\u00e4digt wurde, und stellen Sie eine Sicherungsprotokolldatei wieder her.
+
+# {0} The name of the log file.
+CheckpointEndNotFoundException_info=CWSOM1029E: Es wurde kein CheckpointEndLogRecord in der Protokolldatei {0}(String) gefunden.
+CheckpointEndNotFoundException_info.explanation=Die Protokolldatei wurde beendet, bevor ein Endedatensatz f\u00fcr den Pr\u00fcfpunkt gefunden wurde. \
+Die Protokolldateien m\u00fcssen mindestens einen Anfangs- und einen Endprotokollsatz f\u00fcr einen Pr\u00fcfpunkt enthalten.
+CheckpointEndNotFoundException_info.useraction=Stelle Sie fest, wie die Protokolldatei besch\u00e4digt wurde, und stellen Sie eine Sicherungsprotokolldatei wieder her.
+
+# {0} The ObjectStore raising the exception.
+# {1} The Token requesting the ManagedObject.
+InMemoryObjectNotAvailableException_info=CWSOM1030E: Der speicherbasierte ObjectStore {0} wurde aufgefordert, ein ManagedObject f\u00fcr das Token {0} abzurufen, das noch nicht im Speicher enthalten ist.
+InMemoryObjectNotAvailableException_info.explanation=Der ObjectManager wurde aufgefordert, ein ManagedObject abzurufen, das im Speicher sein sollte, aber dort nicht vorhanden ist.
+InMemoryObjectNotAvailableException_info.useraction=CMSG0002
+
+# {0} The maximum size in bytes the serialized ManagedObject should be.
+# {1} The actual size in bytes of the ManagedObject in bytes.
+SimplifiedSerializationSizeExceptionException_info=CWSOM1031E: Die Gr\u00f6\u00dfe f\u00fcr die vereinfachte Serialisierung \u00fcberschreitet die maximale Gr\u00f6\u00dfe {0} (long). Die tats\u00e4chliche Gr\u00f6\u00dfe ist {1} (long).
+SimplifiedSerializationSizeExceptionException_info.explanation=Die Gr\u00f6\u00dfe eines serialisierten ManagedObject \u00fcberschreitet die maximale Gr\u00f6\u00dfe.
+SimplifiedSerializationSizeExceptionException_info.useraction=CMSG0002
+
+# {0} The current size of the log.
+# {1} The requested size of the log.
+# {2} The space available in the log.
+# {3} the predicted occupancy of the new log file.
+# {4} The threshold occupancy above which the ObjectManager triggers a checkpoint. 
+LogFileSizeTooSmallException_info=CWSOM1032E: Die Gr\u00f6\u00dfe der Protokolldatei ist zu niedrig: aktuelle Gr\u00f6\u00dfe={0} (long) angeforderte Gr\u00f6\u00dfe={1} (long) verf\u00fcgbarer Speicherplatz={2} (long) voraussichtlicher Speicherplatz={3} (float) Schwellenwert f\u00fcr Speicherplatz ={4} (float).
+
+LogFileSizeTooSmallException_info.explanation=Der ObjectManager wurde aufgefordert, die Gr\u00f6\u00dfe des Transaktionsprotokolls zu verringern. \
+Die angeforderte Gr\u00f6\u00dfe ist zu klein f\u00fcr die vorhandenen Protokolldaten. \
+Die neue Gr\u00f6\u00dfe ist kleiner als der Grenzwert. Dies f\u00fchrt dazu, dass der ObjectManager ohne fortlaufendes Pr\u00fcfpunktverfahren ausgef\u00fchrt wird.
+LogFileSizeTooSmallException_info.useraction=Fordern Sie mehr Platz f\u00fcr die Protokolldatei an, oder reduzieren Sie die Last f\u00fcr das Protokoll, indem Sie weniger oder kleinere verwaltete Objekte schreiben.
+
+# {0} The non empty collection.
+# {1} The number of items, committed and uncommitted, in the collection.
+# {2} The transaction trying to delete the collection.
+CollectionNotEmptyException_info=CWSOM1033E: Die Sammlung {0} ist nicht leer: vorl\u00e4ufige Gr\u00f6\u00dfe={1} (long), Transaktion={2} (Transaktion).
+
+CollectionNotEmptyException_info.explanation=Der ObjectManager wurde aufgefordert, eine Sammlung (Tabelle oder Liste) zu l\u00f6schen, die nicht leer ist. Die Sammlung enth\u00e4lt einige Eintr\u00e4ge, die nicht gel\u00f6scht oder von einer anderen Transaktion als der, die versucht, die Sammlung zu l\u00f6schen, gel\u00f6scht wurden.
+CollectionNotEmptyException_info.useraction=\u00dcberpr\u00fcfen Sie die Logik der Anwendung, und stellen Sie fest, warum die Transaktion versucht, die Sammlung zu l\u00f6schen, obwohl sie noch Eintr\u00e4ge enth\u00e4lt.
+
+# {0} The defined maximum number of transactions.
+TooManyTransactionsException_info=CWSOM1034E: Eine Anwendung hat versucht, mehr als die maximale Anzahl von {0} (long) Transaktionen zu starten.
+TooManyTransactionsException_info.explanation=Der ObjectManager wurde aufgefordert, mehr Transaktionen zu starten als in der zugeh\u00f6rigen Konfiguration angegeben sind. Die neue Transaktion wurde nicht gestartet.
+TooManyTransactionsException_info.useraction=\u00dcberpr\u00fcfen Sie die Logik der Anwendung, und stellen Sie fest, warum sie versucht, zu viele Transaktionen zu starten. \
+Es ist m\u00f6glich, dass die Anwendung Transaktionen startet, aber sie weder festschreibt noch zur\u00fccksetzt.
+
+# {0} The number of active transactions.
+# {1} The number of transactons the ObjectManager can currently run.
+TransactionCapacityExceededException_info=CWSOM1035E: Die maximale Anzahl aktiver Transaktionen wurde vor\u00fcbergehend auf die Anzahl derzeit aktiver Transaktionen ({0} (long)) verringert. Aktuelle Kapazit\u00e4t={1} (long).
+TransactionCapacityExceededException_info.explanation=Der ObjectManager wurde aufgefordert, mehr Transaktionen zu starten, als er mit den ihm verf\u00fcgbaren Ressourcen unterst\u00fctzen kann. \
+Der ObjectManager verringert die Anzahl der Transaktionen, die er startet, so dass Pr\u00fcfpunkte durchgef\u00fchrt werden k\u00f6nnen, bevor sich die Protokolldatei f\u00fcllt. Die neue Transaktion wurde nicht gestartet.
+TransactionCapacityExceededException_info.useraction=Erh\u00f6hen Sie die Gr\u00f6\u00dfe der Protokolldatei, oder starten Sie weniger Transaktionen.
+
+# {0} The ObjectStore throwing the exception.
+# {1} the name of the ObjectStore.
+StoreFileInUseExceptionException_info=CWSOM1036E: Der ObjectStore {0} mit dem Namen {1}(String) ist bereits im Gebrauch.
+StoreFileInUseExceptionException_info.explanation=Der ObjectManager hat beim Anfordern einer exklusiven Sperre f\u00fcr die Datei festgestellt, dass die Datei bereits gesperrt ist.
+StoreFileInUseExceptionException_info.useraction=Stellen Sie fest, ob die ObjectStore-Datei von einem anderen ObjectManager oder von einem anderen Programm verwendet wird.
+
+# {0} The Name of the log file.
+# {1} The expected size of the log file.
+# {2} Byte found not to exist in the physical file.
+PrematureEndOfLogFileException_info=CWSOM1037E: Die physische Gr\u00f6\u00dfe der Protokolldatei {0}(String) ist kleiner als die erwartete Gr\u00f6\u00dfe {1} (long). Dies wurde beim Versuch, auf Byte {2} (long) zuzugreifen, festgestellt.
+PrematureEndOfLogFileException_info.explanation=Die Protokolldatei wurde nicht normal beendet, und die physische Datei wurde m\u00f6glicherweise abgeschnitten.
+PrematureEndOfLogFileException_info.useraction=Stellen Sie fest, ob die Protokolldatei besch\u00e4digt ist, und stellen Sie die unbesch\u00e4digte urspr\u00fcngliche Datei wieder her.
+
+# {0} The ObjectManager throwing the exception.
+NoRestartableObjectStoresAvailableException_info=CWSOM1038E: Der ObjectManager {0} hat festgestellt, dass keine wieder anlauff\u00e4higen ObjectStore verf\u00fcgbar sind.
+
+NoRestartableObjectStoresAvailableException_info.explanation=Der ObjectManager wurde aufgefordert, eine Referenz auf ein benanntes ManagedObject zu speichern. \
+Es sind jedoch keine wieder anlauff\u00e4higen ObjectStores vorhanden, in denen das ManagedObject gespeichert werden k\u00f6nnte.
+NoRestartableObjectStoresAvailableException_info.useraction=Stellen Sie fest, ob Sie ein benanntes ManagedObject verwenden m\u00fcssen. \
+Wenn Sie ein benanntes ManagedObject verwenden m\u00fcssen, erstellen Sie einen wieder anlauff\u00e4higen ObjectStore.
+
+# {0} The key which already exists in the map.
+# {1} The existing entry in the map.
+# {2} The transaction locking the duplicate entry or null.
+DuplicateKeyExceptionException_info=CWSOM1039E: Der doppelte Schl\u00fcssel {0} (Object) steht mit dem vorhandenen Eintrag {1} (Map.Entry) in Konflikt, der durch die Transaktion {3} (interne Transaktion) gesperrt wurde.
+DuplicateKeyExceptionException_info.explanation=Es wurde versucht, einem Map-Objekt einen eindeutigen Schl\u00fcssel hinzuzuf\u00fcgen, obwohl bereits ein identischer Schl\u00fcssel im Map-Objekt vorhanden ist. Der vorhandene Schl\u00fcssel geh\u00f6rt bereits zu einer anderen Transaktion und kann nicht durch den neuen Schl\u00fcssel ersetzt werden.
+DuplicateKeyExceptionException_info.useraction=Fordern Sie das Hinzuf\u00fcgen des doppelten Schl\u00fcssels an, oder stellen Sie fest, warum die Anwendung versucht, einen vorhandenen Schl\u00fcssel zu ersetzen.
+
+# {0} Number of bytes requested in the store file.
+# {1} Existing store file size in bytes.
+# {2} Number of bytes currently used in the store file.
+StoreFileSizeTooSmallException_info=CWSOM1040E: Die Dateigr\u00f6\u00dfe f\u00fcr den ObjectStore ist zu klein: angeforderte Gr\u00f6\u00dfe={0} (long), vorhandene Gr\u00f6\u00dfe={1} (long) verwendete Gr\u00f6\u00dfe={2} (long).
+
+StoreFileSizeTooSmallException_info.explanation=Der ObjectManager wurde aufgefordert, die Gr\u00f6\u00dfe einer Speicherdatei auf eine Gr\u00f6\u00dfe zu reduzieren, die f\u00fcr die vorhandenen verwalteten Objekte in der Datei nicht ausreicht.
+StoreFileSizeTooSmallException_info.useraction=Fordern Sie gen\u00fcgend Speicherplatz f\u00fcr die vorhandenen ManagedObjects an.
+
+
+# {0} The java.nio.XXXX Exception that was caught by the ObjectManager.
+PermanentNIOException_info=CWSOM1041E: Der ObjectManager hat die Ausnahme {0}(java.nio.XXX Exception) abgefangen.
+PermanentNIOException_info.explanation=Es wurde eine NIO-Ausnahme vom ObjectManager abgefangen. Die E/A-Operation konnte nicht wiederholt werden und wurde deshalb abgebrochen.
+PermanentNIOException_info.useraction=Die NIO-Ausnahme enth\u00e4lt die Ursache f\u00fcr das zugrunde liegende Problem. \
+Ermitteln und beheben Sie die in der NIO-Ausnahme angegebene Ursache.
+
+# {0} The ObjectStore asked to fulfill the allocation request.
+# {1} The ManagedObject requesting the allocation.
+ObjectStoreFullException_info=CWSOM1042E: Der ObjectStore {0} wurde aufgefordert, Speicherplatz f\u00fcr das ManagedObject {1} zu reservieren, aber er ist voll.
+ObjectStoreFullException_info.explanation=Der ObjectStore war bereits voll, als die neue Reservierungsanforderung gestellt wurde. \
+Die Reservierungsanforderung wurde zur\u00fcckgewiesen.
+ObjectStoreFullException_info.useraction=Entscheiden Sie, ob der ObjectStore vergr\u00f6\u00dfert oder einige vorhandene Objekte entfernt werden sollen.\
+Sie k\u00f6nnten auch versuchen, mehr oder gr\u00f6\u00dfere Objekte als geplant zu speichern.
+
+# {0} The logfiletype that was passed to the ObjectManager constructor.
+InvalidLogFileTypeException_info=CWSOM1043E: An den ObjectManager wurde ein ung\u00fcltiger Protokolldateityp {0}(int) \u00fcbergeben.
+InvalidLogFileTypeException_info.explanation=Es wurde ein Protokolldateityp an den Konstruktor des ObjectManager \u00fcbergeben, der keiner der bekannten Typen LOG_FILE_TYPE_XXXX ist. \
+Der ObjectManager wird nicht instanziert.
+InvalidLogFileTypeException_info.useraction=\u00c4ndern Sie den Konstrukturaufruf, und verwenden Sie einen bekannten Protokolldateityp.
+
+# {0} The List from which the sublist is to be created.
+# {1} The entry which is not in the list.
+SubListEntryNotInListException_info=CWSOM1044E: Die Liste {0} wurde aufgefordert, eine durch den Listeneintrag {1} begrenzte Teilliste zu erstellen, die die die Liste nicht enth\u00e4lt.
+SubListEntryNotInListException_info.explanation=Eine Liste wurde aufgefordert, eine durch Eintr\u00e4ge begrenzte Teilliste zu erstellen, die nicht in der Liste enthalten sind. \
+Die Teilliste wurde nicht erstellt.
+SubListEntryNotInListException_info.useraction=\u00dcberpr\u00fcfen Sie den Anwendungscode, um festzustellen, warum der Eintrag nicht in der Liste enthalten ist. \
+Der Eintrag kann beispielsweise bereits aus der Liste entfernt worden sein.
+
+# {0} The List from which the sublist is to be created.
+ObjectSignatureNotFoundException_info=CWSOM1045E: Der ObjectManager hat versucht, ein ManagedObject mit der Signatur {0}(int) zu entserialisieren, aber die Signatur wurde nicht erkannt.
+ObjectSignatureNotFoundException_info.explanation=Es wurde eine unbekannte Signatur in einem ManagedObject gefunden. Deshalb wurde die Entserialisierung abgebrochen.
+ObjectSignatureNotFoundException_info.useraction=CMSG0002
+
+# {0} The ObjectStore being constructed.
+# {1} The store strategy value that is not valid.
+InvalidStoreStrategyException_info=CWSOM1046E: Der ObjectStore {0} wurde mit der ung\u00fcltigen Speicherstrategie {1}(int) erstellt.
+InvalidStoreStrategyException_info.explanation=ObjectStores k\u00f6nnen nur mit g\u00fcltigen Speicherstrategien erstellt werden.
+InvalidStoreStrategyException_info.useraction=Verwenden Sie zum Erstellen des ObjectStore eine g\u00fcltige Speicherstrategie. \
+\
+Die g\u00fcltigen Strategien sind in der Javadoc zu ObjectManager beschrieben.
+
+# {0} The Name of the new ObjectStore.
+# {1} The objectStoreIdentifier of the new and existing store.
+# {2} ObjectStore already using the identifier.
+DuplicateObjectStoreIdentifierException_info=CWSOM1047E: Es wurde versucht, einen ObjectStore mit dem Namen {0}(String) und der ID {1} zu erstellen, die jedoch schon vom ObjectStore {2} verwendet wird.
+DuplicateObjectStoreIdentifierException_info.explanation=Die IDs von ObjectStores m\u00fcssen in einem ObjectManager eindeutig sein.
+DuplicateObjectStoreIdentifierException_info.useraction=F\u00fcgen Sie dem ObjectManager vorhandene ObjectStores hinzu, bevor Sie neue Objectstores erstellen. \
+Diese Prozedur erm\u00f6glicht dem ObjectManager, die Wiederverwendung der ID zu vermeiden.
+
+# {0} The Object discovering data corruption.
+# {1} The corrupted object.
+GuardBytesException_info=CWSOM1048E: Das Objekt {0} hat potenziell besch\u00e4digte Daten im Objekt {1} gefunden.
+GuardBytesException_info.explanation=Der ObjectManager hat eine Wertabweichung in den W\u00e4chterbytes f\u00fcr Daten gefunden, die durch W\u00e4chterbytes gesch\u00fctzt sind.
+GuardBytesException_info.useraction=CMSG0002
+
+# {0} The name of the ObjectStore discovering corruption in its file header.
+# {1} The corrupted signature found.
+# {2} The correct signature expected.
+InvalidStoreSignatureException_info=CWSOM1049E: Der ObjectStore {0} hat eine besch\u00e4digte Signatur {1}(String) anstelle der korrekten Signatur {2}(String) gefunden.
+InvalidStoreSignatureException_info.explanation=Der ObjectStore hat einen besch\u00e4digten Header und kann nicht verarbeitet werden.
+InvalidStoreSignatureException_info.useraction=Stellen Sie fest, wie die Datei besch\u00e4digt wurde, und schreiben Sie die Datei aus einer Sicherung zur\u00fcck.
+
+# {0} The LogFileHeader discovering corruption in its file header.
+# {1} The corrupted signature found.
+# {2} The correct signature expected.
+InvalidLogFileSignatureException_info=CWSOM1050E: Es wurde die besch\u00e4digte Signatur {0}(String) anstelle der korrekten Signatur {1}(String) in der Protokolldatei gefunden.
+InvalidLogFileSignatureException_info.explanation=Die Protokolldatei hat einen besch\u00e4digten Header und kann nicht verarbeitet werden.
+InvalidLogFileSignatureException_info.useraction=Stellen Sie fest, wie die Datei besch\u00e4digt wurde, und schreiben Sie die Datei aus einer Sicherung zur\u00fcck.
+
+# {0} The name of the thread which is being asked to perform the request.
+# {1} The name of the request the thread is being asked to perform.
+ThreadNotRunningException_info=CWSOM1051E: Der Thread {0} wurde aufgefordert, die Anforderung {1} auszuf\u00fchren, nachdem der Thread gestoppt wurde.
+ThreadNotRunningException_info.explanation=Der angegebene Thread ist fehlgeschlagen oder wurde gerade gestoppt, als die Anforderung gesendet wurde.
+ThreadNotRunningException_info.useraction=CMSG0002
+
+# {0} ObjectStore which is unable to locate the file.
+# {1} The exception caught by the ObjectStore when trying to locate the file, or null.
+# {2} The file name of the file that cannot be found.
+NonExistentObjectStoreFileException_info=CWSOM1052E: ObjectStore {0} hat die Ausnahme {1} beim Suchen oder Erstellen der Datei {2} abgefangen.
+NonExistentObjectStoreFileException_info.explanation=Es wurde eine Ausnahme abgefangen, als der ObjectStore versucht hat, die angegebene Datei zu \u00f6ffnen.Der ObjectManager wird nicht gestartet.
+NonExistentObjectStoreFileException_info.useraction=Vergewissern Sie sich, dass der Dateiname g\u00fcltig ist, dass die Datei vorhanden ist und dass der ObjectManager die erforderlichen Berechtigungen f\u00fcr das Schreiben in die Datei hat.\
+Geben Sie bei Bedarf eine Zuordnung des Namens des logischen Speichers zur physischen Position der Datei an, wenn der ObjectManager gestartet wird.
+
+# ----------------------------------------------------------------------------------------------------
+
+# {0} is the text of the message.
+TEMPORARY_SIOM9999=CWSOM9999E: {0}
+TEMPORARY_SIOM9999.explanation=Falls die in der Nachricht enthaltenen Informationen nicht ausreichen, suchen Sie in den vorherigen Nachrichten nach weiteren Informationen.
+TEMPORARY_SIOM9999.useraction=Suchen Sie in den vorausgegangenen Nachrichten nach n\u00e4heren Informationen. 

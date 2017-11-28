@@ -1,0 +1,72 @@
+###############################################################################
+# Copyright (c) 2012, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# Change activity:
+#
+# Reason          Date       Origin   Description
+# --------------- ---------- -------- ------------------------------------------
+# -------------------------------------------------------------------------------------------------
+# File com.ibm.websphere.sib.api.jms.CWSIAJMSMessages.props
+#
+# SIB.api.jms component file for logging _external_ messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIA0001=CWSIA0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.45,0,02/07/25,05:29:29
+#
+#CMVCPATHNAME com.ibm.ws.messaging.jms/resources/com/ibm/ws/sib/api/jms/CWSIAJMSMessages.nlsprops
+#COMPONENTPREFIX CWSIA
+#COMPONENTNAMEFOR CWSIA SIbus
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} method name
+JMSCONTEXT_INJECTED_CWSIA0512=CWSIA0512E: \u30e1\u30bd\u30c3\u30c9 {0} \u306f\u3001Java EE Web \u307e\u305f\u306f EJB \u30b3\u30f3\u30c6\u30ca\u30fc\u3067\u306f\u8a31\u53ef\u3055\u308c\u3066\u3044\u306a\u3044\u305f\u3081\u3001\u547c\u3073\u51fa\u3057\u3067\u304d\u307e\u305b\u3093\u3002
+JMSCONTEXT_INJECTED_CWSIA0512.explanation= \u3053\u306e\u30e1\u30bd\u30c3\u30c9\u3092 JMS \u4ed5\u69d8\u3069\u304a\u308a\u306b\u547c\u3073\u51fa\u3059\u3053\u3068\u306f\u3067\u304d\u307e\u305b\u3093\u3002  \u8a31\u53ef\u3055\u308c\u3066\u3044\u306a\u3044\u30e1\u30bd\u30c3\u30c9\u306e\u30ea\u30b9\u30c8\u306b\u3064\u3044\u3066\u306f\u8a73\u3057\u304f\u306f\u3001JMS \u4ed5\u69d8\u306e\u8cc7\u6599\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+JMSCONTEXT_INJECTED_CWSIA0512.useraction= \u30e1\u30bd\u30c3\u30c9\u306e\u547c\u3073\u51fa\u3057\u3092\u524a\u9664\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+# -------------------------------------------------------------------------------------------------

@@ -1,0 +1,186 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service
+#CMVCPATHNAME com.ibm.ws.channelfw/resources/com/ibm/ws/channelfw/internal/resources/ChannelfwMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#ISMESSAGEFILE TRUE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+### CHFW will use message numbers 0000-0199
+
+channel.dir.missing=CWWKO0001W: {0} lipse\u015fte sau nu este un director.
+channel.dir.missing.explanation=CMSG0001
+channel.dir.missing.useraction=CMSG0002
+
+channel.jar.open.failure=CWWKO0002E: Implementarea de canal {0} nu a putut fi deschis\u0103: {1}
+channel.jar.open.failure.explanation=CMSG0001
+channel.jar.open.failure.useraction=CMSG0002
+
+channel.descriptor.missing=CWWKO0003E: Implementarea de canal {0} nu are un descriptor de canal.
+channel.descriptor.missing.explanation=CMSG0001
+channel.descriptor.missing.useraction=CMSG0002
+
+channel.descriptor.parse.failure=CWWKO0004E: S-au generat erori la parsarea descriptorului de canal de la {0}: {1}
+channel.descriptor.parse.failure.explanation=CMSG0001
+channel.descriptor.parse.failure.useraction=CMSG0002
+
+channel.descriptor.factory.missing=CWWKO0005E: Implementarea de canal {0} nu specific\u0103 o clas\u0103 runtime fabric\u0103.
+channel.descriptor.factory.missing.explanation=CMSG0001
+channel.descriptor.factory.missing.useraction=CMSG0002
+
+channel.descriptor.channel.missing=CWWKO0006E: Implementarea de canal {0} nu specific\u0103 o clas\u0103 de configurare canal.
+channel.descriptor.channel.missing.explanation=CMSG0001
+channel.descriptor.channel.missing.useraction=CMSG0002
+
+channel.descriptor.interfaces.missing=CWWKO0007E: Implementarea de canal {0} nu specific\u0103 interfe\u0163e pe parte de dispozitiv sau de aplica\u0163ie.
+channel.descriptor.interfaces.missing.explanation=CMSG0001
+channel.descriptor.interfaces.missing.useraction=CMSG0002
+
+channel.descriptor.weight.invalid=CWWKO0008E: Implementarea de canal {0} specific\u0103 o pondere implicit\u0103 de {1}. Aceasta nu este o pondere implicit\u0103 valid\u0103.
+channel.descriptor.weight.invalid.explanation=CMSG0001
+channel.descriptor.weight.invalid.useraction=CMSG0002
+
+chain.channels.empty=CWWKO0009E: Lan\u0163ul {0} nu con\u0163ine nici un canal de transport.
+chain.channels.empty.explanation=Lan\u0163urile trebuie s\u0103 con\u0163in\u0103 canale de transport pentru a func\u0163iona.
+chain.channels.empty.useraction=Ad\u0103uga\u0163i ni\u015fte canale de transport la lan\u0163ul specificat.
+
+chain.flow.mismatch=CWWKO0010E: Canalele de transport ale lan\u0163ului {0} trebuie s\u0103 duc\u0103 toate \u00een aceea\u015fi direc\u0163ie.
+chain.flow.mismatch.explanation=Canalele de transport pot duce la un server (canale de intrare) sau de la un server (canale de ie\u015fire).  Toate canalele de transport dintr-un lan\u0163 trebuie s\u0103 duc\u0103 \u00een aceea\u015fi direc\u0163ie.
+chain.flow.mismatch.useraction=Asigura\u0163i-v\u0103 c\u0103 toate canalele de transport din lan\u0163 duc \u00een aceea\u015fi direc\u0163ie. Nu amesteca\u0163i canalele de intrare \u015fi cele de ie\u015fire \u00een acela\u015fi lan\u0163.
+
+chain.inbound.first.mismatch=CWWKO0011E: Primul canal de transport din lan\u0163ul {0} nu este un canal conector.
+chain.inbound.first.mismatch.explanation=Primul canal de transport dintr-un lan\u0163 de intrare trebuie s\u0103 fie un canal conector.
+chain.inbound.first.mismatch.useraction=Asigura\u0163i-v\u0103 c\u0103 primul canal de transport dintr-un lan\u0163 de intrare este un canal conector.
+
+chain.inbound.last.mismatch=CWWKO0012E: Ultimul canal de transport din lan\u0163ul {0} nu este un canal acceptor.
+chain.inbound.last.mismatch.explanation=Ultimul canal de transport dintr-un lan\u0163 de intrare trebuie s\u0103 fie un canal acceptor.
+chain.inbound.last.mismatch.useraction=Asigura\u0163i-v\u0103 c\u0103 ultimul canal de transport din lan\u0163ul de intrare este un canal acceptor.
+
+chain.acceptor.determination.failure=CWWKO0013E: Sistemul nu a putut determina ID-ul acceptor pentru lan\u0163ul {0}.
+chain.acceptor.determination.failure.explanation=CMSG0001
+chain.acceptor.determination.failure.useraction=CMSG0002
+
+channel.descriptor.notfound=CWWKO0014E: Sistemul nu a putut g\u0103si descriptorul de canal care s\u0103 se potriveasc\u0103 tipului de configurare de canal {0}.
+channel.descriptor.notfound.explanation=Canalele trebuie s\u0103 furnizeze un descriptor pentru a mapa tipuri de configurare la tipuri runtime; nu s-a putut g\u0103si nici un descriptor care s\u0103 se potriveasc\u0103.
+channel.descriptor.notfound.useraction=CMSG0002
+
+jndi.context.failure=CWWKO0015E: Sistemul nu a putut ob\u0163ine urm\u0103torul context de denumire ini\u0163ial: {0}
+jndi.context.failure.explanation=CMSG0001
+jndi.context.failure.useraction=CMSG0002
+
+factory.load.failure=CWWKO0016E: Sistemul nu a putut \u00eenc\u0103rca urm\u0103toarea fabric\u0103 de canale de transport: {0}
+factory.load.failure.explanation=CMSG0001
+factory.load.failure.useraction=CMSG0002
+
+channel.load.failure=CWWKO0017E: Sistemul nu a putut \u00eenc\u0103rca urm\u0103torul canal de transport: {0}
+channel.load.failure.explanation=CMSG0001
+channel.load.failure.useraction=CMSG0002
+
+chain.load.failure=CWWKO0018E: Sistemul nu a putut \u00eenc\u0103rca urm\u0103torul lan\u0163: {0}
+chain.load.failure.explanation=CMSG0001
+chain.load.failure.useraction=CMSG0002
+
+chain.started=CWWKO0019I: Serviciul Canal de transport a pornit lan\u0163ul {0}.
+chain.started.explanation=Serviciul Canal de transport a pornit lan\u0163ul specificat.
+chain.started.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+chain.stopped=CWWKO0020I: Serviciul Canal de transport a oprit lan\u0163ul etichetat {0}.
+chain.stopped.explanation=Serviciul Canal de transport a oprit lan\u0163ul specificat.
+chain.stopped.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+chain.disabled=CWWKO0021I: Lan\u0163ul de intrare {0} a fost marcat ca dezactivat.
+chain.disabled.explanation=Lan\u0163urile de intrare trebuie s\u0103 fie marcate explicit ca activate pentru a fi eligibile pentru pornirea automat\u0103. Lan\u0163urile dezactivate pot fi \u015fi ele pornite, dar trebuie s\u0103 fie pornite explicit dup\u0103 nume.
+chain.disabled.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+config.load.error=CWWKO0022E: Serviciul Canal de transport nu \u015fi-a putut localiza configura\u0163ia din cauza unei excep\u0163ii: {0}
+config.load.error.explanation=Serviciul Canal de transport a generat o excep\u0163ie c\u00e2nd se \u00eencerca descoperirea \u015fi \u00eenc\u0103rcarea configura\u0163iei sale. Va fi pornit f\u0103r\u0103 configura\u0163ie.
+config.load.error.useraction=CMSG0002
+
+boot.no.config=CWWKO0023I: Serviciul Canal de transport nu \u015fi-a putut localiza configura\u0163ia dar va fi pornit f\u0103r\u0103 ea.
+boot.no.config.explanation=Serviciul Canal de transport nu \u015fi-a putut localiza configura\u0163ia. Detaliile de configurare implicite pentru Serviciul Canal de transport ar trebui ad\u0103ugate \u00een fi\u015fierul de configurare server.xml.
+boot.no.config.useraction=Folosi\u0163i consola administrativ\u0103 sau wsadmin pentru a ad\u0103uga configura\u0163ia implicit\u0103 pentru Serviciul Canal de transport.
+
+framework.disabled=CWWKO0024I: Serviciul Canal de transport a fost dezactivat explicit.
+framework.disabled.explanation=Serviciul Canal de transport a fost configurat explicit s\u0103 fie dezactivat \u015fi nu va fi pornit.
+framework.disabled.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+channel.descriptor.factory.config.missing=CWWKO0025E: Implementarea de canal {0} nu specific\u0103 o clas\u0103 de configurare de fabric\u0103.
+channel.descriptor.factory.config.missing.explanation=CMSG0001
+channel.descriptor.factory.config.missing.useraction=CMSG0002
+
+factory.descriptor.notfound=CWWKO0026E: Sistemul nu a putut g\u0103si un descriptor de fabric\u0103 de canale care s\u0103 se potriveasc\u0103 tipului de configurare de canal de transport {0}.
+factory.descriptor.notfound.explanation=Canalele trebuie s\u0103 furnizeze un descriptor pentru a mapa tipuri de configurare la tipuri runtime. Nu s-a putut g\u0103si nici un descriptor care s\u0103 se potriveasc\u0103.
+factory.descriptor.notfound.useraction=CMSG0002
+
+channel.load.problems=CWWKO0027I: Nu s-a \u00eenc\u0103rcat una sau mai multe implement\u0103ri de canal de transport.
+channel.load.problems.explanation=CMSG0001
+channel.load.problems.useraction=CMSG0002
+
+chain.outbound.last.mismatch=CWWKO0028E: Ultimul canal de transport din lan\u0163ul {0} nu este un canal conector.
+chain.outbound.last.mismatch.explanation=Ultimul canal de transport dintr-un lan\u0163 de ie\u015fire trebuie s\u0103 fie un canal conector.
+chain.outbound.last.mismatch.useraction=Asigura\u0163i-v\u0103 c\u0103 ultimul canal de transport din lan\u0163ul de ie\u015fire este un canal conector.
+
+chain.initialization.error=CWWKO0029E: S-a generat o excep\u0163ie la ini\u0163ializarea lan\u0163ului {0} din cauza excep\u0163iei {1}
+chain.initialization.error.explanation=S-a generat o excep\u0163ie fie \u00een lan\u0163, fie \u00een canalele subiacente.
+chain.initialization.error.useraction=Asigura\u0163i-v\u0103 c\u0103 sunt utilizate canalele corecte \u00een lan\u0163.
+
+chain.start.error=CWWKO0030E: S-a generat o excep\u0163ie la pornirea lan\u0163ului {0} din cauza excep\u0163iei {1}
+chain.start.error.explanation=S-a generat o excep\u0163ie fie \u00een lan\u0163, fie \u00een canalele subiacente.
+chain.start.error.useraction=Asigura\u0163i-v\u0103 c\u0103 sunt utilizate canalele corecte \u00een lan\u0163.
+
+chain.stop.error=CWWKO0031E: S-a generat o excep\u0163ie la oprirea lan\u0163ului {0} din cauza excep\u0163iei {1}
+chain.stop.error.explanation=S-a generat o excep\u0163ie fie \u00een lan\u0163, fie \u00een canalele subiacente.
+chain.stop.error.useraction=Asigura\u0163i-v\u0103 c\u0103 sunt utilizate canalele corecte \u00een lan\u0163.
+
+chain.destroy.error=CWWKO0032E: S-a generat o excep\u0163ie la distrugerea lan\u0163ului {0} din cauza excep\u0163iei {1}
+chain.destroy.error.explanation=S-a generat o excep\u0163ie fie \u00een lan\u0163, fie \u00een canalele subiacente.
+chain.destroy.error.useraction=Asigura\u0163i-v\u0103 c\u0103 sunt utilizate canalele corecte \u00een lan\u0163.
+
+chain.retrystart.error=CWWKO0033E: Serviciul Canal de transport nu a pornit lan\u0163ul de transport {0} dup\u0103 {1} \u00eencerc\u0103ri de a-l porni.
+chain.retrystart.error.explanation=Num\u0103rul de re\u00eencerc\u0103ri configurat nu este suficient pentru a determina lan\u0163ul s\u0103 porneasc\u0103 sau portul folosit de lan\u0163 este deja \u00een uz.
+chain.retrystart.error.useraction=Asigura\u0163i-v\u0103 c\u0103 portul folosit de lan\u0163 nu este deja \u00een uz. Seta\u0163i corect propriet\u0103\u0163ile personalizate pentru repornirea lan\u0163urilor.
+
+chain.retrystart.warning=CWWKO0034W: Serviciul Canal de transport a detectat c\u0103 lan\u0163ul de transport {0} nu a pornit.  Serviciul va \u00eencerca s\u0103 porneasc\u0103 lan\u0163ul {0} la fiecare {1} milisecunde timp de {2} \u00eencerc\u0103ri.
+chain.retrystart.warning.explanation=\u00cencercarea ini\u0163ial\u0103 de a porni lan\u0163ul nu a avut succes. Se vor face \u00eencerc\u0103ri ulterioare pentru a-l porni.
+chain.retrystart.warning.useraction=Uita\u0163i-v\u0103 dup\u0103 un mesaj de auditare sau eroare care s\u0103 indice rezultatul \u00eencerc\u0103rilor.
+
+framework.property.error=CWWKO0035E: Serviciul Canal de transport a g\u0103sit valoarea {0} pentru proprietatea {1}. Aceasta nu este o valoare valid\u0103.
+framework.property.error.explanation=Valoarea propriet\u0103\u0163ii este \u00een afara limitelor a\u015fteptate.
+framework.property.error.useraction=Ajusta\u0163i configura\u0163ia pentru a seta proprietatea la o valoare valid\u0103.
+
+missing.factory=CWWKO0036W: Configura\u0163ia lan\u0163ului con\u0163ine un tip de fabric\u0103 lips\u0103, {0}, \u015fi nu a putut porni unul sau mai multe lan\u0163uri.
+missing.factory.explanation=Mediul runtime nu con\u0163ine o fabric\u0103 de canale de tipul corespunz\u0103tor \u015fi, astfel, nu poate porni lan\u0163urile care \u00eel folosesc.
+missing.factory.useraction=Verifica\u0163i dac\u0103 din lista featureset (set de caracteristici) runtime lipsesc unul sau mai multe elemente necesare.
+
+DEFAULT_OPTIONS_ERROR_TCP=CWWKO0037E: Nu se poate crea configura\u0163ia de canal TCP implicit\u0103. Excep\u0163ia este {0}.
+DEFAULT_OPTIONS_ERROR_TCP.explanation=S-a \u00eent\u00e2lnit o eroare la crearea configura\u0163iei implicite pentru canalele TCP.
+DEFAULT_OPTIONS_ERROR_TCP.useraction=Examina\u0163i excep\u0163ia pentru informa\u0163ii despre cum a e\u015fuat crearea.
+
+DEFAULT_OPTIONS_ERROR_UDP=CWWKO0038E: Nu se poate crea configura\u0163ia de canal UDP implicit\u0103. Excep\u0163ia este {0}.
+DEFAULT_OPTIONS_ERROR_UDP.explanation=S-a \u00eent\u00e2lnit o eroare la crearea configura\u0163iei implicite pentru canalele UDP.
+DEFAULT_OPTIONS_ERROR_UDP.useraction=Examina\u0163i excep\u0163ia pentru informa\u0163ii despre cum a e\u015fuat crearea.
+
+channel.shared.warning=CWWKO0039W: Canalul nepartajabil {0} este partajat \u00eentre mai multe regiuni.
+channel.shared.warning.explanation=Canalul a fost configurat s\u0103 fie canal nepartajabil. Totu\u015fi, canalul este partajat \u00eentre mai multe regiuni.
+channel.shared.warning.useraction=Examina\u0163i configura\u0163ia canalului \u015fi utilizarea sa.

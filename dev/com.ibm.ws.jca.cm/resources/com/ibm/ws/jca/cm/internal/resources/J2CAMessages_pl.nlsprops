@@ -1,0 +1,75 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jca.cm/resources/com/ibm/ws/jca/cm/internal/resources/J2CAMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA Connection Management
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+DEACTIVATED_J2CA8001=J2CA8001I: Zas\u00f3b {0} {1} jest niedost\u0119pny.
+DEACTIVATED_J2CA8001.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+DEACTIVATED_J2CA8001.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+DEACTIVATED_J2CA8006=J2CA8006I: Zas\u00f3b {0} {1} w {2} jest niedost\u0119pny.
+DEACTIVATED_J2CA8006.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+DEACTIVATED_J2CA8006.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+UNKNOWN_PROP_J2CA8010=J2CA8010W: Nierozpoznana w\u0142a\u015bciwo\u015b\u0107 {0}: {1}
+UNKNOWN_PROP_J2CA8010.explanation=Skonfigurowana w\u0142a\u015bciwo\u015b\u0107 nie zosta\u0142a rozpoznana.
+UNKNOWN_PROP_J2CA8010.useraction=Popraw lub usu\u0144 skonfigurowan\u0105 w\u0142a\u015bciwo\u015b\u0107.
+
+UNSUPPORTED_VALUE_J2CA8011=J2CA8011E: Warto\u015b\u0107 {0} nie jest obs\u0142ugiwana dla w\u0142a\u015bciwo\u015bci {1} w {2}
+UNSUPPORTED_VALUE_J2CA8011.explanation=Skonfigurowana warto\u015b\u0107 nie jest obs\u0142ugiwana.
+UNSUPPORTED_VALUE_J2CA8011.useraction=Popraw warto\u015b\u0107 lub usu\u0144 skonfigurowan\u0105 w\u0142a\u015bciwo\u015b\u0107.
+
+MISSING_LIBRARY_J2CA8020=J2CA8020E: Nie mo\u017cna za\u0142adowa\u0107 plik\u00f3w z biblioteki {0} lub uzyska\u0107 do nich dost\u0119pu
+MISSING_LIBRARY_J2CA8020.explanation=Nie mo\u017cna za\u0142adowa\u0107 plik\u00f3w z biblioteki wsp\u00f3\u0142u\u017cytkowanej.
+MISSING_LIBRARY_J2CA8020.useraction=Sprawd\u017a uprawnienia plik\u00f3w i konfiguracj\u0119 biblioteki wsp\u00f3\u0142u\u017cytkowanej.
+
+MISSING_LIBRARY_J2CA8022=J2CA8022E: Aplikacja {0} nie ma bibliotek wsp\u00f3\u0142u\u017cytkowanych, kt\u00f3re udost\u0119pniaj\u0105 {1} dla {2} {3}.
+MISSING_LIBRARY_J2CA8022.explanation=Aby u\u017cywa\u0107 \u017ar\u00f3de\u0142 danych zdefiniowanych przez aplikacj\u0119, nale\u017cy udost\u0119pni\u0107 dla aplikacji sterownik JDBC, zapewniaj\u0105cy dost\u0119p do klasy \u017ar\u00f3d\u0142a danych, jako bibliotek\u0119 wsp\u00f3\u0142u\u017cytkowan\u0105.
+MISSING_LIBRARY_J2CA8022.useraction=Dodaj sterownik JDBC jako bibliotek\u0119 wsp\u00f3\u0142u\u017cytkowan\u0105 dla aplikacji.
+
+MISSING_RESOURCE_J2CA8030=J2CA8030E: Nie mo\u017cna znale\u017a\u0107 zasobu {0} {1} dla {2} {3}.
+MISSING_RESOURCE_J2CA8030.explanation=Okre\u015blony zas\u00f3b wymaga innego zasobu, kt\u00f3ry jest niedost\u0119pny.
+MISSING_RESOURCE_J2CA8030.useraction=Sprawd\u017a, czy zas\u00f3b jest poprawnie skonfigurowany.
+
+CARDINALITY_ERROR_J2CA8040=J2CA8040E: Zas\u00f3b {0} {1} mo\u017ce mie\u0107 tylko jeden element {2}.
+CARDINALITY_ERROR_J2CA8040.explanation=Zas\u00f3b nie mo\u017ce mie\u0107 wi\u0119cej ni\u017c jednego elementu okre\u015blonego typu.
+CARDINALITY_ERROR_J2CA8040.useraction=Zaktualizuj konfiguracj\u0119 w taki spos\u00f3b, aby tylko jeden element okre\u015blonego typu by\u0142 powi\u0105zany z zasobem.
+
+RECOMMEND_AUTH_ALIAS_J2CA8050=J2CA8050I: Nale\u017cy u\u017cy\u0107 aliasu uwierzytelniania, zamiast definiowa\u0107 nazw\u0119 u\u017cytkownika i has\u0142o w zasobie {0}.
+RECOMMEND_AUTH_ALIAS_J2CA8050.explanation=Zaleca si\u0119 u\u017cycie aliasu uwierzytelniania zamiast konfigurowania nazwy u\u017cytkownika i has\u0142a w zasobie.
+RECOMMEND_AUTH_ALIAS_J2CA8050.useraction=Skonfiguruj nazw\u0119 u\u017cytkownika i has\u0142o w elemencie authData, a nie bezpo\u015brednio w zasobie. 
+
+INVALID_MBEAN_INVOKE_PARAM_J2CA8060=J2CA8060E: {0} nie jest poprawnym parametrem dla dzia\u0142ania {1}.
+INVALID_MBEAN_INVOKE_PARAM_J2CA8060.explanation=Parametry okre\u015blone dla dzia\u0142ania musz\u0105 odpowiada\u0107 poprawnym parametrom dla danego dzia\u0142ania.
+INVALID_MBEAN_INVOKE_PARAM_J2CA8060.useraction=Okre\u015bl poprawne parametry dla wywo\u0142ywanego dzia\u0142ania.
+
+INVALID_MBEAN_INVOKE_ACTION_J2CA8061=J2CA8061E: {0} nie jest poprawnym dzia\u0142aniem dla komponentu MBean {1}.
+INVALID_MBEAN_INVOKE_ACTION_J2CA8061.explanation=Podj\u0119to pr\u00f3b\u0119 wywo\u0142ania dzia\u0142ania, kt\u00f3re by\u0142o niedost\u0119pne dla podanego komponentu MBean.
+INVALID_MBEAN_INVOKE_ACTION_J2CA8061.useraction=Zmie\u0144 wywo\u0142ywane dzia\u0142anie na poprawn\u0105 metod\u0119 dla podanego komponentu MBean.
+
+MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062=J2CA8062E: {0} nie jest poprawnym atrybutem dla komponentu MBean {1}.
+MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.explanation=Podj\u0119to pr\u00f3b\u0119 pobrania lub ustawienia atrybutu, kt\u00f3ry by\u0142 niedost\u0119pny dla podanego komponentu MBean.
+MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.useraction=Zmie\u0144 podany atrybut na jeden z dost\u0119pnych atrybut\u00f3w dla tego komponentu MBean.

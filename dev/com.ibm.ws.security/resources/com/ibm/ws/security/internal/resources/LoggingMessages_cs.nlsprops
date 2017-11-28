@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS0000 - CWWKS0099
+
+SECURITY_CONFIG_ERROR_MISSING_ATTRIBUTE=CWWKS0000E: Do\u0161lo k v\u00fdjimce konfigurace. Pro prvek <securityConfiguration> nen\u00ed definov\u00e1n \u017e\u00e1dn\u00fd atribut {0}.
+SECURITY_CONFIG_ERROR_MISSING_ATTRIBUTE.explanation=Chyb\u011bj\u00edc\u00ed atribut je pro prvek <securityConfiguration> povinn\u00fd.
+SECURITY_CONFIG_ERROR_MISSING_ATTRIBUTE.useraction=Zadejte chyb\u011bj\u00edc\u00ed atribut pro prvek <securityConfiguration>.
+
+SECURITY_SERVICE_REQUIRED_SERVICE_WITHOUT_ID=CWWKS0001E: Do\u0161lo k v\u00fdjimce konfigurace. Prvek konfigurace typu {0} nedefinuje atribut id.
+SECURITY_SERVICE_REQUIRED_SERVICE_WITHOUT_ID.explanation=Ur\u010den\u00fd typ prvku konfigurace vy\u017eaduje atribut id, aby na n\u011bj mohly odkazovat ostatn\u00ed prvky v konfiguraci.
+SECURITY_SERVICE_REQUIRED_SERVICE_WITHOUT_ID.useraction=Definujte atribut id pro uveden\u00fd typ prvku konfigurace.
+
+SECURITY_SERVICE_ERROR_MISSING_ATTRIBUTE=CWWKS0002E: Do\u0161lo k v\u00fdjimce konfigurace. Pro prvek <security> nen\u00ed definov\u00e1n \u017e\u00e1dn\u00fd atribut {0}.
+SECURITY_SERVICE_ERROR_MISSING_ATTRIBUTE.explanation=Chyb\u011bj\u00edc\u00ed atribut je pro prvek <security> povinn\u00fd.
+SECURITY_SERVICE_ERROR_MISSING_ATTRIBUTE.useraction=Zadejte chyb\u011bj\u00edc\u00ed atribut pro prvek <security>.
+
+SECURITY_SERVICE_ERROR_BAD_DOMAIN=CWWKS0003E: Do\u0161lo k v\u00fdjimce konfigurace. Uveden\u00e1 konfigurace zabezpe\u010den\u00ed, na kterou odkazuje identifik\u00e1tor {0} pro atribut {1} v prvku <security>, nen\u00ed definov\u00e1na.
+SECURITY_SERVICE_ERROR_BAD_DOMAIN.explanation=Uveden\u00e1 konfigurace zabezpe\u010den\u00ed nen\u00ed definov\u00e1na. Je mo\u017en\u00e9, \u017ee je zad\u00e1n nespr\u00e1vn\u00fd n\u00e1zev identifik\u00e1toru, nebo \u017ee odkaz sm\u011b\u0159uje na konfiguraci zabezpe\u010den\u00ed, kter\u00e1 neexistuje.
+SECURITY_SERVICE_ERROR_BAD_DOMAIN.useraction=Definujte platnou konfiguraci zabezpe\u010den\u00ed pro uveden\u00fd atribut v prvku <security>.
+
+SECURITY_SERVICE_ERROR_BAD_REFERENCE=CWWKS0004E: Do\u0161lo k v\u00fdjimce konfigurace. Uveden\u00fd prvek, na kter\u00fd odkazuje identifik\u00e1tor {0} pro atribut {1} v prvku <securityConfiguration>, nen\u00ed definov\u00e1n.
+SECURITY_SERVICE_ERROR_BAD_REFERENCE.explanation=Nakonfigurovan\u00fd identifik\u00e1tor odkazu je neplatn\u00fd. Je mo\u017en\u00e9, \u017ee je zad\u00e1n nespr\u00e1vn\u00fd n\u00e1zev identifik\u00e1toru, nebo \u017ee odkazuje na neexistuj\u00edc\u00ed konfiguraci slu\u017eby.
+SECURITY_SERVICE_ERROR_BAD_REFERENCE.useraction=Zadejte platn\u00fd identifik\u00e1tor konfigurace slu\u017eby pro prvek <securityConfiguration>.
+
+SECURITY_SERVICE_NO_SERVICE_AVAILABLE=CWWKS0005E: Do\u0161lo k v\u00fdjimce konfigurace. Nen\u00ed dostupn\u00e1 \u017e\u00e1dn\u00e1 slu\u017eba {0}.
+SECURITY_SERVICE_NO_SERVICE_AVAILABLE.explanation=Prost\u0159ednictv\u00edm registru slu\u017eeb OSGi nen\u00ed dostupn\u00e1 \u017e\u00e1dn\u00e1 slu\u017eba ur\u010den\u00e9ho typu.
+SECURITY_SERVICE_NO_SERVICE_AVAILABLE.useraction=Zadejte funkci implementace slu\u017eby ur\u010den\u00e9ho typu.
+
+SECURITY_SERVICE_MULTIPLE_SERVICE_AVAILABLE=CWWKS0006E: Do\u0161lo k v\u00fdjimce konfigurace. Existuje v\u00edce dostupn\u00fdch slu\u017eeb {0}. Syst\u00e9m nen\u00ed schopen ur\u010dit, kter\u00e1 m\u00e1 b\u00fdt pou\u017eita.
+SECURITY_SERVICE_MULTIPLE_SERVICE_AVAILABLE.explanation=Prost\u0159ednictv\u00edm registru slu\u017eeb OSGi je dostupn\u00fdch v\u00edce slu\u017eeb ur\u010den\u00e9ho typu a neexistuje \u017e\u00e1dn\u00e1 explicitn\u00ed konfigurace, kter\u00e1 by ur\u010dovala slu\u017ebu, je\u017e m\u00e1 b\u00fdt pou\u017eita.
+SECURITY_SERVICE_MULTIPLE_SERVICE_AVAILABLE.useraction=Zadejte pouze jednu funkci implementace slu\u017eby ur\u010den\u00e9ho typu nebo v konfiguraci ur\u010dete, kter\u00e1 slu\u017eba m\u00e1 b\u00fdt pou\u017eita.
+
+#
+# NOTE: CWWKS0007 through CWWKS0009 have been moved to com.ibm.ws.security.ready.service project
+#
+
+SEC_TOO_MANY_PRINCIPALS=CWWKS0010E: P\u0159i z\u00edsk\u00e1v\u00e1n\u00ed \u010dinitele volaj\u00edc\u00edho bylo zji\u0161t\u011bno, \u017ee p\u0159edm\u011bt volaj\u00edc\u00edho m\u00e1 v\u00edce ne\u017e jednoho \u010dinitele typu WSPrincipal. V subjektu m\u016f\u017ee existovat pouze jeden \u010dinitel WSPrincipal. N\u00e1zvy \u010dinitel\u016f WSPrincipal: {}
+SEC_TOO_MANY_PRINCIPALS.explanation=Subjekt volaj\u00edc\u00edho obsahuje p\u0159\u00edli\u0161 \u010dinitel\u016f typu WSPrincipal. Je podporov\u00e1n pouze jeden \u010dinitel tohoto typu.
+SEC_TOO_MANY_PRINCIPALS.useraction=Zkontrolujte aplikaci a zjist\u011bte, pro\u010d m\u00e1 subjekt v\u00edce ne\u017e jednoho \u010dinitele WSPrincipal.

@@ -1,0 +1,67 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+#CMVCPATHNAME com.ibm.ws.apache.el-3.0/resources/org/apache/el/Messages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+
+# General Errors
+error.convert=Impossibile convertire {0} di tipo {1} in {2}
+error.compare=Impossibile confrontare {0} con {1}
+error.function=Problemi durante il richiamo della funzione ''{0}''
+error.unreachable.base=Destinazione non raggiungibile, identificativo ''{0}'' risolto in null
+error.unreachable.property=Destinazione non raggiungibile, ''{0}'' ha restituito null
+error.resolver.unhandled=ELResolver non ha gestito il tipo: {0} con propriet\u00e0 ''{1}''
+error.resolver.unhandled.null=ELResolver non pu\u00f2 gestire un oggetto base null con l''identificativo ''{0}''
+
+# ValueExpressionLiteral
+error.value.literal.write=ValueExpression \u00e8 un valore letterale e non \u00e8 scrivibile: {0}
+
+# ExpressionFactoryImpl
+error.null=L'espressione non pu\u00f2 essere null
+error.mixed=L''espressione non pu\u00f2 contenere sia ''#''{..}'' che ''$''{..}'' : {0}
+error.method=MethodExpression non valida: {0}
+error.method.nullParms=I tipi di parametro non possono essere null
+error.value.expectedType=Il tipo previsto non pu\u00f2 essere null
+
+# ExpressionBuilder
+error.parseFail=Impossibile analizzare l''espressione [{0}]
+
+# ValueSetVisitor
+error.syntax.set=Sintassi non valida per l'operazione di impostazione
+
+# ReflectionUtil
+error.method.notfound=Metodo non trovato: {0}.{1}({2})
+error.method.ambiguous=Impossibile trovare il metodo non ambiguo: {0}.{1}({2})
+
+# ValidatingVisitor
+error.fnMapper.null=L'espressione utilizza le funzioni, ma non \u00e8 stato fornito un FunctionMapper
+error.fnMapper.method=Funzione ''{0}'' non trovata
+error.fnMapper.paramcount=La funzione ''{0}'' specifica {1} parametri, ma {2} sono stati dichiarati
+
+# ExpressionImpl
+error.context.null=ELContext era null
+
+# Parser
+error.funciton.tooManyMethodParameterSets=Ci sono pi\u00f9 serie di parametri specificati per la funzione [{0}]
+error.identifier.notjava=L''identificativo [{0}] non \u00e8 un identificativo Java valido come richiesto dalla sezione 1.19 della specifica EL (Identificativo ::= identificativo linguaggio Java). Questo controllo pu\u00f2 essere disabilitato impostando la propriet\u00e0 di sistema org.apache.el.parser.SKIP_IDENTIFIER_CHECK su true.
+error.lambda.tooManyMethodParameterSets=Sono specificate pi\u00f9 serie di parametri del metodo che espressioni lambda nidificate
+
+# Stream
+stream.compare.notComparable=Gli elementi flussi devono implementare Comparable
+stream.optional.empty=Non \u00e8 consentito richiamare get() su un elemento facoltativo vuoto
+stream.optional.paramNotLambda=Il parametro per il metodo [{0}] deve essere un''espressione lambda

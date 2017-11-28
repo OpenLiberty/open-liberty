@@ -1,0 +1,141 @@
+###############################################################################
+# Copyright (c) 2002, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT WebSphere kernel transport http channel
+#CMVCPATHNAME com.ibm.ws.transport.http/resources/com/ibm/ws/http/channel/internal/resources/httpchannelmessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+config.maxpersist=CWWKT0001E: Il numero massimo di richieste ({0}) consentite per socket non \u00e8 valido. I valori validi includono {1} per un numero illimitato o qualsiasi numero positivo.
+config.maxpersist.explanation=Il valore configurato per il numero massimo di richieste consentito per socket non \u00e8 valido.
+config.maxpersist.useraction=Configurare un valore valido per il numero massimo di richieste consentito per socket.
+
+config.incomingbody=CWWKT0002E: La dimensione del buffer in entrata {0} non \u00e8 valida. Le dimensioni devono essere comprese tra {1} e {2}.
+config.incomingbody.explanation=Il valore configurato per la dimensione del buffer in entrata non \u00e8 valido.
+config.incomingbody.useraction=Configurare un valore valido per la dimensione del buffer in entrata.
+
+config.incomingheader=CWWKT0003E: La dimensione del buffer dell''intestazione {0} non \u00e8 valida. Le dimensioni devono essere comprese tra {1} e {2}.
+config.incomingheader.explanation=Il valore configurato per la dimensione del buffer dell'intestazione non \u00e8 valido.
+config.incomingheader.useraction=Configurare un valore valido per la dimensione del buffer dell'intestazione.
+
+config.outgoingbuffer=CWWKT0004E: La dimensione del buffer in uscita {0} non \u00e8 valida. Le dimensioni devono essere comprese tra {1} e {2}.
+config.outgoingbuffer.explanation=Il valore configurato per la dimensione del buffer in uscita non \u00e8 valido.
+config.outgoingbuffer.useraction=Configurare un valore valido per la dimensione del buffer in uscita.
+
+config.persisttimeout=CWWKT0005E: Il timeout persistente {0} non \u00e8 valido. I timeout devono essere maggiori di {1}.
+config.persisttimeout.explanation=Il valore configurato per il parametro di timeout persistente non \u00e8 valido.
+config.persisttimeout.useraction=Configurare un valore valido per il parametro di timeout persistente.
+
+config.readtimeout=CWWKT0006E: Il timeout di lettura {0} non \u00e8 valido. I timeout devono essere maggiori di {1}.
+config.readtimeout.explanation=Il valore configurato per il parametro di timeout di lettura non \u00e8 valido.
+config.readtimeout.useraction=Configurare un valore valido per il parametro di timeout di lettura.
+
+config.writetimeout=CWWKT0007E: Il timeout di scrittura {0} non \u00e8 valido. I timeout devono essere maggiori di {1}.
+config.writetimeout.explanation=Il valore configurato per il parametro di timeout di scrittura non \u00e8 valido.
+config.writetimeout.useraction=Configurare un valore valido per il parametro di timeout di scrittura.
+
+config.fieldsize=CWWKT0008E: Il limite della dimensione del campo {0} non \u00e8 valido. Tale dimensione deve essere compresa tra {1} e {2}.
+config.fieldsize.explanation=Il valore configurato per il limite della dimensione del campo non \u00e8 valido.
+config.fieldsize.useraction=Configurare un valore valido per il limite della dimensione del campo.
+
+config.numheaders=CWWKT0009E: Il limite del numero di intestazioni {0} non \u00e8 valido. Tale dimensione deve essere compresa tra {1} e {2}.
+config.numheaders.explanation=Il valore configurato per il limite del numero di intestazioni non \u00e8 valido.
+config.numheaders.useraction=Configurare un valore valido per il limite del numero di intestazioni.
+
+config.incomingbodymaxsize=CWWKT0010E: Il numero massimo di byte per il corpo di un messaggio in entrata {0} non \u00e8 valido. Tale dimensione deve essere maggiore o uguale a {1}.
+config.incomingbodymaxsize.explanation=Il valore configurato per il numero massimo di byte per un corpo di un messaggio in entrata non \u00e8 valido.
+config.incomingbodymaxsize.useraction=Configurare un valore valido per il numero massimo di byte per un corpo di un messaggio in entrata.
+
+NO_DEFAULT_CONFIGURATION=CWWKT0011W: Impossibile trovare una configurazione predefinita per {0} utilizzando l''ID {1}
+NO_DEFAULT_CONFIGURATION.explanation=Non \u00e8 stato possibile trovare la configurazione predefinita specificata per l'ID specificato.
+NO_DEFAULT_CONFIGURATION.useraction=Verificare la configurazione del server ed eseguire quindi un riavvio pulito.
+
+DEFAULT_OPTIONS_ERROR=CWWKT0012E: Si \u00e8 verificato un errore interno. Impossibile creare la configurazione predefinita. Eccezione {0}
+DEFAULT_OPTIONS_ERROR.explanation=CMSG0001
+DEFAULT_OPTIONS_ERROR.useraction=CMSG0002
+
+DEFAULT_ENDPOINT_ERROR=CWWKT0013E: Si \u00e8 verificato un errore interno. Impossibile creare l''endpoint predefinito. Eccezione {0}
+DEFAULT_ENDPOINT_ERROR.explanation=CMSG0001
+DEFAULT_ENDPOINT_ERROR.useraction=CMSG0002
+
+DEFAULT_VHOST_ERROR=CWWKT0014E: Si \u00e8 verificato un errore interno. Impossibile creare l''host virtuale predefinito.  Eccezione {0}
+DEFAULT_VHOST_ERROR.explanation=CMSG0001
+DEFAULT_VHOST_ERROR.useraction=CMSG0002
+
+missingPorts.endpointDisabled=CWWKT0015W: Non \u00e8 stata configurata alcuna porta per l''endpoint {0}. L''endpoint \u00e8 stato disabilitato.
+missingPorts.endpointDisabled.explanation=Un endpoint HTTP richiede che sia configurata almeno una porta.
+missingPorts.endpointDisabled.useraction=Assegnare un valore di porta valido a httpPort, httpsPort o entrambe.
+
+context.root.added=CWWKT0016I: Applicazione Web disponibile ({0}): {1}
+context.root.added.explanation=Messaggio a solo scopo informativo.
+context.root.added.useraction=Non sono richieste azioni.
+
+context.root.removed=CWWKT0017I: Applicazione Web rimossa ({0}): {1}
+context.root.removed.explanation=Messaggio a solo scopo informativo.
+context.root.removed.useraction=Non sono richieste azioni.
+
+Missing.App.Or.Context.Root=CWWKT0018E: Il root di contesto o dell''applicazione per questa richiesta non \u00e8 stato trovato: {0}
+Missing.App.Or.Context.Root.explanation=La richiesta non pu\u00f2 essere gestita da un'applicazione sul server.
+Missing.App.Or.Context.Root.useraction=Assicurarsi che l'applicazione sia definita e distribuita e che sia stata indicata correttamente dal client.
+
+#Cannot remove above due to service rules, but we do not need a message key as this is never logged
+#only output to the browser on our 404 page - removing it means we give away less server implementation info
+Missing.App.Or.Context.Root.No.Error.Code=Il root di contesto o dell''applicazione per questa richiesta non \u00e8 stato trovato: {0}
+Missing.App.Or.Context.Root.No.Error.Code.explanation=La richiesta non pu\u00f2 essere gestita da un'applicazione sul server.
+Missing.App.Or.Context.Root.No.Error.Code.useraction=Assicurarsi che l'applicazione sia definita e distribuita e che sia stata indicata correttamente dal client.
+
+config.httpChain.error=CWWKT0019E: Si \u00e8 verificato un problema durante la configurazione dell''endpoint {0}: {1}.
+config.httpChain.error.explanation=Impossibile avviare l'endpoint HTTP a causa di un problema di configurazione.
+config.httpChain.error.useraction=Esaminare i log di eccezione ed i messaggi e ricercare errori correlati. 
+
+start.httpChain.error=CWWKT0020E: Si \u00e8 verificato un problema durante l''avvio dell''endpoint {0}: {1}.
+start.httpChain.error.explanation=Impossibile avviare l'endpoint HTTP a causa di un problema imprevisto. 
+start.httpChain.error.useraction=Esaminare i log di eccezione ed i messaggi e ricercare errori correlati. 
+
+httpChain.error.shutdown=CWWKT0021I: Il server \u00e8 in fase di arresto a causa di un probabile errore di configurazione. \
+L''endpoint {0} non pu\u00f2 essere avviato, ci\u00f2 pu\u00f2 accadere se la porta configurata \u00e8 gi\u00e0 in uso.
+httpChain.error.shutdown.explanation=L'endpoint HTTP \u00e8 stato configurato con onError=FAIL, ci\u00f2 provoca l'arresto del server se si verifica un problema durante l'avvio dell'endpoint. 
+httpChain.error.shutdown.useraction=Esaminare i log di eccezione ed i messaggi e ricercare errori correlati. \
+Per impedire al server di arrestarsi a causa di problemi durante l'avvio dell'endpoint, assicurarsi che onError sia impostato su WARN o IGNORE.
+
+unresolveableHost=CWWKT0022E: Impossibile risolvere l''host configurato {0} per l''endpoint HTTP {1}. L''endpoint \u00e8 stato disabilitato.
+unresolveableHost.explanation=Un endpoint HTTP richiede un valore host che possa essere risolto in un'interfaccia di rete attiva.
+unresolveableHost.useraction=Assicurarsi che il valore host faccia riferimento a un'interfaccia di rete attiva o utilizzare * per collegare tutte le interfacce.
+
+unresolveableDefaultHost=CWWKT0023W: Impossibile risolvere il defaultHostName {0} configurato, viene utilizzato localhost.
+unresolveableDefaultHost.explanation=La variabile defaultHostName specifica un valore host che non pu\u00f2 essere risolto in un'interfaccia di rete attiva.
+unresolveableDefaultHost.useraction=Assicurarsi che il valore defaultHostName configurato faccia riferimento a un'interfaccia di rete attiva.
+
+defaultHostDisabled=CWWKT0024W: Impossibile disabilitare l'host virtuale predefinito (host_predefinito).
+defaultHostDisabled.explanation=L'host virtuale predefinito \u00e8 richiesto dall'ambiente di runtime. 
+defaultHostDisabled.useraction=Non \u00e8 richiesta alcuna azione.
+
+noHostAliases=CWWKT0025W: L''host virtuale {0} non dispone di alias host configurati, non ricever\u00e0 richieste in entrata.
+noHostAliases.explanation=Tutti gli host virtuali non predefiniti devono definire almeno un alias host (host:porta) per identificare le richieste in entrata che devono essere indirizzate a tale host virtuale. \
+L'host virtuale specificato non dispone di alias host definiti, ci\u00f2 impedir\u00e0 l'indirizzamento delle richieste ad esso.
+noHostAliases.useraction=Aggiornare l'elemento virtualHost nel file server.xml per definire almeno un attributo hostAlias.
+
+invalidAlias=CWWKT0026W: Un alias host  configurato per l''host virtuale {0} non \u00e8 valido e verr\u00e0 ignorato. {1}
+invalidAlias.explanation=L'alias host configurato contiene caratteri non validi o la sintassi non \u00e8 corretta.
+invalidAlias.useraction=Aggiornare l'elemento virtualHost nel file server.xml per correggere o eliminare l'alias host non valido. Notare che gli indirizzi IPv6 devono essere racchiusi tra [].
+
+wildcardReason=Il carattere jolly * non pu\u00f2 essere combinato con altri caratteri nell'alias host.
+badHostPortReason=L'host specificato non \u00e8 un nome host o indirizzo IP valido oppure il valore specificato per la porta non \u00e8 un numero intero.
+
+duplicateAlias=CWWKT0027W: L''alias host {0} per l''host virtuale {1} \u00e8 in conflitto con un alias host esistente e verr\u00e0 ignorato.
+duplicateAlias.explanation=L'alias host specificato \u00e8 in conflitto con un alias host esistente.
+duplicateAlias.useraction=Assicurarsi che tutti gli alias host definiti come elementi host virtuale nel file server.xml siano univoci.
+
+context.root.changed=CWWKT0028I: Applicazione Web spostata ({0}): {1}
+context.root.changed.explanation=Messaggio a solo scopo informativo.
+context.root.changed.useraction=Non \u00e8 richiesta alcuna azione.

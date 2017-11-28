@@ -1,0 +1,605 @@
+###############################################################################
+# Copyright (c) 2001, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# Notes:
+#
+#   Message Ranges for this file are as follows:
+#
+#       0000 - 0299       General exception messages and warnings.
+#       0300 - 0999       XA exceptions and warnings.
+#       1000 - 1999       Additional general exception messages and warnings.
+#       2000 - 3999       Currently unused.
+#       4000 - 4999       Messages for Liberty only.
+#       5000 - 6999       Currently unused.
+#       7000 - 7599       Database Helper exception messages and warnings.
+#       8000 - 8499       DataSource configuration exception messages and warnings.
+#       8500 - 8999       JDBC Wrapper warnings.
+#       9000 - 9999       JDBC Wrapper exception messages.
+#
+#CMVCPATHNAME com.ibm.ws.jdbc/resources/com/ibm/ws/rsadapter/resources/IBMDataStoreAdapterNLS.nlsprops
+#COMPONENTPREFIX DSRA
+#COMPONENTNAMEFOR DSRA JDBC Integration Layer
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#-----------------------------------------------------------------------------------------#
+# 
+# Using 0000-0299 for General DataStore Adapter exception messages and warnings
+# 
+# ----------------------------------------------------------------------------
+# 0010E      SQL_STATE_ERROR_CODE
+# 
+# {0}        The SQLSTATE.
+# {1}        The ERRORCODE
+SQL_STATE_ERROR_CODE=DSRA0010E: Stare SQL = {0},Cod eroare  = {1}
+SQL_STATE_ERROR_CODE.explanation=A ap\u0103rut o eroare de baze de date pentru care starea SQL \u015fi codul Eroare sunt listate.
+SQL_STATE_ERROR_CODE.useraction=Utiliza\u0163i informa\u0163iile asociate cu codul de eroare pentru a rezolva problema din baza de date.
+
+# 0011 deleted
+# 0015 deleted
+# 0020-0027 deleted
+
+# General purpose template for messages that will not be translated
+DSA_INTERNAL_ERROR=DSRA0030E: A ap\u0103rut o eroare intern\u0103 de tip Data Store Adapter. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere cu urm\u0103toarele date:  {0} {1} {2}
+DSA_INTERNAL_ERROR.explanation=CMSG0001
+DSA_INTERNAL_ERROR.useraction=Vizita\u0163i situl web suport IBM pentru informa\u0163ii privind determinarea problemei.
+
+# 0035 deleted
+
+# General purpose template for messages that will not be translated
+WS_INTERNAL_ERROR=DSRA0040E: A ap\u0103rut o eroare intern\u0103 de tip WebSphere. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere cu urm\u0103toarele date:  {0} {1} {2}
+WS_INTERNAL_ERROR.explanation=A ap\u0103rut o eroare \u00een codul WebSphere.
+WS_INTERNAL_ERROR.useraction=Colecta\u0163i toate istoricele de urm\u0103rire \u015fi sistem, \u00eempreun\u0103 cu o descriere a opera\u0163iei pe care o \u00eencerca\u0163i. Vizita\u0163i situl web suport IBM pentru informa\u0163ii privind determinarea problemei.
+
+# General purpose template for messages that will not be translated
+DSA_INTERNAL_WARNING=DSRA0050W: A ap\u0103rut un avertisment intern de tip Data Store Adapter. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere cu urm\u0103toarele date:  {0} {1} {2}
+DSA_INTERNAL_WARNING.explanation=CMSG0001
+DSA_INTERNAL_WARNING.useraction=Vizita\u0163i situl web suport IBM pentru informa\u0163ii privind determinarea problemei.
+
+# 0060 deleted
+# 0070 deleted
+
+# 0080E      DSA_ERROR
+# 
+# {0}        The exception.
+DSA_ERROR=DSRA0080E: Data Store Adapter a primit o excep\u0163ie. Vede\u0163i mesajul de excep\u0163ie original: {0}.
+DSA_ERROR.explanation=Back-end baz\u0103 de date a generat o excep\u0163ie care a fost prins\u0103 de c\u0103tre Adaptorul stocare date.
+DSA_ERROR.useraction=Consulta\u0163i textul de eroare raportate de c\u0103tre software-ul de baz\u0103 de date pentru surse posibile de eroare.
+
+# 0081-0087 deleted
+
+DSA_GENERIC_MSG=DSRA0086E: O opera\u0163ie a rezltat \u00eentr-o excep\u0163ie. Opera\u0163ia este: {0}. Excep\u0163ia este: {1}.  Cauza posibil\u0103 {2}
+DSA_GENERIC_MSG.explanation=Opera\u0163ia  a rezultat \u00eentr-o excep\u0163ie.
+DSA_GENERIC_MSG.useraction=Examina\u0163i fi\u015fierele istorice de opera\u0163ie, excep\u0163ie \u015fi baz\u0103 de date.
+
+# 0090 deleted
+
+UNSUPPORTED_METHOD=DSRA0091I: Metoda {0} nu este suportat\u0103 pentru aceast\u0103 baz\u0103 de date de tip backend
+UNSUPPORTED_METHOD.explanation=A ap\u0103rut o eroare intern\u0103.
+UNSUPPORTED_METHOD.useraction=Vizita\u0163i situl web suport IBM pentru informa\u0163ii privind determinarea problemei.
+
+#TRANSLATOR Do Not Translate: DataSource
+RESOLVING_DB_IMPLICIT_TRANSACTIONS=DSRA0092I: A fost detectat\u0103 o tranzac\u0163ie implicit\u0103 c\u0103tre baza de date. WebSphere va {0} tranzac\u0163ia. Acest mesaj va fi \u00eenregistrat \u00een istoric o dat\u0103 pentru fiecare DataSource. Tranzac\u0163iile implicite urm\u0103toare vor fi rezolvate automat. 
+RESOLVING_DB_IMPLICIT_TRANSACTIONS.explanation=Serverul de aplica\u0163ii a detectat faptul c\u0103 baza de date a pornit o tranzac\u0163ie. Serverul de aplica\u0163ii va \u00eencerca s\u0103 rezolve tranzac\u0163ia dup\u0103 cum este configurat\u0103 \u00een propriet\u0103\u0163ile personalizate pentru sursa de date.
+RESOLVING_DB_IMPLICIT_TRANSACTIONS.useraction=Nu este necesitat\u0103 nicio ac\u0163iune de utilizator. 
+
+#TRANSLATOR Do Not Translate: Datasource, FFDC
+ERROR_RESOLVING_DB_IMPLICIT_TRANSACTIONS=DSRA0093I: A fost detectat\u0103 o tranzac\u0163ie implicit\u0103 c\u0103tre baza de date. WebSphere a \u00eencercat s\u0103 {0} tranzac\u0163ia dar a ap\u0103rut o eroare {1}.
+ERROR_RESOLVING_DB_IMPLICIT_TRANSACTIONS.explanation=Serverul de aplica\u0163ii a detectat faptul c\u0103 baza de date a pornit o tranzac\u0163ie. Serverul de aplica\u0163ii va \u00eencerca s\u0103 rezolve tranzac\u0163ia dup\u0103 cum este configurat\u0103 \u00een propriet\u0103\u0163ile personalizate pentru sursa de date. A ap\u0103rut o eroare care \u00eempiedica rezolvarea tranzac\u0163iei.
+ERROR_RESOLVING_DB_IMPLICIT_TRANSACTIONS.useraction=Str\u00e2nge\u0163i fi\u015fierele istorice FFDC \u015fi orice fi\u015fiere istorice server. Dac\u0103 eroarea nu este \u00eenrudit\u0103 cu \u00eentreruperea bazei de date, vizita\u0163i situl web suport IBM pentru determinarea problemei.
+
+#TRANSLATOR Do Not Translate: Datasource
+IMPLICIT_TRANSACTION_FOUND=DSRA0095I: S-a g\u0103sit o tranzac\u0163ie la baza de date care nu este urm\u0103rit\u0103 prin WebSphere \u015fi care \u00eencerca s\u0103 deruleze \u00eenapoi \u00eenainte de a cur\u0103\u0163a conexiunea. Acest mesaj va fi \u00eenregistrat \u00een istoric o dat\u0103 pentru fiecare DataSource. Tranzac\u0163iile implicite urm\u0103toare vor fi rezolvate automat. 
+IMPLICIT_TRANSACTION_FOUND.explanation=Baza de date a pornit o tranzac\u0163ie pe conexiune. Serverul de aplica\u0163ii va derula \u00eenapoi tranzac\u0163ia \u00eenainte de a returna conexiunea la pool.
+IMPLICIT_TRANSACTION_FOUND.useraction=Evalua\u0163i codul aplica\u0163iei pentru a determina ce ar putea cauza tranzac\u0163ia implicit\u0103. Codul de aplica\u0163ie ar putea fi capabil s\u0103 \u00eempiedice tranzac\u0163ii implicite urm\u0103toare explicit sau dumneavoastr\u0103 a\u0163i putea configura o ac\u0163iunea explicit\u0103 de luat pentru sursa de date. 
+
+# 0096-0101 deleted
+# 0110 deleted
+# 0174 deleted
+
+# TRANSLATOR Do not translate: ManagedConnection.destroy()
+DSTRY_ERROR_EX=DSRA0180W: Excep\u0163ie detectat\u0103 \u00een timpul ManagedConnection.destroy().  Excep\u0163ia este: {0}.
+DSTRY_ERROR_EX.explanation=A fost detectat\u0103 o excep\u0163ie la cur\u0103\u0163area ManagedConnection pentru o opera\u0163ie de distrugere.
+DSTRY_ERROR_EX.useraction=Consulta\u0163i eroarea raportat\u0103 de c\u0103tre software-ul de baz\u0103 de date pentru a ajuta la determinarea cauzei erorii.
+
+# 0230E      INVALID_TX_STATE
+# 
+# {0}        The operation.
+# {1}        The transaction state.
+INVALID_TX_STATE=DSRA0230E: \u00cencercarea de a realiza opra\u0163ia {0} nu este permis\u0103 deoarece starea tranzac\u0163iei este {1}.
+INVALID_TX_STATE.explanation=Opera\u0163ia care a fost cerut\u0103 nu este permis\u0103 \u00een timpul unei tranzac\u0163ii.
+INVALID_TX_STATE.useraction=Realiza\u0163i opera\u0163ia \u00eenainte de a porni tranzac\u0163ia sau dup\u0103 finalizarea tranzac\u0163iei.
+
+# 0240E      INVALID_CONNECTION
+#
+INVALID_CONNECTION=DSRA0240E: Conexiune nevalid\u0103.  Pool-ul de conexiune este epurat.
+INVALID_CONNECTION.explanation=A fost ini\u0163iat\u0103 o cerere de c\u0103tre utilizator de epurare a pool-ului. Aceast\u0103 cerere face conexiunile existente \u00een pool s\u0103 nu mai fie valide.
+INVALID_CONNECTION.useraction=Ie\u015fi\u0163i din tranzac\u0163ie \u015fi grani\u0163a metodei \u015fi \u00eencerca\u0163i din nou logica cu o nou\u0103 conexiune.
+
+# 0244 deleted
+
+# 0250E		WS_ERROR
+#
+# General purpose template for messages that will not be translated
+WS_ERROR=DSRA0250E: Data Store Adapter a primit o excep\u0163ie. Vede\u0163i mesajul de excep\u0163ie original: {0}.
+WS_ERROR.explanation=CMSG0001
+WS_ERROR.useraction=CMSG0002
+
+# 0280 deleted
+
+# ----------------------------------------------------------------------------
+# 
+# Using 0300-0999 for XA Exceptions and Warnings
+# 
+# 
+THROW_XAEXCEPTION=DSRA0302E:  A ap\u0103rut excep\u0163ia XAException.  Codul de eroare este: {0}.  Excep\u0163ia este: {1}
+THROW_XAEXCEPTION.explanation=O opera\u0163ie \u00een dou\u0103 faze de pe baza de date a rezultat \u00eentr-o excep\u0163ie. 
+THROW_XAEXCEPTION.useraction=CMSG0002
+
+
+
+DISPLAY_XAEX_CONTENT=DSRA0304E:  A ap\u0103rut excep\u0163ia XAException. Con\u0163inuturile \u015fi detaliile XAException sunt: {0}.
+DISPLAY_XAEX_CONTENT.explanation=O opera\u0163ie \u00een dou\u0103 faze de pe baza de date a rezultat \u00eentr-o excep\u0163ie.
+DISPLAY_XAEX_CONTENT.useraction=CMSG0002
+
+# 0310E      XID_MISMATCH
+# 
+# {0}        The Xid from the XAResource.start method.
+# {1}        An XAResource method name.
+# {2}        The Xid for the above XAResource method.
+XID_MISMATCH=DSRA0310E: Xids nu se potrive\u015fte.\nXAResource.start: {0}\nXAResource.{1}: {2}
+XID_MISMATCH.explanation=Serverul de aplica\u0163ii a \u00eencercat s\u0103 realizeze o opera\u0163ie XAResource  cu un Xid diferit de Xid care este utilizat pentru XAResource.start.
+XID_MISMATCH.useraction=Ob\u0163ine\u0163i o nou\u0103 conexiune \u015fi \u00eencerca\u0163i din nou tranzac\u0163ia.
+
+# 0330E      ORACLE_RAC_RETRY
+# 
+# {0}        The operation being delayed.
+# {1}        Number of milliseconds from the last stale connection.
+# {2}        The value (in milliseconds) of the oracleRACXARecoveryDelay.
+ORACLE_RAC_RETRY=DSRA0330E: Serverul de aplica\u0163ii \u00eent\u00e2rzie cererea {0}, deoarece durata de la ultimaconexiune mai veche, {1} milisecunde, este \u00een valoarea oracleRACXARecoveryDelay, care este {2} milisecunde.
+ORACLE_RAC_RETRY.explanation=Proprietatea personalizat\u0103 surs\u0103 de date, oracleRACXARecoveryDelay, cauzeaz\u0103 ca serverul de aplica\u0163ii s\u0103 \u00eent\u00e2rzie opera\u0163iile xa.commit \u015fi xa.rollback pentru durata intervalului de re\u00eencercare.
+ORACLE_RAC_RETRY.useraction=A\u015ftepta\u0163i ca managerul de tranzac\u0163ie s\u0103 re\u00eencerce opera\u0163ia. Trebuie s\u0103 configura\u0163i re\u00eencerc\u0103ri euristice pe managerul de tranzac\u0163ie pentru ca oracleRACXARecoveryDelay s\u0103 func\u0163ioneze corect.
+
+# 0400W      TBC_NOT_SUPPORTED
+#
+# {0}        The datasource JNDI name.
+TBC_NOT_SUPPORTED=DSRA0400W: Sursa de date{0}: nu suport\u0103 cuplaj str\u00e2ns la filial\u0103 ??
+TBC_NOT_SUPPORTED.explanation=Baza de date sau furnizorul de JDBC specificat de sursa de date  nu suport\u0103 op\u0163iunea de cuplare str\u00e2ns\u0103 la filial\u0103.  Cuplajulstr\u00e2ns cu filiala estre suportat doar cu o baz\u0103 de date DB2 pentru z/OS acesat\u0103 de driver-ul DB2 Universal JCC.  Va fi folosit\u0103 op\u0163iunea implicit\u0103 de cuplare a filialei pierdute.  Acest lucru poate cauza timeout-uri de blocare, interbloc\u0103ri \u015fi/sau derul\u0103ri \u00eenapoi ale tranzac\u0163iei dac\u0103 aplica\u0163ia este proiectat\u0103 pentru cuplajul str\u00e2sns cu filiala deoarece bloc\u0103rile bazei de  date nu vor fi partajate peste filialele tranzac\u0163iei \u00een aceea\u015fi tranzac\u0163ie global\u0103.
+TBC_NOT_SUPPORTED.useraction=Trebuie s\u0103 configura\u0163i sursa de date pentru a utiliza un nivel suportat de driver-ul JDBC \u015fi baza de date sau configura\u0163i aplica\u0163ia dvs. s\u0103 nu solicite cuplare str\u00e2ns\u0103 la sucursal\u0103.
+
+# 0401 deleted
+
+# 0402W      TBC_DB_NOT_SUPPORTED
+#
+# {0}        The datasource JNDI name.
+TBC_DB_NOT_SUPPORTED=DSRA0402W: Datasource {0}: versiunea bazei de date nu are suport de cuplare str\u00e2ns\u0103 la fili\u0103
+TBC_DB_NOT_SUPPORTED.explanation=Baza de date specificat\u0103 de sursa de date nu suport\u0103 op\u0163iunea de cuplaj filial\u0103 compact\u0103.  Cuplajul de filial\u0103 compact\u0103 este suportat doar cu tipul 4 conexiuni la DB2 for z/OS V8 (+ APAR PK47713) sau DB2 pentru Linux, UNIX, Windows V8 \u015fi versiuni ulterioare.  Va fi folosit\u0103 op\u0163iunea implicit\u0103 de cuplare a filialei pierdute.  Acest lucru poate cauza timeout-uri de blocare, interbloc\u0103ri \u015fi/sau derul\u0103ri \u00eenapoi ale tranzac\u0163iei dac\u0103 aplica\u0163ia este proiectat\u0103 pentru cuplajul str\u00e2sns cu filiala deoarece bloc\u0103rile bazei de  date nu vor fi partajate peste filialele tranzac\u0163iei \u00een aceea\u015fi tranzac\u0163ie global\u0103.
+TBC_DB_NOT_SUPPORTED.useraction=Trebuie s\u0103 configura\u0163i sursa de date pentru a utiliza un nivel suportat de driver-ul JDBC \u015fi baza de date sau configura\u0163i aplica\u0163ia dvs. s\u0103 nu solicite cuplare str\u00e2ns\u0103 la sucursal\u0103.
+
+# 0403W      TBC_JCC_NOT_SUPPORTED
+#
+# {0}        The datasource JNDI name.
+TBC_JCC_NOT_SUPPORTED=DSRA0403W: Datasource {0}:  nu suport\u0103 cuplaj str\u00e2ns cu filiala deoarece driver-ul DB2 JCC este la un nivel incrrect
+TBC_JCC_NOT_SUPPORTED.explanation=Furnizorul de JDBC specificate de sursa de date  nu suport\u0103 op\u0163iunea de cuplaj strans cu fiiala.  Cuplajulstr\u00e2ns la filial\u0103 este suportat doar cu minimul de niveluri de DB2 Universal JCC driver versiunea 3.51 sau 3.6, ca \u015fi cum a fost bundle cu nivelur ule serviciului DB2 9.5 sau 9, sau driver-ul JCC4 versiunea 4.1.  Va fi folosit\u0103 op\u0163iunea implicit\u0103 de cuplare a filialei pierdute.  Acest lucru poate cauza timeout-uri de blocare, interbloc\u0103ri \u015fi/sau derul\u0103ri \u00eenapoi ale tranzac\u0163iei dac\u0103 aplica\u0163ia este proiectat\u0103 pentru cuplajul str\u00e2sns cu filiala deoarece bloc\u0103rile bazei de  date nu vor fi partajate peste filialele tranzac\u0163iei \u00een aceea\u015fi tranzac\u0163ie global\u0103.
+TBC_JCC_NOT_SUPPORTED.useraction=Trebuie s\u0103 configura\u0163i sursa de date pentru a utiliza un nivel suportat de driver-ul JDBC \u015fi baza de date sau configura\u0163i aplica\u0163ia dvs. s\u0103 nu solicite cuplare str\u00e2ns\u0103 la sucursal\u0103.
+
+# ----------------------------------------------------------------------------
+# 
+# Using 1000-1999 for additional general DataStore Adapter exception messages and warnings.
+# 
+# 1000 deleted
+# 1100-1102 deleted
+# 1110 deleted
+
+# 1120E      CONN_NEVER_CLOSED
+# 
+CONN_NEVER_CLOSED=DSRA1120E: Aplica\u0163ia nu a \u00eenchis \u00een mod explicit toate manipulatoarele la aceast\u0103 conexiune. Conexiunea nu poate fi pooled.
+CONN_NEVER_CLOSED.explanation=Conexiunea nu va fi resetat\u0103 pentru pooling conexiune pentru c\u0103 aplica\u0163ia a e\u015fuat s\u0103 \u00eenchid\u0103 explicit toate rutinele de tratare.
+CONN_NEVER_CLOSED.useraction=Modifica\u0163i aplica\u0163ia pentru a \u00eenchide \u00eentotdeauna toate rutinele de tratare conexiuni.
+
+# 1130 deleted
+# 1200 deleted
+# 1210-1213 deleted
+
+# 1300E      FEATURE_NOT_IMPLEMENTED
+# 
+# {0}        The feature (usually a JDBC API method)
+FEATURE_NOT_IMPLEMENTED=DSRA1300E: Caracteristica nu este implementat\u0103: {0}
+FEATURE_NOT_IMPLEMENTED.explanation=Caracteristica cerut\u0103 nu este disponibil\u0103.
+FEATURE_NOT_IMPLEMENTED.useraction=Evita\u0163i utilizarea caracteristicii sau comuta\u0163i pe o versiune de driver care suport\u0103 caracteristica dac\u0103 este posibil.
+
+# 1301 deleted
+# 3000-3020 deleted
+# 3100-3127 deleted
+# 3200-3202 deleted
+# 3250-3262 deleted
+# 3600-3616 deleted
+
+# ----------------------------------------------------------------------------
+# 
+# Using 4000-4999 for Liberty-only messages
+# 
+
+DSRA4000.no.suitable.driver=DSRA4000E: Nu s-a g\u0103sit o clas\u0103 de implementare driver JDBC valid\u0103 pentru jdbcDriver {0} folosind biblioteca {1}.
+DSRA4000.no.suitable.driver.explanation=Nu s-a g\u0103sit o clas\u0103 de implementare driver JDBC valid\u0103.
+DSRA4000.no.suitable.driver.useraction=Actualiza\u0163i configura\u0163ia pentru ca biblioteca s\u0103 con\u0163in\u0103 o cale spre un driver JDBC recunoscut sau clasa de implementare s\u0103 fie specificat\u0103 pe sursa de date.
+
+DSRA4001.no.suitable.driver.nested=DSRA4001E: Nu s-a g\u0103sit o clas\u0103 de implementare driver JDBC valid\u0103 \u00een biblioteca imbricat\u0103 folosit\u0103 de jdbcDriver {0}.
+DSRA4001.no.suitable.driver.nested.explanation=Nu s-a g\u0103sit o clas\u0103 de implementare driver JDBC valid\u0103.
+DSRA4001.no.suitable.driver.nested.useraction=Actualiza\u0163i configura\u0163ia pentru ca biblioteca imbricat\u0103 s\u0103 con\u0163in\u0103 o cale spre un driver JDBC recunoscut sau clasa de implementare s\u0103 fie specificat\u0103 pe sursa de date.
+
+DSRA4003.driver.null=DSRA4003E: Nu s-a putut g\u0103si un element jdbcDriver valid pentru dataSource {0}.
+DSRA4003.driver.null.explanation=Nu s-a putut g\u0103si un element jdbcDriver valid pentru dataSource specificat.
+DSRA4003.driver.null.useraction=Actualiza\u0163i configura\u0163ia pentru a include fie un element jdbcDriver imbricat valid, fie un element jdbcDriver de nivel de top cu acela\u015fi nume ca atributul jdbcDriverRef de pe dataSource.
+
+# {0} SQL command
+# {1} data source JNDI name or config display id 
+DSRA4004.onconnect.sql=DSRA4004E: Nu se poate executa comanda SQL onConnect \"{0}\" pe conexiunea ob\u0163inut\u0103 din dataSource {1}. Referi\u0163i-v\u0103 la excep\u0163ia cauz\u0103 pentru informa\u0163ii suplimentare.
+DSRA4004.onconnect.sql.explanation=A ap\u0103rut o eroare la \u00eencercarea de a executa comanda SQL specificat\u0103.
+DSRA4004.onconnect.sql.useraction=Referi\u0163i-v\u0103 la mesajul de excep\u0163ie pentru a ajuta la determinarea cauzei problemei.
+
+# ----------------------------------------------------------------------------
+# 
+# Using 7000-7599 for DataStore Helper exception messages and warnings
+# 
+# 7000-7009 deleted
+
+# No Comment Provided
+DB2_FILE_OUTSTREAM_ERROR=DSRA7010E: fi\u015fierul de urm\u0103rire specificat {0} nu exist\u0103, o excep\u0163ie va fi aruncat\u0103 de baza de date \u00een cazul \u00een care problema nu este corectat\u0103.
+DB2_FILE_OUTSTREAM_ERROR.explanation=Fi\u015fierul de urm\u0103rire specificat de dumneavoastr\u0103 pe sursa de date nu exist\u0103.
+DB2_FILE_OUTSTREAM_ERROR.useraction=Utiliza\u0163i un fi\u015fier existent pentru fi\u015fierul de urm\u0103rire.
+
+# 7011-7013 deleted
+
+# TRANSLATOR Do not translate: DB2 Universal JDBC
+DB2ZOS_CONFIG_INFO=DSRA7014I: Driver-ulDB2 Universal JDBC ruleaz\u0103 \u00eentr-un mediu RRS
+DB2ZOS_CONFIG_INFO.explanation=Driverul JDBC universal DB2 a fost comutat pentru a rula \u00eentr-un mediu RRS pe DB2 pentru z/OS. 
+DB2ZOS_CONFIG_INFO.useraction=Acesta este mesajul informativ pentru mediul driverului JDBC care ruleaz\u0103.
+
+
+# TRANSLATOR Do not translate: DB2ConnectionPoolDatasource, DB2 Universal JDBC
+DB2ZOS_TYPE2_ERROR=DSRA7015E: DB2 nu suport\u0103 driver-ul de tip 2 cu DB2XADataSource sub DB2 pentru z/OS
+DB2ZOS_TYPE2_ERROR.explanation=Proprietatea personalizat\u0103 driverType pentru sursa de date a fost setat la valoarea de 2 pe DB2XADatasource. Aceast\u0103 configura\u0163ie nu este suportat\u0103 de DB2 pentru z/OS.
+DB2ZOS_TYPE2_ERROR.useraction=Utiliza\u0163i DB2ConnectionPoolDatasource sau comuta\u0163i pe driver JDBC universal DB2 tipul 4 dac\u0103 acesta este disponibil pentru configura\u0163ia dumneavoastr\u0103.
+
+# 7016 deleted
+
+# DSRA7017I      ORACLE_TRACE_WARNING
+# TRANSLATOR Do not translate: IOException
+ORACLE_TRACE_WARNING=DSRA7017I: \u00cenregistrarea \u00een fi\u015fierul {0} nu poate surveni din cauza excep\u0163iei IOException {1}
+ORACLE_TRACE_WARNING.explanation=A ap\u0103rut o IOException c\u00e2nd serverul de aplica\u0163ii \u00eencerca s\u0103 deschid\u0103 fi\u015fierul de urm\u0103rire care a fost specificat.
+ORACLE_TRACE_WARNING.useraction=Examina\u0163i excep\u0163ia, rezolva\u0163i problema I/E \u015fi porni\u0163i din nou serverul de aplica\u0163ii.
+
+# DSRA7018I      META_DATA_EXCEPTION
+# 
+META_DATA_EXCEPTION=DSRA7018I: Accestul la metadatele bazei de date au cauzat o excep\u0163ie la conexiune non-stale.  Execu\u0163ia normal\u0103 este continuat\u0103.  Excep\u0163ia este: {0}
+META_DATA_EXCEPTION.explanation=A ap\u0103rut o exception c\u00e2nd serverul de aplica\u0163ii \u00eencerca s\u0103 ob\u0163in\u0103 sau s\u0103 acceseze obie ctul de metadate pentru baza de date.
+META_DATA_EXCEPTION.useraction=Verifica\u0163i c\u0103 metadatele sunt activate pe baza de date back-end.
+
+# 7019-7039 deleted
+
+# DSRA7040I	WAS_CONNECTION_POOLING_DISABLED_INFO
+WAS_CONNECTION_POOLING_DISABLED_INFO=DSRA7040I: Server-ul de aplica\u0163ii a dezactivat pool-ul de conexiuni interne.
+WAS_CONNECTION_POOLING_DISABLED_INFO.explanation=Serverul de aplica\u0163ii a detectat activarea punerii \u00een cache a conexiunii prin baza de date. Pooling de conexiune din serverul de aplica\u0163ii va fi dezactivat.
+WAS_CONNECTION_POOLING_DISABLED_INFO.useraction=Dac\u0103 nu dori\u0163i s\u0103 dezactiva\u0163i pooling de conexiune din serverul de aplica\u0163ii, dezactiva\u0163i pooling de conexiune pentru serverul de baz\u0103 de date.
+
+# 7041-7042 deleted
+# 7600-7606 deleted
+
+# ----------------------------------------------------------------------------
+# 
+# Using 8000-8499 for DataSource configuration messages.
+# 
+# 8000-8001 deleted
+# 8010 deleted
+
+# 8011E      NO_SETTER_METHOD
+# 
+# {0}        The property we cannot find a setter method for.
+NO_SETTER_METHOD=DSRA8011E: Nici o metod\u0103 setter pentru proprietatea ''{0}''.
+NO_SETTER_METHOD.explanation=Serverul de aplica\u0163ii nu a putut g\u0103si o metod\u0103 setter pe sursa de date pentru a seta proprietatea care este cerut\u0103.
+NO_SETTER_METHOD.useraction=Verifica\u0163i c\u0103 numele propriet\u0103\u0163ii care este specificat este corect.
+
+# 8020E      PROP_NOT_FOUND
+# 
+# TRANSLATOR Do not translate: JDBC.
+# {0}        The DataSource class name.
+# {1}        The property name.
+PROP_NOT_FOUND=DSRA8020E: Avertisment: Proprietatea ''{1}'' nu exist\u0103 \u00een clasa DataSource {0}.
+PROP_NOT_FOUND.explanation=Serverul de aplica\u0163ii nu a putut s\u0103 localizeze proprietatea sursei de date care a fost specificat\u0103.  Motivele posibile sunt: 1) Proprietatea susei de date nu este scris\u0103 corect sau scris\u0103 cu majuscule corect, 2) Proprietatea care este specificat\u0103 nu se aplic\u0103 asupra sursei de date care este configurat\u0103 sau 3) Serverul de aplica\u0163ii con\u0163ine configura\u0163ia implicit\u0103 pentru o versiune diferit\u0103 a driver-ului JDBC care a fost speicficat\u0103 \u015fi aceasta a cauzat o nepotrivire de propriet\u0103\u0163i surs\u0103 de date.
+PROP_NOT_FOUND.useraction=Verifica\u0163i c\u0103 proprietatea care este specificat\u0103 este corect pentru sursa de date. Corecta\u0163i orice erori ortografice sau de scriere cu majuscule.  \u015eterge\u0163i proprietatea dac\u0103a ceasta nu se aplic\u0103 (sau nu se mai aplic\u0103) pentru driver-ul JDBC care este utilizat.
+
+# 8021W      PROP_SET_ERROR
+# 
+# {0}        The property name.
+# {1}        The Exception class, if not already included in the exception message.
+# {2}        The Exception.
+PROP_SET_ERROR=DSRA8021W: Avertisment: eroare la instalare ''{0}''{1}: {2}
+PROP_SET_ERROR.explanation=A ap\u0103rut o excep\u0163ie la setarea propriet\u0103\u0163ii specificate pe sursa de date.
+PROP_SET_ERROR.useraction=Verifica\u0163i c\u0103 valoarea care este specificat\u0103 este valid\u0103 pentru proprietate.
+
+# 8023-8035 deleted
+# 8040-8043 deleted
+# 8050-8055 deleted
+# 8060 deleted
+# 8065 deleted
+
+# 8100E      JAVAX_CONN_ERR
+# 
+# {0}        Type of Connection: XAConnection or PooledConnection.
+JAVAX_CONN_ERR=DSRA8100E: Nu poate s\u0103 ob\u0163in\u0103 {0} de la DataSource.
+JAVAX_CONN_ERR.explanation=Vede\u0163i linkedException pentru informa\u0163ii suplimentare.
+JAVAX_CONN_ERR.useraction=Vede\u0163i linkedException pentru informa\u0163ii suplimentare.
+
+# 8101E      NOT_A_1_PHASE_DS
+# 
+# TRANSLATOR Do not translate: enable2Phase, DataSource, ConnectionPoolDataSource, XADataSource.
+# {0}        ClassCastException message.
+NOT_A_1_PHASE_DS=DSRA8101E: Clasa DataSource class nu poate fi folosit\u0103 ca one-phase: ClassCastException: {0} ??
+NOT_A_1_PHASE_DS.explanation=Proprietatea 'enable2Phase' poate fi setat\u0103 pe fals doar dac\u0103 clasa de surse de date implementeaz\u0103 interfa\u0163a ConnectionPoolDatasource.
+NOT_A_1_PHASE_DS.useraction=Seta\u0163i 'enable2Phase' pe adev\u0103rat pentru XADataSource sau pe fals pentru ConnectionPoolDataSource.
+
+# 8102E      NOT_A_2_PHASE_DS
+# 
+# TRANSLATOR Do not translate: enable2Phase, DataSource, ConnectionPoolDataSource, XADataSource.
+# {0}        ClassCastException message.
+NOT_A_2_PHASE_DS=DSRA8102E: Clasa DataSource nu poate fi folosit\u0103 cu dou\u0103 faze: ClassCastException: {0}
+NOT_A_2_PHASE_DS.explanation=Proprietatea 'enable2Phase' poate fi setat\u0103 pe adev\u0103rat doar dac\u0103 clasa de surse de date implementeaz\u0103 interfa\u0163a XADatasource.
+NOT_A_2_PHASE_DS.useraction=Seta\u0163i 'enable2Phase' pe adev\u0103rat pentru XADataSource sau pe fals pentru ConnectionPoolDataSource.
+
+# 8150 deleted
+# 8160 deleted
+# 8200-8202 deleted
+
+# 8203I      DB_PRODUCT_NAME
+# 
+# TRANSLATOR Do not translate: Database.
+DB_PRODUCT_NAME=DSRA8203I: Nume produs baz\u0103 de date : {0}
+DB_PRODUCT_NAME.explanation=Acest mesaj afi\u015feaz\u0103 numele de produs pentru baza de date.
+DB_PRODUCT_NAME.useraction=Numele de baz\u0103 de date care este listat mai sus este utilizat acum de aplica\u0163ii.
+
+# 8204I      DB_PRODUCT_VERSION
+# 
+DB_PRODUCT_VERSION=DSRA8204I: Versiune produs baz\u0103 de date : {0}
+DB_PRODUCT_VERSION.explanation=Acest mesaj afi\u015feaz\u0103 versiunea de produs pentru baza de date.
+DB_PRODUCT_VERSION.useraction=Versiunea de baz\u0103 de date care este listat\u0103 mai sus este utilizat\u0103 acum de aplica\u0163ii.
+
+# 8205I      JDBC_DRIVER_NAME
+# 
+# TRANSLATOR Do not translate: JDBC.
+JDBC_DRIVER_NAME=DSRA8205I: Nume driver JDBC: {0}
+JDBC_DRIVER_NAME.explanation=Acest mesaj afi\u015feaz\u0103 numele driver-ului JDBC.
+JDBC_DRIVER_NAME.useraction=Numele driver-ului JDBC care este listat mai sus este utilizat acum de aplica\u0163ii.
+
+# 8206I      JDBC_DRIVER_VERSION
+# 
+# TRANSLATOR Do not translate: JDBC.
+JDBC_DRIVER_VERSION=DSRA8206I: Versiune driver JDBC: {0}
+JDBC_DRIVER_VERSION.explanation=Versiunea driver-ului JDBC.
+JDBC_DRIVER_VERSION.useraction=Versiunea care este listat\u0103 mai sus pentru driver-ul JDBC este utilizat\u0103 acum de aplica\u0163ii.
+
+# 8207I      ORA_READONLY
+# 
+ORA_READONLY=DSRA8207I: Metoda setReadOnly(false) este ignorat\u0103. Nu va fi pornit\u0103 nicio tranzac\u0163ie Oracle.
+ORA_READONLY.explanation=Bazele de date Oracle nu implementeaz\u0103 metoda setReadOnly. O metod\u0103 setReadOnly(true) nu va face conexiunea ca o conexiune numai citire. setReadOnly(false) nu este de asemenea implementat\u0103 \u015fi o tranzac\u0163ie este pornit\u0103 implicit de c\u0103tre o baz\u0103 de date Oracle. Serverul de aplica\u0163ii nu va invoca metoda setReadOnly(false) pe o baz\u0103 de date Oracle pentru a \u00eempiedica pornirea unei tranzac\u0163ii nenecesare.   
+ORA_READONLY.useraction=Inspecta\u0163i aplica\u0163ia dumneavoastr\u0103 pentru a verifica faptul c\u0103 aplica\u0163ia dumneavoastr\u0103 nu depinde de o tranzac\u0163ie dup\u0103 ce metoda setReadOnly(false) este apelat\u0103.
+
+# 8208-8212 deleted
+
+# 8213W     PROVIDER_NOT_SUPPORTED
+PROVIDER_NOT_SUPPORTED=DSRA8213W: Furnizorul JDBC, {0}, nu mai este suportat de WebSphere Application Server.  Aplica\u0163iile ar trebui s\u0103 utilizeze {1}.
+PROVIDER_NOT_SUPPORTED.explanation=Aplica\u0163ia utilizeaz\u0103 un furnizor JDBC care nu mai este suportat de serverul de aplica\u0163ii.
+PROVIDER_NOT_SUPPORTED.useraction=Utiliza\u0163i furnizorul JDBC care este furnizat \u00een textul erorii.
+
+# 8214-8222 deleted
+
+# 8230W     NONTRAN_DATASOURCE_WARNING
+# 
+# {0}       The name of the data source property for nontransactional behavior
+# {1}       The name of the data source property for configuring commit or rollback on connection cleanup
+NONTRAN_DATASOURCE_WARNING=DSRA8230W: Server-ul de aplica\u0163ii nu este capabil s\u0103 determine dac\u0103 o tranzac\u0163ie ar trebui rezolvat\u0103 deoarece propietatea personalizat\u0103 a sursei de date {0} este configurat\u0103, dar proprietatea personalizat\u0103 a sursei de date {1} nu este.
+NONTRAN_DATASOURCE_WARNING.explanation=A fost f\u0103cut\u0103 o \u00eencercare de pool pentru o conexiune care are o valorea AutoCommit de  fals. Serverul de aplica\u0163ii nu poate determina dac\u0103 tranzac\u0163ia este activ\u0103 pentru c\u0103 sursa de date este configurat\u0103 ca netranzac\u0163ional\u0103. Serverul de aplica\u0163ii nu va \u00eencerca s\u0103 rezolve tranzac\u0163ia pentru c\u0103 sursa de date nu este configurat\u0103 s\u0103 comit\u0103 sau s\u0103 deruleze \u00eenapoi automat \u00een timpul cur\u0103\u0163\u0103rii conexiunii.
+NONTRAN_DATASOURCE_WARNING.useraction=Configura\u0163i sursa de date s\u0103 comit\u0103 sau s\u0103 deruleze \u00eenapoi automat la cur\u0103\u0163area conexiunii sau reseta\u0163i \u00eentotdeauna valoarea AutoCommit la Adev\u0103rat.
+
+# ----------------------------------------------------------------------------
+# 
+# Using 8500-8999 for JDBC wrapper warnings.
+# 
+# 8520 deleted
+
+# 8600W      ERR_CLOSING_OBJECT
+# 
+# TRANSLATOR Do not translate: JDBC.
+# {0}        The object
+# {1}        The error
+ERR_CLOSING_OBJECT=DSRA8600W: Eroare la \u00eenchidere {0}\n{1}
+ERR_CLOSING_OBJECT.explanation=A ap\u0103rut o eroare la \u00eenchiderea obiectului JDBC care este specificat.
+ERR_CLOSING_OBJECT.useraction=CMSG0002
+
+# 8650 deleted
+# 8660 deleted
+# 8680 deleted
+# 8710 deleted
+
+# 8720W      MULTITHREADED_ACCESS_DETECTED
+#
+# TRANSLATOR Do not translate: Statements, ResultSets, metadata, Datasource
+# 
+# {0}        Object on which multithreaded access was detected.
+# {1}        The thread id on which access is permissible.
+# {2}        The current thread id.
+# {3}        Stack trace of the current thread.
+MULTITHREADED_ACCESS_DETECTED=DSRA8720W: A fost etectat accesul multithreaded \u00een {0}.\nUltima dat\u0103 utilizat cu id fir de execu\u0163ie: {1}\nId fir de execu\u0163ie curent:                  {2}\nUrm\u0103rire stic\u0103 a firului de execu\u0163ie curent:{3}
+MULTITHREADED_ACCESS_DETECTED.explanation=Aplica\u0163ia a \u00eencercat s\u0103 acceseze o conexiune sau Instruc\u0163iunile, ResultSets sau metadatele corespunz\u0103toare conexiunii de pe un fir de execu\u0163ie diferit. Acest comportament este o \u00eenc\u0103lcare a modelului de programare pentru serverul de aplica\u0163ii. \u00cenchiderea obiectelor pe care aplica\u0163ia a \u00eencercat s\u0103 le acceseze \u00eentr-o metod\u0103 finalize() este de asemenea considerat\u0103 o \u00eenc\u0103rcare a modelului de programare, pentru c\u0103 metoda finalize() este rulat\u0103 de c\u0103tre JVM \u00eentr-un alt fir de execu\u0163ie.
+MULTITHREADED_ACCESS_DETECTED.useraction=Ajusta\u0163i aplica\u0163ia pentru a evita accesul cu mai multe fire de execu\u0163ie.
+
+# 8730 deleted
+
+# 8750W      UNSUPPORTED_JDBC30_METHOD
+# 
+# {0}        The method trying to be invoked
+UNSUPPORTED_JDBC30_METHOD=DSRA8750W: Metoda JDBC 3.0 {0} nu este implementat\u0103 \u00een acest furnizor de JDBC.
+UNSUPPORTED_JDBC30_METHOD.explanation=Metoda care este invocat\u0103 face parte din specifica\u0163ia JDBC V3.0 \u015fi metoda nu exist\u0103 pe furnizor.
+UNSUPPORTED_JDBC30_METHOD.useraction=Asigura\u0163i-v\u0103 c\u0103 furnizorul dumneavoastr\u0103 JDBC suport\u0103 specifica\u0163ia JDBC V3.0 sau nu utiliza\u0163i aceast\u0103 metod\u0103.
+
+# 8760W      VENDOR_IMPL_NOT_FOUND
+#
+# {0}        The vendor interface requested for the wrapper.
+# {1}        The underlying connection implementation class of the pooled connection.
+VENDOR_IMPL_NOT_FOUND=DSRA8760W: Nu poate s\u0103 localizeze implementarea pentru interfa\u0163a furnizorului {0} dup\u0103 trecerea la o alt\u0103 conexiune pool. Aliasul de conexiune unwrapped nu mai este utilizabil\u0103 ca acea interfa\u0163\u0103. Noua clas\u0103 de implementare a conexiunii este: {1}
+VENDOR_IMPL_NOT_FOUND.explanation=Aliasul de conexiune este asociat acum cu o conexiune pooled care este diferit\u0103 \u015fi care nu implementeaz\u0103 interfa\u0163a care este cerut\u0103 pentru wrapper.
+VENDOR_IMPL_NOT_FOUND.useraction=Wrapper-ele pentru interfa\u0163a care este specificat\u0103 ar trebui s\u0103 nu fie utilizate c\u00e2nd metoda Wrapper.isWrapperFor indic\u0103 faptul c\u0103 conexiunea nu este un wrapper al interfe\u0163ei.
+
+# 8770I      DEFAULT_MATCH_ORIGINAL
+# 
+# {0}        The name of the connection property.
+# {1}        The name of the data source custom property.
+DEFAULT_MATCH_ORIGINAL=DSRA8770I: \u00cen mod implicit, proprietatea conexiune, {0}, este potrivit\u0103 mai degrab\u0103 pentru conecxiunile partajate bazat pe cererile conexiunii originale dec\u00e2t pentru starea curent\u0103 a conexiunii. Pute\u0163i utiliza proprietatea personalizat\u0103 surs\u0103 de date, {1}, pentru a configura acest comportament.
+DEFAULT_MATCH_ORIGINAL.explanation=Proprietatea personalizat\u0103 surs\u0103 de date v\u0103 d\u0103 poisibilitatea s\u0103 alege\u0163i ce comportament de partajare conexiune dori\u0163i.
+DEFAULT_MATCH_ORIGINAL.useraction=Verifica\u0163i c\u0103 proprietatea personalizat\u0103 surs\u0103 de date este configurat\u0103 pentru comportamentul dorit de dumneavoastr\u0103.
+
+# 8780 deleted
+
+# ----------------------------------------------------------------------------
+# 
+# Using the 9000's for JDBC wrapper messages.
+# 
+# 9000-9001 deleted
+
+# 9002E      RESX_TO_SQLX		Reserved, do not use 342913
+#RESX_TO_SQLX=DSRA9002E
+
+# 9010E      METHOD_UNSUPPORTED
+# 
+# {0}        The method name.
+# {1}        The interface class.
+METHOD_UNSUPPORTED=DSRA9010E: ''{0}'' nu este suportat\u0103 \u00een implementarea WebSphere {1}.
+METHOD_UNSUPPORTED.explanation=Metoda care este specificat\u0103 nu este suportat\u0103 de implementarea serverului de aplica\u0163ii.
+METHOD_UNSUPPORTED.useraction=Nu utiliza\u0163i metoda.
+
+# 9020E      NOT_A_JDBC_METHOD
+# 
+# TRANSLATOR Do not translate: JDBC.
+NOT_A_JDBC_METHOD=DSRA9020E: Metoda invocat\u0103 nu este o metod\u0103 JDBC. Codul WebSphere trebuie s\u0103 transmit\u0103 o cheie valid\u0103 pentru a accesa aceast\u0103 metod\u0103.
+NOT_A_JDBC_METHOD.explanation=Aceast\u0103 metod\u0103 este furnizat\u0103 doar pentru utilizare intern\u0103 de c\u0103tre serverul de aplica\u0163ii.
+NOT_A_JDBC_METHOD.useraction=Nu apela\u0163i aceast\u0103 metod\u0103.
+
+# 9110E      OBJECT_CLOSED
+# 
+# {0}        The object class (such as Connection).
+OBJECT_CLOSED=DSRA9110E: {0} este \u00eenchis.
+OBJECT_CLOSED.explanation=A fost o \u00eencercare de realizare a unei opera\u0163ii pe un obiect care este \u00eenchis.
+OBJECT_CLOSED.useraction=Extrage\u0163i o nou\u0103 instan\u0163\u0103 a obiectului pe care s\u0103 realiza\u0163i opera\u0163ia.
+
+# 9115 deleted
+# 9120-9121 - deleted
+
+# 9122E      NO_WRAPPED_OBJECT
+# 
+# {0}        The WebSphere wrapper object.
+# {1}        The Class of the wrapped object.
+NO_WRAPPED_OBJECT=DSRA9122E: {0} nu face wrap pentru nici un obiect de tip {1}.
+NO_WRAPPED_OBJECT.explanation=Wrapper-ul care este specificat nu con\u0163ine tipul de obiect wrapped care este specificat.
+NO_WRAPPED_OBJECT.useraction=Verifica\u0163i c\u0103 wrapper-ul \u015fi parametrii pentru obiectul wrapped sunt specifica\u0163i corect.
+
+# 9123 deleted
+
+# 9130E      OPERATION_NOT_PERMITTED
+# 
+# {0}        The operation.
+OPERATION_NOT_PERMITTED=DSRA9130E: Opera\u0163ia nu este permits\u0103 de server-ul de aplica\u0163ii: {0}
+OPERATION_NOT_PERMITTED.explanation=Serverul de aplica\u0163ii nu permite opera\u0163ia care a fost cerut\u0103.
+OPERATION_NOT_PERMITTED.useraction=Nu utiliza\u0163i opera\u0163ia care este specificat\u0103.
+
+# 9210 deleted
+
+# 9250E      OP_NOT_SHAREABLE
+# 
+# TRANSLATOR Do not translate: Connection, Shareable, Unshareable, setTypeMap, setReadOnly, setCatalog.
+# {0}        The operation being performed (such as setTypeMap, setReadOnly and setCatalog)
+OP_NOT_SHAREABLE=DSRA9250E: Opera\u0163ia {0}  nu este permits\u0103 \u00een timpul unei tranzac\u0163ii globale pentru Shareable Connections.
+OP_NOT_SHAREABLE.explanation=Serverul de aplica\u0163ii nu permite apel\u0103ri ale metodelor setTypeMap, setReadOnly sau setCatalog pe Conexiuni partajabile \u00een timp ce o tranzac\u0163ie global\u0103 este activ\u0103.
+OP_NOT_SHAREABLE.useraction=Nu apela\u0163i setTypeMap, setReadOnly sau setCatalog pe Conexiuni partajabile \u00eentr-o tranzac\u0163ie global\u0103 sau comuta\u0163i pe Conexiuni nepartajabile.
+
+# 9300 deleted
+# 9310 deleted
+# 9312 deleted
+# 9316 deleted
+# 9320 deleted
+# 9330 deleted
+# 9340 deleted
+
+# 9350E      OP_NOT_VALID_IN_GT
+# 
+# TRANSLATOR Do not translate: Connection, commit, rollback, setSavepoint, releaseSavepoint
+# {0}        The operation being performed (such as Connection.commit)
+OP_NOT_VALID_IN_GT=DSRA9350E: Opera\u0163ia {0}  nu este permits\u0103 \u00een timpul unei tranzac\u0163ii globale.
+OP_NOT_VALID_IN_GT.explanation=Serverul de aplica\u0163ii nu permite apel\u0103ri ale metodelor comitere, derulare \u00eenapoi, setSavepoint sau releaseSavepoint asupra Conexiunii \u00een timp ce o tranzac\u0163ie global\u0103 este activ\u0103.
+OP_NOT_VALID_IN_GT.useraction=Nu apela\u0163i metodele comitere, derulare \u00eenapoi, setSavepoint sau releaseSavepoint asupra Conexiunii c\u00e2nd aceasta este \u00eentr-o trnzac\u0163ie global\u0103. Dac\u0103 o surs\u0103 de date netranzac\u0163ional\u0103 (de exemplu, non-jta-data-source pentru API persisten\u0163\u0103 Java) este utilizat\u0103, atunci configura\u0163i non-jta-data-source \u00een persistence.xml \u015fi de asemenea configura\u0163i proprietatea personalizat\u0103 nonTransactionalDataSource pe sursa de date.
+
+# 9360E      INVALID_TRAN_STATE
+# 
+# {0}        String representing the current ManagedConnection transaction state.
+# TRANSLATOR Do not translate: Connection.
+INVALID_TRAN_STATE=DSRA9360E: Nu poate s\u0103 realizeze opera\u0163ia cerut\u0103 din starea tranzac\u0163iei urm\u0103toare: {0}.
+INVALID_TRAN_STATE.explanation=Nu pute\u0163i realiza opera\u0163ii c\u00e2nd aplica\u0163ia este \u00een starea de tranzac\u0163ie curent\u0103.
+INVALID_TRAN_STATE.useraction=Ob\u0163ine\u0163i o nou\u0103 Conexiune pe care s\u0103 realiza\u0163i opera\u0163ia.
+
+# 9380 deleted
+
+# 9400E      REASSOCIATION_ERR
+# 
+# TRANSLATOR Do not translate: Connection.
+# {0}        The error.
+REASSOCIATION_ERR=DSRA9400E: O eroare fatal\u0103 a ap\u0103rut \u00een timpul reasocierii Connection  {0}
+REASSOCIATION_ERR.explanation=Aliasul Conexiunii curente nu a putut fi reasociat.
+REASSOCIATION_ERR.useraction=\u00cencerca\u0163i s\u0103 ob\u0163ine\u0163i o nou\u0103 Conexiune.
+
+# 9410E      CANNOT_REASSOCIATE
+# 
+# TRANSLATOR Do not translate: Connection.
+# {0}        Current Connection state.
+CANNOT_REASSOCIATE=DSRA9410E: Manipularea reasocierii este permis\u0103 doar din starea INACTIVE. Starea de conexiune curent\u0103 este {0}.
+CANNOT_REASSOCIATE.explanation=Aliasurile de conexiune pot fi reasociate doar din starea INACTIV\u0102.
+CANNOT_REASSOCIATE.useraction=\u00cenchide\u0163i aliasul de Conexiune curent \u015fi ob\u0163ine\u0163i unul nou.
+
+# 9420E      CHILDREN_STILL_OPEN
+# 
+# TRANSLATOR Do not translate: Connection.
+CHILDREN_STILL_OPEN=DSRA9420E: Conexiunea nu poate fi reasociat\u0103 deoarece obiectele copil sunt \u00eenc\u0103 deschise.
+CHILDREN_STILL_OPEN.explanation=Aliasurile de conexiune pot fi reasociate doar dac\u0103 toate obiectele copil sunt \u00eenchise.
+CHILDREN_STILL_OPEN.useraction=\u00cenchide\u0163i aliasul de Conexiune curent \u015fi ob\u0163ine\u0163i unul nou.
+
+# 9430E      HANDLE_IN_USE
+# 
+# TRANSLATOR Do not translate: Connection.
+HANDLE_IN_USE=DSRA9430E: Indicatorul nu poate fi deasociat deoarece este folosit \u00een momentul curent.
+HANDLE_IN_USE.explanation=O opera\u0163ie este realizat\u0103 \u00een prezent pe aliasul de conexiune. Acesta nu poate fi disociat \u00een timpul opera\u0163iei.
+HANDLE_IN_USE.useraction=A\u015ftepta\u0163i p\u00e2n\u0103 c\u00e2nd toate opera\u0163iile de pe alias au fost finalizate, apoi disocia\u0163i aliasul.
+
+# 9500E      NO_NEGATIVE_FETCH_SIZES
+# 
+NO_NEGATIVE_FETCH_SIZES=DSRA9500E: Nu sunt permise valori negative pentru dimensiunea de aducere.
+NO_NEGATIVE_FETCH_SIZES.explanation=Dimensiunea aducerii poate fi setat\u0103 doar la o valoare care nu este negativ\u0103.
+NO_NEGATIVE_FETCH_SIZES.useraction=Alege\u0163i o valoare pentru dimensiunea aducerii care nu este negativ\u0103.
+
+# 9510 deleted
+# 9520 deleted
+# 9530-9542 deleted
+
+# DSRA9543W      KERBEROS_NOT_SUPPORTED_WARNING
+# TRANSLATOR Do not translate: Kerberos
+KERBEROS_NOT_SUPPORTED_WARNING=DSRA9543W: Server-ul de aplica\u0163ii nu suport\u0103 Kerberos \u00eempotriva bazei de date de backend care este folosit\u0103.  Nu vor fi utilizate niciun nume de utilizator \u015fi parol\u0103 pentru a ob\u0163ine o conexiune.
+KERBEROS_NOT_SUPPORTED_WARNING.explanation= Serverul de aplica\u0163ii nu suport\u0103 autentificarea Kerberos pe baza de date care este utilizat\u0103. Nu vor fi utilizate numele de utilizator \u015fi parola la ob\u0163inerea unei conexiuni.
+KERBEROS_NOT_SUPPORTED_WARNING.useraction= Dezactiva\u0163i Kerberos sau utiliza\u0163i un back-end DB2 cu driver-ul JDBC universal DB2.
+
+# 9544-9548 deleted
+# 9600-9603 deleted 
+# 9900 deleted

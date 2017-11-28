@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.crypto.passwordutil/resources/com/ibm/ws/crypto/util/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Security passwordUtil
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+# Message prefix block: CWWKS1850 - CWWKS1899
+
+PASSWORDUTIL_CUSTOM_SERVICE_STARTED=CWWKS1850I: Serviciul de criptare parol\u0103 personalizat\u0103 a fost pornit. Numele de clas\u0103 este {0}.
+PASSWORDUTIL_CUSTOM_SERVICE_STARTED.explanation=Acest mesaj este doar \u00een scop informa\u0163ional.
+PASSWORDUTIL_CUSTOM_SERVICE_STARTED.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+PASSWORDUTIL_CUSTOM_SERVICE_STOPPED=CWWKS1851I: Serviciul de criptare parol\u0103 personalizat\u0103 a fost oprit. Numele de clas\u0103 este {0}.
+PASSWORDUTIL_CUSTOM_SERVICE_STOPPED.explanation=Acest mesaj este doar \u00een scop informa\u0163ional.
+PASSWORDUTIL_CUSTOM_SERVICE_STOPPED.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+PASSWORDUTIL_CUSTOM_DECRYPTION_ERROR=CWWKS1852E: A existat o excep\u0163ie nea\u015fteptat\u0103 \u00een timpul decript\u0103rii parolei utiliz\u00e2nd serviciul de criptare parol\u0103 personalizat\u0103.
+PASSWORDUTIL_CUSTOM_DECRYPTION_ERROR.explanation=A existat o excep\u0163ie nea\u015fteptat\u0103 \u00een timpul proces\u0103rii decript\u0103rii utiliz\u00e2nd serviciul de criptare parol\u0103 personalizat\u0103.
+PASSWORDUTIL_CUSTOM_DECRYPTION_ERROR.useraction=Verifica\u0163i istoricele serviciului de criptare parol\u0103 personalizat\u0103 \u015fi istoricele de server pentru a afla mai multe informa\u0163ii despre cauza excep\u0163iei.
+PASSWORDUTIL_CUSTOM_ENCRYPTION_ERROR=CWWKS1853E: A existat o excep\u0163ie nea\u015fteptat\u0103 \u00een timpul cript\u0103rii parolei utiliz\u00e2nd serviciul de criptare parol\u0103 personalizat\u0103.
+PASSWORDUTIL_CUSTOM_ENCRYPTION_ERROR.explanation=A existat o excep\u0163ie nea\u015fteptat\u0103 \u00een timpul proces\u0103rii cript\u0103rii utiliz\u00e2nd serviciul de criptare parol\u0103 personalizat\u0103.
+PASSWORDUTIL_CUSTOM_ENCRYPTION_ERROR.useraction=Verifica\u0163i istoricele serviciului personalizat de criptare parol\u0103 \u015fi istoricele de server pentru a afla mai multe informa\u0163ii despre cauza excep\u0163iei.
+PASSWORDUTIL_CUSTOM_SERVICE_DOES_NOT_EXIST=CWWKS1854E: Serviciul ter\u0163\u0103 parte de parol\u0103 personalizat\u0103 nu este disponibil pentru a procesa parola criptat\u0103 personalizat\u0103.
+PASSWORDUTIL_CUSTOM_SERVICE_DOES_NOT_EXIST.explanation=Parola criptat\u0103 personalizat\u0103 nu poate fi procesat\u0103 deoarece serviciul de parol\u0103 personalizat\u0103 nu este disponibil.
+PASSWORDUTIL_CUSTOM_SERVICE_DOES_NOT_EXIST.useraction=Verifica\u0163i c\u0103 caracteristica de utilizator pentru parol\u0103 personalizat\u0103 care implementeaz\u0103 interfa\u0163a com.ibm.wsspi.security.crypto.CustomPasswordEncryption este configurat\u0103 \u015fi pornit\u0103.
+PASSWORDUTIL_UNKNOWN_ALGORITHM=CWWKS1855E: Parola nu a fost procesat\u0103 deoarece numele algoritmului de parol\u0103 {0} nu este suportat. Tipurile suportate sunt {1}.
+PASSWORDUTIL_UNKNOWN_ALGORITHM.explanation=Parola nu a fost criptat\u0103 sau decriptat\u0103 deoarece numele algoritmului de parol\u0103 furnizat nu este suportat.
+PASSWORDUTIL_UNKNOWN_ALGORITHM.useraction=Verifica\u0163i c\u0103 este folosit unul din algoritmele suportate.
+PASSWORDUTIL_UNKNOWN_ALGORITHM_EXCEPTION=CWWKS1856E: Parola nu a fost procesat\u0103 deoarece a fost raportat\u0103 o excep\u0163ie de algoritm de parol\u0103.
+PASSWORDUTIL_UNKNOWN_ALGORITHM_EXCEPTION.explanation=Algoritmul specificat nu este suportat.
+PASSWORDUTIL_UNKNOWN_ALGORITHM_EXCEPTION.useraction=Verifica\u0163i istoricul serverului \u015fi dac\u0103 este folosit\u0103 criptarea de parol\u0103 personalizat\u0103 verifica\u0163i \u015fi istoricele serviciului de criptare parol\u0103 personalizat\u0103 pentru informa\u0163ii suplimentare.
+PASSWORDUTIL_CYPHER_EXCEPTION=CWWKS1857E: Parola nu a fost procesat\u0103 deoarece a fost raportat\u0103 o excep\u0163ie de cifru parol\u0103 invalid.
+PASSWORDUTIL_CYPHER_EXCEPTION.explanation=Parola nu a fost criptat\u0103 sau decriptat\u0103 deoarece a fost raportat\u0103 o excep\u0163ie la procesarea parolei.
+PASSWORDUTIL_CYPHER_EXCEPTION.useraction=Verifica\u0163i istoricul serverului \u015fi dac\u0103 este folosit\u0103 criptarea de parol\u0103 personalizat\u0103 verifica\u0163i \u015fi istoricele serviciului de criptare parol\u0103 personalizat\u0103 pentru informa\u0163ii suplimentare.
+PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION=CWWKS1858E: Parola nu a fost procesat\u0103 deoarece a fost raportat\u0103 o excep\u0163ie de codificare nesuportat\u0103.
+PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.explanation=Parola nu a fost criptat\u0103 sau decriptat\u0103 deoarece a fost raportat\u0103 o excep\u0163ie la procesarea parolei.
+PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.useraction=Verifica\u0163i istoricul serverului \u015fi dac\u0103 este folosit\u0103 criptarea de parol\u0103 personalizat\u0103 verifica\u0163i \u015fi istoricele serviciului de criptare parol\u0103 personalizat\u0103 pentru informa\u0163ii suplimentare.
+PASSWORDUTIL_INVALID_BASE64_STRING=CWWKS1859E: Parola nu a fost decriptat\u0103 deoarece a fost raportat\u0103 o eroare de decodificare.
+PASSWORDUTIL_INVALID_BASE64_STRING.explanation=Parola criptat\u0103 nu a fost codificat\u0103 corect.
+PASSWORDUTIL_INVALID_BASE64_STRING.useraction=Verifica\u0163i c\u0103 parola criptat\u0103 nu este trunchiat\u0103 \u015fi codificat\u0103 folosind codificarea Base64.
+
+
+# ---------------- This is an exception message ------------
+PASSWORDUTIL_DUPLICATE_CUSTOM_ENCRYPTION=Au fost detectate mai multe implement\u0103ri CustomPasswordEncryption. Doar o implementare CustomPasswordEncryption este suportat\u0103. Lista implement\u0103rilor CustomPasswordEncryption detectate este urm\u0103toarea:
+PASSWORDUTIL_ERROR_IN_EXTENSION_MANIFEST_FILE=A fost raportat\u0103 o eroare la procesarea fi\u015fierului manifest extensie {0}. Acest fi\u015fier a fost ignorat. Criptarea personalizat\u0103 nu este disponibil\u0103. Mesajul de eroare este {1}.
+PASSWORDUTIL_ERROR_MISSING_HEADER=Antetul necesar {0} nu a fost g\u0103sit \u00een fi\u015fierul manifest extensie {1}. Criptarea personalizat\u0103 nu este disponibil\u0103.
+PASSWORDUTIL_ERROR_NO_FEATURE_MANIFEST=Nu a fost g\u0103sit fi\u015fierul manifest caracteristic\u0103 care corespunde cu fi\u015fierul manifest extensie {0}. Criptarea personalizat\u0103 nu este disponibil\u0103.
+PASSWORDUTIL_ERROR_UNSUPPORTED_OPERATION=Opera\u0163ia de decriptare nu este suportat\u0103 de algoritmul hash. 

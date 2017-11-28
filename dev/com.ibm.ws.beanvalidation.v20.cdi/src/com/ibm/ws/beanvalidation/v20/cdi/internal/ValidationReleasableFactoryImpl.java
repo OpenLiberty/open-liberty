@@ -14,8 +14,16 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import javax.enterprise.inject.spi.BeanManager;
+import javax.validation.BootstrapConfiguration;
+import javax.validation.ClockProvider;
+import javax.validation.Configuration;
 import javax.validation.ConstraintValidatorFactory;
+import javax.validation.MessageInterpolator;
+import javax.validation.ParameterNameProvider;
+import javax.validation.TraversableResolver;
+import javax.validation.ValidatorFactory;
 
+import org.hibernate.validator.cdi.internal.InjectingConstraintValidatorFactory;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -45,7 +53,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 /**
  * An implementation that is CDI aware.
  */
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE,
+@Component(configurationPolicy = ConfigurationPolicy.OPTIONAL,
            immediate = true,
            property = { "type=CDIValidationReleasableFactory" })
 public class ValidationReleasableFactoryImpl implements ValidationReleasableFactory, ComponentMetaDataListener {
@@ -60,30 +68,28 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
 
     @Override
     public <T> ManagedObject<T> createValidationReleasable(Class<T> clazz) {
-        BeanManager beanManager = getCurrentBeanManager();
-
-        // If the bean manger isn't null, this indicates that the module that is
-        // invoking this code path has CDI enabled.
-        if (beanManager != null) {
-
-            // The mof handles calling produce, inject, and postConstruct.
-            ManagedObjectFactory<T> mof = getManagedBeanManagedObjectFactory(clazz);
-            try {
-                return mof.createManagedObject();
-            } catch (Exception e) {
-                // ffdc
-            }
-        }
         return null;
     }
 
     @Override
     public ValidationReleasable<ConstraintValidatorFactory> createConstraintValidatorFactory() {
-        BeanManager beanManager = getCurrentBeanManager();
-        if (beanManager != null) {
-            return new ReleasableConstraintValidatorFactory(this);
-        }
         return null;
+    }
+
+    @Override
+    public ValidatorFactory injectValidatorFactoryResources(Configuration<?> config, ClassLoader appClassLoader) {
+        if (getCurrentBeanManager() != null) {
+            createManagedConstraintValidatorFactory(config, appClassLoader);
+            createManagedMessageInterpolator(config, appClassLoader);
+            createManagedTraversableResolver(config, appClassLoader);
+            createManagedParameterNameProvider(config, appClassLoader);
+            createManagedClockProvider(config, appClassLoader);
+            //this.addValueExtractorBeans(config);
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "managedObjectService is null, skipping creating CDI enhanced objects.");
+        }
+        return config.buildValidatorFactory();
     }
 
     private BeanManager getCurrentBeanManager() {
@@ -94,22 +100,6 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
             beanManagers.put(cmd, beanMgr);
         }
         return beanMgr;
-    }
-
-    private <T> ManagedObjectFactory<T> getManagedBeanManagedObjectFactory(Class<T> clazz) {
-        ModuleMetaData mmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getModuleMetaData();
-        ManagedObjectService managedObjectService = managedObjectServiceRef.getService();
-        if (managedObjectService != null) {
-            try {
-                ManagedObjectFactory<T> factory = managedObjectService.createManagedObjectFactory(mmd, clazz, true);
-                if (factory.isManaged()) {
-                    return factory;
-                }
-            } catch (ManagedObjectException e) {
-                // ffdc
-            }
-        }
-        return null;
     }
 
     @Activate
@@ -145,15 +135,224 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
         managedObjectServiceRef.unsetReference(ref);
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.container.service.metadata.ComponentMetaDataListener#componentMetaDataCreated(com.ibm.ws.container.service.metadata.MetaDataEvent)
+     */
     @Override
     public void componentMetaDataCreated(MetaDataEvent<ComponentMetaData> event) {
         // no-op
+
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.container.service.metadata.ComponentMetaDataListener#componentMetaDataDestroyed(com.ibm.ws.container.service.metadata.MetaDataEvent)
+     */
     @Override
     public void componentMetaDataDestroyed(MetaDataEvent<ComponentMetaData> event) {
         BeanManager beanManager = beanManagers.remove(event.getMetaData());
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "Removed bean manager from cache: ", beanManager);
+    }
+
+    private void createManagedMessageInterpolator(Configuration<?> config, ClassLoader appClassLoader) {
+        BootstrapConfiguration bootstrapConfiguration = config.getBootstrapConfiguration();
+        String messageInterpolatorClassName = bootstrapConfiguration.getMessageInterpolatorClassName();
+        MessageInterpolator mi = null;
+
+        if (messageInterpolatorClassName == null) {
+            mi = config.getDefaultMessageInterpolator();
+        } else {
+            @SuppressWarnings("unchecked")
+            Class<? extends MessageInterpolator> messageInterpolatorClass = (Class<? extends MessageInterpolator>) loadClass(messageInterpolatorClassName, appClassLoader);
+            mi = createManagedObject(messageInterpolatorClass);
+        }
+
+        if (mi != null) {
+            config.messageInterpolator(mi);
+        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Failed to create a CDI managed object for MessageInterpolator class(null means default) " + messageInterpolatorClassName);
+        }
+    }
+
+    private void createManagedTraversableResolver(Configuration<?> config, ClassLoader appClassLoader) {
+        BootstrapConfiguration bootstrapConfiguration = config.getBootstrapConfiguration();
+        String traversableResolverClassName = bootstrapConfiguration.getTraversableResolverClassName();
+        TraversableResolver tr = null;
+
+        if (traversableResolverClassName == null) {
+            tr = config.getDefaultTraversableResolver();
+        } else {
+            @SuppressWarnings("unchecked")
+            Class<? extends TraversableResolver> traversableResolverClass = (Class<? extends TraversableResolver>) loadClass(traversableResolverClassName, appClassLoader);
+            tr = createManagedObject(traversableResolverClass);
+        }
+
+        if (tr != null) {
+            config.traversableResolver(tr);
+        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Failed to create a CDI managed object for TraversableResolver class(null means default) " + traversableResolverClassName);
+        }
+    }
+
+    private void createManagedParameterNameProvider(Configuration<?> config, ClassLoader appClassLoader) {
+        BootstrapConfiguration bootstrapConfiguration = config.getBootstrapConfiguration();
+        String parameterNameProviderClassName = bootstrapConfiguration.getParameterNameProviderClassName();
+        ParameterNameProvider pnp = null;
+
+        if (parameterNameProviderClassName == null) {
+            pnp = config.getDefaultParameterNameProvider();
+        } else {
+            @SuppressWarnings("unchecked")
+            Class<? extends ParameterNameProvider> parameterNameProviderClass = (Class<? extends ParameterNameProvider>) loadClass(parameterNameProviderClassName, appClassLoader);
+            pnp = createManagedObject(parameterNameProviderClass);
+        }
+
+        if (pnp != null) {
+            config.parameterNameProvider(pnp);
+        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Failed to create a CDI managed object for ParameterNameProvider class(null means default) " + parameterNameProviderClassName);
+        }
+    }
+
+    private void createManagedClockProvider(Configuration<?> config, ClassLoader appClassLoader) {
+        BootstrapConfiguration bootstrapConfiguration = config.getBootstrapConfiguration();
+        String clockProviderClassName = bootstrapConfiguration.getClockProviderClassName();
+        ClockProvider clockProvider = null;
+
+        if (clockProviderClassName == null) {
+            clockProvider = config.getDefaultClockProvider();
+        } else {
+            @SuppressWarnings("unchecked")
+            Class<? extends ClockProvider> clockProviderClass = (Class<? extends ClockProvider>) loadClass(clockProviderClassName, appClassLoader);
+            clockProvider = createManagedObject(clockProviderClass);
+        }
+
+        if (clockProvider != null) {
+            config.clockProvider(clockProvider);
+        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Failed to create a CDI managed object for ClockProvider class(null means default) " + clockProviderClassName);
+        }
+    }
+
+    private void createManagedConstraintValidatorFactory(Configuration<?> config, ClassLoader appClassLoader) {
+        BootstrapConfiguration configSource = config.getBootstrapConfiguration();
+        String constraintValidatorFactoryClassName = configSource.getConstraintValidatorFactoryClassName();
+        ConstraintValidatorFactory cvf = null;
+
+        if (constraintValidatorFactoryClassName == null) {
+            // use default
+//            ManagedObject<?> mangedObject = createManagedObject(new ReleasableConstraintValidatorFactory(this));
+//            cvf = (ConstraintValidatorFactory) mangedObject.getObject();
+            cvf = createManagedObject(InjectingConstraintValidatorFactory.class);
+        } else {
+            @SuppressWarnings("unchecked")
+            Class<? extends ConstraintValidatorFactory> constraintValidatorFactoryClass = (Class<? extends ConstraintValidatorFactory>) loadClass(constraintValidatorFactoryClassName,
+                                                                                                                                                  appClassLoader);
+
+            cvf = createManagedObject(constraintValidatorFactoryClass);
+        }
+
+        if (cvf != null) {
+            config.constraintValidatorFactory(cvf);
+        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Failed to create a CDI managed object for ConstraintValidatorFactory class(null means default) " + constraintValidatorFactoryClassName);
+        }
+    }
+
+//    private Set<ValueExtractorDescriptor> createValidationXmlValueExtractors(Configuration<?> config, ClassLoader appClassLoader) {
+//        BootstrapConfiguration bootstrapConfiguration = config.getBootstrapConfiguration();
+//        Set<String> valueExtractorFqcns = bootstrapConfiguration.getValueExtractorClassNames();
+//
+//        @SuppressWarnings("unchecked")
+//        Set<ValueExtractorDescriptor> valueExtractorDescriptors = valueExtractorFqcns.stream()
+//        .map( fqcn -> createInstance( (Class<? extends ValueExtractor<?>>) run( LoadClass.action( fqcn, null ) ) ) )
+//        .map( ve -> new ValueExtractorDescriptor( ve ) )
+//        .collect( Collectors.toSet() );
+//
+//        return valueExtractorDescriptors;
+//    }
+//
+//    @SuppressWarnings("rawtypes")
+//    private Set<ValueExtractorDescriptor> createServiceLoaderValueExtractors() {
+//        Set<ValueExtractorDescriptor> valueExtractorDescriptors = new HashSet<>();
+//
+//        List<ValueExtractor> valueExtractors = run( GetInstancesFromServiceLoader.action(
+//                                                                                         run( GetClassLoader.fromContext() ),
+//                                                                                         ValueExtractor.class
+//                        ) );
+//
+//        for ( ValueExtractor<?> valueExtractor : valueExtractors ) {
+//            valueExtractorDescriptors.add( new ValueExtractorDescriptor( injectInstance( valueExtractor ) ) );
+//        }
+//
+//        return valueExtractorDescriptors;
+//    }
+
+    private <T> ManagedObjectFactory<T> getManagedBeanManagedObjectFactory(Class<T> clazz) {
+        ModuleMetaData mmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getModuleMetaData();
+        ManagedObjectService managedObjectService = managedObjectServiceRef.getServiceWithException();
+        try {
+            ManagedObjectFactory<T> factory = managedObjectService.createManagedObjectFactory(mmd, clazz, true);
+            if (factory.isManaged()) {
+                return factory;
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "ManagedObjectFactory for " + clazz.getName() + " was not managed.");
+                return null;
+            }
+        } catch (ManagedObjectException e) {
+            // ffdc
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Failed to create a ManagedObjectFactory for " + clazz.getName(), e);
+            return null;
+        }
+    }
+
+    //TODO: delete once we are certain we won't need to use our ReleasableConstraintValidatorFactory.
+    private <T> ManagedObject<?> createManagedObject(Object instance) {
+        ModuleMetaData mmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getModuleMetaData();
+        ManagedObjectService managedObjectService = managedObjectServiceRef.getServiceWithException();
+        try {
+            return managedObjectService.createManagedObject(mmd, instance);
+        } catch (ManagedObjectException e) {
+            // ffdc
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Failed to create a ManagedObject for an instance of " + instance.getClass().getName(), e);
+            return null;
+        }
+    }
+
+    private <T> T createManagedObject(Class<T> clazz) {
+        // The mof handles calling produce, inject, and postConstruct.
+        ManagedObjectFactory<T> mof = getManagedBeanManagedObjectFactory(clazz);
+        if (mof == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "ManagedObjectFactory during createManagedObject() was null.");
+            return null;
+        }
+
+        ManagedObject<T> mo;
+        try {
+            mo = mof.createManagedObject();
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Failed to create a ManagedObject using a ManagedObjectFactory for class type " + mof.getManagedObjectClass(), e);
+            return null;
+        }
+        return mo.getObject();
+    }
+
+    private Class<?> loadClass(String className, ClassLoader appClassLoader) {
+        try {
+            return Class.forName(className, true, appClassLoader);
+        } catch (ClassNotFoundException e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Class not found during CDI enablement of the ValidatorFactory.", e);
+            return null;
+        }
     }
 }

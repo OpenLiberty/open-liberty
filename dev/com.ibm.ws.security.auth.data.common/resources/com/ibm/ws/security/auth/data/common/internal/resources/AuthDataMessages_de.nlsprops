@@ -1,0 +1,28 @@
+###############################################################################
+# Copyright (c) 2012, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.auth.data.common/resources/com/ibm/ws/security/auth/data/common/internal/resources/AuthDataMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Auth Data Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS1300 - CWWKS1349
+
+
+AUTH_DATA_CONFIG_ERROR_NO_SUCH_ALIAS=CWWKS1300E: Es ist eine Konfigurationsausnahme eingetreten. Der angeforderte Authentifizierungsdatenalias {0} wurde nicht gefunden.
+AUTH_DATA_CONFIG_ERROR_NO_SUCH_ALIAS.explanation=Der angegebene Alias ist erforderlich.
+AUTH_DATA_CONFIG_ERROR_NO_SUCH_ALIAS.useraction=Geben Sie einen g\u00fcltigen Authentifizierungsdatenalias f\u00fcr einen vorhandenen Benutzer an oder konfigurieren Sie einen neuen Authentifizierungsdatenalias.
+
+AUTH_DATA_CONFIG_ERROR_INCOMPLETE=CWWKS1301E: Ein Konfigurationsfehler ist aufgetreten. Das Attribut {0} muss definiert werden.
+AUTH_DATA_CONFIG_ERROR_INCOMPLETE.explanation=Das angegebene Attribut muss definiert werden.
+AUTH_DATA_CONFIG_ERROR_INCOMPLETE.useraction=Geben Sie einen Wert f\u00fcr das fehlende Attribut an.

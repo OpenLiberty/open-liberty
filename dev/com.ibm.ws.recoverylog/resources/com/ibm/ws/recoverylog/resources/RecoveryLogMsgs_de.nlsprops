@@ -1,0 +1,319 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+##########################################################################
+#
+# %Z% %I% %W% %G% %U% [%H% %T%]                                                
+#
+#
+#  COMPONENT_NAME: WAS.transactions
+#
+#  ORIGINS: 27
+#
+#  DESCRIPTION:
+#
+#  Change Log:
+#  Date      Pgmr      Defect     Description
+#  --------  --------  --------   ------------------------------------------
+#  05-01-20  mdobbie   LI3603     Creation
+#  05-02-28  hursdlg   254615     Msgs 26-28
+#  05-03-03  hursdlg   254326     Msgs 29-30
+#  07-02-26  awilkins  422999     Message review: updates to useraction and explanation
+#  07-03-02  awilkins  424163     Message review: improve contact IBM support user action
+#  08-02-11  mallam    496337     PII additions
+#  29-02-08 johawkes   501807     Style changes
+#  -------------------------------------------------------------------------
+#
+# DEVELOPER INSTRUCTIONS
+# ----------------------
+#
+# To add a new message, define the key string in LTCTrace.java, then create
+# the message text below using that key.  Fill in the comment block above the
+# message to assist in translation of the message, particularly to aid in the
+# appropriate positioning of any message inserts within the translated text.
+# To issue the message, use the LTCTrace.Message method.
+#
+# USE OF PROPERTIES FILE FOR MESSAGES:
+#
+# - Each property in the property file is terminated by the line termination character.
+# - If a line contains only whitespace or if the first non-whitespace character of a
+# line is # or !, the line is ignored. (comments start with # or !)
+# - Every line in the properties file other than whitespace lines or comment lines
+# denotes a single property. A \ is treated as a line continuation character. Lines
+# should be terminated with the line termination character.
+# - Correct grammar for a property line is <key><separator><element>. A valid separator
+# is any one of equal, colon or whitespace ( =: ).
+# - The key consists of all the characters on the line starting from the first
+# non-whitespace up to the first separator. Separator characters can be included in the
+# key by escaping them (e.g. \:) This is not recommended because it is error prone and
+# confusing.
+# - Whitespace after the key is skipped until the first non-whitespace character is
+# found. All remaining characters up to the appropriate line termination character
+# define the element.
+#
+# MESSAGE INSERTS
+#
+#  Primitives
+# Primitives, such as int and long are not recognized as subclasses of Object
+# and cannot be directly passed to one of these methods. A primitive value must
+# be transformed to its proper type (e.g Integer, Long) before being passed as
+# a parameter.
+#
+#  Object
+# For normal Objects, toString() is called on the object and the resulting String
+# is displayed. For exceptions, the stack trace will be printed.For Objects that
+# implement the Traceable interface, the toTraceString() method is called instead.
+# To provide the proper trace representation for the Object, provide the proper
+# implementation for the appropriate method.
+#
+#  Object[]
+# Since Object[] is a proper subclass of Object, Object[] can be passed. Use
+# Object[] when more than one parameter should be passed to a message logging
+# or trace method. The appropriate method (toString() or toTraceString()) is
+# called on each Object in the array. This array should contain only
+# standalone normal Objects and should not contain other arrays. Passing nested
+# array may result in the following Strings being displayed :
+#  "[B@924586a0b" - This is deciphered as a byte array at location X.
+# This is typically returned when an array of primitives is passed as a member
+# of an Object[]. It is the result of calling toString() on the byte[].
+#  "[Ljava.lang.Object;@9136fa0b" : An array of objects.
+# Typically this is seen when an array containing nested arrays is passed.
+#
+#  Array of Primitives
+# An array of primitive (e.g. byte[], int[] is recognized as an Object, but is
+# treated somewhat as a second cousin of Object by Java. The results you see
+# will depend on the type of array passed and the API used. For consistent results,
+# user code should preprocess and format the primitive array into some type of
+# String form before passing it to the method. If such preprocessing is not
+# performed, you may see something results something like the following:
+#  "Illegal trace argument : array of long."
+# This is typically returned when an array of primitives is passed to a method
+# taking an Object and the Tr service does not provide special parsing for
+# primitive arrays of this type.
+#  "01040703..." : the hex representation of an array of bytes.
+# Typically this may be seen when a byte array is passed to a method taking a
+# single Object. This behavior is subject to change and should not be relied on.
+#  " '1' '2' ..." : The String representation of the members of an int[] formed
+# by converting each element to an Integer and calling toString on the Integers.
+# This behavior is subject to change and should not be relied on.
+#
+#  Common messages
+# The following common messages are used in this file:
+#
+#         CMSG0001       This is an unexpected exception. The cause can not be immediately determined.
+#         CMSG0002       For further information on resolving this error, please consult the IBM WebSphere Application Server Support website available
+#                        at: http://www-3.ibm.com/software/webservers/appserv/support.html. The site provides searchable databases of technotes,
+#                        solutions, and e-fixes. Information on contacting the WebSphere Support team is also provided.
+#
+# During the build, the WebSphere Message Tool will recognize the common message keywords, and replace them with text defined in the
+#                Common Messages Table.
+#
+#
+#
+#
+#-----------------------------------------------------------------------
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells Java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+#
+#-----------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines. 
+# For more information, visit: 
+#     http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.6,0,05/12/08,09:47:34
+#
+#CMVCPATHNAME ws/code/recovery.log.impl/src/com/ibm/ws/recoverylog/resources/RecoveryLogMsgs.nlsprops
+#COMPONENTPREFIX WRLS CWRLS
+#COMPONENTNAMEFOR WRLS WebSphere Recovery Log Service
+#COMPONENTNAMEFOR CWRLS WebSphere Recovery Log Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------
+# All new V6 msgs should use the prefix CWRLS
+
+#-----------------------------------------------------------------------
+CWRLS0001_SUSPEND_RLS=CWRLS0001I: Der Service f\u00fcr Wiederherstellungsprotokolle wurde ausgesetzt ({0}).
+CWRLS0001_SUSPEND_RLS.explanation=Der Service f\u00fcr Wiederherstellungsprotokolle wurde in den Wartestatus versetzt, damit das System die Wiederherstellungsprotokolle sichern kann.
+CWRLS0001_SUSPEND_RLS.useraction=Es ist keine Aktion erforderlich. 
+#-----------------------------------------------------------------------
+CWRLS0002_RESUME_RLS=CWRLS0002I: Der Servic f\u00fcr Wiederherstellungsprotokolle wurde wiederaufgenommen ({0}).
+CWRLS0002_RESUME_RLS.explanation=Der Service f\u00fcr Wiederherstellungsprotokolle, der zuvor ausgesetzt wurde, ist jetzt wieder aktiv.
+CWRLS0002_RESUME_RLS.useraction=Es ist keine Aktion erforderlich. 
+#-----------------------------------------------------------------------
+CWRLS0003_GENERIC_ERROR=CWRLS0003E: {0}
+CWRLS0003_GENERIC_ERROR.explanation=Dieser Nachrichtencode wird f\u00fcr Nachrichten verwendet, denen noch kein eigener Nachrichtencode zugeordnet ist.
+CWRLS0003_GENERIC_ERROR.useraction=N\u00e4here Informationen finden Sie im Nachrichtentext.
+
+#-----------------------------------------------------------------------
+CWRLS0004_RECOVERY_LOG_CREATE_FAILED=CWRLS0004E: Das Wiederherstellungsprotokoll {0} kann nicht erstellt werden.
+CWRLS0004_RECOVERY_LOG_CREATE_FAILED.explanation=Der Wiederherstellungsprotokollservice konnte die in der Nachricht angegebene Datei nicht erstellen. Entweder ist der Zielservice nicht verf\u00fcgbar, oder das System besitzt nicht gen\u00fcgend Berechtigungen, um die erforderliche Datei zu erstellen.
+CWRLS0004_RECOVERY_LOG_CREATE_FAILED.useraction=Vergewissern Sie sich, dass die erforderliche Verzeichnishierarchie g\u00fcltig und f\u00fcr den Wiederherstellungsprotokollservice zug\u00e4nglich ist.
+
+#-----------------------------------------------------------------------
+CWRLS0005_RECOVERY_LOG_LOCK_FAILED=CWRLS0005E: Es kann keine exklusive Sperre f\u00fcr {0} angefordert werden.
+CWRLS0005_RECOVERY_LOG_LOCK_FAILED.explanation=Der Wiederherstellungsprotokollservice konnte die in der Nachricht angegebene Datei nicht exklusiv sperren.
+CWRLS0005_RECOVERY_LOG_LOCK_FAILED.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+CWRLS0006_RECOVERY_LOG_CREATE=CWRLS0006I: Die neue Wiederherstellungsprotokolldatei {0} wird erstellt.
+CWRLS0006_RECOVERY_LOG_CREATE.explanation=Es wurde eine neue Wiederherstellungsprotokolldatei f\u00fcr die persistenten Daten erstellt.
+CWRLS0006_RECOVERY_LOG_CREATE.useraction=Es ist keine Aktion erforderlich. 
+#-----------------------------------------------------------------------
+CWRLS0007_RECOVERY_LOG_NOT_EXIST=CWRLS0007I: Es wurden keine Wiederherstellungsprotokolldateien in {0} gefunden. Das Wiederherstellungsprotokoll wird neu gestartet.
+CWRLS0007_RECOVERY_LOG_NOT_EXIST.explanation=Entweder wurden die Wiederherstellungsprotokolldateien zuvor gel\u00f6scht, oder die Wiederherstellungsprotokolldateien wurden zum ersten Mal an dieser Position gespeichert. In beiden F\u00e4llen wird der zugeh\u00f6rige Service gestartet, und es wird keine Wiederherstellung durchgef\u00fchrt.
+CWRLS0007_RECOVERY_LOG_NOT_EXIST.useraction=Es ist keine Aktion erforderlich. 
+#-----------------------------------------------------------------------
+CWRLS0008_RECOVERY_LOG_FAILED=CWRLS0008E: Es ist ein Fehler beim Wiederherstellungsprotokoll aufgetreten. [ {0} {1} ]
+CWRLS0008_RECOVERY_LOG_FAILED.explanation=Es ist ein Fehler beim Wiederherstellungsprotokoll aufgetreten. Deshalb sind keine weiteren Zugriffe auf das Wiederherstellungsprotokoll mehr m\u00f6glich. Die Nachricht enth\u00e4lt die Komponente und die zugeh\u00f6rige Ausnahme.
+CWRLS0008_RECOVERY_LOG_FAILED.useraction=Starten Sie den Server erneut, damit das Protokoll repariert werden kann. Versuchen Sie, alle von der in der Nachrichten angegebenen Ausnahme gemeldeten Fehlerbedingungen zu bereinigen.
+
+#-----------------------------------------------------------------------
+CWRLS0009_RECOVERY_LOG_FAILED_DETAIL=CWRLS0009E: Details zum Fehler des Wiederherstellungsprotokolls: {0}
+CWRLS0009_RECOVERY_LOG_FAILED_DETAIL.explanation=Diese Nachricht wird zusammen mit der Nachricht CWRLS0008E ausgegeben und enth\u00e4lt Einzelheiten zum Fehler, der beim Wiederherstellungsprotokoll aufgetreten ist.
+CWRLS0009_RECOVERY_LOG_FAILED_DETAIL.useraction=Verwenden Sie die Informationen in dieser Nachricht zusammen mit den Informationen in der Nachricht CWRLS0008E, um den beim Wiederherstellungsprotokoll aufgetretenen Fehler zu beheben.
+
+#-----------------------------------------------------------------------
+CWRLS0010_PERFORM_LOCAL_RECOVERY=CWRLS0010I: Die Wiederherstellung f\u00fcr den lokalen WebSphere-Server ({0}) wird durchgef\u00fchrt.
+CWRLS0010_PERFORM_LOCAL_RECOVERY.explanation=Der Service f\u00fcr Wiederherstellungsprotokolle f\u00fchrt die Wiederherstellung der zugeh\u00f6rigen Clientservices durch.
+CWRLS0010_PERFORM_LOCAL_RECOVERY.useraction=Es ist keine Aktion erforderlich. 
+#-----------------------------------------------------------------------
+CWRLS0011_PERFORM_PEER_RECOVERY=CWRLS0011I: Die Wiederherstellung f\u00fcr den WebSphere-Peerserver ({0}) wird durchgef\u00fchrt.
+CWRLS0011_PERFORM_PEER_RECOVERY.explanation=Der Service f\u00fcr Wiederherstellungsprotokolle f\u00fchrt die Wiederherstellung der zugeh\u00f6rigen Clientservices f\u00fcr den Peerserver durch.
+CWRLS0011_PERFORM_PEER_RECOVERY.useraction=Es ist keine Aktion erforderlich. 
+#-----------------------------------------------------------------------
+CWRLS0012_DIRECT_LOCAL_RECOVERY=CWRLS0012I: Alle persistenten Services wurden angewiesen, die Wiederherstellung f\u00fcr den WebSphere-Server ({0}) durchzuf\u00fchren.
+CWRLS0012_DIRECT_LOCAL_RECOVERY.explanation=Der Service f\u00fcr Wiederherstellungsprotokolle hat alle zugeh\u00f6rigen Clientservices angewiesen, mit der Wiederherstellung zu beginnen.
+CWRLS0012_DIRECT_LOCAL_RECOVERY.useraction=Es ist keine Aktion erforderlich. 
+#-----------------------------------------------------------------------
+CWRLS0013_DIRECT_PEER_RECOVERY=CWRLS0013I: Alle persistenten Services wurden angewiesen, die Wiederherstellung f\u00fcr einen WebSphere-Peerserver ({0}) durchzuf\u00fchren.
+CWRLS0013_DIRECT_PEER_RECOVERY.explanation=Der Service f\u00fcr Wiederherstellungsprotokolle hat alle zugeh\u00f6rigen Clientservices angewiesen, mit der Wiederherstellung f\u00fcr den Peerserver zu beginnen.
+CWRLS0013_DIRECT_PEER_RECOVERY.useraction=Es ist keine Aktion erforderlich. 
+#-----------------------------------------------------------------------
+CWRLS0014_HALT_PEER_RECOVERY=CWRLS0014I: Die derzeitige Wiederherstellung f\u00fcr den WebSphere-Peerserver ({0}) wird angehalten.
+CWRLS0014_HALT_PEER_RECOVERY.explanation=Die Wiederherstellung wird an einen anderen Anwendungsserver \u00fcbertragen. Dies geschieht in der Regel, wenn ein Server erneut gestartet wird und das Eigentumsrecht an den Wiederherstellungsprotokollen wieder \u00fcbernimmt.
+CWRLS0014_HALT_PEER_RECOVERY.useraction=Es ist keine Aktion erforderlich. 
+#-----------------------------------------------------------------------
+CWRLS0015_DISABLE_FILE_LOCKING=CWRLS0015I: Die Sperrung der Wiederherstellungsprotokolldatei wurde in den angepassten Eigenschaften f\u00fcr den Transaktionsservice inaktiviert.
+CWRLS0015_DISABLE_FILE_LOCKING.explanation=Der vom Service f\u00fcr Wiederherstellungsprotokolle verwendete Mechanismus f\u00fcr die Dateisperrung, der den exklusiven Zugriff auf die Wiederherstellungsprotokolldateien gew\u00e4hrleistet, wurde explizit inaktiviert.
+CWRLS0015_DISABLE_FILE_LOCKING.useraction=Stellen Sie sicher, dass die entsprechenden Vorgaben f\u00fcr diese Konfigurationseinstellung definiert sind.
+
+#-----------------------------------------------------------------------
+CWRLS0016_RECOVERY_PROCESSING_FAILED=CWRLS0016E: Die exklusive Dateisperre, die f\u00fcr die Wiederherstellung f\u00fcr den Server {0} erforderlich ist, wurde nicht erhalten.
+CWRLS0016_RECOVERY_PROCESSING_FAILED.explanation=Entweder ist der Zielserver aktiv, oder die Konfiguration des Wiederherstellungsprotokolls ist ung\u00fcltig.
+CWRLS0016_RECOVERY_PROCESSING_FAILED.useraction=Stellen Sie sicher, dass die Konfiguration des Wiederherstellungsprotokolls g\u00fcltig ist.
+
+#-----------------------------------------------------------------------
+CWRLS0017_RECOVERY_PROCESSING_INTERRUPTED=CWRLS0017I: Der Versuch, eine exklusive Dateisperre f\u00fcr die Wiederherstellung f\u00fcr den Server {0} zu erhalten, wurde unterbrochen. Es wird ein anderer Server aktiviert, der die Wiederherstellung durchf\u00fchrt.
+CWRLS0017_RECOVERY_PROCESSING_INTERRUPTED.explanation=Die Steuerung f\u00fcr ein Wiederherstellungsprotokoll wurde von einem an einen anderen Anewndungsserver \u00fcbertragen.
+CWRLS0017_RECOVERY_PROCESSING_INTERRUPTED.useraction=Es ist keine Aktion erforderlich. 
+#-----------------------------------------------------------------------
+CWRLS0018_RECOVERY_PROCESSING_FAILED=CWRLS0018E: Ein Versuch, die transaktionsorientierte Wiederherstellung und Weiterleitung f\u00fcr den lokalen Server ({0}) anzuhalten, wurde abgebrochen.
+CWRLS0018_RECOVERY_PROCESSING_FAILED.explanation=Der Service f\u00fcr Wiederherstellungsprotokolle hat verhindert, dass der lokale Server die Steuerung seiner eigenen Wiederherstellungsprotokolle wieder \u00fcbernimmt. Dieser Fehler kann auf die Konfiguration der Stammgruppenrichtlinie zur\u00fcckzuf\u00fchren sein.
+CWRLS0018_RECOVERY_PROCESSING_FAILED.useraction=Stellen Sie sicher, dass die Richtlinienkonfiguration das Eigentumsrecht am Wiederherstellungsprotokoll eines aktiven Servers nicht an einen anderen Server \u00fcbertr\u00e4gt.
+
+#-----------------------------------------------------------------------
+CWRLS0019_SNAPSHOT_SAFE=CWRLS0019I: Der Wiederherstellungsprotokollservice wurde mit den angepassten Eigenschaften des Transaktionsservice f\u00fcr sichere Momentaufnahmen konfiguriert.
+CWRLS0019_SNAPSHOT_SAFE.explanation=Wenn eine Momentaufnahme der Protokolldateien angefordert wird, werden alle Transaktionsprotokollierungsaktivit\u00e4ten ausgesetzt, w\u00e4hrend die Momentaufnahme erstellt wird, um sicherzustellen, dass die Protokolldateien einen bekannten Status haben, der mit anderen Systemen, die an der Momentaufnahme beteiligt sind, konsistent ist.
+CWRLS0019_SNAPSHOT_SAFE.useraction=Es ist keine Aktion erforderlich. 
+#-----------------------------------------------------------------------
+CWRLS0020_SNAPSHOT_SAFE=CWRLS0020W: Der Wiederherstellungsprotokollservice wurde mit den angepassten Eigenschaften des Transaktionsservice NICHT f\u00fcr sichere Momentaufnahmen konfiguriert.
+CWRLS0020_SNAPSHOT_SAFE.explanation=Wenn eine Momentaufnahme der Protokolldateien erstellt wird, ist es m\u00f6glich, dass die Protokolldateien einen Status haben, der nicht mit anderen Systemen, die an der Momentaufnahme beteiligt sind, konsistent ist.
+CWRLS0020_SNAPSHOT_SAFE.useraction=Es ist keine Aktion erforderlich. 
+#-----------------------------------------------------------------------
+CWRLS0021_RESUME_ATTEMPT_RLS=CWRLS0021I: Der Wiederherstellungsprotokollservice wurde aufgerufen, um die Ausf\u00fchrung wieder aufzunehmen ({0}), aber es stehen weitere Aussetzoperationen aus.
+CWRLS0021_RESUME_ATTEMPT_RLS.explanation=Die Ausf\u00fchrung des Wiederherstellungsprotokollservice wird nur dann fortgesetzt, wenn keine weiteren Aussetzoperationen ausstehen.
+CWRLS0021_RESUME_ATTEMPT_RLS.useraction=Es ist keine Aktion erforderlich. 
+#-----------------------------------------------------------------------
+CWRLS0022_RLS_SUSPEND_TIMEOUT=CWRLS0022I: Eine Aussetzoperation f\u00fcr den Service f\u00fcr Wiederherstellungsprotokolle hat das zul\u00e4ssige Zeitlimit \u00fcberschritten ({0}).
+CWRLS0022_RLS_SUSPEND_TIMEOUT.explanation=Wenn keine weiteren Aussetzoperationen ausstehen, wird die Ausf\u00fchrung des Wiederherstellungsprotokollservice fortgesetzt.
+CWRLS0022_RLS_SUSPEND_TIMEOUT.useraction=Es ist keine Aktion erforderlich. 
+#-----------------------------------------------------------------------
+CWRLS0023_RESUME_RLS=CWRLS0023I: Die Ausf\u00fchrung des Service f\u00fcr Wiederherstellungsprotokolle wurde nach der Zeitlimit\u00fcberschreitung einer Aussetzoperation fortgesetzt.
+CWRLS0023_RESUME_RLS.explanation=Diese Nachricht ist nur zu Ihrer Information bestimmt.
+CWRLS0023_RESUME_RLS.useraction=Es ist keine Aktion erforderlich. 
+#-----------------------------------------------------------------------
+CWRLS0024_EXC_DURING_RECOVERY=CWRLS0024E: W\u00e4hrend der Wiederherstellung wurde eine Ausnahme abgefangen. {0}
+CWRLS0024_EXC_DURING_RECOVERY.explanation= Beim Versuch, den Betrieb nach einem vorausgegangenen Serverfehler wiederherzustellen, wurde eine Ausnahme abgefangen.
+CWRLS0024_EXC_DURING_RECOVERY.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+CWRLS0025_RECOVER_MODE_NOT_COMPATIBLE=CWRLS0025E: Das Starten des Servers im Wiederherstellungsmodus ist in einer HA-Konfiguration nicht zul\u00e4ssig.
+CWRLS0025_RECOVER_MODE_NOT_COMPATIBLE.explanation=In einer HA-Konfiguration kann die Serverwiederherstellung automatisch auf einem Peerserver eingeleitet werden.
+CWRLS0025_RECOVER_MODE_NOT_COMPATIBLE.useraction=Versuchen Sie nicht, einen Server im Wiederherstellungsmodus zu starten, wenn er f\u00fcr hohe Verf\u00fcgbarkeit aktiviert ist.
+
+#-----------------------------------------------------------------------
+CWRLS0026_RECOVERY_LOG_LOCK_RETRY=CWRLS0026W: Es kann keine exklusive Sperre f\u00fcr {0} angefordert werden. Der Versuch wird wiederholt.
+CWRLS0026_RECOVERY_LOG_LOCK_RETRY.explanation=Der Wiederherstellungsprotokollservice konnte w\u00e4hrend der Wiederherstellung die in der Nachricht angegebene Datei nicht exklusiv sperren. Die Datei scheint im Gebrauch zu sein. Der Wiederherstellungsservice versucht in regelm\u00e4\u00dfigen Abst\u00e4nden, die exklusive Sperre anzufordern, damit die Wiederherstellung fortgesetzt werden kann. Falls die Protokolldatei f\u00fcr die Wiederherstellung eines der Hauptprotokolle des Servers f\u00fcr Wiederherstellung ist, wird der Start so lange ausgesetzt, bis der Zugriff auf die Protokolle wieder m\u00f6glich ist. Falls die Protokolldatei f\u00fcr die Wiederherstellung zu einem anderen Peerserver geh\u00f6rt, kann ein anderer Server die Sperren und die Peerwiederherstellung \u00fcbernehmen. In diesem Fall h\u00f6rt dieser Server mit der Durchf\u00fchrung weiterer Wiederherstellungsoperationen auf.
+CWRLS0026_RECOVERY_LOG_LOCK_RETRY.useraction=Lesen Sie alle zugeh\u00f6rigen Nachrichten, um die Fehlerursache zu ermitteln. Sollten keine zugeh\u00f6rigen Nachrichten vorhanden sein, \u00fcberpr\u00fcfen Sie die Position der Wiederherstellungsprotokolle, und vergewissern Sie sich, dass keine anderen Server auf die Protokolle zugreifen. Diese Situation kann beispielsweise eintreten, wenn mehrere Server f\u00fcr die Verwendung der Wiederherstellungsprotokolle eines anderen Servers konfiguriert sind.
+
+#-----------------------------------------------------------------------
+CWRLS0027_COMMON_TRANLOG_DIRS=CWRLS0027W: Es wurde ein gemeinsames Transaktionsprotokollverzeichnis {0} f\u00fcr die Server {1} und {2} definiert.
+CWRLS0027_COMMON_TRANLOG_DIRS.explanation=F\u00fcr die Transaktionsprotokolle von zwei Servern wird dieselbe Verzeichniskonfiguration verwendet. Dies kann zu Konflikten beim Zugriff auf die Wiederherstellungsprotokolle und einer Gef\u00e4hrdung der Datenintegrit\u00e4t f\u00fchren. 
+CWRLS0027_COMMON_TRANLOG_DIRS.useraction=Konfigurieren Sie unterschiedliche Verzeichnispfade f\u00fcr die beiden Server.
+
+#-----------------------------------------------------------------------
+CWRLS0028_COMMON_COMPLOG_DIRS=CWRLS0028W: Es wurde ein gemeinsames Kompensationsprotokollverzeichnis {0} f\u00fcr die Server {1} und {2} definiert.
+CWRLS0028_COMMON_COMPLOG_DIRS.explanation=F\u00fcr die Kompensationsprotokolle von zwei Servern wird dieselbe Verzeichniskonfiguration verwendet. Dies kann zu Konflikten beim Zugriff auf die Wiederherstellungsprotokolle und einer Gef\u00e4hrdung der Datenintegrit\u00e4t f\u00fchren. 
+CWRLS0028_COMMON_COMPLOG_DIRS.useraction=Konfigurieren Sie unterschiedliche Verzeichnispfade f\u00fcr die beiden Server.
+
+#-----------------------------------------------------------------------
+CWRLS0029_LOCAL_RECOVERY_FAILED=CWRLS0029W: Die Wiederherstellung f\u00fcr den lokalen WebSphere-Server kann nicht durchgef\u00fchrt werden. Der Server wird beendet.
+CWRLS0029_LOCAL_RECOVERY_FAILED.explanation=Der Wiederherstellungsprotokollservice kann die Wiederherstellung f\u00fcr den lokalen Server nicht durchf\u00fchren. Es k\u00f6nnen keine weiteren Aufgaben ausgef\u00fchrt werden. Deshalb wird der Server gestoppt.
+CWRLS0029_LOCAL_RECOVERY_FAILED.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+CWRLS0030_WAITING_FOR_HAM_ACTIVATE=CWRLS0030W: Es wird darauf gewartet, dass der HA-Manager die Wiederherstellung f\u00fcr den lokalen WebSphere-Server aktiviert.
+CWRLS0030_WAITING_FOR_HAM_ACTIVATE.explanation=Der Service f\u00fcr Wiederherstellungsprotokolle kann die Wiederherstellung f\u00fcr den lokalen Server nicht einleiten, weil er darauf wartet, dass der HA Manager die Gruppenzugeh\u00f6rigkeit f\u00fcr die Wiederherstellungsprotokolle des lokalen Servers aktiviert.
+CWRLS0030_WAITING_FOR_HAM_ACTIVATE.useraction=Lesen Sie alle zugeh\u00f6rigen Nachrichten, um die Fehlerursache zu ermitteln. Sollten keine zugeh\u00f6rigen Nachrichten vorhanden sein, \u00fcberpr\u00fcfen Sie die Konfiguration der DefaultCoreGroup-Einstellungen und die zugeh\u00f6rigen Richtliniendefinitionen f\u00fcr den Service f\u00fcr Wiederherstellungsprotokolle des Servers. Wenn beispielsweise die Richtlinie Clustered TM so eingestellt ist, dass eine \u00dcbernahme bei Fehler nicht unterst\u00fctzt wird, hat m\u00f6glicherweise ein anderer Server die Protokolle gesperrt, wodurch verhindert wird, dass dieser Server aktiviert wird.
+

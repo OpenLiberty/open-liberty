@@ -1,0 +1,27 @@
+###############################################################################
+# Copyright (c) 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME 
+#COMPONENTPREFIX CWWKU
+#COMPONENTNAMEFOR Plugin Utility Runtime
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+collective.mbean.not.available=CWWKU0101E: Eine Anforderung zum Generieren einer Web-Server-Plug-in-Konfigurationsdatei f\u00fcr den Cluster {0} wurde nicht verarbeitet, weil die erforderliche MBean f\u00fcr das Verbundcontroller-Feature nicht gefunden wurde.
+collective.mbean.not.available.explanation=Das Verbundcontroller-Feature muss aktiviert sein, damit der Server die Anforderung verarbeiten kann. 
+collective.mbean.not.available.useraction=Aktivieren Sie das Verbundcontroller-Feature im Zielserver oder leiten Sie die Anforderung an einen Server weiter, in dem das Verbundcontroller-Feature bereits aktiviert ist.
+# --------------------------------
+# --------------------------------
+appserver.mbean.not.available=CWWKU0102E: Eine Anforderung zum Generieren einer Web-Server-Plug-in-Konfigurationsdatei f\u00fcr diesen Server wurde nicht verarbeitet, weil die erforderliche MBean f\u00fcr das Java Servlet-Feature nicht gefunden wurde.
+appserver.mbean.not.available.explanation=Das Java Servlet-Feature der Version 3.0 oder 3.1 muss aktiv sein, damit der Server die Anforderung verarbeiten kann.
+appserver.mbean.not.available.useraction=Aktivieren Sie das Java Servlet-Feature der Version 3.0 oder 3.1 im Zielserver oder leiten Sie die Anforderung an einen Server weiter, in dem das Java Servlet-Feature bereits aktiviert ist.
+# -------------------------------- 

@@ -1,0 +1,411 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWWKC0000=CWWKC0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.anno/resources/com/ibm/ws/anno/resources/internal/AnnoMessages.nlsprops
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Annotation Scan and Infostore Service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# Base Anno scanning layer: 0001 to 0250   com.ibm.ws.anno.resources.internal.AnnoMessages
+# -------------------------------------------------------------------------------------------------
+#
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} The class name of the resource
+# # {2} the hashcode id of the resource
+ANNO_CLASSSOURCE_CLOSE1_EXCEPTION=CWWKC0001W: [ {0} ] : La fermeture de la source [{1}] [{2}] a \u00e9chou\u00e9 avec une exception.
+ANNO_CLASSSOURCE_CLOSE1_EXCEPTION.explanation=La fermeture de la ressource a g\u00e9n\u00e9r\u00e9 une exception.
+ANNO_CLASSSOURCE_CLOSE1_EXCEPTION.useraction=Reportez-vous \u00e0 l'exception et aux messages FFDC associ\u00e9s pour plus d'informations.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} The name of the resource
+# # {2} the name of the class associated with the resource
+ANNO_CLASSSOURCE_CLOSE2_EXCEPTION=CWWKC0002W: [ {0} ] : La fermeture de la ressource [{1}] pour la classe [{2}] a \u00e9chou\u00e9 avec une exception.
+ANNO_CLASSSOURCE_CLOSE2_EXCEPTION.explanation=La fermeture du flux d'entr\u00e9e de la ressource a g\u00e9n\u00e9r\u00e9 une exception.
+ANNO_CLASSSOURCE_CLOSE2_EXCEPTION.useraction=Reportez-vous \u00e0 l'exception et aux messages FFDC associ\u00e9s pour plus d'informations.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} The name of the resource, includes the full path to the class
+# # {2} the name of the class associated with the resource
+ANNO_CLASSSOURCE_OPEN1_EXCEPTION=CWWKC0003W: [ {0} ] : L''ouverture de la ressource [{1}] de la classe [{2}] a \u00e9chou\u00e9 avec une exception.
+ANNO_CLASSSOURCE_OPEN1_EXCEPTION.explanation=L'ouverture d'un flux d'entr\u00e9e pour la ressource a g\u00e9n\u00e9r\u00e9 une exception.
+ANNO_CLASSSOURCE_OPEN1_EXCEPTION.useraction=Reportez-vous \u00e0 l'exception et aux messages FFDC associ\u00e9s pour plus d'informations.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} file name
+# # {2} a class name
+# # {3} a file name
+# # {4} the file path name of {1}
+ANNO_CLASSSOURCE_ADAPT_EXCEPTION=CWWKC0004W: [ {0} ] : La conversion de [{1}] en [{2}] sous la racine [{3}] pour le pr\u00e9fixe [{4}] a \u00e9chou\u00e9.
+ANNO_CLASSSOURCE_ADAPT_EXCEPTION.explanation=Le fichier n'a pas pu \u00eatre converti dans le nouvel objet de type
+ANNO_CLASSSOURCE_ADAPT_EXCEPTION.useraction=Aucune intervention de l'utilisateur n'est possible.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} the resource name, class name plus path
+# # {2} the name of the item
+# # {3} the name of the container that holds item
+# # {4} the name of the class
+ANNO_CLASSSOURCE_OPEN2_EXCEPTION=CWWKC0005W: [ {0} ] : L''ouverture de [{1}] en [{2}] sous la racine [{3}] pour la classe [{4}] a \u00e9chou\u00e9.
+ANNO_CLASSSOURCE_OPEN2_EXCEPTION.explanation=L'ouverture d'un flux d'entr\u00e9e pour la ressource a g\u00e9n\u00e9r\u00e9 une exception.
+ANNO_CLASSSOURCE_OPEN2_EXCEPTION.useraction=Reportez-vous \u00e0 l'exception et aux messages FFDC associ\u00e9s pour plus d'informations.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} the resource name, class name plus path
+# # {2} the name of the container that holds item
+# # {3} the name of the class
+ANNO_CLASSSOURCE_RESOURCE_NOTFOUND=CWWKC0006W: [ {0} ] : L''entr\u00e9e [{1}] n''a pas pu \u00eatre localis\u00e9e sous la racine [{2}] pour la classe [{3}].
+ANNO_CLASSSOURCE_RESOURCE_NOTFOUND.explanation=La ressource est introuvable dans le conteneur racine.
+ANNO_CLASSSOURCE_RESOURCE_NOTFOUND.useraction=V\u00e9rifiez que le chemin d'acc\u00e8s \u00e0 la ressource de la classe existe bien dans le conteneur.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} the resource name, class name plus path
+# # {2} the name of the item
+# # {3} the name of the container that holds item
+# # {4} the name of the class
+ANNO_CLASSSOURCE_CLOSE3_EXCEPTION=CWWKC0007W: [ {0} ] : La fermeture de [{1}] en [{2}] sous la racine [{3}] pour la classe [{4}] a \u00e9chou\u00e9.
+ANNO_CLASSSOURCE_CLOSE3_EXCEPTION.explanation=Une tentative de fermeture du flux d'entr\u00e9e de la classe a g\u00e9n\u00e9r\u00e9 une exception.
+ANNO_CLASSSOURCE_CLOSE3_EXCEPTION.useraction=Reportez-vous \u00e0 l'exception et aux messages FFDC associ\u00e9s pour plus d'informations.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a directory name
+# # {2} the path for the directory
+ANNO_CLASSSOURCE_EMPTY_DIR=CWWKC0008W: [ {0} ] : Aucun fichier n''a \u00e9t\u00e9 trouv\u00e9 dans [{1}] sous la racine [{2}].
+ANNO_CLASSSOURCE_EMPTY_DIR.explanation=La recherche d'annotations a \u00e9t\u00e9 appel\u00e9e pour le r\u00e9pertoire cible, mais aucun fichier de classe n'y a \u00e9t\u00e9 trouv\u00e9.
+ANNO_CLASSSOURCE_EMPTY_DIR.useraction=V\u00e9rifiez que le r\u00e9pertoire contient des classes. Supprimez les r\u00e9pertoires vides de l'application.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} the resource name, class name plus path
+# # {2} a file path
+# # {3} the name of the container for {1}
+# # {4} the name of the class
+ANNO_CLASSSOURCE_NOT_FILE=CWWKC0009W: [ {0} ] : La ressource [{1}] a \u00e9t\u00e9 d\u00e9tect\u00e9e comme r\u00e9pertoire [{2}] sous la racine [{3}] de la classe [{4}].
+ANNO_CLASSSOURCE_NOT_FILE.explanation=La ressource devait correspondre \u00e0 un fichier, mais il s'agit en fait d'un r\u00e9pertoire. 
+ANNO_CLASSSOURCE_NOT_FILE.useraction=Aucune intervention de l'utilisateur n'est possible.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a file path
+# # {2} the resource name, class name plus path
+# # {3} a directory name
+# # {4} the name of the class
+ANNO_CLASSSOURCE_OPEN3_EXCEPTION=CWWKC0010W: [ {0} ] : L''ouverture de [{1}] a \u00e9chou\u00e9, pour la ressource [{2}] sous la racine [{3}] de la classe [{4}].
+ANNO_CLASSSOURCE_OPEN3_EXCEPTION.explanation=La tentative d'ouverture d'un flux d'entr\u00e9e pour le fichier a g\u00e9n\u00e9r\u00e9 une exception.
+ANNO_CLASSSOURCE_OPEN3_EXCEPTION.useraction=Reportez-vous \u00e0 l'exception et aux messages FFDC associ\u00e9s pour plus d'informations.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a resource name
+# # {2} a directory path
+# # {3} a class name
+ANNO_CLASSSOURCE_CLOSE4_EXCEPTION=CWWKC0011W: [ {0} ] : La fermeture de la ressource [{1}] sous la racine [{2}] de la classe [{3}] a \u00e9chou\u00e9.
+ANNO_CLASSSOURCE_CLOSE4_EXCEPTION.explanation=La fermeture du flux d'entr\u00e9e de la ressource a g\u00e9n\u00e9r\u00e9 une exception.
+ANNO_CLASSSOURCE_CLOSE4_EXCEPTION.useraction=Reportez-vous \u00e0 l'exception et aux messages FFDC associ\u00e9s pour plus d'informations.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a jar file path name
+ANNO_CLASSSOURCE_OPEN4_EXCEPTION=CWWKC0012W: [ {0} ] : L''ouverture de [{1}] a \u00e9chou\u00e9 avec une exception.
+ANNO_CLASSSOURCE_OPEN4_EXCEPTION.explanation=Le fichier a \u00e9t\u00e9 ouvert comme fichier Jar et cette action a g\u00e9n\u00e9r\u00e9 une exception.
+ANNO_CLASSSOURCE_OPEN4_EXCEPTION.useraction=Reportez-vous \u00e0 l'exception et aux messages FFDC associ\u00e9s pour plus d'informations.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} The name of the jar file
+# # {2} A number, the value of the 'open counter'
+ANNO_CLASSSOURCE_JAR_STATE_BAD=CWWKC0013W: [ {0} ] : L''\u00e9tat du compteur d''ouvertures [{2}] du fichier Jar [{1}] est incorrect pour la fermeture.
+ANNO_CLASSSOURCE_JAR_STATE_BAD.explanation=Une erreur interne s'est produite. Le nombre d'utilisateurs actifs du fichier jar ne correspond pas \u00e0 l'\u00e9tat du fichier jar.
+ANNO_CLASSSOURCE_JAR_STATE_BAD.useraction=CMSG0002
+                        
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} the name of a jar file
+ANNO_CLASSSOURCE_CLOSE5_EXCEPTION=CWWKC0014W: [ {0} ] : La fermeture de [{1}] a \u00e9chou\u00e9 avec une exception.
+ANNO_CLASSSOURCE_CLOSE5_EXCEPTION.explanation=Une tentative de fermeture de l'objet JarFile a g\u00e9n\u00e9r\u00e9 une exception.
+ANNO_CLASSSOURCE_CLOSE5_EXCEPTION.useraction=Reportez-vous \u00e0 l'exception et aux messages FFDC associ\u00e9s pour plus d'informations.
+                
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a resource name
+# # {2} a class name
+# # {3} a jar file path 
+ANNO_CLASSSOURCE_OPEN5_EXCEPTION=CWWKC0015W: [ {0} ] : L''ouverture de [{1}] pour la classe [{2}] dans [{3}] a \u00e9chou\u00e9 avec une exception.
+ANNO_CLASSSOURCE_OPEN5_EXCEPTION.explanation=Une entr\u00e9e a \u00e9t\u00e9 d\u00e9tect\u00e9e pour la classe dans le fichier jar, mais la cr\u00e9ation d'un flux d'entr\u00e9e pour la classe a g\u00e9n\u00e9r\u00e9 une exception.  
+ANNO_CLASSSOURCE_OPEN5_EXCEPTION.useraction=Reportez-vous \u00e0 l'exception et aux messages FFDC associ\u00e9s pour plus d'informations.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a resource name
+# # {2} a class name
+# # {3} a jar file path 
+ANNO_CLASSSOURCE_CLOSE6_EXCEPTION=CWWKC0016W: [ {0} ] : La fermeture de la ressource [{1}] pour la classe [{2}] dans [{3}] a \u00e9chou\u00e9 avec une exception.
+ANNO_CLASSSOURCE_CLOSE6_EXCEPTION.explanation=Une fermeture de flux d'entr\u00e9e pour la ressource a g\u00e9n\u00e9r\u00e9 une exception.
+ANNO_CLASSSOURCE_CLOSE6_EXCEPTION.useraction=Reportez-vous \u00e0 l'exception et aux messages FFDC associ\u00e9s pour plus d'informations.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a java class name
+# # {2} a method name
+ANNO_ANNOINFO_NO_METHOD=CWWKC0017W: L''annotation [{0}] de la classe d''annotation [{1}] ne contient pas la m\u00e9thode [{2}].
+ANNO_ANNOINFO_NO_METHOD.explanation=Aucune m\u00e9thode correspondante n'a \u00e9t\u00e9 d\u00e9tect\u00e9e pour un param\u00e8tre sur une annotation cod\u00e9e.
+ANNO_ANNOINFO_NO_METHOD.useraction=Aucune intervention de l'utilisateur n'est possible.
+                
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a hash id used to identify the object
+# # {2} a hash id used to identify the object
+ANNO_CLASSINFO_EXISTS1=CWWKC0018W: [{0}] contient d\u00e9j\u00e0 [{1}] comme classe Java distincte [{2}].
+ANNO_CLASSINFO_EXISTS1.explanation=Un objet info de classe existe d\u00e9j\u00e0 pour la classe dans le cache.
+ANNO_CLASSINFO_EXISTS1.useraction=Aucune intervention de l'utilisateur n'est possible.
+            
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a hash id used to identify the object
+ANNO_CLASSINFO_EXISTS2=CWWKC0019W: [{0}] contient d\u00e9j\u00e0 [{1}] comme classe Java.
+ANNO_CLASSINFO_EXISTS2.explanation=Un objet info de classe existe d\u00e9j\u00e0 pour la classe dans le cache.
+ANNO_CLASSINFO_EXISTS2.useraction=Aucune intervention de l'utilisateur n'est possible.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a hash id used to identify the object
+# # {2} a hash id used to identify the object
+ANNO_CLASSINFO_EXISTS3=CWWKC0020W: [{0}] contient d\u00e9j\u00e0 [{1}] comme classe annot\u00e9e distincte [{2}].
+ANNO_CLASSINFO_EXISTS3.explanation=Un objet info de classe existe d\u00e9j\u00e0 pour la classe dans le cache.
+ANNO_CLASSINFO_EXISTS3.useraction=Aucune intervention de l'utilisateur n'est possible.
+            
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a hash id used to identify the object
+ANNO_CLASSINFO_EXISTS4=CWWKC0021W: [{0}] contient d\u00e9j\u00e0 [{1}] comme classe annot\u00e9e.
+ANNO_CLASSINFO_EXISTS4.explanation=Un objet info de classe existe d\u00e9j\u00e0 pour la classe dans le cache.
+ANNO_CLASSINFO_EXISTS4.useraction=Aucune intervention de l'utilisateur n'est possible.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} the name of a class
+ANNO_CLASSINFO_SCAN_EXCEPTION=CWWKC0022W: [ {0} ] L''analyse de la classe [{1}] a g\u00e9n\u00e9r\u00e9 une exception. Le message est le suivant : [{2}] caus\u00e9 par [{3}].
+ANNO_CLASSINFO_SCAN_EXCEPTION.explanation=L'analyse d'une classe pour les annotations a g\u00e9n\u00e9r\u00e9 une exception.
+ANNO_CLASSINFO_SCAN_EXCEPTION.useraction=Reportez-vous \u00e0 l'exception et aux messages FFDC associ\u00e9s pour plus d'informations.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a hash id used to identify the object
+# # {2} a hash id used to identify the object
+ANNO_CLASSINFO_METHODEXISTS=CWWKC0023W: [ {0} ] L''ajout de [{1}] remplace un objet existant [{2}].
+ANNO_CLASSINFO_METHODEXISTS.explanation=Un objet de m\u00e9thode existe d\u00e9j\u00e0 pour la classe dans le cache.
+ANNO_CLASSINFO_METHODEXISTS.useraction=Aucune action utilisateur n'est requise.     
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a hash id used to identify the object
+# # {2} a hash id used to identify the object
+ANNO_CLASSINFO_FIELDEXISTS=CWWKC0024W: [ {0} ] L''ajout de [{1}] remplace un objet existant [{2}].
+ANNO_CLASSINFO_FIELDEXISTS.explanation=Un objet de zone existe d\u00e9j\u00e0 pour la classe dans le cache.
+ANNO_CLASSINFO_FIELDEXISTS.useraction=Aucune action utilisateur n'est requise.     
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} The name of a class 
+ANNO_CLASSINFO_CLASS_NOTFOUND=CWWKC0025W: [ {0} ] La classe est introuvable [{1}].
+ANNO_CLASSINFO_CLASS_NOTFOUND.explanation=Le processus d'analyse des annotations n'a pas pu r\u00e9soudre la classe. Ce probl\u00e8me peut \u00eatre r\u00e9solu par une tentative ult\u00e9rieure de r\u00e9solution de la classe.
+ANNO_CLASSINFO_CLASS_NOTFOUND.useraction=V\u00e9rifiez que la classe est incluse dans l'application ou le chemin d'acc\u00e8s aux classes de l'application.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A hashcode id used to identify the object causing the exception
+# # {2} The error message from the exception
+ANNO_INFOSTORE_OPEN1_EXCEPTION=CWWKC0026W: [ {0} ] : L''ouverture de [{1}] a g\u00e9n\u00e9r\u00e9 une exception. Le message est le suivant : {2}
+ANNO_INFOSTORE_OPEN1_EXCEPTION.explanation=L'ouverture d'une source de classe a g\u00e9n\u00e9r\u00e9 une exception.
+ANNO_INFOSTORE_OPEN1_EXCEPTION.useraction=Reportez-vous \u00e0 l'exception et aux messages FFDC associ\u00e9s pour plus d'informations.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A hashcode id used to identify the object causing the exception
+ANNO_INFOSTORE_CLOSE1_EXCEPTION=CWWKC0027W: [ {0} ] : La fermeture de [{1}] a g\u00e9n\u00e9r\u00e9 une exception.
+ANNO_INFOSTORE_CLOSE1_EXCEPTION.explanation=La fermeture d'une source de classe a g\u00e9n\u00e9r\u00e9 une exception.
+ANNO_INFOSTORE_CLOSE1_EXCEPTION.useraction=Reportez-vous \u00e0 l'exception et aux messages FFDC associ\u00e9s pour plus d'informations.
+       
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} the full resource name for the class
+# # {2} The class name
+ANNO_INFOSTORE_OPEN2_EXCEPTION=CWWKC0028W: [ {0} ] : L''ouverture d''un flux d''entr\u00e9e pour la ressource [{1}] de la classe [{2}] a \u00e9chou\u00e9 avec une exception.
+ANNO_INFOSTORE_OPEN2_EXCEPTION.explanation=Lorsque le processus d'analyse des annotations a essay\u00e9 d'ouvrir un flux d'entr\u00e9e pour la classe, une exception s'est produite. 
+ANNO_INFOSTORE_OPEN2_EXCEPTION.useraction=Reportez-vous \u00e0 l'exception et aux messages FFDC associ\u00e9s pour plus d'informations.
+            
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} the full resource name for the class
+# # {2} The class name
+ANNO_INFOSTORE_CLOSE2_EXCEPTION=CWWKC0029W: [ {0} ] : La fermeture d''un flux d''entr\u00e9e pour la ressource [{1}], classe [{2}], a \u00e9chou\u00e9 avec une exception.
+ANNO_INFOSTORE_CLOSE2_EXCEPTION.explanation=Lorsque le processus d'analyse des annotations a essay\u00e9 de fermer un flux d'entr\u00e9e pour la classe, une exception s'est produite.
+ANNO_INFOSTORE_CLOSE2_EXCEPTION.useraction=Reportez-vous \u00e0 l'exception et aux messages FFDC associ\u00e9s pour plus d'informations.
+
+# # {0} The class name
+# # {1} the full resource name for the class
+ANNO_CREATE_READER_EXCEPTION=CWWKC0030W: La cr\u00e9ation d''un programme de lecture de classe [ {0} ], \u00e0 partir de la ressource [{1}], a \u00e9chou\u00e9 avec une exception.
+ANNO_CREATE_READER_EXCEPTION.explanation=Le processus d'analyse des annotations cr\u00e9ait un programme de lecture de classe pour traiter le flux d'entr\u00e9e de la ressource, ce qui a g\u00e9n\u00e9r\u00e9 une exception.
+ANNO_CREATE_READER_EXCEPTION.useraction=Reportez-vous \u00e0 l'exception et aux messages FFDC associ\u00e9s pour plus d'informations.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a parameter name
+# # {2} a parameter value
+ANNO_INFOVISIT_INVALID_STATE=CWWKC0031W: Erreur d''\u00e9tat interne :  Le visiteur [ {0} ] d\u00e9finit [ {1} ] sur [ {2} ].
+ANNO_INFOVISIT_INVALID_STATE.explanation=Une erreur s'est produite lors du traitement d'une annotation ; l'objet de visiteur est incorrect
+ANNO_INFOVISIT_INVALID_STATE.useraction=CMSG0001
+                    
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A hashcode id used to identify the object that exists
+ANNO_INFOVISITOR_RESET1=CWWKC0032W: [ {0} ] Il existe un package r\u00e9siduel [ {1} ]
+ANNO_INFOVISITOR_RESET1.explanation=Une erreur interne s'est produite. Lors de la r\u00e9initialisation du visiteur, des donn\u00e9es r\u00e9siduelles ont \u00e9t\u00e9 d\u00e9tect\u00e9es.
+ANNO_INFOVISITOR_RESET1.useraction=CMSG0002
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A hashcode id used to identify the object that exists
+ANNO_INFOVISITOR_RESET2=CWWKC0033W: [ {0} ] Il existe une classe r\u00e9siduelle [ {1} ]
+ANNO_INFOVISITOR_RESET2.explanation=Une erreur interne s'est produite. Lors de la r\u00e9initialisation du visiteur, des donn\u00e9es r\u00e9siduelles ont \u00e9t\u00e9 d\u00e9tect\u00e9es.
+ANNO_INFOVISITOR_RESET2.useraction=CMSG0002
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A hashcode id used to identify the object that exists
+ANNO_INFOVISITOR_RESET3=CWWKC0034W: [ {0} ] Il existe une m\u00e9thode r\u00e9siduelle [ {1} ]
+ANNO_INFOVISITOR_RESET3.explanation=Une erreur interne s'est produite. Lors de la r\u00e9initialisation du visiteur, des donn\u00e9es r\u00e9siduelles ont \u00e9t\u00e9 d\u00e9tect\u00e9es.
+ANNO_INFOVISITOR_RESET3.useraction=CMSG0002
+                
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A hashcode id used to identify the object that exists
+ANNO_INFOVISITOR_RESET4=CWWKC0035W: [ {0} ] Il existe une zone r\u00e9siduelle [ {1} ]
+ANNO_INFOVISITOR_RESET4.explanation=Une erreur interne s'est produite. Lors de la r\u00e9initialisation du visiteur, des donn\u00e9es r\u00e9siduelles ont \u00e9t\u00e9 d\u00e9tect\u00e9es.
+ANNO_INFOVISITOR_RESET4.useraction=CMSG0002
+   
+# # {0} A hashcode id used to identify the object emitting the message
+ANNO_INFOVISITOR_RESET5=CWWKC0036W: [ {0} ] Il existe un \u00e9tat de blocage r\u00e9siduel.
+ANNO_INFOVISITOR_RESET5.explanation=Une erreur interne s'est produite. Lors de la r\u00e9initialisation du visiteur, des donn\u00e9es r\u00e9siduelles ont \u00e9t\u00e9 d\u00e9tect\u00e9es.
+ANNO_INFOVISITOR_RESET5.useraction=CMSG0002
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} The name of a class
+ANNO_INFOVISITOR_RESET6=CWWKC0037W: [ {0} ] Il existe un nom de classe externe r\u00e9siduel [ {1} ].
+ANNO_INFOVISITOR_RESET6.explanation=Une erreur interne s'est produite. Lors de la r\u00e9initialisation du visiteur, des donn\u00e9es r\u00e9siduelles ont \u00e9t\u00e9 d\u00e9tect\u00e9es.
+ANNO_INFOVISITOR_RESET6.useraction=CMSG0002
+                                       
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} The name of a class package
+ANNO_INFOVISITOR_VISIT1=CWWKC0038W: [ {0} ] Le package du nom [ {1} ] est null.
+ANNO_INFOVISITOR_VISIT1.explanation=Une erreur interne s'est produite. Lors du traitement de l'analyse des annotations, un objet n'a pas pu \u00eatre cr\u00e9\u00e9.
+ANNO_INFOVISITOR_VISIT1.useraction=CMSG0002
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} The name of a class field
+ANNO_INFOVISITOR_VISIT2=CWWKC0039W: [ {0} ] L''objet de zone du nom [ {1} ] est introuvable.
+ANNO_INFOVISITOR_VISIT2.explanation=Une erreur interne s'est produite. Lors du traitement de l'analyse des annotations, un objet n'a pas pu \u00eatre cr\u00e9\u00e9.
+ANNO_INFOVISITOR_VISIT2.useraction=CMSG0002
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} The name of a class method
+ANNO_INFOVISITOR_VISIT3=CWWKC0040W: [ {0} ] L''objet de m\u00e9thode du nom [ {1} ] est introuvable.
+ANNO_INFOVISITOR_VISIT3.explanation=Une erreur interne s'est produite. Lors du traitement de l'analyse des annotations, un objet n'a pas pu \u00eatre cr\u00e9\u00e9.
+ANNO_INFOVISITOR_VISIT3.useraction=CMSG0002
+
+# # {0} A hashcode id used to identify the object emitting the message
+ANNO_INFOVISITOR_VISIT4=CWWKC0041W: [ {0} ] L''objet de visiteur ne peut pas \u00eatre identifi\u00e9.
+ANNO_INFOVISITOR_VISIT4.explanation=CMSG0001
+ANNO_INFOVISITOR_VISIT4.useraction=CMSG0002
+
+
+ANNO_CLASSINFO_INTERFACE_LATE_ADD=CWWKC0042W: Erreur interne : L''interface [ {1} ] a \u00e9t\u00e9 ajout\u00e9e \u00e0 la classe [ {0} ] une fois que les interfaces de classe ont \u00e9t\u00e9 r\u00e9solues.
+ANNO_CLASSINFO_INTERFACE_LATE_ADD.explanation=CMSG0001
+ANNO_CLASSINFO_INTERFACE_LATE_ADD.useraction=CMSG0002
+
+ANNO_CLASSINFO_INTERFACE_MISSORDERED_ADD=CWWKC0043W: Erreur interne de classe non retard\u00e9e.  L''interface [ {1} ] a \u00e9t\u00e9 ajout\u00e9e \u00e0 la classe [ {0} ] en dehors des \u00e9tapes de traitement habituelles.
+ANNO_CLASSINFO_INTERFACE_MISSORDERED_ADD.explanation=CMSG0001
+ANNO_CLASSINFO_INTERFACE_MISSORDERED_ADD.useraction=CMSG0002
+
+ANNO_TARGETS_SCAN_EXCEPTION=CWWKC0044W: Une exception s''est produite lors de l''analyse des donn\u00e9es de classe et d''annotation. L''exception \u00e9tait {0}.
+ANNO_TARGETS_SCAN_EXCEPTION.explanation=Une erreur s'est produite lors de l'analyse des donn\u00e9es de classe et d'annotation.  Il se peut que le module associ\u00e9 ne fonctionne pas correctement.
+ANNO_TARGETS_SCAN_EXCEPTION.useraction=Reportez-vous \u00e0 l'exception et aux messages FFDC associ\u00e9s pour plus d'informations.
+
+ANNO_TARGETS_FLUSH_WRITE_EXCEPTION=CWWKC0045W: Une exception s'est produite \u00e0 la fin de l'\u00e9criture des donn\u00e9es de classe et d'annotation.
+ANNO_TARGETS_FLUSH_WRITE_EXCEPTION.explanation=Un probl\u00e8me s'est produit \u00e0 la fin de l'\u00e9criture des donn\u00e9es de classe et d'annotation.  Il se peut que le cache des donn\u00e9es de classe et d'annotation soit incomplet et doive \u00eatre effac\u00e9.
+ANNO_TARGETS_FLUSH_WRITE_EXCEPTION.useraction=Reportez-vous \u00e0 l'exception et aux messages FFDC associ\u00e9s pour plus d'informations.
+
+ANNO_TARGETS_READ_EXCEPTION=CWWKC0046W: Une exception s'est produite lors de la lecture des donn\u00e9es d'annotation.
+ANNO_TARGETS_READ_EXCEPTION.explanation=Un probl\u00e8me s'est produit lors de la lecture des donn\u00e9es de classe et d'annotation.  Un traitement suppl\u00e9mentaire peut g\u00e9n\u00e9rer des r\u00e9sultats incorrects car des donn\u00e9es incompl\u00e8tes ont \u00e9t\u00e9 lues.  Le cache des donn\u00e9es de classe et d'annotation doit \u00eatre effac\u00e9.
+ANNO_TARGETS_READ_EXCEPTION.useraction=Reportez-vous \u00e0 l'exception et aux messages FFDC associ\u00e9s pour plus d'informations.
+
+ANNO_TARGETS_WRITE_EXCEPTION=CWWKC0047W: Une exception s'est produite lors de l'\u00e9criture des donn\u00e9es d'annotation.
+ANNO_TARGETS_WRITE_EXCEPTION.explanation=Un probl\u00e8me s'est produit lors de l'\u00e9criture des donn\u00e9es de classe et d'annotation.  La ligne affich\u00e9e n'a pas \u00e9t\u00e9 correctement \u00e9crite dans la classe et les donn\u00e9es d'annotation.  Il se peut que le cache des donn\u00e9es de classe et d'annotation soit incomplet et doive \u00eatre effac\u00e9.
+ANNO_TARGETS_WRITE_EXCEPTION.useraction=Reportez-vous \u00e0 l'exception et aux messages FFDC associ\u00e9s pour plus d'informations.
+
+ANNO_TARGETS_SCAN_CLASS_EXCEPTION=CWWKC0048W: Une exception s''est produite lors de la recherche d''informations de classe et d''annotation dans la classe [ {0} ].
+ANNO_TARGETS_SCAN_CLASS_EXCEPTION.explanation=Un probl\u00e8me s'est produit lors de la tentative de recherche des informations de classe et d'annotation dans une classe.  V\u00e9rifiez la classe affich\u00e9e pour vous assurer qu'elle peut \u00eatre lue et qu'elle contient des octets de classe valides.
+ANNO_TARGETS_SCAN_CLASS_EXCEPTION.useraction=Reportez-vous \u00e0 l'exception et aux messages FFDC associ\u00e9s pour plus d'informations.
+
+ANNO_TARGETS_FAILED_TO_CREATE_READER=CWWKC0049W: Une exception s''est produite lors de la cr\u00e9ation d''un programme de lecture de code interm\u00e9diaire de classe pour la classe [ {0} ].
+ANNO_TARGETS_FAILED_TO_CREATE_READER.explanation=Un probl\u00e8me s'est produit lors de la pr\u00e9paration d'un programme de lecture de code interm\u00e9diaire de classe.  Il se peut que les valeurs du code interm\u00e9diaire de cette classe ne soient pas valides ou que le fichier de classe soit inaccessible.  Les informations de classe et d'annotation de cette classe ne seront donc pas disponibles et le module qui utilise la classe risque de ne pas fonctionner correctement.
+ANNO_TARGETS_FAILED_TO_CREATE_READER.useraction=V\u00e9rifiez le contenu du fichier de classe \u00e0 l'origine de l'erreur.  Si n\u00e9cessaire, remplacez ce fichier de classe par un fichier de classe qui contient des codes interm\u00e9diaires valides.  Pour plus d'informations, reportez-vous par ailleurs \u00e0 l'exception et au message FFDC associ\u00e9.
+
+ANNO_TARGETS_RESIDUAL_PACKAGE=CWWKC0050W: Erreur interne d''analyse de la classe : Le visiteur [ {0} ] montre un nom de package non effac\u00e9 [ {2} ] lors de l''analyse de la classe [ {1} ].
+ANNO_TARGETS_RESIDUAL_PACKAGE.explanation=CMSG0001
+ANNO_TARGETS_RESIDUAL_PACKAGE.useraction=CMSG0002
+
+ANNO_TARGETS_RESIDUAL_CLASS=CWWKC0051W: Erreur interne d''analyse de la classe : Le visiteur [ {0} ] montre un nom de classe non effac\u00e9 [ {2} ] lors de l''analyse de la classe [ {1} ].
+ANNO_TARGETS_RESIDUAL_CLASS.explanation=CMSG0001
+ANNO_TARGETS_RESIDUAL_CLASS.useraction=CMSG0002
+
+ANNO_TARGETS_RESIDUAL_METHOD=CWWKC0052W: Erreur interne d''analyse de la classe : Le visiteur [ {0} ] montre un nom de m\u00e9thode non effac\u00e9 [ {2} ] lors de l''analyse de la classe [ {1} ].
+ANNO_TARGETS_RESIDUAL_METHOD.explanation=CMSG0001
+ANNO_TARGETS_RESIDUAL_METHOD.useraction=CMSG0002
+
+ANNO_TARGETS_RESIDUAL_FIELD=CWWKC0053W: Erreur interne d''analyse de la classe : Le visiteur [ {0} ] montre un nom de zone non effac\u00e9 [ {2} ] lors de l''analyse de la classe [ {1} ].
+ANNO_TARGETS_RESIDUAL_FIELD.explanation=CMSG0001
+ANNO_TARGETS_RESIDUAL_FIELD.useraction=CMSG0002
+
+ANNO_TARGETS_DUPLICATE_PACKAGE=CWWKC0054W: Erreur interne d''analyse de la classe : Le visiteur [ {0} ] a tent\u00e9 une deuxi\u00e8me analyse du package [ {1} ].
+ANNO_TARGETS_DUPLICATE_PACKAGE.explanation=CMSG0001
+ANNO_TARGETS_DUPLICATE_PACKAGE.useraction=CMSG0002
+
+ANNO_TARGETS_DUPLICATE_CLASS=CWWKC0055W: Erreur interne d''analyse de la classe : Le visiteur [ {0} ] a tent\u00e9 une deuxi\u00e8me analyse de la classe [ {1} ].
+ANNO_TARGETS_DUPLICATE_CLASS.explanation=CMSG0001
+ANNO_TARGETS_DUPLICATE_CLASS.useraction=CMSG0002
+
+ANNO_TARGETS_UNEXPECTED_NULL=CWWKC0056W: Erreur interne d''analyse de la classe : Le visiteur [ {0} ] poss\u00e8de une valeur null inattendue.
+ANNO_TARGETS_UNEXPECTED_NULL.explanation=CMSG0001
+ANNO_TARGETS_UNEXPECTED_NULL.useraction=CMSG0002
+
+ANNO_UTIL_MAPPING_INCONSISTENCY=CWWKC0057W: Incoh\u00e9rence des donn\u00e9es internes : Le mappage bidirectionnel [ {0} ] n''a pas mapp\u00e9 de mani\u00e8re coh\u00e9rente la cl\u00e9 [ {1} ] \u00e0 la valeur [ {2} ].  Le r\u00e9sultat de l''ajout de la cl\u00e9 \u00e9tait [ {3} ] tandis que celui de l''ajout de la valeur \u00e9tait [ {4} ].  Ces r\u00e9sultats doivent \u00eatre identiques. 
+ANNO_UTIL_MAPPING_INCONSISTENCY.explanation=CMSG0001
+ANNO_UTIL_MAPPING_INCONSISTENCY.useraction=CMSG0002
+
+ANNO_UTIL_UNEXPECTED_BACKSLASH=CWWKC0058W: La table de cha\u00eenes [ {0} ] a rencontr\u00e9 une erreur lors du traitement de la valeur [ {1} ] de type [ {2} ].  Cette valeur ne doit pas contenir de barre oblique invers\u00e9e (''\\'\').
+ANNO_UTIL_UNEXPECTED_BACKSLASH.explanation=La valeur contient un contenu non valide pour l'utilisation pr\u00e9vue.  Il se peut qu'elle ne soit pas trait\u00e9e correctement.  Il se peut que le module associ\u00e9 ne fonctionne pas correctement.
+ANNO_UTIL_UNEXPECTED_BACKSLASH.useraction=Les donn\u00e9es du module doivent \u00eatre examin\u00e9es pour v\u00e9rifier que la valeur fournie est valide.
+
+ANNO_UTIL_UNEXPECTED_CLASS=CWWKC0059W: La table de cha\u00eenes [ {0} ] a rencontr\u00e9 une erreur lors du traitement de la valeur [ {1} ] de type [ {2} ].  Cette valeur ne doit pas se terminer par ''.class''.
+ANNO_UTIL_UNEXPECTED_CLASS.explanation=La valeur contient un contenu non valide pour l'utilisation pr\u00e9vue.  Il se peut qu'elle ne soit pas trait\u00e9e correctement.  Il se peut que le module associ\u00e9 ne fonctionne pas correctement.
+ANNO_UTIL_UNEXPECTED_CLASS.useraction=Les donn\u00e9es du module doivent \u00eatre examin\u00e9es pour v\u00e9rifier que la valeur fournie est valide.
+
+ANNO_UTIL_EXPECTED_CLASS=CWWKC0060W: La table de cha\u00eenes [ {0} ] a rencontr\u00e9 une erreur lors du traitement de la valeur [ {1} ] de type [ {2} ].  Cette valeur doit se terminer par ''.class''.
+ANNO_UTIL_EXPECTED_CLASS.explanation=La valeur contient un contenu non valide pour l'utilisation pr\u00e9vue.  Il se peut qu'elle ne soit pas trait\u00e9e correctement.  Il se peut que le module associ\u00e9 ne fonctionne pas correctement.
+ANNO_UTIL_EXPECTED_CLASS.useraction=Les donn\u00e9es du module doivent \u00eatre examin\u00e9es pour v\u00e9rifier que la valeur fournie est valide.
+
+ANNO_UTIL_UNEXPECTED_FORWARD_SLASH=CWWKC0061W: La table de cha\u00eenes [ {0} ] a rencontr\u00e9 une erreur lors du traitement de la valeur [ {1} ] de type [ {2} ].  Cette valeur ne doit pas contenir de barre oblique (''//'').
+ANNO_UTIL_UNEXPECTED_FORWARD_SLASH.explanation=La valeur contient un contenu non valide pour l'utilisation pr\u00e9vue.  Il se peut qu'elle ne soit pas trait\u00e9e correctement.  Il se peut que le module associ\u00e9 ne fonctionne pas correctement.
+ANNO_UTIL_UNEXPECTED_FORWARD_SLASH.useraction=Les donn\u00e9es du module doivent \u00eatre examin\u00e9es pour v\u00e9rifier que la valeur fournie est valide.
+
+ANNO_UTIL_UNRECOGNIZED_TYPE=CWWKC0062W: Erreur de traitement interne : La table de cha\u00eenes [ {0} ] a rencontr\u00e9 une erreur lors du traitement de la valeur [ {1} ] de type [ {2} ].  Ce type n''est pas reconnu.
+ANNO_UTIL_UNRECOGNIZED_TYPE.explanation=CMSG0001
+ANNO_UTIL_UNRECOGNIZED_TYPE.useraction=CMSG0002
+
+# #{0} A hashcode id used to identify the object emitting the message
+# #{1} The name of the java exception which occurred 
+# #{2} The class name of the resource being closed
+# #{3} The hashcode id of the resource being closed
+ANNO_CLASSSOURCE_CLOSE_EXCEPTION=CWWKC0063W: [ {0} ] : Exception d''annulation de fermeture en trop {1} de {2} [ {3} ]
+ANNO_CLASSSOURCE_CLOSE_EXCEPTION.explanation=Une exception s'est produite lors de la tentative de fermeture de la ressource.
+ANNO_CLASSSOURCE_CLOSE_EXCEPTION.useraction=Reportez-vous \u00e0 l'exception et aux messages FFDC associ\u00e9s pour plus d'informations.
+
+# {0} The name of the class
+# {1} The name of the jar the class was in.
+ANNO_TARGETS_CORRUPT_CLASS=CWWKC0064I: Il n''a pas \u00e9t\u00e9 possible de traiter les annotations de la classe {0} dans {1} car elle semble \u00eatre corrompue.
+ANNO_TARGETS_CORRUPT_CLASS.explanation=Un probl\u00e8me est survenu lors de la lecture d'un fichier classe afin de d\u00e9terminer s'il existe des annotations int\u00e9ressantes. Il est possible que la classe soit un fichier classe non valide. En cons\u00e9quence les annotation de cette classe ne seront pas reconnues.
+ANNO_TARGETS_CORRUPT_CLASS.useraction=La classe peut \u00eatre remplac\u00e9e ou supprim\u00e9e. Il est \u00e9galement possible d'ignorer ce message en fonction de l'importance de la classe par rapport au fonctionnement de l'application.

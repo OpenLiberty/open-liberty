@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.service/resources/com/ibm/ws/kernel/service/utils/resources/ServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0100 - 0199 com.ibm.ws.kernel.service.utils.resources.ServiceMessages
+# -------------------------------------------------------------------------------------------------
+invalidStringArray=CWWKE0101W: Le param\u00e8tre sp\u00e9cifi\u00e9 n''est ni une cha\u00eene ni un tableau de cha\u00eenes. {1}={2} pour {0}
+invalidStringArray.explanation=La valeur du param\u00e8tre de configuration sp\u00e9cifi\u00e9 n'est pas une cha\u00eene ou un tableau de cha\u00eenes ou ne peut pas \u00eatre convertie en cha\u00eene ou en tableau de cha\u00eenes.
+invalidStringArray.useraction=V\u00e9rifiez la valeur sp\u00e9cifi\u00e9e dans la configuration du serveur et assurez-vous qu'il s'agit d'une repr\u00e9sentation valide d'une cha\u00eene ou d'un tableau de cha\u00eenes.
+
+invalidStringCollection=CWWKE0102W: Le param\u00e8tre sp\u00e9cifi\u00e9 n''est ni une cha\u00eene ni une collection de cha\u00eenes. {1}={2} pour {0}
+invalidStringCollection.explanation=La valeur du param\u00e8tre de configuration sp\u00e9cifi\u00e9 n'est pas une cha\u00eene ou une collection de cha\u00eenes ou ne peut pas \u00eatre convertie en cha\u00eene ou en collection de cha\u00eenes.
+invalidStringCollection.useraction=V\u00e9rifiez que la valeur sp\u00e9cifi\u00e9e dans la configuration du serveur est une repr\u00e9sentation valide d'une cha\u00eene ou d'une collection de cha\u00eenes.
+
+invalidBoolean=CWWKE0103W: Le param\u00e8tre sp\u00e9cifi\u00e9 ne repr\u00e9sente pas une valeur bool\u00e9enne. {1}={2} pour {0}
+invalidBoolean.explanation=La valeur du param\u00e8tre de configuration sp\u00e9cifi\u00e9 n'est pas ou ne peut pas \u00eatre convertie en une donn\u00e9e bool\u00e9enne.
+invalidBoolean.useraction=V\u00e9rifiez que la valeur sp\u00e9cifi\u00e9e dans la configuration du serveur est une repr\u00e9sentation valide d'une valeur bool\u00e9enne.
+
+invalidLong=CWWKE0104W: Le param\u00e8tre sp\u00e9cifi\u00e9 ne repr\u00e9sente pas une valeur d''entier long. {1}={2} pour {0}
+invalidLong.explanation=La valeur du param\u00e8tre de configuration sp\u00e9cifi\u00e9 n'est pas ou ne peut pas \u00eatre convertie en une donn\u00e9e de type long.
+invalidLong.useraction=V\u00e9rifiez que la valeur sp\u00e9cifi\u00e9e dans la configuration du serveur est une repr\u00e9sentation valide d'une valeur 'long'.
+
+invalidInteger=CWWKE0105W: Le param\u00e8tre sp\u00e9cifi\u00e9 ne repr\u00e9sente pas une valeur d''entier. {1}={2} pour {0}
+invalidInteger.explanation=La valeur du param\u00e8tre de configuration sp\u00e9cifi\u00e9 n'est pas ou ne peut pas \u00eatre convertie en une donn\u00e9e d'entier (int).
+invalidInteger.useraction=V\u00e9rifiez que la valeur sp\u00e9cifi\u00e9e dans la configuration du serveur est une repr\u00e9sentation valide d'une valeur d'entier.
+
+invalidIntegerArray=CWWKE0106W: Le param\u00e8tre sp\u00e9cifi\u00e9 ne repr\u00e9sente pas un tableau d''entiers. {1}={2} pour {0}
+invalidIntegerArray.explanation=La valeur du param\u00e8tre de configuration sp\u00e9cifi\u00e9 n'est pas un tableau d'entiers ou ne peut pas \u00eatre convertie en tableau d'entiers.
+invalidIntegerArray.useraction=V\u00e9rifiez que la valeur sp\u00e9cifi\u00e9e dans la configuration du serveur est une repr\u00e9sentation valide d'un tableau d'entiers.
+
+invalidDuration=CWWKE0107W: Le param\u00e8tre sp\u00e9cifi\u00e9 ne repr\u00e9sente pas une valeur de dur\u00e9e. {1}={2} pour {0}
+invalidDuration.explanation=La valeur du param\u00e8tre de configuration sp\u00e9cifi\u00e9 n'est pas ou ne peut pas \u00eatre convertie en une valeur de dur\u00e9e.
+invalidDuration.useraction=V\u00e9rifiez que la valeur sp\u00e9cifi\u00e9e dans la configuration du serveur est une repr\u00e9sentation valide d'une valeur de dur\u00e9e.
+
+#
+# W A R N I N G:   Do not use CWWKE0108 - CCWKE0109 they are currently in use LauncherMessages.nlsprops
+#

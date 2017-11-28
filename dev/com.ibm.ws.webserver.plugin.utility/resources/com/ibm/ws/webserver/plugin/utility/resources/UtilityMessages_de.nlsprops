@@ -1,0 +1,182 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.webserver.plugin.utility/resources/com/ibm/ws/webserver/plugin/utility/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+error=Fehler: {0}
+error.inputConsoleNotAvailable=Die Eingabekonsole ist nicht verf\u00fcgbar.
+error.missingIO=Fehler. E/A-Einheit fehlt: {0}
+
+serverNotFound=Der angegebene Server {0} wurde nicht an der Position {1} gefunden.
+jmx.local.connector.file.notfound=Die Adressendatei des lokalen JMX-Connectors wurde nicht unter {0} gefunden.
+jmx.local.connector.file.invalid=Die Adressendatei des lokalen JMX-Connectors unter {0} konnte nicht gelesen werden.
+
+#------------------------------------------------------------------------------
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+tooManyArgs=Zu viele Argumente.
+insufficientArgs=Zu wenige Argumente.
+missingServerName=Das Ziel f\u00fcr die Task wurde nicht angegeben.
+invalidArg=Das Argument {0} ist ung\u00fcltig.
+missingArg=Das Argument {0} fehlt.
+missingValue=Der Wert f\u00fcr das Argument {0} fehlt.
+
+#------------------------------------------------------------------------------
+# Messages for HelpTask
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Syntax: {0} Aktion [Optionen]
+task.unknown=Unbekannte Task: {0}
+
+common.encodeError=\n\
+Das Kennwort f\u00fcr das Argument kann nicht codiert werden: {0}
+
+common.hostError=\n\
+Der angegebene Hostname scheint nicht zul\u00e4ssig zu sein: {0}\n\
+Vergewissern Sie sich, dass der Hostname richtig ist und das System eine Netzverbindung hat.
+
+common.portError=\n\
+Der angegebene Port {0} konnte nicht erreicht werden. Pr\u00fcfen Sie, ob der Port korrekt ist.
+
+common.connectionError=\n\
+Die Operation kann nicht ausgef\u00fchrt werden.\n\
+Fehler: {0}
+
+#------------------------------------------------------------------------------
+# Messages for get and generate operations
+#------------------------------------------------------------------------------
+
+generateWebServerPluginTask.abort=\n\
+Stoppoperation wird ausgef\u00fchrt...
+
+generateWebServerPluginTask.cleanupFail=\n\
+Fehler beim Bereinigen der generierten Dateien. {0} kann nicht gel\u00f6scht werden. \n\
+Entfernen Sie die Datei manuell, \u00fcberpr\u00fcfen Sie die Dateiberechtigungen\n\
+und wiederholen Sie die Operation.
+
+generateWebServerPluginTask.complete.collective=\n\
+Die Generierung der Web-Server-Konfigurationsdateien f\u00fcr den Zielverbundcontroller war erfolgreich.
+
+generateWebServerPluginTask.fail.collective=\n\
+Die Generierung der Web-Server-Konfigurationsdateien f\u00fcr den Zielverbundcontroller ist fehlgeschlagen.\n\
+Analysieren Sie die Protokolle des Zielverbundcontrollers, um das Problem zu diagnostizieren.
+
+generateWebServerPluginTask.start.server.local=\n\
+Der lokale Zielserver {0} wird verwendet, um die Web-Server-Konfigurationsdatei zu generieren.
+
+generateWebServerPluginTask.start.server.remote=\n\
+Der ferne Zielserver {0} wird verwendet, um die Web-Server-Konfigurationsdatei zu generieren.
+
+generateWebServerPluginTask.complete.server=\n\
+Die Generierung der Web-Server-Konfigurationsdatei f\u00fcr den Zielserver war erfolgreich.
+
+generateWebServerPluginTask.fail.server=\n\
+Die Generierung der Web-Server-Konfigurationsdatei f\u00fcr den Zielserver ist fehlgeschlagen.\n\
+Analysieren Sie die Protokolle des Zielservers, um das Problem zu diagnostizieren.
+
+generateWebServerPluginTask.notEnabled=\n\
+Das Verbundcontroller-Feature ist nicht aktiviert. Aktivieren Sie das Feature und\n\
+wiederholen Sie dann den Befehl.
+
+generateWebServerPluginTask.start.server=\n\
+Der Server {0} wird gestartet, weil er momentan nicht aktiv ist.
+
+generateWebServerPluginTask.stop.server=\n\
+Der Server {0} wird gestoppt, weil er anf\u00e4nglich gestoppt war.
+
+generateWebServerPluginTask.server.started=\n\
+Der Server {0} wurde erfolgreich gestartet.
+
+generateWebServerPluginTask.server.not.started=\n\
+Der Server {0} konnte nicht gestartet werden.
+
+generateWebServerPluginTask.server.plugin=Die Plug-in-Konfigurationsdatei des WebSphere Liberty-Servers wird generiert.
+
+generateWebServerPluginTask.target.directory.not.exists=\n\
+Das f\u00fcr --targetPath: {0} angegebene Verzeichnis ist nicht vorhanden.
+
+generateWebServerPluginTask.server.plugin.generated=\n\
+Die Plug-in-Datei wird an der Position {0} auf dem Server generiert.
+
+generateWebServerPluginTask.complete.next.step=\n\
+Kopieren Sie die Plug-in-Konfigurationsdatei in das mit der Anweisung\n\
+WebSpherePluginConfig in der IBM HTTP Server-Datei httpd.conf \n\
+angegebene Verzeichnis.
+
+#------------------------------------------------------------------------------
+# Messages for merge operation
+#------------------------------------------------------------------------------
+
+MergePluginFilesTask.merging.plugin.dir=\n\
+Die Plug-in-Dateien mit dem Muster *plugin-cfg*.xml aus dem Verzeichnis {0}\n\
+werden zusammengef\u00fchrt. 
+
+MergePluginFilesTask.merging.plugin.list=\n\
+Die aufgelisteten Plug-in-Dateien werden zusammengef\u00fchrt.
+
+MergePluginFilesTask.merging.plugin.file.not.exists=\n\
+Die Datei {0} ist nicht vorhanden. \u00dcberpr\u00fcfen Sie, ob die Datei vorhanden\n\
+und eine g\u00fcltige Plug-in-Konfigurationsdatei ist.
+
+MergePluginFilesTask.merging.plugin.file.is.directory=\n\
+Die Datei {0} ist ein Verzeichnis. Verzeichnisse und normale Dateien\n\
+k\u00f6nnen bei der Zusammenf\u00fchrung nicht gemischt werden.
+
+MergePluginFilesTask.merging.plugin.targetdir.not.exists=\n\
+Das Verzeichnis {0}, in dem die zusammengef\u00fchrte Konfigurationsdatei generiert \n\
+werden soll, ist nicht vorhanden.
+
+MergePluginFilesTask.merging.plugin.source.dir.not.exists=\n\
+Das Quellenverzeichnis {0} ist nicht vorhanden.
+
+MergePluginFilesTask.merging.plugin.source.file.not.directory=\n\
+Die Quelle {0} ist kein Verzeichnis.
+
+MergePluginFilesTask.merging.plugin.source.file.selected=\n\
+Die Datei {0} wurde f\u00fcr die Zusammenf\u00fchrung ausgew\u00e4hlt. 
+
+MergePluginFilesTask.merging.plugin.target.file.generating=\n\
+Die zusammengef\u00fchrte Konfigurationsdatei wird in {0} generiert.
+
+MergePluginFilesTask.merging.plugin.target.file.generated=\n\
+Die zusammengef\u00fchrte Konfigurationsdatei wurde erfolgreich generiert.
+
+MergePluginFilesTask.merging.plugin.insufficent.number.of.source.files=\n\
+Geben Sie mindestens zwei zusammenzuf\u00fchrende Plug-in-Konfigurationsdateien an.
+
+#------------------------------------------------------------------------------
+# Messages for pluginUtility generate option 
+#------------------------------------------------------------------------------
+# reading in a password
+#-----------------------------------------
+password.enterText={0} eingeben:
+password.reenterText={0} erneut eingeben:
+password.readError=Fehler beim Lesen des Kennworts.
+password.entriesDidNotMatch=Die Kennw\u00f6rter stimmen nicht \u00fcberein.
+
+#-----------------------------------------
+# reading in a user 
+#-----------------------------------------
+user.enterText={0} eingeben:
+user.readError=Fehler beim Lesen des Benutzers.
+
+#----------------------------------------- 
+# Missing Argument Messages 
+#-----------------------------------------
+invalidPortArg=Angabe eines ung\u00fcltigen Werts f\u00fcr [Port]={0} im Argument f\u00fcr {1}. Ein numerischer Wert ist erforderlich.
+missingUsernameValue=Fehlender Wert f\u00fcr [Benutzer] im Argument f\u00fcr {0}.
+missingPasswordValue=Fehlender Wert f\u00fcr [Kennwort] im Argument f\u00fcr {0}.
+missingHostValue=Fehlender Wert f\u00fcr [Host] im Argument f\u00fcr {0}.
+missingPortValue=Fehlender Wert f\u00fcr [Port] im Argument f\u00fcr {0}.
+missingHostorPortValue=Fehlender Wert f\u00fcr [Host oder Port] im Argument f\u00fcr {0}.
+
+#------------------------------------------------------------------------------

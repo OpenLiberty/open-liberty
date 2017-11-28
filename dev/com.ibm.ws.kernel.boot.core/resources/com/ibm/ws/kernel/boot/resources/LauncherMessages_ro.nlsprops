@@ -1,0 +1,722 @@
+###############################################################################
+# Copyright (c) 2010, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.boot/resources/com/ibm/ws/kernel/boot/resources/LauncherMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0001 - 0099 com.ibm.ws.kernel.boot.resources.LauncherMessages
+# 0900 - 0999 com.ibm.ws.kernel.boot.resources.LauncherMessages
+# 1000 - 1099 com.ibm.ws.kernel.boot.resources.LauncherMessages
+# ---------- ERROR msgs ----------------------------
+
+audit.launchTime=CWWKE0001I: Serverul {0} a fost lansat.
+audit.launchTime.explanation=Acest mesaj este pur informativ.
+audit.launchTime.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+audit.kernelStartTime=CWWKE0002I: Kernel-ul a pornit dup\u0103 {0}
+audit.kernelStartTime.explanation=Kernel-ul a fost pornit. Intervalul (\u00een secunde) depinde de momentul \u00een care a fost lansat\u0103 platforma.
+audit.kernelStartTime.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+info.bootstrapChange=CWWKE0003I: Loca\u0163iile bootstrap s-au modificat, a\u015fadar serverul va fi pornit curat.
+info.bootstrapChange.explanation=Acest mesaj este pur informativ.
+info.bootstrapChange.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+error.badLocation=CWWKE0004E: Sistemul nu a putut rezolva loca\u0163iile pentru instalarea serverului.
+error.badLocation.explanation=O instalare de server nu a putut fi g\u0103sit\u0103 la o loca\u0163ie specificat\u0103.
+error.badLocation.useraction=Reinstala\u0163i sau repara\u0163i profilul Liberty. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support. 
+
+error.unableToLaunch=CWWKE0005E: Mediul runtime nu a putut fi lansat.
+error.unableToLaunch.explanation=S-a \u00eent\u00e2lnit o problem\u0103 care a \u00eempiedicat lansarea mediului runtime.
+error.unableToLaunch.useraction=Examina\u0163i istoricele disponibile pentru a identifica problema \u015fi a o rezolva.
+
+error.enableIIOPTransport=CWWKE0006E: V\u0103 rug\u0103m s\u0103 activa\u0163i caracteristica orb pentru suport ORB.
+error.enableIIOPTransport.explanation=Suportul Object Request Broker (ORB) necesit\u0103 caracteristica orb.
+error.enableIIOPTransport.useraction=Activa\u0163i caracteristica orb pentru a permite suportul ORB.
+ 
+error.cannotConvertEbcdicToAscii=CWWKE0007E: Sistemul nu a reu\u015fit convertirea cu succes a urm\u0103torului fi\u015fier de la EBCDIC la ASCII: {0}
+error.cannotConvertEbcdicToAscii.explanation=\u00cen timpul proces\u0103rii fi\u015fierului specificat, a ap\u0103rut o eroare care a \u00eempiedicat sistemul s\u0103 converteasc\u0103 formatul EBCDIC la ASCII. Versiunea EBCDIC a fi\u015fierului r\u0103m\u00e2ne intact\u0103.
+error.cannotConvertEbcdicToAscii.useraction=Converti\u0163i manual fi\u015fierul dac\u0103 dori\u0163i s\u0103 \u00eel vizualiza\u0163i pe un sistem bazat pe ASCII.  Nu este necesar\u0103 nicio ac\u0163iune dac\u0103 acest fi\u015fier vor fi procesat de suportul IBM.
+
+error.bootPropsURI=CWWKE0008E: URI-ul propriet\u0103\u0163ilor boostrap este formatat gre\u015fit. uri={0}, motiv={1}
+error.bootPropsURI.explanation=Exist\u0103 o eroare \u00een URI pentru fi\u015fierul de propriet\u0103\u0163i bootstrap specificat.
+error.bootPropsURI.useraction=Corecta\u0163i URI-ul pentru propriet\u0103\u0163ile bootstrap \u015fi re\u00eencerca\u0163i comanda.
+
+# {0} is the path to the missing Java dump file
+error.missingDumpFile=CWWKE0009E: Sistemul nu poate g\u0103si urm\u0103torul fi\u015fier \u015fi acest fi\u015fier nu va fi inclus \u00een arhiva dump de server: {0}
+error.missingDumpFile.explanation=Sistemul este configurat pentru a cere ce dump-uri Java s\u0103 fie luate \u015fi colectate \u00een arhiva dump de server. Dump-ul Java cerut nu poate fi g\u0103sit pe sistemul de fi\u015fiere la loca\u0163ia indicat\u0103 \u015fi nu va fi colectat \u00een arhiva dump de server.
+error.missingDumpFile.useraction=Verifica\u0163i istoricele de server, console.log \u015fi messages.log, sau ambele, pentru a determina dac\u0103 sunt disponibile dump-urile Java necesare la alt\u0103 loca\u0163ie sau pentru a determina de ce a e\u015fuat dump-ul Java. \u00cencerca\u0163i s\u0103 ob\u0163ine\u0163i \u015fi s\u0103 colecta\u0163i manual toate dump-urile Java lips\u0103. Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina web pentru suportul WebSphere Application Server Support pentru informa\u0163ii despre cum s\u0103 genera\u0163i manual javacore-uri: http://www.ibm.com/software/webservers/appserv/was/support
+
+error.badConfigRoot=CWWKE0010E: Fi\u015fierul server.xml necesar trebuie s\u0103 existe \u015fi s\u0103 poat\u0103 fi citit. Cale: {0} Motiv: {1}
+error.badConfigRoot.explanation=Fi\u015fierul server.xml nu poate fi citit sau nu exist\u0103.
+error.badConfigRoot.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul server.xml exist\u0103 \u015fi poate fi citit de utilizatorul curent.
+
+error.archiveTarget=CWWKE0011E: Parametrul --archive necesit\u0103 un argument: --archive="<fi\u015fier de arhivat>"
+error.archiveTarget.explanation=Nu s-a furnizat un argument necesar.
+error.archiveTarget.useraction=Furniza\u0163i argumentul corect \u015fi re\u00eencerca\u0163i comanda. \u00cencerca\u0163i s\u0103 folosi\u0163i --help pentru o descriere a argumentelor pentru op\u0163iunea furnizat\u0103.
+
+error.serverNameCharacter=CWWKE0012E: Numele de server specificat con\u0163ine un caracter care nu este valid (name={0}). \
+Caracterele valide sunt: alfanumerice Unicode (de ex. \
+0-9, a-z, A-Z), liniu\u0163\u0103 de subliniere (_), liniu\u0163\u0103 (-), plus (+) \u015fi punct (.). \
+Un nume de erver nu poate \u00eencepe cu liniu\u0163\u0103 (-) sau punct (.).
+error.serverNameCharacter.explanation=Un caracter care nu este valid a fost utilizat \u00een numele serverului.
+error.serverNameCharacter.useraction=Redenumi\u0163i serverul folosind doar caractere valide: alfanumerice Unicode (de ex. 0-9, a-z, A-Z), liniu\u0163\u0103 de subliniere (_), liniu\u0163\u0103 (-), plus (+) \u015fi punct (.).
+
+error.unknownArgument=CWWKE0013E: Op\u0163iune necunoscut\u0103: {0}
+error.unknownArgument.explanation=Op\u0163iunea specificat\u0103 nu a fost recunoscut\u0103.
+error.unknownArgument.useraction=Re\u00eencerca\u0163i comanda folosind op\u0163iuni valide. \u00cencerca\u0163i s\u0103 folosi\u0163ie --help pentru o list\u0103 de op\u0163iuni valide.
+
+error.bootPropsStream=CWWKE0014E: Sistemul nu a putut deschide sau citi propriet\u0103\u0163ile bootstrap specificate. Cale: {0} Motiv: {1}
+error.bootPropsStream.explanation=Fi\u015fierul bootstrap.properties nu poate fi citit sau nu exist\u0103.
+error.bootPropsStream.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul specificat exist\u0103 \u015fi poate fi citit de utilizatorul curent.
+
+error.platformBundleException=CWWKE0015E: Au ap\u0103rut erori interne la pornirea serverului. 
+error.platformBundleException.explanation=S-a \u00eent\u00e2lnit cel pu\u0163in o excep\u0163ie la instalarea sau pornirea serverului. 
+error.platformBundleException.useraction=Verifica\u0163i c\u0103 produsul a fost instalat corect. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.secPermission=CWWKE0016E: Fi\u015fierul JAR bootstrap necesit\u0103 configura\u0163ia de securitate AllPermission pentru a lansa mediul runtime \u015fi cadrul de lucru OSGi ({0}).
+error.secPermission.explanation=Permisiunile Java 2 Security sunt insuficiente pentru ca fi\u015fierul JAR bootstrap s\u0103 lanseze mediul runtime \u015fi cadrul de lucru OSGi.
+error.secPermission.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul JAR bootstrap are acordate privilegii AllPermission \u00een fi\u015fierul de politici Java 2 Security.
+
+# CWWKE0017E removed because it's only used in com.ibm.ws.kernel.boot.cmdline. Do not reuse.
+
+error.unknownException=CWWKE0018E: A ap\u0103rut o excep\u0163ie \u00een timp ce se lansa mediul runtime: {0}
+error.unknownException.explanation=Excep\u0163ia a \u00eempiedicat lansarea serverului.
+error.unknownException.useraction=Rezolva\u0163i excep\u0163ia, dac\u0103 e posibil, apoi re\u00eencerca\u0163i ac\u0163iunea. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.frameworkDef=CWWKE0019E: Nu s-a specificat defini\u0163ia cadrului de lucru necesar.
+error.frameworkDef.explanation=Instal\u0103rii serverului \u00eei lipsesc fi\u015fiere necesare \u015fi serverul nu a putut porni.
+error.frameworkDef.useraction=Verifica\u0163i c\u0103 produsul a fost instalat corect. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.frameworkDefFile=CWWKE0020E: Nu exist\u0103 defini\u0163ia cadrului de lucru specificat ({0}).
+error.frameworkDefFile.explanation=Nu s-a g\u0103sit fi\u015fierul de defini\u0163ie a cadrului de lucru.
+error.frameworkDefFile.useraction=Asigura\u0163i-v\u0103 c\u0103 exist\u0103 resursa defini\u0163iei cadrului de lucru \u015fi poate fi citit\u0103 de utilizatorul curent.
+
+error.frameworkJarFile=CWWKE0021E: Bundle-ul cadrului de lucru specificat ({0}) nu exist\u0103.
+error.frameworkJarFile.explanation=Nu s-a putut g\u0103si artefactul bundle-ului cadrului de lucru specificat.
+error.frameworkJarFile.useraction=Asigura\u0163i-v\u0103 c\u0103 resursa exist\u0103 \u015fi poate fi citit\u0103 de utilizatorul curent.
+
+error.kernelDef=CWWKE0022E: Nu s-a specificat defini\u0163ia de kernel necesar\u0103.
+error.kernelDef.explanation=Instal\u0103rii serverului \u00eei lipsesc fi\u015fiere necesare \u015fi serverul nu a putut porni.
+error.kernelDef.useraction=Verifica\u0163i c\u0103 produsul a fost instalat corect. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.kernelDefFile=CWWKE0023E: Nu exist\u0103 defini\u0163ia de kernel specificat\u0103 ({0}).
+error.kernelDefFile.explanation=Nu s-a putut g\u0103si defini\u0163ia de kernel specificat\u0103.
+error.kernelDefFile.useraction=Asigura\u0163i-v\u0103 c\u0103 exist\u0103 resursa defini\u0163iei de kernel \u015fi poate fi citit\u0103 de utilizatorul curent.
+
+error.specifiedLocation=CWWKE0025E: Valoarea {0} trebuie s\u0103 fac\u0103 referire la un director. \
+Valoarea specificat\u0103 face referire la o resurs\u0103 de fi\u015fier existent\u0103. \
+Valoare: {1}
+error.specifiedLocation.explanation=Loca\u0163ia furnizat\u0103 face referire la un fi\u015fier existent \u00een loc de un director.
+error.specifiedLocation.useraction=Modifica\u0163i loca\u0163ia specificat\u0103 la un director \u015fi re\u00eencerca\u0163i ac\u0163iunea.
+
+warning.noPlatformCache=CWWKE0026W: Sistemul nu a putut scrie fi\u015fierul cache platform\u0103 ({0}). Excep\u0163ie: {1}
+warning.noPlatformCache.explanation=Fi\u015fierul cache platform\u0103 specificat nu a putut fi scris.
+warning.noPlatformCache.useraction=Verifica\u0163i \u015fi rezolva\u0163i excep\u0163ia, apoi re\u00eencerca\u0163i ac\u0163iunea.
+
+warning.singleServer=CWWKE0027W: Un singur server poate fi specificat \u00een linia de comand\u0103; numele urm\u0103toare vor fi ignorate (server={0}, ignored={1}).
+warning.singleServer.explanation=Pute\u0163i specifica un singur server \u00een linia de comand\u0103. Primul nume de server a fost procesat; numele r\u0103mase au fost ignorate.
+warning.singleServer.useraction=Nu este necesar\u0103 nici o ac\u0163iune. Specifica\u0163i un singur server pentru a evita acest avertisment.
+  
+error.serverAlreadyRunning=CWWKE0029E: O instan\u0163\u0103 a serverului {0} ruleaz\u0103 deja.
+error.serverAlreadyRunning.explanation=\u00cencerca\u0163i s\u0103 porni\u0163i un server ce ruleaz\u0103 deja.
+error.serverAlreadyRunning.useraction=Opri\u0163i instan\u0163a de server existent\u0103 \u00eenainte de a \u00eencerca s\u0103 porni\u0163i serverul sau porni\u0163i un alt server.
+
+# {0} The server name
+# {1} The server directory path
+# {2} The exception thrown when trying to create
+error.creatingNewServer=CWWKE0030E: A avut loc o excep\u0163ie \u00een timpul cre\u0103rii serverului {0}. serverPath: {1} Motiv: {2}
+error.creatingNewServer.explanation=Serverul specificat nu a putut fi creat.
+error.creatingNewServer.useraction=Verifica\u0163i \u015fi rezolva\u0163i excep\u0163ia, apoi \u00eencerca\u0163i din nou s\u0103 crea\u0163i serverul.
+
+error.noExistingServer=CWWKE0031E: Serverul specificat {0} nu exist\u0103; utiliza\u0163i op\u0163iunea --create pentru a crea un nou server. serverPath: {1}
+error.noExistingServer.explanation=Serverul specificat nu exist\u0103, a\u015fadar nu se poate realiza pe el nici o ac\u0163iune.
+error.noExistingServer.useraction=Verifica\u0163i numele serverului sau crea\u0163i un server cu numele specificat, apoi re\u00eencerca\u0163i comanda.
+
+## No longer used
+error.bundleInstallException=CWWKE0032E: Au ap\u0103rut una sau mai multe excep\u0163ii la instalarea bundle-urilor de platforme.
+error.bundleInstallException.explanation=A fot \u00eent\u00e2lnit\u0103 cel pu\u0163in o excep\u0163ie \u00een timpul instal\u0103rii bundle-urilor de platform\u0103.
+error.bundleInstallException.useraction=Examina\u0163i istoricele pentru a identifica \u015fi a rezolva excep\u0163iile, apoi re\u00eencerca\u0163i s\u0103 instala\u0163i bundle-urile.
+
+error.missingBundleException=CWWKE0033E: N-au putut fi g\u0103site bundle-urile de platforme.
+error.missingBundleException.explanation=N-au putut fi g\u0103site unul sau mai multe bundle-uri de platforme.
+error.missingBundleException.useraction=Asigura\u0163i-v\u0103 c\u0103 resursele de platform\u0103 exist\u0103 \u015fi pot fi citite de utilizatorul curent.
+
+error.noStartedBundles=CWWKE0034E: Nu s-a instalat nici un bundle, v\u0103 rug\u0103m verifica\u0163i imaginea de instalare.
+error.noStartedBundles.explanation=Imaginea de instalare ar putea fi incomplet\u0103.
+error.noStartedBundles.useraction=Verifica\u0163i instalarea \u015fi re\u00eencerca\u0163i s\u0103 instala\u0163i bundle-urile.
+
+error.initLog=CWWKE0035E: A fost o problem\u0103 cu fi\u015fierul istoric ini\u0163ial specificat. logPath={0}
+error.initLog.explanation=Loca\u0163ia fi\u015fierului istoric ini\u0163ial nu a fost specificat\u0103 corect, sau fi\u015fierul nu era lizibil.
+error.initLog.useraction=Verifica\u0163i loca\u0163ia \u015fi starea fi\u015fierului istoric ini\u0163ial.
+
+audit.kernelUpTime=CWWKE0036I: Serverul {0} s-a oprit dup\u0103 {1}.
+audit.kernelUpTime.explanation=Kernel-ul s-a oprit dup\u0103 intervalul specificat (\u00een secunde). Acest interval depinde de momentul \u00een care a fost lansat\u0103 platforma.
+audit.kernelUpTime.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+error.unknown.console.protocol=CWWKE0037E: {0} nu este un protocol de consol\u0103 suportat. Protocolul telnet va fi utilizat \u00een schimb. 
+error.unknown.console.protocol.explanation=Protocolul specificat nu este suportat, a\u015fadar sistemul folose\u015fte \u00een loc protocolul (telnet) implicit.
+error.unknown.console.protocol.useraction=Nu este necesar\u0103 nici o ac\u0163iune pentru a utiliza protocolul implicit. Altfel, modifica\u0163i configura\u0163ia s\u0103 utilizeze un protocol suportat.
+
+error.rasProvider=CWWKE0038E: Nu s-a specificat furnizorul de istoric necesar.
+error.rasProvider.explanation=Instal\u0103rii serverului \u00eei lipsesc fi\u015fiere necesare \u015fi serverul nu a putut porni.
+error.rasProvider.useraction=Verifica\u0163i c\u0103 produsul a fost instalat corect. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.rasProviderResolve=CWWKE0039E: Nu exist\u0103 fi\u015fierul JAR al furnizorului de istorice specificat sau bundle-ul ({0}).
+error.rasProviderResolve.explanation=Nu s-a putut g\u0103si resursa furnizorului de istoric specificat.
+error.rasProviderResolve.useraction=Asigura\u0163i-v\u0103 c\u0103 resursa furnizorului de istoric exist\u0103 \u015fi poate fi citit\u0103 de utilizatorul curent.
+
+error.frameworkRestart=CWWKE0040E: Bundle-urile de platforme nu au putut fi rezolvate fa\u0163\u0103 de cache. Reporni\u0163i serverul cu o pornire curat\u0103.
+error.frameworkRestart.explanation=Bundle-urile de platforme nu au putut fi rezolvate fa\u0163\u0103 de cache-ul platformei. Aceast\u0103 problem\u0103 poate fi rezolvat\u0103 \u00een mod normal cu o repornire curat\u0103.
+error.frameworkRestart.useraction=Reporni\u0163i serverul folosind op\u0163iunea --clean pentru a cur\u0103\u0163a cache-ul.
+
+info.frameworkRestart=CWWKE0041I: Cache-ul platformei este nesincornizat. Se reporne\u015fte cadrul de lucru.
+info.frameworkRestart.explanation=Cadrul de lucru a fost repornit \u00eentruc\u00e2t cache-ul platformei era nesincronizat.
+info.frameworkRestart.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+# CWWKE0042E removed because it's only used in com.ibm.ws.kernel.boot.cmdline - Do not reuse.
+
+error.unsupportedLaunch=CWWKE0043E: Loca\u0163ia de lansare nu este un fi\u015fier local. ({0})
+error.unsupportedLaunch.explanation=Mediul runtime trebuie lansat dintr-un fi\u015fier local, de exemplu un fi\u015fier JAR.
+error.unsupportedLaunch.useraction=Verifica\u0163i c\u0103 comanda folosit\u0103 folose\u015fte comanda java -jar <localJarFile> pentru a rula mediu runtime. 
+
+error.serverDirPermission=CWWKE0044E: Nu exist\u0103 nici o permisiune de scriere pentru directorul de server {0}
+error.serverDirPermission.explanation=Directorul de server trebuie s\u0103 fie inscriptibil pentru a porni serverul.
+error.serverDirPermission.useraction=Verifica\u0163i c\u0103 ave\u0163i acces de scriere la directorul de server \u015fi zona de lucru.
+
+error.serverDirExists=CWWKE0045E: Nu s-a putut crea serverul numit {0} pentru c\u0103 directorul de server {1} exist\u0103 deja.
+error.serverDirExists.explanation=Directorul de server nu trebuie s\u0103 existe deja c\u00e2nd crea\u0163i un server.
+error.serverDirExists.useraction=Fie alege\u0163i un nou nume de server fie \u015fterge\u0163i directorul, apoi rerula\u0163i comanda.
+
+error.noAttachAPI=CWWKE0046E: Nu s-a putut g\u0103si o implementare a API-ului Java Attach.
+error.noAttachAPI.explanation=Func\u0163ia cerut\u0103 necesit\u0103 API-ul Java Attach \u015fi nu s-a putut g\u0103si o implementare.
+error.noAttachAPI.useraction=Specifica\u0163i loca\u0163ia API-ului Java Attach pe CLASSPATH (cale de clase).
+
+error.shutdownClientException=CWWKE0047E: Agentul de control al proceselor s-a oprit cu o excep\u0163ie nea\u015fteptat\u0103 {0}
+error.shutdownClientException.explanation=Excep\u0163ia specificat\u0103 a \u00eempiedicat agentul de control al proceselor s\u0103 ruleze corect.
+error.shutdownClientException.useraction=Rezolva\u0163i excep\u0163ia \u015fi re\u00eencerca\u0163i ac\u0163iunea.
+
+warning.serverNotFound=CWWKE0048W: Nu s-a putut g\u0103si o instan\u0163\u0103 ce ruleaz\u0103 a serverului cu numele {0} \u015fi directorul de server {1}.
+warning.serverNotFound.explanation=Agentul de control al proceselor nu a putut g\u0103si o instan\u0163\u0103 ce ruleaz\u0103 a serverului specificat.
+warning.serverNotFound.useraction=Verifica\u0163i c\u0103 ruleaz\u0103 o instan\u0163\u0103 a serverului specificat \u015fi c\u0103 ruleaz\u0103 sub aceea\u015fi implementare JRE.
+
+error.stopServerError=CWWKE0049E: Serverul {0} nu a putut fi oprit. 
+error.stopServerError.explanation=S-a g\u0103sit o instan\u0163\u0103 ce ruleaz\u0103 a serverului specificat, dar nu \u015fi-a oprit activitatea corespunz\u0103tor ca r\u0103spund la o comand\u0103 de oprire (stop). 
+error.stopServerError.useraction=Examina\u0163i istoricele serverului pentru informa\u0163ii suplimentare despre motivul pentru care serverul nu \u015fi-a oprit activitatea corespunz\u0103tor.
+
+error.invalid.directory=CWWKE0050E: Nu s-a putut ini\u0163ializa ascult\u0103torul comenzii de server. Directorul de server {0} nu este valid.
+error.invalid.directory.explanation=Directorul nu exist\u0103 sau nu poate fi citit.
+error.invalid.directory.useraction=Revizui\u0163i configura\u0163ia.
+
+error.packageServerError=CWWKE0051E: Serverul {0} nu a putut fi \u00eempachetat.
+error.packageServerError.explanation=Nu s-a putut \u00eempacheta serverul specificat.
+error.packageServerError.useraction=Revizui\u0163i jurnalele serverului pentru informa\u0163ii suplimentare. Dac\u0103 persist\u0103 problema, vede\u0163i informa\u0163iile despre determinarea problemelor de pe Pagina de suport WebSphere Application Server la http://www.ibm.com/software/webservers/appserv/was/support/.
+
+error.serverCommand.init=CWWKE0052E: A e\u015fuat ini\u0163ializarea ascult\u0103torului de comenzi de server din cauza unei excep\u0163ii I/E {0}
+error.serverCommand.init.explanation=A avut loc o excep\u0163ie nea\u015fteptat\u0103 la ini\u0163ializarea ascult\u0103torului comenzii de server.
+error.serverCommand.init.useraction=Revizui\u0163i jurnalele serverului pentru informa\u0163ii suplimentare despre de ce a e\u015fuat comanda. Dac\u0103 persist\u0103 problema, vede\u0163i informa\u0163iile despre determinarea problemelor de pe Pagina de suport WebSphere Application Server la http://www.ibm.com/software/webservers/appserv/was/support/.
+
+warning.unrecognized.command=CWWKE0053W: Comand\u0103 nerecunoscut\u0103 {0}
+warning.unrecognized.command.explanation=Comanda a fots ignorat\u0103 deoarece nu a fost recunoscut\u0103.
+warning.unrecognized.command.useraction=Folosi\u0163i ac\u0163iunea de ajutor pentru a verifica faptul c\u0103 \u00eencerca\u0163i o comand\u0103 valid\u0103 cu op\u0163iuni valide. Dac\u0103 persist\u0103 problema, vede\u0163i informa\u0163iile despre determinarea problemelor de pe Pagina de suport WebSphere Application Server la http://www.ibm.com/software/webservers/appserv/was/support/.
+
+error.fileNotFound=CWWKE0054E: Nu se poate descide fi\u015fierul {0}. 
+error.fileNotFound.explanation=A avut loc o excep\u0163ie FileNotFoundException la \u00eencercarea de a deschide fi\u015fierul. 
+error.fileNotFound.useraction=Verifica\u0163i c\u0103 exist\u0103 calea \u015fi c\u0103 ave\u0163i acces de scriere \u015fi suficient spa\u0163iu pe disc.
+
+# {0} The date the server was shutdown. 
+# Note {0,date,full} tells the message formatter to expand in the form of Wednesday, Feb 14, 2012 using the server locale (so it'll be location specific)
+# Note {0,time,short} tells the message formatter to expand
+info.stop.request.received=CWWKE0055I: Oprirea serverului a fost cerut\u0103 pe {0,date,full} la {0,time,short}. Serverul {1} se opre\u015fte.
+info.stop.request.received.explanation=Acest mesaj este pur informativ.
+info.stop.request.received.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+error.unableZipDir=CWWKE0056E: Nu se poate arhiva directorul datorit\u0103 unei excep\u0163ii IO {0}. 
+error.unableZipDir.explanation=A avut loc o excep\u0163ie IO.
+error.unableZipDir.useraction=Re\u00eencerca\u0163i opera\u0163ia. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+info.introspect.request.received=CWWKE0057I: Cerere introspect\u0103 primit\u0103. Serverul scap\u0103 de status.
+info.introspect.request.received.explanation=Acest mesaj este doar \u00een scop informativ.
+info.introspect.request.received.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+warn.packageServer.include.unknownOption=CWWKE0058W: Nu se poate utiliza op\u0163iunea --include={0}, se va utiliza \u00een loc --include=all.
+warn.packageServer.include.unknownOption.explanation=Op\u0163iunea a fost ignorat\u0103 deoarece nu a fost recunoscut\u0103.
+warn.packageServer.include.unknownOption.useraction=Re\u00eencerca\u0163i comanda folosind op\u0163iuni valide. \u00cencerca\u0163i s\u0103 folosi\u0163ie --help pentru o list\u0103 de op\u0163iuni valide.
+
+warn.unableWriteFile=CWWKE0059W: Nu se poate scrie fi\u015fierul {0} datorit\u0103 unei excep\u0163ii IO {1}. 
+warn.unableWriteFile.explanation=A avut loc o excep\u0163ie IO.
+warn.unableWriteFile.useraction=Re\u00eencerca\u0163i opera\u0163ia. Dac\u0103 eroarea \u00eenc\u0103 persist\u0103, raporta\u0163i problema la IBM service.
+
+# {0} The name of an iFix jar file
+# {1} The name of a base jar file
+warn.ifix.ignored=CWWKE0060W: Se ignor\u0103 jar iFix {0} deoarece nu exist\u0103 jar {1} de baz\u0103.
+warn.ifix.ignored.explanation=Un jar iFix a fost g\u0103sit, dar jar-ul de baz\u0103 la care se aplic\u0103 iFix-ul nu a fost instalat.
+warn.ifix.ignored.useraction=Ob\u0163ine\u0163i un iFix pentru nivelul de pachet de corec\u0163ii instalat sau actualiza\u0163i la nivelul de corec\u0163ii corespunz\u0103tor sau \u015fterge\u0163i jar-ul iFix-ului.
+
+warn.fileEncodingNotFound=CWWKE0061W: Identificatorul setului de caractere codate (ccsid) z/OS pentru codarea {0} nu exist\u0103. Fi\u015fierelor text nu li se va ad\u0103uga tagul. 
+warn.fileEncodingNotFound.explanation=Fi\u015fierelor text nu li se va ad\u0103uga tagul cu codarea specificat\u0103.
+warn.fileEncodingNotFound.useraction=Fi\u015fierul ar putea avea nevoie s\u0103 fie translatat la codarea IBM-1047, \u00eenainte de a fi vizualizat cu editoarele standard sau utilitarele de text.
+
+warn.unableTagFile=CWWKE0062W: Fi\u015fierelor text nu li se va ad\u0103uga tagul deoarece serviciul __chattr a e\u015fuat cu errno {0}. 
+warn.unableTagFile.explanation=Fi\u015fierelor text nu li se va ad\u0103uga tagul cu codarea specificat\u0103.
+warn.unableTagFile.useraction=Fi\u015fierul ar putea avea nevoie s\u0103 fie translatat la codarea IBM-1047, \u00eenainte de a fi vizualizat cu editoarele standard sau utilitarele de text.
+
+warn.registerNative=CWWKE0063W: Nu s-a putut \u00eenregistra metoda nativ\u0103 cu numele de descriptor {0}. 
+warn.registerNative.explanation=\u00cenregistrarea metodei native a e\u015fuat.
+warn.registerNative.useraction=Verifica\u0163i c\u0103 metoda nativ\u0103 exist\u0103.
+
+error.loadNativeLibrary=CWWKE0064E: Nu se poate \u00eenc\u0103rca biblioteca nativ\u0103 z/OS {0}.
+error.loadNativeLibrary.explanation=Nu se poate \u00eenc\u0103rca biblioteca nativ\u0103 z/OS.
+error.loadNativeLibrary.useraction=Verifica\u0163i c\u0103 exist\u0103 calea \u015fi re\u00eencerca\u0163i. 
+
+# {0} The server name
+# {1} The server directory path
+error.creatingNewServerExists=CWWKE0065E: A avut loc o excep\u0163ie \u00een timpul cre\u0103rii serverului {0}. A fost detectat\u0103 activitate extern\u0103 la calea de server ({1}), prin urmare a fost oprit\u0103 crearea serverului.
+error.creatingNewServerExists.explanation=Serverul specificat nu poate fi creat \u00eentruc\u00e2t alt\u0103 aplica\u0163ie realiza opera\u0163ii cu fi\u015fiere \u00een noul director de server.
+error.creatingNewServerExists.useraction=Investiga\u0163i de ce era activitate de fi\u015fiere \u00een directorul de server \u00een afar\u0103 de comanda de creare, apoi \u015fterge\u0163i directorul de server \u015fi \u00eencerca\u0163i s\u0103 crea\u0163i din nou serverul.
+
+# {0} The server name
+# {1} The server directory path
+error.creatingNewServerMkDirFail=CWWKE0066E: Nu se poate crea un director pentru serverul {0} \u00een urm\u0103toarea loca\u0163ie: {1}.
+error.creatingNewServerMkDirFail.explanation=Serverul specificat nu poate fi creat fie din cauz\u0103 c\u0103 nu era suficient spa\u0163iu pentru a crea serverul, fie pentru c\u0103 sistemul nu poate scrie \u00een loca\u0163ie.
+error.creatingNewServerMkDirFail.useraction=Asigura\u0163i-v\u0103 c\u0103 este suficient spa\u0163iu pe disc pentru a crea serverul \u015fi c\u0103 loca\u0163ia are permisiunile de scriere corecte \u00eenainte de a \u00eencerca s\u0103 crea\u0163i din nou serverul.
+
+info.javadump.request.received=CWWKE0067I: A fost primit\u0103  o cerere de dump Java.
+info.javadump.request.received.explanation=Acest mesaj este doar \u00een scop informativ.
+info.javadump.request.received.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+info.javadump.created=CWWKE0068I: S-a creat un dump Java: {0}
+info.javadump.created.explanation=Acest mesaj este doar \u00een scop informativ.
+info.javadump.created.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+warn.javadump.unsupported=CWWKE0069W: Nu este suportat tipul de dump Java {0}.
+warn.javadump.unsupported.explanation=A fost cerut un dump, dar serverul JVM nu suport\u0103 tipul de dump.
+warn.javadump.unsupported.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+warn.package.invalid.looseFile=CWWKE0070W: Fi\u015fierul spa\u0163iat {0} este invalid.
+warn.package.invalid.looseFile.explanation= Nu s-a putut g\u0103si fi\u015fierul sau formatul fi\u015fierului este gre\u015fit.
+warn.package.invalid.looseFile.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul exist\u0103 \u015fi c\u0103 formatul s\u0103u este corect.
+
+# {0} The name of an interim fix resource
+# {1} The name of a base resource
+warn.ifix.resource.ignored=CWWKE0071W: Ignorarea corec\u0163iei provizorii {0} deoarece versiunea de baz\u0103 {1} nu exist\u0103.
+warn.ifix.resource.ignored.explanation=A fost g\u0103sit\u0103 o resurs\u0103 de corec\u0163ie provizorie, dar resursa de baz\u0103 la care se aplic\u0103 corec\u0163ia provizorie nu a fost instalat\u0103.
+warn.ifix.resource.ignored.useraction=Ob\u0163ine\u0163i o corec\u0163ie provizorie pentru nivelul pachetului de corec\u0163ii instalat, sau face\u0163i actualizarea la pachetului de corec\u0163ii corespunz\u0103tor, sau \u015fterge\u0163i resursa de pachet de corec\u0163ii provizoriu.
+
+# {0} The invalid BLST specification string
+error.blst.spec.invalid=CWWKE0072E: Este invalid \u015firul de specifica\u0163ie BLST {0}. Specifica\u0163ia trebuie s\u0103 fie  de forma: <nume-simbolic>;versiune="<interval-versiune>".
+error.blst.spec.invalid.explanation=\u015eirul de specifica\u0163ie pentru fi\u015fierul BLST nu este \u00een conformitate cu sintaxa cerut\u0103. Serverul nu este pornit.
+error.blst.spec.invalid.useraction=Specifica\u0163i numele-simbolic \u015fi intervalul-versiune pentru fi\u015fierul BLST \u00een formularul: <nume-simbolic>;versiune="<interval-versiune>". Numele-simbolic trebuie s\u0103 fie un jeton OSGi valid. Intervalul-versiune trebuie s\u0103 fie un interval-versiune OSGi valid. \u00cen plus, intervalul-versiune trebuie s\u0103 con\u0163in\u0103 \u015fi margine inferioar\u0103 \u015fi margine superioar\u0103, care pot fi inclusive sau exclusive, \u015fi nu trebuie s\u0103 specifice un calificativ.
+
+# {0} The BLST filename
+error.blst.failed.to.resolve=CWWKE0073E: A e\u015fuat rezolvarea fi\u015fierului BLST pentru {0}.
+error.blst.failed.to.resolve.explanation=Fi\u015fierul specificat BLST nu a putut fi localizat. Instal\u0103rii serverului \u00eei lipsesc fi\u015fiere necesare \u015fi serverul nu a putut porni.
+error.blst.failed.to.resolve.useraction=Specifica\u0163i un fi\u015fier BLST rezolvabil \u00een fi\u015fierul de server bootstrap.properties al serverului.
+
+error.platform.dir.not.found=CWWKE0074E: A e\u015fuat localizarea directorului platform\u0103.
+error.platform.dir.not.found.explanation=Directorul platform\u0103 nu a putut fi localizat. Instal\u0103rii serverului \u00eei lipsesc fi\u015fiere necesare \u015fi serverul nu a putut porni.
+error.platform.dir.not.found.useraction=Verifica\u0163i c\u0103 produsul a fost instalat corect. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.unknown.kernel.version=CWWKE0075E: A e\u015fuat citirea intervalului de versiuni kernel din manifestul de bootstrap.
+error.unknown.kernel.version.explanation=Nu s-a putut citi intervalul de versiuni kernel. Instal\u0103rii serverului \u00eei lipsesc fi\u015fiere necesare \u015fi serverul nu a putut porni.
+error.unknown.kernel.version.useraction=Verifica\u0163i c\u0103 produsul a fost instalat corect. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# Messages for minify.. 
+error.minify.unable.to.start.server=CWWKE0076E: Nu se poate interoga serverul {0} pentru a determina caracteristicile de re\u0163inut.
+error.minify.unable.to.start.server.explanation=Serverul numit nu a putut fi interogat pentru a determina caracteristicile de re\u0163inut \u00een timpul \u00eempachet\u0103rii. Arhiva pachetului rezultant ar putea fi invalid\u0103.
+error.minify.unable.to.start.server.useraction=Verifica\u0163i c\u0103 serverul numit poate fi pornit \u015fi re\u00eencerca\u0163i \u00eempachetarea. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.minify.unable.to.stop.server=CWWKE0077E: Nu se poate opri serverul {0}, s-a \u00eenceput determinarea caracteristicilor de re\u0163inut.
+error.minify.unable.to.stop.server.explanation=Serverul numit a fost interogat pentru caracteristicile configurate momentan, dar nu \u015fi-a oprit activitatea conform cererii.
+error.minify.unable.to.stop.server.useraction=Verifica\u0163i c\u0103 serverul numit poate porni \u015fi opri\u0163i \u015fi re\u00eencerca\u0163i opera\u0163ia pachetului. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.minify.unable.to.determine.features=CWWKE0078E: Nu se pot determina caracteristicile de re\u0163inut pentru serverul {0}.
+error.minify.unable.to.determine.features.explanation=Serverul nu poate fi \u00eempachetat cu op\u0163iunile selectate, \u00eentruc\u00e2t nu s-au putut determina caracteristicile configurate pentru server.
+error.minify.unable.to.determine.features.useraction=Verifica\u0163i configura\u0163ia pentru server \u015fi verifica\u0163i c\u0103 serverul poate porni \u015fi se poate opri. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.minify.missing.manifest=CWWKE0079E: \u00cempachetarea serverului {0} a e\u015fuat din cauza unui manifest de server lips\u0103.
+error.minify.missing.manifest.explanation=Serverul nu a putut fi \u00eempachetat, pentru c\u0103 lipsea manifestul serverului.
+error.minify.missing.manifest.useraction=Verifica\u0163i c\u0103 produsul a fost instalat corect. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.unable.load.property=CWWKE0080E: Nu se poate \u00eenc\u0103rca proprietatea {0} din fi\u015fierul {1}.
+error.unable.load.property.explanation=Proprietatea nu a putut fi g\u0103sit\u0103 \u00een fi\u015fierul de propriet\u0103\u0163i specificat.
+error.unable.load.property.useraction=Asigura\u0163i-v\u0103 c\u0103 numele propriet\u0103\u0163ii exist\u0103 \u015fi este scris corect.
+
+unable.to.package.missing.file=CWWKE0081E: Nu se poate \u00eempacheta serverul {0} cu filtrul de sistem de operare cerut {1} din cauza resursei lips\u0103 {2}.
+unable.to.package.missing.file.explanation=Cererea de \u00eempachetare a serverului cu filtrul de sistem de operare cerut a fost \u00eempiedicat\u0103 din cauza unei resurse lips\u0103.
+unable.to.package.missing.file.useraction=Confirma\u0163i dac\u0103 serverului \u00een curs de \u00eempachetare i-a fost \u00eenl\u0103turat con\u0163inutul de sistem de operare cerut printr-o opera\u0163ie de \u00eempachetare anterioar\u0103 care specifica --include=minify. Dac\u0103 da, re\u00eencerca\u0163i \u00eempachetarea pe un server care nu a fost redus de o opera\u0163ie de \u00eempachetare anterioar\u0103. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support. 
+
+error.unable.to.package=CWWKE0082E: Nu se poate \u00eempacheta serverul {0} din cauza unei excep\u0163ii I/E {1}.
+error.unable.to.package.explanation=A ap\u0103rut o IOException la \u00eempachetarea con\u0163inutului Liberty cerut.
+error.unable.to.package.useraction=Re\u00eencerca\u0163i opera\u0163ia de \u00eempachetare pe un server proasp\u0103t instalat. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.os.without.include=CWWKE0083E: Parametrul --os poate fi folosit numai cu --include=minify.
+error.os.without.include.explanation=Parametrul --os este inten\u0163ionat pentru utilizarea \u00eempreun\u0103 cu --include=minify pentru a specifica ce sisteme de operare s\u0103 se suporte \u00een timpul unei opera\u0163ii de \u00eempachetare.
+error.os.without.include.useraction=Consulta\u0163i documnta\u0163ia \u015fi, fie \u00eenl\u0103tura\u0163i parametrul --os din comand\u0103, fie ad\u0103uga\u0163i --include=minify \u015fi re\u00eencerca\u0163i opera\u0163ia.
+
+audit.system.exit=CWWKE0084I: Serverul {0} se opre\u015fte pentru c\u0103 firul de execu\u0163ie {1} ({2}) a apelat metoda {3}: {4}
+audit.system.exit.explanation=Firul de execu\u0163ie specificat a apelat o metod\u0103 pentru a ie\u015fi din JVM. Serverul a interceptat cererea \u015fi va \u00eencerca s\u0103 se opreasc\u0103 \u00eentr-o manier\u0103 ordonat\u0103.
+audit.system.exit.useraction=Dac\u0103 oprirea serverului a fost nea\u015fteptat\u0103, determina\u0163i de ce firul de execu\u0163ie specificat a apelat metoda.
+
+audit.jvm.shutdown=CWWKE0085I: Serverul {0} se opre\u015fte pentru c\u0103 JVM iese.
+audit.jvm.shutdown.explanation=Serverul a interceptat o cerere de a opri JVM \u015fi va \u00eencerca s\u0103 se opreasc\u0103 \u00eentr-o manier\u0103 ordonat\u0103. JVM ar putea s\u0103 ias\u0103 pentru c\u0103 sistemul de operare a trimis un semnal de terminare la procesul serverului.
+audit.jvm.shutdown.useraction=Dac\u0103 oprirea serverului a fost nea\u015fteptat\u0103, determina\u0163i dac\u0103 s-a trimis un semnal de terminare la procesul serverului.
+
+warning.serverStartedCommandPortDisabled=CWWKE0087W: Pornirea serverului a fost ini\u0163ializat\u0103 pentru serverul {0}, dar nu  este posibil s\u0103 se spun\u0103 dac\u0103 pornirea a fost finalizat\u0103 deoarece portul de comand\u0103 este dezactivat.
+warning.serverStartedCommandPortDisabled.explanation=Portul de comand\u0103 server este necesar pentru comunica\u0163ia cu un server care ruleaz\u0103.  Portul de comand\u0103 a fost dezactivat \u00een mod explicit pentru acest server, prin urmare nu este posibil de spus c\u00e2nd serverul \u015fi-a finalizat pornirea.
+warning.serverStartedCommandPortDisabled.useraction=Verifica\u0163i manual istoricele de server pentru a verifica faptul c\u0103 serverul a pornit cu succes.
+
+warning.serverStartedWithPIDCommandPortDisabled=CWWKE0088W: Pornirea serverului a fost ini\u0163ializat\u0103 pentru serverul {0} cu ID proces {1}, dar nu  este posibil s\u0103 se spun\u0103 dac\u0103 pornirea a fost finalizat\u0103 deoarece portul de comand\u0103 este dezactivat.
+warning.serverStartedWithPIDCommandPortDisabled.explanation=Portul de comand\u0103 server este necesar pentru comunica\u0163ia cu un server care ruleaz\u0103.  Portul de comand\u0103 a fost dezactivat \u00een mod explicit pentru acest server, prin urmare nu este posibil de spus c\u00e2nd serverul \u015fi-a finalizat pornirea.
+warning.serverStartedWithPIDCommandPortDisabled.useraction=Verifica\u0163i manual istoricele de server pentru a verifica faptul c\u0103 serverul a pornit cu succes.
+
+error.serverStopCommandPortDisabled=CWWKE0089E: Serverul {0} nu a putut fi oprit deoarece portul de comand\u0103 server este dezactivat.
+error.serverStopCommandPortDisabled.explanation=Portul de comand\u0103 server este necesar pentru comunica\u0163ia cu un server care ruleaz\u0103.  Portul de comand\u0103 a fost dezactivat pentru acest server, prin urmare nu poate fi oprit din acest script.  Observa\u0163i c\u0103 portul de comand\u0103 este dezactivat implicit c\u00e2nd un server este pornit ca task pornit pe z/OS.
+error.serverStopCommandPortDisabled.useraction=Dac\u0103 serverul ruleaz\u0103 ca task pornit pe z/OS, serverul poate fi oprit din consola de operator.  Altfel, procesul de server poate fi oprit dintr-un shell.
+
+warning.serverDumpCompleteCommandPortDisabled=CWWKE0090W: Dump-ul de server {0} complet \u00een {1}.  Unele informa\u0163ii nu au putut fi ob\u0163inute deoarece portul de comand\u0103 server este dezactivat, \u00eempiedic\u00e2nd comunica\u0163ia direct\u0103 cu serverul care ruleaz\u0103.
+warning.serverDumpCompleteCommandPortDisabled.explanation=Portul de comand\u0103 server este necesar pentru comunica\u0163ia cu un server care ruleaz\u0103.  Portul de comand\u0103 a fost dezactivat pentru acest server, prin urmare nu au putut fi ob\u0163inute unele por\u0163iuni din dump-ul de server care are nevoie de comunica\u0163ie direct\u0103 cu serverul.  Observa\u0163i c\u0103 portul de comand\u0103 este dezactivat implicit c\u00e2nd un server este pornit ca task pornit pe z/OS.
+warning.serverDumpCompleteCommandPortDisabled.useraction=Dac\u0103 serverul ruleaz\u0103 ca task pornit pe z/OS, poate fi cerut un  dump complet de server din consola de operator.  Consulta\u0163i centrul de informare pentru detalii.
+
+error.serverJavaDumpCommandPortDisabled=CWWKE0091E: Dump-ul de server {0} nu a putut fi oprit deoarece portul de comand\u0103 server este dezactivat.
+error.serverJavaDumpCommandPortDisabled.explanation=Portul de comand\u0103 server este necesar pentru comunica\u0163ia cu un server care ruleaz\u0103.  Portul de comand\u0103 este dezactivat pentru acest server, prin urmare dump-ul cerut nu a putut fi luat.  Observa\u0163i c\u0103 portul de comand\u0103 este dezactivat implicit c\u00e2nd un server este pornit ca task pornit pe z/OS.
+error.serverJavaDumpCommandPortDisabled.useraction=Dac\u0103 serverul ruleaz\u0103 ca task pornit pe z/OS, acest dump poate fi cerut din consola de operator.  Consulta\u0163i centrul de informare pentru detalii.
+
+info.javadump.zos.system.created=CWWKE0092I: Este finalizat\u0103 cererea Java System Transaction Dump (SYSTDUMP).
+info.javadump.zos.system.created.explanation=Acest mesaj este doar \u00een scop informativ. V\u0103 rug\u0103m s\u0103 v\u0103 referi\u0163i la istoricul de sistem pentru detalii despre numele \u015fi volumul setului de date care con\u0163ine ie\u015firea dump-ului de sistem Java.
+info.javadump.zos.system.created.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+warn.fingerprintUnableToMkDirs=CWWKE0093W: Serverul nu a putut crea loca\u0163ia {0} la \u00eencercarea de a scrie fi\u015fierul {1}. 
+warn.fingerprintUnableToMkDirs.explanation=Opera\u0163ia de creare a directorului nu a reu\u015fit. Este posibil ca discul s\u0103 fie plin sau serverul s\u0103 nu aib\u0103 permisiune de scriere la loca\u0163ie.
+warn.fingerprintUnableToMkDirs.useraction=Verifica\u0163i loca\u0163ia directorului \u015fi permisiunile pentru a vedea dac\u0103 problema poate fi rezolvat\u0103.
+
+warning.unableToPackageLooseConfigFileCannotResolveLocSymbol=CWWKE0094W: Serverul nu poate \u00eempacheta fi\u015fierele de aplica\u0163ii deoarece unul sau mai multe simboluri de loca\u0163ie din fi\u015fierul {0} sunt necunoscute.
+warning.unableToPackageLooseConfigFileCannotResolveLocSymbol.explanation=Serverul pune fi\u015fierul \u00eempachetat pe care \u00eel creeaz\u0103 \u00een calea specificat\u0103 \u00een fi\u015fierul XML de aplica\u0163ii de configura\u0163ii flexibile. Totu\u015fi, calea din fi\u015fierul XML de aplica\u0163ii de configura\u0163ii flexibile are cel pu\u0163in un simbol necunoscut \u00een ea. Pute\u0163i g\u0103si simbolurile cunoscute \u00een fi\u015fierul WLP_HOME/README.TXT. Simbolurile de loca\u0163ie sunt \u00eenf\u0103\u015furate \u00een textul ${...}.
+warning.unableToPackageLooseConfigFileCannotResolveLocSymbol.useraction=Modifica\u0163i calea din fi\u015fierul XML de aplica\u0163ii de configura\u0163ii flexibile pentru a utiliza simboluri de loca\u0163ie cunoscute.
+
+warning.unableToPackageLooseConfigFileMissingPath=CWWKE0095W: Serverul nu poate \u00eempacheta fi\u015fierele de aplica\u0163ii specificate \u00een fi\u015fierul XML de aplica\u0163ii de configura\u0163ii flexibile {0} deoarece nu le poate g\u0103si.
+warning.unableToPackageLooseConfigFileMissingPath.explanation=Fi\u015fierul XML de aplica\u0163ii de configura\u0163ii flexibile specificat con\u0163ine informa\u0163ii invalide despre loca\u0163ia fi\u015fierelor. De exemplu, ar putea specifica un director care nu poate fi g\u0103sit. C\u0103ile din acest fi\u015fier XML ar trebui s\u0103 fie relative la directorul de configurare al serverului. Arhiva reprezentat\u0103 de acest fi\u015fier nu va fi inclus\u0103 \u00een ie\u015firea \u00eempachetat\u0103 a serverului.
+warning.unableToPackageLooseConfigFileMissingPath.useraction=Modifica\u0163i c\u0103ile din fi\u015fierul XML de aplica\u0163ii de configura\u0163ii flexibile pentru a indica loca\u0163ia corect\u0103 care con\u0163ine fi\u015fierele de aplica\u0163ii. 
+
+warn.packageRuntime.include.unknownOption=CWWKE0099W: Nu se poate folosi op\u0163iunea --include={0}, se va folosi \u00een schimb --include=wlp.
+warn.packageRuntime.include.unknownOption.explanation=Op\u0163iunea a fost ignorat\u0103 deoarece nu a fost recunoscut\u0103.
+warn.packageRuntime.include.unknownOption.useraction=Re\u00eencerca\u0163i comanda folosind op\u0163iuni valide. \u00cencerca\u0163i s\u0103 folosi\u0163ie --help pentru o list\u0103 de op\u0163iuni valide.
+
+audit.licenseRestriction.base_ilan.ilan=CWWKE0100I: Acest produs este licen\u0163iat pentru dezvoltare \u015fi utilizare \u00een produc\u0163ie limitat\u0103. Termenii de licen\u0163\u0103 pot fi vizualiza\u0163i aici: {0}
+audit.licenseRestriction.base_ilan.ilan.explanation=Acest produs este licen\u0163iat pentru dezvoltare \u015fi utilizare \u00een produc\u0163ie limitat\u0103. Pentru a vedea defini\u0163ia utiliz\u0103rii pentru dezvoltare \u015fi pentru a \u00een\u0163elege limit\u0103rile pentru produc\u0163ie, citi\u0163i fi\u015fierele de licen\u0163\u0103 ale produsului.
+audit.licenseRestriction.base_ilan.ilan.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+audit.licenseRestriction.developers.ilan=CWWKE0101I: Acest produs este licen\u0163iat pentru utilizare la dezvoltare. Termenii de licen\u0163\u0103 pot fi vizualiza\u0163i aici: {0}
+audit.licenseRestriction.developers.ilan.explanation=Acest produs este licen\u0163iat pentru utilizare la dezvoltare. Pentru a vedea defini\u0163ia utiliz\u0103rii pentru dezvoltare \u015fi pentru a \u00een\u0163elege limit\u0103rile, citi\u0163i fi\u015fierele de licen\u0163\u0103 ale produsului.
+audit.licenseRestriction.developers.ilan.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+error.create.unknownJavaLevel=CWWKE0102E: Sistemul nu poate determina nivelul specifica\u0163iei Java din propriet\u0103\u0163ile sistemului.  Valoarea nu este specificat\u0103 sau nu este specificat\u0103 corect.  Propriet\u0103\u0163ile de sistem con\u0163in valoarea urm\u0103toare pentru java.specification.level: {0}
+error.create.unknownJavaLevel.explanation=Procesul care \u00eencearc\u0103 s\u0103 creeze serverul nu a putut determina nivelul de Java \u00een uz.  Acest nivel este necesar pentru a determina set\u0103rile optime pentru server.
+error.create.unknownJavaLevel.useraction=Asigura\u0163i-v\u0103 c\u0103 utiliza\u0163i un JDK suportat.  E posibil s\u0103 trebuiasc\u0103 s\u0103 v\u0103 modifica\u0163i variabila de mediu JAVA_HOME pentru a pointa o instalare JDK suportat\u0103.
+
+error.create.java8serverenv=CWWKE0103E: Nu se poate crea un fi\u015fier server.env file \u00een urm\u0103toarea loca\u0163ie: {0}
+error.create.java8serverenv.explanation=Procesul care \u00eencearc\u0103 s\u0103 creeze serverul nu a putut genera un fi\u015fier server.env file \u00een loca\u0163ia specificat\u0103.  Acest fi\u015fier furnizeaz\u0103 argumentele JVM necesare pentru ca serverul s\u0103 func\u0163ioneze corespunz\u0103tor.
+error.create.java8serverenv.useraction=Verifica\u0163i c\u0103 ave\u0163i acces de scriere la directorul de server \u015fi c\u0103 ave\u0163i suficient spa\u0163iu pe disc.  \u00cen plus, pute\u0163i crea manual fi\u015fierul server.env cu urm\u0103toarea valoare:  WLP_SKIP_MAXPERMSIZE=true.  Trebuie s\u0103 v\u0103 asigura\u0163i c\u0103 procesul de server are acces de citire pe acest fi\u015fier.
+
+audit.licenseRestriction.early_access.ilar=CWWKE0104I: Acest produs este un produs beta \u015fi nu poate fi utilizat \u00een produc\u0163ie. Termenii de licen\u0163\u0103 pot fi vizualiza\u0163i aici: {0}
+audit.licenseRestriction.early_access.ilar.explanation=Acest produs este un produs beta \u015fi trebuie s\u0103 fie folosit \u00een conformitate cu termenii din acordul de licen\u0163\u0103 beta.
+audit.licenseRestriction.early_access.ilar.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+error.zosProcStart.create.pidfile=CWWKE0105E: S-ar putea ca pornirea serverului {0} utiliz\u00e2nd procedura z/OS STC {1} s\u0103 fi e\u015fuat \u00eenainte de a fi fost creat fi\u015fierul PID. Verifica\u0163i ie\u015firea STC.
+error.zosProcStart.create.pidfile.explanation=Fi\u015fierul PID pentru acest server nu a fost creat \u00een perioada de a\u015fteptare. Starea pornirii serverului nu a putut fi verificat\u0103.
+error.zosProcStart.create.pidfile.useraction=Verifica\u0163i manual starea serverului nou pornit.
+
+error.zosProcStart.mvs.start=CWWKE0106E: A e\u015fuat pornirea procedurii z/OS STC {0}. Pornirea a returnat codul MGCRE {1}.
+error.zosProcStart.mvs.start.explanation=Nu a reu\u015fit pornirea procedurii STC specificat\u0103 de proprietatea WLP_ZOS_PROCEDURE din server.env. 
+error.zosProcStart.mvs.start.useraction=Verifica\u0163i c\u0103 numele furnizat pentru procedur\u0103 exist\u0103 \u015fi c\u0103 nu este \u00eencadrat de apostrofuri sau ghilimele. Verifica\u0163i codul de returnare MCGRE pentru detalii \u015fi ac\u0163iuni suplimentare.
+
+error.zosProcStart.start.length=CWWKE0107E: Nu a putut fi pornit\u0103 procedura z/OS STC {0}. A fost dep\u0103\u015fit\u0103 lungimea maxim\u0103 a comenzii de pornire.
+error.zosProcStart.start.length.explanation=Parametrii de nume procedur\u0103, nume server \u015fi pornire furniza\u0163i pentru a porni serverul ca task pornit au dep\u0103\u015fit lungimea maxim\u0103 pentru comanda de consol\u0103 MVS.
+error.zosProcStart.start.length.useraction=Scurta\u0163i numele de server \u015fi numele de procedur\u0103, astfel \u00eenc\u00e2t comanda de pornire MVS s\u0103 aib\u0103 mai pu\u0163in de 126 de caractere.
+
+info.addProductExtension=CWWKE0108I: Extensia de produs {0} a fost activat\u0103 programatic. Identificatorul de produs al extensiei de produs este {1}. Loca\u0163ia de instalare a produsului pentru extensia de produs este {2}.
+info.addProductExtension.explanation= Acest mesaj este doar \u00een scop informativ. Extensia de produs a fost ad\u0103ugat\u0103 printr-un apel la com.ibm.wsspi.kernel.embeddable.ServerBuilder.addProductExtension SPI.
+info.addProductExtension.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+# CWWKE0109W removed because it's no longer used - do not reuse
+ 
+
+#
+# W A R N I N G:   Do not use CWWKE0100 - CCWKE0199 they are reserved in ServiceMessages.nlsprops
+#
+# Too Late for CWWKE0101 - CWWKE0107 they have dual use currently and CWWKE0108 and CWWKE0109 are only used here.
+#
+
+error.clientNameCharacter=CWWKE0900E: Numele de client specificat con\u0163ine un caracter care nu este valid (name={0}). \
+Caracterele valide sunt: alfanumerice Unicode (de ex. \
+0-9, a-z, A-Z), liniu\u0163\u0103 de subliniere (_), liniu\u0163\u0103 (-), plus (+) \u015fi punct (.). \
+Un nume de client nu poate \u00eencepe cu o liniu\u0163\u0103 (-) sau un punct (.).
+error.clientNameCharacter.explanation=S-a folosit un caracter care nu este valid \u00een numele clientului.
+error.clientNameCharacter.useraction=Redenumi\u0163i clientul folosind numai caractere valide: alfanumerice Unicode (de ex. 0-9, a-z, A-Z), liniu\u0163\u0103 de subliniere (_), liniu\u0163\u0103 (-), plus (+) \u015fi punct (.).
+
+warning.singleClient=CWWKE0901W: Un singur client poate fi specificat \u00een linia de comand\u0103; numele urm\u0103toare vor fi ignorate (client={0}, ignored={1}).
+warning.singleClient.explanation=Pute\u0163i specifica un singur client \u00een linia de comand\u0103. Primul nume de client a fost procesat; numele r\u0103mase au fost ignorate.
+warning.singleClient.useraction=Nu este necesar\u0103 nici o ac\u0163iune. Specifica\u0163i un singur client pentru a evita acest avertisment.
+
+# {0} The client name
+# {1} The client directory path
+# {2} The exception thrown when trying to create
+error.creatingNewClient=CWWKE0902E: A ap\u0103rut o excep\u0163ie la crearea clientului {0}. clientPath: {1} Motiv: {2}
+error.creatingNewClient.explanation=Clientul specificat nu a putut fi creat.
+error.creatingNewClient.useraction=Verifica\u0163i \u015fi rezolva\u0163i excep\u0163ia, apoi \u00eencerca\u0163i din nou s\u0103 crea\u0163i clientul.
+
+error.noExistingClient=CWWKE0903E: Clientul specificat {0} nu exist\u0103; folosi\u0163i op\u0163iunea --create pentru a crea un nou client. clientPath: {1}
+error.noExistingClient.explanation=Clientul specificat nu exist\u0103, a\u015fadar nu se poate realiza nicio ac\u0163iune pe el.
+error.noExistingClient.useraction=Verifica\u0163i numele clientului sau crea\u0163i un client cu numele specificat, apoi re\u00eencerca\u0163i comanda.
+
+error.clientDirExists=CWWKE0904E: Nu s-a putut crea clientul numit {0} pentru c\u0103 directorul de client {1} exist\u0103 deja.
+error.clientDirExists.explanation=Directorul de client trebuie s\u0103 nu existe deja c\u00e2nd crea\u0163i un client.
+error.clientDirExists.useraction=Fie alege\u0163i un nou nume de client, fie \u015fterge\u0163i directorul, apoi rula\u0163i din nou comanda.
+
+# {0} The client name
+# {1} The client directory path
+error.creatingNewClientExists=CWWKE0905E: A ap\u0103rut o excep\u0163ie la crearea clientului {0}. S-a detectat o activitate extern\u0103 la calea de client ({1}), a\u015fadar s-a oprit crearea clientului.
+error.creatingNewClientExists.explanation=Clientul specificat nu poate fi creat pentru c\u0103 alt\u0103 aplica\u0163ie realiza opera\u0163ii de fi\u015fier \u00een noul director de client.
+error.creatingNewClientExists.useraction=Investiga\u0163i de ce a fost activitate de fi\u015fier \u00een directorul de client \u00een afara comenzii de creare, apoi \u015fterge\u0163i directorul de client \u015fi \u00eencerca\u0163i din nou s\u0103 crea\u0163i clientul.
+
+# {0} The client name
+# {1} The client directory path
+error.creatingNewClientMkDirFail=CWWKE0906E: A ap\u0103rut o excep\u0163ie la crearea clientului {0} la loca\u0163ia {1}.
+error.creatingNewClientMkDirFail.explanation=Clientul specificat nu poate fi create, fie pentru c\u0103 nu era suficient spa\u0163iu pentru a crea clientul, fie pentru c\u0103 \u00een loca\u0163ie este \u00eempiedicat\u0103 scrierea.
+error.creatingNewClientMkDirFail.useraction=Asigura\u0163i-v\u0103 c\u0103 este suficient spa\u0163iu pe disc pentru a crea clientul \u015fi asigura\u0163i-v\u0103 c\u0103 \u00een loca\u0163ie se poate scrie \u015fi apoi \u00eencerca\u0163i din nou. 
+
+audit.launchTime.client=CWWKE0907I: Clientul {0} a fost lansat \u00een execu\u0163ie.
+audit.launchTime.client.explanation=Acest mesaj este doar \u00een scop informativ.
+audit.launchTime.client.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+audit.kernelUpTime.client=CWWKE0908I: Clientul {0} s-a oprit dup\u0103 {1}.
+audit.kernelUpTime.client.explanation=Kernel-ul s-a oprit dup\u0103 intervalul specificat (\u00een secunde). Acest interval depinde de momentul \u00een care a fost lansat\u0103 platforma.
+audit.kernelUpTime.client.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+# {0} The server name 
+info.java2security.started=CWWKE0909I: Serverul {0} a pornit cu Java 2 Security activat\u0103
+info.java2security.started.explanation=Acest mesaj este doar \u00een scop informativ.
+info.java2security.started.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+#{0} Cause of exception
+error.set.securitymanager=CWWKE0910E: E\u015fuare la setarea Security Manager implicit datorit\u0103 excep\u0163iei: {0}  Acest lucru survine dac\u0103 managerul de securitate a fost deja setat \u015fi metoda sa checkPermission nu-i permite s\u0103 fie \u00eenlocuit.
+error.set.securitymanager.explanation=Java 2 Security este activat\u0103 dar a ap\u0103rut o e\u015fuare la setarea Security Manager implicit.
+error.set.securitymanager.useraction=Asigura\u0163i-c\u0103 c\u0103 managerul de securitate nu a fost deja setat prin pornirea serverului cu op\u0163iunea -Djava.security.manager.  \
+Dac\u0103 este deja setat\u0103, \u00eenl\u0103tura\u0163i op\u0163iunea -Djava.security.manager \u015fi reporni\u0163i serverul cu Java 2 Security activat\u0103 prin specificarea propriet\u0103\u0163ii websphere.java.security \u00een fi\u015fierul bootstrap.properties. 
+
+#{0} Cause of exception
+error.set.trace.securitymanager=CWWKE0911E: E\u015fuare la setarea NoRethrow Security Manager datorit\u0103 excep\u0163iei: {0}.  Acest lucru survine dac\u0103 managerul de securitate a fost deja setat \u015fi metoda sa checkPermission nu-i permite s\u0103 fie \u00eenlocuit.
+error.set.trace.securitymanager.explanation=Este activat\u0103 Java 2 Security dar a ap\u0103rut o e\u015fuare la setarea NoRethrow Security Manager.
+error.set.trace.securitymanager.useraction=Asigura\u0163i-c\u0103 c\u0103 managerul de securitate nu a fost deja setat prin pornirea serverului cu op\u0163iunea -Djava.security.manager.  \
+Dac\u0103 este deja setat\u0103, \u00eenl\u0103tura\u0163i op\u0163iunea -Djava.security.manager \u015fi reporni\u0163i serverul cu Java 2 Security activat\u0103 prin specificarea propriet\u0103\u0163ii websphere.java.security \u00een fi\u015fierul bootstrap.properties. 
+
+warning.java.security.permdenied=CWWKE0912W: Politica actual\u0103 Java 2 Security a raportat o poten\u0163ial\u0103 \u00eenc\u0103lcare a permisiunii Java 2 Security. {0}Permisiune:{1}Cod:{2}{3}Urm\u0103 stiv\u0103:{4}Loca\u0163ie baz\u0103 de cod:{5}
+warning.java.security.permdenied.explanation=Metoda checkPermission() a Java Security Manager a aruncat o excep\u0163ie SecurityException pe Permisiunile subiectului.
+warning.java.security.permdenied.useraction=Verifica\u0163i c\u0103 opera\u0163ia \u00eencercat\u0103 este permis\u0103 \u015fi actualiza\u0163i fi\u015fierul de politic\u0103 de permisiuni pentru bundle sau aplica\u0163ii, dup\u0103 cum este necesar.
+
+error.java.security.exception.codebase=CWWKE0913E: O excep\u0163ie nea\u015fteptat\u0103 este prins\u0103 la \u00eencercarea de a determina loca\u0163ia de baz\u0103 de cod.  Excep\u0163ie: {0}.  
+error.java.security.exception.codebase.explanation=A ap\u0103rut o e\u015fuare \u00een determinarea loca\u0163iei de baz\u0103 a codului care a generat o excep\u0163ie la controlul de acces Java 2 Security Permission.
+error.java.security.exception.codebase.useraction=Verifica\u0163i excep\u0163ia \u015fi istoricele serverului pentru detalii. \
+\  Asigura\u0163i-c\u0103 c\u0103 managerul de securitate nu a fost deja setat prin pornirea serverului cu op\u0163iunea -Djava.security.manager \u015fi specificarea unei op\u0163iuni -Djava.security.policy.  \
+Dac\u0103 oricare sau ambele sunt setate, \u00eenl\u0103tura\u0163i set\u0103rile \u015fi reporni\u0163i serverul cu Java 2 Security activat\u0103 prin specificarea  propriet\u0103\u0163ii websphere.java.security \u00een fi\u015fierul bootstrap.properties.
+
+warning.zOS.java.security.permdenied1=CWWKE0914W: Politica curent\u0103 Java 2 Security a reportat o violare poten\u0163ial\u0103 a Java 2 Security Permission. Referi\u0163i-v\u0103 la Knowledge Center pentru mai multe informa\u0163ii.{0}Permisiune:{1}Cod:{2}Loca\u0163ie de baz\u0103 cod:{3}
+warning.zOS.java.security.permdenied1.explanation=Metoda checkPermission() a Java Security Manager a aruncat o excep\u0163ie SecurityException pe Permisiunile subiectului. Un apelant de pe stiva de apeluri nu are permisiunea necesar\u0103.  Acest lucru se poate s\u0103 nu fie o problem\u0103 dac\u0103 apelantul trateaz\u0103 corespunz\u0103tor aceast\u0103 excep\u0163ie.
+warning.zOS.java.security.permdenied1.useraction=Verifica\u0163i c\u0103 opera\u0163ia \u00eencercat\u0103 este permis\u0103 prin examinarea tuturor fi\u015fierelor politicii de securitate Java 2 \u015fi codul de aplica\u0163ie. Permisiuni suplimentare pot fi necesare, un apel AccessController.doPrivileged poate fi necesar \u00een unele coduri de pe stiva de apeluri, sau Managerul de securitate a \u00eempiedicat acce sul la o resurs\u0103 pe care un apelant nu are permisiunea de a o accesa.
+
+warning.zOS.java.security.permdenied2=CWWKE0915W: Politica curent\u0103 Java 2 Security a reportat o violare poten\u0163ial\u0103 a Java 2 Security Permission.  Urm\u0103rirea stiv\u0103:{0} 
+warning.zOS.java.security.permdenied2.explanation=checkPermission() a aruncat o excep\u0163ie SecurityException. Un apelant de pe stiva de apeluri nu are permisiunea necesar\u0103.
+warning.zOS.java.security.permdenied2.useraction=Verifica\u0163i c\u0103 opera\u0163ia \u00eencercat\u0103 este permis\u0103 prin examinarea tuturor fi\u015fierelor de securitate Java 2 \u015fi a codurilor aplica\u0163iei. Permisiuni suplimentare pot fi necesare.   
+
+error.client.runner.missing=CWWKE0916E: CWWKE0916E: Caracteristica de client nu a fost activat\u0103. Examina\u0163i mesajele de eroare.
+error.client.runner.missing.explanation=O caracteristic\u0103 client nu a fost activat\u0103 sau a ap\u0103rut o eroare \u00een timpul \u00eenc\u0103rc\u0103rii caracteristicii.
+error.client.runner.missing.useraction=Asigura\u0163i-v\u0103 c\u0103 este activat\u0103 o caracteristic\u0103 client \u015fi verifica\u0163i mesajele de eroare.
+
+error.client.runner=CWWKE0917E: Aplica\u0163ia client a raportat o eroare.
+error.client.runner.explanation=Produsul a primit o eroare de la aplica\u0163ia client care ruleaz\u0103.
+error.client.runner.useraction=Vede\u0163i mesajele de eroare pentru detalii despre eroarea aplica\u0163iei client.
+
+# {0} server name
+# {1} host name
+# {2} logs location
+# {3} unique request id
+error.mbean.operation.failure=CWWKE0918E:  Nu se poate realiza opera\u0163ia cerut\u0103. Pentru detalii, consulta\u0163i istoricele serverului de profil Liberty {0} pe gazda {1} \u00een loca\u0163ia {2} pentru cererea {3}.
+error.mbean.operation.failure.explanation=A ap\u0103rut o eroare \u00een timpul \u00eencerc\u0103rii de a realiza opera\u0163ia cerut\u0103.
+error.mbean.operation.failure.useraction=Verifica\u0163i istoricele serverului pentru detalii despre eroarea opera\u0163iei.
+
+java.security.permdenied.class.info=CWWKE0919I: Clasa care \u00eencalc\u0103 regula este: {0}
+java.security.permdenied.class.info.explanation=Java Security Manager checkPermission() a aruncat o SecurityException deoarece clasa nu are permisiunile necesare.
+java.security.permdenied.class.info.useraction=Verifica\u0163i c\u0103 opera\u0163ia \u00eencercat\u0103 este permis\u0103 \u015fi actualiza\u0163i fi\u015fierul de politic\u0103 de permisiuni pentru bundle sau aplica\u0163ii, dup\u0103 cum este necesar.
+
+java.security.permdenied.codebaseloc.info=CWWKE0920I: La loca\u0163ia de baz\u0103 de codului: {0}
+java.security.permdenied.codebaseloc.info.explanation=Java Security Manager checkPermission() a aruncat o SecurityException pentru o clas\u0103 la loca\u0163ia de baz\u0103 a codului specificat\u0103.
+java.security.permdenied.codebaseloc.info.useraction=Verifica\u0163i c\u0103 opera\u0163ia \u00eencercat\u0103 este permis\u0103 \u015fi actualiza\u0163i fi\u015fierul de politic\u0103 de permisiuni pentru bundle sau aplica\u0163ii, dup\u0103 cum este necesar.
+
+warning.java.security.permdenied.quickmsg=CWWKE0921W: Politica actual\u0103 Java 2 Security a raportat o poten\u0163ial\u0103 \u00eenc\u0103lcare a permisiunii Java 2 Security. {0}
+warning.java.security.permdenied.quickmsg.explanation=Metoda checkPermission() a Java Security Manager a aruncat o excep\u0163ie SecurityException pe Permisiunile subiectului.
+warning.java.security.permdenied.quickmsg.useraction=Verifica\u0163i c\u0103 opera\u0163ia \u00eencercat\u0103 este permis\u0103 \u015fi actualiza\u0163i fi\u015fierul de politic\u0103 de permisiuni pentru bundle sau aplica\u0163ii, dup\u0103 cum este necesar.
+
+error.package.missingLibExtractDir=CWWKE0922E: Comanda de pachet nu se poate finaliza deoarece instalarea nu are directorul lib/extract.
+error.package.missingLibExtractDir.explanation=Directorul lib/extract con\u0163ine metadate \u015fi clasele de auto-extrac\u0163ie pentru finalizarea comenzii package. Dac\u0103 acest director lipse\u015fte, aceasta poate ar\u0103ta c\u0103 instalarea WebSphere Liberty Profile nu a fost complet\u0103 sau c\u0103 directorul a fost \u015fters.
+error.package.missingLibExtractDir.useraction=Reinstala\u0163i WebSphere Liberty Profile \u015fi asigura\u0163i-v\u0103 c\u0103 exist\u0103 directorul lib/extract sub directorul WLP_HOME.
+
+info.server.pause.all.request.received=CWWKE0923I: A fost primit\u0103 o cerere de a trece \u00een pauz\u0103 toate componentele capabile de pauz\u0103 din server.
+info.server.pause.all.request.received.explanation=Un utilizator a lansat o cerere de a trece \u00een pauz\u0103 toate componentele din server. Serverul va \u00eencerca s\u0103 treac\u0103 \u00een pauz\u0103 aceste componente. 
+info.server.pause.all.request.received.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+info.server.pause.request.received=CWWKE0924I: A fost primit\u0103 o cerere de a trece \u00een pauz\u0103 urm\u0103toarele componente din server: {0}
+info.server.pause.request.received.explanation=Un utilizator a lansat o cerere de a trece \u00een pauz\u0103 anumite componente din server. Serverul va \u00eencerca s\u0103 treac\u0103 \u00een pauz\u0103 aceste componente. 
+info.server.pause.request.received.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+info.server.resume.all.request.received=CWWKE0925I: A fost primit\u0103 o cerere de a relua toate componentele trecute \u00een pauz\u0103 din server.
+info.server.resume.all.request.received.explanation=Un utilizator a lansat o cerere de a relua toate componentele trecute \u00een pauz\u0103 din server. Serverul va \u00eencerca s\u0103 reia aceste componente.
+info.server.resume.all.request.received.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+info.server.resume.request.received=CWWKE0926I: A fost primit\u0103 o cerere de a relua urm\u0103toarele componente din server: {0}
+info.server.resume.request.received.explanation=Un utilizator a lansat o cerere de a relua anumite componente din server. Serverul va \u00eencerca s\u0103 reia aceste componente dac\u0103 au fost trecute \u00een pauz\u0103.
+info.server.resume.request.received.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+error.pause.request.failed=CWWKE0927E: A fost primit\u0103 o cerere de trecere \u00een pauz\u0103, dar infrastructura pentru trecerea \u00een pauz\u0103 a componentelor nu este disponibil\u0103. Cererea nu a putut fi procesat\u0103. 
+error.pause.request.failed.explanation=Un utilizator a lansat o cerere de trecere \u00een pauz\u0103. Totu\u015fi, cererea nu a putut fi procesat\u0103. Serverul s-ar putea s\u0103 se ini\u0163ializeze \u00eenc\u0103 sau s\u0103 fie \u00een curs de oprire.
+error.pause.request.failed.useraction=Verifica\u0163i c\u0103 serverul s-a ini\u0163ializat complet \u015fi c\u0103 nu este \u00een procesul de oprire.
+
+error.resume.request.failed=CWWKE0928E: A fost primit\u0103 o cerere de reluare, dar infrastructura pentru trecerea \u00een pauz\u0103 a componentelor nu este disponibil\u0103. Cererea nu a putut fi procesat\u0103. 
+error.resume.request.failed.explanation=Un utilizator a lansat o cerere de reluare, dar cererea nu poate fi procesat\u0103. Serverul s-ar putea s\u0103 se ini\u0163ializeze \u00eenc\u0103 sau s\u0103 fie \u00een curs de oprire.
+error.resume.request.failed.useraction=Verifica\u0163i c\u0103 serverul este ini\u0163ializat complet \u015fi c\u0103 nu este \u00een procesul de oprire.
+
+error.server.pause.failed=CWWKE0929E: O cerere de trecere \u00een pauz\u0103 s-a finalizat, dar urm\u0103toarele componente nu au putut fi trecute \u00een pauz\u0103: {0}
+error.server.pause.failed.explanation=Serverul a procesat cererea, dar unele componente capabile de pauz\u0103 au e\u015fuat s\u0103 treac\u0103 \u00een pauz\u0103. Toate celelalte componentele capabile de pauz\u0103 au reu\u015fit.
+error.server.pause.failed.useraction=Verifica\u0163i istoricele de server pentru erori suplimentare de la componentele care au e\u015fuat.
+
+error.server.resume.failed=CWWKE0930E: O cerere de reluare s-a finalizat, dar urm\u0103toarele componente nu s-au putut relua: {0}
+error.server.resume.failed.explanation=Serverul a procesat o cerere de reluare, dar unele componente au e\u015fuat reluarea. Toate celelalte componentele \u00een pauz\u0103 au reu\u015fit.
+error.server.resume.failed.useraction=Verifica\u0163i istoricele de server pentru erori suplimentare de la componentele care au e\u015fuat.
+
+warning.server.pause.invalid.targets=CWWKE0931W: A fost primit\u0103 o cerere de trecere \u00een pauz\u0103 anumite componente, dar lista de componente pe op\u0163iunea pentru \u0163int\u0103 a fost goal\u0103. Nu a fost realizat\u0103 nicio ac\u0163iune.
+warning.server.pause.invalid.targets.explanation=Un utilizator a lansat o cerere de trecere \u00een pauz\u0103 cu o list\u0103 de \u0163inte goal\u0103 pe op\u0163iunea pentru \u0163int\u0103 (target). Cererea s-a finalizat, dar nu a fost realizat\u0103 nicio ac\u0163iune.
+warning.server.pause.invalid.targets.useraction=Specifica\u0163i \u00een op\u0163iunea pentru \u0163int\u0103 o list\u0103 de componente care s\u0103 fie trecute \u00een pauz\u0103. Pentru a trece \u00een pauz\u0103 toate componentele capabile de pauz\u0103 din server, lansa\u0163i o cerere de trecere \u00een pauz\u0103 f\u0103r\u0103 op\u0163iunea pentru \u0163int\u0103.
+
+warning.server.resume.invalid.targets=CWWKE0932W: A fost primit\u0103 o cerere de reluare anumite componente, dar lista de componente pe op\u0163iunea pentru \u0163int\u0103 a fost goal\u0103. Nu a fost realizat\u0103 nicio ac\u0163iune.
+warning.server.resume.invalid.targets.explanation=Un utilizator a lansat o reluare cu o list\u0103 de \u0163inte goal\u0103 pe op\u0163iunea pentru \u0163int\u0103 (target). Cererea s-a finalizat, dar nu a fost realizat\u0103 nicio ac\u0163iune.
+warning.server.resume.invalid.targets.useraction=Specifica\u0163i \u00een op\u0163iunea pentru \u0163int\u0103 o list\u0103 de componente care s\u0103 fie reluate. Pentru a relua toate componentele capabile de pauz\u0103 din server, lansa\u0163i o cerere de reluare f\u0103r\u0103 op\u0163iunea pentru \u0163int\u0103.
+
+warning.server.pause.no.targets=CWWKE0933W: A fost primit\u0103 o cerere de trecere \u00een pauz\u0103, dar nu a fost g\u0103sit\u0103 pe server nicio component\u0103 capabil\u0103 de pauz\u0103. Nu a fost realizat\u0103 nicio ac\u0163iune.
+warning.server.pause.no.targets.explanation=Serverul a procesat cererea de trecere \u00een pauz\u0103, dar nu a fost g\u0103sit\u0103 pe server nicio component\u0103 capabil\u0103 de pauz\u0103. Nu a fost realizat\u0103 nicio ac\u0163iune.
+warning.server.pause.no.targets.useraction=Verifica\u0163i c\u0103 sunt disponibile pe server componente capabile de pauz\u0103.
+
+warning.server.resume.no.targets=CWWKE0934W: A fost primit\u0103 o cerere de reluare, dar nu a fost g\u0103sit\u0103 pe server nicio component\u0103 capabil\u0103 de pauz\u0103. Nu a fost realizat\u0103 nicio ac\u0163iune.
+warning.server.resume.no.targets.explanation=Serverul a procesat cererea de reluare, dar nu a fost g\u0103sit\u0103 pe server nicio component\u0103 capabil\u0103 de pauz\u0103. Nu a fost realizat\u0103 nicio ac\u0163iune.
+warning.server.resume.no.targets.useraction=Verifica\u0163i c\u0103 sunt disponibile pe server componente capabile de pauz\u0103.
+
+warning.server.pause.missing.targets=CWWKE0935W: A fost primit\u0103 o cerere de trecere \u00een pauz\u0103, dar urm\u0103toarele componente nu au fost g\u0103site: {0}
+warning.server.pause.missing.targets.explanation=Serverul a procesat cererea de trecere \u00een pauz\u0103, dar anumite componente nu au fost g\u0103site. Cererea a fost procesat\u0103 pentru toate celelalte componente specificate.
+warning.server.pause.missing.targets.useraction=Verifica\u0163i c\u0103 numele componentelor specificate sunt corecte \u015fi c\u0103 acele componente sunt \u00eenregistrate pe server \u015fi sunt capabile de pauz\u0103.
+
+warning.server.resume.missing.targets=CWWKE0936W: A fost primit\u0103 o cerere de reluare, dar urm\u0103toarele componente nu au fost g\u0103site: {0}
+warning.server.resume.missing.targets.explanation=Serverul a procesat cererea de reluare, dar anumite componente nu au fost g\u0103site. Cererea a fost procesat\u0103 pentru toate celelalte componente specificate.
+warning.server.resume.missing.targets.useraction=Verifica\u0163i c\u0103 numele componentelor specificate sunt corecte \u015fi c\u0103 acele componente sunt \u00eenregistrate pe server \u015fi sunt capabile de pauz\u0103.
+
+warning.server.status.missing.targets=CWWKE0937W: A fost primit\u0103 o cerere de stare, dar urm\u0103toarele componente nu au fost g\u0103site: {0}
+warning.server.status.missing.targets.explanation=Serverul a procesat cererea de stare, dar anumite componente nu au fost g\u0103site. Cererea a fost procesat\u0103 pentru toate celelalte componente specificate.
+warning.server.status.missing.targets.useraction=Verifica\u0163i c\u0103 numele componentelor specificate sunt corecte \u015fi c\u0103 acele componente sunt \u00eenregistrate pe server \u015fi sunt capabile de pauz\u0103.
+
+info.server.pause.request.completed=CWWKE0938I: O cerere de trecere \u00een pauz\u0103 s-a finalizat.
+info.server.pause.request.completed.explanation=O cerere de trecere \u00een pauz\u0103 s-a finalizat.
+info.server.pause.request.completed.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+info.server.resume.request.completed=CWWKE0939I: O cerere de reluare s-a finalizat.
+info.server.resume.request.completed.explanation=O cerere de reluare s-a finalizat.
+info.server.resume.request.completed.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+info.envProductExtension=CWWKE0940I: Extensia produsului {0} are un identificator de produs {1} \u015fi o loca\u0163ie de instalare a produsului {2}. Aceast\u0103 extensia de produs a fost activat\u0103 prin specificarea variabilei de mediu WLP_PRODUCT_EXT_DIR. 
+info.envProductExtension.explanation= Variabila de mediu WLP_PRODUCT_EXT_DIR indic\u0103 loca\u0163ia extensiei de produs. Serverul a fost g\u0103sit \u015fi utilizeaz\u0103 extensia de produs.
+info.envProductExtension.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+info.serverStarting=Se porne\u015fte serverul {0}.
+info.serverStarted=Serverul {0} a pornit.
+info.serverStartedWithPID=Serverul {0} a pornit cu ID de proces {1}.
+info.serverIsRunning=Serverul {0} ruleaz\u0103.
+info.clientIsRunning=Clientul {0} ruleaz\u0103.
+info.serverIsAlreadyRunning=Serverul {0} ruleaz\u0103 deja.
+info.serverIsRunningWithPID=Serverul {0} ruleaz\u0103 cu ID de proces {1}.
+info.serverIsAlreadyRunningWithPID=Serverul {0} ruleaz\u0103 deja cu ID-ul de proces {1}.
+info.serverNotRunning=Serverul {0} nu ruleaz\u0103.
+info.serverStopping=Se opre\u015fte serverul {0}.
+info.serverStopped=Serverul {0} s-a oprit.
+info.serverNotExist=Serverul {0} nu exist\u0103.
+info.clientNotExist=Clientul {0} nu exist\u0103.
+info.serverPackaging=Se \u00eempacheteaz\u0103 serverul {0}.
+info.clientPackaging=\u00cempachetarea clientului {0}.
+info.serverPackagingCollectingInformation=Se interogheaz\u0103 serverul {0} pentru con\u0163inut.
+info.serverPackagingBuildingArchive=Se construie\u015fte arhiva pentru serverul {0}.
+info.serverPackageComplete=Pachetul de server {0} complet \u00een {1}.
+info.clientPackageComplete=Pachetul de client {0} complet \u00een {1}.
+info.serverDumping=Se creeaz\u0103 un dump al serverului {0}.
+info.serverDumpComplete=Dump-ul de server {0} complet \u00een {1}.
+info.serverDumpCompleteZos=Este finalizat\u0103 cererea Server {0} System Transaction Dump (SYSTDUMP).
+info.serverStartException=A e\u015fuat pornirea serverului {0}. Verifica\u0163i istoricele serverului pentru detalii.
+info.serverStartUnreachable=Starea serverului {0} nu a putut fi determinat\u0103. \u00cenl\u0103tura\u0163i fi\u015fierul {1} dac\u0103 ID  de proces {2} nu este procesul serverului.
+info.serverStatusException=Starea serverului {0} nu a putut fi determinat\u0103. Verifica\u0163i istoricele serverului pentru detalii.
+info.serverStopException=A e\u015fuat oprirea serverului {0}. Verifica\u0163i istoricele serverului pentru detalii.
+info.serverPackageException=Pachet server {0} e\u015fuat. Verifica\u0163i istoricele serverului pentru detalii.
+info.serverPackageUnreachable=Pachet server {0} e\u015fuat. Trebuie oprit \u00eenainte de a putea fi \u00eempachetat.
+info.clientPackageException=A e\u015fuat pachetul de client {0}. Verifica\u0163i istoricele de client pentru detalii.
+info.clientPackageUnreachable=A e\u015fuat pachetul de client {0}. Trebuie s\u0103 opri\u0163i clientul \u00eenainte de a putea fi \u00eempachetat.
+info.serverDumpOptionUnsupported=Serverul {0} nu suport\u0103 tipul de dump {1}.
+info.serverDumpException=Dump server {0} e\u015fuat. Verifica\u0163i istoricele serverului pentru detalii.
+info.unableZipFile=Nu se poate deschide fi\u015fierul {0} din cauza {1}.
+info.LibInventoryGenerationException=Nu poate genera inventarul bibliotecii \u00een timpul dumpului {0} serverului.
+info.defaultServer=Nu s-a specificat serverul. Se folose\u015fte valoarea implicit\u0103: {0}
+info.defaultClient=Clientul nu a fost specificat. Se folose\u015fte valoarea implicit\u0103: {0}
+info.runtimePackaging=Se \u00eempacheteaz\u0103 runtime-ul liberty.
+info.runtimePackageComplete=Pachetul runtime se finalizeaz\u0103 \u00een {0}.
+info.runtimePackageException=Pachetul runtime a e\u015fuat. Verifica\u0163i istoricele serverului pentru detalii.
+
+# For info.serverLaunch and info.serverVersion: 
+# {0} version (build and/or product name)
+# {1} java.vm.name, e.g. IBM J9 VM
+# {2} java.runtime.version, e.g. pxp3260_26sr2ifx-20120419_02 (SR2) (en_US)
+# {3} server name, only applicable for info.serverLaunch
+# The order of the inserts is important and must be preserved
+info.serverLaunch=Se lanseaz\u0103 {3} ({0}) pe {1}, versiunea {2}
+info.serverVersion={0} pe {1}, versiunea {2}
+
+info.configRoot=Document configurare: {0}
+info.bootProp=Propriet\u0103\u0163i boot: {0}
+info.cmdArgs=Parametri: {0}
+info.consolePort=Se ascult\u0103 pe portul {0} ... 
+info.newServerCreated=S-a creat serverul {0}.
+info.newClientCreated=S-a creat clientul {0}.
+info.days={0} zile
+info.hours={0} ore
+info.minutes={0} minute
+info.seconds={0} secunde
+info.configNotExist=Nu s-a specfificat server.xml
+info.syslogs=Ie\u015fire redirec\u0163ionat\u0103 la SystemOut.log \u015fi SystemErr.log \u00een {0}
+info.initlogs=Se redirec\u0163ioneaz\u0103 stdout \u015fi stderr la fi\u015fierul {0} 
+
+info.no.servers.defined=Nu este definit niciun server \u00een directorul de utilizatori {0}.
+info.list.of.defined.servers=Urm\u0103toarele servere sunt definite relativ la directorul de utilizatori {0}.
+info.communicate.server=A ap\u0103rut o \
+eroare de comunica\u0163ii \u00eentre comanda {0} \u015fi serverul {1}.

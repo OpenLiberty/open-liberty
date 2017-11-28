@@ -1,0 +1,450 @@
+###############################################################################
+# Copyright (c) 2010, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.feature/resources/com/ibm/ws/kernel/feature/internal/resources/ProvisionerMessages.nlsprops
+#COMPONENTPREFIX CWWKF
+#COMPONENTNAMEFOR CWWKF Liberty Feature Manager
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+#   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
+# -------------------------------------------------------------------------------------------------
+
+UPDATE_MISSING_FEATURE_ERROR=CWWKF0001E: Nie mo\u017cna \
+znale\u017a\u0107 definicji sk\u0142adnika {0}
+UPDATE_MISSING_FEATURE_ERROR.explanation=Mened\u017cer sk\u0142adnik\u00f3w nie mo\u017ce \
+znale\u017a\u0107 definicji okre\u015blonego sk\u0142adnika.
+UPDATE_MISSING_FEATURE_ERROR.useraction=Sprawd\u017a, czy nazwa \
+okre\u015blonego sk\u0142adnika jest poprawnie zapisana oraz czy w katalogu lib/features \
+istnieje definicja sk\u0142adnika, kt\u00f3r\u0105 mo\u017cna odczyta\u0107.
+
+UPDATE_MISSING_BUNDLE_ERROR=CWWKF0002E: Nie mo\u017cna \
+znale\u017a\u0107 pakunku dla sk\u0142adnika {0}.
+UPDATE_MISSING_BUNDLE_ERROR.explanation=Mened\u017cer sk\u0142adnik\u00f3w nie mo\u017ce \
+znale\u017a\u0107 pakunku wymaganego przez w\u0142\u0105czony sk\u0142adnik.
+UPDATE_MISSING_BUNDLE_ERROR.useraction=Sprawd\u017a, czy pakunki w \
+katalogu lib mo\u017cna odczyta\u0107 oraz czy obraz instalacyjny jest kompletny.
+
+UPDATE_INSTALL_EXCEPTIONS_ERROR=CWWKF0003E: Wygenerowano \
+wyj\u0105tek podczas instalowania lub deinstalowania pakunku {0}. Wyj\u0105tek: {1}
+UPDATE_INSTALL_EXCEPTIONS_ERROR.explanation=Mened\u017cer sk\u0142adnik\u00f3w \
+nie mo\u017ce zainstalowa\u0107 lub zdeinstalowa\u0107 okre\u015blonego pakunku.
+UPDATE_INSTALL_EXCEPTIONS_ERROR.useraction=Patrz przywo\u0142any wyj\u0105tek i \
+wygenerowane komunikaty FFDC dla ka\u017cdego b\u0142\u0119du.
+
+UPDATE_OTHER_EXCEPTION_ERROR=CWWKF0004E: Wyst\u0105pi\u0142 nieznany \
+wyj\u0105tek podczas instalowania lub usuwania sk\u0142adnik\u00f3w. Wyj\u0105tek: {0}
+UPDATE_OTHER_EXCEPTION_ERROR.explanation=Wyst\u0105pi\u0142 nieoczekiwany \
+wyj\u0105tek podczas dodawania lub usuwania co najmniej jednego sk\u0142adnika w \
+\u015brodowisku wykonawczym.
+UPDATE_OTHER_EXCEPTION_ERROR.useraction=Wi\u0119cej informacji na ten \
+temat zawiera przywo\u0142any wyj\u0105tek i wygenerowany komunikat FFDC.
+
+UPDATE_LIFECYCLE_EXCEPTIONS_ERROR=CWWKF0005E: Wygenerowano \
+wyj\u0105tek podczas uruchamiania, zatrzymywania lub deinstalowania pakunku {0}. Wyj\u0105tek: {1}
+UPDATE_LIFECYCLE_EXCEPTIONS_ERROR.explanation=Wyst\u0105pi\u0142 \
+wyj\u0105tek podczas zmiany stanu pakunku zarz\u0105dzanego przez mened\u017cer sk\u0142adnik\u00f3w.
+UPDATE_LIFECYCLE_EXCEPTIONS_ERROR.useraction=Szczeg\u00f3\u0142y zawiera \
+przywo\u0142any wyj\u0105tek i powi\u0105zane rekordy FFDC.
+
+UPDATE_BUNDLE_CACHE_WARNING=CWWKF0006W: System nie mo\u017ce odczyta\u0107 \
+lub utrwali\u0107 listy pakunk\u00f3w sk\u0142adnika za\u0142adowanych dla tej instancji serwera do \
+elementu {0}. Pami\u0119\u0107 podr\u0119czna pakunku gor\u0105cego startu zosta\u0142a wy\u0142\u0105czona. Wyj\u0105tek: {1}
+UPDATE_BUNDLE_CACHE_WARNING.explanation=Nie mo\u017cna utworzy\u0107 lub \
+odczyta\u0107 pliku pami\u0119ci podr\u0119cznej pakunku. Wi\u0119cej informacji zawiera przywo\u0142any wyj\u0105tek. 
+UPDATE_BUNDLE_CACHE_WARNING.useraction=Sprawd\u017a, czy katalog serwera \
+i podkatalog obszaru roboczego jest dost\u0119pny do zapisu. 
+
+STARTING_AUDIT=CWWKF0007I: Uruchomiono aktualizacj\u0119 sk\u0142adnika.
+STARTING_AUDIT.explanation=Mened\u017cer sk\u0142adnik\u00f3w \
+rozpocz\u0105\u0142 przetwarzanie w\u0142\u0105czonych sk\u0142adnik\u00f3w. Okres (w sekundach) jest \
+okre\u015blony wzgl\u0119dem czasu uruchomienia platformy.
+STARTING_AUDIT.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+COMPLETE_AUDIT=CWWKF0008I: Aktualizacja sk\u0142adnika zosta\u0142a zako\u0144czona po {0} sek.
+COMPLETE_AUDIT.explanation=Mened\u017cer sk\u0142adnik\u00f3w zako\u0144czy\u0142 \
+przetwarzanie w\u0142\u0105czonych sk\u0142adnik\u00f3w. Okres (w sekundach) jest okre\u015blony \
+wzgl\u0119dem czasu uruchomienia platformy.
+COMPLETE_AUDIT.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+EMPTY_FEATURES_WARNING=CWWKF0009W: Serwer nie zosta\u0142 skonfigurowany na potrzeby instalacji sk\u0142adnik\u00f3w.
+EMPTY_FEATURES_WARNING.explanation=Nie skonfigurowano instalacji \u017cadnego sk\u0142adnika. 
+EMPTY_FEATURES_WARNING.useraction=Zaktualizuj konfiguracj\u0119, aby pozwoli\u0107 na dodawanie wymaganych sk\u0142adnik\u00f3w. 
+
+BUNDLE_MATCH_WARNING=CWWKF0010W: Wi\u0119cej ni\u017c jeden pakunek jest \
+zgodny z okre\u015blonym filtrem ({0}) przy zastosowaniu elementu {1}. Liczba \
+zgodnych element\u00f3w: {2} 
+BUNDLE_MATCH_WARNING.explanation=Element definicji sk\u0142adnika jest \
+zgodny z wi\u0119cej ni\u017c jednym pakunkiem. Przyczyn\u0105 mo\u017ce by\u0107 zastosowanie zbyt \
+og\u00f3lnego filtru lub obecno\u015b\u0107 w obrazie starych pakunk\u00f3w, kt\u00f3re s\u0105 zgodne z \
+filtrem.
+BUNDLE_MATCH_WARNING.useraction=Sprawd\u017a, czy filtr jest dostatecznie \
+dok\u0142adny oraz czy u\u017cywany jest poprawny obraz instalacyjny.
+
+SERVER_STARTED=CWWKF0011I: Serwer {0} jest gotowy do dzia\u0142ania w trybie M\u0105drzejszy \u015awiat
+SERVER_STARTED.explanation=Serwer zosta\u0142 pomy\u015blnie uruchomiony.
+SERVER_STARTED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+FEATURES_ADDED=CWWKF0012I: Serwer zosta\u0142 zainstalowany z nast\u0119puj\u0105cymi sk\u0142adnikami: {0}.
+FEATURES_ADDED.explanation=Serwer zosta\u0142 zainstalowany z zestawem sk\u0142adnik\u00f3w.
+FEATURES_ADDED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+FEATURES_REMOVED=CWWKF0013I: Usuni\u0119to z serwera nast\u0119puj\u0105ce sk\u0142adniki: {0}.
+FEATURES_REMOVED.explanation=Usuni\u0119to z serwera zestaw sk\u0142adnik\u00f3w.
+FEATURES_REMOVED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+TEST_FIX_DETECTED=CWWKF0014W: Na serwerze s\u0105 aktywne \
+nast\u0119puj\u0105ce poprawki testowe w \u015brodowisku wykonawczym: {0}.  Aby otrzyma\u0107 pe\u0142n\u0105 list\u0119 zainstalowanych poprawek, uruchom komend\u0119: productInfo \
+version --ifixes
+TEST_FIX_DETECTED.explanation=Pakunki OSGi za\u0142adowane w \
+\u015brodowisku wykonawczym zosta\u0142y zmodyfikowane przez niekt\u00f3re zainstalowane \
+poprawki testowe. List\u0119 wszystkich zainstalowanych poprawek mo\u017cna uzyska\u0107 za \
+pomoc\u0105 komendy: productInfo version --ifixes
+TEST_FIX_DETECTED.useraction=Na serwerze produkcyjnym nie nale\u017cy instalowa\u0107 poprawek testowych. Je\u015bli ten serwer jest produkcyjny, usu\u0144 z niego poprawki testowe i zrestartuj go.
+
+INTERIM_FIX_DETECTED=CWWKF0015I: Na serwerze s\u0105 aktywne \
+nast\u0119puj\u0105ce poprawki tymczasowe w \u015brodowisku wykonawczym: {0}. Aby otrzyma\u0107 pe\u0142n\u0105 list\u0119 zainstalowanych poprawek, uruchom komend\u0119: productInfo \
+version --ifixes
+INTERIM_FIX_DETECTED.explanation=Pakunki OSGi \
+za\u0142adowane w \u015brodowisku wykonawczym zosta\u0142y zmodyfikowane przez niekt\u00f3re \
+zainstalowane poprawki tymczasowe. List\u0119 wszystkich zainstalowanych poprawek \
+mo\u017cna uzyska\u0107 za pomoc\u0105 komendy: productInfo version --ifixes
+INTERIM_FIX_DETECTED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# IBM-Provision-Capability is a manifest header name and should not be translated.
+INVALID_PROVISION_CAPABILITY_FILTER=CWWKF0016I: Filtr {0} w nag\u0142\u00f3wku manifestu sk\u0142adnika {1} jest niepoprawny: {2}
+INVALID_PROVISION_CAPABILITY_FILTER.explanation=Nag\u0142\u00f3wek \
+IBM-Provision-Capability zawiera jeden lub wi\u0119ksz\u0105 liczb\u0119 filtr\u00f3w OSGi o niepoprawnej \
+sk\u0142adni.
+INVALID_PROVISION_CAPABILITY_FILTER.useraction=Popraw sk\u0142adni\u0119 filtru w \
+nag\u0142\u00f3wku IBM-Provision-Capability.
+
+PRODUCT_FEATURE_INSTALL_PATH_ERROR=CWWKF0017E: Nie mo\u017cna znale\u017a\u0107 \u015bcie\u017cki instalacji produktu {0} okre\u015blonej w pliku w\u0142a\u015bciwo\u015bci produktu {1}.
+PRODUCT_FEATURE_INSTALL_PATH_ERROR.explanation=Mened\u017cer sk\u0142adnik\u00f3w nie mo\u017ce znale\u017a\u0107 okre\u015blonej \u015bcie\u017cki instalacji produktu.
+PRODUCT_FEATURE_INSTALL_PATH_ERROR.useraction=Upewnij si\u0119, \u017ce w pliku w\u0142a\u015bciwo\u015bci produktu zdefiniowano poprawn\u0105 \u015bcie\u017ck\u0119 do produktu dla w\u0142a\u015bciwo\u015bci com.ibm.websphere.productInstall.
+
+PRODUCT_FEATURE_PROPERTIES_FILE_ERROR=CWWKF0018E: W pliku {0} w\u0142a\u015bciwo\u015bci produktu nie znaleziono w\u0142a\u015bciwo\u015bci com.ibm.websphere.productInstall.
+PRODUCT_FEATURE_PROPERTIES_FILE_ERROR.explanation=Mened\u017cer sk\u0142adnik\u00f3w znalaz\u0142 plik w\u0142a\u015bciwo\u015bci produktu, kt\u00f3ry nie zawiera w\u0142a\u015bciwo\u015bci com.ibm.websphere.productInstall.
+PRODUCT_FEATURE_PROPERTIES_FILE_ERROR.useraction=Dodaj w\u0142a\u015bciwo\u015b\u0107 com.ibm.websphere.productInstall do pliku w\u0142a\u015bciwo\u015bci produktu znajduj\u0105cego si\u0119 w katalogu etc/extensions.
+
+PRODUCT_FEATURE_LOAD_ERROR=CWWKF0019E: Podczas \
+\u0142adowania pliku w\u0142a\u015bciwo\u015bci produktu {0} zosta\u0142 wygenerowany wyj\u0105tek {1}.
+PRODUCT_FEATURE_LOAD_ERROR.explanation=Podczas pr\u00f3by odczytania przez mened\u017cer \
+sk\u0142adnik\u00f3w w\u0142a\u015bciwo\u015bci z pliku w\u0142a\u015bciwo\u015bci produktu wyst\u0105pi\u0142 okre\u015blony wyj\u0105tek.
+PRODUCT_FEATURE_LOAD_ERROR.useraction=Szczeg\u00f3\u0142y zawiera \
+przywo\u0142any wyj\u0105tek i powi\u0105zane rekordy FFDC.
+
+#SUPERCEDED FEATURES
+SUPERSEDED_CONFIGURATION_ERROR=CWWKF0020E: Sk\u0142adnik {0} ma atrybut superseded ustawiony na warto\u015b\u0107 false, ale warto\u015bci\u0105 atrybutu superseded-by jest {1}. 
+SUPERSEDED_CONFIGURATION_ERROR.explanation=Nag\u0142\u00f3wek nazwy symbolicznej sk\u0142adnika ma skonfigurowany atrybut superseded-by, ale jego atrybut superseded jest ustawiony na warto\u015b\u0107 false.
+SUPERSEDED_CONFIGURATION_ERROR.useraction=Upewnij si\u0119, \u017ce nag\u0142\u00f3wek nazwy symbolicznej ma poprawnie skonfigurowane atrybuty superseded i superseded-by.
+
+UPDATE_NOT_PUBLIC_FEATURE_ERROR=CWWKF0021E: Sk\u0142adnik {0} okre\u015blony w pliku \
+server.xml nie jest sk\u0142adnikiem publicznym, wi\u0119c nie zostanie uruchomiony przez serwer.
+UPDATE_NOT_PUBLIC_FEATURE_ERROR.explanation=W pliku \
+server.xml mo\u017cna okre\u015bla\u0107 tylko sk\u0142adniki publiczne.
+UPDATE_NOT_PUBLIC_FEATURE_ERROR.useraction=Zmie\u0144 konfiguracj\u0119 serwera, tak aby okre\u015bla\u0142a \
+sk\u0142adnik publiczny, kt\u00f3ry udost\u0119pnia wymagan\u0105 funkcj\u0119.  W przypadku tworzenia sk\u0142adnika, kt\u00f3ry ma by\u0107 \
+podawany przez u\u017cytkownik\u00f3w w konfiguracjach serwer\u00f3w, zmie\u0144 widoczno\u015b\u0107 sk\u0142adnika na publiczn\u0105, dodaj\u0105c atrybut \
+visibility=public do elementu Subsystem-SymbolicName sk\u0142adnika.
+
+UNSUPPORTED_FEATURE_VERSION=CWWKF0022E: Sk\u0142adnik {0} nie jest obs\u0142ugiwany. Nag\u0142\u00f3wek \
+IBM-Feature-Version ma warto\u015b\u0107 {1}.
+UNSUPPORTED_FEATURE_VERSION.explanation=Serwer obs\u0142uguje tylko sk\u0142adniki z warto\u015bci\u0105 \
+nag\u0142\u00f3wka IBM-Feature-Version r\u00f3wn\u0105 2. Liczba wy\u017csza ni\u017c 2 oznacza, \u017ce sk\u0142adnik jest przeznaczony dla nowszej \
+wersji produktu.
+UNSUPPORTED_FEATURE_VERSION.useraction=Skontaktuj si\u0119 z autorem sk\u0142adnika, aby uzyska\u0107 \
+kopi\u0119, kt\u00f3ra jest przeznaczona dla tej wersji produktu.
+
+#Minify feature query messages
+ERROR_OPENING_JAR_FOR_CLASSPATH=CWWKF0023W: Sk\u0142adnik przywo\u0142uje archiwum \
+{1}, kt\u00f3rego nie mo\u017cna by\u0142o przetworzy\u0107 w ramach zapytania pakowania. Wyj\u0105tek: {2}
+ERROR_OPENING_JAR_FOR_CLASSPATH.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas odczytu \
+pliku JAR sk\u0142adnika w ramach zapytania pakowania.
+ERROR_OPENING_JAR_FOR_CLASSPATH.useraction=Szczeg\u00f3\u0142y zawiera \
+przywo\u0142any wyj\u0105tek i powi\u0105zane rekordy FFDC.
+
+ERROR_MISSING_FEATURE_RESOURCE=CWWKF0024W: Sk\u0142adnik {0} przywo\u0142uje zas\u00f3b {1}, \
+kt\u00f3rego nie mo\u017cna by\u0142o znale\u017a\u0107 w ramach zapytania pakowania. 
+ERROR_MISSING_FEATURE_RESOURCE.explanation=Mened\u017cer sk\u0142adnik\u00f3w nie mo\u017ce znale\u017a\u0107 \
+tre\u015bci okre\u015blonego sk\u0142adnika.
+ERROR_MISSING_FEATURE_RESOURCE.useraction=Sprawd\u017a, czy produkt \
+zosta\u0142 poprawnie zainstalowany. Je\u015bli problem b\u0119dzie nadal wyst\u0119powa\u0107, skontaktuj si\u0119 z \
+przedstawicielem serwisu.
+
+ERROR_UNKNOWN_FEATURE_RESOURCE_TYPE=CWWKF0025W: Sk\u0142adnik {0} przywo\u0142uje zas\u00f3b {1} \
+nieznanego typu {2} w ramach zapytania pakowania. 
+ERROR_UNKNOWN_FEATURE_RESOURCE_TYPE.explanation=Mened\u017cer sk\u0142adnik\u00f3w nie mo\u017ce \
+zinterpretowa\u0107 tre\u015bci okre\u015blonego sk\u0142adnika.
+ERROR_UNKNOWN_FEATURE_RESOURCE_TYPE.useraction=Sprawd\u017a, czy \
+produkt zosta\u0142 poprawnie zainstalowany. Je\u015bli problem b\u0119dzie nadal wyst\u0119powa\u0107, skontaktuj si\u0119 z \
+przedstawicielem serwisu.
+
+SERVER_MINIFY=CWWKF0026I: Serwer {0} jest gotowy do \
+zbudowania mniejszego pakietu.
+SERVER_MINIFY.explanation=Serwer przygotowuje informacje dla oczekuj\u0105cej \
+operacji pakietu serwera.
+SERVER_MINIFY.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+# end Minify feature query messages
+
+PRODUCT_FEATURE_INSTALL_PATH_SYMBOL_ERROR=CWWKF0027E: Sk\u0142adniki rozszerzenia produktu nie zostan\u0105 zainstalowane, poniewa\u017c \u015bcie\u017cka instalacji rozszerzenia produktu w pliku w\u0142a\u015bciwo\u015bci rozszerzenia produktu {0} zawiera po\u0142o\u017cenie symboliczne {1}.
+PRODUCT_FEATURE_INSTALL_PATH_SYMBOL_ERROR.explanation=\u015acie\u017cka instalacji rozszerzenia produktu nie mo\u017ce zawiera\u0107 po\u0142o\u017ce\u0144 symbolicznych.
+PRODUCT_FEATURE_INSTALL_PATH_SYMBOL_ERROR.useraction=Zaktualizuj w\u0142a\u015bciwo\u015b\u0107 com.ibm.websphere.productInstall w okre\u015blonym pliku w\u0142a\u015bciwo\u015bci rozszerzenia produktu tak, aby nie zawiera\u0142a \u017cadnych po\u0142o\u017ce\u0144 symbolicznych.
+
+PRODUCT_FEATURE_INSTALL_PATH_WLP_ERROR=CWWKF0028E: Sk\u0142adniki rozszerzenia produktu nie zostan\u0105 zainstalowane, poniewa\u017c \u015bcie\u017cka instalacji rozszerzenia produktu w pliku w\u0142a\u015bciwo\u015bci rozszerzenia produktu {0} jest taka sama jak \u015bcie\u017cka wlp.install.dir.
+PRODUCT_FEATURE_INSTALL_PATH_WLP_ERROR.explanation=\u015acie\u017cka instalacji rozszerzenia produktu nie mo\u017ce by\u0107 taka sama jak \u015bcie\u017cka wlp.install.dir.
+PRODUCT_FEATURE_INSTALL_PATH_WLP_ERROR.useraction=Zaktualizuj w\u0142a\u015bciwo\u015b\u0107 com.ibm.websphere.productInstall w okre\u015blonym pliku w\u0142a\u015bciwo\u015bci rozszerzenia produktu tak, aby nie by\u0142a taka sama jak \u015bcie\u017cka wlp.install.dir.
+
+BUNDLE_EXCEPTION_ERROR=CWWKF0029E: {0}
+BUNDLE_EXCEPTION_ERROR.explanation=Zg\u0142oszono wyj\u0105tek BundleException przez \u015brodowisko OSGi.
+BUNDLE_EXCEPTION_ERROR.useraction=Wi\u0119cej informacji znajduje si\u0119 w komunikacie o wyj\u0105tku.
+
+INVALID_START_PHASE_WARNING=CWWKF0030W: Faza uruchamiania {0} okre\u015blona dla pakunku {1} w sk\u0142adniku {2} jest niepoprawna.
+INVALID_START_PHASE_WARNING.explanation=Podano niepoprawn\u0105 warto\u015b\u0107 dla fazy uruchamiania.
+INVALID_START_PHASE_WARNING.useraction=Podaj poprawn\u0105 warto\u015b\u0107 dla fazy uruchamiania. 
+
+FEATURE_NOT_INSTALLED=CWWKF0031I: Serwer pomin\u0105\u0142 \
+\u0142adowanie sk\u0142adnika {0}, poniewa\u017c istnieje ju\u017c odpowiednik tej funkcjonalno\u015bci.
+FEATURE_NOT_INSTALLED.explanation=Je\u015bli w pliku \
+server.xml s\u0105 jawnie podane dwie wersje tego samego sk\u0142adnika lub sk\u0142adniki \
+zawieraj\u0105ce sk\u0142adniki podrz\u0119dne o zduplikowanej funkcjonalno\u015bci, serwer pomija \
+\u0142adowanie drugiej wersji.
+FEATURE_NOT_INSTALLED.useraction=Je\u015bli w pliku server.xml s\u0105 \
+jawnie podane dwie wersje tego samego sk\u0142adnika, usu\u0144 wersj\u0119, kt\u00f3ra nie jest \
+wymagana.
+
+FEATURE_JAVA_LEVEL_NOT_MET_ERROR=CWWKF0032E: Sk\u0142adnik \
+{0} wymaga \u015brodowiska wykonawczego program\u00f3w Java w wersji co najmniej {1}.
+FEATURE_JAVA_LEVEL_NOT_MET_ERROR.explanation=Aby u\u017cy\u0107 \
+wymienionego sk\u0142adnika, w \u015brodowisku u\u017cytkownika musi by\u0107 zainstalowana podana \
+lub nowsza wersja \u015brodowiska wykonawczego program\u00f3w Java.
+FEATURE_JAVA_LEVEL_NOT_MET_ERROR.useraction=Zaktualizuj \
+\u015brodowisko wykonawcze program\u00f3w Java do podanej lub nowszej wersji.
+
+UPDATE_CONFLICT_FEATURE_ERROR=CWWKF0033E: Pojedynczych sk\u0142adnik\u00f3w {0} i {1} nie mo\u017cna za\u0142adowa\u0107 w tym samym czasie.  Skonfigurowane sk\u0142adniki {2} i {3} zawieraj\u0105 co najmniej jeden sk\u0142adnik powoduj\u0105cy konflikt. Konfiguracja nie jest obs\u0142ugiwana. Zaktualizuj plik server.xml w celu usuni\u0119cia niezgodnych sk\u0142adnik\u00f3w.
+UPDATE_CONFLICT_FEATURE_ERROR.explanation=Nie mo\u017cna za\u0142adowa\u0107 wielu wersji pojedynczego sk\u0142adnika w tym samym czasie.  Ten konflikt mo\u017ce wyst\u0105pi\u0107, je\u015bli w konfiguracji serwera skonfigurowane s\u0105 bezpo\u015brednio dwie wersje pojedynczego sk\u0142adnika lub je\u015bli skonfigurowane sk\u0142adniki zawieraj\u0105 r\u00f3\u017cne wersje pojedynczego sk\u0142adnika i nie mog\u0105 tolerowa\u0107 wsp\u00f3lnej wersji pojedynczego sk\u0142adnika.
+UPDATE_CONFLICT_FEATURE_ERROR.useraction=Spr\u00f3buj okre\u015bli\u0107 w pliku server.xml inn\u0105 wersj\u0119 skonfigurowanych sk\u0142adnik\u00f3w, kt\u00f3re spowodowa\u0142y konflikt.  Je\u015bli nie s\u0105 dost\u0119pne inne wersje, skonfigurowane sk\u0142adniki nie s\u0105 ze sob\u0105 kompatybilne i nie mo\u017cna ich skonfigurowa\u0107 w tym samym czasie.
+
+FEATURES_ADDED_CLIENT=CWWKF0034I: Klient zosta\u0142 zainstalowany z nast\u0119puj\u0105cymi sk\u0142adnikami: {0}.
+FEATURES_ADDED_CLIENT.explanation=Klient zosta\u0142 zainstalowany z zestawem sk\u0142adnik\u00f3w.
+FEATURES_ADDED_CLIENT.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+CLIENT_STARTED=CWWKF0035I: Klient {0} jest uruchomiony.
+CLIENT_STARTED.explanation=Klient zosta\u0142 pomy\u015blnie uruchomiony.
+CLIENT_STARTED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#Required feature gather query messages
+SERVER_GATHER_FEATURES=CWWKF0036I: Serwer {0} zako\u0144czy\u0142 zbieranie listy wymaganych sk\u0142adnik\u00f3w.
+SERVER_GATHER_FEATURES.explanation=Serwer skompilowa\u0142 list\u0119 wymaganych sk\u0142adnik\u00f3w.
+SERVER_GATHER_FEATURES.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+#End required feature gather query messages
+
+UPDATE_NOT_PUBLIC_FEATURE_CLIENT_ERROR=CWWKF0037E: Sk\u0142adnik {0} okre\u015blony w pliku client.xml nie jest sk\u0142adnikiem publicznym i nie zostanie uruchomiony przez klienta.
+UPDATE_NOT_PUBLIC_FEATURE_CLIENT_ERROR.explanation=W pliku client.xml mo\u017cna okre\u015bla\u0107 tylko sk\u0142adniki publiczne.
+UPDATE_NOT_PUBLIC_FEATURE_CLIENT_ERROR.useraction=Zmie\u0144 konfiguracj\u0119 klienta w taki spos\u00f3b, aby wskazywa\u0142a sk\u0142adnik publiczny, kt\u00f3ry udost\u0119pnia wymagan\u0105 funkcj\u0119.  W przypadku tworzenia sk\u0142adnika, kt\u00f3ry ma by\u0107 podawany przez u\u017cytkownik\u00f3w w konfiguracji klienta, zmie\u0144 widoczno\u015b\u0107 sk\u0142adnika na publiczn\u0105, dodaj\u0105c atrybut visibility=public do elementu Subsystem-SymbolicName sk\u0142adnika.
+
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_ERROR=CWWKF0038E: Sk\u0142adnik {0} podany w pliku {1} obs\u0142uguje tylko typy proces\u00f3w klienta, co spowoduje, \u017ce ten sk\u0142adnik nie b\u0119dzie uruchamiany przez proces serwera.
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_ERROR.explanation=Skonfigurowany sk\u0142adnik nie obs\u0142uguje okre\u015blonego typu procesu.
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_ERROR.useraction=Usu\u0144 sk\u0142adnik z konfiguracji lub zmie\u0144 plik manifestu sk\u0142adnika tak, aby w\u0142\u0105czy\u0107 obs\u0142ug\u0119 \u017c\u0105danego typu procesu.
+
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_ERROR=CWWKF0039E: Sk\u0142adnik {0} obs\u0142uguje tylko typy proces\u00f3w klienta, co spowoduje, \u017ce ten sk\u0142adnik nie b\u0119dzie uruchamiany przez proces serwera.  Sk\u0142adnik {1} okre\u015blony w pliku {2} mo\u017ce nie dzia\u0142a\u0107 poprawnie ze wzgl\u0119du na zale\u017cno\u015b\u0107 od sk\u0142adnika {0}.
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_ERROR.explanation=Skonfigurowany sk\u0142adnik nie obs\u0142uguje okre\u015blonego typu procesu.
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_ERROR.useraction=Usu\u0144 sk\u0142adnik z konfiguracji lub zmie\u0144 plik manifestu sk\u0142adnika tak, aby w\u0142\u0105czy\u0107 obs\u0142ug\u0119 \u017c\u0105danego typu procesu.
+
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_CLIENT_ERROR=CWWKF0040E: Sk\u0142adnik {0} podany w pliku {1} obs\u0142uguje tylko typy proces\u00f3w serwera, co spowoduje, \u017ce ten sk\u0142adnik nie b\u0119dzie uruchamiany przez proces klienta.
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_CLIENT_ERROR.explanation=Skonfigurowany sk\u0142adnik nie obs\u0142uguje okre\u015blonego typu procesu.
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_CLIENT_ERROR.useraction=Usu\u0144 sk\u0142adnik z konfiguracji lub zmie\u0144 plik manifestu sk\u0142adnika tak, aby w\u0142\u0105czy\u0107 obs\u0142ug\u0119 \u017c\u0105danego typu procesu.
+
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR=CWWKF0041E: Sk\u0142adnik {0} obs\u0142uguje tylko typy proces\u00f3w serwera, co spowoduje, \u017ce ten sk\u0142adnik nie b\u0119dzie uruchamiany przez proces klienta.  Sk\u0142adnik {1} okre\u015blony w pliku {2} mo\u017ce nie dzia\u0142a\u0107 poprawnie ze wzgl\u0119du na zale\u017cno\u015b\u0107 od sk\u0142adnika {0}.
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.explanation=Skonfigurowany sk\u0142adnik nie obs\u0142uguje okre\u015blonego typu procesu.
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.useraction=Usu\u0144 sk\u0142adnik z konfiguracji lub zmie\u0144 plik manifestu sk\u0142adnika tak, aby w\u0142\u0105czy\u0107 obs\u0142ug\u0119 \u017c\u0105danego typu procesu.
+
+# CWWK042E  {0} = feature Name: {1} = server name 
+UPDATE_MISSING_CORE_FEATURE_ERROR=CWWKF0042E: Nie mo\u017cna \
+znale\u017a\u0107 definicji sk\u0142adnika {0}.  Spr\u00f3buj uruchomi\u0107 komend\u0119 bin/installUtility install {0}, aby zainstalowa\u0107 ten sk\u0142adnik. Mo\u017cna r\u00f3wnie\u017c uruchomi\u0107 komend\u0119 bin/installUtility install {1}, aby zainstalowa\u0107 wszystkie sk\u0142adniki przywo\u0142ywane przez t\u0119 konfiguracj\u0119.
+UPDATE_MISSING_CORE_FEATURE_ERROR.explanation=Mened\u017cer sk\u0142adnik\u00f3w nie mo\u017ce znale\u017a\u0107 definicji okre\u015blonego sk\u0142adnika.
+UPDATE_MISSING_CORE_FEATURE_ERROR.useraction=Sprawd\u017a, czy nazwa okre\u015blonego sk\u0142adnika zosta\u0142a podana bez b\u0142\u0119d\u00f3w.  \
+Sprawd\u017a r\u00f3wnie\u017c, czy definicja sk\u0142adnika istnieje i czy jest dost\u0119pna do odczytu w katalogu lib/features. \
+Je\u015bli sk\u0142adnik nie istnieje, spr\u00f3buj uruchomi\u0107 komend\u0119 bin/installUtility install nazwa_sk\u0142adnika, aby zainstalowa\u0107 sk\u0142adnik, lub spr\u00f3buj uruchomi\u0107 komend\u0119 bin/installUtility install nazwa_serwera, aby zainstalowa\u0107 wszystkie sk\u0142adniki przywo\u0142ywane przez t\u0119 konfiguracj\u0119. 
+
+#   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
+
+tool.feature.exists=CWWKF1000I: Sk\u0142adnik {0} ju\u017c istnieje. Nie zostanie on ponownie zainstalowany. Aby zmodyfikowa\u0107 istniej\u0105cy sk\u0142adnik, nale\u017cy najpierw r\u0119cznie go zdeinstalowa\u0107.
+tool.feature.exists.explanation=Instalowany sk\u0142adnik ju\u017c istnieje.
+tool.feature.exists.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+tool.missing.args=CWWKF1001E: Dzia\u0142anie {0} wymaga {1} \
+argument\u00f3w, ale liczba podanych argument\u00f3w to {2}.
+tool.missing.args.explanation=Do wywo\u0142ania dzia\u0142ania u\u017cyto niepoprawnej liczby argument\u00f3w.
+tool.missing.args.useraction=Uruchom komend\u0119 ponownie przy u\u017cyciu poprawnych argument\u00f3w.
+tool.unknown.options=CWWKF1002E: Komenda {0} nie obs\u0142uguje opcji: {1}.
+tool.unknown.options.explanation=Podj\u0119to pr\u00f3b\u0119 uruchomienia komendy przy u\u017cyciu \
+niepoprawnych argument\u00f3w.
+tool.unknown.options.useraction=Uruchom komend\u0119 ponownie bez niepoprawnych argument\u00f3w.
+
+tool.install.bad.extension=CWWKF1003E: Rozszerzenie produktu {0} nie istnieje.
+tool.install.bad.extension.explanation=Rozszerzenie produktu, w kt\u00f3rym ma zosta\u0107 \
+zainstalowany sk\u0142adnik, nie jest zarejestrowane.
+tool.install.bad.extension.useraction=Zainstaluj sk\u0142adnik w zarejestrowanym rozszerzeniu \
+produktu lub zarejestruj brakuj\u0105ce rozszerzenie produktu.
+tool.install.invalid.extension=CWWKF1004E: Rozszerzenie produktu {0} nie okre\u015bla \
+po\u0142o\u017cenia.
+tool.install.invalid.extension.explanation=Nie mo\u017cna znale\u017a\u0107 rozszerzenia produktu, \
+poniewa\u017c plik rejestracji nie zawiera po\u0142o\u017cenia.
+tool.install.invalid.extension.useraction=Popraw rejestracj\u0119 rozszerzenia produktu, tak aby \
+zawiera\u0142a po\u0142o\u017cenie rozszerzenia.
+tool.install.ioexception.extension=CWWKF1005E: Wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d podczas odczytu rozszerzenia produktu {0}. Wyj\u0105tek: {1}
+tool.install.ioexception.extension.explanation=Wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d podczas pr\u00f3by odczytu pliku w\u0142a\u015bciwo\u015bci dla rozszerzenia produktu podanego w komunikacie o b\u0142\u0119dzie.
+tool.install.ioexception.extension.useraction=Przejrzyj komunikat wyj\u0105tku w celu uzyskania wyja\u015bnienia, dlaczego plik nie m\u00f3g\u0142 zosta\u0107 odczytany, i spr\u00f3buj ponownie.
+tool.install.no.dir=CWWKF1006E: Nie mo\u017cna zainstalowa\u0107 sk\u0142adnika, poniewa\u017c katalog {0} \
+nie istnieje.
+tool.install.no.dir.explanation=Katalog rozszerzenia \
+produktu nie istnieje, dlatego nie mo\u017cna zainstalowa\u0107 w nim sk\u0142adnika.
+tool.install.no.dir.useraction=Upewnij si\u0119, \u017ce katalog istnieje, i spr\u00f3buj zainstalowa\u0107 \
+sk\u0142adnik ponownie.
+tool.install.download.esa=CWWKF1007E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas pobierania archiwum podsystemu do {0}. Wyj\u0105tek: {1}
+tool.install.download.esa.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pobierania archiwum \
+podsystemu. Mo\u017ce to by\u0107 spowodowane niepoprawno\u015bci\u0105 adresu URL lub kr\u00f3tkotrwa\u0142ym problemem z sieci\u0105. Drugie \
+zdanie komunikatu o b\u0142\u0119dzie mo\u017ce zawiera\u0107 wi\u0119cej informacji o przyczynie b\u0142\u0119du.
+tool.install.download.esa.useraction=Sprawd\u017a, czy adres URL archiwum podsystemu jest \
+poprawny, i spr\u00f3buj ponownie.
+tool.install.download.tmpFile=CWWKF1008E: Nie mo\u017cna utworzy\u0107 pliku tymczasowego, aby pobra\u0107 archiwum podsystemu. Wyj\u0105tek: {0}
+tool.install.download.tmpFile.explanation=Operacja instalacji sk\u0142adnika pobiera \
+archiwum podsystemu do pliku tymczasowego, ale nie mo\u017cna utworzy\u0107 pliku tymczasowego. Przyczyn\u0105 jest prawdopodobnie ograniczenie komputera. Drugie zdanie komunikatu o b\u0142\u0119dzie mo\u017ce zawiera\u0107 wi\u0119cej \
+informacji o przyczynie b\u0142\u0119du.
+tool.install.download.tmpFile.useraction=Mo\u017cliwe, \u017ce tymczasowy system plik\u00f3w jest \
+pe\u0142ny. W takim przypadku wyczyszczenie miejsca rozwi\u0105\u017ce ten problem.
+tool.install.file.notexist=CWWKF1009E: Plik {0} nie istnieje.
+tool.install.file.notexist.explanation=Plik archiwum podsystemu udost\u0119pniony dla \
+operacji instalacji nie istnieje.
+tool.install.file.notexist.useraction=Upewnij si\u0119, \u017ce nazwa \
+pliku archiwum podsystemu zosta\u0142a podana poprawnie, i pon\u00f3w operacj\u0119 instalacji.
+tool.install.file.notafile=CWWKF1010E: Element {0} nie jest plikiem.
+tool.install.file.notafile.explanation=Podana nazwa pliku \
+okre\u015bla katalog, a nie archiwum podsystemu.
+tool.install.file.notafile.useraction=Upewnij si\u0119, \u017ce nazwa \
+pliku archiwum podsystemu zosta\u0142a podana poprawnie, i pon\u00f3w operacj\u0119 instalacji.
+tool.install.missing.feature=CWWKF1011E: Sk\u0142adnik {0} zale\u017cy od niezainstalowanego \
+sk\u0142adnika {1}.
+tool.install.missing.feature.explanation=Instalowany sk\u0142adnik zale\u017cy od innych \
+sk\u0142adnik\u00f3w, kt\u00f3re nie zosta\u0142y jeszcze zainstalowane. Sk\u0142adnika nie mo\u017cna u\u017cy\u0107, dop\u00f3ki sk\u0142adnik podany w \
+komunikacie o b\u0142\u0119dzie nie zostanie zainstalowany.
+tool.install.missing.feature.useraction=Zainstaluj brakuj\u0105cy sk\u0142adnik i ponownie uruchom instalacj\u0119.
+tool.install.missing.content=CWWKF1012E: Zas\u00f3b {0} nie istnieje w archiwum \
+podsystemu w po\u0142o\u017ceniu {1}.
+tool.install.missing.content.explanation=Podczas przetwarzania tre\u015bci podsystemu \
+nie znaleziono przywo\u0142ywanego pliku w archiwum.
+tool.install.missing.content.useraction=Skontaktuj si\u0119 z autorem podsystemu, aby uzyska\u0107 \
+zaktualizowane archiwum, kt\u00f3re zawiera wymagan\u0105 tre\u015b\u0107.
+tool.install.content.notfound=CWWKF1013E: Tre\u015bci {0} w podsystemie nie znaleziono \
+w archiwum podsystemu.
+tool.install.content.notfound.explanation=Podczas przetwarzania tre\u015bci podsystemu nie znaleziono niekt\u00f3rych wymaganych pakunk\u00f3w w archiwum podsystemu.
+tool.install.content.notfound.useraction=Skontaktuj si\u0119 z autorem podsystemu, aby uzyska\u0107 \
+zaktualizowane archiwum, kt\u00f3re zawiera wymagan\u0105 tre\u015b\u0107.
+tool.install.bad.zip=CWWKF1014E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas odczytu pliku archiwum {0}. Wyj\u0105tek: {1}
+tool.install.bad.zip.explanation=Nie mo\u017cna odczyta\u0107 archiwum podsystemu.
+tool.install.bad.zip.useraction=Sprawd\u017a, czy archiwum podsystemu jest poprawnym, pe\u0142nym archiwum. Je\u015bli nie jest ono poprawne, uzyskaj now\u0105 wersj\u0119 archiwum od dostawcy.
+tool.install.file.exists=CWWKF1015E: Plik {0} ju\u017c istnieje.
+tool.install.file.exists.explanation=Instalacja archiwum podsystemu nie powiod\u0142a si\u0119, \
+poniewa\u017c plik z archiwum ju\u017c istnieje w instalacji.
+tool.install.file.exists.useraction=Przejrzyj pliki, kt\u00f3re ju\u017c istniej\u0105. Je\u015bli operacja \
+instalacji mo\u017ce by\u0107 kontynuowana, uruchom operacj\u0119 ponownie, u\u017cywaj\u0105c opcji --when-file-exists=replace, \
+aby zast\u0105pi\u0107 istniej\u0105ce pliki, lub --when-file-exists=ignore, aby kontynuowa\u0107 bez istniej\u0105cego pliku.
+tool.install.dir.create.fail=CWWKF1016E: Nie mo\u017cna utworzy\u0107 struktury katalog\u00f3w {0}.
+tool.install.dir.create.fail.explanation=Nie mo\u017cna utworzy\u0107 katalog\u00f3w wymaganych przez instalowany sk\u0142adnik.
+tool.install.dir.create.fail.useraction=Sprawd\u017a, czy istnieje udost\u0119pniony katalog i czy istniej\u0105 niezb\u0119dne uprawnienia umo\u017cliwiaj\u0105ce utworzenie struktury katalog\u00f3w. Ponownie uruchom operacj\u0119 instalacji.
+tool.install.feature.ok=CWWKF1017I: Jeden lub wi\u0119cej sk\u0142adnik\u00f3w zosta\u0142o pomy\u015blnie zainstalowanych: {0}.
+tool.install.feature.ok.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+tool.install.feature.ok.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+tool.install.invalid.when.file.exists.value=CWWKF1018E: Warto\u015b\u0107 {0} nie jest poprawn\u0105 \
+opcj\u0105 dla parametru --when-file-exists. Poprawne opcje to fail, replace i ignore.
+tool.install.invalid.when.file.exists.value.explanation=Opcja --when-file-exists musi \
+mie\u0107 warto\u015b\u0107 fail, replace lub ignore.
+tool.install.invalid.when.file.exists.value.useraction=Podaj jedn\u0105 z poprawnych \
+warto\u015bci: fail, replace lub ignore.
+tool.product.ext.features.not.found=CWWKF1019E: Rozszerzenie produktu {0} nie zawiera \u017cadnych sk\u0142adnik\u00f3w.
+tool.product.ext.features.not.found.explanation=Nie znaleziono plik\u00f3w manifestu sk\u0142adnika powi\u0105zanych z okre\u015blonym rozszerzeniem produktu.
+tool.product.ext.features.not.found.useraction=Sprawd\u017a, czy katalog, w kt\u00f3rym znajduj\u0105 si\u0119 manifesty sk\u0142adnik\u00f3w, jest poprawny.
+tool.product.ext.not.found=CWWKF1020E: Nie mo\u017cna znale\u017a\u0107 rozszerzenia produktu {0} w po\u0142o\u017ceniu {1}.
+tool.product.ext.not.found.explanation=Nie mo\u017cna znale\u017a\u0107 rozszerzenia produktu w wymienionym po\u0142o\u017ceniu.
+tool.product.ext.not.found.useraction=Sprawd\u017a, czy po\u0142o\u017cenie instalacji produktu zosta\u0142o poprawnie zdefiniowane w pliku w\u0142a\u015bciwo\u015bci instalacji produktu.
+tool.product.ext.not.defined=CWWKF1021E: Rozszerzenie produktu o nazwie {0} nie istnieje.
+tool.product.ext.not.defined.explanation=Rozszerzenie produktu o podanej nazwie nie istnieje.
+tool.product.ext.not.defined.useraction=Sprawd\u017a, czy podana nazwa rozszerzenia produktu jest poprawna.
+tool.install.content.no.subsystem.manifest=CWWKF1022E: Plik OSGI-INF/SUBSYSTEM.MF nie zosta\u0142 znaleziony w archiwum.
+tool.install.content.no.subsystem.manifest.explanation=Archiwum podsystemu nie zawiera pliku OSGI-INF/SUBSYSTEM.MF, kt\u00f3ry zawiera metadane o podsystemie.
+tool.install.content.no.subsystem.manifest.useraction=Dodaj plik OSGI-INF/SUBSYSTEM.MF do archiwum.
+# {0} is the path to the file being used
+tool.install.two.subsystem.manifests=CWWKF1023W: Istniej\u0105 dwa pliki o \u015bcie\u017cce OSGI-INF/SUBSYSTEM.MF, ale podano je z r\u00f3\u017cn\u0105 wielko\u015bci\u0105 liter. Zostanie u\u017cyty plik {0}. 
+tool.install.two.subsystem.manifests.explanation=Nale\u017cy u\u017cy\u0107 tylko jednego pliku OSGI-INF/SUBSYSTEM.MF w celu zdefiniowania sk\u0142adnika, natomiast archiwum zawiera dwa pliki OSGI-INF/SUBSYSTEM.MF, kt\u00f3re zosta\u0142y podane z r\u00f3\u017cn\u0105 wielko\u015bci\u0105 liter.
+tool.install.two.subsystem.manifests.useraction=Usu\u0144 jeden z plik\u00f3w SUBSYSTEM.MF.
+
+# {0} is the path to the (missing) feature directory
+tool.feature.dir.not.found=CWWKF1024E: Komenda featureManager nie mo\u017ce znale\u017a\u0107 katalogu sk\u0142adnik\u00f3w i nie mo\u017ce go utworzy\u0107 w \u015bcie\u017cce do katalogu {0}.
+tool.feature.dir.not.found.explanation=Katalog sk\u0142adnik\u00f3w dla tego serwera nie istnieje. Zamiast tego katalog o takiej nazwie sk\u0142adnik\u00f3w m\u00f3g\u0142 zosta\u0107 utworzony przypadkowo jako plik.   Pr\u00f3ba utworzenia katalogu sk\u0142adnik\u00f3w przez komend\u0119 featureManager nie powiod\u0142a si\u0119. Cz\u0119sto wyst\u0119puj\u0105c\u0105 przyczyn\u0105 braku mo\u017cliwo\u015bci utworzenia katalogu sk\u0142adnik\u00f3w jest brak uprawnie\u0144 u\u017cytkownika do zapisu dla \u015bcie\u017cki do katalogu. 
+tool.feature.dir.not.found.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci: (1) Utw\u00f3rz okre\u015blony katalog r\u0119cznie i uruchom ponownie komend\u0119 featureManager. (2) Ponownie uruchom komend\u0119 featureManager jako u\u017cytkownik z wystarczaj\u0105cymi uprawnieniami do zapisu w podanej \u015bcie\u017cce do katalogu.  
+
+tool.find.view.info.name=\ \ \ \ Nazwa: {0}
+tool.find.view.info.symbolic.name=\ \ \ \ Nazwa symboliczna: {0}
+tool.find.view.info.description=\ \ \ \ Opis: {0}
+tool.find.view.info.enabled.by=\ \ \ \ W\u0142\u0105czone przez:
+tool.find.no.feature=Nie znaleziono \u017cadnego sk\u0142adnika.
+
+tool.missing.option=CWWKF1025E: Dzia\u0142anie {0} wymaga \
+u\u017cycia opcji {1}, ale nie podano wymaganej opcji.
+tool.missing.option.explanation=Podj\u0119to pr\u00f3b\u0119 \
+uruchomienia komendy bez podania wymaganej opcji.
+tool.missing.option.useraction=Uruchom komend\u0119 ponownie z \
+u\u017cyciem wymaganej opcji.
+
+tool.classpath.feature.not.found=CWWKF1026E: Sk\u0142adnik {0} nie istnieje.
+tool.classpath.feature.not.found.explanation=Okre\u015blono \
+sk\u0142adnik, kt\u00f3ry nie istnieje.
+tool.classpath.feature.not.found.useraction=Uruchom komend\u0119 \
+ponownie bez okre\u015blania tego sk\u0142adnika. 
+
+tool.classpath.feature.not.public=CWWKF1027E: Sk\u0142adnik \
+{0} nie jest publiczny.
+tool.classpath.feature.not.public.explanation=Okre\u015blono \
+sk\u0142adnik, kt\u00f3ry nie jest publiczny.
+tool.classpath.feature.not.public.useraction=Uruchom komend\u0119 \
+ponownie bez okre\u015blania tego sk\u0142adnika.
+
+tool.classpath.wrong.drive=CWWKF1028E: Plik wyj\u015bciowy \
+{0} musi znajdowa\u0107 si\u0119 na tym samym dysku co plik {1}.
+tool.classpath.wrong.drive.explanation=Plik wyj\u015bciowy \
+musi znajdowa\u0107 si\u0119 na tym samym dysku, co wszystkie pliki przywo\u0142ywane przez \
+okre\u015blone sk\u0142adniki.
+tool.classpath.wrong.drive.useraction=Uruchom komend\u0119 ponownie \
+z plikiem wyj\u015bciowym, kt\u00f3ry znajduje si\u0119 na tym samym dysku, co okre\u015blony \
+plik.
+
+tool.classpath.create.fail=CWWKF1029E: Nie mo\u017cna \
+utworzy\u0107 pliku wyj\u015bciowego {0}. Otrzymano nast\u0119puj\u0105cy b\u0142\u0105d: {1}
+tool.classpath.create.fail.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d \
+podczas tworzenia pliku wyj\u015bciowego.
+tool.classpath.create.fail.useraction=Przejrzyj komunikat o \
+b\u0142\u0119dzie, wyeliminuj problem i uruchom komend\u0119 ponownie. 
+
+tool.userfeature.install.location.invalid=CWWKF1036E: Sk\u0142adnika u\u017cytkownika {0} nie mo\u017cna zainstalowa\u0107 w katalogu core.
+tool.userfeature.install.location.invalid.explanation= Sk\u0142adnik u\u017cytkownika nie jest sk\u0142adnikiem podstawowym, dlatego nie mo\u017cna go zainstalowa\u0107 w katalogu core.
+tool.userfeature.install.location.invalid.useraction= Zainstaluj sk\u0142adnik u\u017cytkownika w katalogu usr. 
+

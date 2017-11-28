@@ -1,0 +1,54 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMFT
+#COMPONENTNAMEFOR CWMFT MicroProfile FaultTolerance API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by FaultTolerance Impl -  range is 0000-4999, plus 9999 for the emergency message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#A timeout occurred. 
+timeout.occurred.CWMFT0000E=CWMFT0000E: Wyst\u0105pi\u0142o przekroczenie limitu czasu.
+timeout.occurred.CWMFT0000E.explanation=Operacja trwa\u0142a d\u0142u\u017cej ni\u017c pozwala na to skonfigurowany limit czasu.
+timeout.occurred.CWMFT0000E.useraction=Zwi\u0119ksz limit maksymalnego czasu trwania lub przyspiesz zako\u0144czenie operacji. 
+
+#No free capacity was available in the bulkhead for method {0}.
+bulkhead.no.threads.CWMFT0001E=CWMFT0001E: Brak dost\u0119pnej wolnej pojemno\u015bci w przegrodzie dla metody {0}.
+bulkhead.no.threads.CWMFT0001E.explanation=Wywo\u0142anie metody nie powiod\u0142o si\u0119, poniewa\u017c przegroda metody jest pe\u0142na.
+bulkhead.no.threads.CWMFT0001E.useraction=Zwi\u0119ksz dost\u0119pno\u015b\u0107 w przegrodzie przez zwi\u0119kszenie jej pojemno\u015bci lub zmniejszenie wsp\u00f3\u0142bie\u017cnego obci\u0105\u017cenia tej us\u0142ugi.
+
+#An internal error occurred. The exception is {0}.
+internal.error.CWMFT4998E=CWMFT4998E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Wyj\u0105tek: {0}.
+internal.error.CWMFT4998E.explanation=Na serwerze aplikacji wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
+internal.error.CWMFT4998E.useraction=Zbierz zestaw danych \u015bledzenia i otw\u00f3rz nowy problem dotycz\u0105cy serwera aplikacji.
+
+#Generic error for internal failures. 
+internal.error.CWMFT4999E=CWMFT4999E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
+internal.error.CWMFT4999E.explanation=Na serwerze aplikacji wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
+internal.error.CWMFT4999E.useraction=Zbierz zestaw danych \u015bledzenia i otw\u00f3rz nowy problem dotycz\u0105cy serwera aplikacji.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency FaultTolerance error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Fault Tolerance API error has occurred: {0}
+temporary.CWMFT9999E=CWMFT9999E: Wyst\u0105pi\u0142 b\u0142\u0105d interfejsu API odporno\u015bci na b\u0142\u0119dy: {0}
+temporary.CWMFT9999E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d interfejsu API odporno\u015bci na b\u0142\u0119dy, kt\u00f3ry uniemo\u017cliwia normalne dzia\u0142anie.
+temporary.CWMFT9999E.useraction=Sprawd\u017a dzienniki FFDC i tekst wyj\u0105tku w celu zidentyfikowania problemu.

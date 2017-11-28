@@ -1,0 +1,35 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.artifact.api.zip/resources/com/ibm/ws/artifact/api/zip/internal/resources/ZipArtifactMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKM
+#COMPONENTNAMEFOR CWWKM Module API
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+bad.zip.data=CWWKM0101E: A rendszer nem tudta feldolgozni a(z) {0} arch\u00edvum adatait.
+bad.zip.data.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt az arch\u00edvum t\u00f6m\u00f6r\u00edtett adatainak feldolgoz\u00e1sa sor\u00e1n. 
+bad.zip.data.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a f\u00e1jl egy \u00e9rv\u00e9nyes arch\u00edvum.
+
+remove.cache.data=CWWKM0102W: A rendszer ki\u00fcr\u00edtett az \u00e9rv\u00e9nytelen gyors\u00edt\u00f3t\u00e1radatokat a(z) {0} helyr\u0151l.
+remove.cache.data.explanation=\u00dagy t\u0171nik, hogy az alkalmaz\u00e1s strukt\u00far\u00e1ja megv\u00e1ltozott, ami az el\u0151z\u0151 strukt\u00far\u00e1n alapul\u00f3 gyors\u00edt\u00f3t\u00e1radatok t\u00f6rl\u00e9s\u00e9t ig\u00e9nyli.
+remove.cache.data.useraction=Ha az alkalmaz\u00e1s strukt\u00far\u00e1ja megv\u00e1ltozott, akkor ez az elv\u00e1rt viselked\u00e9s.
+
+extract.cache.fail=CWWKM0103E: A rendszer nem tudott kibontani egy be\u00e1gyazott arch\u00edvumot egy gyors\u00edt\u00f3t\u00e1r helyre a k\u00f6vetkez\u0151 miatt: {0}
+extract.cache.fail.explanation=Hiba t\u00f6rt\u00e9nt az alkalmaz\u00e1shoz tartoz\u00f3 gyors\u00edt\u00f3t\u00e1radatok l\u00e9trehoz\u00e1sakor, ami megakad\u00e1lyozta az alkalmaz\u00e1s feldolgoz\u00e1s\u00e1t. 
+extract.cache.fail.useraction=Ellen\u0151rizze a jelentett okot.

@@ -1,0 +1,41 @@
+###############################################################################
+# Copyright (c) 2012, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.server/resources/com/ibm/ws/jmx/connector/server/internal/resources/RESTServerMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX JMX REST Connector
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKX0100 - CWWKX0120
+
+jmx.connector.server.rest.notification.timeout.warning=CWWKX0101W: Le client de notification ayant l''ID {0} n''a pas effectu\u00e9 de demande dans le d\u00e9lai d\u00e9fini et sera donc d\u00e9sactiv\u00e9.
+jmx.connector.server.rest.notification.timeout.warning.explanation= Des clients de notification sont requis pour effectuer des demandes dans le d\u00e9lai admis afin d'\u00e9viter des d\u00e9passements du d\u00e9lai d'attente.
+jmx.connector.server.rest.notification.timeout.warning.useraction= V\u00e9rifiez que le serveur accepte toujours les demandes HTTP.
+
+jmx.connector.server.rest.notification.limit.warning=CWWKX0102W: Le serveur a atteint la limite des clients de notification simultan\u00e9s.
+jmx.connector.server.rest.notification.limit.warning.explanation= Il existe une limite pour le nombre de clients pouvant s'inscrire simultan\u00e9ment afin de recevoir des notifications.
+jmx.connector.server.rest.notification.limit.warning.useraction= V\u00e9rifiez que les clients de notification sont authentiques et requis.  Le red\u00e9marrage du serveur red\u00e9finit tous les clients de notification.
+
+JMX_REST_ADDRESS=CWWKX0103I: Le connecteur REST JMX s''ex\u00e9cute et est disponible au niveau de l''URL de service suivante : {0}
+JMX_REST_ADDRESS.explanation=Le connecteur REST JMX est maintenant pr\u00eat et accessible \u00e0 l'URL de service indiqu\u00e9e.
+JMX_REST_ADDRESS.useraction=Aucune action n'est requise.
+
+JMX_HTTP_MBEAN_LISTENER_LIMIT_ERROR=CWWKX0104W: Le client de notification portant l''ID {0} a atteint sa limite d''enregistrements de programme d''\u00e9coute MBean simultan\u00e9s.
+JMX_HTTP_MBEAN_LISTENER_LIMIT_ERROR.explanation= Le client de notification comporte le nombre maximum admis d'enregistrements de programme d'\u00e9coute MBean simultan\u00e9s.
+JMX_HTTP_MBEAN_LISTENER_LIMIT_ERROR.useraction= Assurez-vous que les enregistrements de programme d'\u00e9coute MBean actuels sont uniques et obligatoires.  Retirez les enregistrements inutiles ou cr\u00e9ez un nouveau client de notification.

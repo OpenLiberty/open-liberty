@@ -1,0 +1,75 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jca.cm/resources/com/ibm/ws/jca/cm/internal/resources/J2CAMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA Connection Management
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+DEACTIVATED_J2CA8001=J2CA8001I: A(z) {0} {1} nem \u00e9rhet\u0151 el.
+DEACTIVATED_J2CA8001.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+DEACTIVATED_J2CA8001.useraction=Semmit sem kell tennie.
+
+DEACTIVATED_J2CA8006=J2CA8006I: A(z) {0} {1} nem \u00e9rhet\u0151 el a k\u00f6vetkez\u0151ben: {2}.
+DEACTIVATED_J2CA8006.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+DEACTIVATED_J2CA8006.useraction=Semmit sem kell tennie.
+
+UNKNOWN_PROP_J2CA8010=J2CA8010W: Ismeretlen {0} tulajdons\u00e1g: {1}
+UNKNOWN_PROP_J2CA8010.explanation=Egy konfigur\u00e1lt tulajdons\u00e1g nem ismerhet\u0151 fel.
+UNKNOWN_PROP_J2CA8010.useraction=Jav\u00edtsa vagy t\u00e1vol\u00edtsa el a konfigur\u00e1lt tulajdons\u00e1got.
+
+UNSUPPORTED_VALUE_J2CA8011=J2CA8011E: A(z) {0} \u00e9rt\u00e9k nem t\u00e1mogatott a(z) {1} eset\u00e9ben a k\u00f6vetkez\u0151n: {2}
+UNSUPPORTED_VALUE_J2CA8011.explanation=Egy be\u00e1ll\u00edtott \u00e9rt\u00e9k nem t\u00e1mogatott.
+UNSUPPORTED_VALUE_J2CA8011.useraction=Jav\u00edtsa az \u00e9rt\u00e9ket, vagy t\u00e1vol\u00edtsa el a konfigur\u00e1lt tulajdons\u00e1got.
+
+MISSING_LIBRARY_J2CA8020=J2CA8020E: A(z) {0} f\u00fcggv\u00e9nyt\u00e1rban l\u00e9v\u0151 f\u00e1jlok nem t\u00f6lthet\u0151k be vagy nem \u00e9rhet\u0151k el.
+MISSING_LIBRARY_J2CA8020.explanation=A f\u00e1jlok nem t\u00f6lthet\u0151k be a megosztott f\u00fcggv\u00e9nyt\u00e1rb\u00f3l.
+MISSING_LIBRARY_J2CA8020.useraction=Ellen\u0151rizze a megosztott f\u00fcggv\u00e9nyt\u00e1r f\u00e1jlenged\u00e9lyeit \u00e9s konfigur\u00e1ci\u00f3j\u00e1t.
+
+MISSING_LIBRARY_J2CA8022=J2CA8022E: A(z) {0} alkalmaz\u00e1s nem rendelkezik megosztott k\u00f6nyvt\u00e1rakkal, amelyek megadj\u00e1k a(z) {2} {3} sz\u00e1m\u00e1ra a k\u00f6vetkez\u0151t: {1}.
+MISSING_LIBRARY_J2CA8022.explanation=Az alkalmaz\u00e1s \u00e1ltal megadott adatforr\u00e1sok haszn\u00e1lat\u00e1hoz megosztott k\u00f6nyvt\u00e1rk\u00e9nt el\u00e9rhet\u0151v\u00e9 kell tenni az adatforr\u00e1s oszt\u00e1lyt biztos\u00edt\u00f3 JDBC illeszt\u0151programot az alkalmaz\u00e1s sz\u00e1m\u00e1ra.
+MISSING_LIBRARY_J2CA8022.useraction=Adja hozz\u00e1 a JDBC illeszt\u0151programot megosztott k\u00f6nyvt\u00e1rk\u00e9nt az alkalmaz\u00e1shoz.
+
+MISSING_RESOURCE_J2CA8030=J2CA8030E: Nem tal\u00e1lhat\u00f3 a(z) {0} {1} a(z) {2} {3} sz\u00e1m\u00e1ra.
+MISSING_RESOURCE_J2CA8030.explanation=A megadott er\u0151forr\u00e1s egy m\u00e1sik er\u0151forr\u00e1st ig\u00e9nyel, amely nem \u00e9rhet\u0151 el.
+MISSING_RESOURCE_J2CA8030.useraction=Ellen\u0151rizze, hogy az er\u0151forr\u00e1s megfelel\u0151en van-e be\u00e1ll\u00edtva.
+
+CARDINALITY_ERROR_J2CA8040=J2CA8040E: A(z) {0} {1} csak egy {2} elemmel rendelkezhet.
+CARDINALITY_ERROR_J2CA8040.explanation=Az er\u0151forr\u00e1s nem rendelkezhet egyn\u00e9l t\u00f6bbel a megadott t\u00edpus\u00fa elemb\u0151l.
+CARDINALITY_ERROR_J2CA8040.useraction=Friss\u00edtse \u00fagy a konfigur\u00e1ci\u00f3t, hogy a megadott t\u00edpus\u00fa elemb\u0151l csak egy legyen az er\u0151forr\u00e1shoz t\u00e1rs\u00edtva.
+
+RECOMMEND_AUTH_ALIAS_J2CA8050=J2CA8050I: Hiteles\u00edt\u00e9si \u00e1lnevet kell haszn\u00e1lni felhaszn\u00e1l\u00f3n\u00e9v \u00e9s jelsz\u00f3 helyett a k\u00f6vetkez\u0151n: {0}.
+RECOMMEND_AUTH_ALIAS_J2CA8050.explanation=Egy er\u0151forr\u00e1son hiteles\u00edt\u00e9si \u00e1ln\u00e9v haszn\u00e1lata javasolt felhaszn\u00e1l\u00f3n\u00e9v \u00e9s jelsz\u00f3 be\u00e1ll\u00edt\u00e1sa helyett.
+RECOMMEND_AUTH_ALIAS_J2CA8050.useraction=\u00c1ll\u00edtsa be a felhaszn\u00e1l\u00f3nevet \u00e9s jelsz\u00f3t az authData elemen ahelyett, hogy azt k\u00f6zvetlen\u00fcl az er\u0151forr\u00e1son adn\u00e1 meg. 
+
+INVALID_MBEAN_INVOKE_PARAM_J2CA8060=J2CA8060E: A(z) {0} nem \u00e9rv\u00e9nyes param\u00e9ter a(z) {1} m\u0171velethez.
+INVALID_MBEAN_INVOKE_PARAM_J2CA8060.explanation=A m\u0171velethez megadott param\u00e9tereknek meg kell felelni\u00fck az adott m\u0171velethez \u00e9rv\u00e9nyes param\u00e9tereknek.
+INVALID_MBEAN_INVOKE_PARAM_J2CA8060.useraction=Adjon meg \u00e9rv\u00e9nyes param\u00e9tereket a megh\u00edvott m\u0171velethez.
+
+INVALID_MBEAN_INVOKE_ACTION_J2CA8061=J2CA8061E: A(z) {0} nem \u00e9rv\u00e9nyes m\u0171velet a(z) {1} MBean komponenshez.
+INVALID_MBEAN_INVOKE_ACTION_J2CA8061.explanation=Olyan m\u0171velet megh\u00edv\u00e1s\u00e1ra t\u00f6rt\u00e9nt k\u00eds\u00e9rlet, amely nem \u00e9rhet\u0151 el a megadott MBean komponenshez.
+INVALID_MBEAN_INVOKE_ACTION_J2CA8061.useraction=M\u00f3dos\u00edtsa a megh\u00edvott m\u0171veletet a megadott MBean komponenshez \u00e9rv\u00e9nyes met\u00f3dusra.
+
+MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062=J2CA8062E: A(z) {0} attrib\u00fatum nem \u00e9rv\u00e9nyes a(z) {1} MBean komponenshez.
+MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.explanation=Olyan attrib\u00fatum kiolvas\u00e1s\u00e1ra vagy be\u00e1ll\u00edt\u00e1s\u00e1ra t\u00f6rt\u00e9nt k\u00eds\u00e9rlet, amely nem \u00e9rhet\u0151 el a megadott MBean komponenshez.
+MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.useraction=M\u00f3dos\u00edtsa a megadott attrib\u00fatumot az MBean komponenshez el\u00e9rhet\u0151 attrib\u00fatumok egyik\u00e9re.

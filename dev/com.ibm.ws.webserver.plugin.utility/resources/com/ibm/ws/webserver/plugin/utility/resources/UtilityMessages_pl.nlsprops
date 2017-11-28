@@ -1,0 +1,174 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.webserver.plugin.utility/resources/com/ibm/ws/webserver/plugin/utility/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+error=B\u0142\u0105d: {0}
+error.inputConsoleNotAvailable=Konsola wej\u015bciowa jest niedost\u0119pna.
+error.missingIO=B\u0142\u0105d. Brak urz\u0105dzenia we/wy: {0}.
+
+serverNotFound=W po\u0142o\u017ceniu {1} nie znaleziono podanego serwera {0}
+jmx.local.connector.file.notfound=Nie mo\u017cna \
+znale\u017a\u0107 pliku adresu lokalnego konektora JMX w po\u0142o\u017ceniu {0}
+jmx.local.connector.file.invalid=Nie mo\u017cna \
+odczyta\u0107 pliku adresu lokalnego konektora JMX w po\u0142o\u017ceniu {0}
+
+#------------------------------------------------------------------------------
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+tooManyArgs=Zbyt wiele argument\u00f3w.
+insufficientArgs=Za ma\u0142o argument\u00f3w.
+missingServerName=Nie okre\u015blono celu zadania.
+invalidArg=Niepoprawny argument {0}.
+missingArg=Brak argumentu {0}.
+missingValue=Brak warto\u015bci argumentu {0}.
+
+#------------------------------------------------------------------------------
+# Messages for HelpTask
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Sk\u0142adnia: {0} dzia\u0142anie [opcje]
+task.unknown=Nieznane zadanie: {0}
+
+common.encodeError=\n\
+Nie mo\u017cna zakodowa\u0107 has\u0142a dla argumentu: {0}
+
+common.hostError=\n Podana nazwa hosta prawdopodobnie nie jest poprawna: {0}\n\
+Sprawd\u017a, czy nazwa hosta jest poprawna oraz czy system ma po\u0142\u0105czenie sieciowe.
+
+common.portError=\n\
+Nie mo\u017cna uzyska\u0107 dost\u0119pu do podanego portu {0}. Sprawd\u017a, czy port jest \
+poprawny.
+
+common.connectionError=\n Nie mo\u017cna zako\u0144czy\u0107 operacji.\n\
+B\u0142\u0105d: {0}
+
+#------------------------------------------------------------------------------
+# Messages for get and generate operations
+#------------------------------------------------------------------------------
+
+generateWebServerPluginTask.abort=\n\
+Zatrzymywanie...
+
+generateWebServerPluginTask.cleanupFail=\n B\u0142\u0105d podczas czyszczenia wygenerowanych plik\u00f3w. Nie mo\u017cna usun\u0105\u0107 pliku {0}\n\
+Usu\u0144 plik r\u0119cznie, sprawd\u017a uprawnienia do pliku i spr\u00f3buj ponownie.
+
+generateWebServerPluginTask.complete.collective=\n\
+Generowanie pliku konfiguracyjnego wtyczki serwera WWW dla docelowego kontrolera kolektywu zako\u0144czy\u0142o si\u0119 powodzeniem.
+
+generateWebServerPluginTask.fail.collective=\n\
+Generowanie pliku konfiguracyjnego wtyczki serwera WWW dla docelowego kontrolera kolektywu zako\u0144czy\u0142o si\u0119 niepowodzeniem.\n\
+Przeprowad\u017a analiz\u0119 dziennik\u00f3w docelowego kontrolera kolektywu, aby zdiagnozowa\u0107 ten problem.
+
+generateWebServerPluginTask.start.server.local=\n\
+Do wygenerowania pliku konfiguracyjnego wtyczki serwera WWW zostanie u\u017cyty lokalny serwer docelowy {0}.
+
+generateWebServerPluginTask.start.server.remote=\n\
+Do wygenerowania pliku konfiguracyjnego wtyczki serwera WWW zostanie u\u017cyty zdalny serwer docelowy {0}.
+
+generateWebServerPluginTask.complete.server=\n\
+Generowanie pliku konfiguracyjnego wtyczki serwera WWW dla serwera docelowego zako\u0144czy\u0142o si\u0119 powodzeniem.
+
+generateWebServerPluginTask.fail.server=\n\
+Generowanie pliku konfiguracyjnego wtyczki serwera WWW dla serwera docelowego zako\u0144czy\u0142o si\u0119 niepowodzeniem.\n\
+Przeprowad\u017a analiz\u0119 dziennik\u00f3w serwera docelowego, aby zdiagnozowa\u0107 ten problem.
+
+generateWebServerPluginTask.notEnabled=\n\
+Sk\u0142adnik kontrolera kolektywu nie jest w\u0142\u0105czony. W\u0142\u0105cz sk\u0142adnik i \
+spr\u00f3buj\n ponowi\u0107 komend\u0119.
+
+generateWebServerPluginTask.start.server=\n Uruchamianie \
+serwera {0}, poniewa\u017c aktualnie nie jest uruchomiony.
+
+generateWebServerPluginTask.stop.server=\n Zatrzymywanie \
+serwera {0}, poniewa\u017c jego status pocz\u0105tkowy wskazywa\u0142, \u017ce by\u0142 zatrzymany.
+
+generateWebServerPluginTask.server.started=\n Serwer {0} \
+zosta\u0142 uruchomiony pomy\u015blnie.
+
+generateWebServerPluginTask.server.not.started=\n Nie \
+mo\u017cna uruchomi\u0107 serwera {0}.
+
+generateWebServerPluginTask.server.plugin=Generowanie \
+pliku konfiguracyjnego wtyczki z serwera WebSphere Liberty.
+
+generateWebServerPluginTask.target.directory.not.exists=\n Katalog okre\u015blony dla parametru --targetPath ({0}) nie istnieje.
+
+generateWebServerPluginTask.server.plugin.generated=\n\
+Plik wtyczki jest generowany w po\u0142o\u017ceniu {0} na serwerze.
+
+generateWebServerPluginTask.complete.next.step=\n Skopiuj plik \
+konfiguracyjny wtyczki do katalogu okre\u015blonego w\n dyrektywie \
+WebSpherePluginConfig w pliku httpd.conf serwera IBM HTTP Server.
+
+#------------------------------------------------------------------------------
+# Messages for merge operation
+#------------------------------------------------------------------------------
+
+MergePluginFilesTask.merging.plugin.dir=\n Scalanie \
+plik\u00f3w wtyczki pasuj\u0105cych do wzorca *plugin-cfg*.xml z katalogu {0}. 
+
+MergePluginFilesTask.merging.plugin.list=\n Scalanie \
+udost\u0119pnionej listy plik\u00f3w wtyczki.
+
+MergePluginFilesTask.merging.plugin.file.not.exists=\n\
+Plik {0} nie istnieje. Sprawd\u017a, czy plik istnieje i czy jest to poprawny\n plik \
+konfiguracyjny wtyczki.
+
+MergePluginFilesTask.merging.plugin.file.is.directory=\n\
+Plik {0} jest katalogiem. Katalog\u00f3w i zwyk\u0142ych plik\u00f3w nie mo\u017cna\n miesza\u0107 \
+podczas scalania.
+
+MergePluginFilesTask.merging.plugin.targetdir.not.exists=\n Katalog {0}, w kt\u00f3rym ma zosta\u0107 wygenerowany scalony plik konfiguracyjny,\n\
+nie istnieje.
+
+MergePluginFilesTask.merging.plugin.source.dir.not.exists=\n Katalog \u017ar\u00f3d\u0142owy {0} nie istnieje.
+
+MergePluginFilesTask.merging.plugin.source.file.not.directory=\n Element \u017ar\u00f3d\u0142owy {0} nie jest katalogiem.
+
+MergePluginFilesTask.merging.plugin.source.file.selected=\n Plik {0} zosta\u0142 wybrany do scalenia. 
+
+MergePluginFilesTask.merging.plugin.target.file.generating=\n Generowanie scalonego pliku konfiguracyjnego w po\u0142o\u017ceniu {0}.
+
+MergePluginFilesTask.merging.plugin.target.file.generated=\n\
+Scalony plik konfiguracyjny zosta\u0142 pomy\u015blnie wygenerowany.
+
+MergePluginFilesTask.merging.plugin.insufficent.number.of.source.files=\n\
+Podaj co najmniej dwa pliki konfiguracyjne wtyczek w celu wykonania operacji scalania
+
+#------------------------------------------------------------------------------
+# Messages for pluginUtility generate option 
+#------------------------------------------------------------------------------
+# reading in a password
+#-----------------------------------------
+password.enterText=Wprowad\u017a {0}:
+password.reenterText=Wprowad\u017a ponownie {0}:
+password.readError=B\u0142\u0105d odczytu has\u0142a.
+password.entriesDidNotMatch=Has\u0142a nie s\u0105 zgodne.
+
+#-----------------------------------------
+# reading in a user 
+#-----------------------------------------
+user.enterText=Wprowad\u017a {0}:
+user.readError=B\u0142\u0105d odczytu nazwy u\u017cytkownika.
+
+#----------------------------------------- 
+# Missing Argument Messages 
+#-----------------------------------------
+invalidPortArg=Udost\u0119pniono niepoprawn\u0105 warto\u015b\u0107 dla w\u0142a\u015bciwo\u015bci [port]={0} w argumencie dla elementu {1}. Wymagana jest warto\u015b\u0107 liczbowa.
+missingUsernameValue=Brak warto\u015bci w\u0142a\u015bciwo\u015bci [user] w argumencie dla elementu {0}.
+missingPasswordValue=Brak warto\u015bci w\u0142a\u015bciwo\u015bci [password] w argumencie dla elementu {0}.
+missingHostValue=Brak warto\u015bci w\u0142a\u015bciwo\u015bci [host] w argumencie dla elementu {0}.
+missingPortValue=Brak warto\u015bci w\u0142a\u015bciwo\u015bci [port] w argumencie dla elementu {0}.
+missingHostorPortValue=Brak warto\u015bci w\u0142a\u015bciwo\u015bci [host or port] w argumencie dla elementu {0}.
+
+#------------------------------------------------------------------------------

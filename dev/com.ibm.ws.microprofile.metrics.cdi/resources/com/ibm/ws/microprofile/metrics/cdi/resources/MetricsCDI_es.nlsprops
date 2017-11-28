@@ -1,0 +1,30 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMC
+#COMPONENTNAMEFOR CWMMC MicroProfile Metrics API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Metrics CDI Impl -  range is 3000-4999
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#Cannot resolve forwarding gauge.
+cannot.resolve.metric.warning.CWMMC3000W=CWMMC3000W: El valor para la m\u00e9trica del indicador {0} no se ha podido resolver.
+cannot.resolve.metric.warning.CWMMC3000W.explanation=El m\u00e9todo subyacente para el indicador no se ha podido resolver. Esto normalmente es provocado por el acceso a una m\u00e9trica donde se ha descargado la aplicaci\u00f3n.
+cannot.resolve.metric.warning.CWMMC3000W.useraction=No se requiere ninguna acci\u00f3n. Se anular\u00e1 el registro del indicador autom\u00e1ticamente.

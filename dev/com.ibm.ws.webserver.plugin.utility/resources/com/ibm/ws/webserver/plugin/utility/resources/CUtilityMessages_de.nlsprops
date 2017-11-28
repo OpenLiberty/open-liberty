@@ -1,0 +1,462 @@
+###############################################################################
+# Copyright (c) 2010, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.collective.utility/resources/com/ibm/ws/collective/utility/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+
+# Generic messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+error=Fehler: {0}
+error.inputConsoleNotAvailable=Die Eingabekonsole ist nicht verf\u00fcgbar.
+error.missingIO=Fehler. E/A-Einheit fehlt: {0}
+name=Name
+days=Tage
+serverNotFound=Der angegebene Server {0} wurde nicht an der Position {1} gefunden.
+userDirNotFound=Das angegebene Verzeichnis (userDir) {0} wurde nicht gefunden.
+installDirNotFound=Das Installationsverzeichnis {0} wurde nicht gefunden.
+
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+tooManyArgs=Zu viele Argumente.
+insufficientArgs=Zu wenige Argumente.
+missingServerName=Das Ziel f\u00fcr die Task wurde nicht angegeben.
+invalidArg=Das Argument {0} ist ung\u00fcltig.
+missingArg=Das Argument {0} fehlt.
+missingValue=Der Wert f\u00fcr das Argument {0} fehlt.
+missingPasswordArg=Sie m\u00fcssen entweder {0} oder die verbleibenden Kennwortargumente {1} angeben.
+
+
+# Messages for FileUtility
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+fileUtility.failedDirCreate=Fehler beim Erstellen des Verzeichnisses {0}
+fileUtility.deleteSuccess={0} wurde erfolgreich gel\u00f6scht
+fileUtility.deleteFailure={0} konnte nicht gel\u00f6scht werden
+
+
+# Messages for HelpTask
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Syntax: {0} Aktion Ziel [Optionen]
+task.unknown=Unbekannte Task: {0}
+
+
+# Messages for reading in a password
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+password.enterText=Kennwort {0} eingeben:
+password.reenterText=Kennwort {0} erneut eingeben:
+password.readError=Fehler beim Lesen des Kennworts.
+password.entriesDidNotMatch=Die Kennw\u00f6rter stimmen nicht \u00fcberein.
+
+
+# Messages common to collective utility tasks
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+common.encodeError=\n\
+Das Kennwort f\u00fcr das Argument kann nicht codiert werden: {0}
+
+common.hostError=\n\
+Der angegebene Hostname scheint nicht zul\u00e4ssig zu sein: {0}\n\
+Vergewissern Sie sich, dass der Hostname richtig ist und das System eine Netzverbindung hat.
+
+common.portError=\n\
+Der angegebene Port {0} konnte nicht erreicht werden. Vergewissern Sie sich, dass der Port richtig ist.
+
+common.connectionError=\n\
+Die MBean-Operation kann nicht ausgef\u00fchrt werden.\n\
+Fehler: {0}
+
+common.compatibilityError=\n\
+Der Zugriff auf die MBean-Operation ist nicht m\u00f6glich, weil diese nicht im Controller definiert ist. Der Controller hat wahrscheinlich eine \u00e4ltere Version als das Member.\n\
+Fehler: {0}
+
+common.renameFailed=\n\
+{0} kann nicht in {1} umbenannt werden.
+
+common.regenerateKey=Die HTTPS-Standard-Keystore-Datei ist unter {0} vorhanden.\n\
+Dieses Zertifikat wird neu generiert, und das urspr\u00fcngliche Zertifikat wird beibehalten. \n
+
+common.regenerateTrust=Die HTTPS-Standard-Truststore-Datei ist unter {0} vorhanden.\n\
+Dieses Zertifikat wird neu generiert, und das urspr\u00fcngliche Zertifikat wird beibehalten. \n
+
+common.validityTooShort=\n\
+Der angegebene G\u00fcltigkeitszeitraum {0} ist zu kurz. Die Mindestg\u00fcltigkeit sind 365 Tage.
+
+common.invalidDN=\n\
+Der angegebene DN f\u00fcr {0} ist ung\u00fcltig: {1}
+
+common.invalidEndpoint=Der Zielendpunkt f\u00fcr das Replikat {0} hat nicht das erforderliche Format.\n\
+Das Ziel ist der Replikationsport des Replikats und muss das Format\n\
+Host:Port haben.
+
+common.updateServerXML=\n\
+F\u00fcgen Sie der Datei server.xml die folgenden Zeilen hinzu, um die folgenden Komponenten zu aktivieren:
+
+
+# Messages for establishing SSL trust
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+sslTrust.autoAccept=Die Zertifikatskette f\u00fcr den Zielserver wird automatisch akzeptiert.\n\
+Registrierter Name des Zertifikats: {0}
+
+sslTrust.genDigestError={0}-Digest kann nicht generiert werden. \
+Fehler: {1}
+
+sslTrust.noDefaultTrust=Es kann keine SSL-Vertrauensbeziehung mit dem Zielserver hergestellt werden.
+
+sslTrust.certInfo=Informationen zur Zertifikatskette:
+
+sslTrust.cert=Zertifikat {0}
+
+sslTrust.certSubjectDN=Registrierter Name: {0}
+
+sslTrust.certIssueDN=Registrierter Name des Zertifikatsausstellers: {0}
+
+sslTrust.certSerial=Seriennummer: {0}
+
+sslTrust.certExpires=Verfallsdatum: {0}
+
+sslTrust.certSHADigest=SHA-1-Digest: {0}
+
+sslTrust.certMD5Digest=MD5-Digest: {0}
+
+sslTrust.promptToAcceptTrust=M\u00f6chten Sie die zuvor genannte Zertifikatskette akzeptieren? \
+(j/n) 
+# Note to translator this value must be the same as the translation for y in the sslTrust.promptToAcceptTrust brackets.
+yes.response.short=j
+yes.response.full=ja
+
+
+
+sslTrust.rejectTrust=Der Benutzer hat die Anforderung zur Anerkennung der Zertifikatskette abgelehnt.
+
+
+# Messages for registering a host to the collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+hostAuthInfo.bothCredentialsSet={0} und {1} sind definiert. W\u00e4hlen Sie einen der Werte aus. \n\
+Es darf nur ein einziges Authentifizierungsverfahren angegeben werden.
+
+hostAuthInfo.sshKeyPasswordWithoutKey=Das private SSH-Schl\u00fcsselkennwort wurde ohne entsprechenden privaten Schl\u00fcssel angegeben.
+
+hostAuthInfo.useSudoFalseWithSudoOptions=useSudo ist auf false gesetzt, aber es wurden andere sudo-Optionen definiert.
+
+# Messages for registering a host to the collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+encoding.aesRequiresKey=Die Codierung aes erfordert einen Schl\u00fcssel. \
+Geben Sie mit --key einen Schl\u00fcssel an.
+
+encoding.xorDoesNotSupportKey=Die Codierung xor unterst\u00fctzt keinen Schl\u00fcssel. \
+Geben Sie --key nicht an.
+
+encoding.unsupportedEncoding=Der Codierungswert {0} wird nicht unterst\u00fctzt.
+
+# Messages for registering a host to the collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+ssh.invalidSSHKeyPair=\n\
+Das angegebene SSH-Schl\u00fcsselpaar ist nicht g\u00fcltig. \n\
+Fehler: {0}
+
+ssh.couldNotCreateSSHKeys=\n\
+Die SSH-Standardschl\u00fcssel f\u00fcr die Hostauthentifizierung k\u00f6nnen nicht erstellt werden. \n\
+Fehler: {0}
+
+ssh.couldNotReadSSHKeys=\n\
+Die SSH-Schl\u00fcssel k\u00f6nnen nicht gelesen (oder geschrieben) werden. \n\
+Fehler: {0}
+
+ssh.updateAuthorizedKeys=Die berechtigten Schl\u00fcssel werden mit dem neuen \u00f6ffentlichen Schl\u00fcssel aktualisiert...
+
+ssh.cannotUpdateAuthorizedKeys=\n\
+Die Datei mit den berechtigten Schl\u00fcsseln f\u00fcr den Benutzer {0} kann nicht aktualisiert werden. \n\
+Es wurde nach einer Datei mit den berechtigten Schl\u00fcsseln im Ausgangsverzeichnis des Benutzers gesucht: {1}\n\
+Aktualisieren Sie die Datei mit den berechtigten Schl\u00fcsseln mit dem folgenden \u00f6ffentlichen Schl\u00fcssel:\n\
+{2}\n\
+Fehler: {3}
+
+
+# Messages for creation of a collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+create.start=Erforderliche Zertifikate f\u00fcr die Erstellung eines Verbunds werden erstellt...\n\
+Dies kann einige Zeit in Anspruch nehmen.
+
+create.abort=\n\
+Die Konfiguration des Verbundcontroller-Servers wird abgebrochen.
+
+create.errGetHostName=\n\
+Fehler beim Bestimmen des Hostnamens. Der Standardwert {0} wird \u00fcbernommen.\n\
+Ursache: {1}\n\
+Verwenden Sie die Option --hostName, um den Hostnamen explizit festzulegen.
+
+create.errorAlreadyHasResources=\n\
+Das Ressourcen-/Verbundverzeichnis des Servers ist bereits vorhanden.\n\
+Wenn Sie den Verbund neu erstellen m\u00f6chten, entfernen Sie das gesamte Verzeichnis.\n\
+Verwenden Sie zum Erweitern eines vorhandenen Verbunds die Task replicate.
+
+create.configLocationInDefaults=\n\
+Die \u00fcber die Option --createConfigFile angegebene Position befindet sich\n\
+im Serververzeichnis configDropins/defaults. Dies ist keine g\u00fcltige\n\
+Position f\u00fcr die generierte Verbundkonfiguration, weil alle \n\
+Controller die Position gemeinsam nutzen. Geben Sie eine andere Position an.
+
+create.genCertControllerRoot=Das Stammzertifikat f\u00fcr den Controller wurde erfolgreich generiert.
+
+create.genCertMemberRoot=Das Stammzertifikat f\u00fcr das Member wurde erfolgreich generiert.
+
+create.genCertServerIdentity=Das Zertifikat f\u00fcr die Serveridentit\u00e4t wurde erfolgreich generiert.
+
+create.genCertHTTPS=Das HTTPS-Zertifikat wurde erfolgreich generiert.
+
+create.failedKSSave=\n\
+Der Keystore {0} kann nicht gespeichert werden.
+
+create.cleanupFail=\n\
+Fehler beim Bereinigen der generierten Dateien. {0} kann nicht gel\u00f6scht werden. \n\
+Entfernen Sie das Verzeichnis manuell, \u00fcberpr\u00fcfen Sie die Dateiberechtigungen,\n\
+\ und wiederholen Sie die Operation.
+
+create.successful=Die Verbundcontrollerkonfiguration f\u00fcr {0} wurde erfolgreich erstellt.\n
+
+create.configureSecurity=Stellen Sie sicher, dass die Verwaltungssicherheit f\u00fcr den Server konfiguriert ist.\n\
+Die Member m\u00fcssen von einem Benutzer mit Verwaltungsaufgaben in den Verbund eingebunden werden.
+
+create.certUtil.NotAvailable=Die angeforderte Operation ist in dieser Edition von WebSphere nicht verf\u00fcgbar.
+
+# Messages for joining a collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+join.start=Verbund wird mit dem Zielcontroller {0}:{1} verkn\u00fcpft...\n\
+Dies kann einige Zeit in Anspruch nehmen.
+
+join.abort=\n\
+Die Verkn\u00fcpfung des Verbunds wird abgebrochen.
+
+join.errorAlreadyHasResources=Das Ressourcen-/Verbundverzeichnis f\u00fcr diesen Server ist bereits vorhanden. \n\
+Der Server ist m\u00f6glicherweise bereits ein Verbundmember.\n\
+Zum erneuten Einbinden des Servers in den Verbund f\u00fchren Sie die Task zum Entfernen des Servers manuell \n\
+aus, oder l\u00f6schen Sie das Ressourcen-/Verbundverzeichnis manuell, und wiederholen Sie dann die Operation.
+
+join.writeKeystoreFail=\n\
+Fehler beim Schreiben des erforderlichen Keystores auf die Platte {0}
+
+join.cleanupFail=\n\
+Fehler beim Bereinigen der generierten Dateien. {0} kann nicht gel\u00f6scht werden. \n\
+Entfernen Sie das Verzeichnis manuell, \u00fcberpr\u00fcfen Sie die Dateiberechtigungen,\n\
+und wiederholen Sie die Operation.
+
+join.mbeanComplete=Die MBean-Anforderung an den Controller wurde erfolgreich ausgef\u00fchrt.
+
+join.registeredAlready=Der angegebene Server {0} scheint bereits ein Member zu sein. \n\
+Zum erneuten Einbinden des Servers in den Verbund f\u00fchren Sie die Task zum Entfernen des Servers aus und wiederholen Sie dann die Operation.
+
+join.successful=Der Server {0} wurde erfolgreich in den Verbund eingebunden.\n
+
+join.useHostCredentialsButOtherCtedentialsAreSet=Wenn useHostCredentials definiert ist, geben Sie keine anderen Hostberechtigungsnachweise an.
+
+deployAdminMetadata.mbeanComplete=Die AdminMetadataManagerMBean-Anforderung an den Controller wurde erfolgreich ausgef\u00fchrt.
+
+deployAdminMetadata.start=Verwaltungsmetadaten werden im Verbundrepository implementiert...\n\
+Dies kann einige Zeit in Anspruch nehmen.
+
+allocateDeployVariables.mbeanComplete=Die CollectiveRepositoryMBean-Anforderung an den Controller wurde erfolgreich ausgef\u00fchrt.
+
+allocateDeployVariables.start=Implementierungsvariablen im Verbundrepository werden zugeordnet...\n\
+Dies kann einige Zeit in Anspruch nehmen.
+
+AllocatedDeployVars=Zugeordnete Implementierungsvariable:
+deployVarsNotFound=Nicht definierte Implementierungsvariable: {0}
+deployVarsAreAllocated=Die Implementierungsvariablen wurden zugeordnet und die Datei deployVariables.xml wurde im Serververzeichnis /configDropins/overrides erstellt.
+
+# Messages for generating a collective key
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+genKey.start=Der Keystore wird mit dem Zielcontroller {0}:{1} generiert...\n
+genKey.abort=\n\
+genKey wird abgebrochen.
+
+genKey.writeKeystoreFail=\n\
+Fehler beim Schreiben des erforderlichen Keystores auf die Platte {0}
+
+genKey.cleanupFail=\n\
+Fehler beim Bereinigen der generierten Dateien. {0} kann nicht gel\u00f6scht werden. \n\
+Entfernen Sie die Datei manuell, \u00fcberpr\u00fcfen Sie die Dateiberechtigungen\n\
+und wiederholen Sie die Operation.
+
+genKey.mbeanComplete=Die MBean-Anforderung an den Controller wurde erfolgreich ausgef\u00fchrt.
+
+genKey.generatedKeystore=Der Keystore {0} wurde erfolgreich generiert.
+
+
+# Messages for replicating a controller 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+replicate.start=Der Zielverbundcontroller {0}:{1} wird repliziert...\n\
+Dies kann einige Zeit in Anspruch nehmen.
+
+replicate.abort=\n\
+Die Ausf\u00fchrung des Replikatcontrollers wird abgebrochen.
+
+replicate.errorAlreadyHasResources=Das Ressourcen-/Verbundverzeichnis f\u00fcr diesen Server ist bereits vorhanden. \n\
+Der Server ist m\u00f6glicherweise schon ein Controller. \n\
+Wenn Sie den Controller replizieren m\u00f6chten, f\u00fchren Sie die Task remove aus, oder l\u00f6schen Sie\n\
+das Ressourcen-/Verbundverzeichnis manuell, und wiederholen Sie dann die Operation.
+
+replicate.writeKeystoreFail=\n\
+Fehler beim Schreiben des erforderlichen Keystores auf die Platte {0}
+
+replicate.writeFileFail=\n\
+Fehler beim Schreiben der erforderlichen Datei auf die Platte {0}
+
+replicate.cleanupFail=\n\
+Fehler beim Bereinigen der generierten Dateien. {0} kann nicht gel\u00f6scht werden. \n\
+Entfernen Sie das Verzeichnis manuell, \u00fcberpr\u00fcfen Sie die Dateiberechtigungen,\n\
+und wiederholen Sie die Operation.
+
+replicate.mbeanComplete=Die MBean-Anforderung an den Controller wurde erfolgreich ausgef\u00fchrt.
+
+replicate.registeredAlready=Der angegebene Server {0} scheint bereits ein Member zu sein. \n\
+Wenn Sie den Controller replizieren m\u00f6chten, f\u00fchren Sie die Task remove aus und wiederholen Sie dann die Operation.
+
+replicate.success=Der Controller wurde erfolgreich als Server {0} repliziert.\n
+
+
+replicate.configureSecurity=Stellen Sie sicher, dass die Verwaltungssicherheit f\u00fcr den neuen \n\
+Server genauso wie f\u00fcr den aktuellen Verbundcontroller konfiguriert ist. Definieren Sie au\u00dferdem das \n\
+richtige Kennwort f\u00fcr collectiveRootKeys. \n
+
+# Messages for leaving a collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+remove.attemptUnregister=Es wird versucht, die Registrierung des Servers im Verbund aufzuheben...
+
+remove.unregisteredAlready=Der Server {0} ist nicht registriert.\n\
+Er ist m\u00f6glicherweise unter einem anderen Hostnamen registriert.
+
+remove.unregisterFailed=Die Registrierung des Servers {0} konnte wegen eines Fehlers nicht aufgehoben werden.
+
+remove.unregisterSuccess=Die Registrierung des Servers {0} wurde erfolgreich aufgehoben.
+
+remove.attemptResourceDelete=Es wird versucht, Ressourcen f\u00fcr den Verbund aus dem Server zu entfernen...
+
+remove.noFilesRemoved=Es wurden keine Verbundressourcen entfernt.
+remove.noResources=Es wurden keine Verbundressourcen gefunden.
+
+remove.manuallyRemove=Einige Dateien unter {0} konnten nicht entfernt werden.\n\
+Sie m\u00fcssen die Dateien manuell entfernen.
+
+remove.filesSuccess=Die Ressourcen f\u00fcr die Verbundzugeh\u00f6rigkeit wurden erfolgreich entfernt.
+
+remove.updateXML=\n\
+Aktualisieren Sie die Datei server.xml, und entfernen Sie die folgenden Elemente:
+
+removeAllAdminMetadata.mbeanComplete=Die AdminMetadataManagerMBean-Anforderung an den Controller wurde erfolgreich ausgef\u00fchrt.
+
+removeAllAdminMetadata.start=Es werden alle Verwaltungsmetadaten aus dem Verbundrepository entfernt...\n\
+Dies kann einige Zeit in Anspruch nehmen.
+
+remove.removeAllAdminMetadataFailed=Die Verwaltungsmetadaten mit dem Ressourcentyp {0} und der ID {1} k\u00f6nnen aufgrund eines Fehlers nicht aus dem Verbundrepository entfernt werden.
+
+getAdminMetadata.mbeanComplete=Die AdminMetadataManagerMBean-Anforderung an den Controller wurde erfolgreich ausgef\u00fchrt.
+
+releaseDeployVariables.start=Alle Implementierungsvariablen im Verbundrepository werden freigegeben...\n\
+Dies kann einige Zeit in Anspruch nehmen.
+
+releaseDeployVariables.mbeanComplete=Die CollectiveRepositoryMBean-Anforderung an den Controller wurde erfolgreich ausgef\u00fchrt.
+
+remove.releaseDeployVariablesFailed=Die Implementierungsvariablen {0} auf dem Host {1} k\u00f6nnen wegen eines Fehlers nicht aus dem Verbundrepository entfernt werden.
+
+# Messages for registering a host to the collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+registerHost.abort=\n\
+registerHost wird abgebrochen.
+
+registerHost.attemptRegister=Der Host wird im Verbund registriert...
+
+registerHost.registeredAlready=Der Host {0} ist bereits registeriert.
+
+registerHost.registerFailed=Der Host {0} konnte wegen eines Fehlers nicht registriert werden.
+
+registerHost.registerSuccess=Der Host {0} wurde erfolgreich registriert.
+
+
+# Messages for updating a host to the collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+updateHost.abort=\n\
+updateHost wird abgebrochen.
+
+updateHost.attemptRegister=Die Authentifizierungsdaten f\u00fcr den Host werden aktualisiert...
+
+updateHost.notRegistered=Der Host {0} ist nicht registriert.
+updateHost.updateFailed=Der Host {0} konnte wegen eines Fehlers nicht aktualisiert werden.
+updateHost.updateSuccess=Die Authentifizierungsdaten f\u00fcr den Host {0} wurden erfolgreich aktualisiert.
+
+
+# Messages for leaving a collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+unregisterHost.attemptUnregister=Die Registrierung des Hosts im Verbund wird aufgehoben..
+
+unregisterHost.unregisteredAlready=Der Host {0} ist nicht registriert.
+
+unregisterHost.unregisterFailed=Die Registrierung des Hosts {0} konnte wegen eines Fehlers nicht aufgehoben werden.
+
+unregisterHost.unregisterSuccess=Die Registrierung des Hosts {0} wurde erfolgreich aufgehoben.
+
+
+# Messages for adding a replica endpoint
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+addReplica.attempt=Der Endpunkt wird zur Replikatgruppe hinzugef\u00fcgt...
+
+addReplica.alreadyAdded=Der Replikatendpunkt {0} ist bereits Teil der Replikatgruppe.
+
+addReplica.invalidEndpoint=Der Replikatendpunkt {0} kann der Replikatgruppe nicht hinzugef\u00fcgt werden.\n\
+Vergewissern Sie sich, dass der Replikatendpunkt richtig ist und dass das Replikat ausgef\u00fchrt wird.
+
+addReplica.error=Der Replikatendpunkt {0} konnte wegen eines Fehlers nicht hinzugef\u00fcgt werden.
+
+addReplica.success=Der Replikatendpunkt {0} wurde der Replikatgruppe ordnungsgem\u00e4\u00df hinzugef\u00fcgt.
+
+
+# Messages for removing a replica endpoint
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+removeReplica.attemptUnregister=Es wird versucht, den Endpunkt aus der Replikatgruppe zu entfernen...
+
+removeReplica.alreadyRemoved=Der Replikatendpunkt {0} ist nicht Teil der Replikatgruppe oder der Ergebnissatz der Operation ist nicht g\u00fcltig.
+
+removeReplica.error=Der Replikatendpunkt {0} konnte wegen eines Fehlers nicht entfernt werden.
+
+removeReplica.success=Der Replikatendpunkt {0} wurde ordnungsgem\u00e4\u00df aus der Replikatgruppe entfernt.
+
+# Message for setting a host/server into maintenance mode
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+setMaintenanceMode.connectionError=Der Wartungsmodus konnte wegen eines Fehlers beim Herstellen der Verbindung zur Zielmaschine {0} nicht gesetzt werden.
+
+setMaintenanceMode.error=Der Wartungsmodus f\u00fcr {0} konnte wegen eines Fehlers nicht gesetzt werden.
+
+setMaintenanceMode.success=Der Wartungsmodus f\u00fcr {0} wurde erfolgreich gesetzt.
+
+setMaintenanceMode.alt=Es muss ein alternativer Server gestartet werden. \
+Der Wartungsmodus f\u00fcr {0} wird gesetzt, sobald der alternative Server gestartet wird.
+
+setMaintenanceMode.noAltServer=Der Wartungsmodus konnte f\u00fcr {0} nicht aktiviert werden, weil kein alternativer Server verf\u00fcgbar ist.
+
+# Message for taking a host/server out of maintenance mode
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+unsetMaintenanceMode.error=Der Wartungsmodus f\u00fcr {0} konnte wegen eines Fehlers nicht aufgehoben werden.
+
+unsetMaintenanceMode.success=Der Wartungsmodus f\u00fcr {0} wurde erfolgreich aufgehoben.
+
+unsetMaintenanceMode.connectionError=Der Wartungsmodus konnte wegen eines Fehlers beim Herstellen der Verbindung zur Zielmaschine {0} nicht aufgehoben werden.
+
+# Message for displaying if a host/server is in maintenance mode
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+getMaintenanceMode.connectionError=Der Wartungsmodus konnte wegen eines Fehlers beim Herstellen der Verbindung zur Zielmaschine {0} nicht abgerufen werden.
+
+getMaintenanceMode.inMM={0} befindet sich im Wartungsmodus.
+
+getMaintenanceMode.notInMM={0} befindet sich nicht im Wartungsmodus.
+
+getMaintenanceMode.alt=Es muss ein alternativer Server gestartet werden. \
+Der Wartungsmodus f\u00fcr {0} wird gesetzt, sobald der alternative Server gestartet wird.
+
+getMaintenanceMode.error=Der Wartungsmodusstatus f\u00fcr {0} konnte wegen eines Fehlers nicht abgerufen werden.

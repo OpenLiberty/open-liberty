@@ -1,0 +1,71 @@
+#CMVCPATHNAME SERV1/ws/code/prereq.jcdi/src/com/ibm/ws/webbeans/resources/jcdi.nlsprops
+#COMPONENTPREFIX CWOWB
+#COMPONENTNAMEFOR CWOWB Java EE Contexts and Dependency Injection 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by JCDI
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A CDI error has occurred: {0}
+cdi.resource.injection.error.CWOWB1000E=CWOWB1000E: CDI \uc624\ub958 \ubc1c\uc0dd: {0}
+cdi.resource.injection.error.CWOWB1000E.explanation=CDI \uc624\ub958\uac00 \ubc1c\uc0dd\ud558\uc5ec \uc77c\ubc18 \uc870\uc791\uc744 \uc218\ud589\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+cdi.resource.injection.error.CWOWB1000E.useraction=FFDC \ub85c\uadf8 \ubc0f \uc608\uc678 \ud14d\uc2a4\ud2b8\ub97c \uac80\ud1a0\ud558\uc5ec \ubb38\uc81c\ub97c \uc2dd\ubcc4\ud558\uc2ed\uc2dc\uc624.
+
+# Web Application Archive "{0}" contains more than one beans.xml file. Using "{1}". Ignoring "{2}".
+multiple.beans.xml.warning.CWOWB1001W=CWOWB1001W: \uc6f9 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc544\uce74\uc774\ube0c {0}\uc5d0 \ub458 \uc774\uc0c1\uc758 beans.xml \ud30c\uc77c\uc774 \uc788\uc2b5\ub2c8\ub2e4. {1}\uc744(\ub97c) \uc0ac\uc6a9\ud569\ub2c8\ub2e4. {2}\uc744(\ub97c) \ubb34\uc2dc\ud569\ub2c8\ub2e4.
+multiple.beans.xml.warning.CWOWB1001W.explanation=CDI\uc5d0\uc11c \ub458 \uc774\uc0c1\uc758 beans.xml \ud30c\uc77c\uc744 \ucc3e\uc558\uc2b5\ub2c8\ub2e4.
+multiple.beans.xml.warning.CWOWB1001W.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc544\uce74\uc774\ube0c\uac00 \ud558\ub098\uc758 beans.xml \ud30c\uc77c\ub9cc \ud3ec\ud568\ud574\uc57c \ud569\ub2c8\ub2e4.
+
+
+managed.class.bean.class.mismatch.CWOWB1002E=CWOWB1002E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+managed.class.bean.class.mismatch.CWOWB1002E.explanation=CMSG0001
+managed.class.bean.class.mismatch.CWOWB1002E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+
+error.loading.class.CWOWB1003E=CWOWB1003E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+error.loading.class.CWOWB1003E.explanation=CMSG0001
+error.loading.class.CWOWB1003E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+
+unknown.container.type.CWOWB1004E=CWOWB1004E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+unknown.container.type.CWOWB1004E.explanation=CMSG0001
+unknown.container.type.CWOWB1004E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+
+error.loading.resource.CWOWB1005E=CWOWB1005E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+error.loading.resource.CWOWB1005E.explanation=CMSG0001
+error.loading.resource.CWOWB1005E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+no.injection.target.context.CWOWB1006E=CWOWB1006E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+no.injection.target.context.CWOWB1006E.explanation=CMSG0001
+no.injection.target.context.CWOWB1006E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+resource.producer.validation.error.CWOWB1007E=CWOWB1007E: \uc0dd\uc131\uc790 \ud544\ub4dc {0}\uc758 {1} \uc720\ud615\uc774 \uc0bd\uc785\ub41c \uc624\ube0c\uc81d\ud2b8 \uc720\ud615\uacfc \uc77c\uce58\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+resource.producer.validation.error.CWOWB1007E.explanation=CDI\uc5d0\uc11c \ud544\ub4dc \uc720\ud615\uc774 \ud574\ub2f9 \ud544\ub4dc\uc5d0 \uc0bd\uc785\ub41c Java EE \uc790\uc6d0 \uc720\ud615\uacfc \uc77c\uce58\ud558\uc9c0 \uc54a\uc740 \uc790\uc6d0 \uc0dd\uc131\uc790 \ud544\ub4dc\ub97c \ucc3e\uc558\uc2b5\ub2c8\ub2e4.
+resource.producer.validation.error.CWOWB1007E.useraction=\uc62c\ubc14\ub978 Java EE \uc790\uc6d0\uc774 \uc790\uc6d0 \uc0dd\uc131\uc790 \ud544\ub4dc\uc5d0 \uc0bd\uc785\ub418\uace0 \ud544\ub4dc \uc720\ud615\uc774 \ud574\ub2f9 \ud544\ub4dc\uc5d0 \uc0bd\uc785\ub41c \uc790\uc6d0 \uc720\ud615\uacfc \uc77c\uce58\ud558\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+no.injection.target.CWOWB1008E=CWOWB1008E: {1} \ud074\ub798\uc2a4\uac00 Bean \uc544\uce74\uc774\ube0c\uc5d0 \uc5c6\uc73c\ubbc0\ub85c {1} \ud074\ub798\uc2a4\uc758 {0} \uba64\ubc84\ub97c \uc0bd\uc785\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+no.injection.target.CWOWB1008E.explanation=\ud074\ub798\uc2a4\uac00 \uc18d\ud558\ub294 \uc544\uce74\uc774\ube0c\uc758 Bean \uad00\ub9ac\uc790\uac00 \ub110\uc774\ubbc0\ub85c \uc778\uc81d\uc158\uc774 \uc131\uacf5\ud558\uc9c0 \ubabb\ud569\ub2c8\ub2e4.
+no.injection.target.CWOWB1008E.useraction=\ud074\ub798\uc2a4\uac00 \uc18d\ud558\ub294 \uc544\uce74\uc774\ube0c\uac00 Bean \uc544\uce74\uc774\ube0c\uc778\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \uc544\uce74\uc774\ube0c\ub97c Bean \uc544\uce74\uc774\ube0c\ub85c \ub9cc\ub4dc\ub294 \ubc29\ubc95\uc5d0 \ub300\ud574 CDI \uc2a4\ud399\uc744 \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+implicit.bean.scanning.disabled.CWOWB1009W=CWOWB1009W: \ub0b4\uc7ac\uc801 Bean \uc544\uce74\uc774\ube0c\ub97c \uc0ac\uc6a9\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+implicit.bean.scanning.disabled.CWOWB1009W.explanation=\uc544\uce74\uc774\ube0c\ub294 beans.xml \ud30c\uc77c\uc774 \uc5c6\ub294 \uacbd\uc6b0 CDI Bean\uc5d0 \ub300\ud574 \uc2a4\uce94\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+implicit.bean.scanning.disabled.CWOWB1009W.useraction=CDI\ub97c \uc0ac\uc6a9\ud558\ub294 \ubaa8\ub4e0 \uc544\uce74\uc774\ube0c\uc5d0 beans.xml \ud30c\uc77c\uc774 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uac70\ub098 .xml \ud30c\uc77c\uc5d0\uc11c \uc2a4\uce94\ud558\ub294 \ub0b4\uc7ac\uc801 Bean\uc744 \ub2e4\uc2dc \uc0ac\uc6a9\ud558\ub3c4\ub85d \uc124\uc815\ud558\uc2ed\uc2dc\uc624.

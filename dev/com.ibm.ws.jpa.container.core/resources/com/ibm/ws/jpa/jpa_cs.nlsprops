@@ -1,0 +1,329 @@
+###############################################################################
+# Copyright (c) 2006, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the message text
+#           must be followed by a 2nd apostrophe to work correctly.
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWWJP (Java Persistence API)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+#CMVCPATHNAME ws/code/jpa.impl/src/com/ibm/ws/jpa/jpa.nlsprops
+#COMPONENTPREFIX CWWJP
+#COMPONENTNAMEFOR CWWJP Java Persistence API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+
+#-------------------------------------------------------------------------------
+UNABLE_TO_LOAD_JPA_PROVIDER_CWWJP0001E=CWWJP0001E: Server nem\u016f\u017ee na\u010d\u00edst poskytovatele rozhran\u00ed Java Persistence API (JPA) {1} v bal\u00edku {0}, kter\u00fd je um\u00edst\u011bn v souboru {2}. Do\u0161lo k n\u00e1sleduj\u00edc\u00ed chyb\u011b: {3}
+UNABLE_TO_LOAD_JPA_PROVIDER_CWWJP0001E.explanation=B\u011bhem zpracov\u00e1n\u00ed serveru pro v\u00fdchoz\u00edho poskytovatele rozhran\u00ed JPA nemohl server naj\u00edt soubor pro poskytovatele v p\u0159\u00edslu\u0161n\u00e9m bal\u00edku.
+UNABLE_TO_LOAD_JPA_PROVIDER_CWWJP0001E.useraction=Prozkoumejte bal\u00edk poskytovatele rozhran\u00ed JPA a ov\u011b\u0159te existenci n\u00e1sleduj\u00edc\u00edch informac\u00ed:\n  Soubor META-INF/services/javax.persistence.spi.PersistenceProvider definuje spr\u00e1vnou implementa\u010dn\u00ed t\u0159\u00eddu poskytovatele.\n Implementa\u010dn\u00ed t\u0159\u00edda existuje v bal\u00edku.\n Soubor archivu Java (JAR) poskytovatele je ur\u010den ve vlastnosti Bundle-ClassPath v souboru META-INF/MANIFEST.MF.
+
+#-------------------------------------------------------------------------------
+UNABLE_TO_READ_JPA_PROVIDER_SPI_METADATA_CWWJP0002E=CWWJP0002E: Server nem\u016f\u017ee \u010d\u00edst obsah souboru {1} v bal\u00edku poskytovatele rozhran\u00ed Java Persistence API (JPA) {0}. Do\u0161lo k n\u00e1sleduj\u00edc\u00ed chyb\u011b: {2}
+UNABLE_TO_READ_JPA_PROVIDER_SPI_METADATA_CWWJP0002E.explanation=B\u011bhem zpracov\u00e1n\u00ed serveru pro v\u00fdchoz\u00edho poskytovatele rozhran\u00ed JPA nemohl server \u010d\u00edst obsah souboru v bal\u00edku poskytovatele rozhran\u00ed JPA.
+UNABLE_TO_READ_JPA_PROVIDER_SPI_METADATA_CWWJP0002E.useraction=Prozkoumejte bal\u00edk poskytovatele rozhran\u00ed JPA a ov\u011b\u0159te, \u017ee soubor META-INF/services/javax.persistence.spi.PersistenceProvider existuje a je spr\u00e1vn\u011b form\u00e1tov\u00e1n.
+
+#-------------------------------------------------------------------------------
+EXTEND_PC_NOT_IN_SFSB_CWWJP0003E=CWWJP0003E: Roz\u0161\u00ed\u0159en\u00fd kontext perzistence {0} lze zah\u00e1jit v r\u00e1mci oboru objektu session bean se stavem.
+EXTEND_PC_NOT_IN_SFSB_CWWJP0003E.explanation=Specifikace rozhran\u00ed Java Persistence API (JPA) vy\u017eaduje pouze zah\u00e1jen\u00ed roz\u0161\u00ed\u0159en\u00e9ho kontextu perzistence v r\u00e1mci oboru objektu session bean se stavem a aplikace se pokusila o zah\u00e1jen\u00ed roz\u0161\u00ed\u0159en\u00e9ho kontextu perzistence v r\u00e1mci oboru jin\u00e9ho typu objektu bean.
+EXTEND_PC_NOT_IN_SFSB_CWWJP0003E.useraction=Upravte aplikaci tak, aby byl roz\u0161\u00ed\u0159en\u00fd kontext perzistence zah\u00e1jen v r\u00e1mci oboru objektu session bean se stavem nebo zm\u011b\u0148te kontext perzistence.
+
+#-------------------------------------------------------------------------------
+NO_DEFAULT_PERSISTENCE_PROVIDER_CWWJP0004E=CWWJP0004E: Server nem\u016f\u017ee naj\u00edt v\u00fdchoz\u00ed syst\u00e9mov\u00e9 nastaven\u00ed poskytovatele rozhran\u00ed Java Persistence API (JPA) {0}. V\u00fdchoz\u00ed funkce poskytovatele rozhran\u00ed JPA je zak\u00e1z\u00e1na.
+NO_DEFAULT_PERSISTENCE_PROVIDER_CWWJP0004E.explanation=Poskytovatel rozhran\u00ed Java Persistence API pro produkty WebSphere je instalov\u00e1n v r\u00e1mci aplika\u010dn\u00edho serveru pro v\u00fdchoz\u00edho poskytovatele rozhran\u00ed JPA syst\u00e9mu. Tento v\u00fdchoz\u00ed poskytovatel v\u0161ak nebyl nalezen. V\u00fdchoz\u00ed funkce rozhran\u00ed JPA je tud\u00ed\u017e zak\u00e1z\u00e1na.
+NO_DEFAULT_PERSISTENCE_PROVIDER_CWWJP0004E.useraction=Kontaktujte administr\u00e1tora syst\u00e9mu se \u017e\u00e1dost\u00ed, aby byla pro aplika\u010dn\u00ed server p\u0159\u00edstupn\u00e1 v\u00fdchoz\u00ed syst\u00e9mov\u00e1 implementace WSJPA nebo implementace WSJPA definovan\u00e1 u\u017eivatelem.
+
+#-------------------------------------------------------------------------------
+APPL_CLASSLOADER_USE_HAS_NO_JPA_SUPPORT_CWWJP0005W=CWWJP0005W: Jednotka perzistence {0} v modulu {1} pou\u017e\u00edv\u00e1 typ zavad\u011b\u010de t\u0159\u00edd (ClassLoader) {2}. Funkce entity rozhran\u00ed Java Persistence API (JPA) nemus\u00ed pracovat podle o\u010dek\u00e1v\u00e1n\u00ed.
+APPL_CLASSLOADER_USE_HAS_NO_JPA_SUPPORT_CWWJP0005W.explanation=Pro povolen\u00ed \u00fapln\u00e9 podpory JPA m\u016f\u017ee b\u00fdt nutn\u00e9, aby poskytovatel perzistence vlo\u017eil k\u00f3d do entity JPA. Aktivn\u00ed typ zavad\u011b\u010de t\u0159\u00edd (ClassLoader) nepodporuje vkl\u00e1d\u00e1n\u00ed k\u00f3du JPA. Entita JPA proto nemus\u00ed pracovat podle o\u010dek\u00e1v\u00e1n\u00ed.
+APPL_CLASSLOADER_USE_HAS_NO_JPA_SUPPORT_CWWJP0005W.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#-------------------------------------------------------------------------------
+DEFAULT_PERSISTENCE_PROVIDER_LOADED_CWWJP0006I=CWWJP0006I: Jako v\u00fdchoz\u00ed poskytovatel rozhran\u00ed Java Persistence API (JPA) je na\u010dtena t\u0159\u00edda {0}.
+DEFAULT_PERSISTENCE_PROVIDER_LOADED_CWWJP0006I.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+DEFAULT_PERSISTENCE_PROVIDER_LOADED_CWWJP0006I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#-------------------------------------------------------------------------------
+DUPLICATE_PERSISTENCE_UNIT_DEFINED_CWWJP0007W=CWWJP0007W: Jednotka perzistence {0} v modulu {2} aplikace {1} je ji\u017e definov\u00e1na.
+DUPLICATE_PERSISTENCE_UNIT_DEFINED_CWWJP0007W.explanation=Jak je uvedeno v \u010d\u00e1sti 6.2 specifikace rozhran\u00ed Java Persistence API (JPA), mus\u00ed b\u00fdt n\u00e1zev jednotky perzistence jedine\u010dn\u00fd v r\u00e1mci jednoho souboru archivu Enterprise JavaBeans-Java (EJB-JAR), souboru JAR aplika\u010dn\u00edho klienta nebo souboru podnikov\u00e9ho archivu (EAR). Duplicitn\u00ed jednotka perzistence bude ignorov\u00e1na.
+DUPLICATE_PERSISTENCE_UNIT_DEFINED_CWWJP0007W.useraction=P\u0159ed dal\u0161\u00edm pokusem p\u0159ejmenujte nebo odeberte duplicitn\u00ed jednotku perzistence.
+
+#-------------------------------------------------------------------------------
+NO_JTA_TX_SYNC_REGISTRY_CWWJP0008E=CWWJP0008E: Server nenalezl registr rozhran\u00ed Java Transaction API (JTA) s pou\u017eit\u00edm vyhled\u00e1v\u00e1n\u00ed rozhran\u00ed JNDI (Java Naming Directory Interface) pro n\u00e1zev {0}. Do\u0161lo k n\u00e1sleduj\u00edc\u00ed chyb\u011b: {1}
+NO_JTA_TX_SYNC_REGISTRY_CWWJP0008E.explanation=B\u011bhov\u00e9 prost\u0159ed\u00ed serveru nem\u016f\u017ee p\u0159idru\u017eit podproces operace k \u017e\u00e1dn\u00e9 komponent\u011b aplikace prost\u0159ed\u00ed Java Platform, Enterprise Edition 5 (Java EE 5). Tento stav m\u016f\u017ee nastat, pokud nen\u00ed klient rozhran\u00ed JNDI pou\u017e\u00edvaj\u00edc\u00ed n\u00e1zev java: spou\u0161t\u011bn v r\u00e1mci podprocesu po\u017eadavku aplikace serveru.
+NO_JTA_TX_SYNC_REGISTRY_CWWJP0008E.useraction=Ov\u011b\u0159te, \u017ee aplikace prost\u0159ed\u00ed Java EE 5 nespou\u0161t\u00ed operace rozhran\u00ed JNDI pro n\u00e1zvy java: v r\u00e1mci blok\u016f statick\u00e9ho k\u00f3du nebo v podprocesech vytvo\u0159en\u00fdch touto aplikac\u00ed prost\u0159ed\u00ed Java EE 5. Takov\u00fd k\u00f3d nemus\u00ed b\u00fdt nutn\u011b spou\u0161t\u011bn v r\u00e1mci podprocesu po\u017eadavku aplikace serveru, a nen\u00ed tedy podporov\u00e1n operacemi rozhran\u00ed JNDI pro n\u00e1zvy java:.
+
+#-------------------------------------------------------------------------------
+UNABLE_TO_CREATE_ENTITY_MANAGER_FACTORY_CWWJP0009E=CWWJP0009E: Server nem\u016f\u017ee vytvo\u0159it tov\u00e1rnu EntityManagerFactory pro perzistentn\u00ed jednotku {0} od poskytovatele {1} v modulu {2}.
+UNABLE_TO_CREATE_ENTITY_MANAGER_FACTORY_CWWJP0009E.explanation=Metod\u011b createContainerEntityManagerFactory poskytovatele rozhran\u00ed Java Persistence API (JPA) se nezda\u0159ilo vr\u00e1tit tov\u00e1rnu EntityManagerFactory. Tato situace m\u016f\u017ee nastat, pokud byl pro perzistentn\u00ed jednotku  pou\u017eit nespr\u00e1vn\u00fd poskytovatel rozhran\u00ed JPA nebo pokud v poskytovateli rozhran\u00ed JPA do\u0161lo k chyb\u011b.
+UNABLE_TO_CREATE_ENTITY_MANAGER_FACTORY_CWWJP0009E.useraction=Ov\u011b\u0159te, \u017ee byl pro perzistentn\u00ed jednotku konfigurov\u00e1n spr\u00e1vn\u00fd poskytovatel rozhran\u00ed JPA, a prozkoumejte v\u0161echny d\u0159\u00edv\u011bj\u0161\u00ed chyby poch\u00e1zej\u00edc\u00ed od poskytovatele rozhran\u00ed JPA.
+
+#-------------------------------------------------------------------------------
+APPL_NOT_FOUND_DURING_PU_LOOKUP_CWWJP0010W=CWWJP0010W: Server nenalezl implementovanou aplikaci s n\u00e1zvem {0} p\u0159i pokusu o hled\u00e1n\u00ed jednotky perzistence {2} v modulu {1}.
+APPL_NOT_FOUND_DURING_PU_LOOKUP_CWWJP0010W.explanation=Aplikace nen\u00ed instalov\u00e1na nebo nebyla spu\u0161t\u011bna.
+APPL_NOT_FOUND_DURING_PU_LOOKUP_CWWJP0010W.useraction=Instalujte nebo spus\u0165te aplikaci.
+
+#-------------------------------------------------------------------------------
+PU_NOT_SPECIFIED_AND_NO_UNIQUE_PU_FOUND_CWWJP0012E=CWWJP0012E: N\u00e1zev jednotky perzistence nen\u00ed zad\u00e1n a v aplikaci {0} a modulu {1} nebyla nalezena \u017e\u00e1dn\u00e1 jedine\u010dn\u00e1 jednotka perzistence.
+PU_NOT_SPECIFIED_AND_NO_UNIQUE_PU_FOUND_CWWJP0012E.explanation=Aplikace definovala odkaz na kontext perzistence nebo jednotku perzistence bez n\u00e1zvu jednotky perzistence a jedine\u010dn\u00e1 jednotka perzistence nebyla nalezena.
+PU_NOT_SPECIFIED_AND_NO_UNIQUE_PU_FOUND_CWWJP0012E.useraction=Upravte aplikaci tak, aby byl pro odkaz ur\u010den n\u00e1zev jednotky perzistence nebo zadejte jedine\u010dnou perzistenci.
+
+#-------------------------------------------------------------------------------
+UNABLE_TO_GET_DATASOURCE_FOR_PU_CWWJP0013E=CWWJP0013E: Server nenalezl zdroj dat {0} pro jednotku perzistence {1}, proto\u017ee do\u0161lo k n\u00e1sleduj\u00edc\u00ed v\u00fdjimce:\n\ {2}
+UNABLE_TO_GET_DATASOURCE_FOR_PU_CWWJP0013E.explanation=Server se pokusil o vyhled\u00e1n\u00ed zdroje dat pro jednotku perzistence. Zdroj dat v\u0161ak nebyl nalezen.
+UNABLE_TO_GET_DATASOURCE_FOR_PU_CWWJP0013E.useraction=Ujist\u011bte se, \u017ee po\u017eadovan\u00fd zdroj dat byl vytvo\u0159en a \u017ee je k n\u011bmu vytvo\u0159ena vazba.
+
+#-------------------------------------------------------------------------------
+ILLEGAL_CLASS_FORMAT_IN_CLASS_TRANSFORMATION_CWWJP0014E=CWWJP0014E: B\u011bhem transformace t\u0159\u00eddy {0} byl zji\u0161t\u011bn nep\u0159\u00edpustn\u00fd form\u00e1t. Transformace t\u0159\u00eddy nebyla provedena.
+ILLEGAL_CLASS_FORMAT_IN_CLASS_TRANSFORMATION_CWWJP0014E.explanation=Poskytovatel rozhran\u00ed Java Persistence API (JPA) se pokusil o proveden\u00ed transformace t\u0159\u00eddy a nezda\u0159il se s v\u00fdjimkou IllegalClassFormatException. Soubor t\u0159\u00eddy je po\u0161kozen nebo do\u0161lo k probl\u00e9mu s poskytovatelem rozhran\u00ed JPA.
+ILLEGAL_CLASS_FORMAT_IN_CLASS_TRANSFORMATION_CWWJP0014E.useraction=Opravte po\u0161kozen\u00fd soubor t\u0159\u00eddy nebo se obra\u0165te na poskytovatele rozhran\u00ed JPA se \u017e\u00e1dost\u00ed o pomoc.
+
+#-------------------------------------------------------------------------------
+CREATE_CONTAINER_ENTITYMANAGER_FACTORY_ERROR_CWWJP0015E=CWWJP0015E: V poskytovateli perzistence {0} do\u0161lo k chyb\u011b p\u0159i jeho pokusu o vytvo\u0159en\u00ed tov\u00e1rny spr\u00e1vce entity kontejneru pro jednotku perzistence {1}. Do\u0161lo k n\u00e1sleduj\u00edc\u00ed chyb\u011b: {2}
+CREATE_CONTAINER_ENTITYMANAGER_FACTORY_ERROR_CWWJP0015E.explanation=Metoda createContainerEntityManagerFactory poskytovatele rozhran\u00ed Java Persistence API (JPA) se nezda\u0159ila.
+CREATE_CONTAINER_ENTITYMANAGER_FACTORY_ERROR_CWWJP0015E.useraction=Obra\u0165te se na poskytovatele rozhran\u00ed JPA se \u017e\u00e1dost\u00ed o pomoc.
+
+#-------------------------------------------------------------------------------
+DUPL_PCTXT_REF_CWWJP0016W=CWWJP0016W: V souboru deskriptoru implementace {1} byla deklarov\u00e1na v\u00edce ne\u017e jedna polo\u017eka &lt;persistence-context-ref&gt; (odkaz na kontext perzistence) s n\u00e1zvem {0}.
+DUPL_PCTXT_REF_CWWJP0016W.explanation=V souboru deskriptoru implementace je deklarov\u00e1n v\u00edce ne\u017e jeden odkaz na kontext perzistence. V\u0161echny v\u00fdskyty s v\u00fdjimkou prvn\u00edho budou ignorov\u00e1ny.
+DUPL_PCTXT_REF_CWWJP0016W.useraction=P\u0159ed dal\u0161\u00edm pokusem p\u0159ejmenujte nebo odeberte duplicitn\u00ed odkaz na kontext perzistence.
+
+#-------------------------------------------------------------------------------
+JPA_HAS_STARTED_CWWJP0017I=CWWJP0017I: Komponenta Java Persistence API (JPA) byla spu\u0161t\u011bna.
+JPA_HAS_STARTED_CWWJP0017I.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+JPA_HAS_STARTED_CWWJP0017I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#-------------------------------------------------------------------------------
+MALFORMED_PERSISTENCE_XML_CWWJP0018E=CWWJP0018E: V souboru {0} byla zji\u0161t\u011bna nespr\u00e1vn\u00e1 syntaxe nebo chyba. Byla vygenerov\u00e1na n\u00e1sleduj\u00edc\u00ed p\u0159idru\u017een\u00e1 chybov\u00e1 zpr\u00e1va: {1}
+MALFORMED_PERSISTENCE_XML_CWWJP0018E.explanation=Soubor XML obsahuje chyby a neodpov\u00edd\u00e1 definici sch\u00e9matu. Je mo\u017en\u00e9, \u017ee aplikace nebude pracovat podle o\u010dek\u00e1v\u00e1n\u00ed.
+MALFORMED_PERSISTENCE_XML_CWWJP0018E.useraction=Odstra\u0148te chyby v souboru persistence.xml a operaci zopakujte.
+
+#-------------------------------------------------------------------------------
+APPL_STARTED_CWWJP0019W=CWWJP0019W: Aplikace {0} je ji\u017e spu\u0161t\u011bna.
+APPL_STARTED_CWWJP0019W.explanation=CMSG0001
+APPL_STARTED_CWWJP0019W.useraction=CMSG0002
+
+#-------------------------------------------------------------------------------
+STARTING_MODULE_IN_UNDEPLOYED_APPL_CWWJP0020E=CWWJP0020E: Aplika\u010dn\u00ed server nem\u016f\u017ee spustit modul {0} aplikace {1}, proto\u017ee aplikace nen\u00ed instalov\u00e1na.
+STARTING_MODULE_IN_UNDEPLOYED_APPL_CWWJP0020E.explanation=Ov\u011b\u0159te, \u017ee je aplikace spr\u00e1vn\u011b sestavena a instalov\u00e1na s modulem.
+STARTING_MODULE_IN_UNDEPLOYED_APPL_CWWJP0020E.useraction=Pomoc\u00ed n\u00e1stroje Application Assembly Tool ov\u011b\u0159te konfiguraci aplikace, aplikaci instalujte a pot\u00e9 operaci zopakujte.
+
+#-------------------------------------------------------------------------------
+JPA_IS_DISABLED_CWWJP0022I=CWWJP0022I: Komponenta Java Persistence API (JPA) je zak\u00e1z\u00e1na.
+JPA_IS_DISABLED_CWWJP0022I.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+JPA_IS_DISABLED_CWWJP0022I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#-------------------------------------------------------------------------------
+UNABLE_TO_CREATE_EMF_FOR_INJECTION_CWWJP0023E=CWWJP0023E: Server nem\u016f\u017ee vytvo\u0159it instanci EntityManagerFactory v jednotce perzistence {0} pro vlo\u017een\u00ed z\u00e1vislosti do modulu {2} aplikace {1}.
+UNABLE_TO_CREATE_EMF_FOR_INJECTION_CWWJP0023E.explanation=Jednotka perzistence a anotace vlo\u017een\u00ed z\u00e1vislosti mus\u00ed m\u00edt spr\u00e1vnou definici.
+UNABLE_TO_CREATE_EMF_FOR_INJECTION_CWWJP0023E.useraction=Ov\u011b\u0159te, zda m\u00e1 jednotka perzistence a anotace vlo\u017een\u00ed z\u00e1vislosti spr\u00e1vnou definici. Opakujte proces.
+
+#-------------------------------------------------------------------------------
+INCORRECT_PU_JARFILE_URL_SPEC_CWWJP0024E=CWWJP0024E: Specifikace souboru archivu Java (JAR) {0} pro jednotku perzistence {1} je nespr\u00e1vn\u00e1.
+INCORRECT_PU_JARFILE_URL_SPEC_CWWJP0024E.explanation=Specifikace souboru JAR pro jednotku perzistence je nespr\u00e1vn\u011b utvo\u0159ena. Komponenta Java Persistence API (JPA) proto nem\u016f\u017ee p\u0159edat tato data poskytovateli perzistence.
+INCORRECT_PU_JARFILE_URL_SPEC_CWWJP0024E.useraction=Opravte specifikaci souboru JAR a operaci zopakujte.
+
+#-------------------------------------------------------------------------------
+INCORRECT_PU_ROOT_URL_SPEC_CWWJP0025E=CWWJP0025E: Server nem\u016f\u017ee identifikovat ko\u0159enovou adresu URL poskytovatele Java Persistence API (JPA) {0} pro modul {2} v aplikaci {1}.
+INCORRECT_PU_ROOT_URL_SPEC_CWWJP0025E.explanation=Ko\u0159enov\u00e1 adresa URL rozhran\u00ed JPA pro modul v aplikaci je nespr\u00e1vn\u011b utvo\u0159ena.
+INCORRECT_PU_ROOT_URL_SPEC_CWWJP0025E.useraction=CMSG0002
+
+#-------------------------------------------------------------------------------
+JPA_IS_INITIALIZING_CWWJP0026I=CWWJP0026I: Prob\u00edh\u00e1 inicializace komponenty Java Persistence API (JPA).
+JPA_IS_INITIALIZING_CWWJP0026I.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+JPA_IS_INITIALIZING_CWWJP0026I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#-------------------------------------------------------------------------------
+JPA_HAS_INITIALIZED_CWWJP0027I=CWWJP0027I: Komponenta Java Persistence API (JPA) byla inicializov\u00e1na.
+JPA_HAS_INITIALIZED_CWWJP0027I.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+JPA_HAS_INITIALIZED_CWWJP0027I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#-------------------------------------------------------------------------------
+JPA_IS_STARTING_CWWJP0028I=CWWJP0028I: Komponenta Java Persistence API (JPA) se spou\u0161t\u00ed.
+JPA_IS_STARTING_CWWJP0028I.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+JPA_IS_STARTING_CWWJP0028I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#-------------------------------------------------------------------------------
+PU_NOT_FOUND_CWWJP0029E=CWWJP0029E: Server nenalezl jednotku perzistence {2} v modulu {1} a aplikaci {0}.
+PU_NOT_FOUND_CWWJP0029E.explanation=Aplikace definovala odkaz na jednotku perzistence pro jednotku perzistence, kter\u00e1 po proveden\u00ed hled\u00e1n\u00ed souboru META-INF/persistence.xml ve v\u0161ech souborech a adres\u00e1\u0159\u00edch v cest\u011b ke t\u0159\u00edd\u00e1m nebyla nalezena.
+PU_NOT_FOUND_CWWJP0029E.useraction=Ov\u011b\u0159te spr\u00e1vn\u00e9 zad\u00e1n\u00ed n\u00e1zvu jednotky perzistence a spr\u00e1vn\u00e9 sestaven\u00ed jednotky perzistence v aplikaci tak, \u017ee ov\u011b\u0159\u00edte definov\u00e1n\u00ed jednotky perzistence v souboru META-INF/persistence.xml v souboru JAR nebo v adres\u00e1\u0159i v r\u00e1mci cesty ke t\u0159\u00edd\u00e1m.
+
+#-------------------------------------------------------------------------------
+DATASOURCE_NOT_FOUND_IN_COMPONENT_NAMESPACE_CWWJP0030E=CWWJP0030E: Server nenalezl zdroj dat {0} v oboru n\u00e1zv\u016f komponenty pro jednotku perzistence {1}. Do\u0161lo k n\u00e1sleduj\u00edc\u00ed chyb\u011b: {2}
+DATASOURCE_NOT_FOUND_IN_COMPONENT_NAMESPACE_CWWJP0030E.explanation=Zdroj dat definovan\u00fd pro tuto jednotku perzistence mus\u00ed b\u00fdt sv\u00e1z\u00e1n v oboru n\u00e1zv\u016f komponenty.
+DATASOURCE_NOT_FOUND_IN_COMPONENT_NAMESPACE_CWWJP0030E.useraction=Ov\u011b\u0159te, \u017ee po\u017eadovan\u00fd zdroj dat byl vytvo\u0159en a \u017ee je k n\u011bmu vytvo\u0159ena vazba v oboru n\u00e1zv\u016f java:comp/env.
+
+#-------------------------------------------------------------------------------
+DATASOURCE_NOT_FOUND_IN_GLOBAL_NAMESPACE_CWWJP0031E=CWWJP0031E: Server nenalezl zdroj dat {0} v glob\u00e1ln\u00edm oboru n\u00e1zv\u016f pro jednotku perzistence {1}. Do\u0161lo k n\u00e1sleduj\u00edc\u00ed chyb\u011b: {2}
+DATASOURCE_NOT_FOUND_IN_GLOBAL_NAMESPACE_CWWJP0031E.explanation=Zdroj dat definovan\u00fd pro tuto jednotku perzistence mus\u00ed b\u00fdt sv\u00e1z\u00e1n v glob\u00e1ln\u00edm oboru n\u00e1zv\u016f.
+DATASOURCE_NOT_FOUND_IN_GLOBAL_NAMESPACE_CWWJP0031E.useraction=Ov\u011b\u0159te, \u017ee po\u017eadovan\u00fd zdroj dat byl vytvo\u0159en a \u017ee je k n\u011bmu vytvo\u0159ena vazba v glob\u00e1ln\u00edm oboru n\u00e1zv\u016f.
+
+#-------------------------------------------------------------------------------
+CONNECTION_NOT_FOUND_CWWJP0032E=CWWJP0032E: Vyvol\u00e1n\u00ed metody java.sql.Connection se nezda\u0159ilo. Chyba: {0}
+CONNECTION_NOT_FOUND_CWWJP0032E.explanation=Metodu java.sql.Connection jin\u00e1 ne\u017e close nebo isClosed nelze vyvolat, proto\u017ee b\u011bhov\u00e9 prost\u0159ed\u00ed serveru nem\u016f\u017ee p\u0159idru\u017eit podproces operace k \u017e\u00e1dn\u00e9 komponent\u011b aplikace prost\u0159ed\u00ed Java Platform, Enterprise Edition 5 (Java EE 5). Tento stav m\u016f\u017ee nastat, pokud nen\u00ed klient rozhran\u00ed JNDI (Java Naming and Directory InterfaceTM) pou\u017e\u00edvaj\u00edc\u00ed n\u00e1zev java: spou\u0161t\u011bn v r\u00e1mci podprocesu po\u017eadavku aplikace serveru.
+CONNECTION_NOT_FOUND_CWWJP0032E.useraction=Ov\u011b\u0159te, \u017ee aplikace prost\u0159ed\u00ed Java EE 5 nespou\u0161t\u00ed operace rozhran\u00ed JNDI pro n\u00e1zvy java: v r\u00e1mci blok\u016f statick\u00e9ho k\u00f3du nebo v podprocesech vytvo\u0159en\u00fdch touto aplikac\u00ed prost\u0159ed\u00ed Java EE 5. Tento k\u00f3d nemus\u00ed b\u00fdt nutn\u011b spou\u0161t\u011bn v r\u00e1mci podprocesu po\u017eadavku aplikace serveru. K\u00f3d proto nen\u00ed podporov\u00e1n operacemi rozhran\u00ed JNDI pro n\u00e1zvy java:.
+
+#-------------------------------------------------------------------------------
+NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E=CWWJP0033E: Server nenalezl zdroj dat {0} v oboru n\u00e1zv\u016f komponenty pro jednotku perzistence {1}, proto\u017ee kontext komponenty v p\u0159\u00edslu\u0161n\u00e9m podprocesu neexistuje.
+NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.explanation=Zdroj dat nebyl nalezen, proto\u017ee b\u011bhov\u00e9 prost\u0159ed\u00ed serveru nem\u016f\u017ee p\u0159idru\u017eit podproces operace k \u017e\u00e1dn\u00e9 komponent\u011b aplikace prost\u0159ed\u00ed Java Platform, Enterprise Edition 5 (Java EE 5). Tento stav m\u016f\u017ee nastat, pokud nen\u00ed klient rozhran\u00ed JNDI (Java Naming and Directory InterfaceTM) pou\u017e\u00edvaj\u00edc\u00ed n\u00e1zev \"java:\" spou\u0161t\u011bn v r\u00e1mci podprocesu po\u017eadavku aplikace serveru.
+NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.useraction=Ov\u011b\u0159te, \u017ee aplikace prost\u0159ed\u00ed Java EE 5 nespou\u0161t\u00ed operace rozhran\u00ed JNDI pro n\u00e1zvy java: v r\u00e1mci blok\u016f statick\u00e9ho k\u00f3du nebo v podprocesech vytvo\u0159en\u00fdch touto aplikac\u00ed prost\u0159ed\u00ed Java EE 5. Tento k\u00f3d nemus\u00ed b\u00fdt nutn\u011b spou\u0161t\u011bn v r\u00e1mci podprocesu po\u017eadavku aplikace serveru. K\u00f3d proto nen\u00ed podporov\u00e1n operacemi rozhran\u00ed JNDI pro n\u00e1zvy java:.
+
+#----------------------------------
+ENGLISH_ONLY_INFO_MESSAGE_CWWJP0034I=CWWJP0034I: Tato informa\u010dn\u00ed zpr\u00e1va je pouze v angli\u010dtin\u011b: {0}.
+ENGLISH_ONLY_INFO_MESSAGE_CWWJP0034I.explanation=Tato informa\u010dn\u00ed zpr\u00e1va nen\u00ed p\u0159elo\u017eena.
+ENGLISH_ONLY_INFO_MESSAGE_CWWJP0034I.useraction=Podrobnosti naleznete v p\u0159\u00edslu\u0161n\u00e9 zpr\u00e1v\u011b.
+
+# ---------------------------------
+ENGLISH_ONLY_WARN_MESSAGE_CWWJP0035W=CWWJP0035W: Tato varovn\u00e1 zpr\u00e1va je pouze v angli\u010dtin\u011b: {0}.
+ENGLISH_ONLY_WARN_MESSAGE_CWWJP0035W.explanation=Tato varovn\u00e1 zpr\u00e1va nen\u00ed p\u0159elo\u017eena.
+ENGLISH_ONLY_WARN_MESSAGE_CWWJP0035W.useraction=Podrobnosti naleznete v p\u0159\u00edslu\u0161n\u00e9 zpr\u00e1v\u011b.
+
+# ---------------------------------
+ENGLISH_ONLY_ERROR_MESSAGE_CWWJP0036E=CWWJP0036E: Tato chybov\u00e1 zpr\u00e1va je pouze v angli\u010dtin\u011b: {0}.
+ENGLISH_ONLY_ERROR_MESSAGE_CWWJP0036E.explanation=Tato chybov\u00e1 zpr\u00e1va nen\u00ed p\u0159elo\u017eena.
+ENGLISH_ONLY_ERROR_MESSAGE_CWWJP0036E.useraction=Podrobnosti naleznete v p\u0159\u00edslu\u0161n\u00e9 zpr\u00e1v\u011b.
+
+# ---------------------------------
+NO_UOW_SYNC_REGISTRY_CWWJP0037E=CWWJP0037E: Registr synchronizace transakc\u00ed nebyl nalezen v um\u00edst\u011bn\u00ed {0} v glob\u00e1ln\u00edm oboru n\u00e1zv\u016f v d\u016fsledku v\u00fdjimky: {1}
+NO_UOW_SYNC_REGISTRY_CWWJP0037E.explanation=Poskytovatel rozhran\u00ed JPA (Java Persistence API) nem\u016f\u017ee pracovat spr\u00e1vn\u011b bez p\u0159\u00edstupu k objektu UOWSynchronizationRegistry pro \u00fa\u010dast v transakc\u00edch.
+NO_UOW_SYNC_REGISTRY_CWWJP0037E.useraction=CMSG0002
+
+# ---------------------------------
+NO_COMPONENT_CONTEXT_CWWJP0038E=CWWJP0038E: Po\u017eadovanou metodu rozhran\u00ed JPA (Java Persistence API) pro kontext perzistence {0} nebylo mo\u017en\u00e9 dokon\u010dit, proto\u017ee byla vol\u00e1na mimo obor komponenty aplikace prost\u0159ed\u00ed Java EE 5 (Java Platform, Enterprise Edition 5).
+NO_COMPONENT_CONTEXT_CWWJP0038E.explanation=Kontext komponenty v r\u00e1mci podprocesu neexistuje. B\u011bhov\u00e9 prost\u0159ed\u00ed serveru nem\u016f\u017ee p\u0159idru\u017eit podproces operace k \u017e\u00e1dn\u00e9 komponent\u011b aplikace prost\u0159ed\u00ed Java Platform, Enterprise Edition 5 (Java EE 5). Tento stav m\u016f\u017ee nastat, pokud se klient pokus\u00ed prov\u00e1d\u011bt operace EntityManager v podprocesu aplikace mimo server.
+NO_COMPONENT_CONTEXT_CWWJP0038E.useraction=Ov\u011b\u0159te, \u017ee aplikace prost\u0159ed\u00ed Java EE 5 nespou\u0161t\u00ed operace EntityManager v r\u00e1mci blok\u016f statick\u00e9ho k\u00f3du nebo v podprocesech vytvo\u0159en\u00fdch touto aplikac\u00ed prost\u0159ed\u00ed Java EE 5.
+
+# ---------------------------------
+PROPERTY_SYNTAX_ERROR_IN_PERSISTENCE_XML_CWWJP0039E=CWWJP0039E: V r\u00e1mci vlastnost\u00ed v souboru persistence.xml jednotky perzistence {0} doch\u00e1z\u00ed k chyb\u011b syntaxe (vlastnost: {1}, hodnota: {2}). Do\u0161lo k n\u00e1sleduj\u00edc\u00ed chyb\u011b: {3}.
+PROPERTY_SYNTAX_ERROR_IN_PERSISTENCE_XML_CWWJP0039E.explanation= Soubor persistence.xml pro p\u0159\u00edslu\u0161nou jednotku perzistence obsahuje chybu syntaxe. Vlastnost ani hodnota nem\u016f\u017ee m\u00edt hodnotu Null.
+PROPERTY_SYNTAX_ERROR_IN_PERSISTENCE_XML_CWWJP0039E.useraction= Odstra\u0148te chybu syntaxe, k n\u00ed\u017e doch\u00e1z\u00ed v souboru persistence.xml.
+
+#-------------------------------------------------------------------------------
+SYNTAX_ERROR_IN_PERSISTENCE_XML_CWWJP0040E=CWWJP0040E: Zji\u0161t\u011bna nespr\u00e1vn\u00e1 syntaxe nebo chyba v souboru persistence.xml v aplikaci {0}, modulu {1}, na \u0159\u00e1dku {2} a ve sloupci {3}. Byla vygenerov\u00e1na n\u00e1sleduj\u00edc\u00ed p\u0159idru\u017een\u00e1 chybov\u00e1 zpr\u00e1va: {4}
+SYNTAX_ERROR_IN_PERSISTENCE_XML_CWWJP0040E.explanation=Soubor persistence.xml obsahuje chyby a neodpov\u00edd\u00e1 definici sch\u00e9matu. Je mo\u017en\u00e9, \u017ee aplikace nebude pracovat podle o\u010dek\u00e1v\u00e1n\u00ed.
+SYNTAX_ERROR_IN_PERSISTENCE_XML_CWWJP0040E.useraction=Odstra\u0148te chyby v souboru persistence.xml a operaci zopakujte.
+
+#-------------------------------------------------------------------------------
+CONFLICTING_XML_VALUES_CWWJP0041E=CWWJP0041E: Modul {0} aplikace {1} obsahuje v deskriptoru implementace XML koliduj\u00edc\u00ed konfigura\u010dn\u00ed data. Pro n\u011bkolik prvk\u016f {3} se stejnou hodnotu prvku {4} existuj\u00ed koliduj\u00edc\u00ed hodnoty prvk\u016f {2}: {5}. Koliduj\u00edc\u00ed hodnoty prvku {2} jsou {6} a {7}.
+CONFLICTING_XML_VALUES_CWWJP0041E.explanation=Je-li v deskriptoru implementace XML pro stejn\u00fd obor n\u00e1zv\u016f komponenty se stejn\u00fdm n\u00e1zvem definov\u00e1no v\u00edce odkaz\u016f na jednotku \u010di kontext perzistence, mus\u00ed b\u00fdt v\u0161echny atributy odkazu stejn\u00e9. Typick\u00fdm sc\u00e9n\u00e1\u0159em, ve kter\u00e9m tato situace m\u016f\u017ee nastat, je definov\u00e1n\u00ed odkaz\u016f pro objekt enterprise bean a pro odpov\u00eddaj\u00edc\u00ed t\u0159\u00eddu zachyt\u00e1va\u010d\u016f. Objekt typu bean i zachyt\u00e1va\u010d sd\u00edlej\u00ed stejn\u00fd obor n\u00e1zv\u016f komponenty, odkazy sd\u00edlen\u00e9 t\u00edmto objektem, a zachyt\u00e1va\u010dem proto mus\u00ed b\u00fdt kompatibiln\u00ed.
+CONFLICTING_XML_VALUES_CWWJP0041E.useraction=V deskriptoru implementace XML zm\u011b\u0148te n\u00e1zev jednoho z odkaz\u016f nebo zm\u011b\u0148te jednu z koliduj\u00edc\u00edch hodnot tak, aby ob\u011b hodnoty byly shodn\u00e9.
+
+#-------------------------------------------------------------------------------
+CONFLICTING_ANNOTATION_VALUES_CWWJP0042E=CWWJP0042E: Komponenta {0} v modulu {1} aplikace {2} obsahuje v anotac\u00edch zdrojov\u00e9ho k\u00f3du koliduj\u00edc\u00ed konfigura\u010dn\u00ed data. Pro n\u011bkolik anotac\u00ed {4} se stejnou hodnotou atributu {5} existuj\u00ed koliduj\u00edc\u00ed hodnoty atribut\u016f {3}: {6}. Koliduj\u00edc\u00ed hodnoty atribut\u016f {3}: {7} a {8}.
+CONFLICTING_ANNOTATION_VALUES_CWWJP0042E.explanation=Je-li v anotac\u00edch zdrojov\u00e9ho k\u00f3du pro stejn\u00fd obor n\u00e1zv\u016f komponenty se stejn\u00fdm n\u00e1zvem definov\u00e1no v\u00edce odkaz\u016f na jednotku perzistence nebo kontext perzistence, mus\u00ed b\u00fdt v\u0161echny atributy odkazu stejn\u00e9 nebo mus\u00ed b\u00fdt mo\u017en\u00e9 jejich vz\u00e1jemn\u00e9 p\u0159i\u0159azen\u00ed.
+CONFLICTING_ANNOTATION_VALUES_CWWJP0042E.useraction=V anotac\u00edch zdrojov\u00e9ho k\u00f3du zm\u011b\u0148te n\u00e1zev jednoho z odkaz\u016f nebo zm\u011b\u0148te jednu z koliduj\u00edc\u00edch hodnot tak, aby p\u0159edstavovaly stejnou hodnotu nebo aby bylo mo\u017en\u00e9 jejich vz\u00e1jemn\u00e9 p\u0159i\u0159azen\u00ed.
+
+#-------------------------------------------------------------------------------
+INVALID_JAVA_GLOBAL_REF_CWWJP0043E=CWWJP0043E: Byl deklarov\u00e1n odkaz perzistence {0} komponentou {1} v modulu {2} aplikace {3}, ale odkazy perzistence java:global jsou neplatn\u00e9.
+INVALID_JAVA_GLOBAL_REF_CWWJP0043E.explanation=U jednotek perzistence se rozsah platnosti omezuje na jedinou aplikaci, a tak odkaz perzistence java:global pozb\u00fdv\u00e1 smyslu.
+INVALID_JAVA_GLOBAL_REF_CWWJP0043E.useraction=Upravte n\u00e1zev odkazu perzistence tak, aby pou\u017e\u00edval p\u0159edponu java:app nebo java:module, p\u0159\u00edp. odeberte p\u0159edponu java:global, aby se pou\u017e\u00edval v\u00fdchoz\u00ed obor n\u00e1zv\u016f java:comp.
+
+#-------------------------------------------------------------------------------
+JPATXSYNC_INCOMPATIBLE_CWWJP0044E=CWWJP0044E: Pro jednotku perzistence {0} bylo deklarov\u00e1no v\u00edce definic roz\u0161\u00ed\u0159en\u00e9ho kontextu perzistence s neshodnou konfigurac\u00ed synchronizace.
+JPATXSYNC_INCOMPATIBLE_CWWJP0044E.explanation=Pro dan\u00fd objekt typu stateful session bean, kter\u00fd vkl\u00e1d\u00e1 konkr\u00e9tn\u00ed definici jednotky perzistence jako roz\u0161\u00ed\u0159en\u00fd kontext perzistence v\u00edcekr\u00e1t, mus\u00ed b\u00fdt typ synchronizace pro v\u0161echny instance vo\u017een\u00ed bu\u010f SYNCHRONIZED, nebo UNSYCHRONIZED.
+JPATXSYNC_INCOMPATIBLE_CWWJP0044E.useraction=Zm\u011b\u0148te synchronizaci v\u0161ech instanc\u00ed jednotky perzistence na SYNCHRONIZED nebo UNSYNCHRONIZED.
+
+#-------------------------------------------------------------------------------
+JPATXSYNC_INCOMPATIBLE_INHERITANCE_CWWJP0045E=CWWJP0045E: Supert\u0159\u00edda vlo\u017eila pro jednotku perzistence {0} roz\u0161\u00ed\u0159en\u00fd kontext perzistence, jeho\u017e atribut synchronizace je nekompatibiln\u00ed s vlo\u017een\u00edm roz\u0161\u00ed\u0159en\u00e9ho kontextu konzistence podt\u0159\u00eddy.
+JPATXSYNC_INCOMPATIBLE_INHERITANCE_CWWJP0045E.explanation= Objekt typu stateful session bean roz\u0161\u00ed\u0159il t\u0159\u00eddu, kter\u00e1 vkl\u00e1d\u00e1 roz\u0161\u00ed\u0159en\u00fd kontext perzistence pro spole\u010dnou jednotku perzistence, ale typ synchronizace vlo\u017een\u00ed supert\u0159\u00eddy neodpov\u00edd\u00e1 typu synchronizace vlo\u017een\u00ed podt\u0159\u00eddy.
+JPATXSYNC_INCOMPATIBLE_INHERITANCE_CWWJP0045E.useraction=Zm\u011b\u0148te synchronizaci v\u0161ech instanc\u00ed jednotky perzistence na SYNCHRONIZED nebo UNSYNCHRONIZED.
+
+#-------------------------------------------------------------------------------
+JPATXSYNC_ILLEGAL_PROPAGATION_CWWJP0046E=CWWJP0046E: Kontext perzistence UNSYNCHRONIZED JPA nelze propagovat do operace SYNCHRONIZED EntityManager.
+JPATXSYNC_ILLEGAL_PROPAGATION_CWWJP0046E.explanation=Kontext perzistence, kter\u00fd m\u00e1 typ synchronizace UNSYNCHRONIED, nelze propagovat do komponenty, je\u017e vkl\u00e1d\u00e1 stejn\u00fd kontext perzistence, ale s typem synchronizace SYNCHRONIZED. 
+JPATXSYNC_ILLEGAL_PROPAGATION_CWWJP0046E.useraction=Zm\u011b\u0148te vlo\u017een\u00ed @PersistenceContext ve volaj\u00edc\u00ed a volan\u00e9 komponent\u011b, aby m\u011bly stejn\u00fd typ synchronizace.
+
+#-------------------------------------------------------------------------------
+JPATXSYNC_INCOMPATIBLE_PROPAGATION_CWWJP0047E=CWWJP0047E: Kontext perzistence p\u0159idru\u017een\u00fd k jednotce perzistence {0} m\u00e1 synchronizaci typu {1}, je\u017e je nekompatibiln\u00ed s roz\u0161\u00ed\u0159en\u00fdm kontextem perzistence deklarovan\u00fdm {2}.
+JPATXSYNC_INCOMPATIBLE_PROPAGATION_CWWJP0047E.explanation=Kontext perzistence, kter\u00fd m\u00e1 typ synchronizace UNSYNCHRONIED, nelze propagovat do komponenty, je\u017e vkl\u00e1d\u00e1 stejn\u00fd kontext perzistence, ale s typem synchronizace SYNCHRONIZED.
+JPATXSYNC_INCOMPATIBLE_PROPAGATION_CWWJP0047E.useraction=Zm\u011b\u0148te vlo\u017een\u00ed @PersistenceContext ve volaj\u00edc\u00ed a volan\u00e9 komponent\u011b, aby m\u011bly stejn\u00fd typ synchronizace.
+
+#-------------------------------------------------------------------------------
+REPORT_JPARUNTIME_CWWJP0048I=CWWJP0048I: Inicializovan\u00e1 slu\u017eba JPA pro \u00farove\u0148 specifikace JPA {0}.
+REPORT_JPARUNTIME_CWWJP0048I.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+REPORT_JPARUNTIME_CWWJP0048I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#-------------------------------------------------------------------------------
+# 0=providerClass, 1=providerJPALevel, 2=currentJPALevel, 3=currentProviderClasses
+INCORRECT_JPA_LEVEL_CWWJP0049E=CWWJP0049E: Nelze naj\u00edt t\u0159\u00eddu {0}, kter\u00e1 je vestav\u011bn\u00fdm poskytovatelem perzistence pro JPA {1}. Server je aktu\u00e1ln\u011b nakonfigurov\u00e1n pro JPA {2}, co\u017e odpov\u00edd\u00e1 vestav\u011bn\u00e9mu poskytovateli perzistence: {3}. \u00darove\u0148 JPA serveru nebo klastru lze zm\u011bnit pomoc\u00ed administrativn\u00ed konzoly nebo \u00falohy modifyJPASpecLevel AdminTask. Voliteln\u011b aktualizac\u00ed aplikace pou\u017eijte poskytovatele perzistence, kter\u00fd je kompatibiln\u00ed s JPA {2}.
+INCORRECT_JPA_LEVEL_CWWJP0049E.explanation=T\u0159\u00eddu poskytovatele JPA nelze naj\u00edt.
+INCORRECT_JPA_LEVEL_CWWJP0049E.useraction=Zm\u011b\u0148te server nebo konfiguraci pro pou\u017eit\u00ed \u00farovn\u011b JPA, kter\u00e1 je podporov\u00e1na aktu\u00e1ln\u00edm poskytovatelem perzistence p\u0159es administrativn\u00ed konzolu nebo \u00falohu modifyJPASpecLevel AdminTask. Voliteln\u011b aktualizac\u00ed aplikace pou\u017eijte poskytovatele perzistence, kter\u00fd je kompatibiln\u00ed s aktu\u00e1ln\u00ed \u00farovn\u00ed JPA.
+
+#-------------------------------------------------------------------------------
+JPA_PROVIDER_NOT_FOUND_CWWJP0050E=CWWJP0050E: Nelze naj\u00edt poskytovatele perzistence {0}.
+JPA_PROVIDER_NOT_FOUND_CWWJP0050E.explanation=T\u0159\u00eddu poskytovatele JPA nelze naj\u00edt.
+JPA_PROVIDER_NOT_FOUND_CWWJP0050E.useraction=Zm\u011b\u0148te server nebo konfiguraci pro pou\u017eit\u00ed \u00farovn\u011b JPA, kter\u00e1 je podporov\u00e1na ozna\u010den\u00fdm poskytovatelem perzistence.
+
+#-------------------------------------------------------------------------------
+# DO NOT TRANSLATE: <jpa defaultPersistenceProvider="com.acme.PersistenceProviderImpl"/>, bells-1.0, <bell>, <library>, JPA, or javax.persistence.spi.PersistenceProvider
+NO_JPA_PROVIDER_FOUND_CWWJP0051E=CWWJP0051E: V konfiguraci serveru nebyl nalezen \u017e\u00e1dn\u00fd v\u00fdchoz\u00ed poskytovatel perzistence. Ke konfiguraci v\u00fdchoz\u00edho poskytovatele perzistence pou\u017eijte konfiguraci <jpa defaultPersistenceProvider="com.acme.PersistenceProviderImpl"/> nebo povolte funkci bells-1.0 a nakonfigurujte prvek <bell> pro knihovnu <library> obsahuj\u00edc\u00ed poskytovatele JPA. 
+NO_JPA_PROVIDER_FOUND_CWWJP0051E.explanation=Nebyla nalezena \u017e\u00e1dn\u00e1 implementace javax.persistence.spi.PersistenceProvider.
+NO_JPA_PROVIDER_FOUND_CWWJP0051E.useraction=Ke konfiguraci v\u00fdchoz\u00edho poskytovatele perzistence pou\u017eijte konfiguraci <jpa defaultPersistenceProvider="com.acme.PersistenceProviderImpl"/> nebo povolte funkci bells-1.0 a nakonfigurujte prvek <bell> pro knihovnu <library> obsahuj\u00edc\u00ed poskytovatele JPA.
+
+#-------------------------------------------------------------------------------
+JPA_THIRD_PARTY_PROV_NAME_CWWJP0052I=CWWJP0052I: Pou\u017eil se poskytovatel JPA t\u0159et\u00ed strany {0}.
+JPA_THIRD_PARTY_PROV_NAME_CWWJP0052I.explanation=Ozna\u010duje n\u00e1zev t\u0159\u00eddy pou\u017eit\u00e9ho poskytovatele perzistence implementace JPA t\u0159et\u00ed strany.
+JPA_THIRD_PARTY_PROV_NAME_CWWJP0052I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#-------------------------------------------------------------------------------
+JPA_THIRD_PARTY_PROV_INFO_CWWJP0053I=CWWJP0053I: {0} se pou\u017eil jako poskytovatel JPA t\u0159et\u00ed strany. Informace o verzi: {1}. 
+JPA_THIRD_PARTY_PROV_INFO_CWWJP0053I.explanation=Uv\u00e1d\u00ed informace o n\u00e1zvu a verzi pou\u017eit\u00e9 implementace JPA t\u0159et\u00ed strany.
+JPA_THIRD_PARTY_PROV_INFO_CWWJP0053I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#-------------------------------------------------------------------------------
+NOT_COMPLIANT_WITH_JPA21_CWWJP0054E=CWWJP0054E: Implementace {0} {1} nen\u00ed kompatibiln\u00ed se specifikac\u00ed JPA 2.1 a nelze ji pou\u017e\u00edt. Z\u00edskejte nov\u011bj\u0161\u00ed verzi poskytovatele perzistence JPA, kter\u00e1 implementuje specifikaci JPA 2.1.
+NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.explanation=Poskytovatele perzistence JPA nelze pou\u017e\u00edt, proto\u017ee mu chyb\u00ed implementace metod po\u017eadovan\u00fdch specifikac\u00ed JPA 2.1.
+NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.useraction=Z\u00edskejte nov\u011bj\u0161\u00ed verzi poskytovatele perzistence JPA, kter\u00e1 odpov\u00edd\u00e1 specifikaci JPA 2.1.
+
+#-------------------------------------------------------------------------------
+# Error messages from the JPA Provider below this point
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+PROVIDER_INFO_CWWJP9990I=CWWJP9990I: {0}
+PROVIDER_INFO_CWWJP9990I.explanation=Poskytovatel rozhran\u00ed JPA (Java Persistence API) zaznamenal tuto informa\u010dn\u00ed zpr\u00e1vu.
+PROVIDER_INFO_CWWJP9990I.useraction=Informace naleznete v dokumentaci k poskytovateli rozhran\u00ed JPA.
+
+#-------------------------------------------------------------------------------
+PROVIDER_WARNING_CWWJP9991W=CWWJP9991W: {0}
+PROVIDER_WARNING_CWWJP9991W.explanation=Poskytovatel rozhran\u00ed JPA (Java Persistence API) zaznamenal tuto varovnou zpr\u00e1vu.
+PROVIDER_WARNING_CWWJP9991W.useraction=Informace naleznete v dokumentaci k poskytovateli rozhran\u00ed JPA.
+
+#-------------------------------------------------------------------------------
+PROVIDER_ERROR_CWWJP9992E=CWWJP9992E: {0}
+PROVIDER_ERROR_CWWJP9992E.explanation=Poskytovatel rozhran\u00ed JPA (Java Persistence API) zaznamenal tuto chybovou zpr\u00e1vu.
+PROVIDER_ERROR_CWWJP9992E.useraction=Informace naleznete v dokumentaci k poskytovateli rozhran\u00ed JPA.
+
+#-------------------------------------------------------------------------------
+PROVIDER_FATAL_CWWJP9993E=CWWJP9993E: {0}
+PROVIDER_FATAL_CWWJP9993E.explanation=Poskytovatel rozhran\u00ed JPA (Java Persistence API) zaznamenal tuto z\u00e1va\u017enou zpr\u00e1vu.
+PROVIDER_FATAL_CWWJP9993E.useraction=Informace naleznete v dokumentaci k poskytovateli rozhran\u00ed JPA.
+
+#-------------------------------------------------------------------------------

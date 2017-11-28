@@ -1,0 +1,51 @@
+###############################################################################
+# Copyright (c) 2012, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.context/resources/com/ibm/ws/context/service/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Context Propagation Service
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# CWWKC1000, CWWKC1001, CWWKC1002 have been moved to another file. Do not reuse them.
+
+CWWKC1003.not.serializable=CWWKC1003E: O elemento de configura\u00e7\u00e3o {0} deve ter um identificador (ID) ou um jndiName exclusivo para ser serializado.
+CWWKC1003.not.serializable.explanation=Para ser serializado, um servi\u00e7o de contexto deve ter um atributo de ID ou de jndiName exclusivo.
+CWWKC1003.not.serializable.useraction=Inclua um atributo id ou jndiName na configura\u00e7\u00e3o do servi\u00e7o de contexto.
+
+CWWKC1004.context.provider.unavailable=CWWKC1004E: O provedor de contexto de encadeamento {0} est\u00e1 indispon\u00edvel.
+CWWKC1004.context.provider.unavailable.explanation=O servidor de aplicativos n\u00e3o consegue localizar um provedor do tipo especificado de contexto de encadeamento.
+CWWKC1004.context.provider.unavailable.useraction=Assegure-se de que o recurso que fornece o tipo especificado de contexto de encadeamento esteja ativado.
+
+CWWKC1010.context.service.unavailable=CWWKC1010E: Um elemento de configura\u00e7\u00e3o com identificador ou jndiName exclusivo {0} n\u00e3o foi localizado na configura\u00e7\u00e3o do servidor.
+CWWKC1010.context.service.unavailable.explanation=Um servi\u00e7o de contexto com o ID ou o jndiName especificado n\u00e3o foi localizado na configura\u00e7\u00e3o.
+CWWKC1010.context.service.unavailable.useraction=Assegure-se de que um servi\u00e7o de contexto com o ID ou jndiName especificado exista na configura\u00e7\u00e3o e seja v\u00e1lido.
+
+CWWKC1011.app.unavailable=CWWKC1011E: N\u00e3o \u00e9 poss\u00edvel iniciar a tarefa {0} porque o aplicativo {1} que o enviou est\u00e1 indispon\u00edvel.
+CWWKC1011.app.unavailable.explanation=O aplicativo que enviou uma tarefa deve estar dispon\u00edvel  para que a tarefa seja iniciada.
+CWWKC1011.app.unavailable.useraction=Assegure-se de que o aplicativo esteja iniciado e reenvie a tarefa.
+
+CWWKC1012.module.unavailable=CWWKC1012E: N\u00e3o \u00e9 poss\u00edvel iniciar a tarefa {0} porque o m\u00f3dulo {1} do aplicativo {2} que a enviou est\u00e1 indispon\u00edvel.
+CWWKC1012.module.unavailable.explanation=O m\u00f3dulo que enviou uma tarefa deve estar dispon\u00edvel para que a tarefa seja iniciada.
+CWWKC1012.module.unavailable.useraction=Assegure-se de que o m\u00f3dulo seja iniciado e reenvie a tarefa.
+
+CWWKC1013.component.unavailable=CWWKC1013E: N\u00e3o \u00e9 poss\u00edvel iniciar a tarefa {0} porque o  componente {1} do m\u00f3dulo {2} no aplicativo {3} que a enviou est\u00e1 indispon\u00edvel.
+CWWKC1013.component.unavailable.explanation=O componente do aplicativo que enviou uma tarefa deve estar dispon\u00edvel para que a tarefa seja iniciada.
+CWWKC1013.component.unavailable.useraction=Assegure-se de que o componente do aplicativo esteja iniciado e reenvie a tarefa.
+
+# CWWKC1020 has been moved to another file. Do not reuse it.

@@ -1,0 +1,35 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.artifact.api.zip/resources/com/ibm/ws/artifact/api/zip/internal/resources/ZipArtifactMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKM
+#COMPONENTNAMEFOR CWWKM Module API
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+bad.zip.data=CWWKM0101E: \uc2dc\uc2a4\ud15c\uc774 {0}\uc758 \uc544\uce74\uc774\ube0c \ub370\uc774\ud130\ub97c \ucc98\ub9ac\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+bad.zip.data.explanation=\uc544\uce74\uc774\ube0c\uc758 \uc555\ucd95 \ub370\uc774\ud130\ub97c \ucc98\ub9ac\ud558\ub294 \uc911\uc5d0 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. 
+bad.zip.data.useraction=\ud30c\uc77c\uc774 \uc62c\ubc14\ub978 \uc544\uce74\uc774\ube0c\uc778\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+remove.cache.data=CWWKM0102W: \uc2dc\uc2a4\ud15c\uc774 {0} \uc704\uce58\uc5d0\uc11c \uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 \uce90\uc2dc \ub370\uc774\ud130\ub97c \uc815\ub9ac\ud588\uc2b5\ub2c8\ub2e4.
+remove.cache.data.explanation=\uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uad6c\uc870\uac00 \ubcc0\uacbd\ub41c \uac83\uc73c\ub85c \ub098\ud0c0\ub098\uba70, \uc774\uc804 \uad6c\uc870\ub97c \ud1a0\ub300\ub85c \ud558\ub294 \uce90\uc2dc \ub370\uc774\ud130 \uc0ad\uc81c\uac00 \ud544\uc694\ud569\ub2c8\ub2e4.
+remove.cache.data.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c \uad6c\uc870\uac00 \ubcc0\uacbd\ub41c \uacbd\uc6b0 \uc774\uac83\uc740 \uc608\uc0c1\ub41c \uacb0\uacfc\uc785\ub2c8\ub2e4.
+
+extract.cache.fail=CWWKM0103E: \uc2dc\uc2a4\ud15c\uc774 {0}(\uc73c)\ub85c \uc778\ud574 \uce90\uc2dc \uc704\uce58\uc5d0 \uc911\ucca9 \uc544\uce74\uc774\ube0c\uc758 \uc555\ucd95\uc744 \ud480 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+extract.cache.fail.explanation=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc758 \uce90\uc2dc \ub370\uc774\ud130\ub97c \uc791\uc131\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc73c\uba70, \uc774\ub85c \uc778\ud574 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \uc62c\ubc14\ub974\uac8c \ucc98\ub9ac\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. 
+extract.cache.fail.useraction=\ubcf4\uace0\ub41c \uc6d0\uc778\uc744 \uac80\uc0ac\ud558\uc2ed\uc2dc\uc624.

@@ -1,0 +1,948 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.mfp.CWSIFMessages.props
+#
+# SIB.mfp component file for logging messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIF0001=CWSIF0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Msgs in the range CWSIF0001-CWSIF0010 belong to class com.ibm.ws.sib.mfp.JsMessageFactory & JsMessageFactoryImpl
+#   - Msgs in the range CWSIF0011-CWSIF0020 belong to class com.ibm.ws.sib.mfp.JsJmsMessageFactory
+#   - Msgs in the range CWSIF0021-CWSIF0030 belong to class com.ibm.ws.sib.mfp.trm.TrmMessageFactory
+#   - Msgs in the range CWSIF0031-CWSIF0040 belong to classes com.ibm.ws.sib.mfp.impl.JsMessageHandle*
+#   - Msgs in the range CWSIF0041-CWSIF0050 belong to class com.ibm.ws.sib.mfp.mp.ControlMessageFactory
+#   - Msgs in the range CWSIF0051-CWSIF0060 belong to class com.ibm.ws.sib.mfp.CompHandshakeFactory
+#   - Msgs in the range CWSIF0101-CWSIF0180 belong to class com.ibm.ws.sib.mfp.impl.JsMessageImpl
+#   - Msgs in the range CWSIF0181-CWSIF0190 belong to class com.ibm.ws.sib.mfp.impl.JsSdoMessageImpl
+#   - Msgs in the range CWSIF0191-CWSIF0199 belong to class com.ibm.ws.sib.mfp.impl.JsApiMessageImpl
+#   - Msgs in the range CWSIF0200-CWSIF0210 belong to class com.ibm.ws.sib.mfp.util.HexString
+#   - Msgs in the range CWSIF0211-CWSIF0220 belong to class com.ibm.ws.sib.mfp.sdo.SdoEncapsulation
+#   - Msgs in the range CWSIF0221-CWSIF0230 belong to class com.ibm.ws.sib.mfp.sdo.SdoEncapsulationManager
+#   - Msgs in the range CWSIF0231-CWSIF0240 belong to package com.ibm.ws.sib.mfp.sdo.importers / repository
+#   - Msgs in the range CWSIF0241-CWSIF0250 belong to package com.ibm.ws.sib.mfp.sdo.importers / repository
+#   - Msgs in the range CWSIF0251-CWSIF0260 belong to class com.ibm.ws.sib.mfp.sdo.mediators.BlobMediator
+#   - Msgs in the range CWSIF0271-CWSIF0280 belong to package com.ibm.ws.sib.mfp.sdo.soap
+#   - Msgs in the range CWSIF0281-CWSIF0290 belong to package com.ibm.ws.sib.mfp.sdo.soap.write
+#   - Msgs in the range CWSIF0291-CWSIF0310 belong to package com.ibm.ws.sib.mfp.sdo.soap.parse
+#   - Msgs in the range CWSIF0311-CWSIF0320 belong to class com.ibm.ws.sib.mfp.sdo.mediators.JmfDataMediator
+#   - Msgs in the range CWSIF0321-CWSIF0350 belong to package com.ibm.ws.sib.mfp.sdo.bean
+#   - Msgs in the range CWSIF0351-CWSIF0360 belong to package com.ibm.ws.sib.mfp.sdo.soap.parse
+#   - Msgs in the range CWSIF0361-CWSIF0370 belong to class com.ibm.ws.sib.mfp.sdo.DataGraphFactoryImpl
+#   - Msgs in the range CWSIF0371-CWSIF0380 belong to class com.ibm.ws.sib.mfp.sdo.mime.MimeElementImpl
+#   - Msgs in the range CWSIF0381-CWSIF0390 belong to class com.ibm.ws.sib.mfp.sdo.mime.MimeElementListImpl
+#   - Msgs in the range CWSIF0391-CWSIF0410 are no longer allocated
+#   - Msgs in the range CWSIF0411-CWSIF0420 are no longer allocated
+#   - Msgs in the range CWSIF0421-CWSIF0430 are no longer allocated
+#   - Msgs in the range CWSIF0431-CWSIF0439 belong to package com.ibm.ws.sib.mfp.sdo.resource
+#   - Msgs in the range CWSIF0500-CWSIF0510 belong to class com.ibm.ws.sib.mfp.impl.JsSdoMessageImpl
+#   - Msgs in the range CWSIF0600-CWSIF0610 belong to class com.ibm.ws.sib.mfp.sdo.repository.WSDLMetaData
+#   - Msgs in the range CWSIF0700-CWSIF0710 belong to class com.ibm.ws.sib.mfp.mqimpl.MQJmsMapMessageEncapsulation
+#   - Msgs in the range CWSIF0711-CWSIF0720 belong to package com.ibm.ws.sib.mfp.sdo.jms
+#   - Msgs in the range CWSIF0721-CWSIF0730 belong to package com.ibm.ws.sib.mfp*
+#   - CWSIF9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.45,0,02/07/25,05:29:29
+#
+#CMVCPATHNAME com.ibm.ws.messaging.common/resources/com/ibm/ws/sib/mfp/CWSIFMessages.nlsprops
+#COMPONENTPREFIX CWSIF
+#COMPONENTNAMEFOR CWSIF SIBus MFP
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_FACTORY_CWSIF0001=CWSIF0001E: \u7121\u6cd5\u5efa\u7acb JsMessageFactoryImpl \u5be6\u4f8b\uff1a\u7570\u5e38\u72c0\u6cc1 {0}\u3002
+UNABLE_TO_CREATE_FACTORY_CWSIF0001.explanation=CMSG0001
+UNABLE_TO_CREATE_FACTORY_CWSIF0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+NO_DATASLICES_IN_LIST_CWSIF0002=CWSIF0002E: \u5df2\u50b3\u9001\u7a7a\u503c\u6216\u7a7a\u7684\u300cDataSlice \u6e05\u55ae\u300d\u81f3\u8a0a\u606f\u9084\u539f\u3002
+NO_DATASLICES_IN_LIST_CWSIF0002.explanation=CMSG0001
+NO_DATASLICES_IN_LIST_CWSIF0002.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_JMSFACTORY_CWSIF0011=CWSIF0011E: \u7121\u6cd5\u5efa\u7acb JsJmsMessageFactoryImpl \u5be6\u4f8b\uff1a\u7570\u5e38\u72c0\u6cc1 {0}\u3002
+UNABLE_TO_CREATE_JMSFACTORY_CWSIF0011.explanation=CMSG0001
+UNABLE_TO_CREATE_JMSFACTORY_CWSIF0011.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_TRMFACTORY_CWSIF0021=CWSIF0021E: \u7121\u6cd5\u5efa\u7acb TrmMessageFactoryImpl \u5be6\u4f8b\uff1a\u7570\u5e38\u72c0\u6cc1 {0}\u3002
+UNABLE_TO_CREATE_TRMFACTORY_CWSIF0021.explanation=CMSG0001
+UNABLE_TO_CREATE_TRMFACTORY_CWSIF0021.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_HANDLEFACTORY_CWSIF0031=CWSIF0031E: \u7121\u6cd5\u5efa\u7acb JsMessageHandleFactoryImpl \u5be6\u4f8b\uff1a\u7570\u5e38\u72c0\u6cc1 {0}\u3002
+UNABLE_TO_CREATE_HANDLEFACTORY_CWSIF0031.explanation=CMSG0001
+UNABLE_TO_CREATE_HANDLEFACTORY_CWSIF0031.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the type of bad data that was passed (NULL or Empty String)
+NULL_HANDLE_PASSED_FOR_RESTORE_CWSIF0032=CWSIF0032E: \u5df2\u50b3\u9001 {0} \u81f3 SIMessageHandleRestorer\u3002
+NULL_HANDLE_PASSED_FOR_RESTORE_CWSIF0032.explanation=CMSG0001
+NULL_HANDLE_PASSED_FOR_RESTORE_CWSIF0032.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+RESTORE_FROM_BYTES_ARRAY_TOO_SHORT_CWSIF0033=CWSIF0033E: \u50b3\u9001\u81f3SIMessageHandleRestorer.restoreFromBytes \u7684\u8cc7\u6599\u9577\u5ea6\u7121\u6548\u3002
+RESTORE_FROM_BYTES_ARRAY_TOO_SHORT_CWSIF0033.explanation=CMSG0001
+RESTORE_FROM_BYTES_ARRAY_TOO_SHORT_CWSIF0033.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+RESTORE_FROM_BYTES_UNKNOWN_VERSION_NUMBER_CWSIF0034=CWSIF0034E: \u50b3\u9001\u81f3 SIMessageHandleRestorer.restoreFromBytes \u7684\u8cc7\u6599\u6c92\u6709\u6709\u6548\u7684\u7248\u672c\u8cc7\u8a0a\u3002
+RESTORE_FROM_BYTES_UNKNOWN_VERSION_NUMBER_CWSIF0034.explanation=CMSG0001
+RESTORE_FROM_BYTES_UNKNOWN_VERSION_NUMBER_CWSIF0034.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+RESTORE_FROM_BYTES_INTERNAL_LENGTH_CHECK_FAIL_CWSIF0035=CWSIF0035E: \u50b3\u9001\u81f3 SIMessageHandleRestorer.restoreFromBytes \u7684\u8cc7\u6599\u7121\u6cd5\u901a\u904e\u5167\u90e8\u9577\u5ea6\u9a57\u8b49\u6aa2\u67e5\u3002
+RESTORE_FROM_BYTES_INTERNAL_LENGTH_CHECK_FAIL_CWSIF0035.explanation=CMSG0001
+RESTORE_FROM_BYTES_INTERNAL_LENGTH_CHECK_FAIL_CWSIF0035.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_CONTROLFACTORY_CWSIF0041=CWSIF0041E: \u7121\u6cd5\u5efa\u7acb ControlMessageFactoryImpl \u5be6\u4f8b\uff1a\u7570\u5e38\u72c0\u6cc1 {0}\u3002
+UNABLE_TO_CREATE_CONTROLFACTORY_CWSIF0041.explanation=CMSG0001
+UNABLE_TO_CREATE_CONTROLFACTORY_CWSIF0041.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_COMPHANDSHAKE_CWSIF0051=CWSIF0051E: \u7121\u6cd5\u5efa\u7acb CompHandshakeImpl \u5be6\u4f8b\uff1a\u7570\u5e38\u72c0\u6cc1 {0}\u3002
+UNABLE_TO_CREATE_COMPHANDSHAKE_CWSIF0051.explanation=CMSG0001
+UNABLE_TO_CREATE_COMPHANDSHAKE_CWSIF0051.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the implementation class, {1} is the value of the Exception
+UNABLE_TO_CREATE_CWSIF0061=CWSIF0061E: \u7121\u6cd5\u5efa\u7acb {0} \u5be6\u4f8b\uff1a\u7570\u5e38\u72c0\u6cc1 {1}\u3002
+UNABLE_TO_CREATE_CWSIF0061.explanation=CMSG0001
+UNABLE_TO_CREATE_CWSIF0061.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the system message id of the message.
+NOT_API_MESSAGE_CWSIF0101=CWSIF0101E: \u4e0d\u652f\u63f4 {0} \u8a0a\u606f\u7684\u8a0a\u606f\u9078\u53d6\u5668\u3002
+NOT_API_MESSAGE_CWSIF0101.explanation=\u53ea\u652f\u63f4 API \u8a0a\u606f\u7684\u8a0a\u606f\u9078\u53d6\u5668\u3002
+NOT_API_MESSAGE_CWSIF0101.useraction=\u8acb\u78ba\u5b9a\u61c9\u7528\u7a0b\u5f0f\u4e0d\u4f7f\u7528\u975e API \u8a0a\u606f\u7684\u8a0a\u606f\u9078\u53d6\u5668\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message type found
+# {1} is the expected message type
+UNEXPECTED_MESSAGE_TYPE_CWSIF0102=CWSIF0102E: \u539f\u9810\u671f\u8a0a\u606f\u985e\u578b {1}\uff0c\u4f46\u627e\u5230\u8a0a\u606f\u985e\u578b {0}\u3002
+UNEXPECTED_MESSAGE_TYPE_CWSIF0102.explanation=\u8a66\u5716\u5c07\u8a0a\u606f\u5f9e\u67d0\u500b\u8a0a\u606f\u985e\u578b\u8f49\u63db\u6210\u5176\u4ed6\u8a0a\u606f\u985e\u578b\u3002\u4e0d\u652f\u63f4\u9019\u500b\u8f49\u63db\u3002
+UNEXPECTED_MESSAGE_TYPE_CWSIF0102.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+UNABLE_TO_GET_DATAGRAPH_CWSIF0181=CWSIF0181E: \u7121\u6cd5\u5f9e\u8a0a\u606f\u627f\u8f09\u5167\u5bb9\u4e2d\u53d6\u5f97\u300cSDO \u8cc7\u6599\u5716\u300d\u3002
+UNABLE_TO_GET_DATAGRAPH_CWSIF0181.explanation=CMSG0001
+UNABLE_TO_GET_DATAGRAPH_CWSIF0181.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect class name
+INCORRECT_ENCAPSULATION_CWSIF0182=CWSIF0182E: \u8a0a\u606f\u5305\u542b\u4e0d\u6b63\u78ba\u7684\u5c01\u88dd\u985e\u5225\uff1a{0}
+INCORRECT_ENCAPSULATION_CWSIF0182.explanation=CMSG0001
+INCORRECT_ENCAPSULATION_CWSIF0182.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# This is an almost exact copy of CWSIA0114E in file CWSIAJMSMessages.nlsprops
+# {0} is the property name
+# {1} is the expected type of the property value
+# {2} is thetype of the property value given
+BAD_MQMD_PROPERTY_TYPE_CWSIF0183=CWSIF0183E: \u61c9\u8a72\u5229\u7528 {1} \u800c\u4e0d\u662f {2} \u985e\u578b\u4f86\u8a2d\u5b9a {0} \u5167\u5bb9\u3002
+BAD_MQMD_PROPERTY_TYPE_CWSIF0183.explanation=\u5fc5\u9808\u4f7f\u7528\u7279\u5b9a\u7684\u8b8a\u6578\u985e\u578b\u4f86\u8a2d\u5b9a JMS_IBM_MQMD \u5167\u5bb9\u3002
+BAD_MQMD_PROPERTY_TYPE_CWSIF0183.useraction=\u8acb\u66f4\u6b63\u61c9\u7528\u7a0b\u5f0f\u78bc\u4f86\u4f7f\u7528\u6240\u9700\u8981\u7684\u8b8a\u6578\u985e\u578b\uff0c\u4ee5\u8a2d\u5b9a\u9019\u500b JMS_IBM_MQMD \u5167\u5bb9\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect hexadecimal string
+BAD_HEX_STRING_CWSIF0191=CWSIF0191E: \u76f8\u95dc\u6027 ID \u7684\u5341\u516d\u9032\u4f4d\u5b57\u4e32 {0} \u683c\u5f0f\u4e0d\u6b63\u78ba\u3002
+BAD_HEX_STRING_CWSIF0191.explanation=\u5b57\u4e32\u4e0d\u662f\u6709\u6548\u7684\u5341\u516d\u9032\u4f4d\u76f8\u4e92\u95dc\u4fc2 ID\u3002\u5b83\u7684\u683c\u5f0f\u5fc5\u9808\u662f ID: \u5f8c\u9762\u53ea\u63a5\u8457\u5076\u6578\u7684\u5341\u516d\u9032\u4f4d\u5b57\u5143\u3002
+BAD_HEX_STRING_CWSIF0191.useraction=\u8acb\u66f4\u6b63\u8f49\u63db\u5931\u6557\u7684\u5b57\u4e32\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect hexadecimal string
+BAD_HEX_STRING_CWSIF0200=CWSIF0200E: \u5341\u516d\u9032\u4f4d\u5b57\u4e32 {0} \u683c\u5f0f\u4e0d\u6b63\u78ba\u3002
+BAD_HEX_STRING_CWSIF0200.explanation=\u8a66\u5716\u5c07\u5b57\u4e32\u8f49\u63db\u6210\u4f4d\u5143\u7d44\u9663\u5217\u5931\u6557\uff0c\u56e0\u70ba\u5b57\u4e32\u5305\u542b\u975e\u5341\u516d\u9032\u4f4d\u5b57\u5143\u6216\u5947\u6578\u5b57\u5143\u3002
+BAD_HEX_STRING_CWSIF0200.useraction=\u8acb\u6aa2\u67e5\u8f49\u63db\u5931\u6557\u7684\u5b57\u4e32\u5167\u5bb9\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the exception.
+FORMAT_NOT_FOUND_CWSIF0211=CWSIF0211E: \u7121\u6cd5\u8b58\u5225\u8a0a\u606f\u683c\u5f0f\uff1a\u7570\u5e38\u72c0\u6cc1 {0}
+FORMAT_NOT_FOUND_CWSIF0211.explanation=CMSG0001
+FORMAT_NOT_FOUND_CWSIF0211.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the exception.
+GET_LENGTH_FAILED_CWSIF0212=CWSIF0212E: \u7121\u6cd5\u8a08\u7b97\u8a0a\u606f\u9577\u5ea6\uff1a\u7570\u5e38\u72c0\u6cc1 {0}
+GET_LENGTH_FAILED_CWSIF0212.explanation=CMSG0001
+GET_LENGTH_FAILED_CWSIF0212.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the exception.
+WRITE_FAILED_CWSIF0213=CWSIF0213E: \u7121\u6cd5\u8a08\u7b97\u8a0a\u606f\uff1a\u7570\u5e38\u72c0\u6cc1 {0}
+WRITE_FAILED_CWSIF0213.explanation=CMSG0001
+WRITE_FAILED_CWSIF0213.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the exception.
+UNASSEMBLE_FAILED_CWSIF0214=CWSIF0214E: \u7121\u6cd5\u53d6\u6d88\u7d44\u5408 JMF \u8a0a\u606f\uff1a\u7570\u5e38\u72c0\u6cc1 {0}
+UNASSEMBLE_FAILED_CWSIF0214.explanation=CMSG0001
+UNASSEMBLE_FAILED_CWSIF0214.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the exception.
+SCHEMA_ID_ERROR_CWSIF0221=CWSIF0221E: JMF \u7db1\u76ee ID \u932f\u8aa4\uff1a\u7570\u5e38\u72c0\u6cc1 {0}
+SCHEMA_ID_ERROR_CWSIF0221.explanation=CMSG0001
+SCHEMA_ID_ERROR_CWSIF0221.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the exception.
+PARSE_FAILED_CWSIF0222=CWSIF0222E: \u7121\u6cd5\u5256\u6790\u8a0a\u606f\uff1a\u7570\u5e38\u72c0\u6cc1 {0}
+PARSE_FAILED_CWSIF0222.explanation=CMSG0001
+PARSE_FAILED_CWSIF0222.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the filename, {1} is the exception
+INVALID_WSDL_CWSIF0232=CWSIF0232E: \u7121\u6cd5\u532f\u5165 WSDL \u6a94 {0}\uff1a\u7570\u5e38\u72c0\u6cc1 {1}
+INVALID_WSDL_CWSIF0232.explanation=WSDL \u532f\u5165\u5668\u7121\u6cd5\u532f\u5165\u6a94\u6848\u3002
+INVALID_WSDL_CWSIF0232.useraction=\u8acb\u78ba\u5b9a\u60a8\u5728\u532f\u5165\u6709\u6548\u7684 WSDL \u6a94\uff0c\u4e14\u60a8\u5728\u4f7f\u7528\u652f\u63f4\u7684 WSDL \u6a19\u6e96\u7248\u672c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name, {1} is the namespace
+INVALID_WSDL_CWSIF0233=CWSIF0233E: \u627e\u4e0d\u5230\u985e\u578b\uff1a\u540d\u7a31 {0}\u3001\u540d\u7a31\u7a7a\u9593 {1}
+INVALID_WSDL_CWSIF0233.explanation=WSDL \u532f\u5165\u5668\u627e\u4e0d\u5230\u985e\u578b\u5b9a\u7fa9\u3002
+INVALID_WSDL_CWSIF0233.useraction=\u8acb\u78ba\u5b9a\u60a8\u5df2\u5728 WSDL \u985e\u578b\u5340\u6bb5\u4e2d\u4f75\u5165\u985e\u578b\u7684 XML \u7db1\u76ee\u5b9a\u7fa9\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the namespace
+INVALID_WSDL_CWSIF0234=CWSIF0234E: \u627e\u4e0d\u5230\u5143\u7d20\uff1a\u540d\u7a31 {0}\u3001\u540d\u7a31\u7a7a\u9593 {1}
+INVALID_WSDL_CWSIF0234.explanation=WSDL \u532f\u5165\u5668\u627e\u4e0d\u5230\u5143\u7d20\u5b9a\u7fa9\u3002
+INVALID_WSDL_CWSIF0234.useraction=\u8acb\u78ba\u5b9a\u60a8\u5df2\u5728 WSDL \u985e\u578b\u5340\u6bb5\u4e2d\u4f75\u5165\u5143\u7d20\u7684 XML \u7db1\u76ee\u5b9a\u7fa9\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the URI
+BLOCKED_INPUT_CWSIF0235=CWSIF0235E: \u66ab\u505c\u5b58\u53d6 URI \u7684\u8f38\u5165\u4e32\u6d41\uff1a{0}\u3002
+BLOCKED_INPUT_CWSIF0235.explanation=\u57f7\u884c\u6642\u671f\u74b0\u5883\u66ab\u505c\u4e86\u7d66\u5b9a URI \u7684\u5b58\u53d6\u3002\u539f\u56e0\u662f\u8a66\u5716\u8f09\u5165\u672a\u90e8\u7f72\u5728 SDO \u5132\u5b58\u5eab\u7684 XML \u7db1\u76ee\u3002
+BLOCKED_INPUT_CWSIF0235.useraction=\u8acb\u78ba\u5b9a\u60a8\u5df2\u5c07\u9069\u7576\u7684 WSDL \u548c XML \u7db1\u76ee\u6a94\u90e8\u7f72\u5230 SDO \u5132\u5b58\u5eab\u4e2d\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the URI
+BLOCKED_OUTPUT_CWSIF0236=CWSIF0236E: \u66ab\u505c\u5b58\u53d6 URI \u7684\u8f38\u51fa\u4e32\u6d41\uff1a{0}\u3002
+BLOCKED_OUTPUT_CWSIF0236.explanation=CMSG0001
+BLOCKED_OUTPUT_CWSIF0236.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the URI, {1} is the exception
+NESTED_ERROR_CWSIF0237=CWSIF0237E: \u8f09\u5165\u5305\u62ec\u7684\u8cc7\u6e90\u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1\u3002\u8cc7\u6e90 URI\uff1a{0}\uff0c\u7570\u5e38\u72c0\u6cc1\uff1a{1}\u3002
+NESTED_ERROR_CWSIF0237.explanation=\u6a94\u6848\u5305\u62ec\u5de2\u72c0\u8cc7\u6e90\uff0c\u8f09\u5165\u5de2\u72c0\u8cc7\u6e90\u6642\u767c\u73fe\u932f\u8aa4\u3002
+NESTED_ERROR_CWSIF0237.useraction=\u8acb\u53c3\u95b1\u96a8\u9644\u7684\u932f\u8aa4\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the namespace, {1} is the location, {2} is the exception
+RESOURCE_ERROR_CWSIF0238=CWSIF0238E: \u5c0b\u627e Ecore \u6a21\u578b\u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1\u3002\u76ee\u6a19\u540d\u7a31\u7a7a\u9593 {0}\u3001\u4f4d\u7f6e\u63d0\u793a {1}\u3001\u7570\u5e38\u72c0\u6cc1 {2}\u3002
+RESOURCE_ERROR_CWSIF0238.explanation=\u67e5\u95b1 Ecore \u6a21\u578b\u6642\uff0c\u5efa\u7acb\u7570\u5e38\u72c0\u6cc1\u3002
+RESOURCE_ERROR_CWSIF0238.useraction=\u8acb\u53c3\u95b1\u96a8\u9644\u7684\u932f\u8aa4\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the WSDL defintion type (Message, Port Type, Binding or Operation), {1} is the name of the defintion, {2} is the location.
+INVALID_WSDL_CWSIF0240=CWSIF0240E: \u627e\u4e0d\u5230\u540d\u7a31\u70ba {1} \u7684 WSDL {0}\u3002{2} \u6a94\u53c3\u7167\u9019\u500b\u5b9a\u7fa9\u3002
+INVALID_WSDL_CWSIF0240.explanation=WSDL \u532f\u5165\u5668\u627e\u4e0d\u5230 WSDL \u6240\u53c3\u7167\u7684\u5b9a\u7fa9\u3002
+INVALID_WSDL_CWSIF0240.useraction=\u8acb\u78ba\u5b9a\u60a8\u7684 WSDL \u5b9a\u7fa9\u5b8c\u6574\uff0c\u4e14\u60a8\u5df2\u4f75\u5165\u6240\u6709\u53c3\u7167\u7684 WSDL \u6a94\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the filename, {1} is the exception
+INVALID_XSD_CWSIF0241=CWSIF0241E: \u7121\u6cd5\u532f\u5165 XML \u7db1\u76ee\u6a94 {0}\uff1a\u7570\u5e38\u72c0\u6cc1 {1}
+INVALID_XSD_CWSIF0241.explanation=XML \u7db1\u76ee\u532f\u5165\u5668\u7121\u6cd5\u532f\u5165\u6a94\u6848\u3002
+INVALID_XSD_CWSIF0241.useraction=\u8acb\u78ba\u5b9a\u60a8\u5728\u532f\u5165\u6709\u6548\u7684 XML \u7db1\u76ee\u6a94\uff0c\u4e14\u60a8\u5728\u4f7f\u7528\u652f\u63f4\u7684 XML \u7db1\u76ee\u6a19\u6e96\u7248\u672c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the error
+INVALID_XSD_CWSIF0242=CWSIF0242E: \u8f09\u5165 XML \u7db1\u76ee\u6642\uff0c\u767c\u751f\u932f\u8aa4\uff1a{0}
+INVALID_XSD_CWSIF0242.explanation=XML \u7db1\u76ee\u532f\u5165\u5668\u7121\u6cd5\u8f09\u5165\u6a94\u6848\u3002
+INVALID_XSD_CWSIF0242.useraction=\u8acb\u78ba\u5b9a\u60a8\u5728\u532f\u5165\u6709\u6548\u7684 XML \u7db1\u76ee\u6a94\uff0c\u4e14\u60a8\u5728\u4f7f\u7528\u652f\u63f4\u7684 XML \u7db1\u76ee\u6a19\u6e96\u7248\u672c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the error message
+XSD_ERROR_CWSIF0243=CWSIF0243E: {0}
+XSD_ERROR_CWSIF0243.explanation=\u532f\u5165 XML \u7db1\u76ee\u6642\uff0c\u5831\u544a\u767c\u751f\u932f\u8aa4\u3002
+XSD_ERROR_CWSIF0243.useraction=\u8acb\u53c3\u95b1\u932f\u8aa4\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u8a73\u7d30\u8cc7\u8a0a\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BLOB_PARSE_FAILURE_CWSIF0251=CWSIF0251E: \u7121\u6cd5\u5256\u6790\u8a0a\u606f\uff1a\u7570\u5e38\u72c0\u6cc1 {0}
+BLOB_PARSE_FAILURE_CWSIF0251.explanation=CMSG0001
+BLOB_PARSE_FAILURE_CWSIF0251.useraction=\u8acb\u53c3\u95b1\u96a8\u9644\u7684\u932f\u8aa4\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BLOB_LENGTH_FAILURE_CWSIF0252=CWSIF0252E: \u7121\u6cd5\u8a08\u7b97\u8a0a\u606f\u9577\u5ea6\uff1a\u7570\u5e38\u72c0\u6cc1 {0}
+BLOB_LENGTH_FAILURE_CWSIF0252.explanation=CMSG0001
+BLOB_LENGTH_FAILURE_CWSIF0252.useraction=\u8acb\u53c3\u95b1\u96a8\u9644\u7684\u932f\u8aa4\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BLOB_WRITE_FAILURE_CWSIF0253=CWSIF0253E: \u7121\u6cd5\u5beb\u5165\u8a0a\u606f\uff1a\u7570\u5e38\u72c0\u6cc1 {0}
+BLOB_WRITE_FAILURE_CWSIF0253.explanation=CMSG0001
+BLOB_WRITE_FAILURE_CWSIF0253.useraction=\u8acb\u53c3\u95b1\u96a8\u9644\u7684\u932f\u8aa4\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name, {1} is the namespace
+BLOB_MODEL_FAILURE_CWSIF0254=CWSIF0254E: \u8a0a\u606f\u6a21\u578b\u4e0d\u6b63\u78ba\uff1a\u985e\u578b\u540d\u7a31 {0}\u3001\u540d\u7a31\u7a7a\u9593 {1}\u3002
+BLOB_MODEL_FAILURE_CWSIF0254.explanation=CMSG0001
+BLOB_MODEL_FAILURE_CWSIF0254.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+SOAP_PARSE_FAILURE_CWSIF0271=CWSIF0271E: \u7121\u6cd5\u5256\u6790\u8a0a\u606f\uff1a\u7570\u5e38\u72c0\u6cc1 {0}
+SOAP_PARSE_FAILURE_CWSIF0271.explanation=\u5256\u6790\u300cWeb \u670d\u52d9\u300d\u8a0a\u606f\u6642\u767c\u751f\u932f\u8aa4\u3002
+SOAP_PARSE_FAILURE_CWSIF0271.useraction=\u8acb\u53c3\u95b1\u96a8\u9644\u7684\u932f\u8aa4\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+SOAP_LENGTH_FAILURE_CWSIF0272=CWSIF0272E: \u7121\u6cd5\u8a08\u7b97\u8a0a\u606f\u9577\u5ea6\uff1a\u7570\u5e38\u72c0\u6cc1 {0}
+SOAP_LENGTH_FAILURE_CWSIF0272.explanation=\u8655\u7406\u300cWeb \u670d\u52d9\u300d\u8981\u6c42\u3001\u56de\u61c9\u6216\u932f\u8aa4\u6642\u767c\u751f\u932f\u8aa4\u3002
+SOAP_LENGTH_FAILURE_CWSIF0272.useraction=\u8acb\u53c3\u95b1\u96a8\u9644\u7684\u932f\u8aa4\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+SOAP_WRITE_FAILURE_CWSIF0273=CWSIF0273E: \u7121\u6cd5\u5beb\u5165\u8a0a\u606f\uff1a\u7570\u5e38\u72c0\u6cc1 {0}
+SOAP_WRITE_FAILURE_CWSIF0273.explanation=\u5beb\u5165\u300cWeb \u670d\u52d9\u300d\u8a0a\u606f\u6642\u767c\u751f\u932f\u8aa4\u3002
+SOAP_WRITE_FAILURE_CWSIF0273.useraction=\u8acb\u53c3\u95b1\u96a8\u9644\u7684\u932f\u8aa4\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the format string
+SOAP_FORMAT_ERROR_CWSIF0274=CWSIF0274E: \u4e0d\u6b63\u78ba\u7684\u683c\u5f0f\u5b57\u4e32\uff1a{0}
+SOAP_FORMAT_ERROR_CWSIF0274.explanation=\u8655\u7406\u300cWeb \u670d\u52d9\u300d\u8981\u6c42\u3001\u56de\u61c9\u6216\u932f\u8aa4\u6642\u767c\u751f\u932f\u8aa4\u3002
+SOAP_FORMAT_ERROR_CWSIF0274.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u683c\u5f0f\u9075\u5faa SOAP \u8a0a\u606f\u7684\u6b63\u78ba\u8a9e\u6cd5\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the buffer length, {1} is the start offset, {2} is the length
+SOAP_BUFFER_ERROR_CWSIF0275=CWSIF0275E: \u4e0d\u6b63\u78ba\u7684\u7de9\u885d\u5340\u504f\u79fb\uff1a\u7de9\u885d\u5340\u9577\u5ea6 {0}\u3001\u8d77\u59cb\u504f\u79fb {1}\u3001\u8cc7\u6599\u9577\u5ea6 {2}\u3002
+SOAP_BUFFER_ERROR_CWSIF0275.explanation=\u8655\u7406\u300cWeb \u670d\u52d9\u300d\u8981\u6c42\u3001\u56de\u61c9\u6216\u932f\u8aa4\u6642\u767c\u751f\u932f\u8aa4\u3002
+SOAP_BUFFER_ERROR_CWSIF0275.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+SOAP_CREATE_FAILURE_CWSIF0276=CWSIF0276E: \u7121\u6cd5\u5efa\u7acb\u65b0\u7684\u300cSDO \u8cc7\u6599\u5716\u300d\uff1a\u7570\u5e38\u72c0\u6cc1 {0}
+SOAP_CREATE_FAILURE_CWSIF0276.explanation=\u8655\u7406\u300cWeb \u670d\u52d9\u300d\u8981\u6c42\u3001\u56de\u61c9\u6216\u932f\u8aa4\u6642\u767c\u751f\u932f\u8aa4\u3002
+SOAP_CREATE_FAILURE_CWSIF0276.useraction=\u8acb\u53c3\u95b1\u96a8\u9644\u7684\u932f\u8aa4\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of child nodes
+BAD_HEADER_CHILD_CWSIF0281=CWSIF0281E: \u6a19\u982d\u9805\u76ee\u5305\u542b\u7684\u5b50\u9805\u8cc7\u6599\u7269\u4ef6\u6578\u76ee\u932f\u8aa4\u3002\u539f\u9810\u671f\u662f 1 \u500b\uff0c\u627e\u5230 {0} \u500b\u3002
+BAD_HEADER_CHILD_CWSIF0281.explanation=\u4ee3\u8868\u6a19\u982d\u9805\u76ee\u7684\u8cc7\u6599\u7269\u4ef6\u672a\u5305\u542b\u6578\u76ee\u6b63\u78ba\u7684\u5b50\u9805\u8cc7\u6599\u7269\u4ef6\u3002
+BAD_HEADER_CHILD_CWSIF0281.useraction=\u8acb\u78ba\u5b9a\u6bcf\u500b\u6a19\u982d\u9805\u76ee\u90fd\u5305\u542b\u6b63\u597d\u4e00\u500b\u5b50\u9805\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the error URI, {1} is the error code, {2} is the additional data
+SOAP_PARSE_ERROR_CWSIF0291=CWSIF0291E: \u7121\u6cd5\u5256\u6790\u8a0a\u606f\u3002\u932f\u8aa4 URI {0}\u3001\u932f\u8aa4\u78bc {1}\u3001\u5176\u4ed6\u8cc7\u6599 {2}
+SOAP_PARSE_ERROR_CWSIF0291.explanation=\u5728\u8655\u7406 SOAP \u8a0a\u606f\u6642\uff0cXML \u5256\u6790\u5668\u5831\u544a\u767c\u751f\u932f\u8aa4\u3002
+SOAP_PARSE_ERROR_CWSIF0291.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u662f\u5f62\u5f0f\u5b8c\u6574\u7684 XML\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI
+ENVELOPE_PARSE_ERROR_CWSIF0293=CWSIF0293E: \u627e\u5230\u975e\u9810\u671f\u7684\u5143\u7d20\u3002\u5143\u7d20\u540d\u7a31 {0}\u3001\u5143\u7d20\u540d\u7a31\u7a7a\u9593 {1}\u3002
+ENVELOPE_PARSE_ERROR_CWSIF0293.explanation=SOAP \u5256\u6790\u5668\u9810\u671f\u6703\u6709 SOAP \u5c01\u5957\u5143\u7d20\uff0c\u4f46\u767c\u73fe\u4e0a\u8ff0\u5143\u7d20\u3002
+ENVELOPE_PARSE_ERROR_CWSIF0293.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u8cc7\u6599\u76f8\u5bb9\u65bc SOAP \u898f\u683c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI
+ENVELOPE_PARSE_ERROR_CWSIF0294=CWSIF0294E: \u627e\u5230\u975e\u9810\u671f\u7684\u5143\u7d20\u3002\u5143\u7d20\u540d\u7a31 {0}\u3001\u5143\u7d20\u540d\u7a31\u7a7a\u9593 {1}\u3002
+ENVELOPE_PARSE_ERROR_CWSIF0294.explanation=SOAP \u5256\u6790\u5668\u9810\u671f\u6703\u6709 SOAP \u6a19\u982d\u6216\u4e3b\u9ad4\u5143\u7d20\uff0c\u4f46\u767c\u73fe\u4e0a\u8ff0\u5143\u7d20\u3002
+ENVELOPE_PARSE_ERROR_CWSIF0294.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u8cc7\u6599\u76f8\u5bb9\u65bc SOAP \u898f\u683c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI, {2} is the mustUnderstand value
+MUST_UNDERSTAND_ERROR_CWSIF0295=CWSIF0295E: \u627e\u5230\u975e\u9810\u671f\u7684 mustUnderstand \u503c\u3002\u5143\u7d20\u540d\u7a31 {0}\u3001\u5143\u7d20\u540d\u7a31\u7a7a\u9593 {1}\u3001mustUnderstand \u503c {2}\u3002
+MUST_UNDERSTAND_ERROR_CWSIF0295.explanation=SOAP \u5256\u6790\u5668\u627e\u5230\u542b\u4e0d\u6b63\u78ba\u7684\u503c\u7684 SOAP mustUnderstand \u5c6c\u6027\u3002
+MUST_UNDERSTAND_ERROR_CWSIF0295.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u8cc7\u6599\u76f8\u5bb9\u65bc SOAP \u898f\u683c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI
+NON_ROOT_ERROR_CWSIF0296=CWSIF0296E: \u627e\u5230\u4e0d\u6b63\u78ba\u7684\u975e\u6839 SOAP \u4e3b\u9ad4\u5143\u7d20\u3002\u5143\u7d20\u540d\u7a31 {0}\u3001\u5143\u7d20\u540d\u7a31\u7a7a\u9593 {1}\u3002
+NON_ROOT_ERROR_CWSIF0296.explanation=SOAP \u5256\u6790\u5668\u627e\u5230\u975e\u6839 SOAP \u4e3b\u9ad4\u5143\u7d20\uff0c\u4f46\u5143\u7d20\u4e0d\u662f SOAP \u7de8\u78bc\u3002
+NON_ROOT_ERROR_CWSIF0296.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u8cc7\u6599\u76f8\u5bb9\u65bc SOAP \u898f\u683c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI, {2} is the attribute value
+NON_ROOT_ERROR_CWSIF0297=CWSIF0297E: \u627e\u5230\u4e0d\u6b63\u78ba\u7684 SOAP \u6839\u5c6c\u6027\u3002\u5143\u7d20\u540d\u7a31 {0}\u3001\u5143\u7d20\u540d\u7a31\u7a7a\u9593 {1}\u3001SOAP \u6839\u5c6c\u6027\u503c {2}\u3002
+NON_ROOT_ERROR_CWSIF0297.explanation=SOAP \u5256\u6790\u5668\u627e\u5230\u542b\u4e0d\u6b63\u78ba\u7684 SOAP \u6839\u5c6c\u6027\u7684\u5143\u7d20\u3002
+NON_ROOT_ERROR_CWSIF0297.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u8cc7\u6599\u76f8\u5bb9\u65bc SOAP \u898f\u683c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI, {2} is the data
+NIL_DATA_ERROR_CWSIF0298=CWSIF0298E: \u5728 nil \u5143\u7d20\u5167\u627e\u5230\u8cc7\u6599\u3002\u5143\u7d20\u540d\u7a31 {0}\u3001\u5143\u7d20\u540d\u7a31\u7a7a\u9593 {1}\u3001\u8cc7\u6599 {2}\u3002
+NIL_DATA_ERROR_CWSIF0298.explanation=SOAP \u5256\u6790\u5668\u5728\u542b\u6709 xsi:nil="true" \u5c6c\u6027\u7684\u5143\u7d20\u5167\u767c\u73fe\u8cc7\u6599\u3002
+NIL_DATA_ERROR_CWSIF0298.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u8cc7\u6599\u76f8\u5bb9\u65bc XML \u7db1\u76ee\u898f\u683c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI, {2} is the nested element name, {3} is the nested element namespace
+NIL_ELEMENT_ERROR_CWSIF0299=CWSIF0299E: \u5728 nil \u5143\u7d20\u5167\u627e\u5230\u5143\u7d20\u3002\u5143\u7d20\u540d\u7a31 {0}\u3001\u5143\u7d20\u540d\u7a31\u7a7a\u9593 {1}\u3001\u5de2\u72c0\u5143\u7d20\u540d\u7a31 {2}\u3001\u5de2\u72c0\u5143\u7d20\u540d\u7a31\u7a7a\u9593 {3}
+NIL_ELEMENT_ERROR_CWSIF0299.explanation=SOAP \u5256\u6790\u5668\u5728\u542b\u6709 xsi:nil="true" \u5c6c\u6027\u7684\u5143\u7d20\u5167\u767c\u73fe\u5143\u7d20\u3002
+NIL_ELEMENT_ERROR_CWSIF0299.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u8cc7\u6599\u76f8\u5bb9\u65bc XML \u7db1\u76ee\u898f\u683c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI, {2} is the attribute name, {3} is the attribute namespace
+NIL_ATTR_ERROR_CWSIF0300=CWSIF0300E: \u5728 nil \u5143\u7d20\u5167\u627e\u5230\u5c6c\u6027\u3002\u5143\u7d20\u540d\u7a31 {0}\u3001\u5143\u7d20\u540d\u7a31\u7a7a\u9593 {1}\u3001\u5c6c\u6027\u540d\u7a31 {2}\u3001\u5c6c\u6027\u540d\u7a31\u7a7a\u9593 {3}
+NIL_ATTR_ERROR_CWSIF0300.explanation=SOAP \u5256\u6790\u5668\u5728\u542b\u6709 xsi:nil="true" \u5c6c\u6027\u7684\u5143\u7d20\u5167\u767c\u73fe\u5c6c\u6027\u3002
+NIL_ATTR_ERROR_CWSIF0300.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u8cc7\u6599\u76f8\u5bb9\u65bc XML \u7db1\u76ee\u898f\u683c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name, {1} is the type URI, {2} is the data
+VALUE_PARSE_ERROR_CWSIF0301=CWSIF0301E: \u7121\u6cd5\u5256\u6790\u8a0a\u606f\u5167\u7684\u503c\u3002\u985e\u578b\u540d\u7a31 {0}\u3001\u985e\u578b\u540d\u7a31\u7a7a\u9593 {1}\u3001\u8cc7\u6599 {2}
+VALUE_PARSE_ERROR_CWSIF0301.explanation=SOAP \u5256\u6790\u5668\u7121\u6cd5\u5c07\u503c\u8f49\u63db\u6210\u985e\u578b\u7684\u5be6\u4f8b\u3002
+VALUE_PARSE_ERROR_CWSIF0301.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u4e2d\u7684\u8cc7\u6599\u8207 WSDL \u4e2d\u7684\u6a21\u578b\u5316\u985e\u578b\u76f8\u5bb9\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI, {2} is the data
+VALUE_PARSE_ERROR_CWSIF0302=CWSIF0302E: \u627e\u5230\u975e\u9810\u671f\u7684\u6587\u5b57\u3002\u5143\u7d20\u540d\u7a31 {0}\u3001\u5143\u7d20\u540d\u7a31\u7a7a\u9593 {1}\u3001\u8cc7\u6599 {2}
+VALUE_PARSE_ERROR_CWSIF0302.explanation=XML \u5143\u7d20\u5305\u542b\u4e00\u4e9b\u6587\u5b57\uff0c\u4f46 WSDL \u6a21\u578b\u4e0d\u5141\u8a31\u9019\u500b\u5143\u7d20\u5305\u542b\u8cc7\u6599\u3002
+VALUE_PARSE_ERROR_CWSIF0302.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u4e2d\u7684\u8cc7\u6599\u8207 WSDL \u4e2d\u7684\u6a21\u578b\u5316\u985e\u578b\u76f8\u5bb9\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element namespace, {2} is the xsi:type value
+XSI_TYPE_ERROR_CWSIF0303=CWSIF0303E: \u5728\u8655\u7406\u5143\u7d20\u540d\u7a31 {0}\u3001\u540d\u7a31\u7a7a\u9593 {1}\u3001xsi:type \u503c {2} \u6642\uff0c\u767c\u73fe\u4e0d\u6b63\u78ba\u7684 xsi:type \u5c6c\u6027
+XSI_TYPE_ERROR_CWSIF0303.explanation=XML \u5143\u7d20\u5305\u542b xsi:type \u5c6c\u6027\uff0c\u4f46\u7121\u6cd5\u8655\u7406\u5c6c\u6027\u503c\u3002
+XSI_TYPE_ERROR_CWSIF0303.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u8cc7\u6599\u76f8\u5bb9\u65bc XML \u7db1\u76ee\u898f\u683c\u3002
+
+# -------------------------------------------------------------------------------------------------
+BODY_WSDL_MISMATCH_CWSIF0304=CWSIF0304E: \u8a0a\u606f\u4e3b\u9ad4\u4e0d\u7b26\u5408 WSDL \u4e2d\u7684\u4efb\u4f55\u5b9a\u7fa9
+BODY_WSDL_MISMATCH_CWSIF0304.explanation=SOAP \u8a0a\u606f\u4e2d\u7684\u8a0a\u606f\u4e3b\u9ad4\u4e0d\u7b26\u5408 WSDL \u4e2d\u7684\u4efb\u4f55\u5b9a\u7fa9\u3002\u53ef\u80fd\u662f\u56e0\u70ba SOAP \u8a0a\u606f\u4e0d\u6b63\u78ba\uff0c\u4e5f\u53ef\u80fd\u662f\u683c\u5f0f\u5b57\u4e32\u8b58\u5225\u4e86\u932f\u8aa4\u7684 WSDL\u3002
+BODY_WSDL_MISMATCH_CWSIF0304.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u8cc7\u6599\u76f8\u5bb9\u65bc WSDL\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element namespace
+ID_ATTR_NOT_FOUND_CWSIF0305=CWSIF0305E: \u627e\u4e0d\u5230\u975e\u6839 SOAP \u4e3b\u9ad4\u5143\u7d20\u7684 id \u5c6c\u6027\u3002\u5143\u7d20\u8a73\u7d30\u8cc7\u6599\uff1a\u540d\u7a31 {0}\u3001\u540d\u7a31\u7a7a\u9593 {1}\u3002
+ID_ATTR_NOT_FOUND_CWSIF0305.explanation=\u6bcf\u500b\u975e\u6839 SOAP \u4e3b\u9ad4\u5143\u7d20\u90fd\u61c9\u8a72\u6709\u542b\u552f\u4e00\u503c\u7684 id \u5c6c\u6027\u3002
+ID_ATTR_NOT_FOUND_CWSIF0305.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u7b26\u5408 SOAP \u7de8\u78bc\u898f\u5247\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the id attribute
+HREF_NOT_FOUND_CWSIF0306=CWSIF0306E: \u672a\u53c3\u7167\u542b id \u5c6c\u6027\u503c {0} \u7684\u5143\u7d20\u3002
+HREF_NOT_FOUND_CWSIF0306.explanation=\u6bcf\u500b\u975e\u6839 SOAP \u4e3b\u9ad4\u5143\u7d20\u90fd\u61c9\u8a72\u7531\u5176\u4ed6\u8a0a\u606f\u7d44\u4ef6\u53c3\u7167\u3002
+HREF_NOT_FOUND_CWSIF0306.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u7b26\u5408 SOAP \u7de8\u78bc\u898f\u5247\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the href value
+INVALID_HREF_CWSIF0307=CWSIF0307E: \u627e\u4e0d\u5230\u7b26\u5408 href \u5c6c\u6027\u503c {0} \u7684\u5143\u7d20\u3002
+INVALID_HREF_CWSIF0307.explanation=SOAP \u7de8\u78bc\u5143\u7d20\u4f7f\u7528 href \u5c6c\u6027\uff0c\u4f46\u627e\u4e0d\u5230\u542b\u76f8\u7b26 ID \u5c6c\u6027\u7684\u5143\u7d20\u3002
+INVALID_HREF_CWSIF0307.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u7b26\u5408 SOAP \u7de8\u78bc\u898f\u5247\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element namespace, {2} is the processing instruction target
+PI_PARSE_ERROR_CWSIF0308=CWSIF0308E: \u627e\u5230\u975e\u9810\u671f\u7684\u8655\u7406\u6307\u793a\u3002\u5143\u7d20\u540d\u7a31 {0}\u3001\u5143\u7d20\u540d\u7a31\u7a7a\u9593 {1}\u3001\u76ee\u6a19 {2}\u3002
+PI_PARSE_ERROR_CWSIF0308.explanation=XML \u5143\u7d20\u5305\u542b\u8655\u7406\u6307\u793a\uff0c\u4f46 SOAP \u4e0d\u5141\u8a31\u5143\u7d20\u5305\u542b\u8655\u7406\u6307\u793a\u3002
+PI_PARSE_ERROR_CWSIF0308.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u8cc7\u6599\u76f8\u5bb9\u65bc SOAP \u898f\u683c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element namespace
+SIMPLE_ELEMENT_ERROR_CWSIF0309=CWSIF0309E: \u627e\u5230\u975e\u9810\u671f\u7684\u5143\u7d20\u3002\u5143\u7d20\u540d\u7a31 {0}\u3001\u5143\u7d20\u540d\u7a31\u7a7a\u9593 {1}\u3002
+SIMPLE_ELEMENT_ERROR_CWSIF0309.explanation=XML \u5143\u7d20\u5305\u542b\u7c21\u6613\u503c\uff0c\u4f46\u8a72\u503c\u4e0d\u9069\u5408\u8cc7\u6599\u5716\u3002
+SIMPLE_ELEMENT_ERROR_CWSIF0309.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u4e2d\u7684\u8cc7\u6599\u8207 WSDL \u4e2d\u7684\u6a21\u578b\u5316\u985e\u578b\u76f8\u5bb9\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element namespace, {2} is the attribute name, {3} is the attribute namespace
+ATTRIBUTE_ERROR_CWSIF0310=CWSIF0310E: \u627e\u5230\u975e\u9810\u671f\u7684\u5c6c\u6027\u3002\u5143\u7d20\u540d\u7a31 {0}\u3001\u5143\u7d20\u540d\u7a31\u7a7a\u9593 {1}\u3001\u5c6c\u6027\u540d\u7a31 {2}\u3001\u5c6c\u6027\u540d\u7a31\u7a7a\u9593 {3}\u3002
+ATTRIBUTE_ERROR_CWSIF0310.explanation=XML \u5143\u7d20\u5305\u542b\u5c6c\u6027\uff0c\u4f46\u5c6c\u6027\u4e0d\u7b26\u5408\u8cc7\u6599\u5716\u3002
+ATTRIBUTE_ERROR_CWSIF0310.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u4e2d\u7684\u8cc7\u6599\u8207 WSDL \u4e2d\u7684\u6a21\u578b\u5316\u985e\u578b\u76f8\u5bb9\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+JMF_PARSE_FAILURE_CWSIF0311=CWSIF0311E: \u7121\u6cd5\u5256\u6790\u8a0a\u606f\uff1a\u7570\u5e38\u72c0\u6cc1 {0}
+JMF_PARSE_FAILURE_CWSIF0311.explanation=CMSG0001
+JMF_PARSE_FAILURE_CWSIF0311.useraction=\u8acb\u53c3\u95b1\u96a8\u9644\u7684\u932f\u8aa4\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+JMF_LENGTH_FAILURE_CWSIF0312=CWSIF0312E: \u7121\u6cd5\u8a08\u7b97\u8a0a\u606f\u9577\u5ea6\uff1a\u7570\u5e38\u72c0\u6cc1 {0}
+JMF_LENGTH_FAILURE_CWSIF0312.explanation=CMSG0001
+JMF_LENGTH_FAILURE_CWSIF0312.useraction=\u8acb\u53c3\u95b1\u96a8\u9644\u7684\u932f\u8aa4\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+JMF_WRITE_FAILURE_CWSIF0313=CWSIF0313E: \u7121\u6cd5\u5beb\u5165\u8a0a\u606f\uff1a\u7570\u5e38\u72c0\u6cc1 {0}
+JMF_WRITE_FAILURE_CWSIF0313.explanation=CMSG0001
+JMF_WRITE_FAILURE_CWSIF0313.useraction=\u8acb\u53c3\u95b1\u96a8\u9644\u7684\u932f\u8aa4\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect length
+# {1} is the expected length
+JMF_WRITE_FAILURE_CWSIF0314=CWSIF0314E: \u8a0a\u606f\u9577\u5ea6 {0} \u4e0d\u7b26\u5408\u9810\u671f\u7684\u9577\u5ea6 {1}
+JMF_WRITE_FAILURE_CWSIF0314.explanation=CMSG0001
+JMF_WRITE_FAILURE_CWSIF0314.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect format string
+JMF_FORMAT_ERROR_CWSIF0315=CWSIF0315E: \u4e0d\u6b63\u78ba\u7684\u683c\u5f0f\u5b57\u4e32\uff1a{0}
+JMF_FORMAT_ERROR_CWSIF0315.explanation=CMSG0001
+JMF_FORMAT_ERROR_CWSIF0315.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u683c\u5f0f\u7b26\u5408 JMF \u8cc7\u6599\u5b58\u53d6\u670d\u52d9\u7684\u6b63\u78ba\u8a9e\u6cd5\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BEAN_PARSE_FAILURE_CWSIF0321=CWSIF0321E: \u7121\u6cd5\u5256\u6790\u8a0a\u606f\uff1a\u7570\u5e38\u72c0\u6cc1 {0}
+BEAN_PARSE_FAILURE_CWSIF0321.explanation=\u8655\u7406\u300cWeb \u670d\u52d9\u300d\u8981\u6c42\u3001\u56de\u61c9\u6216\u932f\u8aa4\u6642\u767c\u751f\u932f\u8aa4\u3002
+BEAN_PARSE_FAILURE_CWSIF0321.useraction=\u8acb\u53c3\u95b1\u96a8\u9644\u7684\u932f\u8aa4\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name
+# {1} is the namespace
+# {2} is the parent type
+BEAN_CREATE_FAILURE_CWSIF0322=CWSIF0322E: \u7121\u6cd5\u5efa\u7acb DataObject\uff1a\u6bcd\u9805\u985e\u578b\u540d\u7a31 {2}\u3001\u5167\u5bb9\u540d\u7a31 {0}\u3001\u540d\u7a31\u7a7a\u9593 {1}\u3002
+BEAN_CREATE_FAILURE_CWSIF0322.explanation=\u8655\u7406\u300cWeb \u670d\u52d9\u300d\u8981\u6c42\u3001\u56de\u61c9\u6216\u932f\u8aa4\u6642\u767c\u751f\u932f\u8aa4\u3002
+BEAN_CREATE_FAILURE_CWSIF0322.useraction=\u8acb\u78ba\u5b9a\u60a8\u5df2\u532f\u5165\u8a0a\u606f\u7684 WSDL \u6216 XML \u7db1\u76ee\u5b9a\u7fa9\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+# {1} is the namespace
+BEAN_PARSE_FAILURE_CWSIF0323=CWSIF0323E: \u7121\u6cd5\u5224\u65b7\u9650\u5236\u884d\u751f\u985e\u578b\u7684\u57fa\u672c\u985e\u578b\uff1a\u985e\u578b\u540d\u7a31 {0}\u3001\u540d\u7a31\u7a7a\u9593 {1}\u3002
+BEAN_PARSE_FAILURE_CWSIF0323.explanation=\u8655\u7406\u300cWeb \u670d\u52d9\u300d\u8981\u6c42\u3001\u56de\u61c9\u6216\u932f\u8aa4\u6642\u767c\u751f\u932f\u8aa4\u3002
+BEAN_PARSE_FAILURE_CWSIF0323.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u7684 WSDL \u6216 XML \u7db1\u76ee\u5b9a\u7fa9\u6b63\u78ba\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+# {1} is the namespace
+# {2} is the accessor method name
+# {3} is the target Java class name
+BEAN_WRITE_FAILURE_CWSIF0324=CWSIF0324E: \u7576\u5167\u90e8\u6aa2\u67e5\u4ee3\u8868\u6240\u5217\u8209\u985e\u578b\u7684\u7269\u4ef6\u6642\uff0c\u7121\u6cd5\u53d6\u5f97\u548c\u547c\u53eb\u65b9\u6cd5\uff1a\u985e\u578b\u540d\u7a31 {0}\u3001\u540d\u7a31\u7a7a\u9593 {1}\u3001\u65b9\u6cd5\u540d\u7a31 {2}\u3001\u76ee\u6a19\u985e\u5225\u540d\u7a31 {3}\u3002
+BEAN_WRITE_FAILURE_CWSIF0324.explanation=\u8655\u7406\u300cWeb \u670d\u52d9\u300d\u8981\u6c42\u3001\u56de\u61c9\u6216\u932f\u8aa4\u6642\u767c\u751f\u932f\u8aa4\u3002
+BEAN_WRITE_FAILURE_CWSIF0324.useraction=\u8acb\u78ba\u5b9a\u63d0\u4f9b\u7684\u7269\u4ef6\u7279\u6027\u6709\u9069\u7576\u7684 accessor \u65b9\u6cd5\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BEAN_WRITE_FAILURE_CWSIF0325=CWSIF0325E: \u7121\u6cd5\u5beb\u5165\u8a0a\u606f\uff1a\u7570\u5e38\u72c0\u6cc1 {0}
+BEAN_WRITE_FAILURE_CWSIF0325.explanation=\u8655\u7406\u300cWeb \u670d\u52d9\u300d\u8981\u6c42\u3001\u56de\u61c9\u6216\u932f\u8aa4\u6642\u767c\u751f\u932f\u8aa4\u3002
+BEAN_WRITE_FAILURE_CWSIF0325.useraction=\u8acb\u53c3\u95b1\u96a8\u9644\u7684\u932f\u8aa4\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name
+# {1} is the namespace
+# {2} is the parent type
+# {3} is the accessor method name
+# {4} is the target Java class name
+GET_FIELD_FAILURE_CWSIF0326=CWSIF0326E: \u7576\u5167\u90e8\u6aa2\u67e5 Bean \u7269\u4ef6\u6642\uff0c\u7121\u6cd5\u53d6\u5f97\u548c\u547c\u53eb\u65b9\u6cd5\uff1a\u6bcd\u9805\u985e\u578b\u540d\u7a31 {2}\u3001\u5167\u5bb9\u540d\u7a31 {0}\u3001\u540d\u7a31\u7a7a\u9593 {1}\u3001\u65b9\u6cd5\u540d\u7a31 {3}\u3001\u76ee\u6a19\u985e\u5225\u540d\u7a31 {4}\u3002
+GET_FIELD_FAILURE_CWSIF0326.explanation=\u8655\u7406\u300cWeb \u670d\u52d9\u300d\u8981\u6c42\u3001\u56de\u61c9\u6216\u932f\u8aa4\u6642\u767c\u751f\u932f\u8aa4\u3002
+GET_FIELD_FAILURE_CWSIF0326.useraction=\u8acb\u78ba\u5b9a\u63d0\u4f9b\u7684\u7269\u4ef6\u7279\u6027\u6709\u9069\u7576\u7684 accessor \u65b9\u6cd5\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name
+# {1} is the namespace
+# {2} is the parent type
+# {3} is the accessor method name
+# {4} is the target Java class name
+SET_FIELD_FAILURE_CWSIF0327=CWSIF0327E: \u7576\u5167\u90e8\u6aa2\u67e5 Bean \u7269\u4ef6\u6642\uff0c\u7121\u6cd5\u53d6\u5f97\u548c\u547c\u53eb\u65b9\u6cd5\uff1a\u6bcd\u9805\u985e\u578b\u540d\u7a31 {2}\u3001\u5167\u5bb9\u540d\u7a31 {0}\u3001\u540d\u7a31\u7a7a\u9593 {1}\u3001\u65b9\u6cd5\u540d\u7a31 {3}\u3001\u76ee\u6a19\u985e\u5225\u540d\u7a31 {4}\u3002
+SET_FIELD_FAILURE_CWSIF0327.explanation=\u8655\u7406\u300cWeb \u670d\u52d9\u300d\u8981\u6c42\u3001\u56de\u61c9\u6216\u932f\u8aa4\u6642\u767c\u751f\u932f\u8aa4\u3002
+SET_FIELD_FAILURE_CWSIF0327.useraction=\u8acb\u78ba\u5b9a\u63d0\u4f9b\u7684\u7269\u4ef6\u7279\u6027\u6709\u9069\u7576\u7684 accessor \u65b9\u6cd5\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name
+# {1} is the namespace
+# {2} is the parent type
+# {3} is the accessor method name
+# {4} is the target Java class name
+SET_FIELD_FAILURE_CWSIF0328=CWSIF0328E: \u7576\u5167\u90e8\u6aa2\u67e5 Bean \u7269\u4ef6\u6642\uff0c\u7121\u6cd5\u53d6\u5f97\u548c\u547c\u53eb\u65b9\u6cd5\uff1a\u6bcd\u9805\u985e\u578b\u540d\u7a31 {2}\u3001\u5167\u5bb9\u540d\u7a31 {0}\u3001\u540d\u7a31\u7a7a\u9593 {1}\u3001\u65b9\u6cd5\u540d\u7a31 {3}\u3001\u76ee\u6a19\u985e\u5225\u540d\u7a31 {4}\u3002
+SET_FIELD_FAILURE_CWSIF0328.explanation=\u8655\u7406\u300cWeb \u670d\u52d9\u300d\u8981\u6c42\u3001\u56de\u61c9\u6216\u932f\u8aa4\u6642\u767c\u751f\u932f\u8aa4\u3002
+SET_FIELD_FAILURE_CWSIF0328.useraction=\u8acb\u78ba\u5b9a\u63d0\u4f9b\u7684\u7269\u4ef6\u7279\u6027\u6709\u9069\u7576\u7684 accessor \u65b9\u6cd5\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the content type
+MIME_PARSE_FAILURE_CWSIF0329=CWSIF0329E: \u7121\u6cd5\u5256\u6790 MIME \u9644\u4ef6\uff1a\u5167\u5bb9\u985e\u578b {0}\u3002
+MIME_PARSE_FAILURE_CWSIF0329.explanation=\u8655\u7406\u300cWeb \u670d\u52d9\u300d\u8981\u6c42\u3001\u56de\u61c9\u6216\u932f\u8aa4\u6642\u767c\u751f\u932f\u8aa4\u3002
+MIME_PARSE_FAILURE_CWSIF0329.useraction=\u8acb\u78ba\u5b9a\u63d0\u4f9b\u7684\u7269\u4ef6\u9069\u7576\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the fault feature name
+# {1} is the namespace
+# {2} is the location
+FAULT_PARSE_FAILURE_CWSIF0330=CWSIF0330E: \u7121\u6cd5\u5efa\u7acb SOAP \u932f\u8aa4\u8a0a\u606f\u7684 DataObject\uff1a\u932f\u8aa4\u7279\u6027\u540d\u7a31 {0}\u3001\u540d\u7a31\u7a7a\u9593 {1}\u3001\u4f4d\u7f6e {2}\u3002
+FAULT_PARSE_FAILURE_CWSIF0330.explanation=\u8655\u7406\u300cWeb \u670d\u52d9\u300d\u8981\u6c42\u3001\u56de\u61c9\u6216\u932f\u8aa4\u6642\u767c\u751f\u932f\u8aa4\u3002
+FAULT_PARSE_FAILURE_CWSIF0330.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u53ef\u4ee5\u4f7f\u7528 WSDL \u6216 XML \u7db1\u76ee\u5b9a\u7fa9\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name
+# {1} is the namespace
+# {2} is the parent type
+# {3} is the accessor method name
+# {4} is the target Java class name
+GET_FIELD_FAILURE_CWSIF0331=CWSIF0331E: \u7576\u5167\u90e8\u6aa2\u67e5 Bean \u7269\u4ef6\u6642\uff0c\u7121\u6cd5\u53d6\u5f97\u548c\u547c\u53eb\u65b9\u6cd5\uff1a\u6bcd\u9805\u985e\u578b\u540d\u7a31 {2}\u3001\u5167\u5bb9\u540d\u7a31 {0}\u3001\u540d\u7a31\u7a7a\u9593 {1}\u3001\u65b9\u6cd5\u540d\u7a31 {3}\u3001\u76ee\u6a19\u985e\u5225\u540d\u7a31 {4}\u3002
+GET_FIELD_FAILURE_CWSIF0331.explanation=\u8655\u7406\u300cWeb \u670d\u52d9\u300d\u8981\u6c42\u3001\u56de\u61c9\u6216\u932f\u8aa4\u6642\u767c\u751f\u932f\u8aa4\u3002
+GET_FIELD_FAILURE_CWSIF0331.useraction=\u8acb\u78ba\u5b9a\u63d0\u4f9b\u7684\u7269\u4ef6\u7279\u6027\u6709\u9069\u7576\u7684 accessor \u65b9\u6cd5\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name
+# {1} is the namespace
+# {2} is the parent type
+# {3} is the Java class name
+INSTANTIATE_OBJECT_FAILURE_CWSIF0332=CWSIF0332E: \u7121\u6cd5\u5efa\u7acb Bean \u7269\u4ef6\u7684\u65b0\u5be6\u4f8b\uff1a\u6bcd\u9805\u985e\u578b\u540d\u7a31 {2}\u3001\u5167\u5bb9\u540d\u7a31 {0}\u3001\u540d\u7a31\u7a7a\u9593 {1}\u3001\u985e\u5225\u540d\u7a31 {3}\u3002
+INSTANTIATE_OBJECT_FAILURE_CWSIF0332.explanation=\u8655\u7406\u300cWeb \u670d\u52d9\u300d\u8981\u6c42\u3001\u56de\u61c9\u6216\u932f\u8aa4\u6642\u767c\u751f\u932f\u8aa4\u3002
+INSTANTIATE_OBJECT_FAILURE_CWSIF0332.useraction=\u8acb\u78ba\u5b9a\u300cBean \u7269\u4ef6\u300d\u53ef\u4ee5\u5229\u7528 Class.newInstance() \u4f86\u5efa\u7acb\u5be6\u4f8b\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the namespace
+# {1} is the location
+SOAP_ENCODED_ARRAY_PARSE_FAILURE_CWSIF0333=CWSIF0333E: \u627e\u4e0d\u5230\u7528\u4f86\u5efa\u7acb\u4ee3\u8868 SOAP \u7de8\u78bc\u9663\u5217\u8a0a\u606f\u7684 DataObject \u7684\u6a21\u578b\uff1a\u540d\u7a31\u7a7a\u9593 {0}\u3001\u4f4d\u7f6e {1}\u3002
+SOAP_ENCODED_ARRAY_PARSE_FAILURE_CWSIF0333.explanation=\u8655\u7406\u300cWeb \u670d\u52d9\u300d\u8981\u6c42\u3001\u56de\u61c9\u6216\u932f\u8aa4\u6642\u767c\u751f\u932f\u8aa4\u3002
+SOAP_ENCODED_ARRAY_PARSE_FAILURE_CWSIF0333.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u53ef\u4ee5\u4f7f\u7528 WSDL \u6216 XML \u7db1\u76ee\u5b9a\u7fa9\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the namespace
+# {1} is the location
+SOAP_ENCODED_ARRAY_PARSE_FAILURE_CWSIF0334=CWSIF0334E: \u627e\u4e0d\u5230\u7528\u4f86\u5efa\u7acb\u4ee3\u8868 SOAP \u7de8\u78bc\u9663\u5217\u8a0a\u606f\u7684 DataObject \u7684\u6a21\u578b\uff1a\u540d\u7a31\u7a7a\u9593 {0}\u3001\u4f4d\u7f6e {1}\u3002
+SOAP_ENCODED_ARRAY_PARSE_FAILURE_CWSIF0334.explanation=\u8655\u7406\u300cWeb \u670d\u52d9\u300d\u8981\u6c42\u3001\u56de\u61c9\u6216\u932f\u8aa4\u6642\u767c\u751f\u932f\u8aa4\u3002
+SOAP_ENCODED_ARRAY_PARSE_FAILURE_CWSIF0334.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u53ef\u4ee5\u4f7f\u7528 WSDL \u6216 XML \u7db1\u76ee\u5b9a\u7fa9\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the content type
+# {1} is the content transfer encoding
+# {2} is the content id
+MIME_WRITE_FAILURE_CWSIF0335=CWSIF0335E: \u7121\u6cd5\u5beb\u5165 MIME \u9644\u4ef6\uff1a\u5167\u5bb9\u985e\u578b {0}\u3001\u5167\u5bb9\u8f49\u9001\u7de8\u78bc {1}\u3001\u5167\u5bb9 ID {2}\u3002
+MIME_WRITE_FAILURE_CWSIF0335.explanation=\u8655\u7406\u300cWeb \u670d\u52d9\u300d\u8981\u6c42\u3001\u56de\u61c9\u6216\u932f\u8aa4\u6642\u767c\u751f\u932f\u8aa4\u3002
+MIME_WRITE_FAILURE_CWSIF0335.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u4e2d\u7684\u8cc7\u6599\u9069\u5408\u7528\u4f86\u5efa\u7acb MIME \u4e3b\u9ad4\u7d44\u4ef6\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the operation name
+# {1} is the message name
+FAULT_WRITE_FAILURE_CWSIF0336=CWSIF0336E: \u7121\u6cd5\u5beb\u5165\u932f\u8aa4\u8a0a\u606f\uff1a\u8a0a\u606f\u540d\u7a31 {0}\u3001\u4f5c\u696d\u540d\u7a31 {1}\u3002
+FAULT_WRITE_FAILURE_CWSIF0336.explanation=\u8655\u7406\u300cWeb \u670d\u52d9\u300d\u8981\u6c42\u3001\u56de\u61c9\u6216\u932f\u8aa4\u6642\u767c\u751f\u932f\u8aa4\u3002
+FAULT_WRITE_FAILURE_CWSIF0336.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u4e2d\u7684\u8cc7\u6599\u9069\u5408\u7528\u4f86\u5efa\u7acb\u8a73\u7d30\u8cc7\u6599\u5143\u7d20\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BEAN_CREATE_FAILURE_CWSIF0338=CWSIF0338E: \u7121\u6cd5\u5efa\u7acb\u65b0\u7684\u300cSDO \u8cc7\u6599\u5716\u300d\uff1a\u7570\u5e38\u72c0\u6cc1 {0}
+BEAN_CREATE_FAILURE_CWSIF0338.explanation=\u8655\u7406\u300cWeb \u670d\u52d9\u300d\u8981\u6c42\u3001\u56de\u61c9\u6216\u932f\u8aa4\u6642\u767c\u751f\u932f\u8aa4\u3002
+BEAN_CREATE_FAILURE_CWSIF0338.useraction=\u8acb\u53c3\u95b1\u96a8\u9644\u7684\u932f\u8aa4\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BEAN_PARSE_FAILURE_CWSIF0341=CWSIF0341E: \u7121\u6cd5\u5256\u6790\u8a0a\u606f\uff1a\u7570\u5e38\u72c0\u6cc1 {0}
+BEAN_PARSE_FAILURE_CWSIF0341.explanation=\u8655\u7406\u300cWeb \u670d\u52d9\u300d\u8981\u6c42\u3001\u56de\u61c9\u6216\u932f\u8aa4\u6642\u767c\u751f\u932f\u8aa4\u3002
+BEAN_PARSE_FAILURE_CWSIF0341.useraction=\u8acb\u53c3\u95b1\u96a8\u9644\u7684\u932f\u8aa4\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BEAN_WRITE_FAILURE_CWSIF0342=CWSIF0342E: \u7121\u6cd5\u5beb\u5165\u8a0a\u606f\uff1a\u7570\u5e38\u72c0\u6cc1 {0}
+BEAN_WRITE_FAILURE_CWSIF0342.explanation=\u8655\u7406\u300cWeb \u670d\u52d9\u300d\u8981\u6c42\u3001\u56de\u61c9\u6216\u932f\u8aa4\u6642\u767c\u751f\u932f\u8aa4\u3002
+BEAN_WRITE_FAILURE_CWSIF0342.useraction=\u8acb\u53c3\u95b1\u96a8\u9644\u7684\u932f\u8aa4\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BEAN_LENGTH_FAILURE_CWSIF0343=CWSIF0343E: \u7121\u6cd5\u8a08\u7b97\u8a0a\u606f\u9577\u5ea6\uff1a\u7570\u5e38\u72c0\u6cc1 {0}
+BEAN_LENGTH_FAILURE_CWSIF0343.explanation=\u8655\u7406\u300cWeb \u670d\u52d9\u300d\u8981\u6c42\u3001\u56de\u61c9\u6216\u932f\u8aa4\u6642\u767c\u751f\u932f\u8aa4\u3002
+BEAN_LENGTH_FAILURE_CWSIF0343.useraction=\u8acb\u53c3\u95b1\u96a8\u9644\u7684\u932f\u8aa4\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+# {1} is the namespace
+# {2} is the attribute value
+TYPE_MAPPING_FAILURE_CWSIF0346=CWSIF0346E: \u7121\u6cd5\u8655\u7406\u5c6c\u6027\u503c\uff1a\u985e\u578b\u540d\u7a31 {0}\u3001\u540d\u7a31\u7a7a\u9593 {1}\u3001\u5c6c\u6027\u503c {2}\u3002
+TYPE_MAPPING_FAILURE_CWSIF0346.explanation=\u8655\u7406\u300cWeb \u670d\u52d9\u300d\u8981\u6c42\u3001\u56de\u61c9\u6216\u932f\u8aa4\u6642\u767c\u751f\u932f\u8aa4\u3002
+TYPE_MAPPING_FAILURE_CWSIF0346.useraction=\u8acb\u78ba\u5b9a\u63d0\u4f9b\u7684\u5c6c\u6027\u503c\u662f\u9069\u7576\u7684\u985e\u578b\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+# {1} is the namespace
+TYPE_MAPPING_FAILURE_CWSIF0347=CWSIF0347E: \u7121\u6cd5\u5c07\u7db1\u76ee\u985e\u578b\u5c0d\u6620\u81f3 Java \u985e\u5225\uff1a\u985e\u578b\u540d\u7a31 {0}\u3001\u540d\u7a31\u7a7a\u9593 {1}\u3002
+TYPE_MAPPING_FAILURE_CWSIF0347.explanation=\u8655\u7406\u300cWeb \u670d\u52d9\u300d\u8981\u6c42\u3001\u56de\u61c9\u6216\u932f\u8aa4\u6642\u767c\u751f\u932f\u8aa4\u3002
+TYPE_MAPPING_FAILURE_CWSIF0347.useraction=\u8acb\u78ba\u5b9a\u5df2\u63d0\u4f9b\u4e86\u9069\u7576\u7684\u5c0d\u6620\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+# {1} is the namespace
+TYPE_MAPPING_FAILURE_CWSIF0348=CWSIF0348E: \u7121\u6cd5\u5c07\u7db1\u76ee\u985e\u578b\u5c0d\u6620\u81f3 Java \u985e\u5225\uff1a\u985e\u578b\u540d\u7a31 {0}\u3001\u540d\u7a31\u7a7a\u9593 {1}\u3002
+TYPE_MAPPING_FAILURE_CWSIF0348.explanation=\u8655\u7406\u300cWeb \u670d\u52d9\u300d\u8981\u6c42\u3001\u56de\u61c9\u6216\u932f\u8aa4\u6642\u767c\u751f\u932f\u8aa4\u3002
+TYPE_MAPPING_FAILURE_CWSIF0348.useraction=\u8acb\u78ba\u5b9a\u5df2\u63d0\u4f9b\u4e86\u9069\u7576\u7684\u5c0d\u6620\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect format string
+BEAN_FORMAT_ERROR_CWSIF0350=CWSIF0350E: \u4e0d\u6b63\u78ba\u7684\u683c\u5f0f\u5b57\u4e32\uff1a{0}\u3002
+BEAN_FORMAT_ERROR_CWSIF0350.explanation=\u8655\u7406\u300cWeb \u670d\u52d9\u300d\u8981\u6c42\u3001\u56de\u61c9\u6216\u932f\u8aa4\u6642\u767c\u751f\u932f\u8aa4\u3002
+BEAN_FORMAT_ERROR_CWSIF0350.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u683c\u5f0f\u7b26\u5408 Bean \u8cc7\u6599\u5b58\u53d6\u670d\u52d9\u7684\u6b63\u78ba\u8a9e\u6cd5\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+MESSAGE_FEATURE_CWSIF0353=CWSIF0353E: \u627e\u4e0d\u5230\u8a0a\u606f\u7684 meta \u8cc7\u6599\u3002\u670d\u52d9\u540d\u7a31\u7a7a\u9593 {0}\u3001\u670d\u52d9\u540d\u7a31 {1}\u3001\u57e0\u540d\u7a31 {2}\u3001\u4f5c\u696d\u540d\u7a31 {3}\u3001\u8a0a\u606f\u540d\u7a31 {4}\u3002
+MESSAGE_FEATURE_CWSIF0353.explanation=SOAP \u5256\u6790\u5668\u627e\u4e0d\u5230\u7d66\u5b9a\u8a0a\u606f\u7684\u8a0a\u606f meta \u8cc7\u6599\u3002
+MESSAGE_FEATURE_CWSIF0353.useraction=\u8acb\u78ba\u5b9a\u60a8\u5df2\u532f\u5165\u8a0a\u606f\u7684 WSDL \u5b9a\u7fa9\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the part name, {1} is the element name, {2} is the element namespace
+MIME_ELEM_ERROR_CWSIF0354=CWSIF0354E: \u5728\u8a0a\u606f\u7d44\u4ef6\u5167\u627e\u5230\u975e\u9810\u671f\u7684\u5143\u7d20\u3002\u8a0a\u606f\u7d44\u4ef6\u540d\u7a31 {0}\u3001\u5143\u7d20\u540d\u7a31 {1}\u3001\u5143\u7d20\u540d\u7a31\u7a7a\u9593 {2}\u3002
+MIME_ELEM_ERROR_CWSIF0354.explanation=SOAP \u5256\u6790\u5668\u6b63\u5728\u8655\u7406\u5167\u5bb9\u59d4\u6d3e\u7d66 MIME \u9644\u4ef6\u7684\u8a0a\u606f\u7d44\u4ef6\uff0c\u4f46\u9019\u500b\u7d44\u4ef6\u4e5f\u5305\u542b\u5de2\u72c0\u5143\u7d20\u3002
+MIME_ELEM_ERROR_CWSIF0354.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u8cc7\u6599\u76f8\u5bb9\u65bc SOAP \u898f\u683c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the part name, {1} is the attribute name, {2} is the attribute namespace
+MIME_ATTR_ERROR_CWSIF0355=CWSIF0355E: \u5728\u8a0a\u606f\u7d44\u4ef6\u5167\u627e\u5230\u975e\u9810\u671f\u7684\u5c6c\u6027\u3002\u8a0a\u606f\u7d44\u4ef6\u540d\u7a31 {0}\u3001\u5c6c\u6027\u540d\u7a31 {1}\u3001\u5c6c\u6027\u540d\u7a31\u7a7a\u9593 {2}\u3002
+MIME_ATTR_ERROR_CWSIF0355.explanation=SOAP \u5256\u6790\u5668\u6b63\u5728\u8655\u7406\u5167\u5bb9\u59d4\u6d3e\u7d66 MIME \u9644\u4ef6\u7684\u8a0a\u606f\u7d44\u4ef6\uff0c\u4f46\u9019\u500b\u7d44\u4ef6\u4e5f\u5305\u542b\u975e\u9810\u671f\u7684\u5c6c\u6027\u3002
+MIME_ATTR_ERROR_CWSIF0355.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u8cc7\u6599\u76f8\u5bb9\u65bc SOAP \u898f\u683c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the part name, {1} is the exception
+MIME_REF_ERROR_CWSIF0356=CWSIF0356E: \u7121\u6cd5\u8655\u7406 MIME \u9644\u4ef6\u3002\u8a0a\u606f\u7d44\u4ef6\u540d\u7a31 {0}\u3001\u7570\u5e38\u72c0\u6cc1 {1}\u3002
+MIME_REF_ERROR_CWSIF0356.explanation=\u7576\u8655\u7406\u8a0a\u606f\u7d44\u4ef6\u6240\u53c3\u7167\u7684 MIME \u9644\u4ef6\u6642\uff0cSOAP \u5256\u6790\u5668\u767c\u73fe\u7570\u5e38\u72c0\u6cc1\u3002
+MIME_REF_ERROR_CWSIF0356.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u8cc7\u6599\u76f8\u5bb9\u65bc SOAP \u898f\u683c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the part name, {1} is the attachment reference
+MIME_REF_NOT_FOUND_CWSIF0357=CWSIF0357E: \u627e\u4e0d\u5230 MIME \u9644\u4ef6\u3002\u8a0a\u606f\u7d44\u4ef6\u540d\u7a31 {0}\u3001\u53c3\u7167 {1}\u3002
+MIME_REF_NOT_FOUND_CWSIF0357.explanation=SOAP \u5256\u6790\u5668\u627e\u4e0d\u5230\u8a0a\u606f\u7d44\u4ef6\u6240\u53c3\u7167\u7684 MIME \u9644\u4ef6\u3002
+MIME_REF_NOT_FOUND_CWSIF0357.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u8cc7\u6599\u76f8\u5bb9\u65bc SOAP \u898f\u683c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the content id, {1} is the content type, {2} is the exception.
+MIME_IO_ERROR_CWSIF0358=CWSIF0358E: \u7121\u6cd5\u8655\u7406 MIME \u9644\u4ef6\u3002\u5167\u5bb9 ID {0}\u3001\u5167\u5bb9\u985e\u578b {1}\u3001\u7570\u5e38\u72c0\u6cc1 {2}\u3002
+MIME_IO_ERROR_CWSIF0358.explanation=\u7576\u8655\u7406\u542b\u7d66\u5b9a\u5167\u5bb9 ID \u548c\u985e\u578b\u7684 MIME \u9644\u4ef6\u6642\uff0cSOAP \u5256\u6790\u5668\u767c\u73fe IO \u7570\u5e38\u72c0\u6cc1\u3002
+MIME_IO_ERROR_CWSIF0358.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u8cc7\u6599\u76f8\u5bb9\u65bc SOAP \u898f\u683c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect format string
+NO_DATA_MEDIATOR_CWSIF0362=CWSIF0362E: \u8a0a\u606f\u683c\u5f0f {0} \u4e0d\u6b63\u78ba
+NO_DATA_MEDIATOR_CWSIF0362.explanation=\u6240\u63d0\u4f9b\u7684\u8a0a\u606f\u683c\u5f0f\u4e0d\u7b26\u5408\u539f\u9810\u671f\u7684\u8a0a\u606f\u683c\u5f0f\u3002
+NO_DATA_MEDIATOR_CWSIF0362.useraction=\u8acb\u78ba\u5b9a\u63d0\u4f9b\u7684\u8a0a\u606f\u683c\u5f0f\u6b63\u78ba\u3002
+
+
+# com.ibm.ws.sib.mfp.sdo.mime.MimeElementImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the parameter that was not allowed.
+# {1} is the name of the parameter for which it was supplied.
+# {2} is the name of the method to which it was supplied.
+# This message is cloned as INVALID_ARGUMENT_CWSIF0381.
+INVALID_ARGUMENT_CWSIF0371=CWSIF0371E: \u63d0\u4f9b\u7684\u503c {0} \u5c0d {2} \u65b9\u6cd5\u7684 {1} \u53c3\u6578\u7121\u6548\u3002
+INVALID_ARGUMENT_CWSIF0371.explanation=\u4e0d\u5141\u8a31\u5b9a\u7fa9\u7684\u65b9\u6cd5\u4f7f\u7528\u6240\u63d0\u4f9b\u7684\u53c3\u6578\u503c\u3002
+INVALID_ARGUMENT_CWSIF0371.useraction=\u8acb\u78ba\u5b9a\u50b3\u7d66\u76f8\u95dc\u65b9\u6cd5\u7684\u53c3\u6578\u6709\u6548\u3002
+
+# -------------------------------------------------------------------------------------------------
+UNABLE_TO_GET_CONTENT_CWSIF0372=CWSIF0372E: \u53d6\u5f97\u8a0a\u606f\u5143\u7d20\u7684\u5167\u5bb9\u6642\uff0c\u767c\u751f IO \u7570\u5e38\u72c0\u6cc1\u3002
+UNABLE_TO_GET_CONTENT_CWSIF0372.explanation=\u56e0\u93c8\u7d50\u7684 IO \u7570\u5e38\u72c0\u6cc1\uff0c\u4e0d\u53ef\u80fd\u5c07\u8a0a\u606f\u5143\u7d20\u89e3\u9664\u5e8f\u5217\u5316\u3002
+UNABLE_TO_GET_CONTENT_CWSIF0372.useraction=\u8acb\u63a2\u7d22\u548c\u89e3\u6c7a\u93c8\u7d50\u7684 IO \u7570\u5e38\u72c0\u6cc1\u6240\u8aaa\u660e\u7684\u554f\u984c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+ELEMENT_COPY_ERROR_CWSIF0373=CWSIF0373E: \u5728\u8907\u88fd\u8a0a\u606f\u5143\u7d20\u671f\u9593\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1\uff1a{0}\u3002
+ELEMENT_COPY_ERROR_CWSIF0373.explanation=\u56e0\u93c8\u7d50\u7684\u7570\u5e38\u72c0\u6cc1\uff0c\u4e0d\u53ef\u80fd\u8907\u88fd\u8a0a\u606f\u5143\u7d20\u3002
+ELEMENT_COPY_ERROR_CWSIF0373.useraction=\u8acb\u63a2\u7d22\u548c\u89e3\u6c7a\u93c8\u7d50\u7684\u7570\u5e38\u72c0\u6cc1\u6240\u8aaa\u660e\u7684\u554f\u984c\u3002
+
+
+# com.ibm.ws.sib.mfp.sdo.mime.MimeElementListImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the parameter that was not allowed.
+# {1} is the name of the parameter for which it was supplied.
+# {2} is the name of the method to which it was supplied.
+# This is a clone of INVALID_ARGUMENT_CWSIF0371.
+INVALID_ARGUMENT_CWSIF0381=CWSIF0381E: \u63d0\u4f9b\u7684\u503c {0} \u5c0d {2} \u65b9\u6cd5\u7684 {1} \u53c3\u6578\u7121\u6548\u3002
+INVALID_ARGUMENT_CWSIF0381.explanation=\u4e0d\u5141\u8a31\u5b9a\u7fa9\u7684\u65b9\u6cd5\u4f7f\u7528\u6240\u63d0\u4f9b\u7684\u53c3\u6578\u503c\u3002
+INVALID_ARGUMENT_CWSIF0381.useraction=\u8acb\u78ba\u5b9a\u50b3\u7d66\u76f8\u95dc\u65b9\u6cd5\u7684\u53c3\u6578\u6709\u6548\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method in which the error was found.
+UNABLE_TO_GET_CONTENT_CWSIF0382=CWSIF0382E: \u5e8f\u5217\u5316\u6216\u89e3\u9664\u5e8f\u5217\u5316 {0} \u65b9\u6cd5\u4e2d\u7684\u8a0a\u606f\u6642\uff0c\u767c\u751f IO \u7570\u5e38\u72c0\u6cc1\u3002
+UNABLE_TO_GET_CONTENT_CWSIF0382.explanation=\u56e0\u93c8\u7d50\u7684 IO \u7570\u5e38\u72c0\u6cc1\uff0c\u4e0d\u53ef\u80fd\u5c07\u8a0a\u606f\u5143\u7d20\u5e8f\u5217\u5316\u6216\u89e3\u9664\u5e8f\u5217\u5316\u3002
+UNABLE_TO_GET_CONTENT_CWSIF0382.useraction=\u8acb\u63a2\u7d22\u548c\u89e3\u6c7a\u93c8\u7d50\u7684 IO \u7570\u5e38\u72c0\u6cc1\u6240\u8aaa\u660e\u7684\u554f\u984c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the class type of the element that was supplied.
+UNSUPPORTED_ELEMENT_TYPE_CWSIF0383=CWSIF0383E: MimeElementList \u53ea\u652f\u63f4 MimeElement \u9805\u76ee\u3002\u63d0\u4f9b\u7684\u53c3\u6578\u662f {0} \u985e\u578b\u3002
+UNSUPPORTED_ELEMENT_TYPE_CWSIF0383.explanation=MimeElementList \u662f\u53ea\u652f\u63f4 MimeElement \u6e05\u55ae\u9805\u76ee\u7684\u7279\u6b8a\u6e05\u55ae\u5be6\u4f5c\u3002
+UNSUPPORTED_ELEMENT_TYPE_CWSIF0383.useraction=\u8acb\u5efa\u7acb\u4e00\u500b\u5305\u542b\u9019\u500b\u53c3\u6578\u7684 MimeElement \u7269\u4ef6\uff0c\u518d\u5c07\u5b83\u52a0\u5230\u6e05\u55ae\u4e2d\u3002
+
+# -------------------------------------------------------------------------------------------------
+# multipart/related should not be translated
+# {0} is the class type of the element that was supplied.
+NON_MULTIPART_MESSAGE_CWSIF0384=CWSIF0384E: \u63d0\u4f9b\u7684\u8a0a\u606f\u662f {0} \u985e\u578b\uff0c\u4e0d\u662f\u6240\u9700\u8981\u7684 multipart/related \u985e\u578b\u3002
+NON_MULTIPART_MESSAGE_CWSIF0384.explanation=\u5be6\u4f5c\u4e0d\u652f\u63f4\u6240\u63d0\u4f9b\u8a0a\u606f\u7684\u985e\u578b\u3002
+NON_MULTIPART_MESSAGE_CWSIF0384.useraction=\u8acb\u52ff\u63d0\u4f9b\u6307\u5b9a\u985e\u578b\u7684\u8a0a\u606f\u7d66\u9019\u500b\u516c\u7528\u7a0b\u5f0f\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of contentType headers that exist in the message.
+CONTENT_HEADER_CARDINALITY_CWSIF0385=CWSIF0385E: \u5728\u8a0a\u606f\u4e2d\u627e\u5230 {0} ContentType \u6a19\u982d\u9805\u76ee\u3002
+CONTENT_HEADER_CARDINALITY_CWSIF0385.explanation=\u5be6\u4f5c\u53ea\u652f\u63f4\u5305\u542b\u6b63\u597d\u4e00\u500b ContentType \u6a19\u982d\u6b04\u4f4d\u7684\u8a0a\u606f\u3002
+CONTENT_HEADER_CARDINALITY_CWSIF0385.useraction=\u8acb\u52ff\u63d0\u4f9b\u5305\u542b\u96f6\u500b\u6216\u8d85\u51fa\u4e00\u500b\u5167\u5bb9\u985e\u578b\u6b04\u4f4d\u7684\u8a0a\u606f\u7d66\u9019\u500b\u516c\u7528\u7a0b\u5f0f\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+ELEMENT_LIST_COPY_ERROR_CWSIF0386=CWSIF0386E: \u5728\u8907\u88fd\u8a0a\u606f\u5143\u7d20\u6e05\u55ae\u671f\u9593\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1\uff1a{0}\u3002
+ELEMENT_LIST_COPY_ERROR_CWSIF0386.explanation=\u56e0\u93c8\u7d50\u7684\u7570\u5e38\u72c0\u6cc1\uff0c\u4e0d\u53ef\u80fd\u8907\u88fd\u8a0a\u606f\u5143\u7d20\u6e05\u55ae\u3002
+ELEMENT_LIST_COPY_ERROR_CWSIF0386.useraction=\u8acb\u63a2\u7d22\u548c\u89e3\u6c7a\u93c8\u7d50\u7684\u7570\u5e38\u72c0\u6cc1\u6240\u8aaa\u660e\u7684\u554f\u984c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the part name
+# {1} is the containing message name
+NO_TYPE_FOR_PART_CWSIF0431=CWSIF0431E: \u8a0a\u606f {1} \u4e2d\u7684\u300cWSDL \u7d44\u4ef6\u300d{0} \u4e26\u672a\u95dc\u806f\u5230\u4efb\u4f55\u985e\u578b\u6216\u5143\u7d20\u3002
+NO_TYPE_FOR_PART_CWSIF0431.explanation=WSDL \u8a0a\u606f\u4e2d\u7684\u6bcf\u4e00\u500b\u7d44\u4ef6\u90fd\u5fc5\u9808\u95dc\u806f\u5230\u4e00\u7a2e\u300cXML \u7db1\u76ee\u300d\u985e\u578b\u6216\u5143\u7d20\u3002
+NO_TYPE_FOR_PART_CWSIF0431.useraction=\u8acb\u78ba\u5b9a\u6bcf\u4e00\u500b\u8a0a\u606f\u7d44\u4ef6\u7684\u5b9a\u7fa9\u90fd\u5305\u542b 'type' \u6216 'element' \u5c6c\u6027\u3002
+
+# -------------------------------------------------------------------------------------------------
+MAP_NOT_SUPPORTED_AS_SDO_CWSIF0500=CWSIF0500E: \u7121\u6cd5\u5c07 JMS \u5c0d\u6620\u8a0a\u606f\u7576\u4f5c\u300cSDO \u8cc7\u6599\u5716\u300d\u4f86\u5b58\u53d6\u3002
+MAP_NOT_SUPPORTED_AS_SDO_CWSIF0500.explanation=\u4e0d\u652f\u63f4\u900f\u904e SDO \u4f86\u5b58\u53d6 JMS \u5c0d\u6620\u8a0a\u606f\u3002
+MAP_NOT_SUPPORTED_AS_SDO_CWSIF0500.useraction=\u8acb\u91cd\u65b0\u64b0\u5beb\u61c9\u7528\u7a0b\u5f0f\u4f86\u4f7f\u7528\u652f\u63f4\u7684\u529f\u80fd\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+ERROR_TRANSCODING_TO_BYTES_CWSIF0501=CWSIF0501E: \u8a66\u5716\u5c07\u8a0a\u606f\u7684\u6709\u6548\u8ca0\u8f09\u8cc7\u6599\u5716\u7576\u4f5c\u4f4d\u5143\u7d44\u9663\u5217\u4f86\u5b58\u53d6\u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002\u93c8\u7d50\u7684\u7570\u5e38\u72c0\u6cc1\u662f {0}\u3002
+ERROR_TRANSCODING_TO_BYTES_CWSIF0501.explanation=\u5167\u5bb9\u300c\u8cc7\u6599\u5716\u300d\u7684\u5e8f\u5217\u5316\u5931\u6557\u3002
+ERROR_TRANSCODING_TO_BYTES_CWSIF0501.useraction=\u8acb\u6aa2\u67e5\u93c8\u7d50\u7684\u7570\u5e38\u72c0\u6cc1\u4f86\u5224\u65b7\u554f\u984c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the format applied to the byte array
+# {1} is the linked exception
+ERROR_TRANSCODING_FROM_BYTES_CWSIF0502=CWSIF0502E: \u8a66\u5716\u5229\u7528 {0} \u683c\u5f0f\u5f9e\u4f4d\u5143\u7d44\u9663\u5217\u5efa\u7acb\u8a0a\u606f\u7684\u6709\u6548\u8ca0\u8f09\u8cc7\u6599\u5716\u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002\u93c8\u7d50\u7684\u7570\u5e38\u72c0\u6cc1\u662f {1}\u3002
+ERROR_TRANSCODING_FROM_BYTES_CWSIF0502.explanation=\u5256\u6790\u4f4d\u5143\u7d44\u9663\u5217\u4f86\u5efa\u7acb\u300c\u8cc7\u6599\u5716\u300d\u4f46\u5931\u6557\u3002
+ERROR_TRANSCODING_FROM_BYTES_CWSIF0502.useraction=\u8acb\u6aa2\u67e5\u93c8\u7d50\u7684\u7570\u5e38\u72c0\u6cc1\u4f86\u5224\u65b7\u554f\u984c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the DataGraph format of the current message
+# {1} is the DataGraph format that was passed in to change the current message to
+TRANSCODING_NOT_SUPPORTED_BETWEEN_FORMATS_CWSIF0503=CWSIF0503E: \u4e0d\u652f\u63f4\u5c07 {0} \u683c\u5f0f\u8f49\u78bc\u6210 {1} \u683c\u5f0f\u3002
+TRANSCODING_NOT_SUPPORTED_BETWEEN_FORMATS_CWSIF0503.explanation=\u4e0d\u652f\u63f4\u5728\u73fe\u884c SDO \u8a0a\u606f\u300c\u8cc7\u6599\u5716\u300d\u683c\u5f0f\u548c\u65b0\u7684\u300c\u8cc7\u6599\u5716\u300d\u683c\u5f0f\u4e4b\u9593\u8f49\u78bc\u3002
+TRANSCODING_NOT_SUPPORTED_BETWEEN_FORMATS_CWSIF0503.useraction=\u8acb\u91cd\u65b0\u64b0\u5beb\u61c9\u7528\u7a0b\u5f0f\u4f86\u4f7f\u7528\u652f\u63f4\u7684\u529f\u80fd\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} is the format applied to the byte array
+# {1} is the linked exception
+ERROR_NULL_PAYLOAD_SUPPLIED_CWSIF0504=CWSIF0504E: \u8a66\u5716\u5229\u7528 {0} \u683c\u5f0f\uff0c\u5f9e\u7a7a\u503c\u4f4d\u5143\u7d44\u9663\u5217\u5f15\u6578\u5efa\u7acb\u8a0a\u606f\u7684\u6709\u6548\u8ca0\u8f09\u8cc7\u6599\u5716\u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002\u93c8\u7d50\u7684\u7570\u5e38\u72c0\u6cc1\u662f {1}\u3002
+ERROR_NULL_PAYLOAD_SUPPLIED_CWSIF0504.explanation=\u5fc5\u9808\u6709\u975e\u7a7a\u503c\u4f4d\u5143\u7d44\u9663\u5217\uff0c\u624d\u80fd\u5efa\u7f6e\u9019\u7a2e\u683c\u5f0f\u7684\u8cc7\u6599\u5716\u3002
+ERROR_NULL_PAYLOAD_SUPPLIED_CWSIF0504.useraction=\u8acb\u6aa2\u67e5\u93c8\u7d50\u7684\u7570\u5e38\u72c0\u6cc1\u4f86\u5224\u65b7\u554f\u984c\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} is the port
+# {1} is the service
+# {2} is the namespace
+# {3} is the location
+WSDL_MISSING_CWSIF0600=CWSIF0600E: \u683c\u5f0f\u5b57\u4e32\u8b58\u5225\u5728 WSDL \u4f4d\u7f6e {3} \u4e4b\u540d\u7a31\u70ba {1}\u3001\u540d\u7a31\u7a7a\u9593\u70ba {2} \u7684\u670d\u52d9\u5167\u4e4b\u540d\u7a31\u70ba {0} \u7684\u57e0\u3002\u627e\u4e0d\u5230 WSDL\u3002
+WSDL_MISSING_CWSIF0600.explanation=\u627e\u4e0d\u5230\u683c\u5f0f\u5b57\u4e32\u6240\u8b58\u5225\u7684 WSDL\u3002\u53ef\u80fd\u662f\u56e0\u70ba\u683c\u5f0f\u4e2d\u7684\u4f4d\u7f6e\u4e0d\u6b63\u78ba\uff0c\u6216\u5c1a\u672a\u90e8\u7f72 WSDL\u3002
+WSDL_MISSING_CWSIF0600.useraction=\u8acb\u78ba\u5b9a\u683c\u5f0f\u5b57\u4e32\u4e2d\u7684 WSDL \u4f4d\u7f6e\u6b63\u78ba\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the port
+# {1} is the service
+# {2} is the namespace
+# {3} is the location
+SERVICE_MISSING_CWSIF0601=CWSIF0601E: \u683c\u5f0f\u5b57\u4e32\u8b58\u5225\u5728 WSDL \u4f4d\u7f6e {3} \u4e4b\u540d\u7a31\u70ba {1}\u3001\u540d\u7a31\u7a7a\u9593\u70ba {2} \u7684\u670d\u52d9\u5167\u4e4b\u540d\u7a31\u70ba {0} \u7684\u57e0\u3002\u627e\u5230 WSDL\uff0c\u4f46\u672a\u5305\u542b\u6307\u540d\u7684\u670d\u52d9\u3002
+SERVICE_MISSING_CWSIF0601.explanation=\u683c\u5f0f\u5b57\u4e32\u4e0d\u7b26\u5408 WSDL \u4e2d\u7684\u5b9a\u7fa9\u3002\u53ef\u80fd\u662f\u56e0\u70ba\u683c\u5f0f\u4e2d\u7684\u670d\u52d9\u540d\u7a31\u6216\u540d\u7a31\u7a7a\u9593\u4e0d\u6b63\u78ba\uff0c\u6216\u90e8\u7f72\u4e86\u932f\u8aa4\u7684 WSDL\u3002
+SERVICE_MISSING_CWSIF0601.useraction=\u8acb\u78ba\u5b9a\u683c\u5f0f\u5b57\u4e32\u4e2d\u7684\u670d\u52d9\u540d\u7a31\u548c\u540d\u7a31\u7a7a\u9593\u7b26\u5408 WSDL \u4e2d\u7684\u5b9a\u7fa9\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the port
+# {1} is the service
+# {2} is the namespace
+# {3} is the location
+PORT_MISSING_CWSIF0602=CWSIF0602E: \u683c\u5f0f\u5b57\u4e32\u8b58\u5225\u5728 WSDL \u4f4d\u7f6e {3} \u4e4b\u540d\u7a31\u70ba {1}\u3001\u540d\u7a31\u7a7a\u9593\u70ba {2} \u7684\u670d\u52d9\u5167\u4e4b\u540d\u7a31\u70ba {0} \u7684\u57e0\u3002\u5df2\u627e\u5230\u670d\u52d9\uff0c\u4f46\u672a\u5305\u542b\u6307\u540d\u7684\u57e0\u3002
+PORT_MISSING_CWSIF0602.explanation=\u683c\u5f0f\u5b57\u4e32\u4e0d\u7b26\u5408 WSDL \u4e2d\u7684\u5b9a\u7fa9\u3002\u53ef\u80fd\u662f\u56e0\u70ba\u683c\u5f0f\u4e2d\u7684\u57e0\u540d\u7a31\u4e0d\u6b63\u78ba\uff0c\u6216\u90e8\u7f72\u4e86\u932f\u8aa4\u7684 WSDL\u3002
+PORT_MISSING_CWSIF0602.useraction=\u8acb\u78ba\u5b9a\u683c\u5f0f\u5b57\u4e32\u4e2d\u7684\u57e0\u540d\u7a31\u7b26\u5408 WSDL \u4e2d\u7684\u5b9a\u7fa9\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the port
+# {1} is the service
+# {2} is the namespace
+# {3} is the location
+BINDING_MISSING_CWSIF0603=CWSIF0603E: \u683c\u5f0f\u5b57\u4e32\u8b58\u5225\u5728 WSDL \u4f4d\u7f6e {3} \u4e4b\u540d\u7a31\u70ba {1}\u3001\u540d\u7a31\u7a7a\u9593\u70ba {2} \u7684\u670d\u52d9\u5167\u4e4b\u540d\u7a31\u70ba {0} \u7684\u57e0\u3002\u5df2\u627e\u5230\u57e0\uff0c\u4f46\u672a\u5305\u542b\u9023\u7d50\u53c3\u7167\u3002
+BINDING_MISSING_CWSIF0603.explanation=\u683c\u5f0f\u5b57\u4e32\u4e0d\u7b26\u5408 WSDL \u4e2d\u7684\u5b9a\u7fa9\u3002\u53ef\u80fd\u662f\u56e0\u70ba WSDL \u4e0d\u5b8c\u6574\uff0c\u6216\u90e8\u7f72\u4e86\u932f\u8aa4\u7684 WSDL\u3002
+BINDING_MISSING_CWSIF0603.useraction=\u8acb\u78ba\u5b9a\u57e0\u95dc\u806f\u65bc WSDL \u4e2d\u7684\u9023\u7d50\u3002
+
+# -------------------------------------------------------------------------------------------------
+DIFFERENT_LENGTH_LISTS_CWSIF0700=CWSIF0700E: \u5c0d\u6620\u8a0a\u606f\u6c92\u6709\u6578\u76ee\u76f8\u540c\u7684\u540d\u7a31\u548c\u503c
+DIFFERENT_LENGTH_LISTS_CWSIF0700.explanation=\u5c0d\u6620\u540d\u7a31\u6e05\u55ae\u548c\u5c0d\u6620\u503c\u6e05\u55ae\u5fc5\u9808\u7b49\u9577\u3002\u5b83\u5011\u4e00\u8d77\u4ee3\u8868\u5c0d\u6620\u8a0a\u606f\u7684\u540d\u7a31/\u503c\u914d\u5c0d\u3002
+DIFFERENT_LENGTH_LISTS_CWSIF0700.useraction=\u8acb\u78ba\u5b9a\u5169\u4efd\u6e05\u55ae\u7684\u9577\u5ea6\u76f8\u540c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the format string
+JMS_FORMAT_ERROR_CWSIF0711=CWSIF0711E: \u4e0d\u6b63\u78ba\u7684\u683c\u5f0f\u5b57\u4e32\uff1a{0}
+JMS_FORMAT_ERROR_CWSIF0711.explanation=\u683c\u5f0f\u5b57\u4e32\u4e0d\u7b26\u5408 JMS \u8a0a\u606f\u6240\u8fa8\u8b58\u7684\u4efb\u4f55\u683c\u5f0f\u5b57\u4e32\u3002
+JMS_FORMAT_ERROR_CWSIF0711.useraction=\u8acb\u78ba\u5b9a\u6b64\u8a0a\u606f\u683c\u5f0f\u5c0d JMS \u8a0a\u606f\u6240\u652f\u63f4\u7684\u8a0a\u606f\u985e\u578b\u662f\u6b63\u78ba\u7684\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+JMS_WRITE_ERROR_CWSIF0712=CWSIF0712E: JMS \u8a0a\u606f\u7121\u6cd5\u5e8f\u5217\u5316\uff0c\u7570\u5e38\u72c0\u6cc1\uff1a{0}
+JMS_WRITE_ERROR_CWSIF0712.explanation=\u7a0b\u5f0f\u8a66\u5716\u5c07 JMS \u8a0a\u606f\u5e8f\u5217\u5316\uff0c\u4f46\u5931\u6557\u3002
+JMS_WRITE_ERROR_CWSIF0712.useraction=\u8acb\u6aa2\u67e5\u93c8\u7d50\u7684\u7570\u5e38\u72c0\u6cc1\u4f86\u5224\u65b7\u554f\u984c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the existing elements type name
+JMS_BAD_MODEL_ERROR_CWSIF0713=CWSIF0713E: {0} \u985e\u578b\u7684 DataObject \u4e0d\u9069\u5408\u4f5c\u70ba JMS \u8a0a\u606f\u7684\u8ca0\u8f09\u3002
+JMS_BAD_MODEL_ERROR_CWSIF0713.explanation=\u7a0b\u5f0f\u8a66\u5716\u78ba\u8a8d\u6240\u63d0\u4f9b\u7684 DataObject \u9069\u5408\u5f62\u6210 JMS \u8a0a\u606f\u7684\u8ca0\u8f09\u3002
+JMS_BAD_MODEL_ERROR_CWSIF0713.useraction=\u8acb\u4fee\u6539\u7a0b\u5f0f\u4f86\u63d0\u4f9b\u9069\u7576\u985e\u578b\u7684 DataObject\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+JMS_PARSER_CONFIG_ERROR_CWSIF0714=CWSIF0714E: \u914d\u7f6e XML Parser \u4f86\u8b80\u53d6 JMS \u4e32\u6d41\u8a0a\u606f\u6642\uff0c\u767c\u751f\u932f\u8aa4\uff1b\u7570\u5e38\u72c0\u6cc1\uff1a{0}
+JMS_PARSER_CONFIG_ERROR_CWSIF0714.explanation=\u914d\u7f6e XML Parser \u6642\uff0c\u767c\u751f\u975e\u9810\u671f\u7684\u932f\u8aa4\u3002
+JMS_PARSER_CONFIG_ERROR_CWSIF0714.useraction=\u8acb\u6aa2\u67e5\u93c8\u7d50\u7684\u7570\u5e38\u72c0\u6cc1\u4f86\u5224\u65b7\u554f\u984c\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+JMS_STREAM_PARSE_ERROR_CWSIF0715=CWSIF0715E: \u5256\u6790 JMS \u4e32\u6d41\u8a0a\u606f\u7684\u8ca0\u8f09\u6642\uff0c\u767c\u751f\u932f\u8aa4\uff1b\u7570\u5e38\u72c0\u6cc1\uff1a{0}
+JMS_STREAM_PARSE_ERROR_CWSIF0715.explanation=JMS \u4e32\u6d41\u8a0a\u606f\u7684\u8ca0\u8f09\u4e0d\u662f\u6709\u6548\u7684 XML\u3002
+JMS_STREAM_PARSE_ERROR_CWSIF0715.useraction=\u8acb\u6aa2\u67e5\u93c8\u7d50\u7684\u7570\u5e38\u72c0\u6cc1\u4f86\u5224\u65b7\u554f\u984c\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+JMS_STREAM_READ_IO_ERROR_CWSIF0716=CWSIF0716E: JMS \u8cc7\u6599\u5b58\u53d6\u670d\u52d9\u767c\u751f\u8f38\u5165/\u8f38\u51fa\u932f\u8aa4\uff1b\u7570\u5e38\u72c0\u6cc1\uff1a{0}
+JMS_STREAM_READ_IO_ERROR_CWSIF0716.explanation=\u8a66\u5716\u5256\u6790 JMS \u4e32\u6d41\u8a0a\u606f\u7684\u4e3b\u9ad4\u6642\uff0cSAX \u8655\u7406\u767c\u751f\u8f38\u5165/\u8f38\u51fa\u932f\u8aa4
+JMS_STREAM_READ_IO_ERROR_CWSIF0716.useraction=\u8acb\u6aa2\u67e5\u93c8\u7d50\u7684\u7570\u5e38\u72c0\u6cc1\u4f86\u5224\u65b7\u554f\u984c\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+JMS_STREAM_WRITE_IO_ERROR_CWSIF0717=CWSIF0717E: JMS \u8cc7\u6599\u5b58\u53d6\u670d\u52d9\u767c\u751f\u8f38\u5165/\u8f38\u51fa\u932f\u8aa4\uff1b\u7570\u5e38\u72c0\u6cc1\uff1a{0}
+JMS_STREAM_WRITE_IO_ERROR_CWSIF0717.explanation=\u8a66\u5716\u5beb\u5165 JMS \u4e32\u6d41\u8a0a\u606f\u8ca0\u8f09\u6642\uff0c\u767c\u751f\u8f38\u5165/\u8f38\u51fa\u932f\u8aa4\u3002
+JMS_STREAM_WRITE_IO_ERROR_CWSIF0717.useraction=\u8acb\u6aa2\u67e5\u93c8\u7d50\u7684\u7570\u5e38\u72c0\u6cc1\u4f86\u5224\u65b7\u554f\u984c\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+JMS_STREAM_TYPE_ERROR_CWSIF0718=CWSIF0718E: \u8a66\u5716\u5beb\u5165\u5305\u542b {0} \u985e\u578b\u5143\u7d20\u7684 JMS \u4e32\u6d41\u8a0a\u606f\u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002
+JMS_STREAM_TYPE_ERROR_CWSIF0718.explanation=JMS \u4e32\u6d41\u8a0a\u606f\u4e0d\u63a5\u53d7\u554f\u984c\u5143\u7d20\u985e\u578b\u3002
+JMS_STREAM_TYPE_ERROR_CWSIF0718.useraction=\u8acb\u4fee\u6539\u7a0b\u5f0f\uff0c\u4ee5\u78ba\u5b9a\u4e0d\u6703\u5c07\u9019\u985e\u578b\u7684\u7269\u4ef6\u63d2\u5165\u4e32\u6d41\u8a0a\u606f\u4e2d\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+JMS_STREAM_WRITE_ERROR_CWSIF0719=CWSIF0719E: \u5beb\u5165 JMS \u4e32\u6d41\u8a0a\u606f\u7684\u8ca0\u8f09\u6642\uff0c\u767c\u751f\u932f\u8aa4\uff1b\u7570\u5e38\u72c0\u6cc1\uff1a{0}
+JMS_STREAM_WRITE_ERROR_CWSIF0719.explanation=\u5c07 JMS \u4e32\u6d41\u8a0a\u606f\u7684\u8ca0\u8f09\u5beb\u5165\u4f4d\u5143\u7d44\u6642\uff0c\u767c\u751f\u975e\u9810\u671f\u7684\u932f\u8aa4\u3002
+JMS_STREAM_WRITE_ERROR_CWSIF0719.useraction=\u8acb\u6aa2\u67e5\u93c8\u7d50\u7684\u7570\u5e38\u72c0\u6cc1\u4f86\u5224\u65b7\u554f\u984c\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} is the type of the supplied data
+# {1} is the supplied format
+JMS_TYPE_MISMATCH_ERROR_CWSIF0720=CWSIF0720E: \u8a66\u5716\u78ba\u8a8d\u6240\u63d0\u4f9b\u7684 {0} \u985e\u578b DataObject \u9069\u5408\u5f62\u6210 {1} \u683c\u5f0f\u7684 JMS \u8a0a\u606f\u8ca0\u8f09\u3002
+JMS_TYPE_MISMATCH_ERROR_CWSIF0720.explanation=\u63d0\u4f9b\u4f5c\u70ba JMS \u8a0a\u606f\u8ca0\u8f09\u7684 DataObject\uff0c\u985e\u578b\u5fc5\u9808\u76f8\u5bb9\u65bc\u9019\u500b\u8a0a\u606f\u7684\u683c\u5f0f\u3002
+JMS_TYPE_MISMATCH_ERROR_CWSIF0720.useraction=\u8acb\u4fee\u6539\u7a0b\u5f0f\uff0c\u78ba\u8a8d\u6240\u63d0\u4f9b\u7684 DataObject \u548c\u683c\u5f0f\u76f8\u5bb9\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+UNEXPECTED_CLASS_INIT_ERROR_CWSIF0721=CWSIF0721E: \u8d77\u59cb\u8a2d\u5b9a\u985e\u5225\u6642\u767c\u751f\u932f\u8aa4\uff0c\u7570\u5e38\u72c0\u6cc1\uff1a{0}
+UNEXPECTED_CLASS_INIT_ERROR_CWSIF0721.explanation=CMSG0001
+UNEXPECTED_CLASS_INIT_ERROR_CWSIF0721.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIF9999=CWSIF9999E: {0}
+TEMPORARY_CWSIF9999.explanation=\u5982\u679c\u8a0a\u606f\u6c92\u6709\u63d0\u4f9b\u8db3\u5920\u7684\u8cc7\u8a0a\uff0c\u8acb\u6aa2\u67e5\u96a8\u9644\u7684\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002
+TEMPORARY_CWSIF9999.useraction=\u8acb\u53c3\u95b1\u96a8\u9644\u7684\u932f\u8aa4\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002

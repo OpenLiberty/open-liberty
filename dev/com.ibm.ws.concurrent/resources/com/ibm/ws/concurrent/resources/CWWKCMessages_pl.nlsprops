@@ -1,0 +1,81 @@
+###############################################################################
+# Copyright (c) 2012, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.concurrent/resources/com/ibm/ws/concurrent/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC EE Managed Concurrency
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1100 to CWWCK1199 except those specifically identified as moved
+
+# Moved from com.ibm.ws.context
+CWWKC1000.unrecognized.property=CWWKC1000E: Element konfiguracji {0} zawiera nierozpoznany atrybut {1}.
+CWWKC1000.unrecognized.property.explanation=W us\u0142udze kontekstu skonfigurowano nierozpoznan\u0105 w\u0142a\u015bciwo\u015b\u0107.
+CWWKC1000.unrecognized.property.useraction=Usu\u0144 lub popraw nierozpoznan\u0105 w\u0142a\u015bciwo\u015b\u0107.
+
+# Moved from com.ibm.ws.context
+CWWKC1001.context.providers.unavailable=CWWKC1001E: Skonfigurowany kontekst w\u0105tku {0} jest niedost\u0119pny dla elementu konfiguracji {1}.
+CWWKC1001.context.providers.unavailable.explanation=Serwer aplikacji nie mo\u017ce znale\u017a\u0107 dostawc\u00f3w okre\u015blonych typ\u00f3w kontekstu w\u0105tku.
+CWWKC1001.context.providers.unavailable.useraction=Upewnij si\u0119, \u017ce dostawcy dla \u017c\u0105danego kontekstu w\u0105tku s\u0105 w\u0142\u0105czeni.
+
+# Moved from com.ibm.ws.context
+CWWKC1002.provider.cardinality.violation=CWWKC1002E: Element konfiguracji {0} nie mo\u017ce mie\u0107 wi\u0119cej ni\u017c jednego elementu podrz\u0119dnego typu {1}.
+CWWKC1002.provider.cardinality.violation.explanation=W ramach us\u0142ugi kontekstu mo\u017ce by\u0107 skonfigurowany co najwy\u017cej jeden element dla ka\u017cdego typu dostawcy kontekstu.
+CWWKC1002.provider.cardinality.violation.useraction=Usu\u0144 zduplikowane elementy dostawcy kontekstu z konfiguracji us\u0142ugi kontekstu.
+
+# Moved from com.ibm.ws.context
+CWWKC1020.baseContextRef.infinite=CWWKC1020E: Atrybut baseContextRef elementu konfiguracji {0} powoduje wyst\u0105pienie niesko\u0144czonego \u0142a\u0144cucha zale\u017cno\u015bci.
+CWWKC1020.baseContextRef.infinite.explanation=Niesko\u0144czony \u0142a\u0144cuch zale\u017cno\u015bci istnieje, poniewa\u017c atrybut baseContextRef bezpo\u015brednio lub po\u015brednio wskazuje z powrotem t\u0119 sam\u0105 instancj\u0119 us\u0142ugi kontekstu.
+CWWKC1020.baseContextRef.infinite.useraction=Zaktualizuj konfiguracj\u0119 us\u0142ugi kontekstu, aby przerwa\u0107 niesko\u0144czony \u0142a\u0144cuch zale\u017cno\u015bci.
+
+CWWKC1100.resource.unavailable=CWWKC1100E: Zas\u00f3b {0} jest niedost\u0119pny.
+CWWKC1100.resource.unavailable.explanation=Zas\u00f3b m\u00f3g\u0142 sta\u0107 si\u0119 niedost\u0119pny, poniewa\u017c serwer zosta\u0142 zamkni\u0119ty lub wprowadzona zosta\u0142a zmiana konfiguracyjna dotycz\u0105ca zasobu lub innej us\u0142ugi, od kt\u00f3rej zas\u00f3b jest zale\u017cny.
+CWWKC1100.resource.unavailable.useraction=Sprawd\u017a konfiguracj\u0119 tego zasobu i wszystkich zasob\u00f3w, od kt\u00f3rych zale\u017cy.
+
+CWWKC1110.task.canceled=CWWKC1110I: Zadanie {0}, kt\u00f3re zosta\u0142o wprowadzone do us\u0142ugi wykonawcy {1}, zosta\u0142o anulowane.
+CWWKC1110.task.canceled.explanation=Wykonanie zadania zosta\u0142o anulowane.
+CWWKC1110.task.canceled.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+CWWKC1101.task.failed=CWWKC1101E: Zadanie {0}, kt\u00f3re zosta\u0142o wprowadzone do us\u0142ugi wykonawcy {1}, nie powiod\u0142o si\u0119 i zosta\u0142 zwr\u00f3cony nast\u0119puj\u0105cy b\u0142\u0105d: {2}.
+CWWKC1101.task.failed.explanation=Zadanie wys\u0142ane do wykonawcy nie powiod\u0142o si\u0119. Przyczyn\u0119 mo\u017cna znale\u017a\u0107 w komunikacie o wyj\u0105tku.
+CWWKC1101.task.failed.useraction=Usu\u0144 przyczyn\u0119 niepowodzenia i ponownie uruchom zadanie.
+
+CWWKC1102.listener.failed=CWWKC1102E: Proces nas\u0142uchuj\u0105cy zadania zarz\u0105dzanego dla zadania {0}, kt\u00f3re zosta\u0142o wprowadzone do us\u0142ugi wykonawcy {1}, nie powiod\u0142o si\u0119 i zosta\u0142 zwr\u00f3cony nast\u0119puj\u0105cy b\u0142\u0105d: {2}.
+CWWKC1102.listener.failed.explanation=Operacja procesu nas\u0142uchuj\u0105cego zadania zarz\u0105dzanego nie powiod\u0142a si\u0119. Przyczyn\u0119 mo\u017cna znale\u017a\u0107 w komunikacie o wyj\u0105tku.
+CWWKC1102.listener.failed.useraction=Usu\u0144 przyczyn\u0119 niepowodzenia i zdecyduj, czy ponownie uruchomi\u0107 zadanie.
+
+CWWKC1103.skip.run.failed=CWWKC1103E: Wykonanie zadania {0}, kt\u00f3re zosta\u0142o wprowadzone do us\u0142ugi wykonawcy {1}, zosta\u0142o pomini\u0119te, poniewa\u017c operacja Trigger.skipRun nie powiod\u0142a si\u0119 i zosta\u0142 zwr\u00f3cony nast\u0119puj\u0105cy b\u0142\u0105d: {2}.
+CWWKC1103.skip.run.failed.explanation=Operacja skipRun obiektu Trigger nie powiod\u0142a si\u0119, powoduj\u0105c pomini\u0119cie bie\u017c\u0105cej pr\u00f3by wykonania zadania.
+CWWKC1103.skip.run.failed.useraction=Usu\u0144 przyczyn\u0119 niepowodzenia i zdecyduj, czy ponownie uruchomi\u0107 zadanie.
+
+CWWKC1111.task.invalid=CWWKC1111E: Zadanie {0} jest niepoprawne.
+CWWKC1111.task.invalid.explanation=Zadanie nie mo\u017ce zosta\u0107 wprowadzone, poniewa\u017c jest niepoprawne.
+CWWKC1111.task.invalid.useraction=Zaktualizuj aplikacj\u0119 tak, aby wprowadza\u0142a poprawne zadanie do us\u0142ugi ExecutorService.
+
+CWWKC1112.all.tasks.canceled=CWWKC1112I: Wszystkie zadania zosta\u0142y anulowane.
+CWWKC1112.all.tasks.canceled.explanation=Wszystkie zadania zosta\u0142y anulowane, zanim mo\u017cliwe by\u0142o wywo\u0142anie jakiegokolwiek zadania.
+CWWKC1112.all.tasks.canceled.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+CWWKC1120.future.get.rejected=CWWKC1120E: Adnotacja Future udost\u0119pniona dla metod ManagedTaskListener taskSubmitted i taskStarting nie mo\u017ce zosta\u0107 u\u017cyta podczas oczekiwania na zako\u0144czenie zadania.
+CWWKC1120.future.get.rejected.explanation=Metody ManagedTaskListener taskSubmitted i taskStarting s\u0105 uruchamiane w w\u0105tku, kt\u00f3ry wprowadza lub uruchamia zadanie. Dlatego podczas oczekiwania na zako\u0144czenie zadania nie mo\u017cna u\u017cywa\u0107 adnotacji Future udost\u0119pnianej dla tych metod.
+CWWKC1120.future.get.rejected.useraction=Zaktualizuj aplikacj\u0119, aby unikn\u0105\u0107 wywo\u0142ywania metody get w adnotacji Future udost\u0119pnianej dla metod taskSubmitted i taskStarting.
+
+CWWKC1130.xprop.value.invalid=CWWKC1130E: Zadanie wprowadzone do zarz\u0105dzanego wykonawcy {0} zawiera w\u0142a\u015bciwo\u015b\u0107 wykonania {1} o warto\u015bci {2}, kt\u00f3ra jest niepoprawna dla zarz\u0105dzanych wykonawc\u00f3w.
+CWWKC1130.xprop.value.invalid.explanation=Niekt\u00f3re warto\u015bci w\u0142a\u015bciwo\u015bci wykonania s\u0105 niepoprawne w przypadku zarz\u0105dzanych wykonawc\u00f3w, jednak mog\u0105 by\u0107 warto\u015bciami poprawnymi dla innych typ\u00f3w zasob\u00f3w, takich jak us\u0142uga kontekstu lub zarz\u0105dzana fabryka w\u0105tk\u00f3w.
+CWWKC1130.xprop.value.invalid.useraction=Zaktualizuj aplikacj\u0119, aby pomin\u0105\u0107 w\u0142a\u015bciwo\u015b\u0107 wykonania lub ustaw t\u0119 w\u0142a\u015bciwo\u015b\u0107 na poprawn\u0105 warto\u015b\u0107.

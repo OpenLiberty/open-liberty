@@ -1,0 +1,47 @@
+###############################################################################
+# Copyright (c) 2014, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.jaspic-1.1/resources/com/ibm/ws/security/jaspi/resources/JaspiMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server JASPI Authentication
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS1650 - CWWKS1699
+
+JASPI_PROVIDER_PROGRAMATICALLY_ADDED=CWWKS1650I: Una classe AuthConfigProvider JASPIC (Java Authentication SPI for Containers) \u00e8 stata aggiunta tramite l''API AuthConfigFactory.registerConfigProvider. Il nome classe AuthConfigProvider \u00e8 {0}.
+JASPI_PROVIDER_PROGRAMATICALLY_ADDED.explanation=La classe AuthConfigProvider JASPIC \u00e8 ora disponibile per autenticare le richieste web in entrata.
+JASPI_PROVIDER_PROGRAMATICALLY_ADDED.useraction=Non \u00e8 richiesta alcuna azione.
+
+JASPI_PROVIDER_PROGRAMATICALLY_REMOVED=CWWKS1651I: Una classe AuthConfigProvider JASPIC (Java Authentication SPI for Containers) \u00e8 stata rimossa tramite l''API AuthConfigFactory.removeRegistration. Il nome classe AuthConfigProvider \u00e8 {0}.
+JASPI_PROVIDER_PROGRAMATICALLY_REMOVED.explanation=La classe AuthConfigProvider JASPIC non \u00e8 pi\u00f9 disponibile per autenticare le richieste web in entrata.
+JASPI_PROVIDER_PROGRAMATICALLY_REMOVED.useraction=Non \u00e8 richiesta alcuna azione.
+
+JASPI_PROVIDER_FAILED_AUTHENTICATE=CWWKS1652A: L''autenticazione ha avuto esito negativo con stato {0} per la richiesta web {1}. Il servizio JASPIC (Java Authentication SPI for Containers) definito dall''utente {2} ha determinato che i dati di autenticazione non sono validi.
+JASPI_PROVIDER_FAILED_AUTHENTICATE.explanation=L'autenticazione per la richiesta web non \u00e8 riuscita per il provider JASPIC (Java Authentication SPI for Container) definito dall'utente con il nome classe indicato.
+JASPI_PROVIDER_FAILED_AUTHENTICATE.useraction=Verificare che la richiesta web abbia dati di autenticazione validi per il provider JASPIC definito dall'utente. Cercare i messaggi emessi dal provider JASPIC e consultare l'amministratore di sistema relativamente ai requisiti dei dati di autenticazione del provider JASPIC.
+
+JASPI_PROVIDER_SERVICE_ACTIVATED=CWWKS1653I: Una funzione definita dall''utente che implementa un servizio provider JASPIC (Java Authentication SPI for Containers) \u00e8 stata attivata. Il nome della classe di servizio \u00e8 {0}.
+JASPI_PROVIDER_SERVICE_ACTIVATED.explanation=La funzione definita dall'utente che implementa un servizio provider JASPIC con il nome classe indicato \u00e8 ora disponibile per autenticare le richieste web in entrata.
+JASPI_PROVIDER_SERVICE_ACTIVATED.useraction=Non \u00e8 richiesta alcuna azione.
+
+JASPI_PROVIDER_SERVICE_DEACTIVATED=CWWKS1654I: Una funzione definita dall''utente che implementa un servizio provider JASPIC (Java Authentication SPI for Containers) \u00e8 stata disattivata. Il nome della classe di servizio \u00e8 {0}.
+JASPI_PROVIDER_SERVICE_DEACTIVATED.explanation=La funzione definita dall'utente che implementa un servizio provider JASPIC con il nome classe indicato non \u00e8 pi\u00f9 disponibile per autenticare le richieste web in entrata.
+JASPI_PROVIDER_SERVICE_DEACTIVATED.useraction=Non \u00e8 richiesta alcuna azione.
+
+JASPI_DEFAULT_AUTH_CONFIG_FACTORY=CWWKS1655I: Viene utilizzata la classe AuthConfigFactory di JASPIC (Java Authentication SPI for Containers) predefinita {0} perch\u00e9 la propriet\u00e0\u00a0di sicurezza Java authconfigprovider.factory non \u00e8 impostata. 
+JASPI_DEFAULT_AUTH_CONFIG_FACTORY.explanation=Viene utilizzata la classe AuthConfigFactory di JASPIC predefinita perch\u00e9 la propriet\u00e0\u00a0di sicurezza Java authconfigprovider.factory non \u00e8 impostata.
+JASPI_DEFAULT_AUTH_CONFIG_FACTORY.useraction=Non \u00e8 richiesta alcuna azione.
+
+JASPI_AUTH_CONFIG_FACTORY=CWWKS1656I: La classe AuthConfigFactory di JASPIC (Java Authentication SPI for Containers) utilizzata \u00e8 {0}. Il nome classe \u00e8 il valore della propriet\u00e0\u00a0di sicurezza Java authconfigprovider.factory.  
+JASPI_AUTH_CONFIG_FACTORY.explanation=La classe specificata dalla propriet\u00e0 di sicurezza Java authconfigprovider.factory \u00e8 utilizzata come classe AuthConfigFactory di JASPIC. 
+JASPI_AUTH_CONFIG_FACTORY.useraction=Non \u00e8 richiesta alcuna azione.

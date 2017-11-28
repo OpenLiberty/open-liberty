@@ -1,0 +1,454 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.example.CWSOMMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+# 
+# Instructions to translation will precede the line to which it applies
+# {0} description of each insert field
+# ClassName_MessageName=CWSOM0001I: This is a message with insert {0}
+# ClassName_MessageName.explanation=Explanation text for the message.
+# ClassName_MessageName.useraction=User action text for the message.
+#
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - CWSOMIS9999 is for emergency use if any new messages are required after the messages file is finalized
+# -------------------------------------------------------------------------------------------------
+#
+#
+#CMVCPATHNAME %Z%%W% %I%
+#COMPONENTPREFIX CWSOM
+#COMPONENTNAMEFOR CWSOM ObjectManager
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+
+# {0} name of the log file.
+ObjectManagerState_ColdStart=CWSOM0001I: ObjectManager folosind logFile {0} a fost pornit la rece.
+ObjectManagerState_ColdStart.explanation=Un fi\u015fier istoric gol a fost dat ObjectManager-ului a\u015fa c\u0103 a fost pornit la rece.
+ObjectManagerState_ColdStart.useraction= Nimic, doar dac\u0103 v\u0103 a\u015ftepta\u0163i ca ObjectManager s\u0103 porneasc\u0103 la cald. \
+\u00cen acest caz, investiga\u0163i de ce era gol fi\u015fierul istoricului.
+ 
+# {0} name of the log file.
+# {1) The LOG_FILE_TYPE used for the warm start.
+ObjectManagerState_WarmStart=CWSOM0002I: ObjectManager folosind logFile {0} a fost pornit la cald logFileType={1}.
+ObjectManagerState_WarmStart.explanation=Un fi\u015fier istoric valid a fost dat ObjectManager-ului care a fost capabil s\u0103 reporneasc\u0103 de la el.
+ObjectManagerState_WarmStart.useraction=Nimic, doar dac\u0103 nu v\u0103 a\u015ftepta\u0163i ca ObjectManager s\u0103 porneasc\u0103 la rece. \
+\u00cen acest caz, investiga\u0163i de ce nu era gol fi\u015fierul istoricului.
+ 
+# {0} name of the log file.
+ObjectManagerState_Shutdown=CWSOM0003I: ObjectManager folosind logFile {0} a fost oprit.
+ObjectManagerState_Shutdown.explanation=S-a cerut ca ObjectManager s\u0103 fie oprit.
+ObjectManagerState_Shutdown.useraction=Nimic, doar dac\u0103 nu v-a\u0163i a\u015fteptat ca ObjectManager s\u0103 se opreasc\u0103.
+
+# {0} name of the log file.
+ObjectManagerState_ShutdownFast=CWSOM0004I: ObjectManager folosind logFile {0} a fost oprit f\u0103r\u0103 s\u0103 efectueze un punct de control final.
+ObjectManagerState_ShutdownFast.explanation=S-a cerut ca ObjectManager s\u0103 se opreasc\u0103 f\u0103r\u0103 s\u0103 efectueze un punct final, sau s\u0103 se opreasc\u0103 din cauza unor erori mai vechi.
+ObjectManagerState_ShutdownFast.useraction=Nimic, doar dac\u0103 nu v-a\u0163i a\u015fteptat ca ObjectManager s\u0103 se opreasc\u0103 f\u0103r\u0103 s\u0103 efectueze un punct de control final. \
+Examina\u0163i diagnosticul ie\u015firii pentru a determina cauza unei opriri nea\u015fteptate.
+
+# {0} Descriptive name of the transaction to be backed out.
+ObjectManagerState_LogTooFull=CWSOM0005W: ObjectManager a g\u0103sit c\u0103 logFile este plin \u015fi va retrage tranzac\u0163ia {0}.
+ObjectManagerState_LogTooFull.explanation=ObjectManager avea pu\u0163in spa\u0163iu \u00een fi\u015fierul istoric dup\u0103 ce a finalizat un punct de control, a restras cea mai mare tranzac\u0163ie din istoric pentru a elibera spa\u0163iu.
+ObjectManagerState_LogTooFull.useraction=\u00cencerca\u0163i s\u0103 face\u0163i prea mult lucru tranzac\u0163ional pentru m\u0103rimea fi\u015fierului istoricului pe care a\u0163i configurat-o. \
+\u00cencerca\u0163i s\u0103 determian\u0163i dac\u0103 tranzac\u0163iile \u00eencearc\u0103 s\u0103 fac\u0103 prea multe actualiz\u0103ri, sau dac\u0103 \u00eencerca\u0163i s\u0103 actualiza\u0163i prea multe obiecte mari, sau dac\u0103 \u00eencerca\u0163i s\u0103 rula\u0163i prea multe tranzac\u0163ii \u00een acela\u015fi timp, sau dac\u0103 fi\u015fierul istoricului este prea mic \u015fi ar trebui s\u0103 fie m\u0103rit. 
+
+# ----------------------------------------------------------------------------------------------------
+
+# {0} Descriptive name of the transaction to be backed out.
+InternalTransaction_BackoutOrphan=CWSOM0100W: O tranzac\u0163ie {0} a fost descoperit\u0103 \u00een timpul colect\u0103rii gunoiului \u015fi va fi retras\u0103.
+InternalTransaction_BackoutOrphan.explanation=Aplica\u0163ia a pierdut referin\u0163a la o tranzac\u0163ie \u015fi nu poate finaliza tranzac\u0163ia. \
+Astfel, ObjectManager va retrage tranzac\u0163ia pentru a elibera resursele sale.
+InternalTransaction_BackoutOrphan.useraction=Aplica\u0163ia dumneavoastr\u0103 a pierdut referin\u0163a la o tranzac\u0163ie. \
+Dac\u0103 aplica\u0163ia a terminat anormal atunci nu mai este nimic de f\u0103cut. \
+Totu\u015fi dac\u0103 aplica\u0163ia a pierdut referin\u0163a sa f\u0103r\u0103 s\u0103 se termine anormal, aceasta poate fi considerat\u0103 o eroare logic\u0103 a aplica\u0163iei.
+              
+# ----------------------------------------------------------------------------------------------------
+
+# {0} ObjectStore which could not safely be closed.
+ObjectStore_UnsafeToFlush=CWSOM0200W: ObjectStore {0} cu strategia STRATEGY_SAVE_ONLY_ON_SHUTDOWN nu poate fi \u00eenchis \u00een siguran\u0163\u0103.
+ObjectStore_UnsafeToFlush.explanation=\u00cen cazul \u00een care sunt tranzac\u0163ii active la oprirea activit\u0103\u0163ii. \
+ObjectStore-urile cu strategia STRATEGY_SAVE_ONLY_ON_SHUTDOWN nu se pot \u00eenchide \u00een siguran\u0163\u0103 c\u00e2t timp exist\u0103 tranzac\u0163ii active. \
+\u00cenchiderea ObjectStore-ului ar putea conduce la o salvarea de date inconsistente.  \
+ObjectStore este l\u0103sat neschimbat.
+ObjectStore_UnsafeToFlush.useraction=Examina\u0163i de ce exist\u0103 tranzac\u0163ii active. \
+Aceste tranzac\u0163ii active ar putea exista pentru c\u0103 utiliza\u0163i un manager de tranzac\u0163ii extern. \
+\u00cen cazul \u00een care nu pute\u0163i evita tranzac\u0163iile active la oprirea activit\u0103\u0163ii, atunci utiliza\u0163i un ObjectStore cu o strategie de depozitare diferit\u0103.
+
+# {0} Bytes required in the file system.
+# {1} Bytes currently used in the file system.
+# {2} Exception caught when trying to reserved the bytes.
+ObjectStore_AllocateFileSpaceFailed=CWSOM0201W: ObjectStore a cerut {0} octe\u0163i de spa\u0163iu de stocare, c\u00e2nd are curent {1} octe\u0163i, dar a primit excep\u0163ia {2}.
+ObjectStore_AllocateFileSpaceFailed.explanation=Sistemul de fi\u015fiere nu poate aloca spa\u0163iul cerut. \
+\u00cencerc\u0103rile de alocare de obiecte \u00een ObjectStore vor e\u015fua.
+ObjectStore_AllocateFileSpaceFailed.useraction=Examina\u0163i excep\u0163ia \u015fi determina\u0163i de ce nu poate fi alocat spa\u0163iul \u00een sistemul de fi\u015fiere.
+
+# ---------------------------------------------------------------------------------------------------------------------------------
+# Messages used by ObjectManagerException.
+# ---------------------------------------------------------------------------------------------------------------------------------
+
+# {0} The ClassNotFoundException that was caught by the ObjectManager.
+ClassNotFoundException_info=CWSOM1001E: ObjectManager a prins excep\u0163ia ClassNotFoundException={0}(java.lang.ClassNotFoundException) c\u00e2nd a \u00eencercat s\u0103 deserializeze un ManagedObject. 
+ClassNotFoundException_info.explanation=O excep\u0163ie java.lang.ClassNotFoundException a fost prins\u0103 atunci c\u00e2nd ObjectManager a \u00eencercat s\u0103 deserializeze un obiect ManagedObject.
+ClassNotFoundException_info.useraction=Excep\u0163ia con\u0163ine numele clasei care nu a putut fi g\u0103site. \
+Pune\u0163i-l la dispozi\u0163ia \u00eenc\u0103rc\u0103torului de clase ObjectManagers, de exemplu prin includerea fi\u015fierului clasei \u00een calea de clase.
+
+# {0} The Name of the new and existing ObjectStore.
+# {1} ObjectStore already using the name.
+DuplicateObjectStoreNameException_info=CWSOM1002E: S-a \u00eencercat construirea unui ObjectStore folosind storeName={0}(String) care a fost deja folosit de ObjectStore={1}.
+DuplicateObjectStoreNameException_info.explanation=Numele ObjectStore trebuie s\u0103 fie unic \u00eentr-un ObjectManager.
+DuplicateObjectStoreNameException_info.useraction=Alege\u0163i un nume diferit pentru ObjectStore.
+
+# {0} Object which is not in a valid state for the operation.
+# {1} The state the object was in.
+# {2} The descriptive name of the state.
+StateErrorException_info=CWSOM1003E: Obiectul {0} este acum \u00een stare de eroare, starea sa invalid\u0103 anterioar\u0103={1}(int) {2}(String). 
+StateErrorException_info.explanation=A fost cerut\u0103 o opera\u0163ie unui obiect care este \u00eentr-o stare ce nu este valid\u0103 pentru opera\u0163ie. \
+Opera\u0163ia e\u015fueaz\u0103 \u015fi obiectul este trecut la o stare de eroare.
+StateErrorException_info.useraction=CMSG0002 
+
+# {0} The IOException that was caught by the ObjectManager.
+PermanentIOException_info=CWSOM1004E: ObjectManager a prins excep\u0163ia IOException={0}(java.io.IOException). 
+PermanentIOException_info.explanation=O excep\u0163ie IOException a fost prins\u0103 de ObjectManager, opera\u0163ia IO nu a putut fi re\u00eencercat\u0103 \u00een siguran\u0163\u0103 \u015fi a fost abandonat\u0103.
+PermanentIOException_info.useraction=Excep\u0163ia IOException descrie eroarea specific\u0103. \
+Investiga\u0163i \u015fi rezolva\u0163i cauza care st\u0103 la baza excep\u0163iei IOException.
+
+# {0} The IOException that was caught by the ObjectManager.
+TemporaryIOException_info=CWSOM1005E: ObjectManager a prins excep\u0163ia IOException={0}(java.io.IOException). 
+TemporaryIOException_info.explanation=O excep\u0163ie IOException a fost prins\u0103 de ObjectManager, opera\u0163ia I/E a fost abandonat\u0103, dar poate fi reluat\u0103 \u00een siguran\u0163\u0103 re\u00eencerc\u00e2nd API-ul ObjectManager, dup\u0103 ce cauza eviden\u0163iat\u0103 este rezolvat\u0103.
+TemporaryIOException_info.useraction=Excep\u0163ia IOException descrie eroarea specific\u0103. \
+Investiga\u0163i \u015fi corecta\u0163i cauza excep\u0163iei de baz\u0103 IOException, apoi re\u00eencerca\u0163i opera\u0163ia.
+
+# {0} The ObjectStore being constructed.
+# {1} The name.
+InvalidObjectStoreNameException_info=CWSOM1006E: ObjectStore={0}(ObjectStore) a primit un nume invalid={1}(String). 
+InvalidObjectStoreNameException_info.explanation=Un ObjectStore a fost construit folosind un nume care nu este valid. \
+ObjectManager nu a creat ObjectStore-ul.
+InvalidObjectStoreNameException_info.useraction=Examina\u0163i numele pentru a determina de ce nu este valid.
+
+# {0} The unrecognized statistics set.
+StatisticsNameNotFoundException_info=CWSOM1007E: Statisticile numite={0}(String) nu sunt recunoscute. 
+StatisticsNameNotFoundException_info.explanation=Aplica\u0163ia a cerut un set de statistici care nu este recunoscut.
+StatisticsNameNotFoundException_info.useraction=Corecta\u0163i numele setului de statistici cerute.
+
+# {0} The ObjectStore detecting the error.
+# {1} The ManagedObject.
+InvalidObjectToStoreException_info=CWSOM1008E: ObjectStore={0}(ObjectStore) i s-a cerut s\u0103 stocheze un ManagedObject={1} (ManagedObject) invalid. 
+InvalidObjectToStoreException_info.explanation=A fost cerut un ObjectStore s\u0103 stocheze un ManagedObject care nu este valid. \
+ObjectStore nu a stocat ManagedObject.
+InvalidObjectToStoreException_info.useraction=Examina\u0163i ManagedObject s\u0103 fie stocat \u015fi afla\u0163i de ce nu este valid. \
+De exemplu poate fi un ManagedObject null.
+
+# {0} The ObjectStore reporting the sequence error.
+# {1} The non unique sequence number.
+# {2} The ManagedObject already using the sequence number.
+StoreSequenceException_info=CWSOM1009E: ObjectStore={0}(ObjectStore) a generat sequenceNumber={1}(Long) care era deja folsoit de {2}(ManagedObject). 
+StoreSequenceException_info.explanation=O eroare intern\u0103 a ap\u0103rut \u00een ObjectStore.
+StoreSequenceException_info.useraction=-CMSG0002
+
+# {0} ObjectStore throwing the replacementException.
+# {1} The ManagedObject being replaced.
+# {2} The Token referencing the replacement.
+# {3} The existing Token attempting the replacement.
+ReplacementException_info=CWSOM1010E: ObjectStore-ului {0} i s-a cerut s\u0103 \u00eenlocuiasc\u0103 ManagedObject {1} referit de Token {2} c\u00e2nd exista deja \u00een depozit alt Token {3}. 
+ReplacementException_info.explanation=Un Token este identificat de un objectStoreIdentifier \u015fi de un storedObjectIdentifier. \
+Doar un singur token al fiec\u0103rei identit\u0103\u0163i poate exista, dar noul token \u015fi cel existent \u00eempart aceea\u015fi identitate.
+ReplacementException_info.useraction=CMSG0002 
+
+# {0} Object which is not in a valid state for the operation.
+# {1} The state the object is in.
+# {2} The descriptive name of the state.
+InvalidStateException_info=CWSOM1011E: O opera\u0163ie invalid operation was attempted on Object={0} while it was in state={1}(int) {2}(String). 
+InvalidStateException_info.explanation=S-a \u00eencercat o opera\u0163ie asupra obiectului. \
+Opera\u0163ia nu este valid\u0103 atunci c\u00e2nd obiectul se afl\u0103 \u00een starea curent\u0103. \
+De exemplu, este posibil s\u0103 fi \u00eencercat s\u0103 \u015fterge\u0163i un ManagedObject care este deja \u015fters. \
+Opera\u0163ia este respins\u0103 \u015fi obiectul r\u0103m\u00e2ne neschimbat.
+InvalidStateException_info.useraction=Investiga\u0163i starea obiectului \u015fi de ce este \u00eencercat\u0103 opera\u0163ia.
+
+# {0} ObjecManagerState which has detected the duplicate.
+# {1} The new duplicate InternalTransaction.
+# {2} The old existing InternalTransaction.
+DuplicateTransactionException_info=CWSOM1012E: ObjectManagerState={0}(ObjectManagerState) a \u00eencercat s\u0103 \u00eenregistreze sau s\u0103 elibereze o nou\u0103 tranzac\u0163ie={1}(InternalTransaction) care are acela\u015fi identificator LogicalUnitOfWork ca \u015fi tranzac\u0163ia={2}(InternalTransaction).
+DuplicateTransactionException_info.explanation=ObjectManager a descoperit o nou\u0103 tranzac\u0163ie existent\u0103 care are acela\u015fi identificator de tranzac\u0163ie. Aceasta este o eroare intern\u0103 \u015fi nu ar trebui s\u0103 apar\u0103.
+DuplicateTransactionException_info.useraction=CMSG0002 
+
+# {0} The internal transaction trying to unregister.
+NonExistentTransactionException_info=CWSOM1013E: Se \u00eencearc\u0103 anularea \u00eenregistr\u0103rii unei tranzac\u0163ii care nu a fost \u00eenregistrat\u0103, tranzac\u0163ia={0}(InternalTransaction). 
+NonExistentTransactionException_info.explanation=O eroare intern\u0103 a fost detectat\u0103 \u00een ObjectManager. Nicio ac\u0163iune suplimentar\u0103 nu este permis\u0103 \u00een Tranzac\u0163ie.
+NonExistentTransactionException_info.useraction=CMG0002
+
+# {0} The ObjectStoreIdentifier of the ObjectStore that was not known to the ObjectManager.
+NonExistentObjectStoreTemporaryIOException_info=CWSOM1014E: S-a \u00eencercat localizarea unui ObjectStore care nu a fost \u00eenregistrat, storeIdentifier={0}(int).
+NonExistentObjectStoreTemporaryIOException_info.explanation=A fost f\u0103cut\u0103 o referin\u0163\u0103 de un token la un ObjectStore care nu este cunoscut de ObjectManager.
+NonExistentObjectStoreTemporaryIOException_info.useraction=Dac\u0103 ObjectStore a fost \u00eenl\u0103turat din ObjectManager aceast\u0103 excep\u0163ie va fi prins\u0103 de fiecare dat\u0103 c\u00eend un Token existent face referire la Objectstore. \
+Restabili\u0163i ObjectStore-ul sau opri\u0163i-l utliz\u00e2nd Token-urile care \u00eencearc\u0103 s\u0103-l acceseze.
+
+# {0} The Exception that was caught by the ObjectManager.
+UnexpectedExceptionException_info=CWSOM1015E: ObjectManager a prins nea\u015fteptat excep\u0163ia={0}(Exception). 
+UnexpectedExceptionException_info.explanation=O excep\u0163ie a fost prins\u0103 de ObjectManager, ObjectManager nu a fost \u00een m\u0103sur\u0103 s\u0103 ia o ac\u0163iune rezonabil\u0103 ca r\u0103spuns la excep\u0163ie.
+UnexpectedExceptionException_info.useraction=Investiga\u0163i \u015fi rezolva\u0163i cauza excep\u0163iei de baz\u0103.
+
+# {0} The managedObject being unlocked.
+# {1} Internal transaction trying to release the lock on the ManagedObject.
+# {2} The existing lock on the ManagedObject.
+InvalidTransactionException_info=CWSOM1016E: s-a \u00eencercat deblocarea sau \u00eenlocuirea unui ManagedObject={0}(ManagedObject) de InternalTransaction={1}(InternalTransaction), c\u00e2nd a fost blocat de transactionLock={2}(TransactionLock). 
+InvalidTransactionException_info.explanation=A fost f\u0103cut\u0103 o \u00eencercare de a debloca sau \u00eenlocui un ManagedObject sub o tranzac\u0163ie diferit\u0103 de cea care a blocat-o. \
+\u00cencercarea a fost respins\u0103.
+InvalidTransactionException_info.useraction=Examina\u0163i logica aplica\u0163iei care utilizeaz\u0103 interfa\u0163a Transaction.unlock(ManagedObject) a ObjectManager-ului \u015fi determin\u0103 de ce sunt diferite cele dou\u0103 tranzac\u0163ii.
+
+# {0} ObjectManagerState which is unable to locate the log file.
+# {1} The exception caught by the ObjectManagerState when trying to locate the log file.
+# {2} The log file name.
+NonExistentLogFileException_info=CWSOM1017E: ObjectManagerState={0}(ObjectManagerState) a prins excep\u0163ia={1}(Exception) \u00eencerc\u00e2nd s\u0103 localizeze sau s\u0103 creeze fi\u015fierul istoric cu numele={2}(String). 
+NonExistentLogFileException_info.explanation=O excep\u0163ie a fost prins\u0103 atunci c\u00e2nd ObjectManager \u00eencerca s\u0103 deschid\u0103 fi\u015fierul istoricului denumit. \
+ObjectManager nu va porni.
+NonExistentLogFileException_info.useraction=Verifica\u0163i dac\u0103 numele fi\u015fierului istoricului este valid \u015fi ObjectManager are permisiunile corespunz\u0103toare de a-l scrie.
+
+# {0} The Object raising the exception.
+# {1} The underlying Exception.
+LogFileExhaustedException_info=CWSOM1018E: Object={0}(Object) a detectat sf\u00e2r\u0163itul istoricului de intr\u0103ri din cauza excep\u0163iei={1}(Exception). 
+LogFileExhaustedException_info.explanation=ObjectManager a detectat sf\u00e2r\u015fitul fi\u015fierului istoricului de intrare.
+LogFileExhaustedException_info.useraction=Nu este necesar\u0103 nicio ac\u0163iune dac\u0103 aceast\u0103 excep\u0163ie a ap\u0103rut ca rezultat al citirii istoricului la sf\u00e2r\u015fitul repornirii ObjectManager-ului.
+
+# {0} The type of logRecord that was read from the log but not recognized.
+InvalidLogRecordTypeException_info=CWSOM1019E: A fost citit tipul invalid de \u00eenregistrare istoric={0}(int) din istoricul de tranzac\u0163ii. 
+InvalidLogRecordTypeException_info.explanation=ObjectManager se recupera \u015fi a g\u0103sit o \u00eenregistrare a istoricului cu un tip care nu recuno\u015ftea c\u0103 ObjectManager nu este instan\u0163iat.
+InvalidLogRecordTypeException_info.useraction=CMSG0002 
+
+# {0} The name of the ObjectStore that is not registered with the ObjectManager.
+UnknownObjectStoreException_info=CWSOM1020E: S-a \u00eencercat localizarea unui ObjectStore care nu a fost \u00eenregistrat, storeName={0}(String).
+UnknownObjectStoreException_info.explanation=ObjectManager-ului i s-a cerut s\u0103 localizeze un ObjectStore care nu a fost \u00eenregistrat cu el.
+UnknownObjectStoreException_info.useraction=Este posibil ca ObjectStore-ul s\u0103 fi fost \u00eenl\u0103turat din ObjectManager. Recrea\u0163i ObjectStore.
+
+# {0} The Object detecting the condition that is not valid.
+# {1} The variable name containing the condition that is not valid.
+# {2} The data assigned to the variable giving the condition that is not valid.
+InvalidConditionException_info=CWSOM1021E: Condi\u0163ie invalid\u0103 detectat\u0103 de {0}(Object). Variabila={1} con\u0163ine valoarea={2}. 
+InvalidConditionException_info.explanation=O eroare intern\u0103 a ap\u0103rut \u015fi o condi\u0163ie care nu este valid\u0103 a fost g\u0103sit\u0103.
+InvalidConditionException_info.useraction=CMSG0002 
+
+# {0} The name of the log file.
+LogFileInUseException_info=CWSOM1022E: Fi\u015fierul istoric cu numele={0}(String), este deja folosit.
+LogFileInUseException_info.explanation=ObjectManager a \u00eencercat s\u0103 ob\u0163in\u0103 o blocare exclusiv\u0103 a fi\u015fierului, dar era deja dat \u00een folosin\u0163\u0103.
+LogFileInUseException_info.useraction=Determina\u0163i dac\u0103 alt ObjectManager \u00eencearc\u0103 s\u0103 utilizeze acela\u015fi fi\u015fier istoric.
+
+LogFileHeaderCorruptException_info=CWSOM1023E: Fi\u015fierul istoric nu are un antet valid. 
+LogFileHeaderCorruptException_info.explanation=Fi\u015fierul istoric de tranzac\u0163ii con\u0163inea date pe care ObjectManager nu le putea interpreta.
+LogFileHeaderCorruptException_info.useraction=Verifica\u0163i dac\u0103 fi\u015fierul istoricului este fi\u015fierul corect.
+
+# {0} The current XID.
+# {1} The rejected XID.
+XIDModificationException_info=CWSOM1024E: S-a \u00eencercat setarea unui XID tranzac\u0163ie c\u00e2nd este deja setat XID={0}([]byte) existent, rejectedXID={1}([]byte).
+XIDModificationException_info.explanation=O tranzac\u0163ie poate avea doar un identificator de tranzac\u0163ie X/Open. \
+Aceasta nu poate fi modificat\u0103 dup\u0103 ce este setat\u0103.
+XIDModificationException_info.useraction=Examina\u0163i logica aplica\u0163iei \u015fi afla\u0163i de ce \u00eencearc\u0103 s\u0103 schimbe XID al unei tranzac\u0163ii pe care o aplica\u0163ie l-a setat deja.
+
+# {0} The length of the XID passed to the ObjectManager.
+XIDTooLongException_info=CWSOM1025E: s-a \u00eencercat setarea unui XID tranzac\u0163ie care este prea lung, XID.length={0}(int).
+XIDTooLongException_info.explanation=Identificatorul XID al unei tranzac\u0163ii X/Open poate avea o lungime maxim\u0103 ca cea specificat\u0103 de java.lang.Short.MAX_VALUE.
+XIDTooLongException_info.useraction=Utiliza\u0163i o lungime XID mai scurt\u0103.
+
+# {0} The object containing the disabled interface.
+# {1} The method name of the interface that is disabled.
+InterfaceDisabledExceptionException_info=CWSOM1026E: S-a \u00eencercatfolosirea metodei dezactivate methodName={1}(String) \u00een sursa={0}(Object).
+InterfaceDisabledExceptionException_info.explanation=A avut loc o \u00eencercare de folosire a unei interfe\u0163e dezactivate.
+InterfaceDisabledExceptionException_info.useraction=Nu mai folosi\u0163i interfa\u0163a, sau trece\u0163i la o versiune a ObjectManager-ului care suport\u0103 interfa\u0163a.
+
+# {0} The number of bytes to be written to the log.
+# {1} The number of reserved bytes included in the request.
+# {2} The number of bytes available in the log file.
+LogFileFullException_info=CWSOM1027E: Fi\u015fierul istoric este prea plic ca s\u0103 primeasc\u0103 un total de {0}(long) octe\u0163i, cererea a rezervat {1}(long) octe\u0163i suplimentari dar spa\u0163iul disponibil este de {2}(long) octe\u0163i.
+LogFileFullException_info.explanation=A avut loc o \u00eencercare de a scrie mai multe date \u00een istoric dec\u00e2t permitea spa\u0163iul fi\u015fierului disponibil. \
+\u00cencercarea este respins\u0103 \u015fi starea tranzac\u0163iei este schimbat\u0103.
+LogFileFullException_info.useraction=Fie, reduce\u0163i num\u0103rul de obiecte pe care le actualiza\u0163i \u00een tranzac\u0163iile voastre. \
+Reduce\u0163i num\u0103rul tranzac\u0163iilor care sunt active simultan. \
+Reduce\u0163i m\u0103rimea ManagedObject-urilor pe care le actualiza\u0163i. \
+Cre\u015fte\u0163i m\u0103rimea fi\u015fierului istoricului.
+
+# {0} The part type found in the log that is not valid.
+InvalidLogRecordPartTypeException_info=CWSOM1028E: Parte a \u00eenregistr\u0103rii istoric este de tipul={0}(byte) care este invalid. 
+InvalidLogRecordPartTypeException_info.explanation=Un tip de stegule\u0163 pe partea component\u0103 a \u00eenregistr\u0103rii \u00een istoric nu a fost recunoscut.
+InvalidLogRecordPartTypeException_info.useraction=Afla\u0163i cum a devenit corupt fi\u015fierul istoricului \u015fi restaura\u0163i o copie de rezerv\u0103 a fi\u015fierului istoricului.
+
+# {0} The name of the log file.
+CheckpointEndNotFoundException_info=CWSOM1029E: Nu a fost g\u0103sit\u0103 nicio o \u00eenregistrare CheckpointEndLogRecord \u0163i fi\u015fierul istoric={0}(String).
+CheckpointEndNotFoundException_info.explanation=Fi\u015fierul istoricului s-a terminat \u00eenainte s\u0103 fie g\u0103sit un punct de control de oprire. \
+Fi\u015fierele istoric ar trebui s\u0103 con\u0163in\u0103 cel pu\u0163in un LogRecord punct de control de pornire \u015fi unul punct de control de oprire.
+CheckpointEndNotFoundException_info.useraction=Afla\u0163i cum a devenit corupt fi\u015fierul istoricului \u015fi restaura\u0163i o copie de rezerv\u0103 a fi\u015fierului istoricului.
+
+# {0} The ObjectStore raising the exception.
+# {1} The Token requesting the ManagedObject.
+InMemoryObjectNotAvailableException_info=CWSOM1030E: Unui ObjectStore {0} bazat pe memorie i s-a cerut s\u0103 extrag\u0103 un ManagedObject pentru Token={0}(Token), care nu mai era \u00een memorie. 
+InMemoryObjectNotAvailableException_info.explanation=ObjectManager-ului i s-a cerut s\u0103 extrag\u0103 un ManagedObject care trebuia s\u0103 se afle \u00een memorie, dar nu a fost g\u0103sit.
+InMemoryObjectNotAvailableException_info.useraction=-CMSG0002
+
+# {0} The maximum size in bytes the serialized ManagedObject should be.
+# {1} The actual size in bytes of the ManagedObject in bytes.
+SimplifiedSerializationSizeExceptionException_info=CWSOM1031E: Dimensiunea serializ\u0103rii simplificate dep\u0103\u015fe\u015fte maximumSize={0}(long), actualSize={1}(long). 
+SimplifiedSerializationSizeExceptionException_info.explanation=M\u0103rimea unui ManagedObject serializat a dep\u0103\u015fit m\u0103rimea maxim\u0103 a\u015fteptat\u0103.
+SimplifiedSerializationSizeExceptionException_info.useraction=-CMSG0002
+
+# {0} The current size of the log.
+# {1} The requested size of the log.
+# {2} The space available in the log.
+# {3} the predicted occupancy of the new log file.
+# {4} The threshold occupancy above which the ObjectManager triggers a checkpoint. 
+LogFileSizeTooSmallException_info=CWSOM1032E: Dimensiunea fi\u015fierului istoric este pprea mic\u0103, dimnesiune existent\u0103={0}(long) dimensiunea necesar\u0103={1}(long) spa\u0163iu disponibil={2}(long) ocuparea prezis\u0103={3}(float) prag de ocupare={4}(float). 
+LogFileSizeTooSmallException_info.explanation=ObjectManager-ului i s-a cerut s\u0103 reduc\u0103 m\u0103rimea istoricului tranzac\u0163iei. \
+M\u0103rimea cerut\u0103 era prea mic\u0103 pentru a con\u0163ine datele istoricului. \
+Noua m\u0103rime este sub limit\u0103 ce va permite ObjectManager-ului s\u0103 func\u0163ioneze f\u0103r\u0103 s\u0103 realizeze puncte de control \u00een continuu.
+LogFileSizeTooSmallException_info.useraction=Face\u0163i o cerere mai mare sau reduce\u0163i \u00eenc\u0103rc\u0103tura istoricului scriind mai pu\u0163ine ManagedObject-uri sau mai mici.
+
+# {0} The non empty collection.
+# {1} The number of items, committed and uncommitted, in the collection.
+# {2} The transaction trying to delete the collection.
+CollectionNotEmptyException_info=CWSOM1033E: Colec\u0163ia {0} nu este goal\u0103, dimensiunea murdar\u0103={1}(long), tranzac\u0163ie={2}(Transaction). 
+CollectionNotEmptyException_info.explanation=ObjectManager-ului i s-a cerut s\u0103 \u015ftearg\u0103 o colec\u0163ie (Map sau List) care nu era goal\u0103. Colec\u0163ia con\u0163inea ni\u015fte intr\u0103ri ce nu au fost \u015fterse sau au fost \u015fterse de o tranzac\u0163ie, alta dec\u00e2t cea care \u00eencerca s\u0103 \u015ftearg\u0103 colec\u0163ia.
+CollectionNotEmptyException_info.useraction=Examina\u0163i logica aplica\u0163iei \u015fi descoperi\u0163i de ce tranzac\u0163ia \u00eencearc\u0103 s\u0103 \u015ftearg\u0103 colec\u0163ia \u00een timp ce ea con\u0163ine intr\u0103ri.
+
+# {0} The defined maximum number of transactions.
+TooManyTransactionsException_info=CWSOM1034E: O aplica\u0163ie a \u00eencercat s\u0103 porneasc\u0103 un num\u0103r mai mare de trazac\u0163ii dec\u00e2t maximul definit={0}(long). 
+TooManyTransactionsException_info.explanation=ObjectManager-ului i s-a cerut s\u0103 porneasc\u0103 mai multe tranzac\u0163ii dec\u00e2t ce e specificat \u00een configura\u0163ii.Noua tranzac\u0163ie nu a \u00eenceput.
+TooManyTransactionsException_info.useraction=Examina\u0163i logica aplica\u0163iei \u015fi afla\u0163i de ce a \u00eencercat s\u0103 porneasc\u0103 prea multe tranzac\u0163ii. \
+Este posibil ca aplica\u0163ia s\u0103 porneasc\u0103 tranzac\u0163ii, dar nu s\u0103 le comit\u0103 sau s\u0103 le suporte.
+
+# {0} The number of active transactions.
+# {1} The number of transactons the ObjectManager can currently run.
+TransactionCapacityExceededException_info=CWSOM1035E: Num\u0103rul maxim de tranzac\u0163ii a fost redus temporar, tranzac\u0163ii active curent={0}(long) capacitate curent\u0103={1}(long).
+TransactionCapacityExceededException_info.explanation=ObjectManager-ului i s-a cerut s\u0103 porneasc\u0103 mai multe tranzac\u0163ii dec\u00e2t poate suporta cu resursele de care dispune. \
+ObjectManager reduce num\u0103rul de tranzac\u0163ii, va porni astfel ca punctele de control s\u0103 finalizeze \u00eenainte ca fi\u015fierul istoricului s\u0103 se umple.Noua tranzac\u0163ie nu a \u00eenceput.
+TransactionCapacityExceededException_info.useraction=Fie m\u0103ri\u0163i dimensiunea fi\u015fierului istoricului sau porni\u0163i mai pu\u0163ine tranzac\u0163ii.
+
+# {0} The ObjectStore throwing the exception.
+# {1} the name of the ObjectStore.
+StoreFileInUseExceptionException_info=CWSOM1036E: ObjectStore={0}(ObjectStore) nume={1}(String) este deja folosit. 
+StoreFileInUseExceptionException_info.explanation=ObjectStore-ul a descoperit c\u0103 era deja blocat atunci c\u00e2nd a \u00eencercat s\u0103 blocheze exclusiv fi\u015fierul lui.
+StoreFileInUseExceptionException_info.useraction=Afla\u0163i dac\u0103 fi\u015fierul ObjectStore este utilizat de alt ObjectManager, dac\u0103 fi\u015fierul este utilizat de alt program.
+
+# {0} The Name of the log file.
+# {1} The expected size of the log file.
+# {2} Byte found not to exist in the physical file.
+PrematureEndOfLogFileException_info=CWSOM1037E: Fi\u015fierul istoric cu numele={0}(String), dimensiunea fizic\u0103 a fost g\u0103sit\u0103 mai mic\u0103 dec\u00e2t dimensiunea a\u015fteptat\u0103={1}(long) la \u00eencercarea de accesare octet={2}(Long).
+PrematureEndOfLogFileException_info.explanation=Fi\u015fierul nu se termin\u0103 \u00een mod normal, fi\u015fierul fizic ar putea fi trunchiat.
+PrematureEndOfLogFileException_info.useraction=Afla\u0163i de ce este deteriorat fi\u015fierul istoricului, restaura\u0163i fi\u015fierul nedeteriorat original.
+
+# {0} The ObjectManager throwing the exception.
+NoRestartableObjectStoresAvailableException_info=CWSOM1038E: ObjectManager={0} a g\u0103sit c\u0103 nu sunt disponibile ObjectStore-uri restartabile. 
+NoRestartableObjectStoresAvailableException_info.explanation=ObjectManager-ului i s-a cerut s\u0103 stocheze o referin\u0163\u0103 la un ManagedObject numit. \
+Totu\u015fi nu exist\u0103 ObjectStore-uri ce pot fi repornite \u00een care s\u0103-l depoziteze.
+NoRestartableObjectStoresAvailableException_info.useraction=Afla\u0163i dac\u0103 ave\u0163i nevoie s\u0103 folosi\u0163i un ManagedObject numit. \
+\u00cen cazul \u00een care ave\u0163i nevoie s\u0103 utiliza\u0163i un ManagedObject numit, crea\u0163i un ObjectStore ce poate fi repornit.
+
+# {0} The key which already exists in the map.
+# {1} The existing entry in the map.
+# {2} The transaction locking the duplicate entry or null.
+DuplicateKeyExceptionException_info=CWSOM1039E: Cheie duplicat\u0103={0}(Object) intr\u0103 \u00een conflict cu intrarea existent\u0103={1}(Map.Entry) blocat\u0103 de tranzac\u0163ia={3}(InternalTransaction). 
+DuplicateKeyExceptionException_info.explanation=A avut loc o \u00eencercare de a ad\u0103uga o cheie unic\u0103 la o hart\u0103 atunci c\u00e2nd o cheie identic\u0103 exist\u0103 deja \u00een hart\u0103. Cheia existent\u0103 face deja parte din alt\u0103 tranzac\u0163ie \u015fi nu poate fi \u00eenlocuit\u0103 cu noua cheie.
+DuplicateKeyExceptionException_info.useraction=Fie cere\u0163i ad\u0103garea unei chei duplicate folosind metoda putDuplicate sau afla\u0163i de ce \u00eencearc\u0103 aplica\u0163ia s\u0103 \u00eenlocuiasc\u0103 o cheie existent\u0103.
+
+# {0} Number of bytes requested in the store file.
+# {1} Existing store file size in bytes.
+# {2} Number of bytes currently used in the store file.
+StoreFileSizeTooSmallException_info=CWSOM1040E: Dimensiunea de fi\u015fier ObjectStore este prea mic\u0103, dimensiunea cerut\u0103={0}(long), dimensiunea existent\u0103={1}(long) used size={2}(long). 
+StoreFileSizeTooSmallException_info.explanation=ObjectManager-ului i s-a cerut s\u0103 reduc\u0103 m\u0103rimea unui fi\u015fier de depozit la o lungime care nu poate con\u0163ine \u00een fi\u015fier ManagedObject-urile existente.
+StoreFileSizeTooSmallException_info.useraction=Face\u0163i o cerere pentru ca spa\u0163iul suficient s\u0103 con\u0163in\u0103 ManagedObject-urile existente. 
+
+# {0} The java.nio.XXXX Exception that was caught by the ObjectManager.
+PermanentNIOException_info=CWSOM1041E: ObjectManager a prins excep\u0163ia={0}(java.nio.XXX Exception). 
+PermanentNIOException_info.explanation=O excep\u0163ie nio a fost prins\u0103 de ObjectManager, opera\u0163ia de Intrare/Ie\u015fire nu a putut fi re\u00eencercat\u0103 \u00een siguran\u0163\u0103 \u015fi a fost abandonat\u0103.
+PermanentNIOException_info.useraction=Excep\u0163ia nio con\u0163ine cauza problemei de baz\u0103. \
+Investiga\u0163i \u015fi rezolva\u0163i cauza excep\u0163iei de baz\u0103.
+
+# {0} The ObjectStore asked to fulfill the allocation request.
+# {1} The ManagedObject requesting the allocation.
+ObjectStoreFullException_info=CWSOM1042E: ObjectStore-ului={0}(ObjectStore) i s-a cerut s\u0103 aloce spa\u0163iu pentru ManagedObject={1}(ManagedObject) c\u00e2nd era plin. 
+ObjectStoreFullException_info.explanation=Un ObjectStore era deja plin atunci c\u00e2nd a fost f\u0103cut\u0103 o nou\u0103 cerere de alocare. \
+Cererea de alocare este refuzat\u0103.
+ObjectStoreFullException_info.useraction=Decide\u0163i-v\u0103 dac\u0103 ar trebui s\u0103 m\u0103ri\u0163i ObjectStore sau s\u0103 determina\u0163i dac\u0103 s\u0103 \u00eenl\u0103tura\u0163i ni\u015fte obiecte existente. \
+De asmenea ar trebui s\u0103 \u00eencerca\u0163i s\u0103 stoca\u0163i mai multe obiecte sau mai mari dec\u00e2t a\u0163i pl\u0103nuit.
+
+# {0} The logfiletype that was passed to the ObjectManager constructor.
+InvalidLogFileTypeException_info=CWSOM1043E: ObjectManager-ului i s-a transmis un tip de fi\u015fier istoric={0}(int) invalid. 
+InvalidLogFileTypeException_info.explanation=Costructorului ObjectManager-ului i s-a transmis un tip de fi\u015fier istoric care nu a fost recunoscut ca unul din tipurile LOG_FILE_TYPE_XXXX. \
+ObjectManager nu este instan\u0163iat.
+InvalidLogFileTypeException_info.useraction=Modifica\u0163i invocarea constructorului ca s\u0103 foloseasc\u0103 un tip de fi\u015fier istoric recunoscut.
+
+# {0} The List from which the sublist is to be created.
+# {1} The entry which is not in the list.
+SubListEntryNotInListException_info=CWSOM1044E: Listei={0}(List) i s-a cerut s\u0103 o sublist\u0103 delimitat\u0103 de List.Entry={1}(List.Entry) pe care nu o con\u0163ine. 
+SubListEntryNotInListException_info.explanation=A fost solicitat\u0103 o list\u0103 pentru a crea o sublist\u0103 delimitat\u0103 de intr\u0103ri pe care nu le con\u0163inea. \
+Sublista nu a fost creat\u0103.
+SubListEntryNotInListException_info.useraction=Revede\u0163i codul aplica\u0163iei pentru a determina de ce intrarea nu era \u00een list\u0103. \
+De exemplu intrarea se poate s\u0103 fi fost deja \u00eenl\u0103turat\u0103 din list\u0103.
+
+# {0} The List from which the sublist is to be created.
+ObjectSignatureNotFoundException_info=CWSOM1045E: ObjectManager a \u00eencercat s\u0103 deserializeze un ManagedObject cu semn\u0103tura={0}(int) pe care nu a recunsocut-o.
+ObjectSignatureNotFoundException_info.explanation=O semn\u0103tur\u0103 nerecunoscut\u0103 a fost g\u0103sit\u0103 \u00een MangedObject. Astfel deserializarea a fost abandonat\u0103.
+ObjectSignatureNotFoundException_info.useraction=-CMSG0002
+
+# {0} The ObjectStore being constructed.
+# {1} The store strategy value that is not valid.
+InvalidStoreStrategyException_info=CWSOM1046E: ObjectStore={0} a fost construit folosind o stategie de stocare={1}(int) invalid\u0103. 
+InvalidStoreStrategyException_info.explanation=ObjectStore-urile pot fi construite cu strategii de stocare valide.
+InvalidStoreStrategyException_info.useraction=Utiliza\u0163i o strategie de stocare valid\u0103 pentru a construi ObjectStore-ul. \
+Referi\u0163i-v\u0103 la ObjectManagerjavadoc pentru strategii valide.
+
+# {0} The Name of the new ObjectStore.
+# {1} The objectStoreIdentifier of the new and existing store.
+# {2} ObjectStore already using the identifier.
+DuplicateObjectStoreIdentifierException_info=CWSOM1047E: S-a \u00eencercat construirea unui ObjectStore folosind storeName={0}(String) \u015fi identificator {1} care a fost deja folosit de ObjectStore={2}.
+DuplicateObjectStoreIdentifierException_info.explanation=Identificatorii ObjectStore trebuie s\u0103 fie unici \u00een ObjectManager.
+DuplicateObjectStoreIdentifierException_info.useraction=Ad\u0103uga\u0163i ObjectStore-uri existente la ObjectManager \u00eenainte de a crea noile ObjectStore-uri. \
+Aceast\u0103 procedur\u0103 \u00eei permite ObjectManager-ului s\u0103 evite reutilizarea identificatorului.
+
+# {0} The Object discovering data corruption.
+# {1} The corrupted object.
+GuardBytesException_info=CWSOM1048E: Object={0} a descoperit date posibil corupte \u00een Object={1}(Object). 
+GuardBytesException_info.explanation=Pentru datele protejate de octe\u0163i Guard, ObjectManager a descoperit o nepotrivire \u00een valoarea octe\u0163ilor Guard.
+GuardBytesException_info.useraction=-CMSG0002
+
+# {0} The name of the ObjectStore discovering corruption in its file header.
+# {1} The corrupted signature found.
+# {2} The correct signature expected.
+InvalidStoreSignatureException_info=CWSOM1049E: ObjectStore nume={0} a descoperit o semn\u0103tur\u0103 corupt\u0103={1}(String) \u00een locul semn\u0103turii corecte={2}(String). 
+InvalidStoreSignatureException_info.explanation=ObjectStore-ul are antetul corupt \u015fi nu poate fi procesat.
+InvalidStoreSignatureException_info.useraction=Afla\u0163i cum a devenit fi\u015fierul corupt \u015fi restaura\u0163i o copie de rezerv\u0103.
+
+# {0} The LogFileHeader discovering corruption in its file header.
+# {1} The corrupted signature found.
+# {2} The correct signature expected.
+InvalidLogFileSignatureException_info=CWSOM1050E: A fost g\u0103sit\u0103 o semn\u0103tur\u0103 corupt\u0103={0}(String) \u00een fi\u015fierul istoric \u00een locul semn\u0103turii corecte={1}(String). 
+InvalidLogFileSignatureException_info.explanation=Fi\u015fierul istoricului are un antet corupt \u015fi nu poate fi procesat.
+InvalidLogFileSignatureException_info.useraction=Afla\u0163i cum a devenit fi\u015fierul corupt \u015fi restaura\u0163i o copie de rezerv\u0103.
+
+# {0} The name of the thread which is being asked to perform the request.
+# {1} The name of the request the thread is being asked to perform.
+ThreadNotRunningException_info=CWSOM1051E: Firului={0} i s-a cerut s\u0103 realizeze cererea={1} dup\u0103 ce s-a oprit. 
+ThreadNotRunningException_info.explanation=Firul specificat a e\u015fuat sau i s-a cerut s\u0103 se opreasc\u0103 c\u00e2nd cererea a fost f\u0103cut\u0103.
+ThreadNotRunningException_info.useraction=-CMSG0002
+
+# {0} ObjectStore which is unable to locate the file.
+# {1} The exception caught by the ObjectStore when trying to locate the file, or null.
+# {2} The file name of the file that cannot be found.
+NonExistentObjectStoreFileException_info=CWSOM1052E: ObjectStore={0}(ObjectStore) a prins excep\u0163ia={1}(Exception) \u00eencerc\u00e2nd s\u0103 localizeze sau s\u0103 creeze fi\u015fierul cu numele={2}(String). 
+NonExistentObjectStoreFileException_info.explanation=O excep\u0163ie a fost prins\u0103 atunci c\u00e2nd ObjectStore a \u00eencercat s\u0103 deschid\u0103 fi\u015fierul numit. ObjectManager nu va porni.
+NonExistentObjectStoreFileException_info.useraction=Verifica\u0163i dac\u0103 numele fi\u015fierului este valid, dac\u0103 fi\u015fierul exist\u0103 \u015fi c\u0103 ObjectManager are permisiunile corespunz\u0103toare pentru a-l scrie. \
+Dac\u0103 este necesar furniza\u0163i o mapare a numelui depozitului logic la loca\u0163ia fizic\u0103 a fi\u015fierului atunci c\u00e2nd ObjectManager porne\u015fte.
+
+# ----------------------------------------------------------------------------------------------------
+
+# {0} is the text of the message.
+TEMPORARY_SIOM9999=CWSOM9999E: {0}
+TEMPORARY_SIOM9999.explanation=\u00cen cazul \u00een care mesajul nu ofer\u0103 suficiente informa\u0163ii, vede\u0163i mesajele \u00eenrudite pentru ajutor suplimentar.
+TEMPORARY_SIOM9999.useraction=Verifica\u0163i mesajele anterioare pentru mai multe informa\u0163ii.

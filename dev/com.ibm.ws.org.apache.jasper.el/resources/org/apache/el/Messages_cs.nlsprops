@@ -1,0 +1,67 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+#CMVCPATHNAME com.ibm.ws.apache.el-3.0/resources/org/apache/el/Messages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+
+# General Errors
+error.convert=Nelze p\u0159ev\u00e9st {0} typu {1} na {2}
+error.compare=Nelze porovnat {0} s {1}
+error.function=Probl\u00e9my p\u0159i vol\u00e1n\u00ed funkce ''{0}''
+error.unreachable.base=Nedosa\u017eiteln\u00fd c\u00edl, identifik\u00e1tor ''{0}'' vy\u0159e\u0161en na hodnotu null
+error.unreachable.property=Nedosa\u017eiteln\u00fd c\u00edl, ''{0}'' vr\u00e1til hodnotu null
+error.resolver.unhandled=ELResolver nezpracoval typ: {0} s vlastnost\u00ed ''{1}''
+error.resolver.unhandled.null=ELResolver nem\u016f\u017ee zpracovat z\u00e1kladn\u00ed objekt null s identifik\u00e1torem ''{0}''
+
+# ValueExpressionLiteral
+error.value.literal.write=V\u00fdraz ValueExpression je liter\u00e1l a nen\u00ed schopn\u00fd z\u00e1pisu: {0}
+
+# ExpressionFactoryImpl
+error.null=V\u00fdraz nem\u016f\u017ee b\u00fdt null
+error.mixed=V\u00fdraz nem\u016f\u017ee obsahovat ''#''{..}'' i ''$''{..}'' : {0}
+error.method=Nen\u00ed platn\u00fdm v\u00fdrazem MethodExpression: {0}
+error.method.nullParms=Typy parametru nemohou b\u00fdt null
+error.value.expectedType=O\u010dek\u00e1van\u00fd typ nem\u016f\u017ee b\u00fdt null
+
+# ExpressionBuilder
+error.parseFail=Nezda\u0159ilo se zanalyzovat v\u00fdraz [{0}]
+
+# ValueSetVisitor
+error.syntax.set=Nepovolen\u00e1 syntaxe pro mno\u017einovou operaci
+
+# ReflectionUtil
+error.method.notfound=Metoda nebyla nalezena: {0}.{1}({2})
+error.method.ambiguous=Nelze naj\u00edt jednozna\u010dnou metodu: {0}.{1}({2})
+
+# ValidatingVisitor
+error.fnMapper.null=V\u00fdraz pou\u017e\u00edv\u00e1 funkce, ale nebyl dod\u00e1n \u017e\u00e1dn\u00fd parametr FunctionMapper
+error.fnMapper.method=Funkce ''{0}'' nebyla nalezena
+error.fnMapper.paramcount=Funkce ''{0}'' ur\u010duje {1} parametr\u016f, deklarov\u00e1ny byly {2}
+
+# ExpressionImpl
+error.context.null=ELContext byl null
+
+# Parser
+error.funciton.tooManyMethodParameterSets=Existuje v\u00edce sad parametr\u016f ur\u010den\u00fdch pro funkci [{0}]
+error.identifier.notjava=Identifik\u00e1tor [{0}] nen\u00ed platn\u00fdm identifik\u00e1torem jazyka Java, jak je po\u017eadov\u00e1no v sekci 1.19 specifikace El (Identifik\u00e1tor ::= identifik\u00e1tor jazyka Java). Tuto kontrolu lze vypnout nastaven\u00edm syst\u00e9mov\u00e9 vlastnosti org.apache.el.parser.SKIP_IDENTIFIER_CHECK na true.
+error.lambda.tooManyMethodParameterSets=Ur\u010den\u00fdch sad parametr\u016f metody je v\u00edce ne\u017e vno\u0159en\u00fdch v\u00fdraz\u016f lambda
+
+# Stream
+stream.compare.notComparable=Prvky proudu musej\u00ed implementovat srovnateln\u00e9
+stream.optional.empty=Nen\u00ed povoleno volat metodu get() pro voliteln\u011b pr\u00e1zdn\u00e9
+stream.optional.paramNotLambda=Parametr pro metodu [{0}] by m\u011bl b\u00fdt v\u00fdraz lambda

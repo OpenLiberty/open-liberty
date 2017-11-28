@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+        <title>Addressbook JSF Form</title>
+    <h:body>
+        <h:form id="form">
+            <p>
+                <strong>First Name</strong>
+                <h:inputText id="firstName" value="#{addressbook.firstname}" />
+            </p>
+            <p>
+                <strong>Last Name</strong>
+                <h:inputText id="lastName" value="#{addressbook.lastname}" />
+            </p>
+            <p>
+                <strong>Email Address</strong>
+                <h:inputText id="eMailAddr" value="#{addressbook.emailaddr}" />
+            </p>
+            <p>
+                <strong>Phone Number</strong>
+                <h:inputText id="phoneNum" value="#{addressbook.phonenum}" />
+            </p>
+            <p>
+                <h:commandButton value="Add" action="#{addressbook.add}" />
+            </p>
+        </h:form>
+    </h:body>
+</html>

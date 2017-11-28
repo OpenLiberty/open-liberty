@@ -27,7 +27,7 @@ addRequiredLibraries {
            'commons-codec:commons-codec:1.6',
            'org.apache.directory.server:apacheds-service:2.0.0-M15',
            project(':fattest.simplicity'),
-           project(':apache_directory_server'),
+           project(':com.ibm.ws.org.apache.directory.server'),
            project(':com.ibm.ws.webcontainer.security_test.servlets')
     }
     // Copy the dependencies wherever they may be needed

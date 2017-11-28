@@ -1,0 +1,75 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jca.cm/resources/com/ibm/ws/jca/cm/internal/resources/J2CAMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA Connection Management
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+DEACTIVATED_J2CA8001=J2CA8001I: {0} {1} indisponible.
+DEACTIVATED_J2CA8001.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+DEACTIVATED_J2CA8001.useraction=Aucune action n'est requise.
+
+DEACTIVATED_J2CA8006=J2CA8006I: L''\u00e9l\u00e9ment {0} {1} dans {2} n''est pas disponible.
+DEACTIVATED_J2CA8006.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+DEACTIVATED_J2CA8006.useraction=Aucune action n'est requise.
+
+UNKNOWN_PROP_J2CA8010=J2CA8010W: Propri\u00e9t\u00e9 {0} non reconnue : {1}
+UNKNOWN_PROP_J2CA8010.explanation=Une propri\u00e9t\u00e9 configur\u00e9e n'est pas reconnue.
+UNKNOWN_PROP_J2CA8010.useraction=Corrigez ou supprimez la propri\u00e9t\u00e9 configur\u00e9e.
+
+UNSUPPORTED_VALUE_J2CA8011=J2CA8011E: La valeur {0} n''est pas prise en charge pour {1} sur {2}
+UNSUPPORTED_VALUE_J2CA8011.explanation=Une valeur configur\u00e9e n'est pas prise en charge.
+UNSUPPORTED_VALUE_J2CA8011.useraction=Corrigez la valeur ou supprimez la propri\u00e9t\u00e9 configur\u00e9e.
+
+MISSING_LIBRARY_J2CA8020=J2CA8020E: Impossible de charger ou d''acc\u00e9der aux fichiers dans la biblioth\u00e8que {0}
+MISSING_LIBRARY_J2CA8020.explanation=Des fichiers ne peuvent pas \u00eatre charg\u00e9s \u00e0 partir de la biblioth\u00e8que partag\u00e9e.
+MISSING_LIBRARY_J2CA8020.useraction=V\u00e9rifiez les droits sur les fichiers et la configuration de la biblioth\u00e8que partag\u00e9e.
+
+MISSING_LIBRARY_J2CA8022=J2CA8022E: L''application {0} n''a pas de biblioth\u00e8que partag\u00e9e qui fournit {1} pour {2} {3}.
+MISSING_LIBRARY_J2CA8022.explanation=Pour utiliser des sources de donn\u00e9es d\u00e9finies par l'application, le pilote JDBC qui fournit la classe de source de donn\u00e9es doit \u00eatre rendu disponible en tant que biblioth\u00e8que partag\u00e9e pour l'application.
+MISSING_LIBRARY_J2CA8022.useraction=Ajoutez le pilote JDBC en tant que biblioth\u00e8que partag\u00e9e pour l'application.
+
+MISSING_RESOURCE_J2CA8030=J2CA8030E: Impossible de trouver {0} {1} pour {2} {3}.
+MISSING_RESOURCE_J2CA8030.explanation=La ressource sp\u00e9cifi\u00e9e requiert une autre ressource qui n'est pas disponible.
+MISSING_RESOURCE_J2CA8030.useraction=V\u00e9rifiez que la ressource est correctement configur\u00e9e.
+
+CARDINALITY_ERROR_J2CA8040=J2CA8040E: {0} {1} ne peut avoir qu''un seul \u00e9l\u00e9ment {2}.
+CARDINALITY_ERROR_J2CA8040.explanation=La ressource ne peut pas avoir plus d'un \u00e9l\u00e9ment du type sp\u00e9cifi\u00e9.
+CARDINALITY_ERROR_J2CA8040.useraction=Mettez \u00e0 jour la configuration afin qu'il n'y ait qu'un seul \u00e9l\u00e9ment du type sp\u00e9cifi\u00e9 associ\u00e9 \u00e0 la ressource.
+
+RECOMMEND_AUTH_ALIAS_J2CA8050=J2CA8050I: Utilisez un alias d''authentification au lieu de d\u00e9finir un nom d''utilisateur et un mot de passe sur {0}.
+RECOMMEND_AUTH_ALIAS_J2CA8050.explanation=Il est recommand\u00e9 d'utiliser un alias d'authentification au lieu de configurer un nom d'utilisateur et un mot de passe sur une ressource.
+RECOMMEND_AUTH_ALIAS_J2CA8050.useraction=Configurez le nom d'utilisateur et le mot de passe dans un \u00e9l\u00e9ment authData au lieu de le faire directement sur la ressource. 
+
+INVALID_MBEAN_INVOKE_PARAM_J2CA8060=J2CA8060E : {0} n''est pas un param\u00e8tre valide pour l''action {1}.
+INVALID_MBEAN_INVOKE_PARAM_J2CA8060.explanation=Les param\u00e8tres sp\u00e9cifi\u00e9s pour une action doivent correspondre aux param\u00e8tres valides pour l'action donn\u00e9e.
+INVALID_MBEAN_INVOKE_PARAM_J2CA8060.useraction=Indiquez des param\u00e8tres valides pour l'action qui est appel\u00e9e.
+
+INVALID_MBEAN_INVOKE_ACTION_J2CA8061=J2CA8061E : {0} n''est pas une action valide pour le bean g\u00e9r\u00e9 {1}.
+INVALID_MBEAN_INVOKE_ACTION_J2CA8061.explanation=Une tentative d'appel d'une action qui n'\u00e9tait pas disponible a \u00e9t\u00e9 effectu\u00e9e pour le bean g\u00e9r\u00e9 sp\u00e9cifi\u00e9.
+INVALID_MBEAN_INVOKE_ACTION_J2CA8061.useraction=Remplacez l'action qui est appel\u00e9e par une m\u00e9thode valide pour le bean g\u00e9r\u00e9 sp\u00e9cifi\u00e9.
+
+MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062=J2CA8062E : L''attribut {0} n''est pas valide pour le bean g\u00e9r\u00e9 {1}.
+MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.explanation=Une tentative d'obtention ou de d\u00e9finition d'un attribut qui n'\u00e9tait plus disponible a \u00e9t\u00e9 effectu\u00e9e pour le bean g\u00e9r\u00e9 sp\u00e9cifi\u00e9.
+MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.useraction=Remplacez l'attribut sp\u00e9cifi\u00e9 par l'un des attributs disponibles pour ce bean g\u00e9r\u00e9.

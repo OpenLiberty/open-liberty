@@ -1,0 +1,79 @@
+###############################################################################
+# Copyright (c) 2014, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.csiv2/resources/com/ibm/ws/security/csiv2/server/internal/resources/CSIv2ServerContainerMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server CSIv2 for the server container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9600 - CWWKS9699
+
+# Client CSIv2 Configuration related messages CWWKS9600 - CWWKS9619
+# -------------------------------------------------------------------------------------------------
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID=CWWKS9600E: M\u00e9canisme(s) de couche d''authentification non valide(s) sp\u00e9cifi\u00e9(s) pour la s\u00e9curit\u00e9 client {0}. Les valeurs valides sont GSSUP ou LTPA ou GSSUP, LTPA.
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.explanation=Les m\u00e9canismes d'authentification de s\u00e9curit\u00e9 client ne sont pas pris en charge.
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.useraction=V\u00e9rifiez que les m\u00e9canismes d'authentification de la s\u00e9curit\u00e9 client sp\u00e9cifi\u00e9s sont GSSUP ou LTPA ou GSSUP, LTPA.
+
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL=CWWKS9601W: Les m\u00e9canismes de couche d'authentification sp\u00e9cifi\u00e9s dans la s\u00e9curit\u00e9 client sont de type null.
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.explanation=Les m\u00e9canismes de couche d'authentification pour la s\u00e9curit\u00e9 client sp\u00e9cifi\u00e9s sont de type null.
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.useraction=V\u00e9rifiez que le m\u00e9canisme de couche d'authentification de la s\u00e9curit\u00e9 client sp\u00e9cifi\u00e9 est GSSUP ou LTPA ou GSSUP, LTPA.
+
+
+# Server CSIv2 Configuration related messages CWWKS9620 - CWWKS9639
+# -------------------------------------------------------------------------------------------------
+CSIv2_SERVER_AUTH_MECHANISM_INVALID=CWWKS9620E: M\u00e9canisme(s) de couche d''authentification non valide(s) sp\u00e9cifi\u00e9(s) dans la r\u00e8gle de s\u00e9curit\u00e9 du serveur {0}. Les valeurs valides sont GSSUP ou LTPA ou GSSUP, LTPA.
+CSIv2_SERVER_AUTH_MECHANISM_INVALID.explanation=Les m\u00e9canismes de couche d'authentification pour la r\u00e8gle de s\u00e9curit\u00e9 serveur sp\u00e9cifi\u00e9s ne sont pas pris en charge.
+CSIv2_SERVER_AUTH_MECHANISM_INVALID.useraction=V\u00e9rifiez que le m\u00e9canisme de couche d'authentification pour la r\u00e8gle de s\u00e9curit\u00e9 du serveur est GSSUP ou LTPA ou GSSUP, LTPA.
+
+CSIv2_SERVER_AUTH_MECHANISMS_NULL=CWWKS9621W: Les m\u00e9canismes de couche d'authentification sp\u00e9cifi\u00e9s dans la s\u00e9curit\u00e9 client sont de type null.
+CSIv2_SERVER_AUTH_MECHANISMS_NULL.explanation=Les m\u00e9canismes de couche d'authentification sp\u00e9cifi\u00e9s pour la s\u00e9curit\u00e9 client sont de type null.
+CSIv2_SERVER_AUTH_MECHANISMS_NULL.useraction=V\u00e9rifiez que le m\u00e9canisme sp\u00e9cifi\u00e9 de couche d'authentification de la s\u00e9curit\u00e9 client est GSSUP ou LTPA ou GSSUP, LTPA.
+
+CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG=CWWKS9622E: La configuration SSL {0} dans la couche transport CSIv2 entrante ne correspond pas \u00e0 une configuration SSK dans le noeud final IIOP.
+CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG.explanation=La couche transport CSIv2 entrante utilise une configuration SSL mais le noeud final IIOP n'utilise pas la m\u00eame.
+CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG.useraction=Assurez-vous que la configuration SSL dans la couche transport CSIv2 entrante dans le fichier server.xml est l'une des configurations SSL utilis\u00e9es par le noeud final IIOP.
+
+#Do not translate iiopsOptions
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT=CWWKS9623E: Le noeud final IIOP n''a pas de configuration SSL et la couche de transport CSIv2 entrante requiert que la configuration SSL {0} soit utilis\u00e9e dans le noeud final IIOP.
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT.explanation=Le noeud final IIOP ne comporte pas au moins l'un des \u00e9l\u00e9ments iiopsOptions avec une configuration SSL auquel la couche de transport CSIv2 entrante pourrait faire r\u00e9f\u00e9rence.
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT.useraction=Assurez-vous que le noeud final IIOP comporte au moins un \u00e9l\u00e9ment iiopsOptions avec la m\u00eame configuration SSL que celle utilis\u00e9e par la couche de transport CSIv2 entrante.
+
+# Client CSIv2 runtime related messages CWWKS9640 - CWWKS9659
+# -------------------------------------------------------------------------------------------------
+# Do not translate ITTDistinguishedName
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_DN=CWWKS9640E: Le client ne peut pas cr\u00e9er le jeton de v\u00e9rification d''identit\u00e9 ITTDistinguishedName pour le nom distinctif {0}. Message de l''exception : {1}
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_DN.explanation=Le sujet de l'utilisateur en cours de v\u00e9rification ne contient pas un nom distinctif valide et la v\u00e9rification d'identit\u00e9 ne peut pas \u00eatre effectu\u00e9e. 
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_DN.useraction=Consultez le message d'exception, v\u00e9rifiez que le registre d'utilisateurs configur\u00e9 dans le fichier server.xml prend en charge les noms distinctifs, et authentifiez de nouveau l'utilisateur.
+
+# Do not translate ITTX509CertChain
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_CC=CWWKS9641E: Le client ne peut pas cr\u00e9er le jeton de v\u00e9rification d''identit\u00e9 ITTX509CertChain. Message de l''exception : {0}
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_CC.explanation=Le sujet de l'utilisateur en cours de v\u00e9rification ne contient pas un  certificat valide et la v\u00e9rification d'identit\u00e9 ne peut pas \u00eatre effectu\u00e9e. 
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_CC.useraction=Consultez le message d'exception et assurez-vous que le magasin de cl\u00e9s, SSL, et la couche transport de la politique de serveur sont correctement configur\u00e9s dans le fichier server.xml et authentifiez de nouveau l'utilisateur.
+
+CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID=CWWKS9642E: La cha\u00eene de certificat client n'est pas disponible pour continuer la v\u00e9rification d'identit\u00e9.
+CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID.explanation=Le sujet de l'utilisateur en cours de v\u00e9rification ne contient pas un  certificat valide et la v\u00e9rification d'identit\u00e9 ne peut pas \u00eatre effectu\u00e9e. 
+CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID.useraction=Assurez-vous que le magasin de cl\u00e9s, SSL, et la couche transport de la politique de serveur sont correctement configur\u00e9s dans le fichier server.xml et authentifiez de nouveau l'utilisateur.
+
+# Server CSIv2 runtime related messages CWWKS9660 - CWWKS9679
+# -------------------------------------------------------------------------------------------------
+NO_USER_REGISTRY=CWWKS9660E: L''\u00e9l\u00e9ment orb avec l''ID d''attribut {0} n\u00e9cessite un registre d''utilisateurs, mais aucun n''est devenu disponible dans les {1} secondes.   Par cons\u00e9quent, les application ne d\u00e9marreront pas. V\u00e9rifiez que vous avez configur\u00e9 un registre d''utilisateurs dans le fichier server.xml.
+NO_USER_REGISTRY.explanation=Aucune application n'a d\u00e9marr\u00e9 car une fonction ORB (Object Request Broker) s\u00e9curis\u00e9e sur un serveur a besoin d'un registre d'utilisateurs, mais aucun n'a \u00e9t\u00e9 trouv\u00e9. Les applications d\u00e9marreront lorsqu'un registre d'utilisateurs aura \u00e9t\u00e9 configur\u00e9.
+NO_USER_REGISTRY.useraction=V\u00e9rifiez que vous avez configur\u00e9 un registre d'utilisateurs ad\u00e9quat pour votre environnement.
+
+# Common CSIv2  related messages CWWKS9680 - CWWKS9699
+# -------------------------------------------------------------------------------------------------
+CSIv2_COMMON_AUTH_LAYER_DISABLED=CWWKS9680W: La couche d''authentification CSIv2 est d\u00e9sactiv\u00e9e car la valeur pour establishTrustInClient est {0}.
+CSIv2_COMMON_AUTH_LAYER_DISABLED.explanation=Lorsque establishTrustInClient a la valeur Never, la couche d'authentification CSIv2 est d\u00e9sactiv\u00e9e.  
+CSIv2_COMMON_AUTH_LAYER_DISABLED.useraction=Pour activer la couche d'authentification CSIv2, attribuez la valeur Supported ou Required \u00e0 establishTrustInClient.
+
+

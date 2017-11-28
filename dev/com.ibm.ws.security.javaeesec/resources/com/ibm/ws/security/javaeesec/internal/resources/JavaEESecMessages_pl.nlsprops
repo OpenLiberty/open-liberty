@@ -1,0 +1,40 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.javaeesec/resources/com/ibm/ws/security/javaeesec/internal/resources/JavaEESecMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Java EE Security 1.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS1900 - CWWKS1924
+# 1900 to 1909 will be used for some informational message such as JSR375 is enabled or something like that...
+
+JAVAEESEC_ERROR_NO_IDENTITYSTORES=CWWKS1910E: Nie znaleziono obiektu IdentityStore. Upewnij si\u0119, \u017ce zdefiniowano co najmniej jeden obiekt IdentityStore za pomoc\u0105 adnotacji w aplikacji.
+JAVAEESEC_ERROR_NO_IDENTITYSTORES.explanation=Nie znaleziono obiektu IdentityStore. Jest on wymagany na potrzeby uwierzytelniania i autoryzacji.
+JAVAEESEC_ERROR_NO_IDENTITYSTORES.useraction=Upewnij si\u0119, \u017ce aplikacja zawiera poprawne adnotacje, kt\u00f3re udost\u0119pniaj\u0105 co najmniej jeden obiekt IdentityStore.
+
+JAVAEESEC_ERROR_NO_VALIDATION=CWWKS1911E: \u017baden obiekt IdentityStore nie obs\u0142uguje sprawdzania poprawno\u015bci u\u017cytkownika. Upewnij si\u0119, \u017ce co najmniej jeden obiekt IdentityStore obs\u0142uguje sprawdzanie poprawno\u015bci u\u017cytkownika.
+JAVAEESEC_ERROR_NO_VALIDATION.explanation=\u017baden z obiekt\u00f3w IdentityStore nie obs\u0142uguje sprawdzania poprawno\u015bci u\u017cytkownika i dlatego kod zabezpiecze\u0144 nie umo\u017cliwia uwierzytelnienia u\u017cytkownika.
+JAVAEESEC_ERROR_NO_VALIDATION.useraction=Upewnij si\u0119, \u017ce co najmniej jeden obiekt IdentityStore obs\u0142uguje sprawdzanie poprawno\u015bci u\u017cytkownika.
+
+JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: Nie mo\u017cna zidentyfikowa\u0107 obiektu HttpAuthenticationMechanism na potrzeby uwierzytelniania. Upewnij si\u0119, \u017ce w aplikacji istnieje jeden obiekt HttpAuthenticationMechanism.
+JAVAEESEC_ERROR_NO_HAM.explanation=Nie mo\u017cna zidentyfikowa\u0107 obiektu HttpAuthenticationMechanism na potrzeby uwierzytelniania. By\u0107 mo\u017ce podanemu warunkowi nie odpowiada \u017caden obiekt lub odpowiada mu wiele obiekt\u00f3w. Upewnij si\u0119, \u017ce w aplikacji istnieje jeden obiekt HttpAuthenticationMechanism.
+JAVAEESEC_ERROR_NO_HAM.useraction=Upewnij si\u0119, \u017ce w aplikacji istnieje jeden obiekt HttpAuthenticationMechanism.
+
+JAVAEESEC_ERROR_NO_HAM_PROPS=CWWKS1913E: Nie mo\u017cna zidentyfikowa\u0107 obiektu HAMProperties na potrzeby uwierzytelniania. Prawdopodobnie w aplikacji nie ma \u017cadnego obiektu HttpAuthenticationMechanism. Upewnij si\u0119, \u017ce jest zdefiniowany jeden obiekt HttpAuthenticationMechanism.
+JAVAEESEC_ERROR_NO_HAM_PROPS.explanation=Nie mo\u017cna zidentyfikowa\u0107 obiektu HAMProperties na potrzeby uwierzytelniania. Prawdopodobnie w aplikacji nie zdefiniowano \u017cadnego obiektu HttpAuthenticationMechanism.
+JAVAEESEC_ERROR_NO_HAM_PROPS.useraction=Upewnij si\u0119, \u017ce w aplikacji istnieje jeden obiekt HttpAuthenticationMechanism.
+
+JAVAEESEC_WARNING_NO_REALM_NAME=CWWKS1914W: Nazwa dziedziny na potrzeby uwierzytelniania podstawowego nie jest ustawiona. Jest u\u017cywana warto\u015b\u0107 defaultRealm.
+JAVAEESEC_WARNING_NO_REALM_NAME.explanation=Nazwa dziedziny na potrzeby uwierzytelniania podstawowego nie jest ustawiona. Jest u\u017cywana warto\u015b\u0107 domy\u015blna defaultRealm.
+JAVAEESEC_WARNING_NO_REALM_NAME.useraction=Je\u015bli nazwa dziedziny musi zosta\u0107 ustawiona, ustaw j\u0105 w aplikacji przy u\u017cyciu adnotacji BasicAuthenticationMechanismDefinition.

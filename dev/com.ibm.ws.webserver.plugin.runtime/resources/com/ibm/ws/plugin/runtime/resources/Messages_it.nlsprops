@@ -1,0 +1,27 @@
+###############################################################################
+# Copyright (c) 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME 
+#COMPONENTPREFIX CWWKU
+#COMPONENTNAMEFOR Plugin Utility Runtime
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+collective.mbean.not.available=CWWKU0101E: Una richiesta di generare un file di configurazione del plug-in webserver non \u00e8 stata elaborata per il cluster {0} perch\u00e9 non \u00e8 stato trovato l''MBean della funzione collective controller.
+collective.mbean.not.available.explanation=La funzione collective controller deve essere abilitata perch\u00e9 il server elabori la richiesta.
+collective.mbean.not.available.useraction=Abilitare la funzione collective controller nel server di destinazione oppure indirizzare la richiesta a un server che ha la funzione collective controller gi\u00e0 abilitata.
+# --------------------------------
+# --------------------------------
+appserver.mbean.not.available=CWWKU0102E: Una richiesta di generare un file di configurazione del plug-in webserver non \u00e8 stata elaborata per questo server perch\u00e9 non \u00e8 stato trovato l'MBean della funzione Java Servlet.
+appserver.mbean.not.available.explanation=La funzione Java Servlet, 3.0 o 3.1, deve essere abilitata perch\u00e9 il server elabori la richiesta.
+appserver.mbean.not.available.useraction=Abilitare la funzione Java Servlet, 3.0 o 3.1, nel server di destinazione oppure indirizzare la richiesta a un server che ha la funzione Java Servlet gi\u00e0 abilitata.
+# -------------------------------- 

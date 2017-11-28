@@ -1,3 +1,13 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 #CMVCPATHNAME ws/code/jsf/src/com/ibm/ws/jsf/resources/messages.nlsprops
 #COMPONENTPREFIX JSFG
 #COMPONENTNAMEFOR JSFG jsf
@@ -5,6 +15,8 @@
 #NLS_ENCODING=UNICODE
 #NLS_MESSAGEFORMAT_VAR
 # -------------------------------------------------------------------------------------------------
+
+# JSFG0100-JSFG0199 reserved for jsfContainer-2.X features
 
 jsf.warn.myfaces.listener.for.ri.app=JSFG0851W: Sun RI 1.2 JSF Implementation rilevato per l''applicazione web {0} ma \u00e8 anche registrato un MyFaces StartupServletContextListener.
 jsf.warn.myfaces.listener.for.ri.app.explanation=\u00c8 stato trovato un listener che non corrisponde all'implementazione JSF che \u00e8 in uso.

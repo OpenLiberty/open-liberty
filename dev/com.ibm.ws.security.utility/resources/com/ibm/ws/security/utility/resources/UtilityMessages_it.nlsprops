@@ -1,0 +1,97 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.utility/resources/com/ibm/ws/security/utility/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+error=Errore: {0}
+error.inputConsoleNotAvailable=La console di input non \u00e8 disponibile.
+error.missingIO=Errore; manca l''unit\u00e0 I/O: {0}.
+
+usage=Utilizzo:  {0}
+task.unknown=Attivit\u00e0 sconosciuta: {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Common messages
+tooManyArgs=Troppi argomenti.
+insufficientArgs=Argomenti insufficienti.
+invalidArg=Argomento non valido {0}.
+missingArg=Argomento mancante {0}.
+missingValue=Valore mancante per l''argomento {0}.
+missingArg2=\u00c8 necessario fornire l''argomento {0} o l''argomento {1}.
+exclusiveArg=\u00c8 necessario fornire l''argomento {0} o l''argomento {1}, ma non entrambi.
+serverNotFound=Non \u00e8 stato possibile trovare il server specificato {0} all''ubicazione {1}
+
+
+encode.enterText=Immetti testo:
+encode.reenterText=Reimmetti testo:
+encode.readError=Errore di lettura del testo.
+encode.entriesDidNotMatch=Le immissioni non corrispondevano.
+
+
+password.enterText=Immetti password:
+password.reenterText=Reimmetti password:
+password.readError=Errore di lettura della password.
+password.entriesDidNotMatch=Le password non corrispondevano.
+
+name=nome
+days=giorni
+
+sslCert.abort=Interruzione della creazione del certificato:
+sslCert.createFailed=Impossibile creare il certificato SSL predefinito:\n\
+{0}
+sslCert.errorEncodePassword=Errore durante la codifica della password (certificato non creato):\n\
+{0}
+sslCert.createKeyStore=Creazione del keystore {0}\n
+sslCert.oneType=Gli argomenti {0} e {1} non possono essere forniti contemporaneamente.
+sslCert.clientNotFound=Non \u00e8 stato possibile trovare il client specificato {0} all''ubicazione {1}
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+sslCert.serverXML=Certificato SSL creato per il server {0}. Il certificato viene creato con {1} come DN soggetto.\n\
+\n\
+Aggiungere le seguenti righe al file server.xml per abilitare SSL:
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+sslCert.clientXML=Certificato SSL creato per il client {0}. Il certificato viene creato con {1} come DN soggetto.\n\
+\n\
+Aggiungere le seguenti righe al file client.xml per abilitare SSL:
+
+fileUtility.failedDirCreate=Impossibile creare la directory {0}
+file.exists=Il file keystore {0} gi\u00e0 esiste.  Impossibile creare un file keystore in tale ubicazione.
+file.requiredDirNotCreated=Impossibile creare la struttura directory richiesta per {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# The following string will be appended after encode.option-desc.encoding
+# message in UtilityOptions.nlsprops file.
+encode.option-custom.encryption=\n\
+\tE' anche disponibile la codifica password personalizzata.
+encode.option-desc.custom.feature=\n\
+\tIl nome funzione di {0} \u00e8 il seguente:\n\
+\t
+encode.option-desc.custom.description=\n\
+\tLa descrizione di {0} \u00e8 la seguente:\n\
+\t
+
+# The following message is shown when there is no custom password
+# encryption is enabled.
+no.custom.encyption=La codifica password personalizzata non \u00e8 rilevata.
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Note to translator: 'LTPA' should not be translated
+createLTPAKeys.abort=Interruzione della creazione del file della chiave LTPA:
+createLTPAKeys.fileExists=Il file {0} gi\u00e0 esiste.  Impossibile creare un file di chiavi LTPA in tale ubicazione.
+createLTPAKeys.createdFile=File di chiavi LTPA creato: {0}\n Includere la seguente configurazione in server.xml\n\
+{1}\n

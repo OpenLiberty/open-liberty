@@ -1,0 +1,89 @@
+###############################################################################
+# Copyright (c) 2007, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the message text
+#           must be followed by a 2nd apostrophe to work correctly.
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     MTDT (Metadata Framework)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# -----------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# cmvc_en_version_level=
+#
+#
+#CMVCPATHNAME ws/code/beanvalidation/src/com/ibm/ws/beanvalidation/resources/nls/BVNLSMessages.nlsprops
+#COMPONENTPREFIX CWNBV
+#COMPONENTNAMEFOR CWNBV Bean Validation
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the exception that caused this message to be displayed
+# -----------------------------------------------------------------------
+BVKEY_UNABLE_TO_REGISTER_WITH_INJECTION_ENGINE=CWNBV0001E: A kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa k\u00f6zben a BeanValidationService nem tudta regisztr\u00e1lni mag\u00e1t a beilleszt\u0151 szolg\u00e1ltat\u00e1sban. Azok az alkalmaz\u00e1sok, amelyek a ValidatorFactory vagy a Validator oszt\u00e1ly besz\u00far\u00e1s\u00e1t ig\u00e9nylik, meg fognak hi\u00fasulni. A k\u00f6vetkez\u0151 hiba t\u00f6rt\u00e9nt: {0}.
+BVKEY_UNABLE_TO_REGISTER_WITH_INJECTION_ENGINE.explanation=A BeanValidationService nem tudta regisztr\u00e1lni mag\u00e1t a beilleszt\u0151motorban, amikor az alkalmaz\u00e1skiszolg\u00e1l\u00f3 elindult. Nem v\u00e1rt hiba. Egyik lehets\u00e9ges ok: a besz\u00far\u00e1si szolg\u00e1ltat\u00e1s nincs elind\u00edtva.
+BVKEY_UNABLE_TO_REGISTER_WITH_INJECTION_ENGINE.useraction=Jav\u00edtsa ki a kor\u00e1bbi hib\u00e1kat, \u00e9s gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a besz\u00far\u00e1si szolg\u00e1ltat\u00e1s el lett ind\u00edtva. Ha a besz\u00far\u00e1si szolg\u00e1ltat\u00e1s rendelkez\u00e9sre \u00e1ll, de a hiba tov\u00e1bbra is fenn\u00e1ll, akkor tekintse \u00e1t a hibakeres\u00e9si t\u00e1j\u00e9koztat\u00f3t. Ez a WebSphere Application Server t\u00e1mogat\u00f3 weblapj\u00e1n \u00e9rhet\u0151 el az al\u00e1bbi c\u00edmen: http://www.ibm.com/software/webservers/appserv/was/support.
+
+BVKEY_UNABLE_TO_CREATE_VALIDATION_FACTORY=CWNBV0002E: A BeanValidationService nem tud l\u00e9trehozni egy ValidatorFactory oszt\u00e1lyt.
+BVKEY_UNABLE_TO_CREATE_VALIDATION_FACTORY.explanation=A BeanValidationService nem tud l\u00e9trehozni egy \u00e9rv\u00e9nyes\u00edt\u0151gy\u00e1rat. Nem v\u00e1rt hiba. Tov\u00e1bbi inform\u00e1ci\u00f3kat a megadott kiv\u00e9tel le\u00edr\u00e1s\u00e1ban tal\u00e1l. A probl\u00e9m\u00e1t okozhatja az alkalmaz\u00e1ssal kapott validation.xml f\u00e1jl.
+BVKEY_UNABLE_TO_CREATE_VALIDATION_FACTORY.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a kapott validation.xml file \u00e9rv\u00e9nyes, \u00e9s az alap\u00e9rtelmezett \u00e9rv\u00e9nyes\u00edt\u00e9sszolg\u00e1ltat\u00f3, \u00fczenetbesz\u00far\u00f3 \u00e9s \u00e1tj\u00e1rhat\u00f3 felold\u00f3 el\u00e9rhet\u0151 az oszt\u00e1lyel\u00e9r\u00e9si \u00fatvonalon. Ha a hiba annak ellen\u00e9re tov\u00e1bbra is fenn\u00e1ll, hogy a validation.xml f\u00e1jl \u00e9rv\u00e9nyes, \u00e9s az oszt\u00e1lyel\u00e9r\u00e9si \u00fatvonalon el\u00e9rhet\u0151 a megfelel\u0151 inform\u00e1ci\u00f3, akkor n\u00e9zze \u00e1t a hibakeres\u00e9si t\u00e1j\u00e9koztat\u00f3t. Ez a WebSphere Application Server t\u00e1mogat\u00f3 weblapj\u00e1n \u00e9rhet\u0151 el az al\u00e1bbi c\u00edmen: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path of module
+#    {1} is the name of the class that was trying to be loaded or instantiatedd
+#    {2} is the exception that caused this message to be displayed
+# -----------------------------------------------------------------------
+BVKEY_CLASS_NOT_FOUND=CWNBV0003E: A BeanValidationService nem tudott l\u00e9trehozni egy ValidationFactory oszt\u00e1lyt, mert nem tudta bet\u00f6lteni vagy p\u00e9ld\u00e1nyos\u00edtani a k\u00f6vetkez\u0151 oszt\u00e1lyt: {0} az al\u00e1bbi el\u00e9r\u00e9si \u00faton: {1}, a hiba: {2}.
+BVKEY_CLASS_NOT_FOUND.explanation=A BeanValidationService nem tudta bet\u00f6lteni vagy p\u00e9ld\u00e1nyos\u00edtani a ValidationFactory l\u00e9trehoz\u00e1shoz sz\u00fcks\u00e9ges oszt\u00e1lyt.  A probl\u00e9ma oka lehet, hogy az oszt\u00e1ly nem l\u00e9tezik, vagy nem \u00e9rhet\u0151 el az alkalmaz\u00e1s oszt\u00e1lyel\u00e9r\u00e9si \u00fatvonal\u00e1n.
+BVKEY_CLASS_NOT_FOUND.useraction=Ellen\u0151rizze, hogy l\u00e9tezik-e az oszt\u00e1ly, \u00e9s el\u00e9rhet\u0151-e az alkalmaz\u00e1s oszt\u00e1lyel\u00e9r\u00e9si \u00fatvonal\u00e1n.  Ha az oszt\u00e1ly \u00e9rv\u00e9nyes, \u00e9s az alkalmaz\u00e1s oszt\u00e1lyel\u00e9r\u00e9si \u00fatvonal\u00e1n \u00e9rhet\u0151 el, viszont a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, l\u00e1sd a hibameghat\u00e1roz\u00e1si tudnival\u00f3kat. Ez a WebSphere Application Server t\u00e1mogat\u00f3 weblapj\u00e1n \u00e9rhet\u0151 el az al\u00e1bbi c\u00edmen: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path of module
+#    {1} is the exception that caused this message to be displayed
+# -----------------------------------------------------------------------
+BVKEY_SYNTAX_ERROR_IN_VALIDATION_XML=CWNBV0004E: A(z) {0} helyen el\u00e9rhet\u0151 validation.xml f\u00e1jlban \u00e9rv\u00e9nytelen szintaxist vagy hib\u00e1t tal\u00e1lt a rendszer. A k\u00f6vetkez\u0151 t\u00e1rs\u00edtott hiba\u00fczenet jelentkezett: {1}
+BVKEY_SYNTAX_ERROR_IN_VALIDATION_XML.explanation=A validation.xml f\u00e1jl hib\u00e1kat tartalmaz, \u00e9s nem felel meg a s\u00e9mameghat\u00e1roz\u00e1snak.
+BVKEY_SYNTAX_ERROR_IN_VALIDATION_XML.useraction=Jav\u00edtsa ki a validation.xml f\u00e1jlban l\u00e9v\u0151 hib\u00e1kat, \u00e9s pr\u00f3b\u00e1lja meg \u00fajra.
+
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path name for the module
+# -----------------------------------------------------------------------
+BVKEY_NOT_A_BEAN_VALIDATION_XML=CWNBV0005W: A(z) {0} modulhoz l\u00e9tezik validation.xml f\u00e1jl. Ez a validation.xml f\u00e1jl azonban nincs be\u00e1ll\u00edtva \u00e9rv\u00e9nyes\u00edt\u00e9sre, \u00edgy figyelmen k\u00edv\u00fcl hagyja a rendszer.
+BVKEY_NOT_A_BEAN_VALIDATION_XML.explanation=A BeanValidationService nem tud l\u00e9trehozni egy ValidatorFactory oszt\u00e1lyt, mert hiba t\u00f6rt\u00e9nt a validation.xml f\u00e1jlnak a validation-configuration-1.0.xsd s\u00e9maf\u00e1jllal t\u00f6rt\u00e9n\u0151 \u00e9rtelmez\u00e9se k\u00f6zben. Ez a hiba jelezheti azt, hogy a validation.xml f\u00e1jl nem a komponensek fut\u00e1sidej\u0171 \u00e9rt\u00e9kel\u00e9s\u00e9re val\u00f3, ez\u00e9rt figyelmen k\u00edv\u00fcl hagyja a rendszer.
+BVKEY_NOT_A_BEAN_VALIDATION_XML.useraction=Ha a validation.xml f\u00e1jl nem ValidatorFactory p\u00e9ld\u00e1ny l\u00e9trehoz\u00e1s\u00e1ra k\u00e9sz\u00fclt, akkor hagyja figyelmen k\u00edv\u00fcl az \u00fczenetet. Ha azonban a validation.xml f\u00e1jl ValidatorFactory p\u00e9ld\u00e1ny l\u00e9trehoz\u00e1s\u00e1ra szolg\u00e1l, akkor gond van.  Enged\u00e9lyezze az alkalmaz\u00e1skiszolg\u00e1l\u00f3n a komponensek fut\u00e1sid\u0151ben t\u00f6rt\u00e9n\u0151 \u00e9rt\u00e9kel\u00e9s\u00e9nek nyomk\u00f6vet\u00e9s\u00e9t, \u00e1ll\u00edtsa le, majd ind\u00edtsa \u00fajra az alkalmaz\u00e1st, \u00e9s n\u00e9zze \u00e1t a nyomk\u00f6vet\u00e9s kimeneti f\u00e1jlj\u00e1t olyan nyomk\u00f6vet\u00e9si esem\u00e9nyeket keresve, mint: nem v\u00e1rt kiv\u00e9tel a validation.xml f\u00e1jl adatfolyamb\u00f3l val\u00f3 visszaalak\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet k\u00f6zben. A hibakeres\u00e9sben seg\u00edthet, ha megvizsg\u00e1lja a kiv\u00e9telverem nyomk\u00f6vet\u00e9si adatait is.
+
+# -----------------------------------------------------------------------
+JNDI_NON_JEE_THREAD_CWNBV0006E=CWNBV0006E: A java:comp/env n\u00e9ven egy JNDI m\u0171velet nem hajthat\u00f3 v\u00e9gre, mert az aktu\u00e1lis sz\u00e1l nincs t\u00e1rs\u00edtva Java Enterprise Edition alkalmaz\u00e1s\u00f6sszetev\u0151vel. Ez a helyzet akkor \u00e1llhat el\u0151, amikor a java:comp/env nevet haszn\u00e1l\u00f3 JNDI \u00fcgyf\u00e9l nem a kiszolg\u00e1l\u00f3 alkalmaz\u00e1s k\u00e9r\u00e9s\u00e9nek sz\u00e1l\u00e1n jelenik meg. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a Java EE alkalmaz\u00e1s nem futtat JNDI m\u0171veleteket java:comp/env neveken statikus k\u00f3dblokkok belsej\u00e9ben vagy az alkalmaz\u00e1s \u00e1ltal l\u00e9trehozott sz\u00e1lakban.  Az ilyen k\u00f3d nem felt\u00e9tlen\u00fcl a kiszolg\u00e1l\u00f3 alkalmaz\u00e1s k\u00e9r\u00e9s\u00e9nek sz\u00e1l\u00e1n fut, \u00e9s ebb\u0151l ered\u0151en a java:comp/env neveken v\u00e9gzett JNDI m\u0171veletek sem t\u00e1mogatj\u00e1k.
+JNDI_NON_JEE_THREAD_CWNBV0006E.explanation=A java:comp/env n\u00e9ven v\u00e9gzett JNDI m\u0171veletek csak Java EE alkalmaz\u00e1s\u00f6sszetev\u0151h\u00f6z t\u00e1rs\u00edtott sz\u00e1lakon t\u00e1mogatottak.
+JNDI_NON_JEE_THREAD_CWNBV0006E.useraction=M\u00f3dos\u00edtsa \u00fagy az alkalmaz\u00e1st, hogy a JNDI m\u0171velet egy Java EE alkalmaz\u00e1shoz tartoz\u00f3 sz\u00e1lon jelenjen meg.
+
+# -----------------------------------------------------------------------
