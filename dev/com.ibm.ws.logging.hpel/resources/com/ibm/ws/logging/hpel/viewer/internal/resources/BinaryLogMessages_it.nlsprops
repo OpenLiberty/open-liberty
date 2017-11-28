@@ -1,0 +1,217 @@
+###############################################################################
+# Copyright (c) 2013, 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME ws/code/ras/src/com/ibm/ws/logging/hpel/resources/BinaryLogMessages.nlsprops
+#COMPONENTPREFIX CWTRA
+#COMPONENTNAMEFOR CWTRA WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+BL_INVALID_ACTION=L''azione specificata {0} non \u00e8 valida.  
+
+# do not translate "--minDate"
+BL_INVALID_MINDATE=Impossibile analizzare il valore --minDate.
+
+# do not translate "--maxDate"
+BL_INVALID_MAXDATE=Impossibile analizzare il valore --maxDate.
+
+BL_INVALID_REPOSITORYDIR=Il percorso del repository {0} non \u00e8 un nome di percorso valido.
+BL_INVALID_TARGETDIR=Il percorso di destinazione {0} non \u00e8 un nome di percorso valido.
+BL_UNABLE_TO_COPY=Impossibile creare un repository nell'ubicazione di destinazione. Assicurarsi che la directory di destinazione specificata sia vuota e che disponga di autorizzazioni di scrittura.
+BL_NO_FILES_FOUND_MONITOR=La directory specificata non contiene attualmente alcun file di traccia o di log.  Continua il monitoraggio di questa directory.
+BL_NO_FILES_FOUND=La directory del repository o dei log del server specificata non contiene alcun file di log o di traccia.
+BL_OPTION_REQUIRES_A_VALUE=L''opzione {0} richiede un valore.
+BL_UNKNOWN_OPTION=L''opzione {0} non \u00e8 riconosciuta.
+BL_BAD_FORMAT=Il formato {0} non \u00e8 riconosciuto.
+
+# do not translate "--minDate" or "--maxDate"
+BL_MINDATE_AFTER_MAXDATE=La data specificata da --minDate \u00e8 posteriore alla data specificata da --maxDate.
+
+# do not translate "--minLevel" or "--maxLevel"
+BL_MINLEVEL_GREATER_THAN_MAXLEVEL=Il livello specificato da --minLevel \u00e8 superiore a quello specificato da --maxLevel.
+
+# do not translate "binaryLog help"
+BL_USE_HELP=Per informazioni sull'utilizzo, utilizzare binaryLog help.
+
+BL_REPOSITORY_DIRECTORY=Utilizzo di {0} come directory del repository. 
+BL_TARGET_DIRECTORY=Utilizzo di {0} come directory di destinazione.
+
+# do not translate "serverName", "repositoryPath", "targetPath"
+BL_COPY_REQUIRES_TARGETDIR=L'azione di copia richiede la specifica di entrambi {serverName | repositoryPath} e targetPath.
+#--------------------------------------------------------------------------------------------------
+
+# do not translate "binaryLog", "action", "serverName", "repositoryPath"
+BL_MAIN_USAGE_001=Utilizzo: binaryLog action {serverName | repositoryPath} [opzioni]
+
+# do not translate "serverName"
+BL_MAIN_USAGE_004=\ \ \ \ serverName
+BL_MAIN_USAGE_005=\tSpecificare il nome di un server Liberty con un repository da cui leggere.
+
+# do not translate "repositoryPath"
+BL_MAIN_USAGE_006=\ \ \ \ repositoryPath
+
+# do not translate "logdata", "tracedata"
+BL_MAIN_USAGE_007=\tSpecificare il percorso di un repository da cui eseguire la lettura.  Di solito, \u00e8\n\
+\tla directory che contiene le directory logdata e tracedata.
+
+BL_MAIN_USAGE_008=Descrizione:
+BL_MAIN_USAGE_009=\tVisualizzare o copiare il contenuto di un repository HPEL (High Performance Extensible Logging)   \n\
+\toppure visualizzare le istanze dei processi server disponibili nel    \n\
+\trepository.
+
+BL_MAIN_USAGE_010=Azioni:
+
+# do not translate "view"
+BL_MAIN_USAGE_011=\ \ \ \ view
+BL_MAIN_USAGE_012=\tLeggere un repository, facoltativamente filtrarlo e creare una versione che possa \n\
+\tessere letta dall'uomo.
+
+# do not translate "copy"
+BL_MAIN_USAGE_013=\ \ \ \ copy
+BL_MAIN_USAGE_014=\tLeggere un repository, facoltativamente filtrarlo e scriverne il contenuto in un \n\
+\tnuovo repository.
+
+# do not translate "listInstances"
+BL_MAIN_USAGE_015=\ \ \ \ listInstances
+BL_MAIN_USAGE_016=\tVisualizzare un elenco delle istanze dei processi server nel repository.
+
+BL_MAIN_USAGE_017=Opzioni:
+
+# do not translate "help [action]"
+BL_MAIN_USAGE_018=\tUtilizzare il comando help [azione] per ottenere informazioni dettagliate relative alle opzioni per ciascuna azione.
+
+#--------------------------------------------------------------------------------------------------
+
+# do not translate "binaryLog view", "serverName", "repositoryPath"
+BL_VIEW_USAGE_001=Utilizzo: binaryLog view {serverName | repositoryPath} [opzioni]
+
+BL_VIEW_USAGE_002=\tLeggere un repository, facoltativamente filtrarlo e creare una versione che possa \n\
+\tessere letta dall'uomo.
+
+BL_VIEW_USAGE_003=Opzioni filtro:
+BL_VIEW_USAGE_004=\tI filtri sono tutti facoltativi.  Quando si utilizzano pi\u00f9 filtri, vengono specificati   \n\
+\tutilizzando l'operatore logico AND.
+
+# do not translate "--minDate=value"
+BL_VIEW_USAGE_005=\ \ \ \ --minDate=value
+
+# do not translate "--minDate="
+BL_VIEW_USAGE_006=\tFiltrare in base alla data minima di creazione del record. Il valore         \n\
+\tdeve essere specificato come data (ad esempio --minDate=\"{0}\") o come data \n\
+\te ora (ad esempio --minDate=\"{1}\"). \
+\u00c8 possibile anche immettere     \n\
+\tla data/ora in formato ISO-8601; ad esempio, --minDate=\"{2}\" o  \n\
+\t--minDate=\"{3}\".
+
+# do not translate "--maxDate=value"
+BL_VIEW_USAGE_007=\ \ \ \ --maxDate=value
+
+# do not translate "--maxDate="
+BL_VIEW_USAGE_008=\tFiltrare in base alla data massima di creazione del record. Il valore         \n\
+\tdeve essere specificato come data (ad esempio --maxDate=\"{0}\") o come data \n\
+\te ora (ad esempio --maxDate=\"{1}\"). \
+\u00c8 possibile anche immettere     \n\
+\tla data/ora in formato ISO-8601; ad esempio, --maxDate=\"{2}\" o  \n\
+\t--maxDate=\"{3}\".
+
+# do not translate "--minLevel=value"
+BL_VIEW_USAGE_009=\ \ \ \ --minLevel=value
+BL_VIEW_USAGE_010=\tFiltrare in base al livello minimo.  Il valore deve essere uno di                 \n\
+\t{0}.
+
+# do not translate "--maxLevel=value"
+BL_VIEW_USAGE_011=\ \ \ \ --maxLevel=value
+BL_VIEW_USAGE_012=\tFiltrare in base al livello massimo.  Il valore deve essere uno di                 \n\
+\t{0}.
+
+# do not translate "--includeLogger=value[,value]*"
+BL_VIEW_USAGE_013=\ \ \ \ --includeLogger=value[,value]*
+BL_VIEW_USAGE_014=\tIncludere record con il nome del programma di registrazione specificato.  Il valore pu\u00f2 includere * o ? come\n\
+\tcarattere jolly.
+
+# do not translate "--excludeLogger=value[,value]*"
+BL_VIEW_USAGE_015=\ \ \ \ --excludeLogger=value[,value]*
+BL_VIEW_USAGE_016=\tEscludere i record con il nome del programma di registrazione specificato.  Il valore pu\u00f2 includere * o ? come\n\
+\tcarattere jolly.
+
+# do not translate "--includeMessage=value"
+BL_VIEW_USAGE_017=\ \ \ \ --includeMessage=value
+BL_VIEW_USAGE_018=\tFiltrare in base al nome del messaggio.  \
+Il valore pu\u00f2 includere * o ? \
+come carattere jolly.
+
+# do not translate "--includeThread=value"
+BL_VIEW_USAGE_019=\ \ \ \ --includeThread=value
+
+# do not translate "--includeThread=2a"
+BL_VIEW_USAGE_020=\tIncludere record con l'ID thread specificato.  I valori devono essere in         \n\
+\tformato esadecimale (ad esempio, --includeThread=2a).
+
+# do not translate "--includeExtension=name=value[,name=value]*"
+BL_VIEW_USAGE_021=\ \ \ \ --includeExtension=name=value[,name=value]*
+BL_VIEW_USAGE_022=\tIncludere record con il valore e il nome dell'estensione specificati.  Il valore pu\u00f2 includere * o ? come\n\
+\tcarattere jolly.
+
+# do not translate "--includeInstance=value"
+BL_VIEW_USAGE_023=\ \ \ \ --includeInstance=value
+
+# do not translate "latest", "listInstances"
+BL_VIEW_USAGE_024=\tIncludere record dall'istanza del server specificata.  Il valore           \n\
+\tdeve essere "latest" o un ID istanza valido.  Eseguire questo comando \n\
+\tutilizzando l'azione listInstances per visualizzare un elenco di ID istanza validi.
+
+BL_VIEW_USAGE_025=Opzioni di monitoraggio:
+
+# do not translate "--monitor"
+BL_VIEW_USAGE_026=\ \ \ \ --monitor
+BL_VIEW_USAGE_027=\tMonitorare costantemente il repository e rilasciare il nuovo contenuto cos\u00ec come  \n\
+\tviene generato.
+			
+BL_VIEW_USAGE_028=Opzioni di output:
+
+# do not translate "--format={basic | advanced | CBE-1.0.1}"
+BL_VIEW_USAGE_029=\ \ \ \ --format={basic | advanced | CBE-1.0.1}
+BL_VIEW_USAGE_030=\tSpecificare il formato di output da utilizzare.  \
+"basic" \u00e8 il formato predefinito.
+		
+# do not translate "--encoding=value"
+BL_VIEW_USAGE_031=\ \ \ \ --encoding=value
+BL_VIEW_USAGE_032=\tSpecificare la codifica di caratteri da utilizzare per l'output.
+
+# do not translate "--isoDateFormat"
+BL_VIEW_USAGE_033=\ \ \ \ --isoDateFormat
+BL_VIEW_USAGE_034=\tSpecificare il formato data/ora ISO-8601 da utilizzare per l'output.
+#--------------------------------------------------------------------------------------------------
+
+# do not translate "binaryLog", "listInstances", "serverName", "repositoryPath"
+BL_LISTINSTANCES_USAGE_001=Utilizzo: binaryLog listInstances {serverName | repositoryPath} [opzioni]
+
+# do not translate "--includeInstance", "binaryLog view"
+BL_LISTINSTANCES_USAGE_002=\tVisualizzare un elenco degli ID delle istanze server nel repository.  Un'istanza server        \n\
+\t\u00e8 la raccolta di tutti i record di log/traccia scritti dall'ora \n\
+\tin cui il server viene avviato fino a quando non viene arrestato.  Gli ID istanza server   \n\
+\tpossono essere utilizzati con l'opzione --includeInstance dell'azione\n\
+\tbinaryLog view.
+
+#--------------------------------------------------------------------------------------------------
+
+# do not translate "binaryLog", "copy", "serverName", "repositoryPath", "targetPath"
+BL_COPY_USAGE_001=Utilizzo: binaryLog copy {serverName | repositoryPath} targetPath [opzioni]
+
+# do not translate "targetPath"
+BL_COPY_USAGE_002=\ \ \ \ targetPath
+BL_COPY_USAGE_003=\tSpecificare il percorso in cui creare un nuovo repository.
+
+
+BL_COPY_USAGE_004=\tLeggere un repository, facoltativamente filtrarlo e scriverne il contenuto in un \n\
+\tnuovo repository.

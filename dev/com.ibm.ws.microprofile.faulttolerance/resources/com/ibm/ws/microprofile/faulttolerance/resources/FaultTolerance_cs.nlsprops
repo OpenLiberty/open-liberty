@@ -1,0 +1,54 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMFT
+#COMPONENTNAMEFOR CWMFT MicroProfile FaultTolerance API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by FaultTolerance Impl -  range is 0000-4999, plus 9999 for the emergency message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#A timeout occurred. 
+timeout.occurred.CWMFT0000E=CWMFT0000E: Vypr\u0161el \u010dasov\u00fd limit.
+timeout.occurred.CWMFT0000E.explanation=Dokon\u010den\u00ed operace trvalo p\u0159\u00edli\u0161 dlouho vzhledem k nakonfigurovan\u00e9mu \u010dasov\u00e9mu limitu.
+timeout.occurred.CWMFT0000E.useraction=Zvy\u0161te maxim\u00e1ln\u00ed dobu trv\u00e1n\u00ed \u010dasov\u00e9ho limitu nebo se ujist\u011bte, \u017ee se operace dokon\u010d\u00ed rychleji. 
+
+#No free capacity was available in the bulkhead for method {0}.
+bulkhead.no.threads.CWMFT0001E=CWMFT0001E: V p\u0159ep\u00e1\u017ece pro metodu {0} nen\u00ed dostupn\u00e1 \u017e\u00e1dn\u00e1 voln\u00e1 kapacita.
+bulkhead.no.threads.CWMFT0001E.explanation=Vol\u00e1n\u00ed metody nebylo \u00fasp\u011b\u0161n\u00e9, proto\u017ee p\u0159ep\u00e1\u017eka pro metodu je pln\u00e1.
+bulkhead.no.threads.CWMFT0001E.useraction=Zvy\u0161te dostupnost v p\u0159ep\u00e1\u017ece zv\u00fd\u0161en\u00edm kapacity p\u0159ep\u00e1\u017eky nebo sn\u00ed\u017een\u00edm soub\u011b\u017en\u00e9 pracovn\u00ed z\u00e1t\u011b\u017ee t\u00e9to slu\u017eby.
+
+#An internal error occurred. The exception is {0}.
+internal.error.CWMFT4998E=CWMFT4998E: Do\u0161lo k intern\u00ed chyb\u011b. V\u00fdjimka: {0}.
+internal.error.CWMFT4998E.explanation=Aplika\u010dn\u00ed server zaznamenal intern\u00ed chybu.
+internal.error.CWMFT4998E.useraction=Shrom\u00e1\u017ed\u011bte sadu trasov\u00e1n\u00ed a otev\u0159ete nov\u00fd probl\u00e9m k aplika\u010dn\u00edmu serveru.
+
+#Generic error for internal failures. 
+internal.error.CWMFT4999E=CWMFT4999E: Do\u0161lo k intern\u00ed chyb\u011b.
+internal.error.CWMFT4999E.explanation=Aplika\u010dn\u00ed server zaznamenal intern\u00ed chybu.
+internal.error.CWMFT4999E.useraction=Shrom\u00e1\u017ed\u011bte sadu trasov\u00e1n\u00ed a otev\u0159ete nov\u00fd probl\u00e9m k aplika\u010dn\u00edmu serveru.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency FaultTolerance error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Fault Tolerance API error has occurred: {0}
+temporary.CWMFT9999E=CWMFT9999E: Do\u0161lo k chyb\u011b rozhran\u00ed API odolnosti proti poruch\u00e1m: {0}
+temporary.CWMFT9999E.explanation=Do\u0161lo k chyb\u011b rozhran\u00ed API odolnosti proti poruch\u00e1m, kter\u00e1 br\u00e1n\u00ed norm\u00e1ln\u00ed operaci.
+temporary.CWMFT9999E.useraction=Prozkoumejte protokoly FFDC a text v\u00fdjimky a identifikujte p\u0159\u00ed\u010dinu probl\u00e9mu.

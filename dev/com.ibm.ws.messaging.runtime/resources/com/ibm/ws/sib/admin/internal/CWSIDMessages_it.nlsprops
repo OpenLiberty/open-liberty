@@ -1,0 +1,356 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# Change activity:
+#
+# Reason          Date       Origin   Description
+# --------------- ---------- -------- ------------------------------------------
+# 88661           2012-12-07 chetbhat Modifying the nls based on review
+# 89424           2012-12-12 chetbhat Simplifying metatype.xml for messaging
+# 91146           2013-01-21 sharath  Changing the filestore error messages after property changes
+# 91384           2013-01-23 sharath  Adding message for duplicate alias destination name
+# 92315           2013-08-02 chetbhat Nls changes
+# 91944           2013-02-19 Romil    L2 review changes
+# 94952           2013-02-27 Romil    Changing invalid filestore error message after changing code and properties
+# 95341           2013-02-28 Romil    Removing duplicate CWSID0117E entries in error
+# 95981           2013-03-20 Chetan   Changing the error message for filestore and log size comparision
+# ------------------------------------------------------------------------------
+# File com.ibm.ws.sib.example.CWSIDMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem
+# determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSID0000=CWSID0001I: This is a message with insert {0}
+# MSG_DESCRIPTIVE_NAME_CWSID0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSID0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you want them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Messages in the range SIAS0001-SIAS0049 belong to class com.ibm.ws.sib.???
+#   - SIAS9999 is for emergency use if any new messages are required after the messages file is finalised
+#   - Messages starting from SIAS0100 is reserved for liberty 
+# -------------------------------------------------------------------------------------------------
+#
+# cmvc_en_version_level=1.62,0,07/02/06,04:18:47
+#
+#CMVCPATHNAME com.ibm.ws.messaging.runtime/resources/com/ibm/ws/sib/admin/internal/CWSIDMessages.nlsprops
+#COMPONENTPREFIX CWSID
+#COMPONENTNAMEFOR CWSID Admin
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+ 
+### Search on "TBD" for messages that need information from other components ###
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+ME_INITIALIZING_SIAS0001=CWSID0001I: Il motore di messaggistica {0} \u00e8 in fase di inizializzazione.
+ME_INITIALIZING_SIAS0001.explanation=Inizializzazione motore di messaggistica specificato in fase di avvio.
+ME_INITIALIZING_SIAS0001.useraction=Non \u00e8 richiesta alcuna azione.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Internal reason string
+INTERNAL_ERROR_SIAS0003=CWSID0003E: Si \u00e8 verificato un errore interno; causa: {0}
+INTERNAL_ERROR_SIAS0003.explanation=Si \u00e8 verificato un errore interno non previsto durante un'operazione di sistema.
+INTERNAL_ERROR_SIAS0003.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} SIBDestination name
+CREATE_DESTINATION_FAILED_SIAS0009=CWSID0009E: Impossibile creare la destinazione {0}.
+CREATE_DESTINATION_FAILED_SIAS0009.explanation=Non \u00e8 stato possibile creare la destinazione specificata. Se gli script JACL o i programmi JMX personalizzati sono stati utilizzati per creare la configurazione, verificare eventuali errori.
+CREATE_DESTINATION_FAILED_SIAS0009.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} JMX MBean type
+# {1} JMX MBean name
+MBEAN_ACTIVATION_FAILED_SIAS0011=CWSID0011W: Impossibile attivare l''MBean JMX {0} denominato {1}.
+MBEAN_ACTIVATION_FAILED_SIAS0011.explanation=Non \u00e8 stato possibile attivare l'MBean JMX con il nome ed il tipo specificati. Sebbene ci\u00f2 non impedisca l'avvio del server di messaggistica, le funzioni amministrative che richiedono l'esistenza di tale MBean potrebbero non funzionare nel modo previsto.
+MBEAN_ACTIVATION_FAILED_SIAS0011.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} JMX MBean type
+# {1} JMX MBean name
+MBEAN_DEACTIVATION_FAILED_SIAS0012=CWSID0012W: Impossibile disattivare l''MBean JMX {0} denominato {1}.
+MBEAN_DEACTIVATION_FAILED_SIAS0012.explanation=Non \u00e8 stato possibile disattivare l'MBean JMX specificato.
+MBEAN_DEACTIVATION_FAILED_SIAS0012.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Java package and class
+CLASS_LOAD_FAILURE_SIAS0013=CWSID0013W: Impossibile caricare la classe {0}.
+CLASS_LOAD_FAILURE_SIAS0013.explanation=Non \u00e8 stato possibile caricare la classe specificata.
+CLASS_LOAD_FAILURE_SIAS0013.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+
+# {0} Messaging engine name
+ME_RESTART_CHECK_SIAS0027=CWSID0027E: Impossibile riavviare il motore di messaggistica {0}, poich\u00e9 \u00e8 stato riportato un errore grave.
+ME_RESTART_CHECK_SIAS0027.explanation=\u00c8 stato fatto un tentativo di avviare il motore di messaggistica specificato ma \u00e8 stata precedentemente rilevata una condizione di errore grave e il motore di messaggistica non verr\u00e0 riavviato.
+ME_RESTART_CHECK_SIAS0027.useraction=Riavviare il server o spostare il motore di messaggistica su un server di cluster alternativo.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} State of the messaging engine
+ME_STATE_CHECK_SIAS0028=CWSID0028W: Impossibile arrestare il motore di messaggistica {0} dallo stato corrente {1}.
+ME_STATE_CHECK_SIAS0028.explanation=\u00c8 stato fatto un tentativo di arrestare il motore di messaggistica specificato ma l'arresto non \u00e8 un'operazione valida quando il motore di messaggistica \u00e8 nello stato corrente.
+ME_STATE_CHECK_SIAS0028.useraction=Verificare lo stato del motore di messaggistica ed eseguire nuovamente l'operazione quando lo stato \u00e8 valido.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+ME_ERROR_REPORTED_SIAS0029=CWSID0029E: Il motore di messaggistica {0} ha sperimentato un errore di modalit\u00e0 comune.
+ME_ERROR_REPORTED_SIAS0029.explanation=Il motore di messaggistica ha rilevato un errore che di solito si verifica su un server alternativo, il failover non verr\u00e0 tentato.
+ME_ERROR_REPORTED_SIAS0029.useraction=Consultare i log per determinare l'errore, correggere la causa dell'errore e riavviare il server.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+ME_ERROR_STOPPED_SIAS0031=CWSID0031E: Il motore di messaggistica {0} ha sperimentato un errore di modalit\u00e0 comune ed \u00e8 stato arrestato.
+ME_ERROR_STOPPED_SIAS0031.explanation=Il motore di messaggistica ha rilevato un errore comune di modalit\u00e0 ed \u00e8 stato automaticamente arrestato. Non verr\u00e0 tentato un failover.
+ME_ERROR_STOPPED_SIAS0031.useraction=Consultare i log per determinare l'errore, correggere la causa dell'errore e riavviare il server.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_CANNOT_BE_INITIALIZED_SIAS0033=CWSID0033E: Impossibile inizializzare il motore di messaggistica {0}, rilevata eccezione generata da {1} {2}
+ME_CANNOT_BE_INITIALIZED_SIAS0033.explanation=Si \u00e8 verificato un errore non previsto durante l'inizializzazione del motore.
+ME_CANNOT_BE_INITIALIZED_SIAS0033.useraction=Consultare i log per determinare l'errore, correggere la causa dell'errore e riavviare il server.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_CANNOT_BE_STARTED_SIAS0034=CWSID0034E: Impossibile avviare il motore di messaggistica {0}: rilevata eccezione generata da {1} {2}
+ME_CANNOT_BE_STARTED_SIAS0034.explanation=Si \u00e8 verificato un errore non previsto durante l'inizializzazione del motore. La fase di avvio \u00e8 stata completata ed i componenti del motore gi\u00e0 avviati sono stati arrestati.
+ME_CANNOT_BE_STARTED_SIAS0034.useraction=Consultare i log per determinare l'errore, correggere la causa dell'errore e riavviare il server.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_CANNOT_BE_STARTED_SIAS0035=CWSID0035E: Impossibile avviare il motore di messaggistica {0}; rilevato errore riportato durante {1} {2}
+ME_CANNOT_BE_STARTED_SIAS0035.explanation=Non \u00e8 stato possibile avviare un componente del motore di messaggistica. Non saranno avviati altri componenti del motore.
+ME_CANNOT_BE_STARTED_SIAS0035.useraction=Consultare i log per determinare l'errore, correggere la causa dell'errore e riavviare il server.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_EXCEPTION_CAUGHT_SIAS0036=CWSID0036E: Il motore di messaggistica {0} ha rilevato l''eccezione generata dal metodo {1} {2} durante l''azione di ripulitura dell''avvio non riuscito
+ME_EXCEPTION_CAUGHT_SIAS0036.explanation=Non \u00e8 stato possibile arrestare il motore di messaggistica specificato.
+ME_EXCEPTION_CAUGHT_SIAS0036.useraction=Consultare i log per determinare l'errore, correggere la causa dell'errore e riavviare il server.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_EXCEPTION_CAUGHT_SIAS0037=CWSID0037E: Il motore di messaggistica {0} ha rilevato un''eccezione generata dal metodo {1} {2}
+ME_EXCEPTION_CAUGHT_SIAS0037.explanation=\u00c8 stato rilevato un errore da un componente del motore.
+ME_EXCEPTION_CAUGHT_SIAS0037.useraction=Consultare i log per determinare l'errore, correggere la causa dell'errore e riavviare il server.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} JMX MBean type
+# {1} JMX MBean name
+MBEAN_SEND_NOTIFICATION_FAILED_SIAS0043=CWSID0043W: Impossibile inviare una notifica eventi dall''MBean JMX {0} denominato {1}.
+MBEAN_SEND_NOTIFICATION_FAILED_SIAS0043.explanation=Non \u00e8 stato possibile inviare una notifica eventi dall'MBean JMX con il nome ed il tipo specificato. Sebbene questo non impedisca il proseguimento dell'operazione del server di messaggistica, ci\u00f2 comporta che questo MBean non riesce ad informare i listener riguardo ad importanti eventi di messaggi di sistema.
+MBEAN_SEND_NOTIFICATION_FAILED_SIAS0043.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_START_SIAS0044=CWSID0044I: Il motore di messaggistica {0} con UUID {1} \u00e8 stato avviato.
+NOTIFY_MESSAGING_ENGINE_START_SIAS0044.explanation=Il motore di messaggistica \u00e8 disponibile per l'utilizzo.
+NOTIFY_MESSAGING_ENGINE_START_SIAS0044.useraction=Non \u00e8 richiesta alcuna azione.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_STOP_SIAS0045=CWSID0045I: Il motore di messaggistica {0} con UUID {1} \u00e8 stato arrestato.
+NOTIFY_MESSAGING_ENGINE_STOP_SIAS0045.explanation=Il motore di messaggistica non \u00e8 pi\u00f9 disponibile per l'utilizzo.
+NOTIFY_MESSAGING_ENGINE_STOP_SIAS0045.useraction=Non \u00e8 richiesta alcuna azione.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+ME_ERROR_LOCAL_SIAS0046=CWSID0046E: Il motore di messaggistica {0} ha rilevato un errore e non pu\u00f2 continuare l''esecuzione su questo server.
+ME_ERROR_LOCAL_SIAS0046.explanation=Il motore di messaggistica notifica l'errore a HAManager che arrester\u00e0 il server. Con il gestore distribuzione del server delle applicazioni, il server verr\u00e0 riavviato se l'agent del nodo lo sta controllando. Con un cluster Network Deployment, il motore di messaggistica eseguir\u00e0 il failover ad un server del cluster alternativo, se questa operazione \u00e8 consentita dalla politica configurata.
+ME_ERROR_LOCAL_SIAS0046.useraction=Consultare i log per determinare la causa dell'errore, quindi correggere l'errore in modo che non si verifichi nuovamente. Riavviare il server oppure (se si utilizza Network Deployment) verificare che il riavvio automatico o il failover siano stati eseguiti correttamente e che il motore di messaggistica sia in esecuzione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name
+RECEIVE_EXCLUSIVE_OVERRIDE_WARNING_SIAS0048=CWSID0048W: Il valore dell''attributo receiveExclusive \u00e8 stato sostituito per essere"true" per la destinazione {0}.
+RECEIVE_EXCLUSIVE_OVERRIDE_WARNING_SIAS0048.explanation=La destinazione \u00e8 impostata per conservare l'ordine dei messaggi. Per questo motivo, il valore dell'attributo receiveExclusive \u00e8 stato sostituito per essere true.
+RECEIVE_EXCLUSIVE_OVERRIDE_WARNING_SIAS0048.useraction=Se l'ordinamento non \u00e8 richiesto, annullare l'impostazione dell'attributo maintainMessageOrder per disabilitare la sovrascrittura dell'attributo receiveExclusive.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_STARTING_SIAS0049=CWSID0049I: Avvio del motore di messaggistica {0} con UUID {1}.
+NOTIFY_MESSAGING_ENGINE_STARTING_SIAS0049.explanation=Il motore di messaggistica \u00e8 in fase di avvio.
+NOTIFY_MESSAGING_ENGINE_STARTING_SIAS0049.useraction=Non \u00e8 richiesta alcuna azione.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_STOPPING_SIAS0050=CWSID0050I: Arresto del motore di messaggistica {0} con UUID {1}.
+NOTIFY_MESSAGING_ENGINE_STOPPING_SIAS0050.explanation=Il motore di messaggistica \u00e8 in fase di arresto.
+NOTIFY_MESSAGING_ENGINE_STOPPING_SIAS0050.useraction=Non \u00e8 richiesta alcuna azione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_STOP_FAILED_SIAS0052=CWSID0052I: Non \u00e8 stato possibile arrestare il motore di messaggistica {0} con UUID {1}.
+NOTIFY_MESSAGING_ENGINE_STOP_FAILED_SIAS0052.explanation=Non \u00e8 stato possibile arrestare il motore di messaggistica.
+NOTIFY_MESSAGING_ENGINE_STOP_FAILED_SIAS0052.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_SIAS9999=CWSID9999E: {0}
+TEMPORARY_SIAS9999.explanation=Se il messaggio non fornisce sufficienti informazioni, controllare i precedenti messaggi per averne di ulteriori.
+TEMPORARY_SIAS9999.useraction=Per ulteriori informazioni, consultare i messaggi di errore di accompagnamento.
+
+# -------------------------------------------------------------------------------------------------
+# {0} default ME ID
+NO_ID_PROVIDED_SIAS0100=CWSID0100I: Nessun ID fornito per il tag messagingEngine nel file di configurazione del server. Verr\u00e0 utilizzato l''ID predefinito {0}.
+NO_ID_PROVIDED_SIAS0100.explanation=Non \u00e8 stato fornito l'ID per il tag messagingEngine.
+NO_ID_PROVIDED_SIAS0100.useraction=Non \u00e8 richiesta alcuna azione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination Type
+NO_ID_PROVIDED_SIAS0102=CWSID0102E: Nessun ID definito nel file di configurazione del server per la destinazione del tipo {0}. 
+NO_ID_PROVIDED_SIAS0102.explanation=L'ID non \u00e8 specificato per la destinazione, quindi la destinazione non verr\u00e0 creata.  
+NO_ID_PROVIDED_SIAS0102.useraction=Fornire l'ID per la destinazione.
+
+# -------------------------------------------------------------------------------------------------
+NO_FILESTOR_DEFINED_SIAS0104=CWSID0104I:  Il tag fileStore non \u00e8 stato definito nel file di configurazione del server, pertanto verranno utilizzati i valori predefiniti.
+NO_FILESTOR_DEFINED_SIAS0104.explanation=Il tag fileStore non \u00e8 stato fornito, quindi durante la creazione dell'archivio file verranno utilizzati i valori predefiniti.   
+NO_FILESTOR_DEFINED_SIAS0104.useraction=Non \u00e8 richiesta alcuna azione.
+
+# -------------------------------------------------------------------------------------------------
+ME_ID_CHANGE_SIAS0105=CWSID0105I: L'ID del motore di messaggistica non pu\u00f2 essere modificato dopo l'avvio del server.
+ME_ID_CHANGE_SIAS0105.explanation=L'ID del motore di messaggistica \u00e8 univoco per un motore di messaggistica e non pu\u00f2 essere modificato quando il server \u00e8 attivo.
+ME_ID_CHANGE_SIAS0105.useraction=Non \u00e8 richiesta alcuna azione.
+
+# -------------------------------------------------------------------------------------------------
+RESTART_ME_SIAS0106=CWSID0106I: Tentativo di avviare il motore di messaggistica. 
+RESTART_ME_SIAS0106.explanation=Il motore di messaggistica non \u00e8 stato avviato durante la chiamata di activate(). Poich\u00e9 l'utente ha modificato il file di configurazione del server, verr\u00e0 eseguito un tentativo per avviare il motore di messaggistica.  
+RESTART_ME_SIAS0106.useraction=Non \u00e8 richiesta alcuna azione.
+
+# -------------------------------------------------------------------------------------------------
+START_ME_SIAS0107=CWSID0107I: Avvio del server JMS. 
+START_ME_SIAS0107.explanation=Inizializzazione dell'avvio del server JMS.  
+START_ME_SIAS0107.useraction=Non \u00e8 richiesta alcuna azione.
+
+# -------------------------------------------------------------------------------------------------
+ME_STARTED_SIAS0108=CWSID0108I: Il server JMS \u00e8 stato avviato.  
+ME_STARTED_SIAS0108.explanation=L'avvio del server JMS \u00e8 stato completato correttamente.  
+ME_STARTED_SIAS0108.useraction=Non \u00e8 richiesta alcuna azione.
+
+# -------------------------------------------------------------------------------------------------
+ME_STOPPED_SIAS0109=CWSID0109E: Si \u00e8 verificato un errore interno della messaggistica. Impossibile avviare il server JMS.
+ME_STOPPED_SIAS0109.explanation=Impossibile avviare il server JMS.  
+ME_STOPPED_SIAS0109.useraction=Vedere i messaggi di errore precedenti durante un avvio del motore di messaggistica per ottenere ulteriori informazioni.
+
+# -------------------------------------------------------------------------------------------------
+#{0} Alias destination Name
+INVALID_TARGET_DEST_SIAS0110=CWSID0110E: Nessuna destinazione esistente fornita per la destinazione alias {0}.
+INVALID_TARGET_DEST_SIAS0110.explanation=Non \u00e8 stata fornita nessuna destinazione esistente per la destinazione alias.
+INVALID_TARGET_DEST_SIAS0110.useraction= Fornire una destinazione esistente valida nel file di configurazione del server.
+
+# -------------------------------------------------------------------------------------------------
+LOCALIZATION_EXCEPTION_SIAS0113=CWSID0113E: Eccezione rilevata durante la localizzazione della destinazione {0}.
+LOCALIZATION_EXCEPTION_SIAS0113.explanation=Eccezione rilevata durante la localizzazione della destinazione.
+LOCALIZATION_EXCEPTION_SIAS0113.useraction=Vedere i messaggi precedenti e lo stato del motore di messaggistica.
+
+# -------------------------------------------------------------------------------------------------
+# {0} SIBDestination population
+POPULATE_DESTINATION_FAILED_SIAS0114=CWSID0114E: La destinazione {0} non pu\u00f2 essere inserita nella cache.
+POPULATE_DESTINATION_FAILED_SIAS0114.explanation=Impossibile inserire la destinazione specificata nella cache.
+POPULATE_DESTINATION_FAILED_SIAS0114.useraction=Vedere i messaggi precedenti per ulteriori informazioni.
+
+# -------------------------------------------------------------------------------------------------
+NULL_SERVICE_PID_SIAS0115=CWSID0115E: Si \u00e8 verificato un errore interno perch\u00e9 le propriet\u00e0 di configurazione del motore di messaggistica non sono state ricevute. Pertanto, il motore di messaggistica non verr\u00e0 avviato.
+NULL_SERVICE_PID_SIAS0115.explanation=La configurazione non \u00e8 stata ricevuta dal file server.xml poich\u00e9 la relativa propriet\u00e0 di registrazione (service.pid) che viene utilizzata per identificare il servizio gestito o il factory del servizio gestito per il servizio di gestione configurazione \u00e8 null, quindi il bundle non pu\u00f2 utilizzare il servizio dichiarato
+NULL_SERVICE_PID_SIAS0115.useraction=Vedere i messaggi di errore allegati per ulteriori informazioni sul perch\u00e9 non \u00e8 possibile avviare il motore di messaggistica. 
+
+# -------------------------------------------------------------------------------------------------
+NULL_SERVICE_PID_SIAS0116=CWSID0116E: Si \u00e8 verificato un errore interno perch\u00e9 le propriet\u00e0 di configurazione del motore di messaggistica non sono state ricevute. Pertanto, non verr\u00e0 apportata alcuna modifica al motore di messaggistica.
+NULL_SERVICE_PID_SIAS0116.explanation=Il motore di messaggistica \u00e8 stato avviato, ma le modifiche ad esso non sono state accettate perch\u00e9 il valore service.pid \u00e8 null. Pertanto i servizi non vengono richiamati.
+NULL_SERVICE_PID_SIAS0116.useraction=Per ulteriori informazioni, vedere i messaggi di errore allegati correlati all'avvio del motore di messaggistica. 
+
+# -------------------------------------------------------------------------------------------------
+MODIFICATION_UNSUCCESSFUL_SIAS0117=CWSID0117E: Il sistema ha subito uno sforzo interno dopo che una modifica alla configurazione del motore di messaggistica non \u00e8 stata completata.
+MODIFICATION_UNSUCCESSFUL_SIAS0117.explanation=L'aggiornamento alla configurazione del motore di messaggistica non \u00e8 stato completato correttamente e ha provocato un errore di sistema interno.
+MODIFICATION_UNSUCCESSFUL_SIAS0117.useraction=Per ulteriori informazioni, consultare i messaggi di errore di accompagnamento. 
+
+# -------------------------------------------------------------------------------------------------
+BAD_RELIABILITY_VALUE_SIAS0118=CWSID0118E: Il valore specificato per defaultReliability \u00e8 maggiore del valore specificato per maxReliability.
+BAD_RELIABILITY_VALUE_SIAS0118.explanation=Il valore specificato per il parametro defaultReliability deve essere minore o uguale al valore fornito per il parametro maxReliability.
+BAD_RELIABILITY_VALUE_SIAS0118.useraction=Eseguire di nuovo il comando, specificando un valore di defaultReliability che sia minore o uguale a quello di maxReliability.
+
+# -------------------------------------------------------------------------------------------------
+# {0} filestore path
+FILESTORE_PATH_SIAS0119=CWSID0119I: Il percorso archivio file: {0}
+FILESTORE_PATH_SIAS0119.explanation=Il percorso archivio file specificato.
+FILESTORE_PATH_SIAS0119.useraction=Questo \u00e8 un messaggio solo a scopo informativo. Non \u00e8 richiesta alcuna azione.
+
+# -------------------------------------------------------------------------------------------------
+#Invalid path specified in server configuration file
+INVALID_FS_PATH_SIAS0120=CWSID0120E: Non \u00e8 stato possibile avviare il motore di messaggistica poich\u00e9 \u00e8 stato specificato un percorso file non valido {0} nel file di configurazione del server.
+INVALID_FS_PATH_SIAS0120.explanation=\u00c8 necessario un percorso file valido nel file della configurazione del server perch\u00e9 il motore di messaggistica possa essere avviato.
+INVALID_FS_PATH_SIAS0120.useraction=Correggere il percorso file nel file di configurazione del server.
+
+# -------------------------------------------------------------------------------------------------
+ME_STOPPED_SIAS0121=CWSID0121I: Server JMS arrestato.  
+ME_STOPPED_SIAS0121.explanation=Il server JMS \u00e8 stato arrestato.  
+ME_STOPPED_SIAS0121.useraction=Non \u00e8 richiesta alcuna azione.
+
+# -------------------------------------------------------------------------------------------------
+NULL_ME_ID_SIAS0122=CWSID0122I: Nessun ID motore di messaggistica fornito nel file di configurazione del server.  
+NULL_ME_ID_SIAS0122.explanation=L'ID motore di messaggistica \u00e8 stato rimosso durante la modifica del file di configurazione del server. La modifica dell'ID motore di messaggistica viene ignorata quando il motore di messaggistica \u00e8 ancora attivo. 
+NULL_ME_ID_SIAS0122.useraction= Non \u00e8 richiesta alcuna azione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name or ID
+SAME_DEST_ID_SIAS0123=CWSID0123W: {0} viene utilizzato per pi\u00f9 destinazioni.
+SAME_DEST_ID_SIAS0123.explanation=Lo stesso ID non pu\u00f2 essere utilizzato per pi\u00f9 destinazioni: non verranno create destinazioni duplicate. 
+SAME_DEST_ID_SIAS0123.useraction= Specificare identificativi di destinazione univoci.
+# -------------------------------------------------------------------------------------------------
+INVALID_FILE_SIZE_SIAS0124=CWSID0124E: La dimensione del file di log di {0} megabyte dovrebbe essere inferiore alla met\u00e0 della dimensione dell''archivio file di {1} megabyte. Aumentare la dimensione dell''archivio file o diminuire la dimensione del file di log.
+INVALID_FILE_SIZE_SIAS0124.explanation=La dimensione del file di log \u00e8 maggiore della dimensione dell'archivio file permanente. La dimensione dell'archivio file rappresenta la dimensione combinata in megabyte di entrambi l'archivio permanente e di quello temporaneo. La dimensione dell'archivio file \u00e8 ugualmente divisa tra l'archivio permanente e l'archivio temporaneo, quindi la dimensione del file di log deve essere inferiore alla met\u00e0 della dimensione dell'archivio file.
+INVALID_FILE_SIZE_SIAS0124.useraction=Aumentare la dimensione dell'archivio file o diminuire la dimensione del file di log.
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name or ID
+ALIAS_SAME_DEST_ID_SIAS0125=CWSID0125E: L''ID destinazione alias {0} \u00e8 gi\u00e0 definito per una coda o TopicSpace, quindi la destinazione alias non verr\u00e0 creata.
+ALIAS_SAME_DEST_ID_SIAS0125.explanation=L'ID destinazione alias deve essere univoco. 
+ALIAS_SAME_DEST_ID_SIAS0125.useraction=Definire un ID univoco per la destinazione alias.  

@@ -1,0 +1,96 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMOT
+#COMPONENTNAMEFOR CWMOT MicroProfile Opentracing API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+# -----------------------------------------------------------------------
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Opentracing Impl -  range is 0000-4999, plus 9999 for the emergency message
+#-----------------------------------------------------------------------------------------------------------------------------
+OPENTRACING_NO_APPNAME_FOUND_IN_JNDI=CWMOT0000E: Wyszukiwanie nazwy aplikacji za pomoc\u0105 interfejsu JNDI nie zwr\u00f3ci\u0142o warto\u015bci. Nazwa domy\u015blna zostanie u\u017cyta jako nazwa us\u0142ugi Opentracing.
+OPENTRACING_NO_APPNAME_FOUND_IN_JNDI.explanation=Sk\u0142adnik udost\u0119pnia nazw\u0119 aplikacji dla implementacji interfejsu OpentracingTracerFactory podanej przez u\u017cytkownika. Nie mo\u017cna pobra\u0107 nazwy aplikacji za pomoc\u0105 wyszukiwania JNDI w postaci java:app/NazwaAplikacji.  Udost\u0119pniono nazw\u0119 domy\u015bln\u0105 us\u0142ugi.
+OPENTRACING_NO_APPNAME_FOUND_IN_JNDI.useraction=Okre\u015bl, dlaczego nazwa aplikacji nie jest dost\u0119pna za po\u015brednictwem wyszukiwania JNDI w postaci java:app/NazwaAplikacji.
+
+OPENTRACING_COULD_NOT_CREATE_TRACER=CWMOT0001E: Wywo\u0142anie metody OpentracingTracerFactory.newInstance(...) podanej przez u\u017cytkownika nie powiod\u0142o si\u0119 i zosta\u0142 zg\u0142oszony wyj\u0105tek. Komunikat: {0}
+OPENTRACING_COULD_NOT_CREATE_TRACER.explanation=Sk\u0142adnik tworzy implementacje klasy Tracer za pomoc\u0105 fabryki OpentracingTracerFactory podanej przez u\u017cytkownika. Metoda OpentracingTracerFactory.newInstance zwr\u00f3ci\u0142a wyj\u0105tek.
+OPENTRACING_COULD_NOT_CREATE_TRACER.useraction=Okre\u015bl, dlaczego podana przez u\u017cytkownika metoda OpentracingTracerFactory.newInstance zwr\u00f3ci\u0142a wyj\u0105tek.
+
+OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST=CWMOT0002E: \u017baden obiekt Tracer nie jest dost\u0119pny dla \u017c\u0105dania przychodz\u0105cego. \u017b\u0105danie przychodz\u0105ce nie zostanie skorelowane z us\u0142ug\u0105 na pocz\u0105tku przep\u0142ywu.
+OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST.explanation=Implementacja klasy Tracer nie by\u0142a dost\u0119pna, gdy \u017c\u0105danie dotar\u0142o do punktu ko\u0144cowego aplikacji. To \u017c\u0105danie przychodz\u0105ce nie udost\u0119pni \u017cadnych informacji us\u0142udze Opentracing.
+OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST.useraction=Sprawd\u017a poprzednie b\u0142\u0119dy, aby okre\u015bli\u0107, dlaczego obiekt Tracer nie jest dost\u0119pny.
+
+OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST=CWMOT0003E: Obiekt Span utworzony dla \u017c\u0105dania przychodz\u0105cego nie jest dost\u0119pny na potrzeby odpowiedzi na \u017c\u0105danie. \u017b\u0105danie przychodz\u0105ce nie zostanie skorelowane z us\u0142ug\u0105 na pocz\u0105tku przep\u0142ywu.
+OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST.explanation=Obiekt Span utworzony przy nadej\u015bciu \u017c\u0105dania nie jest dost\u0119pny przy zwracaniu odpowiedzi. \u017badne informacje obiektu Span nie zostan\u0105 udost\u0119pnione us\u0142udze Opentracing.
+OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST.useraction=Sprawd\u017a poprzednie b\u0142\u0119dy, aby okre\u015bli\u0107, dlaczego obiekt Span nie jest dost\u0119pny.
+
+OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST=CWMOT0004E: Nie znaleziono obiektu Tracer dla \u017c\u0105dania wychodz\u0105cego. \u017b\u0105danie wychodz\u0105ce nie zostanie skorelowane z \u017c\u0105daniem przychodz\u0105cym.
+OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST.explanation=Implementacja klasy Tracer nie by\u0142a dost\u0119pna, gdy \u017c\u0105danie by\u0142o wysy\u0142ane z aplikacji. To \u017c\u0105danie wychodz\u0105ce nie udost\u0119pni \u017cadnych informacji us\u0142udze Opentracing.
+OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST.useraction=Sprawd\u017a poprzednie b\u0142\u0119dy, aby okre\u015bli\u0107, dlaczego obiekt Tracer nie jest dost\u0119pny.
+
+OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST=CWMOT0005E: Obiekt Span utworzony dla \u017c\u0105dania wychodz\u0105cego nie jest dost\u0119pny na potrzeby odpowiedzi na \u017c\u0105danie. \u017b\u0105danie wychodz\u0105ce nie zostanie skorelowane z \u017c\u0105daniem przychodz\u0105cym.
+OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST.explanation=Obiekt Span utworzony przy wys\u0142aniu \u017c\u0105dania nie jest dost\u0119pny przy zwracaniu odpowiedzi. \u017badne informacje obiektu Span nie zostan\u0105 udost\u0119pnione us\u0142udze Opentracing.
+OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST.useraction=Sprawd\u017a poprzednie b\u0142\u0119dy, aby okre\u015bli\u0107, dlaczego obiekt Span nie jest dost\u0119pny.
+
+OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: Wywo\u0142ana metoda OpentracingTracerFactory.newInstance(...) podana przez u\u017cytkownika zwr\u00f3ci\u0142a warto\u015b\u0107 NULL.
+OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=Sk\u0142adnik tworzy implementacje klasy Tracer za pomoc\u0105 fabryki OpentracingTracerFactory podanej przez u\u017cytkownika.  Metoda OpentracingTracerFactory.newInstance zwr\u00f3ci\u0142a warto\u015b\u0107 NULL.
+OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=Okre\u015bl, dlaczego metoda OpentracingTracerFactory.newInstance podana przez u\u017cytkownika zwr\u00f3ci\u0142a warto\u015b\u0107 NULL.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Opentracing error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# An Opentracing API error has occurred: {0}
+temporary.CWMOT9999E=CWMOT9999E: Wyst\u0105pi\u0142 b\u0142\u0105d interfejsu API Opentracing: {0}
+temporary.CWMOT9999E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d interfejsu API Opentracing, kt\u00f3ry uniemo\u017cliwia normalne dzia\u0142anie.
+temporary.CWMOT9999E.useraction=Sprawd\u017a dzienniki FFDC i tekst wyj\u0105tku w celu zidentyfikowania problemu.

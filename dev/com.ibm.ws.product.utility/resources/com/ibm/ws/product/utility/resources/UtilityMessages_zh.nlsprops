@@ -1,0 +1,198 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.product.utility/resources/com/ibm/ws/product/utility/resources/UtilityMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0001 - 0099 com.ibm.ws.kernel.boot.resources.LauncherMessages
+# 0100 - 0199 com.ibm.ws.kernel.service.utils.resources.ServiceMessages
+# 0200 - 0299 com.ibm.ws.kernel.service.location.internal.resources.LocServiceMessages
+# 0300 - 0399 com.ibm.ws.kernel.fileinstall.internal.resources.FileInstallMessages
+# 0400 - 0499 com.ibm.ws.kernel.filemonitor.internal.resources.FileMonitorMessages
+# 0500 - 0599 com.ibm.ws.product.utility.resources.UtilityMessages
+# 0600 - 0699 com.ibm.ws.kernel.boot.cmdline.resources.CommandLineMessages
+# 0700 - 0799 com.ibm.ws.logging.internal.resources.OSGiMessages -- OSGi Framework/kernel diagnostics
+# -------------------------------------------------------------------------------------------------
+
+ERROR_INPUT_CONSOLE_NOT_AVAILABLE=CWWKE0500E: \u8f93\u5165\u63a7\u5236\u53f0\u4e0d\u53ef\u7528\u3002
+ERROR_INPUT_CONSOLE_NOT_AVAILABLE.explanation=\u5f53\u524d\u63a7\u5236\u53f0\u4e2d\u6ca1\u6709\u8f93\u5165\u81ea\u53d8\u91cf\u652f\u6301\u3002
+ERROR_INPUT_CONSOLE_NOT_AVAILABLE.useraction=\u5207\u6362\u81f3\u63a5\u53d7\u8f93\u5165\u81ea\u53d8\u91cf\u7684\u5176\u4ed6\u6807\u51c6\u63a7\u5236\u53f0\u3002
+
+ERROR_UNABLE_READ_FROM_CONSOLE=CWWKE0501E: \u65e0\u6cd5\u4ece\u63a7\u5236\u53f0\u8bfb\u53d6\u8f93\u5165\u3002\u5f02\u5e38\u6d88\u606f\u662f\uff1a{0}\u3002
+ERROR_UNABLE_READ_FROM_CONSOLE.explanation=\u65e0\u6cd5\u4ece\u63a7\u5236\u53f0\u8bfb\u53d6\u8f93\u5165\u3002
+ERROR_UNABLE_READ_FROM_CONSOLE.useraction=\u8bf7\u8c03\u67e5\u5f02\u5e38\u7684\u6839\u672c\u539f\u56e0\u3002
+
+ERROR_UNKNOWN_COMMAND_TASK=CWWKE0502E: \u672a\u77e5\u4efb\u52a1\uff1a{0}\u3002
+ERROR_UNKNOWN_COMMAND_TASK.explanation=\u5f53\u524d\u547d\u4ee4\u4e0d\u652f\u6301\u8be5\u4efb\u52a1\u3002
+ERROR_UNKNOWN_COMMAND_TASK.useraction=\u8bf7\u4f7f\u7528 help \u547d\u4ee4\u6765\u663e\u793a\u6240\u6709\u53ef\u7528\u7684\u4efb\u52a1\u3002
+
+ERROR_VERSION_FILE_NOT_EXISTS=CWWKE0503E: \u627e\u4e0d\u5230\u7248\u672c\u6587\u4ef6 {0}\u3002
+ERROR_VERSION_FILE_NOT_EXISTS.explanation=\u627e\u4e0d\u5230\u670d\u52a1\u5668\u7248\u672c\u6587\u4ef6\u3002
+ERROR_VERSION_FILE_NOT_EXISTS.useraction=\u8bf7\u9a8c\u8bc1\u670d\u52a1\u5668\u662f\u5426\u5df2\u5b8c\u6574\u5b89\u88c5\u3002
+
+ERROR_UNABLE_READ_FILE=CWWKE0504E: \u65e0\u6cd5\u8bfb\u53d6\u6587\u4ef6 {0}\u3002\u5f02\u5e38\u6d88\u606f\u662f\uff1a{1}\u3002
+ERROR_UNABLE_READ_FILE.explanation=\u65e0\u6cd5\u8bfb\u53d6\u76ee\u6807\u6587\u4ef6\u3002
+ERROR_UNABLE_READ_FILE.useraction=\u8bf7\u8c03\u67e5\u5f02\u5e38\u7684\u6839\u672c\u539f\u56e0\u3002
+
+ERROR_UNABLE_WRITE_FILE=CWWKE0505E: \u65e0\u6cd5\u5199\u5165\u6587\u4ef6 {0}\u3002\u5f02\u5e38\u6d88\u606f\u662f\uff1a{1}\u3002
+ERROR_UNABLE_WRITE_FILE.explanation=\u65e0\u6cd5\u5199\u76ee\u6807\u6587\u4ef6\u3002
+ERROR_UNABLE_WRITE_FILE.useraction=\u8bf7\u8c03\u67e5\u5f02\u5e38\u7684\u6839\u672c\u539f\u56e0\u3002
+
+ERROR_UNABLE_INITIALIZE_TASK_INSTANCE=CWWKE0506E: \u65e0\u6cd5\u521d\u59cb\u5316\u4efb\u52a1 {0}\u3002\u5f02\u5e38\u6d88\u606f\u662f\uff1a{1}\u3002
+ERROR_UNABLE_INITIALIZE_TASK_INSTANCE.explanation=\u65e0\u6cd5\u521d\u59cb\u5316\u76ee\u6807\u4efb\u52a1\u3002
+ERROR_UNABLE_INITIALIZE_TASK_INSTANCE.useraction=\u8bf7\u8c03\u67e5\u5f02\u5e38\u7684\u6839\u672c\u539f\u56e0\u3002
+
+ERROR_CHECKSUMS_FILE_NOT_EXISTS=CWWKE0507E: \u627e\u4e0d\u5230\u4ea7\u54c1\u6821\u9a8c\u548c\u6587\u4ef6 {0}\u3002
+ERROR_CHECKSUMS_FILE_NOT_EXISTS.explanation=\u627e\u4e0d\u5230\u6307\u5b9a\u7684\u4ea7\u54c1\u6821\u9a8c\u548c\u6587\u4ef6\u3002
+ERROR_CHECKSUMS_FILE_NOT_EXISTS.useraction=\u8bf7\u9a8c\u8bc1\u8be5\u6821\u9a8c\u548c\u6587\u4ef6\u662f\u5426\u5b58\u5728\u3002
+
+ERROR_CHECKSUMS_FILE_NOT_LOADED=CWWKE0508E: \u65e0\u6cd5\u88c5\u5165\u6821\u9a8c\u548c\u6587\u4ef6 {0}\u3002
+ERROR_CHECKSUMS_FILE_NOT_LOADED.explanation=\u65e0\u6cd5\u88c5\u5165\u6307\u5b9a\u7684\u6821\u9a8c\u548c\u6587\u4ef6\u3002
+ERROR_CHECKSUMS_FILE_NOT_LOADED.useraction=\u8bf7\u9a8c\u8bc1\u8be5\u6821\u9a8c\u548c\u6587\u4ef6\u662f\u5426\u4e3a\u683c\u5f0f\u826f\u597d\u7684\u6587\u4ef6\uff0c\u542b\u6709\u6587\u4ef6\u8def\u5f84\u548c MD5 \u5b57\u7b26\u4e32\u5bf9\u3002
+
+ERROR_MALFORMED_FILE=CWWKE0509E: \u5f62\u6001\u5f02\u5e38\u7684 Unicode \u8f6c\u4e49\u51fa\u73b0\u5728\u6587\u4ef6 {0} \u4e2d\u3002\u5f02\u5e38\u6d88\u606f\u662f\uff1a{1}\u3002
+ERROR_MALFORMED_FILE.explanation=\u5f62\u6001\u5f02\u5e38\u7684 Unicode \u8f6c\u4e49\u51fa\u73b0\u3002
+ERROR_MALFORMED_FILE.useraction=\u8bf7\u8c03\u67e5\u5f02\u5e38\u7684\u6839\u672c\u539f\u56e0\u3002
+
+ERROR_NO_PROPERTIES_FILE=CWWKE0510E: \u6b64\u76ee\u5f55 {0} \u4e0b\u6ca1\u6709\u5c5e\u6027\u6587\u4ef6\u3002
+ERROR_NO_PROPERTIES_FILE.explanation=\u5728 Liberty \u6982\u8981\u6587\u4ef6\u5b89\u88c5\u76ee\u5f55\u7684 lib/versions \u6587\u4ef6\u5939\u4e0b\u627e\u4e0d\u5230\u4efb\u4f55\u5c5e\u6027\u6587\u4ef6\u3002
+ERROR_NO_PROPERTIES_FILE.useraction=\u8bf7\u4f7f\u7528 validate \u547d\u4ee4\u6765\u9a8c\u8bc1\u5f53\u524d Liberty \u6982\u8981\u6587\u4ef6\u5b89\u88c5\u662f\u5426\u6709\u6548\u3002
+
+ERROR_NO_PROPERTIES_DIRECTORY=CWWKE0511E: \u7248\u672c\u5c5e\u6027\u76ee\u5f55 {0} \u4e0d\u5b58\u5728\u3002
+ERROR_NO_PROPERTIES_DIRECTORY.explanation=\u5728 Liberty \u6982\u8981\u6587\u4ef6\u5b89\u88c5\u76ee\u5f55\u4e0b\u627e\u4e0d\u5230\u7248\u672c\u5c5e\u6027\u76ee\u5f55 lib/versions \u6587\u4ef6\u5939\u3002
+ERROR_NO_PROPERTIES_DIRECTORY.useraction=\u8bf7\u4f7f\u7528 validate \u547d\u4ee4\u6765\u9a8c\u8bc1\u5f53\u524d Liberty \u6982\u8981\u6587\u4ef6\u5b89\u88c5\u662f\u5426\u6709\u6548\u3002
+
+ERROR_NOT_PROPERTIES_DIRECTORY=CWWKE0512E: {0} \u4e0d\u662f\u76ee\u5f55\u3002
+ERROR_NOT_PROPERTIES_DIRECTORY.explanation=Liberty \u6982\u8981\u6587\u4ef6\u5b89\u88c5\u76ee\u5f55\u7684 lib/versions \u4e0d\u662f\u76ee\u5f55\u3002
+ERROR_NOT_PROPERTIES_DIRECTORY.useraction=\u8bf7\u4f7f\u7528 validate \u547d\u4ee4\u6765\u9a8c\u8bc1\u5f53\u524d Liberty \u6982\u8981\u6587\u4ef6\u5b89\u88c5\u662f\u5426\u6709\u6548\u3002
+
+ERROR_UNABLE_READ_PROPERTIES_DIRECTORY=CWWKE0513E: \u65e0\u6cd5\u8bfb\u53d6\u6587\u4ef6 {0}\u3002
+ERROR_UNABLE_READ_PROPERTIES_DIRECTORY.explanation=\u65e0\u6cd5\u8bfb\u53d6\u76ee\u6807\u6587\u4ef6\u3002
+ERROR_UNABLE_READ_PROPERTIES_DIRECTORY.useraction=\u8bf7\u8c03\u67e5\u65e0\u6cd5\u8bfb\u6587\u4ef6\u7684\u6839\u672c\u539f\u56e0\u3002
+
+ERROR_INVALID_COMMAND_OPTION=CWWKE0514E: \u5728\u547d\u4ee4\u884c\u4e0a\u63d0\u4f9b\u4e86\u65e0\u6548\u9009\u9879 {0}\u3002\u6709\u6548\u9009\u9879\u4e3a\uff1a[{1}]
+ERROR_INVALID_COMMAND_OPTION.explanation=\u6b64\u547d\u4ee4\u4e0d\u652f\u6301\u5728\u547d\u4ee4\u884c\u4e0a\u63d0\u4f9b\u7684\u9009\u9879\u3002
+ERROR_INVALID_COMMAND_OPTION.useraction=\u91cd\u65b0\u53d1\u51fa\u4e0d\u5e26\u65e0\u6548\u9009\u9879\u7684\u547d\u4ee4\u6216\u5e26\u6709\u6548\u9009\u9879\u7684\u547d\u4ee4\u3002
+
+LICENSE_NOT_FOUND=\u8bb8\u53ef\u8bc1\u6587\u4ef6\u4e0d\u5b58\u5728\u3002
+
+# {0} is the key of a required property in properties file.
+# {1} is the name of properties file.
+version.missing.key=\u6587\u4ef6 {1} \u4e2d\u7f3a\u5c11\u5fc5\u9700\u7684\u5c5e\u6027\u5173\u952e\u5b57 {0}\u3002
+
+# {0} is the productId property key
+# {1} is the properties file name
+# {2} is another properties file name
+version.duplicated.productId={0} \u7684\u503c\u5fc5\u987b\u662f\u552f\u4e00\u7684\uff0c\u4f46\u662f\u5b83\u5728 {1} \u548c {2} \u4e2d\u76f8\u540c\u3002
+
+# {0} is the productId
+# {1} is the properties file name
+version.replaced.product.not.exist=\u5728 Liberty \u914d\u7f6e\u6587\u4ef6\u5b89\u88c5\u76ee\u5f55\u7684 lib/versions \u6587\u4ef6\u5939\u4e2d\u7684\u4efb\u4f55\u7248\u672c\u5c5e\u6027\u6587\u4ef6\u4e2d\u627e\u4e0d\u5230\u5728 {1} \u4e2d\u6307\u5b9a\u7684\u4ea7\u54c1\u6807\u8bc6 {0}\u3002
+
+# {0} is the properties file name
+version.replaced.product.can.not.itself=\u5728 {0} \u4e2d\uff0c\u4ea7\u54c1\u6807\u8bc6\u4e0d\u80fd\u66ff\u6362\u5176\u672c\u8eab\u3002
+
+# {0} is the value of property with key as com.ibm.websphere.productReplaces
+# {1} is the properties file which defined com.ibm.websphere.productReplaces
+version.replacing.not.exist=\u4ea7\u54c1\u6807\u8bc6 {0} \u4e0d\u5b58\u5728\u4e8e {1} \u4e0b\u7684\u4efb\u4f55\u5c5e\u6027\u6587\u4ef6\u4e2d\u3002
+
+product.name=\u4ea7\u54c1\u540d\u79f0\uff1a
+product.version=\u4ea7\u54c1\u7248\u672c\uff1a
+product.edition=\u4ea7\u54c1\u4fee\u8ba2\u7248\uff1a
+
+usage=\u7528\u6cd5\uff1a{0}
+tasks=\u64cd\u4f5c\uff1a
+
+info.validate.against.file.not.exist=\u4ea7\u54c1\u9a8c\u8bc1\u672a\u542f\u52a8\uff0c\u56e0\u4e3a\u6307\u5b9a\u7684\u4ea7\u54c1\u6821\u9a8c\u548c\u6587\u4ef6\u4e0d\u5b58\u5728\u3002
+info.validate.start=\u542f\u52a8\u4ea7\u54c1\u9a8c\u8bc1...
+info.validate.validating.feature=\u6b63\u5728\u9a8c\u8bc1\u529f\u80fd\u90e8\u4ef6\uff1a{0}... 
+info.validate.validating.platform=\u6b63\u5728\u9a8c\u8bc1\u5e73\u53f0\u6346\u7ed1\u8f6f\u4ef6\u5217\u8868\uff1a{0}... 
+info.validate.deinition.file.not.exist=\u5b9a\u4e49\u6587\u4ef6 {0} \u4e0d\u5b58\u5728\u3002
+info.validate.deinition.file.broken=\u5b9a\u4e49\u6587\u4ef6 {0} \u5df2\u66f4\u6539\u6216\u635f\u574f\u3002
+info.validate.checksum.file.not.exist=\u6821\u9a8c\u548c\u6587\u4ef6 {0} \u4e0d\u5b58\u5728\u3002
+info.validate.checksum.file.broken=\u6821\u9a8c\u548c\u6587\u4ef6 {0} \u5df2\u66f4\u6539\u6216\u635f\u574f\u3002
+info.validate.content.file.not.exist=\u5185\u5bb9 {0} \u4e0d\u5b58\u5728\u3002
+info.validate.content.file.broken=\u5185\u5bb9 {0} \u5df2\u66f4\u6539\u6216\u635f\u574f\u3002
+info.validate.validating.result.error=[\u9519\u8bef]
+info.validate.validating.result.pass=\u901a\u8fc7\uff01
+info.validate.validating.result.fail=\u5931\u8d25\uff01
+info.validate.exception=\u4ea7\u54c1\u9a8c\u8bc1\u53d1\u751f\u5f02\u5e38\uff1a{0}\u3002\u8bf7\u68c0\u67e5\u9519\u8bef\u65e5\u5fd7\uff0c\u4ee5\u83b7\u53d6\u8be6\u7ec6\u4fe1\u606f\u3002
+info.validate.success=\u4ea7\u54c1\u9a8c\u8bc1\u5df2\u6210\u529f\u5b8c\u6210\u3002
+info.validate.fail=\u4ea7\u54c1\u9a8c\u8bc1\u5df2\u5b8c\u6210\uff0c\u53d1\u73b0 {0} \u4e2a\u9519\u8bef\u3002
+info.validate.fixes.need.reapplying=\u5fc5\u987b\u91cd\u65b0\u5e94\u7528\u4ee5\u4e0b\u4fee\u8ba2\uff1a{0}\u3002
+
+# {0} is the usage message from compare.usage
+compare.no.option.set=\u56e0\u4e3a\u547d\u4ee4\u7684\u65e0\u6548\u4f7f\u7528\u800c\u65e0\u6cd5\u5b8c\u6210\uff0c\u5fc5\u987b\u63d0\u4f9b\n\
+--target \u6216 --apars \u4e4b\u4e00\u3002
+
+# {0} is the file location supplied to the command
+compare.to.option.does.not.exist=\u5b89\u88c5\u6587\u4ef6 {0} \u4e0d\u5b58\u5728\u3002
+
+# {0} Is the installation path supplied
+compare.install.not.zip.or.dir=\u5b89\u88c5\u4f4d\u7f6e {0} \u4e0d\u662f\u76ee\u5f55\u6216\u5f52\u6863\u6587\u4ef6\uff08.jar \u6216 .zip\uff09
+# {0} Is the installation path supplied
+# {1} Is the path within the installation location for listing APARs
+# {2} Is the path within the archive for listing APARs that the CSV file containing the list is
+compare.no.csv.entry=\u5b89\u88c5\u4f4d\u7f6e {0} \u65e0\u6548\u3002\u5b83\u5305\u542b\u5217\u793a APAR \u7684\u5f52\u6863\u6587\u4ef6 ({1})\uff0c\u4f46\u662f\u91cc\u9762\u6ca1\u6709\u5217\u793a APAR \u7684\u6587\u4ef6 {2}\u3002
+compare.error.reading.install=\u8bfb\u53d6\u5b89\u88c5\u4f4d\u7f6e {0} \u65f6\u53d1\u751f\u9519\u8bef\uff0c\u9519\u8bef\u6587\u672c\u4e3a\uff1a{1}\u3002
+# {0} The installation location for the first installation being compared
+# {1} The installation location supplied by the user that we are comparing to 
+compare.all.ifixes.present={0} \u5904\u6620\u50cf\u4e2d\u7684\u6240\u6709\u4e34\u65f6\u4fee\u8ba2\u90fd\u5b58\u5728\u4e8e {1} \u5904\u6620\u50cf\u4e2d\u3002
+# {0} The installation location for the first installation being compared
+# {1} The installation location supplied by the user that we are comparing to
+compare.ifixes.missing={0} \u5904\u6620\u50cf\u4e2d\u7684\u67d0\u4e9b\u4e34\u65f6\u4fee\u8ba2\u5728 {1} \u5904\u6620\u50cf\u4e2d\u7f3a\u5931\u3002
+# {0} The installation location for the first installation being compared
+# {1} The installation location supplied by the user that we are comparing to
+compare.list.missing.ifixes=\u4e0b\u5217\u4e34\u65f6\u4fee\u8ba2\u5b58\u5728\u4e8e {0} \u5904\u6620\u50cf\u4e2d\uff0c\u4f46\u662f\u5728 {1} \u5904\u6620\u50cf\u4e2d\u7f3a\u5931\u3002
+# {0} The installation location for the first installation being compared
+# {1} The installation location supplied by the user that we are comparing to
+compare.list.included.ifixes=\u4e0b\u5217\u4e34\u65f6\u4fee\u8ba2\u65e2\u5b58\u5728\u4e8e {0} \u5904\u6620\u50cf\u4e2d\u53c8\u5b58\u5728\u4e8e {1} \u5904\u6620\u50cf\u4e2d\u3002
+# {0} Is the APAR 
+# {1} Is the list of iFixes that the APAR is part of
+compare.ifix.apar.info=\u4e34\u65f6\u4fee\u8ba2\u4e2d\u7684 {0}\uff1a{1}
+# {0} This is a list of which APARs the user inputed are not present in the installation
+compare.missing.apars=\u5b89\u88c5\u4e2d\u6ca1\u6709\u4ee5\u4e0b APAR\uff1a{0}\u3002
+compare.all.apars.present=\u5b89\u88c5\u4e2d\u5305\u542b\u6240\u6709 APAR\u3002
+# {0} The iFix ID for the iFix that could not be read
+compare.ifix.file.parse.error=\u65e0\u6cd5\u8bfb {0} \u7684\u4e34\u65f6\u4fee\u8ba2 <file/> \u4fe1\u606f\uff0c\u56e0\u6b64\u65e0\u6cd5\u68c0\u67e5\u662f\u5426\u5df2\u5b89\u88c5\u8be5\u4e34\u65f6\u4fee\u8ba2
+compare.no.was.properties.found=\u627e\u4e0d\u5230 productId \u4e3a\u201ccom.ibm.websphere.appserver\u201d\u7684\u5c5e\u6027
+# {0} The string being parsed
+# {1} The error from the parser
+compare.unable.to.parse.version=\u65e0\u6cd5\u89e3\u6790 WebSphere Application Server \u7684\u7248\u672c {0}\u3002\u5f02\u5e38\u6d88\u606f\uff1a{1}
+# {0} The error message when we processed the product version
+compare.version.parsing.error=\u65e0\u6cd5\u83b7\u53d6\u5f53\u524d\u5b89\u88c5\u7684\u7248\u672c\uff0c\u56e0\u6b64\u65e0\u6cd5\u68c0\u67e5\u4e34\u65f6\u4fee\u8ba2\u662f\u5426\u9002\u5408\u6b64\u5b89\u88c5\u3002\u5f02\u5e38\u6d88\u606f\u4e3a\uff1a{0}
+# {0} The iFix ID
+compare.unable.to.find.offering={0} \u7684\u4e34\u65f6\u4fee\u8ba2 XML \u5143\u6570\u636e\u4e0d\u5305\u542b\u4ea7\u54c1\u5143\u7d20\uff0c\u56e0\u6b64\u65e0\u6cd5\u68c0\u67e5\u8be5\u4e34\u65f6\u4fee\u8ba2\u5bf9\u4e8e\u6b64\u5b89\u88c5\u662f\u5426\u6709\u6548
+# {0} The version
+compare.version.incompatible=WebSphere Application Server \u7684\u4ea7\u54c1\u7248\u672c\u672a\u91c7\u7528\u9884\u671f\u7684\u683c\u5f0f\u3002\u9884\u671f d1.d2.d3.d4\uff0c\u4f46\u91c7\u7528\u7684\u662f {0}
+# {0} The iFix id
+compare.no.apar=\u4e34\u65f6\u4fee\u8ba2 {0} \u6ca1\u6709\u5143\u6570\u636e XML \u7684 <problem/> \u5143\u7d20\u4e2d\u5217\u793a\u7684\u4efb\u4f55 APAR
+# {0} The ifix ids that are not applicable
+compare.invalid.ifixes.missing=\u6bd4\u8f83\u4e2d\u672a\u5305\u62ec\u4ee5\u4e0b\u4e34\u65f6\u4fee\u8ba2\uff0c\u56e0\u4e3a <file/> \u4e2d\u5217\u51fa\u7684\u6587\u4ef6\u4e0d\u518d\u5b58\u5728\u6216\u8fc7\u65f6\uff1a{0}
+# {0} The ifix ids that are not applicable
+compare.invalid.ifixes.badversion=\u6bd4\u8f83\u4e2d\u672a\u5305\u62ec\u4ee5\u4e0b\u4e34\u65f6\u4fee\u8ba2\uff0c\u56e0\u4e3a\u5b83\u4e0d\u9002\u5408\u6b64 WebSphere Application Server \u7248\u672c\uff1a{0}
+# {0} The ifix ids that are not applicable
+compare.invalid.ifixes.bad.xml=\u6bd4\u8f83\u4e2d\u672a\u5305\u62ec\u4ee5\u4e0b\u4e34\u65f6\u4fee\u8ba2\uff0c\u56e0\u4e3a\u5b83\u4eec\u7684 XML \u65e0\u6548\uff08\u5982\u9700\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u4f7f\u7528 --verbose \u9009\u9879\uff09\uff1a{0}
+
+# {0} is the message from the exception that caused us to be unable to create a parser for reading the XML files
+ifixutils.unable.to.create.parser=\u8bfb\u53d6\u5f53\u524d\u5b89\u88c5\u7684\u4e34\u65f6\u4fee\u8ba2\u4fe1\u606f\u65f6\u53d1\u751f\u9519\u8bef\u3002\u5f02\u5e38\u6d88\u606f\u662f\uff1a{0}\u3002
+# {0} is the path to a file that could not be parsed
+# {1} is the message from the exception that meant we couldn't read the file
+ifixutils.unable.to.read.file=\u8bfb\u53d6\u6587\u4ef6 {0} \u65f6\u53d1\u751f\u5f02\u5e38\u3002\u5f02\u5e38\u6d88\u606f\u662f\uff1a{1}\u3002

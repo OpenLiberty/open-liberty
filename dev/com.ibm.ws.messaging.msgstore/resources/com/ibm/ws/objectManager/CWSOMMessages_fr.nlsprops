@@ -1,0 +1,525 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.example.CWSOMMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+# 
+# Instructions to translation will precede the line to which it applies
+# {0} description of each insert field
+# ClassName_MessageName=CWSOM0001I: This is a message with insert {0}
+# ClassName_MessageName.explanation=Explanation text for the message.
+# ClassName_MessageName.useraction=User action text for the message.
+#
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - CWSOMIS9999 is for emergency use if any new messages are required after the messages file is finalized
+# -------------------------------------------------------------------------------------------------
+#
+#
+#CMVCPATHNAME %Z%%W% %I%
+#COMPONENTPREFIX CWSOM
+#COMPONENTNAMEFOR CWSOM ObjectManager
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+
+# {0} name of the log file.
+ObjectManagerState_ColdStart=CWSOM0001I: Le gestionnaire d''objets utilisant le fichier journal {0} a \u00e9t\u00e9 d\u00e9marr\u00e9 \u00e0 froid.
+ObjectManagerState_ColdStart.explanation=Un fichier journal vide a \u00e9t\u00e9 affect\u00e9 au gestionnaire d'objets : il a donc \u00e9t\u00e9 d\u00e9marr\u00e9 \u00e0 froid.
+ObjectManagerState_ColdStart.useraction= Aucune, sauf si vous attendiez un d\u00e9marrage \u00e0 chaud du gestionnaire d'objets. \
+Dans ce cas, recherchez pourquoi le fichier journal \u00e9tait vide.
+ 
+# {0} name of the log file.
+# {1) The LOG_FILE_TYPE used for the warm start.
+ObjectManagerState_WarmStart=CWSOM0002I: Le gestionnaire d''objets utilisant \
+le fichier journal {0} a \u00e9t\u00e9 d\u00e9marr\u00e9 \u00e0 chaud. Le type de fichier journal est {1}.
+ObjectManagerState_WarmStart.explanation=Un fichier journal valide a \u00e9t\u00e9 affect\u00e9 au gestionnaire d'objets, \u00e0 partir duquel il a pu red\u00e9marrer.
+ObjectManagerState_WarmStart.useraction=Aucune, sauf si vous attendiez un d\u00e9marrage \u00e0 froid du gestionnaire d'objets. \
+Dans ce cas, recherchez pourquoi le fichier journal n'\u00e9tait pas vide.
+ 
+# {0} name of the log file.
+ObjectManagerState_Shutdown=CWSOM0003I: e gestionnaire d''objets utilisant le fichier journal {0} a \u00e9t\u00e9 arr\u00eat\u00e9.
+ObjectManagerState_Shutdown.explanation=L'arr\u00eat du gestionnaire d'objets a \u00e9t\u00e9 demand\u00e9.
+ObjectManagerState_Shutdown.useraction=Aucune, sauf si vous n'attendiez pas l'arr\u00eat du gestionnaire d'objets.
+
+# {0} name of the log file.
+ObjectManagerState_ShutdownFast=CWSOM0004I: Le gestionnaire d''objets utilisant le fichier journal {0} a \u00e9t\u00e9 arr\u00eat\u00e9 sans effectuer un point de contr\u00f4le final.
+ObjectManagerState_ShutdownFast.explanation=L'arr\u00eat du gestionnaire d'objets sans r\u00e9alisation d'un point de contr\u00f4le final a \u00e9t\u00e9 demand\u00e9 ou bien il s'est arr\u00eat\u00e9 \u00e0 cause d'une erreur ant\u00e9rieure.
+ObjectManagerState_ShutdownFast.useraction=Aucune, sauf si vous n'attendiez pas l'arr\u00eat du gestionnaire d'objets sans r\u00e9alisation d'un point de contr\u00f4le final. \
+Examinez le r\u00e9sultat de diagnostic pour d\u00e9terminer la cause de l'arr\u00eat impr\u00e9vu.
+
+# {0} Descriptive name of the transaction to be backed out.
+ObjectManagerState_LogTooFull=CWSOM0005W: Le gestionnaire d''objets a d\u00e9termin\u00e9 que le fichier journal est satur\u00e9 et va annuler la transaction {0}.
+ObjectManagerState_LogTooFull.explanation=Le gestionnaire d'objets manquait d'espace dans le fichier journal apr\u00e8s avoir effectu\u00e9 un point de contr\u00f4le ; il a annul\u00e9 la plus grosse transaction du journal, de fa\u00e7on \u00e0 lib\u00e9rer de l'espace.
+ObjectManagerState_LogTooFull.useraction=Vous tentez d'effectuer trop de travaux transactionnels pour la taille de fichier journal configur\u00e9e. \
+D\u00e9terminez si vos transactions tentent d'effectuer trop de mises \u00e0 jour, si vous tentez de mettre \u00e0 jour trop d'objets de grande taille, si vous tentez d'effectuer trop de transactions en m\u00eame temps ou si le fichier journal est trop petit et doit \u00eatre agrandi. 
+
+# ----------------------------------------------------------------------------------------------------
+
+# {0} Descriptive name of the transaction to be backed out.
+InternalTransaction_BackoutOrphan=CWSOM0100W: Une transaction {0} Une transaction  a \u00e9t\u00e9 d\u00e9couverte lors de la r\u00e9cup\u00e9ration de place et sera annul\u00e9e.
+InternalTransaction_BackoutOrphan.explanation=L'application a perdu sa r\u00e9f\u00e9rence \u00e0 une transaction et ne peut pas effectuer la transaction. \
+Le gestionnaire d'objets va donc annuler la transaction de fa\u00e7on \u00e0 lib\u00e9rer ses ressources.
+InternalTransaction_BackoutOrphan.useraction=L'application a perdu sa r\u00e9f\u00e9rence \u00e0 une transaction. \
+Si l'application s'est termin\u00e9e anormalement, il n'y a plus rien \u00e0 faire. \
+Cependant, si l'application a perdu sa r\u00e9f\u00e9rence sans se terminer anormalement, il peut y avoir une erreur de logique dans l'application.
+              
+# ----------------------------------------------------------------------------------------------------
+
+# {0} ObjectStore which could not safely be closed.
+ObjectStore_UnsafeToFlush=CWSOM0200W: Impossible de fermer de fa\u00e7on s\u00e9curis\u00e9e le magasin d''objets {0} avec la strat\u00e9gie STRATEGY_SAVE_ONLY_ON_SHUTDOWN.
+ObjectStore_UnsafeToFlush.explanation=S'il y a des transactions actives au moment de l'arr\u00eat. \
+Impossible de fermer de fa\u00e7on s\u00e9curis\u00e9e les magasins d'objets avec la strat\u00e9gie STRATEGY_SAVE_ONLY_ON_SHUTDOWN car des transactions actives existent. \
+La fermeture du magasin d'objets peut amener \u00e0 enregistrer des donn\u00e9es incoh\u00e9rentes.  \
+Le magasin de donn\u00e9es est laiss\u00e9 inchang\u00e9.
+ObjectStore_UnsafeToFlush.useraction=Examinez pourquoi il y a des transactions actives. \
+cela peut \u00eatre d\u00fb au fait que vous utilisez un gestionnaire de transactions externe. \
+Si vous ne pouvez pas \u00e9viter d'avoir des transactions actives au moment de l'arr\u00eat, utilisez un magasin d'objets avec une autre strat\u00e9gie de stockage.
+
+# {0} Bytes required in the file system.
+# {1} Bytes currently used in the file system.
+# {2} Exception caught when trying to reserved the bytes.
+ObjectStore_AllocateFileSpaceFailed=CWSOM0201W: Le magasin d''objets a \
+demand\u00e9 {0} octets de stockage alors qu''il dispose actuellement de {1} octets mais il a re\u00e7u \
+l''exception {2}.
+ObjectStore_AllocateFileSpaceFailed.explanation=Le syst\u00e8me de fichiers ne peut pas allouer l'espace demand\u00e9. \
+Les tentatives pour allouer des objets au magasin d'objets \u00e9choueront.
+ObjectStore_AllocateFileSpaceFailed.useraction=Examinez l'exception et d\u00e9terminez pourquoi l'espace n'a pas pu \u00eatre allou\u00e9 dans le syst\u00e8me de fichiers.
+
+# ---------------------------------------------------------------------------------------------------------------------------------
+# Messages used by ObjectManagerException.
+# ---------------------------------------------------------------------------------------------------------------------------------
+
+# {0} The ClassNotFoundException that was caught by the ObjectManager.
+ClassNotFoundException_info=CWSOM1001E: Le gestionnaire d''objets a intercept\u00e9 l''exception ClassNotFoundException={0}(java.lang.ClassNotFoundException) lors d''une tentative de d\u00e9s\u00e9rialisation d''un objet g\u00e9r\u00e9. 
+ClassNotFoundException_info.explanation=Une exception java.lang.ClassNotFoundException a \u00e9t\u00e9 intercept\u00e9e lors d'une tentative de d\u00e9s\u00e9rialisation d'un objet g\u00e9r\u00e9.
+ClassNotFoundException_info.useraction=L'exception contient le nom de la classe qui n'a pas \u00e9t\u00e9 trouv\u00e9e. \
+Rendez-le disponible pour le chargeur de classe du gestionnaire d'objets, par exemple en incluant des fichiers de classe dans le chemin d'acc\u00e8s aux classes.
+
+# {0} The Name of the new and existing ObjectStore.
+# {1} ObjectStore already using the name.
+DuplicateObjectStoreNameException_info=CWSOM1002E: Tentative de construction \
+d''un magasin d''objets avec le nom de magasin {0}(Cha\u00eene)qui a d\u00e9j\u00e0 \u00e9t\u00e9 utilis\u00e9 par le magasin \
+d''objets {1}.
+DuplicateObjectStoreNameException_info.explanation=Les noms de magasins d'objets doivent \u00eatre uniques au sein d'un gestionnaire d'objets.
+DuplicateObjectStoreNameException_info.useraction=Choisissez un autre nom pour le magasin d'objets.
+
+# {0} Object which is not in a valid state for the operation.
+# {1} The state the object was in.
+# {2} The descriptive name of the state.
+StateErrorException_info=CWSOM1003E: L''objet {0} est maintenant en \u00e9tat \
+d''erreur. Son \u00e9tat non valide pr\u00e9c\u00e9dent \u00e9tait {1}(entier) {2}(cha\u00eene). 
+StateErrorException_info.explanation=Une op\u00e9ration a \u00e9t\u00e9 demand\u00e9e sur un objet qui est dans un \u00e9tat non valide. \
+L'op\u00e9ration \u00e9choue et l'objet passe \u00e0 un \u00e9tat d'erreur.
+StateErrorException_info.useraction=CMSG0002 
+
+# {0} The IOException that was caught by the ObjectManager.
+PermanentIOException_info=CWSOM1004E: Le gestionnaire d''objets a intercept\u00e9 \
+une exception IOException {0}(java.io.IOException). 
+PermanentIOException_info.explanation=Une exception IOException a \u00e9t\u00e9 intercept\u00e9e par le gestionnaire d'objets. L'op\u00e9ration d'entr\u00e9e-sortie ne peut pas \u00eatre recommenc\u00e9e de fa\u00e7on s\u00fbre et a \u00e9t\u00e9 abandonn\u00e9e.
+PermanentIOException_info.useraction=L exception IOException d\u00e9crit l'erreur sp\u00e9cifique. \
+Recherchez et corrigez la cause de l'exception IOException sous-jacente.
+
+# {0} The IOException that was caught by the ObjectManager.
+TemporaryIOException_info=CWSOM1005E: Le gestionnaire d''objets a intercept\u00e9 \
+une exception IOException {0}(java.io.IOException). 
+TemporaryIOException_info.explanation=Une exception IOException a \u00e9t\u00e9 intercept\u00e9e par le gestionnaire d'objets. L'op\u00e9ration d'entr\u00e9e-sortie a \u00e9t\u00e9 abandonn\u00e9e, mais elle pourrait \u00eatre recommenc\u00e9e de fa\u00e7on s\u00fbre avec l'interface de programmation d'application (API) du gestionnaire d'objets, une fois la cause sous-jacente corrig\u00e9e.
+TemporaryIOException_info.useraction=L exception IOException d\u00e9crit l'erreur sp\u00e9cifique. \
+Recherchez et corrigez la cause de l'exception IOException sous-jacente, puis recommencez l'op\u00e9ration.
+
+# {0} The ObjectStore being constructed.
+# {1} The name.
+InvalidObjectStoreNameException_info=CWSOM1006E: Le magasin d''objets \
+{0}(Magasin d''objets) a re\u00e7u un nom non valide {1}(Cha\u00eene). 
+InvalidObjectStoreNameException_info.explanation=Un magasin d'objets a \u00e9t\u00e9 cr\u00e9\u00e9 \u00e0 l'aide d'un nom qui n'est pas valide. \
+Le gestionnaire d'objets n'a pas cr\u00e9\u00e9 le magasin d'objets.
+InvalidObjectStoreNameException_info.useraction=Examinez le nom pour d\u00e9terminer pourquoi il n'est pas valide.
+
+# {0} The unrecognized statistics set.
+StatisticsNameNotFoundException_info=CWSOM1007E: Les statistiques nomm\u00e9es \
+{0}(Cha\u00eene) ne sont pas reconnues. 
+StatisticsNameNotFoundException_info.explanation=L'application a demand\u00e9 un ensemble de statistiques non reconnu.
+StatisticsNameNotFoundException_info.useraction=Corrigez le nom de l'ensemble de statistiques demand\u00e9.
+
+# {0} The ObjectStore detecting the error.
+# {1} The ManagedObject.
+InvalidObjectToStoreException_info=CWSOM1008E: Le magasin d''objets \
+{0}(Magasin d''objets) a re\u00e7u une demande de stockage d''un objet g\u00e9r\u00e9 non valide {1} \
+(Objet g\u00e9r\u00e9). 
+InvalidObjectToStoreException_info.explanation=Un magasin d'objets a re\u00e7u une demande de stockage d'un objet g\u00e9r\u00e9 non valide. \
+Le magasin d'objets n'a pas stock\u00e9 l'objet g\u00e9r\u00e9.
+InvalidObjectToStoreException_info.useraction=Examinez l'objet g\u00e9r\u00e9 \u00e0 stocker et d\u00e9terminez pourquoi il n'est pas valide. \
+Il est possible par exemple qu'il ait la valeur null.
+
+# {0} The ObjectStore reporting the sequence error.
+# {1} The non unique sequence number.
+# {2} The ManagedObject already using the sequence number.
+StoreSequenceException_info=CWSOM1009E: Le magasin d''objets {0}(Magasin \
+d''objets) a g\u00e9n\u00e9r\u00e9 un num\u00e9ro de s\u00e9quence {1}(Long) qui a d\u00e9j\u00e0 \u00e9t\u00e9 utilis\u00e9 par {2} \
+(Objet g\u00e9r\u00e9). 
+StoreSequenceException_info.explanation=Une erreur interne s'est produite dans le magasin d'objets.
+StoreSequenceException_info.useraction=CMSG0002
+
+# {0} ObjectStore throwing the replacementException.
+# {1} The ManagedObject being replaced.
+# {2} The Token referencing the replacement.
+# {3} The existing Token attempting the replacement.
+ReplacementException_info=CWSOM1010E: Le magasin d''objets {0} a re\u00e7u une \
+demande de remplacement d''un objet g\u00e9r\u00e9 {1} r\u00e9f\u00e9renc\u00e9 par le jeton {2} avec un jeton \
+diff\u00e9rent {3} qui existait d\u00e9j\u00e0 dans le magasin. 
+ReplacementException_info.explanation=Un jeton est identifi\u00e9 par un identificateur de magasin d'objets et un identificateur d'objet stock\u00e9. \
+Un seul jeton peut exister pour chaque magasin d'identit\u00e9, mais le nouveau jeton et un jeton existant partagent la m\u00eame identit\u00e9.
+ReplacementException_info.useraction=CMSG0002 
+
+# {0} Object which is not in a valid state for the operation.
+# {1} The state the object is in.
+# {2} The descriptive name of the state.
+InvalidStateException_info=CWSOM1011E: Une op\u00e9ration non valide a \u00e9t\u00e9 tent\u00e9e \
+sur l''objet {0} alors qu''il \u00e9tait \u00e0 l''\u00e9tat {1}(entier) {2}(Cha\u00eene). 
+InvalidStateException_info.explanation=Une op\u00e9ration non valide a \u00e9t\u00e9 tent\u00e9e sur l'objet. \
+L'op\u00e9ration n'est pas valide lorsque l'objet est dans son \u00e9tat en cours. \
+Par exemple, vous pouvez avoir essay\u00e9 de supprimer un objet g\u00e9r\u00e9 qui est d\u00e9j\u00e0 supprim\u00e9. \
+L'op\u00e9ration est rejet\u00e9e et l'objet reste inchang\u00e9.
+InvalidStateException_info.useraction=Examinez l'\u00e9tat de l'objet et d\u00e9terminez pourquoi l'op\u00e9ration est tent\u00e9e.
+
+# {0} ObjecManagerState which has detected the duplicate.
+# {1} The new duplicate InternalTransaction.
+# {2} The old existing InternalTransaction.
+DuplicateTransactionException_info=CWSOM1012E: L''\u00e9tat de gestionnaire \
+d''objets {0}(Etat de gestionnaire d''objets) a tent\u00e9 d''enregistrer ou de lib\u00e9rer une nouvelle \
+transaction {1}(Transaction interne) qui a le m\u00eame identificateur d''unit\u00e9 logique de travail que la \
+transaction= {2}(Transaction interne).
+DuplicateTransactionException_info.explanation=Le gestionnaire d'objets a d\u00e9couvert une nouvelle transaction et une transaction existante qui ont le m\u00eame identificateur de transaction. Il s'agit d'une erreur interne qui ne devrait pas se produire.
+DuplicateTransactionException_info.useraction=CMSG0002 
+
+# {0} The internal transaction trying to unregister.
+NonExistentTransactionException_info=CWSOM1013E: Tentative de \
+d\u00e9senregistrement d''une transaction qui n''a pas \u00e9t\u00e9 enregistr\u00e9e. \
+Transaction {0}(Transaction interne). 
+NonExistentTransactionException_info.explanation=Une erreur interne a \u00e9t\u00e9 d\u00e9tect\u00e9e dans le gestionnaire d'objets. Aucune action ult\u00e9rieure n'est autoris\u00e9e sur la transaction.
+NonExistentTransactionException_info.useraction=CMG0002
+
+# {0} The ObjectStoreIdentifier of the ObjectStore that was not known to the ObjectManager.
+NonExistentObjectStoreTemporaryIOException_info=CWSOM1014E: Tentative de \
+localisation d''un magasin d''objets qui n''a pas \u00e9t\u00e9 enregistr\u00e9, ID magasin {0}(entier).
+NonExistentObjectStoreTemporaryIOException_info.explanation=Une r\u00e9f\u00e9rence a \u00e9t\u00e9 faite par un jeton \u00e0 un magasin d'objets qui n'est pas connu du gestionnaire d'objets.
+NonExistentObjectStoreTemporaryIOException_info.useraction=Si le magasin d'objets a \u00e9t\u00e9 supprim\u00e9 du gestionnaire d'objets, cette exception est intercept\u00e9e \u00e0 chaque fois que des jetons existants r\u00e9f\u00e9rencent le magasin d'objets. \
+R\u00e9tablissez le magasin d'objets ou n'utilisez plus le jeton qui tente d'y acc\u00e9der.
+
+# {0} The Exception that was caught by the ObjectManager.
+UnexpectedExceptionException_info=CWSOM1015E: Le gestionnaire d''objets a intercept\u00e9 de fa\u00e7on impr\u00e9vue l''exception={0}(Exception). 
+UnexpectedExceptionException_info.explanation=Une exception a \u00e9t\u00e9 intercept\u00e9e par le gestionnaire d'objets qui n'a pu entreprendre aucune action acceptable en r\u00e9ponse \u00e0 cette exception.
+UnexpectedExceptionException_info.useraction=Recherchez et corrigez la cause de l'exception sous-jacente.
+
+# {0} The managedObject being unlocked.
+# {1} Internal transaction trying to release the lock on the ManagedObject.
+# {2} The existing lock on the ManagedObject.
+InvalidTransactionException_info=CWSOM1016E: Tentative de d\u00e9verrouillage ou \
+de remplacement d''un objet g\u00e9r\u00e9 {0}(objet g\u00e9r\u00e9) par la transaction interne {1}(transaction \
+interne), alors qu''il \u00e9tait verrouill\u00e9 par le verrou de transaction {2}(verrou de transaction). 
+InvalidTransactionException_info.explanation=Une tentative a \u00e9t\u00e9 faite pour d\u00e9verrouiller ou remplacer un objet g\u00e9r\u00e9 dans le cadre d'une transaction diff\u00e9rente de celle qui l'a verrouill\u00e9. \
+La tentative a \u00e9t\u00e9 rejet\u00e9e.
+InvalidTransactionException_info.useraction=Examinez la logique de l'application qui utilise l'interface ObjectManager Transaction.unlock (objet g\u00e9r\u00e9) et d\u00e9terminer pourquoi il y a deux transactions diff\u00e9rentes.
+
+# {0} ObjectManagerState which is unable to locate the log file.
+# {1} The exception caught by the ObjectManagerState when trying to locate the log file.
+# {2} The log file name.
+NonExistentLogFileException_info=CWSOM1017E: L''\u00e9tat de gestionnaire d''objets \
+{0}(Etat de gestionnaire d''objets) a intercept\u00e9 l''exception {1}(Exception) en essayant de localiser \
+ou de cr\u00e9er le nom de fichier {2}(Cha\u00eene). 
+NonExistentLogFileException_info.explanation=Une exception a \u00e9t\u00e9 intercept\u00e9e lors d'une tentative d'ouverture par le gestionnaire d'objets du fichier journal sp\u00e9cifi\u00e9. \
+Le gestionnaire d'objets ne d\u00e9marrera pas.
+NonExistentLogFileException_info.useraction=V\u00e9rifiez que le nom du fichier journal est valide, et que le gestionnaire d'objets dispose des autorisations appropri\u00e9es pour y \u00e9crire.
+
+# {0} The Object raising the exception.
+# {1} The underlying Exception.
+LogFileExhaustedException_info=CWSOM1018E: L''objet {0}(Objet) \
+ a d\u00e9tect\u00e9 la fin du fichier journal d''entr\u00e9e \u00e0 cause de l''exception sous-jacente {1}(Exception). 
+LogFileExhaustedException_info.explanation=Le gestionnaire d'objets a d\u00e9tect\u00e9 la fin du fichier journal d'entr\u00e9e.
+LogFileExhaustedException_info.useraction=Aucune action n'est requise si cette exception s'est produite du fait de la lecture du journal jusqu'\u00e0 la fin lors du red\u00e9marrage du gestionnaire d'objets.
+
+# {0} The type of logRecord that was read from the log but not recognized.
+InvalidLogRecordTypeException_info=CWSOM1019E: Le type d''enregistrement de \
+journal {0} (entier) non valide a \u00e9t\u00e9 lu dans le journal des transactions. 
+InvalidLogRecordTypeException_info.explanation=Le gestionnaire d'objets effectuait une reprise sur incident et a trouv\u00e9 un enregistrement de journal d'un type non reconnu. Le gestionnaire d'objets n'est pas instanci\u00e9.
+InvalidLogRecordTypeException_info.useraction=CMSG0002 
+
+# {0} The name of the ObjectStore that is not registered with the ObjectManager.
+UnknownObjectStoreException_info=CWSOM1020E: Tentative de \
+localisation d''un magasin d''objets qui n''a pas \u00e9t\u00e9 enregistr\u00e9. Nom du magasin {0}(Cha\u00eene).
+UnknownObjectStoreException_info.explanation=Le gestionnaire d'objets a re\u00e7u une demande de localisation d'un magasin d'objets qui n'a pas \u00e9t\u00e9 enregistr\u00e9 aupr\u00e8s de lui.
+UnknownObjectStoreException_info.useraction=Le magasin d'objets peut avoir \u00e9t\u00e9 supprim\u00e9 du gestionnaire d'objets. Recr\u00e9ez le magasin d'objets.
+
+# {0} The Object detecting the condition that is not valid.
+# {1} The variable name containing the condition that is not valid.
+# {2} The data assigned to the variable giving the condition that is not valid.
+InvalidConditionException_info=CWSOM1021E: Condition non valide d\u00e9tect\u00e9e par {0}(Objet). La variable {1} contenait la valeur {2}. 
+InvalidConditionException_info.explanation=Une erreur interne s'est produite et une condition non valide a \u00e9t\u00e9 d\u00e9tect\u00e9e.
+InvalidConditionException_info.useraction=CMSG0002 
+
+# {0} The name of the log file.
+LogFileInUseException_info=CWSOM1022E: Le nom de fichier journal \
+{0}(Cha\u00eene) est d\u00e9j\u00e0 utilis\u00e9.
+LogFileInUseException_info.explanation=Le gestionnaire d'objets a tent\u00e9 d'obtenir un verrou exclusif sur le fichier journal, mais celui-ci \u00e9tait d\u00e9j\u00e0 utilis\u00e9.
+LogFileInUseException_info.useraction=D\u00e9terminez si un autre gestionnaire d'objets ou un autre programme tente d'utiliser le m\u00eame fichier journal.
+
+LogFileHeaderCorruptException_info=CWSOM1023E: Le fichier journal n'a pas d'en-t\u00eate valide. 
+LogFileHeaderCorruptException_info.explanation=Le fichier journal des transactions contenait des donn\u00e9es que le gestionnaire d'objets ne peut pas interpr\u00e9ter.
+LogFileHeaderCorruptException_info.useraction=V\u00e9rifiez que le fichier journal est le fichier correct.
+
+# {0} The current XID.
+# {1} The rejected XID.
+XIDModificationException_info=CWSOM1024E: Tentative de d\u00e9finition d''un ID \
+d''\u00e9change de transaction alors qu''il est d\u00e9j\u00e0 d\u00e9fini. ID d''\u00e9change existant {0}([]octet) \
+ID d''\u00e9change rejet\u00e9 {1}([]octet).
+XIDModificationException_info.explanation=Une transaction ne peut avoir qu'un seul ID d'\u00e9change. \
+Il ne peut pas \u00eatre modifi\u00e9 une fois qu'il a \u00e9t\u00e9 d\u00e9fini.
+XIDModificationException_info.useraction=Examinez la logique de l'application et d\u00e9terminez pourquoi elle tente de modifier l'ID d'\u00e9change d'une transaction que l'application a d\u00e9j\u00e0 d\u00e9finie.
+
+# {0} The length of the XID passed to the ObjectManager.
+XIDTooLongException_info=CWSOM1025E: Tentative de d\u00e9finition d''un ID \
+d''\u00e9change de transaction trop long. Longueur {0}(entier).
+XIDTooLongException_info.explanation=Un ID d'\u00e9change d'identificateur de transaction X/Open peut avoir une longueur maximum telle que sp\u00e9cifi\u00e9e par java.lang.Short.MAX_VALUE.
+XIDTooLongException_info.useraction=Utilisez un ID d'\u00e9change de transaction plus court.
+
+# {0} The object containing the disabled interface.
+# {1} The method name of the interface that is disabled.
+InterfaceDisabledExceptionException_info=CWSOM1026E: Tentative d''utilisation \
+du nom de la m\u00e9thode {1}(Cha\u00eene) d\u00e9sactiv\u00e9e dans la source {0}(Objet).
+InterfaceDisabledExceptionException_info.explanation=Une tentative a \u00e9t\u00e9 effectu\u00e9e d'utiliser une interface qui est d\u00e9sactiv\u00e9e.
+InterfaceDisabledExceptionException_info.useraction=N'utilisez plus l'interface ou passez \u00e0 une version du gestionnaire d'objets qui la prend en charge.
+
+# {0} The number of bytes to be written to the log.
+# {1} The number of reserved bytes included in the request.
+# {2} The number of bytes available in the log file.
+LogFileFullException_info=CWSOM1027E: Le fichier journal \u00e9tait trop rempli \
+pour accepter un total de {0}(long) octets, la requ\u00eate a r\u00e9serv\u00e9 {1}(long) \
+octets suppl\u00e9mentaires et l''espace disponible est \u00e9gal \u00e0 {2}(long) octets.
+LogFileFullException_info.explanation=Une tentative a \u00e9t\u00e9 faite pour \u00e9crire davantage de donn\u00e9es dans le journal que la quantit\u00e9 d'espace disponible autoris\u00e9e dans le fichier. \
+La tentative est rejet\u00e9e et l'\u00e9tat de la transaction est inchang\u00e9.
+LogFileFullException_info.useraction=R\u00e9duisez le nombre d'objets que vous mettez \u00e0 jour dans vos transactions. \
+R\u00e9duisez le nombre de transactions simultan\u00e9ment actives. \
+R\u00e9duisez la taille des objets g\u00e9r\u00e9s \u00e0 mettre \u00e0 jour. \
+Augmentez la taille du fichier journal.
+
+# {0} The part type found in the log that is not valid.
+InvalidLogRecordPartTypeException_info=CWSOM1028E: Type de composant d''enregistrement de journal non valide {0}(octet). 
+InvalidLogRecordPartTypeException_info.explanation=Un indicateur de type sur une partie d'un enregistrement du journal n'a pas \u00e9t\u00e9 reconnu.
+InvalidLogRecordPartTypeException_info.useraction=D\u00e9terminez la fa\u00e7on dont le fichier journal a \u00e9t\u00e9 corrompu et restaurez un fichier journal de sauvegarde.
+
+# {0} The name of the log file.
+CheckpointEndNotFoundException_info=CWSOM1029E: Aucun enregistrement de \
+journal de fin de point de contr\u00f4le trouv\u00e9 dans le fichier journal {0}(Cha\u00eene).
+CheckpointEndNotFoundException_info.explanation=Le fichier journal s'est achev\u00e9 avant qu'un enregistrement de fin de point de contr\u00f4le ait \u00e9t\u00e9 trouv\u00e9. \
+Les fichiers journaux doivent contenir au moins un enregistrement de d\u00e9but de point de contr\u00f4le et un enregistrement de fin de point de contr\u00f4le.
+CheckpointEndNotFoundException_info.useraction=D\u00e9terminez la fa\u00e7on dont le fichier journal a \u00e9t\u00e9 corrompu et restaurez un fichier journal de sauvegarde.
+
+# {0} The ObjectStore raising the exception.
+# {1} The Token requesting the ManagedObject.
+InMemoryObjectNotAvailableException_info=CWSOM1030E: Un magasin d''objets {0} \
+bas\u00e9 sur la m\u00e9moire a re\u00e7u une demande d''extraction d''un objet g\u00e9r\u00e9 pour le jeton {0}(Jeton) \
+qui ne se trouvait pas d\u00e9j\u00e0 en m\u00e9moire. 
+InMemoryObjectNotAvailableException_info.explanation=Le gestionnaire d'objets a re\u00e7u une demande d'extraction d'un objet g\u00e9r\u00e9 qui aurait d\u00fb se trouver en m\u00e9moire, mais qui n'y \u00e9tait pas.
+InMemoryObjectNotAvailableException_info.useraction=CMSG0002
+
+# {0} The maximum size in bytes the serialized ManagedObject should be.
+# {1} The actual size in bytes of the ManagedObject in bytes.
+SimplifiedSerializationSizeExceptionException_info=CWSOM1031E: La taille de \
+s\u00e9rialisation simplifi\u00e9e d\u00e9passait la taille maximale {0}(long). Taille r\u00e9elle : {1}(long). 
+SimplifiedSerializationSizeExceptionException_info.explanation=La taille de l'objet g\u00e9r\u00e9 s\u00e9rialis\u00e9 d\u00e9passait le maximum attendu.
+SimplifiedSerializationSizeExceptionException_info.useraction=CMSG0002
+
+# {0} The current size of the log.
+# {1} The requested size of the log.
+# {2} The space available in the log.
+# {3} the predicted occupancy of the new log file.
+# {4} The threshold occupancy above which the ObjectManager triggers a checkpoint. 
+LogFileSizeTooSmallException_info=CWSOM1032E: Taille du fichier journal trop \
+petite. Taille existante {0}(long). Taille demand\u00e9e {1}(long). Espace disponible \
+{2}(long). Occupation pr\u00e9vue {3}(float). Seuil d''occupation {4}(float). 
+LogFileSizeTooSmallException_info.explanation=Le gestionnaire d'objets a re\u00e7u une demande de r\u00e9duction de la taille du journal des transactions. \
+La taille demand\u00e9e \u00e9tait trop petite pour contenir les donn\u00e9es du journal existant. \
+La nouvelle taille est inf\u00e9rieure \u00e0 la limite qui permettra effectivement au gestionnaire d'objets de fonctionner sans utiliser continuellement des points de contr\u00f4le.
+LogFileSizeTooSmallException_info.useraction=Demandez une taille plus importante ou r\u00e9duisez la charge du journal en y consignant moins d'objets g\u00e9r\u00e9s ou des objets plus petits.
+
+# {0} The non empty collection.
+# {1} The number of items, committed and uncommitted, in the collection.
+# {2} The transaction trying to delete the collection.
+CollectionNotEmptyException_info=CWSOM1033E: La collection {0} n''est pas \
+vide. Taille encore occup\u00e9e {1}(long), transaction={2}(transaction). 
+CollectionNotEmptyException_info.explanation=Le gestionnaire d'objets a re\u00e7u une demande de suppression d'une collection (Mappe ou Liste) qui n'\u00e9tait pas vide. Elle contenait certaines entr\u00e9es qui n'ont pas \u00e9t\u00e9 supprim\u00e9es ou qui ont \u00e9t\u00e9 supprim\u00e9es par une transaction autre que celle qui tente de supprimer la collection.
+CollectionNotEmptyException_info.useraction=Examinez la logique de l'application et d\u00e9terminez pourquoi elle tente de supprimer la collection alors que celle-ci contient des entr\u00e9es.
+
+# {0} The defined maximum number of transactions.
+TooManyTransactionsException_info=CWSOM1034E: Une application a tent\u00e9 de \
+d\u00e9marrer un nombre de transactions sup\u00e9rieur au maximum d\u00e9fini {0}(long). 
+TooManyTransactionsException_info.explanation=Il a \u00e9t\u00e9 demand\u00e9 au gestionnaire d'objets de d\u00e9marrer un nombre de transactions sup\u00e9rieur au nombre pour lequel il a \u00e9t\u00e9 configur\u00e9. La nouvelle transaction n'est pas d\u00e9marr\u00e9e.
+TooManyTransactionsException_info.useraction=Examinez la logique de l'application et d\u00e9terminez pourquoi elle tente de d\u00e9marrer un nombre trop \u00e9lev\u00e9 de transactions. \
+Il est possible que l'application les d\u00e9marre, mais sans les valider ou les annuler.
+
+# {0} The number of active transactions.
+# {1} The number of transactons the ObjectManager can currently run.
+TransactionCapacityExceededException_info=CWSOM1035E: Le nombre maximal de \
+transactions actives a \u00e9t\u00e9 temporairement r\u00e9duit. Transactions actives en cours {0}(long) Capacit\u00e9 \
+actuelle {1}(long).
+TransactionCapacityExceededException_info.explanation=Il a \u00e9t\u00e9 demand\u00e9 au gestionnaire d'objets de d\u00e9marrer un nombre de transactions sup\u00e9rieur au nombre qu'il peut prendre en charge avec les ressources dont il dispose. \
+Le gestionnaire d'objets r\u00e9duit le nombre de transactions qu'il va d\u00e9marrer pour que les points de contr\u00f4le puissent se terminer avant que le fichier journal ne soit rempli. La nouvelle transaction n'a pas commenc\u00e9.
+TransactionCapacityExceededException_info.useraction=Augmentez la taille du fichier journal ou d\u00e9marrez moins de transactions.
+
+# {0} The ObjectStore throwing the exception.
+# {1} the name of the ObjectStore.
+StoreFileInUseExceptionException_info=CWSOM1036E: Le magasin d''objets \
+{0}(Magasin d''objets) Nom {1}(Cha\u00eene) est d\u00e9j\u00e0 en cours d''utilisation. 
+StoreFileInUseExceptionException_info.explanation=Le magasin d'objets \u00e9tait d\u00e9j\u00e0 verrouill\u00e9 au moment o\u00f9 il a tent\u00e9 de prendre un verrou exclusif sur son fichier.
+StoreFileInUseExceptionException_info.useraction=D\u00e9terminez si le magasin d'objets est utilis\u00e9 par un autre gestionnaire d'objets ou si son fichier est en cours d'utilisation par un autre programme.
+
+# {0} The Name of the log file.
+# {1} The expected size of the log file.
+# {2} Byte found not to exist in the physical file.
+PrematureEndOfLogFileException_info=CWSOM1037E: Nom du fichier \
+journal{0}(Cha\u00eene), taille physique inf\u00e9rieure \u00e0 la taille attendue {1}(long) lors d''une tentative \
+d''acc\u00e8s \u00e0 l''octet {2}(Long).
+PrematureEndOfLogFileException_info.explanation=Le fichier journal ne se termine pas de fa\u00e7on normale ; le fichier physique a peut-\u00eatre \u00e9t\u00e9 tronqu\u00e9.
+PrematureEndOfLogFileException_info.useraction=D\u00e9terminez si le fichier journal a \u00e9t\u00e9 endommag\u00e9 et restaurez le fichier original non endommag\u00e9.
+
+# {0} The ObjectManager throwing the exception.
+NoRestartableObjectStoresAvailableException_info=CWSOM1038E: Le gestionnaire \
+d''objets {0} n''a trouv\u00e9 aucun magasin d''objets red\u00e9marrable disponible. 
+NoRestartableObjectStoresAvailableException_info.explanation=Le gestionnaire d'objets a re\u00e7u une demande de stockage d'une r\u00e9f\u00e9rence \u00e0 un objet g\u00e9r\u00e9 nomm\u00e9. \
+Cependant, il n'y a pas de magasins d'objets red\u00e9marrables o\u00f9 le stocker.
+NoRestartableObjectStoresAvailableException_info.useraction=D\u00e9terminez s'il est n\u00e9cessaire d'utiliser un objet g\u00e9r\u00e9 nomm\u00e9. \
+Si tel est le cas, cr\u00e9ez un magasin de donn\u00e9es red\u00e9marrable.
+
+# {0} The key which already exists in the map.
+# {1} The existing entry in the map.
+# {2} The transaction locking the duplicate entry or null.
+DuplicateKeyExceptionException_info=CWSOM1039E: La cl\u00e9 dupliqu\u00e9e {0}(Objet) \
+est en conflit avec l''entr\u00e9e existante {1}(Mappe.Entr\u00e9e) verrouill\u00e9e par la transaction \
+{3}(Transaction interne). 
+DuplicateKeyExceptionException_info.explanation=Une tentative d'ajout d'une cl\u00e9 unique \u00e0 une mappe a \u00e9t\u00e9 effectu\u00e9e alors qu'une cl\u00e9 identique existe d\u00e9j\u00e0 dans la mappe. La cl\u00e9 existante fait d\u00e9j\u00e0 partie d'une autre transaction et ne peut pas \u00eatre remplac\u00e9e par la nouvelle cl\u00e9.
+DuplicateKeyExceptionException_info.useraction=Demandez l'ajout d'une cl\u00e9 dupliqu\u00e9e ou d\u00e9terminez pourquoi l'application tente de remplacer une cl\u00e9 existante.
+
+# {0} Number of bytes requested in the store file.
+# {1} Existing store file size in bytes.
+# {2} Number of bytes currently used in the store file.
+StoreFileSizeTooSmallException_info=CWSOM1040E: Taille de fichier du magasin \
+d''objets trop petite. Taille demand\u00e9e {0}(long). Taille existante {1}(long). Taille utilis\u00e9e : {2}(long). 
+StoreFileSizeTooSmallException_info.explanation=Le gestionnaire d'objets a re\u00e7u une demande de r\u00e9duction de la taille d'un fichier de stockage \u00e0 une taille qui ne permet pas de contenir les objets g\u00e9r\u00e9s existants dans le fichier.
+StoreFileSizeTooSmallException_info.useraction=Demandez suffisamment d'espace pour contenir les objets g\u00e9r\u00e9s existants. 
+
+# {0} The java.nio.XXXX Exception that was caught by the ObjectManager.
+PermanentNIOException_info=CWSOM1041E: Le gestionnaire d''objets a intercept\u00e9 \
+l''exception {0}(exception java.nio.XXX). 
+PermanentNIOException_info.explanation=Une exception nio a \u00e9t\u00e9 intercept\u00e9e par le gestionnaire d'objets. L'op\u00e9ration d'entr\u00e9e-sortie n'a pas pu \u00eatre recommenc\u00e9e de fa\u00e7on s\u00fbre et a \u00e9t\u00e9 abandonn\u00e9e.
+PermanentNIOException_info.useraction=L'exception nio contient la cause du probl\u00e8me sous jacent. \
+Recherchez et corrigez la cause de l'exception nio sous-jacente.
+
+# {0} The ObjectStore asked to fulfill the allocation request.
+# {1} The ManagedObject requesting the allocation.
+ObjectStoreFullException_info=CWSOM1042E: Le \
+magasin d''objets {0}(magasin d''objets) a demand\u00e9 d''allouer de l''espace pour l''objet g\u00e9r\u00e9 \
+{1}(Objet g\u00e9r\u00e9) alors qu''il \u00e9tait plein. 
+ObjectStoreFullException_info.explanation=Un magasin de donn\u00e9es \u00e9tait d\u00e9j\u00e0 plein quand une nouvelle demande d'allocation a \u00e9t\u00e9 faite. \
+La demande d'allocation n'a pas abouti.
+ObjectStoreFullException_info.useraction=D\u00e9terminez si vous devez agrandir la taille du magasin d'objets ou si vous devez supprimer certains objets existants. \
+Vous pouvez \u00e9galement essayer de stocker davantage d'objets ou des objets de plus grande taille que ce qui \u00e9tait pr\u00e9vu.
+
+# {0} The logfiletype that was passed to the ObjectManager constructor.
+InvalidLogFileTypeException_info=CWSOM1043E: Le gestionnaire \
+d''objets a re\u00e7u un type de fichier journal {0}(entier) non valide. 
+InvalidLogFileTypeException_info.explanation=Le constructeur du gestionnaire d'objets a re\u00e7u un type de fichier journal qui n'a pas \u00e9t\u00e9 reconnu comme un des types LOG_FILE_TYPE_XXXX. \
+Le gestionnaire d'objets n'est pas instanci\u00e9.
+InvalidLogFileTypeException_info.useraction=Modifiez l'appel au constructeur \u00e0 l'aide d'un type de fichier journal reconnu.
+
+# {0} The List from which the sublist is to be created.
+# {1} The entry which is not in the list.
+SubListEntryNotInListException_info=CWSOM1044E: La liste {0}(Liste) a re\u00e7u \
+une demande de cr\u00e9ation d''une sous-liste d\u00e9limit\u00e9e par une Liste.Entr\u00e9e {1}(Liste.Entr\u00e9e) qu''elle ne \
+contient pas. 
+SubListEntryNotInListException_info.explanation=Une liste a re\u00e7u une demande de cr\u00e9ation d'une sous-liste d\u00e9limit\u00e9e par des entr\u00e9es qu'elle ne contient pas. \
+La sous-liste n'a pas \u00e9t\u00e9 cr\u00e9\u00e9e.
+SubListEntryNotInListException_info.useraction=Examinez le code de l'application pour d\u00e9terminer pourquoi l'entr\u00e9e ne se trouvait pas dans la liste. \
+Par exemple, l'entr\u00e9e a peut \u00eatre d\u00e9j\u00e0 \u00e9t\u00e9 supprim\u00e9e de la liste.
+
+# {0} The List from which the sublist is to be created.
+ObjectSignatureNotFoundException_info=CWSOM1045E: Le gestionnaire d''objets \
+a tent\u00e9 de d\u00e9s\u00e9rialiser un objet g\u00e9r\u00e9 avec la signature {0}(entier) qu''il ne reconnaissait pas.
+ObjectSignatureNotFoundException_info.explanation=Une signature non reconnue a \u00e9t\u00e9 trouv\u00e9e dans un objet g\u00e9r\u00e9. La d\u00e9s\u00e9rialisation a \u00e9t\u00e9 abandonn\u00e9e.
+ObjectSignatureNotFoundException_info.useraction=CMSG0002
+
+# {0} The ObjectStore being constructed.
+# {1} The store strategy value that is not valid.
+InvalidStoreStrategyException_info=CWSOM1046E: Le magasin d''objets {0} a \u00e9t\u00e9 \
+construit \u00e0 l''aide d''une strat\u00e9gie de stockage {1}(entier) non valide. 
+InvalidStoreStrategyException_info.explanation=Les magasins d'objets peuvent \u00eatre construits seulement avec des strat\u00e9gies de stockage valides.
+InvalidStoreStrategyException_info.useraction=Utilisez une strat\u00e9gie de stockage valide pour construire le magasin de donn\u00e9es. \
+Reportez-vous au document Java du gestionnaire d'objets pour les strat\u00e9gies valides.
+
+# {0} The Name of the new ObjectStore.
+# {1} The objectStoreIdentifier of the new and existing store.
+# {2} ObjectStore already using the identifier.
+DuplicateObjectStoreIdentifierException_info=CWSOM1047E: Tentative de \
+construction d''un magasin d''objets avec le nom de magasin {0}(Cha\u00eene) et l''identificateur {1} qui a \
+d\u00e9j\u00e0 \u00e9t\u00e9 utilis\u00e9 par le magasin d''objets {2}
+DuplicateObjectStoreIdentifierException_info.explanation=Les noms de magasin d'objets doivent \u00eatre uniques au sein d'un gestionnaire d'objets.
+DuplicateObjectStoreIdentifierException_info.useraction=Ajoutez des magasins d'objets au gestionnaire d'objets avant d'en cr\u00e9er de nouveaux. \
+Cette proc\u00e9dure permet au gestionnaire d'objets d'\u00e9viter de r\u00e9utiliser l'identificateur.
+
+# {0} The Object discovering data corruption.
+# {1} The corrupted object.
+GuardBytesException_info=CWSOM1048E: L''objet {0} a d\u00e9couvert des donn\u00e9es \
+potentiellement endommag\u00e9es dans l''objet {1}(Objet). 
+GuardBytesException_info.explanation=Le gestionnaire d'objets a d\u00e9tect\u00e9 une non-correspondance dans la valeur des octets de protection pour les donn\u00e9es prot\u00e9g\u00e9es par ces octets.
+GuardBytesException_info.useraction=CMSG0002
+
+# {0} The name of the ObjectStore discovering corruption in its file header.
+# {1} The corrupted signature found.
+# {2} The correct signature expected.
+InvalidStoreSignatureException_info=CWSOM1049E: Le nom du magasin d''objets \
+{0} a d\u00e9tect\u00e9 une signature {1}(Cha\u00eene) endommag\u00e9e \u00e0 la place de la signature correcte {2}(Cha\u00eene). 
+InvalidStoreSignatureException_info.explanation=Le magasin d'objets a un en-t\u00eate endommag\u00e9 et ne peut pas \u00eatre trait\u00e9.
+InvalidStoreSignatureException_info.useraction=D\u00e9terminez la fa\u00e7on dont le fichier a \u00e9t\u00e9 corrompu et restaurez une sauvegarde.
+
+# {0} The LogFileHeader discovering corruption in its file header.
+# {1} The corrupted signature found.
+# {2} The correct signature expected.
+InvalidLogFileSignatureException_info=CWSOM1050E: Une signature endommag\u00e9e \
+{0}(Cha\u00eene) a \u00e9t\u00e9 d\u00e9tect\u00e9e dans le fichier journal \u00e0 la place de la signature correcte \
+{1}(Cha\u00eene). 
+InvalidLogFileSignatureException_info.explanation=Le fichier journal a un en-t\u00eate endommag\u00e9 et ne peut pas \u00eatre trait\u00e9.
+InvalidLogFileSignatureException_info.useraction=D\u00e9terminez la fa\u00e7on dont le fichier a \u00e9t\u00e9 corrompu et restaurez une sauvegarde.
+
+# {0} The name of the thread which is being asked to perform the request.
+# {1} The name of the request the thread is being asked to perform.
+ThreadNotRunningException_info=CWSOM1051E: L''unit\u00e9 d''ex\u00e9cution {0} a \u00e9t\u00e9 \
+invit\u00e9e \u00e0 effectuer la demande {1} apr\u00e8s avoir \u00e9t\u00e9 arr\u00eat\u00e9e. 
+ThreadNotRunningException_info.explanation=L'unit\u00e9 d'ex\u00e9cution sp\u00e9cifi\u00e9e a \u00e9chou\u00e9 ou a re\u00e7u l'ordre de s'arr\u00eater au moment de la demande.
+ThreadNotRunningException_info.useraction=CMSG0002
+
+# {0} ObjectStore which is unable to locate the file.
+# {1} The exception caught by the ObjectStore when trying to locate the file, or null.
+# {2} The file name of the file that cannot be found.
+NonExistentObjectStoreFileException_info=CWSOM1052E: Le magasin d''objets \
+{0}(Magasin d''objets) a intercept\u00e9 l''exception {1}(Exception) en essayant de localiser ou de cr\u00e9er \
+le nom de fichier {2}(Cha\u00eene). 
+NonExistentObjectStoreFileException_info.explanation=Une exception a \u00e9t\u00e9 intercept\u00e9e lors d'une tentative d'ouverture par le gestionnaire d'objets du fichier journal nomm\u00e9. Le gestionnaire d'objets ne d\u00e9marrera pas.
+NonExistentObjectStoreFileException_info.useraction=V\u00e9rifiez que le nom du fichier est valide, que le fichier existe bien, et que le gestionnaire d'objets dispose des autorisations appropri\u00e9es pour \u00e9crire ce fichier. \
+Si n\u00e9cessaire, fournissez un mappage entre le nom du magasin logique et l'emplacement physique du fichier lors du d\u00e9marrage du gestionnaire d'objets.
+
+# ----------------------------------------------------------------------------------------------------
+
+# {0} is the text of the message.
+TEMPORARY_SIOM9999=CWSOM9999E: {0}
+TEMPORARY_SIOM9999.explanation=Si le message ne fournit pas suffisamment d'informations, consultez les messages associ\u00e9s pour obtenir plus de d\u00e9tails.
+TEMPORARY_SIOM9999.useraction=Consultez les messages pr\u00e9c\u00e9dents pour obtenir plus d'informations.

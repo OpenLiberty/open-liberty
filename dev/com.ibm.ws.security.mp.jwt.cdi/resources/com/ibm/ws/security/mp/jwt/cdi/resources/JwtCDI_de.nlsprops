@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.mp.jwt.cdi/resources/com/ibm/ws/security/mp/jwt/cdi/resources/JwtCDI.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Microprofile JWT CDI
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS5600 - CWWKS5649
+
+# Do not translate Claim.
+MPJWT_CDI_INVALID_INJECTION_TYPE=CWWKS5600E: Es ist nicht m\u00f6glich, den einzuf\u00fcgenden Anspruchstyp zu ermitteln. Der Typ des Injektionspunkts ist {0}.
+MPJWT_CDI_INVALID_INJECTION_TYPE.explanation=Der Injektionspunkt, der mit dem Qualifikationsmerkmal Claim annotiert ist, hat keinen g\u00fcltigen Typ.
+MPJWT_CDI_INVALID_INJECTION_TYPE.useraction=Stellen Sie sicher, dass der Injektionspunkt einen g\u00fcltigen Typ f\u00fcr den Anspruch hat, den Sie einf\u00fcgen m\u00f6chten.
+
+MPJWT_CDI_CANNOT_RESOLVE_INJECTION_POINT=CWWKS5601E: Die {0}-Injektionspunktabh\u00e4ngigkeit wurde nicht aufgel\u00f6st. Der folgende Fehler ist daher aufgetreten: {1}.
+MPJWT_CDI_CANNOT_RESOLVE_INJECTION_POINT.explanation=Ein eingef\u00fcgter Anspruch wurde nicht aufgel\u00f6st.
+MPJWT_CDI_CANNOT_RESOLVE_INJECTION_POINT.useraction=\u00dcberpr\u00fcfen Sie die Servernachricht und die FFDC-Protokolle (first-failure data capture, Erfassung von Fehlerdaten beim ersten Auftreten), um die Ursache zu ermitteln.
+
+# Do not translate Claim, value, and standard. The value and standard are members of the Claim annotation.
+MPJWT_CDI_CONFLICTING_CLAIM_NAMES=CWWKS5602E: Das Qualifikationsmerkmal Claim f\u00fcr den Injektionspunkt {0} hat inkonsistente Werte f\u00fcr die Elemente value und standard. Das Element value hat den Wert {1}, w\u00e4hrend das Element standard den Wert {2} hat.
+MPJWT_CDI_CONFLICTING_CLAIM_NAMES.explanation=Der mit dem Qualifikationsmerkmal Claim annotierte Injektionspunkt hat in Konflikt stehende Elemente.
+MPJWT_CDI_CONFLICTING_CLAIM_NAMES.useraction=Stellen Sie sicher, dass der Injektionspunkt ein g\u00fcltiges Qualifikationsmerkmal Claim f\u00fcr den Anspruch hat, den Sie einf\u00fcgen m\u00f6chten.
+
+# Do not translate ApplicationScoped, SessionScoped, RequestScoped, and Claim.
+MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE=CWWKS5603E: Der Anspruch kann f\u00fcr die Geltungsbereiche ApplicationScoped und SessionScoped nicht in den Injektionspunkt {0} eingef\u00fcgt werden.
+MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.explanation=Der mit dem Qualifikationsmerkmal Claim annotierte Injektionspunkt f\u00fcr einen unformatierten Typ  muss zu einer Klasse geh\u00f6ren, die mit der Geltungsbereichsannotation RequestScoped annotiert ist.
+MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.useraction=Stellen Sie sicher, dass der Injektionspunkt ein Member einer Klasse im Geltungsbereich RequestScoped f\u00fcr den Anspruch ist, den Sie einf\u00fcgen m\u00f6chten.

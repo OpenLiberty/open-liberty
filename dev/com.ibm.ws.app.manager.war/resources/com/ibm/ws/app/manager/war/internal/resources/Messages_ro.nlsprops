@@ -1,0 +1,218 @@
+###############################################################################
+# Copyright (c) 2011, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.war/resources/com/ibm/ws/app/manager/war/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKZ
+#COMPONENTNAMEFOR CWWKZ Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+# Reserving message prefixes CWWKZ0101 to CWWKZ0200
+
+# Now unused, but preserved for the Infocenter:
+#   error.file.copy.failed
+#   error.ear.extraction.exception
+#   error.ear.extraction.failed
+#   error.dir.creation.failed
+#   error.bundle.context.unavailable
+#{0} is source file name 
+#{1} is destination file name 
+#{2} is application name
+error.file.copy.failed=CWWKZ0101E: Fi\u015fierul {0} nu a putut fi copiat \u00een loca\u0163ia {1} \u00een timpul pornirii aplica\u0163iei {2} 
+error.file.copy.failed.explanation=\u00cenainte de a porni aplica\u0163ia, fi\u015fierul de aplica\u0163ie este copiat \u00eentr-o nou\u0103 loca\u0163ie. Opera\u0163ia de copiere a fi\u015fierului nu a avut succes, a\u015fadar aplica\u0163ia nu a fost pornit\u0103.
+error.file.copy.failed.useraction=Examina\u0163i loca\u0163iile fi\u015fierului surs\u0103 \u015fi destina\u0163ie pentru a vedea dac\u0103 problema poate fi rezolvat\u0103.
+
+#{0} is ear file name
+#{1} is extract destination
+#{2} is exception message
+error.ear.extraction.exception=CWWKZ0102E: Fi\u015fierul ear {0} nu a putut fi extras \u00een loca\u0163ia {1}. Mesajul excep\u0163iei a fost: {2}
+error.ear.extraction.exception.explanation=Serverul nu a putut porni aplica\u0163ia pentru c\u0103 fi\u015fierul ear nu a putut fi extras.
+error.ear.extraction.exception.useraction=Citi\u0163i mesajul excep\u0163iei pentru informa\u0163ii.  Ar putea fi disponibile detalii suplimentare \u00een istoricul de excep\u0163ii.
+
+#{0} is ear file name
+#{1} is extract destination
+error.ear.extraction.failed=CWWKZ0103E: Fi\u015fierul ear {0} nu a putut fi extras \u00een loca\u0163ia {1}. 
+error.ear.extraction.failed.explanation=Serverul nu a putut porni aplica\u0163ia pentru c\u0103 fi\u015fierul ear nu a putut fi extras.
+error.ear.extraction.failed.useraction=Examina\u0163i fi\u015fierul ear pentru a v\u0103 asigura c\u0103 este o arhiv\u0103 valid\u0103.
+
+#{0} is directory name
+#{1} is application name
+error.dir.creation.failed=CWWKZ0104E: Directorul {0} nu a putut fi creat \u00een timpul pornirii aplica\u0163iei {1}.
+error.dir.creation.failed.explanation=\u00cenainte de a porni aplica\u0163ia, se creeaz\u0103 un director. Opera\u0163ia de creare a directorului nu a avut succes, a\u015fadar aplica\u0163ia nu a fost pornit\u0103.
+error.dir.creation.failed.useraction=Examina\u0163i loca\u0163ia directorului pentru a vedea dac\u0103 problema poate fi rezolvat\u0103.
+
+#{0} is application name
+error.bundle.context.unavailable=CWWKZ0105E: Contextul bundle-ului nu era disponibil pentru a porni aplica\u0163ia {0}.
+error.bundle.context.unavailable.explanation=Serverul nu a putut porni aplica\u0163ia.  Ar putea fi o eroare intern\u0103.
+error.bundle.context.unavailable.useraction=Examina\u0163i mesajul \u015fi istoricele de excep\u0163ii pentru erori asociate.
+
+# Leaving these (for now); there are catch points which seem
+# to have uses for them.
+#   error.not.installed
+#   error.cache.adapt
+
+#{0} is the application name
+error.not.installed=CWWKZ0106E: Nu poate porni aplica\u0163ia web {0}.
+error.not.installed.explanation=O eroare anterioar\u0103 a \u00eempiedicat aplica\u0163ia s\u0103 fie instalat\u0103.
+error.not.installed.useraction=Verifica\u0163i loca\u0163ia \u00een configura\u0163ia aplica\u0163iei.
+
+# RESERVED: CWWKZ0107E is used by com.ibm.ws.app.manager.module
+error.cache.adapt=CWWKZ0107E: A ap\u0103rut o eroare intern\u0103. Nu poate s\u0103 adapteze cache-ul pentru modulul web {0}.
+error.cache.adapt.explanation=MSG0001
+error.cache.adapt.useraction=CMSG0002
+
+# RESERVED: CWWKZ0108E is used by com.ibm.ws.app.manager.module
+
+# Added by task 73569:
+#
+# The codes for modules types are current (WAR, EJB).  These are untranslated text values
+# used to indicate the type of the module which is being processed.  The type corresponds to
+# the archive, not to the presence of function within the module.
+
+#{0} is the application name
+#{1} is the library relative path
+#{2} is the exception message
+error.application.library.container=CWWKZ0111E: Aplica\u0163ia {0} a \u00eent\u00e2lnit o eroare la accesarea bibliotecii de aplica\u0163ii {1}: {2}
+error.application.library.container.explanation=A ap\u0103rut o eroare intern\u0103 la accesarea con\u0163inutului bibliotecii.  Acea bibliotec\u0103 nu va fi disponibil\u0103 pentru utilizare.
+error.application.library.container.useraction=Examina\u0163i con\u0163inutul aplica\u0163iei pentru a v\u0103 asigura c\u0103 este prezent\u0103 o arhiv\u0103 pentru bibliotec\u0103.
+
+#{0} is the application name
+#{1} is the exception message
+error.application.libraries=CWWKZ0112E: Aplica\u0163ia {0} a \u00eent\u00e2lnit o eroare la listarea bibliotecilor de aplica\u0163ie: {1}
+error.application.libraries.explanation=A ap\u0103rut o eroare la listarea bibliotecilor de aplica\u0163ie.  Lista bibliotecilor de aplica\u0163ii va fi incomplet\u0103.
+error.application.libraries.useraction=Consulta\u0163i informa\u0163iile excep\u0163iei pentru detalii suplimentare.
+
+#{0} is the application name
+#{1} is the relative path to the application descriptor
+#{2} is the exception message
+error.application.parse.descriptor=CWWKZ0113E: Aplica\u0163ia {0} a \u00eent\u00e2lnit o eroare de parsare la procesarea descriptorului de aplica\u0163ie {1}: {2}
+error.application.parse.descriptor.explanation=A ap\u0103rut o eroare la parsarea descriptorului de aplica\u0163ie.  Nici un modul nu va fi disponibil pentru aplica\u0163ie.
+error.application.parse.descriptor.useraction=Consulta\u0163i informa\u0163iile excep\u0163iei pentru detalii suplimentare.  Examina\u0163i con\u0163inutul descriptorului de aplica\u0163ie pentru a v\u0103 asigura c\u0103 este valid con\u0163inutul ca date XML.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+#{3} is the exception message
+error.module.container=CWWKZ0114E: Aplica\u0163ia {0} a \u00eent\u00e2lnit o eroare la accesarea con\u0163inutului modulului {1} de tipul {2}: {3}
+error.module.container.explanation=A ap\u0103rut o eroare intern\u0103 la accesarea con\u0163inutului modulului.  Modulul nu va fi f\u0103cut disponibil pentru utilizare.
+error.module.container.useraction=Consulta\u0163i informa\u0163iile excep\u0163iei pentru detalii suplimentare.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+error.module.container.null=CWWKZ0115E: Aplica\u0163ia {0} a ob\u0163inut o valoare null la accesarea con\u0163inutului din modulul candidat {1} de tip {2}
+error.module.container.null.explanation=A ap\u0103rut o eroare intern\u0103 la accesarea con\u0163inutului unui modul.  Aplica\u0163iei i-ar putea lipsi o arhiv\u0103 pentru modul.  Modulul nu va fi f\u0103cut disponibil pentru utilizare.
+error.module.container.null.useraction=Examina\u0163i con\u0163inutul aplica\u0163iei pentru a v\u0103 asigura c\u0103 este prezent\u0103 o arhiv\u0103 pentru modul.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+#{3} is the exception message
+error.module.create=CWWKZ0116E: Aplica\u0163ia {0} a e\u015fuat s\u0103 finalizeze crearea modulului {1} de tipul {2}: {3}
+error.module.create.explanation=A ap\u0103rut o eroare intern\u0103 la finalizarea cre\u0103rii unui modul.  Modulul nu va fi f\u0103cut disponibil pentru utilizare.
+error.module.create.useraction=Consulta\u0163i informa\u0163iile excep\u0163iei pentru detalii suplimentare.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+error.module.locate.failed=CWWKZ0117E: Aplica\u0163ia {0} a e\u015fuat s\u0103 localizeze modulul {1} de tipul {2}
+error.module.locate.failed.explanation=Nu este disponibil\u0103 nici o arhiv\u0103 pentru un modul men\u0163ionat \u00een descriptorul aplica\u0163iei.  Modulul nu va fi f\u0103cut disponibil pentru utilizare.
+error.module.locate.failed.useraction=Consulta\u0163i informa\u0163iile excep\u0163iei pentru detalii suplimentare.  Examina\u0163i con\u0163inutul aplica\u0163iei pentru a v\u0103 asigura c\u0103 este prezent\u0103 o arhiv\u0103 pentru modul.
+
+#{0} is the application name
+#{1} is the descriptor relative path
+#{2} is the module relative path
+#{3} is a code for the module type (WAR, EJB)
+#{4} is the exception message
+error.module.parse.descriptor=CWWKZ0118E: Aplica\u0163ia {0} a \u00eent\u00e2lnit o eroare de parsare la procesarea descriptorului {1} al modulului {2} de tipul {3}: {4}
+error.module.parse.descriptor.explanation=A ap\u0103rut o eroare la parsarea descriptorului de implementare a modulului.  Modulul nu va fi f\u0103cut disponibil pentru utilizare.
+error.module.parse.descriptor.useraction=Consulta\u0163i informa\u0163iile excep\u0163iei pentru detalii suplimentare.  Examina\u0163i con\u0163inutul descriptorului de aplica\u0163ie pentru a v\u0103 asigura c\u0103 este valid con\u0163inutul ca date XML.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+#{3} is the exception message
+error.module.class.source=CWWKZ0120E: Aplica\u0163ia {0} a e\u015fuat s\u0103 acceseze clasele pentru modulul {1} de tipul {2}: {3}
+error.module.class.source.explanation=A ap\u0103rut o eroare intern\u0103 \u00een timp ce se \u00eencerca scanarea unui fi\u015fier JAR pentru adnot\u0103ri EJB.  JAR-ul nu va fi disponibil ca JAR EJB.
+error.module.class.source.useraction=Consulta\u0163i informa\u0163iile excep\u0163iei pentru detalii suplimentare.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+#{3} is the exception message
+error.module.annotation.targets=CWWKZ0121E: Aplica\u0163ia {0} a e\u015fuat s\u0103 acceseze adnot\u0103rile pentru modulul {1} de tipul {2}: {3}
+error.module.annotation.targets.explanation=A ap\u0103rut o eroare intern\u0103 \u00een timp ce se \u00eencerca scanarea unui fi\u015fier JAR pentru adnot\u0103ri EJB.  JAR-ul nu va fi disponibil ca JAR EJB.
+error.module.annotation.targets.useraction=Consulta\u0163i informa\u0163iile excep\u0163iei pentru detalii suplimentare.
+
+#{0} is the application name
+#{1} is the module relative path
+error.module.uri.duplicate=CWWKZ0122W: Aplica\u0163ia {0} declar\u0103 mai multe module cu URI {1} \u00een META-INF/application.xml.
+error.module.uri.duplicate.explanation=Mai multe module indic\u0103 la aceea\u015fi arhiv\u0103.  Un singur modul va fi disponibil pentru utilizare.
+error.module.uri.duplicate.useraction=Examina\u0163i con\u0163inutul descriptorului aplica\u0163iei pentru a v\u0103 asigura c\u0103 fiecare modul indic\u0103 la o arhiv\u0103 unic\u0103.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is the exception message
+error.module.manifest.read.failed=CWWKZ0123E: Aplica\u0163ia {0} a e\u015fuat s\u0103 citasc\u0103 fi\u015fierul META-INF/MANIFEST.MF pentru modulul {1}. Excep\u0163ia: {2}
+error.module.manifest.read.failed.explanation=\u00cen timp ce se \u00eencerca s\u0103 se determine dac\u0103 modulul este un EJB sau un modul de aplica\u0163ie client, a ap\u0103rut o eroare c\u00e2nd se \u00eencerca citirea fi\u015fierului META-INF/MANIFEST.MF. Acest modul nu va fi tratat ca un modul de client aplica\u0163ie.
+error.module.manifest.read.failed.useraction=Consulta\u0163i informa\u0163iile excep\u0163iei pentru detalii suplimentare. Examina\u0163i con\u0163inutul aplica\u0163iei pentru a v\u0103 asigura c\u0103 META-INF/MANIFEST.MF este un fi\u015fier \u015fi nu un director \u015fi asigura\u0163i-v\u0103 c\u0103 fi\u015fierul MANIFEST.MF este valid.
+
+#{0} is the application name
+error.no.modules=CWWKZ0124E: Aplica\u0163ia {0} nu con\u0163ine module.
+error.no.modules.explanation=Aplica\u0163ia nu declar\u0103 module \u00een fi\u015fierul application.xml \u015fi aplica\u0163ia nu con\u0163ine arhive de module.
+error.no.modules.useraction=Ad\u0103uga\u0163i o arhiv\u0103 de modul \u00een aplica\u0163ie \u015fi reporni\u0163i aplica\u0163ia.
+
+#{0} is the application name
+#{1} is the module relative path
+error.module.manifest.read.no.mainclass=CWWKZ0125E: Aplica\u0163ia {0} nu con\u0163ine atributul Main-Class \u00een fi\u015fierul META-INF/MANIFEST.MF al modulului {1}.
+error.module.manifest.read.no.mainclass.explanation=Fi\u015fierul META-INF/MANIFEST.MF din modul fie nu exist\u0103, fie nu con\u0163ine atributul Main-Class. Acest modul nu va fi tratat ca un modul de client aplica\u0163ie.
+error.module.manifest.read.no.mainclass.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul META-INF/MANIFEST.MF pentru aplica\u0163ie con\u0163ine atributul Main-Class.
+
+#{0} is the context root specified in server.xml on the application element
+#{1} is the name of the application where context-root is specified
+warning.context.root.not.used=CWWKZ0126W:  Valoarea root de context {0} care este specificat\u0103 pe aplica\u0163ia {1} nu are niciun efect.
+warning.context.root.not.used.explanation=Proprietatea context-root nu este valid\u0103 pentru o aplica\u0163ie de \u00eentreprindere. Valoarea nu va fi utilizat\u0103 pentru niciun modul web con\u0163inut \u00een aplica\u0163ia de \u00eentreprindere.
+warning.context.root.not.used.useraction=\u00cenl\u0103tura\u0163i proprietatea context-root din elementul de aplica\u0163ie din configura\u0163ia serverului.
+
+error.module.no.defaultclient=CWWKZ0127E: Exist\u0103 mai multe module client \u00een aplica\u0163ie. Furniza\u0163i numele modulului client implicit.
+error.module.no.defaultclient.explanation=Dac\u0103 exist\u0103 mai multe module client \u00eempachetate \u00een aplica\u0163ie, furniza\u0163i numele modulului client pentru a rula.
+error.module.no.defaultclient.useraction=Specifica\u0163i modulul client care ruleaz\u0103 furniz\u00e2ndu-i numele prin utilizarea atributului defaultClientModule \u00een <enterpriseApplication/>.
+
+error.module.dup.client=CWWKZ0128E: Exist\u0103 mai multe module client cu acela\u015fi nume {0}.
+error.module.dup.client.explanation=Exist\u0103 mai multe module client \u015fi unele dintre ele utilizeaz\u0103 acela\u015fi nume.
+error.module.dup.client.useraction=Furniza\u0163i numele unice pentru modulele client din aplica\u0163ie.
+
+error.module.client.notfound=CWWKZ0129E: Nu se poate g\u0103si modulul client {0} \u00een aplica\u0163ie.
+error.module.client.notfound.explanation=Modulul client specificat nu exist\u0103 \u00een aplica\u0163ie.
+error.module.client.notfound.useraction=Asigura\u0163i-v\u0103 c\u0103 modulul client exist\u0103 \u00een aplica\u0163ie.
+
+#{0} is the application name
+error.client.not.installed=CWWKZ0130E: Nu s-a putut porni aplica\u0163ia client {0}.
+error.client.not.installed.explanation=O eroare anterioar\u0103 a \u00eempiedicat aplica\u0163ia s\u0103 fie instalat\u0103.
+error.client.not.installed.useraction=Verifica\u0163i loca\u0163ia \u00een configura\u0163ia aplica\u0163iei.
+
+#{0} is the application name, {1} is the exception (likely disk space, write permissions, file lock, or some other IO issue.) 
+warning.could.not.expand.application=CWWKZ0131W: Nu s-a putut expanda aplica\u0163ia {0} din cauza excep\u0163iei {1}.
+warning.could.not.expand.application.explanation=Aplica\u0163ia nu a putut fi expandat\u0103 la un director temporar. Aplica\u0163ia va continua s\u0103 ruleze, dar comportamentul anumitor metode care acceseaz\u0103 fi\u015fierele de aplica\u0163ii ar putea fi afectat.
+warning.could.not.expand.application.useraction=\u00cencerca\u0163i s\u0103 rezolva\u0163i problema din mesajul excep\u0163iei \u015fi fie reporni\u0163i serverul, fie actualiza\u0163i aplica\u0163ia.

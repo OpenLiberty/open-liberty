@@ -1,0 +1,218 @@
+###############################################################################
+# Copyright (c) 2011, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.war/resources/com/ibm/ws/app/manager/war/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKZ
+#COMPONENTNAMEFOR CWWKZ Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+# Reserving message prefixes CWWKZ0101 to CWWKZ0200
+
+# Now unused, but preserved for the Infocenter:
+#   error.file.copy.failed
+#   error.ear.extraction.exception
+#   error.ear.extraction.failed
+#   error.dir.creation.failed
+#   error.bundle.context.unavailable
+#{0} is source file name 
+#{1} is destination file name 
+#{2} is application name
+error.file.copy.failed=CWWKZ0101E: Nem siker\u00fclt \u00e1tm\u00e1solni a(z) {0} f\u00e1jl a(z) {1} helyre a(z) {2} alkalmaz\u00e1s ind\u00edt\u00e1sakor. 
+error.file.copy.failed.explanation=Az alkalmaz\u00e1s elind\u00edt\u00e1sa el\u0151tt az alkalmaz\u00e1sf\u00e1jlt a rendszer \u00e1tm\u00e1solja egy \u00faj helyre. A f\u00e1jlm\u00e1sol\u00e1si m\u0171velet sikertelen volt, \u00edgy az alkalmaz\u00e1s nem lett elind\u00edtva.
+error.file.copy.failed.useraction=Vizsg\u00e1lja meg a forr\u00e1s \u00e9s c\u00e9l f\u00e1jlhelyeket, \u00e9s pr\u00f3b\u00e1lja meg megoldani a probl\u00e9m\u00e1t.
+
+#{0} is ear file name
+#{1} is extract destination
+#{2} is exception message
+error.ear.extraction.exception=CWWKZ0102E: A(z) {0} ear f\u00e1jl nem bonthat\u00f3 ki a(z) {1} helyre. A kiv\u00e9tel\u00fczenet: {2}
+error.ear.extraction.exception.explanation=A kiszolg\u00e1l\u00f3 nem tudta elind\u00edtani az alkalmaz\u00e1st, mert az ear f\u00e1jl kibont\u00e1sa nem siker\u00fclt.
+error.ear.extraction.exception.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt olvassa el a kiv\u00e9tel \u00fczenetet.  A kiv\u00e9telnapl\u00f3 tov\u00e1bbi r\u00e9szleteket tartalmazhat.
+
+#{0} is ear file name
+#{1} is extract destination
+error.ear.extraction.failed=CWWKZ0103E: A(z) {0} ear f\u00e1jl nem bonthat\u00f3 ki a(z) {1} helyre. 
+error.ear.extraction.failed.explanation=A kiszolg\u00e1l\u00f3 nem tudta elind\u00edtani az alkalmaz\u00e1st, mert az ear f\u00e1jl kibont\u00e1sa nem siker\u00fclt.
+error.ear.extraction.failed.useraction=Vizsg\u00e1lja meg az ear f\u00e1jlt, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az egy \u00e9rv\u00e9nyes arch\u00edvum.
+
+#{0} is directory name
+#{1} is application name
+error.dir.creation.failed=CWWKZ0104E: Nem siker\u00fclt l\u00e9trehozni a(z) {0} k\u00f6nyvt\u00e1rt a(z) {1} alkalmaz\u00e1s ind\u00edt\u00e1sakor.
+error.dir.creation.failed.explanation=Az alkalmaz\u00e1s elind\u00edt\u00e1sa el\u0151tt l\u00e9trehoz\u00e1sra ker\u00fcl egy k\u00f6nyvt\u00e1r. A k\u00f6nyvt\u00e1r-l\u00e9trehoz\u00e1si m\u0171velet sikertelen volt, \u00edgy az alkalmaz\u00e1s nem lett elind\u00edtva.
+error.dir.creation.failed.useraction=Vizsg\u00e1lja meg a k\u00f6nyvt\u00e1r hely\u00e9t, \u00e9s pr\u00f3b\u00e1lja meg megoldani a probl\u00e9m\u00e1t.
+
+#{0} is application name
+error.bundle.context.unavailable=CWWKZ0105E: A k\u00f6teg kontextus nem volt el\u00e9rhet\u0151 a(z) {0} alkalmaz\u00e1s ind\u00edt\u00e1sa sor\u00e1n.
+error.bundle.context.unavailable.explanation=A kiszolg\u00e1l\u00f3 nem tudta elind\u00edtani az alkalmaz\u00e1st.  Ez egy bels\u0151 hiba lehet.
+error.bundle.context.unavailable.useraction=Vizsg\u00e1lja meg az \u00fczenetet \u00e9s a kiv\u00e9telnapl\u00f3kat, \u00e9s keressen kapcsol\u00f3d\u00f3 hib\u00e1kat.
+
+# Leaving these (for now); there are catch points which seem
+# to have uses for them.
+#   error.not.installed
+#   error.cache.adapt
+
+#{0} is the application name
+error.not.installed=CWWKZ0106E: A(z) {0} alkalmaz\u00e1st nem siker\u00fclt elind\u00edtani.
+error.not.installed.explanation=Egy kor\u00e1bbi hiba megakad\u00e1lyozta az alkalmaz\u00e1s telep\u00edt\u00e9s\u00e9t.
+error.not.installed.useraction=Ellen\u0151rizze a helyet az alkalmaz\u00e1skonfigur\u00e1ci\u00f3ban.
+
+# RESERVED: CWWKZ0107E is used by com.ibm.ws.app.manager.module
+error.cache.adapt=CWWKZ0107E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A(z) {0} webmodul gyors\u00edt\u00f3t\u00e1ra nem alkalmazhat\u00f3.
+error.cache.adapt.explanation=CMSG0001
+error.cache.adapt.useraction=CMSG0002
+
+# RESERVED: CWWKZ0108E is used by com.ibm.ws.app.manager.module
+
+# Added by task 73569:
+#
+# The codes for modules types are current (WAR, EJB).  These are untranslated text values
+# used to indicate the type of the module which is being processed.  The type corresponds to
+# the archive, not to the presence of function within the module.
+
+#{0} is the application name
+#{1} is the library relative path
+#{2} is the exception message
+error.application.library.container=CWWKZ0111E: A(z) {0} alkalmaz\u00e1s hib\u00e1ba \u00fctk\u00f6z\u00f6tt a(z) {1} alkalmaz\u00e1sk\u00f6nyvt\u00e1r el\u00e9r\u00e9se sor\u00e1n: {2}
+error.application.library.container.explanation=Bels\u0151 hiba t\u00f6rt\u00e9nt a k\u00f6nyvt\u00e1r tartalm\u00e1nak el\u00e9r\u00e9se sor\u00e1n.  A k\u00f6nyvt\u00e1r nem lesz el\u00e9rhet\u0151 haszn\u00e1latra.
+error.application.library.container.useraction=Tekintse \u00e1t az alkalmaz\u00e1s tartalm\u00e1t \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy jelen van arch\u00edvum a k\u00f6nyvt\u00e1rhoz.
+
+#{0} is the application name
+#{1} is the exception message
+error.application.libraries=CWWKZ0112E: A(z) {0} alkalmaz\u00e1s hib\u00e1ba \u00fctk\u00f6z\u00f6tt az alkalmaz\u00e1sk\u00f6nyvt\u00e1rak list\u00e1z\u00e1sakor: {1}
+error.application.libraries.explanation=Hiba t\u00f6rt\u00e9nt az alkalmaz\u00e1sk\u00f6nyvt\u00e1rak list\u00e1z\u00e1sa sor\u00e1n.  Az alkalmaz\u00e1sk\u00f6nyvt\u00e1rak list\u00e1ja hi\u00e1nyos lesz.
+error.application.libraries.useraction=Tov\u00e1bbi r\u00e9szletek\u00e9rt n\u00e9zze meg a kiv\u00e9tel inform\u00e1ci\u00f3it.
+
+#{0} is the application name
+#{1} is the relative path to the application descriptor
+#{2} is the exception message
+error.application.parse.descriptor=CWWKZ0113E: A(z) {0} alkalmaz\u00e1s \u00e9rtelmez\u00e9si hib\u00e1ba \u00fctk\u00f6z\u00f6tt a(z) {1} alkalmaz\u00e1sle\u00edr\u00f3 feldolgoz\u00e1sakor: {2}
+error.application.parse.descriptor.explanation=Hiba t\u00f6rt\u00e9nt az alkalmaz\u00e1sle\u00edr\u00f3 \u00e9rtelmez\u00e9se sor\u00e1n.  Nem lesznek el\u00e9rhet\u0151k a modulok az alkalmaz\u00e1shoz.
+error.application.parse.descriptor.useraction=Tov\u00e1bbi r\u00e9szletek\u00e9rt n\u00e9zze meg a kiv\u00e9tel inform\u00e1ci\u00f3it.  Tekintse \u00e1t az alkalmaz\u00e1sle\u00edr\u00f3 tartalm\u00e1t \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy \u00e9rv\u00e9nyes XML adatokat tartalmaz.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+#{3} is the exception message
+error.module.container=CWWKZ0114E: A(z) {0} alkalmaz\u00e1s hib\u00e1ba \u00fctk\u00f6z\u00f6tt a(z) {2} t\u00edpus\u00fa {1} modul el\u00e9r\u00e9se sor\u00e1n: {3}
+error.module.container.explanation=Bels\u0151 hiba t\u00f6rt\u00e9nt a modul tartalm\u00e1nak el\u00e9r\u00e9se sor\u00e1n.  A modul nem lesz el\u00e9rhet\u0151 haszn\u00e1latra.
+error.module.container.useraction=Tov\u00e1bbi r\u00e9szletek\u00e9rt n\u00e9zze meg a kiv\u00e9tel inform\u00e1ci\u00f3it.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+error.module.container.null=CWWKZ0115E: A(z) {0} alkalmaz\u00e1s null\u00e9rt\u00e9ket kapott a(z) {2} t\u00edpus\u00fa {1} jel\u00f6lt modul tartalm\u00e1nak el\u00e9r\u00e9sekor.
+error.module.container.null.explanation=Bels\u0151 hiba t\u00f6rt\u00e9nt a modul tartalm\u00e1nak el\u00e9r\u00e9se sor\u00e1n.  Lehet, hogy az alkalmaz\u00e1sb\u00f3l hi\u00e1nyzik egy arch\u00edvum a modulhoz.  A modul nem lesz el\u00e9rhet\u0151 haszn\u00e1latra.
+error.module.container.null.useraction=Tekintse \u00e1t az alkalmaz\u00e1s tartalm\u00e1t \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy jelen van arch\u00edvum a modulhoz.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+#{3} is the exception message
+error.module.create=CWWKZ0116E: A(z) {0} alkalmaz\u00e1s nem tudta befejezni a(z) {2} t\u00edpus\u00fa {1} modul l\u00e9trehoz\u00e1s\u00e1t: {3}
+error.module.create.explanation=Bels\u0151 hiba t\u00f6rt\u00e9nt a modul l\u00e9trehoz\u00e1s\u00e1nak befejez\u00e9se sor\u00e1n.  A modul nem lesz el\u00e9rhet\u0151 haszn\u00e1latra.
+error.module.create.useraction=Tov\u00e1bbi r\u00e9szletek\u00e9rt n\u00e9zze meg a kiv\u00e9tel inform\u00e1ci\u00f3it.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+error.module.locate.failed=CWWKZ0117E: A(z) {0} alkalmaz\u00e1s nem tal\u00e1lja a(z) {2} t\u00edpus\u00fa {1} modult.
+error.module.locate.failed.explanation=Nem \u00e9rhet\u0151 el arch\u00edvum az alkalmaz\u00e1sle\u00edr\u00f3ban felsorolt modulhoz.  A modul nem lesz el\u00e9rhet\u0151 haszn\u00e1latra.
+error.module.locate.failed.useraction=Tov\u00e1bbi r\u00e9szletek\u00e9rt n\u00e9zze meg a kiv\u00e9tel inform\u00e1ci\u00f3it.  Tekintse \u00e1t az alkalmaz\u00e1s tartalm\u00e1t \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy jelen van arch\u00edvum a modulhoz.
+
+#{0} is the application name
+#{1} is the descriptor relative path
+#{2} is the module relative path
+#{3} is a code for the module type (WAR, EJB)
+#{4} is the exception message
+error.module.parse.descriptor=CWWKZ0118E: A(z) {0} alkalmaz\u00e1s \u00e9rtelmez\u00e9si hib\u00e1ba \u00fctk\u00f6z\u00f6tt a(z) {3} t\u00edpus\u00fa {2} modul {1} le\u00edr\u00f3j\u00e1nak feldolgoz\u00e1sakor: {4}
+error.module.parse.descriptor.explanation=Hiba t\u00f6rt\u00e9nt a modul telep\u00edt\u00e9si le\u00edr\u00f3j\u00e1nak \u00e9rtelmez\u00e9se sor\u00e1n.  A modul nem lesz el\u00e9rhet\u0151 haszn\u00e1latra.
+error.module.parse.descriptor.useraction=Tov\u00e1bbi r\u00e9szletek\u00e9rt n\u00e9zze meg a kiv\u00e9tel inform\u00e1ci\u00f3it.  Tekintse \u00e1t az alkalmaz\u00e1sle\u00edr\u00f3 tartalm\u00e1t \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy \u00e9rv\u00e9nyes XML adatokat tartalmaz.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+#{3} is the exception message
+error.module.class.source=CWWKZ0120E: A(z) {0} alkalmaz\u00e1s nem tudta el\u00e9rni a(z) {2} t\u00edpus\u00fa {1} modul oszt\u00e1lyait: {3}
+error.module.class.source.explanation=Bels\u0151 hiba t\u00f6rt\u00e9nt, amikor a rendszer megpr\u00f3b\u00e1lta megkeresni az EJB annot\u00e1ci\u00f3kat egy JAR f\u00e1jlban.  A JAR nem lesz el\u00e9rhet\u0151 mint EJB JAR.
+error.module.class.source.useraction=Tov\u00e1bbi r\u00e9szletek\u00e9rt n\u00e9zze meg a kiv\u00e9tel inform\u00e1ci\u00f3it.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+#{3} is the exception message
+error.module.annotation.targets=CWWKZ0121E: A(z) {0} alkalmaz\u00e1s nem tudta el\u00e9rni a(z) {2} t\u00edpus\u00fa {1} modul annot\u00e1ci\u00f3it: {3}
+error.module.annotation.targets.explanation=Bels\u0151 hiba t\u00f6rt\u00e9nt, amikor a rendszer megpr\u00f3b\u00e1lta megkeresni az EJB annot\u00e1ci\u00f3kat egy JAR f\u00e1jlban.  A JAR nem lesz el\u00e9rhet\u0151 mint EJB JAR.
+error.module.annotation.targets.useraction=Tov\u00e1bbi r\u00e9szletek\u00e9rt n\u00e9zze meg a kiv\u00e9tel inform\u00e1ci\u00f3it.
+
+#{0} is the application name
+#{1} is the module relative path
+error.module.uri.duplicate=CWWKZ0122W: A(z) {0} alkalmaz\u00e1s t\u00f6bb modult deklar\u00e1l URI {1} azonos\u00edt\u00f3val a META-INF/application.xml f\u00e1jlban.
+error.module.uri.duplicate.explanation=T\u00f6bb modul mutat ugyanarra az arch\u00edvumra.  Csak egy modul lesz haszn\u00e1lhat\u00f3.
+error.module.uri.duplicate.useraction=Tekintse \u00e1t az alkalmaz\u00e1sle\u00edr\u00f3 tartalm\u00e1t \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy mindegyik modul egyedi arch\u00edvumra mutat.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is the exception message
+error.module.manifest.read.failed=CWWKZ0123E: A(z) {0} alkalmaz\u00e1s nem tudja olvasni a(z) {1} modul META-INF/MANIFEST.MF f\u00e1jlj\u00e1t. Kiv\u00e9tel: {2}.
+error.module.manifest.read.failed.explanation=Mialatt a rendszer megpr\u00f3b\u00e1lta meg\u00e1llap\u00edtani, hogy a modul EJB- vagy alkalmaz\u00e1s\u00fcgyf\u00e9l-modul, hiba t\u00f6rt\u00e9nt a META-INF/MANIFEST.MF f\u00e1jl olvas\u00e1si k\u00eds\u00e9rlete sor\u00e1n. Ezt a modult a rendszer nem alkalmaz\u00e1s\u00fcgyf\u00e9l-modulk\u00e9nt fogja kezelni.
+error.module.manifest.read.failed.useraction=Tov\u00e1bbi r\u00e9szletek\u00e9rt n\u00e9zze meg a kiv\u00e9tel inform\u00e1ci\u00f3it. Az alkalmaz\u00e1s tartalm\u00e1nak \u00e1ttekint\u00e9s\u00e9vel gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a META-INF/MANIFEST.MF \u00fatvonala f\u00e1jl, nem k\u00f6nyvt\u00e1r, \u00e9s ellen\u0151rizze, hogy a MANIFEST.MF f\u00e1jl \u00e9rv\u00e9nyes-e.
+
+#{0} is the application name
+error.no.modules=CWWKZ0124E: A(z) {0} alkalmaz\u00e1s nem tartalmaz modulokat.
+error.no.modules.explanation=Az alkalmaz\u00e1s nem deklar\u00e1l modulokat az application.xml f\u00e1jlban, \u00e9s az alkalmaz\u00e1s nem tartalmaz modul arch\u00edvumokat.
+error.no.modules.useraction=Adjon hozz\u00e1 egy modul arch\u00edvumot az alkalmaz\u00e1shoz, \u00e9s ind\u00edtsa \u00fajra az alkalmaz\u00e1st.
+
+#{0} is the application name
+#{1} is the module relative path
+error.module.manifest.read.no.mainclass=CWWKZ0125E: A(z) {0} alkalmaz\u00e1s nem tartalmazza a Main-Class attrib\u00fatumot a(z) {1} modul META-INF/MANIFEST.MF f\u00e1jlj\u00e1ban.
+error.module.manifest.read.no.mainclass.explanation=A modulban l\u00e9v\u0151 META-INF/MANIFEST.MF f\u00e1jl nem l\u00e9tezik, vagy nem tartalmazza a Main-Class attrib\u00fatumot. Ezt a modult a rendszer nem alkalmaz\u00e1s\u00fcgyf\u00e9l-modulk\u00e9nt fogja kezelni.
+error.module.manifest.read.no.mainclass.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1s META-INF/MANIFEST.MF f\u00e1jlja tartalmazza a Main-Class attrib\u00fatumot.
+
+#{0} is the context root specified in server.xml on the application element
+#{1} is the name of the application where context-root is specified
+warning.context.root.not.used=CWWKZ0126W:  A(z) {1} alkalmaz\u00e1shoz megadott {0} kontextusgy\u00f6k\u00e9r \u00e9rt\u00e9knek nincs hat\u00e1sa.
+warning.context.root.not.used.explanation=A context-root tulajdons\u00e1g nem \u00e9rv\u00e9nyes a v\u00e1llalati alkalmaz\u00e1sokhoz. Az \u00e9rt\u00e9k nem ker\u00fcl felhaszn\u00e1l\u00e1sra a v\u00e1llalati alkalmaz\u00e1sban tartalmazott webmodulokhoz.
+warning.context.root.not.used.useraction=T\u00e1vol\u00edtsa el a context-root tulajdons\u00e1got a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3 application elem\u00e9b\u0151l.
+
+error.module.no.defaultclient=CWWKZ0127E: T\u00f6bb \u00fcgyf\u00e9lmodul tal\u00e1lhat\u00f3 az alkalmaz\u00e1sban. Adja meg az alap\u00e9rtelmezett \u00fcgyf\u00e9lmodul nev\u00e9t.
+error.module.no.defaultclient.explanation=Ha t\u00f6bb \u00fcgyf\u00e9lmodul van az alkalmaz\u00e1sba csomagolva, akkor adja meg a futtatand\u00f3 \u00fcgyf\u00e9lmodul nev\u00e9t.
+error.module.no.defaultclient.useraction=A futtatand\u00f3 \u00fcgyf\u00e9lmodul nev\u00e9t az <enterpriseApplication/> defaultClientModule attrib\u00fatuma seg\u00edts\u00e9g\u00e9vel adhatja .
+
+error.module.dup.client=CWWKZ0128E: T\u00f6bb {0} nev\u0171 \u00fcgyf\u00e9lmodul l\u00e9tezik.
+error.module.dup.client.explanation=T\u00f6bb \u00fcgyf\u00e9lmodul van \u00e9s n\u00e9melyik\u00fck ugyanazt a nevet haszn\u00e1lja.
+error.module.dup.client.useraction=Adjon meg egyedi neveket az alkalmaz\u00e1sban tal\u00e1lhat\u00f3 \u00fcgyf\u00e9lmodulok sz\u00e1m\u00e1ra.
+
+error.module.client.notfound=CWWKZ0129E: A(z) {0} \u00fcgyf\u00e9lmodul nem tal\u00e1lhat\u00f3 az alkalmaz\u00e1sban.
+error.module.client.notfound.explanation=A megadott \u00fcgyf\u00e9lmodul nem l\u00e9tezik az alkalmaz\u00e1sban.
+error.module.client.notfound.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fcgyf\u00e9lmodul l\u00e9tezik az alkalmaz\u00e1sban.
+
+#{0} is the application name
+error.client.not.installed=CWWKZ0130E: A(z) {0} alkalmaz\u00e1s\u00fcgyfelet nem siker\u00fclt elind\u00edtani.
+error.client.not.installed.explanation=Egy kor\u00e1bbi hiba megakad\u00e1lyozta az alkalmaz\u00e1s telep\u00edt\u00e9s\u00e9t.
+error.client.not.installed.useraction=Ellen\u0151rizze a helyet az alkalmaz\u00e1skonfigur\u00e1ci\u00f3ban.
+
+#{0} is the application name, {1} is the exception (likely disk space, write permissions, file lock, or some other IO issue.) 
+warning.could.not.expand.application=CWWKZ0131W: Nem siker\u00fclt a(z) {0} alkalmaz\u00e1s kibont\u00e1sa {1} kiv\u00e9tel miatt.
+warning.could.not.expand.application.explanation=Az alkalmaz\u00e1st nem lehetett kibontani ideiglenes k\u00f6nyvt\u00e1rba. Az alkalmaz\u00e1s folytatja a fut\u00e1s\u00e1t, de ez hat\u00e1ssal lehet bizonyos alkalmaz\u00e1sf\u00e1jlokat el\u00e9r\u0151 met\u00f3dusokra. 
+warning.could.not.expand.application.useraction=Pr\u00f3b\u00e1lja meg elh\u00e1r\u00edtani a kiv\u00e9tel \u00fczenet\u00e9ben jelzett probl\u00e9m\u00e1t, \u00e9s ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t vagy friss\u00edtse az alkalmaz\u00e1st. 

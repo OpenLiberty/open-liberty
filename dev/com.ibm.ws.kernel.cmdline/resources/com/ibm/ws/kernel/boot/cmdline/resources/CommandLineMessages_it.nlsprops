@@ -1,0 +1,38 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.cmdline/resources/com/ibm/ws/kernel/boot/cmdline/resources/CommandLineMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0600 - 0699 com.ibm.ws.kernel.boot.cmdline.resources.CommandLineMessages
+# -------------------------------------------------------------------------------------------------
+
+error.sdkRequired=CWWKE0600E: Questo strumento richiede un SDK Java, ma \u00e8 stato avviato utilizzando un JRE: {0}
+error.sdkRequired.explanation=Lo strumento richiede un SDK Java, ma \u00e8 stato avviata utilizzando un ambiente di runtime Java semplice.
+error.sdkRequired.useraction=Impostare la variabile di ambiente JAVA HOME sul percorso di un SDK Java e rieseguire il comando.
+
+error.compilerMissing=CWWKE0601E: Questo strumento richiede che sia disponibile un compilatore Java. Assicurarsi che sia disponibile il modulo java.compiler.
+error.compilerMissing.explanation=Lo strumento richiede un compilatore Java. Tuttavia, lo strumento \u00e8 stato avviato senza.
+error.compilerMissing.useraction=Assicurarsi che sia disponibile il modulo java.compiler nell'immagine Java. Quindi, verificare che sia disponibile al runtime specificando la seguente opzione della riga comandi: --add-modules java.compiler

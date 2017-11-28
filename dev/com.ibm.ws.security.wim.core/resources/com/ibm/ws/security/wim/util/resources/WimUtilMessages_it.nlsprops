@@ -1,0 +1,265 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.websphere.security.wim.util/resources/com/ibm/websphere/security/wim/util/resources/WebsphereWimUtilMessages.nlsprops
+#COMPONENTPREFIX CWIML
+#COMPONENTPREFIX CWIMK
+#COMPONENTNAMEFOR Virtual Member Manager wim utilities 
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: Configuration:0000-0499
+# Message prefix block: Profile Manager: 1000-1999
+# Message prefix block: Repository Manager: 4000-4499
+# Message prefix block: Adapters: 4500-4999
+# Message prefix block: Schema/Realm: 0500-0999
+# Message prefix block: User Registry: 3000-3499
+
+INVALID_UNIQUE_NAME_SYNTAX=CWIML1011E: Impossibile completare l''operazione registro utenti. La sintassi del nome univoco {0} non \u00e8 valida. Fornire un nome univoco con la sintassi corretta. Ad esempio, uid=xyz,dc=yourco,dc=com.
+INVALID_UNIQUE_NAME_SYNTAX.explanation=La sintassi del nome univoco specificata non \u00e8 valida. Il nome univoco specificato nella propriet\u00e0 dell'identificativo non \u00e8 corretto. Impossibile proseguire l'operazione registro utenti senza il nome univoco corretto.
+INVALID_UNIQUE_NAME_SYNTAX.useraction=Verificare che il nome univoco sia stato scritto correttamente. Rivedere la sintassi del nome univoco. Ad esempio, se \u00e8 in formato DN (Distinguished Name), assicurarsi che l'escape dei caratteri speciali sia eseguito correttamente.
+
+INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION=CWIMK0001E: Impossibile completare l''operazione registro utenti. La definizione del tipo di entit\u00e0 {0} non \u00e8 valida. Correggere la definizione dell''entit\u00e0 nel file server.xml.
+INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION.explanation= Il tipo di entit\u00e0 deve essere definito con un nome del tipo di entit\u00e0 e almeno una propriet\u00e0 RDN (Relative Distinguished Name) corrispondente.
+INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION.useraction=Modificare e correggere la definizione del tipo di entit\u00e0 nel file server.xml.
+
+INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: Impossibile completare l''operazione registro utenti. La definizione della voce di base {0} non \u00e8 valida.  Correggere la definizione della voce di base nel file server.xml. Ad esempio, la sintassi \u00e8 <baseEntry name="..." baseDN="...."/>.
+INVALID_BASE_ENTRY_DEFINITION.explanation= La definizione specificata della voce di base non \u00e8 corretta. La sintassi per definire una voce di base \u00e8 <baseEntry name="..." baseDN="...."/>.
+INVALID_BASE_ENTRY_DEFINITION.useraction= Modificare e correggere la definizione della voce di base nel file server.xml.
+
+INVALID_REALM_DEFINITION=CWIMK0003E: Impossibile completare l''operazione registro utenti. La definizione di realm {0} non \u00e8 valida. Correggere la definizione di realm nel file server.xml.
+INVALID_REALM_DEFINITION.explanation= Il tag realm manca oppure non \u00e8 valido a causa di un attributo obbligatorio mancante.
+INVALID_REALM_DEFINITION.useraction=Modificare e correggere la definizione di realm nel file server.xml.
+
+INVALID_PARTICIPATING_BASE_ENTRY_DEFINITION=CWIMK0004E: Impossibile completare l''operazione registro utenti. La definizione della voce di base partecipante {0} non \u00e8 valida. Correggere la definizione della voce di base partecipante nel file server.xml. Ad esempio, la sintassi \u00e8 <participatingBaseEntry name="..."/>.
+INVALID_PARTICIPATING_BASE_ENTRY_DEFINITION.explanation= La definizione specificata della voce di base partecipante non \u00e8 corretta. La sintassi per la definizione della voce di base partecipante \u00e8 <participatingBaseEntry name="..."/>.
+INVALID_PARTICIPATING_BASE_ENTRY_DEFINITION.useraction=Modificare e correggere la definizione della voce di base partecipante nel file server.xml.
+
+INVALID_UR_ATTRIBUTE_MAPPING_DEFINITION=CWIMK0005E: Impossibile completare l''operazione registro utenti. La definizione dell''associazione dell''attributo del registro utenti {0} non \u00e8 valida. Correggere l''associazione dell''attributo del registro utenti nel file server.xml.
+INVALID_UR_ATTRIBUTE_MAPPING_DEFINITION.explanation= La definizione dell'associazione dell'attributo del registro utenti non \u00e8 corretta.
+INVALID_UR_ATTRIBUTE_MAPPING_DEFINITION.useraction=Modificare e correggere la definizione dell'associazione dell'attributo del registro utenti nel file server.xml.
+
+INVALID_REALM_NAME=CWIMK0006E: Impossibile completare l''operazione registro utenti. Il nome del realm {0} specificato non \u00e8 valido. Specificare un nome realm esistente.
+INVALID_REALM_NAME.explanation=Il nome del realm specificato non \u00e8 corretto o non \u00e8 definito nel file server.xml.
+INVALID_REALM_NAME.useraction=Assicurarsi che il nome realm esista e sia stato scritto correttamente nel file server.xml. Se non esiste, \u00e8 necessario specificare un realm valido.
+
+MISSING_BASE_ENTRY_IN_REALM=CWIMK0007E: Impossibile completare l''operazione registro utenti. Non \u00e8 definita alcuna voce di base valida per il realm {0}. Definire la voce di base per il realm nel file server.xml.
+MISSING_BASE_ENTRY_IN_REALM.explanation=Almeno una voce di base partecipante valida deve essere definita per un realm.
+MISSING_BASE_ENTRY_IN_REALM.useraction=Accertarsi che per il realm sia stata definita una voce di base partecipante valida nel file server.xml.
+
+MISSING_BASE_ENTRY=CWIMK0008E: Impossibile completare l''operazione registro utenti. Il repository {0} deve contenere almeno una voce di base. Definire la voce di base nel file server.xml.
+MISSING_BASE_ENTRY.explanation=Una volta aggiunto un repository, \u00e8 necessario aggiungervi almeno una voce di base.
+MISSING_BASE_ENTRY.useraction=Aggiungere almeno una voce di base al repository nel file server.xml.
+
+FEDERATED_MANAGER_SERVICE_READY=CWIMK0009I: Il servizio di federazione del registro utenti \u00e8 pronto.
+FEDERATED_MANAGER_SERVICE_READY.explanation=Messaggio a solo scopo informativo.
+FEDERATED_MANAGER_SERVICE_READY.useraction=Non \u00e8 richiesta alcuna azione.
+
+FEDERATED_MANAGER_SERVICE_STOPPED=CWIMK0010I: Il servizio di federazione del registro utenti \u00e8 stato arrestato.
+FEDERATED_MANAGER_SERVICE_STOPPED.explanation=Messaggio a solo scopo informativo.
+FEDERATED_MANAGER_SERVICE_STOPPED.useraction=Non \u00e8 richiesta alcuna azione.
+
+ENTITY_IDENTIFIER_NOT_SPECIFIED=CWIML1009E: Impossibile completare l'operazione registro utenti. Non \u00e8 stato trovato l'identificativo dell'entit\u00e0. Specificare l'identificativo corretto come parametro di input. 
+ENTITY_IDENTIFIER_NOT_SPECIFIED.explanation=Non \u00e8 stato specificato l'identificativo dell'entit\u00e0. Il sistema non \u00e8 in grado di trovare l'entit\u00e0. Impossibile proseguire l'operazione registro utenti senza trovare questa entit\u00e0. 
+ENTITY_IDENTIFIER_NOT_SPECIFIED.useraction=Assicurarsi che l'entit\u00e0 nell'oggetto di input contenga una propriet\u00e0 dell'identificativo.
+
+EXTERNAL_NAME_CONTROL_NOT_FOUND=CWIML1024E: Impossibile completare l''operazione registro utenti. Il nome esterno {0} \u00e8 specificato, ma il controllo del nome esterno non \u00e8 specificato. Specificare il controllo per il nome esterno indicato.
+EXTERNAL_NAME_CONTROL_NOT_FOUND.explanation=Durante l'operazione get, se \u00e8 impostato externalName, \u00e8 necessario specificare ExternalNameControl.
+EXTERNAL_NAME_CONTROL_NOT_FOUND.useraction=Specificare ExternalNameControl o rimuovere externalName dall'oggetto di input.
+
+INVALID_IDENTIFIER=CWIML1010E: Impossibile completare l''operazione registro utenti. Gli attributi uniqueId = {0} e uniqueName = {1} dell''oggetto identificativo non sono validi o non sono definiti nel repository di backend.
+INVALID_IDENTIFIER.explanation=L'oggetto identificativo specificato non \u00e8 valido. \u00c8 necessario specificare un attributo uniqueId o uniqueName valido nell'oggetto identificativo. Impossibile proseguire l'operazione registro utenti senza un oggetto identificativo valido. Se \u00e8 stato specificato un oggetto identificativo, uniqueId o uniqueName \u00e8 vuoto o null.
+INVALID_IDENTIFIER.useraction=Assicurarsi che l'entit\u00e0 nell'oggetto di input abbia un identificativo con un attributo uniqueId o uniqueName valido (non possono essere entrambi null o vuoti). 
+
+ENTITY_NOT_IN_REALM_SCOPE=CWIML0515E: Impossibile completare l''operazione registro utenti. L''entit\u00e0 {0} non \u00e8 compresa nell''ambito del realm {1}. Specificare un''entit\u00e0 che sia compresa nell''ambito del realm configurato nel file server.xml.
+ENTITY_NOT_IN_REALM_SCOPE.explanation=L'operazione non pu\u00f2 essere eseguita poich\u00e9 l'entit\u00e0 specificata non \u00e8 nell'ambito di applicabilit\u00e0 del realm.
+ENTITY_NOT_IN_REALM_SCOPE.useraction=Assicurarsi che il nome univoco dell'entit\u00e0 sia correttamente specificato. Se \u00e8 stato specificato un nome realm nell'oggetto Context dell'oggetto di input, assicurarsi che il nome sia stato scritto correttamente.
+
+MISSING_SORT_KEY=CWIML1001E: Impossibile completare l'operazione registro utenti. Manca la chiave di ordinamento nell'oggetto controllo ordinamento di input. Definire la chiave di ordinamento per l'oggetto controllo di ordinamento specificato.
+MISSING_SORT_KEY.explanation=\u00c8 stato passato un oggetto SortControl per l'operazione di ricerca senza una chiave di ordinamento, che \u00e8 necessaria per eseguire l'ordinamento.
+MISSING_SORT_KEY.useraction=Impostare la chiave di ordinamento nell'oggetto SortControl e assicurarsi che la propriet\u00e0 usata come chiave di ordinamento faccia parte dell'elenco di propriet\u00e0 che vengono restituite.
+
+MISSING_SEARCH_CONTROL=CWIML1017E: Impossibile completare l'operazione registro utenti. Manca l'oggetto controllo di ricerca nell'oggetto di input dell'operazione di ricerca. Definire l'oggetto controllo di ricerca nell'oggetto di input.
+MISSING_SEARCH_CONTROL.explanation=L'oggetto SearchControl deve essere specificato nell'oggetto di input dell'operazione di ricerca.
+MISSING_SEARCH_CONTROL.useraction=Specificare l'oggetto SearchControl nell'oggetto di input della ricerca.
+
+MISSING_COOKIE=CWIML1002E: Impossibile completare l'operazione registro utenti. Il cookie utilizzato per ottenere la pagina successiva dei risultati della ricerca manca nell'oggetto controllo pagina. Definire il parametro cookie nell'oggetto controllo pagina.
+MISSING_COOKIE.explanation=Il registro utenti non pu\u00f2 acquisire la pagina successiva dei risultati della ricerca. Il parametro cookie utilizzato per ottenere la pagina successiva dei risultati della ricerca deve essere specificato nell'oggetto PageControl.
+MISSING_COOKIE.useraction=Assicurarsi che la propriet\u00e0 cookie sia specificata nell'oggetto PageControl con un valore iniziale 0. Il cookie nell'oggetto PageResponseControl restituisce il valore del cookie che viene utilizzato per ottenere la pagina successiva dei risultati della ricerca.
+
+INVALID_COOKIE=CWIML1041E: Impossibile completare l'operazione registro utenti. Il cookie specificato nell'oggetto controllo pagina non \u00e8 valido o \u00e8 scaduto.
+INVALID_COOKIE.explanation=Il registro utenti non pu\u00f2 acquisire la pagina successiva dei risultati della ricerca. Il parametro cookie utilizzato per ottenere la pagina successiva dei risultati della ricerca nell'oggetto PageControl non \u00e8 valido. 
+INVALID_COOKIE.useraction=Accertarsi che sia specificato un cookie valido nell'oggetto PageControl. 
+
+INCORRECT_COUNT_LIMIT=CWIML1022E: Impossibile completare l''operazione registro utenti. Il limite di conteggio {0} specificato nell''oggetto controllo ricerca non \u00e8 valido. Il valore deve essere 0 o un numero positivo.
+INCORRECT_COUNT_LIMIT.explanation=Il limite di conteggio per un'operazione di ricerca non pu\u00f2 essere un numero negativo. Un numero positivo imposta il numero massimo di voci restituite come risultato della ricerca. Il valore 0 indica assenza di limite; se il limite della ricerca \u00e8 impostato su 0, vengono restituite tutte le voci.
+INCORRECT_COUNT_LIMIT.useraction=Non specificare un numero negativo come limite di conteggio.
+
+INCORRECT_SEARCH_LIMIT=CWIML1031E: Impossibile completare l''operazione registro utenti. Il limite di ricerca {0} specificato nell''oggetto controllo di ricerca non \u00e8 valido. Il valore deve essere 0 o un numero positivo.
+INCORRECT_SEARCH_LIMIT.explanation=Il limite di ricerca per un'operazione di ricerca non pu\u00f2 essere un numero negativo.
+INCORRECT_SEARCH_LIMIT.useraction=Non specificare un numero negativo per la propriet\u00e0 limite di ricerca. Il valore deve essere 0 o un numero positivo.
+
+CANNOT_SPECIFY_COUNT_LIMIT=CWIML1019E: Impossibile completare l'operazione registro utenti. Impossibile specificare il parametro countLimit in un oggetto controllo di ricerca quando nella chiamata di ricerca \u00e8 specificato anche l'oggetto controllo pagina. Specificare i limiti di conteggio o l'oggetto controllo pagina, ma non entrambi.
+CANNOT_SPECIFY_COUNT_LIMIT.explanation=\u00c8 utilizzato il parametro countLimit per specificare quanti risultati della ricerca che il chiamante desidera restituire in un'operazione di ricerca. Non pu\u00f2 essere utilizzato con l'oggetto PageControl.
+CANNOT_SPECIFY_COUNT_LIMIT.useraction=In base al requisito, il chiamante pu\u00f2 utilizzare il parametro countLimit o l'oggetto PageControl, non entrambi. 
+
+MISSING_SEARCH_EXPRESSION=CWIML1003E: Impossibile completare l'operazione registro utenti. Manca la propriet\u00e0 expression dell'oggetto controllo di ricerca. Definire la propriet\u00e0 expression nell'oggetto controllo di ricerca. 
+MISSING_SEARCH_EXPRESSION.explanation=L'operazione di ricerca non pu\u00f2 essere eseguita. La propriet\u00e0 expression deve essere specificata nell'oggetto SearchControl.
+MISSING_SEARCH_EXPRESSION.useraction=Specificare una stringa che rappresenta l'espressione di ricerca nella propriet\u00e0 expression dell'oggetto SearchControl.
+
+SEARCH_EXPRESSION_ERROR=CWIML1004E: Impossibile completare l''operazione registro utenti. Si \u00e8 verificato un errore nell''espressione di ricerca specificata nell''oggetto controllo di ricerca: {0}. Verificare la sintassi dell''espressione di ricerca nell''oggetto controllo di ricerca.
+SEARCH_EXPRESSION_ERROR.explanation=L'operazione non pu\u00f2 essere eseguita. L'espressione di ricerca specificata nell'oggetto SearchControl non segue la sintassi XPath supportata.
+SEARCH_EXPRESSION_ERROR.useraction=Esaminare la sintassi dell'espressione di ricerca e correggere eventuali errori.
+
+INVALID_SEARCH_EXPRESSION=CWIML1029E: Impossibile completare l''operazione registro utenti. La sintassi dell''espressione di ricerca {0} non \u00e8 valida. Specificare la sintassi corretta dell''espressione di ricerca. 
+INVALID_SEARCH_EXPRESSION.explanation=L'operazione di ricerca non pu\u00f2 essere eseguita poich\u00e9 l'espressione di ricerca non \u00e8 valida.
+INVALID_SEARCH_EXPRESSION.useraction=Fornire un'espressione di ricerca valida.
+
+EXCEED_MAX_TOTAL_SEARCH_LIMIT=CWIML1018E: Impossibile completare l''operazione registro utenti. {0} risultati della ricerca superano il limite massimo della ricerca specificato {1}. Non verranno restituiti i risultati della ricerca. Aumentare il limite massimo di ricerca o modificare l''espressione di ricerca per richiamare un numero inferiore di record.
+EXCEED_MAX_TOTAL_SEARCH_LIMIT.explanation=Il numero di record restituiti dalla ricerca \u00e8 superiore al numero massimo di record specificati nel limite della ricerca.
+EXCEED_MAX_TOTAL_SEARCH_LIMIT.useraction=Aumentare il limite massimo della ricerca o rendere pi\u00f9 restrittiva l'espressione di ricerca, in modo che venga richiamato un numero minore di record.
+
+INVALID_CHANGETYPE=CWIML4552E: Impossibile completare l''operazione registro utenti. Il valore changeType, {0}, specificato non \u00e8 valido per la ricerca di entit\u00e0 modificate. I tipi di modifica validi per la ricerca di entit\u00e0 modificate sono add, modify, delete, rename e * (* \u00e8 per tutti i tipi di modifica).
+INVALID_CHANGETYPE.explanation=I tipi di modifica validi per la ricerca di entit\u00e0 modificate sono add, modify, delete, rename e * (* \u00e8 per tutti i tipi di modifica).
+INVALID_CHANGETYPE.useraction=Specificare uno dei tipi di modifica validi.
+
+MISSING_ENTITY_DATA_OBJECT=CWIML1030E: Impossibile completare l''operazione registro utenti. Manca l''oggetto Entit\u00e0 di input per l''operazione {0}. \u00c8 necessario specificare l''oggetto dati entit\u00e0 per l''oggetto che si desidera utilizzare.
+MISSING_ENTITY_DATA_OBJECT.explanation=Per l'operazione specificata \u00e8 richiesto un oggetto Entit\u00e0.
+MISSING_ENTITY_DATA_OBJECT.useraction=\u00c8 necessario definire l'oggetto entit\u00e0 per l'entit\u00e0 che si desidera utilizzare.
+
+ACTION_MULTIPLE_ENTITIES_SPECIFIED=CWIML1016E: Impossibile completare l''operazione registro utenti. L''azione {0} non supporta pi\u00f9 entit\u00e0. Specificare solo una entit\u00e0 per questa operazione.
+ACTION_MULTIPLE_ENTITIES_SPECIFIED.explanation=L'operazione non supporta pi\u00f9 entit\u00e0. Per esempio, l'operazione di aggiornamento pu\u00f2 essere eseguita solo su un'entit\u00e0 alla volta.
+ACTION_MULTIPLE_ENTITIES_SPECIFIED.useraction=Assicurarsi che venga passata solo una entit\u00e0 per l'operazione del registro utenti.
+
+MISSING_OR_EMPTY_PRINCIPAL_NAME=CWIML4536E: Impossibile completare l'operazione di login. Il nome principal \u00e8 mancante o vuoto. 
+MISSING_OR_EMPTY_PRINCIPAL_NAME.explanation=\u00c8 richiesto un nome principal per collegarsi con una password.
+MISSING_OR_EMPTY_PRINCIPAL_NAME.useraction=Assicurarsi che venga specificato un nome principal.
+
+MULTIPLE_PRINCIPALS_FOUND=CWIML4538E: Impossibile completare l''operazione registro utenti. Esiste pi\u00f9 di un record per il nome principal {0} nei registri utenti configurati. \u00c8 necessario che il nome principal sia univoco in tutti i registri utenti.
+MULTIPLE_PRINCIPALS_FOUND.explanation=Sono stati trovati pi\u00f9 principal per il nome principal fornito. Il processo di collegamento non pu\u00f2 proseguire.
+MULTIPLE_PRINCIPALS_FOUND.useraction=Assicurarsi che sia stato specificato il nome principal corretto. Ad esempio, specificare il nome principal come un nome univoco pu\u00f2 evitare l'insorgere di questo tipo di eccezione.
+
+AUTHENTICATE_NOT_SUPPORTED=CWIML4530E: Impossibile completare l''operazione di autenticazione. L''autenticazione con il certificato non \u00e8 supportata dal repository {0}. Causa principale: {1}
+AUTHENTICATE_NOT_SUPPORTED.explanation=L'autenticazione non \u00e8 supportata con il certificato dal repository.
+AUTHENTICATE_NOT_SUPPORTED.useraction=Assicurarsi che l'autenticazione sia supportata con il certificato dal repository.
+
+CERTIFICATE_MAP_FAILED=CWIML3011E: Impossibile completare l'operazione di login. L'associazione del certificato non \u00e8 riuscita. Specificare l'associazione del certificato corretta nel file server.xml o utilizzare un certificato valido.
+CERTIFICATE_MAP_FAILED.explanation=Si \u00e8 verificato un errore durante l'associazione dello specifico certificato al registro utenti.
+CERTIFICATE_MAP_FAILED.useraction=Correggere l'associazione del certificato nel file serve.xml o eseguire il login con un certificato valido.
+
+PRINCIPAL_NOT_FOUND=CWIML4537E: Impossibile completare l''operazione di login. Il nome principal {0} specificato non \u00e8 stato trovato nel repository di backend.
+PRINCIPAL_NOT_FOUND.explanation=Il nome principal non \u00e8 stato trovato nel repository. Il processo di collegamento non pu\u00f2 proseguire.
+PRINCIPAL_NOT_FOUND.useraction=Assicurarsi che venga specificato il nome principal corretto.
+
+NON_EXISTING_SEARCH_BASE=CWIML1042E: Impossibile completare l''operazione registro utenti. La base di ricerca {0} specificata non esiste nel realm corrente configurato. Specificare la base di ricerca valida e assicurarsi che la voce di base sia configurata nel realm corrente.
+NON_EXISTING_SEARCH_BASE.explanation=La base di ricerca specificata non esiste nel realm corrente.
+NON_EXISTING_SEARCH_BASE.useraction=Controllare la base di ricerca specificata e accertarsi che la voce di base corrispondente sia configurata nel realm corrente.
+
+ENTITY_NOT_FOUND=CWIML4001E: Impossibile completare l''operazione registro utenti. L''entit\u00e0 {0} non \u00e8 stata trovata. Specificare l''entit\u00e0 corretta o creare l''entit\u00e0 mancante.
+ENTITY_NOT_FOUND.explanation=Impossibile trovare il nome entit\u00e0 specificato, che potrebbe essere un uniqueName o uniqueId, nel repository sottostante. Impossibile proseguire l'operazione registro utenti senza trovare questa entit\u00e0.
+ENTITY_NOT_FOUND.useraction=Assicurarsi che esista l'entit\u00e0 nel repository sottostante. Se l'entit\u00e0 esiste, verificare che sia impostato il permesso di lettura per l'entit\u00e0 e tentare nuovamente.
+
+INVALID_LEVEL_IN_CONTROL=CWIML4514E: Impossibile completare l''operazione registro utenti. Un valore non corretto per il livello della propriet\u00e0 {0} \u00e8 stato specificato in {1}. Il valore della propriet\u00e0, livello, deve essere 0 o un numero intero positivo.
+INVALID_LEVEL_IN_CONTROL.explanation=Il valore del livello della propriet\u00e0 \u00e8 stato specificato come un numero negativo.
+INVALID_LEVEL_IN_CONTROL.useraction=Il valore della propriet\u00e0, livello, deve essere 0 o un numero intero positivo. Modificare il valore del livello della propriet\u00e0 e tentare nuovamente.
+
+NAMING_EXCEPTION=CWIML4520E: Impossibile completare l''operazione LDAP. Si \u00e8 verificata l''eccezione di denominazione LDAP {0} durante l''elaborazione.
+NAMING_EXCEPTION.explanation=Il messaggio indica che si \u00e8 verificata un'eccezione di denominazione generale durante un'operazione LDAP. Vedere l'eccezione per ulteriori dettagli. 
+NAMING_EXCEPTION.useraction=Assicurarsi che il repository correlato (ad esempio, un database o un server LDAP) sia avviato ed impostato correttamente.
+
+SYSTEM_EXCEPTION=CWIML1998E: Impossibile completare l''operazione registro utenti. Si \u00e8 verificata la seguente eccezione di sistema durante l''elaborazione dell''operazione registro utenti: {0} 
+SYSTEM_EXCEPTION.explanation=Il programma ha rilevato un'eccezione di sistema durante l'esecuzione dell'operazione registro utenti. 
+SYSTEM_EXCEPTION.useraction= Esaminare i log per determinare la causa di questo errore ed eseguire le azioni correttive appropriate.
+
+INVALID_PROPERTY_VALUE=CWIML1013E: Impossibile completare l''operazione registro utenti. Il valore immesso della propriet\u00e0 {0} non \u00e8 valido per l''entit\u00e0 {1}. \u00c8 necessario che il valore della propriet\u00e0 sia corretto e che sia del tipo di dati corretto.
+INVALID_PROPERTY_VALUE.explanation=Il valore della propriet\u00e0 non \u00e8 valido. Per esempio, una propriet\u00e0 di tipo identificativo punta ad un elemento non corretto.
+INVALID_PROPERTY_VALUE.useraction=Assicurarsi che il valore della propriet\u00e0 sia corretto e che sia del tipo di dati corretto. Se si sta provando a richiamare la propriet\u00e0 del tipo di identificativo insieme ad altre propriet\u00e0, ripartirle in due chiamate. Eseguire una chiamata per richiamare le propriet\u00e0 non di tipo di identificativo e l'altra chiamata per richiamare la propriet\u00e0 di tipo di identificativo.
+
+GENERIC=CWIML1999E: Impossibile completare l''operazione del registro utente. Si \u00e8 verificato un errore di runtime durante l''elaborazione: {0}
+GENERIC.explanation=Il programma ha rilevato l'errore specificato durante l'operazione.
+GENERIC.useraction= Esaminare i log per determinare la causa di questo errore ed eseguire le azioni correttive appropriate.
+
+MISSING_MANDATORY_PROPERTY=CWIML1028E: Impossibile completare l''operazione registro utenti. Il valore della propriet\u00e0 obbligatoria {0} \u00e8 mancante. Fornire un valore per la propriet\u00e0 obbligatoria.
+MISSING_MANDATORY_PROPERTY.explanation=L'operazione non pu\u00f2 essere eseguita poich\u00e9 manca il valore della propriet\u00e0 obbligatoria. Ad esempio, la propriet\u00e0 RDN (Relative Distinguished Name) non \u00e8 specificata quando viene creata l'entit\u00e0 oppure propertyName o entityTypeName risultano mancanti in PropertyDefinitionControl o ExtensionPropertyDefinitionControl oppure entityName risulta mancante in entitySchema.
+MISSING_MANDATORY_PROPERTY.useraction=Fornire un valore per la propriet\u00e0 obbligatoria.
+
+CANNOT_DELETE_LOGGED_IN_USER=CWIML5504E: Impossibile completare l''operazione registro utenti. L''utente con nome univoco {0} non pu\u00f2 essere eliminato perch\u00e9 si tratta dell''utente collegato. Eseguire il login con un nome utente differente, se si desidera cancellare questo utente.
+CANNOT_DELETE_LOGGED_IN_USER.explanation=L'utente ha cercato di cancellarsi dal gestore membro virtuale. Questa azione non \u00e8 consentita.
+CANNOT_DELETE_LOGGED_IN_USER.useraction=Effettuare il login come utente diverso per cancellare l'utente corrente.
+
+AUTH_SUBJECT_CRED_FAILURE=CWIML2005E: Impossibile completare l'operazione registro utenti. Si \u00e8 verificato un errore non previsto durante la ricerca delle credenziali dell'oggetto. Per identificare la causa principale dell'errore, esaminare i log di traccia.
+AUTH_SUBJECT_CRED_FAILURE.explanation=Le credenziali dell'oggetto non possono essere richiamate a causa di un errore sconosciuto.
+AUTH_SUBJECT_CRED_FAILURE.useraction=Per vedere la causa principale dell'errore analizzare i log di traccia. Potrebbe esserci un problema con la configurazione della sicurezza di WebSphere.
+
+AUTH_SUBJECT_FAILURE=CWIML2004E: Impossibile completare l'operazione registro utenti. Si \u00e8 verificato un errore non previsto durante la ricerca dell'oggetto del programma chiamante. Per identificare la causa principale dell'errore, esaminare i log di traccia.
+AUTH_SUBJECT_FAILURE.explanation=L'oggetto del programma chiamante non pu\u00f2 essere richiamato a causa di un errore sconosciuto.
+AUTH_SUBJECT_FAILURE.useraction=Per vedere la causa principale dell'errore analizzare i log di traccia. Potrebbe esserci un problema con la configurazione della sicurezza di WebSphere.
+
+INVALID_PARENT_UNIQUE_ID=CWIML1014E: La propriet\u00e0 uniqueId {0} dell''elemento parent non \u00e8 valida.
+INVALID_PARENT_UNIQUE_ID.explanation=uniqueId specificato dell'entit\u00e0 parent non valido. Specificare un Id univoco valido.
+INVALID_PARENT_UNIQUE_ID.useraction=Verificare che uniqueId per l'entit\u00e0 parent sia presente nel repository e che sia specificato correttamente. 
+
+DEFAULT_PARENT_NOT_FOUND=CWIML0516E: Impossibile determinare l''elemento  parent predefinito per {0}. Verificare che la configurazione per il realm {1} sia corretta.
+DEFAULT_PARENT_NOT_FOUND.explanation=L'operazione non pu\u00f2 essere eseguita perch\u00e9 non \u00e8 stato possibile determinare l'elemento parent predefinito per questo tipo di entit\u00e0.
+DEFAULT_PARENT_NOT_FOUND.useraction=Verificare che l'elemento parent predefinito per il tipo di entit\u00e0 sia configurato per i repository federati o il realm. L'elemento parent pu\u00f2 anche essere specificato come parte dell'input.
+
+MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION=CWIML1034E: Configurazione repositoriesForGroups mancante per il repository {0}.
+MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION.explanation=Per il repository non \u00e8 definita alcuna configurazione di gruppo a repository incrociato.
+MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION.useraction=Fare riferimento al file di log per il motivo della mancata riuscita. Controllare la configurazione del repository.
+
+ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: Il tipo di entit\u00e0 specificato {0} non \u00e8 un tipo di entit\u00e0 valido per questa operazione.
+ENTITY_TYPE_NOT_SUPPORTED.explanation=\u00c8 stata richiesta un'operazione su un'entit\u00e0, ma l'operazione non supporta il tipo di entit\u00e0 specificato.
+ENTITY_TYPE_NOT_SUPPORTED.useraction=Assicurarsi che le entit\u00e0 fornite nell'input siano di tipi supportati e rimuovere tutti i tipi non supportati dall'input.
+
+CAN_NOT_CONSTRUCT_UNIQUE_NAME=CWIML1008E: La propriet\u00e0 RDN {0} per il tipo di entit\u00e0 {1} \u00e8 stata fornita nell''input. Il nome univoco non pu\u00f2 essere creato nel repository sottostante poich\u00e9 le informazioni RDN specificate nell''input sono ambigue.
+CAN_NOT_CONSTRUCT_UNIQUE_NAME.explanation=Quando si crea un'entit\u00e0, l'RDN (relative distinguished name-nome distinto relativo) deve essere nel formato corretto e deve contenere propriet\u00e0 non ambigue. Ad esempio, il tipo di entit\u00e0 OrgContainer pu\u00f2 rappresentare un'organizzazione (che utilizza la propriet\u00e0 RDN 'o') o un'unit\u00e0 organizzativa (che utilizza la propriet\u00e0 RDN 'ou') in un repository sottostante. Se si specifica sia 'o' che 'ou' nell'RDN per l'oggetto dati di input relativo alla nuova entit\u00e0, non pu\u00f2 essere creato un nome univoco per la nuova entit\u00e0.
+CAN_NOT_CONSTRUCT_UNIQUE_NAME.useraction=Determinare il tipo di entit\u00e0 che si desidera creare nel repository sottostante e fornire la propriet\u00e0 RDN appropriata per quel tipo. Ad esempio, se si desidera creare un'organizzazione, fornire solo il valore propriet\u00e0 'o'.
+
+REPOSITORY_INITIALIZATION_FAILED=CWIML4510E: Impossibile inizializzare il repository configurato {0} a causa dell''errore sottostante: {1}
+REPOSITORY_INITIALIZATION_FAILED.explanation=Non \u00e8 stato possibile inizializzare il repository federato a causa di un errore sottostante.
+REPOSITORY_INITIALIZATION_FAILED.useraction=Esaminare il messaggio di causa e il file di traccia per determinare la causa dell'errore. Correggere l'errore e tentare nuovamente.
+
+CUSTOM_REGISTRY_EXCEPTION=CWIML3010E: Impossibile completare l''operazione registro utenti. Si \u00e8 verificata un''eccezione nel registro personalizzato configurato per {0}
+CUSTOM_REGISTRY_EXCEPTION.explanation=Il registro personalizzato ha generato una eccezione. \u00c8 possibile che il registro personalizzato non sia disponibile o in grado di eseguire l'operazione.
+CUSTOM_REGISTRY_EXCEPTION.useraction=Esaminare il messaggio di causa e il file di traccia per determinare la causa dell'errore. Correggere l'errore e tentare nuovamente.
+
+ENTITY_GET_FAILED=CWIML4505E: Il registro utente non \u00e8 satto in grado di richiamare l''entit\u00e0\u00a0 {0} a causa di un errore sottostante: {1}
+ENTITY_GET_FAILED.explanation=Non \u00e8 stato possibile richiamare l'entit\u00e0 a causa della motivazione specificata dal repository sottostante.
+ENTITY_GET_FAILED.useraction=Esaminare il messaggio di causa e il file di traccia per determinare la causa dell'errore. Correggere l'errore e tentare nuovamente.
+
+PROPERTY_NOT_DEFINED_FOR_ENTITY=CWIML4516E: Impossibile completare l''operazione registro utenti. La propriet\u00e0 {0} non \u00e8 definita per {1}
+PROPERTY_NOT_DEFINED_FOR_ENTITY.explanation=La propriet\u00e0 specificata non \u00e8 definita per il particolare tipo di entit\u00e0.
+PROPERTY_NOT_DEFINED_FOR_ENTITY.useraction=Verificare che il nome della propriet\u00e0 sia corretto.
+
+MALFORMED_SEARCH_EXPRESSION=CWIML3006W: Impossibile completare l''operazione del registro utente poich\u00e9 l''espressione di ricerca {0} non \u00e8 valida. Specificare la sintassi corretta dell''espressione di ricerca.
+MALFORMED_SEARCH_EXPRESSION.explanation=L'operazione di ricerca non pu\u00f2 essere eseguita poich\u00e9 l'espressione di ricerca non \u00e8 valida.
+MALFORMED_SEARCH_EXPRESSION.useraction=Fornire un'espressione di ricerca valida.
+
+ENTITY_SEARCH_FAILED=CWIML4506E: Impossibile completare l''operazione del registro utente poich\u00e9 il registro utente ha rilevato l''errore sottostante: {1}
+ENTITY_SEARCH_FAILED.explanation=Non \u00e8 stato possibile ricercare nell'entit\u00e0 a causa della motivazione specificata dal registro sottostante.
+ENTITY_SEARCH_FAILED.useraction=Esaminare il messaggio di causa e il file di traccia per determinare la causa dell'errore. Correggere l'errore e tentare nuovamente.
+
+MISSING_OR_EMPTY_PASSWORD=CWIML4541E: Impossibile completare l'operazione di login poich\u00e9 la password manca o \u00e8 vuota.
+MISSING_OR_EMPTY_PASSWORD.explanation=Se durante il processo di login viene specificato il nome principal, la password non pu\u00f2 essere null o vuota.
+MISSING_OR_EMPTY_PASSWORD.useraction=Specificare la password.
+
+CERTIFICATE_GENERATE_FAILED=CWIML3012E: Impossibile completare l'operazione di login poich\u00e9 la generazione del certificato non \u00e8 riuscita.
+CERTIFICATE_GENERATE_FAILED.explanation=Si \u00e8 verificato un errore durante la generazione del file del certificato dal file del certificato di input.
+CERTIFICATE_GENERATE_FAILED.useraction=Eseguire il login con un certificato valido.
+
+AUTHENTICATION_WITH_CERT_NOT_SUPPORTED=CWIML4542E: Impossibile completare l'operazione di login poich\u00e9 il registro utente non supporta il login con un certificato.
+AUTHENTICATION_WITH_CERT_NOT_SUPPORTED.explanation=L'autenticazione tramite certificato non \u00e8 consentita dal registro utente sottostante.
+AUTHENTICATION_WITH_CERT_NOT_SUPPORTED.useraction=Effettuare l'autenticazione tramite ID utente e password invece di utilizzare un certificato.
+
+CANNOT_WRITE_TO_READ_ONLY_REPOSITORY=CWIML1027E: Impossibile completare l''operazione del registro utente poich\u00e9 il repository {0} \u00e8 di sola lettura. Non supporta operazioni di scrittura. 
+CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.explanation=Il repository \u00e8 un repository di sola lettura. Non supporta operazioni di creazione, aggiornamento o cancellazione.
+CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.useraction=Non richiamare un'operazione di scrittura su un repository di sola lettura.

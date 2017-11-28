@@ -1,0 +1,146 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.client/resources/com/ibm/ws/jmx/connector/client/rest/internal/resources/RESTClientMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX JMX REST Client
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKX0200-CWWKX0259
+	
+jmx.rest.client.request.error=CWWKX0201E: A WebSphere Java Management Extensions REST \u00fcgyf\u00e9l hib\u00e1ba \u00fctk\u00f6z\u00f6tt, mik\u00f6zben el\u0151k\u00e9sz\u00edtette a kiszolg\u00e1l\u00f3hoz k\u00fcldend\u0151 k\u00e9r\u00e9st a(z) {1} kapcsolaton tal\u00e1lhat\u00f3 {0} URL eset\u00e9ben
+jmx.rest.client.request.error.explanation=A WebSphere Java Management Extensions REST \u00fcgyf\u00e9l hib\u00e1ba \u00fctk\u00f6z\u00f6tt, mik\u00f6zben el\u0151k\u00e9sz\u00edtette a kiszolg\u00e1l\u00f3hoz k\u00fcldend\u0151 k\u00e9r\u00e9st
+jmx.rest.client.request.error.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt vizsg\u00e1lja meg a kiszolg\u00e1l\u00f3napl\u00f3kat.
+
+jmx.rest.client.response.error=CWWKX0202E: A WebSphere Java Management Extensions REST \u00fcgyf\u00e9l nem tudta feldolgozni a kiszolg\u00e1l\u00f3t\u00f3l \u00e9rkezett v\u00e1laszt a(z) {1} kapcsolaton tal\u00e1lhat\u00f3 {0} URL eset\u00e9ben
+jmx.rest.client.response.error.explanation=A WebSphere Java Management Extensions REST \u00fcgyf\u00e9l nem tudott feldolgozni egy kiszolg\u00e1l\u00f3t\u00f3l \u00e9rkezett v\u00e1laszt
+jmx.rest.client.response.error.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt vizsg\u00e1lja meg a kiszolg\u00e1l\u00f3napl\u00f3kat.
+
+jmx.rest.client.response.code.error=CWWKX0203E: A WebSphere Java Management Extensions REST \u00fcgyf\u00e9l a(z) {0} v\u00e1ratlan v\u00e1laszk\u00f3dot kapta a(z) "{1}" \u00fczenettel a kiszolg\u00e1l\u00f3t\u00f3l a(z) {3} kapcsolaton tal\u00e1lhat\u00f3 {2} URL eset\u00e9ben
+jmx.rest.client.response.code.error.explanation=A WebSphere Java Management Extensions REST \u00fcgyf\u00e9l egy v\u00e1ratlan v\u00e1laszk\u00f3dot kapta a kiszolg\u00e1l\u00f3t\u00f3l
+jmx.rest.client.response.code.error.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt vizsg\u00e1lja meg a kiszolg\u00e1l\u00f3napl\u00f3kat.
+
+jmx.rest.client.server.throwable.exception=CWWKX0204E: Nem lehet \u00e9rtelmezni egy Throwable objektumot a kiszolg\u00e1l\u00f3 hibafolyam\u00e1b\u00f3l.
+jmx.rest.client.server.throwable.exception.explanation=A kiszolg\u00e1l\u00f3 kiv\u00e9telt adott az \u00fcgyf\u00e9lk\u00e9r\u00e9s kezel\u00e9sekor, de az \u00fcgyf\u00e9l nem tudott \u00e9rtelmezni egy Throwable objektumot a kiszolg\u00e1l\u00f3 hibafolyam\u00e1b\u00f3l. Lehet, hogy a Throwable objektum oszt\u00e1lya nem el\u00e9rhet\u0151 az \u00fcgyf\u00e9l sz\u00e1m\u00e1ra.
+jmx.rest.client.server.throwable.exception.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt vizsg\u00e1lja meg a kiszolg\u00e1l\u00f3napl\u00f3kat.
+
+jmx.rest.client.not.connected=CWWKX0206E: Az \u00fcgyf\u00e9l nem kapcsol\u00f3dik a kiszolg\u00e1l\u00f3hoz.
+jmx.rest.client.not.connected.explanation=A kapcsolat a kiszolg\u00e1l\u00f3val megszakadt vagy sikertelen.
+jmx.rest.client.not.connected.useraction=Ellen\u0151rizze, hogy enged\u00e9lyezve van-e a REST csatol\u00f3 szolg\u00e1ltat\u00e1s a kiszolg\u00e1l\u00f3n, \u00e9s hozzon l\u00e9tre \u00faj kapcsolatot a kiszolg\u00e1l\u00f3val.
+
+jmx.rest.client.url.not.found=CWWKX0207E: A kiszolg\u00e1l\u00f3 jelezte, hogy az \u00fcgyf\u00e9l \u00e1ltal k\u00e9rt URL nem tal\u00e1lhat\u00f3.
+jmx.rest.client.url.not.found.explanation=Lehet, hogy az \u00fcgyf\u00e9l elavult inform\u00e1ci\u00f3kkal rendelkezik vagy a REST csatol\u00f3 funkci\u00f3 a kiszolg\u00e1l\u00f3n le van tiltva.
+jmx.rest.client.url.not.found.useraction=Ellen\u0151rizze, hogy enged\u00e9lyezve van-e a REST csatol\u00f3 szolg\u00e1ltat\u00e1s a kiszolg\u00e1l\u00f3n, \u00e9s hozzon l\u00e9tre \u00faj kapcsolatot a kiszolg\u00e1l\u00f3val.
+
+jmx.rest.client.class.name.null=CWWKX0208E: Az oszt\u00e1lyn\u00e9v argumentum null \u00e9rt\u00e9k\u0171 volt.
+jmx.rest.client.class.name.null.explanation=Az oszt\u00e1lyn\u00e9v argumentum nem lehet null \u00e9rt\u00e9k\u0171.
+jmx.rest.client.class.name.null.useraction=Adjon meg nem null \u00e9rt\u00e9k\u0171 oszt\u00e1lynevet a met\u00f3dus h\u00edv\u00e1sakor.
+
+jmx.rest.client.attribute.name.null=CWWKX0209E: Az attrib\u00fatumn\u00e9v argumentum null \u00e9rt\u00e9k\u0171 volt.
+jmx.rest.client.attribute.name.null.explanation=Az attrib\u00fatumn\u00e9v argumentum nem lehet null \u00e9rt\u00e9k\u0171.
+jmx.rest.client.attribute.name.null.useraction=Adjon meg nem null \u00e9rt\u00e9k\u0171 attrib\u00fatumnevet a met\u00f3dus h\u00edv\u00e1sakor.
+
+jmx.rest.client.attribute.names.null=CWWKX0210E: Az attrib\u00fatumneveket tartalmaz\u00f3 argumentum null \u00e9rt\u00e9k\u0171 volt.
+jmx.rest.client.attribute.names.null.explanation=Az attrib\u00fatumneveket tartalmaz\u00f3 argumentum nem lehet null \u00e9rt\u00e9k\u0171.
+jmx.rest.client.attribute.names.null.useraction=Adjon meg nem null \u00e9rt\u00e9k\u0171 attrib\u00fatumn\u00e9v t\u00f6mb\u00f6t a met\u00f3dus h\u00edv\u00e1sakor.
+
+jmx.rest.client.attribute.null=CWWKX0211E: Az Attribute argumentum null \u00e9rt\u00e9k\u0171 volt.
+jmx.rest.client.attribute.null.explanation=Az Attribute argumentum nem lehet null \u00e9rt\u00e9k\u0171.
+jmx.rest.client.attribute.null.useraction=Adjon meg nem null \u00e9rt\u00e9k\u0171 Attribute argumentumot a met\u00f3dus h\u00edv\u00e1sakor.
+
+jmx.rest.client.attribute.list.null=CWWKX0212E: Az AttributeList argumentum null \u00e9rt\u00e9k\u0171 volt.
+jmx.rest.client.attribute.list.null.explanation=Az AttributeList argumentum nem lehet null \u00e9rt\u00e9k\u0171.
+jmx.rest.client.attribute.list.null.useraction=Adjon meg nem null \u00e9rt\u00e9k\u0171 AttributeList argumentumot a met\u00f3dus h\u00edv\u00e1sakor.
+
+jmx.rest.client.object.name.null=CWWKX0213E: Az ObjectName argumentum null \u00e9rt\u00e9k\u0171 volt.
+jmx.rest.client.object.name.null.explanation=Az ObjectName argumentum nem lehet null \u00e9rt\u00e9k\u0171.
+jmx.rest.client.object.name.null.useraction=Adjon meg nem null \u00e9rt\u00e9k\u0171 ObjectName argumentumot a met\u00f3dus h\u00edv\u00e1sakor.
+
+jmx.rest.client.unexpected.server.throwable=CWWKX0214E: Nem v\u00e1rt Throwable objektumot adott vissza a program.
+jmx.rest.client.unexpected.server.throwable.explanation=A kiv\u00e9tel a m\u0171velethez a kiszolg\u00e1l\u00f3r\u00f3l visszaadott nem v\u00e1rt Throwable objektumot tartalmaz.
+jmx.rest.client.unexpected.server.throwable.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt vizsg\u00e1lja meg a kiszolg\u00e1l\u00f3napl\u00f3kat.
+
+jmx.rest.client.bad.credentials=CWWKX0215E: Probl\u00e9ma volt a megadott felhaszn\u00e1l\u00f3n\u00e9vvel vagy jelsz\u00f3val. A kiszolg\u00e1l\u00f3 {0} k\u00f3ddal \u00e9s ''{1}'' \u00fczenettel v\u00e1laszolt.
+jmx.rest.client.bad.credentials.explanation=A kapcsolat l\u00e9trehoz\u00e1sakor megadott hiteles\u00edt\u00e9si adatok helytelenek voltak. Lehet, hogy a felhaszn\u00e1l\u00f3 nem l\u00e9tezik vagy nincs jogosults\u00e1ga a kiszolg\u00e1l\u00f3 el\u00e9r\u00e9s\u00e9hez, vagy helytelen a jelsz\u00f3.
+jmx.rest.client.bad.credentials.useraction=Jav\u00edtsa ki a felhaszn\u00e1l\u00f3nevet vagy jelsz\u00f3t, majd hozzon l\u00e9tre \u00faj kapcsolatot.
+
+jmx.rest.client.object.name.pattern=CWWKX0216E: A(z) ''{0}'' ObjectName argumentum egy minta."
+jmx.rest.client.object.name.pattern.explanation=Az ObjectName argumentum egy minta, de a met\u00f3dus sz\u00e1m\u00e1ra pontosan egy MBean elemmel egyez\u0151 ObjectName sz\u00fcks\u00e9ges.
+jmx.rest.client.object.name.pattern.useraction=Adjon meg helyettes\u00edt\u0151 karakterek n\u00e9lk\u00fcl egy ObjectName argumentumot, ami pontosan egy MBean elemmel egyezik.
+
+jmx.rest.client.instance.not.found=CWWKX0217E: Jelenleg nincs MBean regisztr\u00e1lva a megadott ''{0}'' ObjectName argumentummal.
+jmx.rest.client.instance.not.found.explanation=A m\u0171velethez regisztr\u00e1lt MBean sz\u00fcks\u00e9ges, de a megadott ObjectName argumentummal nem volt MBean regisztr\u00e1lva.
+jmx.rest.client.instance.not.found.useraction=Gondoskodjon arr\u00f3l, hogy az MBean regisztr\u00e1lva legyen, miel\u0151tt kezel\u00e9si m\u0171veleteket pr\u00f3b\u00e1l meg v\u00e9grehajtani rajta.
+
+jmx.rest.client.attribute.not.found=CWWKX0218E: A(z) ''{0}'' MBean nem rendelkezik ''{1}'' nev\u0171 attrib\u00fatummal.
+jmx.rest.client.attribute.not.found.explanation=Az MBean nem biztos\u00edtja a megadott nev\u0171 attrib\u00fatumot.
+jmx.rest.client.attribute.not.found.useraction=Az MBean inform\u00e1ci\u00f3i megszerz\u00e9s\u00e9vel gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy milyen attrib\u00fatumokat biztos\u00edt az MBean.
+
+jmx.rest.client.operation.not.found=CWWKX0219E: A(z) ''{0}'' MBean nem rendelkezik ''{1}'' nev\u0171 m\u0171velettel.
+jmx.rest.client.operation.not.found.explanation=Az MBean nem biztos\u00edtja a megadott nev\u0171 m\u0171veletet.
+jmx.rest.client.operation.not.found.useraction=Az MBean inform\u00e1ci\u00f3i megszerz\u00e9s\u00e9vel gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy milyen m\u0171veleteket biztos\u00edt az MBean.
+
+jmx.rest.client.listener.not.found=CWWKX0220E: A megadott NotificationListener jelenleg nincs regisztr\u00e1lva, hogy \u00e9rtes\u00edt\u00e9seket fogadjon ''{0}'' MBean \u00f6sszetev\u0151t\u0151l.
+jmx.rest.client.listener.not.found.explanation=A NotificationListener nem lett hozz\u00e1adva vagy m\u00e1r el lett t\u00e1vol\u00edtva, \u00e9s jelenleg nincs regisztr\u00e1lva \u00e9rtes\u00edt\u00e9sek fogad\u00e1s\u00e1ra a megadott MBean \u00f6sszetev\u0151t\u0151l.
+jmx.rest.client.listener.not.found.useraction=Gondoskodjon arr\u00f3l, hogy a h\u00edv\u00f3 k\u00f3d nyomon k\u00f6vesse, hogy melyik NotificationListener \u00f6sszetev\u0151k lettek hozz\u00e1adva \u00e9s elt\u00e1vol\u00edtva, vagy fogja el \u00e9s kezelje a kiv\u00e9telt.
+
+jmx.rest.client.notification.lost=CWWKX0221I: Az \u00e9rtes\u00edt\u00e9st nem lehetett k\u00e9zbes\u00edteni.
+jmx.rest.client.notification.lost.explanation=Egy \u00e9rtes\u00edt\u00e9st nem lehetett k\u00e9zbes\u00edteni n\u00e9h\u00e1ny NotificationListener sz\u00e1m\u00e1ra, mert egy regisztr\u00e1lt NotificationListener nem volt megtal\u00e1lhat\u00f3 vagy kiv\u00e9tel t\u00f6rt\u00e9nt az \u00e9rtes\u00edt\u00e9s k\u00e9zbes\u00edt\u00e9se sor\u00e1n.
+jmx.rest.client.notification.lost.useraction=Ha az \u00e9rtes\u00edt\u00e9st k\u00e9zbes\u00edteni kellett volna egy regisztr\u00e1lt NotificationListener sz\u00e1m\u00e1ra, akkor ellen\u0151rizze a napl\u00f3kban a kiv\u00e9teleket.
+
+jmx.rest.client.connection.failed=CWWKX0222I: A kapcsolat a kiszolg\u00e1l\u00f3val sikertelen.
+jmx.rest.client.connection.failed.explanation=A kiszolg\u00e1l\u00f3 el\u00e9rhetetlenn\u00e9 v\u00e1lt, \u00e9s nem lett \u00fajb\u00f3l el\u00e9rhet\u0151 a be\u00e1ll\u00edtott rendelkez\u00e9sre \u00e1ll\u00f3 maxim\u00e1lis id\u0151n bel\u00fcl.
+jmx.rest.client.connection.failed.useraction=Ellen\u0151rizze a h\u00e1l\u00f3zati kapcsolatot, \u00e9s gondoskodjon arr\u00f3l, hogy a kiszolg\u00e1l\u00f3 enged\u00e9lyezett REST csatol\u00f3 funkci\u00f3val fusson. 
+
+jmx.rest.client.connection.temporarily.lost=CWWKX0223I: A kapcsolat a kiszolg\u00e1l\u00f3val ideiglenesen elveszett.
+jmx.rest.client.connection.temporarily.lost.explanation=A kiszolg\u00e1l\u00f3 el\u00e9rhetetlenn\u00e9 v\u00e1lt, de az \u00fcgyf\u00e9l megpr\u00f3b\u00e1lja vissza\u00e1ll\u00edtani a kapcsolatot a be\u00e1ll\u00edtott rendelkez\u00e9sre \u00e1ll\u00f3 maxim\u00e1lis id\u0151n bel\u00fcl.
+jmx.rest.client.connection.temporarily.lost.useraction=Ha a kiszolg\u00e1l\u00f3 sz\u00e1nd\u00e9kosan indul \u00fajra, akkor nincs teend\u0151. Ellenkez\u0151 esetben ellen\u0151rizze a h\u00e1l\u00f3zati kapcsolatot, \u00e9s gondoskodjon arr\u00f3l, hogy a kiszolg\u00e1l\u00f3 enged\u00e9lyezett REST csatol\u00f3 funkci\u00f3val fusson.
+
+jmx.rest.client.connection.restored.with.exceptions=CWWKX0224I: A kapcsolat vissza\u00e1llt, de kiv\u00e9telek fordultak el\u0151 a NotificationListener elemek hozz\u00e1ad\u00e1sakor.
+jmx.rest.client.connection.restored.with.exceptions.explanation=A kapcsolat a kiszolg\u00e1l\u00f3val ideiglenesen elveszett, de sikeresen helyre\u00e1llt. Kiv\u00e9telek fordultak el\u0151 a NotificationListener elemek hozz\u00e1ad\u00e1sakor, ez\u00e9rt lehet, hogy n\u00e9h\u00e1ny \u00e9rtes\u00edt\u00e9st nem lehetett fogadni.
+jmx.rest.client.connection.restored.with.exceptions.useraction=Ellen\u0151rizze az \u00e9rtes\u00edt\u00e9s tartalmazott kiv\u00e9teleit, \u00e9s regisztr\u00e1lja \u00fajra a NotificationListener elemeket a probl\u00e9m\u00e1k kijav\u00edt\u00e1sa ut\u00e1n.
+
+jmx.rest.client.connection.restored=CWWKX0225I: A kapcsolat helyre\u00e1ll\u00edt\u00e1sa siker\u00fclt.
+jmx.rest.client.connection.restored.explanation=A kapcsolat a kiszolg\u00e1l\u00f3val ideiglenesen elveszett, de sikeresen helyre\u00e1llt. A regisztr\u00e1lt NotificationListener elemek tov\u00e1bbra is kapnak \u00e9rtes\u00edt\u00e9seket.
+jmx.rest.client.connection.restored.useraction=Nincs
+
+jmx.rest.client.connection.illegal.argument=CWWKX0226E: A JMXServiceURL t\u00edpus\u00fa param\u00e9ter nem lehet null\u00e9rt\u00e9k.
+jmx.rest.client.connection.illegal.argument.explanation=A 'serviceURL' param\u00e9ter \u00e9rt\u00e9ke nem lehet null\u00e9rt\u00e9k.
+jmx.rest.client.connection.illegal.argument.useraction=Csatlakozzon \u00fajra a JMX REST csatol\u00f3hoz nem null\u00e9rt\u00e9k\u0171 JMXServiceURL \u00e9rt\u00e9kkel.
+
+jmx.rest.client.connection.invalid.endpoint=CWWKX0227E: A k\u00f6vetkez\u0151 nem \u00e9rv\u00e9nyes v\u00e9gpont\u00e9rt\u00e9k: {0}
+jmx.rest.client.connection.invalid.endpoint.explanation=A megadott v\u00e9gpont\u00e9rt\u00e9k \u00e9rv\u00e9nytelen.
+jmx.rest.client.connection.invalid.endpoint.useraction=Csatlakozzon \u00fajra a JMX REST csatol\u00f3hoz karaktersorozat t\u00edpus\u00fa, "hoszt:port" form\u00e1tum\u00fa \u00e9rv\u00e9nyes v\u00e9gpont\u00e9rt\u00e9kkel.
+
+jmx.rest.client.connection.no.endpoints=CWWKX0228E: A csatol\u00f3 inicializ\u00e1l\u00e1s\u00e1hoz nem tal\u00e1lhat\u00f3 el\u00e9rhet\u0151 v\u00e9gpont.
+jmx.rest.client.connection.no.endpoints.explanation=A JMX REST csatol\u00f3 inicializ\u00e1l\u00e1sa sor\u00e1n egyik megadott v\u00e9gpont sem \u00e9rhet\u0151 el.
+jmx.rest.client.connection.no.endpoints.useraction=Csatlakozzon \u00fajra a JMX REST csatol\u00f3hoz legal\u00e1bb 1 el\u00e9rhet\u0151 v\u00e9gpont haszn\u00e1lat\u00e1val.
+
+jmx.rest.client.bad.user.credentials=CWWKX0229E: Probl\u00e9ma volt a megadott felhaszn\u00e1l\u00f3 hiteles\u00edt\u00e9si adatokkal. A kiszolg\u00e1l\u00f3 {0} k\u00f3ddal \u00e9s ''{1}'' \u00fczenettel v\u00e1laszolt.
+jmx.rest.client.bad.user.credentials.explanation=A megadott hiteles\u00edt\u00e9si adatok helytelenek, lej\u00e1rtak vagy jogosults\u00e1guk megtagad\u00e1sra ker\u00fclt.
+jmx.rest.client.bad.user.credentials.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a felhaszn\u00e1l\u00f3 hiteles\u00edt\u00e9si adatok hiteles\u00edt\u00e9se \u00e9s jogosults\u00e1ga helyes, majd alak\u00edtson ki \u00faj kapcsolatot.
+
+jmx.rest.client.connection.connect=CWWKX0230I: Az egy\u00fcttes tag megnyitotta az JMX \u00fcgyfelet az egy\u00fcttes vez\u00e9rl\u0151h\u00f6z: {0}
+jmx.rest.client.connection.connect.explanation=A tag csatlakoztat\u00e1sra ker\u00fclt a vez\u00e9rl\u0151h\u00f6z.
+jmx.rest.client.connection.connect.useraction=Semmit sem kell tennie.
+ 
+jmx.rest.client.connection.disconnect=CWWKX0231I: Az egy\u00fcttes tag lez\u00e1rta az JMX \u00fcgyfelet az egy\u00fcttes vez\u00e9rl\u0151vel: {0}
+jmx.rest.client.connection.disconnect.explanation=A tag vez\u00e9rl\u0151h\u00f6z val\u00f3 csatlakoz\u00e1sa megsz\u0171nt.
+jmx.rest.client.connection.disconnect.useraction=Semmit sem kell tennie.
+

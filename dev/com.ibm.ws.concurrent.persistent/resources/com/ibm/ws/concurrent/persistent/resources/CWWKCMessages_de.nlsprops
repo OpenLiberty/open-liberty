@@ -1,0 +1,97 @@
+###############################################################################
+# Copyright (c) 2014, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.concurrent.persistent/resources/com/ibm/ws/concurrent/persistent/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Persistent Scheduled Executor
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1500 to CWWCK1999 except those specifically identified as moved
+
+# Java class and method names that should not be translated:
+# Future, get, getDelay, getResult, getNextExecutionTime, isCancelled, isDone, ScheduledFuture, TaskStatus
+
+CWWKC1500.task.rollback.retry=CWWKC1500W: Das persistente Steuerprogramm {0} hat die Task {1} r\u00fcckg\u00e4ngig gemacht. Eine Wiederholung der Task ist nach {2} Sekunden geplant.
+CWWKC1500.task.rollback.retry.explanation=Die Taskausf\u00fchrung wurde f\u00fcr die Durchf\u00fchrung einer Rollback-Operation markiert. Die Task wird nach Ablauf der angegebenen Anzahl von Sekunden wiederholt.
+CWWKC1500.task.rollback.retry.useraction=Warten Sie die Wiederholung der Task ab.
+
+CWWKC1501.task.failure.retry=CWWKC1501W: Das persistente Steuerprogramm {0} hat die Task {1} wegen des Fehlers {2} r\u00fcckg\u00e4ngig gemacht. Eine Wiederholung der Task ist nach {3} Sekunden geplant.
+CWWKC1501.task.failure.retry.explanation=Die Taskausf\u00fchrung ist fehlgeschlagen und wurde r\u00fcckg\u00e4ngig gemacht. Die Task wird nach Ablauf der angegebenen Anzahl von Sekunden wiederholt.
+CWWKC1501.task.failure.retry.useraction=Wenn es sich um einen tempor\u00e4re Fehler handelt, warten Sie die Wiederholung der Task ab. Wenn es sich um einen unerwarteten Fehler handelt, beheben Sie die Fehlerursache.
+
+CWWKC1502.task.rollback=CWWKC1502W: Das persistente Steuerprogramm {0} hat die Task {1} r\u00fcckg\u00e4ngig gemacht.
+CWWKC1502.task.rollback.explanation=Die Taskausf\u00fchrung wurde f\u00fcr die Durchf\u00fchrung einer Rollback-Operation markiert.
+CWWKC1502.task.rollback.useraction=Wenn die Rollback-Operation unerwartet ist, planen Sie die Task erneut.
+
+CWWKC1503.task.failure=CWWKC1503W: Das persistente Steuerprogramm {0} hat die Task {1} wegen des Fehlers {2} r\u00fcckg\u00e4ngig gemacht.
+CWWKC1503.task.failure.explanation=Die Taskausf\u00fchrung ist fehlgeschlagen und wurde r\u00fcckg\u00e4ngig gemacht.
+CWWKC1503.task.failure.useraction=Beheben Sie die Fehlerursache, wenn der Fehler nicht erwartet wurde, und planen Sie die Task erneut.
+
+CWWKC1510.retry.limit.reached.rollback=CWWKC1510W: Das persistente Steuerprogramm {0} hat die Task {1} abgebrochen, weil sie r\u00fcckg\u00e4ngig gemacht wurde oder {2} Mal hintereinander fehlgeschlagen ist.
+CWWKC1510.retry.limit.reached.rollback.explanation=Die Task hat die maximal zul\u00e4ssige Anzahl fortlaufender Neuversuche erreicht und wird nicht mehr ausgef\u00fchrt.
+CWWKC1510.retry.limit.reached.rollback.useraction=Wenn die Rollbacks oder Fehler nicht erwartet sind, bestimmen Sie die Ursache und planen Sie die Task erneut. Wenn die Rollbacks und Fehler tempor\u00e4r sind, sollten Sie das Wiederholungslimit erh\u00f6hen. 
+
+CWWKC1511.retry.limit.reached.failed=CWWKC1511W: Das persistente Steuerprogramm {0} hat die Task {1} abgebrochen, weil sie r\u00fcckg\u00e4ngig gemacht wurde oder {2} Mal hintereinander fehlgeschlagen ist. Der letzte Fehler ist {3}.
+CWWKC1511.retry.limit.reached.failed.explanation=Die Task hat die maximal zul\u00e4ssige Anzahl fortlaufender Neuversuche erreicht und wird nicht mehr ausgef\u00fchrt.
+CWWKC1511.retry.limit.reached.failed.useraction=Wenn die Rollbacks oder Fehler nicht erwartet sind, bestimmen Sie die Ursache und planen Sie die Task erneut. Wenn die Rollbacks und Fehler tempor\u00e4r sind, sollten Sie das Wiederholungslimit erh\u00f6hen. 
+
+CWWKC1540.thread.cannot.submit.tasks=CWWKC1540E: Sie k\u00f6nnen keine persistenten Tasks \u00fcber den aktuellen Threadkontext terminieren.
+CWWKC1540.thread.cannot.submit.tasks.explanation=Terminieren Sie persistente Tasks nur \u00fcber einen Thread, der einer Anwendung oder einem Feature mit einer serialisierbaren Klasselader-ID zugeordnet ist.
+CWWKC1540.thread.cannot.submit.tasks.useraction=Vergewissern Sie sich, dass der Kontext f\u00fcr die Anwendung oder das Feature im Thread vorhanden ist, wenn Sie Tasks terminieren.
+
+# {0} method name: either isDone or isCancelled
+CWWKC1550.status.unavailable.until.ended=CWWKC1550E: Sie k\u00f6nnen die Methode {0} nur f\u00fcr den TaskStatus aufrufen, der nach Beenden der Task abgerufen wird. Sie bestimmen, ob die Task zum Zeitpunkt des Abrufens einer TaskStatus-Instanz beendet wurde, indem Sie \u00fcberpr\u00fcfen, ob der getNextExecutionTime-Wert null ist.
+CWWKC1550.status.unavailable.until.ended.explanation=TaskStatus ist ein unver\u00e4nderlicher Snapshot eines Taskstatus. Alle von der Methode isDone oder isCancelled vor dem Ende der Task zur\u00fcckgegebenen Werte werden sonst ung\u00fcltig, sobald die Task endet. Es wird ein Fehler ausgegeben, wenn dies versucht wird, bevor die Task endet, um zu vermeiden, dass ein unzuverl\u00e4ssiger Wert zur\u00fcckgegeben wird.
+CWWKC1550.status.unavailable.until.ended.useraction=Verwenden Sie die Methode getNextExecutionTime, um zu bestimmen, ob eine Task beendet wurde. Verwenden Sie die Methoden isDone und isCancelled nur, wenn die Task beendet wurde.
+
+CWWKC1551.result.unavailable.until.ended=CWWKC1551E: Sie k\u00f6nnen die Methode get nur f\u00fcr den TaskStatus aufrufen, der nach Beenden der Task abgerufen wird. Verwenden Sie die Methode getResult, um das Ergebnis der Ausf\u00fchrung abzurufen, die zum Zeitpunkt des Abrufens der TaskStatus-Instanz die aktuellste Ausf\u00fchrung war.
+CWWKC1551.result.unavailable.until.ended.explanation=TaskStatus ist ein unver\u00e4nderlicher Snapshot eines Taskstatus. Alle von der Methode get vor dem Ende der Task zur\u00fcckgegebenen Werte werden sonst ung\u00fcltig, sobald ein weiterer Ausf\u00fchrungsversuch ausgef\u00fchrt wird oder die Task endet. Es wird ein Fehler ausgegeben, wenn dies versucht wird, bevor die Task endet, um zu vermeiden, dass ein unzuverl\u00e4ssiger Wert zur\u00fcckgegeben wird.
+CWWKC1551.result.unavailable.until.ended.useraction=Verwenden Sie die Methode getResult, um das Ergebnis des Ausf\u00fchrungsversuchs abzurufen, der zum Zeitpunkt des Abrufens der TaskStatus-Instanz der aktuellste Versuch war. 
+
+CWWKC1552.delay.unavailable=CWWKC1552E: Sie k\u00f6nnen die Methode getDelay nur f\u00fcr TaskStatus f\u00fcr Einzeltasks aufrufen. Bei sich wiederholenden Tasks und Tasks, die mit einem Trigger geplant wurden, verwenden Sie die Methode getNextExecutionTime, um die erwartete n\u00e4chste Ausf\u00fchrungszeit nach der Ausf\u00fchrung abzurufen, die zum Zeitpunkt des Abrufens des TaskStatus die aktuellste war.
+CWWKC1552.delay.unavailable.explanation=TaskStatus ist ein unver\u00e4nderlicher Snapshot eines Taskstatus. Alle von der Methode getDelay vor dem Ende der Task zur\u00fcckgegebenen Werte werden sonst ung\u00fcltig, sobald ein weiterer Ausf\u00fchrungsversuch ausgef\u00fchrt wird. Es wird ein Fehler ausgegeben, wenn dies versucht wird, bevor die Task endet, um zu vermeiden, dass ein unzuverl\u00e4ssiger Wert zur\u00fcckgegeben wird.
+CWWKC1552.delay.unavailable.useraction=Verwenden Sie die Methode getNextExecutionTime, um die erwartete n\u00e4chste Ausf\u00fchrungszeit abzurufen, die der Zeit entspricht, zu der der TaskStatus abgerufen wurde.
+
+# {0} persistent executor id
+# {1} task id (and name in parenthesis if any)
+CWWKC1553.result.inaccessible=CWWKC1553E: Das persistente Steuerprogramm {0} kann kein Ergebnis aus der Task {1} abrufen. Suchen Sie in der Ursachenausnahme nach Informationen.
+CWWKC1553.result.inaccessible.explanation=Das Taskergebnis konnte aufgrund eines Fehlers nicht abgerufen werden.
+CWWKC1553.result.inaccessible.useraction=Suchen Sie in der Ursachenausnahme nach Informationen, um das Problem zu l\u00f6sen und terminieren Sie anschlie\u00dfend die Task erneut.
+
+# {0} task id (and name in parenthesis if any)
+CWWKC1554.general.task.failure=CWWKC1554E: Die Task {0} konnte nicht ausgef\u00fchrt werden. Suchen Sie in der Ursachenausnahme nach Informationen.
+CWWKC1554.general.task.failure.explanation=Die Task konnte aufgrund der angegebenen Ausnahme nicht ausgef\u00fchrt werden.
+CWWKC1554.general.task.failure.useraction=Suchen Sie in der Ursachenausnahme nach Informationen, um das Problem zu l\u00f6sen und terminieren Sie anschlie\u00dfend die Task erneut.
+
+# {0} task id (and name in parenthesis if any)
+# {1} number of consecutive failures/rollbacks
+CWWKC1555.retry.limit.reached=CWWKC1555E: Die Task {0} wurde abgebrochen, weil sie {1} Mal hintereinander r\u00fcckg\u00e4ngig gemacht wurde oder fehlgeschlagen ist.
+CWWKC1555.retry.limit.reached.explanation=Die Task hat die maximal zul\u00e4ssige Anzahl fortlaufender Neuversuche erreicht und wird nicht mehr ausgef\u00fchrt.
+CWWKC1555.retry.limit.reached.useraction=Suchen Sie in der Ursachenausnahme nach Informationen, um das Problem zu l\u00f6sen und terminieren Sie anschlie\u00dfend die Task erneut. Wenn das Problem intermittierend auftritt, sollten Sie das Wiederholungslimit erh\u00f6hen.
+
+# {0} name of application that scheduled the task
+CWWKC1556.task.exec.deferred=CWWKC1556W: Die Ausf\u00fchrung der Tasks in der Anwendung {0} wird verz\u00f6gert, bis die Anwendung und die Module, die die Tasks geplant haben, verf\u00fcgbar sind.
+CWWKC1556.task.exec.deferred.explanation=Die Anwendung und das Modul, die eine Task geplant haben, m\u00fcssen verf\u00fcgbar sein, damit die Task ausgef\u00fchrt werden kann.
+CWWKC1556.task.exec.deferred.useraction=Stellen Sie sicher, dass die Anwendung und das Modul, die die Task geplant haben, verf\u00fcgbar sind. Alternativ k\u00f6nnen Sie die Task abbrechen, falls sie nicht mehr ben\u00f6tigt wird.
+
+# {0} request id
+# {1} stack trace
+CWWKC1559.mbean.operation.failure=CWWKC1559E:  Es ist ein Fehler aufgetreten. Anforderung {0}. {1}
+CWWKC1559.mbean.operation.failure.explanation=Beim Ausf\u00fchren der angeforderten Operation ist ein Fehler aufgetreten.
+CWWKC1559.mbean.operation.failure.useraction=Suchen Sie in den Serverprotokollen nach Einzelheiten zu dem Operationsfehler.

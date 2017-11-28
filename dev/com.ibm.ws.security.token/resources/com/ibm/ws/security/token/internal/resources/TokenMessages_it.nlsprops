@@ -1,0 +1,46 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.token/resources/com/ibm/ws/security/token/internal/resources/TokenMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Token Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS4000 - CWWKS4099
+
+TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE=CWWKS4000E: Si \u00e8 verificata un''eccezione di configurazione. Impossibile trovare l''istanza di TokenService richiesta di tipo {0}.
+TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE.explanation=Ciascun bundle di implementazione TokenService specifica il proprio tipo fornito.
+TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE.useraction=Specificare un tipo supportato o installare il bundle che fornisce l'istanza di TokenService del tipo richiesto.
+
+TOKEN_SERVICE_INVALID_TOKEN=CWWKS4001E: Impossibile convalidare il token di sicurezza. Questo pu\u00f2 verificarsi per i seguenti motivi\n\
+1. Il token di sicurezza \u00e8 stato generato su un altro server utilizzando chiavi diverse.\n\
+2. La configurazione del token o le chiavi di sicurezza del servizio token che ha creato il token sono state modificate.\n\
+3. Il servizio token che ha creato il token non \u00e8 pi\u00f9 disponibile.
+TOKEN_SERVICE_INVALID_TOKEN.explanation=Il token non pu\u00f2 essere ricreato dai servizi token configurati correntemente.
+TOKEN_SERVICE_INVALID_TOKEN.useraction=Controllare che almeno una funzione includa un servizio token appropriatamente configurato per ricreare il token.
+
+TOKEN_SERVICE_INVALID_TOKEN_INFO=CWWKS4001I: Impossibile convalidare il token di sicurezza. Possibili cause:\n\
+1. Il token di sicurezza \u00e8 stato generato su un altro server utilizzando chiavi differenti.\n\
+2. La configurazione del token o le chiavi di sicurezza del servizio token che ha creato il token sono state modificate. \n\
+3. Il servizio token che ha creato il token non \u00e8 pi\u00f9 disponibile.
+TOKEN_SERVICE_INVALID_TOKEN_INFO.explanation=Il token non pu\u00f2 essere ricreato dai servizi token configurati correntemente.
+TOKEN_SERVICE_INVALID_TOKEN_INFO.useraction=Controllare che almeno una funzione includa un servizio token appropriatamente configurato per ricreare il token.
+
+KRB_S4U2PROXY_NOT_SUPPORTED=CWWKS4002E: L'API di delega vincolata (S4U2self e S4U2proxy) richiede una versione di JRE (Java runtime environment) minima di JavaSE 1.8.
+KRB_S4U2PROXY_NOT_SUPPORTED.explanation=Le API di delega vincolata (S4U2self e S4U2proxy) richiedono una versione di JRE (Java runtime environment) minima di IBM JavaSE 1.8.
+KRB_S4U2PROXY_NOT_SUPPORTED.useraction=Accertarsi di utilizzare un JRE (Java runtime environment) di IBM JavaSE 1.8.
+
+KRB_OSGI_SERVICE_ERROR=CWWKS4003E: Il servizio OSGi di delega vincolata {0} non \u00e8 disponibile.
+KRB_OSGI_SERVICE_ERROR.explanation=Il servizio OSGi specificato non \u00e8 disponibile.
+KRB_OSGI_SERVICE_ERROR.useraction=Assicurarsi che la funzione di delega vincolata sia abilitata e accertarsi di utilizzare un JRE (Java runtime environment) di IBM JavaSE 1.8. \
+Per ulteriori informazioni, esaminare i log del server.

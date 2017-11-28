@@ -1,0 +1,50 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMH
+#COMPONENTNAMEFOR CWMH MicroProfile Health API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Health Impl -  range is 0000-4999, plus 9999 for the emergency message
+# The range 0000-0049 has been reserved for messages issued above the HealthCheckExecutor within the call stack
+# The range 0050-0099 has been reserved for messages issued at or below the HealthCheckExecutor within the call stack
+#-----------------------------------------------------------------------------------------------------------------------------
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Health error message
+#-----------------------------------------------------------------------------------------------------------------------------
+OSGI_SERVICE_ERROR=CWMH0000E: El servicio OSGi {0} no est\u00e1 disponible.
+OSGI_SERVICE_ERROR.explanation=Este error interno del servidor se genera porque el servicio especificado no est\u00e1 disponible.
+OSGI_SERVICE_ERROR.useraction=Reinicie el servidor con la opci\u00f3n clean.
+
+# A Health API error has occurred: {0}
+temporary.CWMH9999E=CWMH9999E: Se ha producido el siguiente error de API Health: {0}
+temporary.CWMH9999E.explanation=Se ha producido un error de API Health que impide el funcionamiento normal.
+temporary.CWMH9999E.useraction=Revise los registros FFDC y el texto de excepci\u00f3n para identificar el problema.
+
+# The HealthCheck bean call method had an exception
+healthcheck.bean.call.exception.CWMH0050E=CWMH0050E: El m\u00e9todo HealthCheck {0} en la aplicaci\u00f3n {1} del m\u00f3dulo {2} ha lanzado la excepci\u00f3n {3} con el mensaje siguiente: {4}
+healthcheck.bean.call.exception.CWMH0050E.explanation=El m\u00e9todo de llamada especificado ha generado una excepci\u00f3n.
+healthcheck.bean.call.exception.CWMH0050E.useraction=Revise el m\u00e9todo de llamada en el bean HealthCheck para identificar la excepci\u00f3n que se ha producido.
+
+# The HealthCheck bean call method had a DOWN outcome
+healthcheck.application.down.CWMH0051W=CWMH0051W: El {0} que implementa HealthCheckResponse en la aplicaci\u00f3n {1} en el m\u00f3dulo {2}, ha notificado un resultado DOWN {3} con datos {4}.
+healthcheck.application.down.CWMH0051W.explanation=El resultado DOWN podr\u00eda provocar que un servicio de supervisi\u00f3n act\u00fae en este servidor.
+healthcheck.application.down.CWMH0051W.useraction=No se requiere ninguna acci\u00f3n del usuario.  Este aviso es un registro del resultado DOWN.

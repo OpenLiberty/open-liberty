@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 1997, 2008 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# Standard Server runtime messages
+#
+#  Notes:
+#
+#   - DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+#   - WSVR0025I - WSVR0028I are reserved for TimeBomb (bootstrap*.nlsprops)
+#   - WSVR0300x - WSVR0314x are reserved for config (config*.nlsprops)
+#   - WSVR0313E is used for a MDB related error message by EJB component (see runtime.nlsprops)
+#   - WSVR0330x - WSVR0399x are reserved for class loader (this file)
+#   - WSVR0614x - WSVR0620x are reserved for bootstrap (bootstrap*.nlsprops.)
+#   - WSVR0631x - WSVR0650x are reserved for selective bundle provider extension
+#   - WSVR0700x - WSVR0720x are reserved for ThinRegistry (bootstrap*.nlsprops)
+#   - WSVR0800x - WSVR0899x are reserved for config (config*.nlsprops)
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://seaux.raleigh.ibm.com/g11n/was/seae/45/messages/index.html
+# or contact Dennis Hebert/Raleigh/IBM (hebert@us.ibm.com)
+#
+# cmvc_en_version_level=1.128,0,10/05/13,15:15:23
+#
+#CMVCPATHNAME com.ibm.ws.compat/resources/com/ibm/ws/runtime/runtime.nlsprops
+#COMPONENTPREFIX WSVR
+#COMPONENTNAMEFOR WSVR WebSphere Server
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+WSVR0603E=WSVR0603E: A ComponentMetaDataAccessor beginContext met\u00f3dus egy NULL ComponentMetaData \u00e9rt\u00e9ket kapott.
+WSVR0603E.explanation=CMSG0001
+WSVR0603E.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# PK39527 - Update message text
+# -------------------------------------------------------------------------------------------------
+WSVR0623W=WSVR0623W: V\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt: \"{0}\". A com.ibm.websphere.threadpool.clearThreadLocal tulajdons\u00e1g be lett \u00e1ll\u00edtva \u00e9s alkalmazva lesz a(z) {0} sz\u00e1lt\u00e1rol\u00f3ra. Ez a be\u00e1ll\u00edt\u00e1s elavult.
+WSVR0623W.explanation=A com.ibm.websphere.threadpool.clearThreadLocal tulajdons\u00e1g m\u00e9g haszn\u00e1lhat\u00f3 ebben a kiad\u00e1sban, de a k\u00e9s\u0151bbi kiad\u00e1sokban el lesz t\u00e1vol\u00edtva.
+WSVR0623W.useraction=T\u00e1vol\u00edtsa el a com.ibm.websphere.threadpool.clearThreadLocal tulajdons\u00e1got a Java virtu\u00e1lis g\u00e9p (JVM) tulajdons\u00e1gaib\u00f3l.
+
+# F743-24122
+WSVR0629I=WSVR0629I: A(z) \"{0}\" sz\u00e1lk\u00e9szlet k\u00e9r\u00e9spuffere betelt.
+WSVR0629I.explanation=A megadott sz\u00e1lk\u00e9szlet f\u00fcgg\u0151ben l\u00e9v\u0151 munkak\u00e9r\u00e9seinek sora el\u00e9rte a korl\u00e1tj\u00e1t, \u00e9s ez val\u00f3sz\u00edn\u0171leg teljes\u00edtm\u00e9nyprobl\u00e9m\u00e1kat fog el\u0151id\u00e9zni.
+WSVR0629I.useraction=Azonnali beavatkoz\u00e1s nem sz\u00fcks\u00e9ges, azonban a helyzet j\u00f6v\u0151beni ism\u00e9tl\u0151d\u00e9s\u00e9nek elker\u00fcl\u00e9se \u00e9rdek\u00e9ben a sz\u00e1lk\u00e9szlet k\u00e9r\u00e9spuffer\u00e9nek m\u00e9ret\u00e9t aj\u00e1nlatos volna n\u00f6velni.
+
+# PM13147 - Log growth of thread pool beyond maximum size
+WSVR0630I=WSVR0630I: A(z) \"{0}\" n\u00f6velhet\u0151 sz\u00e1lk\u00e9szlet meghaladta eredetileg megadott legnagyobb m\u00e9ret\u00e9t.  A sz\u00e1lk\u00e9szlet m\u00e9rete jelenleg: \"{1}\".
+WSVR0630I.explanation=Az adott sz\u00e1lk\u00e9szlet el\u00e9rte el\u0151re megadott m\u00e9ret\u00e9nek hat\u00e1r\u00e1t, \u00e9s a rendszer megn\u00f6veli a m\u00e9retet.
+WSVR0630I.useraction=Nincs semmi s\u00fcrg\u0151s teend\u0151, de a sz\u00e1lk\u00e9szlet tov\u00e1bb fog n\u0151ni mindaddig, am\u00edg a munkaig\u00e9nyek sz\u00e1ma meghaladja az \u00e9ppen el\u00e9rhet\u0151 sz\u00e1lak sz\u00e1m\u00e1t.

@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2002, 2003 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://seaux.raleigh.ibm.com/g11n/was/seae/45/messages/index.html
+# or contact Dennis Hebert/Raleigh/IBM (hebert@us.ibm.com)
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service: ssl channel
+#CMVCPATHNAME com.ibm.ws.channel.ssl/resources/com/ibm/ws/channel/ssl/internal/resources/SSLChannelMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#
+#ISMESSAGEFILE TRUE
+# NLS_MESSAGEFORMAT_VAR
+
+### SSL channel is using CHFW bundle ids, values 0800-0899
+
+invalid.security.properties=CWWKO0800E: Az SSL csatorna nem ind\u00edthat\u00f3 el a k\u00f6vetkez\u0151 helytelen be\u00e1ll\u00edt\u00e1sok miatt:\n {0}
+invalid.security.properties.explanation=Az SSL csatorna biztons\u00e1gi be\u00e1ll\u00edt\u00e1sai k\u00f6z\u00fcl legal\u00e1bb egy \u00e9rv\u00e9nytelen.
+invalid.security.properties.useraction=Az SSL csatorna biztons\u00e1gi be\u00e1ll\u00edt\u00e1sait helyes \u00e9rt\u00e9kekre kell m\u00f3dos\u00edtani.
+
+handshake.failure=CWWKO0801E: Az SSL kapcsolat nem inicializ\u00e1lhat\u00f3. Jogosulatlan hozz\u00e1f\u00e9r\u00e9s lett megtagadva, vagy a biztons\u00e1gi be\u00e1ll\u00edt\u00e1sok lej\u00e1rtak. Kiv\u00e9tel: {0}.
+handshake.failure.explanation=Egy \u00faj kapcsolat nem tudott v\u00e9grehajtani egy sikeres biztons\u00e1gi egyeztet\u00e9st.
+handshake.failure.useraction=Ellen\u0151rizze a biztons\u00e1gi be\u00e1ll\u00edt\u00e1sokat.  A tan\u00fas\u00edtv\u00e1ny lej\u00e1rt vagy hi\u00e1nyzik.  Az is lehets\u00e9ges, hogy egy jogosulatlan \u00fcgyf\u00e9l hozz\u00e1f\u00e9r\u00e9s lett megtagadva.  Az \u00fczenetek letilt\u00e1s\u00e1hoz \u00e1ll\u00edtsa true \u00e9rt\u00e9k\u0171re az sslOptions konfigur\u00e1ci\u00f3 suppressHandshakeErrors param\u00e9ter\u00e9t.
+
+init.failure=CWWKO0802E: Az SSL k\u00f6teg nem inicializ\u00e1lhat\u00f3. Kiv\u00e9tel: {0}.
+init.failure.explanation=Hiba t\u00f6rt\u00e9nt az SSL k\u00f6teg inicializ\u00e1l\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n. Ezt val\u00f3sz\u00edn\u0171leg egy f\u00fcgg\u0151s\u00e9gi hiba okozza.
+init.failure.useraction=Tekintse \u00e1t a folyamatnapl\u00f3kat, \u00e9s keressen arra vonatkoz\u00f3 inform\u00e1ci\u00f3kat, hogy mi nem indult el.
+
+DEFAULT_OPTIONS_ERROR=CWWKO0803E: Nem siker\u00fclt l\u00e9trehozni az alap\u00e9rtelmezett SSL csatorna konfigur\u00e1ci\u00f3t. Kiv\u00e9tel: {0}.
+DEFAULT_OPTIONS_ERROR.explanation=Hiba t\u00f6rt\u00e9nt az SSL csatorn\u00e1k alap\u00e9rtelmezett konfigur\u00e1ci\u00f3j\u00e1nak l\u00e9trehoz\u00e1sa sor\u00e1n.
+DEFAULT_OPTIONS_ERROR.useraction=Tekintse \u00e1t a kiv\u00e9telt \u00e9s keressen a l\u00e9trehoz\u00e1s meghi\u00fasul\u00e1s\u00e1nak m\u00f3dj\u00e1ra vonatkoz\u00f3 inform\u00e1ci\u00f3kat.
+
+handshake.failure.stop.logging=CWWKO0804I: El\u00e9rte a napl\u00f3zand\u00f3 SSL k\u00e9zfog\u00e1s hib\u00e1k maxim\u00e1lis sz\u00e1m\u00e1t. Ezek az \u00fczenetek ezent\u00fal nem ker\u00fclnek napl\u00f3z\u00e1sra.
+handshake.failure.stop.logging.explanation=A napl\u00f3zott SSL k\u00e9zfog\u00e1s hib\u00e1k sz\u00e1ma korl\u00e1tozott, hogy ne legyen t\u00fal sok napl\u00f3bejegyz\u00e9s.
+handshake.failure.stop.logging.useraction=Semmit sem kell tennie.

@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.runtime.update/resources/com/ibm/ws/runtime/update/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel: runtime update notifications
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 1100-1199 com.ibm.ws.runtime.update.internal.resources.Messages
+# -------------------------------------------------------------------------------------------------
+
+quiesce.begin=CWWKE1100I: Le d\u00e9lai d'attente d\u00e9fini pour la mise au repos du serveur est de 30 secondes maximum.
+quiesce.begin.explanation=Le serveur patiente au maximum 30 secondes le temps que les services soient mis au repos avant de poursuivre la proc\u00e9dure d'arr\u00eat.
+quiesce.begin.useraction=Aucune action n'est requise.
+
+quiesce.end=CWWKE1101I: Mise au repos du serveur termin\u00e9e.
+quiesce.end.explanation=L'op\u00e9ration de mise au repos est termin\u00e9e.
+quiesce.end.useraction=Aucune action n'est requise.
+
+quiece.warning=CWWKE1102W: L'op\u00e9ration de mise au repos n'a pas pu se terminer. Le serveur va maintenant s'arr\u00eater.
+quiece.warning.explanation=Le processus n'a pas pu mettre tous les services au repos dans le d\u00e9lai de 30 secondes.
+quiece.warning.useraction=Vous pouvez ignorer les messages d'erreur qui concernent les services requis non disponibles.
+
+client.quiesce.begin=CWWKE1103I: Le d\u00e9lai d'attente d\u00e9fini pour la mise au repos du client est de 30 secondes maximum.
+client.quiesce.begin.explanation=Le client patiente au maximum 30 secondes le temps que les services soient mis au repos avant de poursuivre la proc\u00e9dure d'arr\u00eat.
+client.quiesce.begin.useraction=Aucune action n'est requise.
+
+client.quiesce.end=CWWKE1104I: Mise au repos du client termin\u00e9e.
+client.quiesce.end.explanation=L'op\u00e9ration de mise au repos est termin\u00e9e.
+client.quiesce.end.useraction=Aucune action n'est requise.

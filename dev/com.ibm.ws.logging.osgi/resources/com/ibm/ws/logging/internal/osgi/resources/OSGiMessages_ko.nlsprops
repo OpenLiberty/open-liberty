@@ -1,0 +1,47 @@
+###############################################################################
+# Copyright (c) 2010, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.logging/resources/com/ibm/ws/logging/internal/osgi/resources/OSGiMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0700 - 0799 com.ibm.ws.logging.internal.osgi.resouces.OSGiMessages -- OSGi Framework/kernel diagnostics
+# -------------------------------------------------------------------------------------------------
+
+# OSGI Log Message
+OSGI_MSG001={0} {1} {2} {3} {4}
+OSGI_MSG001.explanation=OSGi \ub85c\uadf8 \uc11c\ube44\uc2a4\ub97c \uc0ac\uc6a9\ud558\uc5ec \uae30\ub85d\ub41c \uc815\ubcf4 \uba54\uc2dc\uc9c0
+OSGI_MSG001.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. 
+
+OSGI_WARNING_MSG=CWWKE0700W: {0} {1} {2} {3} {4}
+OSGI_WARNING_MSG.explanation=OSGi \ub85c\uadf8 \uc11c\ube44\uc2a4\ub97c \uc0ac\uc6a9\ud558\uc5ec \uae30\ub85d\ub41c \uacbd\uace0 \uba54\uc2dc\uc9c0
+OSGI_WARNING_MSG.useraction=\uacbd\uace0 \uba54\uc2dc\uc9c0\ub97c \uc77d\uace0 \uc815\ubcf4\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+OSGI_ERROR_MSG=CWWKE0701E: {0} {1} {2} {3} {4}
+OSGI_ERROR_MSG.explanation=OSGi \ub85c\uadf8 \uc11c\ube44\uc2a4\ub97c \uc0ac\uc6a9\ud558\uc5ec \uae30\ub85d\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0
+OSGI_ERROR_MSG.useraction=\uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \uc77d\uace0 \uc815\ubcf4\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+OSGI_BUNDLE_EXCEPTION=CWWKE0702E: {0}
+OSGI_BUNDLE_EXCEPTION.explanation=BundleException\uc774 OSGi \ud504\ub808\uc784\uc6cc\ud06c\uc5d0\uc11c \uc608\uc678 \ucc98\ub9ac\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+OSGI_BUNDLE_EXCEPTION.useraction=\uc608\uc678 \uba54\uc2dc\uc9c0\ub97c \uc77d\uace0 \uc815\ubcf4\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624.

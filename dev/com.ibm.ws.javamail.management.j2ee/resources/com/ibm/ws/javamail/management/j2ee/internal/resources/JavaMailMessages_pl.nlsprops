@@ -1,0 +1,26 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#COMPONENTPREFIX CWWKJ
+#COMPONENTNAMEFOR CWWKJ J2EE JavaMail
+#CMVCPATHNAME com.ibm.ws.javamail.management.j2ee/resources/com/ibm/ws/javamail/management/j2ee/internal/resources/JavaMailMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#
+# Message prefix block: CWWKJ0300 - CWWKJ0309
+
+#-----  MailSessionRegistrarImpl
+
+OSGI_SERVICE_ERROR=CWWKJ0300E: Us\u0142uga OSGi {0} nie jest dost\u0119pna. Spr\u00f3buj zrestartowa\u0107 serwer za pomoc\u0105 opcji --clean.
+OSGI_SERVICE_ERROR.explanation=Okre\u015blona us\u0142uga nie jest dost\u0119pna, co powoduje wyst\u0105pienie b\u0142\u0119du wewn\u0119trznego serwera.
+OSGI_SERVICE_ERROR.useraction=Zrestartuj serwer za pomoc\u0105 opcji --clean.
+

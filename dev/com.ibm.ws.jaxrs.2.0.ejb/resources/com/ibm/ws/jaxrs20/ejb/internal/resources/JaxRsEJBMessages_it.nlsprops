@@ -1,0 +1,40 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs-2.0.ejb/resources/com/ibm/ws/jaxrs20/ejb/internal/resources/JaxRsEJBMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS EJB Code
+#RANGE 1100 - 1199
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+
+
+warning.jaxrs.ejb.resource.mismatch=CWWKW1100W: L''ambito {1} della risorsa JAXRS-2.0 {0} non corrisponde all''ambito EJB {2}. Liberty ottiene l''istanza risorsa da {3}.
+warning.jaxrs.ejb.resource.mismatch.explanation=Se l'ambito della risorsa JAXRS-2.0 non corrisponde all'ambito EJB, e l'istanza risorsa esiste in EJB, Liberty ottiene l'istanza risorsa da EJB.
+warning.jaxrs.ejb.resource.mismatch.useraction=Non \u00e8 richiesta alcuna azione. 
+
+warning.jaxrs.ejb.provider.mismatch=CWWKW1102W: L''ambito EJB del provider JAXRS-2.0 {0} \u00e8 {1}. Liberty ottiene l''istanza provider da {2}.
+warning.jaxrs.ejb.provider.mismatch.explanation=L'istanza provider \u00e8 solo Singleton. Liberty ottiene le istanze provider da EJB se l'ambito EJB del provider \u00e8 Dependent o ApplicationScoped.
+warning.jaxrs.ejb.provider.mismatch.useraction=Non \u00e8 richiesta alcuna azione.
+
+warning.failed.instantiate.ejb.instance=CWWKW1103W: Impossibile istanziare l''istanza EJB per la classe {0}. Liberty ottiene l''istanza da JAXRS.
+warning.failed.instantiate.ejb.instance.explanation= La classe EJB {0} non ha un costruttore predefinito. Liberty ottiene l''eccezione InstantiationException quando prova a istanziare l''istanza EJB.
+warning.failed.instantiate.ejb.instance.useraction=Non \u00e8 richiesta alcuna azione.
+
+error.failed.toloadejbclass=CWWKW1104W: La classe EJB {0} non pu\u00f2 essere caricata.
+error.failed.toloadejbclass.explanation= La classe EJB {0} non pu\u00f2 essere caricata.
+error.failed.toloadejbclass.useraction=Correggere l'applicazione per risolvere il problema.

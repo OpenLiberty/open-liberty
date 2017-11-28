@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.security/resources/com/ibm/ws/jbatch/security/resources/BatchSecurityMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0300 - 0349: com.ibm.ws.jbatch.security
+# 
+
+#No fill-ins
+BATCH_SECURITY_ENABLED=CWWKY0300I: La sicurezza batch \u00e8 abilitata.
+BATCH_SECURITY_ENABLED.explanation=Gli utenti sono autorizzati rispetto ai ruoli batch durante l'esecuzione di tutte le operazioni batch.
+BATCH_SECURITY_ENABLED.useraction=Nessuna
+
+#No fill-ins
+BATCH_SECURITY_DISABLED=CWWKY0301I: La sicurezza batch \u00e8 disabilitata.
+BATCH_SECURITY_DISABLED.explanation=Gli utenti NON sono autorizzati rispetto ai ruoli batch.
+BATCH_SECURITY_DISABLED.useraction=Se non \u00e8 richiesta l'autorizzazione basata su ruolo batch in questa configurazione server, non \u00e8 richiesta alcuna azione.
+
+#{0} The invocation subject on the thread.
+#{1} The job instance id.
+USER_UNAUTHORIZED_JOB_INSTANCE=CWWKY0302W: L''utente {0} non \u00e8 autorizzato ad eseguire operazioni batch associate all''istanza lavoro {1}.
+USER_UNAUTHORIZED_JOB_INSTANCE.explanation=L'utente non fa parte di un ruolo batch autorizzato ad eseguire l'operazione batch richiesta su questa istanza lavoro.
+USER_UNAUTHORIZED_JOB_INSTANCE.useraction=Se l'utente \u00e8 autorizzato ad eseguire l'operazione batch richiesta, configurare l'autorizzazione di sicurezza batch ed aggiungere questo utente ai ruoli batch richiesti.
+
+#{0} The invocation subject on the thread.
+USER_UNAUTHORIZED_NO_BATCH_ROLES=CWWKY0303W: L''utente {0} non \u00e8 autorizzato ad eseguire qualsiasi operazione batch.
+USER_UNAUTHORIZED_NO_BATCH_ROLES.explanation=L'utente non fa parte di alcun ruolo batch e non \u00e8 autorizzato ad eseguire operazioni batch.
+USER_UNAUTHORIZED_NO_BATCH_ROLES.useraction=Se l'utente non \u00e8 autorizzato ad essere un utente batch, non \u00e8 richiesta alcuna azione. Se l'utente \u00e8 autorizzato ad eseguire le operazioni batch e la sicurezza batch \u00e8 abilitata, configurare l'autorizzazione di sicurezza batch ed aggiungere questo utente ai ruoli batch richiesti.
+
+#{0} The invocation subject on the thread.
+USER_UNAUTHORIZED_TO_START_JOB=CWWKY0304W: L''utente {0} non \u00e8 autorizzato ad avviare lavori batch.
+USER_UNAUTHORIZED_TO_START_JOB.explanation=L'utente non fa parte di un ruolo batch autorizzato ad avviare i lavori batch.
+USER_UNAUTHORIZED_TO_START_JOB.useraction=Se l'utente non \u00e8 autorizzato ad avviare lavori batch, non \u00e8 richiesta alcuna azione. Se l'utente \u00e8 autorizzato ad eseguire l'operazione batch richiesta, configurare l'autorizzazione di sicurezza batch ed aggiungere questo utente ai ruoli batch richiesti.

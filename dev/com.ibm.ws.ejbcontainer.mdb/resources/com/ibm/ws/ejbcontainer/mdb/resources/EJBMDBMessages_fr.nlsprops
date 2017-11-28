@@ -1,0 +1,68 @@
+###############################################################################
+# Copyright (c) 2013, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CNTR (EJB Container)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME com.ibm.ws.ejbcontainer.mdb/resources/com/ibm/ws/mdb/resources/EJBMDBMessages.nlsprops
+#COMPONENTPREFIX CNTR
+#COMPONENTNAMEFOR CNTR EJB Container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# NOTE: CNTR4000-CNTR4999 are reserved for use in EJBContainerMessages.nlsprops
+#       All messages in this file should be reserved in the core container file.
+#-------------------------------------------------------------------------------
+
+MDB_ENDPOINT_ACTIVATED_CNTR4013I=CNTR4013I: Le noeud final de message pour le bean g\u00e9r\u00e9 par message {0} a \u00e9t\u00e9 activ\u00e9 et est pr\u00eat \u00e0 accepter des messages. 
+MDB_ENDPOINT_ACTIVATED_CNTR4013I.explanation=La sp\u00e9cification d'activation pour le bean pilot\u00e9 par message est disponible et le noeud final de message est devenu actif et est pr\u00eat \u00e0 accepter des messages.
+MDB_ENDPOINT_ACTIVATED_CNTR4013I.useraction=Aucune action n'est requise.
+
+MDB_ENDPOINT_DEACTIVATED_CNTR4014I=CNTR4014I: Le noeud final de message pour le bean g\u00e9r\u00e9 par message {0} a \u00e9t\u00e9 d\u00e9sactiv\u00e9 et n''est pas pr\u00eat \u00e0 accepter des messages.
+MDB_ENDPOINT_DEACTIVATED_CNTR4014I.explanation=Le bean pilot\u00e9 par message est en cours de suppression ou la sp\u00e9cification d'activation n'est plus disponible. Le noeud final de message n'est plus pr\u00eat \u00e0 accepter des messages.
+MDB_ENDPOINT_DEACTIVATED_CNTR4014I.useraction=Aucune action n'est requise.
+
+MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W=CNTR4015W: Le noeud final de message pour le bean pilot\u00e9 par message {0} ne peut pas \u00eatre activ\u00e9 car la sp\u00e9cification d''activation {1} n''est pas disponible. Le noeud final de message re\u00e7oit des messages uniquement lorsque la sp\u00e9cification d''activation devient disponible.
+MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W.explanation=Le serveur d\u00e9marre le bean pilot\u00e9 par message mais ne peut pas activer le noeud final de message car la sp\u00e9cification d'activation est introuvable. Le noeud final de message re\u00e7oit des messages uniquement le noeud final peut \u00eatre activ\u00e9.
+MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W.useraction=V\u00e9rifiez qu'une sp\u00e9cification d'activation a \u00e9t\u00e9 configur\u00e9e avec le nom indiqu\u00e9. Si la configuration existe, attendez que la sp\u00e9cification d'activation devienne disponible.
+
+MDB_DESTINATION_NOT_FOUND_CNTR4016W=CNTR4016W: Le noeud final de message pour le bean pilot\u00e9 par message {0} ne peut pas \u00eatre activ\u00e9 car la destination {1} n''est pas disponible. Le noeud final de message ne recevra pas de messages tant que la destination ne sera pas disponible.
+MDB_DESTINATION_NOT_FOUND_CNTR4016W.explanation=Le serveur d\u00e9marre le bean pilot\u00e9 par message mais ne peut pas activer le noeud final de message car la destination est introuvable. Le noeud final de message re\u00e7oit des messages uniquement le noeud final peut \u00eatre activ\u00e9.
+MDB_DESTINATION_NOT_FOUND_CNTR4016W.useraction=V\u00e9rifiez qu'une destination a \u00e9t\u00e9 configur\u00e9e avec le nom indiqu\u00e9. Si la configuration existe, attendez que la destination devienne disponible.

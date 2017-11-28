@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.runtime.update/resources/com/ibm/ws/runtime/update/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel: runtime update notifications
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 1100-1199 com.ibm.ws.runtime.update.internal.resources.Messages
+# -------------------------------------------------------------------------------------------------
+
+quiesce.begin=CWWKE1100I: Esperando hasta 30 segundos para que el servidor se desactive temporalmente.
+quiesce.begin.explanation=El servidor espera hasta 30 segundos a que se desactiven temporalmente los servicios antes de continuar con el cierre.
+quiesce.begin.useraction=No se requiere ninguna acci\u00f3n.
+
+quiesce.end=CWWKE1101I: La desactivaci\u00f3n temporal del servidor ha finalizado.
+quiesce.end.explanation=La operaci\u00f3n de desactivaci\u00f3n temporal ha finalizado satisfactoriamente.
+quiesce.end.useraction=No se requiere ninguna acci\u00f3n.
+
+quiece.warning=CWWKE1102W: La operaci\u00f3n de desactivaci\u00f3n temporal no ha finalizado. El servidor se detendr\u00e1 ahora.
+quiece.warning.explanation=El proceso no ha podido desactivar temporalmente todos los servicios en 30 segundos.
+quiece.warning.useraction=Puede ignorar de forma segura los mensajes de error que son el resultado de servicios necesarios no disponibles.
+
+client.quiesce.begin=CWWKE1103I: Esperando hasta 30 segundos para que el cliente se desactive temporalmente.
+client.quiesce.begin.explanation=El cliente espera hasta 30 segundos a que se desactiven temporalmente los servicios antes de continuar con el cierre.
+client.quiesce.begin.useraction=No se requiere ninguna acci\u00f3n.
+
+client.quiesce.end=CWWKE1104I: La desactivaci\u00f3n temporal del cliente ha finalizado.
+client.quiesce.end.explanation=La operaci\u00f3n de desactivaci\u00f3n temporal ha finalizado satisfactoriamente.
+client.quiesce.end.useraction=No se requiere ninguna acci\u00f3n.

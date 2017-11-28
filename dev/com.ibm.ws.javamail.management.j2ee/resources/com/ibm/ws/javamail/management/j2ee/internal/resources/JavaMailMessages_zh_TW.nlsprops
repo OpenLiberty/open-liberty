@@ -1,0 +1,26 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#COMPONENTPREFIX CWWKJ
+#COMPONENTNAMEFOR CWWKJ J2EE JavaMail
+#CMVCPATHNAME com.ibm.ws.javamail.management.j2ee/resources/com/ibm/ws/javamail/management/j2ee/internal/resources/JavaMailMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#
+# Message prefix block: CWWKJ0300 - CWWKJ0309
+
+#-----  MailSessionRegistrarImpl
+
+OSGI_SERVICE_ERROR=CWWKJ0300E: OSGi \u670d\u52d9 {0} \u7121\u6cd5\u4f7f\u7528\u3002\u8acb\u5617\u8a66\u4ee5 --clean \u9078\u9805\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+OSGI_SERVICE_ERROR.explanation=\u6307\u5b9a\u7684\u670d\u52d9\u7121\u6cd5\u4f7f\u7528\uff0c\u9020\u6210\u6b64\u5167\u90e8\u4f3a\u670d\u5668\u932f\u8aa4\u3002
+OSGI_SERVICE_ERROR.useraction=\u8acb\u4ee5 --clean \u9078\u9805\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+

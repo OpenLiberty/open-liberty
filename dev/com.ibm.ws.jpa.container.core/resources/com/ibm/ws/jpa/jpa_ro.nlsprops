@@ -1,0 +1,329 @@
+###############################################################################
+# Copyright (c) 2006, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the message text
+#           must be followed by a 2nd apostrophe to work correctly.
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWWJP (Java Persistence API)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+#CMVCPATHNAME ws/code/jpa.impl/src/com/ibm/ws/jpa/jpa.nlsprops
+#COMPONENTPREFIX CWWJP
+#COMPONENTNAMEFOR CWWJP Java Persistence API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+
+#-------------------------------------------------------------------------------
+UNABLE_TO_LOAD_JPA_PROVIDER_CWWJP0001E=CWWJP0001E: Serverul nu poate \u00eenc\u0103rca furnizorul JPA (Java Persistence API) {1} \u00een bundle-ul {0}, care este localizat \u00een fi\u015fierul {2}. A ap\u0103rut urm\u0103toarea eroare: {3}
+UNABLE_TO_LOAD_JPA_PROVIDER_CWWJP0001E.explanation=\u00cen timpul proces\u0103rii serverului pentru furnizorul JPA imnplicit, serverul nu a putut g\u0103si fi\u015fierul pentru furnizorul din bundle.
+UNABLE_TO_LOAD_JPA_PROVIDER_CWWJP0001E.useraction=Inspecta\u0163i bundle-ul furnizorului JPA pentru a v\u0103 asigura c\u0103 exist\u0103 urm\u0103toarele informa\u0163ii:\n Fi\u015fierul META-INF/services/javax.persistence.spi.PersistenceProvider define\u015fte clasa de implementare furnizor corect\u0103.\n Clasa de implementare exist\u0103 \u00een bundle.\n  Fi\u015fierul JAR (arhiv\u0103 Java) furnizor este specificat \u00een proprietatea Bundle-ClassPath \u00een fi\u015fierul META-INF/MANIFEST.MF.
+
+#-------------------------------------------------------------------------------
+UNABLE_TO_READ_JPA_PROVIDER_SPI_METADATA_CWWJP0002E=CWWJP0002E: Serverul nu poate citi con\u0163inutul fi\u015fierului {1} din bundle-ul furnizorului JPA (Java Persistence API) {0}. A ap\u0103rut urm\u0103toarea eroare: {2}
+UNABLE_TO_READ_JPA_PROVIDER_SPI_METADATA_CWWJP0002E.explanation=\u00cen timpul proces\u0103rii serverului pentru furnizorul JPA imnplicit, serverul nu a putut citi con\u0163inutul unui fi\u015fier din bundle-ul furnizor JPA.
+UNABLE_TO_READ_JPA_PROVIDER_SPI_METADATA_CWWJP0002E.useraction=Inspecta\u0163i bundle-ul de furnizor JPA pentru a v\u0103 asigura c\u0103 exist\u0103 fi\u015fierul META-INF/services/javax.persistence.spi.PersistenceProvider \u015fi este formatat corect.
+
+#-------------------------------------------------------------------------------
+EXTEND_PC_NOT_IN_SFSB_CWWJP0003E=CWWJP0003E: Contextul de persisten\u0163\u0103 extins {0} poate fi ini\u0163iat doar \u00een domeniul unui bean de sesiune stateful.
+EXTEND_PC_NOT_IN_SFSB_CWWJP0003E.explanation=Specifica\u0163ia JPA (Java Persistence API) necesit\u0103 ca un context de persisten\u0163\u0103 extins s\u0103 fie ini\u0163iat \u00een domeniul unui bean de sesiune stateful \u015fi aplica\u0163ia a \u00eencercat s\u0103 ini\u0163ieze contextul de persisten\u0163\u0103 extins \u00een domeniul unui alt tip de bean.
+EXTEND_PC_NOT_IN_SFSB_CWWJP0003E.useraction=Modifica\u0163i aplica\u0163ia pentru a ini\u0163ia contextul de persisten\u0163\u0103 extins din domeniul unui bean de sesiune stateful sau modifica\u0163i contextul de persisten\u0163\u0103.
+
+#-------------------------------------------------------------------------------
+NO_DEFAULT_PERSISTENCE_PROVIDER_CWWJP0004E=CWWJP0004E: Serverul nu poate s\u0103 localizeze valoarea implicit\u0103 a sistemului furnizorului JPA (Java Persistence API) {0}. Func\u0163ia furnizorului JPa implicit ese dezactivat\u0103.
+NO_DEFAULT_PERSISTENCE_PROVIDER_CWWJP0004E.explanation=Furnizorul JPA (Java Persistence API) pentru produse WebSphere este instalat \u00een Serverul de aplica\u0163ii pentru furnizorul JPA implicit de sistem. Totu\u015fi, acest furnizor implicit nu este g\u0103sit. Prin urmare, func\u0163ia JPA implicit\u0103 este dezactivat\u0103.
+NO_DEFAULT_PERSISTENCE_PROVIDER_CWWJP0004E.useraction=Contacta\u0163i-v\u0103 administratorul de sistem pentru a face o implementare WJSPA de sistem implicit\u0103 sau definit\u0103 de utilizator accesibil\u0103 pentru serverul de aplica\u0163ii.
+
+#-------------------------------------------------------------------------------
+APPL_CLASSLOADER_USE_HAS_NO_JPA_SUPPORT_CWWJP0005W=CWWJP0005W: Unitatea de persisten\u0163\u0103 {0} din modulul {1} utilizeaz\u0103 tipul de Classloader {2}. Func\u0163ia entit\u0103\u0163ii JPA (Java Persistence API) s-ar putea s\u0103 nu func\u0163ioneze conform a\u015ftept\u0103rilor.
+APPL_CLASSLOADER_USE_HAS_NO_JPA_SUPPORT_CWWJP0005W.explanation=Pentru a activa suportul JPA complet, ar putea fi nevoie ca un furnizor de persisten\u0163\u0103 s\u0103 injecteze cod \u00eentr-o entitate JPA. Tipul ClassLoader activ nu suport\u0103 injec\u0163ia de cod JPA. Prin urmare, o entitate JPA s-ar putea s\u0103 nu func\u0163ioneze conform a\u015ftept\u0103rilor.
+APPL_CLASSLOADER_USE_HAS_NO_JPA_SUPPORT_CWWJP0005W.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#-------------------------------------------------------------------------------
+DEFAULT_PERSISTENCE_PROVIDER_LOADED_CWWJP0006I=CWWJP0006I: Clasa {0} este \u00eenc\u0103rcat\u0103 ca furnizor JPA (Java Persistence API) implicit.
+DEFAULT_PERSISTENCE_PROVIDER_LOADED_CWWJP0006I.explanation=Acest mesaj are doar scop informa\u0163ional.
+DEFAULT_PERSISTENCE_PROVIDER_LOADED_CWWJP0006I.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#-------------------------------------------------------------------------------
+DUPLICATE_PERSISTENCE_UNIT_DEFINED_CWWJP0007W=CWWJP0007W: Unitatea de pesisten\u0163\u0103 {0} din modulul {2} al aplica\u0163iei {1} este deja definit.
+DUPLICATE_PERSISTENCE_UNIT_DEFINED_CWWJP0007W.explanation=A\u015fa cum se indic\u0103 \u00een specifica\u0163ia JPA sec\u0163iunea 6.2, numele unit\u0103\u0163ii de persisten\u0163\u0103 trebuie s\u0103 fie unic \u00eentr-un singur fi\u015fier EJB-JAR (Enterprise JavaBeans-Java archive), un fi\u015fier WAR (arhiv\u0103 web), un fi\u015fier JAR client aplica\u0163ie sau un fi\u015fier EAR (arhiv\u0103 enterprise).  Unitatea de persisten\u0163\u0103 duplicat\u0103 va fi ignorat\u0103.
+DUPLICATE_PERSISTENCE_UNIT_DEFINED_CWWJP0007W.useraction=\u00cenainte de a re\u00eencerca, redenumi\u0163i sau \u00eenl\u0103tura\u0163i unitatea de persisten\u0163\u0103 duplicat\u0103.
+
+#-------------------------------------------------------------------------------
+NO_JTA_TX_SYNC_REGISTRY_CWWJP0008E=CWWJP0008E: Serverul nu poate localiza registrul JTA (Java Transaction API) cu o c\u0103utare JNDI (Java Naming Directory Interface) a numelui {0}. A ap\u0103rut urm\u0103toarea eroare: {1}
+NO_JTA_TX_SYNC_REGISTRY_CWWJP0008E.explanation=Runtime-ul serverului nu poate asocia firul de execu\u0163ie al opera\u0163iei cu nicio component\u0103 de aplica\u0163ie de Platform\u0103 Java, Edi\u0163ia Enterprise 5 (Java EE 5).  Aceast\u0103 condi\u0163ie poate s\u0103 apar\u0103 c\u00e2nd clientul JNDI care utilizeaz\u0103 numele java: nu este rulat pe firul de execu\u0163ie al unei cereri de aplica\u0163ie de server.
+NO_JTA_TX_SYNC_REGISTRY_CWWJP0008E.useraction=Asigura\u0163i-v\u0103 c\u0103 aplica\u0163ia Java EE 5 nu ruleaz\u0103 opera\u0163ii JNDI pe nume java: \u00een blocuri de cod statice sau \u00een fire de execu\u0163ie create de acea aplica\u0163ie Java EE 5.  Un asemenea cod nu ruleaz\u0103 neap\u0103rat pe firul de execu\u0163ie al unei cereri de aplica\u0163ie de server \u015fi, prin urmare, nu este suportat de opera\u0163iile JNDI pe nume java:.
+
+#-------------------------------------------------------------------------------
+UNABLE_TO_CREATE_ENTITY_MANAGER_FACTORY_CWWJP0009E=CWWJP0009E: Serverul nu poate crea o fabric\u0103 EntityManagerFactory pentru unitatea de persisten\u0163\u0103 {0} de la furnizorul {1} din modulul {2}.
+UNABLE_TO_CREATE_ENTITY_MANAGER_FACTORY_CWWJP0009E.explanation=Metoda furnizorului JPA (Java Persistence API) createContainerEntityManagerFactory a e\u015fuat s\u0103 returneze o EntityManagerFactory. Asta s-ar putea \u00eent\u00e2mpla dac\u0103 furnizorul JPA este utilizat pentru unitatea persistent\u0103 sau a ap\u0103rut o eroare \u00een furnizorul JPA.
+UNABLE_TO_CREATE_ENTITY_MANAGER_FACTORY_CWWJP0009E.useraction=Asigura\u0163i-v\u0103 c\u0103 furnizorul JPA corect a fost configurat pentru unitatea persistent\u0103 \u015fi verifica\u0163i toate erorile anterioare de la furnizorul JPA.
+
+#-------------------------------------------------------------------------------
+APPL_NOT_FOUND_DURING_PU_LOOKUP_CWWJP0010W=CWWJP0010W: Serverul nu poate localiza aplica\u0163ia implementat\u0103, care este denumit\u0103 {0}, c\u00e2nd \u00eencearc\u0103 s\u0103 g\u0103seasc\u0103 unitatea de persisten\u0163\u0103 {2} din modulul {1}.
+APPL_NOT_FOUND_DURING_PU_LOOKUP_CWWJP0010W.explanation=Aplica\u0163ia fie nu este instalat\u0103, fie nu a fost pornit\u0103.
+APPL_NOT_FOUND_DURING_PU_LOOKUP_CWWJP0010W.useraction=Instala\u0163i sau porni\u0163i aplica\u0163ia.
+
+#-------------------------------------------------------------------------------
+PU_NOT_SPECIFIED_AND_NO_UNIQUE_PU_FOUND_CWWJP0012E=CWWJP0012E: Numele unit\u0103\u0163ii de persisten\u0163\u0103 nu este specificat \u015fi o unitate de persisten\u0163\u0103 unic\u0103 nu este g\u0103sit\u0103 \u00een aplica\u0163ia {0} \u015fi modulul {1}.
+PU_NOT_SPECIFIED_AND_NO_UNIQUE_PU_FOUND_CWWJP0012E.explanation=Aplica\u0163ia a definit o unitate de persisten\u0163\u0103 sau referin\u0163\u0103 de context de persisten\u0163\u0103 f\u0103r\u0103 un nume de unitate de persisten\u0163\u0103 \u015fi nu se poate g\u0103si o unitate de persisten\u0163\u0103 unic\u0103.
+PU_NOT_SPECIFIED_AND_NO_UNIQUE_PU_FOUND_CWWJP0012E.useraction=Modifica\u0163i aplica\u0163ia pentru a specifica un nume de unitate de persisten\u0163\u0103 pentru referin\u0163\u0103 sau furniza\u0163i o persisten\u0163\u0103 unic\u0103.
+
+#-------------------------------------------------------------------------------
+UNABLE_TO_GET_DATASOURCE_FOR_PU_CWWJP0013E=CWWJP0013E: Serverul nu poate localiza sursa de date {0} pentru unitate a de persisten\u0163\u0103 {1} pentru c\u0103 a \u00eent\u00e2lnit excep\u0163ia urm\u0103toare:\n \ {2}.
+UNABLE_TO_GET_DATASOURCE_FOR_PU_CWWJP0013E.explanation=Serverul a \u00eencercat s\u0103 localizeze sursa de date pentru unitatea de persisten\u0163\u0103. Totu\u015fi, sursa de date nu a putut fi g\u0103sit\u0103.
+UNABLE_TO_GET_DATASOURCE_FOR_PU_CWWJP0013E.useraction=Asigura\u0163i-v\u0103 c\u0103 sursa de date necesar\u0103 este creat\u0103 \u015fi legat\u0103.
+
+#-------------------------------------------------------------------------------
+ILLEGAL_CLASS_FORMAT_IN_CLASS_TRANSFORMATION_CWWJP0014E=CWWJP0014E: A fost detectat un format ilegal \u00een timpul transform\u0103rii de clas\u0103 pentru clasa {0}. Clasa nu a fost transformat\u0103.
+ILLEGAL_CLASS_FORMAT_IN_CLASS_TRANSFORMATION_CWWJP0014E.explanation=Furnizorul JPA (Java Persistence API) a \u00eencercat s\u0103 transforme o clas\u0103 \u015fi a e\u015fuat cu o excep\u0163ie IllegalClassFormatException. Fie fi\u015fierul de clas\u0103 este corupt, fie furnizorul JPA are o problem\u0103.
+ILLEGAL_CLASS_FORMAT_IN_CLASS_TRANSFORMATION_CWWJP0014E.useraction=Corecta\u0163i fi\u015fierul de clas\u0103 corupt sau contacta\u0163i furnizorul JPA pentru asisten\u0163\u0103.
+
+#-------------------------------------------------------------------------------
+CREATE_CONTAINER_ENTITYMANAGER_FACTORY_ERROR_CWWJP0015E=CWWJP0015E: A survenit o eroare \u00een furnizorul de persisten\u0163\u0103 {0} c\u00e2nd a \u00eencercat s\u0103 creeze fabrica managerului entit\u0103\u0163ii container pentru unitatea de persisten\u0163\u0103 {1}. A ap\u0103rut urm\u0103toarea eroare: {2}
+CREATE_CONTAINER_ENTITYMANAGER_FACTORY_ERROR_CWWJP0015E.explanation=Metoda furnizorului JPA (Java Persistence API) createContainerEntityManagerFactory a e\u015fuat.
+CREATE_CONTAINER_ENTITYMANAGER_FACTORY_ERROR_CWWJP0015E.useraction=Contacta\u0163i furnizorul JPA pentru asisten\u0163\u0103.
+
+#-------------------------------------------------------------------------------
+DUPL_PCTXT_REF_CWWJP0016W=CWWJP0016W: Mai mult de o &lt;persistence-context-ref&gt; cu numele {0} sunt declarate \u00een fi\u015fierul descriere de implementare {1}.
+DUPL_PCTXT_REF_CWWJP0016W.explanation=Mai mult de o referin\u0163\u0103 de context de persisten\u0163\u0103 este declarat\u0103 \u00een fi\u015fierul descriere de implementare. Toate instan\u0163ele, cu excep\u0163ia primei instan\u0163e, sunt ignorate.
+DUPL_PCTXT_REF_CWWJP0016W.useraction=\u00cenainte de a re\u00eencerca, redenumi\u0163i sau \u00eenl\u0103tura\u0163i referin\u0163a de context de persisten\u0163\u0103 duplicat\u0103.
+
+#-------------------------------------------------------------------------------
+JPA_HAS_STARTED_CWWJP0017I=CWWJP0017I: Componenta JPA (Java Persistence API) a pornit.
+JPA_HAS_STARTED_CWWJP0017I.explanation=Acest mesaj are doar scop informa\u0163ional.
+JPA_HAS_STARTED_CWWJP0017I.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#-------------------------------------------------------------------------------
+MALFORMED_PERSISTENCE_XML_CWWJP0018E=CWWJP0018E: Sintax\u0103 incorect\u0103 sau eroare detectat\u0103 \u00een fi\u015fierul {0}. A ap\u0103rut urm\u0103torul mesaj de eroare asociat: {1}
+MALFORMED_PERSISTENCE_XML_CWWJP0018E.explanation=Un fi\u015fier XML con\u0163ine o eroare sau erori \u015fi nu se conformeaz\u0103 defini\u0163iei schemei. Aplica\u0163ia s-ar putea s\u0103 nu func\u0163ioneze conform a\u015ftept\u0103rilor.
+MALFORMED_PERSISTENCE_XML_CWWJP0018E.useraction=Corecta\u0163i eroarea sau erorile din fi\u015fierul persistence.xml \u015fi re\u00eencerca\u0163i.
+
+#-------------------------------------------------------------------------------
+APPL_STARTED_CWWJP0019W=CWWJP0019W: Aplica\u0163ia {0} a pornit deja.
+APPL_STARTED_CWWJP0019W.explanation=MSG0001
+APPL_STARTED_CWWJP0019W.useraction=CMSG0002
+
+#-------------------------------------------------------------------------------
+STARTING_MODULE_IN_UNDEPLOYED_APPL_CWWJP0020E=CWWJP0020E: Serverul de aplica\u0163ii nu poate porni modulul {0} al aplica\u0163ie {1} deoarece aplica\u0163ia nu este instalat\u0103.
+STARTING_MODULE_IN_UNDEPLOYED_APPL_CWWJP0020E.explanation=Verifica\u0163i c\u0103 aplica\u0163ia este asamblat\u0103 corect cu modulul \u015fi instalat\u0103.
+STARTING_MODULE_IN_UNDEPLOYED_APPL_CWWJP0020E.useraction=Utiliza\u0163i o unealt\u0103 de asamblare aplica\u0163ie pentru a verifica configura\u0163ia aplica\u0163iei, instala\u0163i aplica\u0163ia \u015fi re\u00eencerca\u0163i.
+
+#-------------------------------------------------------------------------------
+JPA_IS_DISABLED_CWWJP0022I=CWWJP0022I: Componenta JPA (Java Persistence API) este dezactivat\u0103.
+JPA_IS_DISABLED_CWWJP0022I.explanation=Acest mesaj are doar scop informa\u0163ional.
+JPA_IS_DISABLED_CWWJP0022I.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#-------------------------------------------------------------------------------
+UNABLE_TO_CREATE_EMF_FOR_INJECTION_CWWJP0023E=CWWJP0023E: Serverul nu poate crea o instan\u0163\u0103 EntityManagerFactory pentru unitatea de persisten\u0163\u0103 {0} pentru injectare de dependen\u0163\u0103 \u00een modulul {2} al aplica\u0163ie {1}.
+UNABLE_TO_CREATE_EMF_FOR_INJECTION_CWWJP0023E.explanation=Unitatea de persisten\u0163\u0103 \u015fi adnotarea injec\u0163iei de dependen\u0163\u0103 trebuie definite corespunz\u0103tor.
+UNABLE_TO_CREATE_EMF_FOR_INJECTION_CWWJP0023E.useraction=Verifica\u0163i c\u0103 unitatea de persisten\u0163\u0103 \u015fi adnotarea injec\u0163iei de dependen\u0163\u0103 sunt definite corespunz\u0103tor. Re\u00eencerca\u0163i procesul.
+
+#-------------------------------------------------------------------------------
+INCORRECT_PU_JARFILE_URL_SPEC_CWWJP0024E=CWWJP0024E: Specifica\u0163ia fi\u015fierului JAR (Java archive) {0} pentru unitatea de persisiten\u0163\u0103 {1} este incorect\u0103.
+INCORRECT_PU_JARFILE_URL_SPEC_CWWJP0024E.explanation=Specifica\u0163ia fi\u015fierului JAR pentru unitatea de persisten\u0163\u0103 este formatat\u0103 gre\u015fit. Prin urmare, componenta JPA (Java Persistence API) nu poate furniza aceste date la furnizorul de persisten\u0163\u0103.
+INCORRECT_PU_JARFILE_URL_SPEC_CWWJP0024E.useraction=Corecta\u0163i specifica\u0163ia fi\u015fierului JAR \u015fi re\u00eencerca\u0163i.
+
+#-------------------------------------------------------------------------------
+INCORRECT_PU_ROOT_URL_SPEC_CWWJP0025E=CWWJP0025E: Serverul nu poate identifica URL-ul r\u0103d\u0103cin\u0103 JPA (Java Persistence API) {0} pentru modulul {2} din aplica\u0163ia {1}.
+INCORRECT_PU_ROOT_URL_SPEC_CWWJP0025E.explanation=URL-ul r\u0103d\u0103cin\u0103 JPA pentru un modul din aplica\u0163ie este formatat gre\u015fit.
+INCORRECT_PU_ROOT_URL_SPEC_CWWJP0025E.useraction=CMSG0002
+
+#-------------------------------------------------------------------------------
+JPA_IS_INITIALIZING_CWWJP0026I=CWWJP0026I: Componenta JPA (Java Persistence API) se ini\u0163ializeaz\u0103.
+JPA_IS_INITIALIZING_CWWJP0026I.explanation=Acest mesaj are doar scop informa\u0163ional.
+JPA_IS_INITIALIZING_CWWJP0026I.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#-------------------------------------------------------------------------------
+JPA_HAS_INITIALIZED_CWWJP0027I=CWWJP0027I: Componenta JPA (Java Persistence API) s-a ini\u0163ializat.
+JPA_HAS_INITIALIZED_CWWJP0027I.explanation=Acest mesaj are doar scop informa\u0163ional.
+JPA_HAS_INITIALIZED_CWWJP0027I.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#-------------------------------------------------------------------------------
+JPA_IS_STARTING_CWWJP0028I=CWWJP0028I: Componenta JPA (Java Persistence API) porne\u015fte.
+JPA_IS_STARTING_CWWJP0028I.explanation=Acest mesaj are doar scop informa\u0163ional.
+JPA_IS_STARTING_CWWJP0028I.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#-------------------------------------------------------------------------------
+PU_NOT_FOUND_CWWJP0029E=CWWJP0029E: Serverul nu poate g\u0103si unitatea de persisten\u0163\u0103 {2} din modulul {1} \u015fi aplica\u0163ia {0}.
+PU_NOT_FOUND_CWWJP0029E.explanation=O aplica\u0163ie a definit o referin\u0163\u0103 de unitate de persisten\u0163\u0103 pentru o unitate de persisten\u0163\u0103 care nu poate fi g\u0103sit\u0103 dup\u0103 c\u0103utarea could dup\u0103 META-INF/persistence.xml \u00een toate fi\u015fierele \u015fi directoarele din calea de clase.
+PU_NOT_FOUND_CWWJP0029E.useraction=Asigura\u0163i-v\u0103 c\u0103 numele unit\u0103\u0163ii de persisten\u0163\u0103 este scris corect \u015fi asigura\u0163i-v\u0103 c\u0103 unitatea de persisten\u0163\u0103 este asamblat\u0103 corect \u00een aplica\u0163ie verific\u00e2nd c\u0103 unitatea de persisten\u0163\u0103 este definit\u0103 \u00eentr-un fi\u015fier META-INF/persistence.xml care este \u00eentr-un JAR sau director din calea de clase.
+
+#-------------------------------------------------------------------------------
+DATASOURCE_NOT_FOUND_IN_COMPONENT_NAMESPACE_CWWJP0030E=CWWJP0030E: Serverul nu poate localiza sursa de date {0} din spa\u0163iul nume al componentei pentru unitatea de persisten\u0163\u0103 {1}. A ap\u0103rut urm\u0103toarea eroare: {2}
+DATASOURCE_NOT_FOUND_IN_COMPONENT_NAMESPACE_CWWJP0030E.explanation=Sursa de date definit\u0103 pentru aceast\u0103 unitate de persisten\u0163\u0103 trebuie s\u0103 fie legat\u0103 \u00een spa\u0163iul nume al componentei.
+DATASOURCE_NOT_FOUND_IN_COMPONENT_NAMESPACE_CWWJP0030E.useraction=Asigura\u0163i-v\u0103 c\u0103 sursa de date cerut\u0103 este creat\u0103 \u015fi legat\u0103 \u00een spa\u0163iul nume java:comp/env.
+
+#-------------------------------------------------------------------------------
+DATASOURCE_NOT_FOUND_IN_GLOBAL_NAMESPACE_CWWJP0031E=CWWJP0031E: Serverul nu poate localiza sursa de date {0} din spa\u0163iul nume global pentru unitatea de persisten\u0163\u0103 {1}. A ap\u0103rut urm\u0103toarea eroare: {2}
+DATASOURCE_NOT_FOUND_IN_GLOBAL_NAMESPACE_CWWJP0031E.explanation=Sursa de date definit\u0103 pentru aceast\u0103 unitate de persisten\u0163\u0103 trebuie s\u0103 fie legat\u0103 \u00een spa\u0163iul nume global.
+DATASOURCE_NOT_FOUND_IN_GLOBAL_NAMESPACE_CWWJP0031E.useraction=Asigura\u0163i-v\u0103 c\u0103 sursa de date cerut\u0103 este creat\u0103 \u015fi legat\u0103 \u00een spa\u0163iul nume global.
+
+#-------------------------------------------------------------------------------
+CONNECTION_NOT_FOUND_CWWJP0032E=CWWJP0032E: Invocarea metodei java.sql.Connection a e\u015fuat cu eroarea : {0}
+CONNECTION_NOT_FOUND_CWWJP0032E.explanation=O metod\u0103 java.sql.Connection alta dec\u00e2t metoda de \u00eenchidere (close) sau isClosed nu poate fi invocat\u0103 pentru c\u0103 mediul runtime al serverului nu poate asocia firul de execu\u0163ie al opera\u0163iei cu nici o component\u0103 de aplica\u0163ie Java EE 5 (Java Platform, Enterprise Edition 5).  Aceast\u0103 condi\u0163ie poate s\u0103 apar\u0103 c\u00e2nd clientul JNDI (Java Naming and Directory InterfaceTM) care utilizeaz\u0103 numele java: nu ruleaz\u0103 pe firul de execu\u0163ie al unei cereri de aplica\u0163ie de server.
+CONNECTION_NOT_FOUND_CWWJP0032E.useraction=Asigura\u0163i-v\u0103 c\u0103 aplica\u0163ia Java EE 5 nu ruleaz\u0103 opera\u0163ii JNDI pe nume java: \u00een blocuri de cod statice sau \u00een fire de execu\u0163ie care sunt create de acea aplica\u0163ie Java EE 5.  Acest cod nu ruleaz\u0103 neap\u0103rat pe firul de execu\u0163ie al unei cereri de aplica\u0163ie de server.  Prin urmare, codul nu este suportat de opera\u0163iile JNDI pe nume java:.
+
+#-------------------------------------------------------------------------------
+NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E=CWWJP0033E: Serverul nu poate localiza sursa de date {0} din spa\u0163iul nume al componentei pentru unitatea de persisten\u0163\u0103 {1} deoarece nu exist\u0103 un context component\u0103 pe fir.
+NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.explanation=Sursa de date nu poate fi g\u0103sit\u0103 pentru c\u0103 runtime-ul serverului nu poate asocia firul de execu\u0163ie al opera\u0163iei cu nici o component\u0103 de aplica\u0163ie de Platform\u0103 Java, Edi\u0163ia Enterprise 5 (Java EE 5).  Aceast\u0103 condi\u0163ie poate s\u0103 apar\u0103 c\u00e2nd clientul JNDI (Java Naming and Directory InterfaceTM) care utilizeaz\u0103 numele \"java:\" nu ruleaz\u0103 pe firul de execu\u0163ie al unei cereri de aplica\u0163ie de server.
+NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.useraction=Asigura\u0163i-v\u0103 c\u0103 aplica\u0163ia Java EE 5 nu ruleaz\u0103 opera\u0163ii JNDI pe nume java: \u00een blocuri de cod statice sau \u00een fire de execu\u0163ie care sunt create de acea aplica\u0163ie Java EE 5.  Acest cod nu ruleaz\u0103 neap\u0103rat pe firul de execu\u0163ie al unei cereri de aplica\u0163ie de server.  Prin urmare, codul nu este suportat de opera\u0163iile JNDI pe nume java:.
+
+#----------------------------------
+ENGLISH_ONLY_INFO_MESSAGE_CWWJP0034I=CWWJP0034I: Acest mesaj este un mesaj informativ doar \u00een Englez\u0103: {0}.
+ENGLISH_ONLY_INFO_MESSAGE_CWWJP0034I.explanation=Acest mesaj informa\u0163ional nu este tradus.
+ENGLISH_ONLY_INFO_MESSAGE_CWWJP0034I.useraction=Consulta\u0163i mesajul pentru detalii.
+
+# ---------------------------------
+ENGLISH_ONLY_WARN_MESSAGE_CWWJP0035W=CWWJP0035W: Acest mesaj este un mesaj de avertisment doar \u00een Englez\u0103: {0}.
+ENGLISH_ONLY_WARN_MESSAGE_CWWJP0035W.explanation=Acest mesaj de avertisment nu este tradus.
+ENGLISH_ONLY_WARN_MESSAGE_CWWJP0035W.useraction=Consulta\u0163i mesajul pentru detalii.
+
+# ---------------------------------
+ENGLISH_ONLY_ERROR_MESSAGE_CWWJP0036E=CWWJP0036E: Acest mesaj este un mesaj de eroare doar \u00een Englez\u0103: {0}.
+ENGLISH_ONLY_ERROR_MESSAGE_CWWJP0036E.explanation=Acest mesaj de eroare nu este tradus.
+ENGLISH_ONLY_ERROR_MESSAGE_CWWJP0036E.useraction=Consulta\u0163i mesajul pentru detalii.
+
+# ---------------------------------
+NO_UOW_SYNC_REGISTRY_CWWJP0037E=CWWJP0037E: Unitatea de Registru de sincronizare lucru nu a putut fi g\u0103sit\u0103 la loca\u0163ia {0} din numele spa\u0163iu global din cauza excep\u0163iei: {1}
+NO_UOW_SYNC_REGISTRY_CWWJP0037E.explanation=Un furnizor JPA (Java Persistence API) nu poate func\u0163iona corespunz\u0103tor f\u0103r\u0103 acces la UOWSynchronizationRegistry pentru a participa \u00een tranzac\u0163ii.
+NO_UOW_SYNC_REGISTRY_CWWJP0037E.useraction=CMSG0002
+
+# ---------------------------------
+NO_COMPONENT_CONTEXT_CWWJP0038E=CWWJP0038E: Metoda JPA (Java Persistence API) cerut\u0103 pentru contextul de persisten\u0163\u0103 {0} nu a putut fi finalizat\u0103 deoarece a fost apelat\u0103 \u00een afara domeniului unei componente de aplica\u0163ie Platform\u0103 Java, Edi\u0163ie Enterprise 5 (Java EE 5).
+NO_COMPONENT_CONTEXT_CWWJP0038E.explanation=Contextul componentei nu exist\u0103 pe firul de execu\u0163ie. Mediul runtime al serverului nu poate asocia firul de execu\u0163ie al opera\u0163iei cu nici o component\u0103 de aplica\u0163ie de Platform\u0103 Java, Edi\u0163ia Enterprise 5 (Java EE 5). Aceast\u0103 condi\u0163ie poate s\u0103 apar\u0103 c\u00e2nd clientul \u00eencearc\u0103 opera\u0163ii EntityManager pe un fir de execu\u0163ie de aplica\u0163ie non-server.
+NO_COMPONENT_CONTEXT_CWWJP0038E.useraction=Asigura\u0163i-v\u0103 c\u0103 aplica\u0163ia Java EE 5 nu ruleaz\u0103 opera\u0163ii EntityManager \u00een blocuri de cod statice sau \u00een fire de execu\u0163ie care sunt create de aplica\u0163ia Java EE 5.
+
+# ---------------------------------
+PROPERTY_SYNTAX_ERROR_IN_PERSISTENCE_XML_CWWJP0039E=CWWJP0039E: O eroare de sintax\u0103 exist\u0103 \u00een propriet\u0103\u0163ile din persistence.xml al Unit\u0103\u0163ii de persisten\u0163\u0103:  {0}  (Proprietat = {1}, Valoare = {2}).  A ap\u0103rut urm\u0103toarea eroare: {3}.
+PROPERTY_SYNTAX_ERROR_IN_PERSISTENCE_XML_CWWJP0039E.explanation= persistence.xml pentru unitatea de persisten\u0163\u0103 con\u0163ine o eroare de sintax\u0103.  Nici proprietatea nici valoarea nu pot avea valoarea "null".
+PROPERTY_SYNTAX_ERROR_IN_PERSISTENCE_XML_CWWJP0039E.useraction= Corecta\u0163i eroarea de sintax\u0103 care exist\u0103 \u00een persistence.xml.
+
+#-------------------------------------------------------------------------------
+SYNTAX_ERROR_IN_PERSISTENCE_XML_CWWJP0040E=CWWJP0040E: Sinatx\u0103 incorect\u0103 sau eroare detectat\u0103 \u00een fi\u015fierul  persistence.xml din aplicac\u0163ie: {0}, modul: {1}, la num\u0103r linie: {2}, num\u0103r coloan\u0103: {3}. A ap\u0103rut urm\u0103torul mesaj de eroare asociat: {4}
+SYNTAX_ERROR_IN_PERSISTENCE_XML_CWWJP0040E.explanation=Un fi\u015fier persistence.xml con\u0163ine o eroare sau erori \u015fi nu se conformeaz\u0103 defini\u0163iei schemei. Aplica\u0163ia s-ar putea s\u0103 nu func\u0163ioneze conform a\u015ftept\u0103rilor.
+SYNTAX_ERROR_IN_PERSISTENCE_XML_CWWJP0040E.useraction=Corecta\u0163i eroarea sau erorile din fi\u015fierul persistence.xml \u015fi re\u00eencerca\u0163i.
+
+#-------------------------------------------------------------------------------
+CONFLICTING_XML_VALUES_CWWJP0041E=CWWJP0041E: Modulul {0} al aplica\u0163iei {1} are date de configurare conflictuale \u00een descriptorul de implementarea XML. Exist\u0103 valori de element {2} conflictuale pentru mai multe elemente {3} cu aceea\u015fi valoare de element {4}: {5}. Valorile de element {2} conflictuale sunt {6} \u015fi {7}.
+CONFLICTING_XML_VALUES_CWWJP0041E.explanation=C\u00e2nd sunt definite mai multe referin\u0163e de unitate persistent\u0103 sau context persistent \u00een descriptorul de implementare XML pentru acela\u015fi spa\u0163iu nume de component\u0103 cu acela\u015fi nume, toate atributele referin\u0163ei trebuie s\u0103 fie identice. Un scenariu tipic \u00een care s-ar putea \u00eent\u00e2mpla aceasta este cel \u00een care se definesc referin\u0163e pentru un bean enterprise \u015fi pentru o clas\u0103 interceptor coresponent\u0103. At\u00e2t bean-ul, c\u00e2t \u015fi interceptorul partajeaz\u0103 acela\u015fi spa\u0163iu de nume de component\u0103, astfel c\u0103 referin\u0163ele care sunt comune \u00eentre cele dou\u0103 trebuie s\u0103 fie compatibile.
+CONFLICTING_XML_VALUES_CWWJP0041E.useraction=\u00cen descriptorul de implementare XML, modifica\u0163i numele uneia dintre referin\u0163e sau modifica\u0163i una dintre valorile conflictuale \u00een a\u015fa fel \u00eenc\u00e2t s\u0103 aib\u0103 aceea\u015fi valoare.
+
+#-------------------------------------------------------------------------------
+CONFLICTING_ANNOTATION_VALUES_CWWJP0042E=CWWJP0042E: Componenta {0} din modulul {1} al aplica\u0163iei {2} are date de configurare conflictuale \u00een anota\u0163iile din codul surs\u0103. Exist\u0103 valori de atribut {3} conflictuale pentru mai multe adnot\u0103ri {4} cu aceea\u015fi valoare de atribut {5}: {6}. Valorile atributelor {3} conflictuale sunt {7} \u015fi {8}.
+CONFLICTING_ANNOTATION_VALUES_CWWJP0042E.explanation=C\u00e2nd unit\u0103\u0163i de persisten\u0163\u0103 multiple sau referin\u0163e ale contextului de persisten\u0163\u0103 sunt definite \u00een anota\u0163ile codului surs\u0103pentru spa\u015fiul de nume al aceleia\u015fi componente cu acela\u015fi nume, toate atributele referin\u0163ei trebuie s\u0103 fie ori la fel, ori unul s\u0103 fie asignabil celuilalt.
+CONFLICTING_ANNOTATION_VALUES_CWWJP0042E.useraction=\u00cen andot\u0103rile codului surs\u0103, schimba\u0163i numele unei referin\u0163e, sau schimba\u0163i valorile conflictuale ca s\u0103 aib\u0103 aceea\u015fi valoare sau una s\u0103 fie asignabil\u0103 celeilalte.
+
+#-------------------------------------------------------------------------------
+INVALID_JAVA_GLOBAL_REF_CWWJP0043E=CWWJP0043E: Referin\u0163a de persisten\u0163\u0103 {0} este declarat\u0103 de componenta {1} \u00een modulul {2} al aplica\u0163iei {3}, referin\u0163ele de persisten\u0163\u0103 java:global nu sunt valide.
+INVALID_JAVA_GLOBAL_REF_CWWJP0043E.explanation=Unit\u0103\u0163ile de persisten\u0163\u0103 sunt scopate la o singur\u0103 aplica\u0163ie, prin urmare o referin\u0163\u0103 de persisten\u0163\u0103 java:global nu are sens.
+INVALID_JAVA_GLOBAL_REF_CWWJP0043E.useraction=Modifica\u0163i numele referin\u0163ei de persisten\u0163\u0103 s\u0103 foloseasc\u0103 \u00een schimb prefixul java:app sau java:module, sau \u00eenl\u0103tura\u0163i prefixul java:global pentru a se folosi implicit spa\u0163iul de nume java:comp.
+
+#-------------------------------------------------------------------------------
+JPATXSYNC_INCOMPATIBLE_CWWJP0044E=CWWJP0044E: Mai multe defini\u0163ii ale contextului de persisten\u0163\u0103 extins\u0103 ale unit\u0103\u0163ii de persisten\u0163\u0103 {0} au fost declasate cu configura\u0163ie de sincronizare neegal\u0103.
+JPATXSYNC_INCOMPATIBLE_CWWJP0044E.explanation=Pentru un bean de sesiune stateful dat care injecteaz\u0103 o anumit\u0103 defini\u0163ie de unitate de persisten\u0163\u0103 ca un context de persisten\u0163\u0103 exstins\u0103 mai mult de o dat\u0103, tipul de sincronizare pentru toate instan\u0163ele de injec\u0163ie trebuie s\u0103 fie SYNCHRONIZED sau UNSYCHRONIZED.
+JPATXSYNC_INCOMPATIBLE_CWWJP0044E.useraction=Modifica\u0163i sincronizarea tuturor instan\u0163elor de injec\u0163ie ale unit\u0103\u0163ii de persisten\u0163\u0103 la SYNCHRONIZED sau UNSYNCHRONIZED.
+
+#-------------------------------------------------------------------------------
+JPATXSYNC_INCOMPATIBLE_INHERITANCE_CWWJP0045E=CWWJP0045E: O superclas\u0103 a injectat un context de persisten\u0163\u0103 extins\u0103 pentru unitatea de persisten\u0163\u0103 {0} care are un atribut de sincronizare incompatibil cu o injec\u0163ie cu context de persisten\u0163\u0103 extins\u0103 \u00eentr-o subclas\u0103.
+JPATXSYNC_INCOMPATIBLE_INHERITANCE_CWWJP0045E.explanation= Un bean de sesiune stateful a extins o clas\u0103 care injecteaz\u0103 un context de persisten\u0163\u0103 extins\u0103 pentru o unitate de persisten\u0163\u0103 comun\u0103, dar tipul de sincronizare al injec\u0163iei superclasei nu se potrive\u015fte cu tipul de sincronizare al injec\u0163iei subclasei.
+JPATXSYNC_INCOMPATIBLE_INHERITANCE_CWWJP0045E.useraction=Modifica\u0163i sincronizarea tuturor instan\u0163elor de injec\u0163ie ale unit\u0103\u0163ii de persisten\u0163\u0103 la SYNCHRONIZED sau UNSYNCHRONIZED.
+
+#-------------------------------------------------------------------------------
+JPATXSYNC_ILLEGAL_PROPAGATION_CWWJP0046E=CWWJP0046E: Un context de persisten\u0163\u0103 JPA, UNSYNCHRONIZED, nu poate fi propagat \u00eentr-un EntityManager SYNCHRONIZED.
+JPATXSYNC_ILLEGAL_PROPAGATION_CWWJP0046E.explanation=Un context de persisten\u0163\u0103 care are un tip de sincronizare de UNSYNCHRONIED nu poate fi propagat la o component\u0103 care a injectat acela\u015fi context de persisten\u0163\u0103, dar cu un tip de sincronizare de SYNCHRONIZED. 
+JPATXSYNC_ILLEGAL_PROPAGATION_CWWJP0046E.useraction=Modifica\u0163i injec\u0163ia @PersistenceContext \u00een componentele apelantului \u015fi apelatului pentru a avea acela\u015fi tip de sincronizare.
+
+#-------------------------------------------------------------------------------
+JPATXSYNC_INCOMPATIBLE_PROPAGATION_CWWJP0047E=CWWJP0047E: Contextul de persisten\u0163\u0103 asociat cu unitatea de persisten\u0163\u0103 {0} are SynchronizationType de tipul {1}, care este incompatibil cu contextul de persisten\u0163\u0103 extins\u0103 declarat de {2}.
+JPATXSYNC_INCOMPATIBLE_PROPAGATION_CWWJP0047E.explanation=Un context de persisten\u0163\u0103 care are un tip de sincronizare de UNSYNCHRONIED nu poate fi propagat la o component\u0103 care a injectat acela\u015fi context de persisten\u0163\u0103, dar cu un tip de sincronizare de SYNCHRONIZED.
+JPATXSYNC_INCOMPATIBLE_PROPAGATION_CWWJP0047E.useraction=Modifica\u0163i injec\u0163ia @PersistenceContext \u00een componentele apelantului \u015fi apelatului pentru a avea acela\u015fi tip de sincronizare.
+
+#-------------------------------------------------------------------------------
+REPORT_JPARUNTIME_CWWJP0048I=CWWJP0048I: A fost ini\u0163ializat serviciul JPA pentru nivelul de specifica\u0163ie {0} JPA.
+REPORT_JPARUNTIME_CWWJP0048I.explanation=Acest mesaj are doar scop informa\u0163ional.
+REPORT_JPARUNTIME_CWWJP0048I.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#-------------------------------------------------------------------------------
+# 0=providerClass, 1=providerJPALevel, 2=currentJPALevel, 3=currentProviderClasses
+INCORRECT_JPA_LEVEL_CWWJP0049E=CWWJP0049E: Nu se poate localiza clasa {0}, care este un furnizor de persisten\u0163\u0103 \u00eencorporat pentru JPA {1}. Serverul este configurat curent pentru JPA {2}, care corespunde furnizorilor de persisten\u0163\u0103 \u00eencorpora\u0163i: {3}. Nivelul JPA al unui server sau cluster poate fi modificat folosind Admin Console sau taskul Admin modifyJPASpecLevel. Alternativ, actualiza\u0163i aplica\u0163ia pentru a folosi un furnizor de persisten\u0163\u0103 care este compatibil cu JPA {2}.
+INCORRECT_JPA_LEVEL_CWWJP0049E.explanation=Clasa furnizorului JPA nu a putut fi g\u0103sit\u0103.
+INCORRECT_JPA_LEVEL_CWWJP0049E.useraction=Modifica\u0163i serverul sau configura\u0163ia prin Admin Console sau taskul Admin modifyJPASpecLevel pentru a folosi un nivel JPA care este suportat de furnizorul de persisten\u0163\u0103 curent.  Alternativ, actualiza\u0163i aplica\u0163ia pentru a folosi un furnizor de persisten\u0163\u0103 care este compatibil cu nivelul JPA curent.
+
+#-------------------------------------------------------------------------------
+JPA_PROVIDER_NOT_FOUND_CWWJP0050E=CWWJP0050E: Nu s-a putut g\u0103si furnizorul de persisten\u0163\u0103 {0}.
+JPA_PROVIDER_NOT_FOUND_CWWJP0050E.explanation=Clasa furnizorului JPA nu a putut fi g\u0103sit\u0103.
+JPA_PROVIDER_NOT_FOUND_CWWJP0050E.useraction=Modifica\u0163i serverul sau configura\u0163ia pentru a folosi un nivel JPA care este suportat de furnizorul de persisten\u0163\u0103 indicat.
+
+#-------------------------------------------------------------------------------
+# DO NOT TRANSLATE: <jpa defaultPersistenceProvider="com.acme.PersistenceProviderImpl"/>, bells-1.0, <bell>, <library>, JPA, or javax.persistence.spi.PersistenceProvider
+NO_JPA_PROVIDER_FOUND_CWWJP0051E=CWWJP0051E: Nu se poate g\u0103si niciun furnizor de persisten\u0163\u0103 \u00een configura\u0163ia serverului. Pentru a configura un furnizor de persisten\u0163\u0103 implicit utiliza\u0163i configura\u0163ia <jpa defaultPersistenceProvider="com.acme.PersistenceProviderImpl"/> sau activa\u0163i caracteristica bells-1.0 \u015fi configura\u0163i un <bell> pentru <library> care con\u0163ine furnizorul JPA. 
+NO_JPA_PROVIDER_FOUND_CWWJP0051E.explanation=Nu s-a g\u0103sit nicio implementare de javax.persistence.spi.PersistenceProvider.
+NO_JPA_PROVIDER_FOUND_CWWJP0051E.useraction=Pentru a configura un furnizor de persisten\u0163\u0103 implicit utiliza\u0163i configura\u0163ia <jpa defaultPersistenceProvider="com.acme.PersistenceProviderImpl"/> sau activa\u0163i caracteristica bells-1.0 \u015fi configura\u0163i un <bell> pentru <library> care con\u0163ine furnizorul JPA.
+
+#-------------------------------------------------------------------------------
+JPA_THIRD_PARTY_PROV_NAME_CWWJP0052I=CWWJP0052I: Este folosit un furnizor PA ter\u0163\u0103 parte, {0}.
+JPA_THIRD_PARTY_PROV_NAME_CWWJP0052I.explanation=Indic\u0103 nume de clas\u0103 a furnizorului de persisten\u0163\u0103 a unei implement\u0103ri JPA ter\u0163\u0103 parte folosite.
+JPA_THIRD_PARTY_PROV_NAME_CWWJP0052I.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#-------------------------------------------------------------------------------
+JPA_THIRD_PARTY_PROV_INFO_CWWJP0053I=CWWJP0053I: {0} este folosit ca un furnizor JPA ter\u0163\u0103 parte. Informa\u0163iile de versiune sunt: {1}. 
+JPA_THIRD_PARTY_PROV_INFO_CWWJP0053I.explanation=Indic\u0103 informa\u0163iile de nume \u015fi versiune ale unei implement\u0103ri JPA ter\u0163\u0103 parte folosite.
+JPA_THIRD_PARTY_PROV_INFO_CWWJP0053I.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#-------------------------------------------------------------------------------
+NOT_COMPLIANT_WITH_JPA21_CWWJP0054E=CWWJP0054E: Implementarea {0}, {1}, nu este compatibil\u0103 cu specifica\u0163ia JPA 2.1 \u015fi prin urmare nu poate fi folosit\u0103. Ob\u0163ine\u0163i o versiune mai nou\u0103 de furnizor de persisten\u0163\u0103 JPA care implementeaz\u0103 JPA 2.1.
+NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.explanation=Furnizorul de persisten\u0163\u0103 JPA nu poate fi folosit deoarece \u00eei lipse\u015fte implementarea unor metode care sunt cerute de specifica\u0163ia JPA 2.1.
+NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.useraction=Ob\u0163ine\u0163i o versiune mai nou\u0103 de furnizor de persisten\u0163\u0103 JPA care este conform\u0103 cu specifica\u0163ia JPA 2.1.
+
+#-------------------------------------------------------------------------------
+# Error messages from the JPA Provider below this point
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+PROVIDER_INFO_CWWJP9990I=CWWJP9990I: {0}
+PROVIDER_INFO_CWWJP9990I.explanation=Furnizorul JPA (Java Persistence API) a \u00eenregistrat \u00een istoric acest mesaj informa\u0163ional.
+PROVIDER_INFO_CWWJP9990I.useraction=Consulta\u0163i documenta\u0163ia furnizorului JPA.
+
+#-------------------------------------------------------------------------------
+PROVIDER_WARNING_CWWJP9991W=CWWJP9991W: {0}
+PROVIDER_WARNING_CWWJP9991W.explanation=Furnizorul JPA (Java Persistence API) a \u00eenregistrat \u00een istoric acest mesaj de avertisment.
+PROVIDER_WARNING_CWWJP9991W.useraction=Consulta\u0163i documenta\u0163ia furnizorului JPA.
+
+#-------------------------------------------------------------------------------
+PROVIDER_ERROR_CWWJP9992E=CWWJP9992E: {0}
+PROVIDER_ERROR_CWWJP9992E.explanation=Furnizorul JPA (Java Persistence API) a \u00eenregistrat \u00een istoric acest mesaj de eroare.
+PROVIDER_ERROR_CWWJP9992E.useraction=Consulta\u0163i documenta\u0163ia furnizorului JPA.
+
+#-------------------------------------------------------------------------------
+PROVIDER_FATAL_CWWJP9993E=CWWJP9993E: {0}
+PROVIDER_FATAL_CWWJP9993E.explanation=Furnizorul JPA (Java Persistence API) a \u00eenregistrat \u00een istoric acest mesaj fatal.
+PROVIDER_FATAL_CWWJP9993E.useraction=Consulta\u0163i documenta\u0163ia furnizorului JPA.
+
+#-------------------------------------------------------------------------------

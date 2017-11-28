@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs20.client/resources/com/ibm/ws/jaxrs20/client/internal/resources/JAXRSClientMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS20 Client Code
+#RANGE 0700 - 0799
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# JAXRS 2.0 Client Configuration Message ------------------------
+error.jaxrs.client.configuration.timeout.valueinvalid=CWWKW0700E: Il valore di timeout {0} specificato nella propriet\u00e0\u00a0{1} sul lato client JAX-RS non \u00e8 valido. Verr\u00e0 utilizzato il valore predefinito {2}. {3} 
+error.jaxrs.client.configuration.timeout.valueinvalid.explanation=Il tipo del valore di timeout deve essere long o int.  
+error.jaxrs.client.configuration.timeout.valueinvalid.useraction=Impostare il tipo del valore su long o int.
+
+error.jaxrs.client.configuration.proxy.portinvalid=CWWKW0701E: Il valore della porta del server proxy {0} specificato nella propriet\u00e0\u00a0{1} sul lato client JAX-RS non \u00e8 valido. Verr\u00e0 utilizzato il valore predefinito {2}. {3}
+error.jaxrs.client.configuration.proxy.portinvalid.explanation=Il tipo del valore porta del server proxy deve essere int.  
+error.jaxrs.client.configuration.proxy.portinvalid.useraction=Impostare il tipo del valore su int.
+
+error.jaxrs.client.configuration.proxy.typeinvalid=CWWKW0702E: Il valore del tipo di server proxy {0} specificato nella propriet\u00e0\u00a0 {1} sul lato client JAX-RS non \u00e8 valido. Verr\u00e0 utilizzato il valore predefinito {2}. {3}
+error.jaxrs.client.configuration.proxy.typeinvalid.explanation=Il valore del tipo del server proxy deve essere HTTP o SOCKS.  
+error.jaxrs.client.configuration.proxy.typeinvalid.useraction=Impostare il valore su HTTP o SOCKS.
+
+#{0} is the ssl ref id configured in server.xml
+error.jaxrs.client.ssl.invalidsslconfig=CWWKW0703E: Non \u00e8 possibile creare il factory di socket SSL perch\u00e9 l''id riferimento SSL {0} non esiste nel file server.xml.
+error.jaxrs.client.ssl.invalidsslconfig.explanation= \u00c8 richiesto un ID riferimento valido per generare un factory di socket SSL. Non \u00e8 presente una configurazione SSL con ID {0} nel file server.xml.  
+error.jaxrs.client.ssl.invalidsslconfig.useraction= Impostare un ID riferimento SSL valido nel file server.xml.
+
+no_saml_found_in_subject=CWWKW0704W: Il token SAML richiesto manca dal soggetto.
+no_saml_found_in_subject.explanation=Si \u00e8 verificato un errore durante l'estrazione del token SAML dal soggetto o non \u00e8 stato trovato un elemento SAML nel soggetto corrente.
+no_saml_found_in_subject.useraction=Se l'utente ha creato il soggetto Esegui come, verificare che il token SAML sia aggiunto al soggetto. In caso contrario verificare che la configurazione del server supporti l'aggiunta del token SAML al soggetto controllando l'attributo includeTokenInSubject nella configurazione SAML.
+
+failed_to_extract_saml_token_from_subject=CWWKW0705W: Si \u00e8 verificata un''eccezione durante il tentativo di utilizzare l''API PropagationHelper SAML. L''eccezione era: [{0}]
+failed_to_extract_saml_token_from_subject.explanation=Si \u00e8 verificata una eccezione durante il richiamo dell'API PropagationHelper per ottenere il token SAML dal soggetto.
+failed_to_extract_saml_token_from_subject.useraction=Assicurarsi che il file server.xml abbia specificata la funzione samlWeb-2.0. Inoltre, consultare i log del server per ulteriori informazioni relative all'eccezione. 
+
+failed_run_as_subject=CWWKW0706E: Si \u00e8 verificata un''eccezione durante il tentativo di ottenere RunAsSubject. L''eccezione era: [{0}].
+failed_run_as_subject.explanation=Si \u00e8 verificata un'eccezione durante il richiamo di RunAsSubject.
+failed_run_as_subject.useraction=Assicurarsi che il server sia configurato e avviato correttamente.

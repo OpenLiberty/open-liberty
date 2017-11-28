@@ -1,0 +1,360 @@
+###############################################################################
+# Copyright (c) 2010, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.feature/resources/com/ibm/ws/kernel/feature/internal/resources/ProvisionerMessages.nlsprops
+#COMPONENTPREFIX CWWKF
+#COMPONENTNAMEFOR CWWKF Liberty Feature Manager
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+#   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
+# -------------------------------------------------------------------------------------------------
+
+UPDATE_MISSING_FEATURE_ERROR=CWWKF0001E: Uma defini\u00e7\u00e3o de recurso n\u00e3o p\u00f4de ser localizada para {0}
+UPDATE_MISSING_FEATURE_ERROR.explanation=O gerenciador do recurso n\u00e3o p\u00f4de localizar uma defini\u00e7\u00e3o para o recurso especificado.
+UPDATE_MISSING_FEATURE_ERROR.useraction=Verifique se o nome do recurso especificado est\u00e1 escrito corretamente e se a defini\u00e7\u00e3o \
+do recurso existe e est\u00e1 leg\u00edvel no diret\u00f3rio lib/features.
+
+UPDATE_MISSING_BUNDLE_ERROR=CWWKF0002E: Um pacote configur\u00e1vel n\u00e3o p\u00f4de ser localizado para {0}.
+UPDATE_MISSING_BUNDLE_ERROR.explanation=O gerenciador de recurso n\u00e3o p\u00f4de localizar um pacote configur\u00e1vel requerido por um \
+recurso ativado.
+UPDATE_MISSING_BUNDLE_ERROR.useraction=Assegure que os pacotes configur\u00e1veis no diret\u00f3rio lib sejam leg\u00edveis e que a imagem de \
+instala\u00e7\u00e3o esteja conclu\u00edda.
+
+UPDATE_INSTALL_EXCEPTIONS_ERROR=CWWKF0003E: Uma exce\u00e7\u00e3o foi gerada ao instalar ou desinstalar o pacote configur\u00e1vel {0}. Exce\u00e7\u00e3o: {1}
+UPDATE_INSTALL_EXCEPTIONS_ERROR.explanation=O gerenciador de recurso n\u00e3o p\u00f4de instalar ou desinstalar o pacote configur\u00e1vel \
+especificado.
+UPDATE_INSTALL_EXCEPTIONS_ERROR.useraction=Consulte a exce\u00e7\u00e3o referenciada e as mensagens de FFDC geradas para cada falha.
+
+UPDATE_OTHER_EXCEPTION_ERROR=CWWKF0004E: Ocorreu uma exce\u00e7\u00e3o desconhecida ao instalar ou remover recursos. Exce\u00e7\u00e3o: {0}
+UPDATE_OTHER_EXCEPTION_ERROR.explanation=Ocorreu uma exce\u00e7\u00e3o inesperada ao incluir ou remover um ou mais recursos a partir do \
+tempo de execu\u00e7\u00e3o.
+UPDATE_OTHER_EXCEPTION_ERROR.useraction=Consulte a exce\u00e7\u00e3o referenciada e as mensagens de FFDC geradas para obter informa\u00e7\u00f5es \
+adicionais.
+
+UPDATE_LIFECYCLE_EXCEPTIONS_ERROR=CWWKF0005E: Uma exce\u00e7\u00e3o foi gerada ao iniciar, parar ou desinstalar o pacote configur\u00e1vel {0}. Exce\u00e7\u00e3o: \
+{1}
+UPDATE_LIFECYCLE_EXCEPTIONS_ERROR.explanation=Ocorreu uma exce\u00e7\u00e3o ao alterar o estado de um pacote configur\u00e1vel gerenciado pelo \
+gerenciador de recursos.
+UPDATE_LIFECYCLE_EXCEPTIONS_ERROR.useraction=Consulte a exce\u00e7\u00e3o referenciada e os registros de FFDC associados para obter detalhes.
+
+UPDATE_BUNDLE_CACHE_WARNING=CWWKF0006W: O sistema n\u00e3o p\u00f4de ler ou persistir a lista de pacotes configur\u00e1veis de recursos \
+carregados para esta inst\u00e2ncia do servidor em {0}, portanto, o cache do pacote \
+configur\u00e1vel warm start foi desativado. Exce\u00e7\u00e3o: {1}
+UPDATE_BUNDLE_CACHE_WARNING.explanation=O arquivo de cache do pacote configur\u00e1vel n\u00e3o p\u00f4de ser criado ou lido. Consulte a \
+exce\u00e7\u00e3o referenciada para obter informa\u00e7\u00f5es adicionais. 
+UPDATE_BUNDLE_CACHE_WARNING.useraction=Certifique-se de que o diret\u00f3rio do servidor e o subdiret\u00f3rio da \u00e1rea de trabalho sejam \
+grav\u00e1veis. 
+
+STARTING_AUDIT=CWWKF0007I: Atualiza\u00e7\u00e3o do recurso iniciada.
+STARTING_AUDIT.explanation=O gerenciador de recursos iniciou o processamento de recursos ativados. O intervalo (em segundos) \u00e9 relativo a quando a plataforma foi \
+ativada.
+STARTING_AUDIT.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+COMPLETE_AUDIT=CWWKF0008I: Atualiza\u00e7\u00e3o do recurso conclu\u00edda em {0} segundos.
+COMPLETE_AUDIT.explanation=O gerenciador de recursos concluiu o processamento dos recursos ativados. O intervalo \
+(em segundos) \u00e9 relativo a quando a plataforma foi ativada.
+COMPLETE_AUDIT.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+EMPTY_FEATURES_WARNING=CWWKF0009W: O servidor n\u00e3o foi configurado para instalar nenhum recurso.
+EMPTY_FEATURES_WARNING.explanation=Nenhum recurso foi configurado para ser instalado. 
+EMPTY_FEATURES_WARNING.useraction=Atualize a configura\u00e7\u00e3o para incluir quaisquer recursos necess\u00e1rios. 
+
+BUNDLE_MATCH_WARNING=CWWKF0010W: Mais de um pacote configur\u00e1vel correspondeu ao filtro especificado ({0}), usando {1}. Correspond\u00eancias: {2} 
+BUNDLE_MATCH_WARNING.explanation=Um elemento de defini\u00e7\u00e3o de recurso correspondeu a mais de um pacote configur\u00e1vel. Isto \
+poderia ocorrer porque o filtro \u00e9 muito geral ou porque h\u00e1 pacotes configur\u00e1veis antigos \
+na imagem que correspondem ao filtro.
+BUNDLE_MATCH_WARNING.useraction=Certifique-se de que o filtro seja suficientemente espec\u00edfico e que uma imagem de \
+instala\u00e7\u00e3o clara esteja sendo usada.
+
+SERVER_STARTED=CWWKF0011I: O servidor {0} est\u00e1 \
+pronto para executar um planeta mais inteligente.
+SERVER_STARTED.explanation=O servidor foi iniciado com sucesso.
+SERVER_STARTED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+FEATURES_ADDED=CWWKF0012I: O servidor instalou os recursos a seguir: {0}.
+FEATURES_ADDED.explanation=O servidor instalou um conjunto de recursos.
+FEATURES_ADDED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+FEATURES_REMOVED=CWWKF0013I: O servidor removeu os recursos a seguir: {0}.
+FEATURES_REMOVED.explanation=O servidor removeu um conjunto de recursos.
+FEATURES_REMOVED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+TEST_FIX_DETECTED=CWWKF0014W: O servidor tem as corre\u00e7\u00f5es de teste a seguir ativas no tempo de execu\u00e7\u00e3o: {0}.  Para uma listagem integral de corre\u00e7\u00f5es instaladas, execute: productInfo version --ifixes
+TEST_FIX_DETECTED.explanation=Os pacotes configur\u00e1veis OSGi carregados no tempo de execu\u00e7\u00e3o foram modificados por algumas das corre\u00e7\u00f5es de teste instaladas. Uma listagem de todas as corre\u00e7\u00f5es instaladas pode ser obtida usando o comando: productInfo version --ifixes
+TEST_FIX_DETECTED.useraction=Um servidor de produ\u00e7\u00e3o n\u00e3o deve ter corre\u00e7\u00f5es de teste instaladas. Se este for um servidor de produ\u00e7\u00e3o, remova as corre\u00e7\u00f5es de teste e reinicie o servidor.
+
+INTERIM_FIX_DETECTED=CWWKF0015I: O servidor tem as corre\u00e7\u00f5es tempor\u00e1rias a seguir ativas no tempo de execu\u00e7\u00e3o: {0}. Para uma listagem integral de corre\u00e7\u00f5es instaladas, execute: productInfo version --ifixes
+INTERIM_FIX_DETECTED.explanation=Os pacotes configur\u00e1veis OSGi carregados no tempo de execu\u00e7\u00e3o foram modificados por algumas das corre\u00e7\u00f5es tempor\u00e1rias instaladas. Uma listagem de todas as corre\u00e7\u00f5es instaladas pode ser obtida usando o comando: productInfo version --ifixes
+INTERIM_FIX_DETECTED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+# IBM-Provision-Capability is a manifest header name and should not be translated.
+INVALID_PROVISION_CAPABILITY_FILTER=CWWKF0016I: O filtro {0} no cabe\u00e7alho do manifesto do recurso {1} est\u00e1 incorreto: {2}
+INVALID_PROVISION_CAPABILITY_FILTER.explanation=O cabe\u00e7alho IBM-Provision-Capability cont\u00e9m um ou mais filtros OSGi com sintaxe inv\u00e1lida.
+INVALID_PROVISION_CAPABILITY_FILTER.useraction=Corrija a sintaxe de filtro no cabe\u00e7alho IBM-Provision-Capability.
+
+PRODUCT_FEATURE_INSTALL_PATH_ERROR=CWWKF0017E: O caminho de instala\u00e7\u00e3o do produto {0} especificado no arquivo de propriedades do produto {1} n\u00e3o p\u00f4de ser localizado.
+PRODUCT_FEATURE_INSTALL_PATH_ERROR.explanation=O gerenciador de recurso n\u00e3o p\u00f4de localizar o caminho de instala\u00e7\u00e3o do produto especificado.
+PRODUCT_FEATURE_INSTALL_PATH_ERROR.useraction=Verifique se um caminho do produto v\u00e1lido est\u00e1 definido para a propriedade com.ibm.websphere.productInstall no arquivo de propriedades do produto.
+
+PRODUCT_FEATURE_PROPERTIES_FILE_ERROR=CWWKF0018E: A propriedade com.ibm.websphere.productInstall n\u00e3o foi localizada no arquivo de propriedades do produto {0}.
+PRODUCT_FEATURE_PROPERTIES_FILE_ERROR.explanation=O gerenciador de recursos localizou um arquivo de propriedades do produto que n\u00e3o cont\u00e9m a propriedade com.ibm.websphere.productInstall.
+PRODUCT_FEATURE_PROPERTIES_FILE_ERROR.useraction=Inclua com.ibm.websphere.productInstall no arquivo de propriedades do produto em etc/extensions.
+
+PRODUCT_FEATURE_LOAD_ERROR=CWWKF0019E: A exce\u00e7\u00e3o: {1} foi gerada ao carregar o arquivo de propriedades do produto {0}.
+PRODUCT_FEATURE_LOAD_ERROR.explanation=A exce\u00e7\u00e3o especificada ocorreu quando o gerenciador de recursos tentou ler propriedades do arquivo de propriedades do produto.
+PRODUCT_FEATURE_LOAD_ERROR.useraction=Consulte a exce\u00e7\u00e3o referenciada e os registros de FFDC associados para obter detalhes.
+
+#SUPERCEDED FEATURES
+SUPERSEDED_CONFIGURATION_ERROR=CWWKF0020E: O recurso de {0} tem o atributo superseded configurado para false, mas o atributo superseded-by \u00e9 {1}. 
+SUPERSEDED_CONFIGURATION_ERROR.explanation=O cabe\u00e7alho Symbolic-Name em um recurso tem o atributo superseded-by configurado, mas seu atributo superseded est\u00e1 configurado para false.
+SUPERSEDED_CONFIGURATION_ERROR.useraction=Certifique-se de que o cabe\u00e7alho Symbolic-Name tenha os atributos superseded e superseded-by configurados corretamente.
+
+UPDATE_NOT_PUBLIC_FEATURE_ERROR=CWWKF0021E: O recurso {0} especificado em server.xml n\u00e3o \u00e9 um recurso p\u00fablico, portanto n\u00e3o ser\u00e1 executado pelo servidor.
+UPDATE_NOT_PUBLIC_FEATURE_ERROR.explanation=Somente recursos p\u00fablicos podem ser especificados em server.xml.
+UPDATE_NOT_PUBLIC_FEATURE_ERROR.useraction=Altere a configura\u00e7\u00e3o do servidor para especificar um recurso p\u00fablico que forne\u00e7a a fun\u00e7\u00e3o requerida.  Se voc\u00ea estiver desenvolvendo um recurso que os usu\u00e1rios devam especificar em sua configura\u00e7\u00e3o do servidor, altere o recurso para ter visibilidade p\u00fablica incluindo visibility=public como um atributo de Subsystem-SymbolicName para o recurso.
+
+UNSUPPORTED_FEATURE_VERSION=CWWKF0022E: O recurso {0} n\u00e3o \u00e9 suportado. O cabe\u00e7alho IBM-Feature-Version est\u00e1 configurado como {1}.
+UNSUPPORTED_FEATURE_VERSION.explanation=O servidor somente suporta recursos cujo IBM-Feature-Version esteja configurado como 2. Um n\u00famero maior que 2 indica que o recurso \u00e9 destinado para uma vers\u00e3o mais recente do produto.
+UNSUPPORTED_FEATURE_VERSION.useraction=Entre em contato com o autor do recurso para obter uma c\u00f3pia que seja destinada para esta vers\u00e3o do produto.
+
+#Minify feature query messages
+ERROR_OPENING_JAR_FOR_CLASSPATH=CWWKF0023W: Um recurso referenciou um archive {1} que foi incapaz de ser processado durante uma consulta de empacotamento. Exce\u00e7\u00e3o: {2}
+ERROR_OPENING_JAR_FOR_CLASSPATH.explanation=Uma exce\u00e7\u00e3o ocorreu quando o arquivo jar do recurso foi lido durante uma consulta de empacotamento.
+ERROR_OPENING_JAR_FOR_CLASSPATH.useraction=Consulte a exce\u00e7\u00e3o referenciada e os registros de FFDC associados para obter detalhes.
+
+ERROR_MISSING_FEATURE_RESOURCE=CWWKF0024W: O recurso {0} referenciou um recurso {1} que n\u00e3o p\u00f4de ser localizado durante uma consulta de empacotamento. 
+ERROR_MISSING_FEATURE_RESOURCE.explanation=O gerenciador de recursos n\u00e3o p\u00f4de localizar o conte\u00fado do recurso especificado.
+ERROR_MISSING_FEATURE_RESOURCE.useraction=Verifique se o produto foi instalado corretamente. Se o problema persistir, entre em contato com o representante de servi\u00e7o.
+
+ERROR_UNKNOWN_FEATURE_RESOURCE_TYPE=CWWKF0025W: O recurso {0} referenciou um recurso {1} de um tipo desconhecido {2} durante uma consulta de empacotamento. 
+ERROR_UNKNOWN_FEATURE_RESOURCE_TYPE.explanation=O gerenciador de recursos n\u00e3o p\u00f4de entender o conte\u00fado do recurso especificado.
+ERROR_UNKNOWN_FEATURE_RESOURCE_TYPE.useraction=Verifique se o produto foi instalado corretamente. Se o problema persistir, entre em contato com o representante de servi\u00e7o.
+
+SERVER_MINIFY=CWWKF0026I: O servidor {0} est\u00e1 pronto para construir um pacote menor.
+SERVER_MINIFY.explanation=O servidor est\u00e1 preparando informa\u00e7\u00f5es para uma opera\u00e7\u00e3o pendente de pacote do servidor.
+SERVER_MINIFY.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+# end Minify feature query messages
+
+PRODUCT_FEATURE_INSTALL_PATH_SYMBOL_ERROR=CWWKF0027E: Os recursos de extens\u00e3o do produto n\u00e3o ser\u00e3o instalados porque o caminho de instala\u00e7\u00e3o da extens\u00e3o do produto especificado no arquivo de propriedades de extens\u00e3o do produto {0} cont\u00e9m o local simb\u00f3lico {1}.
+PRODUCT_FEATURE_INSTALL_PATH_SYMBOL_ERROR.explanation=Um caminho de instala\u00e7\u00e3o da extens\u00e3o do produto n\u00e3o pode conter locais simb\u00f3licos.
+PRODUCT_FEATURE_INSTALL_PATH_SYMBOL_ERROR.useraction=Atualize a propriedade com.ibm.websphere.productInstall no arquivo de propriedades de extens\u00e3o do produto especificado para que ele n\u00e3o contenha locais simb\u00f3licos.
+
+PRODUCT_FEATURE_INSTALL_PATH_WLP_ERROR=CWWKF0028E: Os recursos de extens\u00e3o do produto n\u00e3o ser\u00e3o instalados porque o caminho de instala\u00e7\u00e3o da extens\u00e3o do produto especificado no arquivo de propriedades de extens\u00e3o do produto {0} \u00e9 o mesmo que wlp.install.dir.
+PRODUCT_FEATURE_INSTALL_PATH_WLP_ERROR.explanation=Um caminho de instala\u00e7\u00e3o da extens\u00e3o do produto n\u00e3o pode ser o mesmo que wlp.install.dir.
+PRODUCT_FEATURE_INSTALL_PATH_WLP_ERROR.useraction=Atualize a propriedade com.ibm.websphere.productInstall no arquivo de propriedades de extens\u00e3o do produto especificado para que n\u00e3o seja o mesmo que wlp.install.dir.
+
+BUNDLE_EXCEPTION_ERROR=CWWKF0029E: {0}
+BUNDLE_EXCEPTION_ERROR.explanation=Uma BundleException foi lan\u00e7ada pela estrutura OSGi.
+BUNDLE_EXCEPTION_ERROR.useraction=Consulte a mensagem de exce\u00e7\u00e3o para obter informa\u00e7\u00f5es.
+
+INVALID_START_PHASE_WARNING=CWWKF0030W: A fase de in\u00edcio {0} especificada para o pacote configur\u00e1vel {1} no recurso {2} \u00e9 inv\u00e1lida.
+INVALID_START_PHASE_WARNING.explanation=Um valor inv\u00e1lido foi especificado para a fase de in\u00edcio.
+INVALID_START_PHASE_WARNING.useraction=Especifique um valor v\u00e1lido para a fase de in\u00edcio. 
+
+FEATURE_NOT_INSTALLED=CWWKF0031I: O servidor \
+ignorou o recurso de carregamento {0} porque a funcionalidade \
+equivalente j\u00e1 existe.
+FEATURE_NOT_INSTALLED.explanation=Se duas \
+vers\u00f5es do mesmo recurso forem explicitamente especificadas no arquivo \
+server.xml, ou o arquivo server.xml especificar recursos que incluem \
+sub-recursos com funcionalidade duplicada, o servidor ir\u00e1 \
+ignorar o carregamento da segunda vers\u00e3o.
+FEATURE_NOT_INSTALLED.useraction=Se duas vers\u00f5es do \
+mesmo recurso forem explicitamente especificadas no arquivo \
+server.xml, exclua a vers\u00e3o que n\u00e3o for necess\u00e1ria.
+
+FEATURE_JAVA_LEVEL_NOT_MET_ERROR=CWWKF0032E: O recurso {0} requer uma vers\u00e3o m\u00ednima do Java Runtime Environment de {1}.
+FEATURE_JAVA_LEVEL_NOT_MET_ERROR.explanation=Para usar o recurso listado, deve-se ter a vers\u00e3o especificada ou uma vers\u00e3o mais recente do Java Runtime Environment (JRE) instalada no ambiente.
+FEATURE_JAVA_LEVEL_NOT_MET_ERROR.useraction=Fa\u00e7a o upgrade do Java Runtime Environment para a vers\u00e3o especificada ou mais recente.
+
+UPDATE_CONFLICT_FEATURE_ERROR=CWWKF0033E: Os recursos de singleton {0} e {1} n\u00e3o podem ser carregados ao mesmo tempo.  Os recursos configurados {2} e {3} incluem um ou mais recursos que causam o conflito. Sua configura\u00e7\u00e3o n\u00e3o \u00e9 suportada; atualize server.xml para remover \
+recursos incompat\u00edveis.
+UPDATE_CONFLICT_FEATURE_ERROR.explanation=V\u00e1rias vers\u00f5es de um recurso de singleton n\u00e3o podem ser carregadas ao mesmo tempo.  Esse conflito pode acontecer se duas vers\u00f5es de um recurso de singleton forem configuradas diretamente na configura\u00e7\u00e3o do servidor. Ou se os recursos configurados inclu\u00edrem vers\u00f5es diferentes de um recurso de singleton e n\u00e3o conseguirem tolerar uma vers\u00e3o comum do recurso de singleton.
+UPDATE_CONFLICT_FEATURE_ERROR.useraction=Tente especificar uma vers\u00e3o diferente dos recursos configurados que causaram o conflito em server.xml.  Se n\u00e3o houver outras vers\u00f5es dispon\u00edveis, os recursos configurados n\u00e3o ser\u00e3o compat\u00edveis uns com os outros e n\u00e3o poder\u00e3o ser configurados ao mesmo tempo.
+
+FEATURES_ADDED_CLIENT=CWWKF0034I: O cliente instalou os recursos a seguir: {0}.
+FEATURES_ADDED_CLIENT.explanation=O cliente instalou um conjunto de recursos.
+FEATURES_ADDED_CLIENT.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+CLIENT_STARTED=CWWKF0035I: O cliente {0} est\u00e1 em execu\u00e7\u00e3o.
+CLIENT_STARTED.explanation=O cliente foi iniciado com sucesso.
+CLIENT_STARTED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#Required feature gather query messages
+SERVER_GATHER_FEATURES=CWWKF0036I: O servidor {0} concluiu a reuni\u00e3o de uma lista de recursos necess\u00e1rios.
+SERVER_GATHER_FEATURES.explanation=O servidor compilou uma lista de recursos necess\u00e1rios.
+SERVER_GATHER_FEATURES.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+#End required feature gather query messages
+
+UPDATE_NOT_PUBLIC_FEATURE_CLIENT_ERROR=CWWKF0037E: O recurso {0} especificado no arquivo client.xml n\u00e3o \u00e9 recurso p\u00fablico e n\u00e3o ser\u00e1 executado pelo cliente.
+UPDATE_NOT_PUBLIC_FEATURE_CLIENT_ERROR.explanation=\u00c9 poss\u00edvel especificar somente recursos p\u00fablicos no arquivo client.xml.
+UPDATE_NOT_PUBLIC_FEATURE_CLIENT_ERROR.useraction=Altere a configura\u00e7\u00e3o do cliente para especificar um recurso p\u00fablico que forne\u00e7a a fun\u00e7\u00e3o requerida.  Se voc\u00ea estiver desenvolvendo um recurso que os usu\u00e1rios devam especificar em sua configura\u00e7\u00e3o do cliente, altere o recurso para ter visibilidade p\u00fablica incluindo visibility=public como um atributo de Subsystem-SymbolicName para o recurso.
+
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_ERROR=CWWKF0038E: O recurso {0} especificado no arquivo {1} somente \
+suporta os tipos de processo do cliente, o que resultar\u00e1 na n\u00e3o execu\u00e7\u00e3o desse recurso pelo processo do servidor.
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_ERROR.explanation=O recurso configurado n\u00e3o suporta o tipo de processo especificado.
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_ERROR.useraction=Remova o recurso da configura\u00e7\u00e3o ou altere o arquivo manifest do recurso para ativar o suporte para o tipo de processo desejado.
+
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_ERROR=CWWKF0039E: O recurso {0} somente suporta os tipos de processo do \
+cliente, o que resultar\u00e1 na n\u00e3o execu\u00e7\u00e3o desse recurso pelo processo do servidor.  O recurso {1} especificado no arquivo {2} pode n\u00e3o funcionar adequadamente, em raz\u00e3o de uma depend\u00eancia do recurso {0}.
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_ERROR.explanation=O recurso configurado n\u00e3o suporta o tipo de processo especificado.
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_ERROR.useraction=Remova o recurso da configura\u00e7\u00e3o ou altere o arquivo manifest do recurso para ativar o suporte para o tipo de processo desejado.
+
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_CLIENT_ERROR=CWWKF0040E: O recurso {0} especificado no arquivo {1} \
+somente suporta os tipos de processo do servidor, o que resultar\u00e1 na n\u00e3o execu\u00e7\u00e3o desse recurso pelo processo do cliente.
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_CLIENT_ERROR.explanation=O recurso configurado n\u00e3o suporta o tipo de processo especificado.
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_CLIENT_ERROR.useraction=Remova o recurso da configura\u00e7\u00e3o ou altere o arquivo manifest do recurso para ativar o suporte para o tipo de processo desejado.
+
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR=CWWKF0041E: O recurso {0} suporta somente os tipos de \
+processo do servidor, o que resultar\u00e1 na n\u00e3o execu\u00e7\u00e3o desse recurso pelo processo do cliente.  O recurso {1} especificado no arquivo {2} pode n\u00e3o funcionar adequadamente, em raz\u00e3o de uma depend\u00eancia do recurso {0}.
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.explanation=O recurso configurado n\u00e3o suporta o tipo de processo especificado.
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.useraction=Remova o recurso da configura\u00e7\u00e3o ou altere o arquivo manifest do recurso para ativar o suporte para o tipo de processo desejado.
+
+# CWWK042E  {0} = feature Name: {1} = server name 
+UPDATE_MISSING_CORE_FEATURE_ERROR=CWWKF0042E: Uma defini\u00e7\u00e3o de recurso n\u00e3o pode ser localizada para o recurso {0}.  Tente \
+executar o comando bin/installUtility install {0} para instalar o \
+recurso. Alternativamente, \u00e9 poss\u00edvel executar o comando \
+bin/installUtility install {1} para instalar todos os recursos \
+referenciados por esta configura\u00e7\u00e3o.
+UPDATE_MISSING_CORE_FEATURE_ERROR.explanation=O gerenciador do recurso n\u00e3o p\u00f4de localizar uma defini\u00e7\u00e3o para o recurso especificado.
+UPDATE_MISSING_CORE_FEATURE_ERROR.useraction=Verifique \
+se o nome do recurso especificado est\u00e1 escrito corretamente.  \
+Verifique tamb\u00e9m se a defini\u00e7\u00e3o do recurso existe e est\u00e1 leg\u00edvel \
+no diret\u00f3rio lib/features. \
+Se o recurso n\u00e3o existir, tente executar o comando bin/installUtility \
+install feature_name para instalar o recurso ou tentar executar o \
+comando bin/installUtility install server_name para instalar todos os \
+recursos referenciados por esta configura\u00e7\u00e3o. 
+
+#   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
+
+tool.feature.exists=CWWKF1000I: O recurso {0} j\u00e1 existe. Ele n\u00e3o ser\u00e1 reinstalado. Para modificar um recurso existente, \u00e9 necess\u00e1rio primeiro desinstal\u00e1-lo manualmente.
+tool.feature.exists.explanation=O recurso que est\u00e1 sendo instalado j\u00e1 existe.
+tool.feature.exists.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+tool.missing.args=CWWKF1001E: {0} requer {1} argumentos, mas {2} foram fornecidos.
+tool.missing.args.explanation=Foi usado um n\u00famero incorreto de argumentos para chamar a a\u00e7\u00e3o.
+tool.missing.args.useraction=Execute o comando novamente com os argumentos corretos.
+tool.unknown.options=CWWKF1002E: {0} n\u00e3o suporta as op\u00e7\u00f5es: {1}.
+tool.unknown.options.explanation=Foi feita uma tentativa de executar um comando usando argumentos inv\u00e1lidos.
+tool.unknown.options.useraction=Execute o comando novamente sem os argumentos inv\u00e1lidos.
+
+tool.install.bad.extension=CWWKF1003E: A extens\u00e3o de produto {0} n\u00e3o existe.
+tool.install.bad.extension.explanation=A extens\u00e3o de produto na qual o recurso deve ser instalado n\u00e3o est\u00e1 registrada.
+tool.install.bad.extension.useraction=Instale o recurso em uma extens\u00e3o de produto que esteja registrada ou registre a extens\u00e3o de produto ausente.
+tool.install.invalid.extension=CWWKF1004E: A extens\u00e3o de produto {0} n\u00e3o especifica um local.
+tool.install.invalid.extension.explanation=A extens\u00e3o de produto n\u00e3o pode ser localizada porque o arquivo de registro n\u00e3o cont\u00e9m um local.
+tool.install.invalid.extension.useraction=Corrija o registro da extens\u00e3o de produto de modo que ele contenha o local da extens\u00e3o.
+tool.install.ioexception.extension=CWWKF1005E: Ocorreu um erro inesperado ao ler a extens\u00e3o de produto {0}, exce\u00e7\u00e3o: {1}
+tool.install.ioexception.extension.explanation=Ocorreu um erro inesperado ao tentar ler o arquivo de propriedades da extens\u00e3o de produto fornecida na mensagem de erro.
+tool.install.ioexception.extension.useraction=Revise a mensagem de exce\u00e7\u00e3o para obter uma explica\u00e7\u00e3o do motivo pelo qual o arquivo n\u00e3o p\u00f4de ser lido e tente novamente.
+tool.install.no.dir=CWWKF1006E: N\u00e3o \u00e9 poss\u00edvel instalar o recurso porque o diret\u00f3rio {0} n\u00e3o existe.
+tool.install.no.dir.explanation=O diret\u00f3rio da extens\u00e3o de produto n\u00e3o existe, portanto o recurso n\u00e3o pode ser instalado nele.
+tool.install.no.dir.useraction=Assegure-se de que o diret\u00f3rio exista e tente instalar o recurso novamente.
+tool.install.download.esa=CWWKF1007E: Ocorreu um erro ao fazer o download do archive do Subsistema para {0}, exce\u00e7\u00e3o {1}
+tool.install.download.esa.explanation=Ocorreu um erro ao fazer o download do archive do Subsistema. Isso pode ser devido \u00e0 URL n\u00e3o ser v\u00e1lida ou a um problema de rede tempor\u00e1rio. A segunda senten\u00e7a da mensagem de erro pode dar informa\u00e7\u00f5es mais detalhadas sobre a causa do erro.
+tool.install.download.esa.useraction=Verifique se a URL do archive do Subsistema est\u00e1 correta e tente novamente.
+tool.install.download.tmpFile=CWWKF1008E: N\u00e3o \u00e9 poss\u00edvel criar um arquivo tempor\u00e1rio para fazer o download do archive do Subsistema, exce\u00e7\u00e3o {0}
+tool.install.download.tmpFile.explanation=A opera\u00e7\u00e3o de instala\u00e7\u00e3o do recurso faz o download do archive do Subsistema para um arquivo tempor\u00e1rio, mas n\u00e3o foi poss\u00edvel criar um arquivo tempor\u00e1rio. Isso provavelmente \u00e9 causado por uma restri\u00e7\u00e3o da m\u00e1quina. A segunda senten\u00e7a da mensagem de erro pode dar informa\u00e7\u00f5es mais detalhadas sobre a causa do erro.
+tool.install.download.tmpFile.useraction=\u00c9 poss\u00edvel que o sistema de arquivo tempor\u00e1rio esteja cheio. Se  for esse o caso, limpar espa\u00e7o resolver\u00e1 este problema.
+tool.install.file.notexist=CWWKF1009E: O arquivo {0} n\u00e3o existe.
+tool.install.file.notexist.explanation=O archive de Subsistema fornecido para a opera\u00e7\u00e3o de instala\u00e7\u00e3o n\u00e3o existe.
+tool.install.file.notexist.useraction=Assegure-se de que o nome do archive de Subsistema foi fornecido corretamente e execute a opera\u00e7\u00e3o de instala\u00e7\u00e3o novamente.
+tool.install.file.notafile=CWWKF1010E: {0} n\u00e3o \u00e9 um arquivo.
+tool.install.file.notafile.explanation=O nome do arquivo fornecido identificou um diret\u00f3rio em vez de um archive de Subsistema.
+tool.install.file.notafile.useraction=Assegure-se de que o nome do archive de Subsistema foi fornecido corretamente e execute a opera\u00e7\u00e3o de instala\u00e7\u00e3o novamente.
+tool.install.missing.feature=CWWKF1011E: O recurso {0} depende de {1}, que n\u00e3o est\u00e1 instalado.
+tool.install.missing.feature.explanation=O recurso que est\u00e1 sendo instalado depende de outros recursos que ainda n\u00e3o foram instalados. O recurso n\u00e3o pode ser usado at\u00e9 que o recurso indicado na mensagem de erro seja instalado.
+tool.install.missing.feature.useraction=Instale o recurso ausente e execute a instala\u00e7\u00e3o novamente.
+tool.install.missing.content=CWWKF1012E: O recurso {0} n\u00e3o existe no archive de Subsistema no local {1}.
+tool.install.missing.content.explanation=Ao processar o conte\u00fado do Subsistema, um arquivo foi referenciado mas n\u00e3o foi localizado no archive.
+tool.install.missing.content.useraction=Entre em contato com o autor do Subsistema para obter um archive atualizado que contenha o conte\u00fado requerido.
+tool.install.content.notfound=CWWKF1013E: O conte\u00fado {0} no Subsistema n\u00e3o foi localizado no archive do Subsistema.
+tool.install.content.notfound.explanation=Ao processar o conte\u00fado do Subsistema, alguns pacotes configur\u00e1veis necess\u00e1rios n\u00e3o foram localizados no archive do Subsistema.
+tool.install.content.notfound.useraction=Entre em contato com o autor do Subsistema para obter um archive atualizado que contenha o conte\u00fado requerido.
+tool.install.bad.zip=CWWKF1014E: Ocorreu um erro ao ler o archive {0}, exce\u00e7\u00e3o {1}
+tool.install.bad.zip.explanation=N\u00e3o foi poss\u00edvel ler o archive do Subsistema.
+tool.install.bad.zip.useraction=Verifique se o archive do Subsistema \u00e9 um archive v\u00e1lido e completo. Se n\u00e3o for v\u00e1lido, obtenha um archive novo do provedor.
+tool.install.file.exists=CWWKF1015E: O arquivo {0} j\u00e1 existe.
+tool.install.file.exists.explanation=A instala\u00e7\u00e3o do archive do Subsistema falhou porque um arquivo do archive j\u00e1 existe na instala\u00e7\u00e3o.
+tool.install.file.exists.useraction=Revise os arquivos que j\u00e1 existem. Se a opera\u00e7\u00e3o de instala\u00e7\u00e3o puder continuar, execute a opera\u00e7\u00e3o novamente usando a op\u00e7\u00e3o --when-file-exists=replace para substituir os arquivos existentes ou a op\u00e7\u00e3o --when-file-exists=ignore para continuar sem o arquivo existente.
+tool.install.dir.create.fail=CWWKF1016E: N\u00e3o \u00e9 poss\u00edvel criar a estrutura de diret\u00f3rios {0}.
+tool.install.dir.create.fail.explanation=Os diret\u00f3rios necess\u00e1rios para o recurso que est\u00e1 sendo instalado n\u00e3o puderam ser criados.
+tool.install.dir.create.fail.useraction=Assegure-se de que o diret\u00f3rio fornecido exista e que as permiss\u00f5es necess\u00e1rias estejam ativas para permitir a cria\u00e7\u00e3o da estrutura de diret\u00f3rio. Execute a opera\u00e7\u00e3o de instala\u00e7\u00e3o novamente.
+tool.install.feature.ok=CWWKF1017I: Um ou mais recursos instalados com sucesso: {0}.
+tool.install.feature.ok.explanation=Essa mensagem \u00e9 apenas informativa.
+tool.install.feature.ok.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+tool.install.invalid.when.file.exists.value=CWWKF1018E: O valor {0} n\u00e3o \u00e9 uma op\u00e7\u00e3o v\u00e1lida para --when-file-exists. As op\u00e7\u00f5es v\u00e1lidas s\u00e3o fail, replace ou ignore.
+tool.install.invalid.when.file.exists.value.explanation=A op\u00e7\u00e3o --when-file-exists deve ser fail, replace ou ignore.
+tool.install.invalid.when.file.exists.value.useraction=Forne\u00e7a um dos valores v\u00e1lidos: fail, replace ou ignore.
+tool.product.ext.features.not.found=CWWKF1019E: A extens\u00e3o de produto {0} n\u00e3o cont\u00e9m recursos.
+tool.product.ext.features.not.found.explanation=Os arquivos de manifesto do recurso associados \u00e0 extens\u00e3o de produto especificada n\u00e3o foram localizados.
+tool.product.ext.features.not.found.useraction=Verifique se o diret\u00f3rio em que os manifestos de recurso est\u00e3o localizados \u00e9 v\u00e1lido.
+tool.product.ext.not.found=CWWKF1020E: A extens\u00e3o de produto {0} n\u00e3o pode ser localizada no local {1}.
+tool.product.ext.not.found.explanation=A extens\u00e3o de produto n\u00e3o pode ser localizada no local mencionado.
+tool.product.ext.not.found.useraction=Verifique se o local de instala\u00e7\u00e3o do produto est\u00e1 definido corretamente no arquivo de propriedades para a instala\u00e7\u00e3o do produto.
+tool.product.ext.not.defined=CWWKF1021E: A extens\u00e3o de produto com o nome {0} n\u00e3o existe.
+tool.product.ext.not.defined.explanation=A extens\u00e3o de produto com o nome especificado n\u00e3o existe.
+tool.product.ext.not.defined.useraction=Verifique se o nome da extens\u00e3o de produto especificado \u00e9 v\u00e1lido.
+tool.install.content.no.subsystem.manifest=CWWKF1022E: O arquivo OSGI-INF/SUBSYSTEM.MF n\u00e3o foi localizado no archive.
+tool.install.content.no.subsystem.manifest.explanation=O archive do subsistema n\u00e3o cont\u00e9m o arquivo OSGI-INF/SUBSYSTEM.MF, que cont\u00e9m metadados sobre o subsistema.
+tool.install.content.no.subsystem.manifest.useraction=Inclua o arquivo OSGI-INF/SUBSYSTEM.MF no archive.
+# {0} is the path to the file being used
+tool.install.two.subsystem.manifests=CWWKF1023W: H\u00e1 dois arquivos com o caminho OSGI-INF/SUBSYSTEM.MF, mas est\u00e3o especificados com mai\u00fasculas e min\u00fasculas diferentes. O arquivo {0} ser\u00e1 usado. 
+tool.install.two.subsystem.manifests.explanation=Voc\u00ea deve usar apenas um arquivo OSGI-INF/SUBSYSTEM.MF para definir um recurso, mas o archive cont\u00e9m dois arquivos OSGI-INF/SUBSYSTEM.MF que est\u00e3o especificados com mai\u00fasculas e min\u00fasculas diferentes.
+tool.install.two.subsystem.manifests.useraction=Exclua um dos arquivos SUBSYSTEM.MF.
+
+# {0} is the path to the (missing) feature directory
+tool.feature.dir.not.found=CWWKF1024E: O comando featureManager n\u00e3o p\u00f4de localizar o diret\u00f3rio de recursos e n\u00e3o p\u00f4de criar um no caminho do diret\u00f3rio {0}.
+tool.feature.dir.not.found.explanation=O diret\u00f3rio de recursos para esse servidor n\u00e3o existe. O diret\u00f3rio desejado com o nome de recursos pode ter sido criado acidentalmente como um arquivo.   O comando  featureManager tentou criar o diret\u00f3rio de recursos, mas n\u00e3o foi poss\u00edvel. Quando o diret\u00f3rio de recursos n\u00e3o puder ser criado, o usu\u00e1rio geralmente n\u00e3o possui permiss\u00f5es de grava\u00e7\u00e3o para o caminho do diret\u00f3rio. 
+tool.feature.dir.not.found.useraction=Conclua uma das seguintes a\u00e7\u00f5es: (1) Crie o diret\u00f3rio especificado manualmente e execute novamente o comando featureManager. (2) Execute novamente o comando featureManager como um usu\u00e1rio com acesso de grava\u00e7\u00e3o suficiente para o caminho do diret\u00f3rio especificado.  
+
+tool.find.view.info.name=\ \ \ \ Nome: {0}
+tool.find.view.info.symbolic.name=\ \ \ \ Nome simb\u00f3lico: {0}
+tool.find.view.info.description=\ \ \ \ Descri\u00e7\u00e3o: {0}
+tool.find.view.info.enabled.by=\ \ \ \ Ativado por:
+tool.find.no.feature=Nenhum recurso foi localizado.
+
+tool.missing.option=CWWKF1025E: A a\u00e7\u00e3o {0} requer a op\u00e7\u00e3o {1}, mas a op\u00e7\u00e3o necess\u00e1ria n\u00e3o foi fornecida.
+tool.missing.option.explanation=Foi feita uma tentativa de executar um comando sem especificar uma op\u00e7\u00e3o necess\u00e1ria.
+tool.missing.option.useraction=Execute o comando novamente com a op\u00e7\u00e3o necess\u00e1ria.
+
+tool.classpath.feature.not.found=CWWKF1026E: O recurso {0} n\u00e3o existe.
+tool.classpath.feature.not.found.explanation=Um recurso que n\u00e3o existe foi especificado.
+tool.classpath.feature.not.found.useraction=Execute o comando novamente sem especificar o recurso. 
+
+tool.classpath.feature.not.public=CWWKF1027E: O recurso {0} n\u00e3o \u00e9 p\u00fablico.
+tool.classpath.feature.not.public.explanation=Foi especificado um recurso que n\u00e3o \u00e9 p\u00fablico.
+tool.classpath.feature.not.public.useraction=Execute o comando novamente sem especificar o recurso.
+
+tool.classpath.wrong.drive=CWWKF1028E: O arquivo de sa\u00edda {0} deve estar localizado na mesma unidade que o arquivo {1}.
+tool.classpath.wrong.drive.explanation=O arquivo de sa\u00edda deve estar localizado na mesma unidade de todos os arquivos mencionados pelos recursos especificados.
+tool.classpath.wrong.drive.useraction=Execute o comando novamente com um arquivo de sa\u00edda localizado na mesma unidade do arquivo especificado.
+
+tool.classpath.create.fail=CWWKF1029E: N\u00e3o foi poss\u00edvel criar o arquivo de sa\u00edda {0}. O seguinte erro foi recebido: {1}
+tool.classpath.create.fail.explanation=Ocorreu um erro ao criar o arquivo de sa\u00edda.
+tool.classpath.create.fail.useraction=Revise a mensagem de erro, corrija o problema e execute o comando novamente. 
+
+tool.userfeature.install.location.invalid=CWWKF1036E: O recurso do usu\u00e1rio {0} n\u00e3o pode ser instalado como principal.
+tool.userfeature.install.location.invalid.explanation= O recurso do usu\u00e1rio n\u00e3o \u00e9 um recurso principal, portanto, n\u00e3o pode ser instalado dessa forma.
+tool.userfeature.install.location.invalid.useraction= Instale o recurso do usu\u00e1rio para usr. 
+

@@ -1,0 +1,120 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.rar/resources/com/ibm/ws/app/manager/rar/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA JCA
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+# replaces APPLICATION_START_SUCCESSFUL
+J2CA7001.adapter.install.successful=J2CA7001I: Adapter zasob\u00f3w {0} zosta\u0142 zainstalowany w ci\u0105gu {1} sek.
+J2CA7001.adapter.install.successful.explanation=Serwer pomy\u015blnie zainstalowa\u0142 adapter zasob\u00f3w.
+J2CA7001.adapter.install.successful.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# replaces APPLICATION_START_FAILED
+J2CA7002.adapter.install.failed=J2CA7002E: Wyst\u0105pi\u0142 wyj\u0105tek podczas instalowania adaptera zasob\u00f3w {0}. Komunikat o wyj\u0105tku: {1}
+J2CA7002.adapter.install.failed.explanation=Serwer nie m\u00f3g\u0142 zainstalowa\u0107 adaptera zasob\u00f3w.
+J2CA7002.adapter.install.failed.useraction=Informacje zawiera komunikat o wyj\u0105tku.
+
+# replaces CANNOT_CREATE_DIRECTORY
+J2CA7006.cannot.create.directory=J2CA7006E: Serwer nie m\u00f3g\u0142 utworzy\u0107 miejsca pobierania {0} dla adaptera zasob\u00f3w {1}.
+J2CA7006.cannot.create.directory.explanation=Podczas pobierania adaptera zasob\u00f3w w celu zainstalowania serwer nie m\u00f3g\u0142 utworzy\u0107 katalogu pobierania.
+J2CA7006.cannot.create.directory.useraction=Sprawd\u017a, czy na dysku jest wystarczaj\u0105co du\u017co wolnego miejsca na potrzeby pobierania.
+
+# replaces APPLICATION_STOPPED
+J2CA7009.adapter.uninstalled=J2CA7009I: Adapter zasob\u00f3w {0} zosta\u0142 pomy\u015blnie zdeinstalowany.
+J2CA7009.adapter.uninstalled.explanation=Serwer pomy\u015blnie zdeinstalowa\u0142 adapter zasob\u00f3w.
+J2CA7009.adapter.uninstalled.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# replaces APPLICATION_STOP_FAILED
+J2CA7010.adapter.uninstall.failed=J2CA7010E: Wyst\u0105pi\u0142 wyj\u0105tek podczas deinstalowania adaptera zasob\u00f3w {0}. Komunikat o wyj\u0105tku: {1}
+J2CA7010.adapter.uninstall.failed.explanation=Serwer nie m\u00f3g\u0142 zdeinstalowa\u0107 adaptera zasob\u00f3w.
+J2CA7010.adapter.uninstall.failed.useraction=Sprawd\u017a, czy stan adaptera zasob\u00f3w umo\u017cliwia jego zdeinstalowanie.
+
+# replaces APPLICATION_NOT_STARTED
+J2CA7012.adapter.not.installed=J2CA7012I: Adapter zasob\u00f3w {0} nie zosta\u0142 zainstalowany.
+J2CA7012.adapter.not.installed.explanation=Zainstalowanie adaptera zasob\u00f3w by\u0142o niemo\u017cliwe z powodu wcze\u015bniejszych b\u0142\u0119d\u00f3w. 
+J2CA7012.adapter.not.installed.useraction=Przejrzyj konfiguracj\u0119 adaptera zasob\u00f3w i sprawd\u017a dzienniki pod k\u0105tem b\u0142\u0119d\u00f3w wyst\u0119puj\u0105cych podczas instalowania adaptera zasob\u00f3w.
+
+# replaces DUPLICATE_APPLICATION_NAME
+J2CA7013.duplicate.adapter.name=J2CA7013E: Nie mo\u017cna zainstalowa\u0107 wielu adapter\u00f3w zasob\u00f3w lub innych artefakt\u00f3w o nazwie {0}.
+J2CA7013.duplicate.adapter.name.explanation=Nazwa adaptera zasob\u00f3w musi by\u0107 unikalna.  Prawdopodobnie dla dw\u00f3ch adapter\u00f3w zasob\u00f3w lub innych artefakt\u00f3w okre\u015blono tak\u0105 sam\u0105 nazw\u0119 lub wdro\u017cono jeden adapter zasob\u00f3w na dwa sposoby: przez skonfigurowanie w pliku server.xml oraz przez umieszczenie adaptera zasob\u00f3w w katalogu docelowym.
+J2CA7013.duplicate.adapter.name.useraction=Je\u015bli wiele adapter\u00f3w zasob\u00f3w lub innych artefakt\u00f3w ma takie same nazwy, usu\u0144 jeden z nich lub zmie\u0144 jego nazw\u0119. Je\u015bli jeden adapter zasob\u00f3w zosta\u0142 wdro\u017cony na dwa r\u00f3\u017cne sposoby, zmie\u0144 konfiguracj\u0119 tak, aby u\u017cywana by\u0142a tylko jedna metoda wdra\u017cania.
+
+# replaces APPLICATION_NOT_FOUND
+J2CA7014.adapter.not.found=J2CA7014W: Nie mo\u017cna zainstalowa\u0107 adaptera zasob\u00f3w {0}, poniewa\u017c nie mo\u017cna go znale\u017a\u0107 w po\u0142o\u017ceni {1}.
+J2CA7014.adapter.not.found.explanation=Serwer nie m\u00f3g\u0142 znale\u017a\u0107 adaptera zasob\u00f3w w okre\u015blonym po\u0142o\u017ceniu (lub w po\u0142o\u017ceniu wzgl\u0119dnym w przypadku \u015bcie\u017cki wzgl\u0119dnej).
+J2CA7014.adapter.not.found.useraction=Sprawd\u017a, czy zdefiniowane po\u0142o\u017cenie adaptera zasob\u00f3w jest poprawne.
+
+# replaces STARTING_APPLICATION
+J2CA7018.installing.adapter=J2CA7018I: Instalowanie adaptera zasob\u00f3w {0}.
+J2CA7018.installing.adapter.explanation=Trwa instalowanie adaptera zasob\u00f3w.
+J2CA7018.installing.adapter.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# replaces APPLICATION_NOT_UPDATED
+J2CA7020.adapter.not.updated=J2CA7020I: Adapter zasob\u00f3w {0} nie zosta\u0142 zaktualizowany.
+J2CA7020.adapter.not.updated.explanation=Zainstalowanie adaptera zasob\u00f3w by\u0142o niemo\u017cliwe z powodu wcze\u015bniejszych b\u0142\u0119d\u00f3w. 
+J2CA7020.adapter.not.updated.useraction=Przejrzyj konfiguracj\u0119 adaptera zasob\u00f3w i sprawd\u017a dzienniki pod k\u0105tem b\u0142\u0119d\u00f3w wyst\u0119puj\u0105cych podczas instalowania adaptera zasob\u00f3w.
+
+# replaces APPLICATION_AT_LOCATION_NOT_VALID
+J2CA7021.adapter.at.location.not.valid=J2CA7021E: Adapter zasob\u00f3w {1} w po\u0142o\u017ceniu {0} jest niepoprawny.
+J2CA7021.adapter.at.location.not.valid.explanation=Archiwum lub katalog w okre\u015blonym po\u0142o\u017ceniu s\u0105 niepoprawne, dlatego nie mo\u017cna zainstalowa\u0107 adaptera zasob\u00f3w.
+J2CA7021.adapter.at.location.not.valid.useraction=Sprawd\u017a poprawno\u015b\u0107 zidentyfikowanego archiwum lub katalogu.
+
+# replaces APPLICATION_SLOW_STARTUP
+J2CA7022.adapter.slow.install=J2CA7022W: Adapter zasob\u00f3w {0} nie zosta\u0142 zainstalowany w ci\u0105gu {1} sek.
+J2CA7022.adapter.slow.install.explanation=Adapter zasob\u00f3w nie zosta\u0142 zainstalowany w oczekiwanym czasie. Mo\u017ce to by\u0107 wynikiem nadmiernego obci\u0105\u017cenia serwera lub wielko\u015bci\u0105 adaptera zasob\u00f3w. Je\u015bli adapter zasob\u00f3w jest instalowany w ramach uruchamiania serwera, uruchomienie serwera zostanie zako\u0144czone bez oczekiwania na zainstalowanie adaptera zasob\u00f3w.
+J2CA7022.adapter.slow.install.useraction=Je\u015bli czas trwania instalowania adaptera zasob\u00f3w jest d\u0142ugi, nie jest wymagana \u017cadna czynno\u015b\u0107. W przeciwnym razie sprawd\u017a, czy w dziennikach serwera wyst\u0119puj\u0105 komunikaty wskazuj\u0105ce przyczyn\u0119.
+
+# replaces MONITOR_APP_STOP_FAIL
+J2CA7053.monitor.adapter.uninstall.fail=J2CA7053E: Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by automatycznego zdeinstalowania adaptera zasob\u00f3w {0}.
+J2CA7053.monitor.adapter.uninstall.fail.explanation=Nie mo\u017cna znale\u017a\u0107 zainstalowanego adaptera zasob\u00f3w na serwerze.
+J2CA7053.monitor.adapter.uninstall.fail.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# replaces MONITOR_APP_START_FAIL
+J2CA7056.monitor.adapter.install.fail=J2CA7056E: Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by automatycznego zainstalowania adaptera zasob\u00f3w {0}.
+J2CA7056.monitor.adapter.install.fail.explanation=Serwer nie m\u00f3g\u0142 zainstalowa\u0107 adaptera zasob\u00f3w.
+J2CA7056.monitor.adapter.install.fail.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# replaces INVALID_DELETE_OF_APPLICATION
+J2CA7059.invalid.delete.of.adapter=J2CA7059E: Adapter zasob\u00f3w {0} zainstalowany z po\u0142o\u017cenia {1} zosta\u0142 usuni\u0119ty, ale jest w dalszym ci\u0105gu skonfigurowany.
+J2CA7059.invalid.delete.of.adapter.explanation=Adapter zasob\u00f3w aktualnie skonfigurowany w pliku server.xml zosta\u0142 usuni\u0119ty.
+J2CA7059.invalid.delete.of.adapter.useraction=Je\u015bli usuni\u0119cie adaptera zasob\u00f3w by\u0142o zamierzone, usu\u0144 konfiguracj\u0119 adaptera zasob\u00f3w z pliku server.xml.
+
+# replaces APPLICATION_MONITORING_FAIL
+J2CA7060.adapter.monitoring.fail=J2CA7060W: Serwer aplikacji nie mo\u017ce monitorowa\u0107 adaptera zasob\u00f3w {0}.
+J2CA7060.adapter.monitoring.fail.explanation=Adapter zasob\u00f3w zosta\u0142 zainstalowany, ale nie rozpocz\u0119to jego monitorowania. Je\u015bli zosta\u0142 zaktualizowany plik wewn\u0105trz adaptera zasob\u00f3w, zmiana nie zostanie wykryta przez serwer. 
+J2CA7060.adapter.monitoring.fail.useraction=W przypadku aktualizowania plik\u00f3w w tym adapterze zasob\u00f3w r\u0119cznie zdeinstaluj i ponownie zainstaluj adapter zasob\u00f3w na serwerze.
+
+#{0} is the resource adapter name
+error.not.installed=J2CA7701: Serwer aplikacji nie m\u00f3g\u0142 zainstalowa\u0107 adaptera zasob\u00f3w {0}.
+error.not.installed.explanation=Wcze\u015bniejszy b\u0142\u0105d uniemo\u017cliwi\u0142 zainstalowanie adaptera zasob\u00f3w.
+error.not.installed.useraction=Sprawd\u017a po\u0142o\u017cenie okre\u015blone w elemencie konfiguracji adaptera zasob\u00f3w.
+
+#{0} is the application name
+#{1} is the relative path to the application descriptor
+#{2} is the exception message
+error.application.parse.descriptor=J2CA7702E: Aplikacja {0} napotka\u0142a b\u0142\u0105d analizowania podczas przetwarzania deskryptora aplikacji {1}: {2}
+error.application.parse.descriptor.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas analizowania deskryptora aplikacji.  Dla aplikacji nie b\u0119d\u0105 dost\u0119pne \u017cadne modu\u0142y.
+error.application.parse.descriptor.useraction=Informacje o wyj\u0105tku zawieraj\u0105 dodatkowe szczeg\u00f3\u0142y.  Przejrzyj tre\u015b\u0107 deskryptora aplikacji, aby upewni\u0107 si\u0119, \u017ce s\u0105 to poprawne dane XML.

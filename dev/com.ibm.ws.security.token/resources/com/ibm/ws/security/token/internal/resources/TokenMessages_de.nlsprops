@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.token/resources/com/ibm/ws/security/token/internal/resources/TokenMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Token Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS4000 - CWWKS4099
+
+TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE=CWWKS4000E: Es ist eine Konfigurationsausnahme eingetreten. Die angeforderte TokenService-Instanz des Typs {0} wurde nicht gefunden.
+TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE.explanation=Jedes TokenService-Implementierungsbundle gibt den unterst\u00fctzten Typ an.
+TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE.useraction=Geben Sie einen unterst\u00fctzten Typ an, oder installieren Sie das Bundle, das die TokenService-Instanz des angeforderten Typs bereitstellt.
+
+TOKEN_SERVICE_INVALID_TOKEN=CWWKS4001E: Das Sicherheitstoken konnte nicht validiert werden. Dies kann die folgenden Gr\u00fcnde haben: \n\
+1. Das Sicherheitstoken wurde in einem anderen Server mit unterschiedlichen Schl\u00fcsseln generiert. \n\
+2. Die Tokenkonfiguration oder die Sicherheitsschl\u00fcssel des Token-Service, die das Token erstellt haben, wurden ge\u00e4ndert. \n\
+3. Der Token-Service, der das Token erstellt hat, ist nicht mehr verf\u00fcgbar.
+TOKEN_SERVICE_INVALID_TOKEN.explanation=Das Token konnte von den momentan konfigurierten Token-Services nicht erneut erstellt werden.
+TOKEN_SERVICE_INVALID_TOKEN.useraction=Vergewissern Sie sich, dass mindestens ein Feature einen Token-Service enth\u00e4lt, der ordnungsgem\u00e4\u00df konfiguriert ist, damit das Token erneut erstellt werden kann.
+
+TOKEN_SERVICE_INVALID_TOKEN_INFO=CWWKS4001I: Das Sicherheitstoken kann nicht validiert werden. Die folgenden Ursachen sind m\u00f6glich:\n\
+1. Das Sicherheitstoken wurde auf einem anderen Server generiert, der andere Schl\u00fcssel verwendet.\n\
+2. Die Tokenkonfiguration oder die Sicherheitsschl\u00fcssel des Token-Service, der das Token erstellt hat, wurden ge\u00e4ndert.\n\
+3. Der Token-Service, der das Token erstellt hat, ist nicht mehr verf\u00fcgbar.
+TOKEN_SERVICE_INVALID_TOKEN_INFO.explanation=Das Token kann mit den momentan konfigurierten Token-Services nicht erneut erstellt werden.
+TOKEN_SERVICE_INVALID_TOKEN_INFO.useraction=Vergewisssern Sie sich, dass mindestens ein Feature einen Token-Service enth\u00e4lt, der ordnungsgem\u00e4\u00df konfiguriert ist, um das Token erneut erstellen zu k\u00f6nnen.
+
+KRB_S4U2PROXY_NOT_SUPPORTED=CWWKS4002E: Die APIs f\u00fcr beschr\u00e4nkte Delegierung (S4U2self und S4U2proxy) setzt JavaSE 1.8 als Mindestverseion f\u00fcr die Java Runtime Environment voraus.
+KRB_S4U2PROXY_NOT_SUPPORTED.explanation=Die APIs f\u00fcr beschr\u00e4nkte Delegierung (S4U2self und S4U2proxy) setzt IBM JavaSE 1.8 als Mindestverseion f\u00fcr die Java Runtime Environment voraus.
+KRB_S4U2PROXY_NOT_SUPPORTED.useraction=Stellen Sie sicher, dass Sie IBM JavaSE 1.8 als Java Runtime Environment verwenden.
+
+KRB_OSGI_SERVICE_ERROR=CWWKS4003E: Der OSGi-Service f\u00fcr beschr\u00e4nkte Delegierung, {0}, ist nicht verf\u00fcgbar.
+KRB_OSGI_SERVICE_ERROR.explanation=Der angegebene OSGi-Service ist nicht verf\u00fcgbar.
+KRB_OSGI_SERVICE_ERROR.useraction=Stellen Sie sicher, dass das Feature f\u00fcr die beschr\u00e4nkte Delegierung aktiviert ist und dass IBM JavaSE 1.8 als Java Runtime Environment verwendet wird. Suchen Sie in den Serverprotokollen nach weiteren Informationen.

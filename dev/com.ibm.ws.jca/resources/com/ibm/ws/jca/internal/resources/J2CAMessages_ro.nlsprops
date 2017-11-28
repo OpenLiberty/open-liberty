@@ -1,0 +1,160 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jca/resources/com/ibm/ws/jca/internal/resources/J2CAMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA JCA
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+J2CA8500.config.prop.error=J2CA8500E: A ap\u0103rut o eroare c\u00e2nd se \u00eencerca s\u0103 se configureze o proprietate {0} a elementului de configurare {1} pe clasa {2}: {3}.
+J2CA8500.config.prop.error.explanation=O proprietate nu a putut fi configurat\u0103 \u00een resursa specificat\u0103 din cauza unei erori.
+J2CA8500.config.prop.error.useraction=Face\u0163i corec\u0163iile asupra configura\u0163iei resursei specificate \u015fi re\u00eencerca\u0163i.
+ 
+J2CA8501.config.prop.unknown=J2CA8501E: Proprietatea {0} a elementului de configurare {1} nu poate fi setat\u0103 pentru c\u0103 nu se g\u0103se\u015fte pe clasa {2}.
+J2CA8501.config.prop.unknown.explanation=O proprietate nu a putut fi g\u0103sit\u0103 \u00een resursa specificat\u0103.
+J2CA8501.config.prop.unknown.useraction=Efectua\u0163i corec\u0163ii asupra configura\u0163iei resursei.
+
+# {1} is the unique identifier for a configuration element, such as jmsTopicConnectionFactory[cf1] or jmsQueue[queue1] 
+J2CA8504.incorrect.props.list=J2CA8504E: Sub-elementul {0} nu este corect pentru elementul de configurare {1}.
+J2CA8504.incorrect.props.list.explanation=Tipul listei de propriet\u0103\u0163i de configurare este incorect pentru elementul de configurare specificat.
+J2CA8504.incorrect.props.list.useraction=Actualiza\u0163i configura\u0163ia astfel \u00eenc\u00e2t s\u0103 foloseasc\u0103 o list\u0103 cu propriet\u0103\u0163i de configurare care corespunde tipului dorit de resurse.
+
+J2CA8505.destination.type.mismatch=J2CA8505E: Nu poate fi configurat\u0103 proprietatea destina\u0163iei pe specificarea activ\u0103rii deoarece destina\u0163ia {0} nu este o instan\u0163\u0103 a interfa\u0163ei care este specificat\u0103 ca destinationType: {1}.
+J2CA8505.destination.type.mismatch.explanation=A fost specificat un tip de destina\u0163ie care nu se potrive\u015fte cu destina\u0163ia.
+J2CA8505.destination.type.mismatch.useraction=Actualiza\u0163i configura\u0163ia serverului sau aplica\u0163ia pentru a specifica un tip de destina\u0163ie care este consistent cu destina\u0163ia.
+
+J2CA8510.create.timed.out=J2CA8510E: Nu s-a putut crea un cronometru pentru adaptorul de resurse {0} \u00een {1} milisecunde.
+J2CA8510.create.timed.out.explanation=Ia mai mult dec\u00e2t era de a\u015fteptat s\u0103 se creeze cronometrul.
+J2CA8510.create.timed.out.useraction=Verifica\u0163i dac\u0103 este o \u00eenc\u0103rcare prea mare pe sistem \u015fi ave\u0163i \u00een vedere sc\u0103derea ei.
+
+J2CA8600.work.start.timeout=J2CA8600E: Lucrul {0} lansat de adaptorul de resurse {1} nu a pornit \u00een {2} milisecunde.
+J2CA8600.work.start.timeout.explanation=\u00cencercarea de a porni lucrul a expirat.
+J2CA8600.work.start.timeout.useraction=Verifica\u0163i dac\u0103 este o \u00eenc\u0103rcare prea mare pe sistem \u015fi ave\u0163i \u00een vedere sc\u0103derea ei, sau contacta\u0163i v\u00e2nz\u0103torul adaptorului de resurse pentru a vedea dac\u0103 el ar trebui s\u0103 creasc\u0103 timeout-ul lucrului folosit la lansarea lucrului c\u0103tre managerul de lucru JCA.
+
+# 8622 deleted
+
+J2CA8623.execution.context.conflict=J2CA8623E: Adaptorul de resurse {0} a \u00eencercat s\u0103 lanseze lucru at\u00e2t cu ExecutionContext, c\u00e2t \u015fi cu WorkContext. Combina\u0163ia \u00eentre ExecutionContext \u015fi WorkContext nu este suportat\u0103.
+J2CA8623.execution.context.conflict.explanation=Adaptorul resursei a lansat \u00een execu\u0163ie lucru care implementeaz\u0103 WorkContextProvider, \u015fi de asemenea a specificat un ExecutionContext. Nu este valid s\u0103 le fac\u0103 pe am\u00e2ndou\u0103.
+J2CA8623.execution.context.conflict.useraction=Adaptorul de resurse trebuie s\u0103 fie actualizat astfel \u00eenc\u00e2t s\u0103 aleag\u0103 \u00eentre WorkContextProvider sau ExecutionContext.
+
+J2CA8624.work.context.duplicate=J2CA8624E: Adaptorul de resurse {0} a \u00eencercat s\u0103 lanseze lucru cu mai multe copii de tipul WorkContext {1}. Un singur WorkContext din fiecare tip este suportat pe o lansare de lucru.
+J2CA8624.work.context.duplicate.explanation=Adaptorul de resurs\u0103 a lansat \u00een execu\u0163ie lucru cu mai multe instan\u0163e WorkContext de acela\u0163i tip.
+J2CA8624.work.context.duplicate.useraction=Adaptorul de resurse trebuie s\u0103 fie actualizat pentru a elimina instan\u0163ele WorkContext duplicate din WorkContextProvider.
+
+J2CA8625.work.context.unavailable=J2CA8625E: Adaptorul de resurse {0} fie a \u00eencercat s\u0103 lanseze lucru cu un tip de context de lucru {1} care nu este suportat, fie caracteristica nu este activat\u0103.
+J2CA8625.work.context.unavailable.explanation=Tipul contextului de lucru fie nu este suportat de serverul de aplica\u0163ii, fie caracteristica care \u00eel suport\u0103 nu este activat.
+J2CA8625.work.context.unavailable.useraction=Verifica\u0163i dac\u0103 tipul contextului de lucru este suportat. Dac\u0103 da, verifica\u0163i dac\u0103 este activat\u0103 caracteristica ce-l suport\u0103.
+
+J2CA8687.hint.datatype.invalid=J2CA8687E: Valorile sugerate pentru {0} trebuie s\u0103 fie de tip {1}. Adaptorul de resurse {2} a specificat o valoare {3} de tip {4}.
+J2CA8687.hint.datatype.invalid.explanation=Valoarea sugerat\u0103 specificat\u0103 de adaptorul de resurse este de tipul de date  gre\u015fit.
+J2CA8687.hint.datatype.invalid.useraction=Contacta\u0163i v\u00e2nz\u0103torul de adaptoare de resurse pentru a corecta tipul de date al indica\u0163iei.
+
+J2CA8688.work.setup.failed=J2CA8688E: Managerul de lucru nu poate rula articolul de lucru. Vede\u0163i excep\u0163ia cauz\u0103: {0}.
+J2CA8688.work.setup.failed.explanation=A ap\u0103rut o eroare \u00een timpul preg\u0103tirii pentru rularea articolului de lucru.
+J2CA8688.work.setup.failed.useraction=Referi\u0163i-v\u0103 la excep\u0163ia cauz\u0103 pentru informa\u0163ii suplimentare.
+
+J2CA8800.multiple.xa.resources=J2CA8800E: S-a returnat mai mult de o resurs\u0103 XA de c\u0103tre adaptorul de resurse {0} pentru specifica\u0163ia de activare {1}.
+J2CA8800.multiple.xa.resources.explanation=Adaptorul de resurse ar trebui s\u0103 returneze o singur\u0103 resurs\u0103 XA pentru specifica\u0163ia de activare furnizat\u0103.
+J2CA8800.multiple.xa.resources.useraction=Contacta\u0163i v\u00e2nz\u0103torul adaptorului de resurse pentru a-\u015fi corecta implementarea API-ului getXAResources pentru a se confomra specifica\u0163iei JCA.
+
+J2CA8801.act.spec.active=J2CA8801I: Punctul final al mesajului pentru specifica\u0163ia de activare {0} \u015fi aplica\u0163ia bean-ului controlat de mesaje {1} este activat.
+J2CA8801.act.spec.active.explanation=Punctul final al mesajului a fost activat \u015fi este gata s\u0103 manipuleze mesajele de intrare.
+J2CA8801.act.spec.active.useraction=Nici o ac\u0163iune nu este necesar\u0103.
+
+J2CA8802.activation.failed=J2CA8802E: Activarea punctului final al mesajului a e\u015fuat pentru adaptorul de resurse {0} din cauza excep\u0163iei: {1}.
+J2CA8802.activation.failed.explanation=Excep\u0163ia specificat\u0103 a fost generat\u0103 \u00een timpul activ\u0103rii punctului final al mesajului.
+J2CA8802.activation.failed.useraction=Verifica\u0163i excep\u0163ia specificat\u0103 pentru a v\u0103 ajuta la determinarea cauzei erorii.
+
+J2CA8803.deactivation.failed=J2CA8803E: Dezactivarea punctului final al mesajului a e\u015fuat pentru adaptorul de resurse {0} din cauza excep\u0163iei: {1}.
+J2CA8803.deactivation.failed.explanation=Excep\u0163ia specificat\u0103 a fost generat\u0103 \u00een timpul dezactiv\u0103rii punctului final al mesajului.
+J2CA8803.deactivation.failed.useraction=Verifica\u0163i excep\u0163ia specificat\u0103 pentru a v\u0103 ajuta la determinarea cauzei erorii.
+
+J2CA8804.act.spec.inactive=J2CA8804I: Punctul final al mesajului pentru specifica\u0163ia de activare {0} \u015fi aplica\u0163ia bean-ului controlat de mesaje {1} este dezactivat.
+J2CA8804.act.spec.inactive.explanation=Punctul final al mesajului a fost dezactivat \u015fi nu va mai manipula mesajele de intrare.
+J2CA8804.act.spec.inactive.useraction=Nici o ac\u0163iune nu este necesar\u0103.
+
+# 8806 deleted
+
+J2CA8807.native.rrs.not.available=J2CA8807E: Serviciul care furnizeaz\u0103 suport tranzac\u0163ional RRS nu este activ. \u00cenregistrarea resursei este refuzat\u0103.
+J2CA8807.native.rrs.not.available.explanation=Serviciul care furnizeaz\u0103 suport tranzac\u0163ional RRS nu este activ. \u00cencerc\u0103rile de \u00eenregistrare a resursei cu managerul de tranzac\u0163ii sunt respinse. 
+J2CA8807.native.rrs.not.available.useraction=Verifica\u0163i c\u0103 este activ procesul angel. Verifica\u0163i c\u0103 ID-ul de utilizator MVS al procesului Liberty are autorizarea SAF corespunz\u0103toare pentru a invoca setul de servicii autorizate folosit pentru integrarea RRS. Verifica\u0163i c\u0103 a fost configurat\u0103 caracteristica ce furnizeaz\u0103 integrarea RRS.
+
+J2CA8809.embedded.lookup.failed=J2CA8809E: Resursa {0} de la adaptorul de resurse imbricat {1} este disponibil\u0103 numai la aplica\u0163ia {2}. S-a f\u0103cut o \u00eencercare de a o accesa din aplica\u0163ia {3}.
+J2CA8809.embedded.lookup.failed.explanation=Un adaptor de resurse \u00eenglobat, \u015fi toate resursele pe care le define\u015fte, poate fi accesat numai din aplica\u0163ia \u00een care este \u00eenglobat. 
+J2CA8809.embedded.lookup.failed.useraction=Asigura\u0163i-v\u0103 c\u0103 aplica\u0163ia caut\u0103 numai resurse care sunt definite la domeniul serverului sau \u00een aceea\u015fi aplica\u0163ie.
+
+J2CA8810.embedded.activation.failed=J2CA8810E: Punctul final {0} din adaptorul de resurse \u00eenglobat {1} poate fi activat numai din aplica\u0163ia {2}. S-a f\u0103cut o \u00eencercare de a o activa din aplica\u0163ia {3}.
+J2CA8810.embedded.activation.failed.explanation=A e\u015fuat activarea punctului final deoarece acesta pointeaz\u0103 c\u0103tre o specifica\u0163ie de activare \u00eenglobat\u0103 \u00een alt\u0103 aplica\u0163ie.
+J2CA8810.embedded.activation.failed.useraction=Actualiza\u0163i configura\u0163ia de server astfel \u00eenc\u00e2t punctul final s\u0103 utilizeze o specifica\u0163ie de activare care este \u00een domeniul de server sau este \u00eenglobat\u0103 \u00een aceea\u015fi aplica\u0163ie.
+
+J2CA8811.embedded.lookup.failed=J2CA8811E: Resursa {0} de la adaptorul de resurse \u00eenglobat {1} este disponibil\u0103 numai la aplica\u0163ia {2}.
+J2CA8811.embedded.lookup.failed.explanation=Un adaptor de resurse \u00eenglobat, \u015fi toate resursele pe care le define\u015fte, poate fi accesat numai din aplica\u0163ia \u00een care este \u00eenglobat.
+J2CA8811.embedded.lookup.failed.useraction=Modifica\u0163i-v\u0103 aplica\u0163ia sau serviciul pentru a c\u0103uta resursele definite la domeniul serverului.
+
+J2CA8812.embedded.activation.failed=J2CA8812E: Punctul final {0} din adaptorul de resurse \u00eenglobat {1} poate fi activat numai din aplica\u0163ia {2}.
+J2CA8812.embedded.activation.failed.explanation=A e\u015fuat activarea punctului final deoarece acesta pointeaz\u0103 c\u0103tre o specifica\u0163ie de activare \u00eenglobat\u0103 \u00een alt\u0103 aplica\u0163ie.
+J2CA8812.embedded.activation.failed.useraction=Actualiza\u0163i configura\u0163ia de server astfel \u00eenc\u00e2t punctul final s\u0103 utilizeze o specifica\u0163ie de activare care este definit\u0103 la domeniul serverului.
+
+J2CA8813.required.activation.prop.not.set=J2CA8813E: Proprietatea necesar\u0103 {0} lipse\u015fte pentru specifica\u0163ia de activare {1} a adaptorului de resurse {2}.
+J2CA8813.required.activation.prop.not.set.explanation=Adaptorul de resurse marcheaz\u0103 anumite propriet\u0103\u0163i ale specifica\u0163iilor de activare, a\u015fa cum se cere, \u015fi valoarea nu a fost furnizat\u0103. Aceste propriet\u0103\u0163i pot fi setate din dou\u0103 locuri diferite: (1) c\u00e2nd crea\u0163i un obiect de configurare specifica\u0163ii de activare sub adaptorul de resurse instalat \u015fi (2) chiar din aplica\u0163ie, ca <activation-config-property>.
+J2CA8813.required.activation.prop.not.set.useraction=Furniza\u0163i valoarea cerut\u0103 pe specifica\u0163ia de activare \u00een configura\u0163ia de server sau \u00eentr-o intrare activation-config-property \u00een aplica\u0163ie.
+
+J2CA8814.resource.adapter.install.failed=J2CA8814E: Atributul id al elementului resourceAdapter pentru modului adaptorului de resurse {0} con\u0163ine caractere nesuportate.
+J2CA8814.resource.adapter.install.failed.explanation=Atributul id al elementului resourceAdapter poate con\u0163ine numai caracterele '.', '-' \u015fi '_' \u00een plus fa\u0163\u0103 de caracterele alfanumerice. ID-ul specificat \u00een configura\u0163ie sau derivat din numele modulului con\u0163ine caractere nesuportate.
+J2CA8814.resource.adapter.install.failed.useraction=Furniza\u0163i o valoare valid\u0103 pentru atributul id al elementului resourceAdapter din configura\u0163ia de server.
+
+J2CA8815.duplicate.resource.adapter.id=J2CA8815E: Adaptoarele multiple de resurse nu pot avea acela\u015fi identificator unic {0}.
+J2CA8815.duplicate.resource.adapter.id.explanation=Adaptoarele multiple de resurse sunt configurate cu sau se termin\u0103 implicit cu acela\u015fi identificator unic (id).
+J2CA8815.duplicate.resource.adapter.id.useraction=Asigna\u0163i identificatori unici pentru unul sau mai multe adaptoare de resurse astfel \u00eenc\u00e2t s\u0103 nu mai existe un conflict.
+
+# Do not translate the term "Bean Validation"
+# Do not translate the term "Validator"
+# ---------------------------------
+# {0} The Validator type and instance hashcode
+# {1} The Validation exception
+# {2} The JavaBean type and instance hashcode
+BEAN_VALIDATION_VALIDATOR_FAILED_J2CA1008=J2CA1008E: A ap\u0103rut o excep\u0163ie \u00een timp ce Validatoru\u015f {0} a \u00eencercat s\u0103 valideze instan\u0163a RAR JavaBean {2} : {1}. Constr\u00e2ngerile de Validare bean-uri nu vot fi validate \u00eenainte de a amplasa instan\u0163a \u00een serviciu.
+BEAN_VALIDATION_VALIDATOR_FAILED_J2CA1008.explanation=Aceast\u0103 excep\u0163ie este nea\u015fteptat\u0103 \u015fi indic\u0103 o problem\u0103 la implementarea de Validator.  E posibil s\u0103 nu fie determinat\u0103 imediat cauza.  
+BEAN_VALIDATION_VALIDATOR_FAILED_J2CA1008.useraction=Verifica\u0163i FFDC \u015fi istoricele de sistem. Dac\u0103 simptomul indic\u0103 o defectare \u00eentr-o implementare Validator, alta dec\u00e2t cea furnizat\u0103 de WebSphere Application Server, contacta\u0163i furnizorul de Bean Validation. -CMSG0002
+
+# Do not translate the term "Bean Validation"
+# ---------------------------------
+# {0} A JavaBean type and instance hashcode, in hexadecimal
+# {1} A newline-delimited list of constraints violated by the JavaBean instance
+BEAN_VALIDATION_FAILED_J2CA0238=J2CA0238E: JavaBean {0} a e\u015fuat Bean Validation datorit\u0103 uneia sau mai multor set\u0103ri invalide de configurare indicate \u00een lista urm\u0103toare a \u00eenc\u0103lc\u0103rilor de constr\u00e2ngeri: {1}
+BEAN_VALIDATION_FAILED_J2CA0238.explanation=Valoarea uneia sau mai multor propriet\u0103\u0163i de configurare ale instan\u0163ei JavaBean \u00eencalc\u0103 constr\u00e2ngerile specificate Bean Validation.
+BEAN_VALIDATION_FAILED_J2CA0238.useraction=Consulta\u0163i documenta\u0163ia furnizorului de Adaptor de resurse pentru a determina valorile valide pentru fiecare proprietate de configurare indicat\u0103 de \u00eenc\u0103lc\u0103rile de constr\u00e2ngeri \u015fi a configura fiecare proprietate corespunz\u0103tor.
+
+#--------------------------------------------------------------------------------
+# J2CA0239 is unused (it was previously used by beta-only code that was removed).
+
+#--------------------------------------------------------------------------------
+# J2CA0240 is unused (it was previously used by beta-only code that was removed).
+
+#--------------------------------------------------------------------------------
+BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241=J2CA0241W: Arhivele bean ale adaptorului de resurse nu sunt suportate.
+BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241.explanation=Fi\u015fierul beans.xml din directorul META-INF va fi ignorat deoarece nu sunt suportate Arhivele bean ale adaptoarelor de resurse CDI gestionate.
+BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241.useraction=\u00cenl\u0103tura\u0163i fi\u015fierul beans.xml din directorul META-INF deoarece nu sunt suportate Arhivele bean ale adaptoarelor de resurse CDI gestionate.
+
+
+

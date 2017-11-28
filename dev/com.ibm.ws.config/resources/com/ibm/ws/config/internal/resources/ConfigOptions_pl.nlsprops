@@ -1,0 +1,38 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.kernel.feature/resources/com/ibm/ws/kernel/feature/internal/resources/FeatureToolOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+briefUsage=Sk\u0142adnia: java [opcje JVM] -jar {0} [opcje] plikWyjsciowy  
+
+use.options=Opcje:
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.ignorePids=--ignorePidsFile
+option-desc.ignorePids=Nazwa pliku zawieraj\u0105cego list\u0119 identyfikator\u00f3w pid do zignorowania
+option-key.encoding=--encoding
+option-desc.encoding=Kodowanie znak\u00f3w u\u017cywane na potrzeby danych wyj\u015bciowych
+option-key.locale=--locale
+option-desc.locale=Ustawienia narodowe u\u017cywane na potrzeby danych wyj\u015bciowych
+option-key.compactoutput=--compactOutput
+option-desc.compactoutput=Schemat wyj\u015bciowy nie b\u0119dzie zawiera\u0142 wci\u0119\u0107 sk\u0142adaj\u0105cych si\u0119 ze spacji, znak\u00f3w nowego wiersza ani komentarzy XML.
+option-key.productExtension=--productExtension
+option-desc.productExtension=Nazwa rozszerzenia produktu do przetwarzania. \n\
+Je\u015bli rozszerzenie produktu jest zainstalowane w po\u0142o\u017ceniu\n\
+domy\u015blnym u\u017cytkownika, u\u017cyj s\u0142owa kluczowego: usr. \n\
+Je\u015bli ta opcja nie zosta\u0142a okre\u015blona, dzia\u0142anie jest wykonywane\n\
+na pliku core serwera Liberty.

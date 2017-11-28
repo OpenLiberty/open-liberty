@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME none
+#COMPONENTPREFIX JSFG
+#COMPONENTNAMEFOR JSFG jsf
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+# -------------------------------------------------------------------------------------------------
+
+# JSFG0100-JSFG0199 reserved for jsfContainer-2.X features
+
+# 0: JSF provider type (will be either MOJARRA or MYFACES)
+# 1: application name
+jsf.container.init=JSFG0100I: Liberty \u5df2\u5bf9\u5e94\u7528\u7a0b\u5e8f {1} \u4e0a\u7684 JSF \u63d0\u4f9b\u7a0b\u5e8f {0} \u521d\u59cb\u5316 JSF \u96c6\u6210\u3002
+jsf.container.init.explanation=Liberty JSF \u96c6\u6210\u5df2\u9488\u5bf9\u6240\u6307\u793a\u5e94\u7528\u7a0b\u5e8f\u521d\u59cb\u5316\uff0c\u8fd9\u5141\u8bb8 CDI \u548c JSF \u96c6\u6210\u751f\u6548\u3002
+jsf.container.init.useraction=\u53c2\u8003\u6d88\u606f\u3002\u7528\u6237\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+# 0: application name
+# 1: required ApplicationFactory implementations
+jsf.container.no.jsf.impl=JSFG0101E: \u5728\u5e94\u7528\u7a0b\u5e8f {0} \u4e2d\u627e\u4e0d\u5230 JSF \u5b9e\u73b0\u3002\u5fc5\u987b\u5bf9\u5e94\u7528\u7a0b\u5e8f {1} \u63d0\u4f9b\u5305\u542b\u4e0b\u5217\u5176\u4e2d\u4e00\u4e2a javax.faces.application.ApplicationFactory \u5b9e\u73b0\u7684 JSF \u5b9e\u73b0\u3002
+jsf.container.no.jsf.impl.explanation=\u4ec5\u4e00\u7ec4\u7279\u5b9a\u7b2c\u4e09\u65b9 JSF \u96c6\u6210\u652f\u6301 Liberty JSF \u96c6\u6210\u3002\u5fc5\u987b\u5bf9\u6240\u6307\u793a\u5e94\u7528\u7a0b\u5e8f\u63d0\u4f9b\u6240\u5217\u793a ApplicationFactory \u5b9e\u73b0\u7684\u5176\u4e2d\u4e4b\u4e00\u3002
+jsf.container.no.jsf.impl.useraction=\u5728\u6240\u6307\u793a\u5e94\u7528\u7a0b\u5e8f\u4e2d\u6dfb\u52a0 Apache MyFaces \u6216 Mojarra JSF \u96c6\u6210\u3002\u6216\u8005\uff0c\u5982\u679c\u8981\u4f7f\u7528 Liberty \u63d0\u4f9b\u7684\u7f3a\u7701 JSF \u5b9e\u73b0\uff08\u5373 Apache MyFaces\uff09\uff0c\u8bf7\u4f7f\u7528 jsf-2.2 \u529f\u80fd\u90e8\u4ef6\u800c\u4e0d\u662f jsfContainer-2.2\u3002
+
+# 0: application name
+jsf.container.no.app.name=JSFG0102E: Liberty \u65e0\u6cd5\u4f7f\u7528 JNDI \u4ece JSF \u5e94\u7528\u7a0b\u5e8f {0} \u83b7\u53d6\u5e94\u7528\u7a0b\u5e8f\u540d\u79f0\u3002
+jsf.container.no.app.name.explanation=\u4f7f\u7528 Liberty JSF \u5bb9\u5668\u6ce8\u518c\u5e94\u7528\u7a0b\u5e8f\u65f6\u8981\u6c42\u901a\u8fc7\u6267\u884c JNDI \u67e5\u627e\u201cjava:app/AppName\u201d\u6765\u83b7\u53d6\u5e94\u7528\u7a0b\u5e8f\u540d\u79f0\u3002
+jsf.container.no.app.name.useraction=\u8bf7\u9a8c\u8bc1\u662f\u5426\u5df2\u542f\u7528 jndi-1.0 \u529f\u80fd\u90e8\u4ef6\u5e76\u786e\u4fdd\u6267\u884c JNDI \u67e5\u627e\uff08\u4f8b\u5982\uff0cInitialContext.doLookup("java:app/AppName")\uff09\u7684\u64cd\u4f5c\u5728\u8be5\u5e94\u7528\u7a0b\u5e8f\u4e2d\u751f\u6548\u3002
+
+# 0: application name
+# 1: expected JSF spec API version range
+# 2: actual JSF spec API version used in app
+jsf.container.bad.spec.api.version=JSFG0103E: \u5bf9\u5e94\u7528\u7a0b\u5e8f {0} \u53ef\u7528\u7684 JSF \u89c4\u8303 API \u7248\u672c\u4e3a {2}\uff0c\u4f46\u5b83\u9700\u8981\u5305\u542b\u5728\u7248\u672c\u8303\u56f4 {1} \u5185\u3002\u786e\u4fdd\u6240\u6307\u793a\u5e94\u7528\u7a0b\u5e8f\u4e2d\u6253\u5305\u7684 JSF API \u5bf9\u5e94\u6240\u542f\u7528 jsfContainer \u7684\u7248\u672c\u3002Liberty \u901a\u8fc7\u68c0\u67e5\u5305\u542b JSF API \u7c7b\u7684 .jar \u6587\u4ef6\u7684 Specification-Version \u6e05\u5355\u5c5e\u6027\u6765\u786e\u5b9a JSF API \u7684\u7248\u672c\u3002
+jsf.container.bad.spec.api.version.explanation=\u6240\u542f\u7528 jsfContainer \u7684\u7248\u672c\u5fc5\u987b\u5bf9\u5e94\u6240\u6307\u793a\u5e94\u7528\u7a0b\u5e8f\u4e2d\u6253\u5305\u7684\u540c\u4e00 JSF API \u7248\u672c\u3002
+jsf.container.bad.spec.api.version.useraction=\u786e\u4fdd\u6240\u6307\u793a\u5e94\u7528\u7a0b\u5e8f\u4e2d\u6253\u5305\u7684 JSF API \u5bf9\u5e94\u6240\u542f\u7528 jsfContainer \u7684\u7248\u672c\u3002Liberty \u901a\u8fc7\u68c0\u67e5\u5305\u542b JSF API \u7c7b\u7684 .jar \u6587\u4ef6\u7684 Specification-Version \u6e05\u5355\u5c5e\u6027\u6765\u786e\u5b9a JSF API \u7684\u7248\u672c\u3002
+
+# 0: application name
+# 1: expected JSF spec API version range
+# 2: actual JSF spec API version used in app
+jsf.container.bad.impl.version=JSFG0104E: \u5bf9\u5e94\u7528\u7a0b\u5e8f {0} \u53ef\u7528\u7684 JSF \u5b9e\u73b0\u7248\u672c\u4e3a {2}\uff0c\u4f46\u5b83\u9700\u8981\u5305\u542b\u5728\u7248\u672c\u8303\u56f4 {1} \u5185\u3002\u786e\u4fdd\u6240\u6307\u793a\u5e94\u7528\u7a0b\u5e8f\u4e2d\u6253\u5305\u7684 JSF \u5b9e\u73b0\u5bf9\u5e94\u6240\u542f\u7528 jsfContainer \u7684\u7248\u672c\u3002Liberty \u901a\u8fc7\u68c0\u67e5\u5305\u542b MyFaces \u6216 Mojarra ApplicationFactory \u7c7b\u7684 .jar \u6587\u4ef6\u7684 Specification-Version \u6e05\u5355\u5c5e\u6027\u6765\u786e\u5b9a JSF \u5b9e\u73b0\u7684\u7248\u672c\u3002
+jsf.container.bad.impl.version.explanation=\u6240\u542f\u7528 jsfContainer \u7684\u7248\u672c\u5fc5\u987b\u5bf9\u5e94\u6240\u6307\u793a\u5e94\u7528\u7a0b\u5e8f\u4e2d\u6253\u5305\u7684\u540c\u4e00 JSF \u5b9e\u73b0\u7248\u672c\u3002
+jsf.container.bad.impl.version.useraction=\u786e\u4fdd\u6240\u6307\u793a\u5e94\u7528\u7a0b\u5e8f\u4e2d\u6253\u5305\u7684 JSF \u5b9e\u73b0\u5bf9\u5e94\u6240\u542f\u7528 jsfContainer \u7684\u7248\u672c\u3002Liberty \u901a\u8fc7\u68c0\u67e5\u5305\u542b MyFaces \u6216 Mojarra ApplicationFactory \u7c7b\u7684 .jar \u6587\u4ef6\u7684 Specification-Version \u6e05\u5355\u5c5e\u6027\u6765\u786e\u5b9a JSF \u5b9e\u73b0\u7684\u7248\u672c\u3002

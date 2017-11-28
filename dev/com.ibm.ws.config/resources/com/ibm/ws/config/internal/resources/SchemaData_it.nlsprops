@@ -1,0 +1,60 @@
+
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#COMPONENTPREFIX CWWKG
+#COMPONENTNAMEFOR CWWKG WebSphere kernel config schema strings
+#CMVCPATHNAME com.ibm.ws.config/resources/com/ibm/ws/config/internal/resources/SchemaData.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#
+# Message prefix block: CWWKG1001 - CWWKG1020
+
+config.internal.metatype.includeType.documentation=Specificare una risorsa di configurazione da includere nella configurazione del server.
+config.internal.metatype.includeType.label=Includi
+config.internal.metatype.includeType.attribute.optional.documentation=Consentire alla risorsa inclusa di essere ignorata se non viene trovata.
+config.internal.metatype.includeType.attribute.optional.label=La risorsa \u00e8 facoltativa
+config.internal.metatype.includeType.attribute.location.documentation=Specifica l'ubicazione della risorsa. Pu\u00f2 essere un un percorso file o un URI per una risorsa remota.
+config.internal.metatype.includeType.attribute.location.label=Ubicazione
+config.internal.metatype.includeType.attribute.onConflict.documentation=Specifica la modalit\u00e0 utilizzata per l'unione degli elementi quando si verificano conflitti.
+config.internal.metatype.includeType.attribute.onConflict.label=In caso di conflitto
+
+config.internal.metatype.variableDefinitionType.documentation=Dichiarare una nuova variabile specificando il nome e il valore per la variabile.
+config.internal.metatype.variableDefinitionType.label=Dichiarazione della variabile
+config.internal.metatype.variableDefinitionType.name.documentation=Il nome della variabile.
+config.internal.metatype.variableDefinitionType.name.label=Nome
+config.internal.metatype.variableDefinitionType.value.documentation=Il valore da assegnare alla variabile.
+config.internal.metatype.variableDefinitionType.value.label=Valore
+
+config.internal.metatype.duration.desc=Specificare un numero intero positivo seguito da un'unit\u00e0 di tempo, che pu\u00f2 essere ore (h), minuti (m), secondi (s) o millisecondi (ms). Ad esempio, specificare 500 millisecondi come 500ms. \u00c8 possibile includere pi\u00f9 valori in una singola immissione. Ad esempio, 1s500ms \u00e8 equivalente a 1,5 secondi.
+config.internal.metatype.duration-s.desc=Specificare un numero intero positivo seguito da un'unit\u00e0 di tempo, che pu\u00f2 essere ore (h), minuti (m) o secondi (s). Ad esempio, specificare 30 secondi come 30s. \u00c8 possibile includere pi\u00f9 valori in una singola immissione. Ad esempio, 1m30s \u00e8 equivalente a 90 secondi.
+config.internal.metatype.duration-m.desc=Specificare un numero intero positivo seguito da un'unit\u00e0 di tempo, che pu\u00f2 essere ore (h) o minuti (m). Ad esempio, specificare 30 minuti come 30m. \u00c8 possibile includere pi\u00f9 valori in una singola immissione. Ad esempio, 1h30m \u00e8 equivalente a 90 minuti.
+config.internal.metatype.duration-h.desc=Specificare un numero intero positivo seguito dall'unit\u00e0 di tempo, che pu\u00f2 essere ore (h). Ad esempio, specificare 12 ore come 12h.
+
+config.internal.metatype.pid.reference.type=ID configurazione di tipo {0} (stringa).
+config.internal.metatype.pid.reference.list.type=Elenco di ID configurazione di tipo {0} (stringa separata da virgole).
+config.internal.metatype.pid.reference.nested.type=Elemento di tipo {0}.
+
+config.internal.metatype.type.desc=Il PID \u00e8 {0}.
+config.internal.metatype.type.child.desc=Il PID \u00e8 {0} ed \u00e8 il child del tipo complesso <q>{1}</q>.
+
+config.internal.metatype.id.documentation=Un ID di configurazione univoco.
+config.internal.metatype.id.label=ID
+
+config.internal.metatype.onConflictType.merge.label=Gli elementi in conflitto verranno uniti tra loro.
+config.internal.metatype.onConflictType.replace.label=Quando esistono elementi in conflitto, l'elemento che proviene dal file incluso sostituir\u00e0 quello in conflitto.
+config.internal.metatype.onConflictType.ignore.label=Gli elementi in conflitto nel file incluso verranno ignorati.
+config.internal.metatype.onConflictType.break.label=Gli elementi in conflitto provocheranno errori di configurazione.
+
+OSGI_SERVICE_ERROR=CWWKG1001E: Il servizio OSGi {0} non \u00e8 disponibile.  Provare a riavviare il server con l'opzione --clean.
+OSGI_SERVICE_ERROR.explanation=Il servizio specificato non \u00e8 disponibile e, pertanto, si verifica questo errore server interno.
+OSGI_SERVICE_ERROR.useraction=Riavviare il server con l'opzione --clean.

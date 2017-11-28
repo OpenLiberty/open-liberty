@@ -1,0 +1,60 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.service/resources/com/ibm/ws/kernel/service/location/internal/resources/LocServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0200 - 0299 com.ibm.ws.kernel.service.location.internal.resources.LocServiceMessages
+# -------------------------------------------------------------------------------------------------
+unreachableLocation=CWWKE0200E: O local especificado est\u00e1 inacess\u00edvel. Ele n\u00e3o \u00e9 filho de um caminho conhecido ou configurado; path={0}.
+unreachableLocation.explanation=A plataforma usa os caminhos simb\u00f3licos para fornecer prote\u00e7\u00e3o rudimentar contra o acesso arbitr\u00e1rio ao sistema de arquivos quando o servi\u00e7o de local for usado para resolver os caminhos especificados. \
+README.TXT cont\u00e9m informa\u00e7\u00f5es sobre como caminhos simb\u00f3licos s\u00e3o configurados.
+unreachableLocation.useraction=Verifique bootstrap.properties para obter os caminhos configurados e assegure que o \
+caminho configurado seja um filho dos s\u00edmbolos existentes ou esteja associado a um \
+s\u00edmbolo definido explicitamente.
+
+invalidResourceType=CWWKE0201E: N\u00e3o \u00e9 poss\u00edvel criar o s\u00edmbolo; o local especificado existe e est\u00e1 em conflito com o tipo necess\u00e1rio: {0}={1}.
+invalidResourceType.explanation=O caminho especificado para um s\u00edmbolo existe e \u00e9 um tipo diferente de recurso do que o \
+caminho especifica (por exemplo, o s\u00edmbolo descreve um arquivo, mas o recurso \u00e9 um \
+diret\u00f3rio).
+invalidResourceType.useraction=Assegure que o caminho seja especificado corretamente. \
+Os caminhos do diret\u00f3rio devem terminar com um /. \
+Assegure-se de que o caminho se refere a um recurso que n\u00e3o exista ou que exista e seja do tipo necess\u00e1rio.
+
+missingTmpDir=CWWKE0202E: O local do diret\u00f3rio tempor\u00e1rio especificado n\u00e3o existe e n\u00e3o p\u00f4de ser criado: {0}.
+missingTmpDir.explanation=O diret\u00f3rio especificado como java.io.tmpdir (por meio de uma propriedade de sistema ou de uma vari\u00e1vel de ambiente espec\u00edfica de plataforma) n\u00e3o existe e n\u00e3o p\u00f4de ser criado.
+missingTmpDir.useraction=Assegure-se de que o diret\u00f3rio exista e tenha permiss\u00f5es de leitura/grava\u00e7\u00e3o.
+
+relativeTmpDir=CWWKE0203I: O java.io.tempdir foi especificado com um caminho relativo. O caminho resolvido \u00e9 {0}.
+relativeTmpDir.explanation=O diret\u00f3rio especificado como java.io.tmpdir (por meio de uma propriedade de sistema ou de uma vari\u00e1vel de ambiente espec\u00edfica de plataforma) era relativo e \u00e9 resolvido relativo ao diret\u00f3rio de ativa\u00e7\u00e3o.
+relativeTmpDir.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+locationInitializationError=CWWKE0204E: Imposs\u00edvel inicializar o servi\u00e7o de localiza\u00e7\u00e3o da plataforma; raz\u00e3o={0}.
+locationInitializationError.explanation=CMSG0001
+locationInitializationError.useraction=CMSG0002
+
+frameworkShutdown=CWWKE0205W: A estrutura est\u00e1 encerrando devido a um erro de inicializa\u00e7\u00e3o anterior.
+frameworkShutdown.explanation=A estrutura est\u00e1 encerrando devido a um erro anterior durante a inicializa\u00e7\u00e3o.
+frameworkShutdown.useraction=Resolva o erro, em seguida, reinicie o servidor.

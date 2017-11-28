@@ -1,0 +1,519 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# Message component file for Exception messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_SIRC0001=CWSIK0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - All msgs are for use by the Exception Destination mechanism. These messages
+#       - will be exposed to the user when a message cannot be delivered.
+#
+#   - Developers: Please ensure that every message in this message file is
+#       - only used once. Servicability requirements mean we need to be able
+#       - determine exactly who decided to reroute a message to the exception
+#       - destination. In addition, please ensure that you add as much useful
+#       - information as possible. Remember that the exception destination
+#       - may be on a different server.
+#
+#		**** IMPORTANT ***
+#       Please ensure EVERY message added has a corresponding reason code
+#		in com/ibm/websphere/sib/SIRCConstants.java
+#       ******************
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.4
+#
+#CMVCPATHNAME ws/code/sib.mfp.api/com/ibm/websphere/sib/CWSIKMessages.nlsprops
+#COMPONENTPREFIX CWSIK
+#COMPONENTNAMEFOR CWSIK SIBus Return Codes
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# SIRC (Service Integration Return Code) messages
+# -------------------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------------------
+# Note to developers: Notice that this message has NO useful inserts. It is the default used by
+# by SICoreException if no exception reason is provided to the SICoreException. NO CODE MAY
+# CONSTRUCT AN SICOREEXCEPTION WITHOUT PROVIDING AN EXCEPTION REASON. ANY CODE THAT DOES WILL
+# BE CAUSING A SERVICABILITY PROBLEM AND (IF DISCOVERED) WILL RESULT IN A DEFECT
+DELIVERY_ERROR_SIRC_1=CWSIK0001E: Se ha producido un error interno.
+DELIVERY_ERROR_SIRC_1.explanation=CMSG0001
+DELIVERY_ERROR_SIRC_1.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0159
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_2=CWSIK0002E: El destino {0} en el motor de mensajer\u00eda {1} es una cola, pero la aplicaci\u00f3n que se conecta ha solicitado un espacio de temas.
+DELIVERY_ERROR_SIRC_2.explanation=Una aplicaci\u00f3n se ha conectado con el motor de mensajer\u00eda y ha solicitado un tipo de destino que no coincide con el tipo de destino subyacente.
+DELIVERY_ERROR_SIRC_2.useraction=Corrija la aplicaci\u00f3n que se conecta o cambie el destino por el tipo necesario utilizando la consola administrativa.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0160
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_3=CWSIK0003E: El destino {0} en el motor de mensajer\u00eda {1} es una cola, pero la aplicaci\u00f3n que se conecta ha solicitado un servicio.
+DELIVERY_ERROR_SIRC_3.explanation=Una aplicaci\u00f3n se ha conectado con el motor de mensajer\u00eda y ha solicitado un tipo de destino que no coincide con el tipo de destino subyacente.
+DELIVERY_ERROR_SIRC_3.useraction=Corrija la aplicaci\u00f3n que se conecta o cambie el destino por el tipo necesario utilizando la consola administrativa.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0161
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_4=CWSIK0004E: El destino {0} en el motor de mensajer\u00eda {1} es una cola, pero la aplicaci\u00f3n que se conecta ha solicitado un puerto.
+DELIVERY_ERROR_SIRC_4.explanation=Una aplicaci\u00f3n se ha conectado con el motor de mensajer\u00eda y ha solicitado un tipo de destino que no coincide con el tipo de destino subyacente.
+DELIVERY_ERROR_SIRC_4.useraction=Corrija la aplicaci\u00f3n que se conecta o cambie el destino por el tipo necesario utilizando la consola administrativa.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0162
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_5=CWSIK0005E: El destino {0} en el motor de mensajer\u00eda {1} es un servicio, pero la aplicaci\u00f3n que se conecta ha solicitado una cola.
+DELIVERY_ERROR_SIRC_5.explanation=Una aplicaci\u00f3n se ha conectado con el motor de mensajer\u00eda y ha solicitado un tipo de destino que no coincide con el tipo de destino subyacente.
+DELIVERY_ERROR_SIRC_5.useraction=Corrija la aplicaci\u00f3n que se conecta o cambie el destino por el tipo necesario utilizando la consola administrativa.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0163
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_6=CWSIK0006E: El destino {0} en el motor de mensajer\u00eda {1} es un servicio, pero la aplicaci\u00f3n que se conecta ha solicitado un espacio de temas.
+DELIVERY_ERROR_SIRC_6.explanation=Una aplicaci\u00f3n se ha conectado con el motor de mensajer\u00eda y ha solicitado un tipo de destino que no coincide con el tipo de destino subyacente.
+DELIVERY_ERROR_SIRC_6.useraction=Corrija la aplicaci\u00f3n que se conecta o cambie el destino por el tipo necesario utilizando la consola administrativa.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0164
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_7=CWSIK0007E: El destino {0} en el motor de mensajer\u00eda {1} es un servicio, pero la aplicaci\u00f3n que se conecta ha solicitado un puerto.
+DELIVERY_ERROR_SIRC_7.explanation=Una aplicaci\u00f3n se ha conectado con el motor de mensajer\u00eda y ha solicitado un tipo de destino que no coincide con el tipo de destino subyacente.
+DELIVERY_ERROR_SIRC_7.useraction=Corrija la aplicaci\u00f3n que se conecta o cambie el destino por el tipo necesario utilizando la consola administrativa.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0165
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_8=CWSIK0008E: El destino {0} en el motor de mensajer\u00eda {1} es un puerto, pero la aplicaci\u00f3n que se conecta ha solicitado una cola.
+DELIVERY_ERROR_SIRC_8.explanation=Una aplicaci\u00f3n se ha conectado con el motor de mensajer\u00eda y ha solicitado un tipo de destino que no coincide con el tipo de destino subyacente.
+DELIVERY_ERROR_SIRC_8.useraction=Corrija la aplicaci\u00f3n que se conecta o cambie el destino por el tipo necesario utilizando la consola administrativa.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0166
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_9=CWSIK0009E: El destino {0} en el motor de mensajer\u00eda {1} es un puerto, pero la aplicaci\u00f3n que se conecta ha solicitado un espacio de temas.
+DELIVERY_ERROR_SIRC_9.explanation=Una aplicaci\u00f3n se ha conectado con el motor de mensajer\u00eda y ha solicitado un tipo de destino que no coincide con el tipo de destino subyacente.
+DELIVERY_ERROR_SIRC_9.useraction=Corrija la aplicaci\u00f3n que se conecta o cambie el destino por el tipo necesario utilizando la consola administrativa.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0167
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_10=CWSIK0010E: El destino {0} en el motor de mensajer\u00eda {1} es un puerto, pero la aplicaci\u00f3n que se conecta ha solicitado un servicio.
+DELIVERY_ERROR_SIRC_10.explanation=Una aplicaci\u00f3n se ha conectado con el motor de mensajer\u00eda y ha solicitado un tipo de destino que no coincide con el tipo de destino subyacente.
+DELIVERY_ERROR_SIRC_10.useraction=Corrija la aplicaci\u00f3n que se conecta o cambie el destino por el tipo necesario utilizando la consola administrativa.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0154
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_11=CWSIK0011E: El destino {0} en el motor de mensajer\u00eda {1} es un espacio de temas, pero la aplicaci\u00f3n que se conecta ha solicitado una cola.
+DELIVERY_ERROR_SIRC_11.explanation=Una aplicaci\u00f3n se ha conectado con el motor de mensajer\u00eda y ha solicitado un tipo de destino que no coincide con el tipo de destino subyacente.
+DELIVERY_ERROR_SIRC_11.useraction=Corrija la aplicaci\u00f3n que se conecta o cambie el destino por el tipo necesario utilizando la consola administrativa.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0155
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_12=CWSIK0012E: El destino {0} en el motor de mensajer\u00eda {1} es un espacio de temas, pero la aplicaci\u00f3n que se conecta ha solicitado un servicio.
+DELIVERY_ERROR_SIRC_12.explanation=Una aplicaci\u00f3n se ha conectado con el motor de mensajer\u00eda y ha solicitado un tipo de destino que no coincide con el tipo de destino subyacente.
+DELIVERY_ERROR_SIRC_12.useraction=Corrija la aplicaci\u00f3n que se conecta o cambie el destino por el tipo necesario utilizando la consola administrativa.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0158
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_13=CWSIK0013E: El destino {0} en el motor de mensajer\u00eda {1} es un espacio de temas, pero la aplicaci\u00f3n que se conecta ha solicitado un puerto.
+DELIVERY_ERROR_SIRC_13.explanation=Una aplicaci\u00f3n se ha conectado con el motor de mensajer\u00eda y ha solicitado un tipo de destino que no coincide con el tipo de destino subyacente.
+DELIVERY_ERROR_SIRC_13.useraction=Corrija la aplicaci\u00f3n que se conecta o cambie el destino por el tipo necesario utilizando la consola administrativa.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0168
+# {0} The destination name
+# {1} The messaging engine name.
+# {2} The destination Type
+# {3} The expected destination type
+DELIVERY_ERROR_SIRC_14=CWSIK0014E: El destino {0} en el motor de mensajer\u00eda {1} es de tipo {2}, pero la aplicaci\u00f3n que se conecta ha solicitado un tipo {3} desconocido.
+DELIVERY_ERROR_SIRC_14.explanation=Una aplicaci\u00f3n se ha conectado con el motor de mensajer\u00eda y ha solicitado un tipo de destino que no coincide con el tipo de destino subyacente.
+DELIVERY_ERROR_SIRC_14.useraction=Corrija la aplicaci\u00f3n que se conecta o cambie el destino por el tipo necesario utilizando la consola administrativa.
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_NOT_FOUND_ERROR_CWSIP0042
+# {0} is the name of the destination
+# {1} The name of the messaging engine
+DELIVERY_ERROR_SIRC_15=CWSIK0015E: No se ha encontrado el destino {0} en el motor de mensajer\u00eda {1}.
+DELIVERY_ERROR_SIRC_15.explanation=El destino indicado es desconocido en el motor de mensajer\u00eda local.
+DELIVERY_ERROR_SIRC_15.useraction=Compruebe que el nombre de destino es correcto y que ha creado el destino en el bus.  Si el destino existe en otro motor de mensajer\u00eda, aseg\u00farese de que la comunicaci\u00f3n con otro motor de mensajer\u00eda est\u00e1 funcionando.
+
+# -------------------------------------------------------------------------------------------------
+# TRANSACTION_SEND_USAGE_ERROR_CWSIP0093
+# {0} The destination address
+DELIVERY_ERROR_SIRC_16=CWSIK0016E: La transacci\u00f3n utilizada para el env\u00edo en el destino: {0} ya se hab\u00eda completado.
+DELIVERY_ERROR_SIRC_16.explanation=Se ha intentado utilizar una transacci\u00f3n que ya se hab\u00eda completado.
+DELIVERY_ERROR_SIRC_16.useraction=Aseg\u00farese de que la transacci\u00f3n utilizada sea nueva.
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_LOCKED_ERROR_CWSIP0232
+# {0} the name of the destination
+# {1} The messaging engine Name
+DELIVERY_ERROR_SIRC_17=CWSIK0017E: El destino con el nombre {0} en el motor de mensajer\u00eda {1} tiene inhabilitado el env\u00edo.
+DELIVERY_ERROR_SIRC_17.explanation=Se ha intentado enviar un mensaje a un destino y se ha realizado una comprobaci\u00f3n para asegurarse de que este destino pueda enviar mensajes.  Esta comprobaci\u00f3n no se ha superado porque el destino tiene inhabilitado el env\u00edo.
+DELIVERY_ERROR_SIRC_17.useraction=Actualice el destino de modo que est\u00e9 habilitado para el env\u00edo y vuelva a enviar el mensaje.
+
+# -------------------------------------------------------------------------------------------------
+# USER_NOT_AUTH_SEND_ERROR_CWSIP0306
+# {0} The destination name
+# {1} The subject attempting the operation
+DELIVERY_ERROR_SIRC_18=CWSIK0018E: Se ha denegado el acceso de env\u00edo al destino {0} del usuario con el asunto {1}
+DELIVERY_ERROR_SIRC_18.explanation=El usuario no tiene autorizaci\u00f3n para enviar al destino.
+DELIVERY_ERROR_SIRC_18.useraction=Si el usuario debe tener autorizaci\u00f3n para enviar mensajes en el destino dado actualice los derechos de autorizaci\u00f3n de usuarios del destino.
+
+# -------------------------------------------------------------------------------------------------
+# USER_NOT_AUTH_SEND_ERROR_CWSIP0307
+# {0} The destination prefix
+# {1} The subject attempting the operation
+DELIVERY_ERROR_SIRC_19=CWSIK0019E: El usuario {1} no tiene autorizaci\u00f3n para enviar a destinos temporales con el prefijo {0}.
+DELIVERY_ERROR_SIRC_19.explanation=El usuario no tiene autorizaci\u00f3n para enviar a destinos temporales con el prefijo especificado.
+DELIVERY_ERROR_SIRC_19.useraction=Si el usuario debe tener autorizaci\u00f3n para enviar mensajes en el destino temporal dado actualice los derechos de autorizaci\u00f3n de usuarios del destino temporal.
+
+# -------------------------------------------------------------------------------------------------
+# USER_NOT_AUTH_SEND_ERROR_CWSIP0308
+# {0} The destination name
+# {1} The discriminator name
+# {2} The user attempting the operation
+DELIVERY_ERROR_SIRC_20=CWSIK0020E: Se ha denegado el acceso de env\u00edo al discriminador {1} del destino {0} del usuario con el asunto {2}
+DELIVERY_ERROR_SIRC_20.explanation=El usuario no tiene autorizaci\u00f3n para enviar al destino utilizando el tema especificado.
+DELIVERY_ERROR_SIRC_20.useraction=Si el usuario tuviera autorizaci\u00f3n para enviar mensajes en el tema dado actualice los derechos de autorizaci\u00f3n de usuarios del tema en el destino dado.
+
+# -------------------------------------------------------------------------------------------------
+# OBJECT_CLOSED_ERROR_CWSIP0233
+# {0} the name of the destination
+# {1} The messaging engine Name
+DELIVERY_ERROR_SIRC_21=CWSIK0021E: La sesi\u00f3n del productor se ha cerrado en el destino {0} en el motor de mensajer\u00eda {1} y no se puede utilizar.
+DELIVERY_ERROR_SIRC_21.explanation=El productor se ha cerrado y no puede utilizarse en el destino especificado.
+DELIVERY_ERROR_SIRC_21.useraction=Cree una nueva sesi\u00f3n de productor en el destino especificado.
+
+# -------------------------------------------------------------------------------------------------
+# OBJECT_CLOSED_ERROR_CWSIP0091
+# {0} The messaging engine name
+DELIVERY_ERROR_SIRC_22=CWSIK0022E: La conexi\u00f3n se ha cerrado en el motor de mensajer\u00eda {0} y no se puede utilizar.
+DELIVERY_ERROR_SIRC_22.explanation=La conexi\u00f3n se ha cerrado y no se puede utilizar para ninguna operaci\u00f3n.
+DELIVERY_ERROR_SIRC_22.useraction=Cree una nueva conexi\u00f3n con el motor de mensajer\u00eda.
+
+# -------------------------------------------------------------------------------------------------
+# EXCEPTION_DESTINATION_ERROR_CWSIP0296
+# {0}  The destination name that could not be found
+# {1} The reason for failing to put the message to the exception destination
+# {2} The related error
+# {3} The current destination
+DELIVERY_ERROR_SIRC_23=CWSIK0023E: No se ha podido direccionar un mensaje a un destino de excepciones en el destino {3} producido por un destino de ruta de direccionamiento de reenv\u00edo {0} debido al motivo {1} con el error relacionado {2}.
+DELIVERY_ERROR_SIRC_23.explanation=No se ha podido encontrar el siguiente destino en la ruta de direccionamiento de reenv\u00edo. El mensaje se ha direccionado al destino de excepciones pero ha habido un error cuando se ha direccionado el mensaje al destino de excepciones.
+DELIVERY_ERROR_SIRC_23.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_SEND_DISALLOWED_CWSIP0252
+# {0} the name of the destination
+# {1} The name of the messaging engine
+DELIVERY_ERROR_SIRC_24=CWSIK0024E: El destino {0} tiene inhabilitado el env\u00edo para el motor de mensajer\u00eda {1}.
+DELIVERY_ERROR_SIRC_24.explanation=Se ha intentado enviar un mensaje a un destino y se ha realizado una comprobaci\u00f3n para asegurarse de que hay disponible un punto de cola para este destino.  No se ha superado esta comprobaci\u00f3n dado que el \u00fanico punto de cola para este destino tiene inhabilitado el env\u00edo.
+DELIVERY_ERROR_SIRC_24.useraction=Actualice el punto de cola del destino, de modo que se permita el env\u00edo y vuelva a intentar la operaci\u00f3n de env\u00edo.
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_HIGH_MESSAGES_ERROR_CWSIP0250
+# {0} is the name of the Destination
+# {1} The name of the messaging engine.
+DELIVERY_ERROR_SIRC_25=CWSIK0025E: El destino {0} en el motor de mensajer\u00eda {1} no est\u00e1 disponible porque ya se ha alcanzado el l\u00edmite superior del n\u00famero de mensajes para este destino.
+DELIVERY_ERROR_SIRC_25.explanation=Todos los puntos de colas del destino especificado o las colas de transmisi\u00f3n en este motor de mensajer\u00eda que se dirigen al destino ya han alcanzado su l\u00edmite superior configurado, por lo tanto, no se puede aceptar el mensaje.
+DELIVERY_ERROR_SIRC_25.useraction=Compruebe que el l\u00edmite superior de mensajes configurado para el destino sea correcto.  Si el destino existe en otro motor de mensajer\u00eda, aseg\u00farese de que la comunicaci\u00f3n con otro motor de mensajer\u00eda est\u00e1 funcionando.
+
+# -------------------------------------------------------------------------------------------------
+# NO_LOCALISATIONS_FOUND_ERROR_CWSIP0032
+# {0} is the name of the destination
+DELIVERY_ERROR_SIRC_26=CWSIK0026E: No se han encontrado puntos de mensaje permitidos direccionables al destino {0}.
+DELIVERY_ERROR_SIRC_26.explanation=Se ha realizado un intento para utilizar un destino pero ning\u00fan punto de mensaje de dicho destino era direccionable debido a restricciones, posiblemente a trav\u00e9s del uso de un alias o enlazando con un punto de mensaje suprimido ahora.
+DELIVERY_ERROR_SIRC_26.useraction=Si este es un mensaje de respuesta, se ha debido especificar un motor de mensajer\u00eda en el mensaje de solicitud original, por lo tanto, es posible que se haya suprimido el punto de mensaje de este destino. Si se utilizaba un destino de alias que restringe los puntos de mensaje direccionables del destino objetivo, corrija el alias para identificar un conjunto correcto de puntos de mensaje.
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_CORRUPT_ERROR_CWSIP0058
+# {0} is the destination name
+DELIVERY_ERROR_SIRC_27=CWSIK0027E: El destino con el nombre {0} est\u00e1 da\u00f1ado
+DELIVERY_ERROR_SIRC_27.explanation=El destino con el nombre dado est\u00e1 da\u00f1ado y no se puede utilizar.
+DELIVERY_ERROR_SIRC_27.useraction=Restablezca el destino desde la consola administrativa.
+
+# -------------------------------------------------------------------------------------------------
+# ALIAS_TARGET_DESTINATION_NOT_FOUND_EXCEPTION_CWSIP0057
+# {0} is the alias destination name
+# {1} is the target destination name
+# {2} is the alias resolution path
+DELIVERY_ERROR_SIRC_28=CWSIK0028E: El destino del alias {0} no se puede resolver porque el destino se\u00f1alado {1} no existe en la v\u00eda de acceso de alias {2}.
+DELIVERY_ERROR_SIRC_28.explanation=El destino se\u00f1alado en la v\u00eda de acceso de alias es desconocido en el motor de mensajer\u00eda local.
+DELIVERY_ERROR_SIRC_28.useraction=Defina el destino se\u00f1alado o corrija el alias incorrecto en la consola administrativa.
+
+# -------------------------------------------------------------------------------------------------
+# ALIAS_TARGETS_SERVICE_DESTINATION_ERROR_CWSIP0622
+# {0} is the name of the alias destination
+# {1} is the name of the service destination
+# {2} is the alias resolution path
+# {3} The name of the messaging engine bus
+DELIVERY_ERROR_SIRC_29=CWSIK0029E: Se ha producido un error porque el destino del alias {0} apunta a un destino de servicio {1} en la v\u00eda de acceso {2} en el bus del motor de mensajer\u00eda {3}.
+DELIVERY_ERROR_SIRC_29.explanation=El destino de alias no es v\u00e1lido porque su objetivo es un destino de servicio.
+DELIVERY_ERROR_SIRC_29.useraction=Elimine el destino de servicio cambiando los alias en la v\u00eda de acceso de resoluci\u00f3n en la consola administrativa.
+
+# -------------------------------------------------------------------------------------------------
+# LINK_NOT_FOUND_ERROR_CWSIP0047
+# {0} is the name of the link
+# {1} is the link UUID
+# {2} is the Bus Name
+DELIVERY_ERROR_SIRC_30=CWSIK0030E: No se ha encontrado el enlace con el nombre {0} y el UUID {1} al crear el bus {2}.
+DELIVERY_ERROR_SIRC_30.explanation=El enlace especificado es desconocido en el motor de mensajer\u00eda local, por lo tanto no se ha podido crear el bus especificado.
+DELIVERY_ERROR_SIRC_30.useraction=Compruebe que el nombre de enlace es correcto y que est\u00e1 definido en la consola administrativa para el bus.  Compruebe que se ha aplicado la \u00faltima configuraci\u00f3n al motor de mensajer\u00eda.
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_ALREADY_EXISTS_ERROR_CWSIP0045
+# {0} is the name of the destination
+DELIVERY_ERROR_SIRC_31=CWSIK0031E: El destino {0} ya existe.
+DELIVERY_ERROR_SIRC_31.explanation=El destino especificado ya se conoce en el motor de mensajer\u00eda local, por lo tanto, no se ha podido crear otro.
+DELIVERY_ERROR_SIRC_31.useraction=Aseg\u00farese de que la configuraci\u00f3n del destino sea correcta en la consola administrativa y reinicie el servidor.
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_DELETED_ERROR_CWSIP0421
+# {0} is the name of the destination
+# {1} The messaging engine name
+DELIVERY_ERROR_SIRC_32=CWSIK0032E: El destino o bus for\u00e1neo {0} se ha suprimido del motor de mensajer\u00eda {1}.
+DELIVERY_ERROR_SIRC_32.explanation=El destino o bus for\u00e1neo ya no puede utilizarse porque se ha suprimido.
+DELIVERY_ERROR_SIRC_32.useraction=Especifique un nombre de destino o bus for\u00e1neo v\u00e1lido cuando env\u00ede mensajes.
+
+# -------------------------------------------------------------------------------------------------
+# MESSAGE_RELIABILITY_ERROR_CWSIP0231
+# {0}  The messages reliability
+# {1}  The destinations reliability
+# {2}  The destinations name.
+# {3}  The messaging engine name.
+DELIVERY_ERROR_SIRC_33=CWSIK0033E: El valor de fiabilidad de mensaje {0} es mayor que el valor de fiabilidad de destino {1} para el destino {2} en el motor de mensajer\u00eda {3}.
+DELIVERY_ERROR_SIRC_33.explanation=Se ha intentado direccionar un mensaje a un destino, pero el mensaje tiene una fiabilidad mayor que la que el destino puede soportar.
+DELIVERY_ERROR_SIRC_33.useraction=Actualice el destino de modo que pueda dar soporte a mensajes de fiabilidad m\u00e1s alta o reducir la fiabilidad del mensaje que va a enviarse.
+
+# -------------------------------------------------------------------------------------------------
+# FORWARD_ROUTING_PATH_ERROR_CWSIP0254
+# {0} the name of the service destination
+# {1} The name of the messaging engine
+DELIVERY_ERROR_SIRC_34=CWSIK0034E: La ruta de direccionamiento de reenv\u00edo no contiene ninguna entrada para el destino de servicio: {0} en este motor de mensajer\u00eda: {1}.
+DELIVERY_ERROR_SIRC_34.explanation=Se ha intentado utilizar un destino de servicio cuando la ruta de direccionamiento de reenv\u00edo est\u00e1 vac\u00eda.
+DELIVERY_ERROR_SIRC_34.useraction=Un destino de servicio ha de tener destinos mediados en su ruta de direccionamiento de reenv\u00edo. Corrija la ruta y vuelva a intentarlo.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the destination to which we were delivering
+# {1} identifies the messaging engine where the destination is located
+DELIVERY_ERROR_SIRC_35=CWSIK0035E: Un mensaje no se puede entregar al destino {0}, en el motor de mensajer\u00eda {1}, porque se ha retrotra\u00eddo m\u00e1s veces que su umbral de reentregas.
+DELIVERY_ERROR_SIRC_35.explanation=Este mensaje no se puede entregar porque ning\u00fan intento para confirmar la transacci\u00f3n que debe entregar el mensaje ha sido satisfactorio.
+DELIVERY_ERROR_SIRC_35.useraction=Compruebe a qu\u00e9 son debidas las retrotracciones de la transacci\u00f3n. Para obtener m\u00e1s informaci\u00f3n sobre c\u00f3mo resolver este error, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte de WebSphere Application Server: http://www.ibm.com/software/webserver/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the message that has been rerouted
+# {1} identifies the destination from which the message was rerouted
+# {2} identifies the messaging engine where the destination is located
+DELIVERY_ERROR_SIRC_36=CWSIK0036E: El mensaje {0} se ha redireccionado administrativamente desde {1} en el motor de mensajer\u00eda {2}.
+DELIVERY_ERROR_SIRC_36.explanation=Se ha eliminado el mensaje del destino dado y se ha trasladado al destino de excepci\u00f3n.
+DELIVERY_ERROR_SIRC_36.useraction=Este mensaje es meramente informativo.
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the destination that was invalid
+# {1} identifies the messaging engine where the destination is located
+# {2} identifies the last valid destination in the path
+# {3} identified the exception caused by the invalid destination
+DELIVERY_ERROR_SIRC_37=CWSIK0037E: El mensaje no se ha podido entregar porque su ruta de direccionamiento conten\u00eda un destino incorrecto {0}. El \u00faltimo destino v\u00e1lido fue {2} en el motor de mensajer\u00eda {3}. El destino no es correcto debido a la excepci\u00f3n {3}.
+DELIVERY_ERROR_SIRC_37.explanation=Un mensaje no ha podido pasar a trav\u00e9s de su ruta de direccionamiento proporcionada porque la v\u00eda contiene un destino incorrecto.
+DELIVERY_ERROR_SIRC_37.useraction=Compruebe que los destinos de la ruta de direccionamiento est\u00e1n disponibles.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the foreign bus
+# {1} The name of the messaging engine
+# {2} The name of the messaging engines bus
+DELIVERY_ERROR_SIRC_38=CWSIK0038E: No se ha encontrado el bus for\u00e1neo con el nombre {0} en el motor de mensajer\u00eda {1} del bus {2}.
+DELIVERY_ERROR_SIRC_38.explanation=Se desconoce el bus for\u00e1neo nombrado en el motor de mensajer\u00eda local.
+DELIVERY_ERROR_SIRC_38.useraction=Compruebe que el nombre del bus for\u00e1neo sea correcto.  Compruebe que se haya definido el enlace del bus for\u00e1neo y vuelva a intentar el mandato.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the foreign bus
+# {1} The name of the messaging engine
+# {2} The name of the messaging engines bus
+# {3} The related error
+DELIVERY_ERROR_SIRC_39=CWSIK0039E: No se ha encontrado el bus for\u00e1neo con el nombre {0} en el motor de mensajer\u00eda {1} del bus {2} debido al error {3}.
+DELIVERY_ERROR_SIRC_39.explanation=Se desconoce el bus for\u00e1neo nombrado en el motor de mensajer\u00eda local.
+DELIVERY_ERROR_SIRC_39.useraction=Compruebe que el nombre del bus for\u00e1neo sea correcto.  Compruebe que se haya definido el enlace del bus for\u00e1neo y vuelva a intentar el mandato.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the foreign bus link
+# {1} The name of the messaging engine
+# {2} The name of the messaging engines bus
+DELIVERY_ERROR_SIRC_40=CWSIK0040E: No se ha encontrado el bus for\u00e1neo con el nombre {0} en el motor de mensajer\u00eda {1} del bus {2}.
+DELIVERY_ERROR_SIRC_40.explanation=Se desconoce el enlace del bus for\u00e1neo nombrado en el motor de mensajer\u00eda local.
+DELIVERY_ERROR_SIRC_40.useraction=Compruebe que el nombre del bus for\u00e1neo sea correcto y tenga enlaces definidos.  Si no hay enlaces definidos, defina un nuevo enlace de bus for\u00e1neo entre los dos buses.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the foreign bus
+# {1} The name of the messaging engine
+# {2} The name of the messaging engines bus
+# {3} The related error
+DELIVERY_ERROR_SIRC_41=CWSIK0041E: No hay enlaces definidos para la conexi\u00f3n con el bus for\u00e1neo con el nombre {0} en el motor de mensajer\u00eda {1} del bus {2} debido al error {3}.
+DELIVERY_ERROR_SIRC_41.explanation=Una aplicaci\u00f3n ha intentado enviar un mensaje a un destino en un bus for\u00e1neo pero no se han definido enlaces entre el bus local y el bus for\u00e1neo.
+DELIVERY_ERROR_SIRC_41.useraction=Defina un enlace entre el bus local y el bus for\u00e1neo en la consola administrativa y vuelva a enviar el mensaje.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the uuid of the mqlink
+# {1} The name of the messaging engine
+# {2} The name of the messaging engines bus
+DELIVERY_ERROR_SIRC_42=CWSIK0042E: El enlace MQ con el UUID {0} no se ha encontrado en el motor de mensajer\u00eda {1} del bus {2}.
+DELIVERY_ERROR_SIRC_42.explanation=Se desconoce el enlace MQ nombrado en el motor de mensajer\u00eda local.
+DELIVERY_ERROR_SIRC_42.useraction=Compruebe que el nombre de enlace MQ est\u00e9 definido y tenga las min\u00fasculas y may\u00fasculas correctas.  Si el enlace MQ no est\u00e1 definido, utilice un enlace MQ que exista o defina un enlace MQ nuevo.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the current maximum forward routing path depth
+DELIVERY_ERROR_SIRC_43=CWSIK0043E: No se ha podido entregar un mensaje a un destino en la ruta de direccionamiento de reenv\u00edo dado que se ha sobrepasado la profundidad m\u00e1xima de la v\u00eda de acceso de direccionamiento de reenv\u00edo ({0}).
+DELIVERY_ERROR_SIRC_43.explanation=Se ha redireccionado un mensaje por una v\u00eda de redireccionamiento de reenv\u00edo. El n\u00famero de redirecciones ha superado el m\u00e1ximo permitido. Por lo tanto, el mensaje se ha enviado al destino de excepci\u00f3n.
+DELIVERY_ERROR_SIRC_43.useraction=Consulte la v\u00eda de direccionamiento de reenv\u00edo para los ciclos. Alternativamente, aumente el valor m\u00e1ximo mediante la propiedad personalizada sib.processor.maxForwardRoutingPath.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination to which we were delivering
+# {1} is the bus from the message originated
+DELIVERY_ERROR_SIRC_44=CWSIK0044E: No se ha podido entregar un mensaje  al destino {0} porque el punto de cola para dicho destino est\u00e1 guardado en un miembro del bus del servidor WebSphere MQ y el mensaje se ha enviado desde el bus for\u00e1neo {1}.
+DELIVERY_ERROR_SIRC_44.explanation=No se pueden enviar mensajes desde un bus for\u00e1neo directamente a un destino cuyo punto de cola est\u00e1 guardado en WebSphere MQ y al que se accede utilizando un miembro del bus de servidor WebSphere MQ. 
+DELIVERY_ERROR_SIRC_44.useraction=Configure de nuevo la aplicaci\u00f3n de destino para conectarse al bus local o permita el acceso al destino WebSphere MQ utilizando una conexi\u00f3n de bus for\u00e1neo WebSphere MQ y encamine el mensaje a trav\u00e9s del bus for\u00e1neo en lugar de hacerlo a trav\u00e9s de un miembro del bus de servidor WebSphere MQ.
+
+# -------------------------------------------------------------------------------------------------
+# ALIAS_TARGET_DESTINATION_NOT_FOUND_EXCEPTION_CWSIP0057
+# {0} is the alias destination name
+# {1} is the target destination name
+DELIVERY_ERROR_SIRC_45=CWSIK0045E: El destino del alias {0} no se puede resolver porque el destino se\u00f1alado {1} no existe.
+DELIVERY_ERROR_SIRC_45.explanation=El destino se\u00f1alado no est\u00e1 disponible en el motor de mensajer\u00eda local.
+DELIVERY_ERROR_SIRC_45.useraction=Especifique el destino se\u00f1alado correcto.
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the message that has been rerouted
+# {1} identifies the destination to which the message was rerouted
+# {2} identifies the mediation that caused the message to be rerouted
+# {3} identifies the destination at which the message was mediated
+# {4} identifies the exception that mediation generated that caused the message to be rerouted
+DELIVERY_ERROR_SIRC_101=CWSIK0101W: El mensaje {0} se ha redireccionado al destino de excepciones {1} porque la mediaci\u00f3n {2} en el destino {3} ha causado la excepci\u00f3n {4}.
+DELIVERY_ERROR_SIRC_101.explanation=El mensaje se ha dado a la mediaci\u00f3n especificada; dicha mediaci\u00f3n ha generado una excepci\u00f3n y, como resultado, el mensaje se ha redireccionado al destino de excepciones.
+DELIVERY_ERROR_SIRC_101.useraction=Si la mediaci\u00f3n no deb\u00eda haber redireccionado el mensaje, compruebe a qu\u00e9 se debe la excepci\u00f3n.
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the message that has been rerouted
+# {1} identifies the mediation that caused the message to become invalid
+# {2} identifies the destination at which the message was mediated
+# {3} identifies the message format to which the message does not conform
+DELIVERY_ERROR_SIRC_102=CWSIK0102E: El mensaje {0} no puede seguir su proceso por su ruta de direccionamiento de reenv\u00edo despu\u00e9s de haber sido intervenida por la mediaci\u00f3n {1} en el destino {2} porque el mensaje no se ajusta al formato de mensaje {3}.
+DELIVERY_ERROR_SIRC_102.explanation=Despu\u00e9s de haber sido intervenida por la mediaci\u00f3n especificada, el mensaje no se ajusta al formato de mensaje especificado. La mediaci\u00f3n ha cambiado el contenido del mensaje, ha cambiado el formato del mensaje, o ambas cosas. La versi\u00f3n original del mensaje se ha redireccionado al destino de excepciones.
+DELIVERY_ERROR_SIRC_102.useraction=Examine c\u00f3mo y porqu\u00e9 la mediaci\u00f3n especificada ha modificado el mensaje de forma que no se ajusta al formato de mensaje especificado.
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the message that has been rerouted
+# {1} identifies the mediation that caused the message to become invalid
+# {2} identifies the destination at which the message was mediated
+DELIVERY_ERROR_SIRC_103=CWSIK0103E: El mensaje {0} no puede seguir su proceso por su ruta de direccionamiento de reenv\u00edo despu\u00e9s de haber sido intervenida por la mediaci\u00f3n {1} en el destino {2} porque el formato del mensaje no es correcto.
+DELIVERY_ERROR_SIRC_103.explanation=Despu\u00e9s de haber sido intervenida por la mediaci\u00f3n especificada, las propiedades del mensaje conten\u00edan objetos que no se pod\u00edan serializar o el gr\u00e1fico de datos no es v\u00e1lido.
+DELIVERY_ERROR_SIRC_103.useraction=Examine c\u00f3mo y porqu\u00e9 la mediaci\u00f3n especificada ha modificado el mensaje de forma que ya no es v\u00e1lido.
+
+# -------------------------------------------------------------------------------------------------
+DELIVERY_ERROR_SIRC_104=CWSIK0104E: El mensaje es demasiado grande para la MQ remota; se env\u00eda al destino de excepciones: tama\u00f1o de mensaje {0}, tama\u00f1o m\u00e1ximo de mensaje {1}.
+DELIVERY_ERROR_SIRC_104.explanation=El mensaje es demasiado grande.
+DELIVERY_ERROR_SIRC_104.useraction=Compruebe los valores MQ.
+
+# -------------------------------------------------------------------------------------------------
+DELIVERY_ERROR_SIRC_105=CWSIK0105E: Existe un error de formato de mensaje.
+DELIVERY_ERROR_SIRC_105.explanation=El mensaje no puede procesarse debido a un error de formato.
+DELIVERY_ERROR_SIRC_105.useraction=Compruebe la conexi\u00f3n.
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the WebSphere MQ return code
+# {1} identifies the WebSphere MQ reason code
+DELIVERY_ERROR_SIRC_106=CWSIK0106E: WebSphere MQ ha generado un error. Los c\u00f3digos de raz\u00f3n y devoluci\u00f3n de WebSphere MQ son {0} y {1}, respectivamente. 
+DELIVERY_ERROR_SIRC_106.explanation=No se puede procesar el mensaje debido a la condici\u00f3n de error que ha generado WebSphere MQ. 
+DELIVERY_ERROR_SIRC_106.useraction=Examine los c\u00f3digos de devoluci\u00f3n y de retorno y las anotaciones cronol\u00f3gicas de error de WebSphere MQ para determinar la causa del error. Es posible que deba ponerse en contacto con el administrador de WebSphere MQ para que le ayude a resolver el problema.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The class name of the Object which cannot be serialized.
+DELIVERY_ERROR_SIRC_200=CWSIK0200E: Un objeto de clase {0} se ha establecido en la carga del mensaje pero no se puede serializar.
+DELIVERY_ERROR_SIRC_200.explanation=Un mensaje de objeto enviado con el indicativo producerDoesNotModifyPayloadAfterSet habilitado en su ConnectionFactory se ha enviado con una carga que el sistema no pudo serializar.  Se han perdido estos datos del mensaje.
+DELIVERY_ERROR_SIRC_200.useraction=Inhabilite producerDoesNotModifyPayloadAfterSet en la ConnectionFactory.  Sin el indicativo habilitado la aplicaci\u00f3n JMS que establece el objeto en el mensaje recibir\u00e1 cualquier excepci\u00f3n de serializaci\u00f3n inmediatamente.
+
+# -------------------------------------------------------------------------------------------------
+# INTERNAL_MESSAGING_ERROR_CWSIP0001
+# {0} The class name
+# {1} The PROBE ID.
+DELIVERY_ERROR_SIRC_900=CWSIK0900E: Se ha producido un error de mensajer\u00eda interno en {0}, {1}.
+DELIVERY_ERROR_SIRC_900.explanation=CMSG0001
+DELIVERY_ERROR_SIRC_900.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# INTERNAL_MESSAGING_ERROR_CWSIP0002
+# {0} The class name
+# {1} The PROBE ID.
+# {2} The related exception
+DELIVERY_ERROR_SIRC_901=CWSIK0901E: Se ha producido un error de mensajer\u00eda interno en {0}, {1}, {2}.
+DELIVERY_ERROR_SIRC_901.explanation=CMSG0001
+DELIVERY_ERROR_SIRC_901.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# INTERNAL_CONFIGURATION_ERROR_CWSIP0006
+# {0} The class name
+# {1} The PROBE ID.
+# {2} destination name
+DELIVERY_ERROR_SIRC_905=CWSIK0905E: Se ha producido un error de configuraci\u00f3n de destino interno en el destino {2} en {0}, {1}.
+DELIVERY_ERROR_SIRC_905.explanation=CMSG0001
+DELIVERY_ERROR_SIRC_905.useraction=CMSG0002

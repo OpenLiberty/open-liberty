@@ -1,0 +1,35 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authorization.jacc.web/resources/com/ibm/ws/security/authorization/jacc/web/resources/JaccWebAuthorizationMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Security JACC Authorization
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS2880 - CWWKS2889
+
+JACC_WEB_GET_POLICYCONFIGURATION_FAILURE=CWWKS2880E: Il servizio JACC non \u00e8 in grado di richiamare l''oggetto PolicyConfiguration con contextID {0}. L''eccezione \u00e8 {1}.
+JACC_WEB_GET_POLICYCONFIGURATION_FAILURE.explanation=Il servizio JACC non \u00e8 in grado di ottenere l'oggetto PolicyConfiguration del provider JACC. Potrebbe essere un errore grave nel provider JACC.
+JACC_WEB_GET_POLICYCONFIGURATION_FAILURE.useraction=Esaminare i log del provider JACC e i log del server per ulteriori informazioni.
+
+JACC_WEB_PERMISSION_PROPAGATION_FAILURE=CWWKS2881E: Il servizio JACC non \u00e8 in grado di propagare le restrizioni di sicurezza Web con il contextID {0} al provider JACC a causa dell''eccezione {1}.
+JACC_WEB_PERMISSION_PROPAGATION_FAILURE.explanation=Il servizio JACC non \u00e8 in grado di propagare le restrizioni di sicurezza Web al provider JACC a causa drll'eccezione imprevista.
+JACC_WEB_PERMISSION_PROPAGATION_FAILURE.useraction=Esaminare i log del provider JACC e i log del server per ulteriori informazioni.
+
+JACC_WEB_IMPLIES_FAILURE=CWWKS2882E: L''autorizzazione per la risorsa Web con contextID {0} ha avuto esito negativo a causa dell''eccezione {1}.
+JACC_WEB_IMPLIES_FAILURE.explanation=L'autorizzazione per la risorsa Web specificata ha avuto esito negativo.
+JACC_WEB_IMPLIES_FAILURE.useraction=Esaminare i log del provider JACC e i log del server per ulteriori informazioni.
+
+JACC_WEB_SPI_PARAMETER_ERROR=CWWKS2883E: L''oggetto del parametro {0} del metodo {1} non \u00e8 valido. L''oggetto previsto del parametro \u00e8 {2}.
+JACC_WEB_SPI_PARAMETER_ERROR.explanation=Il servizio JACC non pu\u00f2 completare la richiesta a causa di un oggetto del parametro non valido. Questo \u00e8 un errore interno.
+JACC_WEB_SPI_PARAMETER_ERROR.useraction=Questo \u00e8 un errore interno. Se il problema persiste, consultare le informazioni relative alla determinazione dei problemi sulla pagina di supporto di WebSphere Application Server all'indirizzo http://www.ibm.com/software/webservers/appserv/was/support/. 

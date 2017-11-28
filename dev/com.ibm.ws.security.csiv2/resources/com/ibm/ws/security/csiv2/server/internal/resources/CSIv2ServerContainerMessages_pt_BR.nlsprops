@@ -1,0 +1,79 @@
+###############################################################################
+# Copyright (c) 2014, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.csiv2/resources/com/ibm/ws/security/csiv2/server/internal/resources/CSIv2ServerContainerMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server CSIv2 for the server container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9600 - CWWKS9699
+
+# Client CSIv2 Configuration related messages CWWKS9600 - CWWKS9619
+# -------------------------------------------------------------------------------------------------
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID=CWWKS9600E: Mecanismo(s) da camada de autentica\u00e7\u00e3o inv\u00e1lido(s) especificado(s) na seguran\u00e7a do cliente {0}. Os valores v\u00e1lidos s\u00e3o GSSUP ou LTPA ou GSSUP, LTPA.
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.explanation=O(s) mecanismo(s) da camada de autentica\u00e7\u00e3o de seguran\u00e7a do cliente especificado(s) n\u00e3o \u00e9(s\u00e3o) suportado(s).
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.useraction=Assegure-se de que o mecanismo da camada de autentica\u00e7\u00e3o de seguran\u00e7a do cliente especificado seja GSSUP ou LTPA ou GSSUP, LTPA.
+
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL=CWWKS9601W: O(s) mecanismo(s) da camada de autentica\u00e7\u00e3o especificado(s) na seguran\u00e7a do cliente \u00e9(s\u00e3o) nulo(s).
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.explanation=O(s) mecanismo(s) da camada de autentica\u00e7\u00e3o de seguran\u00e7a do cliente \u00e9(s\u00e3o) nulo(s).
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.useraction=Assegure-se de que o mecanismo da camada de autentica\u00e7\u00e3o de seguran\u00e7a do cliente especificado seja GSSUP ou LTPA ou GSSUP, LTPA.
+
+
+# Server CSIv2 Configuration related messages CWWKS9620 - CWWKS9639
+# -------------------------------------------------------------------------------------------------
+CSIv2_SERVER_AUTH_MECHANISM_INVALID=CWWKS9620E: Mecanismo(s) da camada de autentica\u00e7\u00e3o inv\u00e1lido(s) especificado(s) na pol\u00edtica de seguran\u00e7a do servidor {0}. Os valores v\u00e1lidos s\u00e3o GSSUP ou LTPA ou GSSUP, LTPA.
+CSIv2_SERVER_AUTH_MECHANISM_INVALID.explanation=O(s) mecanismo(s) da camada de autentica\u00e7\u00e3o da pol\u00edtica de seguran\u00e7a do servidor especificado(s) n\u00e3o \u00e9(s\u00e3o) suportado(s).
+CSIv2_SERVER_AUTH_MECHANISM_INVALID.useraction=Assegure-se de que o mecanismo da camada de autentica\u00e7\u00e3o da pol\u00edtica de seguran\u00e7a do servidor especificado seja GSSUP ou LTPA ou GSSUP, LTPA.
+
+CSIv2_SERVER_AUTH_MECHANISMS_NULL=CWWKS9621W: O(s) mecanismo(s) da camada de autentica\u00e7\u00e3o especificado(s) na seguran\u00e7a do cliente \u00e9(s\u00e3o) nulo(s).
+CSIv2_SERVER_AUTH_MECHANISMS_NULL.explanation=O(s) mecanismo(s) da camada de autentica\u00e7\u00e3o de seguran\u00e7a do cliente \u00e9(s\u00e3o) nulo(s).
+CSIv2_SERVER_AUTH_MECHANISMS_NULL.useraction=Assegure-se de que o mecanismo da camada de autentica\u00e7\u00e3o de seguran\u00e7a do cliente especificado seja GSSUP ou LTPA ou GSSUP, LTPA.
+
+CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG=CWWKS9622E:  A configura\u00e7\u00e3o de SSL {0} na camada de transporte de entrada de CSIv2 n\u00e3o corresponde a uma configura\u00e7\u00e3o de SSL no terminal do IIOP.
+CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG.explanation= A camada de transporte de entrada de CSIv2 usa uma configura\u00e7\u00e3o de SSL, mas o terminal do IIOP n\u00e3o usa a mesma configura\u00e7\u00e3o de SSL.
+CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG.useraction= Assegure-se de que a configura\u00e7\u00e3o de SSL na camada de transporte de entrada de CSIv2 no arquivo server.xml seja uma das configura\u00e7\u00f5es de SSL usada pelo terminal do IIOP.
+
+#Do not translate iiopsOptions
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT=CWWKS9623E:  O terminal do IIOP n\u00e3o possui uma configura\u00e7\u00e3o de SSL e a camada de transporte de entrada de CSIv2 requer que a configura\u00e7\u00e3o de SSL {0} seja usada no terminal do IIOP.
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT.explanation= O terminal do IIOP n\u00e3o possui pelo menos um elemento iiopsOptions com uma configura\u00e7\u00e3o de SSL \u00e0 qual a camada de transporte de entrada de CSIv2 pode se referir.
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT.useraction= Assegure-se de que o terminal do IIOP tenha pelo menos um elemento iiopsOptions com a mesma configura\u00e7\u00e3o de SSL usada pela camada de transporte de entrada de CSIv2.
+
+# Client CSIv2 runtime related messages CWWKS9640 - CWWKS9659
+# -------------------------------------------------------------------------------------------------
+# Do not translate ITTDistinguishedName
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_DN=CWWKS9640E: O cliente n\u00e3o pode criar o token de asser\u00e7\u00e3o de identidade para o nome distinto {0}. A mensagem de exce\u00e7\u00e3o \u00e9: {1}
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_DN.explanation=O assunto para o usu\u00e1rio a ser declarado n\u00e3o cont\u00e9m um nome distinto v\u00e1lido e a asser\u00e7\u00e3o de identidade n\u00e3o pode ser executada. 
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_DN.useraction=Revise a mensagem de exce\u00e7\u00e3o, certifique-se de que o registro do usu\u00e1rio configurado no arquivo server.xml suporta nomes distintos e autentique o usu\u00e1rio novamente.
+
+# Do not translate ITTX509CertChain
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_CC=CWWKS9641E: O cliente n\u00e3o pode criar o token de asser\u00e7\u00e3o de identidade ITTX509CertChain. A mensagem de exce\u00e7\u00e3o \u00e9: {0}
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_CC.explanation=O assunto para o usu\u00e1rio que est\u00e1 sendo declarado n\u00e3o cont\u00e9m um certificado v\u00e1lido e a asser\u00e7\u00e3o de identidade n\u00e3o pode ser executada. 
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_CC.useraction=Revise a mensagem de exce\u00e7\u00e3o e assegure-se de que o armazenamento de chaves, SSL e a camada de transporte de pol\u00edtica do servidor \u00e9 configurada no arquivo server.xml, e autentique o usu\u00e1rio novamente.
+
+CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID=CWWKS9642E: A cadeia de certificado de cliente n\u00e3o est\u00e1 dispon\u00edvel para continuar com a Asser\u00e7\u00e3o de Identidade.
+CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID.explanation=O assunto para o usu\u00e1rio que est\u00e1 sendo declarado n\u00e3o cont\u00e9m um certificado v\u00e1lido e a asser\u00e7\u00e3o de identidade n\u00e3o pode ser executada. 
+CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID.useraction=Assegure-se de que o armazenamento de chaves, SSL e a camada de transporte de pol\u00edtica do servidor \u00e9 configurada no arquivo server.xml, e autentique o usu\u00e1rio novamente.
+
+# Server CSIv2 runtime related messages CWWKS9660 - CWWKS9679
+# -------------------------------------------------------------------------------------------------
+NO_USER_REGISTRY=CWWKS9660E: O elemento orb com o atributo do id {0} requer um registro do usu\u00e1rio, mas nenhum registro de usu\u00e1rio se tornou dispon\u00edvel dentro de {1} segundos.   Como resultado, nenhum aplicativo ser\u00e1 iniciado. Certifique-se de ter configurado um registro do usu\u00e1rio apropriado no arquivo server.xml.
+NO_USER_REGISTRY.explanation=Nenhum aplicativo foi iniciado porque um Object Request Broker (ORB) protegido em um servidor requer um registro do usu\u00e1rio, mas nenhum registro de usu\u00e1rio foi localizado. Ap\u00f3s um registro do usu\u00e1rio apropriado ser configurado, os aplicativos ser\u00e3o iniciados.
+NO_USER_REGISTRY.useraction=Certifique-se de ter configurado um registro do usu\u00e1rio apropriado para seu ambiente.
+
+# Common CSIv2  related messages CWWKS9680 - CWWKS9699
+# -------------------------------------------------------------------------------------------------
+CSIv2_COMMON_AUTH_LAYER_DISABLED=CWWKS9680W: A Camada de Autentica\u00e7\u00e3o do CSIv2 est\u00e1 desativada porque o valor para establishTrustInClient \u00e9 {0}.
+CSIv2_COMMON_AUTH_LAYER_DISABLED.explanation=Quando establishTrustInClient est\u00e1 configurado como Nunca, a Camada de Autentica\u00e7\u00e3o do CSIv2 \u00e9 desativada.  
+CSIv2_COMMON_AUTH_LAYER_DISABLED.useraction=Para ativar a Camada de Autentica\u00e7\u00e3o do CSIv2, configure o valor de establishTrustInClient como Suportado ou Obrigat\u00f3rio.
+
+

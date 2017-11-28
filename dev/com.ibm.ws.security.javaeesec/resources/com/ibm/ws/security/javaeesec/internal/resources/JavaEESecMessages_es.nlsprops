@@ -1,0 +1,40 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.javaeesec/resources/com/ibm/ws/security/javaeesec/internal/resources/JavaEESecMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Java EE Security 1.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS1900 - CWWKS1924
+# 1900 to 1909 will be used for some informational message such as JSR375 is enabled or something like that...
+
+JAVAEESEC_ERROR_NO_IDENTITYSTORES=CWWKS1910E: No se ha encontrado el objeto IdentityStore. Aseg\u00farese de que al menos un objeto IdentityStore se haya definido mediante la anotaci\u00f3n en la aplicaci\u00f3n.
+JAVAEESEC_ERROR_NO_IDENTITYSTORES.explanation=No se ha encontrado el objeto IdentityStore. Es obligatorio para la autenticaci\u00f3n y autorizaci\u00f3n.
+JAVAEESEC_ERROR_NO_IDENTITYSTORES.useraction=Aseg\u00farese de que la aplicaci\u00f3n se ha anotado correctamente para permitir al menos un objeto IdentityStore.
+
+JAVAEESEC_ERROR_NO_VALIDATION=CWWKS1911E: Ning\u00fan objeto IdentityStore admite la validaci\u00f3n de usuarios. Aseg\u00farese de que al menos un IdentityStore admita la validaci\u00f3n de usuarios.
+JAVAEESEC_ERROR_NO_VALIDATION.explanation=Ninguno de los objetos IdentityStore admite la validaci\u00f3n de usuarios, por tanto, el c\u00f3digo de seguridad no autentica al usuario.
+JAVAEESEC_ERROR_NO_VALIDATION.useraction=Aseg\u00farese de que al menos un IdentityStore admita la validaci\u00f3n de usuarios.
+
+JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: El objeto HttpAuthenticationMechanism no se puede identificar para la autenticaci\u00f3n. Aseg\u00farese de que haya un HttpAuthenticationMechanism en la aplicaci\u00f3n.
+JAVAEESEC_ERROR_NO_HAM.explanation=El objeto HttpAuthenticationMechanism no se puede identificar para la autenticaci\u00f3n. Puede ser que no haya ning\u00fan objeto o que haya varios objetos que se correspondan con la condici\u00f3n especificada. Aseg\u00farese de que haya un HttpAuthenticationMechanism en la aplicaci\u00f3n.
+JAVAEESEC_ERROR_NO_HAM.useraction=Aseg\u00farese de que haya un HttpAuthenticationMechanism en la aplicaci\u00f3n.
+
+JAVAEESEC_ERROR_NO_HAM_PROPS=CWWKS1913E: El objeto HAMProperties no se puede identificar para la autenticaci\u00f3n. Lo m\u00e1s probable es que no haya ning\u00fan objeto HttpAuthenticationMechanism en la aplicaci\u00f3n. Compruebe que se haya definido un objeto HttpAuthenticationMechanism.
+JAVAEESEC_ERROR_NO_HAM_PROPS.explanation=El objeto HAMProperties no se puede identificar para la autenticaci\u00f3n. Podr\u00eda ser que no hubiera ning\u00fan objeto HttpAuthenticationMechanism definido en la aplicaci\u00f3n.
+JAVAEESEC_ERROR_NO_HAM_PROPS.useraction=Aseg\u00farese de que haya un HttpAuthenticationMechanism en la aplicaci\u00f3n.
+
+JAVAEESEC_WARNING_NO_REALM_NAME=CWWKS1914W: No se ha establecido el nombre de reino para la autenticaci\u00f3n b\u00e1sica; se utiliza el valor defaultRealm.
+JAVAEESEC_WARNING_NO_REALM_NAME.explanation=No se ha establecido el nombre de reino para la autenticaci\u00f3n b\u00e1sica; se utiliza el valor predeterminado defaultRealm.
+JAVAEESEC_WARNING_NO_REALM_NAME.useraction=Si el nombre de reino debe establecerse, establ\u00e9zcalo utilizando la anotaci\u00f3n BasicAuthenticationMechanismDefinition en la aplicaci\u00f3n.

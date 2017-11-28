@@ -1,0 +1,56 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.service/resources/com/ibm/ws/kernel/service/location/internal/resources/LocServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0200 - 0299 com.ibm.ws.kernel.service.location.internal.resources.LocServiceMessages
+# -------------------------------------------------------------------------------------------------
+unreachableLocation=CWWKE0200E: Die angegebene Position ist nicht erreichbar. Die angegebene Position ist kein untergeordnetes Element eines bekannten oder konfigurierten Pfads. Pfad: {0}
+unreachableLocation.explanation=Die Plattform verwendet einen rudiment\u00e4ren Schutz vor beliebigen Zugriffen auf das Dateisystem, wenn der Positionsservice f\u00fcr die Aufl\u00f6sung angegebener Pfade verwendet wird. \
+Die Datei README.TXT enth\u00e4lt Informationen zur Konfiguration symbolischer Pfade.
+unreachableLocation.useraction=Suchen Sie in der Datei bootstrap.properties nach konfigurierten Pfaden, und stellen Sie sicher, dass der konfigurierte Pfad eine untergeordnete Komponente vorhandener Symbole ist oder dass der Pfad einem explizit definierten Symbol zugeordnet ist.
+
+invalidResourceType=CWWKE0201E: Das Symbol kann nicht erstellt werden. Die angegebene Position ist vorhanden, und es liegen Konflikte mit dem erforderlichen Typ vor: {0}={1}
+invalidResourceType.explanation=Der f\u00fcr ein Symbol angegebene Pfad ist vorhanden, aber dieser hat einen anderen Ressourcentyp als der Pfad (das Symbol beschreibt beispielsweise eine Datei, aber die Ressource ist ein Verzeichnis).
+invalidResourceType.useraction=Stellen Sie sicher, dass der Pfad korrekt angegeben ist. \
+Verzeichnispfade m\u00fcssen mit / enden. \
+Stellen Sie sicher, dass der Pfad auf eine Ressource verweist, die nicht vorhanden ist, oder auf eine Ressource, die vorhanden ist und den erforderlichen Typ hat.
+
+missingTmpDir=CWWKE0202E: Die angegebene tempor\u00e4re Verzeichnisposition ist nicht vorhanden und konnte nicht erstellt werden: {0}.
+missingTmpDir.explanation=Das als java.io.tmpdir angegebene Verzeichnis (entweder mit einer Systemeigenschaft oder mit einer plattformspezifischen Umgebungsvariablen) ist nicht vorhanden und konnte nicht erstellt werden.
+missingTmpDir.useraction=Stellen Sie sicher, dass das angegebene Verzeichnis vorhanden ist und Lese-/Schreibberechtigungen hat.
+
+relativeTmpDir=CWWKE0203I: java.io.tempdir wurde mit einem relativen Pfad angegeben. Der aufgel\u00f6ste Pfad ist {0}.
+relativeTmpDir.explanation=Das als java.io.tmpdir angegebene Verzeichnis (entweder mit einer Systemeigenschaft oder mit einer plattformspezifischen Umgebungsvariablen) ist relativ und wird relativ zum Startverzeichnis aufgel\u00f6st.
+relativeTmpDir.useraction=Es ist keine Aktion erforderlich.
+
+locationInitializationError=CWWKE0204E: Der Plattformpositionsservice kann nicht initialisiert werden. Ursache={0}.
+locationInitializationError.explanation=CMSG0001
+locationInitializationError.useraction=CMSG0002                                                                  
+
+frameworkShutdown=CWWKE0205W: Das Framework wird wegen eines zuvor aufgetretenen Fehlers beendet.
+frameworkShutdown.explanation=Das Framework wird wegen eines vorherigen w\u00e4hrend der Initialisierung aufgetretenen Fehlers beendet.
+frameworkShutdown.useraction=Beheben Sie den Fehler, und starten Sie dann den Server erneut.

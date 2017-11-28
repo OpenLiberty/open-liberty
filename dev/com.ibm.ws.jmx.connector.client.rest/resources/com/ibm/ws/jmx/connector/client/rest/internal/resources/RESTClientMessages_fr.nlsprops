@@ -1,0 +1,146 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.client/resources/com/ibm/ws/jmx/connector/client/rest/internal/resources/RESTClientMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX JMX REST Client
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKX0200-CWWKX0259
+	
+jmx.rest.client.request.error=CWWKX0201E: Le client REST WebSphere Java Management Extensions a d\u00e9tect\u00e9 une erreur lors de la pr\u00e9paration de la demande au serveur de l''URL {0} sur la connexion {1}
+jmx.rest.client.request.error.explanation=Le client REST WebSphere Java Management Extensions a d\u00e9tect\u00e9 une erreur lors de la pr\u00e9paration d'une demande pour le serveur
+jmx.rest.client.request.error.useraction=Examinez les journaux du serveur pour plus d'informations.
+
+jmx.rest.client.response.error=CWWKX0202E: Le client REST WebSphere Java Management Extensions n''a pas pu traiter la r\u00e9ponse du serveur pour l''URL {0} sur la connexion {1}
+jmx.rest.client.response.error.explanation=Le client REST WebSphere Java Management Extensions n'a pas pu traiter une r\u00e9ponse du serveur
+jmx.rest.client.response.error.useraction=Examinez les journaux du serveur pour plus d'informations.
+
+jmx.rest.client.response.code.error=CWWKX0203E: Le client REST WebSphere Java Management Extensions a re\u00e7u un code de r\u00e9ponse inattendu {0} avec le message ''{1}'' du serveur pour l''URL {2} sur la connexion {3}
+jmx.rest.client.response.code.error.explanation=Le client REST WebSphere Java Management Extensions a re\u00e7u un code de r\u00e9ponse inattendu du serveur
+jmx.rest.client.response.code.error.useraction=Examinez les journaux du serveur pour plus d'informations.
+
+jmx.rest.client.server.throwable.exception=CWWKX0204E: Impossible d'interpr\u00e9ter un objet Throwable dans le flux d'erreurs du serveur.
+jmx.rest.client.server.throwable.exception.explanation=Le serveur a lev\u00e9 une exception en traitant la demande du client, mais le client n'a pas pu interpr\u00e9ter un objet Throwable \u00e0 partir du flux d'erreurs du serveur. Il est possible que le client ne dispose pas de la classe de l'objet Throwable.
+jmx.rest.client.server.throwable.exception.useraction=Examinez les journaux du serveur pour plus d'informations.
+
+jmx.rest.client.not.connected=CWWKX0206E: Le client n'est pas connect\u00e9 au serveur.
+jmx.rest.client.not.connected.explanation=La connexion au serveur a \u00e9t\u00e9 ferm\u00e9e ou a \u00e9chou\u00e9.
+jmx.rest.client.not.connected.useraction=V\u00e9rifiez que la fonction connecteur REST est activ\u00e9e sur le serveur, puis obtenez une nouvelle connexion au serveur.
+
+jmx.rest.client.url.not.found=CWWKX0207E: Le serveur signale que l'URL demand\u00e9e par le client est introuvable.
+jmx.rest.client.url.not.found.explanation=Les informations dont dispose le client sont peut-\u00eatre obsol\u00e8tes, ou bien la fonction connecteur REST sur le serveur a peut-\u00eatre \u00e9t\u00e9 d\u00e9sactiv\u00e9e.
+jmx.rest.client.url.not.found.useraction=V\u00e9rifiez que la fonction connecteur REST est activ\u00e9e sur le serveur, puis obtenez une nouvelle connexion au serveur.
+
+jmx.rest.client.class.name.null=CWWKX0208E: L'argument de nom de classe \u00e9tait Null.
+jmx.rest.client.class.name.null.explanation=L'argument de nom de classe ne doit pas \u00eatre Null.
+jmx.rest.client.class.name.null.useraction=Fournissez un nom de classe non Null lorsque vous appelez la m\u00e9thode.
+
+jmx.rest.client.attribute.name.null=CWWKX0209E: L'argument de nom d'attribut \u00e9tait Null.
+jmx.rest.client.attribute.name.null.explanation=L'argument de nom d'attribut ne doit pas \u00eatre Null.
+jmx.rest.client.attribute.name.null.useraction=Fournissez un nom d'attribut non Null lorsque vous appelez la m\u00e9thode.
+
+jmx.rest.client.attribute.names.null=CWWKX0210E: L'argument suppos\u00e9 contenir un tableau de noms d'attribut \u00e9tait Null.
+jmx.rest.client.attribute.names.null.explanation=L'argument suppos\u00e9 contenir un tableau de noms d'attribut ne doit pas \u00eatre Null.
+jmx.rest.client.attribute.names.null.useraction=Fournissez un tableau non Null de noms d'attribut lorsque vous appelez la m\u00e9thode.
+
+jmx.rest.client.attribute.null=CWWKX0211E: L'argument Attribute \u00e9tait Null.
+jmx.rest.client.attribute.null.explanation=L'argument Attribute ne doit pas \u00eatre Null.
+jmx.rest.client.attribute.null.useraction=Fournissez un argument Attribute non Null lorsque vous appelez la m\u00e9thode.
+
+jmx.rest.client.attribute.list.null=CWWKX0212E: L'argument AttributeList \u00e9tait Null.
+jmx.rest.client.attribute.list.null.explanation=L'argument AttributeList ne doit pas \u00eatre Null.
+jmx.rest.client.attribute.list.null.useraction=Fournissez un argument AttributeList non Null lorsque vous appelez la m\u00e9thode.
+
+jmx.rest.client.object.name.null=CWWKX0213E: L'argument ObjectName \u00e9tait Null.
+jmx.rest.client.object.name.null.explanation=L'argument ObjectName ne doit pas \u00eatre Null.
+jmx.rest.client.object.name.null.useraction=Fournissez un argument ObjectName non Null lorsque vous appelez la m\u00e9thode.
+
+jmx.rest.client.unexpected.server.throwable=CWWKX0214E: Un objet Throwable inattendu a \u00e9t\u00e9 renvoy\u00e9 par le serveur.
+jmx.rest.client.unexpected.server.throwable.explanation=L'exception encapsule un objet Throwable renvoy\u00e9 par le serveur qui n'est normalement pas pr\u00e9vu pour cette op\u00e9ration.
+jmx.rest.client.unexpected.server.throwable.useraction=Examinez les journaux du serveur pour plus d'informations.
+
+jmx.rest.client.bad.credentials=CWWKX0215E: Un probl\u00e8me est survenu avec le nom d''utilisateur ou le mot de passe fourni. Le serveur a r\u00e9pondu avec le code {0} et le message ''{1}''
+jmx.rest.client.bad.credentials.explanation=Les donn\u00e9es d'identification fournies lors de l'obtention de la connexion \u00e9taient incorrectes. L'utilisateur n'existe peut-\u00eatre pas ; ou alors, s'il existe, il n'a peut-\u00eatre pas le droit d'acc\u00e9der au serveur ou le mot de passe indiqu\u00e9 est incorrect.
+jmx.rest.client.bad.credentials.useraction=Corrigez le nom d'utilisateur ou le mot de passe, puis obtenez une nouvelle connexion.
+
+jmx.rest.client.object.name.pattern=CWWKX0216E: L''argument ObjectName ''{0}'' est un masque g\u00e9n\u00e9rique.
+jmx.rest.client.object.name.pattern.explanation=L'argument ObjectName est un masque g\u00e9n\u00e9rique alors que la m\u00e9thode requiert un ObjectName correspondant pr\u00e9cis\u00e9ment \u00e0 un unique bean g\u00e9r\u00e9 (MBean).
+jmx.rest.client.object.name.pattern.useraction=Fournissez un argument ObjectName sans partie g\u00e9n\u00e9rique afin de d\u00e9signer pr\u00e9cis\u00e9ment un unique MBean.
+
+jmx.rest.client.instance.not.found=CWWKX0217E: Aucun MBean n''est actuellement enregistr\u00e9 avec l''ObjectName indiqu\u00e9, ''{0}''
+jmx.rest.client.instance.not.found.explanation=L'op\u00e9ration n\u00e9cessite un MBean enregistr\u00e9, mais aucun ne l'a \u00e9t\u00e9 avec l'ObjectName indiqu\u00e9.
+jmx.rest.client.instance.not.found.useraction=Assurez-vous que le MBean est bien enregistr\u00e9 avant de tenter toute op\u00e9ration de gestion dessus.
+
+jmx.rest.client.attribute.not.found=CWWKX0218E: Le MBean ''{0}'' n''a pas d''attribut nomm\u00e9 ''{1}''
+jmx.rest.client.attribute.not.found.explanation=Le MBean ne fournit pas d'attribut portant le nom indiqu\u00e9.
+jmx.rest.client.attribute.not.found.useraction=Obtenez les informations du MBean afin de d\u00e9terminer quels attributs il fournit.
+
+jmx.rest.client.operation.not.found=CWWKX0219E: Le MBean ''{0}'' n''a pas d''op\u00e9ration nomm\u00e9e ''{1}''
+jmx.rest.client.operation.not.found.explanation=Le MBean ne fournit pas d'op\u00e9ration portant le nom indiqu\u00e9.
+jmx.rest.client.operation.not.found.useraction=Obtenez les informations du MBean afin de d\u00e9terminer quelles op\u00e9rations il fournit.
+
+jmx.rest.client.listener.not.found=CWWKX0220E: Le NotificationListener fourni n''est pas actuellement enregistr\u00e9 pour recevoir des notifications du MBean ''{0}''
+jmx.rest.client.listener.not.found.explanation=Le NotificationListener n'a pas \u00e9t\u00e9 ajout\u00e9, ou bien s'il l'a \u00e9t\u00e9, il est d\u00e9j\u00e0 retir\u00e9 et n'est donc pas actuellement enregistr\u00e9 pour recevoir des notifications du MBean indiqu\u00e9.
+jmx.rest.client.listener.not.found.useraction=Assurez-vous que le code appelant tient \u00e0 jour la liste des NotificationListeners ayant \u00e9t\u00e9 ajout\u00e9s et retir\u00e9s ou que l'exception est intercept\u00e9e (catch) et trait\u00e9e.
+
+jmx.rest.client.notification.lost=CWWKX0221I: La notification n'a pas pu \u00eatre livr\u00e9e.
+jmx.rest.client.notification.lost.explanation=Une notification n'a pas pu \u00eatre livr\u00e9e \u00e0 un ou plusieurs NotificationListeners car aucun NotificationListener enregistr\u00e9 n'a \u00e9t\u00e9 trouv\u00e9 ou bien une exception s'est produite lors de la livraison de la notification.
+jmx.rest.client.notification.lost.useraction=Si la notification aurait due \u00eatre envoy\u00e9e \u00e0 un programme d'\u00e9coute NotificationListener enregistr\u00e9, recherchez des exceptions dans les journaux.
+
+jmx.rest.client.connection.failed=CWWKX0222I: La connexion au serveur a \u00e9chou\u00e9.
+jmx.rest.client.connection.failed.explanation=Le serveur est devenu indisponible et sa disponibilit\u00e9 n'a pas \u00e9t\u00e9 r\u00e9tablie dans le d\u00e9lai imparti configur\u00e9.
+jmx.rest.client.connection.failed.useraction=V\u00e9rifiez la connexion r\u00e9seau et assurez-vous que le serveur est ex\u00e9cut\u00e9 avec la fonction connecteur REST activ\u00e9e. 
+
+jmx.rest.client.connection.temporarily.lost=CWWKX0223I: La connexion au serveur a \u00e9t\u00e9 temporairement perdue.
+jmx.rest.client.connection.temporarily.lost.explanation=Le serveur est devenu indisponible, mais le client va tenter de restaurer la connexion dans le d\u00e9lai imparti configur\u00e9.
+jmx.rest.client.connection.temporarily.lost.useraction=Si le serveur red\u00e9marre intentionnellement, aucune action n'est requise. Sinon, v\u00e9rifiez la connexion r\u00e9seau et assurez-vous que le serveur est ex\u00e9cut\u00e9 avec la fonction connecteur REST activ\u00e9e.
+
+jmx.rest.client.connection.restored.with.exceptions=CWWKX0224I: La connexion a \u00e9t\u00e9 restaur\u00e9e, mais des exceptions ont \u00e9t\u00e9 rencontr\u00e9es lors de l'ajout des NotificationListeners.
+jmx.rest.client.connection.restored.with.exceptions.explanation=La connexion au serveur a \u00e9t\u00e9 perdue temporairement, mais elle a ensuite \u00e9t\u00e9 correctement r\u00e9tablie. Des exceptions ont toutefois \u00e9t\u00e9 rencontr\u00e9es lors de l'ajout des NotificationListeners, de sorte que certaines notifications risquent de ne pas \u00eatre re\u00e7ues.
+jmx.rest.client.connection.restored.with.exceptions.useraction=V\u00e9rifiez les exceptions incluses avec la notification et, une fois les probl\u00e8mes corrig\u00e9s, r\u00e9enregistrez les NotificationListeners.
+
+jmx.rest.client.connection.restored=CWWKX0225I: La connexion a \u00e9t\u00e9 restaur\u00e9e correctement.
+jmx.rest.client.connection.restored.explanation=La connexion au serveur a \u00e9t\u00e9 perdue temporairement, mais elle a ensuite \u00e9t\u00e9 correctement r\u00e9tablie. Tous les NotificationListeners enregistr\u00e9s continueront \u00e0 recevoir les notifications.
+jmx.rest.client.connection.restored.useraction=Aucun
+
+jmx.rest.client.connection.illegal.argument=CWWKX0226E: Le param\u00e8tre de type JMXServiceURL ne peut pas avoir la valeur NULL.
+jmx.rest.client.connection.illegal.argument.explanation=La valeur du param\u00e8tre 'serviceURL' ne peut pas \u00eatre NULL.
+jmx.rest.client.connection.illegal.argument.useraction=Connectez-vous \u00e0 nouveau au connecteur JMX REST \u00e0 l'aide d'une valeur JMXServiceURL non NULL.
+
+jmx.rest.client.connection.invalid.endpoint=CWWKX0227E: La valeur de noeud final suivante n''est pas valide : {0}
+jmx.rest.client.connection.invalid.endpoint.explanation=La valeur de noeud final indiqu\u00e9e n'est pas valide.
+jmx.rest.client.connection.invalid.endpoint.useraction=Connectez-vous \u00e0 nouveau au connecteur JMX REST \u00e0 l'aide d'une valeur de noeud final valide de type cha\u00eene et au format "h\u00f4te:port".
+
+jmx.rest.client.connection.no.endpoints=CWWKX0228E: Aucun noeud final disponible ne peut \u00eatre localis\u00e9 pour initialiser le connecteur.
+jmx.rest.client.connection.no.endpoints.explanation=Aucun des noeuds finaux indiqu\u00e9s n'\u00e9tait disponible pendant l'initialisation du connecteur JMX REST.
+jmx.rest.client.connection.no.endpoints.useraction=Connectez-vous \u00e0 nouveau au connecteur JMX REST \u00e0 l'aide d'au moins un noeud final disponible.
+
+jmx.rest.client.bad.user.credentials=CWWKX0229E: Un probl\u00e8me est survenu avec les donn\u00e9es d''identification de l''utilisateur fournies. Le serveur a r\u00e9pondu avec le code {0} et le message ''{1}''
+jmx.rest.client.bad.user.credentials.explanation=Les donn\u00e9es d'identification fournies sont incorrectes, expir\u00e9es, incompl\u00e8tes ou non autoris\u00e9es.
+jmx.rest.client.bad.user.credentials.useraction=V\u00e9rifiez que les donn\u00e9es d'identification de l'utilisateur disposent d'une authentification et d'une autorisation correctes, puis obtenez une nouvelle connexion.
+
+jmx.rest.client.connection.connect=CWWKX0230I: Le membre de collectivit\u00e9 a ouvert le client JMX dans le contr\u00f4leur de collectivit\u00e9 : {0}
+jmx.rest.client.connection.connect.explanation=Le membre est connect\u00e9 au contr\u00f4leur.
+jmx.rest.client.connection.connect.useraction=Aucune action n'est requise.
+ 
+jmx.rest.client.connection.disconnect=CWWKX0231I: Le membre de collectivit\u00e9 a ferm\u00e9 le client JMX dans le contr\u00f4leur de collectivit\u00e9 : {0}
+jmx.rest.client.connection.disconnect.explanation=Le membre est d\u00e9connect\u00e9 du contr\u00f4leur.
+jmx.rest.client.connection.disconnect.useraction=Aucune action n'est requise.
+

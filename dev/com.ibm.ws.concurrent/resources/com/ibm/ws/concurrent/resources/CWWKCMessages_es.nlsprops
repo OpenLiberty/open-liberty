@@ -1,0 +1,81 @@
+###############################################################################
+# Copyright (c) 2012, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.concurrent/resources/com/ibm/ws/concurrent/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC EE Managed Concurrency
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1100 to CWWCK1199 except those specifically identified as moved
+
+# Moved from com.ibm.ws.context
+CWWKC1000.unrecognized.property=CWWKC1000E: El elemento de configuraci\u00f3n {0} contiene un atributo no reconocido {1}.
+CWWKC1000.unrecognized.property.explanation=Se ha configurado una propiedad no reconocida en un servicio de contexto.
+CWWKC1000.unrecognized.property.useraction=Elimine o corrija la propiedad no reconocida.
+
+# Moved from com.ibm.ws.context
+CWWKC1001.context.providers.unavailable=CWWKC1001E: El contexto de hebras configurado {0} no est\u00e1 disponible para el elemento de configuraci\u00f3n {1}.
+CWWKC1001.context.providers.unavailable.explanation=El servidor de aplicaciones no puede encontrar los proveedores del tipo especificado del contexto de hebra.
+CWWKC1001.context.providers.unavailable.useraction=Aseg\u00farese de que los proveedores del contexto de hebra solicitado se hayan habilitado.
+
+# Moved from com.ibm.ws.context
+CWWKC1002.provider.cardinality.violation=CWWKC1002E: El elemento de configuraci\u00f3n {0} no puede tener m\u00e1s de un subelemento de tipo {1}.
+CWWKC1002.provider.cardinality.violation.explanation=Como m\u00e1ximo, se puede configurar un elemento de cada tipo de proveedor de contexto bajo un servicio de contexto.
+CWWKC1002.provider.cardinality.violation.useraction=Elimine los elementos de proveedores de contexto duplicados de la configuraci\u00f3n de servicio de contexto.
+
+# Moved from com.ibm.ws.context
+CWWKC1020.baseContextRef.infinite=CWWKC1020E: El atributo baseContextRef del elemento de configuraci\u00f3n {0} causa una cadena infinita de dependencias.
+CWWKC1020.baseContextRef.infinite.explanation=Se ha producido una cadena infinita de dependencias porque baseContextRef apunta directa o indirectamente a la misma instancia de servicio de contexto.
+CWWKC1020.baseContextRef.infinite.useraction=Actualice la configuraci\u00f3n del servicio de contexto para romper la cadena infinita de dependencias.
+
+CWWKC1100.resource.unavailable=CWWKC1100E: El recurso {0} no est\u00e1 disponible.
+CWWKC1100.resource.unavailable.explanation=Un recurso puede quedar no disponible debido a la conclusi\u00f3n del servidor o debido a un cambio de configuraci\u00f3n, ya sea en s\u00ed mismo u en otro servicio del que depende.
+CWWKC1100.resource.unavailable.useraction=Verifique la configuraci\u00f3n del recurso y de los recursos de los que depende.
+
+CWWKC1110.task.canceled=CWWKC1110I: La tarea {0}, enviada al servicio ejecutor {1}, se ha cancelado.
+CWWKC1110.task.canceled.explanation=La ejecuci\u00f3n de la tarea se ha cancelado.
+CWWKC1110.task.canceled.useraction=No se requiere ninguna acci\u00f3n.
+
+CWWKC1101.task.failed=CWWKC1101E: La tarea {0}, enviada al servicio ejecutor {1}, ha fallado con el error siguiente: {2}.
+CWWKC1101.task.failed.explanation=Ha fallado una tarea enviada a un ejecutor. Consulte el mensaje de excepci\u00f3n para ver la causa.
+CWWKC1101.task.failed.useraction=Corrija la causa del error y vuelva a enviar la tarea.
+
+CWWKC1102.listener.failed=CWWKC1102E: El escucha de tareas gestionadas para la tarea {0}, enviada al servicio ejecutor {1}, ha fallado con el error siguiente: {2}.
+CWWKC1102.listener.failed.explanation=Ha fallado una operaci\u00f3n del escucha de tareas gestionadas. Consulte el mensaje de excepci\u00f3n para ver la causa.
+CWWKC1102.listener.failed.useraction=Corrija la causa del error y decida si se vuelve a enviar la tarea.
+
+CWWKC1103.skip.run.failed=CWWKC1103E: Se omite la ejecuci\u00f3n de la tarea {0}, enviada por el servicio ejecutor {1}, debido a que ha fallado la operaci\u00f3n Trigger.skipRun con el error siguiente: {2}.
+CWWKC1103.skip.run.failed.explanation=La operaci\u00f3n skipRun para Trigger ha fallado, por lo que se ha omitido el intento de ejecuci\u00f3n actual de la tarea.
+CWWKC1103.skip.run.failed.useraction=Corrija la causa del error y decida si se vuelve a enviar la tarea.
+
+CWWKC1111.task.invalid=CWWKC1111E: La tarea {0} no es v\u00e1lida.
+CWWKC1111.task.invalid.explanation=La tarea no se puede enviar porque no es v\u00e1lida.
+CWWKC1111.task.invalid.useraction=Actualice la aplicaci\u00f3n para enviar una tarea v\u00e1lida a ExecutorService.
+
+CWWKC1112.all.tasks.canceled=CWWKC1112I: Todas las tareas se han cancelado.
+CWWKC1112.all.tasks.canceled.explanation=Todas las tareas se han cancelado antes de pudiera invocarse ninguna tarea.
+CWWKC1112.all.tasks.canceled.useraction=No se requiere ninguna acci\u00f3n.
+
+CWWKC1120.future.get.rejected=CWWKC1120E: El futuro suministrado a los m\u00e9todos de ManagedTaskListener taskSubmitted y taskStarting no se puede utilizar para esperar a que finalice la tarea.
+CWWKC1120.future.get.rejected.explanation=Los m\u00e9todos de ManagedTaskListener taskSubmitted y taskStarting se ejecutan en la hebra que enviar\u00e1 o iniciar\u00e1 la tarea. Por lo tanto, el futuro suministrado a estos m\u00e9todos no debe utilizarse para la espera de la tarea.
+CWWKC1120.future.get.rejected.useraction=Actualice la aplicaci\u00f3n para evitar que invoque get en el futuro que se suministra a taskSubmitted y taskStarting.
+
+CWWKC1130.xprop.value.invalid=CWWKC1130E: Una tarea enviada al ejecutor gestionado {0} contiene una propiedad de ejecuci\u00f3n {1} con el valor {2}, que no es v\u00e1lido para los ejecutores gestionados.
+CWWKC1130.xprop.value.invalid.explanation=Algunos valores de propiedad de ejecuci\u00f3n no son v\u00e1lidos para ejecutores gestionados, pero pueden ser v\u00e1lidos para otros tipos de recursos, como f\u00e1brica de hebras gestionadas o servicio de contexto.
+CWWKC1130.xprop.value.invalid.useraction=Actualice la aplicaci\u00f3n para omitir la propiedad de ejecuci\u00f3n o establ\u00e9zcala en un valor v\u00e1lido.

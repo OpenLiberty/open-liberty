@@ -1,0 +1,1875 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# Change activity:
+#
+# Reason          Date       Origin   Description
+# --------------- ---------- -------- ------------------------------------------
+# d673319         18/10/2010 lohit    Addressed issues related to nls translations.
+# 91911           30/01/2013 Sharath  Liberty: Added new information message for Message Discard
+# 98292           23/05/2013 Chetan   New nls message for invalid temporary prefix
+# 114553          06/11/13   balgirid Fixing message threshold not shown in messages.log
+# ------------------------------------------------------------------------------
+# File com.ibm.ws.sib.processor.CWSIPMessages.nlsprops
+#
+# SIB.processor component file for logging messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIP0001=CWSIP0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Msgs in the range CWSIP0001-CWSIP0020 General Internal Errors for Message Processor
+#
+#   - Msgs in the range CWSIP0021-CWSIP0030 belong to class com.ibm.ws.sib.processor.impl.ConnectionImpl
+#   - Msgs in the range CWSIP0031-CWSIP0040 belong to class com.ibm.ws.sib.processor.impl.BaseDestinationHandler
+#   - Msgs in the range CWSIP0041-CWSIP0070 belong to class com.ibm.ws.sib.processor.impl.DestinationManager
+#   - Msgs in the range CWSIP0071-CWSIP0080 belong to class com.ibm.ws.sib.processor.impl.AdministratorImpl
+#   - Msgs in the range CWSIP0081-CWSIP0090 belong to class com.ibm.ws.sib.processor.impl.BrowserSessionImpl
+#   - Msgs in the range CWSIP0091-CWSIP0110 belong to class com.ibm.ws.sib.processor.impl.ConnectionImpl
+#   - Msgs in the range CWSIP0111-CWSIP0120 belong to class com.ibm.ws.sib.processor.impl.ConsumerDispatcher
+#   - Msgs in the range CWSIP0121-CWSIP0130 belong to class com.ibm.ws.sib.processor.impl.AbstractDestinationHandler
+#   - Msgs in the range CWSIP0131-CWSIP0140 belong to class com.ibm.ws.sib.processor.impl.ConsumerSessionImpl
+#   - Msgs in the range CWSIP0141-CWSIP0170 belong to class com.ibm.ws.sib.processor.impl.DestinationHandler
+#   - Msgs in the range CWSIP0171-CWSIP0190 belong to class com.ibm.ws.sib.processor.impl.LocalConsumerPoint
+#   - Msgs in the range CWSIP0191-CWSIP0200 belong to class com.ibm.ws.sib.processor.impl.LockedMessageEnumerationImpl
+#   - Msgs in the range CWSIP0201-CWSIP0210 belong to class com.ibm.ws.sib.processor.runtime.MediatedMessageHandlerControl
+#   - Msgs in the range CWSIP0211-CWSIP0220 belong to class com.ibm.ws.sib.processor.impl.MessageProcessor
+#   - Msgs in the range CWSIP0221-CWSIP0230 belong to class com.ibm.ws.sib.processor.impl.ConsumerKey
+#   - Msgs in the range CWSIP0231-CWSIP0240 belong to class com.ibm.ws.sib.processor.impl.ProducerSessionImpl
+#   - Msgs in the range CWSIP0241-CWSIP0260 belong to class com.ibm.ws.sib.processor.impl.PtoPInputHandler
+#   - Msgs in the range CWSIP0261-CWSIP0270 belong to class com.ibm.ws.sib.processor.store.items.SIMPItem
+#   - Msgs in the range CWSIP0271-CWSIP0280 belong to class com.ibm.ws.sib.processor.runtime.Topicspace
+#   - Msgs in the range CWSIP0281-CWSIP0290 belong to class com.ibm.ws.sib.processor.io.impl.MessageBuffer
+#   - Msgs in the range CWSIP0291-CWSIP0300 belong to class com.ibm.ws.sib.processor.impl.ExceptionDestination
+#   - Msgs in the range CWSIP0301-CWSIP0330 General Security Errors for Message Processor
+#   - Msgs in the range CWSIP0331-CWSIP0340 belong to class com.ibm.ws.sib.processor.impl.DynamicConfigManager
+#   - Msgs in the range CWSIP0341-CWSIP0350 belong to class com.ibm.ws.sib.processor.runtime.MessageProcessorControl
+#
+#   - Msgs in the range CWSIP0361-CWSIP0370 belong to class com.ibm.ws.sib.processor.runtime.QueuedMessage
+#   - Msgs in the range CWSIP0371-CWSIP0390 belong to class com.ibm.ws.sib.processor.matching.MessageProcessorMatching
+#   - Msgs in the range CWSIP0391-CWSIP0410 belong to class com.ibm.ws.sib.processor.impl.MessageProcessor continuation
+#
+#   - Msgs in the range CWSIP0421-CWSIP0430 belong to class com.ibm.ws.sib.processor.impl.AbstractInputHandler
+#
+#
+#   - Msgs in the range CWSIP0451-CWSIP0460 belong to class com.ibm.ws.sib.processor.impl.AnycastOutputHandler
+#
+#   - Msgs in the range CWSIP0471-CWSIP0480 belong to class com.ibm.ws.sib.processor.impl.RemoteConsumerDispatcher
+#   - Msgs in the range CWSIP0481-CWSIP0490 belong to class com.ibm.ws.sib.processor.impl.RemoteConsumerKey
+#
+#
+#   - Msgs in the range CWSIP0511-CWSIP0520 belong to class com.ibm.ws.sib.processor.impl.AnycastInputHandler
+#
+#   - Msgs in the range CWSIP0531-CWSIP0540 belong to class com.ibm.ws.sib.processor.impl.AIBrowseCoursor
+#   - Msgs in the range CWSIP0541-CWSIP0550 belong to class com.ibm.ws.sib.processor.utils.SIMPUtils
+#   - Msgs in the range CWSIP0551-CWSIP0560 belong to class com.ibm.ws.sib.processor.impl.store.itemstreams.PtoPLocalMsgsItemStream
+#   - Msgs in the range CWSIP0561-CWSIP0570 belong to class com.ibm.ws.sib.processor.impl.AsynchConsumer
+#   - Msgs in the range CWSIP0571-CWSIP0579 belong to class com.ibm.ws.sib.processor.impl.mediation.MessagePump
+#
+#
+#
+#
+#   - Msgs in the range CWSIP0621-CWSIP0630 belong to class com.ibm.ws.sib.processor.utils.AliasChainValidator
+#   - Msgs in the range CWSIP0631-CWSIP0640 belong to classes com.ibm.ws.sib.processor.impl.Durable(Input|Output)Handler
+#   - Msgs in the range CWSIP0641-CWSIP0650 belong to classes com.ibm.ws.sib.processor.impl.MediationInputItemStream
+#   - Msgs in the range CWSIP0651-CWSIP0660 belong to classes com.ibm.ws.sib.processor.impl.mediation.MediationStateMachine
+#   - Msgs in the range CWSIP0661-CWSIP0670 belong to classes com.ibm.ws.sib.processor.impl.mediation.ExceptionDestinationImpl
+#
+#   - Msgs in the range CWSIP0701-CWSIP0800 are reserved.
+#   - Msgs in the range CWSIP0801-CWSIP0810 are reserved.
+#   - Msgs in the range CWSIP0811-CWSIP0850 belong to Remote MQ errors for Message Processor
+#   - Msgs in the range CWSIP0851-CWSIP0860 belong to XD integration
+#
+#   - CWSIP9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.274
+#
+#CMVCPATHNAME com.ibm.ws.messaging.common/resources/com/ibm/ws/sib/processor/CWSIPMessages.nlsprops
+#COMPONENTPREFIX CWSIP
+#COMPONENTNAMEFOR CWSIP Message Processor
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# The following messages have moved to sib.mfp.api\com\ibm\websphere\sib\CWSIKMessages.nlsprops
+#
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0154
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0155
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0158
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0159
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0160
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0161
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0162
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0163
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0164
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0165
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0166
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0167
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0168
+# DESTINATION_NOT_FOUND_ERROR_CWSIP0042
+# TRANSACTION_SEND_USAGE_ERROR_CWSIP0093
+# DESTINATION_LOCKED_ERROR_CWSIP0232
+# USER_NOT_AUTH_SEND_ERROR_CWSIP0306
+# USER_NOT_AUTH_SEND_ERROR_CWSIP0307
+# USER_NOT_AUTH_SEND_ERROR_CWSIP0308
+# OBJECT_CLOSED_ERROR_CWSIP0233
+# OBJECT_CLOSED_ERROR_CWSIP0091
+# EXCEPTION_DESTINATION_ERROR_CWSIP0296
+# DESTINATION_SEND_DISALLOWED_CWSIP0252
+# DESTINATION_HIGH_MESSAGES_ERROR_CWSIP0250
+# NO_LOCALISATIONS_FOUND_ERROR_CWSIP0032
+# DESTINATION_CORRUPT_ERROR_CWSIP0058
+# ALIAS_TARGET_DESTINATION_NOT_FOUND_EXCEPTION_CWSIP0057
+# ALIAS_TARGETS_SERVICE_DESTINATION_ERROR_CWSIP0622
+# LINK_NOT_FOUND_ERROR_CWSIP0047
+# DESTINATION_ALREADY_EXISTS_ERROR_CWSIP0045
+# DESTINATION_DELETED_ERROR_CWSIP0421
+# MESSAGE_RELIABILITY_ERROR_CWSIP0231
+# FORWARD_ROUTING_PATH_ERROR_CWSIP0254
+
+# -------------------------------------------------------------------------------------------------
+# {0} The class name
+# {1} The PROBE ID.
+INTERNAL_MESSAGING_ERROR_CWSIP0001=CWSIP0001E: Si \u00e8 verificato un errore di messaggistica interno in {0}, {1}
+INTERNAL_MESSAGING_ERROR_CWSIP0001.explanation=CMSG0001
+INTERNAL_MESSAGING_ERROR_CWSIP0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The class name
+# {1} The PROBE ID.
+# {2} The related exception
+INTERNAL_MESSAGING_ERROR_CWSIP0002=CWSIP0002E: Si \u00e8 verificato un errore di messaggistica interno in {0}, {1}, {2}
+INTERNAL_MESSAGING_ERROR_CWSIP0002.explanation=CMSG0001
+INTERNAL_MESSAGING_ERROR_CWSIP0002.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The class name
+# {1} The PROBE ID.
+# {2} The related exception
+# {3} Related Parameter
+INTERNAL_MESSAGING_ERROR_CWSIP0003=CWSIP0003E: Si \u00e8 verificato un errore di messaggistica interno {3} in {0}, {1}, {2}
+INTERNAL_MESSAGING_ERROR_CWSIP0003.explanation=CMSG0001
+INTERNAL_MESSAGING_ERROR_CWSIP0003.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The class name
+# {1} The PROBE ID.
+# {2} Related parameter
+INTERNAL_MESSAGING_ERROR_CWSIP0005=CWSIP0005E: Si \u00e8 verificato un errore di messaggistica interno {2} in {0}, {1}
+INTERNAL_MESSAGING_ERROR_CWSIP0005.explanation=CMSG0001
+INTERNAL_MESSAGING_ERROR_CWSIP0005.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The class name
+# {1} The PROBE ID.
+# {2} destination name
+INTERNAL_CONFIGURATION_ERROR_CWSIP0006=CWSIP0006E: Si \u00e8 verificato un errore interno di configurazione destinazione nella destinazione {2} in {0}, {1}
+INTERNAL_CONFIGURATION_ERROR_CWSIP0006.explanation=CMSG0001
+INTERNAL_CONFIGURATION_ERROR_CWSIP0006.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+# {1} is the link UUID
+INTERNAL_LINK_CONFIGURATION_ERROR_CWSIP0007=CWSIP0007E: Impossibile creare il link con nome {0} e UUID {1} a causa di una configurazione non valida.
+INTERNAL_LINK_CONFIGURATION_ERROR_CWSIP0007.explanation=CMSG0001
+INTERNAL_LINK_CONFIGURATION_ERROR_CWSIP0007.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The class name
+# {1} The PROBE ID.
+# {2} Related parameter
+# {3} Related parameter2
+INTERNAL_MESSAGING_ERROR_CWSIP0008=CWSIP0008E: Si \u00e8 verificato un errore interno di messaggistica in {0}, {1}: i valori correlati sono {2}, {3}
+INTERNAL_MESSAGING_ERROR_CWSIP0008.explanation=CMSG0001
+INTERNAL_MESSAGING_ERROR_CWSIP0008.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination prefix supplied by the user
+INVALID_DESTINATION_USAGE_ERROR_CWSIP0021=CWSIP0021E: Impossibile creare un consumer per una destinazione del servizio con nome {0} sul motore di messaggistica {1}.
+INVALID_DESTINATION_USAGE_ERROR_CWSIP0021.explanation=Le destinazioni dei servizi non possono avere dei consumer collegati.  Viene creata un'eccezione per tutti i tentativi di creare una sessione consumer per una destinazione del servizio.
+INVALID_DESTINATION_USAGE_ERROR_CWSIP0021.useraction=Creare una destinazione che non sia una destinazione del servizio e creare un consumer per questa destinazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination prefix supplied by the user
+INVALID_DESTINATION_USAGE_ERROR_CWSIP0022=CWSIP0022E: Impossibile creare un browser per una destinazione del servizio con nome {0} sul motore di messaggistica {1}.
+INVALID_DESTINATION_USAGE_ERROR_CWSIP0022.explanation=Le destinazioni dei servizi non possono avere in allegato dei browser.  Viene creata un'eccezione per tutti i tentativi di creare una sessione browser per una destinazione del servizio.
+INVALID_DESTINATION_USAGE_ERROR_CWSIP0022.useraction=Creare una destinazione che non sia una destinazione del servizio e creare un browser per questa destinazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination prefix supplied by the user
+INVALID_DESTINATION_PREFIX_ERROR_CWSIP0023=CWSIP0023E: Il prefisso di destinazione {0} non \u00e8 valido per una destinazione di sistema.
+INVALID_DESTINATION_PREFIX_ERROR_CWSIP0023.explanation=Il prefisso specificato per la destinazione di sistema supera i 24 caratteri oppure contiene dei caratteri non compresi negli intervalli  a-z, A-Z, 0-9, ., / e %.
+INVALID_DESTINATION_PREFIX_ERROR_CWSIP0023.useraction=Assicurarsi che il prefisso di destinazione per una destinazione di sistema sia inferiore ai 24 caratteri e contenga solo caratteri compresi negli intervalli a-z, A-Z, 0-9, ., / e %.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+# {1} The Related exception
+SYSTEM_DESTINATION_USAGE_ERROR_CWSIP0024=CWSIP0024E: Si \u00e8 tentato di accedere ad una destinazione non di sistema {0} da una connessione di sistema sul motore di messaggistica {1}
+SYSTEM_DESTINATION_USAGE_ERROR_CWSIP0024.explanation=CMSG0001
+SYSTEM_DESTINATION_USAGE_ERROR_CWSIP0024.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+# {1} The name of the subscriptions destination
+# {2} The durable Subscription name
+# {3} The messaging engine name
+DURABLE_MISMATCH_ERROR_CWSIP0025=CWSIP0025E: Errore di non corrispondenza nella sottoscrizione durevole, il nome destinazione {0} non corrisponde alla destinazione delle sottoscrizioni {1} per la sottoscrizione durevole {2} sul motore di messaggistica {3}
+DURABLE_MISMATCH_ERROR_CWSIP0025.explanation= Il tentativo di creazione di un consumer per il nome sottoscrizione durevole specificato non \u00e8 riuscito poich\u00e9 la destinazione specificata non corrispondeva a quella utilizzata per creare la sottoscrizione durevole.
+DURABLE_MISMATCH_ERROR_CWSIP0025.useraction=Collegarsi alla sottoscrizione durevole usando la stessa destinazione utilizzata per la creazione delle sottoscrizione.
+
+# -------------------------------------------------------------------------------------------------
+# {1} The MQLink UUID
+# {2} The messaging engine name
+MQLINK_ERROR_CWSIP0026=CWSIP0026E: Link MQ con UUID {0} non trovato sul motore di messaggistica {1}
+MQLINK_ERROR_CWSIP0026.explanation= Si \u00e8 tentato di utilizzare un link MQ ma sul motore di messaggistica specificato non \u00e8 stato trovato.
+MQLINK_ERROR_CWSIP0026.useraction=Definire il link MQ nella console di gestione e riavviare il server.
+
+# -------------------------------------------------------------------------------------------------
+# {1} The MQLink UUID
+# {2} The messaging engine name
+MQLINK_PSB_ERROR_CWSIP0027=CWSIP0027E: Link MQ di pubblicazione/sottoscrizione con UUID {0} non trovato sul motore di messaggistica {1}
+MQLINK_PSB_ERROR_CWSIP0027.explanation= Si \u00e8 tentato di utilizzare un link MQ di pubblicazione/sottoscrizione ma sul motore di messaggistica specificato non \u00e8 stato trovato.
+MQLINK_PSB_ERROR_CWSIP0027.useraction=Definire il link MQ nella console di gestione e riavviare il server.
+
+# -------------------------------------------------------------------------------------------------
+# {0} subscription id
+# {1} destination name
+CLONED_SUBSCRIBER_OVERRIDE_CWSIP0028=CWSIP0028W: Il supporto per pi\u00f9 sottoscrittori alla sottoscrizione {0}, sulla destinazione {1}, \u00e8 stato disabilitato.
+CLONED_SUBSCRIBER_OVERRIDE_CWSIP0028.explanation=La destinazione \u00e8 impostata per conservare l'ordine dei messaggi. Quindi qualsiasi sottoscrizione sulla destinazione pu\u00f2 possedere solo un sottoscrittore.
+CLONED_SUBSCRIBER_OVERRIDE_CWSIP0028.useraction=Se non \u00e8 richiesto un ordinamento, deselezionare l'attributo maintainMessageOrder per disabilitare la sovrascrittura di pi\u00f9 sottoscrittori.
+
+# -------------------------------------------------------------------------------------------------
+# {0} code token to identify exception location
+MISSING_PARAM_ERROR_CWSIP0029=CWSIP0029W: Si \u00e8 verificato un errore interno della messaggistica.  Il parametro con nome mqLinkUuidStr non \u00e8 stato fornito nell''ubicazione {0}
+MISSING_PARAM_ERROR_CWSIP0029.explanation=CMSG0001
+MISSING_PARAM_ERROR_CWSIP0029.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the destination
+# {1} the foreign bus
+# {2} the local bus
+CONSUME_FROM_FOREIGN_BUS_ERROR_CWSIP0030=CWSIP0030E: Non \u00e8 consentito utilizzare i messaggi dalla destinazione {0} sul bus {1} durante la connessione al bus {2}.
+CONSUME_FROM_FOREIGN_BUS_ERROR_CWSIP0030.explanation=L'utilizzo dei messaggi \u00e8 consentito solo dalle destinazioni nel bus collegato in locale e non dai bus esterni.
+CONSUME_FROM_FOREIGN_BUS_ERROR_CWSIP0030.useraction=Modificare la destinazione che il consumer sta provando ad utilizzare oppure modificare la connessione in modo da eseguire la connessione al bus su cui \u00e8 presente la destinazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+# {1} The Related exception
+SUBSCRIPTION_CREATION_FAILED_CWSIP0031=CWSIP0031E: Un tentativo di creare una sottoscrizione sulla destinazione {0} ha riportato l''errore {1}
+SUBSCRIPTION_CREATION_FAILED_CWSIP0031.explanation=CMSG0001
+SUBSCRIPTION_CREATION_FAILED_CWSIP0031.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+# {1} The name of the durable subscription
+# {2} The Related exception
+SUBSCRIPTION_CREATION_FAILED_CWSIP0033=CWSIP0033E: Un tentativo di creazione di una sottoscrizione sulla destinazione {0} con nome {1} non \u00e8 riuscito a causa di un problema di risorse dell''archivio dati {2}
+SUBSCRIPTION_CREATION_FAILED_CWSIP0033.explanation=Durante la creazione di una sottoscrizione durevole viene aggiunta una voce all'archivio dati.  L'operazione non \u00e8 riuscita a causa di un problema di risorse cache.
+SUBSCRIPTION_CREATION_FAILED_CWSIP0033.useraction=Aumentare la dimensione della cache per l'archivio dati utilizzando la console di gestione
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+# {1} The Related exception
+SUBSCRIPTION_CREATION_FAILED_CWSIP0034=CWSIP0034E: Un tentativo di creare una sottoscrizione sulla destinazione {0} non \u00e8 riuscito a causa di un problema di risorse dell''archivio persistente {2}
+SUBSCRIPTION_CREATION_FAILED_CWSIP0034.explanation=Durante la creazione di una sottoscrizione viene aggiunta una voce all'archivio dati.  L'operazione non \u00e8 riuscita a causa di un problema di risorse cache.
+SUBSCRIPTION_CREATION_FAILED_CWSIP0034.useraction=Aumentare la dimensione della cache per l'archivio dati utilizzando la console di gestione
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the durable subscription
+# {1} is the durable home of the durable subscription
+SUBSCRIPTION_ATTACH_FAILED_CWSIP0035=CWSIP0035E: Un tentativo di collegare un consumer alla sottoscrizione {0} sul motore di messaggistica remoto {1} non \u00e8 riuscito, poich\u00e9 la sottoscrizione \u00e8 gi\u00e0 nella home locale.
+SUBSCRIPTION_ATTACH_FAILED_CWSIP0035.explanation=Una sottoscrizione durevole pu\u00f2 lasciare solo un motore di messaggistica. Una sottoscrizione con un nome simile \u00e8 attualmente home nella ME locale, cos\u00ec non pu\u00f2 essere home nella ME remota.
+SUBSCRIPTION_ATTACH_FAILED_CWSIP0035.useraction=Modificare la propriet\u00e0 home della sottoscrizione durevole o eliminare la sottoscrizione locale.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the system destination
+PROXY_LIMIT_EXCEEDED_WARNING_CWSIP0036=CWSIP0036E: Un tentativo di inviare un messaggio di controllo ad una destinazione interna del sistema {0}, destinazione per motore di messaggistica {1}, non \u00e8 riuscito perch\u00e9 la destinazione \u00e8 piena.
+PROXY_LIMIT_EXCEEDED_WARNING_CWSIP0036.explanation=Un messaggio di controllo non pu\u00f2 essere inviato alla destinazione, perch\u00e9 la destinazione \u00e8 piena.  Questo significa che ora la topologia di pubblicazione/sottoscrizione \u00e8 incongruente.
+PROXY_LIMIT_EXCEEDED_WARNING_CWSIP0036.useraction=Eliminare i messaggi dalla destinazione del sistema e riavviare il server.  Accertarsi che il motore di messaggistica remoto sia stato avviato e che le comunicazioni tra loro siano state stabilite.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination prefix supplied by the user
+INVALID_DESTINATION_PREFIX_ERROR_CWSIP0038=CWSIP0038E: Il prefisso di destinazione {0} non \u00e8 valido per una destinazione temporanea.
+INVALID_DESTINATION_PREFIX_ERROR_CWSIP0038.explanation=Il prefisso specificato per la destinazione temporanea supera i 12 caratteri oppure contiene dei caratteri non compresi negli intervalli  a-z, A-Z, 0-9, ., / e %.
+INVALID_DESTINATION_PREFIX_ERROR_CWSIP0038.useraction=Assicurarsi che il prefisso di destinazione per una destinazione temporanea sia inferiore ai 12 caratteri e contenga solo caratteri compresi negli intervalli a-z, A-Z, 0-9, ., / e %.
+
+# -------------------------------------------------------------------------------------------------
+
+INVALID_DESTINATION_PREFIX_MAX_LENGTH_ERROR_CWSIP0039=CWSIP0039E: Il prefisso specificato per la destinazione temporanea supera i 12 caratteri.
+INVALID_DESTINATION_PREFIX_MAX_LENGTH_ERROR_CWSIP0039.explanation=Il prefisso specificato per la destinazione temporanea supera i 12 caratteri.
+INVALID_DESTINATION_PREFIX_MAX_LENGTH_ERROR_CWSIP0039.useraction=Assicurarsi che il prefisso di destinazione per una destinazione temporanea sia inferiore ai 12 caratteri.
+
+# -------------------------------------------------------------------------------------------------
+
+# {0} the destination prefix supplied by the user
+# {1} the invalid character
+INVALID_DESTINATION_PREFIX_CHAR_ERROR_CWSIP0040=CWSIP0040E: Il prefisso di destinazione {0} non \u00e8 valido per una destinazione temporanea. Il carattere {1} non \u00e8 consentito.
+INVALID_DESTINATION_PREFIX_CHAR_ERROR_CWSIP0040.explanation=Il prefisso specificato per la destinazione temporanea contiene dei caratteri non compresi negli intervalli  a-z, A-Z, 0-9, ., / e %.
+INVALID_DESTINATION_PREFIX_CHAR_ERROR_CWSIP0040.useraction=Assicurarsi che il prefisso di destinazione per una destinazione temporanea contenga solo caratteri compresi negli intervalli a-z, A-Z, 0-9, ., / e %.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the link
+# {1} is the name of the messaging engine.
+LINK_NOT_FOUND_ERROR_CWSIP0041=CWSIP0041E: Il link con nome {0} non \u00e8 stato trovato sul motore di messaggistica {1}.
+LINK_NOT_FOUND_ERROR_CWSIP0041.explanation=\u00c8 arrivato un messaggio al motore di messaggistica denominato destinato al link denominato, ma questo link \u00e8 sconosciuto.
+LINK_NOT_FOUND_ERROR_CWSIP0041.useraction=Verificare che il nome del link sia corretto e definito nella console di gestione.  Verificare che il motore di messaggistica disponga della configurazione pi\u00f9 aggiornata.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the link
+# {1} is the name of the messaging engine.
+LINK_ALREADY_EXISTS_ERROR_CWSIP0043=CWSIP0043E: Il link con nome {0} esiste gi\u00e0 sul motore di messaggistica {1}.
+LINK_ALREADY_EXISTS_ERROR_CWSIP0043.explanation=Si \u00e8 tentato di creare un link ma il link denominato esiste gi\u00e0 sul motore di messaggistica denominato.
+LINK_ALREADY_EXISTS_ERROR_CWSIP0043.useraction=Verificare che il nome del link sia corretto e definito nella console di gestione.  Verificare che il motore di messaggistica disponga della configurazione pi\u00f9 aggiornata.
+
+# -------------------------------------------------------------------------------------------------
+# {0} messaging engine name
+MISSING_PARAM_ERROR_CWSIP0044=CWSIP0044W: Si \u00e8 verificato un errore interno della messaggistica.  Non \u00e8 stato fornito il destinationName sul motore di messaggistica {0}
+MISSING_PARAM_ERROR_CWSIP0044.explanation=CMSG0001
+MISSING_PARAM_ERROR_CWSIP0044.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name
+# {1} messaging engine name
+INVALID_DEST_ALTER_ERROR_CWSIP0045=CWSIP0045W: Si \u00e8 verificato un errore interno della messaggistica.  \u00c8 stato fornito un comando di modifica della destinazione non valido per la destinazione {0} sul motore di messaggistica {1}
+INVALID_DEST_ALTER_ERROR_CWSIP0045.explanation=CMSG0001
+INVALID_DEST_ALTER_ERROR_CWSIP0045.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name
+# {1} messaging engine name
+DELETE_SYSTEM_DEST_ERROR_CWSIP0046=CWSIP0046W: Si \u00e8 verificato un errore interno della messaggistica.  Impossibile eliminare la destinazione di sistema {0} sul motore di messaggistica {1}
+DELETE_SYSTEM_DEST_ERROR_CWSIP0046.explanation=CMSG0001
+DELETE_SYSTEM_DEST_ERROR_CWSIP0046.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+DESTINATION_HANDLER_RECOVERY_ERROR_CWSIP0048=CWSIP0048E: Impossibile ripristinare la destinazione {0} dall''archivio dati.
+DESTINATION_HANDLER_RECOVERY_ERROR_CWSIP0048.explanation=CMSG0001
+DESTINATION_HANDLER_RECOVERY_ERROR_CWSIP0048.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+LINK_HANDLER_RECOVERY_ERROR_CWSIP0049=CWSIP0049E: Impossibile ripristinare il link {0} dall''archivio dati.
+LINK_HANDLER_RECOVERY_ERROR_CWSIP0049.explanation=CMSG0001
+LINK_HANDLER_RECOVERY_ERROR_CWSIP0049.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+#
+TEMPORARY_DESTINATION_UNIQUE_COUNT_WARNING_CWSIP0050=CWSIP0050W: Il conteggio univoco della destinazione temporanea ha raggiunto il valore massimo.
+TEMPORARY_DESTINATION_UNIQUE_COUNT_WARNING_CWSIP0050.explanation=Il conteggio univoco della destinazione temporanea ha raggiunto il valore massimo ed \u00e8 stato allineato.  Le destinazioni temporanee non sono pi\u00f9 garantite come univoche.
+TEMPORARY_DESTINATION_UNIQUE_COUNT_WARNING_CWSIP0050.useraction=Nessuno
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+DESTINATION_HANDLER_RECOVERY_ERROR_CWSIP0051=CWSIP0051E: Impossibile ripristinare la destinazione {0} dall''archivio dati a causa dell''errore {1}.
+DESTINATION_HANDLER_RECOVERY_ERROR_CWSIP0051.explanation=CMSG0001
+DESTINATION_HANDLER_RECOVERY_ERROR_CWSIP0051.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name
+TEMPORARY_DESTINATION_IN_USE_ERROR_CWSIP0052=CWSIP0052E: La destinazione temporanea con nome {0} \u00e8 al momento utilizzata da un''altra applicazione e non \u00e8 possibile eliminarla.
+TEMPORARY_DESTINATION_IN_USE_ERROR_CWSIP0052.explanation=La destinazione temporanea \u00e8 in uso. Non \u00e8 possibile eliminare la destinazione temporanea fino a quando tutti i consumer non saranno scollegati.
+TEMPORARY_DESTINATION_IN_USE_ERROR_CWSIP0052.useraction=Chiudere tutti i consumer inattivi per la destinazione temporanea denominata e provare di nuovo.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+# {1} is the link UUID
+LINK_HANDLER_CORRUPT_ERROR_CWSIP0054=CWSIP0054E: Il link WebSphere MQ con nome {0} e UUID {1} \u00e8 danneggiato
+LINK_HANDLER_CORRUPT_ERROR_CWSIP0054.explanation=CMSG0001
+LINK_HANDLER_CORRUPT_ERROR_CWSIP0054.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+# {1} is the link UUID
+# {2} The related exception
+LINK_HANDLER_WARM_START_ERROR_CWSIP0056=CWSIP0056E: Impossibile ripristinare il link con {0} e UUID {1} dall''archivio dati. {2}
+LINK_HANDLER_WARM_START_ERROR_CWSIP0056.explanation=CMSG0001
+LINK_HANDLER_WARM_START_ERROR_CWSIP0056.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the publish/subscribe broker profile name
+# {1} is the MQLink name
+PUB_SUB_BROKER_PROFILE_NOT_FOUND_ERROR_CWSIP0057=CWSIP0057E: Impossibile trovare il profilo broker di pubblicazione/sottoscrizione {0} su MQLink {1}.
+PUB_SUB_BROKER_PROFILE_NOT_FOUND_ERROR_CWSIP0057.explanation=CMSG0001
+PUB_SUB_BROKER_PROFILE_NOT_FOUND_ERROR_CWSIP0057.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+# {1} is the destination UUID
+DESTINATION_INDOUBT_ERROR_CWSIP0062=CWSIP0062E: Non \u00e8 stato possibile ripristinare la destinazione {0} con UUID {1} a causa di un probabile errore di configurazione WCCM
+DESTINATION_INDOUBT_ERROR_CWSIP0062.explanation=La configurazione WCCM della destinazione su questo motore di messaggistica non \u00e8 pi\u00f9 valida, quindi la destinazione non sar\u00e0 disponibile su questo motore di messaggistica.
+DESTINATION_INDOUBT_ERROR_CWSIP0062.useraction=Correggere la configurazione WCCM e riavviare il server. La destinazione sar\u00e0 di nuovo disponibile su questo motore di messaggistica.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+# {1} is the destination UUID
+LOCAL_DEST_DELETE_INFO_CWSIP0063=CWSIP0063I: La destinazione locale {0} con UUID {1} \u00e8 stata contrassegnata per l''eliminazione.
+LOCAL_DEST_DELETE_INFO_CWSIP0063.explanation=La configurazione WCCM della destinazione su questo motore di messaggistica \u00e8 stata rimossa, quindi verr\u00e0 pianificata la cancellazione delle sue risorse.
+LOCAL_DEST_DELETE_INFO_CWSIP0063.useraction=nessuna
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the WebSphere MQ link name
+# {1} is the WebSphere MQ link UUID
+MQLINK_DEST_DELETE_INFO_CWSIP0064=CWSIP0064I: Il link WebSphere MQ {0} con UUID {1} \u00e8 stato contrassegnato per l''eliminazione.
+MQLINK_DEST_DELETE_INFO_CWSIP0064.explanation=La configurazione WCCM del link WebSphere MQ su questo motore di messaggistica \u00e8 stata rimossa, quindi verr\u00e0 pianificata la cancellazione delle sue risorse.
+MQLINK_DEST_DELETE_INFO_CWSIP0064.useraction=nessuna
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the Link name
+# {1} is the Link UUID
+LOCAL_LINK_DELETE_INFO_CWSIP0065=CWSIP0065I: Il link locale {0} con UUID {1} \u00e8 stato contrassegnato per l''eliminazione.
+LOCAL_LINK_DELETE_INFO_CWSIP0065.explanation=La configurazione WCCM del link su questo motore di messaggistica \u00e8 stata rimossa, quindi verr\u00e0 pianificata la cancellazione delle sue risorse.
+LOCAL_LINK_DELETE_INFO_CWSIP0065.useraction=nessuna
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+# {1} is the destination UUID
+REMOTE_DEST_DELETE_INFO_CWSIP0066=CWSIP0066I: La destinazione remota {0} con UUID {1} \u00e8 stata contrassegnata per la cancellazione.
+REMOTE_DEST_DELETE_INFO_CWSIP0066.explanation=La configurazione WCCM della destinazione su un motore di messaggistica remoto \u00e8 stata rimossa, quindi verr\u00e0 pianificata la cancellazione delle sue risorse.
+REMOTE_DEST_DELETE_INFO_CWSIP0066.useraction=nessuna
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the Link name
+# {1} is the Link UUID
+REMOTE_LINK_DELETE_INFO_CWSIP0067=CWSIP0067I: Il link remoto {0} con UUID {1} \u00e8 stato contrassegnato per l''eliminazione.
+REMOTE_LINK_DELETE_INFO_CWSIP0067.explanation=La configurazione WCCM del link su un motore di messaggistica remoto \u00e8 stata rimossa, quindi verr\u00e0 pianificata la cancellazione delle sue risorse.
+REMOTE_LINK_DELETE_INFO_CWSIP0067.useraction=nessuna
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the max thread pool size
+INVALID_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0068=CWSIP0068I: Dimensione pool di thread ricostituito non valida: {0}
+INVALID_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0068.explanation=Dimensione pool di thread ricostituito non valida fornita nella propriet\u00e0 personalizzata sib.processor.maxReconstituteThreadpoolSize
+INVALID_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0068.useraction=Modificare il valore della propriet\u00e0 personalizzata sib.processor.maxReconstituteThreadpoolSize con uno valido.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0069=CWSIP0069W: Dimensione pool di thread ricostituito maggiore di numberOfCores.
+INVALID_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0069.explanation=Dimensione pool di thread ricostituito maggiore di numberOfCores.
+INVALID_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0069.useraction=nessuna
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the max thread pool size
+MAX_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0070=CWSIP0070I: Dimensione pool di thread ricostituito massima: {0}
+MAX_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0070.explanation=Dimensione pool di thread ricostituito massima 
+MAX_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0070.useraction=nessuna
+
+# -------------------------------------------------------------------------------------------------
+# {0} Is the durable subscription id
+# {1} The messaging engine name
+SUBSCRIPTION_DOESNT_EXIST_ERROR_CWSIP0072=CWSIP0072E: La sottoscrizione durevole con nome {0} non esiste sul motore di messaggistica {1}.
+SUBSCRIPTION_DOESNT_EXIST_ERROR_CWSIP0072.explanation=Si \u00e8 tentato di accedere ad una sottoscrizione durevole con il nome specificato ma la sottoscrizione non esiste.
+SUBSCRIPTION_DOESNT_EXIST_ERROR_CWSIP0072.useraction=Creare la sottoscrizione durevole con il nome fornito o provare di nuovo con un identificativo valido di sottoscrizione durevole.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the destination name
+# {1} The messaging engine name
+OBJECT_CLOSED_ERROR_CWSIP0081=CWSIP0081E: La sessione browser \u00e8 chiusa sulla destinazione {0} e non pu\u00f2 essere utilizzata.
+OBJECT_CLOSED_ERROR_CWSIP0081.explanation=Il browser \u00e8 stato chiuso e non pu\u00f2 essere utilizzato sulla destinazione specificata.
+OBJECT_CLOSED_ERROR_CWSIP0081.useraction=Creare una nuova sessione browser nella destinazione specificata.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} The messaging engine name
+DESTINATION_IS_LOCKED_ERROR_CWSIP0085=CWSIP0085E: Si \u00e8 tentato di aprire la destinazione {0} per eseguire la ricerca sul motore di messaggistica {1}.  La destinazione \u00e8 temporaneamente bloccata.
+DESTINATION_IS_LOCKED_ERROR_CWSIP0085.explanation=Le destinazioni sono bloccate durante alcune operazioni di gestione, come l'eliminazione.
+DESTINATION_IS_LOCKED_ERROR_CWSIP0085.useraction=Tentare di eseguire di nuovo la destinazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0}  The id for the originating consumer
+# {1} The messaging engine name
+# The term BifurcatedConsumer is a technical term that should not be translated.
+CREATE_CONSUMER_ERROR_CWSIP0092=CWSIP0092E: Impossibile creare BifurcatedConsumer per il consumer originale {0} sul motore di messaggistica {1}.
+CREATE_CONSUMER_ERROR_CWSIP0092.explanation=Si \u00e8 tentato di creare un BifurcatedConsumer ma il consumer originario non \u00e8 stato trovato con l'identificativo fornito.
+CREATE_CONSUMER_ERROR_CWSIP0092.useraction=Verificare che il consumer originario sia attivo e ripetere l'operazione con l'identificativo corretto.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The id for the originating conusmer
+# {1} The messaging engine name
+# The term BifurcatedConsumer is a technical term that should not be translated.
+CREATE_BIFURCATED_CONSUMER_ERROR_CWSIP0094=CWSIP0094E: Impossibile creare BifurcatedConsumer per il consumer originale {0} sul motore di messaggistica {1}, perch\u00e9 hanno id utente diversi.
+CREATE_BIFURCATED_CONSUMER_ERROR_CWSIP0094.explanation=Si \u00e8 tentato di creare un BifurcatedConsumer ma il contesto di sicurezza utilizzato per creare il BifurcatedConsumer e il consumer originario sono diversi.
+CREATE_BIFURCATED_CONSUMER_ERROR_CWSIP0094.useraction=Verificare che il consumer originario ed il BifurcatedConsumer stiano utilizzando lo stesso contesto di sicurezza o la stessa connessione e riprovare il comando.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name.
+TEMPORARY_DESTINATION_NAME_ERROR_CWSIP0097=CWSIP0097E: Non \u00e8 possibile trovare la destinazione temporanea con nome {0}.
+TEMPORARY_DESTINATION_NAME_ERROR_CWSIP0097.explanation=Si \u00e8 tentato di eliminare una destinazione temporanea denominata, ma non \u00e8 stata trovata.
+TEMPORARY_DESTINATION_NAME_ERROR_CWSIP0097.useraction=Verificare che la destinazione temporanea esista e ripetere l'operazione di eliminazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the subscription name.
+# {1} The destination name.
+DURABLE_SUBSCRIPTION_USAGE_ERROR_CWSIP0098=CWSIP0098E: Impossibile creare la sottoscrizione durevole {0} per una destinazione temporanea {1}.
+DURABLE_SUBSCRIPTION_USAGE_ERROR_CWSIP0098.explanation=Si \u00e8 tentato di creare una sottoscrizione durevole per una destinazione temporanea, ma l'operazione non \u00e8 consentita.
+DURABLE_SUBSCRIPTION_USAGE_ERROR_CWSIP0098.useraction=Creare la sottoscrizione durevole su uno spazio argomento non temporaneo.  Cercare nella console di gestione l'elenco delle destinazioni spazio argomento disponibili.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name.
+TEMPORARY_DESTINATION_CONNECTION_ERROR_CWSIP0099=CWSIP0099E: Impossibile trovare la destinazione temporanea con nome {0}, perch\u00e9 la destinazione temporanea \u00e8 stata creata su un''altra connessione.
+TEMPORARY_DESTINATION_CONNECTION_ERROR_CWSIP0099.explanation=\u00c8 possibile accedere alle destinazioni solo dalla stessa connessione.
+TEMPORARY_DESTINATION_CONNECTION_ERROR_CWSIP0099.useraction=Verificare che la destinazione in uso sia stata creata sulla connessione corrente.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name.
+# {1} is the messaging engine name
+INVALID_PARAMETER_COMBINATION_ERROR_CWSIP0100=CWSIP0100E: La combinazione di parametri fornita non \u00e8 valida per la creazione della sottoscrizione durevole clonata {0} sulla destinazione {1} per il motore di messaggistica {2}
+INVALID_PARAMETER_COMBINATION_ERROR_CWSIP0100.explanation=Il tentativo di creare una sottoscrizione durevole clonata non \u00e8 riuscito perch\u00e9 era richiesto un funzionamento noLocal e questo non \u00e8 supportato per sottoscrittori clonati
+INVALID_PARAMETER_COMBINATION_ERROR_CWSIP0100.useraction=Riconfigurare la sottoscrizione durevole nella console di gestione rimuovendo l'opzione noLocal.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the destination name.
+# {1} The name of the messaging engine
+DESTINATION_DELETED_ERROR_CWSIP0111=CWSIP0111E: La destinazione con nome {0} \u00e8 in fase di eliminazione sul motore di messaggistica {1}.
+DESTINATION_DELETED_ERROR_CWSIP0111.explanation=Si \u00e8 tentato di utilizzare una destinazione mentre questa era in fase di eliminazione.
+DESTINATION_DELETED_ERROR_CWSIP0111.useraction=Ricreare la destinazione nella console di gestione oppure utilizzare una destinazione diversa e riprovare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+# {1} The name of the messaging engine
+DESTINATION_DELETION_ERROR_CWSIP0112=CWSIP0112E: La destinazione {0} sul motore di messaggistica {1} non pu\u00f2 essere eliminata mentre sono collegati dei consumer.
+DESTINATION_DELETION_ERROR_CWSIP0112.explanation=Si \u00e8 tentato di eliminare una destinazione mentre i consumer erano ancora collegati.
+DESTINATION_DELETION_ERROR_CWSIP0112.useraction=Non \u00e8 possibile eliminare una destinazione mentre sono presenti applicazioni collegate.  Rimuovere tutte le applicazioni dalla destinazione e ripetere l'operazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} is the name of the messaging engine.
+DESTINATION_RECEIVE_EXCLUSIVE_CWSIP0114=CWSIP0114E: La destinazione con nome {0} sul motore di messaggistica {1} \u00e8 abilitata unicamente per la ricezione.
+DESTINATION_RECEIVE_EXCLUSIVE_CWSIP0114.explanation=Si \u00e8 tentato di creare una nuova sessione consumer in una destinazione configurata solo con abilitazione alla ricezione. L'operazione non \u00e9 riuscita perch\u00e9 un consumer \u00e8 gi\u00e0 collegato alla destinazione.
+DESTINATION_RECEIVE_EXCLUSIVE_CWSIP0114.useraction=Ripetere l'operazione quando non c'\u00e8 nessun consumer collegato oppure aggiornare la destinazione affinch\u00e9 non sia abilitata unicamente alla ricezione, quindi ripetere l'operazione di creazione sessione consumer.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the internal subscription
+# {1} is the name of the messaging engine
+# {2} is the name of the target destination
+INTERNAL_SUBSCRIPTION_TARGET_NOT_FOUND_CWSIP0115=CWSIP0115E: Non \u00e8 stato possibile inviare un messaggio corrispondente alla sottoscrizione {0} nel motore di messaggistica {1} alla destinazione {2}, poich\u00e9 non \u00e8 stato possibile trovare la destinazione.
+INTERNAL_SUBSCRIPTION_TARGET_NOT_FOUND_CWSIP0115.explanation=\u00c8 stato effettuato un tentativo di mettere in corrispondenza un messaggio ad una sottoscrizione interna e di inoltrarlo alla relativa destinazione. Non \u00e8 stato possibile trovare la destinazione.
+INTERNAL_SUBSCRIPTION_TARGET_NOT_FOUND_CWSIP0115.useraction=La destinazione potrebbe non esistere o essere stata eliminata. Verificare che la destinazione esista e sia accessibile.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} is the name of the messaging engine
+ORDERED_DESTINATION_IN_USE_CWSIP0116=CWSIP0116E: La destinazione con nome {0} sul motore di messaggistica {1} \u00e8 ordinata e ha gi\u00e0 un consumer collegato
+ORDERED_DESTINATION_IN_USE_CWSIP0116.explanation=\u00c8 stato effettuato un tentativo di creare una sessione consumer in una destinazione configurata con l'ordinamento conservato. L'operazione non \u00e9 riuscita perch\u00e9 un consumer \u00e8 gi\u00e0 collegato alla destinazione.
+ORDERED_DESTINATION_IN_USE_CWSIP0116.useraction=Scollegare tutti gli altri consumer prima di tentare il nuovo collegamento.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} is the name of the messaging engine
+ORDERED_MESSAGING_ERROR_CWSIP0117=CWSIP0117E: La destinazione con nome {0} sul motore di messaggistica {1} non pu\u00f2 pi\u00f9 garantire l''ordine dei messaggi.
+ORDERED_MESSAGING_ERROR_CWSIP0117.explanation=Si \u00e8 verificato un errore interno che pu\u00f2 interessare la capacit\u00e0 di conservazione dell'ordine dei messaggi.
+ORDERED_MESSAGING_ERROR_CWSIP0117.useraction=Un riavvio del motore di messaggistica ripristiner\u00e0 la conservazione dell'ordine dei messaggi.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} is the name of the messaging engine.
+OPERATION_IS_INVALID_ERROR_CWSIP0121=CWSIP0121E: L''operazione tentata non \u00e8 valida per la destinazione {0} sul motore di messaggistica {1}.
+OPERATION_IS_INVALID_ERROR_CWSIP0121.explanation=La destinazione non supporta questa operazione.
+OPERATION_IS_INVALID_ERROR_CWSIP0121.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+DESTINATION_IS_LOCKED_ERROR_CWSIP0133=CWSIP0133E: Si \u00e8 tentato di aprire la destinazione {0} sul motore di messaggistica {1} per l''utilizzo.  La destinazione \u00e8 temporaneamente bloccata.
+DESTINATION_IS_LOCKED_ERROR_CWSIP0133.explanation=Le destinazioni sono bloccate durante alcune operazioni di gestione, come l'eliminazione.
+DESTINATION_IS_LOCKED_ERROR_CWSIP0133.useraction=Ripetere l'operazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} The name of the messaging engine.
+# {2} The Subscription name
+DESTINATION_USEAGE_ERROR_CWSIP0141=CWSIP0141E: Errore di non corrispondenza destinazione, una sottoscrizione {2} sta tentando di utilizzare la destinazione {0} definita come coda sul motore di messaggistica {1}.
+DESTINATION_USEAGE_ERROR_CWSIP0141.explanation=Si \u00e8 tentato di associare una sottoscrizione con una destinazione definita come coda.  Le sottoscrizioni possono essere create solo negli spazi argomenti
+DESTINATION_USEAGE_ERROR_CWSIP0141.useraction=Ridefinire la destinazione come spazio argomento o creare una nuova destinazione di tipo Topicspace.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the subscription id
+# {1} The name of the messaging engine.
+SUBSCRIPTION_ALREADY_EXISTS_ERROR_CWSIP0143=CWSIP0143E: La sottoscrizione con nome {0} esiste gi\u00e0 sul motore di messaggistica {1}.
+SUBSCRIPTION_ALREADY_EXISTS_ERROR_CWSIP0143.explanation=Si \u00e8 tentato di creare una sottoscrizione durevole con il nome fornito, ma la sottoscrizione esiste gi\u00e0.
+SUBSCRIPTION_ALREADY_EXISTS_ERROR_CWSIP0143.useraction=Eliminare la sottoscrizione esistente e ripetere l'operazione oppure creare la sottoscrizione con un nuovo nome.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the subscription id
+# {1} The name of the messaging engine
+SUBSCRIPTION_DOESNT_EXIST_ERROR_CWSIP0146=CWSIP0146E: La sottoscrizione durevole con nome {0} non esiste sul motore di messaggistica {1}.
+SUBSCRIPTION_DOESNT_EXIST_ERROR_CWSIP0146.explanation=Si \u00e8 tentato di accedere a una sottoscrizione durevole, ma questa non esiste.
+SUBSCRIPTION_DOESNT_EXIST_ERROR_CWSIP0146.useraction=La sottoscrizione \u00e8 stata eliminata o non ancora creata.  Accertarsi che la sottoscrizione esista e ripetere il comando.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the subscription id
+# {1} The name of the messaging engine
+INTERNAL_SUBSCRIPTION_ACCESS_DISALLOWED_CWSIP0147=CWSIP0147E: La sottoscrizione durevole con nome {0} sul motore di messaggistica {1} \u00e8 una sottoscrizione interna e, perci\u00f2, non \u00e8 possibile collegarsi ad essa.
+INTERNAL_SUBSCRIPTION_ACCESS_DISALLOWED_CWSIP0147.explanation=\u00c8 stato effettuato un tentativo di accedere ad una sottoscrizione durevole, ma tale sottoscrizione durevole \u00e8 interna e non pu\u00f2 essere utilizzata.
+INTERNAL_SUBSCRIPTION_ACCESS_DISALLOWED_CWSIP0147.useraction=Viene utilizzata una sottoscrizione interna per mettere in corrispondenza pubblicazioni ad una destinazione. Consumer esterni non possono collegarsi ad una sottoscrizione interna. Ripetere l'operazione utilizzando un nome sottoscrizione valido.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the subscription id
+# {1} The messaging engine name
+SUBSCRIPTION_IN_USE_ERROR_CWSIP0152=CWSIP0152E: La sottoscrizione durevole con nome {0} \u00e8 al momento utilizzata da un altro consumer sul motore di messaggistica {1}.
+SUBSCRIPTION_IN_USE_ERROR_CWSIP0152.explanation=Una sottoscrizione durevole con il nome specificato \u00e8 al momento utilizzata da un altro consumer. Non \u00e8 possibile svolgere operazioni sulla sottoscrizione fino a quando tutti i consumer non saranno scollegati.
+SUBSCRIPTION_IN_USE_ERROR_CWSIP0152.useraction=Solo un consumer si pu\u00f2 collegare a una sottoscrizione durevole.  Scollegare tutti i consumer e ripetere l'operazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the subscription id
+# {1} The messaging engine Name
+SUBSCRIPTION_IN_USE_ERROR_CWSIP0153=CWSIP0153E: La sottoscrizione durevole con nome {0} contiene dei messaggi di cui non \u00e8 stato eseguito il commit sul motore di messaggistica {1}.
+SUBSCRIPTION_IN_USE_ERROR_CWSIP0153.explanation=Una sottoscrizione durevole contiene messaggi di cui non \u00e8 stato eseguito il commit quindi l'eliminazione non \u00e8 riuscita.
+SUBSCRIPTION_IN_USE_ERROR_CWSIP0153.useraction=Eseguire il commit di tutte le unit\u00e0 di lavoro in sospeso che sono state create inviando o ricevendo dall'applicazione utilizzata dalla sottoscrizione durevole, quindi ripetere l'operazione.
+
+# -------------------------------------------------------------------------------------------------
+#
+# {0} The name of the remote messaging engine we attempt to map.
+REMOTE_ME_MAPPING_ERROR_CWSIP0156=CWSIP0156E: Si \u00e8 verificato un errore durante l''individuazione del motore di messaggistica remoto {0}.
+REMOTE_ME_MAPPING_ERROR_CWSIP0156.explanation=Non \u00e8 stato possibile portare a termine l'elaborazione perch\u00e9 il motore di messaggistica remoto non \u00e8 stato trovato.
+REMOTE_ME_MAPPING_ERROR_CWSIP0156.useraction=Verificare che il nome del motore di messaggistica sia valido, che il motore di messaggistica remoto sia in esecuzione e che le comunicazioni col motore di messaggistica siano attive.
+
+# -------------------------------------------------------------------------------------------------
+#
+RECEIVE_USAGE_ERROR_CWSIP0171=CWSIP0171E: Non \u00e8 possibile eseguire un comando receive mentre un consumer asincrono \u00e8 registrato sulla destinazione {0} del motore di messaggistica {1}
+RECEIVE_USAGE_ERROR_CWSIP0171.explanation=Un consumer non pu\u00f2 ricevere messaggi mentre \u00e8 collegato come asincrono.
+RECEIVE_USAGE_ERROR_CWSIP0171.useraction=Verificare che il consumer non sia registrato come asincrono e ripetere l'operazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message that was not found.
+# {1} the name of the destination.
+# {2} The name of the messaging engine.
+CORE_MESSAGE_NOT_FOUND_ERROR_CWSIP0173=CWSIP0173E: Impossibile individuare il messaggio {0} sulla destinazione {1} del motore di messaggistica {2}
+CORE_MESSAGE_NOT_FOUND_ERROR_CWSIP0173.explanation=\u00c8 stata inviata una richiesta di individuare un messaggio su una destinazione, ma il messaggio non esiste.
+CORE_MESSAGE_NOT_FOUND_ERROR_CWSIP0173.useraction=Il messaggio \u00e8 stato precedentemente cancellato oppure \u00e8 scaduto.  Controllare se il messaggio esiste sulla destinazione specificata e ripetere l'operazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination.
+# {1} The name of the messaging engine.
+RECEIVE_USAGE_ERROR_CWSIP0174=CWSIP0174E: Non \u00e8 possibile registrare un consumer asincrono sulla destinazione {0} del motore di messaggistica {1}, quando viene emesso un comando receive sincrono.
+RECEIVE_USAGE_ERROR_CWSIP0174.explanation=Si \u00e8 tentato di registrare un consumer asincrono mentre veniva emesso un comando receive.
+RECEIVE_USAGE_ERROR_CWSIP0174.useraction=Attendere il completamento del comando receive, quindi registrare il consumer asincrono.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The name of the messaging engine.
+ASYNCH_CONSUMER_ERROR_CWSIP0175=CWSIP0175E: Si \u00e8 tentato di eseguire un consumer asincrono ma non ne \u00e8 stato registrato nessuno sulla destinazione {0} del motore di messaggistica {1}.
+ASYNCH_CONSUMER_ERROR_CWSIP0175.explanation=Si \u00e8 tentato di eseguire un'applicazione come consumer asincrono ma nessuno \u00e8 stato registrato sulla destinazione specificata.
+ASYNCH_CONSUMER_ERROR_CWSIP0175.useraction=Registrare il consumer asincrono sulla destinazione e ripetere l'operazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The messaging engine name
+ASYNCH_CONSUMER_RUN_ERROR_CWSIP0176=CWSIP0176E: Non \u00e8 possibile registrare un consumer asincrono sulla destinazione {0} del motore di messaggistica {1}, quando la sessione \u00e8 avviata.
+ASYNCH_CONSUMER_RUN_ERROR_CWSIP0176.explanation=Si \u00e8 tentato di registrare un consumer asincrono su una destinazione quando la sessione utilizzata per creare il consumer non \u00e8 in stato di arresto.
+ASYNCH_CONSUMER_RUN_ERROR_CWSIP0176.useraction=Interrompere il consumer e ripetere l'operazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The name of the messaging engine.
+CONSUMER_CLOSED_ERROR_CWSIP0177=CWSIP0177E: La sessione del consumer sulla destinazione {0} del motore di messaggistica {1} \u00e8 stata chiusa.
+CONSUMER_CLOSED_ERROR_CWSIP0177.explanation=Non \u00e8 possibile eseguire un'operazione nella sessione del consumer quando questa \u00e8 stata chiusa.
+CONSUMER_CLOSED_ERROR_CWSIP0177.useraction=Creare una nuova sessione consumer per la destinazione specificata oppure eseguire l'operazione prima di chiudere il consumer.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The name of the messaging engine.
+RECEIVE_USAGE_ERROR_CWSIP0178=CWSIP0178E: L''operazione di ricezione non \u00e8 valida in questo momento sulla destinazione {0} del motore di messaggistica {1}.
+RECEIVE_USAGE_ERROR_CWSIP0178.explanation=\u00c8 in corso un'altra operazione di ricezione per questa sessione del consumer nella destinazione specificata.
+RECEIVE_USAGE_ERROR_CWSIP0178.useraction=Attendere il completamento dell'operazione di ricezione originale e riprovare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} is the name of the messaging engine.
+ORDERED_TRANSACTED_RECEIVE_ERROR_CWSIP0180=CWSIP0180E: La destinazione con nome {0} sul motore di messaggistica {1} \u00e8 disabilitata alla ricezione poich\u00e9 \u00e8 attualmente in corso la transazione di una ricezione.
+ORDERED_TRANSACTED_RECEIVE_ERROR_CWSIP0180.explanation=\u00c8 stato compiuto un tentativo di ricevere messaggi da una destinazione configurata con l'ordinamento conservato. Un'altra transazione \u00e8 attualmente in sospeso su questa destinazione.
+ORDERED_TRANSACTED_RECEIVE_ERROR_CWSIP0180.useraction=Completare tutte le altre transazioni su questa destinazione prima di tentare la ricezione con una nuova transazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} destination name
+MAX_BATCH_SIZE_OVERRIDE_WARNING_CWSIP0181=CWSIP0181W: La dimensione massima batch per il consumer sulla destinazione {0}, \u00e8 stata impostata su 1.
+MAX_BATCH_SIZE_OVERRIDE_WARNING_CWSIP0181.explanation=La destinazione \u00e8 impostata per conservare l'ordine dei messaggi. Quindi la dimensione massima batch per un consumer \u00e8 stata impostata su 1.
+MAX_BATCH_SIZE_OVERRIDE_WARNING_CWSIP0181.useraction=Se non \u00e8 richiesto un ordinamento, deselezionare l'attributo maintainMessageOrder per disabilitare la sovrascrittura della dimensione massima batch.
+
+# -------------------------------------------------------------------------------------------------
+# {0} consumer ID
+# {1} resource name, e.g. queue or subscription name
+# {2} messaging engine name
+# {3} elapsed time in seconds
+MSG_BLOCK_WARNING_CWSIP0182=CWSIP0182W: Il consumer {0} della risorsa {1} sul motore di messaggistica {2} \u00e8 stato bloccato per {3} secondi.
+MSG_BLOCK_WARNING_CWSIP0182.explanation=Il consumer del messaggio sulla risorsa denominata \u00e8 stato bloccato per un periodo di tempo inaspettatamente prolungato, elaborando lo stesso insieme di messaggi. Quando si trova in questo stato non \u00e8 in grado di elaborare ulteriori messaggi.
+MSG_BLOCK_WARNING_CWSIP0182.useraction=Risolvere il motivo per cui il consumer del messaggio \u00e8 stato bloccato, esaminare lo stato delle applicazioni che attualmente utilizzano messaggi dalla risorsa.
+
+# -------------------------------------------------------------------------------------------------
+# {0} consumer ID
+# {1} resource name, e.g. queue or subscription name
+# {2} messaging engine name
+MSG_BLOCK_CLEARED_CWSIP0183=CWSIP0183I: Il consumer {0} della risorsa {1} sul motore di messaggistica {2} non \u00e8 pi\u00f9 bloccato.
+MSG_BLOCK_CLEARED_CWSIP0183.explanation=Il consumer del messaggio sulla risorsa denominata non \u00e8 pi\u00f9 bloccato su un insieme di messaggi. Ci\u00f2 \u00e8 dovuto alla risoluzione della causa del blocco o alla chiusura del consumer.
+MSG_BLOCK_CLEARED_CWSIP0183.useraction=Nessuna.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The name of the messaging engine.
+INVALID_MESSAGE_ERROR_CWSIP0191=CWSIP0191E: Il messaggio corrente non \u00e8 valido sulla destinazione {0} del motore di messaggistica {1}.
+INVALID_MESSAGE_ERROR_CWSIP0191.explanation=Si \u00e8 tentato di sbloccare il messaggio corrente ma non erano presenti messaggi da sbloccare.
+INVALID_MESSAGE_ERROR_CWSIP0191.useraction=Il messaggio \u00e8 stato gi\u00e0 sbloccato o eliminato dal consumer corrente.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The name of the messaging engine.
+INVALID_MESSAGE_ERROR_CWSIP0192=CWSIP0192E: Il messaggio corrente non \u00e8 valido sulla destinazione {0} del motore di messaggistica {1}.
+INVALID_MESSAGE_ERROR_CWSIP0192.explanation=Si \u00e8 tentato di eliminare il messaggio corrente ma non erano presenti messaggi da eliminare.
+INVALID_MESSAGE_ERROR_CWSIP0192.useraction=Il messaggio \u00e8 stato gi\u00e0 sbloccato o eliminato dal consumer corrente.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The name of the messaging engine.
+MESSAGE_LOCK_EXPIRED_ERROR_CWSIP0193=CWSIP0193E: Il blocco \u00e8 scaduto per il messaggio con id {0} sul motore di messaggistica {1}.
+MESSAGE_LOCK_EXPIRED_ERROR_CWSIP0193.explanation=\u00c8 stato effettuato un tentativo di utilizzare un messaggio all'interno di un consumer, ma il timeout del blocco \u00e8 scaduto e il messaggio \u00e8 stato reso nuovamente disponibile.
+MESSAGE_LOCK_EXPIRED_ERROR_CWSIP0193.useraction=Quando il timeout del blocco scade il messaggio viene reso nuovamente disponibile ad un altro consumer per l'elaborazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The name of the messaging engine.
+ORDERED_MESSAGING_ERROR_CWSIP0194=CWSIP0194E: La destinazione con nome {0} sul motore di messaggistica {1} non \u00e8 disponibile per la ricezione di messaggi a causa della transazione di una ricezione attualmente in corso.
+ORDERED_MESSAGING_ERROR_CWSIP0194.explanation=\u00c8 stato compiuto un tentativo di ricevere messaggi da una destinazione configurata con l'ordinamento conservato. Un'altra transazione \u00e8 attualmente in sospeso su questa destinazione.
+ORDERED_MESSAGING_ERROR_CWSIP0194.useraction=Completare tutte le altre transazioni su questa destinazione prima di tentare la ricezione con una nuova transazione.
+
+
+# -------------------------------------------------------------------------------------------------
+MESSAGE_HANDLER_CORRUPT_ERROR_CWSIP0201=CWSIP0201E: Questa operazione non \u00e8 disponibile.
+MESSAGE_HANDLER_CORRUPT_ERROR_CWSIP0201.explanation=Il gestore di messaggi \u00e8 danneggiato oppure \u00e8 in stato di ripristino.
+MESSAGE_HANDLER_CORRUPT_ERROR_CWSIP0201.useraction=Ripristinare il gestore di messaggi se non \u00e8 gi\u00e0 in stato di ripristino.  Quindi riavviare il motore di messaggistica.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the messaging engine
+# {1} is the name of the messaging engine bus
+MESSAGE_PROCESSOR_NOT_STARTED_ERROR_CWSIP0211=CWSIP0211E: Il motore di messaggistica {0} sul bus {1} non \u00e8 avviato.
+MESSAGE_PROCESSOR_NOT_STARTED_ERROR_CWSIP0211.explanation=\u00c8 stata inviata una richiesta di accesso al motore di messaggistica denominato ma non \u00e8 stato avviato.
+MESSAGE_PROCESSOR_NOT_STARTED_ERROR_CWSIP0211.useraction=Avviare il motore di messaggistica denominato.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the messaging engine
+# {1} is the name of the messaging engine bus
+RECONCILE_STARTED_INFO_CWSIP00212=CWSIP0212I: Il motore di messaggistica {0} sul bus {1} sta iniziando a ricollegare la destinazione WCCM e la configurazione del link.
+RECONCILE_STARTED_INFO_CWSIP00212.explanation=La destinazione WCCM e la configurazione di link vengono ricollegate alla configurazione memorizzata dal motore di messaggistica quando \u00e8 stato arrestato.
+RECONCILE_STARTED_INFO_CWSIP00212.useraction=nessuna
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the messaging engine
+# {1} is the name of the messaging engine bus
+RECONCILE_COMPLETED_INFO_CWSIP00213=CWSIP0213I: Il motore di messaggistica {0} sul bus {1} ha terminato il ricollegamento della destinazione WCCM e della configurazione del link.
+RECONCILE_COMPLETED_INFO_CWSIP00213.explanation=La destinazione WCCM e la configurazione di link sono state ricollegate con la configurazione memorizzata dal motore di messaggistica quando \u00e8 stato arrestato. Le risorse appropriate verranno modificate, create o pianificate per la cancellazione.
+RECONCILE_COMPLETED_INFO_CWSIP00213.useraction=nessuna
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the messaging engine
+# {1} is the name of the messaging engine bus
+DESTINATION_DELETED_ERROR_CWSIP00221=CWSIP0221E: La destinazione con il nome {0} sul motore di messaggistica {1} \u00e8 stata eliminata.
+DESTINATION_DELETED_ERROR_CWSIP00221.explanation=Un'applicazione che era collegata alla destinazione specificata \u00e8 stata scollegata poich\u00e9 la destinazione \u00e8 stata eliminata.
+DESTINATION_DELETED_ERROR_CWSIP00221.useraction=nessuna
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the messaging engine
+# {1} is the name of the messaging engine bus
+DESTINATION_EXCLUSIVE_ERROR_CWSIP00222=CWSIP0222E: La destinazione con il nome {0} sul motore di messaggistica {1} \u00e8 stata modificata per la ricezione esclusiva.
+DESTINATION_EXCLUSIVE_ERROR_CWSIP00222.explanation=Un'applicazione che era collegata alla destinazione specificata \u00e8 stata scollegata poich\u00e9 la destinazione \u00e8 stata modificata in ricezione esclusiva.  Tutte le applicazioni collegate alla destinazione verranno scollegate e sar\u00e0 consentito solo il collegamento di una singola applicazione.
+DESTINATION_EXCLUSIVE_ERROR_CWSIP00222.useraction=nessuna
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the messaging engine
+# {1} is the name of the messaging engine bus
+DESTINATION_UNREACHABLE_ERROR_CWSIP00223=CWSIP0223E: La destinazione con il nome {0} sul motore di messaggistica {1} dispone di un punto messaggi che non pu\u00f2 essere raggiunto.
+DESTINATION_UNREACHABLE_ERROR_CWSIP00223.explanation=Un'applicazione che era collegata alla destinazione specificata \u00e8 stata scollegata poich\u00e9 non \u00e8 possibile raggiungere il motore di messaggistica di localizzazione della destinazione.
+DESTINATION_UNREACHABLE_ERROR_CWSIP00223.useraction=Verificare che il motore di messaggistica di localizzazione della destinazione sia disponibile.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} The reason code for not being able to put message to exception destination
+DESTINATION_DELETED_ERROR_CWSIP0247=CWSIP0247E: La destinazione {0} \u00e8 stata eliminata e non \u00e8 possibile inserire il messaggio nella destinazione eccezioni a causa di {1}.
+DESTINATION_DELETED_ERROR_CWSIP0247.explanation=Si \u00e8 tentato di eseguire il commit di un messaggio sulla destinazione eliminata ma \u00e8 stato generato un errore.
+DESTINATION_DELETED_ERROR_CWSIP0247.useraction=La destinazione \u00e8 stata eliminata e non \u00e8 pi\u00f9 utilizzabile.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the topic space
+# {1} The messaging engine Name
+FORWARD_ROUTING_PATH_ERROR_CWSIP0249=CWSIP0249E: Non \u00e8 stato possibile recapitare un messaggio ad una destinazione nel percorso di instradamento inoltro, perch\u00e9 la destinazione {0} \u00e8 uno spazio argomento sul motore di messaggistica {1}
+FORWARD_ROUTING_PATH_ERROR_CWSIP0249.explanation=Un percorso di instradamento inoltro conteneva uno spazio argomento, che non era l'elemento finale del percorso. Non \u00e8 possibile consegnare in nessuna delle seguenti destinazioni.
+FORWARD_ROUTING_PATH_ERROR_CWSIP0249.useraction=Uno spazio argomento pu\u00f2 essere solo l'elemento finale in un percorso instradamento inoltro. Correggere il percorso e ripetere l'operazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the Destination
+# {1} identifies the high limit for the topic space
+# {2} the messaging engine name
+DESTINATION_HIGH_MESSAGES_ERROR_CWSIP0251=CWSIP0251E: La destinazione {0} sul motore di messaggistica {2} non \u00e8 disponibile perch\u00e9 \u00e8 gi\u00e0 stato raggiunto il limite massimo {1} di messaggi per questa destinazione.
+DESTINATION_HIGH_MESSAGES_ERROR_CWSIP0251.explanation=Tutte le code alla destinazione denominata hanno gi\u00e0 raggiunto il limite massimo configurato, quindi il messaggio non pu\u00f2 essere accettato.
+DESTINATION_HIGH_MESSAGES_ERROR_CWSIP0251.useraction=Controllare che il limite superiore dei messaggi configurati per la destinazione sia corretto.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the messaging engine
+DESTINATION_SEND_DISALLOWED_CWSIP0253=CWSIP0253E: La destinazione {0} non \u00e8 abilitata all''invio per il motore di messaggistica {1}
+DESTINATION_SEND_DISALLOWED_CWSIP0253.explanation=Si \u00e8 tentato di inviare un messaggio a una destinazione ed \u00e8 stato eseguito un controllo per assicurarsi che un punto pubblicazione sia disponibile per questa destinazione.  Il controllo non \u00e8 riuscito perch\u00e9 il punto pubblicazione per questa destinazione non \u00e8 abilitato all'invio.
+DESTINATION_SEND_DISALLOWED_CWSIP0253.useraction=Aggiornare il punto pubblicazione per la destinazione per renderlo abilitato all'invio e ripetere l'operazione di invio.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+ITEM_RESTORE_ERROR_CWSIP0261=CWSIP0261E: Errore di ripristino del motore di messaggistica.  Versione prevista {0}, ricevuto {1}
+ITEM_RESTORE_ERROR_CWSIP0261.explanation=Quando si ripristina una voce dallo storage persistente del motore di messaggistica, viene eseguito un controllo della versione.  Questo controllo non \u00e8 riuscito.  La causa di tale errore potrebbe essere una nuova versione di WebSphere installata e successivamente rimossa.  Oppure, l'archivio persistente \u00e8 stato danneggiato.
+ITEM_RESTORE_ERROR_CWSIP0261.useraction=Ripristinare lo stato del motore di messaggistica da un backup e consultare il centro informazioni per dettagli relativi a questa operazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+MESSAGE_CORRUPT_ERROR_CWSIP0262=CWSIP0262E: Il messaggio corrente \u00e8 danneggiato e non pu\u00f2 essere aggiunto all''archivio persistente a causa dell''eccezione {0}
+MESSAGE_CORRUPT_ERROR_CWSIP0262.explanation=Messaggi vengono aggiunti all'archivio persistente, ma questo ha dato esito negativo a causa di un problema rilevato.
+MESSAGE_CORRUPT_ERROR_CWSIP0262.useraction= Controllare l'eccezione collegata e risolvere eventuali problemi prima di inviare nuovamente il messaggio
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+SUBSCRIPTION_NOT_FOUND_ERROR_CWSIP0271=CWSIP0271E: Sottoscrizione con id {0} non trovata
+SUBSCRIPTION_NOT_FOUND_ERROR_CWSIP0271.explanation=L'operazione di stabilire un collegamento in fase di runtime alla sottoscrizione  non \u00e8 riuscita poich\u00e9 non \u00e8 possibile trovare la sottoscrizione.  Ci\u00f2 pu\u00f2 essere dovuto all'eliminazione della sottoscrizione.
+SUBSCRIPTION_NOT_FOUND_ERROR_CWSIP0271.useraction=Per visualizzare lo stato, eseguire nuovamente la connessione ad un'altra sottoscrizione utilizzando la console di gestione
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+SUBSCRIPTION_DELETE_ERROR_CWSIP0272=CWSIP0272E: La sottoscrizione con id {0} non pu\u00f2 essere eliminata poich\u00e9 non \u00e8 durevole.
+SUBSCRIPTION_DELETE_ERROR_CWSIP0272.explanation=L'utilizzo dei pannelli di Runtime della console di gestione per eliminare le sottoscrizioni eliminer\u00e0 soltanto le sottoscrizioni durevoli.  L'operazione di eliminazione non riuscir\u00e0 se effettuata per sottoscrizioni non durevoli.
+SUBSCRIPTION_DELETE_ERROR_CWSIP0272.useraction=Ripetere l'operazione di eliminazione per una sottoscrizione durevole.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The remote messaging engine
+# {1} the name of the destination
+# {2} Tick Value (internal object)
+# {3} The Stream id (internal object)
+# {4} The exception
+ENCODE_FAIL_ERROR_CWSIP0281=CWSIP0281E: Impossibile codificare il messaggio per la trasmissione al motore di messaggistica remoto {0} sulla destinazione {1} con il valore {2}, {3} e l''errore {4}
+ENCODE_FAIL_ERROR_CWSIP0281.explanation=Un messaggio collegato per un motore di messaggistica remoto non \u00e8 stato codificato e quindi non \u00e8 stato inviato
+ENCODE_FAIL_ERROR_CWSIP0281.useraction=Controllare i file di log ffdc per determinare la causa della codifica non riuscita e correggere l'errore.  \u00c8 necessario rimuovere il messaggio corrente dal flusso in uscita.  Questa operazione pu\u00f2 essere effettuata tramite la rimozione dal Punto coda remoto utilizzando la Console di gestione.
+
+# -------------------------------------------------------------------------------------------------
+# {0}  The exception destination name
+# {1} The name of the messaging engine
+# {2} The reason exception
+EXCEPTION_DESTINATION_WARNING_CWSIP0291=CWSIP0291W: Tentativo di invio di un messaggio alla destinazione eccezioni {0} sul motore di messaggistica {1} non riuscito per la seguente causa: {2}
+EXCEPTION_DESTINATION_WARNING_CWSIP0291.explanation=Non \u00e8 stato possibile inviare un messaggio alla destinazione eccezioni specificata. Si tenter\u00e0 di nuovo utilizzando la destinazione eccezioni predefinita.
+EXCEPTION_DESTINATION_WARNING_CWSIP0291.useraction=Controllare che la destinazione esista e che sia operativa.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The default exception destination name
+# {1} The messaging engine name
+EXCEPTION_DESTINATION_ERROR_CWSIP0295=CWSIP0295E: Il tentativo di creazione di un report eccezione non \u00e8 riuscito, quindi il messaggio originale non \u00e8 stato inviato alla destinazione eccezioni {0} sul motore di messaggistica {1}
+EXCEPTION_DESTINATION_ERROR_CWSIP0295.explanation=Non \u00e8 stato possibile instradare un messaggio nella destinazione eccezioni perch\u00e9 era richiesto un report eccezione che non pu\u00f2 essere inviato per il messaggio.
+EXCEPTION_DESTINATION_ERROR_CWSIP0295.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0}  The user ID creating the connection
+# {1} The messaging engine name
+# {2} The bus Name
+USER_NOT_AUTHORIZED_ERROR_CWSIP0301=CWSIP0301E: Impossibile autenticare l''utente {0} durante la creazione di una connessione al motore di messaggistica sicuro {1} sul bus {2}.
+USER_NOT_AUTHORIZED_ERROR_CWSIP0301.explanation=L'utente specificato non pu\u00f2 essere autenticato quando si tenta di creare una connessione al bus del motore di messaggistica
+USER_NOT_AUTHORIZED_ERROR_CWSIP0301.useraction=Accertarsi che l'utente sia stato aggiunto al repository di sicurezza di WebSphere Application Server e che sia stata specificata la password corretta.
+
+# -------------------------------------------------------------------------------------------------
+# {0}  The user attempting to access the messaging engine bus.
+USER_NOT_AUTHORIZED_ERROR_CWSIP0302=CWSIP0302E: L''utente {0} non \u00e8 autorizzato ad accedere al motore di messaggistica {1} sul bus {2}.
+USER_NOT_AUTHORIZED_ERROR_CWSIP0302.explanation=L'utente specificato non \u00e8 autorizzato ad accedere al bus del motore di messaggistica.
+USER_NOT_AUTHORIZED_ERROR_CWSIP0302.useraction=Se l'utente deve disporre dell'autorit\u00e0 per accedere al bus del motore di messaggistica, aggiornare i diritti di autorizzazione per il bus del motore di messaggistica.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The messaging engine name
+# {1} The bus Name
+NULL_USER_NOT_AUTHORIZED_ERROR_CWSIP0303=CWSIP0303E: Nessun utente specificato durante la creazione di una connessione al motore di messaggistica sicuro {0} sul bus {1}.
+NULL_USER_NOT_AUTHORIZED_ERROR_CWSIP0303.explanation=\u00c8 stato effettuato un tentativo di creare una connessione al motore di messaggistica sicuro, ma nessun utente \u00e8 stato fornito.
+NULL_USER_NOT_AUTHORIZED_ERROR_CWSIP0303.useraction=Creare la connessione al motore di messaggistica fornendo un utente e una password
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The subject attempting the operation
+USER_NOT_AUTH_BROWSE_ERROR_CWSIP0304=CWSIP0304E: L''accesso alla ricerca per la destinazione {0} \u00e8 stato negato al soggetto {1}
+USER_NOT_AUTH_BROWSE_ERROR_CWSIP0304.explanation=Un utente non \u00e8 autorizzato a sfogliare la destinazione.
+USER_NOT_AUTH_BROWSE_ERROR_CWSIP0304.useraction=Se l'utente possiede l'autorit\u00e0 per sfogliare i messaggi nella destinazione fornita, aggiornare i diritti di autorizzazione utente per la destinazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination prefix
+# {1} The subject attempting the operation
+USER_NOT_AUTH_CREATE_ERROR_CWSIP0305=CWSIP0305E: L''utente con soggetto {1} non \u00e8 autorizzato a creare destinazioni temporanee con prefisso {0}.
+USER_NOT_AUTH_CREATE_ERROR_CWSIP0305.explanation=Un utente non \u00e8 autorizzato a creare destinazioni temporanee con il prefisso denominato.
+USER_NOT_AUTH_CREATE_ERROR_CWSIP0305.useraction=Se l'utente possiede l'autorit\u00e0 per creare destinazioni temporanee con il prefisso denominato, aggiornare i diritti di autorizzazione utente per il prefisso denominato.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The subject attempting the operation
+USER_NOT_AUTH_RECEIVE_ERROR_CWSIP0309=CWSIP0309E: L''accesso alla ricezione per la destinazione {0} \u00e8 stato negato all''utente con soggetto {1}.
+USER_NOT_AUTH_RECEIVE_ERROR_CWSIP0309.explanation=Un utente non \u00e8 autorizzato a ricevere dalla destinazione.
+USER_NOT_AUTH_RECEIVE_ERROR_CWSIP0309.useraction=Se l'utente possiede l'autorit\u00e0 per ricevere i messaggi nella destinazione fornita, aggiornare i diritti di autorizzazione utente per la destinazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The discriminator name
+# {2} The subject attempting the operation
+USER_NOT_AUTH_RECEIVE_ERROR_CWSIP0310=CWSIP0310E: L''accesso alla ricezione dal discriminatore {1} sulla destinazione {0} \u00e8 stato negato all''utente con soggetto {2}.
+USER_NOT_AUTH_RECEIVE_ERROR_CWSIP0310.explanation=Un utente non \u00e8 autorizzato a ricevere dalla destinazione utilizzando l'argomento specificato.
+USER_NOT_AUTH_RECEIVE_ERROR_CWSIP0310.useraction=Se l'utente possiede l'autorit\u00e0 per ricevere messaggi sull'argomento specificato, aggiornare i diritti di autorizzazione utente per l'argomento nella destinazione fornita.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The user ID deleting the durable subscription
+# {1} The subscription name
+# {2} The Destination name
+USER_NOT_AUTH_DELETE_ERROR_CWSIP0311=CWSIP0311E: Un utente {0} non \u00e8 autorizzato ad eliminare una sottoscrizione durevole {1} sulla destinazione {2}.
+USER_NOT_AUTH_DELETE_ERROR_CWSIP0311.explanation=Un utente ha tentato di eliminare una sottoscrizione durevole, ma non \u00e8 l'utente che l'ha creata.
+USER_NOT_AUTH_DELETE_ERROR_CWSIP0311.useraction=Eliminare la sottoscrizione durevole con l'utente originario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The user ID activating the durable subscription
+# {1} The subscription name
+# {2} The Destination name
+USER_NOT_AUTH_ACTIVATE_ERROR_CWSIP0312=CWSIP0312E: Un utente {0} non \u00e8 autorizzato ad attivare una sottoscrizione durevole {1} sulla destinazione {2}.
+USER_NOT_AUTH_ACTIVATE_ERROR_CWSIP0312.explanation=Un utente non \u00e8 autorizzato ad attivare la sottoscrizione durevole, ma non si tratta dell'utente che l'ha creata.
+USER_NOT_AUTH_ACTIVATE_ERROR_CWSIP0312.useraction=Attivare la sottoscrizione durevole con l'utente originario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The user ID activating the durable subscription
+# {1} The exception destination name
+USER_NOT_AUTH_EXCEPTION_DEST_ERROR_CWSIP0313=CWSIP0313E: Un utente {0} non \u00e8 autorizzato ad accedere alla destinazione eccezioni {1}.
+USER_NOT_AUTH_EXCEPTION_DEST_ERROR_CWSIP0313.explanation=Un utente non \u00e8 autorizzato a collocare messaggi alla destinazione eccezioni specificata.
+USER_NOT_AUTH_EXCEPTION_DEST_ERROR_CWSIP0313.useraction=Se l'utente deve disporre dell'accesso alla destinazione eccezioni, modificare il controllo accesso alla destinazione nella console di gestione aggiungendo l'utente specificato
+
+# -------------------------------------------------------------------------------------------------
+# {0} destination name
+# {1} the user name
+USER_NOT_AUTH_INQUIRE_ERROR_CWSIP0314=CWSIP0314E: L''accesso per indagine relativo alla destinazione {0} \u00e8 stato negato all''utente con soggetto {1}
+USER_NOT_AUTH_INQUIRE_ERROR_CWSIP0314.explanation=Un utente non \u00e8 autorizzato ad indagare sulla configurazione per la destinazione
+USER_NOT_AUTH_INQUIRE_ERROR_CWSIP0314.useraction=Se l'utente deve disporre dell'accesso per indagare sulla configurazione di una destinazione, modificare il controllo Accesso indagine nella console di gestione aggiungendo l'utente specificato
+
+# -------------------------------------------------------------------------------------------------
+# {0} The foreign bus name
+# {1} the user name
+USER_NOT_AUTH_INQUIRE_FB_ERROR_CWSIP0315=CWSIP0315E: L''accesso per indagine relativo al bus esterno {0} \u00e8 stato negato all''utente con soggetto {1}
+USER_NOT_AUTH_INQUIRE_FB_ERROR_CWSIP0315.explanation=Un utente non \u00e8 autorizzato ad indagare sulla configurazione per il bus esterno specificato
+USER_NOT_AUTH_INQUIRE_FB_ERROR_CWSIP0315.useraction=Se l'utente deve disporre dell'accesso per indagare sulla configurazione del bus esterno, modificare il controllo Accesso indagine nella console di gestione aggiungendo l'utente specificato
+
+# -------------------------------------------------------------------------------------------------
+# {0} the user name
+USER_NOT_AUTH_INVOKE_ERROR_CWSIP0316=CWSIP0316E: L''utente {0} deve essere SIBServerSubject per utilizzare il metodo invokeCommand()
+USER_NOT_AUTH_INVOKE_ERROR_CWSIP0316.explanation=L'utente non \u00e8 autorizzato a chiamare il metodo invokeCommand() nella connessione
+USER_NOT_AUTH_INVOKE_ERROR_CWSIP0316.useraction=Richiamare il metodo su una connessione con accesso SIBServerSubject
+
+# -------------------------------------------------------------------------------------------------
+# {0} the user name
+DESTINATION_DELETE_ERROR_CWSIP0331=CWSIP0331W: La destinazione {0} sul motore di messaggistica {1} \u00e8 gi\u00e0 stata contrassegnata per l''eliminazione.
+DESTINATION_DELETE_ERROR_CWSIP0331.explanation=\u00c8 stata effettuata la richiesta di eliminare una destinazione, ma essa \u00e8 gi\u00e0 stata contrassegnata per l'eliminazione.
+DESTINATION_DELETE_ERROR_CWSIP0331.useraction=Il sistema rimuover\u00e0 la destinazione dal motore di messaggistica.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the user name
+DESTINATION_NOT_FOUND_ERROR_CWSIP0341=CWSIP0341W: La destinazione {0} non \u00e8 stata trovata sul motore di messaggistica {1}.
+DESTINATION_NOT_FOUND_ERROR_CWSIP0341.explanation=La destinazione denominata \u00e8 sconosciuta nel motore di messaggistica locale.
+DESTINATION_NOT_FOUND_ERROR_CWSIP0341.useraction=Controllare che il nome della destinazione sia corretto.  Se la destinazione esiste su un altro motore di messaggistica, assicurarsi che la comunicazione con l'altro motore di messaggistica funzioni.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id.
+# {1} The destination name
+MESSAGE_INDOUBT_WARNING_CWSIP0361=CWSIP0361W: Impossibile eliminare il messaggio con id {0}, poich\u00e9 non \u00e8 stato eseguito il commit della transazione utilizzata per aggiungerlo alla destinazione {1}.
+MESSAGE_INDOUBT_WARNING_CWSIP0361.explanation=\u00c8 stato inviato un messaggio alla destinazione specificata utilizzando un MessageProducer utilizzando una transazione.  Non \u00e8 stato eseguito il commit alla destinazione di questa transazione, in questo modo il messaggio non pu\u00f2 essere eliminato.
+MESSAGE_INDOUBT_WARNING_CWSIP0361.useraction=Consultare la sezione del centro informazioni "Risoluzione delle transazioni in dubbio" per eseguire il commit o il rollback della transazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id.
+# {1} The destination name
+MESSAGE_INDOUBT_WARNING_CWSIP0362=CWSIP0362W: Impossibile eliminare il messaggio con id {0} dalla destinazione {1}, poich\u00e9 il messaggio \u00e8 stato recapitato ad un consumer.
+MESSAGE_INDOUBT_WARNING_CWSIP0362.explanation=Il messaggio non pu\u00f2 essere eliminato poich\u00e9 \u00e8 stato recapitato ad un consumer.
+MESSAGE_INDOUBT_WARNING_CWSIP0362.useraction=Arrestare qualsiasi MDB o applicazione in fase di utilizzo dalla destinazione e ripetere di nuovo l'operazione.  Se non \u00e8 ancora possibile eliminare il messaggio, consultare la sezione di centro informazioni "Risoluzione delle transazioni in dubbio" per eseguire il commit o il rollback della transazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The selector supplied.
+INVALID_SELECTOR_ERROR_CWSIP0371=CWSIP0371E: La sintassi selettore {0} non \u00e8 valida.
+INVALID_SELECTOR_ERROR_CWSIP0371.explanation=La sintassi selettore fornita non \u00e8 valida.
+INVALID_SELECTOR_ERROR_CWSIP0371.useraction=Correggere la sintassi del selettore e ripetere l'operazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic supplied.
+INVALID_TOPIC_ERROR_CWSIP0372=CWSIP0372E: La sintassi dell''argomento {0} non \u00e8 valida.
+INVALID_TOPIC_ERROR_CWSIP0372.explanation=La sintassi dell'argomento fornito non \u00e8 valida.
+INVALID_TOPIC_ERROR_CWSIP0372.useraction=Correggere la sintassi dell'argomento e ripetere l'operazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} related Exception.
+ACL_ADD_WARNING_CWSIP0373=CWSIP0373W: Impossibile caricare l''elenco di controllo accessi a causa dell''eccezione {0}.
+ACL_ADD_WARNING_CWSIP0373.explanation=Quando \u00e8 stato caricato l'elenco di controllo accessi si \u00e8 verificata un'eccezione.
+ACL_ADD_WARNING_CWSIP0373.useraction=Controllare e correggere l'eccezione relativa per abilitare l'elenco di controllo accessi a caricarsi correttamente.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Discriminator name
+# {1} user
+# {2} related Exception.
+ACL_ADD_WARNING_CWSIP0374=CWSIP0374W: Impossibile caricare l''elenco di controllo accessi a causa dell''eccezione {2} per il discriminatore {0} e l''utente {1}
+ACL_ADD_WARNING_CWSIP0374.explanation=Quando \u00e8 stato caricato l'elenco di controllo accessi si \u00e8 verificata un'eccezione.
+ACL_ADD_WARNING_CWSIP0374.useraction=Controllare e correggere l'eccezione relativa per abilitare l'elenco di controllo accessi a caricarsi correttamente.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Discriminator name
+# {1} related Exception.
+ACL_ADD_WARNING_CWSIP0375=CWSIP0375W: Impossibile caricare l''elenco di controllo accessi a causa dell''eccezione {1} per il discriminatore {0}
+ACL_ADD_WARNING_CWSIP0375.explanation=Quando \u00e8 stato caricato l'elenco di controllo accessi si \u00e8 verificata un'eccezione.
+ACL_ADD_WARNING_CWSIP0375.useraction=Controllare e correggere l'eccezione relativa per abilitare l'elenco di controllo accessi a caricarsi correttamente.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The related exception.
+INVALID_SELECTOR_ERROR_CWSIP0376=CWSIP0376E: Impossibile analizzare il selettore a causa di un errore interno.
+INVALID_SELECTOR_ERROR_CWSIP0376.explanation=L'ambiente di analisi per il selettore non \u00e8 valido.
+INVALID_SELECTOR_ERROR_CWSIP0376.useraction=Controllare e correggere l'eccezione correlata.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value provided for the custom property
+INVALID_XPATH_CUSTOM_PROPERTY_CWSIP0377=CWSIP0377I: La propriet\u00e0 personalizzata del bus di ottimizzazione XPath \u00e8 stata impostata in modo errato su {0}. L''ottimizzazione XPath verr\u00e0 abilitata.
+INVALID_XPATH_CUSTOM_PROPERTY_CWSIP0377.explanation=La propriet\u00e0 personalizzata del bus di ottimizzazione XPath \u00e8 stata impostata in modo errato. Il valore previsto \u00e8 "enabled" o "disabled". ME verr\u00e0 avviato con l'ottimizzazione abilitata.
+INVALID_XPATH_CUSTOM_PROPERTY_CWSIP0377.useraction=Controllare e correggere il valore della propriet\u00e0 personalizzata e riavviare il server.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The UUID of the Remote messaging engine
+NO_NEIGHBOUR_REPLY_WARNING_CWSIP0381=CWSIP0381W: Non \u00e8 stata ricevuta alcuna risposta dal motore di messaggistica {0} per il messaggio di richiesta sottoscrizione.
+NO_NEIGHBOUR_REPLY_WARNING_CWSIP0381.explanation=Un messaggio di richiesta \u00e8 stato inviato ad un motore di messaggistica remoto che non ha risposto rapidamente.  Ci\u00f2 significa che la topologia di pubblicazione/sottoscrizione del motore di messaggistica potrebbe non essere coerente.
+NO_NEIGHBOUR_REPLY_WARNING_CWSIP0381.useraction=Accertarsi che il motore di messaggistica remoto elencato sia avviato.  Se il problema persiste, contattare il rappresentante dell'assistenza IBM.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The UUID of the Remote messaging engine
+NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382=CWSIP0382I: Il motore di messaggistica {0} ha risposto alla richiesta di sottoscrizione, la topologia di pubblicazione/sottoscrizione ora \u00e8 coerente.
+NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382.explanation=Sono state eseguite comunicazioni corrette tra i motori di messaggistica e la topologia di pubblicazione/sottoscrizione \u00e8 coerente.
+NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382.useraction=nessuna
+
+# -------------------------------------------------------------------------------------------------
+# {0} The remote messaging engine name
+# {1} The related exception
+PUBSUB_CONSISTENCY_ERROR_CWSIP0383=CWSIP0383E: Impossibile inviare il messaggio di stato della sottoscrizione iniziale al motore di messaggistica {0}. Fino a quando tale problema non viene risolto, la messaggistica di pubblicazione/sottoscrizione non sar\u00e0 coerente. {1}.
+PUBSUB_CONSISTENCY_ERROR_CWSIP0383.explanation=Le comunicazioni tra i motori di messaggistica hanno avuto esito negativo. La topologia di pubblicazione/sottoscrizione non sar\u00e0 coerente.
+PUBSUB_CONSISTENCY_ERROR_CWSIP0383.useraction=Risolvere i problemi indicati dall'errore e riavviare il motore di messaggistica.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The messaging engine name.
+# {1} The related exception
+MESSAGE_PROCESSOR_CONFIGURE_NEIGHBOURS_ERROR_CWSIP0391=CWSIP0391E: Si \u00e8 verificato un errore nel tentativo di configurare l''elenco di motori di messaggistica remoti per il motore di messaggistica {0}, {1}.
+MESSAGE_PROCESSOR_CONFIGURE_NEIGHBOURS_ERROR_CWSIP0391.explanation=CMSG0001
+MESSAGE_PROCESSOR_CONFIGURE_NEIGHBOURS_ERROR_CWSIP0391.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The messaging engine name
+# {1} The related exception
+REPORT_MESSAGE_ERROR_CWSIP0422=CWSIP0422E: Non \u00e8 stato possibile inviare un tipo di messaggio report scadenza richiesto sul motore di messaggistica {0}. {1}
+REPORT_MESSAGE_ERROR_CWSIP0422.explanation=Si \u00e8 verificato un problema durante la creazione di un tipo messaggio report scadenza.
+REPORT_MESSAGE_ERROR_CWSIP0422.useraction=Correggere eventuali errori associati.  Se il problema persiste, contattare il rappresentante dell'assistenza IBM.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the report message type
+# {1} The related exception
+REPORT_MESSAGE_ERROR_CWSIP0423=CWSIP0423E: Non \u00e8 stato possibile inviare un tipo di messaggio report Conferma su consegna richiesto sul motore di messaggistica {0}. {1}
+REPORT_MESSAGE_ERROR_CWSIP0423.explanation=Si \u00e8 verificato un problema durante la creazione di un tipo messaggio report di conferma su consegna.
+REPORT_MESSAGE_ERROR_CWSIP0423.useraction=Correggere eventuali errori associati.  Se il problema persiste, contattare il rappresentante dell'assistenza IBM.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The Messaging engine name
+# {1} The destination name
+FLUSH_COMPLETE_CWSIP0451=CWSIP0451I: Forzatura scaricamento completata per i flussi Anycast per il ME fornito {0} e la destinazione {1} localizzata qui
+FLUSH_COMPLETE_CWSIP0451.explanation=Nessuno
+FLUSH_COMPLETE_CWSIP0451.useraction=Nessuno
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The Messaging engine name
+# {2} The remote messaging engine name
+FLUSH_COMPLETE_CWSIP0452=CWSIP0452I: Forzatura scaricamento completata per il flusso Anycast per la destinazione {0} localizzata sul motore di messaggistica {1}, poich\u00e9 il ME remoto {2} \u00e8 stato eliminato
+FLUSH_COMPLETE_CWSIP0452.explanation=Nessuno
+FLUSH_COMPLETE_CWSIP0452.useraction=Nessuno
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination for which for which the transaction failed
+# {1} The number of retries attempted
+MSGSTORE_STOP_RETRY_CWSIP0457=CWSIP0457E: Impossibile mantenere lo stato per l''accesso consumer remoto per la destinazione {0} localizzata in questo ME.
+MSGSTORE_STOP_RETRY_CWSIP0457.explanation=Lo stato locale dei consumer collegati in remoto alla destinazione pu\u00f2 essere danneggiato a causa di una transazione locale che non \u00e8 riuscita ad eseguire il commit dopo molti tentativi.
+MSGSTORE_STOP_RETRY_CWSIP0457.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination
+# {1} The messaging engine we are trying to reach
+ANYCAST_STREAM_UNAVAILABLE_CWSIP0471=CWSIP0471E: Impossibile comunicare con il motore di messaggistica {1} dove la destinazione {0} \u00e8 localizzata.
+ANYCAST_STREAM_UNAVAILABLE_CWSIP0471.explanation=Impossibile comunicare con il motore di messaggistica di localizzazione per la destinazione. Questo potrebbe avvenire perch\u00e9 si sta ancora inizializzando il motore di messaggistica oppure a causa di una partizione di rete.
+ANYCAST_STREAM_UNAVAILABLE_CWSIP0471.useraction=Verificare che sia possibile comunicare con il motore di messaggistica di localizzazione e quindi ripetere l'operazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination
+# {1} The messaging engine where it is localised
+CONSUMERCARDINALITY_LIMIT_REACHED_CWSIP0472=CWSIP0472E: Il collegamento consumer non \u00e8 consentito o viene scollegato perch\u00e9 \u00e8 stato raggiunto il limite di cardinalit\u00e0 consumer per la destinazione {0} localizzata nel ME {1}.
+CONSUMERCARDINALITY_LIMIT_REACHED_CWSIP0472.explanation=La destinazione ha un limite di cardinalit\u00e0 di un consumer. Il limite \u00e8 stato raggiunto.
+CONSUMERCARDINALITY_LIMIT_REACHED_CWSIP0472.useraction=Ripetere l'operazione dopo aver scollegato il consumer esistente.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination
+# {1} The messaging engine where it is localised
+# {2} The exception
+PUTEXCEPTION_DISCONNECT_CONSUMER_CWSIP0473=CWSIP0473E: Si \u00e8 verificata un''eccezione {2} durante l''inserimento di un messaggio remoto, sulla destinazione {0}, localizzata nel motore di messaggistica {1}, nell''archivio persistente locale.
+PUTEXCEPTION_DISCONNECT_CONSUMER_CWSIP0473.explanation=Si \u00e8 verificata un'eccezione durante la collocazione di un messaggio remoto nell'archivio persistente locale. Il consumer deve scollegarsi per evitare una violazione di ordinamento messaggi.
+PUTEXCEPTION_DISCONNECT_CONSUMER_CWSIP0473.useraction=Il consumer deve scollegarsi per evitare una violazione di ordinamento messaggi. L'eccezione dovrebbe spiegare la causa del problema. Riprovare dopo aver corretto la causa.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination
+# {1} The messaging engine we are trying to reach
+ANYCAST_STREAM_UNAVAILABLE_CWSIP0481=CWSIP0481E: Non \u00e8 disponibile un flusso per comunicare con il motore di messaggistica di localizzazione {1} per la destinazione {0}.
+ANYCAST_STREAM_UNAVAILABLE_CWSIP0481.explanation=Un flusso per comunicare con il motore di messaggistica di localizzazione per la destinazione non \u00e8 disponibile. Ci\u00f2 pu\u00f2 accadere perch\u00e9 il flusso viene inizializzato o a causa di una partizione di rete.
+ANYCAST_STREAM_UNAVAILABLE_CWSIP0481.useraction=Verificare che sia possibile comunicare con il motore di messaggistica di localizzazione e quindi ripetere l'operazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination
+# {1} The messaging engine we are trying to reach
+ANYCAST_STREAM_NOT_FLUSHED_CWSIP0512=CWSIP0512E: Non \u00e8 disponibile un flusso per comunicare con il motore di messaggistica di localizzazione {1} per la destinazione {0}.
+ANYCAST_STREAM_NOT_FLUSHED_CWSIP0512.explanation=Un flusso per comunicare con il motore di messaggistica di localizzazione per la destinazione non \u00e8 disponibile perch\u00e9 deve essere creato un nuovo flusso, ma il flusso precedente non \u00e8 stato ancora scaricato. Ci\u00f2 potrebbe essere dovuto a una partizione di rete.
+ANYCAST_STREAM_NOT_FLUSHED_CWSIP0512.useraction=Verificare che sia possibile comunicare con il motore di messaggistica di localizzazione e quindi ripetere l'operazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination
+# {1} The messaging engine where it is localised
+CONSUMERCARDINALITY_LIMIT_REACHED_CWSIP0514=CWSIP0514E: Il collegamento consumer non \u00e8 consentito o viene scollegato, poich\u00e9 \u00e8 stato raggiunto il limite di cardinalit\u00e0 del consumer per la destinazione {0} localizzata nel motore di messaggistica {1}.
+CONSUMERCARDINALITY_LIMIT_REACHED_CWSIP0514.explanation=La destinazione ha un limite di cardinalit\u00e0 di un consumer. Il limite \u00e8 stato raggiunto.
+CONSUMERCARDINALITY_LIMIT_REACHED_CWSIP0514.useraction=Ripetere l'operazione dopo aver scollegato il consumer esistente.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination for which for which the transaction failed
+# {1} The number of retries attempted
+MSGSTORE_STOP_RETRY_CWSIP0515=CWSIP0515E: Impossibile rendere persistente lo stato accesso alla coda remota per la destinazione{0}.
+MSGSTORE_STOP_RETRY_CWSIP0515.explanation=Lo stato locale di un collegamento alla destinazione potrebbe essere danneggiato poich\u00e9 una transazione locale non \u00e8 riuscita ad eseguire il commit dopo molti tentativi.
+MSGSTORE_STOP_RETRY_CWSIP0515.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination we are trying to attach to.
+# {1} The messaging engine we are trying to reach.
+ANYCAST_CANNOT_CREATE_STREAM_CWSIP0517=CWSIP0517E: Impossibile collegarsi al punto di coda per la destinazione {0} sul motore di messaggistica {1}.
+ANYCAST_CANNOT_CREATE_STREAM_CWSIP0517.explanation=Il motore di messaggistica che ospita il punto di coda per la destinazione non \u00e8 raggiungibile.
+ANYCAST_CANNOT_CREATE_STREAM_CWSIP0517.useraction=Accertarsi che il motore di messaggistica sia stato avviato e che le comunicazioni siano attive tra i motori di messaggistica prima di riprovare l'operazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination we are trying to attach to.
+# {1} The messaging engine we are trying to reach.
+ANYCAST_CANNOT_REQUEST_FLUSH_CWSIP0518=CWSIP0518E: Impossibile collegarsi al punto di coda per la destinazione {0} sul motore di messaggistica {1}.
+ANYCAST_CANNOT_REQUEST_FLUSH_CWSIP0518.explanation=Il motore di messaggistica che ospita il punto di coda per la destinazione non \u00e8 raggiungibile.
+ANYCAST_CANNOT_REQUEST_FLUSH_CWSIP0518.useraction=Accertarsi che il motore di messaggistica sia stato avviato e che le comunicazioni siano attive tra i motori di messaggistica prima di riprovare l'operazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination we are trying to browse.
+BROWSE_TIMEOUT_CWSIP0532=CWSIP0532E: Si \u00e8 verificato un timeout durante la ricerca in remoto nella destinazione {0}.
+BROWSE_TIMEOUT_CWSIP0532.explanation=Il motore di messaggistica che ospita un punto messaggi di coda per la destinazione non \u00e8 riuscito a rispondere ad una richiesta di ricerca.
+BROWSE_TIMEOUT_CWSIP0532.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination we are trying to browse.
+# {1} the failure reason
+BROWSE_FAILED_CWSIP0533=CWSIP0533E: Errore della ricerca remota nella destinazione {0}; causa: {1}
+BROWSE_FAILED_CWSIP0533.explanation=Il motore di messaggistica che ospita un punto messaggi per la destinazione ha riportato un codice di errore durante una richiesta di ricerca.
+BROWSE_FAILED_CWSIP0533.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the UUID of the destination
+DESTINATION_DELETED_ERROR_CWSIP0550=CWSIP0550E: La destinazione {0}, UUID {1} \u00e8 stata eliminata e non \u00e8 possibile inserire il messaggio nella destinazione eccezioni.
+DESTINATION_DELETED_ERROR_CWSIP0550.explanation=Il tentativo di ripulire i messaggi nella destinazione specificata ha generato un errore.
+DESTINATION_DELETED_ERROR_CWSIP0550.useraction=La ripulitura verr\u00e0 rieseguita successivamente.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the UUID of the destination
+# {2} the state
+NOTIFY_SEND_ALLOWED_STATE_CHANGE_CWSIP0551=CWSIP0551I: Lo stato abilitato all''invio della destinazione {0}, con UUID {1} \u00e8 cambiato in {2}.
+NOTIFY_SEND_ALLOWED_STATE_CHANGE_CWSIP0551.explanation=Il funzionamento dei punti messaggi associati alla destinazione \u00e8 stato alterato.
+NOTIFY_SEND_ALLOWED_STATE_CHANGE_CWSIP0551.useraction=Nessuna.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the UUID of the destination
+# {2} the state
+NOTIFY_RECEIVE_ALLOWED_STATE_CHANGE_CWSIP0552=CWSIP0552I: Lo stato abilitato alla ricezione della destinazione {0}, con UUID {1} \u00e8 cambiato in {2}.
+NOTIFY_RECEIVE_ALLOWED_STATE_CHANGE_CWSIP0552.explanation=Il funzionamento dei punti messaggi associati alla destinazione \u00e8 stato alterato.
+NOTIFY_RECEIVE_ALLOWED_STATE_CHANGE_CWSIP0552.useraction=Nessuna.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the messaging engine
+NOTIFY_DEPTH_THRESHOLD_REACHED_CWSIP0553=CWSIP0553W: La destinazione {0}, presente su {1} ha raggiunto la soglia di profondit\u00e0 messaggi alta {2}.
+NOTIFY_DEPTH_THRESHOLD_REACHED_CWSIP0553.explanation=Il numero di messaggi memorizzati su un punto messaggi ha effettuato un cambiamento di profondit\u00e0 che porta il numero memorizzato oltre la soglia massima di profondit\u00e0.
+NOTIFY_DEPTH_THRESHOLD_REACHED_CWSIP0553.useraction=Nessuna.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the messaging engine
+NOTIFY_DEPTH_THRESHOLD_REACHED_CWSIP0554=CWSIP0554W: La destinazione {0}, presente su {1} ha raggiunto la soglia di profondit\u00e0 messaggi bassa {2}.
+NOTIFY_DEPTH_THRESHOLD_REACHED_CWSIP0554.explanation=Il numero di messaggi nella destinazione \u00e8 sceso al livello di soglia pi\u00f9 basso dal livello di soglia alto; quindi, la destinazione pu\u00f2 accettare nuovi messaggi.
+NOTIFY_DEPTH_THRESHOLD_REACHED_CWSIP0554.useraction=Nessuna.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine that hosts the remote messaging point.
+# {1} the name of the destination
+# {2} the name of the messaging engine where the destination is localised
+NOTIFY_REMOTE_DEPTH_THRESHOLD_REACHED_CWSIP0555=CWSIP0555W: Il punto messaggi remoto su ME {0} per la destinazione {1}, presente su  {2} ha raggiunto la soglia massima di profondit\u00e0 messaggi.
+NOTIFY_REMOTE_DEPTH_THRESHOLD_REACHED_CWSIP0555.explanation=Il numero di messaggi memorizzati su un punto messaggi ha effettuato un cambiamento di profondit\u00e0 che porta il numero memorizzato oltre la soglia massima di profondit\u00e0.
+NOTIFY_REMOTE_DEPTH_THRESHOLD_REACHED_CWSIP0555.useraction=Nessuna.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine that hosts the remote messaging point.
+# {1} the name of the destination
+# {2} the name of the messaging engine where the destination is localised
+NOTIFY_REMOTE_DEPTH_THRESHOLD_REACHED_CWSIP0556=CWSIP0556W: Il punto messaggi remoto su ME {0} per la destinazione {1}, presente su  {2} ha raggiunto la soglia minima di profondit\u00e0 messaggi.
+NOTIFY_REMOTE_DEPTH_THRESHOLD_REACHED_CWSIP0556.explanation=Il numero di messaggi memorizzati su un punto messaggi ha effettuato un cambiamento di profondit\u00e0 che porta il numero memorizzato al di sotto della soglia minima di profondit\u00e0.
+NOTIFY_REMOTE_DEPTH_THRESHOLD_REACHED_CWSIP0556.useraction=Nessuna.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the WebSphere MQ link name
+# {1} the name of the messaging engine
+NOTIFY_MQLINK_DEPTH_THRESHOLD_REACHED_CWSIP0557=CWSIP0557W: Il link WebSphere MQ {0}, presente su {2} ha raggiunto la soglia massima di profondit\u00e0 messaggi.
+NOTIFY_MQLINK_DEPTH_THRESHOLD_REACHED_CWSIP0557.explanation=Il numero di messaggi memorizzati sul link MQ ha effettuato un cambiamento di profondit\u00e0 che porta il numero memorizzato oltre la soglia massima di profondit\u00e0.
+NOTIFY_MQLINK_DEPTH_THRESHOLD_REACHED_CWSIP0557.useraction=Nessuna.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the WebSphere MQ link name
+# {1} the name of the messaging engine
+NOTIFY_MQLINK_DEPTH_THRESHOLD_REACHED_CWSIP0558=CWSIP0558W: Il link WebSphere MQ {0}, presente su {1} ha raggiunto la soglia minima di profondit\u00e0 messaggi.
+NOTIFY_MQLINK_DEPTH_THRESHOLD_REACHED_CWSIP0558.explanation=Il numero di messaggi memorizzati su un link MQ ha effettuato un cambiamento di profondit\u00e0 che porta il numero memorizzato al di sotto della soglia minima di profondit\u00e0.
+NOTIFY_MQLINK_DEPTH_THRESHOLD_REACHED_CWSIP0558.useraction=Nessuna.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the SIB link name
+# {1} the name of the foreign bus
+# {2} the name of the messaging engine
+NOTIFY_SIBLINK_DEPTH_THRESHOLD_REACHED_CWSIP0559=CWSIP0559W: Il link {0} per il bus {1}, su ME {2} ha raggiunto la soglia massima di profondit\u00e0 messaggi.
+NOTIFY_SIBLINK_DEPTH_THRESHOLD_REACHED_CWSIP0559.explanation=Il numero di messaggi memorizzati su un link ha effettuato un cambiamento di profondit\u00e0 che porta il numero memorizzato oltre la soglia massima di profondit\u00e0.
+NOTIFY_SIBLINK_DEPTH_THRESHOLD_REACHED_CWSIP0559.useraction=Nessuna.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the SIB link name
+# {1} the name of the foreign bus
+# {2} the name of the messaging engine
+NOTIFY_SIBLINK_DEPTH_THRESHOLD_REACHED_CWSIP0560=CWSIP0560W: Il link {0} per il bus {1}, su ME {2} ha raggiunto la soglia minima di profondit\u00e0 messaggi.
+NOTIFY_SIBLINK_DEPTH_THRESHOLD_REACHED_CWSIP0560.explanation=Il numero di messaggi memorizzati su un link ha effettuato un cambiamento di profondit\u00e0 che porta il numero memorizzato al di sotto della soglia minima di profondit\u00e0.
+NOTIFY_SIBLINK_DEPTH_THRESHOLD_REACHED_CWSIP0560.useraction=Nessuna.
+
+# -------------------------------------------------------------------------------------------------
+CONNECTION_CONTROLLABLE_ERROR_CWSIP0571=CWSIP0571E: L'oggetto connessione non esiste pi\u00f9.
+CONNECTION_CONTROLLABLE_ERROR_CWSIP0571.explanation=Il tentativo di accedere ad una connessione non \u00e8 riuscito perch\u00e9 la connessione non esiste pi\u00f9.  Questo potrebbe essersi verificato perch\u00e9 un'applicazione ha chiuso la connessione.
+CONNECTION_CONTROLLABLE_ERROR_CWSIP0571.useraction=Nessuno
+
+# -------------------------------------------------------------------------------------------------
+MESSAGE_EXISTS_ERROR_CWSIP0572=CWSIP0572E: Il messaggio con id {0} non esiste pi\u00f9 sulla destinazione {1}.
+MESSAGE_EXISTS_ERROR_CWSIP0572.explanation=Il tentativo di accedere ad un messaggio con l'ID specificato non \u00e8 riuscito.  Questo potrebbe essersi verificato perch\u00e9 il messaggio \u00e8 scaduto o un'applicazione lo ha rimosso.
+MESSAGE_EXISTS_ERROR_CWSIP0572.useraction=Nessuno
+
+# -------------------------------------------------------------------------------------------------
+NO_ELEMENTS_ERROR_CWSIP0601=CWSIP0601E: Non ci sono pi\u00f9 elementi nell'iteratore.
+NO_ELEMENTS_ERROR_CWSIP0601.explanation=Nessuna.
+NO_ELEMENTS_ERROR_CWSIP0601.useraction=Nessuno
+
+# -------------------------------------------------------------------------------------------------
+NO_ELEMENTS_ERROR_CWSIP0602=CWSIP0602E: Non ci sono elementi da rimuovere nell'iteratore.
+NO_ELEMENTS_ERROR_CWSIP0602.explanation=Nessuna.
+NO_ELEMENTS_ERROR_CWSIP0602.useraction=Nessuno
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the alias destination
+# {1} is the alias resolution path
+# {2} The name of the messaging engine bus
+ALIAS_CIRCULAR_DEPENDENCY_ERROR_CWSIP0621=CWSIP0621E: Si \u00e8 verificato un errore durante la risoluzione della destinazione alias {0} a causa della seguente dipendenza circolare {1} sul bus del motore di messaggistica {2}
+ALIAS_CIRCULAR_DEPENDENCY_ERROR_CWSIP0621.explanation=La destinazione alias non \u00e8 stata risolta a causa di una dipendenza circolare
+ALIAS_CIRCULAR_DEPENDENCY_ERROR_CWSIP0621.useraction=Interrompere la dipendenza circolare modificando gli alias nel percorso di risoluzione nella console di gestione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The request type
+# {1} The subscription ID, i.e. client##subName
+# {2} The ME the request was sent to
+REMOTE_DURABLE_TIMEOUT_ERROR_CWSIP0631=CWSIP0631E: L''operazione remota durevole {0} per la sottoscrizione {1} ha superato il tempo limite mentre era in attesa del motore di messaggistica {2}.
+REMOTE_DURABLE_TIMEOUT_ERROR_CWSIP0631.explanation=La richiesta remota durevole ha superato il tempo limite mentre era in attesa del motore di messaggistica remoto.
+REMOTE_DURABLE_TIMEOUT_ERROR_CWSIP0631.useraction=Verificare che DURABLE_HOME sia impostato correttamente e che il motore di messaggistica di destinazione sia attivo.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+MEDIATION_POINT_DELETED_ERROR_SIMP0641=CWSIP0641E: Il punto di mediazione locale per la destinazione {0} \u00e8 stato eliminato e non \u00e8 possibile inserire il messaggio nella destinazione eccezioni.
+MEDIATION_POINT_DELETED_ERROR_SIMP0641.explanation=Il tentativo di spostare i messaggi dal punto di mediazione locale eliminato della destinazione ha generato un errore.
+MEDIATION_POINT_DELETED_ERROR_SIMP0641.useraction=La ripulitura verr\u00e0 rieseguita successivamente.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+MEDIATION_START_ERROR_SIMP0651=CWSIP0651E: Il punto di mediazione locale per la destinazione {0} non riesce ad avviare la mediazione messaggi perch\u00e9 \u00e8 stata eseguita una modifica di configurazione per rimuovere la mediazione dalla destinazione.
+MEDIATION_START_ERROR_SIMP0651.explanation=Una mediazione non \u00e8 pi\u00f9 definita sulla destinazione, quindi la richiesta di avvio del punto di mediazione ha generato un errore.
+MEDIATION_START_ERROR_SIMP0651.useraction=Non \u00e8 richiesta alcuna azione da parte dell'utente. Il punto di mediazione verr\u00e0 rimosso rapidamente.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+MEDIATION_STOPPED_BY_SHUTDOWN_SIMP0652=CWSIP0652I: Il punto di mediazione locale per la destinazione {0} \u00e8 stato interrotto perch\u00e9 il motore di messaggistica si sta arrestando.
+MEDIATION_STOPPED_BY_SHUTDOWN_SIMP0652.explanation=Il punto di mediazione locale non pu\u00f2 pi\u00f9 funzionare perch\u00e9 il motore di messaggistica si sta arrestando. Il punto di mediazione viene arrestato.
+MEDIATION_STOPPED_BY_SHUTDOWN_SIMP0652.useraction=Non \u00e8 richiesta alcuna azione da parte dell'utente. Il punto di mediazione riprender\u00e0 quando successivamente verr\u00e0 riavviato il motore di messaggistica, se configurato in questo modo.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the exception which caused the failure.
+MEDIATION_FAILED_TO_START_SIMP0654=CWSIP0654E: Impossibile avviare il punto di mediazione locale per la destinazione {0} a causa di un errore. La definizione della mediazione non \u00e8 corretta. Errore: {1}.
+MEDIATION_FAILED_TO_START_SIMP0654.explanation=Il punto di mediazione resta in stato interrotto.
+MEDIATION_FAILED_TO_START_SIMP0654.useraction=Il punto di mediazione pu\u00f2 essere riavviato una volta modificate le condizioni dell'errore.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the mediation we were looking for
+# {2} the exception which caused the failure.
+MEDIATION_FAILED_TO_START_SIMP0655=CWSIP0655E: Impossibile avviare il punto di mediazione locale per la destinazione {0} a causa di un errore. La mediazione {1} non \u00e8 stata trovata. Errore: {2}.
+MEDIATION_FAILED_TO_START_SIMP0655.explanation=Il punto di mediazione resta in stato interrotto.
+MEDIATION_FAILED_TO_START_SIMP0655.useraction=Il punto di mediazione pu\u00f2 essere riavviato una volta modificate le condizioni dell'errore.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination
+# {1} The exception string why the message flow can't start. Not the stack trace.
+#
+MESSAGE_PUMP_START_WARNING_CWSIP0656W=CWSIP0656W: Un punto di mediazione non \u00e8 in grado di trasmettere i messaggi per la destinazione {0} a causa dell''errore {1}
+MESSAGE_PUMP_START_WARNING_CWSIP0656W.explanation=Il punto di mediazione ha tentato di avviare la trasmissione dei messaggi alla mediazione e all'endpoint di destinazione. L'avvio del flusso di messaggi non \u00e8 riuscito.
+MESSAGE_PUMP_START_WARNING_CWSIP0656W.useraction=Il punto di mediazione pu\u00f2 essere riavviato una volta modificate le condizioni dell'errore.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the mediation
+# {2} the state change.
+NOTIFY_MEDIATION_STATE_CHANGE_CWSIP0657=CWSIP0657I: Il punto di mediazione locale per la destinazione {0} e la mediazione {1} \u00e8 passato allo stato {2}.
+NOTIFY_MEDIATION_STATE_CHANGE_CWSIP0657.explanation=Il punto di mediazione \u00e8 passato ad uno stato nuovo.
+NOTIFY_MEDIATION_STATE_CHANGE_CWSIP0657.useraction=Nessuna.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+MEDIATION_EXCEPT_DEST_CLOSED_SIMP0661=CWSIP0661E: La mediazione per la destinazione {0} ha provato a inserire un messaggio nella destinazione eccezioni dopo che la mediazione \u00e8 stata interrotta.
+MEDIATION_EXCEPT_DEST_CLOSED_SIMP0661.explanation=Il messaggio non \u00e8 stato inserito nella destinazione eccezioni.
+MEDIATION_EXCEPT_DEST_CLOSED_SIMP0661.useraction=Una volta riavviata, la mediazione pu\u00f2 ritentare l'inserimento del messaggio.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+MEDIATION_STOPPED_BY_FAILURE_TO_MOVE_UNMEDIATED_MESSAGE_SIMP0662=CWSIP0662E: Il punto di mediazione per la destinazione {0} ha provato a spostare un messaggio nel lato della destinazione successivo alla mediazione. Questa operazione non \u00e8 riuscita.
+MEDIATION_STOPPED_BY_FAILURE_TO_MOVE_UNMEDIATED_MESSAGE_SIMP0662.explanation=Il messaggio non \u00e8 stato inserito nel lato della destinazione successivo alla mediazione. Il punto di mediazione \u00e8 stato arrestato.
+MEDIATION_STOPPED_BY_FAILURE_TO_MOVE_UNMEDIATED_MESSAGE_SIMP0662.useraction=Una volta riavviata, la mediazione pu\u00f2 ritentare lo spostamento del messaggio.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the selector passed to MP by the configuration
+# {2} the parse failure when the selector was turned into a parse tree.
+MEDIATION_START_FAILURE_INVALID_SELECTOR_SIMP0663=CWSIP0663E: L''avvio del punto di mediazione della destinazione {0} non \u00e8 riuscito perch\u00e9 il selettore non \u00e8 corretto. Il selettore era impostato su {1}. Errore: {2}.
+MEDIATION_START_FAILURE_INVALID_SELECTOR_SIMP0663.explanation=Il selettore specificato nella configurazione della mediazione non \u00e8 corretto.
+MEDIATION_START_FAILURE_INVALID_SELECTOR_SIMP0663.useraction=Fare riferimento alla documentazione per capire in cosa consiste un selettore valido. Modificare la configurazione della mediazione per impostare un selettore valido. Riavviare il punto di mediazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the discriminator passed to MP by the configuration
+# {2} the parse failure when the selector was turned into a parse tree.
+MEDIATION_START_FAILURE_INVALID_DISCRIMINATOR_SIMP0664=CWSIP0664E: L''avvio del punto di mediazione della destinazione {0} non \u00e8 riuscito perch\u00e9 il discriminatore non \u00e8 corretto. Il discriminatore era impostato su {1}. Errore: {2}.
+MEDIATION_START_FAILURE_INVALID_DISCRIMINATOR_SIMP0664.explanation=Il discriminatore specificato nella configurazione della mediazione non \u00e8 corretto.
+MEDIATION_START_FAILURE_INVALID_DISCRIMINATOR_SIMP0664.useraction=Fare riferimento alla documentazione per capire in cosa consiste un discriminatore valido. Modificare la configurazione della mediazione per impostare un discriminatore valido. Riavviare il punto di mediazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+MEDIATION_START_PREVENTED_DISABLED_SIMP0665=CWSIP0665E: Impossibile avviare il punto di mediazione {0} perch\u00e9 la mediazione \u00e8 disabilitata per questa destinazione.
+MEDIATION_START_PREVENTED_DISABLED_SIMP0665.explanation=Le informazioni di configurazione indicano che tutta l'attivit\u00e0 della mediazione su questa destinazione \u00e8 disabilitata.
+MEDIATION_START_PREVENTED_DISABLED_SIMP0665.useraction=Quando le mediazioni sono in funzione, la destinazione deve indicare che le mediazioni sono abilitate.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} The bus name
+# {2} The related exception
+MEDIATION_MESSAGE_PUMP_START_PRODUCER_FAILED_SIMP0666=CWSIP0666W: Il punto mediazione per la destinazione {0} sul bus {1} non \u00e8 riuscito a creare un producer a causa dell''errore {2}
+MEDIATION_MESSAGE_PUMP_START_PRODUCER_FAILED_SIMP0666.explanation=Per inviare dei messaggi ad una mediazione \u00e8 necessario un producer.  Durante la creazione del producer si \u00e8 verificato un errore.
+MEDIATION_MESSAGE_PUMP_START_PRODUCER_FAILED_SIMP0666.useraction=Esaminare la relativa eccezione e correggere gli eventuali problemi.
+
+# -------------------------------------------------------------------------------------------------
+# Used in ConnectionImpl.java
+NULL_CONSUMERSETCHANGECALLBACK_CWSIP0667=CWSIP0667E: Si \u00e8 verificato un errore interno. Il comando registerConsumerSetMonitor ha avuto esito negativo perch\u00e9 il parametro ConsumerSetChangeCallback inoltrato \u00e8 Null.
+NULL_CONSUMERSETCHANGECALLBACK_CWSIP0667.explanation=CMSG0001
+NULL_CONSUMERSETCHANGECALLBACK_CWSIP0667.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Used in ConnectionImpl.java
+NULL_DESTINATIONADDRESS_CWSIP0668=CWSIP0668E: Si \u00e8 verificato un errore interno. Il comando destinationAddress ha avuto esito negativo perch\u00e9 il parametro ConsumerSetChangeCallback inoltrato \u00e8 Null.
+NULL_DESTINATIONADDRESS_CWSIP0668.explanation=CMSG0001
+NULL_DESTINATIONADDRESS_CWSIP0668.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Used in ConnectionImpl.java
+NULL_DISCRIMINATOREXPRESSION_CWSIP0669=CWSIP0669E: Si \u00e8 verificato un errore interno. Il comando discriminatorExpression ha avuto esito negativo perch\u00e9 il parametro ConsumerSetChangeCallback inoltrato \u00e8 Null.
+NULL_DISCRIMINATOREXPRESSION_CWSIP0669.explanation=CMSG0001
+NULL_DISCRIMINATOREXPRESSION_CWSIP0669.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the messaging engine
+ORDERING_INITIALISATION_ERROR_CWSIP0671=CWSIP0671E: Non \u00e8 stato possibile inizializzare la destinazione {0} sul motore di messaggistica {1} per mantenere l''ordine.
+ORDERING_INITIALISATION_ERROR_CWSIP0671.explanation=\u00c8 stato eseguito un tentativo di inizializzazione di una destinazione ordinata, ma la destinazione aveva pi\u00f9 transazioni in sospeso.
+ORDERING_INITIALISATION_ERROR_CWSIP0671.useraction=Completare tutte le transazioni sulla destinazione prima di poter attivare l'ordinamento.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination prefix supplied by the user
+CONSUMER_NOT_BIFURCATABLE_CWSIP0680=CWSIP0680E: Impossibile creare un consumer biforcato dal consumer {0}, il consumer {0} non pu\u00f2 essere biforcato.
+CONSUMER_NOT_BIFURCATABLE_CWSIP0680.explanation=\u00c8 possibile creare consumer biforcati solamente da consumer che sono stati creati inizialmente come biforcabili.
+CONSUMER_NOT_BIFURCATABLE_CWSIP0680.useraction=Modificare l'applicazione che crea il consumer per consentire la creazione di consumer biforcati.
+
+# -------------------------------------------------------------------------------------------------
+# no parameters.
+MEDIATION_CHANGE_REASON_ADMIN_ACTION_SIMP0771=CWSIP0771I: Azione amministratore.
+MEDIATION_CHANGE_REASON_ADMIN_ACTION_SIMP0771.explanation=Il punto di mediazione \u00e8 in uno stato in seguito a un'azione dell'amministratore.
+MEDIATION_CHANGE_REASON_ADMIN_ACTION_SIMP0771.useraction=Fare riferimento alla documentazione per modificare lo stato del punto di mediazione, se necessario.
+
+# -------------------------------------------------------------------------------------------------
+# no parameters.
+MEDIATION_CHANGE_REASON_MEDIATION_ACTION_SIMP0772=CWSIP0772I: Azione mediazione.
+MEDIATION_CHANGE_REASON_MEDIATION_ACTION_SIMP0772.explanation=Il punto di mediazione \u00e8 in uno stato in seguito a un'azione della mediazione.
+MEDIATION_CHANGE_REASON_MEDIATION_ACTION_SIMP0772.useraction=Fare riferimento alla documentazione per modificare lo stato del punto di mediazione, se necessario.
+
+# -------------------------------------------------------------------------------------------------
+# no parameters.
+MEDIATION_CHANGE_REASON_CONFIG_ACTION_SIMP0773=CWSIP0773I: Utilizzo in corso dello stato iniziale configurato.
+MEDIATION_CHANGE_REASON_CONFIG_ACTION_SIMP0773.explanation=Il punto di mediazione \u00e8 in uno stato mentre tenta di raggiungere lo stato-avvio configurato.
+MEDIATION_CHANGE_REASON_CONFIG_ACTION_SIMP0773.useraction=Fare riferimento alla documentazione per modificare lo stato del punto di mediazione, se necessario.
+
+# -------------------------------------------------------------------------------------------------
+# no parameters.
+MEDIATION_CHANGE_REASON_WAIT_WAS_SIMP0774=CWSIP0774I: In attesa dell'avvio del server WebSphere
+MEDIATION_CHANGE_REASON_WAIT_WAS_SIMP0774.explanation=Il punto di mediazione \u00e8 entrato in stato di attesa dell'avvio del server Websphere.
+MEDIATION_CHANGE_REASON_WAIT_WAS_SIMP0774.useraction=Fare riferimento alla documentazione per modificare lo stato del punto di mediazione, se necessario.
+
+# -------------------------------------------------------------------------------------------------
+# no parameters.
+MEDIATION_CHANGE_REASON_WAIT_DELETE_SIMP0775=CWSIP0775I: In attesa dell'eliminazione di un altro punto di mediazione su questa destinazione.
+MEDIATION_CHANGE_REASON_WAIT_DELETE_SIMP0775.explanation=Il punto di mediazione \u00e8 stato aggiunto alla destinazione prima che l'istanza del punto di mediazione precedente venisse completata. La mediazione deve attendere fino al termine della rimozione precedente prima di poter continuare.
+MEDIATION_CHANGE_REASON_WAIT_DELETE_SIMP0775.useraction=Fare riferimento alla documentazione per modificare lo stato del punto di mediazione, se necessario.
+
+# -------------------------------------------------------------------------------------------------
+# no parameters.
+MEDIATION_CHANGE_REASON_CONFIG_CHANGE_SIMP0776=CWSIP0776I: Applicazione di una modifica alla configurazione.
+MEDIATION_CHANGE_REASON_CONFIG_CHANGE_SIMP0776.explanation=Il punto di mediazione \u00e8 in questo stato in seguito a una modifica della configurazione.
+MEDIATION_CHANGE_REASON_CONFIG_CHANGE_SIMP0776.useraction=Fare riferimento alla documentazione per modificare lo stato del punto di mediazione, se necessario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination address
+TRANSACTION_RECEIVE_USAGE_ERROR_CWSIP0777=CWSIP0777E: La transazione utilizzata per la ricezione sulla destinazione {0} \u00e8 stata gi\u00e0 completata.
+TRANSACTION_RECEIVE_USAGE_ERROR_CWSIP0777.explanation=Si \u00e8 tentato di utilizzare una transazione che \u00e8 stata gi\u00e0 completata.
+TRANSACTION_RECEIVE_USAGE_ERROR_CWSIP0777.useraction=Verificare che la transazione utilizzata sia una nuova transazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination address
+TRANSACTION_DELETE_USAGE_ERROR_CWSIP0778=CWSIP0778E: La transazione utilizzata per l''eliminazione sulla destinazione: {0} \u00e8 gi\u00e0 stata completata.
+TRANSACTION_DELETE_USAGE_ERROR_CWSIP0778.explanation=Si \u00e8 tentato di utilizzare una transazione che \u00e8 stata gi\u00e0 completata.
+TRANSACTION_DELETE_USAGE_ERROR_CWSIP0778.useraction=Verificare che la transazione utilizzata sia una nuova transazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The messaging engine name
+FLUSH_REQUESTED_MESSAGE_CWSIP0780=CWSIP0780I: Motore di messaggistica: {0} avviato, richiesto scaricamento di tutti i flussi di consegna.
+FLUSH_REQUESTED_MESSAGE_CWSIP0780.explanation=Il motore di messaggistica ha rilevato che \u00e8 stato richiesto lo scaricamento dei flussi di consegna.
+FLUSH_REQUESTED_MESSAGE_CWSIP0780.useraction=Nessuna.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The messaging engine name
+# {1} The Stream ID
+# {2} The Destination Name
+FLUSH_INITIATED_MESSAGE_CWSIP0781=CWSIP0781I: Motore di messaggistica: {0} avviato, scaricamento inizializzato per il flusso: {1} e destinazione {2}.
+FLUSH_INITIATED_MESSAGE_CWSIP0781.explanation=Il motore di messaggistica ha iniziato l'operazione di scaricamento del flusso.
+FLUSH_INITIATED_MESSAGE_CWSIP0781.useraction=Nessuna.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The messaging engine name
+# {1} The Stream ID
+# {2} The Destination Name
+# {3} The Exception causing the problem
+FLUSH_FAILED_MESSAGE_CWSIP0782=CWSIP0782E: Motore di messaggistica: {0} avviato, scaricamento del flusso: {1} e destinazione: {2} non riuscito con eccezione: {3}.
+FLUSH_FAILED_MESSAGE_CWSIP0782.explanation=Si \u00e8 verificato un errore durante lo scaricamento dei flussi.
+FLUSH_FAILED_MESSAGE_CWSIP0782.useraction=Se il problema persiste, contattare il rappresentante dell'assistenza IBM.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The messaging engine name
+FLUSH_COMPLETED_MESSAGE_CWSIP0783=CWSIP0783I: Motore di messaggistica: {0} avviato, scaricamento di tutti i flussi di consegna completato.
+FLUSH_COMPLETED_MESSAGE_CWSIP0783.explanation=Il motore di messaggistica ha scaricato tutti i suoi flussi di consegna.
+FLUSH_COMPLETED_MESSAGE_CWSIP0783.useraction=Nessuna.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+# {1} is the uuid of the remote engine
+# {2} is the stream id in the remote engine
+# {3} is the name of the receiving engine
+UNEXPECTED_MESSAGE_RECEIVED_CWSIP0784=CWSIP0784W: Una richiesta messaggio remota (con ID {2}) su una destinazione  (con ID {1}) dal motore di messaggistica {3} a {1} non \u00e8 pi\u00f9 valida. Potrebbe essere necessaria la pulitura.
+UNEXPECTED_MESSAGE_RECEIVED_CWSIP0784.explanation=Lo stato della richiesta messaggio remota condivisa tra i due motori di messaggistica non \u00e8 congruente, probabilmente perch\u00e9 uno degli archivi messaggi del motore di messaggistica, ma non l'altro, \u00e8 stato reimpostato/eliminato.
+UNEXPECTED_MESSAGE_RECEIVED_CWSIP0784.useraction=Rendere coerente lo stato tra i due motori di messaggistica. Ripristinare i due archivi messaggi allo stesso momento oppure annullare questa richiesta sul motore di messaggistica di ricezione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination or foreign bus name
+# {1} Messaging engine name
+# {2} Number of seconds since the blockage was noticed
+# {3} Transaction ID blocking the message
+STREAM_BLOCKED_BY_COMMITTING_MESSAGE_CWSIP0785=CWSIP0785W: Un messaggio presente nel motore di messaggistica {1} per la trasmissione a una destinazione remota o a un bus esterno {0} \u00e8 rimasto in stato di commit per {2} secondi nella transazione {3}. Ulteriori messaggi potrebbero non essere trasferiti fino al completamento della transazione.
+STREAM_BLOCKED_BY_COMMITTING_MESSAGE_CWSIP0785.explanation=I messaggi per la destinazione remota o il bus esterno inviati dopo il messaggio bloccato non saranno trasmessi fino alla risoluzione della transazione.
+STREAM_BLOCKED_BY_COMMITTING_MESSAGE_CWSIP0785.useraction=Risolvere la transazione identificata come blocco del messaggio
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination or foreign bus name
+# {1} Messaging engine name
+# {2} Number of seconds since the blockage was noticed
+# {3} Transaction ID blocking the message
+STREAM_UNBLOCKED_BY_COMMITTING_MESSAGE_CWSIP0786=CWSIP0786I: I messaggi inviati alla destinazione remota o al bus esterno {0} dal motore di messaggistica {1} non sono pi\u00f9 bloccati dalla transazione {2}.
+STREAM_UNBLOCKED_BY_COMMITTING_MESSAGE_CWSIP0786.explanation=La transazione non risolta precedentemente notificata \u00e8 stata ora risolta ed \u00e8 stato ripresa la trasmissione del messaggio.
+STREAM_UNBLOCKED_BY_COMMITTING_MESSAGE_CWSIP0786.useraction=Nessuna azione da eseguire.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} Messaging engine name
+# {2} Number of messages queued
+DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0787=CWSIP0787I: La destinazione {0} sul motore di messaggistica {1} ha raggiunto una profondit\u00e0 di {2} messaggi.
+DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0787.explanation=Il punto messaggi per la destinazione ha raggiunto la profondit\u00e0 messaggio definita.
+DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0787.useraction=Nessuna azione da eseguire.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Number of messages queued
+# {1} Messaging engine with the queued messages
+# {2} The destination name
+# {3} Target messaging engine name
+REMOTE_DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0788=CWSIP0788I: {0} messaggi in coda nel motore di messaggistica {1} per la trasmissione alla destinazione {2} nel motore di messaggistica {3}.
+REMOTE_DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0788.explanation=Il punto messaggi remoto per la destinazione ha raggiunto la profondit\u00e0 messaggio definita.
+REMOTE_DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0788.useraction=Nessuna azione da eseguire.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Number of messages queued
+# {1} Messaging engine with the queued messages
+# {2} The next target foreign bus
+# {3} The link connecting the foreign bus
+REMOTE_LINK_DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0789=CWSIP0789I: {0} messaggi in coda nel motore di messaggistica {1} per la trasmissione al bus esterno {2} sul link {3}.
+REMOTE_LINK_DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0789.explanation=Il link al bus esterno ha raggiunto la profondit\u00e0 messaggio definita
+REMOTE_LINK_DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0789.useraction=Nessuna azione da eseguire.
+
+# -------------------------------------------------------------------------------------------------
+# {0} First missing sequence id
+# {1} Sending bus name
+# {2} link name
+# {3} Receiving messaging engine
+UNRESOLVED_GAP_IN_LINK_TRANSMITTER_CWSIP0790=CWSIP0790W: Il motore di messaggistica {3} ha rilevato un divario nel flusso di messaggi ricevuto dal bus {1} sul link {2}. Le richieste effettuate per colmare questo divario devono ancora essere soddisfatte. Il divario inizia all''id sequenza {0}.
+UNRESOLVED_GAP_IN_LINK_TRANSMITTER_CWSIP0790.explanation=Il motore di messaggistica che riceve messaggi nel link tra bus ha rilevato un divario negli id sequenza di messaggi ricevuti. Sono state effettuate richieste per riconsegnare uno o pi\u00f9 messaggi al motore di messaggistica di invio ma il divario non \u00e8 stato ancora colmato. Se il link tra bus non \u00e8 correntemente in esecuzione, il divario non sar\u00e0 risolto fino a che non viene riavviato il link tra bus.
+UNRESOLVED_GAP_IN_LINK_TRANSMITTER_CWSIP0790.useraction=Riavviare il link se \u00e8 arrestato.
+
+# -------------------------------------------------------------------------------------------------
+# {0} First missing sequence id
+# {1} Sending bus name
+# {2} link name
+# {3} Receiving messaging engine
+RESOLVED_GAP_IN_LINK_TRANSMITTER_CWSIP0791=CWSIP0791I: Il divario che inizia all''id sequenza {0} nel flusso di messaggi dal bus {1} sul link {2} \u00e8 stato risolto sul motore di messaggistica {3}.
+RESOLVED_GAP_IN_LINK_TRANSMITTER_CWSIP0791.explanation=Un divario precedentemente notificato nella sequenza di messaggi \u00e8 stato risolto in questo momento, i messaggi successivi saranno elaborati ora.
+RESOLVED_GAP_IN_LINK_TRANSMITTER_CWSIP0791.useraction=Nessuna azione da eseguire.
+
+# -------------------------------------------------------------------------------------------------
+# {0} First missing sequence id
+# {1} Destination name
+# {2} sending messaging engine
+# {3} Receiving messaging engine
+UNRESOLVED_GAP_IN_DESTINATION_TRANSMITTER_CWSIP0792=CWSIP0792W: Il motore di messaggistica {3} ha rilevato un divario nel flusso di messaggi ricevuto dal motore di messaggistica {2} per la destinazione {1}. Le richieste effettuate per colmare questo divario devono ancora essere soddisfatte. Il divario inizia all''id sequenza {0}.
+UNRESOLVED_GAP_IN_DESTINATION_TRANSMITTER_CWSIP0792.explanation=Il motore di messaggistica che riceve messaggi per la destinazione ha rilevato un divario negli id sequenza dei messaggi ricevuti. Sono state effettuate richieste per riconsegnare uno o pi\u00f9 messaggi al motore di messaggistica di invio ma il divario non \u00e8 stato ancora colmato. Se i motori di messaggistica non riescono a comunicare, il divario non sar\u00e0 risolto fino a quando non si risolve questo problema.
+UNRESOLVED_GAP_IN_DESTINATION_TRANSMITTER_CWSIP0792.useraction=Riavviare il motore di messaggistica di invio se viene arrestato e assicurarsi che la connessione tra i due motori di messaggistica sia attiva.
+
+# -------------------------------------------------------------------------------------------------
+# {0} First missing sequence id
+# {1} Destination name
+# {2} sending messaging engine
+# {3} Receiving messaging engine
+RESOLVED_GAP_IN_DESTINATION_TRANSMITTER_CWSIP0793=CWSIP0793I: Il divario che inizia all''id sequenza {0} nel flusso di messaggi per la destinazione {1} dal motore di messaggistica {2} \u00e8 stato risolto nel motore di messaggistica {3}.
+RESOLVED_GAP_IN_DESTINATION_TRANSMITTER_CWSIP0793.explanation=Un divario precedentemente notificato nella sequenza di messaggi \u00e8 stato risolto in questo momento, i messaggi successivi saranno elaborati ora.
+RESOLVED_GAP_IN_DESTINATION_TRANSMITTER_CWSIP0793.useraction=Nessuna azione da eseguire.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Percentage of messages repeated
+# {1} Sending bus name
+# {2} link name
+# {3} Receiving messaging engine
+REPEATED_MESSAGE_THRESHOLD_REACHED_ON_LINK_CWSIP0794=CWSIP0794W: Il {0} percento dei messaggi ricevuti dal motore di messaggistica {3} dal bus {1} nel link tra bus {2} \u00e8 stato ripetutamente trasmesso nel link tra bus.
+REPEATED_MESSAGE_THRESHOLD_REACHED_ON_LINK_CWSIP0794.explanation=Un'alta percentuale di messaggi inviati dal bus esterno \u00e8 stata precedentemente ricevuta da questo motore di messaggistica, i messaggi non saranno duplicati ma le prestazioni del sistema di messaggistica potrebbero essere ridotte. Questo messaggio pu\u00f2 verificarsi quando un'improvvisa suddivisione di messaggi viene inviata nel link, ripetute ricorrenze di questo messaggio possono indicare che \u00e8 stato superato il livello di prestazione del link su una base sostenuta.
+REPEATED_MESSAGE_THRESHOLD_REACHED_ON_LINK_CWSIP0794.useraction=Esaminare se il tasso di produzione di messaggi per il trasferimento nel link \u00e8 troppo elevato.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Percentage of messages repeated
+# {1} sending messaging engine
+# {2} Receiving messaging engine
+# {3} Destination name
+REPEATED_MESSAGE_THRESHOLD_REACHED_ON_DESTINATION_CWSIP0795=CWSIP0795W: {0} percento dei messaggi ricevuti dal motore di messaggistica {2} per la destinazione {3} e trasmessi dal motore di messaggistica {1}, ripetutamente trasmesso al motore di messaggistica.
+REPEATED_MESSAGE_THRESHOLD_REACHED_ON_DESTINATION_CWSIP0795.explanation=Un'alta percentuale di messaggi inviati dal motore di messaggistica esterno \u00e8 stata precedentemente ricevuta da questo motore di messaggistica, i messaggi non saranno duplicati ma le prestazioni del sistema di messaggistica potrebbero essere ridotte.  Questo messaggio pu\u00f2 verificarsi quando un'improvvisa suddivisione di messaggi viene inviata a un motore di messaggistica. Ripetute ricorrenze di questo messaggio possono indicare che \u00e8 stato superato il livello di prestazione massimo dei messaggi su una base sostenuta.
+REPEATED_MESSAGE_THRESHOLD_REACHED_ON_DESTINATION_CWSIP0795.useraction=Esaminare se il tasso di produzione dei messaggi a questo motore di messaggistica \u00e8 troppo elevato.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The key
+INVOKE_COMMAND_ERROR_CWSIP0801=CWSIP0801E: La chiamata del comando ha dato esito negativo perch\u00e9 la chiave {0} non era valida
+INVOKE_COMMAND_ERROR_CWSIP0801.explanation=Non \u00e8 stato possibile richiamare il comando poich\u00e9 la chiave non era valida
+INVOKE_COMMAND_ERROR_CWSIP0801.useraction=Controllare la chiave fornita su invokeCommand
+
+# -------------------------------------------------------------------------------------------------
+# {0} The null parameter
+INVOKE_COMMAND_ERROR_CWSIP0802=CWSIP0802E: La chiamata del comando ha dato esito negativo poich\u00e9 il seguente parametro {0} era null
+INVOKE_COMMAND_ERROR_CWSIP0802.explanation=Non \u00e8 stato possibile richiamare il comando poich\u00e9 uno dei parametri era null
+INVOKE_COMMAND_ERROR_CWSIP0802.useraction=Impostare il parametro specificato su un valore valido e ripetere l'operazione
+
+# -------------------------------------------------------------------------------------------------
+# no parameters.
+ADD_DEST_LISTENER_ERROR_CWSIP0803=CWSIP0803E: Il comando addDestinationListener non \u00e8 riuscito perch\u00e9 non \u00e8 stato specificato alcun DestinationListener
+ADD_DEST_LISTENER_ERROR_CWSIP0803.explanation=Non \u00e8 stato possibile richiamare il comando perch\u00e9 il parametro DestinationListener era null
+ADD_DEST_LISTENER_ERROR_CWSIP0803.useraction=Specificare un valore DestinationListener valido e riprovare
+
+# -------------------------------------------------------------------------------------------------
+# {0} is destination name
+# {1} is the Websphere MQ Server bus member name
+# {2} is the websphere MQ completion code
+# {3} is the websphere MQ reason code
+MSG_NOT_SENT_CWSIP0811=CWSIP0811W: Non \u00e8 stato possibile inviare un messaggio alla destinazione {0} assegnata al membro bus del server WebSphere MQ {1}.  Il codice di completamento WebSphere MQ era {2}.  Il codice di errore WebSphere MQ era {3}.
+MSG_NOT_SENT_CWSIP0811.explanation=Non \u00e8 stato possibile inviare un messaggio alla destinazione specificata, assegnata al membro bus del server WebSphere MQ specificato. I codici di completamento e di errore WebSphere MQ specificati possono essere utilizzati per stabilire perch\u00e9 non \u00e8 stato possibile inviare il messaggio.
+MSG_NOT_SENT_CWSIP0811.useraction=Consultare la documentazione WebSphere MQ per stabilire il significato dei codici di completamento e di errore.  Eseguire l'azione di correzione appropriata.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is destination name
+# {1} is the Websphere MQ Server bus member name
+# {2} is the websphere MQ completion code
+# {3} is the websphere MQ reason code
+MEDIATION_MSG_NOT_SENT_CWSIP0812=CWSIP0812W: Non \u00e8 stato possibile inviare un messaggio al punto di mediazione associato alla destinazione {0} a sua volta associata al membro bus del server WebSphere MQ {1}.  Il codice di completamento WebSphere MQ era {2}.  Il codice di errore WebSphere MQ era {3}.
+MEDIATION_MSG_NOT_SENT_CWSIP0812.explanation=Non \u00e8 stato possibile inviare un messaggio al punto di eccezione mediazione specificato associato al membro bus del server WebSphere MQ specificato. I codici di completamento e di errore WebSphere MQ specificati possono essere utilizzati per stabilire perch\u00e9 non \u00e8 stato possibile inviare il messaggio.
+MEDIATION_MSG_NOT_SENT_CWSIP0812.useraction=Consultare la documentazione WebSphere MQ per stabilire il significato dei codici di completamento e di errore. Eseguire l'azione di correzione appropriata.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+# {1} is the destination name
+# {2} is the websphere MQ Server bus member name
+EXCEPTION_CWSIP0813=CWSIP0813W: Si \u00e8 verificata un''eccezione {0} nel tentativo di inviare un messaggio alla destinazione {1} assegnata al membro bus del server WebSphere MQ {2}.
+EXCEPTION_CWSIP0813.explanation=Non \u00e8 stato possibile inviare un messaggio alla destinazione specificata, assegnata al membro bus del server WebSphere MQ specificato.  L'eccezione WebSphere specificata pu\u00f2 essere utilizzata per stabilire perch\u00e9 non \u00e8 stato possibile inviare il messaggio.
+EXCEPTION_CWSIP0813.useraction=Consultare la documentazione WebSphere MQ per determinare il significato dell'eccezione. Eseguire l'azione di correzione appropriata.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+# {1} is the destination name
+# {2} is the websphere MQ Server bus member name
+MEDIATION_EXCEPTION_CWSIP0814=CWSIP0814W: Si \u00e8 verificata un''eccezione {0} nel tentativo di inviare un messaggio al punto di mediazione associato alla destinazione {1} a sua volta associata al membro bus del server WebSphere MQ {2}.
+MEDIATION_EXCEPTION_CWSIP0814.explanation=Non \u00e8 stato possibile inviare un messaggio al punto di mediazione per la destinazione specificata, assegnata al membro bus del server WebSphere MQ specificato. L'eccezione WebSphere specificata pu\u00f2 essere utilizzata per stabilire perch\u00e9 non \u00e8 stato possibile inviare il messaggio.
+MEDIATION_EXCEPTION_CWSIP0814.useraction=Consultare la documentazione WebSphere MQ per determinare il significato dell'eccezione. Eseguire l'azione di correzione appropriata.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+# {1} is the Websphere MQ Server bus member name
+# {2} is the websphere MQ completion code
+# {3} is the websphere MQ reason code
+MSG_NOT_RECEIVED_CWSIP0815=CWSIP0815W: Non \u00e8 stato possibile ricevere un messaggio dalla destinazione {0} assegnata al membro bus del server WebSphere MQ {1}. Il codice di completamento WebSphere MQ era {2}. Il codice di errore WebSphere MQ era {3}.
+MSG_NOT_RECEIVED_CWSIP0815.explanation=Non \u00e8 stato possibile ricevere un messaggio dalla destinazione specificata, assegnata al membro bus del server WebSphere MQ specificato.  I codici di completamento e di errore WebSphere MQ specificati possono essere utilizzati per stabilire perch\u00e9 non \u00e8 stato possibile ricevere il messaggio.
+MSG_NOT_RECEIVED_CWSIP0815.useraction=Consultare la documentazione WebSphere MQ per stabilire il significato dei codici di completamento e di errore.  Eseguire l'azione di correzione appropriata.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+# {1} is the Websphere MQ Server bus member name
+# {2} is the websphere MQ completion code
+# {3} is the websphere MQ reason code
+MEDIATION_MSG_NOT_RECEIVED_CWSIP0816=CWSIP0816W: Non \u00e8 stato possibile ricevere un messaggio dal punto di mediazione associato alla destinazione {0} assegnata al membro bus del server WebSphere MQ {1}. Il codice di completamento WebSphere MQ era {2}. Il codice di errore WebSphere MQ era {3}.
+MEDIATION_MSG_NOT_RECEIVED_CWSIP0816.explanation=Non \u00e8 stato possibile ricevere un messaggio dal punto di mediazione associato alla destinazione specificata, assegnata al membro bus del server WebSphere MQ specificato. I codici di completamento e di errore WebSphere MQ specificati possono essere utilizzati per stabilire perch\u00e9 non \u00e8 stato possibile ricevere il messaggio.
+MEDIATION_MSG_NOT_RECEIVED_CWSIP0816.useraction=Consultare la documentazione WebSphere MQ per stabilire il significato dei codici di completamento e di errore.  Eseguire l'azione di correzione appropriata.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+# {1} is the destination name
+# {2} is the Websphere MQ Server bus member name
+EXCEPTION_MSG_NOT_RECEIVED_CWSIP0817=CWSIP0817W: Si \u00e8 verificata un''eccezione {0} nel tentativo di ricevere un messaggio dalla destinazione {1} assegnata al membro bus del server WebSphere MQ {2}.
+EXCEPTION_MSG_NOT_RECEIVED_CWSIP0817.explanation=Non \u00e8 stato possibile ricevere un messaggio dalla destinazione specificata, assegnata al membro bus del server WebSphere MQ specificato. L'eccezione WebSphere specificata pu\u00f2 essere utilizzata per stabilire perch\u00e9 non \u00e8 stato possibile ricevere il messaggio.
+EXCEPTION_MSG_NOT_RECEIVED_CWSIP0817.useraction=Consultare la documentazione WebSphere MQ per determinare il significato dell'eccezione. Eseguire l'azione di correzione appropriata.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+# {1} is the destination name
+# {2} is the Websphere MQ Server bus member name
+MEDIATION_EXCEPTION_MSG_NOT_RECEIVED_CWSIP0818=CWSIP0818W: Si \u00e8 verificata un''eccezione {0} nel tentativo di ricevere un messaggio dal punto di mediazione associato alla destinazione {1} assegnata al membro bus del server WebSphere MQ {2}.
+MEDIATION_EXCEPTION_MSG_NOT_RECEIVED_CWSIP0818.explanation=Non \u00e8 stato possibile ricevere un messaggio dal punto di mediazione associato alla destinazione specificata, assegnata al server WebSphere MQ specificato. L'eccezione WebSphere specificata pu\u00f2 essere utilizzata per stabilire perch\u00e9 non \u00e8 stato possibile ricevere il messaggio.
+MEDIATION_EXCEPTION_MSG_NOT_RECEIVED_CWSIP0818.useraction=Consultare la documentazione WebSphere MQ per determinare il significato dell'eccezione.  Eseguire l'azione di correzione appropriata.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the Websphere MQ Server bus member name
+RMQ_DISABLED_CWSIP0819=CWSIP0819W: Non \u00e8 stato possibile stabilire una connessione al membro bus del server Websphere MQ {0}, poich\u00e9 la messaggistica Websphere MQ \u00e8 stata disabilitata.
+RMQ_DISABLED_CWSIP0819.explanation=La messaggistica Websphere MQ non \u00e8 disponibile a causa di un errore verificatosi durante l'avvio del motore di messaggistica.
+RMQ_DISABLED_CWSIP0819.useraction=Accertarsi che sia stato impostato un client Websphere MQ appropriato sul motore di messaggistica. Riesaminare i log di avvio del motore di messaggistica per determinare l'errore di avvio ed eseguire l'azione di correzione appropriata.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the Websphere MQ Server bus member name
+# {1} is the error
+RMQ_INTERNAL_ERROR_CWSIP0820=CWSIP0820W: Si \u00e8 verificato un errore interno della messaggistica durante l''utilizzo del membro bus del server Websphere MQ {0} : {1}
+RMQ_INTERNAL_ERROR_CWSIP0820.explanation=CMSG0001
+RMQ_INTERNAL_ERROR_CWSIP0820.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the Resource Manager
+# {1} The UUID of the messaging engine
+# {2} The name of the bus
+FAILED_XA_CONNECTION_CWSIP0821=CWSIP0821W: Impossibile creare una connessione dal gestore risorse {0} al motore di messaggistica {1} sul bus {2} durante il richiamo di una transazione.
+FAILED_XA_CONNECTION_CWSIP0821.explanation=Non \u00e8 stato possibile creare una connessione interna ad un motore di messaggistica, l'operazione verr\u00e0 riprovata in un secondo momento.
+FAILED_XA_CONNECTION_CWSIP0821.useraction=nessuna
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+LINK_CONTROLLABLE_NOT_FOUND_CWSIP0822=CWSIP0822E: Impossibile trovare una risorsa link durante la creazione di un adattatore controllabile per un punto di pubblicazione sullo spazio argomento {0}
+LINK_CONTROLLABLE_NOT_FOUND_CWSIP0822.explanation=CMSG0001
+LINK_CONTROLLABLE_NOT_FOUND_CWSIP0822.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Messages for XD Integration
+# -------------------------------------------------------------------------------------------------
+# {0} is the label of the consumer set
+NULL_FLOW_CLASSIFICATIONS_CWSIP0851=CWSIP0851E: Il comando setFlowProperties non \u00e8 riuscito sull''insieme di consumer {0} perch\u00e9 non sono stati specificati flussi di classificazione dei messaggi
+NULL_FLOW_CLASSIFICATIONS_CWSIP0851.explanation=Non \u00e8 stato possibile configurare le propriet\u00e0 del flusso di messaggi perch\u00e9 il parametro dei flussi era null
+NULL_FLOW_CLASSIFICATIONS_CWSIP0851.useraction=Specificare un valore valido per i flussi e riprovare
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the label of the consumer set
+INVALID_FLOW_CLASSIFICATIONS_CWSIP0852=CWSIP0852E: Il comando setFlowProperties non \u00e8 riuscito sull''insieme di consumer {0} perch\u00e9 sono stati specificati flussi di classificazione dei messaggi non validi
+INVALID_FLOW_CLASSIFICATIONS_CWSIP0852.explanation=Non \u00e8 stato possibile configurare le propriet\u00e0 del flusso di messaggi perch\u00e9 il parametro dei flussi non era valido
+INVALID_FLOW_CLASSIFICATIONS_CWSIP0852.useraction=Verificare che le classificazioni specificate nei flussi siano univoche e riprovare
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of ME Control Listeners registered
+# {1} is the list of registered ME Control Listeners
+MORE_THAN_ONE_ME_CONTROL_LISTENER_CWSIP0853=CWSIP0853W: Rilevati {0} MessagingEngineControlListener registrati, ma dovrebbe esserne presente solo uno. I listener rilevati erano {1}
+MORE_THAN_ONE_ME_CONTROL_LISTENER_CWSIP0853.explanation=Solo un listener pu\u00f2 essere registrato. Il sistema utilizzer\u00e0 solo il primo MessagingEngineControlListener nell'elenco. 
+MORE_THAN_ONE_ME_CONTROL_LISTENER_CWSIP0853.useraction=Specificare solo un MessagingEngineControlListener
+
+# -------------------------------------------------------------------------------------------------
+# {0} The related exception
+ME_CONTROL_LISTENER_REGISTRATION_FAILED_CWSIP0854=CWSIP0854E: Rilevato ma con registrazione non riuscita un MessagingEngineControlListener, rilevata eccezione {0}
+ME_CONTROL_LISTENER_REGISTRATION_FAILED_CWSIP0854.explanation=CMSG0001
+ME_CONTROL_LISTENER_REGISTRATION_FAILED_CWSIP0854.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topicpsace 
+# {1} The bus target
+# {2} The related exception
+PUBSUB_LINK_FORWARD_CWSIP0855=CWSIP0855E: Non \u00e8 stato possibile inviare una pubblicazione sullo spazio argomento {0} al bus {1} per l''eccezione {2}
+PUBSUB_LINK_FORWARD_CWSIP0855.explanation=CMSG0001
+PUBSUB_LINK_FORWARD_CWSIP0855.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination we are trying to attach to.
+# {1} The messaging engine we are trying to reach.
+GATHERING_ME_VERSION_INCOMPATIBLE_CWSIP0856=CWSIP0856E: Impossibile collegarsi al punto di coda della destinazione {0} sul motore di messaggistica {1} per la raccolta dei messaggi poich\u00e9 il motore di messaggistica ha una versione non valida.
+GATHERING_ME_VERSION_INCOMPATIBLE_CWSIP0856.explanation=Il motore di messaggistica che ospita il punto di coda per la destinazione \u00e8 in una versione obsoleta e non supporta la raccolta dei messaggi.
+GATHERING_ME_VERSION_INCOMPATIBLE_CWSIP0856.useraction=Utilizzare un consumer che non raccolga i messaggi oppure migrare il motore di messaggistica su un nuova versione del prodotto.
+
+
+# -------------------------------------------------------------------------------------------------
+# Messages for HealthStates - CWSIP09XY
+# Where X is the HealthState colour (0=RED, 1=AMBER, 2=GREEN)
+# Y is the HealthState reason (See HealthStateListener interface)
+# -------------------------------------------------------------------------------------------------
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the ME
+HEALTHSTATE_STATUS_CWSIP0920=CWSIP0920I: Stato OK
+HEALTHSTATE_STATUS_CWSIP0920.explanation=Nessun problema \u00e8 stato rilevato con la trasmissione del messaggio 
+HEALTHSTATE_STATUS_CWSIP0920.useraction=nessuna
+
+# -------------------------------------------------------------------------------------------------
+HEALTHSTATE_STATUS_CWSIP0911=CWSIP0911W: Nessuna risposta dal destinatario, riconoscimento di messaggi inviati in ritardo
+HEALTHSTATE_STATUS_CWSIP0911.explanation=Sono stati inviati messaggi ad un motore di messaggistica remoto, ma non \u00e8 stato ricevuto alcun riconoscimento per tali messaggi per un lungo periodo di tempo imprevisto.
+HEALTHSTATE_STATUS_CWSIP0911.useraction=Assicurarsi che il motore di messaggistica di ricezione sia avviato e riesca a comunicare con il more di messaggistica di invio. In questo caso, il sistema potrebbe essere attualmente sovraccarico ed \u00e8 possibile risolvere il problema riducendo il traffico dei messaggi.
+
+# -------------------------------------------------------------------------------------------------
+HEALTHSTATE_STATUS_CWSIP0912=CWSIP0912W: Trasmettitore bloccato, il messaggio iniziale \u00e8 stato conservato in una transazione in dubbio per un periodo di tempo inaspettatamente prolungato
+HEALTHSTATE_STATUS_CWSIP0912.explanation=Il messaggio nella parte anteriore del flusso di trasmissione \u00e8 parzialmente sottoposto a commit, la transazione potenzialmente in dubbio. I messaggi rimanenti verranno bloccati fino alla risoluzione della transazione.
+HEALTHSTATE_STATUS_CWSIP0912.useraction=Individuare il messaggio bloccato ed individuare la causa per cui la transazione indicata si trova in questo stato. La risoluzione della transazione sbloccher\u00e0 i messaggi
+
+# -------------------------------------------------------------------------------------------------
+HEALTHSTATE_STATUS_CWSIP0913=CWSIP0913W: Trasmettitore messaggi completo
+HEALTHSTATE_STATUS_CWSIP0913.explanation=Il trasmettitore messaggi ha raggiunto la soglia massima dei messaggi del motore di messaggistica. Il ritardo del messaggio pu\u00f2 essere dovuto al fatto che il motore di messaggistica di ricezione non accetta correntemente i messaggi o il tasso di produzione di messaggi supera la capacit\u00e0 di trasmissione dei messaggi.
+HEALTHSTATE_STATUS_CWSIP0913.useraction=Assicurarsi che i motori di messaggistica in comunicazione siano attivi e abbiamo tra loro una connessione di rete. Se questo stato persiste, ridurre il tasso di produzione di messaggi, se opportuno, oppure controllare i log di sistema per eventuali errori.
+
+# -------------------------------------------------------------------------------------------------
+HEALTHSTATE_STATUS_CWSIP0914=CWSIP0914W: \u00c8 stata osservata una consegna messaggi non efficiente a causa di una nuova consegna di messaggi.
+HEALTHSTATE_STATUS_CWSIP0914.explanation=Uno o pi\u00f9 messaggi hanno richiesto una nuova consegna al motore di messaggistica di ricezione, questo \u00e8 accettabile ma non sufficiente. La ridistribuzione potrebbe essere richiesta quando la connessione con il motore di messaggistica di destinazione viene persa oppure \u00e8 intermittente oppure quando la frequenza di produzione dei messaggi supera la capacit\u00e0 di trasmissione.
+HEALTHSTATE_STATUS_CWSIP0914.useraction=Assicurarsi che i motori di messaggistica in comunicazione siano attivi e abbiamo tra loro una connessione di rete. Se questo stato persiste, ridurre il tasso di produzione di messaggi, se opportuno, oppure controllare i log di sistema per eventuali errori.
+
+# -------------------------------------------------------------------------------------------------
+HEALTHSTATE_STATUS_CWSIP0905=CWSIP0905W: Nessuna connessione stabilita
+HEALTHSTATE_STATUS_CWSIP0905.explanation=La connessione tra questo motore di messaggistica e il bus esterno non \u00e8 attualmente disponibile, probabilmente a causa del fatto che il link non \u00e8 stato avviato o il motore di messaggistica non riesce a comunicare con il motore di messaggistica nel bus esterno
+HEALTHSTATE_STATUS_CWSIP0905.useraction=Assicurarsi che il link venga avviato e che i motori di messaggistica che ospitano il link siano attivi e abbiano tra loro una connessione di rete funzionante.
+
+# -------------------------------------------------------------------------------------------------
+HEALTHSTATE_STATUS_CWSIP0916=CWSIP0916W: \u00c8 stata osservata una consegna messaggi non efficiente a causa di una nuova consegna di messaggi.
+HEALTHSTATE_STATUS_CWSIP0916.explanation=La ridistribuzione dei messaggi \u00e8 accettabile ma non efficiente. La ridistribuzione potrebbe essere richiesta quando la connessione con il motore di messaggistica di origine viene persa oppure \u00e8 intermittente oppure quando la frequenza di produzione dei messaggi supera la capacit\u00e0 di ricezione.
+HEALTHSTATE_STATUS_CWSIP0916.useraction=Assicurarsi che i motori di messaggistica in comunicazione siano attivi e abbiamo tra loro una connessione di rete. Se questo stato persiste, ridurre il tasso di produzione di messaggi, se opportuno, oppure controllare i log di sistema per eventuali errori.
+
+# -------------------------------------------------------------------------------------------------
+HEALTHSTATE_STATUS_CWSIP0917=CWSIP0917W: Ripristino consegna messaggi
+HEALTHSTATE_STATUS_CWSIP0917.explanation=\u00c8 stata osservata una pausa nella trasmissione dei messaggi ed \u00e8 stata risolta, probabilmente a causa di una pausa nella comunicazione o perch\u00e9 il tasso di produzione messaggi ha superato la capacit\u00e0 di riceverli.
+HEALTHSTATE_STATUS_CWSIP0917.useraction=Assicurarsi che i motori di messaggistica in comunicazione siano attivi e abbiamo tra loro una connessione di rete. Se questo stato persiste, ridurre il tasso di produzione di messaggi, se opportuno, oppure controllare i log di sistema per eventuali errori.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Error ID
+HEALTHSTATE_STATUS_CWSIP0908=CWSIP0908E: Errore rilevato ({0})
+HEALTHSTATE_STATUS_CWSIP0908.explanation=Uno o pi\u00f9 errori sono stati rilevati che possono impedire ad altri messaggi di essere trasmessi o ricevuti. Controllare i log di sistema per eventuali errori.
+HEALTHSTATE_STATUS_CWSIP0908.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Exception class causing the blockage
+# {1} Target destination
+HEALTHSTATE_STATUS_CWSIP0919=CWSIP0919W: Destinatario bloccato, il destinatario non pu\u00f2 consegnare il messaggio in entrata corrente a causa di {0} sulla destinazione {1}
+HEALTHSTATE_STATUS_CWSIP0919.explanation=Il destinatario non riesce a consegnare un messaggio alla destinazione per la causa indicata, fino alla risoluzione di questo problema, sar\u00e0 bloccata la consegna dei messaggi successivi.
+HEALTHSTATE_STATUS_CWSIP0919.useraction=Se questo stato persiste eseguire l'azione appropriata per risolvere il problema con il messaggio.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIP9999=CWSIP9999E: {0}
+TEMPORARY_CWSIP9999.explanation=Se il messaggio non fornisce sufficienti informazioni, controllare i precedenti messaggi per averne di ulteriori.
+TEMPORARY_CWSIP9999.useraction=Per ulteriori informazioni, consultare i messaggi precedenti.
+# -------------------------------------------------------------------------------------------------
+
+# New messages for Liberty
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the messaging engine
+RECONCILE_STARTED_INFO_CWSIP00214=CWSIP0214I: Il motore di messaggistica {0} sta iniziando a ricollegare la destinazione.
+RECONCILE_STARTED_INFO_CWSIP00214.explanation=\u00c8 in corso il ricollegamento della destinazione con la configurazione memorizzata dal motore di messaggistica quando \u00e8 stato arrestato.
+RECONCILE_STARTED_INFO_CWSIP00214.useraction=nessuna
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the messaging engine
+RECONCILE_COMPLETED_INFO_CWSIP00215=CWSIP0215I: Il motore di messaggistica {0} ha terminato il ricollegamento della destinazione.
+RECONCILE_COMPLETED_INFO_CWSIP00215.explanation=La destinazione \u00e8 stata ricollegata con la configurazione memorizzata dal motore di messaggistica quando \u00e8 stato arrestato. Le risorse appropriate verranno modificate, create o pianificate per la cancellazione.
+RECONCILE_COMPLETED_INFO_CWSIP00215.useraction=nessuna
+
+# -------------------------------------------------------------------------------------------------
+# {0} message id
+DISCARD_MESSAGE_INFO_CWSIP00216=CWSIP0216I: Il messaggio {0} \u00e8 stato eliminato dopo l''esecuzione del numero massimo di tentativi di riconsegna non riusciti.
+DISCARD_MESSAGE_INFO_CWSIP00216.explanation=Il messaggio viene eliminato perch\u00e9 il numero massimo di tentativi di consegna del messaggio non \u00e8 riuscito.
+DISCARD_MESSAGE_INFO_CWSIP00216.useraction=Controllare l'errore generato dall'applicazione consumer e accertarsi che le configurazioni dell'applicazione consumer siano corrette.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+LOCAL_DEST_DELETE_INFO_CWSIP00217=CWSIP0217I: La destinazione locale {0} \u00e8 stata contrassegnata per l''eliminazione.
+LOCAL_DEST_DELETE_INFO_CWSIP00217.explanation=La configurazione per questa destinazione su questo motore di messaggistica \u00e8 stata rimossa, quindi verr\u00e0 pianificata per la cancellazione.
+LOCAL_DEST_DELETE_INFO_CWSIP00217.useraction=nessuna

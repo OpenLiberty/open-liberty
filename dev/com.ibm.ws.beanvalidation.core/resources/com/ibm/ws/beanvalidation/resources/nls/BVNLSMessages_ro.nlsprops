@@ -1,0 +1,89 @@
+###############################################################################
+# Copyright (c) 2007, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the message text
+#           must be followed by a 2nd apostrophe to work correctly.
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     MTDT (Metadata Framework)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# -----------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# cmvc_en_version_level=
+#
+#
+#CMVCPATHNAME ws/code/beanvalidation/src/com/ibm/ws/beanvalidation/resources/nls/BVNLSMessages.nlsprops
+#COMPONENTPREFIX CWNBV
+#COMPONENTNAMEFOR CWNBV Bean Validation
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the exception that caused this message to be displayed
+# -----------------------------------------------------------------------
+BVKEY_UNABLE_TO_REGISTER_WITH_INJECTION_ENGINE=CWNBV0001E: \u00cen timpul pornirii serverului BeanValidationService a e\u015fuat s\u0103 se \u00eenregistreze cu serviciul de injec\u0163ie. Aplica\u0163iile care necesit\u0103 injectarea fie a clasei ValidatorFactory, fie a clasei Validator vor e\u015fua. Urm\u0103toarea eroare a survenit: {0}.
+BVKEY_UNABLE_TO_REGISTER_WITH_INJECTION_ENGINE.explanation=BeanValidationService a e\u015fuat s\u0103 se \u00eenregistreze cu serviciul de injec\u0163ie c\u00e2nd a pornit serverul de aplica\u0163ii. E\u015fuarea este nea\u015fteptat\u0103. O cauz\u0103 posibil\u0103 este c\u0103 serviciul de injectare nu a fost pornit.
+BVKEY_UNABLE_TO_REGISTER_WITH_INJECTION_ENGINE.useraction=Corecta\u0163i orice eroare anterioar\u0103 \u015fi asigura\u0163i-v\u0103 c\u0103 serviciul de injectare a fost pornit. Dac\u0103 serviciul de injectare este disponibil \u015fi problema \u00eenc\u0103 exist\u0103, vede\u0163i informa\u0163iile despre determinarea problemei. Aceste informa\u0163ii sunt disponibile pe pagina web de suport pentru WebSphere Application Server la http://www.ibm.com/software/webservers/appserv/was/support.
+
+BVKEY_UNABLE_TO_CREATE_VALIDATION_FACTORY=CWNBV0002E: BeanValidationService nu poate crea o clas\u0103 ValidatorFactory.
+BVKEY_UNABLE_TO_CREATE_VALIDATION_FACTORY.explanation=BeanValidationService nu poate crea o fabric\u0103 validator. E\u015fuarea este nea\u015fteptat\u0103. Consulta\u0163i descrierea excep\u0163iei specificate pentru informa\u0163ii suplimentare. Problema ar fi putea fi cauzat\u0103 de fi\u015fierul validation.xml care este furnizat cu aplica\u0163ia.
+BVKEY_UNABLE_TO_CREATE_VALIDATION_FACTORY.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul validation.xml furnizat este valid \u015fi c\u0103 furnizorul de validare implicit specificat, interpolatorul de mesaje sau rezolvatorul traversabil sunt disponibile \u00een calea de clase. Dac\u0103 fi\u015fierul validation.xml este valid \u015fi informa\u0163iile corespunz\u0103toare sunt disponibile \u00een calea de clase, dar problema \u00eenc\u0103 exist\u0103, vede\u0163i informa\u0163iile despre determinarea problemei. Aceste informa\u0163ii sunt disponibile pe pagina web de suport pentru WebSphere Application Server la http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path of module
+#    {1} is the name of the class that was trying to be loaded or instantiatedd
+#    {2} is the exception that caused this message to be displayed
+# -----------------------------------------------------------------------
+BVKEY_CLASS_NOT_FOUND=CWNBV0003E: BeanValidationService nu poate crea o clas\u0103 ValidationFactory deoarece nu a putut s\u0103 \u00eencarce sau s\u0103 instan\u0163ieze clasa: {0} \u00een calea {1} din cauza erorii: {2}
+BVKEY_CLASS_NOT_FOUND.explanation=BeanValidationService nu poate s\u0103 \u00eencarce sau s\u0103 instan\u0163ieze clasa folosit\u0103 pentru crearea ValidationFactory.  Problema poate exista deoarece clasa nu exist\u0103 sau clasa nu este disponibil\u0103 \u00een calea de clase a aplica\u0163iei.
+BVKEY_CLASS_NOT_FOUND.useraction=Asigura\u0163i-v\u0103 de disponibilitatea clasei \u015fi de existen\u0163a ei \u00een calea de clase a aplica\u0163iei.  Dac\u0103 clasa este valid\u0103 \u015fi disponibil\u0103 \u00een calea de clase, dar continua\u0163i s\u0103 ave\u0163i probleme, vede\u0163i informa\u0163iile pentru determinarea problemelor. Aceste informa\u0163ii sunt disponibile pe pagina web de suport pentru WebSphere Application Server la http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path of module
+#    {1} is the exception that caused this message to be displayed
+# -----------------------------------------------------------------------
+BVKEY_SYNTAX_ERROR_IN_VALIDATION_XML=CWNBV0004E: O sintax\u0103 incorect\u0103 sau o eroare a fost detectat\u0103 \u00een fi\u015fierul validation.xml g\u0103sit \u00een {0}. A ap\u0103rut urm\u0103torul mesaj de eroare asociat: {1}
+BVKEY_SYNTAX_ERROR_IN_VALIDATION_XML.explanation=Fi\u015fierul validation.xml con\u0163ine erori \u015fi nu este conform cu defini\u0163ia schemei.
+BVKEY_SYNTAX_ERROR_IN_VALIDATION_XML.useraction=Corecta\u0163i erorile din fi\u015fierul validation.xml \u015fi re\u00eencerca\u0163i.
+
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path name for the module
+# -----------------------------------------------------------------------
+BVKEY_NOT_A_BEAN_VALIDATION_XML=CWNBV0005W: A fost g\u0103sit un fi\u015fier validation.xml pentzru modulul {0}. Dar, fi\u015fierul validation.xml nu este configurat pentru validare; de aceea acest fi\u015fier XML este ignorat.
+BVKEY_NOT_A_BEAN_VALIDATION_XML.explanation=BeanValidationService nu poate crea o instan\u0163\u0103 ValidatorFactory din cauza unei erori la parsarea fi\u015fierului validation.xml cu fi\u015fierul de schem\u0103 validation-configuration-1.0.xsd. Aceast\u0103 eroare poate indica c\u0103 fi\u015fierul validation.xml nu este destinat pentru folosire de c\u0103tre runtime-ul Bean Validation; de aceea, acest fi\u015fier XML este ignorat.
+BVKEY_NOT_A_BEAN_VALIDATION_XML.useraction=Dac\u0103 fi\u015fierul validation.xml nu este pentru crearea unei instan\u0163e ValidatorFactory, atunci ignora\u0163i mesajul. \u00cens\u0103 dac\u0103 fi\u015fierul validation.xml este destinat pentru crearea unei instan\u0163e ValidatorFactory, atnci exist\u0103 o problem\u0103.  Activa\u0163i urm\u0103rirea pentru runtime-ul Bean Validation \u00een serverul de aplica\u0163ii, opri\u0163i aplica\u0163ia, reporni\u0163i aplica\u0163ia \u015fi examina\u0163i fi\u015fierul de ie\u015fire a urm\u0103rii pentru un eveniment de urm\u0103rire cum ar fi: Excep\u0163ie nea\u015fteptat\u0103 la \u00eencercarea opera\u0163iei unmarshall pentru fi\u015fierul validation.xml. Examina\u0163i urma stivei pentru excep\u0163ie pentru a v\u0103 ajuta la depanare.
+
+# -----------------------------------------------------------------------
+JNDI_NON_JEE_THREAD_CWNBV0006E=CWNBV0006E: O opera\u0163ie JNDI pe un nume java:comp/env nu poate fi finalizat\u0103 deoarece firul de execu\u0163ie curent nu este asociat cu o component\u0103 de aplica\u0163ieJava Enterprise Edition. Aceast\u0103 condi\u0163ie poate ap\u0103rea atunci c\u00e2nd clientul JNDI care folose\u015fte numele java:comp/env nu are loc pe firul de execu\u0163ie al unei cereri a aplica\u0163iei serverului. Asigura\u0163i-v\u0103 c\u0103 o aplica\u0163ie Java EE nu ruleaz\u0103 opera\u0163ii JNDI pe nume java:comp/env \u00een blocuri de cod statice sau \u00een fire de execu\u0163ie create de acea aplica\u0163ie. Astfel de cod nu ruleaz\u0103 neap\u0103rat pe firul de execu\u0163ie al cererii aplica\u0163iei serverului \u015fi de aceea nu este suportat de opera\u0163iile JNDI pe numele java:comp/env.
+JNDI_NON_JEE_THREAD_CWNBV0006E.explanation=Opera\u0163iile JNDI pe un nume java:comp/env sunt suportate doar pe firele de execu\u0163ie asociate cu o component\u0103 de aplica\u0163ie Java EE.
+JNDI_NON_JEE_THREAD_CWNBV0006E.useraction=Modifica\u0163i aplica\u0163ia, astfel \u00eenc\u00e2t opera\u0163ia JNDI s\u0103 aib\u0103 loc pe un fir de execu\u0163ie asociat cu o component\u0103 de aplica\u0163ie Java EE.
+
+# -----------------------------------------------------------------------

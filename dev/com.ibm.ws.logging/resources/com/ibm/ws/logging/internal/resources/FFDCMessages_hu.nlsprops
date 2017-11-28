@@ -1,0 +1,26 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.logging/resources/com/ibm/ws/logging/internal/resources/FFDCMessages.nlsprops
+#COMPONENTPREFIX FFDC
+#COMPONENTNAMEFOR FFDC WebSphere First Failure Data Capture
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# Shared/reused from tWAS
+INCIDENTSTREAMIMPL_FAILED_TO_OPEN_FILE=FFDC0011I: Az FFDC nem tudott megnyitni vagy l\u00e9trehozni egy incidens folyamf\u00e1jlt: {0}. Kiv\u00e9tel: {1}
+INCIDENTSTREAMIMPL_FAILED_TO_OPEN_FILE.explanation=Egy incidens folyamf\u00e1jl nem volt megnyithat\u00f3 vagy l\u00e9trehozhat\u00f3. A napl\u00f3f\u00e1jlt tartalmaz\u00f3 folyamf\u00e1jl nem el\u00e9rhet\u0151, vagy az FFDC-t futtat\u00f3 folyamatnak nincs enged\u00e9lye a napl\u00f3k\u00f6nyvt\u00e1rban l\u00e9v\u0151 f\u00e1jlok l\u00e9trehoz\u00e1s\u00e1ra \u00e9s el\u00e9r\u00e9s\u00e9re.
+INCIDENTSTREAMIMPL_FAILED_TO_OPEN_FILE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a napl\u00f3k\u00f6nyvt\u00e1rat tartalmaz\u00f3 f\u00e1jlrendszer el\u00e9rhet\u0151, \u00e9s hogy az FFDC-t futtat\u00f3 folyamatnak van enged\u00e9lye f\u00e1jlok l\u00e9trehoz\u00e1s\u00e1ra \u00e9s el\u00e9r\u00e9s\u00e9re a napl\u00f3f\u00e1jlban.
+
+# Provided to tWAS
+lwas.FFDCIncidentEmitted=FFDC1015I: Egy FFDC incidens l\u00e9trehoz\u00e1sra ker\u00fclt: "{0}" a(z) {1} helyen
+lwas.FFDCIncidentEmitted.explanation=A konfigur\u00e1lt napl\u00f3helyen l\u00e9trehoz\u00e1sra ker\u00fclt egy FFDC incidens.
+lwas.FFDCIncidentEmitted.useraction=Semmit sem kell tenni.

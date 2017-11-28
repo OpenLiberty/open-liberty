@@ -1,0 +1,1260 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME ws/code/jsp/src/com/ibm/ws/jsp/resources/messages.nlsprops
+#COMPONENTPREFIX JSPG
+#COMPONENTNAMEFOR JSPG jsp
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+
+jsp.params.invalid.parent=JSPG0001E: a jsp:params \u00e9rv\u00e9nytelen sz\u00fcl\u0151c\u00edmk\u00e9vel rendelkezik
+jsp.params.invalid.parent.explanation=
+jsp.params.invalid.parent.useraction=
+
+jsp.fallback.invalid.parent=JSPG0002E: a jsp:fallback \u00e9rv\u00e9nytelen sz\u00fcl\u0151c\u00edmk\u00e9vel rendelkezik
+jsp.fallback.invalid.parent.explanation=
+jsp.fallback.invalid.parent.useraction=
+
+jsp.param.invalid.parent=JSPG0003E: a jsp:param \u00e9rv\u00e9nytelen sz\u00fcl\u0151c\u00edmk\u00e9vel rendelkezik
+jsp.param.invalid.parent.explanation=
+jsp.param.invalid.parent.useraction=
+
+jsp.param.name.empty=JSPG0004E: a jsp:param n\u00e9vattrib\u00fatum nem lehet \u00fcres
+jsp.param.name.empty.explanation=
+jsp.param.name.empty.useraction=
+
+jsp.error.tld.not.found=JSPG0005E: nem tal\u00e1lhat\u00f3 tld f\u00e1jl a(z) [{0}] uri c\u00edm [{1}] el\u0151tagj\u00e1hoz
+jsp.error.tld.not.found.explanation=
+jsp.error.tld.not.found.useraction=
+
+jsp.error.missing.attribute=JSPG0006E: Az Egy\u00e9ni c\u00edmk\u00e9nek hi\u00e1nyzik a k\u00f6telez\u0151 {0} attrib\u00fatuma
+jsp.error.missing.attribute.explanation=
+jsp.error.missing.attribute.useraction=
+
+jsp.error.bad.attribute=JSPG0007E: Az Egy\u00e9ni c\u00edmk\u00e9nek hi\u00e1nyzik a(z) {0} attrib\u00fatuma
+jsp.error.bad.attribute.explanation=
+jsp.error.bad.attribute.useraction=
+
+jsp.error.invalid.attributes=JSPG0008E: Az Egy\u00e9ni c\u00edmke \u00e9rv\u00e9nytelen attrib\u00fatumokkal rendelkezik
+jsp.error.invalid.attributes.explanation=
+jsp.error.invalid.attributes.useraction=
+
+jsp.error.unable.loadclass=JSPG0009E: Nem t\u00f6lthet\u0151 be a(z) {0} c\u00edmkekezel\u0151 oszt\u00e1ly
+jsp.error.unable.loadclass.explanation=
+jsp.error.unable.loadclass.useraction=
+
+jsp.root.has.no.attributes=JSPG0010E: a jsp:root elem nem rendelkezik attrib\u00fatumokkal
+jsp.root.has.no.attributes.explanation=
+jsp.root.has.no.attributes.useraction=
+
+jsp.error.usebean.missing.attribute=JSPG0011E: a jsp:useBean elemnek hi\u00e1nyzik egy azonos\u00edt\u00f3 attrib\u00fatuma
+jsp.error.usebean.missing.attribute.explanation=
+jsp.error.usebean.missing.attribute.useraction=
+
+jsp.error.usebean.missing.type=JSPG0012E: A jsp:useBean elemnek hi\u00e1nyzik egy t\u00edpusattrib\u00fatuma vagy egy oszt\u00e1lyattrib\u00fatuma
+jsp.error.usebean.missing.type.explanation=
+jsp.error.usebean.missing.type.useraction=
+
+jsp.error.usebean.duplicate=JSPG0013E: M\u00e1r meg van adva egy {0} azonos\u00edt\u00f3j\u00fa komponens 
+jsp.error.usebean.duplicate.explanation=
+jsp.error.usebean.duplicate.useraction=
+
+jsp.error.usebean.prohibited.as.session=JSPG0014E: A hat\u00f3k\u00f6r attrib\u00fatum nem lehet "session", ha a munkamenet oldal utas\u00edt\u00e1sa hamis
+jsp.error.usebean.prohibited.as.session.explanation=
+jsp.error.usebean.prohibited.as.session.useraction=
+
+jsp.error.usebean.not.both=JSPG0015E: A jsp:useBean nem rendelkezhet egyszerre egy oszt\u00e1ly \u00e9s egy beanName attrib\u00fatummal is (oszt\u00e1ly = [{0}] beanName =[{1}]). 
+jsp.error.usebean.not.both.explanation=
+jsp.error.usebean.not.both.useraction=
+
+jsp.error.usebean.invalid.scope=JSPG0016E: \u00e9rv\u00e9nytelen hat\u00f3k\u00f6r attrib\u00fatum \u00e9rt\u00e9k. Oldal, k\u00e9r\u00e9s, munkamenet vagy alkalmaz\u00e1s kell, hogy legyen. A megadott hat\u00f3k\u00f6r: {0}.
+jsp.error.usebean.invalid.scope.explanation=
+jsp.error.usebean.invalid.scope.useraction=
+
+jsp.error.usebean.contains.no.attributes=JSPG0017E: a jsp:useBean nem tartalmaz attrib\u00fatumokat
+jsp.error.usebean.contains.no.attributes.explanation=
+jsp.error.usebean.contains.no.attributes.useraction=
+
+jsp.error.expression.contains.no.cdata=JSPG0018E: A kifejez\u00e9s nem tartalmaz sz\u00f6veget
+jsp.error.expression.contains.no.cdata.explanation=
+jsp.error.expression.contains.no.cdata.useraction=
+
+jsp.error.invalid.value.for.session=JSPG0019E: A munkamenet utas\u00edt\u00e1shoz \u00e9rv\u00e9nytelen \u00e9rt\u00e9k tartozik
+jsp.error.invalid.value.for.session.explanation=
+jsp.error.invalid.value.for.session.useraction=
+
+jsp.error.page.invalid.buffer=JSPG0020E: A puffer utas\u00edt\u00e1shoz \u00e9rv\u00e9nytelen \u00e9rt\u00e9k tartozik
+jsp.error.page.invalid.buffer.explanation=
+jsp.error.page.invalid.buffer.useraction=
+
+jsp.error.page.invalid.autoflush=JSPG0021E: Az automatikus ki\u00edr\u00e1si utas\u00edt\u00e1shoz \u00e9rv\u00e9nytelen \u00e9rt\u00e9k tartozik
+jsp.error.page.invalid.autoflush.explanation=
+jsp.error.page.invalid.autoflush.useraction=
+
+jsp.error.page.invalid.threadsafe=JSPG0022E: A biztons\u00e1gos sz\u00e1lkezel\u00e9si utas\u00edt\u00e1s\u00e1hoz \u00e9rv\u00e9nytelen \u00e9rt\u00e9k tartozik
+jsp.error.page.invalid.threadsafe.explanation=
+jsp.error.page.invalid.threadsafe.useraction=
+
+jsp.error.page.invalid.iserrorpage=JSPG0023E: Az iserrorpage attrib\u00fatumhoz \u00e9rv\u00e9nytelen \u00e9rt\u00e9k tartozik
+jsp.error.page.invalid.iserrorpage.explanation=
+jsp.error.page.invalid.iserrorpage.useraction=
+
+jsp.error.page.directive.unknown=JSPG0024E: Ismeretlen {0} utas\u00edt\u00e1s
+jsp.error.page.directive.unknown.explanation=
+jsp.error.page.directive.unknown.useraction=
+
+jsp.error.page.directive.contains.no.attributes=JSPG0025E: Az oldalutas\u00edt\u00e1s nem tartalmaz attrib\u00fatumokat
+jsp.error.page.directive.contains.no.attributes.explanation=
+jsp.error.page.directive.contains.no.attributes.useraction=
+
+jsp.error.scriptlet.contains.no.cdata=JSPG0026E: A k\u00f3dr\u00e9sz nem tartalmaz sz\u00f6veget
+jsp.error.scriptlet.contains.no.cdata.explanation=
+jsp.error.scriptlet.contains.no.cdata.useraction=
+
+jsp.error.declaration.contains.no.cdata=JSPG0027E: A meghat\u00e1roz\u00e1s nem tartalmaz sz\u00f6veget
+jsp.error.declaration.contains.no.cdata.explanation=
+jsp.error.declaration.contains.no.cdata.useraction=
+
+jsp.error.jsptext.contains.no.cdata=JSPG0028E: a jsp:text elem nem tartalmaz sz\u00f6veget
+jsp.error.jsptext.contains.no.cdata.explanation=
+jsp.error.jsptext.contains.no.cdata.useraction=
+
+jsp.error.invoke.only.in.tagfiles=JSPG0029E: a megh\u00edv\u00e1si m\u0171velet csak c\u00edmkef\u00e1jlokban haszn\u00e1lhat\u00f3
+jsp.error.invoke.only.in.tagfiles.explanation=
+jsp.error.invoke.only.in.tagfiles.useraction=
+
+jsp.error.dobody.only.in.tagfiles=JSPG0030E: a doBody m\u0171velet csak c\u00edmk\u00e9ket tartalmaz\u00f3 f\u00e1jlokban haszn\u00e1lhat\u00f3
+jsp.error.dobody.only.in.tagfiles.explanation=
+jsp.error.dobody.only.in.tagfiles.useraction=
+
+jsp.error.tag.directive.only.in.tagfiles=JSPG0031E: a c\u00edmke utas\u00edt\u00e1s csak c\u00edmkef\u00e1jlokban haszn\u00e1lhat\u00f3
+jsp.error.tag.directive.only.in.tagfiles.explanation=
+jsp.error.tag.directive.only.in.tagfiles.useraction=
+
+jsp.error.attribute.directive.only.in.tagfiles=JSPG0032E: az attrib\u00fatum utas\u00edt\u00e1s csak c\u00edmkef\u00e1jlokban haszn\u00e1lhat\u00f3
+jsp.error.attribute.directive.only.in.tagfiles.explanation=
+jsp.error.attribute.directive.only.in.tagfiles.useraction=
+
+jsp.error.variable.directive.only.in.tagfiles=JSPG0033E: a v\u00e1ltoz\u00f3 utas\u00edt\u00e1s csak c\u00edmkef\u00e1jlokban haszn\u00e1lhat\u00f3
+jsp.error.variable.directive.only.in.tagfiles.explanation=
+jsp.error.variable.directive.only.in.tagfiles.useraction=
+
+jsp.error.internal.dtd.not.found=JSPG0034E: az xml dtd vagy a s\u00e9ma nem tal\u00e1lhat\u00f3
+jsp.error.internal.dtd.not.found.explanation=
+jsp.error.internal.dtd.not.found.useraction=
+
+jsp.error.page.encoding.mismatch=JSPG0035E: a jsp konfigur\u00e1ci\u00f3 oldalk\u00f3dol\u00e1sa nem felel meg egyes jsp \u00e9rt\u00e9knek
+jsp.error.page.encoding.mismatch.explanation=
+jsp.error.page.encoding.mismatch.useraction=
+
+jsp.error.failed.to.find.resource=JSPG0036E: A(z) {0} er\u0151forr\u00e1s nem tal\u00e1lhat\u00f3.
+jsp.error.failed.to.find.resource.explanation=
+jsp.error.failed.to.find.resource.useraction=
+
+jsp.error.page.invalid.iselignored=JSPG0037E: Az isELIgnored attrib\u00fatumhoz \u00e9rv\u00e9nytelen \u00e9rt\u00e9k tartozik
+jsp.error.page.invalid.iselignored.explanation=
+jsp.error.page.invalid.iselignored.useraction=
+
+jsp.error.page.invalid.dynamicattributes= JSPG0038E: a dynamicAttributes utas\u00edt\u00e1shoz \u00e9rv\u00e9nytelen \u00e9rt\u00e9k tartozik
+jsp.error.page.invalid.dynamicattributes.explanation=
+jsp.error.page.invalid.dynamicattributes.useraction=
+
+jsp.error.page.directive.only.in.jsps=JSPG0039E: az oldalutas\u00edt\u00e1s csak oldalakat tartalmaz\u00f3 f\u00e1jlokban haszn\u00e1lhat\u00f3
+jsp.error.page.directive.only.in.jsps.explanation=
+jsp.error.page.directive.only.in.jsps.useraction=
+
+jsp.error.static.include.circular.dependency=JSPG0040E: a(z) {0} m\u00e1r statikusan meg van adva
+jsp.error.static.include.circular.dependency.explanation=
+jsp.error.static.include.circular.dependency.useraction=
+
+jsp.error.tld.fn.invalid.signature.classnotfound=JSPG0041E: A kifejez\u00e9s nyelve f\u00fcggv\u00e9nyoszt\u00e1ly nem tal\u00e1lhat\u00f3. {0} {1} {2}
+jsp.error.tld.fn.invalid.signature.classnotfound.explanation=
+jsp.error.tld.fn.invalid.signature.classnotfound.useraction=
+
+jsp.error.tld.fn.invalid.signature.parenexpected=JSPG0042E: A(z) {0} {1} kifejez\u00e9s nyelve f\u00fcggv\u00e9nyhez z\u00e1r\u00f3jeleket kell haszn\u00e1lni
+jsp.error.tld.fn.invalid.signature.parenexpected.explanation=
+jsp.error.tld.fn.invalid.signature.parenexpected.useraction=
+
+jsp.error.tld.fn.invalid.signature=JSPG0043E: A(z) {0} {1} kifejez\u00e9s nyelve f\u00fcggv\u00e9nyhez \u00e9rv\u00e9nytelen al\u00e1\u00edr\u00e1s tartozik
+jsp.error.tld.fn.invalid.signature.explanation=
+jsp.error.tld.fn.invalid.signature.useraction=
+
+jsp.error.tld.fn.invalid.signature.commaexpected=JSPG0044E: A(z) {0} {1} kifejez\u00e9s nyelve f\u00fcggv\u00e9nyhez vessz\u0151t kell haszn\u00e1lni
+jsp.error.tld.fn.invalid.signature.commaexpected.explanation=
+jsp.error.tld.fn.invalid.signature.commaexpected.useraction=
+
+jsp.error.introspect.taghandler=JSPG0045E: Hiba t\u00f6rt\u00e9nt komponens inform\u00e1ci\u00f3 lek\u00e9r\u00e9se k\u00f6zben a k\u00f6vetkez\u0151 elem r\u00e9sz\u00e9re: {0}
+jsp.error.introspect.taghandler.explanation=
+jsp.error.introspect.taghandler.useraction=
+
+jsp.error.tagfile.not.found=JSPG0046E: A(z) {0} c\u00edmk\u00e9hez tartoz\u00f3 c\u00edmkef\u00e1jl nem tal\u00e1lhat\u00f3 
+jsp.error.tagfile.not.found.explanation=
+jsp.error.tagfile.not.found.useraction=
+
+jsp.error.taglib.not.found=JSPG0047E: A(z) {0} uri c\u00edmhez tartoz\u00f3 c\u00edmkek\u00f6nyvt\u00e1r nem tal\u00e1lhat\u00f3 
+jsp.error.taglib.not.found.explanation=
+jsp.error.taglib.not.found.useraction=
+
+jsp.error.tlv.invalid.page=JSPG0048E: Az oldal \u00e9rv\u00e9nyes\u00edt\u00e9se meghi\u00fasult a taglib \u00e9rv\u00e9nyes\u00edt\u0151 haszn\u00e1latakor a k\u00f6vetkez\u0151h\u00f6z: {0} : {1}
+jsp.error.tlv.invalid.page.explanation=
+jsp.error.tlv.invalid.page.useraction=
+
+jsp.error.compile.failed=JSPG0049E: a(z) {0} nem tudta leford\u00edtani a k\u00f6vetkez\u0151t : {1}
+jsp.error.compile.failed.explanation=
+jsp.error.compile.failed.useraction=
+
+jsp.error.tld.not.found.at.location=JSPG0050E: a tld f\u00e1jl nem tal\u00e1lhat\u00f3 a(z) {0} helyen
+jsp.error.tld.not.found.at.location.explanation=
+jsp.error.tld.not.found.at.location.useraction=
+
+jsp.error.page.directive.dup.value=JSPG0051E: T\u00f6bbsz\u00f6r szerepl\u0151 oldalutas\u00edt\u00e1s \u00e9rt\u00e9k : {0}
+jsp.error.page.directive.dup.value.explanation=
+jsp.error.page.directive.dup.value.useraction=
+
+jsp.error.tag.directive.dup.value=JSPG0052E: T\u00f6bbsz\u00f6r szerepl\u0151 c\u00edmke utas\u00edt\u00e1s \u00e9rt\u00e9k : {0}
+jsp.error.tag.directive.dup.value.explanation=
+jsp.error.tag.directive.dup.value.useraction=
+
+jsp.error.xml.no.prelude=JSPG0053E: A Jsp dokumentumok nem tartalmazhatnak el\u0151jeleket
+jsp.error.xml.no.prelude.explanation=
+jsp.error.xml.no.prelude.useraction=
+
+jsp.error.xml.no.coda=JSPG0054E: Jsp dokumentumok nem tartalmazhatnak k\u00f3dokat
+jsp.error.xml.no.coda.explanation=
+jsp.error.xml.no.coda.useraction=
+
+jsp.error.unable.to.create.xml.attr=JSPG0055E: Nem lehet xml attrib\u00fatumot l\u00e9trehozni a(z) [{0}] n\u00e9v [{1}] \u00e9rt\u00e9k\u00e9b\u0151l
+jsp.error.unable.to.create.xml.attr.explanation=
+jsp.error.unable.to.create.xml.attr.useraction=
+
+jsp.error.unable.to.create.xml.element=JSPG0056E: Nem lehet xml elemet l\u00e9trehozni a(z) [{0}] n\u00e9vt\u00e9r [{1}] nev\u00e9b\u0151l
+jsp.error.unable.to.create.xml.element.explanation=
+jsp.error.unable.to.create.xml.element.useraction=
+
+jsp.jspmodc.usage=JSPG0057I: JspModC -appDir <el\u00e9r\u00e9si-\u00fat> -tmpDir <el\u00e9r\u00e9si-\u00fat> -forceTranslation <igaz/hamis> -additionalClasspath <oszt\u00e1ly-el\u00e9r\u00e9si-\u00fat> -jspFile <jsp-f\u00e1jl>
+jsp.jspmodc.usage.explanation=
+jsp.jspmodc.usage.useraction=
+
+jsp.engine.info=JSPG0058I: IBM JSP 2.1-es Alrendszer
+jsp.engine.info.explanation=
+jsp.engine.info.useraction=
+
+jsp.error.invalid.jsp.syntax=JSPG0060E: \u00c9rv\u00e9nytelen [{0}] jsp szintaxis
+jsp.error.invalid.jsp.syntax.explanation=
+jsp.error.invalid.jsp.syntax.useraction=
+
+jsp.error.unknown.attribute=JSPG0061E: A(z) {0} attrib\u00fatum ismeretlen a(z) {1} jsp elem sz\u00e1m\u00e1ra
+jsp.error.unknown.attribute.explanation=
+jsp.error.unknown.attribute.useraction=
+
+jsp.error.unknown.runtime.attribute=JSPG0062E: A(z) {0} Request-time attrib\u00fatum ismeretlen a(z) {1} jsp elem sz\u00e1m\u00e1ra
+jsp.error.unknown.runtime.attribute.explanation=
+jsp.error.unknown.runtime.attribute.useraction=
+
+jsp.error.invalid.value.for.language=JSPG0063E: \u00c9rv\u00e9nytelen \u00e9rt\u00e9k tartozik a(z) {0} nyelv utas\u00edt\u00e1shoz
+jsp.error.invalid.value.for.language.explanation=
+jsp.error.invalid.value.for.language.useraction=
+
+# keep this around so at least NLS is done if this is added at a later time.
+jsp.error.invalid.value.for.buffer=JSPG0064E: A puffer utas\u00edt\u00e1s \u00e9rv\u00e9nyes \u00e9rt\u00e9keihez \u00e9rv\u00e9nytelen \u00e9rt\u00e9k tartozik. Ha az \u00e9rt\u00e9k m\u00e1s, mint nincs, ki kell \u00edrni a kb ut\u00f3tagot
+jsp.error.invalid.value.for.buffer.explanation=
+jsp.error.invalid.value.for.buffer.useraction=
+
+
+jsp.error.validating.el.nesting.el.not.allowed=JSPG0065E: Az EL c\u00edmke haszn\u00e1lata helytelen. EL c\u00edmk\u00e9k be\u00e1gyaz\u00e1sa nem enged\u00e9lyezett
+jsp.error.validating.el.nesting.el.not.allowed.explanation=
+jsp.error.validating.el.nesting.el.not.allowed.useraction=
+
+
+failed.to.parse.el.expression=JSPG0066E: Nem siker\u00fclt \u00e9rtelmezni a(z) {0} Kifejez\u00e9s nyelve c\u00edmk\u00e9t
+failed.to.parse.el.expression.explanation=
+failed.to.parse.el.expression.useraction=
+
+
+el.expression.not.allowed.for.attribute=JSPG0067E: Az EL c\u00edmke haszn\u00e1lata helytelen.  A(z) {0} jsp elem "{1}" attrib\u00fatuma sz\u00e1m\u00e1ra nem enged\u00e9lyezett a(z) "{2}" \u00e9rt\u00e9k.
+el.expression.not.allowed.for.attribute.explanation=
+el.expression.not.allowed.for.attribute.useraction=
+
+jsp.error.unmatched.tag=JSPG0068E: A(z) [{0}] jsp elem \u00e9rtelmez\u00e9se sor\u00e1n a rendszer nem egyez\u0151 c\u00edmk\u00e9t tal\u00e1lt
+jsp.error.unmatched.tag.explanation=
+jsp.error.unmatched.tag.useraction=
+
+jsp.error.unmatched.end.tag=JSPG0069E: A jsp elem \u00e9rtelmez\u00e9se sor\u00e1n a rendszer nem egyez\u0151 z\u00e1r\u00f3c\u00edmk\u00e9t tal\u00e1lt. A v\u00e1rt {0} helyett {1} tal\u00e1lhat\u00f3 a k\u00f6vetkez\u0151 helyen: {2}
+jsp.error.unmatched.end.tag.explanation=
+jsp.error.unmatched.end.tag.useraction=
+
+jsp.error.dup.url.pattern=JSPG0070E: T\u00f6bbsz\u00f6r szerepl\u0151 [{0}] URL minta tal\u00e1lhat\u00f3 a web alkalmaz\u00e1sok Jsp konfigur\u00e1ci\u00f3j\u00e1ban
+jsp.error.dup.url.pattern.explanation=
+jsp.error.dup.url.pattern.useraction=
+
+jsp.error.tld.load.failed=JSPG0071E: Nem t\u00f6lthet\u0151 be tld f\u00e1jl a(z) {0} webinf er\u0151forr\u00e1sb\u00f3l, \u00fczenet: {1}
+jsp.error.tld.load.failed.explanation=
+jsp.error.tld.load.failed.useraction=
+
+jsp.error.tld.load.failed.from.jar=JSPG0072E: Nem t\u00f6lthet\u0151 be tld f\u00e1jl a(z) {0} jar {1} er\u0151forr\u00e1s\u00e1b\u00f3l, \u00fczenet: {2}
+jsp.error.tld.load.failed.from.jar.explanation=
+jsp.error.tld.load.failed.from.jar.useraction=
+
+jsp.error.usebean.class.must.be.assignable.to.type=JSPG0073E: A(z) "{0}" useBean oszt\u00e1lynak hozz\u00e1rendelhet\u0151nek kell lennie a(z) {2} jsp elem "{1}" t\u00edpus\u00e1hoz 
+jsp.error.usebean.class.must.be.assignable.to.type.explanation=
+jsp.error.usebean.class.must.be.assignable.to.type.useraction=
+
+jsp.error.usebean.cannot.locate.class.to.validate.assignable=JSPG0074E: Nem tal\u00e1lhat\u00f3 az oszt\u00e1ly annak meg\u00e1llap\u00edt\u00e1s\u00e1hoz, hogy a(z) "{0}" useBean oszt\u00e1ly hozz\u00e1rendelhet\u0151-e a(z) {2} jsp elem "{1}" t\u00edpus\u00e1hoz
+jsp.error.usebean.cannot.locate.class.to.validate.assignable.explanation
+jsp.error.usebean.cannot.locate.class.to.validate.assignable.useraction
+
+jsp.error.multiple.attribute.definitions=JSPG0075E: A(z) {1} jsp elem sz\u00e1m\u00e1ra nem enged\u00e9lyezett a(z) {0} attrib\u00fatum t\u00f6bbsz\u00f6ri el\u0151fordul\u00e1sa
+jsp.error.multiple.attribute.definitions.explanation=
+jsp.error.multiple.attribute.definitions.useraction=
+
+jsp.error.missing.required.attribute=JSPG0076E: A(z) {1} jsp elemnek hi\u00e1nyzik a k\u00f6telez\u0151 {0} attrib\u00fatuma 
+jsp.error.missing.required.attribute.explanation=
+jsp.error.missing.required.attribute.useraction=
+
+jsp.error.end.of.file.reached=JSPG0077E: A(z) {0} feldolgoz\u00e1sa sor\u00e1n a program el\u00e9rte a f\u00e1jl v\u00e9g\u00e9t ezen a helyen: {1}
+jsp.error.end.of.file.reached.explanation=
+jsp.error.end.of.file.reached.useraction=
+
+
+jsp.body-content.directive.value.invalid=JSPG0078E: A c\u00edmke utas\u00edt\u00e1s body-content attrib\u00fatum\u00e1hoz \u00e9rv\u00e9nytelen \u00e9rt\u00e9k tartozik.  {0} \u00e9rt\u00e9k
+jsp.body-content.directive.value.invalid.explanation=
+jsp.body-content.directive.value.invalid.useraction=
+
+multiple.occurences.attribute.tagfile.name=JSPG0079E:  A n\u00e9v vagy \u00e1ln\u00e9v vagy "{2}" name-given attrib\u00fatum t\u00f6bbsz\u00f6r\u00f6s el\u0151fordul\u00e1sa nem enged\u00e9lyezett. a(z) "{2}" megadott \u00e9rt\u00e9ke a jsp elemekben: "{0}" \u00e9s "{1}"
+multiple.occurences.attribute.tagfile.name.explanation=
+multiple.occurences.attribute.tagfile.name.useraction=
+
+variable.attribute.nameGiven.nameFromAttribute.not.both=JSPG0080E:  A c\u00edmkef\u00e1jl v\u00e1ltoz\u00f3 utas\u00edt\u00e1s\u00e1nak nem lehet a name-given \u00e9s name-from-attribute attrib\u00fatumot is (name-given=[{1}] name-from-attribute=[{2}]) tartalmaz\u00f3 {0} jsp eleme. 
+variable.attribute.nameGiven.nameFromAttribute.not.both.explanation=
+variable.attribute.nameGiven.nameFromAttribute.not.both.useraction=
+
+missing.required.variable.attribute.nameGiven.nameFromAttribute=JSPG0081E:  A c\u00edmkef\u00e1jl v\u00e1ltoz\u00f3 utas\u00edt\u00e1sa {0} jsp elem\u00e9nek egy name-given vagy egy name-from-attribute attrib\u00fatumra van sz\u00fcks\u00e9ge. 
+missing.required.variable.attribute.nameGiven.nameFromAttribute.explanation=
+missing.required.variable.attribute.nameGiven.nameFromAttribute.useraction=
+
+invalid.value.for.variable.directive.attribute.scope=JSPG0082E:  \u00c9rv\u00e9nytelen \u00e9rt\u00e9k a(z) "{1}" v\u00e1ltoz\u00f3 utas\u00edt\u00e1s attrib\u00fatum hat\u00f3k\u00f6r {0} jsp eleme sz\u00e1m\u00e1ra. 
+invalid.value.for.variable.directive.attribute.scope.explanation=
+invalid.value.for.variable.directive.attribute.scope.useraction=
+
+required.attribute.alias.required.if.nameFromAttribute.specified=JSPG0083E: Hi\u00e1nyzik a k\u00f6telez\u0151 \u00e1ln\u00e9v attrib\u00fatum, amikor a(z) "{1}" name-from-attribute van megadva a(z) {0} jsp elem sz\u00e1m\u00e1ra
+required.attribute.alias.required.if.nameFromAttribute.specified.explanation=
+required.attribute.alias.required.if.nameFromAttribute.specified.useraction=
+
+attribute.alias.not.permitted.if.namegiven.specified=JSPG0084E: A(z) "{2}" \u00e1ln\u00e9v attrib\u00fatum nem enged\u00e9lyezet, ha a(z) "{1}" name-given attrib\u00fatum van megadva. {0} jsp elem
+attribute.alias.not.permitted.if.namegiven.specified.explanation=
+attribute.alias.not.permitted.if.namegiven.specified.useraction=
+
+jsp.error.loadclass.taghandler.attr=JSPG0085E: Hiba mer\u00fclt fel a(z) {0} elem c\u00edmke attrib\u00fatum\u00e1hoz megadott oszt\u00e1ly bet\u00f6lt\u00e9se k\u00f6zben
+jsp.error.loadclass.taghandler.attr.explanation=
+jsp.error.loadclass.taghandler.attr.useraction=
+
+jsp.error.include.type.invalid=JSPG0086E: A(z) {0} Statikus tartalmaz\u00e1snak ugyanolyan t\u00edpus\u00fanak kell lennie, mint a tartalmazott jsp. 
+jsp.error.include.type.invalid.explanation=
+jsp.error.include.type.invalid.useraction=
+
+jsp.error.encoding.mismatch.config.xml=JSPG0087E: Ellentmond\u00e1s tal\u00e1lhat\u00f3 a(z) {0} jsp be\u00e1ll\u00edt\u00e1s k\u00f3dol\u00e1sa \u00e9s a(z) {1} xml prol\u00f3gus k\u00f3dol\u00e1sa k\u00f6z\u00f6tt
+jsp.error.encoding.mismatch.config.xml.explanation=
+jsp.error.encoding.mismatch.config.xml.useraction=
+
+jsp.error.encoding.mismatch.config.pageencoding=JSPG0088E: Ellentmond\u00e1s tal\u00e1lhat\u00f3 a(z) {0} jsp be\u00e1ll\u00edt\u00e1s k\u00f3dol\u00e1sa \u00e9s a(z) {1} oldalutas\u00edt\u00e1s k\u00f3dol\u00e1sa k\u00f6z\u00f6tt
+jsp.error.encoding.mismatch.config.pageencoding.explanation=
+jsp.error.encoding.mismatch.config.pageencoding.useraction=
+
+jsp.error.encoding.mismatch.pageencoding.xml=JSPG0089E: Ellentmond\u00e1s tal\u00e1lhat\u00f3 a(z) {0} oldalutas\u00edt\u00e1s k\u00f3dol\u00e1sa \u00e9s a(z) {1} xml prol\u00f3gus k\u00f3dol\u00e1sa k\u00f6z\u00f6tt
+jsp.error.encoding.mismatch.pageencoding.xml.explanation=
+jsp.error.encoding.mismatch.pageencoding.xml.useraction=
+
+jsp.error.encoding.already.supplied=JSPG0090E: Ehhez a jsp elemhez m\u00e1r volt megadva pageEncoding hiba
+jsp.error.encoding.already.supplied.explanation=
+jsp.error.encoding.already.supplied.useraction=
+
+jsp.error.single.line.number=JSPG0091E: Hiba t\u00f6rt\u00e9nt a(z) {1} f\u00e1jl {0} sor\u00e1ban
+jsp.error.single.line.number.explanation=
+jsp.error.single.line.number.useraction=
+
+jsp.error.multiple.line.number=JSPG0092E: Hiba t\u00f6rt\u00e9nt a(z) {2} f\u00e1jl {0} \u00e9s {1} sora k\u00f6z\u00f6tt
+jsp.error.multiple.line.number.explanation=
+jsp.error.multiple.line.number.useraction=
+
+jsp.error.corresponding.servlet=JSPG0093E: Kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s hiba keletkezett a k\u00f6vetkez\u0151 f\u00e1jlb\u00f3l: {0} 
+jsp.error.corresponding.servlet.explanation=
+jsp.error.corresponding.servlet.useraction=
+
+jsp.error.el.function.prefix.not.found=JSPG0094E: A(z) {0} el f\u00fcggv\u00e9ny el\u0151tagja nem tal\u00e1lhat\u00f3
+jsp.error.el.function.prefix.not.found.explanation=
+jsp.error.el.function.prefix.not.found.useraction=
+
+jsp.error.el.function.not.found=JSPG0095E: A(z) {0} el f\u00fcggv\u00e9ny nem tal\u00e1lhat\u00f3 a(z) {1} uri c\u00edmmel rendelkez\u0151 tld-ben
+jsp.error.el.function.not.found.explanation=
+jsp.error.el.function.not.found.useraction=
+
+jsp.error.function.classnotfound=JSPG0096E: A(z) {0} nem t\u00f6lthet\u0151 be
+jsp.error.function.classnotfound.explanation=
+jsp.error.function.classnotfound.useraction=
+
+jsp.error.noFunctionMethod=JSPG0097E: A(z) {0} el f\u00fcggv\u00e9ny nem t\u00f6lthet\u0151 be
+jsp.error.noFunctionMethod.explanation=
+jsp.error.noFunctionMethod.useraction=
+
+jsp.error.output.has.body=JSPG0098E: a jsp:output c\u00edmk\u00e9nek nem lehet t\u00f6rzse
+jsp.error.output.has.body.explanation=
+jsp.error.output.has.body.useraction=
+
+jsp.error.root.invalid.version=JSPG0099E: A jsp:root v\u00e1ltozat attrib\u00fatuma \u00e9rv\u00e9nytelen: {0}
+jsp.error.root.invalid.version.explanation=
+jsp.error.root.invalid.version.useraction=
+
+jsp.error.tagfile.tag_dynamic_attrs_equals_attr_name=JSPG0100E: A Dinamikus attrib\u00fatumt\u00e9rk\u00e9p neve ugyanaz, mint a c\u00edmkeattrib\u00fatum utas\u00edt\u00e1s n\u00e9vattrib\u00fatuma 
+jsp.error.tagfile.tag_dynamic_attrs_equals_attr_name.explanation=
+jsp.error.tagfile.tag_dynamic_attrs_equals_attr_name.useraction=
+
+jsp.error.tagfile.tag_dynamic_attrs_equals_var_name_given=JSPG0101E: A Dinamikus attrib\u00fatumt\u00e9rk\u00e9p neve ugyanaz, mint a c\u00edmke varibke utas\u00edt\u00e1s name-given attrib\u00fatuma 
+jsp.error.tagfile.tag_dynamic_attrs_equals_var_name_given.explanation=
+jsp.error.tagfile.tag_dynamic_attrs_equals_var_name_given.useraction=
+
+jsp.error.jsptext.has.child.elements=JSPG0102E: a jsp:text nem tartalmazhat ut\u00f3d elemeket
+jsp.error.jsptext.has.child.elements.explanation=
+jsp.error.jsptext.has.child.elements.useraction=
+
+
+jsp.error.jspbody.emptybody.only=JSPG0105E: A(z) {0} c\u00edmke t\u00f6rzse csak jsp:attribute elemet tartalmazhat.  {1} tal\u00e1lhat\u00f3
+jsp.error.jspbody.emptybody.only.explanation=
+jsp.error.jspbody.emptybody.only.useraction=
+
+jsp.error.jspoutput.xml.only=JSPG0106E: A jsp:output elem csak JSP dokumentumokban \u00e9s c\u00edmkef\u00e1jlokban haszn\u00e1lhat\u00f3 az XML szintaxisban.
+jsp.error.jspoutput.xml.only.explanation=
+jsp.error.jspoutput.xml.only.useraction=
+
+jsp.error.attribute.fragment.cannot.be.scriplet=JSPG0107E: A JspFragment t\u00edpus\u00fa \u00e9rt\u00e9kkel rendelkez\u0151 jsp:attribute elem nem tartalmazhat {0} k\u00f3dr\u00e9szleteket.
+jsp.error.attribute.fragment.cannot.be.scriplet.explanation=
+jsp.error.attribute.fragment.cannot.be.scriplet.useraction=
+
+jsp.error.illegal.fragment.and.rtexprvalue=JSPG0108E: Nem enged\u00e9lyezett rtexprvalue megad\u00e1sa a t\u00f6red\u00e9k t\u00edpus\u00fa attrib\u00fatumhoz. rtexprvalue: {0}
+jsp.error.illegal.fragment.and.rtexprvalue.explanation=
+jsp.error.illegal.fragment.and.rtexprvalue.useraction=
+
+jsp.error.illegal.fragment.and.type=JSPG0109E: Nem enged\u00e9lyezett t\u00edpus megad\u00e1sa a t\u00f6red\u00e9k t\u00edpus\u00fa attrib\u00fatumhoz. t\u00edpus: {0}
+jsp.error.illegal.fragment.and.type.explanation=
+jsp.error.illegal.fragment.and.type.useraction=
+
+jsp.error.illegal.type.primitive=JSPG0110E: Nem enged\u00e9lyezett primit\u00edv oszt\u00e1lyk\u00e9nt megadni a c\u00edmkef\u00e1jl attrib\u00fatum\u00e1nak t\u00edpus\u00e1t. {0} primit\u00edv
+jsp.error.illegal.type.primitive.explanation=
+jsp.error.illegal.type.primitive.useraction=
+
+jsp.error.tagfile.cannot.locate.class.to.validate.primitive=JSPG0111E: Nem lehet ellen\u0151rizni, hogy a c\u00edmkef\u00e1jl attrib\u00fatum\u00e1nak {0} t\u00edpusa nem primit\u00edv oszt\u00e1ly-e.
+jsp.error.tagfile.cannot.locate.class.to.validate.primitive.explanation=
+jsp.error.tagfile.cannot.locate.class.to.validate.primitive.useraction=
+
+jsp.error.scripting.disabled.for.translation.unit=JSPG0112E: A fut\u00e1si id\u0151vel kapcsolatos kifejez\u00e9sekben le van tiltva a parancsf\u00e1jl k\u00e9sz\u00edt\u00e9se ehhez a ford\u00edt\u00e1si egys\u00e9ghez. 
+jsp.error.scripting.disabled.for.translation.unit.explanation=
+jsp.error.scripting.disabled.for.translation.unit.useraction=
+
+jsp.error.scriptlets.disabled.for.translation.unit=JSPG0113E: A k\u00f3dr\u00e9szek le vannak tiltva ehhez a ford\u00edt\u00e1si egys\u00e9ghez. 
+jsp.error.scriptlets.disabled.for.translation.unit.explanation=
+jsp.error.scriptlets.disabled.for.translation.unit.useraction=
+
+jsp.error.declarations.disabled.for.translation.unit=JSPG0114E: A meghat\u00e1roz\u00e1sok le vannak tiltva ehhez a ford\u00edt\u00e1si egys\u00e9ghez. 
+jsp.error.declarations.disabled.for.translation.unit.explanation=
+jsp.error.declarations.disabled.for.translation.unit.useraction=
+
+jsp.error.expressions.disabled.for.translation.unit=JSPG0115E: A kifejez\u00e9sek le vannak tiltva ehhez a ford\u00edt\u00e1si egys\u00e9ghez. 
+jsp.error.expressions.disabled.for.translation.unit.explanation=
+jsp.error.expressions.disabled.for.translation.unit.useraction=
+
+jsp.error.multiple.occurrences.directive=JSPG0116E: Nem enged\u00e9lyezett t\u00f6bb {0} oldalutas\u00edt\u00e1s megad\u00e1sa, ha azok k\u00fcl\u00f6nb\u00f6z\u0151 \u00e9rt\u00e9k\u0171ek.  els\u0151: {1} m\u00e1sodik: {2}
+jsp.error.multiple.occurrences.directive.explanation=
+jsp.error.multiple.occurrences.directive.useraction=
+
+jsp.error.invalid.taglib.directive.tagdir.uri=JSPG0117E: Nem enged\u00e9lyezett az uri c\u00edm \u00e9s a tagdir elem egy\u00fcttes megad\u00e1sa a c\u00edmket\u00e1r utas\u00edt\u00e1sban. uri: "[{0}]" tagdir: "[{1}]"
+jsp.error.invalid.taglib.directive.tagdir.uri.explanation=
+jsp.error.invalid.taglib.directive.tagdir.uri.useraction=
+
+jsp.error.invalid.taglib.directive.duplicate.uri=JSPG0118E: Nem enged\u00e9lyezett az uri c\u00edm t\u00f6bbsz\u00f6ri el\u0151fordul\u00e1s\u00e1nak megad\u00e1sa a c\u00edmket\u00e1r utas\u00edt\u00e1sban. uri: "[{0}]" uri: "[{1}]"
+jsp.error.invalid.taglib.directive.duplicate.uri.explanation=
+jsp.error.invalid.taglib.directive.duplicate.uri.useraction=
+
+jsp.error.invalid.taglib.directive.duplicate.tagdir=JSPG0119E: Nem enged\u00e9lyezett a tagdir elem t\u00f6bbsz\u00f6ri el\u0151fordul\u00e1s\u00e1nak megad\u00e1sa a c\u00edmket\u00e1r utas\u00edt\u00e1sban. tagdir: "[{0}]" tagdir: "[{1}]"
+jsp.error.invalid.taglib.directive.duplicate.tagdir.explanation=
+jsp.error.invalid.taglib.directive.duplicate.tagdir.useraction=
+
+jsp.error.page.pageencoding.mismatch=JSPG0120E: Nem enged\u00e9lyezett k\u00fcl\u00f6nb\u00f6z\u0151 \u00e9rt\u00e9kek megad\u00e1sa a pageEncoding attrib\u00fatum \u00e9s a megfelel\u0151 URI minta konfigur\u00e1ci\u00f3s eleme sz\u00e1m\u00e1ra. utas\u00edt\u00e1s: "[{0}]" konfigur\u00e1ci\u00f3: "[{1}]"
+jsp.error.page.pageencoding.mismatch.explanation=
+jsp.error.page.pageencoding.mismatch.useraction=
+
+jsp.error.jsp.attribute.defined.value.jsp.attribute=JSPG0121E: Nem enged\u00e9lyezett <jsp:attribute> elem haszn\u00e1lata egy <jsp:attribute> attrib\u00fatum \u00e9rt\u00e9k\u00e9nek a meghat\u00e1roz\u00e1s\u00e1hoz.
+jsp.error.jsp.attribute.defined.value.jsp.attribute.explanation=
+jsp.error.jsp.attribute.defined.value.jsp.attribute.useraction=
+
+jsp.error.el.function.cannot.parse=JSPG0122E: A(z) {0} EL f\u00fcggv\u00e9ny nem \u00e9rtelmezhet\u0151.
+jsp.error.el.function.cannot.parse.explanation=
+jsp.error.el.function.cannot.parse.useraction=
+
+jsp.error.unable.locate.tagname=JSPG0123E: A(z) {0} c\u00edmkeattrib\u00fatumhoz tartoz\u00f3 c\u00edmkeattrib\u00fatum inform\u00e1ci\u00f3 nem tal\u00e1lhat\u00f3.
+jsp.error.unable.locate.tagname.explanation=
+jsp.error.unable.locate.tagname.useraction=
+
+# jsp2.1ELwork
+jsp.error.attribute.cannot.be.request.time=JSPG0124E: A TLD vagy a c\u00edmkef\u00e1jl attrib\u00fatum utas\u00edt\u00e1sa szerint a(z) "[{0}]" attrib\u00fatum nem fogad el semmilyen kifejez\u00e9st. A kifejez\u00e9s \u00e9rt\u00e9ke: "[{1}]".
+jsp.error.attribute.cannot.be.request.time.explanation=
+jsp.error.attribute.cannot.be.request.time.useraction=
+
+jsp.error.attribute.cannot.be.request.time.fragment=JSPG0125E: A(z) {0} egy\u00e9ni c\u00edmkeattrib\u00fatum nem lehet fut\u00e1sid\u0151-t\u00f6red\u00e9k.
+jsp.error.attribute.cannot.be.request.time.fragment.explanation=
+jsp.error.attribute.cannot.be.request.time.fragment.useraction=
+
+jsp.error.page.pageencoding.dup=JSPG0126E: a(z) {0} jsp nem tartalmazhat egyn\u00e9l t\u00f6bb pageEncoding utas\u00edt\u00e1st
+jsp.error.page.pageencoding.dup.explanation=
+jsp.error.page.pageencoding.dup.useraction=
+
+jsp.error.multiple.occurrences.tag.directive=JSPG0127E: Nem enged\u00e9lyezett t\u00f6bb {0} c\u00edmke utas\u00edt\u00e1s megad\u00e1sa.  els\u0151: {1} m\u00e1sodik: {2}
+jsp.error.multiple.occurrences.tag.directive.explanation=
+jsp.error.multiple.occurrences.tag.directive.useraction=
+
+jsp.error.translation.failed=JSPG0128E: A(z) {0} JSP-t nem lehet leford\u00edtani.
+jsp.error.translation.failed.explanation=
+jsp.error.translation.failed.useraction=
+
+jsp.error.jsp.servlet.init.failed=JSPG0129E: A JspServlet inicializ\u00e1l\u00e1sa meghi\u00fasult
+jsp.error.jsp.servlet.init.failed.explanation=
+jsp.error.jsp.servlet.init.failed.useraction=
+
+jsp.error.include.flush.invalid.value=JSPG0130E: A(z) {0} ki\u00edr\u00e1si attrib\u00fatum \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen
+jsp.error.include.flush.invalid.value.explanation=
+jsp.error.include.flush.invalid.value.useraction=
+
+jsp.error.non_null_tei_and_var_subelems=JSPG0131E: Hiba: nem null tei \u00e9s v\u00e1ltoz\u00f3 alelemek tal\u00e1lhat\u00f3k
+jsp.error.non_null_tei_and_var_subelems.explanation=
+jsp.error.non_null_tei_and_var_subelems.useraction=
+
+jsp.error.tei.invalid.attributes=JSPG0132E: Hib\u00e1s attrib\u00fatumok tal\u00e1lhat\u00f3k ehhez az elemhez: {0} {1}. A hiba: {2}
+jsp.error.tei.invalid.attributes.explanation=
+jsp.error.tei.invalid.attributes.useraction=
+
+jsp.error.jsp.attribute.invalid.parent=JSPG0133E: A jsp:attribute sz\u00fcl\u0151j\u00e9nek szabv\u00e1nyos vagy egy\u00e9ni m\u0171veletnek kell lennie
+jsp.error.jsp.attribute.invalid.parent.explanation=
+jsp.error.jsp.attribute.invalid.parent.useraction=
+
+jsp.error.jsp.body.invalid.parent=JSPG0134E: A jsp:body sz\u00fcl\u0151je \u00e9rv\u00e9nytelen
+jsp.error.jsp.body.invalid.parent.explanation=
+jsp.error.jsp.body.invalid.parent.useraction=
+
+jsp.error.jsp.body.parent.nobody=JSPG0135E: A jsp:body sz\u00fcl\u0151j\u00e9t meghat\u00e1roz\u00f3 egy\u00e9ni c\u00edmk\u00e9nek nincs t\u00f6rzse a tld elem\u00e9ben
+jsp.error.jsp.body.parent.nobody.explanation=
+jsp.error.jsp.body.parent.nobody.useraction=
+
+jsp.error.tagfile.invoke.var_varreader=JSPG0136E: A jsp:invoke nem lehet egyszerre var \u00e9s varReader \u00e9rt\u00e9kre is be\u00e1ll\u00edtva
+jsp.error.tagfile.invoke.var_varreader.explanation=
+jsp.error.tagfile.invoke.var_varreader.useraction=
+
+jsp.error.tagfile.dobody.var_varreader=JSPG0137E: A jsp:doBody nem lehet egyszerre var \u00e9s varReader \u00e9rt\u00e9kre is be\u00e1ll\u00edtva
+jsp.error.tagfile.dobody.var_varreader.explanation=
+jsp.error.tagfile.dobody.var_varreader.useraction=
+
+jsp.error.tagfile.invoke.scope_var_varreader=JSPG0138E: A jsp:invoke elemet var vagy varReader \u00e9rt\u00e9kre kell be\u00e1ll\u00edtani a hat\u00f3k\u00f6r be\u00e1ll\u00edt\u00e1sakor
+jsp.error.tagfile.invoke.scope_var_varreader.explanation=
+jsp.error.tagfile.invoke.scope_var_varreader.useraction=
+
+jsp.error.tagfile.dobody.scope_var_varreader=JSPG0139E: A jsp:dobody elemet var vagy varReader \u00e9rt\u00e9kre kell be\u00e1ll\u00edtani a hat\u00f3k\u00f6r be\u00e1ll\u00edt\u00e1sakor
+jsp.error.tagfile.dobody.scope_var_varreader.explanation=
+jsp.error.tagfile.dobody.scope_var_varreader.useraction=
+
+jsp.error.tagfile.invoke.scope_invalid=JSPG0140E: a jsp:invoke hat\u00f3k\u00f6r \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen
+jsp.error.tagfile.invoke.scope_invalid.explanation=
+jsp.error.tagfile.invoke.scope_invalid.useraction=
+
+jsp.error.tagfile.dobody.scope_invalid=JSPG0141E: a jsp:doBody hat\u00f3k\u00f6r \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen 
+jsp.error.tagfile.dobody.scope_invalid.explanation=
+jsp.error.tagfile.dobody.scope_invalid.useraction=
+
+rt.expression.not.allowed.for.attribute=JSPG0142E: A(z) {0} jsp elem "{1}" attrib\u00fatuma sz\u00e1m\u00e1ra nem enged\u00e9lyezett a(z) "{2}" Fut\u00e1si id\u0151 kifejez\u00e9s \u00e9rt\u00e9k.
+rt.expression.not.allowed.for.attribute.explanation=
+rt.expression.not.allowed.for.attribute.useraction=
+
+jsp.error.jsp.attribute.prefix.mismatch=JSPG0143E: A jsp:attribute n\u00e9vattrib\u00fatum\u00e1nak el\u0151tagja k\u00fcl\u00f6nb\u00f6zik a sz\u00fcl\u0151\u00e9t\u0151l: {0} nem egyenl\u0151 {1}
+jsp.error.jsp.attribute.prefix.mismatch.explanation=
+jsp.error.jsp.attribute.prefix.mismatch.useraction=
+
+jsp.error.plugin.invalid.type=JSPG0144E: A "t\u00edpus" bedolgoz\u00f3 attrib\u00fatumhoz \u00e9rv\u00e9nytelen \u00e9rt\u00e9k tartozik: {0}
+jsp.error.plugin.invalid.type.explanation=
+jsp.error.plugin.invalid.type.useraction=
+
+jsp.error.element.unknown=JSPG0145E: Ismeretlen JSP elem : {0}
+jsp.error.element.unknown.explanation=
+jsp.error.element.unknown.useraction=
+
+jsp.error.include.directive.attribute.invalid=JSPG0146E: A tartalmaz\u00e1s utas\u00edt\u00e1shoz tartoz\u00f3 attrib\u00fatum \u00e9rv\u00e9nytelen: {0}
+jsp.error.include.directive.attribute.invalid.explanation=
+jsp.error.include.directive.attribute.invalid.useraction=
+
+jsp.error.static.include.value.missing=JSPG0147E: A tartalmaz\u00e1s utas\u00edt\u00e1shoz hi\u00e1nyzik a k\u00f6telez\u0151 "file" attrib\u00fatum.
+jsp.error.static.include.value.missing.explanation=
+jsp.error.static.include.value.missing.useraction=
+
+jsp.batchcompilerbase.jspfile.does.not.exist=JSPG0148E: A k\u00f6vetkez\u0151 JSP f\u00e1jl nem l\u00e9tezik: {0}
+jsp.batchcompilerbase.jspfile.does.not.exist.explanation=
+jsp.batchcompilerbase.jspfile.does.not.exist.useraction=
+
+jsp.batchcompilerbase.docroot.not.found=JSPG0149E: A k\u00f6vetkez\u0151 c\u00e9lk\u00f6nyvt\u00e1r nem l\u00e9tezik: {0}
+jsp.batchcompilerbase.docroot.not.found.explanation=
+jsp.batchcompilerbase.docroot.not.found.useraction=
+
+jsp.batchcompilerbase.docroot.not.directory=JSPG0150E: A k\u00f6vetkez\u0151 c\u00e9lk\u00f6nyvt\u00e1r neve nem egy k\u00f6nyvt\u00e1r: {0}
+jsp.batchcompilerbase.docroot.not.directory.explanation=
+jsp.batchcompilerbase.docroot.not.directory.useraction=
+
+jsp.batchcompilerbase.return.code=JSPG0151I: Visszat\u00e9r\u00e9si k\u00f3d: {0}
+jsp.batchcompilerbase.return.code.explanation=
+jsp.batchcompilerbase.return.code.useraction=
+
+jsp.batchcompilerbase.unable.to.create.classloader=JSPG0152E: Az oszt\u00e1lybet\u00f6lt\u0151 nem hozhat\u00f3 l\u00e9tre.
+jsp.batchcompilerbase.unable.to.create.classloader.explanation=
+jsp.batchcompilerbase.unable.to.create.classloader.useraction=
+
+jsp.batchcompiler.initializing.server=JSPG0153I: Kiszolg\u00e1l\u00f3 inicializ\u00e1l\u00e1sa...
+jsp.batchcompiler.initializing.server.explanation=
+jsp.batchcompiler.initializing.server.useraction=
+
+jsp.batchcompiler.exception.while.processing.arguments=JSPG0154E: Kiv\u00e9tel t\u00f6rt\u00e9nt a parancssori argumentumok feldolgoz\u00e1sa k\u00f6zben.
+jsp.batchcompiler.exception.while.processing.arguments.explanation=
+jsp.batchcompiler.exception.while.processing.arguments.useraction=
+
+jsp.batchcompiler.unknown.argument=JSPG0155E: Ismeretlen parancssori argumentum: {0}
+jsp.batchcompiler.unknown.argument.explanation=
+jsp.batchcompiler.unknown.argument.useraction=
+
+jsp.batchcompiler.using.default.log.level=JSPG0156W: Ismeretlen {0} napl\u00f3z\u00e1si szint, az alap\u00e9rtelmezett {1} szint haszn\u00e1lata
+jsp.batchcompiler.using.default.log.level.explanation=
+jsp.batchcompiler.using.default.log.level.useraction=
+
+jsp.batchcompiler.using.default.cell.name=JSPG0157I: A cella neve nincs megadva, az alap\u00e9rtelmezett {0} n\u00e9v haszn\u00e1lata
+jsp.batchcompiler.using.default.cell.name.explanation=
+jsp.batchcompiler.using.default.cell.name.useraction=
+
+jsp.batchcompiler.using.default.node.name=JSPG0158I: A csom\u00f3pont neve nincs megadva, az alap\u00e9rtelmezett {0} n\u00e9v haszn\u00e1lata
+jsp.batchcompiler.using.default.node.name.explanation=
+jsp.batchcompiler.using.default.node.name.useraction=
+
+jsp.batchcompiler.using.default.server.name=JSPG0159I: A kiszolg\u00e1l\u00f3 neve nincs megadva, az alap\u00e9rtelmezett {0} n\u00e9v haszn\u00e1lata
+jsp.batchcompiler.using.default.server.name.explanation=
+jsp.batchcompiler.using.default.server.name.useraction=
+
+jsp.batchcompiler.compiling.all.webmodules=JSPG0160I: Az \u00f6sszes webmodul ford\u00edt\u00e1sa
+jsp.batchcompiler.compiling.all.webmodules.explanation=
+jsp.batchcompiler.compiling.all.webmodules.useraction=
+
+jsp.batchcompiler.unable.to.initialize.server=JSPG0161E: A kiszolg\u00e1l\u00f3 inicializ\u00e1l\u00e1sa sikertelen.
+jsp.batchcompiler.unable.to.initialize.server.explanation=
+jsp.batchcompiler.unable.to.initialize.server.useraction=
+
+jsp.batchcompiler.exception.caught.while.adding.componentmanager.service=JSPG0162E: Kiv\u00e9tel t\u00f6rt\u00e9nt a ComponentManager szolg\u00e1ltat\u00e1s hozz\u00e1ad\u00e1sa k\u00f6zben.
+jsp.batchcompiler.exception.caught.while.adding.componentmanager.service.explanation=
+jsp.batchcompiler.exception.caught.while.adding.componentmanager.service.useraction=
+
+jsp.batchcompiler.exception.caught.while.initializing.batchcompiler.service=JSPG0163E: Hiba t\u00f6rt\u00e9nt a k\u00f6tegelt ford\u00edt\u00f3 szolg\u00e1ltat\u00e1s inicializ\u00e1l\u00e1sa k\u00f6zben.
+jsp.batchcompiler.exception.caught.while.initializing.batchcompiler.service.explanation=
+jsp.batchcompiler.exception.caught.while.initializing.batchcompiler.service.useraction=
+
+jsp.batchcompiler.repository.not.available=JSPG0164E: A t\u00e1rol\u00f3 szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.
+jsp.batchcompiler.repository.not.available.explanation=
+jsp.batchcompiler.repository.not.available.useraction=
+
+jsp.batchcompiler.reading.configfile=JSPG0165I: Konfigur\u00e1ci\u00f3s f\u00e1jl olvas\u00e1sa... \n
+jsp.batchcompiler.reading.configfile.explanation=
+jsp.batchcompiler.reading.configfile.useraction=
+
+jsp.batchcompiler.enterpriseapp.not.found=JSPG0166E: A(z) {0} V\u00e1llalati alkalmaz\u00e1s nem tal\u00e1lhat\u00f3
+jsp.batchcompiler.enterpriseapp.not.found.explanation=
+jsp.batchcompiler.enterpriseapp.not.found.useraction=
+
+jsp.batchcompiler.finished.reading.configfile=JSPG0167I: A konfigur\u00e1ci\u00f3s f\u00e1jl olvas\u00e1sa befejez\u0151d\u00f6tt.
+jsp.batchcompiler.finished.reading.configfile.explanation=
+jsp.batchcompiler.finished.reading.configfile.useraction=
+
+jsp.batchcompiler.successfully.exiting=JSPG0168I: A K\u00f6tegelt ford\u00edt\u00f3program sikeresen, hiba n\u00e9lk\u00fcl l\u00e9pett ki.
+jsp.batchcompiler.successfully.exiting.explanation=
+jsp.batchcompiler.successfully.exiting.useraction=
+
+jsp.batchcompiler.exiting.with.errors=JSPG0169I: A K\u00f6tegelt ford\u00edt\u00f3program hib\u00e1val l\u00e9pett ki.
+jsp.batchcompiler.exiting.with.errors.explanation=
+jsp.batchcompiler.exiting.with.errors.useraction=
+
+jsp.batchcompiler.error.reading.configuration=JSPG0170E: Hiba t\u00f6rt\u00e9nt a konfigur\u00e1ci\u00f3 olvas\u00e1sakor: {0} {1}
+jsp.batchcompiler.error.reading.configuration.explanation=
+jsp.batchcompiler.error.reading.configuration.useraction=
+
+jsp.batchcompiler.error.while.finding.server=JSPG0171E: Hiba t\u00f6rt\u00e9nt a kiszolg\u00e1l\u00f3 keres\u00e9se sor\u00e1n.
+jsp.batchcompiler.error.while.finding.server.explanation=
+jsp.batchcompiler.error.while.finding.server.useraction=
+
+jsp.batchcompiler.error.while.finding.enterpriseapp=JSPG0172E: Hiba t\u00f6rt\u00e9nt a v\u00e1llalati alkalmaz\u00e1s keres\u00e9se sor\u00e1n.
+jsp.batchcompiler.error.while.finding.enterpriseapp.explanation=
+jsp.batchcompiler.error.while.finding.enterpriseapp.useraction=
+
+jsp.batchcompiler.extracttodir.not.writable=JSPG0173E: A(z) {0} extractToDir k\u00f6nyvt\u00e1r nem \u00edrhat\u00f3
+jsp.batchcompiler.extracttodir.not.writable.explanation=
+jsp.batchcompiler.extracttodir.not.writable.useraction=
+
+jsp.batchcompiler.extracttodir.not.a.directory=JSPG0174E: A(z) {0} extractToDir k\u00f6nyvt\u00e1r nem egy k\u00f6nyvt\u00e1r
+jsp.batchcompiler.extracttodir.not.a.directory.explanation=
+jsp.batchcompiler.extracttodir.not.a.directory.useraction=
+
+jsp.batchcompiler.exception.caught.extracting.earfile=JSPG0175E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} ear f\u00e1jl kibont\u00e1sa k\u00f6zben.
+jsp.batchcompiler.exception.caught.extracting.earfile.explanation=
+jsp.batchcompiler.exception.caught.extracting.earfile.useraction=
+
+jsp.batchcompiler.war.path.does.not.exist=JSPG0176E: A(z) {0} WAR el\u00e9r\u00e9si \u00fat nem l\u00e9tezik
+jsp.batchcompiler.war.path.does.not.exist.explanation=
+jsp.batchcompiler.war.path.does.not.exist.useraction=
+
+jsp.batchcompiler.war.path.is.not.a.file=JSPG0177E: A(z) {0} WAR el\u00e9r\u00e9si \u00fat nem egy f\u00e1jl
+jsp.batchcompiler.war.path.is.not.a.file.explanation=
+jsp.batchcompiler.war.path.is.not.a.file.useraction=
+
+jsp.batchcompiler.ear.path.does.not.exist=JSPG0178E: A(z) {0} EAR el\u00e9r\u00e9si \u00fat nem l\u00e9tezik
+jsp.batchcompiler.ear.path.does.not.exist.explanation=
+jsp.batchcompiler.ear.path.does.not.exist.useraction=
+
+jsp.batchcompiler.ear.path.is.not.a.file=JSPG0179E: A(z) {0} EAR el\u00e9r\u00e9si \u00fat nem egy f\u00e1jl
+jsp.batchcompiler.ear.path.is.not.a.file.explanation=
+jsp.batchcompiler.ear.path.is.not.a.file.useraction=
+
+jsp.batchcompiler.webmodule.not.found=JSPG0180E: A(z) {0} webmodul nem tal\u00e1lhat\u00f3
+jsp.batchcompiler.webmodule.not.found.explanation=
+jsp.batchcompiler.webmodule.not.found.useraction=
+
+jsp.batchcompiler.removing.file=JSPG0183I: {0} elt\u00e1vol\u00edt\u00e1sa
+jsp.batchcompiler.removing.file.explanation=
+jsp.batchcompiler.removing.file.useraction=
+
+jsp.batchcompiler.extracting=JSPG0184I: {0} kibont\u00e1sa a k\u00f6vetkez\u0151be: {1}
+jsp.batchcompiler.extracting.explanation=
+jsp.batchcompiler.extracting.useraction=
+
+jsp.batchcompiler.done.extracting=JSPG0185I: A kibont\u00e1s befejez\u0151d\u00f6tt.
+jsp.batchcompiler.done.extracting.explanation=
+jsp.batchcompiler.done.extracting.useraction=
+
+jsp.batchcompiler.saving.zipfile=JSPG0186I: {0} ment\u00e9se
+jsp.batchcompiler.saving.zipfile.explanation=
+jsp.batchcompiler.saving.zipfile.useraction=
+
+jsp.batchcompiler.done.saving=JSPG0187I: A ment\u00e9s befejez\u0151d\u00f6tt.
+jsp.batchcompiler.done.saving.explanation=
+jsp.batchcompiler.done.saving.useraction=
+
+jsp.batchcompiler.exception.while.saving=JSPG0188E: Kiv\u00e9tel t\u00f6rt\u00e9nt a ment\u00e9si m\u0171velet sor\u00e1n.
+jsp.batchcompiler.exception.while.saving.explanation=
+jsp.batchcompiler.exception.while.saving.useraction=
+
+jsp.batchcompiler.must.supply.ear.path.or.war.path.or.enterpriseapp=JSPG0192E: Nem lett megadva EAR el\u00e9r\u00e9si \u00fat vagy WAR el\u00e9r\u00e9si \u00fat vagy V\u00e1llalati alkalmaz\u00e1sn\u00e9v.  A fentiek k\u00f6z\u00fcl egyet k\u00f6telez\u0151 megadni.
+jsp.batchcompiler.must.supply.ear.path.or.war.path.or.enterpriseapp.explanation=
+jsp.batchcompiler.must.supply.ear.path.or.war.path.or.enterpriseapp.useraction=
+
+jsp.batchcompiler.must.supply.only.one.of.ear.path.or.war.path.or.enterpriseapp=JSPG0193E: Csak egyet k\u00f6telez\u0151 megadni az EAR el\u00e9r\u00e9si \u00fat vagy a WAR el\u00e9r\u00e9si \u00fat vagy a V\u00e1llalati alkalmaz\u00e1sn\u00e9v k\u00f6z\u00fcl.
+jsp.batchcompiler.must.supply.only.one.of.ear.path.or.war.path.or.enterpriseapp.explanation=
+jsp.batchcompiler.must.supply.only.one.of.ear.path.or.war.path.or.enterpriseapp.useraction=
+
+jsp.batchcompiler.webmodule.name.being.ignored.because.war.path.given=JSPG0194W: A rendszer figyelmen k\u00edv\u00fcl hagyta a(z) {0} webmodulnevet, mivel WAR el\u00e9r\u00e9si \u00fat volt megadva.
+jsp.batchcompiler.webmodule.name.being.ignored.because.war.path.given.explanation=
+jsp.batchcompiler.webmodule.name.being.ignored.because.war.path.given.useraction=
+
+jsp.batchcompiler.exception.caught.extracting.warfile=JSPG0195E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} war f\u00e1jl kibont\u00e1sa k\u00f6zben.
+jsp.batchcompiler.exception.caught.extracting.warfile.explanation=
+jsp.batchcompiler.exception.caught.extracting.warfile.useraction=
+
+jsp.batchcompiler.extracttodir.must.not.overlap.with.ear.path=JSPG0196E: A JSP K\u00f6tegelt ford\u00edt\u00f3program extractToDir k\u00f6nyvt\u00e1ra \u00e9s az ear f\u00e1jl el\u00e9r\u00e9si \u00fatja nem fedhetik \u00e1t egym\u00e1st.
+jsp.batchcompiler.extracttodir.must.not.overlap.with.ear.path.explanation=
+jsp.batchcompiler.extracttodir.must.not.overlap.with.ear.path.useraction=
+
+jsp.batchcompiler.extracttodir.must.not.overlap.with.war.path=JSPG0197E: A JSP K\u00f6tegelt ford\u00edt\u00f3program extractToDir k\u00f6nyvt\u00e1ra \u00e9s a war f\u00e1jl el\u00e9r\u00e9si \u00fatja nem fedhetik \u00e1t egym\u00e1st.
+jsp.batchcompiler.extracttodir.must.not.overlap.with.war.path.explanation=
+jsp.batchcompiler.extracttodir.must.not.overlap.with.war.path.useraction=
+
+jsp.batchcompiler.extracttodir.does.not.exist=JSPG0198E: a(z) {0} extractToDir nem l\u00e9tezik
+jsp.batchcompiler.extracttodir.does.not.exist.explanation=
+jsp.batchcompiler.extracttodir.does.not.exist.useraction=
+
+jsp.batchcompiler.exception.caught.getting.warfile.list=JSPG0199E: Hiba t\u00f6rt\u00e9nt a war f\u00e1jlok list\u00e1j\u00e1nak beolvas\u00e1sa k\u00f6zben.
+jsp.batchcompiler.exception.caught.getting.warfile.list.explanation=
+jsp.batchcompiler.exception.caught.getting.warfile.list.useraction=
+
+jsp.batchcompiler.exception.caught.opening.earfile=JSPG0200E: Hiba t\u00f6rt\u00e9nt az ear f\u00e1jl megnyit\u00e1sa k\u00f6zben
+jsp.batchcompiler.exception.caught.opening.earfile.explanation=
+jsp.batchcompiler.exception.caught.opening.earfile.useraction=
+
+jsp.batchcompiler.exception.caught.opening.warfile=JSPG0202E: Hiba t\u00f6rt\u00e9nt a war f\u00e1jl megnyit\u00e1sa k\u00f6zben
+jsp.batchcompiler.exception.caught.opening.warfile.explanation=
+jsp.batchcompiler.exception.caught.opening.warfile.useraction=
+
+jsp.batchcompiler.ignoring.extracttodir=JSPG0203W: A rendszer figyelmen k\u00edv\u00fcl hagyta a(z) {0} ExtractToDir argumentumot, mivel az enterpriseapp.name volt megadva.
+jsp.batchcompiler.ignoring.extracttodir.explanation=
+jsp.batchcompiler.ignoring.extracttodir.useraction=
+
+jsp.batchcompiler.error.adding.variable.map=JSPG0204W: Kiv\u00e9tel t\u00f6rt\u00e9nt a v\u00e1ltoz\u00f3 lek\u00e9pez\u00e9s hozz\u00e1ad\u00e1sa k\u00f6zben. {0}
+jsp.batchcompiler.error.adding.variable.map.explanation=
+jsp.batchcompiler.error.adding.variable.map.useraction=
+
+jsp.error.building.visitor.order=JSPG0205W: Hiba t\u00f6rt\u00e9nt a JSP l\u00e1togat\u00f3k sorrendj\u00e9nek l\u00e9trehoz\u00e1sa k\u00f6zben. {0}
+jsp.error.building.visitor.order.explanation=
+jsp.error.building.visitor.order.useraction=
+
+jsp.error.failed.load.jsp-visitor-definition=JSPG0206E: Hiba a jsp-l\u00e1togat\u00f3-meghat\u00e1roz\u00e1s bet\u00f6lt\u00e9skor
+jsp.error.failed.load.jsp-visitor-definition.explanation=
+jsp.error.failed.load.jsp-visitor-definition.useraction=
+
+jsp.batchcompiler.exception.while.processing.arguments.filenotfound=JSPG0207E: Kiv\u00e9tel t\u00f6rt\u00e9nt a parancssori argumentumok feldolgoz\u00e1sa k\u00f6zben: F\u00e1jl: {0} \u00dczenet: {1}
+jsp.batchcompiler.exception.while.processing.arguments.filenotfound.explanation=
+jsp.batchcompiler.exception.while.processing.arguments.filenotfound.useraction=
+
+jsp.batchcompiler.compiletowebinf.being.ignored.because.compiletodir.given=JSPG0208W: A rendszer figyelmen k\u00edv\u00fcl hagyta a compileToWebInf argumentumot, mivel a(z) {0} compileToDir argumentum lett megadva.
+jsp.batchcompiler.compiletowebinf.being.ignored.because.compiletodir.given.explanation=
+jsp.batchcompiler.compiletowebinf.being.ignored.because.compiletodir.given.useraction=
+
+jsp.error.failed.read.jsp=JSPG0209E: A(z) {0}(0,0) nem tudta beolvasni a(z) {1} JSP elemet
+jsp.error.failed.read.jsp.explanation=
+jsp.error.failed.read.jsp.useraction=
+
+jsp.error.page.invalid.autoflush.buffer=JSPG0210E: Az automatikus ki\u00edr\u00e1s nem \u00e1ll\u00edthat\u00f3 be hamis \u00e9rt\u00e9kre, ha a puffer nincs \u00e9rt\u00e9kre van be\u00e1ll\u00edtva
+jsp.error.page.invalid.autoflush.buffer.explanation=
+jsp.error.page.invalid.autoflush.buffer.useraction=
+
+jsp.error.root.must.be.top=JSPG0211E: a jsp:root a dokumentum legfels\u0151 szint\u0171 eleme kell, hogy legyen
+jsp.error.root.must.be.top.explanation=
+jsp.error.root.must.be.top.useraction=
+
+jsp.error.root.only.in.jsp.document=JSPG0212E: a jsp:root csak JSP dokumentumokban haszn\u00e1lhat\u00f3
+jsp.error.root.only.in.jsp.document.explanation=
+jsp.error.root.only.in.jsp.document.useraction=
+
+jsp.error.no.doctype-root-element.attr=JSPG0213E: Hiba: a doctype-system attrib\u00fatum haszn\u00e1latakor meg kell adni egy doctype-root-element elemet.
+jsp.error.no.doctype-root-element.attr.explanation=
+jsp.error.no.doctype-root-element.attr.useraction=
+
+jsp.error.no.doctype-system.attr=JSPG0214E: Hiba: nincs megadva doctype-system attrib\u00fatum. 
+jsp.error.no.doctype-system.attr.explanation=
+jsp.error.no.doctype-system.attr.useraction=
+
+jsp.error.failed.translation.context.creation=JSPG0215E: Hiba: a be\u00e1ll\u00edtott ford\u00edt\u00e1si k\u00f6rnyezet l\u00e9trehoz\u00e1sa meghi\u00fasult a k\u00f6vetkez\u0151b\u0151l: {0}. Kiv\u00e9tel: {2}
+jsp.error.failed.translation.context.creation.explanation=
+jsp.error.failed.translation.context.creation.useraction=
+
+jsp.error.failed.load.context.class=JSPG0216E: Hiba: a(z) {0} be\u00e1ll\u00edtott k\u00f6rnyezeti oszt\u00e1ly bet\u00f6lt\u00e9se meghi\u00fasult
+jsp.error.failed.load.context.class.explanation=
+jsp.error.failed.load.context.class.useraction=
+
+jsp.error.failed.load.extension.processor.class=JSPG0217E: Hiba: a(z) {0} be\u00e1ll\u00edtott kiterjeszt\u00e9sfeldolgoz\u00f3 oszt\u00e1ly bet\u00f6lt\u00e9se meghi\u00fasult
+jsp.error.failed.load.extension.processor.class.explanation=
+jsp.error.failed.load.extension.processor.class.useraction=
+
+
+jsp.error.unable.locate.setter.method.attribute.for.tagname=JSPG0218E: Hiba: a(z) {0} c\u00edmkeoszt\u00e1ly {1} attrib\u00fatum\u00e1hoz a be\u00e1ll\u00edt\u00f3 met\u00f3dus keres\u00e9se meghi\u00fasult
+jsp.error.unable.locate.setter.method.attribute.for.tagname.explanation=
+jsp.error.unable.locate.setter.method.attribute.for.tagname.useraction=
+
+jsp.error.invalid.taglib.directive.attribute=JSPG0219E: Hiba: a(z) {1} \u00e9rt\u00e9kkel rendelkez\u0151 {0} taglib utas\u00edt\u00e1s attrib\u00fatum ismeretlen.
+jsp.error.invalid.taglib.directive.attribute.explanation=
+jsp.error.invalid.taglib.directive.attribute.useraction=
+
+jsp.error.invalid.taglib.directive.missing.required.prefix=JSPG0220E: Hiba: a taglib utas\u00edt\u00e1snak hi\u00e1nyzik a k\u00f6telez\u0151 attrib\u00fatum el\u0151tagja.
+jsp.error.invalid.taglib.directive.missing.required.prefix.explanation=
+jsp.error.invalid.taglib.directive.missing.required.prefix.useraction=
+
+jsp.batchcompiler.compiling.in.metainf.not.allowed=JSPG0221E: A META-INF k\u00f6nyvt\u00e1rban l\u00e9v\u0151 JSP elem ford\u00edt\u00e1sa nem enged\u00e9lyezett.  F\u00e1jl: {0}
+jsp.batchcompiler.compiling.in.metainf.not.allowed.explanation=
+jsp.batchcompiler.compiling.in.metainf.not.allowed.useraction=
+
+jsp.batchcompiler.if.removetempdir.true.enterpriseapp.must.be.given=JSPG0222E: Ha a removeTempDir \u00e9rt\u00e9ke igaz, az enterpriseApp.name \u00e9rt\u00e9k\u00e9t k\u00f6telez\u0151 megadni.
+jsp.batchcompiler.if.removetempdir.true.enterpriseapp.must.be.given.explanation=
+jsp.batchcompiler.if.removetempdir.true.enterpriseapp.must.be.given.useraction=
+
+jsp.batchcompiler.if.translatejsps.false.removetempdir.must.be.true=JSPG0223E: Ha a translate \u00e9rt\u00e9ke hamis, a removeTempDir \u00e9rt\u00e9k\u00e9nek igaznak kell lennie.
+jsp.batchcompiler.if.translatejsps.false.removetempdir.must.be.true.explanation=
+jsp.batchcompiler.if.translatejsps.false.removetempdir.must.be.true.useraction=
+
+jsp.batchcompiler.ignoring.scratchdir=JSPG0224W: A rendszer figyelmen k\u00edv\u00fcl hagyja a(z) [{0}] scratchdir JSP-alrendszer param\u00e9tert, mivel az ear.path vagy a war.path \u00e9rt\u00e9k meg lett adva.
+jsp.batchcompiler.ignoring.scratchdir.explanation=
+jsp.batchcompiler.ignoring.scratchdir.useraction=
+
+jsp.error.single.line.number.included.file=JSPG0225E: Hiba t\u00f6rt\u00e9nt a(z) {1} statikusan megadott f\u00e1jl {0} sor\u00e1ban
+jsp.error.single.line.number.included.file.explanation=
+jsp.error.single.line.number.included.file.useraction=
+
+jsp.error.multiple.line.number.included.file=JSPG0226E: Hiba t\u00f6rt\u00e9nt a(z) {2} statikusan megadott f\u00e1jl {0} \u00e9s {1} sora k\u00f6z\u00f6tt
+jsp.error.multiple.line.number.included.file.explanation=
+jsp.error.multiple.line.number.included.file.useraction=
+
+jsp.error.exception.caught.translating=JSPG0227E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} ford\u00edt\u00e1sa k\u00f6zben
+jsp.error.exception.caught.translating.explanation=
+jsp.error.exception.caught.translating.useraction=
+
+jsp.error.exception.caught.translating.included.file=JSPG0228E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} ford\u00edt\u00e1sa k\u00f6zben: hiba a(z) {1} statikusan megadott f\u00e1jlban
+jsp.error.exception.caught.translating.included.file.explanation=
+jsp.error.exception.caught.translating.included.file.useraction=
+
+JSPG0229=JSP feldolgoz\u00e1si hiba
+JSPG0230=HTTP hibak\u00f3d:
+JSPG0231=Hiba\u00fczenet:
+JSPG0232=Gy\u00f6k\u00e9rok:
+
+jsp.batchcompiler.exception.caught.while.getting.configuration.options=JSPG0233E: Kiv\u00e9tel t\u00f6rt\u00e9nt a konfigur\u00e1ci\u00f3s be\u00e1ll\u00edt\u00e1sok beolvas\u00e1sa k\u00f6zben.
+jsp.batchcompiler.exception.caught.while.getting.configuration.options.explanation=
+jsp.batchcompiler.exception.caught.while.getting.configuration.options.useraction=
+
+jsp.error.unable.to.locate.tld.jar.file=JSPG0234E: A JSP t\u00e1rol\u00f3 nem tal\u00e1lja a c\u00edmkek\u00f6nyvt\u00e1r le\u00edr\u00f3k (TLD) \u00e9rtelmez\u00e9s\u00e9hez sz\u00fcks\u00e9ges [{0}] Java arch\u00edv er\u0151forr\u00e1st.
+jsp.error.unable.to.locate.tld.jar.file.explanation=Egy JAR helyk\u00e9nt (web.xml f\u00e1jl vagy oldalutas\u00edt\u00e1s) meghat\u00e1rozott c\u00edmkek\u00f6nyvt\u00e1r URI c\u00edme nem tal\u00e1lhat\u00f3.
+jsp.error.unable.to.locate.tld.jar.file.useraction=Ellen\u0151rizze, hogy a JAR f\u00e1jl l\u00e9tezik-e \u00e9s el\u00e9rhet\u0151-e a webmodul sz\u00e1m\u00e1ra.
+
+jsp.error.failed.load.tei.class=JSPG0235E: A JSP nem tudta bet\u00f6lteni a(z) [{0}] TagExtraInfo oszt\u00e1lyt 
+jsp.error.failed.load.tei.class.explanation=A JSP nem tudja bet\u00f6lteni a c\u00edmkek\u00f6nyvt\u00e1r le\u00edr\u00f3ban (TLD) megadott TagExtraInfo oszt\u00e1lyt.
+jsp.error.failed.load.tei.class.useraction=Ellen\u0151rizze, hogy a TagExtraInfo oszt\u00e1ly l\u00e9tezik-e \u00e9s el\u00e9rhet\u0151-e a webmodul sz\u00e1m\u00e1ra.
+
+jsp.error.failed.load.tlv.class=JSPG0236E: A JSP nem tudta bet\u00f6lteni a(z) [{0}] TagLibraryValidator oszt\u00e1lyt
+jsp.error.failed.load.tlv.class.explanation=A JSP nem tudja bet\u00f6lteni a c\u00edmkek\u00f6nyvt\u00e1r le\u00edr\u00f3ban (TLD) megadott TagLibraryValidator oszt\u00e1lyt.
+jsp.error.failed.load.tlv.class.useraction=Ellen\u0151rizze, hogy a TagLibraryValidator oszt\u00e1ly l\u00e9tezik-e \u00e9s el\u00e9rhet\u0151-e a webmodul sz\u00e1m\u00e1ra.
+
+jsp.error.tagfile.nameFrom.noAttribute=JSPG0237E: A name-from-attribute attrib\u00fatum \u00e9rt\u00e9k\u00e9vel egyenl\u0151 \"{0}\" \u00e9rt\u00e9k\u0171 n\u00e9vattrib\u00fatummal rendelkez\u0151 attrib\u00fatum utas\u00edt\u00e1s nem tal\u00e1lhat\u00f3.
+jsp.error.tagfile.nameFrom.noAttribute.explanation=Magyar\u00e1zat
+jsp.error.tagfile.nameFrom.noAttribute.useraction=Felhaszn\u00e1l\u00f3i m\u0171velet
+
+jsp.error.tagfile.nameFrom.badAttribute=JSPG0238E: A(z) {0} sorban meghat\u00e1rozott, \"{1}\" n\u00e9vattrib\u00fatum\u00fa (mely a name-from-attribute attrib\u00fatum \u00e9rt\u00e9k\u00e9vel egyenl\u0151) attrib\u00fatum utas\u00edt\u00e1snak java.lang.String t\u00edpus\u00fanak kell lennie, ami \"required\" \u00e9s nem \"rtexprvalue\" \u00e9rt\u00e9k\u0171.
+jsp.error.tagfile.nameFrom.badAttribute.explanation=Magyar\u00e1zat
+jsp.error.tagfile.nameFrom.badAttribute.useraction=Felhaszn\u00e1l\u00f3i m\u0171velet
+
+jsp.error.jspoutput.conflict=JSPG0239E: <jsp:output>: a(z) \"{0}\" attrib\u00fatum k\u00fcl\u00f6nb\u00f6z\u0151 \u00e9rt\u00e9kekkel (r\u00e9gi: {1}, \u00faj: {2}) val\u00f3 t\u00f6bbsz\u00f6r\u00f6s el\u0151fordul\u00e1sa illeg\u00e1lis
+jsp.error.jspoutput.conflict.explanation=A <jsp:output> az attrib\u00fatum t\u00f6bb el\u0151fordul\u00e1s\u00e1t tartalmazza, \u00e9s azok k\u00fcl\u00f6nb\u00f6z\u0151 \u00e9rt\u00e9k\u0171ek.
+jsp.error.jspoutput.conflict.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az attrib\u00fatum t\u00f6bb el\u0151fordul\u00e1sa ugyanolyan \u00e9rt\u00e9k\u0171.
+
+# defect 396002
+jsp.error.prefix.redefined=JSPG0240E: A rendszer megpr\u00f3b\u00e1lta \u00fajra meghat\u00e1rozni a(z) \"{0}\" el\u0151tagot \"{1}\" el\u0151tagk\u00e9nt, amikor az az aktu\u00e1lis hat\u00f3k\u00f6rben m\u00e1r \"{2}\" el\u0151tagk\u00e9nt meg volt hat\u00e1rozva.
+jsp.error.prefix.redefined.explanation= A taglibrary el\u0151tag egy elt\u00e9r\u0151 URI c\u00edmmel m\u00e1r meg volt hat\u00e1rozva.
+jsp.error.prefix.redefined.useraction= Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az el\u0151tag csak egy URI c\u00edmmel van meghat\u00e1rozva.
+
+# defect 396002
+jsp.error.prefix.use_before_dcl=JSPG0241E: Az ebben a c\u00edmke utas\u00edt\u00e1sban meghat\u00e1rozott \"{0}\" el\u0151tagot kor\u00e1bban m\u00e1r haszn\u00e1lta egy m\u0171velet a(z) {1} f\u00e1jlban.
+jsp.error.prefix.use_before_dcl.explanation= A taglibrary el\u0151tagot m\u00e1r haszn\u00e1lt\u00e1k az el\u0151tagot meghat\u00e1roz\u00f3 c\u00edmke utas\u00edt\u00e1s el\u0151tt.
+jsp.error.prefix.use_before_dcl.useraction= Helyezze \u00e1t a c\u00edmke utas\u00edt\u00e1st az el\u0151tagot haszn\u00e1l\u00f3 \u00f6sszes m\u0171velet f\u00f6l\u00e9.
+
+# jsp2.1work
+jsp.error.page.invalid.trimdirectivewhitespaces=JSPG0242E: A trimDirectiveWhitespaces attrib\u00fatumhoz \u00e9rv\u00e9nytelen \u00e9rt\u00e9k tartozik
+jsp.error.page.invalid.trimdirectivewhitespaces.explanation=
+jsp.error.page.invalid.trimdirectivewhitespaces.useraction=
+
+# jsp2.1ELwork
+jsp.error.page.invalid.deferredsyntaxallowedasliteral=JSPG0243E: A deferredSyntaxAllowedAsLiteral attrib\u00fatumhoz \u00e9rv\u00e9nytelen \u00e9rt\u00e9k tartozik
+jsp.error.page.invalid.deferredsyntaxallowedasliteral.explanation=
+jsp.error.page.invalid.deferredsyntaxallowedasliteral.useraction=
+
+# jsp2.1ELwork
+jsp.error.el.template.deferred=JSPG0244E: A(z) \"{0}\" haszn\u00e1lata nem enged\u00e9lyezett sablon sz\u00f6vegben.
+jsp.error.el.template.deferred.explanation=
+jsp.error.el.template.deferred.useraction=
+
+# jsp2.1ELwork
+jsp.error.page.conflict.deferredsyntaxallowedasliteral=JSPG0245E: oldalutas\u00edt\u00e1s: a ''deferredSyntaxAllowedAsLiteral'' k\u00fcl\u00f6nb\u00f6z\u0151 \u00e9rt\u00e9kekkel (r\u00e9gi: {0}, \u00faj: {1}) val\u00f3 t\u00f6bbsz\u00f6r\u00f6s el\u0151fordul\u00e1sa illeg\u00e1lis
+jsp.error.page.conflict.deferredsyntaxallowedasliteral.explanation=
+jsp.error.page.conflict.deferredsyntaxallowedasliteral.useraction=
+
+# jsp2.1ELwork
+jsp.error.tag.conflict.deferredsyntaxallowedasliteral=JSPG0246E: C\u00edmke utas\u00edt\u00e1s: a ''deferredSyntaxAllowedAsLiteral'' k\u00fcl\u00f6nb\u00f6z\u0151 \u00e9rt\u00e9kekkel (r\u00e9gi: {0}, \u00faj: {1}) val\u00f3 t\u00f6bbsz\u00f6r\u00f6s el\u0151fordul\u00e1sa illeg\u00e1lis
+jsp.error.tag.conflict.deferredsyntaxallowedasliteral.explanation=
+jsp.error.tag.conflict.deferredsyntaxallowedasliteral.useraction=
+
+# jsp2.1ELwork
+jsp.error.page.conflict.trimdirectivewhitespaces=JSPG0247E: oldalutas\u00edt\u00e1s: a ''trimDirectiveWhitespaces'' k\u00fcl\u00f6nb\u00f6z\u0151 \u00e9rt\u00e9kekkel (r\u00e9gi: {0}, \u00faj: {1}) val\u00f3 t\u00f6bbsz\u00f6r\u00f6s el\u0151fordul\u00e1sa illeg\u00e1lis
+jsp.error.page.conflict.trimdirectivewhitespaces.explanation=
+jsp.error.page.conflict.trimdirectivewhitespaces.useraction=
+
+# jsp2.1ELwork
+jsp.error.tag.conflict.trimdirectivewhitespaces=JSPG0248E: C\u00edmke utas\u00edt\u00e1s: a ''trimDirectiveWhitespaces'' k\u00fcl\u00f6nb\u00f6z\u0151 \u00e9rt\u00e9kekkel (r\u00e9gi: {0}, \u00faj: {1}) val\u00f3 t\u00f6bbsz\u00f6r\u00f6s el\u0151fordul\u00e1sa illeg\u00e1lis
+jsp.error.tag.conflict.trimdirectivewhitespaces.explanation=
+jsp.error.tag.conflict.trimdirectivewhitespaces.useraction=
+
+# jsp2.1ELwork
+jsp.error.tag.conflict.attr=JSPG0249E: C\u00edmke utas\u00edt\u00e1s: a(z) \"{0}\" attrib\u00fatum k\u00fcl\u00f6nb\u00f6z\u0151 \u00e9rt\u00e9kekkel (r\u00e9gi: {1}, \u00faj: {2}) val\u00f3 t\u00f6bbsz\u00f6r\u00f6s el\u0151fordul\u00e1sa illeg\u00e1lis
+jsp.error.tag.conflict.attr.explanation=
+jsp.error.tag.conflict.attr.useraction=
+
+# jsp2.1ELwork
+jsp.error.tagdirective.badbodycontent=JSPG0250E: A c\u00edmke utas\u00edt\u00e1s t\u00f6rzs tartalma \u00e9rt\u00e9ke ({0}) \u00e9rv\u00e9nytelen.
+jsp.error.tagdirective.badbodycontent.explanation=
+jsp.error.tagdirective.badbodycontent.useraction=
+
+# jsp2.1ELwork
+jsp.error.deferredvaluetypewithoutdeferredvalue=JSPG0251E: Ha a 'deferredValue' \u00e9rt\u00e9ke nem 'true\u2019, nem adhat\u00f3 meg \u00e9rt\u00e9kt\u00edpus
+jsp.error.deferredvaluetypewithoutdeferredvalue.explanation=
+jsp.error.deferredvaluetypewithoutdeferredvalue.useraction=
+
+# jsp2.1ELwork
+jsp.error.deferredmethodsignaturewithoutdeferredmethod=JSPG0252E: Ha a 'deferredMethod' \u00e9rt\u00e9ke nem 'true\u2019, nem adhat\u00f3 meg met\u00f3dus-al\u00e1\u00edr\u00e1s
+jsp.error.deferredmethodsignaturewithoutdeferredmethod.explanation=
+jsp.error.deferredmethodsignaturewithoutdeferredmethod.useraction=
+
+# jsp2.1ELwork
+jsp.error.deferredmethodandvalue=JSPG0253E: Nem lehet a 'deferredValue' \u00e9s a 'deferredMethod' \u00e9rt\u00e9ke is 'true'
+jsp.error.deferredmethodandvalue.explanation=
+jsp.error.deferredmethodandvalue.useraction=
+
+# jsp2.1ELwork
+jsp.error.invalid.version=JSPG0254E: A(z) {0} helyen \u00e9rv\u00e9nytelen JSP v\u00e1ltozat lett megadva a c\u00edmkef\u00e1jlhoz
+jsp.error.invalid.version.explanation=
+jsp.error.invalid.version.useraction=
+
+# jsp2.1ELwork
+jsp.error.unknown_attribute_type=JSPG0255E: A(z) {0} attrib\u00fatumhoz tartoz\u00f3 attrib\u00fatumt\u00edpus ({1}) ismeretlen.
+jsp.error.unknown_attribute_type.explanation=
+jsp.error.unknown_attribute_type.useraction=
+
+# jsp2.1ELwork
+jsp.error.coerce_to_type=JSPG0256E: Nem lehet a(z) {0} attrib\u00fatum {2} \u00e9rt\u00e9k\u00e9t {1} t\u00edpus\u00fav\u00e1 alak\u00edtani.
+jsp.error.coerce_to_type.explanation=
+jsp.error.coerce_to_type.useraction=
+
+# jsp2.1work
+jsp.error.xml.spaceRequiredBeforeVersionInTextDecl=JSPG0257E: A sz\u00f6veges meghat\u00e1roz\u00e1sban a pszeudo attrib\u00fatum v\u00e1ltozata el\u0151tt k\u00f6telez\u0151 sz\u00f3k\u00f6zszer\u0171 karaktert megadni.
+jsp.error.xml.spaceRequiredBeforeVersionInTextDecl.explanation=
+jsp.error.xml.spaceRequiredBeforeVersionInTextDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.spaceRequiredBeforeVersionInXMLDecl=JSPG0258E: Az XML meghat\u00e1roz\u00e1sban a pszeudo attrib\u00fatum v\u00e1ltozata el\u0151tt k\u00f6telez\u0151 sz\u00f3k\u00f6zszer\u0171 karaktert megadni.
+jsp.error.xml.spaceRequiredBeforeVersionInXMLDecl.explanation=
+jsp.error.xml.spaceRequiredBeforeVersionInXMLDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.versionNotSupported=JSPG0259E: Az XML \"{0}\" v\u00e1ltozat\u00e1t a rendszer nem t\u00e1mogatja, csak az XML 1.0-\u00e1s v\u00e1ltozat t\u00e1mogatott.
+jsp.error.xml.versionNotSupported.explanation=
+jsp.error.xml.versionNotSupported.useraction=
+
+# jsp2.1work
+jsp.error.xml.encodingDeclRequired=JSPG0260E: A sz\u00f6veges meghat\u00e1roz\u00e1sban k\u00f6telez\u0151 a k\u00f3dol\u00e1s meghat\u00e1roz\u00e1sa.
+jsp.error.xml.encodingDeclRequired.explanation=
+jsp.error.xml.encodingDeclRequired.useraction=
+
+# jsp2.1work
+jsp.error.xml.versionInfoRequired=JSPG0261E: Az XML meghat\u00e1roz\u00e1sban k\u00f6telez\u0151 a v\u00e1ltozat megad\u00e1sa.
+jsp.error.xml.versionInfoRequired.explanation=
+jsp.error.xml.versionInfoRequired.useraction=
+
+# jsp2.1work
+jsp.error.xml.spaceRequiredBeforeEncodingInTextDecl=JSPG0262E: A sz\u00f6veges meghat\u00e1roz\u00e1sban a k\u00f3dol\u00e1si pszeudo attrib\u00fatum el\u0151tt k\u00f6telez\u0151 sz\u00f3k\u00f6zszer\u0171 karaktert megadni.
+jsp.error.xml.spaceRequiredBeforeEncodingInTextDecl.explanation=
+jsp.error.xml.spaceRequiredBeforeEncodingInTextDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.spaceRequiredBeforeEncodingInXMLDecl=JSPG0263E: Az XML meghat\u00e1roz\u00e1sban a k\u00f3dol\u00e1si pszeudo attrib\u00fatum el\u0151tt k\u00f6telez\u0151 sz\u00f3k\u00f6zszer\u0171 karaktert megadni.
+jsp.error.xml.spaceRequiredBeforeEncodingInXMLDecl.explanation=
+jsp.error.xml.spaceRequiredBeforeEncodingInXMLDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.eqRequiredInTextDecl=JSPG0264E: A sz\u00f6veges meghat\u00e1roz\u00e1sban a(z) \"{0}\" \u00e9rt\u00e9ket a '' = '' karakternek kell k\u00f6vetnie.
+jsp.error.xml.eqRequiredInTextDecl.explanation=
+jsp.error.xml.eqRequiredInTextDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.eqRequiredInXMLDecl=JSPG0265E: Az XML meghat\u00e1roz\u00e1sban a(z) \"{0}\" \u00e9rt\u00e9ket a '' = '' karakternek kell k\u00f6vetnie.
+jsp.error.xml.eqRequiredInXMLDecl.explanation=
+jsp.error.xml.eqRequiredInXMLDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.quoteRequiredInTextDecl=JSPG0266E: A sz\u00f6veges meghat\u00e1roz\u00e1sban a(z) \"{0}\" \u00e9rt\u00e9ket k\u00f6vet\u0151 \u00e9rt\u00e9knek z\u00e1r\u00f3jelbe tett karaktersorozatnak kell lennie.
+jsp.error.xml.quoteRequiredInTextDecl.explanation=
+jsp.error.xml.quoteRequiredInTextDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.quoteRequiredInXMLDecl=JSPG0267E: Az XML meghat\u00e1roz\u00e1sban a(z) \"{0}\" \u00e9rt\u00e9ket k\u00f6vet\u0151 \u00e9rt\u00e9knek z\u00e1r\u00f3jelbe tett karaktersorozatnak kell lennie.
+jsp.error.xml.quoteRequiredInXMLDecl.explanation=
+jsp.error.xml.quoteRequiredInXMLDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.invalidCharInTextDecl=JSPG0268E: \u00c9rv\u00e9nytelen XML karakter (Unicode: 0x{0}) tal\u00e1lhat\u00f3 a sz\u00f6vegmeghat\u00e1roz\u00e1sban.
+jsp.error.xml.invalidCharInTextDecl.explanation=
+jsp.error.xml.invalidCharInTextDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.invalidCharInXMLDecl=JSPG0269E: \u00c9rv\u00e9nytelen XML karakter (Unicode: 0x{0}) tal\u00e1lhat\u00f3 az XML meghat\u00e1roz\u00e1sban.
+jsp.error.xml.invalidCharInXMLDecl.explanation=
+jsp.error.xml.invalidCharInXMLDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.closeQuoteMissingInTextDecl=JSPG0270E: A sz\u00f6veges meghat\u00e1roz\u00e1sban hi\u00e1nyzik a(z) \"{0}\" \u00e9rt\u00e9ket k\u00f6vet\u0151 \u00e9rt\u00e9k lez\u00e1r\u00f3 id\u00e9z\u0151jele.
+jsp.error.xml.closeQuoteMissingInTextDecl.explanation=
+jsp.error.xml.closeQuoteMissingInTextDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.closeQuoteMissingInXMLDecl=JSPG0271E: Az XML meghat\u00e1roz\u00e1sban hi\u00e1nyzik a(z) \"{0}\" \u00e9rt\u00e9ket k\u00f6vet\u0151 \u00e9rt\u00e9k lez\u00e1r\u00f3 id\u00e9z\u0151jele.
+jsp.error.xml.closeQuoteMissingInXMLDecl.explanation=
+jsp.error.xml.closeQuoteMissingInXMLDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.encodingByteOrderUnsupported=JSPG0272E: A(z) \"{0}\" \u00e9rt\u00e9k k\u00f3dol\u00e1s\u00e1hoz haszn\u00e1lt b\u00e1jtsorrend nem t\u00e1mogatott.
+jsp.error.xml.encodingByteOrderUnsupported.explanation=
+jsp.error.xml.encodingByteOrderUnsupported.useraction=
+
+# jsp2.1work
+jsp.error.xml.encodingDeclInvalid=JSPG0273E: A(z) \"{0}\" k\u00f3dol\u00e1si n\u00e9v \u00e9rv\u00e9nytelen.
+jsp.error.xml.encodingDeclInvalid.explanation=
+jsp.error.xml.encodingDeclInvalid.useraction=
+
+# jsp2.1work
+jsp.error.xml.spaceRequiredBeforeStandalone=JSPG0274E: Az XML deklar\u00e1ci\u00f3ban az \u00f6n\u00e1ll\u00f3 pszeudo attrib\u00fatum el\u0151tt k\u00f6telez\u0151 sz\u00f3k\u00f6zt megadni.
+jsp.error.xml.spaceRequiredBeforeStandalone.explanation=
+jsp.error.xml.spaceRequiredBeforeStandalone.useraction=
+
+# jsp2.1work
+jsp.error.xml.sdDeclInvalid=JSPG0275E: Az \u00f6n\u00e1ll\u00f3 dokumentum meghat\u00e1roz\u00e1si \u00e9rt\u00e9knek \"igen\" vagy \"nem\", nem pedig \"{0}\" \u00e9rt\u00e9knek kell lennie.
+jsp.error.xml.sdDeclInvalid.explanation=
+jsp.error.xml.sdDeclInvalid.useraction=
+
+# jsp2.1work
+jsp.error.xml.noMorePseudoAttributes=JSPG0276E: nem enged\u00e9lyezett t\u00f6bb pszeudo attrib\u00fatum.
+jsp.error.xml.noMorePseudoAttributes.explanation=
+jsp.error.xml.noMorePseudoAttributes.useraction=
+
+# jsp2.1work
+jsp.error.xml.morePseudoAttributes=JSPG0277E: t\u00f6bb pszeudo attrib\u00fatumra van sz\u00fcks\u00e9g.
+jsp.error.xml.morePseudoAttributes.explanation=
+jsp.error.xml.morePseudoAttributes.useraction=
+
+# jsp2.1work
+jsp.error.xml.xmlDeclUnterminated=JSPG0278E: Az XML meghat\u00e1roz\u00e1snak \"?>\" jelkombin\u00e1ci\u00f3val kell v\u00e9gz\u0151dnie.
+jsp.error.xml.xmlDeclUnterminated.explanation=
+jsp.error.xml.xmlDeclUnterminated.useraction=
+
+# jsp2.1work
+jsp.error.xml.pseudoAttrNameExpected=JSPG0279E: egy pszeudo attrib\u00fatum nev\u00e9re van sz\u00fcks\u00e9g.
+jsp.error.xml.pseudoAttrNameExpected.explanation=
+jsp.error.xml.pseudoAttrNameExpected.useraction=
+
+# jsp2.1work
+jsp.error.xml.reservedPITarget=JSPG0280E: A(z) \"[xX][mM][lL]\" \u00e9rt\u00e9kkel megegyez\u0151 feldolgoz\u00e1si utas\u00edt\u00e1s c\u00e9lja nem megengedett.
+jsp.error.xml.reservedPITarget.explanation=
+jsp.error.xml.reservedPITarget.useraction=
+
+# jsp2.1work
+jsp.error.xml.spaceRequiredInPI=JSPG0281E: A feldolgoz\u00e1si utas\u00edt\u00e1s c\u00e9lja \u00e9s az adatok k\u00f6z\u00e9 sz\u00f3k\u00f6zszer\u0171 karaktert kell tenni.
+jsp.error.xml.spaceRequiredInPI.explanation=
+jsp.error.xml.spaceRequiredInPI.useraction=
+
+# jsp2.1work
+jsp.error.xml.invalidCharInPI=JSPG0282E: \u00c9rv\u00e9nytelen XML karakter (Unicode: 0x{0}) tal\u00e1lhat\u00f3 a feldolgoz\u00e1si utas\u00edt\u00e1sban.
+jsp.error.xml.invalidCharInPI.explanation=
+jsp.error.xml.invalidCharInPI.useraction=
+
+# jsp2.1work
+jsp.error.xml.invalidCharInContent=JSPG0283E: \u00c9rv\u00e9nytelen XML karakter (Unicode: 0x{0}) tal\u00e1lhat\u00f3 a dokumentumelem tartalm\u00e1ban.
+jsp.error.xml.invalidCharInContent.explanation=
+jsp.error.xml.invalidCharInContent.useraction=
+
+# jsp2.1work
+jsp.error.xml.operationNotSupported=JSPG0284E: A(z) {1} olvas\u00f3 nem t\u00e1mogatja a(z) \"{0}\" m\u0171veletet.
+jsp.error.xml.operationNotSupported.explanation=
+jsp.error.xml.operationNotSupported.useraction=
+
+# jsp2.1work
+jsp.error.xml.invalidASCII=JSPG0285E: A(z) \"{0}\" b\u00e1jt nem 7 bites ASCII karakter.
+jsp.error.xml.invalidASCII.explanation=
+jsp.error.xml.invalidASCII.useraction=
+
+# jsp2.1work
+jsp.error.xml.expectedByte=JSPG0286E: A program egy {1} b\u00e1jtos UTF-8 sorozat {0} b\u00e1jtj\u00e1t v\u00e1rja.
+jsp.error.xml.expectedByte.explanation=
+jsp.error.xml.expectedByte.useraction=
+
+# jsp2.1work
+jsp.error.xml.invalidByte=JSPG0287E: A(z) {1} b\u00e1jtos UTF-8 sorozat {0} b\u00e1jtja \u00e9rv\u00e9nytelen.
+jsp.error.xml.invalidByte.explanation=
+jsp.error.xml.invalidByte.useraction=
+
+# jsp2.1work
+jsp.error.xml.invalidHighSurrogate=JSPG0288E: Az UTF-8 sorozat kezd\u0151 helyettes\u00edt\u0151 bitjei nem haladhatj\u00e1k meg a 0x10 \u00e9rt\u00e9ket, de a tal\u00e1lt \u00e9rt\u00e9k: 0x{0}.
+jsp.error.xml.invalidHighSurrogate.explanation=
+jsp.error.xml.invalidHighSurrogate.useraction=
+
+# jsp2.1work
+jsp.error.prolog_config_encoding_mismatch=JSPG0289E: Az XML prol\u00f3gusban megadott oldalk\u00f3dol\u00e1s ({0}) elt\u00e9r a jsp-tulajdons\u00e1g-csoportban megadott k\u00f3dol\u00e1st\u00f3l ({1})
+jsp.error.prolog_config_encoding_mismatch.explanation=
+jsp.error.prolog_config_encoding_mismatch.useraction=
+
+# jsp2.1work
+jsp.error.invalid.tagdir=JSPG0290E: A(z) {0} c\u00edmkef\u00e1jl k\u00f6nyvt\u00e1r nem \u00edgy kezd\u0151dik: \"/WEB-INF/c\u00edmk\u00e9k\"
+jsp.error.invalid.tagdir.explanation=
+jsp.error.invalid.tagdir.useraction=
+
+# jsp2.1work
+jsp.error.invalid.implicit=JSPG0291E: A c\u00edmkef\u00e1jlhoz \u00e9rv\u00e9nytelen implicit TLD tartozik ezen a helyen: {0}, \u00e9rv\u00e9nytelen elem= [{1}].
+jsp.error.invalid.implicit.explanation=
+jsp.error.invalid.implicit.useraction=
+
+# jsp2.1work
+jsp.error.invalid.implicit.version=JSPG0292E: A(z) {0} helyen az implicit TLD-ben \u00e9rv\u00e9nytelen JSP v\u00e1ltozat lett megadva a c\u00edmkef\u00e1jlhoz, v\u00e1ltozat=[{1}].
+jsp.error.invalid.implicit.version.explanation=
+jsp.error.invalid.implicit.version.useraction=
+
+jsp.ard.nullRequestDispatcher=JSPG0293E: Az ARDRequestDispatcher null \u00e9rt\u00e9k\u0171.
+jsp.ard.nullRequestDispatcher.explanation=
+jsp.ard.nullRequestDispatcher.useraction=
+
+jsp.ard.executionError=JSPG0294E: Az ARD t\u00f6red\u00e9k null \u00e9rt\u00e9k\u0171.
+jsp.ard.executionError.explanation=
+jsp.ard.executionError.useraction=
+
+jsp.ard.notAFragmentResponse=JSPG0295E: Az objektum nem FragmentResponse.
+jsp.ard.notAFragmentResponse.explanation=
+jsp.ard.notAFragmentResponse.useraction=
+
+jsp.ard.nullFragmentResponse=JSPG0296E: A megadott hat\u00f3k\u00f6rben nem l\u00e9tezik ARD t\u00f6red\u00e9k.
+jsp.ard.nullFragmentResponse.explanation=
+jsp.ard.nullFragmentResponse.useraction=
+
+jsp.ard.importTagValidationError=JSPG0297E: Probl\u00e9ma mer\u00fclt fel a c\u00edmke import\u00e1l\u00e1s\u00e1val kapcsolatban.  Az url attrib\u00fatomot \u00e9s/vagy a var attrib\u00fatumot be kell \u00e1ll\u00edtani.
+jsp.ard.importTagValidationError.explanation=
+jsp.ard.importTagValidationError.useraction=
+
+jsp.error.pageContext.multipleInitOrRelease=JSPG0298E: A PageContext objektum m\u00e1r inicializ\u00e1lva lett vagy ki lett adva.  
+jsp.error.pageContext.multipleInitOrRelease.explanation=A PageContext objektumok inicializ\u00e1l\u00e1s\u00e1t \u00e9s kiad\u00e1s\u00e1t a JSP t\u00e1rol\u00f3 kezeli.
+jsp.error.pageContext.multipleInitOrRelease.useraction=A meghat\u00e1roz\u00e1s szerint ellen\u0151rizze, hogy nincsenek-e olyan alkalmaz\u00e1sok, melyek a JspFactory objektumokat haszn\u00e1lj\u00e1k.
+
+jsp.error.dynamicAttributes.translationException=JSPG0299E: A(z) {0} dinamikus attrib\u00fatum el\u0151tagja nem egy n\u00e9vt\u00e9rre van lek\u00e9pezve.
+jsp.error.dynamicAttributes.translationException.explanation=A dinamikus attrib\u00fatum el\u0151tagja nem egy n\u00e9vt\u00e9rre van lek\u00e9pezve.
+jsp.error.dynamicAttributes.translationException.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az el\u0151tag egy l\u00e9tez\u0151 n\u00e9vt\u00e9rre van-e lek\u00e9pezve.
+
+jsp.ard.badContext = JSPG0300E: A(z) k\u00f6rnyezethez nem {0} olvashat\u00f3 be a RequestDispatcher
+jsp.ard.badContext.explanation=Az ig\u00e9nyelt k\u00f6rnyezethez nem olvashat\u00f3 be RequestDispatcher.
+jsp.ard.badContext.useraction=Ellen\u0151rizze, hogy a c\u00edmke\u00e9rt\u00e9kek helyesek-e, \u00e9s hogy az ig\u00e9nyelt k\u00f6rnyezet l\u00e9tezik-e.
+
+jsp.error.translation.invalid.void.deferredMethodClass = JSPG0301E: A void \u00e9rt\u00e9ket visszaad\u00f3 k\u00e9sleltetett met\u00f3dushoz tartoz\u00f3 {0} attrib\u00fatum \u00e9rv\u00e9nytelen.
+jsp.error.translation.invalid.void.deferredMethodClass.explanation=A void \u00e9rt\u00e9ket visszaad\u00f3 k\u00e9sleltetett met\u00f3dusnak \u00e1tadott attrib\u00fatum nem lehet karaktersorozat liter\u00e1l.
+jsp.error.translation.invalid.void.deferredMethodClass.useraction=M\u00f3dos\u00edtsa az \u00e1tadott attrib\u00fatum \u00e9rt\u00e9k\u00e9t.
+
+jsp.jdk.not.at.17=JSPG8500W: A JDK 7 nincs haszn\u00e1latban, hi\u00e1ba volt a jdkSourceLevel \u00e9rt\u00e9ke 17.
+jsp.jdk.not.at.17.explanation=Jsp-k nem t\u00e1mogatott szinten t\u00f6rt\u00e9n\u0151 ford\u00edt\u00e1s\u00e1ra \u00e9rkezett k\u00e9r\u00e9s.
+jsp.jdk.not.at.17.useraction=Telep\u00edtse a JDK 7-es szintj\u00e9t, vagy m\u00f3dos\u00edtsa a jdkSourceLevel \u00e9rt\u00e9k\u00e9t 16-ra.
+
+jsp.jdk.version.exception=JSPG8501W: Kiv\u00e9tel t\u00f6rt\u00e9nt a java.version tulajdons\u00e1g ellen\u0151rz\u00e9sekor.
+jsp.jdk.version.exception.explanation=Probl\u00e9ma mer\u00fclt fel a java.version tulajdons\u00e1g \u00e9rtelmez\u00e9sekor.
+jsp.jdk.version.exception.useraction=Ellen\u0151rizze, hogy \u00e9rv\u00e9nyes-e a java v\u00e1ltozat.
+
+jsp.load.class.exception=JSPG0302W: A k\u00f6vetkez\u0151 JSP oszt\u00e1ly bet\u00f6lt\u00e9se nem siker\u00fclt: {0}. A kiv\u00e9tel: {1}
+jsp.load.class.exception.explanation=Probl\u00e9ma mer\u00fclt fel a JSP oszt\u00e1ly bet\u00f6lt\u00e9sekor.  A JSP t\u00e1rol\u00f3 megpr\u00f3b\u00e1lja bet\u00f6lteni az oszt\u00e1lyf\u00e1jlt az org.apache.jsp csomagn\u00e9vvel.
+jsp.load.class.exception.useraction=Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, akkor ind\u00edtsa \u00fajra az alkalmaz\u00e1st.
+
+jsp.jdksourcelevel.value =JSPG8502I: A jdkSourceLevel JSP attrib\u00fatum \u00e9rt\u00e9ke: \"{0}\".
+jsp.jdksourcelevel.value.explanation =
+jsp.jdksourcelevel.value.useraction =
+
+jsp.parse.tld.exception=JSPG0303W: A rendszer nem tudta \u00e9rtelmezni a k\u00f6vetkez\u0151 JSP c\u00edmkek\u00f6nyvt\u00e1r-le\u00edr\u00f3t: {0}. Az \u00e9rtelmez\u00e9si hib\u00e1hoz kapcsol\u00f3d\u00f3 kiv\u00e9tel: {1}
+jsp.parse.tld.exception.explanation=Probl\u00e9ma t\u00f6rt\u00e9nt a JSP c\u00edmkek\u00f6nyvt\u00e1r-le\u00edr\u00f3f\u00e1jl \u00e9rtelmez\u00e9sekor. Ezt a hib\u00e1t a helytelen\u00fcl form\u00e1zott XML f\u00e1jl okozhatja.
+jsp.parse.tld.exception.useraction=Ellen\u0151rizze a helytelen\u00fcl form\u00e1zott XML f\u00e1jlhoz tartoz\u00f3 JSP c\u00edmkek\u00f6nyvt\u00e1r-le\u00edr\u00f3f\u00e1jlt. Ha a probl\u00e9ma a helytelen\u00fcl form\u00e1zott XML f\u00e1jl kijav\u00edt\u00e1sa ut\u00e1n tov\u00e1bbra is fenn\u00e1ll, akkor ind\u00edtsa \u00fajra az alkalmaz\u00e1st.
+
+system.java.compiler.not.found=JSPG0304W: A useJDKCompiler JSP attrib\u00fatum true \u00e9rt\u00e9kre van be\u00e1ll\u00edtva, de a Java SDK ford\u00edt\u00f3 nem tal\u00e1lhat\u00f3. A JSP t\u00e1rol\u00f3 a term\u00e9kbe be\u00e1gyazott ford\u00edt\u00f3 seg\u00edts\u00e9g\u00e9vel ford\u00edtja le a JSP f\u00e1jlokat a webmodulban: {0}.
+system.java.compiler.not.found.explanation=A JSP t\u00e1rol\u00f3 nem tal\u00e1lta a rendszerford\u00edt\u00f3t, ami \u00e1ltal\u00e1ban azt jelzi, hogy a Java SDK jar f\u00e1jl (tools.jar) nem tal\u00e1lhat\u00f3 az oszt\u00e1ly\u00fatvonalon.
+system.java.compiler.not.found.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a Java SDK jar f\u00e1jl (tools.jar) szerepel az oszt\u00e1ly\u00fatvonalban \u00e9s ellen\u0151rizze, hogy a Java SDK t\u00e1mogatja-e a Java Compiler API-t. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg 199-es sz\u00e1m\u00fa Java specifik\u00e1ci\u00f3k\u00e9r\u00e9st.
