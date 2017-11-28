@@ -20,7 +20,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.annotation.ServletSecurity.EmptyRoleSemantic;
 import web.jar.base.FlexibleBaseServlet;
 
-@FormAuthenticationMechanismDefinition(loginToContinue = @LoginToContinue(errorPage="#{loginToContinuePropsBean.errorPage}", loginPage="#{loginToContinuePropsBean.loginPage}",  useForwardToLoginExpression="#{loginToContinuePropsBean.useForwardToLogin}"))
+@FormAuthenticationMechanismDefinition(loginToContinue = @LoginToContinue(errorPage="${loginToContinuePropsBean.errorPage}", loginPage="${loginToContinuePropsBean.loginPage}",  useForwardToLoginExpression="${loginToContinuePropsBean.useForwardToLogin}"))
 @WebServlet("/ImmediateFormLogin")
 @ServletSecurity(value = @HttpConstraint(EmptyRoleSemantic.DENY), httpMethodConstraints = {@HttpMethodConstraint(value = "GET", rolesAllowed = "group1")})
 public class JavaEESecFormLoginServlet extends FlexibleBaseServlet {
