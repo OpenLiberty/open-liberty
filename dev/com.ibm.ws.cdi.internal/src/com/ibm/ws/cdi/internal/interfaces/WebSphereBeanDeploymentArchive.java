@@ -12,7 +12,6 @@ package com.ibm.ws.cdi.internal.interfaces;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.BeanManager;
@@ -85,7 +84,7 @@ public interface WebSphereBeanDeploymentArchive extends BeanDeploymentArchive {
      *
      * @return the map of all classes known about by this BDA
      */
-    public Map<String, Class<?>> getAllClazzes();
+    public Set<String> getAllClazzes();
 
     /**
      * Get the BeanManager for this BDA
