@@ -195,6 +195,14 @@ public class EndpointActivationService implements XAResourceFactory, Application
                    && (a = ((ActivationParams) o)).activationSpec == activationSpec
                    && a.messageEndpointFactory == messageEndpointFactory;
         }
+
+        /**
+         * Hash code is not needed because we only store in a list, not a map. However, including this for correctness.
+         */
+        @Override
+        public int hashCode() {
+            return System.identityHashCode(activationSpec) + System.identityHashCode(messageEndpointFactory);
+        }
     }
 
     /**
