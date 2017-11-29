@@ -1,0 +1,49 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs20.client/resources/com/ibm/ws/jaxrs20/client/internal/resources/JAXRSClientMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS20 Client Code
+#RANGE 0700 - 0799
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# JAXRS 2.0 Client Configuration Message ------------------------
+error.jaxrs.client.configuration.timeout.valueinvalid=CWWKW0700E: \u60a8\u5728 JAX-RS \u5ba2\u6237\u7aef\u4e0a\u7684\u5c5e\u6027 {1} \u4e2d\u6307\u5b9a\u7684\u8d85\u65f6\u503c {0} \u65e0\u6548\u3002\u6b64\u503c\u5df2\u8bbe\u7f6e\u4e3a\u7f3a\u7701\u503c {2}\u3002{3} 
+error.jaxrs.client.configuration.timeout.valueinvalid.explanation=\u8d85\u65f6\u503c\u7c7b\u578b\u5fc5\u987b\u4e3a\u957f\u6574\u578b\u6216 int\u3002
+error.jaxrs.client.configuration.timeout.valueinvalid.useraction=\u8bf7\u5c06\u503c\u7c7b\u578b\u8bbe\u7f6e\u4e3a\u957f\u6574\u578b\u6216 int\u3002
+
+error.jaxrs.client.configuration.proxy.portinvalid=CWWKW0701E: \u60a8\u5728 JAX-RS \u5ba2\u6237\u7aef\u4e0a\u7684\u5c5e\u6027 {1} \u4e2d\u6307\u5b9a\u7684\u4ee3\u7406\u670d\u52a1\u5668\u7aef\u53e3\u503c {0} \u65e0\u6548\u3002\u6b64\u503c\u5df2\u8bbe\u7f6e\u4e3a\u7f3a\u7701\u503c {2}\u3002{3}
+error.jaxrs.client.configuration.proxy.portinvalid.explanation=\u4ee3\u7406\u670d\u52a1\u5668\u7aef\u53e3\u503c\u7684\u7c7b\u578b\u5fc5\u987b\u4e3a int\u3002
+error.jaxrs.client.configuration.proxy.portinvalid.useraction=\u8bf7\u5c06\u503c\u7c7b\u578b\u8bbe\u7f6e\u4e3a int\u3002
+
+error.jaxrs.client.configuration.proxy.typeinvalid=CWWKW0702E: \u60a8\u5728 JAX-RS \u5ba2\u6237\u7aef\u4e0a\u7684\u5c5e\u6027 {1} \u4e2d\u6307\u5b9a\u7684\u4ee3\u7406\u670d\u52a1\u5668\u7c7b\u578b\u503c {0} \u65e0\u6548\u3002\u6b64\u503c\u5df2\u8bbe\u7f6e\u4e3a\u7f3a\u7701\u503c {2}\u3002{3}
+error.jaxrs.client.configuration.proxy.typeinvalid.explanation=\u4ee3\u7406\u670d\u52a1\u5668\u7c7b\u578b\u503c\u5fc5\u987b\u4e3a HTTP \u6216 SOCKS\u3002
+error.jaxrs.client.configuration.proxy.typeinvalid.useraction=\u8bf7\u5c06\u503c\u8bbe\u7f6e\u4e3a HTTP \u6216 SOCKS\u3002
+
+#{0} is the ssl ref id configured in server.xml
+error.jaxrs.client.ssl.invalidsslconfig=CWWKW0703E: \u65e0\u6cd5\u521b\u5efa SSL \u5957\u63a5\u5b57\u5de5\u5382\uff0c\u56e0\u4e3a SSL \u5f15\u7528\u6807\u8bc6 {0} \u5728 server.xml \u6587\u4ef6\u4e2d\u4e0d\u5b58\u5728\u3002
+error.jaxrs.client.ssl.invalidsslconfig.explanation= \u9700\u8981\u6709\u6548\u5f15\u7528\u6807\u8bc6\u751f\u6210 SSL \u5957\u63a5\u5b57\u5de5\u5382\u3002server.xml \u6587\u4ef6\u4e2d\u6ca1\u6709\u6807\u8bc6\u4e3a {0} \u7684 SSL \u914d\u7f6e\u3002
+error.jaxrs.client.ssl.invalidsslconfig.useraction= \u8bf7\u5728 server.xml \u6587\u4ef6\u4e2d\u8bbe\u7f6e\u6709\u6548 SSL \u5f15\u7528\u6807\u8bc6\u3002
+no_saml_found_in_subject=CWWKW0704W: \u4e3b\u9898\u4e2d\u7f3a\u5c11\u6240\u9700 SAML \u4ee4\u724c\u3002
+no_saml_found_in_subject.explanation=\u4ece\u4e3b\u9898\u62bd\u53d6 SAML \u4ee4\u724c\u65f6\u53d1\u751f\u9519\u8bef\uff0c\u5f53\u524d\u4e3b\u9898\u4e2d\u627e\u4e0d\u5230 SAML \u5143\u7d20\u3002
+no_saml_found_in_subject.useraction=\u5982\u679c\u521b\u5efa run-as \u4e3b\u9898\uff0c\u8bf7\u786e\u4fdd\u5c06 SAML \u4ee4\u724c\u6dfb\u52a0\u5230\u4e3b\u9898\u3002\u6216\u8005\uff0c\u901a\u8fc7\u5728 SAML \u914d\u7f6e\u4e2d\u68c0\u67e5 includeTokenInSubject \u5c5e\u6027\uff0c\u786e\u4fdd\u670d\u52a1\u5668\u914d\u7f6e\u652f\u6301\u5411\u4e3b\u9898\u6dfb\u52a0 SAML \u4ee4\u724c\u3002
+
+failed_to_extract_saml_token_from_subject=CWWKW0705W: \u5c1d\u8bd5\u4f7f\u7528 SAML PropagationHelper API \u65f6\u53d1\u751f\u5f02\u5e38\u3002\u5f02\u5e38\u4e3a\uff1a[{0}]
+failed_to_extract_saml_token_from_subject.explanation=\u8c03\u7528 PropagationHelper API \u4ece\u4e3b\u4f53\u96c6\u4e2d\u68c0\u7d22 SAML \u4ee4\u724c\u65f6\u53d1\u751f\u5f02\u5e38\u3002
+failed_to_extract_saml_token_from_subject.useraction=\u786e\u4fdd\u5df2\u5728 server.xml \u4e2d\u6307\u5b9a samlWeb-2.0 \u529f\u80fd\u90e8\u4ef6\u3002\u53e6\u5916\uff0c\u8bf7\u67e5\u770b\u670d\u52a1\u5668\u65e5\u5fd7\u4ee5\u4e86\u89e3\u6709\u5173\u8be5\u5f02\u5e38\u7684\u5176\u4ed6\u4fe1\u606f\u3002
+
+failed_run_as_subject=CWWKW0706E: \u5c1d\u8bd5\u83b7\u53d6 RunAsSubject \u65f6\u53d1\u751f\u5f02\u5e38\u3002\u5f02\u5e38\u4e3a\uff1a[{0}]\u3002
+failed_run_as_subject.explanation=\u83b7\u53d6 RunAsSubject \u65f6\u53d1\u751f\u5f02\u5e38\u3002
+failed_run_as_subject.useraction=\u786e\u4fdd\u6b63\u786e\u914d\u7f6e\u548c\u542f\u52a8\u4e86\u670d\u52a1\u5668\u3002

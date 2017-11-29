@@ -1,0 +1,43 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.javaeesec/resources/com/ibm/ws/security/javaeesec/cdi/internal/resources/JavaEESecMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Java EE Security 1.0 CDI
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS1925 - CWWKS1949
+
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1925E: Implementace aplikace se nezda\u0159ila, proto\u017ee bylo nalezeno v\u00edce implementac\u00ed HttpAuthenticationMechanism. Seznam t\u0159\u00edd je {0}. S nejv\u011bt\u0161\u00ed pravd\u011bpodobnost\u00ed se jedn\u00e1 o probl\u00e9m balen\u00ed aplikace. Ujist\u011bte se, \u017ee v aplikaci existuje pouze jedna implementace HttpAuthenticationMechanism.
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=Implementace aplikace se nezda\u0159ila, proto\u017ee bylo nalezeno v\u00edce implementac\u00ed HttpAuthenticationMechanism. Tato situace nen\u00ed povolena.
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Ujist\u011bte se, \u017ee v aplikaci existuje pouze jedna implementace HttpAuthenticationMechanism.
+
+JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST=CWWKS1926E: Objekt typu LoginToContinueProperties bean neexistuje. Formul\u00e1\u0159ov\u00e9 p\u0159ihl\u00e1\u0161en\u00ed nen\u00ed povoleno. Ujist\u011bte se, \u017ee aplikace je anotov\u00e1na anotac\u00ed LoginToContinue.
+JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST.explanation=Objekt typu LoginToContinueProperties, kter\u00fd je nezbytn\u00fd pro ov\u011b\u0159en\u00ed formul\u00e1\u0159ov\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed, neexistuje.
+JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST.useraction=Ujist\u011bte se, \u017ee aplikace je anotov\u00e1na anotac\u00ed LoginToContinue v anotaci FormAuthenticationMechanismDefinition nebo CustomFormAuthenticationMechanismDefinition.
+
+JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED=CWWKS1927E: Dodan\u00e1 t\u0159\u00edda pov\u011b\u0159en\u00ed {0} nen\u00ed podporov\u00e1na t\u0159\u00eddou CustomFormHttpAuthenticationMechanism. Pou\u017eijte pro ov\u011b\u0159en\u00ed bu\u010f javax.security.enterprise.credential.UsernamePasswordCredential, nebo javax.security.enterprise.credential.BasicAuthenticationCredential.
+JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.explanation=Dodan\u00e1 t\u0159\u00edda pov\u011b\u0159en\u00ed pro ov\u011b\u0159en\u00ed nen\u00ed podporov\u00e1na t\u0159\u00eddou CustomFormHttpAuthenticationMechanism. Pou\u017eijte pro ov\u011b\u0159en\u00ed bu\u010f javax.security.enterprise.credential.UsernamePasswordCredential, nebo javax.security.enterprise.credential.BasicAuthenticationCredential.
+JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.useraction=Ujist\u011bte se, \u017ee podporovan\u00e1 t\u0159\u00edda pov\u011b\u0159en\u00ed se pou\u017e\u00edv\u00e1 pro ov\u011b\u0159ov\u00e1n\u00ed na z\u00e1klad\u011b vlastn\u00edho formul\u00e1\u0159e.
+
+JAVAEESEC_CDI_ERROR_USERNAME_NULL=CWWKS1928E: Hlavn\u00ed n\u00e1zev je null nebo hlavn\u00ed objekt neexistuje. Ujist\u011bte se, \u017ee CredentialValidationResult obsahuje platn\u00fd hlavn\u00ed objekt.
+JAVAEESEC_CDI_ERROR_USERNAME_NULL.explanation=Hlavn\u00ed objekt Principal v dan\u00e9m objektu CredentialValidationResult nen\u00ed platn\u00fd. Bu\u010f je null, nebo nem\u00e1 platn\u00fd n\u00e1zev.
+JAVAEESEC_CDI_ERROR_USERNAME_NULL.useraction=Pokud aplikace poskytuje IdentityStore, ujist\u011bte se, \u017ee vrac\u00ed platn\u00fd hlavn\u00ed objekt v CredentialValidationResult.
+
+JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL=CWWKS1929E: UniqueId je null. Ujist\u011bte sek, \u017ee CredentialValidationResult obsahuje platn\u00e9 UniqueId.
+JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.explanation=UniqueId v dan\u00e9m objektu CredentialValidationResult je null.
+JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.useraction=Pokud aplikace poskytuje IdentityStore, ujist\u011bte se, \u017ee vrac\u00ed platn\u00e9 UniqueId v CredentialValidationResult.
+
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER=CWWKS1930W: Objekt typu IdentityStoreHandler bean nebyl nalezen. Pou\u017eijte registr u\u017eivatel\u016f, kter\u00fd je definov\u00e1n souborem server.xml. Objekt typu IdentityStoreHandler se vytvo\u0159\u00ed, kdy\u017e existuje alespo\u0148 jeden objekt typu IdentityStore bean. Pokud tato aplikace hodl\u00e1 pou\u017e\u00edt IdentityStore, ujist\u011bte se, \u017ee je spr\u00e1vn\u011b nakonfigurov\u00e1na. 
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.explanation=Objekt typu IdentityStoreHandler bean nebyl nalezen. Pokud tato aplikace hodl\u00e1 pou\u017e\u00edt IdentityStore, ujist\u011bte se, \u017ee je spr\u00e1vn\u011b nakonfigurov\u00e1na. Objekt typu IdentityStoreHandler se vytvo\u0159\u00ed, kdy\u017e existuje alespo\u0148 jeden objekt typu IdentityStore bean.
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.useraction=Pokud tato aplikace hodl\u00e1 pou\u017e\u00edt IdentityStore, ujist\u011bte se, \u017ee je spr\u00e1vn\u011b nakonfigurov\u00e1na.

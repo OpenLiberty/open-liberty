@@ -1,0 +1,26 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.logging/resources/com/ibm/ws/logging/internal/resources/FFDCMessages.nlsprops
+#COMPONENTPREFIX FFDC
+#COMPONENTNAMEFOR FFDC WebSphere First Failure Data Capture
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# Shared/reused from tWAS
+INCIDENTSTREAMIMPL_FAILED_TO_OPEN_FILE=FFDC0011I: FFDC non \u00e8 stato in grado di aprire o creare un file di flusso degli incidenti {0}. Eccezione: {1}
+INCIDENTSTREAMIMPL_FAILED_TO_OPEN_FILE.explanation=Non \u00e8 stato possibile aprire o creare un file di flusso degli incidenti. Il file system che contiene il file di log non \u00e8 disponibile o il processo che esegue FFDC non dispone delle autorizzazioni per la creazione e l'accesso ai file nella directory di log.
+INCIDENTSTREAMIMPL_FAILED_TO_OPEN_FILE.useraction=Verificare che il file system che contiene la directory di log sia disponibile e che il processo che esegue FFDC disponga delle autorizzazioni per la creazione e l'accesso ai file nella directory di log.
+
+# Provided to tWAS
+lwas.FFDCIncidentEmitted=FFDC1015I: \u00c8 stato creato un incidente FFDC: "{0}" in {1}
+lwas.FFDCIncidentEmitted.explanation=\u00c8 stato creato un incidente FFDC nell'ubicazione di log configurata.
+lwas.FFDCIncidentEmitted.useraction=Non \u00e8 necessaria alcuna azione.

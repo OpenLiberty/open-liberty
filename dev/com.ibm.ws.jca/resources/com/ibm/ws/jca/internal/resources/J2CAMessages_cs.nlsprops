@@ -1,0 +1,160 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jca/resources/com/ibm/ws/jca/internal/resources/J2CAMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA JCA
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+J2CA8500.config.prop.error=J2CA8500E: Do\u0161lo k chyb\u011b p\u0159i pokusu o konfiguraci vlastnosti {0} prvku konfigurace {1} na t\u0159\u00edd\u011b {2}: {3}.
+J2CA8500.config.prop.error.explanation=V d\u016fsledku chyby nelze vlastnost na uveden\u00e9m prost\u0159edku nakonfigurovat.
+J2CA8500.config.prop.error.useraction=Prove\u010fte zm\u011bny konfigurace prost\u0159edku a opakujte akci.
+ 
+J2CA8501.config.prop.unknown=J2CA8501E: Vlastnost {0} prvku konfigurace {1} nelze nastavit, proto\u017ee ji nelze naj\u00edt na t\u0159\u00edd\u011b {2}.
+J2CA8501.config.prop.unknown.explanation=Vlastnost nebyla na uveden\u00e9m prost\u0159edku nalezena.
+J2CA8501.config.prop.unknown.useraction=Prove\u010fte zm\u011bny konfigurace prost\u0159edku.
+
+# {1} is the unique identifier for a configuration element, such as jmsTopicConnectionFactory[cf1] or jmsQueue[queue1] 
+J2CA8504.incorrect.props.list=J2CA8504E: D\u00edl\u010d\u00ed prvek {0} nen\u00ed spr\u00e1vn\u00fd pro prvek konfigurace {1}.
+J2CA8504.incorrect.props.list.explanation=Typ seznamu vlastnost\u00ed konfigurace je pro zadan\u00fd prvek konfigurace nespr\u00e1vn\u00fd.
+J2CA8504.incorrect.props.list.useraction=Aktualizujte konfiguraci tak, aby pou\u017e\u00edvala seznam vlastnost\u00ed konfigurace odpov\u00eddaj\u00edc\u00ed po\u017eadovan\u00e9mu typu prost\u0159edku.
+
+J2CA8505.destination.type.mismatch=J2CA8505E: Vlastnost c\u00edle nelze konfigurovat ve specifikaci aktivace, proto\u017ee c\u00edl {0} nen\u00ed instanc\u00ed rozhran\u00ed ur\u010den\u00e9ho jako typ c\u00edle: {1}.
+J2CA8505.destination.type.mismatch.explanation=Byl zad\u00e1n typ c\u00edle, kter\u00fd neodpov\u00edd\u00e1 c\u00edli.
+J2CA8505.destination.type.mismatch.useraction=Aktualizujte konfiguraci serveru nebo aplikaci tak, aby ur\u010dovala typ c\u00edle konzistentn\u00ed s c\u00edlem.
+
+J2CA8510.create.timed.out=J2CA8510E: \u010casova\u010d nelze vytvo\u0159it pro adapt\u00e9r prost\u0159edku {0} b\u011bhem {1} ms.
+J2CA8510.create.timed.out.explanation=Vytvo\u0159en\u00ed \u010dasova\u010de trv\u00e1 d\u00e9le, ne\u017e se o\u010dek\u00e1valo.
+J2CA8510.create.timed.out.useraction=Ov\u011b\u0159te, zda je syst\u00e9m velmi zat\u00ed\u017een a zva\u017ete sn\u00ed\u017een\u00ed z\u00e1t\u011b\u017ee.
+
+J2CA8600.work.start.timeout=J2CA8600E: Pr\u00e1ce {0} odeslan\u00e1 adapt\u00e9rem prost\u0159edku {1} nebyla spu\u0161t\u011bna do {2} ms.
+J2CA8600.work.start.timeout.explanation=Vypr\u0161el \u010dasov\u00fd limit pokusu o zah\u00e1jen\u00ed pr\u00e1ce.
+J2CA8600.work.start.timeout.useraction=Ov\u011b\u0159te, zda je syst\u00e9m velmi zat\u00ed\u017een a zva\u017ete sn\u00ed\u017een\u00ed z\u00e1t\u011b\u017ee, nebo kontaktujte dodavatele adapt\u00e9ru prost\u0159edku s t\u00edm, aby zv\u00e1\u017eil, zda by mohl zv\u00fd\u0161it \u010dasov\u00fd limit pr\u00e1ce pou\u017e\u00edvan\u00fd p\u0159i pr\u00e1ci se spr\u00e1vcem Work Manager JCA.
+
+# 8622 deleted
+
+J2CA8623.execution.context.conflict=J2CA8623E: Adapt\u00e9r prost\u0159edku {0} se pokusil odeslat pr\u00e1ci pomoc\u00ed parametru ExecutionContext i parametru WorkContext. Kombinace parametr\u016f ExecutionContext a WorkContext nen\u00ed podporov\u00e1na.
+J2CA8623.execution.context.conflict.explanation=Adapt\u00e9r prost\u0159edku odeslal pr\u00e1ci, kter\u00e1 implementuje metodu WorkContextProvider a rovn\u011b\u017e ur\u010dil parametr ExecutionContext. Nen\u00ed platn\u00e9 prov\u00e9st oboj\u00ed.
+J2CA8623.execution.context.conflict.useraction=Je t\u0159eba aktualizovat adapt\u00e9r prost\u0159edku a vybrat metodu WorkContextProvider nebo parametr ExecutionContext.
+
+J2CA8624.work.context.duplicate=J2CA8624E: Adapt\u00e9r prost\u0159edku {0} se pokusil o p\u0159ed\u00e1n\u00ed pr\u00e1ce s v\u00edce kopiemi typu WorkContext {1}. Na jednom p\u0159edlo\u017een\u00ed pr\u00e1ce je podporov\u00e1n pouze jeden parametr WorkContext ka\u017ed\u00e9ho typu.
+J2CA8624.work.context.duplicate.explanation=Adapt\u00e9r prost\u0159edku odeslal pr\u00e1ci s n\u011bkolika instancemi t\u0159\u00eddy WorkContext stejn\u00e9ho typu.
+J2CA8624.work.context.duplicate.useraction=Je t\u0159eba aktualizovat adapt\u00e9r prost\u0159edku a vylou\u010dit duplicitn\u00ed instance WorkContext z metody WorkContextProvider.
+
+J2CA8625.work.context.unavailable=J2CA8625E: Adapt\u00e9r prost\u0159edku {0} se bu\u010f pokusil p\u0159edlo\u017eit pr\u00e1ci s typem pracovn\u00edho kontextu {1}, kter\u00fd nen\u00ed podporov\u00e1n, nebo funkce nen\u00ed povolena.
+J2CA8625.work.context.unavailable.explanation=Aplika\u010dn\u00ed server nepodporuje typ pracovn\u00edho kontextu nebo nen\u00ed povolena funkce, kter\u00e1 ho podporuje.
+J2CA8625.work.context.unavailable.useraction=Ov\u011b\u0159te, zda je typ pracovn\u00edho kontextu podporov\u00e1n. Pokud ano, ov\u011b\u0159te, zda je funkce, kter\u00e1 jej podporuje, aktivn\u00ed.
+
+J2CA8687.hint.datatype.invalid=J2CA8687E: Hodnoty pokyn\u016f pro {0} mus\u00ed b\u00fdt typu {1}. Adapt\u00e9r prost\u0159edku {2} ur\u010dil hodnotu {3} typu {4}.
+J2CA8687.hint.datatype.invalid.explanation=Hodnota pokynu ur\u010den\u00e1 adapt\u00e9rem prost\u0159edku m\u00e1 chybn\u00fd datov\u00fd typ.
+J2CA8687.hint.datatype.invalid.useraction=Obra\u0165te se na dodavatele adapt\u00e9ru prost\u0159edku, aby datov\u00fd typ pokynu opravil.
+
+J2CA8688.work.setup.failed=J2CA8688E: Spr\u00e1vce Work Manager nem\u016f\u017ee spustit pracovn\u00ed polo\u017eku. P\u0159\u00ed\u010dinn\u00e1 v\u00fdjimka: {0}.
+J2CA8688.work.setup.failed.explanation=P\u0159i p\u0159\u00edprav\u011b spu\u0161t\u011bn\u00ed pracovn\u00ed polo\u017eky do\u0161lo k chyb\u011b.
+J2CA8688.work.setup.failed.useraction=Dal\u0161\u00ed informace naleznete v p\u0159\u00ed\u010dinn\u00e9 v\u00fdjimce.
+
+J2CA8800.multiple.xa.resources=J2CA8800E: Adapt\u00e9r prost\u0159edku {0} vr\u00e1til v\u00edce ne\u017e jeden prost\u0159edek XA pro specifikaci aktivace {1}.
+J2CA8800.multiple.xa.resources.explanation=Adapt\u00e9r prost\u0159edku sm\u00ed vr\u00e1tit pouze jedin\u00fd prost\u0159edek XA pro uvedenou specifikaci aktivace.
+J2CA8800.multiple.xa.resources.useraction=Kontaktujte dodavatele adapt\u00e9ru prost\u0159edku, aby mohl opravit svoji implementaci rozhran\u00ed API getXAResources tak, aby vyhovovalo specifikaci JCA.
+
+J2CA8801.act.spec.active=J2CA8801I: Koncov\u00fd bod zpr\u00e1v pro specifikaci aktivace {0} a aplikaci objekt\u016f typu message-driven bean {1} je aktivov\u00e1n.
+J2CA8801.act.spec.active.explanation=Koncov\u00fd bod zpr\u00e1v je aktivov\u00e1n a je p\u0159ipraven ke zpracov\u00e1n\u00ed p\u0159\u00edchoz\u00edch zpr\u00e1v.
+J2CA8801.act.spec.active.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+J2CA8802.activation.failed=J2CA8802E: Aktivace koncov\u00e9ho bodu zpr\u00e1v se nezda\u0159ila pro adapt\u00e9r prost\u0159edku {0} kv\u016fli v\u00fdjimce: {1}.
+J2CA8802.activation.failed.explanation=Uveden\u00e1 v\u00fdjimka byla vygenerov\u00e1na p\u0159i aktivaci koncov\u00e9ho bodu zpr\u00e1v.
+J2CA8802.activation.failed.useraction=Chcete-li ur\u010dit p\u0159\u00ed\u010dinu chyby, zkontrolujte ur\u010denou v\u00fdjimku.
+
+J2CA8803.deactivation.failed=J2CA8803E: Deaktivace koncov\u00e9ho bodu zpr\u00e1v se nezda\u0159ila pro adapt\u00e9r prost\u0159edku {0} kv\u016fli v\u00fdjimce: {1}.
+J2CA8803.deactivation.failed.explanation=Uveden\u00e1 v\u00fdjimka byla vygenerov\u00e1na p\u0159i deaktivaci koncov\u00e9ho bodu zpr\u00e1v.
+J2CA8803.deactivation.failed.useraction=Chcete-li ur\u010dit p\u0159\u00ed\u010dinu chyby, zkontrolujte ur\u010denou v\u00fdjimku.
+
+J2CA8804.act.spec.inactive=J2CA8804I: Koncov\u00fd bod zpr\u00e1v pro specifikaci aktivace {0} a aplikaci objekt\u016f typu message-driven bean {1} je deaktivov\u00e1n.
+J2CA8804.act.spec.inactive.explanation=Koncov\u00fd bod zpr\u00e1v je deaktivov\u00e1n a ji\u017e nebude zpracov\u00e1vat p\u0159\u00edchoz\u00ed zpr\u00e1vy.
+J2CA8804.act.spec.inactive.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# 8806 deleted
+
+J2CA8807.native.rrs.not.available=J2CA8807E: Slu\u017eba, kter\u00e1 poskytuje transak\u010dn\u00ed podporu RRS, nen\u00ed aktivn\u00ed. Registrace prost\u0159edk\u016f byla odm\u00edtnuta.
+J2CA8807.native.rrs.not.available.explanation=Slu\u017eba, kter\u00e1 poskytuje transak\u010dn\u00ed podporu RRS, nen\u00ed aktivn\u00ed. Pokusy o registraci prost\u0159edk\u016f se spr\u00e1vcem transakc\u00ed jsou odm\u00edtnuty.
+J2CA8807.native.rrs.not.available.useraction=Ov\u011b\u0159te, \u017ee je proces typu angel aktivn\u00ed. Ov\u011b\u0159te, \u017ee m\u00e1 ID u\u017eivatele MVS procesu Liberty p\u0159\u00edslu\u0161nou autorizaci SAF k vyvol\u00e1n\u00ed sady autorizovan\u00fdch slu\u017eeb pou\u017e\u00edvan\u00fdch pro integraci RRS. Ov\u011b\u0159te, \u017ee funkce, kter\u00e1 poskytuje integraci RRS, byla konfigurov\u00e1na.
+
+J2CA8809.embedded.lookup.failed=J2CA8809E: Prost\u0159edek {0} z adapt\u00e9ru vlo\u017een\u00fdch prost\u0159edk\u016f {1} je dostupn\u00fd pouze pro aplikaci {2}. Do\u0161lo k pokusu o p\u0159\u00edstup z aplikace {3}.
+J2CA8809.embedded.lookup.failed.explanation=Adapt\u00e9r vlo\u017een\u00fdch prost\u0159edk\u016f a v\u0161echny prost\u0159edky, kter\u00e9 definuje, jsou p\u0159\u00edstupn\u00e9 pouze z aplikace, v n\u00ed\u017e jsou vlo\u017een\u00e9. 
+J2CA8809.embedded.lookup.failed.useraction=Zajist\u011bte, aby aplikace vyhled\u00e1vala pouze prost\u0159edky, kter\u00e9 jsou definovan\u00e9 v rozsahu serveru nebo v r\u00e1mci stejn\u00e9 aplikace.
+
+J2CA8810.embedded.activation.failed=J2CA8810E: Koncov\u00fd bod {0} z adapt\u00e9ru vlo\u017een\u00fdch prost\u0159edk\u016f {1} lze aktivovat pouze z aplikace {2}. Do\u0161lo k pokusu o jeho aktivaci z aplikace {3}.
+J2CA8810.embedded.activation.failed.explanation=Aktivace koncov\u00e9ho bodu se nezda\u0159ila, proto\u017ee ukazuje na specifikaci aktivace vlo\u017eenou do jin\u00e9ho aplikace.
+J2CA8810.embedded.activation.failed.useraction=Aktualizujte konfiguraci serveru tak, aby koncov\u00fd bod pou\u017e\u00edval specifikaci aktivace, kter\u00e1 m\u00e1 bu\u010f rozsah serveru, nebo je vlo\u017eena ve stejn\u00e9 aplikaci.
+
+J2CA8811.embedded.lookup.failed=J2CA8811E: Prost\u0159edek {0} z adapt\u00e9ru vlo\u017een\u00fdch prost\u0159edk\u016f {1} je dostupn\u00fd pouze pro aplikaci {2}.
+J2CA8811.embedded.lookup.failed.explanation=Adapt\u00e9r vlo\u017een\u00fdch prost\u0159edk\u016f a v\u0161echny prost\u0159edky, kter\u00e9 definuje, jsou p\u0159\u00edstupn\u00e9 pouze z aplikace, v n\u00ed\u017e jsou vlo\u017een\u00e9.
+J2CA8811.embedded.lookup.failed.useraction=Upravte aplikaci nebo slu\u017ebu tak, aby vyhled\u00e1vala prost\u0159edky definovan\u00e9 v rozsahu serveru.
+
+J2CA8812.embedded.activation.failed=J2CA8812E: Koncov\u00fd bod {0} z adapt\u00e9ru vlo\u017een\u00fdch prost\u0159edk\u016f {1} lze aktivovat pouze z aplikace {2}.
+J2CA8812.embedded.activation.failed.explanation=Aktivace koncov\u00e9ho bodu se nezda\u0159ila, proto\u017ee ukazuje na specifikaci aktivace vlo\u017eenou do jin\u00e9ho aplikace.
+J2CA8812.embedded.activation.failed.useraction=Aktualizujte konfiguraci serveru tak, aby koncov\u00fd bod pou\u017e\u00edval specifikaci aktivace, kter\u00e1 je definovan\u00e1 v rozsahu serveru.
+
+J2CA8813.required.activation.prop.not.set=J2CA8813E: Chyb\u00ed povinn\u00e1 vlastnost {0} specifikace aktivace {1} adapt\u00e9ru prost\u0159edku {2}.
+J2CA8813.required.activation.prop.not.set.explanation=Adapt\u00e9r prost\u0159edku ozna\u010duje ur\u010dit\u00e9 vlastnosti specifikace aktivace jako vy\u017eadovan\u00e9 a hodnota nebyla zad\u00e1na. Tyto vlastnosti mohou b\u00fdt nastaveny ze dvou r\u016fzn\u00fdch m\u00edst: (1) p\u0159i vytv\u00e1\u0159en\u00ed objektu konfigurace specifikace aktivace v r\u00e1mci instalovan\u00e9ho adapt\u00e9ru prost\u0159edku a (2) z vlastn\u00ed aplikace jako prvek <activation-config-property>.
+J2CA8813.required.activation.prop.not.set.useraction=Zadejte po\u017eadovanou hodnotu ve specifikaci aktivace v r\u00e1mci konfigurace serveru nebo v polo\u017ece activation-config-property v r\u00e1mci aplikace.
+
+J2CA8814.resource.adapter.install.failed=J2CA8814E: Atribut id prvku resourceAdapter modulu adapt\u00e9ru prost\u0159edku {0} obsahuje nepodporovan\u00e9 znaky.
+J2CA8814.resource.adapter.install.failed.explanation=Atribut id prvku resourceAdapter sm\u00ed obsahovat pouze znaky '.', '-' a '_' a alfanumerick\u00e9 znaky. ID ur\u010den\u00e9 v konfiguraci nebo odvozen\u00e9 z n\u00e1zvu modulu obsahuje nepodporovan\u00e9 znaky.
+J2CA8814.resource.adapter.install.failed.useraction=Zadejte platnou hodnotu atributu id prvku resourceAdapter v r\u00e1mci konfigurace serveru.
+
+J2CA8815.duplicate.resource.adapter.id=J2CA8815E: R\u016fzn\u00e9 adapt\u00e9ry prost\u0159edk\u016f nemohou m\u00edt stejn\u00fd jedine\u010dn\u00fd identifik\u00e1tor {0}.
+J2CA8815.duplicate.resource.adapter.id.explanation=R\u016fzn\u00e9 adapt\u00e9ry prost\u0159edk\u016f jsou nakonfigurov\u00e1ny se stejn\u00fdm jedine\u010dn\u00fdm identifik\u00e1torem (id) nebo j\u00edm implicitn\u011b kon\u010d\u00ed.
+J2CA8815.duplicate.resource.adapter.id.useraction=P\u0159i\u0159a\u010fte jednomu \u010di v\u00edce adapt\u00e9r\u016fm prost\u0159edk\u016f jedine\u010dn\u00e9 identifik\u00e1tory, aby ji\u017e nedoch\u00e1zelo ke konfliktu.
+
+# Do not translate the term "Bean Validation"
+# Do not translate the term "Validator"
+# ---------------------------------
+# {0} The Validator type and instance hashcode
+# {1} The Validation exception
+# {2} The JavaBean type and instance hashcode
+BEAN_VALIDATION_VALIDATOR_FAILED_J2CA1008=J2CA1008E: Vyskytla se v\u00fdjimka p\u0159i pokusu valid\u00e1toru Validator {0} o ov\u011b\u0159en\u00ed instance {2} objektu JavaBean modulu RAR : {1}. Omezen\u00ed ov\u011b\u0159ov\u00e1n\u00ed Bean Validation nebudou ov\u011b\u0159ena p\u0159ed zprovozn\u011bn\u00edm instance.
+BEAN_VALIDATION_VALIDATOR_FAILED_J2CA1008.explanation=Tato v\u00fdjimka je neo\u010dek\u00e1van\u00e1 a signalizuje probl\u00e9m s implementac\u00ed valid\u00e1tor Validator. Je mo\u017en\u00e9, \u017ee se nepoda\u0159\u00ed ihned ur\u010dit p\u0159\u00ed\u010dinu. 
+BEAN_VALIDATION_VALIDATOR_FAILED_J2CA1008.useraction=Zkontrolujte data FFDC a syst\u00e9mov\u00e9 protokoly. Jestli\u017ee symptomy nazna\u010duj\u00ed selh\u00e1n\u00ed v jin\u00e9 implementaci valid\u00e1toru Validator, ne\u017e kterou poskytuje server WebSphere Application Server, obra\u0165te se na poskytovatele ov\u011b\u0159ov\u00e1n\u00ed Bean Validation. CMSG0002
+
+# Do not translate the term "Bean Validation"
+# ---------------------------------
+# {0} A JavaBean type and instance hashcode, in hexadecimal
+# {1} A newline-delimited list of constraints violated by the JavaBean instance
+BEAN_VALIDATION_FAILED_J2CA0238=J2CA0238E: V objektu JavaBean {0} se nezda\u0159ilo ov\u011b\u0159ov\u00e1n\u00ed Bean Validation typu bean kv\u016fli jednomu nebo v\u00edce neplatn\u00fdm nastaven\u00edm konfigurace uveden\u00fdm v n\u00e1sleduj\u00edc\u00edm seznamu p\u0159ekro\u010den\u00ed omezen\u00ed: {1}
+BEAN_VALIDATION_FAILED_J2CA0238.explanation=Hodnota jedn\u00e9 nebo v\u00edce vlastnost\u00ed konfigurace instance objektu JavaBean poru\u0161uje zadan\u00e1 omezen\u00ed Bean Validation.
+BEAN_VALIDATION_FAILED_J2CA0238.useraction=V dokumentaci poskytovatele adapt\u00e9ru prost\u0159edku zjist\u011bte platn\u00e9 hodnoty pro jednotliv\u00e9 vlastnosti konfigurace ozna\u010den\u00e9 p\u0159ekro\u010den\u00edm omezen\u00ed a prove\u010fte konfiguraci jednotliv\u00fdch vlastnost\u00ed.
+
+#--------------------------------------------------------------------------------
+# J2CA0239 is unused (it was previously used by beta-only code that was removed).
+
+#--------------------------------------------------------------------------------
+# J2CA0240 is unused (it was previously used by beta-only code that was removed).
+
+#--------------------------------------------------------------------------------
+BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241=J2CA0241W: Archivy objekt\u016f typu bean adapt\u00e9ru prost\u0159edk\u016f nejsou podporov\u00e1ny.
+BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241.explanation=Soubor beans.xml v adres\u00e1\u0159i META-INF bude ignorov\u00e1n, proto\u017ee adapt\u00e9ry prost\u0159edk\u016f archivu spravovan\u00fdch objekt\u016f typu bean CDI nejsou podporov\u00e1ny.
+BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241.useraction=Odeberte soubor beans.xml z adres\u00e1\u0159e META-INF, proto\u017ee adapt\u00e9ry prost\u0159edk\u016f archivu spravovan\u00fdch objekt\u016f typu bean CDI nejsou podporov\u00e1ny.
+
+
+

@@ -1,0 +1,97 @@
+###############################################################################
+# Copyright (c) 2014, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.concurrent.persistent/resources/com/ibm/ws/concurrent/persistent/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Persistent Scheduled Executor
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1500 to CWWCK1999 except those specifically identified as moved
+
+# Java class and method names that should not be translated:
+# Future, get, getDelay, getResult, getNextExecutionTime, isCancelled, isDone, ScheduledFuture, TaskStatus
+
+CWWKC1500.task.rollback.retry=CWWKC1500W: Executorul persistent {0} a derulat \u00eenapoi taskul {1}. Taskul este planificat pentru re\u00eencercare dup\u0103 {2} secunde.
+CWWKC1500.task.rollback.retry.explanation=Execu\u0163ia taskului a fost marcat\u0103 pentru derulare \u00eenapoi. Taskul va fi re\u00eencercat dup\u0103 num\u0103rul specificat de secunde.
+CWWKC1500.task.rollback.retry.useraction=A\u015ftepta\u0163i re\u00eencercarea taskului.
+
+CWWKC1501.task.failure.retry=CWWKC1501W: Executorul persistent {0} a derulat \u00eenapoi taskul {1} din cauza e\u015fu\u0103rii {2}. Taskul este planificat pentru re\u00eencercare dup\u0103 {3} secunde.
+CWWKC1501.task.failure.retry.explanation=Execu\u0163ia taskului a e\u015fuat \u015fi a fost derulat\u0103 \u00eenapoi. Taskul va fi re\u00eencercat dup\u0103 num\u0103rul specificat de secunde.
+CWWKC1501.task.failure.retry.useraction=Dac\u0103 e\u015fuarea este trec\u0103toare, a\u015ftepta\u0163i re\u00eencercarea taskului. Altfel, corecta\u0163i cauaza e\u015fecului, dac\u0103 e\u015fecul este nea\u015fteptat.
+
+CWWKC1502.task.rollback=CWWKC1502W: Executorul persistent {0} a derulat \u00eenapoi taskul {1}.
+CWWKC1502.task.rollback.explanation=Execu\u0163ia taskului a fost marcat\u0103 pentru derulare \u00eenapoi.
+CWWKC1502.task.rollback.useraction=Dac\u0103 derularea \u00eenapoi este nea\u015fteptat\u0103, replanifica\u0163i taskul.
+
+CWWKC1503.task.failure=CWWKC1503W: Executorul persistent {0} a derulat \u00eenapoi taskul {1} din cauza e\u015fu\u0103rii {2}.
+CWWKC1503.task.failure.explanation=Execu\u0163ia taskului a e\u015fuat \u015fi a fost derulat\u0103 \u00eenapoi.
+CWWKC1503.task.failure.useraction=Corecta\u0163i cauaza e\u015fecului, dac\u0103 e\u015fecul este nea\u015fteptat, \u015fi replanifica\u0163i taskul.
+
+CWWKC1510.retry.limit.reached.rollback=CWWKC1510W: Executorul persistent {0} a renun\u0163at la taskul {1}, deoarece l-a derulat \u00eenapoi sau a e\u015fuat de {2} ori consecutiv.
+CWWKC1510.retry.limit.reached.rollback.explanation=Taskul a atins limita re\u00eencerc\u0103rilor consecutive \u015fi nu va mai fi \u00eencercat.
+CWWKC1510.retry.limit.reached.rollback.useraction=Dac\u0103 derul\u0103rile \u00eenapoi sau e\u015fecurile sunt nea\u015fteptate, determina\u0163i cauza \u015fi replanifica\u0163i taskul. Dac\u0103 derul\u0103rile \u00eenapoi \u015fi e\u015fecurile sunt intermitente, lua\u0163i \u00een considerare cre\u015fterea limitei de re\u00eencerc\u0103ri. 
+
+CWWKC1511.retry.limit.reached.failed=CWWKC1511W: Executorul persistent {0} a renun\u0163at la taskul {1}, deoarece l-a derulat \u00eenapoi sau a e\u015fuat de {2} ori consecutiv. E\u015fecul final este {3}.
+CWWKC1511.retry.limit.reached.failed.explanation=Taskul a atins limita re\u00eencerc\u0103rilor consecutive \u015fi nu va mai fi \u00eencercat.
+CWWKC1511.retry.limit.reached.failed.useraction=Dac\u0103 e\u015fu\u0103rile sau derul\u0103rile \u00eenapoi sunt nea\u015fteptate, determina\u0163i cauza \u015fi replanifica\u0163i taskul. Dac\u0103 derul\u0103rile \u00eenapoi \u015fi e\u015fecurile sunt intermitente, lua\u0163i \u00een considerare cre\u015fterea limitei de re\u00eencerc\u0103ri. 
+
+CWWKC1540.thread.cannot.submit.tasks=CWWKC1540E: Nu pute\u0163i planifica taskuri persistente din contextul firului de execu\u0163ie curent.
+CWWKC1540.thread.cannot.submit.tasks.explanation=Planifica\u0163i taskuri persistente numai de la un fir de execu\u0163ie care este asociat cu o aplica\u0163ie sau caracteristic\u0103 cu o identitate de \u00eenc\u0103rc\u0103tor de clas\u0103 serializabil\u0103.
+CWWKC1540.thread.cannot.submit.tasks.useraction=Asigura\u0163i-c\u0103 c\u0103 contextul pentru aplica\u0163ie sau caracteristic\u0103 este prezent pe firul de execu\u0163ie c\u00e2nd planifica\u0163i taskuri.
+
+# {0} method name: either isDone or isCancelled
+CWWKC1550.status.unavailable.until.ended=CWWKC1550E: Pute\u0163i invoca metoda {0} numai pe TaskStatus care este ob\u0163inut dup\u0103 ce s-a \u00eencheiat taskul. Determina\u0163i dac\u0103 taskul s-a \u00eencheiat la ora la care s-a ob\u0163inut o instan\u0163\u0103 TaskStatus verific\u00e2nd dac\u0103 valoarea getNextExecutionTime este null.
+CWWKC1550.status.unavailable.until.ended.explanation=TaskStatus este un instantaneu nemodificabil al st\u0103rii taskului. Orice valoare returnat\u0103 de la isDone sau isCancelled \u00eenainte de \u00eencheierea taskului ar deveni invalid\u0103 odat\u0103 ce se \u00eencheie taskul. Apare o eroare c\u00e2nd se \u00eencearc\u0103 \u00eenainte de \u00eencheierea taskului, pentru a evita returnarea unei valori care nu este de \u00eencredere.
+CWWKC1550.status.unavailable.until.ended.useraction=Folosi\u0163i metoda getNextExecutionTime pentru a determina dac\u0103 un task s-a \u00eencheiat. Folosi\u0163i metodele isDone \u015fi isCancelled numai dac\u0103 taskul s-a \u00eencheiat.
+
+CWWKC1551.result.unavailable.until.ended=CWWKC1551E: Pute\u0163i invoca metoda get numai pe TaskStatus care este ob\u0163inut dup\u0103 ce s-a \u00eencheiat taskul. Folosi\u0163i metoda getResult pentru a ob\u0163ine rezultatul execu\u0163iei care a fost cea mai recent\u0103 la momentul \u00een care s-a ob\u0163inut instan\u0163a TaskStatus.
+CWWKC1551.result.unavailable.until.ended.explanation=TaskStatus este un instantaneu nemodificabil al st\u0103rii taskului. Orice valoare returnat\u0103 de la get \u00eenainte de \u00eencheierea taskului ar deveni invalid\u0103 odat\u0103 ce se finalizeaz\u0103 alt\u0103 \u00eencercare de execu\u0163ie sau se \u00eencheie taskul. Apare o eroare c\u00e2nd se \u00eencearc\u0103 \u00eenainte de \u00eencheierea taskului, pentru a evita returnarea unei valori care nu este de \u00eencredere.
+CWWKC1551.result.unavailable.until.ended.useraction=Folosi\u0163i metoda getResult pentru a ob\u0163ine rezultatul \u00eencerc\u0103rii de execu\u0163ie care a fost cea mai recent\u0103 c\u00e2nd s-a ob\u0163inut instan\u0163a TaskStatus. 
+
+CWWKC1552.delay.unavailable=CWWKC1552E: Pute\u0163i invoca metoda getDelay numai pe TaskStatus pentru taskuri unice. Pentru taskuri care se repet\u0103 \u015fi taskuri planificate cu un Declan\u015fator, folosi\u0163i metoda getNextExecutionTime pentru a ob\u0163ine urm\u0103toarea or\u0103 de execu\u0163ie a\u015fteptat\u0103 dup\u0103 execu\u0163ia cea mai recent\u0103 c\u00e2nd s-a ob\u0163inut TaskStatus.
+CWWKC1552.delay.unavailable.explanation=TaskStatus este un instantaneu nemodificabil al st\u0103rii taskului. Orice valoare returnat\u0103 de la getDelay \u00eenainte de \u00eencheierea taskului ar deveni invalid\u0103 odat\u0103 ce se finalizeaz\u0103 alt\u0103 \u00eencercare de execu\u0163ie. Apare o eroare c\u00e2nd se \u00eencearc\u0103 \u00eenainte de \u00eencheierea taskului, pentru a evita returnarea unei valori care nu este de \u00eencredere.
+CWWKC1552.delay.unavailable.useraction=Folosi\u0163i metoda getNextExecutionTime pentru a ob\u0163ine urm\u0103toarea or\u0103 de execu\u0163ie a\u015ftepat\u0103 care corespunde orei c\u00e2nd s-a ob\u0163inut TaskStatus.
+
+# {0} persistent executor id
+# {1} task id (and name in parenthesis if any)
+CWWKC1553.result.inaccessible=CWWKC1553E: Executorul persistent {0} nu poate ob\u0163ine rezultatul taskului {1}. Consulta\u0163i cauza excep\u0163iei.
+CWWKC1553.result.inaccessible.explanation=A ap\u0103rut o eroare care a \u00eempiedicat ob\u0163inerea rezultatului taskului.
+CWWKC1553.result.inaccessible.useraction=Consulta\u0163i cauza excep\u0163iei pentru a corecta problema, apoi planifica\u0163i din nou taskul.
+
+# {0} task id (and name in parenthesis if any)
+CWWKC1554.general.task.failure=CWWKC1554E: Taskul {0} a e\u015fuat s\u0103 ruleze. Consulta\u0163i cauza excep\u0163iei.
+CWWKC1554.general.task.failure.explanation=Taskul a e\u015fuat s\u0103 ruleze din cauza excep\u0163iei specificate.
+CWWKC1554.general.task.failure.useraction=Consulta\u0163i cauza excep\u0163iei pentru a corecta problema, apoi planifica\u0163i din nou taskul.
+
+# {0} task id (and name in parenthesis if any)
+# {1} number of consecutive failures/rollbacks
+CWWKC1555.retry.limit.reached=CWWKC1555E: Taskul {0} este abandonat pentru c\u0103 s-a derulat \u00eenapoi sau a e\u015fuat de {1} ori consecutiv.
+CWWKC1555.retry.limit.reached.explanation=Taskul a atins limita re\u00eencerc\u0103rilor consecutive \u015fi nu va mai fi \u00eencercat.
+CWWKC1555.retry.limit.reached.useraction=Consulta\u0163i cauza excep\u0163iei pentru a corecta problema, apoi planifica\u0163i din nou taskul. Dac\u0103 problema este intermitent\u0103, ave\u0163i \u00een vedere cre\u015fterea limitei re\u00eencerc\u0103rilor.
+
+# {0} name of application that scheduled the task
+CWWKC1556.task.exec.deferred=CWWKC1556W: Execu\u0163ia taskurilor din aplica\u0163ia {0} este am\u00e2nat\u0103 p\u00e2n\u0103 c\u00e2nd sunt disponibile aplica\u0163ia \u015fi modulele care au planificat taskurile.
+CWWKC1556.task.exec.deferred.explanation=Aplica\u0163ia \u015fi modulele care au planificat un task trebuie s\u0103 fie disponibile astfel \u00eenc\u00e2t taskul s\u0103 poat\u0103 rula.
+CWWKC1556.task.exec.deferred.useraction=Asigura\u0163i-v\u0103 c\u0103 sunt disponibile aplica\u0163ia \u015fi modulul care au planificat taskul. Ca alternativ\u0103, anula\u0163i taskul dac\u0103 nu mai este necesar.
+
+# {0} request id
+# {1} stack trace
+CWWKC1559.mbean.operation.failure=CWWKC1559E:  A ap\u0103rut o eroare. Cererea {0}. {1}
+CWWKC1559.mbean.operation.failure.explanation=A ap\u0103rut o eroare \u00een timpul \u00eencerc\u0103rii de a realiza opera\u0163ia cerut\u0103.
+CWWKC1559.mbean.operation.failure.useraction=Verifica\u0163i istoricele serverului pentru detalii despre eroarea opera\u0163iei.

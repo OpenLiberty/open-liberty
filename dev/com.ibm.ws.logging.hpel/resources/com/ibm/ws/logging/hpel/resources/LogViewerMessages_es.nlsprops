@@ -1,0 +1,296 @@
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME ws/code/ras/src/com/ibm/ws/logging/hpel/resources/LogViewerMessages.nlsprops
+#COMPONENTPREFIX CWTRA
+#COMPONENTNAMEFOR CWTRA WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+# Date Translation Comment - There are two types of date format strings in this properties file. 
+#
+# 1. The first is a date format string which is used  by Java. These date format strings should not be translated but
+# rearranged to represent the  date format convention appropriate for the locale.
+# For example, a Jan 31st date in the US is represented as 01/31/2011 or M/d/yy. In the case of a
+# locale where the day comes before the month, such as 31/01/2011, the string should be changed to d/M/yy. 
+#  The messages IDs CWTRA0001I, CWTRA0002I, CWTRA0003I, and CWTRA0073I
+# must have the strings remain in English - as they are used by the product. But the character order should be 
+# changed as needed to be locale appropriate.
+# 
+# 2. Date format strings in the file that need to be both translated and have characters rearranged per 
+# localization rules of the language being translated. These date strings will appear as-is and are
+# used to demonstrate to the user the date format expected by user input. 
+#
+# For example, a message id with the key M/d/yy will continue to be displayed as M/d/yy.  In another locale, such 
+# as Spanish, it needs to be considered that the month and day position will be swapped and characters might need
+# to be translated, as a US locale understands that y represents year while the spanish word for year is ano and y 
+# might not make sense to the user.  This applies to message ids CWTRA0074I and CWTRA0075I
+# -------------------------------------------------------------------------------------------------
+
+CWTRA0000E=No se ha encontrado el directorio del repositorio
+
+# Example output in the En_en locale is: 4/27/10
+# Note to translator, see Date Translation Comment above as this is type 1.
+CWTRA0001I=d/M/yy
+
+# Example output in the En_en locale is: April 27, 2010 1:30 A.M. CDT
+# Note to translator, see Date Translation Comment above as this is type 1.
+CWTRA0002I=d MMM yyyy H:mm a z
+
+# Example output in the En_en locale is: 4/27/10 1:30:0:100 CDT
+# Note to translator, see Date Translation Comment above as this is type 1.
+CWTRA0003I=d/M/yy H:m:s:S z
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0004E=No se puede analizar la fecha y hora de inicio
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0005E=No se puede escribir en la ubicaci\u00f3n de las anotaciones cronol\u00f3gicas de salida
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0006E=No se puede analizar la fecha y hora final.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0007I=LogViewerMessages
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0008E=No se puede analizar el ID de hebra. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0009E=No se puede escribir en una ubicaci\u00f3n de repositorio binario exportado.  Aseg\u00farese de que el directorio especificado est\u00e9 vac\u00edo y tenga permiso de escritura.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0010I=La operaci\u00f3n se ha completado
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0013E=No se puede analizar el nivel {0}  
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0014I=No se puede utilizar el entorno local original de repositorios. Se utilizar\u00e1 el entorno local por omisi\u00f3n del sistema. 
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0015I=No se puede escribir en el archivo de salida 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0016I=Escribiendo la salida en: 
+
+# -------------------------------------------------------------------------------------------------
+LVM_SelectServerPrompt=Seleccione un servidor
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0018I=Se han procesado {0} registros en {1} segundos ({2} registros por segundo).
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0019E=No se puede analizar {0} intervalo: {1}.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0020I=El directorio especificado no contiene actualmente archivos de rastreo ni de anotaciones cronol\u00f3gicas.  Se seguir\u00e1 supervisando este directorio.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0021E=El directorio especificado no contiene archivos de rastreo ni de anotaciones cronol\u00f3gicas.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0022E=La opci\u00f3n {0} requiere {1} par\u00e1metros.  
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0023E=Argumento desconocido: {0}
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0024E=Falta el argumento -repositoryDir o no se ha encontrado ning\u00fan repositorio HPEL en dicha ubicaci\u00f3n.\n\t -repositoryDir es necesario cuando se invoca logViewer fuera del directorio bin del perfil.\n\t Si -repositoryDir no apunta a un repositorio HPEL, la especificaci\u00f3n \n\t es incorrecta o no se ha creado todav\u00eda el repositorio.\n\t Esto puede deberse a que HPEL no est\u00e1 habilitado o a que el servidor \n\t no se ha iniciado desde que se habilit\u00f3 HPEL.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0026E=Argumentos de datos no v\u00e1lidos: -startDate es despu\u00e9s de -stopDate
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0027E=Argumentos de nivel no v\u00e1lidos: -minLevel es superior a -maxLevel
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0028E=Se ha especificado un formato de salida incorrecto: {0}
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0029I=Utilice la opci\u00f3n -help para la informaci\u00f3n de uso.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0030I=Se utiliza {0} como directorio de repositorio. 
+
+# -------------------------------------------------------------------------------------------------
+#CWTRA0031I=LogViewer is used to output log data from the HPEL repository (group of common \nbinary log files) to a text file, console, or to a new HPEL repository. \n\n\By default, the LogViewer will output all records in the repository in basic \nformat.  Use options to control what is included in the LogViewer output, to format \nthe output, or to direct where the output is sent. 
+CWTRA0031I=LogViewer\nUtilice el mandato logViewer para ver, consultar y filtrar los repositorios de rastreo y anotaciones cronol\u00f3gicas HPEL. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0032I=Utilizando {0} como directorio de repositorio.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0033I=logViewer.bat|sh [opciones]
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0034I=Opciones:\n\n-repositoryDir <nombre_directorio>\n\t Especifica la v\u00eda de acceso del directorio del repositorio. Si desea consultar\n\t conjuntamente los datos de rastreo y anotaciones, proporcione la v\u00eda de acceso al\n\t directorio padre, que contiene los directorios de los datos de rastreo y los datos \n\t de anotaciones. Si utiliza la ubicaci\u00f3n de repositorio por omisi\u00f3n, \n\t ra\u00edz_perfil/logs/servidor_aplicaciones/, y ejecuta esta herramienta desde el directorio \n\t bin del perfil, este argumento es opcional. La herramienta comprueba la ubicaci\u00f3n\n\t por omisi\u00f3n si no se proporciona ninguna. Si hay varios servidores de aplicaciones en\n\t este perfil con repositorios HPEL, deber\u00e1 seleccionar el repositorio de rastreo y anotaciones\n\t del servidor que desea ver. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0035I=-outLog <nombre_archivo>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0036I=\t Especifica el nombre de archivo donde se debe grabar la salida de texto. Si no\n\t proporciona esta informaci\u00f3n, la salida de texto se muestra en la consola. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0037I=-startDate <fecha_hora>
+
+# -------------------------------------------------------------------------------------------------
+# Note to translator: Parms {0} and {1} will be substituted with values from CWTRA0074I and CWTRA0075I respectively, so please make sure that if CWTRA0074I and CWTRA0075I are translated, it is possible that H, m, s, S, and z will need to be translated as well.
+# see Date Translation Comment above as an example where translation might be required for type 2.
+CWTRA0038I=\t Especifica la fecha m\u00e1s temprana o la fecha y la hora para las que deben extraerse \n\t entradas de anotaciones cronol\u00f3gicas. Puede especificar s\u00f3lo una fecha o una fecha \n\t y una hora.  Si s\u00f3lo especifica una fecha, esto equivaldr\u00e1 a especificar \n\t la hora como 00:00:00:000 en su huso horario. Las fechas se deben especificar\n\t en formato {0}. Las fechas y las horas deben tener el formato \n\t {1}, donde H es la hora en el formato de 24 horas, m \n\t son los minutos, s los segundos, S los milisegundos y \n\t la z es el huso horario. Cuando se incluye la hora con esta \n\t opci\u00f3n, se deben utilizar comillas, ya que hay espacios en el formato \n\t de fecha y hora.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0039I=\t Ejemplos: \n\t -startDate {0} \n\t -startDate "{1}"
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0040I=-stopDate <fecha_hora>
+
+# -------------------------------------------------------------------------------------------------
+# Note to translator: Parms {0} and {1} will be substituted with values from CWTRA0074I and CWTRA0075I respectively, so please make sure that if CWTRA0074I and CWTRA0075I are translated, it is possible that H, m, s, S, and z will need to be translated as well.
+# see Date Translation Comment above as an example where translation might be required for type 2.
+CWTRA0041I=\t Especifica la fecha m\u00e1s tard\u00eda o la fecha y la hora para las que deben extraerse \n\t entradas de anotaciones cronol\u00f3gicas. Puede especificar s\u00f3lo una fecha o una fecha y \n\t una hora.  Si s\u00f3lo especifica una fecha, esto equivaldr\u00e1 a especificar la \n\t hora como 23:59:59:999 en su huso horario.  Las fechas se deben especificar\n\t en formato {0}. Las fechas y las horas deben tener el formato \n\t {1}, donde H es la hora en el formato de 24 horas, m \n\t son los minutos, s los segundos, S los milisegundos y \n\t la z es el huso horario. Cuando se incluye la hora con esta \n\t opci\u00f3n, se deben utilizar comillas, ya que hay espacios en el formato \n\t de fecha y hora.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0042I=\t Ejemplos: \n\t -stopDate {0} \n\t -stopDate "{1}"
+
+# Description of the -level option ----------------------------------------------------------------
+CWTRA0044I=\t Especifica que LogViewer s\u00f3lo extrae entradas de anotaciones cronol\u00f3gicas del nivel\n\t especificado. Si se combina con -minLevel o -maxLevel, se utilizar\u00e1 la \u00faltima \n \t opci\u00f3n.
+
+# Description of the -minLevel option -------------------------------------------------------------
+CWTRA0046I=\t Especifica que LogViewer no mostrar\u00e1 las entradas de anotaciones cronol\u00f3gicas que est\u00e9n\n\t por debajo del nivel especificado. Al especificar un nivel, se extraer\u00e1n todos los mensajes de ese \n\t nivel y los mensajes de niveles superiores.
+
+# Description of the -maxLevel option -------------------------------------------------------------
+CWTRA0048I=\t Especifica que LogViewer no mostrar\u00e1 las entradas de anotaciones cronol\u00f3gicas que est\u00e9n \n\t por encima del nivel especificado. Al especificar un nivel, se extraer\u00e1n todos los mensajes de ese \n\t nivel y los mensajes de niveles inferiores.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0049I=-format <basic | advanced | CBE-1.0.1>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0050I=\t Especifica el formato de salida. Los formatos soportados son b\u00e1sico, avanzado y \n\t CBE-1.0.1. Si no incluye este par\u00e1metro, la salida se muestra con el formato \n\t b\u00e1sico. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0051I=-tail [intervalo]
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0052I=\t Especifica que desea que logViewer supervise de forma continua el repositorio\n\t y muestre nuevas entradas de registro de anotaciones a medida que se creen. Puede proporcionar un\n\t argumento de entero opcional despu\u00e9s de este par\u00e1metro para especificar con qu\u00e9 frecuencia desea\n\t que la herramienta LogViewer consulte si hay nuevos registros en el repositorio. Por omisi\u00f3n,\n\t LogViewer consulta si hay nuevos registros en el repositorio cada 5 segundos. Cuando se utiliza\n\t con otras opciones de filtrado, s\u00f3lo se muestran aquellos nuevos registros que coincidan con los\n\t criterios del filtro. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0053I=-monitor [intervalo]
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0054I=\t Un sin\u00f3nimo de -tail.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0055I=-includeLoggers <nombres_registradores>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0056I=\t Especifica qu\u00e9 registradores se deben incluir en la salida. Las diversas \n\t entradas se deben separar con una coma. Si esta opci\u00f3n se utiliza en combinaci\u00f3n \n\t con la opci\u00f3n -excludeLoggers y un registrador coincide con una entrada en ambas \n\t listas de nombres de registrador, se utilizar\u00e1 la entrada m\u00e1s espec\u00edfica para determinar si \n\t se debe incluir o excluir un registrador.  Este caso de ejemplo se ilustra en el \u00faltimo \n\t ejemplo que aparece a continuaci\u00f3n, en el que se excluyen todos los registradores com.ibm, excepto \n\t los registradores com.ibm.ws.config.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0057I=\t Ejemplos: \n\t -includeLoggers SystemErr \n\t -includeLoggers "com.ibm.*,org.apache.struts.*" \n\t -includeLoggers "com.ibm.ws.config" -excludeLoggers "com.ibm.*"
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0058I=-excludeLoggers <nombres_registradores>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0059I=\t Especifica qu\u00e9 registradores se deben excluir de la salida. Las diversas \n\t entradas se deben separar con una coma. Si esta opci\u00f3n se utiliza en combinaci\u00f3n \n\t con la opci\u00f3n -includeLoggers y un registrador coincide con una entrada en ambas \n\t listas de nombres de registrador, se utilizar\u00e1 la entrada m\u00e1s espec\u00edfica para determinar si \n\t se debe incluir o excluir un registrador.  Este caso de ejemplo se ilustra en el \u00faltimo \n\t ejemplo que aparece a continuaci\u00f3n, en el que se excluyen todos los registradores com.ibm, excepto \n\t los registradores com.ibm.ws.config.
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0060I=\t Ejemplos: \n\t -excludeLoggers SystemErr \n\t -excludeLoggers "com.hp.*,org.apache.struts.*" \n\t -includeLoggers "com.ibm.ws.config" -excludeLoggers "com.ibm.*"
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0061I=-thread <id_hebra>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0062I=\t Muestra las entradas de anotaciones cronol\u00f3gicas de una hebra espec\u00edfica. Esta opci\u00f3n filtra\n\t los mensajes de anotaciones cronol\u00f3gicas que no hayan sido creados por el ID de hebra \n\t que usted especific\u00f3. Nota: Especifique el ID de hebra en formato hexadecimal.
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0065I=-extractToNewRepository <nombre_directorio>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0066I=\t Extrae registros y escribe una salida en un nuevo repositorio binario. Puede \n\t utilizar esta opci\u00f3n con otras opciones de filtrado para transferir un subconjunto \n\t de registros de rastreo y de anotaciones cronol\u00f3gicas en el nuevo repositorio.  Esta opci\u00f3n utiliza \n\t la v\u00eda de acceso de directorio en la que el nuevo repositorio se debe escribir como \n\t un argumento; por lo tanto, el directorio debe estar vac\u00edo. Si el \n\t directorio no existe, se crear\u00e1.  No obstante, los errores \n\t que se producen durante la creaci\u00f3n del directorio pueden crear directorios \n\t extra\u00f1os.
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0067I=-listInstances
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0068I=\t Lista los ID de instancias de procesos de servidor disponibles \n\t que se pueden utilizar con la opci\u00f3n -instance. Despu\u00e9s de ejecutar \n\t LogViewer con la opci\u00f3n -listInstances, puede utilizar la \n\t opci\u00f3n -instance para invocar LogViewer con uno de los ID de instancias de \n\t procesos de servidor como un argumento. Dado que esta opci\u00f3n no procesa \n\t ning\u00fan registro de rastreo ni de anotaciones cronol\u00f3gicas, cuando se utilice, se \n\t ignorar\u00e1n las dem\u00e1s opciones. 
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0069I=-instance <id_instancia>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0070I=\t Recupera los datos de rastreo y de anotaciones cronol\u00f3gicas de un ID de \n\t instancia de proceso de servidor espec\u00edfico. Ejecute LogViewer \n\t junto con la opci\u00f3n -listInstances antes de utilizar esta opci\u00f3n \n\t para obtener un ID de instancia v\u00e1lido. Esta opci\u00f3n es necesaria al visualizar \n\t datos de anotaciones cronol\u00f3gicas y rastreo de un entorno que contiene subprocesos, \n\t como por ejemplo el sistema operativo z/OS. Si esta opci\u00f3n se combina con \n\t -latestInstance, -instance se ignora.
+
+# LogViewer command line heading for listinstances on z/OS
+CWTRA0071I=       ID de instancia                                                         Fecha de inicio
+
+# LogViewer command line heading for listinstances on distributed
+CWTRA0072I=ID de instancia                  Fecha de inicio
+
+# Instance Start Date format
+CWTRA0073I=dd/MM/yy HH:mm:ss.SSS z
+
+# Example output in the En_en locale is: M/d/yy
+# Note to translator, see Date Translation Comment above as this is type 2.
+CWTRA0074I=d/M/yy
+
+# Example output in the En_en locale is: M/d/yy H:m:s:S z
+# Note to translator, see Date Translation Comment above as this is type 2.
+CWTRA0075I=d/M/yy H:m:s:S z
+
+NoLevelNameInCustomLevelsFile=Problema de formato en {0}. Nivel de entero {1}. El valor debe tener un nombre de nivel
+TooManyValuesInCustomLevelsFile=Problema de formato en {0}. Nivel de entero {1}. El valor "{2}" contiene m\u00e1s de {3} elementos.
+LevelIdTooBigInCustomLevelsFile=Problema de formato en {0}. Nivel de entero {1}. Al menos uno de {2} o {3} debe ser un ID de nivel de car\u00e1cter.
+NotIntegerKeyInCustomLevelsFile=Problema de formato en {0}. La clave {1} debe ser un entero.
+SpecifiedCustomLevelsFileNotFound=No se ha encontrado el archivo {0} que contiene una especificaci\u00f3n de nivel personalizada.
+ErrorReadingCustomLevelsFile=No se puede leer el archivo {0} que contiene una especificaci\u00f3n de nivel personalizada. Error: {1}
+SpecifiedCustomHeaderFileNotFound=No se ha encontrado el archivo {0} que contiene una especificaci\u00f3n de cabecera personalizada.
+ErrorReadingCustomHeaderFile=No se puede leer el archivo {0} que contiene una especificaci\u00f3n de cabecera personalizada. Error: {1}
+
+ErrorUsingHeaderTimeZone=La cabecera de las anotaciones contiene una especificaci\u00f3n de huso horario incorrecta: {0}. En su lugar se utilizar\u00e1 el valor por omisi\u00f3n del sistema.
+
+UnsupportedEncodingError=La codificaci\u00f3n especificada {0} no est\u00e1 soportada en esta JVM.
+
+# -------------------------------------------------------------------------------------------------
+LVM_ERROR_INSTANCEID=No se puede utilizar el valor de ID de instancia que se proporcion\u00f3 para la opci\u00f3n -instance.  Utilice uno de los valores de ID de instancia v\u00e1lidos que se visualizan cuando se utiliza la opci\u00f3n -listInstances.
+
+
+# ------------------------------------------------------------------------------------------------- 
+LVM_HELP_LATESTINSTANCE=-latestInstance
+
+# -------------------------------------------------------------------------------------------------
+LVM_HELP_LATESTINSTANCE_DESCR=\t Recupera los datos de rastreo y de \n\t anotaciones cronol\u00f3gicas de la instancia de servidor m\u00e1s reciente.  Si esta opci\u00f3n se utiliza con \n\t la opci\u00f3n -instance, se ignorar\u00e1 la opci\u00f3n -instance.
+
+
+# ------------------------------------------------------------------------------------------------- 
+LVM_HELP_MESSAGE=-message <mensaje>
+
+# -------------------------------------------------------------------------------------------------
+LVM_HELP_MESSAGE_DESCR=\t Recupera s\u00f3lo los datos de anotaciones o rastreo con \n\t un campo de mensaje que coincida con el texto solicitado. Utilice un asterisco (*) para representar una \n\t serie de caracteres o un signo de interrogaci\u00f3n (?) para representar un solo car\u00e1cter cuando recupere \n\t datos de anotaciones o rastreo.
+
+LVM_HELP_EXTENSIONS=-includeExtensions name[=value][,name[=value]]*
+
+LVM_HELP_EXTENSIONS_DESCR=\t Recupera los datos de registro y rastreo con un nombre de extensi\u00f3n que coincide con \n\t el nombre solicitado, y un valor de extensi\u00f3n que coincide con \n\t el valor solicitado. Tambi\u00e9n puede utilizar esta opci\u00f3n para recuperar los datos de registro y rastreo \n\t con un nombre de extensi\u00f3n que coincida con el nombre solicitado, y un \n\t valor de extensi\u00f3n que coincida con cualquier valor, si omite la parte =value \n\t de la opci\u00f3n. Separe varios argumentos name=value con una coma. \n\t Especifique '==' (dos signos de igual) en lugar de '=' (un signo de igual) en \n\t los casos donde el nombre o valor debe contener un signo de igual. \n\t Especifique ',,' (dos comas) en lugar de ',' (una coma) en los casos donde \n\t el nombre o valor debe contener una coma.
+
+LVM_HELP_ENCODING=-encoding <juego_caracteres>
+
+LVM_HELP_ENCODING_DESCR=\t Especifica el juego de caracteres que utilizar\u00e1 LogViewer para la salida de texto.
+
+#--------------------------------------------------------------------------------------------------
+LVM_HELP_SAMPLES_INTRO=Los siguientes son ejemplos de utilizaci\u00f3n del Visor de anotaciones cronol\u00f3gicas \ncon algunas de las opciones disponibles listadas m\u00e1s arriba.
+LVM_HELP_SAMPLE1= Para recuperar s\u00f3lo entradas de anotaciones de un repositorio que pueda tener tanto entradas de anotaciones como de rastreo: \n\t logViewer.bat -minLevel DETAIL
+LVM_HELP_SAMPLE2= Para recuperar entradas de anotaciones con un nivel m\u00ednimo SEVERE del registrador com.mi.empresa.nombre.MiClase \nque se producen entre {0} y {1}:\n\t logViewer.bat -startDate "{2}" -stopDate "{3}" \n\t-includeLoggers "com.mi.empresa.nombre.MiClase"  -minLevel SEVERE
+LVM_HELP_SAMPLE3= Para hacer una copia de seguridad del repositorio donde {1} contendr\u00e1 una copia del \nrepositorio existente de datos de anotaciones cronol\u00f3gicas y rastreo de {0}: \n\t logViewer.bat -extractToNewRepository {1} -startDate "{2}"
+LVM_HELP_SAMPLE4= Para mostrar las entradas de anotaciones cronol\u00f3gicas y rastreo de su propio c\u00f3digo de aplicaci\u00f3n \n(asumiendo que todos los nombres de registrador empiezan por com.mycompany): \n\t logViewer.bat -includeloggers com.mycompany.*

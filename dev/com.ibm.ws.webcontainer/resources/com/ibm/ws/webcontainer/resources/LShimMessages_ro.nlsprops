@@ -1,0 +1,1269 @@
+###############################################################################
+# Copyright (c) 1997, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://seaux.raleigh.ibm.com/g11n/was/seae/45/messages/index.html
+# or contact Dennis Hebert/Raleigh/IBM (hebert@us.ibm.com)
+#
+# cmvc_en_version_level=1.4,0,04/02/09,12:44:41
+#
+#CMVCPATHNAME ws/code/webcontainer/src/com/ibm/ws/webcontainer/resources/Messages.nlsprops
+#COMPONENTPREFIX SRVE
+#COMPONENTNAMEFOR SRVE Servlet Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+
+
+# --------------------------------
+Illegal.Argument.Trying.to.write.chars=SRVE0011E: Excep\u0163ie argument ilegal: \u00cencercarea de a scrie < 0 caractere
+Illegal.Argument.Trying.to.write.chars.explanation=\u00cencercare de furnizare a unui buffer de dimensiune mai mic\u0103 de 0. Aceasta este o eroare de aplica\u0163ie.
+Illegal.Argument.Trying.to.write.chars.useraction=Scriere numai buffer-e cu dimensiunea 0 sau mai mare.
+
+# --------------------------------
+Uncaught.service().exception.root.cause.{0}\:.{1}=SRVE0014E: R\u0103d\u0103cina cauzei {0} excep\u0163iei neprinse din metoda service(): {1}
+Uncaught.service().exception.root.cause.{0}\:.{1}.explanation=Excep\u0163ie neprins\u0103 creat\u0103 \u00een metoda serviciului servlet. Aceasta este o eroare de aplica\u0163ie.
+Uncaught.service().exception.root.cause.{0}\:.{1}.useraction=Variaz\u0103 \u00een func\u0163ie de cauza r\u0103d\u0103cin\u0103.
+
+# --------------------------------
+Failed.to.initialize.webapp.{0}=SRVE0015E: E\u015fuare la ini\u0163ializarea aplica\u0163iei Web {0}
+Failed.to.initialize.webapp.{0}.explanation=Nu s-a putut ini\u0163ializa aplica\u0163ia web specificat\u0103 \u00een mesaj. Verifica\u0163i istoricul de erori pentru informa\u0163ii suplimentare.
+Failed.to.initialize.webapp.{0}.useraction=Urm\u0103ri\u0163i istoricul de erori pentru a determina cauza r\u0103d\u0103cin\u0103 a acestei probleme.
+
+# --------------------------------
+Illegal.Argument\:.Invalid.Header.Format=SRVE0016E: Excep\u0163ie argument ilegal: format antet nevalid
+Illegal.Argument\:.Invalid.Header.Format.explanation=Formatul g\u0103sit pentru un antet de cerere nu este valid.
+Illegal.Argument\:.Invalid.Header.Format.useraction=Verifica\u0163i crearea antetului client.
+
+# -------------------------------- replaced by SRVE0255E ---------------------------
+#Web.Group.VHost.Not.Found=SRVE0017W: A WebGroup/Virtual Host to handle {0} has not been defined.
+#Web.Group.VHost.Not.Found.explanation=Could not find a web group (web module) or virtual host to handle the request.
+#Web.Group.VHost.Not.Found.useraction=Be sure the web group and virtual host is defined and deployed.
+
+# --------------------------------
+Servlet.unloaded\:.{0}=SRVE0021I: Servlet desc\u0103rcat: {0}
+Servlet.unloaded\:.{0}.explanation=Servletul specificat a fost desc\u0103rcat dup\u0103 ce a fost apelat\u0103 metoda de distrugere.
+Servlet.unloaded\:.{0}.useraction=F\u0103r\u0103.
+
+# --------------------------------
+Illegal.Argument\:.{0}.is.not.a.directory.=SRVE0031E: Excep\u0163ie argument ilegal: {0} nu este un director.
+Illegal.Argument\:.{0}.is.not.a.directory..explanation=Calea specificat\u0103 nu este un director.
+Illegal.Argument\:.{0}.is.not.a.directory..useraction=Asigura\u0163i-v\u0103 c\u0103 directorul exist\u0103 sau c\u0103 apela\u0163i directorul corect.
+
+# --------------------------------
+WebAppSecurityCollaborator=SRVE0035E: WebAppSecurityCollaborator
+WebAppSecurityCollaborator.explanation=WebAppSecurityCollaborator. Aceasta este o eroare de sistem. 
+WebAppSecurityCollaborator.useraction=Examina\u0163i istoricele serverului pentru a determina cauza r\u0103d\u0103cin\u0103 a problemei. Dac\u0103 nu exist\u0103 mesaje \u00eenrudite sau acestea nu ajut\u0103 \u00een rezolvarea problemei, contacta\u0163i suportul IBM.
+
+# --------------------------------
+Illegal.Argument\:.Bootstrap.File.Not.Found=SRVE0041E: Excep\u0163ie argument ilegal: fi\u015fierul bootstrap nu a fost g\u0103sit
+Illegal.Argument\:.Bootstrap.File.Not.Found.explanation=Aceasta este o eroare intern\u0103 de sistem \u015fi probabil este cauzat\u0103 de o defectare anterioar\u0103.
+Illegal.Argument\:.Bootstrap.File.Not.Found.useraction=Examina\u0163i istoricele serverului pentru a determina cauza r\u0103d\u0103cin\u0103 a problemei. Dac\u0103 nu exist\u0103 mesaje \u00eenrudite sau acestea nu ajut\u0103 \u00een rezolvarea problemei, contacta\u0163i suportul IBM.
+
+# --------------------------------
+Illegal.Argument\:.Invalid.Content.Length=SRVE0042E: Excep\u0163ie argument ilegal: lungime con\u0163inut nevalid\u0103
+Illegal.Argument\:.Invalid.Content.Length.explanation=Aceasta este o eroare intern\u0103 de sistem \u015fi probabil este cauzat\u0103 de o defectare anterioar\u0103. Aceasta este o eroare de aplica\u0163ie.
+Illegal.Argument\:.Invalid.Content.Length.useraction=Examina\u0163i istoricele serverului pentru a determina cauza r\u0103d\u0103cin\u0103 a problemei. Dac\u0103 nu exist\u0103 mesaje \u00eenrudite sau acestea nu ajut\u0103 \u00een rezolvarea problemei, contacta\u0163i suportul IBM.
+
+# --------------------------------
+Illegal.Argument\:.Invalid.Date.Format=SRVE0053E: Excep\u0163ie argument ilegal: format dat\u0103 nevalid
+Illegal.Argument\:.Invalid.Date.Format.explanation=Formatul datei nu este valid.
+Illegal.Argument\:.Invalid.Date.Format.useraction=Examina\u0163i istoricele serverului pentru a determina cauza r\u0103d\u0103cin\u0103 a problemei. Dac\u0103 nu exist\u0103 mesaje \u00eenrudite sau acestea nu ajut\u0103 \u00een rezolvarea problemei, contacta\u0163i suportul IBM.
+
+# --------------------------------
+Servlet.wait.for.destroy.timeout.has.expired,.destroy.will.be.forced\:.{0}=SRVE0055I: Servlet-ul a a\u015fteptat expirarea time-out de distrugere, distrugerea va fi for\u0163at\u0103: {0}
+Servlet.wait.for.destroy.timeout.has.expired,.destroy.will.be.forced\:.{0}.explanation=Servletul este distrus dup\u0103 ce a\u015fteptarea a dep\u0103\u015fit pragul de timeout.
+Servlet.wait.for.destroy.timeout.has.expired,.destroy.will.be.forced\:.{0}.useraction=F\u0103r\u0103.
+
+# --------------------------------
+Illegal.Argument\:.Unsupported.flag=SRVE0056E: Excep\u0163ie argument ilegal: flag ilegal
+Illegal.Argument\:.Unsupported.flag.explanation=Aceasta este o eroare intern\u0103 de sistem \u015fi probabil este cauzat\u0103 de o defectare anterioar\u0103.
+Illegal.Argument\:.Unsupported.flag.useraction=Examina\u0163i istoricele serverului pentru a determina cauza r\u0103d\u0103cin\u0103 a problemei. Dac\u0103 nu exist\u0103 mesaje \u00eenrudite sau acestea nu ajut\u0103 \u00een rezolvarea problemei, contacta\u0163i suportul IBM.
+
+# --------------------------------
+Uncaught.destroy().exception.thrown.by.servlet.{0}\:.{2}=SRVE0058E: Nu a realizat excep\u0163ia destroy() creat\u0103 de servlet-ul {0}  \u00een aplica\u0163ia {1}: {2}
+Uncaught.destroy().exception.thrown.by.servlet.{0}\:.{2}.explanation=Nu s-a putut distruge servletul specificat. Aceasta este o eroare de aplica\u0163ie.
+Uncaught.destroy().exception.thrown.by.servlet.{0}\:.{2}.useraction=Examina\u0163i istoricele serverului pentru a determina cauza r\u0103d\u0103cin\u0103 a problemei. Dac\u0103 nu exist\u0103 mesaje \u00eenrudite sau acestea nu ajut\u0103 \u00een rezolvarea problemei, contacta\u0163i suportul IBM.
+
+# --------------------------------
+Unable.to.bind.hostname.[{0}].to.servletHost.[{1}]=SRVE0060E: Nu poate s\u0103 lege numele gazdei [{0}] la servletHost [{1}]
+Unable.to.bind.hostname.[{0}].to.servletHost.[{1}].explanation=Nu s-a putut lega numele gazd\u0103 specificat de servletul gazd\u0103 specificat.
+Unable.to.bind.hostname.[{0}].to.servletHost.[{1}].useraction=Asigura\u0163i-v\u0103 ca numele gazd\u0103 a fost specificat corect \u015fi c\u0103 servletul gazd\u0103 a fost specificat \u00een virtualhosts.xml.
+
+# --------------------------------
+Illegal.Argument\:.Invalid.Directory.Specified\:.{0}=SRVE0061E: Excep\u0163ie argument ilegal: directorul specificat este nevalid: {0}
+Illegal.Argument\:.Invalid.Directory.Specified\:.{0}.explanation=Directorul specificat nu este valid.
+Illegal.Argument\:.Invalid.Directory.Specified\:.{0}.useraction=Verifica\u0163i specifica\u0163iile directorului pentru erori.
+
+# --------------------------------
+Waiting.servlet.to.finish.servicing.requests\:.{0}=SRVE0066I: A\u015fteptare pentru ca servlet-uls\u0103 termine cererile de service: {0}
+Waiting.servlet.to.finish.servicing.requests\:.{0}.explanation=Servletul \u00eenc\u0103 manipuleaz\u0103 cererea. A\u015fteptare finalizare cerere \u00eenainte de apelarea func\u0163iei de distrugere.
+Waiting.servlet.to.finish.servicing.requests\:.{0}.useraction=F\u0103r\u0103.
+
+# --------------------------------
+Uncaught.service().exception.thrown.by.servlet.{0}\:.{2}=SRVE0068E: Excep\u0163ie neprins\u0103 creat\u0103 \u00eentr-una din metodele de servicie ale servlet-ului {0} in aplica\u0163ia {1}. Excep\u0163ia creat\u0103 : {2}
+Uncaught.service().exception.thrown.by.servlet.{0}\:.{2}.explanation=Excep\u0163ie neprins\u0103 creat\u0103 \u00eentr-una din metodele de servicii ale servletului. Aceasta este o eroare de aplica\u0163ie.
+Uncaught.service().exception.thrown.by.servlet.{0}\:.{2}.useraction=Examina\u0163i istoricele serverului pentru a determina cauza r\u0103d\u0103cin\u0103 a problemei. Dac\u0103 nu exist\u0103 mesaje \u00eenrudite sau acestea nu ajut\u0103 \u00een rezolvarea problemei, contacta\u0163i suportul IBM.
+
+# --------------------------------
+Error.Initializing.for.Next.Request=SRVE0070E: Eroare la ini\u0163ializarea cererii urm\u0103toare
+Error.Initializing.for.Next.Request.explanation=Eroare intern\u0103 de container web.
+Error.Initializing.for.Next.Request.useraction=Colecta\u0163i istoricele de server \u015fi contacta\u0163i service IBM.
+
+# --------------------------------
+Invalid.Content.Length=SRVE0080E: lungime con\u0163inut nevalid\u0103
+Invalid.Content.Length.explanation=Eroare intern\u0103 de server. Aceasta ar putea fi cauzat\u0103 de probleme de ajustare a re\u0163elei, content-length fiind specificat incorect, sau lungimea ori dimensiunea unui ata\u015fament. Aceasta este o eroare de aplica\u0163ie.
+Invalid.Content.Length.useraction=Colecta\u0163i istoricele \u015fi contacta\u0163i service IBM.
+
+# --------------------------------
+Illegal.Argument\:.Missing.Resource.Bootstrap.Properties=SRVE0086E: Excep\u0163ie argument ilegal: Lipsesc propriet\u0103\u0163ile de bootstrap ale resursei
+Illegal.Argument\:.Missing.Resource.Bootstrap.Properties.explanation=Eroare intern\u0103 server.
+Illegal.Argument\:.Missing.Resource.Bootstrap.Properties.useraction=Colecta\u0163i istoricele \u015fi contacta\u0163i service IBM.
+
+# --------------------------------
+Servlet.unload.initiated\:.{0}=SRVE0097I: A fost ini\u0163ializat\u0103 desc\u0103rcarea servlet-ului: {0}
+Servlet.unload.initiated\:.{0}.explanation=Servletul specificat este desc\u0103rcat de pe serviciu.
+Servlet.unload.initiated\:.{0}.useraction=F\u0103r\u0103.
+
+# --------------------------------
+Object.Pool.Exception.Class.could.not.be.instantiated.[{0}]=SRVE0099E: Excep\u0163ie pool obiecte: Clasa [{0}] nu a putut fi instan\u0163iat\u0103.
+Object.Pool.Exception.Class.could.not.be.instantiated.[{0}].explanation=Nu a putut fi instan\u0163iat\u0103 o clas\u0103 pentru a fi utilizat\u0103 de pool-uri de obiecte. Aceasta este o eroare de sistem.
+Object.Pool.Exception.Class.could.not.be.instantiated.[{0}].useraction=Asigura\u0163i-v\u0103 ca exist\u0103 clasa \u015fi este vizibil\u0103 din calea clasei aplica\u0163ie.
+
+# --------------------------------
+Uncaught.init().exception.thrown.by.servlet.{0}\:.{2}=SRVE0100E: Excep\u0163ie neprins\u0103 creat\u0103 de servlet-ul {0} \u00een metoda init() \u00een aplica\u0163ia {1}: {2}
+Uncaught.init().exception.thrown.by.servlet.{0}\:.{2}.explanation=Nu s-a putut ini\u0163ializa servletul specificat. Aceasta este o eroare de aplica\u0163ie.
+Uncaught.init().exception.thrown.by.servlet.{0}\:.{2}.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul de clas\u0103 servlet este disponibil din calea clasei aplica\u0163ie.
+
+# --------------------------------
+Illegal.Argument\:.ScriptName.must.be.the.first.part.of.the.URI=SRVE0103E: Excep\u0163ie argument ilegal: ScriptName trebuie s\u0103 fie prima parte component\u0103 din URI
+Illegal.Argument\:.ScriptName.must.be.the.first.part.of.the.URI.explanation=Aceasta este o eroare intern\u0103 de sistem \u015fi probabil este cauzat\u0103 de o defectare anterioar\u0103.
+Illegal.Argument\:.ScriptName.must.be.the.first.part.of.the.URI.useraction=Examina\u0163i istoricele serverului pentru a determina cauza r\u0103d\u0103cin\u0103 a problemei. Dac\u0103 nu exist\u0103 mesaje \u00eenrudite sau acestea nu ajut\u0103 \u00een rezolvarea problemei, contacta\u0163i suportul IBM.
+
+# --------------------------------
+Session.releaseSession().threw.an.unexpected.exception=SRVE0105E: O excep\u0163ie a ap\u0103rut \u00een Session.releaseSession()
+Session.releaseSession().threw.an.unexpected.exception.explanation=Problem\u0103 la eliberarea unei sesiuni.
+Session.releaseSession().threw.an.unexpected.exception.useraction=Examina\u0163i istoricele serverului pentru a determina cauza r\u0103d\u0103cin\u0103 a problemei. Dac\u0103 nu exist\u0103 mesaje \u00eenrudite sau acestea nu ajut\u0103 \u00een rezolvarea problemei, contacta\u0163i suportul IBM.
+
+# --------------------------------
+Illegal.Argument\:.Missing.flag.value=SRVE0108E: Excep\u0163ie argument ilegal: Lipse\u015fte valoarea flag-ului
+Illegal.Argument\:.Missing.flag.value.explanation=Valoare stegule\u0163 lips\u0103.
+Illegal.Argument\:.Missing.flag.value.useraction=Examina\u0163i istoricele serverului pentru a determina cauza r\u0103d\u0103cin\u0103 a problemei. Dac\u0103 nu exist\u0103 mesaje \u00eenrudite sau acestea nu ajut\u0103 \u00een rezolvarea problemei, contacta\u0163i suportul IBM.
+
+# --------------------------------
+Illegal.Argument\:.Invalid.ObjectPool.Instantiated.=SRVE0109E: Excep\u0163ie argument ilegal: A fost instan\u0163iat un ObjectPool nevalid.
+Illegal.Argument\:.Invalid.ObjectPool.Instantiated..explanation=Aceasta este o eroare intern\u0103 de sistem \u015fi probabil este cauzat\u0103 de o defectare anterioar\u0103.
+Illegal.Argument\:.Invalid.ObjectPool.Instantiated..useraction=Examina\u0163i istoricele serverului pentru a determina cauza r\u0103d\u0103cin\u0103 a problemei. Dac\u0103 nu exist\u0103 mesaje \u00eenrudite sau acestea nu ajut\u0103 \u00een rezolvarea problemei, contacta\u0163i suportul IBM.
+
+# --------------------------------
+Error.occurred.while.invoking.error.reporter=SRVE0115E: A ap\u0103rut o eroare \u00een timp ce se invoca reporterul de eroare {0}
+Error.occurred.while.invoking.error.reporter.explanation=Problem\u0103 la invocarea raportorului de erori specificat.
+Error.occurred.while.invoking.error.reporter.useraction=Examina\u0163i istoricele serverului pentru a determina cauza r\u0103d\u0103cin\u0103 a problemei. Dac\u0103 nu exist\u0103 mesaje \u00eenrudite sau acestea nu ajut\u0103 \u00een rezolvarea problemei, contacta\u0163i suportul IBM.
+
+# --------------------------------
+IO.Error=SRVE0120E: Eroare IO {0}
+IO.Error.explanation=\u00cent\u00e2lnire eroare IO.
+IO.Error.useraction=Variaz\u0103 \u00een func\u0163ie de cauza r\u0103d\u0103cin\u0103 raportat\u0103.
+
+# --------------------------------
+Illegal.Argument\:.Trying.to.write.<.0.bytes=SRVE0121E: Excep\u0163ie argument ilegal: \u00cencercare de a scrie &lt; 0 octe\u0163i
+Illegal.Argument\:.Trying.to.write.<.0.bytes.explanation=\u00cencercare de furnizare a unui buffer de dimensiune mai mic\u0103 de 0. Aceasta este o eroare de aplica\u0163ie.
+Illegal.Argument\:.Trying.to.write.<.0.bytes.useraction=Scriere numai buffer-e cu dimensiunea 0 sau mai mare.
+
+# --------------------------------
+Invalidation.Exception\:.{0}.was.created=SRVE0126E: Excep\u0163ie de invalidare: {0} a fost creat
+Invalidation.Exception\:.{0}.was.created.explanation=Aceasta este o eroare intern\u0103 de sistem \u015fi probabil este cauzat\u0103 de o defectare anterioar\u0103.
+Invalidation.Exception\:.{0}.was.created.useraction=Examina\u0163i istoricele serverului pentru a determina cauza r\u0103d\u0103cin\u0103 a problemei. Dac\u0103 nu exist\u0103 mesaje \u00eenrudite sau acestea nu ajut\u0103 \u00een rezolvarea problemei, contacta\u0163i suportul IBM.
+
+# --------------------------------
+Error.Parsing.Parameters=SRVE0133E: A ap\u0103rut o eroare \u00een timp ce parametrii erau analiza\u0163i. {0}
+Error.Parsing.Parameters.explanation=Problem\u0103 \u00eent\u00e2lnit\u0103 la parsarea parametrilor servletului.
+Error.Parsing.Parameters.useraction=Verifica\u0163i c\u0103 clientul trimite cererea complet\u0103.
+
+# --------------------------------
+postInvoke.Security.Exception.=SRVE0138E: Excep\u0163ie de securitate pentru postInvoke
+postInvoke.Security.Exception..explanation=Problem\u0103 de securitate \u00eent\u00e2lnit\u0103 \u00een timpul proces\u0103rii cererii. Aceasta este o eroare de sistem.
+postInvoke.Security.Exception..useraction=Examina\u0163i istoricele serverului pentru a determina cauza r\u0103d\u0103cin\u0103 a problemei. Dac\u0103 nu exist\u0103 mesaje \u00eenrudite sau acestea nu ajut\u0103 \u00een rezolvarea problemei, contacta\u0163i suportul IBM.
+
+# --------------------------------
+preInvoke.Security.Exception.=SRVE0139E: Excep\u0163ie de securitate \u00een preInvoke {0}
+preInvoke.Security.Exception..explanation=Problem\u0103 de securitate \u00eent\u00e2lnit\u0103 \u00een timpul proces\u0103rii cererii. Aceasta este o eroare de sistem.
+preInvoke.Security.Exception..useraction=Variaz\u0103 \u00een func\u0163ie de cauza r\u0103d\u0103cin\u0103.
+
+# --------------------------------
+instantiate.collaborator.exception=SRVE0140E: Nu a putut instan\u0163ia colaboratorul de securitate {0}
+instantiate.collaborator.exception.explanation=Eroare intern\u0103 server.
+instantiate.collaborator.exception.useraction=Colecta\u0163i istoricele \u015fi contacta\u0163i service IBM.
+
+# --------------------------------
+failed.to.load.encoding.properties=SRVE0155E: \u00cenc\u0103rcarea fi\u015fierului encoding.properties a e\u015fuat {0}
+failed.to.load.encoding.properties.explanation=Nu s-a putut \u00eenc\u0103rca fi\u015fierul specificat. Este necesar\u0103 ac\u0163iunea sistemului.
+failed.to.load.encoding.properties.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul specificat exist\u0103 \u015fi este \u00een formatul corect conform java.utils.Properties.
+
+# --------------------------------
+failed.to.load.converter.properties=SRVE0156E: \u00cenc\u0103rcarea fi\u015fierului converter.properties a e\u015fuat {0}
+failed.to.load.converter.properties.explanation=Nu s-a putut \u00eenc\u0103rca fi\u015fierul specificat. Este necesar\u0103 ac\u0163iunea sistemului.
+failed.to.load.converter.properties.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul specificat exist\u0103 \u015fi este \u00een formatul corect conform java.utils.Properties.
+
+# --------------------------------
+setbuffer.size.called.after.write=SRVE0157E: setBufferSize() a fost apelat\u0103 dup\u0103 prima scriere \u00een Output Stream/Writer
+setbuffer.size.called.after.write.explanation=A fost f\u0103cut\u0103 o \u00eencercare de setare dimensiune buffer de r\u0103spuns dup\u0103 ce r\u0103spunsul a fost deja comis. Aceasta este o eroare de aplica\u0163ie.
+setbuffer.size.called.after.write.useraction=\u00cenl\u0103tura\u0163i apelul setBufferSize() sau muta\u0163i-l la o pozi\u0163ie anterioar\u0103 comiterii r\u0103spunsului.
+
+# --------------------------------
+usertransaction.rollback.exception=SRVE0160E: Excep\u0163ie \u00een timp ce derula \u00eenapoi UserTransaction: {0}
+usertransaction.rollback.exception.explanation=Problem\u0103 \u00eent\u00e2lnit\u0103 la derulare \u00eenapoi tranzac\u0163ie utilizator specificat\u0103. Aceasta este o eroare de aplica\u0163ie.
+usertransaction.rollback.exception.useraction=Examina\u0163i istoricele serverului pentru a determina cauza r\u0103d\u0103cin\u0103 a problemei. Dac\u0103 nu exist\u0103 mesaje \u00eenrudite sau acestea nu ajut\u0103 \u00een rezolvarea problemei, contacta\u0163i suportul IBM.
+
+# --------------------------------
+web.container.copyright=SRVE0161I: IBM WebSphere Application Server - Web Container.  Copyright IBM Corp. 1998-2008
+web.container.copyright.explanation=Identificator server aplica\u0163ie.
+web.container.copyright.useraction=F\u0103r\u0103.
+
+# --------------------------------
+web.container.servlet.spec.level=SRVE0162I: Nivel specifica\u0163ii servlet: 2.5
+web.container.servlet.spec.level.explanation=Nivelul de specifica\u0163ii servlet suportat de serverul de aplica\u0163ii.
+web.container.servlet.spec.level.useraction=F\u0103r\u0103.
+
+# --------------------------------
+web.container.jsp.spec.level=SRVE0163I: Nivel specifica\u0163ii JSP suportat: 2.1
+web.container.jsp.spec.level.explanation=Nivelul de specifica\u0163ii JSP suportat de serverul de aplica\u0163ii.
+web.container.jsp.spec.level.useraction=F\u0103r\u0103.
+
+# --------------------------------
+context.root.already.in.use=SRVE0164E: Aplica\u0163ia Web {0} folose\u015fte r\u0103d\u0103cina de context {1}, care este deja \u00een uz de aplica\u0163ia Web {2}. Aplica\u0163ia web {3} nu va fi \u00eenc\u0103rcat\u0103.
+context.root.already.in.use.explanation=Cele dou\u0103 aplica\u0163ii web de pe aceea\u015fi gazd\u0103 virtual\u0103 \u00eempart aceea\u015fi r\u0103d\u0103cin\u0103 context. Aceasta este o eroare de aplica\u0163ie.
+context.root.already.in.use.useraction=Modifica\u0163i r\u0103d\u0103cina context a uneia dintre aplica\u0163ii sau muta\u0163i una dintre acestea pe o gazd\u0103 virtual\u0103 diferit\u0103.
+
+# --------------------------------
+loading.web.module=SRVE0169I: \u00cenc\u0103rcare modul web: {0}.
+loading.web.module.explanation=WebModule porne\u015fte \u015fi este f\u0103cut disponibil pentru serviciu.
+loading.web.module.useraction=F\u0103r\u0103.
+
+# --------------------------------
+[{0}][{1}][Servlet.LOG]\:.{2}=SRVE0180I: [{0}] [{1}] [Servlet.LOG]: {2}
+[{0}][{1}][Servlet.LOG]\:.{2}.explanation=Mesajul informativ {2} a fost \u00eenregistrat \u00een istoric prin ServletContext.log din aplica\u0163ia {0} cu r\u0103d\u0103cina de context {1}.
+[{0}][{1}][Servlet.LOG]\:.{2}.useraction=F\u0103r\u0103.
+
+# --------------------------------
+[{0}][{1}][Servlet.LOG]\:.{2}\:.{3}=SRVE0181I: [{0}] [{1}] [Servlet.LOG]: {2}: {3}
+[{0}][{1}][Servlet.LOG]\:.{2}\:.{3}.explanation=Mesajul informativ {2} a fost \u00eenregistrat \u00een istoric prin ServletContext.log din aplica\u0163ia {0} cu r\u0103d\u0103cina de context {1} \u015fi urma de stiv\u0103 {3}.
+[{0}][{1}][Servlet.LOG]\:.{2}\:.{3}.useraction=F\u0103r\u0103.
+
+# --------------------------------
+error.occurred.processing.request=SRVE0185E: O eroare a survenit \u00een timpul proces\u0103rii cererii:
+error.occurred.processing.request.explanation=Excep\u0163ie ap\u0103rut\u0103 la procesarea cererii.
+error.occurred.processing.request.useraction=Examina\u0163i mesajul pentru a determina cauza r\u0103d\u0103cin\u0103 a problemei.
+
+# -----------------------------------------------
+Cannot.set.buffer.size.after.data=SRVE0186E: Nu se poate seta dimensiunea buffer dup\u0103 ce datele au fost \u00eenscrise \u00een flux
+Cannot.set.buffer.size.after.data.explanation=Unele date au fost deja scrise \u00een flux, astfel dimensiunea buffer nu mai poate fi controlat\u0103. Aceasta este o eroare de aplica\u0163ie.
+Cannot.set.buffer.size.after.data.useraction=Seta\u0163i dimensiunea buffer \u00eenainte de scrierea datelor sau reseta\u0163i buffer-ul \u00eenainte de setare dimensiunii.
+
+# -----------------------------------------------
+Check.your.classpath.ensure.all.classes.present=SRVE0187E: Verifica\u0163i calea clasei dvs. pentru a v\u0103 asigura c\u0103 toate clasele cerute de servlet sunt prezente.
+Check.your.classpath.ensure.all.classes.present.explanation=O clas\u0103 necesar\u0103 nu a fost g\u0103sit\u0103. Aceasta este o eroare de aplica\u0163ie.
+Check.your.classpath.ensure.all.classes.present.useraction=Asigura\u0163i-v\u0103 c\u0103 o cale clas\u0103 reflect\u0103 toate clasele pe care este posibil s\u0103 le accesa\u0163i
+
+# -----------------------------------------------
+Class.{0}.does.not.implement.servlet=SRVE0188E: Clasa {0} nu implementeaz\u0103 servlet
+Class.{0}.does.not.implement.servlet.explanation=Aceasta este o eroare de aplica\u0163ie.
+Class.{0}.does.not.implement.servlet.useraction=Clasa a men\u0163ionat necesit\u0103\u0163ile de implementare javax.servlet.Servlet sau de extindere a unui javax.servlet.GenericServlet sau javax.servlet.http.HttpServlet
+
+# -----------------------------------------------
+Error.occurred.while.finishing.request=SRVE0189E: Eroare survenit\u0103 \u00een timpul finaliz\u0103rii cererii
+Error.occurred.while.finishing.request.explanation=Aceasta este o eroare care apare c\u00e2nd cererea se finalizeaz\u0103. Aceasta este posibil s\u0103 se fi \u00eent\u00e2mplat din cauza unei erori de comunica\u0163ie cu serverul de aplica\u0163ii, dar nu trebuia s\u0103 afecteze procesarea cererii. Aceasta este o eroare de sistem.
+Error.occurred.while.finishing.request.useraction=F\u0103r\u0103.
+
+# -----------------------------------------------
+File.not.found=SRVE0190E: Fi\u015fierul nu a fost g\u0103sit: {0}
+File.not.found.explanation=Fi\u015fierul men\u0163ionat nu a fost g\u0103sit. Aceasta este o eroare de aplica\u0163ie.
+File.not.found.useraction=Asigura\u0163i-v\u0103 ca fi\u015fierul men\u0163ionat exist\u0103.
+
+# -----------------------------------------------
+Illegal.from.included.servlet=SRVE0194E: Ilegal de la servlet-ul inclus
+Illegal.from.included.servlet.explanation=Opera\u0163ia \u00eencercat\u0103 nu poate fi realizat\u0103 servlet/JSP inclus(Consulta\u0163i specifica\u0163iile Servlet). Aceasta este o eroare de aplica\u0163ie.
+Illegal.from.included.servlet.useraction=Modifica\u0163i servletul/JSP care a e\u015fuat.
+
+# -----------------------------------------------
+Missing.required.initialization.parameter=SRVE0196E: Parametru necesar de ini\u0163ializare lips\u0103: {0}
+Missing.required.initialization.parameter.explanation=Parametrul cu numele men\u0163ionat nu are nicio valoare. Acesta este un parametru obligatoriu. Aceasta este o eroare de aplica\u0163ie.
+Missing.required.initialization.parameter.useraction=Furniza\u0163i o valoare pentru parametrul men\u0163ionat.
+
+# -----------------------------------------------
+OutputStream.already.obtained=SRVE0199E: Fluxul de ie\u015fire este ob\u0163inut deja
+OutputStream.already.obtained.explanation=Aplica\u0163ia a f\u0103cut o cerere de PrintWriter dup\u0103 ce ServletResponse OutputStream a fost deja ob\u0163inut. Aceasta este o eroare de aplica\u0163ie.
+OutputStream.already.obtained.useraction=Examina\u0163i aplica\u0163ia pentru a determina daca au fost ob\u0163inute ambele PrintWriter \u015fi OuputStream. Modifica\u0163i servletul/JSP care a e\u015fuat pentru a ob\u0163ine numai unul dintre acestea.
+
+# -----------------------------------------------
+Servlet.Could.not.find.required.servlet.class=SRVE0200E: Servlet [{0}]: Nu a putut g\u0103si clasa necesar\u0103 - {1}
+Servlet.Could.not.find.required.servlet.class.explanation=Servletul nu a g\u0103sit o clas\u0103 necesar\u0103 pentru realizarea unei cereri. Aceasta este o eroare de aplica\u0163ie.
+Servlet.Could.not.find.required.servlet.class.useraction=Verifica\u0163i existen\u0163a clasei \u00een aplica\u0163ie.
+
+# -----------------------------------------------
+Servlet.not.a.servlet.class=SRVE0201E: Servlet [{0}]: nu este o clas\u0103 de servlet
+Servlet.not.a.servlet.class.explanation=Aceasta este o eroare de aplica\u0163ie.
+Servlet.not.a.servlet.class.useraction=Modifica\u0163i clasa e\u015fuat\u0103 astfel \u00eenc\u00e2t s\u0103 implementeze javax.servlet.Servlet sau extinde\u0163i javax.servlet.GenericServlet ori javax.servlet.http.HttpServlet
+
+# -----------------------------------------------
+Servlet.found.but.corrupt=SRVE0202E: Servlet [{0}]: {1} a fost g\u0103sit, dar este corupt:\n
+Servlet.found.but.corrupt.explanation=Clasa servlet a fost g\u0103sit\u0103 corupt\u0103. Aceasta este o eroare de aplica\u0163ie.
+Servlet.found.but.corrupt.useraction=Recompila\u0163i clasa \u015fi \u00eencerca\u0163i din nou.
+
+# -----------------------------------------------
+Servlet.was.found.but.is.missing.another.required.class=SRVE0203E: Servlet [{0}]: {1} a fost g\u0103sit, dar \u00eei lipse\u015fte o alt\u0103 clas\u0103 necesar\u0103.\n
+Servlet.was.found.but.is.missing.another.required.class.explanation=O clas\u0103 necesar\u0103 nu a fost g\u0103sit\u0103. Aceasta este o eroare de aplica\u0163ie.
+Servlet.was.found.but.is.missing.another.required.class.useraction=Asigura\u0163i-v\u0103 c\u0103 toate clasele necesare sunt \u00een folderele/jar-urile reprezent\u00e2nd calea clas\u0103
+
+# -----------------------------------------------
+host.has.not.been.defined=SRVE0204E: Gazda {0} nu a fost definit\u0103
+host.has.not.been.defined.explanation=Gazda virtual\u0103 nu a fost gasit\u0103. Este necesar\u0103 ac\u0163iunea sistemului.
+host.has.not.been.defined.useraction=Verifica\u0163i configura\u0163ia gazdei virtuale din fi\u015fierul virtualhosts.xml, sau prin intermediul consolei administrative.
+
+# -----------------------------------------------
+host.on.port.has.not.been.defined=SRVE0205E: Gazda {0} de pe portul {1} nu a fost definit\u0103. 
+host.on.port.has.not.been.defined.explanation=Nu se poate localiza Gazda virtual\u0103 definit\u0103 s\u0103 manipuleze acest URI. Este necesar\u0103 ac\u0163iunea sistemului.
+host.on.port.has.not.been.defined.useraction=Verifica\u0163i configura\u0163ia gazdei virtuale din fi\u015fierul virtualhosts.xml, sau prin intermediul consolei administrative.
+
+# -----------------------------------------------
+This.error.implies.servlet.was.originally.compiled.with.classes.which.cannot.be.located.by.server=SRVE0206E: Aceast\u0103 eroare implic\u0103 \u00een mod tipic faptul c\u0103 servlet-ul a fost compilat ini\u0163ial cu clasele care nu pot fi localizate de server.\n
+This.error.implies.servlet.was.originally.compiled.with.classes.which.cannot.be.located.by.server.explanation=Aceasta este o eroare de aplica\u0163ie.
+This.error.implies.servlet.was.originally.compiled.with.classes.which.cannot.be.located.by.server.useraction=Recompila\u0163i servletul cu toate componentele necesare puse \u00een calea clas\u0103.
+
+# -----------------------------------------------
+Uncaught.initialization.exception.thrown.by.servlet=SRVE0207E: Excep\u0163ie neprins\u0103 de initializare creat\u0103 de servlet
+Uncaught.initialization.exception.thrown.by.servlet.explanation=Destina\u0163ia a aruncat o excep\u0163ie \u00een timpul ini\u0163ializ\u0103rii care nu a fost prins\u0103 de codul utilizatorului. Aceasta este o eroare de aplica\u0163ie.
+Uncaught.initialization.exception.thrown.by.servlet.useraction=Cont al excep\u0163iei \u00een codul destina\u0163ie.
+
+# -----------------------------------------------
+Unsupported.conversion=SRVE0208E: Conversie nesuportat\u0103
+Unsupported.conversion.explanation=Codul a \u00eencercat o conversie ilegal\u0103 a valorii unui antet. Ex., din int \u00een Data, c\u00e2nd o astfel de conversie nu este posibil\u0103. Aceasta este o eroare de aplica\u0163ie.
+Unsupported.conversion.useraction=Modifica\u0163i servletul/JSP care a e\u015fuat.
+
+# -----------------------------------------------
+Writer.already.obtained=SRVE0209E: Autorul este ob\u0163inut deja
+Writer.already.obtained.explanation=Writer-ul acestui r\u0103spuns a fost deja ob\u0163inut. Utiliza\u0163i writer-ul existent. Aceasta este o eroare de aplica\u0163ie.
+Writer.already.obtained.useraction=Examina\u0163i aplica\u0163ia pentru a determina daca au fost ob\u0163inute ambele PrintWriter \u015fi OuputStream. Modifica\u0163i servletul/JSP care a e\u015fuat pentru a ob\u0163ine numai unul dintre acestea.
+
+# -----------------------------------------------
+be.debugged.by.recompiling.the.servlet.using.only.the.classes.in.the.application's.runtime.classpath=SRVE0210I: Aceast\u0103 problem\u0103 poate fi depanat\u0103 prin recompilarea servlet-ului folosind doar clasele din calea clasei de runtime a aplica\u0163iei\n
+be.debugged.by.recompiling.the.servlet.using.only.the.classes.in.the.application's.runtime.classpath.explanation=Aceasta este o eroare de aplica\u0163ie.
+be.debugged.by.recompiling.the.servlet.using.only.the.classes.in.the.application's.runtime.classpath.useraction=Recompila\u0163i servletul utiliz\u00e2nd doare clasele din calea clas\u0103 din runtime-ul aplica\u0163iei.
+
+# -----------------------------------------------
+class.{0}.could.not.be.instantiated=SRVE0211E: Clasa {0} nu a putut fi instan\u0163iat\u0103
+class.{0}.could.not.be.instantiated.explanation=Excep\u0163ie intern\u0103.
+class.{0}.could.not.be.instantiated.useraction=CMSG0002
+
+# -----------------------------------------------
+class.{0}.not.accessible=SRVE0212E: clasa {0} nu este accesibil\u0103
+class.{0}.not.accessible.explanation=Excep\u0163ie intern\u0103.
+class.{0}.not.accessible.useraction=CMSG0002
+
+# -----------------------------------------------
+class.not.found=SRVE0213E: clasa nu este g\u0103sit\u0103
+class.not.found.explanation=Excep\u0163ie intern\u0103.
+class.not.found.useraction=CMSG0002
+
+# -----------------------------------------------
+invalid.count=SRVE0214E: num\u0103r invalid
+invalid.count.explanation=Excep\u0163ie intern\u0103.
+invalid.count.useraction=CMSG0002
+
+# -----------------------------------------------
+non-HTTP.request.or.response=SRVE0215E: cerere sau r\u0103spuns non-HTTP
+non-HTTP.request.or.response.explanation=Lan\u0163ul servlet definit poate manipula doar cereri HTTP. Aceasta este o eroare de aplica\u0163ie.
+non-HTTP.request.or.response.useraction=F\u0103r\u0103.
+
+# -----------------------------------------------
+post.body.contains.less.bytes.than.specified=SRVE0216E: corpul postat con\u0163ine mai pu\u0163ini octe\u0163i dec\u00e2t este specificat \u00een lungimea con\u0163inutului
+post.body.contains.less.bytes.than.specified.explanation=Cererea de intrare poate fi corupt\u0103. Aceasta este o eroare de aplica\u0163ie.
+post.body.contains.less.bytes.than.specified.useraction=F\u0103r\u0103.
+
+# -----------------------------------------------
+{0}.is.not.a.valid.class=SRVE0217E: {0} nu este o clas\u0103 valid\u0103
+{0}.is.not.a.valid.class.explanation=Aceast\u0103 eroare a ap\u0103rut c\u00e2nd webcontainer-ul a \u00eencercat \u00eenc\u0103rcarea unei clase interne de implementare. Aceasta este o eroare de sistem.
+{0}.is.not.a.valid.class.useraction=Asigura\u0163i-v\u0103 c\u0103 nu a fost modificat\u0103 calea clas\u0103 original\u0103 WAS.
+
+# -----------------------------------------------
+Forbidden.Web.Security.Exception=SRVE0218E: Interzis: Excep\u0163ie securitate web
+Forbidden.Web.Security.Exception.explanation=Cererea a \u00eencercat accesarea unei resurse interzise.
+Forbidden.Web.Security.Exception.useraction=Asigura\u0163i-v\u0103 c\u0103 entitatea care realizeaz\u0103 cererea are privilegiile necesare.
+
+# -----------------------------------------------
+No.Error.to.Report=SRVE0219I: Nicio eroare de raportat
+No.Error.to.Report.explanation=DefaultErrorReport a fost invocat, dar nu a fost g\u0103sit\u0103 nicio eroare. Aceasta este o eroare de sistem.
+No.Error.to.Report.useraction=Examina\u0163i aplica\u0163ia pentru a determina cauza problemei.
+
+# -----------------------------------------------
+Wrapped.Error=SRVE0220I: Eroare \u00eenf\u0103\u015furat\u0103-
+Wrapped.Error.explanation=Eroarea care a cauzat problema.
+Wrapped.Error.useraction=F\u0103r\u0103.
+
+# -----------------------------------------------
+Serving.JSP.Not.Allowed=SRVE0221E: Servirea con\u0163inuturilor fi\u015fierelor JSP nu este permis\u0103.
+Serving.JSP.Not.Allowed.explanation=Nu se poate servi con\u0163inutul unui fi\u015fier JSP
+Serving.JSP.Not.Allowed.useraction=F\u0103r\u0103.
+
+# -----------------------------------------------
+StackTrace=SRVE0223I: Stiv\u0103 urm\u0103rire:
+StackTrace.explanation=F\u0103r\u0103.
+StackTrace.useraction=F\u0103r\u0103.
+
+# -----------------------------------------------
+Target.Servlet=SRVE0224I: Servlet destina\u0163ie:
+Target.Servlet.explanation=F\u0103r\u0103.
+Target.Servlet.useraction=F\u0103r\u0103.
+
+# -----------------------------------------------
+Root.Error=SRVE0225I: Eroare r\u0103d\u0103cin\u0103-
+Root.Error.explanation=F\u0103r\u0103.
+Root.Error.useraction=F\u0103r\u0103.
+
+# -----------------------------------------------
+class.resides.in.proper.package.directory=SRVE0227E: Verifica\u0163i dac\u0103 clasa se afl\u0103 \u00een directorul pachet corespunz\u0103tor.\n
+class.resides.in.proper.package.directory.explanation=Numele pachetului de resurse nu se potrive\u015fte cu pachetul fi\u015fierului clasei compilate. Aceasta este o eroare de aplica\u0163ie.
+class.resides.in.proper.package.directory.useraction=Verifica\u0163i dac\u0103 clasa se afl\u0103 \u00een directorul corect al pachetului.
+
+# -----------------------------------------------
+classname.defined.in.server.using.proper.case.and.fully.qualified.package=SRVE0228E: Verifica\u0163i dac\u0103 numele clasei a fost definit \u00een serverul care utilizeaz\u0103 procesul \u015fi pachetul complet calificat corespunz\u0103toare.\n
+classname.defined.in.server.using.proper.case.and.fully.qualified.package.explanation=Aceasta este o eroare de aplica\u0163ie.
+classname.defined.in.server.using.proper.case.and.fully.qualified.package.useraction=Verifica\u0163i c\u0103 classname a fost definit \u00een server \u00een condi\u0163ii corecte \u015fi pachet complet calificat.
+
+# -----------------------------------------------
+class.transfered.using.binary.mode=SRVE0229E: Verifica\u0163i dac\u0103 clasa a fost transferat\u0103 la sistemul de fi\u015fiere folosind un mod de transfer binar.\n
+class.transfered.using.binary.mode.explanation=Aceasta este o eroare de aplica\u0163ie.
+class.transfered.using.binary.mode.useraction=Verifica\u0163i dac\u0103 clasa a fost transferat\u0103 c\u0103tre sistemul de fi\u015fiere utiliz\u00e2nd o modalitatea de transfer binar.
+
+# -----------------------------------------------
+class.compiled.using.proper.case=SRVE0230E: Verifica\u0163i dac\u0103 clas\u0103 a fost compilat\u0103 prin utilizarea procesului corespunz\u0103tor (a\u015fa cum este definit \u00een defini\u0163ia de clas\u0103).\n
+class.compiled.using.proper.case.explanation=Aceasta este o eroare de aplica\u0163ie.
+class.compiled.using.proper.case.useraction=Verifica\u0163i dac\u0103 clasa a fost compilat\u0103 \u00een condi\u0163ii corecte (expuse \u00een defini\u0163ia clasei).
+
+# -----------------------------------------------
+class.not.renamed.after.compiled=SRVE0231E: Verifica\u0163i c\u0103 fi\u015fierul clasei nu a fost redenumit dup\u0103 ce a fost compilat.
+class.not.renamed.after.compiled.explanation=Aceasta este o eroare de aplica\u0163ie.
+class.not.renamed.after.compiled.useraction=Verifica\u0163i c\u0103 fi\u015fierul clasei nu a fost redenumit dup\u0103 ce a fost compilat.
+
+# -----------------------------------------------
+Engine.Exception.[{0}]=SRVE0232E: Eroare intern\u0103 de server. <br> Mesaj excep\u0163ie: [{0}]
+Engine.Exception.[{0}].explanation=A ap\u0103rut o excep\u0163ie nea\u015fteptat\u0103 \u015fi detaliile au fost furnizate pe pagina de rezultat erori. Aceasta este o eroare de sistem.
+Engine.Exception.[{0}].useraction=Verifica\u0163i istoricele System.out \u015fi System.err pentru informa\u0163ii suplimentare despre excep\u0163ia generat\u0103.
+
+# -----------------------------------------------
+Error.Report=SRVE0233E: Raport de Erori
+Error.Report.explanation=f\u0103r\u0103
+Error.Report.useraction=f\u0103r\u0103
+
+# -----------------------------------------------
+Application.classpath=SRVE0234I: Cale clas\u0103 aplica\u0163ie=[{0}]
+Application.classpath.explanation=f\u0103r\u0103
+Application.classpath.useraction=f\u0103r\u0103
+
+# -----------------------------------------------
+[{0}].reported.an.error=SRVE0235E: [{0}] a raportat o eroare
+[{0}].reported.an.error.explanation=Vede\u0163i eroarea raportat\u0103.
+[{0}].reported.an.error.useraction=F\u0103r\u0103.
+
+# -----------------------------------------------
+error.on.collaborator.starting.call=SRVE0236E: A ap\u0103rut o eroare \u00een timp ce se invoca colaboratorul de initializare \u00een apelul metodei starting()
+error.on.collaborator.starting.call.explanation=Aceasta este o eroare de sistem.
+error.on.collaborator.starting.call.useraction=Verifica\u0163i istoricele FFDC pentru detalii suplimentare despre aceast\u0103 eroare.
+
+# -----------------------------------------------
+error.on.collaborator.started.call=SRVE0237E: A ap\u0103rut o eroare \u00een timp ce se invoca colaboratorul de initializare \u00een apelul metodei started()
+error.on.collaborator.started.call.explanation=Aceasta este o eroare de sistem.
+error.on.collaborator.started.call.useraction=Verifica\u0163i istoricele FFDC pentru detalii suplimentare despre aceast\u0103 eroare
+
+# -----------------------------------------------
+resource.path.has.to.start.with.slash=SRVE0238E: C\u0103ile de resurse ar trebui s\u0103 aib\u0103 un slash de conducere
+resource.path.has.to.start.with.slash.explanation=Aceasta este o eroare de aplica\u0163ie.
+resource.path.has.to.start.with.slash.useraction=Pune\u0163i un slash \u00eenainte de cale \u015fi \u00eencerca\u0163i din nou.
+
+# -----------------------------------------------
+ExtensionFactory.[{0}].registered.successfully=SRVE0239I: Fabrica de extensie [{0}] a fost \u00eenregistrat\u0103 cu succes.
+ExtensionFactory.[{0}].registered.successfully.explanation=F\u0103r\u0103.
+ExtensionFactory.[{0}].registered.successfully.useraction=F\u0103r\u0103.
+
+# -----------------------------------------------
+ExtensionFactory.[{0}].associated.with.patterns.[{1}]=SRVE0240I: Fabrica de extensie [{0}] a fost asociat\u0103 cu modele [{1}].
+ExtensionFactory.[{0}].associated.with.patterns.[{1}].explanation=F\u0103r\u0103.
+ExtensionFactory.[{0}].associated.with.patterns.[{1}].useraction=F\u0103r\u0103.
+
+# -----------------------------------------------
+Using.[{0}].as.server.root=SRVE0241I: Utilizare [{0}] ca root server \u00een getTempDirectory().
+Using.[{0}].as.server.root.explanation=F\u0103r\u0103.
+Using.[{0}].as.server.root.useraction=F\u0103r\u0103.
+
+# -----------------------------------------------
+[{0}].Initialization.successful=SRVE0242I: [{2}] [{1}] [{0}]: Ini\u0163ializarea a avut succes.
+[{0}].Initialization.successful.explanation=Metoda init() a resursei destina\u0163ie a rulat cu succes \u015fi destina\u0163ia a fost pus\u0103 \u00een serviciu.
+[{0}].Initialization.successful.useraction=F\u0103r\u0103.
+
+# -----------------------------------------------
+reaper.with.interval.[{0}].limit.[{1}].started=SRVE0243I: Intervalul firului de execu\u0163ie repeater: [{0}] \u015fi limita de inactivitate:[{1}] au fost pornite.
+reaper.with.interval.[{0}].limit.[{1}].started.explanation=F\u0103r\u0103.
+reaper.with.interval.[{0}].limit.[{1}].started.useraction=F\u0103r\u0103.
+
+# -----------------------------------------------
+reaper.unloading.servlet.[{0}]=SRVE0244I: Firul de execu\u0163ie reaper \u00eenl\u0103tur\u0103 servletul: [{0}].
+reaper.unloading.servlet.[{0}].explanation=Firul de execu\u0163ie reaper \u00eenl\u0103tur\u0103 servleturi care au fost inactivate o perioad\u0103 mai mare dec\u00e2t limita reaper de inactivitate.
+reaper.unloading.servlet.[{0}].useraction=F\u0103r\u0103.
+
+# -----------------------------------------------
+reaper.removing.mapping.[{0}].for.servlet.[{1}]=SRVE0245I: Firul de execu\u0163ie reaper \u00eenl\u0103tur\u0103 maparea: [{0}] pentru servletul: [{0}].
+reaper.removing.mapping.[{0}].for.servlet.[{1}].explanation=Firul de execu\u0163ie reaper \u00eenl\u0103tur\u0103 map\u0103rile pentru jsp-uri \u015fi alte extensii care au fost inactive mai mult dec\u00e2t limita reaper de inactivitate.
+reaper.removing.mapping.[{0}].for.servlet.[{1}].useraction=F\u0103r\u0103.
+
+# -----------------------------------------------
+reaper.destroying.servlet.[{0}]=SRVE0246I: Firul de execu\u0163ie reaper \u015fterge servletul: [{0}].
+reaper.destroying.servlet.[{0}].explanation=F\u0103r\u0103.
+reaper.destroying.servlet.[{0}].useraction=F\u0103r\u0103.
+
+# -----------------------------------------------
+reaper.thread.error=SRVE0247E: Eroare \u00een timpul execut\u0103rii firului de execu\u0163ie reaper.
+reaper.thread.error.explanation=Excep\u0163ie ap\u0103rut\u0103 \u00een procesarea firului de execu\u0163ie reaper. Aceasta este o eroare de sistem.  
+reaper.thread.error.useraction=Procesarea reaper este doar o form\u0103 de colectare gunoi.
+
+# -----------------------------------------------
+waiting.to.destroy.filter.[{0}]=SRVE0248I: Cererile sunt \u00een curs de procesare. A\u015ftepta\u0163i p\u00e2n\u0103 la 60 de secunde \u00eenainte de for\u0163area distrugerea filtrului.
+waiting.to.destroy.filter.[{0}].explanation=F\u0103r\u0103.
+waiting.to.destroy.filter.[{0}].useraction=F\u0103r\u0103.
+
+# -----------------------------------------------
+sync.tothread.not.set.for.server.[{0}]=SRVE0249W: Aplica\u0163ia {0} a cerut SyncToOSThread, dar serverul nu este activat pentru SyncToOSThread
+sync.tothread.not.set.for.server.[{0}].explanation=SyncToOSThread sincronizeaz\u0103 identitatea rol Java EE cu firul de execu\u0163ie al sistemului de operare, adic\u0103 firul de execu\u0163ie al sistemului de operare este egalizat cu identitatea rol Java EE pe durata cererii. Acest mesaj indic\u0103 faptul c\u0103 \u00een timpul configur\u0103rii unei aplica\u0163ii s\u0103 utilizeze func\u0163ionalitatea SyncToOSThread, serverul instalat nu este configurat s\u0103 suporte capabilit\u0103\u0163i SyncToOSThread. Este necesar\u0103 ac\u0163iunea sistemului.
+sync.tothread.not.set.for.server.[{0}].useraction=Dac\u0103 sunt dorite capabilit\u0103\u0163ile SyncToOSThread pentru server, consulta\u0163i centrul de informare pentru descrierea activ\u0103rii SyncToOSThread pentru un server.
+
+# -----------------------------------------------
+module.[{0}].successfully.bound.to.virtualhost.[{1}]=SRVE0250I: Modulul Web {0} a fost legat la {1}.
+module.[{0}].successfully.bound.to.virtualhost.[{1}].explanation=Modulul web specificat a fost asociat cu virtualhost men\u0163ionat \u015fi poate fi accesat prin orice combina\u0163ie gazd\u0103/port pentru acel virtualhost.
+module.[{0}].successfully.bound.to.virtualhost.[{1}].useraction=F\u0103r\u0103.
+
+# -----------------------------------------------
+threadpool.not.used=SRVE0251W: Threadpool configurat sub webcontainer nu este folosit.
+threadpool.not.used.explanation=Exist\u0103 o configura\u0163ie ThreadPool sub webcontainer. Orice modific\u0103ri ale acestei configura\u0163ii nu vor rezulta \u00een modific\u0103ri \u00een sistem.
+threadpool.not.used.useraction=F\u0103r\u0103.
+
+# -----------------------------------------------
+transports.detected=SRVE0252W: Au fost detectate transporturi \u015fi lan\u0163uri! Transporturile au fost modificate s\u0103 foloseasc\u0103 un nou model. Folosi\u0163i utilit\u0103\u0163ile de migrare pentru a migra transporturile la un model nou. Configura\u0163ia threadpool de sub webcontainer nu va fi folosit\u0103 cu aceste transporturi.
+transports.detected.explanation= Transporturile au fost modificate s\u0103 foloseasc\u0103 Lan\u0163uri canal. Consulta\u0163i centrul de informare pentru examinarea informa\u0163iilor despre Lan\u0163uri canal \u015fi despre migrarea transporturilor existente s\u0103 aib\u0103 la baz\u0103 lan\u0163 canal. Configura\u0163ia pool fir de execu\u0163ie de sub webcontainer nu va fi utilizat\u0103 la aceste transporturi.
+transports.detected.useraction= Folosi\u0163i utilit\u0103\u0163ile de migrare pentru a migra modelul de configura\u0163ie al transporturilor la lan\u0163uri canal noi.
+
+# -----------------------------------------------
+[{0}].Destroy.successful=SRVE0253I: [{2}] [{1}] [{0}]: Distrugere cu succes.
+[{0}].Destroy.successful.explanation=Metoda destroy() a resursei destina\u0163ie a rulat cu succes \u015fi destina\u0163ia a fost \u00eenl\u0103turat\u0103 din serviciu.
+[{0}].Destroy.successful.useraction=F\u0103r\u0103.
+
+# -----------------------------------------------
+unsupported.request.encoding.[{0}]=SRVE0254E: Setarea cod\u0103rii necesare a caracterelor a e\u015fuat: [{0}].
+unsupported.request.encoding.[{0}].explanation=Codare cerere specificat\u0103 nu este valid\u0103. Aceasta este o eroare de aplica\u0163ie.
+unsupported.request.encoding.[{0}].useraction=Examina\u0163i istoricele pentru a determina dac\u0103 codarea specificat\u0103 este una valid\u0103.
+
+# -----------------------------------------------
+Web.Group.VHost.Not.Found=SRVE0255E: Nu a fost definit\u0103 o gazd\u0103 WebGroup/Virtual\u0103 pentru a trata {0}.
+Web.Group.VHost.Not.Found.explanation=Nu a putut fi g\u0103sit un grup web (modul web) sau gazd\u0103 virtual\u0103 care s\u0103 trateze cererea. Aceasta este o eroare de aplica\u0163ie.
+Web.Group.VHost.Not.Found.useraction=Asigura\u0163i-v\u0103 c\u0103 grupul web \u015fi gazda virtual\u0103 sunt definite \u015fi implementate.
+
+# -----------------------------------------------
+webcontainer.not.initialized=SRVE0256E: WebContainer nu a fost ini\u0163ializat.
+webcontainer.not.initialized.explanation=WebContainer nu este ini\u0163ializat p\u00e2n\u0103 c\u00e2nd nu se instaleaz\u0103 o aplica\u0163ie. Aceasta este o eroare de sistem.
+webcontainer.not.initialized.useraction=Instala\u0163i o aplica\u0163ie pentru a ini\u0163ializa un webcontainer.
+
+# -----------------------------------------------
+property.has.changed=SRVE0257W: Semantica pentru proprietatea {0} din transport s-a modificat.
+property.has.changed.explanation=Un fir de execu\u0163ie nu mai este legat de o singura conexiune. Este necesar\u0103 ac\u0163iunea sistemului.
+property.has.changed.useraction=Consulta\u0163i centrul de informare pentru detalii suplimentare.
+
+# -----------------------------------------------
+property.not.applicable=SRVE0258W: Atributul {0} sub transport nu se mai aplic\u0103.
+property.not.applicable.explanation=Este necesar\u0103 ac\u0163iunea sistemului.
+property.not.applicable.useraction=Configura\u0163i aceast\u0103 proprietate de sub Serviciul de \u00eenregistrare (vede\u0163i centrul de informare pentru detalii suplimentare despre HTTP Access Logger).
+
+# -----------------------------------------------
+property.configuration.change=SRVE0259W: Proprietatea {0} este acum configurabil\u0103 doar la nivel de WebContainer.
+property.configuration.change.explanation=Proprietatea {0} nu mai poate fi configurat\u0103 la nivel de transport \u015fi trebuie configurat\u0103 la nivel webcontainer. Este necesar\u0103 ac\u0163iunea sistemului.
+property.configuration.change.useraction=Configura\u0163i aceast\u0103 proprietate la nivel webcontainer.
+
+# -----------------------------------------------
+cannot.use.error.page=SRVE0260E: Serverul nu poate folosi pagina de eroare specificat\u0103 pentru aplica\u0163ia dumneavoastr\u0103, pentru a trata Excep\u0163ia Original\u0103 printat\u0103 mai jos.
+cannot.use.error.page.explanation=F\u0103r\u0103.
+cannot.use.error.page.useraction=Vede\u0163i Excep\u0163ia pagin\u0103 erori pentru descrierea problemei paginii specificate.
+
+# -----------------------------------------------
+annotation.helper.not.defined=SRVE0261E: Helper-ul adnota\u0163iei {0} nu a fost definit.
+annotation.helper.not.defined.explanation=Helper-ul de adnotare specificat nu a fost definit. Aceasta este o eroare de sistem.
+annotation.helper.not.defined.useraction=Verifica\u0163i defini\u0163ia helper-ului de adnotare specificat \u015fi ad\u0103uga\u0163i-l dac\u0103 este necesar.
+
+# -----------------------------------------------
+annotation.helper.wrong.type=SRVE0262E: Helper-ul adnota\u0163iei {0} nu este de tipul com.ibm.wsspi.webcontainer.AnnotationHelper.
+annotation.helper.wrong.type.explanation=Helper-ul de adnotare specificat nu este de tipul specificat. Aceasta este o eroare de sistem.
+annotation.helper.wrong.type.useraction=Verifica\u0163i clasa de implementare a helper-ului de adnotare \u015fi corecta\u0163i-o.
+
+# -----------------------------------------------
+annotation.helper.cannot.create=SRVE0263E: Helper-ul adnota\u0163iei {0} nu poate fi instan\u0163iat.
+annotation.helper.cannot.create.explanation=Helper-ul de adnotare specificat nu a putut fi instan\u0163iat. Aceasta este o eroare de sistem.
+annotation.helper.cannot.create.useraction=Verifica\u0163i istoricele de excep\u0163ii pentru a determina motivul pentru care helper-ul de adnotare nu a putut fi instan\u0163iat.
+
+#------------------------------------------------
+error.initializing.extension.factories=SRVE0264E: O eroare a ap\u0103rut \u00een timp ce se ini\u0163ializau fabricile de extensie: {0}
+error.initializing.extension.factories.explanation=Aceasta este o eroare de sistem.
+error.initializing.extension.factories.useraction=Examina\u0163i istoricele.
+
+#------------------------------------------------
+error.notifying.listeners.of.WebApp.start=SRVE0265E: O eroare a ap\u0103rut \u00een timpul notific\u0103rii ascult\u0103torilor de pornirea WebApp: {0}
+error.notifying.listeners.of.WebApp.start.explanation=Aceasta este o eroare de sistem.
+error.notifying.listeners.of.WebApp.start.useraction=Examina\u0163i istoricele.
+
+#-------------------------------------------------
+error.while.initializing.servlets=SRVE0266E: O eroare a ap\u0103rut \u00een timp ce se ini\u0163ializau servleturile: {0}
+error.while.initializing.servlets.explanation=Aceasta este o eroare de sistem.
+error.while.initializing.servlets.useraction=Examina\u0163i istoricele.
+
+#-------------------------------------------------
+error.initializing.filters=SRVE0267E: O eroare a ap\u0103rut \u00een timp ce se ini\u0163ializau filtrele: {0}
+error.initializing.filters.explanation=Aceasta este o eroare de sistem.
+error.initializing.filters.useraction=Examina\u0163i istoricele.
+
+#------------------------------------------------
+error.obtaining.session.context=SRVE0268E: Eroare la ob\u0163inerea sesiunii de context pentru WebApp: {0}
+error.obtaining.session.context.explanation=Nu s-a putut ob\u0163ine un Context sesiune valid pentru WebApp. Este necesar\u0103 ac\u0163iunea sistemului. 
+error.obtaining.session.context.useraction=Verifica\u0163i c\u0103 Managerul de sesiuni este configurat corect.
+
+#-------------------------------------------------
+no.jsp.extension.handler.found=SRVE0269W: Nu a fost g\u0103sit nicio Extensie de procesor pentru tratarea JSP-urilor
+no.jsp.extension.handler.found.explanation=Aceasta este o eroare de sistem.
+no.jsp.extension.handler.found.useraction=Examina\u0163i istoricele.
+
+#-------------------------------------------------
+illegal.servlet.mapping=SRVE0270E: Mapare de servlet ilegal\u0103 \u00eent\u00e2lnit\u0103 pentru servletul {0}.
+illegal.servlet.mapping.explanation=O mapare servlet specificat\u0103 \u00een webconfig.xml nu este valid\u0103. Este necesar\u0103 ac\u0163iunea sistemului.
+illegal.servlet.mapping.useraction=Verifica\u0163i map\u0103rile din webconfig.xml \u015fi face\u0163i modific\u0103rile corespunz\u0103toare
+
+#-------------------------------------------------
+uncaught.init.exception.thrown.by.servlet=SRVE0271E: Excep\u0163ie neprins\u0103 creat\u0103 de servlet-ul [{0}] \u00een metoda init() \u00een aplica\u0163ia [{1}]: {2}
+uncaught.init.exception.thrown.by.servlet.explanation=Aceasta este o eroare de aplica\u0163ie.
+uncaught.init.exception.thrown.by.servlet.useraction=Examina\u0163i istoricele.
+
+#-------------------------------------------------
+jsp.processor.not.defined.skipping=SRVE0272W: Procesorul JSP nun este definit. S\u0103rire : {0}
+jsp.processor.not.defined.skipping.explanation=Aceasta este o eroare de sistem.
+jsp.processor.not.defined.skipping.useraction=F\u0103r\u0103.
+
+#--------------------------------------------------
+error.while.initializing.jsp.as.servlet=SRVE0273E: Eroare \u00een timp ce ini\u0163ializa JSP ca servlet [{0}] \u00een aplica\u0163ia [{1}]: {1}
+error.while.initializing.jsp.as.servlet.explanation=Aceasta este o eroare de aplica\u0163ie.
+error.while.initializing.jsp.as.servlet.useraction=Examina\u0163i istoricele.
+
+#--------------------------------------------------
+error.while.adding.servlet.mapping.for.path=SRVE0274W: Eroare \u00een timp ce ad\u0103uga maparea servleturilor pentru calea-->{0}, wrapper-->{1}, aplica\u0163ie-->{2}.
+error.while.adding.servlet.mapping.for.path.explanation=Aceasta este o eroare de aplica\u0163ie.
+error.while.adding.servlet.mapping.for.path.useraction=Verifica\u0163i nepotrivirile din mapare \u00een webconfig.xml
+
+#--------------------------------------------------
+error.adding.servlet.mapping.for.servlet=SRVE0275E: Eroare \u00een timp ce ad\u0103uga maparea servleturilor pentru servletul [{0}] \u00een aplica\u0163ia [{1}]: {2}
+error.adding.servlet.mapping.for.servlet.explanation=Aceasta este o eroare de aplica\u0163ie.
+error.adding.servlet.mapping.for.servlet.useraction=Verifica\u0163i c\u0103 maparea este valid\u0103.
+
+#--------------------------------------------------
+error.initializing.servlet=SRVE0276E: Eroare \u00een timp ce ini\u0163ializa Servletul [{0}]: {1}
+error.initializing.servlet.explanation=Aceasta este o eroare de aplica\u0163ie.
+error.initializing.servlet.useraction=Examina\u0163i istoricele.
+
+#--------------------------------------------------
+mapping.for.directorybrowsingservlet.already.exists=SRVE0277W: Maparea pentru DirectoryBrowsingServlet exist\u0103 deja
+mapping.for.directorybrowsingservlet.already.exists.explanation=Aceasta este o eroare de aplica\u0163ie.
+mapping.for.directorybrowsingservlet.already.exists.useraction=\u00cenl\u0103tura\u0163i map\u0103rile duplicate.
+
+#--------------------------------------------------
+error.adding.servlet.mapping.file.handler=SRVE0278E: Eroare \u00een timp ce se ad\u0103uga maparea servletului --> {0}.
+error.adding.servlet.mapping.file.handler.explanation=Aceasta este o eroare de aplica\u0163ie.
+error.adding.servlet.mapping.file.handler.useraction=Seta\u0163i fileServingEnabled=false \u00een fi\u015fierul ibm-web-ext.xmi care este sub folderul WEB-INF.
+
+#--------------------------------------------------
+error.processing.global.listeners.for.webapp=SRVE0279E: O eroare a ap\u0103rut \u00een timpul proces\u0103rii ascult\u0103torilor la nivel global pentru aplica\u0163ia {0}: {1}
+error.processing.global.listeners.for.webapp.explanation=Aceasta este o eroare de aplica\u0163ie.
+error.processing.global.listeners.for.webapp.useraction=Examina\u0163i istoricele.
+
+#---------------------------------------------------
+extension.processor.failed.to.initialize.in.factory=SRVE0280E: Extensia procesorului a e\u015fuat s\u0103 ini\u0163ializeze \u00een fabrica [{0}]: {1}
+extension.processor.failed.to.initialize.in.factory.explanation=Aceasta este o eroare de sistem.
+extension.processor.failed.to.initialize.in.factory.useraction=Examina\u0163i istoricele.
+
+#---------------------------------------------------
+request.processor.already.present.for.mapping=SRVE0281E: Procesorul cerut este deja prezent pentru maparea: {0}
+request.processor.already.present.for.mapping.explanation=Aceasta este o eroare de sistem.
+request.processor.already.present.for.mapping.useraction=Examina\u0163i istoricele.
+
+#---------------------------------------------------
+error.while.setting.WebAppAttributes=SRVE0282E: A ap\u0103rut o eroare \u00een timp ce se seta WebAppAttribues: {0} 
+error.while.setting.WebAppAttributes.explanation=Aceasta este o eroare de sistem.
+error.while.setting.WebAppAttributes.useraction=Examina\u0163i istoricele.
+
+#---------------------------------------------------
+exception.while.initializing.context=SRVE0283E: Excep\u0163ie prins\u0103 \u00een timpul ini\u0163ializ\u0103rii contextului: {0}
+exception.while.initializing.context.explanation=Aceasta este o eroare de aplica\u0163ie.
+exception.while.initializing.context.useraction=Examina\u0163i istoricele.
+
+#---------------------------------------------------
+exception.caught.in.notifyServletContextCreated=SRVE0284E: Excep\u0163ie prins\u0103 \u00een notifyServletContextCreated: {0}
+exception.caught.in.notifyServletContextCreated.explanation=Aceasta este o eroare de sistem.
+exception.caught.in.notifyServletContextCreated.useraction=Examina\u0163i istoricele.
+
+#---------------------------------------------------
+exception.caught.destroying.context=SRVE0285E: Excep\u0163ie prins\u0103 \u00een timpul distrugerii contextului: {0}
+exception.caught.destroying.context.explanation=Aceasta este o eroare de sistem.
+exception.caught.destroying.context.useraction=Examina\u0163i istoricele.
+
+#---------------------------------------------------
+exception.caught.in.notifyServletContextDestroyed=SRVE0286E: Excep\u0163ie prins\u0103 \u00een notifyServletContextDestroyed: {0}
+exception.caught.in.notifyServletContextDestroyed.explanation=Aceasta este o eroare de sistem.
+exception.caught.in.notifyServletContextDestroyed.useraction=Examina\u0163i istoricele.
+
+#---------------------------------------------------
+server.root.is.null=SRVE0287E: server.root este null
+server.root.is.null.explanation=Aceasta este o eroare de sistem.
+server.root.is.null.useraction=F\u0103r\u0103.
+
+#---------------------------------------------------
+chown.failed=SRVE0288E: chown a e\u015fuat, a \u00eencercat s\u0103 rulezei comanda: [{0}] Cod de ie\u015fire: [{1}]
+chown.failed.explanation=Aceasta este o eroare de sistem.
+chown.failed.useraction=F\u0103r\u0103.
+
+#---------------------------------------------------
+failed.to.create.temp.directory=SRVE0289E: Crearea directorului temp a e\u015fuat: {0}
+failed.to.create.temp.directory.explanation=Aceasta este o eroare de sistem.
+failed.to.create.temp.directory.useraction=F\u0103r\u0103.
+
+#---------------------------------------------------
+unable.to.use.specified.temp.directory=SRVE0290E: Nu poate s\u0103 utilizeze directorul temp specificat: {0} citire:{1} sciere:{2}
+unable.to.use.specified.temp.directory.explanation=Este necesar\u0103 ac\u0163iunea sistemului.
+unable.to.use.specified.temp.directory.useraction=Verifica\u0163i starea directorului, inclusiv existen\u0163a, privilegii de acces \u015fi spa\u0163iu disponibil.
+
+#---------------------------------------------------
+unable.to.use.default.temp.directory=SRVE0291E: Nu poate s\u0103 utilizeze directorul temp implicit: {0} citire:{1} sciere:{2}
+unable.to.use.default.temp.directory.explanation=Este necesar\u0103 ac\u0163iunea sistemului.
+unable.to.use.default.temp.directory.useraction=Verifica\u0163i starea directorului, inclusiv existen\u0163a, privilegii de acces \u015fi spa\u0163iu disponibil.
+
+#----------------------------------------------------
+log.servlet.message=SRVE0292I: Mesaj Servlet - [{0}]:.{1}
+log.servlet.message.explanation=F\u0103r\u0103.
+log.servlet.message.useraction=F\u0103r\u0103.
+
+#----------------------------------------------------
+log.servlet.error=SRVE0293E: [Eroare Servlet]-[{0}]: {1}
+log.servlet.error.explanation=F\u0103r\u0103.
+log.servlet.error.useraction=F\u0103r\u0103.
+
+#----------------------------------------------------
+log.servlet.error.and.message=SRVE0294E: [Eroare Servlet]-[{0}]: {1}: {2}
+log.servlet.error.and.message.explanation=F\u0103r\u0103.
+log.servlet.error.and.message.useraction=F\u0103r\u0103.
+
+# -----------------------------------------------
+Error.reported.{0}=SRVE0295E: Eroare raportat\u0103: {0}
+Error.reported.{0}.explanation=HttpServletResponse.sendError a fost apelat\u0103 cu un cod de stare dar f\u0103r\u0103 explica\u0163ii.
+Error.reported.{0}.useraction=Examina\u0163i istoricele pentru a determina codul de stare al erorii.
+
+#------------------------------------------------
+log.servlet.message.with.throwable=SRVE0296E: [{0}][{1}][Servlet.LOG]:.{2}:.{3}
+log.servlet.message.with.throwable.explanation=F\u0103r\u0103.
+log.servlet.message.with.throwable.useraction=F\u0103r\u0103.
+
+#------------------------------------------------
+WebApp.destroy.encountered.errors=SRVE0297E: Distrugerea WebApp {0} a \u00eent\u00e2lnit erori: {1}
+WebApp.destroy.encountered.errors.explanation=Aceasta este o eroare de sistem.
+WebApp.destroy.encountered.errors.useraction=Examina\u0163i istoricele.
+
+#------------------------------------------------
+exception.occured.while.creating.wrapper.for.servlet=SRVE0298E: Excep\u0163ie a ap\u0103rut \u00een timpul cre\u0103rii wrapper-ului pentru servlet [{0}]: {1}
+exception.occured.while.creating.wrapper.for.servlet.explanation=Aceasta este o eroare de sistem.
+exception.occured.while.creating.wrapper.for.servlet.useraction=Examina\u0163i istoricele.
+
+#------------------------------------------------
+could.not.create.wrapper.for.servlet=SRVE0299E: Nu a putut crea wrapper pentru servlet [{0}]
+could.not.create.wrapper.for.servlet.explanation=Aceasta este o eroare de sistem.
+could.not.create.wrapper.for.servlet.useraction=Examina\u0163i istoricele.
+
+#------------------------------------------------
+mapping.already.exists=SRVE0300E: Maparea exist\u0103 deja [{0}][{1}]: {2}
+mapping.already.exists.explanation=Calea dorit\u0103 este deja asignat\u0103 \u00eentr-o mapare servlet. Aceasta este o eroare de aplica\u0163ie.
+mapping.already.exists.useraction=Modifica\u0163i sau \u00eenl\u0103tura\u0163i maparea din configura\u0163ia aplica\u0163iei.
+
+#------------------------------------------------
+encountered.problems.while.removing.servlet=SRVE0301I: Probleme \u00eent\u00e2lnite \u00een timpul \u00eendep\u0103rt\u0103rii servletului {0}. Detalii: {1}
+encountered.problems.while.removing.servlet.explanation=Aceasta este o eroare de sistem.
+encountered.problems.while.removing.servlet.useraction=Examina\u0163i istoricele.
+
+#--------------------------------------------------
+error.while.adding.static.file.processor=SRVE0302E: Eroare \u00een timpul ad\u0103ug\u0103rii procesorului de fi\u015fiere statice: {0}
+error.while.adding.static.file.processor.explanation=Aceasta este o eroare de sistem.
+error.while.adding.static.file.processor.useraction=Examina\u0163i istoricele.
+
+# -----------------------------------------------
+servlet.name.for.servlet.mapping.not.found=SRVE0303E: Numele servletului nu a fost g\u0103sit la ad\u0103ugarea map\u0103rii de servlet; nume servlet={0}; tipar URL={1}; modul={2}; aplica\u0163ie={3}
+servlet.name.for.servlet.mapping.not.found.explanation=Nu exist\u0103 defini\u0163ie servlet pentru maparea servlet.
+servlet.name.for.servlet.mapping.not.found.useraction=Verifica\u0163i c\u0103 web.xml are o defini\u0163ie de servlet pentru aceast\u0103 mapare servlet.
+
+#------------------------------------------------
+servletrequestwrapper.is.not.an.instance.of.so.wrapped.logic.may.be.bypassed=SRVE0304E: ServletRequestWrapper [{0}] nu este o instan\u0163\u0103 a [{1}] astfel logica wrap poate fi evitat\u0103.
+servletrequestwrapper.is.not.an.instance.of.so.wrapped.logic.may.be.bypassed.explanation=WebContainer se a\u015fteapt\u0103 ca un obiect cerere wrap s\u0103 fie o instan\u0163\u0103 a clasei din care nu face parte. Aceasta este o eroare de aplica\u0163ie.
+servletrequestwrapper.is.not.an.instance.of.so.wrapped.logic.may.be.bypassed.useraction=Modifica\u0163i codul pentru a implementa interfa\u0163a dorit\u0103.
+
+# --------------------------------
+Object.Pool.Disabled=SRVE0305W: ObjectPoolService nu este disponibil. Pool-ul SRTConnectionContext este dezactivat.
+Object.Pool.Disabled.explanation=Serviciul pool de obiecte \u00eembun\u0103t\u0103\u0163e\u015fte performan\u0163a webcontainer-ului, dar a fost dezactivat. Aceasta este o eroare de sistem.
+Object.Pool.Disabled.useraction=Este recomandat sa se activeze serviciul pool de obiecte.
+
+#------------------------------------------------
+ARD.Not.Enabled=SRVE0306W: ARD nu este activat, a\u015fa c\u0103 \u00eencerc\u0103rile de a realiza includeri asincrone \u015fi de apeluri insertFragment vor fi toate sincrone.
+ARD.Not.Enabled.explanation=ARD nu este activat corect. Este necesar\u0103 ac\u0163iunea sistemului.
+ARD.Not.Enabled.useraction=Asigura\u0163i-v\u0103 c\u0103 ARD este activat \u00een set\u0103rile WebContainer \u015fi c\u0103 un tip de expediere pentru CLIENT_SIDE or SERVER_SIDE este specificat \u00een set\u0103rile aplica\u0163iei.
+
+#------------------------------------------------
+Null.Filter.Mapping=SRVE0307W: mapare nul\u0103 pentru filtrul. Aceasta se poate \u00eent\u00e2mpla dac\u0103 \u00eencerca\u0163i s\u0103 specifica\u0163i o mapare * pe pre-2.5 app.
+Null.Filter.Mapping.explanation=Nu exist\u0103 nicio mapare servlet pentru filtru, astfel c\u0103 nu poate fi ad\u0103ugat. Aceasta este o eroare de aplica\u0163ie.
+Null.Filter.Mapping.useraction=Modifica\u0163i descriptorii aplica\u0163iei la nivel 2.5 dac\u0103 folosi\u0163i o mapare *.
+
+#------------------------------------------------
+filtering.by.asterisk=SRVE0308E: Filtrarea dup\u0103 asterisc nu este permis\u0103. 
+filtering.by.asterisk.explanation=Filtrarea dup\u0103 asterisc nu este permis\u0103 pentru c\u0103 dezactivarea tuturor servleturilor dup\u0103 classname este tratat\u0103 de proprietatea personalizat\u0103 com.ibm.ws.webcontainer.disallowserveservletsbyclassname. Aceasta este o eroare de aplica\u0163ie.
+filtering.by.asterisk.useraction=Seta\u0163i com.ibm.ws.webcontainer.disallowserveservletsbyclassname cu valoarea adev\u0103r pentru a bloca servirea claselor dup\u0103 classname.
+
+#------------------------------------------------
+servlet.on.blocked.list.{0}=SRVE0309E: Servlet \u00een lista celor blocate: {0}
+servlet.on.blocked.list.{0}.explanation=Servletul cerut se afl\u0103 pe lista celor blocate, furnizat\u0103 de proprietatea personalizat\u0103 com.ibm.ws.webcontainer.donotservebyclassname. Aceasta este o eroare de aplica\u0163ie.
+servlet.on.blocked.list.{0}.useraction=Dac\u0103 acesta nu este comportamentul dorit, actualiza\u0163i proprietatea com.ibm.ws.webcontainer.donotservebyclassname.
+
+#------------------------------------------------
+Error.in.WebContainer.custom.property.value=SRVE0310E: A fost o eroare \u00eentr-o proprietate personalizat\u0103: {1}
+Error.in.WebContainer.custom.property.value.explanation=Este necesar\u0103 ac\u0163iunea sistemului.
+Error.in.WebContainer.custom.property.value.useraction=Verifica\u0163i c\u0103 proprietatea personalizat\u0103 este corect\u0103
+
+#------------------------------------------------
+transport.error=SRVE0311E: A fost o eroare \u00een transportul: {0}
+transport.error.explanation=Aceasta este o eroare de sistem.
+transport.error.useraction=Examina\u0163i istoricele.
+
+#------------------------------------------------
+error.adding.channel=SRVE0312E: A ap\u0103rut o eroare la ad\u0103ugarea unui canal: {0}
+error.adding.channel.explanation=Aceasta este o eroare de sistem.
+error.adding.channel.useraction=Examina\u0163i istoricele.
+
+#------------------------------------------------
+transport.migration.error=SRVE0313E: A ap\u0103rut o eroare \u00een timpul migr\u0103rii de transport \u00een portul {0} la lan\u0163ul corespunz\u0103tor: {1}
+transport.migration.error.explanation=Aceasta este o eroare de sistem.
+transport.migration.error.useraction=Examina\u0163i istoricele.
+
+#------------------------------------------------
+failed.to.remove.webmodule=SRVE0314E: \u00cenl\u0103turarea webmodule {0} a e\u015fuat: {1}
+failed.to.remove.webmodule.explanation=Aceasta este o eroare de sistem.
+failed.to.remove.webmodule.useraction=Examina\u0163i istoricele.
+
+#------------------------------------------------
+Exception=SRVE0315E: A ap\u0103rut o excep\u0163ie: {0}
+Exception.explanation=A ap\u0103rut o excep\u0163ie.
+Exception.useraction=Examina\u0163i istoricele.
+
+
+# -------------------------------------------------------------------------------------------------
+# Thread Pool Instances
+Servlet.Engine.Transports=Container web
+
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+webAppModule.desc=Datele de performan\u0163\u0103 pentru aplica\u0163ii Web, servlet-uri, \u015fi fi\u015fiere JSP.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.numLoadedServlets.desc=Num\u0103rul de servleturi \u00eenc\u0103rcate.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.numReloads.desc=Num\u0103rul de servleturi \u00eenc\u0103rcate.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.desc=O colec\u0163ie care con\u0163ine datele de performan\u0163\u0103 per servlet \u015fi fi\u015fier JSP.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.totalRequests.desc=Num\u0103rul total de cereri procesate de un servlet.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.concurrentRequests.desc=Num\u0103rul de cereri care sunt procesate \u00een prezent.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.responseTime.desc=Timpul mediu de r\u0103spuns, \u00een milisecunde, \u00een care este terminat\u0103 o cerere servlet.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.numErrors.desc=Num\u0103rul total apari\u0163ii a unei erori primite de la servlet sau JSP.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.url.totalRequests.desc=Num\u0103rul total de cereri procesate pentru un URI asociat cu un servlet.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.url.concurrentRequests.desc=Num\u0103rul total de cereri procesate \u00een prezent pentru un URI asociat cu un servlet.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.url.responseTime.desc=Timpul mediu de r\u0103spuns al serviciului, \u00een milisecunde, pentru un URI asociat cu un servlet.
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.numLoadedServlets=Num Loaded Servlets
+webAppModule.numLoadedServlets=LoadedServletCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.numReloads=Num Reloads
+webAppModule.numReloads=ReloadCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+webAppModule.servlets=Servleturi
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+webAppModule.servlets.urls=URL-uri
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.totalRequests=Total Requests
+webAppModule.servlets.totalRequests=RequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.concurrentRequests=Concurrent Requests
+webAppModule.servlets.concurrentRequests=ConcurrentRequests
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module (JSR77)
+#webAppModule.servlets.responseTime=Average Response Time (ms)
+webAppModule.servlets.responseTime=ServiceTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.numErrors=Num Errors
+webAppModule.servlets.numErrors=ErrorCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.url.totalRequests=Total Requests
+webAppModule.url.totalRequests=URIRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.url.concurrentRequests=Concurrent Requests
+webAppModule.url.concurrentRequests=URIConcurrentRequests
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module (JSR77)
+#webAppModule.url.responseTime=Average Response Time (ms)
+webAppModule.url.responseTime=URIServiceTime
+
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.loadedSince=Loaded Since (ms)
+webAppModule.servlets.loadedSince=LoadedSince
+
+webAppModule=Aplica\u0163ii Web
+
+# -------------------------------------------------------------------------------------------------
+# Unit for counters
+unit.none=N/A
+
+# -------------------------------------------------------------------------------------------------
+# Unit for counters
+#unit.ms=millisecond (JSR77)
+unit.ms=MILISECUNDE
+
+request.matches.context.root=SRVE0316W: Cererea se potrive\u015fte cu contextul r\u0103d\u0103cinii [{0}] sub aliasul gazdei virtuale al [{1}].
+request.matches.context.root.explanation=Map\u0103rile de cale cerute c\u0103tre o r\u0103d\u0103cin\u0103 context pe o gazd\u0103 virtual\u0103 cu care nu se potrive\u015fte.
+request.matches.context.root.useraction=Verifica\u0163i dac\u0103 trebuie ad\u0103ugat un alias suplimentar pentru gazda virtual\u0103.
+
+need.to.add.a.new.virtual.host.alias=SRVE0317W: Poate fi necesar s\u0103 ad\u0103uga\u0163i un nou alias gazdei virtuale, *:<portul dvs.>, la aceea\u015fi gazd\u0103 virtual\u0103 care dedesubt pe [{0}].
+need.to.add.a.new.virtual.host.alias.explanation=Map\u0103rile de cale cerute c\u0103tre o r\u0103d\u0103cin\u0103 context pe o gazd\u0103 virtual\u0103 cu care nu se potrive\u015fte.
+need.to.add.a.new.virtual.host.alias.useraction=Urma\u0163i instruc\u0163iunile din Centrul de pentru a ad\u0103uga un nou alias de gazd\u0103 virtual\u0103.
+
+# --------------------------------
+Servlet.has.become.temporarily.unavailable.for.service\:.{0}=SRVE0095I: Servletul a devenit temporar indisponibil pentru serviciul: {0}
+Servlet.has.become.temporarily.unavailable.for.service\:.{0}.explanation=Servletul specificat este temporar indisponibil.
+Servlet.has.become.temporarily.unavailable.for.service\:.{0}.useraction=A\u015ftepta\u0163i \u015fi re\u00eencerca\u0163i opera\u0163ia.  Servletul poate s\u0103 fi fost \u00eenl\u0103turat din serviciu de administratorul serverului.
+
+Session.Feature.Set.Not.Started=SRVE0096E: O sesiune nu poate fi accesat\u0103.  Managerul de sesiune featureset nu a fost pornit.
+Session.Feature.Set.Not.Started.explanation=O sesiune nu poate fi accesat\u0103.  Managerul de sesiune featureset nu a fost pornit.
+Session.Feature.Set.Not.Started.useraction=Asigura\u0163i-v\u0103 c\u0103 configura\u0163ia serverului depinde de sesiunea featureset.
+# --------------------------------
+invalid.query.string=SRVE0318W: Caracter nevalid \u00een \u015firul de interogare
+invalid.query.string.explanation=Un caracter, care nu este valid, exist\u0103 \u00een \u015firul de interogare \u015fi a fost ignorat.
+invalid.query.string.useraction=Este necesar\u0103 ac\u0163iunea utilizatorului.
+
+
+ClassNotFound.check.web.xml=SRVE0319W: Clas\u0103 s\u0103rit\u0103 care a e\u015fuat la ini\u0163ializarea scan\u0103rii adnota\u0163iei.
+ClassNotFound.check.web.xml.explanation=O clas\u0103 din modulul web nu a putut fi instan\u0163iat\u0103, a\u015fadar nu poate fi scanat\u0103 pentru adnot\u0103ri.
+ClassNotFound.check.web.xml.useraction=Verifica\u0163i dac\u0103 clasa exist\u0103 \u015fi are toate dependen\u0163ele \u00een calea de clase.
+
+Not.in.servletContextCreated=SRVE0320E: Metodele de configurare programatic\u0103 trebuie apelate din contextInitialized.
+Not.in.servletContextCreated.explanation=Servleturile \u015fi filtrele pot fi ad\u0103ugate dinamic numai \u00een timpul fazei contextInitalized a pornirii aplica\u0163iei.
+Not.in.servletContextCreated.useraction=Muta\u0163i codul care apeleaz\u0103 metoda curent\u0103 \u00eentr-o metod\u0103 contextInitalized a ServletContextInitalizer.
+
+# ----------------------------- Taken/Copied from plugin generator hence allocating a new number here that's (now) reserved for that purpose
+duplicate.context.root=SRVE9100W: Mai multe aplica\u0163ii con\u0163ine aceea\u015fi r\u0103d\u0103cin\u0103 contextual\u0103 [{0}].
+duplicate.context.root.explanation=\u00cen timp ce se genereaz\u0103 fi\u015fierul de configurare plug-in, s-a determinat c\u0103 mai multe aplica\u0163ii folosesc aceea\u015fi r\u0103d\u0103cin\u0103 contextual\u0103.
+duplicate.context.root.useraction=Determina\u0163i dac\u0103 este configurat cum se inten\u0163ioneaz\u0103 \u015fi corecta\u0163i dac\u0103 nu.
+
+collocated.appserver=SRVE9101W: Folosind localhost ca nume gazd\u0103 pentru transportul pentru serverul {0}.{1}. Rutarea cererii va func\u0163iona at\u00e2ta timp c\u00e2t serverul de web \u015fi serverul de aplica\u0163ii sunt asociate.
+collocated.appserver.explanation=Utilizarea localhost ca nume gazd\u0103 va func\u0163iona numai dac\u0103 serverul de aplica\u0163ii destina\u0163ie ruleaz\u0103 pe aceea\u015fi ma\u015fin\u0103.
+collocated.appserver.useraction=Modifica\u0163i numele gazd\u0103 dac\u0103 serverul de aplica\u0163ii nu ruleaz\u0103 de fapt local.
+
+warn.check.applications=SRVE9102W: Nu a putut fi g\u0103sit\u0103 o gazd\u0103 virtual\u0103 de c\u0103tre generatorul de configurare plug-in.
+warn.check.applications.explanation=O gazd\u0103 virtual\u0103 nu va fi disponibil\u0103 dac\u0103 nu este definit\u0103 nicio aplica\u0163ie. 
+warn.check.applications.useraction=Actualiza\u0163i configura\u0163ia serverului penru a defini cel pu\u0163in o aplica\u0163ie anterioar\u0103 gener\u0103rii fi\u015fierului de configurare plug-in.
+
+plugin.file.generated.info=SRVE9103I: A fost generat un fi\u015fier de configura\u0163ie pentru un plug-in de server web pentru acest server la {0}.
+plugin.file.generated.info.explanation=Generarea unui nou fi\u015fier de configura\u0163ie pentru un plug-in apare la fiecare repornire de server \u015fi c\u00e2nd sunt ad\u0103ugate, \u00eenl\u0103turate sau modificate aplica\u0163ii \u00een server.
+plugin.file.generated.info.useraction=Acest fi\u015fier poate fi examinat pentru corectitudine, apoi poate fi mutat la loca\u0163ia plug-in-ului de server web pentru a direc\u0163iona traficul HTTP c\u0103tre aplica\u0163iile din acest server. PluginUtility poate combina fi\u015fierele astfel \u00eenc\u00e2t cererile s\u0103 fie direc\u0163ionate c\u0103tre multiple servere de aplica\u0163ii.  Dac\u0103 fi\u015fierul a fost generat datorit\u0103 modific\u0103rilor de aplica\u0163ii de care a\u0163i puea avea nevoie pentru a actualiza fi\u015fierul existent de configura\u0163ie de pe gazda serverului web.
+
+plugin.file.generated.audit=SRVE9104A: A fost generat un fi\u015fier de configura\u0163ie pentru un plug-in de server web pentru acest server la {0}.
+plugin.file.generated.audit.explanation=O cerere de utilizator a avut ca rezultat crearea unui nou fi\u015fier de configura\u0163ie pentru un plug-in.
+plugin.file.generated.audit.useraction=Acest fi\u015fier poate fi examinat pentru corectitudine, apoi poate fi mutat la loca\u0163ia plug-in-ului de server web pentru a direc\u0163iona traficul HTTP c\u0103tre aplica\u0163iile din acest server.  PluginUtility poate combina fi\u015fierele astfel \u00eenc\u00e2t cererile s\u0103 fie direc\u0163ionate c\u0103tre multiple servere de aplica\u0163ii. 
+
+# ------------------------------- added for liberty
+WARNING_RESOURCE_NOT_FOUND=SRVE9999W: Nu s-a g\u0103sit resursa pentru res-ref-name: {0}
+WARNING_RESOURCE_NOT_FOUND.explanation=Resursa nu poate fi g\u0103sit\u0103 folosind numele referin\u0163\u0103 de resurs\u0103 specificat.
+WARNING_RESOURCE_NOT_FOUND.useraction=Modifica\u0163i valoarea res-ref-name.
+
+AUDIT_APPLICATION_INSTALLED=SRVE9998I: Aplica\u0163ia {0} ad\u0103ugat\u0103 la containerul web.
+AUDIT_APPLICATION_INSTALLED.explanation=Aplica\u0163ia a fost ad\u0103ugat\u0103 la containerul web.
+AUDIT_APPLICATION_INSTALLED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+ERROR_INVALID_RES_AUTH=SRVE9997E: Valoarea res-auth {0} pentru resource-ref {1} este nevalid\u0103
+ERROR_INVALID_RES_AUTH.explanation=Valorile valide pentru atributul res-auth sunt "Aplica\u0163ie" \u015fi "Container".
+ERROR_INVALID_RES_AUTH.useraction=Modifica\u0163i valoarea atributului res-auth.
+
+WARN_INVALID_SHARE_SCOPE=SRVE9996W: Valoarea res-sharing-scope {0} pentru resource-ref {1} este nevalid\u0103; se va folosi valoarea implicit\u0103 {2}.
+WARN_INVALID_SHARE_SCOPE.explanation=Valorile valide pentru atributul res-auth sunt "Partajabil" \u015fi "Nepartajabil".
+WARN_INVALID_SHARE_SCOPE.useraction=Modifica\u0163i valoarea res-sharing-scope.
+
+INFO_APPLICATION_REMOVED=SRVE9995I: Aplica\u0163ia {0} \u00eenl\u0103turat\u0103 din containerul web.
+INFO_APPLICATION_REMOVED.explanation=Aplica\u0163ia a fost \u00eenl\u0103turat\u0103 din containerul web.
+INFO_APPLICATION_REMOVED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+INFO_APPLICATION_UPDATED=SRVE9994I: Aplica\u0163ai {0} actualizat\u0103 \u00een containerul web.
+INFO_APPLICATION_UPDATED.explanation=Aplica\u0163ia a fost actualizat\u0103.
+INFO_APPLICATION_UPDATED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+WARN_JARS_STILL_CACHED=SRVE9993W: Nu se pot preg\u0103ti fi\u015fierele JAR pentru \u015ftergere, fi\u015fierele WAR ce con\u0163in JAR-uri nu vor putea fi \u015fterse
+WARN_JARS_STILL_CACHED.explanation=Pentru a activa \u015ftergerea fi\u015fierelor JAR dintr-o aplica\u0163ie web instalat\u0103, fi\u015fierele JAR trebuie s\u0103 fie setate pentru \u015ftergere, acest proces a e\u015fuat 
+WARN_JARS_STILL_CACHED.useraction=Pentru a \u015fterge fi\u015fierele JAR dintr-o aplica\u0163ie web instalat\u0103, serverul trebuie oprit \u00eenainte de \u015ftergere
+
+ERROR_WEBLISTENER_MUST_IMPLEMENT_IFACE=SRVE9992E: Clasa {0} are o adnotare @WebListener dar nu implementeaz\u0103 niciuna dintre interfe\u0163ele necesare.
+ERROR_WEBLISTENER_MUST_IMPLEMENT_IFACE.explanation=O clas\u0103 adnotat\u0103 cu o adnotare @WebListener trebuie s\u0103 implementeze una dintre interfe\u0163ele javax.servlet.ServletContextListener, javax.servlet.ServletContextAttributeListener, javax.servlet.ServletRequestListener, javax.servlet.ServletRequestAttributeListener, javax.servlet.http.HttpSessionListener sau javax.servlet.http.HttpSessionAttributeListener.
+ERROR_WEBLISTENER_MUST_IMPLEMENT_IFACE.useraction=Asigura\u0163i-v\u0103 c\u0103 toate clasele adnotate cu o adnotare @WebListener implementeaz\u0103 una dintre interfe\u0163ele necesare.
+
+ERROR_WEBFILTER_MUST_IMPLEMENT_FILTER=SRVE9991E: Clasa {0} are o adnotare @WebFilter dar nu implementeaz\u0103 interfa\u0163a javax.servlet.Filter interface.
+ERROR_WEBFILTER_MUST_IMPLEMENT_FILTER.explanation=O clas\u0103 adnotat\u0103 cu o adnotare @WebFilter trebuie s\u0103 implementeze interfa\u0163a specificat\u0103.
+ERROR_WEBFILTER_MUST_IMPLEMENT_FILTER.useraction=Asigura\u0163i-v\u0103 c\u0103 toate clasele adnotate cu o adnotare @WebFilter implementeaz\u0103 interfa\u0163a necesar\u0103.
+
+ERROR_WEBSERVLET_MUST_IMPLEMENT_HTTPSERVLET=SRVE9990E: Clasa {0} are o adnotare @WebServlet dar nu implementeaz\u0103 interfa\u0163a javax.servlet.http.HttpServlet.
+ERROR_WEBSERVLET_MUST_IMPLEMENT_HTTPSERVLET.explanation=O clas\u0103 adnotat\u0103 cu o adnotare @WebServlet trebuie s\u0103 implementeze interfa\u0163a specificat\u0103.
+ERROR_WEBSERVLET_MUST_IMPLEMENT_HTTPSERVLET.useraction=Asigura\u0163i-v\u0103 c\u0103 toate clasele adnotate cu o adnotare @WebServlet implementeaz\u0103 interfa\u0163a necesar\u0103.
+
+ERROR_WEBSERVLET_MISSING_PATTERNS=SRVE9989E: O adnotare @WebServlet pe clasa {0} nu are nicio valoare, niciun atribut urlPatterns.  Trebuie specificat\u0103 fie valoarea, fie urlPatterns.
+ERROR_WEBSERVLET_MISSING_PATTERNS.explanation=O adnotare @WebServlet trebuie fie s\u0103 aib\u0103 o valoare, fie un atribut urlPatterns.  Una singur\u0103 trebuie specificat\u0103; nu trebuie omise ambele.
+ERROR_WEBSERVLET_MISSING_PATTERNS.useraction=Specifica\u0163i orice model URL necesar \u00een valoarea sau atributul urlPatterns al adnot\u0103rii @WebServlet.  Se recomand\u0103 s\u0103 folosi\u0163i valoarea numai dac\u0103 singurul atribut din adnotare este modelul URL.
+
+ERROR_WEBSERVLET_HAS_VALUE_AND_PATTERNS=SRVE9988E: O adnotare @WebServlet pe clasa {0} are \u015fi o valoare \u015fi un atribut urlPatterns.  Valoarea \u015fi urlPatterns nu trebuie men\u0163ionate am\u00e2ndou\u0103. 
+ERROR_WEBSERVLET_HAS_VALUE_AND_PATTERNS.explanation=Nu e permis ca o adnotare @WebServlet s\u0103 aib\u0103 un atribut urlPatterns dac\u0103 are o valoare.
+ERROR_WEBSERVLET_HAS_VALUE_AND_PATTERNS.useraction=Asigura\u0163i-v\u0103 c\u0103 orice model URL specificat \u00een valoarea adnot\u0103rii @WebServlet a fost specificat \u00een atributul urlPatterns \u015fi \u00eenl\u0103tura\u0163i valoarea.  Se recomand\u0103 s\u0103 folosi\u0163i valoarea numai dac\u0103 singurul atribut din adnotare este modelul URL.
+
+ERROR_WEBFILTER_HAS_VALUE_AND_PATTERNS=SRVE9987E: O adnotare @WebFilter pe clasa {0} are \u015fi o valoare \u015fi un atribut urlPatterns.  Valoarea \u015fi urlPatterns nu trebuie men\u0163ionate am\u00e2ndou\u0103.
+ERROR_WEBFILTER_HAS_VALUE_AND_PATTERNS.explanation=Nu e permis ca o adnotare @WebFilter s\u0103 aib\u0103 un atribut urlPatterns dac\u0103 are o valoare.
+ERROR_WEBFILTER_HAS_VALUE_AND_PATTERNS.useraction=Asigura\u0163i-v\u0103 c\u0103 orice model URL specificat \u00een valoarea adnot\u0103rii @WebFilter a fost specificat \u00een atributul urlPatterns \u015fi \u00eenl\u0103tura\u0163i valoarea.  Se recomand\u0103 s\u0103 folosi\u0163i valoarea numai dac\u0103 singurul atribut din adnotare este modelul URL.
+
+ERROR_WEBFILTER_MISSING_VAL_PATT_SERVLET=SRVE9986E: O adnotare @WebFilter pe clasa {0} nu are nicio valoare, atribut urlPatterns sau atribut servletNames.  Trebuie specificat cel pu\u0163in unul din aceste atribute.
+ERROR_WEBFILTER_MISSING_VAL_PATT_SERVLET.explanation=O adnotare @WebFilter trebuie s\u0103 aib\u0103 cel pu\u0163in unul dintre atributele valoare, urlPatterns sau servletNames.
+ERROR_WEBFILTER_MISSING_VAL_PATT_SERVLET.useraction=Specifica\u0163i cel pu\u0163in unul din atributele necesare ale adnot\u0103rii @WebFilter.
+
+INVALID_APPLICATION_BND_DEFINITION=SRVE9985E: Nu se poate rezolva configura\u0163ia aplica\u0163iei {0}. Excep\u0163ie: {1}
+INVALID_APPLICATION_BND_DEFINITION.explanation=Rolurile de securitate pentru o aplica\u0163ie nu au putut fi determinate din fi\u015fierul application-bnd furnizat de aplica\u0163ie din cauza unei excep\u0163ii.
+INVALID_APPLICATION_BND_DEFINITION.useraction=Investiga\u0163i cauza excep\u0163iei \u015fi corecta\u0163i configura\u0163ia aplica\u0163iei.
+
+NO_APPLICATION_BND_DEFINITION=SRVE9984E: Nu s-a putut g\u0103si nicio configura\u0163ie de aplica\u0163ie \u00een {0}.
+NO_APPLICATION_BND_DEFINITION.explanation=Rolurile de securitate pentru o aplica\u0163ie nu au putut fi determinate din configura\u0163ia serverului \u00eentruc\u00e2t nu s-a putut localiza niciun fi\u015fier application-bnd pentru aplica\u0163ie.
+NO_APPLICATION_BND_DEFINITION.useraction=Actualiza\u0163i aplica\u0163ia pentru a furniza fi\u015fierul application-bnd.
+
+INVALID_SECURITY_ROLE_DEFINITION=SRVE9983E: Configura\u0163ia pentru rolul {0} (cu referire \u00een {1}) nu a putut fi \u00eenc\u0103rcat. Excep\u0163ia {2}
+INVALID_SECURITY_ROLE_DEFINITION.explanation=Nu s-a putut determina un rol de securitate a aplica\u0163iei din cauza unei excep\u0163ii.
+INVALID_SECURITY_ROLE_DEFINITION.useraction=Investiga\u0163i cauza excep\u0163iei \u015fi corecta\u0163i configura\u0163ia aplica\u0163iei.
+
+NO_SECURITY_ROLE_DEFINITION=SRVE9982E: Configura\u0163ia pentru rolul {0} (cu referire \u00een {1}) nu exist\u0103.
+NO_SECURITY_ROLE_DEFINITION.explanation=Nu s-a putu g\u0103si o defini\u0163ie a rolului de securitate a aplica\u0163iei, dar se face referire la ea \u00een fi\u015fierul application-bnd.
+NO_SECURITY_ROLE_DEFINITION.useraction=Actualiza\u0163i configura\u0163ia aplica\u0163iei pentru a furniza rolul.
+
+NO_SECURITY_ROLE_NAME_DEFINITION=SRVE9981E: Numele rolului nu a putut fi localizat \u00een propriet\u0103\u0163ile {0} (cu referire \u00een {1}).
+NO_SECURITY_ROLE_NAME_DEFINITION.explanation=Configura\u0163ia unei aplica\u0163ii a furnizat o list\u0103 de roluri de securitate, dar numele unuia dintre roluri nu a putut fi g\u0103sit \u00een acea configura\u0163ie.
+NO_SECURITY_ROLE_NAME_DEFINITION.useraction=Actualiza\u0163i configura\u0163ia aplica\u0163iei pentru a corecta defini\u0163ia rolului.
+
+INVALID_USER_DEFINITION=SRVE9980E: Configura\u0163ia pentru utilizatorul {0} (cu referire de la rolul {1} \u00een {2}) nu a putut fi \u00eenc\u0103rcat\u0103. Excep\u0163ia {3}
+INVALID_USER_DEFINITION.explanation=Un utilizator definit de un rol de securitate nu a putut fi determinat din cauza unei excep\u0163ii.
+INVALID_USER_DEFINITION.useraction=Investiga\u0163i cauza excep\u0163iei \u015fi corecta\u0163i configura\u0163ia aplica\u0163iei.
+
+NO_USER_DEFINITION=SRVE9979E: Nu se poate g\u0103si nicio defini\u0163ie de utilizator pentru {0} (cu referire de la rolul {1} \u00een {2}).
+NO_USER_DEFINITION.explanation=Configura\u0163ia unui rol \u00eentr-o aplica\u0163ie a furnizat o list\u0103 de defini\u0163ii de utilizator, dar una din acele defini\u0163ii nu a putut fi localizat\u0103.
+NO_USER_DEFINITION.useraction=Actualiza\u0163i configura\u0163ia aplica\u0163iei pentru a furniza utilizatorul.
+
+NO_USER_NAME_DEFINITION=SRVE9978E: Numele utilizatorului nu a putut fi localizat \u00een propriet\u0103\u0163ile {0} (cu referire de la rolul {1} \u00een {2}).
+NO_USER_NAME_DEFINITION.explanation=Configura\u0163ia unei aplica\u0163ii a furnizat o list\u0103 de utilizatori, dar numele unuia dintre utilizatori nu a putut fi g\u0103sit \u00een acea configura\u0163ie.
+NO_USER_NAME_DEFINITION.useraction=Actualiza\u0163i configura\u0163ia aplica\u0163iei pentru a corecta defini\u0163ia utilizatorului.
+
+INVALID_GROUP_DEFINITION=SRVE9977E: Configura\u0163ia pentru grupul {0} (cu referire de la rolul {1} din {2}) nu a putut fi \u00eenc\u0103rcat\u0103. Excep\u0163ia {3}
+INVALID_GROUP_DEFINITION.explanation=Un grup definit de un rol de securitate nu a putut fi determinat din cauza unei excep\u0163ii.
+INVALID_GROUP_DEFINITION.useraction=Investiga\u0163i cauza excep\u0163iei \u015fi corecta\u0163i configura\u0163ia aplica\u0163iei.
+
+NO_GROUP_DEFINITION=SRVE9976E: Nu se poate g\u0103si nicio defini\u0163ie de grup pentru {0} (cu referire de la rolul {1} \u00een {2}).
+NO_GROUP_DEFINITION.explanation=Configura\u0163ia unui rol \u00eentr-o aplica\u0163ie a furnizat o list\u0103 de defini\u0163ii de grup, dar una din acele defini\u0163ii nu a putut fi localizat\u0103.
+NO_GROUP_DEFINITION.useraction=Actualiza\u0163i configura\u0163ia aplica\u0163iei pentru a furniza grupul.
+
+NO_GROUP_NAME_DEFINITION=SRVE9975E: Numele grupului nu a putut fi localizat \u00een propriet\u0103\u0163ile {0} (cu referire de la rolul {1} \u00een {2}).
+NO_GROUP_NAME_DEFINITION.explanation=Configura\u0163ia unei aplica\u0163ii a furnizat o list\u0103 de grupuri, dar numele unuia dintre grupuri nu a putut fi g\u0103sit \u00een acea configura\u0163ie.
+NO_GROUP_NAME_DEFINITION.useraction=Actualiza\u0163i configura\u0163ia aplica\u0163iei pentru a corecta defini\u0163ia grupului.
+
+INVALID_SPECIAL_SUBJECT_DEFINITION=SRVE9974E: Configura\u0163ia pentru subiectul special {0} (cu referire de la rolul {1} \u00een {2}) nu a putut f i\u00eenc\u0103rcat\u0103. Excep\u0163ia {3}
+INVALID_SPECIAL_SUBJECT_DEFINITION.explanation=Un subiect special definit de un rol de securitate nu a putut fi determinat din cauza unei excep\u0163ii.
+INVALID_SPECIAL_SUBJECT_DEFINITION.useraction=Investiga\u0163i cauza excep\u0163iei \u015fi corecta\u0163i configura\u0163ia aplica\u0163iei.
+
+NO_SPECIAL_SUBJECT_DEFINITION=SRVE9973E: Nu se poate g\u0103si nicio defini\u0163ie de subiect special pentru {0} (cu referire de la rolul {1} \u00een {2}).
+NO_SPECIAL_SUBJECT_DEFINITION.explanation=Configura\u0163ia unui rol \u00eentr-o aplica\u0163ie a furnizat o list\u0103 de defini\u0163ii de subiect special, dar una din acele defini\u0163ii nu a putut fi localizat\u0103.
+NO_SPECIAL_SUBJECT_DEFINITION.useraction=Actualiza\u0163i configura\u0163ia aplica\u0163iei pentru a furniza defini\u0163ia de subiect special.
+
+NO_SPECIAL_SUBJECT_NAME_DEFINITION=SRVE9972E: Numele subiectului special nu a putut fi localizat \u00een propriet\u0103\u0163ile {0} (cu referire de la rolul {1} \u00een {2}).
+NO_SPECIAL_SUBJECT_NAME_DEFINITION.explanation=Configura\u0163ia unei aplica\u0163ii a furnizat o list\u0103 de subiecte speciale, dar numele unuia dintre subiectele speciale nu a putut fi g\u0103sit \u00een acea configura\u0163ie.
+NO_SPECIAL_SUBJECT_NAME_DEFINITION.useraction=Actualiza\u0163i configura\u0163ia aplica\u0163iei pentru a corecta defini\u0163ia subiectului special.
+
+INVALID_RUN_AS_DEFINITION=SRVE9971E: Configura\u0163ia pentru defini\u0163ia run-as {0} (cu referire de la rolul {1} \u00een {2}) nu a putut fi \u00eenc\u0103rcat\u0103. Excep\u0163ia {3}
+INVALID_RUN_AS_DEFINITION.explanation=O defini\u0163ie run-as definit\u0103 de un rol de securitate nu a putut fi determinat\u0103 din cauza unei excep\u0163ii.
+INVALID_RUN_AS_DEFINITION.useraction=Investiga\u0163i cauza excep\u0163iei \u015fi corecta\u0163i configura\u0163ia aplica\u0163iei.
+
+NO_RUN_AS_DEFINITION=SRVE9970E: Nu se poate g\u0103si nicio defini\u0163ie run-as pentru {0} (cu referire de la rolul {1} \u00een {2}).
+NO_RUN_AS_DEFINITION.explanation=Configura\u0163ia unui rol \u00eentr-o aplica\u0163ie a furnizat o list\u0103 de defini\u0163ii run-as, dar una din acele defini\u0163ii nu a putut fi localizat\u0103.
+NO_RUN_AS_DEFINITION.useraction=Actualiza\u0163i configura\u0163ia aplica\u0163iei pentru a furniza defini\u0163ia run-as.
+
+NO_RUN_AS_USER_OR_PASSWORD_DEFINITION=SRVE9969E: Id-ul de utilizator sau parola specificate pentru defini\u0163ia run-as {0} (cu referire de la rolul {1} \u00een {2}) este nevalid(\u0103).
+NO_RUN_AS_USER_OR_PASSWORD_DEFINITION.explanation=Nu s-a specificat ID-ul de utilizator sau parola, sau \u015firul este gol. Acestea nu sunt valide ca ID-uri de utilizator sau parole.
+NO_RUN_AS_USER_OR_PASSWORD_DEFINITION.useraction=Actualiza\u0163i configura\u0163ia aplica\u0163iei pentru a corecta defini\u0163ia run-as.
+
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION=SRVE9968W: Cale invalid\u0103 a clasei manifest {0} g\u0103sit\u0103 \u00een fi\u015fierul jar {1}.
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION.explanation=Calea de clase nu este specificat\u0103 corect. Trebuie s\u0103 fie un \u015fir URI relativ ce indic\u0103 spre un fi\u015fier jar sau un folder.
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION.useraction=Actualiza\u0163i MANIFEST.MF pentru fi\u015fierul jar, pentru a furniza defini\u0163ia Class-Path corect\u0103.
+
+WARN_MANIFEST_CLASSPATH_NOT_FOUND=SRVE9967W: A e\u015fuat rezolvarea elementului {0} al c\u0103ii de clase a manifestului arhivei {1}.
+WARN_MANIFEST_CLASSPATH_NOT_FOUND.explanation=De obicei, elementele c\u0103ii de clase a manifestului sunt referin\u0163e la fi\u015fiere JAR. Dac\u0103 elementul referit este necesar pentru aplica\u0163ie, mesajul indic\u0103 o problem\u0103 grav\u0103 \u015fi nu ar trebui s\u0103 fie ignorat. Dac\u0103 elementul referit nu este necesar pentru aplica\u0163ie, mesajul indic\u0103 o problem\u0103 benign\u0103 \u015fi poate fi ignorat. Fie elementul referit este absent, fie se afl\u0103 \u00eentr-o loca\u0163ie incorect\u0103, fie elementul referit se afl\u0103 \u00eentr-o loca\u0163ie corect\u0103 \u015fi elementul c\u0103ii de clase a manifestului face referire la alt\u0103 loca\u0163ie, incorect\u0103. C\u00e2nd un element este necesar, acest lucru este indicat de obicei prin e\u015fecul aplica\u0163iei de a localiza o clas\u0103 sau alt\u0103 resurs\u0103 sau prin localizarea de c\u0103tre aplica\u0163ie a unei versiuni gre\u015fite a clasei sau resursei. O cauz\u0103 obi\u015fnuit\u0103 a nerezolv\u0103rii unui element al c\u0103ii de clase a manifestului este o actualizare a structurii aplica\u0163iei \u00een urma c\u0103reia elementul referit devine dep\u0103\u015fit. Alt\u0103 cauz\u0103 obi\u015fnuit\u0103 a nerezolv\u0103rii unui element al c\u0103ii de clase a manifestului este ad\u0103ugarea la aplica\u0163ie a unui fi\u015fier JAR ter\u0163\u0103 parte ce face referire la o loca\u0163ie care nu a fost ad\u0103ugat\u0103 aplica\u0163iei.
+WARN_MANIFEST_CLASSPATH_NOT_FOUND.useraction=Ad\u0103uga\u0163i, redenumi\u0163i sau muta\u0163i elementele aplica\u0163iei sau actualiza\u0163i calea de clase a manifestului, modific\u00e2nd sau \u00eenl\u0103tur\u00e2nd elementele care nu pot fi rezolvate din calea de clase a manifestului. Elementele c\u0103ii de clase a manifestului sunt rezolvate relativ la loca\u0163ia fi\u015fierului arhiv\u0103 care le include.
+
+CONFLICT_KEY_VALUE_CONFIG_BETWEEN_WEB_FRAGMENT_XML=SRVE9966E: Valori duplicate ale {0} sunt g\u0103site \u00een {1} pentru acela\u015fi {2} din {3}, valoarea este {4} \u00een fi\u015fierul web-fragment.xml al {5}, dar {6} \u00een {7}. 
+CONFLICT_KEY_VALUE_CONFIG_BETWEEN_WEB_FRAGMENT_XML.explanation=Valorile aceleia\u015fi configura\u0163ii din fi\u015fiere web-fragment.xml diferite trebuie s\u0103 fie acelea\u015fi.
+CONFLICT_KEY_VALUE_CONFIG_BETWEEN_WEB_FRAGMENT_XML.useraction=Folosi\u0163i acelea\u015fi valori \u00een fi\u015fierele web-fragment.xml diferite sau configura\u0163i-o \u00een fi\u015fierul  web.xml s\u0103 le \u00eenlocuiasc\u0103 pe cele din fi\u015fiere web-fragment.xml.
+
+CONFLICT_SINGLE_VALUE_CONFIG_BETWEEN_WEB_FRAGMENT_XML=SRVE9965E: Sunt g\u0103site valori duplicate ale {0}.{1}, valoarea este {2} \u00een fi\u015fierul web-fragment.xml al {3}, dar {4} \u00een {5}.
+CONFLICT_SINGLE_VALUE_CONFIG_BETWEEN_WEB_FRAGMENT_XML.explanation=Valorile aceleia\u015fi configura\u0163ii din fi\u015fiere web-fragment.xml diferite trebuie s\u0103 fie acelea\u015fi.
+CONFLICT_SINGLE_VALUE_CONFIG_BETWEEN_WEB_FRAGMENT_XML.useraction=Folosi\u0163i acelea\u015fi valori \u00een fi\u015fierele web-fragment.xml diferite sau configura\u0163i-o \u00een fi\u015fierul web.xml s\u0103 le \u00eenlocuiasc\u0103 pe cele din fi\u015fiere web-fragment.xml.
+
+CONFLICT_DEFAULT_ERROR_PAGE_WEB_FRAGMENT_XML=SRVE9957E: Pagina de eroare implicit\u0103 {0} din web-fragment.xml al {1} este \u00een conflict cu pagina de eroare implicit\u0103 {2} din web-fragment.xml al {3}. 
+CONFLICT_DEFAULT_ERROR_PAGE_WEB_FRAGMENT_XML.explanation=Valorile de pagini de eroare implicite din diferite fi\u015fiere web-fragment.xml trebuie s\u0103 fie identice.
+CONFLICT_DEFAULT_ERROR_PAGE_WEB_FRAGMENT_XML.useraction=Utiliza\u0163i aceea\u015fi pagin\u0103 de eroare implicit\u0103 \u00een fi\u015fiere web-fragment.xml diferite sau configura\u0163i o pagin\u0103 de eroare implicit\u0103 pentru ca fi\u015fierul web.xml s\u0103 \u00eenlocuiasc\u0103 pagina de eroare implicit\u0103 di fi\u015fierele web-fragment.xml.
+                                                         
+NO_UNIQUE_WEB_FRAGMENT_NAMES=SRVE9964E: Sunt folosite nume duplicate {0} \u00een fi\u015fierele web-fragment.xml ale {1} \u015fi {2} la folosirea comand\u0103rii relative.
+NO_UNIQUE_WEB_FRAGMENT_NAMES.explanation=Numele unic este necesar pentru elementul din fiecare fi\u015fier web-fragment.xml la folosirea comand\u0103rii sort\u0103rii relative.
+NO_UNIQUE_WEB_FRAGMENT_NAMES.useraction=Aloca\u0163i un nume unic pentru fiecare web-fragment.xml \u00een timp ce folosi\u0163i comandarea de sortare relativ\u0103 sau elementul <absolute-ordering> de sortare absolut\u0103 Configure Use din fi\u015fierul web.xml.
+
+CIRCUIT_WEB_FRAGMENT_DEPENDENCY=SRVE9963E: Referin\u0163e circulare \u00een {0}.
+CIRCUIT_WEB_FRAGMENT_DEPENDENCY.explanation=Referin\u0163ele circulare sunt g\u0103site \u00een fi\u015fierele web-fragment.xml c\u00e2nd folosi\u0163i comandarea relativ\u0103.
+CIRCUIT_WEB_FRAGMENT_DEPENDENCY.useraction=Corecta\u0163i referin\u0163ele relative folosind elementul <before> sau <after> \u00een fi\u015fierele web-fragment.xml sau folosi\u0163i elementul <absolute-ordering> \u00een fi\u015fierul web.xml.
+
+INVALID_BOTH_BEFORE_AND_AFTER_OTHERS=SRVE9962E: Nu este permis\u0103 configurarea <others/> cu elementele <before> \u015fi <after> \u00een fi\u015fierul web-fragment.xml al {0}
+INVALID_BOTH_BEFORE_AND_AFTER_OTHERS.explanation=Nu este permis s\u0103 configura\u0163i <others/> \u00een ambele elemente <before> \u015fi <after>.
+INVALID_BOTH_BEFORE_AND_AFTER_OTHERS.useraction=\u00cenl\u0103tura\u0163i <others/> din elementul <before> sau <after>.
+
+INVALID_BEFORE_OR_AFTER_ITSELF=SRVE9961E: Nu este permis\u0103 configurarea lui web-fragment \u00eensu\u015fi \u00een elementele <before> sau <after> \u00een web-fragment.xml din {0}
+INVALID_BEFORE_OR_AFTER_ITSELF.explanation=Nu este permis s\u0103 configura\u0163i web-fragment \u00eensu\u015fi \u00een elementele <before> \u015fi <after>
+INVALID_BEFORE_OR_AFTER_ITSELF.useraction=\u00cenl\u0103tura\u0163i numele web-fragment din elementele <before> \u015fi <after>
+
+CONFLICT_JNDI_REFERENCE_BETWEEN_WEB_FRAGMENT_XML=SRVE9960E: {0} cu aceea\u015fi valoare {1} de {2} sunt g\u0103site \u00een web-fragment.xml al {3} \u015fi {4}.
+CONFLICT_JNDI_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.explanation=Nu este permis s\u0103 configura\u0163i referin\u0163ele JNDI ale aceluia\u015fi nume \u00een fi\u015fiere web-fragment.xml diferite at\u00e2ta timp c\u00e2t lipse\u015fte din web.xml
+CONFLICT_JNDI_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.useraction=Configura\u0163i referin\u0163a JNDI \u00een web.xml f\u0103r\u0103 \u0163inte de injectare pentru a le include pe cele din fiecare site-fragment.xml sau configura toate configura\u0163iile necesare din fi\u015fierul web.xml.
+
+CONFLICT_DATASOURCE_REFERENCE_BETWEEN_WEB_FRAGMENT_XML=SRVE9959E: Dou\u0103 configura\u0163ii de surse de date cu acela\u015fi nume {0} g\u0103site \u00een web-fragment.xml din {1} \u015fi {2}.
+CONFLICT_DATASOURCE_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.explanation=Nu este permis\u0103 configurarea sursei de date cu acela\u015fi nume \u00een fi\u015fiere web-fragment.xml diferite, \u00een timp ce lipse\u015fte din web.xml
+CONFLICT_DATASOURCE_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.useraction=Configurarea sursei de date cu acela\u015fi nume \u00een web.xml pentru a le \u00eenlocui pa cele din fi\u015fierele web-fragment.xml.
+
+CONFLICT_MAILSESSION_REFERENCE_BETWEEN_WEB_FRAGMENT_XML=SRVE9958E: Dou\u0103 configura\u0163ii mail-session cu acela\u015fi nume {0} au fost g\u0103site \u00een web-fragment.xml, {1} \u015fi {2}.
+CONFLICT_MAILSESSION_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.explanation=Nu este permis s\u0103 configura\u0163i mail-session cu acela\u015fi nume \u00een fi\u015fiere web-fragment.xml diferite, \u00een timp ce lipse\u015fte \u00een web.xml
+CONFLICT_MAILSESSION_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.useraction=Configura\u0163i mail-session cu acela\u015fi nume \u00een web.xml pentru a le \u00eenlocui pe cele din fi\u015fierele web-fragment.xml.
+
+UNKNOWN_VIRTUAL_HOST=SRVE9956W: Nu au putut fi g\u0103site urm\u0103toarele gazde virtuale sau nu sunt configurate corect: {0}.
+UNKNOWN_VIRTUAL_HOST.explanation=Una sau mai multe aplica\u0163ii specific\u0103 o gazd\u0103 virtual\u0103 care nu exist\u0103. Configura\u0163ia de gazd\u0103 virtual\u0103 poate lipsi sau poate con\u0163ine erori.
+UNKNOWN_VIRTUAL_HOST.useraction=Pentru aplica\u0163ii care specific\u0103 o gazd\u0103 virtual\u0103 via fi\u015fiere ibm-web-bnd.xml sau ibm-web-bnd.xmi, asigura\u0163i-v\u0103 c\u0103 este definit un virtualHost care se potrive\u015fte \u00een fi\u015fierul server.xml.
+
+DISTRIBUTABLE_SET_TO_FALSE_IN_FRAGMENT=SRVE9955E: Se seteaz\u0103 <distributable/> la fals \u00eentruc\u00e2t nu este inclus \u00een web-fragment.xml al {0}
+DISTRIBUTABLE_SET_TO_FALSE_IN_FRAGMENT.explanation=Elementul <distributable/> nu s-a g\u0103sit \u00een fragmentul web.  Prin urmare, modulul nu este marcat ca put\u00e2nd fi distribuit.
+DISTRIBUTABLE_SET_TO_FALSE_IN_FRAGMENT.useraction=Seta\u0163i elementul <distributable/> din web-fragment.xml pentru toate fragmentele web din modul dac\u0103 vre\u0163i s\u0103 fie marcat ca put\u00e2nd fi distribuit.
+
+CONFLICT_CONNECTION_FACTORY_REFERENCE_BETWEEN_WEB_FRAGMENT_XML=SRVE9954E: S-au g\u0103sit dou\u0103 configura\u0163ii de fabric\u0103 de conexiuni cu acela\u015fi nume {0} \u00een web-fragment.xml al {1} \u015fi {2}.
+CONFLICT_CONNECTION_FACTORY_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.explanation=Fabrica de conexiuni cu acela\u015fi nume nu poate fi configurat\u0103 \u00een fi\u015fiere diferite web-fragment.xml dac\u0103 lipse\u015fte din web.xml.
+CONFLICT_CONNECTION_FACTORY_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.useraction=Configura\u0163i fabrica de conexiuni cu acela\u015fi nume din web.xml s\u0103 le \u00eenlocuiasc\u0103 pe cele din fi\u015fierele web-fragment.xml.
+
+
+CONFLICT_ADMINISTERED_OBJECT_REFERENCE_BETWEEN_WEB_FRAGMENT_XML=SRVE9951E: S-au g\u0103sit dou\u0103 configura\u0163ii de obiecte administrate cu acela\u015fi nume {0} \u00een web-fragment.xml din {1} \u015fi {2}.
+CONFLICT_ADMINISTERED_OBJECT_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.explanation=Obiectul administrat cu acela\u015fi nume nu poate fi configurat \u00een fi\u015fiere web-fragment.xml diferite dac\u0103 lipse\u015fte din web.xml.
+CONFLICT_ADMINISTERED_OBJECT_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.useraction=Configura\u0163i obiectul administrat cu acela\u015fi nume \u00een web.xml pentru a le \u00eenlocui cu cele din fi\u015fierele web-fragment.xml.
+
+CONFLICT_JMS_CONNECTION_FACTORY_REFERENCE_BETWEEN_WEB_FRAGMENT_XML=SRVE9952E: Dou\u0103 configura\u0163ii de fabric\u0103-de-conexiuni-JMS cu acela\u015fi nume {0} s-au g\u0103sit \u00een web-fragment.xml din {1} \u015fi {2}.
+CONFLICT_JMS_CONNECTION_FACTORY_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.explanation=Fabrica-de-conexiuni-JMS cu acela\u015fi nume nu poate fi configurat\u0103 \u00een fi\u015fiere diferite web-fragment.xml dac\u0103 lipse\u015fte din web.xml.
+CONFLICT_JMS_CONNECTION_FACTORY_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.useraction=Configurarea fabricii-de-conexiuni-JMS cu acela\u015fi nume \u00een web.xml pentru a le \u00eenlocui pa cele din fi\u015fierele web-fragment.xml.
+
+CONFLICT_JMS_DESTINATION_REFERENCE_BETWEEN_WEB_FRAGMENT_XML=SRVE9953E: Dou\u0103 configura\u0163ii destina\u0163ie-JMS cu acela\u015fi nume {0} s-au g\u0103sit \u00een web-fragment.xml din {1} \u015fi {2}.
+CONFLICT_JMS_DESTINATION_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.explanation=Destina\u0163ia-JMS cu acela\u015fi nume nu poate fi configurat\u0103 \u00een fi\u015fiere diferite web-fragment.xml dac\u0103 lipse\u015fte din web.xml.
+CONFLICT_JMS_DESTINATION_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.useraction=Configurarea destina\u0163iei-JMS cu acela\u015fi nume \u00een web.xml pentru a le \u00eenlocui pa cele din fi\u015fierele web-fragment.xml.
+
+
+SRVE0777E=SRVE0777E: Excep\u0163ie aruncat\u0103 de clasa de aplica\u0163ii ''{0}.{1}:{2}''\n{3}
+SRVE0777E.explanation= Codul aplica\u0163iei a aruncat o excep\u0163ie nea\u015fteptat\u0103.
+SRVE0777E.useraction=Examina\u0163i urma stivei ca s\u0103 identifica\u0163i cauza de baz\u0103 a problemei.
+
+# -----------------------------------------------
+Reader.already.obtained=SRVE0778E: Obiectul Reader pentru acest r\u0103spuns a fost deja ob\u0163inut. Aceasta este o eroare de aplica\u0163ie.
+Reader.already.obtained.explanation= A fost f\u0103cut\u0103 o \u00eencercare de ob\u0163inere sau ajustare a unui InputStream pentru acest r\u0103spuns, dar un BufferedReader a fost deja ob\u0163inut.
+Reader.already.obtained.useraction= Modifica\u0163i servletul care a e\u015fuat sau JSP pentru a utiliza fie o instan\u0163\u0103 BufferedReader sau o instan\u0163\u0103 InputStream dar nu ambele.
+# -----------------------------------------------
+InputStream.already.obtained=SRVE0779E: Obiectul InputStream pentru acest r\u0103spuns a fost ob\u0163inut deja. Aceasta este o eroare de aplica\u0163ie.
+InputStream.already.obtained.explanation=A fost f\u0103cut\u0103 o \u00eencercare de ob\u0163inere a BufferedReader pentru acest r\u0103spuns, dar un InputStream a fost deja ob\u0163inut.
+InputStream.already.obtained.useraction=Modifica\u0163i servletul care a e\u015fuat sau JSP pentru a utiliza fie o instan\u0163\u0103 BufferedReader sau o instan\u0163\u0103 InputStream dar nu ambele.
+
+# --------------------------------
+# Notes for translation:
+# {0} is the URL pattern 
+# {1} and {2} are servlet names
+
+duplicate.url.pattern.for.servlet.mapping=SRVE9016E: Nu poate fi inserat\u0103 maparea [{0}] pentru servletul numit [{1}]. Tiparul de URL este deja definit pentru servletul numit [{2}].
+duplicate.url.pattern.for.servlet.mapping.explanation=A ap\u0103rut o eroare de aplica\u0163ie. Un tipar de URL pentru mapare de servlet nu ar trebui s\u0103 fie mapat la mai multe servleturi.
+duplicate.url.pattern.for.servlet.mapping.useraction=Schimba\u0163i tiparul de URL pentru mapare de servlet.
+

@@ -1,0 +1,26 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.logging/resources/com/ibm/ws/logging/internal/resources/FFDCMessages.nlsprops
+#COMPONENTPREFIX FFDC
+#COMPONENTNAMEFOR FFDC WebSphere First Failure Data Capture
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# Shared/reused from tWAS
+INCIDENTSTREAMIMPL_FAILED_TO_OPEN_FILE=FFDC0011I: FFDC \u7121\u6cd5\u958b\u555f\u6216\u5efa\u7acb\u767c\u751f\u4e8b\u4ef6\u4e32\u6d41\u6a94 {0}\u3002\u7570\u5e38\u72c0\u6cc1\uff1a{1}
+INCIDENTSTREAMIMPL_FAILED_TO_OPEN_FILE.explanation=\u7121\u6cd5\u958b\u555f\u6216\u5efa\u7acb\u767c\u751f\u4e8b\u4ef6\u4e32\u6d41\u6a94\u3002\u53ef\u80fd\u662f\u5167\u542b\u65e5\u8a8c\u6a94\u7684\u6a94\u6848\u7cfb\u7d71\u7121\u6cd5\u4f7f\u7528\uff0c\u6216\u4e0d\u5bb9\u8a31\u57f7\u884c FFDC \u7684\u7a0b\u5e8f\u5efa\u7acb\u548c\u5b58\u53d6\u65e5\u8a8c\u76ee\u9304\u4e2d\u7684\u6a94\u6848\u3002
+INCIDENTSTREAMIMPL_FAILED_TO_OPEN_FILE.useraction=\u8acb\u9a57\u8b49\u5167\u542b\u65e5\u8a8c\u76ee\u9304\u7684\u6a94\u6848\u7cfb\u7d71\u70ba\u53ef\u7528\u7684\uff0c\u4e26\u9a57\u8b49\u5bb9\u8a31\u57f7\u884c FFDC \u7684\u7a0b\u5e8f\u5efa\u7acb\u548c\u5b58\u53d6\u65e5\u8a8c\u76ee\u9304\u4e2d\u7684\u6a94\u6848\u3002
+
+# Provided to tWAS
+lwas.FFDCIncidentEmitted=FFDC1015I: \u5df2\u5efa\u7acb\u300cFFDC \u767c\u751f\u4e8b\u4ef6\u300d\uff1a{1} \u4e0a\u7684 "{0}"
+lwas.FFDCIncidentEmitted.explanation=\u5728\u914d\u7f6e\u7684\u65e5\u8a8c\u4f4d\u7f6e\u4e2d\u5efa\u7acb\u4e86\u300cFFDC \u767c\u751f\u4e8b\u4ef6\u300d\u3002
+lwas.FFDCIncidentEmitted.useraction=\u4e0d\u9700\u4efb\u4f55\u52d5\u4f5c\u3002

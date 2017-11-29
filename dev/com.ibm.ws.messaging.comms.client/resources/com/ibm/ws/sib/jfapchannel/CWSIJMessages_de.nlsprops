@@ -1,0 +1,577 @@
+###############################################################################
+# Copyright (c) 2003, 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.jfapchannel.CWSIJMessages.props
+#
+# SIB.comms component file for logging _external_ messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIJ0001=CWSIJ0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Please note that the message prefix changed near the end of the development cycle and as such,
+# while the messages have the right prefix, their keys may use the old. New messages should use
+# the new prefix in the message and the key.
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   Message Range       Package
+#   ----------------------------------------------------
+#   CWSIJ0000-CWSIJ9999   Communications usage only (within the comms team)
+#   ----------------------------------------------------
+#   CWSIJ0001-CWSIJ9998   com.ibm.ws.sib.jfapchannel
+#   CWSIJ9999             emergency use if any new messages are required after message file is finalised
+# -------------------------------------------------------------------------------------------------
+#
+# cmvc_en_version_level=1.43,0,10/10/14,01:07:38
+#
+#CMVCPATHNAME ws/code/sib.jfapchannel/src/com/ibm/ws/sib/jfapchannel/CWSIJMessages.nlsprops
+#COMPONENTPREFIX CWSIJ
+#COMPONENTNAMEFOR CWSIJ Communications
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+EXCP_DURING_INIT_SICJ0001=CWSIJ0001E: Es ist ein interner Fehler aufgetreten. Es kann kein Objekt der Klasse {0} erstellt werden, weil die Ausnahme {1} eingetreten ist.
+EXCP_DURING_INIT_SICJ0001.explanation=CMSG0001
+EXCP_DURING_INIT_SICJ0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the method that could not be invoked
+# {1} the class to which the method which could not be invoked belongs
+# {2} the exception which occurred.
+EXCP_DURING_INIT_SICJ0002=CWSIJ0002E: Die Methode {0} der Klasse {1} kann nicht aufgerufen werden, weil eine Ausnahme eingetreten ist: {2}
+EXCP_DURING_INIT_SICJ0002.explanation=CMSG0001
+EXCP_DURING_INIT_SICJ0002.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+EXCP_DURING_INIT_SICJ0003=CWSIJ0003E: Es ist ein interner Fehler aufgetreten. Es kann kein Objekt der Klasse {0} erstellt werden, weil die Ausnahme {1} eingetreten ist.
+EXCP_DURING_INIT_SICJ0003.explanation=CMSG0001
+EXCP_DURING_INIT_SICJ0003.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the method that could not be invoked
+# {1} the class to which the method which could not be invoked belongs
+# {2} the exception which occurred.
+EXCP_DURING_INIT_SICJ0004=CWSIJ0004E: Die Methode {0} der Klasse {1} kann nicht aufgerufen werden, weil eine Ausnahme eingetreten ist: {2}
+EXCP_DURING_INIT_SICJ0004.explanation=CMSG0001
+EXCP_DURING_INIT_SICJ0004.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CF_NOT_AVAILABLE_SICJ0005=CWSIJ0005E: Eine Instanz des Kanal-Framework-Service f\u00fcr die Kommunikation wurde nicht gefunden.
+CF_NOT_AVAILABLE_SICJ0005.explanation=Es wurde keine Instanz des Kanal-Framework-Service gefunden. Es ist keine Netzkommunikation m\u00f6glich.
+CF_NOT_AVAILABLE_SICJ0005.useraction=Stellen Sie sicher, dass der Zielserver gestartet ist und den Standard-Bootstrap-Port 2809 auf der lokalen Maschine verwendet. Sollte dies nicht der Fall sein, f\u00fchren Sie den Befehl "launchClient" erneut aus. Geben Sie den Parameter "-CCBootstrapPort" mit der richtigen Portnummer und den Parameter "-CCBootstrapHost" mit dem richtigen Hostnamen des Zielservers an. Weitere Informationen zur Behebung dieses Fehlers finden Sie in den Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server unter der Adresse "http://www.ibm.com/software/webservers/appserv/was/support".
+
+# -------------------------------------------------------------------------------------------------
+EXCP_CONN_FAIL_NO_CF_SICJ0007=CWSIJ0007E: Die Verbindung ist fehlgeschlagen, weil die Kommunikationskomponente nicht initialisiert wurde.
+EXCP_CONN_FAIL_NO_CF_SICJ0007.explanation=Der Versuch, eine Netzverbindung herzustellen, ist fehlgeschlagen, weil die Kommunikationskomponente nicht ordnungsgem\u00e4\u00df initialisiert wurde.
+EXCP_CONN_FAIL_NO_CF_SICJ0007.useraction=Suchen Sie in den Protokolldateien des Anwendungsservers nach Hinweisen zur Fehlerursache. Suchen Sie in den begleitenden Fehlernachrichten nach weiteren Informationen und beheben Sie das Problem, sofern dies m\u00f6glich ist.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the default channel chain which is not defined
+NO_DEFAULT_OUTBOUND_SICJ0008=CWSIJ0008W: Die Standardkanalkette f\u00fcr abgehendes Messaging {0} ist nicht in diesem Anwendungsserver definiert.
+NO_DEFAULT_OUTBOUND_SICJ0008.explanation=Die Standardkanalkette f\u00fcr abgehendes Messaging ist nicht in diesem Anwendungsserver definiert. Der Anwendungsserver ist m\u00f6glicherweise nicht in der Lage, Verbindungen zu den Messaging-Engine des fernen Gateway herzustellen.
+NO_DEFAULT_OUTBOUND_SICJ0008.useraction=Definieren Sie eine Kanalkette f\u00fcr abgehendes Messaging f\u00fcr diesen Anwendungsserver.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the default channel chain which is not defined
+NO_DEFAULT_SECURE_OUTBOUND_SICJ0009=CWSIJ0009W: Die Standardkanalkette f\u00fcr sicheres abgehendes Messaging {0} ist nicht in diesem Anwendungsserver definiert.
+NO_DEFAULT_SECURE_OUTBOUND_SICJ0009.explanation=Die Standardkanalkette f\u00fcr sicheres abgehendes Messaging ist nicht in diesem Anwendungsserver definiert. Der Anwendungsserver ist m\u00f6glicherweise nicht in der Lage, Verbindungen zu den Messaging-Engine des fernen Gateway herzustellen.
+NO_DEFAULT_SECURE_OUTBOUND_SICJ0009.useraction=Definieren Sie eine Kanalkette f\u00fcr sicheres abgehendes Messaging f\u00fcr diesen Anwendungsserver.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the default channel chain which is not defined
+NO_DEFAULT_TUNNELED_OUTBOUND_SICJ0010=CWSIJ0010W: Die Standardkanalkette f\u00fcr getunneltes abgehendes Messaging {0} ist nicht in diesem Anwendungsserver definiert.
+NO_DEFAULT_TUNNELED_OUTBOUND_SICJ0010.explanation=Die Standardkanalkette f\u00fcr getunneltes abgehendes Messaging ist nicht in diesem Anwendungsserver definiert. Der Anwendungsserver ist m\u00f6glicherweise nicht in der Lage, Verbindungen zu den Messaging-Engine des fernen Gateway herzustellen.
+NO_DEFAULT_TUNNELED_OUTBOUND_SICJ0010.useraction=Definieren Sie eine getunnelte Standardkanalkette f\u00fcr abgehendes Messaging f\u00fcr diesen Anwendungsserver.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the default channel chain which is not defined
+NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011=CWSIJ0011W: Die Standardkanalkette f\u00fcr getunneltes und sicheres abgehendes Messaging {0} ist nicht in diesem Anwendungsserver definiert.
+NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.explanation=Die Standardkanalkette f\u00fcr getunneltes und sicheres abgehendes Messaging ist nicht in diesem Anwendungsserver definiert. Der Anwendungsserver ist m\u00f6glicherweise nicht in der Lage, Verbindungen zu den Messaging-Engine des fernen Gateway herzustellen.
+NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.useraction=Definieren Sie eine getunnelte Standardkanalkette f\u00fcr sicheres abgehendes Messaging f\u00fcr diesen Anwendungsserver.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the SSL properties file.
+NO_SSL_PROPERTIES_FILE_SICJ0012=CWSIJ0012W: Die Eigenschaftendatei ''{0}'', die zum Bestimmen der Anfangstransportsicherheit f\u00fcr das Client-Messaging verwendet wird, wurde nicht gefunden.
+NO_SSL_PROPERTIES_FILE_SICJ0012.explanation=Die Eigenschaftendatei, die die Informationen zum Herstellen sicherer Client-Messaging-Verbindungen enth\u00e4lt, wurde nicht gefunden. Es werden die Standardwerte verwendet. M\u00f6glicherweise k\u00f6nnen keine sicheren Client-Messaging-Verbindungen hergestellt werden.
+NO_SSL_PROPERTIES_FILE_SICJ0012.useraction=Konfigurieren Sie die Eigenschaftendatei f\u00fcr die Sicherheit des Client-Messagings auf Transportebene.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the class which could not be located
+NO_JFAP_CHANNEL_CLASS_SICJ0013=CWSIJ0013E: Es ist ein interner Fehler aufgetreten. Es wurde keine Darstellung der Klasse {0} gefunden.
+NO_JFAP_CHANNEL_CLASS_SICJ0013.explanation=CMSG0001
+NO_JFAP_CHANNEL_CLASS_SICJ0013.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the class which could not be located
+NO_TCP_CHANNEL_CLASS_SICJ0014=CWSIJ0014E: Es ist ein interner Fehler aufgetreten. Es wurde keine Darstellung der Klasse {0} gefunden.
+NO_TCP_CHANNEL_CLASS_SICJ0014.explanation=CMSG0001
+NO_TCP_CHANNEL_CLASS_SICJ0014.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the class which could not be located
+NO_SSL_CHANNEL_CLASS_SICJ0015=CWSIJ0015E: Es ist ein interner Fehler aufgetreten. Es wurde keine Darstellung der Klasse {0} gefunden.
+NO_SSL_CHANNEL_CLASS_SICJ0015.explanation=CMSG0001
+NO_SSL_CHANNEL_CLASS_SICJ0015.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the class which could not be located
+NO_HTTP_CHANNEL_CLASS_SICJ0016=CWSIJ0016E: Es ist ein interner Fehler aufgetreten. Es wurde keine Darstellung der Klasse {0} gefunden.
+NO_HTTP_CHANNEL_CLASS_SICJ0016.explanation=CMSG0001
+NO_HTTP_CHANNEL_CLASS_SICJ0016.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the class which could not be located
+NO_HTTPT_CHANNEL_CLASS_SICJ0017=CWSIJ0017E: Es ist ein interner Fehler aufgetreten. Es wurde keine Darstellung der Klasse {0} gefunden.
+NO_HTTPT_CHANNEL_CLASS_SICJ0017.explanation=CMSG0001
+NO_HTTPT_CHANNEL_CLASS_SICJ0017.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_JFAP_CHANNEL_SICJ0018=CWSIJ0018E: Es ist ein interner Fehler aufgetreten. Es kann keine Instanz des Kanals {0} erstellt werden, weil die Ausnahme {1} eingetreten ist.
+CANNOT_CREATE_JFAP_CHANNEL_SICJ0018.explanation=CMSG0001
+CANNOT_CREATE_JFAP_CHANNEL_SICJ0018.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_TCP_CHANNEL_SICJ0019=CWSIJ0019E: Es ist ein interner Fehler aufgetreten. Es kann keine Instanz des Kanals {0} erstellt werden, weil die Ausnahme {1} eingetreten ist.
+CANNOT_CREATE_TCP_CHANNEL_SICJ0019.explanation=CMSG0001
+CANNOT_CREATE_TCP_CHANNEL_SICJ0019.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_SSL_CHANNEL_SICJ0020=CWSIJ0020E: Es ist ein interner Fehler aufgetreten. Es kann keine Instanz des Kanals {0} erstellt werden, weil die Ausnahme {1} eingetreten ist.
+CANNOT_CREATE_SSL_CHANNEL_SICJ0020.explanation=CMSG0001
+CANNOT_CREATE_SSL_CHANNEL_SICJ0020.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_HTTP_CHANNEL_SICJ0021=CWSIJ0021E: Es ist ein interner Fehler aufgetreten. Es kann keine Instanz des Kanals {0} erstellt werden, weil die Ausnahme {1} eingetreten ist.
+CANNOT_CREATE_HTTP_CHANNEL_SICJ0021.explanation=CMSG0001
+CANNOT_CREATE_HTTP_CHANNEL_SICJ0021.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_HTTPT_CHANNEL_SICJ0022=CWSIJ0022E: Es ist ein interner Fehler aufgetreten. Es kann keine Instanz des Kanals {0} erstellt werden, weil die Ausnahme {1} eingetreten ist.
+CANNOT_CREATE_HTTPT_CHANNEL_SICJ0022.explanation=CMSG0001
+CANNOT_CREATE_HTTPT_CHANNEL_SICJ0022.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel chain which cannot be defined
+# {1} the exception which occurred.
+CANNOT_CREATE_DEFAULT_OUTBOUND_CHANNEL_SICJ0023=CWSIJ0023E: Die Standardkanalkette f\u00fcr abgehendes Messaging {0} kann nicht erstellt werden, weil die folgende Ausnahme eingetreten ist: {1}
+CANNOT_CREATE_DEFAULT_OUTBOUND_CHANNEL_SICJ0023.explanation=CMSG0001
+CANNOT_CREATE_DEFAULT_OUTBOUND_CHANNEL_SICJ0023.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel chain which cannot be defined
+# {1} the exception which occurred.
+CANNOT_CREATE_SECURE_OUTBOUND_CHANNEL_SICJ0024=CWSIJ0024E: Die Kanalkette f\u00fcr sicheres abgehendes Messaging {0} kann nicht erstellt werden, weil die folgende Ausnahme eingetreten ist: {1}
+CANNOT_CREATE_SECURE_OUTBOUND_CHANNEL_SICJ0024.explanation=CMSG0001
+CANNOT_CREATE_SECURE_OUTBOUND_CHANNEL_SICJ0024.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel chain which cannot be defined
+# {1} the exception which occurred.
+CANNOT_CREATE_TUNNELED_OUTBOUND_CHANNEL_SICJ0025=CWSIJ0025E: Die Kanalkette f\u00fcr getunneltes abgehendes Messaging {0} kann nicht erstellt werden, weil die folgende Ausnahme eingetreten ist: {1}
+CANNOT_CREATE_TUNNELED_OUTBOUND_CHANNEL_SICJ0025.explanation=CMSG0001
+CANNOT_CREATE_TUNNELED_OUTBOUND_CHANNEL_SICJ0025.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel chain which cannot be defined
+# {1} the exception which occurred.
+CANNOT_CREATE_TUNNELED_SECURE_OUTBOUND_CHANNEL_SICJ0026=CWSIJ0026E: Die Kanalkette f\u00fcr getunneltes und sicheres abgehendes Messaging {0} kann nicht erstellt werden, weil die folgende Ausnahme eingetreten ist: {1}
+CANNOT_CREATE_TUNNELED_SECURE_OUTBOUND_CHANNEL_SICJ0026.explanation=CMSG0001
+CANNOT_CREATE_TUNNELED_SECURE_OUTBOUND_CHANNEL_SICJ0026.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_START_INBOUND_CHAINS_SICJ0027=CWSIJ0027W: Es k\u00f6nnen keine Kanalketten f\u00fcr eingehendes Messaging f\u00fcr diesen Anwendungsserver gestartet werden.
+CANNOT_START_INBOUND_CHAINS_SICJ0027.explanation=Es konnten keine Kanalketten f\u00fcr eingehendes Messaging gestartet werden. Wahrscheinlich sind keine Kanalketten f\u00fcr diesen Anwendungsserver definiert. Messaging-Clients und andere Messaging-Engines k\u00f6nnen m\u00f6glicherweise keine Verbindungen zu diesem Anwendungsserver herstellen.
+CANNOT_START_INBOUND_CHAINS_SICJ0027.useraction=Definieren Sie weitere Kanalketten f\u00fcr eingehendes Messaging im Anwendungsserver.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The heartbeat interval
+# {1} The channel for which the heartbeat interval has been specified.
+# {2} The minimum acceptable value for the heartbeat interval.
+INBOUND_HEARTBEAT_INTERVAL_TOO_LOW_SICJ0028=CWSIJ0028W: Das \u00dcberwachungssignalintervall von {0}, das f\u00fcr den Kanal {1} konfiguriert ist, ist kleiner als der Mindestwert {2}. Die Verwendung von \u00dcberwachungssignalen wurde inaktiviert.
+INBOUND_HEARTBEAT_INTERVAL_TOO_LOW_SICJ0028.explanation=Es wurde ein ung\u00fcltiger Wert f\u00fcr eine Konfigurationseigenschaft des Kanals angegeben. Deshalb wurde die Verwendung von \u00dcberwachungssignalen f\u00fcr alle \u00dcbertragungen \u00fcber die zugeordnete Kanalkette inaktiviert.
+INBOUND_HEARTBEAT_INTERVAL_TOO_LOW_SICJ0028.useraction=Es wurde ein ung\u00fcltiger Wert f\u00fcr das \u00dcberwachungssignalintervall angegeben. \u00c4ndern Sie diesen Wert so, dass er im g\u00fcltigen Wertebereich liegt.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The heartbeat interval
+# {1} The channel for which the heartbeat interval has been specified.
+# {2} The maximum acceptable value for the heartbeat interval.
+INBOUND_HEARTBEAT_INTERVAL_TOO_HIGH_SICJ0029=CWSIJ0029W: Das \u00dcberwachungssignalintervall von {0}, das f\u00fcr den Kanal {1} konfiguriert ist, ist gr\u00f6\u00dfer als der Maximalwert {2}. Die Verwendung von \u00dcberwachungssignalen wurde inaktiviert.
+INBOUND_HEARTBEAT_INTERVAL_TOO_HIGH_SICJ0029.explanation=Es wurde ein ung\u00fcltiger Wert f\u00fcr eine Konfigurationseigenschaft des Kanals angegeben. Deshalb wurde die Verwendung von \u00dcberwachungssignalen f\u00fcr alle \u00dcbertragungen \u00fcber die zugeordnete Kanalkette inaktiviert.
+INBOUND_HEARTBEAT_INTERVAL_TOO_HIGH_SICJ0029.useraction=Es wurde ein ung\u00fcltiger Wert f\u00fcr das \u00dcberwachungssignalintervall angegeben. \u00c4ndern Sie diesen Wert so, dass er im g\u00fcltigen Wertebereich liegt.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The heartbeat timeout
+# {1} The channel for which the heartbeat timeout has been specified.
+# {2} The minimum acceptable value for the heartbeat timeout.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_LOW_SICJ0030=CWSIJ0030W: Das Zeitlimit f\u00fcr \u00dcberwachungssignale, {0}, das f\u00fcr den Kanal {1} konfiguriert ist, ist kleiner als der Mindestwert {2}. Die Verwendung von \u00dcberwachungssignalen wurde inaktiviert.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_LOW_SICJ0030.explanation=Es wurde ein ung\u00fcltiger Wert f\u00fcr eine Konfigurationseigenschaft des Kanals angegeben. Deshalb wurde die Verwendung von \u00dcberwachungssignalen f\u00fcr alle \u00dcbertragungen \u00fcber die zugeordnete Kanalkette inaktiviert.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_LOW_SICJ0030.useraction=Es wurde ein ung\u00fcltiger Wert f\u00fcr das \u00dcberwachungssignalzeitlimit angegeben. \u00c4ndern Sie diesen Wert so, dass er im g\u00fcltigen Wertebereich liegt.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The heartbeat timeout
+# {1} The channel for which the heartbeat timeout has been specified.
+# {2} The minimum acceptable value for the heartbeat timeout.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_HIGH_SICJ0031=CWSIJ0031W: Das Zeitlimit f\u00fcr \u00dcberwachungssignale, {0}, das f\u00fcr den Kanal {1} konfiguriert ist, ist gr\u00f6\u00dfer als der Maximalwert {2}. Die Verwendung von \u00dcberwachungssignalen wurde inaktiviert.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_HIGH_SICJ0031.explanation=Es wurde ein ung\u00fcltiger Wert f\u00fcr eine Konfigurationseigenschaft des Kanals angegeben. Deshalb wurde die Verwendung von \u00dcberwachungssignalen f\u00fcr alle \u00dcbertragungen \u00fcber die zugeordnete Kanalkette inaktiviert.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_HIGH_SICJ0031.useraction=Es wurde ein ung\u00fcltiger Wert f\u00fcr das \u00dcberwachungssignalzeitlimit angegeben. \u00c4ndern Sie diesen Wert so, dass er im g\u00fcltigen Wertebereich liegt.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+#CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_SICJ0032=CWSIJ0032E: An internal error occurred.  An object of class {0} cannot be created because of exception: {1}.
+#CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_SICJ0032.explanation=CMSG0001
+#CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_SICJ0032.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+NO_NON_TSWITCH_IMPL_SICJ0033=CWSIJ0033E: Es ist ein interner Fehler aufgetreten. Es kann kein Objekt der Klasse {0} erstellt werden, weil die Ausnahme {1} eingetreten ist.
+NO_NON_TSWITCH_IMPL_SICJ0033.explanation=CMSG0001
+NO_NON_TSWITCH_IMPL_SICJ0033.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+NO_DISPATCHTOALL_IMPL_SICJ0034=CWSIJ0034E: Es ist ein interner Fehler aufgetreten. Es kann kein Objekt der Klasse {0} erstellt werden, weil die Ausnahme {1} eingetreten ist.
+NO_DISPATCHTOALL_IMPL_SICJ0034.explanation=CMSG0001
+NO_DISPATCHTOALL_IMPL_SICJ0034.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+ME_UNEXPECTED_DISCONNECT_SICJ0035=CWSIJ0035E: Eine Messaging-Enginesverbindung von Host {0} in der Transportkette {1} wurde unerwartet getrennt.
+ME_UNEXPECTED_DISCONNECT_SICJ0035.explanation=Eine Messaging-Engine hat die Verbindung zu diesem Anwendungsserver getrennt, ohne den erwarteten Trennprotokollen zu folgen.
+ME_UNEXPECTED_DISCONNECT_SICJ0035.useraction=Weitere Informationen zur Behebung dieses Fehlers finden Sie in den Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server unter der Adresse "http://www.ibm.com/software/webservers/appserv/was/support".
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+CLIENT_UNEXPECTED_DISCONNECT_SICJ0036=CWSIJ0036E: Die Clientverbindung von Host {0} in der Transportkette {1} wurde unerwartet getrennt.
+CLIENT_UNEXPECTED_DISCONNECT_SICJ0036.explanation=Ein Client hat die Verbindung zu diesem Anwendungsserver getrennt, ohne den erwarteten Trennprotokollen zu folgen.
+CLIENT_UNEXPECTED_DISCONNECT_SICJ0036.useraction=Weitere Informationen zur Behebung dieses Fehlers finden Sie in den Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server unter der Adresse "http://www.ibm.com/software/webservers/appserv/was/support".
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+ME_BAD_DATA_RECEIVED_SICJ0037=CWSIJ0037E: Eine aufgebaute Verbindung zur Messaging-Engine wurde beendet, weil ung\u00fcltige Daten von Host {0} in der Transportkette {1} empfangen wurden.
+ME_BAD_DATA_RECEIVED_SICJ0037.explanation=Eine Verbindung zur Messaging-Engine vom angegebenen Host wurde getrennt, weil ung\u00fcltige Daten \u00fcbertragen wurden.
+ME_BAD_DATA_RECEIVED_SICJ0037.useraction=Weitere Informationen zur Behebung dieses Fehlers finden Sie in den Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server unter der Adresse "http://www.ibm.com/software/webservers/appserv/was/support".
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+ME_BAD_DATA_ON_CONNECT_SICJ0038=CWSIJ0038E: Eine Verbindung zur Messaging-Engine wurde beendet, weil die ersten vom Host {0} in der Transportkette {1} empfangenen Daten ung\u00fcltig sind.
+ME_BAD_DATA_ON_CONNECT_SICJ0038.explanation=Eine Verbindung zur Messaging-Engine vom angegebenen Host wurde getrennt, weil ung\u00fcltige Daten \u00fcbertragen wurden.
+ME_BAD_DATA_ON_CONNECT_SICJ0038.useraction=Weitere Informationen zur Behebung dieses Fehlers finden Sie in den Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server unter der Adresse "http://www.ibm.com/software/webservers/appserv/was/support".
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+CLIENT_BAD_DATA_RECEIVED_SICJ0039=CWSIJ0039E: Eine aufgebaute Verbindung wurde beendet, weil ung\u00fcltige Daten von Host {0} in der Transportkette {1} empfangen wurden.
+CLIENT_BAD_DATA_RECEIVED_SICJ0039.explanation=Eine Verbindung vom angegebenen Host wurde getrennt, weil ung\u00fcltige Daten \u00fcbertragen wurden.
+CLIENT_BAD_DATA_RECEIVED_SICJ0039.useraction=Weitere Informationen zur Behebung dieses Fehlers finden Sie in den Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server unter der Adresse "http://www.ibm.com/software/webservers/appserv/was/support".
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+CLIENT_BAD_DATA_ON_CONNECT_SICJ0040=CWSIJ0040E: Eine Verbindung wurde beendet, weil die ersten vom Host {0} in der Transportkette {1} empfangenen Daten ung\u00fcltig sind.
+CLIENT_BAD_DATA_ON_CONNECT_SICJ0040.explanation=Eine Verbindung vom angegebenen Host wurde getrennt, weil ung\u00fcltige Daten \u00fcbertragen wurden.
+CLIENT_BAD_DATA_ON_CONNECT_SICJ0040.useraction=Weitere Informationen zur Behebung dieses Fehlers finden Sie in den Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server unter der Adresse "http://www.ibm.com/software/webservers/appserv/was/support".
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the chain name and {2} is the heartbeat interval
+ME_NOT_RESPONDING_SICJ0041=CWSIJ0041E: Eine Verbindung zur Messaging-Engine von Host {0} in der Transportkette {1} wurde beendet, weil sie {2} Sekunden nicht mehr reagiert hat.
+ME_NOT_RESPONDING_SICJ0041.explanation=Eine Verbindung zur Messaging-Engine vom angegebenen Host wurde getrennt, weil sie nicht mehr reagiert.
+ME_NOT_RESPONDING_SICJ0041.useraction=Weitere Informationen zur Behebung dieses Fehlers finden Sie in den Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server unter der Adresse "http://www.ibm.com/software/webservers/appserv/was/support".
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the chain name and {2} is the heartbeat interval
+CLIENT_NOT_RESPONDING_SICJ0042=CWSIJ0042E: Eine Verbindung von Host {0} in der Transportkette {1} wurde beendet, weil sie seit {2} Sekunden nicht mehr reagiert hat.
+CLIENT_NOT_RESPONDING_SICJ0042.explanation=Eine Verbindung vom angegebenen Host wurde getrennt, weil sie nicht mehr reagiert.
+CLIENT_NOT_RESPONDING_SICJ0042.useraction=Weitere Informationen zur Behebung dieses Fehlers finden Sie in den Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server unter der Adresse "http://www.ibm.com/software/webservers/appserv/was/support".
+
+# -------------------------------------------------------------------------------------------------
+CONNECTION_INTERNAL_SICJ0043=CWSIJ0043E: Es ist ein interner Fehler aufgetreten.
+CONNECTION_INTERNAL_SICJ0043.explanation=CMSG0001
+CONNECTION_INTERNAL_SICJ0043.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CONNECTION_CLOSED_SICJ0044=CWSIJ0044E: Es wurde versucht, eine Operation in einer bereits geschlossenen Verbindung durchzuf\u00fchren.
+CONNECTION_CLOSED_SICJ0044.explanation=Es wurde versucht, eine Operation f\u00fcr eine Verbindungsressource durchzuf\u00fchren, die bereits geschlossen wurde. Dieses Problem kann auf einen Fehler bei der Anwendungsprogrammierung oder darauf zur\u00fcckzuf\u00fchren sein, dass das System die Verbindungsressource als Folge eines Fehlers geschlossen hat.
+CONNECTION_CLOSED_SICJ0044.useraction=Stellen Sie anhand der Protokolldateien zu Ihrem Anwendungsserver fest, warum die Verbindung geschlossen wurde. Suchen Sie in den begleitenden Fehlernachrichten nach weiteren Informationen und beheben Sie das Problem, sofern dies m\u00f6glich ist.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the chain
+CONVERSATIONIMPL_INVALIDATE_SICJ0045=CWSIJ0045E: Es ist ein unerwartetes Ereignis eingetreten, das zum Schlie\u00dfen der Netzverbindung von Host {0} \u00fcber die Transportkette {1} gef\u00fchrt hat.
+CONVERSATIONIMPL_INVALIDATE_SICJ0045.explanation=Eine Netzverbindung wurde aufgrund eines unerwartetes Ereignisses geschlossen.
+CONVERSATIONIMPL_INVALIDATE_SICJ0045.useraction=Stellen Sie anhand der zugeh\u00f6rigen Ausnahmen und Protokolldateien zu Ihrem Anwendungsserver fest, warum die Netzverbindung geschlossen wurde. Suchen Sie in den begleitenden Fehlernachrichten nach weiteren Informationen und beheben Sie das Problem, sofern dies m\u00f6glich ist.
+
+# -------------------------------------------------------------------------------------------------
+CONVERSATIONIMPL_INTERNAL_SICJ0046=CWSIJ0046E: Es ist ein interner Fehler aufgetreten.
+CONVERSATIONIMPL_INTERNAL_SICJ0046.explanation=CMSG0001
+CONVERSATIONIMPL_INTERNAL_SICJ0046.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CONVERSATIONIMPL_CLOSED_SICJ0047=CWSIJ0047E: Es wurde versucht, eine Operation in einer bereits geschlossenen Verbindung durchzuf\u00fchren.
+CONVERSATIONIMPL_CLOSED_SICJ0047.explanation=Es wurde versucht, eine Operation f\u00fcr eine Verbindungsressource durchzuf\u00fchren, die bereits geschlossen wurde. Dieses Problem kann auf einen Fehler bei der Anwendungsprogrammierung oder darauf zur\u00fcckzuf\u00fchren sein, dass das System die Verbindungsressource als Folge eines Fehlers geschlossen hat.
+CONVERSATIONIMPL_CLOSED_SICJ0047.useraction=Stellen Sie anhand der Protokolldateien zu Ihrem Anwendungsserver fest, warum die Verbindung geschlossen wurde. Suchen Sie in den begleitenden Fehlernachrichten nach weiteren Informationen und beheben Sie das Problem, sofern dies m\u00f6glich ist.
+
+# -------------------------------------------------------------------------------------------------
+CONVERSATIONTABLE_INTERNAL_SICJ0048=CWSIJ0048E: Es ist ein interner Fehler aufgetreten.
+CONVERSATIONTABLE_INTERNAL_SICJ0048.explanation=CMSG0001
+CONVERSATIONTABLE_INTERNAL_SICJ0048.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+EXCHANGERL_INTERNAL_SICJ0049=CWSIJ0049E: Es ist ein interner Fehler aufgetreten.
+EXCHANGERL_INTERNAL_SICJ0049.explanation=CMSG0001
+EXCHANGERL_INTERNAL_SICJ0049.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+IDTABLE_INTERNAL_SICJ0050=CWSIJ0050E: Es ist ein interner Fehler aufgetreten.
+IDTABLE_INTERNAL_SICJ0050.explanation=CMSG0001
+IDTABLE_INTERNAL_SICJ0050.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the chain name
+INBOUNDCONV_INVALIDATE_SICJ0051=CWSIJ0051E: Es ist ein unerwartetes Ereignis eingetreten, das zum Schlie\u00dfen der Netzverbindung von Host {0} \u00fcber die Transportkette {1} gef\u00fchrt hat.
+INBOUNDCONV_INVALIDATE_SICJ0051.explanation=Eine Netzverbindung wurde aufgrund eines unerwartetes Ereignisses geschlossen. Suchen Sie in den zugeh\u00f6rigen Ausnahmen nach n\u00e4heren Informationen.
+INBOUNDCONV_INVALIDATE_SICJ0051.useraction=Stellen Sie anhand der zugeh\u00f6rigen Ausnahmen und Protokolldateien zu Ihrem Anwendungsserver fest, warum die Netzverbindung geschlossen wurde. Suchen Sie in den begleitenden Fehlernachrichten nach weiteren Informationen und beheben Sie das Problem, sofern dies m\u00f6glich ist.
+
+# -------------------------------------------------------------------------------------------------
+INBOUNDCONV_INTERNAL_SICJ0052=CWSIJ0052E: Es ist ein interner Fehler aufgetreten.
+INBOUNDCONV_INTERNAL_SICJ0052.explanation=CMSG0001
+INBOUNDCONV_INTERNAL_SICJ0052.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name and {1} is the chain name.
+TRANSPARSER_PROTOCOLERROR_SICJ0053=CWSIJ0053E: Eine Netzverbindung wurde beendet, nachdem der Peer falsch formatierte Informationen gesendet hat.
+TRANSPARSER_PROTOCOLERROR_SICJ0053.explanation=Eine Netzverbindung vom Host in der Transportkette wurde beendet, nachdem falsch formatierte Informationen empfangen wurden.
+TRANSPARSER_PROTOCOLERROR_SICJ0053.useraction=Weitere Informationen zur Behebung dieses Fehlers finden Sie in den Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server unter der Adresse "http://www.ibm.com/software/webservers/appserv/was/support".
+
+# -------------------------------------------------------------------------------------------------
+TRANSPARSER_INTERNAL_SICJ0054=CWSIJ0054E: Es ist ein interner Fehler aufgetreten.
+TRANSPARSER_INTERNAL_SICJ0054.explanation=CMSG0001
+TRANSPARSER_INTERNAL_SICJ0054.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+OUTBOUNDCONN_IDTABLEFULL_SICJ0055=CWSIJ0055E: Aufgrund einer Ressourcenknappheit konnte keine neue Verbindung erstellt werden.
+OUTBOUNDCONN_IDTABLEFULL_SICJ0055.explanation=Es kann keine neue Verbindung hergestellt werden, weil nicht gen\u00fcgend erforderliche Ressourcen verf\u00fcgbar sind. Dieses Problem wird durch eine hohe Anzahl aktiver, aufgebauter Verbindungen verursacht.
+OUTBOUNDCONN_IDTABLEFULL_SICJ0055.useraction=Reduzieren Sie die Ressourcen, die von Anwendungen verwendet werden, indem Sie alle nicht mehr ben\u00f6tigten Verbindungen schlie\u00dfen.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the port number, {2} is the chain name
+OUTBOUNDCONV_INVALIDATE_SICJ0056=CWSIJ0056E: Eine Netzverbindung auf dem Host {0} an Port {1} mit der Kette {2} wurde wegen einer unerwarteten Bedingung geschlossen.
+OUTBOUNDCONV_INVALIDATE_SICJ0056.explanation=Eine Netzverbindung wurde aufgrund eines unerwartetes Ereignisses geschlossen.
+OUTBOUNDCONV_INVALIDATE_SICJ0056.useraction=Stellen Sie anhand der zugeh\u00f6rigen Ausnahmen und Protokolldateien zu Ihrem Anwendungsserver fest, warum die Netzverbindung geschlossen wurde. Suchen Sie in den begleitenden Fehlernachrichten nach weiteren Informationen und beheben Sie das Problem, sofern dies m\u00f6glich ist.
+
+# -------------------------------------------------------------------------------------------------
+PRIORITYQUEUE_INTERNAL_SICJ0057=CWSIJ0057E: Es ist ein interner Fehler aufgetreten.
+PRIORITYQUEUE_INTERNAL_SICJ0057.explanation=CMSG0001
+PRIORITYQUEUE_INTERNAL_SICJ0057.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+REQIDTABLE_INTERNAL_SICJ0058=CWSIJ0058E: Es ist ein interner Fehler aufgetreten.
+REQIDTABLE_INTERNAL_SICJ0058.explanation=CMSG0001
+REQIDTABLE_INTERNAL_SICJ0058.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+SVRCONNMGR_INTERNAL_SICJ0059=CWSIJ0059E: Es ist ein interner Fehler aufgetreten.
+SVRCONNMGR_INTERNAL_SICJ0059.explanation=CMSG0001
+SVRCONNMGR_INTERNAL_SICJ0059.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+TRANSDATA_INTERNAL_SICJ0060=CWSIJ0060E: Es ist ein interner Fehler aufgetreten.
+TRANSDATA_INTERNAL_SICJ0060.explanation=CMSG0001
+TRANSDATA_INTERNAL_SICJ0060.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+TRANSDATAIT_INTERNAL_SICJ0061=CWSIJ0061E: Es ist ein interner Fehler aufgetreten.
+TRANSDATAIT_INTERNAL_SICJ0061.explanation=CMSG0001
+TRANSDATAIT_INTERNAL_SICJ0061.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CONNDATAGROUP_INTERNAL_SICJ0062=CWSIJ0062E: Es ist ein interner Fehler aufgetreten.
+CONNDATAGROUP_INTERNAL_SICJ0062.explanation=CMSG0001
+CONNDATAGROUP_INTERNAL_SICJ0062.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the hostname, {1} is the port.
+CONNDATAGROUP_CONNFAILED_SICJ0063=CWSIJ0063E: Es kann keine Netzverbindung zum Host {0} an Port {1} aufgebaut werden.
+CONNDATAGROUP_CONNFAILED_SICJ0063.explanation=Es kann keine Netzverbindung zum angegebenen Host und angegebenen Port hergestellt werden.
+CONNDATAGROUP_CONNFAILED_SICJ0063.useraction=Stellen Sie sicher, dass der angegebene Hostname g\u00fcltig ist und ein Prozess am angegebenen Port auf Verbindungen wartet. Ein bei der Verwendung des Thin Client for JMS mit WebSphere Application Server bzw. des Resource Adapter for JMS mit WebSphere Application Server auftretendes Problem l\u00e4sst sich einfacher diagnostizieren, wenn die Systemeigenschaft javax.net.debug=all (Sun JSSE) oder javax.net.debug=true (IBM JSSE) konfiguriert und die Ausf\u00fchrung des Anwendungsclients wiederholt wird.
+
+# -------------------------------------------------------------------------------------------------
+OUTCONNTRACKER_INTERNAL_SICJ0064=CWSIJ0064E: Es ist ein interner Fehler aufgetreten.
+OUTCONNTRACKER_INTERNAL_SICJ0064.explanation=CMSG0001
+OUTCONNTRACKER_INTERNAL_SICJ0064.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CRLDRI_INTERNAL_SICJ0065=CWSIJ0065E: Es ist ein interner Fehler aufgetreten.
+CRLDRI_INTERNAL_SICJ0065.explanation=CMSG0001
+CRLDRI_INTERNAL_SICJ0065.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is a transport chain name.  {1} is the name of a machine.
+CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066=CWSIJ0066W: Es wurde keine Transportkette mit dem Namen {0} gefunden, aus der eine SSL-Konfiguration abgerufen werden k\u00f6nnte, die zum Herstellen einer Verbindung zum fernen Host {1} erforderlich w\u00e4re.
+CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066.explanation=Die erforderlichen Informationen zum Herstellen einer SSL-basierten Verbindung (Secure Sockets Layer) zu einem Peer sind nicht in der aktuellen Konfiguration enthalten. Normalerweise werden diese Informationen aus der Definition einer geeigneten Transportkette verwendet. Diese Kettendefinition hat einen Namen, der einer Kette auf dem fernen Peer entspricht. Eine solche Transportkette wurde nicht gefunden. Es kann keine Verbindung hergestellt werden.
+CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066.useraction=Definieren Sie weitere Transportketten.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is a transport chain name.  {1} is the name of a machine.
+CONNDATAGROUP_NOTSSLCHAIN_SICJ0067=CWSIJ0067W: Die Transportkette {0} enth\u00e4lt keine SSL-Konfiguration, die zum Herstellen einer Verbindung zum fernen Host {1} erforderlich w\u00e4re.
+CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.explanation=Die erforderlichen Informationen zum Herstellen einer SSL-basierten Verbindung (Secure Sockets Layer) zu einem Peer sind nicht in der aktuellen Konfiguration enthalten. Normalerweise werden diese Informationen aus der Definition einer geeigneten Transportkette verwendet. Diese Kettendefinition hat einen Namen, der einer Kette auf dem fernen Peer entspricht. Eine solche Transportkette wurde nicht gefunden. Es kann keine Verbindung hergestellt werden.
+CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.useraction=Konfigurieren Sie weitere SSL-Transportkan\u00e4le f\u00fcr die angegebene Transportkette.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_INBOUND_TCP_PROXY_CHANNEL_SICJ0068=CWSIJ0068E: Es ist ein interner Fehler aufgetreten. Es kann keine Instanz des Kanals {0} erstellt werden, weil die Ausnahme {1} eingetreten ist.
+CANNOT_CREATE_INBOUND_TCP_PROXY_CHANNEL_SICJ0068.explanation=CMSG0001
+CANNOT_CREATE_INBOUND_TCP_PROXY_CHANNEL_SICJ0068.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_OUTBOUND_TCP_PROXY_CHANNEL_SICJ0069=CWSIJ0069E: Es ist ein interner Fehler aufgetreten. Es kann keine Instanz des Kanals {0} erstellt werden, weil die Ausnahme {1} eingetreten ist.
+CANNOT_CREATE_OUTBOUND_TCP_PROXY_CHANNEL_SICJ0069.explanation=CMSG0001
+CANNOT_CREATE_OUTBOUND_TCP_PROXY_CHANNEL_SICJ0069.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the port number, {2} is the chain name and {3} is the heartbeat interval
+ME_NOT_RESPONDING_OUTBOUND_SICJ0070=CWSIJ0070E: Eine Verbindung zur Messaging-Engine zum Host {0} an Port {1} \u00fcber die Transportkette {2} wurde beendet, weil sie {3} Sekunden nicht mehr reagiert hat.
+ME_NOT_RESPONDING_OUTBOUND_SICJ0070.explanation=Eine Verbindung zur Messaging-Engine vom angegebenen Host wurde getrennt, weil sie nicht mehr reagiert.
+ME_NOT_RESPONDING_OUTBOUND_SICJ0070.useraction=Weitere Informationen zur Behebung dieses Fehlers finden Sie in den Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server unter der Adresse "http://www.ibm.com/software/webservers/appserv/was/support".
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the port number, {2} is the chain name and {3} is the heartbeat interval
+CLIENT_NOT_RESPONDING_OUTBOUND_SICJ0071=CWSIJ0071E: Eine Verbindung zu Host {0} an Port {1} \u00fcber die Transportkette {2} wurde beendet, weil sie {3} Sekunden nicht mehr reagiert hat.
+CLIENT_NOT_RESPONDING_OUTBOUND_SICJ0071.explanation=Eine Verbindung vom angegebenen Host wurde getrennt, weil sie nicht mehr reagiert.
+CLIENT_NOT_RESPONDING_OUTBOUND_SICJ0071.useraction=Weitere Informationen zur Behebung dieses Fehlers finden Sie in den Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server unter der Adresse "http://www.ibm.com/software/webservers/appserv/was/support".
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the port and {2} is the chain
+CONVERSATIONIMPL_INVALIDATE_OUTBOUND_SICJ0072=CWSIJ0072E: Es ist ein unerwartetes Ereignis eingetreten, das zum Schlie\u00dfen der Netzverbindung mit dem Host {0} an Port {1} \u00fcber die Transportkette {2} gef\u00fchrt hat.
+CONVERSATIONIMPL_INVALIDATE_OUTBOUND_SICJ0072.explanation=Eine Netzverbindung wurde aufgrund eines unerwartetes Ereignisses geschlossen.
+CONVERSATIONIMPL_INVALIDATE_OUTBOUND_SICJ0072.useraction=Suchen Sie in den verkn\u00fcpften Ausnahmen und Protokolldateien Ihres Anwendungsservers nach Hinweisen darauf, warum die Netzverbindung geschlossen wurde. Suchen Sie in den begleitenden Fehlernachrichten nach weiteren Informationen und beheben Sie das Problem, sofern dies m\u00f6glich ist.
+
+# -------------------------------------------------------------------------------------------------
+# *** ignore this message - it is no longer used in the code. ***
+# {0} is the host, {1} is the port and {2} is the transport chain name
+#OUTOFMEMORY_SICJ0073=CWSIJ0073E: The available heap memory was exhausted while attempting to allocate storage for a message received from host {0} on port {1} using chain {2}.
+#OUTOFMEMORY_SICJ0073.explanation=Insufficient heap memory was available to store message data received from the specified remote process.  The connection to the remote process was closed.
+#OUTOFMEMORY_SICJ0073.useraction=Investigate the message throughput, message size and load of your application server.  Consider reducing message throughput, message size, application server load or increasing the amount of heap allocated by your server process.
+
+# -------------------------------------------------------------------------------------------------
+BUFFER_NOT_VALID_SICJ0074=CWSIJ0074E: Es ist ein interner Fehler aufgetreten.
+BUFFER_NOT_VALID_SICJ0074.explanation=CMSG0001
+BUFFER_NOT_VALID_SICJ0074.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+BUFFER_NOT_PREPARED_SICJ0075=CWSIJ0075E: Es ist ein interner Fehler aufgetreten.
+BUFFER_NOT_PREPARED_SICJ0075.explanation=CMSG0001
+BUFFER_NOT_PREPARED_SICJ0075.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+BUFFER_ALREADY_RELEASED_SICJ0076=CWSIJ0076E: Es ist ein interner Fehler aufgetreten.
+BUFFER_ALREADY_RELEASED_SICJ0076.explanation=CMSG0001
+BUFFER_ALREADY_RELEASED_SICJ0076.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+PRIORITY_QUEUE_PURGED_SICJ0077=CWSIJ0077E: Es ist ein unerwartetes Ereignis eingetreten, das zum Schlie\u00dfen der Netzverbindung gef\u00fchrt hat.
+PRIORITY_QUEUE_PURGED_SICJ0077.explanation=Eine Netzverbindung wurde aufgrund eines unerwartetes Ereignisses geschlossen.
+PRIORITY_QUEUE_PURGED_SICJ0077.useraction=Stellen Sie anhand der zugeh\u00f6rigen Ausnahmen und Protokolldateien zu Ihrem Anwendungsserver fest, warum die Netzverbindung geschlossen wurde. Suchen Sie in den begleitenden Fehlernachrichten nach weiteren Informationen und beheben Sie das Problem, sofern dies m\u00f6glich ist.
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_START_INBOUND_CHAIN_SICJ0078=CWSIJ0078E: Die unerwartete Bedingung {0} hat verhindert, dass die Transportkette {1} gestartet wird.
+CANNOT_START_INBOUND_CHAIN_SICJ0078.explanation=Die angegebene Transportkette kann nicht gestartet werden, weil die angegebene Ausnahme eingetreten ist. Andere Prozesse k\u00f6nnen \u00fcber die angegebene Transportkette keine Netzverbindungen zu diesem Server aufbauen.
+CANNOT_START_INBOUND_CHAIN_SICJ0078.useraction=Untersuchen Sie die in der Nachricht angegebene Ausnahme und stellen Sie fest, ob sie gen\u00fcgend Informationen zur Behebung des Problems enth\u00e4lt. Weitere Informationen zur Behebung dieses Fehlers finden Sie in den Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server unter der Adresse "http://www.ibm.com/software/webservers/appserv/was/support".
+
+# -------------------------------------------------------------------------------------------------
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0079=CWSIJ0079I: Die Messaging-Transportkette {0} wurde nicht gestartet.
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0079.explanation=Die Transportkette wurde nicht gestartet, weil keiner der in der Zelle definierten Busse die Verwendung der Kette zul\u00e4sst.
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0079.useraction=Sehen Sie sich die Transporte an, die von Ihren Bussen zugelassen werden.
+
+# -------------------------------------------------------------------------------------------------
+CONNDATAGROUP_CONNFAILED_SICJ0080=CWSIJ0080E: Es kann keine speicher\u00fcbergreifende Verbindung zum Adjunct-Prozess der Steuerregion hergestellt werden.
+CONNDATAGROUP_CONNFAILED_SICJ0080.explanation=Es kann keine speicher\u00fcbergreifende Verbindung hergestellt werden. Dies kann auf das asynchrone Starten von Anwendungsserverprozessen zur\u00fcckzuf\u00fchren sein.
+CONNDATAGROUP_CONNFAILED_SICJ0080.useraction=Es ist keine Aktion erforderlich, wenn diese Nachricht wegen des asynchronen Starts des Anwendungsserverprozesses ausgegeben wurde. Wenn diese Nachricht permanent generiert wird, wenden Sie sich an den IBM Service.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+EXCP_DURING_INIT_SICJ0081=CWSIJ0081E: Es ist ein interner Fehler aufgetreten. Es kann kein Objekt der Klasse {0} erstellt werden, weil die folgende Ausnahme eingetreten ist: {1}
+EXCP_DURING_INIT_SICJ0081.explanation=CMSG0001
+EXCP_DURING_INIT_SICJ0081.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+EXCP_DURING_INIT_SICJ0082=CWSIJ0082E: Es ist ein interner Fehler aufgetreten. Empfangene Ausnahme: {0}
+EXCP_DURING_INIT_SICJ0082.explanation=CMSG0001
+EXCP_DURING_INIT_SICJ0082.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+NETWORK_FAILURE_SICJ0083=CWSIJ0083E: Es ist ein unerwartetes Ereignis eingetreten, das zum Schlie\u00dfen der Netzverbindung gef\u00fchrt hat.
+NETWORK_FAILURE_SICJ0083.explanation=Eine Netzverbindung wurde aufgrund eines unerwartetes Ereignisses geschlossen.
+NETWORK_FAILURE_SICJ0083.useraction=Stellen Sie anhand der zugeh\u00f6rigen Ausnahmen und Protokolldateien zu Ihrem Anwendungsserver fest, warum die Netzverbindung geschlossen wurde. Suchen Sie in den begleitenden Fehlernachrichten nach weiteren Informationen und beheben Sie das Problem, sofern dies m\u00f6glich ist.
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_STOP_INBOUND_CHAIN_SICJ0084=CWSIJ0084E: Die unerwartete Bedingung {0} hat verhindert, dass die Transportkette {1} ordnungsgem\u00e4\u00df gestoppt wird.
+CANNOT_STOP_INBOUND_CHAIN_SICJ0084.explanation=Die angegebene Transportkette wurde wegen der angegebenen Ausnahme m\u00f6glicherweise nicht ordnungsgem\u00e4\u00df gestoppt. Wenn die Transportkette nicht gestoppt werden konnte, k\u00f6nnen andere Prozesse \u00fcber die angegebene Transportkette m\u00f6glicherweise weiterhin Netzverbindungen zu diesem Server aufbauen.
+CANNOT_STOP_INBOUND_CHAIN_SICJ0084.useraction=Untersuchen Sie die in der Nachricht angegebene Ausnahme und stellen Sie fest, ob sie gen\u00fcgend Informationen zur Behebung des Problems enth\u00e4lt. Weitere Informationen zur Behebung dieses Fehlers finden Sie in den Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server unter der Adresse "http://www.ibm.com/software/webservers/appserv/was/support".
+
+# -------------------------------------------------------------------------------------------------
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0085=CWSIJ0085I: Die Messaging-Transportkette {0} wurde gestoppt.
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0085.explanation=Die Transportkette wurde nach einer \u00c4nderung der Sicherheitskonfiguration gestoppt, d. h., kein in der Zelle definierter Bus kann die Kette mehr verwenden.
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0085.useraction=Es ist keine Aktion erforderlich.
+
+# Emergency use
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIJ9999=CWSIJ9999E: {0}
+TEMPORARY_CWSIJ9999.explanation=Falls die in der Nachricht enthaltenen Informationen nicht ausreichend sind, suchen Sie in Begleitnachrichten nach weiteren Informationen.
+TEMPORARY_CWSIJ9999.useraction=Weitere Informationen zur Behebung dieses Fehlers finden Sie in den Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server unter der Adresse "http://www.ibm.com/software/webservers/appserv/was/support".

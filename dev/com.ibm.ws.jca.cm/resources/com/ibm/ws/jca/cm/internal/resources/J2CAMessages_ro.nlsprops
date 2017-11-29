@@ -1,0 +1,75 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jca.cm/resources/com/ibm/ws/jca/cm/internal/resources/J2CAMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA Connection Management
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+DEACTIVATED_J2CA8001=J2CA8001I: {0} {1} este indisponibil.
+DEACTIVATED_J2CA8001.explanation=Acest mesaj este pur informativ.
+DEACTIVATED_J2CA8001.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+DEACTIVATED_J2CA8006=J2CA8006I: {0} {1} \u00een {2} nu este disponibil.
+DEACTIVATED_J2CA8006.explanation=Acest mesaj este pur informativ.
+DEACTIVATED_J2CA8006.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+UNKNOWN_PROP_J2CA8010=J2CA8010W: Proprietate {0} nerecunsocut\u0103: {1}
+UNKNOWN_PROP_J2CA8010.explanation=O proprietate configurat\u0103 nu este recunoscut\u0103.
+UNKNOWN_PROP_J2CA8010.useraction=Corecta\u0163i sau \u00eenl\u0103tura\u0163i proprietatea configurat\u0103.
+
+UNSUPPORTED_VALUE_J2CA8011=J2CA8011E: Valoarea {0} nu este suportat\u0103 pentru {1} pe {2}
+UNSUPPORTED_VALUE_J2CA8011.explanation=O valoare configurat\u0103 nu este suportat\u0103.
+UNSUPPORTED_VALUE_J2CA8011.useraction=Corecta\u0163i valoarea sau \u00eenl\u0103tura\u0163i proprietatea configurat\u0103.
+
+MISSING_LIBRARY_J2CA8020=J2CA8020E: Nu pot fi \u00eenc\u0103rcate sau accesate fi\u015fierele \u00een biblioteca {0}
+MISSING_LIBRARY_J2CA8020.explanation=Fi\u015fierele nu pot fi \u00eenc\u0103rcate din biblioteca partajat\u0103.
+MISSING_LIBRARY_J2CA8020.useraction=Verifica\u0163i permisiunile de fi\u015fier \u015fi configura\u0163ia bibliotecii partajate.
+
+MISSING_LIBRARY_J2CA8022=J2CA8022E: Aplica\u0163ia {0} nu are nicio bibliotec\u0103 partajat\u0103 care s\u0103  furnizeze {1} pentru{2} {3}.
+MISSING_LIBRARY_J2CA8022.explanation=Pentru a utiliza sursele de date definite de aplica\u0163ie, driverul JDBC care furnizeaz\u0103 clasa surs\u0103 de date trebuie s\u0103 fie disponibil ca o bibliotec\u0103 partajat\u0103 pentru aplica\u0163ie.
+MISSING_LIBRARY_J2CA8022.useraction=Ad\u0103uga\u0163i driverul JDBC ca o bibliotec\u0103 partajat\u0103 pentru aplica\u0163ie.
+
+MISSING_RESOURCE_J2CA8030=J2CA8030E: Nu poate g\u0103si {0} {1} pentru {2} {3}.
+MISSING_RESOURCE_J2CA8030.explanation=Resursa specificat\u0103 necesit\u0103 alt\u0103 resurs\u0103 ca nu este disponibil\u0103.
+MISSING_RESOURCE_J2CA8030.useraction=Verifica\u0163i dac\u0103 resursa este configurat\u0103 corespunz\u0103tor.
+
+CARDINALITY_ERROR_J2CA8040=J2CA8040E: {0} {1} permite doar un {2} element.
+CARDINALITY_ERROR_J2CA8040.explanation=Resursa nu poate avea mai mult de un element de tipul specificat.
+CARDINALITY_ERROR_J2CA8040.useraction=Actualiza\u0163i configura\u0163ia astfel \u00eenc\u00e2t s\u0103 existe doar un singur element de tipul specific asociat cu resursa.
+
+RECOMMEND_AUTH_ALIAS_J2CA8050=J2CA8050I: Ar trebui utilizat un alias de autentificare \u00een loc s\u0103 defini\u0163i un nume de utilizator \u015fi o parol\u0103 pe {0}.
+RECOMMEND_AUTH_ALIAS_J2CA8050.explanation=Se recomand\u0103 folosirea unui alias de autentificare \u00een loc s\u0103 configura\u0163i un nume de utilizator \u015fi parol\u0103 pe o resurs\u0103.
+RECOMMEND_AUTH_ALIAS_J2CA8050.useraction=Configura\u0163i numele de utilizator \u015fi parola \u00een elementul authData \u00een loc de direct pe resurs\u0103. 
+
+INVALID_MBEAN_INVOKE_PARAM_J2CA8060=J2CA8060E: {0} nu este un parametru valid pentru ac\u0163iunea {1}.
+INVALID_MBEAN_INVOKE_PARAM_J2CA8060.explanation=Parametrii specifica\u0163i pentru o ac\u0163iune trebuie s\u0103 corespund\u0103 parametrilor valizi pentru ac\u0163iunea dat\u0103.
+INVALID_MBEAN_INVOKE_PARAM_J2CA8060.useraction=Specifica\u0163i parametrii valizi pentru ac\u0163iunea care este invocat\u0103.
+
+INVALID_MBEAN_INVOKE_ACTION_J2CA8061=J2CA8061E: {0} nu este o ac\u0163iune valid\u0103 pentru MBean-ul {1}.
+INVALID_MBEAN_INVOKE_ACTION_J2CA8061.explanation=A fost f\u0103cut\u0103 o \u00eencercare de a invoca o ac\u0163iune care nu a fost disponibil\u0103 pentru MBean-ul specificat.
+INVALID_MBEAN_INVOKE_ACTION_J2CA8061.useraction=Modifica\u0163i ac\u0163iunea care este invocat\u0103 la o metod\u0103 valid\u0103 pentru MBean-ul specificat.
+
+MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062=J2CA8062E: Atributul {0} nu este valid pentru MBean-ul {1}.
+MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.explanation=A fost f\u0103cut\u0103 o \u00eencercare de a ob\u0163ine sau seta un atribut care nu a fost disponibil pentru MBean-ul specificat.
+MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.useraction=Schimba\u0163i atributul specificat cu unul dintre atributele disponibile pentru acest MBean.

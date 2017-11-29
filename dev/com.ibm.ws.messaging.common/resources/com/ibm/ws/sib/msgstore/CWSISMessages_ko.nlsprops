@@ -1,0 +1,670 @@
+###############################################################################
+# Copyright (c) 2012, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# 93022           2013-27-02 kavitha new message added for Invalid XID 
+# 
+# -------------------------------------------------------------------------------------------------
+
+# File com.ibm.ws.sib.example.CWSISMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_SInn0001=CWSIS0001I: This is a message with insert {0}
+# MSG_DESCRIPTIVE_NAME_SInn0001.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_SInn0001.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+# I have allocated ranges of message ids (500 messages each) so we can avoid tripping over each other.
+# If you need a new range - just allocate it (but check no-one has it already).
+#
+#   - Msgs in the range CWSIS0000-CWSIS0499 belong to the interface stuff (eg PTvL)
+#   - Msgs in the range CWSIS0500-CWSIS0999 belong to the core implementation stuff (eg PTvL)
+#   - Msgs in the range CWSIS1000-CWSIS1499 belong to the transaction stuff (eg GB)
+#   - Msgs in the range CWSIS1500-CWSIS1999 belong to the persistence stuff (eg BTD)
+#   - Msgs in the range CWSIS2000-CWSIS2499 belong to the expiry stuff (eg KC)
+#
+#   - CWSIS9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+#
+# cmvc_en_version_level=1.4,0,03/04/23,08:38:27
+#
+#CMVCPATHNAME com.ibm.ws.messaging.common/resources/com/ibm/ws/sib/msgstore/CWSISMessages.nlsprops
+#COMPONENTPREFIX CWSIS
+#COMPONENTNAMEFOR CWSIS MessageStore
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# MsgStore Interface
+# -------------------------------------------------------------------------------------------------
+
+
+# {0} is the text of the exception thrown
+INVALID_ITEM_CONSTRUCTOR_SIMS0001=CWSIS0001E: \ud56d\ubaa9\uc5d0 \uc561\uc138\uc2a4 \uac00\ub2a5\ud55c (\uacf5\uc6a9) \uae30\ubcf8 \uad6c\uc131\uc790 {0}\uc774(\uac00) \uc5c6\uc2b5\ub2c8\ub2e4.
+INVALID_ITEM_CONSTRUCTOR_SIMS0001.explanation=\ub370\uc774\ud130 \uc800\uc7a5\uc18c\uc5d0 \uc801\uc808\ud55c \uad6c\uc131\uc790\uac00 \uc5c6\ub294 \ud56d\ubaa9\uc774 \ucd94\uac00\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+INVALID_ITEM_CONSTRUCTOR_SIMS0001.useraction=CMSG0002 
+# {0} is the text of the exception thrown
+STARTUP_EXCEPTION_SIMS0002=CWSIS0002E: \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc774 \uc2dc\uc791 \uc911\uc5d0 \uc608\uc678\ub97c \ubc1c\uacac\ud588\uc2b5\ub2c8\ub2e4. \uc608\uc678: {0}
+STARTUP_EXCEPTION_SIMS0002.explanation=\uba54\uc2dc\uc9c0\uc5d0 \ucda9\ubd84\ud55c \uc815\ubcf4\uac00 \uc5c6\ub294 \uacbd\uc6b0, \ucd94\uac00 \uc815\ubcf4\ub294 \ucca8\ubd80\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+STARTUP_EXCEPTION_SIMS0002.useraction=CMSG0002 
+# -------------------------------------------------------------------------------------------------
+REFERENCE_CONSISTENCY_SIMS0003=CWSIS0003E: {0} \ucc38\uc870\uc5d0 \ucc38\uc870\ub41c \ud56d\ubaa9\uc774 \uc5c6\uc73c\uba70 \uc774 \ucc38\uc870\ub97c {1}\uc5d0 \ucd94\uac00\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+REFERENCE_CONSISTENCY_SIMS0003.explanation=\ucc38\uc870 \uc2a4\ud2b8\ub9bc\uc5d0 \ucc38\uc870\ub97c \ucd94\uac00\ud558\ub824\uace0 \ud588\uc73c\ub098 \uc774\ub294 \uc77c\uad00\uc131 \uc81c\ud55c\uc870\uac74\uc744 \uc704\ubc18\ud569\ub2c8\ub2e4.
+REFERENCE_CONSISTENCY_SIMS0003.useraction=CMSG0002 
+# -------------------------------------------------------------------------------------------------
+#STREAM_NOT_STORED_SIMS0004=CWSIS0004E: It is not possible to add {0} to {1} because it is not in a data store.
+#STREAM_NOT_STORED_SIMS0004.explanation=An attempt was made to add an item to a stream that is not in a data store.
+#STREAM_NOT_STORED_SIMS0004.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+STREAM_ADD_CONFLICT_SIMS0005=CWSIS0005E: \ub450 \ubc88\uc9f8 \uc2a4\ud2b8\ub9bc {1}\uc5d0 {0}\uc744(\ub97c) \ucd94\uac00\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+STREAM_ADD_CONFLICT_SIMS0005.explanation=\ud56d\ubaa9\uc774 \uc774\ubbf8 \ub2e4\ub978 \uc2a4\ud2b8\ub9bc\uc5d0 \uc788\uc744 \ub54c \uc2a4\ud2b8\ub9bc\uc5d0 \ud56d\ubaa9\uc744 \ucd94\uac00\ud558\ub824\uace0 \ud588\uc2b5\ub2c8\ub2e4.
+STREAM_ADD_CONFLICT_SIMS0005.useraction=CMSG0002 
+# -------------------------------------------------------------------------------------------------
+STREAM_WRONG_STATE_SIMS0006=CWSIS0006E: {1} \uc0c1\ud0dc\uc778 \uc2a4\ud2b8\ub9bc {0}\uc5d0 \ucd94\uac00\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+STREAM_WRONG_STATE_SIMS0006.explanation=\uc798\ubabb\ub41c \uc0c1\ud0dc\uc5d0 \uc788\ub294 \uc2a4\ud2b8\ub9bc\uc5d0 \ucd94\uac00\ud558\ub824\uace0 \ud588\uc2b5\ub2c8\ub2e4.
+STREAM_WRONG_STATE_SIMS0006.useraction=CMSG0002 
+
+# -------------------------------------------------------------------------------------------------
+# MsgStore Implementation
+# -------------------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------------------
+STREAM_STORAGE_MISMATCH_SIMS0500=CWSIS0500E: \ud56d\ubaa9 \uc2a4\ud1a0\ub9ac\uc9c0 \uacc4\ud68d {0}\uc774(\uac00) \uace0\uc720 \uc2a4\ud2b8\ub9bc \uc2a4\ud1a0\ub9ac\uc9c0 \uacc4\ud68d {1}\uc744(\ub97c) \ucd08\uacfc\ud569\ub2c8\ub2e4.
+STREAM_STORAGE_MISMATCH_SIMS0500.explanation=\ud56d\ubaa9\uc774 \uc2a4\ud2b8\ub9bc\uc5d0 \uc788\ub294 \uc2a4\ud1a0\ub9ac\uc9c0 \uacc4\ud68d\ubcf4\ub2e4 \ub192\uc740 \uc2a4\ud2b8\ub9bc\uc5d0 \ud56d\ubaa9\uc744 \uc800\uc7a5\ud558\ub824\uace0 \ud588\uc2b5\ub2c8\ub2e4.
+STREAM_STORAGE_MISMATCH_SIMS0500.useraction=CMSG0002 
+# -------------------------------------------------------------------------------------------------
+STREAM_NOT_EMPTY_SIMS0501=CWSIS0501E: \ube44\uc5b4 \uc788\uc9c0 \uc54a\uc740 \uc2a4\ud2b8\ub9bc\uc744 \uc0ad\uc81c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+STREAM_NOT_EMPTY_SIMS0501.explanation=\ube44\uc5b4 \uc788\uc9c0 \uc54a\uc740 \uc2a4\ud2b8\ub9bc\uc744 \uc0ad\uc81c\ud558\ub824\uace0 \ud588\uc2b5\ub2c8\ub2e4.
+STREAM_NOT_EMPTY_SIMS0501.useraction=CMSG0002 
+# -------------------------------------------------------------------------------------------------
+RESTORING_ITEM_SIMS0502=CWSIS0502E: \ud56d\ubaa9\uc744 \ubcf5\uc6d0\ud558\ub294 \uc911\uc5d0 \uc608\uc678\uac00 \uc788\uc2b5\ub2c8\ub2e4.
+RESTORING_ITEM_SIMS0502.explanation=\ud56d\ubaa9\uc744 \ubcf5\uc6d0\ud558\ub824\ub294 \uc2dc\ub3c4\uac00 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+RESTORING_ITEM_SIMS0502.useraction=CMSG0002 
+#MSGSTORE_CONFIGURATION_ERROR_SIMS0503=CWSIS0503E: Configuration information for the data store is not available.
+#MSGSTORE_CONFIGURATION_ERROR_SIMS0503.explanation=The data store did not receive its configuration.
+#MSGSTORE_CONFIGURATION_ERROR_SIMS0503.useraction=CMSG0002
+
+ROOT_PERSISTABLE_EXCEPTION_SIMS0504=CWSIS0504E: \ub8e8\ud2b8 \uc9c0\uc18d \uc624\ube0c\uc81d\ud2b8\ub97c \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ROOT_PERSISTABLE_EXCEPTION_SIMS0504.explanation=\ub8e8\ud2b8 \uc9c0\uc18d \uc624\ube0c\uc81d\ud2b8\uac00 \uc791\uc131\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+ROOT_PERSISTABLE_EXCEPTION_SIMS0504.useraction=CMSG0002 
+INVALID_MSGSTORE_STATE_SIMS0505=CWSIS0505E: \uba54\uc2dc\uc9c0 \uc800\uc7a5\uc18c\uac00 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 \uc0c1\ud0dc {0}\uc785\ub2c8\ub2e4.
+INVALID_MSGSTORE_STATE_SIMS0505.explanation=\ub370\uc774\ud130 \uc800\uc7a5\uc18c\uac00 \uc694\uccad\ub41c \uc870\uc791\uc744 \uc218\ud589\ud558\uae30 \uc704\ud55c \uc62c\ubc14\ub978 \uc0c1\ud0dc\uac00 \uc544\ub2d9\ub2c8\ub2e4.
+INVALID_MSGSTORE_STATE_SIMS0505.useraction=CMSG0002 
+#INVALID_AUTHENTICATION_DATA_SIMS0506=CWSIS0506E: The authentication data associated with the alias, {0}, is invalid.
+#INVALID_AUTHENTICATION_DATA_SIMS0506.explanation=The authentication data provided cannot be used to access the database containing the data store.
+#INVALID_AUTHENTICATION_DATA_SIMS0506.useraction=Provide an alternate authentication alias and try again.
+
+STREAM_NOT_EMPTY_SIMS0507=CWSIS0507E: \ube44\uc5b4 \uc788\uc9c0 \uc54a\uc740 \uc2a4\ud2b8\ub9bc\uc744 \uc0ad\uc81c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc2a4\ud2b8\ub9bc \ud56d\ubaa9={0}. \uc2a4\ud2b8\ub9bc \ud074\ub798\uc2a4={1}
+STREAM_NOT_EMPTY_SIMS0507.explanation=\ube44\uc5b4 \uc788\uc9c0 \uc54a\uc740 \uc2a4\ud2b8\ub9bc\uc744 \uc0ad\uc81c\ud558\ub824\uace0 \ud588\uc2b5\ub2c8\ub2e4. \
+\uc2a4\ud2b8\ub9bc\uc5d0 \ub0a8\uc544 \uc788\ub294 \ud56d\ubaa9 \uc218\uc640 \ud574\ub2f9 \uc720\ud615\uc774 \uba54\uc2dc\uc9c0\uc5d0 \uc81c\uacf5\ub418\uc5b4 \uc774 \uc870\uc791\uc744 \uc2dc\ub3c4\ud55c \uc774\uc720\ub97c \ud310\ubcc4\ud558\ub294 \ub370 \ub3c4\uc6c0\uc744 \uc90d\ub2c8\ub2e4.
+STREAM_NOT_EMPTY_SIMS0507.useraction=CMSG0002 
+# -------------------------------------------------------------------------------------------------
+# Transaction messages
+# -------------------------------------------------------------------------------------------------
+
+XA_PROTOCOL_ERROR_SIMS1000=CWSIS1000E: XA \ud2b8\ub79c\uc7ad\uc158 \ud504\ub85c\ud1a0\ucf5c\uc744 \ub530\ub974\uc9c0 \uc54a\uc73c\ubbc0\ub85c \uc694\uccad\ub41c \uc870\uce58\ub97c \uc218\ud589\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+XA_PROTOCOL_ERROR_SIMS1000.explanation=\ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc62c\ubc14\ub974\uac8c XA \ud2b8\ub79c\uc7ad\uc158 \ud504\ub85c\ud1a0\ucf5c\uc744 \ub530\ub974\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+XA_PROTOCOL_ERROR_SIMS1000.useraction=CMSG0002
+
+TRAN_PROTOCOL_ERROR_SIMS1001=CWSIS1001E: \uc790\uc6d0 \uad00\ub9ac\uc790\uc758 \ub0b4\ubd80 \ud2b8\ub79c\uc7ad\uc158 \ud504\ub85c\ud1a0\ucf5c\uc744 \ub530\ub974\uc9c0 \uc54a\uc73c\ubbc0\ub85c \uc694\uccad\ub41c \uc870\uce58\ub97c \uc218\ud589\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+TRAN_PROTOCOL_ERROR_SIMS1001.explanation=\ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc790\uc6d0 \uad00\ub9ac\uc790 \ud2b8\ub79c\uc7ad\uc158 \ud504\ub85c\ud1a0\ucf5c\uc744 \uc900\uc218\ud558\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+TRAN_PROTOCOL_ERROR_SIMS1001.useraction=CMSG0002
+
+COMPLETION_EXCEPTION_SIMS1002=CWSIS1002E: \ud2b8\ub79c\uc7ad\uc158 \uc644\ub8cc \uc911\uc5d0 \uc608\uc0c1\uce58 \uc54a\uc740 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc608\uc678: {0}
+COMPLETION_EXCEPTION_SIMS1002.explanation=\ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc790\uc6d0 \uad00\ub9ac\uc790\uac00 \ud574\ub2f9 \uc791\uc5c5 \uc644\ub8cc\ub97c \uc694\uccad\ud588\uc744 \ub54c \ud2b8\ub79c\uc7ad\uc158 \ucc98\ub9ac\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+COMPLETION_EXCEPTION_SIMS1002.useraction=CMSG0002 
+NOT_SUPPORTED_OUTSIDE_WEBSPHERE_SIMS1003=CWSIS1003E: WebSphere \uae30\ub2a5\uc744 WebSphere \uc678\ubd80\uc5d0\uc11c \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+NOT_SUPPORTED_OUTSIDE_WEBSPHERE_SIMS1003.explanation=WebSphere \ub7f0\ud0c0\uc784 \ud658\uacbd\uc774 \uc544\ub2cc \uc0c1\ud0dc\uc5d0\uc11c WebSphere \ud2b9\uc815 \uae30\ub2a5\uc744 \uc0ac\uc6a9\ud558\ub824\uace0 \ud588\uc2b5\ub2c8\ub2e4.
+NOT_SUPPORTED_OUTSIDE_WEBSPHERE_SIMS1003.useraction=CMSG0002 
+CANNOT_COMMIT_COMPLETE_SIMS1004=CWSIS1004E: \ud2b8\ub79c\uc7ad\uc158\uc744 \ucee4\ubbf8\ud2b8\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \ud2b8\ub79c\uc7ad\uc158\uc744 \uc644\ub8cc\ud588\uac70\ub098 \uc644\ub8cc \uc911\uc785\ub2c8\ub2e4.
+CANNOT_COMMIT_COMPLETE_SIMS1004.explanation=\uc774\ubbf8 \uc644\ub8cc\ub418\uc5c8\uac70\ub098 \uc644\ub8cc \ucc98\ub9ac \uc911\uc5d0 \uc788\ub294 \ud2b8\ub79c\uc7ad\uc158\uc744 \ucee4\ubbf8\ud2b8\ud558\ub824\uace0 \ud588\uc2b5\ub2c8\ub2e4.
+CANNOT_COMMIT_COMPLETE_SIMS1004.useraction=CMSG0002 
+CANNOT_ROLLBACK_COMPLETE_SIMS1005=CWSIS1005E: \ud2b8\ub79c\uc7ad\uc158\uc744 \ub864\ubc31\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \ud2b8\ub79c\uc7ad\uc158\uc744 \uc644\ub8cc\ud588\uac70\ub098 \uc644\ub8cc \uc911\uc785\ub2c8\ub2e4.
+CANNOT_ROLLBACK_COMPLETE_SIMS1005.explanation=\uc774\ubbf8 \uc644\ub8cc\ub418\uc5c8\uac70\ub098 \uc644\ub8cc \ucc98\ub9ac \uc911\uc778 \ud2b8\ub79c\uc7ad\uc158\uc744 \ub864\ubc31\ud558\ub824\uace0 \ud588\uc2b5\ub2c8\ub2e4.
+CANNOT_ROLLBACK_COMPLETE_SIMS1005.useraction=CMSG0002
+
+HEURISTIC_HAZARD_SIMS1006=CWSIS1006E: \uba54\uc2dc\uc9c0 \uc800\uc7a5\uc18c\uc758 \ucee8\ud150\uce20\ub97c \ubcc0\uacbd\ud558\ub294 \ub370 \uc0ac\uc6a9\ub41c \ud2b8\ub79c\uc7ad\uc158\uc758 \uacb0\uacfc\ub97c \ud310\ubcc4\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 \uc190\uc2e4 \uac00\ub2a5\uc131\uc744 \uc608\ubc29\ud558\uae30 \uc704\ud574 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc744 \uc911\uc9c0\ud558\ub294 \uc911\uc785\ub2c8\ub2e4.
+HEURISTIC_HAZARD_SIMS1006.explanation=\ubc1c\uacac\uc801 \uc704\ud5d8\uc774 \ubc1c\uacac\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc774 \ub3d9\uae30\ud654\ub418\uc9c0 \uc54a\uc544 \uba54\uc2dc\uc9c0 \uc800\uc7a5\uc18c\uc5d0 \ub300\ud55c \ubcc0\uacbd\uc758 \uc131\uacf5 \uc5ec\ubd80\ub97c \ud310\ubcc4\ud558\ub824\uba74 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc744 \ub2e4\uc2dc \uc2dc\uc791\ud574\uc57c \ud569\ub2c8\ub2e4.
+HEURISTIC_HAZARD_SIMS1006.useraction=CMSG0002 
+XID_NOT_RECOGNISED_SIMS1007=CWSIS1007E: \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc774 \uc81c\uacf5\ub41c XID\ub97c \uc778\uc2dd\ud560 \uc218 \uc5c6\uae30 \ub54c\ubb38\uc5d0 {0} \uc870\uce58\uac00 \ubd88\uac00\ub2a5\ud569\ub2c8\ub2e4. XID: {1}
+XID_NOT_RECOGNISED_SIMS1007.explanation=\uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc774 \uc81c\uacf5\ub41c XID \uac12\uc744 \uc778\uc2dd\ud560 \uc218 \uc5c6\uae30 \ub54c\ubb38\uc5d0 \uc694\uccad\ub41c \uc870\uce58\ub97c \uc644\ub8cc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \
+\uc774 \ubb38\uc81c\ub294 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc774 \uc774\uc804\uc5d0 \ud574\ub2f9 XID\uc640 \uc811\ud55c \uc801\uc774 \uc5c6\uac70\ub098 XID\uc758 \uc0c1\ud0dc\uac00 \uc798\ubabb\ub418\uc5c8\uae30 \ub54c\ubb38\uc77c \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+XID_NOT_RECOGNISED_SIMS1007.useraction=CMSG0002 
+XID_STILL_ASSOCIATED_SIMS1008=CWSIS1008E: \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uacfc XID \uac04\uc758 \uc5f0\uad00\uc744 \uc885\ub8cc\ud558\uae30 \uc704\ud574 \uc81c\uacf5\ub41c XID\ub97c \uc544\uc9c1 \ud638\ucd9c\ud558\uc9c0 \uc54a\uc558\uae30 \ub54c\ubb38\uc5d0 {0} \uc870\uce58\uac00 \ubd88\uac00\ub2a5\ud569\ub2c8\ub2e4. XID: {1}
+XID_STILL_ASSOCIATED_SIMS1008.explanation=\uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc774 \uc5ec\uc804\ud788 \uc81c\uacf5\ub41c XID\uc640 \uc5f0\uad00\ub418\uc5b4 \uc788\uae30 \ub54c\ubb38\uc5d0 \uc694\uccad\ub41c \uc870\uce58\ub97c \uc644\ub8cc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \
+\ud2b8\ub79c\uc7ad\uc158 \ubd84\uae30\ub97c \uc644\ub8cc\ud558\ub824\uace0 \uc2dc\ub3c4\ud558\uae30 \uc804\uc5d0 XA \uc885\ub8cc \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud558\uc5ec \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc5d0\uc11c XID\uc758 \uc5f0\uad00\uc744 \ud574\uc81c\ud558\uc2ed\uc2dc\uc624.
+XID_STILL_ASSOCIATED_SIMS1008.useraction=CMSG0002 
+XID_ALREADY_ASSOCIATED_SIMS1009=CWSIS1009E: \uc81c\uacf5\ub41c XID\uac00 \uc774 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uacfc \uc774\ubbf8 \uc5f0\uad00\ub418\uc5b4 \uc788\uae30 \ub54c\ubb38\uc5d0 {0} \uc870\uce58\uac00 \ubd88\uac00\ub2a5\ud569\ub2c8\ub2e4. XID: {1}
+XID_ALREADY_ASSOCIATED_SIMS1009.explanation=\uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc774 \uc81c\uacf5\ub41c XID\uc640 \uc774\ubbf8 \uc5f0\uad00\ub418\uc5b4 \uc788\uae30 \ub54c\ubb38\uc5d0 \uc694\uccad\ub41c \uc870\uce58\ub97c \uc644\ub8cc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+XID_ALREADY_ASSOCIATED_SIMS1009.useraction=CMSG0002 
+INVALID_XID_STRING_SIMS1010=CWSIS1010E: \ucee4\ubbf8\ud2b8 \ub610\ub294 \ub864\ubc31 \uc870\uc791 \uc2dc \uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 XID \ubb38\uc790\uc5f4\uc774 \uc804\ub2ec\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+INVALID_XID_STRING_SIMS1010.explanation=\uc9c0\uc815\ub41c XID \ubb38\uc790\uc5f4\uc744 \uc0ac\uc6a9\ud558\uc5ec \ucee4\ubbf8\ud2b8 \ub610\ub294 \ub864\ubc31 \uc870\uc9c1\uc744 \uc218\ud589\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+INVALID_XID_STRING_SIMS1010.useraction= \uc62c\ubc14\ub978 XID \ubb38\uc790\uc5f4\uc744 \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624.
+
+UNEXPECTED_EXCEPTION_SIMS1099=CWSIS1099E: \uc608\uc0c1\uce58 \uc54a\uc740 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc608\uc678: {0}
+UNEXPECTED_EXCEPTION_SIMS1099.explanation=\ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \
+\uc608\uc678 \uc815\ubcf4\ub97c \uc0ac\uc6a9\ud558\uc5ec \uc624\ub958\uc758 \uc6d0\uc778\uc744 \ud310\ubcc4\ud558\uc2ed\uc2dc\uc624.
+UNEXPECTED_EXCEPTION_SIMS1099.useraction=CMSG0002 
+# ------------------------------------------------- Unrecoverable Messages ------------------------------------------------- #
+
+UNRECOVERABLE_ERROR_SIMS1499=CWSIS1499E: \ubcf5\uad6c\ud560 \uc218 \uc5c6\ub294 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc73c\uba70 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc744 \uacc4\uc18d\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+UNRECOVERABLE_ERROR_SIMS1499.explanation=\ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+UNRECOVERABLE_ERROR_SIMS1499.useraction=CMSG0002 
+
+
+# -------------------------------------------------------------------------------------------------
+# Persistence
+# -------------------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------------------
+DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1500=CWSIS1500E: Dispatcher\ub97c \uc791\ub3d9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1500.explanation=\uc774\uc804\uc758 \ub370\uc774\ud130 \uc800\uc7a5\uc18c \uc624\ub958\ub85c \uc778\ud574 Dispatcher\ub97c \ub354 \uc774\uc0c1 \uc791\ub3d9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1500.useraction=CMSG0002 
+DATASOURCE_EXCEPTION_SIMS1501=CWSIS1501E: \ub370\uc774\ud130 \uc18c\uc2a4\uac00 \uc608\uc0c1\uce58 \uc54a\uc740 \uc608\uc678\ub97c \uc0dd\uc131\ud588\uc2b5\ub2c8\ub2e4. {0}
+DATASOURCE_EXCEPTION_SIMS1501.explanation=\ub370\uc774\ud130 \uc800\uc7a5\uc18c\ub85c \uc0ac\uc6a9\ud558\ub3c4\ub85d \uad6c\uc131\ub41c \ub370\uc774\ud130 \uc18c\uc2a4\uc5d0\uc11c \uc608\uc678\ub97c \uc0dd\uc131\ud588\uc2b5\ub2c8\ub2e4.
+DATASOURCE_EXCEPTION_SIMS1501.useraction=CMSG0002 
+INVALID_TUPLE_TYPE_SIMS1502=CWSIS1502E: \ud29c\ud50c \uc720\ud615 {0}\uc774(\uac00) \uc720\ud6a8\ud55c \uc720\ud615\uc73c\ub85c \uc778\uc2dd\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_TUPLE_TYPE_SIMS1502.explanation=\ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+INVALID_TUPLE_TYPE_SIMS1502.useraction=CMSG0002 
+#DATABASE_NOT_SUPPORTED_SIMS1503=CWSIS1503E: Database: {0}, version: {1}, platform: {2}, is not supported
+#DATABASE_NOT_SUPPORTED_SIMS1503.explanation=The specified database is not recognized as a supported database.
+#DATABASE_NOT_SUPPORTED_SIMS1503.useraction=Rerun the command and specify a supported database.
+
+#SEVERE_PERSISTENCE_EXCEPTION_SIMS1504=CWSIS1504E: The messaging engine is stopping due to an exception from the data source.
+#SEVERE_PERSISTENCE_EXCEPTION_SIMS1504.explanation=An exception from the data source caused the messaging engine to stop in order to avoid data corruption.
+#SEVERE_PERSISTENCE_EXCEPTION_SIMS1504.useraction=CMSG0002
+
+#KEY_GENERATOR_UPDATE_FAILED_SIMS1505 is no longer used.
+
+#KEY_GENERATOR_MISSING_SIMS1506 is no longer used.
+
+INVALID_PERSISTABLE_OPERATION_SIMS1507=CWSIS1507E: \ud56d\ubaa9\uc758 \uc720\ud615\uc774 {1}\uc774\ubbc0\ub85c {0} \ud56d\ubaa9\uc774 \ub2e4\ub978 \ud56d\ubaa9\uc744 \ud3ec\ud568\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+INVALID_PERSISTABLE_OPERATION_SIMS1507.explanation=\ub0b4\ubd80 \uba54\uc2dc\uc9c0 \ud45c\uc2dc\uc5d0 \uc798\ubabb\ub41c \uc870\uc791\uc774 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+INVALID_PERSISTABLE_OPERATION_SIMS1507.useraction=CMSG0002 
+#TABLE_NUMBER_OUTSIDE_RANGE_SIMS1508=CWSIS1508E: The item table identifier, {0}, is outside of the allowed range.
+#TABLE_NUMBER_OUTSIDE_RANGE_SIMS1508.explanation=A maximum of 32 item tables can be used, with identifiers in the range 0 - 31.
+#TABLE_NUMBER_OUTSIDE_RANGE_SIMS1508.useraction=CMSG0002
+
+#INVALID_NUMBER_OF_STREAM_TABLES_SIMS1509=CWSIS1509E: An incorrect number of stream tables, {0}, were found.
+#INVALID_NUMBER_OF_STREAM_TABLES_SIMS1509.explanation=There must be only one stream table.
+#INVALID_NUMBER_OF_STREAM_TABLES_SIMS1509.useraction=Correct the problem and try again.
+
+#INVALID_NUMBER_OF_PERMANENT_TABLES_SIMS1510=CWSIS1510E: An incorrect number of permanent tables, {0}, were found.
+#INVALID_NUMBER_OF_PERMANENT_TABLES_SIMS1510.explanation=There must be at least one permanent table.
+#INVALID_NUMBER_OF_PERMANENT_TABLES_SIMS1510.useraction=Correct the problem and try again.
+
+#INVALID_NUMBER_OF_TEMPORARY_TABLES_SIMS1511=CWSIS1511E: An incorrect number of temporary tables, {0}, were found.
+#INVALID_NUMBER_OF_TEMPORARY_TABLES_SIMS1511.explanation=There must be at least one temporary table.
+#INVALID_NUMBER_OF_TEMPORARY_TABLES_SIMS1511.useraction=Correct the problem and try again.
+
+#UNKNOWN_ITEM_TABLE_KEY_SIMS1512 is no longer used.
+
+ROLLBACK_ONLY_EXCEPTION_SIMS1513=CWSIS1513E: \uc790\ub3d9 \ucee4\ubbf8\ud2b8 \uc5f0\uacb0\uc5d0 \ub864\ubc31 \uc804\uc6a9 \uc0c1\ud0dc\ub97c \uc124\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ROLLBACK_ONLY_EXCEPTION_SIMS1513.explanation=\uc790\ub3d9 \ucee4\ubbf8\ud2b8 \uc5f0\uacb0 \uc0c1\ud0dc\uc744 '\ub864\ubc31 \uc804\uc6a9'\uc73c\ub85c \uc124\uc815\ud558\ub824\uace0 \ud588\uc2b5\ub2c8\ub2e4.
+ROLLBACK_ONLY_EXCEPTION_SIMS1513.useraction=CMSG0002 
+#JNDI_NAME_NOT_SPECIFIED_SIMS1514=CWSIS1514E: A data source JNDI name has not been specified.
+#JNDI_NAME_NOT_SPECIFIED_SIMS1514.explanation=A JNDI name is needed in order to identify the data source to use as a data store.
+#JNDI_NAME_NOT_SPECIFIED_SIMS1514.useraction=Correct the problem and try again.
+
+#DATABASE_NOT_RECOGNIZED_SIMS1515=CWSIS1515E: The database, {0}, is not recognized as a valid database.
+#DATABASE_NOT_RECOGNIZED_SIMS1515.explanation=An internal error has occurred.
+#DATABASE_NOT_RECOGNIZED_SIMS1515.useraction=CMSG0002
+
+#INVALID_TABLE_ENTRY_SIMS1516=CWSIS1516E: Both data columns of table, {0}, were non-null.
+#INVALID_TABLE_ENTRY_SIMS1516.explanation=An internal error has occurred.
+#INVALID_TABLE_ENTRY_SIMS1516.useraction=CMSG0002
+
+# {0} is the messaging engine's name
+#RELIABLE_PERSISTENT_DATA_LOST_SIMS1517=CWSIS1517W: Reliable persistent data could not be written to the data store by messaging engine {0}.
+#RELIABLE_PERSISTENT_DATA_LOST_SIMS1517.explanation=An earlier exception prevented the writing of reliable persistent data to the data store for the messaging engine. The data cannot be recovered.
+#RELIABLE_PERSISTENT_DATA_LOST_SIMS1517.useraction=CMSG0002
+
+#MAX_DATA_SIZE_SIMS1518 is no longer used.
+
+# {0} is the messaging engine's name
+#CANNOT_OBTAIN_DATA_STORE_LOCK_SIMS1519=CWSIS1519E: Messaging engine {0} cannot obtain the lock on its data store, which ensures it has exclusive access to the data.
+#CANNOT_OBTAIN_DATA_STORE_LOCK_SIMS1519.explanation=The data store lock is already held, probably by another active or recently failed messaging engine.
+#CANNOT_OBTAIN_DATA_STORE_LOCK_SIMS1519.useraction=CMSG0002
+
+INVALID_TASK_OPERATION_SIMS1520=CWSIS1520E: \ud2b8\ub79c\uc7ad\uc158\uc774 \uc870\uc791\uc744 \uc218\ud589\ud558\ub294 \ub370 \uc801\uc808\ud55c \uc0c1\ud0dc\uc5d0 \uc788\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. {0} \uc0c1\ud0dc\uc5d0 \uc788\uc2b5\ub2c8\ub2e4.
+INVALID_TASK_OPERATION_SIMS1520.explanation=\ud0dc\uc2a4\ud06c\ub97c \uc218\ud589\ud558\ub824\uba74 \ud2b8\ub79c\uc7ad\uc158\uc740 \uc720\ud6a8\ud55c \uc0c1\ud0dc\uc5d0 \uc788\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+INVALID_TASK_OPERATION_SIMS1520.useraction=CMSG0002 
+#UNSUPPORTED_TASK_OPERATION_SIMS1521 is no longer used.
+
+#CONNECTION_WAIT_TIMEOUT_SIMS1522=CWSIS1522E: The messaging engine's request for a database connection timed out.
+#CONNECTION_WAIT_TIMEOUT_SIMS1522.explanation=The connection pool for the data source used by the messaging engine is too small.
+#CONNECTION_WAIT_TIMEOUT_SIMS1522.useraction=CMSG0002
+
+#DYNAMIC_TABLE_CREATION_EXCEPTION_SIMS1523=CWSIS1523E: Dynamic allocation of database objects in DB2 for z/OS is not allowed.
+#DYNAMIC_TABLE_CREATION_EXCEPTION_SIMS1523.explanation=Database tables required by the data store cannot be created dynamically.
+#DYNAMIC_TABLE_CREATION_EXCEPTION_SIMS1523.useraction=Use the sibDDLGenerator tool to generate the DDL statements for the data store tables.
+
+#DATASOURCE_NOT_FOUND_EXCEPTION_SIMS1524=CWSIS1524E: Data source, {0}, not found.
+#DATASOURCE_NOT_FOUND_EXCEPTION_SIMS1524.explanation=The look up of the specified JNDI name has failed to locate the data source.
+#DATASOURCE_NOT_FOUND_EXCEPTION_SIMS1524.useraction=Verify that the JNDI name is valid and try again.
+
+#INVALID_TABLE_TYPE_EXCEPTION_SIMS1525=CWSIS1525E: Incorrect item table type, {0}.
+#INVALID_TABLE_TYPE_EXCEPTION_SIMS1525.explanation=An item table type has not been recognized as valid.
+#INVALID_TABLE_TYPE_EXCEPTION_SIMS1525.useraction=Correct the problem and try again.
+
+#INVALID_TABLE_OPERATION_EXCEPTION_SIMS1526=CWSIS1526E: The item table, {0}, is not able to perform the operation. It is of type, {1}.
+#INVALID_TABLE_OPERATION_EXCEPTION_SIMS1526.explanation=The item table cannot perform the requested operation because it is not of the correct type.
+#INVALID_TABLE_OPERATION_EXCEPTION_SIMS1526.useraction=CMSG0002
+
+INVALID_PERSISTABLE_STATE_SIMS1527=CWSIS1527E: \uc9c0\uc18d \uc624\ube0c\uc81d\ud2b8\uac00 \uc798\ubabb\ub41c \uc0c1\ud0dc\uc785\ub2c8\ub2e4. \uc870\uc791 \uc2dc\uc791 \uacc4\uc218: {0}, \uc870\uc791 \uc644\ub8cc \uacc4\uc218: {1}.
+INVALID_PERSISTABLE_STATE_SIMS1527.explanation=\uc644\ub8cc \uacc4\uc218\uac00 \uc2dc\uc791 \uacc4\uc218\ub97c \ucd08\uacfc\ud558\uc5ec \uc9c0\uc18d \uc624\ube0c\uc81d\ud2b8\uac00 \uc798\ubabb\ub41c \uc0c1\ud0dc\uc785\ub2c8\ub2e4.
+INVALID_PERSISTABLE_STATE_SIMS1527.useraction=CMSG0002 
+#DATASOURCE_WRAPPER_STATE_EXCEPTION_SIMS1528=CWSIS1528E: New connections cannot be provided because the persistence layer is stopped.
+#DATASOURCE_WRAPPER_STATE_EXCEPTION_SIMS1528.explanation=The data store persistence layer has been stopped so no more connections will be provided.
+#DATASOURCE_WRAPPER_STATE_EXCEPTION_SIMS1528.useraction=Restart the messaging engine and try again.
+
+#EXPECTED_COLUMN_NOT_FOUND_SIMS1529=CWSIS1529E: The column, {0}, was not found in the table, {1}, as expected.
+#EXPECTED_COLUMN_NOT_FOUND_SIMS1529.explanation=The messaging engine expected to find the column in the relevant table.
+#EXPECTED_COLUMN_NOT_FOUND_SIMS1529.useraction=Correct the problem and try again.
+
+#EXPECTED_DATA_TYPE_NOT_FOUND_SIMS1530=CWSIS1530E: The data type, {0}, was found instead of the expected type, {1}, for column, {2}, in table, {3}.
+#EXPECTED_DATA_TYPE_NOT_FOUND_SIMS1530.explanation=The messaging engine expects certain data types to be used for the columns in the data store tables.
+#EXPECTED_DATA_TYPE_NOT_FOUND_SIMS1530.useraction=Correct the problem and try again.
+
+#MAX_DATA_SIZE_EXCEPTION_SIMS1531=CWSIS1531E: The maximum data size, {0} bytes, of the data store has been exceeded. The data size was, {1} bytes.
+#MAX_DATA_SIZE_EXCEPTION_SIMS1531.explanation=The maximum data size that can be stored in the data store tables has been exceeded.
+#MAX_DATA_SIZE_EXCEPTION_SIMS1531.useraction=CMSG0002
+
+#MISSING_TABLE_EXCEPTION_SIMS1532=CWSIS1532E: The table, {0}, is missing.
+#MISSING_TABLE_EXCEPTION_SIMS1532.explanation=The messaging engine was unable to find the table in the DBMS, and the option to have the messaging engine automatically create it was not selected.
+#MISSING_TABLE_EXCEPTION_SIMS1532.useraction=Correct the problem and try again.
+
+#MISSING_SCHEMA_EXCEPTION_SIMS1533=CWSIS1533E: The schema, {0}, does not exist.
+#MISSING_SCHEMA_EXCEPTION_SIMS1533.explanation=The messaging engine was unable to locate the schema in the DBMS.
+#MISSING_SCHEMA_EXCEPTION_SIMS1533.useraction=Correct the problem and try again.
+
+INVALID_CLASSMAP_TABLE_REFERENCE_SIMS1534=CWSIS1534E: {0} \ud074\ub798\uc2a4 \ucc38\uc870\uac00 \ud574\uc11d\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+INVALID_CLASSMAP_TABLE_REFERENCE_SIMS1534.explanation=\uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc774 \ucc38\uc870\uc5d0 \ud574\ub2f9\ud558\ub294 \ud074\ub798\uc2a4 \uc774\ub984\uc744 \ucc3e\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4.
+INVALID_CLASSMAP_TABLE_REFERENCE_SIMS1534.useraction=CMSG0002 
+
+#DBLOCK_MEUUID_DOESNT_MATCH_SIMS1535=CWSIS1535E: The messaging engine''s unique id does not match that found in the data store. ME_UUID={0}, ME_UUID(DB)={1}
+#DBLOCK_MEUUID_DOESNT_MATCH_SIMS1535.explanation=The unique id of your messaging engine does not match that in the data store.
+#DBLOCK_MEUUID_DOESNT_MATCH_SIMS1535.useraction=You are trying to connect to an existing set of database tables that are owned \ 
+#                                               by a different messaging engine. Either point your messaging engine's data source \ 
+#                                               to a separate set of tables or remove the existing ones.
+
+#DBLOCK_VERSION_DOESNT_MATCH_SIMS1536=CWSIS1536E: The messaging engine''s version does not match that found in the data store. VERSION={0}, VERSION(DB)={1}
+#DBLOCK_VERSION_DOESNT_MATCH_SIMS1536.explanation=The version of your messaging engine does not match that in the data store.
+#DBLOCK_VERSION_DOESNT_MATCH_SIMS1536.useraction=You are trying to connect to an existing set of database tables that are owned \ 
+#                                                by a different messaging engine. Either point your messaging engine's data source \ 
+#                                                to a separate set of tables or remove the existing ones.
+
+#DBLOCK_ACQUIRED_SIMS1537=CWSIS1537I: The messaging engine, ME_UUID={0}, INC_UUID={1}, has acquired an exclusive lock on the data store.
+#DBLOCK_ACQUIRED_SIMS1537.explanation=The messaging engine, identified by the UUIDs in the message, has established ownership of the data store.
+#DBLOCK_ACQUIRED_SIMS1537.useraction=No action is required.
+
+#DBLOCK_ATTEMPTING_SIMS1538=CWSIS1538I: The messaging engine, ME_UUID={0}, INC_UUID={1}, is attempting to obtain an exclusive lock on the data store.
+#DBLOCK_ATTEMPTING_SIMS1538.explanation=The messaging engine, identified by the UUIDs in the message, is attempting to establish ownership of the data store.
+#DBLOCK_ATTEMPTING_SIMS1538.useraction=No action is required.
+
+#DDLGENERATOR_USAGE_INFO_SIMS1539=CWSIS1539I: sibDDLGenerator [{0} <DBMS name>] [{1} <DBMS version>] [{2} <DBMS platform>] [{3} <schema>] [{4} <user>] [{5}|{6}] [{7} <database> (z/OS only)][{8} <true|false> (z/OS only)][{9} <tablespace prefix, maximum 5 characters> (z/OS only)][{10} <storage group> [{11} <high-level qualifier>] (z/OS only)] [{12} <buffer pool> (z/OS only)] [{13} <terminator>] [{14}] [{15}] [{16} <statements>] [{17} <statements>] [{18} <number of permanent tables>] [{19} <number of temporary tables>]
+#DDLGENERATOR_USAGE_INFO_SIMS1539.explanation=DDLGenerator usage information.
+#DDLGENERATOR_USAGE_INFO_SIMS1539.useraction=Rerun the command using the correct syntax.
+
+#INVALID_NUMBER_OF_TABLES_SPECIFIED_SIMS1540=CWSIS1540E: An invalid number of tables has been specified, {0}.
+#INVALID_NUMBER_OF_TABLES_SPECIFIED_SIMS1540.explanation=The specified number of tables must be a positive integer.
+#INVALID_NUMBER_OF_TABLES_SPECIFIED_SIMS1540.useraction=Correct the error and try again.
+
+#MAX_NUMBER_OF_TABLES_EXCEEDED_SIMS1541=CWSIS1541E: The maximum number of SIBnnn tables that can be used by a messaging engine, {0}, has been exceeded.
+#MAX_NUMBER_OF_TABLES_EXCEEDED_SIMS1541.explanation=The total number of stream (there is always one stream table), permanent and temporary tables should not exceed the maximum.
+#MAX_NUMBER_OF_TABLES_EXCEEDED_SIMS1541.useraction=Reduce the number of permanent or temporary tables specified, and restart the server.
+
+#INCOMPATIBLE_NUMBER_OF_TABLES_SIMS1542=CWSIS1542E: The configured number of permanent or temporary tables, {1}, is less than the number currently in use, {0}.
+#INCOMPATIBLE_NUMBER_OF_TABLES_SIMS1542.explanation=The number of permanent or temporary tables cannot be decreased.
+#INCOMPATIBLE_NUMBER_OF_TABLES_SIMS1542.useraction=Restore the original values for the number of permanent and temporary tables, and restart the server. 
+
+#DBLOCK_NO_OWNER_SIMS1543=CWSIS1543I: No previous owner was found in the messaging engine's data store.
+#DBLOCK_NO_OWNER_SIMS1543.explanation=The data store has not been used by another messaging engine.
+#DBLOCK_NO_OWNER_SIMS1543.useraction=No action is required.
+
+#DBLOCK_MULTIPLE_OWNERS_SIMS1544=CWSIS1544E: Multiple previous owner id's found in the messaging engine's data store.
+#DBLOCK_MULTIPLE_OWNERS_SIMS1544.explanation=The data store has identified more than one messagine engine as its owner.
+#DBLOCK_MULTIPLE_OWNERS_SIMS1544.useraction=CMSG0002
+
+#DBLOCK_ONE_OWNER_SIMS1545=CWSIS1545I: A single previous owner was found in the messaging engine''s data store, ME_UUID={0}, INC_UUID={1}
+#DBLOCK_ONE_OWNER_SIMS1545.explanation=The messaging engine identified has previously used the data store.
+#DBLOCK_ONE_OWNER_SIMS1545.useraction=No action is required.
+
+#DBLOCK_NOT_HELD_SIMS1546 is no longer used.
+
+#SCHEMA_NAME_UNDEFINED_SIMS1547=CWSIS1547E: Unable to determine the schema name for the messaging engine.
+#SCHEMA_NAME_UNDEFINED_SIMS1547.explanation=The schema name was not defined explicitly for the data store, and the database user id was not provided.
+#SCHEMA_NAME_UNDEFINED_SIMS1547.useraction=Provide a schema name and try again.
+
+FILE_STORE_LOG_SIZE_CHANGE_PREVENTED_SIMS1548=CWSIS1548W: \ub85c\uadf8 \ud30c\uc77c \ud06c\uae30\ub97c \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc758 \ud30c\uc77c \uc800\uc7a5\uc18c \uad6c\uc131\uc5d0 \uc788\ub294 \uac12\uc73c\ub85c \uc9c0\uae08\uc740 \ubcc0\uacbd\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+FILE_STORE_LOG_SIZE_CHANGE_PREVENTED_SIMS1548.explanation=\ud30c\uc77c \uc800\uc7a5\uc18c\uc758 \uae30\uc874 \ucee8\ud150\uce20\uc5d0\uc11c\ub294 \uad6c\uc131\uc5d0 \uc788\ub294 \uac12\uc774 \uc801\uc6a9\ub418\uc9c0 \ubabb\ud558\uac8c \ud569\ub2c8\ub2e4.
+FILE_STORE_LOG_SIZE_CHANGE_PREVENTED_SIMS1548.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ub2e4\uc74c\uc5d0 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc774 \uc2dc\uc791\ub420 \ub54c \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc5d0\uc11c\ub294 \uad6c\uc131 \ubcc0\uacbd\uc744 \uc801\uc6a9\ud558\ub824\uace0 \uc2dc\ub3c4\ud569\ub2c8\ub2e4.
+
+FILE_STORE_STORE_SIZE_CHANGE_PREVENTED_SIMS1549=CWSIS1549W: \uc800\uc7a5 \ud30c\uc77c \ud06c\uae30\ub97c \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc758 \ud30c\uc77c \uc800\uc7a5\uc18c \uad6c\uc131\uc5d0 \uc788\ub294 \uac12\uc73c\ub85c \uc9c0\uae08\uc740 \ubcc0\uacbd\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+FILE_STORE_STORE_SIZE_CHANGE_PREVENTED_SIMS1549.explanation=\ud30c\uc77c \uc800\uc7a5\uc18c\uc758 \uae30\uc874 \ucee8\ud150\uce20\uc5d0\uc11c\ub294 \uad6c\uc131\uc5d0 \uc788\ub294 \uac12\uc774 \uc801\uc6a9\ub418\uc9c0 \ubabb\ud558\uac8c \ud569\ub2c8\ub2e4.
+FILE_STORE_STORE_SIZE_CHANGE_PREVENTED_SIMS1549.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ub2e4\uc74c\uc5d0 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc774 \uc2dc\uc791\ub420 \ub54c \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc5d0\uc11c\ub294 \uad6c\uc131 \ubcc0\uacbd\uc744 \uc801\uc6a9\ud558\ub824\uace0 \uc2dc\ub3c4\ud569\ub2c8\ub2e4.
+
+FILE_STORE_LOG_SIZE_CONFIGURATION_INFO_SIMS1550=CWSIS1550I: \ub85c\uadf8 \ud30c\uc77c\uc758 \ud604\uc7ac \ud06c\uae30\ub294 {0} \ubc14\uc774\ud2b8\uc785\ub2c8\ub2e4. \ub85c\uadf8 \ud30c\uc77c \uad6c\uc131 \uc815\ubcf4\uc758 \ud06c\uae30\ub294 {1}\ubc14\uc774\ud2b8\uc785\ub2c8\ub2e4.
+FILE_STORE_LOG_SIZE_CONFIGURATION_INFO_SIMS1550.explanation=\uc774\uac83\uc740 \ud30c\uc77c \uc800\uc7a5\uc18c \uad6c\uc131 \uc815\ubcf4\uc758 \ud30c\ud2b8\uc785\ub2c8\ub2e4.
+FILE_STORE_LOG_SIZE_CONFIGURATION_INFO_SIMS1550.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                       
+FILE_STORE_PERMANENT_STORE_SIZE_CURRENT_INFO_SIMS1551=CWSIS1551I: \uc601\uad6c \uc800\uc7a5 \ud30c\uc77c\uc758 \ud604\uc7ac \ucd5c\uc18c \uc608\uc57d \ud06c\uae30\ub294 {0} \ubc14\uc774\ud2b8\uc785\ub2c8\ub2e4. \ud604\uc7ac \ucd5c\ub300 \ud06c\uae30\ub294 {1} \ubc14\uc774\ud2b8\uc785\ub2c8\ub2e4.
+FILE_STORE_PERMANENT_STORE_SIZE_CURRENT_INFO_SIMS1551.explanation=\uc774\uac83\uc740 \ud30c\uc77c \uc800\uc7a5\uc18c \uad6c\uc131 \uc815\ubcf4\uc758 \ud30c\ud2b8\uc785\ub2c8\ub2e4.
+FILE_STORE_PERMANENT_STORE_SIZE_CURRENT_INFO_SIMS1551.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                       
+FILE_STORE_PERMANENT_STORE_SIZE_CURRENT_INFO_UNLIMITED_SIMS1552=CWSIS1552I: \uc601\uad6c \uc800\uc7a5 \ud30c\uc77c\uc758 \ud604\uc7ac \ucd5c\uc18c \uc608\uc57d \ud06c\uae30\ub294 {0} \ubc14\uc774\ud2b8\uc785\ub2c8\ub2e4. \ud604\uc7ac \ucd5c\ub300 \ud06c\uae30\uc5d0\ub294 \uc81c\ud55c\uc774 \uc5c6\uc2b5\ub2c8\ub2e4.
+FILE_STORE_PERMANENT_STORE_SIZE_CURRENT_INFO_UNLIMITED_SIMS1552.explanation=\uc774\uac83\uc740 \ud30c\uc77c \uc800\uc7a5\uc18c \uad6c\uc131 \uc815\ubcf4\uc758 \ud30c\ud2b8\uc785\ub2c8\ub2e4.
+FILE_STORE_PERMANENT_STORE_SIZE_CURRENT_INFO_UNLIMITED_SIMS1552.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                       
+FILE_STORE_PERMANENT_STORE_SIZE_CONFIGURATION_INFO_SIMS1553=CWSIS1553I: \uc601\uad6c \uc800\uc7a5 \ud30c\uc77c \uad6c\uc131 \uc815\ubcf4\uc758 \ucd5c\uc18c \uc608\uc57d \ud06c\uae30\ub294 {0} \ubc14\uc774\ud2b8\uc785\ub2c8\ub2e4. \ucd5c\ub300 \ud06c\uae30\ub294 {1} \ubc14\uc774\ud2b8\uc785\ub2c8\ub2e4.
+FILE_STORE_PERMANENT_STORE_SIZE_CONFIGURATION_INFO_SIMS1553.explanation=\uc774\uac83\uc740 \ud30c\uc77c \uc800\uc7a5\uc18c \uad6c\uc131 \uc815\ubcf4\uc758 \ud30c\ud2b8\uc785\ub2c8\ub2e4.
+FILE_STORE_PERMANENT_STORE_SIZE_CONFIGURATION_INFO_SIMS1553.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                       
+FILE_STORE_PERMANENT_STORE_SIZE_CONFIGURATION_INFO_UNLIMITED_SIMS1554=CWSIS1554I: \uc601\uad6c \uc800\uc7a5 \ud30c\uc77c \uad6c\uc131 \uc815\ubcf4\uc758 \ucd5c\uc18c \uc608\uc57d \ud06c\uae30\ub294 {0} \ubc14\uc774\ud2b8\uc785\ub2c8\ub2e4. \ucd5c\ub300 \ud06c\uae30\uc5d0\ub294 \uc81c\ud55c\uc774 \uc5c6\uc2b5\ub2c8\ub2e4.
+FILE_STORE_PERMANENT_STORE_SIZE_CONFIGURATION_INFO_UNLIMITED_SIMS1554.explanation=\uc774\uac83\uc740 \ud30c\uc77c \uc800\uc7a5\uc18c \uad6c\uc131 \uc815\ubcf4\uc758 \ud30c\ud2b8\uc785\ub2c8\ub2e4.
+FILE_STORE_PERMANENT_STORE_SIZE_CONFIGURATION_INFO_UNLIMITED_SIMS1554.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                       
+FILE_STORE_TEMPORARY_STORE_SIZE_CURRENT_INFO_SIMS1555=CWSIS1555I: \uc784\uc2dc \uc800\uc7a5 \ud30c\uc77c\uc758 \ud604\uc7ac \ucd5c\uc18c \uc608\uc57d \ud06c\uae30\ub294 {0} \ubc14\uc774\ud2b8\uc785\ub2c8\ub2e4. \ud604\uc7ac \ucd5c\ub300 \ud06c\uae30\ub294 {1} \ubc14\uc774\ud2b8\uc785\ub2c8\ub2e4.
+FILE_STORE_TEMPORARY_STORE_SIZE_CURRENT_INFO_SIMS1555.explanation=\uc774\uac83\uc740 \ud30c\uc77c \uc800\uc7a5\uc18c \uad6c\uc131 \uc815\ubcf4\uc758 \ud30c\ud2b8\uc785\ub2c8\ub2e4.
+FILE_STORE_TEMPORARY_STORE_SIZE_CURRENT_INFO_SIMS1555.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                       
+FILE_STORE_TEMPORARY_STORE_SIZE_CURRENT_INFO_UNLIMITED_SIMS1556=CWSIS1556I: \uc784\uc2dc \uc800\uc7a5 \ud30c\uc77c\uc758 \ud604\uc7ac \ucd5c\uc18c \uc608\uc57d \ud06c\uae30\ub294 {0} \ubc14\uc774\ud2b8\uc785\ub2c8\ub2e4. \ud604\uc7ac \ucd5c\ub300 \ud06c\uae30\uc5d0\ub294 \uc81c\ud55c\uc774 \uc5c6\uc2b5\ub2c8\ub2e4.
+FILE_STORE_TEMPORARY_STORE_SIZE_CURRENT_INFO_UNLIMITED_SIMS1556.explanation=\uc774\uac83\uc740 \ud30c\uc77c \uc800\uc7a5\uc18c \uad6c\uc131 \uc815\ubcf4\uc758 \ud30c\ud2b8\uc785\ub2c8\ub2e4.
+FILE_STORE_TEMPORARY_STORE_SIZE_CURRENT_INFO_UNLIMITED_SIMS1556.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                       
+FILE_STORE_TEMPORARY_STORE_SIZE_CONFIGURATION_INFO_SIMS1557=CWSIS1557I: \uc784\uc2dc \uc800\uc7a5 \ud30c\uc77c \uad6c\uc131 \uc815\ubcf4\uc758 \ucd5c\uc18c \uc608\uc57d \ud06c\uae30\ub294 {0} \ubc14\uc774\ud2b8\uc785\ub2c8\ub2e4. \ucd5c\ub300 \ud06c\uae30\ub294 {1} \ubc14\uc774\ud2b8\uc785\ub2c8\ub2e4.
+FILE_STORE_TEMPORARY_STORE_SIZE_CONFIGURATION_INFO_SIMS1557.explanation=\uc774\uac83\uc740 \ud30c\uc77c \uc800\uc7a5\uc18c \uad6c\uc131 \uc815\ubcf4\uc758 \ud30c\ud2b8\uc785\ub2c8\ub2e4.
+FILE_STORE_TEMPORARY_STORE_SIZE_CONFIGURATION_INFO_SIMS1557.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                       
+FILE_STORE_TEMPORARY_STORE_SIZE_CONFIGURATION_INFO_UNLIMITED_SIMS1558=CWSIS1558I: \uc784\uc2dc \uc800\uc7a5 \ud30c\uc77c \uad6c\uc131 \uc815\ubcf4\uc758 \ucd5c\uc18c \uc608\uc57d \ud06c\uae30\ub294 {0} \ubc14\uc774\ud2b8\uc785\ub2c8\ub2e4. \ucd5c\ub300 \ud06c\uae30\uc5d0\ub294 \uc81c\ud55c\uc774 \uc5c6\uc2b5\ub2c8\ub2e4.
+FILE_STORE_TEMPORARY_STORE_SIZE_CONFIGURATION_INFO_UNLIMITED_SIMS1558.explanation=\uc774\uac83\uc740 \ud30c\uc77c \uc800\uc7a5\uc18c \uad6c\uc131 \uc815\ubcf4\uc758 \ud30c\ud2b8\uc785\ub2c8\ub2e4.
+FILE_STORE_TEMPORARY_STORE_SIZE_CONFIGURATION_INFO_UNLIMITED_SIMS1558.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                       
+FILE_STORE_PERMANENT_STORE_USED_CURRENT_INFO_SIMS1559=CWSIS1559I: \uc601\uad6c \uc800\uc7a5 \ud30c\uc77c\uc5d0 \uc788\ub294 \ub370\uc774\ud130\ub294 {0} \ubc14\uc774\ud2b8\ub97c \ucc28\uc9c0\ud569\ub2c8\ub2e4.
+FILE_STORE_PERMANENT_STORE_USED_CURRENT_INFO_SIMS1559.explanation=\uc774\uac83\uc740 \uc601\uad6c \uc800\uc7a5 \ud30c\uc77c\uc758 \ucee8\ud150\uce20\uac00 \uc774\uc6a9\ud558\ub294 \uacf5\uac04\uc758 \ubc14\uc774\ud2b8 \uc218\uc785\ub2c8\ub2e4. \ucd5c\uc18c \uc608\uc57d \ud06c\uae30\ub97c \uc774 \uac12 \uc544\ub798\ub85c \uc904\uc77c \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+FILE_STORE_PERMANENT_STORE_USED_CURRENT_INFO_SIMS1559.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                       
+FILE_STORE_TEMPORARY_STORE_USED_CURRENT_INFO_SIMS1560=CWSIS1560I: \uc784\uc2dc \uc800\uc7a5 \ud30c\uc77c\uc5d0 \uc788\ub294 \ub370\uc774\ud130\ub294 {0} \ubc14\uc774\ud2b8\ub97c \ucc28\uc9c0\ud569\ub2c8\ub2e4.
+FILE_STORE_TEMPORARY_STORE_USED_CURRENT_INFO_SIMS1560.explanation=\uc774\uac83\uc740 \uc784\uc2dc \uc800\uc7a5 \ud30c\uc77c\uc758 \ucee8\ud150\uce20\uac00 \uc774\uc6a9\ud558\ub294 \uacf5\uac04\uc758 \ubc14\uc774\ud2b8 \uc218\uc785\ub2c8\ub2e4. \ucd5c\uc18c \uc608\uc57d \ud06c\uae30\ub97c \uc774 \uac12 \uc544\ub798\ub85c \uc904\uc77c \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+FILE_STORE_TEMPORARY_STORE_USED_CURRENT_INFO_SIMS1560.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                       
+FILE_STORE_LOCK_MEUUID_DOESNT_MATCH_SIMS1561=CWSIS1561E: \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc758 \uace0\uc720 ID\uac00 \ud30c\uc77c \uc800\uc7a5\uc18c\uc5d0\uc11c \ucc3e\uc740 ID\uc640 \uc77c\uce58\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. ME_UUID={0}, ME_UUID(FS)={1}
+FILE_STORE_LOCK_MEUUID_DOESNT_MATCH_SIMS1561.explanation=\uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc758 \uace0\uc720 ID\uac00 \ud30c\uc77c \uc800\uc7a5\uc18c\uc5d0 \uc788\ub294 ID\uc640 \uc77c\uce58\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+FILE_STORE_LOCK_MEUUID_DOESNT_MATCH_SIMS1561.useraction=\ub2e4\ub978 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc774 \uc18c\uc720\ud558\uace0 \uc788\ub294 \uae30\uc874 \ud30c\uc77c \uc138\ud2b8\uc5d0 \ub300\ud55c \uc5f0\uacb0\uc744 \uc2dc\ub3c4\ud558\uace0 \uc788\uc2b5\ub2c8\ub2e4. \
+\uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc758 \ud30c\uc77c \uc800\uc7a5\uc18c\uac00 \ubcc4\ub3c4\uc758 \ud30c\uc77c \uc138\ud2b8\ub97c \uac00\ub9ac\ud0a4\uac8c \ud558\uac70\ub098 \uae30\uc874 \ud30c\uc77c \uc138\ud2b8\ub97c \uc81c\uac70\ud558\uc2ed\uc2dc\uc624.
+
+FILE_STORE_LOCK_VERSION_DOESNT_MATCH_SIMS1562=CWSIS1562E: \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc758 \ubc84\uc804\uc774 \ud30c\uc77c \uc800\uc7a5\uc18c\uc5d0\uc11c \ucc3e\uc740 \ubc84\uc804\uacfc \uc77c\uce58\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. VERSION={0}, VERSION(FS)={1}
+FILE_STORE_LOCK_VERSION_DOESNT_MATCH_SIMS1562.explanation=\uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc758 \ubc84\uc804\uc774 \ud30c\uc77c \uc800\uc7a5\uc18c\uc5d0 \uc788\ub294 \ubc84\uc804\uacfc \uc77c\uce58\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+FILE_STORE_LOCK_VERSION_DOESNT_MATCH_SIMS1562.useraction=\ub2e4\ub978 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc774 \uc18c\uc720\ud558\uace0 \uc788\ub294 \uae30\uc874 \ud30c\uc77c \uc138\ud2b8\uc5d0 \ub300\ud55c \uc5f0\uacb0\uc744 \uc2dc\ub3c4\ud558\uace0 \uc788\uc2b5\ub2c8\ub2e4. \
+\uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc758 \ud30c\uc77c \uc800\uc7a5\uc18c\uac00 \ubcc4\ub3c4\uc758 \ud30c\uc77c \uc138\ud2b8\ub97c \uac00\ub9ac\ud0a4\uac8c \ud558\uac70\ub098 \uae30\uc874 \ud30c\uc77c \uc138\ud2b8\ub97c \uc81c\uac70\ud558\uc2ed\uc2dc\uc624.
+
+# {0} is the messaging engine's UUID
+# {1} is the messaging engine's IND_UUID
+FILE_STORE_LOCK_ACQUIRED_SIMS1563=CWSIS1563I: \uba54\uc2dc\uc9d5 \uc5d4\uc9c4, ME_UUID={0}, INC_UUID={1}\uc774(\uac00) \ud30c\uc77c \uc800\uc7a5\uc18c\uc5d0 \ub300\ud55c \ub3c5\uc810 \uc7a0\uae08\uc744 \ud655\ubcf4\ud588\uc2b5\ub2c8\ub2e4.
+FILE_STORE_LOCK_ACQUIRED_SIMS1563.explanation=UUID\ub85c \uc2dd\ubcc4\ub418\ub294 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc774 \ud30c\uc77c \uc800\uc7a5\uc18c\uc758 \uc18c\uc720\uad8c\uc744 \uc124\uc815\ud588\uc2b5\ub2c8\ub2e4.
+FILE_STORE_LOCK_ACQUIRED_SIMS1563.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                       
+# {0} is the messaging engine's UUID
+# {1} is the messaging engine's IND_UUID
+FILE_STORE_LOCK_ATTEMPTING_SIMS1564=CWSIS1564I: \uba54\uc2dc\uc9d5 \uc5d4\uc9c4, ME_UUID={0}, INC_UUID={1}\uc774(\uac00) \ud30c\uc77c \uc800\uc7a5\uc18c\uc5d0 \ub300\ud55c \ub3c5\uc810 \uc7a0\uae08\uc744 \ud655\ubcf4\ud558\ub824\uace0 \ud569\ub2c8\ub2e4.
+FILE_STORE_LOCK_ATTEMPTING_SIMS1564.explanation=UUID\ub85c \uc2dd\ubcc4\ub418\ub294 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc774 \ud30c\uc77c \uc800\uc7a5\uc18c\uc758 \uc18c\uc720\uad8c\uc744 \uc124\uc815\ud558\ub824 \ud569\ub2c8\ub2e4.
+FILE_STORE_LOCK_ATTEMPTING_SIMS1564.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                       
+FILE_STORE_LOCK_NO_OWNER_SIMS1565=CWSIS1565I: \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc758 \ud30c\uc77c \uc800\uc7a5\uc18c\uc5d0\uc11c \uc774\uc804 \uc18c\uc720\uc790\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+FILE_STORE_LOCK_NO_OWNER_SIMS1565.explanation=\ud30c\uc77c \uc800\uc7a5\uc18c\uac00 \ub2e4\ub978 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc5d0\uc11c \uc0ac\uc6a9\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+FILE_STORE_LOCK_NO_OWNER_SIMS1565.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                       
+# {0} is the UUID of the messaging engine found in the file store
+# {1} is the INC_UUID of the messaging engine found in the file store
+FILE_STORE_LOCK_ONE_OWNER_SIMS1566=CWSIS1566I: \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc758 \ud30c\uc77c \uc800\uc7a5\uc18c, ME_UUID={0}, INC_UUID={1}\uc5d0\uc11c \ub2e8\uc77c \uc774\uc804 \uc18c\uc720\uc790\ub97c \ucc3e\uc558\uc2b5\ub2c8\ub2e4.
+FILE_STORE_LOCK_ONE_OWNER_SIMS1566.explanation=\uc2dd\ubcc4\ub41c \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc774 \uc774\uc804\uc5d0 \ud30c\uc77c \uc800\uc7a5\uc18c\ub97c \uc0ac\uc6a9\ud588\uc2b5\ub2c8\ub2e4.
+FILE_STORE_LOCK_ONE_OWNER_SIMS1566.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                       
+# {0} is the messaging engine's name
+CANNOT_OBTAIN_FILE_STORE_LOCK_SIMS1567=CWSIS1567E: \uba54\uc2dc\uc9d5 \uc5d4\uc9c4 {0}\uc774(\uac00) \ub370\uc774\ud130\uc5d0 \ub300\ud55c \ub3c5\uc810 \uc561\uc138\uc2a4\ub97c \uac16\uac8c \ud558\ub294 \ud574\ub2f9 \ud30c\uc77c \uc800\uc7a5\uc18c\uc758 \uc7a0\uae08\uc744 \ud655\ubcf4\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+CANNOT_OBTAIN_FILE_STORE_LOCK_SIMS1567.explanation=\ub2e4\ub978 \ud65c\uc131 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc774\ub098 \ucd5c\uadfc\uc5d0 \uc2e4\ud328\ud55c \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc5d0\uc11c \ud30c\uc77c \uc800\uc7a5\uc18c \uc7a0\uae08\uc744 \uc774\ubbf8 \ubcf4\uc720\ud558\uace0 \uc788\uc2b5\ub2c8\ub2e4.
+CANNOT_OBTAIN_FILE_STORE_LOCK_SIMS1567.useraction=CMSG0002 
+# {0} is the messaging engine's name
+#MESSAGING_ENGINE_PERSISTENCE_DATASTORE_SIMS1568=CWSIS1568I: Messaging engine {0} is using a data store.
+#MESSAGING_ENGINE_PERSISTENCE_DATASTORE_SIMS1568.explanation=The message store for the messaging engine is a data store.
+#MESSAGING_ENGINE_PERSISTENCE_DATASTORE_SIMS1568.useraction=No action is required.
+
+# {0} is the messaging engine's name
+MESSAGING_ENGINE_PERSISTENCE_FILESTORE_SIMS1569=CWSIS1569I: \uba54\uc2dc\uc9d5 \uc5d4\uc9c4 {0}\uc774(\uac00) \ud30c\uc77c \uc800\uc7a5\uc18c\ub97c \uc0ac\uc6a9\ud558\uace0 \uc788\uc2b5\ub2c8\ub2e4.
+MESSAGING_ENGINE_PERSISTENCE_FILESTORE_SIMS1569.explanation=\uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc758 \uba54\uc2dc\uc9c0 \uc800\uc7a5\uc18c\ub294 \ud30c\uc77c \uc800\uc7a5\uc18c\uc785\ub2c8\ub2e4.
+MESSAGING_ENGINE_PERSISTENCE_FILESTORE_SIMS1569.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                       
+# {0} is the text of the exception thrown
+#DBLOCK_EXCEPTION_SIMS1570=CWSIS1570E: The messaging engine encountered an exception while locking the data store. Exception: {0}
+#DBLOCK_EXCEPTION_SIMS1570.explanation=If the message does not give sufficient information, see the accompanying error messages for further information.
+#DBLOCK_EXCEPTION_SIMS1570.useraction=CMSG0002
+
+# {0} is the number of permanent tables in use
+# {1} is the number of temporary tables in use
+#NUMBER_OF_TABLES_IN_USE_SIMS1571=CWSIS1571I: Data store table summary: Permanent {0}, temporary {1}.
+#NUMBER_OF_TABLES_IN_USE_SIMS1571.explanation=The data store is using these permanent and temporary tables.
+#NUMBER_OF_TABLES_IN_USE_SIMS1571.useraction=No action is required.
+
+# This message is also issued if the number of tables is changing
+# {0} is the number of permanent tables previously in use
+# {1} is the number of temporary tables previously in use
+#NUMBER_OF_TABLES_PREVIOUS_SIMS1572=CWSIS1572I: Data store table summary before configuration change: Permanent {0}, temporary {1}.
+#NUMBER_OF_TABLES_PREVIOUS_SIMS1572.explanation=The data store was using these permanent and temporary tables before the configuration was changed.
+#NUMBER_OF_TABLES_PREVIOUS_SIMS1572.useraction=No action is required.
+
+FILE_STORE_LOG_FULL_SIMS1573E=CWSIS1573E: \ud30c\uc77c \uc800\uc7a5\uc18c\uc758 \ub85c\uadf8 \ud30c\uc77c\uc774 \uac00\ub4dd \ucc3c\uc2b5\ub2c8\ub2e4.
+FILE_STORE_LOG_FULL_SIMS1573E.explanation=\ud30c\uc77c \uc800\uc7a5\uc18c\uc758 \ub85c\uadf8 \ud30c\uc77c\uc5d0 \uba54\uc2dc\uc9c0\ub97c \uc800\uc7a5\ud560 \uacf5\uac04\uc774 \ub354 \uc774\uc0c1 \uc5c6\uc2b5\ub2c8\ub2e4. \
+\uc608\uc0c1\uce58 \uc54a\uc740 \uba54\uc2dc\uc9c0 \ube4c\ub4dc \ub610\ub294 \ud30c\uc77c \ud06c\uae30\uac00 \ub108\ubb34 \uc791\uc740 \uac83\uc774 \uc6d0\uc778\uc77c \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+
+FILE_STORE_LOG_FULL_SIMS1573E.useraction=\uacfc\ub3c4\ud55c \uba54\uc2dc\uc9c0\ub97c \uc815\ub9ac\ud558\uac70\ub098, \ud544\uc694\ud55c \uacbd\uc6b0, \ub85c\uadf8 \ud30c\uc77c\uc758 \ud06c\uae30\ub97c \ub298\ub9ac\uc2ed\uc2dc\uc624.
+
+FILE_STORE_PERMANENT_STORE_FULL_SIMS1574E=CWSIS1574E: \ud30c\uc77c \uc800\uc7a5\uc18c\uc758 \uc601\uad6c \uc800\uc7a5\uc18c \ud30c\uc77c\uc774 \uac00\ub4dd \ucc3c\uc2b5\ub2c8\ub2e4.
+FILE_STORE_PERMANENT_STORE_FULL_SIMS1574E.explanation=\ud30c\uc77c \uc800\uc7a5\uc18c\uc758 \uc601\uad6c \uc800\uc7a5\uc18c \ud30c\uc77c\uc5d0 \uba54\uc2dc\uc9c0\ub97c \uc800\uc7a5\ud560 \uacf5\uac04\uc774 \ub354 \uc774\uc0c1 \uc5c6\uc2b5\ub2c8\ub2e4. \
+\uc608\uc0c1\uce58 \uc54a\uc740 \uba54\uc2dc\uc9c0 \ube4c\ub4dc \ub610\ub294 \ud30c\uc77c \ud06c\uae30\uac00 \ub108\ubb34 \uc791\uc740 \uac83\uc774 \uc6d0\uc778\uc77c \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+FILE_STORE_PERMANENT_STORE_FULL_SIMS1574E.useraction=\uacfc\ub3c4\ud55c \uba54\uc2dc\uc9c0\ub97c \uc815\ub9ac\ud558\uac70\ub098, \ud544\uc694\ud55c \uacbd\uc6b0, \uc601\uad6c \uc800\uc7a5\uc18c \ud30c\uc77c\uc758 \ud06c\uae30\ub97c \ub298\ub9ac\uc2ed\uc2dc\uc624.
+
+FILE_STORE_TEMPORARY_STORE_FULL_SIMS1575E=CWSIS1575E: \ud30c\uc77c \uc800\uc7a5\uc18c\uc758 \uc784\uc2dc \uc800\uc7a5\uc18c \ud30c\uc77c\uc774 \uac00\ub4dd \ucc3c\uc2b5\ub2c8\ub2e4.
+FILE_STORE_TEMPORARY_STORE_FULL_SIMS1575E.explanation=\ud30c\uc77c \uc800\uc7a5\uc18c\uc758 \uc784\uc2dc \uc800\uc7a5\uc18c \ud30c\uc77c\uc5d0 \uba54\uc2dc\uc9c0\ub97c \uc800\uc7a5\ud560 \uacf5\uac04\uc774 \ub354 \uc774\uc0c1 \uc5c6\uc2b5\ub2c8\ub2e4. \
+\uc608\uc0c1\uce58 \uc54a\uc740 \uba54\uc2dc\uc9c0 \ube4c\ub4dc \ub610\ub294 \ud30c\uc77c \ud06c\uae30\uac00 \ub108\ubb34 \uc791\uc740 \uac83\uc774 \uc6d0\uc778\uc77c \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+FILE_STORE_TEMPORARY_STORE_FULL_SIMS1575E.useraction=\uacfc\ub3c4\ud55c \uba54\uc2dc\uc9c0\ub97c \uc815\ub9ac\ud558\uac70\ub098, \ud544\uc694\ud55c \uacbd\uc6b0, \uc784\uc2dc \uc800\uc7a5\uc18c \ud30c\uc77c\uc758 \ud06c\uae30\ub97c \ub298\ub9ac\uc2ed\uc2dc\uc624.
+
+SPILL_DISPATCHER_IS_FULL_SIMS1576E=CWSIS1576E: Dispatcher\uac00 \uac00\ub4dd \ucc3c\uc2b5\ub2c8\ub2e4. 
+SPILL_DISPATCHER_IS_FULL_SIMS1576E.explanation=Spill Dispatcher\uac00 \uac00\ub4dd \ucc28\uc11c \uc77c\ubd80 \uacf5\uac04\uc744 \uc0ac\uc6a9\ud560 \uc218 \uc788\uc744 \ub54c\uae4c\uc9c0 \uc0c8 \uba54\uc2dc\uc9c0\ub97c \uc218\uc2e0\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \
+Dispatcher\uc758 \uc5ec\uc720 \uacf5\uac04\uc744 \ub298\ub9ac\ub3c4\ub85d \uae30\uc874 \uba54\uc2dc\uc9c0\ub97c \uc81c\uac70\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+SPILL_DISPATCHER_IS_FULL_SIMS1576E.useraction=Dispatcher\ub97c \ud45c\uc900\uc73c\ub85c \ub9ac\ud134\ud558\ub294 \ub370 \uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \
+\ud558\uc9c0\ub9cc \uc774\ub294 \uc784\uc2dc \uc800\uc7a5 \ud30c\uc77c\uc758 \ud06c\uae30\uac00 \ub108\ubb34 \uc791\uc544\uc9c4 \ud604\uc0c1\uc77c \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+
+PERSISTENT_DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1577=CWSIS1577E: \uc9c0\uc18d\uc801 Dispatcher\uac00 \uc791\uc5c5\uc744 \ud5c8\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+PERSISTENT_DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1577.explanation=\uc774\uc804 \uc624\ub958\ub85c \uc778\ud574 \uc9c0\uc18d\uc801 Dispatcher\uac00 \ucd94\uac00 \uc791\uc5c5\uc744 \ud5c8\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+PERSISTENT_DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1577.useraction=CMSG0002 
+SPILL_DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1578=CWSIS1578E: Spill Dispatcher\uac00 \uc791\uc5c5\uc744 \ud5c8\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+SPILL_DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1578.explanation=\uc774\uc804 \uc624\ub958\ub85c \uc778\ud574 Spill Dispatcher\uac00 \ucd94\uac00 \uc791\uc5c5\uc744 \ud5c8\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+SPILL_DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1578.useraction=CMSG0002 
+FILE_STORE_LOG_FILE_IN_USE_SIMS1579=CWSIS1579E: \ud30c\uc77c \uc800\uc7a5\uc18c\uc758 \ub85c\uadf8 \ud30c\uc77c\uc774 \ub2e4\ub978 \ud504\ub85c\uc138\uc2a4\uc5d0\uc11c \uc7a0\uacbc\uc2b5\ub2c8\ub2e4.
+FILE_STORE_LOG_FILE_IN_USE_SIMS1579.explanation=\ud30c\uc77c \uc800\uc7a5\uc18c\uac00 \ub85c\uadf8 \ud30c\uc77c \uc7a0\uae08\uc744 \uc2dc\ub3c4\ud560 \ub54c \ub2e4\ub978 \ud504\ub85c\uc138\uc2a4\uac00 \uc774\ubbf8 \ud30c\uc77c \uc7a0\uae08\uc744 \ubcf4\uc720\ud558\uc5ec \uc7a0\uae08\uc744 \uc218\ud589\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \
+\uc774 \ud504\ub85c\uc138\uc2a4\ub294 \ub2e4\ub978 \ud65c\uc131 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4 \ub610\ub294 \uc77c\ubd80 \ub2e4\ub978 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ud504\ub85c\uc138\uc2a4\uc785\ub2c8\ub2e4.
+FILE_STORE_LOG_FILE_IN_USE_SIMS1579.useraction=\ud30c\uc77c \uc800\uc7a5\uc18c\uac00 \ud574\ub2f9 \ud30c\uc77c \uc800\uc7a5\uc18c\uc5d0\uc11c\ub9cc \uc0ac\uc6a9\ud558\ub294 \ub85c\uadf8 \ud30c\uc77c\uc744 \ucc38\uc870\ud558\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \
+\ub450 \ubc88\uc9f8 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc774 \ub3d9\uc77c\ud55c \ud30c\uc77c\uc744 \uc0ac\uc6a9\ud558\ub294 \uacbd\uc6b0, \uc798\ubabb\ub41c \uad6c\uc131 \ub610\ub294 \uc798\ubabb\ub41c \uc7a5\uc560 \ubcf5\uad6c \uc2dc\ub3c4\ub85c \uc778\ud55c \uac83\uc77c \uc218 \uc788\uc2b5\ub2c8\ub2e4. \
+\uc774 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc744 \uc2dc\uc791\ud558\ub824\uba74 \ub85c\uadf8 \ud30c\uc77c\uc744 \uc0ac\uc6a9\ud558\ub294 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc744 \ud310\ubcc4\ud558\uc5ec \ud574\ub2f9 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc744 \uc911\uc9c0\ud558\uc2ed\uc2dc\uc624.
+
+# {0} is the path to the log file that was provided from the configuration.
+FILE_STORE_CANNOT_FIND_LOG_FILE_SIMS1580=CWSIS1580E: \ud30c\uc77c \uc800\uc7a5\uc18c\uc758 \ub85c\uadf8 \ud30c\uc77c\uc744 \uc774\uc804 \uc704\uce58 \uc5d0\uc11c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. {0}.
+FILE_STORE_CANNOT_FIND_LOG_FILE_SIMS1580.explanation=\ud30c\uc77c \uc800\uc7a5\uc18c\uac00 \ub85c\uadf8 \ud30c\uc77c\uc744 \uc5f4\uac70\ub098 \uc791\uc131\ud558\ub824\uace0 \ud588\uc9c0\ub9cc \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. \
+\uc774 \ubb38\uc81c\uc810\uc758 \uc77c\ubc18\uc801\uc778 \uc6d0\uc778\uc740 \ub514\uc2a4\ud06c \ub9c8\uc6b4\ud2b8\uac00 \uc5c6\uac70\ub098 \uc81c\uacf5\ub41c \uacbd\ub85c\ub97c \uc798\ubabb \uc785\ub825\ud588\uae30 \ub54c\ubb38\uc785\ub2c8\ub2e4.
+FILE_STORE_CANNOT_FIND_LOG_FILE_SIMS1580.useraction=\uc81c\uacf5\ub41c \uacbd\ub85c\uac00 \uc0ac\uc6a9 \uac00\ub2a5\ud55c \ub514\uc2a4\ud06c\uc640 \ub514\ub809\ud1a0\ub9ac\ub97c \ucc38\uc870\ud558\ub294\uc9c0 \uc5ec\ubd80\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# {0} The log file name
+FILE_STORE_ATTEMPTING_TO_INITIALISE_SIMS1581=CWSIS1581I: \ud30c\uc77c \uc800\uc7a5\uc18c\uac00 \ub85c\uadf8 \ud30c\uc77c\uc758 \ucd08\uae30\ud654 \uc2dc\ub3c4 \uc911: {0}
+FILE_STORE_ATTEMPTING_TO_INITIALISE_SIMS1581.explanation=\ud30c\uc77c \uc800\uc7a5\uc18c\uac00 \uc2dc\uc791\ub418\uc5b4 \ub85c\uadf8 \ud30c\uc77c\uc758 \ucee8\ud150\uce20\ub97c \uc77d\uace0 \uc788\uc2b5\ub2c8\ub2e4.
+FILE_STORE_ATTEMPTING_TO_INITIALISE_SIMS1581.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                       
+FILE_STORE_PROBLEM_INITIALISING_LOG_SIMS1582=CWSIS1582I: \ud30c\uc77c \uc800\uc7a5\uc18c\uac00 \ub85c\uadf8 \ud30c\uc77c\uc744 \ucd08\uae30\ud654\ud558\ub294 \uc911\uc5d0 \ubb38\uc81c\uac00 \ubc1c\uc0dd\ud588\uc9c0\ub9cc \uc7ac\uc2dc\ub3c4\ud569\ub2c8\ub2e4.
+FILE_STORE_PROBLEM_INITIALISING_LOG_SIMS1582.explanation=\ud30c\uc77c \uc800\uc7a5\uc18c\uac00 \uc774 \uc2dc\ub3c4\uc5d0\uc11c \ucd08\uae30\ud654\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. \
+\uc774\uc804 \uba54\uc2dc\uc9c0\ub294 \uc2e4\ud328 \uc774\uc720\uc5d0 \ub300\ud574 \uc124\uba85\ud558\ub294 \ucd9c\ub825\uc774 \ub429\ub2c8\ub2e4. \
+\ud30c\uc77c \uc800\uc7a5\uc18c\uac00 \ucd08\uae30\ud654\ub97c \uc7ac\uc2dc\ub3c4\ud558\uc5ec \uc2e4\ud328\uac00 \ubcf5\uad6c \uac00\ub2a5\ud55c\uc9c0 \ud655\uc778\ud569\ub2c8\ub2e4.
+FILE_STORE_PROBLEM_INITIALISING_LOG_SIMS1582.useraction=\ud30c\uc77c \uc800\uc7a5\uc18c\uac00 \uc5ec\ub7ec \ubc88\uc758 \uc2dc\ub3c4 \ud6c4\uc5d0 \ucd08\uae30\ud654\uc5d0 \uc131\uacf5\ud558\uc9c0 \ubabb\ud55c \uacbd\uc6b0, \ub85c\uadf8\uc758 \uc2e4\ud328\uc5d0 \ub300\ud574 \uc124\uba85\ud558\ub294 \uba54\uc2dc\uc9c0\uc5d0\uc11c \uad6c\uc131 \ub610\ub294 \uc5f0\uacb0 \ubb38\uc81c\uc810\uc774 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+FILE_STORE_INITIALISATION_RETRY_LIMIT_EXCEEDED_SIMS1583=CWSIS1583E: \ud30c\uc77c \uc800\uc7a5\uc18c\uac00 \ucd08\uae30\ud654 \uc7ac\uc2dc\ub3c4 \ud55c\uacc4\ub97c \ucd08\uacfc\ud558\uc5ec \uc9c0\uae08 \uc911\uc9c0\ub429\ub2c8\ub2e4.
+FILE_STORE_INITIALISATION_RETRY_LIMIT_EXCEEDED_SIMS1583.explanation=\uba54\uc2dc\uc9d5 \uc5d4\uc9c4 \ud30c\uc77c \uc800\uc7a5\uc18c\uac00 \ucd08\uae30\ud654 \uc7ac\uc2dc\ub3c4 \ud69f\uc218 \ud55c\uacc4\uc5d0 \ub3c4\ub2ec\ud558\uc5ec \uc9c0\uae08 \uc911\uc9c0\ub429\ub2c8\ub2e4. \
+\uc774\uc804 \uba54\uc2dc\uc9c0\uc5d0\uc11c\ub294 \ubc18\ubcf5\ub41c \ucd08\uae30\ud654 \uc2e4\ud328\uc758 \uc774\uc720\uc5d0 \ub300\ud574 \uc124\uba85\ud574\uc57c \ud569\ub2c8\ub2e4. \
+\uc911\uc9c0 \ud6c4 \uc11c\ubc84 \uad6c\uc131\uc5d0\uc11c \uc9c0\uc6d0\ud560 \uacbd\uc6b0, \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc740 \uc7a5\uc560 \ubcf5\uad6c\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+FILE_STORE_INITIALISATION_RETRY_LIMIT_EXCEEDED_SIMS1583.useraction=\uba54\uc2dc\uc9c0 \ucd9c\ub825\uc740 \uc774\uc804\uc5d0 \ud30c\uc77c \uc800\uc7a5\uc18c \ucd08\uae30\ud654 \uc2e4\ud328\uc758 \uc774\uc720\ub97c \ud310\ubcc4\ud558\ub294 \ub370 \ub3c4\uc6c0\uc774 \ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+
+FILE_STORE_SUCCESSFULLY_INITIALISED_SIMS1584=CWSIS1584I: \ud30c\uc77c \uc800\uc7a5\uc18c\uac00 \ucd08\uae30\ud654\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+FILE_STORE_SUCCESSFULLY_INITIALISED_SIMS1584.explanation=\ud30c\uc77c \uc800\uc7a5\uc18c\uac00 \ub85c\uadf8 \ud30c\uc77c\uc744 \uc5f4\uc5b4 \ucd08\uae30\ud654\ud588\uc2b5\ub2c8\ub2e4.
+FILE_STORE_SUCCESSFULLY_INITIALISED_SIMS1584.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                       
+# {0} The permanent store file name
+# {1} The temporary store file name
+FILE_STORE_START_PERMANENT_TEMPORARY_STORES_SIMS1585=CWSIS1585I: \ud30c\uc77c \uc800\uc7a5\uc18c\uac00 \uc601\uad6c \uc800\uc7a5\uc18c({0}) \ubc0f \uc784\uc2dc \uc800\uc7a5\uc18c({1}) \uc2dc\uc791\uc744 \uc2dc\ub3c4\ud569\ub2c8\ub2e4.
+FILE_STORE_START_PERMANENT_TEMPORARY_STORES_SIMS1585.explanation=\ud30c\uc77c \uc800\uc7a5\uc18c\uac00 \uc800\uc7a5\uc18c \ud30c\uc77c\uc758 \ucee8\ud150\uce20\ub97c \uc5f4\uc5b4\uc11c \uc77d\uc2b5\ub2c8\ub2e4. \
+\ucc98\uc74c\uc73c\ub85c \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc774 \uc2dc\uc791\ub41c \uacbd\uc6b0\ub77c\uba74 \ud574\ub2f9 \ud30c\uc77c\ub3c4 \uc791\uc131\ub429\ub2c8\ub2e4.
+FILE_STORE_START_PERMANENT_TEMPORARY_STORES_SIMS1585.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                       
+FILE_STORE_SUCCESSFULLY_STARTED_PERMANENT_STORE_SIMS1586=CWSIS1586I: \ud30c\uc77c \uc800\uc7a5\uc18c\uc758 \uc601\uad6c \uc800\uc7a5\uc18c\uac00 \uc2dc\uc791\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+FILE_STORE_SUCCESSFULLY_STARTED_PERMANENT_STORE_SIMS1586.explanation=\ud30c\uc77c \uc800\uc7a5\uc18c\uac00 \ud574\ub2f9 \uc601\uad6c \uc800\uc7a5\uc18c \ud30c\uc77c\uc758 \ucee8\ud150\uce20\ub97c \uc5f4\uc5b4 \ud655\uc778\ud588\uc2b5\ub2c8\ub2e4.
+FILE_STORE_SUCCESSFULLY_STARTED_PERMANENT_STORE_SIMS1586.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                       
+FILE_STORE_SUCCESSFULLY_STARTED_TEMPORARY_STORE_SIMS1587=CWSIS1587I: \ud30c\uc77c \uc800\uc7a5\uc18c\uc758 \uc784\uc2dc \uc800\uc7a5\uc18c\uac00 \uc2dc\uc791\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+FILE_STORE_SUCCESSFULLY_STARTED_TEMPORARY_STORE_SIMS1587.explanation=\ud30c\uc77c \uc800\uc7a5\uc18c\uac00 \ud574\ub2f9 \uc784\uc2dc \uc800\uc7a5\uc18c \ud30c\uc77c\uc758 \ucee8\ud150\uce20\ub97c \uc5f4\uc5b4 \ud655\uc778\ud588\uc2b5\ub2c8\ub2e4.
+FILE_STORE_SUCCESSFULLY_STARTED_TEMPORARY_STORE_SIMS1587.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                       
+FILE_STORE_STARTED_SUCCESSFULLY_SIMS1588=CWSIS1588I: \ud30c\uc77c \uc800\uc7a5\uc18c\uac00 \uc2dc\uc791\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+FILE_STORE_STARTED_SUCCESSFULLY_SIMS1588.explanation=\ud30c\uc77c \uc800\uc7a5\uc18c\uac00 \ubaa8\ub4e0 \ud30c\uc77c\uc744 \uc5f4\uc5b4\uc11c \uc77d\uc5c8\uc73c\uba70 \uc774\uc81c \uc0c8 \uc791\uc5c5\uc744 \ud5c8\uc6a9\ud560 \uc900\ube44\uac00 \ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+FILE_STORE_STARTED_SUCCESSFULLY_SIMS1588.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                       
+FILE_STORE_STOP_EXPECTED_SIMS1589=CWSIS1589I: \ud30c\uc77c \uc800\uc7a5\uc18c\uac00 \uc911\uc9c0\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+FILE_STORE_STOP_EXPECTED_SIMS1589.explanation=\uc81c\uc5b4\ub41c \uc2dc\uc2a4\ud15c \uc885\ub8cc\uc758 \uc77c\ubd80\ub85c \ud30c\uc77c \uc800\uc7a5\uc774 \uc911\uc9c0\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+FILE_STORE_STOP_EXPECTED_SIMS1589.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                       
+FILE_STORE_STOP_UNEXPECTED_SIMS1590=CWSIS1590E: \ud30c\uc77c \uc800\uc7a5\uc18c\uac00 \uc608\uc0c1\uce58 \uc54a\uac8c \uc911\uc9c0\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+FILE_STORE_STOP_UNEXPECTED_SIMS1590.explanation=\ud30c\uc77c \uc800\uc7a5\uc18c\uac00 \uc608\uc0c1\uce58 \uc54a\uc740 \uc624\ub958\ub85c \uc911\uc9c0\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \ub85c\uadf8\uc5d0 \uc788\ub294 \uc774\uc804 \uba54\uc2dc\uc9c0\uc5d0\uc11c \uc624\ub958\ub97c \uc124\uba85\ud574\uc57c \ud569\ub2c8\ub2e4.
+FILE_STORE_STOP_UNEXPECTED_SIMS1590.useraction=\ub85c\uadf8\uc758 \ubaa8\ub4e0 \uba54\uc2dc\uc9c0\ub97c \uc870\uc0ac\ud558\uc5ec \uc608\uc0c1\uce58 \uc54a\uc740 \uc2dc\uc2a4\ud15c \uc885\ub8cc\uc758 \uadfc\ubcf8 \uc6d0\uc778\uc744 \ud310\ubcc4\ud558\uc2ed\uc2dc\uc624.
+
+FILE_STORE_UNEXPECTED_INITIALISATION_EXCEPTION_SIMS1591=CWSIS1591E: \ud30c\uc77c \uc800\uc7a5\uc18c\uc5d0\uc11c \uc124\uce58 \uc911\uc5d0 \uc608\uc0c1\uce58 \uc54a\uc740 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+FILE_STORE_UNEXPECTED_INITIALISATION_EXCEPTION_SIMS1591.explanation=\ud30c\uc77c \uc800\uc7a5\uc18c \ucd08\uae30\ud654 \uc911\uc5d0 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc774 \uc2dc\uc791\uc744 \uc911\uc9c0\ud558\ub3c4\ub85d \ud55c \uc608\uc0c1\uce58 \uc54a\uc740 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+FILE_STORE_UNEXPECTED_INITIALISATION_EXCEPTION_SIMS1591.useraction=CMSG0002 
+FILE_STORE_UNEXPECTED_IO_EXCEPTION_SIMS1592=CWSIS1592E: \ud30c\uc77c \uc800\uc7a5\uc18c\uc5d0 \uc608\uc0c1\uce58 \uc54a\uc740 io \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+FILE_STORE_UNEXPECTED_IO_EXCEPTION_SIMS1592.explanation=\ud30c\uc77c \uc800\uc7a5\uc18c \ucd08\uae30\ud654 \uc911\uc5d0 \uc608\uc0c1\uce58 \uc54a\uc740 io \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \
+\ub2e4\uc2dc \ucd08\uae30\ud654\ud558\ub3c4\ub85d \uc2dc\ub3c4\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+FILE_STORE_UNEXPECTED_IO_EXCEPTION_SIMS1592.useraction=\uc11c\ubc84 \ub85c\uadf8\ub97c \ud655\uc778\ud558\uc5ec \ud30c\uc77c \uc800\uc7a5\uc18c \ucd08\uae30\ud654\ub97c \ub2e4\uc2dc \uc2dc\ub3c4\ud560 \ub54c \ubb38\uc81c\uc810\uc774 \ud574\uacb0\ub418\uc5c8\ub294\uc9c0\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# Messages CWSIS1593 & CWSIS1594 introduced to replace message CWSIS1546 which is ambiguous
+# {0} the messaging engine UUID
+# {1} the incarnation UUID
+#DBLOCK_FAILED_SIMS1593=CWSIS1593I: The messaging engine, ME_UUID={0}, INC_UUID={1}, has failed to gain an initial lock on the data store.
+#DBLOCK_FAILED_SIMS1593.explanation=The messaging engine, identified by the UUIDs in the message, has been unable to get an exclusive lock \ 
+#                                   on the database tables that hold its data. This could be due to another instance of the messaging engine \ 
+#                                   running against the same set of tables. It could also be the result of a lock from a previously running \ 
+#                                   instance being held for longer than expected in the database. The messaging engine will retry for a \ 
+#                                   period during startup to see if it is able to acquire the lock.
+#DBLOCK_FAILED_SIMS1593.useraction=If the messaging engine does not succeed in acquiring the lock during the startup retry period then \ 
+#                                  check that no other instance of the messaging engine is running and that there are no outstanding locks \ 
+#                                 on the tables for this messaging engine being held on your database server.
+
+# {0} the messaging engine UUID
+# {1} the incarnation UUID
+#DBLOCK_LOST_SIMS1594=CWSIS1594I: The messaging engine, ME_UUID={0}, INC_UUID={1}, has lost the lock on the data store.
+#DBLOCK_LOST_SIMS1594.explanation=The messaging engine, identified by the UUIDs in the message, has lost an existing lock on the tables that \ 
+#                                 hold its data. This may be due to a connectivity problem between the messaging engine and the database server \ 
+#                                 or that another instance of the messaging engine has started and taken control of the tables.
+#DBLOCK_LOST_SIMS1594.useraction=Check that a network connection between your messaging engine and database server is available and that there is \ 
+#                               only one instance of the messaging engine running.
+
+#INVALID_PARAMETER_COMBINATION_SIMS1595=CWSIS1595E: An invalid combination of parameters has been specified, Database: {0}, version: {1}, platform: {2} . Refer to the documentation for the correct parameters for your database.
+#INVALID_PARAMETER_COMBINATION_SIMS1595.explanation=The combination of parameters used was unrecognized by the sibDDLGenerator.
+#INVALID_PARAMETER_COMBINATION_SIMS1595.useraction=Refer to the documentation for a valid combination of parameters to use for your database. Rerun the command with a valid combination of parameters.
+
+#DATASTORE_LOCK_CANNOT_BE_DISABLED_CWSIS1596=CWSIS1596I: The data store exclusive lock cannot be disabled.
+#DATASTORE_LOCK_CANNOT_BE_DISABLED_CWSIS1596.explanation=The data store exclusive lock ensures integrity of the data within the data store and cannot \ 
+#                                                        be disabled for this messaging engine.
+#DATASTORE_LOCK_CANNOT_BE_DISABLED_CWSIS1596.useraction=If you have identified a need to disable the data store exclusive lock contact IBM Support.
+
+#DATASTORE_LOCK_DISABLED_CWSIS1597=CWSIS1597I: The data store exclusive lock has been disabled for {0} milliseconds.
+#DATASTORE_LOCK_DISABLED_CWSIS1597.explanation=A request was made to disable the data store exclusive lock. The lock will remain disabled for the \ 
+#                                              length of time stated in the message at which point it will re-enable automatically.
+#DATASTORE_LOCK_DISABLED_CWSIS1597.useraction=No action is required.
+
+#DATASTORE_LOCK_REENABLED_CWSIS1598=CWSIS1598I: The data store exclusive lock has been automatically re-enabled.
+#DATASTORE_LOCK_REENABLED_CWSIS1598.explanation=The messaging engines data store has re-enabled its exclusive lock after the requested time period.
+#DATASTORE_LOCK_REENABLED_CWSIS1598.useraction=No action is required.
+
+#DBLOCK_ATTEMPTING_SIMS1599=CWSIS1599I: The messaging engine, ME_UUID={0}, INC_UUID={1}, is attempting to obtain ownership on the data store.
+#DBLOCK_ATTEMPTING_SIMS1599.explanation=The messaging engine, identified by the UUIDs in the message, is attempting to establish ownership of the data store.
+#DBLOCK_ATTEMPTING_SIMS1599.useraction=No action is required.
+
+#DBLOCK_EXCEPTION_SIMS1600=CWSIS1600E: Unable to update Messaging Engine status as the messaging engine encountered an exception while acquiring ownership on the message store. Exception: {0}
+#DBLOCK_EXCEPTION_SIMS1600.explanation=If the message does not give sufficient information, see the accompanying error messages for further information.
+#DBLOCK_EXCEPTION_SIMS1600.useraction=CMSG0002
+
+#DBLOCK_ACQUIRED_SIMS1601=CWSIS1601I: The messaging engine, ME_UUID={0}, INC_UUID={1}, has obtained ownership on the data store.
+#DBLOCK_ACQUIRED_SIMS1601.explanation=The messaging engine, identified by the UUIDs in the message, has established ownership of the data store.
+#DBLOCK_ACQUIRED_SIMS1601.useraction=No action is required.
+
+#INCOMPATIBLE_DATASTORE_FOR_RESTRICT_DB_LOCK_FEATURE_SIMS1602=CWSIS1602W: Restrict database locking feature is not supported, because the messaging engine is trying to connect to a datastore which is not migrated to a version that supports this feature.
+#INCOMPATIBLE_DATASTORE_FOR_RESTRICT_DB_LOCK_FEATURE_SIMS1602.explanation=Messaging Engine is trying to connect to a datastore which is not migrated to a version that supports this feature.
+#INCOMPATIBLE_DATASTORE_FOR_RESTRICT_DB_LOCK_FEATURE_SIMS1602.useraction=Use sibDBUpdgrade command to migrate the existing tables.
+
+#INCOMPATIBLE_DATASTORE_FOR_RDC_FEATURE_SIMS1603=CWSIS1603W: Keep count of failed deliveries feature is not supported, because the messaging engine is trying to connect to a datastore which is not migrated to a version that supports this feature.
+#INCOMPATIBLE_DATASTORE_FOR_RDC_FEATURE_SIMS1603.explanation=Messaging Engine is trying to connect to a datastore which is not migrated to a version that supports this feature.
+#INCOMPATIBLE_DATASTORE_FOR_RDC_FEATURE_SIMS1603.useraction=Use sibDBUpdgrade command to migrate the existing tables.
+
+
+# -------------------------------------------------------------------------------------------------
+# Expiry
+# -------------------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the non-unique key
+DUPLICATE_EXPIRABLE_SIMS2000=CWSIS2000E: \ud56d\ubaa9\uc5d0 \uace0\uc720 \ud0a4\uac00 \uc5c6\uc2b5\ub2c8\ub2e4. {0}
+DUPLICATE_EXPIRABLE_SIMS2000.explanation=\uace0\uc720\ud558\uc9c0 \uc54a\uc740 \uc624\ube0c\uc81d\ud2b8\ub97c \ub9cc\uae30 \uc0c9\uc778\uc5d0 \ucd94\uac00\ud558\ub824\uace0 \ud588\uc2b5\ub2c8\ub2e4.
+DUPLICATE_EXPIRABLE_SIMS2000.useraction=CMSG0002 
+# {0} is the text of the exception thrown
+EXPIRY_DAEMON_TERMINATED_SIMS2001=CWSIS2001E: \uc608\uc0c1\uce58 \uc54a\uc740 \uc608\uc678\ub85c \uc778\ud574 \ub9cc\uae30 \ub514\uba3c\uc774 \ube44\uc815\uc0c1\uc801\uc73c\ub85c \uc885\ub8cc\ub418\uc5c8\uc2b5\ub2c8\ub2e4. {0}
+EXPIRY_DAEMON_TERMINATED_SIMS2001.explanation=\ub9cc\uae30 \ub514\uba3c \uc2a4\ub808\ub4dc\uac00 \uc778\ud130\ub7fd\ud2b8\ub418\uc5c8\uc73c\ubbc0\ub85c \uc911\uc9c0\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+EXPIRY_DAEMON_TERMINATED_SIMS2001.useraction=CMSG0002  
+# {0} is the text of the exception thrown
+CACHE_LOADER_TERMINATED_SIMS2003=CWSIS2003E: \uc608\uc0c1\uce58 \uc54a\uc740 \uc608\uc678\ub85c \uc778\ud558\uc5ec \uce90\uc2dc \ub85c\ub354 \ub514\uba3c\uc774 \ube44\uc815\uc0c1\uc801\uc73c\ub85c \uc885\ub8cc\ub418\uc5c8\uc2b5\ub2c8\ub2e4. {0}
+CACHE_LOADER_TERMINATED_SIMS2003.explanation=\uce90\uc2dc \ub85c\ub354 \ub514\uba3c \uc2a4\ub808\ub4dc\uac00 \uc778\ud130\ub7fd\ud2b8\ub418\uc5c8\uc73c\uba70 \uc911\uc9c0\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+CACHE_LOADER_TERMINATED_SIMS2003.useraction=CMSG0002 
+EXPIRY_THREAD_ALREADY_RUNNING_SIMS2004=CWSIS2004E: \ub9cc\uae30 \ub514\uba3c\uc744 \uc774\ubbf8 \uc2e4\ud589 \uc911\uc785\ub2c8\ub2e4.
+EXPIRY_THREAD_ALREADY_RUNNING_SIMS2004.explanation=\ub9cc\uae30 \ub514\uba3c \uc2a4\ub808\ub4dc\ub97c \uc2dc\uc791\ud558\ub824\uace0 \ud588\uc73c\ub098 \uc774\ubbf8 \uc2e4\ud589 \uc911\uc785\ub2c8\ub2e4.
+EXPIRY_THREAD_ALREADY_RUNNING_SIMS2004.useraction=CMSG0002 
+
+# -------------------------------------------------------------------------------------------------
+# DeliveryDelayManager
+# -------------------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the non-unique key
+DUPLICATE_DELIVERYDELAYABLE_SIMS2010=CWSIS2010E: \ud56d\ubaa9\uc5d0 \uace0\uc720 \ud0a4\uac00 \uc5c6\uc2b5\ub2c8\ub2e4. {0}
+DUPLICATE_DELIVERYDELAYABLE_SIMS2010.explanation=\uace0\uc720\ud558\uc9c0 \uc54a\uc740 \uc624\ube0c\uc81d\ud2b8\ub97c \uc804\ub2ec \uc9c0\uc5f0 \uc0c9\uc778\uc5d0 \ucd94\uac00\ud558\ub824\uace0 \ud588\uc2b5\ub2c8\ub2e4.
+DUPLICATE_DELIVERYDELAYABLE_SIMS2010.useraction=\uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc744 \ub2e4\uc2dc \uc2dc\uc791\ud558\uc2ed\uc2dc\uc624. \ubb38\uc81c\uc810\uc774 \uc9c0\uc18d\ub418\ub294 \uacbd\uc6b0 WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc758 \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+# {0} is the text of the exception thrown
+DELIVERYDELAYMANAGER_DAEMON_TERMINATED_SIMS2011=CWSIS2011E: \uc608\uc0c1\uce58 \uc54a\uc740 \uc608\uc678\ub85c \uc778\ud558\uc5ec \uc804\ub2ec \uc9c0\uc5f0 \uad00\ub9ac\uc790 \ub514\uba3c\uc774 \ube44\uc815\uc0c1\uc801\uc73c\ub85c \uc885\ub8cc\ub418\uc5c8\uc2b5\ub2c8\ub2e4. {0}
+DELIVERYDELAYMANAGER_DAEMON_TERMINATED_SIMS2011.explanation=\uc804\ub2ec \uc9c0\uc5f0 \uad00\ub9ac\uc790 \ub514\uba3c \uc2a4\ub808\ub4dc\uac00 \uc778\ud130\ub7fd\ud2b8\ub418\uc5c8\uc73c\uba70 \uc911\uc9c0\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+DELIVERYDELAYMANAGER_DAEMON_TERMINATED_SIMS2011.useraction=\uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc744 \ub2e4\uc2dc \uc2dc\uc791\ud558\uc2ed\uc2dc\uc624. \ubb38\uc81c\uc810\uc774 \uc9c0\uc18d\ub418\ub294 \uacbd\uc6b0 WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc758 \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+ 
+DELIVERYDELAYMANAGER_THREAD_ALREADY_RUNNING_SIMS2012=CWSIS2012E: \uc804\ub2ec \uc9c0\uc5f0 \uad00\ub9ac\uc790 \ub514\uba3c\uc774 \uc774\ubbf8 \uc2e4\ud589 \uc911\uc785\ub2c8\ub2e4.
+DELIVERYDELAYMANAGER_THREAD_ALREADY_RUNNING_SIMS2012.explanation=\uc804\ub2ec \uc9c0\uc5f0 \uad00\ub9ac\uc790 \ub514\uba3c \uc2a4\ub808\ub4dc\ub97c \uc2dc\uc791\ud558\ub824\uace0 \ud588\uc73c\ub098 \uc774\ubbf8 \uc2e4\ud589 \uc911\uc785\ub2c8\ub2e4.
+DELIVERYDELAYMANAGER_THREAD_ALREADY_RUNNING_SIMS2012.useraction=\uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc744 \ub2e4\uc2dc \uc2dc\uc791\ud558\uc2ed\uc2dc\uc624. \ubb38\uc81c\uc810\uc774 \uc9c0\uc18d\ub418\ub294 \uacbd\uc6b0 WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc758 \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_SIMS9999=CWSIS9999E: {0}
+TEMPORARY_SIMS9999.explanation=\uba54\uc2dc\uc9c0\uc5d0 \ucda9\ubd84\ud55c \uc815\ubcf4\uac00 \uc5c6\ub294 \uacbd\uc6b0, \ucd94\uac00 \uc815\ubcf4\ub294 \ucca8\ubd80\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+TEMPORARY_SIMS9999.useraction=\ucd94\uac00 \uc815\ubcf4\ub294 \ucca8\ubd80\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.

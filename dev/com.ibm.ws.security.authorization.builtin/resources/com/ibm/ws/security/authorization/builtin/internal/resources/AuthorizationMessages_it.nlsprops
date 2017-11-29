@@ -1,0 +1,39 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authorization.builtin/resources/com/ibm/ws/security/authorization/builtin/internal/resources/AuthorizationMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Built-in Authorization Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS2100 - CWWKS2199
+
+AUTHZ_MULTIPLE_RESOURCES_WITH_SAME_NAME=CWWKS2100E: Pi\u00f9 risorse hanno il nome {0}. Non \u00e8 possibile determinare la politica di autorizzazione.
+AUTHZ_MULTIPLE_RESOURCES_WITH_SAME_NAME.explanation=Ci sono pi\u00f9 risorse con lo stesso nome e non \u00e8 possibile determinare la corretta politica di autorozzazione. I nomi risorsa devono essere univoci.
+AUTHZ_MULTIPLE_RESOURCES_WITH_SAME_NAME.useraction=Modificare uno dei nomi risorsa uguali in modo che tutte le risorse siano univoche.
+
+AUTHZ_TABLE_INVALID_ROLE_DEFINITION=CWWKS2101E: La definizione di ruolo  non \u00e8 valida: {0}
+AUTHZ_TABLE_INVALID_ROLE_DEFINITION.explanation=La sintassi per la definizione di un ruolo \u00e8 <{1} name="..." />.
+AUTHZ_TABLE_INVALID_ROLE_DEFINITION.useraction=Modificare la definizione di ruolo nella configurazione.
+
+AUTHZ_TABLE_DUPLICATE_ROLE_DEFINITION=CWWKS2102E: Rilevati pi\u00f9 elementi {0} con il nome {1}
+AUTHZ_TABLE_DUPLICATE_ROLE_DEFINITION.explanation=\u00c8 consentita solo una definizione di un dato ruolo
+AUTHZ_TABLE_DUPLICATE_ROLE_DEFINITION.useraction=Rimuovere le definizioni di ruolo duplicate nella configurazione.
+
+AUTHZ_TABLE_DUPLICATE_ROLE_MEMBER=CWWKS2103E: Il ruolo {0} ha un utente, un gruppo o un soggetto speciale aggiunto pi\u00f9 di una volta
+AUTHZ_TABLE_DUPLICATE_ROLE_MEMBER.explanation=\u00c8 consentita solo una definizione di un membro per ruolo
+AUTHZ_TABLE_DUPLICATE_ROLE_MEMBER.useraction=Rimuovere le definizioni di membro di ruolo duplicate nella configurazione.
+
+AUTHZ_BASED_ON_ROLE_NAME_SAME_AS_GROUP_NAME=CWWKS2104I: La decisione di autorizzazione per le risorse nell''applicazione {0} verr\u00e0 effettuata utilizzando i nomi gruppo dell''utente che corrisponde ai nomi ruolo richiesti per accedere a tale risorsa.
+AUTHZ_BASED_ON_ROLE_NAME_SAME_AS_GROUP_NAME.explanation=L'applicazione non dispone di alcuna tabella di autorizzazione definita, pertanto il nome ruolo richiesto per accedere alla risorsa verr\u00e0 trattato come il nome gruppo per il controllo accessi. Ad esempio, se il nome ruolo richiesto per accedere alla risorsa \u00e8 Manager, se l'utente autenticato appartiene al gruppo Manager, verr\u00e0 concesso l'accesso.  
+AUTHZ_BASED_ON_ROLE_NAME_SAME_AS_GROUP_NAME.useraction=Il controllo di autorizzazione implicito pu\u00f2 essere disabilitato impostando l'attributo useGroupToRoleName dell'elemento di autorizzazione su false nel file server.xml.   

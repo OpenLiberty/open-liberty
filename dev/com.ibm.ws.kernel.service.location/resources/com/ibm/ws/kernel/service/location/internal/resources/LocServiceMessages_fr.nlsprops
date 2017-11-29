@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.service/resources/com/ibm/ws/kernel/service/location/internal/resources/LocServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0200 - 0299 com.ibm.ws.kernel.service.location.internal.resources.LocServiceMessages
+# -------------------------------------------------------------------------------------------------
+unreachableLocation=CWWKE0200E: L''emplacement sp\u00e9cifi\u00e9 est inaccessible. Il ne s''agit pas d''un enfant d''un chemin connu ou configur\u00e9 ; chemin={0}.
+unreachableLocation.explanation=La plate-forme utilise des chemins symboliques pour procurer une protection rudimentaire contre l'acc\u00e8s arbitraire au syst\u00e8me de fichiers quand le service de localisation d'emplacement est utilis\u00e9 pour r\u00e9soudre des chemins sp\u00e9cifi\u00e9s. \
+Le fichier README.TXT contient des informations sur la mani\u00e8re dont les chemins symboliques sont configur\u00e9s.
+unreachableLocation.useraction=Recherchez les chemins configur\u00e9s dans le fichier bootstrap.properties \
+et v\u00e9rifiez que le chemin configur\u00e9 est un enfant de symboles existants ou est associ\u00e9 \u00e0 un symbole d\u00e9fini \
+explicitement.
+
+invalidResourceType=CWWKE0201E: Impossible de cr\u00e9er le symbole : l''emplacement sp\u00e9cifi\u00e9 existe et est en conflit avec le type requis : {0}={1}.
+invalidResourceType.explanation=Le chemin sp\u00e9cifi\u00e9 pour un symbole existe mais est \
+un type de ressource diff\u00e9rent de celui du chemin (par exemple, le symbole d\u00e9crit un fichier alors que la ressource est un r\u00e9pertoire).
+invalidResourceType.useraction=V\u00e9rifiez que le chemin est correctement sp\u00e9cifi\u00e9. \
+Les chemins de r\u00e9pertoire doivent finir par une barre oblique /. \
+V\u00e9rifiez si le chemin fait r\u00e9f\u00e9rence \u00e0 une ressource qui soit n'existe pas, soit existe mais est alors du type requis.
+
+missingTmpDir=CWWKE0202E: L''emplacement de r\u00e9pertoire temporaire sp\u00e9cifi\u00e9 n''existe pas et ne peut pas \u00eatre cr\u00e9\u00e9 : {0}.
+missingTmpDir.explanation=Le r\u00e9pertoire sp\u00e9cifi\u00e9 pour java.io.tmpdir (par une variable d'environnement sp\u00e9cifique \u00e0 la plateforme ou via une propri\u00e9t\u00e9 syst\u00e8me) n'existe pas et ne peut pas \u00eatre cr\u00e9\u00e9.
+missingTmpDir.useraction=V\u00e9rifiez que le r\u00e9pertoire sp\u00e9cifi\u00e9 existe et est accessible en lecture/\u00e9criture.
+
+relativeTmpDir=CWWKE0203I: Le r\u00e9pertoire java.io.tmpdir a \u00e9t\u00e9 sp\u00e9cifi\u00e9 avec un chemin relatif. Le chemin r\u00e9solu est {0}.
+relativeTmpDir.explanation=Le r\u00e9pertoire sp\u00e9cifi\u00e9 pour java.io.tmpdir (par une variable \
+d'environnement sp\u00e9cifique \u00e0 la plateforme ou via une propri\u00e9t\u00e9 syst\u00e8me) a \u00e9t\u00e9 sp\u00e9cifi\u00e9 avec un chemin relatif et a \u00e9t\u00e9 \
+r\u00e9solu par rapport au r\u00e9pertoire de lancement.
+relativeTmpDir.useraction=Aucune action n'est requise.
+
+locationInitializationError=CWWKE0204E: Impossible d''initialiser le service de localisation de la plateforme ; raison={0}.
+locationInitializationError.explanation=CMSG0001
+locationInitializationError.useraction=CMSG0002
+
+frameworkShutdown=CWWKE0205W: L'infrastructure s'arr\u00eate en raison d'une erreur d'initialisation pr\u00e9c\u00e9dente.
+frameworkShutdown.explanation=L'infrastructure s'arr\u00eate en raison d'une erreur d'initialisation pr\u00e9c\u00e9dente.
+frameworkShutdown.useraction=R\u00e9solvez l'erreur et red\u00e9marrez le serveur.

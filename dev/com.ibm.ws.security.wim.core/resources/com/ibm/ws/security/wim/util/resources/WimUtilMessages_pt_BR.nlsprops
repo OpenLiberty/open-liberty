@@ -1,0 +1,265 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.websphere.security.wim.util/resources/com/ibm/websphere/security/wim/util/resources/WebsphereWimUtilMessages.nlsprops
+#COMPONENTPREFIX CWIML
+#COMPONENTPREFIX CWIMK
+#COMPONENTNAMEFOR Virtual Member Manager wim utilities 
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: Configuration:0000-0499
+# Message prefix block: Profile Manager: 1000-1999
+# Message prefix block: Repository Manager: 4000-4499
+# Message prefix block: Adapters: 4500-4999
+# Message prefix block: Schema/Realm: 0500-0999
+# Message prefix block: User Registry: 3000-3499
+
+INVALID_UNIQUE_NAME_SYNTAX=CWIML1011E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. A sintaxe do nome exclusivo {0} n\u00e3o \u00e9 v\u00e1lida. Forne\u00e7a a um nome exclusivo a sintaxe correta. Por exemplo, uid=xyz,dc=yourco,dc=com.
+INVALID_UNIQUE_NAME_SYNTAX.explanation=A sintaxe de nome exclusivo especificada n\u00e3o \u00e9 v\u00e1lida. O uniqueName especificado na propriedade do identificador n\u00e3o est\u00e1 correto. A opera\u00e7\u00e3o de registro do usu\u00e1rio n\u00e3o pode continuar sem o nome exclusivo correto.
+INVALID_UNIQUE_NAME_SYNTAX.useraction=Verifique se o nome exclusivo est\u00e1 grafado corretamente. Verifique a sintaxe do nome exclusivo. Por exemplo, se ele estiver em um formato de Nome Distinto (DN), assegure-se de que os caracteres especiais tenham escapes corretos.
+
+INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION=CWIMK0001E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. A defini\u00e7\u00e3o de tipo de entidade {0} n\u00e3o \u00e9 v\u00e1lida. Corrija a defini\u00e7\u00e3o da entidade no arquivo server.xml.
+INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION.explanation= O tipo de entidade deve ser definido com um nome de tipo de entidade e pelo menos uma propriedade de Nome Distinto Relativo (RDN) correspondente.
+INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION.useraction=Modifique e corrija a defini\u00e7\u00e3o de tipo de entidade no arquivo server.xml.
+
+INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. A defini\u00e7\u00e3o de entrada de base {0} n\u00e3o \u00e9 v\u00e1lida.  Corrija a defini\u00e7\u00e3o de entrada de base no arquivo server.xml. Por exemplo, a sintaxe \u00e9 <baseEntry name="..." baseDN="...."/>.
+INVALID_BASE_ENTRY_DEFINITION.explanation= A defini\u00e7\u00e3o especificada da entrada de base est\u00e1 incorreta. A sintaxe para definir uma entrada de base \u00e9 <baseEntry name="..." baseDN="...."/>.
+INVALID_BASE_ENTRY_DEFINITION.useraction= Modifique e corrija a defini\u00e7\u00e3o de entrada de base no arquivo server.xml.
+
+INVALID_REALM_DEFINITION=CWIMK0003E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. A defini\u00e7\u00e3o de dom\u00ednio {0} n\u00e3o \u00e9 v\u00e1lida. Corrija a defini\u00e7\u00e3o da regi\u00e3o no arquivo server.xml.
+INVALID_REALM_DEFINITION.explanation= A identifica\u00e7\u00e3o da regi\u00e3o est\u00e1 ausente ou \u00e9 inv\u00e1lida devido \u00e0 aus\u00eancia de um atributo requerido.
+INVALID_REALM_DEFINITION.useraction=Modifique e corrija a defini\u00e7\u00e3o de regi\u00e3o no arquivo server.xml.
+
+INVALID_PARTICIPATING_BASE_ENTRY_DEFINITION=CWIMK0004E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. A defini\u00e7\u00e3o de entrada de base participante {0} n\u00e3o \u00e9 v\u00e1lida. Corrija a defini\u00e7\u00e3o de entrada de base participante no arquivo server.xml. Por exemplo, a sintaxe \u00e9 <participatingBaseEntry name="..."/>.
+INVALID_PARTICIPATING_BASE_ENTRY_DEFINITION.explanation= A defini\u00e7\u00e3o especificada da entrada de base participante est\u00e1 incorreta. A sintaxe para definir uma entrada de base participante \u00e9 <participatingBaseEntry name="..."/>.
+INVALID_PARTICIPATING_BASE_ENTRY_DEFINITION.useraction=Modifique e corrija a defini\u00e7\u00e3o de entrada de base participante no arquivo server.xml.
+
+INVALID_UR_ATTRIBUTE_MAPPING_DEFINITION=CWIMK0005E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. A defini\u00e7\u00e3o de mapeamento do atributo do registro do usu\u00e1rio {0} n\u00e3o \u00e9 v\u00e1lida. Corrija o mapeamento de atributo de registro do usu\u00e1rio no arquivo server.xml.
+INVALID_UR_ATTRIBUTE_MAPPING_DEFINITION.explanation= A defini\u00e7\u00e3o de mapeamento do atributo do registro do usu\u00e1rio est\u00e1 definida incorretamente.
+INVALID_UR_ATTRIBUTE_MAPPING_DEFINITION.useraction=Modifique e corrija a defini\u00e7\u00e3o de mapeamento do atributo do registro do usu\u00e1rio no arquivo server.xml.
+
+INVALID_REALM_NAME=CWIMK0006E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. O nome da regi\u00e3o especificado {0} n\u00e3o \u00e9 v\u00e1lido. Especifique um nome de regi\u00e3o existente.
+INVALID_REALM_NAME.explanation=O nome da regi\u00e3o especificado n\u00e3o est\u00e1 definido ou est\u00e1 incorreto no arquivo server.xml.
+INVALID_REALM_NAME.useraction=Assegure-se de que o nome da regi\u00e3o exista e esteja grafado corretamente no arquivo server.xml. Se ele n\u00e3o existir, uma regi\u00e3o v\u00e1lida deve ser especificada.
+
+MISSING_BASE_ENTRY_IN_REALM=CWIMK0007E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. Nenhuma entrada de base v\u00e1lida est\u00e1 definida para a regi\u00e3o {0}. Defina a entrada de base para a regi\u00e3o no arquivo server.xml.
+MISSING_BASE_ENTRY_IN_REALM.explanation=Pelo menos uma entrada de base participante deve ser definida para uma regi\u00e3o.
+MISSING_BASE_ENTRY_IN_REALM.useraction=Assegure-se de que uma entrada de base participante v\u00e1lida esteja definida para a regi\u00e3o no arquivo server.xml.
+
+MISSING_BASE_ENTRY=CWIMK0008E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. O reposit\u00f3rio {0} deve conter pelo menos uma entrada de base. Defina a entrada de base no arquivo server.xml.
+MISSING_BASE_ENTRY.explanation=Depois de incluir um reposit\u00f3rio, pelo menos uma entrada de base deve ser inclu\u00edda nele.
+MISSING_BASE_ENTRY.useraction=Inclua pelo menos uma entrada de base no reposit\u00f3rio no arquivo server.xml.
+
+FEDERATED_MANAGER_SERVICE_READY=CWIMK0009I: O servi\u00e7o de federa\u00e7\u00e3o de registro do usu\u00e1rio est\u00e1 pronto.
+FEDERATED_MANAGER_SERVICE_READY.explanation=Essa mensagem \u00e9 apenas informativa.
+FEDERATED_MANAGER_SERVICE_READY.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+FEDERATED_MANAGER_SERVICE_STOPPED=CWIMK0010I: O servi\u00e7o de federa\u00e7\u00e3o de registro do usu\u00e1rio est\u00e1 interrompido.
+FEDERATED_MANAGER_SERVICE_STOPPED.explanation=Essa mensagem \u00e9 apenas informativa.
+FEDERATED_MANAGER_SERVICE_STOPPED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+ENTITY_IDENTIFIER_NOT_SPECIFIED=CWIML1009E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. O identificador da entidade n\u00e3o foi localizado. Especifique o identificador correto como o par\u00e2metro de entrada. 
+ENTITY_IDENTIFIER_NOT_SPECIFIED.explanation=O identificador da entidade n\u00e3o foi especificado. O sistema n\u00e3o pode localizar a entidade. A opera\u00e7\u00e3o de registro do usu\u00e1rio n\u00e3o pode continuar sem localizar essa entidade. 
+ENTITY_IDENTIFIER_NOT_SPECIFIED.useraction=Assegure que a entidade no objeto de entrada contenha uma propriedade de identificador.
+
+EXTERNAL_NAME_CONTROL_NOT_FOUND=CWIML1024E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. O nome externo ''{0}'' est\u00e1 especificado, mas o controle para o nome externo n\u00e3o est\u00e1 especificado. Especifique o controle para o nome externo fornecido.
+EXTERNAL_NAME_CONTROL_NOT_FOUND.explanation=Durante a opera\u00e7\u00e3o get, se o externalName for configurado, o ExternalNameControl deve ser especificado.
+EXTERNAL_NAME_CONTROL_NOT_FOUND.useraction=Especifique o ExternalNameControl ou remova o externalName do objeto de entrada.
+
+INVALID_IDENTIFIER=CWIML1010E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. Os atributos uniqueId = {0} e  uniqueName = {1} do objeto identificador n\u00e3o s\u00e3o v\u00e1lidos ou n\u00e3o definidos no reposit\u00f3rio backend.
+INVALID_IDENTIFIER.explanation=O objeto identificador especificado n\u00e3o \u00e9 v\u00e1lido. Um atributo uniqueId ou uniqueName v\u00e1lido deve ser especificado no objeto identificador. A opera\u00e7\u00e3o de registro do usu\u00e1rio n\u00e3o pode continuar sem um objeto de identificador v\u00e1lido. Se um objeto identificador foi especificado, o uniqueId ou o uniqueName est\u00e1 vazio ou \u00e9 nulo.
+INVALID_IDENTIFIER.useraction=Assegure-se de que a entidade no objeto de entrada tenha um identificador com um uniqueId ou uniqueName v\u00e1lido (n\u00e3o podem ser ambos nulos ou vazios). 
+
+ENTITY_NOT_IN_REALM_SCOPE=CWIML0515E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. A entidade {0} n\u00e3o est\u00e1 no escopo da regi\u00e3o {1}. Especifique uma entidade que est\u00e1 no escopo da regi\u00e3o configurado no arquivo server.xml.
+ENTITY_NOT_IN_REALM_SCOPE.explanation=A opera\u00e7\u00e3o n\u00e3o pode ser executada porque a entidade especificada n\u00e3o est\u00e1 no escopo da regi\u00e3o.
+ENTITY_NOT_IN_REALM_SCOPE.useraction=Assegure de que o nome exclusivo da entidade esteja especificado corretamente. Se um nome de regi\u00e3o for especificado no objeto de Contexto do objeto de entrada, assegure-se de que o nome esteja escrito corretamente.
+
+MISSING_SORT_KEY=CWIML1001E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. A chave de classifica\u00e7\u00e3o est\u00e1 ausente no objeto de controle de classifica\u00e7\u00e3o de entrada. Defina a chave de classifica\u00e7\u00e3o para o objeto de controle de classifica\u00e7\u00e3o especificado.
+MISSING_SORT_KEY.explanation=Um objeto SortControl foi passado para a opera\u00e7\u00e3o de procura sem uma chave de classifica\u00e7\u00e3o, que \u00e9 requerida para executar a classifica\u00e7\u00e3o.
+MISSING_SORT_KEY.useraction=Configure a chave de classifica\u00e7\u00e3o no objeto SortControl e assegure-se de que a propriedade usada como a chave de classifica\u00e7\u00e3o fa\u00e7a parte da lista de propriedades de retorno.
+
+MISSING_SEARCH_CONTROL=CWIML1017E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. O objeto de controle de procura est\u00e1 ausente do objeto de entrada da opera\u00e7\u00e3o de procura. Defina o objeto de controle de procura no objeto de entrada.
+MISSING_SEARCH_CONTROL.explanation=O objeto SearchControl deve ser especificado no objeto de entrada da opera\u00e7\u00e3o de procura.
+MISSING_SEARCH_CONTROL.useraction=Especifique o objeto SearchControl no objeto de entrada de procura.
+
+MISSING_COOKIE=CWIML1002E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. O cookie usado para obter a p\u00e1gina seguinte dos resultados da procura est\u00e1 ausente do objeto de controle da p\u00e1gina. Defina o par\u00e2metro do cookie no objeto de controle de p\u00e1gina.
+MISSING_COOKIE.explanation=O registro do usu\u00e1rio n\u00e3o pode obter a p\u00e1gina seguinte dos resultados da procura. O par\u00e2metro de cookie que \u00e9 usado para obter a p\u00e1gina seguinte dos resultados da procura deve ser especificado no objeto PageControl.
+MISSING_COOKIE.useraction=Assegure-se de que a propriedade de cookie seja especificada no objeto PageControl com um valor inicial de 0. O cookie no objeto PageResponseControl retorna o valor de cookie que \u00e9 usado para obter a p\u00e1gina seguinte dos resultados da procura.
+
+INVALID_COOKIE=CWIML1041E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. O cookie especificado no objeto de controle de p\u00e1gina n\u00e3o \u00e9 v\u00e1lido ou expirou.
+INVALID_COOKIE.explanation=O registro do usu\u00e1rio n\u00e3o pode obter a p\u00e1gina seguinte dos resultados da procura. O par\u00e2metro de cookie que \u00e9 usado para obter a p\u00e1gina seguinte dos resultados da procura no objeto PageControl n\u00e3o \u00e9 v\u00e1lido. 
+INVALID_COOKIE.useraction=Assegure-se de que um cookie v\u00e1lido seja especificado no objeto PageControl. 
+
+INCORRECT_COUNT_LIMIT=CWIML1022E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. O limite de contagem {0} especificado no objeto de controle de procura n\u00e3o \u00e9 v\u00e1lido. O valor deve ser 0 ou um n\u00famero positivo.
+INCORRECT_COUNT_LIMIT.explanation=O limite de contagem para uma opera\u00e7\u00e3o de procura n\u00e3o pode ser um n\u00famero negativo. Um n\u00famero positivo configura o n\u00famero m\u00e1ximo de entradas retornadas como um resultado da procura. O valor 0 indica nenhum limite; todas as entradas s\u00e3o retornadas se o limite de procura for configurado como 0.
+INCORRECT_COUNT_LIMIT.useraction=N\u00e3o especifique um n\u00famero negativo para limite de contagem.
+
+INCORRECT_SEARCH_LIMIT=CWIML1031E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. O limite de procura {0} especificado no objeto de controle de procura n\u00e3o \u00e9 v\u00e1lido. O valor deve ser 0 ou um n\u00famero positivo.
+INCORRECT_SEARCH_LIMIT.explanation=O limite de procura para uma opera\u00e7\u00e3o de procura n\u00e3o pode ser um n\u00famero negativo.
+INCORRECT_SEARCH_LIMIT.useraction=N\u00e3o especifique um n\u00famero negativo para a propriedade de limite de procura. O valor deve ser 0 ou um n\u00famero positivo.
+
+CANNOT_SPECIFY_COUNT_LIMIT=CWIML1019E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. N\u00e3o \u00e9 poss\u00edvel especificar o par\u00e2metro countLimit em um objeto de controle de procura quando o objeto de controle de p\u00e1gina tamb\u00e9m estiver especificado na chamada de procura. Especifique limites de contagem ou o objeto de controle de p\u00e1gina, mas n\u00e3o ambos.
+CANNOT_SPECIFY_COUNT_LIMIT.explanation=O par\u00e2metro countLimit \u00e9 usado para especificar o n\u00famero de resultados da procura que o respons\u00e1vel pela chamada deseja retornar em uma opera\u00e7\u00e3o de procura. Ele n\u00e3o pode ser usado junto com o objeto PageControl.
+CANNOT_SPECIFY_COUNT_LIMIT.useraction=Com base no requisito, o respons\u00e1vel pela chamada pode usar o par\u00e2metro countLimit ou o objeto PageControl, mas n\u00e3o ambos. 
+
+MISSING_SEARCH_EXPRESSION=CWIML1003E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. A propriedade expression est\u00e1 ausente do objeto de controle de procura. Defina a propriedade da express\u00e3o no objeto de controle de procura. 
+MISSING_SEARCH_EXPRESSION.explanation=A opera\u00e7\u00e3o de procura n\u00e3o pode ser executada. A propriedade expression deve ser especificada no objeto SearchControl.
+MISSING_SEARCH_EXPRESSION.useraction=Forne\u00e7a uma sequ\u00eancia de express\u00e3o de procura na propriedade expression do objeto SearchControl.
+
+SEARCH_EXPRESSION_ERROR=CWIML1004E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. Existe um erro na express\u00e3o de procura especificada no objeto de controle de procura: {0}. Verifique a sintaxe da express\u00e3o de procura no objeto de controle de procura.
+SEARCH_EXPRESSION_ERROR.explanation=A opera\u00e7\u00e3o n\u00e3o pode ser executada. A express\u00e3o de procura especificada no objeto SearchControl n\u00e3o segue uma sintaxe de XPath suportada.
+SEARCH_EXPRESSION_ERROR.useraction=Reveja a sintaxe da express\u00e3o de procura e corrija qualquer erro.
+
+INVALID_SEARCH_EXPRESSION=CWIML1029E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. A sintaxe da express\u00e3o de procura {0} n\u00e3o \u00e9 v\u00e1lida. Especifique a sintaxe correta da express\u00e3o de procura. 
+INVALID_SEARCH_EXPRESSION.explanation=A opera\u00e7\u00e3o de procura n\u00e3o pode ser executada porque a express\u00e3o de procura n\u00e3o \u00e9 v\u00e1lida.
+INVALID_SEARCH_EXPRESSION.useraction=Forne\u00e7a uma express\u00e3o de procura v\u00e1lida.
+
+EXCEED_MAX_TOTAL_SEARCH_LIMIT=CWIML1018E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. {0} resultados da procura excedem o limite de procura m\u00e1ximo {1}. Nenhum resultado da procura ser\u00e1 retornado. Aumente o limite m\u00e1ximo de procura ou altere a express\u00e3o de procura para recuperar menor n\u00famero de registros.
+EXCEED_MAX_TOTAL_SEARCH_LIMIT.explanation=O n\u00famero de registros retornados pela procura \u00e9 maior que o n\u00famero m\u00e1ximo de registros especificados no limite de procura.
+EXCEED_MAX_TOTAL_SEARCH_LIMIT.useraction=Aumente o limite m\u00e1ximo de procura ou torne a express\u00e3o de procura mais restritiva para que seja buscado um n\u00famero menor de registros.
+
+INVALID_CHANGETYPE=CWIML4552E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. O changeType especificado, {0}, n\u00e3o \u00e9 v\u00e1lido para uma procura para as entidades alteradas. Os tipos de mudan\u00e7as v\u00e1lidos s\u00e3o incluir, modificar, excluir, renomear e * (* \u00e9 para todos os tipos de mudan\u00e7a).
+INVALID_CHANGETYPE.explanation=Os tipos de mudan\u00e7as v\u00e1lidas para uma procura por entidades alteradas s\u00e3o incluir, modificar, excluir, renomear e * (* \u00e9 para todos os tipos de mudan\u00e7as).
+INVALID_CHANGETYPE.useraction=Especifique um dos tipos de altera\u00e7\u00f5es v\u00e1lidos.
+
+MISSING_ENTITY_DATA_OBJECT=CWIML1030E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. O objeto de Entidade de entrada est\u00e1 ausente para a opera\u00e7\u00e3o {0}. O objeto de dados de entidade deve ser definido para o objeto no qual deseja operar.
+MISSING_ENTITY_DATA_OBJECT.explanation=A opera\u00e7\u00e3o especificada requere um objeto de Entidade.
+MISSING_ENTITY_DATA_OBJECT.useraction=O objeto de entidade deve ser definido para a entidade na qual deseja operar.
+
+ACTION_MULTIPLE_ENTITIES_SPECIFIED=CWIML1016E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. A a\u00e7\u00e3o {0} n\u00e3o suporta v\u00e1rias entidades. Especifique apenas uma entidade para essa opera\u00e7\u00e3o.
+ACTION_MULTIPLE_ENTITIES_SPECIFIED.explanation=A opera\u00e7\u00e3o n\u00e3o suporta v\u00e1rias entidades. Por exemplo, a opera\u00e7\u00e3o de atualiza\u00e7\u00e3o apenas pode ser executada em uma entidade por vez.
+ACTION_MULTIPLE_ENTITIES_SPECIFIED.useraction=Assegure-se de que somente uma entidade seja passada para a opera\u00e7\u00e3o de registro do usu\u00e1rio.
+
+MISSING_OR_EMPTY_PRINCIPAL_NAME=CWIML4536E: A opera\u00e7\u00e3o de login n\u00e3o p\u00f4de ser conclu\u00edda. O nome do propriet\u00e1rio est\u00e1 ausente ou vazio. 
+MISSING_OR_EMPTY_PRINCIPAL_NAME.explanation=Um nome principal \u00e9 requerido para efetuar login com uma senha.
+MISSING_OR_EMPTY_PRINCIPAL_NAME.useraction=Verifique se o nome do propriet\u00e1rio est\u00e1 especificado.
+
+MULTIPLE_PRINCIPALS_FOUND=CWIML4538E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. Existem mais de um registro para o nome do principal {0} nos registros de usu\u00e1rio configurados. O nome do principal deve ser exclusivo em todos os registros do usu\u00e1rio.
+MULTIPLE_PRINCIPALS_FOUND.explanation=V\u00e1rios propriet\u00e1rios foram localizados para o nome do propriet\u00e1rio determinado. O processo de login n\u00e3o pode continuar.
+MULTIPLE_PRINCIPALS_FOUND.useraction=Assegure que o nome do propriet\u00e1rio correto esteja especificado. Por exemplo, especificar o nome do propriet\u00e1rio como um nome exclusivo pode evitar esse tipo de exce\u00e7\u00e3o.
+
+AUTHENTICATE_NOT_SUPPORTED=CWIML4530E: A opera\u00e7\u00e3o de autentica\u00e7\u00e3o n\u00e3o p\u00f4de ser conclu\u00edda. A autentica\u00e7\u00e3o com o certificado n\u00e3o \u00e9 suportada pelo reposit\u00f3rio {0}. Causa-raiz: {1}
+AUTHENTICATE_NOT_SUPPORTED.explanation=A autentica\u00e7\u00e3o n\u00e3o \u00e9 suportada com o certificado pelo reposit\u00f3rio.
+AUTHENTICATE_NOT_SUPPORTED.useraction=Assegure-se de que a autentica\u00e7\u00e3o seja suportada com o certificado pelo reposit\u00f3rio.
+
+CERTIFICATE_MAP_FAILED=CWIML3011E: A opera\u00e7\u00e3o de login n\u00e3o p\u00f4de ser conclu\u00edda. O mapeamento de certificado falhou. Especifique o mapeamento de certificado correto no arquivo server.xml ou use um certificado v\u00e1lido.
+CERTIFICATE_MAP_FAILED.explanation=Ocorreu um erro ao mapear o certificado determinado para o registro do usu\u00e1rio.
+CERTIFICATE_MAP_FAILED.useraction=Corrija o mapeamento de certificado no arquivo serve.xml ou efetue login com um certificado v\u00e1lido.
+
+PRINCIPAL_NOT_FOUND=CWIML4537E: A opera\u00e7\u00e3o de login n\u00e3o p\u00f4de ser conclu\u00edda. O nome do principal especificado {0} n\u00e3o est\u00e1 localizado no reposit\u00f3rio de backend.
+PRINCIPAL_NOT_FOUND.explanation=O nome do principal n\u00e3o est\u00e1 localizado no reposit\u00f3rio. O processo de login n\u00e3o pode continuar.
+PRINCIPAL_NOT_FOUND.useraction=Assegure que o nome do propriet\u00e1rio correto esteja especificado.
+
+NON_EXISTING_SEARCH_BASE=CWIML1042E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. A base de procura especificada {0} n\u00e3o existe na regi\u00e3o configurada atual. Especifique a base de procura v\u00e1lida e assegure-se de que a entrada de base est\u00e1 configurada na regi\u00e3o atual.
+NON_EXISTING_SEARCH_BASE.explanation=A base de procura especificada n\u00e3o existe na regi\u00e3o atual.
+NON_EXISTING_SEARCH_BASE.useraction=Verifique a base de procura especificada e assegure-se de que a entrada de base correspondente esteja configurada na regi\u00e3o atual.
+
+ENTITY_NOT_FOUND=CWIML4001E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. A entidade {0} n\u00e3o foi localizada. Especifique a entidade correta ou crie a entidade ausente.
+ENTITY_NOT_FOUND.explanation=O nome da entidade especificado, que poderia ser um uniqueName ou uniqueId, n\u00e3o p\u00f4de ser localizado no reposit\u00f3rio subjacente. A opera\u00e7\u00e3o de registro do usu\u00e1rio n\u00e3o pode continuar sem localizar essa entidade.
+ENTITY_NOT_FOUND.useraction=Assegure que a entidade exista no reposit\u00f3rio subjacente. Se a entidade existe, ent\u00e3o, verifique se a permiss\u00e3o de leitura est\u00e1 configurada para a entidade e tente novamente.
+
+INVALID_LEVEL_IN_CONTROL=CWIML4514E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. Um valor incorreto para o n\u00edvel de propriedade {0} est\u00e1 especificado em {1}. O valor da propriedade n\u00edvel deve ser 0 ou um n\u00famero inteiro positivo.
+INVALID_LEVEL_IN_CONTROL.explanation=O valor do n\u00edvel da propriedade foi especificado como um n\u00famero negativo.
+INVALID_LEVEL_IN_CONTROL.useraction=O valor da propriedade n\u00edvel deve ser 0 ou um n\u00famero inteiro positivo. Altere o valor do n\u00edvel de propriedade e tente novamente.
+
+NAMING_EXCEPTION=CWIML4520E: A opera\u00e7\u00e3o LDAP n\u00e3o p\u00f4de ser conclu\u00edda. Ocorreu a exce\u00e7\u00e3o de nomenclatura LDAP {0} durante o processamento.
+NAMING_EXCEPTION.explanation=A mensagem indica que uma exce\u00e7\u00e3o de nomenclatura geral ocorreu durante uma opera\u00e7\u00e3o LDAP. Consulte a exce\u00e7\u00e3o para obter detalhes adicionais. 
+NAMING_EXCEPTION.useraction=Assegure que o reposit\u00f3rio relacionado (por exemplo, um banco de dados ou um servidor LDAP) seja iniciado e configurado corretamente.
+
+SYSTEM_EXCEPTION=CWIML1998E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. Ocorreu a exce\u00e7\u00e3o do sistema a seguir ao processar a opera\u00e7\u00e3o de registro do usu\u00e1rio: {0} 
+SYSTEM_EXCEPTION.explanation=O programa encontrou uma exce\u00e7\u00e3o do sistema ao executar a opera\u00e7\u00e3o de registro do usu\u00e1rio. 
+SYSTEM_EXCEPTION.useraction= Revise os logs para obter a causa deste erro e tome as a\u00e7\u00f5es corretivas apropriadas.
+
+INVALID_PROPERTY_VALUE=CWIML1013E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. O valor inserido da propriedade {0} n\u00e3o \u00e9 v\u00e1lido para a entidade {1}. O valor da propriedade deve estar correto e deve ser do tipo de dados correto.
+INVALID_PROPERTY_VALUE.explanation=O valor da propriedade n\u00e3o \u00e9 v\u00e1lido. Por exemplo, uma propriedade de tipo de identificador aponta para uma entrada incorreta.
+INVALID_PROPERTY_VALUE.useraction=Assegure-se de que o valor da propriedade esteja correto e seja do tipo correto de dados. Se voc\u00ea est\u00e1 tentando recuperar a propriedade de tipo identificador juntamente com outras propriedades, divida-as em duas chamadas. Uma chamada para recuperar propriedades de tipo n\u00e3o-identificador e outra chamada para recuperar a propriedade de tipo identificador.
+
+GENERIC=CWIML1999E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. Ocorreu um erro de tempo de execu\u00e7\u00e3o durante o processamento: {0}
+GENERIC.explanation=O programa encontrou o erro especificado durante a opera\u00e7\u00e3o.
+GENERIC.useraction= Revise os logs para obter a causa deste erro e tome as a\u00e7\u00f5es corretivas apropriadas.
+
+MISSING_MANDATORY_PROPERTY=CWIML1028E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. O valor da propriedade obrigat\u00f3ria {0} est\u00e1 ausente. Forne\u00e7a um valor para a propriedade obrigat\u00f3ria.
+MISSING_MANDATORY_PROPERTY.explanation=A opera\u00e7\u00e3o n\u00e3o pode ser executada porque o valor da propriedade obrigat\u00f3ria est\u00e1 ausente. Por exemplo, a propriedade RDN (Nome Distinto relativo) n\u00e3o \u00e9 especificada quando a entidade \u00e9 criada; ou propertyName ou entityTypeName est\u00e1 ausente de PropertyDefinitionControl ou ExtensionPropertyDefinitionControl; ou entityName est\u00e1 ausente do entitySchema.
+MISSING_MANDATORY_PROPERTY.useraction=Forne\u00e7a um valor para a propriedade obrigat\u00f3ria.
+
+CANNOT_DELETE_LOGGED_IN_USER=CWIML5504E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. O usu\u00e1rio com uniqueName {0} n\u00e3o pode ser exclu\u00eddo porque ele \u00e9 o usu\u00e1rio que efetuou login. Efetue login como um usu\u00e1rio diferente para excluir esse usu\u00e1rio.
+CANNOT_DELETE_LOGGED_IN_USER.explanation=O usu\u00e1rio tentou excluir a si mesmo do gerenciador de membro virtual. Essa a\u00e7\u00e3o n\u00e3o \u00e9 permitida.
+CANNOT_DELETE_LOGGED_IN_USER.useraction=Efetue login como um usu\u00e1rio diferente para excluir o usu\u00e1rio atual.
+
+AUTH_SUBJECT_CRED_FAILURE=CWIML2005E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. Ocorreu um erro inesperado ao recuperar as credenciais do assunto. Revise os logs de rastreio para identificar a causa-raiz do erro.
+AUTH_SUBJECT_CRED_FAILURE.explanation=As credenciais de assunto n\u00e3o podem ser recuperadas devido a um erro desconhecido.
+AUTH_SUBJECT_CRED_FAILURE.useraction=Reveja os logs de rastreio para obter a causa-raiz do erro. Pode ser um problema com a configura\u00e7\u00e3o de seguran\u00e7a do WebSphere.
+
+AUTH_SUBJECT_FAILURE=CWIML2004E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. Ocorreu um erro inesperado ao recuperar o assunto do respons\u00e1vel pela chamada. Revise os logs de rastreio para identificar a causa-raiz do erro.
+AUTH_SUBJECT_FAILURE.explanation=O assunto do respons\u00e1vel pela chamada n\u00e3o pode ser recuperado devido a um erro desconhecido.
+AUTH_SUBJECT_FAILURE.useraction=Reveja os logs de rastreio para obter a causa-raiz do erro. Pode ser um problema com a configura\u00e7\u00e3o de seguran\u00e7a do WebSphere.
+
+INVALID_PARENT_UNIQUE_ID=CWIML1014E: A propriedade uniqueId {0} do pai n\u00e3o \u00e9 v\u00e1lida.
+INVALID_PARENT_UNIQUE_ID.explanation=O uniqueId especificado da entidade pai n\u00e3o \u00e9 v\u00e1lido. Especifique um ID exclusivo v\u00e1lido.
+INVALID_PARENT_UNIQUE_ID.useraction=Verifique se o uniqueId da entidade pai est\u00e1 presente no reposit\u00f3rio e se est\u00e1 especificado corretamente.
+
+DEFAULT_PARENT_NOT_FOUND=CWIML0516E: N\u00e3o \u00e9 poss\u00edvel determinar o pai padr\u00e3o para {0}. Verifique se a configura\u00e7\u00e3o para a regi\u00e3o {1} est\u00e1 correta.
+DEFAULT_PARENT_NOT_FOUND.explanation=N\u00e3o foi poss\u00edvel executar a opera\u00e7\u00e3o porque o pai padr\u00e3o desse tipo de entidade n\u00e3o p\u00f4de ser determinado.
+DEFAULT_PARENT_NOT_FOUND.useraction=Assegure-se de que o pai padr\u00e3o para o tipo de entidade esteja configurado para os reposit\u00f3rios federados ou regi\u00e3o. O pai tamb\u00e9m pode ser especificado como parte da entrada.
+
+MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION=CWIML1034E: Configura\u00e7\u00e3o repositoriesForGroups ausente para o reposit\u00f3rio {0}.
+MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION.explanation=N\u00e3o h\u00e1 configura\u00e7\u00e3o entre grupos de reposit\u00f3rios definida para o reposit\u00f3rio.
+MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION.useraction=Consulte o arquivo de log para obter o motivo da falha. Verifique a configura\u00e7\u00e3o do reposit\u00f3rio.
+
+ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: O tipo de entidade {0} especificado n\u00e3o \u00e9 um tipo de entidade v\u00e1lido para esta opera\u00e7\u00e3o.
+ENTITY_TYPE_NOT_SUPPORTED.explanation=Uma opera\u00e7\u00e3o foi solicitada em uma entidade, mas essa opera\u00e7\u00e3o n\u00e3o suporta o tipo de entidade especificado.
+ENTITY_TYPE_NOT_SUPPORTED.useraction=Assegure-se de que as entidades fornecidas na entrada sejam de tipos de entidade suportados e remova os tipos de entidade n\u00e3o suportados da entrada.
+
+CAN_NOT_CONSTRUCT_UNIQUE_NAME=CWIML1008E: A propriedade RDN {0} para o tipo de entidade {1} foi fornecida na entrada. O nome exclusivo n\u00e3o pode ser criado no reposit\u00f3rio subjacente porque as informa\u00e7\u00f5es do RDN especificadas na entrada s\u00e3o amb\u00edguas.
+CAN_NOT_CONSTRUCT_UNIQUE_NAME.explanation=Ao criar uma entidade, o nome distinto relativo (RDN) deve estar devidamente formado e conter propriedades que n\u00e3o sejam amb\u00edguas. Por exemplo, o tipo de entidade OrgContainer pode representar uma organiza\u00e7\u00e3o (que usa a propriedade RDN 'o') ou uma unidade organizacional (que usa a propriedade RDN 'ou') em um reposit\u00f3rio subjacente. Se ambos 'o' e 'ou' forem especificados no RDN para o objeto de dados de entrada da nova entidade, um nome exclusivo para a nova entidade n\u00e3o poder\u00e1 ser criado.
+CAN_NOT_CONSTRUCT_UNIQUE_NAME.useraction=Determine o tipo de entidade que deseja criar no reposit\u00f3rio subjacente e forne\u00e7a a propriedade RDN apropriada para este tipo. Por exemplo, se desejar criar uma organiza\u00e7\u00e3o, forne\u00e7a somente o valor da propriedade 'o'.
+
+REPOSITORY_INITIALIZATION_FAILED=CWIML4510E: N\u00e3o \u00e9 poss\u00edvel inicializar o reposit\u00f3rio configurado {0} devido \u00e0 falha subjacente: {1}
+REPOSITORY_INITIALIZATION_FAILED.explanation=O reposit\u00f3rio federado n\u00e3o p\u00f4de ser inicializado devido a uma falha subjacente.
+REPOSITORY_INITIALIZATION_FAILED.useraction=Revise a mensagem de motivo e o arquivo de rastreio para determinar a causa da falha. Corrija o erro e tente novamente.
+
+CUSTOM_REGISTRY_EXCEPTION=CWIML3010E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. Ocorreu uma exce\u00e7\u00e3o no registro configurado customizado para {0}
+CUSTOM_REGISTRY_EXCEPTION.explanation=Foi lan\u00e7ada uma exce\u00e7\u00e3o pelo registro customizado. O registro customizado pode estar indispon\u00edvel ou n\u00e3o pode executar a opera\u00e7\u00e3o.
+CUSTOM_REGISTRY_EXCEPTION.useraction=Revise a mensagem de motivo e o arquivo de rastreio para determinar a causa da falha. Corrija o erro e tente novamente.
+
+ENTITY_GET_FAILED=CWIML4505E: O registro do usu\u00e1rio n\u00e3o p\u00f4de obter a entidade {0} devido a um erro subjacente: {1}
+ENTITY_GET_FAILED.explanation=A entidade n\u00e3o pode ser recuperada por causa do motivo especificado pelo reposit\u00f3rio subjacente.
+ENTITY_GET_FAILED.useraction=Revise a mensagem de motivo e o arquivo de rastreio para determinar a causa da falha.  Corrija o erro e tente novamente.
+
+PROPERTY_NOT_DEFINED_FOR_ENTITY=CWIML4516E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. A propriedade {0} n\u00e3o \u00e9 definida por {1}
+PROPERTY_NOT_DEFINED_FOR_ENTITY.explanation=A propriedade especificada n\u00e3o \u00e9 definida para tipo de entidade determinado.
+PROPERTY_NOT_DEFINED_FOR_ENTITY.useraction=Verifique se o nome da propriedade est\u00e1 correto.
+
+MALFORMED_SEARCH_EXPRESSION=CWIML3006W: A opera\u00e7\u00e3o do registro do usu\u00e1rio n\u00e3o p\u00f4de ser conclu\u00edda, pois a express\u00e3o de procura {0} n\u00e3o \u00e9 v\u00e1lida. Especifique a sintaxe correta da express\u00e3o de procura.
+MALFORMED_SEARCH_EXPRESSION.explanation=A opera\u00e7\u00e3o de procura n\u00e3o pode ser executada porque a express\u00e3o de procura n\u00e3o \u00e9 v\u00e1lida.
+MALFORMED_SEARCH_EXPRESSION.useraction=Forne\u00e7a uma express\u00e3o de procura v\u00e1lida.
+
+ENTITY_SEARCH_FAILED=CWIML4506E: A opera\u00e7\u00e3o do registro do usu\u00e1rio n\u00e3o p\u00f4de ser conclu\u00edda, pois o registro do usu\u00e1rio encontrou o erro subjacente: {1}
+ENTITY_SEARCH_FAILED.explanation=A entidade n\u00e3o pode ser procurada por causa do motivo especificado pelo registro subjacente.
+ENTITY_SEARCH_FAILED.useraction=Revise a mensagem de motivo e o arquivo de rastreio para determinar a causa da falha.  Corrija o erro e tente novamente.
+
+MISSING_OR_EMPTY_PASSWORD=CWIML4541E: A opera\u00e7\u00e3o de login n\u00e3o p\u00f4de ser conclu\u00edda, pois a senha estava ausente ou vazia.
+MISSING_OR_EMPTY_PASSWORD.explanation=Se o nome do principal for especificado durante o processo de login, a senha n\u00e3o poder\u00e1 ser nula ou vazia.
+MISSING_OR_EMPTY_PASSWORD.useraction=Especifique a senha.
+
+CERTIFICATE_GENERATE_FAILED=CWIML3012E: A opera\u00e7\u00e3o de login n\u00e3o p\u00f4de ser conclu\u00edda, pois a gera\u00e7\u00e3o de certificado falhou.
+CERTIFICATE_GENERATE_FAILED.explanation=Ocorreu um erro ao gerar o certificado a partir de um arquivo de certificado de entrada.
+CERTIFICATE_GENERATE_FAILED.useraction=Efetue login com um certificado v\u00e1lido.
+
+AUTHENTICATION_WITH_CERT_NOT_SUPPORTED=CWIML4542E: A opera\u00e7\u00e3o de login n\u00e3o p\u00f4de ser conclu\u00edda, pois o registro do usu\u00e1rio n\u00e3o suporta a cria\u00e7\u00e3o de log com um certificado.
+AUTHENTICATION_WITH_CERT_NOT_SUPPORTED.explanation=N\u00e3o \u00e9 permitida a autentica\u00e7\u00e3o que usa um certificado pelo registro do usu\u00e1rio subjacente.
+AUTHENTICATION_WITH_CERT_NOT_SUPPORTED.useraction=A autentica\u00e7\u00e3o \u00e9 feita usando o ID do usu\u00e1rio e a senha em vez de um certificado.
+
+CANNOT_WRITE_TO_READ_ONLY_REPOSITORY=CWIML1027E: A opera\u00e7\u00e3o do registro do usu\u00e1rio n\u00e3o p\u00f4de ser conclu\u00edda, pois o reposit\u00f3rio {0} \u00e9 um reposit\u00f3rio de somente leitura. Ela n\u00e3o suporta as opera\u00e7\u00f5es de grava\u00e7\u00e3o. 
+CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.explanation=O reposit\u00f3rio \u00e9 um reposit\u00f3rio de somente leitura. Ele n\u00e3o suporta a cria\u00e7\u00e3o, a atualiza\u00e7\u00e3o ou a exclus\u00e3o de opera\u00e7\u00f5es.
+CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.useraction=Assegure-se de que uma opera\u00e7\u00e3o de grava\u00e7\u00e3o n\u00e3o seja chamada em um reposit\u00f3rio de somente leitura.

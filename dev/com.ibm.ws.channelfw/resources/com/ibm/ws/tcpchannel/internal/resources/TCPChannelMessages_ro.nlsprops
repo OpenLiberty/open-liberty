@@ -1,0 +1,157 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service: tcp channel
+#CMVCPATHNAME com.ibm.ws.channelfw/resources/com/ibm/ws/tcpchannel/internal/resources/TCPChannelMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#ISMESSAGEFILE TRUE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+### TCP channel will use message numbers 0200-0399
+
+#Configuration and initialization errors
+MAX_OPEN_CONNECTIONS_INVALID=CWWKO0200E: Num\u0103rul maxim de conexiuni deschise {0} nu este valid. Valorile valide nu sunt mai mici de {1} sau mai mari de {2}.
+MAX_OPEN_CONNECTIONS_INVALID.explanation=Nici o informa\u0163ie suplimentar\u0103.
+MAX_OPEN_CONNECTIONS_INVALID.useraction=Corecta\u0163i eroarea de configurare.
+
+INACTIVITY_TIMEOUT_INVALID=CWWKO0201E: Timeout-ul de inactivitate {0} nu este valid. Valorile valide nu sunt mai mici de {1} sau mai mari de {2}.
+INACTIVITY_TIMEOUT_INVALID.explanation=Nici o informa\u0163ie suplimentar\u0103.
+INACTIVITY_TIMEOUT_INVALID.useraction=Corecta\u0163i eroarea de configurare.
+
+ADDRESS_EXCLUDE_LIST_INVALID=CWWKO0202E: O intrare din lista de excludere adrese pentru Canalul TCP {0} nu este valid\u0103. 
+ADDRESS_EXCLUDE_LIST_INVALID.explanation= Fiecare intrare din list\u0103 trebuie s\u0103 fie un \u015fir valid.
+ADDRESS_EXCLUDE_LIST_INVALID.useraction=Corecta\u0163i eroarea de configurare.
+
+ADDRESS_INCLUDE_LIST_INVALID=CWWKO0203E: O intrare din lista de includere adrese pentru Canalul TCP {0} nu este valid\u0103.
+ADDRESS_INCLUDE_LIST_INVALID.explanation= Fiecare intrare din list\u0103 trebuie s\u0103 fie un \u015fir valid.
+ADDRESS_INCLUDE_LIST_INVALID.useraction=Corecta\u0163i eroarea de configurare.
+
+HOST_NAME_EXCLUDE_LIST_INVALID=CWWKO0204E: O intrare din lista de excludere nume gazd\u0103 pentru Canalul TCP {0} nu este valid\u0103.
+HOST_NAME_EXCLUDE_LIST_INVALID.explanation= Fiecare intrare din list\u0103 trebuie s\u0103 fie un \u015fir valid.
+HOST_NAME_EXCLUDE_LIST_INVALID.useraction=Corecta\u0163i eroarea de configurare.
+
+HOST_NAME_INCLUDE_LIST_INVALID=CWWKO0205E: O intrare din lista de includere nume gazd\u0103 pentru Canalul TCP {0} nu este valid\u0103. 
+HOST_NAME_INCLUDE_LIST_INVALID.explanation= Fiecare intrare din list\u0103 trebuie s\u0103 fie un \u015fir valid.
+HOST_NAME_INCLUDE_LIST_INVALID.useraction=Corecta\u0163i eroarea de configurare.
+
+NOT_VALID_CUSTOM_PROPERTY=CWWKO0206E: Proprietatea personalizat\u0103 {1} a Canalului TCP {0} are valoarea {2}. Aceast\u0103 valoare nu este valid\u0103.
+NOT_VALID_CUSTOM_PROPERTY.explanation=S-a specificat o proprietate personalizat\u0103 cu o valoare care este \u00een afara intervalului de valori valide.
+NOT_VALID_CUSTOM_PROPERTY.useraction=Corecta\u0163i eroarea de configurare.
+
+CONFIG_VALUE_NUMBER_EXCEPTION=CWWKO0207E: Canalul TCP {0} a fost configurat cu o valoare numeric\u0103 incorect\u0103 pentru o proprietate. Nume proprietate: {1}  Valoare: {2}
+CONFIG_VALUE_NUMBER_EXCEPTION.explanation=Valoarea propriet\u0103\u0163ii Canalului TCP specificat\u0103 nu este un num\u0103r valid.
+CONFIG_VALUE_NUMBER_EXCEPTION.useraction=Corecta\u0163i eroarea de configurare.
+
+CONFIG_VALUE_NOT_VALID_STRING=CWWKO0208E: Canalul TCP {0} a fost construit cu o valoare a propriet\u0103\u0163ii de configurare incorect\u0103. Nume: {1}  Valoare: {2}
+CONFIG_VALUE_NOT_VALID_STRING.explanation=Valoarea propriet\u0103\u0163ii Canalului TCP specificat\u0103 nu este \u00een intervalul valid pentru aceast\u0103 proprietate.
+CONFIG_VALUE_NOT_VALID_STRING.useraction=Corecta\u0163i eroarea de configurare.
+
+CONFIG_VALUE_NOT_VALID_NULL_STRING=CWWKO0209E: Canalul TCP {0} a fost construit cu o valoare a propriet\u0103\u0163ii de configurare nul\u0103. Nume: {1}
+CONFIG_VALUE_NOT_VALID_NULL_STRING.explanation=Valoarea propriet\u0103\u0163ii Canalului TCP specificat\u0103 nu este \u00een intervalul valid pentru aceast\u0103 proprietate.
+CONFIG_VALUE_NOT_VALID_NULL_STRING.useraction=Corecta\u0163i eroarea de configurare.
+
+CONFIG_VALUE_NOT_VALID_BOOLEAN=CWWKO0210E: Canalul TCP {0} a fost construit cu o valoare a propriet\u0103\u0163ii de configurare incorect\u0103. Nume: {1}  Valoare: {2}  Interval valid: false, true (fals, adev\u0103rat).
+CONFIG_VALUE_NOT_VALID_BOOLEAN.explanation=Valoarea propriet\u0103\u0163ii Canalului TCP specificat\u0103 nu este \u00een intervalul valid pentru aceast\u0103 proprietate.
+CONFIG_VALUE_NOT_VALID_BOOLEAN.useraction=Corecta\u0163i eroarea de configurare.
+
+CONFIG_VALUE_NOT_VALID_INT=CWWKO0211E: Canalul TCP {0} a fost construit cu o valoare a propriet\u0103\u0163ii de configurare incorect\u0103. Nume: {1}  Valoare: {2}  Interval valid: Minim {3}, Maxim {4}
+CONFIG_VALUE_NOT_VALID_INT.explanation=Valoarea propriet\u0103\u0163ii Canalului TCP specificat\u0103 nu este \u00een intervalul valid pentru aceast\u0103 proprietate.
+CONFIG_VALUE_NOT_VALID_INT.useraction=Corecta\u0163i eroarea de configurare.
+
+CONFIG_KEY_NOT_VALID=CWWKO0212W: Canalul TCP {0} a fost construit cu o proprietate de configurare incorect\u0103. Nume proprietate: {1}  Valoare: {2}
+CONFIG_KEY_NOT_VALID.explanation=Proprietatea Canalului TCP specificat\u0103 are un nume sau o valoare care nu a fost recunoscut(\u0103).
+CONFIG_KEY_NOT_VALID.useraction=Corecta\u0163i eroarea de configurare.
+
+UNRECOGNIZED_CUSTOM_PROPERTY=CWWKO0213W: Canalul TCP {0} are o proprietate personalizat\u0103 configurat\u0103 astfel \u00eenc\u00e2t s\u0103 nu fie o proprietate recunoscut\u0103. Nume proprietate: {1}
+UNRECOGNIZED_CUSTOM_PROPERTY.explanation=S-a specificat incorect o proprietate personalizat\u0103.
+UNRECOGNIZED_CUSTOM_PROPERTY.useraction=Corecta\u0163i eroarea de configurare.
+
+NEW_CONFIG_VALUE_NOT_EQUAL=CWWKO0214E: A e\u015fuat o \u00eencercare de actualizare a Canalului TCP {0}. Valoarea era \u00een curs de modificare pentru o proprietate care nu poate fi actualizat\u0103 \u00een timpul rul\u0103rii. Nume proprietate: {1}   Valoare curent\u0103: {2}   Valoare actualizat\u0103 e\u015fuat\u0103: {3}
+NEW_CONFIG_VALUE_NOT_EQUAL.explanation=\u00cen timpul unei \u00eencerc\u0103ri de actualizare a configura\u0163iei, unei propriet\u0103\u0163i a Canalului TCP i s-a dat o nou\u0103 valoare. Totu\u015fi, aceast\u0103 proprietate nu poate fi actualizat\u0103 cu o nou\u0103 valoare \u00een timpul rul\u0103rii.
+NEW_CONFIG_VALUE_NOT_EQUAL.useraction=Corecta\u0163i eroarea de configurare.
+
+UPDATED_CONFIG_NOT_IMPLEMENTED=CWWKO0215E: A e\u015fuat o \u00eencercare de actualizare a Canalului TCP {0}.
+UPDATED_CONFIG_NOT_IMPLEMENTED.explanation=Canalul TCP specificat nu a putut fi actualizat pentru c\u0103 noua configura\u0163ie nu era o configura\u0163ie valid\u0103.
+UPDATED_CONFIG_NOT_IMPLEMENTED.useraction=Corecta\u0163i eroarea de configurare.
+
+NO_ENDPOINT_NAME=CWWKO0216E: Nu s-a alocat nici un nume de punct final Canalului TCP {0}.
+NO_ENDPOINT_NAME.explanation=Nici o informa\u0163ie suplimentar\u0103.
+NO_ENDPOINT_NAME.useraction=Corecta\u0163i eroarea de configurare.
+
+USER_ID_NOT_VALID=CWWKO0217E: ID-ul de utilizator configurat la care s\u0103 se comute dup\u0103 pornire nu era valid.  ID utilizator: {0}
+USER_ID_NOT_VALID.explanation=Dup\u0103 pornire, sistemul a fost configurat s\u0103 comute la un ID de utilizator care nu era valid.
+USER_ID_NOT_VALID.useraction=Modifica\u0163i ID-ul utilizatorului configurat la o nou\u0103 valoare.
+
+GROUP_ID_NOT_VALID=CWWKO0218E: ID-ul de grup configurat la care s\u0103 se comute dup\u0103 pornire nu era valid.  ID grup: {0}
+GROUP_ID_NOT_VALID.explanation=Dup\u0103 pornire, sistemul a fost configurat s\u0103 comute la un ID de grup care nu era valid.
+GROUP_ID_NOT_VALID.useraction=Modifica\u0163i ID-ul grupului configurat la o nou\u0103 valoare.
+
+#Runtime messages
+
+TCP_CHANNEL_STARTED=CWWKO0219I: Canalul TCP {0} a fost pornit \u015fi acum ascult\u0103 cereri pe gazda {1} portul {2}.
+TCP_CHANNEL_STARTED.explanation=Acest mesaj este pur informativ.
+TCP_CHANNEL_STARTED.useraction=Nici o ac\u0163iune nu este necesar\u0103.
+
+TCP_CHANNEL_STOPPED=CWWKO0220I: Canalul TCP {0} a oprit ascultarea cererilor pe gazda {1} portul {2}.
+TCP_CHANNEL_STOPPED.explanation=Acest mesaj este pur informativ.
+TCP_CHANNEL_STOPPED.useraction=Nici o ac\u0163iune nu este necesar\u0103.
+
+BIND_ERROR=CWWKO0221E: Ini\u0163ializarea canalului TCP {0} nu a avut succes.  Legarea socket-ului nu a avut succes pentru gazda {1} \u015fi portul {2}.  Portul ar putea fi deja \u00een uz.
+BIND_ERROR.explanation=Opera\u0163ia de legare socket nu a avut succes. O cauz\u0103 comun\u0103 este aceea c\u0103 num\u0103rul portului este deja \u00een uz.
+BIND_ERROR.useraction=Verifica\u0163i c\u0103 Canalul TCP a fost configurat s\u0103 utilizeze num\u0103rul de port corect.
+
+MAX_CONNS_EXCEEDED=CWWKO0222W: Canalul TCP {0} a dep\u0103\u015fit num\u0103rul maxim de conexiuni deschise {1}.
+MAX_CONNS_EXCEEDED.explanation=Canalul TCP specificat a dep\u0103\u015fit num\u0103rul maxim de conexiuni deschise \u015fi refuz\u0103 unele conexiuni.
+MAX_CONNS_EXCEEDED.useraction=Dac\u0103 sunt necesare mai multe conexiuni, actualiza\u0163i num\u0103rul maxim de conexiuni permise.
+
+THREAD_DISPATCH_FAILED=CWWKO0223W: Canalul TCP {0} nu a putut ob\u0163ine firul de execu\u0163ie de la pool-ul de fire de execu\u0163ie {1}.
+THREAD_DISPATCH_FAILED.explanation=Canalul TCP specificat nu a putut ob\u0163ine un fir de execu\u0163ie de la pool-ul de fire de execu\u0163ie, a\u015fadar procesarea cererilor suplimentare ar putea fi \u00eent\u00e2rziat\u0103.
+THREAD_DISPATCH_FAILED.useraction=Dac\u0103 CPU-ul nu este utilizat \u00een \u00eentregime, cre\u015fte\u0163i num\u0103rul maxim de fire de execu\u0163ie din pool-ul de fire de execu\u0163ie.  Altfel, reduce\u0163i num\u0103rul cererilor de intrare.
+
+LOCAL_HOST_UNRESOLVED=CWWKO0224E: A e\u015fuat ini\u0163ializarea Canalului TCP {0}.  Gazda {1} \u015fi portul {2} nu au putut fi rezolvate.
+LOCAL_HOST_UNRESOLVED.explanation=Numele gazd\u0103 specificat nu a putut fi rezolvat.  Numele gazd\u0103 a fost specificat incorect sau nu a fost definit pe acest sistem.
+LOCAL_HOST_UNRESOLVED.useraction=Verifica\u0163i c\u0103 Canalul TCP a fost configurat s\u0103 utilizeze numele gazd\u0103 corect.
+
+PORT_NOT_ACCEPTING=CWWKO0225E: Canalul TCP {0} care ascult\u0103 pe gazda {1} portul {2} a oprit acceptarea conexiunilor.
+PORT_NOT_ACCEPTING.explanation=Canalul TCP specificat nu mai poate accepta conexiuni pentru un port.  Portul pare s\u0103 fie dezactivat.
+PORT_NOT_ACCEPTING.useraction=Pentru a folosi portul, activa\u0163i-l \u015fi apoi reporni\u0163i aplica\u0163ia.
+
+EVENT_SVC_MISSING=CWWKO0226E: Lipse\u015fte serviciul Eveniment necesar.
+EVENT_SVC_MISSING.explanation=TCP necesit\u0103 ca serviciul Eveniment s\u0103 fie disponibil pentru a finaliza I/E socket.
+EVENT_SVC_MISSING.useraction=Asigura\u0163i-v\u0103 c\u0103 serviciul Eveniment func\u0163ioneaz\u0103.
+
+EXECUTOR_SVC_MISSING=CWWKO0227E: Lipse\u015fte serviciul Executor necesar.
+EXECUTOR_SVC_MISSING.explanation=TCP necesit\u0103 ca serviciul Executor s\u0103 fie disponibil pentru a finaliza I/E socket.
+EXECUTOR_SVC_MISSING.useraction=Asigura\u0163i-v\u0103 c\u0103 bundle-ul "threading" este activ.
+
+TCP_NOT_ACCEPTING=CWWKO0228E: Serverul a oprit acceptarea conexiunilor TCP din cauza erorilor. Serverul va a\u015ftepta 10 minute \u00eenainte de a \u00eencerca din nou, dar ar putea necesita repornire.
+TCP_NOT_ACCEPTING.explanation=Serverul a oprit acceptarea conexiunilor din cauza unui num\u0103r mare de excep\u0163ii. Asta ar putea indica o problem\u0103 \u00een JVM-ul dumneavoastr\u0103 sau sistemul de operare. Serverul va \u00eencerca acceptarea conexiunilor \u00een 10 minute.
+TCP_NOT_ACCEPTING.useraction=Examina\u0163i mesajul \u015fi istoricele de excep\u0163ii pentru erori de conexiune sau de tratare a fi\u015fierelor. Serverul ar putea necesita repornire. Dac\u0103 problema persist\u0103, v\u0103 rug\u0103m s\u0103 contacta\u0163i suportul IBM.
+
+ZOSAIO_ACTIVATED=CWWKO0229I: A fost activat suportul pentru Native Asynchronous I/O for z/OS.
+ZOSAIO_ACTIVATED.explanation=Soclurile Asynchronous TCP/IP I/O for Liberty (AsyncIO) pe serviciul z/OS, care furnizeaz\u0103 capabilit\u0103\u0163ile de baz\u0103 ale unui pachet Asynchronous I/O la nivel de sistem de operare sunt activate.
+ZOSAIO_ACTIVATED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+ZOSAIO_DEACTIVATED=CWWKO0230I: A fost dezactivat suportul pentru Native Asynchronous I/O for z/OS.
+ZOSAIO_DEACTIVATED.explanation=Soclurile Asynchronous TCP/IP I/O for Liberty (AsyncIO) pe serviciul z/OS, care furnizeaz\u0103 capabilit\u0103\u0163ile de baz\u0103 ale unui pachet Asynchronous I/O la nivel de sistem de operare sunt dezactivate.
+ZOSAIO_DEACTIVATED.useraction=Nici o ac\u0163iune nu este necesar\u0103.

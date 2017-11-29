@@ -1,0 +1,1582 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.4,0,04/02/09,12:44:41
+#
+#CMVCPATHNAME ws/code/webcontainer/src/com/ibm/ws/webcontainer/resources/Messages.nlsprops
+#COMPONENTPREFIX SRVE CWWWC
+#COMPONENTNAMEFOR SRVE Servlet Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+
+
+# --------------------------------
+Illegal.Argument.Trying.to.write.chars=SRVE0011E: Wyj\u0105tek niedozwolonego argumentu: pr\u00f3ba zapisania liczby znak\u00f3w mniejszej od 0.
+Illegal.Argument.Trying.to.write.chars.explanation=Pr\u00f3ba wygenerowania buforu o wielko\u015bci mniejszej od 0. Jest to b\u0142\u0105d aplikacji.
+Illegal.Argument.Trying.to.write.chars.useraction=Mo\u017cliwe jest zapisywanie bufor\u00f3w o wielko\u015bci r\u00f3wnej lub wi\u0119kszej od 0.
+
+# --------------------------------
+Uncaught.service().exception.root.cause=SRVE0014E: Podstawowa przyczyna niewychwyconego wyj\u0105tku zg\u0142oszonego przez metod\u0119 service() {0}: {1}
+Uncaught.service().exception.root.cause.explanation=Metoda service() serwletu utworzy\u0142a niewychwycony wyj\u0105tek. Jest to b\u0142\u0105d aplikacji.
+Uncaught.service().exception.root.cause.useraction=R\u00f3\u017cni si\u0119 w zale\u017cno\u015bci od podstawowej przyczyny.
+
+# --------------------------------
+Failed.to.initialize.webapp.{0}=SRVE0015E: Inicjowanie aplikacji WWW {0} nie powiod\u0142o si\u0119.
+Failed.to.initialize.webapp.{0}.explanation=Nie mo\u017cna zainicjowa\u0107 aplikacji WWW okre\u015blonej w komunikacie. Szczeg\u00f3\u0142owe informacje zawiera dziennik b\u0142\u0119d\u00f3w.
+Failed.to.initialize.webapp.{0}.useraction=Podstawow\u0105 przyczyn\u0119 tego problemu mo\u017cna znale\u017a\u0107 w dzienniku b\u0142\u0119d\u00f3w.
+
+# --------------------------------
+Illegal.Argument\:.Invalid.Header.Format=SRVE0016E: Wyj\u0105tek niedozwolonego argumentu: niepoprawny format nag\u0142\u00f3wka.
+Illegal.Argument\:.Invalid.Header.Format.explanation=Nag\u0142\u00f3wek \u017c\u0105dania ma niepoprawny format.
+Illegal.Argument\:.Invalid.Header.Format.useraction=Sprawd\u017a tworzenie nag\u0142\u00f3wka klienta.
+
+# -------------------------------- replaced by SRVE0255E ---------------------------
+#Web.Group.VHost.Not.Found=SRVE0017W: A WebGroup/Virtual Host to handle {0} has not been defined.
+#Web.Group.VHost.Not.Found.explanation=Could not find a web group (web module) or virtual host to handle the request.
+#Web.Group.VHost.Not.Found.useraction=Be sure the web group and virtual host is defined and deployed.
+
+# --------------------------------
+Servlet.unloaded\:.{0}=SRVE0021I: Serwlet zosta\u0142 usuni\u0119ty z pami\u0119ci: {0}
+Servlet.unloaded\:.{0}.explanation=Okre\u015blony serwlet zosta\u0142 usuni\u0119ty z pami\u0119ci po wywo\u0142aniu metody destroy.
+Servlet.unloaded\:.{0}.useraction=Brak.
+
+# --------------------------------
+Illegal.Argument\:.{0}.is.not.a.directory.=SRVE0031E: Wyj\u0105tek niedozwolonego argumentu: {0} nie jest katalogiem.
+Illegal.Argument\:.{0}.is.not.a.directory..explanation=Okre\u015blona \u015bcie\u017cka nie wskazuje katalogu.
+Illegal.Argument\:.{0}.is.not.a.directory..useraction=Upewnij si\u0119, \u017ce katalog istnieje oraz \u017ce \u017c\u0105danie dotyczy w\u0142a\u015bciwego katalogu.
+
+# --------------------------------
+WebAppSecurityCollaborator=SRVE0035E: WebAppSecurityCollaborator
+WebAppSecurityCollaborator.explanation=WebAppSecurityCollaborator Jest to b\u0142\u0105d systemowy. 
+WebAppSecurityCollaborator.useraction=Przejrzyj dzienniki serwera, aby okre\u015bli\u0107 pierwotn\u0105 przyczyn\u0119 problemu. Je\u015bli nie ma pokrewnych komunikat\u00f3w lub nie pomagaj\u0105 one rozwi\u0105za\u0107 problemu, skontaktuj si\u0119 z dzia\u0142em wsparcia IBM.
+
+# --------------------------------
+Illegal.Argument\:.Bootstrap.File.Not.Found=SRVE0041E: Wyj\u0105tek niedozwolonego argumentu: nie znaleziono pliku programu startowego.
+Illegal.Argument\:.Bootstrap.File.Not.Found.explanation=Jest to wewn\u0119trzny b\u0142\u0105d systemowy, kt\u00f3ry prawdopodobnie zosta\u0142 spowodowany wcze\u015bniejszym niepowodzeniem.
+Illegal.Argument\:.Bootstrap.File.Not.Found.useraction=Przejrzyj dzienniki serwera, aby okre\u015bli\u0107 pierwotn\u0105 przyczyn\u0119 problemu. Je\u015bli nie ma pokrewnych komunikat\u00f3w lub nie pomagaj\u0105 one rozwi\u0105za\u0107 problemu, skontaktuj si\u0119 z dzia\u0142em wsparcia IBM.
+
+# --------------------------------
+Illegal.Argument.Invalid.Content.Length=SRVE0042E: Wyj\u0105tek niedozwolonego argumentu: niepoprawna d\u0142ugo\u015b\u0107 tre\u015bci.
+Illegal.Argument.Invalid.Content.Length.explanation=Jest to wewn\u0119trzny b\u0142\u0105d systemowy, kt\u00f3ry prawdopodobnie zosta\u0142 spowodowany wcze\u015bniejszym niepowodzeniem. Jest to b\u0142\u0105d aplikacji.
+Illegal.Argument.Invalid.Content.Length.useraction=Przejrzyj dzienniki serwera, aby okre\u015bli\u0107 pierwotn\u0105 przyczyn\u0119 problemu. Je\u015bli nie ma pokrewnych komunikat\u00f3w lub nie pomagaj\u0105 one rozwi\u0105za\u0107 problemu, skontaktuj si\u0119 z dzia\u0142em wsparcia IBM.
+
+# --------------------------------
+Illegal.Argument\:.Invalid.Date.Format=SRVE0053E: Wyj\u0105tek niedozwolonego argumentu: niepoprawny format daty.
+Illegal.Argument\:.Invalid.Date.Format.explanation=Format daty jest niepoprawny.
+Illegal.Argument\:.Invalid.Date.Format.useraction=Przejrzyj dzienniki serwera, aby okre\u015bli\u0107 pierwotn\u0105 przyczyn\u0119 problemu. Je\u015bli nie ma pokrewnych komunikat\u00f3w lub nie pomagaj\u0105 one rozwi\u0105za\u0107 problemu, skontaktuj si\u0119 z dzia\u0142em wsparcia IBM.
+
+# --------------------------------
+Servlet.wait.for.destroy.timeout.has.expired,.destroy.will.be.forced\:.{0}=SRVE0055I: Przekroczono limit czasu oczekiwania serwletu na zniszczenie. Operacja niszczenia zostanie wymuszona: {0}.
+Servlet.wait.for.destroy.timeout.has.expired,.destroy.will.be.forced\:.{0}.explanation=Serwlet jest niszczony po przekroczeniu czasu oczekiwania.
+Servlet.wait.for.destroy.timeout.has.expired,.destroy.will.be.forced\:.{0}.useraction=Brak.
+
+# --------------------------------
+Illegal.Argument\:.Unsupported.flag=SRVE0056E: Wyj\u0105tek niedozwolonego argumentu: nieobs\u0142ugiwana opcja.
+Illegal.Argument\:.Unsupported.flag.explanation=Jest to wewn\u0119trzny b\u0142\u0105d systemowy, kt\u00f3ry prawdopodobnie zosta\u0142 spowodowany wcze\u015bniejszym niepowodzeniem.
+Illegal.Argument\:.Unsupported.flag.useraction=Przejrzyj dzienniki serwera, aby okre\u015bli\u0107 pierwotn\u0105 przyczyn\u0119 problemu. Je\u015bli nie ma pokrewnych komunikat\u00f3w lub nie pomagaj\u0105 one rozwi\u0105za\u0107 problemu, skontaktuj si\u0119 z dzia\u0142em wsparcia IBM.
+
+# --------------------------------
+Uncaught.destroy().exception.thrown.by.servlet=SRVE0058E: Wyj\u0105tek dotycz\u0105cy niezrealizowania metody destroy() utworzony przez serwlet {0} w aplikacji {1}: {2}.
+Uncaught.destroy().exception.thrown.by.servlet.explanation=Nie mo\u017cna zniszczy\u0107 okre\u015blonego serwletu. Jest to b\u0142\u0105d aplikacji.
+Uncaught.destroy().exception.thrown.by.servlet.useraction=Przejrzyj dzienniki serwera, aby okre\u015bli\u0107 pierwotn\u0105 przyczyn\u0119 problemu. Je\u015bli nie ma pokrewnych komunikat\u00f3w lub nie pomagaj\u0105 one rozwi\u0105za\u0107 problemu, skontaktuj si\u0119 z dzia\u0142em wsparcia IBM.
+
+# --------------------------------
+Unable.to.bind.hostname.[{0}].to.servletHost.[{1}]=SRVE0060E: Nie mo\u017cna powi\u0105za\u0107 nazwy hosta [{0}] z hostem serwletu [{1}]
+Unable.to.bind.hostname.[{0}].to.servletHost.[{1}].explanation=Nie mo\u017cna powi\u0105za\u0107 okre\u015blonej nazwy hosta z okre\u015blonym hostem serwletu.
+Unable.to.bind.hostname.[{0}].to.servletHost.[{1}].useraction=Sprawd\u017a, czy nazwa hosta zosta\u0142a okre\u015blona poprawnie i czy host serwletu zosta\u0142 okre\u015blony w pliku virtualhosts.xml.
+
+# --------------------------------
+Illegal.Argument\:.Invalid.Directory.Specified\:.{0}=SRVE0061E: Wyj\u0105tek niedozwolonego argumentu: okre\u015blono niepoprawny katalog: {0}.
+Illegal.Argument\:.Invalid.Directory.Specified\:.{0}.explanation=Okre\u015blony katalog nie jest poprawny.
+Illegal.Argument\:.Invalid.Directory.Specified\:.{0}.useraction=Sprawd\u017a, czy w informacjach o katalogu nie ma b\u0142\u0119d\u00f3w.
+
+# --------------------------------
+Waiting.servlet.to.finish.servicing.requests\:.{0}=SRVE0066I: Oczekiwanie na zako\u0144czenie obs\u0142ugi \u017c\u0105da\u0144 przez serwlet: {0}
+Waiting.servlet.to.finish.servicing.requests\:.{0}.explanation=Serwlet nadal obs\u0142uguje \u017c\u0105danie. Trwa oczekiwanie na zako\u0144czenie \u017c\u0105dania przed wywo\u0142aniem operacji niszczenia.
+Waiting.servlet.to.finish.servicing.requests\:.{0}.useraction=Brak.
+
+# --------------------------------
+Uncaught.service().exception.thrown.by.servlet=SRVE0068E: Jedna z metod us\u0142ug serwletu [{0}] w aplikacji [{1}] zg\u0142osi\u0142a wyj\u0105tek. Utworzony wyj\u0105tek: [{2}]
+Uncaught.service().exception.thrown.by.servlet.explanation=Jedna z metod us\u0142ug serwletu zg\u0142osi\u0142a wyj\u0105tek. Jest to b\u0142\u0105d aplikacji.
+Uncaught.service().exception.thrown.by.servlet.useraction=Przejrzyj dzienniki serwera, aby okre\u015bli\u0107 pierwotn\u0105 przyczyn\u0119 problemu. Je\u015bli nie ma pokrewnych komunikat\u00f3w lub nie pomagaj\u0105 one rozwi\u0105za\u0107 problemu, skontaktuj si\u0119 z dzia\u0142em wsparcia IBM.
+
+# --------------------------------
+Error.Initializing.for.Next.Request=SRVE0070E: B\u0142\u0105d inicjowania na potrzeby nast\u0119pnego \u017c\u0105dania
+Error.Initializing.for.Next.Request.explanation=Wewn\u0119trzny b\u0142\u0105d kontenera WWW.
+Error.Initializing.for.Next.Request.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
+
+# --------------------------------
+Invalid.Content.Length=SRVE0080E: Niepoprawna d\u0142ugo\u015b\u0107 tre\u015bci
+Invalid.Content.Length.explanation=Wewn\u0119trzny b\u0142\u0105d serwera. B\u0142\u0105d m\u00f3g\u0142 zosta\u0107 spowodowany przez problemy z dostrojeniem sieci, podanie niepoprawnej warto\u015bci w nag\u0142\u00f3wku content-length lub niepoprawn\u0105 d\u0142ugo\u015b\u0107 lub wielko\u015b\u0107 za\u0142\u0105cznika. Jest to b\u0142\u0105d aplikacji.
+Invalid.Content.Length.useraction=Zbierz dzienniki i skontaktuj si\u0119 z Serwisem IBM.
+
+# --------------------------------
+Illegal.Argument\:.Missing.Resource.Bootstrap.Properties=SRVE0086E: Wyj\u0105tek niedozwolonego argumentu: brak w\u0142a\u015bciwo\u015bci programu startowego zasob\u00f3w.
+Illegal.Argument\:.Missing.Resource.Bootstrap.Properties.explanation=Wewn\u0119trzny b\u0142\u0105d serwera.
+Illegal.Argument\:.Missing.Resource.Bootstrap.Properties.useraction=Zbierz dzienniki i skontaktuj si\u0119 z Serwisem IBM.
+
+# --------------------------------
+Servlet.unload.initiated\:.{0}=SRVE0097I: Zainicjowano operacj\u0119 usuwania serwletu {0} z pami\u0119ci.
+Servlet.unload.initiated\:.{0}.explanation=Okre\u015blony serwlet jest usuwany z us\u0142ugi.
+Servlet.unload.initiated\:.{0}.useraction=Brak.
+
+# --------------------------------
+Object.Pool.Exception.Class.could.not.be.instantiated.[{0}]=SRVE0099E: Wyj\u0105tek puli obiekt\u00f3w: nie mo\u017cna utworzy\u0107 instancji klasy [{0}].
+Object.Pool.Exception.Class.could.not.be.instantiated.[{0}].explanation=Nie mo\u017cna utworzy\u0107 instancji klasy do u\u017cywania w puli obiekt\u00f3w. Jest to b\u0142\u0105d systemowy.
+Object.Pool.Exception.Class.could.not.be.instantiated.[{0}].useraction=Upewnij si\u0119, \u017ce klasa istnieje i jest widoczna w \u015bcie\u017cce klasy aplikacji.
+
+# --------------------------------
+Uncaught.init().exception.thrown.by.servlet.{0}\:.{2}=SRVE0100E: Niewychwycony wyj\u0105tek dotycz\u0105cy metody init() zosta\u0142 utworzony przez serwlet {0} w aplikacji {1}: {2}.
+Uncaught.init().exception.thrown.by.servlet.{0}\:.{2}.explanation=Nie mo\u017cna zainicjowa\u0107 okre\u015blonego serwletu. Jest to b\u0142\u0105d aplikacji.
+Uncaught.init().exception.thrown.by.servlet.{0}\:.{2}.useraction=Upewnij si\u0119, \u017ce plik klas serwletu zosta\u0142 dodany do \u015bcie\u017cki klasy aplikacji.
+
+# --------------------------------
+Illegal.Argument\:.ScriptName.must.be.the.first.part.of.the.URI=SRVE0103E: Wyj\u0105tek niedozwolonego argumentu: nazwa skryptu musi by\u0107 pierwsz\u0105 cz\u0119\u015bci\u0105 identyfikatora URI.
+Illegal.Argument\:.ScriptName.must.be.the.first.part.of.the.URI.explanation=Jest to wewn\u0119trzny b\u0142\u0105d systemowy, kt\u00f3ry prawdopodobnie zosta\u0142 spowodowany wcze\u015bniejszym niepowodzeniem.
+Illegal.Argument\:.ScriptName.must.be.the.first.part.of.the.URI.useraction=Przejrzyj dzienniki serwera, aby okre\u015bli\u0107 pierwotn\u0105 przyczyn\u0119 problemu. Je\u015bli nie ma pokrewnych komunikat\u00f3w lub nie pomagaj\u0105 one rozwi\u0105za\u0107 problemu, skontaktuj si\u0119 z dzia\u0142em wsparcia IBM.
+
+# --------------------------------
+Session.releaseSession().threw.an.unexpected.exception=SRVE0105E: Wyst\u0105pi\u0142 wyj\u0105tek w metodzie Session.releaseSession()
+Session.releaseSession().threw.an.unexpected.exception.explanation=Problem podczas zwalniania sesji.
+Session.releaseSession().threw.an.unexpected.exception.useraction=Przejrzyj dzienniki serwera, aby okre\u015bli\u0107 pierwotn\u0105 przyczyn\u0119 problemu. Je\u015bli nie ma pokrewnych komunikat\u00f3w lub nie pomagaj\u0105 one rozwi\u0105za\u0107 problemu, skontaktuj si\u0119 z dzia\u0142em wsparcia IBM.
+
+# --------------------------------
+Illegal.Argument\:.Missing.flag.value=SRVE0108E: Wyj\u0105tek niedozwolonego argumentu: brak warto\u015bci opcji.
+Illegal.Argument\:.Missing.flag.value.explanation=Brak warto\u015bci opcji.
+Illegal.Argument\:.Missing.flag.value.useraction=Przejrzyj dzienniki serwera, aby okre\u015bli\u0107 pierwotn\u0105 przyczyn\u0119 problemu. Je\u015bli nie ma pokrewnych komunikat\u00f3w lub nie pomagaj\u0105 one rozwi\u0105za\u0107 problemu, skontaktuj si\u0119 z dzia\u0142em wsparcia IBM.
+
+# --------------------------------
+Illegal.Argument\:.Invalid.ObjectPool.Instantiated.=SRVE0109E: Wyj\u0105tek niedozwolonego argumentu: niepoprawna instancja obiektu ObjectPool.
+Illegal.Argument\:.Invalid.ObjectPool.Instantiated..explanation=Jest to wewn\u0119trzny b\u0142\u0105d systemowy, kt\u00f3ry prawdopodobnie zosta\u0142 spowodowany wcze\u015bniejszym niepowodzeniem.
+Illegal.Argument\:.Invalid.ObjectPool.Instantiated..useraction=Przejrzyj dzienniki serwera, aby okre\u015bli\u0107 pierwotn\u0105 przyczyn\u0119 problemu. Je\u015bli nie ma pokrewnych komunikat\u00f3w lub nie pomagaj\u0105 one rozwi\u0105za\u0107 problemu, skontaktuj si\u0119 z dzia\u0142em wsparcia IBM.
+
+# --------------------------------
+Error.occurred.while.invoking.error.reporter=SRVE0115E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas wywo\u0142ywania us\u0142ugi reportera b\u0142\u0119d\u00f3w {0}
+Error.occurred.while.invoking.error.reporter.explanation=Wyst\u0105pi\u0142 problem podczas wywo\u0142ywania us\u0142ugi okre\u015blonego reportera b\u0142\u0119d\u00f3w.
+Error.occurred.while.invoking.error.reporter.useraction=Przejrzyj dzienniki serwera, aby okre\u015bli\u0107 pierwotn\u0105 przyczyn\u0119 problemu. Je\u015bli nie ma pokrewnych komunikat\u00f3w lub nie pomagaj\u0105 one rozwi\u0105za\u0107 problemu, skontaktuj si\u0119 z dzia\u0142em wsparcia IBM.
+
+# --------------------------------
+IO.Error=SRVE0120E: B\u0142\u0105d we/wy: {0}
+IO.Error.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d we/wy.
+IO.Error.useraction=R\u00f3\u017cni si\u0119 w zale\u017cno\u015bci od zg\u0142oszonej przyczyny podstawowej.
+
+# --------------------------------
+Illegal.Argument\:.Trying.to.write.<.0.bytes=SRVE0121E: Wyj\u0105tek niedozwolonego argumentu: podj\u0119to pr\u00f3b\u0119 zapisania mniej ni\u017c 0 bajt\u00f3w.
+Illegal.Argument\:.Trying.to.write.<.0.bytes.explanation=Pr\u00f3ba wygenerowania buforu o wielko\u015bci mniejszej od 0. Jest to b\u0142\u0105d aplikacji.
+Illegal.Argument\:.Trying.to.write.<.0.bytes.useraction=Mo\u017cliwe jest zapisywanie bufor\u00f3w o wielko\u015bci r\u00f3wnej lub wi\u0119kszej od 0.
+
+# --------------------------------
+Invalidation.Exception\:.{0}.was.created=SRVE0126E: Wyj\u0105tek uniewa\u017cniania: Utworzono {0}
+Invalidation.Exception\:.{0}.was.created.explanation=Jest to wewn\u0119trzny b\u0142\u0105d systemowy, kt\u00f3ry prawdopodobnie zosta\u0142 spowodowany wcze\u015bniejszym niepowodzeniem.
+Invalidation.Exception\:.{0}.was.created.useraction=Przejrzyj dzienniki serwera, aby okre\u015bli\u0107 pierwotn\u0105 przyczyn\u0119 problemu. Je\u015bli nie ma pokrewnych komunikat\u00f3w lub nie pomagaj\u0105 one rozwi\u0105za\u0107 problemu, skontaktuj si\u0119 z dzia\u0142em wsparcia IBM.
+
+# --------------------------------
+Error.Parsing.Parameters=SRVE0133E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas analizowania parametr\u00f3w. {0}
+Error.Parsing.Parameters.explanation=Napotkano problem podczas analizowania parametr\u00f3w serwletu.
+Error.Parsing.Parameters.useraction=Sprawd\u017a, czy klient przesy\u0142a pe\u0142ne \u017c\u0105danie.
+
+# --------------------------------
+postInvoke.Security.Exception=SRVE0138E: Wyj\u0105tek zabezpiecze\u0144 postInvoke
+postInvoke.Security.Exception.explanation=Podczas przetwarzania \u017c\u0105dania napotkano problem zwi\u0105zany z zabezpieczeniami. Jest to b\u0142\u0105d systemowy.
+postInvoke.Security.Exception.useraction=Przejrzyj dzienniki serwera, aby okre\u015bli\u0107 pierwotn\u0105 przyczyn\u0119 problemu. Je\u015bli nie ma pokrewnych komunikat\u00f3w lub nie pomagaj\u0105 one rozwi\u0105za\u0107 problemu, skontaktuj si\u0119 z dzia\u0142em wsparcia IBM.
+
+# --------------------------------
+preInvoke.Security.Exception=SRVE0139E: Wyj\u0105tek zabezpiecze\u0144 preInvoke {0}
+preInvoke.Security.Exception.explanation=Podczas przetwarzania \u017c\u0105dania napotkano problem zwi\u0105zany z zabezpieczeniami. Jest to b\u0142\u0105d systemowy.
+preInvoke.Security.Exception.useraction=R\u00f3\u017cni si\u0119 w zale\u017cno\u015bci od podstawowej przyczyny.
+
+# --------------------------------
+instantiate.collaborator.exception=SRVE0140E: Nie mo\u017cna utworzy\u0107 instancji wsp\u00f3\u0142pracownika zabezpiecze\u0144 {0}.
+instantiate.collaborator.exception.explanation=Wewn\u0119trzny b\u0142\u0105d serwera.
+instantiate.collaborator.exception.useraction=Zbierz dzienniki i skontaktuj si\u0119 z Serwisem IBM.
+
+# --------------------------------
+failed.to.load.encoding.properties=SRVE0155E: Nie powiod\u0142o si\u0119 \u0142adowanie pliku encoding.properties {0}.
+failed.to.load.encoding.properties.explanation=Nie mo\u017cna za\u0142adowa\u0107 okre\u015blonego pliku. Wymagane jest wykonanie odpowiednich czynno\u015bci w systemie.
+failed.to.load.encoding.properties.useraction=Sprawd\u017a, czy okre\u015blony plik istnieje oraz czy ma poprawny format zgodny z obiektem java.utils.Properties.
+
+# --------------------------------
+failed.to.load.converter.properties=SRVE0156E: Nie powiod\u0142o si\u0119 \u0142adowanie pliku converter.properties {0}.
+failed.to.load.converter.properties.explanation=Nie mo\u017cna za\u0142adowa\u0107 okre\u015blonego pliku. Wymagane jest wykonanie odpowiednich czynno\u015bci w systemie.
+failed.to.load.converter.properties.useraction=Sprawd\u017a, czy okre\u015blony plik istnieje oraz czy ma poprawny format zgodny z obiektem java.utils.Properties.
+
+# --------------------------------
+setbuffer.size.called.after.write=SRVE0157E: Wywo\u0142ano metod\u0119 setBufferSize() po uprzednim zapisie do strumienia wyj\u015bciowego/programu zapisuj\u0105cego
+setbuffer.size.called.after.write.explanation=Wykonano pr\u00f3b\u0119 ustawienia wielko\u015bci buforu odpowiedzi w momencie, gdy odpowied\u017a by\u0142a ju\u017c zatwierdzona. Jest to b\u0142\u0105d aplikacji.
+setbuffer.size.called.after.write.useraction=Usu\u0144 wywo\u0142anie metody setBufferSize() lub przenie\u015b je w miejsce przed zatwierdzeniem odpowiedzi.
+
+# --------------------------------
+usertransaction.rollback.exception=SRVE0160E: Wyst\u0105pi\u0142 wyj\u0105tek podczas wycofywania transakcji u\u017cytkownika: {0}.
+usertransaction.rollback.exception.explanation=Napotkano problem podczas wycofywania okre\u015blonej transakcji u\u017cytkownika. Jest to b\u0142\u0105d aplikacji.
+usertransaction.rollback.exception.useraction=Przejrzyj dzienniki serwera, aby okre\u015bli\u0107 pierwotn\u0105 przyczyn\u0119 problemu. Je\u015bli nie ma pokrewnych komunikat\u00f3w lub nie pomagaj\u0105 one rozwi\u0105za\u0107 problemu, skontaktuj si\u0119 z dzia\u0142em wsparcia IBM.
+
+# --------------------------------
+web.container.copyright=SRVE0161I: Serwer IBM WebSphere Application Server - kontener WWW.  Copyright IBM Corp. 1998-2012
+web.container.copyright.explanation=Identyfikator serwera aplikacji.
+web.container.copyright.useraction=Brak.
+
+# --------------------------------
+web.container.servlet.spec.level=SRVE0162I: Poziom specyfikacji serwletu: 3.0
+web.container.servlet.spec.level.explanation=Poziom specyfikacji serwletu obs\u0142ugiwany przez serwer aplikacji.
+web.container.servlet.spec.level.useraction=Brak.
+
+# --------------------------------
+web.container.jsp.spec.level=SRVE0163I: Obs\u0142ugiwany poziom specyfikacji JSP: 2.2
+web.container.jsp.spec.level.explanation=Poziom specyfikacji JSP obs\u0142ugiwany przez serwer aplikacji.
+web.container.jsp.spec.level.useraction=Brak.
+
+# --------------------------------
+context.root.already.in.use=SRVE0164E: Aplikacja WWW {0} u\u017cywa kontekstowego katalogu g\u0142\u00f3wnego {1}, kt\u00f3ry jest ju\u017c u\u017cywany przez aplikacj\u0119 WWW {2}. Aplikacja WWW {3} nie zostanie za\u0142adowana.
+context.root.already.in.use.explanation=Dwie aplikacje na tym samym ho\u015bcie wirtualnym wsp\u00f3\u0142u\u017cytkuj\u0105 ten sam kontekstowy katalog g\u0142\u00f3wny. Jest to b\u0142\u0105d aplikacji.
+context.root.already.in.use.useraction=Zmie\u0144 kontekstowy katalog g\u0142\u00f3wny jednej z aplikacji lub przenie\u015b jedn\u0105 aplikacj\u0119 na inny host wirtualny.
+
+# --------------------------------
+loading.web.module=SRVE0169I: \u0141adowanie modu\u0142u WWW: {0}.
+loading.web.module.explanation=Modu\u0142 WWW jest uruchamiany i udost\u0119pniany dla us\u0142ugi.
+loading.web.module.useraction=Brak.
+
+# --------------------------------
+[{0}][{1}][Servlet.LOG]\:.{2}=SRVE0180I: [{0}] [{1}] [Servlet.LOG]: {2}
+[{0}][{1}][Servlet.LOG]\:.{2}.explanation=W dzienniku ServletContext.log zosta\u0142 zarejestrowany komunikat informacyjny z aplikacji.
+[{0}][{1}][Servlet.LOG]\:.{2}.useraction=Brak.
+
+# --------------------------------
+[{0}][{1}][Servlet.LOG]\:.{2}\:.{3}=SRVE0181I: [{0}] [{1}] [Servlet.LOG]: {2}: {3}
+[{0}][{1}][Servlet.LOG]\:.{2}\:.{3}.explanation=W dzienniku ServletContext.log zosta\u0142y zarejestrowane komunikat informacyjny i dane \u015bledzenia stosu z aplikacji.
+[{0}][{1}][Servlet.LOG]\:.{2}\:.{3}.useraction=Brak.
+
+# --------------------------------
+error.occurred.processing.request=SRVE0185E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas przetwarzania \u017c\u0105dania:
+error.occurred.processing.request.explanation=Wyj\u0105tek, kt\u00f3ry wyst\u0105pi\u0142 podczas przetwarzania \u017c\u0105dania.
+error.occurred.processing.request.useraction=Przejrzyj komunikat, aby okre\u015bli\u0107 podstawow\u0105 przyczyn\u0119 problemu.
+
+# -----------------------------------------------
+Cannot.set.buffer.size.after.data=SRVE0186E: Nie mo\u017cna ustawi\u0107 wielko\u015bci buforu po zapisaniu danych do strumienia
+Cannot.set.buffer.size.after.data.explanation=Niekt\u00f3re dane zosta\u0142y ju\u017c zapisane do strumienia, dlatego nie mo\u017cna ju\u017c kontrolowa\u0107 wielko\u015bci buforu. Jest to b\u0142\u0105d aplikacji.
+Cannot.set.buffer.size.after.data.useraction=Ustaw wielko\u015b\u0107 buforu przed zapisaniem danych lub zresetuj bufor przed ustawieniem jego wielko\u015bci.
+
+# -----------------------------------------------
+Check.your.classpath.ensure.all.classes.present=SRVE0187E: Sprawd\u017a \u015bcie\u017ck\u0119 klasy, aby upewni\u0107 si\u0119, \u017ce wszystkie klasy wymagane przez serwlet s\u0105 w niej uwzgl\u0119dnione.
+Check.your.classpath.ensure.all.classes.present.explanation=Nie znaleziono wymaganej klasy. Jest to b\u0142\u0105d aplikacji.
+Check.your.classpath.ensure.all.classes.present.useraction=Sprawd\u017a, czy \u015bcie\u017cka klasy uwzgl\u0119dnia wszystkie klasy, kt\u00f3re mog\u0105 by\u0107 u\u017cywane.
+
+# -----------------------------------------------
+Class.{0}.does.not.implement.servlet=SRVE0188E: Klasa {0} nie implementuje serwletu.
+Class.{0}.does.not.implement.servlet.explanation=Jest to b\u0142\u0105d aplikacji.
+Class.{0}.does.not.implement.servlet.useraction=Podana klasa musi implementowa\u0107 serwlet javax.servlet.Servlet albo rozszerza\u0107 jedn\u0105 z klas: javax.servlet.GenericServlet lub javax.servlet.http.HttpServlet.
+
+# -----------------------------------------------
+Error.occurred.while.finishing.request=SRVE0189E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas ko\u0144czenia \u017c\u0105dania
+Error.occurred.while.finishing.request.explanation=Jest to b\u0142\u0105d, kt\u00f3ry wyst\u0119puje podczas ko\u0144czenia \u017c\u0105dania. Mo\u017ce on wyst\u0105pi\u0107 w wyniku b\u0142\u0119du komunikacji na serwerze aplikacji, ale nie powinien mie\u0107 wp\u0142ywu na przetwarzanie \u017c\u0105dania. Jest to b\u0142\u0105d systemowy.
+Error.occurred.while.finishing.request.useraction=Brak.
+
+# -----------------------------------------------
+File.not.found=SRVE0190E: Nie znaleziono pliku: {0}
+File.not.found.explanation=Nie znaleziono podanego pliku. Jest to b\u0142\u0105d aplikacji.
+File.not.found.useraction=Sprawd\u017a, czy podany plik znajduje si\u0119 we w\u0142a\u015bciwym miejscu.
+
+# -----------------------------------------------
+Illegal.from.included.servlet=SRVE0194E: Dana operacja jest niedozwolona we w\u0142\u0105czonym serwlecie
+Illegal.from.included.servlet.explanation=Nie mo\u017cna wykona\u0107 podj\u0119tej pr\u00f3by przeprowadzenia operacji w odniesieniu do w\u0142\u0105czonego serwletu lub w\u0142\u0105czonej strony JSP. Wi\u0119cej informacji mo\u017cna znale\u017a\u0107 w specyfikacji serwletu. Jest to b\u0142\u0105d aplikacji.
+Illegal.from.included.servlet.useraction=Zmodyfikuj serwlet lub stron\u0119 JSP, w przypadku kt\u00f3rych wyst\u0105pi\u0142o niepowodzenie.
+
+# -----------------------------------------------
+Missing.required.initialization.parameter=SRVE0196E: Brak wymaganego parametru inicjowania: {0}
+Missing.required.initialization.parameter.explanation=Parametr o podanej nazwie nie ma warto\u015bci. Jest to wymagany parametr. Jest to b\u0142\u0105d aplikacji.
+Missing.required.initialization.parameter.useraction=Podaj warto\u015b\u0107 tego parametru.
+
+# -----------------------------------------------
+OutputStream.already.obtained=SRVE0199E: Ju\u017c pobrano klas\u0119 OutputStream
+OutputStream.already.obtained.explanation=Aplikacja za\u017c\u0105da\u0142a klasy PrintWriter po pobraniu klasy ServletResponse OutputStream. Jest to b\u0142\u0105d aplikacji.
+OutputStream.already.obtained.useraction=Przejrzyj aplikacj\u0119 i sprawd\u017a, czy pobrano klasy PrintWriter i OuputStream. Zmodyfikuj dzia\u0142aj\u0105cy niepoprawnie serwlet lub stron\u0119 JSP tak, aby uzyskiwana by\u0142a tylko jedna z klas.
+
+# -----------------------------------------------
+Servlet.Could.not.find.required.servlet.class=SRVE0200E: Serwlet [{0}]: nie znaleziono wymaganej klasy - {1}.
+Servlet.Could.not.find.required.servlet.class.explanation=Serwlet nie mo\u017ce znale\u017a\u0107 wymaganej klasy niezb\u0119dnej do obs\u0142ugi \u017c\u0105dania. Jest to b\u0142\u0105d aplikacji.
+Servlet.Could.not.find.required.servlet.class.useraction=Sprawd\u017a, czy klasa istnieje w ramach aplikacji.
+
+# -----------------------------------------------
+Servlet.not.a.servlet.class=SRVE0201E: Serwlet [{0}]: To nie jest klasa serwletu
+Servlet.not.a.servlet.class.explanation=Jest to b\u0142\u0105d aplikacji.
+Servlet.not.a.servlet.class.useraction=Zmodyfikuj dzia\u0142aj\u0105c\u0105 nieprawid\u0142owo klas\u0119 tak, aby implementowa\u0142a klas\u0119 javax.servlet.Servlet albo rozszerza\u0142a jedn\u0105 z dw\u00f3ch klas: javax.servlet.GenericServlet lub javax.servlet.http.HttpServlet.
+
+# -----------------------------------------------
+Servlet.found.but.corrupt=SRVE0202E: Serwlet [{0}]: znaleziono klas\u0119 {1}, ale jest ona uszkodzona:\n
+Servlet.found.but.corrupt.explanation=Wykryto uszkodzenie klasy serwletu. Jest to b\u0142\u0105d aplikacji.
+Servlet.found.but.corrupt.useraction=Zrekompiluj klas\u0119 i spr\u00f3buj ponownie.
+
+# -----------------------------------------------
+Servlet.was.found.but.is.missing.another.required.class=SRVE0203E: Serwlet [{0}]: Znaleziono klas\u0119 {1}, ale brak jest innej wymaganej klasy.\n
+Servlet.was.found.but.is.missing.another.required.class.explanation=Nie znaleziono wymaganej klasy. Jest to b\u0142\u0105d aplikacji.
+Servlet.was.found.but.is.missing.another.required.class.useraction=Sprawd\u017a, czy wszystkie wymagane klasy s\u0105 umieszczone w folderach /\u00a0plikach JAR reprezentuj\u0105cych \u015bcie\u017ck\u0119 klasy.
+
+# -----------------------------------------------
+host.has.not.been.defined=SRVE0204E: Host {0} nie zosta\u0142 zdefiniowany
+host.has.not.been.defined.explanation=Nie znaleziono hosta wirtualnego. Wymagane jest wykonanie odpowiednich czynno\u015bci w systemie.
+host.has.not.been.defined.useraction=Sprawd\u017a konfiguracj\u0119 hosta wirtualnego, korzystaj\u0105c z pliku virtualhosts.xml lub Konsoli administracyjnej.
+
+# -----------------------------------------------
+host.on.port.has.not.been.defined=SRVE0205E: Host {0} na porcie {1} nie zosta\u0142 zdefiniowany. 
+host.on.port.has.not.been.defined.explanation=Nie mo\u017cna znale\u017a\u0107 hosta wirtualnego zdefiniowanego pod k\u0105tem obs\u0142ugi tego identyfikatora URI \u017c\u0105dania. Wymagane jest wykonanie odpowiednich czynno\u015bci w systemie.
+host.on.port.has.not.been.defined.useraction=Sprawd\u017a konfiguracj\u0119 hosta wirtualnego, korzystaj\u0105c z pliku virtualhosts.xml lub Konsoli administracyjnej.
+
+# -----------------------------------------------
+This.error.implies.servlet.was.originally.compiled.with.classes.which.cannot.be.located.by.server=SRVE0206E: Ten b\u0142\u0105d oznacza zwykle, \u017ce serwlet zosta\u0142 pierwotnie skompilowany z klasami, kt\u00f3rych nie mo\u017ce znale\u017a\u0107 serwer.\n
+This.error.implies.servlet.was.originally.compiled.with.classes.which.cannot.be.located.by.server.explanation=Jest to b\u0142\u0105d aplikacji.
+This.error.implies.servlet.was.originally.compiled.with.classes.which.cannot.be.located.by.server.useraction=Zrekompiluj serwlet ze wszystkimi wymaganymi komponentami umieszczonymi w \u015bcie\u017cce klasy.
+
+# -----------------------------------------------
+Uncaught.initialization.exception.thrown.by.servlet=SRVE0207E: Serwlet utworzy\u0142 niewychwycony wyj\u0105tek inicjowania.
+Uncaught.initialization.exception.thrown.by.servlet.explanation=Podczas inicjowania kod docelowy zg\u0142osi\u0142 wyj\u0105tek, kt\u00f3ry nie zosta\u0142 wychwycony przez kod u\u017cytkownika. Jest to b\u0142\u0105d aplikacji.
+Uncaught.initialization.exception.thrown.by.servlet.useraction=Uwzgl\u0119dnij wyj\u0105tek w kodzie docelowym.
+
+# -----------------------------------------------
+Unsupported.conversion=SRVE0208E: Nieobs\u0142ugiwana konwersja
+Unsupported.conversion.explanation=Pr\u00f3bowano przeprowadzi\u0107 w kodzie niedozwolon\u0105 konwersj\u0119 warto\u015bci nag\u0142\u00f3wka, na przyk\u0142ad z liczby ca\u0142kowitej na dane, gdy taka konwersja jest niemo\u017cliwa. Jest to b\u0142\u0105d aplikacji.
+Unsupported.conversion.useraction=Zmodyfikuj serwlet lub stron\u0119 JSP, w przypadku kt\u00f3rych wyst\u0105pi\u0142o niepowodzenie.
+
+# -----------------------------------------------
+Writer.already.obtained=SRVE0209E: Ju\u017c pobrano program pisz\u0105cy
+Writer.already.obtained.explanation=Program pisz\u0105cy dla tej odpowiedzi zosta\u0142 ju\u017c pobrany. U\u017cyj istniej\u0105cego programu pisz\u0105cego. Jest to b\u0142\u0105d aplikacji.
+Writer.already.obtained.useraction=Przejrzyj aplikacj\u0119 i sprawd\u017a, czy pobrano klasy PrintWriter i OuputStream. Zmodyfikuj dzia\u0142aj\u0105cy niepoprawnie serwlet lub stron\u0119 JSP tak, aby uzyskiwana by\u0142a tylko jedna z klas.
+
+# -----------------------------------------------
+be.debugged.by.recompiling.the.servlet.using.only.the.classes.in.the.application's.runtime.classpath=SRVE0210I: Ten problem mo\u017cna zdebugowa\u0107, rekompiluj\u0105c serwlet przy u\u017cyciu tylko tych klas, kt\u00f3re uwzgl\u0119dniono w \u015bcie\u017cce klasy \u015brodowiska wykonawczego aplikacji.\n
+be.debugged.by.recompiling.the.servlet.using.only.the.classes.in.the.application's.runtime.classpath.explanation=Jest to b\u0142\u0105d aplikacji.
+be.debugged.by.recompiling.the.servlet.using.only.the.classes.in.the.application's.runtime.classpath.useraction=Dokonaj rekompilacji serwletu przy u\u017cyciu tylko tych klas, kt\u00f3re uwzgl\u0119dniono w \u015bcie\u017cce klasy \u015brodowiska wykonawczego aplikacji.
+
+# -----------------------------------------------
+class.{0}.could.not.be.instantiated=SRVE0211E: Nie mo\u017cna utworzy\u0107 instancji klasy {0}.
+class.{0}.could.not.be.instantiated.explanation=Wyj\u0105tek wewn\u0119trzny.
+class.{0}.could.not.be.instantiated.useraction=CMSG0002
+
+# -----------------------------------------------
+class.{0}.not.accessible=SRVE0212E: Klasa {0} jest niedost\u0119pna.
+class.{0}.not.accessible.explanation=Wyj\u0105tek wewn\u0119trzny.
+class.{0}.not.accessible.useraction=CMSG0002
+
+# -----------------------------------------------
+class.not.found=SRVE0213E: Nie znaleziono klasy
+class.not.found.explanation=Wyj\u0105tek wewn\u0119trzny.
+class.not.found.useraction=CMSG0002
+
+# -----------------------------------------------
+invalid.count=SRVE0214E: Niepoprawna warto\u015b\u0107 licznika
+invalid.count.explanation=Wyj\u0105tek wewn\u0119trzny.
+invalid.count.useraction=CMSG0002
+
+# -----------------------------------------------
+non-HTTP.request.or.response=SRVE0215E: \u017b\u0105danie lub odpowied\u017a jest niezgodna z typem HTTP
+non-HTTP.request.or.response.explanation=Zdefiniowany \u0142a\u0144cuch serwletu mo\u017ce obs\u0142ugiwa\u0107 tylko \u017c\u0105dania HTTP. Jest to b\u0142\u0105d aplikacji.
+non-HTTP.request.or.response.useraction=Brak.
+
+# -----------------------------------------------
+post.body.contains.less.bytes.than.specified=SRVE0216E: Tre\u015b\u0107 \u017c\u0105dania POST zawiera mniej bajt\u00f3w ni\u017c podano w nag\u0142\u00f3wku content-length
+post.body.contains.less.bytes.than.specified.explanation=\u017b\u0105danie przychodz\u0105ce mo\u017ce by\u0107 uszkodzone. Jest to b\u0142\u0105d aplikacji.
+post.body.contains.less.bytes.than.specified.useraction=Brak.
+
+# -----------------------------------------------
+{0}.is.not.a.valid.class=SRVE0217E: {0} nie jest poprawn\u0105 klas\u0105
+{0}.is.not.a.valid.class.explanation=Ten b\u0142\u0105d wyst\u0105pi\u0142, gdy kontener WWW pr\u00f3bowa\u0142 za\u0142adowa\u0107 wewn\u0119trzn\u0105 klas\u0119 implementacji. Jest to b\u0142\u0105d systemowy.
+{0}.is.not.a.valid.class.useraction=Sprawd\u017a, czy pierwotna \u015bcie\u017cka klasy produktu nie zosta\u0142a zmieniona.
+
+# -----------------------------------------------
+Forbidden.Web.Security.Exception=SRVE0218E: Zabronione: Wyj\u0105tek zabezpiecze\u0144 WWW
+Forbidden.Web.Security.Exception.explanation=\u017b\u0105danie pr\u00f3bowa\u0142o uzyska\u0107 dost\u0119p do zabronionego zasobu.
+Forbidden.Web.Security.Exception.useraction=Sprawd\u017a, czy obiekt zg\u0142aszaj\u0105cy \u017c\u0105danie ma wymagane uprawnienia.
+
+# -----------------------------------------------
+No.Error.to.Report=SRVE0219I: Brak b\u0142\u0119d\u00f3w do zg\u0142oszenia
+No.Error.to.Report.explanation=Wywo\u0142ano obiekt DefaultErrorReport, ale nie znaleziono \u017cadnych b\u0142\u0119d\u00f3w. Jest to b\u0142\u0105d systemowy.
+No.Error.to.Report.useraction=Przejrzyj aplikacj\u0119, aby okre\u015bli\u0107 przyczyn\u0119 problemu.
+
+# -----------------------------------------------
+Wrapped.Error=SRVE0220I: B\u0142\u0105d opakowania-
+Wrapped.Error.explanation=B\u0142\u0105d, kt\u00f3ry spowodowa\u0142 problem.
+Wrapped.Error.useraction=Brak.
+
+# -----------------------------------------------
+Serving.JSP.Not.Allowed=SRVE0221E: Udost\u0119pnianie tre\u015bci plik\u00f3w JSP nie jest dozwolone.
+Serving.JSP.Not.Allowed.explanation=Nie mo\u017cna udost\u0119pni\u0107 tre\u015bci pliku JSP.
+Serving.JSP.Not.Allowed.useraction=Brak.
+
+# -----------------------------------------------
+StackTrace=SRVE0223I: Dane \u015bledzenia stosu:
+StackTrace.explanation=Brak.
+StackTrace.useraction=Brak.
+
+# -----------------------------------------------
+Target.Servlet=SRVE0224I: Serwlet docelowy:
+Target.Servlet.explanation=Brak.
+Target.Servlet.useraction=Brak.
+
+# -----------------------------------------------
+Root.Error=SRVE0225I: G\u0142\u00f3wny b\u0142\u0105d-
+Root.Error.explanation=Brak.
+Root.Error.useraction=Brak.
+
+# -----------------------------------------------
+class.resides.in.proper.package.directory=SRVE0227E: Sprawd\u017a, czy klasa znajduje si\u0119 we w\u0142a\u015bciwym katalogu pakietu.\n
+class.resides.in.proper.package.directory.explanation=Nazwa pakietu zasobu nie jest zgodna z pakietem skompilowanego pliku klasy. Jest to b\u0142\u0105d aplikacji.
+class.resides.in.proper.package.directory.useraction=Sprawd\u017a, czy klasa znajduje si\u0119 we w\u0142a\u015bciwym katalogu pakietu.
+
+# -----------------------------------------------
+classname.defined.in.server.using.proper.case.and.fully.qualified.package=SRVE0228E: Sprawd\u017a, czy nazwa klasy zosta\u0142a zdefiniowana na serwerze przy u\u017cyciu odpowiedniej wielko\u015bci liter i pe\u0142nej nazwy pakietu.\n
+classname.defined.in.server.using.proper.case.and.fully.qualified.package.explanation=Jest to b\u0142\u0105d aplikacji.
+classname.defined.in.server.using.proper.case.and.fully.qualified.package.useraction=Sprawd\u017a, czy nazwa klasy zosta\u0142a zdefiniowana na serwerze przy u\u017cyciu odpowiedniej wielko\u015bci liter i pe\u0142nej nazwy pakietu.
+
+# -----------------------------------------------
+class.transfered.using.binary.mode=SRVE0229E: Sprawd\u017a, czy klasa zosta\u0142a przes\u0142ana do systemu plik\u00f3w przy u\u017cyciu binarnego trybu przesy\u0142ania.\n
+class.transfered.using.binary.mode.explanation=Jest to b\u0142\u0105d aplikacji.
+class.transfered.using.binary.mode.useraction=Sprawd\u017a, czy klasa zosta\u0142a przes\u0142ana do systemu plik\u00f3w przy u\u017cyciu binarnego trybu przesy\u0142ania.
+
+# -----------------------------------------------
+class.compiled.using.proper.case=SRVE0230E: Sprawd\u017a, czy klasa zosta\u0142a skompilowana przy u\u017cyciu odpowiedniej wielko\u015bci liter (tak jak w definicji klasy).\n
+class.compiled.using.proper.case.explanation=Jest to b\u0142\u0105d aplikacji.
+class.compiled.using.proper.case.useraction=Sprawd\u017a, czy klasa zosta\u0142a skompilowana przy u\u017cyciu odpowiedniej wielko\u015bci liter (zgodnie z definicj\u0105 klasy).
+
+# -----------------------------------------------
+class.not.renamed.after.compiled=SRVE0231E: Sprawd\u017a, czy nie zmieniono nazwy pliku klasy po jej skompilowaniu.
+class.not.renamed.after.compiled.explanation=Jest to b\u0142\u0105d aplikacji.
+class.not.renamed.after.compiled.useraction=Sprawd\u017a, czy nie zmieniono nazwy pliku klasy po jej skompilowaniu.
+
+# -----------------------------------------------
+Engine.Exception.[{0}]=SRVE0232E: Wewn\u0119trzny b\u0142\u0105d serwera. <br> Komunikat wyj\u0105tku: [{0}]
+Engine.Exception.[{0}].explanation=Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek. Szczeg\u00f3\u0142y podano na stronie komunikatu o b\u0142\u0119dzie. Jest to b\u0142\u0105d systemowy.
+Engine.Exception.[{0}].useraction=Wi\u0119cej informacji na temat wygenerowanego wyj\u0105tku mo\u017cna znale\u017a\u0107 w dziennikach System.out i System.err.
+
+# -----------------------------------------------
+Error.Report=SRVE0233E: Raport o b\u0142\u0119dzie
+Error.Report.explanation=Brak.
+Error.Report.useraction=Brak.
+
+# -----------------------------------------------
+Application.classpath=SRVE0234I: \u015acie\u017cka klasy aplikacji=[{0}]
+Application.classpath.explanation=Brak.
+Application.classpath.useraction=Brak.
+
+# -----------------------------------------------
+[{0}].reported.an.error=SRVE0235E: Element [{0}] zg\u0142osi\u0142 b\u0142\u0105d
+[{0}].reported.an.error.explanation=Patrz zg\u0142oszony b\u0142\u0105d.
+[{0}].reported.an.error.useraction=Brak.
+
+# -----------------------------------------------
+error.on.collaborator.starting.call=SRVE0236E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas wywo\u0142ywania wsp\u00f3\u0142pracownika inicjowania w wywo\u0142aniu metody starting().
+error.on.collaborator.starting.call.explanation=Jest to b\u0142\u0105d systemowy.
+error.on.collaborator.starting.call.useraction=Sprawd\u017a dzienniki FFDC, aby uzyska\u0107 bardziej szczeg\u00f3\u0142owe informacje o b\u0142\u0119dzie.
+
+# -----------------------------------------------
+error.on.collaborator.started.call=SRVE0237E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas wywo\u0142ywania wsp\u00f3\u0142pracownika inicjowania w wywo\u0142aniu metody started().
+error.on.collaborator.started.call.explanation=Jest to b\u0142\u0105d systemowy.
+error.on.collaborator.started.call.useraction=Sprawd\u017a dzienniki FFDC, aby uzyska\u0107 bardziej szczeg\u00f3\u0142owe informacje o b\u0142\u0119dzie.
+
+# -----------------------------------------------
+resource.path.has.to.start.with.slash=SRVE0238E: Na pocz\u0105tku \u015bcie\u017cek do zasob\u00f3w powinien znajdowa\u0107 si\u0119 uko\u015bnik.
+resource.path.has.to.start.with.slash.explanation=Jest to b\u0142\u0105d aplikacji.
+resource.path.has.to.start.with.slash.useraction=Wpisz uko\u015bnik na pocz\u0105tku \u015bcie\u017cki i spr\u00f3buj ponownie.
+
+# -----------------------------------------------
+ExtensionFactory.[{0}].registered.successfully=SRVE0239I: Fabryka rozszerze\u0144 [{0}] zosta\u0142a pomy\u015blnie zarejestrowana.
+ExtensionFactory.[{0}].registered.successfully.explanation=Brak.
+ExtensionFactory.[{0}].registered.successfully.useraction=Brak.
+
+# -----------------------------------------------
+ExtensionFactory.[{0}].associated.with.patterns.[{1}]=SRVE0240I: Fabryka rozszerze\u0144 [{0}] zosta\u0142a powi\u0105zana ze wzorcami [{1}].
+ExtensionFactory.[{0}].associated.with.patterns.[{1}].explanation=Brak.
+ExtensionFactory.[{0}].associated.with.patterns.[{1}].useraction=Brak.
+
+# -----------------------------------------------
+Using.[{0}].as.server.root=SRVE0241I: Jako katalog g\u0142\u00f3wny serwera w metodzie getTempDirectory() u\u017cywany jest katalog [{0}].
+Using.[{0}].as.server.root.explanation=Brak.
+Using.[{0}].as.server.root.useraction=Brak.
+
+# -----------------------------------------------
+[{0}].Initialization.successful=SRVE0242I: [{2}] [{1}] [{0}]: inicjowanie powiod\u0142o si\u0119.
+[{0}].Initialization.successful.explanation=Pomy\u015blnie wykonano metod\u0119 init() zasobu docelowego i zas\u00f3b docelowy zosta\u0142 umieszczony w us\u0142udze.
+[{0}].Initialization.successful.useraction=Brak.
+
+# -----------------------------------------------
+reaper.with.interval.[{0}].limit.[{1}].started=SRVE0243I: W\u0142\u0105czono odst\u0119p czasu w\u0105tku usuwania [{0}] i ograniczenie czasu braku aktywno\u015bci [{1}].
+reaper.with.interval.[{0}].limit.[{1}].started.explanation=Brak.
+reaper.with.interval.[{0}].limit.[{1}].started.useraction=Brak.
+
+# -----------------------------------------------
+reaper.unloading.servlet.[{0}]=SRVE0244I: W\u0105tek usuwania usuwa z pami\u0119ci serwlet [{0}].
+reaper.unloading.servlet.[{0}].explanation=W\u0105tek usuwania usuwa serwlety, kt\u00f3re by\u0142y nieaktywne przez czas d\u0142u\u017cszy ni\u017c okre\u015blony czas braku aktywno\u015bci.
+reaper.unloading.servlet.[{0}].useraction=Brak.
+
+# -----------------------------------------------
+reaper.removing.mapping.[{0}].for.servlet.[{1}]=SRVE0245I: W\u0105tek usuwania usuwa odwzorowanie [{0}] dla serwletu [{0}].
+reaper.removing.mapping.[{0}].for.servlet.[{1}].explanation=W\u0105tek usuwania usuwa odwzorowania stron JSP i innych rozszerze\u0144, kt\u00f3re by\u0142y nieaktywne przez czas d\u0142u\u017cszy ni\u017c okre\u015blony czas braku aktywno\u015bci.
+reaper.removing.mapping.[{0}].for.servlet.[{1}].useraction=Brak.
+
+# -----------------------------------------------
+reaper.destroying.servlet.[{0}]=SRVE0246I: W\u0105tek usuwania niszczy serwlet [{0}].
+reaper.destroying.servlet.[{0}].explanation=Brak.
+reaper.destroying.servlet.[{0}].useraction=Brak.
+
+# -----------------------------------------------
+reaper.thread.error=SRVE0247E: B\u0142\u0105d podczas wykonywania w\u0105tku usuwania.
+reaper.thread.error.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas przetwarzania w\u0105tku usuwania. Jest to b\u0142\u0105d systemowy.  
+reaper.thread.error.useraction=Przetwarzanie w\u0105tku usuwania jest form\u0105 czyszczenia pami\u0119ci.
+
+# -----------------------------------------------
+waiting.to.destroy.filter.[{0}]=SRVE0248I: Trwa przetwarzanie \u017c\u0105da\u0144. Czas oczekiwania na wymuszenie operacji niszczenia filtru wynosi co najwy\u017cej 60 sekund.
+waiting.to.destroy.filter.[{0}].explanation=Brak.
+waiting.to.destroy.filter.[{0}].useraction=Brak.
+
+# -----------------------------------------------
+sync.tothread.not.set.for.server.[{0}]=SRVE0249W: Aplikacja {0} za\u017c\u0105da\u0142a funkcji SyncToOSThread, ale na serwerze nie jest w\u0142\u0105czona obs\u0142uga tej funkcji.
+sync.tothread.not.set.for.server.[{0}].explanation=Funkcja SyncToOSThread powoduje synchronizacj\u0119 to\u017csamo\u015bci roli Java EE z w\u0105tkiem systemu operacyjnego, co oznacza, \u017ce na czas trwania \u017c\u0105dania to\u017csamo\u015b\u0107 w\u0105tku systemu operacyjnego staje si\u0119 taka sama jak to\u017csamo\u015b\u0107 roli Java EE. Ten komunikat wskazuje, \u017ce aplikacja zosta\u0142a skonfigurowana na potrzeby korzystania z funkcji SyncToOSThread, ale serwer, na kt\u00f3rym jest ona instalowana, nie jest skonfigurowany do obs\u0142ugi funkcji SyncToOSThread. Wymagane jest wykonanie odpowiednich czynno\u015bci w systemie.
+sync.tothread.not.set.for.server.[{0}].useraction=Je\u015bli funkcja SyncToOSThread jest wymagana na danym serwerze, znajd\u017a opis sposobu w\u0142\u0105czania funkcji SyncToOSThread na serwerze w Centrum informacyjnym.
+
+# -----------------------------------------------
+module.[{0}].successfully.bound.to.virtualhost.[{1}]=SRVE0250I: Modu\u0142 WWW {0} zosta\u0142 powi\u0105zany z hostem wirtualnym {1}.
+module.[{0}].successfully.bound.to.virtualhost.[{1}].explanation=Okre\u015blony modu\u0142 WWW zosta\u0142 powi\u0105zany z podanym hostem wirtualnym i jest dost\u0119pny za po\u015brednictwem dowolnej kombinacji host/port tego hosta wirtualnego.
+module.[{0}].successfully.bound.to.virtualhost.[{1}].useraction=Brak.
+
+# -----------------------------------------------
+threadpool.not.used=SRVE0251W: Pula w\u0105tk\u00f3w skonfigurowana w kontenerze WWW nie jest u\u017cywana.
+threadpool.not.used.explanation=W kontenerze WWW istnieje konfiguracja puli w\u0105tk\u00f3w. Jakiekolwiek zmiany tego elementu konfiguracji nie spowoduj\u0105 zmian w systemie.
+threadpool.not.used.useraction=Brak.
+
+# -----------------------------------------------
+transports.detected=SRVE0252W: Wykryto transporty i \u0142a\u0144cuchy. Transporty zosta\u0142y zmienione w taki spos\u00f3b, aby korzysta\u0142y z nowego modelu. U\u017cyj program\u00f3w narz\u0119dziowych w celu przeprowadzenia migracji transport\u00f3w do nowego modelu. Konfiguracja puli w\u0105tk\u00f3w w kontenerze WWW nie b\u0119dzie u\u017cywana z tymi transportami.
+transports.detected.explanation= Transporty zosta\u0142y zmienione w taki spos\u00f3b, aby korzysta\u0142y z \u0142a\u0144cuch\u00f3w kana\u0142\u00f3w. Informacje na temat \u0142a\u0144cuch\u00f3w kana\u0142\u00f3w i sposobu migracji istniej\u0105cych transport\u00f3w do postaci opartej na \u0142a\u0144cuchu kana\u0142u mo\u017cna znale\u017a\u0107 w Centrum informacyjnym. Konfiguracja puli w\u0105tk\u00f3w w kontenerze WWW nie b\u0119dzie u\u017cywana z tymi transportami.
+transports.detected.useraction= U\u017cyj program\u00f3w narz\u0119dziowych w celu przeprowadzenia migracji modelu konfiguracji z transport\u00f3w do nowych \u0142a\u0144cuch\u00f3w kana\u0142\u00f3w.
+
+# -----------------------------------------------
+[{0}].Destroy.successful=SRVE0253I: [{2}] [{1}] [{0}]: niszczenie powiod\u0142o si\u0119.
+[{0}].Destroy.successful.explanation=Pomy\u015blnie uruchomiono metod\u0119 destroy() dla zasobu docelowego i zas\u00f3b docelowy zosta\u0142 usuni\u0119ty z us\u0142ugi.
+[{0}].Destroy.successful.useraction=Brak.
+
+# -----------------------------------------------
+unsupported.request.encoding.[{0}]=SRVE0254E: Nie powiod\u0142o si\u0119 ustawienie kodowania znak\u00f3w w \u017c\u0105daniu: [{0}].
+unsupported.request.encoding.[{0}].explanation=Kodowanie \u017c\u0105dania okre\u015blone w \u017c\u0105daniu jest niepoprawne. Jest to b\u0142\u0105d aplikacji.
+unsupported.request.encoding.[{0}].useraction=Przejrzyj dzienniki i sprawd\u017a, czy podane kodowanie jest poprawne.
+
+# -----------------------------------------------
+Web.Group.VHost.Not.Found=SRVE0255E: Nie zdefiniowano grupy WWW /\u00a0hosta wirtualnego na potrzeby obs\u0142ugi \u017c\u0105dania {0}.
+Web.Group.VHost.Not.Found.explanation=Nie mo\u017cna znale\u017a\u0107 grupy WWW (modu\u0142u WWW) lub hosta wirtualnego do obs\u0142ugi \u017c\u0105dania. Jest to b\u0142\u0105d aplikacji.
+Web.Group.VHost.Not.Found.useraction=Sprawd\u017a, czy grupa WWW i host wirtualny s\u0105 zdefiniowane i wdro\u017cone.
+
+# -----------------------------------------------
+webcontainer.not.initialized=SRVE0256E: Kontener WWW nie zosta\u0142 zainicjowany.
+webcontainer.not.initialized.explanation=Kontener WWW nie jest inicjowany, dop\u00f3ki nie zostanie zainstalowana aplikacja. Jest to b\u0142\u0105d systemowy.
+webcontainer.not.initialized.useraction=Zainstaluj aplikacj\u0119, aby zainicjowa\u0107 kontener WWW.
+
+# -----------------------------------------------
+property.has.changed=SRVE0257W: Semantyka w\u0142a\u015bciwo\u015bci {0} zmieni\u0142a si\u0119 w transporcie.
+property.has.changed.explanation=W\u0105tek nie jest ju\u017c powi\u0105zany z pojedynczym po\u0142\u0105czeniem. Wymagane jest wykonanie odpowiednich czynno\u015bci w systemie.
+property.has.changed.useraction=Wi\u0119cej szczeg\u00f3\u0142owych informacji mo\u017cna znale\u017a\u0107 w Centrum informacyjnym.
+
+# -----------------------------------------------
+property.not.applicable=SRVE0258W: Transportowany atrybut {0} nie obowi\u0105zuje.
+property.not.applicable.explanation=Wymagane jest wykonanie odpowiednich czynno\u015bci w systemie.
+property.not.applicable.useraction=Skonfiguruj t\u0119 w\u0142a\u015bciwo\u015b\u0107 w obszarze Us\u0142uga rejestrowania (wi\u0119cej szczeg\u00f3\u0142\u00f3w o programie rejestruj\u0105cym pr\u00f3by dost\u0119pu HTTP mo\u017cna znale\u017a\u0107 w Centrum informacyjnym).
+
+# -----------------------------------------------
+property.configuration.change=SRVE0259W: W\u0142a\u015bciwo\u015b\u0107 {0} mo\u017cna teraz konfigurowa\u0107 tylko na poziomie kontenera WWW.
+property.configuration.change.explanation=W\u0142a\u015bciwo\u015bci nie mo\u017cna ju\u017c konfigurowa\u0107 na poziomie transportu. Nale\u017cy j\u0105 skonfigurowa\u0107 na poziomie kontenera WWW. Wymagane jest wykonanie odpowiednich czynno\u015bci w systemie.
+property.configuration.change.useraction=Skonfiguruj t\u0119 w\u0142a\u015bciwo\u015b\u0107 na poziomie kontenera WWW.
+
+# -----------------------------------------------
+cannot.use.error.page=SRVE0260E: Serwer nie mo\u017ce skorzysta\u0107 ze strony komunikatu o b\u0142\u0119dzie okre\u015blonej w odniesieniu do aplikacji u\u017cytkownika w celu obs\u0142ugi pierwotnego wyj\u0105tku wskazanego poni\u017cej.
+cannot.use.error.page.explanation=Brak.
+cannot.use.error.page.useraction=Zapoznaj si\u0119 z wyj\u0105tkiem dotycz\u0105cym strony komunikatu o b\u0142\u0119dzie, aby uzyska\u0107 opis problemu zwi\u0105zanego z okre\u015blon\u0105 stron\u0105.
+
+# -----------------------------------------------
+annotation.helper.not.defined=SRVE0261E: Nie zdefiniowano programu pomocy adnotacji {0}.
+annotation.helper.not.defined.explanation=Nie zdefiniowano podanego programu pomocy adnotacji. Jest to b\u0142\u0105d systemowy.
+annotation.helper.not.defined.useraction=Sprawd\u017a, czy istnieje definicja podanego programu pomocy adnotacji i dodaj j\u0105, je\u015bli jest niezb\u0119dna.
+
+# -----------------------------------------------
+annotation.helper.wrong.type=SRVE0262E: Typ programu pomocy adnotacji {0} jest inny ni\u017c com.ibm.wsspi.webcontainer.AnnotationHelper.
+annotation.helper.wrong.type.explanation=Typ podanego programu pomocy adnotacji r\u00f3\u017cni si\u0119 od oczekiwanego. Jest to b\u0142\u0105d systemowy.
+annotation.helper.wrong.type.useraction=Sprawd\u017a klas\u0119 implementacji programu pomocy adnotacji i popraw j\u0105.
+
+# -----------------------------------------------
+annotation.helper.cannot.create=SRVE0263E: Nie mo\u017cna utworzy\u0107 instancji programu pomocy adnotacji {0}.
+annotation.helper.cannot.create.explanation=Nie mo\u017cna utworzy\u0107 instancji podanego programu pomocy adnotacji. Jest to b\u0142\u0105d systemowy.
+annotation.helper.cannot.create.useraction=Zapoznaj si\u0119 z dziennikami wyj\u0105tk\u00f3w, aby okre\u015bli\u0107 przyczyn\u0119, dla kt\u00f3rej nie mo\u017cna utworzy\u0107 instancji programu pomocy adnotacji.
+
+#------------------------------------------------
+error.initializing.extension.factories=SRVE0264E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas inicjowania fabryk rozszerze\u0144: {0}.
+error.initializing.extension.factories.explanation=Jest to b\u0142\u0105d systemowy.
+error.initializing.extension.factories.useraction=Przejrzyj dzienniki.
+
+#------------------------------------------------
+error.notifying.listeners.of.WebApp.start=SRVE0265E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas powiadamiania obiekt\u00f3w nas\u0142uchiwania o uruchomieniu aplikacji WWW: {0}.
+error.notifying.listeners.of.WebApp.start.explanation=Jest to b\u0142\u0105d systemowy.
+error.notifying.listeners.of.WebApp.start.useraction=Przejrzyj dzienniki.
+
+#-------------------------------------------------
+error.while.initializing.servlets=SRVE0266E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas inicjowania serwlet\u00f3w: {0}.
+error.while.initializing.servlets.explanation=Jest to b\u0142\u0105d systemowy.
+error.while.initializing.servlets.useraction=Przejrzyj dzienniki.
+
+#-------------------------------------------------
+error.initializing.filters=SRVE0267E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas inicjowania filtr\u00f3w: {0}.
+error.initializing.filters.explanation=Jest to b\u0142\u0105d systemowy.
+error.initializing.filters.useraction=Przejrzyj dzienniki.
+
+#------------------------------------------------
+error.obtaining.session.context=SRVE0268E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas uzyskiwania kontekstu sesji dla aplikacji WWW: {0}.
+error.obtaining.session.context.explanation=Nie mo\u017cna uzyska\u0107 poprawnego kontekstu sesji dla aplikacji WWW. Wymagane jest wykonanie odpowiednich czynno\u015bci w systemie. 
+error.obtaining.session.context.useraction=Sprawd\u017a, czy mened\u017cer sesji zosta\u0142 poprawnie skonfigurowany.
+
+#-------------------------------------------------
+no.jsp.extension.handler.found=SRVE0269W: Nie znaleziono procesora rozszerze\u0144 do obs\u0142ugi stron JSP.
+no.jsp.extension.handler.found.explanation=Jest to b\u0142\u0105d systemowy.
+no.jsp.extension.handler.found.useraction=Przejrzyj dzienniki.
+
+#-------------------------------------------------
+illegal.servlet.mapping=SRVE0270E: Wykryto niedozwolone odwzorowanie serwletu {0}.
+illegal.servlet.mapping.explanation=Odwzorowanie serwletu okre\u015blone w pliku webconfig.xml jest niepoprawne. Wymagane jest wykonanie odpowiednich czynno\u015bci w systemie.
+illegal.servlet.mapping.useraction=Sprawd\u017a odwzorowania serwlet\u00f3w w pliku webconfig.xml i wprowad\u017a odpowiednie zmiany.
+
+#-------------------------------------------------
+uncaught.init.exception.thrown.by.servlet=SRVE0271E: Niewychwycony wyj\u0105tek dotycz\u0105cy metody init() utworzony przez serwlet [{0}] w aplikacji [{1}]: {2}.
+uncaught.init.exception.thrown.by.servlet.explanation=Jest to b\u0142\u0105d aplikacji.
+uncaught.init.exception.thrown.by.servlet.useraction=Przejrzyj dzienniki.
+
+#-------------------------------------------------
+jsp.processor.not.defined.skipping=SRVE0272W: Nie zdefiniowano procesora stron JSP. Pomijanie: {0}.
+jsp.processor.not.defined.skipping.explanation=Jest to b\u0142\u0105d systemowy.
+jsp.processor.not.defined.skipping.useraction=Brak.
+
+#--------------------------------------------------
+error.while.initializing.jsp.as.servlet=SRVE0273E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas inicjowania strony JSP jako serwletu [{0}] w aplikacji [{1}]: {1}.
+error.while.initializing.jsp.as.servlet.explanation=Jest to b\u0142\u0105d aplikacji.
+error.while.initializing.jsp.as.servlet.useraction=Przejrzyj dzienniki.
+
+#--------------------------------------------------
+error.while.adding.servlet.mapping.for.path=SRVE0274W: Wyst\u0105pi\u0142 b\u0142\u0105d podczas dodawania odwzorowania serwletu dla \u015bcie\u017cki {0}, opakowania {1}, aplikacji {2}.
+error.while.adding.servlet.mapping.for.path.explanation=Jest to b\u0142\u0105d aplikacji.
+error.while.adding.servlet.mapping.for.path.useraction=Sprawd\u017a, czy w pliku webconfig.xml nie wyst\u0119puj\u0105 konflikty odwzorowa\u0144.
+
+#--------------------------------------------------
+error.adding.servlet.mapping.for.servlet=SRVE0275E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas dodawania odwzorowania serwletu dla serwletu [{0}] w aplikacji [{1}]: {2}.
+error.adding.servlet.mapping.for.servlet.explanation=Jest to b\u0142\u0105d aplikacji.
+error.adding.servlet.mapping.for.servlet.useraction=Sprawd\u017a, czy odwzorowanie jest poprawne.
+
+#--------------------------------------------------
+error.initializing.servlet=SRVE0276E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas inicjowania serwletu [{0}]: {1}.
+error.initializing.servlet.explanation=Jest to b\u0142\u0105d aplikacji.
+error.initializing.servlet.useraction=Przejrzyj dzienniki.
+
+#--------------------------------------------------
+mapping.for.directorybrowsingservlet.already.exists=SRVE0277W: Odwzorowanie serwletu DirectoryBrowsingServlet ju\u017c istnieje.
+mapping.for.directorybrowsingservlet.already.exists.explanation=Jest to b\u0142\u0105d aplikacji.
+mapping.for.directorybrowsingservlet.already.exists.useraction=Usu\u0144 zduplikowane odwzorowanie.
+
+#--------------------------------------------------
+error.adding.servlet.mapping.file.handler=SRVE0278E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas dodawania odwzorowania serwletu {0}.
+error.adding.servlet.mapping.file.handler.explanation=Jest to b\u0142\u0105d aplikacji.
+error.adding.servlet.mapping.file.handler.useraction=Ustaw w\u0142a\u015bciwo\u015b\u0107 fileServingEnabled=false w pliku ibm-web-ext.xmi znajduj\u0105cym si\u0119 w folderze WEB-INF.
+
+#--------------------------------------------------
+error.processing.global.listeners.for.webapp=SRVE0279E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas przetwarzania globalnych obiekt\u00f3w nas\u0142uchiwania dla aplikacji {0}: {1}.
+error.processing.global.listeners.for.webapp.explanation=Jest to b\u0142\u0105d aplikacji.
+error.processing.global.listeners.for.webapp.useraction=Przejrzyj dzienniki.
+
+#---------------------------------------------------
+extension.processor.failed.to.initialize.in.factory=SRVE0280E: Inicjowanie procesora rozszerze\u0144 w fabryce [{0}] nie powiod\u0142o si\u0119: {1}.
+extension.processor.failed.to.initialize.in.factory.explanation=Jest to b\u0142\u0105d systemowy.
+extension.processor.failed.to.initialize.in.factory.useraction=Przejrzyj dzienniki.
+
+#---------------------------------------------------
+request.processor.already.present.for.mapping=SRVE0281E: Procesor \u017c\u0105da\u0144 ju\u017c istnieje w przypadku odwzorowania {0}.
+request.processor.already.present.for.mapping.explanation=Jest to b\u0142\u0105d systemowy.
+request.processor.already.present.for.mapping.useraction=Przejrzyj dzienniki.
+
+#---------------------------------------------------
+error.while.setting.WebAppAttributes=SRVE0282E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas ustawiania atrybut\u00f3w aplikacji WWW: {0} 
+error.while.setting.WebAppAttributes.explanation=Jest to b\u0142\u0105d systemowy.
+error.while.setting.WebAppAttributes.useraction=Przejrzyj dzienniki.
+
+#---------------------------------------------------
+exception.while.initializing.context=SRVE0283E: Wychwycono wyj\u0105tek podczas inicjowania kontekstu: {0}.
+exception.while.initializing.context.explanation=Jest to b\u0142\u0105d aplikacji.
+exception.while.initializing.context.useraction=Przejrzyj dzienniki.
+
+#---------------------------------------------------
+exception.caught.in.notifyServletContextCreated=SRVE0284E: Wychwycono wyj\u0105tek w elemencie notifyServletContextCreated: {0}.
+exception.caught.in.notifyServletContextCreated.explanation=Jest to b\u0142\u0105d systemowy.
+exception.caught.in.notifyServletContextCreated.useraction=Przejrzyj dzienniki.
+
+#---------------------------------------------------
+exception.caught.destroying.context=SRVE0285E: Wychwycono wyj\u0105tek podczas niszczenia kontekstu: {0}
+exception.caught.destroying.context.explanation=Jest to b\u0142\u0105d systemowy.
+exception.caught.destroying.context.useraction=Przejrzyj dzienniki.
+
+#---------------------------------------------------
+exception.caught.in.notifyServletContextDestroyed=SRVE0286E: Wychwycono wyj\u0105tek w elemencie notifyServletContextDestroyed: {0}.
+exception.caught.in.notifyServletContextDestroyed.explanation=Jest to b\u0142\u0105d systemowy.
+exception.caught.in.notifyServletContextDestroyed.useraction=Przejrzyj dzienniki.
+
+#---------------------------------------------------
+server.root.is.null=SRVE0287E: Element server.root ma warto\u015b\u0107 NULL.
+server.root.is.null.explanation=Jest to b\u0142\u0105d systemowy.
+server.root.is.null.useraction=Brak.
+
+#---------------------------------------------------
+chown.failed=SRVE0288E: Pr\u00f3ba uruchomienia komendy chown nie powiod\u0142a si\u0119. Podj\u0119to pr\u00f3b\u0119 uruchomienia komendy: [{0}]. Kod wyj\u015bcia: [{1}].
+chown.failed.explanation=Jest to b\u0142\u0105d systemowy.
+chown.failed.useraction=Brak.
+
+#---------------------------------------------------
+failed.to.create.temp.directory=SRVE0289E: Nie powiod\u0142a si\u0119 pr\u00f3ba utworzenia katalogu tymczasowego: {0}
+failed.to.create.temp.directory.explanation=Jest to b\u0142\u0105d systemowy.
+failed.to.create.temp.directory.useraction=Brak.
+
+#---------------------------------------------------
+unable.to.use.specified.temp.directory=SRVE0290E: Nie mo\u017cna korzysta\u0107 z okre\u015blonego katalogu tymczasowego: {0}, odczyt: {1}, zapis: {2}.
+unable.to.use.specified.temp.directory.explanation=Wymagane jest wykonanie odpowiednich czynno\u015bci w systemie.
+unable.to.use.specified.temp.directory.useraction=Sprawd\u017a status katalogu, w tym jego istnienie oraz uprawnienia dost\u0119pu i ilo\u015b\u0107 dost\u0119pnego miejsca.
+
+#---------------------------------------------------
+unable.to.use.default.temp.directory=SRVE0291E: Nie mo\u017cna korzysta\u0107 z domy\u015blnego katalogu tymczasowego: {0}, odczyt: {1}, zapis: {2}.
+unable.to.use.default.temp.directory.explanation=Wymagane jest wykonanie odpowiednich czynno\u015bci w systemie.
+unable.to.use.default.temp.directory.useraction=Sprawd\u017a status katalogu, w tym jego istnienie oraz uprawnienia dost\u0119pu i ilo\u015b\u0107 dost\u0119pnego miejsca.
+
+#----------------------------------------------------
+log.servlet.message=SRVE0292I: Komunikat serwletu - [{0}]:.{1}
+log.servlet.message.explanation=Zarejestrowano komunikat informacyjny dla serwletu przy u\u017cyciu kontekstu ServletContext.
+log.servlet.message.useraction=Brak.
+
+#----------------------------------------------------
+log.servlet.error=SRVE0293E: [B\u0142\u0105d serwletu]-[{0}]: {1}
+log.servlet.error.explanation=Zarejestrowano wyj\u0105tek dotycz\u0105cy b\u0142\u0119du dla serwletu przy u\u017cyciu kontekstu ServletContext.
+log.servlet.error.useraction=Aby okre\u015bli\u0107 przyczyn\u0119 b\u0142\u0119du i wymagane dzia\u0142ania, przejrzyj informacj\u0119 o wyj\u0105tku. Dodatkowe informacje mog\u0105 by\u0107 dost\u0119pne w dziennikach serwera.
+
+#----------------------------------------------------
+log.servlet.error.and.message=SRVE0294E: [B\u0142\u0105d serwletu]-[{0}]: {1}: {2}
+log.servlet.error.and.message.explanation=Zarejestrowano komunikat o b\u0142\u0119dzie i wyj\u0105tek dla serwletu przy u\u017cyciu kontekstu ServletContext.
+log.servlet.error.and.message.useraction=Aby okre\u015bli\u0107 przyczyn\u0119 b\u0142\u0119du i wymagane dzia\u0142ania, przejrzyj komunikat i informacj\u0119 o wyj\u0105tku. Dodatkowe informacje mog\u0105 by\u0107 dost\u0119pne w dziennikach serwera.
+
+# -----------------------------------------------
+Error.reported.{0}=SRVE0295E: Zg\u0142oszono b\u0142\u0105d: {0}
+Error.reported.{0}.explanation=Wywo\u0142ano metod\u0119 HttpServletResponse.sendError z kodem statusu, ale bez wyja\u015bnienia.
+Error.reported.{0}.useraction=Przejrzyj dzienniki, aby okre\u015bli\u0107 kod statusu b\u0142\u0119du.
+
+#------------------------------------------------
+log.servlet.message.with.throwable=SRVE0296E: [{0}][{1}][Servlet.LOG]:.{2}:.{3}
+log.servlet.message.with.throwable.explanation=Zarejestrowano komunikat informacyjny i wyj\u0105tek dla serwletu przy u\u017cyciu kontekstu ServletContext.
+log.servlet.message.with.throwable.useraction=Aby okre\u015bli\u0107, czy s\u0105 wymagane jakiekolwiek dzia\u0142ania, przejrzyj komunikat i wyj\u0105tek. Dodatkowe informacje mog\u0105 by\u0107 dost\u0119pne w dziennikach serwera.
+
+#------------------------------------------------
+WebApp.destroy.encountered.errors=SRVE0297E: Podczas niszczenia aplikacji WWW {0} wyst\u0105pi\u0142y b\u0142\u0119dy: {1}
+WebApp.destroy.encountered.errors.explanation=Jest to b\u0142\u0105d systemowy.
+WebApp.destroy.encountered.errors.useraction=Przejrzyj dzienniki.
+
+#------------------------------------------------
+exception.occured.while.creating.wrapper.for.servlet=SRVE0298E: Wyst\u0105pi\u0142 wyj\u0105tek podczas tworzenia opakowania dla serwletu [{0}]: {1}
+exception.occured.while.creating.wrapper.for.servlet.explanation=Jest to b\u0142\u0105d systemowy.
+exception.occured.while.creating.wrapper.for.servlet.useraction=Przejrzyj dzienniki.
+
+#------------------------------------------------
+could.not.create.wrapper.for.servlet=SRVE0299E: Nie mo\u017cna utworzy\u0107 opakowania dla serwletu [{0}]
+could.not.create.wrapper.for.servlet.explanation=Jest to b\u0142\u0105d systemowy.
+could.not.create.wrapper.for.servlet.useraction=Przejrzyj dzienniki.
+
+#------------------------------------------------
+mapping.already.exists=SRVE0300E: Odwzorowanie ju\u017c istnieje [{0}][{1}]: {2}
+mapping.already.exists.explanation=Wymagana \u015bcie\u017cka zosta\u0142a ju\u017c przypisana w ramach odwzorowania serwletu. Jest to b\u0142\u0105d aplikacji.
+mapping.already.exists.useraction=Zmie\u0144 lub usu\u0144 odwzorowanie z konfiguracji aplikacji.
+
+#------------------------------------------------
+encountered.problems.while.removing.servlet=SRVE0301I: Wyst\u0105pi\u0142y problemy podczas usuwania serwletu {0}. Szczeg\u00f3\u0142y: {1}.
+encountered.problems.while.removing.servlet.explanation=Jest to b\u0142\u0105d systemowy.
+encountered.problems.while.removing.servlet.useraction=Przejrzyj dzienniki.
+
+#--------------------------------------------------
+error.while.adding.static.file.processor=SRVE0302E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas dodawania procesora plik\u00f3w statycznych: {0}.
+error.while.adding.static.file.processor.explanation=Jest to b\u0142\u0105d systemowy.
+error.while.adding.static.file.processor.useraction=Przejrzyj dzienniki.
+
+# -----------------------------------------------
+servlet.name.for.servlet.mapping.not.found=SRVE0303E: Podczas dodawania odwzorowania serwletu nie znaleziono nazwy serwletu. Nazwa serwletu={0}; wzorzec adresu URL={1}; modu\u0142={2}; aplikacja={3}
+servlet.name.for.servlet.mapping.not.found.explanation=W odniesieniu do odwzorowania serwletu nie zdefiniowano serwletu.
+servlet.name.for.servlet.mapping.not.found.useraction=Sprawd\u017a, czy w pliku web.xml wyst\u0119puje definicja serwletu dotycz\u0105ca danego odwzorowania serwletu.
+
+#------------------------------------------------
+servletrequestwrapper.is.not.an.instance.of.so.wrapped.logic.may.be.bypassed=SRVE0304E: Klasa ServletRequestWrapper [{0}] nie jest instancj\u0105 klasy [{1}], w zwi\u0105zku z czym opakowana logika mo\u017ce zosta\u0107 pomini\u0119ta.
+servletrequestwrapper.is.not.an.instance.of.so.wrapped.logic.may.be.bypassed.explanation=Opakowany obiekt \u017c\u0105dania jest instancj\u0105 innej klasy ni\u017c oczekiwana przez kontener WWW. Jest to b\u0142\u0105d aplikacji.
+servletrequestwrapper.is.not.an.instance.of.so.wrapped.logic.may.be.bypassed.useraction=Zmie\u0144 kod, aby zaimplementowa\u0107 oczekiwany interfejs.
+
+# --------------------------------
+Object.Pool.Disabled=SRVE0305W: Us\u0142uga ObjectPoolService jest niedost\u0119pna. Tworzenie puli obiekt\u00f3w SRTConnectionContext zosta\u0142o wy\u0142\u0105czone.
+Object.Pool.Disabled.explanation=Us\u0142uga puli obiekt\u00f3w umo\u017cliwia zwi\u0119kszenie wydajno\u015bci dzia\u0142ania kontenera WWW, ale zosta\u0142a wy\u0142\u0105czona. Jest to b\u0142\u0105d systemowy.
+Object.Pool.Disabled.useraction=Zaleca si\u0119 w\u0142\u0105czenie us\u0142ugi puli obiekt\u00f3w.
+
+#------------------------------------------------
+ARD.Not.Enabled=SRVE0306W: Opcja ARD nie jest w\u0142\u0105czona, wi\u0119c asynchroniczne operacje w\u0142\u0105czania i wywo\u0142ania metody insertFragment b\u0119d\u0105 wykonywane synchronicznie.
+ARD.Not.Enabled.explanation=Program ARD nie zosta\u0142 poprawnie w\u0142\u0105czony. Wymagane jest wykonanie odpowiednich czynno\u015bci w systemie.
+ARD.Not.Enabled.useraction=Upewnij si\u0119, \u017ce w ustawieniach kontenera WWW zosta\u0142 w\u0142\u0105czony program ARD, a w ustawieniach aplikacji okre\u015blono typ rozsy\u0142ania CLIENT_SIDE lub SERVER_SIDE.
+
+#------------------------------------------------
+Null.Filter.Mapping=SRVE0307W: Odwzorowanie filtru ma warto\u015b\u0107 NULL. Sytuacja taka mo\u017ce wyst\u0105pi\u0107, je\u015bli podj\u0119to pr\u00f3b\u0119 okre\u015blenia odwzorowania * w aplikacji w wersji wcze\u015bniejszej ni\u017c 2.5.
+Null.Filter.Mapping.explanation=Brak odwzorowania serwletu w odniesieniu do filtru, w zwi\u0105zku z czym nie mo\u017cna go doda\u0107. Jest to b\u0142\u0105d aplikacji.
+Null.Filter.Mapping.useraction=W przypadku korzystania z odwzorowania * zaktualizuj deskryptory aplikacji do wersji 2.5.
+
+#------------------------------------------------
+filtering.by.asterisk=SRVE0308E: Filtrowanie przy u\u017cyciu znaku gwiazdki nie jest dozwolone. 
+filtering.by.asterisk.explanation=Filtrowanie przy u\u017cyciu znaku gwiazdki jest niedozwolone, poniewa\u017c wy\u0142\u0105czanie udost\u0119pniania wszystkich serwlet\u00f3w wg nazwy klasy jest realizowane za pomoc\u0105 w\u0142a\u015bciwo\u015bci niestandardowej com.ibm.ws.webcontainer.disallowserveservletsbyclassname. Jest to b\u0142\u0105d aplikacji.
+filtering.by.asterisk.useraction=Ustaw w\u0142a\u015bciwo\u015b\u0107 com.ibm.ws.webcontainer.disallowserveservletsbyclassname na warto\u015b\u0107 true, aby zablokowa\u0107 udost\u0119pnianie wszystkich klas wg nazwy klasy.
+
+#------------------------------------------------
+servlet.on.blocked.list.{0}=SRVE0309E: Serwlet znajduje si\u0119 na li\u015bcie element\u00f3w zablokowanych: {0}.
+servlet.on.blocked.list.{0}.explanation=\u017b\u0105dany serwlet znajduje si\u0119 na li\u015bcie zablokowanych serwlet\u00f3w udost\u0119pnianej przez w\u0142a\u015bciwo\u015b\u0107 niestandardow\u0105 com.ibm.ws.webcontainer.donotservebyclassname. Jest to b\u0142\u0105d aplikacji.
+servlet.on.blocked.list.{0}.useraction=Je\u015bli nie jest to po\u017c\u0105dane dzia\u0142anie, zaktualizuj w\u0142a\u015bciwo\u015b\u0107 com.ibm.ws.webcontainer.donotservebyclassname.
+
+#------------------------------------------------
+Error.in.WebContainer.custom.property.value=SRVE0310E: Wyst\u0105pi\u0142 b\u0142\u0105d we w\u0142a\u015bciwo\u015bci niestandardowej: {1}.
+Error.in.WebContainer.custom.property.value.explanation=Wymagane jest wykonanie odpowiednich czynno\u015bci w systemie.
+Error.in.WebContainer.custom.property.value.useraction=Sprawd\u017a, czy w\u0142a\u015bciwo\u015b\u0107 niestandardowa jest poprawna.
+
+#------------------------------------------------
+transport.error=SRVE0311E: Wyst\u0105pi\u0142 b\u0142\u0105d w transporcie: {0}.
+transport.error.explanation=Jest to b\u0142\u0105d systemowy.
+transport.error.useraction=Przejrzyj dzienniki.
+
+#------------------------------------------------
+error.adding.channel=SRVE0312E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas dodawania kana\u0142u: {0}.
+error.adding.channel.explanation=Jest to b\u0142\u0105d systemowy.
+error.adding.channel.useraction=Przejrzyj dzienniki.
+
+#------------------------------------------------
+transport.migration.error=SRVE0313E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas migracji transportu na porcie {0} do odpowiadaj\u0105cego mu \u0142a\u0144cucha: {1}.
+transport.migration.error.explanation=Jest to b\u0142\u0105d systemowy.
+transport.migration.error.useraction=Przejrzyj dzienniki.
+
+#------------------------------------------------
+failed.to.remove.webmodule=SRVE0314E: Nie powiod\u0142a si\u0119 pr\u00f3ba usuni\u0119cia modu\u0142u WWW {0}: {1}.
+failed.to.remove.webmodule.explanation=Jest to b\u0142\u0105d systemowy.
+failed.to.remove.webmodule.useraction=Przejrzyj dzienniki.
+
+#------------------------------------------------
+Exception=SRVE0315E: Wyst\u0105pi\u0142 wyj\u0105tek: {0}
+Exception.explanation=Wyst\u0105pi\u0142 wyj\u0105tek.
+Exception.useraction=Przejrzyj dzienniki.
+
+
+# -------------------------------------------------------------------------------------------------
+# Thread Pool Instances
+Servlet.Engine.Transports=Kontener WWW
+
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+webAppModule.desc=Dane dotycz\u0105ce wydajno\u015bci aplikacji WWW, serwlet\u00f3w i plik\u00f3w JSP.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.numLoadedServlets.desc=Liczba za\u0142adowanych serwlet\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.numReloads.desc=Liczba prze\u0142adowanych serwlet\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.desc=Kolekcja z danymi dotycz\u0105cymi wydajno\u015bci wed\u0142ug serwlet\u00f3w i plik\u00f3w JSP.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.totalRequests.desc=\u0141\u0105czna liczba \u017c\u0105da\u0144 przetworzonych przez serwlet.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.concurrentRequests.desc=\u0141\u0105czna liczba wsp\u00f3\u0142bie\u017cnie przetwarzanych \u017c\u0105da\u0144.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.responseTime.desc=\u015aredni czas odpowiedzi (w milisekundach) zako\u0144czenia \u017c\u0105dania serwletu.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.numErrors.desc=\u0141\u0105czna liczba b\u0142\u0119d\u00f3w odebranych z serwletu lub pliku JSP.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.url.totalRequests.desc=\u0141\u0105czna liczba \u017c\u0105da\u0144 przetworzonych dla identyfikatora URI powi\u0105zanego z serwletem.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.url.concurrentRequests.desc=Liczba \u017c\u0105da\u0144 przetworzonych wsp\u00f3\u0142bie\u017cnie dla identyfikatora URI powi\u0105zanego z serwletem.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.url.responseTime.desc=\u015aredni czas odpowiedzi us\u0142ugi (w milisekundach) dla identyfikatora URI powi\u0105zanego z serwletem.
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.numLoadedServlets=Num Loaded Servlets
+webAppModule.numLoadedServlets=LoadedServletCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.numReloads=Num Reloads
+webAppModule.numReloads=ReloadCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+webAppModule.servlets=Servlets
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+webAppModule.servlets.urls=Adresy URL
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.totalRequests=Total Requests
+webAppModule.servlets.totalRequests=RequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.concurrentRequests=Concurrent Requests
+webAppModule.servlets.concurrentRequests=ConcurrentRequests
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module (JSR77)
+#webAppModule.servlets.responseTime=Average Response Time (ms)
+webAppModule.servlets.responseTime=ServiceTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.numErrors=Num Errors
+webAppModule.servlets.numErrors=ErrorCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.url.totalRequests=Total Requests
+webAppModule.url.totalRequests=URIRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.url.concurrentRequests=Concurrent Requests
+webAppModule.url.concurrentRequests=URIConcurrentRequests
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module (JSR77)
+#webAppModule.url.responseTime=Average Response Time (ms)
+webAppModule.url.responseTime=URIServiceTime
+
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.loadedSince=Loaded Since (ms)
+webAppModule.servlets.loadedSince=LoadedSince
+
+webAppModule.servlets.asyncContextResponseTime=Czas odpowiedzi interfejsu AsyncContext
+webAppModule.servlets.asyncContextResponseTime.desc=Ten pomiar rejestruje czas odpowiedzi (w milisekundach) poszczeg\u00f3lnych serwlet\u00f3w, w kt\u00f3rym ko\u0144czone jest wywo\u0142anie interfejsu AsyncContext.
+
+webAppModule.url.asyncContextResponseTime=Czas odpowiedzi interfejsu AsyncContext
+webAppModule.url.asyncContextResponseTime.desc=Ten pomiar rejestruje czas odpowiedzi (w milisekundach) poszczeg\u00f3lnych adres\u00f3w URL, w kt\u00f3rym ko\u0144czone jest wywo\u0142anie interfejsu AsyncContext.
+
+webAppModule=Aplikacje WWW
+
+# -------------------------------------------------------------------------------------------------
+# Unit for counters
+unit.none=Nie dotyczy
+
+# -------------------------------------------------------------------------------------------------
+# Unit for counters
+#unit.ms=millisecond (JSR77)
+unit.ms=MILISEKUNDA
+
+request.matches.context.root=SRVE0316W: \u017b\u0105danie jest zgodne z kontekstowym katalogiem g\u0142\u00f3wnym [{0}] pod aliasem hosta wirtualnego [{1}].
+request.matches.context.root.explanation=\u015acie\u017cka \u017c\u0105dania jest odwzorowywana na kontekstowy katalog g\u0142\u00f3wny na niezgodnym ho\u015bcie wirtualnym.
+request.matches.context.root.useraction=Sprawd\u017a, czy nie nale\u017cy doda\u0107 kolejnego aliasu hosta wirtualnego.
+
+need.to.add.a.new.virtual.host.alias=SRVE0317W: Konieczne mo\u017ce by\u0107 dodanie nowego aliasu hosta wirtualnego w postaci *:<numer_portu> do tego samego hosta wirtualnego, w kt\u00f3rym znajduje si\u0119 katalog [{0}].
+need.to.add.a.new.virtual.host.alias.explanation=\u015acie\u017cka \u017c\u0105dania jest odwzorowywana na kontekstowy katalog g\u0142\u00f3wny na niezgodnym ho\u015bcie wirtualnym.
+need.to.add.a.new.virtual.host.alias.useraction=Aby doda\u0107 nowy alias hosta wirtualnego, post\u0119puj zgodnie z instrukcjami w Centrum informacyjnym.
+
+# --------------------------------
+Servlet.has.become.temporarily.unavailable.for.service\:.{0}=SRVE0095I: Serwlet jest tymczasowo niedost\u0119pny dla us\u0142ugi: {0}
+Servlet.has.become.temporarily.unavailable.for.service\:.{0}.explanation=Okre\u015blony serwlet jest tymczasowo niedost\u0119pny.
+Servlet.has.become.temporarily.unavailable.for.service\:.{0}.useraction=Zaczekaj i spr\u00f3buj ponownie.  Serwlet m\u00f3g\u0142 zosta\u0107 usuni\u0119ty z us\u0142ugi przez administratora serwera.
+
+Session.Feature.Set.Not.Started=SRVE0096E: Nie mo\u017cna uzyska\u0107 dost\u0119pu do sesji.  Zestaw sk\u0142adnik\u00f3w mened\u017cera sesji nie zosta\u0142 uruchomiony.
+Session.Feature.Set.Not.Started.explanation=Nie mo\u017cna uzyska\u0107 dost\u0119pu do sesji.  Zestaw sk\u0142adnik\u00f3w mened\u017cera sesji nie zosta\u0142 uruchomiony.
+Session.Feature.Set.Not.Started.useraction=Upewnij si\u0119, \u017ce konfiguracja serwera zale\u017cy od zestawu sk\u0142adnik\u00f3w sesji.
+# --------------------------------
+invalid.query.string=SRVE0318W: \u0141a\u0144cuch zapytania zawiera niepoprawny znak.
+invalid.query.string.explanation=Znak, kt\u00f3ry jest niepoprawny, znajduje si\u0119 w \u0142a\u0144cuchu zapytania i zosta\u0142 zignorowany.
+invalid.query.string.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#Version 8 messages start with 8
+
+ClassNotFound.check.web.xml=SRVE8000W: Pomini\u0119to klas\u0119, kt\u00f3rej zainicjowanie na potrzeby skanowania adnotacji nie powiod\u0142o si\u0119.
+ClassNotFound.check.web.xml.explanation=Nie mo\u017cna zainicjowa\u0107 klasy w module WWW, wi\u0119c nie mo\u017ce ona zosta\u0107 przeskanowana pod k\u0105tem adnotacji.
+ClassNotFound.check.web.xml.useraction=Sprawd\u017a, czy klasa istnieje i czy w \u015bcie\u017cce klasy s\u0105 uwzgl\u0119dnione wszystkie jej zale\u017cno\u015bci.
+
+error.adding.servlet.after.initialization=SRVE8001E: Podj\u0119to pr\u00f3b\u0119 dynamicznego dodania serwletu po zainicjowaniu kontekstu ServletContext.
+error.adding.servlet.after.initialization.explanation=Dynamiczne dodawanie serwlet\u00f3w jest mo\u017cliwe tylko przed zainicjowaniem kontekstu ServletContext.
+error.adding.servlet.after.initialization.useraction=Przenie\u015b kod wywo\u0142uj\u0105cy bie\u017c\u0105c\u0105 metod\u0119 do metody onStartup interfejsu ServletContainerInitalizer lub do metody contextInitialized interfejsu ServletContextListener.
+
+error.adding.filter.after.initialization=SRVE8002E: Podj\u0119to pr\u00f3b\u0119 dynamicznego dodania filtru po zainicjowaniu kontekstu ServletContext.
+error.adding.filter.after.initialization.explanation=Dynamiczne dodawanie filtr\u00f3w jest mo\u017cliwe tylko przed zainicjowaniem kontekstu ServletContext.
+error.adding.filter.after.initialization.useraction=Przenie\u015b kod wywo\u0142uj\u0105cy bie\u017c\u0105c\u0105 metod\u0119 do metody onStartup interfejsu ServletContainerInitalizer lub do metody contextInitialized interfejsu ServletContextListener.
+
+add.servlet.mapping.to.null.url.patterns=SRVE8003E: Podj\u0119to pr\u00f3b\u0119 dodania odwzorowania serwletu z parametrem url-pattern argumentu zmiennej ustawionym na warto\u015b\u0107 NULL.
+add.servlet.mapping.to.null.url.patterns.explanation=Parametr url-pattern argumentu zmiennej przekazywany do metody ServletRegistration.addMapping nie mo\u017ce mie\u0107 warto\u015bci NULL i nie mo\u017ce by\u0107 pusty.
+add.servlet.mapping.to.null.url.patterns.useraction=Zmodyfikuj kod aplikacji zgodnie z wyja\u015bnieniem b\u0142\u0119du.
+
+add.servlet.mapping.to.empty.url.patterns=SRVE8004E: Podj\u0119to pr\u00f3b\u0119 dodania odwzorowania serwletu z pustym parametrem url-pattern argumentu zmiennej.
+add.servlet.mapping.to.empty.url.patterns.explanation=Parametr url-pattern argumentu zmiennej przekazywany do metody ServletRegistration.addMapping nie mo\u017ce mie\u0107 warto\u015bci NULL i nie mo\u017ce by\u0107 pusty.
+add.servlet.mapping.to.empty.url.patterns.useraction=Zmodyfikuj kod aplikacji zgodnie z wyja\u015bnieniem b\u0142\u0119du.
+
+add.filter.mapping.to.null.url.patterns=SRVE8005E: Podj\u0119to pr\u00f3b\u0119 dodania odwzorowania filtru z parametrem url-pattern argumentu zmiennej ustawionym na warto\u015b\u0107 NULL.
+add.filter.mapping.to.null.url.patterns.explanation=Parametr url-pattern argumentu zmiennej przekazywany do metody FilterRegistration.addMappingForUrlPatterns nie mo\u017ce mie\u0107 warto\u015bci NULL i nie mo\u017ce by\u0107 pusty.
+add.filter.mapping.to.null.url.patterns.useraction=Zmodyfikuj kod aplikacji zgodnie z wyja\u015bnieniem b\u0142\u0119du.
+
+add.filter.mapping.to.empty.url.patterns=SRVE8006E: Podj\u0119to pr\u00f3b\u0119 dodania odwzorowania filtru z pustym parametrem url-pattern argumentu zmiennej.
+add.filter.mapping.to.empty.url.patterns.explanation=Parametr url-pattern argumentu zmiennej przekazywany do metody FilterRegistration.addMappingForUrlPatterns nie mo\u017ce mie\u0107 warto\u015bci NULL i nie mo\u017ce by\u0107 pusty.
+add.filter.mapping.to.empty.url.patterns.useraction=Zmodyfikuj kod aplikacji zgodnie z wyja\u015bnieniem b\u0142\u0119du.
+
+add.filter.mapping.to.null.servlet.names=SRVE8007E: Podj\u0119to pr\u00f3b\u0119 dodania odwzorowania filtru z parametrem servlet name argumentu zmiennej ustawionym na warto\u015b\u0107 NULL.
+add.filter.mapping.to.null.servlet.names.explanation=Parametr servlet name argumentu zmiennej przekazywany do metody FilterRegistration.addMappingForServletNames nie mo\u017ce mie\u0107 warto\u015bci NULL i nie mo\u017ce by\u0107 pusty.
+add.filter.mapping.to.null.servlet.names.useraction=Zmodyfikuj kod aplikacji zgodnie z wyja\u015bnieniem b\u0142\u0119du.
+
+add.filter.mapping.to.empty.servlet.names=SRVE8008E: Podj\u0119to pr\u00f3b\u0119 dodania odwzorowania filtru z pustym parametrem servlet name argumentu zmiennej.
+add.filter.mapping.to.empty.servlet.names.explanation=Parametr servlet name argumentu zmiennej przekazywany do metody FilterRegistration.addMappingForServletNames nie mo\u017ce mie\u0107 warto\u015bci NULL i nie mo\u017ce by\u0107 pusty.
+add.filter.mapping.to.empty.servlet.names.useraction=Zmodyfikuj kod aplikacji zgodnie z wyja\u015bnieniem b\u0142\u0119du.
+
+error.while.initializing.target.mappings=SRVE8009E: Podczas inicjowania odwzorowa\u0144 docelowych wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d wewn\u0119trzny serwera.
+error.while.initializing.target.mappings.explanation=Podczas inicjowania odwzorowa\u0144 docelowych wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d wewn\u0119trzny serwera.
+error.while.initializing.target.mappings.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z dzia\u0142em wsparcia IBM.
+
+
+request.does.not.support.async.servlet.processing=SRVE8010E: Bie\u017c\u0105ce \u017c\u0105danie nie obs\u0142uguje asynchronicznego przetwarzania serwlet\u00f3w.
+request.does.not.support.async.servlet.processing.explanation=Jeden z serwlet\u00f3w lub filtr\u00f3w w \u017c\u0105daniu nie obs\u0142uguje serwlet\u00f3w asynchronicznych.
+request.does.not.support.async.servlet.processing.useraction=Nie u\u017cywaj serwlet\u00f3w asynchronicznych lub w\u0142\u0105cz przetwarzanie asynchroniczne dla wszystkich serwlet\u00f3w i filtr\u00f3w w \u0142a\u0144cuchu, dodaj\u0105c element async-supported do definicji komponentu.
+
+# Translation note: {0} = operation being performed, {1} = the listener that called the operation, {2} = the application that contains the listener: SRVE8011E: This operation cannot be executed from a programmatically added listener. (Operation: {0} | Listener: {1} | Application: {2})
+Unsupported.op.from.servlet.context.listener=SRVE8011E: Tej operacji nie mo\u017cna wykona\u0107 z programowo dodanego obiektu nas\u0142uchiwania. (Operacja: {0} | proces nas\u0142uchuj\u0105cy: {1} | aplikacja: {2})
+Unsupported.op.from.servlet.context.listener.explanation=Niekt\u00f3re operacje nie mog\u0105 by\u0107 wykonywane z programowo dodanego obiektu nas\u0142uchiwania, poniewa\u017c nie ma opcji konfiguracji umo\u017cliwiaj\u0105cych ograniczenie ich wykonywania, gdy s\u0105 zdefiniowane w deskryptorze biblioteki znacznik\u00f3w (plik TLD).
+Unsupported.op.from.servlet.context.listener.useraction=Aby umo\u017cliwi\u0107 wykonywanie tej metody, dodaj obiekt nas\u0142uchiwania za po\u015brednictwem adnotacji lub pliku web.xml.
+
+Error.adding.ServletContextListener=SRVE8012E: B\u0142\u0105d podczas dodawania interfejsu ServletContextListener.
+Error.adding.ServletContextListener.explanation=Interfejsu ServletContextListener nie mo\u017cna doda\u0107 za pomoc\u0105 innego interfejsu ServletContextListener.
+Error.adding.ServletContextListener.useraction=Dodaj interfejs ServletContextListener do pliku web.xml lub web-fragment.xml, utw\u00f3rz dla niego adnotacj\u0119 @WebListener lub dodaj go programowo za pomoc\u0105 metody ServletContainerInitializer#onStartup.
+
+Invalid.Listener=SRVE8013E: Dodawany programowo obiekt nas\u0142uchiwania nie jest poprawny.
+Invalid.Listener.explanation=Obiekt nas\u0142uchiwania dodawany programowo nie implementuje poprawnego typu obiektu nas\u0142uchiwania.
+Invalid.Listener.useraction=Zmodyfikuj kod aplikacji, aby doda\u0107 obiekt nas\u0142uchiwania o akceptowanym typie.
+
+exception.occurred.while.creating.listener.instance=SRVE8014E: Wyst\u0105pi\u0142 wyj\u0105tek podczas tworzenia instancji obiektu nas\u0142uchiwania.
+exception.occurred.while.creating.listener.instance.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas tworzenia instancji obiektu nas\u0142uchiwania.
+exception.occurred.while.creating.listener.instance.useraction=Wyst\u0105pi\u0142 wyj\u0105tek podczas tworzenia instancji obiektu nas\u0142uchiwania.
+
+exception.occurred.while.adding.listener=SRVE8015E: Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by dodania obiektu nas\u0142uchiwania o typie {0}.
+exception.occurred.while.adding.listener.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by dodania obiektu nas\u0142uchiwania.
+exception.occurred.while.adding.listener.useraction=Sprawd\u017a, czy obiekt nas\u0142uchiwania ma poprawny typ i jest dost\u0119pny dla aplikacji.
+
+error.validate.annotation.extension.class=SRVE8016E: Adnotacji {0} nie mo\u017cna zastosowa\u0107 do klasy {1}, poniewa\u017c rozszerza ona niepoprawn\u0105 nadklas\u0119.
+error.validate.annotation.extension.class.explanation=Niekt\u00f3re adnotacje mog\u0105 by\u0107 stosowane tylko do klas, kt\u00f3re rozszerzaj\u0105 poprawny typ.
+error.validate.annotation.extension.class.useraction=Zmodyfikuj klas\u0119, aby rozszerza\u0142a poprawn\u0105 nadklas\u0119.
+
+error.validate.webServlet.urlPatterns.and.value=SRVE8017E: Klasa {0} nie mo\u017ce okre\u015bla\u0107 jednocze\u015bnie atrybutu urlPatterns i value w adnotacji.
+error.validate.webServlet.urlPatterns.and.value.explanation=Klasa nie mo\u017ce okre\u015bla\u0107 jednocze\u015bnie atrybutu urlPatterns i value w adnotacji.
+error.validate.webServlet.urlPatterns.and.value.useraction=Zmodyfikuj klas\u0119, aby zawiera\u0142a tylko jeden z atrybut\u00f3w - urlPatterns lub value.
+
+error.validate.webServlet.zero.mappings=SRVE8018E: Klasa {0} nie ma \u017cadnych wzorc\u00f3w okre\u015blonych w adnotacji.
+error.validate.webServlet.zero.mappings.explanation=Klasa musi okre\u015bla\u0107 wzorce w adnotacji za po\u015brednictwem atrybutu urlPatterns lub value.
+error.validate.webServlet.zero.mappings.useraction=Zmodyfikuj klas\u0119, aby doda\u0107 jeden z atrybut\u00f3w - urlPatterns lub value.
+
+error.validate.webServlet.name.empty=SRVE8019E: Klasa {0} z adnotacj\u0105 nie ma poprawnej nazwy.
+error.validate.webServlet.name.empty.explanation=Klasa musi okre\u015bla\u0107 poprawn\u0105 nazw\u0119 w adnotacji.
+error.validate.webServlet.name.empty.useraction=Zmodyfikuj klas\u0119, aby okre\u015bla\u0142a poprawn\u0105 nazw\u0119 w adnotacji.
+
+multipart.no.multipart.config=SRVE8020E: Serwlet nie akceptuje \u017c\u0105da\u0144 wielocz\u0119\u015bciowych.
+multipart.no.multipart.config.explanation=Serwlet nie akceptuje \u017c\u0105da\u0144 wielocz\u0119\u015bciowych. 
+multipart.no.multipart.config.useraction=Dodaj do tego serwletu adnotacj\u0119 @MultipartConfig lub dodaj do serwletu element multipart-config w pliku web.xml. 
+
+multipart.file.size.too.big=SRVE8021E: Przesy\u0142any plik jest zbyt du\u017cy.
+multipart.file.size.too.big.explanation=Wielko\u015b\u0107 pliku przesy\u0142anego za po\u015brednictwem \u017c\u0105dania typu multipart/form-data przekracza maksymaln\u0105 skonfigurowan\u0105 wielko\u015b\u0107.
+multipart.file.size.too.big.useraction=Zwi\u0119ksz warto\u015b\u0107 atrybutu wielko\u015bci pliku w konfiguracji formatu wielocz\u0119\u015bciowego dla danego serwletu.
+
+multipart.request.size.too.big=SRVE8022E: \u017b\u0105danie jest zbyt du\u017ce.
+multipart.request.size.too.big.explanation=Wielko\u015b\u0107 \u017c\u0105dania typu multipart/form-data przekracza maksymaln\u0105 skonfigurowan\u0105 wielko\u015b\u0107.
+multipart.request.size.too.big.useraction=Zwi\u0119ksz warto\u015b\u0107 atrybutu wielko\u015bci \u017c\u0105dania w konfiguracji formatu wielocz\u0119\u015bciowego dla danego serwletu.
+
+multipart.file.upload.exception=SRVE8023E: Wyst\u0105pi\u0142 wyj\u0105tek podczas przesy\u0142ania pliku.
+multipart.file.upload.exception.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas przesy\u0142ania pliku.
+multipart.file.upload.exception.useraction=Sprawd\u017a zagnie\u017cd\u017cony b\u0142\u0105d i wykonaj odpowiednie czynno\u015bci.
+
+multipart.request.not.multipart=SRVE8024E: \u017b\u0105danie nie jest \u017c\u0105daniem typu multipart/form-data.
+multipart.request.not.multipart.explanation=Aby m\u00f3c obs\u0142ugiwa\u0107 t\u0119 metod\u0119, \u017c\u0105danie musi by\u0107 \u017c\u0105daniem typu multipart/form-data.
+multipart.request.not.multipart.useraction=Zmodyfikuj serwlety wykonuj\u0105ce poprzednie \u017c\u0105dania tak, aby bie\u017c\u0105ce \u017c\u0105danie by\u0142o \u017c\u0105daniem typu multipart/form-data.
+
+error.occurred.during.async.servlet.handling=SRVE8025E: Wyst\u0105pi\u0142 b\u0142\u0105d lub zosta\u0142 przekroczony limit czasu podczas wykonywania asynchronicznego przetwarzania serwlet\u00f3w.
+error.occurred.during.async.servlet.handling.explanation=B\u0142\u0105d lub przekroczenie limitu czasu b\u0119d\u0105ce wynikiem rozsy\u0142ania asynchronicznego spowoduje wywo\u0142anie dowolnego zarejestrowanego asynchronicznego obiektu nas\u0142uchiwania, a nast\u0119pnie mechanizmu strony b\u0142\u0119du, je\u015bli to nie obiekt nas\u0142uchiwania wykonuje operacj\u0119 rozsy\u0142ania lub zako\u0144czenia.
+error.occurred.during.async.servlet.handling.useraction=Usu\u0144 przyczyn\u0119 b\u0142\u0119du, przegl\u0105daj\u0105c wyj\u0105tek i modyfikuj\u0105c kod aplikacji albo udost\u0119pnij interfejs AsyncListener lub stron\u0119 b\u0142\u0119d\u00f3w na potrzeby poprawnej obs\u0142ugi b\u0142\u0119du.
+
+thread.interrupted.scheduling.async.runnable.on.thread.pool=SRVE8026E: Wyst\u0105pi\u0142 wyj\u0105tek podczas planowania pracy zwi\u0105zanej z asynchronicznym przetwarzaniem serwletu.
+thread.interrupted.scheduling.async.runnable.on.thread.pool.explanation=Ten wyj\u0105tek nie powinien nigdy wyst\u0105pi\u0107, poniewa\u017c pule w\u0105tk\u00f3w b\u0119d\u0105 kolejkowa\u0142y prac\u0119.
+thread.interrupted.scheduling.async.runnable.on.thread.pool.useraction=Je\u015bli wyj\u0105tek wyst\u0105pi\u0142, skontaktuj si\u0119 z dzia\u0142em wsparcia.
+
+an.io.related.error.has.occurred.during.the.processing.of.the.given.AsyncEvent=SRVE8027E: Wyst\u0105pi\u0142 b\u0142\u0105d we/wy podczas przetwarzania podanej klasy AsyncEvent.
+an.io.related.error.has.occurred.during.the.processing.of.the.given.AsyncEvent.explanation=B\u0142\u0119dy we/wy mog\u0105 wyst\u0119powa\u0107 podczas wywo\u0142ywania interfejsu AsyncListener, je\u015bli dokonuje on zapisu do odpowiedzi wsp\u00f3\u0142bie\u017cnie z innym w\u0105tkiem lub inne dzia\u0142anie spowodowa\u0142o zamkni\u0119cie odpowiedzi.
+an.io.related.error.has.occurred.during.the.processing.of.the.given.AsyncEvent.useraction=Zalecane jest, aby interfejsy AsyncListener wywo\u0142ywa\u0142y tylko ko\u0144czenie lub rozsy\u0142anie, a nie zapisywanie do odpowiedzi. W przeciwnym razie klient jest odpowiedzialny za wykonanie w\u0142asnej synchronizacji, aby zapobiec wyst\u0105pieniu wyj\u0105tku IOException.
+
+default.extension.exception.adding.mapping.target=SRVE8028W: Wyst\u0105pi\u0142 wyj\u0105tek podczas dodawania celu odwzorowania dla domy\u015blnego procesora rozszerze\u0144.
+default.extension.exception.adding.mapping.target.explanation=Kiedy dwa \u017c\u0105dania s\u0105 po raz pierwszy kierowane do tego samego zasobu, mo\u017ce wyst\u0105pi\u0107 warunek wy\u015bcigu podczas pr\u00f3by dodania odwzorowania do aplikacji WWW.
+default.extension.exception.adding.mapping.target.useraction=Zwykle jest to nieszkodliwy warunek, kt\u00f3ry mo\u017cna zignorowa\u0107. Nale\u017cy go zg\u0142osi\u0107 tylko w razie wyst\u0105pienia problem\u00f3w z przesy\u0142aniem \u017c\u0105da\u0144 do tych zasob\u00f3w.
+
+exception.creating.search.path=SRVE8029E: Wyst\u0105pi\u0142 wyj\u0105tek IOException podczas tworzenia \u015bcie\u017cki wyszukiwania rozszerzonego elementu g\u0142\u00f3wnego dokumentu.
+exception.creating.search.path.explanation=Poniewa\u017c tworzenie \u015bcie\u017cki wyszukiwania wymaga dost\u0119pu do systemu plik\u00f3w, mog\u0105 wyst\u0105pi\u0107 wyj\u0105tki IOException.
+exception.creating.search.path.useraction=Sprawd\u017a, czy \u015bcie\u017cka jest poprawna i czy nie ma problem\u00f3w ze sprz\u0119tem.
+
+exception.occured.while.adding.servlet=SRVE8030E: Podczas dynamicznego dodawania serwletu wyst\u0105pi\u0142 wyj\u0105tek ServletException.
+exception.occured.while.adding.servlet.explanation=Podczas dynamicznego dodawania serwletu wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek ServletException. Mo\u017ce on wyst\u0119powa\u0107 na przyk\u0142ad w przypadku, gdy nazwy komponent\u00f3w MBean dw\u00f3ch serwlet\u00f3w koliduj\u0105 ze sob\u0105.
+exception.occured.while.adding.servlet.useraction=Przejrzyj dzienniki i skontaktuj si\u0119 z dzia\u0142em wsparcia.
+
+exception.occurred.while.initializing.ServletContainerInitializers.class.lookup=SRVE8031W: Problem podczas wyszukiwania klasy {0} w czasie skanowania klasy HandlesTypes interfejsu ServletContainerInitializer dla serwletu {1}.
+exception.occurred.while.initializing.ServletContainerInitializers.class.lookup.explanation=Klasa nie zosta\u0142a znaleziona w programie \u0142aduj\u0105cym klasy podczas przetwarzania adnotacji klasy HandlesTypes interfejsu ServletContainerInitializer.
+exception.occurred.while.initializing.ServletContainerInitializers.class.lookup.useraction=Upewnij si\u0119, \u017ce klasa istnieje w programie \u0142aduj\u0105cym klasy modu\u0142u WWW.
+
+exception.occurred.while.initializing.ServletContainerInitializers.HandlesTypes=SRVE8032W: Problem podczas wyszukiwania klasy HandlesTypes w czasie skanowania interfejsu ServletContainerInitializer (serwlet {0}) dla klasy {1}.
+exception.occurred.while.initializing.ServletContainerInitializers.HandlesTypes.explanation=Klasa nie zosta\u0142a znaleziona w programie \u0142aduj\u0105cym klasy podczas przetwarzania adnotacji klasy HandlesTypes interfejsu ServletContainerInitializer.
+exception.occurred.while.initializing.ServletContainerInitializers.HandlesTypes.useraction=Upewnij si\u0119, \u017ce klasa istnieje w programie \u0142aduj\u0105cym klasy modu\u0142u WWW.
+
+exception.occurred.while.initializing.ServletContainerInitializers=SRVE8033W: Wyst\u0105pi\u0142 problem podczas inicjowania interfejs\u00f3w ServletContainerInitializer aplikacji.
+exception.occurred.while.initializing.ServletContainerInitializers.explanation=Wyst\u0105pi\u0142 problem podczas inicjowania interfejs\u00f3w ServletContainerInitializer aplikacji.
+exception.occurred.while.initializing.ServletContainerInitializers.useraction=Sprawd\u017a, czy interfejs ServletContainerInitializer jest poprawnie skonfigurowany.
+
+IOException.loading.servlet=SRVE8034E: Serwlet [{0}]: nie mo\u017cna za\u0142adowa\u0107 klasy {1} z powodu wyst\u0105pienia wyj\u0105tku IOException.
+IOException.loading.servlet.explanation=Wyj\u0105tek IOException mo\u017ce wyst\u0105pi\u0107 z wielu powod\u00f3w zwi\u0105zanych z problemami we/wy.
+IOException.loading.servlet.useraction=Sprawd\u017a, czy klasa nie zosta\u0142a usuni\u0119ta.
+
+IllegalAccessException.loading.servlet=SRVE8035E: Serwlet [{0}]: nie mo\u017cna za\u0142adowa\u0107 klasy {1} z powodu wyst\u0105pienia wyj\u0105tku IllegalAccessException.
+IllegalAccessException.loading.servlet.explanation=Wyst\u0105pi\u0142 wyj\u0105tek IllegalAccessException podczas wywo\u0142ywania metody newInstance dla serwletu.
+IllegalAccessException.loading.servlet.useraction=Sprawd\u017a, czy w serwlecie istnieje publiczny konstruktor bez argument\u00f3w.
+
+InstantiationException.loading.servlet=SRVE8036E: Serwlet [{0}]: nie mo\u017cna za\u0142adowa\u0107 klasy {1} z powodu wyst\u0105pienia wyj\u0105tku InstantiationException.
+InstantiationException.loading.servlet.explanation=Wyj\u0105tek InstantiationException wyst\u0119puje podczas pr\u00f3by utworzenia nowej instancji interfejsu lub klasy abstrakcyjnej.
+InstantiationException.loading.servlet.useraction=Zmie\u0144 klas\u0119, kt\u00f3rej instancja jest tworzona, na klas\u0119 konkretn\u0105 lub usu\u0144 definicj\u0119 jako serwlet.
+
+# --------------------------------
+# Notes for translation:
+# {0} is the servlet name
+# {1} is the servlet class name
+
+Servlet.found.but.injection.failure=SRVE0319E: Dla serwletu [{0}] zosta\u0142a znaleziona klasa {1}, jednak podczas wstrzykiwania zasobu wyst\u0105pi\u0142o niepowodzenie. {2}
+Servlet.found.but.injection.failure.explanation=Inicjowanie serwletu zako\u0144czy\u0142o si\u0119 niepowodzeniem, poniewa\u017c podczas wstrzykiwania zasobu wyst\u0105pi\u0142 b\u0142\u0105d.
+Servlet.found.but.injection.failure.useraction=Sprawd\u017a, czy wstrzykiwane zasoby istniej\u0105 oraz czy s\u0105 dost\u0119pne dla serwletu.
+
+# --------------------------------
+# Notes for translation:
+# {0} is the filter name
+
+Filter.found.but.injection.failure=SRVE0320E: Filtr [{0}] zosta\u0142 znaleziony, ale wyst\u0105pi\u0142o niepowodzenie podczas wstrzykiwania zasobu.
+Filter.found.but.injection.failure.explanation=Inicjowanie filtru zako\u0144czy\u0142o si\u0119 niepowodzeniem, poniewa\u017c podczas wstrzykiwania zasobu wyst\u0105pi\u0142 b\u0142\u0105d.
+Filter.found.but.injection.failure.useraction=Sprawd\u017a, czy wstrzykiwane zasoby istniej\u0105 oraz czy s\u0105 dost\u0119pne dla filtru.
+
+# --------------------------------
+# Notes for translation:
+# {0} is the filter name
+
+init.exception.thrown.by.filter.at.startup=SRVE0321E: Filtr [{0}] nie zosta\u0142 za\u0142adowany podczas uruchamiania.
+init.exception.thrown.by.filter.at.startup.explanation=Filtr nie zosta\u0142 za\u0142adowany podczas uruchamiania.
+init.exception.thrown.by.filter.at.startup.useraction=Przejrzyj dzienniki serwera, aby okre\u015bli\u0107 podstawow\u0105 przyczyn\u0119 problemu.
+
+# --------------------------------
+# Notes for translation:
+# {0} is the listener class name
+
+Listener.found.but.injection.failure=SRVE0322E: Klasa nas\u0142uchiwania [{0}] zosta\u0142a znaleziona, ale podczas wstrzykiwania zasobu wyst\u0105pi\u0142o niepowodzenie.
+Listener.found.but.injection.failure.explanation=Inicjowanie obiektu nas\u0142uchiwania zako\u0144czy\u0142o si\u0119 niepowodzeniem, poniewa\u017c podczas wstrzykiwania zasobu wyst\u0105pi\u0142 b\u0142\u0105d.
+Listener.found.but.injection.failure.useraction=Sprawd\u017a, czy wstrzykiwane zasoby istniej\u0105 oraz czy s\u0105 dost\u0119pne dla obiektu nas\u0142uchiwania. Aby reinicjowa\u0107 obiekt nas\u0142uchiwania, zrestartuj aplikacj\u0119 nas\u0142uchiwania.
+
+# --------------------------------
+# Notes for translation:
+# none
+
+ARD.not.enabled.these.chains.not.supported=SRVE0323I: Program asynchronicznie rozsy\u0142aj\u0105cy \u017c\u0105dania nie jest w\u0142\u0105czony. \u017b\u0105dania wysy\u0142ane przez \u0142a\u0144cuch HttpQueueInboundDefault lub HttpQueueInboundDefaultSecure mog\u0105 nie by\u0107 poprawnie obs\u0142ugiwane.
+ARD.not.enabled.these.chains.not.supported.explanation=\u017b\u0105dania wysy\u0142ane przez \u0142a\u0144cuch HttpQueueInboundDefault lub HttpQueueInboundDefaultSecure mog\u0105 nie by\u0107 poprawnie obs\u0142ugiwane, je\u015bli asynchroniczny program rozsy\u0142aj\u0105cy \u017c\u0105dania nie jest w\u0142\u0105czony na poziomie serwera.
+ARD.not.enabled.these.chains.not.supported.useraction=Je\u015bli asynchroniczny program rozsy\u0142aj\u0105cy \u017c\u0105dania nie jest w\u0142\u0105czony na poziomie serwera, nale\u017cy w\u0142\u0105czy\u0107 \u0142a\u0144cuch WCInboundDefault lub WCInboundDefaultSecure. Je\u015bli \u017caden z tych \u0142a\u0144cuch\u00f3w nie b\u0119dzie dzia\u0142a\u0107, nale\u017cy w\u0142\u0105czy\u0107 asynchroniczny program rozsy\u0142aj\u0105cy \u017c\u0105dania, poniewa\u017c serwer b\u0119dzie wysy\u0142a\u0142 \u017c\u0105dania poprzez \u0142a\u0144cuch HttpQueueInboundDefault lub HttpQueueInboundDefaultSecure.
+
+# --------------------------------
+# Notes for translation:
+# none
+
+ARD.not.enabled.request.on.chains.not.supported=SRVE0324W: Program asynchronicznie rozsy\u0142aj\u0105cy \u017c\u0105dania nie jest w\u0142\u0105czony. Dlatego \u0142a\u0144cuchy HttpQueueInboundDefault i HttpQueueInboundDefaultSecure mog\u0105 niepoprawnie obs\u0142ugiwa\u0107 \u017c\u0105dania.
+ARD.not.enabled.request.on.chains.not.supported.explanation=\u017b\u0105dania znajduj\u0105 si\u0119 w \u0142a\u0144cuchu HttpQueueInboundDefault lub HttpQueueInboundDefaultSecure, ale nie w\u0142\u0105czono asynchronicznego programu rozsy\u0142aj\u0105cego \u017c\u0105dania na poziomie serwera. Dlatego \u0142a\u0144cuchy HttpQueueInboundDefault i HttpQueueInboundDefaultSecure mog\u0105 niepoprawnie obs\u0142ugiwa\u0107 \u017c\u0105dania.
+ARD.not.enabled.request.on.chains.not.supported.useraction=W\u0142\u0105cz asynchroniczny program rozsy\u0142aj\u0105cy \u017c\u0105dania na poziomie serwera lub w\u0142\u0105cz \u0142a\u0144cuch WCInboundDefault lub WCInboundDefaultSecure.
+# --------------------------------
+# Notes for translation:
+# {0} is the total count allowed
+# {1} is the current count
+
+Exceeding.maximum.parameters=SRVE0325E: Przekroczono maksymaln\u0105 dozwolon\u0105 liczb\u0119 parametr\u00f3w na \u017c\u0105danie: {0}. Bie\u017c\u0105ca liczba parametr\u00f3w to {1} i nie mo\u017cna doda\u0107 kolejnych parametr\u00f3w.
+Exceeding.maximum.parameters.explanation=Liczba parametr\u00f3w zawartych w \u017c\u0105daniu przychodz\u0105cym przekracza maksymaln\u0105 liczb\u0119 parametr\u00f3w, kt\u00f3re mo\u017cna uwzgl\u0119dni\u0107 w \u017c\u0105daniu przychodz\u0105cym.
+Exceeding.maximum.parameters.useraction=Upewnij si\u0119, \u017ce wszystkie parametry w \u017c\u0105daniu przychodz\u0105cym s\u0105 poprawne oraz \u017ce \u0142\u0105czna liczba parametr\u00f3w nie przekracza maksymalnej liczby parametr\u00f3w dozwolonych w jednym \u017c\u0105daniu.
+
+# --------------------------------
+# Notes for translation:
+# {0} is the total count allowed
+
+Exceeding.maximum.hash.collisions=SRVE0326E: Przekroczono maksymaln\u0105 dozwolon\u0105 liczb\u0119 kolizji kod\u00f3w mieszaj\u0105cych kluczy parametr\u00f3w na \u017c\u0105danie: {0}.
+Exceeding.maximum.hash.collisions.explanation=Liczba kolizji kod\u00f3w mieszaj\u0105cych kluczy parametr\u00f3w przekracza maksymaln\u0105 liczb\u0119 kolizji dozwolonych w jednym \u017c\u0105daniu przychodz\u0105cym. Klucze parametr\u00f3w generuj\u0105ce duplikaty kod\u00f3w mieszaj\u0105cych mog\u0142y zosta\u0107 dodane do \u017c\u0105da\u0144 w szkodliwym celu, powoduj\u0105c du\u017c\u0105 liczb\u0119 kolizji kod\u00f3w mieszaj\u0105cych kluczy parametr\u00f3w.
+Exceeding.maximum.hash.collisions.useraction=Upewnij si\u0119, \u017ce wszystkie parametry w \u017c\u0105daniu przychodz\u0105cym s\u0105 poprawne.
+
+# --------------------------------
+exception.handing.off.reference.data=SRVE8037E: Wyst\u0105pi\u0142 wyj\u0105tek podczas przetwarzania danych odwo\u0142ania.
+exception.handing.off.reference.data.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas przetwarzania danych odwo\u0142ania. Mimo to zostanie podj\u0119ta pr\u00f3ba uruchomienia aplikacji.
+exception.handing.off.reference.data.useraction=Zbadaj podstawow\u0105 przyczyn\u0119 wyj\u0105tku i okre\u015bl, czy aplikacja nadal dzia\u0142a poprawnie pomimo tych awarii.
+
+trying.to.do.startAsync.after.a.complete=SRVE8038E: Podj\u0119to pr\u00f3b\u0119 wykonania metody startAsync po zako\u0144czeniu.
+trying.to.do.startAsync.after.a.complete.explanation=Zgodnie ze specyfikacj\u0105 serwletu metoda startAsync nie mo\u017ce by\u0107 wywo\u0142ywana po zako\u0144czeniu.
+trying.to.do.startAsync.after.a.complete.useraction=Sprawd\u017a, czy nie ma \u017cadnych problem\u00f3w dotycz\u0105cych logiki kodu lub czasu, kt\u00f3re powoduj\u0105 to niedozwolone zachowanie.
+
+not.called.from.within.the.context.of.a.dispatch.for.this.request=SRVE8039E: Metoda startAsync nie zosta\u0142a wywo\u0142ana z kontekstu rozsy\u0142ania dla tego \u017c\u0105dania.
+not.called.from.within.the.context.of.a.dispatch.for.this.request.explanation=Metoda startAsync musi by\u0107 wywo\u0142ywana z kontekstu rozsy\u0142ania kontenera oryginalnego \u017c\u0105dania lub kolejnego \u017c\u0105dania rozsy\u0142ania asynchronicznego.
+not.called.from.within.the.context.of.a.dispatch.for.this.request.useraction=Sprawd\u017a, czy nie ma \u017cadnych problem\u00f3w dotycz\u0105cych logiki kodu lub czasu, kt\u00f3re powoduj\u0105 to niedozwolone zachowanie.
+
+cannot.call.startAsync.multiple.times.within.same.dispatch=SRVE8040E: Metody startAsync nie mo\u017cna wywo\u0142a\u0107 wiele razy w ramach tego samego rozsy\u0142ania.
+cannot.call.startAsync.multiple.times.within.same.dispatch.explanation=Metoda startAsync nie mo\u017ce by\u0107 wywo\u0142ywana wiele razy z tego samego rozsy\u0142ania. Wywo\u0142anie metody AsyncContext.dispatch umo\u017cliwi ponowne wywo\u0142anie metody startAsync.
+cannot.call.startAsync.multiple.times.within.same.dispatch.useraction=Sprawd\u017a, czy nie ma \u017cadnych problem\u00f3w dotycz\u0105cych logiki kodu lub czasu, kt\u00f3re powoduj\u0105 to niedozwolone zachowanie.
+
+trying.to.call.dispatch.twice.for.the.same.async.operation=SRVE8041E: Pr\u00f3ba wywo\u0142ania rozsy\u0142ania dwa razy dla tej samej operacji asynchronicznej.
+trying.to.call.dispatch.twice.for.the.same.async.operation.explanation=Specyfikacja serwletu okre\u015bla, \u017ce rozsy\u0142anie mo\u017cna wywo\u0142a\u0107 tylko raz dla ka\u017cdego wywo\u0142ania metody startAsync.
+trying.to.call.dispatch.twice.for.the.same.async.operation.useraction=Usu\u0144 dodatkowe wywo\u0142anie rozsy\u0142ania.
+
+reference.context.not.set=SRVE8042E: Z powodu b\u0142\u0119du wewn\u0119trznego kontekst odwo\u0142ania umo\u017cliwiaj\u0105cy wstrzykiwanie nie zosta\u0142 poprawnie zainicjowany.
+reference.context.not.set.explanation=Z powodu b\u0142\u0119du wewn\u0119trznego kontekst odwo\u0142ania umo\u017cliwiaj\u0105cy wstrzykiwanie nie zosta\u0142 poprawnie zainicjowany.
+reference.context.not.set.useraction=Sprawd\u017a dzienniki pod k\u0105tem wcze\u015bniejszych b\u0142\u0119d\u00f3w, kt\u00f3re mog\u0142y spowodowa\u0107 niepowodzenie inicjowania.
+
+ioexception.searching.jar.for.resource=SRVE8043E: Wyst\u0105pi\u0142 wyj\u0105tek IOException podczas wyszukiwania obiektu jarFile [{1}] dla atrybutu fileName [{2}]: {0}
+ioexception.searching.jar.for.resource.explanation=Wyj\u0105tki IOException mog\u0105 wyst\u0119powa\u0107 podczas wyszukiwania plik\u00f3w JAR, je\u015bli plik zosta\u0142 zmieniony lub zamkni\u0119ty w trakcie operacji przej\u015bcia.
+ioexception.searching.jar.for.resource.useraction=Sprawd\u017a, czy plik JAR jest poprawny i nie jest aktualizowany podczas operacji przej\u015bcia.
+
+programmatic.sessions.already.been.initialized=SRVE8044E: Kontekst zosta\u0142 ju\u017c zainicjowany.  Nie s\u0105 dozwolone \u017cadne aktualizacje konfiguracji sesji.
+programmatic.sessions.already.been.initialized.explanation=Kontekst zosta\u0142 ju\u017c zainicjowany.  Nie s\u0105 dozwolone \u017cadne aktualizacje konfiguracji sesji.
+programmatic.sessions.already.been.initialized.useraction=Konfiguracj\u0119 sesji mo\u017cna modyfikowa\u0107 jedynie przed zainicjowaniem aplikacji.
+
+programmatic.sessions.disabled=SRVE8045E: Programowa konfiguracja sesji zosta\u0142a wy\u0142\u0105czona na tym serwerze.
+programmatic.sessions.disabled.explanation=Programowa konfiguracja sesji zosta\u0142a wy\u0142\u0105czona na tym serwerze.
+programmatic.sessions.disabled.useraction=W\u0142\u0105cz programow\u0105 konfiguracj\u0119 sesji.
+
+error.calling.async.dispatch=SRVE8046E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas wywo\u0142ywania rozsy\u0142ania interfejsu AsyncContext.
+error.calling.async.dispatch.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas wywo\u0142ywania rozsy\u0142ania interfejsu AsyncContext.
+error.calling.async.dispatch.useraction=Sprawd\u017a podstawow\u0105 przyczyn\u0119 wyj\u0105tku.
+
+NumberFormatException.for.file.size.at.which.you.switch.to.optimized.file.serving=SRVE8047E: Wyj\u0105tek NumberFormatException dla atrybutu wielko\u015bci pliku, dla kt\u00f3rej wykonywane jest prze\u0142\u0105czanie do zoptymalizowanej obs\u0142ugi plik\u00f3w.
+NumberFormatException.for.file.size.at.which.you.switch.to.optimized.file.serving.explanation=Nie mo\u017cna poprawnie przeanalizowa\u0107 w\u0142a\u015bciwo\u015bci dla atrybutu obs\u0142ugi plik\u00f3w com.ibm.ws.webcontainer.optimizefileservingsize.
+NumberFormatException.for.file.size.at.which.you.switch.to.optimized.file.serving.useraction=Zmie\u0144 warto\u015b\u0107 atrybutu na poprawn\u0105 liczb\u0119 ca\u0142kowit\u0105.
+
+mapping.clash.occurred=SRVE8048E: Podczas dodawania wzorca adresu URL [{0}] wyst\u0105pi\u0142 konflikt odwzorowa\u0144.
+mapping.clash.occurred.explanation=Ten sam wzorzec zosta\u0142 okre\u015blony dwukrotnie dla wzorc\u00f3w adres\u00f3w URL do odmowy na potrzeby obs\u0142ugi plik\u00f3w.
+mapping.clash.occurred.useraction=Sprawd\u017a atrybuty obs\u0142ugi plik\u00f3w w pliku ibm-web-ext.xmi lub ibm-web-ext.xml.
+
+Exception.occured.during.servlet.destroy=SRVE8049E: Podczas niszczenia serwletu wyst\u0105pi\u0142 wewn\u0119trzny b\u0142\u0105d serwera.
+Exception.occured.during.servlet.destroy.explanation=Podczas niszczenia serwletu wyst\u0105pi\u0142 wewn\u0119trzny b\u0142\u0105d serwera.
+Exception.occured.during.servlet.destroy.useraction=Sprawd\u017a podstawow\u0105 przyczyn\u0119 wyj\u0105tku.
+
+Place.servlet.class.on.classpath.of.the.application.server=SRVE8050E: Dodaj klas\u0119 serwletu do \u015bcie\u017cki klasy serwera aplikacji {0}, {1}: {2}.
+Place.servlet.class.on.classpath.of.the.application.server.explanation=Podczas udost\u0119pniania serwletu wyst\u0105pi\u0142y b\u0142\u0119dy \u015bcie\u017cki klasy.
+Place.servlet.class.on.classpath.of.the.application.server.useraction=Dodaj klas\u0119 serwletu do \u015bcie\u017cki klasy serwera aplikacji.
+
+Exception.occured.during.servlet.unload=SRVE8051E: Podczas usuwania serwletu z pami\u0119ci wyst\u0105pi\u0142 wewn\u0119trzny b\u0142\u0105d serwera.
+Exception.occured.during.servlet.unload.explanation=Podczas usuwania serwletu z pami\u0119ci wyst\u0105pi\u0142 wewn\u0119trzny b\u0142\u0105d serwera.
+Exception.occured.during.servlet.unload.useraction=Sprawd\u017a podstawow\u0105 przyczyn\u0119 wyj\u0105tku.
+
+classnotfoundexception.loading.servlet.class=SRVE8052E: Rejestrowanie wyj\u0105tku ClassNotFoundException.
+classnotfoundexception.loading.servlet.class.explanation=Serwlet nie mo\u017ce znale\u017a\u0107 wymaganej klasy niezb\u0119dnej do obs\u0142ugi \u017c\u0105dania. Jest to b\u0142\u0105d aplikacji.
+classnotfoundexception.loading.servlet.class.useraction=Sprawd\u017a, czy klasa istnieje w ramach aplikacji.
+
+setting.initialPoolSize.to.default.value.of.5=SRVE8053E: Wyst\u0105pi\u0142 wyj\u0105tek NumberFormatException podczas pr\u00f3by ustawienia wielko\u015b\u0107 puli dla modelu jednow\u0105tkowego.
+setting.initialPoolSize.to.default.value.of.5.explanation=Wyst\u0105pi\u0142 wyj\u0105tek NumberFormatException podczas pr\u00f3by ustawienia wielko\u015b\u0107 puli dla modelu jednow\u0105tkowego.
+setting.initialPoolSize.to.default.value.of.5.useraction=Sprawd\u017a, czy warto\u015b\u0107 podana jako wielko\u015b\u0107 puli dla modelu jednow\u0105tkowego jest poprawn\u0105 liczb\u0105 ca\u0142kowit\u0105.
+
+setting.maxIdleTime.to.default.value.of.60000=SRVE8054E: Wyst\u0105pi\u0142 wyj\u0105tek NumberFormatException podczas pr\u00f3by ustawienia maksymalnego czasu bezczynno\u015bci serwletu dla modelu jednow\u0105tkowego.
+setting.maxIdleTime.to.default.value.of.60000.explanation=Wyst\u0105pi\u0142 wyj\u0105tek NumberFormatException podczas pr\u00f3by ustawienia maksymalnego czasu bezczynno\u015bci serwletu dla modelu jednow\u0105tkowego.
+setting.maxIdleTime.to.default.value.of.60000.useraction=Sprawd\u017a, czy warto\u015b\u0107 maksymalnego czasu bezczynno\u015bci serwletu dla modelu jednow\u0105tkowego jest poprawn\u0105 liczb\u0105 ca\u0142kowit\u0105.
+
+Error.while.flushing.last.response=SRVE8055E: Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek podczas opr\u00f3\u017cniania pozosta\u0142ych danych odpowiedzi.
+Error.while.flushing.last.response.explanation=Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek podczas opr\u00f3\u017cniania pozosta\u0142ych danych odpowiedzi.
+Error.while.flushing.last.response.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
+
+Error.while.closing.response.output=SRVE8056E: Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek podczas zamykania strumienia wyj\u015bciowego.
+Error.while.closing.response.output.explanation=Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek podczas zamykania strumienia wyj\u015bciowego.
+Error.while.closing.response.output.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
+
+error.initializing.output.stream=SRVE8057E: Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek podczas inicjowania strumienia wyj\u015bciowego.
+error.initializing.output.stream.explanation=Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek podczas inicjowania strumienia wyj\u015bciowego.
+error.initializing.output.stream.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
+
+Did.not.have.access.to.delete.Directory=SRVE8058E: Brak dost\u0119pu do usuwania katalogu tymczasowego.
+Did.not.have.access.to.delete.Directory.explanation=Strategia zabezpiecze\u0144 Java 2 uniemo\u017cliwi\u0142a usuni\u0119cie katalogu tymczasowego.
+Did.not.have.access.to.delete.Directory.useraction=Przejrzyj strategi\u0119 zabezpiecze\u0144 Java 2, aby sprawdzi\u0107, czy ten dost\u0119p powinien by\u0107 dozwolony.
+
+unable.to.get.sessionContext=SRVE8059E: Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek podczas pr\u00f3by pobrania kontekstu sesji.
+unable.to.get.sessionContext.explanation=Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek podczas pr\u00f3by pobrania kontekstu sesji.
+unable.to.get.sessionContext.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
+
+exception.while.injecting.resource=SRVE8060E: Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek podczas wstrzykiwania zasobu.
+exception.while.injecting.resource.explanation=Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek podczas wstrzykiwania zasobu.
+exception.while.injecting.resource.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
+
+unable.to.invoke.method=SRVE8061E: Nie mo\u017cna wywo\u0142a\u0107 metody [{0}] w klasie [{1}].
+unable.to.invoke.method.explanation=Wyst\u0105pi\u0142 problem podczas wywo\u0142ywania metody postConstruct lub preDestroy.
+unable.to.invoke.method.useraction=Sprawd\u017a podstawow\u0105 przyczyn\u0119.
+                         
+exception.initializing.security.collaborator=SRVE8062E: Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek podczas inicjowania wsp\u00f3\u0142pracownika zabezpiecze\u0144.
+exception.initializing.security.collaborator.explanation=Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek podczas inicjowania wsp\u00f3\u0142pracownika zabezpiecze\u0144.
+exception.initializing.security.collaborator.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
+
+Could.not.create.LoginProcessor=SRVE8063E: Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek podczas inicjowania procesora logowania.
+Could.not.create.LoginProcessor.explanation=Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek podczas inicjowania procesora logowania.
+Could.not.create.LoginProcessor.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
+
+Could.not.create.LogoutProcessor=SRVE8064E: Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek podczas inicjowania procesora wylogowania.
+Could.not.create.LogoutProcessor.explanation=Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek podczas inicjowania procesora wylogowania.
+Could.not.create.LogoutProcessor.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
+
+webcontianer.configuration.error=SRVE8065E: Nieznany b\u0142\u0105d zwi\u0105zany z konfiguracj\u0105 kontenera WWW.
+webcontianer.configuration.error.explanation=Nieznany b\u0142\u0105d zwi\u0105zany z konfiguracj\u0105 kontenera WWW.
+webcontianer.configuration.error.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
+
+Failed.to.add.WebContainerService=SRVE8066E: Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek podczas dodawania us\u0142ugi WebContainerService.
+Failed.to.add.WebContainerService.explanation=Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek podczas dodawania us\u0142ugi WebContainerService.
+Failed.to.add.WebContainerService.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
+
+Failed.to.handle.extension.point=SRVE8067E: Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek podczas obs\u0142ugi punktu rozszerzenia.
+Failed.to.handle.extension.point.explanation=Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek podczas obs\u0142ugi punktu rozszerzenia.
+Failed.to.handle.extension.point.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
+
+Could.not.remove.webmodule=SRVE8068E: Nie mo\u017cna usun\u0105\u0107 modu\u0142u WWW [{0}].
+Could.not.remove.webmodule.explanation=Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek podczas usuwania modu\u0142u WWW.
+Could.not.remove.webmodule.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
+
+null.session.registry=SRVE8069E: Rejestr sesji ma warto\u015b\u0107 NULL.
+null.session.registry.explanation=Rejestr sesji ma warto\u015b\u0107 NULL. Prawdopodobna przyczyna to niepoprawnie uruchomiony mened\u017cer sesji. Wykonanie aplikacji WWW nie powiedzie si\u0119.
+null.session.registry.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
+
+failed.to.initialize.webcontainer.required.to.start.chains=SRVE8070E: Wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d podczas uruchamiania \u0142a\u0144cuch\u00f3w kana\u0142\u00f3w kontenera WWW.
+failed.to.initialize.webcontainer.required.to.start.chains.explanation=Wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d podczas uruchamiania \u0142a\u0144cuch\u00f3w kana\u0142\u00f3w kontenera WWW.
+failed.to.initialize.webcontainer.required.to.start.chains.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
+
+Null.webcontainer.config.object=SRVE8071E: Obiekt konfiguracji kontenera WWW ma warto\u015b\u0107 NULL.
+Null.webcontainer.config.object.explanation=Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek konfiguracji.
+Null.webcontainer.config.object.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
+
+Null.virtual.host.config.object=SRVE8072E: Obiekt konfiguracji hosta wirtualnego ma warto\u015b\u0107 NULL.
+Null.virtual.host.config.object.explanation=Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek konfiguracji.
+Null.virtual.host.config.object.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
+
+Null.webApp.configuration.object=SRVE8073E: Obiekt konfiguracji aplikacji WWW ma warto\u015b\u0107 NULL.
+Null.webApp.configuration.object.explanation=Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek konfiguracji.
+Null.webApp.configuration.object.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
+
+Null.webApp.object=SRVE8074E: Obiekt aplikacji WWW ma warto\u015b\u0107 NULL.
+Null.webApp.object.explanation=Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek konfiguracji.
+Null.webApp.object.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
+
+Null.cachedServlet.object=SRVE8075E: Obiekt serwletu pami\u0119ci podr\u0119cznej ma warto\u015b\u0107 NULL.
+Null.cachedServlet.object.explanation=Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek konfiguracji.
+Null.cachedServlet.object.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
+
+Null.AsyncRequestDispatcherConfigImpl.object=SRVE8076E: Obiekt AsyncRequestDispatcherConfigImpl ma warto\u015b\u0107 NULL.
+Null.AsyncRequestDispatcherConfigImpl.object.explanation=Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek konfiguracji.
+Null.AsyncRequestDispatcherConfigImpl.object.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
+
+Null.webApp.config.object=SRVE8077E: Obiekt konfiguracji aplikacji WWW ma warto\u015b\u0107 NULL.
+Null.webApp.config.object.explanation=Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek konfiguracji.
+Null.webApp.config.object.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
+
+Null.servlet.config.object=SRVE8078E: Obiekt konfiguracji serwletu ma warto\u015b\u0107 NULL.
+Null.servlet.config.object.explanation=Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek konfiguracji.
+Null.servlet.config.object.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
+
+Null.filter.config.object=SRVE8079E: Obiekt konfiguracji filtru ma warto\u015b\u0107 NULL.
+Null.filter.config.object.explanation=Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek konfiguracji.
+Null.filter.config.object.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
+
+isUserInRole.caught.exception=SRVE8080E: Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek metody isUserInRole.	Metoda isUserInRole zwraca warto\u015b\u0107 false.
+isUserInRole.caught.exception.explanation=Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek metody isUserInRole.	Metoda isUserInRole zwraca warto\u015b\u0107 false.
+isUserInRole.caught.exception.useraction=Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek metody isUserInRole.	Metoda isUserInRole zwraca warto\u015b\u0107 false.
+
+Error.occurred.while.adding.WebAppCollaborator=SRVE8081E: Podczas dodawania wsp\u00f3\u0142pracownika aplikacji WWW wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d wewn\u0119trzny serwera.
+Error.occurred.while.adding.WebAppCollaborator.explanation=Podczas dodawania wsp\u00f3\u0142pracownika aplikacji WWW wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d wewn\u0119trzny serwera.
+Error.occurred.while.adding.WebAppCollaborator.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
+
+Error.while.adding.static.file.processor=SRVE8082E: Podczas dodawania procesora plik\u00f3w statycznych wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d wewn\u0119trzny serwera.
+Error.while.adding.static.file.processor.explanation=Podczas dodawania procesora plik\u00f3w statycznych wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d wewn\u0119trzny serwera.
+Error.while.adding.static.file.processor.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
+
+Error.occurred.while.registering.WebModule.MBean=SRVE8083E: Podczas rejestrowania komponentu MBean modu\u0142u WWW wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d wewn\u0119trzny serwera.
+Error.occurred.while.registering.WebModule.MBean.explanation=Podczas rejestrowania komponentu MBean modu\u0142u WWW wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d wewn\u0119trzny serwera.
+Error.occurred.while.registering.WebModule.MBean.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
+
+Error.occurred.while.populating.the.namespace=SRVE8084E: Podczas zape\u0142niania przestrzeni nazw wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d wewn\u0119trzny serwera.
+Error.occurred.while.populating.the.namespace.explanation=Podczas zape\u0142niania przestrzeni nazw wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d wewn\u0119trzny serwera.
+Error.occurred.while.populating.the.namespace.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
+
+handleRequest.threw.IOException=SRVE8085E: Metoda handleRequest kontenera WWW zg\u0142osi\u0142a wyj\u0105tek IOException.
+handleRequest.threw.IOException.explanation=Metoda handleRequest kontenera WWW zg\u0142osi\u0142a wyj\u0105tek IOException.
+handleRequest.threw.IOException.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z dzia\u0142em wsparcia IBM.
+
+invalid.peer.certificate=SRVE8086E: Niepoprawny certyfikat w\u0119z\u0142a sieci.
+invalid.peer.certificate.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas pobierania certyfikatu w\u0119z\u0142a sieci.
+invalid.peer.certificate.useraction=Sprawd\u017a podstawow\u0105 przyczyn\u0119.
+
+error.creating.stats.instance=SRVE8087E: B\u0142\u0105d podczas tworzenia instancji statystyk PMI.
+error.creating.stats.instance.explanation=B\u0142\u0105d podczas tworzenia instancji statystyk PMI.
+error.creating.stats.instance.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
+
+failed.to.remove.pmi.stats=SRVE8088E: B\u0142\u0105d podczas usuwania instancji statystyk PMI.
+failed.to.remove.pmi.stats.explanation=B\u0142\u0105d podczas usuwania instancji statystyk PMI.
+failed.to.remove.pmi.stats.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
+
+Error.creating.stats.group=SRVE8089E: B\u0142\u0105d podczas tworzenia grupy statystyk PMI.
+Error.creating.stats.group.explanation=B\u0142\u0105d podczas tworzenia grupy statystyk PMI.
+Error.creating.stats.group.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
+
+Error.occurred.while.preparing.the.servlet.for.initialization=SRVE8090E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas przygotowywania opakowania serwletu w celu zainicjowania.
+Error.occurred.while.preparing.the.servlet.for.initialization.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas przygotowywania opakowania serwletu w celu zainicjowania. 
+Error.occurred.while.preparing.the.servlet.for.initialization.useraction=Sprawd\u017a podstawow\u0105 przyczyn\u0119.
+
+servlet.wrapper.unavailable=SRVE8091W: Serwlet {0} jest obecnie niedost\u0119pny: {1}.
+servlet.wrapper.unavailable.explanation=Serwlet zwr\u00f3ci\u0142 wyj\u0105tek UnavailableException.
+servlet.wrapper.unavailable.useraction=Sprawd\u017a podstawow\u0105 przyczyn\u0119.
+
+exception.invoking.asnyc.error.mechanism=SRVE8092W: Wyst\u0105pi\u0142 wyj\u0105tek podczas wywo\u0142ywania asynchronicznego mechanizmu b\u0142\u0119d\u00f3w.
+exception.invoking.asnyc.error.mechanism.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas wywo\u0142ywania asynchronicznego mechanizmu b\u0142\u0119d\u00f3w.
+exception.invoking.asnyc.error.mechanism.useraction=Sprawd\u017a podstawow\u0105 przyczyn\u0119.
+
+servlet.classname.is.null=SRVE8093W: Nie mo\u017cna obs\u0142u\u017cy\u0107 \u017c\u0105dania, poniewa\u017c nazwa klasy serwletu ma warto\u015b\u0107 NULL dla serwletu o nazwie [{0}].
+servlet.classname.is.null.explanation=Nie mo\u017cna obs\u0142u\u017cy\u0107 \u017c\u0105dania, poniewa\u017c nazwa klasy serwletu ma warto\u015b\u0107 NULL.
+servlet.classname.is.null.useraction=Sprawd\u017a, czy dla serwletu udost\u0119pniono poprawn\u0105 klas\u0119 serwletu.
+
+Cannot.set.header.Response.already.committed=SRVE8094W: Ostrze\u017cenie: nie mo\u017cna ustawi\u0107 nag\u0142\u00f3wka. Odpowied\u017a zosta\u0142a ju\u017c zatwierdzona.  Dane \u015bledzenia stosu dla b\u0142\u0119dnej pr\u00f3by ustawienia nag\u0142\u00f3wka: {0}
+Cannot.set.header.Response.already.committed.explanation=Po zatwierdzeniu odpowiedzi nie mo\u017cna ju\u017c ustawia\u0107 nag\u0142\u00f3wk\u00f3w odpowiedzi.
+Cannot.set.header.Response.already.committed.useraction=Sprawd\u017a, czy to wywo\u0142anie jest konieczne. Je\u015bli nag\u0142\u00f3wek naprawd\u0119 musi zosta\u0107 wys\u0142any, nale\u017cy go ustawi\u0107 przed zatwierdzeniem odpowiedzi.
+
+async.servlet.work.rejected=SRVE8095W: Dla elementu wykonywalnego [{0}] zosta\u0142a wywo\u0142ana metoda workRejected.
+async.servlet.work.rejected.explanation=Podczas planowania elementu pracy za pomoc\u0105 mened\u017cera pracy asynchronicznych komponent\u00f3w bean mo\u017ce zosta\u0107 wywo\u0142ana metoda workRejected, je\u015bli w czasie uruchamiania elementu pracy wyst\u0105pi b\u0142\u0105d.
+async.servlet.work.rejected.useraction=Sprawd\u017a podstawow\u0105 przyczyn\u0119.
+
+exception.scheduling.work.item=SRVE8096W: Wyst\u0105pi\u0142 wyj\u0105tek podczas planowania elementu wykonywalnego [{0}].
+exception.scheduling.work.item.explanation=Podczas planowania elementu pracy za pomoc\u0105 mened\u017cera pracy asynchronicznych komponent\u00f3w bean mo\u017ce zosta\u0107 zwr\u00f3cony wyj\u0105tek, je\u015bli kolejka pracy jest pe\u0142na, a skonfigurowane dzia\u0142anie kolejki pracy w przypadku pe\u0142nej kolejki to zg\u0142oszenie niepowodzenia.
+exception.scheduling.work.item.useraction=Rozwa\u017c zmian\u0119 dzia\u0142ania kolejki pracy w przypadku pe\u0142nej kolejki na blokowanie do czasu, gdy kolejka nie b\u0119dzie pe\u0142na, lub obs\u0142u\u017c wyj\u0105tek w kodzie aplikacji.
+
+null.url.pattern.and.servlet.name.for.filter.mapping=SRVE8097W: Brak wzorca adresu URL lub nazwy serwletu dla odwzorowania filtru [{0}].
+null.url.pattern.and.servlet.name.for.filter.mapping.explanation=Odwzorowanie filtru jest niekompletne bez wzorca adresu URL lub nazwy serwletu, na kt\u00f3ry ma zosta\u0107 wykonane odwzorowanie.
+null.url.pattern.and.servlet.name.for.filter.mapping.useraction=Dodaj wzorzec adresu URL lub nazw\u0119 serwletu do odwzorowania filtru.
+
+null.url.pattern.for.servlet.mapping=SRVE8098W: Nie mo\u017cna wstawi\u0107 odwzorowania dla serwletu o nazwie [{0}]. Wzorzec URL ma warto\u015b\u0107 NULL.
+null.url.pattern.for.servlet.mapping.explanation=Odwzorowanie serwletu jest niekompletne bez wzorca adresu URL, na kt\u00f3ry ma zosta\u0107 wykonane odwzorowanie.
+null.url.pattern.for.servlet.mapping.useraction=Dodaj wzorzec adresu URL do odwzorowania serwletu.
+
+stub.restart.web.application=SRVE8099W: Metoda restartWebApplication nie wykonuje ju\u017c \u017cadnych dzia\u0142a\u0144. Do uruchamiania i restartowania aplikacji nale\u017cy u\u017cywa\u0107 komponentu MBean ApplicationManager.
+stub.restart.web.application.explanation=Metoda restartWebApplication nie wykonuje ju\u017c \u017cadnych dzia\u0142a\u0144. Do uruchamiania i restartowania aplikacji nale\u017cy u\u017cywa\u0107 komponentu MBean ApplicationManager.
+stub.restart.web.application.useraction=Metoda restartWebApplication nie wykonuje ju\u017c \u017cadnych dzia\u0142a\u0144. Do uruchamiania i restartowania aplikacji nale\u017cy u\u017cywa\u0107 komponentu MBean ApplicationManager.
+
+virtual.host.alias.clash=SRVE8100W: Istnieje ju\u017c alias dla hosta wirtualnego [{0}].
+virtual.host.alias.clash.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas dodawania aliasu hosta wirtualnego, poniewa\u017c istnieje ju\u017c alias hosta wirtualnego o tym samym wzorcu.
+virtual.host.alias.clash.useraction=Zmodyfikuj alias hosta wirtualnego i usu\u0144 duplikaty.
+
+Response.buffer.corruption.detected=SRVE8101E: Wykryto uszkodzenie buforu odpowiedzi. Oczekiwany pozosta\u0142y: {0}, rzeczywisty: {1}.
+Response.buffer.corruption.detected.explanation=Nieoczekiwany b\u0142\u0105d wewn\u0119trzny spowodowa\u0142 niezgodno\u015b\u0107 mi\u0119dzy oczekiwanym a rzeczywistym stanem buforu wyj\u015bciowego.
+Response.buffer.corruption.detected.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
+
+Illegal.value.for.ResponseBuffer=SRVE8102E: Niedozwolona warto\u015b\u0107 w\u0142a\u015bciwo\u015bci niestandardowej responsebuffersize [{0}].
+Illegal.value.for.ResponseBuffer.explanation=Niedozwolona warto\u015b\u0107 w\u0142a\u015bciwo\u015bci niestandardowej responsebuffersize.
+Illegal.value.for.ResponseBuffer.useraction=Sprawd\u017a warto\u015b\u0107 w\u0142a\u015bciwo\u015bci niestandardowej responsebuffersize.
+
+Exception.creating.channel=SRVE8103E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera podczas tworzenia obiektu kana\u0142u.
+Exception.creating.channel.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera podczas tworzenia obiektu kana\u0142u.
+Exception.creating.channel.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z dzia\u0142em wsparcia IBM.
+
+Servlet.Engine.Exception=SRVE8104E: Wewn\u0119trzny b\u0142\u0105d serwera. Komunikat wyj\u0105tku: [{0}]
+Servlet.Engine.Exception.explanation=Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek mechanizmu serwletu. Jest to b\u0142\u0105d systemowy.
+Servlet.Engine.Exception.useraction=Wi\u0119cej informacji na temat wygenerowanego wyj\u0105tku mo\u017cna znale\u017a\u0107 w dziennikach System.out i System.err.
+
+unable.to.retrieve.timer.manager=SRVE8105W: Wyst\u0105pi\u0142 b\u0142\u0105d podczas pobierania mened\u017cera licznik\u00f3w czasu w celu uruchomienia limit\u00f3w czasu serwlet\u00f3w asynchronicznych. Zostanie u\u017cyty domy\u015blny jednow\u0105tkowy licznik czasu.
+unable.to.retrieve.timer.manager.explanation=Konsola administracyjna nie powinna zezwala\u0107 na wybranie niepoprawnej nazwy JNDI mened\u017cera licznik\u00f3w czasu.
+unable.to.retrieve.timer.manager.useraction=Sprawd\u017a, czy mened\u017cer licznik\u00f3w czasu wybrany na panelu Kontener WWW jest poprawny.
+
+exception.invoking.async.listener=SRVE8106W: Wyst\u0105pi\u0142 wyj\u0105tek podczas wywo\u0142ywania asynchronicznych obiekt\u00f3w nas\u0142uchiwania.
+exception.invoking.async.listener.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas wywo\u0142ywania asynchronicznych obiekt\u00f3w nas\u0142uchiwania.
+exception.invoking.async.listener.useraction=Sprawd\u017a podstawow\u0105 przyczyn\u0119.
+
+trying.to.schedule.timeout.without.cancelling.previous.timeout=SRVE8107W: Interfejs AsyncContext podj\u0105\u0142 pr\u00f3b\u0119 zaplanowania w\u0105tku limitu czasu, ale nie anulowa\u0142 poprzedniego limitu czasu.
+trying.to.schedule.timeout.without.cancelling.previous.timeout.explanation=Jest to nieoczekiwany b\u0142\u0105d wewn\u0119trzny.
+trying.to.schedule.timeout.without.cancelling.previous.timeout.useraction=Zbierz dane \u015bledzenia kontenera WWW i skontaktuj si\u0119 z dzia\u0142em wsparcia IBM.
+
+trying.to.set.number.of.async.timer.threads.to.less.than.one=SRVE8108W: Podj\u0119to pr\u00f3b\u0119 ustawienia liczby asynchronicznych w\u0105tk\u00f3w licznika czasu na warto\u015b\u0107 mniejsz\u0105 ni\u017c jeden.
+trying.to.set.number.of.async.timer.threads.to.less.than.one.explanation=Musi istnie\u0107 co najmniej jeden asynchroniczny w\u0105tek licznika czasu.
+trying.to.set.number.of.async.timer.threads.to.less.than.one.useraction=Sprawd\u017a konfiguracj\u0119 serwera, aby okre\u015bli\u0107 bie\u017c\u0105ce ustawienie.
+
+uncaught.filter.exception=SRVE8109W: Niewychwycony wyj\u0105tek zosta\u0142 zg\u0142oszony przez filtr {0}: {1}
+uncaught.filter.exception.explanation=Filtr zg\u0142osi\u0142 wyj\u0105tek.
+uncaught.filter.exception.useraction=Sprawd\u017a podstawow\u0105 przyczyn\u0119.
+
+exception.occured.while.processing.ServletContainerInitializer.initializeExtensionPointSCIs=SRVE8110E: Nie mo\u017cna zainicjowa\u0107 interfejsu ServletContainerInitializer: nazwa klasy: [{0}].
+exception.occured.while.processing.ServletContainerInitializer.initializeExtensionPointSCIs.explanation=Nie mo\u017cna zainicjowa\u0107 interfejsu ServletContainerInitializer okre\u015blonego przez punkt rozszerzenia.
+exception.occured.while.processing.ServletContainerInitializer.initializeExtensionPointSCIs.useraction=Sprawd\u017a klas\u0119 okre\u015blon\u0105 w punkcie rozszerzenia.
+
+programmatic.session.cookie.restricted.match=SRVE8111E: Aplikacja {0} pr\u00f3buje zmodyfikowa\u0107 informacj\u0119 cookie, kt\u00f3ra jest zgodna ze wzorcem na li\u015bcie zastrze\u017conych informacji cookie sesji programistycznych [domena={1}, nazwa={2}, \u015bcie\u017cka={3}].
+programmatic.session.cookie.restricted.match.explanation=Administrator wy\u0142\u0105czy\u0142 mo\u017cliwo\u015b\u0107 zmiany konfiguracji informacji cookie dla informacji cookie zgodnych z domen\u0105, nazw\u0105 i \u015bcie\u017ck\u0105
+programmatic.session.cookie.restricted.match.useraction=Zmodyfikuj aplikacj\u0119, aby u\u017cywa\u0142a innej nazwy cookie, domeny lub \u015bcie\u017cki, albo zmodyfikuj warto\u015bci zastrze\u017conych informacji cookie sesji programistycznej 
+
+programmatic.session.cookie.retrieve.cell.xml.failure=SRVE8112W: Wyst\u0105pi\u0142 problem podczas pobierania wzorc\u00f3w zastrze\u017conych informacji cookie.  Na konfiguracj\u0119 sesji programistycznej nie na\u0142o\u017cono \u017cadnych ogranicze\u0144.
+programmatic.session.cookie.retrieve.cell.xml.failure.explanation=Wyst\u0105pi\u0142 problem podczas pobierania wzorc\u00f3w zastrze\u017conych informacji cookie z konfiguracji.
+programmatic.session.cookie.retrieve.cell.xml.failure.useraction=Sprawd\u017a, czy plik cell.xml istnieje i czy mo\u017cna go odczyta\u0107.
+
+AsyncContext.lock.already.held=SRVE8113W: Nie mo\u017cna uzyska\u0107 blokady.  Przetwarzanie b\u0142\u0119du zosta\u0142o ju\u017c wywo\u0142ane przez inny w\u0105tek.
+AsyncContext.lock.already.held.explanation=Przetwarzanie b\u0142\u0119du zosta\u0142o ju\u017c wywo\u0142ane przez inny w\u0105tek.
+AsyncContext.lock.already.held.useraction=Upewnij si\u0119, \u017ce aplikacja mo\u017ce obs\u0142u\u017cy\u0107 ten wyj\u0105tek.  Je\u015bli zwr\u00f3cenie tej metody jest konieczne nawet wtedy, gdy wywo\u0142anie si\u0119 nie powiedzie, skontaktuj si\u0119 z dzia\u0142em wsparcia IBM.
+
+servlet.with.same.name.already.exists=SRVE8500W: Nie mo\u017cna doda\u0107 dynamicznie serwletu o nazwie {0}, poniewa\u017c istnieje ju\u017c konfiguracja serwletu o tej samej nazwie.  
+servlet.with.same.name.already.exists.explanation=Serwlet o takiej nazwie ju\u017c istnieje dla tej aplikacji.
+servlet.with.same.name.already.exists.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.  Sprawd\u017a, czy istnieje konflikt w deskryptorze wdra\u017cania, adnotacjach lub kodzie \u017ar\u00f3d\u0142owym s\u0142u\u017c\u0105cym do dynamicznego dodawania tej konfiguracji serwletu. 
+
+servlet.feature.not.loaded.correctly=SRVE8501E: Kontener serwletu nie zosta\u0142 za\u0142adowany w akceptowalnej wersji.
+servlet.feature.not.loaded.correctly.explanation=Kontener serwletu zosta\u0142 za\u0142adowany w wersji, kt\u00f3ra odpowiada specyfikacji Java EE tego sk\u0142adnika serwletu. Kontener zosta\u0142 za\u0142adowany bez zdefiniowanej wersji.
+servlet.feature.not.loaded.correctly.useraction=Sprawd\u017a, czy w pliku server.xml istnieje sk\u0142adnik servlet-3.0 lub servlet-3.1. Jeden z tych sk\u0142adnik\u00f3w powinien by\u0107 zdefiniowany, ale nie oba jednocze\u015bnie.
+
+filter.failed.app.destroyed=SRVE8502W: Nie mo\u017cna wykona\u0107 \u017c\u0105dania {0}, poniewa\u017c aplikacja zosta\u0142a zatrzymana.
+filter.failed.app.destroyed.explanation=Aplikacja WWW jest zatrzymywana i nie mo\u017cna zako\u0144czy\u0107 wykonywania \u017c\u0105dania. To dzia\u0142anie mo\u017ce by\u0107 spowodowane zamykaniem serwera podczas obs\u0142ugi \u017c\u0105dania.
+filter.failed.app.destroyed.useraction=Wy\u015blij \u017c\u0105danie ponownie, kiedy aplikacja b\u0119dzie dost\u0119pna.
+
+# Notes for translation:
+# {0} is a servlet or filter name, in the current request chain, which does not support asynchronous processing.
+resource.does.not.support.async=SRVE8503E: Nast\u0119puj\u0105cy zas\u00f3b w \u0142a\u0144cuchu \u017c\u0105da\u0144 nie obs\u0142uguje przetwarzania asynchronicznego [{0}]
+resource.does.not.support.async.explanation=Wszystkie filtry i serwlet docelowy dla \u017c\u0105dania musz\u0105 obs\u0142ugiwa\u0107 przetwarzanie asynchroniczne, aby u\u017cywa\u0107 trybu asynchronicznego dla \u017c\u0105da\u0144 serwletu.
+resource.does.not.support.async.useraction=Zaktualizuj okre\u015blony filtr lub serwlet do obs\u0142ugi przetwarzania asynchronicznego albo zaktualizuj serwlet tak, aby nie korzysta\u0142 z funkcji API programowania asynchronicznego.
+
+# Notes for translation:
+# {0} is the name of the AsyncListener that threw an Exception
+# {1} is the Exception thrown by the AsyncListener
+uncaught.exception.during.AsyncListener.onComplete=SRVE8504W: Nast\u0119puj\u0105cy nieprzechwycony wyj\u0105tek zosta\u0142 zg\u0142oszony przez obiekt AsyncListener: [{0}] podczas wykonywania metody onComplete: [{1}]
+uncaught.exception.during.AsyncListener.onComplete.explanation=Przywo\u0142ywany w komunikacie o b\u0142\u0119dzie obiekt AsyncListener zg\u0142osi\u0142 wyj\u0105tek. Ten wyj\u0105tek jest b\u0142\u0119dem aplikacji.
+uncaught.exception.during.AsyncListener.onComplete.useraction=Sprawd\u017a kod \u017ar\u00f3d\u0142owy obiektu AsyncListener i dzienniki serwera, aby znale\u017a\u0107 podstawow\u0105 przyczyn\u0119 b\u0142\u0119du aplikacji.
+
+# Since servlet 4.0.  Use the registered and reserved prefix CWWWC from now on.  
+# 0001 - 0199 for Base
+# 0200 - 0299 for Servlet 3.0
+# 0300 - 0399 for Servlet 3.1
+# 0400 - 0499 for Servlet 4
+#name.is.null=CWWWC0400E: An attribute name, or initial parameter name, is null.
+#name.is.null.explanation=This is an application error.  The name is null in either context getAttribute(), setAttribute(), getInitParameter(), or setInitParameter().
+#name.is.null.useraction=Update the attribute name, or initial parameter name, with a non-null value.

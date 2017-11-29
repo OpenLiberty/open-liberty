@@ -1,0 +1,67 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+#CMVCPATHNAME com.ibm.ws.apache.el-3.0/resources/org/apache/el/Messages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+
+# General Errors
+error.convert=A(z) {1} t\u00edpus\u00fa {0} nem alak\u00edthat\u00f3 \u00e1t a k\u00f6vetkez\u0151re: {2}
+error.compare={0} \u00e9s {1} nem hasonl\u00edthat\u00f3 \u00f6ssze
+error.function=Probl\u00e9m\u00e1k a(z) ''{0}'' f\u00fcggv\u00e9ny h\u00edv\u00e1sakor
+error.unreachable.base=A c\u00e9l nem \u00e9rhet\u0151 el, a(z) ''{0}'' azonos\u00edt\u00f3 null\u00e9rt\u00e9kre lett feloldva
+error.unreachable.property=A c\u00e9l nem \u00e9rhet\u0151 el, a(z) ''{0}'' null\u00e9rt\u00e9ket adott vissza
+error.resolver.unhandled=Az ELResolver nem kezelte a(z) {0} t\u00edpust a(z) ''{1}'' tulajdons\u00e1ggal
+error.resolver.unhandled.null=Az ELResolver nem tud kezelni egy null alapobjektumot a(z) ''{0}'' azonos\u00edt\u00f3val
+
+# ValueExpressionLiteral
+error.value.literal.write=A ValueExpression egy liter\u00e1l, \u00e9s nem \u00edrhat\u00f3: {0}
+
+# ExpressionFactoryImpl
+error.null=A kifejez\u00e9s nem lehet null
+error.mixed=A kifejez\u00e9s nem tartalmazhatja egyar\u00e1nt a ''#''{..}'' \u00e9s a ''$''{..}'' elemet: {0}
+error.method=\u00c9rv\u00e9nytelen MethodExpression : {0}
+error.method.nullParms=A param\u00e9tert\u00edpusok nem lehetnek null\u00e9rt\u00e9k\u0171ek
+error.value.expectedType=A v\u00e1rt t\u00edpus nem lehet null
+
+# ExpressionBuilder
+error.parseFail=A(z) [{0}] kifejez\u00e9s \u00e9rtelmez\u00e9se meghi\u00fasult
+
+# ValueSetVisitor
+error.syntax.set=A set m\u0171velet szintaxisa illeg\u00e1lis
+
+# ReflectionUtil
+error.method.notfound=A met\u00f3dus nem tal\u00e1lhat\u00f3: {0}.{1}({2})
+error.method.ambiguous=Nem tal\u00e1lhat\u00f3 egy\u00e9rtelm\u0171 met\u00f3dus: {0}.{1}({2})
+
+# ValidatingVisitor
+error.fnMapper.null=A kifejez\u00e9s f\u00fcggv\u00e9nyeket haszn\u00e1l, azonban a FunctionMapper nincs megadva
+error.fnMapper.method=A(z) ''{0}'' f\u00fcggv\u00e9ny nem tal\u00e1lhat\u00f3
+error.fnMapper.paramcount=A(z) ''{0}'' f\u00fcggv\u00e9ny {1} param\u00e9tert ad meg, azonban {2} lett deklar\u00e1lva
+
+# ExpressionImpl
+error.context.null=Az ELContext null volt
+
+# Parser
+error.funciton.tooManyMethodParameterSets=T\u00f6bb param\u00e9terk\u00e9szlet lett megadva a(z) [{0}] f\u00fcggv\u00e9nyhez
+error.identifier.notjava=A(z) [{0}] azonos\u00edt\u00f3 nem egy \u00e9rv\u00e9nyes Java azonos\u00edt\u00f3 az EL specifik\u00e1ci\u00f3 1.19 szakasza \u00e1ltal ig\u00e9nyeltnek megfelel\u0151en (Identifier ::= Java nyelvi azonos\u00edt\u00f3). Ez az ellen\u0151rz\u00e9s az org.apache.el.parser.SKIP_IDENTIFIER_CHECK rendszertulajdons\u00e1g true \u00e9rt\u00e9kre t\u00f6rt\u00e9n\u0151 be\u00e1ll\u00edt\u00e1s\u00e1val letilthat\u00f3.
+error.lambda.tooManyMethodParameterSets=A met\u00f3dusparam\u00e9terek t\u00f6bb k\u00e9szlete lett megadva, mint ah\u00e1ny be\u00e1gyazott lambda kifejez\u00e9s l\u00e9tezik.
+
+# Stream
+stream.compare.notComparable=Az adatfolyamelemeknek meg kell val\u00f3s\u00edtaniuk a Comparable fel\u00fcletet
+stream.optional.empty=A get() met\u00f3dus megh\u00edv\u00e1sa egy \u00fcres elhagyhat\u00f3 elemhez illeg\u00e1lis
+stream.optional.paramNotLambda=A(z) [{0}] met\u00f3dus param\u00e9ter\u00e9nek egy lambda kifejez\u00e9snek kell lennie

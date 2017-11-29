@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+#CMVCPATHNAME 
+#COMPONENTPREFIX CWWWC
+#COMPONENTNAMEFOR CWWWC Servlet Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# --------------------------------
+
+# Since servlet 4.0.  Use the registered and reserved prefix CWWWC from now on.  
+# 0001 - 0199 for Base
+# 0200 - 0299 for Servlet 3.0
+# 0300 - 0399 for Servlet 3.1
+# 0400 - 0499 for Servlet 4
+name.is.null=CWWWC0400E: N\u00e1zev atributu nebo n\u00e1zev po\u010d\u00e1te\u010dn\u00edho parametru je null.
+name.is.null.explanation=Jde o chybu aplikace. N\u00e1zev je null bu\u010f v kontextu getAttribute(), setAttribute(), getInitParameter(), nebo setInitParameter().
+name.is.null.useraction=Aktualizujete n\u00e1zev atributu nebo n\u00e1zev po\u010d\u00e1te\u010dn\u00edho parametru s hodnotou jinou ne\u017e null.
+
+# -----------------------------------------------
+unsupported.response.encoding.[{0}]=CWWWC0401E: Nezda\u0159ilo se nastavit k\u00f3dov\u00e1n\u00ed znak\u016f odezvy: [{0}].
+unsupported.response.encoding.[{0}].explanation=K\u00f3dov\u00e1n\u00ed odezvy ur\u010den\u00e9 odezv\u011b je neplatn\u00e9. Jde o chybu aplikace.
+unsupported.response.encoding.[{0}].useraction=Prohl\u00e9dn\u011bte si protokoly a ur\u010dete, zda je ur\u010den\u00e9 k\u00f3dov\u00e1n\u00ed platn\u00e9.
+

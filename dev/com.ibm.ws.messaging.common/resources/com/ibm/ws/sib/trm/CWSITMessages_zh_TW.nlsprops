@@ -1,0 +1,1152 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# 94218          2013-19-02  Venu     L2 review changes 
+# -------------------------------------------------------------------------------------------------
+# File com.ibm.ws.sib.trm.CWSITMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIT0000=CWSIT0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSIT0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSIT0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - CWSIT9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+#
+# cmvc_en_version_level=1.139,0,08/02/28,08:29:16
+#
+#CMVCPATHNAME ws/code/sib.trm.impl/src/com/ibm/ws/sib/trm/CWSITMessages.nlsprops
+#COMPONENTPREFIX CWSIT
+#COMPONENTNAMEFOR CWSIT TRM
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the class that cannot be loaded
+# {1} is the exception created when the class cannot be loaded
+
+EXCP_DURING_INIT_CWSIT0000=CWSIT0000E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u7121\u6cd5\u5efa\u7acb {0} \u985e\u5225\u7684\u7269\u4ef6\uff0c\u56e0\u70ba\u767c\u751f\u7570\u5e38\u72c0\u6cc1\uff1a{1}
+EXCP_DURING_INIT_CWSIT0000.explanation=CMSG0001
+EXCP_DURING_INIT_CWSIT0000.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of parameter which is null
+# {1} name of object being created
+
+NULL_USED_TO_CREATE_CWSIT0001=CWSIT0001E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u4f7f\u7528\u7a7a\u503c {0} \u4f86\u5efa\u7acb {1} \u5be6\u4f8b\u3002
+NULL_USED_TO_CREATE_CWSIT0001.explanation=CMSG0001
+NULL_USED_TO_CREATE_CWSIT0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of parameter which is null
+# {1} name of method
+
+NULL_USED_ON_CWSIT0002=CWSIT0002E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u5728 {1} \u65b9\u6cd5\u547c\u53eb\u4e0a\u50b3\u905e\u7a7a\u503c {0}\u3002
+NULL_USED_ON_CWSIT0002.explanation=CMSG0001
+NULL_USED_ON_CWSIT0002.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property that cannot be found
+
+NULL_PROPERTY_CWSIT0003=CWSIT0003E: \u5728\u9023\u7dda\u5167\u5bb9\u4e2d\uff0c\u627e\u4e0d\u5230 {0} \u5167\u5bb9\u3002
+NULL_PROPERTY_CWSIT0003.explanation=\u7576\u5efa\u7acb\u7528\u6236\u7aef\u9023\u7dda\u6642\uff0c\u5728\u9023\u7dda\u5167\u5bb9\u4e2d\u627e\u4e0d\u5230\u5fc5\u8981\u7684\u5167\u5bb9\u3002
+NULL_PROPERTY_CWSIT0003.useraction=\u8acb\u78ba\u5b9a\u5728\u5efa\u7acb\u9023\u7dda\u6642\uff0c\u5df2\u6b63\u78ba\u6307\u5b9a\u4e86\u5fc5\u8981\u7684\u5167\u5bb9\u3002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_CCF_CWSIT0004=CWSIT0004E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u7121\u6cd5\u5efa\u7acb ClientConnectionFactory \u985e\u5225\u7684\u7269\u4ef6\u3002
+NO_CCF_CWSIT0004.explanation=CMSG0001
+NO_CCF_CWSIT0004.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_CC_CWSIT0005=CWSIT0005E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u7121\u6cd5\u5efa\u7acb ClientConnection \u985e\u5225\u7684\u7269\u4ef6\u3002
+NO_CC_CWSIT0005.explanation=CMSG0001
+NO_CC_CWSIT0005.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} List of bootstrap endpoints to which we tried to connect
+
+NO_BOOTSTRAP_CWSIT0006=CWSIT0006E: \u7121\u6cd5\u806f\u7e6b\u6240\u6307\u5b9a\u7684\u4efb\u4f55\u5f15\u5c0e\u4f3a\u670d\u5668\u3002\u8acb\u53c3\u95b1\u93c8\u7d50\u7684\u7570\u5e38\u72c0\u6cc1\uff0c\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8a73\u7d30\u8cc7\u6599\u3002\u5df2\u8a66\u5716\u9032\u884c\u7684\u5f15\u5c0e\u9023\u7dda\uff1a{0}
+NO_BOOTSTRAP_CWSIT0006.explanation=\u7528\u6236\u7aef\u7121\u6cd5\u9023\u63a5\u81f3\u532f\u6d41\u6392\u3002\u9019\u500b\u72c0\u6cc1\u53ef\u80fd\u662f\u56e0\u70ba\u914d\u7f6e\u6216\u7db2\u8def\u767c\u751f\u554f\u984c\uff0c\u4e5f\u53ef\u80fd\u662f\u76ee\u524d\u6c92\u6709\u5fc5\u8981\u7684\u5f15\u5c0e\u4f3a\u670d\u5668\u53ef\u4f9b\u4f7f\u7528\u3002
+NO_BOOTSTRAP_CWSIT0006.useraction=\u8acb\u78ba\u5b9a\u7db2\u8def\u80fd\u5920\u6b63\u5e38\u904b\u4f5c\uff0c\u4e14\u6709\u5fc5\u8981\u7684\u5f15\u5c0e\u4f3a\u670d\u5668\u53ef\u4f9b\u4f7f\u7528\u3002\u8acb\u53c3\u95b1\u8cc7\u8a0a\u4e2d\u5fc3\uff0c\u4ee5\u53d6\u5f97\u6709\u95dc\u914d\u7f6e\u5f15\u5c0e\u4f3a\u670d\u5668\u9023\u7dda\u7684\u8a73\u7d30\u8cc7\u6599\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} EndPoint of the bootstrap server which cannot be contacted
+# {1} Exception
+
+BOOTSTRAP_FAILED_CWSIT0007=CWSIT0007W: \u7121\u6cd5\u806f\u7e6b {0} \u4e2d\u7684\u5f15\u5c0e\u4f3a\u670d\u5668\uff0c\u56e0\u70ba\u767c\u751f {1} \u7570\u5e38\u72c0\u6cc1\u3002
+BOOTSTRAP_FAILED_CWSIT0007.explanation=\u7528\u6236\u7aef\u7121\u6cd5\u806f\u7e6b\u6307\u5b9a\u7684\u5f15\u5c0e\u4f3a\u670d\u5668\u3002\u9019\u500b\u72c0\u6cc1\u53ef\u80fd\u662f\u56e0\u70ba\u914d\u7f6e\u6216\u7db2\u8def\u767c\u751f\u554f\u984c\uff0c\u4e5f\u53ef\u80fd\u662f\u5fc5\u8981\u7684\u5f15\u5c0e\u4f3a\u670d\u5668\u76ee\u524d\u7121\u6cd5\u4f7f\u7528\u3002\u7528\u6236\u7aef\u5f15\u5c0e\u7a0b\u5e8f\u5c07\u7e7c\u7e8c\u63d0\u4f9b\u8005\u7aef\u9ede\u6e05\u55ae\u4e2d\u7684\u4e0b\u4e00\u500b\u63d0\u4f9b\u8005\u7aef\u9ede\u3002
+BOOTSTRAP_FAILED_CWSIT0007.useraction=\u8acb\u78ba\u5b9a\u7db2\u8def\u904b\u4f5c\u6b63\u5e38\uff0c\u4e14\u5fc5\u8981\u7684\u5f15\u5c0e\u4f3a\u670d\u5668\u53ef\u4f9b\u4f7f\u7528\u3002\u5f15\u5c0e\u4f3a\u670d\u5668\u662f\u7531 JMS Connection Factory \u7684\u300c\u63d0\u4f9b\u8005\u7aef\u9ede\u300d\u5167\u5bb9\u6240\u6307\u5b9a\u3002\u7aef\u9ede\u4f4d\u5740\u7684\u683c\u5f0f\u70ba host_name:port_number:chain_name\uff08\u4f8b\u5982\uff1alocalhost:7276:BootstrapBasicMessaging\uff09\u3002\u5982\u679c\u4f7f\u7528\u7684\u662f\u975e\u9810\u8a2d\u7684\u5f15\u5c0e\u4f3a\u670d\u5668\uff0cConnection Factory \u5fc5\u9808\u6307\u5b9a\u300c\u63d0\u4f9b\u8005\u7aef\u9ede\u300d\u5167\u5bb9\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Endpoint of the bootstrap server
+# {1} Failure message from the bootstrap reply message
+
+BOOTSTRAP_FAILURE_CWSIT0008=CWSIT0008E: \u5df2\u9806\u5229\u9023\u7dda\u5230\u4f4d\u5728 {0} \u7684\u5f15\u5c0e\u4f3a\u670d\u5668\uff0c\u4f46\u4f3a\u670d\u5668\u50b3\u56de\u932f\u8aa4\u72c0\u6cc1\uff1a{1}
+BOOTSTRAP_FAILURE_CWSIT0008.explanation=\u7528\u6236\u7aef\u5df2\u9023\u63a5\u5230\u532f\u6d41\u6392\uff0c\u4f46\u662f\u4f7f\u7528\u670d\u52d9\u6642\u767c\u751f\u554f\u984c\u3002\u9019\u500b\u72c0\u6cc1\u53ef\u80fd\u662f\u56e0\u70ba\u7db2\u8def\u767c\u751f\u554f\u984c\uff0c\u4e5f\u53ef\u80fd\u662f\u5fc5\u8981\u7684\u670d\u52d9\u76ee\u524d\u7121\u6cd5\u4f7f\u7528\u3002
+BOOTSTRAP_FAILURE_CWSIT0008.useraction=\u8acb\u78ba\u5b9a\u7db2\u8def\u80fd\u5920\u6b63\u5e38\u904b\u4f5c\uff0c\u4e14\u6709\u5fc5\u8981\u7684\u670d\u52d9\u53ef\u4f9b\u4f7f\u7528\u3002\u8acb\u53c3\u95b1\u8cc7\u8a0a\u4e2d\u5fc3\uff0c\u4ee5\u53d6\u5f97\u6709\u95dc\u914d\u7f6e\u5f15\u5c0e\u4f3a\u670d\u5668\u9023\u7dda\u7684\u8a73\u7d30\u8cc7\u6599\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} EndPoint of application server that failed
+# {1} Name of bus
+# {2} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0009=CWSIT0009W: \u5728\u5f15\u5c0e\u4f3a\u670d\u5668\u4e2d\uff0c\u7528\u6236\u7aef\u5229\u7528 {0} \u7aef\u9ede\u4f86\u9023\u63a5 {1} \u532f\u6d41\u6392\u5931\u6557\uff0c\u539f\u56e0\u5982\u4e0b\uff1a{2}
+MIRRORED_FAILURE_CWSIT0009.explanation=\u7528\u6236\u7aef\u5f15\u5c0e\u8981\u6c42\u5931\u6557\uff0c\u56e0\u70ba\u5f15\u5c0e\u4f3a\u670d\u5668\u767c\u751f\u554f\u984c\u3002\u50b3\u56de\u5f15\u5c0e\u4f3a\u670d\u5668\u4e2d\u7684\u5931\u6557\u539f\u56e0\u3002\u7528\u6236\u7aef\u5f15\u5c0e\u7a0b\u5e8f\u5c07\u7e7c\u7e8c\u63d0\u4f9b\u8005\u7aef\u9ede\u6e05\u55ae\u4e2d\u7684\u4e0b\u4e00\u500b\u63d0\u4f9b\u8005\u7aef\u9ede\u3002
+MIRRORED_FAILURE_CWSIT0009.useraction=\u8abf\u67e5\u548c\u89e3\u6790\u932f\u8aa4\u8a0a\u606f\u4e2d\u7684\u5931\u6557\uff0c\u7136\u5f8c\u91cd\u65b0\u4f5c\u696d\u3002
+
+
+# -------------------------------------------------------------------------------------------------
+#                                                                       242799.1
+# {0} Name of messaging engine which failed
+# {1} Name of bus
+# {2} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0010=CWSIT0010E: {1} \u532f\u6d41\u6392\u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce {0} \u7684\u7528\u6236\u7aef\u8981\u6c42\u5931\u6557\uff0c\u539f\u56e0\u5982\u4e0b\uff1a{2}
+MIRRORED_FAILURE_CWSIT0010.explanation=\u7528\u6236\u7aef\u7121\u6cd5\u9023\u63a5\u81f3\u532f\u6d41\u6392\uff0c\u56e0\u70ba\u4f3a\u670d\u5668\u5931\u6557\u3002\u50b3\u56de\u4f3a\u670d\u5668\u5931\u6557\u7684\u539f\u56e0\u3002
+MIRRORED_FAILURE_CWSIT0010.useraction=\u8abf\u67e5\u548c\u89e3\u6790\u932f\u8aa4\u8a0a\u606f\u4e2d\u7684\u5931\u6557\uff0c\u7136\u5f8c\u91cd\u65b0\u4f5c\u696d\u3002
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} Name of messaging engine which cannot be contacted
+# {1} Name of bus
+
+ATTACH_FAILED_CWSIT0011=CWSIT0011E: \u4e0d\u53ef\u80fd\u9023\u63a5\u5230 {1} \u532f\u6d41\u6392\u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce {0}\u3002\u9023\u7dda\u5df2\u7d93\u907a\u5931\u3002
+ATTACH_FAILED_CWSIT0011.explanation=\u7528\u6236\u7aef\u7121\u6cd5\u806f\u7e6b\u6307\u540d\u7684\u50b3\u8a0a\u5f15\u64ce\u3002\u9019\u500b\u72c0\u6cc1\u53ef\u80fd\u662f\u56e0\u70ba\u7db2\u8def\u767c\u751f\u554f\u984c\uff0c\u4e5f\u53ef\u80fd\u662f\u5fc5\u8981\u7684\u50b3\u8a0a\u5f15\u64ce\u76ee\u524d\u7121\u6cd5\u4f7f\u7528\u3002
+ATTACH_FAILED_CWSIT0011.useraction=\u8acb\u78ba\u5b9a\u7db2\u8def\u80fd\u5920\u6b63\u5e38\u904b\u4f5c\uff0c\u4e14\u6709\u5fc5\u8981\u7684\u50b3\u8a0a\u5f15\u64ce\u53ef\u4f9b\u4f7f\u7528\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of parameter which is null
+# {1} name of object being created
+
+NULL_USED_TO_CREATE_CWSIT0012=CWSIT0012E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u4f7f\u7528\u7a7a\u503c {0} \u4f86\u5efa\u7acb {1} \u5be6\u4f8b\u3002
+NULL_USED_TO_CREATE_CWSIT0012.explanation=CMSG0001
+NULL_USED_TO_CREATE_CWSIT0012.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of parameter which is null
+# {1} name of object being created
+
+NULL_USED_TO_CREATE_CWSIT0013=CWSIT0013E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u4f7f\u7528\u7a7a\u503c {0} \u4f86\u5efa\u7acb {1} \u5be6\u4f8b\u3002
+NULL_USED_TO_CREATE_CWSIT0013.explanation=CMSG0001
+NULL_USED_TO_CREATE_CWSIT0013.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} EndPoint of messaging engine which failed
+# {3} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0014=CWSIT0014E: \u5728 {1} \u532f\u6d41\u6392 {2} \u7aef\u9ede\u7684\u50b3\u8a0a\u5f15\u64ce {0} \u4e2d\uff0c\u50b3\u8a0a\u5f15\u64ce\u81f3\u50b3\u8a0a\u5f15\u64ce\u7684\u8981\u6c42\u5931\u6557\uff0c\u539f\u56e0\uff1a{3}\u3002
+MIRRORED_FAILURE_CWSIT0014.explanation=\u50b3\u8a0a\u5f15\u64ce\u81f3\u50b3\u8a0a\u5f15\u64ce\u7684\u8981\u6c42\u5931\u6557\uff0c\u56e0\u70ba\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u5931\u6557\u3002
+MIRRORED_FAILURE_CWSIT0014.useraction=\u8abf\u67e5\u548c\u89e3\u6790\u932f\u8aa4\u8a0a\u606f\u4e2d\u7684\u5931\u6557\uff0c\u7136\u5f8c\u91cd\u65b0\u4f5c\u696d\u3002
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+CONNECT_FAILED_CWSIT0015=CWSIT0015W: \u4e0d\u53ef\u80fd\u9023\u63a5\u5230 {1} \u532f\u6d41\u6392\u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce {0}\u3002
+CONNECT_FAILED_CWSIT0015.explanation=\u50b3\u8a0a\u5f15\u64ce\u7121\u6cd5\u806f\u7e6b\u53e6\u4e00\u500b\u50b3\u8a0a\u5f15\u64ce\u3002\u9019\u500b\u72c0\u6cc1\u53ef\u80fd\u662f\u56e0\u70ba\u7db2\u8def\u767c\u751f\u554f\u984c\uff0c\u6216\u53ef\u80fd\u662f\u5fc5\u8981\u7684\u50b3\u8a0a\u5f15\u64ce\u76ee\u524d\u7121\u6cd5\u4f7f\u7528\u3002
+CONNECT_FAILED_CWSIT0015.useraction=\u8acb\u78ba\u5b9a\u7db2\u8def\u80fd\u5920\u6b63\u5e38\u904b\u4f5c\uff0c\u4e14\u6709\u5fc5\u8981\u7684\u50b3\u8a0a\u5f15\u64ce\u53ef\u4f9b\u4f7f\u7528\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHENTICATION_CWSIT0016=CWSIT0016E: \u5728 {1} \u532f\u6d41\u6392\u4e2d\uff0c\u4f7f\u7528\u8005 ID {0} \u9451\u5225\u5931\u6557
+FAILED_AUTHENTICATION_CWSIT0016.explanation=\u7528\u4f86\u5efa\u7acb\u50b3\u8a0a\u5f15\u64ce\u7528\u6236\u7aef\u9023\u7dda\u7684\u4f7f\u7528\u8005 ID \u7121\u6cd5\u7531\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u9451\u5225\u3002\u9451\u5225\u5931\u6557\u53ef\u80fd\u662f\u56e0\u70ba\u4f7f\u7528\u8005 ID \u6216\u5bc6\u78bc\u503c\u4e0d\u6b63\u78ba\u3002
+FAILED_AUTHENTICATION_CWSIT0016.useraction=\u8acb\u78ba\u5b9a\u4f7f\u7528\u8005 ID \u548c\u5bc6\u78bc\u503c\u6b63\u78ba\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} host of messaging engine
+# {3} port of messaging engine
+# {4} transport chain to connect over
+
+LINK_FAILED_CWSIT0017=CWSIT0017W: \u4e0d\u53ef\u80fd\u5229\u7528\u50b3\u8f38\u93c8 {4} \u4f86\u5efa\u7acb\u532f\u6d41\u6392\u5167\u90e8\u9023\u7dda\uff0c\u5176\u901a\u5f80\u5728 {2} \u4e3b\u6a5f {3} \u57e0\u7684 {1} \u532f\u6d41\u6392\u4e2d\u4e4b\u50b3\u8a0a\u5f15\u64ce {0}\u3002
+LINK_FAILED_CWSIT0017.explanation=\u50b3\u8a0a\u5f15\u64ce\u7121\u6cd5\u806f\u7e6b\u53e6\u4e00\u500b\u50b3\u8a0a\u5f15\u64ce\u3002\u9019\u500b\u72c0\u6cc1\u53ef\u80fd\u662f\u56e0\u70ba\u7db2\u8def\u767c\u751f\u554f\u984c\uff0c\u6216\u53ef\u80fd\u662f\u5fc5\u8981\u7684\u50b3\u8a0a\u5f15\u64ce\u76ee\u524d\u7121\u6cd5\u4f7f\u7528\u3002
+LINK_FAILED_CWSIT0017.useraction=\u8acb\u78ba\u5b9a\u7db2\u8def\u80fd\u5920\u6b63\u5e38\u904b\u4f5c\uff0c\u4e14\u6709\u5fc5\u8981\u7684\u50b3\u8a0a\u5f15\u64ce\u53ef\u4f9b\u4f7f\u7528\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine name
+# {2} Bus name
+# {3} host of messaging engine
+# {4} port of messaging engine
+# {5} transport chain to connect over
+
+BRIDGE_FAILED_CWSIT0018=CWSIT0018W: \u4e0d\u53ef\u80fd\u5229\u7528\u50b3\u8f38\u93c8 {5} \u4f86\u5efa\u7acb\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50 {0}\uff0c\u5176\u901a\u5f80\u4e3b\u6a5f {3} \u7684\u57e0 {4} \u7684\u532f\u6d41\u6392 {2} \u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce {1}\u3002
+BRIDGE_FAILED_CWSIT0018.explanation=\u50b3\u8a0a\u5f15\u64ce\u7121\u6cd5\u806f\u7e6b\u53e6\u4e00\u500b\u50b3\u8a0a\u5f15\u64ce\u3002\u9019\u500b\u72c0\u6cc1\u53ef\u80fd\u662f\u56e0\u70ba\u7db2\u8def\u767c\u751f\u554f\u984c\uff0c\u6216\u53ef\u80fd\u662f\u5fc5\u8981\u7684\u50b3\u8a0a\u5f15\u64ce\u76ee\u524d\u7121\u6cd5\u4f7f\u7528\u3002
+BRIDGE_FAILED_CWSIT0018.useraction=\u8acb\u78ba\u5b9a\u7db2\u8def\u80fd\u5920\u6b63\u5e38\u904b\u4f5c\uff0c\u4e14\u6709\u5fc5\u8981\u7684\u50b3\u8a0a\u5f15\u64ce\u53ef\u4f9b\u4f7f\u7528\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Connection properties
+# {2} Text of failure reason
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NO_SUITABLE_ME_CWSIT0019=CWSIT0019E: {0} \u532f\u6d41\u6392\u4e2d\u6c92\u6709\u9069\u7576\u7684\u50b3\u8a0a\u5f15\u64ce\u7b26\u5408\u6307\u5b9a\u7684\u9023\u7dda\u5167\u5bb9 {1}\u3002\u5931\u6557\u539f\u56e0\uff1a{2}
+NO_SUITABLE_ME_CWSIT0019.explanation=\u7528\u6236\u7aef\u7121\u6cd5\u9644\u52a0\u5230\u532f\u6d41\u6392\uff0c\u56e0\u70ba\u76ee\u524d\u6c92\u6709\u9069\u7576\u7684\u50b3\u8a0a\u5f15\u64ce\u7b26\u5408\u9023\u7dda\u5167\u5bb9\u6240\u6307\u5b9a\u7684\u9023\u63a5\u88dd\u7f6e\u6e96\u5247\u3002
+NO_SUITABLE_ME_CWSIT0019.useraction=\u8acb\u518d\u8a66\u4e00\u6b21\u3002\u5982\u679c\u4ecd\u6709\u554f\u984c\uff0c\u8acb\u8981\u6c42\u7cfb\u7d71\u7ba1\u7406\u54e1\u78ba\u8a8d\u6709\u9069\u7576\u7684\u50b3\u8a0a\u5f15\u64ce\u53ef\u7528\u3002\u53e6\u5916\uff0c\u60a8\u4e5f\u53ef\u4ee5\u653e\u5bec\u9023\u7dda\u5167\u5bb9\u6240\u6307\u5b9a\u7684\u9023\u63a5\u6e96\u5247\uff0c\u518d\u91cd\u8a66\u4e00\u6b21\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} Exception
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+EXCEPTION_CWSIT0020=CWSIT0020E: \u7576\u5efa\u7acb\u9023\u7dda\u6642\uff0c{1} \u532f\u6d41\u6392\u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce {0} \u767c\u751f\u975e\u9810\u671f\u7684\u7570\u5e38\u72c0\u6cc1\uff0c\u7570\u5e38\u72c0\u6cc1\uff1a{2}
+EXCEPTION_CWSIT0020.explanation=CMSG0001
+EXCEPTION_CWSIT0020.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Engine name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_FOUND_CWSIT0021=CWSIT0021E: \u5728\u9019\u500b\u7a0b\u5e8f\u4e2d\uff0c\u627e\u4e0d\u5230 {1} \u532f\u6d41\u6392\u4e2d\u5fc5\u8981\u7684\u50b3\u8a0a\u5f15\u64ce {0}
+NOT_FOUND_CWSIT0021.explanation=\u7528\u6236\u7aef\u7121\u6cd5\u9023\u63a5\u532f\u6d41\u6392\uff0c\u56e0\u70ba\u5728\u7528\u6236\u7aef\u6240\u9023\u63a5\u7684\u7a0b\u5e8f\u4e2d\u627e\u4e0d\u5230\u5fc5\u8981\u7684\u50b3\u8a0a\u5f15\u64ce\u3002
+NOT_FOUND_CWSIT0021.useraction=\u9019\u500b\u932f\u8aa4\u901a\u5e38\u662f\u7531\u66ab\u6642\u6027\u72c0\u6cc1\u6240\u9020\u6210\uff0c\u4f8b\u5982\u4f3a\u670d\u5668\u5728\u7528\u6236\u7aef\u91cd\u65b0\u5c0e\u5411\u671f\u9593\u5931\u6557\u3002\u91cd\u8a66\u4f5c\u696d\u61c9\u53ef\u89e3\u6c7a\u8a72\u932f\u8aa4\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+FAILED_AUTHENTICATION_CWSIT0022=CWSIT0022E: \u5728 {1} \u532f\u6d41\u6392\u4e2d\uff0c\u4f7f\u7528\u8005 ID {0} \u9451\u5225\u5931\u6557\u3002
+FAILED_AUTHENTICATION_CWSIT0022.explanation=\u7528\u4f86\u5efa\u7acb\u532f\u6d41\u6392\u5167\u50b3\u8a0a\u5f15\u64ce\u9023\u7dda\u7684\u4f7f\u7528\u8005 ID \u7121\u6cd5\u901a\u904e\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u7684\u9451\u5225\u3002\u9451\u5225\u5931\u6557\u53ef\u80fd\u662f\u56e0\u70ba\u4f7f\u7528\u8005 ID \u6216\u5bc6\u78bc\u503c\u4e0d\u6b63\u78ba\u3002
+FAILED_AUTHENTICATION_CWSIT0022.useraction=\u8acb\u78ba\u5b9a\u4f7f\u7528\u8005 ID \u548c\u5bc6\u78bc\u503c\u6b63\u78ba\u3002
+
+# -------------------------------------------------------------------------------------------------
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_ALLOWED_CWSIT0023=CWSIT0023E: \u62d3\u8e7c\u898f\u5247\u4e0d\u63a5\u53d7\u5728\u540c\u540d\u50b3\u8a0a\u5f15\u64ce\u4e4b\u9593\u7684\u9023\u7dda\u3002
+NOT_ALLOWED_CWSIT0023.explanation=\u540c\u540d\u50b3\u8a0a\u5f15\u64ce\u8a66\u5716\u9023\u63a5\u81f3\u9019\u500b\u50b3\u8a0a\u5f15\u64ce\u3002\u5728\u76f8\u540c\u532f\u6d41\u6392\u5167\uff0c\u4e0d\u80fd\u6709\u5169\u500b\u540c\u540d\u50b3\u8a0a\u5f15\u64ce\u3002
+NOT_ALLOWED_CWSIT0023.useraction=\u8acb\u6aa2\u67e5\u532f\u6d41\u6392\u62d3\u8e7c\u548c\u50b3\u8a0a\u5f15\u64ce\u540d\u7a31\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the class that cannot be loaded
+# {1} is the exception created when the class cannot be loaded
+
+EXCP_DURING_INIT_CWSIT0024=CWSIT0024E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u7121\u6cd5\u5efa\u7acb {0} \u985e\u5225\u7684\u7269\u4ef6\uff0c\u56e0\u70ba\u767c\u751f\u7570\u5e38\u72c0\u6cc1\uff1a{1}
+EXCP_DURING_INIT_CWSIT0024.explanation=CMSG0001
+EXCP_DURING_INIT_CWSIT0024.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Remote messaging engine name
+# {1} Bus name
+# {2} Name of this messaging engine
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_ALLOWED_CWSIT0026=CWSIT0026E: \u532f\u6d41\u6392 {1} \u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce {0} \u8a66\u5716\u5efa\u7acb\u901a\u5f80\u50b3\u8a0a\u5f15\u64ce {2} \u7684\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u3002
+NOT_ALLOWED_CWSIT0026.explanation=\u76f8\u540c\u532f\u6d41\u6392\u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce\u8a66\u5716\u5efa\u7acb\u901a\u5f80\u9019\u500b\u50b3\u8a0a\u5f15\u64ce\u7684\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u3002\u62d3\u8e7c\u898f\u5247\u4e0d\u5141\u8a31\u76f8\u540c\u532f\u6d41\u6392\u7684\u50b3\u8a0a\u5f15\u64ce\u4e4b\u9593\u6709\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u3002
+NOT_ALLOWED_CWSIT0026.useraction=\u8acb\u6aa2\u67e5\u532f\u6d41\u6392\u62d3\u8e7c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine issuing the message
+# {1} Bus name
+# {2} Name of connected messaging engine
+
+INFO_CWSIT0028=CWSIT0028I: \u5df2\u555f\u52d5 {1} \u532f\u6d41\u6392\u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce {0} \u901a\u5f80\u50b3\u8a0a\u5f15\u64ce {2} \u7684\u9023\u7dda\u3002
+INFO_CWSIT0028.explanation=\u5df2\u555f\u52d5\u50b3\u8a0a\u5f15\u64ce\u81f3\u50b3\u8a0a\u5f15\u64ce\u7684\u9023\u7dda\u3002
+INFO_CWSIT0028.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine issuing the message
+# {1} Bus name
+# {2} Name of disconnected messaging engine
+
+INFO_CWSIT0029=CWSIT0029I: \u5df2\u505c\u6b62 {1} \u532f\u6d41\u6392\u4e2d\u4e4b\u50b3\u8a0a\u5f15\u64ce {0} \u901a\u5f80\u50b3\u8a0a\u5f15\u64ce {2} \u7684\u9023\u7dda\u3002
+INFO_CWSIT0029.explanation=\u5df2\u505c\u6b62\u50b3\u8a0a\u5f15\u64ce\u81f3\u50b3\u8a0a\u5f15\u64ce\u7684\u9023\u7dda\u3002
+INFO_CWSIT0029.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine issuing the message
+# {1} Subnet name
+# {2} Bus name
+# {3} Name of remote messaging engine
+# {4} Subnet name of remote messaging engine
+
+INFO_CWSIT0030=CWSIT0030I: \u5df2\u505c\u6b62 {2} \u532f\u6d41\u6392 {1} \u5b50\u7db2\u8def\u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce {0} \u901a\u5f80 {4} \u5b50\u7db2\u8def\u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce {3} \u7684\u532f\u6d41\u6392\u5167\u9023\u7dda\u3002
+INFO_CWSIT0030.explanation=\u5df2\u555f\u52d5\u50b3\u8a0a\u5f15\u64ce\u81f3\u50b3\u8a0a\u5f15\u64ce\u7684\u532f\u6d41\u6392\u5167\u9023\u7dda\u3002
+INFO_CWSIT0030.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine issuing the message
+# {1} Subnet name
+# {2} Bus name
+# {3} Name of remote messaging engine
+# {4} Subnet name of remote messaging engine
+
+INFO_CWSIT0031=CWSIT0031I: \u5df2\u505c\u6b62 {2} \u532f\u6d41\u6392 {1} \u5b50\u7db2\u8def\u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce {0} \u901a\u5f80 {4} \u5b50\u7db2\u8def\u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce {3} \u7684\u532f\u6d41\u6392\u5167\u9023\u7dda\u3002
+INFO_CWSIT0031.explanation=\u5df2\u505c\u6b62\u50b3\u8a0a\u5f15\u64ce\u81f3\u50b3\u8a0a\u5f15\u64ce\u7684\u532f\u6d41\u6392\u5167\u9023\u7dda\u3002
+INFO_CWSIT0031.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine issuing the message
+# {2} Bus name
+# {3} Name of remote messaging engine
+# {4} Bus name of remote messaging engine
+
+INFO_CWSIT0032=CWSIT0032I: \u5df2\u555f\u52d5\u5f9e\u532f\u6d41\u6392 {2} \u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce {1} \u5230\u532f\u6d41\u6392 {4} \u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce {3} \u7684\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50 {0}\u3002
+INFO_CWSIT0032.explanation=\u5df2\u555f\u52d5\u5169\u500b\u50b3\u8a0a\u5f15\u64ce\u4e4b\u9593\u7684\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u3002
+INFO_CWSIT0032.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine issuing the message
+# {2} Bus name
+# {3} Name of remote messaging engine
+# {4} Bus name of remote messaging engine
+
+INFO_CWSIT0033=CWSIT0033I: \u5df2\u505c\u6b62\u5f9e\u532f\u6d41\u6392 {2} \u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce {1} \u5230\u532f\u6d41\u6392 {4} \u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce {3} \u7684\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50 {0}\u3002
+INFO_CWSIT0033.explanation=\u5df2\u505c\u6b62\u5169\u500b\u50b3\u8a0a\u5f15\u64ce\u4e4b\u9593\u7684\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u3002
+INFO_CWSIT0033.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0034=CWSIT0034E: \u5728 {1} \u532f\u6d41\u6392\u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce {0} \u4e2d\uff0c\u50b3\u8a0a\u5f15\u64ce\u81f3\u50b3\u8a0a\u5f15\u64ce\u7684\u8981\u6c42\u5931\u6557\uff0c\u539f\u56e0\uff1a{2}\u3002
+MIRRORED_FAILURE_CWSIT0034.explanation=\u50b3\u8a0a\u5f15\u64ce\u81f3\u50b3\u8a0a\u5f15\u64ce\u7684\u8981\u6c42\u5931\u6557\uff0c\u56e0\u70ba\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u5931\u6557\u3002\u50b3\u56de\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u4e2d\u7684\u5931\u6557\u539f\u56e0\u3002
+MIRRORED_FAILURE_CWSIT0034.useraction=\u8acb\u8981\u6c42\u60a8\u7684\u7cfb\u7d71\u7ba1\u7406\u54e1\u8abf\u67e5\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u7684\u65e5\u8a8c\u4f86\u5354\u52a9\u60a8\u5224\u65b7\u5931\u6557\u7684\u539f\u56e0\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHENTICATION_CWSIT0035=CWSIT0035E: \u5728 {1} \u532f\u6d41\u6392\u4e2d\uff0c\u4f7f\u7528\u8005 ID {0} \u9451\u5225\u5931\u6557
+FAILED_AUTHENTICATION_CWSIT0035.explanation=\u7528\u4f86\u5efa\u7acb\u532f\u6d41\u6392\u5167\u50b3\u8a0a\u5f15\u64ce\u9023\u7dda\u7684\u4f7f\u7528\u8005 ID \u7121\u6cd5\u901a\u904e\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u7684\u9451\u5225\u3002\u9451\u5225\u5931\u6557\u53ef\u80fd\u662f\u56e0\u70ba\u4f7f\u7528\u8005 ID \u6216\u5bc6\u78bc\u503c\u4e0d\u6b63\u78ba\u3002
+FAILED_AUTHENTICATION_CWSIT0035.useraction=\u8acb\u78ba\u5b9a\u4f7f\u7528\u8005 ID \u548c\u5bc6\u78bc\u503c\u6b63\u78ba\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0036=CWSIT0036E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u8207 {1} \u532f\u6d41\u6392\u4e2d\u4e4b\u50b3\u8a0a\u5f15\u64ce {0} \u901a\u8a0a\u6642\u767c\u751f\u7528\u6236\u7aef\u901a\u8a0a\u5354\u5b9a\u932f\u8aa4\uff0c\u6536\u5230\u7684\u8a0a\u606f\u985e\u578b\u662f {2}\uff0c\u4f46\u9810\u671f\u7684\u8a0a\u606f\u985e\u578b\u662f {3}\u3002
+PROTOCOL_ERROR_CWSIT0036.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0036.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} received message type
+# {2} expected message type
+
+PROTOCOL_ERROR_CWSIT0038=CWSIT0038E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u8207 {0} \u532f\u6d41\u6392\u4e2d\u4e4b\u50b3\u8a0a\u5f15\u64ce\u901a\u8a0a\u6642\u767c\u751f\u7528\u6236\u7aef\u5f15\u5c0e\u901a\u8a0a\u5354\u5b9a\u932f\u8aa4\uff0c\u6536\u5230\u7684\u8a0a\u606f\u985e\u578b\u662f {1}\uff0c\u4f46\u9810\u671f\u7684\u8a0a\u606f\u985e\u578b\u662f {2}\u3002
+PROTOCOL_ERROR_CWSIT0038.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0038.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0039=CWSIT0039E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u8207 {1} \u532f\u6d41\u6392\u4e2d\u4e4b\u50b3\u8a0a\u5f15\u64ce {0} \u901a\u8a0a\u6642\u767c\u751f\u9023\u7dda\u901a\u8a0a\u5354\u5b9a\u932f\u8aa4\uff0c\u6536\u5230\u7684\u8a0a\u606f\u985e\u578b\u662f {2}\uff0c\u4f46\u9810\u671f\u7684\u8a0a\u606f\u985e\u578b\u662f {3}\u3002
+PROTOCOL_ERROR_CWSIT0039.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0039.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0040=CWSIT0040E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u8207 {1} \u532f\u6d41\u6392\u4e2d\u4e4b\u50b3\u8a0a\u5f15\u64ce {0} \u901a\u8a0a\u6642\u767c\u751f\u532f\u6d41\u6392\u5167\u9023\u7dda\u901a\u8a0a\u5354\u5b9a\u932f\u8aa4\uff0c\u6536\u5230\u7684\u8a0a\u606f\u985e\u578b\u662f {2}\uff0c\u4f46\u9810\u671f\u7684\u8a0a\u606f\u985e\u578b\u662f {3}\u3002
+PROTOCOL_ERROR_CWSIT0040.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0040.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0041=CWSIT0041E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u8207\u532f\u6d41\u6392 {1} \u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce {0} \u901a\u8a0a\u6642\u767c\u751f\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u901a\u8a0a\u5354\u5b9a\u932f\u8aa4\uff0c\u63a5\u6536\u5230\u7684\u8a0a\u606f\u985e\u578b\u662f {2}\uff0c\u4f46\u9810\u671f\u7684\u8a0a\u606f\u985e\u578b\u662f {3}\u3002
+PROTOCOL_ERROR_CWSIT0041.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0041.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0042=CWSIT0042E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u8207 {1} \u532f\u6d41\u6392\u4e2d\u4e4b\u50b3\u8a0a\u5f15\u64ce {0} \u901a\u8a0a\u6642\u767c\u751f\u9023\u7dda\u901a\u8a0a\u5354\u5b9a\u932f\u8aa4\uff0c\u6536\u5230\u7684\u8a0a\u606f\u985e\u578b\u662f {2}\uff0c\u4f46\u9810\u671f\u7684\u8a0a\u606f\u985e\u578b\u662f {3}\u3002
+PROTOCOL_ERROR_CWSIT0042.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0042.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0043=CWSIT0043E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u8207 {1} \u532f\u6d41\u6392\u4e2d\u4e4b\u50b3\u8a0a\u5f15\u64ce {0} \u901a\u8a0a\u6642\u767c\u751f\u532f\u6d41\u6392\u5167\u9023\u7dda\u901a\u8a0a\u5354\u5b9a\u932f\u8aa4\uff0c\u6536\u5230\u7684\u8a0a\u606f\u985e\u578b\u662f {2}\uff0c\u4f46\u9810\u671f\u7684\u8a0a\u606f\u985e\u578b\u662f {3}\u3002
+PROTOCOL_ERROR_CWSIT0043.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0043.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MCF_CWSIT0044=CWSIT0044E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u7121\u6cd5\u5efa\u7acb MEConnectionFactory \u985e\u5225\u7684\u7269\u4ef6\u3002
+NO_MCF_CWSIT0044.explanation=CMSG0001
+NO_MCF_CWSIT0044.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MCF_CWSIT0045=CWSIT0045E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u7121\u6cd5\u5efa\u7acb MEConnectionFactory \u985e\u5225\u7684\u7269\u4ef6\u3002
+NO_MCF_CWSIT0045.explanation=CMSG0001
+NO_MCF_CWSIT0045.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MCF_CWSIT0046=CWSIT0046E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u7121\u6cd5\u5efa\u7acb MEConnectionFactory \u985e\u5225\u7684\u7269\u4ef6\u3002
+NO_MCF_CWSIT0046.explanation=CMSG0001
+NO_MCF_CWSIT0046.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MC_CWSIT0047=CWSIT0047E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u7121\u6cd5\u5efa\u7acb MEConnection \u985e\u5225\u7684\u7269\u4ef6\u3002
+NO_MC_CWSIT0047.explanation=CMSG0001
+NO_MC_CWSIT0047.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MC_CWSIT0048=CWSIT0048E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u7121\u6cd5\u5efa\u7acb MEConnection \u985e\u5225\u7684\u7269\u4ef6\u3002
+NO_MC_CWSIT0048.explanation=CMSG0001
+NO_MC_CWSIT0048.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MC_CWSIT0049=CWSIT0049E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u7121\u6cd5\u5efa\u7acb MEConnection \u985e\u5225\u7684\u7269\u4ef6\u3002
+NO_MC_CWSIT0049.explanation=CMSG0001
+NO_MC_CWSIT0049.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Expected byte value
+# {1} Actual byte value
+
+INVALID_BYTE_VALUE_CWSIT0053=CWSIT0053E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u627e\u4e0d\u5230\u9810\u671f\u7684\u4f4d\u5143\u7d44\u503c {0}\uff0c\u537b\u627e\u5230\u4f4d\u5143\u7d44\u503c {1}\u3002
+INVALID_BYTE_VALUE_CWSIT0053.explanation=CMSG0001
+INVALID_BYTE_VALUE_CWSIT0053.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Expected byte value
+# {1} Actual byte value
+
+INVALID_BYTE_VALUE_CWSIT0054=CWSIT0054E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u627e\u4e0d\u5230\u9810\u671f\u7684\u4f4d\u5143\u7d44\u503c {0}\uff0c\u537b\u627e\u5230\u4f4d\u5143\u7d44\u503c {1}\u3002
+INVALID_BYTE_VALUE_CWSIT0054.explanation=CMSG0001
+INVALID_BYTE_VALUE_CWSIT0054.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Incorrect value
+# {1} Name of connection property
+# {2} Correct values
+
+INVALID_TARGET_TYPE_CWSIT0055=CWSIT0055E: \u50b3\u905e\u7684\u9023\u7dda\u5167\u5bb9 {1} \u7684 {0} \u503c\u4e0d\u6b63\u78ba\uff0c\u6709\u6548\u503c\u662f\uff1a{2}\u3002
+INVALID_TARGET_TYPE_CWSIT0055.explanation=\u61c9\u7528\u7a0b\u5f0f\u63d0\u4f9b\u4e0d\u6b63\u78ba\u7684\u9023\u7dda\u5167\u5bb9\u503c\uff0c\u7121\u6cd5\u5efa\u7acb\u9023\u7dda\u3002
+INVALID_TARGET_TYPE_CWSIT0055.useraction=\u8acb\u4f7f\u7528\u6709\u6548\u7684\u9023\u7dda\u5167\u5bb9\u503c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHENTICATION_CWSIT0056=CWSIT0056E: \u5728 {1} \u532f\u6d41\u6392\u4e2d\uff0c\u4f7f\u7528\u8005 ID {0} \u9451\u5225\u5931\u6557
+FAILED_AUTHENTICATION_CWSIT0056.explanation=\u7528\u4f86\u5efa\u7acb\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u7684\u4f7f\u7528\u8005 ID \u7121\u6cd5\u7531\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u9451\u5225\u3002\u9451\u5225\u5931\u6557\u53ef\u80fd\u662f\u56e0\u70ba\u4f7f\u7528\u8005 ID \u6216\u5bc6\u78bc\u503c\u4e0d\u6b63\u78ba\u3002
+FAILED_AUTHENTICATION_CWSIT0056.useraction=\u8acb\u78ba\u5b9a\u4f7f\u7528\u8005 ID \u548c\u5bc6\u78bc\u503c\u6b63\u78ba\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Host name
+# {2} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0057=CWSIT0057E: \u4e3b\u6a5f {1} \u4e2d\u7684\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u4e4b\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50 {0} \u5931\u6557\uff0c\u539f\u56e0\uff1a {2}\u3002
+MIRRORED_FAILURE_CWSIT0057.explanation=\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u7684\u8981\u6c42\u5931\u6557\uff0c\u56e0\u70ba\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u5931\u6557\u3002
+MIRRORED_FAILURE_CWSIT0057.useraction=\u8abf\u67e5\u548c\u89e3\u6790\u932f\u8aa4\u8a0a\u606f\u4e2d\u7684\u5931\u6557\uff0c\u7136\u5f8c\u91cd\u65b0\u4f5c\u696d\u3002
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Expected messaging engine name
+# {2} Bus name
+# {3} Unexpected messaging engine name
+
+BRIDGE_FAILED_CWSIT0058=CWSIT0058E: \u4e0d\u53ef\u80fd\u5b8c\u6210\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50 {0}\uff0c\u56e0\u70ba\u9060\u7aef\u532f\u6d41\u6392 {2} \u50b3\u56de\u975e\u9810\u671f\u7684\u50b3\u8a0a\u5f15\u64ce\u540d\u7a31 {3}\uff0c\u539f\u9810\u671f\u7684\u50b3\u8a0a\u5f15\u64ce\u540d\u7a31\u662f {1}\u3002
+BRIDGE_FAILED_CWSIT0058.explanation=\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u8981\u6c42\u9060\u7aef\u532f\u6d41\u6392\u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce\u540d\u7a31\uff0c\u5fc5\u9808\u7b26\u5408\u914d\u7f6e\u7d66\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u7684\u50b3\u8a0a\u5f15\u64ce\u540d\u7a31\u3002
+BRIDGE_FAILED_CWSIT0058.useraction=\u8acb\u6aa2\u67e5\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u914d\u7f6e\uff0c\u78ba\u4fdd\u5169\u500b\u532f\u6d41\u6392\u90fd\u914d\u7f6e\u4e86\u6b63\u78ba\u7684\u50b3\u8a0a\u5f15\u64ce\u540d\u7a31\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine name
+# {2} Bus name
+
+BRIDGE_FAILED_CWSIT0059=CWSIT0059E: \u4e0d\u53ef\u80fd\u5efa\u7acb\u901a\u5f80\u532f\u6d41\u6392 {2} \u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce {1} \u4e4b\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50 {0}\u3002
+BRIDGE_FAILED_CWSIT0059.explanation=\u7121\u6cd5\u806f\u7d61\u6307\u540d\u7684\u50b3\u8a0a\u5f15\u64ce\u3002\u9019\u500b\u72c0\u6cc1\u53ef\u80fd\u662f\u56e0\u70ba\u7db2\u8def\u767c\u751f\u554f\u984c\uff0c\u6216\u53ef\u80fd\u662f\u5fc5\u8981\u7684\u50b3\u8a0a\u5f15\u64ce\u76ee\u524d\u7121\u6cd5\u4f7f\u7528\u3002
+BRIDGE_FAILED_CWSIT0059.useraction=\u8acb\u78ba\u5b9a\u7db2\u8def\u80fd\u5920\u6b63\u5e38\u904b\u4f5c\uff0c\u4e14\u6709\u5fc5\u8981\u7684\u50b3\u8a0a\u5f15\u64ce\u53ef\u4f9b\u4f7f\u7528\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Received Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHORISATION_CWSIT0060=CWSIT0060E: \u4f7f\u7528\u8005 ID {0} \u672a\u7372\u6388\u6b0a\u5728 {1} \u532f\u6d41\u6392\u4e2d\u5efa\u7acb\u532f\u6d41\u6392\u5167\u50b3\u8a0a\u5f15\u64ce\u9023\u7dda
+FAILED_AUTHORISATION_CWSIT0060.explanation=\u7528\u4f86\u5efa\u7acb\u532f\u6d41\u6392\u5167\u50b3\u8a0a\u5f15\u64ce\u9023\u7dda\u7684\u4f7f\u7528\u8005 ID \u4e0d\u662f\u5df2\u7372\u6388\u6b0a\u5141\u8a31\u5efa\u7acb\u532f\u6d41\u6392\u5167\u50b3\u8a0a\u5f15\u64ce\u9023\u7dda\u7684\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u4e4b\u76f8\u540c\u4f7f\u7528\u8005 ID\u3002
+FAILED_AUTHORISATION_CWSIT0060.useraction=\u8acb\u78ba\u5b9a\u50b3\u8a0a\u5f15\u64ce\u5df2\u5c07\u76f8\u540c\u4f7f\u7528\u8005 ID \u914d\u7f6e\u7d66\u532f\u6d41\u6392\u5167\u50b3\u8a0a\u5f15\u64ce\u9023\u7dda\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0061=CWSIT0061E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u8207\u532f\u6d41\u6392 {1} \u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce {0} \u901a\u8a0a\u6642\u767c\u751f\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u901a\u8a0a\u5354\u5b9a\u932f\u8aa4\uff0c\u63a5\u6536\u5230\u7684\u8a0a\u606f\u985e\u578b\u662f {2}\uff0c\u4f46\u9810\u671f\u7684\u8a0a\u606f\u985e\u578b\u662f {3}\u3002
+PROTOCOL_ERROR_CWSIT0061.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0061.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0062=CWSIT0062E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u8207\u532f\u6d41\u6392 {1} \u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce {0} \u901a\u8a0a\u6642\u767c\u751f\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u901a\u8a0a\u5354\u5b9a\u932f\u8aa4\uff0c\u63a5\u6536\u5230\u7684\u8a0a\u606f\u985e\u578b\u662f {2}\uff0c\u4f46\u9810\u671f\u7684\u8a0a\u606f\u985e\u578b\u662f {3}\u3002
+PROTOCOL_ERROR_CWSIT0062.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0062.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Engine name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_FOUND_CWSIT0063=CWSIT0063E: \u5728\u9019\u500b\u7a0b\u5e8f\u4e2d\uff0c\u627e\u4e0d\u5230 {1} \u532f\u6d41\u6392\u4e2d\u5fc5\u8981\u7684\u50b3\u8a0a\u5f15\u64ce {0}
+NOT_FOUND_CWSIT0063.explanation=\u50b3\u8a0a\u5f15\u64ce\u7121\u6cd5\u8207\u9130\u63a5\u7684\u50b3\u8a0a\u5f15\u64ce\u901a\u8a0a\uff0c\u56e0\u70ba\u5728\u9019\u500b\u50b3\u8a0a\u5f15\u64ce\u6240\u9023\u63a5\u7684\u8655\u7406\u7a0b\u5e8f\u4e2d\uff0c\u627e\u4e0d\u5230\u9130\u63a5\u7684\u50b3\u8a0a\u5f15\u64ce\u3002
+NOT_FOUND_CWSIT0063.useraction=\u8acb\u518d\u8a66\u4e00\u6b21\u3002\u8acb\u78ba\u5b9a\u6b63\u78ba\u7684\u4f4d\u7f6e\u6709\u5fc5\u8981\u7684\u50b3\u8a0a\u5f15\u64ce\u53ef\u7528\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Engine name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_FOUND_CWSIT0064=CWSIT0064E: \u5728\u9019\u500b\u7a0b\u5e8f\u4e2d\uff0c\u627e\u4e0d\u5230 {1} \u532f\u6d41\u6392\u4e2d\u5fc5\u8981\u7684\u50b3\u8a0a\u5f15\u64ce {0}
+NOT_FOUND_CWSIT0064.explanation=\u50b3\u8a0a\u5f15\u64ce\u7121\u6cd5\u8207\u9130\u63a5\u7684\u50b3\u8a0a\u5f15\u64ce\u901a\u8a0a\uff0c\u56e0\u70ba\u5728\u9019\u500b\u50b3\u8a0a\u5f15\u64ce\u6240\u9023\u63a5\u7684\u8655\u7406\u7a0b\u5e8f\u4e2d\uff0c\u627e\u4e0d\u5230\u9130\u63a5\u7684\u50b3\u8a0a\u5f15\u64ce\u3002
+NOT_FOUND_CWSIT0064.useraction=\u8acb\u518d\u8a66\u4e00\u6b21\u3002\u8acb\u78ba\u5b9a\u6b63\u78ba\u7684\u4f4d\u7f6e\u6709\u5fc5\u8981\u7684\u50b3\u8a0a\u5f15\u64ce\u53ef\u7528\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Engine name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_FOUND_CWSIT0065=CWSIT0065E: \u5728\u9019\u500b\u7a0b\u5e8f\u4e2d\uff0c\u627e\u4e0d\u5230 {1} \u532f\u6d41\u6392\u4e2d\u5fc5\u8981\u7684\u50b3\u8a0a\u5f15\u64ce {0}
+NOT_FOUND_CWSIT0065.explanation=\u50b3\u8a0a\u5f15\u64ce\u7121\u6cd5\u8207\u9130\u63a5\u7684\u50b3\u8a0a\u5f15\u64ce\u901a\u8a0a\uff0c\u56e0\u70ba\u5728\u9019\u500b\u50b3\u8a0a\u5f15\u64ce\u6240\u9023\u63a5\u7684\u8655\u7406\u7a0b\u5e8f\u4e2d\uff0c\u627e\u4e0d\u5230\u9130\u63a5\u7684\u50b3\u8a0a\u5f15\u64ce\u3002
+NOT_FOUND_CWSIT0065.useraction=\u8acb\u518d\u8a66\u4e00\u6b21\u3002\u8acb\u78ba\u5b9a\u6b63\u78ba\u7684\u4f4d\u7f6e\u6709\u5fc5\u8981\u7684\u50b3\u8a0a\u5f15\u64ce\u53ef\u7528\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Bus Name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+INVALID_REQUEST_CWSIT0066=CWSIT0066E: \u4e0d\u53ef\u80fd\u5b8c\u6210\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50 {0}\uff0c\u56e0\u70ba\u767c\u51fa\u8981\u6c42\u7684\u532f\u6d41\u6392 {1} \u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce\u8a66\u5716\u9023\u63a5\u5230\u76f8\u540c\u532f\u6d41\u6392\u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce\u3002
+INVALID_REQUEST_CWSIT0066.explanation=\u50b3\u8a0a\u5f15\u64ce\u8a66\u5716\u5efa\u7acb\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u4f86\u901a\u5f80\u76f8\u540c\u532f\u6d41\u6392\u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce\u3002\u4e0d\u5141\u8a31\u76f8\u540c\u532f\u6d41\u6392\u7684\u50b3\u8a0a\u5f15\u64ce\u4e4b\u9593\u6709\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u3002
+INVALID_REQUEST_CWSIT0066.useraction=\u8acb\u6aa2\u67e5\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u914d\u7f6e\uff0c\u78ba\u4fdd\u5f15\u5c0e\u7aef\u9ede\u6b63\u78ba\u5b9a\u5740\u9060\u7aef\u532f\u6d41\u6392\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+UNABLE_TO_FIND_CWSIT0067=CWSIT0067E: \u532f\u6d41\u6392 {1} \u4e2d\u7684\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50 {0} \u7121\u6cd5\u4f7f\u7528\u3002
+UNABLE_TO_FIND_CWSIT0067.explanation=\u6536\u5230\u53e6\u4e00\u500b\u532f\u6d41\u6392\u767c\u51fa\u7684\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u8981\u6c42\uff0c\u4f46\u6c92\u6709\u50b3\u8a0a\u5f15\u64ce\u53ef\u63a5\u53d7\u76ee\u6a19\u532f\u6d41\u6392\u4e2d\u7684\u8981\u6c42\u3002
+UNABLE_TO_FIND_CWSIT0067.useraction=\u8acb\u78ba\u4fdd\u914d\u7f6e\u4f86\u8655\u7406\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u7684\u50b3\u8a0a\u5f15\u64ce\u53ef\u4f9b\u4f7f\u7528\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Bus name
+# {2} Engine name
+
+UNABLE_TO_FIND_CWSIT0068=CWSIT0068E: \u5f9e\u532f\u6d41\u6392 {1} \u7684\u50b3\u8a0a\u5f15\u64ce {2} \u4e2d\u6536\u5230 {0} \u7684\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u8981\u6c42\uff0c\u4f46\u662f\u627e\u4e0d\u5230\u76f8\u7b26\u7684\u914d\u7f6e\u5b9a\u7fa9\u3002
+UNABLE_TO_FIND_CWSIT0068.explanation=\u6536\u5230\u53e6\u4e00\u500b\u532f\u6d41\u6392\u767c\u51fa\u7684\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u8981\u6c42\uff0c\u4f46\u627e\u4e0d\u5230\u7b26\u5408\u9019\u500b\u8981\u6c42\u7684\u914d\u7f6e\u5b9a\u7fa9\uff0c\u5df2\u62d2\u7d55\u8981\u6c42\u3002
+UNABLE_TO_FIND_CWSIT0068.useraction=\u8acb\u78ba\u4fdd\u5169\u500b\u532f\u6d41\u6392\u4e2d\u7684\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u914d\u7f6e\u90fd\u6b63\u78ba\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+UNABLE_TO_FIND_CWSIT0069=CWSIT0069E: \u627e\u4e0d\u5230\u532f\u6d41\u6392 {1} \u4e2d\u7684\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u9023\u7dda {0} \u7684\u76f8\u7b26\u914d\u7f6e\u3002
+UNABLE_TO_FIND_CWSIT0069.explanation=\u53e6\u4e00\u500b\u532f\u6d41\u6392\u5df2\u62d2\u7d55\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u8981\u6c42\uff0c\u56e0\u70ba\u627e\u4e0d\u5230\u7b26\u5408\u9019\u500b\u8981\u6c42\u7684\u914d\u7f6e\u5b9a\u7fa9\u3002
+UNABLE_TO_FIND_CWSIT0069.useraction=\u8acb\u78ba\u4fdd\u5169\u500b\u532f\u6d41\u6392\u4e2d\u7684\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u914d\u7f6e\u90fd\u6b63\u78ba\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Requesting bus name
+# {2} Requesting engine name
+# {3} Expected engine name
+
+NOT_ALLOWED_CWSIT0070=CWSIT0070E: \u5f9e\u532f\u6d41\u6392 {1} \u7684\u50b3\u8a0a\u5f15\u64ce {2} \u4e2d\u6536\u5230 {0} \u7684\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u8981\u6c42\uff0c\u4f46\u914d\u7f6e\u5b9a\u7fa9\u539f\u9810\u671f\u50b3\u8a0a\u5f15\u64ce {3}\u3002
+NOT_ALLOWED_CWSIT0070.explanation=\u5f9e\u53e6\u4e00\u500b\u532f\u6d41\u6392\u7684\u50b3\u8a0a\u5f15\u64ce\u4e2d\uff0c\u63a5\u6536\u5230\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u8981\u6c42\uff0c\u4f46\u5b83\u4e0d\u662f\u9019\u500b\u532f\u6d41\u6392\u7684\u914d\u7f6e\u5b9a\u7fa9\u6240\u6307\u540d\u7684\u50b3\u8a0a\u5f15\u64ce\uff0c\u5df2\u62d2\u7d55\u9019\u500b\u8981\u6c42\u3002
+NOT_ALLOWED_CWSIT0070.useraction=\u8acb\u78ba\u4fdd\u5169\u500b\u532f\u6d41\u6392\u4e2d\u7684\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u914d\u7f6e\u90fd\u6b63\u78ba\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Remote bus name
+# {2} Requesting engine name
+# {3} Expected engine name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_ALLOWED_CWSIT0071=CWSIT0071E: \u532f\u6d41\u6392 {1} \u62d2\u7d55\u93c8\u7d50 {0} \u7684\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u8981\u6c42\uff0c\u56e0\u70ba\u767c\u51fa\u8981\u6c42\u7684\u50b3\u8a0a\u5f15\u64ce {2} \u4e0d\u7b26\u5408\u539f\u9810\u671f\u7684\u50b3\u8a0a\u5f15\u64ce {3}
+NOT_ALLOWED_CWSIT0071.explanation=\u9060\u7aef\u532f\u6d41\u6392\u5075\u6e2c\u5230\u9019\u500b\u532f\u6d41\u6392\u767c\u51fa\u7684\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u8981\u6c42\u6240\u6307\u540d\u7684\u50b3\u8a0a\u5f15\u64ce\uff0c\u548c\u5b83\u672c\u8eab\u7684\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u914d\u7f6e\u5b9a\u7fa9\u4e0d\u4e00\u81f4\u3002
+NOT_ALLOWED_CWSIT0071.useraction=\u8acb\u78ba\u4fdd\u5169\u500b\u532f\u6d41\u6392\u4e2d\u7684\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u914d\u7f6e\u90fd\u6b63\u78ba\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of authentication alias
+
+UNABLE_TO_OBTAIN_AUTHDATA_CWSIT0072=CWSIT0072W: \u7121\u6cd5\u5f9e\u532f\u6d41\u6392\u5167\u50b3\u8a0a\u5f15\u64ce\u9451\u5225\u5225\u540d {0} \u53d6\u5f97\u9451\u5225\u8cc7\u6599\u3002
+UNABLE_TO_OBTAIN_AUTHDATA_CWSIT0072.explanation=\u5982\u679c\u9451\u5225\u5225\u540d\u4e0d\u5b58\u5728\u6216\u914d\u7f6e\u4e0d\u6b63\u78ba\uff0c\u5c31\u7121\u6cd5\u5f9e\u5b83\u53d6\u5f97\u9451\u5225\u8cc7\u6599\u3002\u532f\u6d41\u6392\u5167\u50b3\u8a0a\u5f15\u64ce\u9023\u7dda\u6240\u9700\u8981\u7684\u9451\u5225\u8cc7\u6599\u5c07\u63a1\u7528\u9810\u8a2d\u7684\u7a7a\u5b57\u4e32\u503c\u3002\u5982\u679c\u5df2\u555f\u7528\u5b89\u5168\uff0c\u9019\u500b\u554f\u984c\u6703\u4f7f\u50b3\u8a0a\u5f15\u64ce\u7121\u6cd5\u9023\u63a5\u3002
+UNABLE_TO_OBTAIN_AUTHDATA_CWSIT0072.useraction=\u8acb\u78ba\u5b9a\u532f\u6d41\u6392\u5167\u50b3\u8a0a\u5f15\u64ce\u9451\u5225\u5225\u540d\u7684\u914d\u7f6e\u6b63\u78ba\u7121\u8aa4\u3002
+
+# -------------------------------------------------------------------------------------------------
+#                                                                                          237937.1
+
+NO_AUTHALIAS_CWSIT0073=CWSIT0073W: \u532f\u6d41\u6392\u5167\u50b3\u8a0a\u5f15\u64ce\u9451\u5225\u5225\u540d\u5c1a\u672a\u914d\u7f6e\u3002
+NO_AUTHALIAS_CWSIT0073.explanation=\u7576\u5c1a\u672a\u914d\u7f6e\u532f\u6d41\u6392\u5167\u50b3\u8a0a\u5f15\u64ce\u9451\u5225\u5225\u540d\u6642\uff0c\u4e0d\u6703\u91dd\u5c0d\u532f\u6d41\u6392\u5167\u50b3\u8a0a\u5f15\u64ce\u9023\u7dda\u4f86\u57f7\u884c\u9451\u5225\u6aa2\u67e5\u3002\u5982\u679c\u8981\u9451\u5225\u532f\u6d41\u6392\u5167\u50b3\u8a0a\u5f15\u64ce\u9023\u7dda\uff0c\u8acb\u914d\u7f6e\u532f\u6d41\u6392\u5167\u50b3\u8a0a\u5f15\u64ce\u9451\u5225\u5225\u540d\u3002
+NO_AUTHALIAS_CWSIT0073.useraction=\u8acb\u914d\u7f6e\u532f\u6d41\u6392\u5167\u50b3\u8a0a\u5f15\u64ce\u9451\u5225\u5225\u540d\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+ALREADY_DEFINED_CWSIT0074=CWSIT0074E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u5df2\u5b9a\u7fa9\u93c8\u7d50 UUID {0}\u3002
+ALREADY_DEFINED_CWSIT0074.explanation=CMSG0001
+ALREADY_DEFINED_CWSIT0074.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+ALREADY_DEFINED_CWSIT0075=CWSIT0075E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u5df2\u5b9a\u7fa9\u93c8\u7d50 UUID {0}\u3002
+ALREADY_DEFINED_CWSIT0075.explanation=CMSG0001
+ALREADY_DEFINED_CWSIT0075.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+UNDEFINED_CWSIT0076=CWSIT0076E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u672a\u5b9a\u7fa9\u93c8\u7d50 UUID {0}\u3002
+UNDEFINED_CWSIT0076.explanation=CMSG0001
+UNDEFINED_CWSIT0076.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+UNDEFINED_CWSIT0077=CWSIT0077E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u672a\u5b9a\u7fa9\u93c8\u7d50 UUID {0}\u3002
+UNDEFINED_CWSIT0077.explanation=CMSG0001
+UNDEFINED_CWSIT0077.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+NOT_STARTED_CWSIT0078=CWSIT0078E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u7121\u6cd5\u767b\u9304\u93c8\u7d50 UUID {0}\uff0c\u56e0\u70ba\u93c8\u7d50\u5c1a\u672a\u555f\u52d5\u3002
+NOT_STARTED_CWSIT0078.explanation=CMSG0001
+NOT_STARTED_CWSIT0078.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+NOT_ACTIVE_CWSIT0079=CWSIT0079E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u7121\u6cd5\u767b\u9304\u93c8\u7d50 UUID {0}\uff0c\u56e0\u70ba\u93c8\u7d50\u4e0d\u5728\u4f5c\u7528\u4e2d\u3002
+NOT_ACTIVE_CWSIT0079.explanation=CMSG0001
+NOT_ACTIVE_CWSIT0079.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link name
+# {1} originating bus name
+# {2} receiving bus name
+# {3} receiving bus name
+
+NOT_STARTED_CWSIT0080=CWSIT0080W: \u7121\u6cd5\u5efa\u7acb\u532f\u6d41\u6392 {1} \u5230\u532f\u6d41\u6392 {2} \u7684\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50 {0}\uff0c\u56e0\u70ba\u532f\u6d41\u6392 {3} \u4e2d\u7684\u93c8\u7d50\u5c1a\u672a\u555f\u52d5\u3002
+NOT_STARTED_CWSIT0080.explanation=\u76ee\u524d\u5728\u67d0\u532f\u6d41\u6392\u4e2d\u555f\u52d5\u4e86\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\uff0c\u4f46\u5728\u5176\u4ed6\u532f\u6d41\u6392\u4e2d\u5c1a\u672a\u555f\u52d5\uff1b\u5fc5\u9808\u5148\u5728\u5169\u500b\u532f\u6d41\u6392\u4e2d\u555f\u52d5\u93c8\u7d50\uff0c\u624d\u80fd\u5efa\u7acb\u9023\u7dda\u3002
+NOT_STARTED_CWSIT0080.useraction=\u8acb\u505c\u6b62\u767c\u9001\u7aef\u532f\u6d41\u6392\u4e2d\u7684\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\uff0c\u6216\u555f\u52d5\u63a5\u6536\u7aef\u532f\u6d41\u6392\u4e2d\u7684\u93c8\u7d50\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} bridge neighbour UUID
+
+NEIGHBOUR_NOT_FOUND_CWSIT0081=CWSIT0081E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u5728\u9130\u63a5\u74b0\u5883\u4e2d\u627e\u4e0d\u5230 UUID {0} \u7684\u6a4b\u63a5\u9130\u63a5\u9805\u3002
+NEIGHBOUR_NOT_FOUND_CWSIT0081.explanation=CMSG0001
+NEIGHBOUR_NOT_FOUND_CWSIT0081.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} neighbour UUID
+
+NEIGHBOUR_NOT_FOUND_CWSIT0082=CWSIT0082E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u5728\u9130\u63a5\u74b0\u5883\u4e2d\u627e\u4e0d\u5230 UUID {0} \u7684\u9130\u63a5\u9805\u3002
+NEIGHBOUR_NOT_FOUND_CWSIT0082.explanation=CMSG0001
+NEIGHBOUR_NOT_FOUND_CWSIT0082.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Received Userid
+# {1} Link name
+# {2} Requesting Bus name
+# {3} Required Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHORISATION_CWSIT0085=CWSIT0085E: \u4f7f\u7528\u8005 ID {0} \u672a\u7372\u6388\u6b0a\u5728\u532f\u6d41\u6392 {2} \u548c\u532f\u6d41\u6392 {3} \u4e4b\u9593\u5efa\u7acb\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u9023\u7dda {1}
+FAILED_AUTHORISATION_CWSIT0085.explanation=\u7528\u4f86\u5efa\u7acb\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u9023\u7dda\u7684\u4f7f\u7528\u8005 ID \u4e0d\u662f\u76f8\u540c\u7684\u4f7f\u7528\u8005ID\uff0c\u56e0\u70ba\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u5df2\u7372\u6388\u6b0a\u5141\u8a31\u5efa\u7acb\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u9023\u7dda\u3002
+FAILED_AUTHORISATION_CWSIT0085.useraction=\u8acb\u78ba\u5b9a\u5169\u500b\u50b3\u8a0a\u5f15\u64ce\u5df2\u5c07\u76f8\u540c\u4f7f\u7528\u8005 ID \u914d\u7f6e\u7d66\u9019\u500b\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+BUS_NOT_FOUND_CWSIT0086=CWSIT0086E: \u627e\u4e0d\u5230 {0} \u532f\u6d41\u6392
+BUS_NOT_FOUND_CWSIT0086.explanation=\u672a\u5728\u4f3a\u670d\u5668\u4e2d\u914d\u7f6e\u6240\u9700\u8981\u7684\u532f\u6d41\u6392\uff0c\u56e0\u6b64\uff0c\u4e0d\u53ef\u80fd\u5229\u7528\u9019\u500b\u4f3a\u670d\u5668\u4f86\u9023\u63a5\u6240\u9700\u8981\u7684\u532f\u6d41\u6392\u3002
+BUS_NOT_FOUND_CWSIT0086.useraction=\u8acb\u78ba\u5b9a\u532f\u6d41\u6392\u540d\u7a31\u6b63\u78ba\uff0c\u4e14\u4f7f\u7528\u5df2\u914d\u7f6e\u4e86\u5fc5\u8981\u532f\u6d41\u6392\u7684\u4f3a\u670d\u5668\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {1} Remote engine name
+
+UNABLE_TO_FIND_CWSIT0087=CWSIT0087E: \u5f9e\u50b3\u8a0a\u5f15\u64ce {1} \u6536\u5230\u532f\u6d41\u6392\u4ea4\u4e92\u9023\u7dda\u8981\u6c42\uff0c\u4f46\u627e\u4e0d\u5230\u76f8\u7b26\u7684\u914d\u7f6e\u5b9a\u7fa9\u3002
+UNABLE_TO_FIND_CWSIT0087.explanation=\u6536\u5230\u53e6\u4e00\u500b\u50b3\u8a0a\u5f15\u64ce\u767c\u51fa\u7684\u532f\u6d41\u6392\u5167\u9023\u7dda\u8981\u6c42\uff0c\u4f46\u627e\u4e0d\u5230\u7b26\u5408\u9019\u500b\u8981\u6c42\u7684\u914d\u7f6e\u5b9a\u7fa9\uff0c\u5df2\u62d2\u7d55\u8981\u6c42\u3002
+UNABLE_TO_FIND_CWSIT0087.useraction=\u8acb\u78ba\u5b9a\u5169\u500b\u50b3\u8a0a\u5f15\u64ce\u4e2d\u7684\u532f\u6d41\u6392\u5167\u9023\u7dda\u914d\u7f6e\u90fd\u662f\u6b63\u78ba\u7684\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name                                                                               248188
+# {1} Text of failure reason
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NO_MES_STARTED_CWSIT0088=CWSIT0088E: \u5728\u57f7\u884c\u4e2d\u7684 {0} \u532f\u6d41\u6392\u4e2d\uff0c\u76ee\u524d\u6c92\u6709\u50b3\u8a0a\u5f15\u64ce\u3002\u5176\u4ed6\u5931\u6557\u8cc7\u8a0a\uff1a{1}
+NO_MES_STARTED_CWSIT0088.explanation=\u7528\u6236\u7aef\u7121\u6cd5\u9023\u63a5\u81f3\u532f\u6d41\u6392\uff0c\u56e0\u70ba\u57f7\u884c\u4e2d\u7684\u5fc5\u8981\u532f\u6d41\u6392\u5167\u6c92\u6709\u50b3\u8a0a\u5f15\u64ce\u3002
+NO_MES_STARTED_CWSIT0088.useraction=\u8acb\u518d\u8a66\u4e00\u6b21\u3002\u5728\u5fc5\u8981\u7684\u532f\u6d41\u6392\u4e2d\u555f\u52d5\u50b3\u8a0a\u5f15\u64ce\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+FAILED_AUTHENTICATION_CWSIT0089=CWSIT0089E: \u5728 {1} \u532f\u6d41\u6392\u4e2d\uff0c\u4f7f\u7528\u8005 ID {0} \u9451\u5225\u5931\u6557\u3002
+FAILED_AUTHENTICATION_CWSIT0089.explanation=\u7528\u4f86\u5efa\u7acb\u50b3\u8a0a\u5f15\u64ce\u7528\u6236\u7aef\u9023\u7dda\u7684\u4f7f\u7528\u8005 ID \u7121\u6cd5\u901a\u904e\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u7684\u9451\u5225\u3002\u9451\u5225\u5931\u6557\u53ef\u80fd\u662f\u56e0\u70ba\u4f7f\u7528\u8005 ID \u6216\u5bc6\u78bc\u503c\u4e0d\u6b63\u78ba\u3002
+FAILED_AUTHENTICATION_CWSIT0089.useraction=\u8acb\u78ba\u5b9a\u4f7f\u7528\u8005 ID \u548c\u5bc6\u78bc\u503c\u6b63\u78ba\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Channel chain name
+
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0090=CWSIT0090E: \u5df2\u4f7f\u7528 {1} \u901a\u9053\u93c8\u5c0d {0} \u532f\u6d41\u6392\u63d0\u51fa\u5f15\u5c0e\u8981\u6c42\u3002{0} \u532f\u6d41\u6392\u4e0d\u5141\u8a31\u4f7f\u7528\u9019\u500b\u93c8\u3002
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0090.explanation=\u7528\u6236\u7aef\u8a66\u5716\u50b3\u9001\u5f15\u5c0e\u8981\u6c42\uff0c\u4ee5\u9023\u63a5\u5230\u532f\u6d41\u6392\uff0c\u4f46\u532f\u6d41\u6392\u4e0d\u5141\u8a31\u4f7f\u7528\u8a72\u901a\u9053\u7684\u5f15\u5c0e\u8981\u6c42\u3002
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0090.useraction=\u91cd\u65b0\u914d\u7f6e\u7528\u6236\u7aef\uff0c\u4f7f\u5f15\u5c0e\u7aef\u9ede\u4f7f\u7528\u5141\u8a31\u7684\u93c8\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+NO_AUTHALIAS_CWSIT0091=CWSIT0091W: \u5df2\u5728\u672a\u6307\u5b9a\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u9451\u5225\u5225\u540d\u7684\u60c5\u6cc1\u4e0b\uff0c\u6210\u529f\u5efa\u7acb\u4e86\u532f\u6d41\u6392 {1} \u4e4b\u50b3\u8a0a\u5f15\u64ce {0} \u7684\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u9023\u7dda\u3002\u70ba\u4e86\u5b89\u5168\uff0c\u5efa\u8b70\u60a8\u914d\u7f6e\u9451\u5225\u5225\u540d\u3002
+NO_AUTHALIAS_CWSIT0091.explanation=\u82e5\u672a\u5728\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u4e0a\u914d\u7f6e\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u9451\u5225\u5225\u540d\uff0c\u5247\u53ef\u4ee5\u4e0d\u57f7\u884c\u9451\u5225\u6aa2\u67e5\uff0c\u800c\u5efa\u7acb\u5b89\u5168\u532f\u6d41\u6392\u548c\u975e\u5b89\u5168\u532f\u6d41\u6392\u4e4b\u9593\u7684\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u3002
+NO_AUTHALIAS_CWSIT0091.useraction=\u5982\u679c\u60a8\u8981\u5f37\u5236\u5be6\u65bd\u9451\u5225\u6aa2\u67e5\uff0c\u8acb\u914d\u7f6e\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u9451\u5225\u5225\u540d\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Channel chain name
+
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0092=CWSIT0092E: \u8a66\u5716\u4f7f\u7528 {1} \u901a\u9053\u93c8\u9023\u63a5\u5230 {0} \u532f\u6d41\u6392\u3002{0} \u532f\u6d41\u6392\u4e0d\u5141\u8a31\u4f7f\u7528\u9019\u500b\u93c8\u3002
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0092.explanation=\u7528\u6236\u7aef\u8a66\u5716\u50b3\u9001\u8981\u6c42\uff0c\u4ee5\u9023\u63a5\u5230\u532f\u6d41\u6392\uff0c\u4f46\u532f\u6d41\u6392\u4e0d\u5141\u8a31\u4f7f\u7528\u8a72\u901a\u9053\u7684\u9023\u7dda\u3002
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0092.useraction=\u91cd\u65b0\u914d\u7f6e\u7528\u6236\u7aef\uff0c\u4f7f\u9023\u7dda\u4f7f\u7528\u5141\u8a31\u7684\u93c8\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting bus name
+# {1} Required bus name
+# {2} Channel chain name
+
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0093=CWSIT0093E: \u532f\u6d41\u6392 {0} \u8a66\u5716\u4f7f\u7528\u5f15\u5c0e\u901a\u9053\u93c8 {2} \u4f86\u5efa\u7acb\u901a\u5f80\u5916\u90e8\u532f\u6d41\u6392 {1} \u7684\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u3002{1} \u5916\u90e8\u532f\u6d41\u6392\u4e0d\u5141\u8a31\u4f7f\u7528\u9019\u500b\u93c8\u3002
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0093.explanation=\u532f\u6d41\u6392\u8a66\u5716\u4f7f\u7528\u5916\u90e8\u532f\u6d41\u6392\u4e0d\u652f\u63f4\u7684\u5f15\u5c0e\u50b3\u8f38\u93c8\u3002
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0093.useraction=\u91cd\u65b0\u914d\u7f6e\u532f\u6d41\u6392\uff0c\u4f7f\u5f15\u5c0e\u7aef\u9ede\u4f7f\u7528\u5916\u90e8\u532f\u6d41\u6392\u5141\u8a31\u7684\u93c8\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Endpoint of the bootstrap server
+# {2} Failure message from the bootstrap reply message
+
+NOT_AUTHORIZED_CWSIT0094=CWSIT0094E: \u7528\u6236\u7aef\u672a\u7372\u6388\u6b0a\u5229\u7528\u7aef\u9ede\u70ba {1} \u7684\u5f15\u5c0e\u4f3a\u670d\u5668\u4f86\u9023\u63a5 {0} \u532f\u6d41\u6392\u3002\u539f\u56e0\uff1a{2}\u3002
+NOT_AUTHORIZED_CWSIT0094.explanation=\u7528\u4f86\u5efa\u7acb\u532f\u6d41\u6392\u9023\u7dda\u7684\u4f7f\u7528\u8005 ID\uff0c\u672a\u7372\u6388\u6b0a\u9023\u63a5\u5230\u532f\u6d41\u6392\u3002
+NOT_AUTHORIZED_CWSIT0094.useraction=\u8acb\u78ba\u5b9a\u9019\u500b\u4f7f\u7528\u8005 ID \u6709\u532f\u6d41\u6392\u7684\u532f\u6d41\u6392\u9023\u63a5\u5668\u89d2\u8272\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting messaging engine name
+# {1} Requesting bus name
+# {2} Required messaging engine name
+# {3} Required bus name
+# {4} Channel chain name
+
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0095=CWSIT0095E: \u532f\u6d41\u6392 {1} \u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce {0} \u8a66\u5716\u4f7f\u7528\u5165\u57e0\u901a\u9053\u93c8 {4}\uff0c\u4f86\u5efa\u7acb\u901a\u5f80\u5916\u90e8\u532f\u6d41\u6392 {3} \u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce {2} \u7684\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50\u3002{3} \u5916\u90e8\u532f\u6d41\u6392\u4e0d\u5141\u8a31\u4f7f\u7528\u9019\u500b\u93c8\u3002
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0095.explanation=\u532f\u6d41\u6392\u8a66\u5716\u4f7f\u7528\u5916\u90e8\u532f\u6d41\u6392\u4e0d\u652f\u63f4\u7684\u5165\u57e0\u50b3\u8f38\u93c8\u3002
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0095.useraction=\u91cd\u65b0\u914d\u7f6e\u532f\u6d41\u6392\uff0c\u4f7f\u5176\u9023\u63a5\u5916\u90e8\u532f\u6d41\u6392\u5141\u8a31\u7684\u93c8\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting messaging engine name
+# {1} Bus name
+# {2} Required messaging engine name
+# {3} Channel chain name
+
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0096=CWSIT0096E: {1} \u532f\u6d41\u6392\u4e2d\u7684 {0} \u50b3\u8a0a\u5f15\u64ce\u8a66\u5716\u4f7f\u7528 {3} \u5165\u57e0\u901a\u9053\u93c8\uff0c\u4f86\u9023\u63a5 {2} \u50b3\u8a0a\u5f15\u64ce\u3002{1} \u532f\u6d41\u6392\u4e0d\u5141\u8a31\u4f7f\u7528\u9019\u500b\u93c8\u3002
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0096.explanation=\u532f\u6d41\u6392\u914d\u7f6e\u4f7f\u7528\u7684\u50b3\u8f38\u901a\u9053\u93c8\uff0c\u4e0d\u5bb9\u8a31\u7528\u4f86\u9032\u884c\u50b3\u8a0a\u5f15\u64ce\u4e4b\u9593\u7684\u901a\u8a0a\u3002
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0096.useraction=\u91cd\u65b0\u914d\u7f6e\u532f\u6d41\u6392\uff0c\u4f7f\u5176\u6307\u5b9a\u5141\u8a31\u7684\u93c8\u4f5c\u70ba\u5f15\u64ce\u4ea4\u4e92\u50b3\u8f38\u93c8\u3002
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting messaging engine name
+# {1} Requesting subnet name
+# {2} Required messaging engine name
+# {3} Required subnet name
+# {4} Channel chain name
+# {5} Required bus name
+
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0097=CWSIT0097E: {1} \u5b50\u7db2\u8def\u4e2d\u7684 {0} \u50b3\u8a0a\u5f15\u64ce\u8a66\u5716\u4f7f\u7528 {4} \u5165\u57e0\u901a\u9053\u93c8\uff0c\u4f86\u9023\u63a5 {3} \u5b50\u7db2\u8def\u4e2d\u7684 {2} \u50b3\u8a0a\u5f15\u64ce\u3002{5} \u532f\u6d41\u6392\u4e0d\u5141\u8a31\u4f7f\u7528\u9019\u500b\u93c8\u3002
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0097.explanation=\u532f\u6d41\u6392\u8a66\u5716\u4f7f\u7528\u4e0d\u88ab\u5141\u8a31\u7684\u50b3\u8f38\u901a\u9053\u93c8\u3002
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0097.useraction=\u91cd\u65b0\u914d\u7f6e\u532f\u6d41\u6392\uff0c\u4f7f\u5176\u9023\u63a5\u5141\u8a31\u7684\u50b3\u8f38\u901a\u9053\u93c8\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Endpoint of the bootstrap server
+# {2} Failure message from the bootstrap reply message
+
+FAILED_AUTHENTICATION_CWSIT0098=CWSIT0098E: \u9023\u63a5 {0} \u532f\u6d41\u6392\u7684\u7528\u6236\u7aef\u4f7f\u7528\u7aef\u9ede\u70ba {1} \u7684\u5f15\u5c0e\u4f3a\u670d\u5668\uff0c\u4f46\u9451\u5225\u5931\u6557\uff0c\u539f\u56e0\u70ba\uff1a{2}\u3002
+FAILED_AUTHENTICATION_CWSIT0098.explanation=\u7528\u4f86\u5efa\u7acb\u50b3\u8a0a\u5f15\u64ce\u7528\u6236\u7aef\u9023\u7dda\u7684\u4f7f\u7528\u8005 ID \u7121\u6cd5\u901a\u904e\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u7684\u9451\u5225\u3002\u9451\u5225\u5931\u6557\u53ef\u80fd\u662f\u56e0\u70ba\u4f7f\u7528\u8005 ID \u6216\u5bc6\u78bc\u503c\u4e0d\u6b63\u78ba\u3002
+FAILED_AUTHENTICATION_CWSIT0098.useraction=\u8acb\u78ba\u5b9a\u4f7f\u7528\u8005 ID \u548c\u5bc6\u78bc\u503c\u6b63\u78ba\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} EndPoint of the successful bootstrap server
+# {1} Name of messaging engine
+# {2} EndPoint of the original bootstrap server
+# {3} Text of failure reason
+
+REDIRECT_FAILURE_CWSIT0099=CWSIT0099E: \u7528\u6236\u7aef\u5df2\u9806\u5229\u9023\u63a5\u5230\u4f4d\u5728 {0} \u7aef\u9ede\u7684\u5f15\u5c0e\u4f3a\u670d\u5668\uff0c\u4f46\u88ab\u91cd\u65b0\u5c0e\u5411\u81f3\u4f4d\u5728 {2} \u7aef\u9ede\u7684 {1} \u50b3\u8a0a\u5f15\u64ce\u3002\u806f\u7d61\u6b64\u7aef\u9ede\u7684\u5617\u8a66\u5931\u6557\uff0c\u539f\u56e0\u70ba\uff1a{3}\u3002
+REDIRECT_FAILURE_CWSIT0099.explanation=\u7531\u65bc\u5728\u4f3a\u670d\u5668\u4e2d\u5931\u6557\uff0c\u56e0\u6b64\u7528\u6236\u7aef\u5728\u91cd\u65b0\u5c0e\u5411\u4e4b\u5f8c\uff0c\u7121\u6cd5\u9023\u63a5\u81f3\u532f\u6d41\u6392\u3002\u50b3\u56de\u4f3a\u670d\u5668\u5931\u6557\u7684\u539f\u56e0\u3002
+REDIRECT_FAILURE_CWSIT0099.useraction=\u8abf\u67e5\u548c\u89e3\u6790\u932f\u8aa4\u8a0a\u606f\u4e2d\u7684\u5931\u6557\uff0c\u7136\u5f8c\u91cd\u65b0\u4f5c\u696d\u3002
+
+
+# -------------------------------------------------------------------------------------------------
+
+BAD_SELECT_CWSIT0100=CWSIT0100E: \u9810\u671f\u6703\u5f9e Selection \u53d6\u5f97 CFEndpoint\uff0c\u4f46\u537b\u6c92\u6709 CFEndpoint \u5b58\u5728\uff08\u5167\u90e8\u932f\u8aa4\uff09\u3002
+BAD_SELECT_CWSIT0100.explanation=\u89e3\u6790\u76ee\u6a19\u50b3\u8a0a\u5f15\u64ce\u7684\u8981\u6c42\u5931\u6557\u3002
+BAD_SELECT_CWSIT0100.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+INVALID_PARAMETER_CWSIT0101=CWSIT0101E: \u767c\u73fe\u7121\u6548\u7684\u53c3\u6578\u3002
+INVALID_PARAMETER_CWSIT0101.explanation=\u89e3\u6790\u76ee\u6a19\u50b3\u8a0a\u5f15\u64ce\u7684\u8981\u6c42\u5931\u6557\u3002
+INVALID_PARAMETER_CWSIT0101.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Selection's MessagingEngine name
+# {1} Proximity constraint
+
+UNSATISFIED_PROXIMITY_CWSIT0102=CWSIT0102E: \u5df2\u627e\u5230 {0} \u50b3\u8a0a\u5f15\u64ce\u9078\u9805\uff0c\u4f46\u662f\u56e0\u70ba\u8a72\u5f15\u64ce\u4e0d\u7b26\u5408\u61c9\u7528\u7a0b\u5f0f\u6307\u5b9a\u7684 {1} \u9023\u7dda\u8fd1\u4f3c\u6027\u9650\u5236\uff0c\u800c\u5fc5\u9808\u52a0\u4ee5\u6368\u68c4\u3002
+UNSATISFIED_PROXIMITY_CWSIT0102.explanation=\u89e3\u6790\u76ee\u6a19\u50b3\u8a0a\u5f15\u64ce\u7684\u8981\u6c42\u5931\u6557\u3002
+UNSATISFIED_PROXIMITY_CWSIT0102.useraction=\u5982\u679c\u60a8\u60f3\u8981\u9023\u7dda\u5230\u932f\u8aa4\u8a0a\u606f\u6240\u986f\u793a\u7684\u50b3\u8a0a\u5f15\u64ce\uff0c\u5247\u60a8\u5fc5\u9808\u5728 Connection Factory \u6216\u555f\u52d5\u898f\u683c\u4e2d\u653e\u5bec\u9023\u7dda\u8fd1\u4f3c\u6027\uff0c\u4e26\u91cd\u8a66\u4f5c\u696d\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Group
+# {2} Type
+# {3} Significance
+# {4} TransportChain
+# {5} Proximity
+
+NULL_SELECTION_CWSIT0103=CWSIT0103E: \u627e\u4e0d\u5230\u7b26\u5408\u4e0b\u5217\u53c3\u6578\u7684\u50b3\u8a0a\u5f15\u64ce\uff1abus={0}\u3001targetGroup={1}\u3001targetType={2}\u3001targetSignificance={3}\u3001transportChain={4}\u3001proximity={5}\u3002
+NULL_SELECTION_CWSIT0103.explanation=\u89e3\u6790\u76ee\u6a19\u50b3\u8a0a\u5f15\u64ce\u7684\u8981\u6c42\u5931\u6557\u3002
+NULL_SELECTION_CWSIT0103.useraction=\u6aa2\u67e5\u60a8\u60f3\u8981\u9023\u63a5\u7684\u50b3\u8a0a\u5f15\u64ce\u4e4b\u72c0\u614b\uff0c\u78ba\u4fdd\u5176\u70ba\u57f7\u884c\u4e2d\u3002\u53e6\u5916\uff0c\u8acb\u4fee\u6539\u9023\u7dda\u5167\u5bb9\uff0c\u4ee5\u5bb9\u8a31\u9078\u64c7\u4f5c\u7528\u4e2d\u50b3\u8a0a\u5f15\u64ce\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} MessagingEngine name
+# {1} Bus name
+
+ME_NOT_STARTED_CWSIT0104=CWSIT0104E: \u7528\u6236\u7aef\u8a66\u5716\u9023\u63a5\u5230 {1} \u532f\u6d41\u6392\u4e2d\u7684 {0} \u50b3\u8a0a\u5f15\u64ce\uff0c\u4f46\u56e0\u70ba\u50b3\u8a0a\u5f15\u64ce\u5c1a\u672a\u555f\u52d5\uff0c\u56e0\u6b64\u7121\u6cd5\u5efa\u7acb\u9023\u7dda\u3002
+ME_NOT_STARTED_CWSIT0104.explanation=\u50b3\u8a0a\u5f15\u64ce\u78ba\u5be6\u5b58\u5728\uff0c\u4f46\u662f\u6c92\u6709\u555f\u52d5\u3002
+ME_NOT_STARTED_CWSIT0104.useraction=\u555f\u52d5\u60a8\u8981\u9023\u63a5\u7684\u50b3\u8a0a\u5f15\u64ce\uff0c\u4e26\u91cd\u8a66\u4f5c\u696d\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHENTICATION_CWSIT0105=CWSIT0105E: \u7576\u8a66\u5716\u9032\u884c {0} \u532f\u6d41\u6392\u7684\u9451\u5225\u6642\uff0c\u61c9\u7528\u7a0b\u5f0f\u4e26\u672a\u6307\u5b9a\u4f7f\u7528\u8005 ID
+FAILED_AUTHENTICATION_CWSIT0105.explanation=\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u9451\u5225\u5931\u6557\uff0c\u56e0\u70ba\u61c9\u7528\u7a0b\u5f0f\u4e26\u672a\u6307\u5b9a\u4f7f\u7528\u8005 ID\u3002
+FAILED_AUTHENTICATION_CWSIT0105.useraction=\u8acb\u78ba\u5b9a\u4f7f\u7528\u8005 ID \u548c\u5bc6\u78bc\u503c\u6b63\u78ba\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine name
+# {2} Bus name
+# {3} Host of messaging engine
+# {4} Port of messaging engine
+# {5} Transport chain to connect over
+
+BRIDGE_ESTABLISHED_CWSIT0106=CWSIT0106I: \u9806\u5229\u4f7f\u7528\u50b3\u8f38\u93c8 {5} \u5efa\u7acb\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u93c8\u7d50 {0}\uff0c\u5176\u901a\u5f80\u4e3b\u6a5f{3} \u57e0 {4} \u7684\u532f\u6d41\u6392 {2} \u4e2d\u4e4b\u50b3\u8a0a\u5f15\u64ce {1}\u3002
+BRIDGE_ESTABLISHED_CWSIT0106.explanation=\u5df2\u5efa\u7acb\u8207\u4e0d\u540c\u532f\u6d41\u6392\u4e2d\u4e4b\u53e6\u4e00\u50b3\u8a0a\u5f15\u64ce\u7684\u6a4b\u63a5\u5668\u3002
+BRIDGE_ESTABLISHED_CWSIT0106.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Port value
+# {1} Chain name
+
+UNENCRYPTED_PASSWORD_CWSIT0107=CWSIT0107W: \u7aef\u9ede\u4e2d\u7684\u6307\u5b9a\u57e0 {0} \u96b1\u542b\u4f7f\u7528\u50b3\u8f38\u93c8 {1}\u3002\u9019\u6703\u9020\u6210\u5728\u7528\u6236\u7aef\u548c\u4f3a\u670d\u5668\u4e4b\u9593\u50b3\u9001\u672a\u52a0\u5bc6\u7684\u5bc6\u78bc\u3002\u70ba\u4e86\u5b89\u5168\uff0c\u4e0d\u5efa\u8b70\u60a8\u9019\u9ebc\u505a\u3002
+UNENCRYPTED_PASSWORD_CWSIT0107.explanation=\u5df1\u9078\u53d6\u9810\u8a2d\u57e0\uff0c\u4f46\u5728\u63d0\u4f9b\u8005\u7aef\u9ede\u4e2d\u4e26\u672a\u6307\u5b9a\u93c8\u7684\u540d\u7a31\u3002\u9019\u6703\u5c0e\u81f4\u4e0d\u5b89\u5168\u7684\u50b3\u8f38\u93c8\uff0c\u5efa\u8b70\u60a8\u6307\u5b9a\u6b64\u9023\u7dda\u7684\u5b89\u5168\u8a2d\u5b9a\u3002
+UNENCRYPTED_PASSWORD_CWSIT0107.useraction=\u60a8\u53ef\u4ee5\u624b\u52d5\u6307\u5b9a\u5fc5\u8981\u7684\u50b3\u8f38\u93c8\uff08\u5b89\u5168\u6216\u975e\u5b89\u5168\uff09\uff0c\u6216\u5728\u5efa\u7acb\u9023\u7dda\u6642\u7701\u7565\u5bc6\u78bc\uff0c\u4ee5\u9632\u6b62\u51fa\u73fe\u9019\u500b\u8b66\u544a\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHORIZATION_CWSIT0108=CWSIT0108E: \u4f7f\u7528\u8005 ID {0} \u5728\u532f\u6d41\u6392 {1} \u4e2d\u6388\u6b0a\u5931\u6557
+FAILED_AUTHORIZATION_CWSIT0108.explanation=\u7528\u4f86\u5efa\u7acb\u50b3\u8a0a\u5f15\u64ce\u4e4b\u7528\u6236\u7aef\u9023\u7dda\u7684\u4f7f\u7528\u8005 ID\uff0c\u7121\u6cd5\u7372\u5f97\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u6388\u6b0a\u3002\u6388\u6b0a\u5931\u6548\u53ef\u80fd\u662f\u56e0\u70ba\u4f7f\u7528\u8005 ID \u6216\u5bc6\u78bc\u503c\u4e0d\u6b63\u78ba\u3002
+FAILED_AUTHORIZATION_CWSIT0108.useraction=\u8acb\u78ba\u5b9a\u4f7f\u7528\u8005 ID \u548c\u5bc6\u78bc\u503c\u6b63\u78ba\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHORIZATION_CWSIT0109=CWSIT0109E: \u5728\u5617\u8a66\u4ee5\u532f\u6d41\u6392 {0} \u6388\u6b0a\u6642\uff0c\u61c9\u7528\u7a0b\u5f0f\u672a\u6307\u5b9a\u4f7f\u7528\u8005 ID
+FAILED_AUTHORIZATION_CWSIT0109.explanation=\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u6388\u6b0a\u5931\u6557\uff0c\u56e0\u70ba\u61c9\u7528\u7a0b\u5f0f\u672a\u6307\u5b9a\u4f7f\u7528\u8005 ID\u3002
+FAILED_AUTHORIZATION_CWSIT0109.useraction=\u8acb\u78ba\u5b9a\u4f7f\u7528\u8005 ID \u548c\u5bc6\u78bc\u503c\u6b63\u78ba\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+TOKEN_FAILED_AUTHENTICATION_CWSIT0110=CWSIT0110E: \u532f\u6d41\u6392 {1} \u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce {0} \u63d0\u4f9b\u7684\u5b89\u5168\u8a18\u865f\u9451\u5225\u5931\u6557\u3002
+TOKEN_FAILED_AUTHENTICATION_CWSIT0110.explanation=\u7528\u4f86\u5efa\u7acb\u532f\u6d41\u6392\u5167\u50b3\u8a0a\u5f15\u64ce\u9023\u7dda\u7684\u5b89\u5168\u8a18\u865f\u7121\u6cd5\u901a\u904e\u9451\u5225\u3002
+TOKEN_FAILED_AUTHENTICATION_CWSIT0110.useraction=\u6aa2\u67e5\u8207\u8a66\u5716\u9023\u7dda\u6709\u95dc\u7684\u50b3\u8a0a\u5f15\u64ce\u4e4b\u932f\u8aa4\u65e5\u8a8c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+TOKEN_INCONSISTENT_CWSIT0111=CWSIT0111E: \u5b89\u5168\u8a18\u865f\u4e2d\u63d0\u4f9b\u7684\u8b58\u5225\u8cc7\u8a0a\u4e0d\u7b26\u5408\u532f\u6d41\u6392 {1} \u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce {0} \u7684\u9023\u7dda\u8981\u6c42\u4e2d\u7684\u8cc7\u6599\u3002
+TOKEN_INCONSISTENT_CWSIT0111.explanation=\u9019\u6307\u51fa\u672a\u7372\u6388\u6b0a\u7684\u4f7f\u7528\u8005\u53ef\u80fd\u8a66\u5716\u9023\u63a5\u7cfb\u7d71\u3002
+TOKEN_INCONSISTENT_CWSIT0111.useraction=\u6aa2\u67e5\u8207\u8a66\u5716\u9023\u7dda\u6709\u95dc\u7684\u50b3\u8a0a\u5f15\u64ce\u4e4b\u932f\u8aa4\u65e5\u8a8c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The string name of the token type that is unsupported
+# {1} Messaging engine name
+# {2} Bus name
+ 
+TOKEN_TYPE_UNSUPPORTED_CWSIT0112=CWSIT0112E: \u4e0d\u652f\u63f4\u532f\u6d41\u6392 {2} \u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce {1} \u6240\u63d0\u4f9b\u7684 {0} \u7684\u5b89\u5168\u8a18\u865f\u985e\u578b\u3002
+TOKEN_TYPE_UNSUPPORTED_CWSIT0112.explanation=\u7121\u6cd5\u57f7\u884c\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u7684\u9451\u5225\uff0c\u56e0\u70ba\u4e0d\u652f\u63f4\u8a72\u5b89\u5168\u8a18\u865f\u985e\u578b\u3002
+TOKEN_TYPE_UNSUPPORTED_CWSIT0112.useraction=\u6aa2\u67e5\u8207\u8a66\u5716\u9023\u7dda\u6709\u95dc\u7684\u50b3\u8a0a\u5f15\u64ce\u4e4b\u932f\u8aa4\u65e5\u8a8c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+MISSING_SECURITY_TOKEN_CWSIT0113=CWSIT0113E: \u532f\u6d41\u6392 {1} \u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce {0} \u4e4b\u9023\u7dda\u8981\u6c42\u672a\u6307\u5b9a\u5b89\u5168\u8a18\u865f\u985e\u578b\u3002
+MISSING_SECURITY_TOKEN_CWSIT0113.explanation=\u9019\u6307\u51fa\u672a\u7372\u6388\u6b0a\u7684\u4f7f\u7528\u8005\u53ef\u80fd\u8a66\u5716\u9023\u63a5\u7cfb\u7d71\u3002
+MISSING_SECURITY_TOKEN_CWSIT0113.useraction=\u6aa2\u67e5\u8207\u8a66\u5716\u9023\u7dda\u6709\u95dc\u7684\u50b3\u8a0a\u5f15\u64ce\u4e4b\u932f\u8aa4\u65e5\u8a8c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+TOKEN_INCONSISTENT_CWSIT0115=CWSIT0115E: \u5b89\u5168\u8a18\u865f\u4e2d\u63d0\u4f9b\u7684\u8b58\u5225\u8cc7\u8a0a\u4e0d\u7b26\u5408\u532f\u6d41\u6392 {1} \u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce {0} \u7684\u9023\u7dda\u56de\u8986\u4e4b\u8cc7\u6599\u3002
+TOKEN_INCONSISTENT_CWSIT0115.explanation=\u9019\u6307\u51fa\u672a\u7372\u6388\u6b0a\u7684\u4f7f\u7528\u8005\u53ef\u80fd\u8a66\u5716\u9023\u63a5\u7cfb\u7d71\u3002
+TOKEN_INCONSISTENT_CWSIT0115.useraction=\u6aa2\u67e5\u8207\u8a66\u5716\u9023\u7dda\u6709\u95dc\u7684\u50b3\u8a0a\u5f15\u64ce\u4e4b\u932f\u8aa4\u65e5\u8a8c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The string name of the token type that is unsupported
+# {1} Messaging engine name
+# {2} Bus name
+
+TOKEN_TYPE_UNSUPPORTED_CWSIT0116=CWSIT0116E: \u4e0d\u652f\u63f4\u532f\u6d41\u6392 {2} \u4e2d\u4e4b\u50b3\u8a0a\u5f15\u64ce {1} \u63d0\u4f9b\u4f5c\u70ba\u4ea4\u4e92\u9451\u5225\u7684 {0} \u5b89\u5168\u8a18\u865f\u985e\u578b\u3002
+TOKEN_TYPE_UNSUPPORTED_CWSIT0116.explanation=\u7121\u6cd5\u57f7\u884c\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u7684\u9451\u5225\uff0c\u56e0\u70ba\u4e0d\u652f\u63f4\u8a72\u5b89\u5168\u8a18\u865f\u985e\u578b\u3002
+TOKEN_TYPE_UNSUPPORTED_CWSIT0116.useraction=\u6aa2\u67e5\u8207\u8a66\u5716\u9023\u7dda\u6709\u95dc\u7684\u50b3\u8a0a\u5f15\u64ce\u4e4b\u932f\u8aa4\u65e5\u8a8c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+MISSING_SECURITY_TOKEN_CWSIT0117=CWSIT0117E: \u4f86\u81ea\u532f\u6d41\u6392 {1} \u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce {0} \u4e4b\u9023\u7dda\u56de\u8986\u672a\u6307\u5b9a\u5b89\u5168\u8a18\u865f\u985e\u578b\u3002
+MISSING_SECURITY_TOKEN_CWSIT0117.explanation=\u9019\u6307\u51fa\u672a\u7372\u6388\u6b0a\u7684\u4f7f\u7528\u8005\u53ef\u80fd\u8a66\u5716\u9023\u63a5\u7cfb\u7d71\u3002
+MISSING_SECURITY_TOKEN_CWSIT0117.useraction=\u6aa2\u67e5\u8207\u8a66\u5716\u9023\u7dda\u6709\u95dc\u7684\u50b3\u8a0a\u5f15\u64ce\u4e4b\u932f\u8aa4\u65e5\u8a8c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+INCOMPLETE_ME_INFO_CWSIT0118=CWSIT0118E: \u5728\u8a66\u5716\u9023\u63a5\u532f\u6d41\u6392 {1} \u4e2d\u7684\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce {0} \u6642\uff0c\u56e0\u70ba\u8cc7\u8a0a\u4e0d\u5b8c\u6574\u800c\u7121\u6cd5\u9a57\u8b49\u8a72\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u7684\u8eab\u5206\u3002
+INCOMPLETE_ME_INFO_CWSIT0118.explanation=\u9019\u53ef\u80fd\u662f\u7531\u8a08\u6642\u76f8\u95dc\u554f\u984c\u6240\u5f15\u8d77\uff0c\u6216\u6307\u51fa\u672a\u7372\u6388\u6b0a\u7684\u4f7f\u7528\u8005\u8a66\u5716\u9023\u63a5\u7cfb\u7d71\u3002
+INCOMPLETE_ME_INFO_CWSIT0118.useraction=\u7b49\u5f85\u91cd\u8a66\u4f5c\u696d\uff0c\u6216\u6aa2\u67e5\u8207\u9023\u7dda\u5617\u8a66\u6709\u95dc\u4e4b\u50b3\u8a0a\u5f15\u64ce\u76f8\u95dc\u806f\u7684\u7cfb\u7d71\u548c\u932f\u8aa4\u65e5\u8a8c\uff0c\u4ee5\u8abf\u67e5\u906d\u5230\u5b89\u5168\u653b\u64ca\u7684\u53ef\u80fd\u6027\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+INCOMPLETE_ME_INFO_CWSIT0119=CWSIT0119E: \u532f\u6d41\u6392 {1} \u4e2d\u7684\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce {0} \u8a66\u5716\u9023\u7dda\uff0c\u4f46\u56e0\u70ba\u8cc7\u8a0a\u4e0d\u5b8c\u6574\u800c\u7121\u6cd5\u9a57\u8b49\u8a72\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u7684\u8eab\u5206\u3002
+INCOMPLETE_ME_INFO_CWSIT0119.explanation=\u9019\u53ef\u80fd\u662f\u7531\u8a08\u6642\u76f8\u95dc\u554f\u984c\u6240\u5f15\u8d77\uff0c\u6216\u6307\u51fa\u672a\u7372\u6388\u6b0a\u7684\u4f7f\u7528\u8005\u8a66\u5716\u9023\u63a5\u7cfb\u7d71\u3002
+INCOMPLETE_ME_INFO_CWSIT0119.useraction=\u7b49\u5f85\u91cd\u8a66\u4f5c\u696d\uff0c\u6216\u6aa2\u67e5\u8207\u9023\u7dda\u5617\u8a66\u6709\u95dc\u4e4b\u50b3\u8a0a\u5f15\u64ce\u76f8\u95dc\u806f\u7684\u7cfb\u7d71\u548c\u932f\u8aa4\u65e5\u8a8c\uff0c\u4ee5\u8abf\u67e5\u906d\u5230\u5b89\u5168\u653b\u64ca\u7684\u53ef\u80fd\u6027\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+TARGET_NOT_FOUND_CWSIT0120=CWSIT0120E: \u7121\u6cd5\u9a57\u8b49\u532f\u6d41\u6392 {1} \u4e2d\u9023\u63a5\u7684\u50b3\u8a0a\u5f15\u64ce {0} \u7684\u8eab\u5206\u3002
+TARGET_NOT_FOUND_CWSIT0120.explanation=\u9019\u53ef\u80fd\u662f\u7531\u8a08\u6642\u76f8\u95dc\u554f\u984c\u6240\u5f15\u8d77\uff0c\u6216\u6307\u51fa\u672a\u7372\u6388\u6b0a\u7684\u4f7f\u7528\u8005\u8a66\u5716\u9023\u63a5\u7cfb\u7d71\u3002
+TARGET_NOT_FOUND_CWSIT0120.useraction=\u7b49\u5f85\u91cd\u8a66\u4f5c\u696d\uff0c\u6216\u6aa2\u67e5\u8207\u9023\u7dda\u5617\u8a66\u6709\u95dc\u4e4b\u50b3\u8a0a\u5f15\u64ce\u76f8\u95dc\u806f\u7684\u7cfb\u7d71\u548c\u932f\u8aa4\u65e5\u8a8c\uff0c\u4ee5\u8abf\u67e5\u906d\u5230\u5b89\u5168\u653b\u64ca\u7684\u53ef\u80fd\u6027\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The host name which is not valid
+INVALID_HOST_CWSIT0121=CWSIT0121E: \u8a66\u5716\u89e3\u6790 {0} \u4e3b\u6a5f\u540d\u7a31\u6642\uff0c\u64f2\u51fa java.net.UnknownHostException\u3002
+INVALID_HOST_CWSIT0121.explanation=\u9019\u53ef\u80fd\u662f\u56e0\u70ba\u7528\u6236\u7aef\u63a5\u6536\u7684\u4e3b\u6a5f\u540d\u7a31\u5728\u300c\u7db2\u57df\u540d\u7a31\u7cfb\u7d71 (DNS)\u300d\u4e2d\u7121\u6cd5\u89e3\u6790\u6240\u9020\u6210\u3002
+INVALID_HOST_CWSIT0121.useraction=\u5617\u8a66\u5728\u672c\u7aef\u300c\u7db2\u57df\u540d\u7a31\u4f3a\u670d\u5668\u300d\u767b\u9304\u4e3b\u6a5f\u540d\u7a31\uff0c\u6216\u5c07\u9805\u76ee\u65b0\u589e\u81f3\u7528\u6236\u7aef\u7684 'hosts' \u6a94\u6848\uff0c\u7136\u5f8c\u91cd\u8a66\u4f5c\u696d\u3002
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} The host name which is not valid
+STATIC_ROUTING_TABLE_IN_USE_CWSIT0122=CWSIT0122W: \u9019\u500b\u53e2\u96c6\u4f7f\u7528\u975c\u614b\u905e\u9001\u8868\u683c - \u901a\u5e38\u4f7f\u7528\u975c\u614b\u905e\u9001\u6703\u963b\u6b62\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u6b63\u78ba\u904b\u7528\uff0c\u4e26\u4e0d\u5efa\u8b70\u9019\u6a23\u4f5c\u3002
+STATIC_ROUTING_TABLE_IN_USE_CWSIT0122.explanation=\u555f\u7528\u975c\u614b\u905e\u9001\u6703\u963b\u6b62\u5982\u50b3\u8a0a\u5f15\u64ce\u4f4d\u7f6e\u4e4b\u985e\u7684\u8cc7\u8a0a\u5728 Cell \u5167\u52d5\u614b\u5730\u5171\u7528\uff0c\u9019\u5c07\u5c0e\u81f4\u61c9\u7528\u7a0b\u5f0f\u7121\u6cd5\u9023\u63a5\u5230\u532f\u6d41\u6392\u3002
+STATIC_ROUTING_TABLE_IN_USE_CWSIT0122.useraction=\u5982\u679c\u4f7f\u7528\u670d\u52d9\u6574\u5408\u532f\u6d41\u6392\u767c\u751f\u554f\u984c\uff0c\u8acb\u522a\u9664\u975c\u614b\u905e\u9001\u8868\u683c\u4e26\u4e14\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\uff0c\u4ee5\u4f7f\u5176\u56de\u5230\u6a19\u6e96\u905e\u9001\u884c\u70ba\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} bus name
+BOOTSTRAP_NOT_PERMITTED_CWSIT0123=CWSIT0123E: \u4f3a\u670d\u5668\u672a\u914d\u7f6e\u70ba\u5bb9\u8a31\u532f\u6d41\u6392 {0} \u7684\u5f15\u5c0e\u3002
+BOOTSTRAP_NOT_PERMITTED_CWSIT0123.explanation=\u7528\u6236\u7aef\u8a66\u5716\u4f7f\u7528\u672a\u914d\u7f6e\u70ba\u5bb9\u8a31\u532f\u6d41\u6392\u5f15\u5c0e\u7684\u4f3a\u670d\u5668\u4f86\u5f15\u5c0e\u81f3\u532f\u6d41\u6392\u3002
+
+BOOTSTRAP_NOT_PERMITTED_CWSIT0123.useraction=\u91cd\u65b0\u914d\u7f6e\u532f\u6d41\u6392\uff0c\u4f7f\u4f3a\u670d\u5668\u53ef\u7528\u65bc\u5f15\u5c0e\uff0c\u6216\u66f4\u65b0\u7528\u6236\u7aef\u63d0\u4f9b\u8005\u7aef\u9ede\u4f86\u4f7f\u7528\u4e0d\u540c\u7684\u4f3a\u670d\u5668\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting bus name
+# {1} Required bus name
+# {2} Channel chain name
+
+BOOTSTRAP_NOT_PERMITTED_CWSIT0124=CWSIT0124E: \u532f\u6d41\u6392 {0} \u8a66\u5716\u4f7f\u7528\u672a\u914d\u7f6e\u70ba\u5bb9\u8a31\u532f\u6d41\u6392 {0} \u5f15\u5c0e\u7684\u4f3a\u670d\u5668\u4f86\u5c0b\u627e\u5916\u90e8\u532f\u6d41\u6392 {1}\u3002
+BOOTSTRAP_NOT_PERMITTED_CWSIT0124.explanation=\u532f\u6d41\u6392\u8a66\u5716\u4f7f\u7528\u4e0d\u652f\u63f4\u5916\u90e8\u532f\u6d41\u6392\u5f15\u5c0e\u7684\u4f3a\u670d\u5668\u4f86\u5f15\u5c0e\u81f3\u5916\u90e8\u532f\u6d41\u6392\u3002
+BOOTSTRAP_NOT_PERMITTED_CWSIT0124.useraction=\u91cd\u65b0\u914d\u7f6e\u532f\u6d41\u6392\uff0c\u4f7f\u5f15\u5c0e\u7aef\u9ede\u6307\u5b9a\u4e0d\u540c\u7684\u4e3b\u6a5f\u548c\u57e0\u7d44\u5408\u4f86\u4f7f\u7528\u53e6\u4e00\u500b\u4f3a\u670d\u5668\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIT9999=CWSIT9999E: {0}
+TEMPORARY_CWSIT9999.explanation=\u5982\u679c\u9019\u500b\u8a0a\u606f\u6c92\u6709\u63d0\u4f9b\u8db3\u5920\u7684\u8cc7\u8a0a\uff0c\u8acb\u6aa2\u67e5\u96a8\u9644\u7684\u932f\u8aa4\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002
+TEMPORARY_CWSIT9999.useraction=\u5982\u9700\u89e3\u6c7a\u9019\u500b\u932f\u8aa4\u7684\u9032\u4e00\u6b65\u8cc7\u8a0a\uff0c\u8acb\u53c3\u95b1 WebSphere Application Server \u652f\u63f4\u7db2\u9801\u6240\u63d0\u4f9b\u7684\u554f\u984c\u5224\u65b7\u8cc7\u8a0a\uff0c\u7db2\u5740\u5982\u4e0b\uff1ahttp://www.ibm.com/software/webservers/appserv/was/support\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} Endpoint of the Remote Messaging Engine
+# {1} Failure message from the Remote Messaging Engine reply message 
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0126=CWSIT0126E: \u4f4d\u65bc {0} \u7684\u76ee\u6a19\u50b3\u8a0a\u5f15\u64ce\u7684\u9023\u7dda\u5df2\u9806\u5229\u5b8c\u6210\uff0c\u4f46\u50b3\u8a0a\u5f15\u64ce\u50b3\u56de\u932f\u8aa4\u72c0\u6cc1\uff1a{1}
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0126.explanation=\u7528\u6236\u7aef\u5df2\u9023\u63a5\u5230\u50b3\u8a0a\u5f15\u64ce\uff0c\u4f46\u5efa\u7acb\u8207\u76ee\u6a19\u50b3\u8a0a\u5f15\u64ce\u9806\u5229\u5b8c\u6210\u7684\u9023\u7dda\u6642\uff0c\u767c\u751f\u554f\u984c\u3002
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0126.useraction=\u8acb\u78ba\u5b9a\u76ee\u6a19\u50b3\u8a0a\u5f15\u64ce\u5df2\u6b63\u78ba\u914d\u7f6e\uff0c\u4e14\u904b\u4f5c\u6b63\u5e38\uff0c\u80fd\u5920\u63a5\u53d7\u9001\u5165\u7684\u9060\u7aef\u9023\u7dda\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} List of Target Messaging Engines to which we tried to connect
+LIBERTY_NO_BOOTSTRAP_CWSIT0127=CWSIT0127E: \u7121\u6cd5\u806f\u7d61\u6307\u5b9a\u7684\u76ee\u6a19\u50b3\u8a0a\u5f15\u64ce\u3002\u8acb\u53c3\u95b1\u93c8\u7d50\u7684\u7570\u5e38\u72c0\u6cc1\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8a73\u7d30\u8cc7\u6599\u3002\u7528\u6236\u7aef\u5617\u8a66\u8207 {0} \u9023\u7dda
+LIBERTY_NO_BOOTSTRAP_CWSIT0127.explanation=\u7528\u6236\u7aef\u7121\u6cd5\u9023\u63a5\u3002\u9023\u7dda\u53ef\u80fd\u56e0\u70ba\u6240\u9700\u8981\u7684\u76ee\u6a19\u50b3\u8a0a\u5f15\u64ce\u7121\u6cd5\u4f7f\u7528\uff0c\u6216\u56e0\u70ba\u67d0\u4e9b\u914d\u7f6e\u6216\u7db2\u8def\u554f\u984c\u800c\u5931\u6557\u3002
+LIBERTY_NO_BOOTSTRAP_CWSIT0127.useraction=\u8acb\u78ba\u5b9a\u7db2\u8def\u904b\u4f5c\u6b63\u5e38\uff0c\u4e14\u6240\u9700\u8981\u7684\u76ee\u6a19\u50b3\u8a0a\u5f15\u64ce\u53ef\u4f9b\u4f7f\u7528\u3002\u8acb\u53c3\u95b1\u7522\u54c1\u8aaa\u660e\u6587\u4ef6\uff0c\u4ee5\u53d6\u5f97\u914d\u7f6e\u76ee\u6a19\u50b3\u8a0a\u5f15\u64ce\u9023\u7dda\u7684\u76f8\u95dc\u8cc7\u8a0a\u3002
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Endpoint of the bootstrap server # {2} Failure message from the bootstrap reply message 
+
+LIBERTY_FAILED_AUTHENTICATION_CWSIT0128=CWSIT0128E: \u7528\u6236\u7aef\u7684\u76ee\u6a19\u50b3\u8a0a\u5f15\u64ce\u9451\u5225\u5931\u6557\uff0c\u539f\u56e0\u5982\u4e0b\uff1a{2}
+LIBERTY_FAILED_AUTHENTICATION_CWSIT0128.explanation=\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u7121\u6cd5\u9451\u5225\u7528\u4f86\u5efa\u7acb\u7528\u6236\u7aef\u8207\u76ee\u6a19\u50b3\u8a0a\u5f15\u64ce\u4e4b\u9023\u7dda\u7684\u4f7f\u7528\u8005 ID\u3002\u9451\u5225\u5931\u6557\u53ef\u80fd\u662f\u56e0\u70ba\u4f7f\u7528\u8005 ID \u6216\u5bc6\u78bc\u4e0d\u6b63\u78ba\u3002
+LIBERTY_FAILED_AUTHENTICATION_CWSIT0128.useraction=\u8acb\u78ba\u5b9a\u8f38\u5165\u7684\u4f7f\u7528\u8005 ID \u548c\u5bc6\u78bc\u6b63\u78ba\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Endpoint of the bootstrap server # {2} Failure message from the bootstrap reply message 
+
+LIBERTY_NOT_AUTHORIZED_CWSIT0129=CWSIT0129E: \u7528\u6236\u7aef\u672a\u7372\u6388\u6b0a\u9023\u63a5\u76ee\u6a19\u50b3\u8a0a\u5f15\u64ce\u3002\u539f\u56e0\uff1a{2}
+LIBERTY_NOT_AUTHORIZED_CWSIT0129.explanation=\u5efa\u7acb\u9023\u7dda\u6642\u6240\u7528\u7684\u4f7f\u7528\u8005 ID \u672a\u7372\u6388\u6b0a\u9023\u63a5\u76ee\u6a19\u50b3\u8a0a\u5f15\u64ce\u3002
+LIBERTY_NOT_AUTHORIZED_CWSIT0129.useraction=\u8acb\u78ba\u5b9a\u4f7f\u7528\u8005 ID \u5177\u5099\u5fc5\u8981\u7684\u8a31\u53ef\u6b0a\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} EndPoint of application server that failed
+# {1} Name of bus # {2} text of failure reason 
+
+LIBERTY_MIRRORED_FAILURE_CWSIT0130=CWSIT0130W: \u7528\u6236\u7aef\u5c0d\u76ee\u6a19\u50b3\u8a0a\u5f15\u64ce\u7684\u9023\u7dda\u8981\u6c42\u5931\u6557\uff0c\u539f\u56e0\u5982\u4e0b\uff1a{2}
+LIBERTY_MIRRORED_FAILURE_CWSIT0130.explanation=\u7528\u6236\u7aef\u7684\u9023\u7dda\u8981\u6c42\u5931\u6557\uff0c\u56e0\u70ba\u76ee\u6a19\u50b3\u8a0a\u5f15\u64ce\u767c\u751f\u554f\u984c\u3002\u50b3\u56de\u76ee\u6a19\u50b3\u8a0a\u5f15\u64ce\u4e2d\u5931\u6557\u7684\u539f\u56e0\u3002
+LIBERTY_MIRRORED_FAILURE_CWSIT0130.useraction=\u8acb\u8abf\u67e5\u4e26\u89e3\u6c7a\u932f\u8aa4\u8a0a\u606f\u4e2d\u6240\u8aaa\u660e\u7684\u5931\u6557\uff0c\u7136\u5f8c\u91cd\u65b0\u4f5c\u696d\u3002
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} Remote Messaging Engine which cannot be contacted
+# {1} Exception 
+
+LIBERTY_BOOTSTRAP_FAILED_CWSIT0131=CWSIT0131W: \u7121\u6cd5\u9023\u63a5\u5230\u4f4d\u65bc {0} \u7684\u76ee\u6a19\u50b3\u8a0a\u5f15\u64ce\uff0c\u56e0\u70ba\u767c\u751f\u7570\u5e38\u72c0\u6cc1\uff1a{1}
+LIBERTY_BOOTSTRAP_FAILED_CWSIT0131.explanation=\u7528\u6236\u7aef\u7121\u6cd5\u5efa\u7acb\u8207\u6307\u5b9a\u76ee\u6a19\u50b3\u8a0a\u5f15\u64ce\u7684\u9023\u7dda\u3002\u9023\u7dda\u53ef\u80fd\u56e0\u70ba\u6240\u9700\u8981\u7684\u76ee\u6a19\u50b3\u8a0a\u5f15\u64ce\u7121\u6cd5\u4f7f\u7528\uff0c\u6216\u56e0\u70ba\u67d0\u4e9b\u914d\u7f6e\u6216\u7db2\u8def\u554f\u984c\u800c\u5931\u6557\u3002
+LIBERTY_BOOTSTRAP_FAILED_CWSIT0131.useraction=\u8acb\u78ba\u5b9a\u7db2\u8def\u80fd\u5920\u6b63\u5e38\u904b\u4f5c\uff0c\u4e14\u6240\u9700\u8981\u7684\u76ee\u6a19\u50b3\u8a0a\u5f15\u64ce\u53ef\u4f9b\u4f7f\u7528\u3002\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u662f JMS Connection Factory \u7684\u300c\u9060\u7aef\u4f3a\u670d\u5668\u4f4d\u5740\u300d\u5167\u5bb9\u6240\u6307\u5b9a\u3002\u4f4d\u5740\u7684\u683c\u5f0f\u70ba host_name:port_number:chain_name\uff08\u4f8b\u5982\uff1alocalhost:7276:BootstrapBasicMessaging\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Name of the messaging engine runtime feature,  eg wasJmsServer-1.0
+
+LIBERTY_BINDING_FAILED_CWSIT0132=CWSIT0132E: \u6c92\u6709\u53ef\u9023\u63a5\u7684\u672c\u7aef\u50b3\u8a0a\u5f15\u64ce\u3002\u82e5\u8981\u555f\u7528\u672c\u7aef\u50b3\u8a0a\u5f15\u64ce\uff0c\u8acb\u65b0\u589e {0} \u7279\u6027\u3002
+LIBERTY_BINDING_FAILED_CWSIT0132.explanation=\u7528\u6236\u7aef\u7121\u6cd5\u5efa\u7acb\u8207\u672c\u7aef\u50b3\u8a0a\u5f15\u64ce\u7684\u9023\u7dda\u3002\u539f\u56e0\u53ef\u80fd\u662f\u5728\u73fe\u884c Liberty \u8a2d\u5b9a\u6a94\u4f3a\u670d\u5668\u4e2d\uff0c\u50b3\u8a0a\u5f15\u64ce\u5c1a\u672a\u914d\u7f6e\u6216\u4e0d\u5728\u4f5c\u7528\u4e2d\uff0c\u6216\u50b3\u8a0a\u5f15\u64ce\u7121\u6cd5\u63a5\u53d7\u4efb\u4f55\u9023\u7dda\u3002
+LIBERTY_BINDING_FAILED_CWSIT0132.useraction=\u8acb\u78ba\u5b9a\u5728\u73fe\u884c Liberty \u8a2d\u5b9a\u6a94\u4f3a\u670d\u5668\u4e2d\uff0c\u50b3\u8a0a\u5f15\u64ce\u5728\u57f7\u884c\u4e2d\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} Remote Messaging Engine hostname/ipaddess:port:chain combination
+
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0133=CWSIT0133E: \u7528\u6236\u7aef\u53ef\u4ee5\u5efa\u7acb\u901a\u5f80\u4f4d\u65bc {0} \u4e4b\u76ee\u6a19\u4f3a\u670d\u5668\u7684\u9023\u7dda\uff0c\u4f46\u4f3a\u670d\u5668\u5df2\u62d2\u7d55\u9023\u7dda\u3002
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0133.explanation=\u7528\u6236\u7aef\u5df2\u9806\u5229\u9023\u63a5\u5230\u76ee\u6a19\u4f3a\u670d\u5668\uff0c\u4f46\u76ee\u6a19\u4f3a\u670d\u5668\u62d2\u7d55\u9023\u7dda\uff0c\u56e0\u70ba\u57f7\u884c\u65bc\u76ee\u6a19\u4f3a\u670d\u5668\u7684\u50b3\u8a0a\u5f15\u64ce\u4e0d\u7b26\u5408 Connection Factory \u5167\u5bb9\u4e2d\u6240\u5b9a\u7fa9\u7684\u5167\u5bb9\u3002
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0133.useraction= \u8acb\u914d\u7f6e Connection Factory \u5167\u5bb9\uff0c\u4f7f\u57f7\u884c\u65bc\u76ee\u6a19\u4f3a\u670d\u5668\u7684\u50b3\u8a0a\u5f15\u64ce\u7b26\u5408\u6240\u914d\u7f6e\u7684 Connection Factory \u5167\u5bb9\u3002
+
+# -------------------------------------------------------------------------------------------------
+
+LIBERTY_BINDING_FAILED_CWSIT0134=CWSIT0134E: \u7121\u6cd5\u9023\u63a5\u5230\u672c\u7aef\u50b3\u8a0a\u5f15\u64ce\uff0c\u56e0\u70ba\u5b83\u7121\u6cd5\u555f\u52d5\u3002
+LIBERTY_BINDING_FAILED_CWSIT0134.explanation=\u7528\u6236\u7aef\u7121\u6cd5\u5efa\u7acb\u8207\u672c\u7aef\u50b3\u8a0a\u5f15\u64ce\u7684\u9023\u7dda\u3002\u539f\u56e0\u53ef\u80fd\u662f\u5df2\u7d93\u5728\u73fe\u884c Liberty \u8a2d\u5b9a\u6a94\u4f3a\u670d\u5668\u4e2d\u914d\u7f6e\u50b3\u8a0a\u5f15\u64ce\uff0c\u4f46\u50b3\u8a0a\u5f15\u64ce\u7121\u6cd5\u555f\u52d5\u3002
+LIBERTY_BINDING_FAILED_CWSIT0134.useraction=\u8acb\u78ba\u5b9a\u5728\u73fe\u884c Liberty \u8a2d\u5b9a\u6a94\u4f3a\u670d\u5668\u4e2d\uff0c\u50b3\u8a0a\u5f15\u64ce\u5728\u57f7\u884c\u4e2d\u3002\u8acb\u6aa2\u67e5\u932f\u8aa4\u65e5\u8a8c\u6216 FFDC\uff0c\u4ee5\u9032\u4e00\u6b65\u5224\u65b7\u554f\u984c\u3002

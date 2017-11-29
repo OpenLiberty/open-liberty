@@ -1,0 +1,179 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.webserver.plugin.utility/resources/com/ibm/ws/webserver/plugin/utility/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+error=Error: {0}
+error.inputConsoleNotAvailable=La consola de entrada no est\u00e1 disponible.
+error.missingIO=Error, falta el dispositivo E/S: {0}.
+
+serverNotFound=El servidor especificado {0} no se ha podido encontrar en la ubicaci\u00f3n {1}
+jmx.local.connector.file.notfound=No se puede encontrar el archivo de direcci\u00f3n del conector local JMX en {0}
+jmx.local.connector.file.invalid=No se puede leer el archivo de direcci\u00f3n del conector local JMX en {0}
+
+#------------------------------------------------------------------------------
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+tooManyArgs=Demasiados argumentos.
+insufficientArgs=Argumentos insuficientes.
+missingServerName=El destino de la tarea no se ha especificado.
+invalidArg=Argumento no v\u00e1lido {0}.
+missingArg=Falta el argumento {0}.
+missingValue=Falta el valor del argumento {0}.
+
+#------------------------------------------------------------------------------
+# Messages for HelpTask
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Uso: acci\u00f3n {0} [opciones]
+task.unknown=Tarea desconocida: {0}
+
+common.encodeError=\n\
+No se puede codificar la contrase\u00f1a para el argumento: {0}
+
+common.hostError=\n\
+El nombre de host especificado no es v\u00e1lido: {0}\n\
+Compruebe que el nombre de host sea correcto y que el sistema tiene conexi\u00f3n de red.
+
+common.portError=\n\
+No se puede acceder al puerto especificado {0}. Compruebe que el puerto sea correcto.
+
+common.connectionError=\n\
+No se puede completar la operaci\u00f3n.\n\
+Error: {0}
+
+#------------------------------------------------------------------------------
+# Messages for get and generate operations
+#------------------------------------------------------------------------------
+
+generateWebServerPluginTask.abort=\n\
+Deteniendo...
+
+generateWebServerPluginTask.cleanupFail=\n\
+Error al limpiar los archivos generados. No se puede suprimir {0}\n\
+Elimine el archivo manualmente, compruebe los permisos de archivo y repita la operaci\u00f3n.
+
+generateWebServerPluginTask.complete.collective=\n\
+Se ha generado correctamente el archivo de configuraci\u00f3n del plugin de servidor web para el controlador colectivo destino.
+
+generateWebServerPluginTask.fail.collective=\n\
+Ha fallado la generaci\u00f3n del archivo de configuraci\u00f3n del plugin de servidor web para el controlador colectivo destino. \n\
+Analice los registros del controlador colectivo destino para diagnosticar el problema.
+
+generateWebServerPluginTask.start.server.local=\n\
+Se utilizar\u00e1 el servidor destino local {0} para generar el archivo de configuraci\u00f3n del plugin del servidor web.
+
+generateWebServerPluginTask.start.server.remote=\n\
+Se utilizar\u00e1 el servidor destino remoto {0} para generar el archivo de configuraci\u00f3n del plugin del servidor web.
+
+generateWebServerPluginTask.complete.server=\n\
+Se ha generado correctamente el archivo de configuraci\u00f3n del plugin de servidor web para el servidor destino.
+
+generateWebServerPluginTask.fail.server=\n\
+Ha fallado la generaci\u00f3n del archivo de configuraci\u00f3n del plugin de servidor web para el servidor destino. \n\
+Analice los registros del servidor destino para diagnosticar el problema.
+
+generateWebServerPluginTask.notEnabled=\n\
+La caracter\u00edstica de controlador colectivo no est\u00e1 habilitada. Habilite la caracter\u00edstica y vuelva\n\
+a intentar el mandato.
+
+generateWebServerPluginTask.start.server=\n\
+Se est\u00e1 iniciando el servidor {0} pues actualmente no est\u00e1 en ejecuci\u00f3n.
+
+generateWebServerPluginTask.stop.server=\n\
+Se est\u00e1 deteniendo el servidor {0} pues su estado inicial era detenido.
+
+generateWebServerPluginTask.server.started=\n\
+El servidor {0} se ha iniciado satisfactoriamente.
+
+generateWebServerPluginTask.server.not.started=\n\
+El servidor {0} no se ha podido iniciar.
+
+generateWebServerPluginTask.server.plugin=Se est\u00e1 generando el archivo de configuraci\u00f3n de plugin del servidor de WebSphere Liberty.
+
+generateWebServerPluginTask.target.directory.not.exists=\n\
+El directorio especificado para --targetPath: {0} no existe.
+
+generateWebServerPluginTask.server.plugin.generated=\n\
+El archivo de plugin se genera en la ubicaci\u00f3n {0} del servidor.
+
+generateWebServerPluginTask.complete.next.step=\n\
+Copie el archivo de configuraci\u00f3n de plugin en el directorio especificado en la directiva\n\
+WebSpherePluginConfig, que reside en el archivo httpd.conf de IBM HTTP Server.
+
+#------------------------------------------------------------------------------
+# Messages for merge operation
+#------------------------------------------------------------------------------
+
+MergePluginFilesTask.merging.plugin.dir=\n\
+Se est\u00e1n fusionando los archivos de plugin del directorio {0} que tienen el patr\u00f3n *plugin-cfg*.xml. 
+
+MergePluginFilesTask.merging.plugin.list=\n\
+Se est\u00e1n fusionando los archivos de plugin indicados en la lista proporcionada.
+
+MergePluginFilesTask.merging.plugin.file.not.exists=\n\
+El archivo {0} no existe. Compruebe que el archivo existe y es un\n\
+archivo de configuraci\u00f3n de plugin v\u00e1lido.
+
+MergePluginFilesTask.merging.plugin.file.is.directory=\n\
+El archivo {0} es un directorio. Los directorios y archivos normales\n\
+no se pueden mezclar durante una fusi\u00f3n.
+
+MergePluginFilesTask.merging.plugin.targetdir.not.exists=\n\
+El directorio {0}, en el que se debe generar el archivo de configuraci\u00f3n fusionado,\n\
+no existe.
+
+MergePluginFilesTask.merging.plugin.source.dir.not.exists=\n\
+El directorio de origen {0} no existe.
+
+MergePluginFilesTask.merging.plugin.source.file.not.directory=\n\
+El origen {0} no es un directorio.
+
+MergePluginFilesTask.merging.plugin.source.file.selected=\n\
+Se ha seleccionado el archivo {0} para la fusi\u00f3n. 
+
+MergePluginFilesTask.merging.plugin.target.file.generating=\n\
+Se est\u00e1 generando el archivo de configuraci\u00f3n fusionado en {0}.
+
+MergePluginFilesTask.merging.plugin.target.file.generated=\n\
+El archivo de configuraci\u00f3n fusionado se ha generado satisfactoriamente.
+
+MergePluginFilesTask.merging.plugin.insufficent.number.of.source.files=\n\
+Proporcione al menos dos archivos de configuraci\u00f3n de plugin para realizar la fusi\u00f3n.
+
+#------------------------------------------------------------------------------
+# Messages for pluginUtility generate option 
+#------------------------------------------------------------------------------
+# reading in a password
+#-----------------------------------------
+password.enterText=Especifique {0}:
+password.reenterText=Vuelva a especificar {0}:
+password.readError=Error al leer la contrase\u00f1a.
+password.entriesDidNotMatch=Las contrase\u00f1as no han coincidido.
+
+#-----------------------------------------
+# reading in a user 
+#-----------------------------------------
+user.enterText=Especifique {0}:
+user.readError=Error al leer el usuario.
+
+#----------------------------------------- 
+# Missing Argument Messages 
+#-----------------------------------------
+invalidPortArg=Se ha proporcionado un valor no v\u00e1lido para el [puerto]={0} en el argumento {1}, y se requiere un valor num\u00e9rico.
+missingUsernameValue=Falta el valor para [usuario] en el argumento para {0}.
+missingPasswordValue=Falta un valor para [contrase\u00f1a] en el argumento para {0}.
+missingHostValue=Falta un valor para [host] en el argumento para {0}.
+missingPortValue=Falta un valor para [puerto] en el argumento para {0}.
+missingHostorPortValue=Falta un valor para [host o puerto] en el argumento para {0}.
+
+#------------------------------------------------------------------------------

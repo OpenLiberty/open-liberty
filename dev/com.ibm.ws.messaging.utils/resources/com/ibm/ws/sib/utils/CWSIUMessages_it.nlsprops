@@ -1,0 +1,197 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.utils.CWSIUMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_SInn0000=CWSIU0001I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_SInn0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_SInn0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# cmvc_en_version_level=1.31,0,09/07/29,08:43:02
+#
+#CMVCPATHNAME ws/code/sib.utils/src/com/ibm/ws/sib/utils/CWSIUMessages.nlsprops
+#COMPONENTPREFIX CWSIU
+#COMPONENTNAMEFOR CWSIU utils
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the messaging build release
+# {1} is the messaging build level
+
+WPM_SPLASH_CWSIU0000=CWSIU0000I: Release: {0} Livello: {1}
+WPM_SPLASH_CWSIU0000.explanation=Questo messaggio visualizza la release e il livello della build di messaggistica corrente.
+WPM_SPLASH_CWSIU0000.useraction=Nessuna.
+
+# -------------------------------------------------------------------------------------------------
+#                                                                                          220097.0
+# {0} is the name of a runtime property
+# {1} is the new value of the named property
+
+RUNTIME_CWSIU0001=CWSIU0001I: La propriet\u00e0 di runtime {0} \u00e8 stata modificata nel valore {1}.
+RUNTIME_CWSIU0001.explanation=Una propriet\u00e0 di runtime \u00e8 stata modificata in un valore non predefinito.
+RUNTIME_CWSIU0001.useraction=Nessuna.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that will be suppressed
+# {1} is the time interval during which the message will be suppressed
+
+FUTURE_MESSAGES_SUPPRESSED_CWSIU0002=CWSIU0002I: Future ricorrenze del messaggio {0} saranno soppresse nei prossimi {1} minuti.
+FUTURE_MESSAGES_SUPPRESSED_CWSIU0002.explanation=Per evitare che i log contengano copie identiche del messaggio, le ricorrenze future del messaggio verranno soppresse.
+FUTURE_MESSAGES_SUPPRESSED_CWSIU0002.useraction=Non \u00e8 richiesta alcuna azione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that will be suppressed
+
+ALL_MESSAGES_SUPPRESSED_CWSIU0003=CWSIU0003I: Future ricorrenze del messaggio {0} saranno soppresse.
+ALL_MESSAGES_SUPPRESSED_CWSIU0003.explanation=Per evitare che i log contengano copie identiche del messaggio, tutte le ricorrenze future del messaggio verranno soppresse.
+ALL_MESSAGES_SUPPRESSED_CWSIU0003.useraction=Non \u00e8 richiesta alcuna azione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that has been suppressed
+# {1} is the number of times the message has been suppressed (i.e. not displayed)
+# {2} is the length of the time interval during which the message was suppressed
+# {3} is the time of the first message to be suppressed
+# {4} is the time of the last message to be suppressed
+# {5} is the time interval during which the message will be suppressed again
+
+MESSAGES_SUPPRESSED_CWSIU0004=CWSIU0004I: Il messaggio {0} si \u00e8 presentato {1} volte negli ultimi {2} minuti tra le {3} e le {4}. \
+Future ricorrenze di questo messaggio saranno soppresse per i prossimi {5} minuti.
+MESSAGES_SUPPRESSED_CWSIU0004.explanation=Il messaggio si \u00e8 ripresentato molte volte, ma la visualizzazione del messaggio \u00e8 stata soppressa.
+MESSAGES_SUPPRESSED_CWSIU0004.useraction=Non \u00e8 richiesta alcuna azione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that will be suppressed
+# {1} is the time interval during which the message will be suppressed
+
+SOME_FUTURE_MESSAGES_SUPPRESSED_CWSIU0005=CWSIU0005I: Future ricorrenze del seguente messaggio verranno soppresse per i prossimi {1} minuti:  {0} 
+SOME_FUTURE_MESSAGES_SUPPRESSED_CWSIU0005.explanation=Per evitare che i log contengano copie identiche del messaggio, le ricorrenze future del messaggio verranno soppresse.
+SOME_FUTURE_MESSAGES_SUPPRESSED_CWSIU0005.useraction=Non \u00e8 richiesta alcuna azione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that will be suppressed
+
+SOME_ALL_MESSAGES_SUPPRESSED_CWSIU0006=CWSIU0006I: Future ricorrenze del seguente messaggio verranno soppresse:  {0}
+SOME_ALL_MESSAGES_SUPPRESSED_CWSIU0006.explanation=Per evitare che i log contengano copie identiche del messaggio, tutte le ricorrenze future del messaggio verranno soppresse.
+SOME_ALL_MESSAGES_SUPPRESSED_CWSIU0006.useraction=Non \u00e8 richiesta alcuna azione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that has been suppressed
+# {1} is the number of times the message has been suppressed (i.e. not displayed)
+# {2} is the length of the time interval during which the message was suppressed
+# {3} is the time of the first message to be suppressed
+# {4} is the time of the last message to be suppressed
+# {5} is the time interval during which the message will be suppressed again
+
+SOME_MESSAGES_SUPPRESSED_CWSIU0007=CWSIU0007I: Il messaggio {0} si \u00e8 presentato {1} volte negli ultimi {2} minuti tra le {3} e le {4}. \
+Future ricorrenze di questo messaggio saranno soppresse per i prossimi {5} minuti
+SOME_MESSAGES_SUPPRESSED_CWSIU0007.explanation=Il messaggio si \u00e8 ripresentato molte volte, ma la visualizzazione del messaggio \u00e8 stata soppressa.
+SOME_MESSAGES_SUPPRESSED_CWSIU0007.useraction=Non \u00e8 richiesta alcuna azione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the illegal character supplied in the topic string
+# {1} is the topic string to be converted from MA0C to SIB
+INVALID_WILDCARD_CHAR_CWSIU0011=CWSIU0011E: Il carattere {0} non \u00e8 consentito in una stringa argomento SIB con caratteri jolly {1}.
+INVALID_WILDCARD_CHAR_CWSIU0011.explanation=I caratteri punto interrogativo non sono consentiti in una sintassi argomento SIB con caratteri jolly
+INVALID_WILDCARD_CHAR_CWSIU0011.useraction=Rimuovere le istanze del carattere punto interrogativo nella stringa fornita con caratteri jolly argomento.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the topic string to be converted from MA0C to SIB
+INVALID_ASTERIX_WILDCARD_CWSIU0012=CWSIU0012E: La stringa dell''argomento {0} non \u00e8 stata convertita in sintassi SIB perch\u00e9 contiene un carattere asterisco non separato.
+INVALID_ASTERIX_WILDCARD_CWSIU0012.explanation=I caratteri asterisco non sono consentiti in una sintassi SIB con caratteri jolly a meno che non siano separati da barre.
+INVALID_ASTERIX_WILDCARD_CWSIU0012.useraction=Verificare che sia presente una barra ai lati dell'asterisco nella stringa argomento fornita.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property file that can not be loaded
+# {1} is the exception thrown when the file can not be loaded
+EXCP_DURING_LOAD_CWSIU0050=CWSIU0050E: Il file delle propriet\u00e0 {0} non pu\u00f2 essere caricato a causa dell''eccezione: {1}.
+EXCP_DURING_LOAD_CWSIU0050.explanation=CMSG0001
+EXCP_DURING_LOAD_CWSIU0050.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name
+# {1} is the value of the Exception
+CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_CWSIU0051=CWSIU0051E: Si \u00e8 verificato un errore interno.  Impossibile creare un oggetto di classe {0} a causa dell''eccezione: {1}.
+CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_CWSIU0051.explanation=CMSG0001
+CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_CWSIU0051.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that has been suppressed
+# {1} is the time that the message was suppressed
+A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0101=CWSIU0101I: Una ricorrenza precedente del messaggio {0} \u00e8 stata soppressa alle {1}.
+A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0101.explanation=Il messaggio \u00e8 stato visualizzato in precedenza, ma la ricorrenza pi\u00f9 recente \u00e8 stata soppressa.
+A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0101.useraction=Nessuna.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that has been suppressed
+# {1} is the number of times the message has been suppressed (i.e. not displayed)
+# {2} is the time of the first message to be suppressed
+# {3} is the time of the last message to be suppressed
+MESSAGES_SUPPRESSED_EARLIER_CWSIU0102=CWSIU0102I: Il messaggio {0} \u00e8 stato visualizzato {1} volte tra le {2} e le {3}, ma \u00e8 stato soppresso.
+MESSAGES_SUPPRESSED_EARLIER_CWSIU0102.explanation=Il messaggio si \u00e8 ripresentato molte volte, ma la visualizzazione del messaggio \u00e8 stata soppressa.
+MESSAGES_SUPPRESSED_EARLIER_CWSIU0102.useraction=Nessuna.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that has been suppressed
+# {1} is the time of the first message to be suppressed
+SOME_A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0103=CWSIU0103I: Una ricorrenza precedente di "{0}" \u00e8 stata eliminata alle {1}.
+SOME_A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0103.explanation=Il messaggio \u00e8 stato visualizzato in precedenza, ma la ricorrenza pi\u00f9 recente prima del messaggio corrente \u00e8 stata soppressa.
+SOME_A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0103.useraction=Nessuna.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that has been suppressed
+# {1} is the number of times the message has been suppressed (i.e. not displayed)
+# {2} is the time of the first message to be suppressed
+# {3} is the time of the last message to be suppressed
+SOME_MESSAGES_SUPPRESSED_EARLIER_CWSIU0104=CWSIU0104I: "{0}" \u00e8 stato visualizzato {1} volte tra le {2} e le {3}, ma \u00e8 stato soppresso.
+SOME_MESSAGES_SUPPRESSED_EARLIER_CWSIU0104.explanation=Il messaggio si \u00e8 ripresentato molte volte, ma la visualizzazione del messaggio \u00e8 stata soppressa.
+SOME_MESSAGES_SUPPRESSED_EARLIER_CWSIU0104.useraction=Nessuna.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect hexadecimal string
+BAD_HEX_STRING_CWSIU0200=CWSIU0200E: La stringa esadecimale {0} non \u00e8 formattata correttamente.
+BAD_HEX_STRING_CWSIU0200.explanation=Un tentativo di conversione da una stringa ad un array di byte non \u00e8 riuscito perch\u00e9 la stringa contiene caratteri non esadecimali oppure un numero dispari di caratteri.
+BAD_HEX_STRING_CWSIU0200.useraction=Verificare il contenuto della stringa per cui la conversione \u00e8 in errore.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIU9999=CWSIU9999E: {0}
+TEMPORARY_CWSIU9999.explanation=Se il messaggio non fornisce sufficienti informazioni, controllare i messaggi precedenti per ulteriori dettagli.
+TEMPORARY_CWSIU9999.useraction=Se il problema persiste, rivolgersi all'amministratore del sistema.
+

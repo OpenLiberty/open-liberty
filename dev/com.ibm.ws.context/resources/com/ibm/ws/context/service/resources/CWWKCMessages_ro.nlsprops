@@ -1,0 +1,51 @@
+###############################################################################
+# Copyright (c) 2012, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.context/resources/com/ibm/ws/context/service/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Context Propagation Service
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# CWWKC1000, CWWKC1001, CWWKC1002 have been moved to another file. Do not reuse them.
+
+CWWKC1003.not.serializable=CWWKC1003E: Elementul de configurare {0} trebuie s\u0103 aib\u0103 un identificator (ID) unic sau jndiName pentru a fi serializat.
+CWWKC1003.not.serializable.explanation=Pentru a fi serializat, un serviciu context trebuie s\u0103 aib\u0103 un atribut id sau atribut jndiName unic.
+CWWKC1003.not.serializable.useraction=Ad\u0103uga\u0163i un atribut id sau atribut jndiName la configura\u0163ia serviciului context.
+
+CWWKC1004.context.provider.unavailable=CWWKC1004E: Furnizorul contextului de fir de execu\u0163ie {0} este indisponibil.
+CWWKC1004.context.provider.unavailable.explanation=Serverul de aplica\u0163ii nu poate g\u0103si un furnizor de tipul specificat al contextului de fir de execu\u0163ie.
+CWWKC1004.context.provider.unavailable.useraction=Asigura\u0163i-v\u0103 c\u0103 este activat\u0103 caracteristica ce furnizeaz\u0103 tipul specificat de context de fir de execu\u0163ie.
+
+CWWKC1010.context.service.unavailable=CWWKC1010E: Un element de configurare cu identificatorul unic sau jndiName {0} nu se g\u0103se\u015fte \u00een configura\u0163ia serverului.
+CWWKC1010.context.service.unavailable.explanation=Un serviciu context cu ID-ul sau jndiName specificat nu se g\u0103se\u015fte \u00een configura\u0163ie.
+CWWKC1010.context.service.unavailable.useraction=Asigura\u0163i-v\u0103 c\u0103 exist\u0103 un serviciu context cu ID-ul sau jndiName specificat \u00een configura\u0163ie \u015fi c\u0103 este valid.
+
+CWWKC1011.app.unavailable=CWWKC1011E: Nu se poate porni taskul {0} pentru c\u0103 aplica\u0163ia {1} care l-a lansat este indisponibil\u0103.
+CWWKC1011.app.unavailable.explanation=Aplica\u0163ia care a lansat un task trebuie s\u0103 fie disponibil\u0103 pentru a putea porni taskul.
+CWWKC1011.app.unavailable.useraction=Asigura\u0163i-v\u0103 c\u0103 aplica\u0163ia este pornit\u0103 \u015fi relansa\u0163i taskul.
+
+CWWKC1012.module.unavailable=CWWKC1012E: Nu se poate porni taskul {0} pentru c\u0103 modulul {1} al aplica\u0163iei {2} care l-a lansat este indisponibil.
+CWWKC1012.module.unavailable.explanation=Modulul care a lansat un task trebuie s\u0103 fie disponibil pentru a putea porni taskul.
+CWWKC1012.module.unavailable.useraction=Asigura\u0163i-v\u0103 c\u0103 modulul este pornit \u015fi relansa\u0163i taskul.
+
+CWWKC1013.component.unavailable=CWWKC1013E: Nu se poate porni taskul {0} \u00eentruc\u00e2t componenta {1} a modulului {2} din aplica\u0163ia {3} care l-a lansat este indisponibil\u0103.
+CWWKC1013.component.unavailable.explanation=Componenta de aplica\u0163ie care a lansat un task trebuie s\u0103 fie disponibil\u0103 pentru a putea porni taskul.
+CWWKC1013.component.unavailable.useraction=Asigura\u0163i-v\u0103 c\u0103 este pornit\u0103 componenta de aplica\u0163ie \u015fi relansa\u0163i taskul.
+
+# CWWKC1020 has been moved to another file. Do not reuse it.

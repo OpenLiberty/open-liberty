@@ -1,0 +1,35 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.artifact.api.zip/resources/com/ibm/ws/artifact/api/zip/internal/resources/ZipArtifactMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKM
+#COMPONENTNAMEFOR CWWKM Module API
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+bad.zip.data=CWWKM0101E: O sistema n\u00e3o p\u00f4de processar dados do archive para {0}.
+bad.zip.data.explanation=Ocorreu uma exce\u00e7\u00e3o ao processar os dados compactados para o archive. 
+bad.zip.data.useraction=Verifique se o arquivo \u00e9 um archive v\u00e1lido.
+
+remove.cache.data=CWWKM0102W: O sistema limpou dados em cache inv\u00e1lidos do local {0}
+remove.cache.data.explanation=A estrutura do aplicativo parece ter sido alterada, requerendo a exclus\u00e3o de dados em cache com base na estrutura anterior.
+remove.cache.data.useraction=Se seu aplicativo tiver alterado a estrutura, isto \u00e9 esperado.
+
+extract.cache.fail=CWWKM0103E: O sistema n\u00e3o p\u00f4de extrair um archive aninhado em um local de cache devido a {0}
+extract.cache.fail.explanation=Ocorreu um erro durante a cria\u00e7\u00e3o de dados em cache para o aplicativo, impedindo que o aplicativo fosse processado corretamente. 
+extract.cache.fail.useraction=Verifique a causa relatada.

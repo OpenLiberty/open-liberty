@@ -1,0 +1,134 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.session-3.0/resources/com/ibm/ws/session/resources/WASSessionCore.nlsprops
+#COMPONENTPREFIX SESN
+#COMPONENTNAMEFOR SESN Session
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+SessionContext.createWhenStop=SESN0006E: Podj\u0119to pr\u00f3b\u0119 utworzenia sesji w czasie zatrzymywania serwera aplikacji.
+SessionContext.createWhenStop.explanation=Ten b\u0142\u0105d wyst\u0119puje, je\u015bli \u017c\u0105danie dotycz\u0105ce sesji zostanie odebrane w trakcie zatrzymywania serwera.
+SessionContext.createWhenStop.useraction=Zrestartuj serwer.
+# -------------------------------------------------------------------------------------------------
+SessionContext.accessWhenStop=SESN0007E: Podj\u0119to pr\u00f3b\u0119 uzyskania dost\u0119pu do sesji w czasie zatrzymywania serwera aplikacji. 
+SessionContext.accessWhenStop.explanation=Ten b\u0142\u0105d wyst\u0119puje, je\u015bli \u017c\u0105danie dotycz\u0105ce sesji zostanie odebrane w trakcie zatrzymywania serwera.
+SessionContext.accessWhenStop.useraction=Zrestartuj serwer.
+# -------------------------------------------------------------------------------------------------
+SessionContext.unauthAccessError=SESN0008E: U\u017cytkownik uwierzytelniony jako {0} podj\u0105\u0142 pr\u00f3b\u0119 uzyskania dost\u0119pu do sesji u\u017cytkownika {1}.
+SessionContext.unauthAccessError.explanation=Opcja integracji bezpiecze\u0144stwa sesji wykry\u0142a pr\u00f3b\u0119 uzyskania dost\u0119pu do sesji ze strony nieupowa\u017cnionego u\u017cytkownika.
+SessionContext.unauthAccessError.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+# -------------------------------------------------------------------------------------------------
+SessionData.putValErr1=SESN0012E: Wprowadzono klucz o warto\u015bci NULL. Metoda HttpSession.putValue lub HttpSession.setAttribute zosta\u0142a wywo\u0142ana z poziomu serwletu lub strony JSP przy u\u017cyciu klucza o warto\u015bci NULL.
+SessionData.putValErr1.explanation=Metod HttpSession.putValue oraz HttpSession.setAttribute nie mo\u017cna wywo\u0142a\u0107 przy u\u017cyciu klucza o warto\u015bci NULL.
+SessionData.putValErr1.useraction=Zmodyfikuj serwlet lub stron\u0119 JSP, aby by\u0142 przekazywany klucz o warto\u015bci innej ni\u017c NULL.
+# -------------------------------------------------------------------------------------------------
+SessionData.putValErr2=SESN0013E: Wprowadzono warto\u015b\u0107 NULL dla klucza {0}. Metoda HttpSession.putValue zosta\u0142a wywo\u0142ana z poziomu serwletu lub strony JSP przy u\u017cyciu warto\u015bci NULL.
+SessionData.putValErr2.explanation=Metody HttpSession.putValue nie mo\u017cna wywo\u0142a\u0107 przy u\u017cyciu warto\u015bci NULL.
+SessionData.putValErr2.useraction=Zmodyfikuj serwlet lub stron\u0119 JSP tak, aby by\u0142a przekazywana warto\u015b\u0107 inna ni\u017c NULL.
+# -------------------------------------------------------------------------------------------------
+SessionContext.responseAlreadyCommitted=SESN0066E: Odpowied\u017a zosta\u0142a ju\u017c przekazana do klienta. Nie mo\u017cna ustawi\u0107 informacji cookie dotycz\u0105cej sesji.
+SessionContext.responseAlreadyCommitted.explanation=Odpowied\u017a zosta\u0142a ju\u017c przekazana do klienta, w zwi\u0105zku z czym nie mo\u017cna do niego przes\u0142a\u0107 informacji cookie.
+SessionContext.responseAlreadyCommitted.useraction=Zmodyfikuj aplikacj\u0119 tak, aby uzyskiwa\u0142a dost\u0119p do sesji HTTP przed zapisaniem jakichkolwiek informacji w odpowiedzi.
+# -------------------------------------------------------------------------------------------------
+SessionContext.maxSessionIdLengthExceeded=SESN0116W: Przekroczono limit d\u0142ugo\u015bci identyfikatora sesji {0} wynosz\u0105cy {1}.
+SessionContext.maxSessionIdLengthExceeded.explanation=Przekroczono podan\u0105 warto\u015b\u0107 w\u0142a\u015bciwo\u015bci SessionIdentifierMaxLength.
+SessionContext.maxSessionIdLengthExceeded.useraction=W\u0142a\u015bciwo\u015b\u0107 t\u0119 nale\u017cy ustawia\u0107 tylko wtedy, gdy jest to bezwzgl\u0119dnie konieczne. Je\u015bli ta w\u0142a\u015bciwo\u015b\u0107 jest niezb\u0119dna, nale\u017cy jej nada\u0107 maksymaln\u0105 warto\u015b\u0107, jaka jest do przyj\u0119cia w ramach danej instalacji. Je\u015bli opisany problem nadal wyst\u0119puje, prawdopodobnie wynika to z powtarzaj\u0105cych si\u0119 operacji prze\u0142\u0105czania awaryjnego. Znajd\u017a i usu\u0144 podstawow\u0105 przyczyn\u0119 prze\u0142\u0105cze\u0144 awaryjnych.
+# -------------------------------------------------------------------------------------------------
+SessionContextRegistry.globalSessionsEnabled=SESN0117I: Globalne sesje s\u0105 w\u0142\u0105czone dla modu\u0142\u00f3w WWW dzia\u0142aj\u0105cych z u\u017cyciem konfiguracji zarz\u0105dzania sesj\u0105 na poziomie kontenera WWW.
+SessionContextRegistry.globalSessionsEnabled.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+SessionContextRegistry.globalSessionsEnabled.useraction=Je\u015bli obs\u0142uga sesji globalnych nie jest wymagana, wy\u0142\u0105cz j\u0105, nadaj\u0105c w\u0142a\u015bciwo\u015bci Servlet21SessionCompatibility warto\u015b\u0107 false.
+# -------------------------------------------------------------------------------------------------
+SessionContextRegistry.globalSessionTBWWarning=SESN0118W: Razem z obs\u0142ug\u0105 sesji globalnych zosta\u0142a w\u0142\u0105czona opcja zapisu na podstawie czasu.  Dost\u0119p do sesji globalnej z poziomu kilku serwer\u00f3w lub klastr\u00f3w mo\u017ce spowodowa\u0107 utrat\u0119 integralno\u015bci danych sesji.
+SessionContextRegistry.globalSessionTBWWarning.explanation=Je\u015bli razem z obs\u0142ug\u0105 sesji globalnych zosta\u0142a w\u0142\u0105czona opcja zapisu na podstawie czasu i wszystkie modu\u0142y WWW uzyskuj\u0105ce dost\u0119p do sesji globalnej znajduj\u0105 si\u0119 na r\u00f3\u017cnych serwerach lub w r\u00f3\u017cnych klastrach, mo\u017ce doj\u015b\u0107 do utraty integralno\u015bci danych sesji.
+SessionContextRegistry.globalSessionTBWWarning.useraction=Wy\u0142\u0105cz opcj\u0119 zapisu na podstawie czasu, je\u015bli modu\u0142y WWW uzyskuj\u0105ce dost\u0119p do sesji globalnej s\u0105 rozmieszczone na r\u00f3\u017cnych serwerach lub w r\u00f3\u017cnych klastrach.
+# -------------------------------------------------------------------------------------------------
+SessionContextRegistry.globalSessionM2MWarning=SESN0119W: Razem z obs\u0142ug\u0105 sesji globalnych zosta\u0142a w\u0142\u0105czona opcja replikacji z pami\u0119ci do pami\u0119ci.  Dost\u0119p do sesji globalnej z poziomu kilku serwer\u00f3w lub klastr\u00f3w mo\u017ce spowodowa\u0107 utrat\u0119 integralno\u015bci danych sesji.
+SessionContextRegistry.globalSessionM2MWarning.explanation=Je\u015bli razem z obs\u0142ug\u0105 sesji globalnych zosta\u0142a w\u0142\u0105czona opcja replikacji z pami\u0119ci do pami\u0119ci i wszystkie modu\u0142y WWW uzyskuj\u0105ce dost\u0119p do sesji globalnej znajduj\u0105 si\u0119 na r\u00f3\u017cnych serwerach lub w r\u00f3\u017cnych klastrach, mo\u017ce doj\u015b\u0107 do utraty integralno\u015bci danych sesji.
+SessionContextRegistry.globalSessionM2MWarning.useraction=Wy\u0142\u0105cz opcj\u0119 replikacji z pami\u0119ci do pami\u0119ci, je\u015bli modu\u0142y WWW uzyskuj\u0105ce dost\u0119p do sesji globalnej s\u0105 rozmieszczone na r\u00f3\u017cnych serwerach lub w r\u00f3\u017cnych klastrach.
+# -------------------------------------------------------------------------------------------------
+SessionContextRegistry.SessionNotGlobalForWebApp=SESN0120I: Modu\u0142 WWW {0} nie b\u0119dzie uczestniczy\u0142 w sesjach globalnych, poniewa\u017c konfiguracja zarz\u0105dzania sesjami na poziomie kontener\u00f3w WWW zosta\u0142a przes\u0142oni\u0119ta.
+SessionContextRegistry.SessionNotGlobalForWebApp.explanation=Okre\u015blony modu\u0142 WWW nie b\u0119dzie uczestniczy\u0142 w sesjach globalnych, poniewa\u017c konfiguracja zarz\u0105dzania sesjami na poziomie kontener\u00f3w WWW zosta\u0142a przes\u0142oni\u0119ta na poziomie aplikacji korporacyjnej lub modu\u0142u WWW.
+SessionContextRegistry.SessionNotGlobalForWebApp.useraction=Aby modu\u0142 WWW uczestniczy\u0142 w sesjach globalnych, wy\u0142\u0105cz konfiguracj\u0119 zarz\u0105dzania sesjami okre\u015blon\u0105 na poziomie aplikacji korporacyjnej lub modu\u0142u WWW, a nast\u0119pnie zrestartuj serwer.
+# -------------------------------------------------------------------------------------------------
+SessionContext.CrossoverOnRetrieve=SESN0121E: W aplikacji WWW {0} wykryto zamian\u0119 krzy\u017cow\u0105 sesji.  Pobrano sesj\u0119 {1} zamiast spodziewanej sesji {2}.
+SessionContext.CrossoverOnRetrieve.explanation=W wyniku wywo\u0142ania metody request.getSession zosta\u0142a zwr\u00f3cona sesja inna ni\u017c \u017c\u0105dana.
+SessionContext.CrossoverOnRetrieve.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+SessionContext.CrossoverOnReference=SESN0122E: W aplikacji WWW {0} wykryto zamian\u0119 krzy\u017cow\u0105 sesji.  W metodzie {2} nast\u0105pi\u0142o odwo\u0142anie do sesji {1} zamiast do spodziewanej sesji {3}.
+SessionContext.CrossoverOnReference.explanation=Aplikacja odwo\u0142a\u0142a si\u0119 do sesji innej ni\u017c sesja powi\u0105zana z \u017c\u0105daniem.
+SessionContext.CrossoverOnReference.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+SessionContext.CrossoverOnReturn=SESN0123E: W aplikacji WWW {0} wykryto zamian\u0119 krzy\u017cow\u0105 sesji.  Do klienta zwr\u00f3cono sesj\u0119 {1} zamiast spodziewanej sesji {2}.
+SessionContext.CrossoverOnReturn.explanation=Do klienta zwr\u00f3cono informacj\u0119 cookie lub adres URL zawieraj\u0105cy identyfikator sesji niepowi\u0105zany z \u017c\u0105daniem.
+SessionContext.CrossoverOnReturn.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+SessionContext.DebugCrossoverEnabled=SESN0124W: W\u0142\u0105czono wykrywanie zamiany krzy\u017cowej sesji.
+SessionContext.DebugCrossoverEnabled.explanation=Trwa uruchamianie mechanizm\u00f3w wykrywania zamiany krzy\u017cowej sesji.
+SessionContext.DebugCrossoverEnabled.useraction=W celu zwi\u0119kszenia wydajno\u015bci mo\u017cna wy\u0142\u0105czy\u0107 te mechanizmy, ustawiaj\u0105c dla w\u0142a\u015bciwo\u015bci niestandardowej DebugSessionCrossover kontenera WWW warto\u015b\u0107 false.
+# -------------------------------------------------------------------------------------------------
+SessionContext.propertyFound=SESN0169I: Mened\u017cer sesji znalaz\u0142 w\u0142a\u015bciwo\u015b\u0107 niestandardow\u0105 {0} o warto\u015bci {1}.
+SessionContext.propertyFound.explanation=Okre\u015blona w\u0142a\u015bciwo\u015b\u0107 o podanej warto\u015bci jest u\u017cywana do sterowania dzia\u0142aniem mened\u017cera sesji.
+SessionContext.propertyFound.useraction=Sprawd\u017a, czy okre\u015blona w\u0142a\u015bciwo\u015b\u0107 i jej warto\u015b\u0107 umo\u017cliwi\u0105 prawid\u0142owe dzia\u0142anie mened\u017cera.
+# -------------------------------------------------------------------------------------------------
+SessionContext.invalidPropertyFound=SESN0170W: Mened\u017cer sesji znalaz\u0142 w\u0142a\u015bciwo\u015b\u0107 niestandardow\u0105 {0}, kt\u00f3ra ma warto\u015b\u0107 nieliczbow\u0105 {1}, w zwi\u0105zku z czym zostanie ona zignorowana.
+SessionContext.invalidPropertyFound.explanation=Mened\u017cer sesji oczekiwa\u0142, \u017ce okre\u015blona w\u0142a\u015bciwo\u015b\u0107 b\u0119dzie mia\u0142a warto\u015b\u0107 liczbow\u0105.
+SessionContext.invalidPropertyFound.useraction=Zmodyfikuj podan\u0105 warto\u015b\u0107 w\u0142a\u015bciwo\u015bci w taki spos\u00f3b, aby by\u0142a poprawn\u0105 liczb\u0105.
+# -------------------------------------------------------------------------------------------------
+SessionContext.valueOutOfRange=SESN0171W: Mened\u017cer sesji znalaz\u0142 w\u0142a\u015bciwo\u015b\u0107 niestandardow\u0105 {0} o warto\u015bci poza zasi\u0119giem: {1}, w zwi\u0105zku z czym u\u017cyje warto\u015bci {2}.
+SessionContext.valueOutOfRange.explanation=Mened\u017cer sesji oczekiwa\u0142, \u017ce okre\u015blona w\u0142a\u015bciwo\u015b\u0107 b\u0119dzie mia\u0142a warto\u015b\u0107 z okre\u015blonego zakresu.  Zamiast niej mened\u017cer sesji u\u017cywa najbli\u017cszej poprawnej warto\u015bci.
+SessionContext.valueOutOfRange.useraction=Popraw warto\u015b\u0107 okre\u015blonej w\u0142a\u015bciwo\u015bci tak, aby mie\u015bci\u0142a si\u0119 w udokumentowanym zakresie.
+# -------------------------------------------------------------------------------------------------
+# ---------------------------------------NEW 7.0---------------------------------------------------
+SessionIdGeneratorImpl.UsingDefaultSecureRandom=SESN0172I: Mened\u017cer sesji korzysta przy generowaniu identyfikatora sesji z domy\u015blnej implementacji klasy SecureRandom j\u0119zyka Java.
+SessionIdGeneratorImpl.UsingDefaultSecureRandom.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+SessionIdGeneratorImpl.UsingDefaultSecureRandom.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+# -------------------------------------------------------------------------------------------------
+SessionContextRegistry.existingContext=SESN0175I: W odniesieniu do klucza aplikacji {0} zostanie u\u017cyty istniej\u0105cy kontekst sesji.
+SessionContextRegistry.existingContext.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+SessionContextRegistry.existingContext.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+# -------------------------------------------------------------------------------------------------
+SessionContextRegistry.newContext=SESN0176I: W odniesieniu do klucza aplikacji {0} zostanie utworzony nowy kontekst sesji.
+SessionContextRegistry.newContext.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+SessionContextRegistry.newContext.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+# -------------------------------------------------------------------------------------------------
+SessionProperties.serverLevelConfigOnly=SESN0194W: Mened\u017cer sesji znalaz\u0142 w\u0142a\u015bciwo\u015b\u0107 niestandardow\u0105 {0} o warto\u015bci {1}. Mened\u017cer sesji nie mo\u017ce przes\u0142oni\u0107 konfiguracji na poziomie serwera warto\u015bci\u0105 {2}.  W\u0142a\u015bciwo\u015b\u0107 zostanie zignorowana.
+SessionProperties.serverLevelConfigOnly.explanation=W\u0142a\u015bciwo\u015b\u0107 niestandardow\u0105 mo\u017cna ustawi\u0107 wy\u0142\u0105cznie na poziomie serwera.
+SessionProperties.serverLevelConfigOnly.useraction=Usu\u0144 w\u0142a\u015bciwo\u015b\u0107 niestandardow\u0105 z konfiguracji na poziomie aplikacji lub modu\u0142u.  W razie potrzeby zmie\u0144 konfiguracj\u0119 na poziomie serwera.
+# -------------------------------------------------------------------------------------------------
+SessionProperties.propertyFoundButAlreadySet=SESN0195I: Mened\u017cer sesji znalaz\u0142 w\u0142a\u015bciwo\u015b\u0107 niestandardow\u0105 {0} o warto\u015bci {1}. T\u0119 w\u0142a\u015bciwo\u015b\u0107 niestandardow\u0105 mo\u017cna ustawi\u0107 wy\u0142\u0105cznie na poziomie serwera. Poniewa\u017c jest ona taka sama, jak w\u0142a\u015bciwo\u015b\u0107 zapisana w konfiguracji na poziomie serwera, zostanie u\u017cyta.
+SessionProperties.propertyFoundButAlreadySet.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+SessionProperties.propertyFoundButAlreadySet.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+# -------------------------------------------------------------------------------------------------
+Store.createSessionIdAlreadyExists=SESN0196W: Generator identyfikator\u00f3w wygenerowa\u0142 identyfikator, kt\u00f3ry ju\u017c istnieje.
+Store.createSessionIdAlreadyExists.explanation=Generator identyfikator\u00f3w wygenerowa\u0142 identyfikator, kt\u00f3ry ju\u017c istnieje. Z tego powodu zostanie wygenerowany inny identyfikator.
+Store.createSessionIdAlreadyExists.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+# ---------------------------------------NEW 8.5---------------------------------------------------
+# -------------------------------------------------------------------------------------------------
+SessionMgrComponentImpl.noPersistence=SESN8501I: Mened\u017cer sesji nie znalaz\u0142 po\u0142o\u017cenia trwa\u0142ej pami\u0119ci masowej. Obiekty HttpSession b\u0119d\u0105 zapisywane w pami\u0119ci lokalnego serwera aplikacji.
+SessionMgrComponentImpl.noPersistence.explanation=Po\u0142o\u017cenia trwa\u0142ej pami\u0119ci masowej mo\u017cna u\u017cy\u0107, gdy dane sesji u\u017cytkownika musz\u0105 by\u0107 przechowane na czas restartu serwera lub gdy dane te s\u0105 zbyt wa\u017cne, aby mog\u0142y zosta\u0107 utracone na skutek nieoczekiwanej awarii serwera. Je\u015bli po\u0142o\u017cenie pami\u0119ci masowej nie zostanie wykryte, obiekty HttpSession b\u0119d\u0105 zapisywane tylko w pami\u0119ci lokalnego serwera aplikacji. Domy\u015blnie po\u0142o\u017cenie trwa\u0142ej pami\u0119ci masowej jest niedost\u0119pne. Musi ono zosta\u0107 skonfigurowane przez administratora serwera.
+SessionMgrComponentImpl.noPersistence.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. Je\u015bli zamierzano skonfigurowa\u0107 po\u0142o\u017cenie trwa\u0142ej pami\u0119ci masowej, nale\u017cy przejrze\u0107 dzienniki serwera i konfiguracj\u0119 serwera pod k\u0105tem b\u0142\u0119d\u00f3w.
+# -------------------------------------------------------------------------------------------------
+SessionMgrComponentImpl.persistenceMode=SESN8502I: Mened\u017cer sesji znalaz\u0142 po\u0142o\u017cenie trwa\u0142ej pami\u0119ci masowej. Zostanie u\u017cyty tryb {0} utrwalania sesji.
+SessionMgrComponentImpl.persistenceMode.explanation=Po\u0142o\u017cenia trwa\u0142ej pami\u0119ci masowej mo\u017cna u\u017cy\u0107, gdy dane sesji u\u017cytkownika musz\u0105 by\u0107 przechowane na czas restartu serwera lub gdy dane te s\u0105 zbyt wa\u017cne, aby mog\u0142y zosta\u0107 utracone na skutek nieoczekiwanej awarii serwera. Je\u015bli po\u0142o\u017cenie pami\u0119ci masowej zostanie wykryte, obiekty HttpSession b\u0119d\u0105 zapisywane w pami\u0119ci lokalnego serwera aplikacji, a tak\u017ce utrwalane w po\u0142o\u017ceniu pami\u0119ci masowej. Domy\u015blnie po\u0142o\u017cenie trwa\u0142ej pami\u0119ci masowej jest niedost\u0119pne. Musi ono zosta\u0107 skonfigurowane przez administratora serwera.
+SessionMgrComponentImpl.persistenceMode.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. Je\u015bli nie zamierzano konfigurowa\u0107 po\u0142o\u017cenia trwa\u0142ej pami\u0119ci masowej, nale\u017cy zaktualizowa\u0107 konfiguracj\u0119 serwera, usuwaj\u0105c wszystkie odwo\u0142ania do po\u0142o\u017cenia pami\u0119ci masowej i usuwaj\u0105c z mened\u017cera sk\u0142adnik\u00f3w sk\u0142adnik wymagaj\u0105cy po\u0142o\u017cenia pami\u0119ci masowej.
+# -------------------------------------------------------------------------------------------------
+# This isn't an official message but is used to log exception data.
+# It is used in many places in the session manager and has existed this way for many years.
+CommonMessage.exception=Wyj\u0105tek: 
+# -------------------------------------------------------------------------------------------------
+# The following are not official messages but have been in-use for many years for logging extra data following an error
+CommonMessage.object=Obiekt sesji: {0}
+CommonMessage.sessionid=Identyfikator sesji: {0}
+CommonMessage.miscData=Inne dane: {0}
+# -------------------------------------------------------------------------------------------------
+SessionContext.invalidCloneSeparator=SESN0800W: Warto\u015b\u0107 w\u0142a\u015bciwo\u015bci CloneSeparator musi zawiera\u0107 dok\u0142adnie jeden znak i nie mo\u017ce to by\u0107 spacja. Aktualnie okre\u015blon\u0105 warto\u015bci\u0105 w\u0142a\u015bciwo\u015bci CloneSeparator jest {0}
+SessionContext.invalidCloneSeparator.explanation=Warto\u015b\u0107 w\u0142a\u015bciwo\u015bci CloneSeparator musi zawiera\u0107 dok\u0142adnie jeden znak i nie mo\u017ce to by\u0107 spacja.
+SessionContext.invalidCloneSeparator.useraction=Zmodyfikuj w\u0142a\u015bciwo\u015b\u0107 niestandardow\u0105 CloneSeparator.

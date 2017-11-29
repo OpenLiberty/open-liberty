@@ -1,0 +1,44 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.csiv2.client/resources/com/ibm/ws/security/csiv2/client/internal/resources/CSIv2ClientContainerMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server CSIv2 for the client container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9700 - CWWKS9749
+
+# Client CSIv2 Configuration related messages CWWKS9700 - CWWKS9719
+# -------------------------------------------------------------------------------------------------
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID=CWWKS9700E: El mecanismo o mecanismos de autenticaci\u00f3n especificados en la seguridad del cliente {0} no son v\u00e1lidos. El valor v\u00e1lido es GSSUP.
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.explanation=El mecanismo o mecanismos de capa de autenticaci\u00f3n de seguridad del cliente especificados no est\u00e1n soportados.
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.useraction=Aseg\u00farese de que el mecanismo de capa de autenticaci\u00f3n de seguridad del cliente especificado sea GSSUP.
+
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL=CWWKS9701W: El mecanismo de capa de autenticaci\u00f3n especificado en la seguridad del cliente es nulo.
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.explanation=El mecanismo de capa de autenticaci\u00f3n de seguridad del cliente especificado es nulo.
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.useraction=Aseg\u00farese de que el mecanismo de capa de autenticaci\u00f3n de seguridad del cliente especificado sea GSSUP.
+
+CSIv2_CLIENT_MISSING_AUTH_MECH_PROPERTIES=CWWKS9702W: Faltan los siguientes atributos en la pol\u00edtica de cliente IIOP. Los atributos que faltan son [{0}]. A menos que la aplicaci\u00f3n haya implementado un inicio de sesi\u00f3n program\u00e1tico, aseg\u00farese de que los atributos se especifiquen en el archivo client.xml. 
+CSIv2_CLIENT_MISSING_AUTH_MECH_PROPERTIES.explanation=Falta un atributo en el mecanismo de capa de autenticaci\u00f3n de pol\u00edtica de cliente que se ha especificado.
+CSIv2_CLIENT_MISSING_AUTH_MECH_PROPERTIES.useraction=Aseg\u00farese de que se hayan establecido los atributos necesarios o que se utiliza el inicio de sesi\u00f3n program\u00e1tico para proporcionar los valores.
+
+# Client CSIv2 runtime related messages CWWKS9720 - CWWKS9729
+# -------------------------------------------------------------------------------------------------
+
+# Common CSIv2  related messages CWWKS9730 - CWWKS9749
+# -------------------------------------------------------------------------------------------------
+CSIv2_COMMON_AUTH_LAYER_DISABLED=CWWKS9730W: La capa de autenticaci\u00f3n CSIv2 est\u00e1 inhabilitada porque el valor de establishTrustInClient es {0}.
+CSIv2_COMMON_AUTH_LAYER_DISABLED.explanation=Cuando establishTrustInClient est\u00e1 establecido en Never, la capa de autenticaci\u00f3n CSIv2 est\u00e1 inhabilitada. 
+CSIv2_COMMON_AUTH_LAYER_DISABLED.useraction=Para habilitar la capa de autenticaci\u00f3n CSIv2, establezca el valor de establishTrustInClient en Supported o Required.
+
+

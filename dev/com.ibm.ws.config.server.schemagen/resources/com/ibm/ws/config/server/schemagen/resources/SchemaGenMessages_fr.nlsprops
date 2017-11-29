@@ -1,0 +1,91 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.config.server.schemagen/resources/com/ibm/ws/config/server/schemagen/resources/SchemaGenMessages.nlsprops
+#COMPONENTPREFIX CWWKG
+#COMPONENTNAMEFOR CWWKG WebSphere Server Config Schema 
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+## Message prefix block: CWWKG3001 - CWWKG3050
+# 
+
+#------------------------------------------------------------------------
+# Generic messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Syntaxe : {0} serveur
+
+#------------------------------------------------------------------------
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+argument.required=Argument requis manquant : {0}.
+argument.unrecognized=Argument non reconnu : {0}.
+argument.unrecognized.expected=Argument non reconnu : {0}. Vouliez-vous dire : {1} ?.
+argument.invalid.value=Valeur inacceptable pour l''argument : {0}={1}. Valeurs acceptables : {2}.
+
+#------------------------------------------------------------------------
+# Task messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+server.not.found=CWWKG3001E: Le serveur nomm\u00e9 {0} est introuvable. Il devait se trouver \u00e0 l''emplacement suivant : {1}. V\u00e9rifiez que la configuration de serveur se trouve dans le r\u00e9pertoire fourni par le message.
+server.not.found.explanation= Le serveur sp\u00e9cifi\u00e9 dans la commande serverSchemaGen est introuvable. Vous pouvez trouver l'emplacement attendu pour le r\u00e9pertoire de la configuration de serveur dans le message.
+server.not.found.useraction=V\u00e9rifiez que la configuration de serveur se trouve dans le r\u00e9pertoire fourni par le message.  Si n\u00e9cessaire, modifiez les variables WLP_USER_DIR or WLP_INSTALL_DIR afin que le chemin correct soit utilis\u00e9 pour la recherche des fichiers de la configuration de serveur.
+
+local.connector.not.found=CWWKG3002E: Le serveur nomm\u00e9 {0} n''est pas configur\u00e9 pour accepter les demandes JMX locales. Assurez-vous que la configuration de serveur inclut la fonction localConnector et que le serveur est d\u00e9marr\u00e9.
+local.connector.not.found.explanation=Le serveur sp\u00e9cifie dans la commande serverSchemaGen n'est pas configur\u00e9 pour accepter les demandes JMX locales.
+local.connector.not.found.useraction=Assurez-vous que la configuration de serveur inclut la fonction localConnector et que le serveur est d\u00e9marr\u00e9. L'URL requise pour l'\u00e9tablissement d'une connexion JMX locale \u00e0 ce serveur se trouve dans le fichier WLP_USER_DIR/logs/state/com.ibm.ws.jmx.local.address.
+
+local.connector.url.empty=CWWKG3003E: Le serveur nomm\u00e9 {0} indique un probl\u00e8me de configuration de la fonction localConnector.
+local.connector.url.empty.explanation=Le serveur sp\u00e9cifie dans la commande serverSchemaGen n'est pas configur\u00e9 pour accepter les demandes JMX locales. Le fichier contenant l'URL utilis\u00e9e pour cr\u00e9er une connexion JMX au serveur est vide.
+local.connector.url.empty.useraction=Assurez-vous que la configuration de serveur inclut la fonction localConnector et que le serveur est d\u00e9marr\u00e9. L'URL requise pour l'\u00e9tablissement d'une connexion JMX locale \u00e0 ce serveur se trouve dans le fichier WLP_USER_DIR/logs/state/com.ibm.ws.jmx.local.address.
+
+mbean.null.result=CWWKG3004E: La commande de g\u00e9n\u00e9ration de sch\u00e9ma de serveur n'a pas retourn\u00e9 de r\u00e9sultat.
+mbean.null.result.explanation=Le bean g\u00e9r\u00e9 qui g\u00e9n\u00e8re le sch\u00e9ma de serveur a \u00e9t\u00e9 appel\u00e9, mais aucun r\u00e9sultat n'a \u00e9t\u00e9 retourn\u00e9. Le sch\u00e9ma demand\u00e9 n'a peut-\u00eatre pas \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9.
+mbean.null.result.useraction=V\u00e9rifiez si les journaux serveur et le r\u00e9pertoire FFDC contiennent un message d'erreur ou une exception. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+mbean.bad.result=CWWKG3005E: La commande de g\u00e9n\u00e9ration de sch\u00e9ma de serveur a indiqu\u00e9 qu'un probl\u00e8me a \u00e9t\u00e9 signal\u00e9 pendant la g\u00e9n\u00e9ration de sch\u00e9ma.
+mbean.bad.result.explanation=Le bean g\u00e9r\u00e9 qui g\u00e9n\u00e8re le sch\u00e9ma de serveur a \u00e9t\u00e9 appel\u00e9, mais une erreur a \u00e9t\u00e9 signal\u00e9e lors de la g\u00e9n\u00e9ration de sch\u00e9ma. Le sch\u00e9ma demand\u00e9 n'a peut-\u00eatre pas \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9.
+mbean.bad.result.useraction=V\u00e9rifiez si les journaux serveur et le r\u00e9pertoire FFDC contiennent un message d'erreur ou une exception. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+mbean.missing.result=CWWKG3006E: La commande de g\u00e9n\u00e9ration de sch\u00e9ma de serveur n'a pas indiqu\u00e9 si elle avait abouti.
+mbean.missing.result.explanation=Le bean g\u00e9r\u00e9 qui g\u00e9n\u00e8re le sch\u00e9ma de serveur a \u00e9t\u00e9 appel\u00e9, mais aucun code r\u00e9ponse n'a \u00e9t\u00e9 retourn\u00e9 dans le r\u00e9sultat. Le sch\u00e9ma demand\u00e9 n'a peut-\u00eatre pas \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9.
+mbean.missing.result.useraction=V\u00e9rifiez si les journaux serveur et le r\u00e9pertoire FFDC contiennent un message d'erreur ou une exception. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+mbean.missing.output.dir=CWWKG3007E: La commande de g\u00e9n\u00e9ration de sch\u00e9ma de serveur n'a pas retourn\u00e9 de nom de r\u00e9pertoire de sortie.
+mbean.missing.output.dir.explanation=Le bean qui g\u00e9n\u00e8re le sch\u00e9ma de serveur a \u00e9t\u00e9 appel\u00e9, mais le r\u00e9pertoire de sortie utilis\u00e9 pour l'\u00e9criture du sch\u00e9ma n'a pas \u00e9t\u00e9 fourni dans la r\u00e9ponse. Le sch\u00e9ma demand\u00e9 n'a peut-\u00eatre pas \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9.
+mbean.missing.output.dir.useraction=Consultez le sch\u00e9ma g\u00e9n\u00e9r\u00e9 dans le r\u00e9pertoire de sortie du serveur cible. Le r\u00e9pertoire de sortie est sp\u00e9cifi\u00e9 dans le processus serveur par la d\u00e9finition de la variable WLP_OUTPUT_DIR. Le sch\u00e9ma est g\u00e9n\u00e9r\u00e9 dans un r\u00e9pertoire schemagen du r\u00e9pertoire de sortie. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+mbean.output.dir=CWWKG3008I: Le sch\u00e9ma de serveur demand\u00e9 a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9 dans le r\u00e9pertoire suivant : {0}
+mbean.output.dir.explanation=Le sch\u00e9ma de serveur demand\u00e9 a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9 et se trouve dans le r\u00e9pertoire indiqu\u00e9 dans le message.
+mbean.output.dir.useraction=Aucune intervention de l'utilisateur n'est requise.
+
+mbean.not.found=CWWKG3009W: Le bean g\u00e9r\u00e9 qui g\u00e9n\u00e8re le sch\u00e9ma de serveur n''est pas actif sur le serveur {0}.
+mbean.not.found.explanation=Une connexion JMX a \u00e9t\u00e9 \u00e9tablie avec le serveur cible mais le bean g\u00e9r\u00e9 de g\u00e9n\u00e9ration de sch\u00e9ma de serveur est introuvable. 
+mbean.not.found.useraction=V\u00e9rifiez si les journaux serveur et le r\u00e9pertoire FFDC contiennent un message d'erreur ou une exception. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+exception.catch=CWWKG3010E: Une exception a \u00e9t\u00e9 \u00e9mise par la commande de g\u00e9n\u00e9ration de sch\u00e9ma de serveur : {0}
+exception.catch.explanation=Une exception inattendue a \u00e9t\u00e9 \u00e9mise par la commande de g\u00e9n\u00e9ration de sch\u00e9ma de serveur. La trace de pile d'exceptions figure dans le fichier journal stderr. L'utilitaire va arr\u00eater le traitement.
+exception.catch.useraction=Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+server.output.logs.dir.not.found=CWWKG3011E: Le r\u00e9pertoire de journaux du serveur nomm\u00e9 {0} est introuvable. Il devait se trouver \u00e0 l''emplacement suivant : {1}. La valeur du r\u00e9pertoire de journaux est calcul\u00e9e \u00e0 partir de la variable WLP_OUTPUT_DIR. 
+server.output.logs.dir.not.found.explanation=Le r\u00e9pertoire des journaux doit \u00eatre disponible pour que la commande puisse localiser les informations de connexion JMX du serveur. Cette erreur peut survenir si la valeur de la variable WLP_OUTPUT_DIR dans l'environnement actuel n'est pas la m\u00eame que celle utilis\u00e9e par le serveur. 
+server.output.logs.dir.not.found.useraction=Veillez \u00e0 ce que la valeur de la variable WLP_OUTPUT_DIR corresponde \u00e0 celle utilis\u00e9e par le serveur et v\u00e9rifiez que le r\u00e9pertoire des journaux existe. 
+

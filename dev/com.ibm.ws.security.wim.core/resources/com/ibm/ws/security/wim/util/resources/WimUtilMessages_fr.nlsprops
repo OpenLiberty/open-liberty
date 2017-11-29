@@ -1,0 +1,265 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.websphere.security.wim.util/resources/com/ibm/websphere/security/wim/util/resources/WebsphereWimUtilMessages.nlsprops
+#COMPONENTPREFIX CWIML
+#COMPONENTPREFIX CWIMK
+#COMPONENTNAMEFOR Virtual Member Manager wim utilities 
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: Configuration:0000-0499
+# Message prefix block: Profile Manager: 1000-1999
+# Message prefix block: Repository Manager: 4000-4499
+# Message prefix block: Adapters: 4500-4999
+# Message prefix block: Schema/Realm: 0500-0999
+# Message prefix block: User Registry: 3000-3499
+
+INVALID_UNIQUE_NAME_SYNTAX=CWIML1011E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. La syntaxe de nom unique {0} n''est pas valide. Indiquez un nom unique avec la syntaxe correcte. Par exemple, uid=xyz,dc=yourco,dc=com.
+INVALID_UNIQUE_NAME_SYNTAX.explanation=La syntaxe de nom unique indiqu\u00e9e n'est pas valide. Le nom unique indiqu\u00e9 dans la propri\u00e9t\u00e9 d'identificateur n'est pas correct. L'op\u00e9ration de registre d'utilisateurs ne peut pas se poursuivre sans le nom unique correct.
+INVALID_UNIQUE_NAME_SYNTAX.useraction=V\u00e9rifiez que le nom unique est correctement orthographi\u00e9. V\u00e9rifiez la syntaxe du nom unique. Par exemple, s'il est au format DN, assurez-vous que les caract\u00e8res sp\u00e9ciaux sont correctement sp\u00e9cifi\u00e9s avec des caract\u00e8res d'\u00e9chappement.
+
+INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION=CWIMK0001E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. La d\u00e9finition de type d''entit\u00e9 {0} n''est pas valide. Corrigez la d\u00e9finition d''entit\u00e9 dans le fichier server.xml.
+INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION.explanation= Le type d'entit\u00e9 doit \u00eatre d\u00e9fini avec un nom de type d'entit\u00e9 et au moins une propri\u00e9t\u00e9 de nom distinctif relatif correspondante.
+INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION.useraction=Modifiez et corrigez la d\u00e9finition de type d'entit\u00e9 dans le fichier server.xml.
+
+INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. La d\u00e9finition d''entr\u00e9e de base {0} n''est pas valide.  Corrigez la d\u00e9finition d''entr\u00e9e de base dans le fichier server.xml. Par exemple, la syntaxe est <baseEntry name="..." baseDN="...."/>.
+INVALID_BASE_ENTRY_DEFINITION.explanation= La d\u00e9finition sp\u00e9cifi\u00e9e de l'entr\u00e9e de base est incorrecte. La syntaxe de la d\u00e9finition d'une entr\u00e9e de base est <baseEntry name="..." baseDN="...."/>.
+INVALID_BASE_ENTRY_DEFINITION.useraction= Modifiez et corrigez la d\u00e9finition d'entr\u00e9e de base dans le  fichier server.xml.
+
+INVALID_REALM_DEFINITION=CWIMK0003E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. La d\u00e9finition de domaine {0} n''est pas valide. Corrigez la d\u00e9finition de domaine dans le fichier server.xml.
+INVALID_REALM_DEFINITION.explanation= La balise de domaine est manquante ou incorrecte en raison d'un attribut requis manquant.
+INVALID_REALM_DEFINITION.useraction=Modifiez et corrigez la d\u00e9finition de domaine dans le fichier server.xml.
+
+INVALID_PARTICIPATING_BASE_ENTRY_DEFINITION=CWIMK0004E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. La d\u00e9finition d''entr\u00e9e de base participante {0} n''est pas valide. Corrigez la d\u00e9finition d''entr\u00e9e de base participante dans le fichier server.xml. Par exemple, la syntaxe est <participatingBaseEntry name="..."/>.
+INVALID_PARTICIPATING_BASE_ENTRY_DEFINITION.explanation= La d\u00e9finition sp\u00e9cifi\u00e9e de l'entr\u00e9e de base participante est incorrecte. Syntaxe de la d\u00e9finition d'une entr\u00e9e de base participante : <participatingBaseEntry name="..."/>.
+INVALID_PARTICIPATING_BASE_ENTRY_DEFINITION.useraction=Modifiez et corrigez la d\u00e9finition d'entr\u00e9e de base participante dans le fichier server.xml.
+
+INVALID_UR_ATTRIBUTE_MAPPING_DEFINITION=CWIMK0005E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. La d\u00e9finition de mappage de l''attribut de registre d''utilisateurs {0} n''est pas valide. Corrigez le mappage d''attributs de registre d''utilisateurs dans le fichier server.xml.
+INVALID_UR_ATTRIBUTE_MAPPING_DEFINITION.explanation= La d\u00e9finition de mappage de l'attribut de registre d'utilisateurs est incorrecte.
+INVALID_UR_ATTRIBUTE_MAPPING_DEFINITION.useraction=Modifiez et corrigez la d\u00e9finition de mappage de l'attribut de registre d'utilisateurs dans le fichier server.xml.
+
+INVALID_REALM_NAME=CWIMK0006E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. Le nom de superdomaine {0} indiqu\u00e9 n''est pas valide. Indiquez un nom de superdomaine existant.
+INVALID_REALM_NAME.explanation=Le nom de superdomaine indiqu\u00e9 n'est pas d\u00e9fini ou est incorrect dans le fichier server.xml.
+INVALID_REALM_NAME.useraction=Assurez-vous que le nom de superdomaine existe et qu'il est correctement orthographi\u00e9 dans le fichier server.xml. S'il n'existe pas, vous devez en sp\u00e9cifier un qui soit correct.
+
+MISSING_BASE_ENTRY_IN_REALM=CWIMK0007E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. Aucune entr\u00e9e de base valide n''a \u00e9t\u00e9 d\u00e9finie pour le superdomaine {0} D\u00e9finissez l''entr\u00e9e de base pour le superdomaine dans le fichier server.xml.
+MISSING_BASE_ENTRY_IN_REALM.explanation=Au moins une entr\u00e9e de base participante valide doit \u00eatre d\u00e9finie pour un superdomaine.
+MISSING_BASE_ENTRY_IN_REALM.useraction=V\u00e9rifiez qu'une entr\u00e9e de base participante valide est d\u00e9finie pour le superdomaine dans le fichier server.xml.
+
+MISSING_BASE_ENTRY=CWIMK0008E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. Le r\u00e9f\u00e9rentiel {0} doit contenir au moins une entr\u00e9e de base. D\u00e9finissez l''entr\u00e9e de base dans le fichier server.xml.
+MISSING_BASE_ENTRY.explanation=Apr\u00e8s l'ajout d'un r\u00e9f\u00e9rentiel, au moins une entr\u00e9e de base doit lui \u00eatre ajout\u00e9e.
+MISSING_BASE_ENTRY.useraction=Ajoutez au moins une entr\u00e9e de base au r\u00e9f\u00e9rentiel dans le fichier server.xml.
+
+FEDERATED_MANAGER_SERVICE_READY=CWIMK0009I: Le service de f\u00e9d\u00e9ration de registre d'utilisateurs est pr\u00eat.
+FEDERATED_MANAGER_SERVICE_READY.explanation=Ce message est fourni \u00e0 titre  d'information uniquement.
+FEDERATED_MANAGER_SERVICE_READY.useraction=Aucune action n'est requise.
+
+FEDERATED_MANAGER_SERVICE_STOPPED=CWIMK0010I: Le service de f\u00e9d\u00e9ration de registre est arr\u00eat\u00e9.
+FEDERATED_MANAGER_SERVICE_STOPPED.explanation=Ce message est fourni \u00e0 titre  d'information uniquement.
+FEDERATED_MANAGER_SERVICE_STOPPED.useraction=Aucune action n'est requise.
+
+ENTITY_IDENTIFIER_NOT_SPECIFIED=CWIML1009E: L'op\u00e9ration de registre d'utilisateurs n'a pas pu \u00eatre ex\u00e9cut\u00e9e. L'identificateur de l'entit\u00e9 est introuvable. Indiquez l'identificateur correct comme param\u00e8tre d'entr\u00e9e. 
+ENTITY_IDENTIFIER_NOT_SPECIFIED.explanation=L'identificateur de l'entit\u00e9 n'a pas \u00e9t\u00e9 indiqu\u00e9. Le syst\u00e8me ne peut pas localiser l'entit\u00e9. L'op\u00e9ration de registre d'utilisateurs ne peut pas se poursuivre sans cette entit\u00e9. 
+ENTITY_IDENTIFIER_NOT_SPECIFIED.useraction=Assurez-vous que l'entit\u00e9 de l'objet d'entr\u00e9e comporte une propri\u00e9t\u00e9 d'identificateur.
+
+EXTERNAL_NAME_CONTROL_NOT_FOUND=CWIML1024E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. Le nom externe {0} est sp\u00e9cifi\u00e9, mais le contr\u00f4le du nom externe n''est pas indiqu\u00e9. Indiquez le contr\u00f4le pour le nom externe concern\u00e9.
+EXTERNAL_NAME_CONTROL_NOT_FOUND.explanation=Lors de l'op\u00e9ration get, si l'\u00e9l\u00e9ment externalname est d\u00e9fini, l'\u00e9l\u00e9ment externalnamecontrol doit \u00eatre sp\u00e9cifi\u00e9.
+EXTERNAL_NAME_CONTROL_NOT_FOUND.useraction=Sp\u00e9cifiez l'\u00e9l\u00e9ment ExternalNameControl ou retirez l'\u00e9l\u00e9ment externalName de l'objet d'entr\u00e9e.
+
+INVALID_IDENTIFIER=CWIML1010E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. Les attributs uniqueId = {0} et uniqueName = {1} de l''objet d''identificateur ne sont pas valides ou ne sont pas d\u00e9finis dans le r\u00e9f\u00e9rentiel d''arri\u00e8re-plan.
+INVALID_IDENTIFIER.explanation=L'objet d'identificateur sp\u00e9cifi\u00e9 n'est pas valide. Un attribut uniqueId ou uniqueName valide doit \u00eatre sp\u00e9cifi\u00e9 dans l'objet d'identificateur. L'op\u00e9ration de registre d'utilisateurs ne peut pas se poursuivre sans un objet d'identificateur valide. Si un objet d'identificateur a \u00e9t\u00e9 sp\u00e9cifi\u00e9, l'attribut uniqueId ou uniqueName est vide ou NULL.
+INVALID_IDENTIFIER.useraction=Assurez-vous que l'entit\u00e9 dans l'objet d'entr\u00e9e comporte un identificateur avec un attribut uniqueId ou uniqueName valide (ces deux attributs ne peuvent pas \u00eatre vides ou NULL). 
+
+ENTITY_NOT_IN_REALM_SCOPE=CWIML0515E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. L''entit\u00e9 {0} ne se trouve pas dans la port\u00e9e du domaine {1}. Indiquez une entit\u00e9 qui se trouve dans la port\u00e9e du domaine configur\u00e9 dans le fichier server.xml.
+ENTITY_NOT_IN_REALM_SCOPE.explanation=L'op\u00e9ration ne peut pas \u00eatre effectu\u00e9e car l'entit\u00e9 sp\u00e9cifi\u00e9e ne se trouve pas dans la port\u00e9e du domaine.
+ENTITY_NOT_IN_REALM_SCOPE.useraction=V\u00e9rifiez que le nom unique de l'entit\u00e9 est correctement sp\u00e9cifi\u00e9. Si un nom de superdomaine est indiqu\u00e9 dans l'objet de contexte de l'objet d'entr\u00e9e, v\u00e9rifiez que le nom est correct.
+
+MISSING_SORT_KEY=CWIML1001E: L'op\u00e9ration de registre d'utilisateurs n'a pas pu \u00eatre ex\u00e9cut\u00e9e. La cl\u00e9 de tri est manquante dans l'objet de contr\u00f4le de tri d'entr\u00e9e. D\u00e9finissez la cl\u00e9 de tri pour l'objet de contr\u00f4le de tri indiqu\u00e9.
+MISSING_SORT_KEY.explanation=Un objet SortControl a \u00e9t\u00e9 transmis pour l'op\u00e9ration de recherche sans cl\u00e9 de tri. Or, cette derni\u00e8re est requise pour proc\u00e9der au tri.
+MISSING_SORT_KEY.useraction=D\u00e9finissez la cl\u00e9 de tri dans l'objet SortControl et assurez-vous que la propri\u00e9t\u00e9 utilis\u00e9e comme cl\u00e9 de tri fait partie int\u00e9grante de la liste de propri\u00e9t\u00e9s renvoy\u00e9e.
+
+MISSING_SEARCH_CONTROL=CWIML1017E: L'op\u00e9ration de registre d'utilisateurs n'a pas pu \u00eatre ex\u00e9cut\u00e9e. L'objet de contr\u00f4le de recherche est manquant dans l'objet d'entr\u00e9e de l'op\u00e9ration de recherche. D\u00e9finissez l'objet de contr\u00f4le de la recherche dans l'objet d'entr\u00e9e.
+MISSING_SEARCH_CONTROL.explanation=L'objet SearchControl doit \u00eatre sp\u00e9cifi\u00e9 dans l'objet d'entr\u00e9e de l'op\u00e9ration de recherche.
+MISSING_SEARCH_CONTROL.useraction=Sp\u00e9cifiez l'objet SearchControl dans l'objet d'entr\u00e9e de recherche.
+
+MISSING_COOKIE=CWIML1002E: L'op\u00e9ration de registre d'utilisateurs n'a pas pu \u00eatre ex\u00e9cut\u00e9e. Le cookie utilis\u00e9 pour acc\u00e9der \u00e0 la page suivante des r\u00e9sultats de recherche est manquant dans l'objet de contr\u00f4le de page. D\u00e9finissez le param\u00e8tre de cookie dans l'objet de contr\u00f4le de page.
+MISSING_COOKIE.explanation=Le registre d'utilisateurs ne peut pas obtenir la page suivante des r\u00e9sultats de recherche. Le param\u00e8tre cookie utilis\u00e9 pour obtenir la page suivante des r\u00e9sultats de la recherche doit \u00eatre sp\u00e9cifi\u00e9 dans l'objet PageControl.
+MISSING_COOKIE.useraction=V\u00e9rifiez que la propri\u00e9t\u00e9 cookie est sp\u00e9cifi\u00e9e dans l'objet PageControl avec une valeur initiale de 0. Le cookie dans l'objet PageResponseControl renvoie la valeur de cookie utilis\u00e9e pour obtenir la page suivante des r\u00e9sultats de la recherche.
+
+INVALID_COOKIE=CWIML1041E: L'op\u00e9ration de registre d'utilisateurs n'a pas pu \u00eatre ex\u00e9cut\u00e9e. Le cookie indiqu\u00e9 dans l'objet de contr\u00f4le de page n'est pas valide ou a expir\u00e9.
+INVALID_COOKIE.explanation=Le registre d'utilisateurs ne peut pas obtenir la page suivante des r\u00e9sultats de recherche. Le param\u00e8tre cookie utilis\u00e9 pour obtenir la page suivante des r\u00e9sultats de la recherche dans l'objet PageControl n'est pas valide. 
+INVALID_COOKIE.useraction=V\u00e9rifiez qu'un cookie valide est sp\u00e9cifi\u00e9 dans l'objet PageControl. 
+
+INCORRECT_COUNT_LIMIT=CWIML1022E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. Le nombre limite {0} sp\u00e9cifi\u00e9 dans l''objet de contr\u00f4le de recherche n''est pas valide. La valeur doit \u00eatre 0 ou un nombre positif.
+INCORRECT_COUNT_LIMIT.explanation=Le nombre limite d\u00e9fini dans le cadre d'une op\u00e9ration de recherche ne peut pas \u00eatre un nombre n\u00e9gatif. Un nombre positif d\u00e9finit le nombre maximal d'entr\u00e9es renvoy\u00e9es suite \u00e0 la recherche. La valeur 0 indique l'absence de limite ; toutes les entr\u00e9es sont renvoy\u00e9es si la limite de recherche a pour valeur 0.
+INCORRECT_COUNT_LIMIT.useraction=N'indiquez pas de nombre n\u00e9gatif pour le nombre limite.
+
+INCORRECT_SEARCH_LIMIT=CWIML1031E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. La limite de recherche {0} sp\u00e9cifi\u00e9e dans l''objet de contr\u00f4le de recherche n''est pas valide. La valeur doit \u00eatre 0 ou un nombre positif.
+INCORRECT_SEARCH_LIMIT.explanation=La limite de recherche dans le cadre d'une op\u00e9ration de recherche ne peut pas \u00eatre un nombre n\u00e9gatif.
+INCORRECT_SEARCH_LIMIT.useraction=N'indiquez pas de nombre n\u00e9gatif pour la propri\u00e9t\u00e9 de limite de recherche. La valeur doit \u00eatre 0 ou un nombre positif.
+
+CANNOT_SPECIFY_COUNT_LIMIT=CWIML1019E: L'op\u00e9ration de registre d'utilisateurs n'a pas pu \u00eatre ex\u00e9cut\u00e9e. Impossible de d\u00e9finir le param\u00e8tre countLimit dans un objet de contr\u00f4le de recherche lorsque l'objet de contr\u00f4le de page est \u00e9galement sp\u00e9cifi\u00e9 dans un appel de recherche. Indiquez les limites de compte ou l'objet de contr\u00f4le de page mais pas les deux \u00e0 la fois.
+CANNOT_SPECIFY_COUNT_LIMIT.explanation=Le param\u00e8tre countLimit permet au demandeur de pr\u00e9ciser le nombre de r\u00e9sultats de recherche qu'il souhaite obtenir dans le cadre d'une op\u00e9ration de recherche. Il ne peut pas \u00eatre utilis\u00e9 avec l'objet PageControl.
+CANNOT_SPECIFY_COUNT_LIMIT.useraction=En fonction de l'exigence, l'appelant peut utiliser le param\u00e8tre countLimit ou l'objet PageControl mais pas les deux. 
+
+MISSING_SEARCH_EXPRESSION=CWIML1003E: L'op\u00e9ration de registre d'utilisateurs n'a pas pu \u00eatre ex\u00e9cut\u00e9e. La propri\u00e9t\u00e9 d'expression est manquante dans l'objet de contr\u00f4le de recherche. D\u00e9finissez la propri\u00e9t\u00e9 d'expression dans l'objet de contr\u00f4le de recherche. 
+MISSING_SEARCH_EXPRESSION.explanation=L'op\u00e9ration de recherche ne peut pas \u00eatre effectu\u00e9e. La propri\u00e9t\u00e9 d'expression doit \u00eatre d\u00e9finie dans l'objet SearchControl.
+MISSING_SEARCH_EXPRESSION.useraction=D\u00e9finissez une cha\u00eene d'expression de recherche dans la propri\u00e9t\u00e9 d'expression de l'objet SearchControl.
+
+SEARCH_EXPRESSION_ERROR=CWIML1004E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. Une erreur existe dans l''expression de recherche sp\u00e9cifi\u00e9e dans l''objet de contr\u00f4le de recherche : {0}. V\u00e9rifiez la syntaxe de l''expression de recherche dans l''objet de contr\u00f4le de recherche.
+SEARCH_EXPRESSION_ERROR.explanation=L'op\u00e9ration ne peut pas \u00eatre effectu\u00e9e. L'expression de recherche sp\u00e9cifi\u00e9e dans l'objet SearchControl n'est pas conforme \u00e0 une syntaxe XPath prise en charge.
+SEARCH_EXPRESSION_ERROR.useraction=V\u00e9rifiez la syntaxe de l'expression de recherche et corrigez les erreurs.
+
+INVALID_SEARCH_EXPRESSION=CWIML1029E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. La syntaxe de l''expression de recherche {0} n''est pas valide. Indiquez la syntaxe correcte de l''expression de recherche. 
+INVALID_SEARCH_EXPRESSION.explanation=L'op\u00e9ration de recherche ne peut pas \u00eatre effectu\u00e9e car l'expression de recherche n'est pas valide.
+INVALID_SEARCH_EXPRESSION.useraction=Indiquez une expression de recherche valide.
+
+EXCEED_MAX_TOTAL_SEARCH_LIMIT=CWIML1018E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. Les r\u00e9sultats de la recherche {0} d\u00e9passent la limite de recherche maximale {1}. Aucun r\u00e9sultat de recherche ne sera renvoy\u00e9. Augmentez la limite de recherche maximale ou modifiez l''expression de recherche pour qu''un nombre inf\u00e9rieur d''enregistrements soit extrait.
+EXCEED_MAX_TOTAL_SEARCH_LIMIT.explanation=Le nombre d'enregistrements renvoy\u00e9 par la recherche est sup\u00e9rieur au nombre maximal d'enregistrements sp\u00e9cifi\u00e9 dans la limite de recherche.
+EXCEED_MAX_TOTAL_SEARCH_LIMIT.useraction=Augmentez la limite de recherche maximale ou affinez l'expression de recherche de sorte qu'un nombre inf\u00e9rieur d'enregistrements soit extrait.
+
+INVALID_CHANGETYPE=CWIML4552E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. L''\u00e9l\u00e9ment changeType, {0}, indiqu\u00e9 n''est pas valide pour une recherche des entit\u00e9s modifi\u00e9es. Les types de modification valides sont add, modify, delete, rename et * (* indique tous les types de modification).
+INVALID_CHANGETYPE.explanation=Les types de modification valides pour la recherche d'entit\u00e9s modifi\u00e9es sont add, modify, delete, rename et * (* indique tous les types de modification).
+INVALID_CHANGETYPE.useraction=Indiquez un des types de modification suivants.
+
+MISSING_ENTITY_DATA_OBJECT=CWIML1030E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. L''objet Entity d''entr\u00e9e est manquant pour l''op\u00e9ration {0}. L''objet de donn\u00e9es d''entit\u00e9 doit \u00eatre d\u00e9fini pour l''objet sur lequel vous voulez effectuer une op\u00e9ration.
+MISSING_ENTITY_DATA_OBJECT.explanation=L'op\u00e9ration sp\u00e9cifi\u00e9e n\u00e9cessite un objet Entity.
+MISSING_ENTITY_DATA_OBJECT.useraction=L'objet d'entit\u00e9 doit \u00eatre d\u00e9fini pour l'entit\u00e9 sur laquelle vous voulez faire une op\u00e9ration.
+
+ACTION_MULTIPLE_ENTITIES_SPECIFIED=CWIML1016E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. L''action {0} ne prend pas en charge plusieurs entit\u00e9s. Indiquez une seule entit\u00e9 pour cette op\u00e9ration.
+ACTION_MULTIPLE_ENTITIES_SPECIFIED.explanation=L'op\u00e9ration ne prend pas en charge plusieurs entit\u00e9s. Par exemple, l'op\u00e9ration de mise \u00e0 jour ne peut \u00eatre r\u00e9alis\u00e9e que sur une seule entit\u00e9 \u00e0 la fois.
+ACTION_MULTIPLE_ENTITIES_SPECIFIED.useraction=Assurez-vous qu'une seule entit\u00e9 est transmise pour l'op\u00e9ration du registre d'utilisateurs.
+
+MISSING_OR_EMPTY_PRINCIPAL_NAME=CWIML4536E: L'op\u00e9ration de connexion n'a pas pu \u00eatre ex\u00e9cut\u00e9e. Le nom principal est absent ou vide. 
+MISSING_OR_EMPTY_PRINCIPAL_NAME.explanation=Un nom principal est n\u00e9cessaire pour se connecter avec un mot de passe.
+MISSING_OR_EMPTY_PRINCIPAL_NAME.useraction=Assurez-vous que le nom principal est indiqu\u00e9.
+
+MULTIPLE_PRINCIPALS_FOUND=CWIML4538E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. Plusieurs enregistrements existent pour le nom principal {0} dans les registres d''utilisateurs configur\u00e9s. Le nom principal doit \u00eatre unique dans tous les registres d''utilisateurs.
+MULTIPLE_PRINCIPALS_FOUND.explanation=Plusieurs principaux ont \u00e9t\u00e9 trouv\u00e9s pour le nom principal indiqu\u00e9. Le processus de connexion ne peut pas se poursuivre.
+MULTIPLE_PRINCIPALS_FOUND.useraction=V\u00e9rifiez que le nom principal appropri\u00e9 est indiqu\u00e9. Par exemple, la sp\u00e9cification du nom de principal en tant que nom unique peut \u00e9viter ce type d'exception.
+
+AUTHENTICATE_NOT_SUPPORTED=CWIML4530E: L''op\u00e9ration d''authentification n''a pas pu \u00eatre effectu\u00e9e. L''authentification avec le certificat n''est pas prise en charge par le r\u00e9f\u00e9rentiel {0}. Cause premi\u00e8re : {1}
+AUTHENTICATE_NOT_SUPPORTED.explanation=L'authentification n'est pas prise en charge avec le certificat par le r\u00e9f\u00e9rentiel.
+AUTHENTICATE_NOT_SUPPORTED.useraction=Assurez-vous que l'authentification est prise en charge avec le certificat par le r\u00e9f\u00e9rentiel.
+
+CERTIFICATE_MAP_FAILED=CWIML3011E: L'op\u00e9ration de connexion n'a pas pu \u00eatre ex\u00e9cut\u00e9e. Le mappage de certificat a \u00e9chou\u00e9. Indiquez le mappage de certificat correct dans le fichier server.xml ou utilisez un certificat valide.
+CERTIFICATE_MAP_FAILED.explanation=Une erreur s'est produite lors du mappage du certificat indiqu\u00e9 au registre d'utilisateurs.
+CERTIFICATE_MAP_FAILED.useraction=Corrigez le mappage de certificat dans le fichier serve.xml ou connectez-vous avec un certificat valide.
+
+PRINCIPAL_NOT_FOUND=CWIML4537E: L''op\u00e9ration de connexion n''a pas pu \u00eatre ex\u00e9cut\u00e9e. Le nom principal {0} indiqu\u00e9 est introuvable dans le r\u00e9f\u00e9rentiel d''arri\u00e8re-plan.
+PRINCIPAL_NOT_FOUND.explanation=Le nom principal est introuvable dans le r\u00e9f\u00e9rentiel. Le processus de connexion ne peut pas se poursuivre.
+PRINCIPAL_NOT_FOUND.useraction=Assurez-vous que le nom du principal est indiqu\u00e9.
+
+NON_EXISTING_SEARCH_BASE=CWIML1042E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. La base de recherche {0} indiqu\u00e9e n''existe pas dans le domaine configur\u00e9 en cours . Indiquez la base de recherche valide et v\u00e9rifiez que l''entr\u00e9e de base est configur\u00e9e dans le domaine en cours.
+NON_EXISTING_SEARCH_BASE.explanation=La base de recherche sp\u00e9cifi\u00e9e n'existe pas dans le domaine en cours.
+NON_EXISTING_SEARCH_BASE.useraction=V\u00e9rifiez la base de recherche sp\u00e9cifi\u00e9e et assurez-vous que l'entr\u00e9e de base correspondante est configur\u00e9e dans le domaine en cours.
+
+ENTITY_NOT_FOUND=CWIML4001E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. L''entit\u00e9 {0} n''a pas \u00e9t\u00e9 trouv\u00e9e. Indiquez l''entit\u00e9 correcte ou cr\u00e9ez l''entit\u00e9 manquante.
+ENTITY_NOT_FOUND.explanation=Le nom d'entit\u00e9 indiqu\u00e9, qui doit \u00eatre un nom unique ou un ID unique, est introuvable dans le r\u00e9f\u00e9rentiel sous-jacent. L'op\u00e9ration de registre d'utilisateurs ne peut pas se poursuivre sans cette entit\u00e9.
+ENTITY_NOT_FOUND.useraction=V\u00e9rifiez que l'entit\u00e9 existe dans le r\u00e9f\u00e9rentiel sous-jacent. Si l'entit\u00e9 existe, v\u00e9rifiez que les droits en lecture sont d\u00e9finis pour l'entit\u00e9 puis faites une nouvelle tentative.
+
+INVALID_LEVEL_IN_CONTROL=CWIML4514E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. Une valeur incorrecte est d\u00e9finie pour le niveau de propri\u00e9t\u00e9 {0} dans {1}. La valeur du niveau de propri\u00e9t\u00e9 doit \u00eatre \u00e9gale \u00e0 0 ou \u00eatre un entier positif.
+INVALID_LEVEL_IN_CONTROL.explanation=La valeur du niveau de propri\u00e9t\u00e9 a \u00e9t\u00e9 d\u00e9finie en tant que nombre n\u00e9gatif.
+INVALID_LEVEL_IN_CONTROL.useraction=La valeur du niveau de propri\u00e9t\u00e9 doit \u00eatre \u00e9gale \u00e0 0 ou \u00eatre un entier positif. Remplacez la valeur du niveau de propri\u00e9t\u00e9, puis faites une nouvelle tentative.
+
+NAMING_EXCEPTION=CWIML4520E: L''op\u00e9ration LDAP n''a pas pu \u00eatre effectu\u00e9e. L''exception de d\u00e9signation LDAP {0} s''est produite pendant le traitement.
+NAMING_EXCEPTION.explanation=Le message indique qu'une exception de d\u00e9signation s'est produite pendant une op\u00e9ration LDAP. Pour plus de d\u00e9tails, reportez-vous \u00e0 l'exception. 
+NAMING_EXCEPTION.useraction=Assurez-vous que le r\u00e9f\u00e9rentiel associ\u00e9 (par exemple, une base de donn\u00e9es ou un serveur LDAP) est d\u00e9marr\u00e9 et configur\u00e9 correctement.
+
+SYSTEM_EXCEPTION=CWIML1998E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. L''exception syst\u00e8me suivante s''est produite pendant l''op\u00e9ration de registre d''utilisateurs : {0} 
+SYSTEM_EXCEPTION.explanation=Le programme a d\u00e9tect\u00e9 une exception syst\u00e8me lors de l'ex\u00e9cution de l'op\u00e9ration de registre d'utilisateurs. 
+SYSTEM_EXCEPTION.useraction= Recherchez la cause de cette erreur dans les journaux et ex\u00e9cutez les actions correctives appropri\u00e9es.
+
+INVALID_PROPERTY_VALUE=CWIML1013E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. La valeur entr\u00e9e pour la propri\u00e9t\u00e9 {0} n''est pas valide pour l''entit\u00e9 {1}. La valeur de la propri\u00e9t\u00e9 doit \u00eatre correcte et son type de donn\u00e9es valide.
+INVALID_PROPERTY_VALUE.explanation=La valeur de la propri\u00e9t\u00e9 n'est pas valide. Par exemple, une propri\u00e9t\u00e9 de type identificateur pointe vers une entr\u00e9e incorrecte.
+INVALID_PROPERTY_VALUE.useraction=Assurez-vous que la valeur de la propri\u00e9t\u00e9 est correcte et que son type de donn\u00e9es est valide. Si vous essayez d'extraire la propri\u00e9t\u00e9 du type d'identificateur en m\u00eame temps que d'autres propri\u00e9t\u00e9s, effectuez deux appels. Le premier appel permet d'extraire les propri\u00e9t\u00e9s qui ne sont pas li\u00e9es au type d'identificateur et le deuxi\u00e8me d'extraire les propri\u00e9t\u00e9s du type d'identificateur.
+
+GENERIC=CWIML1999E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. Une erreur d''ex\u00e9cution s''est produite lors du traitement : {0}
+GENERIC.explanation=Le programme a d\u00e9tect\u00e9 l'erreur sp\u00e9cifi\u00e9e lors de l'op\u00e9ration.
+GENERIC.useraction= Recherchez la cause de cette erreur dans les journaux et ex\u00e9cutez les actions correctives appropri\u00e9es.
+
+MISSING_MANDATORY_PROPERTY=CWIML1028E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. La valeur de la propri\u00e9t\u00e9 obligatoire {0} est manquante. D\u00e9finissez la valeur de la propri\u00e9t\u00e9 obligatoire.
+MISSING_MANDATORY_PROPERTY.explanation=Impossible d'ex\u00e9cuter l'op\u00e9ration car la valeur de la propri\u00e9t\u00e9 obligatoire est absente. Par exemple, la propri\u00e9t\u00e9 RDN (nom distinctif relatif) n'est pas sp\u00e9cifi\u00e9e lorsque l'entit\u00e9 est cr\u00e9\u00e9e ou l'\u00e9l\u00e9ment propertyName ou entityTypeName est manquant dans PropertyDefinitionControl ou ExtensionPropertyDefinitionControl ou l'\u00e9l\u00e9ment entityName est manquant dans entitySchema.
+MISSING_MANDATORY_PROPERTY.useraction=D\u00e9finissez la valeur de la propri\u00e9t\u00e9 obligatoire.
+
+CANNOT_DELETE_LOGGED_IN_USER=CWIML5504E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. L''utilisateur avec le nom unique {0} ne peut pas \u00eatre supprim\u00e9 car il s''agit de l''utilisateur connect\u00e9. Connectez-vous avec un autre utilisateur pour supprimer cet utilisateur.
+CANNOT_DELETE_LOGGED_IN_USER.explanation=L'utilisateur a tent\u00e9 de se supprimer de Virtual Member Manager. Cette action n'est pas autoris\u00e9e.
+CANNOT_DELETE_LOGGED_IN_USER.useraction=Connectez-vous avec un autre utilisateur pour supprimer l'utilisateur en cours.
+
+AUTH_SUBJECT_CRED_FAILURE=CWIML2005E: L'op\u00e9ration de registre d'utilisateurs n'a pas pu \u00eatre ex\u00e9cut\u00e9e. Une erreur inattendue s'est produite lors de la r\u00e9cup\u00e9ration des donn\u00e9es d'identification du sujet. Examinez les journaux d'ex\u00e9cution pour identifier la cause principale de l'erreur.
+AUTH_SUBJECT_CRED_FAILURE.explanation=Impossible de r\u00e9cup\u00e9rer les donn\u00e9es d'identification du sujet en raison d'une erreur inconnue.
+AUTH_SUBJECT_CRED_FAILURE.useraction=Examinez les journaux d'ex\u00e9cution pour identifier la cause principale de l'erreur. Il se peut qu'il y ait un probl\u00e8me au niveau de la configuration des param\u00e8tres de s\u00e9curit\u00e9 de WebSphere.
+
+AUTH_SUBJECT_FAILURE=CWIML2004E: L'op\u00e9ration de registre d'utilisateurs n'a pas pu \u00eatre ex\u00e9cut\u00e9e. Une erreur inattendue s'est produite lors de la r\u00e9cup\u00e9ration du sujet du demandeur. Examinez les journaux d'ex\u00e9cution pour identifier la cause principale de l'erreur.
+AUTH_SUBJECT_FAILURE.explanation=Impossible de r\u00e9cup\u00e9rer le sujet du demandeur en raison d'une erreur inconnue.
+AUTH_SUBJECT_FAILURE.useraction=Examinez les journaux d'ex\u00e9cution pour identifier la cause principale de l'erreur. Il se peut qu'il y ait un probl\u00e8me au niveau de la configuration des param\u00e8tres de s\u00e9curit\u00e9 de WebSphere.
+
+INVALID_PARENT_UNIQUE_ID=CWIML1014E: La propri\u00e9t\u00e9 uniqueId {0} du parent n''est pas valide.
+INVALID_PARENT_UNIQUE_ID.explanation=L'ID unique indiqu\u00e9 pour l'entit\u00e9 parent est incorrect. Indiquez un ID unique valide.
+INVALID_PARENT_UNIQUE_ID.useraction=V\u00e9rifiez que l'ID unique de l'entit\u00e9 parent est pr\u00e9sent dans le r\u00e9f\u00e9rentiel et qu'il est correctement indiqu\u00e9.
+
+DEFAULT_PARENT_NOT_FOUND=CWIML0516E: Le parent par d\u00e9faut de {0} ne peut pas \u00eatre d\u00e9termin\u00e9. V\u00e9rifiez que la configuration du domaine {1} est correcte.
+DEFAULT_PARENT_NOT_FOUND.explanation=L'op\u00e9ration n'a pas pu \u00eatre ex\u00e9cut\u00e9e car le parent par d\u00e9faut de ce type d'entit\u00e9 n' pas pu \u00eatre d\u00e9termin\u00e9.
+DEFAULT_PARENT_NOT_FOUND.useraction=Assurez-vous que le parent par d\u00e9faut du type d'entit\u00e9 est configur\u00e9 pour les r\u00e9f\u00e9rentiels f\u00e9d\u00e9r\u00e9s ou le domaine. Le parent peut \u00e9galement \u00eatre indiqu\u00e9 comme faisant partie de l'entr\u00e9e.
+
+MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION=CWIML1034E: Configuration repositoriesForGroups manquante pour le r\u00e9f\u00e9rentiel {0}.
+MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION.explanation=Aucune configuration de groupe interr\u00e9f\u00e9rentiel n'est d\u00e9finie pour ce r\u00e9f\u00e9rentiel.
+MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION.useraction=Reportez-vous au fichier journal pour d\u00e9terminer l'origine de l'erreur. V\u00e9rifiez la configuration de votre r\u00e9f\u00e9rentiel.
+
+ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: Le type d''entit\u00e9 {0} sp\u00e9cifi\u00e9 n''est pas un type valide pour cette op\u00e9ration.
+ENTITY_TYPE_NOT_SUPPORTED.explanation=Une op\u00e9ration a \u00e9t\u00e9 demand\u00e9e sur une entit\u00e9, mais cette op\u00e9ration ne prend pas en charge le type d'entit\u00e9 indiqu\u00e9.
+ENTITY_TYPE_NOT_SUPPORTED.useraction=Assurez-vous que les entit\u00e9s fournies dans l'entr\u00e9e sont des types d'entit\u00e9 pris en charge, puis supprimez les \u00e9ventuels types d'entit\u00e9 non pris en charge.
+
+CAN_NOT_CONSTRUCT_UNIQUE_NAME=CWIML1008E: La propri\u00e9t\u00e9 {0} du type d''entit\u00e9 {1} a \u00e9t\u00e9 fournie dans l''entr\u00e9e. Le nom unique ne peut pas \u00eatre cr\u00e9\u00e9 dans le r\u00e9f\u00e9rentiel sous-jacent car les informations RDN indiqu\u00e9es dans l''entr\u00e9e sont consid\u00e9r\u00e9es comme ambigu\u00ebs.
+CAN_NOT_CONSTRUCT_UNIQUE_NAME.explanation=Lors de la cr\u00e9ation d'une entit\u00e9, le nom distinctif relatif (RDN) doit pr\u00e9senter une syntaxe correcte et comporter des propri\u00e9t\u00e9s non ambigu\u00ebs.  Par exemple, le type d'entit\u00e9 OrgContainer peut repr\u00e9senter une organisation (qui utilise la propri\u00e9t\u00e9 RDN 'o') ou une unit\u00e9 organisationnelle (qui utilise la propri\u00e9t\u00e9 RDN 'ou') dans un r\u00e9f\u00e9rentiel sous-jacent. Si 'o' et 'ou' sont sp\u00e9cifi\u00e9s dans le RDN de l'objet de donn\u00e9es en entr\u00e9e pour la nouvelle entit\u00e9, un nom unique ne peut pas \u00eatre cr\u00e9\u00e9 pour cette nouvelle entit\u00e9.
+CAN_NOT_CONSTRUCT_UNIQUE_NAME.useraction=D\u00e9terminez le type d'entit\u00e9 que vous voulez cr\u00e9er dans le r\u00e9f\u00e9rentiel sous-jacent et fournissez la propri\u00e9t\u00e9 RDN appropri\u00e9e pour ce type. Par exemple, si vous voulez cr\u00e9er une organisation, fournissez uniquement la valeur 'o'.
+
+REPOSITORY_INITIALIZATION_FAILED=CWIML4510E: Impossible d''initialiser le r\u00e9f\u00e9rentiel configur\u00e9 {0} en raison de la d\u00e9faillance sous-jacente : {1}
+REPOSITORY_INITIALIZATION_FAILED.explanation=Le r\u00e9f\u00e9rentiel f\u00e9d\u00e9r\u00e9 n'a pas pu \u00eatre initialis\u00e9 en raison d'une d\u00e9faillance sous-jacente.
+REPOSITORY_INITIALIZATION_FAILED.useraction=Consultez le message d'erreur et le fichier trace pour d\u00e9terminer l'origine de l'\u00e9chec. Corrigez l'erreur et faites une nouvelle tentative.
+
+CUSTOM_REGISTRY_EXCEPTION=CWIML3010E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. Une exception s''est produite  dans le registre personnalis\u00e9 configur\u00e9 pour {0}
+CUSTOM_REGISTRY_EXCEPTION.explanation=Une exception a \u00e9t\u00e9 \u00e9mise par le registre personnalis\u00e9. Il se peut que le registre personnalis\u00e9 soit indisponible ou qu'il ne puisse pas effectuer l'op\u00e9ration.
+CUSTOM_REGISTRY_EXCEPTION.useraction=Consultez le message d'erreur et le fichier trace afin de d\u00e9terminer l'origine de la d\u00e9faillance. Corrigez l'erreur et faites une nouvelle tentative.
+
+ENTITY_GET_FAILED=CWIML4505E: Le registre d''utilisateurs n''a pas pu obtenir l''entit\u00e9 {0} en raison d''une erreur sous-jacente : {1}
+ENTITY_GET_FAILED.explanation=L'entit\u00e9 ne peut pas \u00eatre extraite pour la raison indiqu\u00e9e par le r\u00e9f\u00e9rentiel sous-jacent.
+ENTITY_GET_FAILED.useraction=Consultez le message d'erreur et le fichier trace afin de d\u00e9terminer l'origine de la d\u00e9faillance. Corrigez l'erreur et faites une nouvelle tentative.
+
+PROPERTY_NOT_DEFINED_FOR_ENTITY=CWIML4516E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. La propri\u00e9t\u00e9 {0} n''est pas d\u00e9finie pour {1}
+PROPERTY_NOT_DEFINED_FOR_ENTITY.explanation=La propri\u00e9t\u00e9 indiqu\u00e9e n'est pas d\u00e9finie pour le type d'entit\u00e9 en question.
+PROPERTY_NOT_DEFINED_FOR_ENTITY.useraction=V\u00e9rifiez que le nom de la propri\u00e9t\u00e9 est correct.
+
+MALFORMED_SEARCH_EXPRESSION=CWIML3006W: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e car l''expression de recherche {0} n''est pas valide. Indiquez la syntaxe correcte de l''expression de recherche.
+MALFORMED_SEARCH_EXPRESSION.explanation=L'op\u00e9ration de recherche ne peut pas \u00eatre effectu\u00e9e car l'expression de recherche n'est pas valide.
+MALFORMED_SEARCH_EXPRESSION.useraction=Indiquez une expression de recherche valide.
+
+ENTITY_SEARCH_FAILED=CWIML4506E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e car le registre d''utilisateurs a d\u00e9tect\u00e9 l''erreur sous-jacente : {1}
+ENTITY_SEARCH_FAILED.explanation=L'entit\u00e9 ne peut pas \u00eatre recherch\u00e9e pour la raison indiqu\u00e9e par le registre sous-jacent.
+ENTITY_SEARCH_FAILED.useraction=Consultez le message d'erreur et le fichier trace afin de d\u00e9terminer l'origine de la d\u00e9faillance. Corrigez l'erreur et faites une nouvelle tentative.
+
+MISSING_OR_EMPTY_PASSWORD=CWIML4541E: L'op\u00e9ration de connexion n'a pas pu \u00eatre ex\u00e9cut\u00e9e car le mot de passe est manquant ou vide.
+MISSING_OR_EMPTY_PASSWORD.explanation=Si le nom du principal est d\u00e9fini lors de la connexion, le mot de passe ne peut pas \u00eatre null, ni vide.
+MISSING_OR_EMPTY_PASSWORD.useraction=D\u00e9finissez le mot de passe.
+
+CERTIFICATE_GENERATE_FAILED=CWIML3012E: L'op\u00e9ration de connexion n'a pas pu \u00eatre ex\u00e9cut\u00e9e car la g\u00e9n\u00e9ration du certificat a \u00e9chou\u00e9.
+CERTIFICATE_GENERATE_FAILED.explanation=Une erreur est survenue lors de la g\u00e9n\u00e9ration du certificat \u00e0 partir du fichier de certificat d'entr\u00e9e.
+CERTIFICATE_GENERATE_FAILED.useraction=Connectez-vous avec un certificat valide.
+
+AUTHENTICATION_WITH_CERT_NOT_SUPPORTED=CWIML4542E: L'op\u00e9ration de connexion n'a pas pu \u00eatre ex\u00e9cut\u00e9e car le registre d'utilisateurs ne prend pas en charge la connexion avec un certificat.
+AUTHENTICATION_WITH_CERT_NOT_SUPPORTED.explanation=L'authentification \u00e0 l'aide d'un certificat n'est pas autoris\u00e9e par le registre d'utilisateurs sous-jacent.
+AUTHENTICATION_WITH_CERT_NOT_SUPPORTED.useraction=Authentifiez-vous \u00e0 l'aide d'un ID utilisateur et d'un mot de passe au lieu d'utiliser un certificat.
+
+CANNOT_WRITE_TO_READ_ONLY_REPOSITORY=CWIML1027E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e car le r\u00e9f\u00e9rentiel {0} est en lecture seule. Il ne prend pas en charge les op\u00e9rations d''\u00e9criture. 
+CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.explanation=Le r\u00e9f\u00e9rentiel est en lecture seule. Il ne permet d'effectuer des op\u00e9rations de cr\u00e9ation, de mise \u00e0 jour ou de suppression.
+CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.useraction=V\u00e9rifiez qu'aucune op\u00e9ration d'\u00e9criture n'est appel\u00e9e sur un r\u00e9f\u00e9rentiel en lecture seule.

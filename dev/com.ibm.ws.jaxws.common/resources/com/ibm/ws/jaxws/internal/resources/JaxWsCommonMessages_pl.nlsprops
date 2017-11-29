@@ -1,0 +1,205 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxws.common/resources/com/ibm/ws/jaxws/internal/resources/JaxWsCommonMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXWS Common Code
+#RANGE 0000 - 0099
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# Deployment Descriptor validation messages ------------------------
+
+warn.service.ref.dd.service.interface.not.set=CWWKW0000W: Deskryptor wdra\u017cania definiuje element service-ref {0}, kt\u00f3ry nie zawiera elementu service-interface. Dlatego odwo\u0142anie do us\u0142ugi jest ignorowane.
+warn.service.ref.dd.service.interface.not.set.explanation=Element service-ref musi zawiera\u0107 element service-interface.
+warn.service.ref.dd.service.interface.not.set.useraction=Dodaj element service-interface i ponownie wdr\u00f3\u017c aplikacj\u0119.
+
+warn.service.ref.dd.service.interface.class.not.found=CWWKW0001W: Deskryptor wdra\u017cania definiuje element service-ref {0}, lecz nie mo\u017cna znale\u017a\u0107 klasy {1} okre\u015blonej w elemencie service-interface. Dlatego odwo\u0142anie do us\u0142ugi jest ignorowane.
+warn.service.ref.dd.service.interface.class.not.found.explanation=Element service-interface okre\u015bla klas\u0119, kt\u00f3rej nie mo\u017cna znale\u017a\u0107 lub za\u0142adowa\u0107.
+warn.service.ref.dd.service.interface.class.not.found.useraction=Sprawd\u017a, czy klasa znajduje si\u0119 w \u015bcie\u017cce klas aplikacji.
+
+warn.service.ref.dd.service.interface.wrong.value=CWWKW0002W: Deskryptor wdra\u017cania definiuje element service-ref {0}, lecz klasa {1} okre\u015blona w elemencie service-interface nie jest podklas\u0105 klasy javax.xml.ws.Service. Dlatego odwo\u0142anie do us\u0142ugi jest ignorowane.
+warn.service.ref.dd.service.interface.wrong.value.explanation=Element service-interface musi okre\u015bla\u0107 podklas\u0119 klasy javax.xml.ws.Service.
+warn.service.ref.dd.service.interface.wrong.value.useraction=Okre\u015bl podklas\u0119 klasy javax.xml.ws.Service w elemencie service-interface.
+
+# Merge mismatch check messages ------------------------------------
+
+error.service.interface.mismatch.for.member=CWWKW0003E: Odwo\u0142anie do us\u0142ugi {0} w sk\u0142adowej {1} klasy {2} okre\u015bla klas\u0119 elementu service-interface {3}. Jednak w przypadku tego odwo\u0142ania do us\u0142ugi istniej\u0105 dodatkowe metadane, kt\u00f3re okre\u015blaj\u0105 klas\u0119 elementu service-interface {4}.
+error.service.interface.mismatch.for.member.explanation=Klasa elementu service-interface zadeklarowana w wielu miejscach dla tego samego odwo\u0142ania do us\u0142ugi musi by\u0107 taka sama. 
+error.service.interface.mismatch.for.member.useraction=Popraw odwo\u0142anie do us\u0142ugi tak, aby zidentyfikowa\u0107 t\u0119 sam\u0105 klas\u0119 elementu service-interface.
+
+error.service.interface.mismatch.for.class=CWWKW0004E: Odwo\u0142anie do us\u0142ugi na poziomie klasy {0} okre\u015bla klas\u0119 elementu service-interface {1}. Jednak w przypadku tego odwo\u0142ania do us\u0142ugi istniej\u0105 dodatkowe metadane, kt\u00f3re okre\u015blaj\u0105 klas\u0119 elementu service-interface {2}.
+error.service.interface.mismatch.for.class.explanation=Klasa elementu service-interface zadeklarowana w wielu miejscach dla tego samego odwo\u0142ania do us\u0142ugi musi by\u0107 taka sama. 
+error.service.interface.mismatch.for.class.useraction=Popraw odwo\u0142anie do us\u0142ugi tak, aby zidentyfikowa\u0107 t\u0119 sam\u0105 klas\u0119 elementu service-interface.
+
+error.service.ref.type.mismatch.for.member=CWWKW0005E: Odwo\u0142anie do us\u0142ugi {0} w sk\u0142adowej {1} klasy {2} okre\u015bla klas\u0119 elementu service-ref-type {3}. Jednak w przypadku tego odwo\u0142ania do us\u0142ugi istniej\u0105 dodatkowe metadane, kt\u00f3re okre\u015blaj\u0105 klas\u0119 elementu service-ref-type {4}.
+error.service.ref.type.mismatch.for.member.explanation=Klasa elementu service-ref-type zadeklarowana w wielu miejscach dla tego samego odwo\u0142ania do us\u0142ugi musi by\u0107 taka sama. 
+error.service.ref.type.mismatch.for.member.useraction=Popraw odwo\u0142anie do us\u0142ugi tak, aby zidentyfikowa\u0107 t\u0119 sam\u0105 klas\u0119 elementu service-ref-type.
+
+error.service.ref.type.mismatch.for.class=CWWKW0006E: Odwo\u0142anie do us\u0142ugi na poziomie klasy {0} okre\u015bla klas\u0119 elementu service-ref-type {1}. Jednak w przypadku tego odwo\u0142ania do us\u0142ugi istniej\u0105 dodatkowe metadane, kt\u00f3re okre\u015blaj\u0105 klas\u0119 elementu service-ref-type {2}.
+error.service.ref.type.mismatch.for.class.explanation=Klasa elementu service-ref-type zadeklarowana w wielu miejscach dla tego samego odwo\u0142ania do us\u0142ugi musi by\u0107 taka sama. 
+error.service.ref.type.mismatch.for.class.useraction=Popraw odwo\u0142anie do us\u0142ugi tak, aby zidentyfikowa\u0107 t\u0119 sam\u0105 klas\u0119 elementu service-ref-type.
+
+# Merge validation messages ------------------------------------------
+
+error.service.ref.class.level.merge.service.ref.type.absent=CWWKW0007E: Znaleziono adnotacj\u0119 @WebServiceRef lub @Resource w klasie {0}, lecz nie mo\u017cna zidentyfikowa\u0107 atrybutu typu. 
+error.service.ref.class.level.merge.service.ref.type.absent.explanation=Atrybut typu musi by\u0107 zidentyfikowany, je\u015bli adnotacja @WebServiceRef lub @Resource znajduje si\u0119 na poziomie klasy. Mo\u017ce on by\u0107 okre\u015blony w adnotacji @WebServiceRef lub w elemencie service-ref-type w deskryptorze wdra\u017cania.
+error.service.ref.class.level.merge.service.ref.type.absent.useraction=Okre\u015bl brakuj\u0105cy atrybut typu.
+
+error.service.ref.class.level.merge.service.interface.wrong.value=CWWKW0008E: Znaleziono adnotacj\u0119 @WebServiceRef lub @Resource w klasie {0}, lecz w przypadku zidentyfikowanego atrybutu warto\u015bci okre\u015blono klas\u0119 {1}, kt\u00f3ra nie jest podklas\u0105 klasy javax.xml.ws.Service. 
+error.service.ref.class.level.merge.service.interface.wrong.value.explanation=W przypadku atrybutu warto\u015bci musi zosta\u0107 okre\u015blona podklasa klasy javax.xml.ws.Service, chyba \u017ce zidentyfikowany atrybut typu sygnalizuje wstrzykiwanie interfejsu punktu ko\u0144cowego us\u0142ugi (SEI). Atrybut warto\u015bci mo\u017cna okre\u015bli\u0107 w adnotacji lub w elemencie service-interface w deskryptorze wdra\u017cania.
+error.service.ref.class.level.merge.service.interface.wrong.value.useraction=Okre\u015bl podklas\u0119 klasy javax.xml.ws.Service.
+
+error.service.ref.class.level.merge.service.interface.and.service.ref.type.not.same=CWWKW0009E: Znaleziono adnotacj\u0119 @WebServiceRef lub @Resource w klasie {0}, lecz atrybuty typu i warto\u015bci nie maj\u0105 tej samej klasy. 
+error.service.ref.class.level.merge.service.interface.and.service.ref.type.not.same.explanation=Je\u015bli adnotacja sygnalizuje wstrzykiwanie typu us\u0142ugi oraz je\u015bli atrybut warto\u015bci nie okre\u015bla klasy javax.xml.ws.Service, atrybuty typu i warto\u015bci musz\u0105 mie\u0107 okre\u015blon\u0105 tak\u0105 sam\u0105 klas\u0119. Atrybut warto\u015bci mo\u017cna okre\u015bli\u0107 w adnotacji lub w elemencie service-interface w deskryptorze wdra\u017cania, natomiast atrybut typu mo\u017cna okre\u015bli\u0107 w adnotacji @WebServiceRef lub w elemencie service-ref-type w deskryptorze wdra\u017cania.
+error.service.ref.class.level.merge.service.interface.and.service.ref.type.not.same.useraction=Okre\u015bl tak\u0105 sam\u0105 klas\u0119 w przypadku atrybut\u00f3w typu i warto\u015bci.
+
+error.service.ref.member.level.merge.service.ref.type.not.inferred=CWWKW0010E: Znaleziono adnotacj\u0119 @WebServiceRef lub @Resource w sk\u0142adowej {0} klasy {1}, lecz nie mo\u017cna okre\u015bli\u0107 typu wstrzykiwania na podstawie atrybutu typu lub typu sk\u0142adowej klasy. 
+error.service.ref.member.level.merge.service.ref.type.not.inferred.explanation=Je\u015bli typ sk\u0142adowej klasy to obiekt, konieczne jest okre\u015blenie atrybutu typu i nie mo\u017ce to by\u0107 obiekt. Typ sk\u0142adowej klasy mo\u017cna okre\u015bli\u0107 w adnotacji @WebServiceRef lub w elemencie service-ref-type w deskryptorze wdra\u017cania.
+error.service.ref.member.level.merge.service.ref.type.not.inferred.useraction=Okre\u015bl atrybut typu inny ni\u017c obiekt.
+
+error.service.ref.member.level.merge.service.ref.type.not.compatible=CWWKW0011E: Znaleziono adnotacj\u0119 @WebServiceRef lub @Resource w sk\u0142adowej {0} klasy {1}, lecz w przypadku zidentyfikowanego atrybutu typu okre\u015blono klas\u0119 {2}, kt\u00f3ra nie jest zgodna z klas\u0105 sk\u0142adowej {3}, kt\u00f3ra zawiera adnotacj\u0119. 
+error.service.ref.member.level.merge.service.ref.type.not.compatible.explanation=Atrybut typu musi by\u0107 zgodny z typem sk\u0142adowej klasy. Atrybut typu mo\u017cna okre\u015bli\u0107 w adnotacji @WebServiceRef lub w elemencie service-ref-type w deskryptorze wdra\u017cania.
+error.service.ref.member.level.merge.service.ref.type.not.compatible.useraction=Okre\u015bl taki atrybut typu, kt\u00f3ry jest zgodny z typem sk\u0142adowej klasy.
+
+error.service.ref.member.level.merge.service.interface.wrong.value=CWWKW0012E: Znaleziono adnotacj\u0119 @WebServiceRef lub @Resource w sk\u0142adowej {0} klasy {1}, lecz w przypadku zidentyfikowanego atrybutu warto\u015bci okre\u015blono klas\u0119 {2}, kt\u00f3ra nie jest podklas\u0105 klasy javax.xml.ws.Service.
+error.service.ref.member.level.merge.service.interface.wrong.value.explanation=W przypadku atrybutu warto\u015bci musi zosta\u0107 okre\u015blona podklasa klasy javax.xml.ws.Service, chyba \u017ce zidentyfikowany atrybut typu sygnalizuje wstrzykiwanie interfejsu punktu ko\u0144cowego us\u0142ugi (SEI). Atrybut warto\u015bci mo\u017cna okre\u015bli\u0107 w adnotacji lub w elemencie service-interface w deskryptorze wdra\u017cania.
+error.service.ref.member.level.merge.service.interface.wrong.value.useraction=Okre\u015bl podklas\u0119 klasy javax.xml.ws.Service.
+
+error.service.ref.member.level.merge.service.interface.and.service.ref.type.not.same=CWWKW0013E: Znaleziono adnotacj\u0119 @WebServiceRef lub @Resource w sk\u0142adowej {0} klasy {1}, lecz w przypadku zidentyfikowanych atrybut\u00f3w typu i warto\u015bci nie okre\u015blono tej samej klasy. 
+error.service.ref.member.level.merge.service.interface.and.service.ref.type.not.same.explanation=Je\u015bli adnotacja sygnalizuje wstrzykiwanie typu us\u0142ugi oraz je\u015bli atrybut warto\u015bci nie okre\u015bla klasy javax.xml.ws.Service, atrybuty typu i warto\u015bci musz\u0105 mie\u0107 okre\u015blon\u0105 tak\u0105 sam\u0105 klas\u0119. Atrybut warto\u015bci mo\u017cna okre\u015bli\u0107 w adnotacji lub w elemencie service-interface w deskryptorze wdra\u017cania, natomiast atrybut typu mo\u017cna okre\u015bli\u0107 w adnotacji @WebServiceRef lub w elemencie service-ref-type w deskryptorze wdra\u017cania.
+error.service.ref.member.level.merge.service.interface.and.service.ref.type.not.same.useraction=Okre\u015bl tak\u0105 sam\u0105 klas\u0119 w przypadku atrybut\u00f3w typu i warto\u015bci.
+
+# Annotation validation messages ----------------------------------------
+
+error.service.ref.annotation.lookup.redundant.attributes=CWWKW0014E: W adnotacji @WebServiceRef opr\u00f3cz innych atrybut\u00f3w znajduje si\u0119 niepoprawnie okre\u015blony atrybut wyszukiwania.
+error.service.ref.annotation.lookup.redundant.attributes.explanation=Je\u015bli w adnotacji @WebServiceRef okre\u015blono atrybut wyszukiwania, \u017cadne inne atrybuty nie s\u0105 dozwolone.
+error.service.ref.annotation.lookup.redundant.attributes.useraction=Usu\u0144 atrybut wyszukiwania lub inne atrybuty.
+
+error.service.ref.class.level.annotation.name.or.type.absent=CWWKW0015E: Adnotacja @WebServiceRef w klasie {0} nie okre\u015bla warto\u015bci atrybutu typu lub nazwy. 
+error.service.ref.class.level.annotation.name.or.type.absent.explanation=Atrybuty typu i nazwy musz\u0105 zosta\u0107 okre\u015blone, je\u015bli adnotacja @WebServiceRef znajduje si\u0119 na poziomie klasy.
+error.service.ref.class.level.annotation.name.or.type.absent.useraction=Okre\u015bl brakuj\u0105cy atrybut typu lub nazwy.
+
+error.service.ref.class.level.annotation.wrong.value=CWWKW0016E: Znaleziono adnotacj\u0119 @WebServiceRef w klasie {0}. Jednak nie okre\u015blono atrybutu warto\u015bci lub okre\u015blono go w klasie {1}, kt\u00f3ra nie jest podklas\u0105 klasy javax.xml.ws.Service. 
+error.service.ref.class.level.annotation.wrong.value.explanation=W przypadku atrybutu warto\u015bci w adnotacji @WebServiceRef musi zosta\u0107 okre\u015blona podklasa klasy javax.xml.ws.Service, chyba \u017ce atrybut typu sygnalizuje wstrzykiwanie interfejsu punktu ko\u0144cowego us\u0142ugi (SEI).
+error.service.ref.class.level.annotation.wrong.value.useraction=Okre\u015bl podklas\u0119 klasy javax.xml.ws.Service w przypadku atrybutu warto\u015bci.
+
+error.service.ref.class.level.annotation.value.and.type.not.same=CWWKW0017E: Znaleziono adnotacj\u0119 @WebServiceRef w klasie {0}, lecz w przypadku atrybut\u00f3w typu i warto\u015bci nie okre\u015blono takiej samej klasy.
+error.service.ref.class.level.annotation.value.and.type.not.same.explanation=Je\u015bli adnotacja @WebServiceRef sygnalizuje wstrzykiwanie typu us\u0142ugi, a atrybut value nie okre\u015bla klasy javax.xml.ws.Service, klasa okre\u015blona przez atrybuty type i value musi by\u0107 taka sama.
+error.service.ref.class.level.annotation.value.and.type.not.same.useraction=Okre\u015bl tak\u0105 sam\u0105 klas\u0119 w przypadku atrybut\u00f3w typu i warto\u015bci.
+
+error.service.ref.member.level.annotation.wrong.method.name=CWWKW0018E: Znaleziono adnotacj\u0119 @WebServiceRef w metodzie {0} klasy {1}, lecz nazwa metody nie jest zgodna ze standardow\u0105 konwencj\u0105 komponentu JavaBeans.
+error.service.ref.member.level.annotation.wrong.method.name.explanation=Je\u015bli w przypadku odwo\u0142a\u0144 do us\u0142ugi JAX-WS adnotacja @WebServiceRef zostanie okre\u015blona w metodzie, nazwa metody musi by\u0107 zgodna ze standardow\u0105 konwencj\u0105 komponentu JavaBeans, tak\u0105 jak setHelloWorld lub getHelloWorld.
+error.service.ref.member.level.annotation.wrong.method.name.useraction=Sprawd\u017a, czy nazwa metody jest zgodna ze standardow\u0105 konwencj\u0105 komponentu JavaBeans.
+
+error.service.ref.member.level.annotation.type.not.inferred=CWWKW0019E: Znaleziono adnotacj\u0119 @WebServiceRef w sk\u0142adowej {0} klasy {1}, lecz nie mo\u017cna okre\u015bli\u0107 typu wstrzykiwania na podstawie atrybutu typu lub typu sk\u0142adowej klasy.
+error.service.ref.member.level.annotation.type.not.inferred.explanation=Je\u015bli typ sk\u0142adowej klasy to obiekt, konieczne jest okre\u015blenie atrybutu typu w przypadku adnotacji @WebServiceRef i nie mo\u017ce to by\u0107 obiekt.
+error.service.ref.member.level.annotation.type.not.inferred.useraction=Okre\u015bl atrybut typu inny ni\u017c obiekt.
+
+error.service.ref.member.level.annotation.type.not.compatible=CWWKW0020E: Znaleziono adnotacj\u0119 @WebServiceRef w sk\u0142adowej {0} klasy {1}, lecz klasa {2} okre\u015blona w atrybucie typu nie jest zgodna z klas\u0105 {3} sk\u0142adowej, kt\u00f3ra zawiera adnotacj\u0119.
+error.service.ref.member.level.annotation.type.not.compatible.explanation=Atrybut typu musi by\u0107 zgodny z typem sk\u0142adowej klasy.
+error.service.ref.member.level.annotation.type.not.compatible.useraction=Upewnij si\u0119, \u017ce atrybut typu jest zgodny z typem sk\u0142adowej klasy.
+
+error.service.ref.member.level.annotation.wrong.value=CWWKW0021E: Znaleziono adnotacj\u0119 @WebServiceRef w sk\u0142adowej {0} klasy {1}. Jednak nie okre\u015blono atrybutu warto\u015bci lub okre\u015blono go w klasie {2}, kt\u00f3ra nie jest podklas\u0105 klasy javax.xml.ws.Service. 
+error.service.ref.member.level.annotation.wrong.value.explanation=W przypadku atrybutu warto\u015bci w adnotacji @WebServiceRef musi zosta\u0107 okre\u015blona podklasa klasy javax.xml.ws.Service, chyba \u017ce atrybut typu sygnalizuje wstrzykiwanie interfejsu punktu ko\u0144cowego us\u0142ugi (SEI).
+error.service.ref.member.level.annotation.wrong.value.useraction=Okre\u015bl podklas\u0119 klasy javax.xml.ws.Service w przypadku atrybutu warto\u015bci.
+
+error.service.ref.member.level.annotation.value.and.type.not.same=CWWKW0022E: Znaleziono adnotacj\u0119 @WebServiceRef w sk\u0142adowej {0} klasy {1}, lecz w przypadku atrybut\u00f3w typu i warto\u015bci nie okre\u015blono takiej samej klasy.
+error.service.ref.member.level.annotation.value.and.type.not.same.explanation=Je\u015bli adnotacja @WebServiceRef sygnalizuje wstrzykiwanie typu us\u0142ugi, a atrybut value nie okre\u015bla klasy javax.xml.ws.Service, klasa okre\u015blona przez atrybuty type i value musi by\u0107 taka sama.
+error.service.ref.member.level.annotation.value.and.type.not.same.useraction=Okre\u015bl tak\u0105 sam\u0105 klas\u0119 w przypadku atrybut\u00f3w typu i warto\u015bci.
+
+
+#{0}=handlerChain file name
+error.no.handlerChainFile.found=CWWKW0030E: Nie mo\u017cna znale\u017a\u0107 pliku definicji \u0142a\u0144cucha procedury obs\u0142ugi {0}.
+error.no.handlerChainFile.found.explanation=Nie mo\u017cna znale\u017a\u0107 pliku definicji \u0142a\u0144cucha procedury obs\u0142ugi okre\u015blonego w atrybucie pliku w adnotacji handlerChain.
+error.no.handlerChainFile.found.useraction=Okre\u015bl \u015bcie\u017ck\u0119 do istniej\u0105cego pliku definicji \u0142a\u0144cucha procedury obs\u0142ugi. \u015acie\u017cka mo\u017ce by\u0107 pe\u0142n\u0105 \u015bcie\u017ck\u0105 pliku lub wzgl\u0119dn\u0105 \u015bcie\u017ck\u0105 do klasy oznaczonej adnotacj\u0105 handlerChain.
+
+#{0}=handlerChain file content
+error.invalid.handlerChainFile.content=CWWKW0031E: Element g\u0142\u00f3wny pliku handlerChain nie jest poprawny: {0}.
+error.invalid.handlerChainFile.content.explanation=Warto\u015bci\u0105 przestrzeni nazw elementu g\u0142\u00f3wnego nie jest warto\u015b\u0107 http://java.sun.com/xml/ns/javaee lub nazw\u0105 lokaln\u0105 elementu g\u0142\u00f3wnego nie jest nazwa handler-chain.
+error.invalid.handlerChainFile.content.useraction=Zmie\u0144 warto\u015b\u0107 przestrzeni nazw elementu g\u0142\u00f3wnego na http://java.sun.com/xml/ns/javaee lub nazw\u0119 lokaln\u0105 elementu g\u0142\u00f3wnego na handler-chain, a nast\u0119pnie spr\u00f3buj ponownie.
+
+#{0}=the unknown exception
+error.unknown.exception=CWWKW0032E: Nie mo\u017cna przeprowadzi\u0107 analizy pliku \u0142a\u0144cucha procedury obs\u0142ugi z powodu napotkania wyj\u0105tku {0}.
+error.unknown.exception.explanation=Napotkano nieoczekiwany wyj\u0105tek podczas przeprowadzania analizy pliku \u0142a\u0144cucha procedury obs\u0142ugi.
+error.unknown.exception.useraction=Sprawd\u017a, czy format pliku procedury obs\u0142ugi jest poprawny, i przejrzyj dziennik ffdc znajduj\u0105cy si\u0119 w odpowiednim katalogu logs/ffdc na serwerze w celu uzyskania szczeg\u00f3\u0142owych informacji.
+
+#{0}=the qualified name of the class which the handlerChain annotation is on.
+error.handlerChain.annotation.without.file=CWWKW0033E: Adnotacja handlerChain w klasie {0} nie zawiera w\u0142a\u015bciwo\u015bci pliku.
+error.handlerChain.annotation.without.file.explanation=W\u0142a\u015bciwo\u015b\u0107 pliku jest wymagana w adnotacji handlerChain.
+error.handlerChain.annotation.without.file.useraction=Okre\u015bl odpowiedni\u0105 nazw\u0119 pliku w adnotacji handlerChain.
+
+#{0}=the IOException exception
+warn.catalog.load.exception=CWWKW0034E: Nie mo\u017cna za\u0142adowa\u0107 pliku katalogu JAX-WS z powodu wyst\u0105pienia wyj\u0105tku {0}.
+warn.catalog.load.exception.explanation=Wyst\u0105pi\u0142 wyj\u0105tek we/wy podczas \u0142adowania pliku katalogu.
+warn.catalog.load.exception.useraction=Sprawd\u017a, czy plik katalogu JAX-WS istnieje i czy jego sk\u0142adnia jest zgodna ze specyfikacj\u0105 katalogu XML.
+
+#{0}=service impl class
+warn.no.wsdl.generate=CWWKW0035E: Klasa implementacji {0} nie zawiera adnotacji wsdlLocation lub SOAP/1.1. Dlatego nie mo\u017cna wygenerowa\u0107 definicji WSDL.
+warn.no.wsdl.generate.explanation=Us\u0142uga Web Service nie zawiera adnotacji wsdlLocation lub SOAP/1.1.
+warn.no.wsdl.generate.useraction=Okre\u015bl adnotacj\u0119 wsdlLocation lub SOAP/1.1 na potrzeby us\u0142ugi Web Service.
+
+#{0}=IOException_message
+error.write.wsdl.stream=CWWKW0036E: Nie mo\u017cna zapisa\u0107 pe\u0142nej definicji WSDL w strumieniu z powodu wyst\u0105pienia wyj\u0105tku {0}.
+error.write.wsdl.stream.explanation=Wyst\u0105pi\u0142 wyj\u0105tek we/wy podczas pr\u00f3by zapisania pe\u0142nej definicji WSDL w strumieniu.
+error.write.wsdl.stream.useraction=Okre\u015bl adnotacj\u0119 wsdlLocation lub SOAP/1.1 na potrzeby us\u0142ugi Web Service. 
+
+error.no.wsdl.per.specification=CWWKW0037E: Nie mo\u017cna wygenerowa\u0107 definicji WSDL, kt\u00f3ra jest zgodna ze specyfikacj\u0105 JAX-WS 2.2.
+error.no.wsdl.per.specification.explanation=Us\u0142uga Web Service nie zawiera adnotacji wsdlLocation lub SOAP/1.1.
+error.no.wsdl.per.specification.useraction=Okre\u015bl adnotacj\u0119 wsdlLocation lub SOAP/1.1 na potrzeby us\u0142ugi Web Service.
+
+#reuse CWWKW0038~50!
+
+#{0}=the exception message
+warn.could.not.create.handler=CWWKW0051W: Nie mo\u017cna utworzy\u0107 procedury obs\u0142ugi z powodu nast\u0119puj\u0105cego problemu: {0}.
+warn.could.not.create.handler.explanation=Nie mo\u017cna utworzy\u0107 lub zainicjowa\u0107 procedury obs\u0142ugi.
+warn.could.not.create.handler.useraction=Sprawd\u017a, czy klasa procedury obs\u0142ugi jest uwzgl\u0119dniona si\u0119 w \u015bcie\u017cce klas aplikacji i czy klasa procedury obs\u0142ugi udost\u0119pnia pusty konstruktor.
+
+#{0}=the handler class name
+#{1}=the exception message
+warn.invoke.handler.predestory=CWWKW0052W: Nie powiod\u0142a si\u0119 pr\u00f3ba wywo\u0142ania metody preDestory procedury obs\u0142ugi {0} z powodu nast\u0119puj\u0105cego wyj\u0105tku: {1}.
+warn.invoke.handler.predestory.explanation=Warto\u015b\u0107 zwracana przez metod\u0119 preDestory musi by\u0107 typu void. Ponadto zasoby u\u017cywane przez procedur\u0119 obs\u0142ugi musz\u0105 zosta\u0107 zwolnione.
+warn.invoke.handler.predestory.useraction=Upewnij si\u0119, \u017ce typ warto\u015bci zwracanej przez metod\u0119 preDestory to void oraz \u017ce wszystkie zasoby u\u017cywane przez procedur\u0119 obs\u0142ugi zosta\u0142y zwolnione. W celu uzyskania szczeg\u00f3\u0142owych informacji przejrzyj plik dziennika znajduj\u0105cy si\u0119 w katalogu nazwa_serwera/logs/ffdc.
+
+#{0}=service class name
+err.unable.set.serviceclass=CWWKW0053E: Klasa us\u0142ugi {0} nie zosta\u0142a ustawiona prawid\u0142owo.
+err.unable.set.serviceclass.explanation=Klasa us\u0142ugi nie zosta\u0142a znaleziona w \u015bcie\u017cce klasy aplikacji.
+err.unable.set.serviceclass.useraction=Upewnij si\u0119, \u017ce klasa obs\u0142ugi znajduje si\u0119 w \u015bcie\u017cce klasy aplikacji.
+
+#reuse CWWKW0054~55!
+
+#{0}=the Web service implement class name
+#{1}=the WSDL location
+warn.endpoint.absolute.wsdllocation=CWWKW0056W: Klasa implementacji {0} us\u0142ugi Web Service odwo\u0142uje si\u0119 do bezwzgl\u0119dnego po\u0142o\u017cenia pliku WSDL {1} za pomoc\u0105 adnotacji lub plan\u00f3w wdro\u017cenia. Zgodnie ze specyfikacj\u0105 JAX-WS bezwzgl\u0119dne odwo\u0142ania do plik\u00f3w WSDL z poziomu adnotacji @WebService i @WebServiceProvider s\u0105 niedozwolone.
+warn.endpoint.absolute.wsdllocation.explanation=Dla po\u0142o\u017cenia pliku WSDL wymagane jest u\u017cycie wzgl\u0119dnego adresu URL, kt\u00f3ry nie b\u0119dzie wymusza\u0107 pobierania miejsc zdalnych przez implementacj\u0119 JAX-WS. 
+warn.endpoint.absolute.wsdllocation.useraction=Zaktualizuj po\u0142o\u017cenie pliku WSDL z u\u017cyciem wzgl\u0119dnego adresu URL za po\u015brednictwem adnotacji lub plan\u00f3w wdro\u017cenia. 
+
+#{0}=the value of wsdlLocation 
+#{1}=the implementation class
+error.no.wsdl.find=CWWKW0057E: Nie mo\u017cna znale\u017a\u0107 pliku WSDL {0} okre\u015blonego dla klasy implementacji {1}.
+error.no.wsdl.find.explanation=Nie mo\u017cna znale\u017a\u0107 pliku WSDL okre\u015blonego dla klasy implementacji.
+error.no.wsdl.find.useraction=Okre\u015bl istniej\u0105cy plik WSDL w us\u0142udze Web Service.
+
+#{0}=the specified binding type
+#{1}=the port component name
+#{2}=the WSDL document
+error.endpointinfo.validation.bindingtype.and.wsdl.mismatch=CWWKW0058E: Okre\u015blony typ powi\u0105zania {0} nie jest zgodny z typem powi\u0105zania w dokumencie WSDL {1}.
+error.endpointinfo.validation.bindingtype.and.wsdl.mismatch.explanation=Je\u015bli typ powi\u0105zania jest okre\u015blony za pomoc\u0105 adnotacji BindingType lub deskryptora wdra\u017cania, jego warto\u015b\u0107 musi by\u0107 zgodna z warto\u015bci\u0105 w dokumencie WSDL.
+error.endpointinfo.validation.bindingtype.and.wsdl.mismatch.useraction=Zaktualizuj warto\u015b\u0107 typu powi\u0105zania, aby by\u0142a zgodna z warto\u015bci\u0105 w dokumencie WSDL.
+
+#{0}=name of JMX operation
+err.unsupported.jmx.operation=CWWKW0059E: Operacja {0} nie jest obs\u0142ugiwana.
+err.unsupported.jmx.operation.explanation=Wykonanie wymaganej operacji nie jest dozwolone.
+err.unsupported.jmx.operation.useraction=Nie uruchamiaj nieobs\u0142ugiwanej operacji.

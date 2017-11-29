@@ -1,0 +1,104 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMCG
+#COMPONENTNAMEFOR CWMCG MicroProfile Config API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Config Impl -  range is 0000-4999, plus 9999 for the emergency message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# Config is closed.
+config.closed.CWMCG0001E=CWMCG0001E: \uad6c\uc131\uc774 \ub2eb\ud614\uc2b5\ub2c8\ub2e4.
+config.closed.CWMCG0001E.explanation=\ub2eb\ud600\uc9c4 \uad6c\uc131 \uc778\uc2a4\ud134\uc2a4\uc5d0 \uc870\uc791\uc744 \uc218\ud589\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+config.closed.CWMCG0001E.useraction=\uc0c8 \uad6c\uc131 \uc778\uc2a4\ud134\uc2a4\ub97c \uac00\uc838\uc624\uace0 \uc870\uc791\uc744 \ub2e4\uc2dc \uc2dc\ub3c4\ud558\uc2ed\uc2dc\uc624.
+
+# ClassLoader must not be null.
+null.classloader.CWMCG0002E=CWMCG0002E: \ud074\ub798\uc2a4 \ub85c\ub354\uac00 \ub110\uc774\uc5b4\uc11c\ub294 \uc548\ub429\ub2c8\ub2e4.
+null.classloader.CWMCG0002E.explanation=\uad6c\uc131 \ube4c\ub354\uc5d0\uc11c \uc0ac\uc6a9\ud55c \ud074\ub798\uc2a4 \ub85c\ub354\uac00 \ub110\uc774\uc5b4\uc11c\ub294 \uc548\ub429\ub2c8\ub2e4.
+null.classloader.CWMCG0002E.useraction=\ud074\ub798\uc2a4 \ub85c\ub354\ub97c \ub110\uc774 \uc544\ub2cc \uac12\uc73c\ub85c \uc124\uc815\ud558\uc2ed\uc2dc\uc624.
+
+# A Config instance already exists for the specified ClassLoader.
+config.already.exists.CWMCG0003E=CWMCG0003E: \uc9c0\uc815\ub41c \ud074\ub798\uc2a4 \ub85c\ub354\uc5d0 \ub300\ud55c \uad6c\uc131 \uc778\uc2a4\ud134\uc2a4\uac00 \uc774\ubbf8 \uc874\uc7ac\ud569\ub2c8\ub2e4.
+config.already.exists.CWMCG0003E.explanation=\uc9c0\uc815\ub41c \ud074\ub798\uc2a4 \ub85c\ub354\uc5d0 \ub300\ud55c \uad6c\uc131 \uc778\uc2a4\ud134\uc2a4\uac00 \uc774\ubbf8 \uc124\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+config.already.exists.CWMCG0003E.useraction='releaseConfig' \uba54\uc18c\ub4dc\ub97c \uc0ac\uc6a9\ud558\uc5ec \uc774\uc804 \uc778\uc2a4\ud134\uc2a4\ub97c \uc81c\uac70\ud55c \ud6c4 \uba54\uc18c\ub4dc\ub97c \uc7ac\uc2dc\ub3c4\ud558\uc2ed\uc2dc\uc624.
+
+# Unable to close the Config instance. The exception is: {0}.
+could.not.close.CWMCG0004E=CWMCG0004E: \uad6c\uc131 \uc778\uc2a4\ud134\uc2a4\ub97c \ub2eb\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc608\uc678\ub294 {0}\uc785\ub2c8\ub2e4.
+could.not.close.CWMCG0004E.explanation=\uad6c\uc131 \uc778\uc2a4\ud134\uc2a4\ub97c \ub2eb\ub294 \uc911\uc5d0 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc790\uc6d0\uc774 \ub9b4\ub9ac\uc2a4\ub418\uc9c0 \uc54a\uc558\uc744 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+could.not.close.CWMCG0004E.useraction=\uc11c\ubc84 message.log \ubc0f FFDC \ub85c\uadf8\ub97c \uac80\ud1a0\ud558\uc5ec \ubb38\uc81c\uc810\uc744 \uc2dd\ubcc4\ud558\uc2ed\uc2dc\uc624.
+
+# Unable to convert the string "{0}" to a value of type {1}.
+unable.to.convert.CWMCG0006E=CWMCG0006E: \ubb38\uc790\uc5f4 "{0}"\uc744(\ub97c) \uc720\ud615 {1}\uc758 \uac12\uc73c\ub85c \ubcc0\ud658\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+unable.to.convert.CWMCG0006E.explanation=\uc9c0\uc815\ub41c \uc720\ud615\uc5d0 \uc801\ud569\ud55c \ubcc0\ud658\uae30\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+unable.to.convert.CWMCG0006E.useraction=\uc801\ud569\ud55c \ubcc0\ud658\uae30\ub97c \ucd94\uac00\ud558\uac70\ub098 \ud074\ub798\uc2a4\uc5d0 \uacf5\uc6a9 \ubb38\uc790\uc5f4 \uc0dd\uc131\uc790 \ub610\ub294 \uc815\uc801 valueOf(\ubb38\uc790\uc5f4) \uba54\uc18c\ub4dc\uac00 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# A Converter of type {0} threw an exception. The input string was: "{1}". The exception is: {2}.
+conversion.exception.CWMCG0007E=CWMCG0007E: \uc720\ud615 "{0}"\uc758 \ubcc0\ud658\uae30\uc5d0\uc11c \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc785\ub825 \ubb38\uc790\uc5f4: "{1}". \uc608\uc678\ub294 {2}\uc785\ub2c8\ub2e4.
+conversion.exception.CWMCG0007E.explanation=\ubcc0\ud658\uae30\uc5d0\uc11c \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+conversion.exception.CWMCG0007E.useraction=\uc11c\ubc84 message.log \ubc0f FFDC \ub85c\uadf8\ub97c \uac80\ud1a0\ud558\uc5ec \ubb38\uc81c\uc810\uc744 \uc2dd\ubcc4\ud558\uc2ed\uc2dc\uc624.
+
+# Unable to convert the string "{0}" to a value of type Boolean. Expected one of [true, yes, on, false, no, off].
+unable.to.convert.boolean.CWMCG0008E=CWMCG0008E: \ubb38\uc790\uc5f4 "{0}"\uc744(\ub97c) \ubd80\uc6b8 \uc720\ud615\uc758 \uac12\uc73c\ub85c \ubcc0\ud658\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. [true, yes, on, false, no, off] \uac12 \uc911 \ud558\ub098\uc5ec\uc57c \ud569\ub2c8\ub2e4.
+unable.to.convert.boolean.CWMCG0008E.explanation=\uc785\ub825 \ubb38\uc790\uc5f4\uc774 \uc62c\ubc14\ub978 \ubd80\uc6b8 \uac12\uc774 \uc544\ub2d9\ub2c8\ub2e4.
+unable.to.convert.boolean.CWMCG0008E.useraction=\uc18c\uc2a4 \uc785\ub825 \ubb38\uc790\uc5f4\uc744 \uc5c5\ub370\uc774\ud2b8\ud55c \ud6c4 \uc870\uc791\uc744 \ub2e4\uc2dc \uc2dc\ub3c4\ud558\uc2ed\uc2dc\uc624.
+
+# Could not determine conversion type of Converter class {0}.
+unable.to.determine.conversion.type.CWMCG0009E=CWMCG0009E: \ubcc0\ud658\uae30 \ud074\ub798\uc2a4 {0}\uc758 \ubcc0\ud658 \uc720\ud615\uc744 \ud310\ubcc4\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+unable.to.determine.conversion.type.CWMCG0009E.explanation=\ubcc0\ud658\uae30 \uad6c\ud604 \ud074\ub798\uc2a4\uc5d0 \uc801\ud569\ud55c \uc77c\ubc18 \uc720\ud615\uc774 \uc5c6\uc2b5\ub2c8\ub2e4.
+unable.to.determine.conversion.type.CWMCG0009E.useraction=\uad6c\ud604 \ud074\ub798\uc2a4\uc5d0 \ubcc0\ud658\uae30 \uc778\ud130\ud398\uc774\uc2a4\uc5d0 \ub300\ud574 \uc801\ud569\ud55c \uc77c\ubc18 \uc720\ud615 \ubcc0\uc218\uac00 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# Unable to discover ConfigSources. The exception is: {0}.
+unable.to.discover.config.sources.CWMCG0010E=CWMCG0010E: ConfigSources\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc608\uc678\ub294 {0}\uc785\ub2c8\ub2e4.
+unable.to.discover.config.sources.CWMCG0010E.explanation=Java ServiceLoader\uc5d0\uc11c \uc608\uc678\uac00 \uc791\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uac00\uc7a5 \uac00\ub2a5\ud55c \uc6d0\uc778\uc740 \uc774\ub984 \uc9c0\uc815\ub41c ConfigSource \ud074\ub798\uc2a4 \uc911 \ud558\ub098\ub97c \ucc3e\uc744 \uc218 \uc5c6\ub294 \uac83\uc785\ub2c8\ub2e4.
+unable.to.discover.config.sources.CWMCG0010E.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ub0b4\uc758 Java \uc11c\ube44\uc2a4 \ud30c\uc77c\uc5d0\uc11c \uc774\ub984 \uc9c0\uc815\ub41c \ud074\ub798\uc2a4\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \uc11c\ubc84 message.log \ubc0f FFDC \ub85c\uadf8\ub97c \uac80\ud1a0\ud558\uc5ec \ubb38\uc81c\uc810\uc744 \ucd94\uac00\ub85c \uc2dd\ubcc4\ud558\uc2ed\uc2dc\uc624.
+
+# Unable to discover ConfigSourceProviders. The exception is: {0}.
+unable.to.discover.config.source.providers.CWMCG0011E=CWMCG0011E: ConfigSourceProviders\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc608\uc678\ub294 {0}\uc785\ub2c8\ub2e4.
+unable.to.discover.config.source.providers.CWMCG0011E.explanation=Java ServiceLoader\uc5d0\uc11c \uc608\uc678\uac00 \uc791\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uac00\uc7a5 \uac00\ub2a5\ud55c \uc6d0\uc778\uc740 \uc774\ub984 \uc9c0\uc815\ub41c ConfigSourceProvider \ud074\ub798\uc2a4 \uc911 \ud558\ub098\ub97c \ucc3e\uc744 \uc218 \uc5c6\ub294 \uac83\uc785\ub2c8\ub2e4.
+unable.to.discover.config.source.providers.CWMCG0011E.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ub0b4\uc758 Java \uc11c\ube44\uc2a4 \ud30c\uc77c\uc5d0\uc11c \uc774\ub984 \uc9c0\uc815\ub41c \ud074\ub798\uc2a4\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \uc11c\ubc84 message.log \ubc0f FFDC \ub85c\uadf8\ub97c \uac80\ud1a0\ud558\uc5ec \ubb38\uc81c\uc810\uc744 \ucd94\uac00\ub85c \uc2dd\ubcc4\ud558\uc2ed\uc2dc\uc624.
+
+# Unable to discover Converters. The exception is: {0}.
+unable.to.discover.converters.CWMCG0012E=CWMCG0012E: Converters\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc608\uc678\ub294 {0}\uc785\ub2c8\ub2e4.
+unable.to.discover.converters.CWMCG0012E.explanation=Java ServiceLoader\uc5d0\uc11c \uc608\uc678\uac00 \uc791\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uac00\uc7a5 \uac00\ub2a5\ud55c \uc6d0\uc778\uc740 \uc774\ub984 \uc9c0\uc815\ub41c Converter \ud074\ub798\uc2a4 \uc911 \ud558\ub098\ub97c \ucc3e\uc744 \uc218 \uc5c6\ub294 \uac83\uc785\ub2c8\ub2e4.
+unable.to.discover.converters.CWMCG0012E.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ub0b4\uc758 Java \uc11c\ube44\uc2a4 \ud30c\uc77c\uc5d0\uc11c \uc774\ub984 \uc9c0\uc815\ub41c \ud074\ub798\uc2a4\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \uc11c\ubc84 message.log \ubc0f FFDC \ub85c\uadf8\ub97c \uac80\ud1a0\ud558\uc5ec \ubb38\uc81c\uc810\uc744 \ucd94\uac00\ub85c \uc2dd\ubcc4\ud558\uc2ed\uc2dc\uc624.
+
+# Unable to cancel asynchronous update thread.
+future.update.not.cancelled.CWMCG0013E=CWMCG0013E: \uc11c\ubc84\uac00 \ube44\ub3d9\uae30 \uc5c5\ub370\uc774\ud2b8 \uc2a4\ub808\ub4dc\ub97c \ucde8\uc18c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+future.update.not.cancelled.CWMCG0013E.explanation=\ucd94\ud6c4 \ube44\ub3d9\uae30 \uc5c5\ub370\uc774\ud2b8\ub97c \ucde8\uc18c\ud558\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4. \uc77c\ubc18\uc801\uc73c\ub85c \uc774\ub294 ConfigSource \uc778\uc2a4\ud134\uc2a4\uc5d0 \ub300\ud55c \uc7a5\uae30 \uc2e4\ud589 \uc5c5\ub370\uc774\ud2b8 \ud638\ucd9c\ub85c \uc778\ud574 \ubc1c\uc0dd\ud569\ub2c8\ub2e4.
+future.update.not.cancelled.CWMCG0013E.useraction=\uc11c\ubc84 message.log \ubc0f FFDC \ub85c\uadf8\ub97c \uac80\ud1a0\ud558\uc5ec \ubb38\uc81c\uc810\uc744 \uc2dd\ubcc4\ud558\uc2ed\uc2dc\uc624.
+
+# A Converter could not be found for type {0}.
+could.not.find.converter.CWMCG0014E=CWMCG0014E: {0} \uc720\ud615\uc5d0 \ub300\ud55c \ubcc0\ud658\uae30\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+could.not.find.converter.CWMCG0014E.explanation=\uc6d0\uc2dc \ud2b9\uc131 \ubb38\uc790\uc5f4\uc744 \uc694\uccad\ub41c \uc720\ud615\uc73c\ub85c \ubcc0\ud658\ud558\ub294 \ubcc0\ud658\uae30\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+could.not.find.converter.CWMCG0014E.useraction=\uc801\uc808\ud55c Converter \ud074\ub798\uc2a4\uac00 \uc0ac\uc6a9 \uac00\ub2a5\ud558\uace0 Java \uc11c\ube44\uc2a4 \ud30c\uc77c\uc5d0 \ub098\uc5f4\ub418\uc5b4 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# The property {0} was not found in the configuration.
+no.such.element.CWMCG0015E=CWMCG0015E: \uad6c\uc131\uc5d0\uc11c {0} \ud2b9\uc131\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+no.such.element.CWMCG0015E.explanation=\uad6c\uc131\ub41c \uc18c\uc2a4\uc5d0\uc11c \uc694\uccad\ub41c \ud2b9\uc131\uc774 \uc874\uc7ac\ud558\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+no.such.element.CWMCG0015E.useraction=\uae30\uc874 \uc18c\uc2a4 \uc911 \ud558\ub098\uc5d0 \ud2b9\uc131\uc744 \ucd94\uac00\ud558\uac70\ub098 \ud2b9\uc131\uc774 \ud3ec\ud568\ub41c \uc0c8 \uc18c\uc2a4\ub97c \ucd94\uac00\ud558\uc2ed\uc2dc\uc624.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Config error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Config API error has occurred: {0}
+temporary.CWMCG9999E=CWMCG9999E: \uad6c\uc131 API \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. {0}.
+temporary.CWMCG9999E.explanation=\uc77c\ubc18 \uc870\uc791\uc744 \ubc29\ud574\ud558\ub294 \uad6c\uc131 API \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+temporary.CWMCG9999E.useraction=\uc11c\ubc84 message.log \ubc0f FFDC \ub85c\uadf8\ub97c \uac80\ud1a0\ud558\uc5ec \ubb38\uc81c\uc810\uc744 \uc2dd\ubcc4\ud558\uc2ed\uc2dc\uc624.

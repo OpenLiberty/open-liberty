@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs20.client/resources/com/ibm/ws/jaxrs20/client/internal/resources/JAXRSClientMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS20 Client Code
+#RANGE 0700 - 0799
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# JAXRS 2.0 Client Configuration Message ------------------------
+error.jaxrs.client.configuration.timeout.valueinvalid=CWWKW0700E: A JAX-RS \u00fcgyf\u00e9loldalon a(z) {1} tulajdons\u00e1gban megadott {0} id\u0151korl\u00e1t \u00e9rt\u00e9k \u00e9rv\u00e9nytelen. Az \u00e9rt\u00e9k az alap\u00e9rtelmezett {2} \u00e9rt\u00e9kre van be\u00e1ll\u00edtva. {3} 
+error.jaxrs.client.configuration.timeout.valueinvalid.explanation=Az id\u0151korl\u00e1t \u00e9rt\u00e9k t\u00edpusa csak long vagy int lehet.  
+error.jaxrs.client.configuration.timeout.valueinvalid.useraction=\u00c1ll\u00edtsa be az \u00e9rt\u00e9ket long vagy int t\u00edpusra.
+
+error.jaxrs.client.configuration.proxy.portinvalid=CWWKW0701E: A JAX-RS \u00fcgyf\u00e9loldalon a(z) {1} tulajdons\u00e1gban megadott {0} proxykiszolg\u00e1l\u00f3 port \u00e9rt\u00e9k \u00e9rv\u00e9nytelen. Az \u00e9rt\u00e9k az alap\u00e9rtelmezett {2} \u00e9rt\u00e9kre van be\u00e1ll\u00edtva. {3}
+error.jaxrs.client.configuration.proxy.portinvalid.explanation=A proxykiszolg\u00e1l\u00f3 port t\u00edpusa csak int lehet.  
+error.jaxrs.client.configuration.proxy.portinvalid.useraction=\u00c1ll\u00edtsa be az \u00e9rt\u00e9k t\u00edpus\u00e1t int t\u00edpusra.
+
+error.jaxrs.client.configuration.proxy.typeinvalid=CWWKW0702E: A JAX-RS \u00fcgyf\u00e9loldalon a(z) {1} tulajdons\u00e1gban megadott {0} proxykiszolg\u00e1l\u00f3 t\u00edpus \u00e9rt\u00e9k \u00e9rv\u00e9nytelen. Az \u00e9rt\u00e9k az alap\u00e9rtelmezett {2} \u00e9rt\u00e9kre van be\u00e1ll\u00edtva. {3}
+error.jaxrs.client.configuration.proxy.typeinvalid.explanation=A proxykiszolg\u00e1l\u00f3 t\u00edpusa \u00e9rt\u00e9ke csak HTTP vagy SOCKS lehet.  
+error.jaxrs.client.configuration.proxy.typeinvalid.useraction=\u00c1ll\u00edtsa be az \u00e9rt\u00e9ket HTTP vagy SOCKS \u00e9rt\u00e9kre.
+
+#{0} is the ssl ref id configured in server.xml
+error.jaxrs.client.ssl.invalidsslconfig=CWWKW0703E: Az SSL socket gy\u00e1r nem hozhat\u00f3 l\u00e9tre, mert a(z) {0} SSL hivatkoz\u00e1sazonos\u00edt\u00f3 nem l\u00e9tezik a server.xml f\u00e1jlban.
+error.jaxrs.client.ssl.invalidsslconfig.explanation= SSL socket gy\u00e1r el\u0151\u00e1ll\u00edt\u00e1s\u00e1hoz \u00e9rv\u00e9nyes hivatkoz\u00e1sazonos\u00edt\u00f3 sz\u00fcks\u00e9ges. Nem tal\u00e1lhat\u00f3 SSL konfigur\u00e1ci\u00f3 {0} azonos\u00edt\u00f3val a server.xml f\u00e1jlban.  
+error.jaxrs.client.ssl.invalidsslconfig.useraction= A server.xml f\u00e1jlban \u00e1ll\u00edtson be egy \u00e9rv\u00e9nyes SSL hivatkoz\u00e1sazonos\u00edt\u00f3t (reference id).
+
+no_saml_found_in_subject=CWWKW0704W: A sz\u00fcks\u00e9ges SAML token hi\u00e1nyzik a t\u00e1rgyb\u00f3l.
+no_saml_found_in_subject.explanation=Hiba t\u00f6rt\u00e9nt az SAML token kinyer\u00e9sekor a t\u00e1rgyb\u00f3l vagy egy SAML elem nem tal\u00e1lhat\u00f3 az aktu\u00e1lis t\u00e1rgyban.
+no_saml_found_in_subject.useraction=Ha l\u00e9trehozza a futtat\u00e1s (run-as) t\u00e1rgyat, akkor \u00fcgyeljen arra, hogy az SAML token hozz\u00e1 legyen adva a t\u00e1rgyhoz. Ellenkez\u0151 esetben az SAML konfigur\u00e1ci\u00f3ban az includeTokenInSubject attrib\u00fatum ellen\u0151rz\u00e9s\u00e9vel gondoskodjon arr\u00f3l, hogy a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3ja t\u00e1mogassa az SAML token hozz\u00e1ad\u00e1s\u00e1t a t\u00e1rgyhoz.
+
+failed_to_extract_saml_token_from_subject=CWWKW0705W: Kiv\u00e9tel t\u00f6rt\u00e9nt a SAML PropagationHelper API haszn\u00e1lat\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n. A kiv\u00e9tel: [{0}]
+failed_to_extract_saml_token_from_subject.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a PropagationHelper API megh\u00edv\u00e1sakor a SAML token lek\u00e9r\u00e9s\u00e9hez a t\u00e1rgyb\u00f3l.
+failed_to_extract_saml_token_from_subject.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a server.xml f\u00e1jlban a samlWeb-2.0 szolg\u00e1ltat\u00e1s meg van hat\u00e1rozva. Tov\u00e1bb\u00e1 ellen\u0151rizze a kiszolg\u00e1l\u00f3napl\u00f3kat a kiv\u00e9tellel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt. 
+
+failed_run_as_subject=CWWKW0706E: Kiv\u00e9tel t\u00f6rt\u00e9nt a RunAsSubject lek\u00e9r\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n. A kiv\u00e9tel: [{0}].
+failed_run_as_subject.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a RunAsSubject lek\u00e9r\u00e9se k\u00f6zben.
+failed_run_as_subject.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3 megfelel\u0151en van konfigur\u00e1lva \u00e9s elind\u00edtva.

@@ -1,0 +1,97 @@
+###############################################################################
+# Copyright (c) 2014, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.concurrent.persistent/resources/com/ibm/ws/concurrent/persistent/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Persistent Scheduled Executor
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1500 to CWWCK1999 except those specifically identified as moved
+
+# Java class and method names that should not be translated:
+# Future, get, getDelay, getResult, getNextExecutionTime, isCancelled, isDone, ScheduledFuture, TaskStatus
+
+CWWKC1500.task.rollback.retry=CWWKC1500W: A(z) {0} \u00e1lland\u00f3 v\u00e9grehajt\u00f3 visszag\u00f6rgette a(z) {1} feladatot. A feladat az \u00fctemterv szerint {2} m\u00e1sodperc m\u00falva \u00fajrapr\u00f3b\u00e1lkozik.
+CWWKC1500.task.rollback.retry.explanation=A feladat v\u00e9grehajt\u00e1sa visszag\u00f6rget\u00e9sre van megjel\u00f6lve. A feladat a megadott sz\u00e1m\u00fa m\u00e1sodperc m\u00falva \u00fajra fog pr\u00f3b\u00e1lkozni.
+CWWKC1500.task.rollback.retry.useraction=V\u00e1rja meg, am\u00edg a feladat \u00fajrapr\u00f3b\u00e1lkozik.
+
+CWWKC1501.task.failure.retry=CWWKC1501W: A(z) {0} \u00e1lland\u00f3 v\u00e9grehajt\u00f3 visszag\u00f6rgette a(z) {1} feladatot a(z) {2} hiba miatt. A feladat az \u00fctemterv szerint {3} m\u00e1sodperc m\u00falva \u00fajrapr\u00f3b\u00e1lkozik.
+CWWKC1501.task.failure.retry.explanation=A feladat v\u00e9grehajt\u00e1sa meghi\u00fasult, \u00e9s visszag\u00f6rget\u00e9sre ker\u00fclt. A feladat a megadott sz\u00e1m\u00fa m\u00e1sodperc m\u00falva \u00fajra fog pr\u00f3b\u00e1lkozni.
+CWWKC1501.task.failure.retry.useraction=Ha a hiba \u00e1tmeneti, akkor v\u00e1rja meg, am\u00edg a feladat \u00fajrapr\u00f3b\u00e1lkozik. Ellenkez\u0151 esetben jav\u00edtsa ki a hiba ok\u00e1t, ha a hiba v\u00e1ratlan.
+
+CWWKC1502.task.rollback=CWWKC1502W: A(z) {0} \u00e1lland\u00f3 v\u00e9grehajt\u00f3 visszag\u00f6rgette a(z) {1} feladatot.
+CWWKC1502.task.rollback.explanation=A feladat v\u00e9grehajt\u00e1sa visszag\u00f6rget\u00e9sre van megjel\u00f6lve.
+CWWKC1502.task.rollback.useraction=Ha a visszag\u00f6rget\u00e9s v\u00e1ratlan, akkor \u00fctemezze \u00fajra a feladatot.
+
+CWWKC1503.task.failure=CWWKC1503W: A(z) {0} \u00e1lland\u00f3 v\u00e9grehajt\u00f3 visszag\u00f6rgette a(z) {1} feladatot a(z) {2} hiba miatt.
+CWWKC1503.task.failure.explanation=A feladat v\u00e9grehajt\u00e1sa meghi\u00fasult, \u00e9s visszag\u00f6rget\u00e9sre ker\u00fclt.
+CWWKC1503.task.failure.useraction=Ha a hiba v\u00e1ratlan, akkor jav\u00edtsa ki a hiba ok\u00e1t, majd \u00fctemezze \u00fajra a feladatot.
+
+CWWKC1510.retry.limit.reached.rollback=CWWKC1510W: A(z) {0} \u00e1lland\u00f3 v\u00e9grehajt\u00f3 megszak\u00edtotta a(z) {1} feladatot, mert az {2} egym\u00e1st k\u00f6vet\u0151 alkalommal ker\u00fclt visszag\u00f6rget\u00e9sre vagy hi\u00fasult meg.
+CWWKC1510.retry.limit.reached.rollback.explanation=A feladat el\u00e9rte az egym\u00e1st k\u00f6vet\u0151 \u00fajrapr\u00f3b\u00e1lkoz\u00e1sok korl\u00e1tj\u00e1t, \u00e9s nem lesz \u00fajra megk\u00eds\u00e9relve.
+CWWKC1510.retry.limit.reached.rollback.useraction=Ha a visszag\u00f6rget\u00e9sek vagy hib\u00e1k v\u00e1ratlanok, akkor \u00e1llap\u00edtsa meg az okot, \u00e9s \u00fctemezze \u00fajra a feladatot. Ha a visszag\u00f6rget\u00e9sek \u00e9s hib\u00e1k id\u0151szakosak, akkor fontolja meg az \u00fajrapr\u00f3b\u00e1lkoz\u00e1si korl\u00e1t n\u00f6vel\u00e9s\u00e9t. 
+
+CWWKC1511.retry.limit.reached.failed=CWWKC1511W: A(z) {0} \u00e1lland\u00f3 v\u00e9grehajt\u00f3 megszak\u00edtotta a(z) {1} feladatot, mert az {2} egym\u00e1st k\u00f6vet\u0151 alkalommal ker\u00fclt visszag\u00f6rget\u00e9sre vagy hi\u00fasult meg. A v\u00e9gs\u0151 hiba a k\u00f6vetkez\u0151: {3}.
+CWWKC1511.retry.limit.reached.failed.explanation=A feladat el\u00e9rte az egym\u00e1st k\u00f6vet\u0151 \u00fajrapr\u00f3b\u00e1lkoz\u00e1sok korl\u00e1tj\u00e1t, \u00e9s nem lesz \u00fajra megk\u00eds\u00e9relve.
+CWWKC1511.retry.limit.reached.failed.useraction=Ha a hib\u00e1k vagy visszag\u00f6rget\u00e9sek v\u00e1ratlanok, akkor \u00e1llap\u00edtsa meg az okot, \u00e9s \u00fctemezze \u00fajra a feladatot. Ha a visszag\u00f6rget\u00e9sek \u00e9s hib\u00e1k id\u0151szakosak, akkor fontolja meg az \u00fajrapr\u00f3b\u00e1lkoz\u00e1si korl\u00e1t n\u00f6vel\u00e9s\u00e9t. 
+
+CWWKC1540.thread.cannot.submit.tasks=CWWKC1540E: Nem \u00fctemezhet \u00e1lland\u00f3 feladatokat az aktu\u00e1lis sz\u00e1lkontextusb\u00f3l.
+CWWKC1540.thread.cannot.submit.tasks.explanation=\u00c1lland\u00f3 feladatokat csak olyan sz\u00e1lb\u00f3l \u00fctemezhet, amely soros\u00edthat\u00f3 oszt\u00e1lybet\u00f6lt\u0151 azonoss\u00e1ggal rendelkez\u0151 alkalmaz\u00e1ssal vagy szolg\u00e1ltat\u00e1ssal van t\u00e1rs\u00edtva.
+CWWKC1540.thread.cannot.submit.tasks.useraction=Feladatok \u00fctemez\u00e9sekor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a sz\u00e1lon jelen van az alkalmaz\u00e1s vagy szolg\u00e1ltat\u00e1s kontextusa.
+
+# {0} method name: either isDone or isCancelled
+CWWKC1550.status.unavailable.until.ended=CWWKC1550E: A(z) {0} met\u00f3dust csak a feladat befejez\u00e9se ut\u00e1n lek\u00e9rt TaskStatus eset\u00e9n h\u00edvhatja meg. \u00c1llap\u00edtsa meg, hogy a feladat befejez\u0151d\u00f6tt-e a TaskStatus p\u00e9ld\u00e1ny lek\u00e9r\u00e9se id\u0151pontj\u00e1ban \u00fagy, hogy ellen\u0151rzi, a getNextExecutionTime null\u00e9rt\u00e9k\u0171-e.
+CWWKC1550.status.unavailable.until.ended.explanation=A TaskStatus a feladat\u00e1llapot megv\u00e1ltoztathatatlan pillanatk\u00e9pe. Az isDone vagy isCancelled met\u00f3dust\u00f3l a feladat befejez\u0151d\u00e9se el\u0151tt visszaadott minden \u00e9rt\u00e9k \u00e9rv\u00e9nytelenn\u00e9 v\u00e1lik, mihelyt a feladat befejez\u0151dik. Annak \u00e9rdek\u00e9ben, hogy ne ker\u00fclj\u00f6n visszaad\u00e1sra megb\u00edzhatatlan \u00e9rt\u00e9k, a feladat befejez\u0151d\u00e9se el\u0151tt minden k\u00eds\u00e9rlet hib\u00e1t eredm\u00e9nyez.
+CWWKC1550.status.unavailable.until.ended.useraction=A getNextExecutionTime met\u00f3dus haszn\u00e1lat\u00e1val \u00e1llap\u00edtsa meg, hogy a feladat befejez\u0151d\u00f6tt-e. Az isDone \u00e9s isCancelled met\u00f3dusokat csak akkor haszn\u00e1lja, ha a feladat befejez\u0151d\u00f6tt.
+
+CWWKC1551.result.unavailable.until.ended=CWWKC1551E: A get met\u00f3dust csak a feladat befejez\u00e9se ut\u00e1n lek\u00e9rt TaskStatus eset\u00e9n h\u00edvhatja meg. A getResult met\u00f3dus haszn\u00e1lat\u00e1val k\u00e9rje le annak a v\u00e9grehajt\u00e1snak az eredm\u00e9ny\u00e9t, amely a TaskStatus p\u00e9ld\u00e1ny lek\u00e9r\u00e9se id\u0151pontj\u00e1ban a legfrissebb v\u00e9grehajt\u00e1s volt.
+CWWKC1551.result.unavailable.until.ended.explanation=A TaskStatus a feladat\u00e1llapot megv\u00e1ltoztathatatlan pillanatk\u00e9pe. A get met\u00f3dus fel\u0151l a feladat befejez\u0151d\u00e9se el\u0151tt visszakapott minden \u00e9rt\u00e9k \u00e9rv\u00e9nytelenn\u00e9 v\u00e1lik, amint egy m\u00e1sik v\u00e9grehajt\u00e1si k\u00eds\u00e9rlet teljes\u00fcl vagy a feladat befejez\u0151dik. Annak \u00e9rdek\u00e9ben, hogy ne ker\u00fclj\u00f6n visszaad\u00e1sra megb\u00edzhatatlan \u00e9rt\u00e9k, a feladat befejez\u0151d\u00e9se el\u0151tt minden k\u00eds\u00e9rlet hib\u00e1t eredm\u00e9nyez.
+CWWKC1551.result.unavailable.until.ended.useraction=A getResult met\u00f3dus haszn\u00e1lat\u00e1val k\u00e9rje le annak a v\u00e9grehajt\u00e1si k\u00eds\u00e9rletnek az eredm\u00e9ny\u00e9t, amely a TaskStatus p\u00e9ld\u00e1ny lek\u00e9r\u00e9sekor a legfrissebb k\u00eds\u00e9rlet volt. 
+
+CWWKC1552.delay.unavailable=CWWKC1552E: A getDelay met\u00f3dust csak egyszeri feladatokhoz tartoz\u00f3 TaskStatus eset\u00e9n h\u00edvhatja meg. Az ism\u00e9tl\u0151d\u0151 feladatok \u00e9s az aktiv\u00e1l\u00f3val \u00fctemezett feladatok eset\u00e9n a getNextExecutionTime met\u00f3dus haszn\u00e1lat\u00e1val k\u00e9rje le a TaskStatus lek\u00e9r\u00e9sekor legfrissebb v\u00e9grehajt\u00e1s ut\u00e1n elv\u00e1rt k\u00f6vetkez\u0151 v\u00e9grehajt\u00e1si id\u0151t.
+CWWKC1552.delay.unavailable.explanation=A TaskStatus a feladat\u00e1llapot megv\u00e1ltoztathatatlan pillanatk\u00e9pe. A getDelay met\u00f3dust\u00f3l a feladat befejez\u0151d\u00e9se el\u0151tt visszakapott minden \u00e9rt\u00e9k \u00e9rv\u00e9nytelenn\u00e9 v\u00e1lik, amint egy m\u00e1sik v\u00e9grehajt\u00e1si k\u00eds\u00e9rlet teljes\u00fcl. Annak \u00e9rdek\u00e9ben, hogy ne ker\u00fclj\u00f6n visszaad\u00e1sra megb\u00edzhatatlan \u00e9rt\u00e9k, a feladat befejez\u0151d\u00e9se el\u0151tt minden k\u00eds\u00e9rlet hib\u00e1t eredm\u00e9nyez.
+CWWKC1552.delay.unavailable.useraction=A getNextExecutionTime met\u00f3dus haszn\u00e1lat\u00e1val k\u00e9rje le az elv\u00e1rt k\u00f6vetkez\u0151 v\u00e9grehajt\u00e1si id\u0151t, amely megfelel annak az id\u0151pontnak, amikor a TaskStatus lek\u00e9r\u00e9sre ker\u00fclt.
+
+# {0} persistent executor id
+# {1} task id (and name in parenthesis if any)
+CWWKC1553.result.inaccessible=CWWKC1553E: A(z) {0} \u00e1lland\u00f3 v\u00e9grehajt\u00f3 nem tudja lek\u00e9rni a(z) {1} feladat eredm\u00e9ny\u00e9t. Tekintse meg az okoz\u00f3 kiv\u00e9telt.
+CWWKC1553.result.inaccessible.explanation=Hiba t\u00f6rt\u00e9nt, amely megakad\u00e1lyozza a feladat eredm\u00e9ny\u00e9nek lek\u00e9rdez\u00e9s\u00e9t.
+CWWKC1553.result.inaccessible.useraction=Az okoz\u00f3 kiv\u00e9tel tanulm\u00e1nyoz\u00e1s\u00e1val oldja meg a probl\u00e9m\u00e1t, majd \u00fctemezze \u00fajra a feladatot.
+
+# {0} task id (and name in parenthesis if any)
+CWWKC1554.general.task.failure=CWWKC1554E: A(z) {0} feladat futtat\u00e1sa meghi\u00fasult. Tekintse meg az okoz\u00f3 kiv\u00e9telt.
+CWWKC1554.general.task.failure.explanation=A feladat futtat\u00e1sa a megadott kiv\u00e9tel miatt meghi\u00fasult.
+CWWKC1554.general.task.failure.useraction=Az okoz\u00f3 kiv\u00e9tel tanulm\u00e1nyoz\u00e1s\u00e1val oldja meg a probl\u00e9m\u00e1t, majd \u00fctemezze \u00fajra a feladatot.
+
+# {0} task id (and name in parenthesis if any)
+# {1} number of consecutive failures/rollbacks
+CWWKC1555.retry.limit.reached=CWWKC1555E: A(z) {0} feladat megszak\u00edt\u00e1sra ker\u00fclt, mert az {1} egym\u00e1st k\u00f6vet\u0151 alkalommal ker\u00fclt visszag\u00f6rget\u00e9sre vagy hi\u00fasult meg.
+CWWKC1555.retry.limit.reached.explanation=A feladat el\u00e9rte az egym\u00e1st k\u00f6vet\u0151 \u00fajrapr\u00f3b\u00e1lkoz\u00e1sok korl\u00e1tj\u00e1t, \u00e9s nem lesz \u00fajra megk\u00eds\u00e9relve.
+CWWKC1555.retry.limit.reached.useraction=Az okoz\u00f3 kiv\u00e9tel tanulm\u00e1nyoz\u00e1s\u00e1val oldja meg a probl\u00e9m\u00e1t, majd \u00fctemezze \u00fajra a feladatot. Ha a probl\u00e9ma id\u0151szakos, akkor fontolja meg az \u00fajrapr\u00f3b\u00e1lkoz\u00e1si korl\u00e1t n\u00f6vel\u00e9s\u00e9t.
+
+# {0} name of application that scheduled the task
+CWWKC1556.task.exec.deferred=CWWKC1556W: A(z) {0} alkalmaz\u00e1sb\u00f3l sz\u00e1rmaz\u00f3 feladat v\u00e9grehajt\u00e1sa k\u00e9sleltetve lesz mindaddig, am\u00edg a feladatokat \u00fctemez\u0151 alkalmaz\u00e1s \u00e9s modulok el\u00e9rhet\u0151v\u00e9 nem v\u00e1lnak.
+CWWKC1556.task.exec.deferred.explanation=A feladatot \u00fctemez\u0151 alkalmaz\u00e1snak \u00e9s modulnak el\u00e9rhet\u0151nek kell lenni, hogy a feladat futtathat\u00f3 legyen.
+CWWKC1556.task.exec.deferred.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a feladatot \u00fctemez\u0151 alkalmaz\u00e1s \u00e9s modul el\u00e9rhet\u0151. Ennek alternat\u00edv\u00e1jak\u00e9nt vonja vissza a feladatot, ha az m\u00e1r nem sz\u00fcks\u00e9ges.
+
+# {0} request id
+# {1} stack trace
+CWWKC1559.mbean.operation.failure=CWWKC1559E:  Hiba t\u00f6rt\u00e9nt. K\u00e9r\u00e9s: {0}. {1}
+CWWKC1559.mbean.operation.failure.explanation=Hiba t\u00f6rt\u00e9nt a k\u00e9rt m\u0171velet v\u00e9grehajt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
+CWWKC1559.mbean.operation.failure.useraction=A m\u0171veleti hib\u00e1hoz kapcsol\u00f3d\u00f3 r\u00e9szletek\u00e9rt tekintse meg a kiszolg\u00e1l\u00f3napl\u00f3kat. 

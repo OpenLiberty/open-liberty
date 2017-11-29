@@ -1,0 +1,38 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jndi.url.contexts/resources/com/ibm/ws/jndi/internal/url/contexts/resources/JNDIMessages.nlsprops
+#COMPONENTPREFIX CWWKN
+#COMPONENTNAMEFOR CWWKN Description
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# Message numbers CWWKN1nnn are reserved for this file.
+#
+# CWWKN messages are also defined in the com.ibm.ws.jndi.url.contexts project.
+# CWWKN00nn:	com.ibm.ws.jndi.internal.resources.JNDIMessages
+# CWWKN01nn:	com.ibm.ws.jndi.internal.url.contexts.resources.JNDIMessages 
+# -------------------------------------------------------------------------------------------------
+#
+JNDI_NON_JEE_THREAD_CWWKN0100E=CWWKN0100E: Une op\u00e9ration sur le nom JNDI {0} ne peut pas \u00eatre effectu\u00e9e car l''unit\u00e9 d''ex\u00e9cution en cours n''est pas associ\u00e9e \u00e0 un composant d''application JEE. V\u00e9rifiez que l''op\u00e9ration JNDI n''a pas lieu dans les unit\u00e9s d''ex\u00e9cution non g\u00e9r\u00e9es par le serveur ou dans des blocs de codes statiques.
+JNDI_NON_JEE_THREAD_CWWKN0100E.explanation=Les op\u00e9rations JNDI sur l'espace de nom java: sont prises en charge uniquement dans le contexte d'un composant d'application Java EE.
+JNDI_NON_JEE_THREAD_CWWKN0100E.useraction=Modifiez l'application afin que l'op\u00e9ration JNDI ait lieu dans le contexte d'un composant d'application Java EE.

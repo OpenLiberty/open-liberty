@@ -1,0 +1,68 @@
+###############################################################################
+# Copyright (c) 2013, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CNTR (EJB Container)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME com.ibm.ws.ejbcontainer.mdb/resources/com/ibm/ws/mdb/resources/EJBMDBMessages.nlsprops
+#COMPONENTPREFIX CNTR
+#COMPONENTNAMEFOR CNTR EJB Container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# NOTE: CNTR4000-CNTR4999 are reserved for use in EJBContainerMessages.nlsprops
+#       All messages in this file should be reserved in the core container file.
+#-------------------------------------------------------------------------------
+
+MDB_ENDPOINT_ACTIVATED_CNTR4013I=CNTR4013I: Koncov\u00fd bod zpr\u00e1v pro objekt typu message-driven bean {0} byl aktivov\u00e1n a je p\u0159ipraven k p\u0159\u00edjmu zpr\u00e1v. 
+MDB_ENDPOINT_ACTIVATED_CNTR4013I.explanation=Specifikace aktivace pro objekt typu message-driven bean je k dispozici a koncov\u00fd bod zpr\u00e1v se stal aktivn\u00edm a je p\u0159ipraven k p\u0159\u00edjmu zpr\u00e1v.
+MDB_ENDPOINT_ACTIVATED_CNTR4013I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+MDB_ENDPOINT_DEACTIVATED_CNTR4014I=CNTR4014I: Koncov\u00fd bod zpr\u00e1v pro objekt typu message-driven bean {0} byl deaktivov\u00e1n a nen\u00ed k dispozici pro p\u0159\u00edjem zpr\u00e1v.
+MDB_ENDPOINT_DEACTIVATED_CNTR4014I.explanation=Objekt typu message-driven bean je odeb\u00edr\u00e1n nebo ji\u017e nad\u00e1le nen\u00ed k dispozici specifikace aktivace. Koncov\u00fd bod zpr\u00e1v ji\u017e nad\u00e1le nen\u00ed k dispozici pro p\u0159\u00edjem zpr\u00e1v.
+MDB_ENDPOINT_DEACTIVATED_CNTR4014I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W=CNTR4015W: Koncov\u00fd bod zpr\u00e1v pro objekt typu message-driven bean {0} nelze aktivovat, proto\u017ee specifikace aktivace {1} nen\u00ed k dispozici. Koncov\u00fd bod zpr\u00e1v nebude p\u0159ij\u00edmat zpr\u00e1vy, dokud nebude specifikace aktivace k dispozici.
+MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W.explanation=Server spou\u0161t\u00ed objekt typu message-driven bean, ale nem\u016f\u017ee aktivovat koncov\u00fd bod zpr\u00e1v, proto\u017ee nelze naj\u00edt specifikaci aktivace. Koncov\u00fd bod zpr\u00e1v nebude p\u0159ij\u00edmat zpr\u00e1vy, dokud nebude mo\u017en\u00e9 aktivovat koncov\u00fd bod.
+MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W.useraction=Ov\u011b\u0159te, \u017ee byla specifikace aktivace konfigurov\u00e1na s ur\u010den\u00fdm n\u00e1zvem. Pokud konfigurace existuje, po\u010dkejte na dostupnost specifikace aktivace.
+
+MDB_DESTINATION_NOT_FOUND_CNTR4016W=CNTR4016W: Koncov\u00fd bod zpr\u00e1vy pro objekty typu message-driven bean {0} nelze aktivovat, proto\u017ee c\u00edl {1} nen\u00ed dostupn\u00fd. Koncov\u00fd bod zpr\u00e1v neobdr\u017e\u00ed \u017e\u00e1dnou zpr\u00e1vu, dokud nebude c\u00edl dostupn\u00fd.
+MDB_DESTINATION_NOT_FOUND_CNTR4016W.explanation=Server spustil objekt typu message-driven bean, ale nedok\u00e1zal aktivovat koncov\u00fd bod zpr\u00e1v, proto\u017ee nenalezl c\u00edl. Koncov\u00fd bod zpr\u00e1v nebude p\u0159ij\u00edmat zpr\u00e1vy, dokud nebude mo\u017en\u00e9 aktivovat koncov\u00fd bod.
+MDB_DESTINATION_NOT_FOUND_CNTR4016W.useraction=Ov\u011b\u0159te, \u017ee je c\u00edl s uveden\u00fdm n\u00e1zvem nakonfigurovan\u00fd. Pokud konfigurace existuje, po\u010dkejte, a\u017e bude c\u00edl dostupn\u00fd.

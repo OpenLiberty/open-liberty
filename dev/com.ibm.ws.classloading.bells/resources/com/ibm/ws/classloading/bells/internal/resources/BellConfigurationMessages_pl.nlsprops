@@ -1,0 +1,81 @@
+###############################################################################
+# Copyright (c) 2011, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#CMVCPATHNAME com.ibm.ws.classloading/resources/com/ibm/ws/classloading/internal/resources/ClassLoadingServiceMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKL
+#COMPONENTNAMEFOR CWWKL Class Loading Service
+#
+# NLS_MESSAGEFORMAT_VAR
+################### LIBRARY SERVICE EXPORT MESSAGES 0050-0058 ################### 
+#################################################################################
+
+# {0} - the name of the library
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the implementation class
+bell.service.name=CWWKL0050I: Przy u\u017cyciu klasy implementacji {2} biblioteka {0} zarejestrowa\u0142a us\u0142ug\u0119, kt\u00f3ra jest zadeklarowana w pliku {1}.
+bell.service.name.explanation=Us\u0142uga by\u0142a zadeklarowana w katalogu META-INF/services i zosta\u0142a zarejestrowana na serwerze.  
+bell.service.name.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika. 
+
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+bell.no.impl=CWWKL0051W: System nie mo\u017ce znale\u017a\u0107 implementacji {0} us\u0142ugi zadeklarowanej w pliku {1} i zarejestrowanej z biblioteki {2}.
+bell.no.impl.explanation=Nie znaleziono implementacji us\u0142ugi.
+bell.no.impl.useraction=Upewnij si\u0119, \u017ce nazwa okre\u015blona w deklaracji us\u0142ugi jest poprawna.
+
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+# {3} - message from the NoClassDefFoundError
+bell.no.inter=CWWKL0052W: System nie mo\u017ce utworzy\u0107 instancji klasy implementacji {0}, poniewa\u017c brakuje definicji klasy. Ta klasa jest implementacj\u0105 us\u0142ugi zadeklarowanej w pliku {1} i zarejestrowanej z biblioteki {2}. Wyst\u0105pi\u0142 nast\u0119puj\u0105cy b\u0142\u0105d: {3}.
+bell.no.inter.explanation=Nie znaleziono klasy, kt\u00f3ra jest wymagana do zainicjowania us\u0142ugi.
+bell.no.inter.useraction=Upewnij si\u0119, \u017ce nazwa okre\u015blona w deklaracji us\u0142ugi jest poprawna. 
+
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+bell.not.constructible=CWWKL0053W: System nie mo\u017ce utworzy\u0107 instancji klasy implementacji {0}. Ta klasa jest implementacj\u0105 us\u0142ugi zadeklarowanej w pliku {1} i zarejestrowanej z biblioteki {2}.
+bell.not.constructible.explanation=System nie mo\u017ce utworzy\u0107 instancji implementacji us\u0142ugi, poniewa\u017c nie ma dost\u0119pu do definicji klasy lub w klasie brakuje konstruktora bezargumentowego.
+bell.not.constructible.useraction=Upewnij si\u0119, \u017ce definicja klasy i konstruktor s\u0105 dost\u0119pne.
+
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+bell.illegal.access=CWWKL0054W: System nie mo\u017ce utworzy\u0107 instancji klasy implementacji {0} z powodu dost\u0119pu bez uprawnie\u0144. Ta klasa jest implementacj\u0105 us\u0142ugi zadeklarowanej w pliku {1} i zarejestrowanej z biblioteki {2}.
+bell.illegal.access.explanation=System nie mo\u017ce uzyska\u0107 dost\u0119pu do deklaracji klasy lub konstruktora.
+bell.illegal.access.useraction=Upewnij si\u0119, \u017ce klasa i konstruktor s\u0105 zdefiniowane i dost\u0119pne.
+
+# {0} - the name of the library
+bell.no.services.found=CWWKL0055W: System nie mo\u017cne znale\u017a\u0107 \u017cadnych us\u0142ug w nast\u0119puj\u0105cej bibliotece: {0}.
+bell.no.services.found.explanation=W folderze META-INF/services nie ma zadeklarowanych us\u0142ug.
+bell.no.services.found.useraction=Upewnij si\u0119, \u017ce dla sk\u0142adnika Basic Extensions using Liberty Libraries (BELL) skonfigurowano poprawn\u0105 bibliotek\u0119, kt\u00f3ra ma oczekiwany folder META-INF/services.
+
+# {0} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {1} - the name of the library
+# {2} - the exception thrown when trying to read the file
+bell.io.error=CWWKL0056W: Wyst\u0105pi\u0142 b\u0142\u0105d podczas odczytywania pliku {0} na potrzeby eksportu us\u0142ug z biblioteki {1}. B\u0142\u0105d: {2}.
+bell.io.error.explanation=Nie mo\u017cna odczyta\u0107 pliku deklaracji us\u0142ugi.
+bell.io.error.useraction=Sprawd\u017a, czy system mo\u017ce odczyta\u0107 plik.
+
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+# {3} - the exception thrown when instantiating the class
+bell.error.ctor=CWWKL0057W: Instancja klasy {0} nie zosta\u0142a pomy\u015blnie utworzona. Ta klasa jest implementacj\u0105 us\u0142ugi zadeklarowanej w pliku {1} i zarejestrowanej z biblioteki {2}. Wyst\u0105pi\u0142 nast\u0119puj\u0105cy b\u0142\u0105d: {3}
+bell.error.ctor.explanation=Podczas tworzenia instancji system odebra\u0142 b\u0142\u0105d nieoczekiwanego wyj\u0105tku. Ten b\u0142\u0105d mo\u017ce wyst\u0105pi\u0107 w wyniku wyj\u0105tku pochodz\u0105cego z konstruktora klasy.
+bell.error.ctor.useraction=Je\u015bli wyj\u0105tek wyst\u0105pi\u0142 w konstruktorze, przejrzyj i zweryfikuj zachowanie konstruktora klasy.
+
+bell.no.services.config=CWWKL0058W: Nie mo\u017cna znale\u017a\u0107 us\u0142ugi {0} w folderze META-INF/services z biblioteki {1}.
+bell.no.services.config.explanation=Brak zgodnej us\u0142ugi zadeklarowanej w folderze META-INF/services.
+bell.no.services.config.useraction= Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika. 

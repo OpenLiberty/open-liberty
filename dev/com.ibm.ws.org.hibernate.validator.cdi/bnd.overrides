@@ -10,15 +10,15 @@ Fragment-Host:
 Import-Package: \
   org.apache.el,\
   *
-  
+
+Export-Package: org.hibernate.validator.cdi.*;version="6.0.4.Final"
+
 Private-Package: \
-  org.hibernate.validator.cdi.internal.*,\
   com.ibm.ws.beanvalidation.v20.cdi.*
   
 -dsannotations: \
   com.ibm.ws.beanvalidation.v20.cdi.internal.LibertyHibernateValidatorExtension
 
 Include-Resource: \
-  @${repo;org.hibernate.validator:hibernate-validator;6.0.4.Final}!/META-INF/services/*,\
   @${repo;org.hibernate.validator:hibernate-validator-cdi;6.0.4.Final}!/META-INF/services/*,\
   META-INF=resources/META-INF

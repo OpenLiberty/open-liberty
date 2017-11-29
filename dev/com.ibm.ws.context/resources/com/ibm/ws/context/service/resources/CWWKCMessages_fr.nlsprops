@@ -1,0 +1,51 @@
+###############################################################################
+# Copyright (c) 2012, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.context/resources/com/ibm/ws/context/service/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Context Propagation Service
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# CWWKC1000, CWWKC1001, CWWKC1002 have been moved to another file. Do not reuse them.
+
+CWWKC1003.not.serializable=CWWKC1003E: L''\u00e9l\u00e9ment de configuration {0} doit avoir un identificateur unique (id) ou un nom JNDI (jndiName) pour pouvoir \u00eatre s\u00e9rialis\u00e9.
+CWWKC1003.not.serializable.explanation=Pour pouvoir \u00eatre s\u00e9rialis\u00e9, un service de contexte doit avoir un attribut id ou jndiName unique.
+CWWKC1003.not.serializable.useraction=Ajoutez un attribut id ou jndiName \u00e0 la configuration du service contextuel.
+
+CWWKC1004.context.provider.unavailable=CWWKC1004E: Le fournisseur de contexte d''unit\u00e9 d''ex\u00e9cution {0} n''est pas disponible.
+CWWKC1004.context.provider.unavailable.explanation=Le serveur d'application ne peut pas trouver le fournisseur du type de contexte d'unit\u00e9 d'ex\u00e9cution indiqu\u00e9.
+CWWKC1004.context.provider.unavailable.useraction=Assure-vous que le fonction qui fournit le type sp\u00e9cifi\u00e9 de contexte d'unit\u00e9 d'ex\u00e9cution est activ\u00e9e.
+
+CWWKC1010.context.service.unavailable=CWWKC1010E: Un \u00e9l\u00e9ment de configuration avec un identificateur ou un nom JNDI {0} est introuvable dans la configuration de serveur.
+CWWKC1010.context.service.unavailable.explanation=Un service contextuel avec l'ID ou le nom JNDI indiqu\u00e9 est introuvable dans la configuration.
+CWWKC1010.context.service.unavailable.useraction=V\u00e9rifiez qu'un service contextuel avec l'ID ou le nom JNDI existe dans la configuration et est valide.
+
+CWWKC1011.app.unavailable=CWWKC1011E: Impossible de d\u00e9marrer la t\u00e2che {0} car l''application {1} qui l''a soumise n''est pas disponible.
+CWWKC1011.app.unavailable.explanation=L'application qui a soumis une t\u00e2che doit \u00eatre disponible pour que la t\u00e2che puisse d\u00e9marrer.
+CWWKC1011.app.unavailable.useraction=Assurez-vous que l'application est d\u00e9marr\u00e9e et soumettez de nouveau la t\u00e2che.
+
+CWWKC1012.module.unavailable=CWWKC1012E: Impossible de d\u00e9marrer la t\u00e2che {0} car le module {1} de l''application {2} qui est soumis n''est pas disponible.
+CWWKC1012.module.unavailable.explanation=Le module qui a soumis une t\u00e2che doit \u00eatre disponible pour que la t\u00e2che puisse d\u00e9marrer.
+CWWKC1012.module.unavailable.useraction=Assurez-vous que le module est d\u00e9marr\u00e9 et soumettez de nouveau la t\u00e2che.
+
+CWWKC1013.component.unavailable=CWWKC1013E: Impossible de d\u00e9marrer la t\u00e2che {0} car le composant {1} du module {2} dans l''application {3} qui est soumis n''est pas disponible.
+CWWKC1013.component.unavailable.explanation=Le composant d'application qui a soumis une t\u00e2che doit \u00eatre disponible pour que la t\u00e2che puisse d\u00e9marrer.
+CWWKC1013.component.unavailable.useraction=Assurez-vous que le composant d'application est d\u00e9marr\u00e9 et soumettez de nouveau la t\u00e2che.
+
+# CWWKC1020 has been moved to another file. Do not reuse it.

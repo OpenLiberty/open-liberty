@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/common/internal/resources/SSOCommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security SSO Common
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS6101 - CWWKS6200
+SUBJECT_MAPPING_INCORRECT_CLAIM_TYPE=CWWKS6101E: \u017b\u0105danie uwierzytelniania nie powiod\u0142o si\u0119, poniewa\u017c typ danych \u017c\u0105dania [{0}] w informacjach o uwierzytelnianym u\u017cytkowniku jest niepoprawny. Okre\u015blone \u017c\u0105danie jest powi\u0105zane z atrybutem konfiguracji [{1}]. 
+SUBJECT_MAPPING_INCORRECT_CLAIM_TYPE.explanation=Informacje o uwierzytelnianym u\u017cytkowniku maj\u0105 niepoprawny typ danych \u017c\u0105dania i \u015brodowisko wykonawcze nie mo\u017ce kontynuowa\u0107 procesu uwierzytelniania.
+SUBJECT_MAPPING_INCORRECT_CLAIM_TYPE.useraction=Sprawd\u017a, czy konfiguracja klienta logowania w serwisach spo\u0142eczno\u015bciowych okre\u015bla poprawn\u0105 nazw\u0119 \u017c\u0105dania dla atrybutu.
+
+SUBJECT_MAPPING_MISSING_ATTR=CWWKS6102E: \u017b\u0105danie uwierzytelnienia nie powiod\u0142o si\u0119, poniewa\u017c informacje o uwierzytelnianym u\u017cytkowniku nie zawieraj\u0105 \u017c\u0105dania [{0}] okre\u015blonego przez atrybut [{1}].
+SUBJECT_MAPPING_MISSING_ATTR.explanation=Informacje o uwierzytelnianym u\u017cytkowniku nie zawieraj\u0105 okre\u015blonego \u017c\u0105dania na potrzeby identyfikacji nazwanego atrybutu i \u015brodowisko wykonawcze nie mo\u017ce kontynuowa\u0107 procesu uwierzytelniania.
+SUBJECT_MAPPING_MISSING_ATTR.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci. 1) Sprawd\u017a, czy konfiguracja klienta logowania w serwisach spo\u0142eczno\u015bciowych mo\u017ce okre\u015bla\u0107 inne \u017c\u0105danie jako atrybut. 2) Sprawd\u017a, czy dostawca emituje informacje o uwierzytelnianym u\u017cytkowniku z okre\u015blonym \u017c\u0105daniem.
+
+ERROR_AUTHENTICATE=CWWKS6103E: Nie mo\u017cna utworzy\u0107 podmiotu zabezpiecze\u0144 dla u\u017cytkownika {0}.
+ERROR_AUTHENTICATE.explanation=Nie mo\u017cna uwierzytelni\u0107 u\u017cytkownika. 
+ERROR_AUTHENTICATE.useraction=Sprawd\u017a, czy u\u017cytkownik istnieje w rejestrze, a has\u0142o lub inne referencje s\u0105 poprawne.
+
+CONFIG_REQUIRED_ATTRIBUTE_NULL=CWWKS6104W: Brak wymaganego atrybutu konfiguracyjnego [{0}] lub jest on pusty oraz nie podano warto\u015bci domy\u015blnej. Upewnij si\u0119, \u017ce atrybut nie jest pusty i nie sk\u0142ada si\u0119 wy\u0142\u0105cznie z bia\u0142ych znak\u00f3w.
+CONFIG_REQUIRED_ATTRIBUTE_NULL.explanation=Podany atrybut konfiguracji mo\u017ce by\u0107 nieobecny w konfiguracji serwera. Je\u015bli warto\u015b\u0107 jest okre\u015blona, bia\u0142e znaki na jej pocz\u0105tku i na ko\u0144cu s\u0105 usuwane podczas przetwarzania, dlatego warto\u015b\u0107 w konfiguracji mo\u017ce by\u0107 pusta lub zawiera\u0107 wy\u0142\u0105cznie bia\u0142e znaki.
+CONFIG_REQUIRED_ATTRIBUTE_NULL.useraction=Upewnij si\u0119, \u017ce podany atrybut konfiguracji nie jest pusty i nie sk\u0142ada si\u0119 wy\u0142\u0105cznie z bia\u0142ych znak\u00f3w.
+
+CONFIG_REQUIRED_ATTRIBUTE_NULL_WITH_CONFIG_ID=CWWKS6105W: Brak wymaganego atrybutu konfiguracyjnego [{0}] w konfiguracji [{0}] lub jest on pusty oraz nie podano warto\u015bci domy\u015blnej. Upewnij si\u0119, \u017ce atrybut nie jest pusty i nie sk\u0142ada si\u0119 wy\u0142\u0105cznie z bia\u0142ych znak\u00f3w.
+CONFIG_REQUIRED_ATTRIBUTE_NULL_WITH_CONFIG_ID.explanation=By\u0107 mo\u017ce tego atrybutu nie ma w podanym elemencie konfiguracji serwera. Je\u015bli warto\u015b\u0107 jest podana, bia\u0142e znaki na jej pocz\u0105tku i na ko\u0144cu s\u0105 usuwane podczas przetwarzania, dlatego warto\u015b\u0107 w konfiguracji mo\u017ce by\u0107 pusta lub zawiera\u0107 wy\u0142\u0105cznie bia\u0142e znaki.
+CONFIG_REQUIRED_ATTRIBUTE_NULL_WITH_CONFIG_ID.useraction=Upewnij si\u0119, \u017ce podany atrybut konfiguracji nie jest pusty i nie sk\u0142ada si\u0119 wy\u0142\u0105cznie z bia\u0142ych znak\u00f3w.

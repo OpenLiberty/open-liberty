@@ -1,0 +1,121 @@
+###############################################################################
+# Copyright (c) 2011, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.logging/resources/com/ibm/ws/logging/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# Messages in the range TRAS3000 to 3199 are reserved for this messages file.
+# The list of prefixes and the range of messages in use (or "reserved") are shown in 
+# http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+# -------------------------------------------------------------------------------------------------
+
+FATAL=FATAL
+ERROR=ERREUR
+AUDIT=AUDIT
+EVENT=EVENEMENT
+DETAIL=DETAIL
+
+## Shared with tWAS
+
+# Informational message telling the user the trace state has changed.
+MSG_TRACE_STATE_CHANGED=TRAS0018I: L''\u00e9tat de la trace a \u00e9t\u00e9 modifi\u00e9. Le nouvel \u00e9tat est {0}.
+MSG_TRACE_STATE_CHANGED.explanation=Une demande de modification de l'\u00e9tat de trace actuel a \u00e9t\u00e9 re\u00e7ue et trait\u00e9e.
+MSG_TRACE_STATE_CHANGED.useraction=Si le nouvel \u00e9tat de trace ne vous convient pas, changez-en.
+
+#PK509567
+# Warning message telling the user that the rename operation filed while rolling a log file over.
+MSG_ROLLOVER_RENAME_FAILED=TRAS0031W: Impossible de remplacer le nom de fichier {0} par {1} lors du renvoi du fichier journal. Tentative de copie du contenu du fichier.
+MSG_ROLLOVER_RENAME_FAILED.explanation=Le fichier sp\u00e9cifi\u00e9 n'a pu \u00eatre renomm\u00e9.  Un autre processus ou une autre unit\u00e9 d'ex\u00e9cution est sans doute en train d'acc\u00e9der au fichier journal. WebSphere va tenter de terminer l'op\u00e9ration de renvoi en copiant le contenu du fichier journal ; ce processus est plus lent et toutes les unit\u00e9s d'ex\u00e9cution essayant de se connecter seront arr\u00eat\u00e9es.
+MSG_ROLLOVER_RENAME_FAILED.useraction=Identifiez l'origine de l'\u00e9chec du changement de nom et corrigez l'erreur ; vous devrez peut-\u00eatre arr\u00eater les autres processus qui acc\u00e8dent au m\u00eame fichier journal.
+
+## new for lWAS
+INSTRUMENTATION_SERVICE_UNAVAILABLE=TRAS0032W: L'injection \u00e0 l'ex\u00e9cution de la trace de m\u00e9thode d\u00e9taill\u00e9e n'est pas disponible.
+INSTRUMENTATION_SERVICE_UNAVAILABLE.explanation=Le transformateur de fichier de classe responsable de l'ajout de la trace de niveau m\u00e9thode n'a pas pu \u00eatre install\u00e9, car aucune r\u00e9f\u00e9rence java.lang.instrument.Instrumentation convenable n'a pu \u00eatre obtenue.
+INSTRUMENTATION_SERVICE_UNAVAILABLE.useraction=D\u00e9marrez le serveur avec l'argument de ligne de commande -javaagent appropri\u00e9.
+
+## Should not be used anymore because of issue 508
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS=TRAS0033E: L''injection \u00e0 l''ex\u00e9cution de la trace de m\u00e9thode d\u00e9taill\u00e9e a \u00e9chou\u00e9 pour la classe {0}, avec une exception {1}
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS.explanation=Une erreur s'est produite pendant l'injection de la trace de m\u00e9thode d\u00e9taill\u00e9e dans la classe sp\u00e9cifi\u00e9e.
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS.useraction=CMSG0002 
+
+## new for lWAS
+TRACE_STRING_BAD_LEVEL=TRAS0034W: Le niveau de trace {0} pour la sp\u00e9cification {1} n''est pas valide. La sp\u00e9cification de trace sera ignor\u00e9e.
+TRACE_STRING_BAD_LEVEL.explanation=Le niveau de trace configur\u00e9 pour le nom de groupe, classe ou de package indiqu\u00e9 n'a pas \u00e9t\u00e9 reconnu. La trace sera donc saut\u00e9e pour ce nom.
+TRACE_STRING_BAD_LEVEL.useraction=Examinez la configuration de la fonction de trace et entrez une valeur reconnue pour le niveau de trace. Les niveaux de trace valides sont r\u00e9pertori\u00e9s dans la documentation et comprennent 'all', 'info' et 'debug'.
+
+## new for lWAS
+TRACE_STRING_BAD_ACTION=TRAS0035W: La valeur de trace {0} pour la sp\u00e9cification {1} n''est pas reconnue. La sp\u00e9cification de trace sera ignor\u00e9e.
+TRACE_STRING_BAD_ACTION.explanation=La valeur de trace configur\u00e9e pour le nom de groupe, classe ou de package indiqu\u00e9 n'a pas \u00e9t\u00e9 reconnu. La trace sera donc saut\u00e9e pour ce nom.
+TRACE_STRING_BAD_ACTION.useraction=Aucune action n'est n\u00e9cessaire, sauf si la valeur de trace voulue est 'disabled'. Dans ce cas, examinez la configuration de la fonction de trace et corrigez la valeur en 'disabled'.
+
+## new for lWAS
+UNABLE_TO_CREATE_RESOURCE=TRAS0036E: Le syst\u00e8me n''a pas pu cr\u00e9er le fichier {0} en raison de l''exception suivante : {1}
+UNABLE_TO_CREATE_RESOURCE.explanation=Une tentative d'ouverture de la ressource sp\u00e9cifi\u00e9e a \u00e9chou\u00e9. L'exception indique la cause premi\u00e8re de l'\u00e9chec.
+UNABLE_TO_CREATE_RESOURCE.useraction=Examinez l'exception pour d\u00e9terminer la cause premi\u00e8re de l'\u00e9chec. V\u00e9rifiez que le nom de fichier sp\u00e9cifi\u00e9 est valide. V\u00e9rifiez que l'environnement d'ex\u00e9cution du serveur d'applications est autoris\u00e9 \u00e0 acc\u00e9der en \u00e9criture au r\u00e9pertoire pour la ressource et que le disque n'est pas satur\u00e9. Si cela ne suffit pas \u00e0 r\u00e9soudre le probl\u00e8me, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+## new for lWAS
+UNABLE_TO_CREATE_RESOURCE_NOEX=TRAS0037E: Le syst\u00e8me n''a pas pu cr\u00e9er le nouveau fichier {0}
+UNABLE_TO_CREATE_RESOURCE_NOEX.explanation=Un composant du serveur d'applications n'a pas pu effectuer une op\u00e9ration sur une ressource n\u00e9cessaire.
+UNABLE_TO_CREATE_RESOURCE_NOEX.useraction=V\u00e9rifiez que le nom de fichier sp\u00e9cifi\u00e9 est valide. V\u00e9rifiez que l'environnement d'ex\u00e9cution du serveur d'applications est autoris\u00e9 \u00e0 acc\u00e9der en \u00e9criture au r\u00e9pertoire pour la ressource et que le disque n'est pas satur\u00e9. Si cela ne suffit pas \u00e0 r\u00e9soudre le probl\u00e8me, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+## new for lWAS
+UNABLE_TO_DELETE_RESOURCE_NOEX=TRAS0038E: Le syst\u00e8me n''a pas pu supprimer le fichier {0}
+UNABLE_TO_DELETE_RESOURCE_NOEX.explanation=Un composant du serveur d'applications n'a pas pu effectuer une op\u00e9ration sur une ressource n\u00e9cessaire.
+UNABLE_TO_DELETE_RESOURCE_NOEX.useraction=V\u00e9rifiez que le nom de fichier sp\u00e9cifi\u00e9 est valide. V\u00e9rifiez que l'environnement d'ex\u00e9cution du serveur d'applications est autoris\u00e9 \u00e0 acc\u00e9der en \u00e9criture au r\u00e9pertoire pour la ressource et que le disque n'est pas satur\u00e9. Si cela ne suffit pas \u00e0 r\u00e9soudre le probl\u00e8me, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+## new for lWAS
+UNABLE_TO_DELETE_RESOURCE=TRAS0039E: Le syst\u00e8me n''a pas pu supprimer le fichier  {0} en raison de l''exception suivante : {1}
+UNABLE_TO_DELETE_RESOURCE.explanation=Une tentative de fermeture de la ressource sp\u00e9cifi\u00e9e a \u00e9chou\u00e9. L'exception indique la cause premi\u00e8re de l'\u00e9chec.
+UNABLE_TO_DELETE_RESOURCE.useraction=Examinez l'exception pour d\u00e9terminer la cause premi\u00e8re de l'\u00e9chec. V\u00e9rifiez que l'environnement d'ex\u00e9cution du serveur d'applications est autoris\u00e9 \u00e0 acc\u00e9der en \u00e9criture au r\u00e9pertoire pour la ressource. Si cela ne suffit pas \u00e0 r\u00e9soudre le probl\u00e8me, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+# common 
+UNKNOWN_TRACE_SPEC=TRAS0040I: L''\u00e9tat de trace configur\u00e9 incluait les sp\u00e9cifications suivantes qui ne correspondent \u00e0 aucun consignateur actuellement enregistr\u00e9 sur le serveur : {0}. Ignorez ce message si les sp\u00e9cifications de trace {0} sont valides.
+UNKNOWN_TRACE_SPEC.explanation=Les consignateurs sont enregistr\u00e9s sur le serveur lorsque le code ayant servi \u00e0 leur cr\u00e9ation est utilis\u00e9 pour la premi\u00e8re fois. Le syst\u00e8me a d\u00e9tect\u00e9 que certaines sp\u00e9cifications de trace font r\u00e9f\u00e9rence \u00e0 des consignateurs qui n'ont pas \u00e9t\u00e9 enregistr\u00e9s sur le serveur. Il se peut que les sp\u00e9cifications de trace configur\u00e9es soient valides pour les consignateurs non encore enregistr\u00e9s ou que leur saisie ne soit pas correcte. Cette v\u00e9rification est effectu\u00e9e chaque fois que la sp\u00e9cification de trace est mise \u00e0 jour sur un serveur en cours d'ex\u00e9cution.
+UNKNOWN_TRACE_SPEC.useraction=V\u00e9rifiez que la sp\u00e9cification de trace a \u00e9t\u00e9 correctement configur\u00e9e. Si la cha\u00eene de sp\u00e9cification de trace ne comporte pas d'erreurs, aucune action n'est requise. 
+
+## Should not be used anymore because of issue 508
+MESSAGES_CONFIGURED_HIDDEN=TRAS0041I: Les messages suivants sont masqu\u00e9s dans les fichiers console.log et messages.log : {0}
+MESSAGES_CONFIGURED_HIDDEN.explanation=Les messages qui sont configur\u00e9s pour \u00eatre masqu\u00e9s ne sont pas \u00e9crits dans les fichiers console.log et messages.log. Toutefois, ils sont \u00e9crits dans le fichier trace.log. 
+MESSAGES_CONFIGURED_HIDDEN.useraction=Aucune action n'est requise
+
+MSG_ROUTER_UPDATED=TRAS0042I: Le groupe de routage de messages {0} contient les messages suivants : {1}
+MSG_ROUTER_UPDATED.explanation=L'ensemble d'ID de messages configur\u00e9s pour le groupe de routage de messages sp\u00e9cifi\u00e9 a chang\u00e9. L'ensemble d'ID de messages actuellement associ\u00e9 \u00e0 ce groupe de routage de messages est r\u00e9pertori\u00e9.
+MSG_ROUTER_UPDATED.useraction=Aucune action n'est requise.
+
+## use new id range
+
+# updated the old TRAS0033E to TRAS3000E
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2=TRAS3000E: L''injection \u00e0 l''ex\u00e9cution de la trace de m\u00e9thode d\u00e9taill\u00e9e a \u00e9chou\u00e9 pour la classe {0}, en renvoyant l''exception {1}
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2.explanation=Une erreur s'est produite pendant l'injection de la trace de m\u00e9thode d\u00e9taill\u00e9e dans la classe sp\u00e9cifi\u00e9e.
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2.useraction=Consultez les informations d'identification de probl\u00e8me sur la page Web du support produit : http://www.ibm.com/software/webservers/appserv/was/support. 
+
+# updated the old TRAS0041I to TRAS3001I
+MESSAGES_CONFIGURED_HIDDEN_2=TRAS3001I: Les messages suivants sont masqu\u00e9s dans les fichiers console.log et messages.log : {0}
+MESSAGES_CONFIGURED_HIDDEN_2.explanation=Les messages qui sont configur\u00e9s pour \u00eatre masqu\u00e9s ne sont pas \u00e9crits dans les fichiers console.log et messages.log. Ils sont consign\u00e9s dans le fichier trace.log. 
+MESSAGES_CONFIGURED_HIDDEN_2.useraction=Aucune action n'est requise
+
+# Note: no 9999 message kept here because saving footprint space is more important
+
+# End of file

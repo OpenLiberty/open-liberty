@@ -1,0 +1,199 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jca.utils/resources/com/ibm/ws/jca/utils/internal/resources/JcaUtilsMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA JCA
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+# Range: 9900 - 9999
+
+# {0} = resource adapter class name
+# {1} = annotation used on the class
+# {2} = name of interface that the class is required to implement with this annotation
+J2CA9902.required.rainterface.for.anno.missing=J2CA9902E: Klasa adaptera zasob\u00f3w {0} z adnotacj\u0105 {1} nie implementuje interfejsu {2}.
+J2CA9902.required.rainterface.for.anno.missing.explanation=Klasa adaptera zasob\u00f3w z adnotacj\u0105 nie implementuje wymaganego interfejsu.
+J2CA9902.required.rainterface.for.anno.missing.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 dostawcy adaptera zasob\u00f3w i procesami okre\u015blania problem\u00f3w.
+
+# {0} = resource adapter class name
+# {1} = name of interface that the class is required to implement for this deployment descriptor entry type
+J2CA9903.required.rainterface.missing=J2CA9903E: Klasa adaptera zasob\u00f3w {0} nie implementuje interfejsu {1}.
+J2CA9903.required.rainterface.missing.explanation=Klasa adaptera zasob\u00f3w okre\u015blona w deskryptorze wdra\u017cania nie implementuje wymaganego interfejsu.
+J2CA9903.required.rainterface.missing.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 dostawcy adaptera zasob\u00f3w i procesami okre\u015blania problem\u00f3w.
+
+# {0} = resource adapter class name
+# {1} = resource adapter name
+J2CA9904.required.raclass.missing=J2CA9904E: Klasa adaptera zasob\u00f3w {0} jest okre\u015blona, ale nie mo\u017cna jej znale\u017a\u0107 w adapterze zasob\u00f3w {1}.
+J2CA9904.required.raclass.missing.explanation=W adapterze zasob\u00f3w nie znaleziono klasy adaptera zasob\u00f3w okre\u015blonej w elemencie <resourceadapter-class> w pliku ra.xml lub w klasie z adnotacj\u0105 @Connector.
+J2CA9904.required.raclass.missing.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 dostawcy adaptera zasob\u00f3w i procesami okre\u015blania problem\u00f3w.
+
+# {0} = config property name
+# {1} = resource adapter name
+J2CA9905.required.prop.missing=J2CA9905W: W\u0142a\u015bciwo\u015b\u0107 konfiguracyjna {0} jest wymagana, ale nie mo\u017cna znale\u017a\u0107 definicji w\u0142a\u015bciwo\u015bci w adapterze zasob\u00f3w {1}.
+J2CA9905.required.prop.missing.explanation=Nie mo\u017cna znale\u017a\u0107 definicji w\u0142a\u015bciwo\u015bci dla wymaganej w\u0142a\u015bciwo\u015bci konfiguracyjnej w adapterze zasob\u00f3w.
+J2CA9905.required.prop.missing.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 dostawcy adaptera zasob\u00f3w i procesami okre\u015blania problem\u00f3w.
+
+# {0} = config property type specified
+# {1} = config property name
+J2CA9906.invalid.type=J2CA9906E: Typ w\u0142a\u015bciwo\u015bci {0} okre\u015blony dla w\u0142a\u015bciwo\u015bci konfiguracyjnej {1} jest niepoprawny.
+J2CA9906.invalid.type.explanation=W\u0142a\u015bciwo\u015b\u0107 konfiguracyjna musi mie\u0107 jeden z nast\u0119puj\u0105cych typ\u00f3w: String, Long, Double, Float, Integer, Byte, Character, Boolean lub Short.
+J2CA9906.invalid.type.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 dostawcy adaptera zasob\u00f3w i procesami okre\u015blania problem\u00f3w.
+
+# {0} = config property name
+# {1} = resource adapter name
+J2CA9908.duplicate.copy=J2CA9908E: W\u0142a\u015bciwo\u015b\u0107 konfiguracyjna {0} zosta\u0142a znaleziona wielokrotnie w tym samym zasi\u0119gu w adapterze zasob\u00f3w {1}. Duplikaty w\u0142a\u015bciwo\u015bci s\u0105 ignorowane.
+J2CA9908.duplicate.copy.explanation=W\u0142a\u015bciwo\u015b\u0107 konfiguracyjna zosta\u0142a zdefiniowana wiele razy w danym zasi\u0119gu, na przyk\u0142ad w specyfikacji aktywowania.
+J2CA9908.duplicate.copy.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 dostawcy adaptera zasob\u00f3w i procesami okre\u015blania problem\u00f3w.
+
+# {0} = config property name
+# {1} = resource adapter name
+J2CA9909.missing.matching.config.prop=J2CA9909E: W\u0142a\u015bciwo\u015b\u0107 konfiguracyjna {0} jest okre\u015blona w pliku wlp-ra.xml, ale w adapterze zasob\u00f3w {1} nie znaleziono odpowiedniej adnotacji ConfigProperty, pozycji deskryptora wdra\u017cania lub w\u0142a\u015bciwo\u015bci komponentu Java Bean.
+J2CA9909.missing.matching.config.prop.explanation=W\u0142a\u015bciwo\u015b\u0107 konfiguracyjna zosta\u0142a u\u017cyta w pliku wlp-ra.xml, ale nie znaleziono definicji tej w\u0142a\u015bciwo\u015bci w adapterze zasob\u00f3w.
+J2CA9909.missing.matching.config.prop.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 dostawcy adaptera zasob\u00f3w i procesami okre\u015blania problem\u00f3w.
+
+# {0} = admin object interface
+# {1} = admin object class
+# {2} = resource adapter name
+J2CA9910.missing.matching.adminobject=J2CA9910E: Element <adminobject> z interfejsem {0} i klas\u0105 {1} jest okre\u015blony w pliku wlp-ra.xml, ale w adapterze zasob\u00f3w {2} nie znaleziono odpowiedniej adnotacji AdministeredObject lub pozycji deskryptora wdra\u017cania.
+J2CA9910.missing.matching.adminobject.explanation=W pliku wlp-ra.xml zosta\u0142 u\u017cyty element <adminobject>, ale nie mo\u017cna znale\u017a\u0107 jego definicji w adapterze zasob\u00f3w.
+J2CA9910.missing.matching.adminobject.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 dostawcy adaptera zasob\u00f3w i procesami okre\u015blania problem\u00f3w.
+
+# {0} = wlp-ra.xml element name
+# {1} = interface of connection factory or message listener
+# {2} = annotation type
+# {3} = resource adapter name
+J2CA9911.missing.matching.type=J2CA9911E: Element {0} dla typu {1} jest okre\u015blony w pliku wlp-ra.xml, ale w adapterze zasob\u00f3w {3} nie znaleziono odpowiedniej adnotacji {2} lub pozycji deskryptora wdra\u017cania.
+J2CA9911.missing.matching.type.explanation=W pliku wlp-ra.xml u\u017cyto elementu <connection-definition> lub <messagelistener>, ale w adapterze zasob\u00f3w nie mo\u017cna znale\u017a\u0107 odpowiedniej definicji tego elementu.
+J2CA9911.missing.matching.type.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 dostawcy adaptera zasob\u00f3w i procesami okre\u015blania problem\u00f3w.
+   
+J2CA9912.conn.defn.required=J2CA9912E: Brak elementu <connection-definition> lub klasy z adnotacj\u0105 @ConnectionDefinition, ale okre\u015blono obs\u0142ug\u0119 transakcji, mechanizmy uwierzytelniania lub obs\u0142ug\u0119 ponownego uwierzytelniania.
+J2CA9912.conn.defn.required.explanation=Nie mo\u017cna okre\u015bli\u0107 obs\u0142ugi transakcji, mechanizm\u00f3w uwierzytelniania ani obs\u0142ugi ponownego uwierzytelniania, je\u015bli w pliku ra.xml nie znajduje si\u0119 co najmniej jeden element <connection-definition> lub je\u015bli nie istnieje co najmniej jedna klasa z adnotacj\u0105 @ConnectionDefinition.
+J2CA9912.conn.defn.required.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 dostawcy adaptera zasob\u00f3w i procesami okre\u015blania problem\u00f3w.
+
+# {0} = nls file name
+# {1} = resource adapter name
+# {2} = message key
+J2CA9916.duplicate.nls.key=J2CA9916W: Plik komunikat\u00f3w podlegaj\u0105cych t\u0142umaczeniu {0} dla adaptera zasob\u00f3w {1} definiuje wiele komunikat\u00f3w dla tego samego klucza: {2}.
+J2CA9916.duplicate.nls.key.explanation=Podczas przetwarzania pliku t\u0142umaczenia znaleziono pojedynczy klucz NLS, kt\u00f3ry jest u\u017cywany w wielu komunikatach.
+J2CA9916.duplicate.nls.key.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 dostawcy adaptera zasob\u00f3w i procesami okre\u015blania problem\u00f3w.
+
+# {0} = nls file name
+# {1} = resource adapter name
+# {2} = message key
+J2CA9917.missing.nls.msg=J2CA9917W: Plik komunikat\u00f3w podlegaj\u0105cych t\u0142umaczeniu {0} dla adaptera zasob\u00f3w {1} nie zawiera komunikatu t\u0142umaczenia dla klucza {2}, kt\u00f3ry jest okre\u015blony w pliku wlp-ra.xml.
+J2CA9917.missing.nls.msg.explanation=Nie znaleziono komunikatu t\u0142umaczenia dla okre\u015blonego klucza.
+J2CA9917.missing.nls.msg.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 dostawcy adaptera zasob\u00f3w i procesami okre\u015blania problem\u00f3w.
+
+# {0} = attribute name
+# {1} = resource adapter name
+J2CA9918.attrdef.already.processed=J2CA9918W: Adapter zasob\u00f3w {1} definiuje zduplikowane w\u0142a\u015bciwo\u015bci konfiguracyjne o nazwie {0} w tym samym zasi\u0119gu. Duplikaty s\u0105 ignorowane.
+J2CA9918.attrdef.already.processed.explanation=Definicja adaptera zasob\u00f3w, specyfikacji aktywowania, administrowanego obiektu lub fabryki po\u0142\u0105cze\u0144 okre\u015bla zduplikowane w\u0142a\u015bciwo\u015bci konfiguracyjne o tej samej nazwie.
+J2CA9918.attrdef.already.processed.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 dostawcy adaptera zasob\u00f3w i procesami okre\u015blania problem\u00f3w.
+
+J2CA9919.class.not.found=J2CA9919W: Program \u0142aduj\u0105cy klasy dla adaptera zasob\u00f3w {1} nie mo\u017ce za\u0142adowa\u0107 klasy {0}. Sprawd\u017a, czy adapter zasob\u00f3w wymaga niew\u0142\u0105czonego sk\u0142adnika lub niedost\u0119pnej dla niego biblioteki.
+J2CA9919.class.not.found.explanation=Nie mo\u017cna za\u0142adowa\u0107 okre\u015blonej klasy, by\u0107 mo\u017ce dlatego, \u017ce ta klasa lub klasa, od kt\u00f3rej zale\u017cy ta klasa, jest udost\u0119pniana przez niew\u0142\u0105czony sk\u0142adnik lub bibliotek\u0119 niedost\u0119pn\u0105 dla adaptera zasob\u00f3w.
+J2CA9919.class.not.found.useraction=W\u0142\u0105cz wszystkie sk\u0142adniki wymagane przez adapter zasob\u00f3w i skonfiguruj adapter zasob\u00f3w tak, aby mia\u0142 dost\u0119p do wszystkich wymaganych bibliotek.
+
+# {0} = type of object
+# {1} = possible ra.xml entry
+# {2} = possible annotation class
+J2CA9920.duplicate.type=J2CA9920W: Zduplikowany typ {0} zosta\u0142 okre\u015blony w pozycji {1} oraz w innej pozycji w pliku ra.xml, albo w co najmniej jednej klasie z adnotacj\u0105 {2}.
+J2CA9920.duplicate.type.explanation=Definicja adaptera zasob\u00f3w, specyfikacji aktywowania, administrowanego obiektu lub fabryki po\u0142\u0105cze\u0144 zosta\u0142a okre\u015blona wi\u0119cej ni\u017c raz z tym samym typem.
+J2CA9920.duplicate.type.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 dostawcy adaptera zasob\u00f3w i procesami okre\u015blania problem\u00f3w.
+
+# {0} = resource adapter name
+J2CA9922.multiple.connector.anno.found=J2CA9922E: Adapter zasob\u00f3w {0} ma wiele klas z adnotacj\u0105 @Connector, ale nie okre\u015bla za po\u015brednictwem deskryptora wdra\u017cania, kt\u00f3ra z nich ma by\u0107 u\u017cywana.
+J2CA9922.multiple.connector.anno.found.explanation=Dozwolone jest, aby wiele klas mia\u0142o adnotacj\u0119 @Connector, ale klasa u\u017cywana przez adapter zasob\u00f3w musi by\u0107 jawnie okre\u015blona w deskryptorze wdra\u017cania.
+J2CA9922.multiple.connector.anno.found.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 dostawcy adaptera zasob\u00f3w i procesami okre\u015blania problem\u00f3w.
+
+# {0} = message listener type
+# {1} = annotated activation specification class
+J2CA9924.listener.actspec.missing=J2CA9924E: Obiekt nas\u0142uchiwania komunikat\u00f3w typu {0} w pliku ra.xml powinien przes\u0142ania\u0107 klas\u0119 {1} z adnotacj\u0105 @Activation, ale obiekt nas\u0142uchiwania nie zawiera specyfikacji aktywowania.
+J2CA9924.listener.actspec.missing.explanation=Plik ra.xml zawiera typ obiektu nas\u0142uchiwania komunikat\u00f3w, istnieje klasa z adnotacj\u0105 dla tego typu, ale plik ra.xml nie zawiera zgodnej pozycji specyfikacji aktywowania.
+J2CA9924.listener.actspec.missing.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 dostawcy adaptera zasob\u00f3w i procesami okre\u015blania problem\u00f3w.
+
+# {0} = class annotated with @AdministeredObject
+J2CA9925.admobj.interface.missing=J2CA9925E: Nie zdefiniowano interfejs\u00f3w administrowanego obiektu za po\u015brednictwem adnotacji @AdministeredObject, a klasa {0} nie implementuje \u017cadnych interfejs\u00f3w.
+J2CA9925.admobj.interface.missing.explanation=Klasa z adnotacj\u0105 musi udost\u0119pnia\u0107 interfejsy w adnotacji lub implementowa\u0107 interfejsy.
+J2CA9925.admobj.interface.missing.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 dostawcy adaptera zasob\u00f3w i procesami okre\u015blania problem\u00f3w.
+
+# {0} = class annotated with @AdministeredObject
+J2CA9926.admobj.multiple.interfaces=J2CA9926E: Interfejsy administrowanego obiektu nie zosta\u0142y zdefiniowane za po\u015brednictwem adnotacji @AdministeredObject, a wi\u0119c zostan\u0105 u\u017cyte interfejsy zdefiniowane dla klasy. Istnieje jednak wiele interfejs\u00f3w w klasie {0}.
+J2CA9926.admobj.multiple.interfaces.explanation=Interfejsy musz\u0105 by\u0107 zdefiniowane w adnotacji.
+J2CA9926.admobj.multiple.interfaces.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 dostawcy adaptera zasob\u00f3w i procesami okre\u015blania problem\u00f3w.
+
+# {0} = method with invalid name
+J2CA9927.cfgprop.invalid.method=J2CA9927E: Adnotacji @ConfigProperty mo\u017cna u\u017cywa\u0107 tylko w metodach ustawiaj\u0105cych, ale adnotacja ta zosta\u0142a znaleziona w metodzie {0}.
+J2CA9927.cfgprop.invalid.method.explanation=Adnotacja @ConfigProperty zosta\u0142a okre\u015blona w metodzie, kt\u00f3rej nazwa nie zaczyna si\u0119 od \u0142a\u0144cucha set.
+J2CA9927.cfgprop.invalid.method.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 dostawcy adaptera zasob\u00f3w i procesami okre\u015blania problem\u00f3w.
+
+J2CA9930.value.too.small=J2CA9930W: Warto\u015b\u0107 {0} jest mniejsza ni\u017c warto\u015b\u0107 minimalna {1} dla atrybutu {2}
+J2CA9930.value.too.small.explanation=Skonfigurowana warto\u015b\u0107 nie spe\u0142nia ograniczenia wielko\u015bci minimalnej dla atrybutu.
+J2CA9930.value.too.small.useraction=Wybierz warto\u015b\u0107, kt\u00f3ra jest r\u00f3wna lub wi\u0119ksza ni\u017c warto\u015b\u0107 minimalna.
+
+J2CA9931.value.too.large=J2CA9931W: Warto\u015b\u0107 {0} przekracza warto\u015b\u0107 maksymaln\u0105 {1} dla atrybutu {2}
+J2CA9931.value.too.large.explanation=Skonfigurowana warto\u015b\u0107 przekracza ograniczenie wielko\u015bci maksymalnej dla atrybutu.
+J2CA9931.value.too.large.useraction=Wybierz warto\u015b\u0107, kt\u00f3ra jest r\u00f3wna lub mniejsza ni\u017c warto\u015b\u0107 maksymalna.
+
+J2CA9932.value.too.short=J2CA9932W: Warto\u015b\u0107 {0} jest kr\u00f3tsza ni\u017c minimalna d\u0142ugo\u015b\u0107 {1} dla atrybutu {2}
+J2CA9932.value.too.short.explanation=Skonfigurowana warto\u015b\u0107 nie spe\u0142nia ograniczenia d\u0142ugo\u015bci minimalnej dla atrybutu.
+J2CA9932.value.too.short.useraction=Wybierz warto\u015b\u0107, kt\u00f3ra jest tak samo d\u0142uga lub d\u0142u\u017csza ni\u017c d\u0142ugo\u015b\u0107 minimalna.
+
+J2CA9933.value.too.long=J2CA9933W: Warto\u015b\u0107 {0} przekracza d\u0142ugo\u015b\u0107 maksymaln\u0105 {1} dla atrybutu {2}
+J2CA9933.value.too.long.explanation=Skonfigurowana warto\u015b\u0107 przekracza ograniczenie d\u0142ugo\u015bci maksymalnej dla atrybutu.
+J2CA9933.value.too.long.useraction=Wybierz warto\u015b\u0107, kt\u00f3ra jest tak samo d\u0142uga lub kr\u00f3tsza ni\u017c d\u0142ugo\u015b\u0107 maksymalna.
+
+J2CA9934.not.a.valid.option=J2CA9934E: Warto\u015b\u0107 {0} nie jest poprawn\u0105 opcj\u0105 dla atrybutu {1}. Poprawne s\u0105 nast\u0119puj\u0105ce opcje: {2}
+J2CA9934.not.a.valid.option.explanation=Skonfigurowana warto\u015b\u0107 pochodzi spoza zasi\u0119gu poprawnych opcji dla atrybutu.
+J2CA9934.not.a.valid.option.useraction=Wybierz warto\u015b\u0107 z listy poprawnych opcji.
+
+J2CA9935.secperm.not.supported=J2CA9935I: Uprawnienia zabezpiecze\u0144 Java 2 okre\u015blone w deskryptorze wdra\u017cania dla adaptera zasob\u00f3w {0} nie b\u0119d\u0105 wymuszane.
+J2CA9935.secperm.not.supported.explanation=Zabezpieczenia Java 2 nie s\u0105 w\u0142\u0105czone w profilu Liberty, a wi\u0119c nie b\u0119d\u0105 wykonywane operacje sprawdzania zabezpiecze\u0144 Java 2 dla adaptera zasob\u00f3w.
+J2CA9935.secperm.not.supported.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+J2CA9936.default.value.error=J2CA9936W: Nie mo\u017cna uzyska\u0107 warto\u015bci domy\u015blnej w\u0142a\u015bciwo\u015bci {0} z instancji klasy {1} w adapterze zasob\u00f3w {2}, poniewa\u017c wyst\u0105pi\u0142 b\u0142\u0105d: {3}
+J2CA9936.default.value.error.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by uzyskania dost\u0119pu do warto\u015bci domy\u015blnej w\u0142a\u015bciwo\u015bci JavaBean adaptera zasob\u00f3w.
+J2CA9936.default.value.error.useraction=Przeczytaj opis b\u0142\u0119du i skoryguj adapter zasob\u00f3w zgodnie z wymaganiami.
+
+J2CA9937.cfgprop.invalid.return=J2CA9937E: W\u0142a\u015bciwo\u015b\u0107 konfiguracyjna {1} komponentu JavaBean {0} z adnotacj\u0105 @ConfigProperty ma typ zwracanej warto\u015bci metody procedury pobieraj\u0105cej {2}, kt\u00f3ry nie jest zgodny z typem w\u0142a\u015bciwo\u015bci konfiguracyjnej {3}. 
+J2CA9937.cfgprop.invalid.return.explanation=W\u0142a\u015bciwo\u015b\u0107 konfiguracyjna z adnotacj\u0105 @ConfigProperty musi mie\u0107 metod\u0119 procedury pobieraj\u0105cej o typie zwracanej warto\u015bci zgodnym z typem w\u0142a\u015bciwo\u015bci konfiguracyjnej.
+J2CA9937.cfgprop.invalid.return.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 dostawcy adaptera zasob\u00f3w i procesami okre\u015blania problem\u00f3w.
+
+J2CA9938.cfgprop.no.getter=J2CA9938E: W\u0142a\u015bciwo\u015b\u0107 konfiguracyjna {1} komponentu JavaBean {0} z adnotacj\u0105 @ConfigProperty nie ma metody procedury pobieraj\u0105cej o typie zwracanej warto\u015bci {2}.
+J2CA9938.cfgprop.no.getter.explanation=W\u0142a\u015bciwo\u015b\u0107 konfiguracyjna z adnotacj\u0105 @ConfigProperty musi mie\u0107 metod\u0119 procedury pobieraj\u0105cej o typie zwracanej warto\u015bci zgodnym z typem w\u0142a\u015bciwo\u015bci konfiguracyjnej.
+J2CA9938.cfgprop.no.getter.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 dostawcy adaptera zasob\u00f3w i procesami okre\u015blania problem\u00f3w.
+
+J2CA9939.cfgprop.no.setter=J2CA9939E: W\u0142a\u015bciwo\u015b\u0107 konfiguracyjna {1} komponentu JavaBean {0} z adnotacj\u0105 @ConfigProperty nie ma metody procedury ustawiaj\u0105cej z pojedynczym parametrem typu {2}.
+J2CA9939.cfgprop.no.setter.explanation=W\u0142a\u015bciwo\u015b\u0107 konfiguracyjna z adnotacj\u0105 @ConfigProperty musi mie\u0107 metod\u0119 procedury ustawiaj\u0105cej z pojedynczym parametrem o typie zgodnym z typem w\u0142a\u015bciwo\u015bci konfiguracyjnej.
+J2CA9939.cfgprop.no.setter.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 dostawcy adaptera zasob\u00f3w i procesami okre\u015blania problem\u00f3w.
+
+J2CA9940.cfgprop.type.mismatch.field=J2CA9940E: W\u0142a\u015bciwo\u015b\u0107 konfiguracyjna {1} komponentu JavaBean {0} z adnotacj\u0105 @ConfigProperty ma w adnotacji ustawiony typ {2}, kt\u00f3ry nie jest zgodny z typem {3} pola.
+J2CA9940.cfgprop.type.mismatch.field.explanation=Typ ustawiony w adnotacji @ConfigProperty musi by\u0107 zgodny z typem pola, dla kt\u00f3rego j\u0105 u\u017cyto.
+J2CA9940.cfgprop.type.mismatch.field.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 dostawcy adaptera zasob\u00f3w i procesami okre\u015blania problem\u00f3w.
+
+J2CA9941.cfgprop.type.mismatch.setter=J2CA9941E: W\u0142a\u015bciwo\u015b\u0107 konfiguracyjna {1} komponentu JavaBean {0} z adnotacj\u0105 @ConfigProperty ma w adnotacji ustawiony typ {2}, kt\u00f3ry nie jest zgodny z typem {4} parametru w metodzie procedury ustawiaj\u0105cej.
+J2CA9941.cfgprop.type.mismatch.setter.explanation=Typ ustawiony w adnotacji @ConfigProperty musi by\u0107 zgodny z typem parametru w metodzie procedury ustawiaj\u0105cej, dla kt\u00f3rego j\u0105 u\u017cyto.
+J2CA9941.cfgprop.type.mismatch.setter.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 dostawcy adaptera zasob\u00f3w i procesami okre\u015blania problem\u00f3w.
+
+J2CA9942.cfgprop.invalid.parameters=J2CA9942E: Adnotacji @ConfigProperty mo\u017cna u\u017cywa\u0107 tylko w metodach procedur ustawiaj\u0105cych z jednym parametrem, ale znaleziono j\u0105 w metodzie {0} z nast\u0119puj\u0105cymi parametrami: {1}.
+J2CA9942.cfgprop.invalid.parameters.explanation=Adnotacj\u0119 @ConfigProperty nale\u017cy okre\u015bli\u0107 dla metody procedury ustawiaj\u0105cej, kt\u00f3ra ma tylko jeden parametr.
+J2CA9942.cfgprop.invalid.parameters.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 dostawcy adaptera zasob\u00f3w i procesami okre\u015blania problem\u00f3w.
+
+J2CA9943.missing.connector.dd=J2CA9943E: Adapter zasob\u00f3w {0} jest niepoprawny. Powinien on zawiera\u0107 albo deskryptor wdra\u017cania, albo klas\u0119 JavaBean z jedn\u0105 z adnotacji adaptera zasob\u00f3w.
+J2CA9943.missing.connector.dd.explanation=Poprawny adapter zasob\u00f3w musi mie\u0107 albo deskryptor wdra\u017cania, albo klas\u0119 JavaBean z adnotacj\u0105 @Connector, @AdministeredObject, @ConnectionDefinition, @ConnectionDefinitions lub @Activation.
+J2CA9943.missing.connector.dd.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 dostawcy adaptera zasob\u00f3w i procesami okre\u015blania problem\u00f3w.

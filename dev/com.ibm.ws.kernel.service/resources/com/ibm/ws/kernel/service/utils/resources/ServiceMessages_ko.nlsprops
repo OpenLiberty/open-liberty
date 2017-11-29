@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.service/resources/com/ibm/ws/kernel/service/utils/resources/ServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0100 - 0199 com.ibm.ws.kernel.service.utils.resources.ServiceMessages
+# -------------------------------------------------------------------------------------------------
+invalidStringArray=CWWKE0101W: \uc9c0\uc815\ub41c \ub9e4\uac1c\ubcc0\uc218\uac00 \ubb38\uc790\uc5f4 \ub610\ub294 \ubb38\uc790\uc5f4 \ubc30\uc5f4\uc774 \uc544\ub2d9\ub2c8\ub2e4. {1}={0}\uc758 \uacbd\uc6b0 {2}
+invalidStringArray.explanation=\uc9c0\uc815\ub41c \uad6c\uc131 \ub9e4\uac1c\ubcc0\uc218\uc758 \uac12\uc774 \ubb38\uc790\uc5f4 \ub610\ub294 \ubb38\uc790\uc5f4 \ubc30\uc5f4\uc774 \uc544\ub2c8\uac70\ub098 \ubb38\uc790\uc5f4 \ub610\ub294 \ubb38\uc790\uc5f4 \ubc30\uc5f4\ub85c \ubcc0\ud658\ub420 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+invalidStringArray.useraction=\uc11c\ubc84 \uad6c\uc131\uc5d0 \uc9c0\uc815\ub41c \uac12\uc744 \uac80\uc0ac\ud558\uace0 \uac12\uc774 \ubb38\uc790\uc5f4 \ub610\ub294 \ubb38\uc790\uc5f4 \ubc30\uc5f4\uc758 \uc62c\ubc14\ub978 \ud45c\uc2dc\uc778\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+invalidStringCollection=CWWKE0102W: \uc9c0\uc815\ub41c \ub9e4\uac1c\ubcc0\uc218\uac00 \ubb38\uc790\uc5f4 \ub610\ub294 \ubb38\uc790\uc5f4 \ucf5c\ub809\uc158\uc774 \uc544\ub2d9\ub2c8\ub2e4. {1}={0}\uc758 \uacbd\uc6b0 {2}
+invalidStringCollection.explanation=\uc9c0\uc815\ub41c \uad6c\uc131 \ub9e4\uac1c\ubcc0\uc218\uc758 \uac12\uc774 \ubb38\uc790\uc5f4 \ub610\ub294 \ubb38\uc790\uc5f4 \ucf5c\ub809\uc158\uc774 \uc544\ub2c8\uac70\ub098 \ubb38\uc790\uc5f4 \ub610\ub294 \ubb38\uc790\uc5f4 \ucf5c\ub809\uc158\uc73c\ub85c \ubcc0\ud658\ub420 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+invalidStringCollection.useraction=\uc11c\ubc84 \uad6c\uc131\uc5d0 \uc9c0\uc815\ub41c \uac12\uc774 \ubb38\uc790\uc5f4 \ub610\ub294 \ubb38\uc790\uc5f4 \ucf5c\ub809\uc158\uc758 \uc62c\ubc14\ub978 \ud45c\uc2dc\uc778\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+invalidBoolean=CWWKE0103W: \uc9c0\uc815\ub41c \ub9e4\uac1c\ubcc0\uc218\uac00 \ubd80\uc6b8 \uac12\uc744 \ub098\ud0c0\ub0b4\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. {1}={0}\uc758 \uacbd\uc6b0 {2}
+invalidBoolean.explanation=\uc9c0\uc815\ub41c \uad6c\uc131 \ub9e4\uac1c\ubcc0\uc218\uc758 \uac12\uc774 \ubd80\uc6b8 \uac12\uc774 \uc544\ub2c8\uac70\ub098 \ubd80\uc6b8 \uac12\uc73c\ub85c \ubcc0\ud658\ub420 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+invalidBoolean.useraction=\uc11c\ubc84 \uad6c\uc131\uc5d0 \uc9c0\uc815\ub41c \uac12\uc774 \ubd80\uc6b8 \uac12\uc758 \uc62c\ubc14\ub978 \ud45c\uc2dc\uc778\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+invalidLong=CWWKE0104W: \uc9c0\uc815\ub41c \ub9e4\uac1c\ubcc0\uc218\uac00 Long \uac12\uc744 \ub098\ud0c0\ub0b4\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. {1}={0}\uc758 \uacbd\uc6b0 {2}
+invalidLong.explanation=\uc9c0\uc815\ub41c \uad6c\uc131 \ub9e4\uac1c\ubcc0\uc218\uc758 \uac12\uc774 Long \uac12\uc774 \uc544\ub2c8\uac70\ub098 Long \uac12\uc73c\ub85c \ubcc0\ud658\ub420 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+invalidLong.useraction=\uc11c\ubc84 \uad6c\uc131\uc5d0 \uc9c0\uc815\ub41c \uac12\uc774 Long \uac12\uc758 \uc62c\ubc14\ub978 \ud45c\uc2dc\uc778\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+invalidInteger=CWWKE0105W: \uc9c0\uc815\ub41c \ub9e4\uac1c\ubcc0\uc218\uac00 \uc815\uc218 \uac12\uc744 \ub098\ud0c0\ub0b4\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. {1}={0}\uc758 \uacbd\uc6b0 {2}
+invalidInteger.explanation=\uc9c0\uc815\ub41c \uad6c\uc131 \ub9e4\uac1c\ubcc0\uc218\uc758 \uac12\uc774 \uc815\uc218 \uac12\uc774 \uc544\ub2c8\uac70\ub098 \uc815\uc218 \uac12\uc73c\ub85c \ubcc0\ud658\ub420 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+invalidInteger.useraction=\uc11c\ubc84 \uad6c\uc131\uc5d0 \uc9c0\uc815\ub41c \uac12\uc774 \uc815\uc218 \uac12\uc758 \uc62c\ubc14\ub978 \ud45c\uc2dc\uc778\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+invalidIntegerArray=CWWKE0106W: \uc9c0\uc815\ub41c \ub9e4\uac1c\ubcc0\uc218\uac00 \uc815\uc218 \ubc30\uc5f4\uc744 \ub098\ud0c0\ub0b4\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. {1}={0}\uc758 \uacbd\uc6b0 {2}
+invalidIntegerArray.explanation=\uc9c0\uc815\ub41c \uad6c\uc131 \ub9e4\uac1c\ubcc0\uc218\uc758 \uac12\uc774 \uc815\uc218 \ubc30\uc5f4\uc774 \uc544\ub2c8\uac70\ub098 \uc815\uc218 \ubc30\uc5f4\ub85c \ubcc0\ud658\ub420 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+invalidIntegerArray.useraction=\uc11c\ubc84 \uad6c\uc131\uc5d0 \uc9c0\uc815\ub41c \uac12\uc774 \uc815\uc218 \ubc30\uc5f4\uc758 \uc62c\ubc14\ub978 \ud45c\uc2dc\uc778\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+invalidDuration=CWWKE0107W: \uc9c0\uc815\ub41c \ub9e4\uac1c\ubcc0\uc218\uac00 \uc9c0\uc18d \uae30\uac04 \uac12\uc744 \ud45c\uc2dc\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. {1}={0}\uc758 \uacbd\uc6b0 {2}
+invalidDuration.explanation=\uc9c0\uc815\ub41c \uad6c\uc131 \ub9e4\uac1c\ubcc0\uc218\uc758 \uac12\uc774 \uc9c0\uc18d \uae30\uac04 \uac12\uc774 \uc544\ub2c8\uac70\ub098 \uc9c0\uc18d \uae30\uac04 \uac12\uc73c\ub85c \ubcc0\ud658\ub420 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+invalidDuration.useraction=\uc11c\ubc84 \uad6c\uc131\uc5d0 \uc9c0\uc815\ub41c \uac12\uc774 \uc9c0\uc18d \uae30\uac04 \uac12\uc758 \uc62c\ubc14\ub978 \ud45c\uc2dc\uc778\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+#
+# W A R N I N G:   Do not use CWWKE0108 - CCWKE0109 they are currently in use LauncherMessages.nlsprops
+#

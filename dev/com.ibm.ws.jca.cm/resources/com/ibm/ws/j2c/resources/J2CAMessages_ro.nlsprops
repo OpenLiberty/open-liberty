@@ -1,0 +1,337 @@
+###############################################################################
+# Copyright (c) 1997, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# Instructions to translation will precede the line to which it applies
+#
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# Example: MSG_DESCRIPTIVE_NAME_J2CA0001=J2CA0001I: This is a message.
+#
+# The prefix for this component is:
+#     J2CA (J2C Connection Manager)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# :Begin: WebSphere Quality Validation Information :Begin:
+# :End: WebSphere Quality Validation Information :End:
+#
+#CMVCPATHNAME com.ibm.ws.jca.cm/resources/com/ibm/ws/j2c/resources/J2CAMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA Java Platform, Enterprise Edition Connector Architecture Server Implementation
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+NULL_MANAGED_CONNECTION_J2CA0015=J2CA0015E: Managerul pool-ului de conexiuni nu a putut aloca o Conexiune gestionat\u0103 de la resursa {0}.
+NULL_MANAGED_CONNECTION_J2CA0015.explanation=Managerul pool-ului nu a putut aloca o conexiune gestionat\u0103. Asta ar putea fi din cauza propriet\u0103\u0163ilor asociate cu managerul pool-ului (adic\u0103 s-a dep\u0103\u015fit maximul de conexiuni). O conexiune gestionat\u0103 NULL a fost returnat\u0103 de managerul pool-ului.
+NULL_MANAGED_CONNECTION_J2CA0015.useraction=-CMSG0002
+
+# --------------------------------
+XA_OP_NOT_SUPPORTED_J2CA0016=J2CA0016E: O opera\u0163ie XA cu dou\u0103 faze, {0}, a fost invocat\u0103 \u00een ID-ul de tranzac\u0163ie {1}. Acest Adaptor de resurse din pool-ul {2} nu suport\u0103 procesarea \u00een dou\u0103 faze.
+XA_OP_NOT_SUPPORTED_J2CA0016.explanation=Asta indic\u0103 faptul c\u0103 s-a f\u0103cut o \u00eencercare de a folosi conexiunea \u00een contextul unei tranzac\u0163ii XA \u00eempreun\u0103 cu alte resurse capabile XA. Asta nu este o opera\u0163ie valid\u0103 pentru acest adaptor de resurse.
+XA_OP_NOT_SUPPORTED_J2CA0016.useraction=Modifica\u0163i logica pentru a separa utilizarea resurselor \u00een tranzac\u0163ii separate.
+
+# --------------------------------                    
+FAILED_MANAGED_CONNECTION_J2CA0020=J2CA0020E: Managerul pool-ului de conexiuni nu a putut aloca o Conexiune gestionat\u0103: {0}.
+FAILED_MANAGED_CONNECTION_J2CA0020.explanation=Managerul pool-ului a creat o excep\u0163ie c\u00e2nd se \u00eencerca alocarea unei conexiuni gestionate. Textul excep\u0163iei ar putea furniza informa\u0163ii suplimentare pentru determinarea problemei.
+FAILED_MANAGED_CONNECTION_J2CA0020.useraction=Dac\u0103 nu este nicio indica\u0163ie controlat\u0103 de utilizator, mesajul ar putea fi din cauza unei erori interne la procesarea managerului de conexiuni. Colecta\u0163i datele de diagnostic \u015fi vizita\u0163i site-ul pentru suport IBM pentru informa\u0163ii suplimentare.
+
+# --------------------------------
+FAILED_CONNECTION_J2CA0021=J2CA0021E: A ap\u0103rut o excep\u0163ie c\u00e2nd se \u00eencerca ob\u0163inerea unei Conexiuni de la resursa de Conexiune gestionat\u0103 {1} : {0}.
+FAILED_CONNECTION_J2CA0021.explanation=Adaptorul de resurse a creat o excep\u0163ie c\u00e2nd se \u00eencerca apelarea metodei getConnection(). Textul excep\u0163iei ar putea furniza informa\u0163ii suplimentare pentru determinarea problemei.
+FAILED_CONNECTION_J2CA0021.useraction=Dac\u0103 nu este nicio indica\u0163ie controlat\u0103 de utilizator, mesajul ar putea fi din cauza unei erori interne la procesarea managerului de conexiuni. Colecta\u0163i datele de diagnostic \u015fi vizita\u0163i site-ul pentru suport IBM pentru informa\u0163ii suplimentare.
+
+# --------------------------------
+FAILED_CONNECTION_RELEASE_J2CA0022=J2CA0022I: A ap\u0103rut o excep\u0163ie c\u00e2nd se \u00eencerca cur\u0103\u0163area \u015fi eliberarea Conexiunii gestionate de la resursa {1} pentru o getConnection e\u015fuat\u0103 de la Conexiunea gestionat\u0103 {0}. Aceast\u0103 a doua eroare a fost absorbit\u0103 \u015fi eroarea original\u0103 a fost rearuncat\u0103.
+FAILED_CONNECTION_RELEASE_J2CA0022.explanation=A fost o problem\u0103 c\u00e2nd se \u00eencerca cur\u0103\u0163area \u00eenregistr\u0103rilor de la o \u00eencercare getConnection e\u015fuat\u0103. Acest mesaj este informa\u0163ional \u015fi ar trebui combinat cu alte mesaje \u00eenrudite pentru o mai bun\u0103 determinare a problemei.
+FAILED_CONNECTION_RELEASE_J2CA0022.useraction=Examina\u0163i celelalte mesaje \u00eenrudite pentru explica\u0163ii \u015fi r\u0103spunsuri de utilizator.
+
+# --------------------------------
+XA_OPERATION_NOT_SUPPORTED_J2CA0023=J2CA0023E: O opera\u0163ie XA cu dou\u0103 faze, {0}, a fost invocat\u0103. Acest Adaptor de resurse de la DataSource {1} nu suport\u0103 procesarea \u00een dou\u0103 faze.
+XA_OPERATION_NOT_SUPPORTED_J2CA0023.explanation=S-a f\u0103cut o \u00eencercare de a invoca o opera\u0163ie XA pe un adaptor de resurse care suport\u0103 numai tranzac\u0163ii locale. Un adaptor de resurse de tranzac\u0163ie local\u0103 s-ar putea s\u0103 fi fost inclus \u00een contextul unei tranzac\u0163ii XA, \u00eempreun\u0103 cu alte resurse capabile XA.
+XA_OPERATION_NOT_SUPPORTED_J2CA0023.useraction=Modifica\u0163i logica opera\u0163ional\u0103 pentru a separa utilizarea resurselor \u00een tranzac\u0163ii separate.
+
+# --------------------------------
+XA_END_EXCP_J2CA0024=J2CA0024E: Metoda {0}, din ID-ul de ramur\u0103 de tranzac\u0163ie {1} a pool-ului de resurse {4}, a prins {2} \u015fi a aruncat {3}.
+XA_END_EXCP_J2CA0024.explanation=A fost o problem\u0103 la procesarea metodei date. Interfa\u0163a define\u015fte anumite excep\u0163ii care pot fi create, a\u015fa c\u0103 excep\u0163ia care a fost prins\u0103 a fost mapat\u0103 la excep\u0163ia care a fost creat\u0103. Procesarea din metod\u0103 nu s-a finalizat cu succes.
+XA_END_EXCP_J2CA0024.useraction=Verifica\u0163i c\u0103 logica opera\u0163ional\u0103 a aplica\u0163iei prinde corespunz\u0103tor excep\u0163ia care a fost creat\u0103 \u015fi con\u0163ine logica de recuperare necesar\u0103. De asemenea, verifica\u0163i fi\u015fierele istorice pentru erori anterioare care au cauzat excep\u0163ia.
+
+# --------------------------------
+REGISTER_WITH_SYNCHRONIZATION_EXCP_J2CA0026=J2CA0026E: Metoda {0} a prins {1} \u00een timp ce se \u00eencerca \u00eenregistrarea Adaptorului de resurse cu Managerul de sincronizare pentru tranzac\u0163ia curent\u0103 \u015fi a aruncat {2}.
+REGISTER_WITH_SYNCHRONIZATION_EXCP_J2CA0026.explanation=A fost o problem\u0103 la procesarea metodei date. Interfa\u0163a define\u015fte anumite excep\u0163ii care pot fi create, a\u015fa c\u0103 excep\u0163ia care a fost prins\u0103 a fost mapat\u0103 la excep\u0163ia care a fost creat\u0103. Procesarea din metod\u0103 nu s-a finalizat cu succes.
+REGISTER_WITH_SYNCHRONIZATION_EXCP_J2CA0026.useraction=Verifica\u0163i c\u0103 logica opera\u0163ional\u0103 a aplica\u0163iei prinde corespunz\u0103tor excep\u0163ia care a fost creat\u0103 \u015fi con\u0163ine logica de recuperare necesar\u0103. De asemenea, verifica\u0163i fi\u015fierele istorice pentru erori anterioare care au cauzat excep\u0163ia.
+
+# --------------------------------
+XA_RESOURCE_ADAPTER_OPERATION_ID_EXCP_J2CA0027=J2CA0027E: A ap\u0103rut o excep\u0163ie la invocarea {0} pe un Adaptor de resurse XA de la DataSource {3}, din ID-ul de tranzac\u0163ie {1} : {2}.
+XA_RESOURCE_ADAPTER_OPERATION_ID_EXCP_J2CA0027.explanation=A fost o problem\u0103 la procesarea metodei date. Procesarea din metod\u0103 nu s-a finalizat cu succes.
+XA_RESOURCE_ADAPTER_OPERATION_ID_EXCP_J2CA0027.useraction=Verifica\u0163i c\u0103 logica opera\u0163ional\u0103 a aplica\u0163iei prinde corespunz\u0103tor excep\u0163ia care a fost creat\u0103 \u015fi con\u0163ine logica de recuperare necesar\u0103. De asemenea, verifica\u0163i fi\u015fierele istorice pentru erori anterioare care au cauzat excep\u0163ia
+
+# --------------------------------
+XA_RESOURCE_ADAPTER_OPERATION_EXCP_J2CA0028=J2CA0028E: A ap\u0103rut o excep\u0163ie la invocarea {0} pe un Adaptor de resurse XA de la DataSource {2}: {1}.
+XA_RESOURCE_ADAPTER_OPERATION_EXCP_J2CA0028.explanation=A fost o problem\u0103 la procesarea metodei date. Procesarea din metod\u0103 nu s-a finalizat cu succes.
+XA_RESOURCE_ADAPTER_OPERATION_EXCP_J2CA0028.useraction=Verifica\u0163i c\u0103 logica opera\u0163ional\u0103 a aplica\u0163iei prinde corespunz\u0103tor excep\u0163ia care a fost creat\u0103 \u015fi con\u0163ine logica de recuperare necesar\u0103. De asemenea, verifica\u0163i fi\u015fierele istorice pentru erori anterioare care au cauzat excep\u0163ia.
+
+# --------------------------------
+ENLIST_RESOURCE_EXCP_J2CA0030=J2CA0030E: Metoda {0} a prins {1} \u00een timp ce se \u00eencerca \u00eenrolarea resurselor de la DataSource {3} cu Managerul de Tranzac\u0163ii pentru tranzac\u0163ia curent\u0103 \u015fi a aruncat {2}.
+ENLIST_RESOURCE_EXCP_J2CA0030.explanation=A fost o problem\u0103 la procesarea metodei date. Interfa\u0163a define\u015fte anumite excep\u0163ii care pot fi create, a\u015fa c\u0103 excep\u0163ia care a fost prins\u0103 a fost mapat\u0103 la excep\u0163ia care a fost creat\u0103. Procesarea din metod\u0103 nu s-a finalizat cu succes.
+ENLIST_RESOURCE_EXCP_J2CA0030.useraction=Verifica\u0163i c\u0103 logica opera\u0163ional\u0103 a aplica\u0163iei prinde corespunz\u0103tor excep\u0163ia care a fost creat\u0103 \u015fi con\u0163ine logica de recuperare necesar\u0103. De asemenea, verifica\u0163i fi\u015fierele istorice pentru erori anterioare care au cauzat excep\u0163ia.
+
+# --------------------------------
+DELIST_RESOURCE_EXCP_J2CA0031=J2CA0031I: Metoda {0} a prins {1} \u00een timp ce se \u00eencerca anularea \u00eenrol\u0103rii resurselor de la DataSource {3} din Managerul de Tranzac\u0163ii pentru tranzac\u0163ia curent\u0103 \u015fi a aruncat {2}.
+DELIST_RESOURCE_EXCP_J2CA0031.explanation=A fost o problem\u0103 c\u00e2nd se \u00eencerca anularea \u00eenrol\u0103rii \u00eenregistr\u0103rilor de la managerul de tranzac\u0163ii. Acest mesaj este \u00een scop informa\u0163ional.
+DELIST_RESOURCE_EXCP_J2CA0031.useraction=Dac\u0103 acest mesaj apare regulat, colecta\u0163i informa\u0163iile de diagnoz\u0103 \u015fi vizita\u0163i site-ul de suport IBM pentru informa\u0163ii suplimentare.
+
+# --------------------------------
+UNEXPECTED_CONNECTION_EVENT_J2CA0034=J2CA0034E: S-a primit un eveniment nea\u015fteptat de la Adaptorul de resurse pentru resursa {2}. Se a\u015ftepta tipul ConnectionEvent {0} \u015fi s-a primit tipul ConnectionEvent {1}.
+UNEXPECTED_CONNECTION_EVENT_J2CA0034.explanation=Cel mai probabil este o eroare cu respectivul adaptor de resurse.
+UNEXPECTED_CONNECTION_EVENT_J2CA0034.useraction=Contacta\u0163i furnizorul adaptorului de resurse.
+
+# --------------------------------
+NO_VALID_TRANSACTION_CONTEXT_J2CA0040=J2CA0040E: Nu s-a g\u0103sit niciun context de tranzac\u0163ie valid pe firul de execu\u0163ie pentru metoda {0} cu coordonatorul {1} folosind resurse de la DataSource {2}.
+NO_VALID_TRANSACTION_CONTEXT_J2CA0040.explanation=A fost o eroare intern\u0103 la procesarea managerului de conexiuni. Este necesar un context de tranzac\u0163ie valid pentru opera\u0163ia dat\u0103, dar nu s-a g\u0103sit.
+NO_VALID_TRANSACTION_CONTEXT_J2CA0040.useraction=-CMSG0002
+
+# --------------------------------
+POOL_MANAGER_EXCP_CCF2_0001_J2CA0045=J2CA0045E: Conexiunea nu este disponibil\u0103 c\u00e2nd se invoc\u0103 metoda {0} pentru resursa {1}.
+POOL_MANAGER_EXCP_CCF2_0001_J2CA0045.explanation=A ap\u0103rut un timeout de a\u015fteptare a conexiunii. S-a creat o ConnectionWaitTimeoutException.
+POOL_MANAGER_EXCP_CCF2_0001_J2CA0045.useraction=Reconfigura\u0163i pool-ul de conexiuni. Cre\u015fte\u0163i num\u0103rul maxim de conexiuni sau cre\u015fte\u0163i timpul de a\u015fteptare a conexiunii pentru a evita aceast\u0103 eroare.
+
+# --------------------------------
+POOL_MANAGER_EXCP_CCF2_0002_J2CA0046=J2CA0046E: Metoda {0} a prins o excep\u0163ie \u00een timpul cre\u0103rii ManagedConnection pentru resursa {3}, arunc\u00e2nd {2}. Excep\u0163ie original\u0103: {1}
+POOL_MANAGER_EXCP_CCF2_0002_J2CA0046.explanation=A ap\u0103rut o eroare \u00een timpul cre\u0103rii unei ManagedConnection. De obicei, asta se poate rezolva dac\u0103 v\u0103 uita\u0163i la mesajele de eroare de la adaptorul de resurse.
+POOL_MANAGER_EXCP_CCF2_0002_J2CA0046.useraction=-CMSG0002
+
+# --------------------------------
+HANDLE_NOT_CLOSED_J2CA0055=J2CA0055W: Indicatorul nu este \u00eenchis la finalul unit\u0103\u0163ii domeniului de lucru. Indicatoarele vor fi \u00eenchise de Managerul de conexiuni.
+HANDLE_NOT_CLOSED_J2CA0055.explanation=Fie o sesiune de activitate, o tranzac\u0163ie sau domeniu de lucru de tranzac\u0163ie local\u0103 se \u00eencheie \u015fi nu sunt \u00eenchise indicatoarele. Suportul pentru punerea \u00een cache a indicatoarelor \u00een afara unit\u0103\u0163ii curente a domeniului de lucru nu este suportat pentru aceast\u0103 configura\u0163ie sau edi\u0163ie.
+HANDLE_NOT_CLOSED_J2CA0055.useraction=Inspecta\u0163i-v\u0103 aplica\u0163ia \u015fi asigura\u0163i-v\u0103 c\u0103 indicatoarele sunt \u00eenchise \u00eenainte s\u0103 se \u00eencheie unitatea de lucru asociat\u0103.
+
+# --------------------------------
+RA_CONNECTION_ERROR_J2CA0056=J2CA0056I: Managerul de conexiuni a primit o eroare de conexiune fatal\u0103 de la Adaptorul de resurse pentru resursa {1}. Excep\u0163ia este: {0}
+RA_CONNECTION_ERROR_J2CA0056.explanation=Managerul de conexiuni a fost notificat de adaptorul de resurse c\u0103 a ap\u0103rut o eroare pe conexiune. Acest mesaj informa\u0163ional este \u00eenregistrat \u00een istoric pentru ca utilizatorul s\u0103 poat\u0103 vedea excep\u0163ia care a fost returnat\u0103.
+RA_CONNECTION_ERROR_J2CA0056.useraction=Managerul de conexiuni va \u00eenl\u0103tura conexiunea care e\u015fueaz\u0103 sau toate conexiunile din pool, \u00een func\u0163ie de configura\u0163ie. Acesta este comportamentul normal. Dac\u0103 aceast\u0103 eroare apare nea\u015fteptat, investiga\u0163i excep\u0163ia pentru a determina sursa posibil\u0103 a problemei.
+
+# --------------------------------
+NULL_TRAN_WRAPPER_J2CA0057=J2CA0057E: Metoda interactionPending nu a putut g\u0103si o clas\u0103 wrapper de tranzac\u0163ie.
+NULL_TRAN_WRAPPER_J2CA0057.explanation=Aceasta este o eroare intern\u0103 WebSphere.
+NULL_TRAN_WRAPPER_J2CA0057.useraction=-CMSG0002
+
+# --------------------------------
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0058=J2CA0058E: ConnectionManager nu a putut asocia Conexiunea {0} cu ManagedConnection {1} pentru resursa {3}. Excep\u0163ie primit\u0103: {2}
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0058.explanation=Aceasta este cel mai probabil o eroare de aplica\u0163ie. Un exemplu: O conexiune pus\u0103 \u00een cache este \u00eenrolat\u0103 \u00eentr-o tranzac\u0163ie, apoi conexiunea este \u00eenchis\u0103. \u00cenainte ca tranzac\u0163ia s\u0103 finalizeze alt\u0103 cerere, este trimis\u0103 la acela\u015fi EJB care a deschis ini\u0163ial conexiunea. Indicatorul pus \u00een cache este \u00eenc\u0103 asociat cu tranzac\u0163ia original\u0103 \u015fi nu poate fi reasociat p\u00e2n\u0103 la comiterea acelei tranzac\u0163ii.
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0058.useraction=Inspecta\u0163i aplica\u0163ia \u015fi asigura\u0163i-v\u0103 c\u0103 tranzac\u0163ia este comis\u0103 c\u00e2t mai repede posibil dup\u0103 ce sunt \u00eenchise conexiunile.
+
+# --------------------------------
+FAILED_DOPRIVILEGED_J2CA0060=J2CA0060E: PrivilegedActionException la apelarea doPrivileged: {0}
+FAILED_DOPRIVILEGED_J2CA0060.explanation=Aceasta este o eroare runtime de securitate.
+FAILED_DOPRIVILEGED_J2CA0060.useraction=-CMSG0002
+
+# ---------------------------------
+INVALID_OR_UNEXPECTED_SETTING_J2CA0067=J2CA0067W: Setare {0} invalid\u0103 a {1}. Se trece la valoarea implicit\u0103 {2}.
+INVALID_OR_UNEXPECTED_SETTING_J2CA0067.explanation=A ap\u0103rut o eroare intern\u0103. Se folose\u015fte valoarea implicit\u0103.
+INVALID_OR_UNEXPECTED_SETTING_J2CA0067.useraction=Acesta este doar un avertisment. Dac\u0103 apare o eroare mai t\u00e2rziu, v-ar putea ajuta la diagnosticarea problemei. Altfel, poate fi ignorat.
+
+# ---------------------------------
+DELIST_FAILED_J2CA0073=J2CA0073E: Nu se poate anula \u00eenrolarea conexiunii de la resursa {2} de la tranzac\u0163ia din metoda {0} din cauza unei excep\u0163ii. Se ini\u0163iaz\u0103 distrugerea conexiunii. Excep\u0163ia este: {1}
+DELIST_FAILED_J2CA0073.explanation=S-a primit o eroare intern\u0103 \u015fi managerul de conexiuni nu a putut anula \u00eenrolarea unei conexiuni de la tranzac\u0163ia \u00een care a fost implicat\u0103. Managerul de conexiuni va \u00eencerca s\u0103 distrug\u0103 conexiunea.
+DELIST_FAILED_J2CA0073.useraction=-CMSG0002
+
+# ---------------------------------
+ENLIST_FAILED_J2CA0074=J2CA0074E: Nu se poate \u00eenrola conexiunea de la resursa {2} cu tranzac\u0163ia curent\u0103 din metoda {0} din cauza unei excep\u0163ii. Se ini\u0163iaz\u0103 distrugerea conexiunii. Excep\u0163ia este: {1}
+ENLIST_FAILED_J2CA0074.explanation=S-a primit o eroare intern\u0103 \u015fi managerul de conexiuni nu a putut \u00eenrola o conexiune cu tranzac\u0163ia curent\u0103. Managerul de conexiuni va \u00eencerca s\u0103 distrug\u0103 conexiunea.
+ENLIST_FAILED_J2CA0074.useraction=-CMSG0002
+
+# ---------------------------------
+MISSING_TRANSACTION_CONTEXT_J2CA0075=J2CA0075W: O tranzac\u0163ie activ\u0103 ar trebui s\u0103 fie prezent\u0103 la procesarea metodei {0}.
+MISSING_TRANSACTION_CONTEXT_J2CA0075.explanation=Procesarea normal\u0103 a gestiunii conexiunii necesit\u0103 prezen\u0163a unei tranzac\u0163ii pentru a rula metoda curent\u0103.
+MISSING_TRANSACTION_CONTEXT_J2CA0075.useraction=Porni\u0163i toate tranzac\u0163iile necesare pentru a utiliza cu succes conexiunea.
+
+# ---------------------------------
+FAILED_TO_OBTAIN_LOCALTRAN_J2CA0077=J2CA0077E: S-a prins o excep\u0163ie \u00een timp ce se \u00eencerca ob\u0163inerea unei javax.resource.cci.LocalTransaction de la o ManagedConnection pentru resursa {1}. Excep\u0163ia este: {0}
+FAILED_TO_OBTAIN_LOCALTRAN_J2CA0077.explanation=Managerul de conexiuni nu a putut ob\u0163ine o LocalTransaction de la adaptorul de resurse. Aceasta indic\u0103 o problem\u0103 cu adaptorul de resurse.
+FAILED_TO_OBTAIN_LOCALTRAN_J2CA0077.useraction=Uita\u0163i-v\u0103 dup\u0103 mesaje de eroare de la adaptorul de resurse pentru a identifica problema.
+
+# ---------------------------------
+FAILED_TO_OBTAIN_XAResource_J2CA0078=J2CA0078E: S-a prins o excep\u0163ie \u00een timp ce se \u00eencerca ob\u0163inerea unei javax.transaction.xa.XAResource de la o ManagedConnection pe DataSource {1}. Excep\u0163ia este: {0}
+FAILED_TO_OBTAIN_XAResource_J2CA0078.explanation=Managerul de conexiuni nu a putut ob\u0163ine o XAResource de la adaptorul de resurse. Aceasta indic\u0103 o problem\u0103 cu adaptorul de resurse.
+FAILED_TO_OBTAIN_XAResource_J2CA0078.useraction=Uita\u0163i-v\u0103 dup\u0103 mesaje de eroare de la adaptorul de resurse pentru a identifica problema.
+
+# ---------------------------------
+ILLEGAL_STATE_EXCEPTION_J2CA0079=J2CA0079E: Metoda {0} a detectat o stare ilegal\u0103 intern\u0103 \u015fi arunc\u0103 o IllegalStateException. Excep\u0163ia este: {1}
+ILLEGAL_STATE_EXCEPTION_J2CA0079.explanation=Managerul de conexiuni a detectat o eroare intern\u0103.
+ILLEGAL_STATE_EXCEPTION_J2CA0079.useraction=-CMSG0002
+
+# ---------------------------------
+ILLEGAL_ARGUMENT_EXCEPTION_J2CA0080=J2CA0080E: Metoda {0} a detectat un argument ilegal intern \u015fi arunc\u0103 o IllegalArgumentException. Excep\u0163ia este: {1}
+ILLEGAL_ARGUMENT_EXCEPTION_J2CA0080.explanation=Managerul de conexiuni a detectat o eroare intern\u0103.
+ILLEGAL_ARGUMENT_EXCEPTION_J2CA0080.useraction=-CMSG0002
+
+# ---------------------------------
+MCERROR_J2CA0081=J2CA0081E: Metoda {0} a e\u015fuat \u00een timp ce se \u00eencerca executarea metodei {1} pe ManagedConnection {2} de la resursa {4}. S-a prins excep\u0163ia: {3}
+MCERROR_J2CA0081.explanation=Managerul de conexiuni a prins o excep\u0163ie \u00een timp ce \u00eencerca realizarea unei opera\u0163ii pe o ManagedConnection.
+MCERROR_J2CA0081.useraction=\u00centruc\u00e2t ManagedConnection face parte din adaptorul de resurse, uita\u0163i-v\u0103 dup\u0103 mesaje de la adaptorul de resurse pentru a izola mai departe problema.
+
+# --------------------------------
+ATTEMPT_TO_SHARE_LTC_CONNECTION_J2CA0086=J2CA0086I: Mai multe indicatoare deschise nu pot partaja o conexiune fizic\u0103 la {1} la grani\u0163a de limitare a tranzac\u0163iilor locale, deci va fi utilizat\u0103 o conexiune fizic\u0103 diferit\u0103 pentru fiecare indicator. \u00cen aceast\u0103 situa\u0163ie, este important s\u0103 v\u0103 asigura\u0163i c\u0103 nu va continua activitatea tranzac\u0163ional\u0103 dup\u0103 ce se \u00eenchide indicatorul deoarece, dac\u0103 sunt necesare mai t\u00e2rziu indicatoare partajabile suplimentare la grani\u0163a de limitare a tranzac\u0163iilor locale, conexiunea fizic\u0103 la care se asociaz\u0103 va fi imprevizibil\u0103.
+ATTEMPT_TO_SHARE_LTC_CONNECTION_J2CA0086.explanation=Mai multe indicatoare deschise pot partaja numai o singur\u0103 conexiune fizic\u0103 \u00een domeniul unei tranzac\u0163ii globale. C\u00e2nd sunt deschi\u015fi mai mul\u0163i indicatori la grani\u0163a de limitare a tranzac\u0163iilor locale, fiecare indicator utilizeaz\u0103 o conexiune fizic\u0103 diferit\u0103. Av\u00e2nd mai mul\u0163i indicatori partajabili deschi\u015fi \u00een acela\u015fi timp la grani\u0163a de limitare a tranzac\u0163iilor locale, poate cre\u015fte cerin\u0163a pe pool-ul de conexiuni pentru num\u0103rul maxim de conexiuni \u015fi poate cre\u015fte complexitatea utiliz\u0103rii indicatorului func\u0163ie de tranzac\u0163iile locale pentru aplica\u0163iile care respect\u0103 acest tipar.
+ATTEMPT_TO_SHARE_LTC_CONNECTION_J2CA0086.useraction=Asigura\u0163i-v\u0103 c\u0103 pool-ul de conexiuni este dimensionat astfel \u00eenc\u00e2t fiecare fir de execu\u0163ie s\u0103 poat\u0103 cere multiple conexiuni fizice \u015fi revede\u0163i codul aplica\u0163iei pentru a verifica faptul c\u0103 acest model de utilizare este cel dorit \u015fi c\u0103 este specificat domeniul de partajare a\u015fteptat.
+
+# --------------------------------
+BAD_RETURN_VALUE_FROM_ENLIST_J2CA0087=J2CA0087E: Managerul de tranzac\u0163ii nu a ptutu \u00eenrola resursa {0} de la DataSource {1}.
+BAD_RETURN_VALUE_FROM_ENLIST_J2CA0087.explanation=Acest mesaj indic\u0103 o problem\u0103 la \u00eenrolarea \u00eentr-o tranzac\u0163ie. Resursa se poate s\u0103 fi fost deja \u00eenrolat\u0103 \u00eentr-o tranzac\u0163ie sau tranzac\u0163ia s-ar putea s\u0103 nu fi fost \u00een starea corect\u0103.
+BAD_RETURN_VALUE_FROM_ENLIST_J2CA0087.useraction=Verifica\u0163i c\u0103 logica opera\u0163ional\u0103 a aplica\u0163iei prinde corespunz\u0103tor excep\u0163ia creat\u0103 \u015fi con\u0163ine logica de recuperare necesar\u0103. Verifica\u0163i fi\u015fierele istorice pentru erorile anterioare (mai ales erori de tranzac\u0163ie) care se poate s\u0103 fi cauzat excep\u0163ia.
+
+# --------------------------------
+ATTEMPT_TO_DESTORY_CONNECTION_IN_USE_J2CA0088=J2CA0088W: ManagedConnection care este \u00een curs de distrugere de la resursa {1} este \u00eentr-o stare invalid\u0103 {0}. Procesarea va continua.
+ATTEMPT_TO_DESTORY_CONNECTION_IN_USE_J2CA0088.explanation=A survenit o eroare intern\u0103.
+ATTEMPT_TO_DESTORY_CONNECTION_IN_USE_J2CA0088.useraction=-CMSG0002
+                     
+# ---------------------------------
+INTERUPTED_EXCEPTION_J2CA0091=J2CA0091E: A ap\u0103rut o InterruptedException pe firul de execu\u0163ie Colector gunoi.
+INTERUPTED_EXCEPTION_J2CA0091.explanation=A ap\u0103rut o InterruptedException pe firul de execu\u0163ie pentru colectorul de gunoi. Procesarea J2C va continua, dar conexiunile nefolosite \u015fi \u00eenvechite nu vor fi colectate.
+INTERUPTED_EXCEPTION_J2CA0091.useraction=-CMSG0002
+
+# 0096 deleted
+
+# --------------------------------
+GET_SOURCE_CLASS_CAST_EXCP_J2CA0098=J2CA0098E: A ap\u0103rut o ClassCastException c\u00e2nd se \u00eencerca aruncarea event.getSource la ManagedConnection: {0}
+GET_SOURCE_CLASS_CAST_EXCP_J2CA0098.explanation=Sursa evenimentului declan\u015fat pe ascult\u0103tor nu era de tipul ManagedConnection
+GET_SOURCE_CLASS_CAST_EXCP_J2CA0098.useraction=-CMSG0002
+
+# --------------------------------
+DUPLICATE_USERNAME_PASSWORD_CONNECTOR_PROPERTY_J2CA0103=J2CA0103I: Proprietatea de conector duplicat\u0103 nu a fost ad\u0103ugat\u0103. {0}
+DUPLICATE_USERNAME_PASSWORD_CONNECTOR_PROPERTY_J2CA0103.explanation=S-a f\u0103cut o \u00eencercare de a ad\u0103uga o proprietate de conector duplicat\u0103. Proprietatea nu a fost ad\u0103ugat\u0103.
+DUPLICATE_USERNAME_PASSWORD_CONNECTOR_PROPERTY_J2CA0103.useraction=O proprietate personaliza\u0103 a unei fabrici de conexiuni sau surs\u0103 de date a specificat un nume de utilizator sau o parol\u0103, dar s-a specificat \u015fi un alias de autentificare gestionat de component\u0103. Aliasul are \u00eent\u00e2ietate \u00een fa\u0163a propriet\u0103\u0163ilor personalizate. Aceast\u0103 eroare ar putea fi de asemenea rezultatul unui document resources.xml modificat manual.
+
+# ---------------------------------
+INFINITE_CONNECTION_WAIT_TIMEOUT_J2CA0127=J2CA0127I: Un ConnectionWaitTimeout 0 s-a specificat pentru {0}. Cererea va a\u015ftepta p\u00e2n\u0103 se poate ob\u0163ine o conexiune.
+INFINITE_CONNECTION_WAIT_TIMEOUT_J2CA0127.explanation=Un ConnectionWaitTimeout 0 indic\u0103 un timp de a\u015fteptare infinit. Acest fir de execu\u0163ie va dormi p\u00e2n\u0103 se elibereaz\u0103 o conexiune.
+INFINITE_CONNECTION_WAIT_TIMEOUT_J2CA0127.useraction=Nu este necesar\u0103 nicio ac\u0163iune de utilizator.
+
+# --------------------------------
+CONNECTION_CLOSED_NULL_HANDLE_J2CA0148=J2CA0148W: S-a g\u0103sit un ConnectionHandle nul \u00een CONNECTION_CLOSED ConnectionEvent {0}
+CONNECTION_CLOSED_NULL_HANDLE_J2CA0148.explanation=Un CONNECTION_CLOSED ConnectionEvent este necesar pentru Arhitectura conectorului Java EE s\u0103 con\u0163in\u0103 un indicator valid asoicat cu instan\u0163a ManagedConnection.
+CONNECTION_CLOSED_NULL_HANDLE_J2CA0148.useraction=Adaptorul de resurse trebuie s\u0103 foloseasc\u0103 ConnectionEvent.setConnectionHandle() pentru a furniza indicatorul \u00een CONNECTION_CLOSED ConnectionEvent.
+
+# ---------------------------------
+SET_ONCE_PROP_ALREADY_SET_J2CA0159=J2CA0159E: Eroare intern\u0103. S-a f\u0103cut o \u00eencercare de a modifica o proprietate cu setare unic\u0103 ce a fost deja setat\u0103. Numele propriet\u0103\u0163ii este {0}
+SET_ONCE_PROP_ALREADY_SET_J2CA0159.explanation=CMSG0001
+SET_ONCE_PROP_ALREADY_SET_J2CA0159.useraction=-CMSG0002
+
+# 0165 deleted
+
+# 0166 deleted
+
+# 0167 deleted
+
+# --------------------------------
+UNABLE_TO_CHANGE_PROPERTY_J2CA0169=J2CA0169E: Nu se poate modifica proprietatea {0} pe DataSource sau ConnectionFactory {1}.
+UNABLE_TO_CHANGE_PROPERTY_J2CA0169.explanation=Managerul de conexiuni nu a putut face modificarea solicitat\u0103 asupra variabilei de configurare momentan.
+UNABLE_TO_CHANGE_PROPERTY_J2CA0169.useraction=\u00cencerca\u0163i s\u0103 modifica\u0163i din nou variabile de configurare.
+
+# 0200 deleted
+
+# ---------------------------------
+INCOMPATIBLE_PROPERTY_TYPE_J2CA0207=J2CA0207W: Un artefact de adaptor de resurse are proprietatea {0} a c\u0103rei valoare {2} este incompatibil\u0103 cu tipul s\u0103u {1}.
+INCOMPATIBLE_PROPERTY_TYPE_J2CA0207.explanation=O fabric\u0103 de conexiuni, specifica\u0163ie de activare sau obiect admin are o proprietate de resurs\u0103 care nu este valid\u0103.  Valoarea va r\u0103m\u00e2ne nesetat\u0103.
+INCOMPATIBLE_PROPERTY_TYPE_J2CA0207.useraction=Corecta\u0163i proprietatea resursei pentru ca valoarea s\u0103 fie compatibil\u0103 cu tipul s\u0103u de date.
+
+# ---------------------------------
+NO_RA_EXCEPTION_J2CA0216=J2CA0216I: Managerul de conexiuni a primit o eroare de conexiune fatal\u0103 de la Adaptorul de resurse pentru resursa {0}. Informa\u0163iile ar putea fi disponibile \u00een excep\u0163iile sau mesajele anterioare.
+NO_RA_EXCEPTION_J2CA0216.explanation=Managerul de conexiuni a fost notificat de adaptorul de resurse c\u0103 a ap\u0103rut o eroare irecuperabil\u0103 pe conexiune. Nu s-a primit nicio excep\u0163ie de la adaptorul de resurse. 
+NO_RA_EXCEPTION_J2CA0216.useraction=Managerul de conexiuni va \u00eenl\u0103tura conexiunea care e\u015fueaz\u0103 sau toate conexiunile (\u00een func\u0163ie de configura\u0163ie) din pool. Acesta este comportamentul normal. Dac\u0103 asta cauzeaz\u0103 efecte adverse, ar putea fi nevoie s\u0103 contacta\u0163i furnizorul adaptorului de resurse.
+
+# 0226 deleted
+
+# ---------------------------------
+# {0} Configured feature that is ignored.
+# {1} Name of the resource on which the feature is configured. 
+IGNORE_FEATURE_J2CA0240=J2CA0240I: Caracteristic\u0103 neimplementat\u0103 ignorat\u0103 {0} pentru resursa {1}.
+IGNORE_FEATURE_J2CA0240.explanation=Caracteristica nu este implementat\u0103 de serverul de aplica\u0163ii.
+IGNORE_FEATURE_J2CA0240.useraction=Nu este necesar\u0103 nicio ac\u0163iune a utilizatorului.
+
+# ---------------------------------
+# {0}    The field that is missing during de-serialization
+# {1}    The classname of the object with the missing field
+DESERIALIZATION_FIELD_NOT_FOUND_J2CA0278=J2CA0278W: Nu s-a putut anula serializarea c\u00e2mpului {0} din clasa {1}; se va folosi valoarea implicit\u0103
+DESERIALIZATION_FIELD_NOT_FOUND_J2CA0278.explanation=\u00cen timpul anul\u0103rii serializ\u0103rii unui obiect, nu s-a g\u0103sit un c\u00e2mp a\u015fteptat. Aceasta este cel mai probabil din cauza unui obiect care este \u00een curs de anulare a serializ\u0103rii de c\u0103tre o versiune a clasei care este diferit\u0103 de cea care a serializat obiectul.
+DESERIALIZATION_FIELD_NOT_FOUND_J2CA0278.useraction=Acest avertisment indic\u0103 o poten\u0163ial\u0103 problem\u0103, dar nu e necesar\u0103 nicio ac\u0163iune de utilizator dec\u00e2t dac\u0103 apar erori ulterioare.
+
+# --------------------------------
+ATTEMPT_TO_VALIDATE_MC_CONNECTIONS_J2CA0285=J2CA0285W: Metoda {0} a prins o excep\u0163ie \u00een timpul valid\u0103rii conexiunilor gestionate pentru resursa {3}, arunc\u00e2nd {2}. Excep\u0163ie original\u0103: {1}
+ATTEMPT_TO_VALIDATE_MC_CONNECTIONS_J2CA0285.explanation=Un apel la metoda getInvalidConnections() a returnat o excep\u0163ie de resurs\u0103.
+ATTEMPT_TO_VALIDATE_MC_CONNECTIONS_J2CA0285.useraction=Vizita\u0163i situl web de suport pentru furnizorul adaptorului de resurse.
+
+# 0286 deleted
+                                            
+# ---------------------------------
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0292=J2CA0292E: ManagedConnection de la resursa {0} nu a putut fi \u00eenrolat\u0103 cu tranzac\u0163ia curent\u0103.
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0292.explanation=A ap\u0103rut o eroare intern\u0103 \u00een timp ce se procesa metoda lazyEnlist().
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0292.useraction=-CMSG0002
+
+# --------------------------------
+FAILED_TO_ENLIST_CONNECTION_J2CA0293=J2CA0293E: Metoda lazyEnlist() a Managerului de conexiuni necesit\u0103 un parametru ManagedConnection pentru resursa {0}.
+FAILED_TO_ENLIST_CONNECTION_J2CA0293.explanation=Cel mai probabil asta indic\u0103 o eroare cu implementarea adaptorului de resurse. Adaptorul de resurse a apelat metoda lazyEnlist() cu o valoare nul\u0103 pentru ManagedConnection.
+FAILED_TO_ENLIST_CONNECTION_J2CA0293.useraction=Vizita\u0163i situl web de suport pentru furnizorul adaptorului de resurse. Adaptorul de resurse a transmis o valoare nul\u0103 la metoda lazyEnlist(). Vede\u0163i sec\u0163iunea 7.14.2 a specifica\u0163iei JCA 1.5 pentru informa\u0163ii suplimentare despre optimizarea \u00cenrol\u0103rii tranzac\u0163iilor lene\u015fe.
+
+# --------------------------------
+ILLEGAL_USE_OF_LOCAL_TRANSACTION_J2CA0295=J2CA0295E: Managerul de conexiuni a detectat o \u00eencercare de a porni o Tranzac\u0163ie local\u0103 \u00eentr-o Tranzac\u0163ie (de utilizator) global\u0103. Verifica\u0163i codul aplica\u0163iei pentru corectitudine.
+ILLEGAL_USE_OF_LOCAL_TRANSACTION_J2CA0295.explanation=Cel mai probabil asta indic\u0103 o eroare \u00een aplica\u0163ie. Aplica\u0163ia nu ar trebui s\u0103 porneasc\u0103 tranzac\u0163ii locale c\u00e2nd opereaz\u0103 \u00eentr-o tranzac\u0163ie global\u0103.
+ILLEGAL_USE_OF_LOCAL_TRANSACTION_J2CA0295.useraction=Examina\u0163i codul aplica\u0163iei pentru a determina unde este \u00eenceput\u0103 o tranzac\u0163ie local\u0103 \u00eentr-o tranzac\u0163ie global\u0103. C\u0103uta\u0163i \u00een directorul FFDC acest mesaj pentru a g\u0103si o urm\u0103rire de stiv\u0103 care ar putea include numerele de linie ale codului \u00een chestiune - asta poate ajuta la restr\u00e2ngerea c\u0103ut\u0103rii. Dac\u0103 numerele de linie nu sunt g\u0103site, codul a fost compilat JIT sau este altfel obfuscat de exemplu, a\u0163i putea dori s\u0103 instrumenta\u0163i codul cu instruc\u0163iuni System.out.println() pentru a ajuta la g\u0103sirea zonei problem\u0103. Dac\u0103 problema nu poate fi g\u0103sit\u0103 vizita\u0163i situl web de suport IBM.
+                                   
+# ---------------------------------
+DUPLICATE_CONNECTOR_PROPERTY_J2CA0308=J2CA0308W: Proprietate de conector duplicat\u0103 nead\u0103ugat\u0103. {0}.
+DUPLICATE_CONNECTOR_PROPERTY_J2CA0308.explanation=S-a f\u0103cut o \u00eencercare de a ad\u0103uga o proprietate de conector duplicat\u0103. Proprietatea nu a fost ad\u0103ugat\u0103.
+DUPLICATE_CONNECTOR_PROPERTY_J2CA0308.useraction=S-a specificat o proprietate personalizat\u0103 a unei fabrici de conexiuni sau surse de date, dar proprietatea exista deja. Acesta ar putea fi un simptom al unui document resources.xml modificat manual.
+
+# 0680 deleted
+
+# 0681 deleted
+
+# 0682 deleted
+
+# 0683 deleted
+
+# 0687 deleted
+
+# 0689 deleted
+
+# ---------------------------------
+POOL_MANAGER_NOT_FOUND_J2CA0695=J2CA0695E: Nu se poate g\u0103si managerul de pool primar \u00een timpul proces\u0103rii prelur\u0103ii la defect pentru o resurs\u0103 cu numele JNDI {0}.
+POOL_MANAGER_NOT_FOUND_J2CA0695.explanation=A ap\u0103rut o eroare intern\u0103 \u00een timpul proces\u0103rii prelu\u0103rii la defect.
+POOL_MANAGER_NOT_FOUND_J2CA0695.useraction=-CMSG0002
+
+# ---------------------------------
+FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002=J2CA1002E: MCWrapper invalid {0} de la pool-ul liber pentru resursa {1}.
+FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.explanation=\u00cencercarea de a rezerva un MCWrapper a e\u015fuat.
+FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.useraction=-CMSG0002
+
+# ---------------------------------
+SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003=J2CA1003E: A e\u015fuat \u00eenl\u0103turarea MCWrapper-ului {0} din pool-ul partajat.
+SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003.explanation=\u00cencercarea de a \u00eenl\u0103tura un MCWrapper a e\u015fuat, cauz\u00e2nd o poten\u0163ial\u0103 problem\u0103 \u00een pool-ul partajat.
+SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003.useraction=-CMSG0002
+
+# ---------------------------------
+# End of File
+#
+# ---------------------------------

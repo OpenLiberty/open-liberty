@@ -1,0 +1,60 @@
+
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#COMPONENTPREFIX CWWKG
+#COMPONENTNAMEFOR CWWKG WebSphere kernel config schema strings
+#CMVCPATHNAME com.ibm.ws.config/resources/com/ibm/ws/config/internal/resources/SchemaData.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#
+# Message prefix block: CWWKG1001 - CWWKG1020
+
+config.internal.metatype.includeType.documentation=Specifica\u0163i o resurs\u0103 de configurare de inclus \u00een configura\u0163ia serverului.
+config.internal.metatype.includeType.label=Includere
+config.internal.metatype.includeType.attribute.optional.documentation=Permite\u0163i ca resursa inclus\u0103 s\u0103 fie s\u0103rit\u0103 dac\u0103 nu este g\u0103sit\u0103.
+config.internal.metatype.includeType.attribute.optional.label=Resursa este op\u0163ional\u0103
+config.internal.metatype.includeType.attribute.location.documentation=Specific\u0103 loca\u0163ia resurselor. Aceasta poate fi o cale de fi\u015fier sau URI-ul pentru o resurs\u0103 la distan\u0163\u0103.
+config.internal.metatype.includeType.attribute.location.label=Loca\u0163ie
+config.internal.metatype.includeType.attribute.onConflict.documentation=Specific\u0103 comportamentul care este utilizat pentru a combina elemente c\u00e2nd sunt g\u0103site conflicte.
+config.internal.metatype.includeType.attribute.onConflict.label=\u00cen conflict
+
+config.internal.metatype.variableDefinitionType.documentation=Declararea unei noi variabile prin specificarea numelui \u015fi valorii pentru variabile.
+config.internal.metatype.variableDefinitionType.label=Declara\u0163ie variabile
+config.internal.metatype.variableDefinitionType.name.documentation=Numele variabilei.
+config.internal.metatype.variableDefinitionType.name.label=Nume
+config.internal.metatype.variableDefinitionType.value.documentation=Valoarea de alocat variabilei.
+config.internal.metatype.variableDefinitionType.value.label=Valoare
+
+config.internal.metatype.duration.desc=Specifica\u0163i un \u00eentreg pozitiv urmat de o unitate de timp, care poate fi ore (o), minute (m), secunde (s) sau milisecunde (ms). De exemplu, specifica\u0163i 500 milisecunde ca 500ms. Pute\u0163i include valori multiple \u00eentr-o singur\u0103 intrare. De exemplu, 1s500ms este echivalent cu 1.5 secunde.
+config.internal.metatype.duration-s.desc=Specifica\u0163i un \u00eentreg pozitiv urmat de o unitate de timp, care poate fi ore (o), minute (m) sau secunde (s). De exemplu, specifica\u0163i 30 secunde ca 30s. Pute\u0163i include valori multiple \u00eentr-o singur\u0103 intrare. De exemplu, 1m30s este echivalent cu 90 secunde.
+config.internal.metatype.duration-m.desc=Specifica\u0163i un \u00eentreg pozitiv urmat de o unitate de timp, care poate fi ore (o) sau minute (m). De exemplu, specifica\u0163i 30 secunde ca 30m. Pute\u0163i include valori multiple \u00eentr-o singur\u0103 intrare. De exemplu, 1h30m este echivalent cu 90 minute.
+config.internal.metatype.duration-h.desc=Specifica\u0163i un \u00eentreg pozitiv urmat de o unitate de timp, care poate fi ore (o). De exemplu, specifica\u0163i 12 ore ca 12o.
+
+config.internal.metatype.pid.reference.type=ID-ul configura\u0163iei de tipul {0} (\u015fir).
+config.internal.metatype.pid.reference.list.type=Lista de ID-uri configura\u0163ie de tipul {0} (\u015fir separat de virgul\u0103).
+config.internal.metatype.pid.reference.nested.type=Element de tipul {0}.
+
+config.internal.metatype.type.desc=PID este{0}.
+config.internal.metatype.type.child.desc=PID este {0} \u015fi este copilul tipului complex de <q>{1}</q>.
+
+config.internal.metatype.id.documentation=Un ID de configura\u0163ie unic.
+config.internal.metatype.id.label=ID
+
+config.internal.metatype.onConflictType.merge.label=Elementele \u00een conflict vor fi combinate \u00eempreun\u0103.
+config.internal.metatype.onConflictType.replace.label=C\u00e2nd elementele intr\u0103 \u00een conflict, elementul din fi\u015fierul inclus va \u00eenlocui elementul conflictual.
+config.internal.metatype.onConflictType.ignore.label=Elementele \u00een conflict din fi\u015fierul inclus vor fi ignorate.
+config.internal.metatype.onConflictType.break.label=Elementele \u00een conflict vor fi cauza erorilor de configurare.
+
+OSGI_SERVICE_ERROR=CWWKG1001E: Serviciul OSGi {0} nu este disponibil.  \u00cencerca\u0163i s\u0103 reporni\u0163i serverul cu op\u0163iunea --clean.
+OSGI_SERVICE_ERROR.explanation=Serviciul specificat nu este disponibil, ceea ce determin\u0103 aceast\u0103 eroare de server intern\u0103.
+OSGI_SERVICE_ERROR.useraction=Reporni\u0163i serverul cu op\u0163iunea --clean.

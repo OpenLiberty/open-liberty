@@ -1,0 +1,75 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jca.cm/resources/com/ibm/ws/jca/cm/internal/resources/J2CAMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA Connection Management
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+DEACTIVATED_J2CA8001=J2CA8001I: {0} {1} nen\u00ed k dispozici.
+DEACTIVATED_J2CA8001.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+DEACTIVATED_J2CA8001.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+DEACTIVATED_J2CA8006=J2CA8006I: {0} {1} v {2} nen\u00ed k dispozici.
+DEACTIVATED_J2CA8006.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+DEACTIVATED_J2CA8006.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+UNKNOWN_PROP_J2CA8010=J2CA8010W: Nezn\u00e1m\u00e1 vlastnost {0}: {1}
+UNKNOWN_PROP_J2CA8010.explanation=Konfigurovan\u00e1 vlastnost nebyla rozpozn\u00e1na.
+UNKNOWN_PROP_J2CA8010.useraction=Opravte nebo odeberte konfigurovanou vlastnost.
+
+UNSUPPORTED_VALUE_J2CA8011=J2CA8011E: Hodnota {0} nen\u00ed pro {1} na {2} podporov\u00e1na.
+UNSUPPORTED_VALUE_J2CA8011.explanation=Konfigurovan\u00e1 hodnota nen\u00ed podporov\u00e1na.
+UNSUPPORTED_VALUE_J2CA8011.useraction=Opravte hodnotu nebo odeberte konfigurovanou vlastnost.
+
+MISSING_LIBRARY_J2CA8020=J2CA8020E: Nelze na\u010d\u00edst nebo p\u0159istupovat k soubor\u016fm v knihovn\u011b {0}
+MISSING_LIBRARY_J2CA8020.explanation=Nelze na\u010d\u00edst soubory ze sd\u00edlen\u00e9 knihovny.
+MISSING_LIBRARY_J2CA8020.useraction=Ov\u011b\u0159te opr\u00e1vn\u011bn\u00ed k souboru a konfiguraci sd\u00edlen\u00e9 knihovny.
+
+MISSING_LIBRARY_J2CA8022=J2CA8022E: Aplikace {0} nem\u00e1 sd\u00edlen\u00e9 knihovny, kter\u00e9 by poskytly {1} pro {2} {3}.
+MISSING_LIBRARY_J2CA8022.explanation=Chcete-li pou\u017e\u00edvat zdroje dat definovan\u00e9 aplikac\u00ed, mus\u00ed b\u00fdt ovlada\u010d JDBC, kter\u00fd poskytuje t\u0159\u00eddu zdroje dat, zp\u0159\u00edstupn\u011bn pro aplikaci jako sd\u00edlen\u00e1 knihovna.
+MISSING_LIBRARY_J2CA8022.useraction=P\u0159idejte ovlada\u010d JDBC jako sd\u00edlenou knihovnu pro aplikaci.
+
+MISSING_RESOURCE_J2CA8030=J2CA8030E: Nelze nal\u00e9zt {0} {1} pro {2} {3}.
+MISSING_RESOURCE_J2CA8030.explanation=Zadan\u00fd prost\u0159edek vy\u017eaduje dal\u0161\u00ed prost\u0159edek, kter\u00fd nen\u00ed dostupn\u00fd.
+MISSING_RESOURCE_J2CA8030.useraction=Ov\u011b\u0159te, \u017ee je prost\u0159edek spr\u00e1vn\u011b nakonfigurov\u00e1n.
+
+CARDINALITY_ERROR_J2CA8040=J2CA8040E: {0} {1} m\u016f\u017ee m\u00edt pouze jeden prvek {2}.
+CARDINALITY_ERROR_J2CA8040.explanation=Prost\u0159edek nem\u016f\u017ee m\u00edt v\u00edce ne\u017e jeden prvek zadan\u00e9ho typu.
+CARDINALITY_ERROR_J2CA8040.useraction=Aktualizujte konfiguraci tak, aby byl k prost\u0159edku p\u0159idru\u017een pouze jeden prvek zadan\u00e9ho typu.
+
+RECOMMEND_AUTH_ALIAS_J2CA8050=J2CA8050I: Alias ov\u011b\u0159ov\u00e1n\u00ed mus\u00ed b\u00fdt pou\u017eit m\u00edsto definov\u00e1n\u00ed jm\u00e9na a hesla u\u017eivatele v {0}.
+RECOMMEND_AUTH_ALIAS_J2CA8050.explanation=Doporu\u010dujeme pou\u017e\u00edt alias ov\u011b\u0159ov\u00e1n\u00ed m\u00edsto konfigurace jm\u00e9na a hesla u\u017eivatele v prost\u0159edku.
+RECOMMEND_AUTH_ALIAS_J2CA8050.useraction=Nakonfigurujte jm\u00e9no a heslo u\u017eivatele v prvku authData, a nikoli p\u0159\u00edmo v prost\u0159edku. 
+
+INVALID_MBEAN_INVOKE_PARAM_J2CA8060=J2CA8060E: {0} nen\u00ed platn\u00fd parametr akce {1}.
+INVALID_MBEAN_INVOKE_PARAM_J2CA8060.explanation=Parametry uveden\u00e9 pro ur\u010ditou akci mus\u00ed odpov\u00eddat parametr\u016fm platn\u00fdm pro danou akci.
+INVALID_MBEAN_INVOKE_PARAM_J2CA8060.useraction=Zadejte platn\u00e9 parametry vyvol\u00e1van\u00e9 akce.
+
+INVALID_MBEAN_INVOKE_ACTION_J2CA8061=J2CA8061E: {0} nen\u00ed platn\u00e1 akce objektu {1} typu MBean.
+INVALID_MBEAN_INVOKE_ACTION_J2CA8061.explanation=Do\u0161lo k pokusu o vyvol\u00e1n\u00ed akce, kter\u00e1 pro uveden\u00fd objekt typu MBean nen\u00ed k dispozici.
+INVALID_MBEAN_INVOKE_ACTION_J2CA8061.useraction=Zm\u011b\u0148te vyvol\u00e1vanou akci na metodu platnou pro uveden\u00fd objekt typu MBean.
+
+MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062=J2CA8062E: Atribut {0} je pro objekt {1} typu MBean neplatn\u00fd.
+MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.explanation=Do\u0161lo k pokusu o z\u00edsk\u00e1n\u00ed nebo nastaven\u00ed atributu, kter\u00fd pro uveden\u00fd objekt typu MBean nen\u00ed k dispozici.
+MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.useraction=Zm\u011b\u0148te uveden\u00fd atribut na jeden z atribut\u016f dostupn\u00fdch pro tento objekt typu MBean.

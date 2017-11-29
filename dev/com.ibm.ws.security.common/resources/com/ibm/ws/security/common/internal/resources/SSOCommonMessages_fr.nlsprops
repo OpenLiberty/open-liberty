@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/common/internal/resources/SSOCommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security SSO Common
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS6101 - CWWKS6200
+SUBJECT_MAPPING_INCORRECT_CLAIM_TYPE=CWWKS6101E: La demande d''authentification a \u00e9chou\u00e9 car le type de donn\u00e9es de la revendication [{0}] dans les informations de l''utilisateur authentifi\u00e9 n''est pas valide. La revendication sp\u00e9cifi\u00e9e est associ\u00e9e \u00e0 l''attribut de configuration [{1}]. 
+SUBJECT_MAPPING_INCORRECT_CLAIM_TYPE.explanation=Les informations de l'utilisateur authentifi\u00e9 ont un type de donn\u00e9es de revendication non valide et l'environnement d'ex\u00e9cution ne peut pas poursuivre avec le processus d'authentification.
+SUBJECT_MAPPING_INCORRECT_CLAIM_TYPE.useraction=V\u00e9rifiez que la configuration du client de login social sp\u00e9cifie le nom de revendication correct pour l'attribut.
+
+SUBJECT_MAPPING_MISSING_ATTR=CWWKS6102E: La demande d''authentification a \u00e9chou\u00e9 car les informations de l''utilisateur authentifi\u00e9 ne contiennent pas la revendication [{0}] sp\u00e9cifi\u00e9e par l''attribut [{1}].
+SUBJECT_MAPPING_MISSING_ATTR.explanation=Les informations de l'utilisateur authentifi\u00e9 ne contiennent pas la revendication sp\u00e9cifi\u00e9e pour identifier l'attribut nomm\u00e9. L'environnement d'ex\u00e9cution ne peut pas poursuivre avec le processus d'authentification.
+SUBJECT_MAPPING_MISSING_ATTR.useraction=Effectuez l'une des op\u00e9rations suivantes. 1)V\u00e9rifiez si la configuration du client de login social peut sp\u00e9cifier une revendication diff\u00e9rente pour l'attribut 2)V\u00e9rifiez que le fournisseur \u00e9met les informations de l'utilisateur authentifi\u00e9 avec la revendication sp\u00e9cifi\u00e9e.
+
+ERROR_AUTHENTICATE=CWWKS6103E: Un sujet de s\u00e9curit\u00e9 ne peut pas \u00eatre cr\u00e9\u00e9 pour l''utilisateur {0}.
+ERROR_AUTHENTICATE.explanation=L'utilisateur n'a pas pu \u00eatre authentifi\u00e9. 
+ERROR_AUTHENTICATE.useraction=Assurez-vous que l'utilisateur existe dans le registre et que le mot de passe ou d'autres donn\u00e9es d'identification sont corrects.
+
+CONFIG_REQUIRED_ATTRIBUTE_NULL=CWWKS6104W: L''attribut de configuration [{0}] requis est manquant ou vide et aucune valeur par d\u00e9faut n''est fournie. V\u00e9rifiez que l''attribut est configur\u00e9, qu''il n''est pas vide et qu''il n''est pas uniquement constitu\u00e9 d''espaces.
+CONFIG_REQUIRED_ATTRIBUTE_NULL.explanation=L'attribut de configuration sp\u00e9cifi\u00e9 est peut-\u00eatre manquant dans la configuration de serveur. Si une valeur est sp\u00e9cifi\u00e9e, l'espace qui la pr\u00e9c\u00e8de et l'espace qui la suit sont retir\u00e9s lorsqu'elle est trait\u00e9e, par cons\u00e9quent, il se peut que la valeur dans la configuration soit vide ou ne comporte que des espaces.
+CONFIG_REQUIRED_ATTRIBUTE_NULL.useraction=Assurez-vous que l'attribut de configuration sp\u00e9cifi\u00e9 est configur\u00e9, qu'il n'est pas vide et qu'il n'est pas uniquement constitu\u00e9 d'espaces.
+
+CONFIG_REQUIRED_ATTRIBUTE_NULL_WITH_CONFIG_ID=CWWKS6105W: L''attribut de configuration requis [{0}] est manquant ou vide dans la configuration [{0}] et une valeur par d\u00e9faut n''a pas \u00e9t\u00e9 fournie. V\u00e9rifiez que l''attribut est configur\u00e9, qu''il n''est pas vide et qu''il n''est pas uniquement constitu\u00e9 d''espaces.
+CONFIG_REQUIRED_ATTRIBUTE_NULL_WITH_CONFIG_ID.explanation=Il se peut que l'attribut de configuration sp\u00e9cifi\u00e9 soi manquant dans l'\u00e9l\u00e9ment de configuration serveur sp\u00e9cifi\u00e9. Si une valeur est sp\u00e9cifi\u00e9e, l'espace qui la pr\u00e9c\u00e8de et l'espace qui la suit sont retir\u00e9s lorsqu'elle est trait\u00e9e, par cons\u00e9quent, il se peut que la valeur dans la configuration soit vide ou ne comporte que des espaces.
+CONFIG_REQUIRED_ATTRIBUTE_NULL_WITH_CONFIG_ID.useraction=Assurez-vous que l'attribut de configuration sp\u00e9cifi\u00e9 est configur\u00e9, qu'il n'est pas vide et qu'il n'est pas uniquement constitu\u00e9 d'espaces.

@@ -1,0 +1,59 @@
+###############################################################################
+# Copyright (c) 2011, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.client/resources/com/ibm/ws/jmx/connector/client/rest/internal/resources/FileTransferClientMessages.nlsprops
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR WebSphere Management File Transfer Client
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKX7951 - CWWKX7999
+
+filetransfer.client.init=CWWKX7951I: Un nouveau client de transfert de fichier a \u00e9t\u00e9 connect\u00e9 avec l''identificateur de connexion {0}.
+filetransfer.client.init.explanation=Un nouveau client de transfert de fichier a \u00e9t\u00e9 connect\u00e9 avec l'identificateur de connexion indiqu\u00e9.
+filetransfer.client.init.useraction=Il s'agit d'un message d'information et aucune action n'est requise.
+
+filetransfer.client.error=CWWKX7952E: Un message d''erreur "{0}" a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9 c\u00f4t\u00e9 client pour la connexion {1}.
+filetransfer.client.error.explanation=Une erreur s'est produite pour le connecteur JMX REST c\u00f4t\u00e9 client et le message indiqu\u00e9 a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9.
+filetransfer.client.error.useraction=Utilisez le message d'erreur g\u00e9n\u00e9r\u00e9 pour identifier et corriger le probl\u00e8me \u00e0 l'origine de cette erreur, puis relancez l'op\u00e9ration.
+
+filetransfer.server.error=CWWKX7953E: Le message d''erreur "{0}" a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9 c\u00f4t\u00e9 serveur pour la connexion {1}.
+filetransfer.server.error.explanation=Une erreur s'est produite sur le connecteur JMX REST c\u00f4t\u00e9 serveur et a g\u00e9n\u00e9r\u00e9 le message indiqu\u00e9.
+filetransfer.server.error.useraction=Utilisez le message d'erreur g\u00e9n\u00e9r\u00e9 pour identifier et corriger le probl\u00e8me \u00e0 l'origine de cette erreur, puis relancez l'op\u00e9ration.
+
+filetransfer.client.bad.credentials=CWWKX7954E: Le nom d''utilisateur ou le mot de passe indiqu\u00e9 n''est pas autoris\u00e9. Le serveur a r\u00e9pondu avec le code {0} et le message "{1}" pour la connexion {2}.
+filetransfer.client.bad.credentials.explanation=Les donn\u00e9es d'identification fournies lors de l'obtention de la connexion sont incorrectes. L'utilisateur n'existe peut-\u00eatre pas, s'il existe, il n'a peut-\u00eatre pas le droit d'acc\u00e9der au serveur, ou le mot de passe indiqu\u00e9 est incorrect.
+filetransfer.client.bad.credentials.useraction=Corrigez le nom d'utilisateur ou le mot de passe, puis obtenez une nouvelle connexion.
+
+filetransfer.response.code.error=CWWKX7955E: Le client de transfert de fichier a re\u00e7u un code de r\u00e9ponse {0} avec le message "{1}" pour la connexion {2}.
+filetransfer.response.code.error.explanation=Le client du transfert de fichiers a re\u00e7u un code de r\u00e9ponse inattendu du serveur.
+filetransfer.response.code.error.useraction=Utilisez la code de r\u00e9ponse client pour identifier et r\u00e9soudre ce probl\u00e8me, puis relancez l'op\u00e9ration.
+
+filetransfer.download.file=CWWKX7956I: La demande de t\u00e9l\u00e9chargement du fichier {0} a abouti et son contenu a \u00e9t\u00e9 \u00e9crit dans le fichier {1} \u00e0 l''aide de la connexion {2}.
+filetransfer.download.file.explanation=La demande de t\u00e9l\u00e9chargement du fichier sp\u00e9cifi\u00e9 a abouti.
+filetransfer.download.file.useraction=Il s'agit d'un message d'information et aucune action n'est requise.
+
+filetransfer.unsupported.operation=CWWKX7957E: L''op\u00e9ration {0} n''est pas prise en charge par le client de transfert de fichier pour la connexion {1}.
+filetransfer.unsupported.operation.explanation=L'op\u00e9ration sp\u00e9cifi\u00e9e n'est pas prise en charge par le client du transfert de fichiers.
+filetransfer.unsupported.operation.useraction=Demandez une op\u00e9ration qui est prise en charge par le client du transfert de fichiers.
+
+filetransfer.upload.file=CWWKX7958I: La demande de t\u00e9l\u00e9chargement du fichier {0} a abouti et son contenu a \u00e9t\u00e9 \u00e9crit dans le fichier {1} \u00e0 l''aide de la connexion {2}.
+filetransfer.upload.file.explanation=La demande de t\u00e9l\u00e9chargement du fichier sp\u00e9cifi\u00e9 a abouti.
+filetransfer.upload.file.useraction=Il s'agit d'un message d'information et aucune action n'est requise.
+
+filetransfer.delete.file=CWWKX7959I: La demande de suppression du fichier {0} \u00e0 l''aide de la connexion {1} a abouti.
+filetransfer.delete.file.explanation=La demande de suppression du fichier indiqu\u00e9 a abouti.
+filetransfer.delete.file.useraction=Il s'agit d'un message d'information et aucune action n'est requise.
+
+filetransfer.delete.all=CWWKX7960I: La demande de suppression de tous les fichiers et dossiers de la collection {0} a r\u00e9ussi via la connexion {1}.
+filetransfer.delete.all.explanation=La demande de suppression de la collection sp\u00e9cifi\u00e9e a r\u00e9ussi.
+filetransfer.delete.all.useraction=Il s'agit d'un message d'information et aucune action n'est requise.

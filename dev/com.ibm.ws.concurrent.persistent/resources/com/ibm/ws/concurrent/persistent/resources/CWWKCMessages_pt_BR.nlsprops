@@ -1,0 +1,97 @@
+###############################################################################
+# Copyright (c) 2014, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.concurrent.persistent/resources/com/ibm/ws/concurrent/persistent/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Persistent Scheduled Executor
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1500 to CWWCK1999 except those specifically identified as moved
+
+# Java class and method names that should not be translated:
+# Future, get, getDelay, getResult, getNextExecutionTime, isCancelled, isDone, ScheduledFuture, TaskStatus
+
+CWWKC1500.task.rollback.retry=CWWKC1500W: O executor persistente {0} recuperou a tarefa {1}. Uma nova tentativa de execu\u00e7\u00e3o da tarefa est\u00e1 planejada para ocorrer em {2} segundos.
+CWWKC1500.task.rollback.retry.explanation=A execu\u00e7\u00e3o da tarefa foi marcada para ser recuperada. Haver\u00e1 uma nova tentativa de execu\u00e7\u00e3o da tarefa ap\u00f3s o n\u00famero de segundos especificado.
+CWWKC1500.task.rollback.retry.useraction=Aguarde a nova tentativa da tarefa.
+
+CWWKC1501.task.failure.retry=CWWKC1501W: O executor persistente {0} recuperou a tarefa {1} devido \u00e0 falha {2}. Uma nova tentativa de execu\u00e7\u00e3o da tarefa est\u00e1 planejada para ocorrer em {3} segundos.
+CWWKC1501.task.failure.retry.explanation=A execu\u00e7\u00e3o da tarefa falhou e foi recuperada. Haver\u00e1 uma nova tentativa de execu\u00e7\u00e3o da tarefa ap\u00f3s o n\u00famero de segundos especificado.
+CWWKC1501.task.failure.retry.useraction=Se a falha for tempor\u00e1ria, aguarde a nova tentativa de execu\u00e7\u00e3o da tarefa. Caso contr\u00e1rio, corrija a causa da falha, se a falha for inesperada.
+
+CWWKC1502.task.rollback=CWWKC1502W: O executor persistente {0} recuperou a tarefa {1}.
+CWWKC1502.task.rollback.explanation=A execu\u00e7\u00e3o da tarefa foi marcada para ser recuperada.
+CWWKC1502.task.rollback.useraction=Se a recupera\u00e7\u00e3o for inesperada, reagende a tarefa.
+
+CWWKC1503.task.failure=CWWKC1503W: O executor persistente {0} recuperou a tarefa {1} devido \u00e0 falha {2}.
+CWWKC1503.task.failure.explanation=A execu\u00e7\u00e3o da tarefa falhou e foi recuperada.
+CWWKC1503.task.failure.useraction=Corrija a causa da falha, se a falha for inesperada e reagende a tarefa.
+
+CWWKC1510.retry.limit.reached.rollback=CWWKC1510W: O executor persistente {0} interrompeu a tarefa {1} porque ela foi recuperada ou falhou {2} vezes consecutivas.
+CWWKC1510.retry.limit.reached.rollback.explanation=A tarefa atingiu o limite de novas tentativas consecutivas e n\u00e3o ser\u00e1 tentada novamente.
+CWWKC1510.retry.limit.reached.rollback.useraction=Se as recupera\u00e7\u00f5es ou falhas forem inesperadas, determine a causa e reagende a tarefa. Se as recupera\u00e7\u00f5es e falhas forem intermitentes, considere aumentar o limite de novas tentativas. 
+
+CWWKC1511.retry.limit.reached.failed=CWWKC1511W: O executor persistente {0} interrompeu a tarefa {1} porque ela foi recuperada ou falhou {2} vezes consecutivas. A falha final \u00e9 {3}.
+CWWKC1511.retry.limit.reached.failed.explanation=A tarefa atingiu o limite de novas tentativas consecutivas e n\u00e3o ser\u00e1 tentada novamente.
+CWWKC1511.retry.limit.reached.failed.useraction=Se as falhas ou recupera\u00e7\u00f5es forem inesperadas, determine a causa e reagende a tarefa. Se as recupera\u00e7\u00f5es e falhas forem intermitentes, considere aumentar o limite de novas tentativas. 
+
+CWWKC1540.thread.cannot.submit.tasks=CWWKC1540E: N\u00e3o \u00e9 poss\u00edvel planejar tarefas persistentes a partir do contexto de encadeamento atual.
+CWWKC1540.thread.cannot.submit.tasks.explanation=Planeje tarefas persistentes somente a partir de um encadeamento que esteja associado a um aplicativo ou recurso com uma identidade de carregador de classe serializ\u00e1vel.
+CWWKC1540.thread.cannot.submit.tasks.useraction=Assegure-se de que o contexto do aplicativo ou recurso esteja presente no encadeamento ao planejar tarefas.
+
+# {0} method name: either isDone or isCancelled
+CWWKC1550.status.unavailable.until.ended=CWWKC1550E: \u00c9 poss\u00edvel chamar o m\u00e9todo {0} somente no TaskStatus que \u00e9 obtido ap\u00f3s o t\u00e9rmino da tarefa. Determine se a tarefa terminou no momento em que uma inst\u00e2ncia TaskStatus foi obtida verificando se o valor getNextExecutionTime \u00e9 nulo.
+CWWKC1550.status.unavailable.until.ended.explanation=TaskStatus \u00e9 uma captura instant\u00e2nea imut\u00e1vel do estado da tarefa. Qualquer valor retornado de isDone ou isCancelled antes do t\u00e9rmino da tarefa se tornaria inv\u00e1lido com o t\u00e9rmino da tarefa. Ocorreu um erro ao tentar, antes do t\u00e9rmino da tarefa, evitar o retorno de um valor n\u00e3o confi\u00e1vel.
+CWWKC1550.status.unavailable.until.ended.useraction=Use o m\u00e9todo getNextExecutionTime para determinar se uma tarefa terminou. Use os m\u00e9todos isDone e isCancelled somente se a tarefa tiver terminado.
+
+CWWKC1551.result.unavailable.until.ended=CWWKC1551E: \u00c9 poss\u00edvel chamar o m\u00e9todo get somente no TaskStatus que \u00e9 obtido ap\u00f3s o t\u00e9rmino da tarefa. Use o m\u00e9todo getResult para obter o resultado da execu\u00e7\u00e3o que era a execu\u00e7\u00e3o mais recente no momento em que a inst\u00e2ncia TaskStatus foi obtida.
+CWWKC1551.result.unavailable.until.ended.explanation=TaskStatus \u00e9 uma captura instant\u00e2nea imut\u00e1vel do estado da tarefa. Qualquer valor retornado de get antes do t\u00e9rmino da tarefa se tornaria inv\u00e1lido com a conclus\u00e3o de outra tentativa de execu\u00e7\u00e3o ou com o t\u00e9rmino da tarefa. Ocorreu um erro ao tentar, antes do t\u00e9rmino da tarefa, evitar o retorno de um valor n\u00e3o confi\u00e1vel.
+CWWKC1551.result.unavailable.until.ended.useraction=Use o m\u00e9todo getResult para obter o resultado da tentativa de execu\u00e7\u00e3o que era a tentativa mais recente quando a inst\u00e2ncia TaskStatus foi obtida. 
+
+CWWKC1552.delay.unavailable=CWWKC1552E: \u00c9 poss\u00edvel chamar o m\u00e9todo getDelay somente no TaskStatus para tarefas de comando \u00fanico. Para repetir tarefas e tarefas planejadas com um Acionador, use o m\u00e9todo getNextExecutionTime para obter o pr\u00f3ximo tempo de execu\u00e7\u00e3o esperado ap\u00f3s a execu\u00e7\u00e3o mais recente quando o TaskStatus foi obtido.
+CWWKC1552.delay.unavailable.explanation=TaskStatus \u00e9 uma captura instant\u00e2nea imut\u00e1vel do estado da tarefa. Qualquer valor retornado de getDelay antes do t\u00e9rmino da tarefa se tornaria inv\u00e1lido com a conclus\u00e3o de outra tentativa de execu\u00e7\u00e3o. Ocorreu um erro ao tentar, antes do t\u00e9rmino da tarefa, evitar o retorno de um valor n\u00e3o confi\u00e1vel.
+CWWKC1552.delay.unavailable.useraction=Use o m\u00e9todo getNextExecutionTime para obter o pr\u00f3ximo tempo de execu\u00e7\u00e3o esperado que corresponda ao tempo quando o TaskStatus foi obtido.
+
+# {0} persistent executor id
+# {1} task id (and name in parenthesis if any)
+CWWKC1553.result.inaccessible=CWWKC1553E: O executor persistente {0} n\u00e3o consegue obter o resultado da tarefa {1}. Consulte a exce\u00e7\u00e3o da causa.
+CWWKC1553.result.inaccessible.explanation=Ocorreu um erro que impede que o resultado da tarefa seja obtido.
+CWWKC1553.result.inaccessible.useraction=Consulte a exce\u00e7\u00e3o da causa para corrigir o problema e, em seguida, reagende a tarefa.
+
+# {0} task id (and name in parenthesis if any)
+CWWKC1554.general.task.failure=CWWKC1554E: Falha ao executar a tarefa {0}. Consulte a exce\u00e7\u00e3o da causa.
+CWWKC1554.general.task.failure.explanation=A tarefa falhou ao ser executada devido \u00e0 exce\u00e7\u00e3o especificada.
+CWWKC1554.general.task.failure.useraction=Consulte a exce\u00e7\u00e3o da causa para corrigir o problema e, em seguida, reagende a tarefa.
+
+# {0} task id (and name in parenthesis if any)
+# {1} number of consecutive failures/rollbacks
+CWWKC1555.retry.limit.reached=CWWKC1555E: A tarefa {0} foi interrompida por ter sido recuperada ou falhado {1} vezes consecutivas.
+CWWKC1555.retry.limit.reached.explanation=A tarefa atingiu o limite de novas tentativas consecutivas e n\u00e3o ser\u00e1 tentada novamente.
+CWWKC1555.retry.limit.reached.useraction=Consulte a exce\u00e7\u00e3o da causa para corrigir o problema e, em seguida, reagende a tarefa. Se o problema for intermitente, considere aumentar o limite de novas tentativas.
+
+# {0} name of application that scheduled the task
+CWWKC1556.task.exec.deferred=CWWKC1556W: A execu\u00e7\u00e3o de tarefas a partir do aplicativo {0} foi adiada at\u00e9 que o aplicativo e os m\u00f3dulos que planejaram as tarefas estejam dispon\u00edveis.
+CWWKC1556.task.exec.deferred.explanation=O aplicativo e o m\u00f3dulo que planejaram uma tarefa devem estar dispon\u00edveis para que a tarefa possa ser executada.
+CWWKC1556.task.exec.deferred.useraction=Assegure-se de que o aplicativo e o m\u00f3dulo que planejaram a tarefa estejam dispon\u00edveis. Ou ent\u00e3o, cancele a tarefa se ela n\u00e3o for mais necess\u00e1ria.
+
+# {0} request id
+# {1} stack trace
+CWWKC1559.mbean.operation.failure=CWWKC1559E:  Ocorreu um erro. Solicita\u00e7\u00e3o {0}. {1}
+CWWKC1559.mbean.operation.failure.explanation=Ocorreu um erro ao tentar executar a opera\u00e7\u00e3o solicitada.
+CWWKC1559.mbean.operation.failure.useraction=Verifique os logs do servidor para obter detalhes sobre o erro da opera\u00e7\u00e3o.

@@ -1,0 +1,230 @@
+###############################################################################
+# Copyright (c) 2002, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+
+
+#COMPONENTPREFIX CWWKH
+#COMPONENTNAMEFOR CWWKH WebSphere WebSocket
+#CMVCPATHNAME com.ibm.ws.wsoc-1.0/resources/com/ibm/ws/wsoc/internal/resources/WebSockets.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+invalid.endpointclass=CWWKH0001E: A ap\u0103rut o excep\u0163ie \u00een timpul implement\u0103rii aplica\u0163iei WebSocket deoarece clasa Endpoint adnotat\u0103 {0} nu este nici public\u0103 \u015fi nici concret\u0103, sau nu are un constructor public no-args.
+invalid.endpointclass.explanation=Clasa ServerEndpoint adnotat\u0103 trebuie s\u0103 fie public\u0103, concret\u0103 \u015fi s\u0103 aib\u0103 un constructor public no-args.
+invalid.endpointclass.useraction=Corecta\u0163i clasa ServerEndpoint adnotat\u0103 s\u0103 fie public\u0103, concret\u0103 \u015fi s\u0103 aib\u0103 un constructor public no-args. Dup\u0103 ce rezolva\u0163i problema, implementa\u0163i aplica\u0163ia din nou.
+
+missing.annotation=CWWKH0002E: A ap\u0103rut o excep\u0163ie \u00een timpul implement\u0103rii aplica\u0163iei WebSocket deoarece at\u00e2t adnotarea @onOpen, c\u00e2t \u015fi adnotare @onMessage lipsesc \u00een clasa Endpoint adnotat\u0103 {0}.
+missing.annotation.explanation=Clasa ServerEndpoint adnotat\u0103 este invalid\u0103 dac\u0103 lipsesc @OnOpen \u015fi @onMessage.
+missing.annotation.useraction=Corecta\u0163i ServerEndpoint adnotat\u0103 ad\u0103ug\u00e2nd @OnOpen \u015fi/sau @OnMessage. Dup\u0103 ce rezolva\u0163i problema, implementa\u0163i aplica\u0163ia din nou.
+
+morethanonepong.annotation=CWWKH0003E: A ap\u0103rut o excep\u0163ie \u00een timpul implement\u0103rii aplica\u0163iei WebSocket deoarece sunt definite mai multe metode @OnMessage cu tipul de mesaj Pong \u00een clasa Endpoint adnotat\u0103 {0}.
+morethanonepong.annotation.explanation=ServerEndpoint adnotat\u0103 este invalid\u0103 deoarece sunt definite mai mult de o metod\u0103 @OnMessage cu tipul de mesaj Pong \u00een clasa Endpoint adnotat\u0103. Aplica\u0163ia WebSocket nu este implementat\u0103 corect. 
+morethanonepong.annotation.useraction=Corecta\u0163i clasa ServerEndpoint adnotat\u0103 definind doar o singur\u0103 metod\u0103 @OnMessage cu tip de mesaj pong. Dup\u0103 ce rezolva\u0163i problema, implementa\u0163i aplica\u0163ia din nou.
+
+morethanonebinary.annotation=CWWKH0004E: A ap\u0103rut o excep\u0163ie \u00een timpul implement\u0103rii aplica\u0163iei WebSocket deoarece sunt definite mai multe metode @OnMessage cu tipul de mesaj binar \u00een clasa Endpoint adnotat\u0103 {0}.
+morethanonebinary.annotation.explanation=ServerEndpoint adnotat\u0103 este invalid\u0103 deoarece sunt definite mai mult de o metod\u0103 @OnMessage cu tipul de mesaj binar \u00een clasa Endpoint adnotat\u0103. Aplica\u0163ia WebSocket nu este implementat\u0103 corect. 
+morethanonebinary.annotation.useraction=Corecta\u0163i clasa ServerEndpoint adnotat\u0103 definind doar o singur\u0103 metod\u0103 @OnMessage cu tip de mesaj binar. Dup\u0103 ce rezolva\u0163i problema, implementa\u0163i aplica\u0163ia din nou.
+
+missing.msgtype.param=CWWKH0005E: A ap\u0103rut o excep\u0163ie \u00een timpul implement\u0103rii aplica\u0163iei WebSocket deoarece metoda @OnMessage din clasa Endpoint adnotat\u0103 {0} nu are parametrul de tip de mesaj pong, binar sau text.
+missing.msgtype.param.explanation=ServerEndpoint adnotat\u0103 este invalid\u0103 deoarece metoda @onMessage nu are parametrul de tip mesaj pong, binar sau text. Aplica\u0163ia WebSocket nu este implementat\u0103 corect. 
+missing.msgtype.param.useraction=Corecta\u0163i clasa ServerEndpoint adnotat\u0103 declar\u00e2nd metoda @onMessage cu unul din parametrii de tip mesaj text, binar sau pong. Dup\u0103 ce rezolva\u0163i problema, implementa\u0163i aplica\u0163ia din nou.
+
+morethanonetext.annotation=CWWKH0006E: A ap\u0103rut o excep\u0163ie \u00een timpul implement\u0103rii aplica\u0163iei WebSocket application deployment deoarece sunt definite mai multe metode @OnMessage cu tip de mesaj text \u00een clasa Punct final adnotat {0}.
+morethanonetext.annotation.explanation=ServerEndpoint adnotat este invalid deoarece sunt definite mai multe metode @OnMessage cu tip de mesaj text \u00een clasa Punct final adnotat. Aplica\u0163ia WebSocket nu este implementat\u0103 corect. 
+morethanonetext.annotation.useraction=Corecta\u0163i clasa ServerEndpoint adnotat prin definirea unei singure metode de mesagerie text de tip @OnMessage. Dup\u0103 ce rezolva\u0163i problema, implementa\u0163i aplica\u0163ia din nou.
+
+invalid.onopen.annotation=CWWKH0007E: A ap\u0103rut o excep\u0163ie \u00een timpul implement\u0103rii aplica\u0163iei WebSocket deoarece metoda @OnOpen {0} din clasa Endpoint adnotat\u0103 {1} are parametri diferi\u0163i de Session, EndpointConfig sau @PathParam.
+invalid.onopen.annotation.explanation=A fost g\u0103sit un tip de parametru invalid \u00een metoda @OnOpen. Metoda @OnOpen poate avea doar parametrii Session op\u0163ional, EndpointConfig op\u0163ional \u015fi @PathParam op\u0163ional. 
+invalid.onopen.annotation.useraction=Corecta\u0163i clasa ServerEndpoint adnotat\u0103 prin \u00eenl\u0103turarea tipului de parametru invalid din metoda @OnOpen. Dup\u0103 ce rezolva\u0163i problema, implementa\u0163i aplica\u0163ia din nou.
+
+morethanoneclose.annotation=CWWKH0008E: A ap\u0103rut o excep\u0163ie \u00een timpul implement\u0103rii aplica\u0163iei WebSocket deoarece sunt definite mai multe metode @OnClose \u00een clasa Endpoint adnotat\u0103 {0}. Metodele @OnClose sunt {1} \u015fi {2}.
+morethanoneclose.annotation.explanation=ServerEndpoint adnotat\u0103 este invalid\u0103 deoarece sunt definite mai mult de o metod\u0103 @OnClose \u00een clasa Endpoint adnotat\u0103. Aplica\u0163ia WebSocket nu este implementat\u0103 corect. 
+morethanoneclose.annotation.useraction=Corecta\u0163i clasa ServerEndpoint adnotat\u0103 definind doar o metod\u0103 @OnClose. Dup\u0103 ce rezolva\u0163i problema, implementa\u0163i aplica\u0163ia din nou.
+
+invalid.onclose.annotation=CWWKH0009E: A ap\u0103rut o excep\u0163ie \u00een timpul implement\u0103rii aplica\u0163iei WebSocket deoarece metoda @OnClose {0} din clasa Endpoint adnotat\u0103 {1} are parametri diferi\u0163i de Session, CloseReason sau @PathParam.
+invalid.onclose.annotation.explanation=A fost g\u0103sit un tip de parametru invalid \u00een metoda @OnClose. Metoda @OnClose poate avea doar parametrii Session op\u0163ional, CloseReason op\u0163ional \u015fi @PathParam op\u0163ional. 
+invalid.onclose.annotation.useraction=Corecta\u0163i clasa ServerEndpoint adnotat\u0103 prin \u00eenl\u0103turarea tipului de parametru invalid din metoda @OnClose. Dup\u0103 ce rezolva\u0163i problema, implementa\u0163i aplica\u0163ia din nou.
+
+morethanoneerror.annotation=CWWKH0010E: A ap\u0103rut o excep\u0163ie \u00een timpul implement\u0103rii aplica\u0163iei WebSocket deoarece sunt definite mai multe metode @OnError \u00een clasa Endpoint adnotat\u0103 {0}. Metodele @OnError sunt {1} \u015fi {2}.
+morethanoneerror.annotation.explanation=ServerEndpoint adnotat\u0103 este invalid\u0103 deoarece sunt definite mai mult de o metod\u0103 @OnError \u00een clasa Endpoint adnotat\u0103. Aplica\u0163ia WebSocket nu este implementat\u0103 corect. 
+morethanoneerror.annotation.useraction=Corecta\u0163i clasa ServerEndpoint adnotat\u0103 definind doar o singur\u0103 metod\u0103 @OnError. Dup\u0103 ce rezolva\u0163i problema, implementa\u0163i aplica\u0163ia din nou.
+
+invalid.onerror.annotation=CWWKH0011E: A ap\u0103rut o excep\u0163ie \u00een timpul implement\u0103rii aplica\u0163iei WebSocket deoarece metoda @OnError {0} din clasa Endpoint adnotat\u0103 {1} are parametri diferi\u0163i de Throwable, Session sau @PathParam.
+invalid.onerror.annotation.explanation=Tip de parametru invalid g\u0103sit \u00een metoda @OnError. Metoda @OnError poate avea doar parametrii Throwable obligatoriu, Session op\u0163ional \u015fi @PathParam op\u0163ional. 
+invalid.onerror.annotation.useraction=Corecta\u0163i clasa ServerEndpoint adnotat\u0103 \u00eenl\u0103tur\u00e2nd tipul de parametru invalid din metoda @OnError. Dup\u0103 ce rezolva\u0163i problema, implementa\u0163i aplica\u0163ia din nou.
+
+missing.throwable=CWWKH0012E: A ap\u0103rut o excep\u0163ie \u00een timpul implement\u0103rii aplica\u0163iei WebSocket deoarece metodei @OnError {0} din clasa Endpoint adnotat\u0103 {1} \u00eei lipse\u015fte parametrul obligatoriu de tipul Throwable.
+missing.throwable.explanation=ServerEndpoint adnotat\u0103 este invalid\u0103 deoarece metodei @OnError \u00eei lipse\u015fte parametrul obligatoriu de tipul Throwable. Aplica\u0163ia WebSocket nu este implementat\u0103 corect. 
+missing.throwable.useraction=Corecta\u0163i clasa ServerEndpoint adnotat\u0103 ad\u0103ug\u00e2nd parametrul obligatoriu de tip Throwable metodei @OnError. Dup\u0103 ce rezolva\u0163i problema, implementa\u0163i aplica\u0163ia din nou.
+
+invalid.pong.annotation=CWWKH0013E: A ap\u0103rut o excep\u0163ie \u00een timpul implement\u0103rii aplica\u0163iei WebSocket deoarece metoda @OnMessage {0} din clasa Endpoint adnotat\u0103 {1} are parametrul invalid {2}.
+invalid.pong.annotation.explanation=A fost g\u0103sit un tip de parametru invalid \u00een metoda @OnMessage cu tipul de mesaj pong. Aplica\u0163ia WebSocket nu este implementat\u0103 corect.
+invalid.pong.annotation.useraction=Corecta\u0163i clasa ServerEndpoint adnotat\u0103 prin \u00eenl\u0103turarea tipului de parametru invalid din metoda @OnMessage. Dup\u0103 ce rezolva\u0163i problema, implementa\u0163i aplica\u0163ia din nou.
+
+morethanone.binary.param=CWWKH0014E: A ap\u0103rut o excep\u0163ie \u00een timpul implement\u0103rii aplica\u0163iei WebSocket deoarece metoda @OnMessage {0} din clasa Endpoint adnotat\u0103 {1} are mai mult de un parametru de tip de mesaj binar.
+morethanone.binary.param.explanation=ServerEndpoint adnotat\u0103 este invalid\u0103 deoarece metoda @onMessage are mai mult de un parametru de tip mesaj binar. Aplica\u0163ia WebSocket nu este implementat\u0103 corect. 
+morethanone.binary.param.useraction=Corecta\u0163i clasa ServerEndpoint adnotat\u0103 definind doar un singur parametru de tip mesaj binar. Dup\u0103 ce rezolva\u0163i problema, implementa\u0163i aplica\u0163ia din nou.
+
+invalid.decoderclass=CWWKH0015E: A ap\u0103rut o excep\u0163ie \u00een timpul implement\u0103rii aplica\u0163iei WebSocket deoarece clasa decoder {0} folosit\u0103 \u00een metoda @OnMessage {1} a clasei Endpoint adnotat\u0103 {2} nu este nici public\u0103, nici concret\u0103 sau nu are un constructor public no-args.
+invalid.decoderclass.explanation=Clasa decoder folosit\u0103 \u00een clasa ServerEndpoint adnotat\u0103 trebuie s\u0103 fie public\u0103, concret\u0103 \u015fi s\u0103 aib\u0103 un constructor public no-args.
+invalid.decoderclass.useraction=Corecta\u0163i clasa decoder s\u0103 fie public\u0103, concret\u0103 \u015fi s\u0103 aib\u0103 un constructor public no-args. Dup\u0103 ce rezolva\u0163i problema, implementa\u0163i aplica\u0163ia din nou.
+
+morethanone.message.param=CWWKH0016E: A ap\u0103rut o excep\u0163ie \u00een timpul implement\u0103rii aplica\u0163iei WebSocket deoarece metoda @OnMessage {0} din clasa Endpoint adnotat\u0103 {1} are mai mult de un parametru de tip de mesaj {2}.
+morethanone.message.param.explanation=ServerEndpoint adnotat\u0103 este invalid\u0103 deoarece metoda @onMessage are mai mult de un parametru de tip mesaj. Aplica\u0163ia WebSocket nu este implementat\u0103 corect. 
+morethanone.message.param.useraction=Corecta\u0163i metoda @OnMessage prin definirea doar a unui parametru de tip mesaj conform documenta\u0163iei API javax.websocket.OnMessage. Dup\u0103 ce rezolva\u0163i problema, implementa\u0163i aplica\u0163ia din nou.
+
+invalid.binary.param=CWWKH0017E: A ap\u0103rut o excep\u0163ie \u00een timpul implement\u0103rii aplica\u0163iei WebSocket deoarece metoda @OnMessage {0} din clasa Endpoint adnotat\u0103 {1} are parametrul invalid {2}.
+invalid.binary.param.explanation=A fost g\u0103sit un tip de parametru invalid \u00een metoda @OnMessage cu tipul de mesaj binar. Aplica\u0163ia WebSocket nu este implementat\u0103 corect.
+invalid.binary.param.useraction=Corecta\u0163i metoda @OnMessage prin \u00eenl\u0103turarea tipului de parametru invalid conform documenta\u0163iei API javax.websocket.OnMessage API. Dup\u0103 ce rezolva\u0163i problema, implementa\u0163i aplica\u0163ia din nou.
+
+morethanone.text.param=CWWKH0018E: A ap\u0103rut o excep\u0163ie \u00een timpul implement\u0103rii aplica\u0163iei WebSocket deoarece metoda @OnMessage {0} din clasa Endpoint adnotat\u0103 {1} are mai mult de un parametru de tip de mesaj text {2}.
+morethanone.text.param.explanation=ServerEndpoint adnotat\u0103 este invalid\u0103 deoarece metoda @onMessage are mai mult de un parametru de tip mesaj text. Aplica\u0163ia WebSocket nu este implementat\u0103 corect. 
+morethanone.text.param.useraction=Corecta\u0163i metoda @OnMessage prin definirea doar a unui parametru de tip mesaj text conform documenta\u0163iei API javax.websocket.OnMessage. Dup\u0103 ce rezolva\u0163i problema, implementa\u0163i aplica\u0163ia din nou.
+
+invalid.text.param=CWWKH0019E: A ap\u0103rut o excep\u0163ie \u00een timpul implement\u0103rii aplica\u0163iei WebSocket deoarece metoda @OnMessage {0} din clasa Endpoint adnotat\u0103 {1} are parametrul invalid {2}.
+invalid.text.param.explanation=A fost g\u0103sit un tip de parametru invalid \u00een metoda @OnMessage cu tipul de mesaj text. Aplica\u0163ia WebSocket nu este implementat\u0103 corect.
+invalid.text.param.useraction=Corecta\u0163i metoda @OnMessage prin \u00eenl\u0103turarea tipului de parametru invalid conform documenta\u0163iei API javax.websocket.OnMessage API. Dup\u0103 ce rezolva\u0163i problema, implementa\u0163i aplica\u0163ia din nou.
+
+missing.path.segment=CWWKH0020E: A survenit o excep\u0163ie \u00een timpul invoc\u0103rii WebSocket Server Endpoint. Parametrul @PathParam {0} definit \u00een metoda {1} nu are un segment de cale corespondent \u00een @ServerEndpoint URI din clasa Endpoint adnotat\u0103 {2}.
+missing.path.segment.explanation=Parametrul @PathParam nu are un segment de cale corespondent \u00een @ServerEndpoint URI. 
+missing.path.segment.useraction=Corecta\u0163i numele parametrului @PathParam s\u0103 se potriveasc\u0103 cu unul din segmentele de cale din @ServerEndpoint URI. Dup\u0103 ce rezolva\u0163i problema, implementa\u0163i aplica\u0163ia din nou.
+
+missing.pathparam.value=CWWKH0021E: A ap\u0103rut o excep\u0163ie \u00een timpul implement\u0103rii aplica\u0163iei WebSocket deoarece adnot\u0103rii @PathParam {0} definite \u00een metoda {1} \u00eei lipse\u015fte valoarea adnot\u0103rii \u00een clasa Endpoint adnotat\u0103 {2}.
+missing.pathparam.value.explanation=Adnotarea @PathParam nu are o valoare. Aplica\u0163ia WebSocket nu este implementat\u0103 corect.
+missing.pathparam.value.useraction=Corecta\u0163i adnotarea @PathParam prin ad\u0103ugarea valorii la adnotare. Dup\u0103 ce rezolva\u0163i problema, implementa\u0163i aplica\u0163ia din nou.
+
+invalid.pathparam.type=CWWKH0022E: A ap\u0103rut o excep\u0163ie \u00een timpul implement\u0103rii aplica\u0163iei WebSocket deoarece parametrul @PathParam {0} definit \u00een metoda {1} are tip invalid \u00een clasa Endpoint adnotat\u0103 {2}.
+invalid.pathparam.type.explanation=Parametrul @PathParam are un tip invalid. Aplica\u0163ia WebSocket nu este implementat\u0103 corect.
+invalid.pathparam.type.useraction=Corecta\u0163i tipul adnot\u0103rii @PathParam pentru a fi fie String, fie orice tip de primitiv\u0103 Java versiune \u00eencasetat\u0103. Dup\u0103 ce rezolva\u0163i problema, implementa\u0163i aplica\u0163ia din nou.
+
+mismatch.pathparam.type=CWWKH0023E: A ap\u0103rut o excep\u0163ie \u00een timp ce se executa metoda {0} din clasa Endpoint adnotat\u0103 {1} la convertirea datelor @PathParam datelor de la indexul de parametru {2} la tipul {3}.
+mismatch.pathparam.type.explanation=Convertirea parametrului @PathParam cu segmentul corespunz\u0103tor din ServerEndpoint URI a e\u015fuat din cauza unui tip invalid. Mertoda Endpoint nu s-a executat cu succes.
+mismatch.pathparam.type.useraction=Asigura\u0163i-v\u0103 c\u0103 segmentul ServerEndpoint URI de intrare este de un tip de date care se potrive\u015fte cu parametrul @PathParam corespondent.
+
+bytes.notavailable=CWWKH0024E: A ap\u0103rut o excep\u0163ie \u00een timp ce se citea un mesaj WebSocket de intrare din cauz\u0103 c\u0103 nu mai sunt disponibili mai mul\u0163i octe\u0163i.
+bytes.notavailable.explanation=A ap\u0103rut o excep\u0163ie \u00een timp ce se citea un mesaj WebSocket de intrare nu mai sunt disponibili octe\u0163i de citit.
+bytes.notavailable.useraction=Verifica\u0163i corectitudinea datelor mesajului WebSocket.
+
+onmessage.notdefined=CWWKH0025E: Clientul a trimis un mesaj c\u0103tre Endpoint {0} care nu are definit\u0103 o metod\u0103 @onMessage sau un MessageHandler pentru acest tip de mesaj.
+onmessage.notdefined.explanation=Nu se poate executa cererea clientului WebSocket deoarece clientul trimite un mesaj c\u0103tre ServerEndpoint care nu are definit\u0103 o metod\u0103 @onMessage sau un MessageHandler pentru acest tip de mesaj.
+onmessage.notdefined.useraction=Fie notifica\u0163i clientul, fie ad\u0103uga\u0163i metoda @OnMessage la ServerEndpoint adnotat\u0103 sau ad\u0103uga\u0163i un MessageHandler, pentru a putea servi cererea clientului, iar apoi implementa\u0163i din nou aplica\u0163ia.
+
+decoder.ioexception=CWWKH0026E: Nu se poate executa cererea clientului WebSocket deoarece a ap\u0103rut o excep\u0163ie IOException la apelarea onMessage din clasa {0} \u00een timpul decodific\u0103rii datelor mesajului {1}. Mesajul excep\u0163iei este {2}
+decoder.ioexception.explanation=Nu se poate executa cererea clientului WebSocket deoarece a ap\u0103rut o excep\u0163ie IOException la apelarea onMessage \u00een timpul decodific\u0103rii datelor mesajului. 
+decoder.ioexception.useraction=Verifica\u0163i datele mesajului de intrare \u015fi verifica\u0163i decodorul.
+
+decoder.create.exception=CWWKH0027E: Nu se poate executa cererea WebSocket din cauza problemei la crearea noii instan\u0163e a clasei decoder {0}. Excep\u0163ia este {1}.
+decoder.create.exception.explanation=Nu se poate executa cererea WebSocket din cauza problemei la crearea noii instan\u0163e a clasei decoder.
+decoder.create.exception.useraction=Verifica\u0163i clasa decoder.
+
+fin1.processing.error=CWWKH0028E: A ap\u0103rut o excep\u0163ie \u00een timp ce se citea un mesaj WebSocket de intrare din clasa ServerEndpoint {0} din cauza unei erori la procesarea valorii FIN de 1.
+fin1.processing.error.explanation=A ap\u0103rut o excep\u0163ie \u00een timp ce se citea un mesaj WebSocket de intrare din cauza unei erori la procesarea valorii FIN de 1.
+fin1.processing.error.useraction=Verifica\u0163i corectitudinea datelor cadrului de mesaj WebSocket.
+ 
+fin0.processing.error=CWWKH0029E: A ap\u0103rut o excep\u0163ie \u00een timp ce se citea un mesaj WebSocket de intrare din clasa ServerEndpoint {0} din cauza unei erori la procesarea valorii FIN de 0.
+fin0.processing.error.explanation=A ap\u0103rut o excep\u0163ie \u00een timp ce se citea un mesaj WebSocket de intrare din cauza unei erori la procesarea valorii FIN de 0.
+fin0.processing.error.useraction=Verifica\u0163i corectitudinea datelor cadrului de mesaj WebSocket.
+
+invalid.opcode=CWWKH0030E: A ap\u0103rut o excep\u0163ie \u00een timp ce se citea un mesaj WebSocket de intrare din clasa ServerEndpoint {0} din cauza unui opcode invalid {1} din cadrul mesajului.
+invalid.opcode.explanation=A ap\u0103rut o excep\u0163ie \u00een timp ce se citea un mesaj WebSocket de intrare din cauza unui opcode invalid din cadrul mesajului.
+invalid.opcode.useraction=Verifica\u0163i corectitudinea datelor cadrului de mesaj WebSocket.
+
+invalid.continue.opcode=CWWKH0031E: A ap\u0103rut o excep\u0163ie \u00een timp ce se citea un mesaj WebSocket de intrare din clasa ServerEndpoint {0} din cauza unui opcode de continuare cu un mesaj nefragmentat.
+invalid.continue.opcode.explanation=A ap\u0103rut o excep\u0163ie \u00een timp ce se citea un mesaj WebSocket de intrare din cauza unui opcode de continuare cu un mesaj nefragmentat.
+invalid.continue.opcode.useraction=Verifica\u0163i corectitudinea datelor cadrului de mesaj WebSocket.  
+
+incorrect.maskflag=CWWKH0032E: A ap\u0103rut o excep\u0163ie \u00een timp ce se citea un mesaj WebSocket de intrare din clasa ServerEndpoint {0} deoarece stegule\u0163ul de masc\u0103 nu este setat corect \u00een cadrul mesajului.
+incorrect.maskflag.explanation=A ap\u0103rut o excep\u0163ie \u00een timp ce se citea un mesaj WebSocket de intrare deoarece stegule\u0163ul de masc\u0103 nu este setat corect \u00een cadrul mesajului.
+incorrect.maskflag.useraction=Verifica\u0163i corectitudinea datelor cadrului de mesaj WebSocket. 
+
+invalid.maskflag.value=CWWKH0033E: A ap\u0103rut o excep\u0163ie \u00een timp ce se citea un mesaj WebSocket de intrare din clasa ServerEndpoint {0} deoarece stegule\u0163ul Mask nu este setat la o valoare corect\u0103.
+invalid.maskflag.value.explanation=A ap\u0103rut o excep\u0163ie \u00een timp ce se citea un mesaj WebSocket de intrare deoarece stegule\u0163ul Mask nu este setat la o valoare corect\u0103.
+invalid.maskflag.value.useraction=Verifica\u0163i corectitudinea datelor cadrului de mesaj WebSocket.
+
+duplicate.uri=CWWKH0034E: A ap\u0103rut o excep\u0163ie \u00een timpul implement\u0103rii aplica\u0163iei WebSocket deoarece mai multe puncte final server au acela\u015fi URI {0}.
+duplicate.uri.explanation=ServerEndpoint adnotat\u0103 este invalid\u0103 deoarece mai multe puncte final server au acela\u015fi URI. Aplica\u0163ia WebSocket nu este implementat\u0103 corect. 
+duplicate.uri.useraction=Defini\u0163i URI-uri ServerEndpoint unice \u00een aplica\u0163ia WebSocket. Dup\u0103 ce rezolva\u0163i problema, implementa\u0163i aplica\u0163ia din nou.
+
+invalid.nonzero.opcode=CWWKH0035E: A ap\u0103rut o excep\u0163ie \u00een timp ce se citea un mesaj WebSocket de intrare din clasa ServerEndpoint {0} din cauza unui opcode non-zero invalid pe un cadru care nu este primul.
+invalid.nonzero.opcode.explanation=A ap\u0103rut o excep\u0163ie \u00een timp ce se citea un mesaj WebSocket de intrare din cauza unui opcode non-zero invalid pe un cadru care nu este primul.
+invalid.nonzero.opcode.useraction=Verifica\u0163i corectitudinea datelor cadrului de mesaj WebSocket.
+
+morethanoneonopen.annotation=CWWKH0036E: A ap\u0103rut o excep\u0163ie \u00een timpul implement\u0103rii aplica\u0163iei WebSocket deoarece sunt definite mai multe metode @OnOpen \u00een clasa Endpoint adnotat\u0103 {0}.
+morethanoneonopen.annotation.explanation=ServerEndpoint adnotat\u0103 este invalid\u0103 deoarece sunt definite mai mult de o metod\u0103 @OnOpen \u00een clasa Endpoint adnotat\u0103. Aplica\u0163ia WebSocket nu este implementat\u0103 corect. 
+morethanoneonopen.annotation.useraction=Corecta\u0163i clasa ServerEndpoint adnotat\u0103 definind doar o singur\u0103 metod\u0103 @OnOpen. Dup\u0103 ce rezolva\u0163i problema, implementa\u0163i aplica\u0163ia din nou.
+
+invalid.message.toobig=CWWKH0037E: Mesaj WebSocket de intrare invalid \u00een clasa ServerEndpoint {0}. Dimensiunea mesajului de intrare este {1} care este mai mare dec\u00e2t valoarea maxMessageSize {2} definit\u0103 \u00een metoda adnot\u0103rii @onMessage {3}.
+invalid.message.toobig.explanation=Mesajul WebSocket nu poate dep\u0103\u015fi valoarea maxMessageSize definit\u0103 \u00een adnotarea @OnMessage.
+invalid.message.toobig.useraction=Verifica\u0163i ca clientul s\u0103 trimit\u0103 mesajul WebSocket cu o lungime mai mic\u0103 dec\u00e2t maxMessageSize definit \u00een @onMessage sau cre\u015fte\u0163i maxMessageSize \u00een @onMessage \u015fi implementa\u0163i aplica\u0163ia din nou.
+
+maxidletimeout.closesession=CWWKH0038E: Sesiunea WebSocket a fost inactiv\u0103 pentru {0} secunde. Se \u00eenchide conexiunea.
+maxidletimeout.closesession.explanation=Sesiune de WebSocket a expirat. Sesiunile WebSocket devin inactive c\u00e2nd mesajele nu sunt trimise sau primite \u00een num\u0103rul de secunde specificat de setarea maxIdleTimeout.
+maxidletimeout.closesession.useraction=Verifica\u0163i de ce clientul nu trimite sau nu prime\u015fte mesaje. Dac\u0103 este necesar, cre\u015fte\u0163i setarea maxIdleTimeout utiliz\u00e2nd API-ul Session.setMaxIdleTimeout().
+
+client.invalid.returncode=CWWKH0039E: C\u00e2nd a fost trimis\u0103 o cerere WebSocket de ie\u015fire la punctul final {1} de pe serverul \u0163int\u0103, a fost returnat un r\u0103spuns {0} \u00een loc de un r\u0103spuns 101.
+client.invalid.returncode.explanation=Opera\u0163iile WebSocket de ie\u015fire necesit\u0103 un cod de r\u0103spuns 101 pentru opera\u0163ii WebSocket.
+client.invalid.returncode.useraction=Utiliza\u0163i codul de r\u0103spuns invalid pentru a determina dac\u0103 punctul final \u0163int\u0103 este valid \u015fi ruleaz\u0103 punctul final WebSocket \u015fi pentru a determina cauza e\u015fu\u0103rii de pe cererea WebSocket de ie\u015fire. 
+
+client.invalid.acceptkey=CWWKH0040E: Serverul \u0163int\u0103 a r\u0103spuns cu o cheie de acceptare WebSocket invalid\u0103 la trimiterea unei cereri WebSocket de ie\u015fire la punctul final {1}.  
+client.invalid.acceptkey.explanation=Opera\u0163iile WebSocket de ie\u015fire necesit\u0103 ca serverul \u0163int\u0103 s\u0103 returneze o cheie de acceptare WebSocket valid\u0103 pentru opera\u0163iile WebSocket.
+client.invalid.acceptkey.useraction=Verifica\u0163i dac\u0103 serverul \u0163int\u0103 este compatibil cu protocolul WebSocket.
+
+client.invalid.endpoint=CWWKH0041E: Punctul final {0} invalid a fost specificat \u00een timpul unei cereri WebSocket de ie\u015fire.
+client.invalid.endpoint.explanation=Este necesar un punct final valid pentru o cerere WebSocket de ie\u015fire.
+client.invalid.endpoint.useraction=Verifica\u0163i dac\u0103 parametrul ClientEndpoint utilizat \u00een metoda connectToServer a apel\u0103rii API-ului WebSocket este un punct final de client adnotat. 
+
+client.invalid.scheme=CWWKH0042E: A fost utilizat\u0103 o schem\u0103 {0} invalid\u0103 pentru conexiunea de client de ie\u015fire. Scheme valide pentru protocolul WebSocket sunt ws sau wss.
+client.invalid.scheme.explanation=Scheme WebSocket valide sunt  ws sau wss.
+client.invalid.scheme.useraction=Utiliza\u0163i o schem\u0103 valid\u0103 \u00een timpul unei cereri WebSocket de ie\u015fire.
+
+client.invalid.configurator=CWWKH0043E: Clasa Configurator {0} nu a fost crear\u0103 \u00een timpul unei cereri de ie\u015fire. Excep\u0163ia este {1}. 
+client.invalid.configurator.explanation=Clasa Configurator nu a fost creat\u0103 \u00een timpul unei cereri de ie\u015fire, posibil deoarece constructorul de zero public al clasei Configurator nu a existat sau nu era accesibil.
+client.invalid.configurator.useraction=Verifica\u0163i corectitudinea clasei configurator \u015fi dac\u0103 are un constructor de argument zero public accesibil.
+ 
+client.connection.error=CWWKH0044E: Punctul final {0} nu a putut fi procesat \u00een timpul unei cereri WebSocket de ie\u015fire.  Excep\u0163ia este {1}.
+client.connection.error.explanation=Excep\u0163ia a ap\u0103rut c\u00e2nd punctul final a \u00eencercat s\u0103 se conecteze la serverul \u0163int\u0103 \u00een timpul unei cereri WebSocket de ie\u015fire.
+client.connection.error.useraction=Utiliza\u0163i detaliile excep\u0163iei pentru a determina cauza \u015fi a rezolva problema.
+
+client.invalid.endpointclass=CWWKH0045E: Clasa {0} nu este valid\u0103 \u015fi a fost specificat\u0103 \u00een timpul unei cereri de ie\u015fire WebSocket.
+client.invalid.endpointclass.explanation=Este necesar\u0103 o clas\u0103 de punct final valid\u0103 pentru o cerere de ie\u015fire WebSocket.
+client.invalid.endpointclass.useraction=Verifica\u0163i c\u0103 parametrul Endpoint (punct final) care este folosit \u00een metoda connectToServer a apelului API WebSocket extinde o clas\u0103 de punct final WebSocket.
+
+adding.endpoint=CWWKH0046I: Ad\u0103ugarea unui WebSocket ServerEndpoint cu urm\u0103torul URI: {0}
+adding.endpoint.explanation=WebSocket ServerEndpoint cu URI-ul specificat este disponibil pentru utilizarea de c\u0103tre clientul WebSocket.
+adding.endpoint.useraction=Nu este necesar\u0103 nicio ac\u0163iune. 
+
+invalid.endpoint.context=CWWKH0047E: WebSocket ServerEndpoints cu calea contextual\u0103 {0} nu sunt disponibile pentru client.
+invalid.endpoint.context.explanation=WebSocket ServerEndpoints cu calea contextual\u0103 specificat\u0103 sunt indisponibile pentru a face service clientului WebSocket.
+invalid.endpoint.context.useraction=Pentru informa\u0163ii despre motivul pentru care nu sunt disponibile ServerEndpoints, vede\u0163i istoricele \u015fi urmele de server ale profilului Liberty.
+
+client.connection.nossl=CWWKH0048E: Punctul final {0} nu a putut fi procesat \u00een timpul unei cereri WebSocket sigure de ie\u015fire, deoarece securitatea nu este activat\u0103.
+client.connection.nossl.explanation=Trebuie s\u0103 fie activat\u0103 securitatea pentru a fi procesate cereri WebSocket sigure de ie\u015fire.
+client.connection.nossl.useraction=Activa\u0163i securitatea.
+
+endpoint.addsclosed=CWWKH0049E: Nu pot fi ad\u0103ugate puncte finale WebSocket suplimentare dup\u0103 ce a pornit aplica\u0163ia WebSocket.
+endpoint.addsclosed.explanation=Punctele finale WebSocket trebuie s\u0103 fie ad\u0103ugate \u00eenainte de a porni aplica\u0163ia WebSocket.
+endpoint.addsclosed.useraction=Ad\u0103uga\u0163i punctele finale WebSocket \u00eenainte de a porni aplica\u0163ia WebSocket.
+
+endpoint.creation.error=CWWKH0050E: Nu a putut fi creat\u0103 clasa de puncte finale {0}.  Excep\u0163ia este {1}.
+endpoint.creation.error.explanation=Excep\u0163ia a ap\u0103rut \u00een timpul cre\u0103rii clasei de puncte finale.
+endpoint.creation.error.useraction=Utiliza\u0163i detaliile excep\u0163iei pentru a determina cauza \u015fi a rezolva problema.
+
+endpoint.instance.error=CWWKH0051E: Serverul nu poate accesa clasa de puncte finale {0} din cauza urm\u0103toarei excep\u0163ii: {1}
+endpoint.instance.error.explanation=C\u00e2nd serverul \u00eencearc\u0103 s\u0103 acceseze clasa de puncte finale specificat\u0103 a ap\u0103rut o eroare.
+endpoint.instance.error.useraction=Examina\u0163i detaliile excep\u0163iei pentru a determina de ce nu poate fi accesat\u0103 clasa de puncte finale \u015fi rezolva\u0163i problema.
+
+missingslashornull.uri=CWWKH0052E: O excep\u0163ie a ap\u0103rut \u00een timpul implement\u0103rii/pornirii punctului final al serverului: {0} cu uri: "{1}". URI-ul punctului final este fie null, fie nu \u00eencepe cu /.
+missingslashornull.uri.explanation=ServerEndpoint este invalid deoarece URI-ul punctului final este fie null, fie nu \u00eencepe cu / \u00een clasa endpoint. Aplica\u0163ia WebSocket nu este disponibil\u0103 pentru pentru cereri. 
+missingslashornull.uri.useraction=Defini\u0163i URI-ul punct final non-null care \u00eencepe cu /. Dup\u0103 ce rezolva\u0163i problema, implementa\u0163i aplica\u0163ia din nou.
+
+
+

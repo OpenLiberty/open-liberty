@@ -1,0 +1,214 @@
+###############################################################################
+# Copyright (c) 2013, 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME ws/code/ras/src/com/ibm/ws/logging/hpel/resources/BinaryLogMessages.nlsprops
+#COMPONENTPREFIX CWTRA
+#COMPONENTNAMEFOR CWTRA WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+BL_INVALID_ACTION=Ac\u0163iunea specificat\u0103 {0} nu este valid\u0103.  
+
+# do not translate "--minDate"
+BL_INVALID_MINDATE=Nu se poate parsa valoarea --minDate.
+
+# do not translate "--maxDate"
+BL_INVALID_MAXDATE=Nu se poate parsa valoarea --maxDate.
+
+BL_INVALID_REPOSITORYDIR=Calea de magazie {0} nu este un nume de cale valid.
+BL_INVALID_TARGETDIR=Calea \u0163intei {0} nu este un nume de cale valid.
+BL_UNABLE_TO_COPY=Nu se poate crea o magazie la loca\u0163ia \u0163int\u0103. Asigura\u0163i-v\u0103 c\u0103 directorul \u0163int\u0103 specificat este gol \u015fi are permisiuni de scriere.
+BL_NO_FILES_FOUND_MONITOR=Directorul specificat nu con\u0163ine momentan nici un fi\u015fier istoric sau de urm\u0103rire.  Se continu\u0103 monitorizarea acestui director.
+BL_NO_FILES_FOUND=Directorul de istorice al serverului sau directorul magaziei specificat nu con\u0163ine nici un fi\u015fier istoric sau de urm\u0103rire.
+BL_OPTION_REQUIRES_A_VALUE=Op\u0163iunea {0} necesit\u0103 o valoare.
+BL_UNKNOWN_OPTION=Op\u0163iunea {0} nu este recunoscut\u0103.
+BL_BAD_FORMAT=Formatul {0} nu este recunoscut.
+
+# do not translate "--minDate" or "--maxDate"
+BL_MINDATE_AFTER_MAXDATE=Data specificat\u0103 de --minDate este dup\u0103 data specificat\u0103 de --maxDate.
+
+# do not translate "--minLevel" or "--maxLevel"
+BL_MINLEVEL_GREATER_THAN_MAXLEVEL=Nivelul specificat de --minLevel este mai mare dec\u00e2t nivelul specificat de --maxLevel.
+
+# do not translate "binaryLog help"
+BL_USE_HELP=Pentru informa\u0163ii de utilizare, folosi\u0163i ajutorul binaryLog.
+
+BL_REPOSITORY_DIRECTORY=Se folose\u015fte {0} ca director de magazie. 
+BL_TARGET_DIRECTORY=Se folose\u015fte {0} ca director \u0163int\u0103.
+
+# do not translate "serverName", "repositoryPath", "targetPath"
+BL_COPY_REQUIRES_TARGETDIR=Ac\u0163iunea de copiere necesit\u0103 s\u0103 se specifice at\u00e2t {serverName | repositoryPath}, c\u00e2t \u015fi targetPath.
+#--------------------------------------------------------------------------------------------------
+
+# do not translate "binaryLog", "action", "serverName", "repositoryPath"
+BL_MAIN_USAGE_001=Utilizare: binaryLog action {serverName | repositoryPath} [options]
+
+# do not translate "serverName"
+BL_MAIN_USAGE_004=\ \ \ \ serverName
+BL_MAIN_USAGE_005=\tSpecifica\u0163i numele unui server Liberty cu o magazie din care s\u0103 se citeasc\u0103.
+
+# do not translate "repositoryPath"
+BL_MAIN_USAGE_006=\ \ \ \ repositoryPath
+
+# do not translate "logdata", "tracedata"
+BL_MAIN_USAGE_007=\tSpecifica\u0163i calea spre o magazie din care s\u0103 se citeasc\u0103.  Aceasta este de obicei\n\
+\tdirectorul ce con\u0163ine directoarele logdata \u015fi tracedata.
+
+BL_MAIN_USAGE_008=Descriere:
+BL_MAIN_USAGE_009=\tVizualiza\u0163i sau copia\u0163i con\u0163inutul unei magazii HPEL (High Performance Extensible Logging)   \n\
+\tsau lista\u0163i instan\u0163ele proceselor de server disponibile \u00een    \n\
+\tmagazie.
+
+BL_MAIN_USAGE_010=Ac\u0163iuni:
+
+# do not translate "view"
+BL_MAIN_USAGE_011=\ \ \ \ view
+BL_MAIN_USAGE_012=\tCiti\u0163i o magazie, op\u0163ional o filtra\u0163i \u015fi crea\u0163i o versiune lizibil\u0103 \n\
+\tpentru om.
+
+# do not translate "copy"
+BL_MAIN_USAGE_013=\ \ \ \ copy
+BL_MAIN_USAGE_014=\tCiti\u0163i o magazie, op\u0163ional o filtra\u0163i \u015fi scrie\u0163i con\u0163inut \u00eentr-o\n\
+\tmagazie nou\u0103.
+
+# do not translate "listInstances"
+BL_MAIN_USAGE_015=\ \ \ \ listInstances
+BL_MAIN_USAGE_016=\tLista\u0163i instan\u0163ele proceselor de server din magazie.
+
+BL_MAIN_USAGE_017=Op\u0163iuni:
+
+# do not translate "help [action]"
+BL_MAIN_USAGE_018=\tFolosi\u0163i help [action] pentru informa\u0163ii de op\u0163iuni detaliate ale fiec\u0103rei ac\u0163iuni.
+
+#--------------------------------------------------------------------------------------------------
+
+# do not translate "binaryLog view", "serverName", "repositoryPath"
+BL_VIEW_USAGE_001=Utilizare: binaryLog view {serverName | repositoryPath} [options]
+
+BL_VIEW_USAGE_002=\tCiti\u0163i o magazie, op\u0163ional o filtra\u0163i \u015fi crea\u0163i o versiune lizibil\u0103 \n\
+\tpentru om.
+
+BL_VIEW_USAGE_003=Op\u0163iuni filtru:
+BL_VIEW_USAGE_004=\tFiltrele sunt toate op\u0163ionale.  C\u00e2nd se folosesc mai multe filtre, sunt   \n\
+\tpuse \u00eempreun\u0103 cu AND logic.
+
+# do not translate "--minDate=value"
+BL_VIEW_USAGE_005=\ \ \ \ --minDate=valoare
+
+# do not translate "--minDate="
+BL_VIEW_USAGE_006=\tFiltru bazat pe data minim\u0103 de creare a \u00eenregistr\u0103rii. Valoarea trebuie s\u0103 fie      \n\
+\tspecificat\u0103 fie ca dat\u0103 (de exemplu --minDate=\"{0}\") sau o dat\u0103 \n\
+\t\u015fi or\u0103 (de exemplu --minDate=\"{1}\"). De asemenea, pute\u0163i introduce     \n\
+\tdata \u015fi ora \u00een format ISO-8601; de exemplu, --minDate=\"{2}\" sau  \n\
+\t--minDate=\"{3}\".
+
+# do not translate "--maxDate=value"
+BL_VIEW_USAGE_007=\ \ \ \ --maxDate=valoare
+
+# do not translate "--maxDate="
+BL_VIEW_USAGE_008=\tFiltru bazat pe data maxim\u0103 de creare a \u00eenregistr\u0103rii. Valoarea trebuie s\u0103 fie      \n\
+\tspecificat\u0103 fie ca dat\u0103 (de exemplu --maxDate=\"{0}\") sau o dat\u0103 \n\
+\t\u015fi or\u0103 (de exemplu --maxDate=\"{1}\"). De asemenea, pute\u0163i introduce     \n\
+\tdata \u015fi ora \u00een format ISO-8601; de exemplu, --maxDate=\"{2}\" sau  \n\
+\t--maxDate=\"{3}\".
+
+# do not translate "--minLevel=value"
+BL_VIEW_USAGE_009=\ \ \ \ --minLevel=valoare
+BL_VIEW_USAGE_010=\tFiltru bazat pe nivelul minim.  Valoarea trebuie s\u0103 fie una din      \n\
+\t{0}.
+
+# do not translate "--maxLevel=value"
+BL_VIEW_USAGE_011=\ \ \ \ --maxLevel=valoare
+BL_VIEW_USAGE_012=\tFiltru bazat pe nivelul maxim.  Valoarea trebuie s\u0103 fie una din      \n\
+\t{0}.
+
+# do not translate "--includeLogger=value[,value]*"
+BL_VIEW_USAGE_013=\ \ \ \ --includeLogger=valoare[,valoare]*
+BL_VIEW_USAGE_014=\tInclude\u0163i \u00eenregistr\u0103ri cu numele programului de \u00eenregistrare \u00een istoric specificat.  Valoarea \
+poate include  * sau ? drept\n\
+\tmetacaracter.
+
+# do not translate "--excludeLogger=value[,value]*"
+BL_VIEW_USAGE_015=\ \ \ \ --excludeLogger=valoare[,valoare]*
+BL_VIEW_USAGE_016=\tExclude\u0163i \u00eenregistr\u0103ri cu numele programului de \u00eenregistrare \u00een istoric specificat.  Valoarea poate include  * sau ? drept\n \tmetacaracter.
+
+# do not translate "--includeMessage=value"
+BL_VIEW_USAGE_017=\ \ \ \ --includeMessage=valoare
+BL_VIEW_USAGE_018=\tFiltru bazat pe numele mesajului.  \
+Valoarea poate include  * sau ? \
+Ca metacaracter.
+
+# do not translate "--includeThread=value"
+BL_VIEW_USAGE_019=\ \ \ \ --includeThread=valoare
+
+# do not translate "--includeThread=2a"
+BL_VIEW_USAGE_020=\tInclude\u0163i \u00eenregistr\u0103ri cu ID-ul de fir de execu\u0163ie specificat.  Valorile trebuie s\u0103 fie         \n\
+\thexazecimale (de exemplu, --includeThread=2a).
+
+# do not translate "--includeExtension=name=value[,name=value]*"
+BL_VIEW_USAGE_021=\ \ \ \ --includeExtension=name=valoare[,name=valoare]*
+BL_VIEW_USAGE_022=\tInclude\u0163i \u00eenregistr\u0103rile cu valoarea \u015fi numele de extensie specificat.  Valoarea poate include  * sau ? drept\n \tmetacaracter.
+
+# do not translate "--includeInstance=value"
+BL_VIEW_USAGE_023=\ \ \ \ --includeInstance=valoare
+
+# do not translate "latest", "listInstances"
+BL_VIEW_USAGE_024=\tInclude\u0163i \u00eenregistr\u0103rile de la instan\u0163a de server specificat\u0103.  Valoarea           \n\
+\ttrebuie s\u0103 fie "latest" sau un ID de instan\u0163\u0103 valid.  Rula\u0163i aceast\u0103 comand\u0103 \n\
+\tfolosind ac\u0163iunea listInstances pentru a vedea o list\u0103 a ID-urilor de instan\u0163e valide.
+
+BL_VIEW_USAGE_025=Op\u0163iune monitor:
+
+# do not translate "--monitor"
+BL_VIEW_USAGE_026=\ \ \ \ --monitor
+BL_VIEW_USAGE_027=\tMonitoriza\u0163i \u00een continuu magazia \u015fi crea\u0163i ie\u015fire pentru con\u0163inut nou\n\
+\tpe m\u0103sur\u0103 ce este generat.
+			
+BL_VIEW_USAGE_028=Op\u0163iuni ie\u015fire:
+
+# do not translate "--format={basic | advanced | CBE-1.0.1}"
+BL_VIEW_USAGE_029=\ \ \ \ --format={basic | advanced | CBE-1.0.1}
+BL_VIEW_USAGE_030=\tSpecifica\u0163i formatul de ie\u015fire de folosit.  \
+"basic" este formatul implicit.
+		
+# do not translate "--encoding=value"
+BL_VIEW_USAGE_031=\ \ \ \ --encoding=valoare
+BL_VIEW_USAGE_032=\tSpecifica\u0163i cifrarea caracterelor de folosit pentru ie\u015fire.
+
+# do not translate "--isoDateFormat"
+BL_VIEW_USAGE_033=\ \ \ \ --isoDateFormat
+BL_VIEW_USAGE_034=\tSpecifica\u0163i formatul de dat\u0103 \u015fi or\u0103 ISO-8601 de utilizat pentru ie\u015fire.
+#--------------------------------------------------------------------------------------------------
+
+# do not translate "binaryLog", "listInstances", "serverName", "repositoryPath"
+BL_LISTINSTANCES_USAGE_001=Utilizare: binaryLog listInstances {serverName | repositoryPath} [op\u0163iuni]
+
+# do not translate "--includeInstance", "binaryLog view"
+BL_LISTINSTANCES_USAGE_002=\tLista\u0163i ID-urile instan\u0163elor de server din magazie.  O instan\u0163\u0103 de   \n\
+\tserver este colec\u0163ia tuturor \u00eenregistr\u0103rilor de istoric/urm\u0103rire scrise de c\u00e2nd\n\
+\ts-a pornit un server \u015fi p\u00e2n\u0103 este oprit.  ID-urile instan\u0163elor de server \n\
+\tpot fi folosite cu op\u0163iunea --includeInstance a ac\u0163iunii de vizualizare \n\
+\tbinaryLog.
+
+#--------------------------------------------------------------------------------------------------
+
+# do not translate "binaryLog", "copy", "serverName", "repositoryPath", "targetPath"
+BL_COPY_USAGE_001=Utilizare: binaryLog copy {serverName | repositoryPath} targetPath [options]
+
+# do not translate "targetPath"
+BL_COPY_USAGE_002=\ \ \ \ targetPath
+BL_COPY_USAGE_003=\tSpecifica\u0163i calea la care s\u0103 se creeze o nou\u0103 magazie.
+
+
+BL_COPY_USAGE_004=\tCiti\u0163i o magazie, op\u0163ional o filtra\u0163i \u015fi scrie\u0163i con\u0163inutul \u00eentr-o \n\
+\tmagazie nou\u0103.

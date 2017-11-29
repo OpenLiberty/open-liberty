@@ -1,0 +1,40 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs-2.0.ejb/resources/com/ibm/ws/jaxrs20/ejb/internal/resources/JaxRsEJBMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS EJB Code
+#RANGE 1100 - 1199
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+
+
+warning.jaxrs.ejb.resource.mismatch=CWWKW1100W: La porte {1} de JAXRS-2.0 Resource {0} ne correspond pas \u00e0 la port\u00e9e EJB {2}. Liberty obtient l''instance de ressource de {3}.
+warning.jaxrs.ejb.resource.mismatch.explanation=Si la port\u00e9e JAXRS-2.0 Resource ne correspond pas \u00e0 la port\u00e9e EJB, et si l'instance de ressource existe dans EJB, Liberty obtient l'instance de ressource de EJB.
+warning.jaxrs.ejb.resource.mismatch.useraction=Aucune action n'est requise. 
+
+warning.jaxrs.ejb.provider.mismatch=CWWKW1102W: La port\u00e9e EJB de JAXRS-2.0 Provider {0} est {1}. Liberty obtient l''instance de fournisseur de {2}.
+warning.jaxrs.ejb.provider.mismatch.explanation=L'instance de fournisseur est Singleton uniquement. Liberty obtient les instances de fournisseur de EJB si la port\u00e9e EJB du fournisseur est de type Dependent ou ApplicationScoped.
+warning.jaxrs.ejb.provider.mismatch.useraction=Aucune action de l'utilisateur n'est requise.
+
+warning.failed.instantiate.ejb.instance=CWWKW1103W: L''instance EJB de la classe {0} ne peut pas \u00eatre instanci\u00e9e. Liberty obtient l''instance de fournisseur de JAXRS.
+warning.failed.instantiate.ejb.instance.explanation= La classe EJB {0} n''a pas de constructeur par d\u00e9faut. Liberty obtient l''exception InstantiationException lorsqu''il essaie d''instancier l''instance EJB.
+warning.failed.instantiate.ejb.instance.useraction=Aucune action n'est requise.
+
+error.failed.toloadejbclass=CWWKW1104W: La classe EJB {0} ne peut pas \u00eatre charg\u00e9e.
+error.failed.toloadejbclass.explanation= La classe EJB {0} ne peut pas \u00eatre charg\u00e9e.
+error.failed.toloadejbclass.useraction=Corrigez votre application afin de rem\u00e9dier au probl\u00e8me.

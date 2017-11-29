@@ -1,0 +1,295 @@
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME ws/code/ras/src/com/ibm/ws/logging/hpel/resources/LogViewerMessages.nlsprops
+#COMPONENTPREFIX CWTRA
+#COMPONENTNAMEFOR CWTRA WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+# Date Translation Comment - There are two types of date format strings in this properties file. 
+#
+# 1. The first is a date format string which is used  by Java. These date format strings should not be translated but
+# rearranged to represent the  date format convention appropriate for the locale.
+# For example, a Jan 31st date in the US is represented as 01/31/2011 or M/d/yy. In the case of a
+# locale where the day comes before the month, such as 31/01/2011, the string should be changed to d/M/yy. 
+#  The messages IDs CWTRA0001I, CWTRA0002I, CWTRA0003I, and CWTRA0073I
+# must have the strings remain in English - as they are used by the product. But the character order should be 
+# changed as needed to be locale appropriate.
+# 
+# 2. Date format strings in the file that need to be both translated and have characters rearranged per 
+# localization rules of the language being translated. These date strings will appear as-is and are
+# used to demonstrate to the user the date format expected by user input. 
+#
+# For example, a message id with the key M/d/yy will continue to be displayed as M/d/yy.  In another locale, such 
+# as Spanish, it needs to be considered that the month and day position will be swapped and characters might need
+# to be translated, as a US locale understands that y represents year while the spanish word for year is ano and y 
+# might not make sense to the user.  This applies to message ids CWTRA0074I and CWTRA0075I
+# -------------------------------------------------------------------------------------------------
+
+CWTRA0000E=Das Repositoryverzeichnis wurde nicht gefunden.
+
+# Example output in the En_en locale is: 4/27/10
+# Note to translator, see Date Translation Comment above as this is type 1.
+CWTRA0001I=d.M.yy
+
+# Example output in the En_en locale is: April 27, 2010 1:30 A.M. CDT
+# Note to translator, see Date Translation Comment above as this is type 1.
+CWTRA0002I=d. MMM yyyy H:mm z
+
+# Example output in the En_en locale is: 4/27/10 1:30:0:100 CDT
+# Note to translator, see Date Translation Comment above as this is type 1.
+CWTRA0003I=d.M.yy H:m:s:S z
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0004E=Startdatum/Startzeit k\u00f6nnen nicht geparst werden.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0005E=Es kann nicht an die Position des Ausgabeprotokolls geschrieben werden.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0006E=Stoppdatum/Stoppzeit k\u00f6nnen nicht geparst werden.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0007I=LogViewerMessages
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0008E=Die Thread-ID kann nicht geparst werden. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0009E=Es kann nicht an die Position des exportierten bin\u00e4ren Repositorys geschrieben werden. Stellen Sie sicher, dass das angegebene Verzeichnis leer ist und Schreibberechtigungen hat.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0010I=Operation abgeschlossen
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0013E=Die Version {0} kann nicht geparst werden   
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0014I=Die urspr\u00fcngliche L\u00e4ndereinstellung des Repositorys kann nicht verwendet werden. Es wird die Standardl\u00e4ndereinstellung des Systems verwendet. 
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0015I=Schreiben in die Ausgabedatei nicht m\u00f6glich. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0016I=Schreiben der Ausgabe nach: 
+
+# -------------------------------------------------------------------------------------------------
+LVM_SelectServerPrompt=Server ausw\u00e4hlen
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0018I=Es wurden {0} Datens\u00e4tze in {1} Sekunden verarbeitet ({2} Datens\u00e4tze pro Sekunde).
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0019E=Parsing des {0}-Intervalls nicht m\u00f6glich: {1}
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0020I=Das angegebene Verzeichnis enth\u00e4lt derzeit keine Protokoll- oder Tracedateien. Die \u00dcberwachung dieses Verzeichnisses wird fortgesetzt.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0021E=Das angegebene Verzeichnis enth\u00e4lt keine Protokoll- oder Tracedateien.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0022E=Die Option {0} erfordert {1} Parameter.  
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0023E=Unbekanntes Argument: {0}
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0024E=Das Argument -repositoryDir fehlt, oder es wurde kein HPEL-Repository an dieser Position gefunden. \n\t -repositoryDir ist erforderlich, wenn logViewer au\u00dferhalb des Profilverzeichnisses bin aufgerufen wird. \n\t Wenn -repositoryDir nicht auf ein HPEL-Repository zeigt, ist entweder die Spezifikation\n\t falsch, oder das Repository wurde noch nicht erstellt.\n\t M\u00f6glicherweise ist HPEL nicht aktiviert, oder der Server wurde nach der\n\t Aktivierung von HPEL nicht gestartet.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0026E=Ung\u00fcltige date-Argumente: -startDate liegt nach dem -stopDate
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0027E=Ung\u00fcltige level-Argumente: -minLevel ist h\u00f6her als -maxLevel
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0028E=Es wurde ein ung\u00fcltiges Ausgabeformat angegeben: {0}
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0029I=Verwenden Sie die Option -help, um den Verwendungshinweis anzuzeigen.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0030I={0} wird als Repository-Verzeichnis verwendet. 
+
+# -------------------------------------------------------------------------------------------------
+#CWTRA0031I=LogViewer is used to output log data from the HPEL repository (group of common \nbinary log files) to a text file, console, or to a new HPEL repository. \n\n\By default, the LogViewer will output all records in the repository in basic \nformat.  Use options to control what is included in the LogViewer output, to format \nthe output, or to direct where the output is sent. 
+CWTRA0031I=LogViewer\nVerwenden Sie den Befehl logViewer, um die HPEL-Protokoll- und -Tracerepositorys anzuzeigen, abzufragen und zu filtern.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0032I={0} wird als Repositoryverzeichnis verwendet.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0033I=logViewer.bat|sh [Optionen]
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0034I=Optionen:\n\n-repositoryDir <Verzeichnisname> \n\t Gibt den Pfad des Repositoryverzeichnisses an. Wenn Sie die\n\t Protokoll- und Tracedaten zusammen abfragen m\u00f6chten, geben Sie\n\t den Pfad zum \u00fcbergeordneten Verzeichnis an, das die Protokoll-\n\t und Tracedatenverzeichnisse enth\u00e4lt. Wenn Sie die Standardrepositoryposition\n\t Profilstammverzeichnis/logs/application_server/ verwenden und dieses\n\t Tool aus dem Profilverzeichnis bin ausf\u00fchren, ist dieses Argument \n\t optional. Das Tool \u00fcberpr\u00fcft die Standardposition, wenn keine Position\n\t angegeben wird. Wenn mehrere Anwendungsserver in diesem Profil mit\n\t HPEL-Repositorys vorhanden sind, werden Sie aufgefordert, das\n\t Serverprotokoll- und -tracerepository auszuw\u00e4hlen, das Sie anzeigen m\u00f6chten. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0035I=-outLog <Dateiname>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0036I=\t Gibt den Namen der Datei an, in die die Textausgabe geschrieben werden soll. Wenn\n\t Sie diese Informationen nicht angeben, wird die Textausgabe in der Konsole angezeigt.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0037I=-startDate <Datum_Zeitt>
+
+# -------------------------------------------------------------------------------------------------
+# Note to translator: Parms {0} and {1} will be substituted with values from CWTRA0074I and CWTRA0075I respectively, so please make sure that if CWTRA0074I and CWTRA0075I are translated, it is possible that H, m, s, S, and z will need to be translated as well.
+# see Date Translation Comment above as an example where translation might be required for type 2.
+CWTRA0038I=\t Gibt das fr\u00fcheste Datum, einschlie\u00dflich Uhrzeit an, f\u00fcr das\n\t Protokolleintr\u00e4ge extrahiert werden sollen. Sie k\u00f6nnen nur ein Datum oder \n\t ein Datum und eine Uhrzeit angeben. Wenn Sie nur ein Datum eingeben, entspricht\n\t dies der Angabe der Uhrzeit 00:00:00:000 in Ihrer Zeitzone. F\u00fcr Datumsangaben\n\t muss das Format {0} verwendet werden. Daten und Uhrzeiten m\u00fcssen im Format \n\t {1} angegeben werden. H steht f\u00fcr die Stunde im 24-Stunden-Format, \n\t m f\u00fcr die Minuten, s f\u00fcr die Sekunden, S f\u00fcr die Millisekunden\n\t und z f\u00fcr die Zeitzone. Wenn Sie mit dieser Option eine Uhrzeit angeben,\n\t m\u00fcssen Anf\u00fchrungszeichen verwendet werden, das das Datum/Zeit-Format \n\t Leerzeichen enth\u00e4lt.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0039I=\t Beispiele: \n\t -startDate {0} \n\t -startDate "{1}"
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0040I=-stopDate <Datum_Zeit>
+
+# -------------------------------------------------------------------------------------------------
+# Note to translator: Parms {0} and {1} will be substituted with values from CWTRA0074I and CWTRA0075I respectively, so please make sure that if CWTRA0074I and CWTRA0075I are translated, it is possible that H, m, s, S, and z will need to be translated as well.
+# see Date Translation Comment above as an example where translation might be required for type 2.
+CWTRA0041I=\t Gibt das sp\u00e4teste Datum, einschlie\u00dflich Uhrzeit an, f\u00fcr das\n\t Protokolleintr\u00e4ge extrahiert werden sollen. Sie k\u00f6nnen nur ein Datum oder \n\t ein Datum und eine Uhrzeit angeben. Wenn Sie nur ein Datum eingeben, entspricht\n\t dies der Angabe der Uhrzeit 23:59:59:999 in Ihrer Zeitzone. F\u00fcr Datumsangaben\n\t muss das Format {0} verwendet werden. Daten und Uhrzeiten m\u00fcssen im Format \n\t {1} angegeben werden. H steht f\u00fcr die Stunde im 24-Stunden-Format, \n\t m f\u00fcr die Minuten, s f\u00fcr die Sekunden, S f\u00fcr die Millisekunden\n\t und z f\u00fcr die Zeitzone. Wenn Sie mit dieser Option eine Uhrzeit angeben,\n\t m\u00fcssen Anf\u00fchrungszeichen verwendet werden, das das Datum/Zeit-Format Leerzeichen\n\t enth\u00e4lt.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0042I=\t Beispiele: \n\t -stopDate {0} \n\t -stopDate "{1}"
+
+# Description of the -level option ----------------------------------------------------------------
+CWTRA0044I=\t Gibt an, dass LogViewer nur Protokolleintr\u00e4ge der angegebenen\n\t Stufe abrufen soll. In Kombination mit -minLevel oder -maxLevel wird die jeweils\n\t letzte Option verwendet.
+
+# Description of the -minLevel option -------------------------------------------------------------
+CWTRA0046I=\t Gibt an, dass LogViewer keine Protokolleintr\u00e4ge anzeigen soll, die \n\t unter der angegebenen Stufe liegen. Wenn eine Stufe angegeben wird, werden alle\n\t Nachrichten dieser Stufe und der dieser Stufe \u00fcbergeordneten Stufen extrahiert.
+
+# Description of the -maxLevel option -------------------------------------------------------------
+CWTRA0048I=\t Gibt an, dass LogViewer keine Protokolleintr\u00e4ge anzeigen soll, die \n\t \u00fcber der angegebenen Stufe liegen. Wenn eine Stufe angegeben wird, werden alle\n\t Nachrichten dieser Stufe und der dieser Stufe \u00fcbergeordneten Stufen extrahiert.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0049I=-format <basic | advanced | CBE-1.0.1>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0050I=\t Gibt das Ausgabeformat an. Die unterst\u00fctzten Formate sind basic (Basis), \n\t advanced (erweitert) und CBE-1.0.1. Wenn Sie diesen Parameter nicht angeben, wird\n\t die Ausgabe im Basisformat ausgegeben. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0051I=-tail [Intervall]
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0052I=\t Gibt an, dass logViewer das Repository fortlaufend \u00fcberwachen\n\t und neue Protokolldatensatzeintr\u00e4ge ausgeben soll, sobald diese erstellt werden. \n\t Sie k\u00f6nnen mit diesem Parameter ein optionales ganzzahliges Argument angeben,\n\t das angibt, wie oft das Tool LogViewer das Repository nach neuen Datens\u00e4tzen\n\t abfragen soll. Standardm\u00e4\u00dfig fragt LogViewer das Repository alle 5 Sekunden\n\t nach neuen Datens\u00e4tzen ab. Wenn dieser Parameter zusammen mit anderen\n\t Filteroptionen verwendet wird, werden nur solche neuen Datens\u00e4tze\n\t angezeigt, die den Filterkriterien entsprechen. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0053I=-monitor [Intervall]
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0054I=\t Ein Synonym f\u00fcr -tail.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0055I=-includeLoggers <Name_der_Protokollfunktionen>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0056I=\t Gibt an, welche Protokollfunktionen in die Ausgabe eingeschlossen werden sollen.\n\t Mehrere Eintr\u00e4ge m\u00fcssen durch Kommas voneinander getrennt werden.\n\t Wenn diese Option in Kombination mit der Option -excludeLoggers verwendet\n\t wird und eine Protokollfunktion einem Wert in beiden Optionen entspricht,\n\t wird der spezifischere der beiden Eintr\u00e4ge verwendet, um zu bestimmen,\n\t ob eine Protokollfunktion ein- oder ausgeschlossen wird. Dieses Szenario ist \n\t im letzten der folgenden Beispiele veranschaulicht, in dem alle Protokollfunktionen\n\t des Typs com.ibm mit Ausnahme der Protokollfunktion com.ibm.ws.config ausgeschlossen\n\t werden.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0057I=\t Beispiele:\n\t -includeLoggers SystemErr \n\t -includeLoggers "com.ibm.*,org.apache.struts.*" \n\t -includeLoggers "com.ibm.ws.config" -excludeLoggers "com.ibm.*"
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0058I=-excludeLoggers <Namen_der_Protokollfunktionen>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0059I=\t Gibt an, welche Protokollfunktionen von der Ausgabe ausgeschlossen werden sollen.\n\t Mehrere Eintr\u00e4ge m\u00fcssen durch Kommas voneinander getrennt werden.\n\t Wenn diese Option in Kombination mit der Option -includeLoggers verwendet\n\t wird und eine Protokollfunktion einem Wert in beiden Optionen entspricht,\n\t wird der spezifischere der beiden Eintr\u00e4ge verwendet, um zu bestimmen,\n\t ob eine Protokollfunktion ein- oder ausgeschlossen wird. Dieses Szenario ist \n\t im letzten der folgenden Beispiele veranschaulicht, in dem alle Protokollfunktionen\n\t des Typs com.ibm mit Ausnahme der Protokollfunktion com.ibm.ws.config ausgeschlossen\n\t werden.
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0060I=\t Beispiele:\n\t -excludeLoggers SystemErr \n\t -excludeLoggers "com.hp.*,org.apache.struts.*" \n\t -includeLoggers "com.ibm.ws.config" -excludeLoggers "com.ibm.*"
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0061I=-thread <Thread-ID>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0062I=\t Gibt an, dass Protokolleintr\u00e4ge aus einem bestimmten Thread angezeigt\n\t werden sollen. Diese Option filtert alle Protokollnachrichten heraus, die nicht\n\t von der angegebenen Thread-ID erstellt wurden. Anmerkung: Geben Sie die Thread-ID\n\t im Hexadezimalformat an.
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0065I=-extractToNewRepository <Verzeichnisname>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0066I=\t Gibt an, dass Datens\u00e4tze extrahiert und die Ausgaben in ein neues bin\u00e4res\n\t Repository geschrieben werden sollen. Sie k\u00f6nnen diese Option zusammen mit\n\t anderen Filteroptionen verwenden, um ein Subset der Protokoll- und Tracedatens\u00e4tze\n\t in das neue Repository zu \u00fcbertragen. Diese Option verwendet den Verzeichnispfad,\n\t in den das neue Repository geschrieben werden muss, als Argument. Deshalb\n\t muss dieses Verzeichnis leer sein.\n\t Wenn das Verzeichnis nicht vorhanden ist, wird es erstellt. Fehler, die\n\t w\u00e4hrend der Erstellung des Verzeichnisses auftreten, k\u00f6nnen jedoch \n\t dazu f\u00fchren, dass zus\u00e4tzliche Verzeichnisse erstellt werden.
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0067I=-listInstances
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0068I=\t Listet die IDs der verf\u00fcgbaren Serverprozessinstanzen auf,\n\t die mit der Option -instance angegeben werden k\u00f6nnen. Nach der Ausf\u00fchrung\n\t von LogViewer mit der Option -listInstances k\u00f6nnen Sie die Option \n\t -instance verwenden, um LogViewer mit einer der Serverprozessinstanz-IDs\n\t als Argument aufzurufen. Da diese Option keine Protokoll- oder Tracedatens\u00e4tze\n\t verarbeitet, werden alle anderen Optionen ignoriert, wenn Sie diese Option\n\t angeben.
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0069I=-instance <Instanz-ID>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0070I=\t Ruft die Protokoll- und Tracedaten f\u00fcr eine bestimmte\n\t Serverprozessinstanz-ID ab. \t F\u00fchren Sie LogViewer zusammen mit der Option -listInstances aus, bevor Sie\n\t diese Option verwenden, um eine g\u00fcltige Instanz-ID abzurufen.\n\t Diese Option ist erforderlich, wenn Sie Protokoll- und Tracedaten in einer\n\t Umgebung anzeigen, die Unterprozesse enth\u00e4lt, wie z. B. das\n\t Betriebssystem z/OS. In Kombination mit -latestInstance, wird \n\t -instance ignoriert.
+
+# LogViewer command line heading for listinstances on z/OS
+CWTRA0071I=       Instanz-ID                                                             Startdatum
+# LogViewer command line heading for listinstances on distributed
+CWTRA0072I=Instanz-ID                   Startdatum
+
+# Instance Start Date format
+CWTRA0073I=dd.MM.yy HH:mm:ss.SSS z
+
+# Example output in the En_en locale is: M/d/yy
+# Note to translator, see Date Translation Comment above as this is type 2.
+CWTRA0074I=d.M.yy
+
+# Example output in the En_en locale is: M/d/yy H:m:s:S z
+# Note to translator, see Date Translation Comment above as this is type 2.
+CWTRA0075I=d.M.yy H:m:s:S z
+
+NoLevelNameInCustomLevelsFile=Formatproblem in {0}. Stufe (Ganzzahl): {1}. Der Wert muss einen Namen f\u00fcr die Stufe haben.
+TooManyValuesInCustomLevelsFile=Formatproblem in {0}. Stufe (Ganzzahl): {1}. Der Wert "{2}" enth\u00e4lt mehr als {3} Elemente.
+LevelIdTooBigInCustomLevelsFile=Formatproblem in {0}. Stufe (Ganzzahl): {1}. Mindestens eine der Angaben, {2} oder {3}, muss eine einstellige Stufen-ID enthalten.
+NotIntegerKeyInCustomLevelsFile=Formatproblem in {0}. Der Schl\u00fcssel {1} muss eine ganze Zahl sein.
+SpecifiedCustomLevelsFileNotFound=Die Datei {0} mit der angepassten Stufenspezifikation wurde nicht gefunden.
+ErrorReadingCustomLevelsFile=Fehler beim Lesen der Datei {0} mit der angepassten Stufenspezifikation. Fehler: {1}
+SpecifiedCustomHeaderFileNotFound=Die Datei {0} mit der angepassten Headerspezifikation wurde nicht gefunden.
+ErrorReadingCustomHeaderFile=Fehler beim Lesen der Datei {0} mit der angepassten Headerspezifikation. Fehler: {1}
+
+ErrorUsingHeaderTimeZone=Der Protokollheader enth\u00e4lt eine ung\u00fcltige Zeitzonenspezifikation : {0}. Es wird stattdessen der Systemstandardwert verwendet.
+
+UnsupportedEncodingError=Die angegebene Codierung {0} wird in dieser JVM nicht unterst\u00fctzt.
+
+# -------------------------------------------------------------------------------------------------
+LVM_ERROR_INSTANCEID=Der f\u00fcr die Option -instance angegebene Instanz-ID-Wert kann nicht verwendet werden. Verwenden Sie einen der g\u00fcltigen Instanz-ID-Werte, die angezeigt werde, wenn Sie die Option -listInstances verwenden.
+
+
+# ------------------------------------------------------------------------------------------------- 
+LVM_HELP_LATESTINSTANCE=-latestInstance
+
+# -------------------------------------------------------------------------------------------------
+LVM_HELP_LATESTINSTANCE_DESCR=\t Ruft die Protokoll- und Tracedaten aus der aktuellsten \n\t Serverinstanz ab. Wenn diese Option zusammen mit der Option -instance verwendet wird,\n\t wird die Option -instance ignoriert.
+
+
+# ------------------------------------------------------------------------------------------------- 
+LVM_HELP_MESSAGE=-message <Nachricht>
+
+# -------------------------------------------------------------------------------------------------
+LVM_HELP_MESSAGE_DESCR=\t Ruft nur Protokoll- und Tracedaten ab, deren\n\t Nachrichtenfeld mit dem angeforderten Text \u00fcbereinstimmt. Verwenden Sie einen Stern (*),\n\t um eine Zeichenfolge darzustellen, oder ein Fragezeichen (?), um ein einzelnes Zeichen\n\t darzustellen, wenn Sie Protokoll- oder Tracedaten abrufen.
+
+LVM_HELP_EXTENSIONS=-includeExtensions Name[=Wert][,Name[=Wert]]*
+
+LVM_HELP_EXTENSIONS_DESCR=\t Ruft die Protokoll- und Tracedaten mit einem Erweiterungsnamen, der \n\t dem angeforderten Namen entspricht, und einem Erweiterungswert, der dem angeforderten Wert\n\t entspricht, ab. Sie k\u00f6nnen diese Option auch verwenden, um die Protokoll- und Tracedaten \n\t mit einem Erweiterungsnamen, der dem angeforderten Namen entspricht, und einem Erweiterungswert, \n\t der einem beliebigen Wert entspricht, abzurufen, wenn Sie den Teil =Wert \n\t der Option weglassen. Trennen Sie mehrere Name=Wert-Argumente jeweils durch ein Komma voneinander. \n\t Geben Sie '==' (zwei Gleichheitszeichen) anstelle von '=' (ein Gleichheitszeichen) an, wenn\n\t der Name oder der Wert ein Gleichheitszeichen enthalten muss. \n\t Geben Sie ',,' (zwei Kommas) anstelle von ',' (ein Komma) an, wenn der Name oder Wert \n\t ein Komma enthalten muss.
+
+LVM_HELP_ENCODING=-encoding <Zeichensatz>
+
+LVM_HELP_ENCODING_DESCR=\t Gibt den Zeichensatz an, den LogViewer f\u00fcr die Textausgabe verwendet.
+
+#--------------------------------------------------------------------------------------------------
+LVM_HELP_SAMPLES_INTRO=Die folgenden Beispiele veranschaulichen die Verwendung von Log Viewer \nmit einigen der verf\u00fcgbaren und zuvor aufgelisteten Optionen.
+LVM_HELP_SAMPLE1= Wenn Sie nur Protokolleintr\u00e4ge aus einem Repository abrufen m\u00f6chten,\ndie Protokoll- und Traceeintr\u00e4ge enthalten k\u00f6nnen, geben Sie Folgendes ein:\n\t logViewer.bat -minLevel DETAIL
+LVM_HELP_SAMPLE2= Wenn Sie Protokolleintr\u00e4ge mit einer Mindeststufe SEVERE (schwerwiegend)\nvon der Protokollfunktion com.my.company.name.MyClass, die zwischen {0} und {1} aufgezeichnet wurdenn\nabrufen m\u00f6chten, geben Sie Folgendes ein:\n\t logViewer.bat -startDate "{2}" -stopDate "{3}" \n\t-includeLoggers "com.my.company.name.MyClass"  -minLevel SEVERE
+LVM_HELP_SAMPLE3= Wenn Sie eine Sicherung des Repositorys erstellen m\u00f6chten, wobei {1} eine Kopie\ndes vorhandenen Repositorys aus den Protokoll- und Tracedaten von {0} enth\u00e4lt, geben Sie Folgendes ein: \n\t logViewer.bat -extractToNewRepository {1} -startDate "{2}"
+LVM_HELP_SAMPLE4= Zum Anzeigen der Protokoll- und Traceeintr\u00e4ge aus Ihrem eigenen Anwendungscode (vorausgesetzt, dass die\nNamen aller Protokollfunktionen mit com.mycompany beginnen) geben Sie Folgendes ein: \n\t logViewer.bat -includeloggers com.mycompany.*

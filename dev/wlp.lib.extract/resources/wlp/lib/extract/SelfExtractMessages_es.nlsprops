@@ -1,0 +1,287 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME wlp.lib.extract/resources/wlp/lib/extract/SelfExtractMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_ALL
+#
+#   All strings in the self-extract utility go through MessageFormat: 
+#    single quote must be coded as 2 consecutive single quotes ''.
+#
+
+
+helpAgreement=Ver acuerdo de licencia.
+helpInformation=Ver informaci\u00f3n de licencia.
+helpVerbose=Muestra informaci\u00f3n detallada durante la extracci\u00f3n de archivado.
+helpAcceptLicense=Indica autom\u00e1ticamente la aceptaci\u00f3n de los t\u00e9rminos y condiciones de licencia.
+
+# The following messages are used to tell the user how to run the installer from the command line.
+#
+# usage
+#  
+#   java -jar wlp-liberty-developers-core.jar [options] [installLocation]
+#
+# options
+#    < list of options and descriptions goes here >
+usage=Uso
+installLocation=ubicaci\u00f3n de instalaci\u00f3n
+options=Opciones
+
+
+licenseOptionDescription=Al elegir la opci\u00f3n "Acepto", acepta los t\u00e9rminos del acuerdo de licencia de IBM y los acuerdos que no sean de IBM, si aplicables. \
+Si no est\u00e1 de acuerdo, seleccione "No acepto".
+
+licenseeAcknowledges=El licenciatario reconoce y acepta que todo el c\u00f3digo (incluidas las caracter\u00edsticas, funciones u otras \
+descargas de software) descargado por el licenciatario (el "C\u00f3digo" en este documento) s\u00f3lo se utilizar\u00e1 con una versi\u00f3n bajo licencia del programa IBM \
+WebSphere  Application Server Liberty (el "Programa"). \
+El licenciatario tambi\u00e9n reconoce y acepta que el uso del C\u00f3digo est\u00e1 sujeto a los t\u00e9rminos de los acuerdos de \
+licencia que rigen el uso \
+del Programa (por ejemplo, el acuerdo internacional de licencia de programa, el Acuerdo Internacional de Licencia para Programas sin Garant\u00eda, el Acuerdo \
+Internacional de Licencia para la Evaluaci\u00f3n de Programas, el Acuerdo Internacional de Licencia Previa de Programas), incluyendo, si es aplicable, \
+cualquier Informaci\u00f3n sobre licencia.
+
+extractPrompt=\u00bfDirectorio de destino para archivos de producto?
+extractSuccess=Se han extra\u00eddo satisfactoriamente todos los archivos de producto.
+extractLicenseSuccess=Se han aplicado satisfactoriamente los archivos de licencia.
+licenseNotFound=Ha fallado la b\u00fasqueda de archivos de licencia.
+
+promptAgreement=Pulse Intro para mostrar ahora los t\u00e9rminos de licencia o ''x'' para omitir.
+promptInfo=Pulse Intro para mostrar ahora la informaci\u00f3n de licencia adicional o ''x'' para omitir.
+
+#
+# {0} [1]
+# {1} [2]
+# 
+licensePrompt=Seleccione {0} Acepto o {1} No Acepto: 
+
+#
+# {0} IBM WebSphere Application Server Network Deployment Version 8.5 (EXAMPLE)
+# {1} International Program License Agreement
+#
+licenseStatement=Antes de que pueda utilizar, extraer o instalar {0}, debe aceptar los t\u00e9rminos de {1} y la informaci\u00f3n de licencia adicional. \
+Lea detenidamente los siguientes acuerdos de licencia.
+
+#
+# {0} --viewLicenseAgreement
+# 
+showAgreement=El acuerdo de licencia se puede visualizar por separado utilizando la opci\u00f3n {0}. 
+
+#
+# {0} --viewLicenseInfo
+# 
+showInformation=La informaci\u00f3n de licencia adicional se puede visualizar por separado utilizando la opci\u00f3n {0}.
+
+#
+# {0} --acceptLicense
+# 
+licenseAccepted=Se ha encontrado el argumento {0}. Esto indica que ha aceptado los t\u00e9rminos del acuerdo de licencia.
+
+#
+# {0} c:/full/directory/path
+# 
+extractInstruction=Especifique el directorio para los archivos de producto o d\u00e9jelo en blanco para aceptar los valores predeterminados.
+extractLicenseInstruction=Especifique el directorio del archivo de actualizaci\u00f3n de licencia o pulse la tecla Intro aceptar el directorio predeterminado.
+extractDefault=El directorio de destino predeterminado es {0}
+extractDirectoryExists=Ya existe el directorio: {0}
+extractDirectoryError=Se ha producido un fallo al crear el directorio: {0}
+extractDirectory=Extrayendo archivos a {0}
+
+#
+# {0} c:/full/directory/path/fileName
+# 
+extractFileError=Se ha producido un fallo al extraer {0}
+chmodError=No se han podido modificar los permisos de script: {0}.
+extractFileExists=Ya existe el archivo: {0}
+
+#
+# {0} exception message text
+# 
+inputException=Excepci\u00f3n al procesar la entrada: {0}
+
+invalidInstall=El directorio {0} no es un directorio de instalaci\u00f3n de Liberty v\u00e1lido.
+invalidVersion=La instalaci\u00f3n del producto especificada tiene la versi\u00f3n {0} y este complemento del producto s\u00f3lo se aplica a la versi\u00f3n {1}.
+invalidEdition=La instalaci\u00f3n del producto especificada tiene la edici\u00f3n {0} y este complemento del producto s\u00f3lo se aplica a las ediciones {1}.
+invalidLicense=La instalaci\u00f3n del producto especificada tiene una licencia {0} y este complemento del producto es para un producto con licencia {1}.
+invalidInstallType=La instalaci\u00f3n del producto especificada se ha instalado utilizando IBM Installation Manager; utilice IBM Installation Manager para instalar los complementos del producto.
+invalidOption=No se reconoce la opci\u00f3n {0}.
+
+#
+# {0} name of the addon
+# {1} list of features that are missing
+# {2} the install directory on which we are trying to install
+#
+missingRequiredFeatures=No se ha podido instalar el complemento de producto {0}. En la instalaci\u00f3n del producto especificada en {2} faltan las caracter\u00edsticas necesarias: {1}. 
+
+allFeaturesAlreadyPresent=No es necesario instalar el complemento de producto {0}. La instalaci\u00f3n del producto especificada en {2} ya tiene todas las caracter\u00edsticas del complemento: {1}.
+
+#
+# {0} the install directory
+# {1} the list of addons installed into that installed
+#
+addonsInstalled=La instalaci\u00f3n del producto en {0} tiene instalados los siguientes complementos: {1}.
+
+#
+# {0} the install directory
+# {1} the list of supported features by that installation
+#
+featuresInstalled=La instalaci\u00f3n del producto en {0} da soporte a las siguientes caracter\u00edsticas: {1}.
+
+#
+# {0} name of the addon
+# {1} the features included in the addon
+#
+addonFeatures=Este complemento de producto {0} contiene las siguientes caracter\u00edsticas: {1}.
+
+helpMakeBackups=Antes de ejecutar esta herramienta, deber\u00eda hacer copia de seguridad de algunos archivos. Siga las instrucciones que aparecen en la secci\u00f3n ''Instrucciones para aplicar el arreglo'' del archivo readme.txt.
+helpInstallLocation=Ubicaci\u00f3n absoluta o relativa del directorio de instalaci\u00f3n del perfil Liberty.
+helpSupressInfo=La \u00fanica salida de mensajes del archivo JAR ser\u00e1n mensajes de error o la confirmaci\u00f3n de que el parche se ha completado.
+
+# {0} is the Liberty install directory, according to the user.
+couldNotFindLiberty=No se ha podido encontrar el directorio {0}.
+
+# {0} is the Liberty install directory.
+patchingStarted=Aplicando el arreglo al directorio de instalaci\u00f3n de Liberty en {0} ahora.
+patchingStartedWithFix=Aplicando el arreglo {1} al directorio de instalaci\u00f3n de Liberty en {0} ahora.
+
+patchingSuccessful=El arreglo se ha aplicado correctamente.
+patchingSuccessfulWithFix=El arreglo {1} se ha aplicado correctamente.
+
+patchingNotNeeded=El arreglo ya se ha aplicado al directorio de instalaci\u00f3n de Liberty en {0}.
+patchingNotNeededWithFix=El arreglo {1} ya se ha aplicado al directorio de instalaci\u00f3n de Liberty en {0}.
+
+patchingNotApplicable=Ninguna de las caracter\u00edsticas solucionadas por el arreglo est\u00e1n presentes en el directorio de instalaci\u00f3n de Liberty en {0}.
+patchingNotApplicableWithFix=Ninguna de las caracter\u00edsticas solucionadas por el arreglo {1} est\u00e1n presentes en el directorio de instalaci\u00f3n de Liberty en {0}.
+
+invalidPatch=No se ha podido leer el contenido del archivo. Terminando anormalmente el arreglo.
+invalidPatchWithFix=No se ha podido leer el contenido del archivo {0}. Terminando anormalmente el arreglo.
+
+# {0} directory location does not exist and cannot be created.
+noWriteAccess=No se ha podido encontrar o crear el directorio {0}. Terminando anormalmente el arreglo.
+noWriteAccessWithFix=No se ha podido encontrar o crear el directorio {0}. Terminando anormalmente la instalaci\u00f3n del arreglo {1}.
+
+restoreBackupsNeeded=El arreglo no se ha aplicado correctamente y necesita restaurar la instalaci\u00f3n anterior de Liberty. Siga las instrucciones de la secci\u00f3n ''Instrucciones para eliminar el arreglo'' del archivo readme.txt. Tenga en cuenta que algunos de los archivos que las instrucciones indican que hay que eliminar puede que no se hayan creado.
+restoreBackupsNeededWithFix=El arreglo {1} no se ha aplicado correctamente y necesita restaurar la instalaci\u00f3n anterior de Liberty. Siga las instrucciones de la secci\u00f3n ''Instrucciones para eliminar el arreglo'' del archivo readme.txt. Tenga en cuenta que algunos de los archivos que las instrucciones indican que hay que eliminar puede que no se hayan creado.
+
+noRestoreNeeded=Aunque el arreglo no se ha aplicado correctamente, no es necesario restaurar ni eliminar ning\u00fan archivo.
+noRestoreNeededWithFix=Aunque el arreglo {1} no se ha aplicado correctamente, no es necesario restaurar ni suprimir ning\u00fan archivo.
+
+# {0} is a file's location
+replacingFile=Sustituyendo archivo en ''{0}''.
+
+patchFailed=El arreglo no se ha podido aplicar correctamente.
+
+# This message was written speculatively and is sadly not what we need. Use addOnNeedsIFixes instead.
+addonsNeedsFix=La instalaci\u00f3n del producto en {0} ten\u00eda arreglos aplicados que no est\u00e1n incluidos en el complemento de producto {1}. Los arreglos deben volver a aplicarse, ya que el complemento del producto no los incluye. Las caracter\u00edsticas afectadas son: {2}
+
+# This message is terse because it was part of a 2000-character emergency translation. 
+addOnNeedsIFixes=La instalaci\u00f3n del producto en {0} se ha ampliado. Deben volver a aplicarse los arreglos siguientes: {1}.  
+
+# This message is for the feature processing in the SelfExtraction code. 
+fileProcessingException=Se ha producido la excepci\u00f3n siguiente al procesar el archivo {0}: {1}
+
+#
+helpDownloadDependencies=Descargar autom\u00e1ticamente las dependencias externas.
+# {0} Space-separated list of URLs
+externalDepsInstruction=Este paquete tiene dependencias con las siguientes bibliotecas externas: {0}
+
+#
+# {0} [1]
+# {1} [2]
+externalDepsPrompt=\u00bfDesea descargar autom\u00e1ticamente estas dependencias? Seleccione {0} S\u00ed (por omisi\u00f3n) o {1} No: 
+
+# {0} URL to download the file from, e.g. : http://url-for-download.com/path/to/file.jar
+# {1] Destination file to download the file to, eg c:/path/to/file/download-file.jar
+downloadFileError=No se ha podido descargar el archivo remoto de {0} a {1}. 
+downloadingFileNotice=Descargando archivo remoto de {0} a {1}. 
+
+# {0} --verbose
+downloadingBeginNotice=Descargando ahora dependencias externas \u2013 informaci\u00f3n adicional disponible si se utiliza la opci\u00f3n {0}.
+
+# {0} Exception description
+readDepsError=No se ha podido leer el archivo de metadatos de dependencias externas; excepci\u00f3n {0}
+
+archiveContainsNoLicense=Este archivo de archivado no contiene una licencia.
+
+# {0} is a path to a directory
+targetUserDirectory=El directorio de usuario de destino es {0}
+
+#Used when the ifix installer subclass specified by the header in the fix manifest cannot be found/created/invoked.
+# {0} is the error detected, eg class not found, method not found, etc should only happen if the ifix is built incorrectly.
+invalidFixInstaller=Se ha detectado un error interno al ejecutar el instalador de arreglos: {0}. No se puede aplicar el arreglo.
+
+#Used if the fix is built missing the required header that specifies the subclass to handle fix installation.
+# {0} is the missing header name.
+missingFixInstallerHeader=Se ha producido un error interno por falta de cabecera del arreglo {0}. No se puede aplicar el arreglo.
+
+#Used if the specified fix installer does not meet the interface requirement.
+# {0} is the bad fix class name
+badFixInstaller=Se ha producido un error interno; instalador de arreglos err\u00f3neo {0}. No se puede aplicar el arreglo.
+
+#Used when the lpmf file inside the fix is unabled to be parsed.
+# {0} is the error reported parsing the lpmf
+invalidMetaDataFile=Se ha detectado un error interno al procesar metadatos del arreglo: {0}. No se puede aplicar el arreglo.
+
+#Cannot create the output log file.
+# {0} is the filename of the log that had the error, {1} is the error.
+unableToCreateFixLog=No se puede crear el archivo de registro de instalaci\u00f3n del arreglo {0} debido a {1}. No se puede aplicar el arreglo. 
+
+#Used when the fix installer is unable to understand the content of a manifest contained in the fix.
+#{0} is the manifest with the issue, {1} is the error.
+invalidFixManifest=Se ha detectado un error interno al procesar los datos del manifiesto del arreglo {0}: {1}. No se puede aplicar el arreglo.
+
+#The update to the fingerprint could fail.. but the fix will have been applied.
+unableToUpdateFingerprint=No se puede actualizar la huella dactilar del servicio debido a {0}; el arreglo se ha aplicado, por favor utilice --clean cuando inicie el servidor.
+
+#Updated not applicable message stating no files have been written.
+patchingNotApplicableNoChange=No se ha extra\u00eddo contenido porque no hay caracter\u00edsticas coincidentes en el tiempo de ejecuci\u00f3n {0}
+
+# {0} is the message from the exception that caused us to be unable to create a parser for reading the XML files
+ifixutils.unable.to.create.parser=Se ha producido un error al leer la informaci\u00f3n de iFix de la instalaci\u00f3n actual. El mensaje de excepci\u00f3n es: {0}.
+# {0} is the path to a file that could not be parsed
+# {1} is the message from the exception that meant we couldn't read the file
+ifixutils.unable.to.read.file=Se ha producido una excepci\u00f3n al leer el archivo {0}. El mensaje de excepci\u00f3n es: {1}.
+
+# {0} is the manifest file path and {1} is the exception message
+exception.reading.manifest=Se ha producido una excepci\u00f3n al leer el archivo de manifiesto {0}.  Excepci\u00f3n: {1}
+
+# Platform utils messages
+ERROR_UNABLE_TO_SET_EXT_ATTR=No se han podido establecer los atributos ampliados {0} en los archivos siguientes: {1}
+ERROR_UNABLE_TO_SET_EXECUTE_PERMISSIONS=No se ha podido establecer el permiso de ejecuci\u00f3n en los archivos siguientes: {0}
+ERROR_UNABLE_TO_GET_UMASK=No se ha podido recuperar el valor umask mediante el mandato: {0}
+ERROR_INVALID_EXTATTR_PARMS=Los par\u00e1metros {0} no son v\u00e1lidos para el mandato extattr.  Los par\u00e1metros v\u00e1lidos para el mandato extattr son: [+alps] [-alps]
+ERROR_EXECUTING_COMMAND=Se ha producido un error al ejecutar el mandato: {0} El mandato ha terminado con c\u00f3digo de salida {1} y el mensaje de error: {2}
+ERROR_UNABLE_TO_LOCATE_COMMAND_EXE=No se ha podido ubicar el ejecutable {0} despu\u00e9s de comprobar las ubicaciones siguientes: {1}
+
+# java -jar messages 
+UNABLE_TO_FIND_PID=No se ha podido obtener el ID de proceso del proceso java -jar. No se puede suprimir el directorio de extracci\u00f3n temporal {1} hasta que no finalice manualmente el proceso java -jar.
+
+UNABLE_TO_ATTACH_AGENT=No se ha podido conectar el agente Java de Liberty. Se ejecutar\u00e1 este servidor, pero no podr\u00e1 realizar funciones que requieran el agente Java, como la supervisi\u00f3n o el rastreo. Excepci\u00f3n: {0}
+
+UNABLE_TO_FIND_TOOLS_JAR=No se ha podido conectar el agente Java de Liberty porque este servidor utiliza un JRE en lugar de un SDK Java. Se ejecutar\u00e1 este servidor, pero no podr\u00e1 realizar funciones que requieran el agente Java, como la supervisi\u00f3n o el rastreo. 
+
+UNABLE_TO_FIND_JAVA_AGENT=No se ha podido localizar el agente Java de Liberty. Se ejecutar\u00e1 este servidor, pero no podr\u00e1 realizar funciones que requieran el agente Java, como la supervisi\u00f3n o el rastreo. 
+
+# messages for LicenseSelfEctractor
+LICENSE_invalidInstall=El directorio {0} no es una instalaci\u00f3n de Liberty v\u00e1lida. Especifique el directorio ra\u00edz de la instalaci\u00f3n de Liberty que desea actualizar.
+LICENSE_invalidVersion=No se puede actualizar la licencia porque la instalaci\u00f3n del producto especificada tiene la versi\u00f3n {0}, pero la licencia solo se puede actualizar desde la versi\u00f3n {1}.
+LICENSE_invalidEdition=No se puede actualizar la licencia porque la instalaci\u00f3n del producto especificada es de la edici\u00f3n {0}, pero la licencia solo puede actualizar las ediciones siguientes: {1}
+LICENSE_invalidLicense=No se puede actualizar la licencia porque la instalaci\u00f3n del producto especificada tiene una licencia {0}, pero la licencia solo puede actualizar los productos con una licencia {1}.
+LICENSE_invalidInstallType=No se puede actualizar la licencia porque la instalaci\u00f3n del producto especificada se ha instalado mediante IBM Installation Manager. Utilice IBM Installation Manager para actualizar la instalaci\u00f3n.
+
+# new messages for license upgrade and downgrade
+LICENSE_replace_invalidVersion=No se puede actualizar la licencia porque la instalaci\u00f3n del producto especificada tiene la versi\u00f3n {0}, pero la licencia solo se puede aplicar desde la versi\u00f3n {1}.
+LICENSE_replace_invalidInstallType=No se puede aplicar la licencia porque la instalaci\u00f3n del producto especificada se ha instalado mediante IBM Installation Manager. Utilice IBM Installation Manager para actualizar la instalaci\u00f3n.
+
+LICENSE_replace_invalidEditonFeatures=Las caracter\u00edsticas siguientes no son aplicables a la edici\u00f3n {0} y se deben desinstalar antes de aplicar la licencia: {1}\n\
+\n\
+Utilice el mandato siguiente para desinstalar estas caracter\u00edsticas antes de aplicar la licencia para la edici\u00f3n {2}: {3}
+
+LICENSE_downgrade_block_8557_low=Esta licencia solo es aplicable a la instalaci\u00f3n en {0} o superior. La instalaci\u00f3n actual est\u00e1 en {1}. Descargue y actualice al \u00faltimo nivel y vuelva a aplicar la licencia.

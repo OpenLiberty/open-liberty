@@ -1,0 +1,72 @@
+###############################################################################
+# Copyright (c) 1997, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# cmvc_en_version_level=1.123,0,13/01/21,12:35:39
+#
+#CMVCPATHNAME ws/code/j2c/src/com/ibm/ws/j2c/resources/J2CAMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA Java Platform, Enterprise Edition Connector Architecture Server Implementation
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+
+# Start inbound security feature messages.
+CUSTOM_CREDENTIALS_MISSING_J2CA0668=J2CA0668E: O WorkManager n\u00e3o conseguiu preencher o assunto de execu\u00e7\u00e3o com o diretor respons\u00e1vel pela chamada ou as credenciais necess\u00e1rias para estabelecer o contexto de seguran\u00e7a para essa inst\u00e2ncia de trabalho.
+CUSTOM_CREDENTIALS_MISSING_J2CA0668.explanation=O manipulador de retorno de chamada do JASPIC do WorkManager falhou ao preencher as credenciais do diretor ou customizadas do assunto de execu\u00e7\u00e3o porque ocorreu uma exce\u00e7\u00e3o ao processar os retornos de chamada do JASPIC fornecidos pelo adaptador de recursos.
+CUSTOM_CREDENTIALS_MISSING_J2CA0668.useraction=Verifique os logs do servidor e FFDC que foram emitidos imediatamente antes da mensagem J2CA0672E para determinar a causa. Se a causa n\u00e3o puder ser determinada a partir das mensagens de erro anteriores, re\u00fana os dados diagn\u00f3sticos e visite o website de suporte da IBM para obter informa\u00e7\u00f5es adicionais.
+
+EXECUTION_CALLBACK_SUBJECT_MISMATCH_J2CA0673=J2CA0673W: O objeto de execu\u00e7\u00e3o fornecido pelo WorkManager n\u00e3o corresponde ao assunto fornecido pelo {0}.
+EXECUTION_CALLBACK_SUBJECT_MISMATCH_J2CA0673.explanation=A inst\u00e2ncia do assunto de execu\u00e7\u00e3o fornecido pelo WorkManager para estabelecer o contexto de seguran\u00e7a da inst\u00e2ncia de Trabalho n\u00e3o \u00e9 a mesma inst\u00e2ncia obtida do respectivo retorno de chamada. O WorkManager ignorou o assunto obtido do retorno de chamada e continuou estabelecendo o contexto de seguran\u00e7a usando a inst\u00e2ncia que forneceu.
+EXECUTION_CALLBACK_SUBJECT_MISMATCH_J2CA0673.useraction=Entre em contato com o fornecedor do adaptador de recursos para modificar o m\u00e9todo getSubject() de retorno de chamada do JASPIC para retornar o assunto de execu\u00e7\u00e3o fornecido para a inst\u00e2ncia do SecurityContext atrav\u00e9s da chamada para o m\u00e9todo setupSecurityContext.
+
+ERROR_HANDLING_CALLBACK_J2CA0672=J2CA0672E: O manipulador de retorno de chamada do JASPIC do WorkManager falhou com a exce\u00e7\u00e3o {0} durante a manipula\u00e7\u00e3o dos retornos de chamada fornecidos pelo contexto de seguran\u00e7a. A mensagem de exce\u00e7\u00e3o \u00e9 {1}.
+ERROR_HANDLING_CALLBACK_J2CA0672.explanation=O WorkManager encontrou uma exce\u00e7\u00e3o ao manipular os retornos de chamada do JASPIC fornecidos pelo adaptador de recursos no contexto de seguran\u00e7a transferido. A exce\u00e7\u00e3o pode ser dos seguintes casos: 1) Um CallerPrincipalCallback forneceu a um diretor um nome de usu\u00e1rio que n\u00e3o existe no registro do usu\u00e1rio. 2) Um PasswordValidationCallback forneceu um nome de usu\u00e1rio ou uma senha inv\u00e1lidos. 3) Um CallerPrincipalCallback e um PasswordValidationCallback forneceram nomes de usu\u00e1rio diferentes. 4) O adaptador de recursos forneceu um retorno de chamada que o servidor de aplicativos n\u00e3o suporta atualmente. 5) O adaptador de recursos forneceu mais do que um CallerPrincipalCallback.  6) O WorkManager encontrou um erro inesperado.
+ERROR_HANDLING_CALLBACK_J2CA0672.useraction=Se a mensagem de exce\u00e7\u00e3o tiver um c\u00f3digo de erro, verifique a a\u00e7\u00e3o do usu\u00e1rio para esse c\u00f3digo de erro. Se a exce\u00e7\u00e3o for um UnsupportedCallbackException, entre em contato com o fornecedor do adaptador de recursos porque o manipulador de retorno de chamada do JASPIC do WorkManager n\u00e3o suporta atualmente o retorno de chamada fornecido. Se a exce\u00e7\u00e3o n\u00e3o for nenhum dos problemas mencionados, colete os dados diagn\u00f3sticos e consulte o site de suporte IBM para obter informa\u00e7\u00f5es adicionais.
+
+INVALID_GROUP_ENCOUNTERED_J2CA0678=J2CA0678W: O grupo {0} n\u00e3o pertence ao dom\u00ednio associado ao aplicativo.
+INVALID_GROUP_ENCOUNTERED_J2CA0678.explanation=O contexto de seguran\u00e7a transferido com a inst\u00e2ncia de trabalho forneceu um nome de grupo que n\u00e3o existe na regi\u00e3o (registro do usu\u00e1rio) do dom\u00ednio de seguran\u00e7a associada ao aplicativo.  O WorkManager obteve o nome do grupo inv\u00e1lido a partir de uma inst\u00e2ncia de um GroupPrincipalCallback JASPIC, sempre que uma inst\u00e2ncia \u00e9 fornecida pelo adaptador de recursos.
+INVALID_GROUP_ENCOUNTERED_J2CA0678.useraction=Verifique se o grupo \u00e9 da mesma regi\u00e3o confirmando a exist\u00eancia do grupo no registro do usu\u00e1rio para essa regi\u00e3o. Se o grupo for de uma regi\u00e3o diferente, entre em contato com o fornecedor do adaptador de recursos porque o WorkManager n\u00e3o suporta grupos de regi\u00f5es diferentes.
+
+NO_GROUPS_FOR_UNIQUEID_J2CA0679=J2CA0679W: Nenhum grupo foi localizado para o usu\u00e1rio com ID exclusivo {0}
+NO_GROUPS_FOR_UNIQUEID_J2CA0679.explanation=O contexto de seguran\u00e7a transferido com a inst\u00e2ncia de trabalho forneceu um usu\u00e1rio que n\u00e3o pertence a nenhum dos grupos definidos no registro do usu\u00e1rio.
+NO_GROUPS_FOR_UNIQUEID_J2CA0679.useraction=Nenhuma a\u00e7\u00e3o do usu\u00e1rio \u00e9 requerida.
+
+INVALID_USERNAME_PASSWORD_INBOUND_J2CA0674=J2CA0674E: O nome de usu\u00e1rio {0} ou a senha fornecidos pelo PasswordValidationCallback \u00e9 inv\u00e1lido.
+INVALID_USERNAME_PASSWORD_INBOUND_J2CA0674.explanation=O nome de usu\u00e1rio e a senha n\u00e3o existem no registro do usu\u00e1rio da regi\u00e3o que \u00e9 configurada para o dom\u00ednio de seguran\u00e7a associado ao aplicativo.
+INVALID_USERNAME_PASSWORD_INBOUND_J2CA0674.useraction=Configure o adaptador de recursos e o Enterprise Information System para usar um nome de usu\u00e1rio e uma senha v\u00e1lidos. 
+
+VALIDATION_FAILED_INBOUND_J2CA0684=J2CA0684E: N\u00e3o \u00e9 poss\u00edvel validar o nome do usu\u00e1rio {0} e a senha que s\u00e3o fornecidos pelo PasswordValidationCallback.
+VALIDATION_FAILED_INBOUND_J2CA0684.explanation=O WorkManager n\u00e3o conseguiu validar o nome de usu\u00e1rio e a senha que s\u00e3o fornecidos pelo PasswordValidationCallback devido a uma CustomRegistryException. Essa exce\u00e7\u00e3o \u00e9 causada por uma senha inv\u00e1lida ou um problema com o registro do usu\u00e1rio para essa regi\u00e3o de aplicativo.
+VALIDATION_FAILED_INBOUND_J2CA0684.useraction=Se a causa da CustomRegistryException for uma senha inv\u00e1lida, configure o adaptador de recursos ou o Enterprise Information System para usar uma combina\u00e7\u00e3o de nome do usu\u00e1rio v\u00e1lido e senha. Caso contr\u00e1rio, resolva o problema com o registro do usu\u00e1rio.
+
+CALLBACK_SECURITY_NAME_MISMATCH_J2CA0675=J2CA0675E: O nome de usu\u00e1rio {0}, fornecido pelo PasswordValidationCallback e o nome de usu\u00e1rio {1}, fornecido pelo CallerPrincipalCallback, n\u00e3o correspondem.
+CALLBACK_SECURITY_NAME_MISMATCH_J2CA0675.explanation=Os nomes de usu\u00e1rio fornecidos pelo PasswordValidationCallback e CallerPrincipalCallback devem corresponder. 
+CALLBACK_SECURITY_NAME_MISMATCH_J2CA0675.useraction=Entre em contato com o fornecedor do adaptador de recursos e o administrador do sistema para garantir que o adaptador de recursos seja designado e configurado para retornar o mesmo nome de usu\u00e1rio dos dois retornos de chamada.
+
+SECURITY_CONTEXT_NOT_ASSOCIATED_J2CA0671=J2CA0671E: O WorkManager n\u00e3o conseguiu associar o SecurityContext fornecido \u00e0 inst\u00e2ncia de Trabalho.
+SECURITY_CONTEXT_NOT_ASSOCIATED_J2CA0671.explanation=O WorkManager encontrou um problema ao estabelecer e configurar o contexto de seguran\u00e7a para a solicita\u00e7\u00e3o de Trabalho de entrada. 
+SECURITY_CONTEXT_NOT_ASSOCIATED_J2CA0671.useraction=Verifique o FFDC e os logs do servidor para obter mensagens J2CA0668E e J2CA0669E para determinar a causa.
+
+METHOD_FAILED_J2CA0132=J2CA0132E: O m\u00e9todo {0} capturou a exce\u00e7\u00e3o {1}.
+METHOD_FAILED_J2CA0132.explanation=O m\u00e9todo capturou uma exce\u00e7\u00e3o que \u00e9 mais provavelmente um erro interno.
+METHOD_FAILED_J2CA0132.useraction=CMSG0002
+
+
+
+# End inbound security feature messages.
+
+
+
+# ---------------------------------
+# End of File
+#
+# ---------------------------------

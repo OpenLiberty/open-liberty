@@ -1,0 +1,35 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.service/resources/com/ibm/ws/kernel/pseudo/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0800 - 0899 com.ibm.ws.kernel.pseudo.internal.PseudoServiceMessages
+# -------------------------------------------------------------------------------------------------
+
+jndi.not.installed=CWWKE0800W: S-a f\u0103cut o \u00eencercare de a extrage contextul ini\u0163ial pentru [{0}] dar nu este configurat\u0103 nici o caracteristic\u0103 JNDI.
+jndi.not.installed.explanation=Caracteristica JNDI furnizeaz\u0103 un registru JNDI \u015fi utilitare asociate.  Aceasta este cerut\u0103 \u00een mod normal dac\u0103 o aplica\u0163ie sau o caracteristic\u0103 trebuie s\u0103 caute intr\u0103ri \u00eentr-un context JNDI.
+jndi.not.installed.useraction=Asigura\u0163i-v\u0103 c\u0103 este furnizat\u0103 o implementare JNDI (de ex. configur\u00e2nd caracteristica JNDI \u00een configura\u0163ia pentru acest server).
+

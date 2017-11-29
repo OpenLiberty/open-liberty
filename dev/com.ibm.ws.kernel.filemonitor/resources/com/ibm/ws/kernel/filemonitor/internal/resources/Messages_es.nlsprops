@@ -1,0 +1,62 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.filemonitor/resources/com/ibm/ws/kernel/filemonitor/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0400 - 0499 com.ibm.ws.kernel.filemonitor.internal.resources.FileMonitorMessages
+# -------------------------------------------------------------------------------------------------
+
+badFilter=CWWKE0400W: El par\u00e1metro especificado no indica un filtro de nombre de archivo v\u00e1lido. {0}={1}
+badFilter.explanation=El valor del par\u00e1metro de configuraci\u00f3n especificado no era un valor de serie, o no se ha podido convertir en dicho valor.
+badFilter.useraction=Compruebe el valor especificado en la configuraci\u00f3n de servidor.
+
+badInterval=CWWKE0401W: El par\u00e1metro especificado no representa un intervalo de supervisi\u00f3n v\u00e1lido. {0}={1}
+badInterval.explanation=El valor del par\u00e1metro de configuraci\u00f3n especificado no se ha podido analizar como un intervalo de supervisi\u00f3n.
+badInterval.useraction=Compruebe el valor especificado en la configuraci\u00f3n de servidor y aseg\u00farese de que el valor es un intervalo de supervisi\u00f3n v\u00e1lido. \
+Por ejemplo, 1 s para un segundo. \
+Las unidades v\u00e1lidas son ms=milisegundos, s=segundos, m=minutos, h=horas.
+
+## unused as of 8.5.0.1
+badDiskCache=CWWKE0402W: No se ha podido asignar la ubicaci\u00f3n de la memoria cach\u00e9 especificada, por lo tanto, toda la informaci\u00f3n sobre archivos supervisados se almacenar\u00e1 en la memoria. {0}={1}
+badDiskCache.explanation=El servicio no ha podido crear una ubicaci\u00f3n de memoria cach\u00e9 para un conjunto de recursos supervisados.
+badDiskCache.useraction=Verifique que tiene acceso de escritura al directorio del servidor y al \u00e1rea de trabajo.
+
+createMonitorException=CWWKE0403W: Se ha producido una excepci\u00f3n al crear un supervisor para {0}. Se ha inhabilitado la supervisi\u00f3n de este recursos. El mensaje de la excepci\u00f3n es: {1}
+createMonitorException.explanation=Se ha producido una excepci\u00f3n inesperada al crear un supervisor del recurso especificado. No se supervisar\u00e1 el recurso. 
+createMonitorException.useraction=Compruebe si dispone de acceso de lectura al recurso especificado. Consulte la excepci\u00f3n y el mensaje FFDC asociado para obtener m\u00e1s informaci\u00f3n.
+
+## unreachable in 8.5 GM -- cache file never used
+UNABLE_TO_DELETE_CACHE_FILE=CWWKE0404E: El archivo de memoria cach\u00e9 {0} no se ha podido suprimir.
+UNABLE_TO_DELETE_CACHE_FILE.explanation=El servicio no ha podido suprimir una ubicaci\u00f3n de memoria cach\u00e9 para un conjunto de recursos supervisados.
+UNABLE_TO_DELETE_CACHE_FILE.useraction=Verifique que tiene acceso de escritura al directorio del servidor y al \u00e1rea de trabajo
+
+fileMonitorException=CWWKE0405W: Se ha producido una excepci\u00f3n al notificar a un monitor de las siguientes creaciones, modificaciones y supresiones de archivos: {0}, {1}, {2}. La clase de monitor es {3}. El mensaje de la excepci\u00f3n es: {4}
+fileMonitorException.explanation=Se ha producido una excepci\u00f3n inesperada al crear un supervisor del recurso especificado. 
+fileMonitorException.useraction=Consulte la excepci\u00f3n y el mensaje FFDC asociado para obtener m\u00e1s informaci\u00f3n.
+
+fileMonitorDisabled=CWWKE0406W: Se han producido m\u00e1s de {0} excepciones al notificar los cambios a un monitor. La clase de monitor es {1}. FileMonitor se ha inhabilitado. 
+fileMonitorDisabled.explanation=Se han producido demasiadas excepciones consecutivas al notificar a un monitor acerca del recurso especificado. El recurso dejar\u00e1 de supervisarse. 
+fileMonitorDisabled.useraction=Consulte las excepciones y los mensajes FFDC asociados para obtener m\u00e1s informaci\u00f3n.

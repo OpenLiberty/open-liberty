@@ -1,0 +1,197 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.utils.CWSIUMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_SInn0000=CWSIU0001I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_SInn0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_SInn0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# cmvc_en_version_level=1.31,0,09/07/29,08:43:02
+#
+#CMVCPATHNAME ws/code/sib.utils/src/com/ibm/ws/sib/utils/CWSIUMessages.nlsprops
+#COMPONENTPREFIX CWSIU
+#COMPONENTNAMEFOR CWSIU utils
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the messaging build release
+# {1} is the messaging build level
+
+WPM_SPLASH_CWSIU0000=CWSIU0000I: \u30ea\u30ea\u30fc\u30b9: {0} \u30ec\u30d9\u30eb: {1}
+WPM_SPLASH_CWSIU0000.explanation=\u3053\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u306f\u3001\u73fe\u884c\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u306e\u30d3\u30eb\u30c9\u30fb\u30ea\u30ea\u30fc\u30b9\u304a\u3088\u3073\u30ec\u30d9\u30eb\u3092\u793a\u3057\u307e\u3059\u3002
+WPM_SPLASH_CWSIU0000.useraction=\u306a\u3057
+
+# -------------------------------------------------------------------------------------------------
+#                                                                                          220097.0
+# {0} is the name of a runtime property
+# {1} is the new value of the named property
+
+RUNTIME_CWSIU0001=CWSIU0001I: \u30e9\u30f3\u30bf\u30a4\u30e0\u30fb\u30d7\u30ed\u30d1\u30c6\u30a3\u30fc {0} \u306f\u3001\u5024 {1} \u306b\u5909\u66f4\u3055\u308c\u307e\u3057\u305f\u3002
+RUNTIME_CWSIU0001.explanation=\u30e9\u30f3\u30bf\u30a4\u30e0\u30fb\u30d7\u30ed\u30d1\u30c6\u30a3\u30fc\u304c\u30c7\u30d5\u30a9\u30eb\u30c8\u4ee5\u5916\u306e\u5024\u306b\u5909\u66f4\u3055\u308c\u307e\u3057\u305f\u3002
+RUNTIME_CWSIU0001.useraction=\u306a\u3057
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that will be suppressed
+# {1} is the time interval during which the message will be suppressed
+
+FUTURE_MESSAGES_SUPPRESSED_CWSIU0002=CWSIU0002I: \u4ee5\u964d\u306e {0} \u30e1\u30c3\u30bb\u30fc\u30b8\u306e\u767a\u751f\u304c\u6b21\u306e {1} \u5206\u9593\u6291\u5236\u3055\u308c\u307e\u3059\u3002
+FUTURE_MESSAGES_SUPPRESSED_CWSIU0002.explanation=\u540c\u3058\u30e1\u30c3\u30bb\u30fc\u30b8\u306e\u30b3\u30d4\u30fc\u3067\u30ed\u30b0\u304c\u3044\u3063\u3071\u3044\u306b\u306a\u3089\u306a\u3044\u3088\u3046\u306b\u3001\u5f53\u8a72\u30e1\u30c3\u30bb\u30fc\u30b8\u306e\u4eca\u5f8c\u306e\u767a\u751f\u3092\u6291\u5236\u3057\u307e\u3059\u3002
+FUTURE_MESSAGES_SUPPRESSED_CWSIU0002.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that will be suppressed
+
+ALL_MESSAGES_SUPPRESSED_CWSIU0003=CWSIU0003I: \u4ee5\u964d\u306e {0} \u30e1\u30c3\u30bb\u30fc\u30b8\u306e\u767a\u751f\u3092\u6291\u5236\u3057\u307e\u3059\u3002
+ALL_MESSAGES_SUPPRESSED_CWSIU0003.explanation=\u540c\u3058\u30e1\u30c3\u30bb\u30fc\u30b8\u306e\u30b3\u30d4\u30fc\u3067\u30ed\u30b0\u304c\u3044\u3063\u3071\u3044\u306b\u306a\u3089\u306a\u3044\u3088\u3046\u306b\u3001\u5f53\u8a72\u30e1\u30c3\u30bb\u30fc\u30b8\u306e\u4eca\u5f8c\u306e\u767a\u751f\u3092\u3059\u3079\u3066\u6291\u5236\u3057\u307e\u3059\u3002
+ALL_MESSAGES_SUPPRESSED_CWSIU0003.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that has been suppressed
+# {1} is the number of times the message has been suppressed (i.e. not displayed)
+# {2} is the length of the time interval during which the message was suppressed
+# {3} is the time of the first message to be suppressed
+# {4} is the time of the last message to be suppressed
+# {5} is the time interval during which the message will be suppressed again
+
+MESSAGES_SUPPRESSED_CWSIU0004=CWSIU0004I: {0} \u30e1\u30c3\u30bb\u30fc\u30b8\u304c {3} \u304b\u3089 {4} \u306e\u6700\u5f8c\u306e {2} \u5206\u9593\u3067 {1} \u56de\u767a\u751f\u3057\u307e\u3057\u305f\u3002 \
+\u3053\u308c\u304b\u3089\u3053\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u306e\u767a\u751f\u304c\u6b21\u306e {5} \u5206\u9593\u6291\u5236\u3055\u308c\u307e\u3059\u3002
+MESSAGES_SUPPRESSED_CWSIU0004.explanation=\u3053\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u304c\u4f55\u56de\u3082\u767a\u751f\u3057\u307e\u3057\u305f\u304c\u3001\u305d\u306e\u305f\u3073\u306b\u30e1\u30c3\u30bb\u30fc\u30b8\u306e\u8868\u793a\u306f\u6291\u5236\u3055\u308c\u307e\u3057\u305f\u3002
+MESSAGES_SUPPRESSED_CWSIU0004.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that will be suppressed
+# {1} is the time interval during which the message will be suppressed
+
+SOME_FUTURE_MESSAGES_SUPPRESSED_CWSIU0005=CWSIU0005I: \u4ee5\u4e0b\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u306e\u767a\u751f\u306f\u3001\u4eca\u5f8c {1} \u5206\u9593\u3001\u6291\u5236\u3055\u308c\u307e\u3059:  {0}
+SOME_FUTURE_MESSAGES_SUPPRESSED_CWSIU0005.explanation=\u540c\u3058\u30e1\u30c3\u30bb\u30fc\u30b8\u306e\u30b3\u30d4\u30fc\u3067\u30ed\u30b0\u304c\u3044\u3063\u3071\u3044\u306b\u306a\u3089\u306a\u3044\u3088\u3046\u306b\u3001\u5f53\u8a72\u30e1\u30c3\u30bb\u30fc\u30b8\u306e\u4eca\u5f8c\u306e\u767a\u751f\u3092\u6291\u5236\u3057\u307e\u3059\u3002
+SOME_FUTURE_MESSAGES_SUPPRESSED_CWSIU0005.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that will be suppressed
+
+SOME_ALL_MESSAGES_SUPPRESSED_CWSIU0006=CWSIU0006I: \u4ee5\u4e0b\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u306e\u767a\u751f\u306f\u3001\u4eca\u5f8c\u6291\u5236\u3055\u308c\u307e\u3059:  {0}
+SOME_ALL_MESSAGES_SUPPRESSED_CWSIU0006.explanation=\u540c\u3058\u30e1\u30c3\u30bb\u30fc\u30b8\u306e\u30b3\u30d4\u30fc\u3067\u30ed\u30b0\u304c\u3044\u3063\u3071\u3044\u306b\u306a\u3089\u306a\u3044\u3088\u3046\u306b\u3001\u5f53\u8a72\u30e1\u30c3\u30bb\u30fc\u30b8\u306e\u4eca\u5f8c\u306e\u767a\u751f\u3092\u3059\u3079\u3066\u6291\u5236\u3057\u307e\u3059\u3002
+SOME_ALL_MESSAGES_SUPPRESSED_CWSIU0006.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that has been suppressed
+# {1} is the number of times the message has been suppressed (i.e. not displayed)
+# {2} is the length of the time interval during which the message was suppressed
+# {3} is the time of the first message to be suppressed
+# {4} is the time of the last message to be suppressed
+# {5} is the time interval during which the message will be suppressed again
+
+SOME_MESSAGES_SUPPRESSED_CWSIU0007=CWSIU0007I: {0} \u30e1\u30c3\u30bb\u30fc\u30b8\u304c {3} \u304b\u3089 {4} \u306e\u6700\u5f8c\u306e {2} \u5206\u9593\u3067 {1} \u56de\u767a\u751f\u3057\u307e\u3057\u305f\u3002 \
+\u3053\u308c\u304b\u3089\u3053\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u306e\u767a\u751f\u304c\u6b21\u306e {5} \u5206\u9593\u6291\u5236\u3055\u308c\u307e\u3059\u3002
+SOME_MESSAGES_SUPPRESSED_CWSIU0007.explanation=\u3053\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u304c\u4f55\u56de\u3082\u767a\u751f\u3057\u307e\u3057\u305f\u304c\u3001\u305d\u306e\u305f\u3073\u306b\u30e1\u30c3\u30bb\u30fc\u30b8\u306e\u8868\u793a\u306f\u6291\u5236\u3055\u308c\u307e\u3057\u305f\u3002
+SOME_MESSAGES_SUPPRESSED_CWSIU0007.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the illegal character supplied in the topic string
+# {1} is the topic string to be converted from MA0C to SIB
+INVALID_WILDCARD_CHAR_CWSIU0011=CWSIU0011E: \u6587\u5b57 {0} \u306f\u3001SIB \u30c8\u30d4\u30c3\u30af\u30fb\u30ef\u30a4\u30eb\u30c9\u30ab\u30fc\u30c9\u30fb\u30b9\u30c8\u30ea\u30f3\u30b0 {1} \u3067\u306f\u4f7f\u7528\u3067\u304d\u307e\u305b\u3093\u3002
+INVALID_WILDCARD_CHAR_CWSIU0011.explanation=\u7591\u554f\u7b26 (?) \u6587\u5b57\u306f\u3001SIB \u30c8\u30d4\u30c3\u30af\u30fb\u30ef\u30a4\u30eb\u30c9\u30ab\u30fc\u30c9\u69cb\u6587\u3067\u306f\u4f7f\u7528\u3067\u304d\u307e\u305b\u3093\u3002
+INVALID_WILDCARD_CHAR_CWSIU0011.useraction=\u6307\u5b9a\u3055\u308c\u305f\u30c8\u30d4\u30c3\u30af\u30fb\u30ef\u30a4\u30eb\u30c9\u30ab\u30fc\u30c9\u30fb\u30b9\u30c8\u30ea\u30f3\u30b0\u304b\u3089\u7591\u554f\u7b26 (?) \u6587\u5b57\u306e\u3042\u308b\u30a4\u30f3\u30b9\u30bf\u30f3\u30b9\u3092\u9664\u53bb\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the topic string to be converted from MA0C to SIB
+INVALID_ASTERIX_WILDCARD_CWSIU0012=CWSIU0012E: \u30c8\u30d4\u30c3\u30af\u30fb\u30b9\u30c8\u30ea\u30f3\u30b0 {0} \u306b\u306f\u3001\u5206\u96e2\u3055\u308c\u3066\u3044\u306a\u3044\u30a2\u30b9\u30bf\u30ea\u30b9\u30af\u6587\u5b57\u304c\u542b\u307e\u308c\u3066\u3044\u308b\u306e\u3067\u3001SIB \u69cb\u6587\u306b\u5909\u63db\u3067\u304d\u307e\u305b\u3093\u3002
+INVALID_ASTERIX_WILDCARD_CWSIU0012.explanation=\u30a2\u30b9\u30bf\u30ea\u30b9\u30af\u6587\u5b57\u306f\u3001\u30b9\u30e9\u30c3\u30b7\u30e5\u3067\u5b8c\u5168\u306b\u5206\u96e2\u3055\u308c\u3066\u3044\u306a\u3044\u9650\u308a\u3001SIB \u30ef\u30a4\u30eb\u30c9\u30ab\u30fc\u30c9\u69cb\u6587\u3067\u4f7f\u7528\u3067\u304d\u307e\u305b\u3093\u3002
+INVALID_ASTERIX_WILDCARD_CWSIU0012.useraction=\u6307\u5b9a\u3055\u308c\u305f\u30c8\u30d4\u30c3\u30af\u30fb\u30b9\u30c8\u30ea\u30f3\u30b0\u5185\u306e\u30a2\u30b9\u30bf\u30ea\u30b9\u30af\u306e\u4e21\u5074\u306b\u30b9\u30e9\u30c3\u30b7\u30e5\u304c\u3042\u308b\u3053\u3068\u3092\u78ba\u8a8d\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property file that can not be loaded
+# {1} is the exception thrown when the file can not be loaded
+EXCP_DURING_LOAD_CWSIU0050=CWSIU0050E: \u4f8b\u5916 {1} \u306e\u305f\u3081\u3001\u30d7\u30ed\u30d1\u30c6\u30a3\u30fc\u30fb\u30d5\u30a1\u30a4\u30eb {0} \u3092\u30ed\u30fc\u30c9\u3067\u304d\u307e\u305b\u3093\u3002
+EXCP_DURING_LOAD_CWSIU0050.explanation=CMSG0001
+EXCP_DURING_LOAD_CWSIU0050.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name
+# {1} is the value of the Exception
+CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_CWSIU0051=CWSIU0051E: \u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002  \u4f8b\u5916 {1} \u306e\u305f\u3081\u3001\u30af\u30e9\u30b9 {0} \u306e\u30aa\u30d6\u30b8\u30a7\u30af\u30c8\u3092\u4f5c\u6210\u3067\u304d\u307e\u305b\u3093\u3002
+CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_CWSIU0051.explanation=CMSG0001
+CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_CWSIU0051.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that has been suppressed
+# {1} is the time that the message was suppressed
+A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0101=CWSIU0101I: \u4ee5\u524d\u306b\u767a\u751f\u3057\u305f {0} \u30e1\u30c3\u30bb\u30fc\u30b8\u306f {1} \u306b\u6291\u5236\u3055\u308c\u307e\u3057\u305f\u3002
+A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0101.explanation=\u3053\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u306f\u4ee5\u524d\u306b\u767a\u751f\u3057\u307e\u3057\u305f\u304c\u3001\u6700\u65b0\u306e\u3082\u306e\u306f\u6291\u5236\u3055\u308c\u307e\u3057\u305f\u3002
+A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0101.useraction=\u306a\u3057
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that has been suppressed
+# {1} is the number of times the message has been suppressed (i.e. not displayed)
+# {2} is the time of the first message to be suppressed
+# {3} is the time of the last message to be suppressed
+MESSAGES_SUPPRESSED_EARLIER_CWSIU0102=CWSIU0102I: \u30e1\u30c3\u30bb\u30fc\u30b8 {0} \u306f\u3001{2} \u3068 {3} \u3068\u306e\u9593\u306b {1} \u56de\u767a\u751f\u3057\u307e\u3057\u305f\u304c\u3001\u6291\u5236\u3055\u308c\u307e\u3057\u305f\u3002
+MESSAGES_SUPPRESSED_EARLIER_CWSIU0102.explanation=\u3053\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u304c\u4f55\u56de\u3082\u767a\u751f\u3057\u307e\u3057\u305f\u304c\u3001\u305d\u306e\u305f\u3073\u306b\u30e1\u30c3\u30bb\u30fc\u30b8\u306e\u8868\u793a\u306f\u6291\u5236\u3055\u308c\u307e\u3057\u305f\u3002
+MESSAGES_SUPPRESSED_EARLIER_CWSIU0102.useraction=\u306a\u3057
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that has been suppressed
+# {1} is the time of the first message to be suppressed
+SOME_A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0103=CWSIU0103I: \u4ee5\u524d\u306b\u767a\u751f\u3057\u305f\u300c{0}\u300d\u306f {1} \u306b\u6291\u5236\u3055\u308c\u307e\u3057\u305f\u3002
+SOME_A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0103.explanation=\u3053\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u306f\u4ee5\u524d\u306b\u767a\u751f\u3057\u307e\u3057\u305f\u304c\u3001\u73fe\u5728\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u306e\u524d\u3067\u6700\u65b0\u306e\u3082\u306e\u306f\u6291\u5236\u3055\u308c\u307e\u3057\u305f\u3002
+SOME_A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0103.useraction=\u306a\u3057
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that has been suppressed
+# {1} is the number of times the message has been suppressed (i.e. not displayed)
+# {2} is the time of the first message to be suppressed
+# {3} is the time of the last message to be suppressed
+SOME_MESSAGES_SUPPRESSED_EARLIER_CWSIU0104=CWSIU0104I: \u300c{0}\u300d\u306f\u3001{2} \u3068 {3} \u3068\u306e\u9593\u306b {1} \u56de\u767a\u751f\u3057\u307e\u3057\u305f\u304c\u3001\u6291\u5236\u3055\u308c\u307e\u3057\u305f\u3002
+SOME_MESSAGES_SUPPRESSED_EARLIER_CWSIU0104.explanation=\u3053\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u304c\u4f55\u56de\u3082\u767a\u751f\u3057\u307e\u3057\u305f\u304c\u3001\u305d\u306e\u305f\u3073\u306b\u30e1\u30c3\u30bb\u30fc\u30b8\u306e\u8868\u793a\u306f\u6291\u5236\u3055\u308c\u307e\u3057\u305f\u3002
+SOME_MESSAGES_SUPPRESSED_EARLIER_CWSIU0104.useraction=\u306a\u3057
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect hexadecimal string
+BAD_HEX_STRING_CWSIU0200=CWSIU0200E: 16 \u9032\u6570\u30b9\u30c8\u30ea\u30f3\u30b0 {0} \u306e\u30d5\u30a9\u30fc\u30de\u30c3\u30c8\u306b\u8aa4\u308a\u304c\u3042\u308a\u307e\u3059\u3002
+BAD_HEX_STRING_CWSIU0200.explanation=\u30b9\u30c8\u30ea\u30f3\u30b0\u304b\u3089\u30d0\u30a4\u30c8\u914d\u5217\u306b\u5909\u63db\u3057\u3088\u3046\u3068\u3057\u307e\u3057\u305f\u304c\u3001\u30b9\u30c8\u30ea\u30f3\u30b0\u304c 16 \u9032\u6587\u5b57\u4ee5\u5916\u306e\u6587\u5b57\u307e\u305f\u306f\u5947\u6570\u500b\u306e\u6587\u5b57\u3092\u542b\u3080\u305f\u3081\u3001\u5931\u6557\u3057\u307e\u3057\u305f\u3002
+BAD_HEX_STRING_CWSIU0200.useraction=\u5909\u63db\u304c\u5931\u6557\u3057\u305f\u30b9\u30c8\u30ea\u30f3\u30b0\u306e\u5185\u5bb9\u3092\u78ba\u8a8d\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIU9999=CWSIU9999E: {0}
+TEMPORARY_CWSIU9999.explanation=\u3053\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u306e\u60c5\u5831\u3060\u3051\u3067\u306f\u4e0d\u5341\u5206\u306a\u5834\u5408\u3001\u8a73\u7d30\u306f\u3053\u306e\u524d\u306b\u30e1\u30c3\u30bb\u30fc\u30b8\u304c\u3042\u308c\u3070\u3001\u305d\u308c\u3089\u3092\u30c1\u30a7\u30c3\u30af\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+TEMPORARY_CWSIU9999.useraction=\u554f\u984c\u3092\u89e3\u6c7a\u3067\u304d\u306a\u3044\u5834\u5408\u306f\u3001\u30b7\u30b9\u30c6\u30e0\u7ba1\u7406\u8005\u306b\u554f\u984c\u89e3\u6c7a\u3092\u4f9d\u983c\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+

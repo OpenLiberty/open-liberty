@@ -1,0 +1,60 @@
+
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#COMPONENTPREFIX CWWKG
+#COMPONENTNAMEFOR CWWKG WebSphere kernel config schema strings
+#CMVCPATHNAME com.ibm.ws.config/resources/com/ibm/ws/config/internal/resources/SchemaData.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#
+# Message prefix block: CWWKG1001 - CWWKG1020
+
+config.internal.metatype.includeType.documentation=Konfigurationsressource angeben, die in die Serverkonfiguration eingeschlossen werden soll
+config.internal.metatype.includeType.label=Einschlie\u00dfen
+config.internal.metatype.includeType.attribute.optional.documentation=\u00dcberspringen der eingeschlossenen Datei zulassen, wenn sie nicht gefunden wird
+config.internal.metatype.includeType.attribute.optional.label=Ressource ist optional
+config.internal.metatype.includeType.attribute.location.documentation=Gibt die Ressourcenposition an. Dies kann ein Dateipfad oder eine URI f\u00fcr eine ferne Ressource sein.
+config.internal.metatype.includeType.attribute.location.label=Position
+config.internal.metatype.includeType.attribute.onConflict.documentation=Gibt das Verhalten an, das f\u00fcr die Zusammenf\u00fchrung von Elementen verwendet wird, wenn Konflikte gefunden werden.
+config.internal.metatype.includeType.attribute.onConflict.label=Bei Konflikt
+
+config.internal.metatype.variableDefinitionType.documentation=Deklarieren Sie eine neue Variable, indem Sie den Namen und den Wert f\u00fcr die Variable angeben.
+config.internal.metatype.variableDefinitionType.label=Variablendeklaration
+config.internal.metatype.variableDefinitionType.name.documentation=Der Name der Variablen.
+config.internal.metatype.variableDefinitionType.name.label=Name
+config.internal.metatype.variableDefinitionType.value.documentation=Der Wert, der der Variablen zugeordnet werden soll.
+config.internal.metatype.variableDefinitionType.value.label=Wert
+
+config.internal.metatype.duration.desc=Geben Sie eine positive ganze Zahl, gefolgt von einer Zeiteinheit, an. Die g\u00fcltigen Zeiteinheiten sind Stunden (h), Minuten (m), Sekunden (s) und Millisekunden (ms). Geben Sie 500 Millisekunden beispielsweise als 500ms an. Sie k\u00f6nnen mehrere Werte in einen einzigen Eintrag einschlie\u00dfen. 1s500ms entspricht beispielsweise 1,5 Sekunden.
+config.internal.metatype.duration-s.desc=Geben Sie eine positive ganze Zahl, gefolgt von einer Zeiteinheit, an. Die g\u00fcltigen Zeiteinheiten sind Stunden (h), Minuten (m) und Sekunden (s). Geben Sie 30 Sekunden beispielsweise als 30s an. Sie k\u00f6nnen mehrere Werte in einen einzigen Eintrag einschlie\u00dfen. 1m30s entspricht beispielsweise 90 Sekunden.
+config.internal.metatype.duration-m.desc=Geben Sie eine positive ganze Zahl, gefolgt von einer Zeiteinheit, an. Die g\u00fcltigen Zeiteinheiten sind Stunden (h) und Minuten (m). Geben Sie 30 Minuten beispielsweise als 30m an. Sie k\u00f6nnen mehrere Werte in einen einzigen Eintrag einschlie\u00dfen. 1h30m entspricht beispielsweise 90 Minuten.
+config.internal.metatype.duration-h.desc=Geben Sie eine positive ganze Zahl, gefolgt von der Zeiteinheit, an. Die g\u00fcltige Zeiteinheit sind Stunden (h). Geben Sie 12 Stunden beispielsweise als 12h an. 
+
+config.internal.metatype.pid.reference.type=Konfigurations-ID des Typs {0} (Zeichenfolge).
+config.internal.metatype.pid.reference.list.type=Liste der Konfigurations-ID des Typs {0} (durch Kommas getrennte Zeichenfolge).
+config.internal.metatype.pid.reference.nested.type=Element des Typs {0}.
+
+config.internal.metatype.type.desc=PID ist {0}.
+config.internal.metatype.type.child.desc=Die PID ist {0}. Die PID ist das untergeordnete Element des komplexen Typs <q>{1}</q>.
+
+config.internal.metatype.id.documentation=Eine eindeutige Konfigurations-ID.
+config.internal.metatype.id.label=ID
+
+config.internal.metatype.onConflictType.merge.label=Miteinander in Konflikt stehende Elemente werden zusammengef\u00fchrt.
+config.internal.metatype.onConflictType.replace.label=Wenn Elemente miteinander in Konflikt stehen, ersetzt das Element aus der eingeschlossenen Datei das Konfliktelement.
+config.internal.metatype.onConflictType.ignore.label=Miteinander in Konflikt stehende Elemente in der eingeschlossenen Datei werden ignoriert.
+config.internal.metatype.onConflictType.break.label=Miteinander in Konflikt stehende Elemente f\u00fchren zu Konfigurationsfehlern.
+
+OSGI_SERVICE_ERROR=CWWKG1001E: OSGi-Service {0} ist nicht verf\u00fcgbar. Versuchen Sie, den Server mit der Option --clean erneut zu starten.
+OSGI_SERVICE_ERROR.explanation=Dieser interne Serverfehler ist aufgetreten, weil der angegebene Service nicht verf\u00fcgbar ist.
+OSGI_SERVICE_ERROR.useraction=Starten Sie den Server mit der Option --clean erneut.

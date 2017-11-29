@@ -1,0 +1,157 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service: tcp channel
+#CMVCPATHNAME com.ibm.ws.channelfw/resources/com/ibm/ws/tcpchannel/internal/resources/TCPChannelMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#ISMESSAGEFILE TRUE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+### TCP channel will use message numbers 0200-0399
+
+#Configuration and initialization errors
+MAX_OPEN_CONNECTIONS_INVALID=CWWKO0200E: A megnyitott kapcsolatok maxim\u00e1lis sz\u00e1ma ({0}) \u00e9rv\u00e9nytelen. Az \u00e9rv\u00e9nyes \u00e9rt\u00e9kek: nem kisebb, mint {1} \u00e9s nem nagyobb, mint {2}.
+MAX_OPEN_CONNECTIONS_INVALID.explanation=Nincsenek tov\u00e1bbi inform\u00e1ci\u00f3k.
+MAX_OPEN_CONNECTIONS_INVALID.useraction=Jav\u00edtsa ki a konfigur\u00e1ci\u00f3s hib\u00e1t.
+
+INACTIVITY_TIMEOUT_INVALID=CWWKO0201E: A(z) {0} inaktivit\u00e1si id\u0151korl\u00e1tja \u00e9rv\u00e9nytelen. Az \u00e9rv\u00e9nyes \u00e9rt\u00e9kek: nem kisebb, mint {1} \u00e9s nem nagyobb, mint {2}.
+INACTIVITY_TIMEOUT_INVALID.explanation=Nincsenek tov\u00e1bbi inform\u00e1ci\u00f3k.
+INACTIVITY_TIMEOUT_INVALID.useraction=Jav\u00edtsa ki a konfigur\u00e1ci\u00f3s hib\u00e1t.
+
+ADDRESS_EXCLUDE_LIST_INVALID=CWWKO0202E: A(z) {0} TCP csatorna c\u00edm kiz\u00e1r\u00e1si list\u00e1j\u00e1ban l\u00e9v\u0151 egyik bejegyz\u00e9s \u00e9rv\u00e9nytelen. 
+ADDRESS_EXCLUDE_LIST_INVALID.explanation= A list\u00e1ban minden bejegyz\u00e9snek egy \u00e9rv\u00e9nyes karaktersorozatnak kell lennie.
+ADDRESS_EXCLUDE_LIST_INVALID.useraction=Jav\u00edtsa ki a konfigur\u00e1ci\u00f3s hib\u00e1t.
+
+ADDRESS_INCLUDE_LIST_INVALID=CWWKO0203E: A(z) {0} TCP csatorna c\u00edm tartalmaz\u00e1si list\u00e1j\u00e1ban l\u00e9v\u0151 egyik bejegyz\u00e9s \u00e9rv\u00e9nytelen.
+ADDRESS_INCLUDE_LIST_INVALID.explanation= A list\u00e1ban minden bejegyz\u00e9snek egy \u00e9rv\u00e9nyes karaktersorozatnak kell lennie.
+ADDRESS_INCLUDE_LIST_INVALID.useraction=Jav\u00edtsa ki a konfigur\u00e1ci\u00f3s hib\u00e1t.
+
+HOST_NAME_EXCLUDE_LIST_INVALID=CWWKO0204E: A(z) {0} TCP csatorna hosztn\u00e9v kiz\u00e1r\u00e1si list\u00e1j\u00e1ban l\u00e9v\u0151 egyik bejegyz\u00e9s \u00e9rv\u00e9nytelen.
+HOST_NAME_EXCLUDE_LIST_INVALID.explanation= A list\u00e1ban minden bejegyz\u00e9snek egy \u00e9rv\u00e9nyes karaktersorozatnak kell lennie.
+HOST_NAME_EXCLUDE_LIST_INVALID.useraction=Jav\u00edtsa ki a konfigur\u00e1ci\u00f3s hib\u00e1t.
+
+HOST_NAME_INCLUDE_LIST_INVALID=CWWKO0205E: A(z) {0} TCP csatorna hosztn\u00e9v tartalmaz\u00e1si list\u00e1j\u00e1ban l\u00e9v\u0151 egyik bejegyz\u00e9s \u00e9rv\u00e9nytelen. 
+HOST_NAME_INCLUDE_LIST_INVALID.explanation= A list\u00e1ban minden bejegyz\u00e9snek egy \u00e9rv\u00e9nyes karaktersorozatnak kell lennie.
+HOST_NAME_INCLUDE_LIST_INVALID.useraction=Jav\u00edtsa ki a konfigur\u00e1ci\u00f3s hib\u00e1t.
+
+NOT_VALID_CUSTOM_PROPERTY=CWWKO0206E: A(z) {0} TCP csatorna {1} egy\u00e9ni tulajdons\u00e1g\u00e1nak \u00e9rt\u00e9ke {2}. Ez az \u00e9rt\u00e9k \u00e9rv\u00e9nytelen.
+NOT_VALID_CUSTOM_PROPERTY.explanation=Egy egy\u00e9ni tulajdons\u00e1g olyan \u00e9rt\u00e9kkel lett megadva, amely k\u00edv\u00fcl esik az \u00e9rv\u00e9nyes \u00e9rt\u00e9kek tartom\u00e1ny\u00e1n.
+NOT_VALID_CUSTOM_PROPERTY.useraction=Jav\u00edtsa ki a konfigur\u00e1ci\u00f3s hib\u00e1t.
+
+CONFIG_VALUE_NUMBER_EXCEPTION=CWWKO0207E: A(z) {0} TCP csatorna egyik tulajdons\u00e1ga helytelen sz\u00e1m\u00e9rt\u00e9kkel lett megadva. Tulajdons\u00e1gn\u00e9v: {1}  \u00c9rt\u00e9k: {2}
+CONFIG_VALUE_NUMBER_EXCEPTION.explanation=A megadott TCP csatorna tulajdons\u00e1g\u00e9rt\u00e9k nem egy \u00e9rv\u00e9nyes sz\u00e1m.
+CONFIG_VALUE_NUMBER_EXCEPTION.useraction=Jav\u00edtsa ki a konfigur\u00e1ci\u00f3s hib\u00e1t.
+
+CONFIG_VALUE_NOT_VALID_STRING=CWWKO0208E: A(z) {0} TCP csatorna helytelen konfigur\u00e1ci\u00f3s tulajdons\u00e1g \u00e9rt\u00e9kkel ker\u00fclt l\u00e9trehoz\u00e1sra. N\u00e9v: {1}  \u00c9rt\u00e9k: {2}
+CONFIG_VALUE_NOT_VALID_STRING.explanation=A megadott TCP csatorna tulajdons\u00e1g\u00e9rt\u00e9k nem a tulajdons\u00e1g \u00e9rv\u00e9nyes \u00e9rt\u00e9ktartom\u00e1ny\u00e1ba esik.
+CONFIG_VALUE_NOT_VALID_STRING.useraction=Jav\u00edtsa ki a konfigur\u00e1ci\u00f3s hib\u00e1t.
+
+CONFIG_VALUE_NOT_VALID_NULL_STRING=CWWKO0209E: A(z) {0} TCP csatorna null konfigur\u00e1ci\u00f3s tulajdons\u00e1g \u00e9rt\u00e9kkel ker\u00fclt l\u00e9trehoz\u00e1sra. N\u00e9v: {1}
+CONFIG_VALUE_NOT_VALID_NULL_STRING.explanation=A megadott TCP csatorna tulajdons\u00e1g\u00e9rt\u00e9k nem a tulajdons\u00e1g \u00e9rv\u00e9nyes \u00e9rt\u00e9ktartom\u00e1ny\u00e1ba esik.
+CONFIG_VALUE_NOT_VALID_NULL_STRING.useraction=Jav\u00edtsa ki a konfigur\u00e1ci\u00f3s hib\u00e1t.
+
+CONFIG_VALUE_NOT_VALID_BOOLEAN=CWWKO0210E: A(z) {0} TCP csatorna helytelen konfigur\u00e1ci\u00f3s tulajdons\u00e1g \u00e9rt\u00e9kkel ker\u00fclt l\u00e9trehoz\u00e1sra. N\u00e9v: {1}  \u00c9rt\u00e9k: {2} \u00c9rv\u00e9nyes tartom\u00e1ny: false, true
+CONFIG_VALUE_NOT_VALID_BOOLEAN.explanation=A megadott TCP csatorna tulajdons\u00e1g\u00e9rt\u00e9k nem a tulajdons\u00e1g \u00e9rv\u00e9nyes \u00e9rt\u00e9ktartom\u00e1ny\u00e1ba esik.
+CONFIG_VALUE_NOT_VALID_BOOLEAN.useraction=Jav\u00edtsa ki a konfigur\u00e1ci\u00f3s hib\u00e1t.
+
+CONFIG_VALUE_NOT_VALID_INT=CWWKO0211E: A(z) {0} TCP csatorna helytelen konfigur\u00e1ci\u00f3s tulajdons\u00e1g \u00e9rt\u00e9kkel ker\u00fclt l\u00e9trehoz\u00e1sra. N\u00e9v: {1}  \u00c9rt\u00e9k: {2}  \u00c9rv\u00e9nyes tartom\u00e1ny: minimum {3}, maximum {4}
+CONFIG_VALUE_NOT_VALID_INT.explanation=A megadott TCP csatorna tulajdons\u00e1g\u00e9rt\u00e9k nem a tulajdons\u00e1g \u00e9rv\u00e9nyes \u00e9rt\u00e9ktartom\u00e1ny\u00e1ba esik.
+CONFIG_VALUE_NOT_VALID_INT.useraction=Jav\u00edtsa ki a konfigur\u00e1ci\u00f3s hib\u00e1t.
+
+CONFIG_KEY_NOT_VALID=CWWKO0212W: A(z) {0} TCP csatorna helytelen konfigur\u00e1ci\u00f3s tulajdons\u00e1ggal ker\u00fclt l\u00e9trehoz\u00e1sra. Tulajdons\u00e1gn\u00e9v: {1}  \u00c9rt\u00e9k: {2}
+CONFIG_KEY_NOT_VALID.explanation=A megadott TCP csatorna tulajdons\u00e1g neve vagy \u00e9rt\u00e9ke nem ismerhet\u0151 fel.
+CONFIG_KEY_NOT_VALID.useraction=Jav\u00edtsa ki a konfigur\u00e1ci\u00f3s hib\u00e1t.
+
+UNRECOGNIZED_CUSTOM_PROPERTY=CWWKO0213W: A(z) {0} TCP csatorn\u00e1nak van egy konfigur\u00e1lt egy\u00e9ni tulajdons\u00e1ga, amely nem ismerhet\u0151 fel. Tulajdons\u00e1gn\u00e9v: {1}
+UNRECOGNIZED_CUSTOM_PROPERTY.explanation=Az egy\u00e9ni tulajdons\u00e1g helytelen\u00fcl lett megadva.
+UNRECOGNIZED_CUSTOM_PROPERTY.useraction=Jav\u00edtsa ki a konfigur\u00e1ci\u00f3s hib\u00e1t.
+
+NEW_CONFIG_VALUE_NOT_EQUAL=CWWKO0214E: A(z) {0} TCP csatorna friss\u00edt\u00e9s\u00e9re tett k\u00eds\u00e9rlet nem siker\u00fclt. Egy olyan tulajdons\u00e1g \u00e9rt\u00e9ke lett megv\u00e1ltoztatva, amely fut\u00e1si id\u0151ben nem friss\u00edthet\u0151. Tulajdons\u00e1gn\u00e9v: {1}   Jelenlegi \u00e9rt\u00e9k: {2}   Sikertelen\u00fcl friss\u00edtett \u00e9rt\u00e9k: {3}
+NEW_CONFIG_VALUE_NOT_EQUAL.explanation=A konfigur\u00e1ci\u00f3 friss\u00edt\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n egy TCP csatorna tulajdons\u00e1g \u00faj \u00e9rt\u00e9ket kapott. Azonban ez a tulajdons\u00e1g fut\u00e1si id\u0151ben nem friss\u00edthet\u0151 \u00faj \u00e9rt\u00e9kre.
+NEW_CONFIG_VALUE_NOT_EQUAL.useraction=Jav\u00edtsa ki a konfigur\u00e1ci\u00f3s hib\u00e1t.
+
+UPDATED_CONFIG_NOT_IMPLEMENTED=CWWKO0215E: A(z) {0} TCP csatorna friss\u00edt\u00e9s\u00e9re tett k\u00eds\u00e9rlet nem siker\u00fclt.
+UPDATED_CONFIG_NOT_IMPLEMENTED.explanation=Nem siker\u00fclt friss\u00edteni a megadott TCP csatorn\u00e1t, mert az \u00faj konfigur\u00e1ci\u00f3 nem egy \u00e9rv\u00e9nyes konfigur\u00e1ci\u00f3 volt.
+UPDATED_CONFIG_NOT_IMPLEMENTED.useraction=Jav\u00edtsa ki a konfigur\u00e1ci\u00f3s hib\u00e1t.
+
+NO_ENDPOINT_NAME=CWWKO0216E: A(z) {0} TCP csatorn\u00e1hoz nem lett hozz\u00e1rendelve v\u00e9gpontn\u00e9v.
+NO_ENDPOINT_NAME.explanation=Nincsenek tov\u00e1bbi inform\u00e1ci\u00f3k.
+NO_ENDPOINT_NAME.useraction=Jav\u00edtsa ki a konfigur\u00e1ci\u00f3s hib\u00e1t.
+
+USER_ID_NOT_VALID=CWWKO0217E: A be\u00e1ll\u00edtott felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3, amelyre az ind\u00edt\u00e1s ut\u00e1n \u00e1t kell v\u00e1ltani, \u00e9rv\u00e9nytelen volt.  Felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3: {0}
+USER_ID_NOT_VALID.explanation=A rendszer \u00fagy van be\u00e1ll\u00edtva, hogy ind\u00edt\u00e1s ut\u00e1n \u00e1tv\u00e1ltson egy felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3ra, amely \u00e9rv\u00e9nytelen.
+USER_ID_NOT_VALID.useraction=M\u00f3dos\u00edtsa a be\u00e1ll\u00edtott felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3t egy \u00faj \u00e9rt\u00e9kre.
+
+GROUP_ID_NOT_VALID=CWWKO0218E: A be\u00e1ll\u00edtott csoportazonos\u00edt\u00f3, amelyre az ind\u00edt\u00e1s ut\u00e1n \u00e1t kell v\u00e1ltani, \u00e9rv\u00e9nytelen volt.  Csoportazonos\u00edt\u00f3: {0}
+GROUP_ID_NOT_VALID.explanation=A rendszer \u00fagy van be\u00e1ll\u00edtva, hogy ind\u00edt\u00e1s ut\u00e1n \u00e1tv\u00e1ltson egy csoportazonos\u00edt\u00f3ra, amely \u00e9rv\u00e9nytelen.
+GROUP_ID_NOT_VALID.useraction=M\u00f3dos\u00edtsa a be\u00e1ll\u00edtott csoportazonos\u00edt\u00f3t egy \u00faj \u00e9rt\u00e9kre.
+
+#Runtime messages
+
+TCP_CHANNEL_STARTED=CWWKO0219I: A(z) {0} TCP csatorna elindult, \u00e9s most a(z) {1} hoszt {2} portj\u00e1n figyeli a k\u00e9r\u00e9seket.
+TCP_CHANNEL_STARTED.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+TCP_CHANNEL_STARTED.useraction=Nincs teend\u0151.
+
+TCP_CHANNEL_STOPPED=CWWKO0220I: A(z) {0} UDP csatorna m\u00e1r nem figyeli a k\u00e9r\u00e9seket  a(z) {1} hoszt {2} portj\u00e1n.
+TCP_CHANNEL_STOPPED.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+TCP_CHANNEL_STOPPED.useraction=Nincs teend\u0151.
+
+BIND_ERROR=CWWKO0221E: A(z) {0} TCP csatorna inicializ\u00e1l\u00e1sa nem siker\u00fclt.  A socket k\u00f6t\u00e9s nem siker\u00fclt a(z) {1} hoszton \u00e9s {2} porton.  Lehets\u00e9ges, hogy a port m\u00e1r haszn\u00e1latban van.
+BIND_ERROR.explanation=A socket k\u00f6t\u00e9si m\u0171velet nem siker\u00fclt. A hiba oka \u00e1ltal\u00e1ban az, hogy a portsz\u00e1m m\u00e1r haszn\u00e1latban van.
+BIND_ERROR.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a TCP csatorna a helyes portsz\u00e1m haszn\u00e1lat\u00e1ra van be\u00e1ll\u00edtva.
+
+MAX_CONNS_EXCEEDED=CWWKO0222W: A(z) {0} TCP csatorna t\u00fall\u00e9pte a megnyitott kapcsolatok maxim\u00e1lis sz\u00e1m\u00e1t ({1}).
+MAX_CONNS_EXCEEDED.explanation=A megadott TCP csatorna t\u00fall\u00e9pte a megnyitott kapcsolatok maxim\u00e1lis sz\u00e1m\u00e1t.
+MAX_CONNS_EXCEEDED.useraction=Ha t\u00f6bb kapcsolatra van sz\u00fcks\u00e9g, akkor friss\u00edtse az enged\u00e9lyezett kapcsolatok maxim\u00e1lis sz\u00e1m\u00e1t.
+
+THREAD_DISPATCH_FAILED=CWWKO0223W: A(z) {0} TCP csatorna nem tudott beszerezni sz\u00e1lat a(z) {1} sz\u00e1lk\u00e9szletb\u0151l.
+THREAD_DISPATCH_FAILED.explanation=A megadott TCP csatorna nem tudott beszerezni egy sz\u00e1lat a sz\u00e1lk\u00e9szletb\u0151l, \u00edgy a tov\u00e1bbi k\u00e9r\u00e9sek feldolgoz\u00e1sa k\u00e9slekedhet.
+THREAD_DISPATCH_FAILED.useraction=Ha a CPU nincs teljes m\u00e9rt\u00e9kben kihaszn\u00e1lva, akkor n\u00f6velje a sz\u00e1lak maxim\u00e1lis sz\u00e1m\u00e1t a sz\u00e1lk\u00e9szletben.  M\u00e1sk\u00fcl\u00f6nben cs\u00f6kkentse a bej\u00f6v\u0151 k\u00e9r\u00e9sek sz\u00e1m\u00e1t.
+
+LOCAL_HOST_UNRESOLVED=CWWKO0224E: A(z) {0} FTP csatorna inicializ\u00e1l\u00e1sa meghi\u00fasult.  A(z) {1} hoszt \u00e9s {2} port nem oldhat\u00f3 fel.
+LOCAL_HOST_UNRESOLVED.explanation=A megadott hosztn\u00e9v nem oldhat\u00f3 fel.  A hosztn\u00e9v helytelen\u00fcl lett megadva, vagy nincs meghat\u00e1rozva ezen a rendszeren.
+LOCAL_HOST_UNRESOLVED.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a TCP csatorna a helyes hosztn\u00e9v haszn\u00e1lat\u00e1ra van be\u00e1ll\u00edtva.
+
+PORT_NOT_ACCEPTING=CWWKO0225E: A(z) {1} hoszt {2} portj\u00e1n figyel\u0151 {0} TCP csatorna m\u00e1r nem fogad kapcsolatokat.
+PORT_NOT_ACCEPTING.explanation=A megadott TCP csatorna m\u00e1r nem fogad kapcsolatokat egy porton.  \u00dagy t\u0171nik, hogy a port le van tiltva.
+PORT_NOT_ACCEPTING.useraction=Ha haszn\u00e1lni szeretn\u00e9 a portot, akkor enged\u00e9lyezze azt, majd ind\u00edtsa \u00fajra az alkalmaz\u00e1st.
+
+EVENT_SVC_MISSING=CWWKO0226E: A sz\u00fcks\u00e9ges esem\u00e9ny szolg\u00e1ltat\u00e1s hi\u00e1nyzik.
+EVENT_SVC_MISSING.explanation=A TCP a socket IO m\u0171veletek elv\u00e9gz\u00e9s\u00e9hez megk\u00f6veteli, hogy az esem\u00e9ny szolg\u00e1ltat\u00e1s el\u00e9rhet\u0151 legyen.
+EVENT_SVC_MISSING.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az esem\u00e9ny szolg\u00e1ltat\u00e1s m\u0171k\u00f6dik.
+
+EXECUTOR_SVC_MISSING=CWWKO0227E: A sz\u00fcks\u00e9ges v\u00e9grehajt\u00f3 szolg\u00e1ltat\u00e1s hi\u00e1nyzik.
+EXECUTOR_SVC_MISSING.explanation=A TCP a socket IO m\u0171veletek elv\u00e9gz\u00e9s\u00e9hez megk\u00f6veteli, hogy a v\u00e9grehajt\u00f3 szolg\u00e1ltat\u00e1s el\u00e9rhet\u0151 legyen.
+EXECUTOR_SVC_MISSING.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a "threading" k\u00f6teg akt\u00edv.
+
+TCP_NOT_ACCEPTING=CWWKO0228E: A kiszolg\u00e1l\u00f3 hib\u00e1k miatt le\u00e1ll\u00edtotta a TCP kapcsolatok elfogad\u00e1s\u00e1t. A kiszolg\u00e1l\u00f3 10 perc v\u00e1rakoz\u00e1s ut\u00e1n pr\u00f3b\u00e1lkozik \u00fajra, de sz\u00fcks\u00e9g lehet az \u00fajraind\u00edt\u00e1s\u00e1ra.
+TCP_NOT_ACCEPTING.explanation=A kiszolg\u00e1l\u00f3 nagy sz\u00e1m\u00fa kiv\u00e9tel miatt le\u00e1ll\u00edtotta a kapcsolatok elfogad\u00e1s\u00e1t. Ez a JVM vagy az oper\u00e1ci\u00f3s rendszer probl\u00e9m\u00e1j\u00e1t jelezheti. A kiszolg\u00e1l\u00f3 10 perc m\u00falva pr\u00f3b\u00e1lkozik meg kapcsolatok elfogad\u00e1s\u00e1val.
+TCP_NOT_ACCEPTING.useraction=Vizsg\u00e1lja meg az \u00fczenetet \u00e9s a kiv\u00e9tel napl\u00f3kat csatlakoz\u00e1si vagy f\u00e1jlhivatkoz\u00e1si hib\u00e1k\u00e9rt. Sz\u00fcks\u00e9g lehet a kiszolg\u00e1l\u00f3 \u00fajraind\u00edt\u00e1s\u00e1ra. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, l\u00e9pjen kapcsolatba az IBM term\u00e9kt\u00e1mogat\u00e1ssal.
+
+ZOSAIO_ACTIVATED=CWWKO0229I: A z/OS nat\u00edv aszinkron I/O t\u00e1mogat\u00e1sa aktiv\u00e1lva lett.
+ZOSAIO_ACTIVATED.explanation=A z/OS szolg\u00e1ltat\u00e1son aktiv\u00e1lva lett a Liberty aszinkron TCP/IP sockets I/O, ami az oper\u00e1ci\u00f3s rendszer szintj\u00e9n biztos\u00edtja az aszinkron I/O csomag alapvet\u0151 k\u00e9pess\u00e9geit.
+ZOSAIO_ACTIVATED.useraction=Nincs teend\u0151.
+
+ZOSAIO_DEACTIVATED=CWWKO0230I: A z/OS nat\u00edv aszinkron I/O t\u00e1mogat\u00e1sa le lett \u00e1ll\u00edtva.
+ZOSAIO_DEACTIVATED.explanation=A z/OS szolg\u00e1ltat\u00e1son le lett \u00e1ll\u00edtva a Liberty aszinkron TCP/IP sockets I/O, ami az oper\u00e1ci\u00f3s rendszer szintj\u00e9n biztos\u00edtja az aszinkron I/O csomag alapvet\u0151 k\u00e9pess\u00e9geit.
+ZOSAIO_DEACTIVATED.useraction=Nincs teend\u0151.

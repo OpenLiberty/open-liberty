@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs20.client/resources/com/ibm/ws/jaxrs20/client/internal/resources/JAXRSClientMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS20 Client Code
+#RANGE 0700 - 0799
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# JAXRS 2.0 Client Configuration Message ------------------------
+error.jaxrs.client.configuration.timeout.valueinvalid=CWWKW0700E: Warto\u015b\u0107 limitu czasu {0} podana we w\u0142a\u015bciwo\u015bci {1} po stronie klienta JAX-RS jest niepoprawna. Zostanie ustawiona warto\u015b\u0107 domy\u015blna {2}. {3} 
+error.jaxrs.client.configuration.timeout.valueinvalid.explanation=Warto\u015b\u0107 limitu czasu musi mie\u0107 typ long lub int.  
+error.jaxrs.client.configuration.timeout.valueinvalid.useraction=Ustaw typ warto\u015bci na long lub int.
+
+error.jaxrs.client.configuration.proxy.portinvalid=CWWKW0701E: Warto\u015b\u0107 portu serwera proxy {0} podana we w\u0142a\u015bciwo\u015bci {1} po stronie klienta JAX-RS jest niepoprawna. Zostanie ustawiona warto\u015b\u0107 domy\u015blna {2}. {3}
+error.jaxrs.client.configuration.proxy.portinvalid.explanation=Warto\u015b\u0107 portu serwera proxy musi mie\u0107 typ int.  
+error.jaxrs.client.configuration.proxy.portinvalid.useraction=Ustaw typ warto\u015bci na int.
+
+error.jaxrs.client.configuration.proxy.typeinvalid=CWWKW0702E: Warto\u015b\u0107 typu serwera proxy {0} podana we w\u0142a\u015bciwo\u015bci {1} po stronie klienta JAX-RS jest niepoprawna. Zostanie ustawiona warto\u015b\u0107 domy\u015blna {2}. {3}
+error.jaxrs.client.configuration.proxy.typeinvalid.explanation=Typ serwera proxy musi mie\u0107 warto\u015b\u0107 HTTP lub SOCKS.  
+error.jaxrs.client.configuration.proxy.typeinvalid.useraction=Ustaw warto\u015b\u0107 na HTTP lub SOCKS.
+
+#{0} is the ssl ref id configured in server.xml
+error.jaxrs.client.ssl.invalidsslconfig=CWWKW0703E: Nie mo\u017cna utworzy\u0107 fabryki gniazd SSL, poniewa\u017c identyfikator odwo\u0142ania SSL {0} nie istnieje w pliku server.xml.
+error.jaxrs.client.ssl.invalidsslconfig.explanation= Do wygenerowania fabryki gniazd SSL wymagany jest poprawny identyfikator odwo\u0142ania. Brak konfiguracji SSL o identyfikatorze {0} w pliku server.xml.  
+error.jaxrs.client.ssl.invalidsslconfig.useraction= Ustaw poprawny identyfikator odwo\u0142ania SSL w pliku server.xml.
+
+no_saml_found_in_subject=CWWKW0704W: W podmiocie brak wymaganego znacznika SAML.
+no_saml_found_in_subject.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas wyodr\u0119bniania znacznika SAML z podmiotu lub w bie\u017c\u0105cym podmiocie nie znaleziono elementu SAML.
+no_saml_found_in_subject.useraction=Je\u015bli tworzysz podmiot \u201euruchom jako\u201d, dodaj znacznik SAML do podmiotu. W przeciwnym razie zadbaj o to, aby konfiguracja serwera obs\u0142ugiwa\u0142a dodawanie znacznika SAML do podmiotu \u2013 w tym celu zaznacz atrybut includeTokenInSubject w konfiguracji SAML.
+
+failed_to_extract_saml_token_from_subject=CWWKW0705W: Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by u\u017cycia interfejsu API PropagationHelper SAML. Wyj\u0105tek: [{0}]
+failed_to_extract_saml_token_from_subject.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas wywo\u0142ywania interfejsu API PropagationHelper w celu pobrania znacznika SAML z podmiotu.
+failed_to_extract_saml_token_from_subject.useraction=Upewnij si\u0119, \u017ce w pliku server.xml podano sk\u0142adnik samlWeb-2.0. Ponadto sprawd\u017a w dziennikach serwera dodatkowe informacje dotycz\u0105ce wyj\u0105tku. 
+
+failed_run_as_subject=CWWKW0706E: Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by uzyskania podmiotu RunAsSubject. Wyj\u0105tek: [{0}].
+failed_run_as_subject.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas uzyskiwania podmiotu RunAsSubject.
+failed_run_as_subject.useraction=Upewnij si\u0119, \u017ce serwer jest poprawnie skonfigurowany i uruchomiony.

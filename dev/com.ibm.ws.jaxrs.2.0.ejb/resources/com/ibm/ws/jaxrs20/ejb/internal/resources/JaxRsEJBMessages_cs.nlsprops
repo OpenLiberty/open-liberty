@@ -1,0 +1,40 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs-2.0.ejb/resources/com/ibm/ws/jaxrs20/ejb/internal/resources/JaxRsEJBMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS EJB Code
+#RANGE 1100 - 1199
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+
+
+warning.jaxrs.ejb.resource.mismatch=CWWKW1100W: Rozsah {1} prost\u0159edku JAXRS-2.0 {0} se neshoduje s rozsahem EJB {2}. Liberty z\u00edsk\u00e1 instanci prost\u0159edku od {3}.
+warning.jaxrs.ejb.resource.mismatch.explanation=Pokud se rozsah prost\u0159edku JAXRS-2.0 neshoduje s rozsahem EJB a tato instance prost\u0159edku existuje v EJB, z\u00edsk\u00e1 Liberty tuto instanci prost\u0159edku od EJB.
+warning.jaxrs.ejb.resource.mismatch.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. 
+
+warning.jaxrs.ejb.provider.mismatch=CWWKW1102W: Rozsah EJB poskytovatele JAXRS-2.0 {0} je {1}. Liberty z\u00edsk\u00e1 instanci poskytovatele od {2}.
+warning.jaxrs.ejb.provider.mismatch.explanation=Instance poskytovatele je pouze typu singleton. Liberty z\u00edsk\u00e1 instance poskytovatele od EJB v p\u0159\u00edpad\u011b, \u017ee rozsah EJB poskytovatele je typu Z\u00e1visl\u00fd nebo Vymezen aplikac\u00ed.
+warning.jaxrs.ejb.provider.mismatch.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+warning.failed.instantiate.ejb.instance=CWWKW1103W: Instance EJB pro t\u0159\u00eddu {0} nem\u016f\u017ee b\u00fdt p\u0159evedena na instance. Liberty z\u00edsk\u00e1 instanci od JAXRS.
+warning.failed.instantiate.ejb.instance.explanation= T\u0159\u00edda EJB {0} nem\u00e1 v\u00fdchoz\u00ed konstruktor. Liberty obdr\u017e\u00ed v\u00fdjimku InstantiationException, jakmile se pokus\u00ed p\u0159ev\u00e9st instanci EJB na instance.
+warning.failed.instantiate.ejb.instance.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.failed.toloadejbclass=CWWKW1104W: T\u0159\u00eddu EJB {0} nelze na\u010d\u00edst.
+error.failed.toloadejbclass.explanation= T\u0159\u00eddu EJB {0} nelze na\u010d\u00edst.
+error.failed.toloadejbclass.useraction=Probl\u00e9m vy\u0159e\u0161te opravou aplikace.

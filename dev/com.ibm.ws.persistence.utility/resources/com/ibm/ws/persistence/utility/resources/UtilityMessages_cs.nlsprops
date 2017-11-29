@@ -1,0 +1,113 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.persistence.utility/resources/com/ibm/ws/persistence/utility/resources/UtilityMessages.nlsprops
+#COMPONENTPREFIX CWWKD
+#COMPONENTNAMEFOR CWWKD WebSphere Persistence Service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0100 - 0199: com.ibm.ws.persistence.utility
+# 
+
+#------------------------------------------------------------------------
+# Generic messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# {0} = scriptName, {1}=action.all
+usage=\n\
+Pou\u017eit\u00ed: {0} '{'{1}'}' n\u00e1zevServeru
+action.all=generovat|n\u00e1pov\u011bda
+
+actions=\n\
+Akce:\n\
+\n
+action-key.generate=\ \ \ \ generovat\n
+action-desc.generate=\tGenerujte DDL pro v\u0161echny zkonfigurovan\u00e9 funkce, kter\u00e9 vy\u017eaduj\u00ed DDL pro    \n\
+\tposkytnut\u00fd server.\n\
+\n
+
+action-key.help=\ \ \ \ n\u00e1pov\u011bda\n
+action-desc.help=\tVytiskn\u011bte informace n\u00e1pov\u011bdy pro ur\u010denou akci.\n
+
+generate.help=Pou\u017eit\u00ed:\n\
+\tddlGen generate n\u00e1zevServeru\n\
+\n\
+Popis:\n\
+\tGenerujte DDL (Data Definition Language) pro v\u0161echny funkce, kter\u00e9 jsou\n\
+\tnakonfigurov\u00e1ny na serveru, jen\u017e vy\u017eaduje p\u0159\u00edstup k datab\u00e1zi.
+
+#------------------------------------------------------------------------
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+argument.required=Chyb\u00ed povinn\u00fd argument: {0}.
+action.unrecognized=Nezn\u00e1m\u00e1 akce: {0}.
+
+#------------------------------------------------------------------------
+# Task messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+server.not.found=CWWKD0100E: Server s n\u00e1zvem {0} nebyl nalezen. O\u010dek\u00e1valo se, \u017ee bude v n\u00e1sleduj\u00edc\u00edm um\u00edst\u011bn\u00ed: {1}
+server.not.found.explanation= Nelze naj\u00edt server ur\u010den\u00fd v p\u0159\u00edkazu ddlGen. M\u016f\u017eete ve zpr\u00e1v\u011b naj\u00edt o\u010dek\u00e1van\u00e9 um\u00edst\u011bn\u00ed adres\u00e1\u0159e pro konfiguraci serveru.
+server.not.found.useraction=Ujist\u011bte se, \u017ee je mo\u017en\u00e9 v adres\u00e1\u0159i naj\u00edt konfiguraci serveru uvedenou ve zpr\u00e1v\u011b. Je-li to nezbytn\u00e9, upravte prom\u011bnn\u00e9 WLP_USER_DIR nebo WLP_INSTALL_DIR tak, aby se pou\u017eila spr\u00e1vn\u00e1 cesta k nalezen\u00ed konfigura\u010dn\u00edch soubor\u016f serveru.
+
+local.connector.not.found=CWWKD0101E: Server s n\u00e1zvem {0} nen\u00ed nakonfigurov\u00e1n tak, aby p\u0159ij\u00edmal lok\u00e1ln\u00ed po\u017eadavky JMX.
+local.connector.not.found.explanation=Server ur\u010den\u00fd v p\u0159\u00edkazu ddlGen nen\u00ed nakonfigurov\u00e1n tak, aby p\u0159ij\u00edmal lok\u00e1ln\u00ed po\u017eadavky JMX.
+local.connector.not.found.useraction=Ujist\u011bte se, \u017ee konfigurace serveru zahrnuje funkci localConnector a \u017ee je server spu\u0161t\u011bn\u00fd. Adresa URL po\u017eadovan\u00e1 k nav\u00e1z\u00e1n\u00ed lok\u00e1ln\u00edho p\u0159ipojen\u00ed JMX k tomuto serveru se nach\u00e1z\u00ed v souboru WLP_USER_DIR/logs/state/com.ibm.ws.jmx.local.address.
+
+local.connector.url.empty=CWWKD0102E: Server s n\u00e1zvem {0} m\u00e1 probl\u00e9m se svou konfigurac\u00ed funkce localConnector.
+local.connector.url.empty.explanation=Server ur\u010den\u00fd v p\u0159\u00edkazu ddlGen nen\u00ed nakonfigurov\u00e1n tak, aby p\u0159ij\u00edmal lok\u00e1ln\u00ed po\u017eadavky JMX. Soubor obsahuj\u00edc\u00ed adresu URL pou\u017eitou k vytvo\u0159en\u00ed p\u0159ipojen\u00ed JMX k serveru je pr\u00e1zdn\u00fd.
+local.connector.url.empty.useraction=Ujist\u011bte se, \u017ee konfigurace serveru zahrnuje funkci localConnector a \u017ee je server spu\u0161t\u011bn\u00fd. Adresa URL po\u017eadovan\u00e1 k nav\u00e1z\u00e1n\u00ed lok\u00e1ln\u00edho p\u0159ipojen\u00ed JMX k tomuto serveru se nach\u00e1z\u00ed v souboru WLP_USER_DIR/logs/state/com.ibm.ws.jmx.local.address.
+
+mbean.null.result=CWWKD0103E: Obslu\u017en\u00fd program generov\u00e1n\u00ed DDL nevr\u00e1til v\u00fdsledek.
+mbean.null.result.explanation=Byl vyvol\u00e1n objekt typu MBean, kter\u00fd generuje DDL, ale nebyly vr\u00e1ceny \u017e\u00e1dn\u00e9 v\u00fdsledky. Po\u017eadovan\u00e9 DDL mo\u017en\u00e1 nebylo vygenerov\u00e1no.
+mbean.null.result.useraction=Zkontrolujte protokoly serveru a adres\u00e1\u0159 FFDC, kde m\u016f\u017ee b\u00fdt uvedena chybov\u00e1 zpr\u00e1va nebo v\u00fdjimka. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, nahl\u00e9dn\u011bte do informac\u00ed k ur\u010den\u00ed probl\u00e9mu na webu podpory produktu WebSphere Application Server na adrese: http://www.ibm.com/software/webservers/appserv/was/support.
+
+mbean.bad.result=CWWKD0104E: Obslu\u017en\u00fd program generov\u00e1n\u00ed DDL ozna\u010dil, \u017ee b\u011bhem generov\u00e1n\u00ed DDL do\u0161lo k probl\u00e9mu.
+mbean.bad.result.explanation=Byl vyvol\u00e1n objekt typu MBean, kter\u00fd generuje DDL, ale p\u0159i generov\u00e1n\u00ed DDL do\u0161lo k chyb\u011b. Po\u017eadovan\u00e9 DDL mo\u017en\u00e1 nebylo vygenerov\u00e1no.
+mbean.bad.result.useraction=Zkontrolujte protokoly serveru a adres\u00e1\u0159 FFDC, kde m\u016f\u017ee b\u00fdt uvedena chybov\u00e1 zpr\u00e1va nebo v\u00fdjimka. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, nahl\u00e9dn\u011bte do informac\u00ed k ur\u010den\u00ed probl\u00e9mu na webu podpory produktu WebSphere Application Server na adrese: http://www.ibm.com/software/webservers/appserv/was/support.
+
+mbean.missing.result=CWWKD0105E: Obslu\u017en\u00fd program generov\u00e1n\u00ed DDL nenahl\u00e1sil, zda je operace dokon\u010dena \u00fasp\u011b\u0161n\u011b.
+mbean.missing.result.explanation=Byl vyvol\u00e1n objekt typu MBean, kter\u00fd generuje DDL, do v\u00fdsledku nebyl vr\u00e1cen \u017e\u00e1dn\u00fd k\u00f3d odezvy. Po\u017eadovan\u00e9 DDL mo\u017en\u00e1 nebylo vygenerov\u00e1no.
+mbean.missing.result.useraction=Zkontrolujte protokoly serveru a adres\u00e1\u0159 FFDC, kde m\u016f\u017ee b\u00fdt uvedena chybov\u00e1 zpr\u00e1va nebo v\u00fdjimka. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, nahl\u00e9dn\u011bte do informac\u00ed k ur\u010den\u00ed probl\u00e9mu na webu podpory produktu WebSphere Application Server na adrese: http://www.ibm.com/software/webservers/appserv/was/support.
+
+mbean.missing.output.dir=CWWKD0106E: Obslu\u017en\u00fd program generov\u00e1n\u00ed DDL nevr\u00e1til n\u00e1zev v\u00fdstupn\u00edho adres\u00e1\u0159e.
+mbean.missing.output.dir.explanation=Byl vyvol\u00e1n objekt typu MBean, kter\u00fd generuje DDL, ale v odezv\u011b nebyl uveden v\u00fdstupn\u00ed adres\u00e1\u0159 pro z\u00e1pis DDL. Po\u017eadovan\u00e9 DDL mo\u017en\u00e1 nebylo vygenerov\u00e1no.
+mbean.missing.output.dir.useraction=Zkontrolujte v\u00fdstupn\u00ed adres\u00e1\u0159 c\u00edlov\u00e9ho serveru pro generovan\u00e9 DDL. V\u00fdstupn\u00ed adres\u00e1\u0159 je ur\u010den v procesu serveru nastaven\u00edm prom\u011bnn\u00e9 WLP_OUTPUT_DIR. DDL se vygeneruje do adres\u00e1\u0159e ddl ve v\u00fdstupn\u00edm adres\u00e1\u0159i. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, nahl\u00e9dn\u011bte do informac\u00ed k ur\u010den\u00ed probl\u00e9mu na webu podpory produktu WebSphere Application Server na adrese: http://www.ibm.com/software/webservers/appserv/was/support.
+
+mbean.output.dir=CWWKD0107I: Po\u017eadovan\u00e9 DDL bylo vygenerov\u00e1no do n\u00e1sleduj\u00edc\u00edho adres\u00e1\u0159e: {0}
+mbean.output.dir.explanation=Po\u017eadovan\u00e9 DDL bylo vygenerov\u00e1no a je um\u00edst\u011bno do adres\u00e1\u0159e ozna\u010den\u00e9ho ve zpr\u00e1v\u011b.
+mbean.output.dir.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+mbean.not.found=CWWKD0108W: Objekt typu MBean, kter\u00fd generuje DDL, nen\u00ed aktivn\u00ed na serveru {0}.
+mbean.not.found.explanation=P\u0159ipojen\u00ed JMX bylo nav\u00e1z\u00e1no s c\u00edlov\u00fdm serverem, ale objekt typu MBean generov\u00e1n\u00ed DDL nebyl nalezen. Tuto akci lze o\u010dek\u00e1vat, nevy\u017eaduje-li \u017e\u00e1dn\u00e1 funkce v konfiguraci serveru p\u0159\u00edstup do datab\u00e1ze.
+mbean.not.found.useraction=Ov\u011b\u0159te, \u017ee funkce, kterou vy\u017eaduje generov\u00e1n\u00ed DDL, je zkonfigurov\u00e1no na c\u00edlov\u00e9m serveru. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, nahl\u00e9dn\u011bte do informac\u00ed k ur\u010den\u00ed probl\u00e9mu na webu podpory produktu WebSphere Application Server na adrese: http://www.ibm.com/software/webservers/appserv/was/support.
+
+exception.catch=CWWKD0109E: Do\u0161lo k v\u00fdjimce obslu\u017enou rutinou generov\u00e1n\u00ed DDL: {0}
+exception.catch.explanation=Do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce obslu\u017enou rutinou generov\u00e1n\u00ed DDL. Trasov\u00e1n\u00ed z\u00e1sobn\u00edku v\u00fdjimek se vytiskne do souboru protokolu stderr. Obslu\u017en\u00fd program zastav\u00ed zpracov\u00e1n\u00ed.
+exception.catch.useraction=Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, nahl\u00e9dn\u011bte do informac\u00ed k ur\u010den\u00ed probl\u00e9mu na webu podpory produktu WebSphere Application Server na adrese: http://www.ibm.com/software/webservers/appserv/was/support.
+
+no.output.generated=CWWKD0110W: Obslu\u017en\u00fd program generov\u00e1n\u00ed DDL nedodal serveru {0} \u017e\u00e1dn\u00fd v\u00fdstup, proto\u017ee v konfiguraci serveru nejsou \u017e\u00e1dn\u00e9 funkce nebo prost\u0159edky vy\u017eaduj\u00edc\u00ed DDL, anebo proto\u017ee konfigurace serveru obsahovala chyby.
+no.output.generated.explanation=Obslu\u017en\u00fd program generov\u00e1n\u00ed DDL skon\u010dil \u00fasp\u011b\u0161n\u011b, ale v konfiguraci serveru nejsou \u017e\u00e1dn\u00e9 funkce vy\u017eaduj\u00edc\u00ed DDL. Je mo\u017en\u00e9, \u017ee \u010d\u00e1st konfigurace serveru chyb\u00ed nebo obsahuje syntaktickou chybu.
+no.output.generated.useraction=Ov\u011b\u0159te, \u017ee funkce, kter\u00e1 vy\u017eaduje generov\u00e1n\u00ed DDL, je zkonfigurov\u00e1na na c\u00edlov\u00e9m serveru. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, nahl\u00e9dn\u011bte do informac\u00ed k ur\u010den\u00ed probl\u00e9mu na webu podpory produktu WebSphere Application Server na adrese: http://www.ibm.com/software/webservers/appserv/was/support.
+
+server.output.logs.dir.not.found=CWWKD0111E: Adres\u00e1\u0159 protokol\u016f pro server s n\u00e1zvem {0} nebyl nalezen. O\u010dek\u00e1valo se, \u017ee bude v n\u00e1sleduj\u00edc\u00edm um\u00edst\u011bn\u00ed: {1}. Hodnota pro adres\u00e1\u0159 protokol\u016f je vypo\u010dtena pomoc\u00ed prom\u011bnn\u00e9 WLP_OUTPUT_DIR. 
+server.output.logs.dir.not.found.explanation=Adres\u00e1\u0159 protokol\u016f mus\u00ed b\u00fdt dostupn\u00fd pro p\u0159\u00edkaz tak, aby byl schopen vyhledat informace o p\u0159ipojen\u00ed JMX serveru. K t\u00e9to chyb\u011b m\u016f\u017ee doj\u00edt, pokud hodnota prom\u011bnn\u00e9 WLP_OUTPUT_DIR v aktu\u00e1ln\u00edm prost\u0159ed\u00ed nen\u00ed stejn\u00e1 jako hodnota pou\u017eit\u00e1 serverem. 
+server.output.logs.dir.not.found.useraction=Ujist\u011bte se, \u017ee hodnota prom\u011bnn\u00e9 WLP_OUTPUT_DIR odpov\u00edd\u00e1 hodnot\u011b pou\u017eit\u00e9 serverem a \u017ee existuje adres\u00e1\u0159 protokol\u016f. 

@@ -1,0 +1,81 @@
+###############################################################################
+# Copyright (c) 2012, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.concurrent/resources/com/ibm/ws/concurrent/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC EE Managed Concurrency
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1100 to CWWCK1199 except those specifically identified as moved
+
+# Moved from com.ibm.ws.context
+CWWKC1000.unrecognized.property=CWWKC1000E: L''\u00e9l\u00e9ment de configuration {0} contient un attribut non reconnu {1}.
+CWWKC1000.unrecognized.property.explanation=Une propri\u00e9t\u00e9 non reconnue est configur\u00e9e sur un service contextuel.
+CWWKC1000.unrecognized.property.useraction=Supprimez ou corrigez la propri\u00e9t\u00e9 non reconnue.
+
+# Moved from com.ibm.ws.context
+CWWKC1001.context.providers.unavailable=CWWKC1001E: Le contexte d''unit\u00e9 d''ex\u00e9cution configur\u00e9 {0} est indisponible pour l''\u00e9l\u00e9ment de configuration {1}.
+CWWKC1001.context.providers.unavailable.explanation=Le serveur d'application ne peut pas trouver le(s) fournisseur(s) du/des type(s) de contexte d'unit\u00e9 d'ex\u00e9cution indiqu\u00e9(s).
+CWWKC1001.context.providers.unavailable.useraction=V\u00e9rifiez que le ou les fournisseurs du contexte d'unit\u00e9 d'ex\u00e9cution demand\u00e9 sont activ\u00e9s.
+
+# Moved from com.ibm.ws.context
+CWWKC1002.provider.cardinality.violation=CWWKC1002E: L''\u00e9l\u00e9ment de configuration {0} ne peut pas avoir plusieurs sous-\u00e9l\u00e9ments de type {1}.
+CWWKC1002.provider.cardinality.violation.explanation=Au plus, un \u00e9l\u00e9ment de chaque type de fournisseur de contexte peut \u00eatre configur\u00e9 sous un service de contexte.
+CWWKC1002.provider.cardinality.violation.useraction=Supprimez les \u00e9l\u00e9ments de fournisseur de contexte en double de la configuration du service contextuel.
+
+# Moved from com.ibm.ws.context
+CWWKC1020.baseContextRef.infinite=CWWKC1020E: L''attribut baseContextRef de l''\u00e9l\u00e9ment de configuration {0} g\u00e9n\u00e8re une cha\u00eene infinie de d\u00e9pendances.
+CWWKC1020.baseContextRef.infinite.explanation=Une cha\u00eene infinie de d\u00e9pendances existe car baseContextRef d\u00e9signe directement ou indirectement la m\u00eame instance de service contextuel.
+CWWKC1020.baseContextRef.infinite.useraction=Mettez \u00e0 jour la configuration de service contextuel afin de rompre la cha\u00eene infinie de d\u00e9pendances.
+
+CWWKC1100.resource.unavailable=CWWKC1100E: La ressource {0} est indisponible.
+CWWKC1100.resource.unavailable.explanation=Une ressource peut devenir indisponible lorsqu'un serveur est en cours d'arrpet ou en cas de modification de configuration, soit le concernant soit concernant un autre service dont il d\u00e9pend.
+CWWKC1100.resource.unavailable.useraction=V\u00e9rifiez la configuration de la ressource et des ressources dont il d\u00e9pend.
+
+CWWKC1110.task.canceled=CWWKC1110I: La t\u00e2che {0}, qui a \u00e9t\u00e9 soumise au service de programme d''ex\u00e9cution {1}, est annul\u00e9e.
+CWWKC1110.task.canceled.explanation=L'ex\u00e9cution de la t\u00e2che est annul\u00e9e.
+CWWKC1110.task.canceled.useraction=Aucune action n'est requise.
+
+CWWKC1101.task.failed=CWWKC1101E: La t\u00e2che {0}, qui a \u00e9t\u00e9 soumise au service de programme d''ex\u00e9cution {1}, a \u00e9chou\u00e9 avec l''erreur suivante : {2}.
+CWWKC1101.task.failed.explanation=Une t\u00e2che soumise \u00e0 un programme d'ex\u00e9cution a \u00e9chou\u00e9. Veuillez vous reporter au message d'exception pour en conna\u00eetre la cause.
+CWWKC1101.task.failed.useraction=Corrigez la cause de l'\u00e9chec et soumettez la t\u00e2che \u00e0 nouveau.
+
+CWWKC1102.listener.failed=CWWKC1102E: Le programme d''\u00e9coute des t\u00e2ches g\u00e9r\u00e9es de la t\u00e2che {0}, qui a \u00e9t\u00e9 soumis au service de programme d''ex\u00e9cution {1}, a \u00e9chou\u00e9 avec l''erreur suivante : {2}.
+CWWKC1102.listener.failed.explanation=Une op\u00e9ration du programme d'\u00e9coute de t\u00e2ches g\u00e9r\u00e9es a \u00e9chou\u00e9. Veuillez vous reporter au message d'exception pour en conna\u00eetre la cause.
+CWWKC1102.listener.failed.useraction=Corrigez la cause de l'\u00e9chec et d\u00e9cidez si vous souhaitez ou non soumettre la t\u00e2che \u00e0 nouveau.
+
+CWWKC1103.skip.run.failed=CWWKC1103E: L''ex\u00e9cution de la t\u00e2che {0}, qui a \u00e9t\u00e9 soumise au service de programme d''ex\u00e9cution {1}, est ignor\u00e9e car l''op\u00e9ration Trigger.skipRun a \u00e9chou\u00e9 avec l''erreur suivante : {2}.
+CWWKC1103.skip.run.failed.explanation=L'op\u00e9ration skipRun du d\u00e9clencheur a \u00e9chou\u00e9 et la tentative d'ex\u00e9cution en cours de la t\u00e2che a \u00e9t\u00e9 ignor\u00e9e.
+CWWKC1103.skip.run.failed.useraction=Corriger la cause de l'\u00e9chec et d\u00e9cidez si vous souhaitez ou non soumettre la t\u00e2che \u00e0 nouveau.
+
+CWWKC1111.task.invalid=CWWKC1111E: La t\u00e2che {0} n''est pas valide.
+CWWKC1111.task.invalid.explanation=La t\u00e2che ne peut pas \u00eatre soumise car elle n'est pas valide.
+CWWKC1111.task.invalid.useraction=Mettez \u00e0 jour l'application afin de soumettre une t\u00e2che valide sur le service ExecutorService.
+
+CWWKC1112.all.tasks.canceled=CWWKC1112I: Toutes les t\u00e2ches sont annul\u00e9es.
+CWWKC1112.all.tasks.canceled.explanation=Toutes les t\u00e2ches ont \u00e9t\u00e9 annul\u00e9es avant qu'une t\u00e2che puisse \u00eatre appel\u00e9e.
+CWWKC1112.all.tasks.canceled.useraction=Aucune action n'est requise.
+
+CWWKC1120.future.get.rejected=CWWKC1120E: Les \u00e9l\u00e9ments fournis ult\u00e9rieurement aux m\u00e9thodes ManagedTaskListener taskSubmitted et taskStarting ne peuvent pas \u00eatre utilis\u00e9s pour attendre l'ach\u00e8vement des t\u00e2ches.
+CWWKC1120.future.get.rejected.explanation=Le m\u00e9thodes ManagedTaskListener taskSubmitted et taskStarting s'ex\u00e9cutent sur l'unit\u00e9 d'ex\u00e9cution qui va soumettre ou d\u00e9marrer la t\u00e2che. Par cons\u00e9quent, l'\u00e9l\u00e9ment Future fourni pour ces m\u00e9thodes ne doit pas \u00eatre utilis\u00e9 pour attendre la t\u00e2che.
+CWWKC1120.future.get.rejected.useraction=Mettez \u00e0 jour l'application afin d'\u00e9viter que l'appel se poursuive sur l'\u00e9l\u00e9ment Future qui est fourni pour taskSubmitted et taskStarting.
+
+CWWKC1130.xprop.value.invalid=CWWKC1130E: Une t\u00e2che soumise pour le programme d''ex\u00e9cution g\u00e9r\u00e9 {0} contient une propri\u00e9t\u00e9 d''ex\u00e9cution {1} avec la valeur {2} qui n''est pas valide pour les programmes d''ex\u00e9cution g\u00e9r\u00e9s.
+CWWKC1130.xprop.value.invalid.explanation=Certaines valeurs de propri\u00e9t\u00e9 d'ex\u00e9cution ne sont pas valides pour les programmes d'ex\u00e9cution g\u00e9r\u00e9s, mais peuvent l'\u00eatre pour d'autres types de ressource, par exemple le service de contexte ou la fabrique d'unit\u00e9s d'ex\u00e9cution g\u00e9r\u00e9e.
+CWWKC1130.xprop.value.invalid.useraction=Mettez \u00e0 jour l'application afin d'omettre la propri\u00e9t\u00e9 d'ex\u00e9cution ou d\u00e9finissez-la sur une valeur valide.

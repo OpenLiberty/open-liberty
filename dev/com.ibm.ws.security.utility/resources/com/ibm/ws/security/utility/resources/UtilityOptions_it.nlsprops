@@ -1,0 +1,170 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.utility/resources/com/ibm/ws/security/utility/resources/UtilityOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_ALL
+
+global.description=Descrizione:
+global.actions=Azioni:
+global.options=Opzioni:
+global.usage=Uso:
+global.required=Richiesta:
+global.options.statement=\tUtilizzare il comando help [nomeAzione] per informazioni dettagliate sulle opzioni di ciascuna azione.
+
+
+
+# -------- GENERAL OPTIONS -----------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+#Note to translator, please make sure that the the length of the line should
+# not exceed 80 characters. Therefore the \n (CRLF) needs to be placed at or
+# before 72th characters if the line starts with \t.
+# And this statement is applied after the sentences are translated.
+# So please feel free to place \n character at or before 72th characters if
+# the translated sentence is longer than the original sentence.
+
+help.desc=\tStampare le informazioni della guida per l''azione specificata.
+#Note to translator the word "help" should not be translated
+help.usage.options=\t{0} help [nomeAzione]
+
+# -------- ENCODE OPTIONS ------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+encode.desc=\tCodificare il testo fornito.
+#Note to translator the word "encode" should not be translated
+encode.usage.options=\t{0} encode [opzioni]
+encode.option-key.text=\ \ \ \ textToEncode
+encode.option-desc.text=\tSe non viene specificato alcun argomento, lo strumento passer\u00e0\n\
+\t alla modalit\u00e0 interattiva; altrimenti, il testo fornito sar\u00e0 codificato.\n\
+\tIl testo contenente degli spazi dovr\u00e0 essere racchiuso tra virgolette se viene specificato come un argomento.
+encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|hash{1}]
+encode.option-desc.encoding=\tSpecifica come codificare la password. Le codifiche supportate sono xor, aes,\n\
+\te hash. La codifica predefinita \u00e8 xor. {2}
+encode.option-key.key=\ \ \ \ --key=[key]
+encode.option-desc.key=\tSpecifica una chiave da utilizzare quando si esegue la codifica mediante AES. Di questa stringa verr\u00e0 \n\
+\teseguito l''hash per produrre una chiave di codifica che verr\u00e0 utilizzata per codificare e\n\
+\tdecodificare la password. La chiave pu\u00f2 essere fornita al server\n\
+\tdefinendo la variabile wlp.password.encryption.key il cui valore \u00e8 la\n\
+\tchiave. Se questa opzione non viene fornita, verr\u00e0 utilizzata una chiave predefinita.
+encode.option-key.notrim=\ \ \ \ --notrim
+encode.option-desc.notrim=\tSpecifica se i caratteri spazio sono rimossi dall''inizio e\n\
+\tdalla fine del testo specificato. Se questa opzione viene specificata, il testo\n\
+\tfornito verr\u00e0 codificato cos\u00ec com''\u00e8.\n\
+\tSe questa opzione non viene specificata, i caratteri spazio dall''inizio\n\
+\te dalla fine del testo specificato verranno rimossi. 
+encode.option-key.listCustom=\ \ \ \ --listCustom
+encode.option-desc.listCustom=\tVisualizza le informazioni della codifica password personalizzata\n\
+\tin formato JSON (JavaScript Object Notation).\n\
+\tLe informazioni sono:\n\
+\tname : il nome dell''algoritmo di codifica della password personalizzata\n\
+\tfeaturename : il nome della funzione\n\
+\tdescription : la descrizione della codifica password personalizzata
+
+
+
+# -------- CREATE SSL CERTIFICATE OPTIONS --------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+sslCert.desc=\tCreare un certificato SSL predefinito per l''uso da parte della configurazione server o\n\
+\tclient. 
+#Note to translator the word "createSSLCertificate" should not be translated
+sslCert.usage.options=\t{0} createSSLCertificate '{--server nomeserver|--client nomeclient'}  \n\
+\t--password password [opzioni]
+sslCert.required-key.server=\ \ \ \ --server=nome
+sslCert.required-desc.server=\tIl server per cui creare il certificato.  Questo argomento non pu\u00f2 essere\n\
+\tutilizzato se \u00e8 utilizzato l''argomento --client.
+sslCert.required-key.client=\ \ \ \ --client=nome
+sslCert.required-desc.client=\tIl client per cui creare il certificato.  Questo argomento non pu\u00f2 essere\n\
+\tutilizzato se \u00e8 utilizzato l''argomento --server.
+sslCert.required-key.password=\ \ \ \ --password[=pwd]
+sslCert.required-desc.password=\tLa password di keystore, minimo {1} caratteri.\n\
+\tSe non \u00e8 definito alcun valore, verr\u00e0 richiesto di specificarlo.
+sslCert.option-key.validity=\ \ \ \ --validity=giorni
+sslCert.option-desc.validity=\tNumero di giorni di validit\u00e0 del certificato. Il periodo di validit\u00e0 predefinito \u00e8 \n\
+\t{2}. Il periodo di validit\u00e0 minimo \u00e8 {3}.
+sslCert.option-key.subject=\ \ \ \ --subject=DN
+sslCert.option-desc.subject=\tIl DN per il soggetto e l''emittente certificato. Il DN predefinito \u00e8 basato \n\
+\tsul nome host.
+sslCert.option.addon=Il certificato verr\u00e0 creato con alias {4}.\n\
+L''algoritmo chiave \u00e8 {5} e quello di firma \u00e8 {6}.\n\
+Per ulteriore controllo sulla creazione del certificato, utilizzare direttamente keytool.
+sslCert.option-key.password.encoding=\ \ \ \ --passwordEncoding=[xor|aes]
+sslCert.option-desc.password.encoding=\tSpecifica come codificare la password del keystore. Le codifiche supportate sono\n\
+\txor e aes. La codifica predefinita \u00e8 xor.\n\
+\tUtilizzare il comando securityUtility encode --listCustom per vedere se sono supportate\n \tulteriori codifiche personalizzate.
+sslCert.option-key.password.key=\ \ \ \ --passwordKey=[key]
+sslCert.option-desc.password.key=\tSpecifica una chiave da utilizzare durante la codifica della password del keystore utilizzando\n\
+\tAES. Di questa stringa verr\u00e0 eseguito l''hash per produrre una chiave di codifica che\n\
+\tverr\u00e0 utilizzata per codificare e decodificare la password. La chiave pu\u00f2 essere\n\
+\tfornita al server definendo la variabile \n\
+\twlp.password.encryption.key, il cui valore \u00e8 la chiave. Se questa opzione non\n\
+\tviene fornita, verr\u00e0 utilizzata una chiave predefinita.
+
+sslCert.option-key.createConfigFile=\ \ \ \ --createConfigFile=file
+sslCert.option-desc.createConfigFile=\tFacoltativo. Il frammento di codice verr\u00e0 scritto nel file specificato\n\
+\tinvece che nella schermata della console. Quindi, il file pu\u00f2 essere incluso nella \n\
+\tconfigurazione di server.xml utilizzando il frammento di codice fornito.
+
+sslCert.option-key.keySize=\ \ \ \ --keySize=dimensione
+sslCert.option-desc.keySize=\tLa dimensione della chiave del certificato.  \
+La dimensione chiave predefinita \u00e8 {7}.
+
+sslCert.option-key.sigAlg=\ \ \ \ --sigAlg=algoritmo di firma
+sslCert.option-desc.sigAlg=\tL''algoritmo di firma del certificato.\n\
+\tL''algoritmo di firma predefinito \u00e8 {8}.
+
+
+# -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+# Note to translator: the words 'LTPA' and 'ltpa.keys' should not be translated 
+createLTPAKeys.desc=\tCreare una serie di chiavi LTPA per l''uso da parte del server o che possono essere condivise\n\
+\tcon pi\u00f9 server. Se non si specifica un server o un file, viene creato un file ltpa.keys\n\
+\tnella directory di lavoro corrente.
+#Note to translator the word "createLTPAKeys" should not be translated
+createLTPAKeys.usage.options=\t{0} createLTPAKeys --password[=pwd] [opzioni]
+createLTPAKeys.required-key.password=\ \ \ \ --password[=pwd]
+createLTPAKeys.required-desc.password=\tPassword chiavi LTPA. \
+Se non \u00e8 definito alcun valore, verr\u00e0 richiesto di specificarlo.
+createLTPAKeys.option-key.server=\ \ \ \ --server=nome
+createLTPAKeys.option-desc.server=\tIl server per cui creare le chiavi LTPA.\n\
+\tQuesto argomento non pu\u00f2 essere utilizzato se \u00e8 utilizzato l''argomento --file.
+createLTPAKeys.option-key.file=\ \ \ \ --file=name
+createLTPAKeys.option-desc.file=\tIl file in cui scrivere le chiavi LTPA.\n\
+\tQuesto argomento non pu\u00f2 essere utilizzato se \u00e8 utilizzato l''argomento --server.
+createLTPAKeys.option-key.password.encoding=\ \ \ \ --passwordEncoding=[xor|aes]
+createLTPAKeys.option-desc.password.encoding=\tSpecifica come codificare la password delle chiavi LTPA in server.xml.\n\
+\tLe codifiche supportate sono xor e aes. La codifica predefinita \u00e8 xor.\n\
+\tUtilizzare il comando securityUtility encode --listCustom per vedere se sono supportate\n \tulteriori codifiche personalizzate.
+createLTPAKeys.option-key.password.key=\ \ \ \ --passwordKey=[key]
+createLTPAKeys.option-desc.password.key=\tSpecifica una chiave da utilizzare durante la codifica della password delle chiavi LTPA utilizzando\n\
+\tAES. Di questa stringa verr\u00e0 eseguito l''hash per produrre una chiave di codifica che\n\
+\tverr\u00e0 utilizzata per codificare e decodificare la password. La chiave pu\u00f2 essere\n\
+\tfornita al server definendo la variabile \n\
+\twlp.password.encryption.key, il cui valore \u00e8 la chiave. Se questa opzione non\n\
+\tviene fornita, verr\u00e0 utilizzata una chiave predefinita.

@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs20.client/resources/com/ibm/ws/jaxrs20/client/internal/resources/JAXRSClientMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS20 Client Code
+#RANGE 0700 - 0799
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# JAXRS 2.0 Client Configuration Message ------------------------
+error.jaxrs.client.configuration.timeout.valueinvalid=CWWKW0700E: JAX-RS \ud074\ub77c\uc774\uc5b8\ud2b8 \uce21\uc758 \ud2b9\uc131 {1}\uc5d0 \uc9c0\uc815\ub41c \uc81c\ud55c\uc2dc\uac04 \uac12 {0}\uc774(\uac00) \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uac12\uc774 \uae30\ubcf8\uac12 {2}(\uc73c)\ub85c \uc124\uc815\ub418\uc5b4 \uc788\uc2b5\ub2c8\ub2e4. {3} 
+error.jaxrs.client.configuration.timeout.valueinvalid.explanation=\uc81c\ud55c\uc2dc\uac04 \uac12\uc758 \uc720\ud615\uc740 long \ub610\ub294 int\uc5ec\uc57c \ud569\ub2c8\ub2e4.
+error.jaxrs.client.configuration.timeout.valueinvalid.useraction=\uac12\uc758 \uc720\ud615\uc744 long \ub610\ub294 int\ub85c \uc124\uc815\ud558\uc2ed\uc2dc\uc624.
+
+error.jaxrs.client.configuration.proxy.portinvalid=CWWKW0701E: JAX-RS \ud074\ub77c\uc774\uc5b8\ud2b8 \uce21\uc758 \ud2b9\uc131 {1}\uc5d0 \uc9c0\uc815\ub41c \ud504\ub85d\uc2dc \uc11c\ubc84 \ud3ec\ud2b8 \uac12 {0}\uc774(\uac00) \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uac12\uc774 \uae30\ubcf8\uac12 {2}(\uc73c)\ub85c \uc124\uc815\ub418\uc5b4 \uc788\uc2b5\ub2c8\ub2e4. {3}
+error.jaxrs.client.configuration.proxy.portinvalid.explanation=\ud504\ub85d\uc2dc \uc11c\ubc84 \ud3ec\ud2b8 \uac12\uc758 \uc720\ud615\uc740 int\uc5ec\uc57c \ud569\ub2c8\ub2e4. 
+error.jaxrs.client.configuration.proxy.portinvalid.useraction=\uac12\uc758 \uc720\ud615\uc744 int\ub85c \uc124\uc815\ud558\uc2ed\uc2dc\uc624.
+
+error.jaxrs.client.configuration.proxy.typeinvalid=CWWKW0702E: JAX-RS \ud074\ub77c\uc774\uc5b8\ud2b8 \uce21\uc758 \ud2b9\uc131 {1}\uc5d0 \uc9c0\uc815\ub41c \ud504\ub85d\uc2dc \uc11c\ubc84 \uc720\ud615 \uac12 {0}\uc774(\uac00) \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uac12\uc774 \uae30\ubcf8\uac12 {2}(\uc73c)\ub85c \uc124\uc815\ub418\uc5b4 \uc788\uc2b5\ub2c8\ub2e4. {3}
+error.jaxrs.client.configuration.proxy.typeinvalid.explanation=\ud504\ub85d\uc2dc \uc11c\ubc84 \uc720\ud615\uc758 \uac12\uc740 HTTP \ub610\ub294 SOCKS\uc5ec\uc57c \ud569\ub2c8\ub2e4.
+error.jaxrs.client.configuration.proxy.typeinvalid.useraction=\uac12\uc744 HTTP \ub610\ub294 SOCKS\ub85c \uc124\uc815\ud558\uc2ed\uc2dc\uc624.
+
+#{0} is the ssl ref id configured in server.xml
+error.jaxrs.client.ssl.invalidsslconfig=CWWKW0703E: SSL \ucc38\uc870 ID {0}\uc774(\uac00) server.xml \ud30c\uc77c\uc5d0 \uc5c6\uc73c\ubbc0\ub85c SSL \uc18c\ucf13 \ud329\ud1a0\ub9ac\ub97c \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+error.jaxrs.client.ssl.invalidsslconfig.explanation= SSL \uc18c\ucf13 \ud329\ud1a0\ub9ac\ub97c \uc0dd\uc131\ud558\ub824\uba74 \uc720\ud6a8\ud55c \ucc38\uc870 ID\uac00 \ud544\uc694\ud569\ub2c8\ub2e4. server.xml \ud30c\uc77c\uc5d0 ID\uac00 {0}\uc778 SSL \uad6c\uc131\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. 
+error.jaxrs.client.ssl.invalidsslconfig.useraction= server.xml \ud30c\uc77c\uc5d0\uc11c \uc720\ud6a8\ud55c SSL \ucc38\uc870 ID\ub97c \uc124\uc815\ud558\uc2ed\uc2dc\uc624.
+
+no_saml_found_in_subject=CWWKW0704W: \ud544\uc218 SAML \ud1a0\ud070\uc774 \uc8fc\uc81c\uc5d0\uc11c \ub204\ub77d\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+no_saml_found_in_subject.explanation=\uc8fc\uc81c\uc5d0\uc11c SAML \ud1a0\ud070\uc744 \ucd94\ucd9c\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uac70\ub098 \ud604\uc7ac \uc8fc\uc81c\uc5d0 SAML \uc694\uc18c\uac00 \uc5c6\uc2b5\ub2c8\ub2e4.
+no_saml_found_in_subject.useraction=\uc2e4\ud589 \ub3c4\uad6c(run-as) \uc8fc\uc81c\ub97c \uc791\uc131\ud558\ub294 \uacbd\uc6b0 SAML \ud1a0\ud070\uc744 \uc8fc\uc81c\uc5d0 \ucd94\uac00\ud558\ub3c4\ub85d \ud558\uc2ed\uc2dc\uc624. \uadf8\ub807\uc9c0 \uc54a\uc73c\uba74 SAML \uad6c\uc131\uc5d0\uc11c includeTokenInSubject \uc18d\uc131\uc744 \ud655\uc778\ud558\uc5ec \uc11c\ubc84 \uad6c\uc131\uc5d0\uc11c \uc8fc\uc81c\uc5d0 SAML \ud1a0\ud070\uc744 \ucd94\uac00\ud558\ub3c4\ub85d \uc9c0\uc6d0\ud558\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+failed_to_extract_saml_token_from_subject=CWWKW0705W: SAML PropagationHelper API\ub97c \uc0ac\uc6a9\ud558\ub294 \ub3d9\uc548 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc608\uc678: [{0}]
+failed_to_extract_saml_token_from_subject.explanation=\uc8fc\uc81c\uc5d0\uc11c SAML \ud1a0\ud070\uc744 \uac80\uc0c9\ud558\uae30 \uc704\ud574 PropagationHelper API\ub97c \ud638\ucd9c\ud558\ub294 \uc911\uc5d0 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+failed_to_extract_saml_token_from_subject.useraction=server.xml\uc5d0 \uc9c0\uc815\ud55c samlWeb-2.0 \uae30\ub2a5\uc774 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \ub610\ud55c \uc608\uc678\uc5d0 \ub300\ud55c \ucd94\uac00 \uc815\ubcf4\ub294 \uc11c\ubc84 \ub85c\uadf8\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624. 
+
+failed_run_as_subject=CWWKW0706E: RunAsSubject\ub97c \uac00\uc838\uc624\ub294 \uc911 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc608\uc678: [{0}].
+failed_run_as_subject.explanation=RunAsSubject\ub97c \uac00\uc838\uc624\ub294 \uc911 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+failed_run_as_subject.useraction=\uc11c\ubc84\uac00 \uad6c\uc131\ub418\uc5b4 \uc801\uc808\ud788 \uc2dc\uc791\ub418\uc5c8\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.

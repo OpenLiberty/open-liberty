@@ -1,0 +1,53 @@
+###############################################################################
+# Copyright (c) 2012, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO 
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKO1000 - CWWKO1099
+
+HANDLER_NOT_FOUND_ERROR=CWWKO1000E: Aucun gestionnaire enregistr\u00e9 ne correspond \u00e0 l''URL demand\u00e9e {0}.
+HANDLER_NOT_FOUND_ERROR.explanation=Une tentative d'acc\u00e8s a \u00e9t\u00e9 effectu\u00e9e pour une URL qui ne correspondait \u00e0 aucun des gestionnaires enregistr\u00e9s.
+HANDLER_NOT_FOUND_ERROR.useraction=Corrigez l'URL afin qu'elle corresponde \u00e0 un gestionnaire enregistr\u00e9.
+
+OSGI_SERVICE_ERROR=CWWKO1001E: Le service OSGi {0} n''est pas disponible.
+OSGI_SERVICE_ERROR.explanation=Cette erreur de serveur interne est \u00e9mise car le service sp\u00e9cifi\u00e9 n'est pas disponible.
+OSGI_SERVICE_ERROR.useraction=Red\u00e9marrez le serveur en utilisant l'option clean.
+ 
+SSL_CONTEXT_NOT_AVAILABLE=CWWKO1002E: L''exception suivante a \u00e9t\u00e9 rencontr\u00e9e lors de la r\u00e9solution du contexte SSL d''un membre de la collectivit\u00e9 : {0}
+SSL_CONTEXT_NOT_AVAILABLE.explanation=Un contexte SSL n'a pas pu \u00eatre cr\u00e9\u00e9 \u00e0 partir du certificat SSL du membre.
+SSL_CONTEXT_NOT_AVAILABLE.useraction=V\u00e9rifiez la configuration SSL de la collectivit\u00e9, y-compris le contr\u00f4leur et le membre cible.
+
+MISSING_PARAMETER=CWWKO1003E: Un param\u00e8tre requis, {0}, est manquant dans la requ\u00eate https.
+MISSING_PARAMETER.explanation=Le param\u00e8tre sp\u00e9cifi\u00e9 obligatoire est manquant dans la requ\u00eate. 
+MISSING_PARAMETER.useraction=Incluez dans la requ\u00eate le param\u00e8tre sp\u00e9cifi\u00e9 et relancez la requ\u00eate.
+
+MISSING_HEADER=CWWKO1004E: Un en-t\u00eate requis, {0}, est manquant dans la requ\u00eate https.
+MISSING_HEADER.explanation=L'en-t\u00eate sp\u00e9cifi\u00e9 obligatoire est manquant dans la requ\u00eate. 
+MISSING_HEADER.useraction=Incluez dans la requ\u00eate l'en-t\u00eate sp\u00e9cifi\u00e9 et relancez la requ\u00eate.
+
+INVALID_INPUT_VALUE=CWWKO1005E: La zone d''entr\u00e9e nomm\u00e9e {0} contient une valeur non valide.
+INVALID_INPUT_VALUE.explanation=La requ\u00eate comporte une zone d'entr\u00e9e avec une valeur incorrecte. La zone d'entr\u00e9e ne correspond \u00e0 aucun enregistrement dans le syst\u00e8me. 
+INVALID_INPUT_VALUE.useraction=Corrigez la valeur de la zone d'entr\u00e9e et relancez la requ\u00eate.
+
+UNSUPPORTED_MEDIA_TYPE=CWWKO1006E: Le type MIME de la demande, {0}, n''est pas pris en charge. 
+UNSUPPORTED_MEDIA_TYPE.explanation=Le serveur ne peut pas consommer le type MIME de la demande. Le type MIME ne correspond \u00e0 aucun des types MIME attendus. 
+UNSUPPORTED_MEDIA_TYPE.useraction=Corrigez la valeur du type de contenu et relancez la demande.
+

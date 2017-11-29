@@ -1,0 +1,159 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME 
+#COMPONENTPREFIX SRVE
+#COMPONENTNAMEFOR SRVE Servlet Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+failed.to.create.httpupgradehandler=SRVE9000E: Utworzenie interfejsu HttpUpgradeHandler nie powiod\u0142o si\u0119: {0}.  Sprawd\u017a, czy zawiera on konstruktor domy\u015blny i czy mo\u017cna utworzy\u0107 jego instancj\u0119.
+failed.to.create.httpupgradehandler.explanation=Utworzenie interfejsu HttpUpgradeHandler nie powiod\u0142o si\u0119.
+failed.to.create.httpupgradehandler.useraction=Sprawd\u017a dzienniki FFDC, aby uzyska\u0107 bardziej szczeg\u00f3\u0142owe informacje o b\u0142\u0119dzie.
+# --------------------------------
+servlet.31.not.in.use=SRVE9001E: Sk\u0142adnik servlet-3.1 nie jest u\u017cywany.
+servlet.31.not.in.use.explanation=Sk\u0142adnik servlet-3.1 nie jest u\u017cywany.  Prawdopodobnie u\u017cywana jest ju\u017c wcze\u015bniejsza wersja serwletu.
+servlet.31.not.in.use.useraction=Dodaj sk\u0142adnik servlet-3.1 do pliku server.xml.
+# --------------------------------
+# Translation note: {0} = operation being performed, {1} = the listener that called the operation, {2} = the application that contains the listener: SRVE9002E: You cannot start this operation from a programmatically added listener when using servlet-3.1 feature. (Operation: {0} | Listener: {1} | Application: {2})
+Unsupported.op.from.servlet.context.listener.31=SRVE9002E: Tej operacji nie mo\u017cna uruchomi\u0107 z programowo dodanego procesu nas\u0142uchuj\u0105cego, je\u015bli u\u017cywany jest sk\u0142adnik servlet-3.1. (Operacja: {0} | proces nas\u0142uchuj\u0105cy: {1} | aplikacja: {2})
+Unsupported.op.from.servlet.context.listener.31.explanation=Niekt\u00f3re operacje nie mog\u0105 by\u0107 uruchamiane z programowo dodanego obiektu nas\u0142uchiwania, poniewa\u017c nie ma opcji konfiguracji umo\u017cliwiaj\u0105cych ograniczenie ich uruchamiania, gdy s\u0105 zdefiniowane w deskryptorze biblioteki znacznik\u00f3w (plik TLD).
+Unsupported.op.from.servlet.context.listener.31.useraction=Dodaj obiekt nas\u0142uchiwania przy u\u017cyciu adnotacji lub w pliku web.xml, aby umo\u017cliwi\u0107 uruchamianie tej metody.
+# --------------------------------
+# 
+# Notes for translation:
+# {0} is the application name
+handlerClass.is.null=SRVE9003E: Przekazany obiekt HttpUpgradeHandler ma warto\u015b\u0107 NULL dla aplikacji WWW: {0}.
+handlerClass.is.null.explanation=Aktualizacja \u017c\u0105dania nie powiod\u0142a si\u0119, poniewa\u017c przekazany obiekt HttpUpgradeHandler ma warto\u015b\u0107 NULL.
+handlerClass.is.null.useraction= Upewnij si\u0119, \u017ce podany jest poprawny obiekt HttpUpgradeHandler.
+# --------------------------------
+# -------------------------------- -------------------------------- --------------------------------
+# Following messages are added for Read and Write Listener per Java Servlet Specification 
+# -------------------------------- -------------------------------- --------------------------------
+readlistener.is.null=SRVE9004E: Pr\u00f3ba ustawienia obiektu ReadListener nie powiod\u0142a si\u0119, poniewa\u017c obiekt ReadListener mia\u0142 warto\u015b\u0107 NULL.
+readlistener.is.null.explanation=Argument zmiennej przekazany do funkcji API setReadListener musi by\u0107 poprawnym obiektem readListener.
+readlistener.is.null.useraction=Zmodyfikuj kod aplikacji zgodnie z wyja\u015bnieniem b\u0142\u0119du.
+# --------------------------------
+writelistener.is.null=SRVE9005E: Pr\u00f3ba ustawienia obiektu WriteListener nie powiod\u0142a si\u0119, poniewa\u017c obiekt WriteListener mia\u0142 warto\u015b\u0107 NULL.
+writelistener.is.null.explanation=Argument zmiennej przekazany do funkcji API WriteListener musi by\u0107 poprawnym obiektem writeListener.
+writelistener.is.null.useraction=Zmodyfikuj kod aplikacji zgodnie z wyja\u015bnieniem b\u0142\u0119du.
+# --------------------------------
+readlistener.async.not.started=SRVE9006E: Pr\u00f3ba ustawienia obiektu ReadListener nie powiod\u0142a si\u0119, poniewa\u017c dla powi\u0105zanego \u017c\u0105dania nie uruchomiono funkcji asynchronicznej lub \u017c\u0105danie nie zosta\u0142o zaktualizowane.
+readlistener.async.not.started.explanation=Obiekt ReadListener dla \u017c\u0105dania mo\u017cna ustawi\u0107 tylko wtedy, gdy w\u0142\u0105czona jest funkcja asynchroniczna lub je\u015bli zostanie wywo\u0142ana metoda init obiektu UpgradeHandler.
+readlistener.async.not.started.useraction=Zmodyfikuj kod aplikacji zgodnie z wyja\u015bnieniem b\u0142\u0119du.
+# --------------------------------
+writelistener.async.not.started=SRVE9007E: Pr\u00f3ba ustawienia obiektu WriteListener nie powiod\u0142a si\u0119, poniewa\u017c dla powi\u0105zanego \u017c\u0105dania nie uruchomiono funkcji asynchronicznej lub \u017c\u0105danie nie zosta\u0142o zaktualizowane.
+writelistener.async.not.started.explanation=Obiekt WriteListener dla \u017c\u0105dania mo\u017cna ustawi\u0107 tylko wtedy, gdy w\u0142\u0105czona jest funkcja asynchroniczna lub je\u015bli zostanie wywo\u0142ana metoda init obiektu UpgradeHandler.
+writelistener.async.not.started.useraction=Zmodyfikuj kod aplikacji zgodnie z wyja\u015bnieniem b\u0142\u0119du.
+# --------------------------------
+readlistener.already.started=SRVE9008E: Pr\u00f3ba ustawienia obiektu ReadListener nie powiod\u0142a si\u0119, poniewa\u017c obiekt ReadListener jest ju\u017c ustawiony.
+readlistener.already.started.explanation=Nie mo\u017cna ustawi\u0107 obiektu ReadListener wi\u0119cej ni\u017c raz.
+readlistener.already.started.useraction=Zmodyfikuj kod aplikacji zgodnie z wyja\u015bnieniem b\u0142\u0119du.
+# --------------------------------
+writelistener.already.started=SRVE9009E: Pr\u00f3ba ustawienia obiektu WriteListener nie powiod\u0142a si\u0119, poniewa\u017c obiekt WriteListener jest ju\u017c ustawiony.
+writelistener.already.started.explanation=Nie mo\u017cna ustawi\u0107 obiektu WriteListener wi\u0119cej ni\u017c raz.
+writelistener.already.started.useraction=Zmodyfikuj kod aplikacji zgodnie z wyja\u015bnieniem b\u0142\u0119du.
+# --------------------------------
+read.failed.isReady.false=SRVE9010E: Pr\u00f3ba odczytu nie powiod\u0142a si\u0119, poniewa\u017c funkcja API isReady zwraca warto\u015b\u0107 false.
+read.failed.isReady.false.explanation= Je\u015bli funkcja isReady zwraca warto\u015b\u0107 false, wywo\u0142ywanie metody read jest niedozwolone.
+read.failed.isReady.false.useraction= Zmodyfikuj kod aplikacji zgodnie z wyja\u015bnieniem b\u0142\u0119du.
+# --------------------------------
+# -------------------------------- -------------------------------- --------------------------------
+# Following messages for read in SRTUpgradeInputStream31 and write in SRTOutputStream31 per OutputStream Java doc
+# -------------------------------- -------------------------------- --------------------------------
+read.write.bytearray.null=SRVE9011E: Pr\u00f3ba odczytu ze strumienia wej\u015bciowego lub zapisu do strumienia wyj\u015bciowego nie powiod\u0142a si\u0119, poniewa\u017c argument zmiennej byte[] mia\u0142 warto\u015b\u0107 NULL.
+read.write.bytearray.null.explanation=Argument zmiennej byte[] przekazany do funkcji API odczytu lub zapisu nie mo\u017ce mie\u0107 warto\u015bci NULL.
+read.write.bytearray.null.useraction=Zmodyfikuj kod aplikacji zgodnie z wyja\u015bnieniem b\u0142\u0119du.
+# --------------------------------
+# 
+# Notes for translation:
+# {0} is the offset as number
+# {1} is the length as number
+# {2} is the array length as number
+read.write.offset.length.bytearraylength= SRVE9012E: Pr\u00f3ba odczytu lub zapisu nie powiod\u0142a si\u0119, poniewa\u017c przesuni\u0119cie ({0}) lub d\u0142ugo\u015b\u0107 ({1}) argumentu zmiennej maj\u0105 warto\u015b\u0107 ujemn\u0105 albo suma przesuni\u0119cia i d\u0142ugo\u015bci jest wi\u0119ksza ni\u017c podana d\u0142ugo\u015b\u0107 argumentu byte[] ({2}).
+read.write.offset.length.bytearraylength.explanation= Przesuni\u0119cie argumentu zmiennej mia\u0142o warto\u015b\u0107 ujemn\u0105, jego d\u0142ugo\u015b\u0107 mia\u0142a warto\u015b\u0107 ujemn\u0105 lub d\u0142ugo\u015b\u0107 by\u0142a wi\u0119ksza ni\u017c r\u00f3\u017cnica mi\u0119dzy warto\u015bci\u0105 byte[].length i przesuni\u0119ciem.
+read.write.offset.length.bytearraylength.useraction=Zmodyfikuj kod aplikacji i upewnij si\u0119, \u017ce warto\u015b\u0107 przesuni\u0119cia udost\u0119pniona funkcji API odczytu lub zapisu nie jest ujemna. Upewnij si\u0119, \u017ce warto\u015b\u0107 d\u0142ugo\u015bci udost\u0119pniana funkcji API odczytu nie jest ujemna. Upewnij si\u0119 r\u00f3wnie\u017c, \u017ce podana warto\u015b\u0107 d\u0142ugo\u015bci jest wi\u0119ksza ni\u017c d\u0142ugo\u015b\u0107 argumentu byte[] po odj\u0119ciu podanej warto\u015bci przesuni\u0119cia.
+# --------------------------------
+# -------------------------------- --------------------------------
+# Following SEVERE messages for SRTInputStream31
+# -------------------------------- --------------------------------
+# 
+# Notes for translation:
+# {0} is the exception as String
+setReadListener.initialread.failed= SRVE9013E: Wyst\u0105pi\u0142 wyj\u0105tek podczas pocz\u0105tkowego odczytu w czasie ustawiania obiektu ReadListener dla zaktualizowanego \u017c\u0105dania: {0}
+setReadListener.initialread.failed.explanation=Podczas ustawiania obiektu ReadListener proces nas\u0142uchuj\u0105cy podj\u0105\u0142 pr\u00f3b\u0119 odczytu, kt\u00f3ra nie powiod\u0142a si\u0119.
+setReadListener.initialread.failed.useraction=Przejrzyj dzienniki maszyny JVM pod k\u0105tem wyj\u0105tku.
+# --------------------------------
+# -------------------------------- --------------------------------
+# Following SEVERE messages for Session
+# -------------------------------- --------------------------------
+# 
+# Notes for translation:
+# {0} is the path as String
+changeSessionId.no.session.associated.with.request= SRVE9014E: Pr\u00f3ba zmiany identyfikatora sesji nie powiod\u0142a si\u0119, poniewa\u017c \u017cadna sesja nie zosta\u0142a powi\u0105zana z \u017c\u0105daniem dla: {0}
+changeSessionId.no.session.associated.with.request.explanation=Aby zmieni\u0107 identyfikator sesji dla \u017c\u0105dania, nale\u017cy najpierw upewni\u0107 si\u0119, \u017ce u\u017cywane \u017c\u0105danie ma powi\u0105zan\u0105 sesj\u0119.
+changeSessionId.no.session.associated.with.request.useraction=Zmodyfikuj kod aplikacji zgodnie z wyja\u015bnieniem b\u0142\u0119du.
+# --------------------------------
+# -------------------------------- --------------------------------
+# Following SEVERE messages for AysncContext31Impl
+# -------------------------------- --------------------------------
+# 
+# Notes for translation:
+# Do not translate the following terms: AsyncContext.dispatch(),AsyncContext.complete(),AsyncContext.getRequest(),AsyncContext.getResponse(), IllegalStateException, complete(), dispatch()
+asynccontext.getRequestResponse.illegalstateexception= SRVE9015E: Nie mo\u017cna uzyska\u0107 obiektu \u017c\u0105dania lub odpowiedzi po wykonaniu metody AsyncContext.dispatch() lub AsyncContext.complete().
+asynccontext.getRequestResponse.illegalstateexception.explanation= W przypadku serwletu 3.1 i nowszych metody AsyncContext.getRequest() i AsyncContext.getResponse() musz\u0105 zg\u0142asza\u0107 wyj\u0105tek IllegalStateException, je\u015bli w cyklu asynchronicznym zosta\u0142a wywo\u0142ana metoda complete() lub dowolna metoda dispatch(). 
+asynccontext.getRequestResponse.illegalstateexception.useraction=Zmodyfikuj kod aplikacji zgodnie z wyja\u015bnieniem b\u0142\u0119du.
+# ---------------------------------
+#
+# NOTE: Message number SRVE9016E: is used in com.ibm.ws.webcontainer-8.0, see LShimMessages.
+#       Skip to message number SRVE9017 for next message. 
+# 
+# --------------------------------
+# --------------------------------
+stream.is.closed.no.read.write= SRVE9017E: Pr\u00f3ba odczytu lub zapisu zako\u0144czy\u0142a si\u0119 niepowodzeniem, poniewa\u017c strumie\u0144 zosta\u0142 zamkni\u0119ty.
+stream.is.closed.no.read.write.explanation=Interfejs API zapisu w obiekcie OutputStream oraz interfejs API odczytu w obiekcie InputStream wskazuj\u0105, \u017ce mo\u017ce zosta\u0107 zg\u0142oszony wyj\u0105tek IOException, je\u015bli strumie\u0144 zosta\u0142 zamkni\u0119ty.
+stream.is.closed.no.read.write.useraction=Zmodyfikuj kod aplikacji zgodnie z wyja\u015bnieniem b\u0142\u0119du.
+# -----------------------------------------------
+# -------------------------------- --------------------------------
+# Following SEVERE messages for AysncContext31Impl
+# -------------------------------- --------------------------------
+#
+# Notes for translation:
+# Do not translate the following terms: content-length
+post.body.contains.less.bytes.than.specified=SRVE0216E: Tre\u015b\u0107 \u017c\u0105dania POST zawiera mniej bajt\u00f3w ni\u017c podano w nag\u0142\u00f3wku content-length.
+post.body.contains.less.bytes.than.specified.explanation=\u017b\u0105danie przychodz\u0105ce mo\u017ce by\u0107 b\u0142\u0119dnie zbudowane lub uszkodzone w wyniku b\u0142\u0119du aplikacji po stronie klienta b\u0105d\u017a b\u0142\u0119du sieciowego.
+post.body.contains.less.bytes.than.specified.useraction=Sprawd\u017a aplikacj\u0119 po stronie klienta lub sie\u0107, aby okre\u015bli\u0107 przyczyn\u0119 obci\u0119cia \u017c\u0105dania.
+# --------------------------------
+#
+# NOTE: Message number SRVE9018E is used as SRV0216E in com.ibm.ws.webcontainer-8.0, see Messages.nlsprops.
+#       Skip to message number SRVE9018 for next message. 
+# 
+# --------------------------------
+# 
+# Notes for translation:
+# {0} WriteListener class name
+# 
+blocking.write.not.allowed=SRVE0918E: Pr\u00f3ba blokowania zapisu jest niedozwolona, poniewa\u017c nieblokuj\u0105ce we/wy ju\u017c zosta\u0142o uruchomione przez aplikacj\u0119 rejestruj\u0105c\u0105 proces nas\u0142uchuj\u0105cy WriteListener [{0}].
+blocking.write.not.allowed.explanation=Nie mo\u017cna zako\u0144czy\u0107 \u017c\u0105danego blokowania zapisu, poniewa\u017c ju\u017c uruchomiono nieblokuj\u0105ce we/wy.
+blocking.write.not.allowed.useraction=Przejrzyj aplikacj\u0119, aby okre\u015bli\u0107, gdzie by\u0142o wykonywane blokowanie zapisu. Na przyk\u0142ad mog\u0142o by\u0107 wykonywane z serwletu po zarejestrowaniu procesu nas\u0142uchuj\u0105cego WriteListener lub z procesu nas\u0142uchuj\u0105cego WriteListener, kt\u00f3ry wykonuje drugi zapis po wywo\u0142aniu funkcji API isReady(). Po ustaleniu miejsca blokowania zapisu zmie\u0144 aplikacj\u0119, aby by\u0142a wykonywana w ramach procesu nas\u0142uchuj\u0105cego WriteListener i/lub po wywo\u0142aniu funkcji isReady().
+# --------------------------------
+# 
+# Notes for translation:
+# {0} WriteListener class name
+# {1} is the Exception String
+#
+writeListener.onError.failed=SRVE0919E: Wyst\u0105pi\u0142 wyj\u0105tek podczas wykonywania funkcji API onError() procesu nas\u0142uchuj\u0105cego WriteListener [{0}] aplikacji. Wyj\u0105tek [{1}]
+writeListener.onError.failed.explanation= Wyst\u0105pi\u0142 wyj\u0105tek podczas wykonywania funkcji API onError() procesu nas\u0142uchuj\u0105cego WriteListener aplikacji.
+writeListener.onError.failed.useraction=Przejrzyj dzienniki i ustal przyczyn\u0119 zg\u0142aszania wyj\u0105tku z implementacji funkcji API onError() w aplikacji oraz znajd\u017a spos\u00f3b rozwi\u0105zania problemu. Je\u015bli wyst\u0105pi\u0142 wyj\u0105tek we/wy, funkcja API onError() nie mo\u017ce zapisywa\u0107 wyj\u015bcia.
+# --------------------------------
+ 
