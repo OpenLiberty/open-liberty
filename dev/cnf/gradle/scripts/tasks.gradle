@@ -120,39 +120,60 @@ subprojects {
             rename '(.*).jar', '$1' + "_${bnd.bFullVersion}.jar"
           }
           else {
-			rename '(.*).jar', '$1' + "_${bnd.bFullVersion}.${qualifier}.jar"
+            rename '(.*).jar', '$1' + "_${bnd.bFullVersion}.${qualifier}.jar"
           }
         }
       }
     }
   }
 
-  task publishDevApiIBMJavadoc {
+  task apiSpiJavadoc(type: Javadoc) {
     dependsOn jar
-    inputs.files(fileTree( dir: "${projectDir}", include: 'com.ibm.websphere.appserver.api.*.javadoc.zip' )).skipWhenEmpty()
-    outputs.dir "${rootDir}/build.image/wlp/dev/api/ibm/javadoc"
-    doLast {
-      copy {
-        from "${projectDir}"
-        into "${rootDir}/build.image/wlp/dev/api/ibm/javadoc"
-        include 'com.ibm.websphere.appserver.api.*.javadoc.zip'
-        rename '.javadoc.zip', "_${bnd.bVersion}-javadoc.zip"
+    def publishSuffix = bnd('publish.wlp.jar.suffix', 'lib')
+    enabled publishSuffix.contains('api/ibm') || publishSuffix.contains('spi/ibm')
+
+    def sp = files()
+    def cp = files()
+    bndWorkspace.getProject(bnd('Bundle-SymbolicName', project.name))?.getBuildpath()*.getProject().each {
+      sp += files(it.getSourcePath())
+      cp += files(it.getBuildpath()*.getFile())
+    }
+
+    destinationDir = file("${buildDir}/javadoc")
+    classpath += cp
+    source = sp
+
+    include bnd('Export-Package', '').split(',').collect {
+      def pkg = it
+      int index = pkg.indexOf(";")
+      if (index != -1) {
+        pkg = pkg.substring(0, index)
       }
+      pkg = pkg.trim().replaceAll("\\.", "/") + "/*.java"
+      return pkg
+    }
+    exclude "**/internal/**"
+    title = bnd('Bundle-Name')
+    options.source '1.6'
+    options.memberLevel = 'PUBLIC'
+    options.noIndex true
+    options.use true
+    if (JavaVersion.current().isJava8Compatible()) {
+      options.addStringOption('Xdoclint:none', '-quiet')
     }
   }
 
-  task publishDevSpiIBMJavadoc {
-    dependsOn jar
-    inputs.files(fileTree( dir: "${projectDir}", include: 'com.ibm.websphere.appserver.spi.*.javadoc.zip' )).skipWhenEmpty()
-    outputs.dir "${rootDir}/build.image/wlp/dev/spi/ibm/javadoc"
-    doLast {
-      copy {
-        from "${projectDir}"
-        into "${rootDir}/build.image/wlp/dev/spi/ibm/javadoc"
-        include 'com.ibm.websphere.appserver.spi.*.javadoc.zip'
-        rename '.javadoc.zip', "_${bnd.bVersion}-javadoc.zip"
-      }
-    }
+  task zipJavadoc(type: Zip) {
+    dependsOn apiSpiJavadoc
+    archiveName bnd('Bundle-SymbolicName', project.name) + '.javadoc.zip'
+    from new File(project.buildDir, "javadoc")
+  }
+
+  task publishJavadoc(type: Copy) {
+    dependsOn zipJavadoc
+    from zipJavadoc
+    into rootProject.file("build.image/wlp/" + bnd('publish.wlp.jar.suffix', 'lib') + "/javadoc")
+    rename '.javadoc.zip', "_${bnd.bVersion}-javadoc.zip"
   }
 
   task publishToolJars {
@@ -399,9 +420,8 @@ subprojects {
   assemble {
     dependsOn copyMavenLibs
     dependsOn publishWLPJars
-    dependsOn publishDevApiIBMJavadoc
-    dependsOn publishDevSpiIBMJavadoc
     dependsOn publishToolJars
+    dependsOn publishJavadoc
     dependsOn publishSchemaResources
     dependsOn publishFeatureResources
     dependsOn publishPlatformManifests
