@@ -17,11 +17,15 @@ javac.target: 1.8
 src: \
 	fat/src,\
 	test-applications/bvalApp/src,\
-	test-applications/bvalCDIApp/src
+	test-applications/bvalCDIApp/src,\
+	test-applications/MultipleValidationXmlEjb1.jar/src,\
+	test-applications/MultipleValidationXmlEjb2.jar/src,\
+	test-applications/MultipleValidationXmlWeb.war/src
 
 test.project: true
 
 -buildpath: \
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
-	com.ibm.websphere.javaee.validation.2.0;version=latest
+	com.ibm.websphere.javaee.validation.2.0;version=latest,\
+	com.ibm.websphere.javaee.ejb.3.2;version=latest
