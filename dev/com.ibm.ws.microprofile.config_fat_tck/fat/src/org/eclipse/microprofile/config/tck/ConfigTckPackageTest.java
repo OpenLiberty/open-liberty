@@ -10,19 +10,23 @@ import java.util.stream.Stream;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.PortType;
 
 import componenttest.annotation.Server;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 /**
  *
  */
-public class ConfigTckPackage {
+@RunWith(FATRunner.class)
+public class ConfigTckPackageTest {
 
     @Server("FATServer")
     public static LibertyServer server;
+
     private String className;
     private String packageName;
     private File home;
@@ -33,6 +37,7 @@ public class ConfigTckPackage {
     private String[] mvnCliMethodRoot;
     private String[] mvnCliClassRoot;
     private String[] mvnCliPackageRoot;
+    private String[] mvnCliTckRoot;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -46,7 +51,11 @@ public class ConfigTckPackage {
 
     @Test
     public void testCustomConfigSourceProvider() throws Exception {
-        samePacakgeInTck();
+        if (!init) {
+            init();
+        }
+        File mvnOutput = new File(home, "mvnOut_" + packageName);
+        int rc = runCmd(mvnCliTckRoot, tckRunnerDir, mvnOutput);
     }
 
     /**
@@ -98,6 +107,7 @@ public class ConfigTckPackage {
         mvnCliMethodRoot = concatStringArray(mvnCliRoot, new String[] { "-DsuiteXmlFile=method.xml" });
         mvnCliClassRoot = concatStringArray(mvnCliRoot, new String[] { "-DsuiteXmlFile=class.xml" });
         mvnCliPackageRoot = concatStringArray(mvnCliRoot, new String[] { "-DsuiteXmlFile=package.xml" });
+        mvnCliTckRoot = concatStringArray(mvnCliRoot, new String[] { "-DsuiteXmlFile=tck-suite.xml" });
         tckRunnerDir = new File("publish/tckRunner");
         init = true;
     }

@@ -7,14 +7,11 @@
 	the specific language governing permissions and limitations under the License. -->
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="microprofile-config-1.1-tck" verbose="2" configfailurepolicy="continue">
-	<test name="DynamicValue">
-		<classes>
-			<class name="org.eclipse.microprofile.config.tck.ConfigProviderTest">
-				<methods>
-					<include name="testDynamicValueInPropertyConfigSource" />
-				</methods>
-			</class>
-		</classes>
+<suite name="microprofile-config-1.1-tck" verbose="2"
+	configfailurepolicy="continue">
+	<test name="tck-package-org.eclipse.microprofile.config.tck">
+		<packages>
+			<package name="org.eclipse.microprofile.config.tck.*"></package>
+		</packages>
 	</test>
 </suite>
