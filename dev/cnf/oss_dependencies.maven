@@ -113,6 +113,14 @@ org.apache.cxf:cxf-rt-rs-service-description:3.1.14
 org.apache.cxf:cxf-rt-transports-http:3.1.14
 org.apache.cxf:cxf-tools-common:3.1.14
 org.apache.cxf:cxf-tools-wadlto-jaxrs:3.1.14
+org.apache.cxf:cxf-core:3.2.1
+org.apache.cxf:cxf-rt-frontend-jaxrs:3.2.1
+org.apache.cxf:cxf-rt-rs-client:3.2.1
+org.apache.cxf:cxf-rt-rs-service-description:3.2.1
+org.apache.cxf:cxf-rt-rs-sse:3.2.1
+org.apache.cxf:cxf-rt-transports-http:3.2.1
+org.apache.cxf:cxf-tools-common:3.2.1
+org.apache.cxf:cxf-tools-wadlto-jaxrs:3.2.1
 org.apache.derby:derby:10.11.1.1
 org.apache.derby:derbynet:10.11.1.1
 org.apache.directory.server:apacheds-service:2.0.0-M15
