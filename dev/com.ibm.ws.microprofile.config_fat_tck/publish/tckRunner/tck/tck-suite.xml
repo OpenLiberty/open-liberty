@@ -11,8 +11,15 @@
 	configfailurepolicy="continue">
 	<test name="tck-package-org.eclipse.microprofile.config.tck">
 		<packages>
+		  <method-selectors>
+             <method-selector>
+               <script language="beanshell"><![CDATA[
+                 !method.getDeclaringClass().getSimpleName().startsWith("CDIPlainInjectionTest") && !method.getDeclaringClass().getSimpleName().startsWith("ConfigProviderTest")
+               ]]></script>
+             </method-selector>
+        </method-selectors>
 			<package name="org.eclipse.microprofile.config.tck.*">
-			 <exclude name=".*CDIPlainInjectionTest.*" />   
+			 <exclude name="CDIPlainInjectionTest" />   
 			</package>
 		</packages>
 	</test>

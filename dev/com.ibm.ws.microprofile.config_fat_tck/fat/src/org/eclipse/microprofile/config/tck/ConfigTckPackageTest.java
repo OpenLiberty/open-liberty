@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.ws.microprofile.tck.Utils;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -41,10 +42,11 @@ public class ConfigTckPackageTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E");
+        server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E", "CWWKZ0002E");
     }
 
     @Test
+    @AllowedFFDC
     public void testTck() throws Exception {
         if (!Utils.init) {
             Utils.init(server);
