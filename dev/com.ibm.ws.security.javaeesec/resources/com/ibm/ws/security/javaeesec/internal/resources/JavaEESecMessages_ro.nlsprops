@@ -27,14 +27,15 @@ JAVAEESEC_ERROR_NO_VALIDATION=CWWKS1911E: Niciun obiect IdentityStore suport\u01
 JAVAEESEC_ERROR_NO_VALIDATION.explanation=Niciun obiect IdentityStore suport\u0103 validarea utilizatorului, prin urmare codul de securitate nu autentific\u0103 utilizatorul.
 JAVAEESEC_ERROR_NO_VALIDATION.useraction=Asigura\u0163i-v\u0103 c\u0103 cel pu\u0163in un IdentityStore suport\u0103 validarea utilizatorului.
 
-JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: Obiectul HttpAuthenticationMechanism nu poate fi identificat pentru autentificare. Asigura\u0163i-v\u0103 c\u0103 exist\u0103 un HttpAuthenticationMechanism \u00een aplica\u0163ie.
+JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: Obiectul HttpAuthenticationMechanism pentru modulul {0} din aplica\u0163ia {1} nu a fost g\u0103sit. Asigura\u0163i-v\u0103 c\u0103 modulul con\u0163ine un obiect HttpAuthenticationMechanism.
 JAVAEESEC_ERROR_NO_HAM.explanation=Obiectul HttpAuthenticationMechanism nu poate fi identificat pentru autentificare. Fie nu exist\u0103 obiectul, fie mai multe obiecte corespund condi\u0163iei specificate. Asigura\u0163i-v\u0103 c\u0103 exist\u0103 un HttpAuthenticationMechanism \u00een aplica\u0163ie.
 JAVAEESEC_ERROR_NO_HAM.useraction=Asigura\u0163i-v\u0103 c\u0103 exist\u0103 un HttpAuthenticationMechanism \u00een aplica\u0163ie.
 
-JAVAEESEC_ERROR_NO_HAM_PROPS=CWWKS1913E: Obiectul HAMProperties nu poate fi identificat pentru autentificare. Cel mai probabil, nu exist\u0103 niciun obiect HttpAuthenticationMechanism \u00een aplica\u0163ie. Asigura\u0163i-v\u0103 c\u0103 este definit un obiect HttpAuthenticationMechanism.
-JAVAEESEC_ERROR_NO_HAM_PROPS.explanation=Obiectul HAMProperties nu poate fi identificat pentru autentificare. Probabil nu exist\u0103 niciun obiect HttpAuthenticationMechanism definit \u00een aplica\u0163ie.
-JAVAEESEC_ERROR_NO_HAM_PROPS.useraction=Asigura\u0163i-v\u0103 c\u0103 exist\u0103 un HttpAuthenticationMechanism \u00een aplica\u0163ie.
+JAVAEESEC_ERROR_NO_MODULE_PROPS=CWWKS1913E: Obiectul ModuleProperties pentru autentificarea aplica\u0163iei {0} nu poate fi g\u0103sit, probabil din cauz\u0103 c\u0103 aplica\u0163ia nu con\u0163ine un obiect HttpAuthenticationMechanism. Asigura\u0163i-v\u0103 c\u0103 este definit un obiect HttpAuthenticationMechanism \u00een fiecare modul.
+JAVAEESEC_ERROR_NO_MODULE_PROPS.explanation=Obiectul ModuleProperties, care este necesar pentru a autentifica aplica\u0163ia, nu poate fi identificat. Aceast\u0103 eroare rezult\u0103 \u00een mod obi\u015fnuit din cauz\u0103 c\u0103 nu a fost definit \u00een aplica\u0163ie un obiect HttpAuthenticationMechanism.
+JAVAEESEC_ERROR_NO_MODULE_PROPS.useraction=Asigura\u0163i-v\u0103 c\u0103 fiecare modul din aplica\u0163ie con\u0163ine un obiect HttpAuthenticationMechanism.
 
 JAVAEESEC_WARNING_NO_REALM_NAME=CWWKS1914W: Numele de regiune pentru autentificarea de baz\u0103 nu este setat, este utilizat\u0103 valoarea defaultRealm.
 JAVAEESEC_WARNING_NO_REALM_NAME.explanation=Numele de regiune pentru autentificarea de baz\u0103 nu este setat, este utilizat\u0103 valoarea implicit\u0103 defaultRealm.
 JAVAEESEC_WARNING_NO_REALM_NAME.useraction=Dac\u0103 numele regiunii trebuie s\u0103 fie setat, v\u0103 rug\u0103m s\u0103 \u00eel seta\u0163i folosind \u00een aplica\u0163ie adnotarea BasicAuthenticationMechanismDefinition.
+

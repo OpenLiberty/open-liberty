@@ -33,7 +33,7 @@ Unsupported.op.from.servlet.context.listener.31.useraction=Inclua o listener usa
 # 
 # Notes for translation:
 # {0} is the application name
-handlerClass.is.null==SRVE9003E: O objeto HttpUpgradeHandler aprovado \u00e9 nulo com o aplicativo da web: {0}.
+handlerClass.is.null=SRVE9003E: O objeto HttpUpgradeHandler aprovado \u00e9 nulo com o aplicativo da web: {0}.
 handlerClass.is.null.explanation=Falha ao fazer upgrade da solicita\u00e7\u00e3o porque o objeto HttpUpgradeHandler passado \u00e9 nulo.
 handlerClass.is.null.useraction= Assegure-se de que o objeto HttpUpgradeHandler correto tenha sido fornecido.
 # --------------------------------

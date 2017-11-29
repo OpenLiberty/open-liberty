@@ -33,7 +33,7 @@ Unsupported.op.from.servlet.context.listener.31.useraction=A met\u00f3dus elind\
 # 
 # Notes for translation:
 # {0} is the application name
-handlerClass.is.null==SRVE9003E: Az \u00e1tadott HttpUpgradeHandler objektum null a webalkalmaz\u00e1ssal: {0}.
+handlerClass.is.null=SRVE9003E: Az \u00e1tadott HttpUpgradeHandler objektum null a webalkalmaz\u00e1ssal: {0}.
 handlerClass.is.null.explanation=A k\u00e9r\u00e9s nem friss\u00edthet\u0151, mert az \u00e1tadott HttpUpgradeHandler objektum null.
 handlerClass.is.null.useraction= Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a helyes HttpUpgradeHandler objektumot adta meg.
 # --------------------------------

@@ -653,6 +653,14 @@ info.envProductExtension=CWWKE0940I: L''estensione del prodotto {0} ha un identi
 info.envProductExtension.explanation= La variabile di ambiente WLP_PRODUCT_EXT_DIR punta all'ubicazione dell'estensione del prodotto. Il server \u00e8 stato trovato e utilizza l'estensione del prodotto.
 info.envProductExtension.useraction=Non \u00e8 richiesta alcuna azione.
 
+error.zosProcStart.procedure.invalid=CWWKE0942E: Avvio della procedura z/OS STC {0} non riuscito. Il nome procedura non \u00e8 valido. Verificare che il nome della procedura non sia pi\u00f9 di otto caratteri e non contenga una virgola.
+error.zosProcStart.procedure.invalid.explanation=Il nome della procedura STC specificato dalla propriet\u00e0 WLP_ZOS_PROCEDURE nel file server.env non \u00e8 valido. Il nome procedura non deve essere pi\u00f9 lungo di 8 caratteri e non deve contenere una virgola.
+error.zosProcStart.procedure.invalid.useraction=Verificare che il nome della procedura non sia pi\u00f9 di otto caratteri e non contenga una virgola.
+
+error.zosProcStart.jobname.invalid=CWWKE0943E: Avvio della procedura z/OS STC {0} non riuscito. Il nome lavoro {1} non \u00e8 valido. Verificare che il nome lavoro non sia pi\u00f9 di otto caratteri e non contenga una virgola.
+error.zosProcStart.jobname.invalid.explanation=Il nome lavoro STC specificato dalla propriet\u00e0 WLP_ZOS_JOBNAME nel file server.env non \u00e8 valido. Il nome lavoro non deve essere pi\u00f9 lungo di 8 caratteri e non deve contenere una virgola.
+error.zosProcStart.jobname.invalid.useraction=Verificare che il nome del lavoro non sia pi\u00f9 di otto caratteri e non contenga una virgola.
+
 info.serverStarting=Avvio del server {0} in corso.
 info.serverStarted=Server {0} avviato.
 info.serverStartedWithPID=Server {0} avviato con ID processo {1}.

@@ -27,14 +27,15 @@ JAVAEESEC_ERROR_NO_VALIDATION=CWWKS1911E: \u017d\u00e1dn\u00fd objekt IdentitySt
 JAVAEESEC_ERROR_NO_VALIDATION.explanation=\u017d\u00e1dn\u00fd z objekt\u016f IdentityStore nepodporuje ov\u011b\u0159en\u00ed platnosti u\u017eivatele, proto k\u00f3d zabezpe\u010den\u00ed neov\u011b\u0159uje u\u017eivatele.
 JAVAEESEC_ERROR_NO_VALIDATION.useraction=Ujist\u011bte se, \u017ee alespo\u0148 jeden objekt IdentityStore podporuje ov\u011b\u0159en\u00ed platnosti u\u017eivatele.
 
-JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: Objekt HttpAuthenticationMechanism nelze identifikovat pro ov\u011b\u0159en\u00ed. Ujist\u011bte se, \u017ee v aplikaci existuje alespo\u0148 jeden objekt HttpAuthenticationMechanism.
+JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: Objekt HttpAuthenticationMechanism pro modul {0} v aplikaci {1} nebyl nalezen. Ujist\u011bte se, \u017ee modul obsahuje objekt HttpAuthenticationMechanism.
 JAVAEESEC_ERROR_NO_HAM.explanation=Objekt HttpAuthenticationMechanism nelze identifikovat pro ov\u011b\u0159en\u00ed. Je mo\u017en\u00e9, \u017ee objekt neexistuje nebo \u017ee ur\u010den\u00e9 podm\u00ednce odpov\u00edd\u00e1 v\u00edce objekt\u016f. Ujist\u011bte se, \u017ee v aplikaci existuje alespo\u0148 jeden objekt HttpAuthenticationMechanism.
 JAVAEESEC_ERROR_NO_HAM.useraction=Ujist\u011bte se, \u017ee v aplikaci existuje alespo\u0148 jeden objekt HttpAuthenticationMechanism.
 
-JAVAEESEC_ERROR_NO_HAM_PROPS=CWWKS1913E: Objekt HAMProperties nelze identifikovat pro ov\u011b\u0159en\u00ed. S nejv\u011bt\u0161\u00ed pravd\u011bpodobnost\u00ed nen\u00ed v aplikaci \u017e\u00e1dn\u00fd objekt HttpAuthenticationMechanism. Ujist\u011bte se, \u017ee je nadefinov\u00e1n jeden objekt HttpAuthenticationMechanism.
-JAVAEESEC_ERROR_NO_HAM_PROPS.explanation=Objekt HAMProperties nelze identifikovat pro ov\u011b\u0159en\u00ed. Je mo\u017en\u00e9, \u017ee v aplikaci nen\u00ed \u017e\u00e1dn\u00fd nadefinovan\u00fd objekt HttpAuthenticationMechanism.
-JAVAEESEC_ERROR_NO_HAM_PROPS.useraction=Ujist\u011bte se, \u017ee v aplikaci existuje alespo\u0148 jeden objekt HttpAuthenticationMechanism.
+JAVAEESEC_ERROR_NO_MODULE_PROPS=CWWKS1913E: Objekt ModuleProperties pro ov\u011b\u0159en\u00ed aplikaci {0} nelze nal\u00e9zt, pravd\u011bpodobn\u011b proto, \u017ee aplikace neobsahuje objekt HttpAuthenticationMechanism. Ujist\u011bte se, \u017ee je nadefinov\u00e1n pro ka\u017ed\u00fd modul jeden objekt HttpAuthenticationMechanism.
+JAVAEESEC_ERROR_NO_MODULE_PROPS.explanation=Objekt ModuleProperties, kter\u00fd je nezbytn\u00fd pro ov\u011b\u0159en\u00ed aplikace, nelze identifikovat. K t\u00e9to chyb\u011b obvykle dojde, kdy\u017e objekt HttpAuthenticationMechanism nen\u00ed nadefinov\u00e1n v aplikaci.
+JAVAEESEC_ERROR_NO_MODULE_PROPS.useraction=Ujist\u011bte se, \u017ee ka\u017ed\u00fd modul v aplikaci obsahuje objekt HttpAuthenticationMechanism.
 
 JAVAEESEC_WARNING_NO_REALM_NAME=CWWKS1914W: N\u00e1zev sf\u00e9ry pro z\u00e1kladn\u00ed ov\u011b\u0159en\u00ed nen\u00ed nastaven, pou\u017eije se hodnota defaultRealm.
 JAVAEESEC_WARNING_NO_REALM_NAME.explanation=N\u00e1zev sf\u00e9ry pro z\u00e1kladn\u00ed ov\u011b\u0159en\u00ed nen\u00ed nastaven, pou\u017eije se v\u00fdchoz\u00ed hodnota defaultRealm.
 JAVAEESEC_WARNING_NO_REALM_NAME.useraction=Pokud n\u00e1zev oblasti vy\u017eaduje nastaven\u00ed, nastavte jej v aplikaci pomoc\u00ed anotace BasicAuthenticationMechanismDefinition.
+

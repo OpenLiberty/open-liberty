@@ -48,3 +48,11 @@ failed_to_extract_saml_token_from_subject.useraction=V\u00e9rifiez que la foncti
 failed_run_as_subject=CWWKW0706E: Une exception s''est produite lors de la tentative d''ex\u00e9cution de RunAsSubject. L''exception \u00e9tait : [{0}].
 failed_run_as_subject.explanation=Une exception s'est produite lors de l'obtention de RunAsSubject.
 failed_run_as_subject.useraction=V\u00e9rifiez que le serveur est configur\u00e9 et a d\u00e9marr\u00e9 correctement.
+
+warn_missing_mpjwt_token=CWWKW0707W: L''attribut [{0}] dans la configuration [{1}] a \u00e9t\u00e9 d\u00e9fini \u00e0 [{2}], mais le jeton Web JSON (JWT) MicroProfile n''est pas disponible. la demande ne comporte pas d''en-t\u00eate Authorization avec le jeton.
+warn_missing_mpjwt_token.explanation=L'environnement d'ex\u00e9cution n'est pas parvenu \u00e0 trouver le jeton MicroProfile JWT dans le sujet runAs. Cette erreur indique g\u00e9n\u00e9ralement un probl\u00e8me lors de l'authentification. V\u00e9rifiez qu'aucune erreur ne s'est produite lors de l'authentification d'un utilisateur par la fonction JWT MicroProfile.
+warn_missing_mpjwt_token.useraction=V\u00e9rifiez l'action utilisateur en cas d'erreurs ant\u00e9rieures consign\u00e9es par les serveur.
+
+warn_mpjwt_prop_service_notavail=CWWKW0708W: Le service MicroProfile JWT Propagation n'est pas disponible. L'environnement d'ex\u00e9cution ne peut pas acc\u00e9der au jeton pour l'inclure dans l'en-t\u00eate Authorization.
+warn_mpjwt_prop_service_notavail.explanation=Le service MicroProfile JWT Propagation requiert la fonction mpJwt-1.0. 
+warn_mpjwt_prop_service_notavail.useraction=V\u00e9rifiez que le serveur op\u00e8re avec la fonction requise.

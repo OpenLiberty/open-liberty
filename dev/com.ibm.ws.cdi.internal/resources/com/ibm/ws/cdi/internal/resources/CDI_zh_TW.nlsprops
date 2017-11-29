@@ -34,7 +34,6 @@ multiple.beans.xml.warning.CWOWB1001W=CWOWB1001W: Web \u61c9\u7528\u7a0b\u5f0f\u
 multiple.beans.xml.warning.CWOWB1001W.explanation=CDI \u767c\u73fe\u591a\u500b beans.xml \u6a94\u6848\u3002
 multiple.beans.xml.warning.CWOWB1001W.useraction=\u8acb\u78ba\u5b9a\u61c9\u7528\u7a0b\u5f0f\u4fdd\u5b58\u6a94\u53ea\u542b\u6709\u4e00\u500b beans.xml \u6a94\u3002
 
-
 managed.class.bean.class.mismatch.CWOWB1002E=CWOWB1002E: \u767c\u751f WebSphere Application Server \u5167\u90e8\u932f\u8aa4\u3002\u8acb\u806f\u7d61 WebSphere Application Server \u652f\u63f4\u4eba\u54e1\uff0c\u4e26\u63d0\u4f9b\u4e0b\u5217\u8cc7\u6599\uff1a{0} {1}
 managed.class.bean.class.mismatch.CWOWB1002E.explanation=CMSG0001
 managed.class.bean.class.mismatch.CWOWB1002E.useraction=\u8acb\u53c3\u95b1 WebSphere Application Server \u652f\u63f4\u7db2\u9801\u6240\u63d0\u4f9b\u7684\u554f\u984c\u5224\u65b7\u8cc7\u8a0a\uff0c\u7db2\u5740\u5982\u4e0b\uff1ahttp://www.ibm.com/software/webservers/appserv/was/support\u3002
