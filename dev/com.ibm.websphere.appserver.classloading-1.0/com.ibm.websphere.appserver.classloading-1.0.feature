@@ -10,6 +10,6 @@ IBM-Process-Types: server, \
  com.ibm.websphere.appserver.dynamicBundle-1.0
 -bundles=com.ibm.ws.classloading
 -jars=com.ibm.websphere.appserver.spi.classloading; location:=dev/spi/ibm/
--files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.classloading_1.3-javadoc.zip
+-files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.classloading_1.4-javadoc.zip
 kind=ga
 edition=core
