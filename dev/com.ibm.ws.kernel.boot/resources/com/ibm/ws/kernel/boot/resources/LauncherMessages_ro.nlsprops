@@ -195,7 +195,9 @@ info.frameworkRestart=CWWKE0041I: Cache-ul platformei este nesincornizat. Se rep
 info.frameworkRestart.explanation=Cadrul de lucru a fost repornit \u00eentruc\u00e2t cache-ul platformei era nesincronizat.
 info.frameworkRestart.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 
-# CWWKE0042E removed because it's only used in com.ibm.ws.kernel.boot.cmdline - Do not reuse.
+error.badVersion=CWWKE0042E: Nu ruleaz\u0103 versiunea Java corect\u0103. Mediul runtime necesit\u0103 Java 7 sau superior.
+error.badVersion.explanation=Fie ruleaz\u0103 o versiune Java nesuportat\u0103, fie variabila de sistem JAVA_HOME este setat\u0103 s\u0103 indice spre o versiune mai veche de Java.
+error.badVersion.useraction= Moderniza\u0163i versiunea Java la Java 7, sau ajusta\u0163i variabila de sistem JAVA_HOME s\u0103 indice la Java 7.
 
 error.unsupportedLaunch=CWWKE0043E: Loca\u0163ia de lansare nu este un fi\u015fier local. ({0})
 error.unsupportedLaunch.explanation=Mediul runtime trebuie lansat dintr-un fi\u015fier local, de exemplu un fi\u015fier JAR.

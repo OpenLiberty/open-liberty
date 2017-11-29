@@ -196,7 +196,9 @@ info.frameworkRestart=CWWKE0041I: Der Plattformcache ist nicht synchron. Starten
 info.frameworkRestart.explanation=Das Framework wurde erneut gestartet, weil der Plattformcache nicht synchron ist.
 info.frameworkRestart.useraction=Es ist keine Aktion erforderlich.
 
-# CWWKE0042E removed because it's only used in com.ibm.ws.kernel.boot.cmdline - Do not reuse.
+error.badVersion=CWWKE0042E: Die aktive Java-Version ist nicht korrekt. Die Laufzeitumgebung setzt Java 7 oder h\u00f6her voraus.
+error.badVersion.explanation=Entweder ist eine nicht unterst\u00fctzte Java-Version aktiv oder die Systemvariable JAVA_HOME wurde so definiert, dass sie auf eine \u00e4ltere Version von Java verweist.
+error.badVersion.useraction= F\u00fchren Sie ein Upgrade der Java-Version auf Java 7 durch oder passen Sie die Systemvariable JAVA_HOME so an, dass sie auf Java 7 verweist.
 
 error.unsupportedLaunch=CWWKE0043E: Die Startposition ist keine lokale Datei. ({0})
 error.unsupportedLaunch.explanation=Die Laufzeitumgebung muss \u00fcber eine lokale Datei gestartet werden, z. B. eine JAR-Datei.
