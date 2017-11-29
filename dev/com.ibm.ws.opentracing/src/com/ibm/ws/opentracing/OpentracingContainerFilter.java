@@ -27,7 +27,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.opentracing.filters.SpanFilterType;
 
 import io.opentracing.Span;
 import io.opentracing.SpanContext;
@@ -75,7 +74,12 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
             Tr.debug(tc, methodName + " priorContext", priorOutgoingContext);
         }
 
-        boolean process = OpentracingService.process(incomingUri, SpanFilterType.INCOMING);
+        /*
+         * Removing filter processing until microprofile spec for it is approved. Expect to add this code
+         * back in in 1Q18 - smf
+         */
+        // boolean process = OpentracingService.process(incomingUri, SpanFilterType.INCOMING);
+        boolean process = true;
 
         if (process) {
             Tracer.SpanBuilder spanBuilder = tracer.buildSpan(incomingURL);
