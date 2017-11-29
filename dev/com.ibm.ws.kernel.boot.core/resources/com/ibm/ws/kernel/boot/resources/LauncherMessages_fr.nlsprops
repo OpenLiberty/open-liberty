@@ -655,6 +655,14 @@ info.envProductExtension=CWWKE0940I: L''extension de produit {0} a l''identifica
 info.envProductExtension.explanation= La variable d'environnement WLP_PRODUCT_EXT_DIR pointe vers l'emplacement de l'extension de produit. Le serveur a trouv\u00e9 l'extension de produit et l'utilise.
 info.envProductExtension.useraction=Aucune action n'est requise.
 
+error.zosProcStart.procedure.invalid=CWWKE0942E: Echec du d\u00e9marrage de la proc\u00e9dure STC z/OS {0}. Le nom de proc\u00e9dure n''est pas valide. V\u00e9rifiez que le nom de la proc\u00e9dure ne d\u00e9passe pas huit caract\u00e8res et ne contient pas de virgule.
+error.zosProcStart.procedure.invalid.explanation=Le nom de proc\u00e9dure STC sp\u00e9cifi\u00e9 par la propri\u00e9t\u00e9 WLP_ZOS_PROCEDURE dans le fichier server.env n'est pas valide. Le nom de la proc\u00e9dure ne doit pas d\u00e9passer huit caract\u00e8res et ne doit pas comporter de virgule.
+error.zosProcStart.procedure.invalid.useraction=V\u00e9rifiez que le nom de la proc\u00e9dure ne d\u00e9passe pas huit caract\u00e8res et ne contient pas de virgule.
+
+error.zosProcStart.jobname.invalid=CWWKE0943E: Echec du d\u00e9marrage de la proc\u00e9dure STC z/OS {0}. Le nom de travail {1} n''est pas valide. V\u00e9rifiez que le nom du travail ne d\u00e9passe pas huit caract\u00e8res et ne contient pas de virgule.
+error.zosProcStart.jobname.invalid.explanation=Le nom de travail STC sp\u00e9cifi\u00e9 par la propri\u00e9t\u00e9 WLP_ZOS_JOBNAME dans le fichier server.env n'est pas valide. Le nom de travail ne doit pas d\u00e9passer huit caract\u00e8res et ne doit pas comporter de virgule.
+error.zosProcStart.jobname.invalid.useraction=V\u00e9rifiez que le nom du travail ne d\u00e9passe pas huit caract\u00e8res et ne contient pas de virgule.
+
 info.serverStarting=D\u00e9marrage du serveur {0}.
 info.serverStarted=Le serveur {0} a d\u00e9marr\u00e9.
 info.serverStartedWithPID=Le serveur {0} a d\u00e9marr\u00e9 avec l''ID de processus {1}.

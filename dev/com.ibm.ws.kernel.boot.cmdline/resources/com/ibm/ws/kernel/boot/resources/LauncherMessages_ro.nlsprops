@@ -660,6 +660,14 @@ warning.variable.invalid=CWWKE0941W: Declara\u0163ia de variabil\u0103 {0} speci
 warning.variable.invalid.explanation=Sunt permise doar caractere alfanumerice \u00een numele variabilelor specificate \u00een fi\u015fierul server.env.
 warning.variable.invalid.useraction=Fie modifica\u0163i numele variabilei pentru a utiliza doar caractere alfanumerice sau muta\u0163i defini\u0163ia variabilei la fi\u015fierul bootstrap.properties.
 
+error.zosProcStart.procedure.invalid=CWWKE0942E: A e\u015fuat pornirea procedurii z/OS STC {0}. Numele de procedur\u0103 nu este valid. Verifica\u0163i c\u0103 numele de procedur\u0103 nu are mai mult de opt caractere \u015fi nu con\u0163ine o virgul\u0103.
+error.zosProcStart.procedure.invalid.explanation=Numele de procedur\u0103 STC specificat de proprietatea WLP_ZOS_PROCEDURE din fi\u015fierul server.env file nu este valid. Numele de procedur\u0103 nu trebuie s\u0103 aib\u0103 mai mult de opt caractere \u015fi nu poate con\u0163ine o virgul\u0103.
+error.zosProcStart.procedure.invalid.useraction=Verifica\u0163i c\u0103 numele de procedur\u0103 nu are mai mult de opt caractere \u015fi nu con\u0163ine o virgul\u0103.
+
+error.zosProcStart.jobname.invalid=CWWKE0943E: A e\u015fuat pornirea procedurii z/OS STC {0}. Numele de job {1} nu este valid. Verifica\u0163i c\u0103 numele de job nu are mai mult de opt caractere \u015fi nu con\u0163ine o virgul\u0103.
+error.zosProcStart.jobname.invalid.explanation=Numele de job STC specificat de proprietatea WLP_ZOS_JOBNAME din fi\u015fierul server.env file nu este valid. Numele de job nu trebuie s\u0103 aib\u0103 mai mult de opt caractere \u015fi nu poate con\u0163ine o virgul\u0103.
+error.zosProcStart.jobname.invalid.useraction=Verifica\u0163i c\u0103 numele de job nu are mai mult de opt caractere \u015fi nu con\u0163ine o virgul\u0103.
+
 info.serverStarting=Se porne\u015fte serverul {0}.
 info.serverStarted=Serverul {0} a pornit.
 info.serverStartedWithPID=Serverul {0} a pornit cu ID de proces {1}.

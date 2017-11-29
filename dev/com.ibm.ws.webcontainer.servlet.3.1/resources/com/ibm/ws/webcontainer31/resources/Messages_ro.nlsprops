@@ -33,7 +33,7 @@ Unsupported.op.from.servlet.context.listener.31.useraction=Ad\u0103uga\u0163i as
 # 
 # Notes for translation:
 # {0} is the application name
-handlerClass.is.null==SRVE9003E: Obiectul HttpUpgradeHandler transmis este null cu aplica\u0163ia web: {0}.
+handlerClass.is.null=SRVE9003E: Obiectul HttpUpgradeHandler transmis este null cu aplica\u0163ia web: {0}.
 handlerClass.is.null.explanation=S-a e\u015fuat modernizarea cererii deoarece obiectul HttpUpgradeHandler transmis este nul.
 handlerClass.is.null.useraction= Asigura\u0163i-v\u0103 c\u0103 este furnizat obiectul HttpUpgradeHandler corect.
 # --------------------------------

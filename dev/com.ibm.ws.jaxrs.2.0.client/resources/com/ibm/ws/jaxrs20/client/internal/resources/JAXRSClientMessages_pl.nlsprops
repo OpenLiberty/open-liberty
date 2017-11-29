@@ -48,3 +48,11 @@ failed_to_extract_saml_token_from_subject.useraction=Upewnij si\u0119, \u017ce w
 failed_run_as_subject=CWWKW0706E: Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by uzyskania podmiotu RunAsSubject. Wyj\u0105tek: [{0}].
 failed_run_as_subject.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas uzyskiwania podmiotu RunAsSubject.
 failed_run_as_subject.useraction=Upewnij si\u0119, \u017ce serwer jest poprawnie skonfigurowany i uruchomiony.
+
+warn_missing_mpjwt_token=CWWKW0707W: Atrybut [{0}] w konfiguracji [{1}] jest ustawiony na [{2}], ale znacznik MicroProfile JSON Web Token (JWT) jest niedost\u0119pny. \u017b\u0105danie nie zawiera nag\u0142\u00f3wka Authorization ze znacznikiem.
+warn_missing_mpjwt_token.explanation=\u015arodowisko wykonawcze nie mog\u0142o znale\u017a\u0107 znacznika MicroProfile JWT w podmiocie runAs. Ten b\u0142\u0105d zwykle wskazuje problem zwi\u0105zany z uwierzytelnianiem. Nale\u017cy zadba\u0107 o to, aby nie wyst\u0119powa\u0142y b\u0142\u0119dy, gdy sk\u0142adnik MicroProfile JWT uwierzytelnia u\u017cytkownika.
+warn_missing_mpjwt_token.useraction=Sprawd\u017a czynno\u015bci u\u017cytkownika dla wszystkich wcze\u015bniejszych b\u0142\u0119d\u00f3w zarejestrowanych przez serwer.
+
+warn_mpjwt_prop_service_notavail=CWWKW0708W: Us\u0142uga MicroProfile JWT Propagation jest niedost\u0119pna. \u015arodowisko wykonawcze nie mo\u017ce uzyska\u0107 dost\u0119pu do znacznika w celu uwzgl\u0119dnienia go w nag\u0142\u00f3wku Authorization.
+warn_mpjwt_prop_service_notavail.explanation=Us\u0142uga propagacji MicroProfile JWT wymaga sk\u0142adnika mpJwt-1.0. 
+warn_mpjwt_prop_service_notavail.useraction=Zadbaj o to, aby serwer zosta\u0142 uruchomiony z wymaganym sk\u0142adnikiem.

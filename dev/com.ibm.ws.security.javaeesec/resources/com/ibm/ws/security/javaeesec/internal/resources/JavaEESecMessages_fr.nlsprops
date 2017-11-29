@@ -27,14 +27,15 @@ JAVAEESEC_ERROR_NO_VALIDATION=CWWKS1911E: Aucun objet IdentityStore ne prend en 
 JAVAEESEC_ERROR_NO_VALIDATION.explanation=Aucun objet IdentityStore ne prenant en charge la validation utilisateur, le code de s\u00e9curit\u00e9 n'authentifie pas l'utilisateur.
 JAVAEESEC_ERROR_NO_VALIDATION.useraction=Assurez-vous qu'au moins un objet IdentityStore prend en charge la validation utilisateur.
 
-JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: L'objet HttpAuthenticationMechanism ne peut pas \u00eatre identifi\u00e9 pour l'authentification. Assurez-vous de la pr\u00e9sence d'un objet HttpAuthenticationMechanism dans l'application.
+JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: L''objet HttpAuthenticationMechanism pour le module {0} dans l''application {1} est introuvable. V\u00e9rifiez que le module contient un objet HttpAuthenticationMechanism.
 JAVAEESEC_ERROR_NO_HAM.explanation=L'objet HttpAuthenticationMechanism ne peut pas \u00eatre identifi\u00e9 pour l'authentification. Il se peut qu'un tel objet n'existe pas ou que plusieurs objets correspondent \u00e0 la condition sp\u00e9cifi\u00e9e. Assurez-vous de la pr\u00e9sence d'un objet HttpAuthenticationMechanism dans l'application.
 JAVAEESEC_ERROR_NO_HAM.useraction=Assurez-vous de la pr\u00e9sence d'un objet HttpAuthenticationMechanism dans l'application.
 
-JAVAEESEC_ERROR_NO_HAM_PROPS=CWWKS1913E: HAMProperties objet ne peut pas \u00eatre identifi\u00e9 pour l'authentification. Probablement, aucun objet HttpAuthenticationMechanism n'existe dans l'application. Assurez-vous qu'un objet HttpAuthenticationMechanism a \u00e9t\u00e9 d\u00e9fini.
-JAVAEESEC_ERROR_NO_HAM_PROPS.explanation=Un objet HAMProperties ne peut pas \u00eatre identifi\u00e9 pour l'authentification. Il se peut qu'aucun objet HttpAuthenticationMechanism n'ait \u00e9t\u00e9 d\u00e9fini dans l'application.
-JAVAEESEC_ERROR_NO_HAM_PROPS.useraction=Assurez-vous de la pr\u00e9sence d'un objet HttpAuthenticationMechanism dans l'application.
+JAVAEESEC_ERROR_NO_MODULE_PROPS=CWWKS1913E: L''objet ModuleProperties pour authentification de l''application {0} est introuvable, probablement parce que celle-ci ne contient pas d''objet HttpAuthenticationMechanism. V\u00e9rifiez qu''un objet HttpAuthenticationMechanism est d\u00e9fini pour chaque module.
+JAVAEESEC_ERROR_NO_MODULE_PROPS.explanation=L'objet ModuleProperties, lequel est requis pour authentifier l'application, ne peut pas \u00eatre identifi\u00e9. En g\u00e9n\u00e9ral, cette erreur r\u00e9sulte d'un objet HttpAuthenticationMechanism qui n'est plus d\u00e9fini dans l'application.
+JAVAEESEC_ERROR_NO_MODULE_PROPS.useraction=V\u00e9rifiez que chaque module dans l'application contient un objet HttpAuthenticationMechanism.
 
 JAVAEESEC_WARNING_NO_REALM_NAME=CWWKS1914W: Le nom de domaine pour l'authentification de base n'a pas \u00e9t\u00e9 d\u00e9fini, la valeur defaultRealm sera utilis\u00e9e.
 JAVAEESEC_WARNING_NO_REALM_NAME.explanation=Le nom de domaine pour l'authentification de base n'a pas \u00e9t\u00e9 d\u00e9fini, la valeur par d\u00e9faut defaultRealm sera utilis\u00e9e.
 JAVAEESEC_WARNING_NO_REALM_NAME.useraction=Si le nom de domaine doit \u00eatre d\u00e9finie, sp\u00e9cifiez-le \u00e0 l'aide de l'annotation BasicAuthenticationMechanismDefinition dans l'application.
+

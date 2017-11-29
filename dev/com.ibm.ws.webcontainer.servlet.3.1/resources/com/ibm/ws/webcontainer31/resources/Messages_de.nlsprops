@@ -33,7 +33,7 @@ Unsupported.op.from.servlet.context.listener.31.useraction=F\u00fcgen Sie den Li
 # 
 # Notes for translation:
 # {0} is the application name
-handlerClass.is.null==SRVE9003E: Das \u00fcbergebene HttpUpgradeHandler-Objekt ist f\u00fcr die Webanwendung {0} null.
+handlerClass.is.null=SRVE9003E: Das \u00fcbergebene HttpUpgradeHandler-Objekt ist f\u00fcr die Webanwendung {0} null.
 handlerClass.is.null.explanation=Die Anforderung kann nicht aktualisiert werden, weil das \u00fcbergebene HttpUpgradeHandler-Objekt null ist.
 handlerClass.is.null.useraction= Stellen Sie sicher, dass das richtige HttpUpgradeHandler-Objekt \u00fcbergeben wird.
 # --------------------------------
