@@ -4,15 +4,14 @@
 package org.eclipse.microprofile.config.tck;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.stream.Stream;
+import java.lang.invoke.MethodHandles;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.PortType;
+import com.ibm.ws.microprofile.tck.Utils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -27,17 +26,13 @@ public class ConfigTckPackageTest {
     @Server("FATServer")
     public static LibertyServer server;
 
-    private String className;
-    private String packageName;
-    private File home;
-    private String wlp;
-    private File tckRunnerDir;
-    private boolean init;
-    private String mvnCliRoot[];
-    private String[] mvnCliMethodRoot;
-    private String[] mvnCliClassRoot;
-    private String[] mvnCliPackageRoot;
-    private String[] mvnCliTckRoot;
+    private static String className;
+    private static String packageName;
+    static {
+        Class<?> clazz = MethodHandles.lookup().lookupClass();
+        className = clazz.getName();
+        packageName = clazz.getPackage().getName();
+    }
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -46,70 +41,16 @@ public class ConfigTckPackageTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E");
     }
 
     @Test
-    public void testCustomConfigSourceProvider() throws Exception {
-        if (!init) {
-            init();
+    public void testTck() throws Exception {
+        if (!Utils.init) {
+            Utils.init(server);
         }
-        File mvnOutput = new File(home, "mvnOut_" + packageName);
-        int rc = runCmd(mvnCliTckRoot, tckRunnerDir, mvnOutput);
-    }
-
-    /**
-     * @param methodName
-     * @return
-     * @throws Exception
-     */
-    private int samePacakgeInTck() throws Exception {
-        if (!init) {
-            init();
-        }
-        File mvnOutput = new File(home, "mvnOut_" + packageName);
-        int rc = runCmd(mvnCliPackageRoot, tckRunnerDir, mvnOutput);
-        return rc;
-    }
-
-    /**
-     * @param cmd
-     * @param workingDirectory TODO
-     * @param outputFile TODO
-     * @return
-     * @throws Exception
-     */
-    private int runCmd(String[] cmd, File workingDirectory, File outputFile) throws Exception {
-
-        ProcessBuilder pb = new ProcessBuilder(cmd);
-        System.out.println("GDH cmd is:" + Arrays.asList(cmd));
-        pb.directory(workingDirectory);
-        pb.redirectOutput(outputFile);
-        Process p = pb.start();
-        int exitCode = p.waitFor();
-        return exitCode;
-    }
-
-    public String[] concatStringArray(String[] a, String[] b) {
-        Stream<String> streamA = Arrays.stream(a);
-        Stream<String> streamB = Arrays.stream(b);
-        return Stream.concat(streamA, streamB).toArray(String[]::new);
-    }
-
-    public void init() throws Exception {
-        className = this.getClass().getName();
-        packageName = this.getClass().getPackage().getName();
-        home = new File(System.getProperty("user.dir"));
-        // wlpHome = System.getProperty("wlp.install.dir"); //System.getProperty("liberty.location");
-        wlp = server.getInstallRoot();
-        mvnCliRoot = new String[] { "mvn", "clean", "test", "-Dwlp=" + wlp, "-Dtck_server=" + server.getServerName(),
-                                    "-Dtck_port=" + server.getPort(PortType.WC_defaulthost), "-DpackageName=" + packageName, "-DclassName=" + className };
-        mvnCliMethodRoot = concatStringArray(mvnCliRoot, new String[] { "-DsuiteXmlFile=method.xml" });
-        mvnCliClassRoot = concatStringArray(mvnCliRoot, new String[] { "-DsuiteXmlFile=class.xml" });
-        mvnCliPackageRoot = concatStringArray(mvnCliRoot, new String[] { "-DsuiteXmlFile=package.xml" });
-        mvnCliTckRoot = concatStringArray(mvnCliRoot, new String[] { "-DsuiteXmlFile=tck-suite.xml" });
-        tckRunnerDir = new File("publish/tckRunner");
-        init = true;
+        File mvnOutput = new File(Utils.home, "mvnOut_TCK");
+        int rc = Utils.runCmd(Utils.mvnCliTckRoot, Utils.tckRunnerDir, mvnOutput);
     }
 
 }
