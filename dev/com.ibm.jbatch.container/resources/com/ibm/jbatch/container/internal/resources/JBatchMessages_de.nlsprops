@@ -295,3 +295,17 @@ info.batch.events.publish.topic.useraction=Das JMS-Topic-Stammverzeichnis f\u00f
 cdi.ambiguous.artifact.names=CWWKY0041W: Der Batch-Container wird mit einem aktivem CDI-Feature ausgef\u00fchrt, aber die CDI-Engine konnte das Batch-Artefakt nicht als CDI-Managed-Bean laden und weitere CDI-Injektionen ausf\u00fchren. Dieses Problem k\u00f6nnte auf eine fehlende beandefinierende Annotation wie @Dependent, einen nicht beabsichtigten Beanerkennungsmodus oder einen mehrdeutigen 'ref'-Wert zur\u00fcckzuf\u00fchren sein.
 cdi.ambiguous.artifact.names.explanation=Wenn die Batch-Laufzeitumgebung Artefakte mit der CDI-Engine l\u00e4dt, werden die Batch-Eigenschaften (@BatchProperty) und Batch-Kontexte (JobContext and StepContext) eingef\u00fcgt und die Funktionalit\u00e4t von CDI uneingeschr\u00e4nkt bereitgestellt. Zu dieser Funktionalit\u00e4t geh\u00f6ren die Injektion weiterer Managed Beans entsprechend den Qualifikationsmerkmalen und alle weiteren Features des CDI-Programmiermodells. Wenn die Batch-Laufzeitumgebung Artefakte ohne die CDI-Engine l\u00e4dt, werden nur die Batch-Eigenschaften und -Kontexte eingef\u00fcgt. Da es sich nicht um eine CDI-Managed-Bean in diesem Pfad handelt, sind keine weiteren Injektionen und anderen Features des CDI-Programmiermodells im Batch-Artefakt verf\u00fcgbar. Diese Nachricht zeigt an, dass das Batch-Artefakt trotz aktiviertem CDI-Feature im Server nicht als CDI-Managed-Bean geladen werden kann, weil der Wert des Attributs 'ref', das dieser Artefaktreferenz in der XML entspricht, nicht auf eine einzelne eindeutige CDI-Managed-Bean verweist.
 cdi.ambiguous.artifact.names.useraction=F\u00fcgen Sie die Annotation @Dependent oder eine andere passende beandefinierende Annotation zu Ihrem Batch-Artefakt hinzu. Alternativ k\u00f6nnen Sie den Beanerkennungsmodus in der Datei beans.xml auf 'all' setzen, obwohl diese L\u00f6sung Ihre Anwendung verlangsamen kann. Wenn die mehrdeutigen Artefakte alle nicht erforderlich sind, k\u00f6nnen Sie auch die mehrdeutigen 'ref'-Attribute aus der Anwendung entfernen, sodass nur eine einzige eindeutige Referenz \u00fcbrig bleibt.
+
+#{0} job/flow/partition
+#{1} The JSL
+display.resolved.jsl=CWWKY0042I:  Die aufgel\u00f6ste JSL f\u00fcr {0} ist \n\
+\ {1}.
+display.resolved.jsl.explanation=Die f\u00fcr den Job, den Datenfluss oder die Partition verwendete JSL wird nach der Aufl\u00f6sung der Parameter und Eigenschaften angezeigt. Die Job-JSL l\u00f6st keine Partitionsplaneigenschaften auf. Suchen Sie nach dieser Nachricht in den einzelnen Partitionsprotokollen zur Aufl\u00f6sung der Partitionsplaneigenschaften.
+display.resolved.jsl.useraction=Vergewissern Sie sich, dass die JSL- und Parameteraufl\u00f6sung wie erwartet funktioniert.
+
+#{0} The JSL
+display.unresolved.jsl=CWWKY0043I:  Die nicht aufgel\u00f6ste JSL f\u00fcr diesen Job ist \n\
+\ {0}.
+display.unresolved.jsl.explanation=Die f\u00fcr den Job verwendete JCL wird vor der Aufl\u00f6sung der Parameter und Eigenschaften angezeigt.
+display.unresolved.jsl.useraction=Stellen Sie sicher, dass der Dateiname f\u00fcr die JSL korrekt ist, und vergewissern Sie sich, dass die JSL-Quelle die richtige JSL enth\u00e4lt.
+
