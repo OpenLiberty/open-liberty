@@ -10,8 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.beanvalidation.v20.cdi.internal;
 
+import java.security.AccessController;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.enterprise.inject.spi.BeanManager;
 import javax.validation.BootstrapConfiguration;
@@ -22,8 +28,11 @@ import javax.validation.MessageInterpolator;
 import javax.validation.ParameterNameProvider;
 import javax.validation.TraversableResolver;
 import javax.validation.ValidatorFactory;
+import javax.validation.valueextraction.ValueExtractor;
 
 import org.hibernate.validator.cdi.internal.InjectingConstraintValidatorFactory;
+import org.hibernate.validator.internal.engine.valueextraction.ValueExtractorDescriptor;
+import org.hibernate.validator.internal.util.privilegedactions.GetInstancesFromServiceLoader;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -41,6 +50,7 @@ import com.ibm.ws.beanvalidation.service.ValidationReleasableFactory;
 import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.container.service.metadata.ComponentMetaDataListener;
 import com.ibm.ws.container.service.metadata.MetaDataEvent;
+import com.ibm.ws.kernel.service.util.PrivHelper;
 import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.managedobject.ManagedObjectException;
 import com.ibm.ws.managedobject.ManagedObjectFactory;
@@ -84,7 +94,7 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
             createManagedTraversableResolver(config, appClassLoader);
             createManagedParameterNameProvider(config, appClassLoader);
             createManagedClockProvider(config, appClassLoader);
-            //this.addValueExtractorBeans(config);
+            addValueExtractorBeans(config, appClassLoader);
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "managedObjectService is null, skipping creating CDI enhanced objects.");
@@ -263,34 +273,49 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
         }
     }
 
-//    private Set<ValueExtractorDescriptor> createValidationXmlValueExtractors(Configuration<?> config, ClassLoader appClassLoader) {
-//        BootstrapConfiguration bootstrapConfiguration = config.getBootstrapConfiguration();
-//        Set<String> valueExtractorFqcns = bootstrapConfiguration.getValueExtractorClassNames();
-//
-//        @SuppressWarnings("unchecked")
-//        Set<ValueExtractorDescriptor> valueExtractorDescriptors = valueExtractorFqcns.stream()
-//        .map( fqcn -> createInstance( (Class<? extends ValueExtractor<?>>) run( LoadClass.action( fqcn, null ) ) ) )
-//        .map( ve -> new ValueExtractorDescriptor( ve ) )
-//        .collect( Collectors.toSet() );
-//
-//        return valueExtractorDescriptors;
-//    }
-//
-//    @SuppressWarnings("rawtypes")
-//    private Set<ValueExtractorDescriptor> createServiceLoaderValueExtractors() {
-//        Set<ValueExtractorDescriptor> valueExtractorDescriptors = new HashSet<>();
-//
-//        List<ValueExtractor> valueExtractors = run( GetInstancesFromServiceLoader.action(
-//                                                                                         run( GetClassLoader.fromContext() ),
-//                                                                                         ValueExtractor.class
-//                        ) );
-//
-//        for ( ValueExtractor<?> valueExtractor : valueExtractors ) {
-//            valueExtractorDescriptors.add( new ValueExtractorDescriptor( injectInstance( valueExtractor ) ) );
-//        }
-//
-//        return valueExtractorDescriptors;
-//    }
+    private void addValueExtractorBeans(Configuration<?> config, ClassLoader appClassLoader) {
+        Map<ValueExtractorDescriptor.Key, ValueExtractorDescriptor> valueExtractorDescriptors = createValidationXmlValueExtractors(config,
+                                                                                                                                   appClassLoader).stream().collect(Collectors.toMap(ValueExtractorDescriptor::getKey,
+                                                                                                                                                                                     Function.identity()));
+
+        for (ValueExtractorDescriptor serviceLoaderValueExtractorDescriptor : createServiceLoaderValueExtractors()) {
+            valueExtractorDescriptors.putIfAbsent(serviceLoaderValueExtractorDescriptor.getKey(), serviceLoaderValueExtractorDescriptor);
+        }
+
+        for (ValueExtractorDescriptor valueExtractorDescriptor : valueExtractorDescriptors.values()) {
+            config.addValueExtractor(valueExtractorDescriptor.getValueExtractor());
+        }
+    }
+
+    private Set<ValueExtractorDescriptor> createValidationXmlValueExtractors(Configuration<?> config, ClassLoader appClassLoader) {
+        BootstrapConfiguration bootstrapConfiguration = config.getBootstrapConfiguration();
+        Set<String> valueExtractorClassNames = bootstrapConfiguration.getValueExtractorClassNames();
+
+        @SuppressWarnings("unchecked")
+        Set<ValueExtractorDescriptor> valueExtractorDescriptors = valueExtractorClassNames.stream().map(fqcn -> createManagedObject((Class<? extends ValueExtractor<?>>) loadClass(fqcn,
+                                                                                                                                                                                   appClassLoader))).map(valueExtractor -> new ValueExtractorDescriptor(valueExtractor)).collect(Collectors.toSet());
+
+        return valueExtractorDescriptors;
+    }
+
+    @SuppressWarnings("rawtypes")
+    private Set<ValueExtractorDescriptor> createServiceLoaderValueExtractors() {
+        Set<ValueExtractorDescriptor> valueExtractorDescriptors = new HashSet<>();
+
+        List<ValueExtractor> valueExtractors;
+
+        if (System.getSecurityManager() != null) {
+            valueExtractors = AccessController.doPrivileged(GetInstancesFromServiceLoader.action(PrivHelper.getContextClassLoader(), ValueExtractor.class));
+        } else {
+            valueExtractors = GetInstancesFromServiceLoader.action(PrivHelper.getContextClassLoader(), ValueExtractor.class).run();
+        }
+
+        for (ValueExtractor<?> valueExtractor : valueExtractors) {
+            valueExtractorDescriptors.add(new ValueExtractorDescriptor(createManagedObject(valueExtractor)));
+        }
+
+        return valueExtractorDescriptors;
+    }
 
     private <T> ManagedObjectFactory<T> getManagedBeanManagedObjectFactory(Class<T> clazz) {
         ModuleMetaData mmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getModuleMetaData();
@@ -312,18 +337,19 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
         }
     }
 
-    //TODO: delete once we are certain we won't need to use our ReleasableConstraintValidatorFactory.
-    private <T> ManagedObject<?> createManagedObject(Object instance) {
+    private <T> T createManagedObject(T instance) {
         ModuleMetaData mmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getModuleMetaData();
         ManagedObjectService managedObjectService = managedObjectServiceRef.getServiceWithException();
+        ManagedObject<T> mo;
         try {
-            return managedObjectService.createManagedObject(mmd, instance);
+            mo = managedObjectService.createManagedObject(mmd, instance);
         } catch (ManagedObjectException e) {
             // ffdc
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "Failed to create a ManagedObject for an instance of " + instance.getClass().getName(), e);
             return null;
         }
+        return mo.getObject();
     }
 
     private <T> T createManagedObject(Class<T> clazz) {

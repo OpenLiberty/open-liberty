@@ -147,11 +147,11 @@ public class ValidatorFactoryBuilderImpl implements ValidatorFactoryBuilder {
         }
     };
 
-    public void releaseLoader(ClassLoader tccl) {
+    private void releaseLoader(ClassLoader tccl) {
         AccessController.doPrivileged(new DestroyThreadContextClassLoaderAction(tccl));
     }
 
-    public ClassLoader configureBvalClassloader(ClassLoader cl) {
+    private ClassLoader configureBvalClassloader(ClassLoader cl) {
         if (cl == null) {
             cl = PrivHelper.getContextClassLoader();
         }
