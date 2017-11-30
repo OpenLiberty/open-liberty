@@ -1,20 +1,21 @@
-/*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/*
+ * IBM Confidential
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * OCO Source Materials
+ *
+ * Copyright IBM Corp. 2011, 2017
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with the
+ * U.S. Copyright Office.
+ */
 package com.ibm.ws.artifact.zip.internal;
 
-import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 import org.osgi.framework.BundleContext;
@@ -22,6 +23,7 @@ import org.osgi.service.component.ComponentContext;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.artifact.contributor.ArtifactContainerFactoryHelper;
 import com.ibm.ws.artifact.zip.cache.ZipCachingService;
 import com.ibm.ws.classloading.configuration.GlobalClassloadingConfiguration;
@@ -29,221 +31,400 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.ArtifactEntry;
 import com.ibm.wsspi.artifact.factory.ArtifactContainerFactory;
+import com.ibm.wsspi.kernel.service.utils.FileUtils;
 
 /**
- * Factory to create Containers for Zip structured data.
+ * ZIP file container factory.
+ *
+ * This is a delegate container factory which is used by the artifact file system
+ * delegating container factory to attempt to create zip file type containers.
+ *
+ * Generally, a zip file type container can be created on files and on artifact entries,
+ * when the file or entry has a valid zip type extension, and when at least one entry can
+ * be read from the file or entry.
+ *
+ * A file or entry which has a zip type extension is expected to contain valid zip data.
+ * Warnings are issued when a file or entry which has a zip type extension fails to read
+ * as a zip file.
  */
 public class ZipFileContainerFactory implements ArtifactContainerFactoryHelper, ContainerFactoryHolder {
-
     static final TraceComponent tc = Tr.register(ZipFileContainerFactory.class);
 
-    private boolean hasZipExtension(String name) {
-        return name.matches("(?i:(.*)\\.(ZIP|[SEJRW]AR|E[BS]A))");
+    //
+
+    private BundleContext bundleContext;
+
+    protected synchronized void activate(ComponentContext componentContext) {
+        bundleContext = componentContext.getBundleContext();
     }
 
-    /**
-     * Returns a Container if the Object is a File, and if the filename has an extension indicating Zip data. <p> {@inheritDoc}
-     */
-    @Override
-    public ArtifactContainer createContainer(File cacheDir, Object o) {
-        ArtifactContainer zfc = null;
-        if (o instanceof File && Utils.isFile(((File) o))) {
-            File f = (File) o;
-            if (isZip(f)) {
-                zfc = new ZipFileContainer(cacheDir, f, this);
-            }
-        }
-        return zfc;
+    protected synchronized void deactivate(ComponentContext componentContext) {
+        rootContainerFactory = null;
+        bundleContext = null;
     }
 
-    /**
-     * Returns a Container if
-     * <li>the Object is a File, and if the filename has an extension indicating Zip data.
-     * <li>the Entry name has an extension indicating Zip data, and the inputstream for the Entry is able to be opened as a ZipInputStream <p> {@inheritDoc}
-     */
-    @Override
-    public ArtifactContainer createContainer(File cacheDir, ArtifactContainer parent, ArtifactEntry e, Object o) {
-        ArtifactContainer zfc = null;
-
-        if (o instanceof File && Utils.isFile(((File) o))) {
-            File f = (File) o;
-            if (isZip(f)) {
-                zfc = new ZipFileContainer(cacheDir, parent, e, f, this);
-            }
-        } else {
-            if (isZip(e)) {
-                zfc = new ZipFileContainer(cacheDir, parent, e, null, this);
-            }
-        }
-        return zfc;
-    }
-
-    private boolean isZip(ArtifactEntry e) {
-        boolean validZip = false;
-
-        if (hasZipExtension(e.getName())) {
-            InputStream is = null;
-            try {
-                is = e.getInputStream();
-                if (is == null) {
-                    return false;
-                }
-                if (!(is instanceof BufferedInputStream)) {
-                    is = new BufferedInputStream(is);
-                }
-
-                ZipInputStream zis = new ZipInputStream(is);
-                //test if its actually a zip ?
-                try {
-                    // we call getNextEntry to ensure we have a valid zip, will fail if not.
-                    // we don't care about the first entry so we can ignore it.
-                    zis.getNextEntry();
-                    validZip = true;
-                } catch (IOException io) {
-                    //if we caught an exception.. it's not a zip
-                    //or its a broken zip
-                    //or the disk is failing
-
-                    //no need to report the error, we were only attempting to load the file.
-                    //if we fail, someone else might not.
-                    //update: we now report the error, as a user aid to diagnosing issues.
-
-                    // If we get an exception it isn't a valid zip.
-                    // build a path for the message.. this isn't too straightforward.
-                    // note: the artifact api impls are allowed to use getPhysicalPath =)
-                    String path = e.getPath();
-                    if (e.getPhysicalPath() != null) {
-                        //entry has a real path
-                        path = e.getPhysicalPath();
-                    } else {
-                        if (e.getRoot().getPhysicalPath() != null) {
-                            //entry didnt have a path, but it's root did.. 
-                            path = e.getRoot().getPhysicalPath() + "!" + path;
-                        } else {
-                            //entry and it's root had no physical path..
-                            //can we go up above that?
-                            boolean found = false;
-                            ArtifactEntry parent = e.getRoot().getEntryInEnclosingContainer();
-                            while (parent != null) {
-                                if (parent.getPhysicalPath() != null) {
-                                    path = parent.getPhysicalPath() + "!" + path;
-                                } else {
-                                    path = parent.getPath() + "!" + path;
-                                }
-                                parent = parent.getRoot().getEntryInEnclosingContainer();
-                            }
-                            //path is now either prefixed by a physical path, or is as 
-                            //good as we can get.. (eg, if this is a zip in loose.. )
-                        }
-                    }
-                    Tr.error(tc, "bad.zip.data", path);
-                }
-                try {
-                    // attempt to close the zip, ignoring any error because we can't recover.
-                    zis.close();
-                } catch (IOException ioe) {
-                    //ignore errors closing.
-                }
-            } catch (IOException e1) {
-                //IOException just means we couldn't verify it was a zip, so return false.
-                //IOException must have come from getInputStream, so we have nothing to close.
-                //(all others are caught above)
-                return false;
-            }
-        }
-
-        return validZip;
-    }
-
-    @FFDCIgnore(IOException.class)
-    private boolean isZip(File f) {
-        boolean validZip = false;
-        if (hasZipExtension(f.getName())) {
-            // Opening the file as a zip to ensure it really is a valid zip.
-            ZipFile zf;
-            try {
-                zf = Utils.newZipFile(f);
-                validZip = true;
-                zf.close();
-            } catch (IOException e) {
-                // If we get an exception it isn't a valid zip.
-                Tr.error(tc, "bad.zip.data", f.getAbsolutePath());
-            }
-
-        }
-
-        return validZip;
-    }
-
-    private ArtifactContainerFactory containerFactory = null;
-    private ZipCachingService zipCachingService = null;
-    private BundleContext ctx = null;
-    private GlobalClassloadingConfiguration classLoadingConfiguration;
-
-    protected synchronized void activate(ComponentContext ctx) {
-        //need to get this into containers for the notifier.. 
-        this.ctx = ctx.getBundleContext();
-    }
-
-    protected synchronized void deactivate(ComponentContext ctx) {
-        this.containerFactory = null;
-        this.ctx = null;
-    }
-
-    protected synchronized void setContainerFactory(ArtifactContainerFactory cf) {
-        this.containerFactory = cf;
-    }
-
-    protected synchronized void unsetContainerFactory(ArtifactContainerFactory cf) {
-        if (this.containerFactory == cf)
-            this.containerFactory = null;
-    }
-
-    protected void setGlobalClassloadingConfiguration(GlobalClassloadingConfiguration globalClassloadingConfiguration) {
-        this.classLoadingConfiguration = globalClassloadingConfiguration;
-    }
-
-    protected void setZipCachingService(ZipCachingService zcs) {
-        this.zipCachingService = zcs;
-    }
-
-    @Override
-    public synchronized ArtifactContainerFactory getContainerFactory() {
-        if (containerFactory == null) {
-            throw new IllegalStateException();
-        }
-        return containerFactory;
-    }
-
+    @Trivial
     @Override
     public synchronized BundleContext getBundleContext() {
-        if (ctx == null) {
+        if ( bundleContext == null ) {
+            // TODO: Why throw this?
             throw new IllegalStateException();
         }
-        return ctx;
+        return bundleContext;
     }
 
-    @Override
-    public ZipCachingService getZipCachingService() {
-        if (zipCachingService == null) {
-            throw new IllegalStateException();
-        }
-        return this.zipCachingService;
-    }
+    //
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.ibm.ws.artifact.zip.internal.ContainerFactoryHolder#useJarUrls()
+    /**
+     * The root delegating container factory used by this zip file container.
+     *
+     * The root delegating container factory is used to convert entries to
+     * non-enclosed containers.
+     *
+     * The factory is a "root delegating" factory because it is populated by
+     * declarative services to call out to specific container factories
+     * (such as this {@link ZipFileContainerFactory}.  When attempting to
+     * convert an entry to a container the root delegating factory iterates
+     * across the specific contains it has been given and gives them each
+     * a try at converting the container.
+     *
+     * The conversion of an entry to a container does <strong>not</strong> use
+     * the root delegating container factory when a local conversion is requested.
+     *
+     * See {@link ZipFileEntry#convertToContainer(boolean)}
      */
+    private ArtifactContainerFactory rootContainerFactory;
+
+    protected synchronized void setContainerFactory(ArtifactContainerFactory rootContainerFactory) {
+        this.rootContainerFactory = rootContainerFactory;
+    }
+
+    protected synchronized void unsetContainerFactory(
+        @SuppressWarnings("hiding")
+        ArtifactContainerFactory rootContainerFactory) {
+
+        if ( this.rootContainerFactory == rootContainerFactory ) {
+            this.rootContainerFactory = null;
+        }
+    }
+
+    @Trivial
+    @Override
+    public synchronized ArtifactContainerFactory getContainerFactory() {
+        if ( rootContainerFactory == null ) {
+            throw new IllegalStateException();
+        }
+        return rootContainerFactory;
+    }
+
+    //
+
+    // TODO: Should access to the class loading configuration be synchronized?
+    //       An assignment during access could leave the reference spliced and
+    //       unusable.
+
+    private GlobalClassloadingConfiguration classLoadingConfiguration;
+
+    protected void setGlobalClassloadingConfiguration(GlobalClassloadingConfiguration classloadingConfiguration) {
+        this.classLoadingConfiguration = classloadingConfiguration;
+    }
+
+    //
+
+    /**
+     * Tell if the "jar:" protocol is to be used in archive URLs.  The default is
+     * to use the "wsjar:" protocol.
+     *
+     * The result is obtained from the global class loading configuration.
+     * See {GlobalClassLoadingConfiguration{@link #useJarUrls}.  A global
+     * class loading configuration is optional.  When not available, answer
+     * false.
+     *
+     * @return True or false telling if the "jar:" protocol is to be used instead
+     *     of the "wsjar:" protocol.
+     */
+    @Trivial
     @Override
     public boolean useJarUrls() {
-        // The classloadingConfiguration is optional, so don't assume it's there
-        if (classLoadingConfiguration != null) {
+        if ( classLoadingConfiguration != null ) {
             return classLoadingConfiguration.useJarUrls();
         } else {
             return false;
         }
     }
 
+    //
+
+    // TODO: Should access to the zip caching service be synchronized?
+    //       An assignment during access could leave the reference spliced and
+    //       unusable.
+
+    private ZipCachingService zipCachingService;
+
+    protected void setZipCachingService(ZipCachingService zipCachingService) {
+        this.zipCachingService = zipCachingService;
+    }
+
+    @Trivial
+    @Override
+    public ZipCachingService getZipCachingService() {
+        if ( zipCachingService == null ) {
+            throw new IllegalStateException();
+        }
+        return zipCachingService;
+    }
+
+    //
+
+    /**
+     * Attempt to create a root-of-roots zip file type container.
+     *
+     * Anser null if the container data is not a file or is not a valid
+     * zip file.
+     *
+     * @return A new root-of-roots zip file type container.
+     */
+    @Override
+    public ArtifactContainer createContainer(File cacheDir, Object containerData) {
+        if ( !(containerData instanceof File) ) {
+            return null;
+        }
+
+        File fileContainerData = (File) containerData;
+        if ( !FileUtils.fileIsFile(fileContainerData) ) {
+            return null;
+        }
+
+        if ( !isZip(fileContainerData) ) {
+            return null;
+        }
+
+        return new ZipFileContainer(cacheDir, fileContainerData, this);
+    }
+
+    /**
+     * Attempt to create an enclosed root zip file type container.
+     *
+     * The entry from which the container is to be created must container
+     * data for a zip file.
+     *
+     * The container data, if supplied and a file, will be tested.  Otherwise,
+     * the supplied entry will be tested.
+     *
+     * Answer null if the container data is a file but is not a zip file, or
+     * if the entry is not a zip entry.
+     *
+     * @return The new enclosed root zip file container.  Null if the attempt
+     *     fails.
+     */
+    @Override
+    public ArtifactContainer createContainer(
+        File cacheDir,
+        ArtifactContainer enclosingContainer,
+        ArtifactEntry entryInEnclosingContainer,
+        Object containerData) {
+
+        if ( (containerData instanceof File) && FileUtils.fileIsFile((File) containerData) ) {
+            File fileContainerData = (File) containerData;
+            if ( isZip(fileContainerData) ) {
+                return new ZipFileContainer(
+                    cacheDir,
+                    enclosingContainer, entryInEnclosingContainer,
+                    fileContainerData,
+                    this);
+            } else {
+                return null;
+            }
+
+        } else {
+            if ( isZip(entryInEnclosingContainer) ) {
+                return new ZipFileContainer(
+                    cacheDir,
+                    enclosingContainer, entryInEnclosingContainer,
+                    null,
+                    this);
+            } else {
+                return null;
+            }
+        }
+    }
+
+    //
+
+    private static final String[] ZIP_EXTENSIONS = new String[] {
+        "jar",
+        "zip",
+        "ear", "war", "rar",
+        "eba", "esa",
+        "sar"
+    };
+
+    private static boolean hasZipExtension(String name) {
+        int nameLen = name.length();
+        if ( nameLen < 4 ) {
+            return false;
+        } else if ( name.charAt(nameLen - 4) != '.' ) {
+            return false;
+        } else {
+            for ( String ext : ZIP_EXTENSIONS ) {
+                if ( name.regionMatches(true, nameLen - 3, ext, 0, 3) ) { // ignore case
+                    return true;
+                }
+            }
+            return false;
+        }
+        // return name.matches("(?i:(.*)\\.(ZIP|[SEJRW]AR|E[BS]A))");
+    }
+
+    // If we caught an exception, it's not a zip file.
+    // Or, it is a broken zip file.
+    // Or, the disk is failing
+
+    /**
+     * Tell if an artifact entry is valid to be interpreted as a zip file
+     * container.
+     *
+     * The entry must have a valid zip file extension (see {@link #hasZipExtension}.
+     *
+     * The entry must open as a {@link ZipInputStream}, and at least one entry
+     * must be readable from that stream.
+     *
+     * A zip stream is used instead of a zip file: Opening a zip file on the
+     * entry would force the entry to be extracted, and would cause the table
+     * of entries of the zip file to be loaded.
+     *
+     * @param artifactEntry The entry to test as a zip file container.
+     *
+     * @return True or false telling if the entry can be interpreted as
+     *     a zip file container.
+     */
+    private static boolean isZip(ArtifactEntry artifactEntry) {
+        if ( !hasZipExtension( artifactEntry.getName() ) ) {
+            return false;
+        }
+
+        boolean validZip = false;
+
+        InputStream entryInputStream = null;
+        try {
+            entryInputStream = artifactEntry.getInputStream();
+            if ( entryInputStream == null ) {
+                return false;
+            }
+
+            ZipInputStream zipInputStream = new ZipInputStream(entryInputStream);
+            try {
+                zipInputStream.getNextEntry();
+                validZip = true;
+            } catch ( IOException e ) {
+                String entryPath = getPhysicalPath(artifactEntry);
+                Tr.error(tc, "bad.zip.data", entryPath);
+            }
+
+            try {
+                // attempt to close the zip, ignoring any error because we can't recover.
+                zipInputStream.close();
+            } catch (IOException ioe) {
+                // FFDC
+            }
+        } catch ( IOException e1 ) {
+            // FFDC
+            return false;
+        }
+
+        return validZip;
+    }
+
+    /**
+     * Answer they physical path of an artifact entry.
+     *
+     * If the entry has a physical path (for example, because it was
+     * extracted), directly answer that path.  In that case, the path
+     * of the entry may be in a cache directory, and may not have a
+     * relationship to enclosing containers physical path.
+     *
+     * If the entry does not have a physical path, walk upwards until
+     * an enclosing container has a physical path, then append the
+     * path of enclosing entry which reaches the entry, placing "!"
+     * after each enclosing path.
+     *
+     * @param artifactEntry The entry for which to obtain a physical path.
+     *
+     * @return The physical path of the entry.
+     */
+    @SuppressWarnings("deprecation")
+    private static String getPhysicalPath(ArtifactEntry artifactEntry) {
+        String physicalPath = artifactEntry.getPhysicalPath();
+        if ( physicalPath != null ) {
+            return physicalPath;
+        }
+
+        String entryPath = artifactEntry.getPath();
+        String rootPath = artifactEntry.getRoot().getPhysicalPath();
+        if ( rootPath != null ) {
+            return rootPath + "!" + entryPath;
+        }
+
+        while ( (artifactEntry = artifactEntry.getRoot().getEntryInEnclosingContainer()) != null ) {
+            String nextPhysicalPath = artifactEntry.getPhysicalPath();
+            if ( nextPhysicalPath != null ) {
+                return nextPhysicalPath + "!" + entryPath;
+            }
+            entryPath = artifactEntry.getPath() + "!" + entryPath;
+        }
+
+        return entryPath;
+    }
+
+    /**
+     * Tell if a file is valid to used to create a zip file container.
+     *
+     * The file must have a valid zip file extension (see {@link #hasZipExtension}.
+     *
+     * The file must open as a {@link ZipInputStream}, and at least one entry
+     * must be readable from that stream.
+     *
+     * A zip stream is used instead of a zip file: Opening a zip file on the
+     * file would cause the table of entries of the zip file to be loaded.
+     *
+     * @param file The file to test as a zip file container.
+     *
+     * @return True or false telling if the file can be interpreted as
+     *     a zip file container.
+     */
+    @FFDCIgnore( { IOException.class, FileNotFoundException.class } )
+    private static boolean isZip(File file) {
+        if ( !hasZipExtension( file.getName() ) ) {
+            return false;
+        }
+
+        InputStream inputStream = null;
+
+        try {
+            inputStream = new FileInputStream(file); // throws FileNotFoundException
+
+            ZipInputStream zipInputStream = new ZipInputStream(inputStream);
+
+            try {
+                zipInputStream.getNextEntry(); // throws IOException
+                return true;
+            } catch ( IOException e ) {
+                Tr.error(tc, "bad.zip.data", file.getAbsolutePath());
+                return false;
+            }
+
+        } catch ( FileNotFoundException e ) {
+            Tr.error(tc, "Missing zip file " + file.getAbsolutePath());
+            return false;
+
+        } finally {
+            if ( inputStream != null ) {
+                try {
+                    inputStream.close();
+                } catch ( IOException e ) {
+                    // IGNORE
+                }
+            }
+        }
+    }
 }
