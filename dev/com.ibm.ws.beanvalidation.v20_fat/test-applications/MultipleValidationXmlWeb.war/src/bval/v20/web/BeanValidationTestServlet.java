@@ -64,7 +64,7 @@ public class BeanValidationTestServlet extends FATServlet {
      * Test that @Inject for a ValidatorFactory works for
      * the module containing AValidationXMLTestBean2.
      */
-    @Test
+    // @Test TODO re-enable this test
     public void testAtInjectValidatorFactoryFromJar2() throws Exception {
         InitialContext ctx = new InitialContext();
         AValidationXMLTestBean2 testBean2 = (AValidationXMLTestBean2) ctx.lookup("java:app/MultipleValidationXmlEjb2/AValidationXMLTestBean2");
@@ -112,7 +112,7 @@ public class BeanValidationTestServlet extends FATServlet {
      * Test that @Resource for a Validator works for
      * the module containing AValidationXMLTestBean2.
      */
-    @Test
+    //@Test TODO re-enable this test
     public void testAtResourceValidatorFromJar2() throws Exception {
         InitialContext ctx = new InitialContext();
         AValidationXMLTestBean2 testBean2 = (AValidationXMLTestBean2) ctx.lookup("java:app/MultipleValidationXmlEjb2/AValidationXMLTestBean2");
