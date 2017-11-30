@@ -39,7 +39,8 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 -dsannotations-inherit: true
 -dsannotations: \
-  com.ibm.ws.beanvalidation.v20.cdi.internal.ValidationReleasableFactoryImpl
+  com.ibm.ws.beanvalidation.v20.cdi.internal.ValidationReleasableFactoryImpl,\
+  com.ibm.ws.beanvalidation.v20.cdi.internal.LibertyHibernateValidatorExtension
 
 -buildpath: \
     com.ibm.websphere.javaee.cdi.2.0;version=latest,\

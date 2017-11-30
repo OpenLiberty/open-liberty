@@ -274,13 +274,12 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
         List<ValueExtractor> valueExtractors;
 
         if (System.getSecurityManager() != null) {
-            ClassLoader tccl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            valueExtractors = AccessController.doPrivileged(new PrivilegedAction<List<ValueExtractor>>() {
                 @Override
-                public ClassLoader run() {
-                    return Thread.currentThread().getContextClassLoader();
+                public List<ValueExtractor> run() {
+                    return GetInstancesFromServiceLoader.action(Thread.currentThread().getContextClassLoader(), ValueExtractor.class).run();
                 }
             });
-            valueExtractors = AccessController.doPrivileged(GetInstancesFromServiceLoader.action(tccl, ValueExtractor.class));
         } else {
             valueExtractors = GetInstancesFromServiceLoader.action(Thread.currentThread().getContextClassLoader(), ValueExtractor.class).run();
         }
