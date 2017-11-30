@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="build/unittest/classes" path="unittest/src"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.logging"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.org.osgi.core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.org.osgi.service.component"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.wsspi.org.osgi.service.component.annotations"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.kernel.service"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.kernel.filemonitor"/>
+	<classpathentry kind="lib" path="/ant_build/lib/junit.jar"/>
+	<classpathentry kind="lib" path="/ant_build/lib/ws-junit.jar" sourcepath="/ant_junit"/>
+	<classpathentry kind="lib" path="/build.sharedResources/lib/hamcrest-all.jar"/>
+	<classpathentry kind="lib" path="/ant_build/lib/jmock-junit4.jar"/>
+	<classpathentry kind="lib" path="/ant_build/lib/jmock.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.artifact"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.servlet.3.0"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.artifact.overlay"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.adaptable.module"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.artifact.loose"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.artifact.zip"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.artifact.url"/>
+</classpath>
