@@ -50,9 +50,6 @@ public class DatabaseIdentityStore implements IdentityStore {
 
     private static final TraceComponent tc = Tr.register(DatabaseIdentityStore.class);
 
-    // todo-kristip: generate a storeId
-    private final String storeId = null;
-
     /** The definitions for this IdentityStore. */
     private final DatabaseIdentityStoreDefinitionWrapper idStoreDefinition;
 
@@ -226,7 +223,7 @@ public class DatabaseIdentityStore implements IdentityStore {
 
         if (passwordHash.verify(cred.getPassword().getValue(), String.valueOf(dbPassword.getChars()))) {
             Set<String> groups = getCallerGroups(new CredentialValidationResult(null, caller, caller, caller, null));
-            return new CredentialValidationResult(storeId, caller, caller, caller, groups);
+            return new CredentialValidationResult(idStoreDefinition.getDataSourceLookup(), caller, caller, caller, groups);
         } else {
             if (tc.isEventEnabled()) {
                 Tr.event(tc, "PasswordHash verify check returned false for caller: " + caller);
