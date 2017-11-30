@@ -48,3 +48,11 @@ failed_to_extract_saml_token_from_subject.useraction=Ujist\u011bte se, \u017ee s
 failed_run_as_subject=CWWKW0706E: Do\u0161lo k v\u00fdjimce p\u0159i pokusu z\u00edskat RunAsSubject. V\u00fdjimka: [{0}].
 failed_run_as_subject.explanation=Do\u0161lo k v\u00fdjimce p\u0159i z\u00edsk\u00e1v\u00e1n\u00ed RunAsSubject.
 failed_run_as_subject.useraction=Ujist\u011bte se, \u017ee je server spr\u00e1vn\u011b nakonfigurov\u00e1n a spu\u0161t\u011bn.
+
+warn_missing_mpjwt_token=CWWKW0707W: Atribut [{0}] v konfiguraci [{1}] je nastaven na [{2}], ale token MicroProfile JSON Web Token (JWT) nen\u00ed dostupn\u00fd. Po\u017eadavek neobsahuje z\u00e1hlav\u00ed autorizace s tokenem.
+warn_missing_mpjwt_token.explanation=B\u011bhov\u00e9mu prost\u0159ed\u00ed se nezda\u0159ilo naj\u00edt MicroProfile JWT v p\u0159edm\u011btu runAs. Tato chyba obvykle ozna\u010duje probl\u00e9m s ov\u011b\u0159en\u00edm. Ujist\u011bte se, \u017ee nedo\u0161lo k \u017e\u00e1dn\u00fdm chyb\u00e1m p\u0159i ov\u011b\u0159ov\u00e1n\u00ed u\u017eivatele funkc\u00ed MicroProfile JWT.
+warn_missing_mpjwt_token.useraction=Zkontrolujte akci u\u017eivatele pro jak\u00e9koli p\u0159edchoz\u00ed chyby, kter\u00e9 server protokoluje.
+
+warn_mpjwt_prop_service_notavail=CWWKW0708W: Slu\u017eba MicroProfile JWT Propagation nen\u00ed dostupn\u00e1. B\u011bhov\u00e9 prost\u0159ed\u00ed nem\u00e1 p\u0159\u00edstup k tokenu, aby jej zahrnulo do z\u00e1hlav\u00ed autorizace.
+warn_mpjwt_prop_service_notavail.explanation=Slu\u017eba MicroProfile JWT Propagation vy\u017eaduje funkci mpJwt-1.0. 
+warn_mpjwt_prop_service_notavail.useraction=P\u0159esv\u011bd\u010dte se, \u017ee je server spu\u0161t\u011bn s po\u017eadovanou funkc\u00ed.

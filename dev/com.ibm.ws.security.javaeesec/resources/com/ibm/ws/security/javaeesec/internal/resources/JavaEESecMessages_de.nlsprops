@@ -27,14 +27,15 @@ JAVAEESEC_ERROR_NO_VALIDATION=CWWKS1911E: Es wurde kein IdentityStore-Objekt gef
 JAVAEESEC_ERROR_NO_VALIDATION.explanation=Keines der IdentityStore-Objekt unterst\u00fctzt die Benutzervalidierung. Deshalb kann der Benutzer mit dem Sicherheitscode nicht authentifiziert werden.
 JAVAEESEC_ERROR_NO_VALIDATION.useraction=Stellen Sie sicher, dass mindestens ein IdentityStore-Objekt die Benutzervalidierung unterst\u00fctzt.
 
-JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: Es wurde kein HttpAuthenticationMechanism-Objekt f\u00fcr die Authentifizierung gefunden. Stellen Sie sicher, dass ein HttpAuthenticationMechanism-Objekt in der Anwendung vorhanden ist.
+JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: Das HttpAuthenticationMechanism-Objekt f\u00fcr das Modul {0} in der Anwendung {1} wurde nicht gefunden. Stellen Sie sicher, dass das Modul ein HttpAuthenticationMechanism-Objekt enth\u00e4lt.
 JAVAEESEC_ERROR_NO_HAM.explanation=Es wurde kein HttpAuthenticationMechanism-Objekt f\u00fcr die Authentifizierung gefunden. Es ist m\u00f6glich, dass kein Objekt vorhanden ist oder dass es mehrere Objekte gibt, die der angegebenen Bedingung entsprechen. Stellen Sie sicher, dass ein HttpAuthenticationMechanism-Objekt in der Anwendung vorhanden ist.
 JAVAEESEC_ERROR_NO_HAM.useraction=Stellen Sie sicher, dass ein HttpAuthenticationMechanism-Objekt in der Anwendung vorhanden ist.
 
-JAVAEESEC_ERROR_NO_HAM_PROPS=CWWKS1913E: Es wurde kein HAMProperties-Objekt f\u00fcr die Authentifizierung gefunden. Wahrscheinlich ist kein HttpAuthenticationMechanism-Objekt in der Anwendung vorhanden. Stellen Sie sicher, dass ein HttpAuthenticationMechanism-Objekt definiert ist.
-JAVAEESEC_ERROR_NO_HAM_PROPS.explanation=Es wurde kein HAMProperties-Objekt f\u00fcr die Authentifizierung gefunden. Es ist m\u00f6glich, dass kein HttpAuthenticationMechanism-Objekt in der Anwendung definiert ist.
-JAVAEESEC_ERROR_NO_HAM_PROPS.useraction=Stellen Sie sicher, dass ein HttpAuthenticationMechanism-Objekt in der Anwendung vorhanden ist.
+JAVAEESEC_ERROR_NO_MODULE_PROPS=CWWKS1913E: Das ModuleProperties-Objekt f\u00fcr die Authentifizierung der Anwendung {0} wurde nicht gefunden. Wahrscheinlich enth\u00e4lt die Anwendung kein HttpAuthenticationMechanism-Objekt. Stellen Sie sicher, dass f\u00fcr jedes Modul ein HttpAuthenticationMechanism-Objekt definiert ist.
+JAVAEESEC_ERROR_NO_MODULE_PROPS.explanation=Das ModuleProperties-Objekt, das f\u00fcr die Authentifizierung der Anwendung erforderlich ist, kann nicht identifiziert werden. Dieser Fehler ist gew\u00f6hnlich darauf zur\u00fcckzuf\u00fchren, dass kein HttpAuthenticationMechanism-Objekt in der Anwendung definiert ist.
+JAVAEESEC_ERROR_NO_MODULE_PROPS.useraction=Stellen Sie sicher, dass jedes Modul in der Anwendung ein HttpAuthenticationMechanism-Objekt enth\u00e4lt.
 
 JAVAEESEC_WARNING_NO_REALM_NAME=CWWKS1914W: Der Realmname f\u00fcr die Basisauthentifizierung ist nicht definiert. Es wird der Wert defaultRealm verwendet.
 JAVAEESEC_WARNING_NO_REALM_NAME.explanation=Der Realmname f\u00fcr die Basisauthentifizierung ist nicht definiert und deshalb wird der Standardwert defaultRealm verwendet.
 JAVAEESEC_WARNING_NO_REALM_NAME.useraction=Wenn der Realmname definiert werden muss, definieren Sie ihn mit der Annotation BasicAuthenticationMechanismDefinition in der Anwendung.
+

@@ -451,5 +451,10 @@ error.extendsAlias.collision=CWWKG0100E: L''attributo {2} ibm:extendsAlias \u00e
 error.extendsAlias.collision.explanation=L'attributo ibm:extendsAlias deve essere univoco in una gerarchia di estensioni singola.
 error.extendsAlias.collision.useraction=Rendere univoco ciascun attributo ibm:extendsAlias nella gerarchia di estensioni.
 
+warning.binding.config=CWWKG0101W: La configurazione con il PID (persisted identity) {0} \u00e8 collegata al bundle {1}. La configurazione non \u00e8 visibile per altri bundle.  
+warning.binding.config.explanation=Una configurazione \u00e8 collegata al bundle chiamante quando il metodo getConfiguration dell'interfaccia ConfigurationAdmin \u00e8 richiamato per la prima volta. Una volta collegata la configurazione, non \u00e8 pi\u00f9 visibile per altri bundle.  
+warning.binding.config.useraction=Per assicurarsi che l'ubicazione bundle sia il valore previsto, utilizzare il metodo getConfiguration sull'interfaccia ConfigurationAdmin che acquisisce un'ubicazione bundle come secondo parametro.
+
+
 # Non-TR message
 error.invalidOCDRef=ERRORE: il PID metatipo [{0}] specifica un ID di definizione della classe oggetto inesistente [{1}]

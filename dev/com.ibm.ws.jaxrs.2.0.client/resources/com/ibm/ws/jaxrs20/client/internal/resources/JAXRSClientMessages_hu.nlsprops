@@ -48,3 +48,11 @@ failed_to_extract_saml_token_from_subject.useraction=Gy\u0151z\u0151dj\u00f6n me
 failed_run_as_subject=CWWKW0706E: Kiv\u00e9tel t\u00f6rt\u00e9nt a RunAsSubject lek\u00e9r\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n. A kiv\u00e9tel: [{0}].
 failed_run_as_subject.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a RunAsSubject lek\u00e9r\u00e9se k\u00f6zben.
 failed_run_as_subject.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3 megfelel\u0151en van konfigur\u00e1lva \u00e9s elind\u00edtva.
+
+warn_missing_mpjwt_token=CWWKW0707W: A(z) [{0}] attrib\u00fatum a(z) [{1}konfigur\u00e1ci\u00f3ban [{2}] \u00e9rt\u00e9kre van be\u00e1ll\u00edtva, de a MicroProfile JSON webes token (JWT) nem \u00e9rhet\u0151 el. A k\u00e9r\u00e9sben nem szerepel Authorization fejl\u00e9c a tokennel.
+warn_missing_mpjwt_token.explanation=A fut\u00e1si k\u00f6rnyezet nem tal\u00e1lta a MicroProfile JWT-t a runAs t\u00e1rgyban. Ez a hiba \u00e1ltal\u00e1ban hiteles\u00edt\u00e9ssel kapcsolatos probl\u00e9m\u00e1t jelez. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy nem t\u00f6rt\u00e9nik hiba, mik\u00f6zben a MicroProfile JWT szolg\u00e1ltat\u00e1s hiteles\u00edti a felhaszn\u00e1l\u00f3t.
+warn_missing_mpjwt_token.useraction=Keressen a felhaszn\u00e1l\u00f3i m\u0171velettel kapcsolatos kor\u00e1bbi hib\u00e1kat, amelyeket a kiszolg\u00e1l\u00f3 napl\u00f3zott.
+
+warn_mpjwt_prop_service_notavail=CWWKW0708W: A MicroProfile JWT tov\u00e1bb\u00edt\u00e1si szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el. A fut\u00e1si k\u00f6rnyezet nem tudja el\u00e9rni a tokent, hogy felvegye azt az Authorization fejl\u00e9cbe.
+warn_mpjwt_prop_service_notavail.explanation=A MicroProfile JWT tov\u00e1bb\u00edt\u00e1si szolg\u00e1ltat\u00e1snak sz\u00fcks\u00e9ge van a mpJwt-1.0 szolg\u00e1ltat\u00e1sra. 
+warn_mpjwt_prop_service_notavail.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a a kiszolg\u00e1l\u00f3 a sz\u00fcks\u00e9ges szolg\u00e1ltat\u00e1ssal fut.

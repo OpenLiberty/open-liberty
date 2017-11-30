@@ -48,3 +48,11 @@ failed_to_extract_saml_token_from_subject.useraction=Stellen Sie sicher, dass da
 failed_run_as_subject=CWWKW0706E: Beim Abrufen des RunAsSubject ist eine Ausnahme eingetreten. Ausnahme: [{0}]
 failed_run_as_subject.explanation=Beim Abrufen des RunAsSubject ist eine Ausnahme eingetreten.
 failed_run_as_subject.useraction=Stellen Sie sicher, dass der Server ordnungsgem\u00e4\u00df konfiguriert und gestartet ist.
+
+warn_missing_mpjwt_token=CWWKW0707W: Das Attribut [{0}] in der Konfiguration [{1}] ist auf [{2}] gesetzt, aber das MicroProfile JSON Web Token (JWT) ist nicht verf\u00fcgbar. Die Anforderung enth\u00e4lt keinen Authorization-Header mit dem Token.
+warn_missing_mpjwt_token.explanation=Die Laufzeitumgebung hat das MicroProfile JWT nicht im RunAs-Subjekt gefunden. Dieser Fehler weist gew\u00f6hnlich auf ein Problem mit der Authentifizierung hin. Stellen Sie sicher, dass keine Fehler auftreten, w\u00e4hrend das Feature MicroProfile JWT einen Benutzer authentifiziert.
+warn_missing_mpjwt_token.useraction=Sehen Sie sich die vorgeschlagenen Benutzeraktionen f\u00fcr alle vorherigen Fehler an, die der Server protokolliert hat.
+
+warn_mpjwt_prop_service_notavail=CWWKW0708W: Der Service f\u00fcr die Weitergabe des MicroProfile JWT ist nicht verf\u00fcgbar. Die Laufzeitumgebung kann nicht auf das Token zugreifen, um es in den Authorization-Header einzuschlie\u00dfen.
+warn_mpjwt_prop_service_notavail.explanation=Der Service f\u00fcr die Weitergabe des MicroProfile JWT setzt das Feature mpJwt-1.0 voraus. 
+warn_mpjwt_prop_service_notavail.useraction=Stellen Sie sicher, dass der Server mit dem erforderlichen Feature ausgef\u00fchrt wird.

@@ -662,6 +662,14 @@ warning.variable.invalid=CWWKE0941W: La d\u00e9claration de variable {0} sp\u00e
 warning.variable.invalid.explanation=Seuls les caract\u00e8res alphanum\u00e9riques sont admis dans les noms de variables sp\u00e9cifi\u00e9s dans le fichier server.env.
 warning.variable.invalid.useraction=Modifiez le nom de la variable en utilisant uniquement des caract\u00e8res alphanum\u00e9riques ou transf\u00e9rez la d\u00e9finition de la variable vers le fichier bootstrap.properties.
 
+error.zosProcStart.procedure.invalid=CWWKE0942E: Echec du d\u00e9marrage de la proc\u00e9dure STC z/OS {0}. Le nom de proc\u00e9dure n''est pas valide. V\u00e9rifiez que le nom de la proc\u00e9dure ne d\u00e9passe pas huit caract\u00e8res et ne contient pas de virgule.
+error.zosProcStart.procedure.invalid.explanation=Le nom de proc\u00e9dure STC sp\u00e9cifi\u00e9 par la propri\u00e9t\u00e9 WLP_ZOS_PROCEDURE dans le fichier server.env n'est pas valide. Le nom de la proc\u00e9dure ne doit pas d\u00e9passer huit caract\u00e8res et ne doit pas comporter de virgule.
+error.zosProcStart.procedure.invalid.useraction=V\u00e9rifiez que le nom de la proc\u00e9dure ne d\u00e9passe pas huit caract\u00e8res et ne contient pas de virgule.
+
+error.zosProcStart.jobname.invalid=CWWKE0943E: Echec du d\u00e9marrage de la proc\u00e9dure STC z/OS {0}. Le nom de travail {1} n''est pas valide. V\u00e9rifiez que le nom du travail ne d\u00e9passe pas huit caract\u00e8res et ne contient pas de virgule.
+error.zosProcStart.jobname.invalid.explanation=Le nom de travail STC sp\u00e9cifi\u00e9 par la propri\u00e9t\u00e9 WLP_ZOS_JOBNAME dans le fichier server.env n'est pas valide. Le nom de travail ne doit pas d\u00e9passer huit caract\u00e8res et ne doit pas comporter de virgule.
+error.zosProcStart.jobname.invalid.useraction=V\u00e9rifiez que le nom du travail ne d\u00e9passe pas huit caract\u00e8res et ne contient pas de virgule.
+
 info.serverStarting=D\u00e9marrage du serveur {0}.
 info.serverStarted=Le serveur {0} a d\u00e9marr\u00e9.
 info.serverStartedWithPID=Le serveur {0} a d\u00e9marr\u00e9 avec l''ID de processus {1}.
