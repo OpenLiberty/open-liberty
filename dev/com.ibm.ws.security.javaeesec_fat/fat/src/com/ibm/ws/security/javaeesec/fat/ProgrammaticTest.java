@@ -47,7 +47,7 @@ public class ProgrammaticTest extends JavaEESecTestBase {
 
     protected static Class<?> logClass = ProgrammaticTest.class;
     protected static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.javaeesec.fat");
-    protected String queryString = "/JavaEESec/UnprotectedServlet";
+    protected String queryString = "/JavaEESecUnprotected/UnprotectedServlet";
     protected static String urlBase;
     protected static String urlHttps;
     protected static String JAR_NAME = "JavaEESecBase.jar";
@@ -66,11 +66,11 @@ public class ProgrammaticTest extends JavaEESecTestBase {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        WCApplicationHelper.addWarToServerApps(myServer, "JavaEESec.war", true, JAR_NAME, false, "web.jar.base", "web.war.servlets",
+        WCApplicationHelper.addWarToServerApps(myServer, "JavaEESecUnprotected.war", true, JAR_NAME, false, "web.jar.base", "web.war.servlets.unprotected",
                                                "web.war.identitystores");
-        myServer.setServerConfigurationFile("commonServer.xml");
+        myServer.setServerConfigurationFile("unprotected.xml");
         myServer.startServer(true);
-        myServer.addInstalledAppForValidation("JavaEESec");
+        myServer.addInstalledAppForValidation("JavaEESecUnprotected");
 
         urlBase = "http://" + myServer.getHostname() + ":" + myServer.getHttpDefaultPort();
         urlHttps = "https://" + myServer.getHostname() + ":" + myServer.getHttpDefaultSecurePort();
@@ -101,10 +101,13 @@ public class ProgrammaticTest extends JavaEESecTestBase {
 
     @Test
     public void testRequestAuthenticate() throws Exception {
-        String response = executeGetRequestBasicAuthCreds(httpclient, urlHttps + queryString + "?method=authenticate", Constants.javaeesec_basicRoleUser,
-                                                          Constants.javaeesec_basicRolePwd,
-                                                          HttpServletResponse.SC_OK);
-//        verifyUserResponse(response, Constants.getUserPrincipalFound + Constants.javaeesec_basicRoleUser, Constants.getRemoteUserFound + Constants.javaeesec_basicRoleUser);
+        String response = executeGetRequestNoAuthCreds(httpclient, urlHttps + queryString + "?method=authenticate", HttpServletResponse.SC_UNAUTHORIZED);
+        mustContain(response, Constants.isAuthenticatedFalse);
+        verifyUserResponse(response, Constants.getUserPrincipalNull, Constants.getRemoteUserNull);
+        response = executeGetRequestBasicAuthCreds(httpclient, urlHttps + queryString + "?method=authenticate", Constants.javaeesec_basicRoleUser, Constants.javaeesec_basicRolePwd,
+                                                   HttpServletResponse.SC_OK);
+        verifyAuthenticatedResponse(response, Constants.getAuthTypeJaspi, Constants.getUserPrincipalFound + Constants.javaeesec_basicRoleUser,
+                                    Constants.getRemoteUserFound + Constants.javaeesec_basicRoleUser);
     }
 
 }

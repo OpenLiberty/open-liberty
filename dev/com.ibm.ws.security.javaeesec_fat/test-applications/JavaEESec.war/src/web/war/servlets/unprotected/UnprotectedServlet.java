@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package web.war.servlets;
+package web.war.servlets.unprotected;
 
 import web.jar.base.FlexibleBaseServlet;
 import javax.inject.Inject;
@@ -22,13 +22,9 @@ public class UnprotectedServlet extends FlexibleBaseServlet {
         super("UnprotectedServlet");
 
         mySteps.add(new ProcessServlet30MethodStep());
-        
-//        mySteps.add(new WriteRequestBasicsStep());
-//        mySteps.add(new WritePrincipalStep());
-//        mySteps.add(new WriteRolesStep());
-//        mySteps.add(new WriteSubjectStep());
-//        mySteps.add(new WritePublicCredentialsStep());
-//        mySteps.add(new WriteRunAsSubjectStep());
-//        mySteps.add(new WriteCookiesStep());
+        mySteps.add(new WriteRequestBasicsStep());
+        mySteps.add(new WritePrincipalStep());
+        mySteps.add(new WriteSubjectStep());
+        mySteps.add(new WriteRunAsSubjectStep());
     }
 }

@@ -17,17 +17,6 @@
 		<url-pattern>/CommonServlet</url-pattern>
 	</servlet-mapping>
 
-	<servlet>
-		<display-name>UnprotectedServlet</display-name>
-		<servlet-name>UnprotectedServlet</servlet-name>
-		<servlet-class>web.war.servlets.UnprotectedServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>UnprotectedServlet</servlet-name>
-		<url-pattern>/UnprotectedServlet</url-pattern>
-		<url-pattern>/UnprotectedServlet</url-pattern>
-	</servlet-mapping>
-	
 	<!-- SECURITY CONSTRAINTS -->
 	<security-constraint>
 		<display-name>basic_auth</display-name>
