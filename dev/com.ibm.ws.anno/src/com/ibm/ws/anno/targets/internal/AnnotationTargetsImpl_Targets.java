@@ -1364,44 +1364,51 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
     }
 
     @Override
-    public boolean isInstanceOf(String className, Class<?> clazz) {
+    public boolean isInstanceOf(String className, Class<?> targetClass) {
         scanReferenceClasses();
 
-        String clazzName = internClassName(clazz.getName(), false);
-        className = internClassName(className, false);
-
-        if (clazzName == null || className == null) {
-            // haven't seen the class/interface so fail
-            return false;
+        String i_className = internClassName(className, false);
+        if ( i_className == null ) {
+            return false; // The immediate class is not in the targets data.
         }
 
-        // check if top level matches
-        if (className == clazzName) {
-            return true;
+        String i_targetClassName = internClassName(targetClass.getName(), false);
+        if ( i_targetClassName == null ) {
+            return false; // The target class is not in the targets data.
         }
 
-        String intfName = null;
-        if (clazz.isInterface()) {
-            intfName = clazzName;
-            clazzName = null;
+        if ( i_className == i_targetClassName ) {
+            return true; // The immediate class is the target class.
         }
 
-        while (className != null) {
-            if (intfName != null) {
-                // check interfaces
-                String[] interfaces = i_getInterfaceNames(className);
-                if (interfaces != null) {
-                    for (String intrface : interfaces) {
-                        if (intfName == intrface) {
+        String i_targetInterfaceName = null;
+        if ( targetClass.isInterface() ) {
+            i_targetInterfaceName = i_targetClassName;
+            i_targetClassName = null;
+        }
+
+        while ( i_className != null ) {
+            if ( i_targetInterfaceName != null ) {
+                // Match on one of the interfaces of the next super class.
+
+                String[] i_interfaces = i_getInterfaceNames(i_className);
+                if ( i_interfaces != null ) {
+                    for ( String i_interface : i_interfaces ) {
+                        if ( i_targetInterfaceName == i_interface ) {
                             return true;
                         }
                     }
                 }
-            } else if (className == clazzName) {
+
+            } else if ( i_className == i_targetClassName ) {
                 return true;
             }
 
-            className = getSuperclassName(className);
+            i_className = i_getSuperclassName(i_className);
+
+            // TODO: This should build a table of visited super classes.  An
+            //       infinite loop will result from a class inheritance loop.
+            //       We need to detect that case and fail gracefully.
         }
 
         return false;
