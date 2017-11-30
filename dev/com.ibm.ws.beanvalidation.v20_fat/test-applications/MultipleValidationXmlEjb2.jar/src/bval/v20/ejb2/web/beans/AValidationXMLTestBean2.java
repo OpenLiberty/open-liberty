@@ -81,6 +81,13 @@ public class AValidationXMLTestBean2 {
         svLogger.exiting(CLASS_NAME, "resetValidation" + this);
     }
 
+    public void testMethodParmConstraintEJB2(String testString) {
+        // This method is used for method parameter constraint testing
+        // The constraint-house.xml for this EJB requires the
+        // parameter 'testString' to not be null and to have a length of 3
+        
+    }
+
     @NotNull
     public String getDesc() {
         return pattern;

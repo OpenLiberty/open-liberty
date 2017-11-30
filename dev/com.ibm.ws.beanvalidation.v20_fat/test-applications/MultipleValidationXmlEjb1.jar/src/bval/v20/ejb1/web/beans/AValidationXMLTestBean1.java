@@ -82,6 +82,11 @@ public class AValidationXMLTestBean1 {
         svLogger.exiting(CLASS_NAME, "resetValidation" + this);
     }
 
+    public void testMethodParmConstraintEJB1(@NotNull @Size(max = 5) @Size(min = 5) String testString) {
+        // This method is used for method parameter constraint testing.
+        // The parameter 'testString' must not be null and must have a length of 5
+    }
+
     @NotNull
     public String getDesc() {
         return pattern;
