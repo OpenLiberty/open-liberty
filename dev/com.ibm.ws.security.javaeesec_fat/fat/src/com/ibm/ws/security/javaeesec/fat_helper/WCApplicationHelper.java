@@ -77,6 +77,29 @@ public class WCApplicationHelper {
 
     /*
      * Helper method to create a ear and placed it to the specified directory which is relative from /publish/servers/ directory.
+     * this method supports adding jar file.
+     */
+    public static void createJar(LibertyServer server, String dir, String jarName, boolean addJarResources, String... packageNames) throws Exception {
+        String baseDir = DIR_PUBLISH + server.getServerName() + "/" + dir + "/";
+        JavaArchive jar = null;
+        if (jarName != null) {
+            LOG.info("createJar : create jar " + jarName + ", jar includes resources : " + addJarResources);
+            jar = ShrinkWrap.create(JavaArchive.class, jarName);
+            if (packageNames != null) {
+                for (String packageName : packageNames) {
+                    if (packageName.contains(".jar.")) {
+                        jar.addPackage(packageName);
+                    }
+                }
+            }
+            if (addJarResources)
+                ShrinkHelper.addDirectory(jar, "test-applications/" + jarName + "/resources");
+        }
+        ShrinkHelper.exportArtifact(jar, DIR_PUBLISH + server.getServerName() + "/" + dir);
+    }
+
+    /*
+     * Helper method to create a ear and placed it to the specified directory which is relative from /publish/servers/ directory.
      */
     public static void packageWarsToEar(LibertyServer server, String dir, String earName, boolean addEarResources, String... warFiles) throws Exception {
         String baseDir = DIR_PUBLISH + server.getServerName() + "/" + dir + "/";
@@ -90,6 +113,44 @@ public class WCApplicationHelper {
         }
         ShrinkHelper.exportArtifact(ear, DIR_PUBLISH + server.getServerName() + "/" + dir);
     }
+
+
+    public static EnterpriseArchive createEar(LibertyServer server, String dir, String earName, boolean addEarResources) {
+        String baseDir = DIR_PUBLISH + server.getServerName() + "/" + dir + "/";
+        LOG.info("createEar: dir : " + dir + ", earName : " + earName + ", includes resources : " + addEarResources);
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, earName);
+        if (addEarResources) {
+            ear.addAsManifestResource(new File("test-applications/" + earName + "/resources/META-INF/application.xml"));
+        }
+        return ear;
+    }
+
+    public static void exportEar(LibertyServer server, String dir, EnterpriseArchive ear) throws Exception {
+        ShrinkHelper.exportArtifact(ear, DIR_PUBLISH + server.getServerName() + "/" + dir);
+    }
+
+    /*
+     */
+    public static EnterpriseArchive packageWars(LibertyServer server, String dir, EnterpriseArchive ear, String... warFiles) throws Exception {
+        String baseDir = DIR_PUBLISH + server.getServerName() + "/" + dir + "/";
+        for (String warFile : warFiles) {
+            WebArchive war = ShrinkWrap.createFromZipFile(WebArchive.class, new File(baseDir +  warFile));
+            ear.addAsModule(war);
+        }
+        return ear;
+    }
+
+    /*
+     */
+    public static EnterpriseArchive packageJars(LibertyServer server, String dir, EnterpriseArchive ear, String... jarFiles) throws Exception {
+        String baseDir = DIR_PUBLISH + server.getServerName() + "/" + dir + "/";
+        for (String jarFile : jarFiles) {
+            JavaArchive jar = ShrinkWrap.createFromZipFile(JavaArchive.class, new File(baseDir +  jarFile));
+            ear.addAsLibrary(jar);
+        }
+        return ear;
+    }
+
 
     /*
      * Helper method to create a ear and placed it to the specified directory which is relative from /publish/servers/ directory.

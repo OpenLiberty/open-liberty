@@ -46,6 +46,8 @@ import com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase;
 import com.ibm.ws.security.javaeesec.fat_helper.LocalLdapServer;
 import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+
 @MinimumJavaLevel(javaLevel = 1.8, runSyntheticTest = false)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
@@ -56,6 +58,7 @@ public class MultipleModuleTest extends JavaEESecTestBase {
     protected static String urlBase;
     protected static String TEMP_DIR = "test_temp";
     protected static String JAR_NAME = "JavaEESecBase.jar";
+    protected static String JAR2_NAME = "CommonIdentityStore.jar";
     protected static String MODULE1_ROOT = "multipleModule1";
     protected static String MODULE1_NAME = "JavaEESecMultipleISForm";
     protected static String WAR1_NAME = MODULE1_NAME + ".war";
@@ -189,6 +192,72 @@ public class MultipleModuleTest extends JavaEESecTestBase {
         verifyRealm(response, "localhost:10389");
         verifyNotInGroups(response, "group:127.0.0.1:10389/");  // make sure that there is no realm name from the second IdentityStore.
         verifyGroups(response, "group:localhost:10389/grantedgroup2, group:localhost:10389/cn=anothergroup1,ou=anothergroups,o=ibm,c=us, group:localhost:10389/grantedgroup");
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI> An ear file which contains two war files and common jar file. Each war files contains one LdapIdentityStoreDefinision,
+     *      and one FormHttpAuthenticationMechanismDefinision which points to different form.
+     * </OL>
+     * <P> Expected Results:
+     * <OL>
+     * <LI> Return code 200
+     * <LI> Veirfy the realm name is the same as the IdentityStore ID of the 1st IdentityStore.
+     * <LI> Veirfy the list of groups contains the group name of 1st and 3rd groups only
+     * <LI> Veirfy the list of groups does not contain the group name of 2nd identitystore.
+     * </OL>
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void testMultipleModuleWithJarAccessValid() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        // create module1, form login, redirect, ldap1. grouponly.
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, null, false, "web.war.servlets.form.get.redirect", "web.war.identitystores.ldap.ldap1","web.war.identitystores.custom.grouponly");
+        // create module2, custom form login, forward, ldap2. grouponly.
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2_NAME, true, null, false, "web.war.servlets.customform", "web.war.servlets.customform.get.forward", "web.war.identitystores.ldap.ldap2","web.war.identitystores.custom.grouponly");
+        WCApplicationHelper.createJar(myServer, TEMP_DIR, JAR2_NAME, true, "web.jar.base", "web.jar.common.identitystores");
+
+        EnterpriseArchive ear = WCApplicationHelper.createEar(myServer, TEMP_DIR, EAR_NAME, true);
+        WCApplicationHelper.packageWars(myServer, TEMP_DIR, ear, WAR1_NAME, WAR2_NAME);
+        WCApplicationHelper.packageJars(myServer, TEMP_DIR, ear, JAR2_NAME);
+        WCApplicationHelper.exportEar(myServer, TEMP_DIR, ear);
+        WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EAR_NAME);
+
+        startServer();
+
+        // ------------- accessing module1 ---------------
+        // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
+        String response = getFormLoginPage(httpclient, urlBase + APP1_SERVLET, true, urlBase + MODULE1_LOGIN, MODULE1_TITLE_LOGIN_PAGE);
+
+        // Execute Form login and get redirect location.
+        String location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, "commonuser1", LocalLdapServer.PASSWORD, true);
+
+        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP1_SERVLET);
+        verifyUserResponse(response, Constants.getUserPrincipalFound + "commonuser1", Constants.getRemoteUserFound + "commonuser1");
+//        verifyRealm(response, "127.0.0.1:10389");
+//        verifyNotInGroups(response, "group:localhost:10389/");  // make sure that there is no realm name from the second IdentityStore.
+//        verifyGroups(response, "group:127.0.0.1:10389/grantedgroup2, group:127.0.0.1:10389/cn=group1,ou=groups,o=ibm,c=us, group:127.0.0.1:10389/grantedgroup");
+        // --------------- reset client -----------------
+
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        // ------------- accessing module2 ---------------
+        // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
+        response = getFormLoginPage(httpclient, urlBase + APP2_SERVLET, false, urlBase + MODULE2_LOGIN, MODULE2_TITLE_LOGIN_PAGE);
+
+        // Execute Form login and get redirect location.
+        location = executeCustomFormLogin(httpclient, urlBase + MODULE2_LOGIN, "commonuser2", LocalLdapServer.PASSWORD, getViewState(response));
+        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP2_SERVLET);
+        verifyUserResponse(response, Constants.getUserPrincipalFound + "commonuser2", Constants.getRemoteUserFound + "commonuser2");
+//        verifyRealm(response, "localhost:10389");
+//        verifyNotInGroups(response, "group:127.0.0.1:10389/");  // make sure that there is no realm name from the second IdentityStore.
+//        verifyGroups(response, "group:localhost:10389/grantedgroup2, group:localhost:10389/cn=anothergroup1,ou=anothergroups,o=ibm,c=us, group:localhost:10389/grantedgroup");
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
