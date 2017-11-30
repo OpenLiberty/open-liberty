@@ -12,6 +12,7 @@ package com.ibm.ws.cdi12.fat.tests;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import com.ibm.ws.cdi12.suite.ShutDownSharedServer;
@@ -24,6 +25,9 @@ import componenttest.topology.utils.HttpUtils;
 public class SimpleJSPTest extends LoggingTest {
     public static LibertyServer server;
 
+    @ClassRule
+    public static ShutDownSharedServer SHARED_SERVER = new ShutDownSharedServer("cdi12BasicServer");
+
     /*
      * (non-Javadoc)
      *
@@ -31,12 +35,12 @@ public class SimpleJSPTest extends LoggingTest {
      */
     @Override
     protected ShutDownSharedServer getSharedServer() {
-        return null;
+        return SHARED_SERVER;
     }
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server = LibertyServerFactory.getStartedLibertyServer("cdi12BasicServer");
+        server = SHARED_SERVER.getLibertyServer();
         server.waitForStringInLogUsingMark("CWWKZ0001I.*Application simpleJSPApp started");
     }
 

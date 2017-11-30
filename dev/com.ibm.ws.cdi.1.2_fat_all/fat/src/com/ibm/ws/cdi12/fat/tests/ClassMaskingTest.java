@@ -42,7 +42,6 @@ public class ClassMaskingTest extends LoggingTest {
     @Test
     public void testClassMasking() throws Exception {
         LibertyServer lServer = server.getLibertyServer();
-        lServer.useSecondaryHTTPPort();
 
         HttpUtils.findStringInUrl(lServer, "/maskedClassWeb/TestServlet",
                                   "Type1: from ejb",
