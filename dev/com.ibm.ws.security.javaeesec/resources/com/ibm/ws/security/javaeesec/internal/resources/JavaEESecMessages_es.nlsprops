@@ -39,3 +39,6 @@ JAVAEESEC_WARNING_NO_REALM_NAME=CWWKS1914W: No se ha establecido el nombre de re
 JAVAEESEC_WARNING_NO_REALM_NAME.explanation=No se ha establecido el nombre de reino para la autenticaci\u00f3n b\u00e1sica; se utiliza el valor predeterminado defaultRealm.
 JAVAEESEC_WARNING_NO_REALM_NAME.useraction=Si el nombre de reino debe establecerse, establ\u00e9zcalo utilizando la anotaci\u00f3n BasicAuthenticationMechanismDefinition en la aplicaci\u00f3n.
 
+JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1915E: El despliegue del m\u00f3dulo {0} en la aplicaci\u00f3n {1} ha fallado debido a que se se han encontrado varias implementaciones de HttpAuthenticationMechanism. La lista de clases es {2}. Probablemente se trate de un problema del empaquetado de la aplicaci\u00f3n. Aseg\u00farese de que solo haya una implementaci\u00f3n HttpAuthenticationMechanism en cada m\u00f3dulo.
+JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=El despliegue de la aplicaci\u00f3n ha fallado porque se ha encontrado m\u00e1s de una implementaci\u00f3n de HttpAuthenticationMechanism. Esta condici\u00f3n no est\u00e1 permitida.
+JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Aseg\u00farese de que solo haya una implementaci\u00f3n HttpAuthenticationMechanism en cada m\u00f3dulo de la aplicaci\u00f3n.

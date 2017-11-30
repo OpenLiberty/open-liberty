@@ -39,3 +39,6 @@ JAVAEESEC_WARNING_NO_REALM_NAME=CWWKS1914W: Der Realmname f\u00fcr die Basisauth
 JAVAEESEC_WARNING_NO_REALM_NAME.explanation=Der Realmname f\u00fcr die Basisauthentifizierung ist nicht definiert und deshalb wird der Standardwert defaultRealm verwendet.
 JAVAEESEC_WARNING_NO_REALM_NAME.useraction=Wenn der Realmname definiert werden muss, definieren Sie ihn mit der Annotation BasicAuthenticationMechanismDefinition in der Anwendung.
 
+JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1915E: Die Implementierung des Moduls {0} in der Anwendung {1} ist fehlgeschlagen, weil mehrere HttpAuthenticationMechanism-Implementierungen gefunden wurden. Die Liste der Klassen ist {2}. Wahrscheinlich handelt es sich um ein Problem bei der Anwendungspaketierung. Stellen Sie sicher, dass nur eine einzige HttpAuthenticationMechanism-Implementierung im Modul enthalten ist.
+JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=Die Anwendungsimplementierung ist fehlgeschlagen, weil mehrere HttpAuthenticationMechanism-Implementierungen gefunden wurden. Diese Bedingung ist nicht zul\u00e4ssig.
+JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Stellen Sie sicher, dass nur eine einzige HttpAuthenticationMechanism-Implementierung f\u00fcr jedes Modul in der Anwendung enthalten ist.

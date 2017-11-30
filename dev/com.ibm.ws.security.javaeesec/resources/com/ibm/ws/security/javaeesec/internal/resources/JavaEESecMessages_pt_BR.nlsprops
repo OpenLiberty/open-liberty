@@ -39,3 +39,6 @@ JAVAEESEC_WARNING_NO_REALM_NAME=CWWKS1914W: O nome da regi\u00e3o para a autenti
 JAVAEESEC_WARNING_NO_REALM_NAME.explanation=O nome da regi\u00e3o para a autentica\u00e7\u00e3o b\u00e1sica n\u00e3o est\u00e1 configurado, o valor padr\u00e3o defaultRealm est\u00e1 sendo usado.
 JAVAEESEC_WARNING_NO_REALM_NAME.useraction=Se o nome da regi\u00e3o precisa ser configurado, configure-o usando a anota\u00e7\u00e3o BasicAuthenticationMechanismDefinition no aplicativo.
 
+JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1915E: A implementa\u00e7\u00e3o para o m\u00f3dulo {0} no aplicativo {1} falhou porque m\u00faltiplas implementa\u00e7\u00f5es HttpAuthenticationMechanism foram localizadas. A lista de classes \u00e9 {2}. Mais provavelmente, esse \u00e9 um problema de empacotamento de aplicativo. Certifique-se de que haja apenas uma implementa\u00e7\u00e3o HttpAuthenticationMechanism em cada m\u00f3dulo.
+JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=A implementa\u00e7\u00e3o do aplicativo falhou porque mais de uma implementa\u00e7\u00e3o HttpAuthenticationMechanism foi localizada. Essa condi\u00e7\u00e3o n\u00e3o \u00e9 permitida.
+JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Certifique-se de que haja apenas uma implementa\u00e7\u00e3o HttpAuthenticationMechanism para cada m\u00f3dulo no aplicativo.
