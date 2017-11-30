@@ -4,7 +4,8 @@ visibility=public
 IBM-API-Package: javax.security.enterprise; type="spec", \
  javax.security.enterprise.authentication.mechanism.http; type="spec", \
  javax.security.enterprise.credential; type="spec", \
- javax.security.enterprise.identitystore; type="spec"
+ javax.security.enterprise.identitystore; type="spec", \
+ com.ibm.ws.security.javaeesec.cdi.beans.hash; type="spec"
 
 IBM-ShortName: appSecurity-3.0
 #IBM-SPI-Package:
