@@ -16,12 +16,23 @@ task zipMessageFiles(type: Zip) {
   destinationDir distsDir
 }
 
+task zipMessageXmlFiles(type: Zip) {
+  baseName 'openPIIXml'
+  from "${projectDir}/nlsxml"
+  destinationDir distsDir
+}
+
 publishing {
   publications {
     maven(MavenPublication) {
       artifactId 'openPII'
       version project.version
       artifact zipMessageFiles
+    }
+    nlsxml(MavenPublication) {
+      artifactId 'openPIIXml'
+      version project.version
+      artifact zipMessageXmlFiles
     }
   }
 }
