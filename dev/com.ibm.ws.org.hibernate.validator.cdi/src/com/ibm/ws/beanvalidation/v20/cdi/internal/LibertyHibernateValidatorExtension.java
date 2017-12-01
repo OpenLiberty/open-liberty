@@ -36,6 +36,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.ws.beanvalidation.service.BeanValidation;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
+import com.ibm.ws.kernel.service.util.PrivHelper;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
@@ -62,8 +63,8 @@ public class LibertyHibernateValidatorExtension implements Extension, WebSphereC
     BeanValidation beanValidation;
 
     public static BeanValidation getBeanVal() {
-        BundleContext bctx = FrameworkUtil.getBundle(LibertyHibernateValidatorExtension.class).getBundleContext();
-        return bctx.getService(bctx.getServiceReference(BeanValidation.class));
+        BundleContext bctx = PrivHelper.getBundleContext(FrameworkUtil.getBundle(LibertyHibernateValidatorExtension.class));
+        return PrivHelper.getService(bctx, BeanValidation.class);
     }
 
     public static Validator getDefaultValidator() {
