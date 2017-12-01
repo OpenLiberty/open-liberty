@@ -1430,7 +1430,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
     }
 
     private void setLastModified(ArtifactEntry inputEntry, File outputFile, String outputPath) {
-        if ( !FileUtils.setLastModified( outputFile, inputEntry.getLastModified() ) ) {
+        if ( !FileUtils.fileSetLastModified( outputFile, inputEntry.getLastModified() ) ) {
             Tr.error(tc, "Failed to set last modified [ " + outputPath + " ]");
         }
     }
