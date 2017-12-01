@@ -21,7 +21,7 @@ src: \
 	test-applications/jpa22/cdi/src,\
 	test-applications/jpa22/jpa22injection/src,\
 	test-applications/jpa22/jpa22query/src,\
-	test-applications/jpa22/jpa22timeapi
+	test-applications/jpa22/jpa22timeapi/src
 
 test.project: true
 
