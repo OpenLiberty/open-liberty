@@ -888,6 +888,19 @@ info.envProductExtension=CWWKE0940I: Rozszerzenie produktu {0} ma identyfikator 
 info.envProductExtension.explanation= Zmienna \u015brodowiskowa WLP_PRODUCT_EXT_DIR wskazuje po\u0142o\u017cenie rozszerzenia produktu. Serwer znalaz\u0142 to rozszerzenie produktu i u\u017cywa go.
 info.envProductExtension.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
+error.zosProcStart.procedure.invalid=CWWKE0942E: Nie powiod\u0142o si\u0119 uruchomienie procedury STC systemu z/OS {0}. Nazwa procedury jest niepoprawna. Upewnij si\u0119, \u017ce nazwa procedury ma maksymalnie 8 znak\u00f3w i nie zawiera przecinka.
+error.zosProcStart.procedure.invalid.explanation=Nazwa procedury \
+STC podana we w\u0142a\u015bciwo\u015bci WLP_ZOS_PROCEDURE w pliku server.env jest niepoprawna. Nazwa procedury \
+mo\u017ce zawiera\u0107 maksymalnie 8 znak\u00f3w i nie mo\u017ce zawiera\u0107 przecinka.
+error.zosProcStart.procedure.invalid.useraction=Sprawd\u017a, czy nazwa procedury nie jest d\u0142u\u017csza ni\u017c 8 znak\u00f3w i czy nie zawiera przecinka.
+
+error.zosProcStart.jobname.invalid=CWWKE0943E: Nie powiod\u0142o si\u0119 uruchomienie procedury STC systemu z/OS {0}. Nazwa zadania {1} jest niepoprawna. Upewnij si\u0119, \u017ce nazwa zadania ma maksymalnie 8 znak\u00f3w i nie zawiera przecinka.
+error.zosProcStart.jobname.invalid.explanation=Nazwa zadania STC podana \
+we w\u0142a\u015bciwo\u015bci WLP_ZOS_JOBNAME w pliku server.env jest niepoprawna. Nazwa zadania mo\u017ce zawiera\u0107 \
+maksymalnie 8 znak\u00f3w i nie mo\u017ce zawiera\u0107 przecinka.
+error.zosProcStart.jobname.invalid.useraction=Sprawd\u017a, czy nazwa zadania nie \
+jest d\u0142u\u017csza ni\u017c 8 znak\u00f3w i czy nie zawiera przecinka.
+
 info.serverStarting=Uruchamianie serwera {0}.
 info.serverStarted=Serwer {0} zosta\u0142 uruchomiony.
 info.serverStartedWithPID=Serwer {0} zosta\u0142 \

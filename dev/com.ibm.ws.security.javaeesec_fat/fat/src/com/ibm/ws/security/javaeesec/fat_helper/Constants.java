@@ -162,4 +162,15 @@ public class Constants {
     public final static String SERVLET_SECURITY_NOJASPI_SERVER_XML = "dynamicSecurityFeature/servlet31_appSecurity20_noJaspi.xml";
     public final static String SERVLET_SECURITY_JASPI_SERVER_XML = "dynamicSecurityFeature/servlet31_appSecurity20_withJaspi.xml";
 
+    public final static String DB_USER1 = "blue1";
+    public final static String DB_USER1_PWD = "pwd";
+    public final static String DB_USER2 = "blue2";
+    public final static String DB_USER2_PWD = "pwd2";
+    public final static String DB_USER3 = "blue3";
+    public final static String DB_USER3_PWD = "pwd3";
+    public final static String DB_USER_DUPE = "dupUser";
+    public final static String DB_GROUP2 = "group2";
+    public final static String DB_GROUP3 = "group3";
+    public final static String DB_USER_NOPWD = "userNoPwd";
+
 }

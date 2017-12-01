@@ -27,14 +27,18 @@ JAVAEESEC_ERROR_NO_VALIDATION=CWWKS1911E: \u017baden obiekt IdentityStore nie ob
 JAVAEESEC_ERROR_NO_VALIDATION.explanation=\u017baden z obiekt\u00f3w IdentityStore nie obs\u0142uguje sprawdzania poprawno\u015bci u\u017cytkownika i dlatego kod zabezpiecze\u0144 nie umo\u017cliwia uwierzytelnienia u\u017cytkownika.
 JAVAEESEC_ERROR_NO_VALIDATION.useraction=Upewnij si\u0119, \u017ce co najmniej jeden obiekt IdentityStore obs\u0142uguje sprawdzanie poprawno\u015bci u\u017cytkownika.
 
-JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: Nie mo\u017cna zidentyfikowa\u0107 obiektu HttpAuthenticationMechanism na potrzeby uwierzytelniania. Upewnij si\u0119, \u017ce w aplikacji istnieje jeden obiekt HttpAuthenticationMechanism.
+JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: Nie znaleziono obiektu HttpAuthenticationMechanism dla modu\u0142u {0} w aplikacji {1}. Upewnij si\u0119, \u017ce ten modu\u0142 zawiera obiekt HttpAuthenticationMechanism.
 JAVAEESEC_ERROR_NO_HAM.explanation=Nie mo\u017cna zidentyfikowa\u0107 obiektu HttpAuthenticationMechanism na potrzeby uwierzytelniania. By\u0107 mo\u017ce podanemu warunkowi nie odpowiada \u017caden obiekt lub odpowiada mu wiele obiekt\u00f3w. Upewnij si\u0119, \u017ce w aplikacji istnieje jeden obiekt HttpAuthenticationMechanism.
 JAVAEESEC_ERROR_NO_HAM.useraction=Upewnij si\u0119, \u017ce w aplikacji istnieje jeden obiekt HttpAuthenticationMechanism.
 
-JAVAEESEC_ERROR_NO_HAM_PROPS=CWWKS1913E: Nie mo\u017cna zidentyfikowa\u0107 obiektu HAMProperties na potrzeby uwierzytelniania. Prawdopodobnie w aplikacji nie ma \u017cadnego obiektu HttpAuthenticationMechanism. Upewnij si\u0119, \u017ce jest zdefiniowany jeden obiekt HttpAuthenticationMechanism.
-JAVAEESEC_ERROR_NO_HAM_PROPS.explanation=Nie mo\u017cna zidentyfikowa\u0107 obiektu HAMProperties na potrzeby uwierzytelniania. Prawdopodobnie w aplikacji nie zdefiniowano \u017cadnego obiektu HttpAuthenticationMechanism.
-JAVAEESEC_ERROR_NO_HAM_PROPS.useraction=Upewnij si\u0119, \u017ce w aplikacji istnieje jeden obiekt HttpAuthenticationMechanism.
+JAVAEESEC_ERROR_NO_MODULE_PROPS=CWWKS1913E: Nie mo\u017cna znale\u017a\u0107 obiektu ModuleProperties na potrzeby uwierzytelniania aplikacji {0}, poniewa\u017c aplikacja prawdopodobnie nie zawiera obiektu HttpAuthenticationMechanism. Upewnij si\u0119, \u017ce dla ka\u017cdego modu\u0142u zdefiniowany jest jeden obiekt HttpAuthenticationMechanism.
+JAVAEESEC_ERROR_NO_MODULE_PROPS.explanation=Nie mo\u017cna zidentyfikowa\u0107 obiektu ModuleProperties wymaganego do uwierzytelnienia aplikacji. Ten b\u0142\u0105d zwykle jest spowodowany tym, \u017ce obiekt HttpAuthenticationMechanism nie jest zdefiniowany w aplikacji.
+JAVAEESEC_ERROR_NO_MODULE_PROPS.useraction=Upewnij si\u0119, \u017ce ka\u017cdy modu\u0142 w aplikacji zawiera obiekt HttpAuthenticationMechanism.
 
 JAVAEESEC_WARNING_NO_REALM_NAME=CWWKS1914W: Nazwa dziedziny na potrzeby uwierzytelniania podstawowego nie jest ustawiona. Jest u\u017cywana warto\u015b\u0107 defaultRealm.
 JAVAEESEC_WARNING_NO_REALM_NAME.explanation=Nazwa dziedziny na potrzeby uwierzytelniania podstawowego nie jest ustawiona. Jest u\u017cywana warto\u015b\u0107 domy\u015blna defaultRealm.
 JAVAEESEC_WARNING_NO_REALM_NAME.useraction=Je\u015bli nazwa dziedziny musi zosta\u0107 ustawiona, ustaw j\u0105 w aplikacji przy u\u017cyciu adnotacji BasicAuthenticationMechanismDefinition.
+
+JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1915E: Wdra\u017canie modu\u0142u {0} w aplikacji {1} zako\u0144czy\u0142o si\u0119 niepowodzeniem, poniewa\u017c znaleziono wiele implementacji obiektu HttpAuthenticationMechanism. Lista klas: {2}. Najprawdopodobniej przyczyn\u0105 jest problem z pakietem aplikacji. Upewnij si\u0119, \u017ce w ka\u017cdym module istnieje tylko jedna implementacja obiektu HttpAuthenticationMechanism.
+JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=Wdro\u017cenie aplikacji nie powiod\u0142o si\u0119, poniewa\u017c znaleziono wiele implementacji obiektu HttpAuthenticationMechanism. Taka sytuacja nie jest dozwolona.
+JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Upewnij si\u0119, \u017ce w aplikacji istnieje tylko jedna implementacja obiektu HttpAuthenticationMechanism dla ka\u017cdego modu\u0142u.

@@ -661,6 +661,14 @@ warning.variable.invalid=CWWKE0941W: A server.env f\u00e1jlban megadott {0} v\u0
 warning.variable.invalid.explanation=A server.env f\u00e1jlban megadott v\u00e1ltoz\u00f3nevek csak alfanumerikus karaktereket tartalmazhatnak.
 warning.variable.invalid.useraction=M\u00f3dos\u00edtsa a v\u00e1ltoz\u00f3nevet \u00e9s haszn\u00e1ljon csak alfanumerikus karaktereket vagy helyezze \u00e1t a v\u00e1ltoz\u00f3 meghat\u00e1roz\u00e1s\u00e1t a bootstrap.properties f\u00e1jlba.
 
+error.zosProcStart.procedure.invalid=CWWKE0942E: A(z) {0} z/OS STC elj\u00e1r\u00e1s indul\u00e1sa meghi\u00fasult. Az elj\u00e1r\u00e1sn\u00e9v \u00e9rv\u00e9nytelen. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az elj\u00e1r\u00e1sn\u00e9v nem hosszabb nyolc karaktern\u00e9l \u00e9s nem tartalmaz vessz\u0151t.
+error.zosProcStart.procedure.invalid.explanation=A server.env f\u00e1jlban l\u00e9v\u0151 WLP_ZOS_PROCEDURE tulajdons\u00e1g \u00e1ltal megadott STC elj\u00e1r\u00e1sn\u00e9v \u00e9rv\u00e9nytelen. Az elj\u00e1r\u00e1sn\u00e9v nem lehet 8 karaktern\u00e9l hosszabb, \u00e9s nem tartalmazhat vessz\u0151t.
+error.zosProcStart.procedure.invalid.useraction=Ellen\u0151rizze, hogy az elj\u00e1r\u00e1sn\u00e9v nem hosszabb nyolc karaktern\u00e9l \u00e9s nem tartalmaz vessz\u0151t.
+
+error.zosProcStart.jobname.invalid=CWWKE0943E: A(z) {0} z/OS STC elj\u00e1r\u00e1s indul\u00e1sa meghi\u00fasult. A(z) {1} feladatn\u00e9v \u00e9rv\u00e9nytelen. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a feladatn\u00e9v nem hosszabb nyolc karaktern\u00e9l \u00e9s nem tartalmaz vessz\u0151t.
+error.zosProcStart.jobname.invalid.explanation=A server.env f\u00e1jlban l\u00e9v\u0151 WLP_ZOS_PROCEDURE tulajdons\u00e1g \u00e1ltal megadott STC feladatn\u00e9v \u00e9rv\u00e9nytelen. A feladatn\u00e9v nem lehet 8 karaktern\u00e9l hosszabb, \u00e9s nem tartalmazhat vessz\u0151t.
+error.zosProcStart.jobname.invalid.useraction=Ellen\u0151rizze, hogy a feladatn\u00e9v nem hosszabb nyolc karaktern\u00e9l \u00e9s nem tartalmaz vessz\u0151t.
+
 info.serverStarting=A(z) {0} kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa.
 info.serverStarted=A(z) {0} kiszolg\u00e1l\u00f3 elindult.
 info.serverStartedWithPID=A(z) {0} kiszolg\u00e1l\u00f3 {1} folyamatazonos\u00edt\u00f3val elindult.

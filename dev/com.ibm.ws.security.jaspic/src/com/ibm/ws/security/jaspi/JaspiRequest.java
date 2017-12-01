@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,17 +40,11 @@ public class JaspiRequest {
     private String moduleName = null;
     private WebAppConfig wac = null;
 
-    /**
-     * @param webRequest
-     */
     public JaspiRequest(WebRequest webRequest, WebAppConfig wac) {
         this.webRequest = webRequest;
         this.wac = wac;
     }
 
-    /**
-     * @return
-     */
     public String getAppContext() {
         if (appContext == null) {
             String vHost = null;
@@ -60,8 +54,7 @@ public class JaspiRequest {
                 vHost = appCfg.getVirtualHostName();
                 contextRoot = appCfg.getContextRoot();
                 appContext = vHost + " " + contextRoot;
-            }
-            else {
+            } else {
                 if (wac != null) {
                     vHost = wac.getVirtualHostName();
                     contextRoot = wac.getContextRoot();
@@ -72,44 +65,26 @@ public class JaspiRequest {
         return appContext;
     }
 
-    /**
-     * @return
-     */
     public WebSecurityContext getWebSecurityContext() {
         return webRequest.getWebSecurityContext();
     }
 
-    /**
-     * @return
-     */
     public MessageInfo getMessageInfo() {
         return msgInfo;
     }
 
-    /**
-     * @param msgInfo
-     */
     public void setMessageInfo(MessageInfo messageInfo) {
         msgInfo = messageInfo;
     }
 
-    /**
-     * @return
-     */
     public HttpServletRequest getHttpServletRequest() {
         return webRequest.getHttpServletRequest();
     }
 
-    /**
-     * @return
-     */
     public HttpServletResponse getHttpServletResponse() {
         return webRequest.getHttpServletResponse();
     }
 
-    /**
-     * @return
-     */
     public boolean isLogoutMethod() {
         return isLogoutMethod;
     }
@@ -118,24 +93,14 @@ public class JaspiRequest {
         isLogoutMethod = isLogout;
     }
 
-    /**
-     * @return
-     */
     public String getUserid() {
         return userid;
     }
 
-    /**
-     * 
-     * @param id
-     */
     public void setUserid(String id) {
         userid = id;
     }
 
-    /**
-     * @return
-     */
     public String getPassword() {
         return password;
     }
@@ -144,17 +109,14 @@ public class JaspiRequest {
         password = pwd;
     }
 
-    /**
-     * @return
-     */
     public LoginConfiguration getLoginConfig() {
         return webRequest.getLoginConfig();
     }
 
     /**
      * The request is protected if there are required roles
-     * 
-     * @return
+     *
+     * @return true if there are required roles.
      */
     public boolean isProtected() {
         List<String> requiredRoles = null;
@@ -164,15 +126,19 @@ public class JaspiRequest {
     }
 
     /**
-     * @return
+     * Per section 3.9.3 of the JSR-196 (JASPIC) specification, when handling an HttpServletRequest.authenticate:
+     * The MessageInfo map must unconditionally contain the javax.security.auth.message.MessagePolicy.isMandatory key (with associated true value).
      */
+    public boolean isMandatory() {
+        return isProtected() || webRequest.isRequestAuthenticate();
+    }
+
     public String getApplicationName() {
         if (appName == null) {
             WebAppConfig appCfg = WebConfigUtils.getWebAppConfig();
             if (appCfg != null) {
                 appName = appCfg.getModuleName();
-            }
-            else {
+            } else {
                 if (wac != null) {
                     appName = wac.getModuleName();
                 }
@@ -181,16 +147,12 @@ public class JaspiRequest {
         return appName;
     }
 
-    /**
-     * @return
-     */
     public String getModuleName() {
         if (moduleName == null) {
             WebAppConfig appCfg = WebConfigUtils.getWebAppConfig();
             if (appCfg != null) {
                 moduleName = appCfg.getModuleName();
-            }
-            else {
+            } else {
                 if (wac != null) {
                     moduleName = wac.getModuleName();
                 }
@@ -199,10 +161,8 @@ public class JaspiRequest {
         return moduleName;
     }
 
-    /**
-     * 
-     */
     public WebRequest getWebRequest() {
         return webRequest;
     }
+
 }

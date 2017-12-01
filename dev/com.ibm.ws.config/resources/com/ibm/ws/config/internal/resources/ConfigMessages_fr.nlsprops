@@ -502,5 +502,10 @@ error.extendsAlias.collision=CWWKG0100E: L''attribut {2} ibm:extendsAlias est en
 error.extendsAlias.collision.explanation=L'attribut ibm:extendsAlias doit \u00eatre unique au sein d'une hi\u00e9rarchie extends unique.
 error.extendsAlias.collision.useraction=Rendez chaque attribut ibm:extendsAlias unique au sein de la hi\u00e9rarchie extends.
 
+warning.binding.config=CWWKG0101W: La configuration avec l''identit\u00e9 persistante (PID) {0} est li\u00e9e au bundle {1}. La configuration n''est pas visible par les autres bundles. 
+warning.binding.config.explanation=Une configuration est li\u00e9e au bundle appelant lorsque la m\u00e9thode getConfiguration de l'interface ConfigurationAdmin est appel\u00e9e pour la premi\u00e8re fois. Une fois la configuration li\u00e9e, elle n'est plus visible par les autres bundles. 
+warning.binding.config.useraction=Pour v\u00e9rifier que l'emplacement du bundle correspond \u00e0 la valeur pr\u00e9vue, utilisez la m\u00e9thode getConfiguration sur l'interface ConfigurationAdmin (recevant un emplacement de bundle comme second param\u00e8tre).
+
+
 # Non-TR message
 error.invalidOCDRef=ERREUR : Le PID [{0}] du m\u00e9tatype sp\u00e9cifie un ID de d\u00e9finition de classe d''objets qui n''existe pas [{1}]

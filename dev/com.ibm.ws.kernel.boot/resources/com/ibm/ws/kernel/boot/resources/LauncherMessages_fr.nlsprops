@@ -197,7 +197,9 @@ info.frameworkRestart=CWWKE0041I: Le cache de la plateforme n'est plus synchroni
 info.frameworkRestart.explanation=L'infrastructure a \u00e9t\u00e9 red\u00e9marr\u00e9e car le cache de la plateforme \u00e9tait d\u00e9synchronis\u00e9.
 info.frameworkRestart.useraction=Aucune action n'est requise.
 
-# CWWKE0042E removed because it's only used in com.ibm.ws.kernel.boot.cmdline - Do not reuse.
+error.badVersion=CWWKE0042E: La version Java en cours d'ex\u00e9cution n'est pas correcte. L'environnement d'ex\u00e9cution n\u00e9cessite Java 7 ou version ult\u00e9rieure.
+error.badVersion.explanation=Soit une version non prise en charge de Java est ex\u00e9cut\u00e9e, soit la variable syst\u00e8me JAVA_HOME pointe sur une ancienne version de Java.
+error.badVersion.useraction= Mettez \u00e0 niveau votre environnement Java pour le porter au niveau de version Java 7 ou modifiez la variable JAVA_HOME afin qu'elle d\u00e9signe une installation de Java 7.
 
 error.unsupportedLaunch=CWWKE0043E: L''emplacement de lancement n''est pas un fichier local. ({0})
 error.unsupportedLaunch.explanation=L'environnement d'ex\u00e9cution doit \u00eatre lanc\u00e9 depuis un fichier local, par exemple un fichier JAR.

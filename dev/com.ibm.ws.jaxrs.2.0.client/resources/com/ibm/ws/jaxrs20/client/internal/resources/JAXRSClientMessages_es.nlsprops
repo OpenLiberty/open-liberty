@@ -48,3 +48,11 @@ failed_to_extract_saml_token_from_subject.useraction=Compruebe que server.xml ti
 failed_run_as_subject=CWWKW0706E: Se ha producido una excepci\u00f3n al intentar obtener el RunAsSubject. La excepci\u00f3n era: [{0}]
 failed_run_as_subject.explanation=Se ha producido una excepci\u00f3n al obtener el RunAsSubject.
 failed_run_as_subject.useraction=Aseg\u00farese de que el servidor est\u00e9 configurado y se inicie correctamente.
+
+warn_missing_mpjwt_token=CWWKW0707W: El atributo [{0}] en la configuraci\u00f3n [{1}] se ha establecido en [{2}], pero la se\u00f1al web JSON (JWT) MicroProfile no est\u00e1 disponible. La solicitud no contiene una cabecera Authorization con la se\u00f1al.
+warn_missing_mpjwt_token.explanation=El tiempo de ejecuci\u00f3n no ha encontrado la se\u00f1al JWT MicroProfile en el sujeto runAs. Este error suele indicar un problema con la autenticaci\u00f3n. Aseg\u00farese de que no se produzca ning\u00fan error mientras la caracter\u00edstica JWT MicroProfile autentique a un usuario.
+warn_missing_mpjwt_token.useraction=Compruebe si se han producido errores previos en la acci\u00f3n del usuario en el registro del servidor.
+
+warn_mpjwt_prop_service_notavail=CWWKW0708W: El servicio MicroProfile JWT Propagation no est\u00e1 disponible. El tiempo de ejecuci\u00f3n no puede acceder a la se\u00f1al para incluirla en la cabecera Authorization.
+warn_mpjwt_prop_service_notavail.explanation=El servicio MicroProfile JWT Propagation requiere la caracter\u00edstica mpJwt-1.0. 
+warn_mpjwt_prop_service_notavail.useraction=Compruebe que el servidor se est\u00e9 ejecutando con la caracter\u00edstica obligatoria.

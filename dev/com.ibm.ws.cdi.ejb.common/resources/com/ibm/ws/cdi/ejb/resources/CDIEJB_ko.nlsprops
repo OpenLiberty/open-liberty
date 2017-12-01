@@ -32,3 +32,8 @@ lifecycle.interceptor.exception.CWOWB2001E=CWOWB2001E: {0} \ub77c\uc774\ud504\uc
 lifecycle.interceptor.exception.CWOWB2001E.explanation=\ub77c\uc774\ud504\uc0ac\uc774\ud074 \uc778\ud130\uc149\ud130\uc5d0\uc11c \ud655\uc778\ub41c \uc608\uc678\ub294 \ubc1c\uc0dd\ud558\uc9c0 \uc54a\uc544\uc57c \ud569\ub2c8\ub2e4.
 lifecycle.interceptor.exception.CWOWB2001E.useraction=\ub85c\uadf8\ub97c \ud655\uc778\ud558\uc5ec \ubb38\uc81c\uc810\uc744 \ud310\ubcc4\ud558\uc2ed\uc2dc\uc624.
 
+internal.server.error.CWOWB2002E=CWOWB2002E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+internal.server.error.CWOWB2002E.explanation=CMSG0001
+internal.server.error.CWOWB2002E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+

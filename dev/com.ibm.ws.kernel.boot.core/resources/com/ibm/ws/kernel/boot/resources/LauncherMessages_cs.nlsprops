@@ -660,6 +660,14 @@ info.envProductExtension=CWWKE0940I: Roz\u0161\u00ed\u0159en\u00ed produktu {0} 
 info.envProductExtension.explanation= Prom\u011bnn\u00e1 prost\u0159ed\u00ed WLP_PRODUCT_EXT_DIR ukazuje na um\u00edst\u011bn\u00ed roz\u0161\u00ed\u0159en\u00ed produktu. Server nalezl a pou\u017e\u00edv\u00e1 roz\u0161\u00ed\u0159en\u00ed produktu.
 info.envProductExtension.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
+error.zosProcStart.procedure.invalid=CWWKE0942E: Nezda\u0159ilo se spustit proceduru z/OS STC {0}. N\u00e1zev procedury je neplatn\u00fd. Ujist\u011bte se, \u017ee n\u00e1zev procedury nen\u00ed del\u0161\u00ed ne\u017e osm znak\u016f a \u017ee neobsahuje \u010d\u00e1rku.
+error.zosProcStart.procedure.invalid.explanation=N\u00e1zev procedury STC ur\u010den\u00fd vlastnost\u00ed WLP_ZOS_PROCEDURE v souboru server.env nen\u00ed platn\u00fd. N\u00e1zev procedury nesm\u00ed b\u00fdt del\u0161\u00ed ne\u017e 8 znak\u016f a nesm\u00ed obsahovat \u010d\u00e1rku.
+error.zosProcStart.procedure.invalid.useraction=Ujist\u011bte se, \u017ee n\u00e1zev procedury nen\u00ed del\u0161\u00ed ne\u017e osm znak\u016f a \u017ee neobsahuje \u010d\u00e1rku.
+
+error.zosProcStart.jobname.invalid=CWWKE0943E: Nezda\u0159ilo se spustit proceduru z/OS STC {0}. N\u00e1zev \u00falohy {1} je neplatn\u00fd. Ujist\u011bte se, \u017ee n\u00e1zev \u00falohy nen\u00ed del\u0161\u00ed ne\u017e osm znak\u016f a \u017ee neobsahuje \u010d\u00e1rku.
+error.zosProcStart.jobname.invalid.explanation=N\u00e1zev \u00falohy STC ur\u010den\u00fd vlastnost\u00ed WLP_ZOS_JOBNAME v souboru server.env nen\u00ed platn\u00fd. N\u00e1zev \u00falohy nesm\u00ed b\u00fdt del\u0161\u00ed ne\u017e 8 znak\u016f a nesm\u00ed obsahovat \u010d\u00e1rku.
+error.zosProcStart.jobname.invalid.useraction=Ujist\u011bte se, \u017ee n\u00e1zev \u00falohy nen\u00ed del\u0161\u00ed ne\u017e osm znak\u016f a \u017ee neobsahuje \u010d\u00e1rku.
+
 info.serverStarting=Spou\u0161t\u011bn\u00ed serveru {0}.
 info.serverStarted=Server {0} byl spu\u0161t\u011bn.
 info.serverStartedWithPID=Server {0} byl spu\u0161t\u011bn s ID procesu {1}.

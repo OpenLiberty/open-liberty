@@ -33,7 +33,7 @@ Unsupported.op.from.servlet.context.listener.31.useraction=Ajoutez le programme 
 # 
 # Notes for translation:
 # {0} is the application name
-handlerClass.is.null==SRVE9003E: L''objet HttpUpgradeHandler transmis est ind\u00e9fini avec l''application Web : {0}.
+handlerClass.is.null=SRVE9003E: L''objet HttpUpgradeHandler transmis a pour valeur Null dans l''application Web : {0}.
 handlerClass.is.null.explanation=Echec de la mise \u00e0 niveau de la demande car l'objet HttpUpgradeHandler transmis est null.
 handlerClass.is.null.useraction= V\u00e9rifiez que l'objet HttpUpgradeHandler correct est indiqu\u00e9.
 # --------------------------------

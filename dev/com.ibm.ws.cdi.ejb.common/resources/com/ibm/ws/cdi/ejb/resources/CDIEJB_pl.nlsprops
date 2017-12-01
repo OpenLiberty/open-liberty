@@ -32,3 +32,8 @@ lifecycle.interceptor.exception.CWOWB2001E=CWOWB2001E: Przechwytywacz cyklu \u01
 lifecycle.interceptor.exception.CWOWB2001E.explanation=Przechwytywacze cyklu \u017cycia nie powinny zg\u0142asza\u0107 sprawdzonych wyj\u0105tk\u00f3w 
 lifecycle.interceptor.exception.CWOWB2001E.useraction=Sprawd\u017a dzienniki w celu ustalenia problemu
 
+internal.server.error.CWOWB2002E=CWOWB2002E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1}
+internal.server.error.CWOWB2002E.explanation=CMSG0001
+internal.server.error.CWOWB2002E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+

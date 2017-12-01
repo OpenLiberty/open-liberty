@@ -34,7 +34,6 @@ multiple.beans.xml.warning.CWOWB1001W=CWOWB1001W: El archivado de aplicaci\u00f3
 multiple.beans.xml.warning.CWOWB1001W.explanation=CDI ha encontrado m\u00e1s de un archivo beans.xml.
 multiple.beans.xml.warning.CWOWB1001W.useraction=Aseg\u00farese de que el archivado de aplicaci\u00f3n s\u00f3lo contenga un archivo beans.xml.
 
-
 managed.class.bean.class.mismatch.CWOWB1002E=CWOWB1002E: Se ha producido un error interno de WebSphere Application Server. P\u00f3ngase en contacto con el centro de soporte de WebSphere Application Server con los datos siguientes: {0} {1}
 managed.class.bean.class.mismatch.CWOWB1002E.explanation=CMSG0001
 managed.class.bean.class.mismatch.CWOWB1002E.useraction=Consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.

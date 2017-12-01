@@ -195,7 +195,9 @@ info.frameworkRestart=CWWKE0041I: La memoria cach\u00e9 de la plataforma no est\
 info.frameworkRestart.explanation=La infraestructura se ha reiniciado porque la memoria cach\u00e9 de la plataforma no estaba sincronizada.
 info.frameworkRestart.useraction=No se requiere ninguna acci\u00f3n.
 
-# CWWKE0042E removed because it's only used in com.ibm.ws.kernel.boot.cmdline - Do not reuse.
+error.badVersion=CWWKE0042E: La versi\u00f3n de Java correcta no se est\u00e1 ejecutando. El entorno de ejecuci\u00f3n requiere Java 7 o una versi\u00f3n superior.
+error.badVersion.explanation=O bien es est\u00e1 ejecutando una versi\u00f3n de Java no admitida o la variable de sistema JAVA_HOME est\u00e1 establecida para apuntar a una versi\u00f3n anterior de Java.
+error.badVersion.useraction= Actualice la versi\u00f3n Java a Java 7, o ajuste la variable del sistema JAVA_HOME para se\u00f1alar a Java 7.
 
 error.unsupportedLaunch=CWWKE0043E: La ubicaci\u00f3n de inicio no es un archivo local. ({0})
 error.unsupportedLaunch.explanation=El entorno de ejecuci\u00f3n debe iniciarse desde un archivo local, por ejemplo un archivo JAR.

@@ -28,13 +28,32 @@ addRequiredLibraries {
            'org.apache.directory.server:apacheds-service:2.0.0-M15',
            project(':fattest.simplicity'),
            project(':com.ibm.ws.org.apache.directory.server'),
-           project(':com.ibm.ws.webcontainer.security_test.servlets')
+           project(':com.ibm.ws.webcontainer.security_test.servlets'),
+           project(':com.ibm.ws.security.javaeesec.cdi')
     }
     // Copy the dependencies wherever they may be needed
     copy {
       // Adding jars to "autoFVT/lib/" will include them in a FAT bucket classpath at runtime
       from configurations.libs
       into "${buildDir}/autoFVT/lib/"
+    }
+    
+    def sharedResources = "${buildDir}/autoFVT/publish/shared/resources"
+    
+    // Define dependency groups
+    configurations {
+      derby
+    }
+    // Define G:A:V coordinates of each dependency
+    dependencies {
+      derby 'org.apache.derby:derby:10.11.1.1'
+    }
+    // Copy the dependencies wherever they may be needed
+    
+    // Copy Derby
+    copy {
+      from configurations.derby
+      into sharedResources + "/derby"
     }
   }
 }
