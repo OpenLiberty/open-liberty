@@ -39,3 +39,6 @@ JAVAEESEC_WARNING_NO_REALM_NAME=CWWKS1914W: Numele de regiune pentru autentifica
 JAVAEESEC_WARNING_NO_REALM_NAME.explanation=Numele de regiune pentru autentificarea de baz\u0103 nu este setat, este utilizat\u0103 valoarea implicit\u0103 defaultRealm.
 JAVAEESEC_WARNING_NO_REALM_NAME.useraction=Dac\u0103 numele regiunii trebuie s\u0103 fie setat, v\u0103 rug\u0103m s\u0103 \u00eel seta\u0163i folosind \u00een aplica\u0163ie adnotarea BasicAuthenticationMechanismDefinition.
 
+JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1915E: Implementarea modulului {0} a e\u015fuat \u00een aplica\u0163ia {1} deoarece au fost g\u0103site multiple implement\u0103ri HttpAuthenticationMechanism. Lista de clase este {2}. Cel mai probabil, aceasta este o problem\u0103 de \u00eempachetare a aplica\u0163iei. Asigura\u0163i-v\u0103 c\u0103 exist\u0103 doar o singur\u0103 implementare HttpAuthenticationMechanism modul.
+JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=Implementarea aplica\u0163iei a e\u015fuat deoarece au fost g\u0103site mai mult de o implementare HttpAuthenticationMechanism. Aceast\u0103 condi\u0163ie nu este permis\u0103.
+JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Asigura\u0163i-v\u0103 c\u0103 exist\u0103 doar o singur\u0103 implementare HttpAuthenticationMechanism fiecare modul din aplica\u0163ie.

@@ -316,3 +316,17 @@ info.batch.events.publish.topic.useraction=La racine de rubrique JMS d'ex\u00e9c
 cdi.ambiguous.artifact.names=CWWKY0041W: Le conteneur de lots s'ex\u00e9cute avec une fonction CDI active, or, le moteur CDI n'est pas parvenu \u00e0 charger l'artefact de lots en tant que bean g\u00e9r\u00e9 par CDI et \u00e0 ex\u00e9cuter d'autres injections CDI. Cela peut \u00eatre d\u00fb \u00e0 l'absence d'une annotation de d\u00e9finition de bean, telle que @Dependent, \u00e0 la pr\u00e9sence d'un mode de reconnaissance de bean inintentionnel ou \u00e0 la pr\u00e9sence d'une valeur 'ref' ambigu\u00eb.
 cdi.ambiguous.artifact.names.explanation=Lorsque l'environnement d'ex\u00e9cution par lots charge des artefacts en utilisant le moteur CDI, les propri\u00e9t\u00e9s par lots (@BatchProperty) et les contextes par lots (JobContext et StepContext) sont inject\u00e9s, et les fonctionnalit\u00e9s compl\u00e8tes de CDI sont disponibles. Ces fonctionnalit\u00e9s incluent l'injection d'autres beans g\u00e9r\u00e9s en fonction de qualificateurs et de toutes les autres fonctions du mod\u00e8le de programmation CDI. Lorsque l'environnement d'ex\u00e9cution par lots charge des artefacts sans utiliser le moteur CDI, il injecte uniquement les propri\u00e9t\u00e9s et les contextes par lots. Etant donn\u00e9 qu'il ne s'agit pas d'un bean g\u00e9r\u00e9 par CDI dans ce chemin, aucune autre injection ou fonction du mod\u00e8le de programmation CDI n'est disponible dans cet artefact par lots. Ce message indique que bien que le serveur soit configur\u00e9 pour que la fonction CDI soit active, l'artefact par lots ne peut pas \u00eatre charg\u00e9 en tant que bean g\u00e9r\u00e9 par CDI car la valeur d'attribut 'ref' correspondant \u00e0 cette r\u00e9f\u00e9rence d'artefact dans XML ne pointe pas vers un seul bean g\u00e9r\u00e9 par CDI explicite.
 cdi.ambiguous.artifact.names.useraction=Ajoutez l'annotation @Dependent ou une autre annotation de d\u00e9finition de bean appropri\u00e9e \u00e0 votre artefact par lots. Vous pouvez aussi d\u00e9finir la valeur 'all' pour le mode de reconnaissance de bean dans le fichier beans.xml, mais cette solution est susceptible de ralentir votre application. Si tous les artefacts ambigus ne sont pas n\u00e9cessaires, vous pouvez \u00e9galement retirer les attributs 'ref' ambigus de l'application de sorte qu'il ne reste qu'une seule r\u00e9f\u00e9rence explicite.
+
+#{0} job/flow/partition
+#{1} The JSL
+display.resolved.jsl=CWWKY0042I:  JSL r\u00e9solu pour ce {0} : \n\
+\ {1}.
+display.resolved.jsl.explanation=Le JSL utilis\u00e9 pour ce travail, ce flux ou cette partition est affich\u00e9 une fois que les param\u00e8tres et les propri\u00e9t\u00e9s ont \u00e9t\u00e9 r\u00e9solus.  Le JSL du travail ne r\u00e9sout pas les propri\u00e9t\u00e9s du plan de partition. Recherchez ce message dans les journaux de partition individuels pour r\u00e9solution de la propri\u00e9t\u00e9 de plan de partition.
+display.resolved.jsl.useraction=V\u00e9rifiez que la r\u00e9solution du JSL et des param\u00e8tres correspond \u00e0 ce qui est attendu.
+
+#{0} The JSL
+display.unresolved.jsl=CWWKY0043I:  JSL non r\u00e9solu pour ce travail : \n\
+\ {0}.
+display.unresolved.jsl.explanation=Le JSL utilis\u00e9 pour le travail est affich\u00e9 avant que les param\u00e8tres et les propri\u00e9t\u00e9s n'aient \u00e9t\u00e9 r\u00e9solus.
+display.unresolved.jsl.useraction=V\u00e9rifiez que le nom de fichier du JSL est correct et que la source du JSL contient le JSL correct.
+

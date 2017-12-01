@@ -195,7 +195,9 @@ info.frameworkRestart=CWWKE0041I: A platform gyors\u00edt\u00f3t\u00e1r nincs sz
 info.frameworkRestart.explanation=A keretrendszer \u00fajra lett ind\u00edtva, mert a platform gyors\u00edt\u00f3t\u00e1r nem volt szinkroniz\u00e1lva.
 info.frameworkRestart.useraction=Semmit sem kell tennie.
 
-# CWWKE0042E removed because it's only used in com.ibm.ws.kernel.boot.cmdline - Do not reuse.
+error.badVersion=CWWKE0042E: Nem a megfelel\u0151 Java v\u00e1ltozat fut. A fut\u00e1si k\u00f6rnyezet Java 7 vagy \u00fajabb v\u00e1ltozatot ig\u00e9nyel.
+error.badVersion.explanation=Egy nem t\u00e1mogatott Java v\u00e1ltozat fut, vagy a JAVA_HOME rendszerv\u00e1ltoz\u00f3 \u00fagy van be\u00e1ll\u00edtva, hogy egy r\u00e9gebbi Java v\u00e1ltozatra mutat.
+error.badVersion.useraction= Friss\u00edtse a Java v\u00e1ltozatot a Java 7-es v\u00e1ltozatra, vagy \u00e1ll\u00edtsa be a JAVA_HOME rendszerv\u00e1ltoz\u00f3t \u00fagy, hogy Java 7 fut\u00e1si k\u00f6rnyezetre mutasson.
 
 error.unsupportedLaunch=CWWKE0043E: Az ind\u00edt\u00e1si hely nem egy helyi f\u00e1jl. ({0})
 error.unsupportedLaunch.explanation=A fut\u00e1si k\u00f6rnyezetet egy helyi f\u00e1jlb\u00f3l kell elind\u00edtani, p\u00e9ld\u00e1ul egy JAR f\u00e1jlb\u00f3l.
