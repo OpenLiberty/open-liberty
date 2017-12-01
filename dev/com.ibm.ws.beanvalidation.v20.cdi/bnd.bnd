@@ -29,6 +29,7 @@ Private-Package: \
 Import-Package: \
   org.hibernate.validator.internal,\
   org.hibernate.validator.cdi.internal,\
+  com.ibm.ws.cdi.internal.interfaces,\
   *
 
 Include-Resource: \
@@ -55,5 +56,7 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 	com.ibm.ws.javaee.dd;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest, \
-        com.ibm.ws.org.hibernate.validator.6.0.4.Final;version=latest, \
-	com.ibm.ws.org.hibernate.validator.cdi.6.0.4.Final;version=latest
+    com.ibm.ws.org.hibernate.validator.6.0.4.Final;version=latest, \
+	com.ibm.ws.org.hibernate.validator.cdi.6.0.4.Final;version=latest, \
+	com.ibm.ws.cdi.internal;version=latest, \
+    com.ibm.ws.kernel.service;version=latest

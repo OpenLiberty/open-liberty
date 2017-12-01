@@ -88,7 +88,9 @@ public class ValidatorFactoryBuilderImpl implements ValidatorFactoryBuilder {
 
     @Override
     public void closeValidatorFactory(ValidatorFactory vf) {
-        vf.close();
+        if (vf != null) {
+            vf.close();
+        }
     }
 
     @Override
