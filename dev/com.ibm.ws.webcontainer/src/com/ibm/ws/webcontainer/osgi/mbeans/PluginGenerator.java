@@ -249,13 +249,6 @@ public class PluginGenerator {
             // add in hardcoded properties and any extra properties from the user configuration
             if (!pcd.extraConfigProperties.isEmpty())
             {
-                if(pcd.TrustedProxyEnable != null) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Overriding TrustedProxyEnable from extra config properties with the specified value");
-                    }
-                    pcd.extraConfigProperties.put("TrustedProxyEnable", pcd.TrustedProxyEnable.toString());
-                }
-                
                 for (String key : pcd.extraConfigProperties.keySet()) {
                     String value = (String)pcd.extraConfigProperties.get(key);
                     rootElement.setAttribute(key, value);                    
@@ -345,20 +338,20 @@ public class PluginGenerator {
                 }
             }
 
-            if (pcd.TrustedProxyGroup != null) {
+            if (pcd.TrustedProxyList != null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Adding custom property TrustedProxyGroup element and its associated proxy servers");
                 }
 
                 Element tproxyGroupElem = output.createElement("TrustedProxyGroup");
                 rootElement.appendChild(tproxyGroupElem);
-                for (String trustedProxy : pcd.TrustedProxyGroup) {
+                for (String trustedProxy : pcd.TrustedProxyList) {
                     Element tproxyElem = output.createElement("TrustedProxy");
                     if (trustedProxy.indexOf(":") != -1) {
                         // IPV6
-                        tproxyElem.setAttribute("Name", "[" + trustedProxy.trim() + "]" );
+                        tproxyElem.setAttribute("Name", "[" + trustedProxy + "]" );
                     } else {
-                        tproxyElem.setAttribute("Name", trustedProxy.trim() );
+                        tproxyElem.setAttribute("Name", trustedProxy );
                     }
                     tproxyGroupElem.appendChild(tproxyElem);
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -1419,8 +1412,7 @@ public class PluginGenerator {
         protected Integer postBufferSize = Integer.valueOf(0);
         protected Boolean GetDWLMTable = Boolean.FALSE;
         protected Integer HTTPMaxHeaders = Integer.valueOf(300);
-        protected Boolean TrustedProxyEnable = null;
-        protected String[] TrustedProxyGroup = null;
+        protected String[] TrustedProxyList = null;
       
         // properties from server configuration -  see metatype-mbeans.properties file
         // properties that exist in metatype file should not have defaults specified here
@@ -1492,12 +1484,6 @@ public class PluginGenerator {
             if(config.get("ESIEnableToPassCookies") != null){
                 ESIEnableToPassCookies =  (Boolean) config.get("ESIEnableToPassCookies");
             }// PI76699 End
-            TrustedProxyEnable = (Boolean) config.get("trustedProxyEnable");
-            String proxyList = (String) config.get("trustedProxyGroup");
-            if(proxyList != null) {
-                TrustedProxyGroup = proxyList.split(",");
-            }
-            
             
             // populate extra properties map with default values but allow override from user config
             extraConfigProperties.put("ASDisableNagle", "false");
@@ -1578,8 +1564,7 @@ public class PluginGenerator {
                 Tr.debug(trace, "   CertLabel               : " + CertLabel);
                 Tr.debug(trace, "   KeyringLocation         : " + KeyringLocation);
                 Tr.debug(trace, "   StashfileLocation       : " + StashfileLocation);
-                Tr.debug(trace, "   TrustedProxyEnable      : " + TrustedProxyEnable);
-                Tr.debug(trace, "   TrustedProxyGroup       : " + traceList(TrustedProxyGroup));
+                Tr.debug(trace, "   TrustedProxyList        : " + traceList(TrustedProxyList));
                 if (!extraConfigProperties.isEmpty())
                     Tr.debug(trace, "   AdditionalConfigProps   : " + extraConfigProperties.toString());
             }
