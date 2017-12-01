@@ -16,6 +16,8 @@ src: \
   test-applications/fvtweb/src, \
   test-applications/TestingApp/src
 
+runtime.minimum.java.level: 1.8
+
 test.project: true
 
 -buildpath: \
