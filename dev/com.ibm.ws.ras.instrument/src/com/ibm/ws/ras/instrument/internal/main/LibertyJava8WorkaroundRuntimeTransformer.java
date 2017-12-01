@@ -105,13 +105,8 @@ public class LibertyJava8WorkaroundRuntimeTransformer implements ClassFileTransf
     
     protected static Boolean checkJDK8WithHotReplaceBug() {
     	if (isIBMVirtualMachine) {
-			
-			//It turns out no recent JDK we've tried yet can do reinstrumentation on java8 classes with
-			//INVOKEDYNAMIC features like lambdas. So for now this workaround will be on always.
-			
-			return true;
-			
-            //String runtimeVersion = System.getProperty("java.runtime.version", "unknown-00000000_0000");
+		
+            String runtimeVersion = System.getProperty("java.runtime.version", "unknown-00000000_0000");
 
             
             //This is largely replicated from the JavaInfo class. The problem is this class gets packed into the 
@@ -119,33 +114,49 @@ public class LibertyJava8WorkaroundRuntimeTransformer implements ClassFileTransf
             //Please keep the definitive version of this in JavaInfo.
             
             // Parse MAJOR and MINOR versions
-            //String specVersion = System.getProperty("java.specification.version");
-            //String[] versions = specVersion.split("[^0-9]"); // split on non-numeric chars
+            String specVersion = System.getProperty("java.specification.version");
+            String[] versions = specVersion.split("[^0-9]"); // split on non-numeric chars
             // Offset for 1.MAJOR.MINOR vs. MAJOR.MINOR version syntax
             
-            //int offset = "1".equals(versions[0]) ? 1 : 0;
-            //if (versions.length <= offset)
-            //    return false; //If something goes badly wrong, don't use the workaround. 
-            //
-            //int MAJOR = Integer.parseInt(versions[offset]);
-            //int MINOR = versions.length < (2 + offset) ? 0 : Integer.parseInt(versions[(1 + offset)]);
-            //int SR = 0;
-            //int srloc = runtimeVersion.toLowerCase().indexOf("sr");
-            //if (srloc > (-1)) {
-            //    srloc += 2;
-            //    if (srloc < runtimeVersion.length()) {
-            //        int len = 0;
-            //        while ((srloc + len < runtimeVersion.length()) && Character.isDigit(runtimeVersion.charAt(srloc + len))) {
-            //            len++;
-            //       }
-            //        SR = Integer.parseInt(runtimeVersion.substring(srloc, srloc + len));
-            //    }
-            //}
+            int offset = "1".equals(versions[0]) ? 1 : 0;
+            if (versions.length <= offset)
+                return false; //If something goes badly wrong, don't use the workaround. 
             
-            //For JDK 8000->8005 (non-inclusive) we need to use the hot code replace workaround.
-            //if ((MAJOR==8) && (MINOR==0) && (SR<5)) {
-            //	return true;
-            //}
+            int MAJOR = Integer.parseInt(versions[offset]);
+            int MINOR = versions.length < (2 + offset) ? 0 : Integer.parseInt(versions[(1 + offset)]);
+            //SR and FP need to be parsed manually for a string like 2017111111_01(SR5 FP5) 
+			
+			int SR = 0;
+			int FP = 0;
+            int srloc = runtimeVersion.toLowerCase().indexOf("sr");
+            if (srloc > (-1)) {
+                srloc += 2;
+                if (srloc < runtimeVersion.length()) {
+                    int len = 0;
+                    while ((srloc + len < runtimeVersion.length()) && Character.isDigit(runtimeVersion.charAt(srloc + len))) {
+                        len++;
+                   }
+                    SR = Integer.parseInt(runtimeVersion.substring(srloc, srloc + len));
+                }
+            }
+            
+			int fploc = runtimeVersion.toLowerCase().indexOf("fp");
+            if (fploc > (-1)) {
+                fploc += 2;
+                if (fploc < runtimeVersion.length()) {
+                    int len = 0;
+                    while ((fploc + len < runtimeVersion.length()) && Character.isDigit(runtimeVersion.charAt(fploc + len))) {
+                        len++;
+                   }
+                    FP = Integer.parseInt(runtimeVersion.substring(fploc, fploc + len));
+                }
+            }
+			
+            //For IBM JDK 80 SR5 FP5 and lower, we need to use a workaround and property activated injection mechanism.
+            //Workaround if we're at 8.0 AND we're either SR0,1,2,3,4 OR we're at SR5 FP1,2,3,4. ONLY 8.0 SR5 FP5 or higher FP OR 8.0 SR6 or higher regardless of FP.
+			if ((MAJOR==8) && (MINOR==0) && ((SR<5) || ((SR==5) && (FP<5)) )) {
+            	return true;
+            }
 
         }
         
