@@ -86,6 +86,14 @@ OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: \uc0ac\uc6a9\uc790\uac00 \uc
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=\uc774 \uae30\ub2a5\uc740 \uc0ac\uc6a9\uc790\uac00 \uc81c\uacf5\ud55c OpentracingTracerFactory\ub97c \uc0ac\uc6a9\ud558\uc5ec Tracer \uad6c\ud604\uc744 \uad6c\uc131\ud569\ub2c8\ub2e4. OpentracingTracerFactory.newInstance \uba54\uc18c\ub4dc\uc5d0\uc11c \ub110\uc744 \ub9ac\ud134\ud588\uc2b5\ub2c8\ub2e4.
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=\uc0ac\uc6a9\uc790\uac00 \uc81c\uacf5\ud55c OpentracingTracerFactory newInstance \uba54\uc18c\ub4dc\uc5d0\uc11c \ub110\uc744 \ub9ac\ud134\ud55c \uc774\uc720\ub97c \ud310\ubcc4\ud558\uc2ed\uc2dc\uc624.
 
+OPENTRACING_FILTER_PATTERN_BLANK=CWMOT0007E: opentracing excludeSpans \ub610\ub294 includeSpans \uad6c\uc131 \uc694\uc18c\uc758 \ud328\ud134 \uc18d\uc131\uc740 \uacf5\ubc31\uc785\ub2c8\ub2e4.
+OPENTRACING_FILTER_PATTERN_BLANK.explanation=\uc62c\ubc14\ub978 URI \ud328\ud134\uc744 \uc9c0\uc815\ud574\uc57c \ud558\uace0 \uacf5\ubc31\uc774 \ub420 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+OPENTRACING_FILTER_PATTERN_BLANK.useraction=\uc720\ud6a8\ud55c \ud328\ud134\uc740 \ubb38\uc11c\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+OPENTRACING_FILTER_PATTERN_INVALID=CWMOT0008E: opentracing excludeSpans \ub610\ub294 includeSpans \uad6c\uc131 \uc694\uc18c\uc758 \ud328\ud134 \uc18d\uc131 {0}\uc774(\uac00) \uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 URI(RFC 2396)\uc785\ub2c8\ub2e4.
+OPENTRACING_FILTER_PATTERN_INVALID.explanation=\uc62c\ubc14\ub978 URI \ud328\ud134\uc744 \uc9c0\uc815\ud574\uc57c \ud569\ub2c8\ub2e4. \uac00\uc7a5 \uc77c\ubc18\uc801\uc778 \ubb38\uc81c\uc810\uc740 % URL \uc778\ucf54\ub529\ub41c \uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 \ubb38\uc790\uac00 \uc801\uc808\ud558\uc9c0 \uc54a\uc740 \uac83\uc785\ub2c8\ub2e4.
+OPENTRACING_FILTER_PATTERN_INVALID.useraction=RFC 2396\uc744 \ucc38\uc870\ud558\uc5ec % URL \uc778\ucf54\ub529\ub41c \uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 \ubb38\uc790\uac00 \uc801\uc808\ud55c\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message
 #-----------------------------------------------------------------------------------------------------------------------------

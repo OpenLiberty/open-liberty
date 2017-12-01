@@ -34,7 +34,6 @@ multiple.beans.xml.warning.CWOWB1001W=CWOWB1001W: Archiv Web Application Archive
 multiple.beans.xml.warning.CWOWB1001W.explanation=Kontejner CDI nalezl v\u00edce soubor\u016f beans.xml.
 multiple.beans.xml.warning.CWOWB1001W.useraction=Ujist\u011bte se, \u017ee archiv aplikace obsahuje pouze jeden soubor beans.xml.
 
-
 managed.class.bean.class.mismatch.CWOWB1002E=CWOWB1002E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1}
 managed.class.bean.class.mismatch.CWOWB1002E.explanation=CMSG0001
 managed.class.bean.class.mismatch.CWOWB1002E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.

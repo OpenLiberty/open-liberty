@@ -1,11 +1,6 @@
 <server description="Server for testing CDI">
 
     <include location="../fatTestPorts.xml"/>
-    
-    <httpEndpoint id="defaultHttpEndpoint"
-                  enabled="true"
-                  host="*"
-                  httpPort="${bvt.prop.HTTP_secondary}"/>   
 
     <featureManager>
         <feature>osgiconsole-1.0</feature>

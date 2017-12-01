@@ -17,7 +17,6 @@
 		<url-pattern>/CommonServlet</url-pattern>
 	</servlet-mapping>
 
-	
 	<!-- SECURITY CONSTRAINTS -->
 	<security-constraint>
 		<display-name>basic_auth</display-name>

@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
 	<classpathentry kind="src" path="test-applications/JavaEESecBase.jar/src"/>
+	<classpathentry kind="src" path="test-applications/JavaEESec.war/src"/>
 	<classpathentry kind="src" path="test-applications/JavaEESecBasicAuthServlet.war/src"/>
 	<classpathentry kind="src" path="test-applications/JavaEEsecFormAuth.war/src"/>
 	<classpathentry kind="src" path="test-applications/JavaEEsecFormAuthRedirect.war/src"/>

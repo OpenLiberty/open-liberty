@@ -20,7 +20,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import componenttest.rules.FeatureReplacementAction;
+import componenttest.rules.RepeatTests;
+
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -173,7 +177,11 @@ import com.ibm.ws.fat.util.FatLogHandler;
                 WithAnnotationsTest.class
 })
 public class FATSuite {
-    
+  
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(FeatureReplacementAction.EE8_FEATURES);
+  
     private static final Logger LOG = Logger.getLogger(FATSuite.class.getName());
     private static Map<String,List<Archive>> serversToApps = new HashMap<String,List<Archive>>();
 

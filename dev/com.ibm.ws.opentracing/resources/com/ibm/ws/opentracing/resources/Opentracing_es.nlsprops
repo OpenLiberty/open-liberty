@@ -86,6 +86,14 @@ OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: La invocaci\u00f3n del m\u00
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=La caracter\u00edstica crea implementaciones de Tracer con un m\u00e9todo OpentracingTracerFactory proporcionado por el usuario. El m\u00e9todo OpentracingTracerFactory.newInstance ha devuelto un valor nulo.
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=Determine por qu\u00e9 el m\u00e9todo OpentracingTracerFactory newInstance proporcionado por el usuario ha devuelto un valor nulo.
 
+OPENTRACING_FILTER_PATTERN_BLANK=CWMOT0007E: El atributo de patr\u00f3n de un elemento de configuraci\u00f3n excludeSpans o includeSpans de Opentracing est\u00e1 en blanco.
+OPENTRACING_FILTER_PATTERN_BLANK.explanation=Debe especificarse un patr\u00f3n de URI v\u00e1lido y no puede dejarse en blanco.
+OPENTRACING_FILTER_PATTERN_BLANK.useraction=Consulte la documentaci\u00f3n sobre patrones v\u00e1lidos.
+
+OPENTRACING_FILTER_PATTERN_INVALID=CWMOT0008E: El atributo de patr\u00f3n {0} de un elemento de configuraci\u00f3n excludeSpans o includeSpans de Opentracing es un URI no v\u00e1lido (RFC 2396).
+OPENTRACING_FILTER_PATTERN_INVALID.explanation=Debe especificarse un patr\u00f3n de URI v\u00e1lido. El problema m\u00e1s com\u00fan de los caracteres no v\u00e1lidos es que los caracteres no tienen la codificaci\u00f3n de URL % adecuada.
+OPENTRACING_FILTER_PATTERN_INVALID.useraction=Consulte RFC 2396 y aseg\u00farese de que los caracteres tengan una codificaci\u00f3n de URL % correcta.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message
 #-----------------------------------------------------------------------------------------------------------------------------
