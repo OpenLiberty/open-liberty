@@ -307,3 +307,17 @@ info.batch.events.publish.topic.useraction=Root-ul de subiecte JMS poate fi modi
 cdi.ambiguous.artifact.names=CWWKY0041W: Containerul de batch ruleaz\u0103 cu o caracteristic\u0103 activ\u0103 CDI, dar motorul CDI nu a putut \u00eenc\u0103rca artefactul de batch ca bean gestionat de CDI \u015fi realizeaz\u0103 alte injec\u0163ii CDI. Aceast\u0103 problem\u0103 ar putea fi cauzat\u0103 de o adnotare definit\u0103 de bean lips\u0103 cum ar fi @Dependent, un mod neinten\u0163ionat de descoperire bean sau o valoare 'ref' ambigu\u0103.
 cdi.ambiguous.artifact.names.explanation=C\u00e2nd runtime-ul de batch \u00eencarc\u0103 artefacte utiliz\u00e2nd motorul CDI, sunt injectate propriet\u0103\u0163ile de batch (@BatchProperty) \u015fi contextele de batch (JobContext \u015fi StepContext) \u015fi sunt f\u0103cute disponibile toate capabilit\u0103\u0163ile de CDI. Aceste capabilit\u0103\u0163i includ injec\u0163ia altor bean-uri gestionate, \u00een concordan\u0163\u0103 cu calificativele \u015fi toate celelalte caracteristici ale modelului de programare CDI. C\u00e2nd runtime-ul de batch \u00eencarc\u0103 artefactele f\u0103r\u0103 utilizarea motorului de CDI, el injecteaz\u0103 numai propriet\u0103\u0163ile \u015fi contextele de batch. \u00centruc\u00e2t nu exist\u0103 un bean gestionat de CDI \u00een aceast\u0103 cale, nu sunt disponibile nicio alt\u0103 injec\u0163ie sau alt\u0103 caracteristic\u0103 ale modelului de programare CDI \u00een acel artefact de batch. Acest mesaj indic\u0103 faptul c\u0103, de\u015fi serverul este configurat astfel \u00eenc\u00e2t caracteristica CDI s\u0103 fie activ\u0103, artefactul de batch nu poate fi \u00eenc\u0103rcat ca bean gestionat de CDI deoarece valoarea atributului 'ref' care corespunde acestei referin\u0163e de artefact \u00een XML nu indic\u0103 un singur, neambiguu bean gestionat de CDI.
 cdi.ambiguous.artifact.names.useraction=Ad\u0103uga\u0163i adnotarea @Dependent sau alt\u0103 adnotare de definire bean potrivit\u0103 la artefactul dumneavoastr\u0103 de batch. Sau, pute\u0163i seta modul de descoperire de bean la 'all' \u00een fi\u015fierul beans.xml, de\u015fi aceast\u0103 solu\u0163ie poate \u00eencetini aplica\u0163ia dumneavoastr\u0103. Dac\u0103 nu sunt necesare toate artefactele ambigue, pute\u0163i de asemenea s\u0103 \u00eenl\u0103tura\u0163i atributele 'ref' ambigue din aplica\u0163ie, astfel \u00eenc\u00e2t s\u0103 r\u0103m\u00e2n\u0103 numai o singur\u0103 referin\u0163\u0103, neambigu\u0103.
+
+#{0} job/flow/partition
+#{1} The JSL
+display.resolved.jsl=CWWKY0042I:  JSL-ul rezolvat pentru acest {0} este \n\
+\ {1}.
+display.resolved.jsl.explanation=JSL-ul folosit pentru job, flux sau parti\u0163ie este afi\u015fat dup\u0103 ce parametrii \u015fi propriet\u0103\u0163ile au fost rezolvate. JSL-ul jobului nu rezolv\u0103 propriet\u0103\u0163ile planului de parti\u0163ie. C\u0103uta\u0163i acest mesaj \u00een istoricele de parti\u0163ie individuale pentru rezolvarea propriet\u0103\u0163i de plan parti\u0163ie.
+display.resolved.jsl.useraction=Verifica\u0163i dac\u0103 rezolvarea JSL \u015fi a parametrilor este a\u015fa cum este de a\u015fteptat.
+
+#{0} The JSL
+display.unresolved.jsl=CWWKY0043I:  JSL-ul nerezolvat pentru acest job este \n\
+\ {0}.
+display.unresolved.jsl.explanation=JSL-ul folosit pentru job este afi\u015fat \u00eenainte de rezolvarea parametrilor \u015fi propriet\u0103\u0163ilor.
+display.unresolved.jsl.useraction=Verifica\u0163i c\u0103 numele de fi\u015fier pentru JSL este corect \u015fi c\u0103 sursa pentru JSL con\u0163ine JSL-ul corect.
+

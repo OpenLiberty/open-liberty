@@ -48,3 +48,11 @@ failed_to_extract_saml_token_from_subject.useraction=Asigura\u0163i-v\u0103 c\u0
 failed_run_as_subject=CWWKW0706E: A ap\u0103rut o eroare \u00een timpul \u00eencerc\u0103rii de a ob\u0163ine RunAsSubject. Excep\u0163ia a fost: [{0}].
 failed_run_as_subject.explanation=A survenit o excep\u0163ie la ob\u0163inerea RunAsSubject.
 failed_run_as_subject.useraction=Asigura\u0163i-v\u0103 c\u0103 serverul este configurat \u015fi porne\u015fte corespunz\u0103tor.
+
+warn_missing_mpjwt_token=CWWKW0707W: Atributul [{0}] din configura\u0163ia [{1}] este setat la [{2}], JWT-ul (JSON Web Token) MicroProfile nu este disponibil. Cererea nu con\u0163ine un antet de autorizare cu jetonul.
+warn_missing_mpjwt_token.explanation=Runtime-ul a e\u015fuat s\u0103 g\u0103seasc\u0103 JWT-ul MicroProfile \u00een subiectul runAs. Aceast\u0103 eroare de obicei indic\u0103 o problem\u0103 cu autentificarea. Asigura\u0163i-v\u0103 c\u0103 nu au ap\u0103rut erori \u00een timp ce caracteristica MicroProfile JWT autentic\u0103 un utilizator.
+warn_missing_mpjwt_token.useraction=Verifica\u0163i ac\u0163iunea utilizatorului pentru orice erori anterioare pe care le-a jurnalizat serverul.
+
+warn_mpjwt_prop_service_notavail=CWWKW0708W: Serviciul de propagare MicroProfile JWT nu este disponibil. Runtime-ul nu poate accesa jetonul pentru a-l include \u00een antetul de autorizare.
+warn_mpjwt_prop_service_notavail.explanation=Serviciul de propagare MicroProfile JWT necesit\u0103 caracteristica mpJwt-1.0.
+warn_mpjwt_prop_service_notavail.useraction=Asigura\u0163i-v\u0103 c\u0103 serverul ruleaz\u0103 cu caracteristica cerut\u0103.

@@ -35,7 +35,10 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 MultipleIdentityStoreFormPostTest.class,
                 MultipleIdentityStoreCustomFormPostTest.class,
                 MultipleIdentityStoreApplLoginToContinueTest.class,
-                LoginToContinueELTest.class
+                LoginToContinueELTest.class,
+                HttpAuthenticationMechanismDBTest.class,
+                HttpAuthenticationMechanismDBAuthAliasTest.class,
+                ProgrammaticTest.class
 })
 
 /**

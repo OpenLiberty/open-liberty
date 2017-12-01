@@ -32,3 +32,8 @@ lifecycle.interceptor.exception.CWOWB2001E=CWOWB2001E: Une intercepteur de cycle
 lifecycle.interceptor.exception.CWOWB2001E.explanation=Les intercepteurs de cycle de vue doivent \u00e9viter d'\u00e9mettre des exceptions v\u00e9rifi\u00e9es 
 lifecycle.interceptor.exception.CWOWB2001E.useraction=V\u00e9rifiez les journaux pour d\u00e9terminer le probl\u00e8me.
 
+internal.server.error.CWOWB2002E=CWOWB2002E: Une erreur interne WebSphere Application Server s'est produite. Contactez le support WebSphere Application Server en ayant les donn\u00e9es suivantes \u00e0 disposition : {0} {1}
+internal.server.error.CWOWB2002E.explanation=CMSG0001
+internal.server.error.CWOWB2002E.useraction=Reportez-vous aux informations de d\u00e9termination des probl\u00e8mes sur la page Web du support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+

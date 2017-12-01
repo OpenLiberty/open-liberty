@@ -656,6 +656,14 @@ warning.variable.invalid=CWWKE0941W: Die in der Datei server.env angegebene Vari
 warning.variable.invalid.explanation=In der Datei server.env angegebene Variablennamen d\u00fcrfen nur alphanumerische Zeichen enthalten.
 warning.variable.invalid.useraction=\u00c4ndern Sie entweder den Variablennamen so, dass nur alphanumerische Zeichen verwendet werden, oder verschieben Sie die Definition der Variable in die Datei bootstrap.properties.
 
+error.zosProcStart.procedure.invalid=CWWKE0942E: Die z/OS-STC-Prozedur {0} konnte nicht gestartet werden. Der Prozedurname ist nicht g\u00fcltig. Stellen Sie sicher, dass der Prozedurname nicht l\u00e4nger als acht Zeichen ist und dass er kein Komma enth\u00e4lt.
+error.zosProcStart.procedure.invalid.explanation=Der mit der Eigenschaft WLP_ZOS_PROCEDURE in der Datei server.env angegebene STC-Prozedurname ist nicht g\u00fcltig. Der Prozedurname darf nicht l\u00e4nger als acht Zeichen sein und kein Komma enthalten.
+error.zosProcStart.procedure.invalid.useraction=Stellen Sie sicher, dass der Prozedurname nicht l\u00e4nger als acht Zeichen ist und dass er kein Komma enth\u00e4lt.
+
+error.zosProcStart.jobname.invalid=CWWKE0943E: Die z/OS-STC-Prozedur {0} konnte nicht gestartet werden. Der Jobname {1} ist nicht g\u00fcltig. Stellen Sie sicher, dass der Jobname nicht l\u00e4nger als acht Zeichen ist und dass er kein Komma enth\u00e4lt.
+error.zosProcStart.jobname.invalid.explanation=Der mit der Eigenschaft WLP_ZOS_JOBNAME in der Datei server.env angegebene STC-Jobname ist nicht g\u00fcltig. Der Jobname darf nicht l\u00e4nger als acht Zeichen sein und kein Komma enthalten.
+error.zosProcStart.jobname.invalid.useraction=Stellen Sie sicher, dass der Jobname nicht l\u00e4nger als acht Zeichen ist und dass er kein Komma enth\u00e4lt.
+
 info.serverStarting=Server {0} wird gestartet.
 info.serverStarted=Der Server {0} wurde gestartet.
 info.serverStartedWithPID=Der Server {0} wurde mit der Prozess-ID {1} gestartet.

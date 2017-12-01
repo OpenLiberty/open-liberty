@@ -32,3 +32,8 @@ lifecycle.interceptor.exception.CWOWB2001E=CWOWB2001E: {0} \u30e9\u30a4\u30d5\u3
 lifecycle.interceptor.exception.CWOWB2001E.explanation=\u30e9\u30a4\u30d5\u30b5\u30a4\u30af\u30eb\u30fb\u30a4\u30f3\u30bf\u30fc\u30bb\u30d7\u30bf\u30fc\u304c\u30c1\u30a7\u30c3\u30af\u4f8b\u5916\u3092\u30b9\u30ed\u30fc\u3057\u306a\u3044\u3088\u3046\u306b\u3059\u308b\u5fc5\u8981\u304c\u3042\u308a\u307e\u3059\u3002 
 lifecycle.interceptor.exception.CWOWB2001E.useraction=\u30ed\u30b0\u3092\u78ba\u8a8d\u3057\u3066\u554f\u984c\u3092\u7279\u5b9a\u3057\u3066\u304f\u3060\u3055\u3044
 
+internal.server.error.CWOWB2002E=CWOWB2002E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1}
+internal.server.error.CWOWB2002E.explanation=CMSG0001
+internal.server.error.CWOWB2002E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+

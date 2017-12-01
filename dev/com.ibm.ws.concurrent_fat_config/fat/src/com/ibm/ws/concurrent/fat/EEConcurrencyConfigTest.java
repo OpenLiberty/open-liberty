@@ -505,6 +505,11 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         normalPolicy.setId("normalPolicy");
         normalPolicy.setMax("1");
         config.getConcurrencyPolicies().add(normalPolicy);
+        // Add: <concurrencyPolicy id="policy1" max="1"/>
+        ConcurrencyPolicy policy1 = new ConcurrencyPolicy();
+        policy1.setId("policy1");
+        policy1.setMax("1");
+        config.getConcurrencyPolicies().add(policy1);
         // Add: <managedExecutorService jndiName="concurrent/execSvc1" concurrencyPolicyRef="normalPolicy"/>
         ManagedExecutorService execSvc1 = new ManagedExecutorService();
         execSvc1.setId("execSvc1");
@@ -519,11 +524,6 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         runTest("testTask1BlockedByTask2", "concurrent/execSvc1");
 
         // Switch to a different concurrency policy. Should be able to submit more tasks on that policy.
-        // Add: <concurrencyPolicy id="policy1" max="1"/>
-        ConcurrencyPolicy policy1 = new ConcurrencyPolicy();
-        policy1.setId("policy1");
-        policy1.setMax("1");
-        config.getConcurrencyPolicies().add(policy1);
         // Update: <managedExecutorService jndiName="concurrent/execSvc1" concurrencyPolicyRef="policy1"/>
         execSvc1.setConcurrencyPolicyRef(policy1.getId());
 
