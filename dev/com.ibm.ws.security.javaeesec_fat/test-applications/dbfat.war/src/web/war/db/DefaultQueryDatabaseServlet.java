@@ -17,7 +17,6 @@ import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.sql.DataSource;
 
-import com.ibm.ws.security.javaeesec.cdi.beans.hash.Pbkdf2PasswordHashImpl;
 import com.ibm.ws.security.javaeesec.fat_helper.Constants;
 
 import componenttest.app.FATDatabaseServlet;
@@ -40,10 +39,12 @@ public class DefaultQueryDatabaseServlet extends FATDatabaseServlet {
             FATDatabaseServlet.createTable(ds, groupTable, "group_name VARCHAR(36), caller_name VARCHAR(36)");
 
             // create passwords
-            Pbkdf2PasswordHashImpl pphi = new Pbkdf2PasswordHashImpl();
-            String testpwd = pphi.generate((new String(Constants.DB_USER1_PWD)).toCharArray());
-            String testpwd2 = pphi.generate((new String(Constants.DB_USER2_PWD)).toCharArray());
-            String testpwd3 = pphi.generate((new String(Constants.DB_USER3_PWD)).toCharArray());
+            // this is a hashed value of "pwd".
+            String testpwd = "PBKDF2WithHmacSHA256:2048:cRXf00gdzCPVfeflEINqBWEjm0Vhvlq9IXRI5nYorLU=:68P/amIBNLCGdlGqViThbeL2YJXPJzLdUUohhAltydc=";
+            // this is a hashed value of "pwd2".
+            String testpwd2 = "PBKDF2WithHmacSHA256:2048:Su7sJuASLoYmKknP/L2nhH2t9XsnX5YEFaYkrgr0T2c=:e12Ym58HsS9PzZPnLfcTL/gFwUhikFllB/cVKa2Obes=";
+            // this is a hashed value of "pwd3".
+            String testpwd3 = "PBKDF2WithHmacSHA256:2048:4ax3fqYXsu3FWftO+vap99PASwpCkBdZLTsY/6oj3+k=:uhDD9IlbxRRdjQt9Iji5mQV8rMqaYoFb0Fxxb7EnVk4=";
 
             Connection conn = ds.getConnection();
             Statement stmt1 = conn.createStatement();
