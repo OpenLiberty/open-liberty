@@ -11,15 +11,15 @@
 package com.ibm.ws.kernel.service;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.management.JMX;
 import javax.management.MBeanException;
@@ -38,6 +38,7 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.kernel.server.ServerEndpointControlMBean;
+//import com.ibm.websphere.kernel.server.ServerEndpointControlMBean;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.ExpectedFFDC;
@@ -72,13 +73,11 @@ public class ServerEndpointControlMBeanTest {
 
     @BeforeClass
     public static void setup() throws Exception {
-        final Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-        logger.logp(Level.INFO, "class", "method", "foo {0}", new Object[] { "bar" });
         server.startServer();
         // set up local connector
-        MBeanServerConnection mbsc = getMBeanServer(server.getServerRoot());
+        MBeanServerConnection mbsc = getMBeanServer(server.getServerRoot()); //mbsc = getMBeanServer(server.getServerRoot());
         // get ON of the desired mbean
-        ObjectName on = getMBeanObjectInstance(mbsc).getObjectName();
+        ObjectName on = getMBeanObjectInstance(mbsc).getObjectName(); //on = getMBeanObjectInstance(mbsc).getObjectName();
         // create an proxy for the mbean
         mbean = JMX.newMBeanProxy(mbsc, on, ServerEndpointControlMBean.class);
     }
@@ -92,24 +91,45 @@ public class ServerEndpointControlMBeanTest {
     }
 
     /**
-     * Tests that the expected exception is thrown if the MBean pause method is issued when no pauseable components exist
+     * Tests that the expected exception is thrown if the MBean pause method is issued with no targets when no pauseable components exist
      *
      * @throws Exception
      */
     @ExpectedFFDC(PAUSEABLE_EXCEPTION_CLASS)
     @Test
-    public void testPauseNoPauseableComponents() throws Exception {
-        final String METHOD_NAME = "testPauseNoPauseableComponents";
+    public void testPauseAllNoPauseableComponents() throws Exception {
+        final String METHOD_NAME = "testPauseAllNoPauseableComponents";
+        Log.entering(c, METHOD_NAME);
+
+        try {
+            mbean.pause();
+            fail("Didn't get expected exception from attempting to pause a server with no pauseable components");
+
+        } catch (MBeanException e) {
+        }
+        assertNotNull("Didn't find CWWKE0933W in logs as expected.", server.waitForStringInLog("CWWKE0933W", logWaitTimeout));
+
+        Log.exiting(c, METHOD_NAME);
+    }
+
+    /**
+     * Tests that the expected exception is thrown if the MBean pause method is issued with invalid target list when no pauseable components exist
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC(PAUSEABLE_EXCEPTION_CLASS)
+    @Test
+    public void testPauseInvalidTargetList() throws Exception {
+        final String METHOD_NAME = "testPauseInvalidTargetList";
         Log.entering(c, METHOD_NAME);
 
         try {
             mbean.pause(null);
-            fail("Didn't get expected exception from attempting to pause a server with no pauseable components");
+            fail("Didn't get expected exception from attempting to pause a server with an invalid target list");
 
         } catch (MBeanException e) {
-            Assert.assertEquals(PAUSEABLE_EXCEPTION_CLASS, e.getCause().getClass().getName());
         }
-        assertNotNull(server.waitForStringInLog("CWWKE0933W", logWaitTimeout));
+        assertNotNull("Didn't find CWWKE0931W in logs as expected.", server.waitForStringInLog("CWWKE0931W", logWaitTimeout));
 
         Log.exiting(c, METHOD_NAME);
     }
@@ -121,18 +141,39 @@ public class ServerEndpointControlMBeanTest {
      */
     @ExpectedFFDC(PAUSEABLE_EXCEPTION_CLASS)
     @Test
-    public void testResumeNoPauseableComponents() throws Exception {
-        final String METHOD_NAME = "testResumeNoPauseableComponents";
+    public void testResumeAllNoPauseableComponents() throws Exception {
+        final String METHOD_NAME = "testResumeAllNoPauseableComponents";
+        Log.entering(c, METHOD_NAME);
+
+        try {
+            mbean.resume();
+            fail("Didn't get expected exception from attempting to resume a server with no pauseable components");
+
+        } catch (MBeanException e) {
+        }
+        assertNotNull("Didn't find CWWKE0934W in logs as expected.", server.waitForStringInLog("CWWKE0934W", logWaitTimeout));
+
+        Log.exiting(c, METHOD_NAME);
+    }
+
+    /**
+     * Tests that the expected exception is thrown if the MBean pause method is issued with invalid target list when no pauseable components exist
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC(PAUSEABLE_EXCEPTION_CLASS)
+    @Test
+    public void testResumeInvalidTargetList() throws Exception {
+        final String METHOD_NAME = "testResumeInvalidTargetList";
         Log.entering(c, METHOD_NAME);
 
         try {
             mbean.resume("");
-            fail("Didn't get expected exception from attempting to resume a server with no pauseable components");
+            fail("Didn't get expected exception from attempting to resume a server with an invalid target list");
 
         } catch (MBeanException e) {
-            Assert.assertEquals(PAUSEABLE_EXCEPTION_CLASS, e.getCause().getClass().getName());
         }
-        assertNotNull(server.waitForStringInLog("CWWKE0934W", logWaitTimeout));
+        assertNotNull("Didn't find CWWKE0932W in logs as expected.", server.waitForStringInLog("CWWKE0932W", logWaitTimeout));
 
         Log.exiting(c, METHOD_NAME);
     }
@@ -153,9 +194,24 @@ public class ServerEndpointControlMBeanTest {
             fail("Didn't get expected exception from attempting to pause a server with an invalid target");
 
         } catch (MBeanException e) {
-            Assert.assertEquals(PAUSEABLE_EXCEPTION_CLASS, e.getCause().getClass().getName());
         }
         assertNotNull(server.waitForStringInLog("CWWKE0935W", logWaitTimeout));
+
+        Log.exiting(c, METHOD_NAME);
+    }
+
+    /**
+     * Tests that the expected exception is thrown if the MBean resume method is issued with an invalid target.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testListEndpoints() throws Exception {
+        final String METHOD_NAME = "testListEndpoints";
+        Log.entering(c, METHOD_NAME);
+
+        List<String> eps = mbean.listEndpoints();
+        assertTrue("Expected 0 endpoints from listEndpoints, got " + eps.size(), eps.size() == 0);
 
         Log.exiting(c, METHOD_NAME);
     }
@@ -176,7 +232,6 @@ public class ServerEndpointControlMBeanTest {
             fail("Didn't get expected exception from attempting to resume a server with an invalid target");
 
         } catch (MBeanException e) {
-            Assert.assertEquals(PAUSEABLE_EXCEPTION_CLASS, e.getCause().getClass().getName());
         }
         assertNotNull(server.waitForStringInLog("CWWKE0936W", logWaitTimeout));
 

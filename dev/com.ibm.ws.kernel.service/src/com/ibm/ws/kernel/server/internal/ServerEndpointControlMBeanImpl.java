@@ -64,17 +64,48 @@ public class ServerEndpointControlMBeanImpl extends StandardMBean implements Ser
     /*
      * (non-Javadoc)
      *
+     * @see com.ibm.websphere.kernel.server.ServerEndpointControlMBean#pause()
+     */
+    @Override
+    public void pause() throws MBeanException {
+        try {
+            pauseableComponentController.pause();
+        } catch (PauseableComponentControllerRequestFailedException ex) {
+            // because the PauseableComponentControllerRequestFailedException is not API and thus not serializable on jmx client side,
+            // it can't be set as the cause, but the message is usable
+            throw new MBeanException(new Exception(ex.getLocalizedMessage()));
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
      * @see com.ibm.websphere.kernel.server.ServerEndpointControlMBean#pause(java.lang.String)
      */
     @Override
     public void pause(String targets) throws MBeanException {
         try {
-            if (targets == null | "".equals(targets))
-                pauseableComponentController.pause();
-            else
-                pauseableComponentController.pause(targets);
+            pauseableComponentController.pause(targets);
         } catch (PauseableComponentControllerRequestFailedException ex) {
-            throw new MBeanException(ex);
+            // because the PauseableComponentControllerRequestFailedException is not API and thus not serializable on jmx client side,
+            // it can't be set as the cause, but the message is usable
+            throw new MBeanException(new Exception(ex.getLocalizedMessage()));
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.websphere.kernel.server.ServerEndpointControlMBean#resume()
+     */
+    @Override
+    public void resume() throws MBeanException {
+        try {
+            pauseableComponentController.resume();
+        } catch (PauseableComponentControllerRequestFailedException ex) {
+            // because the PauseableComponentControllerRequestFailedException is not API and thus not serializable on jmx client side,
+            // it can't be set as the cause, but the message is usable
+            throw new MBeanException(new Exception(ex.getLocalizedMessage()));
         }
     }
 
@@ -86,13 +117,22 @@ public class ServerEndpointControlMBeanImpl extends StandardMBean implements Ser
     @Override
     public void resume(String targets) throws MBeanException {
         try {
-            if (targets == null | "".equals(targets))
-                pauseableComponentController.resume();
-            else
-                pauseableComponentController.resume(targets);
+            pauseableComponentController.resume(targets);
         } catch (PauseableComponentControllerRequestFailedException ex) {
-            throw new MBeanException(ex);
+            // because the PauseableComponentControllerRequestFailedException is not API and thus not serializable on jmx client side,
+            // it can't be set as the cause, but the message is usable
+            throw new MBeanException(new Exception(ex.getLocalizedMessage()));
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.websphere.kernel.server.ServerEndpointControlMBean#isPaused()
+     */
+    @Override
+    public boolean isPaused() {
+        return pauseableComponentController.isPaused();
     }
 
     /*
@@ -103,12 +143,11 @@ public class ServerEndpointControlMBeanImpl extends StandardMBean implements Ser
     @Override
     public boolean isPaused(String targets) throws MBeanException {
         try {
-            if (targets == null | "".equals(targets))
-                return pauseableComponentController.isPaused();
-            else
-                return pauseableComponentController.isPaused(targets);
+            return pauseableComponentController.isPaused(targets);
         } catch (PauseableComponentControllerRequestFailedException ex) {
-            throw new MBeanException(ex);
+            // because the PauseableComponentControllerRequestFailedException is not API and thus not serializable on jmx client side,
+            // it can't be set as the cause, but the message is usable
+            throw new MBeanException(new Exception(ex.getLocalizedMessage()));
         }
     }
 
@@ -118,23 +157,12 @@ public class ServerEndpointControlMBeanImpl extends StandardMBean implements Ser
      * @see com.ibm.websphere.kernel.server.ServerEndpointControlMBean#listEndpoints()
      */
     @Override
-    public List<String> listEndpoints() throws MBeanException {
+    public List<String> listEndpoints() {
         Collection<PauseableComponent> pauseableComponents = pauseableComponentController.getPauseableComponents();
-        System.out.println("pauseableComponents length" + pauseableComponents.size() + " " + pauseableComponents.toString());
         ArrayList<String> endpoints = new ArrayList<String>();
-        // list of endpoints may change while iterating
-        synchronized (this) {
-            while (true) {
-                try {
-                    for (PauseableComponent pauseableComponent : pauseableComponents) {
-                        endpoints.add(pauseableComponent.getName());
-                    }
-                    break;
-                } catch (Throwable t) {
-                    // Someone modified our list of endpoints. Retry.
-                    endpoints.clear();
-                }
-            }
+        // get the name of each endpoint
+        for (PauseableComponent pauseableComponent : pauseableComponents) {
+            endpoints.add(pauseableComponent.getName());
         }
         return endpoints;
     }

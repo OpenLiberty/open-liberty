@@ -17,6 +17,7 @@ src: \
 	test-applications/shutdownfat/src
 
 test.project: true
+test.classpath.wlp.include: api/spec/*.jar,api/ibm/*.jar
 
 -buildpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

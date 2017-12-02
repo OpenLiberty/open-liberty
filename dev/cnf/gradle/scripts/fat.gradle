@@ -153,6 +153,10 @@ task autoFVT {
     if(minJavaLevel == null)
       minJavaLevel = bnd('javac.source')
     bndProps.setProperty('runtime.minimum.java.level', minJavaLevel)
+    // Check if we should override wlp classpath
+    def wlpClasspath = bnd('test.classpath.wlp.include')
+    if(wlpClasspath != null)
+      bndProps.setProperty('test.classpath.wlp.include', wlpClasspath)
     
     def writer = new FileWriter(propsFile)
     try {

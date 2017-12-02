@@ -30,42 +30,57 @@ public interface ServerEndpointControlMBean {
     String OBJECT_NAME = "WebSphere:feature=kernel,name=ServerEndpointControl";
 
     /**
-     * Pauses the server endpoint(s) specified by target(s)
+     * Pauses all registered server endpoints
      *
-     * @param targets Comma separated list of zero or more targets representing the endpoint(s) to be paused
-     *            Null or empty string ("") will pause all registered endpoints
-     * @throws MBeanException
+     * @throws MBeanException if not all registered endpoints could be paused
      */
+    public void pause() throws MBeanException;
 
+    /**
+     * Pauses the specified server endpoints
+     *
+     * @param targets Comma separated list of one or more names of endpoints.
+     * @throws MBeanException If each of the specified targets couldn't be paused, or if the list of target names is empty or are not all valid
+     */
     public void pause(String targets) throws MBeanException;
 
     /**
-     * Resumes the server endpoint(s) specified by target(s)
+     * Resumes all registered server endpoints
      *
-     * @param targets Comma separated list of zero or more targets representing the endpoint(s) to be resumed
-     *            Null or empty string ("") will resume all registered endpoints
-     * @throws MBeanException
+     * @throws MBeanException if not all registered endpoints could be resumed
      */
+    public void resume() throws MBeanException;
 
+    /**
+     * Resumes the specified server endpoints
+     *
+     * @param targets Comma separated list of one or more names of endpoints.
+     * @throws MBeanException If each of the specified targets couldn't be resumed, or if the list of target names is empty or are not all valid
+     */
     public void resume(String targets) throws MBeanException;
 
     /**
-     * Returns true if the server endpoint(s) specified by target(s) is paused, otherwise false.
+     * Query the state of all registered server endpoints.
      *
-     * @param targets String representation of the endpoint to be paused
-     * @return The state of the specified target, if targets is null or empty the cumulative state of all registered endpoints is returned
-     * @throws MBeanException
+     * @return The cumulative state of all registered endpoints
      */
+    public boolean isPaused();
 
+    /**
+     * Query the state of the specified server endpoints.
+     *
+     * @param targets Comma separated list of one or more names of endpoints.
+     * @return If a single target is specified, returns the state of the specified target, if multiple targets are specified, returns true only
+     *         all specified targets are paused
+     * @throws MBeanException If each of the specified targets couldn't be queried, or if the list of target names is empty or are not all valid
+     */
     public boolean isPaused(String targets) throws MBeanException;
 
     /**
      * Returns the name of all endpoints that can be paused/resumed
      *
      * @return List of endpoints and their state
-     * @throws MBeanException
      */
-
-    public List<String> listEndpoints() throws MBeanException;
+    public List<String> listEndpoints();
 
 }
