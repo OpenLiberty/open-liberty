@@ -216,11 +216,17 @@ public class FacesServletMappingUtils
     public static boolean isFacesServlet(FacesContext facesContext, String servletClassName)
     {
         Class servletClass = org.apache.myfaces.shared.util.ClassUtils.simpleClassForName(
-                servletClassName);
-        return (FacesServlet.class.isAssignableFrom(servletClass) ||
+                servletClassName, false);
+        boolean isFacesServlet = false;
+        if (servletClass != null) 
+        {
+            isFacesServlet = (FacesServlet.class.isAssignableFrom(servletClass) ||
                             DelegatedFacesServlet.class.isAssignableFrom(servletClass) ||
                             servletClass.getName().equals(
                                     WebXml.getWebXml(facesContext.getExternalContext()).getDelegateFacesServlet()));
+        }
+
+        return isFacesServlet;
     }
     
     /**
