@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
-
 Bundle-Name: Common code for remote JNDI implementation
 Bundle-SymbolicName: com.ibm.ws.clientcontainer.remote.common; singleton:=true
 Bundle-Description: This bundle provides common interfaces for accessing the server from the client container; version=${bVersion}

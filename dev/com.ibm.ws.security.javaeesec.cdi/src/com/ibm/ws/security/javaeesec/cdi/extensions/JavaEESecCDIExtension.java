@@ -208,7 +208,6 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         } catch (Exception e) {
             // TODO Auto-generated catch block
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         }
     }
@@ -228,7 +227,6 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         } catch (Exception e) {
             // TODO Auto-generated catch block
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         }
     }
@@ -246,6 +244,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
                 props = parseLoginToContinue(ltc);
             } catch (Exception e) {
                 // TODO Auto-generated catch block
+                // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
                 e.printStackTrace();
             }
         }
@@ -351,7 +350,6 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         } catch (Exception e) {
             // TODO Auto-generated catch block
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         }
     }
