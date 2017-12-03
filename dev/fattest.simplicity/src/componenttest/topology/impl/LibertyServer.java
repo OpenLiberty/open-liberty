@@ -621,6 +621,19 @@ public class LibertyServer implements LogMonitorClient {
         tempServerXML.delete();
     }
 
+    /**
+     * Copies the server.xml to the server.
+     *
+     * @param newFeatures
+     * @throws Exception
+     */
+    public void refreshServerXMLFromPublish() throws Exception {
+        RemoteFile serverXML = new RemoteFile(machine, serverRoot + "/" + SERVER_CONFIG_FILE_NAME);
+        LocalFile publishServerXML = new LocalFile(PATH_TO_AUTOFVT_SERVERS + "/" + getServerName() + "/" + SERVER_CONFIG_FILE_NAME);
+        
+        publishServerXML.copyToDest(serverXML, false, true);
+    }
+
     public static void setValidateApps(boolean validateApp) {
         validateApps = validateApp;
     }
