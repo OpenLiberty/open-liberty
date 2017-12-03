@@ -10,5 +10,6 @@ IBM-API-Package: javax.json.bind; type="spec", \
 IBM-ShortName: jsonbContainer-1.0
 Subsystem-Name: JavaScript Object Notation Binding 1.0 via Bells
 -features=com.ibm.websphere.appserver.jsonbImpl-1.0.0
+-bundles=com.ibm.ws.jsonb.service
 kind=beta
 edition=core
