@@ -10,5 +10,5 @@
  -->
 <server>
     <!-- Only expose the Yasson JSONB service if a public JSON-B feature is being used -->
-    <com.ibm.ws.org.glassfish.json.JsonProviderImpl/>
+    <com.ibm.ws.org.eclipse.yasson.ResourceProvider/>
 </server>
