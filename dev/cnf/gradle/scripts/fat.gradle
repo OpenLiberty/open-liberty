@@ -279,6 +279,7 @@ task runfat(type: Exec) {
   dependsOn cleanBeforeRun
   shouldRunAfter build
   shouldRunAfter cleanBeforeRun
+  System.setProperty("fat.test.localrun", "true");
   environment System.getProperties()
   if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
     executable "cmd"

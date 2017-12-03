@@ -21,6 +21,7 @@ import com.ibm.websphere.simplicity.ConnectionInfo;
 import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.common.apiservices.Bootstrap;
 
 /**
@@ -33,7 +34,7 @@ public class LibertyServerUtils {
     /**
      * Makes the String compatible with Java, this problem only exists where
      * Windows uses \ for a path seperator and Java uses /
-     * 
+     *
      * @param s
      *            the string to change
      */
@@ -52,7 +53,7 @@ public class LibertyServerUtils {
     /**
      * Makes the String compatible with Java, this problem only exists where
      * Windows uses \ for a path seperator and Java uses /
-     * 
+     *
      * @param s
      *            the string to change
      */
@@ -89,8 +90,7 @@ public class LibertyServerUtils {
     }
 
     private static String executeOsgiCommand(Machine machine, int osgiPort,
-                                             String cmd, boolean waitForReply)
-                    throws Exception {
+                                             String cmd, boolean waitForReply) throws Exception {
         String method = "executeOsgiCommand";
         String ret = "";
         SocketChannel channel = null;
@@ -117,10 +117,9 @@ public class LibertyServerUtils {
         }
 
         if (ret.contains("Connection refused")) {
-            throw new Exception(
-                            "Another client is using telnet. This can also be caused by other servers listening on this telnet port ("
-                                            + osgiPort
-                                            + "). Please ensure there are no other running instances.");
+            throw new Exception("Another client is using telnet. This can also be caused by other servers listening on this telnet port ("
+                                + osgiPort
+                                + "). Please ensure there are no other running instances.");
         }
 
         ret = ret.replace("osgi>", "");
@@ -132,7 +131,7 @@ public class LibertyServerUtils {
     /**
      * This method attempts to read, up to a certain point, for a specified time
      * period. It will return what is read in the return value.
-     * 
+     *
      * @param channel
      *            the socket channel to read from.
      * @param prompt
@@ -142,8 +141,7 @@ public class LibertyServerUtils {
      * @return what was read.
      * @throws IOException
      */
-    private static String readFrom(SocketChannel channel, String prompt, long timeout)
-                    throws IOException {
+    private static String readFrom(SocketChannel channel, String prompt, long timeout) throws IOException {
         StringBuilder builder = new StringBuilder();
 
         long startTime = System.currentTimeMillis();
@@ -165,15 +163,14 @@ public class LibertyServerUtils {
 
     /**
      * We want to send a command to the OSGi console.
-     * 
+     *
      * @param channel
      *            the channel to write to.
      * @param command
      *            the command to send
      * @throws IOException
      */
-    private static void writeCommandTo(SocketChannel channel, String command)
-                    throws IOException {
+    private static void writeCommandTo(SocketChannel channel, String command) throws IOException {
         command = command + "\r\n";
         byte[] bytes = command.getBytes();
         ByteBuffer buffer = ByteBuffer.allocate(bytes.length);
@@ -184,18 +181,12 @@ public class LibertyServerUtils {
     }
 
     public static Machine createMachine(Bootstrap b) throws Exception {
-        final String method = "createMachine";
         String hostName = b.getValue("hostName");
         String user = b.getValue(hostName + ".user");
         String password = b.getValue(hostName + ".password");
         String keystore = b.getValue("keystore");
 
-        Log.info(c, method,
-                 "getting Machine from credentials in Boostrapping file");
-        Log.info(c, method, "Connecting to machine " + hostName + " with User "
-                            + user + ".");
-        ConnectionInfo machineDetails = new ConnectionInfo(
-                        hostName, user, password);
+        ConnectionInfo machineDetails = new ConnectionInfo(hostName, user, password);
         if ((password == null || password.length() == 0) && keystore != null && keystore.length() != 0) {
             File keyfile = new File(keystore);
             machineDetails = new ConnectionInfo(hostName, keyfile, user, password);
@@ -210,7 +201,7 @@ public class LibertyServerUtils {
     /**
      * Execute a command on the file system. The javaHome parameter can be null if
      * the command being executed does not need a JAVA_HOME env variable to be set.
-     * 
+     *
      * @param machine
      * @param javaHome
      * @param command
@@ -220,20 +211,24 @@ public class LibertyServerUtils {
      */
     public static ProgramOutput execute(Machine machine, String javaHome, Properties envVars, String command, String... parms) throws Exception {
         final String method = "execute";
-        Log.info(c, method, "Executing: " + command, parms);
+        Log.finer(c, method, "Executing: " + command, parms);
 
         //Need to ensure JAVA_HOME is set correctly - can't rely on user's environment to be set to the same Java as the build/runtime environment
         Properties _envVars = new Properties();
         _envVars.setProperty("JAVA_HOME", javaHome);
         if (envVars != null)
             _envVars.putAll(envVars);
-        Log.info(c, method, "Using additional env props: " + _envVars.toString());
+        Log.finer(c, method, "Using additional env props: " + _envVars.toString());
 
         parms = parms != null ? parms : new String[] {};
         ProgramOutput output = machine.execute(command, parms, _envVars);
         String stdout = output.getStdout();
-        Log.info(c, method, "Server script output: " + stdout);
-        Log.info(c, method, "Return code from script is: " + output.getReturnCode());
+        int rc = output.getReturnCode();
+        // Skip logging if rc=0 (success) or rc=1 (server not running)
+        if (rc != 0 && rc != 1) {
+            Log.info(c, method, "Server script output: " + stdout);
+            Log.info(c, method, "Return code from script is: " + output.getReturnCode());
+        }
         return output;
     }
 
