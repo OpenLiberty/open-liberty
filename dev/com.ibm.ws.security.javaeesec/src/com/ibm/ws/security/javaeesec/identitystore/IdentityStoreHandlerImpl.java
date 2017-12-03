@@ -166,7 +166,7 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
         if (identityStoreInstances != null) {
             for (IdentityStore identityStore : identityStoreInstances) {
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "IdentityStore from extension: " + identityStore + ", validationTypes : " + identityStore.validationTypes() + ", priority : " + identityStore.priority());
+                    Tr.debug(tc, "IdentityStore from the CDI: " + identityStore + ", validationTypes : " + identityStore.validationTypes() + ", priority : " + identityStore.priority());
                 }
                 identityStores.add(identityStore);
             }
@@ -175,7 +175,7 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
         if (cdi.getBeanManager().equals(CDIHelper.getBeanManager()) == false) {
             for (IdentityStore identityStore : CDIHelper.getBeansFromCurrentModule(IdentityStore.class)) {
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "IdentityStore form module: " + identityStore + ", validationTypes : " + identityStore.validationTypes() + ", priority : " + identityStore.priority());
+                    Tr.debug(tc, "IdentityStore from module BeanManager: " + identityStore + ", validationTypes : " + identityStore.validationTypes() + ", priority : " + identityStore.priority());
                 }
                 identityStores.add(identityStore);
             }
