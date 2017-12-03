@@ -18,7 +18,7 @@ src: \
 
 runtime.minimum.java.level: 1.8
 
-test.project: true
+fat.project: true
 
 -buildpath: \
   com.ibm.ws.componenttest:public.api;version=1.0.0,\

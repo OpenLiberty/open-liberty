@@ -15,7 +15,7 @@ src: \
 	fat/src,\
 	test-applications/persistentdemo/src
 
-test.project: true
+fat.project: true
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\

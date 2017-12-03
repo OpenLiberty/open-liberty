@@ -8,20 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-apply from: '../cnf/gradle/scripts/fat.gradle'
-	
-addRequiredLibraries {
-  doLast {
-    configurations {
-      commons
-    }
-    dependencies {
-      commons 'commons-logging:commons-logging:1.1.3', 'commons-codec:commons-codec:1.6'
-    }
-    copy {
-      from configurations.commons
-      into "${buildDir}/autoFVT/lib/"
-    }
-  }
+
+dependencies {
+  requiredLibs 'commons-logging:commons-logging:1.1.3', 'commons-codec:commons-codec:1.6'
 }
-	

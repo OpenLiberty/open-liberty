@@ -25,7 +25,7 @@
 	</dataSource>
 	
 	<library id="DerbyLib">
-	    <fileset dir="${shared.resource.dir}/derby/" includes="derby-*.jar"/>
+	    <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
 	</library>
     
 </server>
