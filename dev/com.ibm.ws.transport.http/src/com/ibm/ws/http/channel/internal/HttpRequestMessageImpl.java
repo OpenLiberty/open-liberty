@@ -314,7 +314,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         //Set Method
         this.setMethod(pseudoHeaders.get(HpackConstants.METHOD));
         //Set Path
-        this.myURIString = pseudoHeaders.get(HpackConstants.PATH);
+        this.setRequestURI(pseudoHeaders.get(HpackConstants.PATH));
         //Set Scheme
         this.setScheme(pseudoHeaders.get(HpackConstants.SCHEME));
 
