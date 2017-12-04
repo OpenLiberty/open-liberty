@@ -7,6 +7,7 @@ import java.io.File;
 import java.lang.invoke.MethodHandles;
 
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,8 +58,10 @@ public class ConfigTckPackageTest {
         }
         File mvnOutput = new File(Utils.home, "mvnOut_TCK");
         int rc = Utils.runCmd(Utils.mvnCliTckRoot, Utils.tckRunnerDir, mvnOutput);
-        // mvn returns 0 is all surefire tests pass 1 on failure
-        Utils.log("rc was = " + rc);
+        // mvn returns 0 is all surefire tests and pass 1 on failure
+        Assert.assertTrue("TCK has returned non-zero return code of: " + rc +
+                          "This idicates test failure, see: ...autoFVT/mvnOut_TCK " +
+                          "and ...autoFVT/publish/tckRunner/tck/target/surefire-reports/index.html", rc == 0);
     }
 
 }
