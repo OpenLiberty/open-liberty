@@ -1,0 +1,35 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.artifact.api.zip/resources/com/ibm/ws/artifact/api/zip/internal/resources/ZipArtifactMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKM
+#COMPONENTNAMEFOR CWWKM Module API
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+bad.zip.data=CWWKM0101E: Il sistema non \u00e8 stato in grado di elaborare i dati dell''archivio per {0}.
+bad.zip.data.explanation=Si \u00e8 verificata un'eccezione durante l'elaborazione dei dati compressi per l'archivio. 
+bad.zip.data.useraction=Verificare che il file sia un archivio valido.
+
+remove.cache.data=CWWKM0102W: Il sistema ha eliminato i dati della cache non validi dall''ubicazione {0}
+remove.cache.data.explanation=La struttura dell'applicazione sembra essere stata modificata, richiedendo l'eliminazione dei dati della cache basati sulla struttura precedente.
+remove.cache.data.useraction=Se \u00e8 stata modificata la struttura dell'applicazione, questo funzionamento \u00e8 previsto.
+
+extract.cache.fail=CWWKM0103E: Il sistema non \u00e8 stato in grado di estrarre un archivio nidificato in un''ubicazione della cache a causa di {0}
+extract.cache.fail.explanation=Si \u00e8 verificato un errore durante la creazione dei dati della cache per l'applicazione, impedendo la corretta elaborazione dell'applicazione. 
+extract.cache.fail.useraction=Controllare la causa indicata.

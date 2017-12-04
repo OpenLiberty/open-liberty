@@ -16,7 +16,9 @@ src: \
   test-applications/fvtweb/src, \
   test-applications/TestingApp/src
 
-test.project: true
+runtime.minimum.java.level: 1.8
+
+fat.project: true
 
 -buildpath: \
   com.ibm.ws.componenttest:public.api;version=1.0.0,\

@@ -1,0 +1,53 @@
+###############################################################################
+# Copyright (c) 2012, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO 
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKO1000 - CWWKO1099
+
+HANDLER_NOT_FOUND_ERROR=CWWKO1000E: Nu exist\u0103 niciun handler \u00eenregistrat care se potrive\u015fte URL-ului cerut {0}.
+HANDLER_NOT_FOUND_ERROR.explanation=S-a f\u0103cut o \u00eencercare de a accesa un URL care nu se potrivea cu niciunul din handlerele \u00eenregistrate.
+HANDLER_NOT_FOUND_ERROR.useraction=Corecta\u0163i URL-ul pentru a se potrivi unui handler \u00eenregistrat.
+
+OSGI_SERVICE_ERROR=CWWKO1001E: Serviciul OSGi {0} nu este disponibil.
+OSGI_SERVICE_ERROR.explanation=Aceast\u0103 eroare intern\u0103 de server este aruncat\u0103 pentru c\u0103 serviciul specificat nu este disponibil.
+OSGI_SERVICE_ERROR.useraction=Reporni\u0163i serverul cu op\u0163iunea de cur\u0103\u0163are.
+ 
+SSL_CONTEXT_NOT_AVAILABLE=CWWKO1002E: A \u00eent\u00e2lnit o excep\u0163ie \u00een timpul rezolv\u0103rii contextului SSL al membrului colectiv: {0}
+SSL_CONTEXT_NOT_AVAILABLE.explanation=Un context SSL nu a putut fi creat cu certificatul SSL al membrului.
+SSL_CONTEXT_NOT_AVAILABLE.useraction=Verifica\u0163i configurarea SSL colectiv\u0103, inclusiv membrul \u0163int\u0103 \u015fi controlorul.
+
+MISSING_PARAMETER=CWWKO1003E: Un parametru necesar, {0}, lipse\u015fte din cererea https.
+MISSING_PARAMETER.explanation=Parametrul necesar specificat lipse\u015fte din cerere. 
+MISSING_PARAMETER.useraction=Include\u0163i parametrul specificat \u00een cerere \u015fi re\u00eencerca\u0163i cererea.
+
+MISSING_HEADER=CWWKO1004E: Un antet necesar, {0}, lipse\u015fte din cererea https.
+MISSING_HEADER.explanation=Antetul necesar specificat lipse\u015fte din cerere. 
+MISSING_HEADER.useraction=Include\u0163i antetul specificat \u00een cerere \u015fi re\u00eencerca\u0163i cererea.
+
+INVALID_INPUT_VALUE=CWWKO1005E: C\u00e2mpul de intrare cu numele {0} con\u0163ine o valoare incorect\u0103.
+INVALID_INPUT_VALUE.explanation=Cererea con\u0163ine un c\u00e2mp de intrare cu o valoare incorect\u0103. C\u00e2mpul de intrare nu se potrive\u015fte cu nicio \u00eenregistrare din sistem. 
+INVALID_INPUT_VALUE.useraction=Corecta\u0163i valoarea c\u00e2mpului de intrare \u015fi re\u00eencerca\u0163i cererea.
+
+UNSUPPORTED_MEDIA_TYPE=CWWKO1006E: Tipul MIME al cererii, {0}, nu este suportat. 
+UNSUPPORTED_MEDIA_TYPE.explanation=Serverul nu poate consuma tipul MIME al cererii. Tipul MIME nu se potrive\u015fte cu niciuna dintre tipurile MIME a\u015fteptate. 
+UNSUPPORTED_MEDIA_TYPE.useraction=Corecta\u0163i valoarea tipului de con\u0163inut \u015fi trimite\u0163i cererea din nou.
+

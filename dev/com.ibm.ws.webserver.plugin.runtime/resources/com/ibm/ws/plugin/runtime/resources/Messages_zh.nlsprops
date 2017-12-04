@@ -1,0 +1,27 @@
+###############################################################################
+# Copyright (c) 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME 
+#COMPONENTPREFIX CWWKU
+#COMPONENTNAMEFOR Plugin Utility Runtime
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+collective.mbean.not.available=CWWKU0101E: \u4e0d\u4f1a\u4e3a\u96c6\u7fa4 {0} \u5904\u7406\u7528\u4e8e\u751f\u6210 Web \u670d\u52a1\u5668\u63d2\u4ef6\u914d\u7f6e\u6587\u4ef6\u7684\u8bf7\u6c42\uff0c\u56e0\u4e3a\u627e\u4e0d\u5230\u6240\u9700\u96c6\u5408\u4f53\u63a7\u5236\u5668\u529f\u80fd\u90e8\u4ef6 MBean\u3002
+collective.mbean.not.available.explanation=\u5fc5\u987b\u542f\u7528\u96c6\u5408\u4f53\u63a7\u5236\u5668\u529f\u80fd\u90e8\u4ef6\uff0c\u670d\u52a1\u5668\u624d\u80fd\u5904\u7406\u8bf7\u6c42\u3002
+collective.mbean.not.available.useraction=\u5728\u76ee\u6807\u670d\u52a1\u5668\u4e2d\u542f\u7528\u96c6\u5408\u4f53\u63a7\u5236\u5668\u529f\u80fd\u90e8\u4ef6\uff0c\u6216\u8005\u5c06\u8bf7\u6c42\u53d1\u9001\u5230\u542f\u7528\u4e86\u96c6\u5408\u4f53\u63a7\u5236\u5668\u529f\u80fd\u90e8\u4ef6\u7684\u670d\u52a1\u5668\u3002
+# --------------------------------
+# --------------------------------
+appserver.mbean.not.available=CWWKU0102E: \u4e0d\u4f1a\u4e3a\u6b64\u670d\u52a1\u5668\u5904\u7406\u7528\u4e8e\u751f\u6210 Web \u670d\u52a1\u5668\u63d2\u4ef6\u914d\u7f6e\u6587\u4ef6\u7684\u8bf7\u6c42\uff0c\u56e0\u4e3a\u627e\u4e0d\u5230\u6240\u9700 Java Servlet \u529f\u80fd\u90e8\u4ef6 MBean\u3002
+appserver.mbean.not.available.explanation=\u5fc5\u987b\u542f\u7528 Java Servlet \u529f\u80fd\u90e8\u4ef6 3.0 \u6216 3.1\uff0c\u670d\u52a1\u5668\u624d\u80fd\u5904\u7406\u8bf7\u6c42\u3002
+appserver.mbean.not.available.useraction=\u5728\u76ee\u6807\u670d\u52a1\u5668\u4e2d\u542f\u7528 Java Servlet \u529f\u80fd\u90e8\u4ef6 3.0 \u6216 3.1\uff0c\u6216\u8005\u5c06\u8bf7\u6c42\u53d1\u9001\u5230\u542f\u7528\u4e86 Java Servlet \u529f\u80fd\u90e8\u4ef6\u7684\u670d\u52a1\u5668\u3002
+# -------------------------------- 

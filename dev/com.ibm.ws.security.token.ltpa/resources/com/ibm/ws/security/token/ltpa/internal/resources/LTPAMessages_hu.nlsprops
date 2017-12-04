@@ -1,0 +1,57 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.token.ltpa/resources/com/ibm/ws/security/token/ltpa/internal/resources/LTPAMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Token Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS4100 - CWWKS4199
+
+LTPA_TOKEN_SERVICE_INVALID_FACTORY=CWWKS4100E: Nincs inicializ\u00e1lva token gy\u00e1rt\u00f3.
+LTPA_TOKEN_SERVICE_INVALID_FACTORY.explanation=A token gy\u00e1rt\u00f3 nem lett inicializ\u00e1lva.
+LTPA_TOKEN_SERVICE_INVALID_FACTORY.useraction=\u00c9rv\u00e9nyes\u00edtse a tokenkezel\u0151 konfigur\u00e1ci\u00f3t a server.xml f\u00e1jlban, vagy a konfigur\u00e1ci\u00f3 \u00e1ltal megadott b\u00e1rmely m\u00e1s er\u0151forr\u00e1sban.
+
+LTPA_TOKEN_SERVICE_INVALID_UNIQUE_ID=CWWKS4101E: Nincs a token l\u00e9trehoz\u00e1s\u00e1hoz haszn\u00e1lhat\u00f3 egyedi azonos\u00edt\u00f3.
+LTPA_TOKEN_SERVICE_INVALID_UNIQUE_ID.explanation=A unique_id param\u00e9ter null, vagy nem lett megadva a token adataiban.
+LTPA_TOKEN_SERVICE_INVALID_UNIQUE_ID.useraction=Ellen\u0151rizze, hogy a felhaszn\u00e1l\u00f3nak egyedi azonos\u00edt\u00f3ja van-e. Ha egy\u00e9ni felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1st haszn\u00e1l, akkor ellen\u0151rizze, hogy a token adatai tartalmaznak \u00e9rt\u00e9ket unique_id param\u00e9terhez.
+
+LTPA_TOKEN_SERVICE_MISSING_KEY=CWWKS4102E: A rendszer nem tudta l\u00e9trehozni az LTPA tokent, mert a k\u00f6telez\u0151 {0} tulajdons\u00e1g hi\u00e1nyzik.
+LTPA_TOKEN_SERVICE_MISSING_KEY.explanation=A megadott kulcs hi\u00e1nyzik, \u00edgy az LTPA token nem hozhat\u00f3 l\u00e9tre.
+LTPA_TOKEN_SERVICE_MISSING_KEY.useraction=Vizsg\u00e1lja meg az LTPA kulcs inform\u00e1ci\u00f3it t\u00e1rol\u00f3 tulajdons\u00e1gf\u00e1jlt, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kulcs inform\u00e1ci\u00f3i k\u00f6z\u00f6tt szerepel egy titkos kulcs, egy priv\u00e1t kulcs \u00e9s egy nyilv\u00e1nos kulcs.
+
+LTPA_CREATE_KEYS_START=CWWKS4103I: Az LTPA kulcsok l\u00e9trehoz\u00e1sa. Ez eltarthat n\u00e9h\u00e1ny m\u00e1sodpercig.
+LTPA_CREATE_KEYS_START.explanation=Az LTPA kulcsok nem l\u00e9teznek \u00e9s automatikusan ker\u00fclnek el\u0151\u00e1ll\u00edt\u00e1sra. Az LTPA-t ig\u00e9nyl\u0151 szolg\u00e1ltat\u00e1sok addig nem fognak elindulni, am\u00edg az LTPA kulcsok el\u0151\u00e1ll\u00edt\u00e1sra nem ker\u00fclnek \u00e9s a konfigur\u00e1ci\u00f3 \u00fczemk\u00e9sz nem lesz.
+LTPA_CREATE_KEYS_START.useraction=Semmit sem kell tennie.
+
+LTPA_CREATE_KEYS_COMPLETE=CWWKS4104A: LTPA kulcsok l\u00e9trehozva {0} m\u00e1sodperc alatt. LTPA kulcsf\u00e1jl: {1}
+LTPA_CREATE_KEYS_COMPLETE.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+LTPA_CREATE_KEYS_COMPLETE.useraction=Semmit sem kell tennie.
+
+LTPA_CONFIG_READY=CWWKS4105I: Az LTPA {0} m\u00e1sodperc ut\u00e1n \u00fczemk\u00e9sz lesz.
+LTPA_CONFIG_READY.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+LTPA_CONFIG_READY.useraction=Semmit sem kell tennie.
+
+LTPA_CONFIG_ERROR=CWWKS4106E: LTPA konfigur\u00e1ci\u00f3s hiba. Nem lehet l\u00e9trehozni vagy beolvasni az LTPA kulcsf\u00e1jlt: {0}
+LTPA_CONFIG_ERROR.explanation=Az LTPA kulcsokat nem lehet beolvasni vagy l\u00e9trehozni a megadott helyen.
+LTPA_CONFIG_ERROR.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a hely a kiszolg\u00e1l\u00f3 feldolgoz sz\u00e1m\u00e1ra hozz\u00e1f\u00e9rhet\u0151. Az esetleges FFDC-k a kulcsok el\u0151\u00e1ll\u00edt\u00e1sa vagy bet\u00f6lt\u00e9se k\u00f6zben bek\u00f6vetkezett s\u00falyos hib\u00e1t jelezhetnek.
+
+LTPA_KEYS_TO_LOAD=CWWKS4107A: Az LTPA kulcsf\u00e1jl vagy konfigur\u00e1ci\u00f3 m\u00f3dos\u00edt\u00e1sra ker\u00fclt. Az LTPA kulcsok \u00fajrabet\u00f6lt\u00e9sre ker\u00fclnek a k\u00f6vetkez\u0151 f\u00e1jlb\u00f3l: {0}
+LTPA_KEYS_TO_LOAD.explanation=Az LTPA kulcsokat \u00fajra be kell t\u00f6lteni, mert az LTPA kulcsf\u00e1jl vagy a konfigur\u00e1ci\u00f3 m\u00f3dosult.
+LTPA_KEYS_TO_LOAD.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az egypontos bejelentkez\u00e9sben r\u00e9szt vev\u0151 \u00f6sszes kiszolg\u00e1l\u00f3 ugyanazokat az LTPA kulcsokat \u00e9s jelsz\u00f3t haszn\u00e1lja.
+
+LTPA_KEY_CREATE_ERROR=CWWKS4108E: A rendszer nem tudja l\u00e9trehozni az LTPA kulcsot.
+LTPA_KEY_CREATE_ERROR.explanation=Az LTPA kulcs nem hozhat\u00f3 l\u00e9tre.
+LTPA_KEY_CREATE_ERROR.useraction=Az esetleges FFDC-k a kulcsok el\u0151\u00e1ll\u00edt\u00e1sa sor\u00e1n bek\u00f6vetkezett s\u00falyos hib\u00e1t jelezhetnek.
+
+

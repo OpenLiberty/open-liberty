@@ -1,0 +1,91 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.config.server.schemagen/resources/com/ibm/ws/config/server/schemagen/resources/SchemaGenMessages.nlsprops
+#COMPONENTPREFIX CWWKG
+#COMPONENTNAMEFOR CWWKG WebSphere Server Config Schema 
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+## Message prefix block: CWWKG3001 - CWWKG3050
+# 
+
+#------------------------------------------------------------------------
+# Generic messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Utilizare: server {0}
+
+#------------------------------------------------------------------------
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+argument.required=Argument necesar lips\u0103: {0}.
+argument.unrecognized=Argument nerecunoscut: {0}.
+argument.unrecognized.expected=Argument nerecunoscut: {0}. Poate a\u0163i inten\u0163ionat: {1}.
+argument.invalid.value=Valoare inacceptabil\u0103 pentru argumentul: {0}={1}. Valori acceptabile: {2}.
+
+#------------------------------------------------------------------------
+# Task messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+server.not.found=CWWKG3001E: Nu a fost g\u0103sit serverul denumit {0}. Era de a\u015fteptat s\u0103 fie la urm\u0103toarea loca\u0163ie: {1}. Asigura\u0163i-v\u0103 c\u0103 pute\u0163i g\u0103si configura\u0163ia serverului \u00een directorul furnizat de mesaj.
+server.not.found.explanation= Nu s-a putut g\u0103si serverul specificat pe comanda serverSchemaGen. Pute\u0163i g\u0103si loca\u0163ia a\u015fteptat\u0103 a directorului pentru configura\u0163ia serverului \u00een mesaj.
+server.not.found.useraction=Asigura\u0163i-v\u0103 c\u0103 pute\u0163i g\u0103si configura\u0163ia serverului \u00een directorul furnizat de mesaj.  Dac\u0103 este necesar, modifica\u0163i variabilele WLP_USER_DIR sau WLP_INSTALL_DIR astfel \u00eenc\u00e2t s\u0103 fie utilizat\u0103 calea corect\u0103 pentru a g\u0103si fi\u015fierele de configurare server.
+
+local.connector.not.found=CWWKG3002E: Serverul cu numele {0} nu este configurat s\u0103 accepte cereri JMX locale. Asigura\u0163i-v\u0103 c\u0103 configura\u0163ia serverului include caracteristica localConnector \u015fi c\u0103 serverul este pornit.
+local.connector.not.found.explanation=Serverul specificat pe comanda serverSchemaGen nu este configurat s\u0103 accepte cereri locale JMX.
+local.connector.not.found.useraction=Asigura\u0163i-v\u0103 c\u0103 configura\u0163ia serverului include caracteristica localConnector \u015fi c\u0103 serverul este pornit. URL-ul necesar pentru a stabili o conexiune local\u0103 JMX la acest server este localizat \u00een fi\u015fierul WLP_USER_DIR/logs/state/com.ibm.ws.jmx.local.address.
+
+local.connector.url.empty=CWWKG3003E: Serverul cu numele {0} are o problem\u0103 cu configura\u0163ia sa pentru caracteristica localConnector.
+local.connector.url.empty.explanation=Serverul specificat pe comanda serverSchemaGen nu este configurat s\u0103 accepte cereri locale JMX. Fi\u015fierul care con\u0163ine URL-ul utilizat pentru a crea o conexiune JMX la server este gol.
+local.connector.url.empty.useraction=Asigura\u0163i-v\u0103 c\u0103 configura\u0163ia serverului include caracteristica localConnector \u015fi c\u0103 serverul este pornit. URL-ul necesar pentru a stabili o conexiune local\u0103 JMX la acest server este localizat \u00een fi\u015fierul WLP_USER_DIR/logs/state/com.ibm.ws.jmx.local.address.
+
+mbean.null.result=CWWKG3004E: Comanda de generare Server Schema nu a returnat un rezultat.
+mbean.null.result.explanation=A fost invocat MBean-ul care genereaz\u0103 schema de server, dar nu a fost returnat niciun rezultat. E posibil ca schema necesar\u0103 s\u0103 nu fi fost generat\u0103.
+mbean.null.result.useraction=Verifica\u0163i istoricele serverului \u015fi directorul FFDC pentru o excep\u0163ie sau un mesaj posibil de eroare. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+mbean.bad.result=CWWKG3005E: Comanda de generare Server Schema a indicat c\u0103 a fost raportat\u0103 o problem\u0103 \u00een timpul gener\u0103rii schemei.
+mbean.bad.result.explanation=A fost invocat MBean-ul care genereaz\u0103 schema de server, dar a fost raportat\u0103 o eroare \u00een timpul gener\u0103rii schemei. E posibil ca schema necesar\u0103 s\u0103 nu fi fost generat\u0103.
+mbean.bad.result.useraction=Verifica\u0163i istoricele serverului \u015fi directorul FFDC pentru o excep\u0163ie sau un mesaj de eroare. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+mbean.missing.result=CWWKG3006E: Comanda de generare Server Schema nu a raportat dac\u0103 s-a finalizat cu succes.
+mbean.missing.result.explanation=A fost invocat MBean-ul care genereaz\u0103 schema de server, dar nu a fost returnat niciun cod r\u0103spuns \u00een rezultat. E posibil ca schema necesar\u0103 s\u0103 nu fi fost generat\u0103.
+mbean.missing.result.useraction=Verifica\u0163i istoricele serverului \u015fi directorul FFDC pentru o excep\u0163ie sau un mesaj posibil de eroare. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+mbean.missing.output.dir=CWWKG3007E: Comanda de generare Server Schema nu a returnat un nume de director de ie\u015fire.
+mbean.missing.output.dir.explanation=A fost invocat MBean-ul care genereaz\u0103 schema de server, dar nu a fost furnizat \u00een r\u0103spuns directorul de ie\u015fire utilizat pentru a scrie schema. E posibil ca schema necesar\u0103 s\u0103 nu fi fost generat\u0103.
+mbean.missing.output.dir.useraction=Verifica\u0163i directorul de ie\u015fire al serverului \u0163int\u0103 pentru schema generat\u0103. Directorul de ie\u015fire este specificat \u00een procesul de server prin setarea variabilei WLP_OUTPUT_DIR. Schema este generat\u0103 \u00eentr-un director schemagen \u00een directorul de ie\u015fire. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+mbean.output.dir=CWWKG3008I: Schema de server necesar\u0103 a fost generat\u0103 \u00een urm\u0103torul director: {0}
+mbean.output.dir.explanation=Schema de server necesar\u0103 a fost generat\u0103 \u015fi este localizat\u0103 \u00een directorul indicat \u00een mesaj.
+mbean.output.dir.useraction=Nu este necesar\u0103 nicio ac\u0163iune din partea utilizatorului.
+
+mbean.not.found=CWWKG3009W: MBean-ul care genereaz\u0103 schema de server nu este activ \u00een serverul {0}.
+mbean.not.found.explanation=A fost stabilit\u0103 conexiune JMX cu serverul \u0163int\u0103 dar nu a fost g\u0103sit MBean-ul de generare a schemei de server. 
+mbean.not.found.useraction=Verifica\u0163i istoricele serverului \u015fi directorul FFDC pentru o excep\u0163ie sau un mesaj posibil de eroare. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+exception.catch=CWWKG3010E: A fost aruncat\u0103 o excep\u0163ie de c\u0103tre comanda de generare a schemei de server: {0}
+exception.catch.explanation=A fost aruncat\u0103 o excep\u0163ie nea\u015fteptat\u0103 de comanda de generare a schemei de server. Urma stivei de excep\u0163ii este tip\u0103rit\u0103 \u00een fi\u015fierul istoric stderr. Utilitarul va opri procesarea.
+exception.catch.useraction=Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+server.output.logs.dir.not.found=CWWKG3011E: Nu a fost g\u0103sit directorul de istorice pentru serverul numit {0}. Era de a\u015fteptat s\u0103 fie la urm\u0103toarea loca\u0163ie: {1}. Valoarea directorului de istorice este calculat\u0103 utiliz\u00e2nd variabila WLP_OUTPUT_DIR. 
+server.output.logs.dir.not.found.explanation=Directorul de istorice trebuie s\u0103 fie disponibil pentru comanda pentru a fi capabil s\u0103 localizeze informa\u0163iile de conexiune ale serverului JMX. Aceast\u0103 eroare poate surveni dac\u0103 valoarea variabilei WLP_OUTPUT_DIR din mediul curent nu este aceea\u015fi ca valoarea utilizat\u0103 de server. 
+server.output.logs.dir.not.found.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea variabilei WLP_OUTPUT_DIR se potrive\u015fte cu valoarea utilizat\u0103 de server \u015fi asigura\u0163i-v\u0103 c\u0103 exist\u0103 directorul de istorice. 
+

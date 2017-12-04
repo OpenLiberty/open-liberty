@@ -1,0 +1,1875 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# Change activity:
+#
+# Reason          Date       Origin   Description
+# --------------- ---------- -------- ------------------------------------------
+# d673319         18/10/2010 lohit    Addressed issues related to nls translations.
+# 91911           30/01/2013 Sharath  Liberty: Added new information message for Message Discard
+# 98292           23/05/2013 Chetan   New nls message for invalid temporary prefix
+# 114553          06/11/13   balgirid Fixing message threshold not shown in messages.log
+# ------------------------------------------------------------------------------
+# File com.ibm.ws.sib.processor.CWSIPMessages.nlsprops
+#
+# SIB.processor component file for logging messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIP0001=CWSIP0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Msgs in the range CWSIP0001-CWSIP0020 General Internal Errors for Message Processor
+#
+#   - Msgs in the range CWSIP0021-CWSIP0030 belong to class com.ibm.ws.sib.processor.impl.ConnectionImpl
+#   - Msgs in the range CWSIP0031-CWSIP0040 belong to class com.ibm.ws.sib.processor.impl.BaseDestinationHandler
+#   - Msgs in the range CWSIP0041-CWSIP0070 belong to class com.ibm.ws.sib.processor.impl.DestinationManager
+#   - Msgs in the range CWSIP0071-CWSIP0080 belong to class com.ibm.ws.sib.processor.impl.AdministratorImpl
+#   - Msgs in the range CWSIP0081-CWSIP0090 belong to class com.ibm.ws.sib.processor.impl.BrowserSessionImpl
+#   - Msgs in the range CWSIP0091-CWSIP0110 belong to class com.ibm.ws.sib.processor.impl.ConnectionImpl
+#   - Msgs in the range CWSIP0111-CWSIP0120 belong to class com.ibm.ws.sib.processor.impl.ConsumerDispatcher
+#   - Msgs in the range CWSIP0121-CWSIP0130 belong to class com.ibm.ws.sib.processor.impl.AbstractDestinationHandler
+#   - Msgs in the range CWSIP0131-CWSIP0140 belong to class com.ibm.ws.sib.processor.impl.ConsumerSessionImpl
+#   - Msgs in the range CWSIP0141-CWSIP0170 belong to class com.ibm.ws.sib.processor.impl.DestinationHandler
+#   - Msgs in the range CWSIP0171-CWSIP0190 belong to class com.ibm.ws.sib.processor.impl.LocalConsumerPoint
+#   - Msgs in the range CWSIP0191-CWSIP0200 belong to class com.ibm.ws.sib.processor.impl.LockedMessageEnumerationImpl
+#   - Msgs in the range CWSIP0201-CWSIP0210 belong to class com.ibm.ws.sib.processor.runtime.MediatedMessageHandlerControl
+#   - Msgs in the range CWSIP0211-CWSIP0220 belong to class com.ibm.ws.sib.processor.impl.MessageProcessor
+#   - Msgs in the range CWSIP0221-CWSIP0230 belong to class com.ibm.ws.sib.processor.impl.ConsumerKey
+#   - Msgs in the range CWSIP0231-CWSIP0240 belong to class com.ibm.ws.sib.processor.impl.ProducerSessionImpl
+#   - Msgs in the range CWSIP0241-CWSIP0260 belong to class com.ibm.ws.sib.processor.impl.PtoPInputHandler
+#   - Msgs in the range CWSIP0261-CWSIP0270 belong to class com.ibm.ws.sib.processor.store.items.SIMPItem
+#   - Msgs in the range CWSIP0271-CWSIP0280 belong to class com.ibm.ws.sib.processor.runtime.Topicspace
+#   - Msgs in the range CWSIP0281-CWSIP0290 belong to class com.ibm.ws.sib.processor.io.impl.MessageBuffer
+#   - Msgs in the range CWSIP0291-CWSIP0300 belong to class com.ibm.ws.sib.processor.impl.ExceptionDestination
+#   - Msgs in the range CWSIP0301-CWSIP0330 General Security Errors for Message Processor
+#   - Msgs in the range CWSIP0331-CWSIP0340 belong to class com.ibm.ws.sib.processor.impl.DynamicConfigManager
+#   - Msgs in the range CWSIP0341-CWSIP0350 belong to class com.ibm.ws.sib.processor.runtime.MessageProcessorControl
+#
+#   - Msgs in the range CWSIP0361-CWSIP0370 belong to class com.ibm.ws.sib.processor.runtime.QueuedMessage
+#   - Msgs in the range CWSIP0371-CWSIP0390 belong to class com.ibm.ws.sib.processor.matching.MessageProcessorMatching
+#   - Msgs in the range CWSIP0391-CWSIP0410 belong to class com.ibm.ws.sib.processor.impl.MessageProcessor continuation
+#
+#   - Msgs in the range CWSIP0421-CWSIP0430 belong to class com.ibm.ws.sib.processor.impl.AbstractInputHandler
+#
+#
+#   - Msgs in the range CWSIP0451-CWSIP0460 belong to class com.ibm.ws.sib.processor.impl.AnycastOutputHandler
+#
+#   - Msgs in the range CWSIP0471-CWSIP0480 belong to class com.ibm.ws.sib.processor.impl.RemoteConsumerDispatcher
+#   - Msgs in the range CWSIP0481-CWSIP0490 belong to class com.ibm.ws.sib.processor.impl.RemoteConsumerKey
+#
+#
+#   - Msgs in the range CWSIP0511-CWSIP0520 belong to class com.ibm.ws.sib.processor.impl.AnycastInputHandler
+#
+#   - Msgs in the range CWSIP0531-CWSIP0540 belong to class com.ibm.ws.sib.processor.impl.AIBrowseCoursor
+#   - Msgs in the range CWSIP0541-CWSIP0550 belong to class com.ibm.ws.sib.processor.utils.SIMPUtils
+#   - Msgs in the range CWSIP0551-CWSIP0560 belong to class com.ibm.ws.sib.processor.impl.store.itemstreams.PtoPLocalMsgsItemStream
+#   - Msgs in the range CWSIP0561-CWSIP0570 belong to class com.ibm.ws.sib.processor.impl.AsynchConsumer
+#   - Msgs in the range CWSIP0571-CWSIP0579 belong to class com.ibm.ws.sib.processor.impl.mediation.MessagePump
+#
+#
+#
+#
+#   - Msgs in the range CWSIP0621-CWSIP0630 belong to class com.ibm.ws.sib.processor.utils.AliasChainValidator
+#   - Msgs in the range CWSIP0631-CWSIP0640 belong to classes com.ibm.ws.sib.processor.impl.Durable(Input|Output)Handler
+#   - Msgs in the range CWSIP0641-CWSIP0650 belong to classes com.ibm.ws.sib.processor.impl.MediationInputItemStream
+#   - Msgs in the range CWSIP0651-CWSIP0660 belong to classes com.ibm.ws.sib.processor.impl.mediation.MediationStateMachine
+#   - Msgs in the range CWSIP0661-CWSIP0670 belong to classes com.ibm.ws.sib.processor.impl.mediation.ExceptionDestinationImpl
+#
+#   - Msgs in the range CWSIP0701-CWSIP0800 are reserved.
+#   - Msgs in the range CWSIP0801-CWSIP0810 are reserved.
+#   - Msgs in the range CWSIP0811-CWSIP0850 belong to Remote MQ errors for Message Processor
+#   - Msgs in the range CWSIP0851-CWSIP0860 belong to XD integration
+#
+#   - CWSIP9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.274
+#
+#CMVCPATHNAME com.ibm.ws.messaging.common/resources/com/ibm/ws/sib/processor/CWSIPMessages.nlsprops
+#COMPONENTPREFIX CWSIP
+#COMPONENTNAMEFOR CWSIP Message Processor
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# The following messages have moved to sib.mfp.api\com\ibm\websphere\sib\CWSIKMessages.nlsprops
+#
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0154
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0155
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0158
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0159
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0160
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0161
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0162
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0163
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0164
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0165
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0166
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0167
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0168
+# DESTINATION_NOT_FOUND_ERROR_CWSIP0042
+# TRANSACTION_SEND_USAGE_ERROR_CWSIP0093
+# DESTINATION_LOCKED_ERROR_CWSIP0232
+# USER_NOT_AUTH_SEND_ERROR_CWSIP0306
+# USER_NOT_AUTH_SEND_ERROR_CWSIP0307
+# USER_NOT_AUTH_SEND_ERROR_CWSIP0308
+# OBJECT_CLOSED_ERROR_CWSIP0233
+# OBJECT_CLOSED_ERROR_CWSIP0091
+# EXCEPTION_DESTINATION_ERROR_CWSIP0296
+# DESTINATION_SEND_DISALLOWED_CWSIP0252
+# DESTINATION_HIGH_MESSAGES_ERROR_CWSIP0250
+# NO_LOCALISATIONS_FOUND_ERROR_CWSIP0032
+# DESTINATION_CORRUPT_ERROR_CWSIP0058
+# ALIAS_TARGET_DESTINATION_NOT_FOUND_EXCEPTION_CWSIP0057
+# ALIAS_TARGETS_SERVICE_DESTINATION_ERROR_CWSIP0622
+# LINK_NOT_FOUND_ERROR_CWSIP0047
+# DESTINATION_ALREADY_EXISTS_ERROR_CWSIP0045
+# DESTINATION_DELETED_ERROR_CWSIP0421
+# MESSAGE_RELIABILITY_ERROR_CWSIP0231
+# FORWARD_ROUTING_PATH_ERROR_CWSIP0254
+
+# -------------------------------------------------------------------------------------------------
+# {0} The class name
+# {1} The PROBE ID.
+INTERNAL_MESSAGING_ERROR_CWSIP0001=CWSIP0001E: W klasie {0} wyst\u0105pi\u0142 wewn\u0119trzny b\u0142\u0105d przesy\u0142ania komunikat\u00f3w (identyfikator sondy: {1})
+INTERNAL_MESSAGING_ERROR_CWSIP0001.explanation=CMSG0001
+INTERNAL_MESSAGING_ERROR_CWSIP0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The class name
+# {1} The PROBE ID.
+# {2} The related exception
+INTERNAL_MESSAGING_ERROR_CWSIP0002=CWSIP0002E: W klasie {0} wyst\u0105pi\u0142 wewn\u0119trzny b\u0142\u0105d przesy\u0142ania komunikat\u00f3w (identyfikator sondy: {1}). Wyj\u0105tek: {2}
+INTERNAL_MESSAGING_ERROR_CWSIP0002.explanation=CMSG0001
+INTERNAL_MESSAGING_ERROR_CWSIP0002.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The class name
+# {1} The PROBE ID.
+# {2} The related exception
+# {3} Related Parameter
+INTERNAL_MESSAGING_ERROR_CWSIP0003=CWSIP0003E: W klasie {0} wyst\u0105pi\u0142 wewn\u0119trzny b\u0142\u0105d przesy\u0142ania komunikat\u00f3w {3} (identyfikator sondy: {1}). Wyj\u0105tek: {2}
+INTERNAL_MESSAGING_ERROR_CWSIP0003.explanation=CMSG0001
+INTERNAL_MESSAGING_ERROR_CWSIP0003.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The class name
+# {1} The PROBE ID.
+# {2} Related parameter
+INTERNAL_MESSAGING_ERROR_CWSIP0005=CWSIP0005E: W klasie {0} wyst\u0105pi\u0142 wewn\u0119trzny b\u0142\u0105d przesy\u0142ania komunikat\u00f3w {2} (identyfikator sondy: {1})
+INTERNAL_MESSAGING_ERROR_CWSIP0005.explanation=CMSG0001
+INTERNAL_MESSAGING_ERROR_CWSIP0005.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The class name
+# {1} The PROBE ID.
+# {2} destination name
+INTERNAL_CONFIGURATION_ERROR_CWSIP0006=CWSIP0006E: W klasie {0} wyst\u0105pi\u0142 wewn\u0119trzny b\u0142\u0105d konfiguracji miejsca docelowego {2} (identyfikator sondy: {1})
+INTERNAL_CONFIGURATION_ERROR_CWSIP0006.explanation=CMSG0001
+INTERNAL_CONFIGURATION_ERROR_CWSIP0006.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+# {1} is the link UUID
+INTERNAL_LINK_CONFIGURATION_ERROR_CWSIP0007=CWSIP0007E: Nie mo\u017cna utworzy\u0107 po\u0142\u0105czenia o nazwie {0} i identyfikatorze UUID {1} z powodu niepoprawnej konfiguracji.
+INTERNAL_LINK_CONFIGURATION_ERROR_CWSIP0007.explanation=CMSG0001
+INTERNAL_LINK_CONFIGURATION_ERROR_CWSIP0007.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The class name
+# {1} The PROBE ID.
+# {2} Related parameter
+# {3} Related parameter2
+INTERNAL_MESSAGING_ERROR_CWSIP0008=CWSIP0008E: W klasie {0} wyst\u0105pi\u0142 wewn\u0119trzny b\u0142\u0105d przesy\u0142ania komunikat\u00f3w (identyfikator sondy: {1}). Pokrewne warto\u015bci: {2}, {3}
+INTERNAL_MESSAGING_ERROR_CWSIP0008.explanation=CMSG0001
+INTERNAL_MESSAGING_ERROR_CWSIP0008.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination prefix supplied by the user
+INVALID_DESTINATION_USAGE_ERROR_CWSIP0021=CWSIP0021E: W mechanizmie przesy\u0142ania komunikat\u00f3w {1} nie mo\u017cna utworzy\u0107 konsumenta dla miejsca docelowego us\u0142ug o nazwie {0}.
+INVALID_DESTINATION_USAGE_ERROR_CWSIP0021.explanation=Miejsca docelowe us\u0142ug nie mog\u0105 mie\u0107 przy\u0142\u0105czonych konsument\u00f3w.  Ka\u017cda pr\u00f3ba utworzenia sesji konsumenta dla miejsca docelowego us\u0142ugi spowoduje utworzenie wyj\u0105tku.
+INVALID_DESTINATION_USAGE_ERROR_CWSIP0021.useraction=Utw\u00f3rz miejsce docelowe nieb\u0119d\u0105ce miejscem docelowym us\u0142ugi, a nast\u0119pnie utw\u00f3rz dla niego nowego konsumenta.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination prefix supplied by the user
+INVALID_DESTINATION_USAGE_ERROR_CWSIP0022=CWSIP0022E: W mechanizmie przesy\u0142ania komunikat\u00f3w {1} nie mo\u017cna utworzy\u0107 przegl\u0105darki dla miejsca docelowego us\u0142ugi o nazwie {0}.
+INVALID_DESTINATION_USAGE_ERROR_CWSIP0022.explanation=Miejsca docelowe us\u0142ug nie mog\u0105 mie\u0107 przy\u0142\u0105czonych przegl\u0105darek.  Ka\u017cda pr\u00f3ba utworzenia przegl\u0105darki dla miejsca docelowego us\u0142ugi spowoduje utworzenie wyj\u0105tku.
+INVALID_DESTINATION_USAGE_ERROR_CWSIP0022.useraction=Utw\u00f3rz miejsce docelowe nieb\u0119d\u0105ce miejscem docelowym us\u0142ugi, a nast\u0119pnie utw\u00f3rz i przy\u0142\u0105cz do niego now\u0105 przegl\u0105dark\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination prefix supplied by the user
+INVALID_DESTINATION_PREFIX_ERROR_CWSIP0023=CWSIP0023E: Przedrostek {0} jest niepoprawny dla systemowego miejsca docelowego.
+INVALID_DESTINATION_PREFIX_ERROR_CWSIP0023.explanation=Podany przedrostek systemowego miejsca docelowego sk\u0142ada si\u0119 z wi\u0119cej ni\u017c 24 znak\u00f3w lub zawiera znaki spoza danego zakresu: a-z, A-Z, 0-9, ., / oraz %.
+INVALID_DESTINATION_PREFIX_ERROR_CWSIP0023.useraction=Upewnij si\u0119, \u017ce przedrostek systemowego miejsca docelowego zawiera mniej ni\u017c 24 znaki nale\u017c\u0105ce wy\u0142\u0105cznie do danego zakresu: a-z, A-Z, 0-9, ., / oraz %.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+# {1} The Related exception
+SYSTEM_DESTINATION_USAGE_ERROR_CWSIP0024=CWSIP0024E: Podj\u0119to pr\u00f3b\u0119 uzyskania dost\u0119pu do niesystemowego miejsca docelowego {0} z po\u0142\u0105czenia systemowego w mechanizmie przesy\u0142ania komunikat\u00f3w {1}
+SYSTEM_DESTINATION_USAGE_ERROR_CWSIP0024.explanation=CMSG0001
+SYSTEM_DESTINATION_USAGE_ERROR_CWSIP0024.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+# {1} The name of the subscriptions destination
+# {2} The durable Subscription name
+# {3} The messaging engine name
+DURABLE_MISMATCH_ERROR_CWSIP0025=CWSIP0025E: B\u0142\u0105d niezgodno\u015bci sta\u0142ej subskrypcji. Nazwa miejsca docelowego {0} nie jest zgodna z miejscem docelowym {1} sta\u0142ej subskrypcji {2} w mechanizmie przesy\u0142ania komunikat\u00f3w {3}
+DURABLE_MISMATCH_ERROR_CWSIP0025.explanation= Pr\u00f3ba utworzenia konsumenta dla okre\u015blonej nazwy sta\u0142ej subskrypcji nie powiod\u0142a si\u0119. Podana nazwa miejsca docelowego nie by\u0142a zgodna z nazw\u0105 miejsca docelowego u\u017cyt\u0105 do utworzenia sta\u0142ej subskrypcji.
+DURABLE_MISMATCH_ERROR_CWSIP0025.useraction=Przy\u0142\u0105cz konsumenta do sta\u0142ej subskrypcji przy u\u017cyciu tego samego miejsca docelowego, kt\u00f3rego u\u017cyto do utworzenia subskrypcji.
+
+# -------------------------------------------------------------------------------------------------
+# {1} The MQLink UUID
+# {2} The messaging engine name
+MQLINK_ERROR_CWSIP0026=CWSIP0026E: \u0141\u0105cze produktu MQ o identyfikatorze UUID {0} nie zosta\u0142o znalezione w mechanizmie przesy\u0142ania komunikat\u00f3w {1}
+MQLINK_ERROR_CWSIP0026.explanation= Podj\u0119to pr\u00f3b\u0119 u\u017cycia po\u0142\u0105czenia MQ, kt\u00f3re nie zosta\u0142o znalezione w okre\u015blonym mechanizmie przesy\u0142ania komunikat\u00f3w.
+MQLINK_ERROR_CWSIP0026.useraction=Zdefiniuj po\u0142\u0105czenie MQ w Konsoli administracyjnej i zrestartuj serwer.
+
+# -------------------------------------------------------------------------------------------------
+# {1} The MQLink UUID
+# {2} The messaging engine name
+MQLINK_PSB_ERROR_CWSIP0027=CWSIP0027E: \u0141\u0105cze MQ publikowania/subskrypcji o identyfikatorze UUID {0} nie zosta\u0142o znalezione w mechanizmie przesy\u0142ania komunikat\u00f3w {1}
+MQLINK_PSB_ERROR_CWSIP0027.explanation= Podj\u0119to pr\u00f3b\u0119 u\u017cycia po\u0142\u0105czenia MQ publikowania/subskrypcji, kt\u00f3re nie zosta\u0142o znalezione w podanym mechanizmie przesy\u0142ania komunikat\u00f3w.
+MQLINK_PSB_ERROR_CWSIP0027.useraction=Zdefiniuj po\u0142\u0105czenie MQ w Konsoli administracyjnej i zrestartuj serwer.
+
+# -------------------------------------------------------------------------------------------------
+# {0} subscription id
+# {1} destination name
+CLONED_SUBSCRIBER_OVERRIDE_CWSIP0028=CWSIP0028W: Wy\u0142\u0105czono obs\u0142ug\u0119 wielu subskrybent\u00f3w w przypadku subskrypcji {0} w miejscu docelowym {1}.
+CLONED_SUBSCRIBER_OVERRIDE_CWSIP0028.explanation=W przypadku danego miejsca docelowego ustawiono opcj\u0119 zachowywania porz\u0105dku komunikat\u00f3w. Z tego powodu subskrypcje w miejscu docelowym mog\u0105 mie\u0107 tylko jednego subskrybenta.
+CLONED_SUBSCRIBER_OVERRIDE_CWSIP0028.useraction=Je\u015bli porz\u0105dkowanie komunikat\u00f3w nie jest wymagane, zmie\u0144 ustawienie atrybutu maintainMessageOrder w taki spos\u00f3b, aby wy\u0142\u0105czy\u0107 przes\u0142anianie opcji obs\u0142ugi wielu subskrybent\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# {0} code token to identify exception location
+MISSING_PARAM_ERROR_CWSIP0029=CWSIP0029W: Wyst\u0105pi\u0142 wewn\u0119trzny b\u0142\u0105d przesy\u0142ania komunikat\u00f3w.  Nie podano parametru o nazwie mqLinkUuidStr w po\u0142o\u017ceniu {0}
+MISSING_PARAM_ERROR_CWSIP0029.explanation=CMSG0001
+MISSING_PARAM_ERROR_CWSIP0029.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the destination
+# {1} the foreign bus
+# {2} the local bus
+CONSUME_FROM_FOREIGN_BUS_ERROR_CWSIP0030=CWSIP0030E: Odbieranie komunikat\u00f3w z miejsca docelowego {0} na magistrali {1} przy aktywnym po\u0142\u0105czeniu z magistral\u0105 {2} jest niedozwolone.
+CONSUME_FROM_FOREIGN_BUS_ERROR_CWSIP0030.explanation=Komunikaty mo\u017cna pobiera\u0107 tylko z miejsc docelowych znajduj\u0105cych si\u0119 w magistrali pod\u0142\u0105czonej lokalnie. Pobieranie komunikat\u00f3w z magistrali obcych nie jest mo\u017cliwe.
+CONSUME_FROM_FOREIGN_BUS_ERROR_CWSIP0030.useraction=Zmodyfikuj miejsce docelowe, z kt\u00f3rego odbiorca pr\u00f3buje pobiera\u0107 komunikaty, albo zmodyfikuj\u0105 po\u0142\u0105czenie w taki spos\u00f3b, aby \u0142\u0105czy\u0107 si\u0119 z magistral\u0105 zawieraj\u0105c\u0105 po\u017c\u0105dane miejsce docelowe.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+# {1} The Related exception
+SUBSCRIPTION_CREATION_FAILED_CWSIP0031=CWSIP0031E: Pr\u00f3ba utworzenia subskrypcji w miejscu docelowym {0} nie powiod\u0142a si\u0119 z powodu nast\u0119puj\u0105cego b\u0142\u0119du: {1}
+SUBSCRIPTION_CREATION_FAILED_CWSIP0031.explanation=CMSG0001
+SUBSCRIPTION_CREATION_FAILED_CWSIP0031.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+# {1} The name of the durable subscription
+# {2} The Related exception
+SUBSCRIPTION_CREATION_FAILED_CWSIP0033=CWSIP0033E: Pr\u00f3ba utworzenia subskrypcji o nazwie {1} w miejscu docelowym {0} nie powiod\u0142a si\u0119 z powodu nast\u0119puj\u0105cego problemu zwi\u0105zanego z zasobami w sk\u0142adnicy danych: {2}
+SUBSCRIPTION_CREATION_FAILED_CWSIP0033.explanation=Przy tworzeniu sta\u0142ej subskrypcji do sk\u0142adnicy danych dodawany jest element.  Czynno\u015b\u0107 ta nie powiod\u0142a si\u0119 z powodu problemu z zasobami pami\u0119ci podr\u0119cznej.
+SUBSCRIPTION_CREATION_FAILED_CWSIP0033.useraction=Korzystaj\u0105c z Konsoli administracyjnej, zwi\u0119ksz wielko\u015b\u0107 pami\u0119ci podr\u0119cznej przeznaczonej dla tej sk\u0142adnicy danych.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+# {1} The Related exception
+SUBSCRIPTION_CREATION_FAILED_CWSIP0034=CWSIP0034E: Pr\u00f3ba utworzenia subskrypcji w miejscu docelowym {0} nie powiod\u0142a si\u0119 z powodu nast\u0119puj\u0105cego problemu zwi\u0105zanego z zasobami w trwa\u0142ej sk\u0142adnicy: {2}
+SUBSCRIPTION_CREATION_FAILED_CWSIP0034.explanation=Przy tworzeniu subskrypcji do sk\u0142adnicy danych dodawany jest element.  Czynno\u015b\u0107 ta nie powiod\u0142a si\u0119 z powodu problemu z zasobami pami\u0119ci podr\u0119cznej.
+SUBSCRIPTION_CREATION_FAILED_CWSIP0034.useraction=Korzystaj\u0105c z Konsoli administracyjnej, zwi\u0119ksz wielko\u015b\u0107 pami\u0119ci podr\u0119cznej przeznaczonej dla tej sk\u0142adnicy danych.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the durable subscription
+# {1} is the durable home of the durable subscription
+SUBSCRIPTION_ATTACH_FAILED_CWSIP0035=CWSIP0035E: Pr\u00f3ba przy\u0142\u0105czenia konsumenta do subskrypcji {0} w zdalnym mechanizmie przesy\u0142ania komunikat\u00f3w {1} nie powiod\u0142a si\u0119, poniewa\u017c subskrypcja jest ju\u017c obs\u0142ugiwana lokalnie.
+SUBSCRIPTION_ATTACH_FAILED_CWSIP0035.explanation=Sta\u0142a subskrypcja mo\u017ce funkcjonowa\u0107 tylko w jednym mechanizmie przesy\u0142ania komunikat\u00f3w. Subskrypcja o podobnej nazwie jest obecnie umieszczona w lokalnym mechanizmie przesy\u0142ania komunikat\u00f3w i nie mo\u017cna jej umie\u015bci\u0107 w mechanizmie zdalnym.
+SUBSCRIPTION_ATTACH_FAILED_CWSIP0035.useraction=Zmie\u0144 w\u0142a\u015bciwo\u015bci przechowywania sta\u0142ej subskrypcji lub usu\u0144 subskrypcj\u0119 lokaln\u0105.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the system destination
+PROXY_LIMIT_EXCEEDED_WARNING_CWSIP0036=CWSIP0036E: W przypadku mechanizmu przesy\u0142ania komunikat\u00f3w {1} nie powiod\u0142a si\u0119 pr\u00f3ba wys\u0142ania komunikatu steruj\u0105cego do wewn\u0119trznego systemowego miejsca docelowego {0}, poniewa\u017c w miejscu docelowym nie ma miejsca.
+PROXY_LIMIT_EXCEEDED_WARNING_CWSIP0036.explanation=Nie mo\u017cna wys\u0142a\u0107 komunikatu steruj\u0105cego do miejsca docelowego, poniewa\u017c w miejscu docelowym nie ma miejsca.  Oznacza to, \u017ce topologia publikowania/subskrypcji jest teraz niesp\u00f3jna.
+PROXY_LIMIT_EXCEEDED_WARNING_CWSIP0036.useraction=Usu\u0144 komunikaty z systemowego miejsca docelowego i zrestartuj serwer.  Upewnij si\u0119, \u017ce zdalny mechanizm przesy\u0142ania komunikat\u00f3w jest uruchomiony i nawi\u0105zano komunikacj\u0119 mi\u0119dzy nim a miejscem docelowym.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination prefix supplied by the user
+INVALID_DESTINATION_PREFIX_ERROR_CWSIP0038=CWSIP0038E: Przedrostek {0} jest niepoprawny dla tymczasowego miejsca docelowego.
+INVALID_DESTINATION_PREFIX_ERROR_CWSIP0038.explanation=Podany przedrostek tymczasowego miejsca docelowego sk\u0142ada si\u0119 z wi\u0119cej ni\u017c 12 znak\u00f3w lub zawiera znaki spoza danego zakresu: a-z, A-Z, 0-9, ., / oraz %.
+INVALID_DESTINATION_PREFIX_ERROR_CWSIP0038.useraction=Sprawd\u017a, czy przedrostek tymczasowego miejsca docelowego zawiera mniej ni\u017c 12 znak\u00f3w nale\u017c\u0105cych wy\u0142\u0105cznie do danego zakresu: a-z, A-Z, 0-9, ., / oraz %.
+
+# -------------------------------------------------------------------------------------------------
+
+INVALID_DESTINATION_PREFIX_MAX_LENGTH_ERROR_CWSIP0039=CWSIP0039E: Przedrostek podany dla tymczasowego miejsca docelowego jest d\u0142u\u017cszy ni\u017c 12 znak\u00f3w.
+INVALID_DESTINATION_PREFIX_MAX_LENGTH_ERROR_CWSIP0039.explanation=Przedrostek podany dla tymczasowego miejsca docelowego jest d\u0142u\u017cszy ni\u017c 12 znak\u00f3w.
+INVALID_DESTINATION_PREFIX_MAX_LENGTH_ERROR_CWSIP0039.useraction=Zmie\u0144 przedrostek tymczasowego miejsca docelowego tak, aby by\u0142 kr\u00f3tszy ni\u017c 12 znak\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+
+# {0} the destination prefix supplied by the user
+# {1} the invalid character
+INVALID_DESTINATION_PREFIX_CHAR_ERROR_CWSIP0040=CWSIP0040E: Przedrostek {0} jest niepoprawny dla tymczasowego miejsca docelowego. Znak {1} jest niedozwolony.
+INVALID_DESTINATION_PREFIX_CHAR_ERROR_CWSIP0040.explanation=Podany przedrostek tymczasowego miejsca docelowego zawiera znaki spoza zbioru dozwolonych znak\u00f3w: a-z, A-Z, 0-9, ., / oraz %.
+INVALID_DESTINATION_PREFIX_CHAR_ERROR_CWSIP0040.useraction=Zmie\u0144 przedrostek tymczasowego miejsca docelowego tak, aby zawiera\u0142 wy\u0142\u0105cznie znaki nale\u017c\u0105ce do zbioru dozwolonych znak\u00f3w: a-z, A-Z, 0-9, ., / oraz %.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the link
+# {1} is the name of the messaging engine.
+LINK_NOT_FOUND_ERROR_CWSIP0041=CWSIP0041E: Po\u0142\u0105czenie o nazwie {0} nie zosta\u0142o znalezione w mechanizmie przesy\u0142ania komunikat\u00f3w {1}.
+LINK_NOT_FOUND_ERROR_CWSIP0041.explanation=Do wymienionego mechanizmu przesy\u0142ania komunikat\u00f3w dotar\u0142 komunikat wys\u0142any do po\u0142\u0105czenia o okre\u015blonej nazwie. Po\u0142\u0105czenie to jest jednak nieznane.
+LINK_NOT_FOUND_ERROR_CWSIP0041.useraction=Sprawd\u017a, czy nazwa po\u0142\u0105czenia jest poprawna i czy zosta\u0142a ona zdefiniowana w Konsoli administracyjnej.  Sprawd\u017a, czy konfiguracja mechanizmu przesy\u0142ania komunikat\u00f3w jest aktualna.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the link
+# {1} is the name of the messaging engine.
+LINK_ALREADY_EXISTS_ERROR_CWSIP0043=CWSIP0043E: Po\u0142\u0105czenie o nazwie {0} ju\u017c istnieje w mechanizmie przesy\u0142ania komunikat\u00f3w {1}.
+LINK_ALREADY_EXISTS_ERROR_CWSIP0043.explanation=Podj\u0119to pr\u00f3b\u0119 utworzenia po\u0142\u0105czenia, lecz po\u0142\u0105czenie o podanej nazwie ju\u017c istnieje w wymienionym mechanizmie przesy\u0142ania komunikat\u00f3w.
+LINK_ALREADY_EXISTS_ERROR_CWSIP0043.useraction=Sprawd\u017a, czy nazwa po\u0142\u0105czenia jest poprawna i czy zosta\u0142a ona zdefiniowana w Konsoli administracyjnej.  Sprawd\u017a, czy konfiguracja mechanizmu przesy\u0142ania komunikat\u00f3w jest aktualna.
+
+# -------------------------------------------------------------------------------------------------
+# {0} messaging engine name
+MISSING_PARAM_ERROR_CWSIP0044=CWSIP0044W: Wyst\u0105pi\u0142 wewn\u0119trzny b\u0142\u0105d przesy\u0142ania komunikat\u00f3w.  Nie podano parametru destinationName w mechanizmie przesy\u0142ania komunikat\u00f3w {0}
+MISSING_PARAM_ERROR_CWSIP0044.explanation=CMSG0001
+MISSING_PARAM_ERROR_CWSIP0044.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name
+# {1} messaging engine name
+INVALID_DEST_ALTER_ERROR_CWSIP0045=CWSIP0045W: Wyst\u0105pi\u0142 wewn\u0119trzny b\u0142\u0105d przesy\u0142ania komunikat\u00f3w.  Podano niepoprawn\u0105 komend\u0119 zmiany miejsca docelowego dla miejsca docelowego {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1}
+INVALID_DEST_ALTER_ERROR_CWSIP0045.explanation=CMSG0001
+INVALID_DEST_ALTER_ERROR_CWSIP0045.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name
+# {1} messaging engine name
+DELETE_SYSTEM_DEST_ERROR_CWSIP0046=CWSIP0046W: Wyst\u0105pi\u0142 wewn\u0119trzny b\u0142\u0105d przesy\u0142ania komunikat\u00f3w.  Nie mo\u017cna usun\u0105\u0107 systemowego miejsca docelowego {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1}
+DELETE_SYSTEM_DEST_ERROR_CWSIP0046.explanation=CMSG0001
+DELETE_SYSTEM_DEST_ERROR_CWSIP0046.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+DESTINATION_HANDLER_RECOVERY_ERROR_CWSIP0048=CWSIP0048E: Miejsce docelowe {0} nie mo\u017ce zosta\u0107 odzyskane ze sk\u0142adnicy danych.
+DESTINATION_HANDLER_RECOVERY_ERROR_CWSIP0048.explanation=CMSG0001
+DESTINATION_HANDLER_RECOVERY_ERROR_CWSIP0048.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+LINK_HANDLER_RECOVERY_ERROR_CWSIP0049=CWSIP0049E: Po\u0142\u0105czenie {0} nie mo\u017ce zosta\u0107 odzyskane ze sk\u0142adnicy danych.
+LINK_HANDLER_RECOVERY_ERROR_CWSIP0049.explanation=CMSG0001
+LINK_HANDLER_RECOVERY_ERROR_CWSIP0049.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+#
+TEMPORARY_DESTINATION_UNIQUE_COUNT_WARNING_CWSIP0050=CWSIP0050W: Licznik unikalnych tymczasowych miejsc docelowych osi\u0105gn\u0105\u0142 maksymaln\u0105 warto\u015b\u0107.
+TEMPORARY_DESTINATION_UNIQUE_COUNT_WARNING_CWSIP0050.explanation=Licznik unikalnych tymczasowych miejsc docelowych osi\u0105gn\u0105\u0142 maksymaln\u0105 warto\u015b\u0107 i rozpocz\u0105\u0142 naliczanie od pocz\u0105tku.  Tymczasowe miejsca docelowe mog\u0105 ju\u017c nie by\u0107 unikalne.
+TEMPORARY_DESTINATION_UNIQUE_COUNT_WARNING_CWSIP0050.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+DESTINATION_HANDLER_RECOVERY_ERROR_CWSIP0051=CWSIP0051E: Miejsce docelowe {0} nie mo\u017ce zosta\u0107 odzyskane ze sk\u0142adnicy danych z powodu b\u0142\u0119du {1}.
+DESTINATION_HANDLER_RECOVERY_ERROR_CWSIP0051.explanation=CMSG0001
+DESTINATION_HANDLER_RECOVERY_ERROR_CWSIP0051.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name
+TEMPORARY_DESTINATION_IN_USE_ERROR_CWSIP0052=CWSIP0052E: Tymczasowe miejsce docelowe o nazwie {0} jest u\u017cywane przez inn\u0105 aplikacj\u0119 i nie mo\u017ce zosta\u0107 usuni\u0119te.
+TEMPORARY_DESTINATION_IN_USE_ERROR_CWSIP0052.explanation=Tymczasowe miejsce docelowe jest u\u017cywane. Jego usuni\u0119cie b\u0119dzie mo\u017cliwe dopiero po roz\u0142\u0105czeniu si\u0119 z nim wszystkich konsument\u00f3w.
+TEMPORARY_DESTINATION_IN_USE_ERROR_CWSIP0052.useraction=Zamknij wszystkich aktywnych konsument\u00f3w w wymienionym miejscu docelowym i spr\u00f3buj ponownie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+# {1} is the link UUID
+LINK_HANDLER_CORRUPT_ERROR_CWSIP0054=CWSIP0054E: \u0141\u0105cze produktu Websphere MQ o nazwie {0} i identyfikatorze UUID {1} jest uszkodzone.
+LINK_HANDLER_CORRUPT_ERROR_CWSIP0054.explanation=CMSG0001
+LINK_HANDLER_CORRUPT_ERROR_CWSIP0054.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+# {1} is the link UUID
+# {2} The related exception
+LINK_HANDLER_WARM_START_ERROR_CWSIP0056=CWSIP0056E: Nie mo\u017cna odzyska\u0107 \u0142\u0105cza o nazwie {0} i identyfikatorze UUID {1} ze sk\u0142adnicy danych. {2}
+LINK_HANDLER_WARM_START_ERROR_CWSIP0056.explanation=CMSG0001
+LINK_HANDLER_WARM_START_ERROR_CWSIP0056.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the publish/subscribe broker profile name
+# {1} is the MQLink name
+PUB_SUB_BROKER_PROFILE_NOT_FOUND_ERROR_CWSIP0057=CWSIP0057E: Nie mo\u017cna znale\u017a\u0107 profilu brokera publikowania/subskrypcji {0} w po\u0142\u0105czeniu MQLink {1}.
+PUB_SUB_BROKER_PROFILE_NOT_FOUND_ERROR_CWSIP0057.explanation=CMSG0001
+PUB_SUB_BROKER_PROFILE_NOT_FOUND_ERROR_CWSIP0057.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+# {1} is the destination UUID
+DESTINATION_INDOUBT_ERROR_CWSIP0062=CWSIP0062E: Miejsce docelowe {0} o identyfikatorze UUID {1} nie mog\u0142o zosta\u0107 odzyskane, prawdopodobnie z powodu b\u0142\u0119du w konfiguracji WCCM.
+DESTINATION_INDOUBT_ERROR_CWSIP0062.explanation=Konfiguracja produktu WCCM dla tego miejsca docelowego w tym mechanizmie przesy\u0142ania komunikat\u00f3w sta\u0142a si\u0119 niepoprawna. Z tego powodu miejsce docelowe nie zostanie udost\u0119pnione dla tego mechanizmu przesy\u0142ania komunikat\u00f3w.
+DESTINATION_INDOUBT_ERROR_CWSIP0062.useraction=Popraw konfiguracj\u0119 WCCM i zrestartuj serwer. Spowoduje to ponowne udost\u0119pnienie miejsca docelowego w tym mechanizmie przesy\u0142ania komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+# {1} is the destination UUID
+LOCAL_DEST_DELETE_INFO_CWSIP0063=CWSIP0063I: Lokalne miejsce docelowe {0} o identyfikatorze {1} zosta\u0142o oznaczone do usuni\u0119cia.
+LOCAL_DEST_DELETE_INFO_CWSIP0063.explanation=Usuni\u0119to konfiguracj\u0119 WCCM dla tego miejsca docelowego w tym mechanizmie przesy\u0142ania komunikat\u00f3w. Z tego powodu zasoby miejsca docelowego zosta\u0142y przeznaczone do usuni\u0119cia.
+LOCAL_DEST_DELETE_INFO_CWSIP0063.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the WebSphere MQ link name
+# {1} is the WebSphere MQ link UUID
+MQLINK_DEST_DELETE_INFO_CWSIP0064=CWSIP0064I: Po\u0142\u0105czenie produktu WebSphere MQ {0} o identyfikatorze UUID {1} zosta\u0142o oznaczone do usuni\u0119cia.
+MQLINK_DEST_DELETE_INFO_CWSIP0064.explanation=Usuni\u0119to konfiguracj\u0119 WCCM dla tego po\u0142\u0105czenia produktu WebSphere MQ w tym mechanizmie przesy\u0142ania komunikat\u00f3w. W zwi\u0105zku z tym jego zasoby zosta\u0142y przeznaczone do usuni\u0119cia.
+MQLINK_DEST_DELETE_INFO_CWSIP0064.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the Link name
+# {1} is the Link UUID
+LOCAL_LINK_DELETE_INFO_CWSIP0065=CWSIP0065I: Lokalne po\u0142\u0105czenie {0} o identyfikatorze UUID {1} zosta\u0142o oznaczone do usuni\u0119cia.
+LOCAL_LINK_DELETE_INFO_CWSIP0065.explanation=Usuni\u0119to konfiguracj\u0119 WCCM dla tego po\u0142\u0105czenia w tym mechanizmie przesy\u0142ania komunikat\u00f3w. W zwi\u0105zku z tym jego zasoby zosta\u0142y przeznaczone do usuni\u0119cia.
+LOCAL_LINK_DELETE_INFO_CWSIP0065.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+# {1} is the destination UUID
+REMOTE_DEST_DELETE_INFO_CWSIP0066=CWSIP0066I: Zdalne miejsce docelowe {0} o identyfikatorze UUID {1} zosta\u0142o oznaczone do usuni\u0119cia.
+REMOTE_DEST_DELETE_INFO_CWSIP0066.explanation=Usuni\u0119to konfiguracj\u0119 WCCM dla tego miejsca docelowego w zdalnym mechanizmie przesy\u0142ania komunikat\u00f3w. W zwi\u0105zku z tym jego zasoby zostan\u0105 przeznaczone do usuni\u0119cia.
+REMOTE_DEST_DELETE_INFO_CWSIP0066.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the Link name
+# {1} is the Link UUID
+REMOTE_LINK_DELETE_INFO_CWSIP0067=CWSIP0067I: Zdalne po\u0142\u0105czenie {0} o identyfikatorze UUID {1} zosta\u0142o oznaczone do usuni\u0119cia.
+REMOTE_LINK_DELETE_INFO_CWSIP0067.explanation=Usuni\u0119to konfiguracj\u0119 WCCM dla tego po\u0142\u0105czenia na zdalnym mechanizmie przesy\u0142ania komunikat\u00f3w. W zwi\u0105zku z tym jego zasoby zosta\u0142y przeznaczone do usuni\u0119cia.
+REMOTE_LINK_DELETE_INFO_CWSIP0067.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the max thread pool size
+INVALID_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0068=CWSIP0068I: Niepoprawna wielko\u015b\u0107 puli w\u0105tk\u00f3w ponownego okre\u015blania: {0}
+INVALID_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0068.explanation=Podano niepoprawn\u0105 wielko\u015b\u0107 puli w\u0105tk\u00f3w ponownego okre\u015blania we w\u0142a\u015bciwo\u015bci niestandardowej sib.processor.maxReconstituteThreadpoolSize.
+INVALID_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0068.useraction=Zmie\u0144 warto\u015b\u0107 w\u0142a\u015bciwo\u015bci niestandardowej sib.processor.maxReconstituteThreadpoolSize na poprawn\u0105.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0069=CWSIP0069W: Wielko\u015b\u0107 puli w\u0105tk\u00f3w ponownego okre\u015blania jest wi\u0119ksza ni\u017c warto\u015b\u0107 numberOfCores.
+INVALID_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0069.explanation=Wielko\u015b\u0107 puli w\u0105tk\u00f3w ponownego okre\u015blania jest wi\u0119ksza ni\u017c warto\u015b\u0107 numberOfCores.
+INVALID_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0069.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the max thread pool size
+MAX_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0070=CWSIP0070I: Maksymalna wielko\u015b\u0107 puli w\u0105tk\u00f3w ponownego okre\u015blania: {0}
+MAX_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0070.explanation=Maksymalna wielko\u015b\u0107 puli w\u0105tk\u00f3w ponownego okre\u015blania. 
+MAX_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0070.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Is the durable subscription id
+# {1} The messaging engine name
+SUBSCRIPTION_DOESNT_EXIST_ERROR_CWSIP0072=CWSIP0072E: Trwa\u0142a subskrypcja o nazwie {0} nie istnieje w mechanizmie przesy\u0142ania komunikat\u00f3w {1}.
+SUBSCRIPTION_DOESNT_EXIST_ERROR_CWSIP0072.explanation=Podj\u0119to pr\u00f3b\u0119 uzyskania dost\u0119pu do trwa\u0142ej subskrypcji o wymienionej nazwie. Taka subskrypcja nie istnieje.
+SUBSCRIPTION_DOESNT_EXIST_ERROR_CWSIP0072.useraction=Utw\u00f3rz trwa\u0142\u0105 subskrypcj\u0119 o podanej nazwie lub spr\u00f3buj ponownie, u\u017cywaj\u0105c poprawnego identyfikatora trwa\u0142ej subskrypcji.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the destination name
+# {1} The messaging engine name
+OBJECT_CLOSED_ERROR_CWSIP0081=CWSIP0081E: Sesja przegl\u0105darki zosta\u0142a zamkni\u0119ta w miejscu docelowym {0} i nie mo\u017cna jej u\u017cywa\u0107.
+OBJECT_CLOSED_ERROR_CWSIP0081.explanation=Przegl\u0105darka zosta\u0142a zamkni\u0119ta i nie mo\u017ce zosta\u0107 u\u017cyta w okre\u015blonym miejscu docelowym.
+OBJECT_CLOSED_ERROR_CWSIP0081.useraction=Utw\u00f3rz now\u0105 sesj\u0119 przegl\u0105darki dla podanego miejsca docelowego.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} The messaging engine name
+DESTINATION_IS_LOCKED_ERROR_CWSIP0085=CWSIP0085E: Podj\u0119to pr\u00f3b\u0119 otwarcia miejsca docelowego {0} w celu przejrzenia go w mechanizmie przesy\u0142ania komunikat\u00f3w {1}.  To miejsce docelowe jest tymczasowo zablokowane.
+DESTINATION_IS_LOCKED_ERROR_CWSIP0085.explanation=Miejsca docelowe s\u0105 blokowane podczas wykonywania niekt\u00f3rych czynno\u015bci administracyjnych, takich jak na przyk\u0142ad usuwanie.
+DESTINATION_IS_LOCKED_ERROR_CWSIP0085.useraction=Spr\u00f3buj ponownie po\u0142\u0105czy\u0107 si\u0119 z miejscem docelowym.
+
+# -------------------------------------------------------------------------------------------------
+# {0}  The id for the originating consumer
+# {1} The messaging engine name
+# The term BifurcatedConsumer is a technical term that should not be translated.
+CREATE_CONSUMER_ERROR_CWSIP0092=CWSIP0092E: Nie mo\u017cna utworzy\u0107 obiektu BifurcatedConsumer dla oryginalnego konsumenta {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1}.
+CREATE_CONSUMER_ERROR_CWSIP0092.explanation=Podj\u0119to pr\u00f3b\u0119 utworzenia obiektu BifurcatedConsumer, lecz nie znaleziono oryginalnego konsumenta o podanym identyfikatorze.
+CREATE_CONSUMER_ERROR_CWSIP0092.useraction=Sprawd\u017a, czy oryginalny konsument jest aktywny i wykonaj operacj\u0119 ponownie, u\u017cywaj\u0105c poprawnego identyfikatora.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The id for the originating conusmer
+# {1} The messaging engine name
+# The term BifurcatedConsumer is a technical term that should not be translated.
+CREATE_BIFURCATED_CONSUMER_ERROR_CWSIP0094=CWSIP0094E: Nie mo\u017cna utworzy\u0107 obiektu BifurcatedConsumer dla oryginalnego konsumenta {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1}, poniewa\u017c maj\u0105 one r\u00f3\u017cne identyfikatory u\u017cytkownika.
+CREATE_BIFURCATED_CONSUMER_ERROR_CWSIP0094.explanation=Podj\u0119to pr\u00f3b\u0119 utworzenia obiektu BifurcatedConsumer, lecz u\u017cyty kontekst zabezpiecze\u0144 r\u00f3\u017cni si\u0119 od kontekstu u\u017cytego przy tworzeniu oryginalnego konsumenta.
+CREATE_BIFURCATED_CONSUMER_ERROR_CWSIP0094.useraction=Upewnij si\u0119, \u017ce oryginalny konsument oraz obiekt BifurcatedConsumer u\u017cywaj\u0105 tego samego kontekstu zabezpiecze\u0144 i po\u0142\u0105czenia, a nast\u0119pnie ponownie wykonaj komend\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name.
+TEMPORARY_DESTINATION_NAME_ERROR_CWSIP0097=CWSIP0097E: Nie mo\u017cna znale\u017a\u0107 tymczasowego miejsca docelowego o nazwie {0}.
+TEMPORARY_DESTINATION_NAME_ERROR_CWSIP0097.explanation=Podj\u0119to pr\u00f3b\u0119 usuni\u0119cia wymienionego tymczasowego miejsca docelowego, lecz nie mo\u017cna go by\u0142o znale\u017a\u0107.
+TEMPORARY_DESTINATION_NAME_ERROR_CWSIP0097.useraction=Upewnij si\u0119, \u017ce podane tymczasowe miejsce docelowe istnieje i pon\u00f3w pr\u00f3b\u0119 usuni\u0119cia.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the subscription name.
+# {1} The destination name.
+DURABLE_SUBSCRIPTION_USAGE_ERROR_CWSIP0098=CWSIP0098E: Nie mo\u017cna utworzy\u0107 trwa\u0142ej subskrypcji {0} w tymczasowym miejscu docelowym {1}.
+DURABLE_SUBSCRIPTION_USAGE_ERROR_CWSIP0098.explanation=Podj\u0119to pr\u00f3b\u0119 utworzenia trwa\u0142ej subskrypcji w tymczasowym miejscu docelowym, co jest czynno\u015bci\u0105 niedozwolon\u0105.
+DURABLE_SUBSCRIPTION_USAGE_ERROR_CWSIP0098.useraction=Utw\u00f3rz trwa\u0142\u0105 subskrypcj\u0119 w obszarze tematu, kt\u00f3ry nie jest tymczasowy.  W Konsoli administracyjnej sprawd\u017a list\u0119 miejsc docelowych dost\u0119pnych dla obszar\u00f3w tematu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name.
+TEMPORARY_DESTINATION_CONNECTION_ERROR_CWSIP0099=CWSIP0099E: Nie mo\u017cna znale\u017a\u0107 tymczasowego miejsca docelowego o nazwie {0}, poniewa\u017c zosta\u0142o ono utworzone w innym po\u0142\u0105czeniu.
+TEMPORARY_DESTINATION_CONNECTION_ERROR_CWSIP0099.explanation=Dost\u0119p do tymczasowych miejsc docelowych mo\u017cna uzyska\u0107 tylko z tego samego po\u0142\u0105czenia.
+TEMPORARY_DESTINATION_CONNECTION_ERROR_CWSIP0099.useraction=Sprawd\u017a, czy u\u017cywane miejsce docelowe zosta\u0142o utworzone w tym samym po\u0142\u0105czeniu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name.
+# {1} is the messaging engine name
+INVALID_PARAMETER_COMBINATION_ERROR_CWSIP0100=CWSIP0100E: Podana kombinacja parametr\u00f3w jest niepoprawna i nie mo\u017ce zosta\u0107 u\u017cyta w celu utworzenia klonu trwa\u0142ej subskrypcji {0} w miejscu docelowym {1} dla mechanizmu przesy\u0142ania komunikat\u00f3w {2}
+INVALID_PARAMETER_COMBINATION_ERROR_CWSIP0100.explanation=Pr\u00f3ba utworzenia klonu trwa\u0142ej subskrypcji nie powiod\u0142a si\u0119, poniewa\u017c za\u017c\u0105dano dzia\u0142ania noLocal, kt\u00f3re nie jest obs\u0142ugiwane w przypadku sklonowanych subskrybent\u00f3w.
+INVALID_PARAMETER_COMBINATION_ERROR_CWSIP0100.useraction=Zmie\u0144 konfiguracj\u0119 trwa\u0142ej subskrypcji w Konsoli administracyjnej, usuwaj\u0105c opcj\u0119 noLocal.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the destination name.
+# {1} The name of the messaging engine
+DESTINATION_DELETED_ERROR_CWSIP0111=CWSIP0111E: Miejsce docelowe o nazwie {0} jest usuwane w mechanizmie przesy\u0142ania komunikat\u00f3w {1}.
+DESTINATION_DELETED_ERROR_CWSIP0111.explanation=Podj\u0119to pr\u00f3b\u0119 u\u017cycia miejsca docelowego, kt\u00f3re jest usuwane.
+DESTINATION_DELETED_ERROR_CWSIP0111.useraction=Utw\u00f3rz na nowo miejsce docelowe w Konsoli administracyjnej lub u\u017cyj innego miejsca docelowego i spr\u00f3buj ponownie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+# {1} The name of the messaging engine
+DESTINATION_DELETION_ERROR_CWSIP0112=CWSIP0112E: Miejsce docelowe {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} nie mo\u017ce zosta\u0107 usuni\u0119te, gdy s\u0105 do niego przy\u0142\u0105czeni konsumenci.
+DESTINATION_DELETION_ERROR_CWSIP0112.explanation=Podj\u0119to pr\u00f3b\u0119 usuni\u0119cia miejsca docelowego, do kt\u00f3rego nadal byli przy\u0142\u0105czeni konsumenci.
+DESTINATION_DELETION_ERROR_CWSIP0112.useraction=Miejsce docelowe nie mo\u017ce zosta\u0107 usuni\u0119te, gdy s\u0105 do niego przy\u0142\u0105czone aplikacje konsumenckie.  Usu\u0144 wszystkie aplikacje konsumenckie z miejsca docelowego i spr\u00f3buj ponownie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} is the name of the messaging engine.
+DESTINATION_RECEIVE_EXCLUSIVE_CWSIP0114=CWSIP0114E: Miejsce docelowe o nazwie {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} jest skonfigurowane wy\u0142\u0105cznie do odbioru.
+DESTINATION_RECEIVE_EXCLUSIVE_CWSIP0114.explanation=Podj\u0119to pr\u00f3b\u0119 utworzenia sesji konsumenta dla miejsca docelowego skonfigurowanego wy\u0142\u0105cznie do odbioru. Operacja nie powiod\u0142a si\u0119, poniewa\u017c konsument zosta\u0142 ju\u017c przy\u0142\u0105czony do tego miejsca docelowego.
+DESTINATION_RECEIVE_EXCLUSIVE_CWSIP0114.useraction=Spr\u00f3buj ponownie, gdy \u017caden konsument nie b\u0119dzie przy\u0142\u0105czony lub zaktualizuj miejsce docelowe, aby nie by\u0142o skonfigurowane wy\u0142\u0105cznie do odbioru, po czym pon\u00f3w operacj\u0119 tworzenia sesji konsumenta.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the internal subscription
+# {1} is the name of the messaging engine
+# {2} is the name of the target destination
+INTERNAL_SUBSCRIPTION_TARGET_NOT_FOUND_CWSIP0115=CWSIP0115E: Komunikat zgodny z subskrypcj\u0105 {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} nie m\u00f3g\u0142 zosta\u0107 wys\u0142any do miejsca docelowego {2}, poniewa\u017c nie mo\u017cna by\u0142o znale\u017a\u0107 tego miejsca docelowego.
+INTERNAL_SUBSCRIPTION_TARGET_NOT_FOUND_CWSIP0115.explanation=Podj\u0119to pr\u00f3b\u0119 uzgodnienia komunikatu z wewn\u0119trzn\u0105 subskrypcj\u0105 i przekazania go do jego miejsca docelowego. Nie mo\u017cna znale\u017a\u0107 miejsca docelowego.
+INTERNAL_SUBSCRIPTION_TARGET_NOT_FOUND_CWSIP0115.useraction=Miejsce docelowe mo\u017ce nie istnie\u0107 lub zosta\u0142o usuni\u0119te. Sprawd\u017a, czy miejsce docelowe istnieje i czy jest dost\u0119pne.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} is the name of the messaging engine
+ORDERED_DESTINATION_IN_USE_CWSIP0116=CWSIP0116E: Miejsce docelowe o nazwie {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} ma skonfigurowan\u0105 opcj\u0119 porz\u0105dkowania i ma ju\u017c przy\u0142\u0105czonego konsumenta
+ORDERED_DESTINATION_IN_USE_CWSIP0116.explanation=Podj\u0119to pr\u00f3b\u0119 utworzenia sesji konsumenta dla miejsca docelowego, w przypadku kt\u00f3rego skonfigurowano opcj\u0119 porz\u0105dkowania. Operacja nie powiod\u0142a si\u0119, poniewa\u017c konsument zosta\u0142 ju\u017c przy\u0142\u0105czony do tego miejsca docelowego.
+ORDERED_DESTINATION_IN_USE_CWSIP0116.useraction=Przed podj\u0119ciem pr\u00f3by ponownego przy\u0142\u0105czenia od\u0142\u0105cz wszystkich innych konsument\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} is the name of the messaging engine
+ORDERED_MESSAGING_ERROR_CWSIP0117=CWSIP0117E: Miejsce docelowe o nazwie {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} nie mo\u017ce dalej gwarantowa\u0107 zachowywania porz\u0105dku komunikat\u00f3w.
+ORDERED_MESSAGING_ERROR_CWSIP0117.explanation=Wyst\u0105pi\u0142 wewn\u0119trzny b\u0142\u0105d, kt\u00f3ry m\u00f3g\u0142 wp\u0142yn\u0105\u0107 na zdolno\u015b\u0107 do zachowywania porz\u0105dku komunikat\u00f3w.
+ORDERED_MESSAGING_ERROR_CWSIP0117.useraction=Zrestartowanie mechanizmu przesy\u0142ania komunikat\u00f3w spowoduje, \u017ce porz\u0105dek komunikat\u00f3w znowu b\u0119dzie zachowywany.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} is the name of the messaging engine.
+OPERATION_IS_INVALID_ERROR_CWSIP0121=CWSIP0121E: Pr\u00f3bowano wykona\u0107 operacj\u0119, kt\u00f3ra jest niepoprawna dla miejsca docelowego {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1}.
+OPERATION_IS_INVALID_ERROR_CWSIP0121.explanation=Miejsce docelowe nie obs\u0142uguje tej operacji.
+OPERATION_IS_INVALID_ERROR_CWSIP0121.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+DESTINATION_IS_LOCKED_ERROR_CWSIP0133=CWSIP0133E: Podj\u0119to pr\u00f3b\u0119 otwarcia miejsca docelowego {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} na potrzeby pobierania.  To miejsce docelowe jest tymczasowo zablokowane.
+DESTINATION_IS_LOCKED_ERROR_CWSIP0133.explanation=Miejsca docelowe s\u0105 blokowane podczas wykonywania niekt\u00f3rych czynno\u015bci administracyjnych, takich jak na przyk\u0142ad usuwanie.
+DESTINATION_IS_LOCKED_ERROR_CWSIP0133.useraction=Spr\u00f3buj ponownie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} The name of the messaging engine.
+# {2} The Subscription name
+DESTINATION_USEAGE_ERROR_CWSIP0141=CWSIP0141E: B\u0142\u0105d niezgodno\u015bci miejsca docelowego. Subskrypcja {2} pr\u00f3buje u\u017cy\u0107 miejsca docelowego {0}, kt\u00f3re zosta\u0142o zdefiniowane jako kolejka w mechanizmie przesy\u0142ania komunikat\u00f3w {1}.
+DESTINATION_USEAGE_ERROR_CWSIP0141.explanation=Podj\u0119to pr\u00f3b\u0119 powi\u0105zania subskrypcji z miejscem docelowym zdefiniowanym jako kolejka.  Subskrypcje mo\u017cna tworzy\u0107 wy\u0142\u0105cznie w powi\u0105zaniu z obszarami temat\u00f3w.
+DESTINATION_USEAGE_ERROR_CWSIP0141.useraction=Zdefiniuj ponownie to miejsce docelowe jako obszar tematu lub utw\u00f3rz nowe miejsce docelowe tego typu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the subscription id
+# {1} The name of the messaging engine.
+SUBSCRIPTION_ALREADY_EXISTS_ERROR_CWSIP0143=CWSIP0143E: Subskrypcja o nazwie {0} ju\u017c istnieje w mechanizmie przesy\u0142ania komunikat\u00f3w {1}.
+SUBSCRIPTION_ALREADY_EXISTS_ERROR_CWSIP0143.explanation=Podj\u0119to pr\u00f3b\u0119 utworzenia sta\u0142ej subskrypcji o podanej nazwie, lecz taka subskrypcja ju\u017c istnieje.
+SUBSCRIPTION_ALREADY_EXISTS_ERROR_CWSIP0143.useraction=Usu\u0144 istniej\u0105c\u0105 subskrypcj\u0119 i spr\u00f3buj ponownie lub utw\u00f3rz subskrypcj\u0119 o innej nazwie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the subscription id
+# {1} The name of the messaging engine
+SUBSCRIPTION_DOESNT_EXIST_ERROR_CWSIP0146=CWSIP0146E: Trwa\u0142a subskrypcja o nazwie {0} nie istnieje w mechanizmie przesy\u0142ania komunikat\u00f3w {1}.
+SUBSCRIPTION_DOESNT_EXIST_ERROR_CWSIP0146.explanation=Podj\u0119to pr\u00f3b\u0119 uzyskania dost\u0119pu do trwa\u0142ej subskrypcji, lecz subskrypcja ta nie istnieje.
+SUBSCRIPTION_DOESNT_EXIST_ERROR_CWSIP0146.useraction=Subskrypcja mog\u0142a zosta\u0107 usuni\u0119ta lub nie zosta\u0142a jeszcze utworzona.  Sprawd\u017a, czy subskrypcja istnieje i pon\u00f3w komend\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the subscription id
+# {1} The name of the messaging engine
+INTERNAL_SUBSCRIPTION_ACCESS_DISALLOWED_CWSIP0147=CWSIP0147E: Trwa\u0142a subskrypcja o nazwie {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} jest wewn\u0119trzn\u0105 subskrypcj\u0105 i dlatego nie mo\u017cna si\u0119 do niej przy\u0142\u0105czy\u0107.
+INTERNAL_SUBSCRIPTION_ACCESS_DISALLOWED_CWSIP0147.explanation=Podj\u0119to pr\u00f3b\u0119 uzyskania dost\u0119pu do trwa\u0142ej subskrypcji, ale jest to subskrypcja wewn\u0119trzna i nie mo\u017ce by\u0107 u\u017cywana.
+INTERNAL_SUBSCRIPTION_ACCESS_DISALLOWED_CWSIP0147.useraction=Subskrypcja wewn\u0119trzna jest u\u017cywana do odwzorowywania publikacji na w\u0142a\u015bciwe miejsce docelowe. Do wewn\u0119trznej subskrypcji nie mo\u017cna przy\u0142\u0105cza\u0107 zewn\u0119trznych konsument\u00f3w. Spr\u00f3buj ponownie, u\u017cywaj\u0105c poprawnej nazwy subskrypcji.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the subscription id
+# {1} The messaging engine name
+SUBSCRIPTION_IN_USE_ERROR_CWSIP0152=CWSIP0152E: Trwa\u0142a subskrypcja o nazwie {0} jest u\u017cywana przez innego konsumenta w mechanizmie przesy\u0142ania komunikat\u00f3w {1}.
+SUBSCRIPTION_IN_USE_ERROR_CWSIP0152.explanation=Trwa\u0142a subskrypcja o podanej nazwie jest u\u017cywana przez innego konsumenta. Nie mo\u017cna dokonywa\u0107 \u017cadnych operacji na miejscu docelowym, gdy s\u0105 do niego pod\u0142\u0105czeni konsumenci.
+SUBSCRIPTION_IN_USE_ERROR_CWSIP0152.useraction=Do trwa\u0142ej subskrypcji mo\u017ce by\u0107 przy\u0142\u0105czony tylko jeden konsument.  Od\u0142\u0105cz wszystkich konsument\u00f3w i spr\u00f3buj ponownie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the subscription id
+# {1} The messaging engine Name
+SUBSCRIPTION_IN_USE_ERROR_CWSIP0153=CWSIP0153E: Trwa\u0142a subskrypcja o nazwie {0} zawiera komunikaty, kt\u00f3re nie s\u0105 zatwierdzone w mechanizmie przesy\u0142ania komunikat\u00f3w {1}.
+SUBSCRIPTION_IN_USE_ERROR_CWSIP0153.explanation=Pr\u00f3ba usuni\u0119cia nie powiod\u0142a si\u0119, poniewa\u017c trwa\u0142a subskrypcja zawiera niezatwierdzone komunikaty.
+SUBSCRIPTION_IN_USE_ERROR_CWSIP0153.useraction=Zatwierd\u017a wszystkie oczekuj\u0105ce jednostki pracy, kt\u00f3re zosta\u0142y utworzone w wyniku wysy\u0142ania lub odbierania danych przez aplikacj\u0119 konsumenck\u0105 trwa\u0142ej subskrypcji, a nast\u0119pnie spr\u00f3buj ponownie.
+
+# -------------------------------------------------------------------------------------------------
+#
+# {0} The name of the remote messaging engine we attempt to map.
+REMOTE_ME_MAPPING_ERROR_CWSIP0156=CWSIP0156E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas wyszukiwania zdalnego mechanizmu przesy\u0142ania komunikat\u00f3w {0}.
+REMOTE_ME_MAPPING_ERROR_CWSIP0156.explanation=Nie mo\u017cna by\u0142o zako\u0144czy\u0107 przetwarzania, poniewa\u017c nie mo\u017cna by\u0142o znale\u017a\u0107 zdalnego mechanizmu przesy\u0142ania komunikat\u00f3w.
+REMOTE_ME_MAPPING_ERROR_CWSIP0156.useraction=Sprawd\u017a, czy nazwa zdalnego mechanizmu przesy\u0142ania komunikat\u00f3w jest poprawna, czy mechanizm dzia\u0142a i czy komunikacja z nim jest aktywna.
+
+# -------------------------------------------------------------------------------------------------
+#
+RECEIVE_USAGE_ERROR_CWSIP0171=CWSIP0171E: Nie mo\u017cna wyda\u0107 komendy odbioru, je\u015bli w miejscu docelowym {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} jest zarejestrowany asynchroniczny konsument
+RECEIVE_USAGE_ERROR_CWSIP0171.explanation=Konsument przy\u0142\u0105czony jako konsument asynchroniczny nie mo\u017ce odbiera\u0107 komunikat\u00f3w.
+RECEIVE_USAGE_ERROR_CWSIP0171.useraction=Sprawd\u017a, czy konsument nie jest zarejestrowany jako konsument asynchroniczny i spr\u00f3buj ponownie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message that was not found.
+# {1} the name of the destination.
+# {2} The name of the messaging engine.
+CORE_MESSAGE_NOT_FOUND_ERROR_CWSIP0173=CWSIP0173E: Nie mo\u017cna znale\u017a\u0107 komunikatu {0} w miejscu docelowym {1} w mechanizmie przesy\u0142ania komunikat\u00f3w {2}
+CORE_MESSAGE_NOT_FOUND_ERROR_CWSIP0173.explanation=Wygenerowano \u017c\u0105danie znalezienia komunikatu w miejscu docelowym, lecz ten komunikat nie istnieje.
+CORE_MESSAGE_NOT_FOUND_ERROR_CWSIP0173.useraction=Komunikat m\u00f3g\u0142 zosta\u0107 usuni\u0119ty lub utraci\u0107 wa\u017cno\u015b\u0107.  Sprawd\u017a, czy komunikat istnieje w podanym miejscu docelowym i pon\u00f3w operacj\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination.
+# {1} The name of the messaging engine.
+RECEIVE_USAGE_ERROR_CWSIP0174=CWSIP0174E: Konsument asynchroniczny, kt\u00f3ry wysy\u0142a komend\u0119 synchronicznego odbioru, nie mo\u017ce zosta\u0107 zarejestrowany w miejscu docelowym {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1}.
+RECEIVE_USAGE_ERROR_CWSIP0174.explanation=Podj\u0119to pr\u00f3b\u0119 zarejestrowania asynchronicznego konsumenta podczas wysy\u0142ania komendy odbioru.
+RECEIVE_USAGE_ERROR_CWSIP0174.useraction=Zaczekaj a\u017c zako\u0144czona zostanie komenda odbioru, a nast\u0119pnie zarejestruj konsumenta asynchronicznego.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The name of the messaging engine.
+ASYNCH_CONSUMER_ERROR_CWSIP0175=CWSIP0175E: Podj\u0119to pr\u00f3b\u0119 uruchomienia konsumenta asynchronicznego, ale \u017caden konsument asynchroniczny nie zosta\u0142 zarejestrowany w miejscu docelowym {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1}.
+ASYNCH_CONSUMER_ERROR_CWSIP0175.explanation=Aplikacja za\u017c\u0105da\u0142a uruchomienia asynchronicznego konsumenta, lecz \u017caden nie zosta\u0142 zarejestrowany w podanym miejscu docelowym.
+ASYNCH_CONSUMER_ERROR_CWSIP0175.useraction=Zarejestruj asynchronicznego konsumenta w miejscu docelowym i pon\u00f3w pr\u00f3b\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The messaging engine name
+ASYNCH_CONSUMER_RUN_ERROR_CWSIP0176=CWSIP0176E: Konsument asynchroniczny nie mo\u017ce zosta\u0107 zarejestrowany w miejscu docelowym {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} po rozpocz\u0119ciu sesji.
+ASYNCH_CONSUMER_RUN_ERROR_CWSIP0176.explanation=Podj\u0119to pr\u00f3b\u0119 zarejestrowania w miejscu docelowym asynchronicznego konsumenta w czasie, gdy sesja u\u017cywana do tworzenia konsumenta nie by\u0142a w stanie zatrzymania.
+ASYNCH_CONSUMER_RUN_ERROR_CWSIP0176.useraction=Zatrzymaj konsumenta i pon\u00f3w pr\u00f3b\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The name of the messaging engine.
+CONSUMER_CLOSED_ERROR_CWSIP0177=CWSIP0177E: Sesja konsumenta w miejscu docelowym {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} zosta\u0142a zamkni\u0119ta.
+CONSUMER_CLOSED_ERROR_CWSIP0177.explanation=Nie mo\u017cna przeprowadzi\u0107 operacji w sesji konsumenta, gdy zosta\u0142a ona zamkni\u0119ta.
+CONSUMER_CLOSED_ERROR_CWSIP0177.useraction=Utw\u00f3rz now\u0105 sesj\u0119 konsumenta dla podanego miejsca docelowego lub wykonaj operacj\u0119 przed zamkni\u0119ciem konsumenta.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The name of the messaging engine.
+RECEIVE_USAGE_ERROR_CWSIP0178=CWSIP0178E: W tym momencie operacja odbioru nie jest mo\u017cliwa w miejscu docelowym {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1}.
+RECEIVE_USAGE_ERROR_CWSIP0178.explanation=Aktualnie trwa inna operacja odbioru dla tej sesji konsumenta w podanym miejscu docelowym.
+RECEIVE_USAGE_ERROR_CWSIP0178.useraction=Zaczekaj a\u017c poprzednia operacja odbioru zostanie zako\u0144czona i spr\u00f3buj ponownie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} is the name of the messaging engine.
+ORDERED_TRANSACTED_RECEIVE_ERROR_CWSIP0180=CWSIP0180E: Odbi\u00f3r z miejsca docelowego o nazwie {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} jest niedozwolony z powodu wykonywania bie\u017c\u0105cej transakcji odbioru.
+ORDERED_TRANSACTED_RECEIVE_ERROR_CWSIP0180.explanation=Podj\u0119to pr\u00f3b\u0119 odebrania komunikat\u00f3w z miejsca docelowego, w kt\u00f3rym skonfigurowano opcj\u0119 porz\u0105dkowania. Aktualnie w tym miejscu docelowym oczekuje inna transakcja.
+ORDERED_TRANSACTED_RECEIVE_ERROR_CWSIP0180.useraction=Przed podj\u0119ciem pr\u00f3by odebrania komunikat\u00f3w w ramach nowej transakcji zako\u0144cz inne transakcje w tym miejscu docelowym.
+
+# -------------------------------------------------------------------------------------------------
+# {0} destination name
+MAX_BATCH_SIZE_OVERRIDE_WARNING_CWSIP0181=CWSIP0181W: Maksymalna wielko\u015b\u0107 partii dla konsumenta w miejscu docelowym {0} zosta\u0142a ustawiona na 1.
+MAX_BATCH_SIZE_OVERRIDE_WARNING_CWSIP0181.explanation=W przypadku danego miejsca docelowego ustawiono opcj\u0119 zachowywania porz\u0105dku komunikat\u00f3w. Z tego powodu maksymalna wielko\u015b\u0107 partii dla konsumenta zosta\u0142a ustawiona na 1.
+MAX_BATCH_SIZE_OVERRIDE_WARNING_CWSIP0181.useraction=Je\u015bli porz\u0105dkowanie komunikat\u00f3w nie jest wymagane, zmie\u0144 ustawienie atrybutu maintainMessageOrder w taki spos\u00f3b, aby wy\u0142\u0105czy\u0107 przes\u0142anianie warto\u015bci maksymalnej wielko\u015bci partii.
+
+# -------------------------------------------------------------------------------------------------
+# {0} consumer ID
+# {1} resource name, e.g. queue or subscription name
+# {2} messaging engine name
+# {3} elapsed time in seconds
+MSG_BLOCK_WARNING_CWSIP0182=CWSIP0182W: Konsument {0} zasobu {1} w mechanizmie przesy\u0142ania komunikat\u00f3w {2} zosta\u0142 zablokowany na {3} sek.
+MSG_BLOCK_WARNING_CWSIP0182.explanation=Konsument komunikat\u00f3w w zasobie nazwanym zosta\u0142 zablokowany na nieoczekiwanie d\u0142ugi okres czasu, wci\u0105\u017c przetwarzaj\u0105c ten sam zestaw komunikat\u00f3w. W takim stanie nie mo\u017ce on przetwarza\u0107 dalszych komunikat\u00f3w.
+MSG_BLOCK_WARNING_CWSIP0182.useraction=Rozstrzygnij, dlaczego konsument komunikat\u00f3w jest zablokowany, badaj\u0105c stan aplikacji aktualnie konsumuj\u0105cych komunikaty z danego zasobu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} consumer ID
+# {1} resource name, e.g. queue or subscription name
+# {2} messaging engine name
+MSG_BLOCK_CLEARED_CWSIP0183=CWSIP0183I: Konsument {0} zasobu {1} w mechanizmie przesy\u0142ania komunikat\u00f3w {2} nie jest ju\u017c zablokowany.
+MSG_BLOCK_CLEARED_CWSIP0183.explanation=Konsument komunikat\u00f3w w zasobie nazwanym nie jest ju\u017c zablokowany na zestawie komunikat\u00f3w. Przyczyn\u0105 jest rozstrzygni\u0119cie przyczyny blokady lub zamkni\u0119cie konsumenta.
+MSG_BLOCK_CLEARED_CWSIP0183.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The name of the messaging engine.
+INVALID_MESSAGE_ERROR_CWSIP0191=CWSIP0191E: Bie\u017c\u0105cy komunikat jest niepoprawny dla miejsca docelowego {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1}.
+INVALID_MESSAGE_ERROR_CWSIP0191.explanation=Podj\u0119to pr\u00f3b\u0119 odblokowania bie\u017c\u0105cego komunikatu, lecz komunikat do odblokowania nie istnia\u0142.
+INVALID_MESSAGE_ERROR_CWSIP0191.useraction=Komunikat m\u00f3g\u0142 zosta\u0107 ju\u017c odblokowany lub usuni\u0119ty przez bie\u017c\u0105cego u\u017cytkownika.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The name of the messaging engine.
+INVALID_MESSAGE_ERROR_CWSIP0192=CWSIP0192E: Bie\u017c\u0105cy komunikat jest niepoprawny dla miejsca docelowego {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1}.
+INVALID_MESSAGE_ERROR_CWSIP0192.explanation=Podj\u0119to pr\u00f3b\u0119 usuni\u0119cia bie\u017c\u0105cego komunikatu, lecz komunikat do usuni\u0119cia nie istnia\u0142.
+INVALID_MESSAGE_ERROR_CWSIP0192.useraction=Komunikat m\u00f3g\u0142 zosta\u0107 ju\u017c odblokowany lub usuni\u0119ty przez bie\u017c\u0105cego u\u017cytkownika.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The name of the messaging engine.
+MESSAGE_LOCK_EXPIRED_ERROR_CWSIP0193=CWSIP0193E: Utraci\u0142a wa\u017cno\u015b\u0107 blokada komunikatu o identyfikatorze {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1}.
+MESSAGE_LOCK_EXPIRED_ERROR_CWSIP0193.explanation=Podj\u0119to pr\u00f3b\u0119 u\u017cycia komunikatu w konsumencie, lecz up\u0142yn\u0105\u0142 limit czasu blokady i komunikat zosta\u0142 ponownie udost\u0119pniony.
+MESSAGE_LOCK_EXPIRED_ERROR_CWSIP0193.useraction=Gdy up\u0142ywa limit czasu blokady, komunikat zostaje ponownie udost\u0119pniony do przetworzenia innemu konsumentowi.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The name of the messaging engine.
+ORDERED_MESSAGING_ERROR_CWSIP0194=CWSIP0194E: Miejsce docelowe o nazwie {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} jest niedost\u0119pne dla operacji odbierania komunikat\u00f3w z powodu wykonywania bie\u017c\u0105cej transakcji odbioru..
+ORDERED_MESSAGING_ERROR_CWSIP0194.explanation=Podj\u0119to pr\u00f3b\u0119 odebrania komunikat\u00f3w z miejsca docelowego, w kt\u00f3rym skonfigurowano opcj\u0119 porz\u0105dkowania. Aktualnie w tym miejscu docelowym oczekuje inna transakcja.
+ORDERED_MESSAGING_ERROR_CWSIP0194.useraction=Przed podj\u0119ciem pr\u00f3by odebrania komunikat\u00f3w w ramach nowej transakcji zako\u0144cz inne transakcje w tym miejscu docelowym.
+
+
+# -------------------------------------------------------------------------------------------------
+MESSAGE_HANDLER_CORRUPT_ERROR_CWSIP0201=CWSIP0201E: Ta operacja jest niedost\u0119pna.
+MESSAGE_HANDLER_CORRUPT_ERROR_CWSIP0201.explanation=Ten program obs\u0142ugi komunikat\u00f3w jest uszkodzony i zosta\u0142 zresetowany.
+MESSAGE_HANDLER_CORRUPT_ERROR_CWSIP0201.useraction=Zresetuj program obs\u0142ugi komunikat\u00f3w, je\u015bli nie zosta\u0142 jeszcze zresetowany.  Nast\u0119pnie zrestartuj mechanizm przesy\u0142ania komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the messaging engine
+# {1} is the name of the messaging engine bus
+MESSAGE_PROCESSOR_NOT_STARTED_ERROR_CWSIP0211=CWSIP0211E: Mechanizm przesy\u0142ania komunikat\u00f3w {0} na magistrali {1} nie zosta\u0142 uruchomiony.
+MESSAGE_PROCESSOR_NOT_STARTED_ERROR_CWSIP0211.explanation=Za\u017c\u0105dano dost\u0119pu do wymienionego mechanizmu przesy\u0142ania komunikat\u00f3w, kt\u00f3ry jednak nie zosta\u0142 uruchomiony.
+MESSAGE_PROCESSOR_NOT_STARTED_ERROR_CWSIP0211.useraction=Uruchom wymieniony mechanizm przesy\u0142ania komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the messaging engine
+# {1} is the name of the messaging engine bus
+RECONCILE_STARTED_INFO_CWSIP00212=CWSIP0212I: Mechanizm przesy\u0142ania komunikat\u00f3w {0} na magistrali {1} rozpoczyna uzgadnianie miejsca docelowego WCCM i konfiguracji po\u0142\u0105cze\u0144.
+RECONCILE_STARTED_INFO_CWSIP00212.explanation=Po zatrzymaniu mechanizmu przesy\u0142ania komunikat\u00f3w rozpocz\u0119to uzgadnianie miejsca docelowego WCCM i konfiguracji po\u0142\u0105cze\u0144 z przechowywan\u0105 w nim konfiguracj\u0105.
+RECONCILE_STARTED_INFO_CWSIP00212.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the messaging engine
+# {1} is the name of the messaging engine bus
+RECONCILE_COMPLETED_INFO_CWSIP00213=CWSIP0213I: Mechanizm przesy\u0142ania komunikat\u00f3w {0} na magistrali {1} zako\u0144czy\u0142 uzgadnianie miejsca docelowego WCCM i konfiguracji po\u0142\u0105cze\u0144.
+RECONCILE_COMPLETED_INFO_CWSIP00213.explanation=Miejsce docelowe WCCM i konfiguracja po\u0142\u0105cze\u0144 zosta\u0142y uzgodnione z konfiguracj\u0105 przechowywan\u0105 przez mechanizm przesy\u0142ania komunikat\u00f3w, gdy by\u0142 on zatrzymany. Odpowiednie zasoby zostan\u0105 zmienione, utworzone lub przeznaczone do usuni\u0119cia.
+RECONCILE_COMPLETED_INFO_CWSIP00213.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the messaging engine
+# {1} is the name of the messaging engine bus
+DESTINATION_DELETED_ERROR_CWSIP00221=CWSIP0221E: Miejsce docelowe o nazwie {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} zosta\u0142o usuni\u0119te.
+DESTINATION_DELETED_ERROR_CWSIP00221.explanation=Aplikacja, kt\u00f3ra by\u0142a po\u0142\u0105czona z usuni\u0119tym miejscem docelowym, zosta\u0142a roz\u0142\u0105czona.
+DESTINATION_DELETED_ERROR_CWSIP00221.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the messaging engine
+# {1} is the name of the messaging engine bus
+DESTINATION_EXCLUSIVE_ERROR_CWSIP00222=CWSIP0222E: Miejsce docelowe o nazwie {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} zosta\u0142o zmodyfikowane w taki spos\u00f3b, \u017ce w jego przypadku mo\u017cliwy jest tylko odbi\u00f3r wy\u0142\u0105czny.
+DESTINATION_EXCLUSIVE_ERROR_CWSIP00222.explanation=Aplikacja, kt\u00f3ra by\u0142a po\u0142\u0105czona z danym miejscem docelowym, roz\u0142\u0105czy\u0142a si\u0119, poniewa\u017c miejsce docelowe zosta\u0142o zmodyfikowane w taki spos\u00f3b, \u017ce w jego przypadku mo\u017cliwy jest tylko odbi\u00f3r wy\u0142\u0105czny.  Wszystkie aplikacje po\u0142\u0105czone z tym miejscem docelowym zostan\u0105 roz\u0142\u0105czone i tylko jedna z nich b\u0119dzie uprawniona do ponownego nawi\u0105zywania po\u0142\u0105czenia.
+DESTINATION_EXCLUSIVE_ERROR_CWSIP00222.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the messaging engine
+# {1} is the name of the messaging engine bus
+DESTINATION_UNREACHABLE_ERROR_CWSIP00223=CWSIP0223E: Nie mo\u017cna osi\u0105gn\u0105\u0107 punktu komunikat\u00f3w miejsca docelowego o nazwie {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1}.
+DESTINATION_UNREACHABLE_ERROR_CWSIP00223.explanation=Aplikacja po\u0142\u0105czona z okre\u015blonym miejscem docelowym zosta\u0142a roz\u0142\u0105czona, poniewa\u017c nie mo\u017cna by\u0142o osi\u0105gn\u0105\u0107 mechanizmu przesy\u0142ania komunikat\u00f3w wyszukuj\u0105cego miejsca docelowego.
+DESTINATION_UNREACHABLE_ERROR_CWSIP00223.useraction=Upewnij si\u0119, \u017ce jest dost\u0119pny mechanizm przesy\u0142ania komunikat\u00f3w wyszukuj\u0105cy miejsce docelowe.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} The reason code for not being able to put message to exception destination
+DESTINATION_DELETED_ERROR_CWSIP0247=CWSIP0247E: Miejsce docelowe {0} zosta\u0142o usuni\u0119te i nie mo\u017cna umie\u015bci\u0107 komunikatu w miejscu docelowym wyj\u0105tk\u00f3w z nast\u0119puj\u0105cej przyczyny: {1}.
+DESTINATION_DELETED_ERROR_CWSIP0247.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d w wyniku pr\u00f3by zatwierdzenia komunikatu w usuni\u0119tym miejscu docelowym.
+DESTINATION_DELETED_ERROR_CWSIP0247.useraction=Miejsce docelowe zosta\u0142o usuni\u0119te lub nie mo\u017ce by\u0107 u\u017cywane.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the topic space
+# {1} The messaging engine Name
+FORWARD_ROUTING_PATH_ERROR_CWSIP0249=CWSIP0249E: Nie uda\u0142o si\u0119 dostarczy\u0107 komunikatu do miejsca docelowego w \u015bcie\u017cce kierowania przy przekazywaniu, poniewa\u017c miejsce docelowe {0} jest obszarem tematu w mechanizmie przesy\u0142ania komunikat\u00f3w {1}
+FORWARD_ROUTING_PATH_ERROR_CWSIP0249.explanation=\u015acie\u017cka kierowania przy przekazywaniu zawiera\u0142a obszar tematu, kt\u00f3ry nie by\u0142 ostatnim elementem \u015bcie\u017cki. Komunikaty nie zostan\u0105 dostarczone do \u017cadnego z wymienionych w dalszej kolejno\u015bci miejsc docelowych.
+FORWARD_ROUTING_PATH_ERROR_CWSIP0249.useraction=Obszar tematu mo\u017ce by\u0107 wy\u0142\u0105cznie ostatnim elementem w \u015bcie\u017cce kierowania przy przekazywaniu. Popraw \u015bcie\u017ck\u0119 i spr\u00f3buj ponownie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the Destination
+# {1} identifies the high limit for the topic space
+# {2} the messaging engine name
+DESTINATION_HIGH_MESSAGES_ERROR_CWSIP0251=CWSIP0251E: Miejsce docelowe {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {2} jest niedost\u0119pne, poniewa\u017c osi\u0105gni\u0119to ju\u017c g\u00f3rny limit liczby komunikat\u00f3w ({1}) dla tego miejsca docelowego.
+DESTINATION_HIGH_MESSAGES_ERROR_CWSIP0251.explanation=Komunikat nie mo\u017ce by\u0107 zaakceptowany, poniewa\u017c wszystkie kolejki dla wymienionego miejsca docelowego osi\u0105gn\u0119\u0142y ju\u017c skonfigurowany dla nich g\u00f3rny limit.
+DESTINATION_HIGH_MESSAGES_ERROR_CWSIP0251.useraction=Sprawd\u017a, czy g\u00f3rny limit liczby komunikat\u00f3w skonfigurowany dla tego miejsca docelowego jest poprawny.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the messaging engine
+DESTINATION_SEND_DISALLOWED_CWSIP0253=CWSIP0253E: W przypadku miejsca docelowego {0} nie jest dozwolona operacja wysy\u0142ania (mechanizm przesy\u0142ania komunikat\u00f3w: {1})
+DESTINATION_SEND_DISALLOWED_CWSIP0253.explanation=Podj\u0119to pr\u00f3b\u0119 wys\u0142ania komunikatu do miejsca docelowego i sprawdzono, czy zosta\u0142 dla niego udost\u0119pniony punkt publikacji.  Sprawdzenie nie powiod\u0142o si\u0119, poniewa\u017c w tym punkcie publikacji nie jest dozwolone wysy\u0142anie do tego miejsca docelowego.
+DESTINATION_SEND_DISALLOWED_CWSIP0253.useraction=Zaktualizuj punkt publikacji dla tego miejsca docelowego, aby umo\u017cliwi\u0107 wysy\u0142anie. Pon\u00f3w operacj\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+ITEM_RESTORE_ERROR_CWSIP0261=CWSIP0261E: B\u0142\u0105d odtwarzania mechanizmu przesy\u0142ania komunikat\u00f3w.  Oczekiwano wersji {0}, otrzymano {1}
+ITEM_RESTORE_ERROR_CWSIP0261.explanation=Dokonano sprawdzenia wersji podczas odtwarzania elementu z trwa\u0142ej pami\u0119ci masowej mechanizmu przesy\u0142ania komunikat\u00f3w.  Sprawdzenie nie powiod\u0142o si\u0119.  Przyczyn\u0105 b\u0142\u0119du mog\u0142o by\u0107 zainstalowanie, a nast\u0119pnie usuni\u0119cie nowej wersji produktu WebSphere.  Mog\u0142o te\u017c doj\u015b\u0107 do uszkodzenia trwa\u0142ej sk\u0142adnicy.
+ITEM_RESTORE_ERROR_CWSIP0261.useraction=Na podstawie kopii zapasowej odtw\u00f3rz poprzedni stan mechanizmu przesy\u0142ania komunikat\u00f3w. Informacje na temat tej czynno\u015bci mo\u017cna znale\u017a\u0107 w Centrum informacyjnym.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+MESSAGE_CORRUPT_ERROR_CWSIP0262=CWSIP0262E: Bie\u017c\u0105cy komunikat jest uszkodzony i nie mo\u017ce zosta\u0107 dodany do trwa\u0142ej sk\u0142adnicy z powodu wyj\u0105tku {0}
+MESSAGE_CORRUPT_ERROR_CWSIP0262.explanation=Komunikaty s\u0105 dodawane do trwa\u0142ej sk\u0142adnicy. Operacja ta nie powiod\u0142a si\u0119 z powodu napotkanego problemu.
+MESSAGE_CORRUPT_ERROR_CWSIP0262.useraction= Sprawd\u017a do\u0142\u0105czony wyj\u0105tek i usu\u0144 problemy przed ponownym przes\u0142aniem komunikatu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+SUBSCRIPTION_NOT_FOUND_ERROR_CWSIP0271=CWSIP0271E: Nie znaleziono subskrypcji o identyfikatorze {0}
+SUBSCRIPTION_NOT_FOUND_ERROR_CWSIP0271.explanation=Przy\u0142\u0105czenie do subskrypcji w czasie wykonywania nie powiod\u0142o si\u0119, poniewa\u017c nie znaleziono subskrypcji.  Powodem mog\u0142o by\u0107 usuni\u0119cie subskrypcji.
+SUBSCRIPTION_NOT_FOUND_ERROR_CWSIP0271.useraction=Aby wy\u015bwietli\u0107 stan, po\u0142\u0105cz si\u0119 ponownie z inn\u0105 subskrypcj\u0105, u\u017cywaj\u0105c Konsoli administracyjnej.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+SUBSCRIPTION_DELETE_ERROR_CWSIP0272=CWSIP0272E: Subskrypcja o identyfikatorze {0} nie mo\u017ce zosta\u0107 usuni\u0119ta, poniewa\u017c nie jest to trwa\u0142a subskrypcja.
+SUBSCRIPTION_DELETE_ERROR_CWSIP0272.explanation=Usuni\u0119cie subskrypcji na panelach czasu wykonywania w Konsoli administracyjnej spowoduje usuni\u0119cie tylko trwa\u0142ych subskrypcji.  W przypadku subskrypcji innych ni\u017c trwa\u0142e operacja usuni\u0119cia nie powiedzie si\u0119.
+SUBSCRIPTION_DELETE_ERROR_CWSIP0272.useraction=Pon\u00f3w operacj\u0119 usuni\u0119cia w przypadku trwa\u0142ej subskrypcji.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The remote messaging engine
+# {1} the name of the destination
+# {2} Tick Value (internal object)
+# {3} The Stream id (internal object)
+# {4} The exception
+ENCODE_FAIL_ERROR_CWSIP0281=CWSIP0281E: Nie powiod\u0142a si\u0119 pr\u00f3ba zakodowania komunikatu w celu przes\u0142ania go do zdalnego mechanizmu przesy\u0142ania komunikat\u00f3w {0} w miejscu docelowym {1} (o parametrach {2} i {3}). B\u0142\u0105d: {4}
+ENCODE_FAIL_ERROR_CWSIP0281.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas kodowania komunikatu powi\u0105zanego ze zdalnym mechanizmem przesy\u0142ania komunikat\u00f3w. Z tego powodu komunikat nie m\u00f3g\u0142 zosta\u0107 wys\u0142any.
+ENCODE_FAIL_ERROR_CWSIP0281.useraction=Przejrzyj dzienniki ffdc, aby sprawdzi\u0107, dlaczego nie powiod\u0142a si\u0119 pr\u00f3ba zakodowania komunikatu, a nast\u0119pnie usu\u0144 b\u0142\u0105d.  Bie\u017c\u0105cy komunikat musi zosta\u0107 usuni\u0119ty ze strumienia danych wychodz\u0105cych.  Mo\u017cna to zrobi\u0107 usuwaj\u0105c komunikat z Punktu zdalnej kolejki przy pomocy Konsoli administracyjnej.
+
+# -------------------------------------------------------------------------------------------------
+# {0}  The exception destination name
+# {1} The name of the messaging engine
+# {2} The reason exception
+EXCEPTION_DESTINATION_WARNING_CWSIP0291=CWSIP0291W: Pr\u00f3ba wys\u0142ania komunikatu do miejsca docelowego wyj\u0105tk\u00f3w {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} nie powiod\u0142a si\u0119 z nast\u0119puj\u0105cego powodu: {2}
+EXCEPTION_DESTINATION_WARNING_CWSIP0291.explanation=Pr\u00f3ba wys\u0142ania komunikatu do wymienionego miejsca docelowego wyj\u0105tk\u00f3w nie powiod\u0142a si\u0119. Nast\u0105pi ponowna pr\u00f3ba przy u\u017cyciu domy\u015blnego miejsca docelowego wyj\u0105tk\u00f3w.
+EXCEPTION_DESTINATION_WARNING_CWSIP0291.useraction=Sprawd\u017a, czy wymienione miejsce docelowe istnieje i czy dzia\u0142a.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The default exception destination name
+# {1} The messaging engine name
+EXCEPTION_DESTINATION_ERROR_CWSIP0295=CWSIP0295E: Pr\u00f3ba wygenerowania raportu o wyj\u0105tku nie powiod\u0142a si\u0119. W zwi\u0105zku z tym oryginalny komunikat nie zosta\u0142 wys\u0142any do miejsca docelowego wyj\u0105tk\u00f3w {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1}
+EXCEPTION_DESTINATION_ERROR_CWSIP0295.explanation=Pr\u00f3ba skierowania komunikatu do miejsca docelowego wyj\u0105tk\u00f3w nie powiod\u0142a si\u0119, poniewa\u017c nie mo\u017cna by\u0142o wys\u0142a\u0107 \u017c\u0105danego raportu o wyj\u0105tku dla tego komunikatu.
+EXCEPTION_DESTINATION_ERROR_CWSIP0295.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0}  The user ID creating the connection
+# {1} The messaging engine name
+# {2} The bus Name
+USER_NOT_AUTHORIZED_ERROR_CWSIP0301=CWSIP0301E: Nie mo\u017cna uwierzytelni\u0107 u\u017cytkownika {0} podczas tworzenia po\u0142\u0105czenia z bezpiecznym mechanizmem przesy\u0142ania komunikat\u00f3w {1} na magistrali {2}.
+USER_NOT_AUTHORIZED_ERROR_CWSIP0301.explanation=Uwierzytelnienie podanego u\u017cytkownika nie powiod\u0142o si\u0119 podczas pr\u00f3by utworzenia po\u0142\u0105czenia z magistral\u0105 mechanizmu przesy\u0142ania komunikat\u00f3w.
+USER_NOT_AUTHORIZED_ERROR_CWSIP0301.useraction=Sprawd\u017a, czy u\u017cytkownik zosta\u0142 dodany do repozytorium zabezpiecze\u0144 WebSphere Application Server i czy zosta\u0142o podane poprawne has\u0142o.
+
+# -------------------------------------------------------------------------------------------------
+# {0}  The user attempting to access the messaging engine bus.
+USER_NOT_AUTHORIZED_ERROR_CWSIP0302=CWSIP0302E: U\u017cytkownik {0} nie ma uprawnie\u0144 wymaganych do uzyskania dost\u0119pu do mechanizmu przesy\u0142ania komunikat\u00f3w {1} na magistrali {2}.
+USER_NOT_AUTHORIZED_ERROR_CWSIP0302.explanation=Wymieniony u\u017cytkownik nie ma uprawnie\u0144 wymaganych do uzyskania dost\u0119pu do magistrali mechanizmu przesy\u0142ania komunikat\u00f3w.
+USER_NOT_AUTHORIZED_ERROR_CWSIP0302.useraction=Zaktualizuj ustawienia uprawnie\u0144 tej magistrali mechanizmu przesy\u0142ania komunikat\u00f3w, je\u015bli dany u\u017cytkownik powinien mie\u0107 do niej dost\u0119p.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The messaging engine name
+# {1} The bus Name
+NULL_USER_NOT_AUTHORIZED_ERROR_CWSIP0303=CWSIP0303E: Nie podano nazwy u\u017cytkownika podczas tworzenia po\u0142\u0105czenia z bezpiecznym mechanizmem przesy\u0142ania komunikat\u00f3w {0} na magistrali {1}.
+NULL_USER_NOT_AUTHORIZED_ERROR_CWSIP0303.explanation=Podj\u0119to pr\u00f3b\u0119 nawi\u0105zania po\u0142\u0105czenia z bezpiecznym mechanizmem przesy\u0142ania komunikat\u00f3w, lecz nie okre\u015blono nazwy u\u017cytkownika.
+NULL_USER_NOT_AUTHORIZED_ERROR_CWSIP0303.useraction=Nawi\u0105\u017c po\u0142\u0105czenie z mechanizmem przesy\u0142ania komunikat\u00f3w, podaj\u0105c nazw\u0119 u\u017cytkownika i has\u0142o.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The subject attempting the operation
+USER_NOT_AUTH_BROWSE_ERROR_CWSIP0304=CWSIP0304E: Odmowa dost\u0119pu dotycz\u0105ca przegl\u0105dania miejsca docelowego {0} dla podmiotu {1}
+USER_NOT_AUTH_BROWSE_ERROR_CWSIP0304.explanation=U\u017cytkownik nie ma uprawnie\u0144 wymaganych do przegl\u0105dania miejsca docelowego.
+USER_NOT_AUTH_BROWSE_ERROR_CWSIP0304.useraction=Je\u015bli ten u\u017cytkownik powinien mie\u0107 uprawnienia do przegl\u0105dania komunikat\u00f3w w tym miejscu docelowym, to nale\u017cy zaktualizowa\u0107 ustawienia dotycz\u0105ce autoryzacji u\u017cytkownik\u00f3w w tym miejscu docelowym.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination prefix
+# {1} The subject attempting the operation
+USER_NOT_AUTH_CREATE_ERROR_CWSIP0305=CWSIP0305E: U\u017cytkownik (podmiot: {1}) nie ma uprawnie\u0144 wymaganych do tworzenia tymczasowych miejsc docelowych z przedrostkiem {0}.
+USER_NOT_AUTH_CREATE_ERROR_CWSIP0305.explanation=U\u017cytkownik nie ma uprawnie\u0144 wymaganych do tworzenia tymczasowych miejsc docelowych z wymienionym przedrostkiem.
+USER_NOT_AUTH_CREATE_ERROR_CWSIP0305.useraction=Je\u015bli ten u\u017cytkownik powinien mie\u0107 mo\u017cliwo\u015b\u0107 tworzenia tymczasowych miejsc docelowych z wymienionym przedrostkiem, to nale\u017cy zaktualizowa\u0107 ustawienia dotycz\u0105ce autoryzacji u\u017cytkownik\u00f3w dla tego przedrostka.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The subject attempting the operation
+USER_NOT_AUTH_RECEIVE_ERROR_CWSIP0309=CWSIP0309E: Odmowa dost\u0119pu dotycz\u0105ca odbioru komunikat\u00f3w z miejsca docelowego {0} dla danego u\u017cytkownika (podmiot: {1}).
+USER_NOT_AUTH_RECEIVE_ERROR_CWSIP0309.explanation=U\u017cytkownik nie ma uprawnie\u0144 wymaganych do odbierania komunikat\u00f3w z tego miejsca docelowego.
+USER_NOT_AUTH_RECEIVE_ERROR_CWSIP0309.useraction=Je\u015bli ten u\u017cytkownik powinien mie\u0107 uprawnienia do odbierania komunikat\u00f3w z tego miejsca docelowego, to nale\u017cy zaktualizowa\u0107 ustawienia dotycz\u0105ce autoryzacji u\u017cytkownik\u00f3w w tym miejscu docelowym.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The discriminator name
+# {2} The subject attempting the operation
+USER_NOT_AUTH_RECEIVE_ERROR_CWSIP0310=CWSIP0310E: Odmowa dost\u0119pu dotycz\u0105ca odbioru komunikat\u00f3w z wyr\u00f3\u017cnika {1} w miejscu docelowym {0} dla danego u\u017cytkownika (podmiot: {2}).
+USER_NOT_AUTH_RECEIVE_ERROR_CWSIP0310.explanation=U\u017cytkownik nie ma uprawnie\u0144 wymaganych do odbierania komunikat\u00f3w z tego miejsca docelowego przy u\u017cyciu tego tematu.
+USER_NOT_AUTH_RECEIVE_ERROR_CWSIP0310.useraction=Je\u015bli ten u\u017cytkownik powinien mie\u0107 mo\u017cliwo\u015b\u0107 odbierania komunikat\u00f3w na dany temat, to nale\u017cy zaktualizowa\u0107 ustawienia dotycz\u0105ce autoryzacji u\u017cytkownik\u00f3w dla tego tematu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The user ID deleting the durable subscription
+# {1} The subscription name
+# {2} The Destination name
+USER_NOT_AUTH_DELETE_ERROR_CWSIP0311=CWSIP0311E: U\u017cytkownik {0} nie ma uprawnie\u0144 wymaganych do usuwania trwa\u0142ej subskrypcji {1} w miejscu docelowym {2}.
+USER_NOT_AUTH_DELETE_ERROR_CWSIP0311.explanation=U\u017cytkownik podj\u0105\u0142 pr\u00f3b\u0119 usuni\u0119cia trwa\u0142ej subskrypcji, ale nie jest u\u017cytkownikiem, kt\u00f3ry j\u0105 utworzy\u0142.
+USER_NOT_AUTH_DELETE_ERROR_CWSIP0311.useraction=Trwa\u0142\u0105 subskrypcj\u0119 mo\u017ce usun\u0105\u0107 tylko ten u\u017cytkownik, kt\u00f3ry j\u0105 utworzy\u0142.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The user ID activating the durable subscription
+# {1} The subscription name
+# {2} The Destination name
+USER_NOT_AUTH_ACTIVATE_ERROR_CWSIP0312=CWSIP0312E: U\u017cytkownik {0} nie ma uprawnie\u0144 wymaganych do aktywowania trwa\u0142ej subskrypcji {1} w miejscu docelowym {2}.
+USER_NOT_AUTH_ACTIVATE_ERROR_CWSIP0312.explanation=U\u017cytkownik nie ma uprawnie\u0144 wymaganych do aktywowania trwa\u0142ej subskrypcji, poniewa\u017c nie jest on u\u017cytkownikiem, kt\u00f3ry j\u0105 utworzy\u0142.
+USER_NOT_AUTH_ACTIVATE_ERROR_CWSIP0312.useraction=Trwa\u0142\u0105 subskrypcj\u0119 mo\u017ce aktywowa\u0107 tylko ten u\u017cytkownik, kt\u00f3ry j\u0105 utworzy\u0142.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The user ID activating the durable subscription
+# {1} The exception destination name
+USER_NOT_AUTH_EXCEPTION_DEST_ERROR_CWSIP0313=CWSIP0313E: U\u017cytkownik {0} nie ma uprawnie\u0144 wymaganych do uzyskiwania dost\u0119pu do miejsca docelowego wyj\u0105tk\u00f3w {1}.
+USER_NOT_AUTH_EXCEPTION_DEST_ERROR_CWSIP0313.explanation=U\u017cytkownik nie ma uprawnie\u0144 wymaganych do umieszczania komunikat\u00f3w w podanym miejscu docelowym wyj\u0105tk\u00f3w.
+USER_NOT_AUTH_EXCEPTION_DEST_ERROR_CWSIP0313.useraction=Je\u015bli ten u\u017cytkownik powinien mie\u0107 dost\u0119p do miejsca docelowego wyj\u0105tk\u00f3w, to nale\u017cy zmodyfikowa\u0107 ustawienia kontroli dost\u0119pu do tego miejsca docelowego wyj\u0105tk\u00f3w w Konsoli administracyjnej, dodaj\u0105c wymienionego u\u017cytkownika.
+
+# -------------------------------------------------------------------------------------------------
+# {0} destination name
+# {1} the user name
+USER_NOT_AUTH_INQUIRE_ERROR_CWSIP0314=CWSIP0314E: Odmowa dost\u0119pu dotycz\u0105ca zapytania o miejsce docelowe {0} dla danego u\u017cytkownika (podmiot: {1})
+USER_NOT_AUTH_INQUIRE_ERROR_CWSIP0314.explanation=U\u017cytkownik nie ma uprawnie\u0144 wymaganych do wysy\u0142ania zapytania o konfiguracj\u0119 miejsca docelowego.
+USER_NOT_AUTH_INQUIRE_ERROR_CWSIP0314.useraction=Je\u015bli ten u\u017cytkownik powinien mie\u0107 dost\u0119p do zapytania o konfiguracj\u0119 miejsca docelowego, to w Konsoli administracyjnej nale\u017cy zmodyfikowa\u0107 ustawienia kontroli dost\u0119pu do zapytania, dodaj\u0105c wymienionego u\u017cytkownika.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The foreign bus name
+# {1} the user name
+USER_NOT_AUTH_INQUIRE_FB_ERROR_CWSIP0315=CWSIP0315E: Odmowa dost\u0119pu dotycz\u0105ca zapytania o magistral\u0119 obc\u0105 {0} dla danego u\u017cytkownika (podmiot: {1}).
+USER_NOT_AUTH_INQUIRE_FB_ERROR_CWSIP0315.explanation=U\u017cytkownik nie ma uprawnie\u0144 wymaganych do wysy\u0142ania zapytania o konfiguracj\u0119 okre\u015blonej obcej magistrali.
+USER_NOT_AUTH_INQUIRE_FB_ERROR_CWSIP0315.useraction=Je\u015bli ten u\u017cytkownik powinien mie\u0107 dost\u0119p do zapytania o konfiguracj\u0119 obcej magistrali, to w Konsoli administracyjnej nale\u017cy zmodyfikowa\u0107 ustawienia kontroli dost\u0119pu do zapytania, dodaj\u0105c wymienionego u\u017cytkownika.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the user name
+USER_NOT_AUTH_INVOKE_ERROR_CWSIP0316=CWSIP0316E: Aby u\u017cytkownik {0} m\u00f3g\u0142 u\u017cywa\u0107 metody invokeCommand(), musi mie\u0107 dost\u0119p SIBServerSubject
+USER_NOT_AUTH_INVOKE_ERROR_CWSIP0316.explanation=U\u017cytkownik nie ma uprawnie\u0144 wymaganych do wywo\u0142ywania metody invokeCommand() wzgl\u0119dem po\u0142\u0105czenia
+USER_NOT_AUTH_INVOKE_ERROR_CWSIP0316.useraction=Wywo\u0142aj metod\u0119 wzgl\u0119dem po\u0142\u0105czenia, korzystaj\u0105c z dost\u0119pu SIBServerSubject
+
+# -------------------------------------------------------------------------------------------------
+# {0} the user name
+DESTINATION_DELETE_ERROR_CWSIP0331=CWSIP0331W: Miejsce docelowe {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} zosta\u0142o ju\u017c oznaczone do usuni\u0119cia.
+DESTINATION_DELETE_ERROR_CWSIP0331.explanation=Zg\u0142oszono \u017c\u0105danie usuni\u0119cia miejsca docelowego, ale to miejsce docelowe zosta\u0142o ju\u017c oznaczone do usuni\u0119cia.
+DESTINATION_DELETE_ERROR_CWSIP0331.useraction=System powinien usun\u0105\u0107 miejsce docelowe z mechanizmu przesy\u0142ania komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the user name
+DESTINATION_NOT_FOUND_ERROR_CWSIP0341=CWSIP0341W: W mechanizmie przesy\u0142ania komunikat\u00f3w {1} nie znaleziono miejsca docelowego {0}.
+DESTINATION_NOT_FOUND_ERROR_CWSIP0341.explanation=Miejsce docelowe o podanej nazwie jest nieznane w lokalnym mechanizmie przesy\u0142ania komunikat\u00f3w.
+DESTINATION_NOT_FOUND_ERROR_CWSIP0341.useraction=Sprawd\u017a, czy nazwa miejsca docelowego jest poprawna.  Je\u015bli miejsce docelowe istnieje w innym mechanizmie przesy\u0142ania komunikat\u00f3w, sprawd\u017a, czy dzia\u0142a komunikacja z innym mechanizmem przesy\u0142ania komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id.
+# {1} The destination name
+MESSAGE_INDOUBT_WARNING_CWSIP0361=CWSIP0361W: Komunikat o identyfikatorze {0} nie mo\u017ce zosta\u0107 usuni\u0119ty, poniewa\u017c transakcja, za pomoc\u0105 kt\u00f3rej dodano go do miejsca docelowego {1}, nie zosta\u0142a zatwierdzona.
+MESSAGE_INDOUBT_WARNING_CWSIP0361.explanation=Komunikat zosta\u0142 wys\u0142any do wymienionego miejsca docelowego przy u\u017cyciu komponentu MessageProducer korzystaj\u0105cego z transakcji.  Ta transakcja nie zosta\u0142a zatwierdzona dla miejsca docelowego, wi\u0119c komunikat nie mo\u017ce by\u0107 usuni\u0119ty.
+MESSAGE_INDOUBT_WARNING_CWSIP0361.useraction=Przejrzyj sekcj\u0119 Rozstrzyganie w\u0105tpliwych transakcji w Centrum Informacyjnym, aby zatwierdzi\u0107 lub wycofa\u0107 transakcj\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id.
+# {1} The destination name
+MESSAGE_INDOUBT_WARNING_CWSIP0362=CWSIP0362W: Komunikat o identyfikatorze {0} nie mo\u017ce zosta\u0107 usuni\u0119ty z miejsca docelowego {1}, poniewa\u017c komunikat zosta\u0142 dostarczony do konsumenta.
+MESSAGE_INDOUBT_WARNING_CWSIP0362.explanation=Nie mo\u017cna usun\u0105\u0107 komunikatu, poniewa\u017c zosta\u0142 on dostarczony do konsumenta.
+MESSAGE_INDOUBT_WARNING_CWSIP0362.useraction=Zatrzymaj wszystkie komponenty MDB lub aplikacje korzystaj\u0105ce z miejsca docelowego i spr\u00f3buj usun\u0105\u0107 komunikat ponownie.  Je\u015bli nadal nie mo\u017cna usun\u0105\u0107 komunikatu, przejrzyj sekcj\u0119 Rozstrzyganie w\u0105tpliwych transakcji w Centrum Informacyjnym, aby zatwierdzi\u0107 lub wycofa\u0107 transakcj\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The selector supplied.
+INVALID_SELECTOR_ERROR_CWSIP0371=CWSIP0371E: Sk\u0142adnia selektora {0} jest niepoprawna.
+INVALID_SELECTOR_ERROR_CWSIP0371.explanation=Podana sk\u0142adnia selektora jest niepoprawna.
+INVALID_SELECTOR_ERROR_CWSIP0371.useraction=Popraw sk\u0142adni\u0119 selektora i pon\u00f3w pr\u00f3b\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic supplied.
+INVALID_TOPIC_ERROR_CWSIP0372=CWSIP0372E: Sk\u0142adnia tematu {0} jest niepoprawna.
+INVALID_TOPIC_ERROR_CWSIP0372.explanation=Podana sk\u0142adnia tematu jest niepoprawna.
+INVALID_TOPIC_ERROR_CWSIP0372.useraction=Popraw sk\u0142adni\u0119 tematu i pon\u00f3w pr\u00f3b\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# {0} related Exception.
+ACL_ADD_WARNING_CWSIP0373=CWSIP0373W: Nie mo\u017cna za\u0142adowa\u0107 listy kontroli dost\u0119pu z powodu nast\u0119puj\u0105cego wyj\u0105tku: {0}.
+ACL_ADD_WARNING_CWSIP0373.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas \u0142adowania listy kontroli dost\u0119pu.
+ACL_ADD_WARNING_CWSIP0373.useraction=Sprawd\u017a i popraw powi\u0105zany wyj\u0105tek, aby poprawnie za\u0142adowa\u0107 list\u0119 kontroli dost\u0119pu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Discriminator name
+# {1} user
+# {2} related Exception.
+ACL_ADD_WARNING_CWSIP0374=CWSIP0374W: Nie mo\u017cna za\u0142adowa\u0107 listy kontroli dost\u0119pu dla wyr\u00f3\u017cnika {0} i u\u017cytkownika {1} z powodu nast\u0119puj\u0105cego wyj\u0105tku: {2}
+ACL_ADD_WARNING_CWSIP0374.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas \u0142adowania listy kontroli dost\u0119pu.
+ACL_ADD_WARNING_CWSIP0374.useraction=Sprawd\u017a i popraw powi\u0105zany wyj\u0105tek, aby poprawnie za\u0142adowa\u0107 list\u0119 kontroli dost\u0119pu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Discriminator name
+# {1} related Exception.
+ACL_ADD_WARNING_CWSIP0375=CWSIP0375W: Nie mo\u017cna za\u0142adowa\u0107 listy kontroli dost\u0119pu dla wyr\u00f3\u017cnika {0} z powodu nast\u0119puj\u0105cego wyj\u0105tku: {1}
+ACL_ADD_WARNING_CWSIP0375.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas \u0142adowania listy kontroli dost\u0119pu.
+ACL_ADD_WARNING_CWSIP0375.useraction=Sprawd\u017a i popraw powi\u0105zany wyj\u0105tek, aby poprawnie za\u0142adowa\u0107 list\u0119 kontroli dost\u0119pu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The related exception.
+INVALID_SELECTOR_ERROR_CWSIP0376=CWSIP0376E: Nieudana pr\u00f3ba przeanalizowania selektora z powodu b\u0142\u0119du wewn\u0119trznego.
+INVALID_SELECTOR_ERROR_CWSIP0376.explanation=\u015arodowisko analizy selektora jest niepoprawne.
+INVALID_SELECTOR_ERROR_CWSIP0376.useraction=Sprawd\u017a i popraw zwi\u0105zany z tym wyj\u0105tek.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value provided for the custom property
+INVALID_XPATH_CUSTOM_PROPERTY_CWSIP0377=CWSIP0377I: Niestandardow\u0105 w\u0142a\u015bciwo\u015b\u0107 Magistrala optymalizacji XPath ustawiono na niepoprawn\u0105 warto\u015b\u0107 {0}. Optymalizacja XPath zostanie w\u0142\u0105czona.
+INVALID_XPATH_CUSTOM_PROPERTY_CWSIP0377.explanation=W\u0142a\u015bciwo\u015b\u0107 niestandardowa Magistrala optymalizacji XPath zosta\u0142a nieprawid\u0142owo ustawiona. Oczekiwana warto\u015b\u0107 to "enabled" (w\u0142\u0105czona) lub "disabled" (wy\u0142\u0105czona). Mechanizm przesy\u0142ania komunikat\u00f3w zostanie uruchomiony z w\u0142\u0105czon\u0105 optymalizacj\u0105.
+INVALID_XPATH_CUSTOM_PROPERTY_CWSIP0377.useraction=Sprawd\u017a i popraw warto\u015b\u0107 tej w\u0142a\u015bciwo\u015bci niestandardowej, a nast\u0119pnie zrestartuj serwer.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The UUID of the Remote messaging engine
+NO_NEIGHBOUR_REPLY_WARNING_CWSIP0381=CWSIP0381W: Z mechanizmu przesy\u0142ania komunikat\u00f3w {0} nie otrzymano odpowiedzi na \u017c\u0105danie subskrypcji.
+NO_NEIGHBOUR_REPLY_WARNING_CWSIP0381.explanation=Wys\u0142ano \u017c\u0105danie do zdalnego mechanizmu przesy\u0142ania komunikat\u00f3w, kt\u00f3ry nie odpowiedzia\u0142 w odpowiednim czasie.  To oznacza, \u017ce topologia publikowania/subskrypcji mechanizmu przesy\u0142ania komunikat\u00f3w mo\u017ce by\u0107 niesp\u00f3jna.
+NO_NEIGHBOUR_REPLY_WARNING_CWSIP0381.useraction=Sprawd\u017a, czy zosta\u0142 uruchomiony zdalny mechanizm przesy\u0142ania komunikat\u00f3w.  Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, skontaktuj si\u0119 z przedstawicielem dzia\u0142u wsparcia IBM.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The UUID of the Remote messaging engine
+NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382=CWSIP0382I: Mechanizm przesy\u0142ania komunikat\u00f3w {0} odpowiedzia\u0142 na \u017c\u0105danie subskrypcji. Topologia publikowania/subskrypcji jest ju\u017c sp\u00f3jna.
+NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382.explanation=Komunikacja mi\u0119dzy mechanizmami przesy\u0142ania komunikat\u00f3w powiod\u0142a si\u0119. Topologia publikowania/subskrypcji jest sp\u00f3jna.
+NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The remote messaging engine name
+# {1} The related exception
+PUBSUB_CONSISTENCY_ERROR_CWSIP0383=CWSIP0383E: Nieudana pr\u00f3ba wys\u0142ania komunikatu o pocz\u0105tkowym stanie subskrypcji do mechanizmu przesy\u0142ania komunikat\u00f3w {0}. Do czasu rozwi\u0105zania tego problemu przesy\u0142anie komunikat\u00f3w w topologii publikowania/subskrypcji b\u0119dzie funkcjonowa\u0107 niesp\u00f3jnie. {1}.
+PUBSUB_CONSISTENCY_ERROR_CWSIP0383.explanation=Pr\u00f3ba nawi\u0105zania komunikacji mi\u0119dzy mechanizmami przesy\u0142ania komunikat\u00f3w nie powiod\u0142a si\u0119. Topologia publikowania/subskrypcji b\u0119dzie niesp\u00f3jna.
+PUBSUB_CONSISTENCY_ERROR_CWSIP0383.useraction=Rozwi\u0105\u017c problemy wskazane przez ten b\u0142\u0105d i zrestartuj mechanizm przesy\u0142ania komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The messaging engine name.
+# {1} The related exception
+MESSAGE_PROCESSOR_CONFIGURE_NEIGHBOURS_ERROR_CWSIP0391=CWSIP0391E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by skonfigurowania listy zdalnych mechanizm\u00f3w przesy\u0142ania komunikat\u00f3w dla mechanizmu przesy\u0142ania komunikat\u00f3w {0}. Wyj\u0105tek: {1}.
+MESSAGE_PROCESSOR_CONFIGURE_NEIGHBOURS_ERROR_CWSIP0391.explanation=CMSG0001
+MESSAGE_PROCESSOR_CONFIGURE_NEIGHBOURS_ERROR_CWSIP0391.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The messaging engine name
+# {1} The related exception
+REPORT_MESSAGE_ERROR_CWSIP0422=CWSIP0422E: \u017b\u0105dany typ komunikatu (raport o utracie wa\u017cno\u015bci) nie m\u00f3g\u0142 zosta\u0107 wys\u0142any w mechanizmie przesy\u0142ania komunikat\u00f3w {0}. {1}
+REPORT_MESSAGE_ERROR_CWSIP0422.explanation=Wyst\u0105pi\u0142 problem podczas tworzenia tego typu komunikatu (raportu o utracie wa\u017cno\u015bci).
+REPORT_MESSAGE_ERROR_CWSIP0422.useraction=Popraw wszystkie powi\u0105zane b\u0142\u0119dy.  Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, skontaktuj si\u0119 z przedstawicielem dzia\u0142u wsparcia IBM.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the report message type
+# {1} The related exception
+REPORT_MESSAGE_ERROR_CWSIP0423=CWSIP0423E: \u017b\u0105dany typ komunikatu (potwierdzenie dostarczenia) nie m\u00f3g\u0142 zosta\u0107 wys\u0142any w mechanizmie przesy\u0142ania komunikat\u00f3w {0}. {1}
+REPORT_MESSAGE_ERROR_CWSIP0423.explanation=Wyst\u0105pi\u0142 problem podczas tworzenia tego typu komunikatu (potwierdzenie dostarczenia).
+REPORT_MESSAGE_ERROR_CWSIP0423.useraction=Popraw wszystkie powi\u0105zane b\u0142\u0119dy.  Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, skontaktuj si\u0119 z przedstawicielem dzia\u0142u wsparcia IBM.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The Messaging engine name
+# {1} The destination name
+FLUSH_COMPLETE_CWSIP0451=CWSIP0451I: Zako\u0144czono wymuszone opr\u00f3\u017cnianie strumieni Anycast dla mechanizmu przesy\u0142ania komunikat\u00f3w {0} i znajduj\u0105cego si\u0119 w nim miejsca docelowego {1}
+FLUSH_COMPLETE_CWSIP0451.explanation=Brak.
+FLUSH_COMPLETE_CWSIP0451.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The Messaging engine name
+# {2} The remote messaging engine name
+FLUSH_COMPLETE_CWSIP0452=CWSIP0452I: Zako\u0144czono wymuszone opr\u00f3\u017cnianie strumieni Anycast dla miejsca docelowego {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1}, poniewa\u017c zdalny mechanizm przesy\u0142ania komunikat\u00f3w {2} zosta\u0142 usuni\u0119ty.
+FLUSH_COMPLETE_CWSIP0452.explanation=Brak.
+FLUSH_COMPLETE_CWSIP0452.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination for which for which the transaction failed
+# {1} The number of retries attempted
+MSGSTORE_STOP_RETRY_CWSIP0457=CWSIP0457E: Nie powiod\u0142a si\u0119 pr\u00f3ba utrwalenia stanu na potrzeby dost\u0119pu w przypadku konsumenta zdalnego dla miejsca docelowego {0} znajduj\u0105cego si\u0119 w tym mechanizmie przesy\u0142ania komunikat\u00f3w.
+MSGSTORE_STOP_RETRY_CWSIP0457.explanation=Lokalny stan dla konsument\u00f3w zdalnie przy\u0142\u0105czonych do miejsca docelowego mo\u017ce by\u0107 uszkodzony, poniewa\u017c po wielu pr\u00f3bach transakcja lokalna nie zosta\u0142a zatwierdzona.
+MSGSTORE_STOP_RETRY_CWSIP0457.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination
+# {1} The messaging engine we are trying to reach
+ANYCAST_STREAM_UNAVAILABLE_CWSIP0471=CWSIP0471E: Komunikacja z mechanizmem przesy\u0142ania komunikat\u00f3w {1}, w kt\u00f3rym znajduje si\u0119 miejsce docelowe {0}, nie jest mo\u017cliwa.
+ANYCAST_STREAM_UNAVAILABLE_CWSIP0471.explanation=Komunikacja z mechanizmem przesy\u0142ania komunikat\u00f3w, w kt\u00f3rym znajduje si\u0119 miejsce docelowe, jest niemo\u017cliwa. Mo\u017ce to by\u0107 spowodowane przez niepoprawn\u0105 partycj\u0119 sieciow\u0105 lub przez to, \u017ce mechanizm przesy\u0142ania komunikat\u00f3w nadal jest inicjowany.
+ANYCAST_STREAM_UNAVAILABLE_CWSIP0471.useraction=Sprawd\u017a, czy jest mo\u017cliwa komunikacja z tym mechanizmem przesy\u0142ania komunikat\u00f3w, i spr\u00f3buj ponownie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination
+# {1} The messaging engine where it is localised
+CONSUMERCARDINALITY_LIMIT_REACHED_CWSIP0472=CWSIP0472E: Przy\u0142\u0105czenie konsumenta jest niedozwolone lub zosta\u0142 on od\u0142\u0105czony z powodu przekroczenia limitu liczno\u015bci konsument\u00f3w dla miejsca docelowego {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1}.
+CONSUMERCARDINALITY_LIMIT_REACHED_CWSIP0472.explanation=Limit liczno\u015bci dla tego miejsca docelowego to jeden konsument. Limit zosta\u0142 osi\u0105gni\u0119ty.
+CONSUMERCARDINALITY_LIMIT_REACHED_CWSIP0472.useraction=Spr\u00f3buj ponownie po roz\u0142\u0105czeniu si\u0119 obecnego konsumenta.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination
+# {1} The messaging engine where it is localised
+# {2} The exception
+PUTEXCEPTION_DISCONNECT_CONSUMER_CWSIP0473=CWSIP0473E: Wyst\u0105pi\u0142 wyj\u0105tek {2} w miejscu docelowym {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} podczas umieszczania zdalnego komunikatu w lokalnej trwa\u0142ej sk\u0142adnicy.
+PUTEXCEPTION_DISCONNECT_CONSUMER_CWSIP0473.explanation=Wyst\u0105pi\u0142 wyj\u0105tek przy umieszczaniu zdalnego komunikatu w lokalnej trwa\u0142ej sk\u0142adnicy danych. Konsument powinien zosta\u0107 roz\u0142\u0105czony, aby zapobiec naruszeniu zasad porz\u0105dkowania komunikat\u00f3w.
+PUTEXCEPTION_DISCONNECT_CONSUMER_CWSIP0473.useraction=Konsument powinien zosta\u0107 roz\u0142\u0105czony, aby zapobiec naruszeniu zasad porz\u0105dkowania komunikat\u00f3w. Wyj\u0105tek powinien zawiera\u0107 wyja\u015bnienie przyczyny problemu. Spr\u00f3buj ponownie po usuni\u0119ciu przyczyny.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination
+# {1} The messaging engine we are trying to reach
+ANYCAST_STREAM_UNAVAILABLE_CWSIP0481=CWSIP0481E: Strumie\u0144 komunikacji z mechanizmem przesy\u0142ania komunikat\u00f3w {1}, w kt\u00f3rym znajduje si\u0119 miejsce docelowe {0}, jest niedost\u0119pny.
+ANYCAST_STREAM_UNAVAILABLE_CWSIP0481.explanation=Strumie\u0144 komunikacji z mechanizmem przesy\u0142ania komunikat\u00f3w, w kt\u00f3rym znajduje si\u0119 to miejsce docelowe, jest niedost\u0119pny. Mo\u017ce to by\u0107 spowodowane przez niepoprawn\u0105 partycj\u0119 sieciow\u0105 lub przez to, \u017ce strumie\u0144 nadal jest inicjowany.
+ANYCAST_STREAM_UNAVAILABLE_CWSIP0481.useraction=Sprawd\u017a, czy jest mo\u017cliwa komunikacja z tym mechanizmem przesy\u0142ania komunikat\u00f3w, i spr\u00f3buj ponownie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination
+# {1} The messaging engine we are trying to reach
+ANYCAST_STREAM_NOT_FLUSHED_CWSIP0512=CWSIP0512E: Strumie\u0144 komunikacji z mechanizmem przesy\u0142ania komunikat\u00f3w {1}, w kt\u00f3rym znajduje si\u0119 miejsce docelowe {0}, jest niedost\u0119pny.
+ANYCAST_STREAM_NOT_FLUSHED_CWSIP0512.explanation=Strumie\u0144 komunikacji z mechanizmem przesy\u0142ania komunikat\u00f3w, w kt\u00f3rym znajduje si\u0119 to miejsce docelowe, jest niedost\u0119pny, poniewa\u017c konieczne jest utworzenie nowego strumienia, a poprzedni strumie\u0144 nie zosta\u0142 jeszcze opr\u00f3\u017cniony. Przyczyn\u0105 mog\u0142a by\u0107 niepoprawna partycja sieciowa.
+ANYCAST_STREAM_NOT_FLUSHED_CWSIP0512.useraction=Sprawd\u017a, czy jest mo\u017cliwa komunikacja z tym mechanizmem przesy\u0142ania komunikat\u00f3w, i spr\u00f3buj ponownie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination
+# {1} The messaging engine where it is localised
+CONSUMERCARDINALITY_LIMIT_REACHED_CWSIP0514=CWSIP0514E: Przy\u0142\u0105czenie konsumenta jest niedozwolone lub zosta\u0142 on od\u0142\u0105czony z powodu przekroczenia limitu liczno\u015bci konsument\u00f3w dla miejsca docelowego {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1}.
+CONSUMERCARDINALITY_LIMIT_REACHED_CWSIP0514.explanation=Limit liczno\u015bci dla tego miejsca docelowego to jeden konsument. Limit zosta\u0142 osi\u0105gni\u0119ty.
+CONSUMERCARDINALITY_LIMIT_REACHED_CWSIP0514.useraction=Spr\u00f3buj ponownie po roz\u0142\u0105czeniu si\u0119 obecnego konsumenta.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination for which for which the transaction failed
+# {1} The number of retries attempted
+MSGSTORE_STOP_RETRY_CWSIP0515=CWSIP0515E: Nie powiod\u0142a si\u0119 pr\u00f3ba utrwalenia stanu dost\u0119pu w przypadku zdalnej kolejki dla miejsca docelowego {0}.
+MSGSTORE_STOP_RETRY_CWSIP0515.explanation=Lokalny stan przy\u0142\u0105czenia do miejsca docelowego mo\u017ce by\u0107 uszkodzony, poniewa\u017c po wielu pr\u00f3bach transakcja lokalna nie zosta\u0142a zatwierdzona.
+MSGSTORE_STOP_RETRY_CWSIP0515.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination we are trying to attach to.
+# {1} The messaging engine we are trying to reach.
+ANYCAST_CANNOT_CREATE_STREAM_CWSIP0517=CWSIP0517E: Nie mo\u017cna utworzy\u0107 przy\u0142\u0105czenia do punktu kolejki dla miejsca docelowego {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1}.
+ANYCAST_CANNOT_CREATE_STREAM_CWSIP0517.explanation=Brak dost\u0119pu do mechanizmu przesy\u0142ania komunikat\u00f3w, w kt\u00f3rym znajduje si\u0119 ten punkt kolejki dla tego miejsca docelowego.
+ANYCAST_CANNOT_CREATE_STREAM_CWSIP0517.useraction=Sprawd\u017a, czy ten mechanizm przesy\u0142ania komunikat\u00f3w zosta\u0142 uruchomiony i czy zosta\u0142o nawi\u0105zane po\u0142\u0105czenie mi\u0119dzy mechanizmami przesy\u0142ania komunikat\u00f3w. Spr\u00f3buj ponownie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination we are trying to attach to.
+# {1} The messaging engine we are trying to reach.
+ANYCAST_CANNOT_REQUEST_FLUSH_CWSIP0518=CWSIP0518E: Nie mo\u017cna utworzy\u0107 przy\u0142\u0105czenia do punktu kolejki dla miejsca docelowego {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1}.
+ANYCAST_CANNOT_REQUEST_FLUSH_CWSIP0518.explanation=Brak dost\u0119pu do mechanizmu przesy\u0142ania komunikat\u00f3w, w kt\u00f3rym znajduje si\u0119 ten punkt kolejki dla tego miejsca docelowego.
+ANYCAST_CANNOT_REQUEST_FLUSH_CWSIP0518.useraction=Sprawd\u017a, czy ten mechanizm przesy\u0142ania komunikat\u00f3w zosta\u0142 uruchomiony i czy zosta\u0142o nawi\u0105zane po\u0142\u0105czenie mi\u0119dzy mechanizmami przesy\u0142ania komunikat\u00f3w. Spr\u00f3buj ponownie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination we are trying to browse.
+BROWSE_TIMEOUT_CWSIP0532=CWSIP0532E: Przekroczono limit czasu podczas zdalnego przegl\u0105dania miejsca docelowego {0}.
+BROWSE_TIMEOUT_CWSIP0532.explanation=Mechanizm przesy\u0142ania komunikat\u00f3w, w kt\u00f3rym znajduje si\u0119 punkt kolejki dla tego miejsca docelowego, nie odpowiedzia\u0142 na \u017c\u0105danie przegl\u0105dania.
+BROWSE_TIMEOUT_CWSIP0532.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination we are trying to browse.
+# {1} the failure reason
+BROWSE_FAILED_CWSIP0533=CWSIP0533E: Zdalne przegl\u0105danie miejsca docelowego {0} nie powiod\u0142o si\u0119 z nast\u0119puj\u0105cej przyczyny: {1}
+BROWSE_FAILED_CWSIP0533.explanation=Mechanizm przesy\u0142ania komunikat\u00f3w, w kt\u00f3rym znajduje si\u0119 punkt kolejki dla tego miejsca docelowego, zwr\u00f3ci\u0142 kod b\u0142\u0119du podczas przetwarzania \u017c\u0105dania przegl\u0105dania.
+BROWSE_FAILED_CWSIP0533.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the UUID of the destination
+DESTINATION_DELETED_ERROR_CWSIP0550=CWSIP0550E: Miejsce docelowe {0} o identyfikatorze UUID {1} zosta\u0142o usuni\u0119te i komunikat nie mo\u017ce zosta\u0107 umieszczony w tym miejscu docelowym wyj\u0105tk\u00f3w.
+DESTINATION_DELETED_ERROR_CWSIP0550.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by wykonania procedury czyszcz\u0105cej dla komunikat\u00f3w z podanego miejsca docelowego.
+DESTINATION_DELETED_ERROR_CWSIP0550.useraction=Procedura czyszcz\u0105ca zostanie powt\u00f3rzona p\u00f3\u017aniej.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the UUID of the destination
+# {2} the state
+NOTIFY_SEND_ALLOWED_STATE_CHANGE_CWSIP0551=CWSIP0551I: Stan miejsca docelowego {0} o identyfikatorze UUID {1}, kt\u00f3ry zezwala\u0142 na wysy\u0142anie, zmieni\u0142 si\u0119 na {2}.
+NOTIFY_SEND_ALLOWED_STATE_CHANGE_CWSIP0551.explanation=Zmieniono zachowanie punkt\u00f3w komunikat\u00f3w powi\u0105zanych z tym miejscem docelowym.
+NOTIFY_SEND_ALLOWED_STATE_CHANGE_CWSIP0551.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the UUID of the destination
+# {2} the state
+NOTIFY_RECEIVE_ALLOWED_STATE_CHANGE_CWSIP0552=CWSIP0552I: Stan miejsca docelowego {0} o identyfikatorze UUID {1}, kt\u00f3ry zezwala\u0142 na odbieranie, zmieni\u0142 si\u0119 na {2}.
+NOTIFY_RECEIVE_ALLOWED_STATE_CHANGE_CWSIP0552.explanation=Zmieniono zachowanie punkt\u00f3w komunikat\u00f3w powi\u0105zanych z tym miejscem docelowym.
+NOTIFY_RECEIVE_ALLOWED_STATE_CHANGE_CWSIP0552.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the messaging engine
+NOTIFY_DEPTH_THRESHOLD_REACHED_CWSIP0553=CWSIP0553W: Miejsce docelowe {0} znajduj\u0105ce si\u0119 w mechanizmie przesy\u0142ania komunikat\u00f3w {1} osi\u0105gn\u0119\u0142o g\u00f3rny pr\u00f3g g\u0142\u0119boko\u015bci komunikat\u00f3w wynosz\u0105cy {2}.
+NOTIFY_DEPTH_THRESHOLD_REACHED_CWSIP0553.explanation=Liczba komunikat\u00f3w przechowywanych w tym punkcie komunikat\u00f3w zmieni\u0142a si\u0119, co spowodowa\u0142o, \u017ce liczba przechowywanych komunikat\u00f3w przekroczy\u0142a g\u00f3rny pr\u00f3g g\u0142\u0119boko\u015bci.
+NOTIFY_DEPTH_THRESHOLD_REACHED_CWSIP0553.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the messaging engine
+NOTIFY_DEPTH_THRESHOLD_REACHED_CWSIP0554=CWSIP0554W: Miejsce docelowe {0} znajduj\u0105ce si\u0119 w mechanizmie przesy\u0142ania komunikat\u00f3w {1} osi\u0105gn\u0119\u0142o dolny pr\u00f3g g\u0142\u0119boko\u015bci komunikat\u00f3w wynosz\u0105cy {2}.
+NOTIFY_DEPTH_THRESHOLD_REACHED_CWSIP0554.explanation=Liczba komunikat\u00f3w w miejscu docelowym obni\u017cy\u0142a si\u0119 z progu g\u00f3rnego do ni\u017cszego poziomu progu. Dlatego miejsce docelowe mo\u017ce akceptowa\u0107 nowe komunikaty.
+NOTIFY_DEPTH_THRESHOLD_REACHED_CWSIP0554.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine that hosts the remote messaging point.
+# {1} the name of the destination
+# {2} the name of the messaging engine where the destination is localised
+NOTIFY_REMOTE_DEPTH_THRESHOLD_REACHED_CWSIP0555=CWSIP0555W: Zdalny punkt komunikat\u00f3w w mechanizmie przesy\u0142ania komunikat\u00f3w {0} dla miejsca docelowego {1} znajduj\u0105cego si\u0119 w mechanizmie przesy\u0142ania komunikat\u00f3w {2} osi\u0105gn\u0105\u0142 g\u00f3rny pr\u00f3g g\u0142\u0119boko\u015bci komunikat\u00f3w.
+NOTIFY_REMOTE_DEPTH_THRESHOLD_REACHED_CWSIP0555.explanation=Liczba komunikat\u00f3w przechowywanych w tym punkcie komunikat\u00f3w zmieni\u0142a si\u0119, co spowodowa\u0142o, \u017ce liczba przechowywanych komunikat\u00f3w przekroczy\u0142a g\u00f3rny pr\u00f3g g\u0142\u0119boko\u015bci.
+NOTIFY_REMOTE_DEPTH_THRESHOLD_REACHED_CWSIP0555.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine that hosts the remote messaging point.
+# {1} the name of the destination
+# {2} the name of the messaging engine where the destination is localised
+NOTIFY_REMOTE_DEPTH_THRESHOLD_REACHED_CWSIP0556=CWSIP0556W: Zdalny punkt komunikat\u00f3w w mechanizmie przesy\u0142ania komunikat\u00f3w {0} dla miejsca docelowego {1} znajduj\u0105cego si\u0119 w mechanizmie przesy\u0142ania komunikat\u00f3w {2} osi\u0105gn\u0105\u0142 dolny pr\u00f3g g\u0142\u0119boko\u015bci komunikat\u00f3w.
+NOTIFY_REMOTE_DEPTH_THRESHOLD_REACHED_CWSIP0556.explanation=Liczba komunikat\u00f3w przechowywanych w tym punkcie komunikat\u00f3w zmieni\u0142a si\u0119, co spowodowa\u0142o, \u017ce liczba przechowywanych komunikat\u00f3w spad\u0142a poni\u017cej dolnego progu g\u0142\u0119boko\u015bci.
+NOTIFY_REMOTE_DEPTH_THRESHOLD_REACHED_CWSIP0556.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the WebSphere MQ link name
+# {1} the name of the messaging engine
+NOTIFY_MQLINK_DEPTH_THRESHOLD_REACHED_CWSIP0557=CWSIP0557W: Po\u0142\u0105czenie {0} produktu Websphere MQ znajduj\u0105ce si\u0119 w mechanizmie przesy\u0142ania komunikat\u00f3w {2} osi\u0105gn\u0119\u0142o g\u00f3rny pr\u00f3g g\u0142\u0119boko\u015bci komunikat\u00f3w.
+NOTIFY_MQLINK_DEPTH_THRESHOLD_REACHED_CWSIP0557.explanation=Liczba komunikat\u00f3w przechowywanych w tym po\u0142\u0105czeniu MQ zmieni\u0142a si\u0119, co spowodowa\u0142o, \u017ce liczba przechowywanych komunikat\u00f3w przekroczy\u0142a g\u00f3rny pr\u00f3g g\u0142\u0119boko\u015bci.
+NOTIFY_MQLINK_DEPTH_THRESHOLD_REACHED_CWSIP0557.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the WebSphere MQ link name
+# {1} the name of the messaging engine
+NOTIFY_MQLINK_DEPTH_THRESHOLD_REACHED_CWSIP0558=CWSIP0558W: Po\u0142\u0105czenie {0} produktu Websphere MQ znajduj\u0105ce si\u0119 w mechanizmie przesy\u0142ania komunikat\u00f3w {1} osi\u0105gn\u0119\u0142o dolny pr\u00f3g g\u0142\u0119boko\u015bci komunikat\u00f3w.
+NOTIFY_MQLINK_DEPTH_THRESHOLD_REACHED_CWSIP0558.explanation=Liczba komunikat\u00f3w przechowywanych w tym po\u0142\u0105czeniu MQ zmieni\u0142a si\u0119, co spowodowa\u0142o, \u017ce liczba przechowywanych komunikat\u00f3w spad\u0142a poni\u017cej dolnego progu g\u0142\u0119boko\u015bci.
+NOTIFY_MQLINK_DEPTH_THRESHOLD_REACHED_CWSIP0558.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the SIB link name
+# {1} the name of the foreign bus
+# {2} the name of the messaging engine
+NOTIFY_SIBLINK_DEPTH_THRESHOLD_REACHED_CWSIP0559=CWSIP0559W: Po\u0142\u0105czenie {0} (magistrala {1}) w mechanizmie przesy\u0142ania komunikat\u00f3w {2} osi\u0105gn\u0119\u0142o g\u00f3rny pr\u00f3g g\u0142\u0119boko\u015bci komunikat\u00f3w.
+NOTIFY_SIBLINK_DEPTH_THRESHOLD_REACHED_CWSIP0559.explanation=Liczba komunikat\u00f3w przechowywanych w po\u0142\u0105czeniu zmieni\u0142a si\u0119, co spowodowa\u0142o, \u017ce liczba przechowywanych komunikat\u00f3w przekroczy\u0142a g\u00f3rny pr\u00f3g g\u0142\u0119boko\u015bci.
+NOTIFY_SIBLINK_DEPTH_THRESHOLD_REACHED_CWSIP0559.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the SIB link name
+# {1} the name of the foreign bus
+# {2} the name of the messaging engine
+NOTIFY_SIBLINK_DEPTH_THRESHOLD_REACHED_CWSIP0560=CWSIP0560W: Po\u0142\u0105czenie {0} (magistrala {1}) w mechanizmie przesy\u0142ania komunikat\u00f3w {2} osi\u0105gn\u0119\u0142o dolny pr\u00f3g g\u0142\u0119boko\u015bci komunikat\u00f3w.
+NOTIFY_SIBLINK_DEPTH_THRESHOLD_REACHED_CWSIP0560.explanation=Liczba komunikat\u00f3w przechowywanych w po\u0142\u0105czeniu zmieni\u0142a si\u0119, co spowodowa\u0142o, \u017ce liczba przechowywanych komunikat\u00f3w spad\u0142a poni\u017cej dolnego progu g\u0142\u0119boko\u015bci.
+NOTIFY_SIBLINK_DEPTH_THRESHOLD_REACHED_CWSIP0560.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+CONNECTION_CONTROLLABLE_ERROR_CWSIP0571=CWSIP0571E: Obiekt po\u0142\u0105czenia ju\u017c nie istnieje.
+CONNECTION_CONTROLLABLE_ERROR_CWSIP0571.explanation=Pr\u00f3ba uzyskania dost\u0119pu do po\u0142\u0105czenia nie powiod\u0142a si\u0119, poniewa\u017c po\u0142\u0105czenie ju\u017c nie istnieje.  Mog\u0142o to by\u0107 spowodowane zamkni\u0119ciem po\u0142\u0105czenia przez aplikacj\u0119.
+CONNECTION_CONTROLLABLE_ERROR_CWSIP0571.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+MESSAGE_EXISTS_ERROR_CWSIP0572=CWSIP0572E: Komunikat o identyfikatorze {0} nie istnieje ju\u017c w miejscu docelowym {1}.
+MESSAGE_EXISTS_ERROR_CWSIP0572.explanation=Pr\u00f3ba uzyskania dost\u0119pu do komunikatu o podanym identyfikatorze nie powiod\u0142a si\u0119.  Powodem by\u0142a prawdopodobnie utrata wa\u017cno\u015bci przez komunikat lub jego usuni\u0119cie przez aplikacj\u0119.
+MESSAGE_EXISTS_ERROR_CWSIP0572.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+NO_ELEMENTS_ERROR_CWSIP0601=CWSIP0601E: Brak element\u00f3w w iteratorze.
+NO_ELEMENTS_ERROR_CWSIP0601.explanation=Brak.
+NO_ELEMENTS_ERROR_CWSIP0601.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+NO_ELEMENTS_ERROR_CWSIP0602=CWSIP0602E: Brak mo\u017cliwych do usuni\u0119cia element\u00f3w w iteratorze.
+NO_ELEMENTS_ERROR_CWSIP0602.explanation=Brak.
+NO_ELEMENTS_ERROR_CWSIP0602.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the alias destination
+# {1} is the alias resolution path
+# {2} The name of the messaging engine bus
+ALIAS_CIRCULAR_DEPENDENCY_ERROR_CWSIP0621=CWSIP0621E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas rozstrzygania miejsca docelowego okre\u015blonego przez alias {0} z powodu nast\u0119puj\u0105cej zale\u017cno\u015bci cyklicznej {1} w magistrali mechanizmu przesy\u0142ania komunikat\u00f3w {2}
+ALIAS_CIRCULAR_DEPENDENCY_ERROR_CWSIP0621.explanation=Nie znaleziono miejsca docelowego okre\u015blonego przez alias z powodu zale\u017cno\u015bci cyklicznej
+ALIAS_CIRCULAR_DEPENDENCY_ERROR_CWSIP0621.useraction=Z\u0142am zale\u017cno\u015b\u0107 cykliczn\u0105, zmieniaj\u0105c aliasy w \u015bcie\u017cce rozstrzygania w Konsoli administracyjnej.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The request type
+# {1} The subscription ID, i.e. client##subName
+# {2} The ME the request was sent to
+REMOTE_DURABLE_TIMEOUT_ERROR_CWSIP0631=CWSIP0631E: Sta\u0142a, zdalna operacja {0} dla subskrypcji {1} przekroczy\u0142a limit czasu oczekiwania na mechanizm przesy\u0142ania komunikat\u00f3w {2}.
+REMOTE_DURABLE_TIMEOUT_ERROR_CWSIP0631.explanation=Sta\u0142e, zdalne \u017c\u0105danie przekroczy\u0142o limit czasu oczekiwania na mechanizm przesy\u0142ania komunikat\u00f3w.
+REMOTE_DURABLE_TIMEOUT_ERROR_CWSIP0631.useraction=Sprawd\u017a, czy opcja DURABLE_HOME zosta\u0142a poprawnie ustawiona i czy docelowy mechanizm przesy\u0142ania komunikat\u00f3w jest aktywny.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+MEDIATION_POINT_DELETED_ERROR_SIMP0641=CWSIP0641E: Lokalny punkt mediacji dla miejsca docelowego {0} zosta\u0142 usuni\u0119ty i komunikat nie mo\u017ce zosta\u0107 umieszczony w miejscu docelowym wyj\u0105tk\u00f3w.
+MEDIATION_POINT_DELETED_ERROR_SIMP0641.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d w wyniku pr\u00f3by przeniesienia komunikatu z usuni\u0119tego lokalnego punktu mediacji tego miejsca docelowego.
+MEDIATION_POINT_DELETED_ERROR_SIMP0641.useraction=Procedura czyszcz\u0105ca zostanie powt\u00f3rzona p\u00f3\u017aniej.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+MEDIATION_START_ERROR_SIMP0651=CWSIP0651E: Lokalny punkt mediacji dla miejsca docelowego {0} otrzyma\u0142 komend\u0119 rozpocz\u0119cia mediacji komunikat\u00f3w, ale nie mo\u017ce jej wykona\u0107, poniewa\u017c zmiana w konfiguracji spowodowa\u0142a usuni\u0119cie tej mediacji z miejsca docelowego.
+MEDIATION_START_ERROR_SIMP0651.explanation=Dla tego miejsca docelowego nie jest ju\u017c zdefiniowana mediacja, wi\u0119c w wyniku \u017c\u0105dania rozpocz\u0119cia mediacji wyst\u0105pi\u0142 b\u0142\u0105d.
+MEDIATION_START_ERROR_SIMP0651.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. Punkt mediacji zostanie wkr\u00f3tce usuni\u0119ty.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+MEDIATION_STOPPED_BY_SHUTDOWN_SIMP0652=CWSIP0652I: Lokalny punkt mediacji dla miejsca docelowego {0} zosta\u0142 zatrzymany, poniewa\u017c jest zatrzymywany mechanizm przesy\u0142ania komunikat\u00f3w.
+MEDIATION_STOPPED_BY_SHUTDOWN_SIMP0652.explanation=Lokalny punkt mediacji nie mo\u017ce funkcjonowa\u0107, poniewa\u017c mechanizm przesy\u0142ania komunikat\u00f3w jest zatrzymywany. Punkt mediacji jest zatrzymywany.
+MEDIATION_STOPPED_BY_SHUTDOWN_SIMP0652.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. Dzia\u0142anie punktu mediacji zostanie wznowione po zrestartowaniu mechanizmu przesy\u0142ania komunikat\u00f3w (je\u015bli jest odpowiednio skonfigurowany).
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the exception which caused the failure.
+MEDIATION_FAILED_TO_START_SIMP0654=CWSIP0654E: Nie powiod\u0142a si\u0119 pr\u00f3ba uruchomienia lokalnego punktu mediacji dla miejsca docelowego {0}, poniewa\u017c wyst\u0105pi\u0142 b\u0142\u0105d. Definicja mediacji jest niepoprawna. B\u0142\u0105d: {1}.
+MEDIATION_FAILED_TO_START_SIMP0654.explanation=Punkt mediacji nadal pozostanie zatrzymany.
+MEDIATION_FAILED_TO_START_SIMP0654.useraction=Punkt mediacji b\u0119dzie mo\u017cna zrestartowa\u0107, gdy zmienione zostan\u0105 warunki powoduj\u0105ce b\u0142\u0105d.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the mediation we were looking for
+# {2} the exception which caused the failure.
+MEDIATION_FAILED_TO_START_SIMP0655=CWSIP0655E: Nie powiod\u0142a si\u0119 pr\u00f3ba uruchomienia lokalnego punktu mediacji dla miejsca docelowego {0}, poniewa\u017c wyst\u0105pi\u0142 b\u0142\u0105d. Mediacji {1} nie znaleziono. B\u0142\u0105d: {2}.
+MEDIATION_FAILED_TO_START_SIMP0655.explanation=Punkt mediacji nadal pozostanie zatrzymany.
+MEDIATION_FAILED_TO_START_SIMP0655.useraction=Punkt mediacji b\u0119dzie mo\u017cna zrestartowa\u0107, gdy zmienione zostan\u0105 warunki powoduj\u0105ce b\u0142\u0105d.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination
+# {1} The exception string why the message flow can't start. Not the stack trace.
+#
+MESSAGE_PUMP_START_WARNING_CWSIP0656W=CWSIP0656W: Punkt mediacji nie mo\u017ce uruchomi\u0107 przep\u0142ywu komunikat\u00f3w dla miejsca docelowego {0} z powodu nast\u0119puj\u0105cego b\u0142\u0119du: {1}
+MESSAGE_PUMP_START_WARNING_CWSIP0656W.explanation=Punkt mediacji wykona\u0142 pr\u00f3b\u0119 uruchomienia przep\u0142ywu komunikat\u00f3w do mediacji i punktu ko\u0144cowego miejsca docelowego. Uruchomienie przep\u0142ywu komunikat\u00f3w nie powiod\u0142o si\u0119.
+MESSAGE_PUMP_START_WARNING_CWSIP0656W.useraction=Punkt mediacji b\u0119dzie mo\u017cna zrestartowa\u0107, gdy zmienione zostan\u0105 warunki powoduj\u0105ce b\u0142\u0105d.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the mediation
+# {2} the state change.
+NOTIFY_MEDIATION_STATE_CHANGE_CWSIP0657=CWSIP0657I: Stan lokalnego punktu mediacji dla miejsca docelowego {0} i mediacji {1} zmieni\u0142 si\u0119 na {2}.
+NOTIFY_MEDIATION_STATE_CHANGE_CWSIP0657.explanation=Punkt mediacji przeszed\u0142 w nowy stan.
+NOTIFY_MEDIATION_STATE_CHANGE_CWSIP0657.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+MEDIATION_EXCEPT_DEST_CLOSED_SIMP0661=CWSIP0661E: W ramach mediacji w przypadku miejsca docelowego {0} podj\u0119to pr\u00f3b\u0119 umieszczenia komunikatu w miejscu docelowym wyj\u0105tk\u00f3w po zatrzymaniu mediacji.
+MEDIATION_EXCEPT_DEST_CLOSED_SIMP0661.explanation=Komunikat nie zosta\u0142 umieszczony w miejscu docelowym wyj\u0105tk\u00f3w.
+MEDIATION_EXCEPT_DEST_CLOSED_SIMP0661.useraction=Po zrestartowaniu mediacja mo\u017ce ponowi\u0107 pr\u00f3b\u0119 umieszczenia komunikatu w tym miejscu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+MEDIATION_STOPPED_BY_FAILURE_TO_MOVE_UNMEDIATED_MESSAGE_SIMP0662=CWSIP0662E: W ramach punktu mediacji w przypadku miejsca docelowego {0} podj\u0119to pr\u00f3b\u0119 przeniesienia komunikatu do cz\u0119\u015bci miejsca docelowego przeznaczonej dla komunikat\u00f3w po mediacji. Operacja nie powiod\u0142a si\u0119.
+MEDIATION_STOPPED_BY_FAILURE_TO_MOVE_UNMEDIATED_MESSAGE_SIMP0662.explanation=Komunikat nie zosta\u0142 umieszczony w cz\u0119\u015bci miejsca docelowego przeznaczonej dla komunikat\u00f3w po mediacji. Dzia\u0142anie punktu mediacji zosta\u0142o zatrzymane.
+MEDIATION_STOPPED_BY_FAILURE_TO_MOVE_UNMEDIATED_MESSAGE_SIMP0662.useraction=Po zrestartowaniu mediacja mo\u017ce ponowi\u0107 pr\u00f3b\u0119 przeniesienia komunikatu w to miejsce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the selector passed to MP by the configuration
+# {2} the parse failure when the selector was turned into a parse tree.
+MEDIATION_START_FAILURE_INVALID_SELECTOR_SIMP0663=CWSIP0663E: Nie powiod\u0142a si\u0119 pr\u00f3ba uruchomienia punktu mediacji dla miejsca docelowego {0} z powodu niepoprawnego selektora. Selektor by\u0142 ustawiony na {1}. B\u0142\u0105d: {2}.
+MEDIATION_START_FAILURE_INVALID_SELECTOR_SIMP0663.explanation=Selektor okre\u015blony w tej konfiguracji mediacji jest niepoprawny.
+MEDIATION_START_FAILURE_INVALID_SELECTOR_SIMP0663.useraction=Informacje o sposobach tworzenia poprawnego selektora mo\u017cna znale\u017a\u0107 w dokumentacji. Ustaw poprawny selektor, zmieniaj\u0105c konfiguracj\u0119 mediacji. Zrestartuj punkt mediacji.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the discriminator passed to MP by the configuration
+# {2} the parse failure when the selector was turned into a parse tree.
+MEDIATION_START_FAILURE_INVALID_DISCRIMINATOR_SIMP0664=CWSIP0664E: Nie powiod\u0142a si\u0119 pr\u00f3ba uruchomienia punktu mediacji dla miejsca docelowego {0} z powodu niepoprawnego wyr\u00f3\u017cnika. Wyr\u00f3\u017cnik by\u0142 ustawiony na {1}. B\u0142\u0105d: {2}.
+MEDIATION_START_FAILURE_INVALID_DISCRIMINATOR_SIMP0664.explanation=Wyr\u00f3\u017cnik okre\u015blony w tej konfiguracji mediacji jest niepoprawny.
+MEDIATION_START_FAILURE_INVALID_DISCRIMINATOR_SIMP0664.useraction=Informacje o sposobach tworzenia poprawnego wyr\u00f3\u017cnika mo\u017cna znale\u017a\u0107 w dokumentacji. Ustaw poprawny wyr\u00f3\u017cnik, zmieniaj\u0105c konfiguracj\u0119 mediacji. Zrestartuj punkt mediacji.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+MEDIATION_START_PREVENTED_DISABLED_SIMP0665=CWSIP0665E: Nie mo\u017cna uruchomi\u0107 punktu mediacji dla miejsca docelowego {0}, poniewa\u017c mediacja dla tego miejsca docelowego jest wy\u0142\u0105czona.
+MEDIATION_START_PREVENTED_DISABLED_SIMP0665.explanation=Informacje konfiguracyjne wskazuj\u0105, \u017ce w tym miejscu docelowym wy\u0142\u0105czone zosta\u0142y wszystkie czynno\u015bci mediacyjne.
+MEDIATION_START_PREVENTED_DISABLED_SIMP0665.useraction=Je\u015bli mediacje maj\u0105 dzia\u0142a\u0107, miejsce docelowe musi wskazywa\u0107, \u017ce mediacje zosta\u0142y w\u0142\u0105czone.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} The bus name
+# {2} The related exception
+MEDIATION_MESSAGE_PUMP_START_PRODUCER_FAILED_SIMP0666=CWSIP0666W: Pr\u00f3ba utworzenia producenta przez punkt mediacji dla miejsca docelowego {0} (magistrala {1}) nie powiod\u0142a si\u0119 z powodu nast\u0119puj\u0105cego b\u0142\u0119du: {2}
+MEDIATION_MESSAGE_PUMP_START_PRODUCER_FAILED_SIMP0666.explanation=Dostarczanie komunikatu do mediacji wymaga producenta.  Wyst\u0105pi\u0142 b\u0142\u0105d podczas tworzenia producenta.
+MEDIATION_MESSAGE_PUMP_START_PRODUCER_FAILED_SIMP0666.useraction=Sprawd\u017a powi\u0105zany wyj\u0105tek i rozwi\u0105\u017c problemy.
+
+# -------------------------------------------------------------------------------------------------
+# Used in ConnectionImpl.java
+NULL_CONSUMERSETCHANGECALLBACK_CWSIP0667=CWSIP0667E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Wykonanie komendy registerConsumerSetMonitor nie powiod\u0142o si\u0119, poniewa\u017c zosta\u0142 przekazany parametr ConsumerSetChangeCallback o warto\u015bci NULL.
+NULL_CONSUMERSETCHANGECALLBACK_CWSIP0667.explanation=CMSG0001
+NULL_CONSUMERSETCHANGECALLBACK_CWSIP0667.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Used in ConnectionImpl.java
+NULL_DESTINATIONADDRESS_CWSIP0668=CWSIP0668E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Wykonanie komendy destinationAddress nie powiod\u0142o si\u0119, poniewa\u017c zosta\u0142 przekazany parametr ConsumerSetChangeCallback o warto\u015bci NULL.
+NULL_DESTINATIONADDRESS_CWSIP0668.explanation=CMSG0001
+NULL_DESTINATIONADDRESS_CWSIP0668.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Used in ConnectionImpl.java
+NULL_DISCRIMINATOREXPRESSION_CWSIP0669=CWSIP0669E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Wykonanie komendy discriminatorExpression nie powiod\u0142o si\u0119, poniewa\u017c zosta\u0142 przekazany parametr ConsumerSetChangeCallback o warto\u015bci NULL.
+NULL_DISCRIMINATOREXPRESSION_CWSIP0669.explanation=CMSG0001
+NULL_DISCRIMINATOREXPRESSION_CWSIP0669.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the messaging engine
+ORDERING_INITIALISATION_ERROR_CWSIP0671=CWSIP0671E: Nie powiod\u0142a si\u0119 pr\u00f3ba zainicjowania miejsca docelowego {0} (w mechanizmie przesy\u0142ania komunikat\u00f3w {1}), w przypadku kt\u00f3rego jest zachowywany porz\u0105dek komunikat\u00f3w.
+ORDERING_INITIALISATION_ERROR_CWSIP0671.explanation=Podj\u0119to pr\u00f3b\u0119 zainicjowania miejsca docelowego, w kt\u00f3rym jest zachowywany porz\u0105dek komunikat\u00f3w, ale miejsce docelowe mia\u0142o wiele oczekuj\u0105cych transakcji.
+ORDERING_INITIALISATION_ERROR_CWSIP0671.useraction=Przed aktywowaniem funkcji zachowywania porz\u0105dku komunikat\u00f3w zako\u0144cz wszystkie transakcje w miejscu docelowym.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination prefix supplied by the user
+CONSUMER_NOT_BIFURCATABLE_CWSIP0680=CWSIP0680E: Nie mo\u017cna utworzy\u0107 rozdwojonego konsumenta z konsumenta {0}. Konsument {0} nie jest rozdwajalny.
+CONSUMER_NOT_BIFURCATABLE_CWSIP0680.explanation=Rozdwojone konsumenty mo\u017cna utworzy\u0107 tylko na podstawie konsument\u00f3w utworzonych pocz\u0105tkowo jako rozdwajalne.
+CONSUMER_NOT_BIFURCATABLE_CWSIP0680.useraction=Zmie\u0144 aplikacj\u0119, kt\u00f3ra tworzy konsument, aby umo\u017cliwi\u0107 tworzenie rozdwojonych konsument\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# no parameters.
+MEDIATION_CHANGE_REASON_ADMIN_ACTION_SIMP0771=CWSIP0771I: Dzia\u0142anie administratora.
+MEDIATION_CHANGE_REASON_ADMIN_ACTION_SIMP0771.explanation=Punkt mediacji przeszed\u0142 w ten stan w wyniku dzia\u0142ania administratora.
+MEDIATION_CHANGE_REASON_ADMIN_ACTION_SIMP0771.useraction=Informacje o sposobach modyfikowania stanu punktu mediacji mo\u017cna znale\u017a\u0107 w dokumentacji.
+
+# -------------------------------------------------------------------------------------------------
+# no parameters.
+MEDIATION_CHANGE_REASON_MEDIATION_ACTION_SIMP0772=CWSIP0772I: Dzia\u0142anie mediacji.
+MEDIATION_CHANGE_REASON_MEDIATION_ACTION_SIMP0772.explanation=Punkt mediacji przeszed\u0142 w ten stan w wyniku dzia\u0142ania mediacji.
+MEDIATION_CHANGE_REASON_MEDIATION_ACTION_SIMP0772.useraction=Informacje o sposobach modyfikowania stanu punktu mediacji mo\u017cna znale\u017a\u0107 w dokumentacji.
+
+# -------------------------------------------------------------------------------------------------
+# no parameters.
+MEDIATION_CHANGE_REASON_CONFIG_ACTION_SIMP0773=CWSIP0773I: U\u017cywanie skonfigurowanego stanu pocz\u0105tkowego.
+MEDIATION_CHANGE_REASON_CONFIG_ACTION_SIMP0773.explanation=Punkt mediacji przeszed\u0142 w ten stan, pr\u00f3buj\u0105c osi\u0105gn\u0105\u0107 skonfigurowany stan pocz\u0105tkowy.
+MEDIATION_CHANGE_REASON_CONFIG_ACTION_SIMP0773.useraction=Informacje o sposobach modyfikowania stanu punktu mediacji mo\u017cna znale\u017a\u0107 w dokumentacji.
+
+# -------------------------------------------------------------------------------------------------
+# no parameters.
+MEDIATION_CHANGE_REASON_WAIT_WAS_SIMP0774=CWSIP0774I: Oczekiwanie na uruchomienie serwera produktu Websphere
+MEDIATION_CHANGE_REASON_WAIT_WAS_SIMP0774.explanation=Punkt mediacji przeszed\u0142 w ten stan, oczekuj\u0105c na uruchomienie serwera produktu Websphere.
+MEDIATION_CHANGE_REASON_WAIT_WAS_SIMP0774.useraction=Informacje o sposobach modyfikowania stanu punktu mediacji mo\u017cna znale\u017a\u0107 w dokumentacji.
+
+# -------------------------------------------------------------------------------------------------
+# no parameters.
+MEDIATION_CHANGE_REASON_WAIT_DELETE_SIMP0775=CWSIP0775I: Oczekiwanie na usuni\u0119cie innego punktu mediacji z tego miejsca docelowego.
+MEDIATION_CHANGE_REASON_WAIT_DELETE_SIMP0775.explanation=Punkt mediacji zosta\u0142 dodany do miejsca docelowego, gdy poprzedni punkt mediacji nie zosta\u0142 jeszcze ca\u0142kowicie usuni\u0119ty. Mediacja b\u0119dzie oczekiwa\u0107, a\u017c do momentu ca\u0142kowitego usuni\u0119cia poprzednich mediacji.
+MEDIATION_CHANGE_REASON_WAIT_DELETE_SIMP0775.useraction=Informacje o sposobach modyfikowania stanu punktu mediacji mo\u017cna znale\u017a\u0107 w dokumentacji.
+
+# -------------------------------------------------------------------------------------------------
+# no parameters.
+MEDIATION_CHANGE_REASON_CONFIG_CHANGE_SIMP0776=CWSIP0776I: Stosowanie zmian w konfiguracji.
+MEDIATION_CHANGE_REASON_CONFIG_CHANGE_SIMP0776.explanation=Punkt mediacji przeszed\u0142 w ten stan w wyniku zmiany w konfiguracji.
+MEDIATION_CHANGE_REASON_CONFIG_CHANGE_SIMP0776.useraction=Informacje o sposobach modyfikowania stanu punktu mediacji mo\u017cna znale\u017a\u0107 w dokumentacji.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination address
+TRANSACTION_RECEIVE_USAGE_ERROR_CWSIP0777=CWSIP0777E: Transakcja u\u017cyta na potrzeby operacji odbioru w miejscu docelowym {0} zosta\u0142a ju\u017c zako\u0144czona.
+TRANSACTION_RECEIVE_USAGE_ERROR_CWSIP0777.explanation=Podj\u0119to pr\u00f3b\u0119 u\u017cycia transakcji, kt\u00f3ra zosta\u0142a ju\u017c zako\u0144czona.
+TRANSACTION_RECEIVE_USAGE_ERROR_CWSIP0777.useraction=Sprawd\u017a, czy u\u017cywana transakcja jest now\u0105 transakcj\u0105.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination address
+TRANSACTION_DELETE_USAGE_ERROR_CWSIP0778=CWSIP0778E: Transakcja u\u017cyta na potrzeby operacji usuwania w miejscu docelowym {0} zosta\u0142a ju\u017c zako\u0144czona.
+TRANSACTION_DELETE_USAGE_ERROR_CWSIP0778.explanation=Podj\u0119to pr\u00f3b\u0119 u\u017cycia transakcji, kt\u00f3ra zosta\u0142a ju\u017c zako\u0144czona.
+TRANSACTION_DELETE_USAGE_ERROR_CWSIP0778.useraction=Sprawd\u017a, czy u\u017cywana transakcja jest now\u0105 transakcj\u0105.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The messaging engine name
+FLUSH_REQUESTED_MESSAGE_CWSIP0780=CWSIP0780I: Uruchomiono mechanizm przesy\u0142ania komunikat\u00f3w {0}. Za\u017c\u0105dano opr\u00f3\u017cnienia wszystkich strumieni dostarczania.
+FLUSH_REQUESTED_MESSAGE_CWSIP0780.explanation=Mechanizm przesy\u0142ania komunikat\u00f3w rozpozna\u0142 \u017c\u0105danie opr\u00f3\u017cnienia jego strumieni dostarczania.
+FLUSH_REQUESTED_MESSAGE_CWSIP0780.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The messaging engine name
+# {1} The Stream ID
+# {2} The Destination Name
+FLUSH_INITIATED_MESSAGE_CWSIP0781=CWSIP0781I: Uruchomiono mechanizm przesy\u0142ania komunikat\u00f3w {0}. Rozpocz\u0119to opr\u00f3\u017cnianie strumienia {1} i miejsca docelowego {2}.
+FLUSH_INITIATED_MESSAGE_CWSIP0781.explanation=Mechanizm przesy\u0142ania komunikat\u00f3w rozpocz\u0105\u0142 opr\u00f3\u017cnianie strumienia.
+FLUSH_INITIATED_MESSAGE_CWSIP0781.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The messaging engine name
+# {1} The Stream ID
+# {2} The Destination Name
+# {3} The Exception causing the problem
+FLUSH_FAILED_MESSAGE_CWSIP0782=CWSIP0782E: Uruchomiono mechanizm przesy\u0142ania komunikat\u00f3w {0}. Pr\u00f3ba opr\u00f3\u017cnienia strumienia {1} i miejsca docelowego {2} nie powiod\u0142a si\u0119 z powodu wyst\u0105pienia nast\u0119puj\u0105cego wyj\u0105tku: {3}.
+FLUSH_FAILED_MESSAGE_CWSIP0782.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas opr\u00f3\u017cniania strumieni.
+FLUSH_FAILED_MESSAGE_CWSIP0782.useraction=Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, skontaktuj si\u0119 z przedstawicielem dzia\u0142u wsparcia IBM.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The messaging engine name
+FLUSH_COMPLETED_MESSAGE_CWSIP0783=CWSIP0783I: Uruchomiono mechanizm przesy\u0142ania komunikat\u00f3w {0}. Zako\u0144czono opr\u00f3\u017cnianie wszystkich strumieni dostarczania.
+FLUSH_COMPLETED_MESSAGE_CWSIP0783.explanation=Mechanizm przesy\u0142ania komunikat\u00f3w opr\u00f3\u017cni\u0142 wszystkie swoje strumienie dostarczania.
+FLUSH_COMPLETED_MESSAGE_CWSIP0783.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+# {1} is the uuid of the remote engine
+# {2} is the stream id in the remote engine
+# {3} is the name of the receiving engine
+UNEXPECTED_MESSAGE_RECEIVED_CWSIP0784=CWSIP0784W: Zdalne \u017c\u0105danie komunikatu (o identyfikatorze {2}) dla miejsca docelowego (o identyfikatorze {1}) od mechanizmu przesy\u0142ania komunikat\u00f3w {3} do {1} utraci\u0142o wa\u017cno\u015b\u0107. Konieczne mo\u017ce by\u0107 wykonanie procedury czyszcz\u0105cej.
+UNEXPECTED_MESSAGE_RECEIVED_CWSIP0784.explanation=Zdalne \u017c\u0105danie komunikatu nie ma tego samego stanu na obu mechanizmach przesy\u0142ania komunikat\u00f3w. Mo\u017ce to wynika\u0107 z faktu, \u017ce w jednym mechanizmie odtworzono lub usuni\u0119to sk\u0142adnic\u0119 komunikat\u00f3w, a na drugim tego nie zrobiono.
+UNEXPECTED_MESSAGE_RECEIVED_CWSIP0784.useraction=Zapewnij sp\u00f3jno\u015b\u0107 stanu w obydwu mechanizmach przesy\u0142ania komunikat\u00f3w. Mo\u017cna to osi\u0105gn\u0105\u0107, odtwarzaj\u0105c obie sk\u0142adnice komunikat\u00f3w z kopii wykonanej dla tego samego punktu w czasie lub anuluj\u0105c to \u017c\u0105danie w odbiorczym mechanizmie przesy\u0142ania komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination or foreign bus name
+# {1} Messaging engine name
+# {2} Number of seconds since the blockage was noticed
+# {3} Transaction ID blocking the message
+STREAM_BLOCKED_BY_COMMITTING_MESSAGE_CWSIP0785=CWSIP0785W: Komunikat oczekuj\u0105cy w mechanizmie przesy\u0142ania komunikat\u00f3w {1} na transmisj\u0119 do zdalnego miejsca docelowego lub obcej magistrali {0} pozostawa\u0142 przez {2} sek. w stanie zatwierdzania w ramach transakcji {3}. Przep\u0142yw dalszych komunikat\u00f3w mo\u017ce zosta\u0107 zatrzymany do czasu zako\u0144czenia tej transakcji.
+STREAM_BLOCKED_BY_COMMITTING_MESSAGE_CWSIP0785.explanation=\u017badne komunikaty wys\u0142ane do miejsca docelowego lub do obcej magistrali po wys\u0142aniu zablokowanego komunikatu nie zostan\u0105 przes\u0142ane do czasu rozstrzygni\u0119cia transakcji.
+STREAM_BLOCKED_BY_COMMITTING_MESSAGE_CWSIP0785.useraction=Rozstrzygnij transakcj\u0119, kt\u00f3ra blokuje komunikat
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination or foreign bus name
+# {1} Messaging engine name
+# {2} Number of seconds since the blockage was noticed
+# {3} Transaction ID blocking the message
+STREAM_UNBLOCKED_BY_COMMITTING_MESSAGE_CWSIP0786=CWSIP0786I: Komunikaty wysy\u0142ane do zdalnego miejsca docelowego lub obcej magistrali {0} z mechanizmu przesy\u0142ania komunikat\u00f3w {1} nie s\u0105 ju\u017c blokowane przez transakcj\u0119 {2}.
+STREAM_UNBLOCKED_BY_COMMITTING_MESSAGE_CWSIP0786.explanation=Zg\u0142aszana poprzednio nierozstrzygni\u0119ta transakcja zosta\u0142a ju\u017c rozstrzygni\u0119ta i transmisja komunikat\u00f3w zosta\u0142a wznowiona.
+STREAM_UNBLOCKED_BY_COMMITTING_MESSAGE_CWSIP0786.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} Messaging engine name
+# {2} Number of messages queued
+DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0787=CWSIP0787I: Miejsce docelowe {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} osi\u0105gn\u0119\u0142o g\u0142\u0119boko\u015b\u0107 stanowi\u0105c\u0105 nast\u0119puj\u0105c\u0105 liczb\u0119 komunikat\u00f3w: {2}.
+DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0787.explanation=Punkt komunikat\u00f3w dla miejsca docelowego osi\u0105gn\u0105\u0142 wymienion\u0105 warto\u015b\u0107 g\u0142\u0119boko\u015bci komunikat\u00f3w
+DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0787.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Number of messages queued
+# {1} Messaging engine with the queued messages
+# {2} The destination name
+# {3} Target messaging engine name
+REMOTE_DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0788=CWSIP0788I: W kolejce mechanizmu przesy\u0142ania komunikat\u00f3w {1} umieszczono komunikaty (liczba komunikat\u00f3w: {0}), kt\u00f3re maj\u0105 zosta\u0107 przes\u0142ane do miejsca docelowego {2} w mechanizmie przesy\u0142ania komunikat\u00f3w {3}.
+REMOTE_DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0788.explanation=Zdalny punkt komunikat\u00f3w dla miejsca docelowego osi\u0105gn\u0105\u0142 wymienion\u0105 warto\u015b\u0107 g\u0142\u0119boko\u015bci komunikat\u00f3w
+REMOTE_DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0788.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Number of messages queued
+# {1} Messaging engine with the queued messages
+# {2} The next target foreign bus
+# {3} The link connecting the foreign bus
+REMOTE_LINK_DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0789=CWSIP0789I: W kolejce mechanizmu przesy\u0142ania komunikat\u00f3w {1} umieszczono komunikaty (liczba komunikat\u00f3w: {0}), kt\u00f3re maj\u0105 zosta\u0107 przes\u0142ane do obcej magistrali {2} w \u0142\u0105czu {3}.
+REMOTE_LINK_DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0789.explanation=\u0141\u0105cze do obcej magistrali osi\u0105gn\u0119\u0142o wymienion\u0105 warto\u015b\u0107 g\u0142\u0119boko\u015bci komunikat\u00f3w
+REMOTE_LINK_DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0789.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# -------------------------------------------------------------------------------------------------
+# {0} First missing sequence id
+# {1} Sending bus name
+# {2} link name
+# {3} Receiving messaging engine
+UNRESOLVED_GAP_IN_LINK_TRANSMITTER_CWSIP0790=CWSIP0790W: Mechanizm przesy\u0142ania komunikat\u00f3w {3} wykry\u0142 luk\u0119 w strumieniu komunikat\u00f3w odebranych z magistrali {1} w \u0142\u0105czu {2}. \u017b\u0105dania uzupe\u0142nienia przerwy nie zosta\u0142y jeszcze spe\u0142nione. Przerwa rozpoczyna si\u0119 od identyfikatora sekwencji {0}.
+UNRESOLVED_GAP_IN_LINK_TRANSMITTER_CWSIP0790.explanation=Mechanizm przesy\u0142ania komunikat\u00f3w odbieraj\u0105cy komunikaty przy u\u017cyciu \u0142\u0105cza mi\u0119dzymagistralowego wykry\u0142 przerw\u0119 w identyfikatorach sekwencji odebranych komunikat\u00f3w. Do wysy\u0142aj\u0105cego mechanizmu przesy\u0142ania komunikat\u00f3w wys\u0142ano \u017c\u0105dania ponownego dostarczenia jednego lub wi\u0119kszej liczby komunikat\u00f3w, ale przerwa nie zosta\u0142a jeszcze uzupe\u0142niona. Je\u015bli \u0142\u0105cze mi\u0119dzymagistralowe aktualnie nie dzia\u0142a, przerwa nie zostanie rozstrzygni\u0119ta do czasu zrestartowania \u0142\u0105cza mi\u0119dzymagistralowego.
+UNRESOLVED_GAP_IN_LINK_TRANSMITTER_CWSIP0790.useraction=Zrestartuj \u0142\u0105cze, je\u015bli zosta\u0142o zatrzymane.
+
+# -------------------------------------------------------------------------------------------------
+# {0} First missing sequence id
+# {1} Sending bus name
+# {2} link name
+# {3} Receiving messaging engine
+RESOLVED_GAP_IN_LINK_TRANSMITTER_CWSIP0791=CWSIP0791I: Luka rozpoczynaj\u0105ca si\u0119 od identyfikatora sekwencji {0} w strumieniu komunikat\u00f3w z magistrali {1} w \u0142\u0105czu {2} zosta\u0142a usuni\u0119ta w mechanizmie przesy\u0142ania komunikat\u00f3w {3}.
+RESOLVED_GAP_IN_LINK_TRANSMITTER_CWSIP0791.explanation=Zg\u0142oszona poprzednio przerwa w sekwencji komunikat\u00f3w zosta\u0142a w\u0142a\u015bnie rozstrzygni\u0119ta. Nast\u0119pne komunikaty b\u0119d\u0105 ju\u017c przetwarzane.
+RESOLVED_GAP_IN_LINK_TRANSMITTER_CWSIP0791.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# -------------------------------------------------------------------------------------------------
+# {0} First missing sequence id
+# {1} Destination name
+# {2} sending messaging engine
+# {3} Receiving messaging engine
+UNRESOLVED_GAP_IN_DESTINATION_TRANSMITTER_CWSIP0792=CWSIP0792W: Mechanizm przesy\u0142ania komunikat\u00f3w {3} wykry\u0142 luk\u0119 w strumieniu komunikat\u00f3w odebranych z mechanizmu przesy\u0142ania komunikat\u00f3w {2} dla miejsca docelowego {1}. \u017b\u0105dania uzupe\u0142nienia przerwy nie zosta\u0142y jeszcze spe\u0142nione. Przerwa rozpoczyna si\u0119 od identyfikatora sekwencji {0}.
+UNRESOLVED_GAP_IN_DESTINATION_TRANSMITTER_CWSIP0792.explanation=Mechanizm przesy\u0142ania komunikat\u00f3w odbieraj\u0105cy komunikaty dla miejsca docelowego wykry\u0142 przerw\u0119 w identyfikatorach sekwencji odebranych komunikat\u00f3w. Do wysy\u0142aj\u0105cego mechanizmu przesy\u0142ania komunikat\u00f3w wys\u0142ano \u017c\u0105dania ponownego dostarczenia jednego lub wi\u0119kszej liczby komunikat\u00f3w, ale przerwa nie zosta\u0142a jeszcze uzupe\u0142niona. Je\u015bli mechanizmy przesy\u0142ania komunikat\u00f3w nie b\u0119d\u0105 w stanie nawi\u0105za\u0107 komunikacji, przerwa nie zostanie rozstrzygni\u0119ta do czasu rozwi\u0105zania tego problemu.
+UNRESOLVED_GAP_IN_DESTINATION_TRANSMITTER_CWSIP0792.useraction=Je\u015bli wysy\u0142aj\u0105cy mechanizm przesy\u0142ania komunikat\u00f3w zosta\u0142 zatrzymany, zrestartuj go i upewnij si\u0119, \u017ce po\u0142\u0105czenie mi\u0119dzy dwoma mechanizmami przesy\u0142ania komunikat\u00f3w jest aktywne.
+
+# -------------------------------------------------------------------------------------------------
+# {0} First missing sequence id
+# {1} Destination name
+# {2} sending messaging engine
+# {3} Receiving messaging engine
+RESOLVED_GAP_IN_DESTINATION_TRANSMITTER_CWSIP0793=CWSIP0793I: Luka rozpoczynaj\u0105ca si\u0119 od identyfikatora sekwencji {0} w strumieniu komunikat\u00f3w dla miejsca docelowego {1} z mechanizmu przesy\u0142ania komunikat\u00f3w {2} zosta\u0142a usuni\u0119ta w mechanizmie przesy\u0142ania komunikat\u00f3w {3}.
+RESOLVED_GAP_IN_DESTINATION_TRANSMITTER_CWSIP0793.explanation=Zg\u0142oszona poprzednio przerwa w sekwencji komunikat\u00f3w zosta\u0142a w\u0142a\u015bnie rozstrzygni\u0119ta. Nast\u0119pne komunikaty b\u0119d\u0105 ju\u017c przetwarzane.
+RESOLVED_GAP_IN_DESTINATION_TRANSMITTER_CWSIP0793.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Percentage of messages repeated
+# {1} Sending bus name
+# {2} link name
+# {3} Receiving messaging engine
+REPEATED_MESSAGE_THRESHOLD_REACHED_ON_LINK_CWSIP0794=CWSIP0794W: Cz\u0119\u015b\u0107 komunikat\u00f3w, stanowi\u0105ca {0} procent komunikat\u00f3w odebranych przez mechanizm przesy\u0142ania komunikat\u00f3w {3} z magistrali {1} za po\u015brednictwem \u0142\u0105cza mi\u0119dzymagistralowego {2}, zosta\u0142a przes\u0142ana przez to \u0142\u0105cze wielokrotnie.
+REPEATED_MESSAGE_THRESHOLD_REACHED_ON_LINK_CWSIP0794.explanation=Ten mechanizm przesy\u0142ania komunikat\u00f3w odebra\u0142 poprzednio du\u017cy procent komunikat\u00f3w wys\u0142anych z obcej magistrali. Komunikaty nie b\u0119d\u0105 duplikowane, ale wydajno\u015b\u0107 systemu przesy\u0142ania komunikat\u00f3w mo\u017ce zosta\u0107 zmniejszona. Ten komunikat mo\u017ce zosta\u0107 wy\u015bwietlony w sytuacji, kiedy wyst\u0105pi nag\u0142y wzrost liczby przesy\u0142anych komunikat\u00f3w przez \u0142\u0105cze. Powtarzaj\u0105ce si\u0119 wyst\u0105pienia tego komunikatu mog\u0105 wskazywa\u0107 na cz\u0119ste przekraczanie limitu przepustowo\u015bci \u0142\u0105cza.
+REPEATED_MESSAGE_THRESHOLD_REACHED_ON_LINK_CWSIP0794.useraction=Zbadaj, czy cz\u0119stotliwo\u015b\u0107 produkcji komunikat\u00f3w przeznaczonych do przesy\u0142ania przez to \u0142\u0105cze nie jest zbyt wysoka.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Percentage of messages repeated
+# {1} sending messaging engine
+# {2} Receiving messaging engine
+# {3} Destination name
+REPEATED_MESSAGE_THRESHOLD_REACHED_ON_DESTINATION_CWSIP0795=CWSIP0795W: {0} procent komunikat\u00f3w odebranych przez mechanizm przesy\u0142ania komunikat\u00f3w {2} dla miejsca docelowego {3} przes\u0142anych z mechanizmu przesy\u0142ania komunikat\u00f3w {1} przes\u0142ano wielokrotnie do mechanizmu przesy\u0142ania komunikat\u00f3w.
+REPEATED_MESSAGE_THRESHOLD_REACHED_ON_DESTINATION_CWSIP0795.explanation=Ten mechanizm przesy\u0142ania komunikat\u00f3w odebra\u0142 poprzednio du\u017cy procent komunikat\u00f3w wys\u0142anych ze zdalnego mechanizmu przesy\u0142ania komunikat\u00f3w. Komunikaty nie b\u0119d\u0105 duplikowane, ale wydajno\u015b\u0107 systemu przesy\u0142ania komunikat\u00f3w mo\u017ce zosta\u0107 zmniejszona.  Ten komunikat mo\u017ce zosta\u0107 wy\u015bwietlony w sytuacji, kiedy wyst\u0105pi nag\u0142y wzrost liczby komunikat\u00f3w przesy\u0142anych do mechanizmu przesy\u0142ania komunikat\u00f3w. Powtarzaj\u0105ce si\u0119 wyst\u0105pienia tego komunikatu mog\u0105 wskazywa\u0107 na cz\u0119ste przekraczanie maksymalnego limitu przepustowo\u015bci komunikat\u00f3w.
+REPEATED_MESSAGE_THRESHOLD_REACHED_ON_DESTINATION_CWSIP0795.useraction=Zbadaj, czy cz\u0119stotliwo\u015b\u0107 produkcji komunikat\u00f3w przeznaczonych dla tego mechanizmu przesy\u0142ania komunikat\u00f3w nie jest zbyt wysoka.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The key
+INVOKE_COMMAND_ERROR_CWSIP0801=CWSIP0801E: Pr\u00f3ba wywo\u0142ania komendy nie powiod\u0142a si\u0119 z powodu niepoprawnego klucza ({0})
+INVOKE_COMMAND_ERROR_CWSIP0801.explanation=Wywo\u0142anie komendy nie by\u0142o mo\u017cliwe, poniewa\u017c klucz by\u0142 niepoprawny.
+INVOKE_COMMAND_ERROR_CWSIP0801.useraction=Sprawd\u017a klucz podawany w metodzie invokeCommand.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The null parameter
+INVOKE_COMMAND_ERROR_CWSIP0802=CWSIP0802E: Pr\u00f3ba wywo\u0142ania komendy nie powiod\u0142a si\u0119, poniewa\u017c nast\u0119puj\u0105cy parametr ma warto\u015b\u0107 NULL: {0}
+INVOKE_COMMAND_ERROR_CWSIP0802.explanation=Nie mo\u017cna wywo\u0142a\u0107 komendy, poniewa\u017c jeden z parametr\u00f3w ma warto\u015b\u0107 NULL
+INVOKE_COMMAND_ERROR_CWSIP0802.useraction=Ustaw okre\u015blony parametr na poprawn\u0105 warto\u015b\u0107 i spr\u00f3buj ponownie
+
+# -------------------------------------------------------------------------------------------------
+# no parameters.
+ADD_DEST_LISTENER_ERROR_CWSIP0803=CWSIP0803E: Wykonanie komendy addDestinationListener nie powiod\u0142o si\u0119, poniewa\u017c nie podano \u017cadnego programu nas\u0142uchuj\u0105cego miejsca docelowego (DestinationListener).
+ADD_DEST_LISTENER_ERROR_CWSIP0803.explanation=Wywo\u0142anie tej komendy nie by\u0142o mo\u017cliwe, poniewa\u017c parametr programu nas\u0142uchuj\u0105cego miejsca docelowego (DestinationListener) mia\u0142 warto\u015b\u0107 NULL.
+ADD_DEST_LISTENER_ERROR_CWSIP0803.useraction=Podaj poprawn\u0105 warto\u015b\u0107 parametru DestinationListener i pon\u00f3w pr\u00f3b\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is destination name
+# {1} is the Websphere MQ Server bus member name
+# {2} is the websphere MQ completion code
+# {3} is the websphere MQ reason code
+MSG_NOT_SENT_CWSIP0811=CWSIP0811W: Nie mo\u017cna wys\u0142a\u0107 komunikatu do miejsca docelowego {0} przypisanego do elementu magistrali serwera produktu WebSphere MQ {1}.  Kod zako\u0144czenia produktu WebSphere MQ: {2}.  Kod przyczyny produktu WebSphere MQ: {3}.
+MSG_NOT_SENT_CWSIP0811.explanation=Nie mo\u017cna by\u0142o wys\u0142a\u0107 komunikatu do okre\u015blonego miejsca docelowego przypisanego do podanego elementu magistrali serwera produktu WebSphere MQ. Podany kod zako\u0144czenia i kod przyczyny produktu WebSphere MQ mog\u0105 zosta\u0107 u\u017cyte w celu okre\u015blenia, dlaczego nie mo\u017cna by\u0142o wys\u0142a\u0107 komunikatu.
+MSG_NOT_SENT_CWSIP0811.useraction=Informacje na temat znaczenia kodu zako\u0144czenia i kodu przyczyny zawiera dokumentacja produktu WebSphere MQ.  Wykonaj odpowiedni\u0105 czynno\u015b\u0107 w celu rozwi\u0105zania problemu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is destination name
+# {1} is the Websphere MQ Server bus member name
+# {2} is the websphere MQ completion code
+# {3} is the websphere MQ reason code
+MEDIATION_MSG_NOT_SENT_CWSIP0812=CWSIP0812W: Nie mo\u017cna wys\u0142a\u0107 komunikatu do punktu mediacji powi\u0105zanego z miejscem docelowym {0} przypisanym do elementu magistrali serwera produktu WebSphere MQ {1}.  Kod zako\u0144czenia produktu WebSphere MQ: {2}.  Kod przyczyny produktu WebSphere MQ: {3}.
+MEDIATION_MSG_NOT_SENT_CWSIP0812.explanation=Nie mo\u017cna by\u0142o wys\u0142a\u0107 komunikatu do okre\u015blonego punktu wykonywania mediacji powi\u0105zanego z podanym elementem magistrali serwera produktu WebSphere MQ. Podany kod zako\u0144czenia i kod przyczyny produktu WebSphere MQ mog\u0105 zosta\u0107 u\u017cyte w celu okre\u015blenia, dlaczego nie mo\u017cna by\u0142o wys\u0142a\u0107 komunikatu.
+MEDIATION_MSG_NOT_SENT_CWSIP0812.useraction=Informacje na temat znaczenia kodu zako\u0144czenia i kodu przyczyny zawiera dokumentacja produktu WebSphere MQ. Wykonaj odpowiedni\u0105 czynno\u015b\u0107 w celu rozwi\u0105zania problemu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+# {1} is the destination name
+# {2} is the websphere MQ Server bus member name
+EXCEPTION_CWSIP0813=CWSIP0813W: Wyst\u0105pi\u0142 wyj\u0105tek {0} podczas pr\u00f3by wys\u0142ania komunikatu do miejsca docelowego {1} przypisanego do elementu magistrali serwera produktu WebSphere MQ {2}.
+EXCEPTION_CWSIP0813.explanation=Nie mo\u017cna by\u0142o wys\u0142a\u0107 komunikatu do okre\u015blonego miejsca docelowego przypisanego do podanego elementu magistrali serwera produktu WebSphere MQ.  Podany wyj\u0105tek mo\u017ce zosta\u0107 u\u017cyty w celu okre\u015blenia, dlaczego nie mo\u017cna by\u0142o wys\u0142a\u0107 komunikatu.
+EXCEPTION_CWSIP0813.useraction=Informacje na temat znaczenia wyj\u0105tku zawiera dokumentacja produktu WebSphere MQ. Wykonaj odpowiedni\u0105 czynno\u015b\u0107 w celu rozwi\u0105zania problemu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+# {1} is the destination name
+# {2} is the websphere MQ Server bus member name
+MEDIATION_EXCEPTION_CWSIP0814=CWSIP0814W: Wyst\u0105pi\u0142 wyj\u0105tek {0} podczas pr\u00f3by wys\u0142ania komunikatu do punktu mediacji powi\u0105zanego z miejscem docelowym {1} przypisanym do elementu magistrali serwera produktu WebSphere MQ {2}.
+MEDIATION_EXCEPTION_CWSIP0814.explanation=Nie mo\u017cna by\u0142o wys\u0142a\u0107 komunikatu do punktu mediacji dla okre\u015blonego miejsca docelowego przypisanego do podanego elementu magistrali serwera produktu WebSphere MQ. Podany wyj\u0105tek mo\u017ce zosta\u0107 u\u017cyty w celu okre\u015blenia, dlaczego nie mo\u017cna by\u0142o wys\u0142a\u0107 komunikatu.
+MEDIATION_EXCEPTION_CWSIP0814.useraction=Informacje na temat znaczenia wyj\u0105tku zawiera dokumentacja produktu WebSphere MQ. Wykonaj odpowiedni\u0105 czynno\u015b\u0107 w celu rozwi\u0105zania problemu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+# {1} is the Websphere MQ Server bus member name
+# {2} is the websphere MQ completion code
+# {3} is the websphere MQ reason code
+MSG_NOT_RECEIVED_CWSIP0815=CWSIP0815W: Nie mo\u017cna odebra\u0107 komunikatu z miejsca docelowego {0} przypisanego do elementu magistrali serwera produktu WebSphere MQ {1}. Kod zako\u0144czenia produktu WebSphere MQ: {2}. Kod przyczyny produktu WebSphere MQ: {3}.
+MSG_NOT_RECEIVED_CWSIP0815.explanation=Nie mo\u017cna by\u0142o odebra\u0107 komunikatu z okre\u015blonego miejsca docelowego przypisanego do podanego elementu magistrali serwera produktu WebSphere MQ.  Podany kod zako\u0144czenia i kod przyczyny produktu WebSphere MQ mog\u0105 zosta\u0107 u\u017cyte w celu okre\u015blenia, dlaczego nie mo\u017cna by\u0142o odebra\u0107 komunikatu.
+MSG_NOT_RECEIVED_CWSIP0815.useraction=Informacje na temat znaczenia kodu zako\u0144czenia i kodu przyczyny zawiera dokumentacja produktu WebSphere MQ.  Wykonaj odpowiedni\u0105 czynno\u015b\u0107 w celu rozwi\u0105zania problemu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+# {1} is the Websphere MQ Server bus member name
+# {2} is the websphere MQ completion code
+# {3} is the websphere MQ reason code
+MEDIATION_MSG_NOT_RECEIVED_CWSIP0816=CWSIP0816W: Nie mo\u017cna odebra\u0107 komunikatu z punktu mediacji powi\u0105zanego z miejscem docelowym {0} przypisanym do elementu magistrali serwera produktu WebSphere MQ {1}. Kod zako\u0144czenia produktu WebSphere MQ: {2}. Kod przyczyny produktu WebSphere MQ: {3}.
+MEDIATION_MSG_NOT_RECEIVED_CWSIP0816.explanation=Nie mo\u017cna by\u0142o odebra\u0107 komunikatu z punktu mediacji powi\u0105zanego z okre\u015blonym miejscem docelowym przypisanym do podanego elementu magistrali serwera produktu WebSphere MQ. Podany kod zako\u0144czenia i kod przyczyny produktu WebSphere MQ mog\u0105 zosta\u0107 u\u017cyte w celu okre\u015blenia, dlaczego nie mo\u017cna by\u0142o odebra\u0107 komunikatu.
+MEDIATION_MSG_NOT_RECEIVED_CWSIP0816.useraction=Informacje na temat znaczenia kodu zako\u0144czenia i kodu przyczyny zawiera dokumentacja produktu WebSphere MQ.  Wykonaj odpowiedni\u0105 czynno\u015b\u0107 w celu rozwi\u0105zania problemu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+# {1} is the destination name
+# {2} is the Websphere MQ Server bus member name
+EXCEPTION_MSG_NOT_RECEIVED_CWSIP0817=CWSIP0817W: Wyst\u0105pi\u0142 wyj\u0105tek {0} podczas pr\u00f3by odebrania komunikatu z miejsca docelowego {1} przypisanego do elementu magistrali serwera produktu WebSphere MQ {2}.
+EXCEPTION_MSG_NOT_RECEIVED_CWSIP0817.explanation=Nie mo\u017cna by\u0142o odebra\u0107 komunikatu z okre\u015blonego miejsca docelowego przypisanego do podanego elementu magistrali serwera produktu WebSphere MQ. Podany wyj\u0105tek mo\u017ce zosta\u0107 u\u017cyty w celu okre\u015blenia, dlaczego nie mo\u017cna by\u0142o odebra\u0107 komunikatu.
+EXCEPTION_MSG_NOT_RECEIVED_CWSIP0817.useraction=Informacje na temat znaczenia wyj\u0105tku zawiera dokumentacja produktu WebSphere MQ. Wykonaj odpowiedni\u0105 czynno\u015b\u0107 w celu rozwi\u0105zania problemu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+# {1} is the destination name
+# {2} is the Websphere MQ Server bus member name
+MEDIATION_EXCEPTION_MSG_NOT_RECEIVED_CWSIP0818=CWSIP0818W: Wyst\u0105pi\u0142 wyj\u0105tek {0} podczas pr\u00f3by odebrania komunikatu z punktu mediacji powi\u0105zanego z miejscem docelowym {1} przypisanym do elementu magistrali serwera produktu WebSphere MQ {2}.
+MEDIATION_EXCEPTION_MSG_NOT_RECEIVED_CWSIP0818.explanation=Nie mo\u017cna by\u0142o odebra\u0107 komunikatu z punktu mediacji powi\u0105zanego z okre\u015blonym miejscem docelowym przypisanym do podanego serwera produktu WebSphere MQ. Podany wyj\u0105tek mo\u017ce zosta\u0107 u\u017cyty w celu okre\u015blenia, dlaczego nie mo\u017cna by\u0142o odebra\u0107 komunikatu.
+MEDIATION_EXCEPTION_MSG_NOT_RECEIVED_CWSIP0818.useraction=Informacje na temat znaczenia wyj\u0105tku zawiera dokumentacja produktu WebSphere MQ.  Wykonaj odpowiedni\u0105 czynno\u015b\u0107 w celu rozwi\u0105zania problemu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the Websphere MQ Server bus member name
+RMQ_DISABLED_CWSIP0819=CWSIP0819W: Nie mo\u017cna nawi\u0105za\u0107 po\u0142\u0105czenia z elementem magistrali serwera produktu WebSphere MQ {0}, poniewa\u017c wy\u0142\u0105czono mechanizm przesy\u0142ania komunikat\u00f3w produktu WebSphere MQ.
+RMQ_DISABLED_CWSIP0819.explanation=Mechanizm przesy\u0142ania komunikat\u00f3w produktu WebSphere MQ jest niedost\u0119pny z powodu b\u0142\u0119du, kt\u00f3ry wyst\u0105pi\u0142 podczas uruchamiania mechanizmu przesy\u0142ania komunikat\u00f3w.
+RMQ_DISABLED_CWSIP0819.useraction=Upewnij si\u0119, \u017ce zosta\u0142 skonfigurowany odpowiedni klient produktu WebSphere MQ w mechanizmie przesy\u0142ania komunikat\u00f3w. Przejrzyj dzienniki uruchamiania mechanizmu przesy\u0142ania komunikat\u00f3w, aby okre\u015bli\u0107 b\u0142\u0105d uruchamiania, a nast\u0119pnie wykonaj odpowiedni\u0105 czynno\u015b\u0107 w celu rozwi\u0105zania problemu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the Websphere MQ Server bus member name
+# {1} is the error
+RMQ_INTERNAL_ERROR_CWSIP0820=CWSIP0820W: Wyst\u0105pi\u0142 wewn\u0119trzny b\u0142\u0105d przesy\u0142ania komunikat\u00f3w podczas u\u017cywania elementu magistrali serwera produktu Websphere MQ {0} : {1}
+RMQ_INTERNAL_ERROR_CWSIP0820.explanation=CMSG0001
+RMQ_INTERNAL_ERROR_CWSIP0820.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the Resource Manager
+# {1} The UUID of the messaging engine
+# {2} The name of the bus
+FAILED_XA_CONNECTION_CWSIP0821=CWSIP0821W: Pr\u00f3ba utworzenia po\u0142\u0105czenia z mened\u017cera zasob\u00f3w {0} do mechanizmu przesy\u0142ania komunikat\u00f3w {1} na magistrali {2} podczas wydobywania transakcji nie powiod\u0142a si\u0119.
+FAILED_XA_CONNECTION_CWSIP0821.explanation=Utworzenie wewn\u0119trznego po\u0142\u0105czenia z mechanizmem przesy\u0142ania komunikat\u00f3w nie by\u0142o mo\u017cliwe. Pr\u00f3ba nawi\u0105zania po\u0142\u0105czenia zostanie ponowiona p\u00f3\u017aniej.
+FAILED_XA_CONNECTION_CWSIP0821.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+LINK_CONTROLLABLE_NOT_FOUND_CWSIP0822=CWSIP0822E: Podczas tworzenia kontrolowanego adaptera dla punktu publikacji w obszarze temat\u00f3w {0} nie uda\u0142o si\u0119 znale\u017a\u0107 zasobu po\u0142\u0105czenia.
+LINK_CONTROLLABLE_NOT_FOUND_CWSIP0822.explanation=CMSG0001
+LINK_CONTROLLABLE_NOT_FOUND_CWSIP0822.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Messages for XD Integration
+# -------------------------------------------------------------------------------------------------
+# {0} is the label of the consumer set
+NULL_FLOW_CLASSIFICATIONS_CWSIP0851=CWSIP0851E: Wykonanie komendy setFlowProperties na zbiorze odbiorc\u00f3w {0} nie powiod\u0142o si\u0119, poniewa\u017c nie podano przep\u0142yw\u00f3w klasyfikacji komunikat\u00f3w.
+NULL_FLOW_CLASSIFICATIONS_CWSIP0851.explanation=Skonfigurowanie w\u0142a\u015bciwo\u015bci przep\u0142ywu komunikat\u00f3w nie by\u0142o mo\u017cliwe, poniewa\u017c parametr Flows mia\u0142 warto\u015b\u0107 NULL.
+NULL_FLOW_CLASSIFICATIONS_CWSIP0851.useraction=Podaj poprawn\u0105 warto\u015b\u0107 parametru Flows i spr\u00f3buj ponownie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the label of the consumer set
+INVALID_FLOW_CLASSIFICATIONS_CWSIP0852=CWSIP0852E: Wykonanie komendy setFlowProperties na zbiorze odbiorc\u00f3w {0} nie powiod\u0142o si\u0119, poniewa\u017c podano niepoprawne przep\u0142ywy klasyfikacji komunikat\u00f3w.
+INVALID_FLOW_CLASSIFICATIONS_CWSIP0852.explanation=Skonfigurowanie w\u0142a\u015bciwo\u015bci przep\u0142ywu komunikat\u00f3w nie by\u0142o mo\u017cliwe, poniewa\u017c parametr Flows by\u0142 niepoprawny.
+INVALID_FLOW_CLASSIFICATIONS_CWSIP0852.useraction=Sprawd\u017a, czy klasyfikacje okre\u015blone w przep\u0142ywach s\u0105 unikalne i pon\u00f3w pr\u00f3b\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of ME Control Listeners registered
+# {1} is the list of registered ME Control Listeners
+MORE_THAN_ONE_ME_CONTROL_LISTENER_CWSIP0853=CWSIP0853W: Znaleziona liczba zarejestrowanych program\u00f3w nas\u0142uchuj\u0105cych elementu steruj\u0105cego mechanizmu przesy\u0142ania komunikat\u00f3w (MessagingEngineControlListeners): {0}. Powinien by\u0107 tylko jeden. Znalezione programy nas\u0142uchuj\u0105ce: {1}
+MORE_THAN_ONE_ME_CONTROL_LISTENER_CWSIP0853.explanation=Mo\u017ce by\u0107 zarejestrowany tylko jeden program nas\u0142uchuj\u0105cy. System wykorzysta tylko pierwszy obiekt MessagingEngineControlListener z listy. 
+MORE_THAN_ONE_ME_CONTROL_LISTENER_CWSIP0853.useraction=Podaj tylko jeden obiekt MessagingEngineControlListener.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The related exception
+ME_CONTROL_LISTENER_REGISTRATION_FAILED_CWSIP0854=CWSIP0854E: Znaleziono obiekt MessagingEngineControlListener, jednak rejestracja nie powiod\u0142a si\u0119. Wyj\u0105tek: {0}
+ME_CONTROL_LISTENER_REGISTRATION_FAILED_CWSIP0854.explanation=CMSG0001
+ME_CONTROL_LISTENER_REGISTRATION_FAILED_CWSIP0854.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topicpsace 
+# {1} The bus target
+# {2} The related exception
+PUBSUB_LINK_FORWARD_CWSIP0855=CWSIP0855E: Nie mo\u017cna wys\u0142a\u0107 publikacji dla obszaru tematu {0} do magistrali {1} z powodu wyst\u0105pienia wyj\u0105tku {2}
+PUBSUB_LINK_FORWARD_CWSIP0855.explanation=CMSG0001
+PUBSUB_LINK_FORWARD_CWSIP0855.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination we are trying to attach to.
+# {1} The messaging engine we are trying to reach.
+GATHERING_ME_VERSION_INCOMPATIBLE_CWSIP0856=CWSIP0856E: Nie mo\u017cna utworzy\u0107 przy\u0142\u0105czenia do punktu kolejki dla miejsca docelowego {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} na potrzeby zbierania komunikat\u00f3w, poniewa\u017c wersja mechanizmu przesy\u0142ania komunikat\u00f3w jest niepoprawna.
+GATHERING_ME_VERSION_INCOMPATIBLE_CWSIP0856.explanation=Mechanizm przesy\u0142ania komunikat\u00f3w udost\u0119pniaj\u0105cy punkt kolejki dla miejsca docelowego ma starsz\u0105 wersj\u0119 i nie obs\u0142uguje zbierania komunikat\u00f3w.
+GATHERING_ME_VERSION_INCOMPATIBLE_CWSIP0856.useraction=U\u017cyj konsumenta pozbawionego funkcji zbierania lub przeprowad\u017a migracj\u0119 mechanizmu przesy\u0142ania komunikat\u00f3w do nowej wersji produktu.
+
+
+# -------------------------------------------------------------------------------------------------
+# Messages for HealthStates - CWSIP09XY
+# Where X is the HealthState colour (0=RED, 1=AMBER, 2=GREEN)
+# Y is the HealthState reason (See HealthStateListener interface)
+# -------------------------------------------------------------------------------------------------
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the ME
+HEALTHSTATE_STATUS_CWSIP0920=CWSIP0920I: Status OK
+HEALTHSTATE_STATUS_CWSIP0920.explanation=Nie wykryto \u017cadnych problem\u00f3w zwi\u0105zanych z transmisj\u0105 komunikat\u00f3w 
+HEALTHSTATE_STATUS_CWSIP0920.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+HEALTHSTATE_STATUS_CWSIP0911=CWSIP0911W: Brak odpowiedzi z odbiornika. Up\u0142yn\u0105\u0142 termin potwierdzenia wys\u0142anych komunikat\u00f3w
+HEALTHSTATE_STATUS_CWSIP0911.explanation=Wys\u0142ano komunikaty do zdalnego mechanizmu przesy\u0142ania komunikat\u00f3w, jednak nie otrzymano \u017cadnego potwierdzenia tych komunikat\u00f3w przez nieoczekiwanie d\u0142ugi czas.
+HEALTHSTATE_STATUS_CWSIP0911.useraction=Upewnij si\u0119, \u017ce odbiorczy mechanizm przesy\u0142ania komunikat\u00f3w jest uruchomiony oraz \u017ce jest w stanie nawi\u0105za\u0107 komunikacj\u0119 z wysy\u0142aj\u0105cym mechanizmem przesy\u0142ania komunikat\u00f3w. Je\u015bli tak, by\u0107 mo\u017ce system jest obecnie przeci\u0105\u017cony. Problem rozwi\u0105\u017ce ograniczenie ruchu komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+HEALTHSTATE_STATUS_CWSIP0912=CWSIP0912W: Zablokowany nadajnik. Komunikat prowadz\u0105cy zosta\u0142 wstrzymany w ramach w\u0105tpliwej transakcji na nieoczekiwanie d\u0142ugi czas
+HEALTHSTATE_STATUS_CWSIP0912.explanation=Komunikat znajduj\u0105cy si\u0119 przed strumieniem transmisji zosta\u0142 cz\u0119\u015bciowo zatwierdzony, ale transakcja jest potencjalnie w\u0105tpliwa. Pozosta\u0142e komunikaty zostan\u0105 zablokowane do czasu rozstrzygni\u0119cia transakcji.
+HEALTHSTATE_STATUS_CWSIP0912.useraction=Znajd\u017a zablokowany komunikat i okre\u015bl przyczyn\u0119 takiego stanu transakcji. Rozstrzygni\u0119cie transakcji spowoduje odblokowanie komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+HEALTHSTATE_STATUS_CWSIP0913=CWSIP0913W: Nadajnik komunikat\u00f3w jest pe\u0142ny
+HEALTHSTATE_STATUS_CWSIP0913.explanation=Nadajnik komunikat\u00f3w osi\u0105gn\u0105\u0142 g\u00f3rny pr\u00f3g komunikat\u00f3w mechanizmu przesy\u0142ania komunikat\u00f3w. Zablokowanie kolejki komunikat\u00f3w oczekuj\u0105cych mo\u017ce by\u0107 spowodowane nie przyjmowaniem komunikat\u00f3w przez odbiorczy mechanizm przesy\u0142ania komunikat\u00f3w albo zbyt wysokim tempem generowania komunikat\u00f3w, przekraczaj\u0105cym mo\u017cliwo\u015bci ich przesy\u0142ania.
+HEALTHSTATE_STATUS_CWSIP0913.useraction=Upewnij si\u0119, \u017ce mechanizmy przesy\u0142ania komunikat\u00f3w, mi\u0119dzy kt\u00f3rymi nawi\u0105zywana jest komunikacja, s\u0105 aktywne oraz \u017ce istnieje mi\u0119dzy nimi po\u0142\u0105czenie sieciowe. Je\u015bli taki stan b\u0119dzie nadal wyst\u0119powa\u0142, to w razie potrzeby zmniejsz cz\u0119stotliwo\u015b\u0107 produkcji komunikat\u00f3w lub sprawd\u017a dzienniki systemowe pod k\u0105tem wyst\u0119powania b\u0142\u0119d\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+HEALTHSTATE_STATUS_CWSIP0914=CWSIP0914W: Zaobserwowano nieefektywne dostarczenie komunikatu z powodu konieczno\u015bci ponownego dostarczania komunikat\u00f3w.
+HEALTHSTATE_STATUS_CWSIP0914.explanation=Co najmniej jeden komunikat wymaga\u0142 ponownego dostarczenia do odbiorczego mechanizmu przesy\u0142ania komunikat\u00f3w. Jest to akceptowalne, ale nieefektywne. Ponowne dostarczanie komunikatu mo\u017ce by\u0107 wymagane, gdy po\u0142\u0105czenie z docelowym mechanizmem przesy\u0142ania komunikat\u00f3w zostanie utracone lub funkcjonuje nieregularnie, a tak\u017ce gdy tempo generowania komunikat\u00f3w przekracza mo\u017cliwo\u015bci ich przesy\u0142ania.
+HEALTHSTATE_STATUS_CWSIP0914.useraction=Upewnij si\u0119, \u017ce mechanizmy przesy\u0142ania komunikat\u00f3w, mi\u0119dzy kt\u00f3rymi nawi\u0105zywana jest komunikacja, s\u0105 aktywne oraz \u017ce istnieje mi\u0119dzy nimi po\u0142\u0105czenie sieciowe. Je\u015bli taki stan b\u0119dzie nadal wyst\u0119powa\u0142, to w razie potrzeby zmniejsz cz\u0119stotliwo\u015b\u0107 produkcji komunikat\u00f3w lub sprawd\u017a dzienniki systemowe pod k\u0105tem wyst\u0119powania b\u0142\u0119d\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+HEALTHSTATE_STATUS_CWSIP0905=CWSIP0905W: Nie nawi\u0105zano \u017cadnego po\u0142\u0105czenia
+HEALTHSTATE_STATUS_CWSIP0905.explanation=Po\u0142\u0105czenie mi\u0119dzy tym mechanizmem przesy\u0142ania komunikat\u00f3w a obc\u0105 magistral\u0105 jest aktualnie niedost\u0119pne, poniewa\u017c prawdopodobnie nie uruchomiono \u0142\u0105cza lub mechanizm przesy\u0142ania komunikat\u00f3w nie m\u00f3g\u0142 nawi\u0105za\u0107 komunikacji z mechanizmem przesy\u0142ania komunikat\u00f3w z obcej magistrali
+HEALTHSTATE_STATUS_CWSIP0905.useraction=Upewnij si\u0119, \u017ce \u0142\u0105cze zosta\u0142o uruchomione, mechanizmy przesy\u0142ania komunikat\u00f3w, kt\u00f3re udost\u0119pniaj\u0105 \u0142\u0105cze, s\u0105 aktywne oraz \u017ce istnieje mi\u0119dzy nimi dzia\u0142aj\u0105ce po\u0142\u0105czenie sieciowe.
+
+# -------------------------------------------------------------------------------------------------
+HEALTHSTATE_STATUS_CWSIP0916=CWSIP0916W: Zaobserwowano nieefektywne dostarczenie komunikatu z powodu konieczno\u015bci ponownego dostarczania komunikat\u00f3w.
+HEALTHSTATE_STATUS_CWSIP0916.explanation=Ponowne dostarczanie komunikat\u00f3w jest dopuszczalne, ale ma\u0142o wydajne. Ponowne dostarczanie komunikatu mo\u017ce by\u0107 wymagane, gdy po\u0142\u0105czenie z docelowym mechanizmem przesy\u0142ania komunikat\u00f3w zostanie utracone lub funkcjonuje nieregularnie, a tak\u017ce gdy tempo generowania komunikat\u00f3w przekracza mo\u017cliwo\u015bci ich przesy\u0142ania.
+HEALTHSTATE_STATUS_CWSIP0916.useraction=Upewnij si\u0119, \u017ce mechanizmy przesy\u0142ania komunikat\u00f3w, mi\u0119dzy kt\u00f3rymi nawi\u0105zywana jest komunikacja, s\u0105 aktywne oraz \u017ce istnieje mi\u0119dzy nimi po\u0142\u0105czenie sieciowe. Je\u015bli taki stan b\u0119dzie nadal wyst\u0119powa\u0142, to w razie potrzeby zmniejsz cz\u0119stotliwo\u015b\u0107 produkcji komunikat\u00f3w lub sprawd\u017a dzienniki systemowe pod k\u0105tem wyst\u0119powania b\u0142\u0119d\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+HEALTHSTATE_STATUS_CWSIP0917=CWSIP0917W: Ponowne ustanawianie dostarczania komunikat\u00f3w
+HEALTHSTATE_STATUS_CWSIP0917.explanation=W transmisji komunikat\u00f3w zaobserwowano przerw\u0119, kt\u00f3ra jest aktualnie rozstrzygana. Prawdopodobn\u0105 przyczyn\u0105 awarii jest przerwa w komunikacji lub wyst\u0105pienie sytuacji, w kt\u00f3rej cz\u0119stotliwo\u015b\u0107 produkcji komunikat\u00f3w przekroczy\u0142a mo\u017cliwo\u015bci ich odbierania.
+HEALTHSTATE_STATUS_CWSIP0917.useraction=Upewnij si\u0119, \u017ce mechanizmy przesy\u0142ania komunikat\u00f3w, mi\u0119dzy kt\u00f3rymi nawi\u0105zywana jest komunikacja, s\u0105 aktywne oraz \u017ce istnieje mi\u0119dzy nimi po\u0142\u0105czenie sieciowe. Je\u015bli taki stan b\u0119dzie nadal wyst\u0119powa\u0142, to w razie potrzeby zmniejsz cz\u0119stotliwo\u015b\u0107 produkcji komunikat\u00f3w lub sprawd\u017a dzienniki systemowe pod k\u0105tem wyst\u0119powania b\u0142\u0119d\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Error ID
+HEALTHSTATE_STATUS_CWSIP0908=CWSIP0908E: Wykryto b\u0142\u0105d ({0})
+HEALTHSTATE_STATUS_CWSIP0908.explanation=Wykryto co najmniej jeden b\u0142\u0105d, kt\u00f3ry mo\u017ce uniemo\u017cliwi\u0107 przesy\u0142anie lub odbieranie dalszych komunikat\u00f3w. Sprawd\u017a dzienniki systemowe pod k\u0105tem wyst\u0119powania b\u0142\u0119d\u00f3w.
+HEALTHSTATE_STATUS_CWSIP0908.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Exception class causing the blockage
+# {1} Target destination
+HEALTHSTATE_STATUS_CWSIP0919=CWSIP0919W: Zablokowany odbiornik. Odbiornik nie mo\u017ce dostarczy\u0107 bie\u017c\u0105cego komunikatu przychodz\u0105cego w miejscu docelowym {1} z nast\u0119puj\u0105cej przyczyny: {0}
+HEALTHSTATE_STATUS_CWSIP0919.explanation=Odbiornik nie mo\u017ce dostarczy\u0107 komunikatu do miejsca docelowego z podanej przyczyny. Do czasu rozwi\u0105zania tego problemu dostarczanie kolejnych komunikat\u00f3w b\u0119dzie blokowane.
+HEALTHSTATE_STATUS_CWSIP0919.useraction=Je\u015bli taki stan b\u0119dzie wyst\u0119powa\u0142 nadal, wykonaj odpowiednie czynno\u015bci, aby rozwi\u0105za\u0107 problem z komunikatem.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIP9999=CWSIP9999E: {0}
+TEMPORARY_CWSIP9999.explanation=Je\u015bli te informacje s\u0105 niewystarczaj\u0105ce, przejrzyj wcze\u015bniejsze komunikaty, aby uzyska\u0107 dodatkow\u0105 pomoc.
+TEMPORARY_CWSIP9999.useraction=Wi\u0119cej informacji mo\u017cna znale\u017a\u0107 w poprzednich komunikatach.
+# -------------------------------------------------------------------------------------------------
+
+# New messages for Liberty
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the messaging engine
+RECONCILE_STARTED_INFO_CWSIP00214=CWSIP0214I: Mechanizm przesy\u0142ania komunikat\u00f3w {0} rozpoczyna uzgadnianie miejsca docelowego.
+RECONCILE_STARTED_INFO_CWSIP00214.explanation=Miejsce docelowe jest uzgadniane z konfiguracj\u0105 zapisan\u0105 przez mechanizm przesy\u0142ania komunikat\u00f3w przy jego zatrzymaniu.
+RECONCILE_STARTED_INFO_CWSIP00214.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the messaging engine
+RECONCILE_COMPLETED_INFO_CWSIP00215=CWSIP0215I: Mechanizm przesy\u0142ania komunikat\u00f3w {0} zako\u0144czy\u0142 uzgadnianie miejsca docelowego.
+RECONCILE_COMPLETED_INFO_CWSIP00215.explanation=Miejsce docelowe zosta\u0142o uzgodnione z konfiguracj\u0105 zapisan\u0105 przez mechanizm przesy\u0142ania komunikat\u00f3w przy jego zatrzymaniu. Odpowiednie zasoby zostan\u0105 zmienione, utworzone lub przeznaczone do usuni\u0119cia.
+RECONCILE_COMPLETED_INFO_CWSIP00215.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} message id
+DISCARD_MESSAGE_INFO_CWSIP00216=CWSIP0216I: Komunikat {0} zosta\u0142 odrzucony po osi\u0105gni\u0119ciu maksymalnej liczby nieudanych pr\u00f3b ponownego dostarczenia.
+DISCARD_MESSAGE_INFO_CWSIP00216.explanation=Komunikat zosta\u0142 odrzucony, poniewa\u017c osi\u0105gni\u0119to maksymalna liczb\u0119 nieudanych pr\u00f3b dostarczenia komunikatu.
+DISCARD_MESSAGE_INFO_CWSIP00216.useraction=Sprawd\u017a b\u0142\u0105d zg\u0142oszony przez aplikacj\u0119 konsumenck\u0105 i upewnij si\u0119, \u017ce konfiguracje aplikacji konsumenckiej s\u0105 poprawne.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+LOCAL_DEST_DELETE_INFO_CWSIP00217=CWSIP0217I: Lokalne miejsce docelowe {0} zosta\u0142o oznaczone do usuni\u0119cia.
+LOCAL_DEST_DELETE_INFO_CWSIP00217.explanation=Usuni\u0119to konfiguracj\u0119 dla tego miejsca docelowego w danym mechanizmie przesy\u0142ania komunikat\u00f3w. Z tego powodu zostanie ono zaplanowane do usuni\u0119cia.
+LOCAL_DEST_DELETE_INFO_CWSIP00217.useraction=Brak.

@@ -15,7 +15,7 @@ src: \
 	fat/src,\
 	test-applications/concurrent/src
 
-test.project: true
+fat.project: true
 
 -buildpath: \
   com.ibm.websphere.javaee.concurrent.1.0;version=latest,\

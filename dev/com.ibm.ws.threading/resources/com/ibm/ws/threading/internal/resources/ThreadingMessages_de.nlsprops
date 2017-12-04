@@ -1,0 +1,57 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME=CWWKExxxxI: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.threading/resources/com/ibm/ws/threading/internal/resources/ThreadingMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 1200 - 1299 com.ibm.ws.threading.internal.resources.ThreadingMessages
+# -------------------------------------------------------------------------------------------------
+
+# {0} size of the pool when a deadlock was first detected
+# {1} current size of the pool
+unbreakableExecutorHang=CWWKE1200W:  Alle Threads im Liberty-Standardsteuerprogramm scheinen blockiert zu sein. Liberty hat die Anzahl der Threads automatisch von {0} auf {1} erh\u00f6ht. Es scheinen jedoch alle Threads blockiert zu sein.
+unbreakableExecutorHang.explanation=Es ist ein Fehler aufgetreten, der zur Blockierung eines Steuerprogramms gef\u00fchrt hat, und die Liberty-Laufzeitumgebung hat eine erhebliche Anzahl an Threads hinzugef\u00fcgt, um zu versuchen, die Blockierung aufzuheben. Das Steuerprogramm scheint jedoch nicht zu reagieren. 
+unbreakableExecutorHang.useraction=Stellen Sie fest, ob es einen Engpass gibt, z. B. eine gesperrte Datenbanktabelle, der verhindert, dass Threads im Server aufgel\u00f6st werden. Wenn es keinen solchen Engpass gibt und der Server tats\u00e4chlich weitere Threads ben\u00f6tigt, passen Sie das Attribut coreThreads des Konfigurationselements des Ausf\u00fchrungsprogramms an.
+
+CWWKE1201.queue.full.abort=CWWKE1201E: Eine Task kann nicht an den Executor {0} \u00fcbergeben werden, da die Taskwarteschlange mit dem Wert {1} f\u00fcr das Attribut maxQueueSize nach einer Wartezeit von {2} Nanosekunden an der Kapazit\u00e4tsgrenze bleibt.
+CWWKE1201.queue.full.abort.explanation=Das Attribut maxQueueSize steuert, wie viele Task\u00fcbergaben in die Warteschlange eingereiht werden k\u00f6nnen. Das Attribut maxWaitForEnqueue steuert, wie lange auf die Verf\u00fcgbarkeit einer Warteschlangenposition gewartet werden soll, aber dieses Intervall kann durch das verbleibende Zeitlimit verk\u00fcrzt werden, wenn Sie die timed-Methode invokeAll oder invokeAny f\u00fcr die \u00dcbergabe von Tasks verwenden. Das Attribut queueFullAction legt fest, welche Aktion ausgef\u00fchrt wird, nachdem die Wartezeit abgelaufen und weiterhin keine Position in der Warteschlange verf\u00fcgbar ist. Um maximale Parallelit\u00e4t zu vermeiden bzw. um den angegebenen Zeitlimitwert zu ber\u00fccksichtigen, k\u00f6nnen die Methoden invokeAll und invokeAny die queueFullAction \u00fcberschreiben und die Task\u00fcbergabe abbrechen, wenn sie nicht in eine Warteschlange eingereiht werden kann.
+CWWKE1201.queue.full.abort.useraction=Es ist keine Aktion erforderlich, wenn die Anwendung die RejectedExecutionException verarbeitet. Verwenden Sie andernfalls eine Kombination der folgenden Aktionen: maxQueueSize erh\u00f6hen, maxWaitForEnqueue erh\u00f6hen, eine andere queueFullAction verwenden, Zeitlimit f\u00fcr die Methode invokeAll oder invokeAny erh\u00f6hen.
+
+CWWKE1202.submit.after.shutdown=CWWKE1202E: Eine Task kann nicht \u00fcbergeben werden, weil der Executor {0} heruntergefahren wurde.
+CWWKE1202.submit.after.shutdown.explanation=Task\u00fcbergaben sind nach Absetzen der Anforderung zum Herunterfahren des Executor-Service nicht zul\u00e4ssig.
+CWWKE1202.submit.after.shutdown.useraction=\u00dcbergeben Sie Tasks nur an eine Executor-Serviceinstanz, f\u00fcr die keine Anforderung zum Herunterfahren abgesetzt wurde.
+
+CWWKE1203.config.update.after.shutdown=CWWKE1203E: Die Konfigurationsaktualisierung {0} ist nicht zul\u00e4ssig, weil der Executor {1} heruntergefahren wurde.
+CWWKE1203.config.update.after.shutdown.explanation=Es ist nicht m\u00f6glich, die Konfiguration zu aktualisieren, nachdem eine Anforderung zum Herunterfahren des Executor-Service abgesetzt wurde.
+CWWKE1203.config.update.after.shutdown.useraction=Aktualisieren Sie nur die Konfiguration eines Executor-Service, f\u00fcr den keine Anforderung zum Herunterfahren abgesetzt wurde.
+
+# {4} is the value of the time unit enum constant that was supplied to invokeAll/invokeAny. For example, MINUTES
+CWWKE1204.unable.to.invoke=CWWKE1204E: Der Executor {0} konnte {1} der Tasks {2} nicht innerhalb des zugeteilten Intervalls von {3} {4} \u00fcbergeben.
+CWWKE1204.unable.to.invoke.explanation=Der Executor hat die Operation invokeAll oder invokeAny zur\u00fcckgewiesen, weil nicht gen\u00fcgend Zeit oder Warteschlangenkapazit\u00e4t f\u00fcr die \u00dcbergabe aller Tasks, die innerhalb des angegebenen Intervalls angefordert wurden, verf\u00fcgbar war.
+CWWKE1204.unable.to.invoke.useraction=Es ist keine Aktion erforderlich, wenn die Anwendung die RejectedExecutionException verarbeitet. Verwenden Sie andernfalls eine Kombination der folgenden Aktionen: maxQueueSize erh\u00f6hen, maxConcurrency erh\u00f6hen, Zeitlimitwert f\u00fcr die Methode invokeAll oder invokeAny erh\u00f6hen.
+
+CWWKE1205.start.timeout=CWWKE1205E: Der Executor {0} konnte die Task {1} nach {2} Nanosekunden nicht starten, weil die Task den zul\u00e4ssigen startTimeout-Wert von {3} Nanosekunden \u00fcberschritten hat.
+CWWKE1205.start.timeout.explanation=Wenn ein startTimeout-Wert in einem Executor konfiguriert ist oder \u00fcber das Programm f\u00fcr eine Task angefordert wurde, verfolgt der Executor die abgelaufene Zeit zwischen der Task\u00fcbergabe und dem m\u00f6glichen Ausf\u00fchrungspunkt f\u00fcr die Task. Wenn die abgelaufene Zeit den startTimeout-Wert \u00fcberschreitet, bricht der Executor die Task ab, anstatt sie zu starten. 
+CWWKE1205.start.timeout.useraction=Es ist keine Aktion erforderlich, wenn die Anwendung erwartet, dass Tasks bei \u00dcberschreitung des festgelegten startTimeout-Werts abgebrochen werden. Verwenden Sie andernfalls eine Kombination der folgenden Aktionen: startTimeout erh\u00f6hen, maxConcurrency erh\u00f6hen.

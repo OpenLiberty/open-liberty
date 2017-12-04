@@ -1,0 +1,195 @@
+###############################################################################
+# Copyright (c) 2011, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWNEN (Injection Engine)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME com.ibm.ws.injection/resources/com/ibm/ws/osgi/internal/resources/EJBContainerMessages.nlsprops
+#COMPONENTPREFIX CNTR
+#COMPONENTNAMEFOR CNTR EJB Container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# NOTE: CNTR4000-CNTR4999 are reserved for use in this message file. All other
+#       CNTR ranges are reserved by com/ibm/ejs/container/container.nlsprops
+#
+#  		CNTR4000-CNTR4099 - general EJB messages
+#       CNTR4100+ - Metadata messages
+#-------------------------------------------------------------------------------
+
+STARTING_MODULE_CNTR4000I=CNTR4000I: A(z) {1} alkalmaz\u00e1sban tal\u00e1lhat\u00f3 {0} EJB modul elindul.
+STARTING_MODULE_CNTR4000I.explanation=A kiszolg\u00e1l\u00f3 elind\u00edtja az EJB modult.
+STARTING_MODULE_CNTR4000I.useraction=Semmit sem kell tennie.
+STARTED_MODULE_CNTR4001I=CNTR4001I: A(z) {1} alkalmaz\u00e1sban tal\u00e1lhat\u00f3 {0} EJB modul sikeresen elindult.
+STARTED_MODULE_CNTR4001I.explanation=A kiszolg\u00e1l\u00f3 elind\u00edtotta az EJB modult.
+STARTED_MODULE_CNTR4001I.useraction=Semmit sem kell tennie.
+
+ERROR_STARTING_MODULE_CNTR4002E=CNTR4002E: A(z) {1} alkalmaz\u00e1sban tal\u00e1lhat\u00f3 {0} EJB modul ind\u00edt\u00e1sa meghi\u00fasult. Kiv\u00e9tel: {2}.
+ERROR_STARTING_MODULE_CNTR4002E.explanation=A kiszolg\u00e1l\u00f3 nem tudta elind\u00edtani az EJB modult.
+ERROR_STARTING_MODULE_CNTR4002E.useraction=A kiv\u00e9tel inform\u00e1ci\u00f3inak felhaszn\u00e1l\u00e1s\u00e1val azonos\u00edtsa a probl\u00e9ma forr\u00e1s\u00e1t, majd oldja meg azt. Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support/.
+
+STOPPING_MODULE_CNTR4003I=CNTR4003I: A(z) {1} alkalmaz\u00e1sban tal\u00e1lhat\u00f3 {0} EJB modul le\u00e1ll.
+STOPPING_MODULE_CNTR4003I.explanation=A kiszolg\u00e1l\u00f3 le\u00e1ll\u00edtja az EJB modult.
+STOPPING_MODULE_CNTR4003I.useraction=Semmit sem kell tennie.
+
+STOPPED_MODULE_CNTR4004I=CNTR4004I: A(z) {1} alkalmaz\u00e1sban tal\u00e1lhat\u00f3 {0} EJB modul sikeresen le\u00e1llt.
+STOPPED_MODULE_CNTR4004I.explanation=A kiszolg\u00e1l\u00f3 le\u00e1ll\u00edtotta az EJB modult.
+STOPPED_MODULE_CNTR4004I.useraction=Semmit sem kell tennie.
+
+ERROR_STOPPING_MODULE_CNTR4005E=CNTR4005E: A(z) {1} alkalmaz\u00e1s {0} EJB modulj\u00e1nak le\u00e1ll\u00edt\u00e1sa meghi\u00fasult. Kiv\u00e9tel: {2}.
+ERROR_STOPPING_MODULE_CNTR4005E.explanation=A kiszolg\u00e1l\u00f3 nem tudta le\u00e1ll\u00edtani az EJB modult.
+ERROR_STOPPING_MODULE_CNTR4005E.useraction=A kiv\u00e9tel inform\u00e1ci\u00f3inak felhaszn\u00e1l\u00e1s\u00e1val azonos\u00edtsa a probl\u00e9ma forr\u00e1s\u00e1t, majd oldja meg azt. Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support/.
+
+ERROR_STARTING_EJB_CNTR4006E=CNTR4006E: A(z) {2} alkalmaz\u00e1s {1} modulj\u00e1ban tal\u00e1lhat\u00f3 {0} EJB-komponens ind\u00edt\u00e1sa meghi\u00fasult. Kiv\u00e9tel: {3}
+ERROR_STARTING_EJB_CNTR4006E.explanation=Az EJB-komponens \u00fagy van be\u00e1ll\u00edtva, hogy az els\u0151 haszn\u00e1latkor induljon el, ne a modulja elind\u00edt\u00e1sa ut\u00e1n. Az EJB-komponens ind\u00edt\u00e1sa az els\u0151 haszn\u00e1latkor meghi\u00fasult.
+ERROR_STARTING_EJB_CNTR4006E.useraction=A kiv\u00e9tel inform\u00e1ci\u00f3inak felhaszn\u00e1l\u00e1s\u00e1val azonos\u00edtsa a probl\u00e9ma forr\u00e1s\u00e1t, majd oldja meg azt. Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support/.
+
+JNDI_CANNOT_INSTANTIATE_OBJECT_CNTR4007E=CNTR4007E: Hiba t\u00f6rt\u00e9nt a(z) {0} fel\u00fclet l\u00e9trehoz\u00e1sakor a(z) {3} alkalmaz\u00e1sban tal\u00e1lhat\u00f3 {2} modul {1} EJB-komponense sz\u00e1m\u00e1ra. Az EJB-komponens kikeres\u00e9se a(z) {4} JNDI n\u00e9vvel meghi\u00fasult. Kiv\u00e9tel: {5}
+JNDI_CANNOT_INSTANTIATE_OBJECT_CNTR4007E.explanation=Hiba t\u00f6rt\u00e9nt az EJB-komponens p\u00e9ld\u00e1ny\u00e1nak l\u00e9trehoz\u00e1sakor a megadott JNDI n\u00e9vvel.
+JNDI_CANNOT_INSTANTIATE_OBJECT_CNTR4007E.useraction=A hib\u00e1val kapcsolatos inform\u00e1ci\u00f3k\u00e9rt tekintse meg a be\u00e1gyazott kiv\u00e9telt, vagy egy kor\u00e1bbi hiba\u00fczenetet.
+
+JNDI_CANNOT_INSTANTIATE_HOME_CNTR4008E=CNTR4008E: A(z) {1} EJB-komponens {0} saj\u00e1t fel\u00fclete a(z) {3} alkalmaz\u00e1s {2} modulj\u00e1ban nem k\u00e9rdezhet\u0151 le a(z) {4} JNDI n\u00e9vhez, mert a saj\u00e1t fel\u00fcleteket a server.xml f\u00e1jlban be\u00e1ll\u00edtott szolg\u00e1ltat\u00e1sok egyike sem t\u00e1mogatja.
+JNDI_CANNOT_INSTANTIATE_HOME_CNTR4008E.explanation=Az ejbLite szolg\u00e1ltat\u00e1sok az EJB-komponensek saj\u00e1t vagy komponens fel\u00fcleteit nem t\u00e1mogatj\u00e1k. Az ejbLite szolg\u00e1ltat\u00e1sokban csak az \u00fczleti fel\u00fcletek t\u00e1mogatottak.
+JNDI_CANNOT_INSTANTIATE_HOME_CNTR4008E.useraction=Az alkalmaz\u00e1st m\u00f3dos\u00edtva t\u00e1vol\u00edtsa el az EJB-komponens saj\u00e1t \u00e9s komponens fel\u00fcletek haszn\u00e1lat\u00e1t, vagy adjon hozz\u00e1 ejbHome szolg\u00e1ltat\u00e1st a server.xml f\u00e1jlhoz.
+
+JNDI_CANNOT_INSTANTIATE_REMOTE_CNTR4009E=CNTR4009E: A(z) {1} EJB-komponens {0} saj\u00e1t fel\u00fclete a(z) {3} alkalmaz\u00e1s {2} modulj\u00e1ban nem k\u00e9rdezhet\u0151 le a(z) {4} JNDI n\u00e9vhez, mert a t\u00e1voli fel\u00fcleteket a server.xml f\u00e1jlban be\u00e1ll\u00edtott szolg\u00e1ltat\u00e1sok egyike sem t\u00e1mogatja.
+JNDI_CANNOT_INSTANTIATE_REMOTE_CNTR4009E.explanation=Az ejbLite szolg\u00e1ltat\u00e1sok az EJB-komponensek t\u00e1voli fel\u00fcleteit nem t\u00e1mogatj\u00e1k. Az ejbLite szolg\u00e1ltat\u00e1sokban csak a helyi fel\u00fcletek t\u00e1mogatottak.
+JNDI_CANNOT_INSTANTIATE_REMOTE_CNTR4009E.useraction=Az alkalmaz\u00e1st m\u00f3dos\u00edtva t\u00e1vol\u00edtsa el az EJB-komponens t\u00e1voli fel\u00fcletek haszn\u00e1lat\u00e1t, vagy adjon hozz\u00e1 ejbRemote szolg\u00e1ltat\u00e1st a server.xml f\u00e1jlhoz.
+
+AUTOMATIC_TIMERS_NOT_SUPPORTED_CNTR4010W=CNTR4010W: A(z) {2} alkalmaz\u00e1s {1} modulj\u00e1nak {0} EJB-komponense nem-\u00e1lland\u00f3 automatikus id\u0151m\u00e9r\u0151ket deklar\u00e1l. A nem-\u00e1lland\u00f3 automatikus id\u0151m\u00e9r\u0151ket a server.xml f\u00e1jlban be\u00e1ll\u00edtott egyik szolg\u00e1ltat\u00e1s sem t\u00e1mogatja \u00e9s figyelmen k\u00edv\u00fcl maradnak.
+AUTOMATIC_TIMERS_NOT_SUPPORTED_CNTR4010W.explanation=A telep\u00edt\u00e9si le\u00edr\u00f3ban vagy annot\u00e1ci\u00f3ban deklar\u00e1lt nem-\u00e1lland\u00f3 automatikus EJB-komponens id\u0151m\u00e9r\u0151ket az ejbLite-3.1 szolg\u00e1ltat\u00e1s nem t\u00e1mogatja \u00e9s a fut\u00e1s sor\u00e1n figyelmen k\u00edv\u00fcl maradnak. Az EJB-komponens id\u0151m\u00e9r\u0151k alkalmaz\u00e1s \u00e1ltali tervezett felhaszn\u00e1l\u00e1s\u00e1t\u00f3l f\u00fcgg\u0151en az alkalmaz\u00e1s lehet, hogy az elv\u00e1rt m\u00f3don fog futni, de lehet, hogy nem.
+AUTOMATIC_TIMERS_NOT_SUPPORTED_CNTR4010W.useraction=T\u00e1vol\u00edtsa el a nem t\u00e1mogatott automatikus id\u0151m\u00e9r\u0151ket az alkalmaz\u00e1sb\u00f3l, vagy adja hozz\u00e1 az ejbLite szolg\u00e1ltat\u00e1s olyan v\u00e1ltozat\u00e1t a server.xml f\u00e1jlhoz, amely t\u00e1mogatja a nem-\u00e1lland\u00f3 automatikus id\u0151m\u00e9r\u0151ket. 
+
+INJECTION_CANNOT_INSTANTIATE_HOME_CNTR4011E=CNTR4011E: A(z) {1} EJB-komponens {0} saj\u00e1t fel\u00fclete a(z) {3} alkalmaz\u00e1s {2} modulj\u00e1ban nem k\u00e9rdezhet\u0151 le a k\u00f3dbesz\u00far\u00e1shoz, mert a saj\u00e1t fel\u00fcleteket a server.xml f\u00e1jlban be\u00e1ll\u00edtott szolg\u00e1ltat\u00e1sok egyike sem t\u00e1mogatja.
+INJECTION_CANNOT_INSTANTIATE_HOME_CNTR4011E.explanation=Az ejbLite szolg\u00e1ltat\u00e1sok az EJB-komponensek saj\u00e1t vagy komponens fel\u00fcleteit nem t\u00e1mogatj\u00e1k. Az ejbLite szolg\u00e1ltat\u00e1sokban csak az \u00fczleti fel\u00fcletek t\u00e1mogatottak.
+INJECTION_CANNOT_INSTANTIATE_HOME_CNTR4011E.useraction=Az alkalmaz\u00e1st m\u00f3dos\u00edtva t\u00e1vol\u00edtsa el az EJB-komponens saj\u00e1t \u00e9s komponens fel\u00fcletek haszn\u00e1lat\u00e1t, vagy adjon hozz\u00e1 ejbHome szolg\u00e1ltat\u00e1st a server.xml f\u00e1jlhoz.
+
+INJECTION_CANNOT_INSTANTIATE_REMOTE_CNTR4012E=CNTR4012E: A(z) {1} EJB-komponens {0} t\u00e1voli fel\u00fclete a(z) {3} alkalmaz\u00e1s {2} modulj\u00e1ban nem k\u00e9rdezhet\u0151 le a k\u00f3dbesz\u00far\u00e1shoz, mert a t\u00e1voli fel\u00fcleteket a server.xml f\u00e1jlban be\u00e1ll\u00edtott szolg\u00e1ltat\u00e1sok egyike sem t\u00e1mogatja.
+INJECTION_CANNOT_INSTANTIATE_REMOTE_CNTR4012E.explanation=Az ejbLite szolg\u00e1ltat\u00e1sok az EJB-komponensek t\u00e1voli fel\u00fcleteit nem t\u00e1mogatj\u00e1k. Az ejbLite szolg\u00e1ltat\u00e1sokban csak a helyi fel\u00fcletek t\u00e1mogatottak.
+INJECTION_CANNOT_INSTANTIATE_REMOTE_CNTR4012E.useraction=Az alkalmaz\u00e1st m\u00f3dos\u00edtva t\u00e1vol\u00edtsa el az EJB-komponens t\u00e1voli fel\u00fcletek haszn\u00e1lat\u00e1t, vagy adjon hozz\u00e1 ejbRemote szolg\u00e1ltat\u00e1st a server.xml f\u00e1jlhoz.
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_ACTIVATED_CNTR4013I 
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_DEACTIVATED_CNTR4014I
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_DESTINATION_NOT_FOUND_CNTR4016W
+
+ASYNC_METHODS_NOT_SUPPORTED_CNTR4017E=CNTR4017E: A(z) {1} EJB-komponens {0} aszinkron met\u00f3dusa a(z) {3} alkalmaz\u00e1s {2} modulj\u00e1ban nem \u00fctemezhet\u0151. Az aszinkron EJB met\u00f3dusokat a server.xml f\u00e1jlban be\u00e1ll\u00edtott egyik szolg\u00e1ltat\u00e1s sem t\u00e1mogatja.
+ASYNC_METHODS_NOT_SUPPORTED_CNTR4017E.explanation=Az ejbLite-3.1 szolg\u00e1ltat\u00e1s az aszinkron EJB met\u00f3dusokat nem t\u00e1mogatja.
+ASYNC_METHODS_NOT_SUPPORTED_CNTR4017E.useraction=T\u00e1vol\u00edtsa el a nem t\u00e1mogatott aszinkron met\u00f3dusokat az alkalmaz\u00e1sb\u00f3l, vagy adja hozz\u00e1 az ejbLite szolg\u00e1ltat\u00e1s olyan v\u00e1ltozat\u00e1t a server.xml f\u00e1jlhoz, amely t\u00e1mogatja az aszinkron met\u00f3dusokat. 
+
+NON_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4018E=CNTR4018E: Nem-\u00e1lland\u00f3 id\u0151m\u00e9r\u0151ket nem lehet l\u00e9trehozni \u00e9s el\u00e9rni. A nem-\u00e1lland\u00f3 EJB id\u0151m\u00e9r\u0151ket a server.xml f\u00e1jlban be\u00e1ll\u00edtott egyik szolg\u00e1ltat\u00e1s sem t\u00e1mogatja.
+NON_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4018E.explanation=Az ejbLite-3.1 szolg\u00e1ltat\u00e1s a nem-\u00e1lland\u00f3 EJB id\u0151m\u00e9r\u0151ket nem t\u00e1mogatja.
+NON_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4018E.useraction=T\u00e1vol\u00edtsa el a nem t\u00e1mogatott nem-\u00e1lland\u00f3 id\u0151m\u00e9r\u0151ket az alkalmaz\u00e1sb\u00f3l, vagy adja hozz\u00e1 az ejbLite szolg\u00e1ltat\u00e1s olyan v\u00e1ltozat\u00e1t a server.xml f\u00e1jlhoz, amely t\u00e1mogatja a nem-\u00e1lland\u00f3 id\u0151m\u00e9r\u0151ket. 
+
+PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E=CNTR4019E: \u00c1lland\u00f3 id\u0151m\u00e9r\u0151ket nem lehet l\u00e9trehozni \u00e9s el\u00e9rni. Az \u00e1lland\u00f3 EJB id\u0151m\u00e9r\u0151ket a server.xml f\u00e1jlban be\u00e1ll\u00edtott egyik szolg\u00e1ltat\u00e1s sem t\u00e1mogatja.
+PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E.explanation=Az ejbLite szolg\u00e1ltat\u00e1sok az \u00e1lland\u00f3 EJB id\u0151m\u00e9r\u0151ket nem t\u00e1mogatj\u00e1k.
+PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E.useraction=T\u00e1vol\u00edtsa el a nem t\u00e1mogatott \u00e1lland\u00f3 id\u0151m\u00e9r\u0151ket az alkalmaz\u00e1sb\u00f3l, vagy adja hozz\u00e1 az ejbPersistentTimer szolg\u00e1ltat\u00e1st a server.xml f\u00e1jlhoz. 
+
+DUPLICATE_EJB_CNTR4100E=CNTR4100E: Az <ejb-name> elem {0} \u00e9rt\u00e9ke az ejb-jar.xml f\u00e1jlban nem egyedi.
+DUPLICATE_EJB_CNTR4100E.explanation=T\u00f6bb EJB-komponens van meghat\u00e1rozva ugyanazzal a n\u00e9vvel az ejb-jar.xml f\u00e1jlban. Minden EJB-komponensnek egyedi n\u00e9vvel kell rendelkeznie.
+DUPLICATE_EJB_CNTR4100E.useraction=T\u00e1vol\u00edtsa el a m\u00e1sodp\u00e9ld\u00e1ny EJB-komponens meghat\u00e1roz\u00e1sokat.
+
+UNSPECIFIED_CLASS_CNTR4101E=CNTR4101E: Az <ejb-class> elem nincs megadva a(z) {0} EJB-komponenshez az ejb-jar.xml f\u00e1jlban.
+UNSPECIFIED_CLASS_CNTR4101E.explanation=Az <ejb-class> elem nincs megadva az ejb-jar.xml f\u00e1jlban. Ez az elem k\u00f6telez\u0151 az annot\u00e1ci\u00f3k n\u00e9lk\u00fcl meghat\u00e1rozott EJB-komponensek eset\u00e9ben.
+UNSPECIFIED_CLASS_CNTR4101E.useraction=Adja hozz\u00e1 az <ejb-class> elemet az EJB-komponens meghat\u00e1roz\u00e1s\u00e1hoz az ejb-jar.xml f\u00e1jlban.
+
+UNSPECIFIED_SESSION_TYPE_CNTR4102E=CNTR4102E: A <session-type> elem nincs megadva a(z) {0} munkamenet komponenshez az ejb-jar.xml f\u00e1jlban.
+UNSPECIFIED_SESSION_TYPE_CNTR4102E.explanation=A <session-type> elem nincs megadva az ejb-jar.xml f\u00e1jlban. Ez az elem k\u00f6telez\u0151 az annot\u00e1ci\u00f3k n\u00e9lk\u00fcl meghat\u00e1rozott munkamenet komponensek eset\u00e9ben.
+UNSPECIFIED_SESSION_TYPE_CNTR4102E.useraction=Vegye fel a <session-type> elemet a munkamenet komponens meghat\u00e1roz\u00e1s\u00e1ba.
+
+INCOMPATIBLE_KIND_CNTR4103E=CNTR4103E: A(z) {0} EJB-komponens ellentmond\u00f3 komponenst\u00edpusokkal lett meghat\u00e1rozva. Az ejb-jar.xml f\u00e1jlban a(z) {1} elem ker\u00fclt felhaszn\u00e1l\u00e1sra, a(z) {3} oszt\u00e1lyban pedig a(z) {2} annot\u00e1ci\u00f3 lett megadva.
+INCOMPATIBLE_KIND_CNTR4103E.explanation=Egy EJB-komponens csak egy t\u00edpussal rendelkezhet, de nem kompatibilis t\u00edpusok vannak megadva az ejb-jar.xml f\u00e1jlban \u00e9s az annot\u00e1ci\u00f3ban.
+INCOMPATIBLE_KIND_CNTR4103E.useraction=M\u00f3dos\u00edtsa az elem t\u00edpus\u00e1t vagy az annot\u00e1ci\u00f3 t\u00edpus\u00e1t az EJB-komponenshez.
+
+INCOMPATIBLE_ANN_TYPE_CNTR4104E=CNTR4104E: A(z) {0} EJB-komponens ellentmond\u00f3 komponenst\u00edpusokkal lett meghat\u00e1rozva. A(z) {1} \u00e9s a(z) {2} annot\u00e1ci\u00f3 is meg lett adva a(z) {3} oszt\u00e1lyra.
+INCOMPATIBLE_ANN_TYPE_CNTR4104E.explanation=Egy EJB-komponens csak egy t\u00edpussal rendelkezhet, de t\u00f6bb component-defining annot\u00e1ci\u00f3 is meg van adva.
+INCOMPATIBLE_ANN_TYPE_CNTR4104E.useraction=T\u00e1vol\u00edtsa el a component-defining annot\u00e1ci\u00f3k egyik\u00e9t.
+
+INCOMPATIBLE_SESSION_TYPE_CNTR4105E=CNTR4105E: A(z) {0} EJB-komponens ellentmond\u00f3 komponenst\u00edpusokkal lett meghat\u00e1rozva. Az ejb-jar.xml f\u00e1jlban a <session-type>{1}</session-type> elem ker\u00fclt felhaszn\u00e1l\u00e1sra, a(z) {3} oszt\u00e1lyban pedig a(z) {2} annot\u00e1ci\u00f3 lett megadva.
+INCOMPATIBLE_SESSION_TYPE_CNTR4105E.explanation=Egy EJB-komponens csak egy t\u00edpussal rendelkezhet, de nem kompatibilis t\u00edpusok vannak megadva az ejb-jar.xml f\u00e1jlban \u00e9s az annot\u00e1ci\u00f3ban.
+INCOMPATIBLE_SESSION_TYPE_CNTR4105E.useraction=M\u00f3dos\u00edtsa az elem t\u00edpus\u00e1t vagy az annot\u00e1ci\u00f3 t\u00edpus\u00e1t az EJB-komponenshez.
+
+INCOMPATIBLE_CLASS_ANN_ANN_CNTR4106E=CNTR4106E: A(z) {0} EJB-komponens t\u00f6bb oszt\u00e1llyal lett deklar\u00e1lva: a(z) {1} annot\u00e1ci\u00f3 \u00e1ltal a(z) {2} oszt\u00e1lyban, \u00e9s a(z) {3} annot\u00e1ci\u00f3val a(z) {4} oszt\u00e1lyban.
+INCOMPATIBLE_CLASS_ANN_ANN_CNTR4106E.explanation=Az EJB-komponensek csak egy oszt\u00e1llyal deklar\u00e1lhat\u00f3k, ez azonban k\u00e9t k\u00fcl\u00f6n\u00e1ll\u00f3 oszt\u00e1ly annot\u00e1ci\u00f3ival lett deklar\u00e1lva.
+INCOMPATIBLE_CLASS_ANN_ANN_CNTR4106E.useraction=T\u00e1vol\u00edtsa el az egyik annot\u00e1ci\u00f3t, vagy m\u00f3dos\u00edtsa az egyik EJB-komponens nev\u00e9t.
+
+INCOMPATIBLE_DEFAULT_BUSINESS_INTERFACE_TYPE_CNTR4107E=CNTR4107E: A @Remote \u00e9s a @Local annot\u00e1ci\u00f3 is meg lett adva \u00e9rt\u00e9k n\u00e9lk\u00fcl a(z) {1} EJB-komponens {0} oszt\u00e1ly\u00e1ban.
+INCOMPATIBLE_DEFAULT_BUSINESS_INTERFACE_TYPE_CNTR4107E.explanation=Az \u00e9rt\u00e9k n\u00e9lk\u00fcl megadott @Remote vagy @Local annot\u00e1ci\u00f3 azt jelzi, hogy az implements r\u00e9szkifejez\u00e9sben szerepl\u0151 \u00fczleti fel\u00fcletet t\u00e1volinak, illetve helyinek kell tekinteni (\u00e9rtelemszer\u0171en), \u00edgy mindk\u00e9t annot\u00e1ci\u00f3 megadhat\u00f3 \u00e9rt\u00e9k n\u00e9lk\u00fcl.
+INCOMPATIBLE_DEFAULT_BUSINESS_INTERFACE_TYPE_CNTR4107E.useraction=T\u00e1vol\u00edtsa el az annot\u00e1ci\u00f3t vagy az \u00fczleti fel\u00fcletekkel adja meg az annot\u00e1ci\u00f3kat.
+
+DEFAULT_IMPLEMENTS_NONE_CNTR4108E=CNTR4108E: A {0} annot\u00e1ci\u00f3 meg lett adva \u00e9rt\u00e9k n\u00e9lk\u00fcl a(z) {2} EJB-komponens {1} oszt\u00e1ly\u00e1ban, de az implements r\u00e9szkifejez\u00e9s nem tartalmaz egyetlen \u00fczleti fel\u00fcletet sem.
+DEFAULT_IMPLEMENTS_NONE_CNTR4108E.explanation=Az \u00e9rt\u00e9k n\u00e9lk\u00fcl megadott @Remote vagy @Local annot\u00e1ci\u00f3 azt jelzi, hogy az implements r\u00e9szkifejez\u00e9sben szerepl\u0151 \u00fczleti fel\u00fcletet t\u00e1volinak, illetve helyinek kell tekinteni (\u00e9rtelemszer\u0171en), de az oszt\u00e1ly nem rendelkezik \u00fczleti fel\u00fclettel az implements r\u00e9szkifejez\u00e9s\u00e9ben.
+DEFAULT_IMPLEMENTS_NONE_CNTR4108E.useraction=Vegyen fel \u00fczleti fel\u00fcletcsatol\u00f3t az implements r\u00e9szkifejez\u00e9sbe, t\u00e1vol\u00edtsa el az annot\u00e1ci\u00f3t, vagy az \u00fczleti fel\u00fcletekkel adja meg az annot\u00e1ci\u00f3kat.
+
+# Note: This message was added in 8.5.5 but is no longer used.
+DEFAULT_IMPLEMENTS_MULTIPLE_CNTR4109E=CNTR4109E: A(z) {0} \u00e9rt\u00e9k n\u00e9lk\u00fcl lett megadva a(z) {2} EJB-komponens {1} oszt\u00e1ly\u00e1n, de az implements r\u00e9szkifejez\u00e9s t\u00f6bb \u00fczleti fel\u00fcletet tartalmaz, ezek: {3} \u00e9s {4}.
+DEFAULT_IMPLEMENTS_MULTIPLE_CNTR4109E.explanation=Az \u00e9rt\u00e9k n\u00e9lk\u00fcl megadott @Remote vagy @Local annot\u00e1ci\u00f3 azt jelzi, hogy az implements r\u00e9szkifejez\u00e9sben szerepl\u0151 \u00fczleti fel\u00fcletet t\u00e1volinak, illetve helyinek kell tekinteni, \u00e9rtelemszer\u0171en, de az oszt\u00e1ly t\u00f6bb \u00fczleti fel\u00fclettel is rendelkezik az implements r\u00e9szkifejez\u00e9s\u00e9ben.
+DEFAULT_IMPLEMENTS_MULTIPLE_CNTR4109E.useraction=T\u00e1vol\u00edtsa el egy kiv\u00e9tel\u00e9vel az \u00f6sszes \u00fczleti fel\u00fcletet az implements r\u00e9szkifejez\u00e9sb\u0151l, vagy az \u00f6sszes \u00fczleti fel\u00fclettel adja meg az annot\u00e1ci\u00f3kat.
+
+INCOMPATIBLE_INTERFACE_TYPE_CNTR4110E=CNTR4110E: A(z) {0} EJB-komponens a(z) {1} oszt\u00e1lyt helyi \u00fczleti fel\u00fcletk\u00e9nt \u00e9s t\u00e1voli \u00fczleti fel\u00fcletk\u00e9nt is megadta.
+INCOMPATIBLE_INTERFACE_TYPE_CNTR4110E.explanation=Egy oszt\u00e1ly egy EJB-komponenshez vagy helyi \u00fczleti fel\u00fcletk\u00e9nt, vagy t\u00e1voli \u00fczleti fel\u00fcletk\u00e9nt lehet megadva, de mindkett\u0151k\u00e9nt nem.
+INCOMPATIBLE_INTERFACE_TYPE_CNTR4110E.useraction=Friss\u00edtse az EJB-komponens oszt\u00e1lyt, a fel\u00fclet oszt\u00e1lyt vagy a telep\u00edt\u00e9si le\u00edr\u00f3t \u00fagy, hogy a fel\u00fclet vagy helyi \u00fczleti fel\u00fcletk\u00e9nt, vagy t\u00e1voli \u00fczleti fel\u00fcletk\u00e9nt legyen megadva, de nem mindkett\u0151k\u00e9nt.
+
+IMPLEMENTS_INTERFACE_TYPE_VALUE_CNTR4111E=CNTR4111E: A(z) {0} annot\u00e1ci\u00f3 \u00e9rt\u00e9kkel lett megadva a(z) {1} fel\u00fcleten. A fel\u00fclet a(z) {3} EJB-komponens {2} oszt\u00e1ly\u00e1nak implements r\u00e9szkifejez\u00e9s\u00e9n lett megadva.
+IMPLEMENTS_INTERFACE_TYPE_VALUE_CNTR4111E.explanation=A @Remote \u00e9s @Local annot\u00e1ci\u00f3k csak akkor rendelkezhetnek \u00e9rt\u00e9kkel, ha egy EJB-komponens oszt\u00e1lyon vannak meghat\u00e1rozva.
+IMPLEMENTS_INTERFACE_TYPE_VALUE_CNTR4111E.useraction=T\u00e1vol\u00edtsa el az \u00e9rt\u00e9ket a @Remote vagy @Local annot\u00e1ci\u00f3b\u00f3l a fel\u00fcleten.
+
+ORPHAN_EXTENSION_ENTRY_CNTR4112W=CNTR4112W: Egy {0} kiterjeszt\u00e9s az ibm-ejb-jar-ext.xml f\u00e1jl {1} modulj\u00e1ban a(z) {2} EJB-komponenst azonos\u00edtja, amely nem l\u00e9tezik.
+ORPHAN_EXTENSION_ENTRY_CNTR4112W.explanation=Az EJB-komponens neve helytelen lehet, vagy nem l\u00e9tez\u0151 EJB-komponenshez lett megadva kiterjeszt\u00e9s.
+ORPHAN_EXTENSION_ENTRY_CNTR4112W.useraction=Jav\u00edtsa az EJB-komponens nev\u00e9t az ibm-ejb-jar-ext.xml f\u00e1jlban.
+
+RESOLVER_ACTIVITY_SESSION_NOT_SUPPORTED_CNTR4113E=CNTR4113E: A(z) {2} alkalmaz\u00e1s {1} modulj\u00e1ban l\u00e9v\u0151 {0} EJB-komponens az ibm-ejb-jar-ext.xml f\u00e1jlban a(z) {3} helyi tranzakci\u00f3hat\u00e1r haszn\u00e1lat\u00e1ra van be\u00e1ll\u00edtva, amely nem t\u00e1mogatott a Liberty profilban.
+RESOLVER_ACTIVITY_SESSION_NOT_SUPPORTED_CNTR4113E.explanation=A <local-transaction> kiterjeszt\u00e9s ACTIVITY_SESSION hat\u00e1rattrib\u00fatum-\u00e9rt\u00e9ke nem t\u00e1mogatott a Liberty profilban.
+RESOLVER_ACTIVITY_SESSION_NOT_SUPPORTED_CNTR4113E.useraction=M\u00f3dos\u00edtsa az ibm-ejb-jar-ext.xml f\u00e1jlt \u00fagy, hogy BEAN_METHOD \u00e9rt\u00e9ket hat\u00e1rozzon meg a hat\u00e1r sz\u00e1m\u00e1ra, vagy t\u00e1vol\u00edtsa el az attrib\u00fatumot, hogy a rendszer az alap\u00e9rtelmezett BEAN_METHOD \u00e9rt\u00e9ket haszn\u00e1lja.
+
+INCOMPATIBLE_CLASS_XML_ANN_CNTR4114E=CNTR4114E: A(z) {0} EJB-komponens t\u00f6bb oszt\u00e1llyal lett deklar\u00e1lva: a(z) {1} \u00e9rt\u00e9kkel az <ejb-class> elemben, az ejb-jar.xml f\u00e1jlban, \u00e9s a(z) {2} annot\u00e1ci\u00f3 \u00e1ltal a(z) {3} oszt\u00e1lyon.
+INCOMPATIBLE_CLASS_XML_ANN_CNTR4114E.explanation=Az EJB-komponensek csak egy oszt\u00e1llyal deklar\u00e1lhat\u00f3k, ez azonban k\u00fcl\u00f6n\u00e1ll\u00f3 oszt\u00e1lyokkal lett deklar\u00e1lva az XML f\u00e1jlban \u00e9s egy annot\u00e1ci\u00f3 \u00e1ltal.
+INCOMPATIBLE_CLASS_XML_ANN_CNTR4114E.useraction=T\u00e1vol\u00edtsa el az oszt\u00e1lyt az ejb-jar.xml f\u00e1jlb\u00f3l, t\u00e1vol\u00edtsa el az annot\u00e1ci\u00f3t vagy m\u00f3dos\u00edtsa az EJB-komponens nevek egyik\u00e9t.
+
+INVALID_CLASS_CNTR4115E=CNTR4115E: Az ejb-jar.xml f\u00e1jlban l\u00e9v\u0151 <ejb-class> elem a(z) {0} oszt\u00e1lynevet adja meg a(z) {1} nagyv\u00e1llalati komponens sz\u00e1m\u00e1ra, de az oszt\u00e1lyf\u00e1jl nem tal\u00e1lhat\u00f3.
+INVALID_CLASS_CNTR4115E.explanation=Vagy az ejb-jar.xml f\u00e1jl hat\u00e1roz meg \u00e9rv\u00e9nytelen oszt\u00e1lynevet, vagy az oszt\u00e1lyf\u00e1jl nem ker\u00fclt becsomagol\u00e1sra az alkalmaz\u00e1ssal.
+INVALID_CLASS_CNTR4115E.useraction=Jav\u00edtsa ki az oszt\u00e1lynevet az ejb-jar.xml f\u00e1jlban, vagy csomagolja az oszt\u00e1lyf\u00e1jlt az alkalmaz\u00e1shoz.

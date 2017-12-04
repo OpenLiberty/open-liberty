@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.crypto.passwordutil/resources/com/ibm/ws/crypto/util/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Security passwordUtil
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+# Message prefix block: CWWKS1850 - CWWKS1899
+
+PASSWORDUTIL_CUSTOM_SERVICE_STARTED=CWWKS1850I: Il servizio di codifica password personalizzato \u00e8 stato avviato. Il nome della classe \u00e8 {0}.
+PASSWORDUTIL_CUSTOM_SERVICE_STARTED.explanation=Questo messaggio \u00e8 unicamente a scopo informativo.
+PASSWORDUTIL_CUSTOM_SERVICE_STARTED.useraction=Non \u00e8 richiesta alcuna azione.
+PASSWORDUTIL_CUSTOM_SERVICE_STOPPED=CWWKS1851I: Il servizio di codifica password personalizzato \u00e8 stato arrestato. Il nome della classe \u00e8 {0}.
+PASSWORDUTIL_CUSTOM_SERVICE_STOPPED.explanation=Questo messaggio \u00e8 unicamente a scopo informativo.
+PASSWORDUTIL_CUSTOM_SERVICE_STOPPED.useraction=Non \u00e8 richiesta alcuna azione.
+PASSWORDUTIL_CUSTOM_DECRYPTION_ERROR=CWWKS1852E: Si \u00e8 verificata un'eccezione imprevista durante la decodifica della password utilizzando il servizio di codifica della password personalizzato.
+PASSWORDUTIL_CUSTOM_DECRYPTION_ERROR.explanation=Si \u00e8 verificata un'eccezione imprevista durante l'elaborazione della decodifica utilizzando il servizio di codifica della password personalizzato.
+PASSWORDUTIL_CUSTOM_DECRYPTION_ERROR.useraction=Controllare i log del servizio di codifica password personalizzato e i log del server per ulteriori informazioni sulla causa dell'eccezione.
+PASSWORDUTIL_CUSTOM_ENCRYPTION_ERROR=CWWKS1853E: Si \u00e8 verificata un'eccezione imprevista durante la codifica della password utilizzando il servizio di codifica della password personalizzato.
+PASSWORDUTIL_CUSTOM_ENCRYPTION_ERROR.explanation=Si \u00e8 verificata un'eccezione imprevista durante l'elaborazione della codifica utilizzando il servizio di codifica della password personalizzato.
+PASSWORDUTIL_CUSTOM_ENCRYPTION_ERROR.useraction=Controllare i log del servizio di codifica password personalizzato e i log del server per ulteriori informazioni sulla causa dell'eccezione.
+PASSWORDUTIL_CUSTOM_SERVICE_DOES_NOT_EXIST=CWWKS1854E: Il servizio password personalizzato di terze parti non \u00e8 disponibile per elaborare la password codificata personalizzata.
+PASSWORDUTIL_CUSTOM_SERVICE_DOES_NOT_EXIST.explanation=La password codificata personalizzata non pu\u00f2 essere elaborata perch\u00e9 il servizio password personalizzato non \u00e8 disponibile.
+PASSWORDUTIL_CUSTOM_SERVICE_DOES_NOT_EXIST.useraction=Assicurarsi che la funzione utente password personalizzata che implementa l'interfaccia com.ibm.wsspi.security.crypto.CustomPasswordEncryption sia configurata e avviata.
+PASSWORDUTIL_UNKNOWN_ALGORITHM=CWWKS1855E: La password non \u00e8 stata elaborata perch\u00e9 il nome dell''algoritmo della password {0} non \u00e8 supportato. I tipi supportati sono {1}.
+PASSWORDUTIL_UNKNOWN_ALGORITHM.explanation=La password non \u00e8 stata codificata o decodificata perch\u00e9 il nome dell'algoritmo della password fornito non \u00e8 supportato.
+PASSWORDUTIL_UNKNOWN_ALGORITHM.useraction=Assicurarsi di utilizzare uno degli algoritmi supportati.
+PASSWORDUTIL_UNKNOWN_ALGORITHM_EXCEPTION=CWWKS1856E: La password non \u00e8 stata elaborata perch\u00e9 \u00e8 stata notificata un'eccezione di algoritmo della password sconosciuto.
+PASSWORDUTIL_UNKNOWN_ALGORITHM_EXCEPTION.explanation=L'algoritmo specificato non \u00e8 supportato.
+PASSWORDUTIL_UNKNOWN_ALGORITHM_EXCEPTION.useraction=Per ulteriori informazioni, controllare il log del server e se \u00e8 utilizzata la codifica password personalizzata controllare i log della codifica password personalizzata.
+PASSWORDUTIL_CYPHER_EXCEPTION=CWWKS1857E: La password non \u00e8 stata elaborata perch\u00e9 \u00e8 stata notificata un'eccezione di cifratura della password non valida.
+PASSWORDUTIL_CYPHER_EXCEPTION.explanation=La password non \u00e8 stata codificata o decodificata perch\u00e9 l'eccezione \u00e8 stata notificata durante l'elaborazione della password.
+PASSWORDUTIL_CYPHER_EXCEPTION.useraction=Per ulteriori informazioni, controllare il log del server e se \u00e8 utilizzata la codifica password personalizzata controllare i log della codifica password personalizzata.
+PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION=CWWKS1858E: La password non \u00e8 stata elaborata perch\u00e9 \u00e8 stata notificata un'eccezione di codifica non supportata.
+PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.explanation=La password non \u00e8 stata codificata o decodificata perch\u00e9 l'eccezione \u00e8 stata notificata durante l'elaborazione della password.
+PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.useraction=Per ulteriori informazioni, controllare il log del server e se \u00e8 utilizzata la codifica password personalizzata controllare i log della codifica password personalizzata.
+PASSWORDUTIL_INVALID_BASE64_STRING=CWWKS1859E: La password non \u00e8 stata decodificata perch\u00e9 \u00e8 stato notificato un errore di decodifica.
+PASSWORDUTIL_INVALID_BASE64_STRING.explanation=La password non \u00e8 stata codificata correttamente.
+PASSWORDUTIL_INVALID_BASE64_STRING.useraction=Assicurarsi che la password codificata non sia troncata e codificata tramite Base64.
+
+
+# ---------------- This is an exception message ------------
+PASSWORDUTIL_DUPLICATE_CUSTOM_ENCRYPTION=Rilevata pi\u00f9 di una implementazione CustomPasswordEncryption. \u00c8 supportata una sola implementazione CustomPasswordEncryption. L'elenco di implementazioni CustomPasswordEncryption rilevate \u00e8 il seguente:
+PASSWORDUTIL_ERROR_IN_EXTENSION_MANIFEST_FILE=Si \u00e8 verificato un errore durante l''elaborazione del manifest di estensione {0}. Il file \u00e8 stato ignorato.  La codifica personalizzata non \u00e8 disponibile. Il messaggio di errore \u00e8 {1}.
+PASSWORDUTIL_ERROR_MISSING_HEADER=L''intestazione richiesta {0} non \u00e8 stata trovata nel file manifest di estensione {1}.  La codifica personalizzata non \u00e8 disponibile.
+PASSWORDUTIL_ERROR_NO_FEATURE_MANIFEST=Non \u00e8 stato trovato il file manifest della funzione che corrisponde al file manifest di estensione {0}.  La codifica personalizzata non \u00e8 disponibile.
+PASSWORDUTIL_ERROR_UNSUPPORTED_OPERATION=L'operazione di decodifica non \u00e8 supportata dall'algoritmo hash.

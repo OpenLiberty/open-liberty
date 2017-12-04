@@ -1,0 +1,196 @@
+###############################################################################
+# Copyright (c) 2011, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWNEN (Injection Engine)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME com.ibm.ws.injection/resources/com/ibm/ws/osgi/internal/resources/EJBContainerMessages.nlsprops
+#COMPONENTPREFIX CNTR
+#COMPONENTNAMEFOR CNTR EJB Container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# NOTE: CNTR4000-CNTR4999 are reserved for use in this message file. All other
+#       CNTR ranges are reserved by com/ibm/ejs/container/container.nlsprops
+#
+#  		CNTR4000-CNTR4099 - general EJB messages
+#       CNTR4100+ - Metadata messages
+#-------------------------------------------------------------------------------
+
+STARTING_MODULE_CNTR4000I=CNTR4000I: O m\u00f3dulo EJB {0} no aplicativo {1} est\u00e1 iniciando.
+STARTING_MODULE_CNTR4000I.explanation=O servidor est\u00e1 iniciando o m\u00f3dulo EJB.
+STARTING_MODULE_CNTR4000I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+STARTED_MODULE_CNTR4001I=CNTR4001I: O m\u00f3dulo EJB {0} no aplicativo {1} foi iniciado com \u00eaxito.
+STARTED_MODULE_CNTR4001I.explanation=O servidor iniciou o m\u00f3dulo EJB.
+STARTED_MODULE_CNTR4001I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+ERROR_STARTING_MODULE_CNTR4002E=CNTR4002E: O m\u00f3dulo EJB {0} no aplicativo {1} n\u00e3o conseguiu iniciar. Exce\u00e7\u00e3o: {2}
+ERROR_STARTING_MODULE_CNTR4002E.explanation=O servidor n\u00e3o conseguiu iniciar o m\u00f3dulo EJB.
+ERROR_STARTING_MODULE_CNTR4002E.useraction=Use as informa\u00e7\u00f5es da exce\u00e7\u00e3o para identificar a origem do problema e para resolver o problema. Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da Web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+STOPPING_MODULE_CNTR4003I=CNTR4003I: O m\u00f3dulo EJB {0} no aplicativo {1} est\u00e1 parando.
+STOPPING_MODULE_CNTR4003I.explanation=O servidor est\u00e1 parando o m\u00f3dulo EJB.
+STOPPING_MODULE_CNTR4003I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+STOPPED_MODULE_CNTR4004I=CNTR4004I: O m\u00f3dulo EJB {0} no aplicativo {1} parou com \u00eaxito.
+STOPPED_MODULE_CNTR4004I.explanation=O servidor parou o m\u00f3dulo EJB.
+STOPPED_MODULE_CNTR4004I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+ERROR_STOPPING_MODULE_CNTR4005E=CNTR4005E: O m\u00f3dulo EJB {0} no aplicativo {1} falhou em parar. Exce\u00e7\u00e3o: {2}
+ERROR_STOPPING_MODULE_CNTR4005E.explanation=O servidor n\u00e3o conseguiu parar o m\u00f3dulo EJB.
+ERROR_STOPPING_MODULE_CNTR4005E.useraction=Use as informa\u00e7\u00f5es da exce\u00e7\u00e3o para identificar a origem do problema e para resolver o problema. Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da Web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_STARTING_EJB_CNTR4006E=CNTR4006E: O enterprise bean {0} no m\u00f3dulo {1} do aplicativo {2} falhou ao ser iniciado. Exce\u00e7\u00e3o : {3}
+ERROR_STARTING_EJB_CNTR4006E.explanation=O enterprise bean foi configurado para iniciar quando fosse usado pela primeira vez, em vez de quando seu m\u00f3dulo fosse iniciado. O enterprise bean falhou ao ser iniciado quando foi usado pela primeira vez.
+ERROR_STARTING_EJB_CNTR4006E.useraction=Use as informa\u00e7\u00f5es da exce\u00e7\u00e3o para identificar a origem do problema e para resolver o problema. Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da Web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+JNDI_CANNOT_INSTANTIATE_OBJECT_CNTR4007E=CNTR4007E: Ocorreu um erro ao criar a interface {0} para o enterprise bean {1} no m\u00f3dulo {2} no aplicativo {3}. A consulta do enterprise bean falhou ao usar o nome JNDI {4}. Exce\u00e7\u00e3o: {5}
+JNDI_CANNOT_INSTANTIATE_OBJECT_CNTR4007E.explanation=Ocorreu um erro ao criar uma inst\u00e2ncia do enterprise bean com o nome JNDI especificado.
+JNDI_CANNOT_INSTANTIATE_OBJECT_CNTR4007E.useraction=Consulte a exce\u00e7\u00e3o aninhada ou um erro anterior para obter informa\u00e7\u00f5es adicionais sobre o erro.
+
+JNDI_CANNOT_INSTANTIATE_HOME_CNTR4008E=CNTR4008E: N\u00e3o foi poss\u00edvel obter a interface inicial {0} para o enterprise bean {1} no m\u00f3dulo {2} no aplicativo {3} para o nome JNDI {4} porque n\u00e3o h\u00e1 suporte para interfaces iniciais para nenhum dos recursos configurados no arquivo server.xml.
+JNDI_CANNOT_INSTANTIATE_HOME_CNTR4008E.explanation=Os recursos ejbLite n\u00e3o suportam interfaces iniciais ou de componente do enterprise bean. Apenas interfaces de neg\u00f3cios s\u00e3o suportadas nos recursos ejbLite.
+JNDI_CANNOT_INSTANTIATE_HOME_CNTR4008E.useraction=Modifique o aplicativo para remover o uso de interfaces iniciais e de componente do  enterprise bean ou inclua um recurso ejbHome para o arquivo server.xml.
+
+JNDI_CANNOT_INSTANTIATE_REMOTE_CNTR4009E=CNTR4009E: N\u00e3o foi poss\u00edvel obter a interface remota {0} para o enterprise bean {1} no m\u00f3dulo {2} no aplicativo {3} para o nome JNDI {4} porque n\u00e3o h\u00e1 suporte para interfaces remotas para nenhum dos recursos configurados no arquivo server.xml.
+JNDI_CANNOT_INSTANTIATE_REMOTE_CNTR4009E.explanation=Os recursos ejbLite n\u00e3o suportam interfaces remotas do enterprise bean. Apenas interfaces locais s\u00e3o suportadas nos recursos ejbLite.
+JNDI_CANNOT_INSTANTIATE_REMOTE_CNTR4009E.useraction=Modifique o aplicativo para remover o uso de interfaces remotas do enterprise bean ou inclua um recurso ejbRemote para o arquivo server.xml.
+
+AUTOMATIC_TIMERS_NOT_SUPPORTED_CNTR4010W=CNTR4010W: O enterprise bean {0} no m\u00f3dulo {1} no aplicativo {2} declara cron\u00f4metros autom\u00e1ticos n\u00e3o persistentes. Cron\u00f4metros autom\u00e1ticos n\u00e3o persistentes n\u00e3o s\u00e3o suportados por nenhum dos recursos configurados no arquivo server.xml e ser\u00e3o ignorados.
+AUTOMATIC_TIMERS_NOT_SUPPORTED_CNTR4010W.explanation=Os cron\u00f4metros autom\u00e1ticos n\u00e3o persistentes do enterprise bean declarados em um descritor de implementa\u00e7\u00e3o ou uma anota\u00e7\u00e3o n\u00e3o s\u00e3o suportados pelo recurso ejbLite-3.1 e ser\u00e3o ignorados durante o tempo de execu\u00e7\u00e3o. Dependendo do uso pretendido dos cron\u00f4metros do enterprise bean pelo aplicativo, o aplicativo pode ou n\u00e3o ser executado conforme o esperado.
+AUTOMATIC_TIMERS_NOT_SUPPORTED_CNTR4010W.useraction=Remova o uso de cron\u00f4metros autom\u00e1ticos n\u00e3o suportados do aplicativo ou inclua uma vers\u00e3o do recurso ejbLite que ofere\u00e7a suporte para cron\u00f4metros autom\u00e1ticos n\u00e3o persistentes para o arquivo server.xml. 
+
+INJECTION_CANNOT_INSTANTIATE_HOME_CNTR4011E=CNTR4011E: N\u00e3o foi poss\u00edvel obter a interface inicial {0} para o enterprise bean {1} no m\u00f3dulo {2} no aplicativo {3} para a inje\u00e7\u00e3o porque n\u00e3o h\u00e1 suporte para interfaces iniciais para nenhum dos recursos configurados no arquivo server.xml.
+INJECTION_CANNOT_INSTANTIATE_HOME_CNTR4011E.explanation=Os recursos ejbLite n\u00e3o suportam interfaces iniciais ou de componente do enterprise bean. Apenas interfaces de neg\u00f3cios s\u00e3o suportadas nos recursos ejbLite.
+INJECTION_CANNOT_INSTANTIATE_HOME_CNTR4011E.useraction=Modifique o aplicativo para remover o uso de interfaces iniciais e de componente do  enterprise bean ou inclua um recurso ejbHome para o arquivo server.xml.
+
+INJECTION_CANNOT_INSTANTIATE_REMOTE_CNTR4012E=CNTR4012E: N\u00e3o foi poss\u00edvel obter a interface remota {0} para o enterprise bean {1} no m\u00f3dulo {2} no aplicativo {3} para a inje\u00e7\u00e3o porque n\u00e3o h\u00e1 suporte para interfaces remotas para nenhum dos recursos configurados no arquivo server.xml.
+INJECTION_CANNOT_INSTANTIATE_REMOTE_CNTR4012E.explanation=Os recursos ejbLite n\u00e3o suportam interfaces remotas do enterprise bean. Apenas interfaces locais s\u00e3o suportadas nos recursos ejbLite.
+INJECTION_CANNOT_INSTANTIATE_REMOTE_CNTR4012E.useraction=Modifique o aplicativo para remover o uso de interfaces remotas do enterprise bean ou inclua um recurso ejbRemote para o arquivo server.xml.
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_ACTIVATED_CNTR4013I 
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_DEACTIVATED_CNTR4014I
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_DESTINATION_NOT_FOUND_CNTR4016W
+
+ASYNC_METHODS_NOT_SUPPORTED_CNTR4017E=CNTR4017E: O m\u00e9todo ass\u00edncrono {0} do enterprise bean {1} no m\u00f3dulo {2} no aplicativo {3} n\u00e3o p\u00f4de ser planejado. M\u00e9todos ass\u00edncronos do EJB n\u00e3o s\u00e3o suportados por nenhum dos recursos configurados no arquivo server.xml.
+ASYNC_METHODS_NOT_SUPPORTED_CNTR4017E.explanation=Os m\u00e9todos ass\u00edncronos do EJB n\u00e3o s\u00e3o suportados pelo recurso ejbLite-3.1.
+ASYNC_METHODS_NOT_SUPPORTED_CNTR4017E.useraction=Remova o uso de m\u00e9todos ass\u00edncronos n\u00e3o suportados do aplicativo ou inclua uma vers\u00e3o do recurso ejbLite que ofere\u00e7a suporte para m\u00e9todos ass\u00edncronos para o arquivo server.xml. 
+
+NON_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4018E=CNTR4018E: N\u00e3o \u00e9 poss\u00edvel criar ou acessar cron\u00f4metros n\u00e3o persistentes. Cron\u00f4metros n\u00e3o persistentes do EJB n\u00e3o s\u00e3o suportados por nenhum dos recursos configurados no arquivo server.xml.
+NON_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4018E.explanation=Os cron\u00f4metros n\u00e3o persistentes do EJB n\u00e3o s\u00e3o suportados pelo recurso ejbLite-3.1.
+NON_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4018E.useraction=Remova o uso de cron\u00f4metros n\u00e3o persistentes n\u00e3o suportados do aplicativo ou inclua uma vers\u00e3o do recurso ejbLite que ofere\u00e7a suporte para cron\u00f4metros n\u00e3o persistentes para o arquivo server.xml. 
+
+PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E=CNTR4019E: N\u00e3o \u00e9 poss\u00edvel criar ou acessar cron\u00f4metros persistentes. Cron\u00f4metros persistentes do EJB n\u00e3o s\u00e3o suportados por nenhum dos recursos configurados no arquivo server.xml.
+PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E.explanation=Os cron\u00f4metros persistentes do EJB n\u00e3o s\u00e3o suportados pelos recursos ejbLite.
+PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E.useraction=Remova o uso de cron\u00f4metros persistentes n\u00e3o suportados do aplicativo ou inclua um recurso ejbPersistentTimer no arquivo server.xml. 
+
+DUPLICATE_EJB_CNTR4100E=CNTR4100E: O valor {0} do elemento <ejb-name> no arquivo ejb-jar.xml n\u00e3o \u00e9 exclusivo.
+DUPLICATE_EJB_CNTR4100E.explanation=V\u00e1rios enterprise beans foram definidos com o mesmo nome no arquivo ejb-jar.xml. Cada enterprise bean deve ter um nome exclusivo.
+DUPLICATE_EJB_CNTR4100E.useraction=Remova as defini\u00e7\u00f5es duplicadas de enterprise beans.
+
+UNSPECIFIED_CLASS_CNTR4101E=CNTR4101E: O elemento <ejb-class> n\u00e3o foi especificado para o enterprise bean {0} no arquivo ejb-jar.xml.
+UNSPECIFIED_CLASS_CNTR4101E.explanation=O elemento <ejb-class> n\u00e3o foi especificado no arquivo ejb-jar.xml. Esse elemento \u00e9 necess\u00e1rio para enterprise beans definidos sem o uso de uma anota\u00e7\u00e3o.
+UNSPECIFIED_CLASS_CNTR4101E.useraction=Inclua o elemento <ejb-class> na defini\u00e7\u00e3o de enterprise bean no arquivo ejb-jar.xml.
+
+UNSPECIFIED_SESSION_TYPE_CNTR4102E=CNTR4102E: O elemento <session-type> n\u00e3o foi especificado para o bean de sess\u00e3o {0} no arquivo ejb-jar.xml.
+UNSPECIFIED_SESSION_TYPE_CNTR4102E.explanation=O elemento <session-type> n\u00e3o foi especificado no arquivo ejb-jar.xml. Esse elemento \u00e9 necess\u00e1rio para beans de sess\u00e3o definidos sem o uso de uma anota\u00e7\u00e3o.
+UNSPECIFIED_SESSION_TYPE_CNTR4102E.useraction=Inclua o elemento <session-type> na defini\u00e7\u00e3o do bean de sess\u00e3o.
+
+INCOMPATIBLE_KIND_CNTR4103E=CNTR4103E: O enterprise bean {0} foi definido com tipos de bean inconsistentes. O elemento {1} foi usado no arquivo ejb-jar.xml e a anota\u00e7\u00e3o {2} foi especificada na classe {3}.
+INCOMPATIBLE_KIND_CNTR4103E.explanation=Um enterprise bean s\u00f3 pode ter um tipo, mas tipos incompat\u00edveis foram especificados no arquivo ejb-jar.xml e pela anota\u00e7\u00e3o.
+INCOMPATIBLE_KIND_CNTR4103E.useraction=Altere o tipo de elemento ou o tipo de anota\u00e7\u00e3o do enterprise bean.
+
+INCOMPATIBLE_ANN_TYPE_CNTR4104E=CNTR4104E: O enterprise bean {0} foi definido com tipos de bean inconsistentes. As anota\u00e7\u00f5es {1} e {2} foram ambas especificadas na classe {3}.
+INCOMPATIBLE_ANN_TYPE_CNTR4104E.explanation=Um enterprise bean s\u00f3 pode ter um tipo, mas v\u00e1rias anota\u00e7\u00f5es definidoras de componente foram especificadas.
+INCOMPATIBLE_ANN_TYPE_CNTR4104E.useraction=Remova uma das anota\u00e7\u00f5es definidoras de componente.
+
+INCOMPATIBLE_SESSION_TYPE_CNTR4105E=CNTR4105E: O enterprise bean {0} foi definido com tipos de bean inconsistentes. O elemento <session-type>{1}</session-type> foi usado no arquivo ejb-jar.xml e a anota\u00e7\u00e3o {2} foi especificada na classe {3}.
+INCOMPATIBLE_SESSION_TYPE_CNTR4105E.explanation=Um enterprise bean s\u00f3 pode ter um tipo, mas tipos incompat\u00edveis foram especificados no arquivo ejb-jar.xml e pela anota\u00e7\u00e3o.
+INCOMPATIBLE_SESSION_TYPE_CNTR4105E.useraction=Altere o tipo de elemento ou o tipo de anota\u00e7\u00e3o do enterprise bean.
+
+INCOMPATIBLE_CLASS_ANN_ANN_CNTR4106E=CNTR4106E: O enterprise bean {0} foi declarado com v\u00e1rias classes: pela anota\u00e7\u00e3o {1} na classe {2} e pela anota\u00e7\u00e3o {3} na classe {4}.
+INCOMPATIBLE_CLASS_ANN_ANN_CNTR4106E.explanation=Um enterprise bean s\u00f3 pode ser declarado com uma classe, mas foi declarado com diferentes classes por anota\u00e7\u00f5es em duas classes separadas.
+INCOMPATIBLE_CLASS_ANN_ANN_CNTR4106E.useraction=Remova uma das anota\u00e7\u00f5es ou altere um dos nomes do enterprise bean.
+
+INCOMPATIBLE_DEFAULT_BUSINESS_INTERFACE_TYPE_CNTR4107E=CNTR4107E: As anota\u00e7\u00f5es @Remote e @Local foram ambas especificadas sem um valor na classe {0} do enterprise bean {1}.
+INCOMPATIBLE_DEFAULT_BUSINESS_INTERFACE_TYPE_CNTR4107E.explanation=A especifica\u00e7\u00e3o da anota\u00e7\u00e3o @Remote ou @Local sem um valor indica que as interfaces de neg\u00f3cios na cl\u00e1usula implements deveriam ser consideradas remota ou local, respectivamente, portanto ambas as anota\u00e7\u00f5es n\u00e3o podem ser especificadas sem um valor.
+INCOMPATIBLE_DEFAULT_BUSINESS_INTERFACE_TYPE_CNTR4107E.useraction=Remova a anota\u00e7\u00e3o ou especifique as anota\u00e7\u00f5es com as interfaces de neg\u00f3cios.
+
+DEFAULT_IMPLEMENTS_NONE_CNTR4108E=CNTR4108E: A anota\u00e7\u00e3o {0} foi especificada sem um valor na classe {1} do enterprise bean {2}, mas a cl\u00e1usula implements n\u00e3o cont\u00e9m interfaces de neg\u00f3cios.
+DEFAULT_IMPLEMENTS_NONE_CNTR4108E.explanation=A especifica\u00e7\u00e3o da anota\u00e7\u00e3o @Remote ou @Local sem um valor indica que as interfaces de neg\u00f3cios na cl\u00e1usula implements devem ser consideradas remota ou local, respectivamente, mas a classe n\u00e3o possui interfaces de neg\u00f3cios em sua cl\u00e1usula implements.
+DEFAULT_IMPLEMENTS_NONE_CNTR4108E.useraction=Inclua uma interface de neg\u00f3cios na cl\u00e1usula implements, remova a anota\u00e7\u00e3o ou especifique a anota\u00e7\u00e3o com as interfaces de neg\u00f3cios.
+
+# Note: This message was added in 8.5.5 but is no longer used.
+DEFAULT_IMPLEMENTS_MULTIPLE_CNTR4109E=CNTR4109E: A anota\u00e7\u00e3o {0} foi especificada sem um valor na classe {1} do enterprise bean {2}, mas a cl\u00e1usula implements cont\u00e9m v\u00e1rias interfaces de neg\u00f3cios: {3} e {4}.
+DEFAULT_IMPLEMENTS_MULTIPLE_CNTR4109E.explanation=A especifica\u00e7\u00e3o da anota\u00e7\u00e3o @Remote ou @Local sem um valor indica que a interface de neg\u00f3cios na cl\u00e1usula implements deveria ser considerada remota ou local respectivamente, mas a classe tem v\u00e1rias interfaces de neg\u00f3cios em sua cl\u00e1usula implements.
+DEFAULT_IMPLEMENTS_MULTIPLE_CNTR4109E.useraction=Remova todas as interfaces de neg\u00f3cios menos uma na cl\u00e1usula implements ou especifique a anota\u00e7\u00e3o com todas as interfaces de neg\u00f3cios.
+
+INCOMPATIBLE_INTERFACE_TYPE_CNTR4110E=CNTR4110E: O enterprise bean {0} especificou a classe {1} como uma interface de neg\u00f3cios local e uma interface de neg\u00f3cios remota.
+INCOMPATIBLE_INTERFACE_TYPE_CNTR4110E.explanation=Uma classe pode ser especificada para um enterprise bean como uma interface de neg\u00f3cios local ou uma interface de neg\u00f3cios remota, mas n\u00e3o como ambas.
+INCOMPATIBLE_INTERFACE_TYPE_CNTR4110E.useraction=Atualize a classe de enterprise bean, a classe de interface, ou o descritor de implementa\u00e7\u00e3o para que a interface seja especificada como uma interface de neg\u00f3cios local ou uma interface de neg\u00f3cios remota, mas n\u00e3o como ambas.
+
+IMPLEMENTS_INTERFACE_TYPE_VALUE_CNTR4111E=CNTR4111E: A anota\u00e7\u00e3o {0} foi especificada com um valor na interface {1}. A interface foi especificada na cl\u00e1usula implements da classe {2} do enterprise bean {3}.
+IMPLEMENTS_INTERFACE_TYPE_VALUE_CNTR4111E.explanation=As anota\u00e7\u00f5es @Remote e @Local s\u00f3 podem ter um valor quando s\u00e3o especificadas em uma classe de enterprise bean.
+IMPLEMENTS_INTERFACE_TYPE_VALUE_CNTR4111E.useraction=Remova o valor da anota\u00e7\u00e3o @Remote ou @Local na interface.
+
+ORPHAN_EXTENSION_ENTRY_CNTR4112W=CNTR4112W: Uma extens\u00e3o {0} no arquivo ibm-ejb-jar-ext.xml no m\u00f3dulo {1} refere-se ao enterprise bean {2}, que n\u00e3o existe.
+ORPHAN_EXTENSION_ENTRY_CNTR4112W.explanation=O nome do enterprise bean pode estar incorreto ou uma extens\u00e3o pode ter sido especificada para um enterprise bean que n\u00e3o existe.
+ORPHAN_EXTENSION_ENTRY_CNTR4112W.useraction=Corrija o nome do enterprise bean no arquivo ibm-ejb-jar-ext.xml.
+
+RESOLVER_ACTIVITY_SESSION_NOT_SUPPORTED_CNTR4113E=CNTR4113E: O enterprise bean {0} no m\u00f3dulo {1} no aplicativo {2} est\u00e1 configurado no arquivo ibm-ejb-jar-ext.xml para usar o limite de transa\u00e7\u00e3o local {3}, que n\u00e3o \u00e9 suportado no perfil do Liberty.
+RESOLVER_ACTIVITY_SESSION_NOT_SUPPORTED_CNTR4113E.explanation=O valor de atributo limite ACTIVITY_SESSION da extens\u00e3o <local-transaction> n\u00e3o \u00e9 suportado no perfil do Liberty.
+RESOLVER_ACTIVITY_SESSION_NOT_SUPPORTED_CNTR4113E.useraction=Atualize o arquivo ibm-ejb-jar-ext.xml para especificar BEAN_METHOD para o limite, ou remova o atributo de limite para usar o padr\u00e3o, que \u00e9 BEAN_METHOD.
+
+INCOMPATIBLE_CLASS_XML_ANN_CNTR4114E=CNTR4114E: O enterprise bean {0} foi declarado com v\u00e1rias classes: com o valor {1} no elemento <ejb-class> no arquivo ejb-jar.xml e pela anota\u00e7\u00e3o {2} na classe {3}.
+INCOMPATIBLE_CLASS_XML_ANN_CNTR4114E.explanation=Um enterprise bean s\u00f3 pode ser definido com uma classe, mas ele foi declarado com diferentes classes em XML e por uma anota\u00e7\u00e3o.
+INCOMPATIBLE_CLASS_XML_ANN_CNTR4114E.useraction=Remova a classe de ejb-jar.xml, remova a anota\u00e7\u00e3o ou altere um dos nomes do enterprise bean. 
+
+INVALID_CLASS_CNTR4115E=CNTR4115E: O elemento <ejb-class> no arquivo ejb-jar.xml especifica o nome de classe {0} do enterprise bean {1}, mas o arquivo de classe n\u00e3o foi localizado.
+INVALID_CLASS_CNTR4115E.explanation=O arquivo ejb-jar.xml especifica um nome de classe inv\u00e1lido, ou que o arquivo de classe n\u00e3o foi empacotado no aplicativo.
+INVALID_CLASS_CNTR4115E.useraction=Corrija o nome da classe no arquivo ejb-jar.xml ou empacote o arquivo de classe no aplicativo.

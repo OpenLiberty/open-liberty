@@ -1,0 +1,266 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.websphere.security.wim.util/resources/com/ibm/websphere/security/wim/util/resources/WebsphereWimUtilMessages.nlsprops
+#COMPONENTPREFIX CWIML
+#COMPONENTPREFIX CWIMK
+#COMPONENTNAMEFOR Virtual Member Manager wim utilities 
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: Configuration:0000-0499
+# Message prefix block: Profile Manager: 1000-1999
+# Message prefix block: Repository Manager: 4000-4499
+# Message prefix block: Adapters: 4500-4999
+# Message prefix block: Schema/Realm: 0500-0999
+# Message prefix block: User Registry: 3000-3499
+
+INVALID_UNIQUE_NAME_SYNTAX=CWIML1011E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Die Syntax des eindeutigen Namen, {0}, ist nicht g\u00fcltig. Geben Sie einen eindeutigen Namen mit der richtigen Syntax an, z. B. uid=xyz,dc=yourco,dc=com.
+INVALID_UNIQUE_NAME_SYNTAX.explanation=Die Syntax des angegebenen eindeutigen Namens ist nicht g\u00fcltig. Der uniqueName-Wert, der in der Eigenschaft identifier angegeben wurde, ist nicht korrekt. Die Benutzerregistry-Operation kann ohne den richtigen eindeutigen Namen nicht fortgesetzt werden.
+INVALID_UNIQUE_NAME_SYNTAX.useraction=Vergewissern Sie sich, dass der eindeutige Namen korrekt angegeben wurde. \u00dcberpr\u00fcfen Sie die Syntax des eindeutigen Namens. Stellen Sie beispielsweise sicher, das Sonderzeichen mit Escapezeichen versehen sind, wenn der eindeutige Name im DN-Format angegeben wird.
+
+INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION=CWIMK0001E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Die Entit\u00e4tstypdefinition {0} ist nicht g\u00fcltig. Korrigieren Sie die Entit\u00e4tsdefinition in der Datei server.xml.
+INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION.explanation= Der Entit\u00e4tstyp muss mit einem Entit\u00e4tstypnamen und mindestens einer entsprechenden RDN-Eigenschaft definiert werden.
+INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION.useraction=\u00c4ndern und korrigieren Sie die Entit\u00e4tstypdefinition in der Datei server.xml.
+
+INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Die Basiseintragsdefinition {0} ist nicht g\u00fcltig. Korrigieren Sie die Basiseintragsdefinition in der Datei server.xml. Die Syntax ist beispielsweise <baseEntry name="..." baseDN="...."/>.
+INVALID_BASE_ENTRY_DEFINITION.explanation= Die angegebene Basiseintragsdefinition ist falsch. Die Syntax f\u00fcr die Definition eines Basiseintrags ist <baseEntry name="..." baseDN="...."/>.
+INVALID_BASE_ENTRY_DEFINITION.useraction= \u00c4ndern und korrigieren Sie die Basiseintragsdefinition in der Datei server.xml.
+
+INVALID_REALM_DEFINITION=CWIMK0003E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Die Realmdefinition {0} ist nicht g\u00fcltig. Korrigieren Sie die Realmdefinition in der Datei server.xml.
+INVALID_REALM_DEFINITION.explanation= Der Realm-Tag fehlt oder ist ung\u00fcltig, weil ein erforderliches Attribut fehlt.
+INVALID_REALM_DEFINITION.useraction=\u00c4ndern und korrigieren Sie die Realmdefinition in der Datei server.xml.
+
+INVALID_PARTICIPATING_BASE_ENTRY_DEFINITION=CWIMK0004E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Die beteiligte Basiseintragsdefinition {0} ist nicht g\u00fcltig. Korrigieren Sie die Definition des teilnehmenden Basiseintrags in der Datei server.xml. Die Syntax ist beispielsweise <participatingBaseEntry name="..."/>.
+INVALID_PARTICIPATING_BASE_ENTRY_DEFINITION.explanation= Die angegebene Definition des beteiligten Basiseintrags ist falsch. Die Syntax f\u00fcr die Definition eines beteiligten Basiseintrags ist <participatingBaseEntry name="..."/>.
+INVALID_PARTICIPATING_BASE_ENTRY_DEFINITION.useraction=\u00c4ndern und korrigieren Sie die beteiligte Basiseintragsdefinition in der Datei server.xml.
+
+INVALID_UR_ATTRIBUTE_MAPPING_DEFINITION=CWIMK0005E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Die Zuordnungsdefinition des Benutzerregistry-Attributs {0} ist nicht g\u00fcltig. Korrigieren Sie die Attributzuordnung f\u00fcr die Benutzerregistry in der Datei server.xml.
+INVALID_UR_ATTRIBUTE_MAPPING_DEFINITION.explanation= Die Zuordnungsdefinition des Benutzerregistry-Attributs nicht korrekt.
+INVALID_UR_ATTRIBUTE_MAPPING_DEFINITION.useraction=\u00c4ndern und korrigieren Sie die Zuordnungsdefinition des Benutzerregistry-Attributs in der Datei server.xml.
+
+INVALID_REALM_NAME=CWIMK0006E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Der Realmname {0} ist nicht g\u00fcltig. Geben Sie einen vorhandenen Realmnamen an.
+INVALID_REALM_NAME.explanation=Der angegebene Realmname ist nicht in der Datei server.xml definiert, oder er ist falsch.
+INVALID_REALM_NAME.useraction=Stellen Sie sicher, dass der Realmname vorhanden ist und in der Datei server.xml korrekt angegeben ist. Geben Sie einen g\u00fcltigen Realmnamen an, wenn kein Realmname vorhanden ist.
+
+MISSING_BASE_ENTRY_IN_REALM=CWIMK0007E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Es ist kein g\u00fcltiger Basiseintrag f\u00fcr den Realm {0} definiert. Definieren Sie den Basiseintrag f\u00fcr den Realm in der Datei server.xml.
+MISSING_BASE_ENTRY_IN_REALM.explanation=Es muss mindestens ein g\u00fcltiger beteiligter Basiseintrag f\u00fcr einen Realm definiert werden.
+MISSING_BASE_ENTRY_IN_REALM.useraction=Stellen Sie sicher, dass ein g\u00fcltiger beteiligter Basiseintrag f\u00fcr den Realm in der Datei server.xml definiert ist.
+
+MISSING_BASE_ENTRY=CWIMK0008E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Das Repository {0} muss mindestens einen Basiseintrag enthalten. Definieren Sie den Basiseintrag in der Datei server.xml.
+MISSING_BASE_ENTRY.explanation=Nach dem Hinzuf\u00fcgen eines Repositorys muss diesem mindestens ein Basiseintrag hinzugef\u00fcgt werden.
+MISSING_BASE_ENTRY.useraction=F\u00fcgen Sie dem Repository in der Datei server.xml mindestens einen Basiseintrag hinzu.
+
+FEDERATED_MANAGER_SERVICE_READY=CWIMK0009I: Der Service f\u00fcr die Einbindung der Benutzerregistry ist bereit.
+FEDERATED_MANAGER_SERVICE_READY.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+FEDERATED_MANAGER_SERVICE_READY.useraction=Es ist keine Aktion erforderlich.
+
+FEDERATED_MANAGER_SERVICE_STOPPED=CWIMK0010I: Der Service f\u00fcr die Einbindung der Benutzerregistry wurde gestoppt.
+FEDERATED_MANAGER_SERVICE_STOPPED.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+FEDERATED_MANAGER_SERVICE_STOPPED.useraction=Es ist keine Aktion erforderlich.
+
+ENTITY_IDENTIFIER_NOT_SPECIFIED=CWIML1009E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Die Kennung der Entit\u00e4t wurde nicht gefunden. Geben Sie die richtige ID als Eingabeparameter an. 
+ENTITY_IDENTIFIER_NOT_SPECIFIED.explanation=Die Kennung der Entit\u00e4t wurde nicht angegeben. Das System kann die Entit\u00e4t nicht finden. Die Benutzerregistry-Operation kann ohne diese Entit\u00e4t nicht fortgesetzt werden. 
+ENTITY_IDENTIFIER_NOT_SPECIFIED.useraction=Stellen Sie sicher, dass die Entit\u00e4t im Eingabeobjekt eine Eigenschaft identifier enth\u00e4lt.
+
+EXTERNAL_NAME_CONTROL_NOT_FOUND=CWIML1024E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Der externe Name {0} wurde angegeben, aber das Steuerelement f\u00fcr den externen Namen wurde nicht angegeben. Geben Sie das Steuerelement f\u00fcr den angegebenen externen Namen an.
+EXTERNAL_NAME_CONTROL_NOT_FOUND.explanation=ExternalNameControl muss angegeben werden, wenn externalName w\u00e4hrend einer Abrufoperation definiert wird.
+EXTERNAL_NAME_CONTROL_NOT_FOUND.useraction=Geben Sie ExternalNameControl an, oder entfernen Sie externalName aus dem Eingabeobjekt.
+
+INVALID_IDENTIFIER=CWIML1010E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Die Attribute uniqueId = {0} und uniqueName = {1} des ID-Objekts sind nicht g\u00fcltig oder nicht im Back-End-Repository definiert.
+INVALID_IDENTIFIER.explanation=Das angegebene Kennungsobjekt ist nicht g\u00fcltig. Es muss ein g\u00fcltiges Attribut f\u00fcr uniqueId oder uniqueName im Kennungsobjekt angegeben werden. Die Benutzerregistry-Operation kann ohne ein g\u00fcltiges DN-Objekt nicht fortgesetzt werden. Wenn ein Kennungsobjekt angegeben wurde, ist uniqueId oder uniqueName leer oder null.
+INVALID_IDENTIFIER.useraction=Stellen Sie sicher, dass die Entit\u00e4t im Eingabeobjekt eine Kennung mit einer g\u00fcltigen Eigenschaft uniqueId oder uniqueName hat (beide Eigenschaften d\u00fcrfen weder null noch leer sein).
+
+ENTITY_NOT_IN_REALM_SCOPE=CWIML0515E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Die Entit\u00e4t {0} ist nicht im Geltungsbereich des Realms {1} vorhanden. Geben Sie eine Entit\u00e4t an, die im Geltungsbereich des in der Datei server.xml konfigurierten Realms enthalten ist.
+ENTITY_NOT_IN_REALM_SCOPE.explanation=Die Operation kann nicht ausgef\u00fchrt werden, weil die angegebene Entit\u00e4t nicht im Geltungsbereich des Realms liegt.
+ENTITY_NOT_IN_REALM_SCOPE.useraction=Stellen Sie sicher, dass der eindeutige Name der Entit\u00e4t korrekt angegeben ist. Wenn im Kontextobjekt des Eingabeobjekts ein Realmname angegeben wird, m\u00fcssen Sie sicherstellen, dass der Name richtig geschrieben ist.
+
+MISSING_SORT_KEY=CWIML1001E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Der Sortierschl\u00fcssel fehlt im Eingabesteuerungsobjekt sort. Definieren Sie den Sortierschl\u00fcssel f\u00fcr das angegebene Steuerungsobjekt sort.
+MISSING_SORT_KEY.explanation=Ein Objekt SortControl wurde ohne Sortierschl\u00fcssel f\u00fcr die Suchoperation \u00fcbergeben. Der Suchschl\u00fcssel ist aber f\u00fcr die Ausf\u00fchrung der Sortieroperation erforderlich.
+MISSING_SORT_KEY.useraction=Definieren Sie den Sortierschl\u00fcssel im Objekt SortControl, und stellen Sie sicher, dass die Eigenschaft, die als Sortierschl\u00fcssel verwendet wird, in der Liste der zur\u00fcckgegebenen Eigenschaften enthalten ist.
+
+MISSING_SEARCH_CONTROL=CWIML1017E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Das Steuerungsobjekt search fehlt im Eingabeobjekt der Suchoperation. Definieren Sie das Steuerungsobjekt search im Eingabeobjekt.
+MISSING_SEARCH_CONTROL.explanation=Das Objekt SearchControl muss im Eingabeobjekt der Suchoperation angegeben werden.
+MISSING_SEARCH_CONTROL.useraction=Geben Sie das Objekt SearchControl im Eingabeobjekt f\u00fcr die Suche an.
+
+MISSING_COOKIE=CWIML1002E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Das Cookie, das zum Abrufen der n\u00e4chsten Seite der Suchergebnisse verwendet wird, fehlt im Steuerungsobjekt page. Definieren Sie den Cookieparameter im Seitensteuerungsobjekt (page).
+MISSING_COOKIE.explanation=Die Benutzerregistry kann die n\u00e4chste Seite mit den Suchergebnissen nicht abrufen. Der Cookieparameter, der zum Abrufen der n\u00e4chsten Seite mit den Suchergebnissen verwendet wird, muss im Objekt PageControl angegeben werden.
+MISSING_COOKIE.useraction=Stellen Sie sicher, dass die Cookieeigenschaft mit dem Anfangswert 0 im Objekt PageControl angegeben wird. Das Cookie im Objekt PageResponseControl gibt den Cookiewert zur\u00fcck, der zum Abrufen der n\u00e4chsten Seite der Suchergebnisse verwendet wird.
+
+INVALID_COOKIE=CWIML1041E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Das Cookie im Steuerungsobjekt page ist nicht g\u00fcltig oder abgelaufen.
+INVALID_COOKIE.explanation=Die Benutzerregistry kann die n\u00e4chste Seite mit den Suchergebnissen nicht abrufen. Der Cookieparameter, der zum Abrufen der n\u00e4chsten Seite mit den Suchergebnissen \u00fcber das Objekt PageControl verwendet wird, ist ung\u00fcltig.
+
+INVALID_COOKIE.useraction=Stellen Sie sicher, dass im Objekt PageControl ein g\u00fcltiges Cookie angegeben ist.
+
+
+INCORRECT_COUNT_LIMIT=CWIML1022E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Die Z\u00e4hlergrenze {0} im Steuerungsobjekt search ist nicht g\u00fcltig. Die g\u00fcltigen Werte sind 0 und positive Zahlen.
+INCORRECT_COUNT_LIMIT.explanation=Die Begrenzung f\u00fcr die Anzahl bei einer Suchoperation darf keine negative Zahl sein. Eine positive Zahl definiert die maximale Anzahl von Eintr\u00e4gen, die als Ergebnis vom Suchvorgang zur\u00fcckgegeben werden k\u00f6nnen. Der Wert 0 gibt keine Begrenzung an. Alle Eintr\u00e4ge werden zur\u00fcckgegeben, wenn das Suchlimit auf 0 gesetzt wird.
+INCORRECT_COUNT_LIMIT.useraction=Geben Sie f\u00fcr die Begrenzung der Anzahl keine negative Zahl an.
+
+INCORRECT_SEARCH_LIMIT=CWIML1031E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Das Suchlimit {0} im Steuerungsobjekt search ist nicht g\u00fcltig. Die g\u00fcltigen Werte sind 0 und positive Zahlen.
+INCORRECT_SEARCH_LIMIT.explanation=Das Suchlimit bei einer Suchoperation darf keine negative Zahl sein.
+INCORRECT_SEARCH_LIMIT.useraction=Geben Sie f\u00fcr die Suchlimiteigenschaft keine negative Zahl an. Die g\u00fcltigen Werte sind 0 und positive Zahlen.
+
+CANNOT_SPECIFY_COUNT_LIMIT=CWIML1019E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Der Parameter countLimit kann nicht in einem Steuerungsobjekt search angegeben werden, wenn das Steuerungsobjekt page ebenfalls in einem Suchaufruf angegeben wird. Geben Sie Z\u00e4hlergrenzen oder das Seitensteuerungsobjekt (page) an, aber nicht beides.
+CANNOT_SPECIFY_COUNT_LIMIT.explanation=Der Parameter countLimit gibt an, wie viele Suchergebnisse der Aufrufende bei einem Suchoperation als R\u00fcckgabe erhalten will. Er kann nicht mit PageControl verwendet werden.
+CANNOT_SPECIFY_COUNT_LIMIT.useraction=Je nach Anforderung kann der Aufrufende kann entweder countLimit oder PageControl, aber nicht beides verwenden. 
+
+MISSING_SEARCH_EXPRESSION=CWIML1003E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Die Eigenschaft expression fehlt im Steuerungsobjekt search. Definieren Sie die Ausdruckseigenschaft im Steuerungsobjekt search. 
+MISSING_SEARCH_EXPRESSION.explanation=Die Suchoperation kann nicht ausgef\u00fchrt werden. Die Eigenschaft expression muss im Objekt SearchControl angegeben werden.
+MISSING_SEARCH_EXPRESSION.useraction=Geben Sie eine Suchausdruckszeichenfolge in der Eigenschaft expression des Objekts SearchControl an.
+
+SEARCH_EXPRESSION_ERROR=CWIML1004E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Es ist ein Fehler in dem Suchausdruck enthalten, der im Objekt search angegeben ist: {0}. \u00dcberpr\u00fcfen Sie die Syntax des Suchausdrucks im Steuerungsobjekt search.
+SEARCH_EXPRESSION_ERROR.explanation=Die Operation kann nicht ausgef\u00fchrt werden. Der Suchausdruck, der im Objekt SearchControl angegeben ist, entspricht nicht der unterst\u00fctzten XPath-Syntax.
+SEARCH_EXPRESSION_ERROR.useraction=\u00dcberpr\u00fcfen Sie die Syntax des Suchausdrucks, und korrigieren Sie etwaige Fehler.
+
+INVALID_SEARCH_EXPRESSION=CWIML1029E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Die Syntax des Suchausdrucks {0} ist nicht g\u00fcltig. Geben Sie den Suchausdruck in der richtigen Syntax an. 
+INVALID_SEARCH_EXPRESSION.explanation=Die Suchoperation kann nicht ausgef\u00fchrt werden, weil der Suchausdruck nicht g\u00fcltig ist.
+INVALID_SEARCH_EXPRESSION.useraction=Geben Sie einen g\u00fcltigen Suchausdruck an.
+
+EXCEED_MAX_TOTAL_SEARCH_LIMIT=CWIML1018E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Die Anzahl der Suchergebnisse, {0}, \u00fcberschreitet das angegebene maximale Suchlimit, {1}. Es werden keine Suchergebnisse zur\u00fcckgegeben. Erh\u00f6hen Sie das maximale Suchlimit, oder \u00e4ndern Sie den Suchausdruck so, dass weniger Datens\u00e4tze abgerufen werden.
+EXCEED_MAX_TOTAL_SEARCH_LIMIT.explanation=Die Anzahl der Datens\u00e4tze, die von der Suche zur\u00fcckgegeben wurden, ist gr\u00f6\u00dfer als die maximale Anzahl von Datens\u00e4tzen, die im Suchlimit angegeben wurde.
+EXCEED_MAX_TOTAL_SEARCH_LIMIT.useraction=Erh\u00f6hen Sie das maximale Suchlimit, oder geben Sie einen restriktiveren Suchausdruck an, damit weniger Datens\u00e4tze abgerufen werden.
+
+INVALID_CHANGETYPE=CWIML4552E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Der angegebene \u00c4nderungstyp {0} ist f\u00fcr eine Suche der ge\u00e4nderten Entit\u00e4ten nicht g\u00fcltig. Die g\u00fcltigen \u00c4nderungstypen sind add, modify, delete, rename und * (* steht f\u00fcr alle \u00c4nderungstypen).
+INVALID_CHANGETYPE.explanation=Die g\u00fcltigen \u00c4nderungstypen f\u00fcr eine Suche ge\u00e4nderter Entit\u00e4ten sind add, modify, delete, rename und * (* steht f\u00fcr alle \u00c4nderungstypen).
+INVALID_CHANGETYPE.useraction=Geben Sie einen der g\u00fcltigen \u00c4nderungstypen an.
+
+MISSING_ENTITY_DATA_OBJECT=CWIML1030E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Das Eingabeentit\u00e4tsobjekt f\u00fcr die Operation {0} fehlt. Das Entit\u00e4tsdatenobjekt muss f\u00fcr das zu bearbeitende Objekt definiert werden.
+MISSING_ENTITY_DATA_OBJECT.explanation=F\u00fcr die angegebene Operation ist ein Entit\u00e4tsobjekt erforderlich.
+MISSING_ENTITY_DATA_OBJECT.useraction=Das Entit\u00e4tsobjekt muss f\u00fcr die Entit\u00e4t definiert werden, f\u00fcr die Sie die Operation durchf\u00fchren m\u00f6chten.
+
+ACTION_MULTIPLE_ENTITIES_SPECIFIED=CWIML1016E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Die Aktion {0} unterst\u00fctzt nur eine einzige Entit\u00e4t. Geben Sie f\u00fcr diese Operation nur eine einzige Entit\u00e4t an.
+ACTION_MULTIPLE_ENTITIES_SPECIFIED.explanation=Die Operation unterst\u00fctzt nur eine einzige Entit\u00e4t. Die Aktualisierungsoperation kann beispielsweise jeweils nur f\u00fcr eine einzige Entit\u00e4t ausgef\u00fchrt werden.
+ACTION_MULTIPLE_ENTITIES_SPECIFIED.useraction=Stellen Sie sicher, dass nur eine einzige Entit\u00e4t f\u00fcr die Benutzerregistry-Operation \u00fcbergeben wird.
+
+MISSING_OR_EMPTY_PRINCIPAL_NAME=CWIML4536E: Die Anmeldeoperation konnte nicht ausgef\u00fchrt werden. Der Name des Principals fehlt oder ist leer.
+
+MISSING_OR_EMPTY_PRINCIPAL_NAME.explanation=F\u00fcr die Anmeldung mit einem Kennwort ist ein Principalname erforderlich.
+MISSING_OR_EMPTY_PRINCIPAL_NAME.useraction=Stellen Sie sicher, dass der Name des Principals angegeben wird.
+
+MULTIPLE_PRINCIPALS_FOUND=CWIML4538E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Es sind mehrere Datens\u00e4tze f\u00fcr den Principalnamen {0} in den konfigurierten Benutzerregistrys vorhanden. Der Principalname muss in allen Benutzerregistrys eindeutig sein.
+MULTIPLE_PRINCIPALS_FOUND.explanation=F\u00fcr den angegebenen Principalnamen wurden mehrere Principals gefunden. Der Anmeldevorgang kann nicht fortgesetzt werden.
+MULTIPLE_PRINCIPALS_FOUND.useraction=Stellen Sie sicher, dass der richtige Principalname angegeben wurde. Dieser Ausnahmebedingungstyp kann zum Beispiel vermieden werden, wenn der Principalname als eindeutiger Name angegeben wird.
+
+AUTHENTICATE_NOT_SUPPORTED=CWIML4530E: Die Authentifizierungsoperation konnte nicht ausgef\u00fchrt werden. Die Authentifizierung mit dem Zertifikat wird vom Repository {0} nicht unterst\u00fctzt. Eigentliche Fehlerursache: {1}
+AUTHENTICATE_NOT_SUPPORTED.explanation=Die Authentifizierung mit dem Zertifikat wird vom Repository nicht unterst\u00fctzt.
+AUTHENTICATE_NOT_SUPPORTED.useraction=Stellen Sie sicher, dass die Authentifizierung mit dem Zertifikat vom Repository unterst\u00fctzt wird.
+
+CERTIFICATE_MAP_FAILED=CWIML3011E: Die Anmeldeoperation konnte nicht ausgef\u00fchrt werden. Die Zertifikatszuordnung ist fehlgeschlagen. Geben Sie die richtige Zertifikatszuordnung in der Datei server.xml an, oder verwenden Sie ein g\u00fcltiges Zertifikat.
+CERTIFICATE_MAP_FAILED.explanation=Bei der Zuordnung des angegebenen Zertifikats zur Benutzerregistry ist ein Fehler aufgetreten.
+CERTIFICATE_MAP_FAILED.useraction=Korrigieren Sie die Zertifikatszuordnung in der Datei server.xml, oder melden Sie sich mit einem g\u00fcltigen Zertifikat an.
+
+PRINCIPAL_NOT_FOUND=CWIML4537E: Die Anmeldeoperation konnte nicht ausgef\u00fchrt werden. Der angegebene Principalname {0} wurde nicht im Back-End-Repository gefunden.
+PRINCIPAL_NOT_FOUND.explanation=Der Principalname wurde nicht im Repository gefunden. Der Anmeldevorgang kann nicht fortgesetzt werden.
+PRINCIPAL_NOT_FOUND.useraction=Stellen Sie sicher, dass der richtige Principalname angegeben wurde.
+
+NON_EXISTING_SEARCH_BASE=CWIML1042E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Die angegebene Suchbasis {0} ist im momentan konfigurierten Realm nicht vorhanden. Geben Sie eine g\u00fcltige Suchbasis an, und stellen Sie sicher, dass der Basiseintrag im aktuellen Realm konfiguriert ist.
+NON_EXISTING_SEARCH_BASE.explanation=Die angegebene Suchbasis ist im aktuellen Realm nicht vorhanden.
+NON_EXISTING_SEARCH_BASE.useraction=\u00dcberpr\u00fcfen Sie die angegebene Suchbasis, und stellen Sie sicher, dass der entsprechende Basiseintrag im aktuellen Realm konfiguriert ist.
+
+ENTITY_NOT_FOUND=CWIML4001E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Die Entit\u00e4t {0} wurde nicht gefunden. Geben Sie die richtige Entit\u00e4t an, oder erstellen Sie die fehlende Entit\u00e4t.
+ENTITY_NOT_FOUND.explanation=Der angegebene Entit\u00e4tsname, der ein uniqueName oder eine uniqueId sein kann, wurde nicht im zugrunde liegenden Repository gefunden. Die Benutzerregistry-Operation kann ohne diese Entit\u00e4t nicht fortgesetzt werden.
+ENTITY_NOT_FOUND.useraction=Stellen Sie sicher, dass die Entit\u00e4t im zugrunde liegenden Repository vorhanden ist. Wenn die Entit\u00e4t vorhanden ist, stellen Sie sicher, dass die Leseberechtigung f\u00fcr die Entit\u00e4t definiert wurde, und wiederholen Sie den Vorgang.
+
+INVALID_LEVEL_IN_CONTROL=CWIML4514E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Es wurde ein falscher Wert f\u00fcr die Eigenschaftsebene {0} in {1} angegeben. Die g\u00fcltigen Werte f\u00fcr die Eigenschaftsebene sind 0 und positive ganze Zahlen.
+INVALID_LEVEL_IN_CONTROL.explanation=Der Wert der Eigenschaftsebene wurde als negative Zahl angegeben.
+INVALID_LEVEL_IN_CONTROL.useraction=Die g\u00fcltigen Werte f\u00fcr die Eigenschaftsebene sind 0 und positive ganze Zahlen. \u00c4ndern Sie den Wert f\u00fcr die Eigenschaftsebene, und wiederholen Sie dann die Operation.
+
+NAMING_EXCEPTION=CWIML4520E: Die LDAP-Operation konnte nicht ausgef\u00fchrt werden. W\u00e4hrend der Verarbeitung ist die folgende Ausnahme bei der LDAP-Benennung {0} eingetreten.
+NAMING_EXCEPTION.explanation=Die Nachricht zeigt an, dass w\u00e4hrend einer LDAP-Operation eine allgemeine Benennungsausnahme eingetreten ist. Suchen Sie in der Ausnahme nach weiteren Einzelheiten. 
+NAMING_EXCEPTION.useraction=Stellen Sie sicher, dass das zugeh\u00f6rige Repository (z. B. eine Datenbank oder ein LDAP-Server) gestartet und ordnungsgem\u00e4\u00df konfiguriert ist.
+
+SYSTEM_EXCEPTION=CWIML1998E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. W\u00e4hrend der Verarbeitung der Benutzerregistry-Operation ist die folgende Systemausnahme eingetreten: {0} 
+SYSTEM_EXCEPTION.explanation=W\u00e4hrend der Ausf\u00fchrung der Benutzerregistry-Operation hat das Programm eine Systemausnahme festgestellt.
+SYSTEM_EXCEPTION.useraction= \u00dcberpr\u00fcfen Sie die Protokolle, um die Fehlerursache zu bestimmen und Ma\u00dfnahmen zur Problembehebung zu ergreifen.
+
+INVALID_PROPERTY_VALUE=CWIML1013E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Der f\u00fcr die Eigenschaft {0} angegebene Wert ist f\u00fcr die Entit\u00e4t {1} nicht g\u00fcltig. Der Wert der Eigenschaft muss richtig sein und den richtigen Datentyp haben.
+INVALID_PROPERTY_VALUE.explanation=Der Wert der Eigenschaft ist nicht g\u00fcltig. Beispiel: Ein Kennungstyp verweist auf einen falschen Eintrag.
+INVALID_PROPERTY_VALUE.useraction=Stellen Sie sicher, dass der Wert der Eigenschaft korrekt ist und den richtigen Datentyp hat. Wenn Sie versuchen, eine Eigenschaft vom Typ Kennung zusammen mit anderen Eigenschaften abzurufen, m\u00fcssen Sie zwei Aufrufe verwenden: einen f\u00fcr den Abruf der Eigenschaften, die nicht vom Typ Kennung sind, und einen weiteren f\u00fcr den Abruf der Eigenschaft vom Typ Kennung.
+
+GENERIC=CWIML1999E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. W\u00e4hrend der Verarbeitung ist ein Laufzeitfehler aufgetreten: {0}
+GENERIC.explanation=Das Programm hat den angegebenen Fehler w\u00e4hrend der Operation festgestellt.
+GENERIC.useraction= \u00dcberpr\u00fcfen Sie die Protokolle, um die Fehlerursache zu bestimmen und Ma\u00dfnahmen zur Problembehebung zu ergreifen.
+
+MISSING_MANDATORY_PROPERTY=CWIML1028E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Der Wert der verbindlichen Eigenschaft {0} fehlt. Geben Sie einen Wert f\u00fcr die verbindliche Eigenschaft an.
+MISSING_MANDATORY_PROPERTY.explanation=Die Operation kann nicht ausgef\u00fchrt werden, weil die verbindliche Eigenschaft fehlt. Beispiel: Die RDN-Eigenschaft wurde bei der Erstellung der Entit\u00e4t nicht angegeben, oder propertyName oder entityTypeName fehlt in PropertyDefinitionControl oder ExtensionPropertyDefinitionControl, oder entityName fehlt im entitySchema.
+MISSING_MANDATORY_PROPERTY.useraction=Geben Sie einen Wert f\u00fcr die verbindliche Eigenschaft an.
+
+CANNOT_DELETE_LOGGED_IN_USER=CWIML5504E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Benutzer mit dem eindeutigen Namen (uniqueName) {0} kann nicht gel\u00f6scht werden, weil es sich dabei um den angemeldeten Benutzer handelt. Melden Sie sich mit einem anderen Benutzernamen an, um diesen Benutzer zu l\u00f6schen.
+CANNOT_DELETE_LOGGED_IN_USER.explanation=Der Benutzer hat versucht, sich selbst aus Virtual Member Manager zu l\u00f6schen. Diese Aktion ist nicht zul\u00e4ssig.
+CANNOT_DELETE_LOGGED_IN_USER.useraction=Melden Sie sich als anderer Benutzer an, um den aktuellen Benutzer zu l\u00f6schen.
+AUTH_SUBJECT_CRED_FAILURE=CWIML2005E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Beim Abrufen der Berechtigungsnachweise des Subjekts ist ein unerwarteter Fehler aufgetreten.	\u00dcberpr\u00fcfen Sie die Traceprotokolle, um die Ursache des Fehlers zu ermitteln.
+AUTH_SUBJECT_CRED_FAILURE.explanation=Die Berechtigungsnachweise des Subjekts k\u00f6nnen auf Grund eines unbekannten Fehlers nicht abgerufen werden.
+AUTH_SUBJECT_CRED_FAILURE.useraction=\u00dcberpr\u00fcfen Sie die Traceprotokolle, um die Ursache des Fehlers zu ermitteln. M\u00f6glicherweise liegt ein Problem bei der WebSphere-Sicherheitskonfiguration vor. 
+AUTH_SUBJECT_FAILURE=CWIML2004E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Beim Abrufen des Subjekts des Aufrufenden ist ein unerwarteter Fehler aufgetreten. \u00dcberpr\u00fcfen Sie die Traceprotokolle, um die Ursache des Fehlers zu ermitteln.
+AUTH_SUBJECT_FAILURE.explanation=Das Subjekt des Aufrufenden kann auf Grund eines unbekannten Fehlers nicht abgerufen werden.
+AUTH_SUBJECT_FAILURE.useraction=\u00dcberpr\u00fcfen Sie die Traceprotokolle, um die Ursache des Fehlers zu ermitteln. M\u00f6glicherweise liegt ein Problem bei der WebSphere-Sicherheitskonfiguration vor.
+
+INVALID_PARENT_UNIQUE_ID=CWIML1014E: Der Wert {0} f\u00fcr die Eigenschaft uniqueId der \u00fcbergeordneten Entit\u00e4t ist nicht g\u00fcltig.
+INVALID_PARENT_UNIQUE_ID.explanation=Die angegebene uniqueId f\u00fcr die \u00fcbergeordnete Entit\u00e4t ist nicht g\u00fcltig. Geben Sie eine g\u00fcltige eindeutige ID an.
+INVALID_PARENT_UNIQUE_ID.useraction=\u00dcberpr\u00fcfen Sie, ob der uniqueId-Wert f\u00fcr die \u00fcbergeordnete Entit\u00e4t im Repository vorhanden und korrekt angegeben ist.
+
+DEFAULT_PARENT_NOT_FOUND=CWIML0516E: Die \u00fcbergeordnete Standardentit\u00e4t f\u00fcr {0} kann nicht bestimmt werden. Vergewissern Sie sich, dass die Konfiguration f\u00fcr den Realm {1} korrekt ist.
+DEFAULT_PARENT_NOT_FOUND.explanation=Die Operation konnte nicht ausgef\u00fchrt werden, weil die \u00fcbergeordnete Entit\u00e4t f\u00fcr diesen Entit\u00e4tstyp nicht bestimmt werden konnte.
+DEFAULT_PARENT_NOT_FOUND.useraction=Stellen Sie sicher, dass die \u00fcbergeordnete Standardentit\u00e4t f\u00fcr den Entit\u00e4tstyp f\u00fcr die eingebundenen Repositorys oder den Realm konfiguriert ist. Die \u00fcbergeordnete Entit\u00e4t kann auch als Teil der Eingabe angegeben werden.
+
+MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION=CWIML1034E: Die repositoriesForGroups-Konfiguration f\u00fcr das Repository {0} fehlt.
+MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION.explanation=Es ist keine repository-\u00fcbergreifende Gruppenkonfiguration f\u00fcr das Repository definiert.
+MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION.useraction=Suchen Sie in der Protokolldatei nach der Fehlerursache. \u00dcberpr\u00fcfen Sie Ihre Repository-Konfiguration.
+
+ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: Der angegebene Entit\u00e4tstyp {0} ist kein g\u00fcltiger Entit\u00e4tstyp f\u00fcr diese Operation.
+ENTITY_TYPE_NOT_SUPPORTED.explanation=Es wurde eine Operation f\u00fcr eine Entit\u00e4t angefordert, aber diese Operation unterst\u00fctzt den angegebenen Entit\u00e4tstyp nicht.
+ENTITY_TYPE_NOT_SUPPORTED.useraction=Stellen Sie sicher, dass die in der Eingabe angegebenen Entit\u00e4ten unterst\u00fctzte Entit\u00e4tstypen haben, und entfernen Sie alle unterst\u00fctzten Entit\u00e4tstypen aus der Eingabe.
+
+CAN_NOT_CONSTRUCT_UNIQUE_NAME=CWIML1008E: Die RDN-Eigenschaft {0} wurde f\u00fcr den Entit\u00e4tstyp {1} in der Eingabe angegeben. Der eindeutige Name kann nicht im zugrunde liegenden Repository erstellt werden, weil die in der Eingabe angegebenen RDN-Informationen mehrdeutig sind.
+CAN_NOT_CONSTRUCT_UNIQUE_NAME.explanation=Wenn Sie eine Entit\u00e4t erstellen, muss der RDN (relativ definierter Name) das korrekte Format haben und Eigenschaften enthalten, die nicht mehrdeutig sind. Der Entit\u00e4tstyp OrgContainer kann beispielsweise eine Organisation (die die RDN-Eigenschaft 'o' verwendet) oder eine Organisationseinheit (die die RDN-Eigenschaft 'ou' verwendet) in einem zugrunde liegenden Repository darstellen. Wenn 'o' und 'ou' im relativ definierten Namen f\u00fcr das Eingabedatenobjekt f\u00fcr die neue Entit\u00e4t angegeben sind, kann kein eindeutiger Name f\u00fcr die neue Entit\u00e4t erstellt werden.
+CAN_NOT_CONSTRUCT_UNIQUE_NAME.useraction=Bestimmen Sie den Typ der im zugrunde liegenden Repository zu erstellenden Entit\u00e4t und geben Sie die entsprechende RDN-Eigenschaft f\u00fcr diesen Typ an. Wenn Sie beispielsweise eine Organisation erstellen m\u00f6chten, geben Sie nur den Wert f\u00fcr die Eigenschaft 'o' an.
+
+REPOSITORY_INITIALIZATION_FAILED=CWIML4510E: Das konfigurierte Repository {0} kann wegen des folgenden zugrundeliegenden Fehlers nicht initialisiert werden: {1}
+REPOSITORY_INITIALIZATION_FAILED.explanation=Das eingebundene Repository konnte wegen eines zugrundeliegenden Fehlers nicht initialisiert werden.
+REPOSITORY_INITIALIZATION_FAILED.useraction=Bestimmen Sie die Fehlerursache anhand der Ursachennachricht und der Tracedatei. Beheben Sie den Fehler und wiederholen Sie dann die Operation.
+
+CUSTOM_REGISTRY_EXCEPTION=CWIML3010E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Es ist eine Ausnahme in der f\u00fcr {0} konfigurierten angepassten Registry eingetreten.
+CUSTOM_REGISTRY_EXCEPTION.explanation=Die angepasste Registry hat eine Ausnahme ausgel\u00f6st. Die angepasste Registry ist m\u00f6glicherweise nicht verf\u00fcgbar oder nicht in der Lage, die Operation auszuf\u00fchren.
+CUSTOM_REGISTRY_EXCEPTION.useraction=Bestimmen Sie die Fehlerursache anhand der Ursachennachricht und der Tracedatei. Beheben Sie den Fehler und wiederholen Sie dann die Operation.
+
+ENTITY_GET_FAILED=CWIML4505E: Die Benutzerregistry konnte die Entit\u00e4t {0} wegen des folgenden zugrundeliegenden Fehlers nicht abrufen: {1}
+ENTITY_GET_FAILED.explanation=Die Entit\u00e4t kann wegen der vom zugrundeliegenden Repository angegebenen Ursache nicht abgerufen werden.
+ENTITY_GET_FAILED.useraction=Bestimmen Sie die Fehlerursache anhand der Ursachennachricht und der Tracedatei. Beheben Sie den Fehler und wiederholen Sie dann die Operation.
+
+PROPERTY_NOT_DEFINED_FOR_ENTITY=CWIML4516E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Die Eigenschaft {0} ist f\u00fcr {1} nicht definiert.
+PROPERTY_NOT_DEFINED_FOR_ENTITY.explanation=Die angegebene Eigenschaft ist f\u00fcr den angegebenen Entit\u00e4tstyp nicht definiert.
+PROPERTY_NOT_DEFINED_FOR_ENTITY.useraction=\u00dcberpr\u00fcfen Sie, ob der Eigenschaftsname korrekt ist.
+
+MALFORMED_SEARCH_EXPRESSION=CWIML3006W: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden, weil der Suchausdruck {0} nicht g\u00fcltig ist. Geben Sie den Suchausdruck in der richtigen Syntax an.
+MALFORMED_SEARCH_EXPRESSION.explanation=Die Suchoperation kann nicht ausgef\u00fchrt werden, weil der Suchausdruck nicht g\u00fcltig ist.
+MALFORMED_SEARCH_EXPRESSION.useraction=Geben Sie einen g\u00fcltigen Suchausdruck an.
+
+ENTITY_SEARCH_FAILED=CWIML4506E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden, weil in der Benutzerregistry der folgende zugrundeliegende Fehler aufgetreten ist: {1}
+ENTITY_SEARCH_FAILED.explanation=Die Entit\u00e4t konnte wegen der von der zugrundeliegenden Registry angegebenen Ursache nicht durchsucht werden.
+ENTITY_SEARCH_FAILED.useraction=Bestimmen Sie die Fehlerursache anhand der Ursachennachricht und der Tracedatei. Beheben Sie den Fehler und wiederholen Sie dann die Operation.
+
+MISSING_OR_EMPTY_PASSWORD=CWIML4541E: Die Anmeldeoperation konnte nicht ausgef\u00fchrt werden, weil das Kennwort fehlt oder leer ist.
+MISSING_OR_EMPTY_PASSWORD.explanation=Wenn der Principalname w\u00e4hrend des Anmeldeprozesses angegeben wird, darf das Kennwort weder null noch leer sein.
+MISSING_OR_EMPTY_PASSWORD.useraction=Geben Sie das Kennwort an.
+
+CERTIFICATE_GENERATE_FAILED=CWIML3012E: Die Anmeldeoperation konnte nicht ausgef\u00fchrt werden, weil die Generierung des Zertifikats fehlgeschlagen ist.
+CERTIFICATE_GENERATE_FAILED.explanation=Bei der Generierung des Zertifikats aus der Eingabezertifikatsdatei ist ein Fehler aufgetreten.
+CERTIFICATE_GENERATE_FAILED.useraction=Melden Sie sich mit einem g\u00fcltigen Zertifikat an.
+
+AUTHENTICATION_WITH_CERT_NOT_SUPPORTED=CWIML4542E: Die Anmeldeoperation konnte nicht ausgef\u00fchrt werden, weil die Benutzerregistry keine Anmeldung mit Zertifikat unterst\u00fctzt.
+AUTHENTICATION_WITH_CERT_NOT_SUPPORTED.explanation=Eine Authentifizierung mit einem Zertifikat wird von der zugrundeliegenden Benutzerregistry nicht zugelassen.
+AUTHENTICATION_WITH_CERT_NOT_SUPPORTED.useraction=Authentifizieren Sie sich mit einer Benutzer-ID und einem Kennwort und nicht mit einem Zertifikat.
+
+CANNOT_WRITE_TO_READ_ONLY_REPOSITORY=CWIML1027E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden, weil das Repository {0} schreibgesch\u00fctzt ist. Das Repository unterst\u00fctzt keine Schreiboperationen. 
+CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.explanation=Das Repository ist schreibgesch\u00fctzt. Es unterst\u00fctzt keine Erstellungs-, Aktualisierungs- und L\u00f6schoperatione.
+CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.useraction=Stellen Sie sicher, dass keine Schreiboperation f\u00fcr ein schreibgesch\u00fctztes Repository aufgerufen wird.

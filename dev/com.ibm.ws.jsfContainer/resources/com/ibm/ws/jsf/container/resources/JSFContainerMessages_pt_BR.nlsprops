@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME none
+#COMPONENTPREFIX JSFG
+#COMPONENTNAMEFOR JSFG jsf
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+# -------------------------------------------------------------------------------------------------
+
+# JSFG0100-JSFG0199 reserved for jsfContainer-2.X features
+
+# 0: JSF provider type (will be either MOJARRA or MYFACES)
+# 1: application name
+jsf.container.init=JSFG0100I: O Liberty inicializou integra\u00e7\u00f5es JSF para o provedor JSF {0} no aplicativo {1}.
+jsf.container.init.explanation=As integra\u00e7\u00f5es JSF do Liberty s\u00e3o inicializadas para o aplicativo indicado, o que permite que integra\u00e7\u00f5es CDI e JSF funcionem.
+jsf.container.init.useraction=Mensagem informativa. Nenhuma a\u00e7\u00e3o do usu\u00e1rio \u00e9 necess\u00e1ria.
+
+# 0: application name
+# 1: required ApplicationFactory implementations
+jsf.container.no.jsf.impl=JSFG0101E: Nenhuma implementa\u00e7\u00e3o JSF foi localizada no aplicativo {0}. Uma implementa\u00e7\u00e3o JSF que cont\u00e9m uma das implementa\u00e7\u00f5es javax.faces.application.ApplicationFactory a seguir deve estar dispon\u00edvel para o aplicativo {1}.
+jsf.container.no.jsf.impl.explanation=As integra\u00e7\u00f5es JSF do Liberty s\u00e3o suportadas apenas para um conjunto espec\u00edfico de implementa\u00e7\u00f5es JSF de terceiros. Uma das implementa\u00e7\u00f5es ApplicationFactory listadas deve estar dispon\u00edvel para o aplicativo indicado.
+jsf.container.no.jsf.impl.useraction=Inclua a implementa\u00e7\u00e3o JSF de Apache MyFaces ou Mojarra dentro do aplicativo indicado. Como alternativa, se quiser usar a implementa\u00e7\u00e3o JSF padr\u00e3o fornecida pelo Liberty, Apache MyFaces, use o recurso jsf-2.2 em vez de jsfContainer-2.2.
+
+# 0: application name
+jsf.container.no.app.name=JSFG0102E: O Liberty n\u00e3o consegue obter o nome de aplicativo do aplicativo JSF {0} usando JNDI.
+jsf.container.no.app.name.explanation=O registro de um aplicativo com o Cont\u00eainer JSF do Liberty requer que o nome do aplicativo esteja dispon\u00edvel executando uma consulta JNDI de "java:app/AppName".
+jsf.container.no.app.name.useraction=Verifique se o recurso jndi-1.0 est\u00e1 ativado e assegure-se de que a execu\u00e7\u00e3o de uma consulta JNDI, como InitialContext.doLookup("java:app/AppName"), funciona de dentro do aplicativo.
+
+# 0: application name
+# 1: expected JSF spec API version range
+# 2: actual JSF spec API version used in app
+jsf.container.bad.spec.api.version=JSFG0103E: A vers\u00e3o de API da especifica\u00e7\u00e3o JSF dispon\u00edvel para o aplicativo {0} \u00e9 {2}, mas precisa estar dentro do intervalo de vers\u00e3o {1}. Assegure-se de que a API do JSF empacotada no aplicativo indicado corresponda \u00e0 vers\u00e3o de jsfContainer que est\u00e1 ativada. O Liberty determina a vers\u00e3o da API do JSF verificando o atributo de manifest Specification-Version do arquivo .jar que cont\u00e9m uma classe API do JSF.
+jsf.container.bad.spec.api.version.explanation=A vers\u00e3o de jsfContainer ativada dever\u00e1 corresponder \u00e0 mesma vers\u00e3o de API do JSF empacotada no aplicativo indicado.
+jsf.container.bad.spec.api.version.useraction=Assegure-se de que a API do JSF empacotada no aplicativo indicado corresponda \u00e0 vers\u00e3o de jsfContainer que est\u00e1 ativada. O Liberty determina a vers\u00e3o da API do JSF verificando o atributo de manifest Specification-Version do arquivo .jar que cont\u00e9m uma classe API do JSF.
+
+# 0: application name
+# 1: expected JSF spec API version range
+# 2: actual JSF spec API version used in app
+jsf.container.bad.impl.version=JSFG0104E: A vers\u00e3o da implementa\u00e7\u00e3o JSF dispon\u00edvel para o aplicativo {0} \u00e9 {2}, mas precisa estar dentro do intervalo de vers\u00e3o {1}. Assegure-se de que a implementa\u00e7\u00e3o JSF empacotada no aplicativo indicado corresponda \u00e0 vers\u00e3o de jsfContainer que est\u00e1 ativada. O Liberty determina a vers\u00e3o da implementa\u00e7\u00e3o JSF verificando o atributo de manifest Specification-Version do arquivo .jar que cont\u00e9m a classe ApplicationFactory de MyFaces ou Mojarra.
+jsf.container.bad.impl.version.explanation=A vers\u00e3o de jsfContainer ativada dever\u00e1 corresponder \u00e0 mesma vers\u00e3o da implementa\u00e7\u00e3o JSF empacotada no aplicativo indicado.
+jsf.container.bad.impl.version.useraction=Assegure-se de que a implementa\u00e7\u00e3o JSF empacotada no aplicativo indicado corresponda \u00e0 vers\u00e3o de jsfContainer que est\u00e1 ativada. O Liberty determina a vers\u00e3o da implementa\u00e7\u00e3o JSF verificando o atributo de manifest Specification-Version do arquivo .jar que cont\u00e9m a classe ApplicationFactory de MyFaces ou Mojarra.

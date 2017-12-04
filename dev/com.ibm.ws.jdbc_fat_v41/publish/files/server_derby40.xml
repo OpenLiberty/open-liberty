@@ -11,7 +11,7 @@
 <server>
     <featureManager>
       <feature>componenttest-1.0</feature>
-      <feature>servlet-3.0</feature>
+      <feature>servlet-3.1</feature>
       <feature>localConnector-1.0</feature>
       <feature>jdbc-4.1</feature>
       <feature>jndi-1.0</feature>
@@ -26,7 +26,7 @@
     
     <jdbcDriver id="DerbyEmbedded" libraryRef="DerbyLib"/>
     <library id="DerbyLib">
-    	<fileset dir="${server.config.dir}/derby40" includes="*.jar"/>
+    	<fileset dir="${server.config.dir}/derby40" includes="derby40.jar"/>
     </library>
     
     <dataSource id="ds1" jndiName="jdbc/${id}" jdbcDriverRef="DerbyEmbedded">
@@ -46,7 +46,7 @@
         <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
     
-    <javaPermission codebase="${server.config.dir}derby40/derby40.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${server.config.dir}/derby40/derby40.jar" className="java.security.AllPermission"/>
     
     
     <variable name="onError" value="FAIL"/>

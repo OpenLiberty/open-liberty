@@ -1,0 +1,329 @@
+###############################################################################
+# Copyright (c) 1997, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# Instructions to translation will precede the line to which it applies
+#
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# Example: MSG_DESCRIPTIVE_NAME_J2CA0001=J2CA0001I: This is a message.
+#
+# The prefix for this component is:
+#     J2CA (J2C Connection Manager)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# :Begin: WebSphere Quality Validation Information :Begin:
+# :End: WebSphere Quality Validation Information :End:
+#
+#CMVCPATHNAME com.ibm.ws.jca.cm/resources/com/ibm/ws/j2c/resources/J2CAMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA Java Platform, Enterprise Edition Connector Architecture Server Implementation
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+NULL_MANAGED_CONNECTION_J2CA0015=J2CA0015E: Der Verbindungspoolmanager konnte keine verwaltete Verbindung aus Ressource {0} zuordnen.
+NULL_MANAGED_CONNECTION_J2CA0015.explanation=Der Poolmanager konnte keine verwaltete Verbindung zuordnen. Dieser Fehler ist m\u00f6glicherweise auf die Eigenschaften des Poolmanagers (z. B. \u00dcberschreitung der maximalen Anzahl von Verbindungen) zur\u00fcckzuf\u00fchren. Es wurde eine leere verwaltete Verbindung vom Poolmanager zur\u00fcckgegeben.
+NULL_MANAGED_CONNECTION_J2CA0015.useraction=CMSG0002
+
+# --------------------------------
+XA_OP_NOT_SUPPORTED_J2CA0016=J2CA0016E: Die zweiphasige XA-Operation {0} wurde in der Transaktion mit der ID {1} aufgerufen. Dieser Ressourcenadapter aus dem Pool {2} unterst\u00fctzt keine zweiphasige Verarbeitung.
+XA_OP_NOT_SUPPORTED_J2CA0016.explanation=Diese Nachricht weist darauf hin, dass versucht wurde, die Verbindung im Kontext einer XA-Transaktion zusammen mit anderen XA-f\u00e4higen Ressourcen zu verwenden. Diese Operation ist f\u00fcr den Ressourcenadapter nicht g\u00fcltig.
+XA_OP_NOT_SUPPORTED_J2CA0016.useraction=\u00c4ndern Sie die Logik so, dass die Ressourcenverwendung auf zwei separate Transaktionen verteilt wird.
+
+# --------------------------------                    
+FAILED_MANAGED_CONNECTION_J2CA0020=J2CA0020E: Der Verbindungspoolmanager konnte eine verwaltete Verbindung nicht zuordnen: {0}.
+FAILED_MANAGED_CONNECTION_J2CA0020.explanation=Der Poolmanager hat beim Zuordnen einer verwalteten Verbindung eine Ausnahme erstellt. Der Ausnahmetext kann weitere Informationen zur Fehlerbestimmung enthalten.
+FAILED_MANAGED_CONNECTION_J2CA0020.useraction=Falls keine diesbez\u00fcglichen Hinweise vorhanden sind, liegt m\u00f6glicherweise ein interner Fehler in der Verarbeitung des Verbindungsmanagers vor. Stellen Sie Diagnosedaten zusammen, und suchen Sie auf der IBM Unterst\u00fctzungswebsite nach weiteren Informationen.
+
+# --------------------------------
+FAILED_CONNECTION_J2CA0021=J2CA0021E: Beim Abrufen einer Verbindung aus der verwalteten Verbindungsressource {1} ist eine Ausnahme eingetreten: {0}.
+FAILED_CONNECTION_J2CA0021.explanation=Der Ressourcenadapter hat beim Aufrufen der Methode getConnection() eine Ausnahme erstellt. Der Ausnahmetext kann weitere Informationen zur Fehlerbestimmung enthalten.
+FAILED_CONNECTION_J2CA0021.useraction=Falls keine diesbez\u00fcglichen Hinweise vorhanden sind, liegt m\u00f6glicherweise ein interner Fehler in der Verarbeitung des Verbindungsmanagers vor. Stellen Sie Diagnosedaten zusammen, und suchen Sie auf der IBM Unterst\u00fctzungswebsite nach weiteren Informationen.
+
+# --------------------------------
+FAILED_CONNECTION_RELEASE_J2CA0022=J2CA0022I: Beim Bereinigen und Freigeben der verwalteten Verbindung aus der Ressource {1} nach einem fehlgeschlagenen getConnection der verwalteten Verbindung ist eine Ausnahme eingetreten: {0}. Der zweite Fehler wurde \u00fcbergangen, und die urspr\u00fcngliche Fehlerbedingung wurde erneut ausgegeben.
+FAILED_CONNECTION_RELEASE_J2CA0022.explanation=Beim Bereinigen der Datensatze zum fehlgeschlagenen getConnection-Versuch ist ein Fehler aufgetreten. Die Nachricht dient zu Ihrer Information und muss im Zusammenhang mit anderen zugeh\u00f6rigen Nachrichten gelesen werden, um die Fehlerursache zu bestimmen.
+FAILED_CONNECTION_RELEASE_J2CA0022.useraction=Suchen Sie in den anderen zugeh\u00f6rigen Nachrichten nach Erl\u00e4uterungen und Benutzeraktionen.
+
+# --------------------------------
+XA_OPERATION_NOT_SUPPORTED_J2CA0023=J2CA0023E: Die zweiphasige XA-Operation {0} wurde aufgerufen. Dieser Ressourcenadapter aus der Datenquelle {1} unterst\u00fctzt keine zweiphasige Verarbeitung.
+XA_OPERATION_NOT_SUPPORTED_J2CA0023.explanation=Es wurde versucht, eine XA-Operation f\u00fcr einen Ressourcenadapter aufzurufen, der nur lokale Transaktionen unterst\u00fctzt. M\u00f6glicherweise wurde ein Ressourcenadapter f\u00fcr lokale Transaktionen versehentlich zusammen mit anderen XA-f\u00e4higen Ressourcen in den Kontext einer XA-Transaktion eingebunden.
+XA_OPERATION_NOT_SUPPORTED_J2CA0023.useraction=\u00c4ndern Sie die Gesch\u00e4ftslogik so, dass die Ressourcenverwendung auf zwei separate Transaktionen verteilt wird.
+
+# --------------------------------
+XA_END_EXCP_J2CA0024=J2CA0024E: Die Methode {0} in der Transaktionsverzweigung {1} aus Ressourcenpool {4} hat {2} abgefangen und eine {3} ausgel\u00f6st.
+XA_END_EXCP_J2CA0024.explanation=Bei der Verarbeitung der angegebenen Methode ist ein Fehler aufgetreten. Die Schnittstelle definiert bestimmte Ausnahmen, die erstellt werden k\u00f6nnen. Deshalb wurde die abgefangene Ausnahme der erstellten Ausnahme zugeordnet. Die Verarbeitung in der Methode wurde nicht erfolgreich durchgef\u00fchrt.
+XA_END_EXCP_J2CA0024.useraction=Vergewissern Sie sich, dass die Gesch\u00e4ftslogik der Anwendung die erstellte Ausnahme ordnungsgem\u00e4\u00df abf\u00e4ngt und dass sie die erforderliche Wiederherstellungslogik enth\u00e4lt. Suchen Sie au\u00dferdem in allen Protokolldateien nach vorherigen Fehlern, die zu dieser Ausnahme gef\u00fchrt haben k\u00f6nnten. 
+# --------------------------------
+REGISTER_WITH_SYNCHRONIZATION_EXCP_J2CA0026=J2CA0026E: Die Methode {0} hat die Ausnahme {1} abgefangen, als sie versuchte, den Ressourcenadapter f\u00fcr die aktuelle Transaktion beim Synchronisationsmanager zu registrieren. Eine {2} wurde ausgel\u00f6st.
+REGISTER_WITH_SYNCHRONIZATION_EXCP_J2CA0026.explanation=Bei der Verarbeitung der angegebenen Methode ist ein Fehler aufgetreten. Die Schnittstelle definiert bestimmte Ausnahmen, die erstellt werden k\u00f6nnen. Deshalb wurde die abgefangene Ausnahme der erstellten Ausnahme zugeordnet. Die Verarbeitung in der Methode wurde nicht erfolgreich durchgef\u00fchrt.
+REGISTER_WITH_SYNCHRONIZATION_EXCP_J2CA0026.useraction=Vergewissern Sie sich, dass die Gesch\u00e4ftslogik der Anwendung die erstellte Ausnahme ordnungsgem\u00e4\u00df abf\u00e4ngt und dass sie die erforderliche Wiederherstellungslogik enth\u00e4lt. Suchen Sie au\u00dferdem in allen Protokolldateien nach vorherigen Fehlern, die zu dieser Ausnahme gef\u00fchrt haben k\u00f6nnten. 
+# --------------------------------
+XA_RESOURCE_ADAPTER_OPERATION_ID_EXCP_J2CA0027=J2CA0027E: Beim Aufrufen von {0} f\u00fcr einen XA-Ressourcenadapter aus der Datenquelle {3} in der Transaktion mit der ID {1} ist eine Ausnahme eingetreten: {2}
+XA_RESOURCE_ADAPTER_OPERATION_ID_EXCP_J2CA0027.explanation=Bei der Verarbeitung der angegebenen Methode ist ein Fehler aufgetreten. Die Verarbeitung in der Methode wurde nicht erfolgreich durchgef\u00fchrt.
+XA_RESOURCE_ADAPTER_OPERATION_ID_EXCP_J2CA0027.useraction=Vergewissern Sie sich, dass die Gesch\u00e4ftslogik der Anwendung die erstellte Ausnahme ordnungsgem\u00e4\u00df abf\u00e4ngt und dass sie die erforderliche Wiederherstellungslogik enth\u00e4lt. Suchen Sie au\u00dferdem in allen Protokolldateien nach vorherigen Fehlern, die zu dieser Ausnahme gef\u00fchrt haben k\u00f6nnten.
+# --------------------------------
+XA_RESOURCE_ADAPTER_OPERATION_EXCP_J2CA0028=J2CA0028E: Beim Aufrufen von {0} f\u00fcr einen XA-Ressourcenadapter aus der Datenquelle {2} ist eine Ausnahme eingetreten: {1}
+XA_RESOURCE_ADAPTER_OPERATION_EXCP_J2CA0028.explanation=Bei der Verarbeitung der angegebenen Methode ist ein Fehler aufgetreten. Die Verarbeitung in der Methode wurde nicht erfolgreich durchgef\u00fchrt.
+XA_RESOURCE_ADAPTER_OPERATION_EXCP_J2CA0028.useraction=Vergewissern Sie sich, dass die Gesch\u00e4ftslogik der Anwendung die erstellte Ausnahme ordnungsgem\u00e4\u00df abf\u00e4ngt und dass sie die erforderliche Wiederherstellungslogik enth\u00e4lt. Suchen Sie au\u00dferdem in allen Protokolldateien nach vorherigen Fehlern, die zu dieser Ausnahme gef\u00fchrt haben k\u00f6nnten. 
+# --------------------------------
+ENLIST_RESOURCE_EXCP_J2CA0030=J2CA0030E: Die Methode {0} hat {1} abgefangen, als sie versucht hat, Ressourcen aus Datenquelle {3} f\u00fcr die aktuelle Transaktion beim Transaktionsmanager zu registrieren, und hat eine {2} ausgel\u00f6st.
+ENLIST_RESOURCE_EXCP_J2CA0030.explanation=Bei der Verarbeitung der angegebenen Methode ist ein Fehler aufgetreten. Die Schnittstelle definiert bestimmte Ausnahmen, die erstellt werden k\u00f6nnen. Deshalb wurde die abgefangene Ausnahme der erstellten Ausnahme zugeordnet. Die Verarbeitung in der Methode wurde nicht erfolgreich durchgef\u00fchrt.
+ENLIST_RESOURCE_EXCP_J2CA0030.useraction=Vergewissern Sie sich, dass die Gesch\u00e4ftslogik der Anwendung die erstellte Ausnahme ordnungsgem\u00e4\u00df abf\u00e4ngt und dass sie die erforderliche Wiederherstellungslogik enth\u00e4lt. Suchen Sie au\u00dferdem in allen Protokolldateien nach vorherigen Fehlern, die zu dieser Ausnahme gef\u00fchrt haben k\u00f6nnten. 
+# --------------------------------
+DELIST_RESOURCE_EXCP_J2CA0031=J2CA0031I: Die Methode {0} hat die Ausnahme {1} abgefangen, als sie versucht hat, die Registrierung von Ressourcen in der Datenquelle {3} beim Transaktionsmanager f\u00fcr die aktuelle Transaktion zur\u00fcckzunehmen, und {2} ausgel\u00f6st.
+DELIST_RESOURCE_EXCP_J2CA0031.explanation=Diese Nachricht weist darauf hin, dass beim Zur\u00fccknehmen der Registrierung von Ressourcen beim Transaktionsmanager ein Fehler aufgetreten ist. Diese Nachricht ist nur zu Ihrer Information bestimmt.
+DELIST_RESOURCE_EXCP_J2CA0031.useraction=Wenn diese Nachricht regelm\u00e4\u00dfig ausgegeben wird, stellen Sie Diagnoseinformationen zusammen, und suchen Sie auf der IBM Unterst\u00fctzungswebsite nach weiteren Informationen.
+
+# --------------------------------
+UNEXPECTED_CONNECTION_EVENT_J2CA0034=J2CA0034E: Es wurde ein unerwartetes Ereignis vom Ressourcenadapter f\u00fcr die Ressource {2}empfangen. Erwartet wurde der ConnectionEvent-Typ {0}, empfangen wurde der ConnectionEvent-Typ {1}.
+UNEXPECTED_CONNECTION_EVENT_J2CA0034.explanation=Diese Nachricht weist wahrscheinlich auf einen Fehler eines bestimmten Ressourcenadapters hin.
+UNEXPECTED_CONNECTION_EVENT_J2CA0034.useraction=Wenden Sie sich an den Lieferanten des Ressourcenadapters.
+
+# --------------------------------
+NO_VALID_TRANSACTION_CONTEXT_J2CA0040=J2CA0040E: Es wurde kein g\u00fcltiger Transaktionskontext im Thread f\u00fcr die Methode {0} mit dem Koordinator {1} \u00fcber die Ressourcen aus der Datenquelle {2} gefunden.
+NO_VALID_TRANSACTION_CONTEXT_J2CA0040.explanation=Bei der Verarbeitung im Verbindungsmanager ist ein interner Fehler aufgetreten. Die angegebene Operation erfordert einen g\u00fcltigen Transaktionskontext, aber es wurde keiner gefunden.
+NO_VALID_TRANSACTION_CONTEXT_J2CA0040.useraction=CMSG0002
+
+# --------------------------------
+POOL_MANAGER_EXCP_CCF2_0001_J2CA0045=J2CA0045E: Die Verbindung ist beim Aufruf der Methode {0} f\u00fcr Ressource {1} nicht verf\u00fcgbar.
+POOL_MANAGER_EXCP_CCF2_0001_J2CA0045.explanation=Die zul\u00e4ssige Wartezeit auf eine Verbindung wurde \u00fcberschritten. Es wurde eine Ausnahme vom Typ ConnectionWaitTimeoutException erstellt.
+POOL_MANAGER_EXCP_CCF2_0001_J2CA0045.useraction=Rekonfigurieren Sie den Verbindungspool. Sie k\u00f6nnen die maximale Anzahl der Verbindungen erh\u00f6hen oder die Wartezeit f\u00fcr Verbindungen heraufsetzen, um diesen Fehler zu vermeiden.
+
+# --------------------------------
+POOL_MANAGER_EXCP_CCF2_0002_J2CA0046=J2CA0046E: Die Methode {0} hat w\u00e4hrend der Erstellung der ManagedConnection f\u00fcr Ressource {3} eine Ausnahme abgefangen und l\u00f6st {2} aus. Urspr\u00fcngliche Ausnahme: {1}
+POOL_MANAGER_EXCP_CCF2_0002_J2CA0046.explanation=W\u00e4hrend der Erstellung einer verwalteten Verbindung ist ein Fehler aufgetreten. In der Regel k\u00f6nnen Sie das Problem l\u00f6sen, indem Sie sich die Fehlernachrichten des Ressourcenadapters ansehen.
+POOL_MANAGER_EXCP_CCF2_0002_J2CA0046.useraction=CMSG0002
+
+# --------------------------------
+HANDLE_NOT_CLOSED_J2CA0055=J2CA0055W: Die Verbindungskennung wurde am Ende des Bereichs der Arbeitseinheit nicht geschlossen. Die Kennungen werden vom Verbindungsmanager geschlossen.
+HANDLE_NOT_CLOSED_J2CA0055.explanation=Der Arbeitsbereich einer Activity-Session, Transaktion oder lokalen Transaktion wurde beendet, aber die Verbindungskennungen wurden nicht geschlossen. Das Caching von Kennungen au\u00dferhalb des Bereichs der Arbeitseinheit wird f\u00fcr diese Konfiguration und in diesem Release nicht unterst\u00fctzt.
+HANDLE_NOT_CLOSED_J2CA0055.useraction=\u00dcberpr\u00fcfen Sie Ihre Anwendung, und stellen Sie sicher, dass die Verbindungskennungen geschlossen werden, bevor die zugeordnete Arbeitseinheit beendet wird.
+
+# --------------------------------
+RA_CONNECTION_ERROR_J2CA0056=J2CA0056I: Der Verbindungsmanager hat einen schwer wiegenden Verbindungsfehler vom Ressourcenadapter f\u00fcr Ressource {1} empfangen. Ausnahme: {0}
+RA_CONNECTION_ERROR_J2CA0056.explanation=Der Verbindungsmanager wurde vom Ressourcenadapter dar\u00fcber benachrichtigt, dass in der Verbindung ein schwer wiegender Fehler aufgetreten ist. Diese Informationsnachricht wird protokolliert, damit Sie die zur\u00fcckgegebene Ausnahme pr\u00fcfen k\u00f6nnen.
+RA_CONNECTION_ERROR_J2CA0056.useraction=Der Verbindungsmanager entfernt je nach Konfiguration nur die fehlgeschlagene Verbindung oder alle Verbindungen aus dem Pool. Dies ist normal. Wenn dieser Fehler unerwartet auftritt, suchen Sie in der Ausnahme nach der m\u00f6glichen Fehlerursache.
+
+# --------------------------------
+NULL_TRAN_WRAPPER_J2CA0057=J2CA0057E: Die Methode interactionPending konnte eine Transaktions-Wrapper-Klasse nicht finden.
+NULL_TRAN_WRAPPER_J2CA0057.explanation=Dies ist ein WebSphere-interner Fehler.
+NULL_TRAN_WRAPPER_J2CA0057.useraction=CMSG0002
+
+# --------------------------------
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0058=J2CA0058E: Der Verbindungsmanager konnte die Verbindung {0} nicht der verwalteten Verbindung {1} f\u00fcr Ressource {3} zuordnen.  Es wurde die Ausnahme {2} empfangen.
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0058.explanation=Dies ist wahrscheinlich ein Anwendungsfehler. Beispiel: Eine im Cache gespeicherte Verbindung ist in einer Transaktion registriert, und die Verbindung wird dann geschlossen. Bevor die Transaktion abgeschlossen ist, wird eine anderen Anforderung an dieselbe EJB gesendet, die die Verbindung ge\u00f6ffnet hat. Die im Cache gespeicherte Kennung ist immer noch der urspr\u00fcnglichen Transaktion zugeordnet und kann erst dann erneut zugeordnet werden, wenn diese Transaktion festgeschrieben ist.
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0058.useraction=\u00dcberpr\u00fcfen Sie die Anwendung, und vergewissern Sie sich, dass die Transaktion so bald wie m\u00f6glich nach dem Schlie\u00dfen der Verbindungen festgeschrieben wird.
+
+# --------------------------------
+FAILED_DOPRIVILEGED_J2CA0060=J2CA0060E: Beim Aufruf von doPrivileged ist eine PrivilegedActionException eingetreten: {0}
+FAILED_DOPRIVILEGED_J2CA0060.explanation=Dies ist ein Sicherheitslaufzeitfehler.
+FAILED_DOPRIVILEGED_J2CA0060.useraction=CMSG0002
+
+# ---------------------------------
+INVALID_OR_UNEXPECTED_SETTING_J2CA0067=J2CA0067W: Die Einstellung {0} f\u00fcr {1} ist ung\u00fcltig. Stattdessen wird standardm\u00e4\u00dfig {2} verwendet.
+INVALID_OR_UNEXPECTED_SETTING_J2CA0067.explanation=Interner Fehler. Es wird der Standardwert verwendet.
+INVALID_OR_UNEXPECTED_SETTING_J2CA0067.useraction=Dies ist nur eine Warnung. Falls zu einem sp\u00e4teren Zeitpunkt ein Fehler auftritt, k\u00f6nnen Ihnen diese Informationen beim Diagnostizieren des Fehlers helfen. Andernfalls kann die Nachricht ignoriert werden.
+
+# ---------------------------------
+DELIST_FAILED_J2CA0073=J2CA0073E: Die Registrierung der Verbindung von Ressource {2} bei der Transaktion in Methode {0} konnte aufgrund einer Ausnahme nicht aufgehoben werden. Der Abbruch der Verbindung wird eingeleitet. Die Ausnahme {1} wurde ausgel\u00f6st.
+DELIST_FAILED_J2CA0073.explanation=Aufgrund eines internen Fehlers konnte der Verbindungsmanager die Registrierung einer Verbindung bei der zugeordneten Transaktion nicht aufheben. Der Verbindungsmanager versucht, die Verbindung zu l\u00f6schen.
+DELIST_FAILED_J2CA0073.useraction=CMSG0002
+
+# ---------------------------------
+ENLIST_FAILED_J2CA0074=J2CA0074E: Die Verbindung von Ressource {2} konnte aufgrund einer Ausnahme nicht bei der aktuellen Transaktion in Methode {0} registriert werden. Der Abbruch der Verbindung wird eingeleitet. Die Ausnahme {1} wurde ausgel\u00f6st.
+ENLIST_FAILED_J2CA0074.explanation=Aufgrund eines internen Fehlers konnte der Verbindungsmanager eine Verbindung nicht bei der aktuellen Transaktion registrieren. Der Verbindungsmanager versucht, die Verbindung zu l\u00f6schen.
+ENLIST_FAILED_J2CA0074.useraction=CMSG0002
+
+# ---------------------------------
+MISSING_TRANSACTION_CONTEXT_J2CA0075=J2CA0075W: F\u00fcr die Verarbeitung der Methode {0} muss eine aktive Transaktion vorhanden sein.
+MISSING_TRANSACTION_CONTEXT_J2CA0075.explanation=In der herk\u00f6mmlichen Verbindungsverwaltung muss eine Transaktion vorhanden sein, damit die aktuelle Methode ausgef\u00fchrt werden kann.
+MISSING_TRANSACTION_CONTEXT_J2CA0075.useraction=Starten Sie alle Transaktionen, die f\u00fcr eine erfolgreiche Nutzung der Verbindung erforderlich sind.
+
+# ---------------------------------
+FAILED_TO_OBTAIN_LOCALTRAN_J2CA0077=J2CA0077E: Beim Abrufen einer javax.resource.cci.LocalTransaction aus einer ManagedConnection f\u00fcr Ressource {1} wurde eine Ausnahme abgefangen. Ausnahme: {0}
+FAILED_TO_OBTAIN_LOCALTRAN_J2CA0077.explanation=Der Verbindungsmanager konnte keine LocalTransaction vom Ressourcenadapter abrufen. Dies weist auf ein Problem beim Ressourcenadapter hin.
+FAILED_TO_OBTAIN_LOCALTRAN_J2CA0077.useraction=Lesen Sie die Fehlernachrichten des Ressourcenadapters, um das Problem zu ermitteln.
+
+# ---------------------------------
+FAILED_TO_OBTAIN_XAResource_J2CA0078=J2CA0078E: Beim Abrufen einer javax.transaction.xa.XAResource aus einer ManagedConnection in der Datenquelle {1} wurde eine Ausnahme abgefangen. Ausnahme: {0}
+FAILED_TO_OBTAIN_XAResource_J2CA0078.explanation=Der Verbindungsmanager konnte keine XA-Ressource vom Ressourcenadapter abrufen. Dies weist auf ein Problem beim Ressourcenadapter hin.
+FAILED_TO_OBTAIN_XAResource_J2CA0078.useraction=Lesen Sie die Fehlernachrichten des Ressourcenadapters, um das Problem zu ermitteln.
+
+# ---------------------------------
+ILLEGAL_STATE_EXCEPTION_J2CA0079=J2CA0079E: Die Methode {0} hat einen internen ung\u00fcltigen Status festgestellt und l\u00f6st eine IllegalStateException aus. Ausnahme: {1}
+ILLEGAL_STATE_EXCEPTION_J2CA0079.explanation=Der Verbindungsmanager hat einen internen Fehler festgestellt.
+ILLEGAL_STATE_EXCEPTION_J2CA0079.useraction=CMSG0002
+
+# ---------------------------------
+ILLEGAL_ARGUMENT_EXCEPTION_J2CA0080=J2CA0080E: Die Methode {0} hat ein internes ung\u00fcltiges Argument festgestellt und l\u00f6st eine IllegalArgumentException aus. Ausnahme: {1}
+ILLEGAL_ARGUMENT_EXCEPTION_J2CA0080.explanation=Der Verbindungsmanager hat einen internen Fehler festgestellt.
+ILLEGAL_ARGUMENT_EXCEPTION_J2CA0080.useraction=CMSG0002
+
+# ---------------------------------
+MCERROR_J2CA0081=J2CA0081E: Die Methode {0} ist beim Ausf\u00fchren der Methode {1} f\u00fcr die verwaltete Verbindung {2} mit Ressource {4} fehlgeschlagen. Die Ausnahme {3} wurde abgefangen.
+MCERROR_J2CA0081.explanation=Der Verbindungsmanager hat eine Ausnahme abgefangen, als er versuchte, eine Operation f\u00fcr eine verwaltete Verbindung auszuf\u00fchren.
+MCERROR_J2CA0081.useraction=Da die verwaltete Verbindung zum Ressourcenadapter geh\u00f6rt, suchen Sie nach Nachrichten des Ressourcenadapters, um das Problem einzugrenzen.
+
+# --------------------------------
+ATTEMPT_TO_SHARE_LTC_CONNECTION_J2CA0086=J2CA0086I: Mehrere offene Verbindungshandles k\u00f6nnen innerhalb eines Grenzwerts f\u00fcr lokale Transaktionseinschl\u00fcsse keine physische Verbindung zu {1} gemeinsam nutzen, daher wird eine andere physische Verbindung f\u00fcr jedes Verbindungshandle verwendet. In dieser Situation ist es wichtig, sicherzustellen, dass keine transaktionsorientierten Arbeitsvorg\u00e4nge in Bearbeitung sind, nachdem das Verbindungshandle geschlossen wurde. Werden n\u00e4mlich zu einem sp\u00e4teren Zeitpunkt zus\u00e4tzliche, gemeinsam nutzbare Verbindungshandles innerhalb des Grenzwerts f\u00fcr lokale Transaktionseinschl\u00fcsse angefordert, ist die physische Verbindung, der sie zugeordnet sind, unvorhersehbar.
+ATTEMPT_TO_SHARE_LTC_CONNECTION_J2CA0086.explanation=Mehrere offene Verbindungshandles k\u00f6nnen nur eine einzige physische Verbindung im Rahmen einer globalen Transaktion gemeinsam nutzen. Wenn mehrere Verbindungshandles innerhalb des Grenzwerts f\u00fcr lokale Transaktionseinsch\u00fcsse offen sind, verwendet jedes Handle eine andere physische Verbindung. Mehrere gleichzeitig ge\u00f6ffnete, gemeinsam nutzbare Verbindungen innerhalb des Grenzwerts f\u00fcr lokale Transaktionseinschl\u00fcsse k\u00f6nnen die Anforderungen an den Verbindungspool hinsichtlich der maximalen Anzahl an Verbindungen erh\u00f6hen und die Komplexit\u00e4t der Nutzung von Verbindungshandles im Hinblick auf lokale Transaktionen f\u00fcr Anwendungen mit diesem Verwendungsmuster deutlich vergr\u00f6\u00dfern.
+ATTEMPT_TO_SHARE_LTC_CONNECTION_J2CA0086.useraction=Stellen Sie sicher, dass die Gr\u00f6\u00dfe des Verbindungspools so gew\u00e4hlt ist, dass jeder Thread mehrere physische Verbindungen erfordern kann und \u00fcberpr\u00fcfen Sie den Anwendungscode, um sicherzustellen, dass dieses Verwendungsmuster gew\u00fcnscht und der erwartete Umfang f\u00fcr die gemeinsame Nutzung angegeben ist.
+
+# --------------------------------
+BAD_RETURN_VALUE_FROM_ENLIST_J2CA0087=J2CA0087E: Der Transaktionsmanager konnte die Ressource  {0} aus Datenquelle {1} nicht registrieren.
+BAD_RETURN_VALUE_FROM_ENLIST_J2CA0087.explanation=Diese Nachricht weist auf einen Fehler bei der Registrierung einer Transaktion hin. Die Ressource ist m\u00f6glicherweise bereits in einer Transaktion registriert, oder die Transaktion hat nicht den richtigen Status.
+BAD_RETURN_VALUE_FROM_ENLIST_J2CA0087.useraction=Vergewissern Sie sich, dass die Gesch\u00e4ftslogik der Anwendung die erstellte Ausnahme ordnungsgem\u00e4\u00df abf\u00e4ngt und dass sie die erforderliche Wiederherstellungslogik enth\u00e4lt. Untersuchen Sie auch die Protokolldateien nach \u00e4lteren Fehlern (insbesondere nach Transaktionsfehlern), die diese Ausnahme ausgel\u00f6st haben k\u00f6nnten. 
+# --------------------------------
+ATTEMPT_TO_DESTORY_CONNECTION_IN_USE_J2CA0088=J2CA0088W: Die aus Ressource {1} zu l\u00f6schende ManagedConnection hat einen ung\u00fcltigen Status {0}. Die Verarbeitung wird fortgesetzt.
+ATTEMPT_TO_DESTORY_CONNECTION_IN_USE_J2CA0088.explanation=Es ist ein interner Fehler aufgetreten.
+ATTEMPT_TO_DESTORY_CONNECTION_IN_USE_J2CA0088.useraction=CMSG0002
+                     
+# ---------------------------------
+INTERUPTED_EXCEPTION_J2CA0091=J2CA0091E: Im Garbage-Collector-Thread ist eine InterruptedException eingetreten.
+INTERUPTED_EXCEPTION_J2CA0091.explanation=Im Garbage-Collector ist eine Ausnahme vom Typ InterruptedException eingetreten. Die J2C-Verarbeitung wird zwar fortgesetzt, aber es werden keine nicht verwendeten und veralteten Verbindungen erfasst.
+INTERUPTED_EXCEPTION_J2CA0091.useraction=CMSG0002
+
+# 0096 deleted
+
+# --------------------------------
+GET_SOURCE_CLASS_CAST_EXCP_J2CA0098=J2CA0098E: Es ist eine ClassCastException eingetreten, als versucht wurde, das event.getSource f\u00fcr die ManagedConnection auszul\u00f6sen: {0}
+GET_SOURCE_CLASS_CAST_EXCP_J2CA0098.explanation=Die Quelle des f\u00fcr den Listener ausgel\u00f6sten Ereignisses hatte nicht den Typ ManagedConnection.
+GET_SOURCE_CLASS_CAST_EXCP_J2CA0098.useraction=CMSG0002
+
+# --------------------------------
+DUPLICATE_USERNAME_PASSWORD_CONNECTOR_PROPERTY_J2CA0103=J2CA0103I: Die doppelt vorhandene Connector-Eigenschaft wurde nicht hinzugef\u00fcgt. {0}
+DUPLICATE_USERNAME_PASSWORD_CONNECTOR_PROPERTY_J2CA0103.explanation=Es wurde versucht, eine Connector-Eigenschaft hinzuzuf\u00fcgen, das schon vorhanden ist. Die Eigenschaft wurde nicht hinzugef\u00fcgt.
+DUPLICATE_USERNAME_PASSWORD_CONNECTOR_PROPERTY_J2CA0103.useraction=Eine angepasste Eigenschaft einer Verbindungsfactory oder einer Datenquelle enth\u00e4lt einen Benutzernamen oder ein Kennwort. Es wurde aber auch ein Alias f\u00fcr die \u00fcber Komponenten realisierte Authentifizierung angegeben. Der Alias hat Vorrang vor den angepepassten Eigenschaften. Diese Fehler kann auch die Folge einer manuellen \u00c4nderung des Dokuments resources.xml sein. 
+# ---------------------------------
+INFINITE_CONNECTION_WAIT_TIMEOUT_J2CA0127=J2CA0127I: Es wurde ein Verbindungszeitlimit von 0 f\u00fcr {0} angegeben. Die Anforderung wartet so lange, bis eine Verbindung verf\u00fcgbar ist.
+INFINITE_CONNECTION_WAIT_TIMEOUT_J2CA0127.explanation=Der ConnectionWaitTimeout-Wert 0 gibt an, dass die Wartezeigt unbegrenzt ist. Der Thread bleibt so lange inaktiv, bis eine Verbindung freigegeben wird.
+INFINITE_CONNECTION_WAIT_TIMEOUT_J2CA0127.useraction=Es ist keine Benutzeraktion erforderlich.
+
+# --------------------------------
+CONNECTION_CLOSED_NULL_HANDLE_J2CA0148=J2CA0148W: Es wurde ein ConnectionHandle mit Nullwert im CONNECTION_CLOSED-ConnectionEvent {0} gefunden.
+CONNECTION_CLOSED_NULL_HANDLE_J2CA0148.explanation=Ein CONNECTION_CLOSED-ConnectionEvent muss gem\u00e4\u00df der Java EE Connector Architecture eine g\u00fcltige Verbindungskennung f\u00fcr die ManagedConnection-Instanz enthalten.
+CONNECTION_CLOSED_NULL_HANDLE_J2CA0148.useraction=Der Ressourcenadapter muss die Methode ConnectionEvent.setConnectionHandle() verwenden, um die Verbindungskennung an das CONNECTION_CLOSED-ConnectionEvent zu \u00fcbergeben.
+
+# ---------------------------------
+SET_ONCE_PROP_ALREADY_SET_J2CA0159=J2CA0159E: Interner Fehler. Es wurde versucht, eine einmalig zu setzende Eigenschaft zu \u00e4ndern, das bereits definiert worden ist. Der Eigenschaftsname ist {0}.
+SET_ONCE_PROP_ALREADY_SET_J2CA0159.explanation=CMSG0001
+SET_ONCE_PROP_ALREADY_SET_J2CA0159.useraction=CMSG0002
+
+# 0165 deleted
+
+# 0166 deleted
+
+# 0167 deleted
+
+# --------------------------------
+UNABLE_TO_CHANGE_PROPERTY_J2CA0169=J2CA0169E: Die Eigenschaft {0} der DataSource oder ConnectionFactory {1} kann nicht ge\u00e4ndert werden.
+UNABLE_TO_CHANGE_PROPERTY_J2CA0169.explanation=Der Verbindungsmanager konnte die angeforderte \u00c4nderung an der Konfigurationsvariablen derzeit nicht vornehmen.
+UNABLE_TO_CHANGE_PROPERTY_J2CA0169.useraction=Versuchen Sie erneut, die Konfigurationsvariable zu \u00e4ndern.
+
+# 0200 deleted
+
+# ---------------------------------
+INCOMPATIBLE_PROPERTY_TYPE_J2CA0207=J2CA0207W: Ein Ressourcenadapterartefakt hat die Eigenschaft {0}, deren Wert {2} mit dem Typ {1} nicht kompatibel ist.
+INCOMPATIBLE_PROPERTY_TYPE_J2CA0207.explanation=Eine Verbindungsfactory, eine Aktivierungsspezifikation oder ein Verwaltungsobjekt hat eine Ressourceneigenschaft, die nicht g\u00fcltig ist. Der Wert bleibt nicht definiert.
+INCOMPATIBLE_PROPERTY_TYPE_J2CA0207.useraction=Korrigieren Sie die Ressourceneigenschaft so, dass der Wert mit dem Datentyp konsistent ist.
+
+# ---------------------------------
+NO_RA_EXCEPTION_J2CA0216=J2CA0216I: Der Verbindungsmanager hat einen schwer wiegenden Verbindungsfehler vom Ressourcenadapter f\u00fcr die Ressource {0} empfangen. Information k\u00f6nnen in fr\u00fcheren Nachrichten oder Ausnahmen enthalten sein.
+NO_RA_EXCEPTION_J2CA0216.explanation=Der Verbindungsmanager wurde vom Ressourcenadapter dar\u00fcber benachrichtigt, dass in der Verbindung ein nicht behebbarer Fehler aufgetreten ist. Es wurde keine Ausnahme vom Ressourcenadapter empfangen. 
+NO_RA_EXCEPTION_J2CA0216.useraction=Der Verbindungsmanager l\u00f6scht je nach Konfiguration entweder nur die fehlerhafte Verbindung oder alle Verbindungen aus dem Pool. Dies ist normal. Sollte dies negative Auswirkungen haben, m\u00fcssen Sie sich unter Umst\u00e4nden an den Lieferanten des Ressourcenadapters wenden.
+
+# 0226 deleted
+
+# ---------------------------------
+# {0} Configured feature that is ignored.
+# {1} Name of the resource on which the feature is configured. 
+IGNORE_FEATURE_J2CA0240=J2CA0240I: Das nicht implementierte Feature {0} f\u00fcr die Ressource {1} wird ignoriert.
+IGNORE_FEATURE_J2CA0240.explanation=Das Feature wird vom Anwendungsserver nicht implementiert.
+IGNORE_FEATURE_J2CA0240.useraction=Es ist keine Benutzeraktion erforderlich.
+
+# ---------------------------------
+# {0}    The field that is missing during de-serialization
+# {1}    The classname of the object with the missing field
+DESERIALIZATION_FIELD_NOT_FOUND_J2CA0278=J2CA0278W: Das Feld {0} in der Klasse {1} konnte nicht entserialisiert werden. Es wird der Standardwert verwendet.
+DESERIALIZATION_FIELD_NOT_FOUND_J2CA0278.explanation=W\u00e4hrend der Entserialisierung eines Objekts wurde ein erwartetes Feld nicht gefunden. Dieser Fehler ist wahrscheinlich darauf zur\u00fcckzuf\u00fchren, dass f\u00fcr die Entserialisierung und die Serialisierung des Objekts unterschiedliche Klassenversionen verwendet wurden.
+DESERIALIZATION_FIELD_NOT_FOUND_J2CA0278.useraction=Diese Warnung weist auf ein potenzielles Problem hin, aber es ist keine Benutzeraktion erforderlich, sofern keine weiteren Fehler auftreten.
+
+# --------------------------------
+ATTEMPT_TO_VALIDATE_MC_CONNECTIONS_J2CA0285=J2CA0285W: Die Methode {0} hat w\u00e4hrend der Validierung verwalteter Verbindungen f\u00fcr die Ressource {3} eine Ausnahme abgefangen. Daraufhin wurde {2} ausgel\u00f6st. Urspr\u00fcngliche Ausnahme: {1}
+ATTEMPT_TO_VALIDATE_MC_CONNECTIONS_J2CA0285.explanation=Der Aufruf der Methode getInvalidConnections() hat eine Ressourcenausnahme ausgel\u00f6st.
+ATTEMPT_TO_VALIDATE_MC_CONNECTIONS_J2CA0285.useraction=Suchen Sie auf der Unterst\u00fctzungssite des Anbieters des Ressourcenadapters nach weiteren Informationen.
+
+# 0286 deleted
+                                            
+# ---------------------------------
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0292=J2CA0292E: Die ManagedConnection von Ressource {0} konnte nicht bei der aktuellen Transaktion registriert werden.
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0292.explanation=Bei der Verarbeitung der Methode lazyEnlist() ist ein interner Fehler aufgetreten.
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0292.useraction=CMSG0002                                                                  
+
+# --------------------------------
+FAILED_TO_ENLIST_CONNECTION_J2CA0293=J2CA0293E: Die Verbindungsmanagermethode lazyEnlist() erfordert einen ManagedConnection-Parameter f\u00fcr die Ressource {0} mit einem Wert ungleich null.
+FAILED_TO_ENLIST_CONNECTION_J2CA0293.explanation=Wahrscheinlich weist diese Nachricht auf einen Fehler in der Implementierung des Ressourcenadapters hin. Der Ressourcenadapter hat die Methode lazyEnlist() mit einem Nullwert f\u00fcr ManagedConnection aufgerufen.
+FAILED_TO_ENLIST_CONNECTION_J2CA0293.useraction=Suchen Sie auf der Unterst\u00fctzungssite des Anbieters des Ressourcenadapters nach weiteren Informationen. Der Code des Ressourcenadapters hat einen Nullwert an die Methode "lazyEnlist()" \u00fcbergeben. Informationen zur Optimierung von Lazy Transaction Enlistment finden Sie im Abschnitt 7.14.2 der Spezifikation JCA 1.5. 
+# --------------------------------
+ILLEGAL_USE_OF_LOCAL_TRANSACTION_J2CA0295=J2CA0295E: Der Verbindungsmanager hat festgestellt, dass versucht wurde, eine lokale Transaktion in einer globalen (Benutzer-) Transaktion zu starten. \u00dcberpr\u00fcfen Sie den Anwendungscode.
+ILLEGAL_USE_OF_LOCAL_TRANSACTION_J2CA0295.explanation=Diese Bedingung weist auf einen Fehler in der Anwendung hin. Die Anwendung sollte keine lokalen Transaktionen starten, wenn eine globale Transaktion ausgef\u00fchrt wird.
+ILLEGAL_USE_OF_LOCAL_TRANSACTION_J2CA0295.useraction=Untersuchen Sie den Anwendungscode, und stellen Sie fest, wo eine lokale Transaktion innerhalb einer globalen Transaktion gestartet wird. Suchen Sie im im FFDC-Verzeichnis nach dieser Nachricht, um einen Stack-Trace zu finden, der m\u00f6glicherweise die fraglichen Codezeilen enth\u00e4lt. Auf diese Weise k\u00f6nnen Sie die Suche eingrenzen. Wenn Sie keine Zeilennummern finden ,z. B. wenn der Code mit einem JIT-Compiler bearbeitet oder anderweitig unkenntlich gemacht wurde), k\u00f6nnen Sie den Code mit Anweisungen des Typs System.out.println() instrumentieren, um den problematischen Bereich zu finden. Wenn Sie den Fehler nicht bestimmen k\u00f6nnen, suchen Sie auf der IBM Unterst\u00fctzungswebsite nach weiteren Informationen.
+                                   
+# ---------------------------------
+DUPLICATE_CONNECTOR_PROPERTY_J2CA0308=J2CA0308W: Das doppelt vorhandene Connector-Eigenschaft wurde nicht hinzugef\u00fcgt. {0}.
+DUPLICATE_CONNECTOR_PROPERTY_J2CA0308.explanation=Es wurde versucht, eine Connector-Eigenschaft hinzuzuf\u00fcgen, das schon vorhanden ist. Die Eigenschaft wurde nicht hinzugef\u00fcgt.
+DUPLICATE_CONNECTOR_PROPERTY_J2CA0308.useraction=Es wurde eine angepasste Eigenschaft einer Verbindungsfactory oder Datenquelle angegeben, aber die Eigenschaft ist bereits vorhanden. Dies k\u00f6nnte die Folge einer manuellen \u00c4nderung des Dokuments resources.xml sein.
+
+# 0680 deleted
+
+# 0681 deleted
+
+# 0682 deleted
+
+# 0683 deleted
+
+# 0687 deleted
+
+# 0689 deleted
+
+# ---------------------------------
+POOL_MANAGER_NOT_FOUND_J2CA0695=J2CA0695E: W\u00e4hrend der Failoververarbeitung f\u00fcr eine Ressource mit dem JNDI-Namen {0} wurde der prim\u00e4re Pool-Manager nicht gefunden.
+POOL_MANAGER_NOT_FOUND_J2CA0695.explanation=W\u00e4hrend der Failoververarbeitung ist ein interner Fehler aufgetreten.
+POOL_MANAGER_NOT_FOUND_J2CA0695.useraction=CMSG0002                                                                  
+
+# ---------------------------------
+FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002=J2CA1002E: Ung\u00fcltiger MCWrapper {0} aus dem Pool freier Wrapper f\u00fcr Ressource {1}.
+FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.explanation=Der Versuch, einen MCWrapper zu reservieren, ist fehlgeschlagen.
+FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.useraction=CMSG0002                                                                  
+
+# ---------------------------------
+SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003=J2CA1003E: Der MCWrapper {0} konnte nicht aus dem gemeinsamen Pool entfernt werden.
+SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003.explanation=Der Versuch, einen MCWrapper zu entfernen, ist fehlgeschlagen. Dieser Fehler kann Probleme mit dem gemeinsamen Pool nach sich ziehen.
+SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003.useraction=CMSG0002                                                                  
+
+# ---------------------------------
+# End of File
+#
+# ---------------------------------

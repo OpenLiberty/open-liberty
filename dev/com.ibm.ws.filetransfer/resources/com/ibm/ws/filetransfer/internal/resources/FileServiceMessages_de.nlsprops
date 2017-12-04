@@ -1,0 +1,73 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.filetransfer/resources/com/ibm/ws/filetransfer/resources/FileServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR WebSphere File Transfer
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKX7900 - CWWKX7950
+
+#-----  FileService MBean
+
+ACCESS_DENIED_ERROR=CWWKX7900E: Zugriff auf den Pfad {0} wurde verweigert.
+ACCESS_DENIED_ERROR.explanation=Es wurde versucht, auf einen Pfad au\u00dferhalb der konfigurierten Lese-/Schreibregion zuzugreifen.
+ACCESS_DENIED_ERROR.useraction=Stellen Sie sicher, dass sich der Pfad innerhalb der konfigurierten Lese-/Schreibregion befindet.
+
+PATH_ERROR=CWWKX7901E: Der Systempfad der Datei {0} ist nicht g\u00fcltig.
+PATH_ERROR.explanation=Der angegebene Dateisystempfad kann nicht aufgel\u00f6st werden.
+PATH_ERROR.useraction=Geben Sie einen g\u00fcltigen Dateisystempfad an.
+
+ARCHIVE_CREATE_SOURCE_DENIED_WARNING=CWWKX7902W: Die Archiverstellung \u00fcber die MBean f\u00fcr die Datei\u00fcbertragung wurde f\u00fcr den Quellenpfad {0} verweigert.
+ARCHIVE_CREATE_SOURCE_DENIED_WARNING.explanation=Es wurde versucht, Informationen aus einem Pfad au\u00dferhalb der konfigurierten Leseregion zu lesen.
+ARCHIVE_CREATE_SOURCE_DENIED_WARNING.useraction=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt. Es ist keine Aktion erforderlich.
+
+ARCHIVE_CREATE_TARGET_DENIED_WARNING=CWWKX7903W: Die Archiverstellung \u00fcber die MBean f\u00fcr die Datei\u00fcbertragung wurde f\u00fcr den Zielpfad {0} verweigert.
+ARCHIVE_CREATE_TARGET_DENIED_WARNING.explanation=Es wurde versucht, Informationen in einen Pfad au\u00dferhalb der konfigurierten Schreibregion zu schreiben.
+ARCHIVE_CREATE_TARGET_DENIED_WARNING.useraction=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt. Es ist keine Aktion erforderlich.
+
+ARCHIVE_CREATE_SUCCESS_INFO=CWWKX7904I: Das Archiv {1} wurde erfolgreich aus {0} erstellt.
+ARCHIVE_CREATE_SUCCESS_INFO.explanation=Das Archiv wurde erfolgreich erstellt.
+ARCHIVE_CREATE_SUCCESS_INFO.useraction=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt. Es ist keine Aktion erforderlich.
+
+ARCHIVE_CREATE_FAILURE_WARNING=CWWKX7905W: Das Archiv {1} konnte nicht aus {0} erstellt werden.
+ARCHIVE_CREATE_FAILURE_WARNING.explanation=Die Anforderung zum Erstellen des Archivs ist fehlgeschlagen.
+ARCHIVE_CREATE_FAILURE_WARNING.useraction=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt. Es ist keine Aktion erforderlich.
+
+ARCHIVE_EXPAND_SOURCE_DENIED_WARNING=CWWKX7906W: Die Archiverweiterung f\u00fcr den Quellenpfad {0} wurde verweigert.
+ARCHIVE_EXPAND_SOURCE_DENIED_WARNING.explanation=Es wurde versucht, Informationen aus einem Pfad au\u00dferhalb der konfigurierten Leseregion zu lesen.
+ARCHIVE_EXPAND_SOURCE_DENIED_WARNING.useraction=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt. Es ist keine Aktion erforderlich.
+
+ARCHIVE_EXPAND_TARGET_DENIED_WARNING=CWWKX7907W: Die Archiverweiterung f\u00fcr den Zielpfad {0} wurde verweigert.
+ARCHIVE_EXPAND_TARGET_DENIED_WARNING.explanation=Es wurde versucht, Informationen in einen Pfad au\u00dferhalb der konfigurierten Schreibregion zu schreiben.
+ARCHIVE_EXPAND_TARGET_DENIED_WARNING.useraction=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt. Es ist keine Aktion erforderlich.
+
+ARCHIVE_EXPAND_SUCCESS_INFO=CWWKX7908I: Das Archiv {0} wurde erfolgreich in {1} erweitert.
+ARCHIVE_EXPAND_SUCCESS_INFO.explanation=Das Archiv wurde vollst\u00e4ndig erweitert.
+ARCHIVE_EXPAND_SUCCESS_INFO.useraction=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt. Es ist keine Aktion erforderlich.
+
+ARCHIVE_EXPAND_FAILURE_WARNING=CWWKX7909W: Das Archiv {0} konnte nicht in {1} erweitert werden.
+ARCHIVE_EXPAND_FAILURE_WARNING.explanation=Die Anforderung zum Erweitern des Archivs ist fehlgeschlagen.
+ARCHIVE_EXPAND_FAILURE_WARNING.useraction=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt. Es ist keine Aktion erforderlich.
+
+UNSUPPORTED_MBEAN_OPERATION_ERROR=CWWKX7910W: Die Operation ''{0}'' ist nur verf\u00fcgbar, wenn diese MBean \u00fcber den IBM JMX-REST-Connector aufgerufen wird.
+UNSUPPORTED_MBEAN_OPERATION_ERROR.explanation=Der Zugriff auf die angegebene MBean-Operation ist nur verf\u00fcgbar, wenn der Zugriff \u00fcber den IBM JMX-REST-Connector erfolgt.
+UNSUPPORTED_MBEAN_OPERATION_ERROR.useraction=Greifen Sie \u00fcber den IBM JMX-REST-Connector auf diese MBean zu.
+
+OSGI_SERVICE_ERROR=CWWKX7911E: OSGi-Service {0} ist nicht verf\u00fcgbar.
+OSGI_SERVICE_ERROR.explanation=Dieser interne Serverfehler wurde ausgegeben, weil der angegebene Service nicht verf\u00fcgbar ist.
+OSGI_SERVICE_ERROR.useraction=Starten Sie den Server mit der Option "clean" erneut.
+
+ATTRIBUTE_UPDATED=CWWKX7912I: Das FileServiceMXBean-Attribut {0} wurde erfolgreich aktualisiert.
+ATTRIBUTE_UPDATED.explanation=Das angegebene FileServiceMXBean-Attribut wurde erfolgreich aktualisiert.
+ATTRIBUTE_UPDATED.useraction=Es ist keine Aktion erforderlich.

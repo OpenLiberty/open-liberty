@@ -1,0 +1,141 @@
+###############################################################################
+# Copyright (c) 2002, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT WebSphere kernel transport http channel
+#CMVCPATHNAME com.ibm.ws.transport.http/resources/com/ibm/ws/http/channel/internal/resources/httpchannelmessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+config.maxpersist=CWWKT0001E: A socketenk\u00e9nt enged\u00e9lyezett k\u00e9r\u00e9sek maxim\u00e1lis sz\u00e1ma ({0}) \u00e9rv\u00e9nytelen. Az \u00e9rv\u00e9nyes \u00e9rt\u00e9kek: {1} - korl\u00e1tlan, vagy b\u00e1rmely pozit\u00edv sz\u00e1m.
+config.maxpersist.explanation=A socketenk\u00e9nt enged\u00e9lyezett k\u00e9r\u00e9sek maxim\u00e1lis sz\u00e1m\u00e1nak be\u00e1ll\u00edtott \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen.
+config.maxpersist.useraction=\u00c1ll\u00edtson be \u00e9rv\u00e9nyes \u00e9rt\u00e9ket a socketenk\u00e9nt enged\u00e9lyezett k\u00e9r\u00e9sek maxim\u00e1lis sz\u00e1mak\u00e9nt.
+
+config.incomingbody=CWWKT0002E: A(z) {0} bej\u00f6v\u0151 pufferm\u00e9ret \u00e9rv\u00e9nytelen. A m\u00e9ret csak {1} \u00e9s {2} k\u00f6z\u00f6tt lehet.
+config.incomingbody.explanation=A bej\u00f6v\u0151 pufferm\u00e9ret be\u00e1ll\u00edtott \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen.
+config.incomingbody.useraction=\u00c1ll\u00edtson be egy \u00e9rv\u00e9nyes \u00e9rt\u00e9ket a bej\u00f6v\u0151 pufferm\u00e9ret sz\u00e1m\u00e1ra.
+
+config.incomingheader=CWWKT0003E: A(z) {0} fejl\u00e9c pufferm\u00e9ret \u00e9rv\u00e9nytelen. A m\u00e9ret csak {1} \u00e9s {2} k\u00f6z\u00f6tt lehet.
+config.incomingheader.explanation=A fejl\u00e9c pufferm\u00e9ret be\u00e1ll\u00edtott \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen.
+config.incomingheader.useraction=\u00c1ll\u00edtson be egy \u00e9rv\u00e9nyes \u00e9rt\u00e9ket a fejl\u00e9c pufferm\u00e9ret sz\u00e1m\u00e1ra.
+
+config.outgoingbuffer=CWWKT0004E: A(z) {0} kimen\u0151 pufferm\u00e9ret \u00e9rv\u00e9nytelen. A m\u00e9ret csak {1} \u00e9s {2} k\u00f6z\u00f6tt lehet.
+config.outgoingbuffer.explanation=A kimen\u0151 pufferm\u00e9ret be\u00e1ll\u00edtott \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen.
+config.outgoingbuffer.useraction=\u00c1ll\u00edtson be egy \u00e9rv\u00e9nyes \u00e9rt\u00e9ket a kimen\u0151 pufferm\u00e9ret sz\u00e1m\u00e1ra.
+
+config.persisttimeout=CWWKT0005E: A(z) {0} megtart\u00e1si id\u0151korl\u00e1t \u00e9rv\u00e9nytelen. Az id\u0151korl\u00e1toknak nagyobbnak kell lenni\u00fck, mint {1}.
+config.persisttimeout.explanation=Az \u00e1lland\u00f3 id\u0151korl\u00e1t param\u00e9ter be\u00e1ll\u00edtott \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen.
+config.persisttimeout.useraction=\u00c1ll\u00edtson be egy \u00e9rv\u00e9nyes \u00e9rt\u00e9ket az \u00e1lland\u00f3 id\u0151korl\u00e1t param\u00e9ter sz\u00e1m\u00e1ra.
+
+config.readtimeout=CWWKT0006E: A(z) {0} olvas\u00e1si id\u0151korl\u00e1t \u00e9rv\u00e9nytelen. Az id\u0151korl\u00e1toknak nagyobbnak kell lenni\u00fck, mint {1}.
+config.readtimeout.explanation=Az olvas\u00e1si id\u0151korl\u00e1t param\u00e9ter be\u00e1ll\u00edtott \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen.
+config.readtimeout.useraction=\u00c1ll\u00edtson be egy \u00e9rv\u00e9nyes \u00e9rt\u00e9ket az olvas\u00e1si id\u0151korl\u00e1t param\u00e9ter sz\u00e1m\u00e1ra.
+
+config.writetimeout=CWWKT0007E: A(z) {0} \u00edr\u00e1si id\u0151korl\u00e1t \u00e9rv\u00e9nytelen. Az id\u0151korl\u00e1toknak nagyobbnak kell lenni\u00fck, mint {1}.
+config.writetimeout.explanation=Az \u00edr\u00e1si id\u0151korl\u00e1t param\u00e9ter be\u00e1ll\u00edtott \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen.
+config.writetimeout.useraction=\u00c1ll\u00edtson be egy \u00e9rv\u00e9nyes \u00e9rt\u00e9ket az \u00edr\u00e1si id\u0151korl\u00e1t param\u00e9ter sz\u00e1m\u00e1ra.
+
+config.fieldsize=CWWKT0008E: A(z) {0} mez\u0151 m\u00e9retkorl\u00e1t \u00e9rv\u00e9nytelen. A m\u00e9ret csak {1} \u00e9s {2} k\u00f6z\u00f6tt lehet.
+config.fieldsize.explanation=A mez\u0151m\u00e9ret korl\u00e1t be\u00e1ll\u00edtott \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen.
+config.fieldsize.useraction=\u00c1ll\u00edtson be egy \u00e9rv\u00e9nyes \u00e9rt\u00e9ket a mez\u0151m\u00e9ret korl\u00e1t sz\u00e1m\u00e1ra.
+
+config.numheaders=CWWKT0009E: A(z) {0} fejl\u00e9cek sz\u00e1m\u00e1ra vonatkoz\u00f3 korl\u00e1t \u00e9rv\u00e9nytelen. A m\u00e9ret csak {1} \u00e9s {2} k\u00f6z\u00f6tt lehet.
+config.numheaders.explanation=A fejl\u00e9csz\u00e1m korl\u00e1t be\u00e1ll\u00edtott \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen.
+config.numheaders.useraction=\u00c1ll\u00edtson be egy \u00e9rv\u00e9nyes \u00e9rt\u00e9ket a fejl\u00e9csz\u00e1m korl\u00e1t sz\u00e1m\u00e1ra.
+
+config.incomingbodymaxsize=CWWKT0010E: a bej\u00f6v\u0151 \u00fczenetek t\u00f6rzs\u00e9re vonatkoz\u00f3 {0} maxim\u00e1lis byte-sz\u00e1m \u00e9rv\u00e9nytelne. A m\u00e9ret {1} vagy enn\u00e9l nagyobb lehet.
+config.incomingbodymaxsize.explanation=A bej\u00f6v\u0151 \u00fczenetek t\u00f6rzs\u00e9re vonatkoz\u00f3 maxim\u00e1lis byte-sz\u00e1m sz\u00e1m\u00e1ra be\u00e1ll\u00edtott \u00e9rt\u00e9k \u00e9rv\u00e9nytelen.
+config.incomingbodymaxsize.useraction=\u00c1ll\u00edtson be \u00e9rv\u00e9nyes \u00e9rt\u00e9ket a bej\u00f6v\u0151 \u00fczenetek t\u00f6rzs\u00e9re vonatkoz\u00f3 maxim\u00e1lis byte-sz\u00e1m sz\u00e1m\u00e1ra.
+
+NO_DEFAULT_CONFIGURATION=CWWKT0011W: A(z) {0} alap\u00e9rtelmezett konfigur\u00e1ci\u00f3ja a(z) {1} azonos\u00edt\u00f3 haszn\u00e1lat\u00e1val nem tal\u00e1lhat\u00f3
+NO_DEFAULT_CONFIGURATION.explanation=A megadott alap\u00e9rtelmezett konfigur\u00e1ci\u00f3 nem tal\u00e1lhat\u00f3 a megadott azonos\u00edt\u00f3hoz.
+NO_DEFAULT_CONFIGURATION.useraction=Ellen\u0151rizze a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3t, majd hajtson v\u00e9gre egy tiszta \u00fajraind\u00edt\u00e1st.
+
+DEFAULT_OPTIONS_ERROR=CWWKT0012E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Az alap\u00e9rtelmezett konfigur\u00e1ci\u00f3 nem hozhat\u00f3 l\u00e9tre. Kiv\u00e9tel: {0}
+DEFAULT_OPTIONS_ERROR.explanation=CMSG0001
+DEFAULT_OPTIONS_ERROR.useraction=CMSG0002
+
+DEFAULT_ENDPOINT_ERROR=CWWKT0013E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Az alap\u00e9rtelmezett v\u00e9gpont nem hozhat\u00f3 l\u00e9tre. Kiv\u00e9tel: {0}
+DEFAULT_ENDPOINT_ERROR.explanation=CMSG0001
+DEFAULT_ENDPOINT_ERROR.useraction=CMSG0002
+
+DEFAULT_VHOST_ERROR=CWWKT0014E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Az alap\u00e9rtelmezett virtu\u00e1lis hoszt nem hozhat\u00f3 l\u00e9tre.  Kiv\u00e9tel: {0}
+DEFAULT_VHOST_ERROR.explanation=CMSG0001
+DEFAULT_VHOST_ERROR.useraction=CMSG0002
+
+missingPorts.endpointDisabled=CWWKT0015W: Nincs be\u00e1ll\u00edtva port a(z) {0} v\u00e9gponthoz. A v\u00e9gpont letilt\u00e1sra ker\u00fclt.
+missingPorts.endpointDisabled.explanation=A HTTP v\u00e9gpont legal\u00e1bb egy port be\u00e1ll\u00edt\u00e1s\u00e1t k\u00f6veteli meg.
+missingPorts.endpointDisabled.useraction=Rendeljen hozz\u00e1 \u00e9rv\u00e9nyes port\u00e9rt\u00e9ket a httpPort vagy a httpsPort tulajdons\u00e1ghoz, vagy mindkett\u0151h\u00f6z.
+
+context.root.added=CWWKT0016I: A webalkalmaz\u00e1s el\u00e9rhet\u0151 ({0}): {1}
+context.root.added.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+context.root.added.useraction=Semmit sem kell tennie.
+
+context.root.removed=CWWKT0017I: A webalkalmaz\u00e1s elt\u00e1vol\u00edtva ({0}): {1}
+context.root.removed.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+context.root.removed.useraction=Semmit sem kell tennie.
+
+Missing.App.Or.Context.Root=CWWKT0018E: A k\u00e9r\u00e9shez tartoz\u00f3 alkalmaz\u00e1s vagy kontextusgy\u00f6k\u00e9r nem tal\u00e1lhat\u00f3: {0}
+Missing.App.Or.Context.Root.explanation=A kiszolg\u00e1l\u00f3n tal\u00e1lhat\u00f3 alkalmaz\u00e1s nem tudja kezelni a k\u00e9r\u00e9st.
+Missing.App.Or.Context.Root.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1s meg van hat\u00e1rozva \u00e9s telep\u00edtve van, \u00e9s helyesen hivatkozik r\u00e1 az \u00fcgyf\u00e9l.
+
+#Cannot remove above due to service rules, but we do not need a message key as this is never logged
+#only output to the browser on our 404 page - removing it means we give away less server implementation info
+Missing.App.Or.Context.Root.No.Error.Code=A k\u00e9r\u00e9shez tartoz\u00f3 alkalmaz\u00e1s vagy kontextusgy\u00f6k\u00e9r nem tal\u00e1lhat\u00f3: {0}
+Missing.App.Or.Context.Root.No.Error.Code.explanation=A kiszolg\u00e1l\u00f3n tal\u00e1lhat\u00f3 alkalmaz\u00e1s nem tudja kezelni a k\u00e9r\u00e9st.
+Missing.App.Or.Context.Root.No.Error.Code.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1s meg van hat\u00e1rozva \u00e9s telep\u00edtve van, \u00e9s helyesen hivatkozik r\u00e1 az \u00fcgyf\u00e9l.
+
+config.httpChain.error=CWWKT0019E: Probl\u00e9ma mer\u00fclt fel a k\u00f6vetkez\u0151 v\u00e9gpont be\u00e1ll\u00edt\u00e1sa sor\u00e1n: {0}: {1}.
+config.httpChain.error.explanation=A HTTP v\u00e9gpont konfigur\u00e1ci\u00f3s probl\u00e9ma miatt nem ind\u00edthat\u00f3.
+config.httpChain.error.useraction=Vizsg\u00e1lja meg az \u00fczenetet \u00e9s a kiv\u00e9telnapl\u00f3kat, \u00e9s keressen kapcsol\u00f3d\u00f3 hib\u00e1kat. 
+
+start.httpChain.error=CWWKT0020E: Probl\u00e9ma mer\u00fclt fel a k\u00f6vetkez\u0151 v\u00e9gpont ind\u00edt\u00e1sa sor\u00e1n: {0}: {1}.
+start.httpChain.error.explanation=A HTTP v\u00e9gpont nem v\u00e1rt probl\u00e9ma miatt nem ind\u00edthat\u00f3. 
+start.httpChain.error.useraction=Vizsg\u00e1lja meg az \u00fczenetet \u00e9s a kiv\u00e9telnapl\u00f3kat, \u00e9s keressen kapcsol\u00f3d\u00f3 hib\u00e1kat. 
+
+httpChain.error.shutdown=CWWKT0021I: A kiszolg\u00e1l\u00f3 le\u00e1ll lehets\u00e9ges konfigur\u00e1ci\u00f3s hiba miatt. \
+A(z) {0} v\u00e9gpont nem indthat\u00f3 el; ez akkor t\u00f6rt\u00e9nhet meg, amikor a konfigur\u00e1lt port m\u00e1r haszn\u00e1latban van.
+httpChain.error.shutdown.explanation=A HTTP v\u00e9gpont be\u00e1ll\u00edt\u00e1sa onError=FAIL, melynek hat\u00e1s\u00e1ra a kiszolg\u00e1l\u00f3 le\u00e1ll, ha probl\u00e9ma mer\u00fclt fel a v\u00e9gpont ind\u00edt\u00e1s\u00e1val. 
+httpChain.error.shutdown.useraction=Vizsg\u00e1lja meg az \u00fczenetet \u00e9s a kiv\u00e9telnapl\u00f3kat, \u00e9s keressen kapcsol\u00f3d\u00f3 hib\u00e1kat. \
+Ahhoz, hogy a kiszolg\u00e1l\u00f3 ne \u00e1lljon le, amikor probl\u00e9ma mer\u00fcl fel a v\u00e9gpont ind\u00edt\u00e1sa sor\u00e1n, gondoskodj\u00e9k r\u00f3la, hogy az onError be\u00e1ll\u00edt\u00e1sa WARN vagy IGNORE.
+
+unresolveableHost=CWWKT0022E: A konfigur\u00e1lt {0} hoszt a(z) {1} HTTP v\u00e9gponthoz nem oldhat\u00f3 fel. A v\u00e9gpont letilt\u00e1sra ker\u00fclt.
+unresolveableHost.explanation=A HTTP v\u00e9gpont olyan hoszt\u00e9rt\u00e9ket ig\u00e9nyel, amely feloldhat\u00f3 egy akt\u00edv h\u00e1l\u00f3zati csatol\u00f3ra.
+unresolveableHost.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a hoszt\u00e9rt\u00e9k egy akt\u00edv h\u00e1l\u00f3zati csatol\u00f3t azonos\u00edtson, vagy haszn\u00e1lja a * karaktert az \u00f6sszes csatol\u00f3 k\u00f6t\u00e9s\u00e9hez.
+
+unresolveableDefaultHost=CWWKT0023W: A konfigur\u00e1lt {0} defaultHostName nem oldhat\u00f3 fel, helyette a localhost ker\u00fcl felhaszn\u00e1l\u00e1sra.
+unresolveableDefaultHost.explanation=A defaultHostName v\u00e1ltoz\u00f3 olyan hoszt\u00e9rt\u00e9ket ad meg, amely nem oldhat\u00f3 fel akt\u00edv h\u00e1l\u00f3zati csatol\u00f3ra.
+unresolveableDefaultHost.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a konfigur\u00e1lt defaultHostName \u00e9rt\u00e9k egy akt\u00edv h\u00e1l\u00f3zati csatol\u00f3t azonos\u00edtson.
+
+defaultHostDisabled=CWWKT0024W: Az alap\u00e9rtelmezett virtu\u00e1lis hoszt (default_host) nem tilthat\u00f3 le.
+defaultHostDisabled.explanation=Az alap\u00e9rtelmezett virtu\u00e1lis hosztra a fut\u00e1si k\u00f6rnyezetnek van sz\u00fcks\u00e9ge. 
+defaultHostDisabled.useraction=Semmit sem kell tennie.
+
+noHostAliases=CWWKT0025W: A(z) {0} virtu\u00e1lis hoszt nem rendelkezik konfigur\u00e1lt hoszt \u00e1lnevekkel, nem fog bej\u00f6v\u0151 k\u00e9r\u00e9seket kapni.
+noHostAliases.explanation=Az \u00f6sszes virtu\u00e1lis hosztnak legal\u00e1bb egy hoszt \u00e1lnevet (hoszt:port) meg kell hat\u00e1roznia az adott virtu\u00e1lis hoszthoz tov\u00e1bb\u00edtand\u00f3 bej\u00f6v\u0151 k\u00e9r\u00e9sek azonos\u00edt\u00e1s\u00e1hoz. \
+A megadott virtu\u00e1lis hoszt nem rendelkezik meghat\u00e1rozott hoszt \u00e1ln\u00e9vvel, melynek hat\u00e1s\u00e1ra egyetlen k\u00e9r\u00e9s sem lesz tov\u00e1bb\u00edtva hozz\u00e1.
+noHostAliases.useraction=Friss\u00edtse a virtualHost elemet a server.xml f\u00e1jlban, hogy az legal\u00e1bb egy hostAlias attrib\u00fatumot meghat\u00e1rozzon.
+
+invalidAlias=CWWKT0026W: A(z) {0} virtu\u00e1lis hoszt egyik konfigur\u00e1lt hoszt \u00e1lneve \u00e9rv\u00e9nytelen \u00e9s figyelmen k\u00edv\u00fcl marad. {1}
+invalidAlias.explanation=A konfigur\u00e1lt hoszt \u00e1ln\u00e9v \u00e9rv\u00e9nytelen karaktereket vagy helytelen szintaxist tartalmaz.
+invalidAlias.useraction=A server.xml f\u00e1jlban a virtu\u00e1lis hoszt elem friss\u00edt\u00e9s\u00e9vel jav\u00edtsa vagy t\u00e1vol\u00edtsa el az \u00e9rv\u00e9nytelen hoszt \u00e1lnevet. Figyeljen arra, hogy az IPv6 c\u00edmeket [] k\u00f6z\u00e9 kell foglalni.
+
+wildcardReason=A * helyettes\u00edt\u0151 karakter nem kombin\u00e1lhat\u00f3 a hoszt \u00e1ln\u00e9vben m\u00e1s karakterekkel.
+badHostPortReason=A megadott hoszt nem \u00e9rv\u00e9nyes IP c\u00edm vagy hosztn\u00e9v, vagy a megadott port nem eg\u00e9sz sz\u00e1m.
+
+duplicateAlias=CWWKT0027W: A(z) {1} virtu\u00e1lis hoszt {0} hoszt \u00e1lneve \u00fctk\u00f6zik egy megl\u00e9v\u0151 hoszt \u00e1ln\u00e9vvel, \u00e9s figyelmen k\u00edv\u00fcl marad.
+duplicateAlias.explanation=A megadott hoszt \u00e1ln\u00e9v \u00fctk\u00f6zik egy megl\u00e9v\u0151 hoszt \u00e1ln\u00e9vvel.
+duplicateAlias.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a server.xml f\u00e1jlban virtu\u00e1lis hoszt elemk\u00e9nt meghat\u00e1rozott \u00f6sszes hoszt \u00e1ln\u00e9v egyedi legyen.
+
+context.root.changed=CWWKT0028I: Webalkalmaz\u00e1s \u00e1thelyezve ({0}): {1}
+context.root.changed.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+context.root.changed.useraction=Semmit sem kell tennie.

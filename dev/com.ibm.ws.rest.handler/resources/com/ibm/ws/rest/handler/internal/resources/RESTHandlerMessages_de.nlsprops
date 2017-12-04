@@ -1,0 +1,53 @@
+###############################################################################
+# Copyright (c) 2012, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO 
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKO1000 - CWWKO1099
+
+HANDLER_NOT_FOUND_ERROR=CWWKO1000E: Es sind keine registrierten Handler vorhanden, die der angeforderten URL {0} entsprechen.
+HANDLER_NOT_FOUND_ERROR.explanation=Es wurde versucht, auf eine URL zuzugreifen, die keinem der registrierten Handler entspricht.
+HANDLER_NOT_FOUND_ERROR.useraction=Korrigiere Sie die URL so, dass sie einem registrierten Handler entspricht.
+
+OSGI_SERVICE_ERROR=CWWKO1001E: Der OSGi-Service {0} ist nicht verf\u00fcgbar.
+OSGI_SERVICE_ERROR.explanation=Dieser interne Serverfehler wird ausgel\u00f6st, weil der angegebene Service nicht verf\u00fcgbar ist.
+OSGI_SERVICE_ERROR.useraction=Starten Sie den Server mit der Option clean erneut.
+ 
+SSL_CONTEXT_NOT_AVAILABLE=CWWKO1002E: Beim Aufl\u00f6sen des SSL-Kontextes eines Verbundmembers ist die folgende Ausnahme eingetreten: {0}
+SSL_CONTEXT_NOT_AVAILABLE.explanation=Es konnte kein SSL-Kontext mit dem SSL-Zertifikat des Members erstellt werden.
+SSL_CONTEXT_NOT_AVAILABLE.useraction=\u00dcberpr\u00fcfen Sie die SSL-Konfiguration des Verbunds, einschlie\u00dflich des Controllers und des Zielmembers.
+
+MISSING_PARAMETER=CWWKO1003E: Der erforderliche Parameter {0} fehlt in der HTTPS-Anforderung.
+MISSING_PARAMETER.explanation=Der angegebene erforderliche Parameter fehlt in der Anforderung. 
+MISSING_PARAMETER.useraction=Schlie\u00dfen Sie den angegebenen Parameter in die Anforderung ein und wiederholen Sie dann die Anforderung.
+
+MISSING_HEADER=CWWKO1004E: Der erforderliche Header {0} fehlt in der HTTPS-Anforderung.
+MISSING_HEADER.explanation=Der angegebene erforderliche Header fehlt in der Anforderung. 
+MISSING_HEADER.useraction=Schlie\u00dfen Sie den angegebenen Header in die Anforderung ein und wiederholen Sie dann die Anforderung.
+
+INVALID_INPUT_VALUE=CWWKO1005E: Das Eingabefeld mit dem Namen {0} enth\u00e4lt einen falschen Wert.
+INVALID_INPUT_VALUE.explanation=Die Anforderung enth\u00e4lt ein Eingabefeld mit einem falschen Wert. Das Eingabefeld stimmt mit keinem der Datens\u00e4tze im System \u00fcberein. 
+INVALID_INPUT_VALUE.useraction=Korrigieren Sie den Wert des Eingabefelds und wiederholen Sie dann die Anforderung.
+
+UNSUPPORTED_MEDIA_TYPE=CWWKO1006E: Der MIME-Typ der Anforderung, {0}, wird nicht unterst\u00fctzt. 
+UNSUPPORTED_MEDIA_TYPE.explanation=Der Server kann den MIME-Typ der Anforderung nicht verarbeiten. Der MIME-Typ stimmt mit keinem der erwarteten MIME-Typen \u00fcberein. 
+UNSUPPORTED_MEDIA_TYPE.useraction=Korrigieren Sie den Wert f\u00fcr den Inhaltstyp und senden Sie die Anforderung erneut.
+

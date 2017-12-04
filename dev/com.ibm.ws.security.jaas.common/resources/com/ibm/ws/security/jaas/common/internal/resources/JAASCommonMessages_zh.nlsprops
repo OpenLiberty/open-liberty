@@ -1,0 +1,69 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authentication.builtin/resources/com/ibm/ws/security/jaas/common/internal/resources/JAASCommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Authentication Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# JAAS Message prefix block: CWWKS1133 - CWWKS1166
+
+# Only the following message falls outside of the allocated block above 
+# because it was moved as-is from another package for a refactor
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET=CWWKS1108E: \u672a\u8bbe\u7f6e WSLoginModuleProxy \u4ee3\u8868\u9009\u9879\u3002
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.explanation=\u8ba4\u8bc1\u672a\u6210\u529f\uff0c\u56e0\u4e3a\u672a\u8bbe\u7f6e WSLoginModuleProxy \u4ee3\u8868\u9009\u9879\u3002
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.useraction=\u8bf7\u9a8c\u8bc1 WSLoginModuleProxy \u914d\u7f6e\u662f\u5426\u5305\u62ec\u4ee3\u8868\u9009\u9879\u3002
+
+# NOTE!! Any messages added here should start at CWWKS1133
+
+# Start msgs from cWAS
+security.jaas.open.URL=CWWKS1133E: \u65e0\u6cd5\u6253\u5f00 URL\uff1a{0}\u3002\u5f02\u5e38\uff1a{1}
+security.jaas.open.URL.explanation=\u5c1d\u8bd5\u8fde\u63a5\u6307\u5b9a\u7684 URL \u65f6\u53d1\u751f MalformedURLException\u3002
+security.jaas.open.URL.useraction=\u8bf7\u8c03\u67e5\u8be5\u5f02\u5e38\u3002\u68c0\u67e5\u6307\u5b9a\u7684 URL\u3002
+# -------------------------------------------------------------------------------------------------
+security.jaas.create.URL=CWWKS1134E: \u65e0\u6cd5\u521b\u5efa URL\uff1a{0}\u3002\u5f02\u5e38\uff1a{1}
+security.jaas.create.URL.explanation=\u5c1d\u8bd5\u8fde\u63a5\u6307\u5b9a\u7684 URL \u65f6\u53d1\u751f IOException\u3002
+security.jaas.create.URL.useraction=\u8bf7\u8c03\u67e5\u8be5\u5f02\u5e38\u3002\u68c0\u67e5\u6307\u5b9a\u7684 URL\u3002
+# -------------------------------------------------------------------------------------------------
+security.jaas.parser.URL=CWWKS1135E: \u5904\u7406\u6587\u4ef6 {0} \u65f6\u53d1\u751f\u6587\u4ef6\u89e3\u6790\u5668\u5f02\u5e38\u3002\u5f02\u5e38\uff1a{1}
+security.jaas.parser.URL.explanation=\u5c1d\u8bd5\u8fde\u63a5\u6307\u5b9a\u7684 URL \u65f6\u53d1\u751f IOException\u3002
+security.jaas.parser.URL.useraction=\u8bf7\u8c03\u67e5\u8be5\u5f02\u5e38\u3002\u68c0\u67e5\u6307\u5b9a\u7684 URL\u3002
+# -------------------------------------------------------------------------------------------------
+security.jaas.duplicate.config=CWWKS1136E: \u767b\u5f55\u914d\u7f6e\u540d {0} \u91cd\u590d\u3002\u5c06\u91cd\u5199\u3002
+security.jaas.duplicate.config.explanation=\u5728\u914d\u7f6e\u6570\u636e\u4e2d\u6307\u5b9a\u4e86\u91cd\u590d\u7684\u767b\u5f55\u914d\u7f6e\u540d\u3002
+security.jaas.duplicate.config.useraction=\u8bf7\u68c0\u67e5\u914d\u7f6e\u6570\u636e\u3002
+# -------------------------------------------------------------------------------------------------
+security.jaas.app.parseIO=CWWKS1137E: \u89e3\u6790 JAAS \u5e94\u7528\u7a0b\u5e8f\u914d\u7f6e\u671f\u95f4\u53d1\u751f IOException\u3002\u5f02\u5e38\u4e3a {0}\u3002
+security.jaas.app.parseIO.explanation=\u89e3\u6790 JAAS \u5e94\u7528\u7a0b\u5e8f\u914d\u7f6e\u671f\u95f4\u53d1\u751f IOException\u3002
+security.jaas.app.parseIO.useraction=\u8bf7\u68c0\u67e5\u914d\u7f6e\u6587\u4ef6\u3002\u8bf7\u8c03\u67e5\u8be5\u5f02\u5e38\u3002
+# -------------------------------------------------------------------------------------------------
+security.jaas.app.parse=CWWKS1138E: \u89e3\u6790 JAAS \u5e94\u7528\u7a0b\u5e8f\u914d\u7f6e\u671f\u95f4\u53d1\u751f ParserException\u3002\u5f02\u5e38\u4e3a {0}\u3002
+security.jaas.app.parse.explanation=\u89e3\u6790 JAAS \u5e94\u7528\u7a0b\u5e8f\u914d\u7f6e\u671f\u95f4\u53d1\u751f ParserException\u3002
+security.jaas.app.parse.useraction=\u8c03\u67e5\u5f02\u5e38\uff0c\u5b83\u6709\u5728\u914d\u7f6e\u6587\u4ef6\u4e2d\u7684\u8bed\u6cd5\u9519\u8bef\u4fe1\u606f\u3002
+# -------------------------------------------------------------------------------------------------
+# End msgs from cWAS
+DEFAULT_JAAS_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1139W: \u65e0\u6cd5\u5728 JAAS \u914d\u7f6e\u6587\u4ef6 {1} \u4e2d\u6307\u5b9a\u7f3a\u7701 jaasLoginContextEntry {0}\u3002\u5fc5\u987b\u5728 server.xml \u6216 client.xml \u6587\u4ef6\u4e2d\u6307\u5b9a\u7f3a\u7701 jaasLoginContextEntry\u3002
+DEFAULT_JAAS_LOGIN_CONTEXT_ENTRY_SKIP.explanation=\u65e0\u6cd5\u5728 JAAS \u914d\u7f6e\u6587\u4ef6\u4e2d\u6307\u5b9a\u7f3a\u7701 jaasLoginContextEntry\u3002
+DEFAULT_JAAS_LOGIN_CONTEXT_ENTRY_SKIP.useraction=\u786e\u8ba4 JAAS \u914d\u7f6e\u6587\u4ef6\u4e0d\u5177\u6709\u7f3a\u7701 jaasLoginContextEntry\u3002
+
+OSGI_SERVICE_ERROR=CWWKS1140E: OSGi \u670d\u52a1 {0} \u4e0d\u53ef\u7528\u3002
+OSGI_SERVICE_ERROR.explanation=\u6307\u5b9a\u7684 OSGi \u670d\u52a1\u4e0d\u53ef\u7528\u3002
+OSGI_SERVICE_ERROR.useraction=\u8bf7\u4f7f\u7528\u201cclean\u201d\u9009\u9879\u91cd\u65b0\u542f\u52a8\u670d\u52a1\u5668\u3002
+
+JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND=CWWKS1141E: \u9488\u5bf9 {0} \u7684\u540d\u79f0\u6267\u884c\u7c7b\u65f6\u53d1\u751f\u5f02\u5e38\u3002\u610f\u5916\u5f02\u5e38 {1}\u3002
+JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND.explanation=\u9488\u5bf9\u540d\u79f0\u6267\u884c\u7c7b\u65f6\u53d1\u751f\u5f02\u5e38\u3002
+JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND.useraction=\u9a8c\u8bc1\u7f3a\u7701 JAAS \u76ee\u5f55\u4e2d\u662f\u5426\u5b58\u5728 JAAS \u914d\u7f6e\u6587\u4ef6\u4e2d\u6307\u5b9a\u7684\u6240\u6709\u5b9a\u5236 JAAS \u767b\u5f55\u6a21\u5757\u3002\u670d\u52a1\u5668\u7684\u7f3a\u7701 JAAS \u76ee\u5f55\u4e3a ${server.config.dir}/resources/security/jaas\u3002\u5ba2\u6237\u673a\u7684\u7f3a\u7701 JAAS \u76ee\u5f55\u4e3a ${client.config.dir}/resources/security/jaas\u3002
+
+JAAS_DUPLICATE_ENTRY_NAME=CWWKS1142W: \u5728 JAAS \u914d\u7f6e\u548c server.xml/client.xml \u6587\u4ef6\u4e2d\u6307\u5b9a\u4e86\u91cd\u590d\u7684\u767b\u5f55\u914d\u7f6e\u540d {0}\u3002\u5c06\u4f7f\u7528 server.xml/client.xml \u6587\u4ef6\u4e2d\u7684\u767b\u5f55\u914d\u7f6e\u540d\u3002
+JAAS_DUPLICATE_ENTRY_NAME.explanation=\u5728 JAAS \u914d\u7f6e\u6587\u4ef6\u548c server.xml/client.xml \u6587\u4ef6\u4e2d\u6307\u5b9a\u4e86\u91cd\u590d\u7684\u767b\u5f55\u914d\u7f6e\u540d\u3002
+JAAS_DUPLICATE_ENTRY_NAME.useraction=\u68c0\u67e5 JAAS \u914d\u7f6e\u6587\u4ef6\u548c server.xml/client.xml \u6587\u4ef6\u3002

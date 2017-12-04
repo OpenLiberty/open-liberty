@@ -1,0 +1,136 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# Change activity:
+#
+# Reason          Date       Origin   Description
+# --------------- ---------- -------- ------------------------------------------
+# 114580          06-11-13   balgirid Fixing username not displayed in FFDC for unsuccessful login
+#
+#
+# File com.ibm.ws.messaging.security.CWWKMMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem
+# determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWWKM0000=CWWKM0001I: This is a message with insert {0}
+# MSG_DESCRIPTIVE_NAME_CWWKM0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKM0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you want them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Messages in the range CWWKM3001-CWWKM3101 belong to class com.ibm.ws.messaging.security
+# -------------------------------------------------------------------------------------------------
+#
+#CMVCPATHNAME New_File_For_Liberty
+#COMPONENTPREFIX CWWKM
+#COMPONENTNAMEFOR CWWKM Liberty Messaging Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+ 
+# -------------------------------------------------------------------------------------------------
+EXCEPTION_OCCURED_DURING_AUTHENTICATION_MSE1001=CWWKM3001E: Ov\u011b\u0159en\u00ed u\u017eivatele se nezda\u0159ilo.
+EXCEPTION_OCCURED_DURING_AUTHENTICATION_MSE1001.explanation=Je nespr\u00e1vn\u00e9 jm\u00e9no nebo heslo u\u017eivatele.
+EXCEPTION_OCCURED_DURING_AUTHENTICATION_MSE1001.useraction=Zadejte platn\u00e9 jm\u00e9no a heslo u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} - Token Type
+SECURITY_TOKEN_TYPE_NOT_SUPPORTED_MSE1002=CWWKM3002E: Zadan\u00fd typ tokenu {0} nen\u00ed podporov\u00e1n.
+SECURITY_TOKEN_TYPE_NOT_SUPPORTED_MSE1002.explanation=Typ tokenu ur\u010den\u00fd aplikac\u00ed klienta nen\u00ed podporov\u00e1n. Podporov\u00e1ny jsou pouze tokeny LTPA.
+SECURITY_TOKEN_TYPE_NOT_SUPPORTED_MSE1002.useraction=Ur\u010dete token LTPA, proto\u017ee podporov\u00e1ny jsou pouze tokeny LTPA.
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_FIND_CONFIG_ADMIN_SERVICE_MSE1003=CWWKM3003E: Administrativn\u00ed slu\u017eba konfigurace nen\u00ed k dispozici.
+CANNOT_FIND_CONFIG_ADMIN_SERVICE_MSE1003.explanation=Administrativn\u00ed slu\u017eba konfigurace nen\u00ed k dispozici.
+CANNOT_FIND_CONFIG_ADMIN_SERVICE_MSE1003.useraction=Ov\u011b\u0159te, zda je slu\u017eba konfigurace spu\u0161t\u011bna.
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_FIND_SECURITY_SERVICE_MSE1004=CWWKM3004E: Slu\u017eba zabezpe\u010den\u00ed je nedostupn\u00e1.
+CANNOT_FIND_SECURITY_SERVICE_MSE1004.explanation=Slu\u017eba zabezpe\u010den\u00ed je nedostupn\u00e1. 
+CANNOT_FIND_SECURITY_SERVICE_MSE1004.useraction=Ov\u011b\u0159te, zda je slu\u017eba zabezpe\u010den\u00ed spu\u0161t\u011bna.
+
+# -------------------------------------------------------------------------------------------------
+USER_REGISTRY_NOT_CONFIGURED_MSE1005=CWWKM3005E: Nen\u00ed nakonfigurov\u00e1n registr u\u017eivatel\u016f.
+USER_REGISTRY_NOT_CONFIGURED_MSE1005.explanation=Pro tento server je t\u0159eba nakonfigurovat registr u\u017eivatel\u016f.
+USER_REGISTRY_NOT_CONFIGURED_MSE1005.useraction=Nakonfigurujte alespo\u0148 jeden registr u\u017eivatel\u016f (nap\u0159. LDAP, BasicUserRegistry \u010di QuickStartSecurity) pro tento server.
+
+# -------------------------------------------------------------------------------------------------
+USER_REGISTRY_EXCEPTION_MSE1006=CWWKM3006E: Do\u0161lo k v\u00fdjimce p\u0159i p\u0159\u00edstupu k registru u\u017eivatel\u016f.
+USER_REGISTRY_EXCEPTION_MSE1006.explanation=Do\u0161lo k v\u00fdjimce p\u0159i p\u0159\u00edstupu k registru u\u017eivatel\u016f.
+USER_REGISTRY_EXCEPTION_MSE1006.useraction=Zkontrolujte, zda je registr u\u017eivatel\u016f spr\u00e1vn\u011b nakonfigurov\u00e1n.
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_FIND_CONFIG_ADMIN_OBJECT_MSE1007=CWWKM3007E: Nebyl nalezen definovan\u00fd administrativn\u00ed objekt konfigurace.
+CANNOT_FIND_CONFIG_ADMIN_OBJECT_MSE1007.explanation=Nebyl nalezen definovan\u00fd administrativn\u00ed objekt konfigurace.
+CANNOT_FIND_CONFIG_ADMIN_OBJECT_MSE1007.useraction=M\u016f\u017ee j\u00edt o chybu v definici vlastnosti. Ov\u011b\u0159te spr\u00e1vnost definic vlastnost\u00ed v konfigura\u010dn\u00edm souboru serveru.
+
+# -------------------------------------------------------------------------------------------------
+IO_EXCEPTION_READING_CONFIGURATION_MSE1008=CWWKM3008E: Do\u0161lo k v\u00fdjimce IOException p\u0159i \u010dten\u00ed dat z konfigura\u010dn\u00edho souboru.
+IO_EXCEPTION_READING_CONFIGURATION_MSE1008.explanation=Do\u0161lo k v\u00fdjimce IOException p\u0159i \u010dten\u00ed dat ze souboru server.xml.
+IO_EXCEPTION_READING_CONFIGURATION_MSE1008.useraction=Ov\u011b\u0159te konfigurace zadan\u00e9 v souboru server.xml.
+
+# -------------------------------------------------------------------------------------------------
+USER_NOT_AUTHENTICATED_MSE1009=CWWKM3009E: U\u017eivatel {0} nen\u00ed ov\u011b\u0159en pro p\u0159\u00edstup ke slu\u017eb\u011b syst\u00e9mu zpr\u00e1v Liberty.
+USER_NOT_AUTHENTICATED_MSE1009.explanation=U\u017eivatel nem\u00e1 opr\u00e1vn\u011bn\u00ed pro p\u0159\u00edstup ke slu\u017eb\u011b syst\u00e9mu zpr\u00e1v Liberty.
+USER_NOT_AUTHENTICATED_MSE1009.useraction=Zadejte platn\u00e9 jm\u00e9no u\u017eivatele, kter\u00fd je ov\u011b\u0159en pro p\u0159ipojen\u00ed ke slu\u017eb\u011b syst\u00e9mu zpr\u00e1v Liberty.
+
+# -------------------------------------------------------------------------------------------------
+# {0} - User name
+# {1} - Action Name
+# {2} - Destination
+USER_NOT_AUTHORIZED_MSE1010=CWWKM3010W: U\u017eivatel {0} nen\u00ed opr\u00e1vn\u011bn prov\u00e9st akci {1} v c\u00edli {2}.
+USER_NOT_AUTHORIZED_MSE1010.explanation=Zadan\u00fd u\u017eivatel nen\u00ed autorizov\u00e1n k proveden\u00ed ur\u010den\u00e9 akce v ozna\u010den\u00e9m c\u00edli.
+USER_NOT_AUTHORIZED_MSE1010.useraction=Ur\u010dete u\u017eivatele, kter\u00fd je autorizov\u00e1n k proveden\u00ed uveden\u00e9 akce v dan\u00e9m c\u00edli.
+
+# -------------------------------------------------------------------------------------------------
+# {0} - User name
+USER_NOT_AUTHORIZED_TO_CONNECT_MSE1011=CWWKM3011E: U\u017eivatel nem\u00e1 autorizaci pro p\u0159ipojen\u00ed ke slu\u017eb\u00e1m syst\u00e9mu zpr\u00e1v Liberty.
+USER_NOT_AUTHORIZED_TO_CONNECT_MSE1011.explanation=U\u017eivatel nen\u00ed autorizov\u00e1n pro p\u0159ipojen\u00ed ke slu\u017eb\u00e1m syst\u00e9mu zpr\u00e1v Liberty.
+USER_NOT_AUTHORIZED_TO_CONNECT_MSE1011.useraction=Zadejte u\u017eivatele, kter\u00fd je autorizov\u00e1n pro p\u0159ipojen\u00ed ke slu\u017eb\u011b syst\u00e9mu zpr\u00e1v Liberty.
+
+# -------------------------------------------------------------------------------------------------
+# {0} - Role name which has duplicate entry
+DUPLICATE_ROLE_NAME_EXISTS_MSE1012=CWWKM3012W: N\u00e1zev {0} se ji\u017e pou\u017e\u00edv\u00e1 pro jinou roli.
+DUPLICATE_ROLE_NAME_EXISTS_MSE1012.explanation=Jeden n\u00e1zev nelze pou\u017e\u00edt pro v\u00edce rol\u00ed.
+DUPLICATE_ROLE_NAME_EXISTS_MSE1012.useraction=Zadejte jin\u00fd n\u00e1zev, aby nevznikly duplicitn\u00ed polo\u017eky pro roli.
+
+# -------------------------------------------------------------------------------------------------
+# {0} - Action Name
+# {1} - Destination
+USER_NOT_AUTHORIZED_MSE1013=CWWKM3013W: U\u017eivatel nen\u00ed opr\u00e1vn\u011bn prov\u00e9st akci {0} v c\u00edli {1}.
+USER_NOT_AUTHORIZED_MSE1013.explanation=Zadan\u00fd u\u017eivatel nen\u00ed autorizov\u00e1n k proveden\u00ed ur\u010den\u00e9 akce v ozna\u010den\u00e9m c\u00edli.
+USER_NOT_AUTHORIZED_MSE1013.useraction=Poskytn\u011bte u\u017eivatele, kter\u00fd je autorizov\u00e1n k proveden\u00ed ur\u010den\u00e9 akce v ozna\u010den\u00e9m c\u00edli.

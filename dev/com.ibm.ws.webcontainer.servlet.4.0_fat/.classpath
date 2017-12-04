@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="test-applications/TestEncoding.war/src"/>
 	<classpathentry kind="src" path="test-applications/TestServlet40.war/src"/>
 	<classpathentry kind="src" path="test-applications/TestServlet40.jar/src"/>
 	<classpathentry kind="src" path="test-applications/TestGetMapping.war/src"/>

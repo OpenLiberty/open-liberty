@@ -1,0 +1,28 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.webcontainer.security.feature/resources/com/ibm/ws/webcontainer/security/feature/resources/WebFeatureSecurityMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Feature Web Security Collaborator
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9200 - CWWKS9249
+
+FEATURE_ROLE_CONFIG_PROCESSED=CWWKS9120I: Les r\u00f4les d''autorisation avec l''ID "{0}" ont \u00e9t\u00e9 trait\u00e9s.
+FEATURE_ROLE_CONFIG_PROCESSED.explanation=Le traitement du mappage de r\u00f4le d'autorisation a \u00e9t\u00e9 effectu\u00e9.
+FEATURE_ROLE_CONFIG_PROCESSED.useraction=Aucune action n'est requise.
+AUTHZ_ROLE_ID_IS_NULL=CWWKS9121E: L'attribut ID est manquant dans l'\u00e9l\u00e9ment <authorization-roles>.
+AUTHZ_ROLE_ID_IS_NULL.explanation=L'attribut ID est obligatoire afin de traiter l'\u00e9l\u00e9ment <authorization-roles>.
+AUTHZ_ROLE_ID_IS_NULL.useraction=D\u00e9finissez la valeur appropri\u00e9e pour l'attribut ID de l'\u00e9l\u00e9ment <authorization-roles>.
+
+

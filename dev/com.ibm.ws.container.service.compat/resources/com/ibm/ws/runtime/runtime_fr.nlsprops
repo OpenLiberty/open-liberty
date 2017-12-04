@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 1997, 2008 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# Standard Server runtime messages
+#
+#  Notes:
+#
+#   - DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+#   - WSVR0025I - WSVR0028I are reserved for TimeBomb (bootstrap*.nlsprops)
+#   - WSVR0300x - WSVR0314x are reserved for config (config*.nlsprops)
+#   - WSVR0313E is used for a MDB related error message by EJB component (see runtime.nlsprops)
+#   - WSVR0330x - WSVR0399x are reserved for class loader (this file)
+#   - WSVR0614x - WSVR0620x are reserved for bootstrap (bootstrap*.nlsprops.)
+#   - WSVR0631x - WSVR0650x are reserved for selective bundle provider extension
+#   - WSVR0700x - WSVR0720x are reserved for ThinRegistry (bootstrap*.nlsprops)
+#   - WSVR0800x - WSVR0899x are reserved for config (config*.nlsprops)
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://seaux.raleigh.ibm.com/g11n/was/seae/45/messages/index.html
+# or contact Dennis Hebert/Raleigh/IBM (hebert@us.ibm.com)
+#
+# cmvc_en_version_level=1.128,0,10/05/13,15:15:23
+#
+#CMVCPATHNAME com.ibm.ws.compat/resources/com/ibm/ws/runtime/runtime.nlsprops
+#COMPONENTPREFIX WSVR
+#COMPONENTNAMEFOR WSVR WebSphere Server
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+WSVR0603E=WSVR0603E: La m\u00e9thode beginContext de ComponentMetaDataAccessor a re\u00e7u un ComponentMetaData de type NULL.
+WSVR0603E.explanation=CMSG0001
+WSVR0603E.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# PK39527 - Update message text
+# -------------------------------------------------------------------------------------------------
+WSVR0623W=WSVR0623W: Une exception inattendue s''est produite : \"{0}\". La propri\u00e9t\u00e9 com.ibm.websphere.threadpool.clearThreadLocal a \u00e9t\u00e9 d\u00e9finie et sera appliqu\u00e9e au pool d''unit\u00e9s d''ex\u00e9cution {0}. Cette option est d\u00e9conseill\u00e9e.
+WSVR0623W.explanation=La propri\u00e9t\u00e9 com.ibm.websphere.threadpool.clearThreadLocal est encore utilis\u00e9e dans cette version, mais sera supprim\u00e9e dans une prochaine version.
+WSVR0623W.useraction=Supprimez la propri\u00e9t\u00e9 com.ibm.websphere.threadpool.clearThreadLocal des propri\u00e9t\u00e9s de la machine JVM (Java Virtual Machine).
+
+# F743-24122
+WSVR0629I=WSVR0629I: La m\u00e9moire tampon n\u00e9cessaire pour le groupe d''unit\u00e9s d''ex\u00e9cution \"{0}\" a atteint sa capacit\u00e9 maximale.
+WSVR0629I.explanation=La file d'attente des demandes de travaux en attente du groupe d'unit\u00e9s d'ex\u00e9cution indiqu\u00e9 a atteint sa limite, ce qui pourrait affecter les performances.
+WSVR0629I.useraction=Aucune action imm\u00e9diate n'est requise. Cependant, pour \u00e9viter que cette situation ne se reproduise, il se peut que la taille de la m\u00e9moire tampon de la demande du groupe d'unit\u00e9s d'ex\u00e9cution doive \u00eatre augment\u00e9e.
+
+# PM13147 - Log growth of thread pool beyond maximum size
+WSVR0630I=WSVR0630I: Le pool d''unit\u00e9s d''ex\u00e9cution \u00e9volutif \"{0}\" a \u00e9t\u00e9 \u00e9tendu au-del\u00e0 de sa capacit\u00e9 maximale initialement d\u00e9finie.  La taille du pool est actuellement de \"{1}\".
+WSVR0630I.explanation=Le pool d'unit\u00e9s d'ex\u00e9cution sp\u00e9cifi\u00e9 a atteint sa taille maximale pr\u00e9d\u00e9finie et va \u00eatre \u00e9tendu.
+WSVR0630I.useraction=Aucune action imm\u00e9diate n'est requise. Il est \u00e0 noter que le pool continuera \u00e0 s'\u00e9tendre une fois sa nouvelle taille atteinte.

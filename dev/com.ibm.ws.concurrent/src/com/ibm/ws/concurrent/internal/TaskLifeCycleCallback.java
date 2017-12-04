@@ -90,8 +90,9 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
      * @return identifier to use in messages.
      */
     @Override
+    @Trivial
     public String getIdentifier(String identifier) {
-        return identifier.startsWith("managed") ? identifier : managedExecutor.name.get() + " (" + identifier + ')';
+        return managedExecutor.getIdentifier(identifier);
     }
 
     /**
@@ -125,7 +126,7 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
 
     @FFDCIgnore({ Error.class, RuntimeException.class }) // No need for FFDC, error is logged instead
     @Override
-    public void onCancel(Object task, PolicyTaskFuture<?> future, boolean timedOut, boolean whileRunning) {
+    public void onCancel(Object task, PolicyTaskFuture<?> future, boolean whileRunning) {
         // Tasks that are canceled while running have the taskAborted notification sent on the thread of execution instead.
 
         // notify listener: taskAborted (if task was canceled before it started)
@@ -279,5 +280,10 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
     @Override
     public void raiseAbortedException(Throwable x) throws ExecutionException {
         throw new AbortedException(x);
+    }
+
+    @Override
+    public void resolveDeadlockOnFutureGet() throws InterruptedException {
+        throw new InterruptedException(Tr.formatMessage(tc, "CWWKC1120.future.get.rejected"));
     }
 }

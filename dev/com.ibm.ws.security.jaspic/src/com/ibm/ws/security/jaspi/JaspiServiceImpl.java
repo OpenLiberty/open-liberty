@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -410,15 +410,8 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
         try {
             ServerAuthContext authContext = getServerAuthContext(jaspiRequest, provider);
             MessageInfo msgInfo = jaspiRequest.getMessageInfo();
-            // need to add webRequest for the JSR375 provider.
-            if (msgInfo != null) {
-                msgInfo.getMap().put(JaspiConstants.SECURITY_WEB_REQUEST, jaspiRequest.getWebRequest());
-            } else {
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "msgInfo object is null.");
-                }
-            }
             setRequestAuthType(jaspiRequest.getHttpServletRequest(), authType);
+
             if (webSecurityContext != null) {
                 setRunSecureResponse(true, (JaspiAuthContext) webSecurityContext.getJaspiAuthContext());
             }
@@ -519,7 +512,7 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
     protected MessageInfo newMessageInfo(JaspiRequest jaspiRequest) {
         HttpServletRequest req = jaspiRequest.getHttpServletRequest();
         MessageInfo msgInfo = new JaspiMessageInfo(req, jaspiRequest.getHttpServletResponse());
-        msgInfo.getMap().put(IS_MANDATORY_POLICY, Boolean.toString(jaspiRequest.isProtected()));
+        msgInfo.getMap().put(IS_MANDATORY_POLICY, Boolean.toString(jaspiRequest.isMandatory()));
         return msgInfo;
     }
 

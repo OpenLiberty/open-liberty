@@ -1,0 +1,28 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jca.utils/resources/com/ibm/ws/timedexit/internal/resources/TimedExitMessages.nlsprops
+#COMPONENTPREFIX TE
+#COMPONENTNAMEFOR TE TE
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+# Range: 9900 - 9999
+
+TE9900.timedexit.enabled=TE9900A: \u010casovan\u00fd konec povolen
+TE9900.timedexit.enabled.explanation=\u010casovan\u00fd konec je povolen.
+TE9900.timedexit.enabled.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.

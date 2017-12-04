@@ -19,6 +19,8 @@ Bundle-SymbolicName: com.ibm.ws.microprofile.config
 
 Bundle-Description:MicroProfile Configuration Implementation, version ${bVersion}
 
+testsrc: test/src, test/resources
+
 -dsannotations-inherit: true
 -dsannotations: com.ibm.ws.microprofile.config.archaius.impl.ArchaiusConfigProviderResolverImpl
 
@@ -56,7 +58,7 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 	org.hamcrest:hamcrest-all;version=1.3, \
 	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
 	org.jmock:jmock;strategy=exact;version=2.5.1, \
-    org.glassfish:javax.json;version=1.0.4, \
+    org.glassfish:javax.json;strategy=exact;version=1.0.4, \
     org.slf4j:slf4j-api;version=1.7.7, \
     org.slf4j:slf4j-jdk14;version=1.7.7, \
     com.ibm.websphere.javaee.jsonp.1.0;version=latest, \

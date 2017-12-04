@@ -1,0 +1,157 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service: tcp channel
+#CMVCPATHNAME com.ibm.ws.channelfw/resources/com/ibm/ws/tcpchannel/internal/resources/TCPChannelMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#ISMESSAGEFILE TRUE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+### TCP channel will use message numbers 0200-0399
+
+#Configuration and initialization errors
+MAX_OPEN_CONNECTIONS_INVALID=CWWKO0200E: Maxim\u00e1ln\u00ed po\u010det otev\u0159en\u00fdch p\u0159ipojen\u00ed {0} nen\u00ed platn\u00fd. Platn\u00e9 hodnoty nejsou men\u0161\u00ed ne\u017e {1} a v\u011bt\u0161\u00ed ne\u017e {2}.
+MAX_OPEN_CONNECTIONS_INVALID.explanation=Dal\u0161\u00ed informace nejsou k dispozici.
+MAX_OPEN_CONNECTIONS_INVALID.useraction=Opravte chybu konfigurace.
+
+INACTIVITY_TIMEOUT_INVALID=CWWKO0201E: \u010casov\u00fd limit ne\u010dinnosti p\u0159ipojen\u00ed {0} nen\u00ed platn\u00fd. Platn\u00e9 hodnoty nejsou men\u0161\u00ed ne\u017e {1} a v\u011bt\u0161\u00ed ne\u017e {2}.
+INACTIVITY_TIMEOUT_INVALID.explanation=Dal\u0161\u00ed informace nejsou k dispozici.
+INACTIVITY_TIMEOUT_INVALID.useraction=Opravte chybu konfigurace.
+
+ADDRESS_EXCLUDE_LIST_INVALID=CWWKO0202E: V seznamu vylou\u010den\u00fdch adres kan\u00e1lu TCP {0} je nalezena neplatn\u00e1 polo\u017eka. 
+ADDRESS_EXCLUDE_LIST_INVALID.explanation= Ka\u017ed\u00e1 polo\u017eka v seznamu mus\u00ed b\u00fdt platn\u00fd \u0159et\u011bzec.
+ADDRESS_EXCLUDE_LIST_INVALID.useraction=Opravte chybu konfigurace.
+
+ADDRESS_INCLUDE_LIST_INVALID=CWWKO0203E: V seznamu povolen\u00fdch adres kan\u00e1lu TCP {0} je nalezena neplatn\u00e1 polo\u017eka.
+ADDRESS_INCLUDE_LIST_INVALID.explanation= Ka\u017ed\u00e1 polo\u017eka v seznamu mus\u00ed b\u00fdt platn\u00fd \u0159et\u011bzec.
+ADDRESS_INCLUDE_LIST_INVALID.useraction=Opravte chybu konfigurace.
+
+HOST_NAME_EXCLUDE_LIST_INVALID=CWWKO0204E: V seznamu vylou\u010den\u00fdch n\u00e1zv\u016f hostitel\u016f kan\u00e1lu TCP {0} je nalezena neplatn\u00e1 polo\u017eka.
+HOST_NAME_EXCLUDE_LIST_INVALID.explanation= Ka\u017ed\u00e1 polo\u017eka v seznamu mus\u00ed b\u00fdt platn\u00fd \u0159et\u011bzec.
+HOST_NAME_EXCLUDE_LIST_INVALID.useraction=Opravte chybu konfigurace.
+
+HOST_NAME_INCLUDE_LIST_INVALID=CWWKO0205E: V seznamu povolen\u00fdch n\u00e1zv\u016f hostitel\u016f kan\u00e1lu TCP {0} je nalezena neplatn\u00e1 polo\u017eka. 
+HOST_NAME_INCLUDE_LIST_INVALID.explanation= Ka\u017ed\u00e1 polo\u017eka v seznamu mus\u00ed b\u00fdt platn\u00fd \u0159et\u011bzec.
+HOST_NAME_INCLUDE_LIST_INVALID.useraction=Opravte chybu konfigurace.
+
+NOT_VALID_CUSTOM_PROPERTY=CWWKO0206E: Kan\u00e1l TCP {0} m\u00e1 p\u0159izp\u016fsobenou vlastnost {1} s hodnotou {2}. Tato hodnota je neplatn\u00e1.
+NOT_VALID_CUSTOM_PROPERTY.explanation=Byla ur\u010dena p\u0159izp\u016fsoben\u00e1 vlastnost s hodnotou mimo rozsah platn\u00fdch hodnot.
+NOT_VALID_CUSTOM_PROPERTY.useraction=Opravte chybu konfigurace.
+
+CONFIG_VALUE_NUMBER_EXCEPTION=CWWKO0207E: Pro kan\u00e1l TCP {0} byla nastavena nespr\u00e1vn\u00e1 \u010d\u00edseln\u00e1 hodnota vlastnosti. N\u00e1zev vlastnosti: {1}, Hodnota: {2}
+CONFIG_VALUE_NUMBER_EXCEPTION.explanation=Ur\u010den\u00e1 hodnota vlastnosti kan\u00e1lu TCP nen\u00ed platn\u00e9 \u010d\u00edslo.
+CONFIG_VALUE_NUMBER_EXCEPTION.useraction=Opravte chybu konfigurace.
+
+CONFIG_VALUE_NOT_VALID_STRING=CWWKO0208E: Kan\u00e1l TCP {0} byl sestaven s nespr\u00e1vnou hodnotou vlastnosti konfigurace. N\u00e1zev: {1}  Hodnota: {2}
+CONFIG_VALUE_NOT_VALID_STRING.explanation=Ur\u010den\u00e1 hodnota vlastnosti kan\u00e1lu TCP nele\u017e\u00ed v platn\u00e9m rozsahu pro tuto vlastnost.
+CONFIG_VALUE_NOT_VALID_STRING.useraction=Opravte chybu konfigurace.
+
+CONFIG_VALUE_NOT_VALID_NULL_STRING=CWWKO0209E: Kan\u00e1l TCP {0} byl sestaven s hodnotou vlastnosti konfigurace NULL. N\u00e1zev: {1}
+CONFIG_VALUE_NOT_VALID_NULL_STRING.explanation=Ur\u010den\u00e1 hodnota vlastnosti kan\u00e1lu TCP nele\u017e\u00ed v platn\u00e9m rozsahu pro tuto vlastnost.
+CONFIG_VALUE_NOT_VALID_NULL_STRING.useraction=Opravte chybu konfigurace.
+
+CONFIG_VALUE_NOT_VALID_BOOLEAN=CWWKO0210E: Kan\u00e1l TCP {0} byl sestaven s nespr\u00e1vnou hodnotou vlastnosti konfigurace. N\u00e1zev: {1}  Hodnota: {2}  Platn\u00fd rozsah: false, true.
+CONFIG_VALUE_NOT_VALID_BOOLEAN.explanation=Ur\u010den\u00e1 hodnota vlastnosti kan\u00e1lu TCP nele\u017e\u00ed v platn\u00e9m rozsahu pro tuto vlastnost.
+CONFIG_VALUE_NOT_VALID_BOOLEAN.useraction=Opravte chybu konfigurace.
+
+CONFIG_VALUE_NOT_VALID_INT=CWWKO0211E: Kan\u00e1l TCP {0} byl sestaven s nespr\u00e1vnou hodnotou vlastnosti konfigurace. N\u00e1zev: {1}  Hodnota: {2}  Platn\u00fd rozsah: Minimum {3}, Maximum {4}
+CONFIG_VALUE_NOT_VALID_INT.explanation=Ur\u010den\u00e1 hodnota vlastnosti kan\u00e1lu TCP nele\u017e\u00ed v platn\u00e9m rozsahu pro tuto vlastnost.
+CONFIG_VALUE_NOT_VALID_INT.useraction=Opravte chybu konfigurace.
+
+CONFIG_KEY_NOT_VALID=CWWKO0212W: Kan\u00e1l TCP {0} byl sestaven s nespr\u00e1vnou vlastnost\u00ed konfigurace. N\u00e1zev vlastnosti: {1}, Hodnota: {2}
+CONFIG_KEY_NOT_VALID.explanation=Ur\u010den\u00e1 vlastnost kan\u00e1lu TCP m\u00e1 n\u00e1zev nebo hodnotu, kter\u00e1 nebyla rozpozn\u00e1na.
+CONFIG_KEY_NOT_VALID.useraction=Opravte chybu konfigurace.
+
+UNRECOGNIZED_CUSTOM_PROPERTY=CWWKO0213W: Pro kan\u00e1l TCP {0} je konfigurov\u00e1na p\u0159izp\u016fsoben\u00e1 vlastnost. kter\u00e1 nepat\u0159\u00ed k rozpoznan\u00fdm vlastnostem. N\u00e1zev vlastnosti: {1}
+UNRECOGNIZED_CUSTOM_PROPERTY.explanation=P\u0159izp\u016fsoben\u00e1 vlastnost byla ur\u010dena nespr\u00e1vn\u011b.
+UNRECOGNIZED_CUSTOM_PROPERTY.useraction=Opravte chybu konfigurace.
+
+NEW_CONFIG_VALUE_NOT_EQUAL=CWWKO0214E: Pokus o aktualizaci kan\u00e1lu TCP {0} se nezda\u0159il. Byla zm\u011bn\u011bna hodnota pro vlastnost, kterou nelze aktualizovat za b\u011bhu. N\u00e1zev vlastnosti: {1}, Aktu\u00e1ln\u00ed hodnota: {2}, Ne\u00fasp\u011b\u0161n\u00e1 aktualizace hodnoty: {3}
+NEW_CONFIG_VALUE_NOT_EQUAL.explanation=B\u011bhem pokusu o aktualizaci konfigurace byla vlastnosti kan\u00e1lu TCP p\u0159id\u011blena nov\u00e1 hodnota. Tuto vlastnost v\u0161ak nelze aktualizovat o novou hodnotu za b\u011bhu.
+NEW_CONFIG_VALUE_NOT_EQUAL.useraction=Opravte chybu konfigurace.
+
+UPDATED_CONFIG_NOT_IMPLEMENTED=CWWKO0215E: Pokus o aktualizaci kan\u00e1lu TCP {0} se nezda\u0159il.
+UPDATED_CONFIG_NOT_IMPLEMENTED.explanation=Ur\u010den\u00fd kan\u00e1l TCP se nepoda\u0159ilo aktualizovat, proto\u017ee nov\u00e1 konfigurace byla neplatn\u00e1.
+UPDATED_CONFIG_NOT_IMPLEMENTED.useraction=Opravte chybu konfigurace.
+
+NO_ENDPOINT_NAME=CWWKO0216E: Ke kan\u00e1lu TCP {0} nebyl p\u0159i\u0159azen \u017e\u00e1dn\u00fd n\u00e1zev koncov\u00e9ho bodu.
+NO_ENDPOINT_NAME.explanation=Dal\u0161\u00ed informace nejsou k dispozici.
+NO_ENDPOINT_NAME.useraction=Opravte chybu konfigurace.
+
+USER_ID_NOT_VALID=CWWKO0217E: ID u\u017eivatele konfigurovan\u00e9 jako c\u00edl pro p\u0159epnut\u00ed po spu\u0161t\u011bn\u00ed je neplatn\u00e9. ID u\u017eivatele: {0}
+USER_ID_NOT_VALID.explanation=Po spu\u0161t\u011bn\u00ed byl syst\u00e9m konfigurov\u00e1n tak, aby do\u0161lo k p\u0159epnut\u00ed na ID u\u017eivatele, kter\u00e9 nebylo platn\u00e9.
+USER_ID_NOT_VALID.useraction=Nastavte novou hodnotu konfigurovan\u00e9ho ID u\u017eivatele.
+
+GROUP_ID_NOT_VALID=CWWKO0218E: ID skupiny konfigurovan\u00e9 jako c\u00edl pro p\u0159epnut\u00ed po spu\u0161t\u011bn\u00ed je neplatn\u00e9. ID skupiny: {0}
+GROUP_ID_NOT_VALID.explanation=Po spu\u0161t\u011bn\u00ed byl syst\u00e9m konfigurov\u00e1n tak, aby do\u0161lo k p\u0159epnut\u00ed na ID skupiny, kter\u00e9 nebylo platn\u00e9.
+GROUP_ID_NOT_VALID.useraction=Nastavte novou hodnotu konfigurovan\u00e9ho ID skupiny.
+
+#Runtime messages
+
+TCP_CHANNEL_STARTED=CWWKO0219I: Kan\u00e1l TCP {0} byl spu\u0161t\u011bn a nyn\u00ed naslouch\u00e1 po\u017eadavk\u016fm na hostiteli {1} na portu {2}.
+TCP_CHANNEL_STARTED.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+TCP_CHANNEL_STARTED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+TCP_CHANNEL_STOPPED=CWWKO0220I: Kan\u00e1l TCP {0} ukon\u010dil naslouch\u00e1n\u00ed na hostiteli po\u017eadavk\u016fm {1} na portu {2}.
+TCP_CHANNEL_STOPPED.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+TCP_CHANNEL_STOPPED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+BIND_ERROR=CWWKO0221E: Inicializace kan\u00e1lu TCP {0} se nezda\u0159ila. Nepoda\u0159ilo se vytvo\u0159it vazbu soketu k hostiteli {1} a portu {2}. Je mo\u017en\u00e9, \u017ee je port ji\u017e pou\u017e\u00edv\u00e1n.
+BIND_ERROR.explanation=Operace sv\u00e1z\u00e1n\u00ed soketu se nezda\u0159ila. K tomu doch\u00e1z\u00ed obvykle v p\u0159\u00edpad\u011b, \u017ee je dan\u00e9 \u010d\u00edslo portu ji\u017e obsazeno.
+BIND_ERROR.useraction=Ov\u011b\u0159te, zda byl kan\u00e1l TCP konfigurov\u00e1n pro pou\u017eit\u00ed spr\u00e1vn\u00e9ho \u010d\u00edsla portu.
+
+MAX_CONNS_EXCEEDED=CWWKO0222W: Kan\u00e1l TCP {0} p\u0159ekro\u010dil maxim\u00e1ln\u00ed po\u010det otev\u0159en\u00fdch p\u0159ipojen\u00ed {1}.
+MAX_CONNS_EXCEEDED.explanation=Uveden\u00fd kan\u00e1l TCP p\u0159ekro\u010dil maxim\u00e1ln\u00ed po\u010det otev\u0159en\u00fdch p\u0159ipojen\u00ed a nyn\u00ed n\u011bkter\u00e1 p\u0159ipojen\u00ed odm\u00edt\u00e1.
+MAX_CONNS_EXCEEDED.useraction=Pokud pot\u0159ebujete v\u00edce p\u0159ipojen\u00ed, zm\u011b\u0148te maxim\u00e1ln\u00ed povolen\u00fd po\u010det povolen\u00fdch p\u0159ipojen\u00ed.
+
+THREAD_DISPATCH_FAILED=CWWKO0223W: Kan\u00e1lu TCP {0} se nepoda\u0159ilo z\u00edskat podproces z fondu podproces\u016f {1}.
+THREAD_DISPATCH_FAILED.explanation=Uveden\u00e9mu kan\u00e1lu TCP se nepoda\u0159ilo z\u00edskat podproces z fondu podproces\u016f. Zpracov\u00e1n\u00ed dal\u0161\u00edch po\u017eadavk\u016f se proto m\u016f\u017ee opozdit.
+THREAD_DISPATCH_FAILED.useraction=Pokud nen\u00ed procesor pln\u011b vyt\u00ed\u017een, zvy\u0161te maxim\u00e1ln\u00ed po\u010det podproces\u016f ve fondu podproces\u016f. Jinak sni\u017ete po\u010det p\u0159\u00edchoz\u00edch po\u017eadavk\u016f.
+
+LOCAL_HOST_UNRESOLVED=CWWKO0224E: Selhala inicializace kan\u00e1lu TCP {0}. Nepoda\u0159ilo se rozli\u0161it kombinaci hostitele {1} a portu {2}.
+LOCAL_HOST_UNRESOLVED.explanation=Nepoda\u0159ilo se rozli\u0161it zadan\u00fd n\u00e1zev hostitele. N\u00e1zev hostitele byl zad\u00e1n nespr\u00e1vn\u011b nebo nebyl v tomto syst\u00e9mu definov\u00e1n.
+LOCAL_HOST_UNRESOLVED.useraction=Ov\u011b\u0159te, zda byl kan\u00e1l TCP konfigurov\u00e1n pro pou\u017eit\u00ed spr\u00e1vn\u00e9ho n\u00e1zvu hostitele.
+
+PORT_NOT_ACCEPTING=CWWKO0225E: Kan\u00e1l TCP {0}, kter\u00fd naslouch\u00e1 na hostiteli {1} na portu {2}, zastavil p\u0159\u00edjem p\u0159ipojen\u00ed.
+PORT_NOT_ACCEPTING.explanation=Uveden\u00fd kan\u00e1l TCP ji\u017e nem\u016f\u017ee p\u0159ij\u00edmat p\u0159ipojen\u00ed k portu. Port byl z\u0159ejm\u011b zak\u00e1z\u00e1n.
+PORT_NOT_ACCEPTING.useraction=Chcete-li uveden\u00fd port pou\u017e\u00edvat, povolte jej a restartujte aplikaci.
+
+EVENT_SVC_MISSING=CWWKO0226E: Chyb\u00ed povinn\u00e1 slu\u017eba ud\u00e1losti.
+EVENT_SVC_MISSING.explanation=TCP vy\u017eaduje k dokon\u010den\u00ed IO soketu vy\u017eaduje, aby byla slu\u017eba ud\u00e1losti dostupn\u00e1.
+EVENT_SVC_MISSING.useraction=Ujist\u011bte se, \u017ee slu\u017eba ud\u00e1losti funguje.
+
+EXECUTOR_SVC_MISSING=CWWKO0227E: Chyb\u00ed povinn\u00e1 slu\u017eba prov\u00e1d\u011bc\u00edho modulu.
+EXECUTOR_SVC_MISSING.explanation=TCP k dokon\u010den\u00ed IO soketu vy\u017eaduje, aby byla slu\u017eba prov\u00e1d\u011bc\u00edho modulu dostupn\u00e1.
+EXECUTOR_SVC_MISSING.useraction=Ujist\u011bte se, \u017ee je bal\u00edk "paraleln\u00edch proces\u016f" aktivn\u00ed.
+
+TCP_NOT_ACCEPTING=CWWKO0228E: Server p\u0159estal p\u0159ij\u00edmat p\u0159ipojen\u00ed TCP z d\u016fvodu chyb. Server bude \u010dekat 10 minut, ne\u017e se o to pokus\u00ed znovu, ale m\u016f\u017ee b\u00fdt pot\u0159eba jeho restart.
+TCP_NOT_ACCEPTING.explanation=Server p\u0159estal p\u0159ij\u00edmat p\u0159ipojen z d\u016fvodu velk\u00e9ho mno\u017estv\u00ed v\u00fdjimek. To m\u016f\u017ee zna\u010dit probl\u00e9m v prost\u0159ed\u00ed JVM  nebo v opera\u010dn\u00edm syst\u00e9mu. Server se pokus\u00ed p\u0159ij\u00edmat p\u0159ipojen\u00ed za 10 minut.
+TCP_NOT_ACCEPTING.useraction=Zkontrolujte zpr\u00e1vu nebo protokoly v\u00fdjimek a zkuste naj\u00edt chyby p\u0159ipojen\u00ed nebo chyby popisova\u010de souboru. M\u016f\u017ee b\u00fdt pot\u0159eba restartovat server. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, obra\u0165te se na podporu IBM.
+
+ZOSAIO_ACTIVATED=CWWKO0229I: Nativn\u00ed podpora asynchronn\u00edho I/O pro z/OS byla aktivov\u00e1na.
+ZOSAIO_ACTIVATED.explanation=Slu\u017eba Asynchronous TCP/IP sockets I/O for Liberty (AsyncIO) on z/OS, kter\u00e1 poskytuje z\u00e1kladn\u00ed funkce bal\u00edku asynchronn\u00edho I/O na \u00farovni opera\u010dn\u00edho syst\u00e9mu, je aktivov\u00e1na.
+ZOSAIO_ACTIVATED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+ZOSAIO_DEACTIVATED=CWWKO0230I: Nativn\u00ed podpora asynchronn\u00edho I/O pro z/OS byla deaktivov\u00e1na.
+ZOSAIO_DEACTIVATED.explanation=Slu\u017eba Asynchronous TCP/IP sockets I/O for Liberty (AsyncIO) on z/OS, kter\u00e1 poskytuje z\u00e1kladn\u00ed funkce bal\u00edku asynchronn\u00edho I/O na \u00farovni opera\u010dn\u00edho syst\u00e9mu, je deaktivov\u00e1na.
+ZOSAIO_DEACTIVATED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.

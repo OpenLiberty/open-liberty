@@ -11,29 +11,31 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
 task assembleBootstrap(type: Copy) {
-	def javaHome = System.properties.('java.home').replace("\\", "\\\\").replace(":", "\\:")
-    from "${projectDir}/autoFVT-templates/bootstrapping.properties"
-    into "${projectDir}/autoFVT-defaults/"
+    def javaHome = System.properties.('java.home').replace('\\', '\\\\').replace(':', '\\:')
+    from project.file('autoFVT-templates/bootstrapping.properties')
+    into new File(buildDir, 'autoFVT-defaults')
     filter(ReplaceTokens, tokens: [JAVA_HOME: javaHome])
 }
 
 task assembleBinaryDependencies() {
-	doLast {
-		// Copy maven dependencies of this project into a directory that can be included by the junit
-		// task of every FAT bucket, effectively making all of fattest.simplicty's dependencies transitive
-	    sourceSets.main.runtimeClasspath.each {
-			def path = it.getAbsolutePath()
-	    	if((path.contains(".m2") || path.contains(".ibmartifactory")) && !(file("${buildDir}/lib/" + it.getName()).exists())) {
-	    		copy {
-	    			from path
-	    			into "${buildDir}/lib/"
-	    		}
-	    	}
-	    }		
-	}
+    File buildDirLib = new File(buildDir, 'lib')
+    outputs.dir buildDirLib
+    doLast {
+        // Copy maven dependencies of this project into a directory that can be included by the junit
+        // task of every FAT bucket, effectively making all of fattest.simplicty's dependencies transitive
+        sourceSets.main.runtimeClasspath.each {
+            def path = it.getAbsolutePath()
+            if((path.contains('.m2') || path.contains('.ibmartifactory')) && !(new File(buildDirLib, it.getName()).exists())) {
+                copy {
+                    from path
+                    into buildDirLib
+                }
+            }
+        }
+    }
 }
 
 assemble {
-	dependsOn assembleBootstrap
-	dependsOn assembleBinaryDependencies
+    dependsOn assembleBootstrap
+    dependsOn assembleBinaryDependencies
 }

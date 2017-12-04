@@ -181,15 +181,7 @@ public class PackageCommand {
      * Otherwise return false.
      */
     private boolean includeMinifyorMinifyRunnable(String val) {
-        if (PackageProcessor.IncludeOption.MINIFY.getValue().equals(val)) {
-            return true;
-        }
-        else if (PackageProcessor.IncludeOption.MINIFYRUNNABLE.getValue().equals(val)) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return PackageProcessor.IncludeOption.MINIFY.matches(val);
     }
 
     public ReturnCode packageServerRuntime(File packageFile, boolean runtimeOnly) {
@@ -276,6 +268,10 @@ public class PackageCommand {
             return "pax";
         }
 
+        if (PackageProcessor.IncludeOption.RUNNABLE.matches(includeOption)) {
+            return "jar";
+        }
+        
         return "zip";
     }
 
@@ -287,13 +283,15 @@ public class PackageCommand {
      */
     private String normalizePackageTargetName(String packageTarget) {
 
+        String defaultExt = getDefaultPackageFormat();
         if (packageTarget.contains(".")) {
             int poz = packageTarget.lastIndexOf(".");
             String ext = packageTarget.substring(poz);
             //FIXME we need improve this to print message when we auto modify the extension name as following
             if (ext.equalsIgnoreCase(".zip") || ext.equalsIgnoreCase(".pax")) {
-                return packageTarget.substring(0, poz) + "." + getDefaultPackageFormat();
-            } else if (ext.equalsIgnoreCase(".jar") && "zip".equals(getDefaultPackageFormat())) {
+                return packageTarget.substring(0, poz) + "." + defaultExt;
+            } else if (ext.equalsIgnoreCase(".jar") && 
+                        ("zip".equals(defaultExt) || "jar".equals(defaultExt))) {
                 //allow jar format packaging for zip defaulting platforms.
                 //this method overall currently prevents creation of zip on non-zip platforms, 
                 //prevents pax on non-pax platforms, this may be an error, but if we wish to create
@@ -301,7 +299,7 @@ public class PackageCommand {
                 return packageTarget;
             }
         }
-        return packageTarget + "." + getDefaultPackageFormat();
+        return packageTarget + "." + defaultExt;
     }
 
     private static class FailedWithReturnCodeException extends Exception {

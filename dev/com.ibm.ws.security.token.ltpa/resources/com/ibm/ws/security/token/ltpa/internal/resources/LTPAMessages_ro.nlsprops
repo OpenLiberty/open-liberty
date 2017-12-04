@@ -1,0 +1,57 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.token.ltpa/resources/com/ibm/ws/security/token/ltpa/internal/resources/LTPAMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Token Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS4100 - CWWKS4199
+
+LTPA_TOKEN_SERVICE_INVALID_FACTORY=CWWKS4100E: Nu exist\u0103 nici o fabric\u0103 de token-uri ini\u0163ializat\u0103.
+LTPA_TOKEN_SERVICE_INVALID_FACTORY.explanation=Fabrica de token-uri nu a fost ini\u0163ializat\u0103.
+LTPA_TOKEN_SERVICE_INVALID_FACTORY.useraction=Valida\u0163i configura\u0163ia Managerului de jetoane din fi\u015fierul server.xml sau orice alt\u0103 resurs\u0103 specificat\u0103 de configura\u0163ie.
+
+LTPA_TOKEN_SERVICE_INVALID_UNIQUE_ID=CWWKS4101E: Nu exist\u0103 nici un ID unic cu care s\u0103 se creeze token-ul.
+LTPA_TOKEN_SERVICE_INVALID_UNIQUE_ID.explanation=Parametrul unique_id este nul sau nu a fost specificat \u00een datele token-ului.
+LTPA_TOKEN_SERVICE_INVALID_UNIQUE_ID.useraction=Valida\u0163i c\u0103 utilizatorul are un ID unic. Dac\u0103 utiliza\u0163i un registru de utilizatori personalizat, valida\u0163i c\u0103 datele token-ului con\u0163in o valoare pentru parametrul unique_id.
+
+LTPA_TOKEN_SERVICE_MISSING_KEY=CWWKS4102E: Sistemul nu poate crea token-ul LTPA pentru c\u0103 lipse\u015fte proprietatea necesar\u0103 {0}.
+LTPA_TOKEN_SERVICE_MISSING_KEY.explanation=Cheia specificat\u0103 lipse\u015fte, a\u015fadar token-ul LTPa nu poate fi creat.
+LTPA_TOKEN_SERVICE_MISSING_KEY.useraction=Explora\u0163i fi\u015fierul de propriet\u0103\u0163i \u00een care sunt stocate informa\u0163iile de cheie LTPA \u015fi verifica\u0163i c\u0103 informa\u0163iile cheii includ o cheie secret\u0103, o cheie privat\u0103 \u015fi o cheie public\u0103.
+
+LTPA_CREATE_KEYS_START=CWWKS4103I: Crearea cheilor LTPA. Aceasta poate dura c\u00e2teva secunde.
+LTPA_CREATE_KEYS_START.explanation=Cheile LTPA nu exist\u0103 \u015fi sunt generate automat. Orice servicii ce necesit\u0103 LTPA nu vor porni p\u00e2n\u0103 c\u00e2nd cheile LTPA au fost generate \u015fi configura\u0163ia este preg\u0103tit\u0103.
+LTPA_CREATE_KEYS_START.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+LTPA_CREATE_KEYS_COMPLETE=CWWKS4104A: Chei LTPA create \u00een {0} secunde. Fi\u015fier cheie LTPA: {1}
+LTPA_CREATE_KEYS_COMPLETE.explanation=Acest mesaj este pur informativ.
+LTPA_CREATE_KEYS_COMPLETE.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+LTPA_CONFIG_READY=CWWKS4105I: Configura\u0163ia LTPA este gata dup\u0103 {0} secunde.
+LTPA_CONFIG_READY.explanation=Acest mesaj este pur informativ.
+LTPA_CONFIG_READY.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+LTPA_CONFIG_ERROR=CWWKS4106E: Eroare de configurare LTPA. Nu se poate crea sau citi fi\u015fierul de chei LTPA: {0}
+LTPA_CONFIG_ERROR.explanation=Cheile LTPA nu au putut fi citite sau create la loca\u0163ia specificat\u0103.
+LTPA_CONFIG_ERROR.useraction=Asigura\u0163i-v\u0103 c\u0103 loca\u0163ie este accesibil\u0103 procesului de server. Orice FFDC-uri pot indica o eroare fatal\u0103 \u00een generarea sau \u00eenc\u0103rcarea cheilor.
+
+LTPA_KEYS_TO_LOAD=CWWKS4107A: Fi\u015fierul de chei LTPA sau configura\u0163ia au fost modificate. Cheile LTPA vor fi re\u00eenc\u0103rcate din fi\u015fierul: {0}
+LTPA_KEYS_TO_LOAD.explanation=Cheile LTPA trebuiesc re\u00eenc\u0103rcate deoarece a existat o modificare la fi\u015fierul cheilor LTPA sau a configura\u0163iei.
+LTPA_KEYS_TO_LOAD.useraction=Asigura\u0163i-v\u0103 c\u0103 toate serverele care particip\u0103 \u00een semnarea unic\u0103 (Single-Sign-On) folosesc acelea\u015fi chei LTPA \u015fi parole.
+
+LTPA_KEY_CREATE_ERROR=CWWKS4108E: Sistemul nu poate crea cheia LTPA.
+LTPA_KEY_CREATE_ERROR.explanation=Cheia LTPA nu poate fi creat\u0103.
+LTPA_KEY_CREATE_ERROR.useraction=Orice FFDC ar putea indica o eroare fatal\u0103 \u00een generarea cheilor.
+
+

@@ -1,0 +1,97 @@
+###############################################################################
+# Copyright (c) 2014, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.concurrent.persistent/resources/com/ibm/ws/concurrent/persistent/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Persistent Scheduled Executor
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1500 to CWWCK1999 except those specifically identified as moved
+
+# Java class and method names that should not be translated:
+# Future, get, getDelay, getResult, getNextExecutionTime, isCancelled, isDone, ScheduledFuture, TaskStatus
+
+CWWKC1500.task.rollback.retry=CWWKC1500W: El ejecutor persistente {0} ha retrotra\u00eddo la tarea {1}. El reintento de la tarea est\u00e1 planificado transcurridos {2} segundos.
+CWWKC1500.task.rollback.retry.explanation=La ejecuci\u00f3n de la tarea se ha marcado para retrotraer. La tarea se volver\u00e1 a intentar despu\u00e9s del n\u00famero especificado de segundos.
+CWWKC1500.task.rollback.retry.useraction=Espere a que se reintente la tarea.
+
+CWWKC1501.task.failure.retry=CWWKC1501W: El ejecutor persistente {0} ha retrotra\u00eddo la tarea {1} debido a la anomal\u00eda {2}. El reintento de la tarea est\u00e1 planificado transcurridos {3} segundos.
+CWWKC1501.task.failure.retry.explanation=La ejecuci\u00f3n de la tarea ha fallado y se ha retrotra\u00eddo. La tarea se volver\u00e1 a intentar despu\u00e9s del n\u00famero especificado de segundos.
+CWWKC1501.task.failure.retry.useraction=Si la anomal\u00eda es transitoria, espere a que la tarea se vuelva a intentar. De lo contrario, corrija la causa de la anomal\u00eda si \u00e9sta es inesperada.
+
+CWWKC1502.task.rollback=CWWKC1502W: El ejecutor persistente {0} ha retrotra\u00eddo la tarea {1}.
+CWWKC1502.task.rollback.explanation=La ejecuci\u00f3n de la tarea se ha marcado para retrotraer.
+CWWKC1502.task.rollback.useraction=Si la retrotracci\u00f3n es inesperada, vuelva a planificar la tarea.
+
+CWWKC1503.task.failure=CWWKC1503W: El ejecutor persistente {0} ha retrotra\u00eddo la tarea {1} debido a la anomal\u00eda {2}.
+CWWKC1503.task.failure.explanation=La ejecuci\u00f3n de la tarea ha fallado y se ha retrotra\u00eddo.
+CWWKC1503.task.failure.useraction=Corrija la causa de la anomal\u00eda, si la anomal\u00eda es inesperada, y vuelva a planificar la tarea.
+
+CWWKC1510.retry.limit.reached.rollback=CWWKC1510W: El ejecutor persistente {0} ha cancelado la tarea {1} porque se ha retrotra\u00eddo o ha fallado {2} veces consecutivas.
+CWWKC1510.retry.limit.reached.rollback.explanation=La tarea ha alcanzado el l\u00edmite de reintentos consecutivos y no se volver\u00e1 a intentar ejecutar.
+CWWKC1510.retry.limit.reached.rollback.useraction=Si los errores o retrotracciones son inesperadas, determine la causa y vuelva a planificar la tarea. Si las retrotracciones y anomal\u00edas son intermitentes, considere la posibilidad de aumentar el l\u00edmite de reintentos. 
+
+CWWKC1511.retry.limit.reached.failed=CWWKC1511W: El ejecutor persistente {0} ha cancelado la tarea {1} porque se ha retrotra\u00eddo o ha fallado {2} veces consecutivas. La anomal\u00eda final es {3}.
+CWWKC1511.retry.limit.reached.failed.explanation=La tarea ha alcanzado el l\u00edmite de reintentos consecutivos y no se volver\u00e1 a intentar ejecutar.
+CWWKC1511.retry.limit.reached.failed.useraction=Si los errores o retrotracciones son inesperadas, determine la causa y vuelva a planificar la tarea. Si las retrotracciones y anomal\u00edas son intermitentes, considere la posibilidad de aumentar el l\u00edmite de reintentos. 
+
+CWWKC1540.thread.cannot.submit.tasks=CWWKC1540E: No puede planificar tareas persistentes desde el contexto de hebras actual.
+CWWKC1540.thread.cannot.submit.tasks.explanation=Planifique tareas persistentes s\u00f3lo desde una hebra asociada con una aplicaci\u00f3n o caracter\u00edstica con una identidad de cargador de clases serializable.
+CWWKC1540.thread.cannot.submit.tasks.useraction=Aseg\u00farese de que el contexto de la aplicaci\u00f3n o caracter\u00edstica est\u00e9 presente en la hebra cuando se planifiquen las tareas.
+
+# {0} method name: either isDone or isCancelled
+CWWKC1550.status.unavailable.until.ended=CWWKC1550E: S\u00f3lo puede invocar el m\u00e9todo {0} en un TaskStatus obtenido una vez finalizada la tarea. Determine si la tarea ha finalizado en el momento de obtener una instancia de TaskStatus verificando que el valor de getNextExecutionTime sea nulo.
+CWWKC1550.status.unavailable.until.ended.explanation=TaskStatus es una instant\u00e1nea inmutable del estado de la tarea. Cualquier valor devuelto de isDone o isCancelled anterior al final de la tarea no ser\u00e1 v\u00e1lido cuando finalice la tarea. Se genera un error cuando se intenta antes de que finalice la tarea para evitar devolver un valor no fiable.
+CWWKC1550.status.unavailable.until.ended.useraction=Utilice el m\u00e9todo getNextExecutionTime para determinar si una tarea ha finalizado. Utilice los m\u00e9todos isDone e isCancelled s\u00f3lo si la tarea ha finalizado.
+
+CWWKC1551.result.unavailable.until.ended=CWWKC1551E: S\u00f3lo puede invocar el m\u00e9todo get en un TaskStatus obtenido una vez finalizada la tarea. Utilice el m\u00e9todo getResult para obtener el resultado de la ejecuci\u00f3n m\u00e1s reciente en el momento de obtener la instancia de TaskStatus.
+CWWKC1551.result.unavailable.until.ended.explanation=TaskStatus es una instant\u00e1nea inmutable del estado de la tarea. Cualquier valor devuelto de get anterior al final de la tarea no ser\u00e1 v\u00e1lido cuando finalice otro intento de ejecuci\u00f3n o la tarea. Se genera un error cuando se intenta antes de que finalice la tarea para evitar devolver un valor no fiable.
+CWWKC1551.result.unavailable.until.ended.useraction=Utilice el m\u00e9todo getResult para obtener el resultado del intento de ejecuci\u00f3n m\u00e1s reciente en el momento de obtener la instancia de TaskStatus. 
+
+CWWKC1552.delay.unavailable=CWWKC1552E: S\u00f3lo puede invocar el m\u00e9todo getDelay en un TaskStatus para las tareas de una \u00fanica instant\u00e1nea. Para las tareas repetidas y las tareas planificadas con un desencadenante, utilice el m\u00e9todo getNextExecutionTime para obtener la siguiente hora de ejecuci\u00f3n esperada despu\u00e9s de la ejecuci\u00f3n m\u00e1s reciente en el momento de obtener TaskStatus.
+CWWKC1552.delay.unavailable.explanation=TaskStatus es una instant\u00e1nea inmutable del estado de la tarea. Cualquier valor devuelto de getDelay anterior al final de la tarea no ser\u00e1 v\u00e1lido cuando finalice otro intento de ejecuci\u00f3n. Se genera un error cuando se intenta antes de que finalice la tarea para evitar devolver un valor no fiable.
+CWWKC1552.delay.unavailable.useraction=Utilice el m\u00e9todo getNextExecutionTime para obtener la siguiente hora de ejecuci\u00f3n esperada correspondiente al momento de obtener TaskStatus.
+
+# {0} persistent executor id
+# {1} task id (and name in parenthesis if any)
+CWWKC1553.result.inaccessible=CWWKC1553E: El ejecutor persistente {0} no puede obtener el resultado de la tarea {1}. Consulte la excepci\u00f3n de la causa.
+CWWKC1553.result.inaccessible.explanation=Se ha producido un error que impide obtener el resultado de la tarea.
+CWWKC1553.result.inaccessible.useraction=Consulte la excepci\u00f3n de la causa para corregir el problema y, a continuaci\u00f3n, vuelva a planificar la tarea.
+
+# {0} task id (and name in parenthesis if any)
+CWWKC1554.general.task.failure=CWWKC1554E: La tarea {0} no ha podido ejecutarse. Consulte la excepci\u00f3n de la causa.
+CWWKC1554.general.task.failure.explanation=La tarea no ha podido ejecutarse debido a la excepci\u00f3n especificada.
+CWWKC1554.general.task.failure.useraction=Consulte la excepci\u00f3n de la causa para corregir el problema y, a continuaci\u00f3n, vuelva a planificar la tarea.
+
+# {0} task id (and name in parenthesis if any)
+# {1} number of consecutive failures/rollbacks
+CWWKC1555.retry.limit.reached=CWWKC1555E: La tarea {0} ha terminado anormalmente porque se ha retrotra\u00eddo o ha fallado {1} veces consecutivas.
+CWWKC1555.retry.limit.reached.explanation=La tarea ha alcanzado el l\u00edmite de reintentos consecutivos y no se volver\u00e1 a intentar ejecutar.
+CWWKC1555.retry.limit.reached.useraction=Consulte la excepci\u00f3n de la causa para corregir el problema y, a continuaci\u00f3n, vuelva a planificar la tarea. Si el problema es intermitente, aumente el l\u00edmite de reintentos.
+
+# {0} name of application that scheduled the task
+CWWKC1556.task.exec.deferred=CWWKC1556W: La ejecuci\u00f3n de tareas de la aplicaci\u00f3n {0} se ha diferido hasta que la aplicaci\u00f3n y los m\u00f3dulos que han planificado las tareas est\u00e9n disponibles.
+CWWKC1556.task.exec.deferred.explanation=La aplicaci\u00f3n y el m\u00f3dulo que han planificado una tarea deben estar disponibles para que se pueda ejecutar la tarea.
+CWWKC1556.task.exec.deferred.useraction=Aseg\u00farese de que la aplicaci\u00f3n y el m\u00f3dulo que han planificado la tarea est\u00e9n disponibles. Como alternativa, cancele la tarea si ya no se necesita.
+
+# {0} request id
+# {1} stack trace
+CWWKC1559.mbean.operation.failure=CWWKC1559E:  Se ha producido un error. Solicitud {0}. {1}
+CWWKC1559.mbean.operation.failure.explanation=Se ha producido un error al intentar realizar la operaci\u00f3n solicitada.
+CWWKC1559.mbean.operation.failure.useraction=Compruebe los registros del servidor para obtener m\u00e1s detalles sobre el error de la operaci\u00f3n.

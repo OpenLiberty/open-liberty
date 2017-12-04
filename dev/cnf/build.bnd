@@ -8,7 +8,7 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include ${workspace}/gradle.properties, ${workspace}/generated.properties
+-include ${workspace}/gradle.properties
 
 # Maven repository credentials
 -connection-settings: ${if;${artifactory.download.token};server;-dummy};id=https://${artifactory.download.server};username=${artifactory.download.user};password=${artifactory.download.token}, \
@@ -48,6 +48,9 @@ bin: ${if;${driver;gradle};build/classes/java/main;bin}
 testbin: ${if;${driver;gradle};build/classes/java/test;bin_test}
 target-dir: ${if;${driver;gradle};build/libs;generated}
 
+fat.project: false
+test.project: ${fat.project}
+
 javac.source: 1.7
 javac.target: 1.7
 javac.debug: true
@@ -62,9 +65,18 @@ javac.encoding: UTF-8
 -buildrepo: Local
 -groupid: ${if;${test.project};test;dev}
 -pom: 
-#-dsannotations-options: version;minimum=1.2
+-dsannotations-options: version;minimum=1.2
 
 buildEngineName: defaultEngine
+
+Bundle-License: \
+  Eclipse Public License; \
+  url=https://www.eclipse.org/legal/epl-v10.html
+
+Bundle-SCM: \
+  connection=scm:git:https://github.com/OpenLiberty/open-liberty.git, \
+  developerConnection=scm:git:https://github.com:OpenLiberty/open-liberty.git, \
+  url=https://github.com/OpenLiberty/open-liberty/tree/master
 
 # This is the version of JUnit that will be used at build time and run time
 junit: org.apache.servicemix.bundles.junit;version="[4.11,5)"
@@ -75,9 +87,7 @@ mockito: org.mockito.mockito-core;version="[1.9,2)",\
 
 -pluginpath: \
     ${workspace}/cnf/lib/wlp-bndPlugins.jar,\
-    ${workspace}/cnf/lib/org.apache.aries.util-1.2.0.jar
-
-test.project: false
+    ${workspace}/cnf/mavenlibs/org.apache.aries.util-1.1.3.jar
 
 instrument.disabled: ${if;${test.project};true;false}
 instrument.classesIncludes: **/*.class

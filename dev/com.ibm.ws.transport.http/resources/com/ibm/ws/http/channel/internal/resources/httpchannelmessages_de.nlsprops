@@ -1,0 +1,143 @@
+###############################################################################
+# Copyright (c) 2002, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT WebSphere kernel transport http channel
+#CMVCPATHNAME com.ibm.ws.transport.http/resources/com/ibm/ws/http/channel/internal/resources/httpchannelmessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+config.maxpersist=CWWKT0001E: Die maximal zul\u00e4ssige Anforderungsanzahl ({0}) pro Socket ist nicht g\u00fcltig. Die g\u00fcltigen Werte sind {1} f\u00fcr unbegrenzt und alle positiven Zahlen.
+config.maxpersist.explanation=Der konfigurierte Wert f\u00fcr die maximal zul\u00e4ssige Anforderungsanzahl pro Socket ist nicht g\u00fcltig.
+config.maxpersist.useraction=Konfigurieren Sie einen g\u00fcltigen Wert f\u00fcr die maximal zul\u00e4ssige Anforderungsanzahl pro Socket.
+
+config.incomingbody=CWWKT0002E: Die Gr\u00f6\u00dfe f\u00fcr den Eingangspuffer {0} ist nicht g\u00fcltig. Die g\u00fcltigen Gr\u00f6\u00dfenwerte sind {1} bis {2}.
+config.incomingbody.explanation=Der f\u00fcr die Gr\u00f6\u00dfe des Eingangspuffers konfigurierte Wert ist nicht g\u00fcltig.
+config.incomingbody.useraction=Konfigurierne Sie einen g\u00fcltigen Wert f\u00fcr die Gr\u00f6\u00dfe des Eingangspuffers.
+
+config.incomingheader=CWWKT0003E: Die Gr\u00f6\u00dfe f\u00fcr den Headerpuffer {0} ist nicht g\u00fcltig. Die g\u00fcltigen Gr\u00f6\u00dfenwerte sind {1} bis {2}.
+config.incomingheader.explanation=Der f\u00fcr die Gr\u00f6\u00dfe des Headerpuffers konfigurierte Wert ist nicht g\u00fcltig.
+config.incomingheader.useraction=Konfigurierne Sie einen g\u00fcltigen Wert f\u00fcr die Gr\u00f6\u00dfe des Headerpuffers.
+
+config.outgoingbuffer=CWWKT0004E: Die Gr\u00f6\u00dfe f\u00fcr den Ausgangspuffer {0} ist nicht g\u00fcltig. Die g\u00fcltigen Gr\u00f6\u00dfenwerte sind {1} bis {2}.
+config.outgoingbuffer.explanation=Der f\u00fcr die Gr\u00f6\u00dfe des Ausgangspuffers konfigurierte Wert ist nicht g\u00fcltig.
+config.outgoingbuffer.useraction=Konfigurierne Sie einen g\u00fcltigen Wert f\u00fcr die Gr\u00f6\u00dfe des Ausgangspuffers.
+
+config.persisttimeout=CWWKT0005E: Das Persistenzzeitlimit {0} ist nicht g\u00fcltig. Das Zeitlimit muss gr\u00f6\u00dfer als {1} sein.
+config.persisttimeout.explanation=Der konfigurierte Wert f\u00fcr den Parameter des Persistenzzeitlimits ist nicht g\u00fcltig.
+config.persisttimeout.useraction=Konfigurieren Sie einen g\u00fcltigen Wert f\u00fcr den Parameter des Persistenzzeitlimits.
+
+config.readtimeout=CWWKT0006E: Das Lesezeitlimit {0} ist nicht g\u00fcltig. Das Zeitlimit muss gr\u00f6\u00dfer als {1} sein.
+config.readtimeout.explanation=Der konfigurierte Wert f\u00fcr den Parameter des Lesezietlimits ist nicht g\u00fcltig.
+config.readtimeout.useraction=Konfigurieren Sie einen g\u00fcltigen Wert f\u00fcr den Parameter des Lesezeitlimits.
+
+config.writetimeout=CWWKT0007E: Das Schreibzeitlimit {0} ist nicht g\u00fcltig. Das Zeitlimit muss gr\u00f6\u00dfer als {1} sein.
+config.writetimeout.explanation=Der konfigurierte Wert f\u00fcr den Parameter des Schreibzeitlimits ist nicht g\u00fcltig.
+config.writetimeout.useraction=Konfigurieren Sie einen g\u00fcltigen Wert f\u00fcr den Parameter des Schreibzeitlimits.
+
+config.fieldsize=CWWKT0008E: Der Feldgr\u00f6\u00dfengrenzwert {0} ist nicht g\u00fcltig. Die g\u00fcltigen Gr\u00f6\u00dfenwerte sind {1} bis {2}.
+config.fieldsize.explanation=Der konfigurierte Wert f\u00fcr den Feldgr\u00f6\u00dfengrenzwert ist nicht g\u00fcltig.
+config.fieldsize.useraction=Konfigurieren Sie einen g\u00fcltigen Wert f\u00fcr den Feldgr\u00f6\u00dfengrenzwert.
+
+config.numheaders=CWWKT0009E: Der Grenzwert f\u00fcr Headeranzahl {0} ist nicht g\u00fcltig. Die g\u00fcltigen Gr\u00f6\u00dfenwerte sind {1} bis {2}.
+config.numheaders.explanation=Der konfigurierte Wert f\u00fcr den Grenzwert f\u00fcr Headeranzahl ist nicht g\u00fcltig.
+config.numheaders.useraction=Konfigurierne Sie einen g\u00fcltigen Wert f\u00fcr den Grenzwert f\u00fcr Headeranzahl.
+
+config.incomingbodymaxsize=CWWKT0010E: Die maximale Byteanzahl f\u00fcr eingehende Nachrichtenhauptteile ({0}) ist nicht g\u00fcltig. Der Wert muss gr\u00f6\u00dfer-gleich {1} sein.
+config.incomingbodymaxsize.explanation=Der konfigurierte Wert f\u00fcr die maximale Byteanzahl f\u00fcr eingehende Nachrichtenhauptteile ist nicht g\u00fcltig.
+config.incomingbodymaxsize.useraction=Konfigurieren Sie einen g\u00fcltigen Wert f\u00fcr die maximale Byteanzahl f\u00fcr einen eingehenden Nachrichtenhauptteil.
+
+NO_DEFAULT_CONFIGURATION=CWWKT0011W: Die Standardkonfiguration f\u00fcr {0} mit der ID {1} wurde nicht gefunden.
+NO_DEFAULT_CONFIGURATION.explanation=Die angegebene Standardkonfiguration wurde f\u00fcr die angegebene ID nicht gefunden.
+NO_DEFAULT_CONFIGURATION.useraction=\u00dcberpr\u00fcfen Sie die Serverkonfiguration, und f\u00fchren Sie anschlie\u00dfend einen bereinigten Start durch.
+
+DEFAULT_OPTIONS_ERROR=CWWKT0012E: Es ist ein interner Fehler aufgetreten. Die Standardkonfiguration kann nicht erstellt werden. Ausnahme: {0}
+DEFAULT_OPTIONS_ERROR.explanation=CMSG0001
+DEFAULT_OPTIONS_ERROR.useraction=CMSG0002
+
+DEFAULT_ENDPOINT_ERROR=CWWKT0013E: Es ist ein interner Fehler aufgetreten. Der Standardendpunkt kann nicht erstellt werden. Ausnahme: {0}
+DEFAULT_ENDPOINT_ERROR.explanation=CMSG0001
+DEFAULT_ENDPOINT_ERROR.useraction=CMSG0002                                                   
+
+DEFAULT_VHOST_ERROR=CWWKT0014E: Es ist ein interner Fehler aufgetreten. Der virtuelle Standardhost kann nicht erstellt werden. Ausnahme: {0}
+DEFAULT_VHOST_ERROR.explanation=CMSG0001
+DEFAULT_VHOST_ERROR.useraction=CMSG0002                                                   
+missingPorts.endpointDisabled=CWWKT0015W: Es wurden keine Ports f\u00fcr den Endpunkt {0} konfiguriert. Der Endpunkt wurde inaktiviert.
+missingPorts.endpointDisabled.explanation=Ein HTTP-Endpunkt erfordert, dass mindestens ein Port konfiguriert wird.
+missingPorts.endpointDisabled.useraction=Ordnen Sie httpPort und/oder httpsPort einen g\u00fcltigen Portwert zu.
+
+context.root.added=CWWKT0016I: Webanwendung verf\u00fcgbar: ({0}): {1}
+context.root.added.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+context.root.added.useraction=Es ist keine Aktion erforderlich.
+
+context.root.removed=CWWKT0017I: Webanwendung entfernt ({0}): {1}
+context.root.removed.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+context.root.removed.useraction=Es ist keine Aktion erforderlich.
+
+Missing.App.Or.Context.Root=CWWKT0018E: Die Anwendung oder das Kontextstammelement f\u00fcr diese Anforderung wurde nicht gefunden: {0}
+Missing.App.Or.Context.Root.explanation=Die Anforderung kann nicht von einer Anwendung im Server verarbeitet werden.
+Missing.App.Or.Context.Root.useraction=Stellen Sie sicher, dass die Anwendung definiert und implementiert ist und vom Client ordnungsgem\u00e4\u00df referenziert wird.
+
+#Cannot remove above due to service rules, but we do not need a message key as this is never logged
+#only output to the browser on our 404 page - removing it means we give away less server implementation info
+Missing.App.Or.Context.Root.No.Error.Code=Die Anwendung oder das Kontextstammelement f\u00fcr diese Anforderung wurde nicht gefunden: {0}
+Missing.App.Or.Context.Root.No.Error.Code.explanation=Die Anforderung kann nicht von einer Anwendung im Server verarbeitet werden.
+Missing.App.Or.Context.Root.No.Error.Code.useraction=Stellen Sie sicher, dass die Anwendung definiert und implementiert ist und vom Client ordnungsgem\u00e4\u00df referenziert wird.
+
+config.httpChain.error=CWWKT0019E: Beim Konfigurieren des Endpunkts {0} ist ein Problem aufgetreten: {1}
+config.httpChain.error.explanation=Der HTTP-Endpunkt konnte wegen eines Konfigurationsproblems nicht gestartet werden.
+config.httpChain.error.useraction=Suchen Sie in den Nachrichten- und Ausnahmeprotokollen nach zugeh\u00f6rigen Fehlern.
+
+
+start.httpChain.error=CWWKT0020E: Beim Starten des Endpunkts {0} ist ein Problem aufgetreten:: {1}
+start.httpChain.error.explanation=Der HTTP-Endpunkt konnte wegen eines unerwarteten Problems nicht gestartet werden. 
+start.httpChain.error.useraction=Suchen Sie in den Nachrichten- und Ausnahmeprotokollen nach zugeh\u00f6rigen Fehlern.
+
+
+httpChain.error.shutdown=CWWKT0021I: Der Server wird aufgrund eines m\u00f6glichen Konfigurationsfehlers gestoppt. \
+Der Endpunkt {0} kann nicht gestartet werden. Dieser Fehler kann auftreten, weil der konfigurierte Port bereits im Gebrauch ist.
+httpChain.error.shutdown.explanation=Der HTTP-Endpunkt wurde mit der Einstellung onError=FAIL konfiguriert. Daher wird der Server gestoppt, wenn beim Starten des Endpunkts ein Fehler auftritt. 
+httpChain.error.shutdown.useraction=Suchen Sie in den Nachrichten- und Ausnahmeprotokollen nach zugeh\u00f6rigen Fehlern. \
+\
+Wenn Sie verhindern m\u00f6chten, dass der Server aufgrund eines Fehlers beim Starten des Endpunkts gestoppt wird, stellen Sie sicher, dass die Einstellung onError auf WARN (Warnung) oder IGNORE (Ignorieren) gesetzt ist.
+
+unresolveableHost=CWWKT0022E: Der konfigurierte Host {0} f\u00fcr den HTTP-Endpunkt {1} konnte nicht aufgel\u00f6st werden. Der Endpunkt wurde inaktiviert.
+unresolveableHost.explanation=Ein HTTP-Endpunkt setzt einen Hostwert voraus, der in eine aktive Netzschnittstelle aufgel\u00f6st werden kann.
+unresolveableHost.useraction=Stellen Sie sicher, dass sich der Hostwert auf eine aktive Netzschnittstelle bezieht oder verwenden Sie den Platzhalter *, um alle Schnittstellen zu binden.
+
+unresolveableDefaultHost=CWWKT0023W: Die konfigurierte Variable defaultHostName {0} konnte nicht aufgel\u00f6st werden, daher wurde localhost verwendet.
+unresolveableDefaultHost.explanation=Die konfigurierte Variable defaultHostName gibt einen Hostwert an, der nicht in eine aktive Netzschnittstelle aufgel\u00f6st werden konnte.
+unresolveableDefaultHost.useraction=Stellen Sie sicher, dass sich der konfigurierte defaultHostName-Wert auf eine aktive Netzschnittstelle bezieht.
+
+defaultHostDisabled=CWWKT0024W: Der virtuelle Standardhost (default_host) kann nicht inaktiviert werden.
+defaultHostDisabled.explanation=F\u00fcr die Laufzeitumgebung ist der virtuelle Standardhost erforderlich. 
+defaultHostDisabled.useraction=Es ist keine Aktion erforderlich.
+
+noHostAliases=CWWKT0025W: Der virtuelle Host {0} hat keine konfigurierten Hostaliasnamen. Er empf\u00e4ngt keine eingehenden Anforderungen.
+noHostAliases.explanation=Alle virtuellen Hosts, die keine Standardhosts sind, m\u00fcssen mindestens einen Hostalias (Host:Port) definieren, um an diesen virtuellen Host weiterzuleitende eingehende Anforderungen zu ermitteln. \
+Der angegebene virtuelle Host hat keinen einzigen definierten Hostalias, sodass keine Anforderungen an ihn weitergeleitet werden.
+noHostAliases.useraction=Aktualisieren Sie das Element virtualHost in der Datei server.xml, um mindestens ein hostAlias-Attribut zu definieren.
+
+invalidAlias=CWWKT0026W: Ein konfigurierter Hostalias f\u00fcr den virtuellen Host {0} ist ung\u00fcltig  und wird ignoriert. {1}
+invalidAlias.explanation=Der konfigurierte Hostalias enth\u00e4lt ung\u00fcltige Zeichen oder die Syntax ist falsch.
+invalidAlias.useraction=Aktualisieren Sie das Element virtualHost in der Datei server.xml und geben Sie entweder den richtigen Hostalias an oder entfernen Sie den falschen Hostalias. IPv6-Adressen m\u00fcssen in [] eingeschlossen werden.
+
+wildcardReason=Das Platzhalterzeichen * kann nicht mit anderen Zeichen im Hostalias kombiniert werden.
+badHostPortReason=Der angegebene Host ist keine g\u00fcltige IP-Adresse oder kein g\u00fcltiger Hostname oder der angegebene Port ist kein Integer.
+
+duplicateAlias=CWWKT0027W: Der Hostalias {0} f\u00fcr den virtuellen Host {1} steht in Konflikt mit einem vorhandenen Hostalias und wird daher ignoriert.
+duplicateAlias.explanation=Der angegebene Hostalias steht in Konflikt mit einem vorhandenen Hostalias.
+duplicateAlias.useraction=Stellen Sie sicher, dass alle in der Datei server.xml als Element virtualHost definierte Hostalias eindeutig sind.
+
+context.root.changed=CWWKT0028I: Die Webanwendung wurde verschoben ({0}): {1}
+context.root.changed.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+context.root.changed.useraction=Es ist keine Aktion erforderlich.

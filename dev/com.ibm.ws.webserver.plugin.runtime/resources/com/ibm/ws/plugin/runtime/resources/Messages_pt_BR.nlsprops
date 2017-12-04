@@ -1,0 +1,27 @@
+###############################################################################
+# Copyright (c) 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME 
+#COMPONENTPREFIX CWWKU
+#COMPONENTNAMEFOR Plugin Utility Runtime
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+collective.mbean.not.available=CWWKU0101E: Uma solicita\u00e7\u00e3o para gerar um arquivo de configura\u00e7\u00e3o de plug-in do servidor da web n\u00e3o \u00e9 processada para o cluster {0} porque o recurso do controlador coletivo requerido MBean n\u00e3o foi localizado.
+collective.mbean.not.available.explanation=O recurso do controlador coletivo deve ser ativado para o servidor processar a solicita\u00e7\u00e3o. 
+collective.mbean.not.available.useraction=Ative o recurso do controlador coletivo no servidor de destino, ou direcione a solicita\u00e7\u00e3o para um servidor que tenha o recurso do controlador coletivo j\u00e1 ativado.
+# --------------------------------
+# --------------------------------
+appserver.mbean.not.available=CWWKU0102E: Uma solicita\u00e7\u00e3o para gerar um arquivo de configura\u00e7\u00e3o de plug-in do servidor da web n\u00e3o \u00e9 processada para este servidor porque o recurso Java Servlet requerido MBean n\u00e3o foi localizado.
+appserver.mbean.not.available.explanation=O recurso Java Servlet, 3.0 ou 3.1, deve ser ativado para o servidor processar a solicita\u00e7\u00e3o.
+appserver.mbean.not.available.useraction=Ative o recurso Java Servlet, 3.0 ou 3.1, no servidor de destino, ou direcione a solicita\u00e7\u00e3o para um servidor que tenha um recurso Java Servlet j\u00e1 ativado.
+# -------------------------------- 

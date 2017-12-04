@@ -43,6 +43,7 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.spi.InjectionProviderException;
 import org.apache.myfaces.spi.InjectionProviderFactory;
@@ -240,7 +241,18 @@ public final class ActionListenerHandler extends TagHandler
 
         WASInjectionProvider injectionProvider = (WASInjectionProvider) InjectionProviderFactory.getInjectionProviderFactory(eContext).getInjectionProvider(eContext);
 
-        ManagedObject mo = (ManagedObject) injectionProvider.inject(Klass, true, eContext);
+        ManagedObject mo = null;
+        boolean disableFaceletActionListenerPreDestroy = MyfacesConfig.getCurrentInstance(eContext).isDisableFaceletActionListenerPreDestroy();
+
+        // If disableFaceletActionListenerPreDestroy is enabled (set to true),
+        // do not add the ActionListener instance to the Injected Bean list in the application map.
+        // This prevents the Injected Bean list to grow and PreDestroy in ActionListener is never called.
+        if (disableFaceletActionListenerPreDestroy) {
+            mo = (ManagedObject) injectionProvider.inject(Klass, true, null);
+        }
+        else {
+            mo = (ManagedObject) injectionProvider.inject(Klass, true, eContext);
+        }
 
         return (ActionListener) mo.getObject();
 

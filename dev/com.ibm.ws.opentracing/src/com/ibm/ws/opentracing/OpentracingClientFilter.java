@@ -26,7 +26,6 @@ import org.osgi.service.component.annotations.Component;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.opentracing.filters.SpanFilterType;
 
 import io.opentracing.ActiveSpan;
 import io.opentracing.Span;
@@ -99,7 +98,12 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
             Tr.debug(tc, methodName + " parent", priorIncomingSpan);
         }
 
-        boolean process = OpentracingService.process(outgoingUri, SpanFilterType.OUTGOING);
+        /*
+         * Removing filter processing until microprofile spec for it is approved. Expect to add this code
+         * back in in 1Q18 - smf
+         */
+//        boolean process = OpentracingService.process(outgoingUri, SpanFilterType.OUTGOING);
+        boolean process = true;
 
         SpanContext nextContext;
 

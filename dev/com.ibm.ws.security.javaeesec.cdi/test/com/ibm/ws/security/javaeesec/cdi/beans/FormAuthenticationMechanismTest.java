@@ -135,7 +135,7 @@ public class FormAuthenticationMechanismTest {
     @Test
     public void testValidateRequestAuthReqFalseValidIdAndPWIdentityStoreHandler() throws Exception {
         IdentityStoreHandler mish = new MyIdentityStoreHandler();
-        withMessageContext(ch).withUsernamePassword(USER1, PASSWORD1).withAuthenticationRequest(false).withBeanInstance(mish).withSetStatusToResponse(HttpServletResponse.SC_OK);
+        withMessageContext().withMessageInfo().withUsernamePassword(USER1, PASSWORD1).withAuthenticationRequest(false).withBeanInstance(mish).withSetStatusToResponse(HttpServletResponse.SC_OK);
 
         AuthenticationStatus status = fam.validateRequest(req, res, hmc);
         assertEquals("The result should be SUCCESS", AuthenticationStatus.SUCCESS, status);
@@ -147,7 +147,7 @@ public class FormAuthenticationMechanismTest {
     @Test
     public void testValidateRequestAuthReqFalseInvalidIdAndPWIdentityStoreHandler() throws Exception {
         IdentityStoreHandler mish = new MyIdentityStoreHandler();
-        withMessageContext(ch).withUsernamePassword(USER1, "invalid").withAuthenticationRequest(false).withBeanInstance(mish).withSetStatusToResponse(HttpServletResponse.SC_FORBIDDEN);
+        withMessageContext().withUsernamePassword(USER1, "invalid").withAuthenticationRequest(false).withBeanInstance(mish).withSetStatusToResponse(HttpServletResponse.SC_FORBIDDEN);
 
         AuthenticationStatus status = fam.validateRequest(req, res, hmc);
         assertEquals("The result should be SEND_FAILURE", AuthenticationStatus.SEND_FAILURE, status);
@@ -160,7 +160,7 @@ public class FormAuthenticationMechanismTest {
     @Test
     public void testValidateRequestAuthReqFalseValidIdAndPWNoIdentityStoreHandlerCallbackHandler() throws Exception {
         final MyCallbackHandler mch = new MyCallbackHandler();
-        withMessageContext(mch).withUsernamePassword(USER1, PASSWORD1).withAuthenticationRequest(false).withBeanInstance(null).withSetStatusToResponse(HttpServletResponse.SC_OK);
+        withMessageContext().withHandler(mch).withMessageInfo().withUsernamePassword(USER1, PASSWORD1).withAuthenticationRequest(false).withBeanInstance(null).withSetStatusToResponse(HttpServletResponse.SC_OK);
 
         AuthenticationStatus status = fam.validateRequest(req, res, hmc);
         assertEquals("The result should be SUCCESS", AuthenticationStatus.SUCCESS, status);
@@ -172,7 +172,7 @@ public class FormAuthenticationMechanismTest {
     @Test
     public void testValidateRequestAuthReqFalseInvalidIdAndPWNoIdentityStoreHandlerCallbackHandler() throws Exception {
         final MyCallbackHandler mch = new MyCallbackHandler();
-        withMessageContext(mch).withUsernamePassword(USER1, "invalid").withAuthenticationRequest(false).withBeanInstance(null).withSetStatusToResponse(HttpServletResponse.SC_FORBIDDEN);
+        withMessageContext().withHandler(mch).withUsernamePassword(USER1, "invalid").withAuthenticationRequest(false).withBeanInstance(null).withSetStatusToResponse(HttpServletResponse.SC_FORBIDDEN);
 
         AuthenticationStatus status = fam.validateRequest(req, res, hmc);
         assertEquals("The result should be SEND_FAILURE", AuthenticationStatus.SEND_FAILURE, status);
@@ -184,7 +184,7 @@ public class FormAuthenticationMechanismTest {
     @Test
     public void testValidateRequestAuthReqTrueValidIdAndPWIdentityStoreHandler() throws Exception {
         IdentityStoreHandler mish = new MyIdentityStoreHandler();
-        withMessageContext(ch).withUsernamePassword(USER1, PASSWORD1).withAuthenticationRequest(true).withBeanInstance(mish).withSetStatusToResponse(HttpServletResponse.SC_OK);
+        withMessageContext().withMessageInfo().withUsernamePassword(USER1, PASSWORD1).withAuthenticationRequest(true).withBeanInstance(mish).withSetStatusToResponse(HttpServletResponse.SC_OK);
 
         AuthenticationStatus status = fam.validateRequest(req, res, hmc);
         assertEquals("The result should be SUCCESS", AuthenticationStatus.SUCCESS, status);
@@ -196,7 +196,7 @@ public class FormAuthenticationMechanismTest {
     @Test
     public void testValidateRequestAuthReqTrueInvalidIdAndPWIdentityStoreHandler() throws Exception {
         IdentityStoreHandler mish = new MyIdentityStoreHandler();
-        withMessageContext(ch).withUsernamePassword(USER1, "invalid").withAuthenticationRequest(true).withBeanInstance(mish).withSetStatusToResponse(HttpServletResponse.SC_FORBIDDEN);
+        withMessageContext().withUsernamePassword(USER1, "invalid").withAuthenticationRequest(true).withBeanInstance(mish).withSetStatusToResponse(HttpServletResponse.SC_FORBIDDEN);
 
         AuthenticationStatus status = fam.validateRequest(req, res, hmc);
         assertEquals("The result should be SEND_FAILURE", AuthenticationStatus.SEND_FAILURE, status);
@@ -209,7 +209,7 @@ public class FormAuthenticationMechanismTest {
     @Test
     public void testValidateRequestAuthReqTrueValidIdAndPWNoIdentityStoreHandlerCallbackHandler() throws Exception {
         final MyCallbackHandler mch = new MyCallbackHandler();
-        withMessageContext(mch).withUsernamePassword(USER1, PASSWORD1).withAuthenticationRequest(true).withBeanInstance(null).withSetStatusToResponse(HttpServletResponse.SC_OK);
+        withMessageContext().withMessageInfo().withHandler(mch).withUsernamePassword(USER1, PASSWORD1).withAuthenticationRequest(true).withBeanInstance(null).withSetStatusToResponse(HttpServletResponse.SC_OK);
 
         AuthenticationStatus status = fam.validateRequest(req, res, hmc);
         assertEquals("The result should be SUCCESS", AuthenticationStatus.SUCCESS, status);
@@ -221,7 +221,7 @@ public class FormAuthenticationMechanismTest {
     @Test
     public void testValidateRequestAuthReqTrueInvalidIdAndPWNoIdentityStoreHandlerCallbackHandler() throws Exception {
         final MyCallbackHandler mch = new MyCallbackHandler();
-        withMessageContext(mch).withUsernamePassword(USER1, "invalid").withAuthenticationRequest(true).withBeanInstance(null).withSetStatusToResponse(HttpServletResponse.SC_FORBIDDEN);
+        withMessageContext().withHandler(mch).withUsernamePassword(USER1, "invalid").withAuthenticationRequest(true).withBeanInstance(null).withSetStatusToResponse(HttpServletResponse.SC_FORBIDDEN);
 
         AuthenticationStatus status = fam.validateRequest(req, res, hmc);
         assertEquals("The result should be SEND_FAILURE", AuthenticationStatus.SEND_FAILURE, status);
@@ -234,7 +234,7 @@ public class FormAuthenticationMechanismTest {
     public void testValidateRequestAuthReqTrueValidIdAndPWNoIdentityStoreHandlerCallbackHandlerException() throws Exception {
         final String msg = "An Exception by CallbackHandler";
         IOException ex = new IOException(msg);
-        withMessageContext(ch).withUsernamePassword(USER1, PASSWORD1).withAuthenticationRequest(true).withBeanInstance(null).withCallbackHandlerException(ex);
+        withMessageContext().withHandler(ch).withUsernamePassword(USER1, PASSWORD1).withAuthenticationRequest(true).withBeanInstance(null).withCallbackHandlerException(ex);
 
         try {
             AuthenticationStatus status = fam.validateRequest(req, res, hmc);
@@ -250,7 +250,7 @@ public class FormAuthenticationMechanismTest {
      */
     @Test
     public void testValidateRequestAuthReqTrueValidIdAndPWNoIdentityStoreHandlerNoCallbackHandler() throws Exception {
-        withMessageContext(null).withUsernamePassword(USER1, PASSWORD1).withAuthenticationRequest(true).withBeanInstance(null).withSetStatusToResponse(HttpServletResponse.SC_FORBIDDEN);
+        withMessageContext().withHandler(null).withUsernamePassword(USER1, PASSWORD1).withAuthenticationRequest(true).withBeanInstance(null).withSetStatusToResponse(HttpServletResponse.SC_FORBIDDEN);
 
         AuthenticationStatus status = fam.validateRequest(req, res, hmc);
     }
@@ -260,7 +260,7 @@ public class FormAuthenticationMechanismTest {
      */
     @Test
     public void testValidateRequestAuthReqFalseNoIdAndPWProtectedTrue() throws Exception {
-        withMessageContext(ch).withUsernamePassword(null, null).withAuthenticationRequest(false).withProtected(true);
+        withMessageContext().withUsernamePassword(null, null).withAuthenticationRequest(false).withProtected(true);
  
         AuthenticationStatus status = fam.validateRequest(req, res, hmc);
         assertEquals("The result should be SEND_CONTINUE", AuthenticationStatus.SEND_CONTINUE, status);
@@ -271,7 +271,7 @@ public class FormAuthenticationMechanismTest {
      */
     @Test
     public void testValidateRequestAuthReqFalseNoIdAndPWProtectedFalse() throws Exception {
-        withMessageContext(ch).withUsernamePassword(null, null).withAuthenticationRequest(false).withProtected(false);
+        withMessageContext().withUsernamePassword(null, null).withAuthenticationRequest(false).withProtected(false);
  
         AuthenticationStatus status = fam.validateRequest(req, res, hmc);
         assertEquals("The result should be NOT_DONE", AuthenticationStatus.NOT_DONE, status);
@@ -282,7 +282,7 @@ public class FormAuthenticationMechanismTest {
      */
     @Test
     public void testValidateRequestAuthReqTrueNoIdAndPW() throws Exception {
-        withMessageContext(ch).withUsernamePassword(null, null).withAuthenticationRequest(true);
+        withMessageContext().withUsernamePassword(null, null).withAuthenticationRequest(true);
  
         AuthenticationStatus status = fam.validateRequest(req, res, hmc);
         assertEquals("The result should be SEND_CONTINUE", AuthenticationStatus.SEND_CONTINUE, status);
@@ -309,7 +309,23 @@ public class FormAuthenticationMechanismTest {
     }
 
     @SuppressWarnings("unchecked")
-    private FormAuthenticationMechanismTest withMessageContext(final CallbackHandler handler) throws Exception {
+    private FormAuthenticationMechanismTest withMessageContext() throws Exception {
+        
+        mockery.checking(new Expectations() {
+            {
+                one(hmc).getClientSubject();
+                will(returnValue(cs));
+                one(hmc).getRequest();
+                will(returnValue(req));
+                one(hmc).getResponse();
+                will(returnValue(res));
+            }
+        });
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    private FormAuthenticationMechanismTest withMessageInfo() throws Exception {
         
         mockery.checking(new Expectations() {
             {
@@ -317,14 +333,18 @@ public class FormAuthenticationMechanismTest {
                 will(returnValue(mi));
                 one(mi).getMap();
                 will(returnValue(mm));
-                one(hmc).getClientSubject();
-                will(returnValue(cs));
+            }
+        });
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    private FormAuthenticationMechanismTest withHandler(final CallbackHandler handler) throws Exception {
+        
+        mockery.checking(new Expectations() {
+            {
                 one(hmc).getHandler();
                 will(returnValue(handler));
-                one(hmc).getRequest();
-                will(returnValue(req));
-                one(hmc).getResponse();
-                will(returnValue(res));
             }
         });
         return this;

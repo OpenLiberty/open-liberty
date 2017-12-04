@@ -1,0 +1,141 @@
+###############################################################################
+# Copyright (c) 2002, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT WebSphere kernel transport http channel
+#CMVCPATHNAME com.ibm.ws.transport.http/resources/com/ibm/ws/http/channel/internal/resources/httpchannelmessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+config.maxpersist=CWWKT0001E: Maxim\u00e1ln\u00ed po\u010det po\u017eadavk\u016f ({0}) povolen\u00fdch pro jeden soket je neplatn\u00fd. Platn\u00e1 je hodnota {1} p\u0159edstavuj\u00edc\u00ed nastaven\u00ed bez omezen\u00ed nebo jak\u00e9koli kladn\u00e9 \u010d\u00edslo.
+config.maxpersist.explanation=Konfigurovan\u00e1 hodnota maxim\u00e1ln\u00edho po\u010dtu po\u017eadavk\u016f povolen\u00fdch pro soket nen\u00ed platn\u00e1.
+config.maxpersist.useraction=Nakonfigurujte hodnotu maxim\u00e1ln\u00edho po\u010dtu po\u017eadavk\u016f povolen\u00fdch pro soket.
+
+config.incomingbody=CWWKT0002E: Velikost vyrovn\u00e1vac\u00ed pam\u011bti p\u0159\u00edchoz\u00edch polo\u017eek {0} je neplatn\u00e1. Velikost mus\u00ed le\u017eet v rozsahu {1} a\u017e {2}.
+config.incomingbody.explanation=Konfigurovan\u00e1 hodnota velikosti vyrovn\u00e1vac\u00ed pam\u011bti p\u0159\u00edchoz\u00edch polo\u017eek nen\u00ed platn\u00e1.
+config.incomingbody.useraction=Nakonfigurujte platnou hodnotu velikosti vyrovn\u00e1vac\u00ed pam\u011bti p\u0159\u00edchoz\u00edch polo\u017eek.
+
+config.incomingheader=CWWKT0003E: Velikost vyrovn\u00e1vac\u00ed pam\u011bti z\u00e1hlav\u00ed {0} je neplatn\u00e1. Velikost mus\u00ed le\u017eet v rozsahu {1} a\u017e {2}.
+config.incomingheader.explanation=Konfigurovan\u00e1 hodnota velikosti vyrovn\u00e1vac\u00ed pam\u011bti z\u00e1hlav\u00ed nen\u00ed platn\u00e1.
+config.incomingheader.useraction=Nakonfigurujte platnou hodnotu velikosti vyrovn\u00e1vac\u00ed pam\u011bti z\u00e1hlav\u00ed.
+
+config.outgoingbuffer=CWWKT0004E: Velikost vyrovn\u00e1vac\u00ed pam\u011bti odchoz\u00edch polo\u017eek {0} je neplatn\u00e1. Velikost mus\u00ed le\u017eet v rozsahu {1} a\u017e {2}.
+config.outgoingbuffer.explanation=Konfigurovan\u00e1 hodnota velikosti vyrovn\u00e1vac\u00ed pam\u011bti odchoz\u00edch polo\u017eek nen\u00ed platn\u00e1.
+config.outgoingbuffer.useraction=Nakonfigurujte platnou hodnotu velikosti vyrovn\u00e1vac\u00ed pam\u011bti odchoz\u00edch polo\u017eek.
+
+config.persisttimeout=CWWKT0005E: Trval\u00fd \u010dasov\u00fd limit {0} je neplatn\u00fd. \u010casov\u00fd limit mus\u00ed b\u00fdt v\u011bt\u0161\u00ed ne\u017e {1}.
+config.persisttimeout.explanation=Konfigurovan\u00e1 hodnota parametru \u010dasov\u00e9ho limitu perzistence nen\u00ed platn\u00e1.
+config.persisttimeout.useraction=Nakonfigurujte platnou hodnotu parametru \u010dasov\u00e9ho limitu perzistence.
+
+config.readtimeout=CWWKT0006E: \u010casov\u00fd limit \u010dten\u00ed {0} je neplatn\u00fd. \u010casov\u00fd limit mus\u00ed b\u00fdt v\u011bt\u0161\u00ed ne\u017e {1}.
+config.readtimeout.explanation=Konfigurovan\u00e1 hodnota parametru \u010dasov\u00e9ho limitu \u010dten\u00ed nen\u00ed platn\u00e1.
+config.readtimeout.useraction=Nakonfigurujte platnou hodnotu parametru \u010dasov\u00e9ho limitu \u010dten\u00ed.
+
+config.writetimeout=CWWKT0007E: \u010casov\u00fd limit z\u00e1pisu {0} je neplatn\u00fd. \u010casov\u00fd limit mus\u00ed b\u00fdt v\u011bt\u0161\u00ed ne\u017e {1}.
+config.writetimeout.explanation=Konfigurovan\u00e1 hodnota parametru \u010dasov\u00e9ho limitu z\u00e1pisu nen\u00ed platn\u00e1.
+config.writetimeout.useraction=Nakonfigurujte platnou hodnotu parametru \u010dasov\u00e9ho limitu z\u00e1pisu.
+
+config.fieldsize=CWWKT0008E: Mezn\u00ed hodnota velikosti pole {0} je neplatn\u00e1. Tato velikost mus\u00ed le\u017eet v rozsahu {1} a\u017e {2}.
+config.fieldsize.explanation=Konfigurovan\u00e1 mezn\u00ed hodnota velikosti pole nen\u00ed platn\u00e1.
+config.fieldsize.useraction=Nakonfigurujte platnou mezn\u00ed hodnotu velikosti pole.
+
+config.numheaders=CWWKT0009E: Mezn\u00ed hodnota po\u010dtu z\u00e1hlav\u00ed {0} je neplatn\u00e1. Tato velikost mus\u00ed le\u017eet v rozsahu {1} a\u017e {2}.
+config.numheaders.explanation=Konfigurovan\u00e1 mezn\u00ed hodnota po\u010dtu z\u00e1hlav\u00ed nen\u00ed platn\u00e1.
+config.numheaders.useraction=Nakonfigurujte platnou mezn\u00ed hodnotu po\u010dtu z\u00e1hlav\u00ed.
+
+config.incomingbodymaxsize=CWWKT0010E: Maxim\u00e1ln\u00ed po\u010det bajt\u016f pro t\u011blo p\u0159\u00edchoz\u00ed zpr\u00e1vy {0} je neplatn\u00fd. Tato velikost mus\u00ed b\u00fdt v\u011bt\u0161\u00ed nebo rovna {1}.
+config.incomingbodymaxsize.explanation=Konfigurovan\u00e1 hodnota maxim\u00e1ln\u00edho po\u010dtu bajt\u016f pro t\u011blo p\u0159\u00edchoz\u00ed zpr\u00e1vy nen\u00ed platn\u00e1.
+config.incomingbodymaxsize.useraction=Nakonfigurujte hodnotu maxim\u00e1ln\u00edho po\u010dtu bajt\u016f pro t\u011blo p\u0159\u00edchoz\u00ed zpr\u00e1vy.
+
+NO_DEFAULT_CONFIGURATION=CWWKT0011W: Nelze naj\u00edt v\u00fdchoz\u00ed konfiguraci pro {0} s pou\u017eit\u00edm ID {1}.
+NO_DEFAULT_CONFIGURATION.explanation=Zadanou v\u00fdchoz\u00ed konfiguraci nelze pro zadan\u00e9 ID nal\u00e9zt.
+NO_DEFAULT_CONFIGURATION.useraction=Ov\u011b\u0159te konfiguraci serveru, a potom prove\u010fte \u010dist\u00fd restart.
+
+DEFAULT_OPTIONS_ERROR=CWWKT0012E: Do\u0161lo k intern\u00ed chyb\u011b. Nelze vytvo\u0159it v\u00fdchoz\u00ed konfiguraci. V\u00fdjimka {0}
+DEFAULT_OPTIONS_ERROR.explanation=CMSG0001
+DEFAULT_OPTIONS_ERROR.useraction=CMSG0002
+
+DEFAULT_ENDPOINT_ERROR=CWWKT0013E: Do\u0161lo k intern\u00ed chyb\u011b. Nelze vytvo\u0159it v\u00fdchoz\u00ed koncov\u00fd bod. V\u00fdjimka {0}
+DEFAULT_ENDPOINT_ERROR.explanation=CMSG0001
+DEFAULT_ENDPOINT_ERROR.useraction=CMSG0002
+
+DEFAULT_VHOST_ERROR=CWWKT0014E: Do\u0161lo k intern\u00ed chyb\u011b. Nelze vytvo\u0159it v\u00fdchoz\u00edho virtu\u00e1ln\u00edho hostitele. V\u00fdjimka {0}
+DEFAULT_VHOST_ERROR.explanation=CMSG0001
+DEFAULT_VHOST_ERROR.useraction=CMSG0002
+
+missingPorts.endpointDisabled=CWWKT0015W: Nejsou nakonfigurov\u00e1ny \u017e\u00e1dn\u00e9 porty pro koncov\u00fd bod {0}. Koncov\u00fd bod byl zak\u00e1z\u00e1n.
+missingPorts.endpointDisabled.explanation=Koncov\u00fd bod HTTP mus\u00ed m\u00edt nakonfigurovan\u00fd nejm\u00e9n\u011b jeden port.
+missingPorts.endpointDisabled.useraction=P\u0159i\u0159a\u010fte platnou hodnotu portu vlastnosti httpPort nebo vlastnosti httpsPort, nebo ob\u011bma t\u011bmto vlastnostem.
+
+context.root.added=CWWKT0016I: Webov\u00e1 aplikace je k dispozici ({0}): {1}
+context.root.added.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+context.root.added.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+context.root.removed=CWWKT0017I: Webov\u00e1 aplikace byla odebr\u00e1na ({0}): {1}
+context.root.removed.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+context.root.removed.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+Missing.App.Or.Context.Root=CWWKT0018E: Nebyl nalezen ko\u0159enov\u00fd adres\u00e1\u0159 aplikace nebo kontextov\u00fd ko\u0159enov\u00fd adres\u00e1\u0159 pro tento po\u017eadavek: {0}
+Missing.App.Or.Context.Root.explanation=\u017d\u00e1dn\u00e1 aplikace na tomto serveru nedok\u00e1\u017ee zpracovat tento po\u017eadavek.
+Missing.App.Or.Context.Root.useraction=P\u0159esv\u011bd\u010dte se, \u017ee je aplikace definov\u00e1na a implementov\u00e1na a \u017ee na ni klient spr\u00e1vn\u011b odkazuje.
+
+#Cannot remove above due to service rules, but we do not need a message key as this is never logged
+#only output to the browser on our 404 page - removing it means we give away less server implementation info
+Missing.App.Or.Context.Root.No.Error.Code=Nebyl nalezen ko\u0159enov\u00fd adres\u00e1\u0159 aplikace nebo kontextov\u00fd ko\u0159enov\u00fd adres\u00e1\u0159 pro tento po\u017eadavek: {0}
+Missing.App.Or.Context.Root.No.Error.Code.explanation=\u017d\u00e1dn\u00e1 aplikace na tomto serveru nedok\u00e1\u017ee zpracovat tento po\u017eadavek.
+Missing.App.Or.Context.Root.No.Error.Code.useraction=P\u0159esv\u011bd\u010dte se, \u017ee je aplikace definov\u00e1na a implementov\u00e1na a \u017ee na ni klient spr\u00e1vn\u011b odkazuje.
+
+config.httpChain.error=CWWKT0019E: Do\u0161lo k probl\u00e9mu p\u0159i konfiguraci koncov\u00e9ho bodu {0}: {1}.
+config.httpChain.error.explanation=Koncov\u00fd bod HTTP nelze spustit kv\u016fli konfigura\u010dn\u00edmu probl\u00e9mu.
+config.httpChain.error.useraction=Zkontrolujte protokoly v\u00fdjimek a zpr\u00e1v, zda v nich nejsou souvisej\u00edc\u00ed chyby. 
+
+start.httpChain.error=CWWKT0020E: Do\u0161lo k probl\u00e9mu p\u0159i spou\u0161t\u011bn\u00ed koncov\u00e9ho bodu {0}: {1}.
+start.httpChain.error.explanation=Koncov\u00fd bod HTTP nelze spustit kv\u016fli neo\u010dek\u00e1van\u00e9mu probl\u00e9mu. 
+start.httpChain.error.useraction=Zkontrolujte protokoly v\u00fdjimek a zpr\u00e1v, zda v nich nejsou souvisej\u00edc\u00ed chyby. 
+
+httpChain.error.shutdown=CWWKT0021I: Server se zastavuje kv\u016fli mo\u017en\u00e9 chyb\u011b konfigurace. \
+Koncov\u00fd bod {0} nelze spustit. K tomu m\u016f\u017ee doj\u00edt, pokud je nakonfigurovan\u00fd port ji\u017e pou\u017e\u00edv\u00e1n.
+httpChain.error.shutdown.explanation=Koncov\u00fd bod HTTP byl nakonfigurov\u00e1n s nastaven\u00edm onError=FAIL, kter\u00e9 v p\u0159\u00edpad\u011b, \u017ee se vyskytne probl\u00e9m se spu\u0161t\u011bn\u00edm koncov\u00e9ho bodu, zp\u016fsob\u00ed zastaven\u00ed serveru. 
+httpChain.error.shutdown.useraction=Zkontrolujte protokoly v\u00fdjimek a zpr\u00e1v, zda v nich nejsou souvisej\u00edc\u00ed chyby. \
+Chcete-li zabr\u00e1nit zastaven\u00ed serveru kv\u016fli probl\u00e9mu se spu\u0161t\u011bn\u00edm tohoto koncov\u00e9ho bodu, zajist\u011bte, aby byla vlastnost onError nastavena na hodnotu WARN nebo IGNORE.
+
+unresolveableHost=CWWKT0022E: Nelze interpretovat nakonfigurovan\u00e9ho hostitele {0} pro koncov\u00fd bod HTTP {1}. Koncov\u00fd bod byl zak\u00e1z\u00e1n.
+unresolveableHost.explanation=Koncov\u00fd bod HTTP vy\u017eaduje hodnotu hostitele, kterou lze interpretovat jako aktivn\u00ed s\u00ed\u0165ov\u00e9 rozhran\u00ed.
+unresolveableHost.useraction=Zajist\u011bte, aby hodnota hostitele odkazovala na aktivn\u00ed s\u00ed\u0165ov\u00e9 rozhran\u00ed, nebo pomoc\u00ed znaku * nastavte vazbu na v\u0161echna rozhran\u00ed.
+
+unresolveableDefaultHost=CWWKT0023W: Nakonfigurovan\u00fd n\u00e1zev hostitele defaultHostName {0} nelze interpretovat, pou\u017eije se localhost.
+unresolveableDefaultHost.explanation=Prom\u011bnn\u00e1 defaultHostName ur\u010duje hodnotu hostitele, kterou nelze interpretovat jako aktivn\u00ed s\u00ed\u0165ov\u00e9 rozhran\u00ed.
+unresolveableDefaultHost.useraction=Zajist\u011bte, aby nakonfigurovan\u00e1 hodnota prom\u011bnn\u00e9 defaultHostName odkazovala na aktivn\u00ed s\u00ed\u0165ov\u00e9 rozhran\u00ed.
+
+defaultHostDisabled=CWWKT0024W: V\u00fdchoz\u00edho virtu\u00e1ln\u00edho hostitele (default_host) nelze vypnout.
+defaultHostDisabled.explanation=V\u00fdchoz\u00ed virtu\u00e1ln\u00ed hostitel je pro b\u011bhov\u00e9 prost\u0159ed\u00ed nezbytn\u00fd. 
+defaultHostDisabled.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+noHostAliases=CWWKT0025W: Virtu\u00e1ln\u00ed hostitel {0} nem\u00e1 nakonfigurovan\u00e9 \u017e\u00e1dn\u00fd alias hostitele, tak\u017ee nebude p\u0159ij\u00edmat p\u0159\u00edchoz\u00ed po\u017eadavky.
+noHostAliases.explanation=Ka\u017ed\u00fd virtu\u00e1ln\u00ed hostitel krom\u011b v\u00fdchoz\u00edho mus\u00ed definovat nejm\u00e9n\u011b jeden alias hostitele (hostitel:port), a identifikovat tak p\u0159\u00edchoz\u00ed po\u017eadavky, kter\u00e9 maj\u00ed b\u00fdt k tomuto virtu\u00e1ln\u00edmu hostiteli sm\u011brov\u00e1ny. \
+Uveden\u00fd virtu\u00e1ln\u00ed hostitel nem\u00e1 nadefinov\u00e1n \u017e\u00e1dn\u00fd alias hostitele, tak\u017ee nebude mo\u017en\u00e9 k n\u011bmu sm\u011brovat \u017e\u00e1dn\u00e9 po\u017eadavky.
+noHostAliases.useraction=Aktualizujte prvek virtualHost v souboru server.xml tak, aby definoval alespo\u0148 jeden atribut hostAlias.
+
+invalidAlias=CWWKT0026W: Alias hostitele nakonfigurovan\u00fd pro virtu\u00e1ln\u00edho hostitele {0} je neplatn\u00fd a bude ignorov\u00e1n. {1}
+invalidAlias.explanation=Nakonfigurovan\u00fd alias hostitele obsahuje neplatn\u00e9 znaky nebo chybnou syntaxi.
+invalidAlias.useraction=Opravte nebo odeberte neplatn\u00fd alias hostitele v prvku virtu\u00e1ln\u00edho hostitele v souboru server.xml. Pozor, adresy IPv6 mus\u00ed b\u00fdt uzav\u0159eny v [].
+
+wildcardReason=Z\u00e1stupn\u00fd znak * nelze v aliasu hostitele kombinovat s ostatn\u00edmi znaky.
+badHostPortReason=Uveden\u00fd hostitel nen\u00ed platnou adresou IP ani n\u00e1zvem hostitele, nebo uveden\u00fd port nen\u00ed cel\u00e9 \u010d\u00edslo.
+
+duplicateAlias=CWWKT0027W: Alias hostitele {0} pro virtu\u00e1ln\u00edho hostitele {1} je v konfliktu s ji\u017e existuj\u00edc\u00edm aliasem hostitele a bude ignorov\u00e1n.
+duplicateAlias.explanation=Uveden\u00fd alias hostitele je v konfliktu s ji\u017e existuj\u00edc\u00edm aliasem hostitele.
+duplicateAlias.useraction=Zajist\u011bte, aby byly v\u0161echny aliasy hostitel\u016f definov\u00e1ny jako prvky virtu\u00e1ln\u00edch hostitel\u016f v souboru server.xml jedine\u010dn\u00e9.
+
+context.root.changed=CWWKT0028I: Webov\u00e1 aplikace byla p\u0159esunuta ({0}): {1}
+context.root.changed.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+context.root.changed.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.

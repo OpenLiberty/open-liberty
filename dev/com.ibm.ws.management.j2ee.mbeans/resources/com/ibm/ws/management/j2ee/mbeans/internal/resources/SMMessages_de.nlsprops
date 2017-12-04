@@ -1,0 +1,31 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX J2EE SM related MBeans
+#CMVCPATHNAME com.ibm.ws.management.j2ee.mbeans/resources/com/ibm/ws/management/j2ee/mbeans/internal/resources/SMMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#
+# Message prefix block: CWWKX7500 - CWWKX7524
+
+#-----  JVMMBeanImpl
+
+DETERMINE_HOST_ERROR=CWWKX7500E: Das Produkt kann den vollst\u00e4ndig qualifizierten Dom\u00e4nennamen des Hosts nicht bestimmen. Der Hostname wird auf den Standardwert {0} gesetzt. Fehler: {1}
+DETERMINE_HOST_ERROR.explanation=Die IP-Adresse oder der Hostname des Servers kann nicht bestimmt werden.
+DETERMINE_HOST_ERROR.useraction=\u00dcberpr\u00fcfen Sie die Netzkonfiguration des Servers und starten Sie den Server mit der Option --clean erneut.
+
+#-----  SMActivator
+
+OSGI_SERVICE_ERROR=CWWKX7501E: Der OSGi-Service {0} ist nicht verf\u00fcgbar. Versuchen Sie, den Server mit der Option --clean erneut zu starten.
+OSGI_SERVICE_ERROR.explanation=Dieser interne Serverfehler ist aufgetreten, weil der angegebene Service nicht verf\u00fcgbar ist.
+OSGI_SERVICE_ERROR.useraction=Starten Sie den Server mit der Option --clean erneut.

@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.security/resources/com/ibm/ws/jbatch/security/resources/BatchSecurityMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0300 - 0349: com.ibm.ws.jbatch.security
+# 
+
+#No fill-ins
+BATCH_SECURITY_ENABLED=CWWKY0300I: A seguran\u00e7a em lote est\u00e1 ativada.
+BATCH_SECURITY_ENABLED.explanation=Os usu\u00e1rios s\u00e3o autorizados com rela\u00e7\u00e3o \u00e0s fun\u00e7\u00f5es em lote ao executar todas as opera\u00e7\u00f5es em lote.
+BATCH_SECURITY_ENABLED.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+#No fill-ins
+BATCH_SECURITY_DISABLED=CWWKY0301I: A seguran\u00e7a em lote est\u00e1 desativada.
+BATCH_SECURITY_DISABLED.explanation=Os usu\u00e1rios N\u00c3O s\u00e3o autorizados com rela\u00e7\u00e3o \u00e0s fun\u00e7\u00f5es em lote.
+BATCH_SECURITY_DISABLED.useraction=Se nenhuma autoriza\u00e7\u00e3o baseada em fun\u00e7\u00e3o em lote for requerida nesta configura\u00e7\u00e3o do servidor, nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#{0} The invocation subject on the thread.
+#{1} The job instance id.
+USER_UNAUTHORIZED_JOB_INSTANCE=CWWKY0302W: O usu\u00e1rio {0} n\u00e3o est\u00e1 autorizado a executar opera\u00e7\u00f5es em lote associadas \u00e0 inst\u00e2ncia da tarefa {1}.
+USER_UNAUTHORIZED_JOB_INSTANCE.explanation=O usu\u00e1rio n\u00e3o \u00e9 parte de uma fun\u00e7\u00e3o em lote que est\u00e1 autorizada a executar a opera\u00e7\u00e3o em lote solicitada nesta inst\u00e2ncia da tarefa.
+USER_UNAUTHORIZED_JOB_INSTANCE.useraction=Se o usu\u00e1rio for autorizado a executar a opera\u00e7\u00e3o em lote solicitada, configure a autoriza\u00e7\u00e3o de seguran\u00e7a em lote e inclua este usu\u00e1rio \u00e0s fun\u00e7\u00f5es em lote requeridas. 
+
+#{0} The invocation subject on the thread.
+USER_UNAUTHORIZED_NO_BATCH_ROLES=CWWKY0303W: O usu\u00e1rio {0} n\u00e3o est\u00e1 autorizado a executar nenhuma opera\u00e7\u00e3o em lote.
+USER_UNAUTHORIZED_NO_BATCH_ROLES.explanation=O usu\u00e1rio n\u00e3o \u00e9 parte de nenhuma fun\u00e7\u00e3o em lote e n\u00e3o est\u00e1 autorizado a executar opera\u00e7\u00f5es em lote.
+USER_UNAUTHORIZED_NO_BATCH_ROLES.useraction=Se o usu\u00e1rio n\u00e3o for autorizado a ser um usu\u00e1rio em lote, nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria. Se o usu\u00e1rio for autorizado a executar as opera\u00e7\u00f5es em lote e a seguran\u00e7a em lote estiver ativada, configure a autoriza\u00e7\u00e3o de seguran\u00e7a em lote e inclua este usu\u00e1rio \u00e0s fun\u00e7\u00f5es em lote requeridas. 
+
+#{0} The invocation subject on the thread.
+USER_UNAUTHORIZED_TO_START_JOB=CWWKY0304W: O usu\u00e1rio {0} n\u00e3o est\u00e1 autorizado a iniciar tarefas em lote.
+USER_UNAUTHORIZED_TO_START_JOB.explanation=O usu\u00e1rio n\u00e3o \u00e9 parte de nenhuma fun\u00e7\u00e3o em lote que est\u00e1 autorizada a iniciar tarefas em lote.
+USER_UNAUTHORIZED_TO_START_JOB.useraction=Se o usu\u00e1rio n\u00e3o for autorizado a iniciar tarefas em lote, nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria. Se o usu\u00e1rio for autorizado a executar a opera\u00e7\u00e3o em lote solicitada, configure a autoriza\u00e7\u00e3o de seguran\u00e7a em lote e inclua este usu\u00e1rio \u00e0s fun\u00e7\u00f5es em lote requeridas.

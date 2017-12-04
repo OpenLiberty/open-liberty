@@ -1,0 +1,281 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME wlp.lib.extract/resources/wlp/lib/extract/SelfExtractMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_ALL
+#
+#   All strings in the self-extract utility go through MessageFormat: 
+#    single quote must be coded as 2 consecutive single quotes ''.
+#
+
+
+helpAgreement=Tekintse meg a licencszerz\u0151d\u00e9st.
+helpInformation=Tekintse meg a licencinform\u00e1ci\u00f3kat.
+helpVerbose=A r\u00e9szletes inform\u00e1ci\u00f3kat jelen\u00edti meg az arch\u00edvum kibont\u00e1sa k\u00f6zben.
+helpAcceptLicense=Automatikusan jelzi a licencfelt\u00e9telek \u00e9s kik\u00f6t\u00e9sek elfogad\u00e1s\u00e1t.
+
+# The following messages are used to tell the user how to run the installer from the command line.
+#
+# usage
+#  
+#   java -jar wlp-liberty-developers-core.jar [options] [installLocation]
+#
+# options
+#    < list of options and descriptions goes here >
+usage=Haszn\u00e1lat
+installLocation=telep\u00edt\u00e9si hely
+options=Be\u00e1ll\u00edt\u00e1sok
+
+
+licenseOptionDescription=Az "Elfogadom" lehet\u0151s\u00e9g kiv\u00e1laszt\u00e1s\u00e1val elfogadja a licencszerz\u0151d\u00e9st \u00e9s a nem-IBM felt\u00e9teleket, ha alkalmazhat\u00f3ak. \
+Ha nem fogadja el, v\u00e1lassza a "Nem fogadom el" lehet\u0151s\u00e9get".
+
+licenseeAcknowledges=A Licencfelhaszn\u00e1l\u00f3 tudom\u00e1sul veszi \u00e9s egyet\u00e9rt vele, hogy a Licencfelhaszn\u00e1l\u00f3 \u00e1ltal ezzel kapcsolatban let\u00f6lt\u00f6tt minden k\u00f3d (a "K\u00f3d"), az \u00f6sszetev\u0151ket, f\u00fcggv\u00e9nyeket \u00e9s egy\u00e9b szoftverlet\u00f6lt\u00e9seket is bele\u00e9rtve, csak az IBM WebSphere  Application Server Liberty program  (a "Program") licenc hat\u00e1lya al\u00e1 tartoz\u00f3 v\u00e1ltozat\u00e1val ker\u00fcl felhaszn\u00e1l\u00e1sra. \
+A Licencfelhaszn\u00e1l\u00f3 tudom\u00e1sul veszi tov\u00e1bb\u00e1, hogy a K\u00f3d haszn\u00e1lat\u00e1ra a Program haszn\u00e1lat\u00e1t szab\u00e1lyoz\u00f3 licencszerz\u0151d\u00e9sek (p\u00e9ld\u00e1ul International Program License Agreement, International License Agreement for Non-Warranted Programs, International License Agreement for Evaluation of Programs, International License Agreement for Early Release of Programs) vonatkoznak (az esetleges licenc inform\u00e1ci\u00f3kat is bele\u00e9rtve).
+
+extractPrompt=A term\u00e9k f\u00e1jljainak c\u00e9lk\u00f6nyvt\u00e1ra?
+extractSuccess=Minden term\u00e9kf\u00e1jl sikeresen kibontva.
+extractLicenseSuccess=Licencf\u00e1jlok sikeresen alkalmazva.
+licenseNotFound=A licencszerz\u0151d\u00e9s f\u00e1jljai nem tal\u00e1lhat\u00f3ak.
+
+promptAgreement=A licenctelt\u00e9telek megjelen\u00edt\u00e9s\u00e9hez nyomja meg az Enter-t, vagy nyomja meg az x-t a tov\u00e1bbl\u00e9p\u00e9shez.
+promptInfo=A tov\u00e1bbi licencinform\u00e1ci\u00f3k megjelen\u00edt\u00e9s\u00e9hez nyomja meg az Enter-t, vagy nyomja meg az x-t a tov\u00e1bbl\u00e9p\u00e9shez.
+
+#
+# {0} [1]
+# {1} [2]
+# 
+licensePrompt=V\u00e1lasszon az {0} Elfogadom, vagy {1} Nem fogadom el lehet\u0151s\u00e9gek k\u00f6z\u00fcl: 
+
+#
+# {0} IBM WebSphere Application Server Network Deployment Version 8.5 (EXAMPLE)
+# {1} International Program License Agreement
+#
+licenseStatement=Miel\u0151tt haszn\u00e1ln\u00e1, bontsa ki vagy telep\u00edtse az {0}-t, el kell fogadnia az {1} felt\u00e9teleit, \u00e9s a tov\u00e1bbi licencinform\u00e1ci\u00f3kat. \
+Alaposan olvassa el a k\u00f6vetkez\u0151 licencszerz\u0151d\u00e9st.
+
+#
+# {0} --viewLicenseAgreement
+# 
+showAgreement=A licencszerz\u0151d\u00e9s megtekinthet\u0151 k\u00fcl\u00f6n a {0} lehet\u0151s\u00e9g haszn\u00e1lat\u00e1val. 
+
+#
+# {0} --viewLicenseInfo
+# 
+showInformation=Tov\u00e1bbi licencinform\u00e1ci\u00f3k megtekinthet\u0151ek k\u00fcl\u00f6n a {0} lehet\u0151s\u00e9g haszn\u00e1lat\u00e1val.
+
+#
+# {0} --acceptLicense
+# 
+licenseAccepted=A(z) {0} argumentum nem tal\u00e1lhat\u00f3. Ez jelzi, hogy elfogadta a licencszerz\u0151d\u00e9s felt\u00e9teleit.
+
+#
+# {0} c:/full/directory/path
+# 
+extractInstruction=Adja meg a term\u00e9k f\u00e1jljainak a k\u00f6nyvt\u00e1r\u00e1t, vagy hagyja \u00fcresen az alap\u00e9rt\u00e9k elfogad\u00e1s\u00e1hoz.
+extractLicenseInstruction=Adja meg a licencfriss\u00edt\u00e9si arch\u00edvum k\u00f6nyvt\u00e1r\u00e1t, vagy nyomja le az Entert az alap\u00e9rtelmezett k\u00f6nyvt\u00e1r elfogad\u00e1s\u00e1hoz.
+extractDefault=Az alap\u00e9rtelmezett c\u00e9lk\u00f6nyvt\u00e1r: {0}
+extractDirectoryExists=A k\u00f6nyvt\u00e1r m\u00e1r l\u00e9tezik: {0}
+extractDirectoryError=Nem siker\u00fclt l\u00e9trehozni a k\u00f6nyvt\u00e1rat: {0}
+extractDirectory=F\u00e1jlok kibont\u00e1sa ide: {0}
+
+#
+# {0} c:/full/directory/path/fileName
+# 
+extractFileError=A(z) {0} kibont\u00e1sa nem siker\u00fclt
+chmodError=Nem siker\u00fclt megv\u00e1ltoztatni a parancsf\u00e1jl enged\u00e9lyeket: {0}.
+extractFileExists=A f\u00e1jl m\u00e1r l\u00e9tezik: {0}
+
+#
+# {0} exception message text
+# 
+inputException=Kiv\u00e9tel-feldolgoz\u00e1s bemenete: {0}
+
+invalidInstall=A(z) {0} k\u00f6nyvt\u00e1r nem \u00e9rv\u00e9nyes Liberty telep\u00edt\u00e9si k\u00f6nyvt\u00e1r.
+invalidVersion=A megadott term\u00e9ktelep\u00edt\u00e9s {0} v\u00e1ltozat\u00fa, de ez a term\u00e9kkieg\u00e9sz\u00edt\u0151 csak {1} v\u00e1ltozatra \u00e9rv\u00e9nyes.
+invalidEdition=A megadott term\u00e9ktelep\u00edt\u00e9s a {0} kiad\u00e1s, de ez a term\u00e9kkieg\u00e9sz\u00edt\u0151 csak a(z) {1} kiad\u00e1sokra \u00e9rv\u00e9nyes.
+invalidLicense=A megadott term\u00e9ktelep\u00edt\u00e9shez {0} licenc tartozik, de ez a term\u00e9kkieg\u00e9sz\u00edt\u0151 csak {1} licenccel rendelkez\u0151 term\u00e9kre vonatkozik.
+invalidInstallType=A megadott term\u00e9ktelep\u00edt\u00e9s IBM Installation Manager seg\u00edts\u00e9g\u00e9vel ker\u00fclt telep\u00edt\u00e9sre, haszn\u00e1lja az IBM Installation Manager alkalmaz\u00e1st term\u00e9kkieg\u00e9sz\u00edt\u0151k telep\u00edt\u00e9s\u00e9hez.
+invalidOption=A(z) {0} param\u00e9ter nem ismerhet\u0151 fel.
+
+#
+# {0} name of the addon
+# {1} list of features that are missing
+# {2} the install directory on which we are trying to install
+#
+missingRequiredFeatures=A(z) {0} term\u00e9kkieg\u00e9sz\u00edt\u0151 nem telep\u00edthet\u0151. A megadott term\u00e9ktelep\u00edt\u00e9sb\u0151l a(z) {2} helyen hi\u00e1nyoznak k\u00f6telez\u0151 \u00f6sszetev\u0151k: {1}. 
+
+allFeaturesAlreadyPresent=A(z) {0} term\u00e9kkieg\u00e9sz\u00edt\u0151t nem sz\u00fcks\u00e9ges telep\u00edteni. A megadott term\u00e9ktelep\u00edt\u00e9s a(z) {2} helyen m\u00e1r rendelkezik a kieg\u00e9sz\u00edt\u0151 \u00f6sszes \u00f6sszetev\u0151j\u00e9vel: {1}.
+
+#
+# {0} the install directory
+# {1} the list of addons installed into that installed
+#
+addonsInstalled=A term\u00e9ktelep\u00edt\u00e9s a(z) {0} helyen a k\u00f6vetkez\u0151 telep\u00edtett kieg\u00e9sz\u00edt\u0151kkel rendelkezik: {1}.
+
+#
+# {0} the install directory
+# {1} the list of supported features by that installation
+#
+featuresInstalled=A term\u00e9ktelep\u00edt\u00e9s a(z) {0} helyen a k\u00f6vetkez\u0151 \u00f6sszetev\u0151ket t\u00e1mogatja: {1}.
+
+#
+# {0} name of the addon
+# {1} the features included in the addon
+#
+addonFeatures=A(z) {0} term\u00e9kkieg\u00e9sz\u00edt\u0151 a k\u00f6vetkez\u0151 \u00f6sszetev\u0151ket tartalmazza: {1}.
+
+helpMakeBackups=Az eszk\u00f6z futtat\u00e1sa el\u0151tt sz\u00fcks\u00e9ges lehet biztons\u00e1gi ment\u00e9st k\u00e9sz\u00edteni n\u00e9h\u00e1ny f\u00e1jlr\u00f3l. K\u00f6vesse a readme.txt f\u00e1jl ''\u00datmutat\u00e1sok a jav\u00edt\u00e1s alkalmaz\u00e1s\u00e1hoz'' c\u00edm\u0171 szakasz\u00e1ban le\u00edrt utas\u00edt\u00e1sokat.
+helpInstallLocation=A Liberty profil telep\u00edt\u00e9si k\u00f6nyvt\u00e1r\u00e1nak abszol\u00fat vagy relat\u00edv helye.
+helpSupressInfo=A JAR f\u00e1jlt\u00f3l csak hiba\u00fczenetek, illetve a jav\u00edt\u00e1s elk\u00e9sz\u00fclt\u00e9nek meger\u0151s\u00edt\u0151 \u00fczenete \u00e9rkezhet.
+
+# {0} is the Liberty install directory, according to the user.
+couldNotFindLiberty=A(z) {0} k\u00f6nyvt\u00e1r nem tal\u00e1lhat\u00f3.
+
+# {0} is the Liberty install directory.
+patchingStarted=Jav\u00edt\u00e1s alkalmaz\u00e1s a(z) {0} helyen tal\u00e1lhat\u00f3 Liberty telep\u00edt\u00e9si k\u00f6nyvt\u00e1rban.
+patchingStartedWithFix=A(z) {1} jav\u00edt\u00e1s alkalmaz\u00e1sa a(z) {0} helyen tal\u00e1lhat\u00f3 Liberty telep\u00edt\u00e9si k\u00f6nyvt\u00e1rra most.
+
+patchingSuccessful=A jav\u00edt\u00e1s alkalmaz\u00e1sa siker\u00fclt.
+patchingSuccessfulWithFix=A(z) {1} jav\u00edt\u00e1s alkalmaz\u00e1sa sikeres.
+
+patchingNotNeeded=A jav\u00edt\u00e1s m\u00e1r alkalmaz\u00e1sra ker\u00fclt a(z) {0} helyen l\u00e9v\u0151 Liberty telep\u00edt\u00e9si k\u00f6nyvt\u00e1rra.
+patchingNotNeededWithFix=A(z) {1} jav\u00edt\u00e1s m\u00e1r alkalmaz\u00e1sra ker\u00fclt a(z) {0} helyen l\u00e9v\u0151 Liberty telep\u00edt\u00e9si k\u00f6nyvt\u00e1rra.
+
+patchingNotApplicable=A jav\u00edt\u00e1s \u00e1ltal \u00e9rintett egyik \u00f6sszetev\u0151 sincs jelen a(z) {0} helyen tal\u00e1lhat\u00f3 Liberty telep\u00edt\u00e9si k\u00f6nyvt\u00e1rban.
+patchingNotApplicableWithFix=A(z) {1} jav\u00edt\u00e1s \u00e1ltal \u00e9rintett egyik \u00f6sszetev\u0151 sincs jelen a(z) {0} helyen tal\u00e1lhat\u00f3 Liberty telep\u00edt\u00e9si k\u00f6nyvt\u00e1rban.
+
+invalidPatch=A jav\u00edt\u00e1s tartalma nem olvashat\u00f3. A jav\u00edt\u00e1s megszakad.
+invalidPatchWithFix=A(z) {0} jav\u00edt\u00e1s tartalma nem olvashat\u00f3. A jav\u00edt\u00e1s megszakad.
+
+# {0} directory location does not exist and cannot be created.
+noWriteAccess=A(z) {0} k\u00f6nyvt\u00e1r nem tal\u00e1lhat\u00f3 vagy nem hozhat\u00f3 l\u00e9tre. A jav\u00edt\u00e1s megszakad.
+noWriteAccessWithFix=A(z) {0} k\u00f6nyvt\u00e1r nem tal\u00e1lhat\u00f3 vagy nem hozhat\u00f3 l\u00e9tre. A(z) {1} jav\u00edt\u00e1s telep\u00edt\u00e9se megszak\u00edtva.
+
+restoreBackupsNeeded=A jav\u00edt\u00e1s alkalmaz\u00e1sa nem siker\u00fclt, \u00e9s vissza kell \u00e1ll\u00edtani a kor\u00e1bbi Liberty telep\u00edt\u00e9st. K\u00f6vesse a readme.txt f\u00e1jl ''\u00datmutat\u00e1sok a jav\u00edt\u00e1s elt\u00e1vol\u00edt\u00e1s\u00e1hoz'' c\u00edm\u0171 szakasz\u00e1ban le\u00edrt utas\u00edt\u00e1sokat. Megjegyz\u00e9s: Az \u00fatmutat\u00f3ban olyan f\u00e1jlok t\u00f6rl\u00e9s\u00e9re vonatkoz\u00f3 utas\u00edt\u00e1sok is szerepelhetnek, amelyek nem j\u00f6ttek l\u00e9tre.
+restoreBackupsNeededWithFix=A(z) {1} jav\u00edt\u00e1s alkalmaz\u00e1sa nem siker\u00fclt, vissza kell \u00e1ll\u00edtania a kor\u00e1bbi Liberty telep\u00edt\u00e9st. K\u00f6vesse a readme.txt f\u00e1jl ''\u00datmutat\u00e1sok a jav\u00edt\u00e1s elt\u00e1vol\u00edt\u00e1s\u00e1hoz'' c\u00edm\u0171 szakasz\u00e1ban le\u00edrt utas\u00edt\u00e1sokat. Megjegyz\u00e9s: Az \u00fatmutat\u00f3ban olyan f\u00e1jlok t\u00f6rl\u00e9s\u00e9re vonatkoz\u00f3 utas\u00edt\u00e1sok is szerepelhetnek, amelyek nem j\u00f6ttek l\u00e9tre.
+
+noRestoreNeeded=B\u00e1r a jav\u00edt\u00e1s alkalmaz\u00e1sa nem siker\u00fclt, nincs sz\u00fcks\u00e9g f\u00e1jlok vissza\u00e1ll\u00edt\u00e1s\u00e1ra vagy t\u00f6rl\u00e9s\u00e9re.
+noRestoreNeededWithFix=B\u00e1r a(z) {1} jav\u00edt\u00e1s alkalmaz\u00e1sa nem siker\u00fclt, nincs sz\u00fcks\u00e9g f\u00e1jlok vissza\u00e1ll\u00edt\u00e1s\u00e1ra vagy t\u00f6rl\u00e9s\u00e9re.
+
+# {0} is a file's location
+replacingFile=F\u00e1jl cser\u00e9je a k\u00f6vetkez\u0151 helyen: ''{0}''.
+
+patchFailed=A jav\u00edt\u00e1s alkalmaz\u00e1sa nem siker\u00fclt.
+
+# This message was written speculatively and is sadly not what we need. Use addOnNeedsIFixes instead.
+addonsNeedsFix=A(z) {0} helyen l\u00e9v\u0151 term\u00e9ktelep\u00edt\u00e9sen olyan jav\u00edt\u00e1sok ker\u00fcltek alkalmaz\u00e1sra, amelyeket a(z) {1} term\u00e9kkieg\u00e9sz\u00edt\u0151 nem tartalmaz. Ezeket a jav\u00edt\u00e1sokat \u00fajra kell alkalmazni, mivel a term\u00e9kkieg\u00e9sz\u00edt\u0151 nem tartalmazza azokat. Az \u00e9rintett \u00f6sszetev\u0151k: {2}
+
+# This message is terse because it was part of a 2000-character emergency translation. 
+addOnNeedsIFixes=A(z) {0} helyen a term\u00e9ktelep\u00edt\u00e9s kib\u0151v\u00fclt. A k\u00f6vetkez\u0151 jav\u00edt\u00e1sokat kell \u00fajra alkalmazni: {1}.  
+
+# This message is for the feature processing in the SelfExtraction code. 
+fileProcessingException=A(z) {0} f\u00e1jl feldolgoz\u00e1sa sor\u00e1m a k\u00f6vetkez\u0151 kiv\u00e9tel t\u00f6rt\u00e9nt: {1}
+
+#
+helpDownloadDependencies=Minden k\u00fcls\u0151 f\u00fcgg\u0151s\u00e9get automatikusan let\u00f6lt.
+# {0} Space-separated list of URLs
+externalDepsInstruction=Ez a csomag a k\u00f6vetkez\u0151 k\u00fcls\u0151 f\u00fcggv\u00e9nyt\u00e1rakkal van f\u00fcgg\u0151s\u00e9gben: {0}
+
+#
+# {0} [1]
+# {1} [2]
+externalDepsPrompt=Szeretn\u00e9 automatikusan let\u00f6lteni ezeket a f\u00fcgg\u0151s\u00e9geket? Lehet\u0151s\u00e9gek: {0} Igen (alap\u00e9rtelmez\u00e9s), vagy {1} Nem: 
+
+# {0} URL to download the file from, e.g. : http://url-for-download.com/path/to/file.jar
+# {1] Destination file to download the file to, eg c:/path/to/file/download-file.jar
+downloadFileError=T\u00e1voli f\u00e1jl let\u00f6lt\u00e9se meghi\u00fasult. Forr\u00e1s: {0}, c\u00e9l: {1}. 
+downloadingFileNotice=T\u00e1voli f\u00e1jl let\u00f6lt\u00e9se. Forr\u00e1s: {0}, c\u00e9l: {1}. 
+
+# {0} --verbose
+downloadingBeginNotice=K\u00fcls\u0151 f\u00fcgg\u0151s\u00e9gek let\u00f6lt\u00e9se - tov\u00e1bbi inform\u00e1ci\u00f3k a(z) {0} param\u00e9terrel \u00e9rhet\u0151k el.
+
+# {0} Exception description
+readDepsError=A k\u00fcls\u0151 f\u00fcgg\u0151s\u00e9g metaadat-f\u00e1jl olvas\u00e1sa meghi\u00fasult, kiv\u00e9tel: {0}
+
+archiveContainsNoLicense=Ez az arch\u00edvum nem tartalmaz licencet.
+
+# {0} is a path to a directory
+targetUserDirectory=A c\u00e9l felhaszn\u00e1l\u00f3i k\u00f6nyvt\u00e1r: {0}
+
+#Used when the ifix installer subclass specified by the header in the fix manifest cannot be found/created/invoked.
+# {0} is the error detected, eg class not found, method not found, etc should only happen if the ifix is built incorrectly.
+invalidFixInstaller=Bels\u0151 hiba t\u00f6rt\u00e9nt a jav\u00edt\u00e1s telep\u00edt\u0151 futtat\u00e1sa sor\u00e1n : {0}. A jav\u00edt\u00e1s nem alkalmazhat\u00f3.
+
+#Used if the fix is built missing the required header that specifies the subclass to handle fix installation.
+# {0} is the missing header name.
+missingFixInstallerHeader=Bels\u0151 hiba t\u00f6rt\u00e9nt, hi\u00e1nyz\u00f3 jav\u00edt\u00e1s fejl\u00e9c: {0}. A jav\u00edt\u00e1s nem alkalmazhat\u00f3.
+
+#Used if the specified fix installer does not meet the interface requirement.
+# {0} is the bad fix class name
+badFixInstaller=Bels\u0151 hiba, helytelen jav\u00edt\u00e1s telep\u00edt\u0151: {0}. A jav\u00edt\u00e1s nem alkalmazhat\u00f3.
+
+#Used when the lpmf file inside the fix is unabled to be parsed.
+# {0} is the error reported parsing the lpmf
+invalidMetaDataFile=Bels\u0151 hiba t\u00f6rt\u00e9nt jav\u00edt\u00e1s metaadatok feldolgoz\u00e1sa sor\u00e1n : {0}. A jav\u00edt\u00e1s nem alkalmazhat\u00f3.
+
+#Cannot create the output log file.
+# {0} is the filename of the log that had the error, {1} is the error.
+unableToCreateFixLog=A(z) {0} jav\u00edt\u00e1s telep\u00edt\u00e9si napl\u00f3f\u00e1jl nem hozhat\u00f3 l\u00e9tre, ok: {1}. A jav\u00edt\u00e1s nem alkalmazhat\u00f3. 
+
+#Used when the fix installer is unable to understand the content of a manifest contained in the fix.
+#{0} is the manifest with the issue, {1} is the error.
+invalidFixManifest=Bels\u0151 hiba t\u00f6rt\u00e9nt a(z) {0} jav\u00edt\u00e1s le\u00edr\u00f3f\u00e1jl adatainak feldolgoz\u00e1sa sor\u00e1n : {1}. A jav\u00edt\u00e1s nem alkalmazhat\u00f3.
+
+#The update to the fingerprint could fail.. but the fix will have been applied.
+unableToUpdateFingerprint=Kiszolg\u00e1l\u00f3 ujjlenyomat nem friss\u00edthet\u0151, ok: {0}. A jav\u00edt\u00e1s alkalmaz\u00e1sra ker\u00fclt; a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa sor\u00e1n  haszn\u00e1lja a --clean param\u00e9tert.
+
+#Updated not applicable message stating no files have been written.
+patchingNotApplicableNoChange=Nem ker\u00fclt kibont\u00e1sra tartalom, mert nincsenek megfelel\u0151 \u00f6sszetev\u0151k a fut\u00e1si k\u00f6rnyezetben: {0}
+
+# {0} is the message from the exception that caused us to be unable to create a parser for reading the XML files
+ifixutils.unable.to.create.parser=Hiba t\u00f6rt\u00e9nt a jelenlegi telep\u00edt\u00e9s iFix inform\u00e1ci\u00f3inak beolvas\u00e1sakor. A kiv\u00e9tel\u00fczenet: {0}.
+# {0} is the path to a file that could not be parsed
+# {1} is the message from the exception that meant we couldn't read the file
+ifixutils.unable.to.read.file=Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} f\u00e1jl beolvas\u00e1sakor. A kiv\u00e9tel\u00fczenet: {1}.
+
+# {0} is the manifest file path and {1} is the exception message
+exception.reading.manifest=A(z) {0} le\u00edr\u00f3f\u00e1jl beolvas\u00e1sa sor\u00e1n kiv\u00e9tel t\u00f6rt\u00e9nt.  Kiv\u00e9tel: {1}
+
+# Platform utils messages
+ERROR_UNABLE_TO_SET_EXT_ATTR=Nem siker\u00fclt be\u00e1ll\u00edtani a(z) {0} kiterjesztett attrib\u00fatumokat a k\u00f6vetkez\u0151 f\u00e1jlokhoz: {1}
+ERROR_UNABLE_TO_SET_EXECUTE_PERMISSIONS=Nem siker\u00fclt be\u00e1ll\u00edtani a v\u00e9grehajt\u00e1si enged\u00e9lyeket a k\u00f6vetkez\u0151 f\u00e1jlokhoz: {0}
+ERROR_UNABLE_TO_GET_UMASK=Nem siker\u00fclt lek\u00e9rni az umask be\u00e1ll\u00edt\u00e1st a k\u00f6vetkez\u0151 parancs haszn\u00e1lat\u00e1val: {0}
+ERROR_INVALID_EXTATTR_PARMS=A(z) {0} param\u00e9terek az extattr parancs eset\u00e9n \u00e9rv\u00e9nytelenek.  Az extattr parancs \u00e9rv\u00e9nyes param\u00e9terei: [+alps] [-alps]
+ERROR_EXECUTING_COMMAND=A parancs futtat\u00e1sa sor\u00e1n hiba t\u00f6rt\u00e9nt: {0} A parancs a(z) {1} kil\u00e9p\u00e9si k\u00f3ddal \u00e9s a k\u00f6vetkez\u0151 hiba\u00fczenettel t\u00e9rt vissza: {2}
+ERROR_UNABLE_TO_LOCATE_COMMAND_EXE=A(z) {0} v\u00e9grehajthat\u00f3 f\u00e1jl nem tal\u00e1lhat\u00f3 a k\u00f6vetkez\u0151 helyek ellen\u0151rz\u00e9se ut\u00e1n: {1}
+
+# java -jar messages 
+UNABLE_TO_FIND_PID=Nem siker\u00fclt lek\u00e9rdezni a java -jar folyamat folyamatazonos\u00edt\u00f3j\u00e1t. Nem lehet t\u00f6r\u00f6lni a(z) {1} ideiglenes kibont\u00e1si k\u00f6nyvt\u00e1rat, am\u00edg saj\u00e1t kez\u0171leg le nem \u00e1ll\u00edtja a java -jar folyamatot.
+
+UNABLE_TO_ATTACH_AGENT=A Liberty Java \u00fcgyn\u00f6k\u00f6t nem lehet csatlakoztatni. A kiszolg\u00e1l\u00f3 futni fog, de nem tud ell\u00e1tni Java \u00fcgyn\u00f6k\u00f6t ig\u00e9nyl\u0151 funkci\u00f3kat, mint p\u00e9ld\u00e1ul a megfigyel\u00e9st vagy nyomk\u00f6vet\u00e9st. Kiv\u00e9tel: {0}
+
+UNABLE_TO_FIND_TOOLS_JAR=A Liberty Java \u00fcgyn\u00f6k\u00f6t nem lehetett csatlakoztatni, mert nem Java SDK-t, hanem JRE fejleszt\u0151eszk\u00f6zt haszn\u00e1l. A kiszolg\u00e1l\u00f3 futni fog, de nem tud ell\u00e1tni Java \u00fcgyn\u00f6k\u00f6t ig\u00e9nyl\u0151 funkci\u00f3kat, mint p\u00e9ld\u00e1ul a megfigyel\u00e9st vagy nyomk\u00f6vet\u00e9st.
+
+UNABLE_TO_FIND_JAVA_AGENT=A Liberty Java \u00fcgyn\u00f6k nem tal\u00e1lhat\u00f3. A kiszolg\u00e1l\u00f3 futni fog, de nem tud ell\u00e1tni Java \u00fcgyn\u00f6k\u00f6t ig\u00e9nyl\u0151 funkci\u00f3kat, mint p\u00e9ld\u00e1ul a megfigyel\u00e9st vagy nyomk\u00f6vet\u00e9st.
+
+# messages for LicenseSelfEctractor
+LICENSE_invalidInstall=A(z) {0} k\u00f6nyvt\u00e1r nem \u00e9rv\u00e9nyes Liberty telep\u00edt\u00e9s. Adja meg a friss\u00edteni k\u00edv\u00e1nt Liberty telep\u00edt\u00e9s gy\u00f6k\u00e9rk\u00f6nyvt\u00e1r\u00e1t.
+LICENSE_invalidVersion=A licenc nem friss\u00edthet\u0151, mert a megadott term\u00e9ktelep\u00edt\u00e9s v\u00e1ltozatsz\u00e1ma {0}, \u00e9s a licenc csak {1} v\u00e1ltozatr\u00f3l friss\u00edthet\u0151.
+LICENSE_invalidEdition=A licenc nem friss\u00edthet\u0151, mert a megadott term\u00e9ktelep\u00edt\u00e9s kiad\u00e1sa {0}, \u00e9s a licenc csak {1} kiad\u00e1sr\u00f3l friss\u00edthet\u0151.
+LICENSE_invalidLicense=A licenc nem friss\u00edthet\u0151, mert a megadott term\u00e9ktelep\u00edt\u00e9s licence {0}, \u00e9s a licenc csak {1} licenccel rendelkez\u0151 term\u00e9ket friss\u00edt.
+LICENSE_invalidInstallType=A licenc nem friss\u00edthet\u0151, mert a megadott term\u00e9ktelep\u00edt\u00e9s az IBM Installation Manager seg\u00edts\u00e9g\u00e9vel ker\u00fclt telep\u00edt\u00e9sre. A telep\u00edt\u00e9st az IBM Installation Manager seg\u00edts\u00e9g\u00e9vel friss\u00edtse.
+
+# new messages for license upgrade and downgrade
+LICENSE_replace_invalidVersion=A licenc nem alkalmazhat\u00f3, mert a megadott term\u00e9ktelep\u00edt\u00e9s v\u00e1ltozatsz\u00e1ma {0}, \u00e9s a licenc csak a(z) {1} v\u00e1ltozatt\u00f3l alkalmazhat\u00f3.
+LICENSE_replace_invalidInstallType=A licenc nem alkalmazhat\u00f3, mert a megadott term\u00e9ktelep\u00edt\u00e9s az IBM Installation Manager seg\u00edts\u00e9g\u00e9vel ker\u00fclt telep\u00edt\u00e9sre. A telep\u00edt\u00e9st az IBM Installation Manager seg\u00edts\u00e9g\u00e9vel friss\u00edtse.
+
+LICENSE_replace_invalidEditonFeatures=A k\u00f6vetkez\u0151 szolg\u00e1ltat\u00e1sok nem \u00e9rv\u00e9nyesek a(z) {0} kiad\u00e1sra, \u00e9s el kell \u0151ket t\u00e1vol\u00edtani a licenc alkalmaz\u00e1sa el\u0151tt: {1}\n\
+\n\
+A szolg\u00e1ltat\u00e1sok elt\u00e1vol\u00edt\u00e1s\u00e1hoz haszn\u00e1lja a k\u00f6vetkez\u0151 parancsot, miel\u0151tt alkalmazn\u00e1 a(z) {2} kiad\u00e1s licenc\u00e9t: {3}
+
+LICENSE_downgrade_block_8557_low=Ez a licenc csak a(z) {0} vagy \u00fajabb telep\u00edt\u00e9sre alkalmazhat\u00f3. A jelenlegi telep\u00edt\u00e9s {1} szinten van. T\u00f6ltse le \u00e9s friss\u00edtse a term\u00e9ket a leg\u00fajabb szintre, \u00e9s alkalmazza \u00fajra a licencet.

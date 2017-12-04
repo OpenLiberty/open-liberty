@@ -1,0 +1,141 @@
+###############################################################################
+# Copyright (c) 2002, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT WebSphere kernel transport http channel
+#CMVCPATHNAME com.ibm.ws.transport.http/resources/com/ibm/ws/http/channel/internal/resources/httpchannelmessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+config.maxpersist=CWWKT0001E: Le nombre maximum de requ\u00eates ({0}) autoris\u00e9 par socket est incorrect. Les valeurs admises incluent {1} pour un nombre illimit\u00e9 ou tout nombre positif.
+config.maxpersist.explanation=La valeur configur\u00e9e pour le nombre maximal de demandes admises par socket n'est pas valide.
+config.maxpersist.useraction=Configurez une valeur valide pour le nombre maximal de demandes admises par socket.
+
+config.incomingbody=CWWKT0002E: La taille de la m\u00e9moire tampon d''entr\u00e9e {0} est incorrecte. La taille doit \u00eatre comprise entre {1} et {2} pour \u00eatre valide.
+config.incomingbody.explanation=La valeur configur\u00e9e pour la taille de m\u00e9moire tampon entrante n'est pas valide.
+config.incomingbody.useraction=Configurez une valeur valide pour la taille de m\u00e9moire tampon entrante.
+
+config.incomingheader=CWWKT0003E: La taille de la m\u00e9moire tampon d''en-t\u00eate {0} est incorrecte. La taille doit \u00eatre comprise entre {1} et {2} pour \u00eatre valide.
+config.incomingheader.explanation=La valeur configur\u00e9e pour la taille de m\u00e9moire tampon d'en-t\u00eate n'est pas valide.
+config.incomingheader.useraction=Configurez une valeur valide pour la taille de m\u00e9moire tampon d'en-t\u00eate.
+
+config.outgoingbuffer=CWWKT0004E: La taille de la m\u00e9moire tampon de sortie {0} est incorrecte. La taille doit \u00eatre comprise entre {1} et {2} pour \u00eatre valide.
+config.outgoingbuffer.explanation=La valeur configur\u00e9e pour la taille de m\u00e9moire tampon sortante n'est pas valide.
+config.outgoingbuffer.useraction=Configurez une valeur valide pour la taille de m\u00e9moire tampon sortante.
+
+config.persisttimeout=CWWKT0005E: Le d\u00e9lai d''expiration permanent {0} est incorrect. Le d\u00e9lai d''expiration doit \u00eatre sup\u00e9rieur \u00e0 {1}.
+config.persisttimeout.explanation=La valeur configur\u00e9e pour le param\u00e8tre de d\u00e9lai persistant n'est pas valide.
+config.persisttimeout.useraction=Configurez une valeur valide pour le param\u00e8tre de d\u00e9lai persistant.
+
+config.readtimeout=CWWKT0006E: Le d\u00e9lai d''expiration de lecture {0} est incorrect. Le d\u00e9lai d''expiration doit \u00eatre sup\u00e9rieur \u00e0 {1}.
+config.readtimeout.explanation=La valeur configur\u00e9e par le param\u00e8tre de d\u00e9lai de lecture n'est pas valide.
+config.readtimeout.useraction=Configurez une valeur valide pour le param\u00e8tre de d\u00e9lai de lecture.
+
+config.writetimeout=CWWKT0007E: Le d\u00e9lai d''expiration d''\u00e9criture {0} est incorrect. Le d\u00e9lai d''expiration doit \u00eatre sup\u00e9rieur \u00e0 {1}.
+config.writetimeout.explanation=La valeur configur\u00e9e pour le param\u00e8tre de d\u00e9lai d'\u00e9criture n'est pas valide.
+config.writetimeout.useraction=Configurez une valeur valide pour le param\u00e8tre de d\u00e9lai d'\u00e9criture.
+
+config.fieldsize=CWWKT0008E: La limite de taille de zone {0} est incorrecte. La taille doit \u00eatre comprise entre {1} et {2} pour \u00eatre valide.
+config.fieldsize.explanation=La valeur configur\u00e9e pour la limite de taille de zone n'est pas valide.
+config.fieldsize.useraction=Configurez une valeur valide pour la limite de taille de zone.
+
+config.numheaders=CWWKT0009E: La limite du nombre d''en-t\u00eates {0} est incorrecte. La taille doit \u00eatre comprise entre {1} et {2} pour \u00eatre valide.
+config.numheaders.explanation=La valeur configur\u00e9e pour le nombre maximal d'en-t\u00eates n'est pas valide.
+config.numheaders.useraction=Configurez une valeur valide pour le nombre maximal d'en-t\u00eates.
+
+config.incomingbodymaxsize=CWWKT0010E: Le nombre maximal de {0} octets d\u00e9fini pour le corps d''un message entrant n''est pas valide. Ce nombre doit \u00eatre sup\u00e9rieur ou \u00e9gal \u00e0 {1}.
+config.incomingbodymaxsize.explanation=La valeur configur\u00e9 pour le nombre maximal d'octets d\u00e9fini pour le corps d'un message entrant n'est pas valide.
+config.incomingbodymaxsize.useraction=Configurez une valeur valide pour le nombre maximal d'octets d'un corps de message entrant.
+
+NO_DEFAULT_CONFIGURATION=CWWKT0011W: La configuration par d\u00e9faut est introuvable pour {0} utilisant l''ID {1}.
+NO_DEFAULT_CONFIGURATION.explanation=La configuration par d\u00e9faut sp\u00e9cifi\u00e9e n'a pas \u00e9t\u00e9 trouv\u00e9e pour l'ID sp\u00e9cifi\u00e9.
+NO_DEFAULT_CONFIGURATION.useraction=V\u00e9rifiez la configuration du serveur et effectuez un red\u00e9marrage.
+
+DEFAULT_OPTIONS_ERROR=CWWKT0012E: Une erreur interne s''est produite. Impossible de cr\u00e9er une configuration par d\u00e9faut. Exception {0}
+DEFAULT_OPTIONS_ERROR.explanation=CMSG0001
+DEFAULT_OPTIONS_ERROR.useraction=CMSG0002
+
+DEFAULT_ENDPOINT_ERROR=CWWKT0013E: Une erreur interne s''est produite. Impossible de cr\u00e9er un noeud final par d\u00e9faut. Exception {0}
+DEFAULT_ENDPOINT_ERROR.explanation=CMSG0001
+DEFAULT_ENDPOINT_ERROR.useraction=CMSG0002
+
+DEFAULT_VHOST_ERROR=CWWKT0014E: Une erreur interne s''est produite. Impossible de cr\u00e9er l''h\u00f4te virtuel par d\u00e9faut.  Exception {0}
+DEFAULT_VHOST_ERROR.explanation=CMSG0001
+DEFAULT_VHOST_ERROR.useraction=CMSG0002
+
+missingPorts.endpointDisabled=CWWKT0015W: Aucun port n''a \u00e9t\u00e9 configur\u00e9 pour le noeud final {0}. Le noeud final a \u00e9t\u00e9 d\u00e9sactiv\u00e9.
+missingPorts.endpointDisabled.explanation=Un noeud final HTTP doit \u00eatre configur\u00e9 avec au moins un port.
+missingPorts.endpointDisabled.useraction=Attribuez une valeur de port valide \u00e0 la propri\u00e9t\u00e9 httpPort ou httpsPort.
+
+context.root.added=CWWKT0016I: Application Web disponible, ({0}) : {1}
+context.root.added.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+context.root.added.useraction=Aucune action n'est n\u00e9cessaire.
+
+context.root.removed=CWWKT0017I: Application Web supprim\u00e9e ({0}) : {1}
+context.root.removed.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+context.root.removed.useraction=Aucune action n'est n\u00e9cessaire.
+
+Missing.App.Or.Context.Root=CWWKT0018E: L''application ou la racine de contexte de cette demande est introuvable : {0}
+Missing.App.Or.Context.Root.explanation=La demande ne peut pas \u00eatre trait\u00e9e par une application sur le serveur.
+Missing.App.Or.Context.Root.useraction=Assurez-vous que l'application est d\u00e9finie et d\u00e9ploy\u00e9e, puis qu'elle a \u00e9t\u00e9 correctement r\u00e9f\u00e9renc\u00e9e par le client.
+
+#Cannot remove above due to service rules, but we do not need a message key as this is never logged
+#only output to the browser on our 404 page - removing it means we give away less server implementation info
+Missing.App.Or.Context.Root.No.Error.Code=L''application ou la racine de contexte de cette demande est introuvable : {0}
+Missing.App.Or.Context.Root.No.Error.Code.explanation=La demande ne peut pas \u00eatre trait\u00e9e par une application sur le serveur.
+Missing.App.Or.Context.Root.No.Error.Code.useraction=Assurez-vous que l'application est d\u00e9finie et d\u00e9ploy\u00e9e, puis qu'elle a \u00e9t\u00e9 correctement r\u00e9f\u00e9renc\u00e9e par le client.
+
+config.httpChain.error=CWWKT0019E: Un probl\u00e8me est survenu lors de la configuration du noeud final {0} : {1}.
+config.httpChain.error.explanation=Le noeud final HTTP n'a pas pu \u00eatre d\u00e9marr\u00e9 en raison d'un probl\u00e8me de configuration.
+config.httpChain.error.useraction=Examinez les journaux de messages et d'exceptions et voyez s'ils contiennent des erreurs ayant un lien avec le probl\u00e8me signal\u00e9. 
+
+start.httpChain.error=CWWKT0020E: Un probl\u00e8me est survenu lors du d\u00e9marrage du noeud final {0} : {1}.
+start.httpChain.error.explanation=Le noeud final HTTP n'a pas pu \u00eatre d\u00e9marr\u00e9 en raison d'un probl\u00e8me inattendu.
+start.httpChain.error.useraction=Examinez les journaux de messages et d'exceptions et voyez s'ils contiennent des erreurs ayant un lien avec le probl\u00e8me signal\u00e9. 
+
+httpChain.error.shutdown=CWWKT0021I: Le serveur s''arr\u00eate en raison d''une erreur de configuration \u00e9ventuelle. \
+Le noeud final {0} ne peut pas \u00eatre d\u00e9marr\u00e9 ; cela peut se produire si le port configur\u00e9 est en cours d''utilisation.
+httpChain.error.shutdown.explanation=Le noeud final HTTP a \u00e9t\u00e9 configur\u00e9 avec onError=FAIL, ce qui a caus\u00e9 l'arr\u00eat du serveur si un probl\u00e8me se produit au d\u00e9marrage du noeud final. 
+httpChain.error.shutdown.useraction=Examinez les journaux de messages et d'exceptions et voyez s'ils contiennent des erreurs ayant un lien avec le probl\u00e8me signal\u00e9. \
+Pour \u00e9viter l'arr\u00eat du serveur en raison d'un probl\u00e8me li\u00e9 au d\u00e9marrage du noeud final, v\u00e9rifiez que onError est d\u00e9fini sur WARN ou IGNORE.
+
+unresolveableHost=CWWKT0022E: L''h\u00f4te configur\u00e9 {0} pour le noeud final HTTP {1} n''a pas pu \u00eatre r\u00e9solu. Le noeud final a \u00e9t\u00e9 d\u00e9sactiv\u00e9.
+unresolveableHost.explanation=Un noeud final HTTP requiert une valeur d'h\u00f4te pouvant \u00eatre convertie en une interface r\u00e9seau active.
+unresolveableHost.useraction=V\u00e9rifiez que la valeur d'h\u00f4te fait r\u00e9f\u00e9rence \u00e0 une interface r\u00e9seau active ou utilisez * pour garantir une liaison \u00e0 toutes les interfaces.
+
+unresolveableDefaultHost=CWWKT0023W: Le nom defaultHostName {0} configur\u00e9 n''a pas pu \u00eatre r\u00e9solu ; utilisation de localhost.
+unresolveableDefaultHost.explanation=La variable defaultHostName sp\u00e9cifie une valeur h\u00f4te qui n'a pas pu \u00eatre convertie en une interface r\u00e9seau active.
+unresolveableDefaultHost.useraction=V\u00e9rifiez que la valeur defaultHostName configur\u00e9e fait r\u00e9f\u00e9rence \u00e0 une interface r\u00e9seau active.
+
+defaultHostDisabled=CWWKT0024W: L'h\u00f4te virtuel par d\u00e9faut (default_host) ne peut pas \u00eatre d\u00e9sactiv\u00e9.
+defaultHostDisabled.explanation=L'h\u00f4te virtuel par d\u00e9faut est requis par l'environnement d'ex\u00e9cution. 
+defaultHostDisabled.useraction=Aucune action n'est n\u00e9cessaire.
+
+noHostAliases=CWWKT0025W: L''h\u00f4te virtuel {0} ne poss\u00e8de pas d''alias d''h\u00f4te configur\u00e9, il ne recevra pas de requ\u00eate entrante.
+noHostAliases.explanation=Tous les h\u00f4tes virtuels qui ne sont pas d\u00e9finis par d\u00e9faut doivent sp\u00e9cifier au moins un alias d'h\u00f4te (host:port) pour identifier les requ\u00eates entrantes qui doivent \u00eatre achemin\u00e9es vers cet h\u00f4te virtuel. \
+Aucun alias d'h\u00f4te n'est d\u00e9fini pour l'h\u00f4te virtuel sp\u00e9cifi\u00e9, ce qui emp\u00eache l'acheminement de requ\u00eates vers cet h\u00f4te.
+noHostAliases.useraction=Mettez \u00e0 jour l'\u00e9l\u00e9ment virtualHost dans le fichier server.xml pour d\u00e9finir au moins un attribut hostAlias.
+
+invalidAlias=CWWKT0026W: Un alias d''h\u00f4te configur\u00e9 pour l''h\u00f4te virtuel {0} n''est pas valide et sera ignor\u00e9. {1}
+invalidAlias.explanation=L'alias d'h\u00f4te configur\u00e9 contient des caract\u00e8res non valides ou une syntaxe incorrecte.
+invalidAlias.useraction=Mettez \u00e0 jour l'\u00e9l\u00e9ment d'h\u00f4te virtuel dans le fichier server.xml pour corriger ou supprimer l'alias d'h\u00f4te non valide. Notez que les adresses IPv6 doivent \u00eatre plac\u00e9es entre crochets, [].
+
+wildcardReason=Le caract\u00e8re g\u00e9n\u00e9rique * ne peut pas \u00eatre utilis\u00e9 avec d'autres caract\u00e8res dans l'alias d'h\u00f4te.
+badHostPortReason=L'h\u00f4te sp\u00e9cifi\u00e9 n'est pas une adresse IP ou un nom d'h\u00f4te valide, ou le port sp\u00e9cifi\u00e9 n'est pas un nombre entier.
+
+duplicateAlias=CWWKT0027W: L''alias d''h\u00f4te {0} pour l''h\u00f4te virtuel {1} est en conflit avec un alias d''h\u00f4te existant et sera ignor\u00e9.
+duplicateAlias.explanation=L'alias d'h\u00f4te sp\u00e9cifi\u00e9 est en conflit avec un alias d'h\u00f4te existant.
+duplicateAlias.useraction=V\u00e9rifiez que tous les alias d'h\u00f4te d\u00e9finis en tant qu'\u00e9l\u00e9ments d'h\u00f4te virtuel dans le fichier server.xml sont uniques.
+
+context.root.changed=CWWKT0028I: Application Web d\u00e9plac\u00e9e ({0}) : {1}
+context.root.changed.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+context.root.changed.useraction=Aucune action n'est n\u00e9cessaire.

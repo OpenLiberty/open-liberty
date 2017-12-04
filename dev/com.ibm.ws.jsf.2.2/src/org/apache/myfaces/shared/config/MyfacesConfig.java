@@ -561,6 +561,10 @@ public class MyfacesConfig
     public final static String DELAY_POST_CONSTRUCT = "com.ibm.ws.jsf.delayManagedBeanPostConstruct";
     public final static boolean DELAY_POST_CONSTRUCT_DEFAULT = true;
     
+    @JSFWebConfigParam(expectedValues="true, false", defaultValue="false")
+    public final static String DISABLE_FACELET_ACTION_LISTENER_PREDESTROY = "com.ibm.ws.jsf.DisableFaceletActionListenerPreDestroy";
+    public final static boolean DISABLE_FACELET_ACTION_LISTENER_PREDESTROY_DEFAULT = false;
+    
     private boolean _prettyHtml;
     private boolean _detectJavascript;
     private boolean _allowJavascript;
@@ -606,6 +610,7 @@ public class MyfacesConfig
     private boolean _delayManagedBeanPostConstruct; //PI30335
     private boolean _supportEL3ImportHandler;
     private boolean _strictJsf2OriginHeaderAppPath;
+    private boolean _disableFaceletActionListenerPreDestroy;
 
     private static final boolean TOMAHAWK_AVAILABLE;
     private static final boolean MYFACES_IMPL_AVAILABLE;
@@ -721,6 +726,7 @@ public class MyfacesConfig
         setDelayManagedBeanPostConstruct(DELAY_POST_CONSTRUCT_DEFAULT); //PI30335
         setSupportEL3ImportHandler(SUPPORT_EL_3_IMPORT_HANDLER_DEFAULT);
         setStrictJsf2OriginHeaderAppPath(STRICT_JSF_2_ORIGIN_HEADER_APP_PATH_DEFAULT);
+        setDisableFaceletActionListenerPreDestroy(DISABLE_FACELET_ACTION_LISTENER_PREDESTROY_DEFAULT);
     }
 
     private static MyfacesConfig createAndInitializeMyFacesConfig(ExternalContext extCtx)
@@ -927,6 +933,10 @@ public class MyfacesConfig
         myfacesConfig.setStrictJsf2OriginHeaderAppPath(WebConfigParamUtils.getBooleanInitParameter(extCtx, 
                         STRICT_JSF_2_ORIGIN_HEADER_APP_PATH, 
                         STRICT_JSF_2_ORIGIN_HEADER_APP_PATH_DEFAULT));
+        
+        myfacesConfig.setDisableFaceletActionListenerPreDestroy(WebConfigParamUtils.getBooleanInitParameter(extCtx, 
+                        DISABLE_FACELET_ACTION_LISTENER_PREDESTROY, 
+                        DISABLE_FACELET_ACTION_LISTENER_PREDESTROY_DEFAULT));
 
         if (TOMAHAWK_AVAILABLE)
         {
@@ -1610,5 +1620,15 @@ public class MyfacesConfig
     public void setStrictJsf2OriginHeaderAppPath(boolean strictJsf2OriginHeaderAppPath)
     {
         this._strictJsf2OriginHeaderAppPath = strictJsf2OriginHeaderAppPath;
+    }
+    
+    public boolean isDisableFaceletActionListenerPreDestroy()
+    {
+        return _disableFaceletActionListenerPreDestroy;
+    }
+    
+    public void setDisableFaceletActionListenerPreDestroy(boolean disableFaceletActionListenerPreDestroy)
+    {
+        this._disableFaceletActionListenerPreDestroy = disableFaceletActionListenerPreDestroy;
     }
 }

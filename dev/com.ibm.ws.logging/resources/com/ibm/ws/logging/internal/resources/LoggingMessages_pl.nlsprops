@@ -1,0 +1,121 @@
+###############################################################################
+# Copyright (c) 2011, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.logging/resources/com/ibm/ws/logging/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# Messages in the range TRAS3000 to 3199 are reserved for this messages file.
+# The list of prefixes and the range of messages in use (or "reserved") are shown in 
+# http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+# -------------------------------------------------------------------------------------------------
+
+FATAL=B\u0141\u0104D KRYTYCZNY
+ERROR=B\u0141\u0104D
+AUDIT=KONTROLA
+EVENT=ZDARZENIE
+DETAIL=SZCZEG\u00d3\u0141Y
+
+## Shared with tWAS
+
+# Informational message telling the user the trace state has changed.
+MSG_TRACE_STATE_CHANGED=TRAS0018I: Stan \u015bledzenia zosta\u0142 zmieniony. Nowy stan \u015bledzenia to {0}.
+MSG_TRACE_STATE_CHANGED.explanation=Odebrano i przetworzono \u017c\u0105danie zmiany bie\u017c\u0105cego stanu \u015bledzenia.
+MSG_TRACE_STATE_CHANGED.useraction=Je\u015bli nowy stan \u015bledzenia nie jest wymaganym stanem \u015bledzenia, zmie\u0144 go na wymagany stan.
+
+#PK509567
+# Warning message telling the user that the rename operation filed while rolling a log file over.
+MSG_ROLLOVER_RENAME_FAILED=TRAS0031W: Nie mo\u017cna zmieni\u0107 nazwy pliku {0} na {1} podczas prze\u0142\u0105czania pliku dziennika. Zostanie podj\u0119ta pr\u00f3ba skopiowania tre\u015bci pliku.
+MSG_ROLLOVER_RENAME_FAILED.explanation=Nie powiod\u0142a si\u0119 pr\u00f3ba zmiany nazwy wskazanego pliku.  Najbardziej prawdopodobn\u0105 przyczyn\u0105 jest to, \u017ce inny proces lub w\u0105tek w\u0142a\u015bnie uzyskuje dost\u0119p do tego pliku dziennika. Produkt WebSphere podejmie pr\u00f3b\u0119 zako\u0144czenia operacji prze\u0142\u0105czania przez skopiowanie tre\u015bci pliku dziennika - ten proces jest wolniejszy i w czasie jego trwania zostan\u0105 wstrzymane wszystkie w\u0105tki, kt\u00f3re podejm\u0105 pr\u00f3b\u0119 zarejestrowania danych w dzienniku.
+MSG_ROLLOVER_RENAME_FAILED.useraction=Okre\u015bl przyczyn\u0119 wyst\u0105pienia niepowodzenia podczas zmiany nazwy i usu\u0144 j\u0105 - mo\u017ce to obejmowa\u0107 wy\u0142\u0105czenie innych proces\u00f3w, kt\u00f3re uzyskuj\u0105 dost\u0119p do tego pliku dziennika.
+
+## new for lWAS
+INSTRUMENTATION_SERVICE_UNAVAILABLE=TRAS0032W: Wstrzykiwanie w czasie wykonywania szczeg\u00f3\u0142owego \u015bledzenia metody jest niedost\u0119pne.
+INSTRUMENTATION_SERVICE_UNAVAILABLE.explanation=Nie mo\u017cna zainstalowa\u0107 transformatora plik\u00f3w klas odpowiedzialnego za dodanie \u015bledzenia na poziomie metody, poniewa\u017c nie mo\u017cna uzyska\u0107 odpowiedniej referencji java.lang.instrument.Instrumentation.
+INSTRUMENTATION_SERVICE_UNAVAILABLE.useraction=Uruchom serwer, u\u017cywaj\u0105c odpowiedniego argumentu wiersza komend -javaagent.
+
+## Should not be used anymore because of issue 508
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS=TRAS0033E: Wstrzykiwanie w czasie wykonywania szczeg\u00f3\u0142owego \u015bledzenia metody nie powiod\u0142o si\u0119 dla klasy {0}. Wyst\u0105pi\u0142 wyj\u0105tek {1}.
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas wstrzykiwania szczeg\u00f3\u0142owego \u015bledzenia metody do okre\u015blonej klasy.
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS.useraction=CMSG0002 
+
+## new for lWAS
+TRACE_STRING_BAD_LEVEL=TRAS0034W: Poziom \u015bledzenia {0} dla specyfikacji {1} jest niepoprawny. Specyfikacja \u015bledzenia zostanie zignorowana.
+TRACE_STRING_BAD_LEVEL.explanation=Poziom \u015bledzenia skonfigurowany dla okre\u015blonej nazwy grupy, klasy lub pakietu nie zosta\u0142 rozpoznany. Ustawienie \u015bledzenia dla tej nazwy zostanie pomini\u0119te.
+TRACE_STRING_BAD_LEVEL.useraction=Sprawd\u017a konfiguracj\u0119 \u015bledzenia i ustaw poziom na rozpoznawan\u0105 warto\u015b\u0107. Poprawne poziomy \u015bledzenia s\u0105 wymienione w dokumentacji i obejmuj\u0105 warto\u015bci all, info i debug.
+
+## new for lWAS
+TRACE_STRING_BAD_ACTION=TRAS0035W: Warto\u015b\u0107 ustawienia \u015bledzenia {0} dla specyfikacji {1} nie zosta\u0142a rozpoznana. Specyfikacja \u015bledzenia zostanie zignorowana.
+TRACE_STRING_BAD_ACTION.explanation=Warto\u015b\u0107 ustawienia \u015bledzenia skonfigurowana dla okre\u015blonej nazwy grupy, klasy lub pakietu nie zosta\u0142a rozpoznana. Ustawienie \u015bledzenia dla tej nazwy zostanie pomini\u0119te.
+TRACE_STRING_BAD_ACTION.useraction=\u017badne dzia\u0142anie nie jest wymagane, chyba \u017ce ustawienie \u015bledzenia ma mie\u0107 warto\u015b\u0107 disabled. W takim przypadku sprawd\u017a konfiguracj\u0119 \u015bledzenia i zmie\u0144 warto\u015b\u0107 ustawienia na disabled.
+
+## new for lWAS
+UNABLE_TO_CREATE_RESOURCE=TRAS0036E: System nie mo\u017ce utworzy\u0107 pliku {0} z powoduj nast\u0119puj\u0105cego wyj\u0105tku: {1}
+UNABLE_TO_CREATE_RESOURCE.explanation=Pr\u00f3ba otwarcia okre\u015blonego zasobu nie powiod\u0142a si\u0119. Wyj\u0105tek informuje o podstawowej przyczynie niepowodzenia.
+UNABLE_TO_CREATE_RESOURCE.useraction=Sprawd\u017a wyj\u0105tek, aby okre\u015bli\u0107 podstawow\u0105 przyczyn\u0119. Upewnij si\u0119, \u017ce okre\u015blona nazwa pliku jest poprawn\u0105 nazw\u0105 pliku. Upewnij si\u0119, \u017ce \u015brodowisko wykonawcze serwera aplikacji ma prawo do zapisu w katalogu zawieraj\u0105cym zas\u00f3b i \u017ce dysk nie jest pe\u0142ny. Je\u015bli problem nie zostanie rozwi\u0105zany, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+## new for lWAS
+UNABLE_TO_CREATE_RESOURCE_NOEX=TRAS0037E: System nie mo\u017ce utworzy\u0107 nowego pliku {0}
+UNABLE_TO_CREATE_RESOURCE_NOEX.explanation=Komponent serwera aplikacji nie mo\u017ce wykona\u0107 operacji na \u017c\u0105danym zasobie.
+UNABLE_TO_CREATE_RESOURCE_NOEX.useraction=Upewnij si\u0119, \u017ce okre\u015blona nazwa pliku jest poprawn\u0105 nazw\u0105 pliku. Upewnij si\u0119, \u017ce \u015brodowisko wykonawcze serwera aplikacji ma prawo do zapisu w katalogu zawieraj\u0105cym zas\u00f3b i \u017ce dysk nie jest pe\u0142ny. Je\u015bli problem nie zostanie rozwi\u0105zany, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+## new for lWAS
+UNABLE_TO_DELETE_RESOURCE_NOEX=TRAS0038E: System nie mo\u017ce usun\u0105\u0107 pliku {0}
+UNABLE_TO_DELETE_RESOURCE_NOEX.explanation=Komponent serwera aplikacji nie mo\u017ce wykona\u0107 operacji na \u017c\u0105danym zasobie.
+UNABLE_TO_DELETE_RESOURCE_NOEX.useraction=Upewnij si\u0119, \u017ce okre\u015blona nazwa pliku jest poprawn\u0105 nazw\u0105 pliku. Upewnij si\u0119, \u017ce \u015brodowisko wykonawcze serwera aplikacji ma prawo do zapisu w katalogu zawieraj\u0105cym zas\u00f3b i \u017ce dysk nie jest pe\u0142ny. Je\u015bli problem nie zostanie rozwi\u0105zany, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+## new for lWAS
+UNABLE_TO_DELETE_RESOURCE=TRAS0039E: System nie mo\u017ce usun\u0105\u0107 pliku {0} z powodu nast\u0119puj\u0105cego wyj\u0105tku: {1}
+UNABLE_TO_DELETE_RESOURCE.explanation=Pr\u00f3ba usuni\u0119cia okre\u015blonego zasobu nie powiod\u0142a si\u0119. Wyj\u0105tek informuje o podstawowej przyczynie niepowodzenia.
+UNABLE_TO_DELETE_RESOURCE.useraction=Sprawd\u017a wyj\u0105tek, aby okre\u015bli\u0107 podstawow\u0105 przyczyn\u0119. Upewnij si\u0119, \u017ce \u015brodowisko wykonawcze serwera aplikacji ma prawo do zapisu w katalogu zawieraj\u0105cym zas\u00f3b. Je\u015bli problem nie zostanie rozwi\u0105zany, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# common 
+UNKNOWN_TRACE_SPEC=TRAS0040I: Skonfigurowany stan \u015bledzenia zawiera\u0142 nast\u0119puj\u0105ce specyfikacje, kt\u00f3re nie by\u0142y zgodne z \u017cadnym z zarejestrowanych obecnie na serwerze program\u00f3w rejestruj\u0105cych: {0} Zignoruj ten komunikat, je\u015bli specyfikacje \u015bledzenia {0} s\u0105 poprawne.
+UNKNOWN_TRACE_SPEC.explanation=Programy rejestruj\u0105ce s\u0105 rejestrowane na serwerze podczas pierwszego u\u017cycia kodu, kt\u00f3ry je tworzy. System wykry\u0142, \u017ce niekt\u00f3re specyfikacje \u015bledzenia odwo\u0142uj\u0105 si\u0119 do program\u00f3w rejestruj\u0105cych, kt\u00f3rych nie zarejestrowano na serwerze. Skonfigurowane specyfikacje \u015bledzenia mog\u0105 by\u0107 poprawne dla program\u00f3w rejestruj\u0105cych, kt\u00f3rych jeszcze nie zarejestrowano, lub mog\u0142y zosta\u0107 niepoprawnie wpisane. Ta procedura sprawdzaj\u0105ca jest wykonywana za ka\u017cdym razem, gdy specyfikacja \u015bledzenia zostanie zaktualizowana na dzia\u0142aj\u0105cym serwerze.
+UNKNOWN_TRACE_SPEC.useraction=Sprawd\u017a, czy specyfikacja \u015bledzenia zosta\u0142a poprawnie skonfigurowana. Je\u015bli \u0142a\u0144cuch specyfikacji \u015bledzenia nie zawiera \u017cadnych b\u0142\u0119d\u00f3w, nie jest wymagana \u017cadna czynno\u015b\u0107. 
+
+## Should not be used anymore because of issue 508
+MESSAGES_CONFIGURED_HIDDEN=TRAS0041I: Nast\u0119puj\u0105ce komunikaty s\u0105 ukryte w plikach console.log i messages.log: {0}
+MESSAGES_CONFIGURED_HIDDEN.explanation=Komunikaty, kt\u00f3re s\u0105 skonfigurowane jako ukryte, nie s\u0105 zapisywane w plikach console.log i messages.log. S\u0105 jednak zapisywane w pliku trace.log. 
+MESSAGES_CONFIGURED_HIDDEN.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+MSG_ROUTER_UPDATED=TRAS0042I: Grupa kierowania komunikat\u00f3w {0} zawiera nast\u0119puj\u0105ce komunikaty: {1}
+MSG_ROUTER_UPDATED.explanation=Zestaw identyfikator\u00f3w komunikat\u00f3w skonfigurowanych dla okre\u015blonej grupy kierowania komunikat\u00f3w uleg\u0142 zmianie. Podano zestaw identyfikator\u00f3w komunikat\u00f3w obecnie powi\u0105zanych z t\u0105 grup\u0105 kierowania komunikat\u00f3w.
+MSG_ROUTER_UPDATED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+## use new id range
+
+# updated the old TRAS0033E to TRAS3000E
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2=TRAS3000E: Wstrzykiwanie w czasie wykonywania szczeg\u00f3\u0142owego \u015bledzenia metody nie powiod\u0142o si\u0119 dla klasy {0}. Wyst\u0105pi\u0142 wyj\u0105tek {1}.
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas wstrzykiwania szczeg\u00f3\u0142owego \u015bledzenia metody do okre\u015blonej klasy.
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla produktu: http://www.ibm.com/software/webservers/appserv/was/support. 
+
+# updated the old TRAS0041I to TRAS3001I
+MESSAGES_CONFIGURED_HIDDEN_2=TRAS3001I: Nast\u0119puj\u0105ce komunikaty s\u0105 ukryte w plikach console.log i messages.log: {0}
+MESSAGES_CONFIGURED_HIDDEN_2.explanation=Komunikaty, kt\u00f3re s\u0105 skonfigurowane jako ukryte, nie s\u0105 zapisywane w plikach console.log i messages.log. S\u0105 zapisywane w pliku trace.log. 
+MESSAGES_CONFIGURED_HIDDEN_2.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# Note: no 9999 message kept here because saving footprint space is more important
+
+# End of file

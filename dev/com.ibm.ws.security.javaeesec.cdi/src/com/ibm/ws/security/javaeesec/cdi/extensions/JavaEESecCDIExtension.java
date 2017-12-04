@@ -14,7 +14,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -22,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -42,6 +40,7 @@ import javax.security.enterprise.authentication.mechanism.http.BasicAuthenticati
 import javax.security.enterprise.authentication.mechanism.http.CustomFormAuthenticationMechanismDefinition;
 import javax.security.enterprise.authentication.mechanism.http.FormAuthenticationMechanismDefinition;
 import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
+import javax.security.enterprise.authentication.mechanism.http.LoginToContinue;
 import javax.security.enterprise.identitystore.DatabaseIdentityStoreDefinition;
 import javax.security.enterprise.identitystore.IdentityStore;
 import javax.security.enterprise.identitystore.IdentityStore.ValidationType;
@@ -54,9 +53,9 @@ import org.osgi.service.component.annotations.Component;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
-import com.ibm.ws.security.javaeesec.CDIHelper;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.ws.security.javaeesec.cdi.beans.BasicHttpAuthenticationMechanism;
 import com.ibm.ws.security.javaeesec.cdi.beans.CustomFormAuthenticationMechanism;
@@ -72,7 +71,7 @@ import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
  *
  * @param <T>
  */
-@Component(service = { WebSphereCDIExtension.class},
+@Component(service = { WebSphereCDIExtension.class },
            property = { "api.classes=javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;javax.security.enterprise.identitystore.IdentityStore;javax.security.enterprise.identitystore.IdentityStoreHandler;javax.security.enterprise.identitystore.RememberMeIdentityStore;javax.security.enterprise.SecurityContext;com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider" },
            immediate = true)
 public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtension {
@@ -83,7 +82,6 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     private final Set<Bean> beansToAdd = new HashSet<Bean>();
     private boolean identityStoreHandlerRegistered = false;
     private boolean identityStoreRegistered = false;
-    private final Annotation loginToContinue = null;
     private final Set<Class<?>> authMechRegistered = new HashSet<Class<?>>();
     private final Map<String, ModuleProperties> moduleMap = new HashMap<String, ModuleProperties>(); // map of module name and list of authmechs.
     private final List<LdapIdentityStoreDefinition> ldapDefinitionList = new ArrayList<LdapIdentityStoreDefinition>();
@@ -102,7 +100,8 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
                 Tr.debug(tc, "Found an application specific HttpAuthenticationMechanism : " + javaClass);
             }
             authMechRegistered.add(javaClass);
-            createModulePropertiesProviderBeanForApplicationAuthMechToAdd(beanManager, javaClass);
+            Annotation ltc = annotatedType.getAnnotation(LoginToContinue.class);
+            createModulePropertiesProviderBeanForApplicationAuthMechToAdd(beanManager, ltc, javaClass);
             // need to create a HAMProperties
         }
         //look at the class level annotations
@@ -141,7 +140,8 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     }
 
     <T> void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager) {
-        if (tc.isDebugEnabled()) Tr.debug(tc, "afterBeanDiscovery : instance : " + Integer.toHexString(this.hashCode()) + " BeanManager : " + Integer.toHexString(beanManager.hashCode()));
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "afterBeanDiscovery : instance : " + Integer.toHexString(this.hashCode()) + " BeanManager : " + Integer.toHexString(beanManager.hashCode()));
         try {
             verifyConfiguration();
             if (!identityStoreHandlerRegistered) {
@@ -160,7 +160,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         } catch (DeploymentException de) {
             afterBeanDiscovery.addDefinitionError(de);
         }
-        if (!moduleMap.isEmpty()) {
+        if (!isEmptyModuleMap()) {
             ModulePropertiesProviderBean bean = new ModulePropertiesProviderBean(beanManager, moduleMap);
             beansToAdd.add(bean);
         }
@@ -192,7 +192,8 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
      * @param annotation
      * @param annotationType
      */
-    private <T> void createModulePropertiesProviderBeanForFormToAdd(BeanManager beanManager, Annotation annotation, Class<? extends Annotation> annotationType, Class annotatedClass) {
+    private <T> void createModulePropertiesProviderBeanForFormToAdd(BeanManager beanManager, Annotation annotation, Class<? extends Annotation> annotationType,
+                                                                    Class annotatedClass) {
         try {
             Method loginToContinueMethod = annotationType.getMethod("loginToContinue");
             Annotation ltcAnnotation = (Annotation) loginToContinueMethod.invoke(annotation);
@@ -234,21 +235,34 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
 
     /**
      * @param beanManager
-     * @param annotation
-     * @param annotationType
+     * @param ltc LoginToContinue annotation if it exists.
+     * @param implClass the implementation class
      */
-    private void createModulePropertiesProviderBeanForApplicationAuthMechToAdd(BeanManager beanManager, Class implClass) {
+    @SuppressWarnings("rawtypes")
+    private void createModulePropertiesProviderBeanForApplicationAuthMechToAdd(BeanManager beanManager, Annotation ltc, Class implClass) {
         Map<String, ModuleProperties> moduleMap = getModuleMap();
         String moduleName = getModuleFromClass(implClass);
+        Properties props = null;
+        if (ltc != null) {
+            try {
+                props = parseLoginToContinue(ltc);
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+                // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
+                e.printStackTrace();
+            }
+        }
         // if there is a match for the module name, place the class in it, otherwise, place the class
         // to all of the modules. It is OK to do so since it can be instanciated only in the appropriate module.
         if (moduleMap.containsKey(moduleName)) {
             ModuleProperties mp = moduleMap.get(moduleName);
-            mp.putToAuthMechMap(implClass, null);
-            if (tc.isDebugEnabled()) Tr.debug(tc, "found the module in the map. " + mp);
+            mp.putToAuthMechMap(implClass, props);
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "found the module in the map. " + mp);
         } else {
             for (Map.Entry<String, ModuleProperties> entry : moduleMap.entrySet()) {
-                entry.getValue().putToAuthMechMap(implClass, null);
+                entry.getValue().putToAuthMechMap(implClass, props);
             }
         }
     }
@@ -259,7 +273,8 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         if (moduleMap.containsKey(moduleName)) {
             moduleMap.get(moduleName).putToAuthMechMap(implClass, props);
         } else {
-            if (tc.isDebugEnabled()) Tr.debug(tc, "The module is not found. A new entry is created. Module: " + moduleName);
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "The module is not found. A new entry is created. Module: " + moduleName);
             ModuleProperties mp = new ModuleProperties();
             mp.getAuthMechMap().put(implClass, props);
             moduleMap.put(moduleName, mp);
@@ -355,7 +370,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     }
 
     private boolean containsLdapDefinition(LdapIdentityStoreDefinition ldapDefinition, List<LdapIdentityStoreDefinition> ldapDefinitionList) {
-        for(LdapIdentityStoreDefinition lisd : ldapDefinitionList) {
+        for (LdapIdentityStoreDefinition lisd : ldapDefinitionList) {
             if (equalsLdapDefinition(ldapDefinition, lisd)) {
                 return true;
             }
@@ -377,6 +392,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
             }
 
             @Override
+            @Sensitive
             public String bindDnPassword() {
                 return (overrides != null && overrides.containsKey("bindDnPassword")) ? (String) overrides.get("bindDnPassword") : "";
             }
@@ -529,7 +545,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     private boolean equalsUseFor(ValidationType[] vt1, ValidationType[] vt2) {
         if (vt1 == vt2) {
             return true;
-        } else if ((vt1.length == vt2.length) && (vt1.length ==1)) {
+        } else if ((vt1.length == vt2.length) && (vt1.length == 1)) {
             return vt1[0] == vt2[0];
         } else {
             List<ValidationType> list1 = Arrays.asList(vt1);
@@ -618,7 +634,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     }
 
     protected boolean isApplicationAuthMech(Class<?> javaClass) {
-        if (HttpAuthenticationMechanism.class.isAssignableFrom((Class<?>)javaClass)) {
+        if (HttpAuthenticationMechanism.class.isAssignableFrom(javaClass)) {
             if (!BasicHttpAuthenticationMechanism.class.equals(javaClass) && !FormAuthenticationMechanism.class.equals(javaClass)
                 && !CustomFormAuthenticationMechanism.class.equals(javaClass) && !HttpAuthenticationMechanism.class.equals(javaClass)) {
                 return true;
@@ -699,19 +715,35 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         if (moduleMap.isEmpty()) {
             List<String> wml = getWebModuleList();
             if (wml != null) {
-                for(String name : wml) {
+                for (String name : wml) {
                     moduleMap.put(name, new ModuleProperties());
                 }
             }
         }
     }
 
+    private boolean isEmptyModuleMap() {
+        boolean result = moduleMap.isEmpty();
+        if (!result) {
+            // check ModuleProperties is empty.
+            for (Map.Entry<String, ModuleProperties> entry : moduleMap.entrySet()) {
+                if (entry.getValue().getAuthMechMap().isEmpty()) {
+                    result = true;
+                } else {
+                    result = false;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
     private List<String> getWebModuleList() {
         List<ModuleMetaData> mmds = getModuleMetaDataList();
-        List<String> list = null; 
+        List<String> list = null;
         if (mmds != null) {
             list = new ArrayList<String>();
-            for(ModuleMetaData mmd : mmds) {
+            for (ModuleMetaData mmd : mmds) {
                 if (mmd instanceof WebModuleMetaData) {
                     String j2eeModuleName = mmd.getJ2EEName().getModule();
                     if (tc.isDebugEnabled()) {
@@ -725,12 +757,12 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     }
 
     /**
-      * make sure that there is one HAM for each modules, and if there is a HAM in a module, make sure there is no login configuration in web.xml.
+     * make sure that there is one HAM for each modules, and if there is a HAM in a module, make sure there is no login configuration in web.xml.
      **/
     private void verifyConfiguration() throws DeploymentException {
         List<ModuleMetaData> mmds = getModuleMetaDataList();
         if (mmds != null) {
-            for(ModuleMetaData mmd : mmds) {
+            for (ModuleMetaData mmd : mmds) {
                 if (mmd instanceof WebModuleMetaData) {
                     String j2eeModuleName = mmd.getJ2EEName().getModule();
                     Map<Class, Properties> authMechs = getAuthMechs(j2eeModuleName);
@@ -743,11 +775,11 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
                             String msg = Tr.formatMessage(tc, "JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS", j2eeModuleName, appName, authMechNames);
                             throw new DeploymentException(msg);
                         }
-                    
-                        SecurityMetadata smd = (SecurityMetadata)((WebModuleMetaData)mmd).getSecurityMetaData();
+
+                        SecurityMetadata smd = (SecurityMetadata) ((WebModuleMetaData) mmd).getSecurityMetaData();
                         if (smd != null) {
-                            LoginConfiguration lc =  smd.getLoginConfiguration();
-                            if (lc != null  && !lc.isAuthenticationMethodDefaulted()) {
+                            LoginConfiguration lc = smd.getLoginConfiguration();
+                            if (lc != null && !lc.isAuthenticationMethodDefaulted()) {
                                 String appName = mmd.getJ2EEName().getApplication();
                                 String msg = Tr.formatMessage(tc, "JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS", j2eeModuleName, appName);
                                 Tr.error(tc, "JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS", j2eeModuleName, appName);

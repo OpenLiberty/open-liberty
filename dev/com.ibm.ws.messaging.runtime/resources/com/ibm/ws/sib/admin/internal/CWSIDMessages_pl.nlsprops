@@ -1,0 +1,356 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# Change activity:
+#
+# Reason          Date       Origin   Description
+# --------------- ---------- -------- ------------------------------------------
+# 88661           2012-12-07 chetbhat Modifying the nls based on review
+# 89424           2012-12-12 chetbhat Simplifying metatype.xml for messaging
+# 91146           2013-01-21 sharath  Changing the filestore error messages after property changes
+# 91384           2013-01-23 sharath  Adding message for duplicate alias destination name
+# 92315           2013-08-02 chetbhat Nls changes
+# 91944           2013-02-19 Romil    L2 review changes
+# 94952           2013-02-27 Romil    Changing invalid filestore error message after changing code and properties
+# 95341           2013-02-28 Romil    Removing duplicate CWSID0117E entries in error
+# 95981           2013-03-20 Chetan   Changing the error message for filestore and log size comparision
+# ------------------------------------------------------------------------------
+# File com.ibm.ws.sib.example.CWSIDMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem
+# determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSID0000=CWSID0001I: This is a message with insert {0}
+# MSG_DESCRIPTIVE_NAME_CWSID0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSID0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you want them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Messages in the range SIAS0001-SIAS0049 belong to class com.ibm.ws.sib.???
+#   - SIAS9999 is for emergency use if any new messages are required after the messages file is finalised
+#   - Messages starting from SIAS0100 is reserved for liberty 
+# -------------------------------------------------------------------------------------------------
+#
+# cmvc_en_version_level=1.62,0,07/02/06,04:18:47
+#
+#CMVCPATHNAME com.ibm.ws.messaging.runtime/resources/com/ibm/ws/sib/admin/internal/CWSIDMessages.nlsprops
+#COMPONENTPREFIX CWSID
+#COMPONENTNAMEFOR CWSID Admin
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+ 
+### Search on "TBD" for messages that need information from other components ###
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+ME_INITIALIZING_SIAS0001=CWSID0001I: Trwa inicjowanie mechanizmu przesy\u0142ania komunikat\u00f3w {0}.
+ME_INITIALIZING_SIAS0001.explanation=Podany mechanizm przesy\u0142ania komunikat\u00f3w rozpoczyna proces inicjowania.
+ME_INITIALIZING_SIAS0001.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Internal reason string
+INTERNAL_ERROR_SIAS0003=CWSID0003E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Przyczyna: {0}
+INTERNAL_ERROR_SIAS0003.explanation=Podczas wykonywania operacji systemowej wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d wewn\u0119trzny.
+INTERNAL_ERROR_SIAS0003.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} SIBDestination name
+CREATE_DESTINATION_FAILED_SIAS0009=CWSID0009E: Nie mo\u017cna utworzy\u0107 miejsca docelowego {0}.
+CREATE_DESTINATION_FAILED_SIAS0009.explanation=Nie mo\u017cna utworzy\u0107 wskazanego miejsca docelowego. Je\u015bli w celu utworzenia konfiguracji u\u017cyto skrypt\u00f3w JACL lub niestandardowych program\u00f3w JMX, sprawd\u017a, czy nie ma w nich b\u0142\u0119d\u00f3w.
+CREATE_DESTINATION_FAILED_SIAS0009.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} JMX MBean type
+# {1} JMX MBean name
+MBEAN_ACTIVATION_FAILED_SIAS0011=CWSID0011W: Nie mo\u017cna aktywowa\u0107 komponentu MBean JMX {0} o nazwie {1}.
+MBEAN_ACTIVATION_FAILED_SIAS0011.explanation=Aktywowanie komponentu MBean JMX o wskazanym typie i nazwie nie by\u0142o mo\u017cliwe. Chocia\u017c nie uniemo\u017cliwia to uruchomienia serwera komunikat\u00f3w, oznacza to, \u017ce us\u0142ugi administracyjne wymagaj\u0105ce istnienia tego komponentu MBean mog\u0105 nie dzia\u0142a\u0107 zgodnie z oczekiwaniami.
+MBEAN_ACTIVATION_FAILED_SIAS0011.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} JMX MBean type
+# {1} JMX MBean name
+MBEAN_DEACTIVATION_FAILED_SIAS0012=CWSID0012W: Nie mo\u017cna dezaktywowa\u0107 komponentu MBean JMX {0} o nazwie {1}.
+MBEAN_DEACTIVATION_FAILED_SIAS0012.explanation=Nie mo\u017cna dezaktywowa\u0107 wskazanego komponentu MBean JMX.
+MBEAN_DEACTIVATION_FAILED_SIAS0012.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Java package and class
+CLASS_LOAD_FAILURE_SIAS0013=CWSID0013W: Nie mo\u017cna za\u0142adowa\u0107 klasy {0}.
+CLASS_LOAD_FAILURE_SIAS0013.explanation=Nie mo\u017cna za\u0142adowa\u0107 wskazanej klasy.
+CLASS_LOAD_FAILURE_SIAS0013.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+
+# {0} Messaging engine name
+ME_RESTART_CHECK_SIAS0027=CWSID0027E: Nie mo\u017cna zrestartowa\u0107 mechanizmu przesy\u0142ania komunikat\u00f3w {0}, poniewa\u017c zosta\u0142 zg\u0142oszony powa\u017cny b\u0142\u0105d.
+ME_RESTART_CHECK_SIAS0027.explanation=Podj\u0119to pr\u00f3b\u0119 uruchomienia podanego mechanizmu przesy\u0142ania komunikat\u00f3w, ale zg\u0142oszono wcze\u015bniej powa\u017cny b\u0142\u0105d, dlatego mechanizm przesy\u0142ania komunikat\u00f3w nie zostanie zrestartowany.
+ME_RESTART_CHECK_SIAS0027.useraction=Zrestartuj serwer albo przenie\u015b mechanizm przesy\u0142ania komunikat\u00f3w do innego serwera klastrowego.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} State of the messaging engine
+ME_STATE_CHECK_SIAS0028=CWSID0028W: Nie mo\u017cna zatrzyma\u0107 mechanizmu przesy\u0142ania komunikat\u00f3w {0} znajduj\u0105cego si\u0119 w bie\u017c\u0105cym stanie {1}.
+ME_STATE_CHECK_SIAS0028.explanation=Podj\u0119to pr\u00f3b\u0119 zatrzymania podanego mechanizmu przesy\u0142ania komunikat\u00f3w, ale nie jest to poprawna operacja, gdy mechanizm przesy\u0142ania komunikat\u00f3w jest w bie\u017c\u0105cym stanie.
+ME_STATE_CHECK_SIAS0028.useraction=Sprawd\u017a stan mechanizmu przesy\u0142ania komunikat\u00f3w i wykonaj operacj\u0119 ponownie, gdy b\u0119dzie on poprawny.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+ME_ERROR_REPORTED_SIAS0029=CWSID0029E: W mechanizmie przesy\u0142ania komunikat\u00f3w {0} wyst\u0105pi\u0142 typowy b\u0142\u0105d.
+ME_ERROR_REPORTED_SIAS0029.explanation=W mechanizmie przesy\u0142ania komunikat\u00f3w wykryto b\u0142\u0105d, kt\u00f3ry prawdopodobnie wyst\u0105pi ponownie tak\u017ce na innym serwerze, dlatego nie zostanie podj\u0119ta pr\u00f3ba prze\u0142\u0105czenia awaryjnego.
+ME_ERROR_REPORTED_SIAS0029.useraction=Zapoznaj si\u0119 z zawarto\u015bci\u0105 dziennik\u00f3w w celu okre\u015blenia przyczyny b\u0142\u0119du, a nast\u0119pnie usu\u0144 j\u0105 i zrestartuj serwer.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+ME_ERROR_STOPPED_SIAS0031=CWSID0031E: W mechanizmie przesy\u0142ania komunikat\u00f3w {0} wyst\u0105pi\u0142 typowy b\u0142\u0105d i dlatego mechanizm zosta\u0142 zatrzymany.
+ME_ERROR_STOPPED_SIAS0031.explanation=W mechanizmie przesy\u0142ania komunikat\u00f3w wykryto typowy b\u0142\u0105d. Mechanizm zosta\u0142 automatycznie zatrzymany. Nie zostanie podj\u0119ta pr\u00f3ba prze\u0142\u0105czenia awaryjnego.
+ME_ERROR_STOPPED_SIAS0031.useraction=Zapoznaj si\u0119 z zawarto\u015bci\u0105 dziennik\u00f3w w celu okre\u015blenia przyczyny b\u0142\u0119du, a nast\u0119pnie usu\u0144 j\u0105 i zrestartuj serwer.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_CANNOT_BE_INITIALIZED_SIAS0033=CWSID0033E: Nie mo\u017cna zainicjowa\u0107 mechanizmu przesy\u0142ania komunikat\u00f3w {0}. Wychwycono wyj\u0105tek zg\u0142oszony przez metod\u0119 {1} {2}
+ME_CANNOT_BE_INITIALIZED_SIAS0033.explanation=Wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d podczas inicjowania mechanizmu.
+ME_CANNOT_BE_INITIALIZED_SIAS0033.useraction=Zapoznaj si\u0119 z zawarto\u015bci\u0105 dziennik\u00f3w w celu okre\u015blenia przyczyny b\u0142\u0119du, a nast\u0119pnie usu\u0144 j\u0105 i zrestartuj serwer.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_CANNOT_BE_STARTED_SIAS0034=CWSID0034E: Nie mo\u017cna uruchomi\u0107 mechanizmu przesy\u0142ania komunikat\u00f3w {0}. Wychwycono wyj\u0105tek zg\u0142oszony przez metod\u0119 {1} {2}
+ME_CANNOT_BE_STARTED_SIAS0034.explanation=Wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d podczas inicjowania mechanizmu. Faza uruchamiania zosta\u0142a zako\u0144czona, a wszelkie uruchomione wcze\u015bniej komponenty mechanizmu zosta\u0142y zatrzymane.
+ME_CANNOT_BE_STARTED_SIAS0034.useraction=Zapoznaj si\u0119 z zawarto\u015bci\u0105 dziennik\u00f3w w celu okre\u015blenia przyczyny b\u0142\u0119du, a nast\u0119pnie usu\u0144 j\u0105 i zrestartuj serwer.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_CANNOT_BE_STARTED_SIAS0035=CWSID0035E: Nie mo\u017cna uruchomi\u0107 mechanizmu przesy\u0142ania komunikat\u00f3w {0}. Wykryto b\u0142\u0105d zg\u0142oszony podczas wykonywania metody {1} {2}
+ME_CANNOT_BE_STARTED_SIAS0035.explanation=Nie mo\u017cna uruchomi\u0107 jednego z komponent\u00f3w mechanizmu przesy\u0142ania komunikat\u00f3w. Pozosta\u0142e komponenty mechanizmu nie zostan\u0105 uruchomione.
+ME_CANNOT_BE_STARTED_SIAS0035.useraction=Zapoznaj si\u0119 z zawarto\u015bci\u0105 dziennik\u00f3w w celu okre\u015blenia przyczyny b\u0142\u0119du, a nast\u0119pnie usu\u0144 j\u0105 i zrestartuj serwer.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_EXCEPTION_CAUGHT_SIAS0036=CWSID0036E: Mechanizm przesy\u0142ania komunikat\u00f3w {0} wychwyci\u0142 wyj\u0105tek, kt\u00f3ry zosta\u0142 zg\u0142oszony przez metod\u0119 {1} {2} podczas procedury czyszcz\u0105cej rozpocz\u0119tej po nieudanym uruchomieniu.
+ME_EXCEPTION_CAUGHT_SIAS0036.explanation=Nie mo\u017cna zatrzyma\u0107 wskazanego mechanizmu przesy\u0142ania komunikat\u00f3w.
+ME_EXCEPTION_CAUGHT_SIAS0036.useraction=Zapoznaj si\u0119 z zawarto\u015bci\u0105 dziennik\u00f3w w celu okre\u015blenia przyczyny b\u0142\u0119du, a nast\u0119pnie usu\u0144 j\u0105 i zrestartuj serwer.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_EXCEPTION_CAUGHT_SIAS0037=CWSID0037E: Mechanizm przesy\u0142ania komunikat\u00f3w {0} wychwyci\u0142 wyj\u0105tek zg\u0142oszony przez metod\u0119 {1} {2}
+ME_EXCEPTION_CAUGHT_SIAS0037.explanation=Komponent mechanizmu wykry\u0142 b\u0142\u0105d.
+ME_EXCEPTION_CAUGHT_SIAS0037.useraction=Zapoznaj si\u0119 z zawarto\u015bci\u0105 dziennik\u00f3w w celu okre\u015blenia przyczyny b\u0142\u0119du, a nast\u0119pnie usu\u0144 j\u0105 i zrestartuj serwer.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} JMX MBean type
+# {1} JMX MBean name
+MBEAN_SEND_NOTIFICATION_FAILED_SIAS0043=CWSID0043W: Nie mo\u017cna wys\u0142a\u0107 powiadomienia o zdarzeniu z komponentu MBean JMX {0} o nazwie {1}.
+MBEAN_SEND_NOTIFICATION_FAILED_SIAS0043.explanation=Wys\u0142anie powiadomienia o zdarzeniu z komponentu MBean JMX o wskazanym typie i nazwie nie by\u0142o mo\u017cliwe. Nie uniemo\u017cliwi to kontynuowania dzia\u0142ania serwera przesy\u0142ania komunikat\u00f3w, ale oznacza to, \u017ce dany komponent MBean nie mo\u017ce powiadamia\u0107 obiekt\u00f3w nas\u0142uchiwania o wa\u017cnych zdarzeniach systemowych dotycz\u0105cych przesy\u0142ania komunikat\u00f3w.
+MBEAN_SEND_NOTIFICATION_FAILED_SIAS0043.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_START_SIAS0044=CWSID0044I: Uruchomiono mechanizm przesy\u0142ania komunikat\u00f3w {0} o identyfikatorze UUID {1}.
+NOTIFY_MESSAGING_ENGINE_START_SIAS0044.explanation=Mechanizm przesy\u0142ania komunikat\u00f3w jest dost\u0119pny do u\u017cytku.
+NOTIFY_MESSAGING_ENGINE_START_SIAS0044.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_STOP_SIAS0045=CWSID0045I: Zatrzymano mechanizm przesy\u0142ania komunikat\u00f3w {0} o identyfikatorze UUID {1}.
+NOTIFY_MESSAGING_ENGINE_STOP_SIAS0045.explanation=Mechanizm przesy\u0142ania komunikat\u00f3w nie jest ju\u017c dost\u0119pny do u\u017cytku.
+NOTIFY_MESSAGING_ENGINE_STOP_SIAS0045.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+ME_ERROR_LOCAL_SIAS0046=CWSID0046E: Mechanizm przesy\u0142ania komunikat\u00f3w {0} wykry\u0142 b\u0142\u0105d i nie mo\u017ce kontynuowa\u0107 dzia\u0142ania na tym serwerze.
+ME_ERROR_LOCAL_SIAS0046.explanation=Mechanizm przesy\u0142ania komunikat\u00f3w zg\u0142asza b\u0142\u0105d mened\u017cerowi wysokiej dost\u0119pno\u015bci, kt\u00f3ry zatrzyma serwer. W przypadku produktu Application Server Network Deployment serwer zostanie zrestartowany, je\u015bli jest monitorowany przez agenta w\u0119z\u0142a. W przypadku klastra w konfiguracji sieciowej, mechanizm przesy\u0142ania komunikat\u00f3w zostanie prze\u0142\u0105czony na alternatywny serwer w klastrze (je\u015bli pozwala na to skonfigurowana strategia).
+ME_ERROR_LOCAL_SIAS0046.useraction=Zapoznaj si\u0119 z zawarto\u015bci\u0105 dziennik\u00f3w w celu okre\u015blenia przyczyny b\u0142\u0119du i usu\u0144 j\u0105, aby b\u0142\u0105d nie wyst\u0119powa\u0142. Zrestartuj serwer albo (je\u015bli u\u017cywana jest konfiguracja sieciowa) upewnij si\u0119, \u017ce pomy\u015blnie wykonano automatyczny restart lub prze\u0142\u0105czenie awaryjne i mechanizm przesy\u0142ania komunikat\u00f3w jest uruchomiony.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name
+RECEIVE_EXCLUSIVE_OVERRIDE_WARNING_SIAS0048=CWSID0048W: W przypadku miejsca docelowego {0} warto\u015b\u0107 atrybutu receiveExclusive zosta\u0142a przes\u0142oni\u0119ta warto\u015bci\u0105 true.
+RECEIVE_EXCLUSIVE_OVERRIDE_WARNING_SIAS0048.explanation=W przypadku danego miejsca docelowego ustawiono opcj\u0119 zachowywania porz\u0105dku komunikat\u00f3w. Oznacza to, \u017ce warto\u015b\u0107 atrybutu receiveExclusive zosta\u0142a przes\u0142oni\u0119ta warto\u015bci\u0105 true.
+RECEIVE_EXCLUSIVE_OVERRIDE_WARNING_SIAS0048.useraction=Je\u015bli porz\u0105dkowanie komunikat\u00f3w nie jest wymagane, zmie\u0144 ustawienie atrybutu maintainMessageOrder w taki spos\u00f3b, aby wy\u0142\u0105czy\u0107 przes\u0142anianie atrybutu receiveExclusive.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_STARTING_SIAS0049=CWSID0049I: Trwa uruchamianie mechanizmu przesy\u0142ania komunikat\u00f3w {0} o identyfikatorze UUID {1}.
+NOTIFY_MESSAGING_ENGINE_STARTING_SIAS0049.explanation=Trwa uruchamianie mechanizmu przesy\u0142ania komunikat\u00f3w.
+NOTIFY_MESSAGING_ENGINE_STARTING_SIAS0049.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_STOPPING_SIAS0050=CWSID0050I: Trwa zatrzymywanie mechanizmu przesy\u0142ania komunikat\u00f3w {0} o identyfikatorze UUID {1}.
+NOTIFY_MESSAGING_ENGINE_STOPPING_SIAS0050.explanation=Trwa zatrzymywanie mechanizmu przesy\u0142ania komunikat\u00f3w.
+NOTIFY_MESSAGING_ENGINE_STOPPING_SIAS0050.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_STOP_FAILED_SIAS0052=CWSID0052I: Zatrzymanie mechanizmu przesy\u0142ania komunikat\u00f3w {0} o identyfikatorze UUID {1} nie powiod\u0142o si\u0119.
+NOTIFY_MESSAGING_ENGINE_STOP_FAILED_SIAS0052.explanation=Zatrzymanie mechanizmu przesy\u0142ania komunikat\u00f3w nie powiod\u0142o si\u0119.
+NOTIFY_MESSAGING_ENGINE_STOP_FAILED_SIAS0052.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_SIAS9999=CWSID9999E: {0}
+TEMPORARY_SIAS9999.explanation=Je\u015bli te informacje s\u0105 niewystarczaj\u0105ce, przejrzyj wcze\u015bniejsze komunikaty, aby uzyska\u0107 dodatkow\u0105 pomoc.
+TEMPORARY_SIAS9999.useraction=Wi\u0119cej informacji zawieraj\u0105 do\u0142\u0105czone komunikaty o b\u0142\u0119dach.
+
+# -------------------------------------------------------------------------------------------------
+# {0} default ME ID
+NO_ID_PROVIDED_SIAS0100=CWSID0100I: Nie podano identyfikatora dla znacznika messagingEngine w pliku konfiguracyjnym serwera. Zostanie u\u017cyty domy\u015blny identyfikator {0}.
+NO_ID_PROVIDED_SIAS0100.explanation=Nie podano identyfikatora dla znacznika messagingEngine.
+NO_ID_PROVIDED_SIAS0100.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination Type
+NO_ID_PROVIDED_SIAS0102=CWSID0102E: W pliku konfiguracyjnym serwera nie zdefiniowano identyfikatora dla typu miejsca docelowego {0}. 
+NO_ID_PROVIDED_SIAS0102.explanation=Nie podano identyfikatora dla miejsca docelowego, dlatego nie zostanie ono utworzone.  
+NO_ID_PROVIDED_SIAS0102.useraction=Podaj identyfikator dla miejsca docelowego.
+
+# -------------------------------------------------------------------------------------------------
+NO_FILESTOR_DEFINED_SIAS0104=CWSID0104I:  W pliku konfiguracyjnym serwera nie zdefiniowano znacznika fileStore. Zostan\u0105 u\u017cyte warto\u015bci domy\u015blne.
+NO_FILESTOR_DEFINED_SIAS0104.explanation=Nie podano znacznika fileStore, dlatego podczas tworzenia sk\u0142adnicy plik\u00f3w zostan\u0105 u\u017cyte warto\u015bci domy\u015blne.   
+NO_FILESTOR_DEFINED_SIAS0104.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# -------------------------------------------------------------------------------------------------
+ME_ID_CHANGE_SIAS0105=CWSID0105I: Po uruchomieniu serwera nie mo\u017cna zmieni\u0107 identyfikatora mechanizmu przesy\u0142ania komunikat\u00f3w.
+ME_ID_CHANGE_SIAS0105.explanation=Identyfikator mechanizmu przesy\u0142ania komunikat\u00f3w jest unikalny dla danego mechanizmu i nie mo\u017cna go zmieni\u0107, gdy serwer jest aktywny.
+ME_ID_CHANGE_SIAS0105.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# -------------------------------------------------------------------------------------------------
+RESTART_ME_SIAS0106=CWSID0106I: Zostanie podj\u0119ta pr\u00f3ba uruchomienia mechanizmu przesy\u0142ania komunikat\u00f3w. 
+RESTART_ME_SIAS0106.explanation=Mechanizm przesy\u0142ania komunikat\u00f3w nie zosta\u0142 uruchomiony podczas wywo\u0142ania activate(). Poniewa\u017c u\u017cytkownik zmodyfikowa\u0142 plik konfiguracyjny serwera, zostanie podj\u0119ta pr\u00f3ba uruchomienia mechanizmu przesy\u0142ania komunikat\u00f3w.  
+RESTART_ME_SIAS0106.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# -------------------------------------------------------------------------------------------------
+START_ME_SIAS0107=CWSID0107I: Uruchamianie serwera JMS. 
+START_ME_SIAS0107.explanation=Inicjowanie uruchomienia serwera JMS.  
+START_ME_SIAS0107.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# -------------------------------------------------------------------------------------------------
+ME_STARTED_SIAS0108=CWSID0108I: Uruchomiono serwer JMS.  
+ME_STARTED_SIAS0108.explanation=Uruchamianie serwera JMS zako\u0144czy\u0142o si\u0119 pomy\u015blnie.  
+ME_STARTED_SIAS0108.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# -------------------------------------------------------------------------------------------------
+ME_STOPPED_SIAS0109=CWSID0109E: Wyst\u0105pi\u0142 wewn\u0119trzny b\u0142\u0105d przesy\u0142ania komunikat\u00f3w. Nie mo\u017cna uruchomi\u0107 serwera JMS.
+ME_STOPPED_SIAS0109.explanation=Nie mo\u017cna uruchomi\u0107 serwera JMS.  
+ME_STOPPED_SIAS0109.useraction=Aby uzyska\u0107 wi\u0119cej informacji, przejrzyj poprzednie komunikaty o b\u0142\u0119dach, kt\u00f3re wyst\u0105pi\u0142y podczas uruchamiania mechanizmu przesy\u0142ania komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+#{0} Alias destination Name
+INVALID_TARGET_DEST_SIAS0110=CWSID0110E: Nie podano miejsca docelowego dla miejsca docelowego okre\u015blonego przez alias {0}.
+INVALID_TARGET_DEST_SIAS0110.explanation=Nie podano miejsca docelowego dla miejsca docelowego okre\u015blonego przez alias.
+INVALID_TARGET_DEST_SIAS0110.useraction= Podaj poprawne miejsce docelowe w pliku konfiguracyjnym serwera.
+
+# -------------------------------------------------------------------------------------------------
+LOCALIZATION_EXCEPTION_SIAS0113=CWSID0113E: Znaleziono wyj\u0105tek podczas lokalizowania miejsca docelowego {0}.
+LOCALIZATION_EXCEPTION_SIAS0113.explanation=Znaleziono wyj\u0105tek podczas lokalizowania miejsca docelowego.
+LOCALIZATION_EXCEPTION_SIAS0113.useraction=Sprawd\u017a poprzednie komunikaty i stan mechanizmu przesy\u0142ania komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# {0} SIBDestination population
+POPULATE_DESTINATION_FAILED_SIAS0114=CWSID0114E: Nie mo\u017cna zape\u0142ni\u0107 miejsca docelowego {0} w pami\u0119ci podr\u0119cznej.
+POPULATE_DESTINATION_FAILED_SIAS0114.explanation=Podanego miejsca docelowego nie mo\u017cna zape\u0142ni\u0107 w pami\u0119ci podr\u0119cznej.
+POPULATE_DESTINATION_FAILED_SIAS0114.useraction=Wi\u0119cej informacji mo\u017cna znale\u017a\u0107 w poprzednich komunikatach.
+
+# -------------------------------------------------------------------------------------------------
+NULL_SERVICE_PID_SIAS0115=CWSID0115E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny, poniewa\u017c w\u0142a\u015bciwo\u015bci konfiguracji mechanizmu przesy\u0142ania komunikat\u00f3w nie zosta\u0142y odebrane. Mechanizm przesy\u0142ania komunikat\u00f3w nie zostanie uruchomiony.
+NULL_SERVICE_PID_SIAS0115.explanation=Konfiguracja nie zosta\u0142a odebrana z pliku server.xml, poniewa\u017c jego w\u0142a\u015bciwo\u015b\u0107 rejestracji (service.pid) u\u017cywana do identyfikowania us\u0142ugi zarz\u0105dzanej lub fabryki us\u0142ug zarz\u0105dzanych w us\u0142udze ConfigurationAdmin ma warto\u015b\u0107 NULL, kt\u00f3ra oznacza, \u017ce pakunek nie mo\u017ce u\u017cywa\u0107 zadeklarowanej us\u0142ugi.
+NULL_SERVICE_PID_SIAS0115.useraction=Zapoznaj si\u0119 z do\u0142\u0105czonymi komunikatami o b\u0142\u0119dach, aby uzyska\u0107 wi\u0119cej informacji o tym, dlaczego mechanizm przesy\u0142ania komunikat\u00f3w nie mo\u017ce zosta\u0107 uruchomiony. 
+
+# -------------------------------------------------------------------------------------------------
+NULL_SERVICE_PID_SIAS0116=CWSID0116E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny, poniewa\u017c w\u0142a\u015bciwo\u015bci konfiguracji mechanizmu przesy\u0142ania komunikat\u00f3w nie zosta\u0142y odebrane. W mechanizmie przesy\u0142ania komunikat\u00f3w nie zostan\u0105 wprowadzone \u017cadne modyfikacje.
+NULL_SERVICE_PID_SIAS0116.explanation=Uruchomiono mechanizm przesy\u0142ania komunikat\u00f3w, ale dotycz\u0105ce go zmiany nie s\u0105 akceptowane, poniewa\u017c identyfikator service.pid ma warto\u015b\u0107 NULL. Z tego powodu us\u0142ugi nie s\u0105 wywo\u0142ywane.
+NULL_SERVICE_PID_SIAS0116.useraction=Wi\u0119cej informacji zawieraj\u0105 do\u0142\u0105czone komunikaty o b\u0142\u0119dach dotycz\u0105cych uruchamiania mechanizmu przesy\u0142ania komunikat\u00f3w. 
+
+# -------------------------------------------------------------------------------------------------
+MODIFICATION_UNSUCCESSFUL_SIAS0117=CWSID0117E: System odebra\u0142 b\u0142\u0105d wewn\u0119trzny, gdy modyfikacja konfiguracji mechanizmu przesy\u0142ania komunikat\u00f3w nie zako\u0144czy\u0142a si\u0119 pomy\u015blnie.
+MODIFICATION_UNSUCCESSFUL_SIAS0117.explanation=Modyfikacja konfiguracji mechanizmu przesy\u0142ania komunikat\u00f3w nie zako\u0144czy\u0142a si\u0119 pomy\u015blnie i spowodowa\u0142a wyst\u0105pienie wewn\u0119trznego b\u0142\u0119du systemowego.
+MODIFICATION_UNSUCCESSFUL_SIAS0117.useraction=Wi\u0119cej informacji zawieraj\u0105 do\u0142\u0105czone komunikaty o b\u0142\u0119dach. 
+
+# -------------------------------------------------------------------------------------------------
+BAD_RELIABILITY_VALUE_SIAS0118=CWSID0118E: Warto\u015b\u0107 okre\u015blona dla parametru defaultReliability jest wi\u0119ksza ni\u017c warto\u015b\u0107 parametru maxReliability.
+BAD_RELIABILITY_VALUE_SIAS0118.explanation=Podana warto\u015b\u0107 parametru defaultReliability musi by\u0107 mniejsza lub r\u00f3wna warto\u015bci podanej dla parametru maxReliability.
+BAD_RELIABILITY_VALUE_SIAS0118.useraction=Uruchom komend\u0119 ponownie, podaj\u0105c warto\u015b\u0107 parametru defaultReliability, kt\u00f3ra jest mniejsza lub r\u00f3wna warto\u015bci parametru maxReliability.
+
+# -------------------------------------------------------------------------------------------------
+# {0} filestore path
+FILESTORE_PATH_SIAS0119=CWSID0119I: \u015acie\u017cka do sk\u0142adnicy plik\u00f3w: {0}
+FILESTORE_PATH_SIAS0119.explanation=Okre\u015blona \u015bcie\u017cka do sk\u0142adnicy plik\u00f3w.
+FILESTORE_PATH_SIAS0119.useraction=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny. Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# -------------------------------------------------------------------------------------------------
+#Invalid path specified in server configuration file
+INVALID_FS_PATH_SIAS0120=CWSID0120E: Mechanizm przesy\u0142ania komunikat\u00f3w nie m\u00f3g\u0142 zosta\u0107 uruchomiony, poniewa\u017c w pliku konfiguracyjnym serwera podano niepoprawn\u0105 \u015bcie\u017ck\u0119 do pliku {0}.
+INVALID_FS_PATH_SIAS0120.explanation=Przed uruchomieniem mechanizmu przesy\u0142ania komunikat\u00f3w nale\u017cy poda\u0107 poprawn\u0105 \u015bcie\u017ck\u0119 do pliku w pliku konfiguracyjnym serwera.
+INVALID_FS_PATH_SIAS0120.useraction=Popraw \u015bcie\u017ck\u0119 do pliku w pliku konfiguracyjnym serwera.
+
+# -------------------------------------------------------------------------------------------------
+ME_STOPPED_SIAS0121=CWSID0121I: Zatrzymano serwer JMS.  
+ME_STOPPED_SIAS0121.explanation=Zatrzymano serwer JMS.  
+ME_STOPPED_SIAS0121.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# -------------------------------------------------------------------------------------------------
+NULL_ME_ID_SIAS0122=CWSID0122I: W pliku konfiguracyjnym serwera nie podano identyfikatora mechanizmu przesy\u0142ania komunikat\u00f3w.  
+NULL_ME_ID_SIAS0122.explanation=Identyfikator mechanizmu przesy\u0142ania komunikat\u00f3w zosta\u0142 usuni\u0119ty podczas modyfikowania pliku konfiguracyjnego serwera. Zmiana identyfikatora mechanizmu przesy\u0142ania komunikat\u00f3w nie zostanie uwzgl\u0119dniona, dop\u00f3ki mechanizm przesy\u0142ania komunikat\u00f3w b\u0119dzie aktywny. 
+NULL_ME_ID_SIAS0122.useraction= Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name or ID
+SAME_DEST_ID_SIAS0123=CWSID0123W: Warto\u015b\u0107 {0} zosta\u0142a u\u017cyta dla wielu miejsc docelowych.
+SAME_DEST_ID_SIAS0123.explanation=Ten sam identyfikator nie mo\u017ce by\u0107 u\u017cywany dla wielu miejsc docelowych. Zduplikowane miejsca docelowe nie zostan\u0105 utworzone. 
+SAME_DEST_ID_SIAS0123.useraction= Podaj unikalne identyfikatory miejsc docelowych.
+# -------------------------------------------------------------------------------------------------
+INVALID_FILE_SIZE_SIAS0124=CWSID0124E: Wielko\u015b\u0107 pliku dziennika ({0} MB) powinna by\u0107 mniejsza ni\u017c po\u0142owa wielko\u015bci sk\u0142adnicy plik\u00f3w ({1} MB). Zwi\u0119ksz wielko\u015b\u0107 sk\u0142adnicy plik\u00f3w lub zmniejsz wielko\u015b\u0107 pliku dziennika.
+INVALID_FILE_SIZE_SIAS0124.explanation=Wielko\u015b\u0107 pliku dziennika przekracza wielko\u015b\u0107 trwa\u0142ej sk\u0142adnicy plik\u00f3w. Wielko\u015b\u0107 sk\u0142adnicy plik\u00f3w to suma (w MB) pami\u0119ci trwa\u0142ej i tymczasowej. Wielko\u015b\u0107 sk\u0142adnicy plik\u00f3w jest r\u00f3wnomiernie podzielona mi\u0119dzy pami\u0119\u0107 trwa\u0142\u0105 i tymczasow\u0105, dlatego wielko\u015b\u0107 pliku dziennika musi by\u0107 mniejsza ni\u017c po\u0142owa wielko\u015bci sk\u0142adnicy plik\u00f3w.
+INVALID_FILE_SIZE_SIAS0124.useraction=Zwi\u0119ksz wielko\u015b\u0107 sk\u0142adnicy plik\u00f3w lub zmniejsz wielko\u015b\u0107 pliku dziennika.
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name or ID
+ALIAS_SAME_DEST_ID_SIAS0125=CWSID0125E: Identyfikator miejsca docelowego aliasu {0} jest ju\u017c zdefiniowany dla elementu Queue lub TopicSpace i dlatego miejsce docelowe aliasu nie zostanie utworzone.
+ALIAS_SAME_DEST_ID_SIAS0125.explanation=Identyfikator miejsca docelowego aliasu musi by\u0107 unikalny. 
+ALIAS_SAME_DEST_ID_SIAS0125.useraction=Upewnij si\u0119, \u017ce zdefiniowano unikalny identyfikator dla miejsca docelowego okre\u015blonego przez alias.  

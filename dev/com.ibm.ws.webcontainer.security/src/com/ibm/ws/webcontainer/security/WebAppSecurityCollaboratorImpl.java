@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 IBM Corporation and others.
+ * Copyright (c) 2011, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -907,18 +907,18 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         reply = isAuthorized ? new PermitReply() : DENY_AUTHZ_FAILED;
 
         auditManager.setWebRequest(webRequest);
-	if (authResult != null) {
-	    auditManager.setRealm(authResult.getTargetRealm());
-	}
+        if (authResult != null) {
+            auditManager.setRealm(authResult.getTargetRealm());
+        }
 
         Audit.audit(Audit.EventID.SECURITY_AUTHZ_01, webRequest, authResult, uriName, Integer.valueOf(reply.getStatusCode()));
         // now update current thread context
         if (isAuthorized) {
             // at this point set invocation subject = caller subject.
             // delegation may change the invocation subject later
-	    if (authResult != null) {
-		subjectManager.setInvocationSubject(authResult.getSubject());
-	    }
+            if (authResult != null) {
+                subjectManager.setInvocationSubject(authResult.getSubject());
+            }
         } else {
             // if authorization failure, put the caller subject back to the original one.
             subjectManager.setCallerSubject(receivedSubject);
@@ -962,8 +962,9 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         WebReply webReply = PERMIT_REPLY;
         boolean result = true;
         WebRequest webRequest = new WebRequestImpl(req, resp, getSecurityMetadata(), webAppSecConfig);
-        //WebRequest webRequest = new WebRequestImpl(req, resp, getApplicationName(), webSecurityContext, securityMetadata, matchResponse, webAppSecConfig);
+        webRequest.setRequestAuthenticate(true);
         AuthenticationResult authResult = null;
+
         if (isJaspiEnabled &&
             ((JaspiService) webAuthenticatorRef.getService("com.ibm.ws.security.jaspi")).isAnyProviderRegistered(webRequest)) {
             authResult = providerAuthenticatorProxy.handleJaspi(webRequest, null);
@@ -982,7 +983,9 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             result = false;
         }
         authResult.setTargetRealm(authResult.realm != null ? authResult.realm : collabUtils.getUserRegistryRealm(securityServiceRef));
-        webReply.writeResponse(resp);
+        if (!resp.isCommitted()) {
+            webReply.writeResponse(resp);
+        }
         Audit.audit(Audit.EventID.SECURITY_AUTHN_01, webRequest, authResult, Integer.valueOf(webReply.getStatusCode()));
         return result;
     }

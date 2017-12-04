@@ -1,0 +1,70 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.javaeesec/resources/com/ibm/ws/security/javaeesec/cdi/internal/resources/JavaEESecMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Java EE Security 1.0 CDI
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS1925 - CWWKS1949
+
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1925E: Implementarea modulului {0} a e\u015fuat \u00een aplica\u0163ia {1} deoarece au fost g\u0103site multiple implement\u0103ri HttpAuthenticationMechanism. Lista de clase este {2}. Cel mai probabil, aceasta este o problem\u0103 de \u00eempachetare a aplica\u0163iei. Asigura\u0163i-v\u0103 c\u0103 exist\u0103 doar o singur\u0103 implementare HttpAuthenticationMechanism modul.
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=Implementarea aplica\u0163iei a e\u015fuat deoarece au fost g\u0103site mai mult de o implementare HttpAuthenticationMechanism. Aceast\u0103 condi\u0163ie nu este permis\u0103.
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Asigura\u0163i-v\u0103 c\u0103 exist\u0103 doar o singur\u0103 implementare HttpAuthenticationMechanism fiecare modul din aplica\u0163ie.
+
+JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST=CWWKS1926E: Bean-ul LoginToContinueProperties nu exist\u0103. Logarea cu formular nu a fost activat\u0103. Asigura\u0163i-v\u0103 c\u0103 aplica\u0163ia este adnotat\u0103 de adnotarea LoginToContinue.
+JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST.explanation=Bean-ul LoginToContinueProperties care este necesar pentru autentificarea de logare cu formular nu exist\u0103.
+JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST.useraction=Asigura\u0163i-v\u0103 c\u0103 aplica\u0163ia este adnotat\u0103 de adnotarea LoginToContinue \u00een adnotarea FormAuthenticationMechanismDefinition sau CustomFormAuthenticationMechanismDefinition.
+
+JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED=CWWKS1927E: Clasa de acreditare furnizat\u0103 {0} nu este suportat\u0103 de clasa CustomFormHttpAuthenticationMechanism. Utiliza\u0163i fie javax.security.enterprise.credential.UsernamePasswordCredential, fie javax.security.enterprise.credential.BasicAuthenticationCredential pentru autentificare.
+JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.explanation=Clasa de acreditare furnizat\u0103 nu este suportat\u0103 de clasa CustomFormHttpAuthenticationMechanism. Utiliza\u0163i fie javax.security.enterprise.credential.UsernamePasswordCredential, fie javax.security.enterprise.credential.BasicAuthenticationCredential pentru autentificare.
+JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.useraction=Asigura\u0163i-v\u0103 c\u0103 este folosit\u0103 clasa de acreditare suportat\u0103 pentru autentificarea cu formular personalizat.
+
+JAVAEESEC_CDI_ERROR_USERNAME_NULL=CWWKS1928E: Numele de Principal este null sau obiectul Principal nu exist\u0103. Asigura\u0163i-v\u0103 c\u0103 CredentialValidationResult con\u0163ine un obiect Principal valid.
+JAVAEESEC_CDI_ERROR_USERNAME_NULL.explanation=Obiectul Principal din obiectul CredentialValidationResult dat nu este valid. Fie este null sau nu are un nume valid.
+JAVAEESEC_CDI_ERROR_USERNAME_NULL.useraction=Dac\u0103 aplica\u0163ia furnizeaz\u0103 un IdentityStore, asigura\u0163i-v\u0103 c\u0103 returneaz\u0103 obiectul Principal valid \u00een CredentialValidationResult.
+
+JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL=CWWKS1929E: UniqueId este null. Asigura\u0163i-v\u0103 c\u0103 CredentialValidationResult con\u0163ine un UniqueId valid.
+JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.explanation=UniqueId din obiectul CredentialValidationResult dat este null.
+JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.useraction=Dac\u0103 aplica\u0163ia furnizeaz\u0103 un IdentityStore, asigura\u0163i-v\u0103 c\u0103 returneaz\u0103 UniqueId valid \u00een CredentialValidationResult.
+
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER=CWWKS1930W: Bean-ul IdentityStoreHandler nu este g\u0103sit. Utiliza\u0163i un registru de utilizatori care este definit de server.xml. Bean-ul IdentityStoreHandler este creat c\u00e2nd exist\u0103 cel pu\u0163in un bean IdentityStore. Dac\u0103 aplica\u0163ia inten\u0163ioneaz\u0103 s\u0103 foloseasc\u0103 un IdentityStore, asigura\u0163i-v\u0103 c\u0103 este configurat corespunz\u0103tor. 
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.explanation=Bean-ul IdentityStoreHandler nu este g\u0103sit. Dac\u0103 aplica\u0163ia inten\u0163ioneaz\u0103 s\u0103 foloseasc\u0103 un IdentityStore, asigura\u0163i-v\u0103 c\u0103 este configurat corespunz\u0103tor. Bean-ul IdentityStoreHandler este creat c\u00e2nd exist\u0103 cel pu\u0163in un bean IdentityStore.
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.useraction=Dac\u0103 aplica\u0163ia inten\u0163ioneaz\u0103 s\u0103 foloseasc\u0103 un IdentityStore, asigura\u0163i-v\u0103 c\u0103 este configurat corespunz\u0103tor. 
+
+JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS=CWWKS1931E: Implementarea aplica\u0163iei a e\u015fuat deoarece un element login-config a fost g\u0103sit \u00een fi\u015fierul web.xml pentru modulul {0} din aplica\u0163ia {1}. Pentru a activa bean-ul HttpAuthenticationMechanism, \u00eenl\u0103tura\u0163i elementul login-config din fi\u015fierul web.xml.
+JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.explanation=Implementarea aplica\u0163iei a e\u015fuat deoarece sunt definite, at\u00e2t elementul login-config, c\u00e2t \u015fi bean-ul HttpAuthenticationMechanism. Doar unul dintre aceste mecanisme de autentificare poate fi utilizat \u00een aplica\u0163ia dumneavoastr\u0103.
+JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.useraction=Pentru a activa bean-ul HttpAuthenticationMechanism, \u00eenl\u0103tura\u0163i elementul login-config din fi\u015fierul web.xml.
+
+JAVAEESEC_CDI_WARNING_NO_REALM_NAME=CWWKS1932W: Numele de regiune pentru autentificarea de baz\u0103 nu este setat, a fost utilizat\u0103 valoarea implicit\u0103 defaultRealm.
+JAVAEESEC_CDI_WARNING_NO_REALM_NAME.explanation=Deoarece numele de regiune (realm) pentru autentificarea de baz\u0103 nu este definit, numele de regiune a fost setat la valoarea implicit\u0103 defaultRealm.
+JAVAEESEC_CDI_WARNING_NO_REALM_NAME.useraction=Pentru a seta numele de regiune, defini\u0163i-l pe o adnotare BasicAuthenticationMechanismDefinition \u00een aplica\u0163ie.
+
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM=CWWKS1933E: Valoarea {0} a parametrului de configura\u0163ie {1} este invalid\u0103.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM.explanation=Valoarea parametrului de configura\u0163ie nu este valid\u0103.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM.useraction=Asigura\u0163i-v\u0103 c\u0103 parametrul de configura\u0163ie este setat corect.
+
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM=CWWKS1934E: Valoarea {0} a parametrului de configura\u0163ie {1} este mai mic\u0103 dec\u00e2t valoarea minim\u0103 {2}.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.explanation=Valoarea parametrului de configura\u0163ie este mai mic\u0103 dec\u00e2t valoarea minim\u0103.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea parametrului de configura\u0163ie este egal\u0103 sau mai mare dec\u00e2t valoarea minim\u0103.
+
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA=CWWKS1935E: Datele m\u0103run\u0163ite (hashed) sunt invalide. ''{0}''
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.explanation=Valoarea m\u0103run\u0163it\u0103 (hashed) din baza de date nu este valid\u0103.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.useraction=Asigura\u0163i-v\u0103 c\u0103 pentru datele din baza de date care au fost supuse opera\u0163iei hash, algoritmul de hash este suportat de clasa de implementare PasswordHash.
+
+#The following messages are used with JAVAEESEC_ERR_RPASSWORDHASH_INVALID_DATA message.
+JAVAEESEC_CDI_INVALID_ITERATION=Itera\u0163iile {0} nu sunt un num\u0103ri.
+JAVAEESEC_CDI_INVALID_ALGORITHM=Algoritmul de hash {0} nu este suportat.
+JAVAEESEC_CDI_INVALID_ELEMENTS=Num\u0103rul de elemente {0} nu este 4.
+JAVAEESEC_CDI_INVALID_HASH_VALUE=Valoarea hash nu este codificat\u0103 corect.
+JAVAEESEC_CDI_INVALID_SALT_VALUE=Valoarea salt nu este codificat\u0103 corect.

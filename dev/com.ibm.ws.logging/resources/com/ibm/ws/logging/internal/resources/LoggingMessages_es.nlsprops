@@ -1,0 +1,121 @@
+###############################################################################
+# Copyright (c) 2011, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.logging/resources/com/ibm/ws/logging/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# Messages in the range TRAS3000 to 3199 are reserved for this messages file.
+# The list of prefixes and the range of messages in use (or "reserved") are shown in 
+# http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+# -------------------------------------------------------------------------------------------------
+
+FATAL=MUY GRAVE
+ERROR=ERROR
+AUDIT=AUDITAR
+EVENT=SUCESO
+DETAIL=DETALLE
+
+## Shared with tWAS
+
+# Informational message telling the user the trace state has changed.
+MSG_TRACE_STATE_CHANGED=TRAS0018I: Se ha cambiado el estado de rastreo. El nuevo estado de rastreo es {0}.
+MSG_TRACE_STATE_CHANGED.explanation=Se ha recibido y procesado una petici\u00f3n de cambio del estado de rastreo actual.
+MSG_TRACE_STATE_CHANGED.useraction=Si el nuevo estado de rastreo no es el deseado, c\u00e1mbielo con el que desea.
+
+#PK509567
+# Warning message telling the user that the rename operation filed while rolling a log file over.
+MSG_ROLLOVER_RENAME_FAILED=TRAS0031W: No se puede renombrar el archivo {0} por {1} durante el reinicio del archivo de registro. Se intenta copiar el contenido del archivo.
+MSG_ROLLOVER_RENAME_FAILED.explanation=No se ha podido cambiar el nombre del archivo indicado.  La causa m\u00e1s probable es que otro proceso o hebra est\u00e9 accediendo al archivo de anotaciones cronol\u00f3gicas. WebSphere intentar\u00e1 completar la operaci\u00f3n de conversi\u00f3n copiando el contenido del archivo de anotaciones cronol\u00f3gicas; este proceso es m\u00e1s lento y todas las hebras que intenten anotar ser\u00e1n detenidas durante este proceso.
+MSG_ROLLOVER_RENAME_FAILED.useraction=Determine la causa de la anomal\u00eda para renombrar y resu\u00e9lvala; esto puede suponer tener que concluir otros procesos que est\u00e9n accediendo al mismo archivo de anotaciones cronol\u00f3gicas.
+
+## new for lWAS
+INSTRUMENTATION_SERVICE_UNAVAILABLE=TRAS0032W: La inyecci\u00f3n de tiempo de ejecuci\u00f3n del rastreo de m\u00e9todo detallado no est\u00e1 disponible.
+INSTRUMENTATION_SERVICE_UNAVAILABLE.explanation=El transformador de archivos de clase responsable de a\u00f1adir un rastreo de nivel de m\u00e9todo no se ha podido instalar porque no se ha podido obtener una referencia java.lang.instrument.Instrumentation adecuada.
+INSTRUMENTATION_SERVICE_UNAVAILABLE.useraction=Inicie el servidor con el argumento de l\u00ednea de mandatos -javaagent adecuado.
+
+## Should not be used anymore because of issue 508
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS=TRAS0033E: La inyecci\u00f3n de tiempo de ejecuci\u00f3n de rastreo de m\u00e9todo detallado ha fallado para la clase {0} con la excepci\u00f3n {1}
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS.explanation=Se ha producido un error al inyectar el rastreo de m\u00e9todo detallado en la clase especificada.
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS.useraction=CMSG0002 
+
+## new for lWAS
+TRACE_STRING_BAD_LEVEL=TRAS0034W: El nivel de rastreo {0} para la especificaci\u00f3n {1} no es v\u00e1lido. Se ignorar\u00e1 la especificaci\u00f3n de rastreo.
+TRACE_STRING_BAD_LEVEL.explanation=No se ha podido reconocer el nombre del nivel de rastreo configurado para el grupo, clase o paquete especificado, se saltar\u00e1 la configuraci\u00f3n de rastreo con ese nombre.
+TRACE_STRING_BAD_LEVEL.useraction=Examine la configuraci\u00f3n de rastreo y corrija el nivel a un valor reconocido. Los niveles de rastreo v\u00e1lidos se enumeran en la documentaci\u00f3n e incluyen 'all', 'info' y 'debug'.
+
+## new for lWAS
+TRACE_STRING_BAD_ACTION=TRAS0035W: No se ha reconocido el valor de configuraci\u00f3n de rastreo {0} para la especificaci\u00f3n {1}. Se ignorar\u00e1 la especificaci\u00f3n de rastreo.
+TRACE_STRING_BAD_ACTION.explanation=No se ha podido reconocer el nombre del nivel de rastreo configurado para el grupo, clase o paquete especificado, se saltar\u00e1 la configuraci\u00f3n de rastreo con ese nombre.
+TRACE_STRING_BAD_ACTION.useraction=No es necesaria ninguna acci\u00f3n a menos que el valor de configuraci\u00f3n de rastreo en cuesti\u00f3n sea 'inhabilitado'. En este caso, examine la configuraci\u00f3n de rastreo y corrija el valor a 'disabled'.
+
+## new for lWAS
+UNABLE_TO_CREATE_RESOURCE=TRAS0036E: El sistema no ha podido crear el archivo {0} debido a la siguiente excepci\u00f3n: {1}
+UNABLE_TO_CREATE_RESOURCE.explanation=Error al intentar abrir el recurso especificado. La excepci\u00f3n indica la causa ra\u00edz del error.
+UNABLE_TO_CREATE_RESOURCE.useraction=Examine la excepci\u00f3n para determinar la causa ra\u00edz. Aseg\u00farese de que el nombre de archivo especificado sea un nombre de archivo v\u00e1lido. Aseg\u00farese de que el tiempo de ejecuci\u00f3n del servidor de aplicaciones disponga de acceso de escritura al directorio del recurso y que el disco no est\u00e9 lleno. Si esto no soluciona el problema, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+## new for lWAS
+UNABLE_TO_CREATE_RESOURCE_NOEX=TRAS0037E: El sistema no ha podido crear el archivo {0}
+UNABLE_TO_CREATE_RESOURCE_NOEX.explanation=Un componente del servidor de aplicaciones no ha podido realizar una operaci\u00f3n en un recurso necesario.
+UNABLE_TO_CREATE_RESOURCE_NOEX.useraction=Aseg\u00farese de que el nombre de archivo especificado sea un nombre de archivo v\u00e1lido. Aseg\u00farese de que el tiempo de ejecuci\u00f3n del servidor de aplicaciones disponga de acceso de escritura al directorio del recurso y que el disco no est\u00e9 lleno. Si esto no soluciona el problema, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+## new for lWAS
+UNABLE_TO_DELETE_RESOURCE_NOEX=TRAS0038E: El sistema no ha podido suprimir el archivo {0}
+UNABLE_TO_DELETE_RESOURCE_NOEX.explanation=Un componente del servidor de aplicaciones no ha podido realizar una operaci\u00f3n en un recurso necesario.
+UNABLE_TO_DELETE_RESOURCE_NOEX.useraction=Aseg\u00farese de que el nombre de archivo especificado sea un nombre de archivo v\u00e1lido. Aseg\u00farese de que el tiempo de ejecuci\u00f3n del servidor de aplicaciones disponga de acceso de escritura al directorio del recurso y que el disco no est\u00e9 lleno. Si esto no soluciona el problema, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+## new for lWAS
+UNABLE_TO_DELETE_RESOURCE=TRAS0039E: El sistema no ha podido suprimir {0} debido a la siguiente excepci\u00f3n: {1}
+UNABLE_TO_DELETE_RESOURCE.explanation=Un intento de suprimir el recurso especificado ha fallado. La excepci\u00f3n indica la causa ra\u00edz del error.
+UNABLE_TO_DELETE_RESOURCE.useraction=Examine la excepci\u00f3n para determinar la causa ra\u00edz. Aseg\u00farese de que el tiempo de ejecuci\u00f3n del servidor de aplicaciones tenga permiso de escritura en el directorio para el recurso. Si esto no soluciona el problema, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# common 
+UNKNOWN_TRACE_SPEC=TRAS0040I: El estado del rastreo configurado inclu\u00eda las especificaciones siguientes que no coinciden con ning\u00fan registrador registrado actualmente en el servidor: {0}; omita este mensaje si las especificaciones de rastreo {0} son v\u00e1lidas.
+UNKNOWN_TRACE_SPEC.explanation=Los registradores se registran en el servidor cuando el c\u00f3digo que los crea que se utiliza por primera vez. El sistema ha detectado que determinadas especificaciones de rastreo hacen referencia a registradores que no se han registrado en el servidor. Las especificaciones de rastreo configuradas pueden ser v\u00e1lidas para registradores que a\u00fan no est\u00e1n registrados o pueden haberse escrito de forma incorrecta. Esta comprobaci\u00f3n se realiza cada vez que se actualiza la especificaci\u00f3n de rastreo en el servidor en ejecuci\u00f3n.
+UNKNOWN_TRACE_SPEC.useraction=Aseg\u00farese de que la especificaci\u00f3n de rastreo se haya configurado correctamente. Si no hay errores en la serie de especificaci\u00f3n de rastreo, no es necesario realizar ninguna acci\u00f3n. 
+
+## Should not be used anymore because of issue 508
+MESSAGES_CONFIGURED_HIDDEN=TRAS0041I: Los mensajes siguientes est\u00e1n ocultos de los archivos console.log y messages.log: {0}
+MESSAGES_CONFIGURED_HIDDEN.explanation=Los mensajes que se han configurado para estar ocultos no se escriben en los archivos console.log y messages.log. Sin embargo, se escriben en el archivo trace.log. 
+MESSAGES_CONFIGURED_HIDDEN.useraction=No se requiere ninguna acci\u00f3n
+
+MSG_ROUTER_UPDATED=TRAS0042I: El grupo de direccionamiento de mensajes {0} contiene los mensajes siguientes: {1}
+MSG_ROUTER_UPDATED.explanation=El conjunto de ID de mensajes configurado para el grupo de direccionamiento de mensajes especificado ha cambiado. Se enumera el conjunto de ID de mensajes asociado actualmente a este grupo de direccionamiento de mensajes.
+MSG_ROUTER_UPDATED.useraction=No se requiere ninguna acci\u00f3n. 
+## use new id range
+
+# updated the old TRAS0033E to TRAS3000E
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2=TRAS3000E: La inyecci\u00f3n de tiempo de ejecuci\u00f3n de rastreo de m\u00e9todo detallado ha fallado para la clase {0} con la excepci\u00f3n {1}.
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2.explanation=Se ha producido un error al inyectar el rastreo de m\u00e9todo detallado en la clase especificada.
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2.useraction=Consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de producto: http://www.ibm.com/software/webservers/appserv/was/support.
+
+
+# updated the old TRAS0041I to TRAS3001I
+MESSAGES_CONFIGURED_HIDDEN_2=TRAS3001I: Los mensajes siguientes est\u00e1n ocultos de los archivos console.log y messages.log: {0}
+MESSAGES_CONFIGURED_HIDDEN_2.explanation=Los mensajes que se han configurado para estar ocultos no se escriben en los archivos console.log y messages.log. Se escriben en el archivo trace.log. 
+MESSAGES_CONFIGURED_HIDDEN_2.useraction=No se requiere ninguna acci\u00f3n
+
+# Note: no 9999 message kept here because saving footprint space is more important
+
+# End of file

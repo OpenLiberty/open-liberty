@@ -200,13 +200,11 @@ public class SecurityNameBridge {
             else {
                 Entity entity = returnList.get(0);
                 if (entity != null) {
-                    LoginAccount loginAct = (LoginAccount) entity;
-
                     // d115256
                     if (!this.mappingUtils.isIdentifierTypeProperty(outputAttrName)) {
-                        returnValue = (String) loginAct.get(outputAttrName);
+                        returnValue = (String) entity.get(outputAttrName);
                     } else {
-                        returnValue = (String) loginAct.getIdentifier().get(outputAttrName);
+                        returnValue = (String) entity.getIdentifier().get(outputAttrName);
                     }
                 }
             }

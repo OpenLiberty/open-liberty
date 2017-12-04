@@ -17,6 +17,7 @@
 package com.ibm.jbatch.container.execution.impl;
 
 import java.util.Date;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 import javax.batch.runtime.BatchStatus;
@@ -92,6 +93,11 @@ public class RuntimePartitionExecution extends RuntimeWorkUnitExecution {
         if (!msgType.equals(MessageType.STARTED)) {
             buf.append("\n Partition Batch Status = " + getBatchStatus());
             buf.append(", Partition Exit Status = " + getExitStatus());
+        }
+        Properties partitionProperties = partitionPlanConfig.getPartitionPlanProperties();
+        if (partitionProperties != null) {
+            buf.append("\n Partition Properties = ");
+            buf.append(partitionProperties);
         }
         buf.append("\n" + LogHelper.dashes);
 

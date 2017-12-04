@@ -1,0 +1,46 @@
+###############################################################################
+# Copyright (c) 2011, 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# ORIGINS: 27         (used for IBM originated files)
+#
+# Caution: because some text editors automatically convert
+# consecutive runs of spaces to tabs, use the Java "\ " escape
+# sequence to represent each space in a run of multiple spaces.
+#
+# translator:
+# Translate words on the right hand side of the = sign.
+# Do not translate {0}, {1}, %1, %2 etc.
+# Do NOT translate any words when they START with: '-
+# Do NOT translate any words when they START with: @
+# Preserve all spaces after a backslash (\) even at the end of a line.
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs.2.0.server/resources/com/ibm/ws/jaxrs20/server/internal/resources/JaxRsWebServerMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS WebContainer Code
+#RANGE 0100 - 0199
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+
+warn.provider.no.public.ctor=CWWKW0100W: Klasa dostawcy JAX-RS {0} w aplikacji nie zawiera konstruktora publicznego. Serwer zignoruje tego dostawc\u0119.
+warn.provider.no.public.ctor.explanation=Specyfikacja JAX-RS wymaga, aby klasy dostawc\u00f3w zawiera\u0142y co najmniej jeden konstruktor publiczny dla implementacji kontenera JAX-RS, kt\u00f3ra ma zosta\u0107 wywo\u0142ana. Podana klasa dostawcy nie zawiera konstruktora publicznego, wi\u0119c zostanie zignorowana przez serwer.
+warn.provider.no.public.ctor.useraction=Je\u015bli aplikacja wymaga tego dostawcy, ta klasa musi zosta\u0107 zmodyfikowana w taki spos\u00f3b, aby zawiera\u0142a co najmniej jeden konstruktor publiczny. Wi\u0119cej informacji na ten temat zawiera sekcja 4.1.2 specyfikacji JAX-RS 2.0 (JSR 339).
+
+warn.servlet.specified.without.application=CWWKW0101W: Plik web.xml w module {0} okre\u015bla serwlet o nazwie {1} i klasie {2}, ale nie okre\u015bla wymaganego parametru inicjowania aplikacji.
+warn.servlet.specified.without.application.explanation=Podczas deklarowania serwlet\u00f3w JAX-RS plik web.xml musi okre\u015bla\u0107 element init-param aplikacji. Wi\u0119cej informacji na ten temat mo\u017cna znale\u017a\u0107 w Centrum Wiedzy: https://www.ibm.com/support/knowledgecenter/SSAW57_9.0.0/com.ibm.websphere.nd.multiplatform.doc/ae/twbs_jaxrs_configwebxml.html?pos=2
+warn.servlet.specified.without.application.useraction=Zaktualizuj plik web.xml, uwzgl\u0119dniaj\u0105c wymagany element init-param umo\u017cliwiaj\u0105cy okre\u015blenie klasy aplikacji w tym module.
+
+warn.servlet.specified.with.invalid.application=CWWKW0102W: Plik web.xml w module {0} okre\u015bla serwlet o nazwie {1}, kt\u00f3ry deklaruje niepoprawn\u0105 klas\u0119 aplikacji w parametrze inicjowania. Klasa {2} nie jest podklas\u0105 klasy javax.ws.rs.Application.
+warn.servlet.specified.with.invalid.application.explanation=Plik web.xml musi okre\u015bla\u0107 element init-param o nazwie javax.ws.rs.Application, kt\u00f3rego warto\u015bci\u0105 jest klasa aplikacji rozszerzaj\u0105ca klas\u0119 javax.ws.rs.Application. Wi\u0119cej informacji na ten temat mo\u017cna znale\u017a\u0107 w Centrum Wiedzy: https://www.ibm.com/support/knowledgecenter/SSAW57_9.0.0/com.ibm.websphere.nd.multiplatform.doc/ae/twbs_jaxrs_configwebxml.html?pos=2
+warn.servlet.specified.with.invalid.application.useraction=Zaktualizuj plik web.xml, okre\u015blaj\u0105c podklas\u0119 aplikacji w tym module.

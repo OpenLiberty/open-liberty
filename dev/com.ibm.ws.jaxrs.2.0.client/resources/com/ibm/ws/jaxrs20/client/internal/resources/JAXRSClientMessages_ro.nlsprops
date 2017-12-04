@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs20.client/resources/com/ibm/ws/jaxrs20/client/internal/resources/JAXRSClientMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS20 Client Code
+#RANGE 0700 - 0799
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# JAXRS 2.0 Client Configuration Message ------------------------
+error.jaxrs.client.configuration.timeout.valueinvalid=CWWKW0700E: Valoarea de timeout {0} pe care a\u0163i specificat-o \u00een proprietatea {1} pe partea JAX-RS Client este invalid\u0103. Valoarea este setat\u0103 la valoarea implicit\u0103 {2}. {3} 
+error.jaxrs.client.configuration.timeout.valueinvalid.explanation=Tipul de valoare de timeout trebuie s\u0103 fie long sau int.  
+error.jaxrs.client.configuration.timeout.valueinvalid.useraction=Seta\u0163i tipul de valoare la long sau int.
+
+error.jaxrs.client.configuration.proxy.portinvalid=CWWKW0701E: Valoarea portului de server proxy {0} pe care a\u0163i specificat-o \u00een proprietatea {1} pe partea JAX-RS Client este invalid\u0103. Valoarea este setat\u0103 la valoarea implicit\u0103 {2}. {3}
+error.jaxrs.client.configuration.proxy.portinvalid.explanation=Tipul valorii portului de server proxy trebuie s\u0103 fie int.  
+error.jaxrs.client.configuration.proxy.portinvalid.useraction=Seta\u0163i tipul de valoare la int.
+
+error.jaxrs.client.configuration.proxy.typeinvalid=CWWKW0702E: Valoarea tipului de server proxy {0} pe care a\u0163i specificat-o \u00een proprietatea {1} pe partea JAX-RS Client este invalid\u0103. Valoarea este setat\u0103 la valoarea implicit\u0103 {2}. {3}
+error.jaxrs.client.configuration.proxy.typeinvalid.explanation=Valoarea tipului de server proxy trebuie s\u0103 fie HTTP sau SOCKS.  
+error.jaxrs.client.configuration.proxy.typeinvalid.useraction=Seta\u0163i valoarea la HTTP sau SOCKS.
+
+#{0} is the ssl ref id configured in server.xml
+error.jaxrs.client.ssl.invalidsslconfig=CWWKW0703E: Fabrica de socket-uri SSL nu poate fi creat\u0103 pentru c\u0103 ID-ul de referin\u0163\u0103 SSL {0} nu exist\u0103 \u00een fi\u015fierul server.xml.
+error.jaxrs.client.ssl.invalidsslconfig.explanation= Este necesar un ID de referin\u0163\u0103 valid pentru a genera o fabric\u0103 de socket-uri SSL. Nu exist\u0103 nicio configura\u0163ie SSL cu ID-ul {0} \u00een fi\u015fierul server.xml.  
+error.jaxrs.client.ssl.invalidsslconfig.useraction= Seta\u0163i un ID de referin\u0163\u0103 SSL valid \u00een fi\u015fierul server.xml.
+
+no_saml_found_in_subject=CWWKW0704W: Jetonul SAML necesar lipse\u015fte din subiect.
+no_saml_found_in_subject.explanation=A existat o eroare la extragere jetonului SAML din subiect sau nu a fost g\u0103sit un element SAML \u00een subiectul curent.
+no_saml_found_in_subject.useraction=Dac\u0103 crea\u0163i subiectul rulare-ca, asigura\u0163i-v\u0103 c\u0103 jetonul SAML este ad\u0103ugat la subiect. Altfel, asigura\u0163i-v\u0103 c\u0103 configura\u0163ia dumneavoastr\u0103 de server suport\u0103 ad\u0103ugarea jetonului SAML la subiect verific\u00e2nd atributul includeTokenInSubject \u00een configura\u0163ia dumneavoastr\u0103 SAML.
+
+failed_to_extract_saml_token_from_subject=CWWKW0705W: A ap\u0103rut o eroare \u00een timpul \u00eencerc\u0103rii de a utiliza API-ul SAML PropagationHelper. Excep\u0163ia a fost: [{0}]
+failed_to_extract_saml_token_from_subject.explanation=A ap\u0103rut o excep\u0163ie la invocarea API-ului PropagationHelper pentru a extrage jetonul SAML din subiect.
+failed_to_extract_saml_token_from_subject.useraction=Asigura\u0163i-v\u0103 c\u0103 server.xml are caracteristica samlWeb-2.0 specificat\u0103. De asemenea, verifica\u0163i istoricele serverului pentru informa\u0163ii suplimentare despre excep\u0163ie. 
+
+failed_run_as_subject=CWWKW0706E: A ap\u0103rut o eroare \u00een timpul \u00eencerc\u0103rii de a ob\u0163ine RunAsSubject. Excep\u0163ia a fost: [{0}].
+failed_run_as_subject.explanation=A survenit o excep\u0163ie la ob\u0163inerea RunAsSubject.
+failed_run_as_subject.useraction=Asigura\u0163i-v\u0103 c\u0103 serverul este configurat \u015fi porne\u015fte corespunz\u0103tor.
+
+warn_missing_mpjwt_token=CWWKW0707W: Atributul [{0}] din configura\u0163ia [{1}] este setat la [{2}], JWT-ul (JSON Web Token) MicroProfile nu este disponibil. Cererea nu con\u0163ine un antet de autorizare cu jetonul.
+warn_missing_mpjwt_token.explanation=Runtime-ul a e\u015fuat s\u0103 g\u0103seasc\u0103 JWT-ul MicroProfile \u00een subiectul runAs. Aceast\u0103 eroare de obicei indic\u0103 o problem\u0103 cu autentificarea. Asigura\u0163i-v\u0103 c\u0103 nu au ap\u0103rut erori \u00een timp ce caracteristica MicroProfile JWT autentic\u0103 un utilizator.
+warn_missing_mpjwt_token.useraction=Verifica\u0163i ac\u0163iunea utilizatorului pentru orice erori anterioare pe care le-a jurnalizat serverul.
+
+warn_mpjwt_prop_service_notavail=CWWKW0708W: Serviciul de propagare MicroProfile JWT nu este disponibil. Runtime-ul nu poate accesa jetonul pentru a-l include \u00een antetul de autorizare.
+warn_mpjwt_prop_service_notavail.explanation=Serviciul de propagare MicroProfile JWT necesit\u0103 caracteristica mpJwt-1.0.
+warn_mpjwt_prop_service_notavail.useraction=Asigura\u0163i-v\u0103 c\u0103 serverul ruleaz\u0103 cu caracteristica cerut\u0103.

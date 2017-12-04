@@ -10,11 +10,12 @@
  *******************************************************************************/
 
 test {
+    dependsOn ':cnf:copyMavenLibs'
     doFirst {
-        ant.jar(destfile: new File(compileTestJava.destinationDir, 'test.jar'), manifest: "${projectDir}/test-resources/PackageDefineTestResources/MANIFEST.MF") {
-            fileset(dir: compileTestJava.destinationDir, includes: "test/")
+        ant.jar(destfile: new File(compileTestJava.destinationDir, 'test.jar'), manifest: project.file('test-resources/PackageDefineTestResources/MANIFEST.MF')) {
+            fileset(dir: compileTestJava.destinationDir, includes: 'test/')
         }
     }
 
-    jvmArgs "-Dservlet.jar.location=${rootDir}/cnf/mavenlibs/servlet-3.1.jar"
+    jvmArgs '-Dservlet.jar.location=' + cnf.file('mavenlibs/servlet-3.1.jar')
 }

@@ -1,0 +1,141 @@
+###############################################################################
+# Copyright (c) 1997, 2009 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME ws/code/ras/src/com/ibm/ws/logging/hpel/resources/HpelMessages.nlsprops
+#COMPONENTPREFIX HPEL
+# Long proper prefix CWLHP
+#COMPONENTNAMEFOR HPEL IBM High Performance Extensible Logging
+#NLS_MESSAGEFORMAT_VAR
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+# AbstractBufferedLogFileWriter messages.
+HPEL_WrongBufferSizeValue=HPEL0101W: Die Puffergr\u00f6\u00dfe {0}, die mit der Systemeigenschaft {1} angegeben wurde, ist keine Zahl. Stattdessen wird {2} verwendet.
+HPEL_WrongBufferSizeValue.explanation=Die angegebene Puffergr\u00f6\u00dfe ist ung\u00fcltig. Stattdessen wird die Standardgr\u00f6\u00dfe verwendet.
+HPEL_WrongBufferSizeValue.useraction=Wenn die Standardgr\u00f6\u00dfe nicht optimal ist, geben Sie eine g\u00fcltige Puffergr\u00f6\u00dfe an.
+
+HPEL_WrongFlushPeriodValue=HPEL0102W: Der Flush-Zeitraum {0}, der mit der Systemeigenschaft {1} angegeben wurde, ist keine Zahl. Stattdessen wird {2} verwendet.
+HPEL_WrongFlushPeriodValue.explanation=Der angegebene Flush-Zeitraum ist ung\u00fcltig. Stattdessen wird der Standardzeitraum verwendet.
+HPEL_WrongFlushPeriodValue.useraction=Wenn der Standard-Flush-Zeitraum nicht optimal ist, geben Sie einen g\u00fcltigen Flush-Zeitraum an.
+
+HPEL_ExceptionInPeriodicFlush=HPEL0103W: Ausnahme bei der Ausf\u00fchrung der in regelm\u00e4\u00dfigen Abst\u00e4nden ausgef\u00fchrten Flush-Operation f\u00fcr den Protokolldatenstrom.
+HPEL_ExceptionInPeriodicFlush.explanation=Beim Ausf\u00fchren der Flush-Operation f\u00fcr den gepufferten Protokolldatenstrom ist eine Ausnahme eingetreten. Details finden Sie in der Nachricht.
+HPEL_ExceptionInPeriodicFlush.useraction=Bestimmen Sie die Fehlerursache anhand der Ausnahme. Stellen Sie sicher, dass der angegebene Dateiname ein g\u00fcltiger Dateiname ist. Stellen Sie sicher, dass die Laufzeitumgebung des Anwendungsservers Schreibzugriff auf das Verzeichnis f\u00fcr die Serviceprotokolldatei erh\u00e4lt. Wenn Sie das Problem mithilfe dieser Schritte nicht beheben k\u00f6nnen, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support) an.
+
+# AbstractHPELRepositoryExporter messages.
+HPEL_HeaderWithoutProcessId=HPEL0104E: Der Header enth\u00e4lt keine Informationen zur Prozess-ID. Stellen Sie sicher, dass die Eigenschaft {0} gesetzt ist.
+HPEL_HeaderWithoutProcessId.explanation=Es fehlen Informationen im Header.
+HPEL_HeaderWithoutProcessId.useraction=Bestimmen Sie die Fehlerursache anhand der Ausnahme. Stellen Sie sicher, dass der angegebene Dateiname ein g\u00fcltiger Dateiname ist. Stellen Sie sicher, dass die Laufzeitumgebung des Anwendungsservers Schreibzugriff auf das Verzeichnis f\u00fcr die Serviceprotokolldatei erh\u00e4lt. Wenn Sie das Problem mithilfe dieser Schritte nicht beheben k\u00f6nnen, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support) an.
+
+HPEL_ErrorWhileSerializingHeader=HPEL0105E: Ausnahme bei der Konvertierung des Protokollheaders in eine Bytefeldgruppe.
+HPEL_ErrorWhileSerializingHeader.explanation=Der Protokollheader ist nicht g\u00fcltig, da er w\u00e4hrend der Codeverarbeitung nicht geparst und konvertiert werden konnte.
+HPEL_ErrorWhileSerializingHeader.useraction=Bestimmen Sie die Fehlerursache anhand der Ausnahme. Stellen Sie sicher, dass der angegebene Dateiname ein g\u00fcltiger Dateiname ist. Stellen Sie sicher, dass die Laufzeitumgebung des Anwendungsservers Schreibzugriff auf das Verzeichnis f\u00fcr die Serviceprotokolldatei erh\u00e4lt. Wenn Sie das Problem mithilfe dieser Schritte nicht beheben k\u00f6nnen, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support) an.
+
+HPEL_LogHeaderWasNotSet=HPEL0106E: Aufruffehler: Der Versuch, einen Protokolldatensatz vor der Definition prozessweiter Informationen zu exportieren, ist nicht zul\u00e4ssig.
+HPEL_LogHeaderWasNotSet.explanation=Es ist ein Problem mit der Verarbeitungsreihenfolge aufgetreten. Es werden Datens\u00e4tze geschrieben, obwohl das Protokollierungssystem noch nicht bereit ist.
+HPEL_LogHeaderWasNotSet.useraction=Bestimmen Sie die Fehlerursache anhand der Ausnahme. Stellen Sie sicher, dass der angegebene Dateiname ein g\u00fcltiger Dateiname ist. Stellen Sie sicher, dass die Laufzeitumgebung des Anwendungsservers Schreibzugriff auf das Verzeichnis f\u00fcr die Serviceprotokolldatei erh\u00e4lt. Wenn Sie das Problem mithilfe dieser Schritte nicht beheben k\u00f6nnen, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support) an.
+
+HPEL_ErrorWhileSerializingRecord=HPEL0107E: Ausnahme bei der Konvertierung des Protokollsatzes in eine Bytefeldgruppe.
+HPEL_ErrorWhileSerializingRecord.explanation=Die Protokolldaten wurden nicht ordnungsgem\u00e4\u00df serialisiert. Informationen zur Ausnahme finden Sie in der Fehlernachricht.
+HPEL_ErrorWhileSerializingRecord.useraction=Bestimmen Sie die Fehlerursache anhand der Ausnahme. Stellen Sie sicher, dass der angegebene Dateiname ein g\u00fcltiger Dateiname ist. Stellen Sie sicher, dass die Laufzeitumgebung des Anwendungsservers Schreibzugriff auf das Verzeichnis f\u00fcr die Serviceprotokolldatei erh\u00e4lt. Wenn Sie das Problem mithilfe dieser Schritte nicht beheben k\u00f6nnen, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support) an.
+
+# LogRecordBrowser messages.
+HPEL_NoRecordAtLocation=HPEL0108W: Es wurden keine Datens\u00e4tze an der angegebenen Position gefunden.
+HPEL_NoRecordAtLocation.explanation=An der angegebenen Position sind keine Dateien mit Datens\u00e4tzen vorhanden.
+HPEL_NoRecordAtLocation.useraction=Bestimmen Sie die Fehlerursache anhand der Ausnahme. Stellen Sie sicher, dass der angegebene Dateiname ein g\u00fcltiger Dateiname ist. Stellen Sie sicher, dass die Laufzeitumgebung des Anwendungsservers Schreibzugriff auf das Verzeichnis f\u00fcr die Serviceprotokolldatei erh\u00e4lt. Wenn Sie das Problem mithilfe dieser Schritte nicht beheben k\u00f6nnen, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support) an.
+
+# LogRepositoryBrowserImpl messages.
+HPEL_NotRepositoryLocation=HPEL0109E: Die angegebene Position geh\u00f6rt nicht zu diesem Repository.
+HPEL_NotRepositoryLocation.explanation=Die angegebenen Repository-Informationen sind falsch.
+HPEL_NotRepositoryLocation.useraction=\u00dcberpr\u00fcfen Sie die angegebenen Positionsinformationen, und \u00e4ndern Sie die Aufrufe.
+
+HPEL_NotRepositoryFileNoTimestamp=HPEL0110E: Die Datei "{0}", die im Argument verwendet wird, geh\u00f6rt nicht zu diesem Repository. Die Zeitmarke kann nicht abgerufen werden.
+HPEL_NotRepositoryFileNoTimestamp.explanation=Die Datei ist keine g\u00fcltige Datei im Repository.
+HPEL_NotRepositoryFileNoTimestamp.useraction=Bestimmen Sie die Fehlerursache anhand der Ausnahme. Stellen Sie sicher, dass der angegebene Dateiname ein g\u00fcltiger Dateiname ist. Stellen Sie sicher, dass die Laufzeitumgebung des Anwendungsservers Schreibzugriff auf das Verzeichnis f\u00fcr die Serviceprotokolldatei erh\u00e4lt. Wenn Sie das Problem mithilfe dieser Schritte nicht beheben k\u00f6nnen, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support) an.
+
+HPEL_RepositoryFileMissing=HPEL0111W: Die Datei "{0}" fehlt im Repository. Wahrscheinlich wurde Sie durch den Aufbewahrungsmanager entfernt.
+HPEL_RepositoryFileMissing.explanation=Die erwartete Datei wurde vom Positionsmanager oder durch einen manuellen Eingriff entfernt.
+HPEL_RepositoryFileMissing.useraction=Wenn Informationen aus der Datei ben\u00f6tigt werden und die Datei archiviert wurde, k\u00f6nnen Sie die Informationen wiederherstellen.
+
+HPEL_NotRepositoryFileNoProcessId=HPEL0112E: Die Datei "{0}", die im Argument verwendet wird, geh\u00f6rt nicht zu diesem Repository. Die Prozess-ID kann nicht abgerufen werden.
+HPEL_NotRepositoryFileNoProcessId.explanation=Die Headerinformationen in der Datei weisen darauf hin, dass die Datei keine ordnungsgem\u00e4\u00df formatierte Datei in diesem Repository ist.
+HPEL_NotRepositoryFileNoProcessId.useraction=Bestimmen Sie die Fehlerursache anhand der Ausnahme. Stellen Sie sicher, dass der angegebene Dateiname ein g\u00fcltiger Dateiname ist. Stellen Sie sicher, dass die Laufzeitumgebung des Anwendungsservers Schreibzugriff auf das Verzeichnis f\u00fcr die Serviceprotokolldatei erh\u00e4lt. Wenn Sie das Problem mithilfe dieser Schritte nicht beheben k\u00f6nnen, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support) an.
+
+# LogRepositoryWriterImpl messages.
+HPEL_IncorrectSwitchHour=HPEL0113W: Der angegebene Wert {0} ist f\u00fcr die Angabe einer Stunde des Tages nicht g\u00fcltig. Stattdessen wird der Wert {1} verwendet.
+HPEL_IncorrectSwitchHour.explanation=Die angegebene Stunde des Tages ist ung\u00fcltig. Stattdessen wird ein Standardwert verwendet.
+HPEL_IncorrectSwitchHour.useraction=Wenn die Standardstunde nicht optimal ist, geben Sie eine g\u00fcltige Stunde des Tages an.
+
+# OneLogFileRecordIterator messages.
+HPEL_NoHeaderRecordInFileHead=HPEL0114E: Fehler beim Lesen des Headerdatensatzes am Anfang der Datei "{0}": {1}
+HPEL_NoHeaderRecordInFileHead.explanation=Die Datei hat entweder keine g\u00fcltigen Headerinformationen, oder bei aktiviertem Puffern erstellt das Repository eine neue Bin\u00e4rdatei, auf die gleichzeitig zugegriffen wird. 
+HPEL_NoHeaderRecordInFileHead.useraction=Es k\u00f6nnte sich um einen Fehler in der Ablaufsteuerung handeln. Sie sollten die Abfrage erneut ausf\u00fchren. Bestimmen Sie die Fehlerursache anhand der Ausnahme. Stellen Sie sicher, dass der angegebene Dateiname ein g\u00fcltiger Dateiname ist. Stellen Sie sicher, dass die Laufzeitumgebung des Anwendungsservers Schreibzugriff auf das Verzeichnis f\u00fcr die Serviceprotokolldatei erh\u00e4lt. Wenn Sie das Problem mithilfe dieser Schritte nicht beheben k\u00f6nnen, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support) an.
+
+HPEL_NoRecordsInFile=HPEL0115E: Es wurden keine Datens\u00e4tze in der Datei "{0}" gefunden.
+HPEL_NoRecordsInFile.explanation=Die Datei ist momentan leer. Dies ist im Allgemeinen ein Hinweis auf einen Fehler, da Dateien erstellt werden, wenn zu speichernde Datens\u00e4tze vorhanden sind, oder das Repository erstellt eine neue Bin\u00e4rdatei, auf die gleichzeitig zugegriffen wird. 
+HPEL_NoRecordsInFile.useraction=Es k\u00f6nnte sich um einen Fehler in der Ablaufsteuerung handeln. Sie sollten die Abfrage erneut ausf\u00fchren. Bestimmen Sie die Fehlerursache anhand der Ausnahme. Stellen Sie sicher, dass der angegebene Dateiname ein g\u00fcltiger Dateiname ist. Stellen Sie sicher, dass die Laufzeitumgebung des Anwendungsservers Schreibzugriff auf das Verzeichnis f\u00fcr die Serviceprotokolldatei erh\u00e4lt. Wenn Sie das Problem mithilfe dieser Schritte nicht beheben k\u00f6nnen, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support) an.
+
+HPEL_InconsistencyInHeaderRecordSize=HPEL0116W: Die \u00dcberpr\u00fcfung der Datensatzgr\u00f6\u00dfe des Protokollheaders ist fehlgeschlagen. Die am Ende des Headerdatensatzes aufgezeichnete Gr\u00f6\u00dfe ({0}) an Offset ({1}) ist nicht identisch mit der am Anfang des Datensatzes aufgezeichneten Gr\u00f6\u00dfe ({2}). Dies kann ein Hinweis auf ein Problem mit der Protokolldatei "{3}" sein.
+HPEL_InconsistencyInHeaderRecordSize.explanation=Die internen Informationen zur Protokolldatei weisen darauf hin, dass ein Problem aufgetreten ist.
+HPEL_InconsistencyInHeaderRecordSize.useraction=Bestimmen Sie die Fehlerursache anhand der Ausnahme. Stellen Sie sicher, dass der angegebene Dateiname ein g\u00fcltiger Dateiname ist. Stellen Sie sicher, dass die Laufzeitumgebung des Anwendungsservers Schreibzugriff auf das Verzeichnis f\u00fcr die Serviceprotokolldatei erh\u00e4lt. Wenn Sie das Problem mithilfe dieser Schritte nicht beheben k\u00f6nnen, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support) an.
+
+HPEL_InconsistencyInLogRecordSize=HPEL0117W: Die \u00dcberpr\u00fcfung der Gr\u00f6\u00dfe des Nachrichtendatensatzes ist fehlgeschlagen. Die am Anfang des Datensatzes aufgezeichnete Gr\u00f6\u00dfe ({0}) an Offset ({1}) ist nicht identisch mit der am Ende des Datensatzes aufgezeichneten Gr\u00f6\u00dfe ({2}). Dies kann ein Hinweis auf ein Problem mit der Protokolldatei "{3}" sein.
+HPEL_InconsistencyInLogRecordSize.explanation=Die internen Informationen zur Protokolldatei weisen darauf hin, dass ein Problem aufgetreten ist.
+HPEL_InconsistencyInLogRecordSize.useraction=Bestimmen Sie die Fehlerursache anhand der Ausnahme. Stellen Sie sicher, dass der angegebene Dateiname ein g\u00fcltiger Dateiname ist. Stellen Sie sicher, dass die Laufzeitumgebung des Anwendungsservers Schreibzugriff auf das Verzeichnis f\u00fcr die Serviceprotokolldatei erh\u00e4lt. Wenn Sie das Problem mithilfe dieser Schritte nicht beheben k\u00f6nnen, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support) an.
+
+HPEL_OffsetBeyondFileSize=HPEL0118E: Der Versuch, den Datenstrom f\u00fcr die Datei "{0}" an Offset {1} zu positionieren, ist unzul\u00e4ssig, da das Offset die Gr\u00f6\u00dfe der Datei \u00fcberschreitet: {2}.
+HPEL_OffsetBeyondFileSize.explanation=Das angegebene Offset f\u00fcr die Datei ist ung\u00fcltig (geht \u00fcber das Ende der Datei hinaus).
+HPEL_OffsetBeyondFileSize.useraction=Wenn es sich um einen lokal geschriebenen Client handelt, \u00fcberpr\u00fcfen Sie die Logik f\u00fcr die Berechnung des Offsets. Bestimmen Sie die Fehlerursache anhand der Ausnahme. Stellen Sie sicher, dass der angegebene Dateiname ein g\u00fcltiger Dateiname ist. Stellen Sie sicher, dass die Laufzeitumgebung des Anwendungsservers Schreibzugriff auf das Verzeichnis f\u00fcr die Serviceprotokolldatei erh\u00e4lt. Wenn Sie das Problem mithilfe dieser Schritte nicht beheben k\u00f6nnen, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support) an.
+
+HPEL_ErrorSettingFileOffset=HPEL0119E: Fehler beim Positionieren des Datenstroms f\u00fcr die Datei "{0}" an Offset {1}, von dem zuvor ein Datensatz erfolgreich gelesen wurde: {2}.
+HPEL_ErrorSettingFileOffset.explanation=Bei der Positionierung innerhalb der Datei scheint ein Problem aufgetreten zu sein.
+HPEL_ErrorSettingFileOffset.useraction=Bestimmen Sie die Fehlerursache anhand der Ausnahme. Stellen Sie sicher, dass der angegebene Dateiname ein g\u00fcltiger Dateiname ist. Stellen Sie sicher, dass die Laufzeitumgebung des Anwendungsservers Schreibzugriff auf das Verzeichnis f\u00fcr die Serviceprotokolldatei erh\u00e4lt. Wenn Sie das Problem mithilfe dieser Schritte nicht beheben k\u00f6nnen, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support) an.
+
+HPEL_ErrorReadingFileOffset=HPEL0120E: Fehler beim Abrufen des aktuellen Offsets im Datenstrom f\u00fcr die Datei "{0}": {2}.
+HPEL_ErrorReadingFileOffset.explanation=Bei der Positionierung innerhalb der Datei scheint ein Problem aufgetreten zu sein.
+
+HPEL_ErrorReadingFileOffset.useraction=Bestimmen Sie die Fehlerursache anhand der Ausnahme. Stellen Sie sicher, dass der angegebene Dateiname ein g\u00fcltiger Dateiname ist. Stellen Sie sicher, dass die Laufzeitumgebung des Anwendungsservers Schreibzugriff auf das Verzeichnis f\u00fcr die Serviceprotokolldatei erh\u00e4lt. Wenn Sie das Problem mithilfe dieser Schritte nicht beheben k\u00f6nnen, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support) an.
+
+HPEL_ErrorReadingLogRecord=HPEL0121E: Fehler beim Lesen eines Protokolldatensatzes aus der Datei "{0}": {1}.
+HPEL_ErrorReadingLogRecord.explanation=Ein Datensatz in der Datei kann nicht gelesen werden.
+HPEL_ErrorReadingLogRecord.useraction=Bestimmen Sie die Fehlerursache anhand der Ausnahme. Stellen Sie sicher, dass der angegebene Dateiname ein g\u00fcltiger Dateiname ist. Stellen Sie sicher, dass die Laufzeitumgebung des Anwendungsservers Schreibzugriff auf das Verzeichnis f\u00fcr die Serviceprotokolldatei erh\u00e4lt. Wenn Sie das Problem mithilfe dieser Schritte nicht beheben k\u00f6nnen, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support) an.
+
+HPEL_ErrorSkippingFailedLogRecord=HPEL0122E: Fehler beim Springen zum n\u00e4chsten Datensatz nach einem Fehler in der Datei "{0}": {1}.
+HPEL_ErrorSkippingFailedLogRecord.explanation=Beim Versuch der Neupositionierung innerhalb der Datei ist ein Fehler aufgetreten.
+HPEL_ErrorSkippingFailedLogRecord.useraction=Bestimmen Sie die Fehlerursache anhand der Ausnahme. Stellen Sie sicher, dass der angegebene Dateiname ein g\u00fcltiger Dateiname ist. Stellen Sie sicher, dass die Laufzeitumgebung des Anwendungsservers Schreibzugriff auf das Verzeichnis f\u00fcr die Serviceprotokolldatei erh\u00e4lt. Wenn Sie das Problem mithilfe dieser Schritte nicht beheben k\u00f6nnen, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support) an.
+
+# CompatZipRepositoryExporter and HPELZipRepositoryExporter message.
+HPEL_ErrorClosingZipStream=HPEL0123W: Beim Schlie\u00dfen eines ZIP-Datenstroms ist ein Fehler aufgetreten.
+HPEL_ErrorClosingZipStream.explanation=Beim Schlie\u00dfen eines Datenstroms ist ein Fehler aufgetreten. Die Ausnahme sollte weitere Informationen enthalten.
+HPEL_ErrorClosingZipStream.useraction=Bestimmen Sie die Fehlerursache anhand der Ausnahme. Stellen Sie sicher, dass der angegebene Dateiname ein g\u00fcltiger Dateiname ist. Stellen Sie sicher, dass die Laufzeitumgebung des Anwendungsservers Schreibzugriff auf das Verzeichnis f\u00fcr die Serviceprotokolldatei erh\u00e4lt. Wenn Sie das Problem mithilfe dieser Schritte nicht beheben k\u00f6nnen, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support) an.
+
+# RepositoryReaderImpl message.
+HPEL_RepositoryPointerNotInRepository=HPEL0124W: Der angegebene Repositoryzeiger geh\u00f6rt nicht zu einem Repository. Wahrscheinlich wurde die Datei, auf die der Zeiger verweist, bereits gel\u00f6scht.
+HPEL_RepositoryPointerNotInRepository.explanation=Der angegebene Repositoryzeiger geh\u00f6rt nicht zu einem Repository. Wahrscheinlich wurde die Datei, auf die der Zeiger verweist, bereits gel\u00f6scht.
+HPEL_RepositoryPointerNotInRepository.useraction=Bestimmen Sie die Fehlerursache anhand der Ausnahme. Stellen Sie sicher, dass der angegebene Dateiname ein g\u00fcltiger Dateiname ist. Stellen Sie sicher, dass die Laufzeitumgebung des Anwendungsservers Schreibzugriff auf das Verzeichnis f\u00fcr die Serviceprotokolldatei erh\u00e4lt. Wenn Sie das Problem mithilfe dieser Schritte nicht beheben k\u00f6nnen, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support) an.
+
+# Additional messages from OneLogFileRecordIterator
+HPEL_ErrorReadingLogRecordDoSkip=HPEL0125W: Es wurde kein g\u00fcltiger Datensatz an Offset {0} gefunden. Es werden {1} Bytes bis zum n\u00e4chsten Datensatz in der Datei {2} \u00fcbersprungen.
+HPEL_ErrorReadingLogRecordDoSkip.explanation=Ein Datensatz in der Datei konnte nicht gelesen werden, aber die Datei kann andere g\u00fcltige Datens\u00e4tze enthalten.
+HPEL_ErrorReadingLogRecordDoSkip.useraction=Bestimmen Sie die Fehlerursache anhand der Ausnahme. Stellen Sie sicher, dass der angegebene Dateiname ein g\u00fcltiger Dateiname ist. Stellen Sie sicher, dass die Laufzeitumgebung des Anwendungsservers Schreibzugriff auf das Verzeichnis f\u00fcr die Serviceprotokolldatei erh\u00e4lt. Wenn Sie das Problem mithilfe dieser Schritte nicht beheben k\u00f6nnen, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support) an.
+
+# Messages for handling of PCI list
+IllegalArgInConstructingPatternLevel=HPEL0150W: Unzul\u00e4ssiges Argument beim Erstellen eines Elements in der eingeschr\u00e4nkten Liste {0}
+IllegalArgInConstructingPatternLevel.explanation=Ein neuer Eintrag in der eingeschr\u00e4nkten Liste hat das falsche Format.
+IllegalArgInConstructingPatternLevel.useraction=Stellen Sie fest, ob dieser Eintrag aus der Eigenschaftendatei oder von jemandem stammt, der die API verwendet, um Eintr\u00e4ge hinzuzuf\u00fcgen, und korrigieren Sie dann die Datei bzw. den Aufrufenen der API.
+
+InvalidPatternString=HPEL0151I: Die Muster/Version-Zeichenfolge {0} kann nicht ordnungsgem\u00e4\u00df in ein Muster und eine Version von loggerName geparst werden.
+InvalidPatternString.explanation=Das Parsing der angegebenen Zeichenfolge f\u00fcr Muster und Version von loggerName ist nicht m\u00f6gich.
+InvalidPatternString.useraction=Stellen Sie fest, ob dieser Eintrag aus der Eigenschaftendatei oder von jemandem stammt, der die API verwendet, um Eintr\u00e4ge hinzuzuf\u00fcgen, und korrigieren Sie dann die Datei bzw. den Aufrufenen der API.
+
+# Messages for file system space alarms
+HPEL_FileSystem_Space_Warning=HPEL0161W: Das Dateisystem in {0} ben\u00f6tigt {1} Bytes f\u00fcr die Protokollierungsvoraussetzungen. Es sind jedoch nur {2} Bytes \u00fcbrig.
+HPEL_FileSystem_Space_Warning.explanation=Protokollierungs- und Tracing-Konfigurationen erfordern mehr Platz als dieses Dateisystem zurzeit hat.
+HPEL_FileSystem_Space_Warning.useraction=Bereinigen Sie das Dateisystem, um Platz bereitzustellen, oder \u00e4ndern Sie die Protokoll- und Tracekonfigurationen so, dass diese auf eine andere Position verweisen oder weniger Platz beanspruchen.

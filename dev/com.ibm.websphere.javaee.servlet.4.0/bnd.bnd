@@ -20,9 +20,5 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-	com.ibm.ws.javaee.servlet.3.1;version=1.0.10.201509101149,\
-	com.ibm.ws.javax.j2ee:servlet.resources;version=3.1, \
-    com.ibm.websphere.org.osgi.core;version=latest,\
-	com.ibm.websphere.org.osgi.service.component;version=latest,\
-	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
-    
+   javax.servlet:javax.servlet-api;version=4.0.0, \
+   	com.ibm.ws.javax.j2ee:servlet.resources;version=3.1

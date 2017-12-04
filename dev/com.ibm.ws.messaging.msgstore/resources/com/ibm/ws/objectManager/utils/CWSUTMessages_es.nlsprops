@@ -1,0 +1,49 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.example.CWSUTMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+# 
+# Instructions to translation will precede the line to which it applies
+# {0} description of each insert field
+# ClassName_MessageName=CWSUT0001I: This is a message with insert {0}
+# ClassName_MessageName.explanation=Explanation text for the message.
+# ClassName_MessageName.useraction=User action text for the message.
+#
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - CWSOMIS9999 is for emergency use if any new messages are required after the messages file is finalized
+# -------------------------------------------------------------------------------------------------
+#
+#
+#CMVCPATHNAME %Z%%W% %I%
+#COMPONENTPREFIX CWSUT
+#COMPONENTNAMEFOR CWSUT ObjectManager.Utils
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# ---------------------------------------------------------------------------------------------------------------------------------
+# Messages used by UtilsException.
+# ---------------------------------------------------------------------------------------------------------------------------------
+
+# {0} The Exception that was caught by the ObjectManager.
+UnexpectedExceptionException_info=CWSUT1001E: ObjectManager ha detectado de forma imprevista la excepci\u00f3n exception={0}(Exception). 
+UnexpectedExceptionException_info.explanation=ObjectManager ha detectado una excepci\u00f3n, ObjectManager no ha podido realizar los pasos necesarios para responder a la excepci\u00f3n.
+UnexpectedExceptionException_info.useraction=Compruebe la causa de la excepci\u00f3n subyacente.
+
+# ----------------------------------------------------------------------------------------------------
+
+# {0} is the text of the message.
+TEMPORARY_SIUT9999=CWSUT9999E: {0}
+TEMPORARY_SIUT9999.explanation=Si el mensaje no proporciona suficiente informaci\u00f3n, consulte los mensajes anteriores para obtener m\u00e1s ayuda.
+TEMPORARY_SIUT9999.useraction=Consulte los mensajes anteriores para obtener m\u00e1s informaci\u00f3n.

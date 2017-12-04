@@ -27,9 +27,10 @@ import com.ibm.ws.ejbcontainer.EJBEndpoint;
 import com.ibm.ws.ejbcontainer.EJBReferenceFactory;
 import com.ibm.ws.ejbcontainer.EJBType;
 
-public class EjbDescriptorImpl<T> implements WebSphereEjbDescriptor<T>
-{
+public class EjbDescriptorImpl<T> implements WebSphereEjbDescriptor<T> {
     private static final TraceComponent tc = Tr.register(EjbDescriptorImpl.class);
+
+    public static final String PREFIX = "WebSphereEjbDescriptor:";
 
     private final Class<T> beanClass;
     private final EJBReferenceFactory referenceFactory;
@@ -46,8 +47,7 @@ public class EjbDescriptorImpl<T> implements WebSphereEjbDescriptor<T>
 
     private Collection<Method> removeMethods;
 
-    private EjbDescriptorImpl(Class<T> beanClass, EJBEndpoint ejb, ClassLoader classLoader) throws CDIException
-    {
+    private EjbDescriptorImpl(Class<T> beanClass, EJBEndpoint ejb, ClassLoader classLoader) throws CDIException {
         this.beanClass = beanClass;
         this.referenceFactory = ejb.getEJBType().isSession() ? ejb.getReferenceFactory() : null;
         this.ejbJ2EEName = ejb.getJ2EEName();
@@ -55,9 +55,8 @@ public class EjbDescriptorImpl<T> implements WebSphereEjbDescriptor<T>
         init(ejb, classLoader);
     }
 
-    public static EjbDescriptor<?> newInstance(EJBEndpoint ejb, ClassLoader classLoader) throws CDIException
-    {
-        EjbDescriptor<?> descriptor = null;
+    public static WebSphereEjbDescriptor<?> newInstance(EJBEndpoint ejb, ClassLoader classLoader) throws CDIException {
+        WebSphereEjbDescriptor<?> descriptor = null;
         String beanClassName = ejb.getClassName();
         try {
             Class<?> beanClass = classLoader.loadClass(beanClassName);
@@ -68,19 +67,15 @@ public class EjbDescriptorImpl<T> implements WebSphereEjbDescriptor<T>
         return descriptor;
     }
 
-    public static <K> EjbDescriptor<K> newInstance(Class<K> beanClass, EJBEndpoint ejb, ClassLoader classLoader)
-                    throws CDIException
-    {
+    public static <K> WebSphereEjbDescriptor<K> newInstance(Class<K> beanClass, EJBEndpoint ejb, ClassLoader classLoader) throws CDIException {
         return new EjbDescriptorImpl<K>(beanClass, ejb, classLoader);
     }
 
-    private void init(EJBEndpoint ejb, ClassLoader classLoader) throws CDIException
-    {
+    private void init(EJBEndpoint ejb, ClassLoader classLoader) throws CDIException {
         try {
             List<String> localInterfaceNames = ejb.getLocalBusinessInterfaceNames();
             this.localBusinessInterfaces = new ArrayList<BusinessInterfaceDescriptor<?>>(localInterfaceNames.size() + 1);
-            for (String interfaceName : localInterfaceNames)
-            {
+            for (String interfaceName : localInterfaceNames) {
                 Class<?> interfaceClass = classLoader.loadClass(interfaceName);
                 this.localBusinessInterfaces.add(BusinessInterfaceDescriptorImpl.newInstance(interfaceClass));
             }
@@ -91,8 +86,7 @@ public class EjbDescriptorImpl<T> implements WebSphereEjbDescriptor<T>
 
             List<String> remoteInterfaceNames = ejb.getRemoteBusinessInterfaceNames();
             this.remoteBusinessInterfaces = new ArrayList<BusinessInterfaceDescriptor<?>>();
-            for (String remoteInterfaceName : remoteInterfaceNames)
-            {
+            for (String remoteInterfaceName : remoteInterfaceNames) {
                 Class<?> remoteInterfaceClass = classLoader.loadClass(remoteInterfaceName);
                 this.remoteBusinessInterfaces.add(BusinessInterfaceDescriptorImpl.newInstance(remoteInterfaceClass));
             }
@@ -115,8 +109,7 @@ public class EjbDescriptorImpl<T> implements WebSphereEjbDescriptor<T>
         this.removeMethods = getRemoveMethodsForEndPoint(ejb);
     }
 
-    private Collection<Method> getRemoveMethodsForEndPoint(EJBEndpoint ejbEndpoint) throws CDIException
-    {
+    private Collection<Method> getRemoveMethodsForEndPoint(EJBEndpoint ejbEndpoint) throws CDIException {
         Collection<Method> removeMethods = null;
         try {
             removeMethods = ejbEndpoint.getStatefulRemoveMethods();
@@ -127,74 +120,62 @@ public class EjbDescriptorImpl<T> implements WebSphereEjbDescriptor<T>
     }
 
     @Override
-    public Class<T> getBeanClass()
-    {
+    public Class<T> getBeanClass() {
         return beanClass;
     }
 
     @Override
-    public Collection<BusinessInterfaceDescriptor<?>> getLocalBusinessInterfaces()
-    {
+    public Collection<BusinessInterfaceDescriptor<?>> getLocalBusinessInterfaces() {
         return localBusinessInterfaces;
     }
 
     @Override
-    public Collection<BusinessInterfaceDescriptor<?>> getRemoteBusinessInterfaces()
-    {
+    public Collection<BusinessInterfaceDescriptor<?>> getRemoteBusinessInterfaces() {
         return remoteBusinessInterfaces;
     }
 
     @Override
-    public String getEjbName()
-    {
+    public String getEjbName() {
         return ejbJ2EEName.getComponent();
     }
 
     @Override
-    public Collection<Method> getRemoveMethods()
-    {
+    public Collection<Method> getRemoveMethods() {
         return removeMethods;
     }
 
     @Override
-    public boolean isStateless()
-    {
+    public boolean isStateless() {
         return isStateless;
     }
 
     @Override
-    public boolean isSingleton()
-    {
+    public boolean isSingleton() {
         return isSingleton;
     }
 
     @Override
-    public boolean isStateful()
-    {
+    public boolean isStateful() {
         return isStateful;
     }
 
     @Override
-    public boolean isMessageDriven()
-    {
+    public boolean isMessageDriven() {
         return isMessageDriven;
     }
 
     @Override
-    public boolean isPassivationCapable()
-    {
+    public boolean isPassivationCapable() {
         return isPassivationCapable;
     }
 
     @Override
-    public J2EEName getEjbJ2EEName()
-    {
+    public J2EEName getEjbJ2EEName() {
         return ejbJ2EEName;
     }
 
     @Override
-    public EJBReferenceFactory getReferenceFactory()
-    {
+    public EJBReferenceFactory getReferenceFactory() {
         return referenceFactory;
     }
 
@@ -225,7 +206,19 @@ public class EjbDescriptorImpl<T> implements WebSphereEjbDescriptor<T>
 
     @Override
     public String toString() {
-        return "EjbDescriptor: " + this.ejbJ2EENameString;
+        return PREFIX + this.ejbJ2EENameString;
     }
 
+    public static String parseJ2EEName(EjbDescriptor<?> desc) {
+        String j2eeName = null;
+        String ejbDescString = desc.toString();
+        if (ejbDescString.startsWith(PREFIX)) {
+            j2eeName = ejbDescString.substring(PREFIX.length());
+        } else {
+            //If the the string did not start with PREFIX then it wasn't one of ours!
+            //it should not be possible to get here
+            throw new IllegalArgumentException(Tr.formatMessage(tc, "internal.server.error.CWOWB2002E", "Could not parse J2EEName", ejbDescString));
+        }
+        return j2eeName;
+    }
 }

@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.service/resources/com/ibm/ws/kernel/service/utils/resources/ServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0100 - 0199 com.ibm.ws.kernel.service.utils.resources.ServiceMessages
+# -------------------------------------------------------------------------------------------------
+invalidStringArray=CWWKE0101W: A megadott param\u00e9ter nem egy karaktersorozat vagy karaktersorozat t\u00f6mb. {1}={2} a k\u00f6vetkez\u0151n\u00e9l: {0}
+invalidStringArray.explanation=A megadott konfigur\u00e1ci\u00f3s param\u00e9ter \u00e9rt\u00e9ke nem karaktersorozat, vagy nem alak\u00edthat\u00f3 \u00e1t karaktersorozatt\u00e1 vagy karaktersorozat t\u00f6mbb\u00e9.
+invalidStringArray.useraction=Ellen\u0151rizze a megadott \u00e9rt\u00e9ket a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00e9rt\u00e9k egy karaktersorozat vagy karaktersorozat t\u00f6mb \u00e9rv\u00e9nyes \u00e1br\u00e1zol\u00e1sa.
+
+invalidStringCollection=CWWKE0102W: A megadott param\u00e9ter nem egy karaktersorozat vagy karaktersorozat gy\u0171jtem\u00e9ny. {1}={2} a k\u00f6vetkez\u0151n\u00e9l: {0}
+invalidStringCollection.explanation=A megadott konfigur\u00e1ci\u00f3s param\u00e9ter \u00e9rt\u00e9ke nem karaktersorozat, vagy nem alak\u00edthat\u00f3 \u00e1t karaktersorozatt\u00e1 vagy karaktersorozat gy\u0171jtem\u00e9nny\u00e9.
+invalidStringCollection.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban megadott \u00e9rt\u00e9k egy karaktersorozat vagy karaktersorozat gy\u0171jtem\u00e9ny \u00e9rv\u00e9nyes \u00e1br\u00e1zol\u00e1sa.
+
+invalidBoolean=CWWKE0103W: A megadott param\u00e9ter nem egy logikai \u00e9rt\u00e9ket \u00e1br\u00e1zol. {1}={2} a k\u00f6vetkez\u0151n\u00e9l: {0}
+invalidBoolean.explanation=A megadott konfigur\u00e1ci\u00f3s param\u00e9ter \u00e9rt\u00e9ke nem logikai \u00e9rt\u00e9k, vagy nem alak\u00edthat\u00f3 \u00e1t logikai \u00e9rt\u00e9kk\u00e9.
+invalidBoolean.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban megadott \u00e9rt\u00e9k egy logikai \u00e9rt\u00e9k \u00e9rv\u00e9nyes \u00e1br\u00e1zol\u00e1sa.
+
+invalidLong=CWWKE0104W: A megadott param\u00e9ter nem egy long t\u00edpus\u00fa \u00e9rt\u00e9ket \u00e1br\u00e1zol. {1}={2} a k\u00f6vetkez\u0151n\u00e9l: {0}
+invalidLong.explanation=A megadott konfigur\u00e1ci\u00f3s param\u00e9ter \u00e9rt\u00e9ke nem long t\u00edpus\u00fa \u00e9rt\u00e9k, vagy nem alak\u00edthat\u00f3 \u00e1t long t\u00edpus\u00fa \u00e9rt\u00e9kk\u00e9.
+invalidLong.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban megadott \u00e9rt\u00e9k egy long t\u00edpus\u00fa \u00e9rt\u00e9k \u00e9rv\u00e9nyes \u00e1br\u00e1zol\u00e1sa.
+
+invalidInteger=CWWKE0105W: A megadott param\u00e9ter nem egy eg\u00e9sz sz\u00e1m \u00e9rt\u00e9ket \u00e1br\u00e1zol. {1}={2} a k\u00f6vetkez\u0151n\u00e9l: {0}
+invalidInteger.explanation=A megadott konfigur\u00e1ci\u00f3s param\u00e9ter \u00e9rt\u00e9ke nem eg\u00e9sz sz\u00e1m, vagy nem alak\u00edthat\u00f3 \u00e1t eg\u00e9sz sz\u00e1m \u00e9rt\u00e9kk\u00e9.
+invalidInteger.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban megadott \u00e9rt\u00e9k egy eg\u00e9sz sz\u00e1m \u00e9rt\u00e9k \u00e9rv\u00e9nyes \u00e1br\u00e1zol\u00e1sa.
+
+invalidIntegerArray=CWWKE0106W: A megadott param\u00e9ter nem egy eg\u00e9sz sz\u00e1m t\u00f6mb\u00f6t \u00e1br\u00e1zol. {1}={2} a k\u00f6vetkez\u0151n\u00e9l: {0}
+invalidIntegerArray.explanation=A megadott konfigur\u00e1ci\u00f3s param\u00e9ter \u00e9rt\u00e9ke nem eg\u00e9sz sz\u00e1m t\u00f6mb, vagy nem alak\u00edthat\u00f3 \u00e1t eg\u00e9sz sz\u00e1m t\u00f6mbb\u00e9.
+invalidIntegerArray.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban megadott \u00e9rt\u00e9k egy eg\u00e9sz sz\u00e1m t\u00f6mb \u00e9rv\u00e9nyes \u00e1br\u00e1zol\u00e1sa.
+
+invalidDuration=CWWKE0107W: A megadott param\u00e9ter nem id\u0151tartam \u00e9rt\u00e9ket \u00e1br\u00e1zol. {1}={2} a k\u00f6vetkez\u0151n\u00e9l: {0}
+invalidDuration.explanation=A megadott konfigur\u00e1ci\u00f3s param\u00e9ter \u00e9rt\u00e9ke nem id\u0151tartam, vagy nem alak\u00edthat\u00f3 \u00e1t id\u0151tartam \u00e9rt\u00e9kk\u00e9.
+invalidDuration.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban megadott \u00e9rt\u00e9k egy id\u0151tartam \u00e9rt\u00e9k \u00e9rv\u00e9nyes \u00e1br\u00e1zol\u00e1sa.
+
+#
+# W A R N I N G:   Do not use CWWKE0108 - CCWKE0109 they are currently in use LauncherMessages.nlsprops
+#

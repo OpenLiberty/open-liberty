@@ -10,7 +10,48 @@
  *******************************************************************************/
 
 import org.apache.tools.ant.filters.ReplaceTokens
+
+task copyPropertiesToBuildImage (type:Copy) {
+    dependsOn jar
+    from project.file('publish')
+    into project.file('wlp/lib/versions')
+    include '*.properties'
+    filter(ReplaceTokens,
+           tokens: [PRODUCT_VERSION: bnd.libertyRelease, PRODUCT_EDITION: bnd.productEdition, PRODUCT_LICENSE_TYPE: bnd.productLicenseType])
+}
+
+task copyReadmeToBuildImage (type:Copy) {
+    dependsOn jar
+    from project.file('publish')
+    into project.file('wlp')
+    include 'README.TXT'
+    filter(ReplaceTokens,
+           tokens: [BUILD_ID: bnd.buildID, LIBERTY_VERSION: bnd.libertyRelease])
+}
+
+assemble {
+    dependsOn copyPropertiesToBuildImage
+    dependsOn copyReadmeToBuildImage
+}
+
+task copyGeneratedToBuildImageBinTools (type:Copy) {
+    dependsOn parent.subprojects.assemble
+    from project.file('wlp/lib')
+    into project.file('wlp/bin/tools')
+    include 'bootstrap-agent.jar'
+    rename 'bootstrap-agent.jar', 'ws-javaagent.jar'
+}
+
+task copyGeneratedToCnfLib (type:Copy) {
+    dependsOn parent.subprojects.assemble
+    from project.file('wlp/dev/api/spec/')
+    into project.file('lib')
+    include 'com.ibm.ws.org.osgi.core_*.jar'
+    rename '.*.jar', 'osgi.core.jar'
+}
+
 import groovy.json.*
+import org.gradle.internal.os.OperatingSystem
 
 // Set the generated zip version to the buildID.
 // tasks.gradle file where this task is defined
@@ -21,79 +62,77 @@ if (releaseVersionOverride != null) {
     releaseVersion = releaseVersionOverride
 }
 
-String packageDir = "${buildDir}/openliberty"
+File packageDir = new File(project.buildDir, 'openliberty')
+def props = new Properties()
+rootProject.file('generated.properties').withInputStream { props.load(it) }
 
 task packageOpenLiberty {
+    enabled props["ghe.build.type"] == null || !props["ghe.build.type"].contains("ifix")
     dependsOn parent.subprojects.assemble
+    dependsOn copyGeneratedToBuildImageBinTools
+    dependsOn copyGeneratedToCnfLib
     doLast {
         // Create server in order to minify an image that only includes kind=ga features
-        String serverName = "packageOpenLiberty"
-        delete "${projectDir}/wlp/usr/servers/${serverName}"
-        if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-           exec {
-              workingDir "${projectDir}/wlp/bin"
-              commandLine "cmd", "/c", "server", "create", serverName
-           }
-        } else {
-            exec {
-              workingDir "${projectDir}/wlp/bin"
-              commandLine "./server", "create", serverName
+        delete project.file('wlp/usr/servers/packageOpenLiberty')
+        exec {
+            workingDir project.file('wlp/bin')
+            def args = ["create", "packageOpenLiberty"]
+            if (OperatingSystem.current().windows) {
+                commandLine = ["cmd", "/c", "server"] + args
+            } else {
+                commandLine = ["./server"] + args
             }
         }
 
         try {
             String features = ""
-            fileTree(dir: "${rootDir}", include: '*/*.feature').visit { element ->
+            rootProject.fileTree(dir: '.', include: '*/*.feature').visit { element ->
                 if (element.isDirectory()) {
                     return
                 }
-
-                File featureFile = element.getFile()
-                if (featureFile.text.contains("kind=ga")) {
-                    for (String line : featureFile.text.split("\\n")) {
-                        if (line.contains("IBM-ShortName:")) {
-                            String shortname = line.substring(14)
-                            shortname = shortname.replaceAll("\\s+", "")
-                            features += "\n<feature>" + shortname + "</feature>"
-                            break
-                        }
-                    }
+                Properties featureProps = new Properties()
+                element.getFile().withInputStream { featureProps.load(it) }
+                if (featureProps['kind'] == 'ga' && featureProps['IBM-ShortName'] != null) {
+                    String shortname = featureProps['IBM-ShortName']
+                    features += "\n<feature>" + shortname + "</feature>"
                 }
             }
 
-            def serverXml = file("${projectDir}/wlp/usr/servers/${serverName}/server.xml")
+            def serverXml = project.file("wlp/usr/servers/packageOpenLiberty/server.xml")
             serverXml.text = """<?xml version="1.0" encoding="UTF-8"?>
-<server description="new server">
-<featureManager>${features}
-</featureManager>
-</server>
-"""
+    <server description="new server">
+    <featureManager>${features}
+    </featureManager>
+    </server>
+    """
 
-            String archive = "${buildDir}/openliberty.zip"
+            File archive = new File(project.buildDir, 'openliberty.zip')
             delete archive
-            if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
             exec {
-              workingDir "${projectDir}/wlp/bin"
-              commandLine "cmd", "/c", "server", "package", serverName, "--archive=${archive}", "--include=minify"
-            }
-            } else {
-              exec {
-                 workingDir "${projectDir}/wlp/bin"
-                 commandLine "./server", "package", serverName, "--archive=${archive}", "--include=minify"
-              }
+                workingDir project.file('wlp/bin')
+                def args = ["package", "packageOpenLiberty", "--archive=${archive}", "--include=minify"]
+                if (OperatingSystem.current().windows) {
+                    commandLine = ["cmd", "/c", "server"] + args
+                } else {
+                    commandLine = ["./server"] + args
+                }
             }
 
             // Postprocess to remove unwanted files
             delete packageDir
             copy {
-                from(zipTree(file(archive)))
+                from zipTree(file(archive))
                 exclude 'wlp/usr/servers/**'
                 exclude 'wlp/lib/versions/package_*'
                 into packageDir
             }
-
-        } finally {
-            delete "${projectDir}/wlp/usr/servers/${serverName}"
+        } catch (all) {
+            def messages = project.file("wlp/usr/servers/packageOpenLiberty/logs/messages.log")
+            if (messages.exists()) {
+                messages.eachLine { String line ->
+                    println line
+                }
+            }
         }
     }
 }
@@ -111,61 +150,18 @@ publish.dependsOn zipOpenLiberty
 // Includes all features.
 task zipOpenLibertyAll(type: Zip) {
     dependsOn parent.subprojects.assemble
+    dependsOn copyGeneratedToBuildImageBinTools
+    dependsOn copyGeneratedToCnfLib
     baseName 'openliberty-all'
     from projectDir
     include 'wlp/**'
     destinationDir distsDir
     version releaseVersion
     doLast {
-        def props = new Properties()
-        file("${rootDir}/generated.properties").withInputStream { props.load(it) }
-
         props.setProperty('zipopenliberty.archivename', archivePath.toString())
-
-        File propsFile = new File("${rootDir}/generated.properties")
+        File propsFile = rootProject.file('generated.properties')
         props.store(propsFile.newWriter(), null)
     }
-}
-
-task copyPropertiesToBuildImage (type:Copy) {
-    dependsOn jar
-    from "${projectDir}/publish/"
-    into "${projectDir}/wlp/lib/versions/"
-    include '*.properties'
-    filter(ReplaceTokens,
-           tokens: [PRODUCT_VERSION: bnd.libertyRelease, PRODUCT_EDITION: bnd.productEdition, PRODUCT_LICENSE_TYPE: bnd.productLicenseType])
-}
-
-task copyReadmeToBuildImage (type:Copy) {
-    dependsOn jar
-    from "${projectDir}/publish/"
-    into "${projectDir}/wlp/"
-    include 'README.TXT'
-    filter(ReplaceTokens,
-           tokens: [BUILD_ID: bnd.buildID, LIBERTY_VERSION: bnd.libertyRelease])
-}
-
-task copyGeneratedToBuildImageBinTools (type:Copy) {
-    dependsOn jar
-    from "${projectDir}/wlp/lib/"
-    into "${projectDir}/wlp/bin/tools/"
-    include 'bootstrap-agent.jar'
-    rename 'bootstrap-agent.jar', 'ws-javaagent.jar'
-}
-
-task copyGeneratedToCnfLib (type:Copy) {
-    dependsOn jar
-    from "${projectDir}/wlp/dev/api/spec/"
-    into "${rootDir}/${bnd_cnf}/lib/"
-    include 'com.ibm.ws.org.osgi.core.6.0.0_*.jar'
-    rename '.*.jar', 'osgi.core.jar'
-}
-
-assemble {
-    dependsOn copyPropertiesToBuildImage
-    dependsOn copyReadmeToBuildImage
-    dependsOn copyGeneratedToBuildImageBinTools
-    dependsOn copyGeneratedToCnfLib
 }
 
 clean.doLast {
@@ -187,9 +183,6 @@ task createJSONForPublicArtifacts {
     enabled isAutomatedBuild
 
     doLast {
-        def props = new Properties()
-        file("${rootDir}/generated.properties").withInputStream { props.load(it) }
-
         // Create JSON descriptor
         delete "${buildDir}/info.json"
         File json = new File("${buildDir}/info.json")
@@ -237,15 +230,15 @@ task createJSONForPublicArtifacts {
 
 buildscript {
     repositories {
-        def props = new Properties()
-        file("${rootDir}/generated.properties").withInputStream { props.load(it) }
-        if (usrHomeProps.exists() && !props.getProperty('artifactory.force.external.repo')) {
+        def properties = new Properties()
+        rootProject.file('generated.properties').withInputStream { properties.load(it) }
+        if (usrHomeProps.exists() && !properties.getProperty('artifactory.force.external.repo')) {
             maven {
                 credentials {
-                    username props.getProperty("artifactory.download.user")
-                    password props.getProperty("artifactory.download.token")
+                    username properties.getProperty("artifactory.download.user")
+                    password properties.getProperty("artifactory.download.token")
                 }
-                url ("https://" + props.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty")
+                url ("https://" + properties.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty")
             }
         } else {
             jcenter()
@@ -263,9 +256,6 @@ apply plugin: 'org.hidetake.ssh'
 
 remotes {
     dhe {
-        def props = new Properties()
-        file("${rootDir}/generated.properties").withInputStream { props.load(it) }
-
         host = props.getProperty("dhe.server")
         user = props.getProperty("dhe.user")
         password = props.getProperty("dhe.password")
@@ -283,9 +273,6 @@ task publishPublicArtifactsOnDhe {
     enabled isAutomatedBuild && isPublicPublishing
 
     doLast {
-        def props = new Properties()
-        file("${rootDir}/generated.properties").withInputStream { props.load(it) }
-
         // Re-arrange buildLabel, ex: 201708101600 to 2017-08-10_1600
         def (yr, mo, d, t) = [bnd.buildLabel.substring(0,4), bnd.buildLabel.substring(4,6), bnd.buildLabel.substring(6,8), bnd.buildLabel.substring(8)]
         String version = "${yr}-${mo}-${d}_${t}"
@@ -367,9 +354,6 @@ task publishPublicArtifactsOnBintray {
     enabled isAutomatedBuild && isPublicPublishing
 
     doLast {
-        def props = new Properties()
-        file("${rootDir}/generated.properties").withInputStream { props.load(it) }
-
         String bintrayUser = props.getProperty("bintray.user")
         String bintrayApikey = props.getProperty("bintray.apikey")
 

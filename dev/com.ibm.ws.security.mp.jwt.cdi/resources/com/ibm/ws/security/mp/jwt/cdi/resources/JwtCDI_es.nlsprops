@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.mp.jwt.cdi/resources/com/ibm/ws/security/mp/jwt/cdi/resources/JwtCDI.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Microprofile JWT CDI
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS5600 - CWWKS5649
+
+# Do not translate Claim.
+MPJWT_CDI_INVALID_INJECTION_TYPE=CWWKS5600E: No es posible determinar el tipo de reclamaci\u00f3n que se va a inyectar. El tipo del punto de inyecci\u00f3n es {0}.
+MPJWT_CDI_INVALID_INJECTION_TYPE.explanation=El punto de inyecci\u00f3n anotado con el calificador Claim no tiene un tipo v\u00e1lido.
+MPJWT_CDI_INVALID_INJECTION_TYPE.useraction=Aseg\u00farese de que el punto de inyecci\u00f3n tiene un tipo v\u00e1lido para la reclamaci\u00f3n que desea inyectar.
+
+MPJWT_CDI_CANNOT_RESOLVE_INJECTION_POINT=CWWKS5601E: No se puede resolver la dependencia del punto de inyecci\u00f3n {0}, lo que genera un error {1}.
+MPJWT_CDI_CANNOT_RESOLVE_INJECTION_POINT.explanation=La reclamaci\u00f3n inyectada no se ha resuelto.
+MPJWT_CDI_CANNOT_RESOLVE_INJECTION_POINT.useraction=Compruebe el mensaje del servidor y los registros de captura de datos en primer error (FFDC, First-failure data Capture) para determinar la causa.
+
+# Do not translate Claim, value, and standard. The value and standard are members of the Claim annotation.
+MPJWT_CDI_CONFLICTING_CLAIM_NAMES=CWWKS5602E: El calificador Claim para el punto de inyecci\u00f3n {0} tiene valores incoherentes para los elementos value y standard. El elemento value tiene {1} mientras que el elemento standard tiene {2}.
+MPJWT_CDI_CONFLICTING_CLAIM_NAMES.explanation=El punto de inyecci\u00f3n anotado con el calificador Claim tiene elementos en conflicto.
+MPJWT_CDI_CONFLICTING_CLAIM_NAMES.useraction=Aseg\u00farese de que el punto de inyecci\u00f3n tiene un calificador Claim v\u00e1lido para la reclamaci\u00f3n que desea inyectar.
+
+# Do not translate ApplicationScoped, SessionScoped, RequestScoped, and Claim.
+MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE=CWWKS5603E: La reclamaci\u00f3n no se puede inyectar en el punto de inyecci\u00f3n {0} para los \u00e1mbitos ApplicationScoped o SessionScoped.
+MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.explanation=El punto de inyecci\u00f3n anotado con el calificador de reclamaci\u00f3n para un tipo raw debe pertenecer a una clase anotada con la anotaci\u00f3n de \u00e1mbito RequestScoped.
+MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.useraction=Aseg\u00farese de que el punto de inyecci\u00f3n es miembro de una clase en el \u00e1mbito RequestScoped para la reclamaci\u00f3n que desea inyectar.

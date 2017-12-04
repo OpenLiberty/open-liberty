@@ -1,0 +1,72 @@
+###############################################################################
+# Copyright (c) 1997, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# cmvc_en_version_level=1.123,0,13/01/21,12:35:39
+#
+#CMVCPATHNAME ws/code/j2c/src/com/ibm/ws/j2c/resources/J2CAMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA Java Platform, Enterprise Edition Connector Architecture Server Implementation
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+
+# Start inbound security feature messages.
+CUSTOM_CREDENTIALS_MISSING_J2CA0668=J2CA0668E: WorkManager non \u00e8 stato in grado di popolare il soggetto di esecuzione con il principal del chiamante o le credenziali necessarie per stabilire il contesto di sicurezza per questa istanza di lavoro.
+CUSTOM_CREDENTIALS_MISSING_J2CA0668.explanation=Il gestore callback JASPIC di WorkManager non \u00e8 stato in grado di popolare il principal o le credenziali personalizzate del soggetto di esecuzione perch\u00e9 si \u00e8 verificata un'eccezione durante l'elaborazione dei callback JASPIC forniti dall'adattatore di risorse.
+CUSTOM_CREDENTIALS_MISSING_J2CA0668.useraction=Verificare i log del server e FFDC emessi immediatamente prima del messaggio J2CA0672E per determinare la causa. Se la causa non pu\u00f2 essere determinata dai messaggi di errore precedenti, raccogliere i dati diagnostici e visitare il sito web di supporto IBM per ulteriori informazioni.
+
+EXECUTION_CALLBACK_SUBJECT_MISMATCH_J2CA0673=J2CA0673W: Il soggetto di esecuzione fornito da  WorkManager non corrisponde al soggetto fornito da {0}.
+EXECUTION_CALLBACK_SUBJECT_MISMATCH_J2CA0673.explanation=L'istanza del soggetto di esecuzione fornito da WorkManager per stabilire il contesto di sicurezza dell'istanza di lavoro non \u00e8 la stessa istanza ottenuta dal rispettivo callback. WorkManager ha ignorato il soggetto ottenuto dal callback e ha continuato a stabilire il contesto di sicurezza utilizzando l'istanza fornita.
+EXECUTION_CALLBACK_SUBJECT_MISMATCH_J2CA0673.useraction=Rivolgersi al fornitore dell'adattatore di risorse per modificare il metodo getSubject() del callback JASPIC in modo da restituire il soggetto di esecuzione fornito all'istanza SecurityContext mediante la chiamata al metodo setupSecurityContext.
+
+ERROR_HANDLING_CALLBACK_J2CA0672=J2CA0672E: Si \u00e8 verificato un errore relativo al gestore callback JASPIC di WorkManager con l''eccezione {0} durante la gestione dei callback forniti dal contesto di sicurezza. Il messaggio di eccezione \u00e8 {1}.
+ERROR_HANDLING_CALLBACK_J2CA0672.explanation=WorkManager ha rilevato un'eccezione durante la gestione dei callback JASPIC forniti dall'adattatore di risorse nel contesto di sicurezza trasferito. L'eccezione pu\u00f2 essere uno dei casi riportati di seguito: 1) Un CallerPrincipalCallback ha fornito un principal con un nome utente che non esiste nel registro utenti. 2) Un PasswordValidationCallback ha fornito un nome utente o una password non validi. 3) Un CallerPrincipalCallback ed un PasswordValidationCallback hanno fornito nomi utente differenti. 4) L'adattatore di risorse ha fornito un callback che al momento il server delle applicazioni non supporta. 5) L'adattatore di risorse ha fornito pi\u00f9 di un CallerPrincipalCallback.  6) Il WorkManager ha rilevato un errore non previsto.
+ERROR_HANDLING_CALLBACK_J2CA0672.useraction=Se il messaggio di eccezione presenta un codice di errore, controllare l'azione utente per quel codice di errore. Se l'eccezione \u00e8 UnsupportedCallbackException, rivolgersi al fornitore dell'adattatore di risorse perch\u00e9 il gestore callback JASPIC di WorkManager al momento non supporta il callback fornito. Se l'eccezione non \u00e8 uno dei problemi indicati, raccogliere i dati diagnostici e fare riferimento al sito di supporto IBM per ulteriori informazioni.
+
+INVALID_GROUP_ENCOUNTERED_J2CA0678=J2CA0678W: Il gruppo {0} non appartiene al dominio associato all''applicazione.
+INVALID_GROUP_ENCOUNTERED_J2CA0678.explanation=Il contesto di sicurezza trasferito con l'istanza di lavoro ha fornito un nome gruppo che non esiste nel realm (registro utenti) del dominio di sicurezza associato all'applicazione.  WorkManager ha ottenuto il nome gruppo non valido da un'istanza di un GroupPrincipalCallback JASPIC, nel momento in cui \u00e8 stata fornita un'istanza dall'adattatore di risorse.
+INVALID_GROUP_ENCOUNTERED_J2CA0678.useraction=Verificare se il gruppo proviene dallo stesso realm confermandone l'esistenza nel registro utenti per tale realm. Se il gruppo proviene da un realm differente, rivolgersi al fornitore dell'adattatore di risorse perch\u00e9 WorkManager non supporta gruppi da realm differenti.
+
+NO_GROUPS_FOR_UNIQUEID_J2CA0679=J2CA0679W: Non \u00e8 stato trovato alcun gruppo per l''utente con ID univoco {0}
+NO_GROUPS_FOR_UNIQUEID_J2CA0679.explanation=Il contesto di sicurezza trasferito con l'istanza di lavoro ha fornito un utente che non appartiene ad alcuno dei gruppi definiti nel registro utente.
+NO_GROUPS_FOR_UNIQUEID_J2CA0679.useraction=Non sono richieste azioni da parte dell'utente.
+
+INVALID_USERNAME_PASSWORD_INBOUND_J2CA0674=J2CA0674E: Il nome utente {0} o la password forniti da PasswordValidationCallback non sono validi.
+INVALID_USERNAME_PASSWORD_INBOUND_J2CA0674.explanation=Il nome utente e la password non esistono nel registro utenti del realm configurato per il dominio di sicurezza associato all'applicazione.
+INVALID_USERNAME_PASSWORD_INBOUND_J2CA0674.useraction=Configurare l'adattatore di risorse e l'EIS (enterprise information system) in modo da utilizzare un nome utente ed una password validi. 
+
+VALIDATION_FAILED_INBOUND_J2CA0684=J2CA0684E: Impossibile convalidare il nome utente {0} e la password forniti da PasswordValidationCallback.
+VALIDATION_FAILED_INBOUND_J2CA0684.explanation=WorkManager non \u00e8 stato in grado di convalidare il nome utente e la password forniti da PasswordValidationCallback a causa di un'eccezione CustomRegistryException. Tale eccezione \u00e8 causata da una password non valida o da un problema con il registro utenti per il realm dell'applicazione.
+VALIDATION_FAILED_INBOUND_J2CA0684.useraction=Se la causa dell'eccezione CustomRegistryException \u00e8 una password non valida, configurare l'adattatore di risorse o l'EIS (enterprise information system) in modo da utilizzare una combinazione di nome utente e password valida. In caso contrario, risolvere il problema relativo al registro utenti.
+
+CALLBACK_SECURITY_NAME_MISMATCH_J2CA0675=J2CA0675E: Il nome utente {0}, fornito da PasswordValidationCallback ed il nome utente {1}, fornito da CallerPrincipalCallback, non corrispondono.
+CALLBACK_SECURITY_NAME_MISMATCH_J2CA0675.explanation=I nomi utente forniti da PasswordValidationCallback e CallerPrincipalCallback devono corrispondere. 
+CALLBACK_SECURITY_NAME_MISMATCH_J2CA0675.useraction=Rivolgersi al fornitore dell'adattatore di risorse ed all'amministratore di sistema per accertarsi che l'adattatore di risorse sia progettato e configurato in modo da restituire lo stesso nome utente dai due callback.
+
+SECURITY_CONTEXT_NOT_ASSOCIATED_J2CA0671=J2CA0671E: WorkManager non \u00e8 stato in grado di associare il SecurityContext fornito all'istanza di lavoro.
+SECURITY_CONTEXT_NOT_ASSOCIATED_J2CA0671.explanation=WorkManager ha rilevato un problema durante il tentativo di stabilire e configurare il contesto di sicurezza per la richiesta di lavoro in entrata. 
+SECURITY_CONTEXT_NOT_ASSOCIATED_J2CA0671.useraction=Verificare i log del server e FFDC per i messaggi J2CA0668E e J2CA0669E per determinare la causa.
+
+METHOD_FAILED_J2CA0132=J2CA0132E: il metodo {0} ha ottenuto l''eccezione {1}.
+METHOD_FAILED_J2CA0132.explanation=Il metodo ha rilevato un'eccezione dovuta probabilmente ad un errore interno.
+METHOD_FAILED_J2CA0132.useraction=CMSG0002
+
+
+
+# End inbound security feature messages.
+
+
+
+# ---------------------------------
+# End of File
+#
+# ---------------------------------

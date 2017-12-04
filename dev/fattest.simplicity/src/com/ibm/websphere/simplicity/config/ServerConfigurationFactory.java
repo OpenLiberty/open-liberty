@@ -20,13 +20,17 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import com.ibm.websphere.simplicity.Machine;
+import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.config.dsprops.Properties_derby_embedded;
+
+import componenttest.topology.impl.LibertyFileManager;
 
 /**
  * Reads server.xml into memory, writes changes back to server.xml
- * 
+ *
  * @author Tim Burns
- * 
+ *
  */
 public class ServerConfigurationFactory {
 
@@ -37,6 +41,30 @@ public class ServerConfigurationFactory {
             INSTANCE = new ServerConfigurationFactory();
         }
         return INSTANCE;
+    }
+
+    public static ServerConfiguration fromFile(File file) throws Exception {
+        return getInstance().unmarshal(new FileInputStream(file));
+    }
+
+    public static void toFile(File targetFile, ServerConfiguration config) throws Exception {
+        // write contents to a temporary file
+        RemoteFile originalFile = LibertyFileManager.createRemoteFile(Machine.getLocalMachine(), targetFile.getAbsolutePath());
+        RemoteFile newServerFile = LibertyFileManager.createRemoteFile(Machine.getLocalMachine(), targetFile.getAbsolutePath() + ".tmp");
+        OutputStream os = newServerFile.openForWriting(false);
+        ServerConfigurationFactory.getInstance().marshal(config, os);
+
+        if (newServerFile.length() == originalFile.length()) {
+            config.setDescription(config.getDescription() + " (this is some random text to make the file size bigger)");
+            os = newServerFile.openForWriting(false);
+            ServerConfigurationFactory.getInstance().marshal(config, os);
+        }
+
+        // replace the file
+        // This logic does not need to be time protected (as we do in method
+        // replaceServerConfiguration) because of the "extra random text" logic
+        // above. Even if the timestamp would not be changed, the size out be.
+        LibertyFileManager.moveLibertyFile(newServerFile, originalFile);
     }
 
     private final Marshaller marshaller;
@@ -51,7 +79,7 @@ public class ServerConfigurationFactory {
 
     /**
      * Expresses a server configuration in an XML document.
-     * 
+     *
      * @param sourceConfig
      *            the configuration you want to marshal
      * @param targetFile
@@ -70,7 +98,7 @@ public class ServerConfigurationFactory {
 
     /**
      * Expresses a server configuration in an XML document.
-     * 
+     *
      * @param sourceConfig
      *            the configuration you want to marshal
      * @param outputStream
@@ -92,7 +120,7 @@ public class ServerConfigurationFactory {
 
     /**
      * Converts a server configuration XML file into a series of Java objects.
-     * 
+     *
      * @param inputStream
      *            a server configuration XML file as a stream
      * @return a Java object representation of the server configuration, or null
@@ -113,7 +141,7 @@ public class ServerConfigurationFactory {
 
     /**
      * Tests server configuration factory; prints server.xml for easy debug
-     * 
+     *
      * @param args
      *            nothing
      * @throws Exception

@@ -1,0 +1,207 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.wim.adapter.ldap.util/resources/com/ibm/ws/security/wim/adapter/ldap/util/resources/LdapUtilMessages.nlsprops
+#COMPONENTPREFIX CWIML
+#COMPONENTPREFIX CWIMK
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR Virtual Member Manager user registry utilities
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: Profile Manager: 1000-1999
+# Message prefix block: Repository Manager: 4000-4499
+# Message prefix block: Adapters: 4500-4999
+# Message prefix block: CWWKS3200 - CWWKS3299
+
+ENTITY_NOT_FOUND=CWIML4001E: Opera\u0163ia de \u00eenregistrare utilizator nu a putut fi finalizat\u0103. Entitatea {0} nu a fost g\u0103sit\u0103. Specific\u0103 entitatea corect\u0103 sau crea\u0163i entitatea lips\u0103.
+ENTITY_NOT_FOUND.explanation=Numele entit\u0103\u0163ii specificate, ce poate fi un uniqueName sau un uniqueId, nu a putut fi g\u0103sit \u00een repozitoriul subiacent. Opera\u0163ia de \u00eenregistrare utilizator nu poate continua f\u0103r\u0103 g\u0103sirea acestei entit\u0103\u0163i.
+ENTITY_NOT_FOUND.useraction=Asigura\u0163i-v\u0103 c\u0103 entitatea exist\u0103 \u00een magazia subiacent\u0103. Dac\u0103 entitatea exist\u0103, atunci verifica\u0163i c\u0103 permisiunea de citire este setat\u0103 pentru entitate \u015fi re\u00eencerca\u0163i.
+
+INVALID_LEVEL_IN_CONTROL=CWIML4514E: Opera\u0163ia de \u00eenregistrare utilizator nu a putut fi finalizat\u0103. Este specificat\u0103 o valoare incorect\u0103 pentru nivelul de proprietate {0} \u00een {1}. Valoarea propriet\u0103\u0163ii, nivel, trebuie s\u0103 fie 0 sau un \u00eentreg pozitiv.
+INVALID_LEVEL_IN_CONTROL.explanation=Valoarea nivelului de proprietate s-a specificat ca num\u0103r negativ.
+INVALID_LEVEL_IN_CONTROL.useraction=Valoarea propriet\u0103\u0163ii, nivel, trebuie s\u0103 fie 0 sau un \u00eentreg pozitiv. Modifica\u0163i valoarea nivelului de proprietate \u015fi re\u00eencerca\u0163i.
+
+NAMING_EXCEPTION=CWIML4520E: Opera\u0163ia LDAP nu a putut fi finalizat\u0103. Excep\u0163ia de numire LDAP {0} a ap\u0103rut \u00een timpul proces\u0103rii.
+NAMING_EXCEPTION.explanation=Mesajul indic\u0103 faptul c\u0103 o excep\u0163ie de numire general\u0103 a ap\u0103rut \u00een timpul unei opera\u0163ii de LDAP. Vede\u0163i excep\u0163ia pentru detalii suplimentare. 
+NAMING_EXCEPTION.useraction=Asigura\u0163i-v\u0103 c\u0103 magazia asociat\u0103 (de exemplu, o baz\u0103 de date sau un server LDAP) este pornit\u0103 \u015fi setat\u0103 corect.
+
+SYSTEM_EXCEPTION=CWIML1998E: Opera\u0163ia de \u00eenregistrare utilizator nu a putut fi finalizat\u0103. A ap\u0103rut urm\u0103toarea excep\u0163ie de sistem \u00een timpul proces\u0103rii opera\u0163iei de \u00eenregistrare utilizator: {0} 
+SYSTEM_EXCEPTION.explanation=Programul a \u00eent\u00e2lnit o excep\u0163ie de sistem \u00een timpul efectu\u0103rii opera\u0163iei de \u00eenregistrare utilizator. 
+SYSTEM_EXCEPTION.useraction= Examina\u0163i istoricele pentru cauza acestei erori \u015fi face\u0163i ac\u0163iunile corectoare corespunz\u0103toare. 
+
+INVALID_PROPERTY_VALUE=CWIML1013E: Opera\u0163ia de \u00eenregistrare utilizator nu a putut fi finalizat\u0103. Valoarea introdus\u0103 a propriet\u0103\u0163ii {0} nu este valid\u0103 pentru entitate {1}. Valoarea propriet\u0103\u0163ii trebuie s\u0103 fie din tipul de date corect.
+INVALID_PROPERTY_VALUE.explanation=Valoarea propriet\u0103\u0163ii nu este valid\u0103. De exemplu, o proprietate de tip identificator indic\u0103 spre o intrare incorect\u0103.
+INVALID_PROPERTY_VALUE.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea propriet\u0103\u0163ii este corect\u0103 \u015fi este de tipul de date corect. Dac\u0103 \u00eencerca\u0163i s\u0103 extrage\u0163i proprietatea tipului de identificator \u00eempreun\u0103 cu alte propriet\u0103\u0163i, \u00eemp\u0103r\u0163i\u0163i-le \u00een dou\u0103 apeluri. Un apel pentru a extrage propriet\u0103\u0163ile de tip non-identificator \u015fi alt apel pentru a extrage proprietatea de tip identificator.
+
+GENERIC=CWIML1999E: Opera\u0163ia registrului de utilizatori nu a putut fi finalizat\u0103. A ap\u0103rut o eroare runtime \u00een timpul proces\u0103rii: {0}
+GENERIC.explanation=Programul a \u00eent\u00e2lnit eroarea specificat\u0103 \u00een timpul opera\u0163iei.
+GENERIC.useraction= Examina\u0163i istoricele pentru cauza acestei erori \u015fi face\u0163i ac\u0163iunile corectoare corespunz\u0103toare.
+
+MISSING_MANDATORY_PROPERTY=CWIML1028E: Opera\u0163ia de \u00eenregistrare utilizator nu a putut fi finalizat\u0103. Valoarea propriet\u0103\u0163ii obligatorii {0} lipse\u015fte. Furniza\u0163i o valoare pentru proprietatea obligatorie.
+MISSING_MANDATORY_PROPERTY.explanation=Opera\u0163ia nu poate fi realizat\u0103 pentru c\u0103 valoarea propriet\u0103\u0163ii obligatorii lipse\u015fte. De exemplu, proprietatea RDN (Nume distinctiv relativ) nu este specificat\u0103 la crearea entit\u0103\u0163ii; sau propertyName sau entityTypeName lipse\u015fte din PropertyDefinitionControl sau ExtensionPropertyDefinitionControl; sau entityName lipse\u015fte din entitySchema.
+MISSING_MANDATORY_PROPERTY.useraction=Furniza\u0163i o valoare pentru proprietatea obligatorie.
+
+ENTITY_IS_NOT_A_GROUP=CWIML4525E: Opera\u0163ia de \u00eenregistrare utilizator nu a putut fi finalizat\u0103. Tipul de entitate {0} furnizat nu este de tipul Grup. Aceast\u0103 opera\u0163ie este suportat\u0103 numai de o entitate de tip Grup.
+ENTITY_IS_NOT_A_GROUP.explanation=Opera\u0163iile legate de grup, cum ar fi alocarea membrilor unui grup sau ob\u0163inerea membrilor unui grup, sunt aplicabile numai tipului de entitate Grup. Se arunc\u0103 o excep\u0163ie dac\u0103 entitatea specificat\u0103 nu este de tip Grup.
+ENTITY_IS_NOT_A_GROUP.useraction=Asigura\u0163i-v\u0103 c\u0103 tipul de entitate specificat este de tip Grup. Pentru adaptorul LDAP, asigura\u0163i-v\u0103 c\u0103 clasa de obiecte care este definit\u0103 pentru tipul de entitate Grup se potriv\u015fte cu clasa de obiect real\u0103 a grupului.
+
+CLEAR_ALL_CLEAR_CACHE_MODE=CWIML4002W:  Utilizatorul {2} a transmis elementul de control cache specific\u00e2nd modul de cur\u0103\u0163are cache {1} pentru magazia {0}. Este cur\u0103\u0163at \u00eentregul cache al repozitoriului LDAP.
+CLEAR_ALL_CLEAR_CACHE_MODE.explanation=Utilizatorul specificat \u00eencearc\u0103 s\u0103 cure\u0163e \u00eentregul cache al magaziei specificate folosind modul clearAll.
+CLEAR_ALL_CLEAR_CACHE_MODE.useraction=Acest mesaj este \u00eenregistrat \u00een istoric \u00een scopul audit\u0103rii.
+
+UNKNOWN_CLEAR_CACHE_MODE=CWIML4003W:  Modul de cur\u0103\u0163are cache {1} specificat pentru magazia {0} \u00een elementul de control cache nu este suportat. Specifica\u0163i un mod de cur\u0103\u0163are cache suportat.
+UNKNOWN_CLEAR_CACHE_MODE.explanation=Modul de cur\u0103\u0163are cache specificat nu este suportat pentru aceast\u0103 magazie.
+UNKNOWN_CLEAR_CACHE_MODE.useraction=Specifica\u0163i un mod de cur\u0103\u0163are cache care este suportat pentru magazia specificat\u0103. 
+
+INVALID_PROPERTY_DATA_TYPE=CWIML4522E: Opera\u0163ia de \u00eenregistrare utilizator nu a putut fi finalizat\u0103. Tipul de date al propriet\u0103\u0163ii {0} nu este valid.  Registrul utilizator configurat \u015fi repozitoriul back-end ar trebui s\u0103 aib\u0103 acela\u015f tip de date pentru proprietate. 
+INVALID_PROPERTY_DATA_TYPE.explanation=Tipul de date specificat nu se potrive\u015fte cu tipul de date care este definit pentru proprietate. De exemplu, tipul de date definit \u00een registrul utilizator configurat este un binar, dar tipul de date definit \u00een repozitoriul back-end este un \u015fir.
+INVALID_PROPERTY_DATA_TYPE.useraction=Asigura\u0163i-v\u0103 c\u0103 tipul de date al propriet\u0103\u0163ii este acela\u015fi at\u00e2t \u00een registrul utilizator configurat c\u00e2t \u015fi \u00een repozitoriul back-end. 
+
+LDAP_ENTRY_NOT_FOUND=CWIML4527E: Opera\u0163ia LDAP nu a putut fi finalizat\u0103. Intrarea LDAP {0} nu a fost g\u0103sit\u0103: {1} Specifica\u0163i numele unic corect al entit\u0103\u0163ii \u015fi defini\u0163i maparea nodului corect pentru repozitoriul LDAP.
+LDAP_ENTRY_NOT_FOUND.explanation=Intrarea LDAP pentru entitatea specificat\u0103 nu se g\u0103se\u015fte pe serverul LDAP.
+LDAP_ENTRY_NOT_FOUND.useraction=Asigura\u0163i-v\u0103 c\u0103 este specificat corect numele unic al entit\u0103\u0163ii. Asigura\u0163i-v\u0103 c\u0103 maparea de noduri a magaziei LDAP este definit\u0103 corect.
+
+PROPERTY_NOT_DEFINED=CWIML0514W: Opera\u0163ia de \u00eenregistrare utilizator nu a putut fi finalizat\u0103. Proprietatea {0} nu este definit\u0103. Defini\u0163i sau utiliza\u0163i numele de proprietate corect.
+PROPERTY_NOT_DEFINED.explanation=Proprietatea specificat\u0103 nu este definit\u0103.
+PROPERTY_NOT_DEFINED.useraction=Asigura\u0163i-v\u0103 c\u0103 proprietatea este definit\u0103 sau utiliza\u0163i numele de proprietate corect.
+
+CANNOT_SEARCH_PRINCIPAL_NAME_WITH_OTHER_PROPS=CWIML1021E: Opera\u0163ia de c\u0103utare registru de utilizator nu a putut fi finalizat\u0103. principalName nu poate fi utilizat \u00een opera\u0163iile de c\u0103utare \u00eempreun\u0103 cu alte propriet\u0103\u0163i.
+CANNOT_SEARCH_PRINCIPAL_NAME_WITH_OTHER_PROPS.explanation=C\u0103utarea principalName cu alte propriet\u0103\u0163i \u00eentr-o expresie de c\u0103utare nu este suportat\u0103.
+CANNOT_SEARCH_PRINCIPAL_NAME_WITH_OTHER_PROPS.useraction=Nu utiliza\u0163i principalName \u00een opera\u0163iile de c\u0103utare \u00eempreun\u0103 cu alte propriet\u0103\u0163i.
+
+NULL_CHECKPOINT_VALUE=CWIML4550E: Opera\u0163ia LDAP nu a putut fi finalizat\u0103. S-a transmis o valoare de punct de control goal\u0103 sau nul\u0103 la un adaptor care suport\u0103 urm\u0103rirea modific\u0103rilor. Specifica\u0163i un punct de control valid sau dezactiva\u0163i 'supportChangeLog' pentru repozitoriul din fi\u015fierul server.xml.
+NULL_CHECKPOINT_VALUE.explanation=Dac\u0103 repozitoriul suport\u0103 modificarea urm\u0103ririi a\u015fa cum este specificat de steagul 'supportChangeLog' pentru repozitoriul din fi\u015fierul server.xml, atunci punctul de control trecut pentru acesta \u00een ChangeControl nu trebuie s\u0103 fie gol sau null.
+NULL_CHECKPOINT_VALUE.useraction=\u00cencerca\u0163i din nou c\u0103utarea cu un punct de control valid sau dezactiva\u0163i 'supportChangeLog' pentru acel repozitoriu din fi\u015fierul server.xml, dac\u0103 adaptorul de registru utilizator nu este capabil s\u0103 urm\u0103reasc\u0103 modific\u0103rile.
+
+MISSING_OR_EMPTY_PASSWORD=CWIML4541E: Opera\u0163ia de logare nu a putut fi finalizat\u0103. Parola lipse\u015fte sau este goal\u0103.
+MISSING_OR_EMPTY_PASSWORD.explanation=Dac\u0103 numele principal este specificat \u00een timpul log\u0103rii, parola nu poate fi nul\u0103 sau goal\u0103.
+MISSING_OR_EMPTY_PASSWORD.useraction=Specifica\u0163i parola.
+
+PASSWORD_CHECKED_FAILED=CWIML4529E: Opera\u0163ia de logare nu a putut fi finalizat\u0103. Verificarea parolei pentru numele principal {0} a e\u015fuat. Cauza root: {1}. Specifica\u0163i corect numele principal \u015fi parola \u015fi verifica\u0163i dac\u0103 contul este activat \u015fi nu este blocat.
+PASSWORD_CHECKED_FAILED.explanation=Numele principal specificat nu poate fi autentificat pentru c\u0103 a e\u015fuat verificarea parolei.
+PASSWORD_CHECKED_FAILED.useraction=Asigura\u0163i-v\u0103 c\u0103 at\u00e2t numele principal, c\u00e2t \u015fi parola, sunt specificate corect. Asigura\u0163i-v\u0103 c\u0103 nu este blocat contul \u015fi c\u0103 este activat.
+
+UNSUPPORTED_CLEAR_CACHE_MODE=CWIML4004W: Opera\u0163ia de cur\u0103\u0163are cache al repozitoriului LDAP nu a putut fi finalizat\u0103. Modul de cache cur\u0103\u0163at {1} trecut \u00een Control cache nu este suportat pentru aceast\u0103 opera\u0163ie de repozitoriul specificat {0}. Specifica\u0163i un mod de cur\u0103\u0163are cache suportat.
+UNSUPPORTED_CLEAR_CACHE_MODE.explanation=Modul de cur\u0103\u0163are cache specificat este invalid pentru aceast\u0103 magazie.
+UNSUPPORTED_CLEAR_CACHE_MODE.useraction=Specifica\u0163i modul de cur\u0103\u0163are cache corect. Cache-ul nu va fi cur\u0103\u0163at pentru magazia specificat\u0103 dec\u00e2t dac\u0103 se furnizeaz\u0103 un mod valid de cur\u0103\u0163are cache.
+
+CURRENT_LDAP_SERVER=CWIML4564I: Registrul utilizator este acum conectat la server-ul LDAP {0}.
+CURRENT_LDAP_SERVER.explanation=Registrul de utilizatori este acum conectat la Serverul LDAP specificat.
+CURRENT_LDAP_SERVER.useraction=Nu este necesara nicio ac\u0163iune a utilizatorului.
+
+CANNOT_CONNECT_TO_LDAP_SERVER=CWIML4563I: Nu se poate conecta la server-ul LDAP primar configurat {0}. Conectarea la server-ul de preluare la defect va avea loc dac\u0103 este configurat \u00een fi\u015fierul server.xml.
+CANNOT_CONNECT_TO_LDAP_SERVER.explanation=Nu se poate conecta la server-ul LDAP primar. Conectarea la server-ul de preluare la defect va avea loc dac\u0103 este configurat \u00een fi\u015fierul server.xml. Vede\u0163i documenta\u0163ia de preluare la defect pentru informa\u0163ii suplimentare.
+CANNOT_CONNECT_TO_LDAP_SERVER.useraction=Asigura\u0163i-v\u0103 c\u0103 server-ul LDAP specificat este pornit \u015fi ruleaz\u0103.
+
+INVALID_CERTIFICATE_FILTER=CWIML0002E: Opera\u0163ia de logare nu a putut fi finalizat\u0103. Sintaxa filtrului de certificat {0} nu este valid\u0103. Sintaxa corect\u0103 este: LDAP attribute=$[Atribut certificat client] (de exemplu, uid=$[SubjectCN]).
+INVALID_CERTIFICATE_FILTER.explanation=sintaxa sau structura acestui filtru este: LDAP attribute=$[Atribut certificat client] (de exemplu, uid=$[SubjectCN]). Partea st\u00e2ng\u0103 a specifica\u0163iei de filtru este un atribut LDAP care depinde de schema pe care este configurat serverul dumneavoastr\u0103 LDAP s-o utilizeze.  Partea dreapt\u0103 a specifica\u0163iei de filtru este unul din atributele publice din certificatul dumneavoastr\u0103 de client. Partea dreapt\u0103 trebuie s\u0103 \u00eenceap\u0103 cu semnul dolar ($) \u015fi o parantez\u0103 deschis\u0103 ({ sau [) \u015fi s\u0103 se \u00eencheie cu o parantez\u0103 \u00eenchis\u0103 (} sau ]). Pute\u0163i folosi urm\u0103toarele valori de atribute de certificat \u00een partea dreapt\u0103 a specifica\u0163iei de filtru. \u015eirurile sunt sensibile la majuscule: $[UniqueKey], $[PublicKey], $[Issuer], $[NotAfter], $[NotBefore], $[SerialNumber], $[SigAlgName], $[SigAlgOID], $[SigAlgParams], $[SubjectCN], $[Version]. 
+INVALID_CERTIFICATE_FILTER.useraction=Asigura\u0163i-v\u0103 c\u0103 filtrul de certificat urm\u0103re\u015fte sintaxa documentat\u0103.
+
+TBS_CERTIFICATE_UNSUPPORTED=CWIML0008E: Opera\u0163ia de logare nu a putut fi finalizat\u0103. Opera\u0163ia getTBSCertificate() nu este suportat\u0103 de expresia de filtrare. Specifica\u0163i filtrul de certificat corect.
+TBS_CERTIFICATE_UNSUPPORTED.explanation=Atributul de certificat TBSCertificate nu poate fi folosit \u00een specifica\u0163ia filtrului. Pute\u0163i folosi urm\u0103toarele valori de atribute de certificat \u00een partea dreapt\u0103 a specifica\u0163iei de filtru. \u015eirurile sunt sensibile la majuscule: ${UniqueKey}, ${PublicKey}, ${Issuer}, ${NotAfter}, ${NotBefore}, ${SerialNumber}, ${SigAlgName}, ${SigAlgOID}, ${SigAlgParams}, ${SubjectCN}, ${Version}.
+TBS_CERTIFICATE_UNSUPPORTED.useraction=Asigura\u0163i-v\u0103 c\u0103 filtrul de certificat este corect.
+
+UNKNOWN_CERTIFICATE_ATTRIBUTE=CWIML0009E: Opera\u0163ia de logare nu a putut fi finalizat\u0103. Un atribut de certificat {0} necunoscut a fost utilizat \u00een specifica\u0163ia filtrului. Specifica\u0163i un filtru de certificat suportat.
+UNKNOWN_CERTIFICATE_ATTRIBUTE.explanation=Pute\u0163i folosi numai urm\u0103toarele valori de atribute de certificat \u00een partea dreapt\u0103 a specifica\u0163iei de filtru. \u015eirurile sunt sensibile la majuscule: ${UniqueKey}, ${PublicKey}, ${Issuer}, ${NotAfter}, ${NotBefore}, ${SerialNumber}, ${SigAlgName}, ${SigAlgOID}, ${SigAlgParams}, ${SubjectCN}, ${Version}. 
+UNKNOWN_CERTIFICATE_ATTRIBUTE.useraction=Asigura\u0163i-v\u0103 c\u0103 filtrul de certificat este corect.
+
+UNKNOWN_DN_FIELD=CWIML0003E: Opera\u0163ia de logare nu a putut fi finalizat\u0103. C\u00e2mpul Nume distinctiv {0} configurat nu este valid. Specifica\u0163i un c\u00e2mp Nume distinctiv valid.
+UNKNOWN_DN_FIELD.explanation=C\u00e2mpul Nume distinctiv (DN) specificat \u00een filtrul certificatului este necunoscut.
+UNKNOWN_DN_FIELD.useraction=Asigura\u0163i-v\u0103 c\u0103 filtrul de certificat este corect. Pentru informa\u0163ii suplimentare, vede\u0163i documenta\u0163ia de configurare a certific\u0103rii.
+
+EXT_ID_VALUE_IS_NULL=CWIML4548E: Opera\u0163ia de logare nu a putut fi finalizat\u0103. Atributul LDAP specificat utilizat ca \u015fi identificator extern {0} are o valoare null pentru entitate {1}.
+EXT_ID_VALUE_IS_NULL.explanation=Atributul LDAP folosit ca identificator extern trebuie s\u0103 con\u0163in\u0103 o valoare pentru fiecare entitate.
+EXT_ID_VALUE_IS_NULL.useraction=Asigura\u0163i-v\u0103 c\u0103 este ales atributul corect pentru identificatorul extern. Dac\u0103 nu exist\u0103 nici un atribut corespunz\u0103tor, se poate folosi numele distinctiv ca identificator extern.
+
+EXT_ID_HAS_MULTIPLE_VALUES=CWIML4528E: Opera\u0163ia de c\u0103utare nu a putut fi finalizat\u0103. Atributul LDAP utilizat ca \u015fi identificator extern con\u0163ine valori multiple: {0}. Alege\u0163i atributul LDAP corect ca \u015fi un identificator extern.
+EXT_ID_HAS_MULTIPLE_VALUES.explanation=Atributul LDAP folosit ca identificator extern trebuie s\u0103 fie unic \u015fi s\u0103 nu con\u0163in\u0103 valori multiple.
+EXT_ID_HAS_MULTIPLE_VALUES.useraction=Asigura\u0163i-v\u0103 c\u0103 este ales atributul corect pentru identificatorul extern. Dac\u0103 nu exist\u0103 nici un atribut corespunz\u0103tor, se poate folosi numele distinctiv ca identificator extern.
+
+INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: Opera\u0163ia de \u00eenregistrare utilizator nu a putut fi finalizat\u0103. Intrarea de baz\u0103 configurat\u0103 nu este valid\u0103: {0}. Configura\u0163i o defini\u0163ie a intr\u0103rii de baz\u0103 valide \u00een fi\u015fierul server.xml. De exemplu: <baseEntry name="..." baseDN="...."/>.
+INVALID_BASE_ENTRY_DEFINITION.explanation=Sintaxa pentru definirea unei intr\u0103ri de baz\u0103 este <baseEntry name="..." baseDN="...."/>.
+INVALID_BASE_ENTRY_DEFINITION.useraction=Corecta\u0163i defini\u0163ia intr\u0103rii de baz\u0103 \u00een fi\u015fierul server.xml.
+
+INVALID_DN_SYNTAX=CWIML4517E: Opera\u0163ia de logare nu a putut fi finalizat\u0103. Numele distinctiv (DN) {0} nu este valid. Specifica\u0163i sintaxa corect\u0103 a numelui distinctiv.
+INVALID_DN_SYNTAX.explanation=Numele distinctiv (DN) specificat nu este valid. Opera\u0163ia de \u00eenregistrare utilizator nu poate continua f\u0103r\u0103 un DN valid.
+INVALID_DN_SYNTAX.useraction=Asigura\u0163i-v\u0103 c\u0103 sintaxa numelui distinctiv este corect\u0103. De exemplu, examina\u0163i caracterele 'escape'.
+
+INIT_POOL_SIZE_TOO_BIG=CWIML4532E: Dimensiune de pool de context ini\u0163ial {0} este mai mare dec\u00e2t dimensiunea de pool de context maxim\u0103 {1}. De aici, pool-ul de context a fost dezactivat.
+INIT_POOL_SIZE_TOO_BIG.explanation=Dimensiunea pool-ului de context ini\u0163ial\u0103 ar trebui s\u0103 fie mai mic\u0103 dec\u00e2t dimensiunea maxim\u0103 a pool-ului de context.
+INIT_POOL_SIZE_TOO_BIG.useraction=Asigura\u0163i-v\u0103 c\u0103 dimensiunea pool-ului de context este mai mic\u0103 dec\u00e2t dimensiunea pool-ului de context maxim\u0103, sau seta\u0163i dimensiunea pool-ului de context maxim la 0.
+
+PREF_POOL_SIZE_TOO_BIG=CWIML4533E: Dimensiune pool-ului de context preferat\u0103 {0} trebuie s\u0103 fie mai mic\u0103 dec\u00e2t dimensiunea pool-ului de context maxim {1}. De aici, pool-ul de context a fost dezactivat.
+PREF_POOL_SIZE_TOO_BIG.explanation=Dimensiunea preferat\u0103 a pool-ului de context ar trebui s\u0103 fie mai mic\u0103 dec\u00e2t dimensiunea maxim\u0103 a pool-ului de context.
+PREF_POOL_SIZE_TOO_BIG.useraction=Asigura\u0163i-v\u0103 c\u0103 dimensiunea pool-ului de context preferat\u0103 este mai mic\u0103 dec\u00e2t dimensiunea pool-ului de context maxim\u0103, sau seta\u0163i dimensiunea pool-ului de context maxim\u0103 la 0.
+
+MISSING_INI_PROPERTY=CWIML0004E: A ap\u0103rut o eroare \u00een timpul ini\u0163ializ\u0103rii registrului utilizator. Proprietatea de ini\u0163ializare {0} lipse\u015fte din fi\u015fierul server.xml. Specifica\u0163i o proprietate de ini\u0163ializare \u00een fi\u015fierul server.xml.
+MISSING_INI_PROPERTY.explanation=Proprietatea de ini\u0163ializare specificat\u0103 este obligatorie. Opera\u0163ie de \u00eenregistrare utilizator nu a putut porni f\u0103r\u0103 acesta.
+MISSING_INI_PROPERTY.useraction=Asigura\u0163i-v\u0103 c\u0103 aceast\u0103 proprietate este specificat\u0103 \u00een fi\u015fierul server.xml. Asigura\u0163i-v\u0103 c\u0103 aceast\u0103 proprietate nu este goal\u0103 sau nul\u0103.
+
+DUPLICATE_ENTITY_TYPE=CWIML4531E: Un tip de entitate {0} duplicat este definit \u00een fi\u015fierul server.xml.
+DUPLICATE_ENTITY_TYPE.explanation=Tipul de entitate definit \u00een fi\u015fierul server.xml trebuie s\u0103 fie unic.
+DUPLICATE_ENTITY_TYPE.useraction=Edita\u0163i fi\u015fierul server.xml pentru a \u00eendep\u0103rta tipul de entitate duplicat.
+
+LDAP_CONFIG_INCOMPLETE=CWWKS3200E: A avut loc o excep\u0163ie de configurare. Atributul {0} trebuie s\u0103 fie definit.
+LDAP_CONFIG_INCOMPLETE.explanation=Atributul specificat trebuie definit.
+LDAP_CONFIG_INCOMPLETE.useraction=Specifica\u0163i valoarea pentru atributul lips\u0103.
+
+LDAP_SSL_SOCKET_FACTORY_INIT_ERROR=CWWKS3201E: A avut loc o excep\u0163ie la activarea Fabricii de socket-uri LDAP SSL: {0}.
+LDAP_SSL_SOCKET_FACTORY_INIT_ERROR.explanation=Aliasul, gazda sau portul de configurare SSL furnizate \u00een configura\u0163ia SSL-LDAP sunt incorecte.
+LDAP_SSL_SOCKET_FACTORY_INIT_ERROR.useraction=Furniza\u0163i informa\u0163iile de configura\u0163ie SSL corecte necesare pentru conectarea la serverul LDAP cu SSL activat.
+
+LDAP_UNSUPPORTED_TYPE=CWWKS3202E: A fost specificat un tip de server LDAP nesuportat: {0}.
+LDAP_UNSUPPORTED_TYPE.explanation=Sunt suportate urm\u0103toarele tipuri de servere LDAP: Netscape Directory Server, IBM Lotus Domino, IBM SecureWay Directory Server, Microsoft Active Directory, Sun Java System Directory Server, IBM Tivoli Directory Server, Novell eDirectory, Custom.
+LDAP_UNSUPPORTED_TYPE.useraction=Specifica\u0163i un tip de server LDAP suportat.
+
+LDAP_SSL_ENABLED_WITHOUT_SSL=CWWKS3203E: Atributul sslEnabled este setat la true, dar caracteristica SSL nu este activat\u0103.
+LDAP_SSL_ENABLED_WITHOUT_SSL.explanation=Dac\u0103 atributul SSL este setat la true, trebuie de asemenea s\u0103 activa\u0163i caracteristica SSL.
+LDAP_SSL_ENABLED_WITHOUT_SSL.useraction=Fie seta\u0163i atributul sslEnabled la false fie activa\u0163i caracteristica SSL.
+
+LDAP_REGISTRY_INVALID_FAILOVER_SERVERS_DEFINITION=CWWKS3204E: Defini\u0163ia serverelor de preluare la defect nu este valid\u0103: {0}
+LDAP_REGISTRY_INVALID_FAILOVER_SERVERS_DEFINITION.explanation=Sintaxa pentru definirea serverului de preluare la defect este<server host="..." port="..." />.
+LDAP_REGISTRY_INVALID_FAILOVER_SERVERS_DEFINITION.useraction=Corecta\u0163i defini\u0163ia serverului de preluare la defect dinconfigura\u0163ie.
+
+SERVER_MUST_DEFINE_HOST=Un element server trebuie s\u0103 defineasc\u0103 o gazd\u0103.
+SERVER_MUST_DEFINE_PORT=Un element server trebuie s\u0103 defineasc\u0103 un port.
+
+LDAP_REGISTRY_UNREACHABLE_SERVER=CWWKS3205A: Nu poate s\u0103 se conecteze la {0}.
+LDAP_REGISTRY_UNREACHABLE_SERVER.explanation=Serverul poate fi jos sau portul poate fi gre\u015fit.
+LDAP_REGISTRY_UNREACHABLE_SERVER.useraction=Verifica\u0163i dac\u0103 serverul func\u0163ioneaz\u0103 \u015fi dac\u0103 num\u0103rul de port este corect.
+
+LDAP_REGISTRY_UNABLE_TO_AUTHENTICATE=CWWKS3206A: Nu poate s\u0103 se autentifice la {0} cu DN-ul de legare configurat {1}.
+LDAP_REGISTRY_UNABLE_TO_AUTHENTICATE.explanation=bindDN \u015fi bindPassword sunt incorecte sau portul poate fi gre\u015fit.
+LDAP_REGISTRY_UNABLE_TO_AUTHENTICATE.useraction=Verifica\u0163i dac\u0103 bindDN \u015fi bindPassword configurate sunt corecte pentru serverul LDAP configurat.
+
+ENTITY_HAS_DESCENDENTS=CWIML4519E: Opera\u0163ia de \u00eenregistrare utilizator nu poate fi finalizat\u0103. Entitatea {0} are descenden\u0163i. Nu poate fi \u015ftears\u0103 sau redenumit\u0103. V\u0103 rug\u0103m s\u0103 \u015fterge\u0163i to\u0163i descenden\u0163ii entit\u0103\u0163ii \u00eenainte de a \u00eencerca s\u0103 \u015fterge\u0163i sau s\u0103 redenumi\u0163i entitatea \u00een sine.
+ENTITY_HAS_DESCENDENTS.explanation=Func\u0163ia de \u015ftergere sau redenumire poate fi realizat\u0103 numai pe o entitate frunz\u0103, adic\u0103 o entitate f\u0103r\u0103 niciun descendent. Entitatea specificat\u0103 are descenden\u0163i.
+ENTITY_HAS_DESCENDENTS.useraction=\u015eterge\u0163i mai \u00eent\u00e2i to\u0163i descenden\u0163ii entit\u0103\u0163ii, apoi \u015fterge\u0163i sau redenumi\u0163i entitatea \u00een sine.
+
+ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: Opera\u0163ia de \u00eenregistrare utilizator nu a putut fi finalizat\u0103. {0} nu este un tip de entitate valid. Invoca\u0163i opera\u0163ia specific\u00e2nd un tip de entitate valid.
+ENTITY_TYPE_NOT_SUPPORTED.explanation=A fost cerut\u0103 o opera\u0163ie pe o entitate, dar opera\u0163ia nu suport\u0103 tipul de entitate specificat. De exemplu, dac\u0103 o opera\u0163ia GET de magazie este invocat\u0103 pentru o entitate Cont, opera\u0163ia e\u015fueaz\u0103.
+ENTITY_TYPE_NOT_SUPPORTED.useraction=Asigura\u0163i-v\u0103 c\u0103 entit\u0103\u0163ile sunt invocate pentru tipuri de entitate suportate \u015fi \u00eenl\u0103tura\u0163i orice tipuri de entitate nesuportate din intrare.
+
+CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY=CWIML4543E: Opera\u0163ia de \u00eenregistrare utilizator nu a putut fi finalizat\u0103. Nu se poate crea sau actualiza proprietatea {0} din magazia {1}.
+CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY.explanation=\u00cen opera\u0163ia de creare sau actualizare, este specificat\u0103 o valoare pentru o proprietate care nu poate fi scris\u0103 la magazie. De exemplu, un pricipalName nu poate fi specificat pentru o opera\u0163ie CREATE.
+CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY.useraction=\u00cenl\u0103tura\u0163i proprietatea eronat\u0103 din intrare \u015fi re\u00eencerca\u0163i opera\u0163ia specific\u00e2nd propriet\u0103\u0163i \u015fi valori valide.
+
+PARENT_NOT_FOUND=CWIML4526E: Opera\u0163ia de registru de utilizatori CREATE nu a putut fi finalizat\u0103. Entitatea nu a fost creat\u0103 deoarece p\u0103rintele nu  entit\u0103\u0163ii nu a fost g\u0103sit. Excep\u0163ia JDNI subiacent\u0103 a fost: {0}
+PARENT_NOT_FOUND.explanation=\u00cen timpul cre\u0103rii, dac\u0103 p\u0103rintele entit\u0103\u0163ii pe care vre\u0163i s\u0103 o crea\u0163i nu este g\u0103sit, este aruncat\u0103 o excep\u0163ie.
+PARENT_NOT_FOUND.useraction=ASigura\u0163i-v\u0103 c\u0103 p\u0103rintele implicit definit pentru entitate exist\u0103.  Dac\u0103 nu exist\u0103, trebuie s\u0103 \u00eel crea\u0163i \u015fi s\u0103 re\u00eencerca\u0163i opera\u0163ia.
+
+ENTITY_ALREADY_EXIST=CWIML4501E: Opera\u0163ia de registru de utilizatori CREATE nu a putut fi finalizat\u0103. O entitate cu acela\u015fi nume unic, {0}, sau aceea\u015fi valoare RDN exist\u0103 deja.
+ENTITY_ALREADY_EXIST.explanation=Numele unic specificat sau o entitate cu aceea\u015fi valoare RDN exist\u0103 deja \u00een magazie. O entitate duplicat\u0103 cu acela\u015fi nume unic sau acela\u015fi RDN (Relative Distinguished Name) nu poate fi ad\u0103ugat\u0103 la magazie.
+ENTITY_ALREADY_EXIST.useraction=Re\u00eencerca\u0163i opera\u0163ia \u015fi specifica\u0163i un nume diferit pentru entitate pentru a o face unic\u0103.
+
+WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED=CWIML4547E: Opera\u0163ia de \u00eenregistrare utilizator nu a putut fi finalizat\u0103. Opera\u0163iile de scriere nu sunt permise pe serverul LDAP secundar {0}.
+WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED.explanation=Toate opera\u0163iile de scriere (creare, acualizare, \u015ftergere) sunt permise doar \u00een serverul LDAP primar.
+WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED.useraction=Asigura\u0163i-v\u0103 c\u0103 serverul primar a fost pornit \u015f re\u00eencerca\u0163i opera\u0163ia.

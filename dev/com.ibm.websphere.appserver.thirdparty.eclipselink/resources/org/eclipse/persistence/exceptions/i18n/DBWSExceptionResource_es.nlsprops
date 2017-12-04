@@ -1,0 +1,51 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2014
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DBWSExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+47000=No se ha podido ubicar el archivo [{0}]
+
+47001=No se ha podido ubicar el descriptor [{0}] para la operaci\u00f3n [{1}] en el proyecto O-R
+
+47002=No se ha podido ubicar la consulta [{0}] para el descriptor [{1}]
+
+47003=No se ha podido ubicar la consulta [{0}] para la sesi\u00f3n [{1}]
+
+47004=El tipo de par\u00e1metro [{0}] para la operaci\u00f3n [{1}] no existe en el esquema
+
+47005=El tipo de par\u00e1metro [{0}] para la operaci\u00f3n [{1}] no tiene ninguna correlaci\u00f3n O-X
+
+47006=El tipo de resultado [{0}] para la operaci\u00f3n [{1}] no existe en el esquema
+
+47007=El tipo de resultado [{0}] para la operaci\u00f3n [{1}] no tiene ninguna correlaci\u00f3n O-X
+
+47008=S\u00f3lo las consultas de formato XML simple dan soporte a varios argumentos de salida
+
+47009=Los par\u00e1metros de cursor INOUT no est\u00e1n soportados
+
+47010=No se ha podido ubicar la sesi\u00f3n O-R para el servicio [{0}]
+
+47011=No se ha podido ubicar la sesi\u00f3n O-X para el servicio [{0}]
+
+47012=No se ha podido analizar el archivo DBWS
+

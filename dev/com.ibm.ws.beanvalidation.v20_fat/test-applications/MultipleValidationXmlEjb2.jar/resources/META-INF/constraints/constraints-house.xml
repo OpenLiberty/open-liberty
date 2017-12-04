@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<constraint-mappings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://jboss.org/xml/ns/javax/validation/mapping validation-mapping-1.0.xsd"
+  xmlns="http://jboss.org/xml/ns/javax/validation/mapping">
+  <default-package>bval.v20.ejb2.web.beans</default-package>
+
+  <bean class="AValidationXMLTestBean2" ignore-annotations="true">
+    <field name="builder2">
+      <constraint annotation="javax.validation.constraints.NotNull" />
+    </field>
+
+    <field name="address2">
+      <constraint annotation="javax.validation.constraints.NotNull" />
+
+      <constraint annotation="javax.validation.constraints.Size">
+        <element name="min">5</element>
+        <element name="max">80</element>
+      </constraint>
+    </field>
+  </bean>
+</constraint-mappings>

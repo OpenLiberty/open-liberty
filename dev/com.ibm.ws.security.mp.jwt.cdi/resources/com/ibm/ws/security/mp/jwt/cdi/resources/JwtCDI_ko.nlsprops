@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.mp.jwt.cdi/resources/com/ibm/ws/security/mp/jwt/cdi/resources/JwtCDI.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Microprofile JWT CDI
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS5600 - CWWKS5649
+
+# Do not translate Claim.
+MPJWT_CDI_INVALID_INJECTION_TYPE=CWWKS5600E: \uc0bd\uc785\ub420 \uccad\uad6c\uc758 \uc720\ud615\uc744 \ud310\ubcc4\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc0bd\uc785 \uc704\uce58\uc758 \uc720\ud615\uc774 {0}\uc785\ub2c8\ub2e4.
+MPJWT_CDI_INVALID_INJECTION_TYPE.explanation=\uccad\uad6c \uaddc\uc815\uc790\ub85c \uc5b4\ub178\ud14c\uc774\uc158\uc774 \uc9c0\uc815\ub41c \uc0bd\uc785 \uc704\uce58\uc5d0 \uc62c\ubc14\ub978 \uc720\ud615\uc774 \uc5c6\uc2b5\ub2c8\ub2e4.
+MPJWT_CDI_INVALID_INJECTION_TYPE.useraction=\uc0bd\uc785 \uc704\uce58\uc5d0 \uc0bd\uc785\ud560 \uccad\uad6c\uc5d0 \ub300\ud55c \uc62c\ubc14\ub978 \uc720\ud615\uc774 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+MPJWT_CDI_CANNOT_RESOLVE_INJECTION_POINT=CWWKS5601E: {0} \uc0bd\uc785 \uc704\uce58 \uc885\uc18d\uc131\uc774 \ubd84\uc11d\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc624\ub958 {1}\uc774(\uac00) \ubc1c\uc0dd\ud569\ub2c8\ub2e4.
+MPJWT_CDI_CANNOT_RESOLVE_INJECTION_POINT.explanation=\uc0bd\uc785\ub41c \uccad\uad6c\uac00 \ubd84\uc11d\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+MPJWT_CDI_CANNOT_RESOLVE_INJECTION_POINT.useraction=\uc11c\ubc84 \uba54\uc2dc\uc9c0 \ubc0f \uccab \ubc88\uc9f8 \uc624\ub958 \ub370\uc774\ud130 \ucea1\ucc98(FFDC) \ub85c\uadf8\ub97c \ud655\uc778\ud558\uc5ec \uc6d0\uc778\uc744 \ud310\ubcc4\ud558\uc2ed\uc2dc\uc624.
+
+# Do not translate Claim, value, and standard. The value and standard are members of the Claim annotation.
+MPJWT_CDI_CONFLICTING_CLAIM_NAMES=CWWKS5602E: \uc0bd\uc785 \uc704\uce58 {0}\uc758 \uccad\uad6c \uaddc\uc815\uc790\uc5d0 \uac12 \ubc0f \ud45c\uc900 \uc694\uc18c \ubaa8\ub450\uc5d0 \ub300\ud55c \ubd88\uc77c\uce58 \uac12\uc774 \uc788\uc2b5\ub2c8\ub2e4. \uac12 \uc694\uc18c\uc5d0 {1}\uc774(\uac00) \uc788\uc73c\uba70 \ud45c\uc900 \uc694\uc18c\uc5d0 {2}\uc774(\uac00) \uc788\uc2b5\ub2c8\ub2e4.
+MPJWT_CDI_CONFLICTING_CLAIM_NAMES.explanation=\uccad\uad6c \uaddc\uc815\uc790\ub85c \uc5b4\ub178\ud14c\uc774\uc158\uc774 \uc9c0\uc815\ub41c \uc0bd\uc785 \uc704\uce58\uc5d0 \ucda9\ub3cc\ud558\ub294 \uc694\uc18c\uac00 \uc788\uc2b5\ub2c8\ub2e4.
+MPJWT_CDI_CONFLICTING_CLAIM_NAMES.useraction=\uc0bd\uc785 \uc704\uce58\uc5d0 \uc0bd\uc785\ud560 \uccad\uad6c\uc5d0 \ub300\ud55c \uc62c\ubc14\ub978 \uccad\uad6c \uaddc\uc815\uc790\uac00 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# Do not translate ApplicationScoped, SessionScoped, RequestScoped, and Claim.
+MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE=CWWKS5603E: \uc774 \uccad\uad6c\ub294 ApplicationScoped \ub610\ub294 SessionScoped \ubc94\uc704\uc5d0 \ub300\ud55c {0} \uc0bd\uc785 \uc704\uce58\uc5d0 \uc0bd\uc785\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.explanation=\uc6d0\uc2dc \uc720\ud615\uc5d0 \ub300\ud55c \uccad\uad6c \uaddc\uc815\uc790\ub85c \uc5b4\ub178\ud14c\uc774\uc158\uc774 \uc9c0\uc815\ub41c \uc0bd\uc785 \uc704\uce58\ub294 RequestScoped \ubc94\uc704\ub85c \uc5b4\ub178\ud14c\uc774\uc158\uc774 \uc9c0\uc815\ub41c \ud074\ub798\uc2a4\uc5d0 \uc18d\ud574\uc57c \ud569\ub2c8\ub2e4.
+MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.useraction=\uc0bd\uc785 \uc704\uce58\uc5d0 \uc0bd\uc785\ud560 \uccad\uad6c\uc5d0 \ub300\ud55c RequestScoped \ubc94\uc704\uc758 \ud074\ub798\uc2a4 \uba64\ubc84\uac00 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.

@@ -1,0 +1,218 @@
+###############################################################################
+# Copyright (c) 2013, 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME ws/code/ras/src/com/ibm/ws/logging/hpel/resources/BinaryLogMessages.nlsprops
+#COMPONENTPREFIX CWTRA
+#COMPONENTNAMEFOR CWTRA WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+BL_INVALID_ACTION=Okre\u015blone dzia\u0142anie {0} jest niepoprawne.  
+
+# do not translate "--minDate"
+BL_INVALID_MINDATE=Nie mo\u017cna przeanalizowa\u0107 warto\u015bci --minDate.
+
+# do not translate "--maxDate"
+BL_INVALID_MAXDATE=Nie mo\u017cna przeanalizowa\u0107 warto\u015bci --maxDate.
+
+BL_INVALID_REPOSITORYDIR=\u015acie\u017cka repozytorium {0} nie jest poprawn\u0105 nazw\u0105 \u015bcie\u017cki.
+BL_INVALID_TARGETDIR=\u015acie\u017cka docelowa {0} nie jest poprawn\u0105 nazw\u0105 \u015bcie\u017cki.
+BL_UNABLE_TO_COPY=Nie mo\u017cna utworzy\u0107 repozytorium w po\u0142o\u017ceniu docelowym. Upewnij si\u0119, \u017ce okre\u015blony katalog docelowy jest pusty i ma uprawnienia do zapisu.
+BL_NO_FILES_FOUND_MONITOR=Podany katalog nie zawiera obecnie \u017cadnych plik\u00f3w dziennika ani plik\u00f3w \u015bledzenia.  Monitorowanie tego katalogu b\u0119dzie kontynuowane.
+BL_NO_FILES_FOUND=Okre\u015blony katalog dziennik\u00f3w serwera lub katalog repozytorium nie zawiera \u017cadnych plik\u00f3w dziennika lub \u015bledzenia.
+BL_OPTION_REQUIRES_A_VALUE=Opcja {0} wymaga podania warto\u015bci.
+BL_UNKNOWN_OPTION=Opcja {0} nie zosta\u0142a rozpoznana.
+BL_BAD_FORMAT=Format {0} nie zosta\u0142 rozpoznany.
+
+# do not translate "--minDate" or "--maxDate"
+BL_MINDATE_AFTER_MAXDATE=Data okre\u015blona przez warto\u015b\u0107 --minDate jest p\u00f3\u017aniejsza ni\u017c data okre\u015blona przez warto\u015b\u0107 --maxDate.
+
+# do not translate "--minLevel" or "--maxLevel"
+BL_MINLEVEL_GREATER_THAN_MAXLEVEL=Poziom okre\u015blony przez warto\u015b\u0107 --minLevel jest wy\u017cszy ni\u017c poziom okre\u015blony przez warto\u015b\u0107 --maxLevel.
+
+# do not translate "binaryLog help"
+BL_USE_HELP=W celu uzyskania informacji o sk\u0142adni u\u017cyj opcji binaryLog help.
+
+BL_REPOSITORY_DIRECTORY=Jako katalog repozytorium u\u017cywany jest katalog {0}. 
+BL_TARGET_DIRECTORY=Jako katalog docelowy u\u017cywany jest katalog {0}.
+
+# do not translate "serverName", "repositoryPath", "targetPath"
+BL_COPY_REQUIRES_TARGETDIR=Dzia\u0142anie kopiowania wymaga okre\u015blenia zar\u00f3wno warto\u015bci {serverName | repositoryPath}, jak i targetPath.
+#--------------------------------------------------------------------------------------------------
+
+# do not translate "binaryLog", "action", "serverName", "repositoryPath"
+BL_MAIN_USAGE_001=Sk\u0142adnia: binaryLog dzia\u0142anie {serverName | repositoryPath} [opcje]
+
+# do not translate "serverName"
+BL_MAIN_USAGE_004=\ \ \ \ serverName
+BL_MAIN_USAGE_005=\tPodaj nazw\u0119 serwera Liberty z repozytorium do odczytania.
+
+# do not translate "repositoryPath"
+BL_MAIN_USAGE_006=\ \ \ \ repositoryPath
+
+# do not translate "logdata", "tracedata"
+BL_MAIN_USAGE_007=\tPodaj \u015bcie\u017ck\u0119 do repozytorium do odczytania.  Jest to zwykle\n\
+\tkatalog zawieraj\u0105cy katalogi logdata i tracedata.
+
+BL_MAIN_USAGE_008=Opis:
+BL_MAIN_USAGE_009=\tS\u0142u\u017cy do wy\u015bwietlania lub kopiowania tre\u015bci repozytorium\n\
+\tHigh Performance Extensible Logging lub do wy\u015bwietlania listy instancji\n\
+\tprocesu serwera dost\u0119pnych w repozytorium.
+
+BL_MAIN_USAGE_010=Dzia\u0142ania:
+
+# do not translate "view"
+BL_MAIN_USAGE_011=\ \ \ \ view
+BL_MAIN_USAGE_012=\tS\u0142u\u017cy do odczytywania i opcjonalnie do filtrowania repozytorium oraz\n\
+\tdo tworzenia czytelnej wersji.
+
+# do not translate "copy"
+BL_MAIN_USAGE_013=\ \ \ \ copy
+BL_MAIN_USAGE_014=\tS\u0142u\u017cy do odczytywania i opcjonalnie do filtrowania repozytorium oraz\n\
+\tdo zapisywania tre\u015bci w nowym repozytorium.
+
+# do not translate "listInstances"
+BL_MAIN_USAGE_015=\ \ \ \ listInstances
+BL_MAIN_USAGE_016=\tS\u0142u\u017cy do wy\u015bwietlania listy instancji procesu serwera w repozytorium.
+
+BL_MAIN_USAGE_017=Opcje:
+
+# do not translate "help [action]"
+BL_MAIN_USAGE_018=\tU\u017cyj komendy help [dzia\u0142anie] w celu uzyskania szczeg\u00f3\u0142owych informacji o opcjach ka\u017cdego dzia\u0142ania.
+
+#--------------------------------------------------------------------------------------------------
+
+# do not translate "binaryLog view", "serverName", "repositoryPath"
+BL_VIEW_USAGE_001=Sk\u0142adnia: binaryLog view {serverName | repositoryPath} [opcje]
+
+BL_VIEW_USAGE_002=\tS\u0142u\u017cy do odczytywania i opcjonalnie do filtrowania repozytorium oraz\n\
+\tdo tworzenia czytelnej wersji.
+
+BL_VIEW_USAGE_003=Opcje filtru:
+BL_VIEW_USAGE_004=\tWszystkie filtry s\u0105 opcjonalne.  W przypadku u\u017cywania wielu filtr\u00f3w\n\
+\ts\u0105 one \u0142\u0105czone przy u\u017cyciu operatora logicznego AND.
+
+# do not translate "--minDate=value"
+BL_VIEW_USAGE_005=\ \ \ \ --minDate=warto\u015b\u0107
+
+# do not translate "--minDate="
+BL_VIEW_USAGE_006=\tFiltr oparty na warto\u015bci minimalnej daty utworzenia rekordu. Warto\u015b\u0107\n\
+\tmusi by\u0107 okre\u015blona jako data (np. --minDate=\"{0}\") lub data\n\
+\ti godzina (np. --minDate=\"{1}\"). \
+Mo\u017cna r\u00f3wnie\u017c wprowadzi\u0107 \n\
+\tdat\u0119 i godzin\u0119 w formacie ISO-8601, na przyk\u0142ad: --minDate=\"{2}\" lub \n\
+\t--minDate=\"{3}\".
+
+# do not translate "--maxDate=value"
+BL_VIEW_USAGE_007=\ \ \ \ --maxDate=warto\u015b\u0107
+
+# do not translate "--maxDate="
+BL_VIEW_USAGE_008=\tFiltr oparty na warto\u015bci maksymalnej daty utworzenia rekordu. Warto\u015b\u0107\n\
+\tmusi by\u0107 okre\u015blona jako data (np. --maxDate=\"{0}\") lub data\n\
+\ti godzina (np. --maxDate=\"{1}\"). \
+Mo\u017cna r\u00f3wnie\u017c wprowadzi\u0107 \n\
+\tdat\u0119 i godzin\u0119 w formacie ISO-8601, na przyk\u0142ad: --maxDate=\"{2}\" lub \n\
+\t--maxDate=\"{3}\".
+
+# do not translate "--minLevel=value"
+BL_VIEW_USAGE_009=\ \ \ \ --minLevel=warto\u015b\u0107
+BL_VIEW_USAGE_010=\tFiltr oparty na minimalnym poziomie warto\u015bci.  Warto\u015bci\u0105\n\
+\tmusi by\u0107 jedna z nast\u0119puj\u0105cych: {0}.
+
+# do not translate "--maxLevel=value"
+BL_VIEW_USAGE_011=\ \ \ \ --maxLevel=warto\u015b\u0107
+BL_VIEW_USAGE_012=\tFiltr oparty na maksymalnym poziomie warto\u015bci.  Warto\u015bci\u0105\n\
+\tmusi by\u0107 jedna z nast\u0119puj\u0105cych: {0}.
+
+# do not translate "--includeLogger=value[,value]*"
+BL_VIEW_USAGE_013=\ \ \ \ --includeLogger=warto\u015b\u0107[,warto\u015b\u0107]*
+BL_VIEW_USAGE_014=\tW\u0142\u0105cz rekordy z okre\u015blon\u0105 nazw\u0105 programu rejestruj\u0105cego.  Warto\u015b\u0107 mo\u017ce\n\
+\tzawiera\u0107 gwiazdk\u0119 (*) lub znak zapytania (?) jako znak wieloznaczny.
+
+# do not translate "--excludeLogger=value[,value]*"
+BL_VIEW_USAGE_015=\ \ \ \ --excludeLogger=warto\u015b\u0107[,warto\u015b\u0107]*
+BL_VIEW_USAGE_016=\tWyklucz rekordy z okre\u015blon\u0105 nazw\u0105 programu rejestruj\u0105cego.  Warto\u015b\u0107 mo\u017ce\n\
+\tzawiera\u0107 gwiazdk\u0119 (*) lub znak zapytania (?) jako znak wieloznaczny.
+
+# do not translate "--includeMessage=value"
+BL_VIEW_USAGE_017=\ \ \ \ --includeMessage=warto\u015b\u0107
+BL_VIEW_USAGE_018=\tFiltr oparty na nazwie komunikatu.  \
+Warto\u015b\u0107 mo\u017ce zawiera\u0107 gwiazdk\u0119 (*) lub znak zapytania (?) \
+jako znak wieloznaczny.
+
+# do not translate "--includeThread=value"
+BL_VIEW_USAGE_019=\ \ \ \ --includeThread=warto\u015b\u0107
+
+# do not translate "--includeThread=2a"
+BL_VIEW_USAGE_020=\tW\u0142\u0105cz rekordy z okre\u015blonym identyfikatorem w\u0105tku.  Warto\u015bci musz\u0105 by\u0107\n\
+\tw formacie szesnastkowym (np. --includeThread=2a).
+
+# do not translate "--includeExtension=name=value[,name=value]*"
+BL_VIEW_USAGE_021=\ \ \ \ --includeExtension=nazwa=warto\u015b\u0107[,nazwa=warto\u015b\u0107]*
+BL_VIEW_USAGE_022=\tW\u0142\u0105cz rekordy z okre\u015blon\u0105 nazw\u0105 i warto\u015bci\u0105 rozszerzenia.  Warto\u015b\u0107 mo\u017ce\n\
+\tzawiera\u0107 gwiazdk\u0119 (*) lub znak zapytania (?) jako znak wieloznaczny.
+
+# do not translate "--includeInstance=value"
+BL_VIEW_USAGE_023=\ \ \ \ --includeInstance=warto\u015b\u0107
+
+# do not translate "latest", "listInstances"
+BL_VIEW_USAGE_024=\tW\u0142\u0105cz rekordy z okre\u015blonej instancji serwera.  Warto\u015b\u0107 musi by\u0107\n\
+\twarto\u015bci\u0105 "latest" lub poprawnym identyfikatorem instancji.  Uruchom t\u0119\n\
+\tkomend\u0119 za pomoc\u0105 dzia\u0142ania listInstances, aby wy\u015bwietli\u0107 list\u0119 poprawnych identyfikator\u00f3w instancji.
+
+BL_VIEW_USAGE_025=Opcja monitora:
+
+# do not translate "--monitor"
+BL_VIEW_USAGE_026=\ \ \ \ --monitor
+BL_VIEW_USAGE_027=\tW spos\u00f3b ci\u0105g\u0142y monitoruj repozytorium i nowe dane wyj\u015bciowe w miar\u0119\n\
+\tich generowania.
+			
+BL_VIEW_USAGE_028=Opcje danych wyj\u015bciowych:
+
+# do not translate "--format={basic | advanced | CBE-1.0.1}"
+BL_VIEW_USAGE_029=\ \ \ \ --format={basic | advanced | CBE-1.0.1}
+BL_VIEW_USAGE_030=\tOkre\u015bl format danych wyj\u015bciowych, kt\u00f3ry ma by\u0107 u\u017cywany.  \
+Formatem domy\u015blnym jest basic.
+		
+# do not translate "--encoding=value"
+BL_VIEW_USAGE_031=\ \ \ \ --encoding=warto\u015b\u0107
+BL_VIEW_USAGE_032=\tOkre\u015bl kodowanie znak\u00f3w u\u017cywane na potrzeby danych wyj\u015bciowych.
+
+# do not translate "--isoDateFormat"
+BL_VIEW_USAGE_033=\ \ \ \ --isoDateFormat
+BL_VIEW_USAGE_034=\tOkre\u015bl format ISO-8601 daty i godziny, kt\u00f3ry ma by\u0107 u\u017cywany w danych wyj\u015bciowych.
+#--------------------------------------------------------------------------------------------------
+
+# do not translate "binaryLog", "listInstances", "serverName", "repositoryPath"
+BL_LISTINSTANCES_USAGE_001=Sk\u0142adnia: binaryLog listInstances {serverName | repositoryPath} [opcje]
+
+# do not translate "--includeInstance", "binaryLog view"
+BL_LISTINSTANCES_USAGE_002=\tS\u0142u\u017cy do wy\u015bwietlania listy identyfikator\u00f3w\n\
+\tinstancji serwera w repozytorium.  Instancja serwera\n\
+\tto kolekcja wszystkich rekord\u00f3w dziennika/\u015bledzenia od momentu\n\
+\turuchomienia serwera do jego zatrzymania.  Identyfikator\u00f3w instancji\n\
+\tserwera mo\u017cna u\u017cywa\u0107 z opcj\u0105 --includeInstance dzia\u0142ania binaryLog view.\n\
+\t
+
+#--------------------------------------------------------------------------------------------------
+
+# do not translate "binaryLog", "copy", "serverName", "repositoryPath", "targetPath"
+BL_COPY_USAGE_001=Sk\u0142adnia: binaryLog copy {serverName | repositoryPath} targetPath [opcje]
+
+# do not translate "targetPath"
+BL_COPY_USAGE_002=\ \ \ \ targetPath
+BL_COPY_USAGE_003=\tPodaj \u015bcie\u017ck\u0119, w kt\u00f3rej ma zosta\u0107 utworzone nowe repozytorium.
+
+
+BL_COPY_USAGE_004=\tS\u0142u\u017cy do odczytywania i opcjonalnie do filtrowania repozytorium oraz\n\
+\tdo zapisywania tre\u015bci w nowym repozytorium.

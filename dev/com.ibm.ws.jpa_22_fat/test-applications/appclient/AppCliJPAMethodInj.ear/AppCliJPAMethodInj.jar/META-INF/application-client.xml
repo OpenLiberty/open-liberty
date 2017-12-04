@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application-client xmlns="http://java.sun.com/xml/ns/javaee"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application-client_6.xsd"
+     version="6">
+      <display-name>JPAApplicationMethodInjectClient</display-name>
+      
+      <resource-ref>
+         <res-ref-name>java:app/env/jdbc/JPA_NJTADS</res-ref-name>
+         <res-type>javax.sql.DataSource</res-type>
+         <res-auth>Container</res-auth>
+         <res-sharing-scope>Shareable</res-sharing-scope>
+      </resource-ref>
+      
+      <persistence-unit-ref>
+         <persistence-unit-ref-name>AppCliPU_DD_EMF</persistence-unit-ref-name>
+         <persistence-unit-name>AppCliPU</persistence-unit-name>
+         <injection-target>
+            <injection-target-class>jpaappcli.client.methodinjection.JPAApplicationMethodInjectClient</injection-target-class>
+            <injection-target-name>emfDD</injection-target-name>
+         </injection-target>
+      </persistence-unit-ref>
+      <persistence-unit-ref>
+         <persistence-unit-ref-name>AppCliPU_DDOVRD_EMF</persistence-unit-ref-name>
+         <persistence-unit-name>AppCliPU_2</persistence-unit-name>
+         <injection-target>
+            <injection-target-class>jpaappcli.client.methodinjection.JPAApplicationMethodInjectClient</injection-target-class>
+            <injection-target-name>emfMerge</injection-target-name>
+         </injection-target>
+      </persistence-unit-ref>
+</application-client>

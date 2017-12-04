@@ -1,0 +1,218 @@
+###############################################################################
+# Copyright (c) 2013, 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME ws/code/ras/src/com/ibm/ws/logging/hpel/resources/BinaryLogMessages.nlsprops
+#COMPONENTPREFIX CWTRA
+#COMPONENTNAMEFOR CWTRA WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+BL_INVALID_ACTION=A megadott {0} m\u0171velet nem \u00e9rv\u00e9nyes.  
+
+# do not translate "--minDate"
+BL_INVALID_MINDATE=A --minDate \u00e9rt\u00e9k nem \u00e9rtelmezhet\u0151.
+
+# do not translate "--maxDate"
+BL_INVALID_MAXDATE=A --maxDate \u00e9rt\u00e9k nem \u00e9rtelmezhet\u0151.
+
+BL_INVALID_REPOSITORYDIR=A(z) {0} lerakat \u00fatvonal nem \u00e9rv\u00e9nyes \u00fatvonaln\u00e9v.
+BL_INVALID_TARGETDIR=A(z) {0} c\u00e9l \u00fatvonal nem \u00e9rv\u00e9nyes \u00fatvonaln\u00e9v.
+BL_UNABLE_TO_COPY=A c\u00e9l helyen nem hozhat\u00f3 l\u00e9tre lerakat. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott c\u00e9l k\u00f6nyvt\u00e1r \u00fcres, \u00e9s rendelkezik \u00edr\u00e1si enged\u00e9lyekkel.
+BL_NO_FILES_FOUND_MONITOR=A megadott k\u00f6nyvt\u00e1r pillanatnyilag nem tartalmaz napl\u00f3- vagy nyomk\u00f6vet\u00e9si f\u00e1jlt.  A k\u00f6nyvt\u00e1r megfigyel\u00e9se folytat\u00f3dik.
+BL_NO_FILES_FOUND=A megadott kiszolg\u00e1l\u00f3napl\u00f3 k\u00f6nyvt\u00e1r vagy lerakat k\u00f6nyvt\u00e1r nem tartalmaz napl\u00f3- vagy nyomk\u00f6vet\u00e9si f\u00e1jlt.
+BL_OPTION_REQUIRES_A_VALUE=A(z) {0} param\u00e9terhez \u00e9rt\u00e9k sz\u00fcks\u00e9ges.
+BL_UNKNOWN_OPTION=A(z) {0} param\u00e9ter nem ismerhet\u0151 fel.
+BL_BAD_FORMAT=A(z) {0} form\u00e1tum nem ismerhet\u0151 fel.
+
+# do not translate "--minDate" or "--maxDate"
+BL_MINDATE_AFTER_MAXDATE=A --minDate \u00e1ltal megadott d\u00e1tum k\u00e9s\u0151bbi a --maxDate d\u00e1tum\u00e1n\u00e1l.
+
+# do not translate "--minLevel" or "--maxLevel"
+BL_MINLEVEL_GREATER_THAN_MAXLEVEL=A --minLevel \u00e1ltal megadott szint magasabb, mint a --maxLevel szintje.
+
+# do not translate "binaryLog help"
+BL_USE_HELP=A haszn\u00e1latr\u00f3l inform\u00e1ci\u00f3k\u00e9rt haszn\u00e1lja a binaryLog help parancsot.
+
+BL_REPOSITORY_DIRECTORY=A(z) {0} haszn\u00e1lata lerakat k\u00f6nyvt\u00e1rk\u00e9nt. 
+BL_TARGET_DIRECTORY=A(z) {0} haszn\u00e1lata c\u00e9l k\u00f6nyvt\u00e1rk\u00e9nt.
+
+# do not translate "serverName", "repositoryPath", "targetPath"
+BL_COPY_REQUIRES_TARGETDIR=A m\u00e1sol\u00e1si m\u0171velethez k\u00f6telez\u0151 a {serverName | repositoryPath} \u00e9s egy targetPath megad\u00e1sa is.
+#--------------------------------------------------------------------------------------------------
+
+# do not translate "binaryLog", "action", "serverName", "repositoryPath"
+BL_MAIN_USAGE_001=Haszn\u00e1lat: binaryLog action {serverName | repositoryPath} [param\u00e9terek]
+
+# do not translate "serverName"
+BL_MAIN_USAGE_004=\ \ \ \ serverName
+BL_MAIN_USAGE_005=\tEgy Liberty kiszolg\u00e1l\u00f3 nev\u00e9t adja meg lerakattal az olvas\u00e1shoz.
+
+# do not translate "repositoryPath"
+BL_MAIN_USAGE_006=\ \ \ \ repositoryPath
+
+# do not translate "logdata", "tracedata"
+BL_MAIN_USAGE_007=\tEgy lerakat \u00fatvonal\u00e1t adja meg az olvas\u00e1shoz.  Ez jellemz\u0151en az a   \n\
+\tk\u00f6nyvt\u00e1r, amely a logdata \u00e9s tracedata k\u00f6nyvt\u00e1rakat tartalmazza.
+
+BL_MAIN_USAGE_008=Le\u00edr\u00e1s:
+BL_MAIN_USAGE_009=\tEgy nagyteljes\u00edtm\u00e9ny\u0171 b\u0151v\u00edthet\u0151 napl\u00f3z\u00e1s (HPEL) lerakat tartalm\u00e1nak  \n\
+\ta megjelen\u00edt\u00e9se vagy m\u00e1sol\u00e1sa, illetve felsorolja a lerakatban       \n\
+\tel\u00e9rhet\u0151 kiszolg\u00e1l\u00f3 folyamatp\u00e9ld\u00e1nyokat.
+
+BL_MAIN_USAGE_010=M\u0171veletek:
+
+# do not translate "view"
+BL_MAIN_USAGE_011=\ \ \ \ view
+BL_MAIN_USAGE_012=\tEgy lerakat olvas\u00e1sa, v\u00e1laszthat\u00f3an sz\u0171r\u00e9se, valamint egy felhaszn\u00e1l\u00f3\n\
+\tsz\u00e1m\u00e1ra olvashat\u00f3 v\u00e1ltozat l\u00e9trehoz\u00e1sa.
+
+# do not translate "copy"
+BL_MAIN_USAGE_013=\ \ \ \ copy
+BL_MAIN_USAGE_014=\tEgy lerakat olvas\u00e1sa, v\u00e1laszthat\u00f3an sz\u0171r\u00e9se, valamint a tartalm\u00e1nak  \n\
+\t\u00edr\u00e1sa egy \u00faj lerakatba.
+
+# do not translate "listInstances"
+BL_MAIN_USAGE_015=\ \ \ \ listInstances
+BL_MAIN_USAGE_016=\tFelsorolja a lerakat kiszolg\u00e1l\u00f3 folyamatp\u00e9ld\u00e1nyait.
+
+BL_MAIN_USAGE_017=Param\u00e9terek:
+
+# do not translate "help [action]"
+BL_MAIN_USAGE_018=\tAz egyes m\u0171veletek param\u00e9tereinek r\u00e9szletes inform\u00e1ci\u00f3i\u00e9rt haszn\u00e1lja \n\
+\ta help [m\u0171velet] parancsot.
+
+#--------------------------------------------------------------------------------------------------
+
+# do not translate "binaryLog view", "serverName", "repositoryPath"
+BL_VIEW_USAGE_001=Haszn\u00e1lat: binaryLog view {serverName | repositoryPath} [param\u00e9terek]
+
+BL_VIEW_USAGE_002=\tEgy lerakat olvas\u00e1sa, v\u00e1laszthat\u00f3an sz\u0171r\u00e9se, valamint egy felhaszn\u00e1l\u00f3\n\
+\tsz\u00e1m\u00e1ra olvashat\u00f3 v\u00e1ltozat l\u00e9trehoz\u00e1sa.
+
+BL_VIEW_USAGE_003=Sz\u0171r\u0151 param\u00e9terek:
+BL_VIEW_USAGE_004=\tA sz\u0171r\u0151k nem k\u00f6telez\u0151ek.  T\u00f6bb sz\u0171r\u0151 haszn\u00e1lata eset\u00e9n ezek           \n\
+\tlogikailag \u00f6sszead\u00f3dnak (AND).
+
+# do not translate "--minDate=value"
+BL_VIEW_USAGE_005=\ \ \ \ --minDate=value
+
+# do not translate "--minDate="
+BL_VIEW_USAGE_006=\tA legkisebb rekordl\u00e9trehoz\u00e1si d\u00e1tumon alapul\u00f3 sz\u0171r\u0151. Az \u00e9rt\u00e9ket       \n\
+\td\u00e1tumk\u00e9nt (p\u00e9ld\u00e1ul: --minDate=\"{0}\") vagy d\u00e1tumk\u00e9nt \u00e9s             \n\
+\tid\u0151pontk\u00e9nt (p\u00e9ld\u00e1ul: --minDate=\"{1}\") kell megadni. \
+Megadhatja a d\u00e1tumot \u00e9s id\u0151pontot     \n\
+\tISO-8601 form\u00e1tumban is; p\u00e9ld\u00e1ul: --minDate=\"{2}\" vagy  \n\
+\t--minDate=\"{3}\".
+
+# do not translate "--maxDate=value"
+BL_VIEW_USAGE_007=\ \ \ \ --maxDate=value
+
+# do not translate "--maxDate="
+BL_VIEW_USAGE_008=\tA legnagyobb rekordl\u00e9trehoz\u00e1si d\u00e1tumon alapul\u00f3 sz\u0171r\u0151. Az \u00e9rt\u00e9ket      \n\
+\td\u00e1tumk\u00e9nt (p\u00e9ld\u00e1ul: --maxDate=\"{0}\") vagy d\u00e1tumk\u00e9nt \u00e9s \n\
+\tid\u0151pontk\u00e9nt (p\u00e9ld\u00e1ul: --maxDate=\"{1}\") kell megadni. Megadhatja a d\u00e1tumot \u00e9s id\u0151pontot     \n\
+\tISO-8601 form\u00e1tumban is; p\u00e9ld\u00e1ul: --maxDate=\"{2}\" vagy  \n\
+\t--maxDate=\"{3}\".
+
+# do not translate "--minLevel=value"
+BL_VIEW_USAGE_009=\ \ \ \ --minLevel=value
+BL_VIEW_USAGE_010=\tA legkisebb szinten alapul\u00f3 sz\u0171r\u0151.  Az \u00e9rt\u00e9ke csak az egyik lehet:  \n\
+\t{0}
+
+# do not translate "--maxLevel=value"
+BL_VIEW_USAGE_011=\ \ \ \ --maxLevel=value
+BL_VIEW_USAGE_012=\tA legnagyobb szinten alapul\u00f3 sz\u0171r\u0151.  Az \u00e9rt\u00e9ke csak az egyik lehet      \n\
+\t{0}
+
+# do not translate "--includeLogger=value[,value]*"
+BL_VIEW_USAGE_013=\ \ \ \ --includeLogger=value[,value]*
+BL_VIEW_USAGE_014=\tRekordokat ad hozz\u00e1 a megadott napl\u00f3z\u00f3n\u00e9vvel.  Az \u00e9rt\u00e9ke tartalmazhat \n\
+\t* vagy ? karaktert helyettes\u00edt\u0151 karakterk\u00e9nt.
+
+# do not translate "--excludeLogger=value[,value]*"
+BL_VIEW_USAGE_015=\ \ \ \ --excludeLogger=value[,value]*
+BL_VIEW_USAGE_016=\tRekordokat z\u00e1r ki a megadott napl\u00f3z\u00f3n\u00e9vvel.  Az \u00e9rt\u00e9ke tartalmazhat \n\
+\t* vagy ? karaktert helyettes\u00edt\u0151 karakterk\u00e9nt.
+
+# do not translate "--includeMessage=value"
+BL_VIEW_USAGE_017=\ \ \ \ --includeMessage=value
+BL_VIEW_USAGE_018=\t\u00dczenetn\u00e9ven alapul\u00f3 sz\u0171r\u0151.  \
+Az \u00e9rt\u00e9ke tartalmazhat \
+* vagy ? karaktert helyettes\u00edt\u0151 karakterk\u00e9nt.
+
+# do not translate "--includeThread=value"
+BL_VIEW_USAGE_019=\ \ \ \ --includeThread=value
+
+# do not translate "--includeThread=2a"
+BL_VIEW_USAGE_020=\tRekordokat ad hozz\u00e1 a megadott sz\u00e1lazonos\u00edt\u00f3val.  Az \u00e9rt\u00e9keknek             \n\
+\thexadecim\u00e1lisnak kell lenni\u00fck (p\u00e9ld\u00e1ul: --includeThread=2a).
+
+# do not translate "--includeExtension=name=value[,name=value]*"
+BL_VIEW_USAGE_021=\ \ \ \ --includeExtension=name=value[,name=value]*
+BL_VIEW_USAGE_022=\tRekordokat ad hozz\u00e1 a megadott kiterjeszt\u00e9s n\u00e9vvel \u00e9s \u00e9rt\u00e9kkel.  Az \u00e9rt\u00e9ke tartalmazhat \n\
+\t* vagy ? karaktert helyettes\u00edt\u0151 karakterk\u00e9nt.
+
+# do not translate "--includeInstance=value"
+BL_VIEW_USAGE_023=\ \ \ \ --includeInstance=value
+
+# do not translate "latest", "listInstances"
+BL_VIEW_USAGE_024=\tRekordokat ad hozz\u00e1 a megadott kiszolg\u00e1l\u00f3p\u00e9ld\u00e1nyb\u00f3l.  Az \u00e9rt\u00e9ke       \n\
+\tvagy "latest" vagy egy \u00e9rv\u00e9nyes p\u00e9ld\u00e1nyazonos\u00edt\u00f3 lehet.  A parancsot \n\
+\ta listInstances m\u0171velettel futtatva l\u00e1thatja az \u00e9rv\u00e9nyes             \n\
+\tp\u00e9ld\u00e1nyazonos\u00edt\u00f3kat.
+
+BL_VIEW_USAGE_025=Figyel\u0151 param\u00e9ter:
+
+# do not translate "--monitor"
+BL_VIEW_USAGE_026=\ \ \ \ --monitor
+BL_VIEW_USAGE_027=\tFolyamatosan megfigyeli a lerakatot \u00e9s kimenetk\u00e9nt megadja az \u00faj     \n\
+\ttartalmat annak el\u0151\u00e1ll\u00edt\u00e1sakor.
+			
+BL_VIEW_USAGE_028=Kimeneti param\u00e9terek:
+
+# do not translate "--format={basic | advanced | CBE-1.0.1}"
+BL_VIEW_USAGE_029=\ \ \ \ --format={basic | advanced | CBE-1.0.1}
+BL_VIEW_USAGE_030=\tMegadja a haszn\u00e1land\u00f3 kimeneti form\u00e1tumot.  \
+Az alap\u00e9rtelmezett form\u00e1tum: "basic".
+		
+# do not translate "--encoding=value"
+BL_VIEW_USAGE_031=\ \ \ \ --encoding=value
+BL_VIEW_USAGE_032=\tMegadja a kimenet karakterk\u00f3dol\u00e1s\u00e1t.
+
+# do not translate "--isoDateFormat"
+BL_VIEW_USAGE_033=\ \ \ \ --isoDateFormat
+BL_VIEW_USAGE_034=\tAdja meg a kimenethez haszn\u00e1land\u00f3 ISO-8601 d\u00e1tum- \u00e9s id\u0151form\u00e1tumot.
+#--------------------------------------------------------------------------------------------------
+
+# do not translate "binaryLog", "listInstances", "serverName", "repositoryPath"
+BL_LISTINSTANCES_USAGE_001=Haszn\u00e1lat: binaryLog listInstances {serverName | repositoryPath} [param\u00e9terek]
+
+# do not translate "--includeInstance", "binaryLog view"
+BL_LISTINSTANCES_USAGE_002=\tFelsorolja a lerakatban l\u00e9v\u0151 kiszolg\u00e1l\u00f3p\u00e9ld\u00e1nyok azonos\u00edt\u00f3it.  A      \n\
+\tkiszolg\u00e1l\u00f3p\u00e9ld\u00e1ny az \u00f6sszes napl\u00f3/nyomk\u00f6vet\u00e9si rekord, amely a       \n\
+\tkiszolg\u00e1l\u00f3 ind\u00edt\u00e1s\u00e1t\u00f3l a le\u00e1ll\u00edt\u00e1s\u00e1ig \u00edr\u00e1sra ker\u00fclt.  A               \n\
+\tkiszolg\u00e1l\u00f3p\u00e9ld\u00e1ny azonos\u00edt\u00f3k a binaryLog view m\u0171velet                \n\
+\t--includeInstance param\u00e9ter\u00e9vel haszn\u00e1lhat\u00f3k.
+
+#--------------------------------------------------------------------------------------------------
+
+# do not translate "binaryLog", "copy", "serverName", "repositoryPath", "targetPath"
+BL_COPY_USAGE_001=Haszn\u00e1lat: binaryLog copy {serverName | repositoryPath} targetPath [options]
+
+# do not translate "targetPath"
+BL_COPY_USAGE_002=\ \ \ \ targetPath
+BL_COPY_USAGE_003=\tMegadja az \u00fatvonalat \u00faj lerakat l\u00e9trehoz\u00e1s\u00e1hoz.
+
+
+BL_COPY_USAGE_004=\tEgy lerakat olvas\u00e1sa, v\u00e1laszthat\u00f3an sz\u0171r\u00e9se, valamint a tartalm\u00e1nak  \n\
+\t\u00edr\u00e1sa egy \u00faj lerakatba.

@@ -1,0 +1,25 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs-2.0.tools/resources/com/ibm/ws/jaxrs20/tools/internal/resources/JaxRsToolsMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS 2.0 Tools Code
+#RANGE 0900-9999
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+error.badVersion=CWWKW0900E: \u672a\u8fd0\u884c\u6b63\u786e\u7684 Java \u7248\u672c\u3002\u8fd0\u884c\u65f6\u73af\u5883\u9700\u8981 Java 7 \u6216\u66f4\u9ad8\u7248\u672c\u3002
+error.badVersion.explanation=\u6b63\u5728\u8fd0\u884c\u4e0d\u53d7\u652f\u6301\u7684 Java \u7248\u672c\uff0c\u6216 JAVA_HOME \u7cfb\u7edf\u53d8\u91cf\u5df2\u8bbe\u7f6e\u4e3a\u6307\u5411\u8f83\u65e9\u7248\u672c\u7684 Java\u3002
+error.badVersion.useraction= \u8bf7\u5c06 Java \u7248\u672c\u5347\u7ea7\u5230 Java 7\uff0c\u6216\u8c03\u6574 JAVA_HOME \u7cfb\u7edf\u53d8\u91cf\u4ee5\u6307\u5411 Java 7\u3002

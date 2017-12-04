@@ -1,0 +1,125 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.product.utility/resources/com/ibm/ws/product/utility/resources/UtilityOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+#
+
+global.description=Descri\u00e7\u00e3o:
+global.options=Op\u00e7\u00f5es:
+global.usage=Uso:
+global.options.statement=\tUse help [actionName] para obter informa\u00e7\u00f5es de op\u00e7\u00e3o detalhadas de cada a\u00e7\u00e3o.
+
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+help.desc=\tImprima informa\u00e7\u00f5es da ajuda para a a\u00e7\u00e3o especificada.
+help.usage.options=\t{0} help [actionName]
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+version.desc=\tImprima as informa\u00e7\u00f5es do produto, como nome e vers\u00e3o.
+version.usage.options=\t{0} version [options]
+version.option-key.output=\ \ \ \ --output="caminho para um arquivo de sa\u00edda"
+version.option-desc.output=\tUm caminho para um arquivo que cont\u00e9m a sa\u00edda a partir desse comando. Essa    \n\
+\top\u00e7\u00e3o n\u00e3o \u00e9 obrigat\u00f3ria. O padr\u00e3o \u00e9 STDOUT.
+version.option-key.verbose=\ \ \ \ --verbose
+version.option-desc.verbose=\tExibe todo o conte\u00fado de cada arquivo de propriedades.
+version.option-key.ifixes=\ \ \ \ --ifixes
+version.option-desc.ifixes=\tQuando fornecido, especifica que a lista de iFixes instalados tamb\u00e9m \u00e9 exibida.
+
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+viewLicenseAgreement.desc=\tExibe o contrato de licen\u00e7a para a edi\u00e7\u00e3o do perfil Liberty que est\u00e1 instalada.
+viewLicenseAgreement.usage.options=\t{0} viewLicenseAgreement
+
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+viewLicenseInfo.desc=\tExibe as informa\u00e7\u00f5es de licen\u00e7a para a edi\u00e7\u00e3o do perfil Liberty que est\u00e1 instalada.
+viewLicenseInfo.usage.options=\t{0} viewLicenseInfo
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+featureInfo.desc=\tListe todos os recursos instalados.
+featureInfo.usage.options=\t{0} featureInfo [options]
+featureInfo.option-key.output=\ \ \ \ --output="caminho para um arquivo de sa\u00edda"
+featureInfo.option-desc.output=\tUm caminho para um arquivo que cont\u00e9m a sa\u00edda a partir desse comando. Essa    \n\
+\top\u00e7\u00e3o n\u00e3o \u00e9 obrigat\u00f3ria. O padr\u00e3o \u00e9 STDOUT.
+
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+validate.desc=\tValide uma instala\u00e7\u00e3o de produ\u00e7\u00e3o com rela\u00e7\u00e3o a um arquivo de soma de verifica\u00e7\u00e3o do produto.
+validate.usage.options=\t{0} validate [options]
+validate.option-key.checksumfile=\ \ \ \ --checksumfile="caminho para o arquivo de soma de verifica\u00e7\u00e3o"
+validate.option-desc.checksumfile=\tEspecifique o arquivo que cont\u00e9m a soma de verifica\u00e7\u00e3o dos arquivos *.mf e *.blst \n\
+\tque est\u00e3o sendo instalados. Esta \
+      op\u00e7\u00e3o n\u00e3o \u00e9 obrigat\u00f3ria. O padr\u00e3o \u00e9 o arquivo    \n\
+\tlib/version/productChecksums.cs
+validate.option-key.output=\ \ \ \ --output="caminho para um arquivo de sa\u00edda"
+validate.option-desc.output=\tUm caminho para um arquivo que cont\u00e9m a sa\u00edda a partir desse comando. Essa    \n\
+\top\u00e7\u00e3o n\u00e3o \u00e9 obrigat\u00f3ria. O padr\u00e3o \u00e9 STDOUT.
+
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+compare.desc=\tCompare os iFixes aplicados \u00e0 instala\u00e7\u00e3o atual com um novo n\u00edvel de fix\n \tpack e lista todos os iFixes que n\u00e3o est\u00e3o no fix pack ou compara com \n \tuma lista fornecida de iFixes e lista se eles est\u00e3o inclu\u00eddos na      \n \t vers\u00e3o atual.
+compare.usage.options=\t{0} compare [options]
+compare.option-key.target=\ \ \ \ --target="caminho para o diret\u00f3rio ou archive"
+compare.option-desc.target=\tEspecifique o arquivo de destino com o qual comparar a instala\u00e7\u00e3o atual. O     \n\
+\tdestino pode ser um diret\u00f3rio ou archive, mas deve ser um local de instala\u00e7\u00e3o v\u00e1lido do \n\
+\tWebSphere Application Server Liberty Profile.
+compare.option-key.apars=\ \ \ \ --apars="uma lista separada por v\u00edrgulas de IDs de APAR"
+compare.option-desc.apars=\tA ferramenta de compara\u00e7\u00e3o verifica a instala\u00e7\u00e3o atual com rela\u00e7\u00e3o a essa lista separada por v\u00edrgula de  \n \tIDs de APARs para ver se ela os cont\u00e9m e, em seguida, lista \n \ttodos os APARs que n\u00e3o est\u00e3o inclu\u00eddos.
+compare.option-key.output=\ \ \ \ --output="caminho para um arquivo de sa\u00edda"
+compare.option-desc.output=\tUm caminho para um arquivo conter a sa\u00edda a partir desse comando. Essa op\u00e7\u00e3o\n\
+\tn\u00e3o \u00e9 obrigat\u00f3ria. O padr\u00e3o \u00e9 STDOUT.
+compare.option-key.verbose=\ \ \ \ --verbose
+compare.option-desc.verbose=\tExibe mensagens de erro detalhadas quando um erro ocorre.
+compare.option.addon=Um de --target ou --apars deve ser fornecido.

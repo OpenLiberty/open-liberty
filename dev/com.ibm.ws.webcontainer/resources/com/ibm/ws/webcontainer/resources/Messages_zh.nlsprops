@@ -1,0 +1,1582 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.4,0,04/02/09,12:44:41
+#
+#CMVCPATHNAME ws/code/webcontainer/src/com/ibm/ws/webcontainer/resources/Messages.nlsprops
+#COMPONENTPREFIX SRVE CWWWC
+#COMPONENTNAMEFOR SRVE Servlet Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+
+
+# --------------------------------
+Illegal.Argument.Trying.to.write.chars=SRVE0011E: \u975e\u6cd5\u53c2\u6570\u5f02\u5e38\uff1a\u5c1d\u8bd5\u5199\u5165\u7684\u5b57\u7b26\u6570\u5c0f\u4e8e 0
+Illegal.Argument.Trying.to.write.chars.explanation=\u5c1d\u8bd5\u8f93\u51fa\u5927\u5c0f\u5c0f\u4e8e 0 \u7684\u7f13\u51b2\u533a\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+Illegal.Argument.Trying.to.write.chars.useraction=\u4ec5\u5199\u5927\u5c0f\u4e3a 0 \u6216\u8005\u5927\u4e8e 0 \u7684\u7f13\u51b2\u533a\u3002
+
+# --------------------------------
+Uncaught.service().exception.root.cause=SRVE0014E: \u672a\u6355\u83b7\u5230 service() \u5f02\u5e38\u7684\u6839\u672c\u539f\u56e0 {0}\uff1a{1}
+Uncaught.service().exception.root.cause.explanation=\u5728 servlet \u670d\u52a1\u65b9\u6cd5\u4e2d\u4ea7\u751f\u4e86\u672a\u6355\u83b7\u5f02\u5e38\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+Uncaught.service().exception.root.cause.useraction=\u9700\u8981\u6267\u884c\u7684\u64cd\u4f5c\u53d6\u51b3\u4e8e\u6839\u672c\u539f\u56e0\u3002
+
+# --------------------------------
+Failed.to.initialize.webapp.{0}=SRVE0015E: \u65e0\u6cd5\u521d\u59cb\u5316 Web \u5e94\u7528\u7a0b\u5e8f {0}
+Failed.to.initialize.webapp.{0}.explanation=\u65e0\u6cd5\u521d\u59cb\u5316\u6d88\u606f\u4e2d\u6307\u5b9a\u7684 Web \u5e94\u7528\u7a0b\u5e8f\u3002\u8bf7\u68c0\u67e5\u9519\u8bef\u65e5\u5fd7\u4ee5\u4e86\u89e3\u66f4\u591a\u8be6\u7ec6\u4fe1\u606f\u3002
+Failed.to.initialize.webapp.{0}.useraction=\u8bf7\u67e5\u770b\u9519\u8bef\u65e5\u5fd7\u4ee5\u786e\u5b9a\u6b64\u95ee\u9898\u7684\u6839\u672c\u539f\u56e0\u3002
+
+# --------------------------------
+Illegal.Argument\:.Invalid.Header.Format=SRVE0016E: \u975e\u6cd5\u53c2\u6570\u5f02\u5e38\uff1a\u5934\u683c\u5f0f\u65e0\u6548
+Illegal.Argument\:.Invalid.Header.Format.explanation=\u6240\u53d1\u73b0\u7684\u8bf7\u6c42\u5934\u683c\u5f0f\u65e0\u6548\u3002
+Illegal.Argument\:.Invalid.Header.Format.useraction=\u8bf7\u68c0\u67e5\u5ba2\u6237\u673a\u5934\u521b\u5efa\u3002
+
+# -------------------------------- replaced by SRVE0255E ---------------------------
+#Web.Group.VHost.Not.Found=SRVE0017W: A WebGroup/Virtual Host to handle {0} has not been defined.
+#Web.Group.VHost.Not.Found.explanation=Could not find a web group (web module) or virtual host to handle the request.
+#Web.Group.VHost.Not.Found.useraction=Be sure the web group and virtual host is defined and deployed.
+
+# --------------------------------
+Servlet.unloaded\:.{0}=SRVE0021I: \u5df2\u5378\u8f7d Servlet\uff1a{0}
+Servlet.unloaded\:.{0}.explanation=\u8c03\u7528\u9500\u6bc1\u65b9\u6cd5\u540e\u5df2\u5378\u8f7d\u6307\u5b9a\u7684 servlet\u3002
+Servlet.unloaded\:.{0}.useraction=\u65e0\u3002
+
+# --------------------------------
+Illegal.Argument\:.{0}.is.not.a.directory.=SRVE0031E: \u975e\u6cd5\u53c2\u6570\u5f02\u5e38\uff1a{0} \u4e0d\u662f\u76ee\u5f55\u3002
+Illegal.Argument\:.{0}.is.not.a.directory..explanation=\u6307\u5b9a\u7684\u8def\u5f84\u4e0d\u662f\u76ee\u5f55\u3002
+Illegal.Argument\:.{0}.is.not.a.directory..useraction=\u8bf7\u786e\u4fdd\u76ee\u5f55\u5b58\u5728\u6216\u8005\u60a8\u6b63\u5728\u8bf7\u6c42\u6b63\u786e\u7684\u76ee\u5f55\u3002
+
+# --------------------------------
+WebAppSecurityCollaborator=SRVE0035E: WebAppSecurityCollaborator
+WebAppSecurityCollaborator.explanation=WebAppSecurityCollaborator\u3002\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+WebAppSecurityCollaborator.useraction=\u8bf7\u68c0\u67e5\u670d\u52a1\u5668\u65e5\u5fd7\uff0c\u4ee5\u786e\u5b9a\u95ee\u9898\u7684\u6839\u672c\u539f\u56e0\u3002\u5982\u679c\u6ca1\u6709\u76f8\u5173\u6d88\u606f\uff0c\u6216\u8005\u5b83\u4eec\u5bf9\u4e8e\u89e3\u51b3\u95ee\u9898\u6ca1\u6709\u5e2e\u52a9\uff0c\u8bf7\u4e0e IBM \u652f\u6301\u4eba\u5458\u8054\u7cfb\u3002
+
+# --------------------------------
+Illegal.Argument\:.Bootstrap.File.Not.Found=SRVE0041E: \u975e\u6cd5\u53c2\u6570\u5f02\u5e38\uff1a\u627e\u4e0d\u5230\u5f15\u5bfc\u7a0b\u5e8f\u6587\u4ef6
+Illegal.Argument\:.Bootstrap.File.Not.Found.explanation=\u8fd9\u662f\u53ef\u80fd\u7531\u5148\u524d\u6545\u969c\u5bfc\u81f4\u7684\u5185\u90e8\u7cfb\u7edf\u9519\u8bef\u3002
+Illegal.Argument\:.Bootstrap.File.Not.Found.useraction=\u8bf7\u68c0\u67e5\u670d\u52a1\u5668\u65e5\u5fd7\uff0c\u4ee5\u786e\u5b9a\u95ee\u9898\u7684\u6839\u672c\u539f\u56e0\u3002\u5982\u679c\u6ca1\u6709\u76f8\u5173\u6d88\u606f\uff0c\u6216\u8005\u5b83\u4eec\u5bf9\u4e8e\u89e3\u51b3\u95ee\u9898\u6ca1\u6709\u5e2e\u52a9\uff0c\u8bf7\u4e0e IBM \u652f\u6301\u4eba\u5458\u8054\u7cfb\u3002
+
+# --------------------------------
+Illegal.Argument.Invalid.Content.Length=SRVE0042E: \u975e\u6cd5\u53c2\u6570\u5f02\u5e38\uff1a\u5185\u5bb9\u957f\u5ea6\u65e0\u6548
+Illegal.Argument.Invalid.Content.Length.explanation=\u8fd9\u662f\u53ef\u80fd\u7531\u5148\u524d\u6545\u969c\u5bfc\u81f4\u7684\u5185\u90e8\u7cfb\u7edf\u9519\u8bef\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+Illegal.Argument.Invalid.Content.Length.useraction=\u8bf7\u68c0\u67e5\u670d\u52a1\u5668\u65e5\u5fd7\uff0c\u4ee5\u786e\u5b9a\u95ee\u9898\u7684\u6839\u672c\u539f\u56e0\u3002\u5982\u679c\u6ca1\u6709\u76f8\u5173\u6d88\u606f\uff0c\u6216\u8005\u5b83\u4eec\u5bf9\u4e8e\u89e3\u51b3\u95ee\u9898\u6ca1\u6709\u5e2e\u52a9\uff0c\u8bf7\u4e0e IBM \u652f\u6301\u4eba\u5458\u8054\u7cfb\u3002
+
+# --------------------------------
+Illegal.Argument\:.Invalid.Date.Format=SRVE0053E: \u975e\u6cd5\u53c2\u6570\u5f02\u5e38\uff1a\u65e5\u671f\u683c\u5f0f\u65e0\u6548
+Illegal.Argument\:.Invalid.Date.Format.explanation=\u65e5\u671f\u683c\u5f0f\u65e0\u6548\u3002
+Illegal.Argument\:.Invalid.Date.Format.useraction=\u8bf7\u68c0\u67e5\u670d\u52a1\u5668\u65e5\u5fd7\uff0c\u4ee5\u786e\u5b9a\u95ee\u9898\u7684\u6839\u672c\u539f\u56e0\u3002\u5982\u679c\u6ca1\u6709\u76f8\u5173\u6d88\u606f\uff0c\u6216\u8005\u5b83\u4eec\u5bf9\u4e8e\u89e3\u51b3\u95ee\u9898\u6ca1\u6709\u5e2e\u52a9\uff0c\u8bf7\u4e0e IBM \u652f\u6301\u4eba\u5458\u8054\u7cfb\u3002
+
+# --------------------------------
+Servlet.wait.for.destroy.timeout.has.expired,.destroy.will.be.forced\:.{0}=SRVE0055I: servlet \u7b49\u5f85\u9500\u6bc1\u8d85\u65f6\u5df2\u5230\u671f\uff0c\u5c06\u5f3a\u5236\u6267\u884c\u9500\u6bc1\uff1a{0}
+Servlet.wait.for.destroy.timeout.has.expired,.destroy.will.be.forced\:.{0}.explanation=\u7b49\u5f85\u8d85\u65f6\u540e\u6b63\u5728\u635f\u6bc1 Servlet\u3002
+Servlet.wait.for.destroy.timeout.has.expired,.destroy.will.be.forced\:.{0}.useraction=\u65e0\u3002
+
+# --------------------------------
+Illegal.Argument\:.Unsupported.flag=SRVE0056E: \u975e\u6cd5\u53c2\u6570\u5f02\u5e38\uff1a\u6807\u5fd7\u4e0d\u53d7\u652f\u6301
+Illegal.Argument\:.Unsupported.flag.explanation=\u8fd9\u662f\u53ef\u80fd\u7531\u5148\u524d\u6545\u969c\u5bfc\u81f4\u7684\u5185\u90e8\u7cfb\u7edf\u9519\u8bef\u3002
+Illegal.Argument\:.Unsupported.flag.useraction=\u8bf7\u68c0\u67e5\u670d\u52a1\u5668\u65e5\u5fd7\uff0c\u4ee5\u786e\u5b9a\u95ee\u9898\u7684\u6839\u672c\u539f\u56e0\u3002\u5982\u679c\u6ca1\u6709\u76f8\u5173\u6d88\u606f\uff0c\u6216\u8005\u5b83\u4eec\u5bf9\u4e8e\u89e3\u51b3\u95ee\u9898\u6ca1\u6709\u5e2e\u52a9\uff0c\u8bf7\u4e0e IBM \u652f\u6301\u4eba\u5458\u8054\u7cfb\u3002
+
+# --------------------------------
+Uncaught.destroy().exception.thrown.by.servlet=SRVE0058E: \u672a\u8bc6\u522b\u51fa\u5e94\u7528\u7a0b\u5e8f {1} \u4e2d\u7531 servlet {0} \u521b\u5efa\u7684 destroy() \u5f02\u5e38\uff1a{2}
+Uncaught.destroy().exception.thrown.by.servlet.explanation=\u65e0\u6cd5\u9500\u6bc1\u6307\u5b9a\u7684 servlet\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+Uncaught.destroy().exception.thrown.by.servlet.useraction=\u8bf7\u68c0\u67e5\u670d\u52a1\u5668\u65e5\u5fd7\uff0c\u4ee5\u786e\u5b9a\u95ee\u9898\u7684\u6839\u672c\u539f\u56e0\u3002\u5982\u679c\u6ca1\u6709\u76f8\u5173\u6d88\u606f\uff0c\u6216\u8005\u5b83\u4eec\u5bf9\u4e8e\u89e3\u51b3\u95ee\u9898\u6ca1\u6709\u5e2e\u52a9\uff0c\u8bf7\u4e0e IBM \u652f\u6301\u4eba\u5458\u8054\u7cfb\u3002
+
+# --------------------------------
+Unable.to.bind.hostname.[{0}].to.servletHost.[{1}]=SRVE0060E: \u65e0\u6cd5\u7ed1\u5b9a\u4e3b\u673a\u540d\uff3b{0}\uff3d\u5230 servletHost\uff3b{1}\uff3d
+Unable.to.bind.hostname.[{0}].to.servletHost.[{1}].explanation=\u65e0\u6cd5\u5c06\u6307\u5b9a\u7684\u4e3b\u673a\u540d\u7ed1\u5b9a\u81f3\u6307\u5b9a\u7684 servlet \u4e3b\u673a\u3002
+Unable.to.bind.hostname.[{0}].to.servletHost.[{1}].useraction=\u8bf7\u786e\u4fdd\u5df2\u6b63\u786e\u6307\u5b9a\u4e86\u4e3b\u673a\u540d\u5e76\u4e14\u5df2\u5728 virtualhosts.xml \u4e2d\u6307\u5b9a\u4e86 servlet \u4e3b\u673a\u3002
+
+# --------------------------------
+Illegal.Argument\:.Invalid.Directory.Specified\:.{0}=SRVE0061E: \u975e\u6cd5\u53c2\u6570\u5f02\u5e38\uff1a\u6307\u5b9a\u7684\u76ee\u5f55\u65e0\u6548\uff1a{0}
+Illegal.Argument\:.Invalid.Directory.Specified\:.{0}.explanation=\u6307\u5b9a\u7684\u76ee\u5f55\u65e0\u6548\u3002
+Illegal.Argument\:.Invalid.Directory.Specified\:.{0}.useraction=\u8bf7\u68c0\u67e5\u76ee\u5f55\u89c4\u8303\u4ee5\u67e5\u770b\u9519\u8bef\u3002
+
+# --------------------------------
+Waiting.servlet.to.finish.servicing.requests\:.{0}=SRVE0066I: \u6b63\u5728\u7b49\u5f85 servlet \u5b8c\u6210\u670d\u52a1\u8bf7\u6c42\uff1a{0}
+Waiting.servlet.to.finish.servicing.requests\:.{0}.explanation=servlet \u4ecd\u5728\u5904\u7406\u8be5\u8bf7\u6c42\u3002\u6b63\u7b49\u5f85\u8bf7\u6c42\u5b8c\u6210\uff0c\u7136\u540e\u8c03\u7528\u9500\u6bc1\u3002
+Waiting.servlet.to.finish.servicing.requests\:.{0}.useraction=\u65e0\u3002
+
+# --------------------------------
+Uncaught.service().exception.thrown.by.servlet=SRVE0068E: \u5e94\u7528\u7a0b\u5e8f [{1}] \u4e2d servlet [{0}] \u7684\u5176\u4e2d\u4e00\u4e2a\u670d\u52a1\u65b9\u6cd5\u629b\u51fa\u5f02\u5e38\u3002\u521b\u5efa\u7684\u5f02\u5e38\uff1a[{2}]
+Uncaught.service().exception.thrown.by.servlet.explanation=servlet \u7684\u5176\u4e2d\u4e00\u4e2a\u670d\u52a1\u65b9\u6cd5\u629b\u51fa\u5f02\u5e38\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+Uncaught.service().exception.thrown.by.servlet.useraction=\u8bf7\u68c0\u67e5\u670d\u52a1\u5668\u65e5\u5fd7\uff0c\u4ee5\u786e\u5b9a\u95ee\u9898\u7684\u6839\u672c\u539f\u56e0\u3002\u5982\u679c\u6ca1\u6709\u76f8\u5173\u6d88\u606f\uff0c\u6216\u8005\u5b83\u4eec\u5bf9\u4e8e\u89e3\u51b3\u95ee\u9898\u6ca1\u6709\u5e2e\u52a9\uff0c\u8bf7\u4e0e IBM \u652f\u6301\u4eba\u5458\u8054\u7cfb\u3002
+
+# --------------------------------
+Error.Initializing.for.Next.Request=SRVE0070E: \u521d\u59cb\u5316\u4e0b\u4e00\u4e2a\u8bf7\u6c42\u65f6\u51fa\u9519
+Error.Initializing.for.Next.Request.explanation=\u5185\u90e8 Web \u5bb9\u5668\u9519\u8bef\u3002
+Error.Initializing.for.Next.Request.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+# --------------------------------
+Invalid.Content.Length=SRVE0080E: \u5185\u5bb9\u957f\u5ea6\u65e0\u6548
+Invalid.Content.Length.explanation=\u5185\u90e8\u670d\u52a1\u5668\u9519\u8bef\u3002\u8fd9\u53ef\u80fd\u662f\u7531\u7f51\u7edc\u8c03\u6574\u95ee\u9898\u3001\u5185\u5bb9\u957f\u5ea6\u6307\u5b9a\u4e0d\u6b63\u786e\u6216\u9644\u4ef6\u7684\u957f\u5ea6\u6216\u5927\u5c0f\u5bfc\u81f4\u7684\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+Invalid.Content.Length.useraction=\u8bf7\u6536\u96c6\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+# --------------------------------
+Illegal.Argument\:.Missing.Resource.Bootstrap.Properties=SRVE0086E: \u975e\u6cd5\u53c2\u6570\u5f02\u5e38\uff1a\u7f3a\u5c11\u8d44\u6e90\u5f15\u5bfc\u7a0b\u5e8f\u5c5e\u6027
+Illegal.Argument\:.Missing.Resource.Bootstrap.Properties.explanation=\u5185\u90e8\u670d\u52a1\u5668\u9519\u8bef\u3002
+Illegal.Argument\:.Missing.Resource.Bootstrap.Properties.useraction=\u8bf7\u6536\u96c6\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+# --------------------------------
+Servlet.unload.initiated\:.{0}=SRVE0097I: \u5df2\u521d\u59cb\u5316 Servlet \u5378\u8f7d\uff1a{0}
+Servlet.unload.initiated\:.{0}.explanation=\u6b63\u4ece\u670d\u52a1\u5378\u88c5\u6307\u5b9a\u7684 servlet\u3002
+Servlet.unload.initiated\:.{0}.useraction=\u65e0\u3002
+
+# --------------------------------
+Object.Pool.Exception.Class.could.not.be.instantiated.[{0}]=SRVE0099E: \u5bf9\u8c61\u6c60\u5f02\u5e38\uff1a\u65e0\u6cd5\u5b9e\u4f8b\u5316\u7c7b [{0}]\u3002
+Object.Pool.Exception.Class.could.not.be.instantiated.[{0}].explanation=\u65e0\u6cd5\u5b9e\u4f8b\u5316\u7c7b\uff0c\u4f7f\u5bf9\u8c61\u6c60\u80fd\u4f7f\u7528\u5b83\u3002\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+Object.Pool.Exception.Class.could.not.be.instantiated.[{0}].useraction=\u8bf7\u786e\u4fdd\u7c7b\u5b58\u5728\u5e76\u4e14\u5728\u5e94\u7528\u7a0b\u5e8f\u7c7b\u8def\u5f84\u4e2d\u53ef\u89c6\u3002
+
+# --------------------------------
+Uncaught.init().exception.thrown.by.servlet.{0}\:.{2}=SRVE0100E: \u5e94\u7528\u7a0b\u5e8f {1} \u4e2d\u7684 servlet {0} \u521b\u5efa\u4e86\u672a\u6355\u83b7\u5230\u7684 init() \u5f02\u5e38\uff1a{2}
+Uncaught.init().exception.thrown.by.servlet.{0}\:.{2}.explanation=\u65e0\u6cd5\u521d\u59cb\u5316\u6307\u5b9a\u7684 Servlet\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+Uncaught.init().exception.thrown.by.servlet.{0}\:.{2}.useraction=\u8bf7\u786e\u4fdd servlet \u7c7b\u6587\u4ef6\u5728\u5e94\u7528\u7a0b\u5e8f\u7c7b\u8def\u5f84\u4e0a\u53ef\u7528\u3002
+
+# --------------------------------
+Illegal.Argument\:.ScriptName.must.be.the.first.part.of.the.URI=SRVE0103E: \u975e\u6cd5\u53c2\u6570\u5f02\u5e38\uff1a\u811a\u672c\u540d\u5fc5\u987b\u662f URI \u7684\u7b2c\u4e00\u90e8\u5206
+Illegal.Argument\:.ScriptName.must.be.the.first.part.of.the.URI.explanation=\u8fd9\u662f\u53ef\u80fd\u7531\u5148\u524d\u6545\u969c\u5bfc\u81f4\u7684\u5185\u90e8\u7cfb\u7edf\u9519\u8bef\u3002
+Illegal.Argument\:.ScriptName.must.be.the.first.part.of.the.URI.useraction=\u8bf7\u68c0\u67e5\u670d\u52a1\u5668\u65e5\u5fd7\uff0c\u4ee5\u786e\u5b9a\u95ee\u9898\u7684\u6839\u672c\u539f\u56e0\u3002\u5982\u679c\u6ca1\u6709\u76f8\u5173\u6d88\u606f\uff0c\u6216\u8005\u5b83\u4eec\u5bf9\u4e8e\u89e3\u51b3\u95ee\u9898\u6ca1\u6709\u5e2e\u52a9\uff0c\u8bf7\u4e0e IBM \u652f\u6301\u4eba\u5458\u8054\u7cfb\u3002
+
+# --------------------------------
+Session.releaseSession().threw.an.unexpected.exception=SRVE0105E: Session.releaseSession() \u4e2d\u53d1\u751f\u5f02\u5e38
+Session.releaseSession().threw.an.unexpected.exception.explanation=\u53d1\u5e03\u4f1a\u8bdd\u65f6\u53d1\u751f\u7684\u95ee\u9898\u3002
+Session.releaseSession().threw.an.unexpected.exception.useraction=\u8bf7\u68c0\u67e5\u670d\u52a1\u5668\u65e5\u5fd7\uff0c\u4ee5\u786e\u5b9a\u95ee\u9898\u7684\u6839\u672c\u539f\u56e0\u3002\u5982\u679c\u6ca1\u6709\u76f8\u5173\u6d88\u606f\uff0c\u6216\u8005\u5b83\u4eec\u5bf9\u4e8e\u89e3\u51b3\u95ee\u9898\u6ca1\u6709\u5e2e\u52a9\uff0c\u8bf7\u4e0e IBM \u652f\u6301\u4eba\u5458\u8054\u7cfb\u3002
+
+# --------------------------------
+Illegal.Argument\:.Missing.flag.value=SRVE0108E: \u975e\u6cd5\u53c2\u6570\u5f02\u5e38\uff1a\u7f3a\u5c11\u6807\u5fd7\u503c
+Illegal.Argument\:.Missing.flag.value.explanation=\u7f3a\u5c11\u6807\u5fd7\u503c\u3002
+Illegal.Argument\:.Missing.flag.value.useraction=\u8bf7\u68c0\u67e5\u670d\u52a1\u5668\u65e5\u5fd7\uff0c\u4ee5\u786e\u5b9a\u95ee\u9898\u7684\u6839\u672c\u539f\u56e0\u3002\u5982\u679c\u6ca1\u6709\u76f8\u5173\u6d88\u606f\uff0c\u6216\u8005\u5b83\u4eec\u5bf9\u4e8e\u89e3\u51b3\u95ee\u9898\u6ca1\u6709\u5e2e\u52a9\uff0c\u8bf7\u4e0e IBM \u652f\u6301\u4eba\u5458\u8054\u7cfb\u3002
+
+# --------------------------------
+Illegal.Argument\:.Invalid.ObjectPool.Instantiated.=SRVE0109E: \u975e\u6cd5\u53c2\u6570\u5f02\u5e38\uff1a\u5b9e\u4f8b\u5316\u7684 ObjectPool \u65e0\u6548\u3002
+Illegal.Argument\:.Invalid.ObjectPool.Instantiated..explanation=\u8fd9\u662f\u53ef\u80fd\u7531\u5148\u524d\u6545\u969c\u5bfc\u81f4\u7684\u5185\u90e8\u7cfb\u7edf\u9519\u8bef\u3002
+Illegal.Argument\:.Invalid.ObjectPool.Instantiated..useraction=\u8bf7\u68c0\u67e5\u670d\u52a1\u5668\u65e5\u5fd7\uff0c\u4ee5\u786e\u5b9a\u95ee\u9898\u7684\u6839\u672c\u539f\u56e0\u3002\u5982\u679c\u6ca1\u6709\u76f8\u5173\u6d88\u606f\uff0c\u6216\u8005\u5b83\u4eec\u5bf9\u4e8e\u89e3\u51b3\u95ee\u9898\u6ca1\u6709\u5e2e\u52a9\uff0c\u8bf7\u4e0e IBM \u652f\u6301\u4eba\u5458\u8054\u7cfb\u3002
+
+# --------------------------------
+Error.occurred.while.invoking.error.reporter=SRVE0115E: \u8c03\u7528\u9519\u8bef\u62a5\u544a\u7a0b\u5e8f {0} \u65f6\u51fa\u9519
+Error.occurred.while.invoking.error.reporter.explanation=\u8c03\u7528\u6307\u5b9a\u7684\u9519\u8bef\u62a5\u544a\u7a0b\u5e8f\u65f6\u53d1\u751f\u7684\u95ee\u9898\u3002
+Error.occurred.while.invoking.error.reporter.useraction=\u8bf7\u68c0\u67e5\u670d\u52a1\u5668\u65e5\u5fd7\uff0c\u4ee5\u786e\u5b9a\u95ee\u9898\u7684\u6839\u672c\u539f\u56e0\u3002\u5982\u679c\u6ca1\u6709\u76f8\u5173\u6d88\u606f\uff0c\u6216\u8005\u5b83\u4eec\u5bf9\u4e8e\u89e3\u51b3\u95ee\u9898\u6ca1\u6709\u5e2e\u52a9\uff0c\u8bf7\u4e0e IBM \u652f\u6301\u4eba\u5458\u8054\u7cfb\u3002
+
+# --------------------------------
+IO.Error=SRVE0120E: IO \u9519\u8bef {0}
+IO.Error.explanation=\u9047\u5230 IO \u9519\u8bef\u3002
+IO.Error.useraction=\u6839\u636e\u62a5\u544a\u7684\u6839\u672c\u539f\u56e0\u6539\u53d8\u3002
+
+# --------------------------------
+Illegal.Argument\:.Trying.to.write.<.0.bytes=SRVE0121E: \u975e\u6cd5\u53c2\u6570\u5f02\u5e38\uff1a\u5c1d\u8bd5\u5199\u5165\u7684\u5b57\u8282\u6570\u5c0f\u4e8e 0
+Illegal.Argument\:.Trying.to.write.<.0.bytes.explanation=\u5c1d\u8bd5\u8f93\u51fa\u5927\u5c0f\u5c0f\u4e8e 0 \u7684\u7f13\u51b2\u533a\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+Illegal.Argument\:.Trying.to.write.<.0.bytes.useraction=\u4ec5\u5199\u5927\u5c0f\u4e3a 0 \u6216\u8005\u5927\u4e8e 0 \u7684\u7f13\u51b2\u533a\u3002
+
+# --------------------------------
+Invalidation.Exception\:.{0}.was.created=SRVE0126E: \u5931\u6548\u5f02\u5e38\uff1a{0} \u5df2\u521b\u5efa
+Invalidation.Exception\:.{0}.was.created.explanation=\u8fd9\u662f\u53ef\u80fd\u7531\u5148\u524d\u6545\u969c\u5bfc\u81f4\u7684\u5185\u90e8\u7cfb\u7edf\u9519\u8bef\u3002
+Invalidation.Exception\:.{0}.was.created.useraction=\u8bf7\u68c0\u67e5\u670d\u52a1\u5668\u65e5\u5fd7\uff0c\u4ee5\u786e\u5b9a\u95ee\u9898\u7684\u6839\u672c\u539f\u56e0\u3002\u5982\u679c\u6ca1\u6709\u76f8\u5173\u6d88\u606f\uff0c\u6216\u8005\u5b83\u4eec\u5bf9\u4e8e\u89e3\u51b3\u95ee\u9898\u6ca1\u6709\u5e2e\u52a9\uff0c\u8bf7\u4e0e IBM \u652f\u6301\u4eba\u5458\u8054\u7cfb\u3002
+
+# --------------------------------
+Error.Parsing.Parameters=SRVE0133E: \u89e3\u6790\u53c2\u6570\u65f6\u53d1\u751f\u9519\u8bef\u3002{0}
+Error.Parsing.Parameters.explanation=\u89e3\u6790 servlet \u53c2\u6570\u65f6\u9047\u5230\u4e86\u95ee\u9898\u3002
+Error.Parsing.Parameters.useraction=\u8bf7\u9a8c\u8bc1\u5ba2\u6237\u673a\u662f\u5426\u6b63\u53d1\u9001\u5b8c\u6574\u8bf7\u6c42\u3002
+
+# --------------------------------
+postInvoke.Security.Exception=SRVE0138E: postInvoke \u5b89\u5168\u6027\u5f02\u5e38
+postInvoke.Security.Exception.explanation=\u8bf7\u6c42\u5904\u7406\u671f\u95f4\u9047\u5230\u5b89\u5168\u6027\u95ee\u9898\u3002\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+postInvoke.Security.Exception.useraction=\u8bf7\u68c0\u67e5\u670d\u52a1\u5668\u65e5\u5fd7\uff0c\u4ee5\u786e\u5b9a\u95ee\u9898\u7684\u6839\u672c\u539f\u56e0\u3002\u5982\u679c\u6ca1\u6709\u76f8\u5173\u6d88\u606f\uff0c\u6216\u8005\u5b83\u4eec\u5bf9\u4e8e\u89e3\u51b3\u95ee\u9898\u6ca1\u6709\u5e2e\u52a9\uff0c\u8bf7\u4e0e IBM \u652f\u6301\u4eba\u5458\u8054\u7cfb\u3002
+
+# --------------------------------
+preInvoke.Security.Exception=SRVE0139E: \u5b89\u5168\u6027 preInvoke {0} \u4e2d\u53d1\u751f\u5f02\u5e38
+preInvoke.Security.Exception.explanation=\u8bf7\u6c42\u5904\u7406\u671f\u95f4\u9047\u5230\u5b89\u5168\u6027\u95ee\u9898\u3002\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+preInvoke.Security.Exception.useraction=\u9700\u8981\u6267\u884c\u7684\u64cd\u4f5c\u53d6\u51b3\u4e8e\u6839\u672c\u539f\u56e0\u3002
+
+# --------------------------------
+instantiate.collaborator.exception=SRVE0140E: \u65e0\u6cd5\u5b9e\u4f8b\u5316\u5b89\u5168\u6027\u534f\u8c03\u7a0b\u5e8f {0}
+instantiate.collaborator.exception.explanation=\u5185\u90e8\u670d\u52a1\u5668\u9519\u8bef\u3002
+instantiate.collaborator.exception.useraction=\u8bf7\u6536\u96c6\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+# --------------------------------
+failed.to.load.encoding.properties=SRVE0155E: \u65e0\u6cd5\u88c5\u5165 encoding.properties \u6587\u4ef6 {0}
+failed.to.load.encoding.properties.explanation=\u65e0\u6cd5\u88c5\u5165\u6307\u5b9a\u7684\u6587\u4ef6\u3002\u9700\u8981\u7cfb\u7edf\u64cd\u4f5c\u3002
+failed.to.load.encoding.properties.useraction=\u8bf7\u786e\u4fdd\u6307\u5b9a\u7684\u6587\u4ef6\u5b58\u5728\uff0c\u5e76\u4e14\u5b83\u7684\u683c\u5f0f\u662f\u7b26\u5408 java.utils.Properties \u7684\u6b63\u786e\u683c\u5f0f\u3002
+
+# --------------------------------
+failed.to.load.converter.properties=SRVE0156E: \u65e0\u6cd5\u88c5\u5165 converter.properties \u6587\u4ef6 {0}
+failed.to.load.converter.properties.explanation=\u65e0\u6cd5\u88c5\u5165\u6307\u5b9a\u7684\u6587\u4ef6\u3002\u9700\u8981\u7cfb\u7edf\u64cd\u4f5c\u3002
+failed.to.load.converter.properties.useraction=\u8bf7\u786e\u4fdd\u6307\u5b9a\u7684\u6587\u4ef6\u5b58\u5728\uff0c\u5e76\u4e14\u5b83\u7684\u683c\u5f0f\u662f\u7b26\u5408 java.utils.Properties \u7684\u6b63\u786e\u683c\u5f0f\u3002
+
+# --------------------------------
+setbuffer.size.called.after.write=SRVE0157E: \u7b2c\u4e00\u6b21\u5199\u5165\u8f93\u51fa\u6d41/\u5199\u7a0b\u5e8f\u4e4b\u540e\u8c03\u7528\u4e86 setBufferSize()
+setbuffer.size.called.after.write.explanation=\u5c1d\u8bd5\u5728\u843d\u5b9e\u54cd\u5e94\u540e\u8bbe\u7f6e\u54cd\u5e94\u7f13\u51b2\u533a\u5927\u5c0f\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+setbuffer.size.called.after.write.useraction=\u8bf7\u5728\u79fb\u9664 setBufferSize() \u8c03\u7528\u6216\u8005\u5728\u54cd\u5e94\u843d\u5b9e\u4e4b\u524d\u5c06\u5176\u79fb\u52a8\u5230\u67d0\u4e2a\u4f4d\u7f6e\u3002
+
+# --------------------------------
+usertransaction.rollback.exception=SRVE0160E: \u56de\u6eda UserTransaction \u65f6\u53d1\u751f\u5f02\u5e38\uff1a{0}
+usertransaction.rollback.exception.explanation=\u56de\u6eda\u6307\u5b9a\u7684\u7528\u6237\u4e8b\u52a1\u65f6\u9047\u5230\u4e86\u95ee\u9898\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+usertransaction.rollback.exception.useraction=\u8bf7\u68c0\u67e5\u670d\u52a1\u5668\u65e5\u5fd7\uff0c\u4ee5\u786e\u5b9a\u95ee\u9898\u7684\u6839\u672c\u539f\u56e0\u3002\u5982\u679c\u6ca1\u6709\u76f8\u5173\u6d88\u606f\uff0c\u6216\u8005\u5b83\u4eec\u5bf9\u4e8e\u89e3\u51b3\u95ee\u9898\u6ca1\u6709\u5e2e\u52a9\uff0c\u8bf7\u4e0e IBM \u652f\u6301\u4eba\u5458\u8054\u7cfb\u3002
+
+# --------------------------------
+web.container.copyright=SRVE0161I: IBM WebSphere Application Server - Web \u5bb9\u5668\u3002Copyright IBM Corp.1998-2012
+web.container.copyright.explanation=\u5e94\u7528\u7a0b\u5e8f\u670d\u52a1\u5668\u6807\u8bc6\u3002
+web.container.copyright.useraction=\u65e0\u3002
+
+# --------------------------------
+web.container.servlet.spec.level=SRVE0162I: Servlet \u89c4\u8303\u7ea7\u522b\uff1a3.0
+web.container.servlet.spec.level.explanation=\u5e94\u7528\u7a0b\u5e8f\u670d\u52a1\u5668\u652f\u6301\u7684 servlet \u89c4\u8303\u7ea7\u522b\u3002
+web.container.servlet.spec.level.useraction=\u65e0\u3002
+
+# --------------------------------
+web.container.jsp.spec.level=SRVE0163I: \u53d7\u652f\u6301\u7684 JSP \u89c4\u8303\u7ea7\u522b\uff1a2.2
+web.container.jsp.spec.level.explanation=\u5e94\u7528\u7a0b\u5e8f\u670d\u52a1\u5668\u652f\u6301\u7684 JSP \u89c4\u8303\u7ea7\u522b\u3002
+web.container.jsp.spec.level.useraction=\u65e0\u3002
+
+# --------------------------------
+context.root.already.in.use=SRVE0164E: Web \u5e94\u7528\u7a0b\u5e8f {0} \u4f7f\u7528\u4e0a\u4e0b\u6587\u6839 {1}\uff0c\u5b83\u5df2\u7531 Web \u5e94\u7528\u7a0b\u5e8f {2} \u4f7f\u7528\u3002\u5c06\u4e0d\u4f1a\u88c5\u5165 Web \u5e94\u7528\u7a0b\u5e8f {3}\u3002
+context.root.already.in.use.explanation=\u5728\u540c\u4e00\u865a\u62df\u4e3b\u673a\u4e0a\u7684\u4e24\u4e2a Web \u5e94\u7528\u7a0b\u5e8f\u5171\u4eab\u540c\u4e00\u4e0a\u4e0b\u6587\u6839\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+context.root.already.in.use.useraction=\u8bf7\u66f4\u6539\u5176\u4e2d\u4e00\u4e2a Web \u5e94\u7528\u7a0b\u5e8f\u7684\u4e0a\u4e0b\u6587\u6839\u6216\u5c06\u4e00\u4e2a Web \u5e94\u7528\u7a0b\u5e8f\u79fb\u52a8\u5230\u4e0d\u540c\u7684\u865a\u62df\u4e3b\u673a\u4e0a\u3002
+
+# --------------------------------
+loading.web.module=SRVE0169I: \u6b63\u5728\u88c5\u5165 Web \u6a21\u5757\uff1a{0}\u3002
+loading.web.module.explanation=Web \u6a21\u5757\u6b63\u5728\u542f\u52a8\u5e76\u4e14\u5c06\u5bf9\u670d\u52a1\u53ef\u7528\u3002
+loading.web.module.useraction=\u65e0\u3002
+
+# --------------------------------
+[{0}][{1}][Servlet.LOG]\:.{2}=SRVE0180I: [{0}] [{1}] [Servlet.LOG]: {2}
+[{0}][{1}][Servlet.LOG]\:.{2}.explanation=\u901a\u8fc7 ServletContext.log \u8bb0\u5f55\u4e86\u5e94\u7528\u7a0b\u5e8f\u7684\u53c2\u8003\u6d88\u606f\u3002
+[{0}][{1}][Servlet.LOG]\:.{2}.useraction=\u65e0\u3002
+
+# --------------------------------
+[{0}][{1}][Servlet.LOG]\:.{2}\:.{3}=SRVE0181I: [{0}] [{1}] [Servlet.LOG]: {2}: {3}
+[{0}][{1}][Servlet.LOG]\:.{2}\:.{3}.explanation=\u901a\u8fc7 ServletContext.log \u8bb0\u5f55\u4e86\u5e94\u7528\u7a0b\u5e8f\u7684\u53c2\u8003\u6d88\u606f\u548c\u5806\u6808\u8ddf\u8e2a\u3002
+[{0}][{1}][Servlet.LOG]\:.{2}\:.{3}.useraction=\u65e0\u3002
+
+# --------------------------------
+error.occurred.processing.request=SRVE0185E: \u5904\u7406\u8bf7\u6c42\u65f6\u53d1\u751f\u4e86\u9519\u8bef\uff1a
+error.occurred.processing.request.explanation=\u5904\u7406\u8bf7\u6c42\u65f6\u53d1\u751f\u4e86\u5f02\u5e38\u3002
+error.occurred.processing.request.useraction=\u8bf7\u67e5\u770b\u6b64\u6d88\u606f\u4ee5\u786e\u5b9a\u95ee\u9898\u7684\u6839\u672c\u539f\u56e0\u3002
+
+# -----------------------------------------------
+Cannot.set.buffer.size.after.data=SRVE0186E: \u5c06\u6570\u636e\u5199\u5165\u6d41\u4e4b\u540e\uff0c\u65e0\u6cd5\u8bbe\u7f6e\u7f13\u51b2\u533a\u5927\u5c0f
+Cannot.set.buffer.size.after.data.explanation=\u67d0\u4e9b\u6570\u636e\u5df2\u5199\u81f3\u6d41\uff0c\u56e0\u6b64\u65e0\u6cd5\u518d\u63a7\u5236\u7f13\u51b2\u533a\u5927\u5c0f\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+Cannot.set.buffer.size.after.data.useraction=\u8bf7\u5728\u5199\u5165\u6570\u636e\u4e4b\u524d\u8bbe\u7f6e\u7f13\u51b2\u533a\u5927\u5c0f\u6216\u5728\u8bbe\u7f6e\u5927\u5c0f\u524d\u590d\u4f4d\u7f13\u51b2\u533a\u3002
+
+# -----------------------------------------------
+Check.your.classpath.ensure.all.classes.present=SRVE0187E: \u68c0\u67e5\u60a8\u7684\u7c7b\u8def\u5f84\uff0c\u4ee5\u786e\u4fdd servlet \u9700\u8981\u7684\u6240\u6709\u7c7b\u90fd\u5b58\u5728\u3002
+Check.your.classpath.ensure.all.classes.present.explanation=\u627e\u4e0d\u5230\u6240\u9700\u7684\u7c7b\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+Check.your.classpath.ensure.all.classes.present.useraction=\u8bf7\u786e\u4fdd\u7c7b\u8def\u5f84\u53cd\u6620\u4e86\u60a8\u53ef\u80fd\u8bbf\u95ee\u7684\u6240\u6709\u7c7b
+
+# -----------------------------------------------
+Class.{0}.does.not.implement.servlet=SRVE0188E: \u7c7b {0} \u672a\u5b9e\u73b0 servlet
+Class.{0}.does.not.implement.servlet.explanation=\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+Class.{0}.does.not.implement.servlet.useraction=\u63d0\u5230\u7684\u7c7b\u9700\u8981\u5b9e\u73b0 javax.servlet.Servlet\uff0c\u6216\u8005\u6269\u5c55 javax.servlet.GenericServlet \u6216 javax.servlet.http.HttpServlet \u7684\u5176\u4e2d\u4e4b\u4e00\u3002
+
+# -----------------------------------------------
+Error.occurred.while.finishing.request=SRVE0189E: \u5b8c\u6210\u8bf7\u6c42\u65f6\u53d1\u751f\u9519\u8bef
+Error.occurred.while.finishing.request.explanation=\u8fd9\u662f\u5b8c\u6210\u8bf7\u6c42\u65f6\u51fa\u9519\u3002\u53ef\u80fd\u56e0\u4e3a\u5e94\u7528\u7a0b\u5e8f\u670d\u52a1\u5668\u4e2d\u7684\u901a\u4fe1\u9519\u8bef\u800c\u53d1\u751f\u6b64\u9519\u8bef\uff0c\u4f46\u6b64\u9519\u8bef\u4e0d\u5e94\u5f71\u54cd\u8bf7\u6c42\u7684\u5904\u7406\u3002\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+Error.occurred.while.finishing.request.useraction=\u65e0\u3002
+
+# -----------------------------------------------
+File.not.found=SRVE0190E: \u627e\u4e0d\u5230\u6587\u4ef6\uff1a{0}
+File.not.found.explanation=\u627e\u4e0d\u5230\u63d0\u5230\u7684\u6587\u4ef6\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+File.not.found.useraction=\u8bf7\u786e\u4fdd\u63d0\u5230\u7684\u6587\u4ef6\u6240\u5904\u4f4d\u7f6e\u6b63\u786e\u3002
+
+# -----------------------------------------------
+Illegal.from.included.servlet=SRVE0194E: \u5305\u62ec\u7684 servlet \u975e\u6cd5
+Illegal.from.included.servlet.explanation=\u65e0\u6cd5\u5728\u5305\u542b\u7684 servlet/JSP \u4e2d\u6267\u884c\u5c1d\u8bd5\u7684\u64cd\u4f5c\uff08\u8bf7\u53c2\u9605 servlet \u89c4\u8303\uff09\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+Illegal.from.included.servlet.useraction=\u8bf7\u4fee\u6539\u5931\u8d25\u7684 servlet/JSP\u3002
+
+# -----------------------------------------------
+Missing.required.initialization.parameter=SRVE0196E: \u7f3a\u5c11\u5fc5\u9700\u7684\u521d\u59cb\u5316\u53c2\u6570\uff1a{0}
+Missing.required.initialization.parameter.explanation=\u6240\u63d0\u5230\u540d\u79f0\u7684\u53c2\u6570\u6ca1\u6709\u503c\u3002\u8fd9\u662f\u5fc5\u9700\u53c2\u6570\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+Missing.required.initialization.parameter.useraction=\u8bf7\u5bf9\u63d0\u5230\u7684\u53c2\u6570\u63d0\u4f9b\u503c\u3002
+
+# -----------------------------------------------
+OutputStream.already.obtained=SRVE0199E: \u5df2\u83b7\u53d6\u4e86 OutputStream
+OutputStream.already.obtained.explanation=\u5728\u83b7\u5f97 ServletResponse OutputStream \u4e4b\u540e\uff0c\u5e94\u7528\u7a0b\u5e8f\u8bf7\u6c42\u4e86 PrintWriter\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+OutputStream.already.obtained.useraction=\u8bf7\u67e5\u770b\u5e94\u7528\u7a0b\u5e8f\u4ee5\u786e\u5b9a\u662f\u5426\u83b7\u5f97\u4e86 PrintWriter \u548c OuputStream\u3002\u8bf7\u4fee\u6539\u5931\u8d25\u7684 servlet/JSP \u4ee5\u4fbf\u4ec5\u83b7\u5f97\u5176\u4e2d\u4e4b\u4e00\u3002
+
+# -----------------------------------------------
+Servlet.Could.not.find.required.servlet.class=SRVE0200E: Servlet [{0}]\uff1a\u627e\u4e0d\u5230\u5fc5\u9700\u7c7b - {1}
+Servlet.Could.not.find.required.servlet.class.explanation=servlet \u627e\u4e0d\u5230\u5904\u7406\u6b64\u8bf7\u6c42\u6240\u9700\u7684\u7c7b\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+Servlet.Could.not.find.required.servlet.class.useraction=\u8bf7\u9a8c\u8bc1\u5e94\u7528\u7a0b\u5e8f\u4e2d\u662f\u5426\u5b58\u5728\u6b64\u7c7b\u3002
+
+# -----------------------------------------------
+Servlet.not.a.servlet.class=SRVE0201E: Servlet [{0}]\uff1a\u4e0d\u662f servlet \u7c7b
+Servlet.not.a.servlet.class.explanation=\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+Servlet.not.a.servlet.class.useraction=\u8bf7\u4fee\u6539\u5931\u8d25\u7684\u7c7b\u4ee5\u5b9e\u73b0 javax.servlet.Servlet\uff0c\u6216\u8005\u6269\u5c55 javax.servlet.GenericServlet \u6216 javax.servlet.http.HttpServlet \u7684\u5176\u4e2d\u4e4b\u4e00
+
+# -----------------------------------------------
+Servlet.found.but.corrupt=SRVE0202E: Servlet [{0}]\uff1a\u627e\u5230 {1}\uff0c\u4f46\u5b83\u5df2\u635f\u574f\uff1a\n
+Servlet.found.but.corrupt.explanation=\u53d1\u73b0 servlet \u7c7b\u5df2\u9500\u6bc1\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+Servlet.found.but.corrupt.useraction=\u8bf7\u91cd\u65b0\u7f16\u8bd1\u6b64\u7c7b\u5e76\u91cd\u8bd5\u3002
+
+# -----------------------------------------------
+Servlet.was.found.but.is.missing.another.required.class=SRVE0203E: Servlet [{0}]\uff1a\u627e\u5230 {1}\uff0c\u4f46\u7f3a\u5c11\u53e6\u4e00\u4e2a\u5fc5\u9700\u7c7b\u3002\n
+Servlet.was.found.but.is.missing.another.required.class.explanation=\u627e\u4e0d\u5230\u6240\u9700\u7684\u7c7b\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+Servlet.was.found.but.is.missing.another.required.class.useraction=\u8bf7\u786e\u4fdd\u6240\u6709\u5fc5\u9700\u7684\u7c7b\u90fd\u5728\u8868\u793a\u6b64\u7c7b\u8def\u5f84\u7684\u6587\u4ef6\u5939/JAR \u4e2d\u3002
+
+# -----------------------------------------------
+host.has.not.been.defined=SRVE0204E: \u5c1a\u672a\u5b9a\u4e49\u4e3b\u673a {0}
+host.has.not.been.defined.explanation=\u672a\u627e\u5230\u865a\u62df\u4e3b\u673a\u3002\u9700\u8981\u7cfb\u7edf\u64cd\u4f5c\u3002
+host.has.not.been.defined.useraction=\u8bf7\u68c0\u67e5 virtualhosts.xml \u6587\u4ef6\u4e2d\u7684\u865a\u62df\u4e3b\u673a\u914d\u7f6e\u6216\u901a\u8fc7\u7ba1\u7406\u63a7\u5236\u53f0\u8fdb\u884c\u68c0\u67e5\u3002
+
+# -----------------------------------------------
+host.on.port.has.not.been.defined=SRVE0205E: \u5c1a\u672a\u5b9a\u4e49\u7aef\u53e3 {1} \u4e0a\u7684\u4e3b\u673a {0}\u3002
+
+host.on.port.has.not.been.defined.explanation=\u627e\u4e0d\u5230\u5b9a\u4e49\u4e3a\u5904\u7406\u6b64\u8bf7\u6c42 URI \u7684\u865a\u62df\u4e3b\u673a\u3002\u9700\u8981\u7cfb\u7edf\u64cd\u4f5c\u3002
+host.on.port.has.not.been.defined.useraction=\u8bf7\u68c0\u67e5 virtualhosts.xml \u6587\u4ef6\u4e2d\u7684\u865a\u62df\u4e3b\u673a\u914d\u7f6e\u6216\u901a\u8fc7\u7ba1\u7406\u63a7\u5236\u53f0\u8fdb\u884c\u68c0\u67e5\u3002
+
+# -----------------------------------------------
+This.error.implies.servlet.was.originally.compiled.with.classes.which.cannot.be.located.by.server=SRVE0206E: \u6b64\u9519\u8bef\u901a\u5e38\u610f\u5473\u7740 servlet \u6700\u521d\u662f\u7528\u670d\u52a1\u5668\u627e\u4e0d\u5230\u7684\u7c7b\u6765\u7f16\u8bd1\u7684\u3002\n
+This.error.implies.servlet.was.originally.compiled.with.classes.which.cannot.be.located.by.server.explanation=\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+This.error.implies.servlet.was.originally.compiled.with.classes.which.cannot.be.located.by.server.useraction=\u8bf7\u91cd\u65b0\u7f16\u8bd1\u6b64 servlet \u5e76\u786e\u4fdd\u6240\u6709\u5fc5\u9700\u7ec4\u4ef6\u90fd\u5728\u6b64\u7c7b\u8def\u5f84\u4e2d\u3002
+
+# -----------------------------------------------
+Uncaught.initialization.exception.thrown.by.servlet=SRVE0207E: servlet \u521b\u5efa\u4e86\u672a\u6355\u83b7\u5230\u7684\u521d\u59cb\u5316\u5f02\u5e38
+Uncaught.initialization.exception.thrown.by.servlet.explanation=\u76ee\u6807\u5728\u521d\u59cb\u5316\u671f\u95f4\u629b\u51fa\u4e86\u7528\u6237\u4ee3\u7801\u672a\u6355\u83b7\u5230\u7684\u5f02\u5e38\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+Uncaught.initialization.exception.thrown.by.servlet.useraction=\u8bf7\u8bf4\u660e\u76ee\u6807\u4ee3\u7801\u4e2d\u7684\u5f02\u5e38\u3002
+
+# -----------------------------------------------
+Unsupported.conversion=SRVE0208E: \u4e0d\u652f\u6301\u7684\u8f6c\u6362
+Unsupported.conversion.explanation=\u4ee3\u7801\u5c1d\u8bd5\u6267\u884c\u975e\u6cd5\u5934\u503c\u8f6c\u6362\u3002\u4f8b\u5982\uff0c\u4ece\u6574\u6570\u8f6c\u6362\u5230\u6570\u636e\uff0c\u800c\u6b64\u7c7b\u8f6c\u6362\u662f\u4e0d\u53ef\u80fd\u7684\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+Unsupported.conversion.useraction=\u8bf7\u4fee\u6539\u5931\u8d25\u7684 servlet/JSP\u3002
+
+# -----------------------------------------------
+Writer.already.obtained=SRVE0209E: \u5df2\u83b7\u53d6\u4e86\u5199\u7a0b\u5e8f
+Writer.already.obtained.explanation=\u5df2\u83b7\u53d6\u6b64\u54cd\u5e94\u7684\u5199\u7a0b\u5e8f\u3002\u4f7f\u7528\u73b0\u6709\u5199\u7a0b\u5e8f\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+Writer.already.obtained.useraction=\u8bf7\u67e5\u770b\u5e94\u7528\u7a0b\u5e8f\u4ee5\u786e\u5b9a\u662f\u5426\u83b7\u5f97\u4e86 PrintWriter \u548c OuputStream\u3002\u8bf7\u4fee\u6539\u5931\u8d25\u7684 servlet/JSP \u4ee5\u4fbf\u4ec5\u83b7\u5f97\u5176\u4e2d\u4e4b\u4e00\u3002
+
+# -----------------------------------------------
+be.debugged.by.recompiling.the.servlet.using.only.the.classes.in.the.application's.runtime.classpath=SRVE0210I: \u901a\u8fc7\u4ec5\u4f7f\u7528\u5e94\u7528\u7a0b\u5e8f\u7684\u8fd0\u884c\u65f6\u7c7b\u8def\u5f84\u4e2d\u7684\u7c7b\u91cd\u65b0\u7f16\u8bd1 servlet\uff0c\u53ef\u4ee5\u8c03\u8bd5\u6b64\u95ee\u9898\n
+be.debugged.by.recompiling.the.servlet.using.only.the.classes.in.the.application's.runtime.classpath.explanation=\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+be.debugged.by.recompiling.the.servlet.using.only.the.classes.in.the.application's.runtime.classpath.useraction=\u4ec5\u4f7f\u7528\u5e94\u7528\u7a0b\u5e8f\u8fd0\u884c\u65f6\u7c7b\u8def\u5f84\u4e2d\u7684\u7c7b\u91cd\u65b0\u7f16\u8bd1 Servlet\u3002
+
+# -----------------------------------------------
+class.{0}.could.not.be.instantiated=SRVE0211E: \u65e0\u6cd5\u5b9e\u4f8b\u5316\u7c7b {0}
+class.{0}.could.not.be.instantiated.explanation=\u5185\u90e8\u5f02\u5e38\u3002
+class.{0}.could.not.be.instantiated.useraction=CMSG0002
+# -----------------------------------------------
+class.{0}.not.accessible=SRVE0212E: \u65e0\u6cd5\u8bbf\u95ee\u7c7b {0}
+class.{0}.not.accessible.explanation=\u5185\u90e8\u5f02\u5e38\u3002
+class.{0}.not.accessible.useraction=CMSG0002
+# -----------------------------------------------
+class.not.found=SRVE0213E: \u627e\u4e0d\u5230\u7c7b
+class.not.found.explanation=\u5185\u90e8\u5f02\u5e38\u3002
+class.not.found.useraction=CMSG0002
+# -----------------------------------------------
+invalid.count=SRVE0214E: \u8ba1\u6570\u65e0\u6548
+invalid.count.explanation=\u5185\u90e8\u5f02\u5e38\u3002
+invalid.count.useraction=CMSG0002
+# -----------------------------------------------
+non-HTTP.request.or.response=SRVE0215E: \u975e HTTP \u8bf7\u6c42\u6216\u54cd\u5e94
+non-HTTP.request.or.response.explanation=\u5df2\u5b9a\u4e49\u7684 servlet \u94fe\u53ea\u80fd\u5904\u7406 HTTP \u8bf7\u6c42\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+non-HTTP.request.or.response.useraction=\u65e0\u3002
+
+# -----------------------------------------------
+post.body.contains.less.bytes.than.specified=SRVE0216E: post \u4e3b\u4f53\u5305\u542b\u7684\u5b57\u8282\u6bd4\u5185\u5bb9\u957f\u5ea6\u6307\u5b9a\u7684\u5b57\u8282\u8981\u5c11
+post.body.contains.less.bytes.than.specified.explanation=\u5165\u5c40\u8bf7\u6c42\u53ef\u80fd\u5df2\u9500\u6bc1\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+post.body.contains.less.bytes.than.specified.useraction=\u65e0\u3002
+
+# -----------------------------------------------
+{0}.is.not.a.valid.class=SRVE0217E: {0} \u4e0d\u662f\u6709\u6548\u7684\u7c7b
+{0}.is.not.a.valid.class.explanation=Web \u5bb9\u5668\u5c1d\u8bd5\u88c5\u5165\u5185\u90e8\u5b9e\u73b0\u7c7b\u65f6\u53d1\u751f\u6b64\u9519\u8bef\u3002\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+{0}.is.not.a.valid.class.useraction=\u8bf7\u68c0\u67e5\u4ee5\u786e\u4fdd\u672a\u4fee\u6539\u539f\u59cb\u4ea7\u54c1\u7c7b\u8def\u5f84\u3002
+
+# -----------------------------------------------
+Forbidden.Web.Security.Exception=SRVE0218E: \u7981\u7528\uff1aWeb \u5b89\u5168\u6027\u5f02\u5e38
+Forbidden.Web.Security.Exception.explanation=\u6b64\u8bf7\u6c42\u5c1d\u8bd5\u8bbf\u95ee\u5df2\u7981\u7528\u7684\u8d44\u6e90\u3002
+Forbidden.Web.Security.Exception.useraction=\u8bf7\u786e\u4fdd\u8bf7\u6c42\u5b9e\u4f53\u5177\u6709\u5fc5\u9700\u7684\u7279\u6743\u3002
+
+# -----------------------------------------------
+No.Error.to.Report=SRVE0219I: \u672a\u62a5\u544a\u9519\u8bef
+No.Error.to.Report.explanation=\u8c03\u7528\u4e86 DefaultErrorReport\uff0c\u4f46\u672a\u53d1\u73b0\u4efb\u4f55\u9519\u8bef\u3002\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+No.Error.to.Report.useraction=\u8bf7\u67e5\u770b\u5e94\u7528\u7a0b\u5e8f\u4ee5\u786e\u5b9a\u95ee\u9898\u539f\u56e0\u3002
+
+# -----------------------------------------------
+Wrapped.Error=SRVE0220I: \u5305\u542b\u7684\u9519\u8bef -
+Wrapped.Error.explanation=\u5bfc\u81f4\u6b64\u95ee\u9898\u7684\u9519\u8bef\u3002
+Wrapped.Error.useraction=\u65e0\u3002
+
+# -----------------------------------------------
+Serving.JSP.Not.Allowed=SRVE0221E: \u4e0d\u5141\u8bb8\u63d0\u4f9b JSP \u6587\u4ef6\u7684\u5185\u5bb9\u3002
+Serving.JSP.Not.Allowed.explanation=\u65e0\u6cd5\u5904\u7406 JSP \u6587\u4ef6\u7684\u5185\u5bb9
+Serving.JSP.Not.Allowed.useraction=\u65e0\u3002
+
+# -----------------------------------------------
+StackTrace=SRVE0223I: \u5806\u6808\u8ddf\u8e2a\uff1a
+StackTrace.explanation=\u65e0\u3002
+StackTrace.useraction=\u65e0\u3002
+
+# -----------------------------------------------
+Target.Servlet=SRVE0224I: \u76ee\u6807 Servlet\uff1a
+Target.Servlet.explanation=\u65e0\u3002
+Target.Servlet.useraction=\u65e0\u3002
+
+# -----------------------------------------------
+Root.Error=SRVE0225I: \u6839\u672c\u9519\u8bef -
+Root.Error.explanation=\u65e0\u3002
+Root.Error.useraction=\u65e0\u3002
+
+# -----------------------------------------------
+class.resides.in.proper.package.directory=SRVE0227E: \u8bf7\u68c0\u67e5\u7c7b\u662f\u5426\u4f4d\u4e8e\u6b63\u786e\u7684\u8f6f\u4ef6\u5305\u76ee\u5f55\u4e2d\u3002\n
+class.resides.in.proper.package.directory.explanation=\u8d44\u6e90\u5305\u540d\u4e0e\u6240\u7f16\u8bd1\u7c7b\u6587\u4ef6\u7684\u5305\u4e0d\u5339\u914d\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+class.resides.in.proper.package.directory.useraction=\u8bf7\u68c0\u67e5\u6b64\u7c7b\u662f\u5426\u4f4d\u4e8e\u6b63\u786e\u7684\u5305\u76ee\u5f55\u4e2d\u3002
+
+# -----------------------------------------------
+classname.defined.in.server.using.proper.case.and.fully.qualified.package=SRVE0228E: \u8bf7\u68c0\u67e5\u662f\u5426\u4f7f\u7528\u6b63\u786e\u7684\u5927\u5c0f\u5199\u548c\u6807\u51c6\u8f6f\u4ef6\u5305\u5728\u670d\u52a1\u5668\u4e2d\u5b9a\u4e49\u4e86\u7c7b\u540d\u3002\n
+classname.defined.in.server.using.proper.case.and.fully.qualified.package.explanation=\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+classname.defined.in.server.using.proper.case.and.fully.qualified.package.useraction=\u8bf7\u68c0\u67e5\u662f\u5426\u4f7f\u7528\u6b63\u786e\u7684\u5927\u5c0f\u5199\u548c\u6807\u51c6\u5305\u5728\u670d\u52a1\u5668\u4e2d\u5b9a\u4e49\u4e86\u7c7b\u540d\u3002
+
+# -----------------------------------------------
+class.transfered.using.binary.mode=SRVE0229E: \u8bf7\u68c0\u67e5\u662f\u5426\u4f7f\u7528\u4e86\u4e8c\u8fdb\u5236\u4f20\u9001\u65b9\u5f0f\u5c06\u7c7b\u4f20\u9001\u5230\u6587\u4ef6\u7cfb\u7edf\u3002\n
+class.transfered.using.binary.mode.explanation=\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+class.transfered.using.binary.mode.useraction=\u8bf7\u68c0\u67e5\u662f\u5426\u4f7f\u7528\u4e86\u4e8c\u8fdb\u5236\u4f20\u8f93\u65b9\u5f0f\u5c06\u6b64\u7c7b\u4f20\u8f93\u81f3\u6587\u4ef6\u7cfb\u7edf\u3002
+
+# -----------------------------------------------
+class.compiled.using.proper.case=SRVE0230E: \u8bf7\u68c0\u67e5\u662f\u5426\u4f7f\u7528\u4e86\u6b63\u786e\u7684\u5927\u5c0f\u5199\uff08\u5982\u7c7b\u5b9a\u4e49\u4e2d\u6240\u5b9a\u4e49\u7684\u90a3\u6837\uff09\u6765\u7f16\u8bd1\u7c7b\u3002\n
+class.compiled.using.proper.case.explanation=\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+class.compiled.using.proper.case.useraction=\u8bf7\u68c0\u67e5\u662f\u5426\u5df2\u4f7f\u7528\u6b63\u786e\u7684\u5927\u5c0f\u5199\uff08\u5982\u7c7b\u5b9a\u4e49\u4e2d\u6240\u5b9a\u4e49\u90a3\u6837\uff09\u7f16\u8bd1\u7c7b\u3002
+
+# -----------------------------------------------
+class.not.renamed.after.compiled=SRVE0231E: \u8bf7\u68c0\u67e5\u7c7b\u6587\u4ef6\u5728\u7f16\u8bd1\u540e\u662f\u5426\u88ab\u91cd\u547d\u540d\u3002
+class.not.renamed.after.compiled.explanation=\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+class.not.renamed.after.compiled.useraction=\u8bf7\u68c0\u67e5\u662f\u5426\u5728\u7f16\u8bd1\u7c7b\u6587\u4ef6\u540e\u672a\u91cd\u547d\u540d\u5b83\u3002
+
+# -----------------------------------------------
+Engine.Exception.[{0}]=SRVE0232E: \u5185\u90e8\u670d\u52a1\u5668\u9519\u8bef\u3002<br> \u5f02\u5e38\u6d88\u606f\uff1a[{0}]
+Engine.Exception.[{0}].explanation=\u53d1\u751f\u4e86\u610f\u5916\u5f02\u5e38\uff0c\u4e14\u751f\u6210\u7684\u9519\u8bef\u9875\u9762\u4e0a\u63d0\u4f9b\u4e86\u8be6\u7ec6\u4fe1\u606f\u3002\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+Engine.Exception.[{0}].useraction=\u8bf7\u68c0\u67e5 System.out \u548c System.err \u65e5\u5fd7\u4ee5\u4e86\u89e3\u6709\u5173\u6240\u751f\u6210\u5f02\u5e38\u7684\u66f4\u591a\u4fe1\u606f\u3002
+
+# -----------------------------------------------
+Error.Report=SRVE0233E: \u9519\u8bef\u62a5\u544a
+Error.Report.explanation=\u65e0
+Error.Report.useraction=\u65e0
+
+# -----------------------------------------------
+Application.classpath=SRVE0234I: \u5e94\u7528\u7a0b\u5e8f\u7c7b\u8def\u5f84=[{0}]
+Application.classpath.explanation=\u65e0
+Application.classpath.useraction=\u65e0
+
+# -----------------------------------------------
+[{0}].reported.an.error=SRVE0235E: [{0}] \u62a5\u544a\u4e86\u9519\u8bef
+[{0}].reported.an.error.explanation=\u8bf7\u53c2\u9605\u62a5\u544a\u7684\u9519\u8bef\u3002
+[{0}].reported.an.error.useraction=\u65e0\u3002
+
+# -----------------------------------------------
+error.on.collaborator.starting.call=SRVE0236E: \u5728 starting() \u8c03\u7528\u4e2d\u8c03\u7528\u521d\u59cb\u5316\u534f\u8c03\u7a0b\u5e8f\u65f6\u51fa\u9519
+error.on.collaborator.starting.call.explanation=\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+error.on.collaborator.starting.call.useraction=\u8bf7\u68c0\u67e5 FFDC \u65e5\u5fd7\u4ee5\u4e86\u89e3\u6709\u5173\u6b64\u9519\u8bef\u7684\u66f4\u591a\u8be6\u7ec6\u4fe1\u606f\u3002
+
+# -----------------------------------------------
+error.on.collaborator.started.call=SRVE0237E: \u5728 started() \u8c03\u7528\u4e2d\u8c03\u7528\u521d\u59cb\u5316\u534f\u8c03\u7a0b\u5e8f\u65f6\u51fa\u9519
+error.on.collaborator.started.call.explanation=\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+error.on.collaborator.started.call.useraction=\u8bf7\u68c0\u67e5 FFDC \u65e5\u5fd7\u4ee5\u4e86\u89e3\u6709\u5173\u6b64\u9519\u8bef\u7684\u66f4\u591a\u8be6\u7ec6\u4fe1\u606f
+
+# -----------------------------------------------
+resource.path.has.to.start.with.slash=SRVE0238E: \u8d44\u6e90\u8def\u5f84\u5e94\u8be5\u4ee5\u659c\u6760\u5f00\u5934
+resource.path.has.to.start.with.slash.explanation=\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+resource.path.has.to.start.with.slash.useraction=\u8bf7\u5728\u8def\u5f84\u524d\u8f93\u5165\u524d\u5bfc\u659c\u6760\u5e76\u91cd\u8bd5\u3002
+
+# -----------------------------------------------
+ExtensionFactory.[{0}].registered.successfully=SRVE0239I: \u6210\u529f\u6ce8\u518c\u6269\u5c55\u5de5\u5382\uff3b{0}\uff3d\u3002
+ExtensionFactory.[{0}].registered.successfully.explanation=\u65e0\u3002
+ExtensionFactory.[{0}].registered.successfully.useraction=\u65e0\u3002
+
+# -----------------------------------------------
+ExtensionFactory.[{0}].associated.with.patterns.[{1}]=SRVE0240I: \u6269\u5c55\u5de5\u5382\uff3b{0}\uff3d\u5df2\u4e0e\u6a21\u5f0f\uff3b{1}\uff3d\u5173\u8054\u3002
+ExtensionFactory.[{0}].associated.with.patterns.[{1}].explanation=\u65e0\u3002
+ExtensionFactory.[{0}].associated.with.patterns.[{1}].useraction=\u65e0\u3002
+
+# -----------------------------------------------
+Using.[{0}].as.server.root=SRVE0241I: \u6b63\u5728\u4f7f\u7528 [{0}] \u4f5c\u4e3a getTempDirectory() \u4e2d\u7684\u670d\u52a1\u5668\u6839\u3002
+Using.[{0}].as.server.root.explanation=\u65e0\u3002
+Using.[{0}].as.server.root.useraction=\u65e0\u3002
+
+# -----------------------------------------------
+[{0}].Initialization.successful=SRVE0242I: [{2}] [{1}] [{0}]: \u521d\u59cb\u5316\u6210\u529f\u3002
+[{0}].Initialization.successful.explanation=\u76ee\u6807\u8d44\u6e90\u7684 init() \u65b9\u6cd5\u5df2\u6210\u529f\u8fd0\u884c\u5e76\u4e14\u76ee\u6807\u5df2\u653e\u7f6e\u5230\u670d\u52a1\u4e2d\u3002
+[{0}].Initialization.successful.useraction=\u65e0\u3002
+
+# -----------------------------------------------
+reaper.with.interval.[{0}].limit.[{1}].started=SRVE0243I: \u6536\u5272\u7ebf\u7a0b\u65f6\u95f4\u95f4\u9694 [{0}] \u548c\u4e0d\u6d3b\u52a8\u9650\u5236 [{1}] \u5df2\u542f\u52a8\u3002
+reaper.with.interval.[{0}].limit.[{1}].started.explanation=\u65e0\u3002
+reaper.with.interval.[{0}].limit.[{1}].started.useraction=\u65e0\u3002
+
+# -----------------------------------------------
+reaper.unloading.servlet.[{0}]=SRVE0244I: \u6536\u5272\u7ebf\u7a0b\u6b63\u5728\u5378\u8f7d servlet\uff1a[{0}]\u3002
+reaper.unloading.servlet.[{0}].explanation=\u6536\u5272\u7a0b\u5e8f\u7ebf\u7a0b\u79fb\u9664\u4e0d\u6d3b\u52a8\u65f6\u95f4\u8d85\u8fc7\u6536\u5272\u7a0b\u5e8f\u4e0d\u6d3b\u52a8\u9650\u5236\u7684 servlet\u3002
+reaper.unloading.servlet.[{0}].useraction=\u65e0\u3002
+
+# -----------------------------------------------
+reaper.removing.mapping.[{0}].for.servlet.[{1}]=SRVE0245I: \u6536\u5272\u7ebf\u7a0b\u6b63\u5728\u9664\u53bb servlet [{0}] \u7684\u6620\u5c04 [{0}]\u3002
+reaper.removing.mapping.[{0}].for.servlet.[{1}].explanation=\u6536\u5272\u7a0b\u5e8f\u7ebf\u7a0b\u79fb\u9664\u4e0d\u6d3b\u52a8\u65f6\u95f4\u8d85\u8fc7\u6536\u5272\u7a0b\u5e8f\u4e0d\u6d3b\u52a8\u9650\u5236\u7684 JSP \u548c\u5176\u4ed6\u6269\u5c55\u7684\u6620\u5c04\u3002
+reaper.removing.mapping.[{0}].for.servlet.[{1}].useraction=\u65e0\u3002
+
+# -----------------------------------------------
+reaper.destroying.servlet.[{0}]=SRVE0246I: \u6536\u5272\u7ebf\u7a0b\u6b63\u5728\u9500\u6bc1 servlet\uff1a[{0}]\u3002
+reaper.destroying.servlet.[{0}].explanation=\u65e0\u3002
+reaper.destroying.servlet.[{0}].useraction=\u65e0\u3002
+
+# -----------------------------------------------
+reaper.thread.error=SRVE0247E: \u6536\u5272\u7ebf\u7a0b\u6267\u884c\u671f\u95f4\u51fa\u9519\u3002
+reaper.thread.error.explanation=\u5904\u7406\u6536\u5272\u7a0b\u5e8f\u7ebf\u7a0b\u65f6\u53d1\u751f\u4e86\u5f02\u5e38\u3002\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+reaper.thread.error.useraction=\u6536\u5272\u7a0b\u5e8f\u5904\u7406\u5c31\u662f\u5783\u573e\u56de\u6536\u7684\u4e00\u79cd\u5f62\u5f0f\u3002
+
+# -----------------------------------------------
+waiting.to.destroy.filter.[{0}]=SRVE0248I: \u5f53\u524d\u6b63\u5728\u5904\u7406\u8bf7\u6c42\u3002\u5f3a\u5236\u8fc7\u6ee4\u5668\u9500\u6bc1\u4e4b\u524d\u6700\u591a\u7b49\u5f85 60 \u79d2\u3002
+waiting.to.destroy.filter.[{0}].explanation=\u65e0\u3002
+waiting.to.destroy.filter.[{0}].useraction=\u65e0\u3002
+
+# -----------------------------------------------
+sync.tothread.not.set.for.server.[{0}]=SRVE0249W: \u5e94\u7528\u7a0b\u5e8f {0} \u5df2\u8bf7\u6c42\u4e86 SyncToOSThread\uff0c\u4f46\u7528\u4e8e SyncToOSThread \u7684\u670d\u52a1\u5668\u672a\u542f\u7528
+sync.tothread.not.set.for.server.[{0}].explanation=SyncToOSThread \u4f7f Java EE \u89d2\u8272\u8eab\u4efd\u4e0e\u64cd\u4f5c\u7cfb\u7edf\u7ebf\u7a0b\u540c\u6b65\uff0c\u8fd9\u610f\u5473\u7740\u5728\u8bf7\u6c42\u6301\u7eed\u65f6\u95f4\u5185\u64cd\u4f5c\u7cfb\u7edf\u7ebf\u7a0b\u8eab\u4efd\u4e0e Java EE \u89d2\u8272\u8eab\u4efd\u76f8\u7b49\u3002\u6b64\u6d88\u606f\u6307\u793a\u5e94\u7528\u7a0b\u5e8f\u5df2\u914d\u7f6e\u4e3a\u4f7f\u7528 SyncToOSThread \u529f\u80fd\uff0c\u4f46\u5b89\u88c5\u4e86\u6b64\u5e94\u7528\u7a0b\u5e8f\u7684\u670d\u52a1\u5668\u672a\u914d\u7f6e\u4e3a\u652f\u6301 SyncToOSThread \u529f\u80fd\u3002\u9700\u8981\u7cfb\u7edf\u64cd\u4f5c\u3002
+sync.tothread.not.set.for.server.[{0}].useraction=\u5982\u679c\u6240\u8ba8\u8bba\u7684\u670d\u52a1\u5668\u9700\u8981 SyncToOSThread \u529f\u80fd\uff0c\u8bf7\u53c2\u9605\u4fe1\u606f\u4e2d\u5fc3\u4ee5\u4e86\u89e3\u6709\u5173\u5982\u4f55\u5bf9\u670d\u52a1\u5668\u542f\u7528 SyncToOSThread \u7684\u63cf\u8ff0\u3002
+
+# -----------------------------------------------
+module.[{0}].successfully.bound.to.virtualhost.[{1}]=SRVE0250I: Web \u6a21\u5757 {0} \u5df2\u7ed1\u5b9a\u5230 {1}\u3002
+module.[{0}].successfully.bound.to.virtualhost.[{1}].explanation=\u6307\u5b9a\u7684 Web \u6a21\u5757\u5df2\u4e0e\u63d0\u5230\u7684\u865a\u62df\u4e3b\u673a\u76f8\u5173\u8054\uff0c\u5e76\u53ef\u901a\u8fc7\u8be5\u865a\u62df\u4e3b\u673a\u7684\u4efb\u4f55\u4e3b\u673a/\u7aef\u53e3\u7ec4\u5408\u8bbf\u95ee\u3002
+module.[{0}].successfully.bound.to.virtualhost.[{1}].useraction=\u65e0\u3002
+
+# -----------------------------------------------
+threadpool.not.used=SRVE0251W: \u5728 Web \u5bb9\u5668\u4e2d\u914d\u7f6e\u7684\u7ebf\u7a0b\u6c60\u672a\u5728\u4f7f\u7528\u3002
+threadpool.not.used.explanation=Web \u5bb9\u5668\u4e2d\u5b58\u5728\u7ebf\u7a0b\u6c60\u914d\u7f6e\u3002\u5bf9\u6b64\u914d\u7f6e\u9879\u6240\u505a\u7684\u4efb\u4f55\u66f4\u6539\u5c06\u4e0d\u4f1a\u5bfc\u81f4\u7cfb\u7edf\u4e2d\u53d1\u751f\u66f4\u6539\u3002
+threadpool.not.used.useraction=\u65e0\u3002
+
+# -----------------------------------------------
+transports.detected=SRVE0252W: \u5df2\u68c0\u6d4b\u5230\u4f20\u8f93\u548c\u94fe\uff01\u5df2\u5c06\u4f20\u8f93\u66f4\u6539\u4e3a\u4f7f\u7528\u65b0\u7684\u6a21\u578b\u3002\u4f7f\u7528\u8fc1\u79fb\u5b9e\u7528\u7a0b\u5e8f\u5c06\u4f20\u8f93\u8fc1\u79fb\u5230\u65b0\u7684\u6a21\u578b\u3002Web \u5bb9\u5668\u4e0b\u7684\u7ebf\u7a0b\u6c60\u914d\u7f6e\u5c06\u4e0d\u4e0e\u8fd9\u4e9b\u4f20\u8f93\u534f\u540c\u4f7f\u7528\u3002
+transports.detected.explanation= \u4f20\u8f93\u5df2\u66f4\u6539\u4e3a\u4f7f\u7528\u901a\u9053\u94fe\u3002\u8bf7\u53c2\u9605\u4fe1\u606f\u4e2d\u5fc3\uff0c\u4ee5\u67e5\u770b\u6709\u5173\u901a\u9053\u94fe\u4ee5\u53ca\u5982\u4f55\u5c06\u73b0\u6709\u4f20\u8f93\u8fc1\u79fb\u81f3\u57fa\u4e8e\u901a\u9053\u94fe\u7684\u4f20\u8f93\u7684\u4fe1\u606f\u3002\u5c06\u4e0d\u4f1a\u5bf9\u8fd9\u4e9b\u4f20\u8f93\u4f7f\u7528 Web \u5bb9\u5668\u4e0b\u7684\u7ebf\u7a0b\u6c60\u914d\u7f6e\u3002
+transports.detected.useraction= \u4f7f\u7528\u8fc1\u79fb\u5b9e\u7528\u7a0b\u5e8f\u5c06\u4f20\u8f93\u4e2d\u7684\u914d\u7f6e\u6a21\u578b\u8fc1\u79fb\u81f3\u65b0\u7684\u901a\u9053\u94fe\u3002
+
+# -----------------------------------------------
+[{0}].Destroy.successful=SRVE0253I: [{2}] [{1}] [{0}]\uff1a\u9500\u6bc1\u6210\u529f\u3002
+[{0}].Destroy.successful.explanation=\u76ee\u6807\u8d44\u6e90\u7684 destroy() \u65b9\u6cd5\u5df2\u6210\u529f\u8fd0\u884c\uff0c\u5e76\u4e14\u76ee\u6807\u5df2\u4ece\u670d\u52a1\u4e2d\u79fb\u9664\u3002
+[{0}].Destroy.successful.useraction=\u65e0\u3002
+
+# -----------------------------------------------
+unsupported.request.encoding.[{0}]=SRVE0254E: \u672a\u80fd\u8bbe\u7f6e\u8bf7\u6c42\u5b57\u7b26\u7f16\u7801\uff1a[{0}]\u3002
+unsupported.request.encoding.[{0}].explanation=\u5bf9\u8bf7\u6c42\u6307\u5b9a\u7684\u8bf7\u6c42\u7f16\u7801\u65e0\u6548\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+unsupported.request.encoding.[{0}].useraction=\u8bf7\u67e5\u770b\u65e5\u5fd7\u4ee5\u786e\u5b9a\u6307\u5b9a\u7684\u7f16\u7801\u662f\u5426\u4e3a\u6709\u6548\u7f16\u7801\u3002
+
+# -----------------------------------------------
+Web.Group.VHost.Not.Found=SRVE0255E: \u5c1a\u672a\u5b9a\u4e49\u8981\u5904\u7406 {0} \u7684 Web \u7ec4/\u865a\u62df\u4e3b\u673a\u3002
+Web.Group.VHost.Not.Found.explanation=\u627e\u4e0d\u5230\u7528\u4e8e\u5904\u7406\u6b64\u8bf7\u6c42\u7684 Web \u7ec4\uff08Web \u6a21\u5757\uff09\u6216\u865a\u62df\u4e3b\u673a\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+Web.Group.VHost.Not.Found.useraction=\u8bf7\u786e\u4fdd\u5df2\u5b9a\u4e49\u5e76\u90e8\u7f72\u4e86 Web \u7ec4\u548c\u865a\u62df\u4e3b\u673a\u3002
+
+# -----------------------------------------------
+webcontainer.not.initialized=SRVE0256E: \u5c1a\u672a\u521d\u59cb\u5316 Web \u5bb9\u5668\u3002
+webcontainer.not.initialized.explanation=\u76f4\u5230\u5b89\u88c5\u4e86\u5e94\u7528\u7a0b\u5e8f\u624d\u521d\u59cb\u5316 Web \u5bb9\u5668\u3002\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+webcontainer.not.initialized.useraction=\u8bf7\u5b89\u88c5\u5e94\u7528\u7a0b\u5e8f\u4ee5\u521d\u59cb\u5316\u8be5 Web \u5bb9\u5668\u3002
+
+# -----------------------------------------------
+property.has.changed=SRVE0257W: \u4f20\u8f93\u4e0a\u5c5e\u6027 {0} \u7684\u8bed\u4e49\u5df2\u66f4\u6539\u3002
+property.has.changed.explanation=\u7ebf\u7a0b\u4e0d\u518d\u4e0e\u5355\u4e2a\u8fde\u63a5\u7ed1\u5b9a\u5728\u4e00\u8d77\u3002\u9700\u8981\u7cfb\u7edf\u64cd\u4f5c\u3002
+property.has.changed.useraction=\u8bf7\u53c2\u9605\u4fe1\u606f\u4e2d\u5fc3\u4ee5\u4e86\u89e3\u66f4\u591a\u8be6\u7ec6\u4fe1\u606f\u3002
+
+# -----------------------------------------------
+property.not.applicable=SRVE0258W: \u4f20\u8f93\u4e0b\u7684\u5c5e\u6027 {0} \u4e0d\u518d\u9002\u7528\u3002
+property.not.applicable.explanation=\u9700\u8981\u7cfb\u7edf\u64cd\u4f5c\u3002
+property.not.applicable.useraction=\u8bf7\u5728\u8bb0\u5f55\u670d\u52a1\u4e0b\u914d\u7f6e\u6b64\u5c5e\u6027\uff08\u8bf7\u53c2\u9605\u4fe1\u606f\u4e2d\u5fc3\u4ee5\u4e86\u89e3\u6709\u5173 HTTP \u8bbf\u95ee\u8bb0\u5f55\u5668\u7684\u66f4\u591a\u4fe1\u606f\uff09\u3002
+
+# -----------------------------------------------
+property.configuration.change=SRVE0259W: \u5c5e\u6027 {0} \u73b0\u53ea\u80fd\u5728 Web \u5bb9\u5668\u7ea7\u522b\u8fdb\u884c\u914d\u7f6e\u3002
+property.configuration.change.explanation=\u6b64\u5c5e\u6027\u4e0d\u518d\u80fd\u591f\u5728\u4f20\u8f93\u7ea7\u522b\u8fdb\u884c\u914d\u7f6e\uff0c\u5e76\u4e14\u5fc5\u987b\u5728 Web \u5bb9\u5668\u7ea7\u522b\u8fdb\u884c\u914d\u7f6e\u3002\u9700\u8981\u7cfb\u7edf\u64cd\u4f5c\u3002
+property.configuration.change.useraction=\u8bf7\u5728 Web \u5bb9\u5668\u7ea7\u522b\u914d\u7f6e\u6b64\u5c5e\u6027\u3002
+
+# -----------------------------------------------
+cannot.use.error.page=SRVE0260E: \u670d\u52a1\u5668\u65e0\u6cd5\u4f7f\u7528\u5bf9\u5e94\u7528\u7a0b\u5e8f\u6307\u5b9a\u7684\u9519\u8bef\u9875\u6765\u5904\u7406\u5982\u4e0b\u6240\u793a\u7684\u539f\u59cb\u5f02\u5e38\u3002
+cannot.use.error.page.explanation=\u65e0\u3002
+cannot.use.error.page.useraction=\u8bf7\u53c2\u9605\u201c\u9519\u8bef\u9875\u9762\u5f02\u5e38\u201d\u4ee5\u83b7\u53d6\u6307\u5b9a\u9519\u8bef\u9875\u9762\u5b58\u5728\u7684\u95ee\u9898\u7684\u63cf\u8ff0\u3002
+
+# -----------------------------------------------
+annotation.helper.not.defined=SRVE0261E: \u5c1a\u672a\u5b9a\u4e49\u6ce8\u91ca\u8f85\u52a9\u63a7\u4ef6 {0}\u3002
+annotation.helper.not.defined.explanation=\u672a\u5b9a\u4e49\u6307\u5b9a\u7684\u6ce8\u91ca\u8f85\u52a9\u63a7\u4ef6\u3002\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+annotation.helper.not.defined.useraction=\u8bf7\u68c0\u67e5\u6307\u5b9a\u7684\u6ce8\u91ca\u8f85\u52a9\u63a7\u4ef6\u7684\u5b9a\u4e49\u5e76\u5728\u5fc5\u8981\u65f6\u6dfb\u52a0\u6b64\u5b9a\u4e49\u3002
+
+# -----------------------------------------------
+annotation.helper.wrong.type=SRVE0262E: \u6ce8\u91ca\u8f85\u52a9\u63a7\u4ef6 {0} \u4e0d\u5c5e\u4e8e com.ibm.wsspi.webcontainer.AnnotationHelper \u7c7b\u578b\u3002
+annotation.helper.wrong.type.explanation=\u6307\u5b9a\u7684\u6ce8\u91ca\u8f85\u52a9\u63a7\u4ef6\u5e76\u975e\u671f\u671b\u7c7b\u578b\u3002\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+annotation.helper.wrong.type.useraction=\u8bf7\u68c0\u67e5\u6ce8\u91ca\u8f85\u52a9\u63a7\u4ef6\u5b9e\u73b0\u7c7b\u5e76\u4fee\u6b63\u6b64\u7c7b\u3002
+
+# -----------------------------------------------
+annotation.helper.cannot.create=SRVE0263E: \u65e0\u6cd5\u5bf9\u6ce8\u91ca\u8f85\u52a9\u63a7\u4ef6 {0} \u8fdb\u884c\u5b9e\u4f8b\u5316\u3002
+annotation.helper.cannot.create.explanation=\u672a\u80fd\u5bf9\u6307\u5b9a\u7684\u6ce8\u91ca\u8f85\u52a9\u63a7\u4ef6\u8fdb\u884c\u5b9e\u4f8b\u5316\u3002\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+annotation.helper.cannot.create.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u65e5\u5fd7\u4ee5\u4e86\u89e3\u672a\u80fd\u5bf9\u6b64\u6ce8\u91ca\u8f85\u52a9\u63a7\u4ef6\u8fdb\u884c\u5b9e\u4f8b\u5316\u7684\u539f\u56e0\u3002
+
+#------------------------------------------------
+error.initializing.extension.factories=SRVE0264E: \u5bf9\u6269\u5c55\u5de5\u5382\u8fdb\u884c\u5b9e\u4f8b\u5316\u65f6\u51fa\u9519\uff1a{0}
+error.initializing.extension.factories.explanation=\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+error.initializing.extension.factories.useraction=\u8bf7\u67e5\u770b\u65e5\u5fd7\u3002
+
+#------------------------------------------------
+error.notifying.listeners.of.WebApp.start=SRVE0265E: \u901a\u77e5 Web \u5e94\u7528\u7a0b\u5e8f\u542f\u52a8\u7684\u4fa6\u542c\u5668\u65f6\u51fa\u9519\uff1a{0}
+error.notifying.listeners.of.WebApp.start.explanation=\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+error.notifying.listeners.of.WebApp.start.useraction=\u8bf7\u67e5\u770b\u65e5\u5fd7\u3002
+
+#-------------------------------------------------
+error.while.initializing.servlets=SRVE0266E: \u521d\u59cb\u5316 servlet \u65f6\u51fa\u9519\uff1a{0}
+error.while.initializing.servlets.explanation=\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+error.while.initializing.servlets.useraction=\u8bf7\u67e5\u770b\u65e5\u5fd7\u3002
+
+#-------------------------------------------------
+error.initializing.filters=SRVE0267E: \u521d\u59cb\u5316\u8fc7\u6ee4\u5668\u65f6\u51fa\u9519\uff1a{0}
+error.initializing.filters.explanation=\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+error.initializing.filters.useraction=\u8bf7\u67e5\u770b\u65e5\u5fd7\u3002
+
+#------------------------------------------------
+error.obtaining.session.context=SRVE0268E: \u83b7\u53d6 Web \u5e94\u7528\u7a0b\u5e8f\u7684\u4f1a\u8bdd\u4e0a\u4e0b\u6587\u65f6\u51fa\u9519\uff1a{0}
+error.obtaining.session.context.explanation=\u672a\u80fd\u83b7\u53d6 Web \u5e94\u7528\u7a0b\u5e8f\u7684\u6709\u6548\u4f1a\u8bdd\u4e0a\u4e0b\u6587\u3002\u9700\u8981\u7cfb\u7edf\u64cd\u4f5c\u3002
+error.obtaining.session.context.useraction=\u8bf7\u68c0\u67e5\u662f\u5426\u6b63\u786e\u914d\u7f6e\u4e86\u4f1a\u8bdd\u7ba1\u7406\u5668\u3002
+
+#-------------------------------------------------
+no.jsp.extension.handler.found=SRVE0269W: \u627e\u4e0d\u5230\u7528\u4e8e\u5904\u7406 JSP \u7684\u6269\u5c55\u5904\u7406\u5668\u3002
+no.jsp.extension.handler.found.explanation=\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+no.jsp.extension.handler.found.useraction=\u8bf7\u67e5\u770b\u65e5\u5fd7\u3002
+
+#-------------------------------------------------
+illegal.servlet.mapping=SRVE0270E: \u5bf9\u4e8e servlet {0}\uff0c\u9047\u5230\u4e86\u975e\u6cd5\u7684 servlet \u6620\u5c04\u3002
+illegal.servlet.mapping.explanation=\u5728 webconfig.xml \u4e2d\u6307\u5b9a\u7684 servlet \u6620\u5c04\u65e0\u6548\u3002\u9700\u8981\u7cfb\u7edf\u64cd\u4f5c\u3002
+illegal.servlet.mapping.useraction=\u8bf7\u68c0\u67e5 webconfig.xml \u4e2d\u7684 servlet \u6620\u5c04\u5e76\u8fdb\u884c\u9002\u5f53\u7684\u66f4\u6539
+
+#-------------------------------------------------
+uncaught.init.exception.thrown.by.servlet=SRVE0271E: \u5e94\u7528\u7a0b\u5e8f [{1}] \u4e2d\u7684 servlet [{0}] \u521b\u5efa\u4e86\u672a\u6355\u83b7\u5230\u7684 init() \u5f02\u5e38\uff1a{2}
+uncaught.init.exception.thrown.by.servlet.explanation=\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+uncaught.init.exception.thrown.by.servlet.useraction=\u8bf7\u67e5\u770b\u65e5\u5fd7\u3002
+
+#-------------------------------------------------
+jsp.processor.not.defined.skipping=SRVE0272W: \u672a\u5b9a\u4e49 JSP \u5904\u7406\u5668\u3002\u6b63\u5728\u8df3\u8fc7 {0}
+jsp.processor.not.defined.skipping.explanation=\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+jsp.processor.not.defined.skipping.useraction=\u65e0\u3002
+
+#--------------------------------------------------
+error.while.initializing.jsp.as.servlet=SRVE0273E: \u5c06 JSP \u521d\u59cb\u5316\u4e3a\u5e94\u7528\u7a0b\u5e8f [{1}] \u4e2d\u7684 servlet [{0}] \u65f6\u51fa\u9519\uff1a{1}
+error.while.initializing.jsp.as.servlet.explanation=\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+error.while.initializing.jsp.as.servlet.useraction=\u8bf7\u67e5\u770b\u65e5\u5fd7\u3002
+
+#--------------------------------------------------
+error.while.adding.servlet.mapping.for.path=SRVE0274W: \u4e3a\u8def\u5f84-->{0}\u3001\u5305\u88c5\u5668-->{1}\u3001\u5e94\u7528\u7a0b\u5e8f-->{2} \u6dfb\u52a0 servlet \u6620\u5c04\u65f6\u51fa\u9519\u3002
+error.while.adding.servlet.mapping.for.path.explanation=\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+error.while.adding.servlet.mapping.for.path.useraction=\u8bf7\u68c0\u67e5 webconfig.xml \u4e2d\u662f\u5426\u5b58\u5728\u6620\u5c04\u51b2\u7a81
+
+#--------------------------------------------------
+error.adding.servlet.mapping.for.servlet=SRVE0275E: \u4e3a\u5e94\u7528\u7a0b\u5e8f [{1}] \u4e2d\u7684 servlet [{0}] \u6dfb\u52a0 servlet \u6620\u5c04\u65f6\u51fa\u9519\uff1a{2}
+error.adding.servlet.mapping.for.servlet.explanation=\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+error.adding.servlet.mapping.for.servlet.useraction=\u8bf7\u9a8c\u8bc1\u6620\u5c04\u662f\u5426\u6709\u6548\u3002
+
+#--------------------------------------------------
+error.initializing.servlet=SRVE0276E: \u521d\u59cb\u5316 Servlet [{0}] \u65f6\u51fa\u9519\uff1a{1}
+error.initializing.servlet.explanation=\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+error.initializing.servlet.useraction=\u8bf7\u67e5\u770b\u65e5\u5fd7\u3002
+
+#--------------------------------------------------
+mapping.for.directorybrowsingservlet.already.exists=SRVE0277W: DirectoryBrowsingServlet \u7684\u6620\u5c04\u5df2\u5b58\u5728
+mapping.for.directorybrowsingservlet.already.exists.explanation=\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+mapping.for.directorybrowsingservlet.already.exists.useraction=\u8bf7\u79fb\u9664\u91cd\u590d\u6620\u5c04\u3002
+
+#--------------------------------------------------
+error.adding.servlet.mapping.file.handler=SRVE0278E: \u6dfb\u52a0 servlet \u6620\u5c04 --> {0} \u65f6\u51fa\u9519\u3002
+error.adding.servlet.mapping.file.handler.explanation=\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+error.adding.servlet.mapping.file.handler.useraction=\u8bf7\u5728 WEB-INF \u6587\u4ef6\u5939\u4e0b\u7684 ibm-web-ext.xmi \u6587\u4ef6\u4e2d\u8bbe\u7f6e fileServingEnabled=false\u3002
+
+#--------------------------------------------------
+error.processing.global.listeners.for.webapp=SRVE0279E: \u5904\u7406\u5e94\u7528\u7a0b\u5e8f {0} \u7684\u5168\u5c40\u4fa6\u542c\u5668\u65f6\u51fa\u9519\uff1a{1}
+error.processing.global.listeners.for.webapp.explanation=\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+error.processing.global.listeners.for.webapp.useraction=\u8bf7\u67e5\u770b\u65e5\u5fd7\u3002
+
+#---------------------------------------------------
+extension.processor.failed.to.initialize.in.factory=SRVE0280E: \u6269\u5c55\u5904\u7406\u5668\u65e0\u6cd5\u5728\u5de5\u5382 [{0}] \u4e2d\u8fdb\u884c\u521d\u59cb\u5316\uff1a{1}
+extension.processor.failed.to.initialize.in.factory.explanation=\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+extension.processor.failed.to.initialize.in.factory.useraction=\u8bf7\u67e5\u770b\u65e5\u5fd7\u3002
+
+#---------------------------------------------------
+request.processor.already.present.for.mapping=SRVE0281E: \u8bf7\u6c42\u5904\u7406\u5668\u5bf9\u4e8e\u6620\u5c04 {0} \u5df2\u5b58\u5728
+request.processor.already.present.for.mapping.explanation=\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+request.processor.already.present.for.mapping.useraction=\u8bf7\u67e5\u770b\u65e5\u5fd7\u3002
+
+#---------------------------------------------------
+error.while.setting.WebAppAttributes=SRVE0282E: \u8bbe\u7f6e Web \u5e94\u7528\u7a0b\u5e8f\u5c5e\u6027\u65f6\u51fa\u9519\uff1a{0}
+
+error.while.setting.WebAppAttributes.explanation=\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+error.while.setting.WebAppAttributes.useraction=\u8bf7\u67e5\u770b\u65e5\u5fd7\u3002
+
+#---------------------------------------------------
+exception.while.initializing.context=SRVE0283E: \u521d\u59cb\u5316\u4e0a\u4e0b\u6587\u65f6\u6355\u83b7\u5230\u5f02\u5e38\uff1a{0}
+exception.while.initializing.context.explanation=\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+exception.while.initializing.context.useraction=\u8bf7\u67e5\u770b\u65e5\u5fd7\u3002
+
+#---------------------------------------------------
+exception.caught.in.notifyServletContextCreated=SRVE0284E: \u5728 notifyServletContextCreated \u4e2d\u6355\u83b7\u5230\u5f02\u5e38\uff1a{0}
+exception.caught.in.notifyServletContextCreated.explanation=\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+exception.caught.in.notifyServletContextCreated.useraction=\u8bf7\u67e5\u770b\u65e5\u5fd7\u3002
+
+#---------------------------------------------------
+exception.caught.destroying.context=SRVE0285E: \u9500\u6bc1\u4e0a\u4e0b\u6587\u65f6\u6355\u83b7\u5230\u5f02\u5e38\uff1a{0}
+exception.caught.destroying.context.explanation=\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+exception.caught.destroying.context.useraction=\u8bf7\u67e5\u770b\u65e5\u5fd7\u3002
+
+#---------------------------------------------------
+exception.caught.in.notifyServletContextDestroyed=SRVE0286E: \u5728 notifyServletContextDestroyed \u4e2d\u6355\u83b7\u5230\u5f02\u5e38\uff1a{0}
+exception.caught.in.notifyServletContextDestroyed.explanation=\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+exception.caught.in.notifyServletContextDestroyed.useraction=\u8bf7\u67e5\u770b\u65e5\u5fd7\u3002
+
+#---------------------------------------------------
+server.root.is.null=SRVE0287E: server.root \u4e3a\u7a7a
+server.root.is.null.explanation=\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+server.root.is.null.useraction=\u65e0\u3002
+
+#---------------------------------------------------
+chown.failed=SRVE0288E: chown \u5931\u8d25\uff0c\u5c1d\u8bd5\u8fd0\u884c\u547d\u4ee4\uff1a[{0}] \u9000\u51fa\u4ee3\u7801\uff1a[{1}]
+chown.failed.explanation=\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+chown.failed.useraction=\u65e0\u3002
+
+#---------------------------------------------------
+failed.to.create.temp.directory=SRVE0289E: \u65e0\u6cd5\u521b\u5efa\u4e34\u65f6\u76ee\u5f55\uff1a{0}
+failed.to.create.temp.directory.explanation=\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+failed.to.create.temp.directory.useraction=\u65e0\u3002
+
+#---------------------------------------------------
+unable.to.use.specified.temp.directory=SRVE0290E: \u65e0\u6cd5\u4f7f\u7528\u6307\u5b9a\u7684\u4e34\u65f6\u76ee\u5f55\uff1a{0} \u8bfb\uff1a{1} \u5199\uff1a{2}
+unable.to.use.specified.temp.directory.explanation=\u9700\u8981\u7cfb\u7edf\u64cd\u4f5c\u3002
+unable.to.use.specified.temp.directory.useraction=\u8bf7\u68c0\u67e5\u6b64\u76ee\u5f55\u7684\u72b6\u6001\uff0c\u5305\u62ec\u662f\u5426\u5b58\u5728\u3001\u8bbf\u95ee\u7279\u6743\u53ca\u53ef\u7528\u7a7a\u95f4\u3002
+
+#---------------------------------------------------
+unable.to.use.default.temp.directory=SRVE0291E: \u65e0\u6cd5\u4f7f\u7528\u7f3a\u7701\u4e34\u65f6\u76ee\u5f55\uff1a{0} \u8bfb\uff1a{1} \u5199\uff1a{2}
+unable.to.use.default.temp.directory.explanation=\u9700\u8981\u7cfb\u7edf\u64cd\u4f5c\u3002
+unable.to.use.default.temp.directory.useraction=\u8bf7\u68c0\u67e5\u6b64\u76ee\u5f55\u7684\u72b6\u6001\uff0c\u5305\u62ec\u662f\u5426\u5b58\u5728\u3001\u8bbf\u95ee\u7279\u6743\u53ca\u53ef\u7528\u7a7a\u95f4\u3002
+
+#----------------------------------------------------
+log.servlet.message=SRVE0292I: Servlet \u6d88\u606f - [{0}]:.{1}
+log.servlet.message.explanation=\u901a\u8fc7\u4f7f\u7528 ServletContext \u8bb0\u5f55\u4e86 servlet \u7684\u53c2\u8003\u6d88\u606f\u3002
+log.servlet.message.useraction=\u65e0\u3002
+
+#----------------------------------------------------
+log.servlet.error=SRVE0293E: [Servlet \u9519\u8bef]-[{0}]: {1}
+log.servlet.error.explanation=\u901a\u8fc7\u4f7f\u7528 ServletContext \u8bb0\u5f55\u4e86 servlet \u7684\u9519\u8bef\u5f02\u5e38\u3002
+log.servlet.error.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u4ee5\u786e\u5b9a\u9519\u8bef\u539f\u56e0\u548c\u6240\u9700\u64cd\u4f5c\u3002\u670d\u52a1\u5668\u65e5\u5fd7\u4e2d\u53ef\u80fd\u63d0\u4f9b\u4e86\u5176\u4ed6\u4fe1\u606f\u3002
+
+#----------------------------------------------------
+log.servlet.error.and.message=SRVE0294E: [Servlet \u9519\u8bef]-[{0}]: {1}: {2}
+log.servlet.error.and.message.explanation=\u901a\u8fc7\u4f7f\u7528 ServletContext \u8bb0\u5f55\u4e86 servlet \u7684\u9519\u8bef\u6d88\u606f\u548c\u5f02\u5e38\u3002
+log.servlet.error.and.message.useraction=\u8bf7\u67e5\u770b\u6d88\u606f\u548c\u5f02\u5e38\u4ee5\u786e\u5b9a\u9519\u8bef\u539f\u56e0\u548c\u6240\u9700\u64cd\u4f5c\u3002\u670d\u52a1\u5668\u65e5\u5fd7\u4e2d\u53ef\u80fd\u63d0\u4f9b\u4e86\u5176\u4ed6\u4fe1\u606f\u3002
+
+# -----------------------------------------------
+Error.reported.{0}=SRVE0295E: \u62a5\u544a\u7684\u9519\u8bef\uff1a{0}
+Error.reported.{0}.explanation=\u8c03\u7528\u4e86 HttpServletResponse.sendError\uff0c\u4ea7\u751f\u4e86\u72b6\u6001\u7801\uff0c\u4f46\u6ca1\u6709\u8bf4\u660e\u3002
+Error.reported.{0}.useraction=\u67e5\u770b\u65e5\u5fd7\u4ee5\u786e\u5b9a\u9519\u8bef\u7684\u72b6\u6001\u7801\u3002
+
+#------------------------------------------------
+log.servlet.message.with.throwable=SRVE0296E: [{0}][{1}][Servlet.LOG]:.{2}:.{3}
+log.servlet.message.with.throwable.explanation=\u901a\u8fc7\u4f7f\u7528 ServletContext \u8bb0\u5f55\u4e86 servlet \u7684\u53c2\u8003\u6d88\u606f\u548c\u5f02\u5e38\u3002
+log.servlet.message.with.throwable.useraction=\u8bf7\u67e5\u770b\u6d88\u606f\u548c\u5f02\u5e38\u4ee5\u786e\u5b9a\u662f\u5426\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002\u670d\u52a1\u5668\u65e5\u5fd7\u4e2d\u53ef\u80fd\u63d0\u4f9b\u4e86\u5176\u4ed6\u4fe1\u606f\u3002
+
+#------------------------------------------------
+WebApp.destroy.encountered.errors=SRVE0297E: Web \u5e94\u7528\u7a0b\u5e8f {0} \u9500\u6bc1\u9047\u5230\u4e86\u9519\u8bef\uff1a{1}
+WebApp.destroy.encountered.errors.explanation=\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+WebApp.destroy.encountered.errors.useraction=\u8bf7\u67e5\u770b\u65e5\u5fd7\u3002
+
+#------------------------------------------------
+exception.occured.while.creating.wrapper.for.servlet=SRVE0298E: \u4e3a servlet [{0}] \u521b\u5efa\u5305\u88c5\u5668\u65f6\u53d1\u751f\u4e86\u5f02\u5e38\uff1a{1}
+exception.occured.while.creating.wrapper.for.servlet.explanation=\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+exception.occured.while.creating.wrapper.for.servlet.useraction=\u8bf7\u67e5\u770b\u65e5\u5fd7\u3002
+
+#------------------------------------------------
+could.not.create.wrapper.for.servlet=SRVE0299E: \u65e0\u6cd5\u4e3a servlet [{0}] \u521b\u5efa\u5305\u88c5\u5668
+could.not.create.wrapper.for.servlet.explanation=\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+could.not.create.wrapper.for.servlet.useraction=\u8bf7\u67e5\u770b\u65e5\u5fd7\u3002
+
+#------------------------------------------------
+mapping.already.exists=SRVE0300E: \u6620\u5c04\u5df2\u5b58\u5728 [{0}][{1}]: {2}
+mapping.already.exists.explanation=\u5df2\u5728 servlet \u6620\u5c04\u4e2d\u6307\u5b9a\u671f\u671b\u8def\u5f84\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+mapping.already.exists.useraction=\u8bf7\u5728\u5e94\u7528\u7a0b\u5e8f\u914d\u7f6e\u4e2d\u66f4\u6539\u6216\u79fb\u9664\u6b64\u6620\u5c04\u3002
+
+#------------------------------------------------
+encountered.problems.while.removing.servlet=SRVE0301I: \u9664\u53bb servlet {0} \u65f6\u9047\u5230\u4e86\u95ee\u9898\u3002\u8be6\u7ec6\u4fe1\u606f\uff1a{1}
+encountered.problems.while.removing.servlet.explanation=\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+encountered.problems.while.removing.servlet.useraction=\u8bf7\u67e5\u770b\u65e5\u5fd7\u3002
+
+#--------------------------------------------------
+error.while.adding.static.file.processor=SRVE0302E: \u6dfb\u52a0\u9759\u6001\u6587\u4ef6\u5904\u7406\u5668\u65f6\u51fa\u9519\uff1a{0}
+error.while.adding.static.file.processor.explanation=\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+error.while.adding.static.file.processor.useraction=\u8bf7\u67e5\u770b\u65e5\u5fd7\u3002
+
+# -----------------------------------------------
+servlet.name.for.servlet.mapping.not.found=SRVE0303E: \u6dfb\u52a0 servlet \u6620\u5c04\u65f6\u627e\u4e0d\u5230 servlet \u540d\u79f0\uff1bservlet \u540d\u79f0 = {0}\uff1bURL \u6a21\u5f0f = {1}\uff1b\u6a21\u5757 = {2}\uff1b\u5e94\u7528\u7a0b\u5e8f = {3}
+servlet.name.for.servlet.mapping.not.found.explanation=servlet \u6620\u5c04\u6ca1\u6709 servlet \u5b9a\u4e49\u3002
+servlet.name.for.servlet.mapping.not.found.useraction=\u8bf7\u68c0\u67e5 web.xml \u662f\u5426\u5177\u6709\u6b64 servlet \u6620\u5c04\u7684 servlet \u5b9a\u4e49\u3002
+
+#------------------------------------------------
+servletrequestwrapper.is.not.an.instance.of.so.wrapped.logic.may.be.bypassed=SRVE0304E: ServletRequestWrapper [{0}] \u4e0d\u662f [{1}] \u7684\u5b9e\u4f8b\uff0c\u56e0\u6b64\u53ef\u80fd\u4f1a\u7ed5\u8fc7\u5305\u88c5\u7684\u903b\u8f91\u3002
+servletrequestwrapper.is.not.an.instance.of.so.wrapped.logic.may.be.bypassed.explanation=Web \u5bb9\u5668\u671f\u671b\u5305\u88c5\u7684\u8bf7\u6c42\u5bf9\u8c61\u662f\u7c7b\u7684\u5b9e\u4f8b\uff0c\u4f46\u4e8b\u5b9e\u5e76\u975e\u5982\u6b64\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+servletrequestwrapper.is.not.an.instance.of.so.wrapped.logic.may.be.bypassed.useraction=\u8bf7\u66f4\u6539\u4ee3\u7801\u4ee5\u5b9e\u73b0\u6240\u9700\u7684\u63a5\u53e3\u3002
+
+# --------------------------------
+Object.Pool.Disabled=SRVE0305W: ObjectPoolService \u4e0d\u53ef\u7528\u3002SRTConnectionContext \u6c60\u5df2\u7981\u7528\u3002
+Object.Pool.Disabled.explanation=\u8be5\u5bf9\u8c61\u6c60\u670d\u52a1\u53ef\u63d0\u9ad8 Web \u5bb9\u5668\u7684\u6027\u80fd\uff0c\u4f46\u5df2\u88ab\u7981\u7528\u3002\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+Object.Pool.Disabled.useraction=\u5efa\u8bae\u542f\u7528\u5bf9\u8c61\u6c60\u670d\u52a1\u3002
+
+#------------------------------------------------
+ARD.Not.Enabled=SRVE0306W: ARD \u672a\u542f\u7528\uff0c\u56e0\u6b64\u5f02\u6b65\u5305\u542b\u6216 insertFragment \u8c03\u7528\u5c06\u540c\u6b65\u3002
+ARD.Not.Enabled.explanation=\u672a\u6b63\u786e\u542f\u7528 ARD\u3002\u9700\u8981\u7cfb\u7edf\u64cd\u4f5c\u3002
+ARD.Not.Enabled.useraction=\u8bf7\u786e\u4fdd\u5728 Web \u5bb9\u5668\u8bbe\u7f6e\u4e2d\u542f\u7528\u4e86 ARD\uff0c\u5e76\u4e14\u5728\u5e94\u7528\u7a0b\u5e8f\u8bbe\u7f6e\u4e2d\u6307\u5b9a\u4e86\u5206\u6d3e\u7c7b\u578b CLIENT_SIDE \u6216 SERVER_SIDE\u3002
+
+#------------------------------------------------
+Null.Filter.Mapping=SRVE0307W: \u8fc7\u6ee4\u5668\u7684\u6620\u5c04\u4e3a null\u3002\u5982\u679c\u5c1d\u8bd5\u5bf9\u7ea7\u522b 2.5 \u4e4b\u524d\u7684\u5e94\u7528\u7a0b\u5e8f\u6307\u5b9a * \u6620\u5c04\uff0c\u90a3\u4e48\u53ef\u80fd\u4f1a\u53d1\u751f\u6b64\u95ee\u9898\u3002
+Null.Filter.Mapping.explanation=\u8fc7\u6ee4\u5668\u6ca1\u6709 servlet \u6620\u5c04\uff0c\u6240\u4ee5\u4e0d\u80fd\u6dfb\u52a0\u6b64\u6620\u5c04\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+Null.Filter.Mapping.useraction=\u5982\u679c\u8981\u4f7f\u7528 * \u6620\u5c04\uff0c\u8bf7\u5c06\u5e94\u7528\u7a0b\u5e8f\u63cf\u8ff0\u7b26\u7ea7\u522b\u66f4\u6539\u4e3a 2.5\u3002
+
+#------------------------------------------------
+filtering.by.asterisk=SRVE0308E: \u4e0d\u5141\u8bb8\u6309\u661f\u53f7\u8fdb\u884c\u8fc7\u6ee4\u3002
+filtering.by.asterisk.explanation=\u4e0d\u5141\u8bb8\u4f7f\u7528\u661f\u53f7\u8fdb\u884c\u8fc7\u6ee4\uff0c\u56e0\u4e3a\u7981\u6b62\u6309\u7c7b\u540d\u5904\u7406\u6240\u6709 servlet \u8fd9\u4e00\u8bbe\u7f6e\u7531 com.ibm.ws.webcontainer.disallowserveservletsbyclassname \u5b9a\u5236\u5c5e\u6027\u63a7\u5236\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+filtering.by.asterisk.useraction=\u5c06 com.ibm.ws.webcontainer.disallowserveservletsbyclassname \u8bbe\u7f6e\u4e3a true \u4ee5\u963b\u6b62\u6309\u7c7b\u540d\u5904\u7406\u6240\u6709\u7c7b\u3002
+
+#------------------------------------------------
+servlet.on.blocked.list.{0}=SRVE0309E: Servlet \u4f4d\u4e8e\u88ab\u963b\u6b62\u7684\u5217\u8868\u4e2d\uff1a{0}
+servlet.on.blocked.list.{0}.explanation=\u8bf7\u6c42\u7684 servlet \u5728\u5b9a\u5236\u5c5e\u6027 com.ibm.ws.webcontainer.donotservebyclassname \u63d0\u4f9b\u7684\u963b\u6b62\u9879\u5217\u8868\u4e0a\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+servlet.on.blocked.list.{0}.useraction=\u5982\u679c\u8fd9\u5e76\u975e\u9884\u671f\u884c\u4e3a\uff0c\u8bf7\u66f4\u65b0\u5c5e\u6027 com.ibm.ws.webcontainer.donotservebyclassname\u3002
+
+#------------------------------------------------
+Error.in.WebContainer.custom.property.value=SRVE0310E: \u5b9a\u5236\u5c5e\u6027\u4e2d\u5b58\u5728\u9519\u8bef\uff1a{1}
+Error.in.WebContainer.custom.property.value.explanation=\u9700\u8981\u7cfb\u7edf\u64cd\u4f5c\u3002
+Error.in.WebContainer.custom.property.value.useraction=\u8bf7\u9a8c\u8bc1\u5b9a\u5236\u5c5e\u6027\u662f\u5426\u6b63\u786e\u3002
+
+#------------------------------------------------
+transport.error=SRVE0311E: \u4f20\u8f93\u4e2d\u5b58\u5728\u9519\u8bef\uff1a{0}
+transport.error.explanation=\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+transport.error.useraction=\u8bf7\u67e5\u770b\u65e5\u5fd7\u3002
+
+#------------------------------------------------
+error.adding.channel=SRVE0312E: \u6dfb\u52a0\u901a\u9053\u65f6\u51fa\u9519\uff1a{0}
+error.adding.channel.explanation=\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+error.adding.channel.useraction=\u8bf7\u67e5\u770b\u65e5\u5fd7\u3002
+
+#------------------------------------------------
+transport.migration.error=SRVE0313E: \u5c06\u7aef\u53e3 {0} \u5904\u7684\u4f20\u8f93\u8fc1\u79fb\u5230\u76f8\u5bf9\u5e94\u7684\u94fe\u65f6\u51fa\u9519\uff1a{1}\u3002
+transport.migration.error.explanation=\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+transport.migration.error.useraction=\u8bf7\u67e5\u770b\u65e5\u5fd7\u3002
+
+#------------------------------------------------
+failed.to.remove.webmodule=SRVE0314E: \u672a\u80fd\u9664\u53bb Web \u6a21\u5757 {0}\uff1a{1}
+failed.to.remove.webmodule.explanation=\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+failed.to.remove.webmodule.useraction=\u8bf7\u67e5\u770b\u65e5\u5fd7\u3002
+
+#------------------------------------------------
+Exception=SRVE0315E: \u53d1\u751f\u5f02\u5e38\uff1a{0}
+Exception.explanation=\u53d1\u751f\u4e86\u5f02\u5e38\u3002
+Exception.useraction=\u8bf7\u67e5\u770b\u65e5\u5fd7\u3002
+
+
+# -------------------------------------------------------------------------------------------------
+# Thread Pool Instances
+Servlet.Engine.Transports=Web \u5bb9\u5668
+
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+webAppModule.desc=Web \u5e94\u7528\u7a0b\u5e8f\u3001Servlet \u548c JSP \u6587\u4ef6\u4e0a\u7684\u6027\u80fd\u6570\u636e\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.numLoadedServlets.desc=\u88c5\u5165\u7684 servlet \u6570\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.numReloads.desc=\u91cd\u65b0\u88c5\u5165\u7684 servlet \u6570\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.desc=\u5305\u542b\u6bcf\u4e2a servlet \u548c JSP \u6587\u4ef6\u7684\u6027\u80fd\u6570\u636e\u7684\u96c6\u5408\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.totalRequests.desc=servlet \u5904\u7406\u7684\u8bf7\u6c42\u603b\u6570\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.concurrentRequests.desc=\u5e76\u53d1\u5904\u7406\u7684\u8bf7\u6c42\u6570\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.responseTime.desc=\u5b8c\u6210 servlet \u8bf7\u6c42\u7684\u5e73\u5747\u54cd\u5e94\u65f6\u95f4\uff08\u4ee5\u6beb\u79d2\u8ba1\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.numErrors.desc=\u4ece servlet \u6216 JSP \u63a5\u6536\u5230\u9519\u8bef\u7684\u603b\u6b21\u6570\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.url.totalRequests.desc=\u9488\u5bf9\u4e0e servlet \u76f8\u5173\u8054\u7684 URI \u6240\u5904\u7406\u7684\u603b\u8bf7\u6c42\u6570\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.url.concurrentRequests.desc=\u9488\u5bf9\u4e0e servlet \u76f8\u5173\u8054\u7684 URI \u5e76\u884c\u5904\u7406\u7684\u8bf7\u6c42\u6570\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.url.responseTime.desc=\u4e0e servlet \u76f8\u5173\u8054\u7684 URI \u7684\u5e73\u5747\u670d\u52a1\u54cd\u5e94\u65f6\u95f4\uff08\u4ee5\u6beb\u79d2\u8ba1\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.numLoadedServlets=Num Loaded Servlets
+webAppModule.numLoadedServlets=\u5df2\u88c5\u5165\u7684 servlet \u6570
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.numReloads=Num Reloads
+webAppModule.numReloads=\u91cd\u65b0\u88c5\u5165\u6b21\u6570
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+webAppModule.servlets=servlet
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+webAppModule.servlets.urls=URL
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.totalRequests=Total Requests
+webAppModule.servlets.totalRequests=\u8bf7\u6c42\u6570
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.concurrentRequests=Concurrent Requests
+webAppModule.servlets.concurrentRequests=\u5e76\u53d1\u8bf7\u6c42
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module (JSR77)
+#webAppModule.servlets.responseTime=Average Response Time (ms)
+webAppModule.servlets.responseTime=\u670d\u52a1\u65f6\u95f4
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.numErrors=Num Errors
+webAppModule.servlets.numErrors=\u9519\u8bef\u6570
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.url.totalRequests=Total Requests
+webAppModule.url.totalRequests=URIRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.url.concurrentRequests=Concurrent Requests
+webAppModule.url.concurrentRequests=URIConcurrentRequests
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module (JSR77)
+#webAppModule.url.responseTime=Average Response Time (ms)
+webAppModule.url.responseTime=URIServiceTime
+
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.loadedSince=Loaded Since (ms)
+webAppModule.servlets.loadedSince=\u88c5\u5165\u65f6\u95f4
+
+webAppModule.servlets.asyncContextResponseTime=AsyncContext \u54cd\u5e94\u65f6\u95f4
+webAppModule.servlets.asyncContextResponseTime.desc=\u6b64\u5ea6\u91cf\u8bb0\u5f55\u6bcf servlet \u7684 AsyncContext \u5b8c\u6210\u65f6\u7684\u54cd\u5e94\u65f6\u95f4\uff08\u4ee5\u6beb\u79d2\u8ba1\uff09\u3002
+
+webAppModule.url.asyncContextResponseTime=AsyncContext \u54cd\u5e94\u65f6\u95f4
+webAppModule.url.asyncContextResponseTime.desc=\u6b64\u5ea6\u91cf\u8bb0\u5f55\u6bcf URL \u7684 AsyncContext \u5b8c\u6210\u65f6\u7684\u54cd\u5e94\u65f6\u95f4\uff08\u4ee5\u6beb\u79d2\u8ba1\uff09\u3002
+
+webAppModule=Web \u5e94\u7528\u7a0b\u5e8f
+
+# -------------------------------------------------------------------------------------------------
+# Unit for counters
+unit.none=\u4e0d\u9002\u7528
+
+# -------------------------------------------------------------------------------------------------
+# Unit for counters
+#unit.ms=millisecond (JSR77)
+unit.ms=\u6beb\u79d2
+
+request.matches.context.root=SRVE0316W: \u8bf7\u6c42\u4e0e\u865a\u62df\u4e3b\u673a\u522b\u540d [{1}] \u4e0b\u7684\u4e0a\u4e0b\u6587\u6839 [{0}] \u5339\u914d\u3002
+request.matches.context.root.explanation=\u8bf7\u6c42\u8def\u5f84\u6620\u5c04\u5230\u4e0d\u5339\u914d\u7684\u865a\u62df\u4e3b\u673a\u4e0a\u7684\u4e0a\u4e0b\u6587\u6839\u3002
+request.matches.context.root.useraction=\u8bf7\u68c0\u67e5\u662f\u5426\u9700\u8981\u6dfb\u52a0\u5176\u4ed6\u865a\u62df\u4e3b\u673a\u522b\u540d\u3002
+
+need.to.add.a.new.virtual.host.alias=SRVE0317W: \u53ef\u80fd\u9700\u8981\u5c06\u65b0\u7684\u865a\u62df\u4e3b\u673a\u522b\u540d *:<your port> \u6dfb\u52a0\u81f3 [{0}] \u6240\u5728\u7684\u865a\u62df\u4e3b\u673a\u3002
+need.to.add.a.new.virtual.host.alias.explanation=\u8bf7\u6c42\u8def\u5f84\u6620\u5c04\u5230\u4e0d\u5339\u914d\u7684\u865a\u62df\u4e3b\u673a\u4e0a\u7684\u4e0a\u4e0b\u6587\u6839\u3002
+need.to.add.a.new.virtual.host.alias.useraction=\u8bf7\u9075\u5faa\u4fe1\u606f\u4e2d\u5fc3\u4e2d\u7684\u6307\u793a\u4fe1\u606f\u6765\u6dfb\u52a0\u65b0\u7684\u865a\u62df\u4e3b\u673a\u522b\u540d\u3002
+
+# --------------------------------
+Servlet.has.become.temporarily.unavailable.for.service\:.{0}=SRVE0095I: servlet \u6682\u65f6\u65e0\u6cd5\u63d0\u4f9b\u670d\u52a1\uff1a{0}
+Servlet.has.become.temporarily.unavailable.for.service\:.{0}.explanation=\u6307\u5b9a\u7684 servlet \u6682\u65f6\u4e0d\u53ef\u7528\u3002
+Servlet.has.become.temporarily.unavailable.for.service\:.{0}.useraction=\u8bf7\u7b49\u5f85\uff0c\u7136\u540e\u91cd\u8bd5\u64cd\u4f5c\u3002\u670d\u52a1\u5668\u7ba1\u7406\u5458\u53ef\u80fd\u5df2\u4ece\u670d\u52a1\u4e2d\u79fb\u9664\u4e86\u8be5 servlet\u3002
+
+Session.Feature.Set.Not.Started=SRVE0096E: \u65e0\u6cd5\u8bbf\u95ee\u4f1a\u8bdd\u3002\u4f1a\u8bdd\u7ba1\u7406\u5668\u529f\u80fd\u96c6\u672a\u542f\u52a8\u3002
+Session.Feature.Set.Not.Started.explanation=\u65e0\u6cd5\u8bbf\u95ee\u4f1a\u8bdd\u3002\u4f1a\u8bdd\u7ba1\u7406\u5668\u529f\u80fd\u96c6\u672a\u542f\u52a8\u3002
+Session.Feature.Set.Not.Started.useraction=\u8bf7\u786e\u4fdd\u670d\u52a1\u5668\u914d\u7f6e\u4f9d\u8d56\u4e8e\u4f1a\u8bdd\u529f\u80fd\u96c6\u3002
+# --------------------------------
+invalid.query.string=SRVE0318W: \u67e5\u8be2\u5b57\u7b26\u4e32\u4e2d\u7684\u5b57\u7b26\u65e0\u6548\u3002
+invalid.query.string.explanation=\u67e5\u8be2\u5b57\u7b26\u4e32\u4e2d\u5b58\u5728\u65e0\u6548\u5b57\u7b26\uff0c\u5df2\u5ffd\u7565\u8be5\u5b57\u7b26\u3002
+invalid.query.string.useraction=\u7528\u6237\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+#Version 8 messages start with 8
+
+ClassNotFound.check.web.xml=SRVE8000W: \u5df2\u8df3\u8fc7\u672a\u80fd\u521d\u59cb\u5316\u4ee5\u8fdb\u884c\u6ce8\u91ca\u626b\u63cf\u7684\u7c7b\u3002
+ClassNotFound.check.web.xml.explanation=Web \u6a21\u5757\u4e2d\u7684\u7c7b\u672a\u80fd\u521d\u59cb\u5316\uff0c\u6240\u4ee5\u4e0d\u80fd\u5bf9\u5b83\u8fdb\u884c\u6ce8\u91ca\u626b\u63cf\u3002
+ClassNotFound.check.web.xml.useraction=\u9a8c\u8bc1\u6b64\u7c7b\u662f\u5426\u5b58\u5728\u4ee5\u53ca\u7c7b\u8def\u5f84\u4e2d\u662f\u5426\u5305\u542b\u5176\u6240\u6709\u4f9d\u8d56\u9879\u3002
+
+error.adding.servlet.after.initialization=SRVE8001E: \u5c1d\u8bd5\u5728 ServletContext \u521d\u59cb\u5316\u540e\u52a8\u6001\u6dfb\u52a0 servlet\u3002
+error.adding.servlet.after.initialization.explanation=\u53ea\u80fd\u5728\u521d\u59cb\u5316 ServletContext \u4e4b\u524d\u52a8\u6001\u6dfb\u52a0 Servlet\u3002
+error.adding.servlet.after.initialization.useraction=\u8bf7\u5c06\u8c03\u7528\u5f53\u524d\u65b9\u6cd5\u7684\u4ee3\u7801\u79fb\u81f3 ServletContainerInitalizer \u7684 onStartup \u65b9\u6cd5\u6216 ServletContextListener \u7684 contextInitialized \u65b9\u6cd5\u3002
+
+error.adding.filter.after.initialization=SRVE8002E: \u5c1d\u8bd5\u5728 ServletContext \u521d\u59cb\u5316\u540e\u52a8\u6001\u6dfb\u52a0\u8fc7\u6ee4\u5668\u3002
+error.adding.filter.after.initialization.explanation=\u53ea\u80fd\u5728\u521d\u59cb\u5316 ServletContext \u4e4b\u524d\u52a8\u6001\u6dfb\u52a0\u8fc7\u6ee4\u5668\u3002
+error.adding.filter.after.initialization.useraction=\u8bf7\u5c06\u8c03\u7528\u5f53\u524d\u65b9\u6cd5\u7684\u4ee3\u7801\u79fb\u81f3 ServletContainerInitalizer \u7684 onStartup \u65b9\u6cd5\u6216 ServletContextListener \u7684 contextInitialized \u65b9\u6cd5\u3002
+
+add.servlet.mapping.to.null.url.patterns=SRVE8003E: \u5c1d\u8bd5\u6dfb\u52a0\u7684 servlet \u6620\u5c04\u7684\u53d8\u91cf\u53c2\u6570 URL \u6a21\u5f0f\u53c2\u6570\u8bbe\u7f6e\u4e3a null\u3002
+add.servlet.mapping.to.null.url.patterns.explanation=\u4f20\u9012\u81f3 ServletRegistration.addMapping \u7684\u53d8\u91cf\u53c2\u6570 URL \u6a21\u5f0f\u53c2\u6570\u4e0d\u80fd\u4e3a null\uff0c\u4e5f\u4e0d\u80fd\u4e3a\u7a7a\u3002
+add.servlet.mapping.to.null.url.patterns.useraction=\u8bf7\u6839\u636e\u9519\u8bef\u8bf4\u660e\u4fee\u6539\u5e94\u7528\u7a0b\u5e8f\u4ee3\u7801\u3002
+
+add.servlet.mapping.to.empty.url.patterns=SRVE8004E: \u5c1d\u8bd5\u6dfb\u52a0\u7684 servlet \u6620\u5c04\u7684\u53d8\u91cf\u53c2\u6570 URL \u6a21\u5f0f\u53c2\u6570\u4e3a\u7a7a\u3002
+add.servlet.mapping.to.empty.url.patterns.explanation=\u4f20\u9012\u81f3 ServletRegistration.addMapping \u7684\u53d8\u91cf\u53c2\u6570 URL \u6a21\u5f0f\u53c2\u6570\u4e0d\u80fd\u4e3a null\uff0c\u4e5f\u4e0d\u80fd\u4e3a\u7a7a\u3002
+add.servlet.mapping.to.empty.url.patterns.useraction=\u8bf7\u6839\u636e\u9519\u8bef\u8bf4\u660e\u4fee\u6539\u5e94\u7528\u7a0b\u5e8f\u4ee3\u7801\u3002
+
+add.filter.mapping.to.null.url.patterns=SRVE8005E: \u5c1d\u8bd5\u6dfb\u52a0\u7684\u8fc7\u6ee4\u5668\u6620\u5c04\u7684\u53d8\u91cf\u53c2\u6570 URL \u6a21\u5f0f\u53c2\u6570\u8bbe\u7f6e\u4e3a null\u3002
+add.filter.mapping.to.null.url.patterns.explanation=\u4f20\u9012\u81f3 FilterRegistration.addMappingForUrlPatterns \u7684\u53d8\u91cf\u53c2\u6570 URL \u6a21\u5f0f\u53c2\u6570\u4e0d\u80fd\u4e3a null\uff0c\u4e5f\u4e0d\u80fd\u4e3a\u7a7a\u3002
+add.filter.mapping.to.null.url.patterns.useraction=\u8bf7\u6839\u636e\u9519\u8bef\u8bf4\u660e\u4fee\u6539\u5e94\u7528\u7a0b\u5e8f\u4ee3\u7801\u3002
+
+add.filter.mapping.to.empty.url.patterns=SRVE8006E: \u5c1d\u8bd5\u6dfb\u52a0\u7684\u8fc7\u6ee4\u5668\u6620\u5c04\u7684\u53d8\u91cf\u53c2\u6570 URL \u6a21\u5f0f\u53c2\u6570\u4e3a\u7a7a\u3002
+add.filter.mapping.to.empty.url.patterns.explanation=\u4f20\u9012\u81f3 FilterRegistration.addMappingForUrlPatterns \u7684\u53d8\u91cf\u53c2\u6570 URL \u6a21\u5f0f\u53c2\u6570\u4e0d\u80fd\u4e3a null\uff0c\u4e5f\u4e0d\u80fd\u4e3a\u7a7a\u3002
+add.filter.mapping.to.empty.url.patterns.useraction=\u8bf7\u6839\u636e\u9519\u8bef\u8bf4\u660e\u4fee\u6539\u5e94\u7528\u7a0b\u5e8f\u4ee3\u7801\u3002
+
+add.filter.mapping.to.null.servlet.names=SRVE8007E: \u5c1d\u8bd5\u6dfb\u52a0\u7684\u8fc7\u6ee4\u5668\u6620\u5c04\u7684\u53d8\u91cf\u53c2\u6570 servlet \u540d\u79f0\u53c2\u6570\u8bbe\u7f6e\u4e3a null\u3002
+add.filter.mapping.to.null.servlet.names.explanation=\u4f20\u9012\u81f3 FilterRegistration.addMappingForServletNames \u7684\u53d8\u91cf\u53c2\u6570 servlet \u540d\u79f0\u53c2\u6570\u4e0d\u80fd\u4e3a null\uff0c\u4e5f\u4e0d\u80fd\u4e3a\u7a7a\u3002
+add.filter.mapping.to.null.servlet.names.useraction=\u8bf7\u6839\u636e\u9519\u8bef\u8bf4\u660e\u4fee\u6539\u5e94\u7528\u7a0b\u5e8f\u4ee3\u7801\u3002
+
+add.filter.mapping.to.empty.servlet.names=SRVE8008E: \u5c1d\u8bd5\u6dfb\u52a0\u7684\u8fc7\u6ee4\u5668\u6620\u5c04\u7684\u53d8\u91cf\u53c2\u6570 servlet \u540d\u79f0\u53c2\u6570\u4e3a\u7a7a\u3002
+add.filter.mapping.to.empty.servlet.names.explanation=\u4f20\u9012\u81f3 FilterRegistration.addMappingForServletNames \u7684\u53d8\u91cf\u53c2\u6570 servlet \u540d\u79f0\u53c2\u6570\u4e0d\u80fd\u4e3a null\uff0c\u4e5f\u4e0d\u80fd\u4e3a\u7a7a\u3002
+add.filter.mapping.to.empty.servlet.names.useraction=\u8bf7\u6839\u636e\u9519\u8bef\u8bf4\u660e\u4fee\u6539\u5e94\u7528\u7a0b\u5e8f\u4ee3\u7801\u3002
+
+error.while.initializing.target.mappings=SRVE8009E: \u521d\u59cb\u5316\u76ee\u6807\u6620\u5c04\u65f6\u53d1\u751f\u4e86\u610f\u5916\u7684\u5185\u90e8\u670d\u52a1\u5668\u9519\u8bef\u3002
+error.while.initializing.target.mappings.explanation=\u521d\u59cb\u5316\u76ee\u6807\u6620\u5c04\u65f6\u53d1\u751f\u4e86\u610f\u5916\u7684\u5185\u90e8\u670d\u52a1\u5668\u9519\u8bef\u3002
+error.while.initializing.target.mappings.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u652f\u6301\u673a\u6784\u8054\u7cfb\u3002
+
+
+request.does.not.support.async.servlet.processing=SRVE8010E: \u5f53\u524d\u8bf7\u6c42\u4e0d\u652f\u6301\u5f02\u6b65 servlet \u5904\u7406\u3002
+request.does.not.support.async.servlet.processing.explanation=\u8bf7\u6c42\u4e2d\u7684\u67d0\u4e2a servlet \u6216\u8fc7\u6ee4\u5668\u4e0d\u652f\u6301\u5f02\u6b65 servlet\u3002
+request.does.not.support.async.servlet.processing.useraction=\u8bf7\u52ff\u4f7f\u7528\u5f02\u6b65 servlet\uff0c\u6216\u8005\u8bf7\u901a\u8fc7\u5c06\u652f\u6301\u5f02\u6b65\u7684\u5143\u7d20\u6dfb\u52a0\u81f3\u7ec4\u4ef6\u5b9a\u4e49\u6765\u5bf9\u94fe\u4e2d\u7684\u6240\u6709 servlet \u548c\u8fc7\u6ee4\u5668\u542f\u7528\u5f02\u6b65\u5904\u7406\u3002
+
+# Translation note: {0} = operation being performed, {1} = the listener that called the operation, {2} = the application that contains the listener: SRVE8011E: This operation cannot be executed from a programmatically added listener. (Operation: {0} | Listener: {1} | Application: {2})
+Unsupported.op.from.servlet.context.listener=SRVE8011E: \u65e0\u6cd5\u4ece\u901a\u8fc7\u7a0b\u5e8f\u6dfb\u52a0\u7684\u4fa6\u542c\u5668\u6267\u884c\u6b64\u64cd\u4f5c\u3002\uff08\u64cd\u4f5c\uff1a{0} | \u4fa6\u542c\u5668\uff1a{1} | \u5e94\u7528\u7a0b\u5e8f\uff1a{2}\uff09
+Unsupported.op.from.servlet.context.listener.explanation=\u65e0\u6cd5\u4ece\u901a\u8fc7\u7a0b\u5e8f\u6dfb\u52a0\u7684\u4fa6\u542c\u5668\u6267\u884c\u67d0\u4e9b\u64cd\u4f5c\uff0c\u56e0\u4e3a\u5728\u6807\u8bb0\u5e93\u63cf\u8ff0\u7b26 (TLD) \u4e2d\u5b9a\u4e49\u8fd9\u4e9b\u64cd\u4f5c\u65f6\uff0c\u6ca1\u6709\u7528\u4e8e\u9650\u5236\u8fd9\u4e9b\u64cd\u4f5c\u7684\u6267\u884c\u7684\u914d\u7f6e\u9009\u9879\u3002
+Unsupported.op.from.servlet.context.listener.useraction=\u8bf7\u901a\u8fc7\u6ce8\u91ca\u6216 web.xml \u6dfb\u52a0\u4fa6\u542c\u5668\u4ee5\u5141\u8bb8\u6267\u884c\u6b64\u65b9\u6cd5\u3002
+
+Error.adding.ServletContextListener=SRVE8012E: \u6dfb\u52a0 ServletContextListener \u65f6\u51fa\u9519
+Error.adding.ServletContextListener.explanation=\u65e0\u6cd5\u901a\u8fc7\u4e00\u4e2a ServletContextListener \u6dfb\u52a0\u53e6\u4e00\u4e2a ServletContextListener
+Error.adding.ServletContextListener.useraction=\u5c06 ServletContextListener \u6dfb\u52a0\u81f3 web.xml \u6216 web-fragment.xml\u3001\u4f7f\u7528 @WebListener \u6ce8\u91ca\u5bf9\u5176\u8fdb\u884c\u6ce8\u91ca\u6216\u901a\u8fc7\u7a0b\u5e8f\u4ece ServletContainerInitializer#onStartup \u6dfb\u52a0 ServletContextListener
+
+Invalid.Listener=SRVE8013E: \u8981\u901a\u8fc7\u7a0b\u5e8f\u6dfb\u52a0\u7684\u4fa6\u542c\u5668\u65e0\u6548
+Invalid.Listener.explanation=\u8981\u901a\u8fc7\u7a0b\u5e8f\u6dfb\u52a0\u7684\u4fa6\u542c\u5668\u672a\u5b9e\u73b0\u6709\u6548\u4fa6\u542c\u5668\u7c7b\u578b
+Invalid.Listener.useraction=\u8bf7\u4fee\u6539\u5e94\u7528\u7a0b\u5e8f\u4ee3\u7801\u4ee5\u6dfb\u52a0\u5df2\u63a5\u53d7\u7c7b\u578b\u7684\u4fa6\u542c\u5668
+
+exception.occurred.while.creating.listener.instance=SRVE8014E: \u521b\u5efa\u4fa6\u542c\u5668\u5b9e\u4f8b\u65f6\u53d1\u751f\u4e86\u5f02\u5e38
+exception.occurred.while.creating.listener.instance.explanation=\u521b\u5efa\u4fa6\u542c\u5668\u5b9e\u4f8b\u65f6\u53d1\u751f\u4e86\u5f02\u5e38
+exception.occurred.while.creating.listener.instance.useraction=\u521b\u5efa\u4fa6\u542c\u5668\u5b9e\u4f8b\u65f6\u53d1\u751f\u4e86\u5f02\u5e38
+
+exception.occurred.while.adding.listener=SRVE8015E: \u5c1d\u8bd5\u6dfb\u52a0\u7c7b\u578b\u4e3a {0} \u7684\u4fa6\u542c\u5668\u65f6\u53d1\u751f\u4e86\u5f02\u5e38
+exception.occurred.while.adding.listener.explanation=\u5c1d\u8bd5\u6dfb\u52a0\u4fa6\u542c\u5668\u65f6\u53d1\u751f\u4e86\u5f02\u5e38
+exception.occurred.while.adding.listener.useraction=\u8bf7\u9a8c\u8bc1\u4fa6\u542c\u5668\u662f\u5426\u4e3a\u6709\u6548\u7c7b\u578b\u4ee5\u53ca\u662f\u5426\u5bf9\u6b64\u5e94\u7528\u7a0b\u5e8f\u53ef\u7528
+
+error.validate.annotation.extension.class=SRVE8016E: {0} \u6ce8\u91ca\u65e0\u6cd5\u5e94\u7528\u4e8e\u7c7b {1}\uff0c\u56e0\u4e3a\u6b64\u7c7b\u6269\u5c55\u4e86\u9519\u8bef\u7684\u8d85\u7c7b
+error.validate.annotation.extension.class.explanation=\u67d0\u4e9b\u6ce8\u91ca\u53ea\u80fd\u5e94\u7528\u4e8e\u6269\u5c55\u6b63\u786e\u7c7b\u578b\u7684\u7c7b\u3002
+error.validate.annotation.extension.class.useraction=\u8bf7\u4fee\u6539\u6b64\u7c7b\u4ee5\u6269\u5c55\u6b63\u786e\u7684\u8d85\u7c7b
+
+error.validate.webServlet.urlPatterns.and.value=SRVE8017E: \u7c7b {0} \u65e0\u6cd5\u540c\u65f6\u5728\u6ce8\u91ca\u4e2d\u6307\u5b9a urlPattern \u548c\u503c
+error.validate.webServlet.urlPatterns.and.value.explanation=\u6b64\u7c7b\u4e0d\u80fd\u540c\u65f6\u5728\u6ce8\u91ca\u4e2d\u6307\u5b9a urlPattern \u548c\u503c
+error.validate.webServlet.urlPatterns.and.value.useraction=\u8bf7\u4fee\u6539\u6b64\u7c7b\u4ee5\u4fbf\u4ec5\u5305\u542b urlPattern \u6216\u503c\u5c5e\u6027\u7684\u5176\u4e2d\u4e4b\u4e00
+
+error.validate.webServlet.zero.mappings=SRVE8018E: \u7c7b {0} \u672a\u5728\u6ce8\u91ca\u4e2d\u6307\u5b9a\u4efb\u4f55\u6a21\u5f0f
+error.validate.webServlet.zero.mappings.explanation=\u6b64\u7c7b\u5fc5\u987b\u901a\u8fc7 urlPattern \u6216\u503c\u5c5e\u6027\u5728\u6ce8\u91ca\u4e2d\u6307\u5b9a\u6a21\u5f0f
+error.validate.webServlet.zero.mappings.useraction=\u8bf7\u4fee\u6539\u6b64\u7c7b\u4ee5\u6dfb\u52a0 urlPattern \u6216\u503c\u5c5e\u6027\u7684\u5176\u4e2d\u4e4b\u4e00
+
+error.validate.webServlet.name.empty=SRVE8019E: \u5e26\u6709\u6ce8\u91ca\u7684\u7c7b {0} \u7684\u540d\u79f0\u65e0\u6548
+error.validate.webServlet.name.empty.explanation=\u6b64\u7c7b\u5fc5\u987b\u5728\u6ce8\u91ca\u4e2d\u6307\u5b9a\u6709\u6548\u540d\u79f0
+error.validate.webServlet.name.empty.useraction=\u8bf7\u4fee\u6539\u6b64\u7c7b\u4ee5\u5728\u6ce8\u91ca\u4e2d\u6307\u5b9a\u6709\u6548\u540d\u79f0
+
+multipart.no.multipart.config=SRVE8020E: servlet \u4e0d\u63a5\u53d7\u591a\u91cd\u90e8\u4ef6\u8bf7\u6c42
+multipart.no.multipart.config.explanation=\u6b64 servlet \u4e0d\u63a5\u53d7\u591a\u91cd\u90e8\u4ef6\u8bf7\u6c42\u3002
+multipart.no.multipart.config.useraction=\u8bf7\u5c06 @MultipartConfig \u6ce8\u91ca\u6dfb\u52a0\u81f3\u6b64 servlet \u6216\u5728 web.xml \u4e2d\u5c06 multipart-config \u5143\u7d20\u6dfb\u52a0\u81f3\u6b64 servlet\u3002
+
+multipart.file.size.too.big=SRVE8021E: \u8981\u4e0a\u8f7d\u7684\u6587\u4ef6\u592a\u5927\u3002
+multipart.file.size.too.big.explanation=\u8981\u901a\u8fc7\u591a\u91cd\u90e8\u4ef6/\u8868\u5355\u6570\u636e\u8bf7\u6c42\u4e0a\u8f7d\u7684\u6587\u4ef6\u5927\u4e8e\u6700\u5927\u914d\u7f6e\u5927\u5c0f\u3002
+multipart.file.size.too.big.useraction=\u8bf7\u63d0\u9ad8\u7ed9\u5b9a servlet \u7684\u591a\u91cd\u90e8\u4ef6\u914d\u7f6e\u7684\u6587\u4ef6\u5927\u5c0f\u5c5e\u6027\u3002
+
+multipart.request.size.too.big=SRVE8022E: \u8bf7\u6c42\u592a\u5927\u3002
+multipart.request.size.too.big.explanation=\u591a\u91cd\u90e8\u4ef6/\u8868\u5355\u6570\u636e\u8bf7\u6c42\u5927\u4e8e\u6700\u5927\u914d\u7f6e\u5927\u5c0f\u3002
+multipart.request.size.too.big.useraction=\u8bf7\u63d0\u9ad8\u7ed9\u5b9a servlet \u7684\u591a\u91cd\u90e8\u4ef6\u914d\u7f6e\u7684\u8bf7\u6c42\u5927\u5c0f\u5c5e\u6027\u3002
+
+multipart.file.upload.exception=SRVE8023E: \u4e0a\u8f7d\u6587\u4ef6\u65f6\u53d1\u751f\u4e86\u5f02\u5e38\u3002
+multipart.file.upload.exception.explanation=\u4e0a\u8f7d\u6587\u4ef6\u65f6\u53d1\u751f\u4e86\u5f02\u5e38\u3002
+multipart.file.upload.exception.useraction=\u8bf7\u8c03\u67e5\u5d4c\u5957\u9519\u8bef\u5e76\u6267\u884c\u9002\u5f53\u7684\u64cd\u4f5c\u3002
+
+multipart.request.not.multipart=SRVE8024E: \u6b64\u8bf7\u6c42\u4e0d\u662f\u591a\u91cd\u90e8\u4ef6/\u8868\u5355\u6570\u636e\u7c7b\u578b\u3002
+multipart.request.not.multipart.explanation=\u6b64\u8bf7\u6c42\u5fc5\u987b\u4e3a\u591a\u91cd\u90e8\u4ef6/\u8868\u5355\u6570\u636e\u7c7b\u578b\u624d\u80fd\u5904\u7406\u6b64\u65b9\u6cd5\u3002
+multipart.request.not.multipart.useraction=\u8bf7\u4fee\u6539\u53d1\u51fa\u5148\u524d\u8bf7\u6c42\u7684 servlet \u4ee5\u4f7f\u5f53\u524d\u8bf7\u6c42\u4e3a\u591a\u91cd\u90e8\u4ef6/\u8868\u5355\u6570\u636e\u7c7b\u578b\u3002
+
+error.occurred.during.async.servlet.handling=SRVE8025E: \u6267\u884c\u5f02\u6b65 servlet \u5904\u7406\u65f6\u53d1\u751f\u4e86\u9519\u8bef\u6216\u8d85\u65f6\u3002
+error.occurred.during.async.servlet.handling.explanation=\u56e0\u4e3a\u5f02\u6b65\u5206\u6d3e\u800c\u5bfc\u81f4\u7684\u9519\u8bef\u6216\u8d85\u65f6\u5c06\u8c03\u7528\u4efb\u4f55\u5df2\u6ce8\u518c\u5f02\u6b65\u4fa6\u542c\u5668\uff0c\u7136\u540e\u8c03\u7528\u9519\u8bef\u9875\u9762\u673a\u5236\uff08\u5982\u679c\u5e76\u975e\u4fa6\u542c\u5668\u5206\u6d3e\u6216\u5b8c\u6210\uff09\u3002
+error.occurred.during.async.servlet.handling.useraction=\u8bf7\u901a\u8fc7\u67e5\u770b\u5f02\u5e38\u5e76\u4fee\u6539\u5e94\u7528\u7a0b\u5e8f\u4ee3\u7801\u6765\u4fee\u6b63\u9519\u8bef\uff0c\u6216\u786e\u4fdd\u63d0\u4f9b AsyncListener \u6216\u9519\u8bef\u9875\u9762\u4ee5\u5b8c\u5584\u5904\u7406\u9519\u8bef\u60c5\u51b5\u3002
+
+thread.interrupted.scheduling.async.runnable.on.thread.pool=SRVE8026E: \u8c03\u5ea6\u4e0e\u5f02\u6b65 servlet \u5904\u7406\u76f8\u5173\u7684\u5de5\u4f5c\u65f6\u53d1\u751f\u4e86\u5f02\u5e38\u3002
+thread.interrupted.scheduling.async.runnable.on.thread.pool.explanation=\u6b64\u5f02\u5e38\u51b3\u4e0d\u5e94\u53d1\u751f\uff0c\u56e0\u4e3a\u7ebf\u7a0b\u6c60\u5c06\u6392\u961f\u7b49\u5f85\u5de5\u4f5c\u3002
+thread.interrupted.scheduling.async.runnable.on.thread.pool.useraction=\u5982\u679c\u53d1\u751f\u6b64\u5f02\u5e38\uff0c\u8bf7\u4e0e\u652f\u6301\u4eba\u5458\u8054\u7cfb\u3002
+
+an.io.related.error.has.occurred.during.the.processing.of.the.given.AsyncEvent=SRVE8027E: \u5904\u7406\u7ed9\u5b9a AsyncEvent \u671f\u95f4\u53d1\u751f\u4e86 I/O \u76f8\u5173\u9519\u8bef\u3002
+an.io.related.error.has.occurred.during.the.processing.of.the.given.AsyncEvent.explanation=\u5982\u679c AsyncListener \u6b63\u4e0e\u53e6\u4e00\u7ebf\u7a0b\u5e76\u884c\u5199\u81f3\u54cd\u5e94\u6216\u5176\u4ed6\u5bf9\u8c61\u5df2\u5173\u95ed\u54cd\u5e94\uff0c\u90a3\u4e48\u8c03\u7528 AsyncListener \u53ef\u80fd\u53d1\u751f I/O \u9519\u8bef\u3002
+an.io.related.error.has.occurred.during.the.processing.of.the.given.AsyncEvent.useraction=\u5efa\u8bae AsyncListener \u4ec5\u5e94\u8c03\u7528\u5b8c\u6210\u6216\u5206\u6d3e\uff0c\u4f46\u4e0d\u5199\u81f3\u54cd\u5e94\u3002\u5426\u5219\uff0c\u7531\u5ba2\u6237\u8d1f\u8d23\u6267\u884c\u4ed6\u4eec\u81ea\u5df1\u7684\u540c\u6b65\u4ee5\u907f\u514d IOException\u3002
+
+default.extension.exception.adding.mapping.target=SRVE8028W: \u4e3a\u7f3a\u7701\u6269\u5c55\u5904\u7406\u5668\u6dfb\u52a0\u6620\u5c04\u76ee\u6807\u65f6\u53d1\u751f\u4e86\u5f02\u5e38\u3002
+default.extension.exception.adding.mapping.target.explanation=\u5982\u679c\u7b2c\u4e00\u6b21\u5411\u540c\u4e00\u8d44\u6e90\u53d1\u51fa\u4e24\u4e2a\u8bf7\u6c42\uff0c\u90a3\u4e48\u5c1d\u8bd5\u5c06\u6620\u5c04\u6dfb\u52a0\u81f3 Web \u5e94\u7528\u7a0b\u5e8f\u65f6\u53ef\u80fd\u4f1a\u51fa\u73b0\u7ade\u4e89\u72b6\u6001\u3002
+default.extension.exception.adding.mapping.target.useraction=\u8fd9\u901a\u5e38\u662f\u826f\u6027\u60c5\u51b5\uff0c\u53ef\u5ffd\u7565\u3002\u4ec5\u5f53\u5904\u7406\u9488\u5bf9\u6240\u8ba8\u8bba\u8d44\u6e90\u7684\u4efb\u4f55\u8bf7\u6c42\u671f\u95f4\u53d1\u751f\u95ee\u9898\u65f6\uff0c\u624d\u5e94\u62a5\u544a\u6b64\u60c5\u51b5\u3002
+
+exception.creating.search.path=SRVE8029E: \u521b\u5efa\u6269\u5c55\u6587\u6863\u6839\u641c\u7d22\u8def\u5f84\u65f6\u53d1\u751f IOException\u3002
+exception.creating.search.path.explanation=\u56e0\u4e3a\u521b\u5efa\u641c\u7d22\u8def\u5f84\u6d89\u53ca\u6587\u4ef6\u7cfb\u7edf\u8bbf\u95ee\uff0c\u6240\u4ee5\u53ef\u80fd\u4f1a\u53d1\u751f IOException\u3002
+exception.creating.search.path.useraction=\u8bf7\u9a8c\u8bc1\u6b64\u8def\u5f84\u662f\u5426\u6b63\u786e\u4ee5\u53ca\u662f\u5426\u5b58\u5728\u786c\u4ef6\u95ee\u9898\u3002
+
+exception.occured.while.adding.servlet=SRVE8030E: \u52a8\u6001\u6dfb\u52a0 servlet \u65f6\u53d1\u751f ServletException\u3002
+exception.occured.while.adding.servlet.explanation=\u52a8\u6001\u6dfb\u52a0 servlet \u65f6\u53d1\u751f\u610f\u5916 ServletException\u3002\u4f8b\u5982\uff0c\u4e24\u4e2a servlet \u7684 MBean \u540d\u79f0\u5b58\u5728\u51b2\u7a81\u65f6\uff0c\u53ef\u80fd\u53d1\u751f\u6b64\u5f02\u5e38\u3002
+exception.occured.while.adding.servlet.useraction=\u8bf7\u67e5\u770b\u65e5\u5fd7\u5e76\u4e0e\u652f\u6301\u4eba\u5458\u8054\u7cfb\u3002
+
+exception.occurred.while.initializing.ServletContainerInitializers.class.lookup=SRVE8031W: \u5728\u626b\u63cf {1} \u7684 ervletContainerInitializer HandlesTypes \u671f\u95f4\u67e5\u627e\u7c7b {0} \u65f6\u53d1\u751f\u95ee\u9898\u3002
+exception.occurred.while.initializing.ServletContainerInitializers.class.lookup.explanation=\u5904\u7406 ServletContainerInitializer HandlesTypes \u6ce8\u91ca\u65f6\uff0c\u5728\u7c7b\u88c5\u5165\u5668\u4e2d\u627e\u4e0d\u5230\u6b64\u7c7b\u3002
+exception.occurred.while.initializing.ServletContainerInitializers.class.lookup.useraction=\u8bf7\u786e\u4fdd Web \u6a21\u5757\u7684\u7c7b\u88c5\u5165\u5668\u4e2d\u5b58\u5728\u6b64\u7c7b\u3002
+
+exception.occurred.while.initializing.ServletContainerInitializers.HandlesTypes=SRVE8032W: \u5728\u626b\u63cf {1} \u7684 ServletContainerInitializer {0} \u671f\u95f4\u67e5\u627e HandlesTypes \u7c7b\u65f6\u53d1\u751f\u95ee\u9898\u3002
+exception.occurred.while.initializing.ServletContainerInitializers.HandlesTypes.explanation=\u5904\u7406 ServletContainerInitializer HandlesTypes \u6ce8\u91ca\u65f6\uff0c\u5728\u7c7b\u88c5\u5165\u5668\u4e2d\u627e\u4e0d\u5230\u6b64\u7c7b\u3002
+exception.occurred.while.initializing.ServletContainerInitializers.HandlesTypes.useraction=\u8bf7\u786e\u4fdd Web \u6a21\u5757\u7684\u7c7b\u88c5\u5165\u5668\u4e2d\u5b58\u5728\u6b64\u7c7b\u3002
+
+exception.occurred.while.initializing.ServletContainerInitializers=SRVE8033W: \u521d\u59cb\u5316\u5e94\u7528\u7a0b\u5e8f\u7684 ServletContainerInitializer \u65f6\u53d1\u751f\u95ee\u9898\u3002
+exception.occurred.while.initializing.ServletContainerInitializers.explanation=\u521d\u59cb\u5316\u5e94\u7528\u7a0b\u5e8f\u7684 ServletContainerInitializer \u65f6\u53d1\u751f\u95ee\u9898\u3002
+exception.occurred.while.initializing.ServletContainerInitializers.useraction=\u8bf7\u9a8c\u8bc1\u662f\u5426\u6b63\u786e\u914d\u7f6e\u4e86 ServletContainerInitializer\u3002
+
+IOException.loading.servlet=SRVE8034E: Servlet [{0}]\uff1a\u672a\u80fd\u88c5\u5165 {1}\uff0c\u56e0\u4e3a\u53d1\u751f\u4e86 IOException\u3002
+IOException.loading.servlet.explanation=\u4e0e I/O \u6709\u5173\u7684\u4efb\u4f55\u539f\u56e0\u90fd\u53ef\u80fd\u5bfc\u81f4\u53d1\u751f IOException\u3002
+IOException.loading.servlet.useraction=\u8bf7\u68c0\u67e5\u662f\u5426\u79fb\u9664\u4e86\u6b64\u7c7b\u3002
+
+IllegalAccessException.loading.servlet=SRVE8035E: Servlet [{0}]\uff1a\u672a\u80fd\u88c5\u5165{1}\uff0c\u56e0\u4e3a\u53d1\u751f\u4e86 IllegalAccessException\u3002
+IllegalAccessException.loading.servlet.explanation=\u5bf9 servlet \u8c03\u7528 newInstance \u65f6\u53d1\u751f IllegalAccessException\u3002
+IllegalAccessException.loading.servlet.useraction=\u8bf7\u9a8c\u8bc1 servlet \u4e0a\u662f\u5426\u5b58\u5728\u516c\u7528\u96f6\u53c2\u6570\u6784\u9020\u51fd\u6570\u3002
+
+InstantiationException.loading.servlet=SRVE8036E: Servlet [{0}]\uff1a\u672a\u80fd\u88c5\u5165 {1}\uff0c\u56e0\u4e3a\u53d1\u751f\u4e86 InstantiationException\u3002
+InstantiationException.loading.servlet.explanation=\u5c1d\u8bd5\u521b\u5efa\u63a5\u53e3\u6216\u62bd\u8c61\u7c7b\u7684\u65b0\u5b9e\u4f8b\u65f6\u53d1\u751f InstantiationException\u3002
+InstantiationException.loading.servlet.useraction=\u8bf7\u5c06\u8981\u5b9e\u4f8b\u5316\u7684\u7c7b\u66f4\u6539\u4e3a\u5177\u4f53\u7c7b\u6216\u5c06\u5b9a\u4e49\u4f5c\u4e3a servlet \u79fb\u9664\u3002
+
+# --------------------------------
+# Notes for translation:
+# {0} is the servlet name
+# {1} is the servlet class name
+
+Servlet.found.but.injection.failure=SRVE0319E: \u5bf9\u4e8e servlet [{0}]\uff0c\u627e\u5230 servlet \u7c7b {1}\uff0c\u4f46\u662f\u5df2\u53d1\u751f\u8d44\u6e90\u6ce8\u5165\u6545\u969c\u3002{2}
+Servlet.found.but.injection.failure.explanation=\u8be5 servlet \u672a\u80fd\u521d\u59cb\u5316\uff0c\u56e0\u4e3a\u5728\u6ce8\u5165\u8d44\u6e90\u65f6\u53d1\u751f\u9519\u8bef\u3002
+Servlet.found.but.injection.failure.useraction=\u8bf7\u9a8c\u8bc1\u6240\u6ce8\u5165\u8d44\u6e90\u662f\u5426\u5b58\u5728\u4ee5\u53ca\u5bf9\u4e8e\u8be5 servlet \u662f\u5426\u53ef\u8bbf\u95ee\u3002
+
+# --------------------------------
+# Notes for translation:
+# {0} is the filter name
+
+Filter.found.but.injection.failure=SRVE0320E: \u627e\u5230\u8fc7\u6ee4\u5668 [{0}]\uff0c\u4f46\u662f\u5df2\u53d1\u751f\u8d44\u6e90\u6ce8\u5165\u6545\u969c\u3002
+Filter.found.but.injection.failure.explanation=\u8be5\u8fc7\u6ee4\u5668\u672a\u80fd\u521d\u59cb\u5316\uff0c\u56e0\u4e3a\u5728\u6ce8\u5165\u8d44\u6e90\u65f6\u53d1\u751f\u9519\u8bef\u3002
+Filter.found.but.injection.failure.useraction=\u8bf7\u9a8c\u8bc1\u6240\u6ce8\u5165\u8d44\u6e90\u662f\u5426\u5b58\u5728\u4ee5\u53ca\u5bf9\u4e8e\u8be5\u8fc7\u6ee4\u5668\u662f\u5426\u53ef\u8bbf\u95ee\u3002
+
+# --------------------------------
+# Notes for translation:
+# {0} is the filter name
+
+init.exception.thrown.by.filter.at.startup=SRVE0321E: \u5728\u542f\u52a8\u671f\u95f4\u8fc7\u6ee4\u5668 [{0}] \u672a\u88c5\u5165\u3002
+init.exception.thrown.by.filter.at.startup.explanation=\u5728\u542f\u52a8\u671f\u95f4\u8be5\u8fc7\u6ee4\u5668\u672a\u88c5\u5165\u3002
+init.exception.thrown.by.filter.at.startup.useraction=\u8bf7\u68c0\u67e5\u670d\u52a1\u5668\u65e5\u5fd7\u4ee5\u786e\u5b9a\u95ee\u9898\u7684\u6839\u672c\u539f\u56e0\u3002
+
+# --------------------------------
+# Notes for translation:
+# {0} is the listener class name
+
+Listener.found.but.injection.failure=SRVE0322E: \u627e\u5230\u4fa6\u542c\u5668\u7c7b [{0}]\uff0c\u4f46\u662f\u5df2\u53d1\u751f\u8d44\u6e90\u6ce8\u5165\u6545\u969c\u3002
+Listener.found.but.injection.failure.explanation=\u8be5\u4fa6\u542c\u5668\u672a\u80fd\u521d\u59cb\u5316\uff0c\u56e0\u4e3a\u5728\u6ce8\u5165\u8d44\u6e90\u65f6\u53d1\u751f\u9519\u8bef\u3002
+Listener.found.but.injection.failure.useraction=\u8bf7\u9a8c\u8bc1\u6ce8\u5165\u7684\u8d44\u6e90\u662f\u5426\u5b58\u5728\u4ee5\u53ca\u662f\u5426\u53ef\u4f9b\u6b64\u4fa6\u542c\u5668\u8bbf\u95ee\u3002\u8981\u91cd\u65b0\u521d\u59cb\u5316\u8be5\u4fa6\u542c\u5668\uff0c\u8bf7\u91cd\u65b0\u542f\u52a8\u4fa6\u542c\u5668\u5e94\u7528\u7a0b\u5e8f\u3002
+
+# --------------------------------
+# Notes for translation:
+# none
+
+ARD.not.enabled.these.chains.not.supported=SRVE0323I: \u672a\u542f\u7528\u5f02\u6b65\u8bf7\u6c42\u5206\u6d3e\u5668\u3002\u53ef\u80fd\u65e0\u6cd5\u6b63\u786e\u5904\u7406\u901a\u8fc7 HttpQueueInboundDefault \u6216 HttpQueueInboundDefaultSecure \u94fe\u53d1\u9001\u7684\u8bf7\u6c42\u3002
+ARD.not.enabled.these.chains.not.supported.explanation=\u5982\u679c\u672a\u5728\u670d\u52a1\u5668\u7ea7\u522b\u542f\u7528\u5f02\u6b65\u8bf7\u6c42\u5206\u6d3e\u5668\uff0c\u90a3\u4e48\u53ef\u80fd\u65e0\u6cd5\u6b63\u786e\u5904\u7406\u901a\u8fc7 HttpQueueInboundDefault \u6216 HttpQueueInboundDefaultSecure \u94fe\u53d1\u9001\u7684\u8bf7\u6c42\u3002
+ARD.not.enabled.these.chains.not.supported.useraction=\u5982\u679c\u672a\u5728\u670d\u52a1\u5668\u7ea7\u522b\u542f\u7528\u5f02\u6b65\u8bf7\u6c42\u5206\u6d3e\u5668\uff0c\u8bf7\u786e\u4fdd WCInboundDefault \u6216 WCInboundDefaultSecure \u94fe\u5df2\u542f\u7528\u4e14\u6b63\u5728\u8fd0\u884c\u3002\u5982\u679c\u8fd9\u4e24\u4e2a\u94fe\u90fd\u6ca1\u6709\u8fd0\u884c\uff0c\u90a3\u4e48\u60a8\u5fc5\u987b\u542f\u7528\u5f02\u6b65\u8bf7\u6c42\u5206\u6d3e\u5668\uff08\u5982\u679c\u5c1a\u672a\u542f\u7528\uff09\uff0c\u56e0\u4e3a\u670d\u52a1\u5668\u5c06\u901a\u8fc7 HttpQueueInboundDefault \u6216 HttpQueueInboundDefaultSecure \u94fe\u53d1\u9001\u8bf7\u6c42\u3002
+
+# --------------------------------
+# Notes for translation:
+# none
+
+ARD.not.enabled.request.on.chains.not.supported=SRVE0324W: \u672a\u542f\u7528\u5f02\u6b65\u8bf7\u6c42\u5206\u6d3e\u5668\u3002\u56e0\u6b64\uff0cHttpQueueInboundDefault \u548c HttpQueueInboundDefaultSecure \u94fe\u53ef\u80fd\u65e0\u6cd5\u6b63\u786e\u5904\u7406\u60a8\u7684\u8bf7\u6c42\u3002
+ARD.not.enabled.request.on.chains.not.supported.explanation=\u60a8\u7684\u8bf7\u6c42\u662f\u9488\u5bf9 HttpQueueInboundDefault \u6216 HttpQueueInboundDefaultSecure \u94fe\u7684\uff0c\u4f46\u672a\u5728\u670d\u52a1\u5668\u7ea7\u522b\u542f\u7528\u5f02\u6b65\u8bf7\u6c42\u5206\u6d3e\u5668\u3002\u56e0\u6b64\uff0cHttpQueueInboundDefault \u548c HttpQueueInboundDefaultSecure \u94fe\u53ef\u80fd\u65e0\u6cd5\u6b63\u786e\u5904\u7406\u8fd9\u4e9b\u8bf7\u6c42\u3002
+ARD.not.enabled.request.on.chains.not.supported.useraction=\u8bf7\u5728\u670d\u52a1\u5668\u7ea7\u522b\u542f\u7528\u5f02\u6b65\u8bf7\u6c42\u5206\u6d3e\u5668\uff0c\u6216\u8005\u542f\u7528 WCInboundDefault \u548c WCInboundDefaultSecure \u94fe\u4e2d\u7684\u4e00\u4e2a\u5e76\u786e\u4fdd\u5176\u6b63\u5728\u8fd0\u884c\u3002
+# --------------------------------
+# Notes for translation:
+# {0} is the total count allowed
+# {1} is the current count
+
+Exceeding.maximum.parameters=SRVE0325E: \u8d85\u51fa\u6bcf\u4e2a\u8bf7\u6c42 {0} \u5141\u8bb8\u7684\u6700\u5927\u53c2\u6570\u3001\u5f53\u524d {1}\uff0c\u65e0\u6cd5\u6dfb\u52a0\u66f4\u591a\u5185\u5bb9\u3002
+Exceeding.maximum.parameters.explanation=\u5165\u7ad9\u8bf7\u6c42\u4e2d\u5305\u542b\u7684\u53c2\u6570\u6570\u76ee\u8d85\u8fc7\u5165\u7ad9\u8bf7\u6c42\u53ef\u5305\u542b\u7684\u6700\u5927\u53c2\u6570\u6570\u76ee\u3002
+Exceeding.maximum.parameters.useraction=\u786e\u4fdd\u5165\u7ad9\u8bf7\u6c42\u4e2d\u7684\u6240\u6709\u53c2\u6570\u5747\u6709\u6548\uff0c\u4e14\u53c2\u6570\u7684\u603b\u6570\u6ca1\u6709\u8d85\u8fc7\u6bcf\u4e2a\u8bf7\u6c42\u5141\u8bb8\u7684\u6700\u5927\u5141\u8bb8\u6570\u3002
+
+# --------------------------------
+# Notes for translation:
+# {0} is the total count allowed
+
+Exceeding.maximum.hash.collisions=SRVE0326E: \u5df2\u8d85\u51fa\u6bcf\u4e2a\u8bf7\u6c42 {0} \u5141\u8bb8\u7684\u6700\u5927\u53c2\u6570\u5bc6\u94a5\u6563\u5217\u7801\u51b2\u7a81\u6570\u76ee\u3002
+Exceeding.maximum.hash.collisions.explanation=\u53c2\u6570\u5bc6\u94a5\u6563\u5217\u7801\u51b2\u7a81\u6570\u76ee\u8d85\u51fa\u6bcf\u4e2a\u5165\u7ad9\u8bf7\u6c42\u5141\u8bb8\u7684\u6700\u5927\u53c2\u6570\u5bc6\u94a5\u6563\u5217\u7801\u51b2\u7a81\u6570\u76ee\u3002\u751f\u6210\u91cd\u590d\u6563\u5217\u7801\u7684\u53c2\u6570\u5bc6\u94a5\u53ef\u80fd\u5df2\u6076\u610f\u5730\u6dfb\u52a0\u81f3\u8bf7\u6c42\uff0c\u56e0\u6b64\u4f1a\u5f15\u8d77\u5927\u6570\u91cf\u7684\u53c2\u6570\u5bc6\u94a5\u6563\u5217\u7801\u51b2\u7a81\u3002
+Exceeding.maximum.hash.collisions.useraction=\u786e\u4fdd\u5165\u7ad9\u8bf7\u6c42\u4e2d\u7684\u6240\u6709\u53c2\u6570\u5747\u6709\u6548\u3002
+
+# --------------------------------
+exception.handing.off.reference.data=SRVE8037E: \u5904\u7406\u5f15\u7528\u6570\u636e\u65f6\u53d1\u751f\u4e86\u5f02\u5e38\u3002
+exception.handing.off.reference.data.explanation=\u5904\u7406\u5f15\u7528\u6570\u636e\u65f6\u53d1\u751f\u4e86\u5f02\u5e38\u3002\u5e94\u7528\u7a0b\u5e8f\u5c06\u5c1d\u8bd5\u4ee5\u4efb\u4f55\u65b9\u5f0f\u542f\u52a8\u3002
+exception.handing.off.reference.data.useraction=\u8bf7\u8c03\u67e5\u5bfc\u81f4\u5f02\u5e38\u7684\u6839\u672c\u539f\u56e0\uff0c\u5e76\u786e\u5b9a\u5e94\u7528\u7a0b\u5e8f\u662f\u5426\u4ecd\u6b63\u5e38\u5de5\u4f5c\uff08\u5c3d\u7ba1\u53d1\u751f\u4e86\u8fd9\u4e9b\u6545\u969c\uff09\u3002
+
+trying.to.do.startAsync.after.a.complete=SRVE8038E: \u5c1d\u8bd5\u5728\u6267\u884c\u5b8c\u6210\u64cd\u4f5c\u540e\u6267\u884c startAsync\u3002
+trying.to.do.startAsync.after.a.complete.explanation=\u4e0d\u80fd\u5728\u9488\u5bf9\u6bcf\u4e2a servlet \u89c4\u8303\u6267\u884c\u5b8c\u6210\u64cd\u4f5c\u540e\u8c03\u7528 startAsync \u65b9\u6cd5\u3002
+trying.to.do.startAsync.after.a.complete.useraction=\u8bf7\u9a8c\u8bc1\u662f\u5426\u5b58\u5728\u4efb\u4f55\u4ee3\u7801\u903b\u8f91\u6216\u8ba1\u65f6\u95ee\u9898\u5bfc\u81f4\u6b64\u975e\u6cd5\u884c\u4e3a\u3002
+
+not.called.from.within.the.context.of.a.dispatch.for.this.request=SRVE8039E: \u672a\u5728\u9488\u5bf9\u6b64\u8bf7\u6c42\u7684\u5206\u6d3e\u4e0a\u4e0b\u6587\u4e2d\u8c03\u7528 startAsync \u65b9\u6cd5
+not.called.from.within.the.context.of.a.dispatch.for.this.request.explanation=\u5982\u679c\u5bb9\u5668\u5206\u6d3e\u662f\u539f\u59cb\u8bf7\u6c42\u6216\u540e\u7eed\u5f02\u6b65\u5206\u6d3e\uff0c\u90a3\u4e48\u5fc5\u987b\u5728\u5bb9\u5668\u5206\u6d3e\u7684\u4e0a\u4e0b\u6587\u4e2d\u8c03\u7528 startAsync \u65b9\u6cd5\u3002
+not.called.from.within.the.context.of.a.dispatch.for.this.request.useraction=\u8bf7\u9a8c\u8bc1\u662f\u5426\u5b58\u5728\u4efb\u4f55\u4ee3\u7801\u903b\u8f91\u6216\u8ba1\u65f6\u95ee\u9898\u5bfc\u81f4\u6b64\u975e\u6cd5\u884c\u4e3a\u3002
+
+cannot.call.startAsync.multiple.times.within.same.dispatch=SRVE8040E: \u65e0\u6cd5\u5728\u540c\u4e00\u5206\u6d3e\u5185\u591a\u6b21\u8c03\u7528 startAsync\u3002
+cannot.call.startAsync.multiple.times.within.same.dispatch.explanation=\u65e0\u6cd5\u5728\u540c\u4e00\u5206\u6d3e\u5185\u591a\u6b21\u8c03\u7528 startAsync \u65b9\u6cd5\u3002\u8c03\u7528 AsyncContext.dispatch \u5c06\u5141\u8bb8\u60a8\u518d\u6b21\u8c03\u7528 startAsync\u3002
+cannot.call.startAsync.multiple.times.within.same.dispatch.useraction=\u8bf7\u9a8c\u8bc1\u662f\u5426\u5b58\u5728\u4efb\u4f55\u4ee3\u7801\u903b\u8f91\u6216\u8ba1\u65f6\u95ee\u9898\u5bfc\u81f4\u6b64\u975e\u6cd5\u884c\u4e3a\u3002
+
+trying.to.call.dispatch.twice.for.the.same.async.operation=SRVE8041E: \u5c1d\u8bd5\u5bf9\u540c\u4e00\u5f02\u6b65\u64cd\u4f5c\u4e24\u6b21\u8c03\u7528\u5206\u6d3e
+trying.to.call.dispatch.twice.for.the.same.async.operation.explanation=servlet \u89c4\u8303\u6307\u793a\u5bf9\u4e8e startAsync \u7684\u6bcf\u6b21\u8c03\u7528\uff0c\u60a8\u53ea\u80fd\u8c03\u7528\u4e00\u6b21\u5206\u6d3e
+trying.to.call.dispatch.twice.for.the.same.async.operation.useraction=\u79fb\u9664\u5bf9\u5206\u6d3e\u7684\u989d\u5916\u8c03\u7528\u3002
+
+reference.context.not.set=SRVE8042E: \u5185\u90e8\u9519\u8bef\u5bfc\u81f4\u542f\u7528\u6ce8\u5165\u7684\u5f15\u7528\u4e0a\u4e0b\u6587\u672a\u6b63\u786e\u521d\u59cb\u5316\u3002
+reference.context.not.set.explanation=\u5185\u90e8\u9519\u8bef\u5bfc\u81f4\u542f\u7528\u6ce8\u5165\u7684\u5f15\u7528\u4e0a\u4e0b\u6587\u672a\u6b63\u786e\u521d\u59cb\u5316\u3002
+reference.context.not.set.useraction=\u8bf7\u5728\u65e5\u5fd7\u4e2d\u67e5\u627e\u53ef\u80fd\u5bfc\u81f4\u521d\u59cb\u5316\u5931\u8d25\u7684\u5148\u524d\u9519\u8bef\u3002
+
+ioexception.searching.jar.for.resource=SRVE8043E: \u5728 JAR \u6587\u4ef6 [{1}] \u4e2d\u641c\u7d22\u6587\u4ef6\u540d [{2}] {0} \u65f6\u53d1\u751f IOException
+ioexception.searching.jar.for.resource.explanation=\u5982\u679c JAR \u6587\u4ef6\u5728\u904d\u5386\u671f\u95f4\u5df2\u66f4\u6539\u6216\u5173\u95ed\uff0c\u90a3\u4e48\u67e5\u770b JAR \u6587\u4ef6\u65f6\u53ef\u80fd\u53d1\u751f IOException\u3002
+ioexception.searching.jar.for.resource.useraction=\u8bf7\u9a8c\u8bc1 JAR \u6587\u4ef6\u662f\u5426\u6709\u6548\u5e76\u4e14\u5728\u904d\u5386\u671f\u95f4\u662f\u5426\u8fdb\u884c\u4e86\u66f4\u65b0\u3002
+
+programmatic.sessions.already.been.initialized=SRVE8044E: \u4e0a\u4e0b\u6587\u5df2\u521d\u59cb\u5316\u3002\u4e0d\u5141\u8bb8\u5bf9\u4f1a\u8bdd\u914d\u7f6e\u8fdb\u884c\u66f4\u65b0\u3002
+programmatic.sessions.already.been.initialized.explanation=\u4e0a\u4e0b\u6587\u5df2\u521d\u59cb\u5316\u3002\u4e0d\u5141\u8bb8\u5bf9\u4f1a\u8bdd\u914d\u7f6e\u8fdb\u884c\u66f4\u65b0\u3002
+programmatic.sessions.already.been.initialized.useraction=\u53ea\u80fd\u5728\u521d\u59cb\u5316\u5e94\u7528\u7a0b\u5e8f\u4e4b\u524d\u4fee\u6539\u4f1a\u8bdd\u914d\u7f6e\u3002
+
+programmatic.sessions.disabled=SRVE8045E: \u5df2\u5728\u6b64\u670d\u52a1\u5668\u4e0a\u7981\u7528\u7a0b\u5e8f\u5316\u4f1a\u8bdd\u914d\u7f6e\u3002
+programmatic.sessions.disabled.explanation=\u5df2\u5728\u6b64\u670d\u52a1\u5668\u4e0a\u7981\u7528\u7a0b\u5e8f\u5316\u4f1a\u8bdd\u914d\u7f6e\u3002
+programmatic.sessions.disabled.useraction=\u8bf7\u542f\u7528\u7a0b\u5e8f\u5316\u4f1a\u8bdd\u914d\u7f6e\u3002
+
+error.calling.async.dispatch=SRVE8046E: \u8c03\u7528 AsyncContext \u5206\u6d3e\u65f6\u51fa\u9519\u3002
+error.calling.async.dispatch.explanation=\u8c03\u7528 AsyncContext \u5206\u6d3e\u65f6\u51fa\u9519\u3002
+error.calling.async.dispatch.useraction=\u8bf7\u53c2\u9605\u5bfc\u81f4\u6b64\u5f02\u5e38\u7684\u6839\u672c\u539f\u56e0\u3002
+
+NumberFormatException.for.file.size.at.which.you.switch.to.optimized.file.serving=SRVE8047E: \u5207\u6362\u81f3\u4f18\u5316\u6587\u4ef6\u670d\u52a1\u7684\u6587\u4ef6\u5927\u5c0f\u5b58\u5728 NumberFormatException\u3002
+NumberFormatException.for.file.size.at.which.you.switch.to.optimized.file.serving.explanation=\u6587\u4ef6\u670d\u52a1\u5c5e\u6027 com.ibm.ws.webcontainer.optimizefileservingsize \u4e0d\u80fd\u662f\u5df2\u89e3\u6790\u7279\u6027\u3002
+NumberFormatException.for.file.size.at.which.you.switch.to.optimized.file.serving.useraction=\u8bf7\u5c06\u6b64\u5c5e\u6027\u7684\u503c\u66f4\u6539\u4e3a\u6709\u6548\u6574\u6570\u503c\u3002
+
+mapping.clash.occurred=SRVE8048E: \u6dfb\u52a0 URL \u6a21\u5f0f [{0}] \u65f6\u53d1\u751f\u4e86\u6620\u5c04\u51b2\u7a81
+mapping.clash.occurred.explanation=\u4e24\u6b21\u5bf9\u8981\u62d2\u7edd\u6587\u4ef6\u670d\u52a1\u7684 URL \u6a21\u5f0f\u6307\u5b9a\u4e86\u540c\u4e00\u6a21\u5f0f\u3002
+mapping.clash.occurred.useraction=\u8bf7\u68c0\u67e5 ibm-web-ext.xmi \u6216 ibm-web-ext.xml \u6587\u4ef6\u4e2d\u7684\u6587\u4ef6\u670d\u52a1\u5c5e\u6027\u3002
+
+Exception.occured.during.servlet.destroy=SRVE8049E: \u9500\u6bc1 servlet \u65f6\u53d1\u751f\u4e86\u5185\u90e8\u670d\u52a1\u5668\u9519\u8bef\u3002
+Exception.occured.during.servlet.destroy.explanation=\u9500\u6bc1 servlet \u65f6\u53d1\u751f\u4e86\u5185\u90e8\u670d\u52a1\u5668\u9519\u8bef\u3002
+Exception.occured.during.servlet.destroy.useraction=\u8bf7\u53c2\u9605\u5bfc\u81f4\u6b64\u5f02\u5e38\u7684\u6839\u672c\u539f\u56e0\u3002
+
+Place.servlet.class.on.classpath.of.the.application.server=SRVE8050E: \u8bf7\u5c06 servlet \u7c7b\u653e\u5728\u5e94\u7528\u7a0b\u5e8f\u670d\u52a1\u5668 {0} \u7684\u7c7b\u8def\u5f84 {1} \u4e0a\uff1a{2}\u3002
+Place.servlet.class.on.classpath.of.the.application.server.explanation=\u5904\u7406 servlet \u65f6\u53d1\u751f\u4e86\u7c7b\u8def\u5f84\u9519\u8bef\u3002
+Place.servlet.class.on.classpath.of.the.application.server.useraction=\u8bf7\u5c06 servlet \u7c7b\u653e\u5728\u5e94\u7528\u7a0b\u5e8f\u670d\u52a1\u5668\u7684\u7c7b\u8def\u5f84\u4e0a\u3002
+
+Exception.occured.during.servlet.unload=SRVE8051E: \u5378\u8f7d servlet \u65f6\u53d1\u751f\u4e86\u5185\u90e8\u670d\u52a1\u5668\u9519\u8bef\u3002
+Exception.occured.during.servlet.unload.explanation=\u5378\u8f7d servlet \u65f6\u53d1\u751f\u5185\u90e8\u670d\u52a1\u5668\u9519\u8bef\u3002
+Exception.occured.during.servlet.unload.useraction=\u8bf7\u53c2\u9605\u5bfc\u81f4\u6b64\u5f02\u5e38\u7684\u6839\u672c\u539f\u56e0\u3002
+
+classnotfoundexception.loading.servlet.class=SRVE8052E: \u6b63\u5728\u8bb0\u5f55 ClassNotFoundException
+classnotfoundexception.loading.servlet.class.explanation=servlet \u627e\u4e0d\u5230\u5904\u7406\u6b64\u8bf7\u6c42\u6240\u9700\u7684\u7c7b\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+classnotfoundexception.loading.servlet.class.useraction=\u8bf7\u9a8c\u8bc1\u5e94\u7528\u7a0b\u5e8f\u4e2d\u662f\u5426\u5b58\u5728\u6b64\u7c7b\u3002
+
+setting.initialPoolSize.to.default.value.of.5=SRVE8053E: \u5c1d\u8bd5\u8bbe\u7f6e\u5355\u7ebf\u7a0b\u6a21\u578b\u6c60\u5927\u5c0f\u65f6\u53d1\u751f\u4e86 NumberFormatException\u3002
+setting.initialPoolSize.to.default.value.of.5.explanation=\u5c1d\u8bd5\u8bbe\u7f6e\u5355\u7ebf\u7a0b\u6a21\u578b\u6c60\u5927\u5c0f\u65f6\u53d1\u751f\u4e86 NumberFormatException\u3002
+setting.initialPoolSize.to.default.value.of.5.useraction=\u8bf7\u9a8c\u8bc1\u5355\u7ebf\u7a0b\u6a21\u578b\u6c60\u5927\u5c0f\u7684\u503c\u662f\u5426\u4e3a\u6709\u6548\u6574\u6570\u3002
+
+setting.maxIdleTime.to.default.value.of.60000=SRVE8054E: \u5c1d\u8bd5\u8bbe\u7f6e\u5355\u7ebf\u7a0b\u6a21\u578b servlet \u6700\u957f\u7a7a\u95f2\u65f6\u95f4\u65f6\u53d1\u751f\u4e86 NumberFormatException\u3002
+setting.maxIdleTime.to.default.value.of.60000.explanation=\u5c1d\u8bd5\u8bbe\u7f6e\u5355\u7ebf\u7a0b\u6a21\u578b servlet \u6700\u957f\u7a7a\u95f2\u65f6\u95f4\u65f6\uff0c\u53d1\u751f NumberFormatException\u3002
+setting.maxIdleTime.to.default.value.of.60000.useraction=\u8bf7\u9a8c\u8bc1\u5355\u7ebf\u7a0b\u6a21\u578b servlet \u6700\u957f\u7a7a\u95f2\u65f6\u95f4\u7684\u503c\u662f\u5426\u4e3a\u6709\u6548\u6574\u6570\u3002
+
+Error.while.flushing.last.response=SRVE8055E: \u6e05\u9664\u54cd\u5e94\u6570\u636e\u7684\u4f59\u4e0b\u90e8\u5206\u65f6\u53d1\u751f\u4e86\u610f\u5916\u5f02\u5e38\u3002
+Error.while.flushing.last.response.explanation=\u6e05\u9664\u54cd\u5e94\u6570\u636e\u7684\u4f59\u4e0b\u90e8\u5206\u65f6\uff0c\u53d1\u751f\u610f\u5916\u5f02\u5e38\u3002
+Error.while.flushing.last.response.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+Error.while.closing.response.output=SRVE8056E: \u5173\u95ed\u8f93\u51fa\u6d41\u65f6\u53d1\u751f\u4e86\u610f\u5916\u5f02\u5e38\u3002
+Error.while.closing.response.output.explanation=\u5173\u95ed\u8f93\u51fa\u6d41\u65f6\uff0c\u53d1\u751f\u610f\u5916\u5f02\u5e38\u3002
+Error.while.closing.response.output.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+error.initializing.output.stream=SRVE8057E: \u521d\u59cb\u5316\u8f93\u51fa\u6d41\u65f6\u53d1\u751f\u4e86\u610f\u5916\u5f02\u5e38\u3002
+error.initializing.output.stream.explanation=\u521d\u59cb\u5316\u8f93\u51fa\u6d41\u65f6\uff0c\u53d1\u751f\u610f\u5916\u5f02\u5e38\u3002
+error.initializing.output.stream.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+Did.not.have.access.to.delete.Directory=SRVE8058E: \u6ca1\u6709\u8bbf\u95ee\u6743\uff0c\u65e0\u6cd5\u5220\u9664\u4e34\u65f6\u76ee\u5f55
+Did.not.have.access.to.delete.Directory.explanation=\u201cJava 2 \u5b89\u5168\u6027\u201d\u7b56\u7565\u963b\u6b62\u5220\u9664\u4e34\u65f6\u76ee\u5f55
+Did.not.have.access.to.delete.Directory.useraction=\u8bf7\u68c0\u67e5\u201cJava 2 \u5b89\u5168\u6027\u201d\u7b56\u7565\u4ee5\u9a8c\u8bc1\u662f\u5426\u5e94\u5141\u8bb8\u6b64\u8bbf\u95ee\u6743\u3002
+
+unable.to.get.sessionContext=SRVE8059E: \u5c1d\u8bd5\u68c0\u7d22\u4f1a\u8bdd\u4e0a\u4e0b\u6587\u65f6\u53d1\u751f\u4e86\u610f\u5916\u5f02\u5e38
+unable.to.get.sessionContext.explanation=\u5c1d\u8bd5\u68c0\u7d22\u4f1a\u8bdd\u4e0a\u4e0b\u6587\u65f6\uff0c\u53d1\u751f\u610f\u5916\u5f02\u5e38
+unable.to.get.sessionContext.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+exception.while.injecting.resource=SRVE8060E: \u8d44\u6e90\u6ce8\u5165\u671f\u95f4\u53d1\u751f\u4e86\u610f\u5916\u5f02\u5e38\u3002
+exception.while.injecting.resource.explanation=\u8d44\u6e90\u6ce8\u5165\u671f\u95f4\u53d1\u751f\u4e86\u610f\u5916\u5f02\u5e38\u3002
+exception.while.injecting.resource.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+unable.to.invoke.method=SRVE8061E: \u65e0\u6cd5\u5bf9\u7c7b [{1}] \u8c03\u7528\u65b9\u6cd5 [{0}]\u3002
+unable.to.invoke.method.explanation=\u8c03\u7528 postConstruct \u6216 preDestroy \u65f6\u53d1\u751f\u4e86\u95ee\u9898\u3002
+unable.to.invoke.method.useraction=\u8bf7\u67e5\u770b\u6839\u672c\u539f\u56e0\u3002
+                         
+exception.initializing.security.collaborator=SRVE8062E: \u521d\u59cb\u5316\u5b89\u5168\u6027\u534f\u8c03\u7a0b\u5e8f\u65f6\u53d1\u751f\u4e86\u610f\u5916\u5f02\u5e38\u3002
+exception.initializing.security.collaborator.explanation=\u521d\u59cb\u5316\u5b89\u5168\u534f\u8c03\u7a0b\u5e8f\u65f6\uff0c\u53d1\u751f\u610f\u5916\u5f02\u5e38\u3002
+exception.initializing.security.collaborator.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+Could.not.create.LoginProcessor=SRVE8063E: \u521d\u59cb\u5316\u767b\u5f55\u5904\u7406\u5668\u65f6\u53d1\u751f\u4e86\u610f\u5916\u5f02\u5e38\u3002
+Could.not.create.LoginProcessor.explanation=\u521d\u59cb\u5316\u767b\u5f55\u5904\u7406\u5668\u65f6\uff0c\u53d1\u751f\u610f\u5916\u5f02\u5e38\u3002
+Could.not.create.LoginProcessor.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+Could.not.create.LogoutProcessor=SRVE8064E: \u521d\u59cb\u5316\u6ce8\u9500\u5904\u7406\u5668\u65f6\u53d1\u751f\u4e86\u610f\u5916\u5f02\u5e38\u3002
+Could.not.create.LogoutProcessor.explanation=\u521d\u59cb\u5316\u6ce8\u9500\u5904\u7406\u5668\u65f6\uff0c\u53d1\u751f\u610f\u5916\u5f02\u5e38\u3002
+Could.not.create.LogoutProcessor.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+webcontianer.configuration.error=SRVE8065E: \u4e0e Web \u5bb9\u5668\u914d\u7f6e\u76f8\u5173\u7684\u672a\u77e5\u9519\u8bef\u3002
+webcontianer.configuration.error.explanation=\u4e0e Web \u5bb9\u5668\u914d\u7f6e\u76f8\u5173\u7684\u672a\u77e5\u9519\u8bef\u3002
+webcontianer.configuration.error.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+Failed.to.add.WebContainerService=SRVE8066E: \u6dfb\u52a0 WebContainerService \u65f6\u53d1\u751f\u4e86\u610f\u5916\u5f02\u5e38\u3002
+Failed.to.add.WebContainerService.explanation=\u6dfb\u52a0 WebContainerService \u65f6\u53d1\u751f\u4e86\u610f\u5916\u5f02\u5e38\u3002
+Failed.to.add.WebContainerService.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+Failed.to.handle.extension.point=SRVE8067E: \u5904\u7406\u6269\u5c55\u70b9\u65f6\u53d1\u751f\u4e86\u610f\u5916\u5f02\u5e38\u3002
+Failed.to.handle.extension.point.explanation=\u5904\u7406\u6269\u5c55\u70b9\u65f6\u53d1\u751f\u4e86\u610f\u5916\u5f02\u5e38\u3002
+Failed.to.handle.extension.point.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+Could.not.remove.webmodule=SRVE8068E: \u672a\u80fd\u9664\u53bb Web \u6a21\u5757 [{0}]
+Could.not.remove.webmodule.explanation=\u79fb\u9664 Web \u6a21\u5757\u65f6\u53d1\u751f\u4e86\u610f\u5916\u5f02\u5e38\u3002
+Could.not.remove.webmodule.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+null.session.registry=SRVE8069E: \u4f1a\u8bdd\u6ce8\u518c\u8868\u4e3a NULL\u3002
+null.session.registry.explanation=\u4f1a\u8bdd\u6ce8\u518c\u8868\u4e3a NULL \u53ef\u80fd\u662f\u56e0\u4e3a\u4f1a\u8bdd\u7ba1\u7406\u5668\u672a\u6b63\u786e\u542f\u52a8\u3002Web \u5e94\u7528\u7a0b\u5e8f\u5c06\u5931\u8d25\u3002
+null.session.registry.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+failed.to.initialize.webcontainer.required.to.start.chains=SRVE8070E: \u542f\u52a8 Web \u5bb9\u5668\u901a\u9053\u94fe\u65f6\u53d1\u751f\u4e86\u610f\u5916\u9519\u8bef\u3002
+failed.to.initialize.webcontainer.required.to.start.chains.explanation=\u542f\u52a8 Web \u5bb9\u5668\u901a\u9053\u94fe\u65f6\u53d1\u751f\u4e86\u610f\u5916\u9519\u8bef\u3002
+failed.to.initialize.webcontainer.required.to.start.chains.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+Null.webcontainer.config.object=SRVE8071E: web \u5e94\u7528\u7a0b\u5e8f\u914d\u7f6e\u5bf9\u8c61\u4e3a null\u3002
+Null.webcontainer.config.object.explanation=\u53d1\u751f\u4e86\u610f\u5916\u7684\u914d\u7f6e\u5f02\u5e38\u3002
+Null.webcontainer.config.object.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+Null.virtual.host.config.object=SRVE8072E: \u865a\u62df\u4e3b\u673a\u914d\u7f6e\u5bf9\u8c61\u4e3a null\u3002
+Null.virtual.host.config.object.explanation=\u53d1\u751f\u4e86\u610f\u5916\u7684\u914d\u7f6e\u5f02\u5e38\u3002
+Null.virtual.host.config.object.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+Null.webApp.configuration.object=SRVE8073E: web \u5e94\u7528\u7a0b\u5e8f\u914d\u7f6e\u5bf9\u8c61\u4e3a null\u3002
+Null.webApp.configuration.object.explanation=\u53d1\u751f\u4e86\u610f\u5916\u7684\u914d\u7f6e\u5f02\u5e38\u3002
+Null.webApp.configuration.object.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+Null.webApp.object=SRVE8074E: web \u5e94\u7528\u7a0b\u5e8f\u5bf9\u8c61\u4e3a null\u3002
+Null.webApp.object.explanation=\u53d1\u751f\u4e86\u610f\u5916\u7684\u914d\u7f6e\u5f02\u5e38\u3002
+Null.webApp.object.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+Null.cachedServlet.object=SRVE8075E: \u9ad8\u901f\u7f13\u5b58 servlet \u5bf9\u8c61\u4e3a null\u3002
+Null.cachedServlet.object.explanation=\u53d1\u751f\u4e86\u610f\u5916\u7684\u914d\u7f6e\u5f02\u5e38\u3002
+Null.cachedServlet.object.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+Null.AsyncRequestDispatcherConfigImpl.object=SRVE8076E: AsyncRequestDispatcherConfigImpl \u5bf9\u8c61\u4e3a null\u3002
+Null.AsyncRequestDispatcherConfigImpl.object.explanation=\u53d1\u751f\u4e86\u610f\u5916\u7684\u914d\u7f6e\u5f02\u5e38\u3002
+Null.AsyncRequestDispatcherConfigImpl.object.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+Null.webApp.config.object=SRVE8077E: web \u5e94\u7528\u7a0b\u5e8f\u914d\u7f6e\u5bf9\u8c61\u4e3a null\u3002
+Null.webApp.config.object.explanation=\u53d1\u751f\u4e86\u610f\u5916\u7684\u914d\u7f6e\u5f02\u5e38\u3002
+Null.webApp.config.object.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+Null.servlet.config.object=SRVE8078E: servlet \u914d\u7f6e\u5bf9\u8c61\u4e3a null\u3002
+Null.servlet.config.object.explanation=\u53d1\u751f\u4e86\u610f\u5916\u7684\u914d\u7f6e\u5f02\u5e38\u3002
+Null.servlet.config.object.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+Null.filter.config.object=SRVE8079E: \u8fc7\u6ee4\u5668\u914d\u7f6e\u5bf9\u8c61\u4e3a null\u3002
+Null.filter.config.object.explanation=\u53d1\u751f\u4e86\u610f\u5916\u7684\u914d\u7f6e\u5f02\u5e38\u3002
+Null.filter.config.object.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+isUserInRole.caught.exception=SRVE8080E: \u53d1\u751f\u4e86\u610f\u5916\u7684 isUserInRole \u5f02\u5e38\uff0cisUserInRole \u8fd4\u56de false\u3002
+isUserInRole.caught.exception.explanation=\u53d1\u751f\u4e86\u610f\u5916\u7684 isUserInRole \u5f02\u5e38\uff0cisUserInRole \u8fd4\u56de false\u3002
+isUserInRole.caught.exception.useraction=\u53d1\u751f\u4e86\u610f\u5916\u7684 isUserInRole \u5f02\u5e38\uff0cisUserInRole \u8fd4\u56de false\u3002
+
+Error.occurred.while.adding.WebAppCollaborator=SRVE8081E: \u6dfb\u52a0 Web \u5e94\u7528\u7a0b\u5e8f\u534f\u8c03\u7a0b\u5e8f\u65f6\u53d1\u751f\u4e86\u610f\u5916\u7684\u5185\u90e8\u670d\u52a1\u5668\u9519\u8bef\u3002
+Error.occurred.while.adding.WebAppCollaborator.explanation=\u6dfb\u52a0 Web \u5e94\u7528\u7a0b\u5e8f\u534f\u8c03\u7a0b\u5e8f\u65f6\u53d1\u751f\u4e86\u610f\u5916\u7684\u5185\u90e8\u670d\u52a1\u5668\u9519\u8bef\u3002
+Error.occurred.while.adding.WebAppCollaborator.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+Error.while.adding.static.file.processor=SRVE8082E: \u6dfb\u52a0\u9759\u6001\u6587\u4ef6\u5904\u7406\u5668\u65f6\u53d1\u751f\u4e86\u610f\u5916\u7684\u5185\u90e8\u670d\u52a1\u5668\u9519\u8bef\u3002
+Error.while.adding.static.file.processor.explanation=\u6dfb\u52a0\u9759\u6001\u6587\u4ef6\u5904\u7406\u5668\u65f6\uff0c\u53d1\u751f\u610f\u5916\u7684\u5185\u90e8\u670d\u52a1\u5668\u9519\u8bef\u3002
+Error.while.adding.static.file.processor.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+Error.occurred.while.registering.WebModule.MBean=SRVE8083E: \u6ce8\u518c Web \u6a21\u5757 MBean \u65f6\u53d1\u751f\u4e86\u610f\u5916\u7684\u5185\u90e8\u670d\u52a1\u5668\u9519\u8bef\u3002
+Error.occurred.while.registering.WebModule.MBean.explanation=\u6ce8\u518c Web \u6a21\u5757 MBean \u65f6\uff0c\u53d1\u751f\u610f\u5916\u7684\u5185\u90e8\u670d\u52a1\u5668\u9519\u8bef\u3002
+Error.occurred.while.registering.WebModule.MBean.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+Error.occurred.while.populating.the.namespace=SRVE8084E: \u586b\u5145\u540d\u79f0\u7a7a\u95f4\u65f6\u53d1\u751f\u4e86\u610f\u5916\u7684\u5185\u90e8\u670d\u52a1\u5668\u9519\u8bef\u3002
+Error.occurred.while.populating.the.namespace.explanation=\u586b\u5145\u540d\u79f0\u7a7a\u95f4\u65f6\uff0c\u53d1\u751f\u610f\u5916\u7684\u5185\u90e8\u670d\u52a1\u5668\u9519\u8bef\u3002
+Error.occurred.while.populating.the.namespace.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+handleRequest.threw.IOException=SRVE8085E: \u4ece Web \u5bb9\u5668\u7684 handleRequest \u65b9\u6cd5\u629b\u51fa\u4e86 IOException\u3002
+handleRequest.threw.IOException.explanation=\u4ece Web \u5bb9\u5668\u7684 handleRequest \u65b9\u6cd5\u629b\u51fa\u4e86 IOException\u3002
+handleRequest.threw.IOException.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u652f\u6301\u673a\u6784\u8054\u7cfb\u3002
+
+invalid.peer.certificate=SRVE8086E: \u5bf9\u7b49\u8bc1\u4e66\u65e0\u6548\u3002
+invalid.peer.certificate.explanation=\u68c0\u7d22\u5bf9\u7b49\u8bc1\u4e66\u65f6\u53d1\u751f\u4e86\u5f02\u5e38\u3002
+invalid.peer.certificate.useraction=\u8bf7\u67e5\u770b\u6839\u672c\u539f\u56e0\u3002
+
+error.creating.stats.instance=SRVE8087E: \u521b\u5efa PMI \u7edf\u8ba1\u5b9e\u4f8b\u65f6\u51fa\u9519\u3002
+error.creating.stats.instance.explanation=\u521b\u5efa PMI \u7edf\u8ba1\u5b9e\u4f8b\u65f6\u51fa\u9519\u3002
+error.creating.stats.instance.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+failed.to.remove.pmi.stats=SRVE8088E: \u9664\u53bb PMI \u7edf\u8ba1\u5b9e\u4f8b\u65f6\u51fa\u9519\u3002
+failed.to.remove.pmi.stats.explanation=\u79fb\u9664 PMI \u7edf\u8ba1\u5b9e\u4f8b\u65f6\u51fa\u9519\u3002
+failed.to.remove.pmi.stats.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+Error.creating.stats.group=SRVE8089E: \u521b\u5efa PMI \u7edf\u8ba1\u7ec4\u65f6\u51fa\u9519\u3002
+Error.creating.stats.group.explanation=\u521b\u5efa PMI \u7edf\u8ba1\u7ec4\u65f6\u51fa\u9519\u3002
+Error.creating.stats.group.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+Error.occurred.while.preparing.the.servlet.for.initialization=SRVE8090E: \u51c6\u5907 servlet \u5305\u88c5\u5668\u4ee5\u8fdb\u884c\u521d\u59cb\u5316\u65f6\u51fa\u9519\u3002
+Error.occurred.while.preparing.the.servlet.for.initialization.explanation=\u51c6\u5907 servlet \u5305\u88c5\u5668\u4ee5\u8fdb\u884c\u521d\u59cb\u5316\u65f6\u51fa\u9519\u3002
+
+Error.occurred.while.preparing.the.servlet.for.initialization.useraction=\u8bf7\u67e5\u770b\u6839\u672c\u539f\u56e0\u3002
+
+servlet.wrapper.unavailable=SRVE8091W: servlet {0} \u5f53\u524d\u4e0d\u53ef\u7528\uff1a{1}
+servlet.wrapper.unavailable.explanation=\u4ece servlet \u629b\u51fa\u4e86 UnavailableException\u3002
+servlet.wrapper.unavailable.useraction=\u8bf7\u67e5\u770b\u6839\u672c\u539f\u56e0\u3002
+
+exception.invoking.asnyc.error.mechanism=SRVE8092W: \u8c03\u7528\u5f02\u6b65\u9519\u8bef\u673a\u5236\u65f6\u53d1\u751f\u4e86\u5f02\u5e38\u3002
+exception.invoking.asnyc.error.mechanism.explanation=\u8c03\u7528\u5f02\u6b65\u9519\u8bef\u673a\u5236\u65f6\u53d1\u751f\u4e86\u5f02\u5e38\u3002
+exception.invoking.asnyc.error.mechanism.useraction=\u8bf7\u67e5\u770b\u6839\u672c\u539f\u56e0\u3002
+
+servlet.classname.is.null=SRVE8093W: servlet [{0}] \u7684 servlet \u7c7b\u540d\u4e3a null\uff0c\u6240\u4ee5\u65e0\u6cd5\u5904\u7406\u6b64\u8bf7\u6c42\u3002
+servlet.classname.is.null.explanation=servlet \u7c7b\u540d\u4e3a null\uff0c\u6240\u4ee5\u65e0\u6cd5\u5904\u7406\u6b64\u8bf7\u6c42\u3002
+servlet.classname.is.null.useraction=\u8bf7\u9a8c\u8bc1\u662f\u5426\u4e3a\u6b64 servlet \u63d0\u4f9b\u4e86\u6709\u6548 servlet \u7c7b\u3002
+
+Cannot.set.header.Response.already.committed=SRVE8094W: \u8b66\u544a\uff1a\u65e0\u6cd5\u8bbe\u7f6e\u5934\u3002\u54cd\u5e94\u5df2\u843d\u5b9e\u3002\u4ee5\u4e0b\u662f\u5bf9\u8bbe\u7f6e\u5934\u7684\u4e0d\u5f53\u5c1d\u8bd5\u7684\u5806\u6808\u8ddf\u8e2a\uff1a{0}
+Cannot.set.header.Response.already.committed.explanation=\u843d\u5b9e\u54cd\u5e94\u540e\uff0c\u4e0d\u80fd\u8bbe\u7f6e\u5176\u4ed6\u54cd\u5e94\u5934\u3002
+Cannot.set.header.Response.already.committed.useraction=\u8bf7\u9a8c\u8bc1\u6b64\u8c03\u7528\u662f\u5426\u5fc5\u8981\u3002\u5982\u679c\u786e\u5b9e\u9700\u8981\u53d1\u9001\u6b64\u5934\uff0c\u90a3\u4e48\u5e94\u5728\u843d\u5b9e\u54cd\u5e94\u4e4b\u524d\u8bbe\u7f6e\u6b64\u5934\u3002
+
+async.servlet.work.rejected=SRVE8095W: \u5bf9\u53ef\u8fd0\u884c [{0}] \u8c03\u7528\u4e86 workRejected\u3002
+async.servlet.work.rejected.explanation=\u4f7f\u7528\u5f02\u6b65 bean \u5de5\u4f5c\u7ba1\u7406\u5668\u8c03\u5ea6\u5de5\u4f5c\u9879\u65f6\uff0c\u5982\u679c\u542f\u52a8\u5de5\u4f5c\u9879\u65f6\u51fa\u9519\uff0c\u90a3\u4e48\u53ef\u80fd\u4f1a\u8c03\u7528 workRejected\u3002
+async.servlet.work.rejected.useraction=\u8bf7\u67e5\u770b\u6839\u672c\u539f\u56e0\u3002
+
+exception.scheduling.work.item=SRVE8096W: \u8c03\u5ea6\u53ef\u8fd0\u884c [{0}] \u65f6\u53d1\u751f\u4e86\u5f02\u5e38\u3002
+exception.scheduling.work.item.explanation=\u4f7f\u7528\u5f02\u6b65 bean \u5de5\u4f5c\u7ba1\u7406\u5668\u8c03\u5ea6\u5de5\u4f5c\u9879\u65f6\uff0c\u5982\u679c\u5de5\u4f5c\u961f\u5217\u5df2\u6ee1\uff0c\u90a3\u4e48\u53ef\u80fd\u4f1a\u629b\u51fa\u5f02\u5e38\uff0c\u5e76\u4e14\u5df2\u914d\u7f6e\u5de5\u4f5c\u961f\u5217\u53d8\u6ee1\u64cd\u4f5c\u5c06\u5931\u8d25\u3002
+exception.scheduling.work.item.useraction=\u8bf7\u8bc4\u4f30\u662f\u5426\u5e94\u7981\u6b62\u5de5\u4f5c\u961f\u5217\u53d8\u6ee1\u64cd\u4f5c\u76f4\u5230\u961f\u5217\u5904\u4e8e\u672a\u6ee1\u72b6\u6001\uff0c\u6216\u5728\u5e94\u7528\u7a0b\u5e8f\u4ee3\u7801\u4e2d\u5904\u7406\u6b64\u5f02\u5e38\u3002
+
+null.url.pattern.and.servlet.name.for.filter.mapping=SRVE8097W: \u8fc7\u6ee4\u5668 [{0}] \u7684\u8fc7\u6ee4\u5668\u6620\u5c04\u6ca1\u6709 URL \u6a21\u5f0f\u6216 servlet \u540d\u79f0\u3002
+null.url.pattern.and.servlet.name.for.filter.mapping.explanation=\u8fc7\u6ee4\u5668\u6620\u5c04\u4e0d\u5b8c\u6574\uff0c\u6ca1\u6709\u8981\u6620\u5c04\u81f3\u7684 URL \u6a21\u5f0f\u6216 servlet \u540d\u79f0\u3002
+null.url.pattern.and.servlet.name.for.filter.mapping.useraction=\u8bf7\u5411\u8fc7\u6ee4\u5668\u6620\u5c04\u6dfb\u52a0 URL \u6a21\u5f0f\u6216 servlet \u540d\u79f0\u3002
+
+null.url.pattern.for.servlet.mapping=SRVE8098W: \u65e0\u6cd5\u5bf9\u540d\u4e3a [{0}] \u7684 servlet \u63d2\u5165\u6620\u5c04\u3002URL \u6a21\u5f0f\u4e3a null\u3002
+null.url.pattern.for.servlet.mapping.explanation=servlet \u6620\u5c04\u4e0d\u5b8c\u6574\uff0c\u6ca1\u6709\u8981\u6620\u5c04\u81f3\u7684 URL \u6a21\u5f0f\u3002
+null.url.pattern.for.servlet.mapping.useraction=\u5411 servlet \u6620\u5c04\u6dfb\u52a0 URL \u6a21\u5f0f\u3002
+
+stub.restart.web.application=SRVE8099W: restartWebApplication \u65b9\u6cd5\u4e0d\u518d\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002\u4f7f\u7528 ApplicationManager MBean \u542f\u52a8\u548c\u91cd\u65b0\u542f\u52a8\u5e94\u7528\u7a0b\u5e8f\u3002
+stub.restart.web.application.explanation=restartWebApplication \u65b9\u6cd5\u4e0d\u518d\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002\u4f7f\u7528 ApplicationManager MBean \u542f\u52a8\u548c\u91cd\u65b0\u542f\u52a8\u5e94\u7528\u7a0b\u5e8f\u3002
+stub.restart.web.application.useraction=restartWebApplication \u65b9\u6cd5\u4e0d\u518d\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002\u4f7f\u7528 ApplicationManager MBean \u542f\u52a8\u548c\u91cd\u65b0\u542f\u52a8\u5e94\u7528\u7a0b\u5e8f\u3002
+
+virtual.host.alias.clash=SRVE8100W: \u865a\u62df\u4e3b\u673a [{0}] \u5df2\u5b58\u5728\u865a\u62df\u4e3b\u673a\u522b\u540d\u3002
+virtual.host.alias.clash.explanation=\u6dfb\u52a0\u865a\u62df\u4e3b\u673a\u522b\u540d\u65f6\u51fa\u9519\uff0c\u56e0\u4e3a\u5df2\u5b58\u5728\u6a21\u5f0f\u76f8\u540c\u7684\u522b\u540d\u3002
+virtual.host.alias.clash.useraction=\u8bf7\u7f16\u8f91\u865a\u62df\u4e3b\u673a\u522b\u540d\u5e76\u79fb\u9664\u6240\u6709\u91cd\u590d\u9879\u3002
+
+Response.buffer.corruption.detected=SRVE8101E: \u68c0\u6d4b\u5230\u54cd\u5e94\u7f13\u51b2\u533a\u6bc1\u574f\u3002\u671f\u671b\u4f59\u4e0b\u90e8\u5206\u4e3a {0}\uff0c\u4f46\u5b9e\u9645\u4e3a {1}\u3002
+Response.buffer.corruption.detected.explanation=\u610f\u5916\u7684\u5185\u90e8\u9519\u8bef\u5bfc\u81f4\u8f93\u51fa\u7f13\u51b2\u533a\u7684\u671f\u671b\u72b6\u6001\u4e0e\u5b9e\u9645\u72b6\u6001\u4e0d\u7b26\u3002
+Response.buffer.corruption.detected.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+
+Illegal.value.for.ResponseBuffer=SRVE8102E: responsebuffersize \u5b9a\u5236\u5c5e\u6027 [{0}] \u7684\u503c\u975e\u6cd5\u3002
+Illegal.value.for.ResponseBuffer.explanation=responsebuffersize \u5b9a\u5236\u5c5e\u6027\u7684\u503c\u975e\u6cd5\u3002
+Illegal.value.for.ResponseBuffer.useraction=\u8bf7\u68c0\u67e5 responsebuffersize \u5b9a\u5236\u5c5e\u6027\u7684\u503c\u3002
+
+Exception.creating.channel=SRVE8103E: \u521b\u5efa\u901a\u9053\u5bf9\u8c61\u65f6\u53d1\u751f\u4e86\u5185\u90e8\u670d\u52a1\u5668\u9519\u8bef\u3002
+Exception.creating.channel.explanation=\u521b\u5efa\u901a\u9053\u5bf9\u8c61\u65f6\u53d1\u751f\u4e86\u5185\u90e8\u670d\u52a1\u5668\u9519\u8bef\u3002
+Exception.creating.channel.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5\u5fd7\u5e76\u4e0e IBM \u652f\u6301\u673a\u6784\u8054\u7cfb\u3002
+
+Servlet.Engine.Exception=SRVE8104E: \u5185\u90e8\u670d\u52a1\u5668\u9519\u8bef\u3002\u5f02\u5e38\u6d88\u606f\uff1a[{0}]
+Servlet.Engine.Exception.explanation=\u53d1\u751f\u4e86\u610f\u5916\u7684 servlet \u5f15\u64ce\u5f02\u5e38\u3002\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
+Servlet.Engine.Exception.useraction=\u8bf7\u68c0\u67e5 System.out \u548c System.err \u65e5\u5fd7\u4ee5\u4e86\u89e3\u6709\u5173\u6240\u751f\u6210\u5f02\u5e38\u7684\u66f4\u591a\u4fe1\u606f\u3002
+
+unable.to.retrieve.timer.manager=SRVE8105W: \u68c0\u7d22\u8ba1\u65f6\u5668\u7ba1\u7406\u5668\u4ee5\u67e5\u627e servlet \u8d85\u65f6\u671f\u95f4\u53d1\u751f\u4e86\u9519\u8bef\u3002\u4f7f\u7528\u7f3a\u7701\u5355\u7ebf\u7a0b\u8ba1\u65f6\u5668\u3002
+unable.to.retrieve.timer.manager.explanation=\u7ba1\u7406\u63a7\u5236\u53f0\u4e0d\u5e94\u5141\u8bb8\u60a8\u9009\u62e9\u65e0\u6548\u8ba1\u65f6\u5668\u7ba1\u7406\u5668 JNDI \u540d\u79f0\u3002
+unable.to.retrieve.timer.manager.useraction=\u8bf7\u9a8c\u8bc1\u5728 Web \u5bb9\u5668\u9762\u677f\u4e2d\u9009\u62e9\u7684\u8ba1\u65f6\u5668\u7ba1\u7406\u5668\u662f\u5426\u6709\u6548\u3002
+
+exception.invoking.async.listener=SRVE8106W: \u8c03\u7528\u5f02\u6b65\u4fa6\u542c\u5668\u65f6\u53d1\u751f\u4e86\u5f02\u5e38\u3002
+exception.invoking.async.listener.explanation=\u8c03\u7528\u5f02\u6b65\u4fa6\u542c\u5668\u65f6\uff0c\u53d1\u751f\u5f02\u5e38\u3002
+exception.invoking.async.listener.useraction=\u8bf7\u67e5\u770b\u6839\u672c\u539f\u56e0\u3002
+
+trying.to.schedule.timeout.without.cancelling.previous.timeout=SRVE8107W: AsyncContext \u5c1d\u8bd5\u5728\u4e0d\u53d6\u6d88\u5148\u524d\u8d85\u65f6\u7684\u60c5\u51b5\u4e0b\u8c03\u5ea6\u8d85\u65f6\u7ebf\u7a0b\u3002
+trying.to.schedule.timeout.without.cancelling.previous.timeout.explanation=\u8fd9\u662f\u4e0d\u53ef\u9884\u6599\u7684\u5185\u90e8\u9519\u8bef\u3002
+trying.to.schedule.timeout.without.cancelling.previous.timeout.useraction=\u8bf7\u6536\u96c6 Web \u5bb9\u5668\u8ddf\u8e2a\u5e76\u4e0e IBM \u652f\u6301\u4eba\u5458\u8054\u7cfb\u3002
+
+trying.to.set.number.of.async.timer.threads.to.less.than.one=SRVE8108W: \u6b63\u5728\u5c1d\u8bd5\u5c06\u5f02\u6b65\u8ba1\u65f6\u5668\u7ebf\u7a0b\u6570\u8bbe\u7f6e\u4e3a\u5c0f\u4e8e 1\u3002
+trying.to.set.number.of.async.timer.threads.to.less.than.one.explanation=\u5fc5\u987b\u81f3\u5c11\u6709\u4e00\u4e2a\u5f02\u6b65\u8ba1\u65f6\u5668\u7ebf\u7a0b\u3002
+trying.to.set.number.of.async.timer.threads.to.less.than.one.useraction=\u8bf7\u68c0\u67e5\u670d\u52a1\u5668\u914d\u7f6e\u4ee5\u786e\u5b9a\u8981\u8bbe\u7f6e\u7684\u503c\u3002
+
+uncaught.filter.exception=SRVE8109W: \u672a\u6355\u83b7\u5230\u8fc7\u6ee4\u5668 {0} \u629b\u51fa\u7684\u5f02\u5e38\uff1a{1}
+uncaught.filter.exception.explanation=\u8fc7\u6ee4\u5668\u629b\u51fa\u4e86\u5f02\u5e38\u3002
+uncaught.filter.exception.useraction=\u8bf7\u67e5\u770b\u6839\u672c\u539f\u56e0\u3002
+
+exception.occured.while.processing.ServletContainerInitializer.initializeExtensionPointSCIs=SRVE8110E: \u65e0\u6cd5\u521d\u59cb\u5316 ServletContainerInitializer\uff1aClassname\uff1a[{0}]\u3002
+exception.occured.while.processing.ServletContainerInitializer.initializeExtensionPointSCIs.explanation=\u65e0\u6cd5\u521d\u59cb\u5316\u6269\u5c55\u70b9\u6307\u5b9a\u7684 ServletContainerInitializer\u3002
+exception.occured.while.processing.ServletContainerInitializer.initializeExtensionPointSCIs.useraction=\u8bf7\u68c0\u67e5\u6269\u5c55\u70b9\u4e2d\u6307\u5b9a\u7684\u7c7b\u3002
+
+programmatic.session.cookie.restricted.match=SRVE8111E: \u5e94\u7528\u7a0b\u5e8f {0} \u6b63\u5728\u5c1d\u8bd5\u4fee\u6539\u4e0e\u53d7\u9650\u7a0b\u5e8f\u4f1a\u8bdd cookie \u5217\u8868 [domain={1}, name={2}, path={3}] \u4e2d\u7684\u6a21\u5f0f\u5339\u914d\u7684 cookie\u3002
+programmatic.session.cookie.restricted.match.explanation=\u7ba1\u7406\u5458\u7981\u7528\u4e86\u4e0e\u57df\u3001\u540d\u79f0\u548c\u8def\u5f84\u5339\u914d\u7684 cookie \u7684 cookie \u914d\u7f6e\u66f4\u6539
+programmatic.session.cookie.restricted.match.useraction=\u4fee\u6539\u5e94\u7528\u7a0b\u5e8f\u4ee5\u4f7f\u7528\u5176\u4ed6 cookie \u540d\u79f0\u3001\u57df\u6216\u8def\u5f84\uff0c\u6216\u8005\u4fee\u6539\u53d7\u9650\u7a0b\u5e8f\u4f1a\u8bdd cookie \u503c
+
+programmatic.session.cookie.retrieve.cell.xml.failure=SRVE8112W: \u68c0\u7d22\u53d7\u9650 cookie \u6a21\u5f0f\u65f6\u51fa\u73b0\u95ee\u9898\u3002\u7a0b\u5e8f\u4f1a\u8bdd\u914d\u7f6e\u6ca1\u6709\u9650\u5236\u3002
+programmatic.session.cookie.retrieve.cell.xml.failure.explanation=\u4ece\u914d\u7f6e\u4e2d\u68c0\u7d22\u53d7\u9650 cookie \u6a21\u5f0f\u65f6\u51fa\u73b0\u95ee\u9898\u3002
+programmatic.session.cookie.retrieve.cell.xml.failure.useraction=\u8bf7\u9a8c\u8bc1 cell.xml \u662f\u5426\u5b58\u5728\u4ee5\u53ca\u662f\u5426\u53ef\u8bfb\u3002
+
+AsyncContext.lock.already.held=SRVE8113W: \u65e0\u6cd5\u83b7\u5f97\u9501\u3002\u53e6\u4e00\u4e2a\u7ebf\u7a0b\u5df2\u8c03\u7528\u4e86\u9519\u8bef\u5904\u7406\u3002
+AsyncContext.lock.already.held.explanation=\u53e6\u4e00\u4e2a\u7ebf\u7a0b\u5df2\u8c03\u7528\u4e86\u9519\u8bef\u5904\u7406\u3002
+AsyncContext.lock.already.held.useraction=\u8bf7\u786e\u4fdd\u5e94\u7528\u7a0b\u5e8f\u53ef\u4ee5\u5904\u7406\u6b64\u5904\u7684\u5f02\u5e38\u3002\u5982\u679c\u6709\u5fc5\u8981\u4f7f\u6b64\u65b9\u6cd5\u8fd4\u56de\uff08\u5373\u4f7f\u8c03\u7528\u4e0d\u6210\u529f\uff09\uff0c\u8bf7\u4e0e IBM \u652f\u6301\u8054\u7cfb\u3002
+
+servlet.with.same.name.already.exists=SRVE8500W: \u65e0\u6cd5\u52a8\u6001\u5730\u6dfb\u52a0\u540d\u4e3a {0} \u7684 servlet\uff0c\u56e0\u4e3a\u5df2\u5b58\u5728\u540c\u540d servlet \u914d\u7f6e\u3002
+servlet.with.same.name.already.exists.explanation=\u6b64\u5e94\u7528\u7a0b\u5e8f\u5df2\u5b58\u5728\u7528\u4e8e\u6b64\u914d\u7f6e\u7684\u540c\u540d servlet\u3002
+servlet.with.same.name.already.exists.useraction=\u65e0\u9700\u64cd\u4f5c\u3002\u5728\u90e8\u7f72\u63cf\u8ff0\u7b26\u3001\u6ce8\u91ca\u4ee5\u53ca\u6e90\u4ee3\u7801\u4e2d\u68c0\u67e5\u53ef\u4ee5\u52a8\u6001\u6dfb\u52a0\u6b64 servlet \u7684\u914d\u7f6e\u51b2\u7a81\u3002
+
+
+servlet.feature.not.loaded.correctly=SRVE8501E: servlet \u5bb9\u5668\u672a\u4f7f\u7528\u53ef\u63a5\u53d7\u7248\u672c\u88c5\u5165\u3002
+servlet.feature.not.loaded.correctly.explanation=servlet \u5bb9\u5668\u662f\u4f7f\u7528\u5bf9\u5e94\u8be5 servlet \u529f\u80fd\u90e8\u4ef6\u7684 Java EE \u89c4\u8303\u7684\u7248\u672c\u88c5\u5165\u7684\u3002\u88c5\u5165\u8be5\u5bb9\u5668\u65f6\u672a\u5b9a\u4e49\u4efb\u4f55\u7248\u672c\u3002
+servlet.feature.not.loaded.correctly.useraction=\u8bf7\u68c0\u67e5 server.xml \u6587\u4ef6\u4ee5\u4e86\u89e3 servlet-3.0 \u6216 servlet-3.1 \u529f\u80fd\u90e8\u4ef6\u662f\u5426\u5b58\u5728\u3002\u5e94\u8be5\u5b9a\u4e49\u8fd9\u4e9b\u529f\u80fd\u90e8\u4ef6\u7684\u5176\u4e2d\u4e00\u4e2a\u800c\u4e0d\u662f\u5168\u90e8\u3002
+
+filter.failed.app.destroyed=SRVE8502W: \u9488\u5bf9 {0} \u7684\u8bf7\u6c42\u65e0\u6cd5\u5b8c\u6210\uff0c\u56e0\u4e3a\u5e94\u7528\u7a0b\u5e8f\u5df2\u505c\u6b62\u3002
+filter.failed.app.destroyed.explanation=Web \u5e94\u7528\u7a0b\u5e8f\u6b63\u5728\u505c\u6b62\uff0c\u8be5\u8bf7\u6c42\u65e0\u6cd5\u5b8c\u6210\u3002\u6b64\u64cd\u4f5c\u53ef\u80fd\u662f\u56e0\u4e3a\u5904\u7406\u8be5\u8bf7\u6c42\u65f6\u5173\u95ed\u670d\u52a1\u5668\u5bfc\u81f4\u7684\u3002
+filter.failed.app.destroyed.useraction=\u5e94\u7528\u7a0b\u5e8f\u53ef\u7528\u540e\uff0c\u91cd\u65b0\u63d0\u4ea4\u8be5\u8bf7\u6c42\u3002
+
+# Notes for translation:
+# {0} is a servlet or filter name, in the current request chain, which does not support asynchronous processing.
+resource.does.not.support.async=SRVE8503E: \u8bf7\u6c42\u94fe\u4e2d\u7684\u4ee5\u4e0b\u8d44\u6e90\u4e0d\u652f\u6301\u5f02\u6b65\u5904\u7406 [{0}]
+resource.does.not.support.async.explanation=\u7528\u4e8e\u8bf7\u6c42\u7684\u6240\u6709\u8fc7\u6ee4\u5668\u548c\u76ee\u6807 Servlet \u9700\u8981\u652f\u6301\u5f02\u6b65\u5904\u7406\uff0c\u4ee5\u5bf9 Servlet \u8bf7\u6c42\u4f7f\u7528\u5f02\u6b65\u65b9\u5f0f\u3002
+resource.does.not.support.async.useraction=\u66f4\u65b0\u6240\u6307\u5b9a\u7684\u8fc7\u6ee4\u5668\u6216 Servlet \u4ee5\u652f\u6301\u5f02\u6b65\u5904\u7406\uff0c\u6216\u8005\u66f4\u65b0 Servlet \u4ee5\u4e0d\u4f7f\u7528\u5f02\u6b65\u7f16\u7a0b API\u3002
+
+# Notes for translation:
+# {0} is the name of the AsyncListener that threw an Exception
+# {1} is the Exception thrown by the AsyncListener
+uncaught.exception.during.AsyncListener.onComplete=SRVE8504W: onComplete [{1}] \u671f\u95f4 AsyncListener \u629b\u51fa\u4ee5\u4e0b\u672a\u6355\u83b7\u7684\u5f02\u5e38\uff1a[{0}]
+uncaught.exception.during.AsyncListener.onComplete.explanation=\u9519\u8bef\u6d88\u606f\u4e2d\u5f15\u7528\u7684 AsyncListener \u629b\u51fa\u5f02\u5e38\u3002\u8be5\u5f02\u5e38\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
+uncaught.exception.during.AsyncListener.onComplete.useraction=\u68c0\u67e5 AsyncListener \u6e90\u4ee3\u7801\u4ee5\u53ca\u670d\u52a1\u5668\u65e5\u5fd7\u4ee5\u83b7\u53d6\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u7684\u6839\u672c\u539f\u56e0\u3002
+
+# Since servlet 4.0.  Use the registered and reserved prefix CWWWC from now on.  
+# 0001 - 0199 for Base
+# 0200 - 0299 for Servlet 3.0
+# 0300 - 0399 for Servlet 3.1
+# 0400 - 0499 for Servlet 4
+#name.is.null=CWWWC0400E: An attribute name, or initial parameter name, is null.
+#name.is.null.explanation=This is an application error.  The name is null in either context getAttribute(), setAttribute(), getInitParameter(), or setInitParameter().
+#name.is.null.useraction=Update the attribute name, or initial parameter name, with a non-null value.

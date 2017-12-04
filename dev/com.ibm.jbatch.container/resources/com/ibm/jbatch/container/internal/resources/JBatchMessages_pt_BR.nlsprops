@@ -1,0 +1,340 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.jbatch.container/resources/com/ibm/jbatch/container/internal/resources/JBatchMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# NLS message prefix registry: http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+#
+# This file contains the messages in use.
+#
+# The range of messages "reserved":
+# 0001 - 0100: com.ibm.jbatch.container
+# 
+
+stopping.job.at.shutdown=CWWKY0001I: Emitindo a parada para a execu\u00e7\u00e3o da tarefa {0}, pois o componente do lote est\u00e1 sendo desativado.
+stopping.job.at.shutdown.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+stopping.job.at.shutdown.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+jobs.running.at.shutdown=CWWKY0002I: O componente de lote est\u00e1 sendo desativado. \
+Solicita\u00e7\u00f5es de parada foram emitidas para todas as execu\u00e7\u00f5es de tarefas ativas. \
+As seguintes execu\u00e7\u00f5es de tarefa ainda estavam em execu\u00e7\u00e3o no momento da desativa\u00e7\u00e3o: {0}.
+jobs.running.at.shutdown.explanation=Quando o componente em lote \u00e9 desativado, ele emite solicita\u00e7\u00f5es de parada para todas as execu\u00e7\u00f5es de tarefas ativas e aguarda brevemente que parem.  \
+As execu\u00e7\u00f5es de tarefas que n\u00e3o pararam s\u00e3o relatadas na mensagem. \
+As execu\u00e7\u00f5es de tarefas que s\u00e3o executadas al\u00e9m da desativa\u00e7\u00e3o do componente de lote podem apresentar um comportamento imprevis\u00edvel.
+jobs.running.at.shutdown.useraction=\u00c9 recomendado esperar at\u00e9 que todas as tarefas sejam conclu\u00eddas antes de desativar o componente de lote. \
+O componente de lote \u00e9 desativado quando o servidor \u00e9 parado, quando o recurso de lote \u00e9 removido ou quando a configura\u00e7\u00e3o de lote \u00e9 atualizada.
+ 
+jsl.schema.invalid=CWWKY0003E: A JSL (documento XML de tarefa) na URL {0} n\u00e3o \u00e9 v\u00e1lida de acordo com o esquema XML de tarefa. \
+O primeiro erro de valida\u00e7\u00e3o registrado pelo validador JAXB foi: {1}.
+jsl.schema.invalid.explanation=O documento XML n\u00e3o estava em conformidade com o esquema XSD.
+jsl.schema.invalid.useraction=Use uma ferramenta de valida\u00e7\u00e3o XML para entender qual constru\u00e7\u00e3o viola os requisitos do esquema.
+
+jsl.not.found.batch-jobs=CWWKY0004E: O nome JSL (documento XML de tarefa): {0} n\u00e3o foi localizado no local: {1} no archive de aplicativo.
+jsl.not.found.batch-jobs.explanation=O documento n\u00e3o p\u00f4de ser localizado no local identificado pelo par\u00e2metro usado para enviar a tarefa (ex.: \
+start).
+jsl.not.found.batch-jobs.useraction=Certifique-se de que os par\u00e2metros usados para identificar o local do JSL estejam corretos. \
+Ao usar o envio de tarefa remota para enviar uma tarefa definida em um JSL empacotado em um m\u00f3dulo aplicativo, certifique-se de que o m\u00f3dulo aplicativo tenha sido corretamente identificado pelo par\u00e2metro transmitido para a interface REST (diretamente ou usando o utilit\u00e1rio de linha de comando).
+
+persistence.service.status=CWWKY0005I: O \
+servi\u00e7o de persist\u00eancia {0} em lote \u00e9 {1}.
+persistence.service.status.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+persistence.service.status.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+job.recovery.failed=CWWKY0006W: O servi\u00e7o de recupera\u00e7\u00e3o da tarefa em lote \u00e9 incapaz de corrigir o status em lote \
+para uma inst\u00e2ncia da tarefa que estava em execu\u00e7\u00e3o anteriormente {0} e que foi finalizada. A \
+corre\u00e7\u00e3o falhou devido \u00e0 exce\u00e7\u00e3o {1}.
+job.recovery.failed.explanation=O servi\u00e7o de recupera\u00e7\u00e3o de tarefa em lote, que corrige o status de tarefas que estavam em execu\u00e7\u00e3o quando uma inst\u00e2ncia anterior deste servidor foi encerrada anormalmente, n\u00e3o p\u00f4de corrigir o status da inst\u00e2ncia da tarefa especificada devido \u00e0 exce\u00e7\u00e3o especificada.
+job.recovery.failed.useraction=Aborde a causa da exce\u00e7\u00e3o, se poss\u00edvel, e reinicie o servidor para \
+executar o servi\u00e7o de recupera\u00e7\u00e3o de tarefa em lote novamente.
+
+recovery.failed=CWWKY0007W: O servi\u00e7o de recupera\u00e7\u00e3o da tarefa em lote \u00e9 incapaz de corrigir o status em lote \
+para tarefas que estavam em execu\u00e7\u00e3o anteriormente e que foram finalizadas. A corre\u00e7\u00e3o falhou devido \u00e0 exce\u00e7\u00e3o {0}.
+recovery.failed.explanation=O servi\u00e7o de recupera\u00e7\u00e3o de tarefa em lote, que corrige o status de tarefas que \
+estavam em execu\u00e7\u00e3o quando uma inst\u00e2ncia anterior deste servidor foi \
+encerrada anormalmente, falhou devido \u00e0 exce\u00e7\u00e3o especificada.
+recovery.failed.useraction=Aborde a causa da exce\u00e7\u00e3o, se poss\u00edvel, e reinicie o servidor para \
+executar o servi\u00e7o de recupera\u00e7\u00e3o de tarefa em lote novamente.
+
+batch.kernel.persistence=CWWKY0008I: O \
+recurso em lote est\u00e1 usando o tipo de persist\u00eancia {0}.
+batch.kernel.persistence.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+batch.kernel.persistence.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+#{0} The job name
+#{1} The job instance id
+#{2} The job execution id
+job.started=CWWKY0009I: Tarefa {0} iniciada para inst\u00e2ncia da tarefa {1} e execu\u00e7\u00e3o da tarefa {2}.
+job.started.explanation=Um novo encadeamento de execu\u00e7\u00e3o da tarefa foi iniciado.
+job.started.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+#{0} The job name
+#{1} The batch status of the job
+#{2} The exit status of the job
+#{3} The job instance id
+#{4} The job execution id
+job.ended=CWWKY0010I: Tarefa {0} terminada com status em lote {1} e status de sa\u00edda {2} para inst\u00e2ncia da tarefa {3} e execu\u00e7\u00e3o da tarefa {4}.
+job.ended.explanation=A execu\u00e7\u00e3o da tarefa terminou.
+job.ended.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+#{0} The job name
+#{1} The batch status of the job
+#{2} The exit status of the job
+#{3} The job instance id
+#{4} The job execution id
+job.failed=CWWKY0011W: Falha na tarefa {0} com status em lote {1} e status de sa\u00edda {2} para inst\u00e2ncia da \
+tarefa {3} e execu\u00e7\u00e3o da tarefa {4}.
+job.failed.explanation=Falha na execu\u00e7\u00e3o da tarefa para o t\u00e9rmino bem-sucedido.
+job.failed.useraction=Revise os logs da tarefa da execu\u00e7\u00e3o da tarefa associada para determinar a causa da falha.
+
+#{0} The partition number
+#{1} The step name
+#{2} The job instance id
+#{3} The job execution id
+partition.started=CWWKY0012I: Parti\u00e7\u00e3o {0} iniciada para a etapa {1} para inst\u00e2ncia da tarefa {2} e execu\u00e7\u00e3o \
+da tarefa {3}.
+partition.started.explanation=Uma nova parti\u00e7\u00e3o foi iniciada.
+partition.started.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+#{0} The step name
+#{1} The partition number
+#{2} The batch status of the partition
+#{3} The exit status of the partition
+#{4} The job instance id
+#{5} The job execution id
+partition.ended=CWWKY0013I: Parti\u00e7\u00e3o {0} terminada com o status em lote {1} e o status de sa\u00edda {2} para \
+etapa {3} para inst\u00e2ncia da tarefa {4} e execu\u00e7\u00e3o da tarefa {5}.
+partition.ended.explanation=A parti\u00e7\u00e3o terminada.
+partition.ended.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+#{0} The step name
+#{1} The partition number
+#{2} The batch status of the partition
+#{3} The exit status of the partition
+#{4} The job instance id
+#{5} The job execution id
+partition.failed=CWWKY0014W: Falha na parti\u00e7\u00e3o {0} com status em lote {1} status de sa\u00edda {2} para etapa {3} \
+para inst\u00e2ncia da tarefa {4} e execu\u00e7\u00e3o da tarefa {5}.
+partition.failed.explanation=A parti\u00e7\u00e3o falhou ao terminar com \u00eaxito.
+partition.failed.useraction=Revise os logs da tarefa da execu\u00e7\u00e3o da tarefa associada para determinar a causa da falha.
+
+#{0} The flow name
+#{1} The job instance id
+#{2} The job execution id
+flow.started=CWWKY0015I: Fluxo {0} iniciado para inst\u00e2ncia da tarefa {1} e execu\u00e7\u00e3o da tarefa {2}.
+flow.started.explanation=O fluxo iniciado.
+flow.started.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+#{0} The flow name
+#{1} The job instance id
+#{2} The job execution id
+flow.ended=CWWKY0016I: Fluxo {0} terminado para a inst\u00e2ncia da tarefa {1} e execu\u00e7\u00e3o da tarefa {2}.
+flow.ended.explanation=O fluxo terminado.
+flow.ended.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+#{0} The flow name
+#{1} The job instance id
+#{2} The job execution id
+flow.failed=CWWKY0017W: Falha no fluxo {0} para a inst\u00e2ncia da tarefa {1} e a execu\u00e7\u00e3o da tarefa {2}.
+flow.failed.explanation=Falha no fluxo ao terminar com \u00eaxito.
+flow.failed.useraction=Revise os logs da tarefa da execu\u00e7\u00e3o da tarefa associada para determinar a causa da falha.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+step.started=CWWKY0018I: Etapa {0} iniciada para inst\u00e2ncia da tarefa {1} e execu\u00e7\u00e3o da tarefa {2}.
+step.started.explanation=A etapa nomeada foi iniciada ao ser executada em um encadeamento.
+step.started.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+#{0} The step name
+#{1} The batch status of the step
+#{2} The exit status of the step
+#{3} The job instance id
+#{4} The job execution id
+step.failed=CWWKY0019W: Falha na etapa {0} com status em lote {1} e status de sa\u00edda {2} para inst\u00e2ncia da \
+tarefa {3} e execu\u00e7\u00e3o da tarefa {4}.
+step.failed.explanation=Falha na etapa ao terminar com \u00eaxito.
+step.failed.useraction=Revise os logs da tarefa da execu\u00e7\u00e3o da etapa associada para determinar a causa da falha.
+
+#{0} The step name
+#{1} The batch status of the step
+#{2} The exit status of the step
+#{3} The job instance id
+#{4} The job execution id
+step.ended=CWWKY0020I: Etapa {0} terminada com o status em lote {1} e o status de sa\u00edda {2} para inst\u00e2ncia \
+da tarefa {3} e execu\u00e7\u00e3o da tarefa {4}.
+step.ended.explanation=A etapa foi terminada no processamento.
+step.ended.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.started=CWWKY0021I: Um novo chunk foi iniciado para a etapa {0} na inst\u00e2ncia da tarefa {1} e execu\u00e7\u00e3o \
+da tarefa {2}. M\u00e9tricas da etapa = {3}
+chunk.started.explanation= Uma nova transa\u00e7\u00e3o foi iniciada para processar esse chunk.
+chunk.started.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.ended=CWWKY0022I: O chunk terminado com \u00eaxito para a etapa {0} na inst\u00e2ncia da tarefa {1} e execu\u00e7\u00e3o \
+da tarefa {2}. M\u00e9tricas da etapa = {3}
+chunk.ended.explanation= A transa\u00e7\u00e3o associada a esse chunk foi confirmada com \u00eaxito.
+chunk.ended.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.rollback=CWWKY0024W: O chunk atual retrocedeu para o ponto de verifica\u00e7\u00e3o anterior para a etapa {0} na \
+inst\u00e2ncia da tarefa {1} e execu\u00e7\u00e3o da tarefa {2}. M\u00e9tricas da etapa = {3}
+chunk.rollback.explanation= Ocorreu uma falha durante esse chunk atual que causou um retrocesso de transa\u00e7\u00e3o \
+para o ponto de verifica\u00e7\u00e3o anterior.
+chunk.rollback.useraction=Revise os logs da tarefa da execu\u00e7\u00e3o da tarefa associada para determinar a causa da falha.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.rollback.and.retry=CWWKY0025W: Retrocesso de processamento para o chunk atual ap\u00f3s uma exce\u00e7\u00e3o de nova \
+tentativa para a etapa {0} na inst\u00e2ncia da tarefa {1} e execu\u00e7\u00e3o da tarefa {2}. M\u00e9tricas da etapa = {3}
+chunk.rollback.and.retry.explanation= Ocorreu uma exce\u00e7\u00e3o de nova tentativa durante o \
+processamento para o chunk que ser\u00e1 retrocedido para o ponto de verifica\u00e7\u00e3o anterior e tentado novamente.
+chunk.rollback.and.retry.useraction=Revise os logs da tarefa da execu\u00e7\u00e3o da tarefa associada para determinar a causa da falha.
+
+#{0} The step name that is associated with this reader
+item.reader.opened=CWWKY0026I: O leitor do item para a etapa {0} foi aberto.
+item.reader.opened.explanation=O leitor do item associado a essa etapa foi aberto.
+item.reader.opened.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+#{0} The step name that is associated with this reader
+item.reader.closed=CWWKY0027I: O leitor do item para a etapa {0} foi encerrado.
+item.reader.closed.explanation=O leitor do item associado a essa etapa foi encerrado.
+item.reader.closed.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+#{0} The step name that is associated with this writer
+item.writer.opened=CWWKY0028I: O gravador do item para a etapa {0} foi aberto.
+item.writer.opened.explanation=O gravador do item associado a essa etapa foi aberto.
+item.writer.opened.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+#{0} The step name that is associated with this writer
+item.writer.closed=CWWKY0029I: O gravador do item para a etapa {0} foi encerrado.
+item.writer.closed.explanation=O gravador do item associado a essa etapa foi encerrado.
+item.writer.closed.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+#{0} The step name that is associated with this writer
+#{1} The exception that occurred
+exception.executing.step=CWWKY0030I: Ocorreu uma exce\u00e7\u00e3o durante a execu\u00e7\u00e3o da etapa {0}.\n\
+{1}
+exception.executing.step.explanation=Isso pode ser um erro de aplicativo. Ocorreu uma exce\u00e7\u00e3o durante a execu\u00e7\u00e3o da parte principal da etapa, ap\u00f3s o cont\u00eainer de lote chamar os artefatos de aplicativo em lote relevantes.
+exception.executing.step.useraction=Revise os logs da tarefa da execu\u00e7\u00e3o da tarefa associada para determinar a causa da falha.  Isso pode envolver a depura\u00e7\u00e3o de seu aplicativo.
+
+#{0} The step name that is associated with this writer
+#{1} The exception that occurred
+exception.after.step=CWWKY0031I: Ocorreu uma exce\u00e7\u00e3o durante a execu\u00e7\u00e3o da parte final da etapa {0}.\n\
+{1}
+exception.after.step.explanation=Isso pode ser um erro de aplicativo. Ocorreu uma exce\u00e7\u00e3o durante a execu\u00e7\u00e3o da parte final da etapa (por exemplo, incluir o m\u00e9todo StepListener afterStep()), ap\u00f3s o cont\u00eainer de lote chamar os artefatos de aplicativo em lote relevantes.
+exception.after.step.useraction=Revise os logs da tarefa da execu\u00e7\u00e3o da tarefa associada para determinar a causa da falha.  Isso pode envolver a depura\u00e7\u00e3o de seu aplicativo.
+
+#{0} The exception that occurred
+error.persisting.stepExecution=CWWKY0032I: Ocorreu uma exce\u00e7\u00e3o durante uma tentativa de persistir no status de execu\u00e7\u00e3o da etapa e dados relacionados.\n\
+{0}
+error.persisting.stepExecution.explanation=Se isso ocorrer, \u00e9 comum que o status da etapa final n\u00e3o persista corretamente no banco de dados e o status do lote pode acabar preso em um estado STARTED apesar do fato de ele n\u00e3o estar mais em execu\u00e7\u00e3o. Isso pode interferir na tentativa de reinicializa\u00e7\u00e3o, causando erros de inconsist\u00eancia de estado na reinicializa\u00e7\u00e3o. 
+error.persisting.stepExecution.useraction=Assegure-se de que o banco de dados esteja configurado e conectado corretamente.   Depois disso, se for necess\u00e1rio, \u00e9 poss\u00edvel reiniciar o servidor executor (servidor no qual a tarefa est\u00e1 sendo executada), o que acionar\u00e1 a recupera\u00e7\u00e3o e marcar\u00e1 tarefas e etapas associadas como FAILED para que uma reinicializa\u00e7\u00e3o de tarefa possa ser executada com sucesso. 
+
+#{0} The exception that occurred
+exception.executing.job=CWWKY0033I: Ocorreu uma exce\u00e7\u00e3o durante a execu\u00e7\u00e3o da tarefa.\n\
+{0}
+exception.executing.job.explanation=Isso pode ser um erro de aplicativo. Ocorreu uma exce\u00e7\u00e3o durante a execu\u00e7\u00e3o da parte principal da tarefa, ap\u00f3s o cont\u00eainer de lote chamar os artefatos de aplicativo em lote relevantes.
+exception.executing.job.useraction=Revise os logs da tarefa da execu\u00e7\u00e3o da tarefa associada para determinar a causa da falha.  Isso pode envolver a depura\u00e7\u00e3o de seu aplicativo.
+
+#{0} The exception that occurred
+exception.after.job=CWWKY0034I: Ocorreu uma exce\u00e7\u00e3o durante a execu\u00e7\u00e3o da parte final da tarefa.\n\
+{0}
+exception.after.job.explanation=Isso pode ser um erro de aplicativo. Ocorreu uma exce\u00e7\u00e3o durante a execu\u00e7\u00e3o da parte final da tarefa (por exemplo, incluir o m\u00e9todo JobListener afterJob()), ap\u00f3s o cont\u00eainer de lote chamar os artefatos de aplicativo em lote relevantes.
+exception.after.job.useraction=Revise os logs da tarefa da tarefa associada para determinar a causa da falha.  Isso pode envolver a depura\u00e7\u00e3o de seu aplicativo.
+
+#{0} The exception that occurred
+error.persisting.jobExecution=CWWKY0035I: Ocorreu uma exce\u00e7\u00e3o durante uma tentativa de persistir no status de execu\u00e7\u00e3o da tarefa e dados relacionados.\n\
+{0}
+error.persisting.jobExecution.explanation=Se isso ocorrer, \u00e9 comum que o status do lote de tarefa final n\u00e3o persista corretamente no banco de dados e o status do lote pode acabar preso em um estado STARTED apesar do fato de ele n\u00e3o estar mais em execu\u00e7\u00e3o. Isso pode interferir na tentativa de reinicializa\u00e7\u00e3o, causando erros de inconsist\u00eancia de estado na reinicializa\u00e7\u00e3o.
+error.persisting.jobExecution.useraction=Assegure-se de que o banco de dados esteja configurado e conectado corretamente.   Depois disso, se for necess\u00e1rio, \u00e9 poss\u00edvel reiniciar o servidor executor (servidor no qual a tarefa est\u00e1 sendo executada), o que acionar\u00e1 a recupera\u00e7\u00e3o e marcar\u00e1 tarefas e etapas associadas como FAILED para que uma reinicializa\u00e7\u00e3o de tarefa possa ser executada com sucesso.
+
+#{0} The invalid job instance id.
+#{1} The persistence exception.
+error.invalid.persisted.job.id=CWWKY0036E: Valor inv\u00e1lido do ID da inst\u00e2ncia da tarefa {0} gerado como o valor da chave prim\u00e1ria para uma tabela em lote. O valor do ID deve ser um n\u00famero inteiro positivo.\n\
+{1}
+error.invalid.persisted.job.id.explanation=A execu\u00e7\u00e3o da tarefa falhou porque um ID inv\u00e1lido foi gerado em uma tabela em lote. Um ID de lote deve ser um n\u00famero inteiro positivo.
+error.invalid.persisted.job.id.useraction=Assegure-se de que a defini\u00e7\u00e3o de tabela de banco de dados em lote usada permita somente n\u00fameros inteiros positivos para os valores de ID usados como chaves prim\u00e1rias.
+
+#{0} The invalid execution id.
+#{1} The persistence exception.
+error.invalid.persisted.exe.id=CWWKY0037E: Valor inv\u00e1lido do ID de execu\u00e7\u00e3o da tarefa {0} gerado como o valor da chave prim\u00e1ria para uma tabela em lote. O valor do ID deve ser um n\u00famero inteiro positivo.\n\
+{1}
+error.invalid.persisted.exe.id.explanation=A execu\u00e7\u00e3o da tarefa falhou porque um ID inv\u00e1lido foi gerado em uma tabela em lote. Um ID de lote deve ser um n\u00famero inteiro positivo.
+error.invalid.persisted.exe.id.useraction=Assegure-se de que a defini\u00e7\u00e3o de tabela de banco de dados em lote usada permita somente n\u00fameros inteiros positivos para os valores de ID usados como chaves prim\u00e1rias.
+
+#{0} The invalid step execution id.
+#{1} The persistence exception.
+error.invalid.persisted.step.id=CWWKY0038E: Valor inv\u00e1lido do ID de execu\u00e7\u00e3o da etapa {0} gerado como o valor da chave prim\u00e1ria para uma tabela em lote. O valor do ID deve ser um n\u00famero inteiro positivo.\n\
+{1}
+error.invalid.persisted.step.id.explanation=A execu\u00e7\u00e3o da tarefa falhou porque um ID inv\u00e1lido foi gerado em uma tabela em lote. Um ID de lote deve ser um n\u00famero inteiro positivo.
+error.invalid.persisted.step.id.useraction=Assegure-se de que a defini\u00e7\u00e3o de tabela de banco de dados em lote usada permita somente n\u00fameros inteiros positivos para os valores de ID usados como chaves prim\u00e1rias.
+
+partition.recovery.failed=CWWKY0039W: O \
+servi\u00e7o de recupera\u00e7\u00e3o de tarefa em lote n\u00e3o pode corrigir o status \
+do lote para uma parti\u00e7\u00e3o anteriormente em execu\u00e7\u00e3o {0} que foi \
+finalizada. A \
+corre\u00e7\u00e3o falhou devido \u00e0 exce\u00e7\u00e3o {1}.
+partition.recovery.failed.explanation=O \
+servi\u00e7o de recupera\u00e7\u00e3o de tarefa em lote, que corrige o status de \
+parti\u00e7\u00f5es que estavam em execu\u00e7\u00e3o quando uma inst\u00e2ncia anterior desse \
+servidor foi finalizada de modo anormal, n\u00e3o p\u00f4de corrigir o status \
+da parti\u00e7\u00e3o determinada devido \u00e0 exce\u00e7\u00e3o fornecida.
+partition.recovery.failed.useraction=Aborde a causa da exce\u00e7\u00e3o, se poss\u00edvel, e reinicie o servidor para \
+executar o servi\u00e7o de recupera\u00e7\u00e3o de tarefa em lote novamente.
+
+info.batch.events.publish.topic=CWWKY0040I: O tempo de execu\u00e7\u00e3o do lote publicar\u00e1 eventos na raiz do t\u00f3pico JMS {0}.
+info.batch.events.publish.topic.explanation=Informativo. O tempo de execu\u00e7\u00e3o do lote publicar\u00e1 eventos na raiz do t\u00f3pico JMS em lote listada.
+info.batch.events.publish.topic.useraction=A raiz do t\u00f3pico JMS em lote pode ser modificada. Verifique as op\u00e7\u00f5es configuradas que s\u00e3o usadas para batchJmsEvents. 
+
+cdi.ambiguous.artifact.names=CWWKY0041W: O cont\u00eainer de lote est\u00e1 em execu\u00e7\u00e3o com um recurso de CDI ativo, mas o mecanismo CDI n\u00e3o p\u00f4de carregar o artefato em lote como um bean gerenciado pelo CDI e executar outras inje\u00e7\u00f5es de CDI. Esse problema pode ser causado por uma anota\u00e7\u00e3o de defini\u00e7\u00e3o de bean ausente, como @Dependent, um modo de descoberta de bean indesejado ou um valor 'ref' amb\u00edguo.
+cdi.ambiguous.artifact.names.explanation=Quando o tempo de execu\u00e7\u00e3o do lote carrega artefatos usando o mecanismo CDI, as propriedades em lote (@BatchProperty) e os contextos em lote (JobContext e StepContext) s\u00e3o injetados e os recursos integrais de CDI s\u00e3o disponibilizados. Esses recursos incluem a inje\u00e7\u00e3o de outros beans gerenciados de acordo com qualificadores e todos os outros recursos do modelo de programa\u00e7\u00e3o CDI. Quando o tempo de execu\u00e7\u00e3o do lote carrega os artefatos sem usar o mecanismo CDI, ele injeta somente as propriedades e os contextos em lote. Como ele n\u00e3o \u00e9 um bean gerenciado pelo CDI nesse caminho, nenhuma outra inje\u00e7\u00e3o ou outro recurso do modelo de programa\u00e7\u00e3o CDI est\u00e1 dispon\u00edvel nesse artefato em lote. Essa mensagem indica que embora o servidor esteja configurado para que o recurso CDI de esteja ativo, o artefato em lote n\u00e3o pode ser carregado como um bean gerenciado pelo CDI porque o valor de atributo 'ref' que corresponde a essa refer\u00eancia de artefato em XML n\u00e3o aponta para um \u00fanico e inequ\u00edvoco bean gerenciado pelo CDI.
+cdi.ambiguous.artifact.names.useraction=Inclua a anota\u00e7\u00e3o @Dependent ou outra anota\u00e7\u00e3o de defini\u00e7\u00e3o de bean adequada em seu artefato em lote. Como alternativa, \u00e9 poss\u00edvel configurar o modo de descoberta de bean como 'all' no arquivo beans.xml, embora essa solu\u00e7\u00e3o possa tornar o aplicativo lento. Se todos os artefatos amb\u00edguos n\u00e3o forem necess\u00e1rios, tamb\u00e9m ser\u00e1 poss\u00edvel remover os atributos 'ref' amb\u00edguos do aplicativo para que somente uma \u00fanica e inequ\u00edvoca refer\u00eancia permanece.
+
+#{0} job/flow/partition
+#{1} The JSL
+display.resolved.jsl=CWWKY0042I:  O JSL resolvido para este {0} \u00e9 \n\
+\ {1}.
+display.resolved.jsl.explanation=O JSL usado para a tarefa, o fluxo ou a parti\u00e7\u00e3o \u00e9 exibido depois que par\u00e2metros e propriedades s\u00e3o resolvidos.  A tarefa JSL n\u00e3o resolve propriedades de plano de parti\u00e7\u00e3o.  Procure essa mensagem nos logs de parti\u00e7\u00e3o individual para resolu\u00e7\u00e3o de propriedade de plano de parti\u00e7\u00e3o.
+display.resolved.jsl.useraction=Verifique se a resolu\u00e7\u00e3o do JSL e do par\u00e2metro \u00e9 a esperada.
+#{0} The JSL
+display.unresolved.jsl=CWWKY0043I:  O JSL n\u00e3o resolvido para esta tarefa \u00e9 \n\
+\ {0}.
+display.unresolved.jsl.explanation=O JSL usado para a tarefa \u00e9 exibido antes de par\u00e2metros e propriedades serem resolvidos.
+display.unresolved.jsl.useraction=Assegure-se de que o nome do arquivo para o JSL esteja correto e verifique se a origem do JSL cont\u00e9m o JSL correto.
+

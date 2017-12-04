@@ -1,0 +1,35 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authorization.jacc.ejb/resources/com/ibm/ws/security/authorization/jacc/ejb/resources/JaccEjbAuthorizationMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Security JACC Authorization
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS2890 - CWWKS2899
+
+JACC_EJB_GET_POLICYCONFIGURATION_FAILURE=CWWKS2890E: Serviciul JACC nu poate primi obiectul PolicyConfiguration cu contextID {0}. Excep\u0163ia este {1}.
+JACC_EJB_GET_POLICYCONFIGURATION_FAILURE.explanation=Serviciul JACC nu poate primi obiectul PolicyConfiguration. Aceasta ar putea fi o eroare sever\u0103 \u00een furnizorul JACC.
+JACC_EJB_GET_POLICYCONFIGURATION_FAILURE.useraction=Examina\u0163i istoricele de furnizor JACC \u015fi istoricele de server pentru mai multe informa\u0163ii.
+
+JACC_EJB_IMPLIES_FAILURE=CWWKS2891E: Autorizarea pentru resursa cu contextID {0} a e\u015fuat din cauza excep\u0163iei {1}.
+JACC_EJB_IMPLIES_FAILURE.explanation=Autorizarea pentru resursa specificat\u0103 a e\u015fuat.
+JACC_EJB_IMPLIES_FAILURE.useraction=Examina\u0163i istoricele de furnizor JACC \u015fi istoricele de server pentru mai multe informa\u0163ii.
+
+JACC_EJB_PERMISSION_PROPAGATION_FAILURE=CWWKS2892E: Serviciul JACC nu poate propaga rolurile de securitate EJB ale contextID {0} la furnizorul JACC din cauza excep\u0163iei {1}.
+JACC_EJB_PERMISSION_PROPAGATION_FAILURE.explanation=Serviciul JACC nu poate propaga rolurile de securitate EJB la furnizorul JACC din cauza unei excep\u0163ii nea\u015fteptate.
+JACC_EJB_PERMISSION_PROPAGATION_FAILURE.useraction=Examina\u0163i istoricele de furnizor JACC \u015fi istoricele de server pentru mai multe informa\u0163ii.
+
+JACC_EJB_SPI_PARAMETER_ERROR=CWWKS2893E: Obiectul parametrului {0} al metodei {1} nu este valid. Obiectul a\u015fteptat al parametrului este {2}.
+JACC_EJB_SPI_PARAMETER_ERROR.explanation=Serviciul de JACC nu poate finaliza cererea din cauz\u0103 c\u0103 obiectul parametrului nu este valid. Aceasta este o eroare intern\u0103.
+JACC_EJB_SPI_PARAMETER_ERROR.useraction=Aceasta este o eroare intern\u0103. Dac\u0103 problema r\u0103m\u00e2ne, consulta\u0163i informa\u0163ia de determinarea problemei pe pagina WebSphere Application Server Support la http://www.ibm.com/software/webservers/appserv/was/support/. 

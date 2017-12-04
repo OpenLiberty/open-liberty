@@ -1,0 +1,75 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jca.cm/resources/com/ibm/ws/jca/cm/internal/resources/J2CAMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA Connection Management
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+DEACTIVATED_J2CA8001=J2CA8001I: {0} {1} ist nicht verf\u00fcgbar.
+DEACTIVATED_J2CA8001.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+DEACTIVATED_J2CA8001.useraction=Es ist keine Aktion erforderlich.
+
+DEACTIVATED_J2CA8006=J2CA8006I: {0} {1} in {2} ist nicht verf\u00fcgbar.
+DEACTIVATED_J2CA8006.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+DEACTIVATED_J2CA8006.useraction=Es ist keine Aktion erforderlich.
+
+UNKNOWN_PROP_J2CA8010=J2CA8010W: Die Eigenschaft {0} wurde nicht erkannt: {1}
+UNKNOWN_PROP_J2CA8010.explanation=Eine konfigurierte Eigenschaft wurde nicht erkannt.
+UNKNOWN_PROP_J2CA8010.useraction=Korrigieren oder entfernen Sie die konfigurierte Eigenschaft.
+
+UNSUPPORTED_VALUE_J2CA8011=J2CA8011E: Der Wert {0} wird f\u00fcr {1} in {2} nicht unterst\u00fctzt.
+UNSUPPORTED_VALUE_J2CA8011.explanation=Ein konfigurierter Wert wird nicht unterst\u00fctzt.
+UNSUPPORTED_VALUE_J2CA8011.useraction=Korrigieren Sie den Wert, oder entfernen Sie die konfigurierte Eigenschaft.
+
+MISSING_LIBRARY_J2CA8020=J2CA8020E: Es ist nicht m\u00f6glich, Dateien aus der Bibliothek {0} zu laden und auf diese zuzugreifen.
+MISSING_LIBRARY_J2CA8020.explanation=Dateien k\u00f6nnen nicht aus der gemeinsam genutzten Bibliothek geladen werden.
+MISSING_LIBRARY_J2CA8020.useraction=\u00dcberpr\u00fcfen Sie die Dateiberechtigungen und die Konfiguration der gemeinsam genutzten Bibliothek.
+
+MISSING_LIBRARY_J2CA8022=J2CA8022E: Die Anwendung {0} hat keine gemeinsam genutzten Bibliotheken, die {1} f\u00fcr {2} {3} bereitstellen.
+MISSING_LIBRARY_J2CA8022.explanation=Zur Verwendung anwendungsdefinierter Datenquellen muss der JDBC-Treiber, der die Datenquellenklasse bereitstellt, als gemeinsam genutzte Bibliothek f\u00fcr die Anwendung zur Verf\u00fcgung gestellt werden.
+MISSING_LIBRARY_J2CA8022.useraction=F\u00fcgen Sie den JDBC-Treiber als gemeinsam genutzte Bibliothek f\u00fcr die Anwendung hinzu.
+
+MISSING_RESOURCE_J2CA8030=J2CA8030E: {0} {1} wurde f\u00fcr {2} {3} nicht gefunden.
+MISSING_RESOURCE_J2CA8030.explanation=Die angegebene Ressource setzt eine andere Ressource voraus, die nicht verf\u00fcgbar ist.
+MISSING_RESOURCE_J2CA8030.useraction=Vergewissern Sie sich, dass die Ressource ordnungsgem\u00e4\u00df konfiguriert ist.
+
+CARDINALITY_ERROR_J2CA8040=J2CA8040E: {0} {1} darf nur ein einziges Element {2} haben.
+CARDINALITY_ERROR_J2CA8040.explanation=Die Ressource kann nur ein einziges Element des angegebenen Typs haben.
+CARDINALITY_ERROR_J2CA8040.useraction=Aktualisieren Sie die Konfiguration so, dass es nur ein einziges Element des angegebenen Typs f\u00fcr die Ressource gibt.
+
+RECOMMEND_AUTH_ALIAS_J2CA8050=J2CA8050I: Es sollte ein Authentifizierungsalias verwendet werden, anstatt einen Benutzernamen und ein Kennwort in {0} zu definieren.
+RECOMMEND_AUTH_ALIAS_J2CA8050.explanation=Es wird empfohlen, einen Authentifizierungsalias zu verwenden, anstatt einen Benutzernamen und ein Kennwort in einer Ressource zu definieren.
+RECOMMEND_AUTH_ALIAS_J2CA8050.useraction=Konfigurieren Sie den Benutzernamen und das Kennwort im Element authData und nicht direkt in der Ressource.
+
+INVALID_MBEAN_INVOKE_PARAM_J2CA8060=J2CA8060E: {0} ist kein g\u00fcltiger Parameter f\u00fcr die Aktion {1}.
+INVALID_MBEAN_INVOKE_PARAM_J2CA8060.explanation=Die f\u00fcr eine Aktion angegebenen Parameter m\u00fcssen den g\u00fcltigen Parametern f\u00fcr die angegebene Aktion entsprechen.
+INVALID_MBEAN_INVOKE_PARAM_J2CA8060.useraction=Geben Sie g\u00fcltige Parameter f\u00fcr die aufzurufende Aktion an.
+
+INVALID_MBEAN_INVOKE_ACTION_J2CA8061=J2CA8061E: {0} ist keine g\u00fcltige Aktion f\u00fcr die MBean {1}.
+INVALID_MBEAN_INVOKE_ACTION_J2CA8061.explanation=Es wurde versucht, eine Aktion aufzurufen, die f\u00fcr die angegebene MBean nicht verf\u00fcgbar ist.
+INVALID_MBEAN_INVOKE_ACTION_J2CA8061.useraction=\u00c4ndern Sie die aufzurufende Aktion in eine g\u00fcltige Methode f\u00fcr die angegebene MBean.
+
+MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062=J2CA8062E: Das Attribut {0} ist f\u00fcr die MBean {1} nicht g\u00fcltig.
+MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.explanation=Es wurde versucht, ein Attribut abzurufen oder zu definieren, das f\u00fcr die angegebene MBean nicht verf\u00fcgbar ist.
+MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.useraction=\u00c4ndern Sie das angegeben Attribut in eines der verf\u00fcgbaren Attribute f\u00fcr diese MBean.

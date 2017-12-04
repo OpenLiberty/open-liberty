@@ -1,0 +1,643 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# 284561          10-Aug-05 pnickoll Added extra data to the exception thrown when validating an activation spec
+# 320291                  04-Nov-05 ajw          Problem in message 1181
+# 344741                  08-Feb-06 ajw          Removed msgs CWSJR1115 and CWSJR1116
+# 342029                  09-Feb-06 ajw          Removed unused msgs
+# 352462          04-Jul-06 matrober SVT:CWSJR1067E has a misspelling
+# 387921          04-Sep-06 pnickoll Fixed misspellings and incorrect message ID
+# SIB0048c.ra.6   22-Jan-07 vaughton Tidy up policing of xa connections msgs
+# 446227          18-Jun-07 pnickoll merge updated from UT
+# 468221          19-Sep-07 pnickoll Changed 1072 so that it uses {0} instead of {1}
+# 99986           13-Jun-13 Chetan   Correcting nls message
+# -------------------------------------------------------------------------------------------------
+# File com.ibm.ws.sib.api.jmsra.CWSJRMessages.nlsprops
+#
+# SIB.api.jmsra component file for logging _external_ messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJR0001=CWSJR0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you want them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes: TODO: CONFIRM THIS RANGE DOESN'T OVERLAP THE JMS API TEAMS RANGE
+#   Message Range        Owning class
+#   ----------------------------------------------------
+#   CWSJR1000-CWSJR1500   JMS api usage only (within API team)
+#   ----------------------------------------------------
+#   CWSJR1001-CWSJR1020   com.ibm.ws.sib.api.jmsra.impl.JmsJcaResourceAdapterImpl
+#   CWSJR1021-CWSJR1040   com.ibm.ws.sib.api.jmsra.impl.JmsJcaManagedConnectionFactoryImpl
+#   CWSJR1041-CWSJR1060   com.ibm.ws.sib.api.jmsra.impl.JmsJcaManagedQueueConnectionFactoryImpl / JmsJcaManagedTopicConnectionFactoryImpl
+#   CWSJR1061-CWSJR1080   com.ibm.ws.sib.api.jmsra.impl.JmsJcaConnectionFactoryImpl
+#   CWSJR1081-CWSJR1100   com.ibm.ws.sib.api.jmsra.impl.JmsJcaConnectionImpl
+#   CWSJR1101-CWSJR1120   com.ibm.ws.sib.api.jmsra.impl.JmsJcaManagedConnection
+#   CWSJR1121-CWSJR1160   com.ibm.ws.sib.api.jmsra.impl.JmsJcaSessionImpl
+#   CWSJR1161-CWSJR1180   com.ibm.ws.sib.api.jmsra.JmsJcaReferenceUtils
+#   CWSJR1181-CWSJR1200   com.ibm.ws.sib.api.jmsra.impl.JmsJcaActivationSpecImpl
+#   CWSJR1201-CWSJR1220   com.ibm.ws.sib.api.jmsra.impl.JmsJcaDispatcher
+#   CWSJR1221-CWSJR1240   com.ibm.ws.sib.api.jmsra.impl.JmsJcaEndpointActivation
+#   CWSJR1241-CWSJR1260   com.ibm.ws.sib.api.jmsra.impl.JmsJcaTransactionalDispatcher
+#   CWSJR1441-CWSJR1460   com.ibm.ws.sib.api.jmsra.JmsJcaFactory
+#   CWSJR1461-CWSJR1480   com.ibm.ws.sib.api.jmsra.impl.JmsJcaManagedConnectionSynchronizationProvider
+#   CWSJR1481-CWSJR1500   com.ibm.ws.sib.api.jmsra.impl.JmsJcaEndpointInvokerImpl
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.61,0,07/01/24,10:58:20
+#
+#CMVCPATHNAME com.ibm.ws.messaging.jms/resources/com/ibm/ws/sib/api/jmsra/CWSJRMessages.nlsprops
+#COMPONENTPREFIX CWSJR
+#COMPONENTNAMEFOR CWSJR SIbus
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+#
+# JmsJcaResourceAdapterImpl
+# -------------------------------------------------------------------------------------------------
+
+#
+# JmsJcaManagedConnectionFactoryImpl
+#
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1021=CWSJR1021E: \u7522\u751f\u5167\u90e8\u7570\u5e38\u72c0\u6cc1\u3002{1} \u65b9\u6cd5\u4e2d\u7684 {0} \u7570\u5e38\u72c0\u6cc1\u3002
+EXCEPTION_RECEIVED_CWSJR1021.explanation=\u60a8\u53ef\u4ee5\u5229\u7528\u6240\u5305\u542b\u7684\u7570\u5e38\u72c0\u6cc1\u8cc7\u8a0a\u4f86\u9032\u884c\u8a3a\u65b7\u3002
+EXCEPTION_RECEIVED_CWSJR1021.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+# {1} the type of object we were expecting
+# {2} the type of object we received
+EXCEPTION_RECEIVED_CWSJR1022=CWSJR1022E: \u547c\u53eb\u65b9\u6cd5 {0} \u671f\u9593\uff0c\u767c\u751f\u975e\u9810\u671f\u7684\u7570\u5e38\u72c0\u6cc1\u3002\u6536\u5230\u975e\u9810\u671f\u7684 ConnectionRequest \u7269\u4ef6 {2} \u985e\u578b\uff0c\u800c\u4e0d\u662f {1}\u3002
+EXCEPTION_RECEIVED_CWSJR1022.explanation=\u7522\u751f\u5167\u90e8\u7570\u5e38\u72c0\u6cc1\u3002\u60a8\u53ef\u4ee5\u5229\u7528\u6240\u5305\u542b\u7684\u7570\u5e38\u72c0\u6cc1\u8cc7\u8a0a\u4f86\u9032\u884c\u8a3a\u65b7\u3002
+EXCEPTION_RECEIVED_CWSJR1022.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+SICORECONNECTION_ERROR_CWSJR1023=CWSJR1023E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u5728\u547c\u53eb {0} \u65b9\u6cd5\u671f\u9593\uff0c\u7121\u6cd5\u64f7\u53d6\u6709\u6548\u7684 SICoreConnectionFactory\u3002
+SICORECONNECTION_ERROR_CWSJR1023.explanation=CMSG0001
+SICORECONNECTION_ERROR_CWSJR1023.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+# {1} the type of object we were expecting
+# {2} the type of object we received
+JMS_CONNECTION_FAIL_CWSJR1024=CWSJR1024E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u5728\u547c\u53eb {0} \u65b9\u6cd5\u671f\u9593\uff0c\u6536\u5230\u975e\u9810\u671f\u7684 {2} \u985e\u578b\u7269\u4ef6\uff0c\u800c\u4e0d\u662f {1}\u3002
+JMS_CONNECTION_FAIL_CWSJR1024.explanation=\u7522\u751f\u5167\u90e8\u7570\u5e38\u72c0\u6cc1\u3002JmsFactoryFactory.getInstance() \u65b9\u6cd5\u672a\u4f9d\u9810\u671f\u6536\u5230\u6b63\u78ba\u7684 JMSRAFactoryFactory \u985e\u578b\u3002
+JMS_CONNECTION_FAIL_CWSJR1024.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} the prefix that was trying to be set
+DESTINATION_PREFIX_LONG_CWSJR1025=CWSJR1025E: \u5b57\u9996 {0} \u7684\u9577\u5ea6\u8d85\u51fa 12 \u500b\u5b57\u5143\u3002
+DESTINATION_PREFIX_LONG_CWSJR1025.explanation=\u66ab\u6642\u76ee\u7684\u5730\u540d\u7a31\u7684\u5b57\u9996\u4e0d\u80fd\u8d85\u51fa 12 \u500b\u5b57\u5143\u3002
+DESTINATION_PREFIX_LONG_CWSJR1025.useraction=\u8acb\u6307\u5b9a\u4e0d\u8d85\u51fa 12 \u500b\u5b57\u5143\u7684\u5b57\u9996\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1026=CWSJR1026E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u5728 {1} \u65b9\u6cd5\u4e2d\u6536\u5230 {0} \u7570\u5e38\u72c0\u6cc1\u3002
+EXCEPTION_RECEIVED_CWSJR1026.explanation=\u60a8\u53ef\u4ee5\u5229\u7528\u6240\u5305\u542b\u7684\u7570\u5e38\u72c0\u6cc1\u8cc7\u8a0a\u4f86\u9032\u884c\u8a3a\u65b7\u3002
+EXCEPTION_RECEIVED_CWSJR1026.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1027=CWSJR1027E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u5728 {1} \u65b9\u6cd5\u4e2d\u6536\u5230 {0} \u7570\u5e38\u72c0\u6cc1\u3002
+EXCEPTION_RECEIVED_CWSJR1027.explanation=\u60a8\u53ef\u4ee5\u5229\u7528\u6240\u5305\u542b\u7684\u7570\u5e38\u72c0\u6cc1\u8cc7\u8a0a\u4f86\u9032\u884c\u8a3a\u65b7\u3002
+EXCEPTION_RECEIVED_CWSJR1027.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1028=CWSJR1028E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u5728 {1} \u65b9\u6cd5\u4e2d\u6536\u5230 {0} \u7570\u5e38\u72c0\u6cc1\u3002
+EXCEPTION_RECEIVED_CWSJR1028.explanation=\u60a8\u53ef\u4ee5\u5229\u7528\u6240\u5305\u542b\u7684\u7570\u5e38\u72c0\u6cc1\u8cc7\u8a0a\u4f86\u9032\u884c\u8a3a\u65b7\u3002
+EXCEPTION_RECEIVED_CWSJR1028.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} the prefix that was trying to be set
+DESTINATION_PREFIX_LONG_CWSJR1029=CWSJR1029E: \u5b57\u9996 {0} \u7684\u9577\u5ea6\u8d85\u51fa 12 \u500b\u5b57\u5143\u3002
+DESTINATION_PREFIX_LONG_CWSJR1029.explanation=\u66ab\u6642\u76ee\u7684\u5730\u540d\u7a31\u7684\u5b57\u9996\u4e0d\u80fd\u8d85\u51fa 12 \u500b\u5b57\u5143\u3002
+DESTINATION_PREFIX_LONG_CWSJR1029.useraction=\u8acb\u6307\u5b9a\u4e0d\u8d85\u51fa 12 \u500b\u5b57\u5143\u7684\u5b57\u9996\u3002
+
+#
+# JmsJcaConnectionFactoryImpl
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+# {1} the type of object we were expecting
+# {2} the type of object we received
+EXCEPTION_RECEIVED_CWSJR1061=CWSJR1061E: \u65b9\u6cd5 {0} \u4e2d\u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u672a\u5efa\u7acb\u6709\u6548\u9023\u7dda\uff1b\u6536\u5230 {2} \u7269\u4ef6\uff0c\u800c\u4e0d\u662f {1}\u3002
+EXCEPTION_RECEIVED_CWSJR1061.explanation=CMSG0001
+EXCEPTION_RECEIVED_CWSJR1061.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1064=CWSJR1064E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u5728 {1} \u65b9\u6cd5\u4e2d\u6536\u5230 {0} \u7570\u5e38\u72c0\u6cc1\u3002
+EXCEPTION_RECEIVED_CWSJR1064.explanation=\u60a8\u53ef\u4ee5\u5229\u7528\u6240\u5305\u542b\u7684\u7570\u5e38\u72c0\u6cc1\u8cc7\u8a0a\u4f86\u9032\u884c\u8a3a\u65b7\u3002
+EXCEPTION_RECEIVED_CWSJR1064.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1065=CWSJR1065E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u5728 {1} \u65b9\u6cd5\u4e2d\u6536\u5230 {0} \u7570\u5e38\u72c0\u6cc1\u3002
+EXCEPTION_RECEIVED_CWSJR1065.explanation=\u60a8\u53ef\u4ee5\u5229\u7528\u6240\u5305\u542b\u7684\u7570\u5e38\u72c0\u6cc1\u8cc7\u8a0a\u4f86\u9032\u884c\u8a3a\u65b7\u3002
+EXCEPTION_RECEIVED_CWSJR1065.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+SICORECONNECTION_ERROR_CWSJR1066=CWSJR1066E: \u5728\u547c\u53eb {0} \u65b9\u6cd5\u671f\u9593\uff0c\u7121\u6cd5\u64f7\u53d6\u6709\u6548\u7684 SICoreConnectionFactory\u3002
+SICORECONNECTION_ERROR_CWSJR1066.explanation=CMSG0001
+SICORECONNECTION_ERROR_CWSJR1066.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the JCA exception
+CONNECTION_ERROR_RETRY_CWSJR1067=CWSJR1067E: \u7576\u5617\u8a66\u53d6\u5f97\u9023\u7dda\u6642\uff0c\u767c\u751f\u4e0b\u5217 JCA \u9023\u7dda\u932f\u8aa4\u3002\u5c07\u91cd\u65b0\u5617\u8a66\u64f7\u53d6\u9023\u7dda\u3002\u7570\u5e38\u72c0\u6cc1\u662f {0}\u3002
+CONNECTION_ERROR_RETRY_CWSJR1067.explanation=\u53d6\u5f97\u9023\u7dda\u6642\u7522\u751f\u7570\u5e38\u72c0\u6cc1\u3002\u7cfb\u7d71\u5c07\u6e05\u9664\u9023\u7dda\uff0c\u7136\u5f8c\u8a66\u5716\u53d6\u5f97\u53e6\u4e00\u500b\u9023\u7dda\u3002
+CONNECTION_ERROR_RETRY_CWSJR1067.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The authentication alias name
+CONTAINER_AUTHENTICATION_EXCEPTION_1068=CWSJR1068E: \u7121\u6cd5\u4f7f\u7528\u63d0\u4f9b\u7684\u9451\u5225\u5225\u540d {0} \u4f86\u9032\u884c\u9451\u5225\u3002
+CONTAINER_AUTHENTICATION_EXCEPTION_1068.explanation=\u61c9\u7528\u7a0b\u5f0f\u4f7f\u7528\u8cc7\u6e90\u53c3\u7167\u4f86\u67e5\u95b1 Connection Factory\u3002\u8a72\u8cc7\u6e90\u53c3\u7167\u5df2\u914d\u7f6e\u6210\u4f7f\u7528\u5132\u5b58\u5668\u7ba1\u7406\u7684\u9451\u5225\uff0c\u4f46\u76f8\u95dc\u806f\u7684\u9451\u5225\u8cc7\u6599\u7121\u6548\u3002
+CONTAINER_AUTHENTICATION_EXCEPTION_1068.useraction=\u8acb\u78ba\u5b9a\u8207\u6b64\u8cc7\u6e90\u53c3\u7167\u76f8\u95dc\u806f\u7684\u9451\u5225\u5225\u540d\u5305\u542b\u532f\u6d41\u6392\u7684\u6709\u6548\u8a8d\u8b49\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The user name
+APPLICATION_AUTHENTICATION_EXCEPTION_1069=CWSJR1069E: \u6240\u63d0\u4f9b\u7684\u4f7f\u7528\u8005\u540d\u7a31 {0} \u9451\u5225\u5931\u6557\u3002
+APPLICATION_AUTHENTICATION_EXCEPTION_1069.explanation=\u61c9\u7528\u7a0b\u5f0f\u4f7f\u7528\u8cc7\u6e90\u53c3\u7167\u4f86\u67e5\u95b1 Connection Factory\u3002\u8a72\u8cc7\u6e90\u53c3\u7167\u5df2\u914d\u7f6e\u6210\u4f7f\u7528\u61c9\u7528\u7a0b\u5f0f\u7ba1\u7406\u7684\u9451\u5225\uff0c\u4f46\u76f8\u95dc\u806f\u7684\u5143\u4ef6\u9451\u5225\u5225\u540d\u8cc7\u6599\u7121\u6548\u3002
+APPLICATION_AUTHENTICATION_EXCEPTION_1069.useraction=\u8acb\u78ba\u5b9a\u5143\u4ef6\u9451\u5225\u5225\u540d\u5305\u542b\u532f\u6d41\u6392\u7684\u6709\u6548\u8a8d\u8b49\u3002
+
+# -------------------------------------------------------------------------------------------------
+CONTAINER_AUTHORIZATION_EXCEPTION_1070=CWSJR1070E: \u7121\u6cd5\u9032\u884c\u9451\u5225\uff0c\u56e0\u70ba\u672a\u6307\u5b9a\u9451\u5225\u5225\u540d\u3002
+CONTAINER_AUTHORIZATION_EXCEPTION_1070.explanation=\u61c9\u7528\u7a0b\u5f0f\u4f7f\u7528\u8cc7\u6e90\u53c3\u7167\u4f86\u67e5\u95b1 Connection Factory\u3002\u8a72\u8cc7\u6e90\u53c3\u7167\u5df2\u914d\u7f6e\u6210\u4f7f\u7528\u5132\u5b58\u5668\u7ba1\u7406\u7684\u9451\u5225\uff0c\u4f46\u9451\u5225\u5225\u540d\u672a\u8207\u8a72\u8cc7\u6e90\u53c3\u7167\u76f8\u95dc\u806f\u3002
+CONTAINER_AUTHORIZATION_EXCEPTION_1070.useraction=\u8acb\u78ba\u5b9a\u9451\u5225\u5225\u540d\u8207\u6b64\u8cc7\u6e90\u53c3\u7167\u76f8\u95dc\u806f\u3002
+
+# -------------------------------------------------------------------------------------------------
+APPLICATION_AUTHORIZATION_EXCEPTION_1071=CWSJR1071E: \u7121\u6cd5\u9032\u884c\u9451\u5225\uff0c\u56e0\u70ba\u672a\u63d0\u4f9b\u8a8d\u8b49\u3002
+APPLICATION_AUTHORIZATION_EXCEPTION_1071.explanation=\u61c9\u7528\u7a0b\u5f0f\u4f7f\u7528\u8cc7\u6e90\u53c3\u7167\u4f86\u67e5\u95b1 Connection Factory\u3002\u8a72\u8cc7\u6e90\u53c3\u7167\u5df2\u914d\u7f6e\u6210\u4f7f\u7528\u61c9\u7528\u7a0b\u5f0f\u7ba1\u7406\u7684\u9451\u5225\uff0c\u4f46\u672a\u6307\u5b9a\u5143\u4ef6\u9451\u5225\u5225\u540d\u8cc7\u6599\u3002
+APPLICATION_AUTHORIZATION_EXCEPTION_1071.useraction=\u8acb\u78ba\u5b9a\u9451\u5225\u5225\u540d\u8207\u6b64\u8cc7\u6e90\u53c3\u7167\u76f8\u95dc\u806f\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The user name
+APPLICATION_AUTHENTICATION_EXCEPTION_1072=CWSJR1072E: \u7121\u6cd5\u9451\u5225\u63d0\u4f9b\u7684\u4f7f\u7528\u8005\u540d\u7a31 {0}\u3002
+APPLICATION_AUTHENTICATION_EXCEPTION_1072.explanation=\u61c9\u7528\u7a0b\u5f0f\u4f7f\u7528\u8cc7\u6e90\u53c3\u7167\u4f86\u67e5\u95b1 Connection Factory\u3002\u8a72\u8cc7\u6e90\u53c3\u7167\u914d\u7f6e\u6210\u4f7f\u7528\u61c9\u7528\u7a0b\u5f0f\u7ba1\u7406\u7684\u9451\u5225\uff0c\u4f46\u61c9\u7528\u7a0b\u5f0f\u63d0\u4f9b\u7684\u8a8d\u8b49\u7121\u6548\u3002
+
+APPLICATION_AUTHENTICATION_EXCEPTION_1072.useraction=\u8acb\u78ba\u5b9a\u5efa\u7acb\u9023\u7dda\u6642\u63d0\u4f9b\u7684\u8a8d\u8b49\u6b63\u78ba\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The authentication alias name
+CONTAINER_AUTHENTICATION_EXCEPTION_1073=CWSJR1073E: \u7121\u6cd5\u4f7f\u7528\u63d0\u4f9b\u7684\u9451\u5225\u5225\u540d {0} \u4f86\u9032\u884c\u9451\u5225\u3002
+CONTAINER_AUTHENTICATION_EXCEPTION_1073.explanation=\u61c9\u7528\u7a0b\u5f0f\u4f7f\u7528\u8cc7\u6e90\u53c3\u7167\u4f86\u67e5\u95b1 Connection Factory\u3002\u8a72\u8cc7\u6e90\u53c3\u7167\u5df2\u914d\u7f6e\u6210\u4f7f\u7528\u5132\u5b58\u5668\u7ba1\u7406\u7684\u9451\u5225\uff0c\u4f46\u76f8\u95dc\u806f\u7684\u9451\u5225\u8cc7\u6599\u7121\u6548\u3002
+CONTAINER_AUTHENTICATION_EXCEPTION_1073.useraction=\u8acb\u78ba\u5b9a\u8207\u6b64\u8cc7\u6e90\u53c3\u7167\u76f8\u95dc\u806f\u7684\u9451\u5225\u5225\u540d\u5305\u542b\u532f\u6d41\u6392\u7684\u6709\u6548\u8a8d\u8b49\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The user name
+APPLICATION_AUTHENTICATION_EXCEPTION_1074=CWSJR1074E: \u6240\u63d0\u4f9b\u7684\u4f7f\u7528\u8005\u540d\u7a31 {0} \u9451\u5225\u5931\u6557\u3002
+APPLICATION_AUTHENTICATION_EXCEPTION_1074.explanation=\u61c9\u7528\u7a0b\u5f0f\u4f7f\u7528\u8cc7\u6e90\u53c3\u7167\u4f86\u67e5\u95b1 Connection Factory\u3002\u8a72\u8cc7\u6e90\u53c3\u7167\u5df2\u914d\u7f6e\u6210\u4f7f\u7528\u61c9\u7528\u7a0b\u5f0f\u7ba1\u7406\u7684\u9451\u5225\uff0c\u4f46\u76f8\u95dc\u806f\u7684\u5143\u4ef6\u9451\u5225\u5225\u540d\u8cc7\u6599\u7121\u6548\u3002
+APPLICATION_AUTHENTICATION_EXCEPTION_1074.useraction=\u8acb\u78ba\u5b9a\u5143\u4ef6\u9451\u5225\u5225\u540d\u5305\u542b\u532f\u6d41\u6392\u7684\u6709\u6548\u8a8d\u8b49\u3002
+
+# -------------------------------------------------------------------------------------------------
+CONTAINER_AUTHORIZATION_EXCEPTION_1075=CWSJR1075E: \u7121\u6cd5\u9032\u884c\u9451\u5225\uff0c\u56e0\u70ba\u672a\u6307\u5b9a\u9451\u5225\u5225\u540d\u3002
+CONTAINER_AUTHORIZATION_EXCEPTION_1075.explanation=\u61c9\u7528\u7a0b\u5f0f\u4f7f\u7528\u8cc7\u6e90\u53c3\u7167\u4f86\u67e5\u95b1 Connection Factory\u3002\u8a72\u8cc7\u6e90\u53c3\u7167\u5df2\u914d\u7f6e\u6210\u4f7f\u7528\u5132\u5b58\u5668\u7ba1\u7406\u7684\u9451\u5225\uff0c\u4f46\u9451\u5225\u5225\u540d\u672a\u8207\u8a72\u8cc7\u6e90\u53c3\u7167\u76f8\u95dc\u806f\u3002
+CONTAINER_AUTHORIZATION_EXCEPTION_1075.useraction=\u8acb\u78ba\u5b9a\u9451\u5225\u5225\u540d\u8207\u6b64\u8cc7\u6e90\u53c3\u7167\u76f8\u95dc\u806f\u3002
+
+# -------------------------------------------------------------------------------------------------
+APPLICATION_AUTHORIZATION_EXCEPTION_1076=CWSJR1076E: \u7121\u6cd5\u9032\u884c\u9451\u5225\uff0c\u56e0\u70ba\u672a\u63d0\u4f9b\u8a8d\u8b49\u3002
+APPLICATION_AUTHORIZATION_EXCEPTION_1076.explanation=\u61c9\u7528\u7a0b\u5f0f\u4f7f\u7528\u8cc7\u6e90\u53c3\u7167\u4f86\u67e5\u95b1 Connection Factory\u3002\u8a72\u8cc7\u6e90\u53c3\u7167\u5df2\u914d\u7f6e\u6210\u4f7f\u7528\u61c9\u7528\u7a0b\u5f0f\u7ba1\u7406\u7684\u9451\u5225\uff0c\u4f46\u672a\u6307\u5b9a\u5143\u4ef6\u9451\u5225\u5225\u540d\u8cc7\u6599\u3002
+APPLICATION_AUTHORIZATION_EXCEPTION_1076.useraction=\u8acb\u78ba\u5b9a\u9451\u5225\u5225\u540d\u8207\u6b64\u8cc7\u6e90\u53c3\u7167\u76f8\u95dc\u806f\u3002
+# -------------------------------------------------------------------------------------------------
+AUTHENTICATION_EXCEPTION_1077=CWSJR1077E: \u6240\u63d0\u4f9b\u4e4b\u4f7f\u7528\u8005\u540d\u7a31\u7684\u9451\u5225\u5931\u6557\u3002
+AUTHENTICATION_EXCEPTION_1077.explanation=\u4f7f\u7528\u63d0\u4f9b\u7684\u8a73\u7d30\u8cc7\u6599\u6240\u9032\u884c\u7684\u9451\u5225\u5931\u6557\uff0c\u56e0\u70ba\u4f7f\u7528\u8005\u540d\u7a31\u6216\u5bc6\u78bc\u4e0d\u6b63\u78ba\u3002
+AUTHENTICATION_EXCEPTION_1077.useraction=\u5982\u9700\u76f8\u95dc\u8cc7\u8a0a\uff0c\u8acb\u53c3\u95b1\u93c8\u7d50\u7684\u932f\u8aa4\u8a0a\u606f\u3002\u6aa2\u67e5\u4f7f\u7528\u8005\u540d\u7a31\u548c\u5bc6\u78bc\u662f\u5426\u6b63\u78ba\u4e14\u5df2\u5b9a\u7fa9\u5728\u7cfb\u7d71\u4e2d\u3002
+
+#
+# JmsJcaConnectionImpl
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+# {1} is the number of sessions found
+EXCEPTION_RECEIVED_CWSJR1082=CWSJR1082E: \u5728\u547c\u53eb\u65b9\u6cd5 {0} \u671f\u9593\uff0c\u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u539f\u9810\u671f\u70ba\u6b63\u597d\u4e00\u500b\u968e\u6bb5\u4f5c\u696d\uff0c\u4f46\u6536\u5230 {1} \u500b\u968e\u6bb5\u4f5c\u696d\u3002
+EXCEPTION_RECEIVED_CWSJR1082.explanation=\u9023\u7dda\u4e2d\u7684\u968e\u6bb5\u4f5c\u696d\u96c6\u6709\u591a\u500b\u968e\u6bb5\u4f5c\u696d\uff0c\u4f46\u53ea\u61c9\u8a72\u6709\u4e00\u500b\u968e\u6bb5\u4f5c\u696d\u3002
+EXCEPTION_RECEIVED_CWSJR1082.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+# {1} is the object type that was found
+# {2} is the object type that was expected
+EXCEPTION_RECEIVED_CWSJR1083=CWSJR1083E: \u5728\u547c\u53eb\u65b9\u6cd5 {0} \u671f\u9593\uff0c\u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u539f\u9810\u671f\u6703\u6709 {2} \u7269\u4ef6\uff0c\u4f46\u627e\u5230 {1} \u7269\u4ef6\u3002
+EXCEPTION_RECEIVED_CWSJR1083.explanation=\u5728\u968e\u6bb5\u4f5c\u696d\u96c6\u4e2d\u627e\u5230\u7684\u7269\u4ef6\u4e0d\u662f\u6240\u9700\u7684\u985e\u578b\u3002
+EXCEPTION_RECEIVED_CWSJR1083.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+# {1} is the object type that was found
+# {2} is the object type that was expected
+EXCEPTION_RECEIVED_CWSJR1084=CWSJR1084E: \u5728\u547c\u53eb\u65b9\u6cd5 {0} \u671f\u9593\uff0c\u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u539f\u9810\u671f\u6703\u6709 {2} \u7269\u4ef6\uff0c\u4f46\u627e\u5230 {1} \u7269\u4ef6\u3002
+EXCEPTION_RECEIVED_CWSJR1084.explanation=\u5728\u968e\u6bb5\u4f5c\u696d\u96c6\u4e2d\u627e\u5230\u7684\u7269\u4ef6\u4e0d\u662f\u6240\u9700\u7684\u985e\u578b\u3002
+EXCEPTION_RECEIVED_CWSJR1084.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+ILLEGAL_STATE_CWSJR1085=CWSJR1085E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u5728\u9023\u7dda\u95dc\u9589\u4e4b\u5f8c\u547c\u53eb {0} \u65b9\u6cd5\u3002
+ILLEGAL_STATE_CWSJR1085.explanation=\u5728\u9023\u7dda\u95dc\u9589\u4e4b\u5f8c\uff0c\u7121\u6cd5\u547c\u53eb\u9019\u500b\u65b9\u6cd5\u3002
+ILLEGAL_STATE_CWSJR1085.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+ILLEGAL_STATE_CWSJR1086=CWSJR1086E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u5728\u9023\u7dda\u95dc\u9589\u4e4b\u5f8c\u547c\u53eb {0} \u65b9\u6cd5\u3002
+ILLEGAL_STATE_CWSJR1086.explanation=\u5728\u9023\u7dda\u95dc\u9589\u4e4b\u5f8c\uff0c\u7121\u6cd5\u547c\u53eb\u9019\u500b\u65b9\u6cd5\u3002
+ILLEGAL_STATE_CWSJR1086.useraction=CMSG0002
+
+#
+# JmsJcaManagedConnection
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+# {1} is the object type that was expected
+# {2} is the object type that was found
+EXCEPTION_RECEIVED_CWSJR1101=CWSJR1101E: \u5728\u547c\u53eb\u65b9\u6cd5 {0} \u671f\u9593\uff0c\u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u9023\u7dda\u5931\u6557\uff0c\u56e0\u70ba\u539f\u9810\u671f\u6703\u6709 {1} \u7269\u4ef6\uff0c\u4f46\u627e\u5230 {2} \u7269\u4ef6\u3002
+EXCEPTION_RECEIVED_CWSJR1101.explanation=\u8981\u6c42\u7684\u8cc7\u8a0a\u985e\u578b\u4e0d\u6b63\u78ba\u3002
+EXCEPTION_RECEIVED_CWSJR1101.useraction=CMSG0002
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+EXCEPTION_RECEIVED_CWSJR1102=CWSJR1102E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u64f2\u51fa\u7570\u5e38\u72c0\u6cc1 {0}\u3002
+EXCEPTION_RECEIVED_CWSJR1102.explanation=\u5728\u9023\u7dda\u7ba1\u7406\u7a0b\u5f0f\u4e0a\u547c\u53eb lazyEnlist \u65b9\u6cd5\u5931\u6557\u3002
+EXCEPTION_RECEIVED_CWSJR1102.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} The method that is called.
+# {1} The username that was used in the objects constructor
+# {2} The username passed to the method
+AUTHENTICATION_ERROR_CWSJR1103=CWSJR1103E: \u50b3\u7d66\u65b9\u6cd5 {0} \u7684\u8a8d\u8b49 ({2}) \u4e0d\u7b26\u5408\u50b3\u7d66\u5efa\u69cb\u5b50 ({1}) \u7684\u8a8d\u8b49\u3002
+AUTHENTICATION_ERROR_CWSJR1103.explanation=\u63d0\u4f9b\u7684\u8a8d\u8b49\u6c92\u6709\u901a\u904e\u9451\u5225\u6aa2\u67e5\u3002
+AUTHENTICATION_ERROR_CWSJR1103.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+# {1} is the object type that was expected
+# {2} is the object type that was found
+INVALID_SESSION_CWSJR1104=CWSJR1104E: \u5728\u547c\u53eb\u65b9\u6cd5 {0} \u671f\u9593\uff0c\u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u6536\u5230 {2} \u7269\u4ef6\uff0c\u800c\u4e0d\u662f {1} \u7269\u4ef6\u3002
+INVALID_SESSION_CWSJR1104.explanation=\u6536\u5230\u985e\u578b\u932f\u8aa4\u7684\u7269\u4ef6\u3002
+INVALID_SESSION_CWSJR1104.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+INVALID_SESSION_CWSJR1105=CWSJR1105E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u8a66\u5716\u555f\u52d5\u5340\u57df\u4ea4\u6613\uff0c\u4f46\u9019\u985e\u4ea4\u6613\u5df2\u7d93\u5b58\u5728\u3002
+INVALID_SESSION_CWSJR1105.explanation=\u5982\u679c\u5340\u57df\u4ea4\u6613\u5df2\u7d93\u5b58\u5728\uff0c\u5c31\u4e0d\u53ef\u80fd\u555f\u52d5\u5340\u57df\u4ea4\u6613\u3002
+INVALID_SESSION_CWSJR1105.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+EXCEPTION_RECEIVED_CWSJR1106=CWSJR1106E: \u5728\u547c\u53eb\u65b9\u6cd5 {0} \u671f\u9593\uff0c\u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u627e\u4e0d\u5230\u5fc5\u8981\u7684 SICoreConnection \u7269\u4ef6\u3002
+EXCEPTION_RECEIVED_CWSJR1106.explanation=\u9700\u8981 SICoreConnection \u7269\u4ef6\uff0c\u4f46\u627e\u4e0d\u5230\u3002
+EXCEPTION_RECEIVED_CWSJR1106.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+EXCEPTION_RECEIVED_CWSJR1107=CWSJR1107E: \u5728\u547c\u53eb\u65b9\u6cd5 {0} \u671f\u9593\uff0c\u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u627e\u4e0d\u5230\u5fc5\u8981\u7684 SICoreConnection \u7269\u4ef6\u3002
+EXCEPTION_RECEIVED_CWSJR1107.explanation=\u9700\u8981 SICoreConnection \u7269\u4ef6\uff0c\u4f46\u627e\u4e0d\u5230\u3002
+EXCEPTION_RECEIVED_CWSJR1107.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is a connection property name, eg targetType
+# {1} is the required connection property value
+ME_NAME_REQUIRED_CWSJR1108=CWSJR1108E: \u5fc5\u9808\u6307\u5b9a\u7279\u5b9a\u7684\u50b3\u8a0a\u5f15\u64ce\uff0c\u4ee5\u4fbf\u5728\u4ea4\u6613\u5167\u4f7f\u7528 JMS \u8cc7\u6e90\u3002\u9023\u7dda\u5167\u5bb9 {0} \u5fc5\u9808\u8a2d\u5b9a\u70ba {1}\u3002
+ME_NAME_REQUIRED_CWSJR1108.explanation=\u5982\u679c\u8981\u5141\u8a31\u4ea4\u6613\u56de\u5fa9\uff0cConnection Factory \u5fc5\u9808\u4ee5\u532f\u6d41\u6392\u4e2d\u7684\u7279\u5b9a\u50b3\u8a0a\u5f15\u64ce\u70ba\u76ee\u6a19\u3002
+ME_NAME_REQUIRED_CWSJR1108.useraction=\u5c07 Connection Factory \u5167\u5bb9 'Target' \u503c\u8b8a\u66f4\u70ba\u76ee\u6a19\u50b3\u8a0a\u5f15\u64ce\u540d\u7a31\u7684\u5b57\u4e32\u503c\uff0c\u5c07 'Target type' \u8b8a\u66f4\u70ba\u4e0b\u62c9\u503c 'Messaging engine name'\uff0c\u4e26\u5c07 'Target significance' \u8b8a\u66f4\u70ba 'Required' \u4e0b\u62c9\u503c\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1110=CWSJR1110E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u7570\u5e38\u72c0\u6cc1\uff1a{1} \u65b9\u6cd5\u4e2d\u7684 {0}
+EXCEPTION_RECEIVED_CWSJR1110.explanation=\u60a8\u53ef\u4ee5\u5229\u7528\u6240\u5305\u542b\u7684\u7570\u5e38\u72c0\u6cc1\u8cc7\u8a0a\u4f86\u9032\u884c\u8a3a\u65b7\u3002
+EXCEPTION_RECEIVED_CWSJR1110.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1111=CWSJR1111E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u7570\u5e38\u72c0\u6cc1\uff1a{1} \u65b9\u6cd5\u4e2d\u7684 {0}
+EXCEPTION_RECEIVED_CWSJR1111.explanation=\u60a8\u53ef\u4ee5\u5229\u7528\u6240\u5305\u542b\u7684\u7570\u5e38\u72c0\u6cc1\u8cc7\u8a0a\u4f86\u9032\u884c\u8a3a\u65b7\u3002
+EXCEPTION_RECEIVED_CWSJR1111.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1112=CWSJR1112E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u7570\u5e38\u72c0\u6cc1\uff1a{1} \u65b9\u6cd5\u4e2d\u7684 {0}
+EXCEPTION_RECEIVED_CWSJR1112.explanation=\u60a8\u53ef\u4ee5\u5229\u7528\u6240\u5305\u542b\u7684\u7570\u5e38\u72c0\u6cc1\u8cc7\u8a0a\u4f86\u9032\u884c\u8a3a\u65b7\u3002
+EXCEPTION_RECEIVED_CWSJR1112.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1113=CWSJR1113E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u7570\u5e38\u72c0\u6cc1\uff1a{1} \u65b9\u6cd5\u4e2d\u7684 {0}
+EXCEPTION_RECEIVED_CWSJR1113.explanation=\u60a8\u53ef\u4ee5\u5229\u7528\u6240\u5305\u542b\u7684\u7570\u5e38\u72c0\u6cc1\u8cc7\u8a0a\u4f86\u9032\u884c\u8a3a\u65b7\u3002
+EXCEPTION_RECEIVED_CWSJR1113.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1114=CWSJR1114E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u7570\u5e38\u72c0\u6cc1\uff1a{1} \u65b9\u6cd5\u4e2d\u7684 {0}
+EXCEPTION_RECEIVED_CWSJR1114.explanation=\u60a8\u53ef\u4ee5\u5229\u7528\u6240\u5305\u542b\u7684\u7570\u5e38\u72c0\u6cc1\u8cc7\u8a0a\u4f86\u9032\u884c\u8a3a\u65b7\u3002
+EXCEPTION_RECEIVED_CWSJR1114.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} The method that is called.
+AUTHENTICATION_ERROR_CWSJR1117=CWSJR1117E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u50b3\u7d66 {0} \u65b9\u6cd5\u7684\u8a8d\u8b49\u4e0d\u7b26\u5408\u50b3\u7d66\u5efa\u69cb\u5b50\u7684\u8a8d\u8b49\u3002
+AUTHENTICATION_ERROR_CWSJR1117.explanation=\u63d0\u4f9b\u7684\u8a8d\u8b49\u6c92\u6709\u901a\u904e\u9451\u5225\u6aa2\u67e5\u3002
+AUTHENTICATION_ERROR_CWSJR1117.useraction=CMSG0002
+
+#
+# JmsJcaSessionImpl
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+# {1} is the linked exception
+EXCEPTION_RECEIVED_CWSJR1121=CWSJR1121E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u5728\u547c\u53eb {0} \u65b9\u6cd5\u671f\u9593\uff0c\u64f2\u51fa {1} \u7570\u5e38\u72c0\u6cc1\u3002
+EXCEPTION_RECEIVED_CWSJR1121.explanation=\u5728\u968e\u6bb5\u4f5c\u696d\u5617\u8a66\u91cd\u5efa\u81ea\u5df1\u8207\u9023\u7dda\u7ba1\u7406\u7a0b\u5f0f\u7684\u95dc\u806f\u6027\u6642\uff0c\u767c\u751f\u975e\u9810\u671f\u7684\u7570\u5e38\u72c0\u6cc1\u3002
+EXCEPTION_RECEIVED_CWSJR1121.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+# {1} is the object we received
+# {2} is the object type we expected.
+EXCEPTION_RECEIVED_CWSJR1122=CWSJR1122E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u5728\u547c\u53eb {0} \u65b9\u6cd5\u671f\u9593\uff0c\u6211\u5011\u9810\u671f\u6703\u6536\u5230 {2}\uff0c\u4f46\u6536\u5230 {1}\u3002
+EXCEPTION_RECEIVED_CWSJR1122.explanation=\u9023\u7dda\u7ba1\u7406\u7a0b\u5f0f\u4e0d\u662f\u5ef6\u9072\u5217\u5165\u7684\u3002
+EXCEPTION_RECEIVED_CWSJR1122.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+ILLEGAL_STATE_CWSJR1123=CWSJR1123E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u5728\u968e\u6bb5\u4f5c\u696d\u95dc\u9589\u4e4b\u5f8c\u547c\u53eb {0}\u3002
+ILLEGAL_STATE_CWSJR1123.explanation=\u5728\u968e\u6bb5\u4f5c\u696d\u95dc\u9589\u4e4b\u5f8c\uff0c\u7121\u6cd5\u547c\u53eb\u9019\u500b\u65b9\u6cd5\u3002
+ILLEGAL_STATE_CWSJR1123.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+ILLEGAL_STATE_CWSJR1124=CWSJR1124E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u5728\u968e\u6bb5\u4f5c\u696d\u5931\u6548\u4e4b\u5f8c\u547c\u53eb {0}\u3002
+ILLEGAL_STATE_CWSJR1124.explanation=\u5728\u968e\u6bb5\u4f5c\u696d\u5931\u6548\u4e4b\u5f8c\uff0c\u4e0d\u5141\u8a31\u547c\u53eb\u9019\u500b\u65b9\u6cd5\u3002
+ILLEGAL_STATE_CWSJR1124.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+ILLEGAL_STATE_CWSJR1125=CWSJR1125E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u8a66\u5716\u547c\u53eb {0}\uff0c\u4f46\u6c92\u6709\u5340\u57df\u4ea4\u6613\u3002
+ILLEGAL_STATE_CWSJR1125.explanation=\u5982\u679c\u6c92\u6709\u5340\u57df\u4ea4\u6613\uff0c\u5c31\u4e0d\u5141\u8a31\u547c\u53eb\u9019\u500b\u65b9\u6cd5\u3002
+ILLEGAL_STATE_CWSJR1125.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+EXCEPTION_RECEIVED_CWSJR1126=CWSJR1126E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u7531\u65bc\u662f\u672a\u53d7\u7ba1\u7406\u7684\u74b0\u5883\uff0c\u56e0\u6b64\u4e0d\u5bb9\u8a31\u547c\u53eb {0} \u65b9\u6cd5\u3002
+EXCEPTION_RECEIVED_CWSJR1126.explanation=\u5728\u672a\u53d7\u7ba1\u7406\u7684\u74b0\u5883\u4e2d\uff0c\u4e0d\u5141\u8a31\u9019\u500b\u547c\u53eb\u3002
+EXCEPTION_RECEIVED_CWSJR1126.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1130=CWSJR1130E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u5728\u968e\u6bb5\u4f5c\u696d\u95dc\u9589\u4e4b\u5f8c\u547c\u53eb {0}\u3002
+ILLEGAL_STATE_CWSJR1130.explanation=\u5728\u968e\u6bb5\u4f5c\u696d\u95dc\u9589\u4e4b\u5f8c\uff0c\u7121\u6cd5\u547c\u53eb\u9019\u500b\u65b9\u6cd5\u3002
+ILLEGAL_STATE_CWSJR1130.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1131=CWSJR1131E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u5728\u968e\u6bb5\u4f5c\u696d\u95dc\u9589\u4e4b\u5f8c\u547c\u53eb {0}\u3002
+ILLEGAL_STATE_CWSJR1131.explanation=\u5728\u968e\u6bb5\u4f5c\u696d\u95dc\u9589\u4e4b\u5f8c\uff0c\u7121\u6cd5\u547c\u53eb\u9019\u500b\u65b9\u6cd5\u3002
+ILLEGAL_STATE_CWSJR1131.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1132=CWSJR1132E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u5728\u968e\u6bb5\u4f5c\u696d\u95dc\u9589\u4e4b\u5f8c\u547c\u53eb {0}\u3002
+ILLEGAL_STATE_CWSJR1132.explanation=\u5728\u968e\u6bb5\u4f5c\u696d\u95dc\u9589\u4e4b\u5f8c\uff0c\u7121\u6cd5\u547c\u53eb\u9019\u500b\u65b9\u6cd5\u3002
+ILLEGAL_STATE_CWSJR1132.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1133=CWSJR1133E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u5728\u968e\u6bb5\u4f5c\u696d\u95dc\u9589\u4e4b\u5f8c\u547c\u53eb {0}\u3002
+ILLEGAL_STATE_CWSJR1133.explanation=\u5728\u968e\u6bb5\u4f5c\u696d\u95dc\u9589\u4e4b\u5f8c\uff0c\u7121\u6cd5\u547c\u53eb\u9019\u500b\u65b9\u6cd5\u3002
+ILLEGAL_STATE_CWSJR1133.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1134=CWSJR1134E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u5728\u968e\u6bb5\u4f5c\u696d\u5931\u6548\u4e4b\u5f8c\u547c\u53eb {0}\u3002
+ILLEGAL_STATE_CWSJR1134.explanation=\u5728\u968e\u6bb5\u4f5c\u696d\u5931\u6548\u4e4b\u5f8c\uff0c\u4e0d\u5141\u8a31\u547c\u53eb\u9019\u500b\u65b9\u6cd5\u3002
+ILLEGAL_STATE_CWSJR1134.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1135=CWSJR1135E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u5728\u968e\u6bb5\u4f5c\u696d\u5931\u6548\u4e4b\u5f8c\u547c\u53eb {0}\u3002
+ILLEGAL_STATE_CWSJR1135.explanation=\u5728\u968e\u6bb5\u4f5c\u696d\u5931\u6548\u4e4b\u5f8c\uff0c\u4e0d\u5141\u8a31\u547c\u53eb\u9019\u500b\u65b9\u6cd5\u3002
+ILLEGAL_STATE_CWSJR1135.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1136=CWSJR1136E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u5728\u968e\u6bb5\u4f5c\u696d\u5931\u6548\u4e4b\u5f8c\u547c\u53eb {0}\u3002
+ILLEGAL_STATE_CWSJR1136.explanation=\u5728\u968e\u6bb5\u4f5c\u696d\u5931\u6548\u4e4b\u5f8c\uff0c\u4e0d\u5141\u8a31\u547c\u53eb\u9019\u500b\u65b9\u6cd5\u3002
+ILLEGAL_STATE_CWSJR1136.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1137=CWSJR1137E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u5728\u968e\u6bb5\u4f5c\u696d\u5931\u6548\u4e4b\u5f8c\u547c\u53eb {0}\u3002
+ILLEGAL_STATE_CWSJR1137.explanation=\u5728\u968e\u6bb5\u4f5c\u696d\u5931\u6548\u4e4b\u5f8c\uff0c\u4e0d\u5141\u8a31\u547c\u53eb\u9019\u500b\u65b9\u6cd5\u3002
+ILLEGAL_STATE_CWSJR1137.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1138=CWSJR1138E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u767c\u751f\u4e86\u975e\u9810\u671f\u7684\u7570\u5e38\u72c0\u6cc1\u3002\u8a66\u5716\u547c\u53eb {0}\uff0c\u4f46\u6c92\u6709\u5340\u57df\u4ea4\u6613\u3002
+ILLEGAL_STATE_CWSJR1138.explanation=\u5982\u679c\u5ee3\u57df\u4ea4\u6613\u5728\u4f5c\u7528\u4e2d\uff0c\u5c31\u4e0d\u5141\u8a31\u547c\u53eb\u9019\u500b\u65b9\u6cd5\u3002
+ILLEGAL_STATE_CWSJR1138.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1139=CWSJR1139E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u767c\u751f\u4e86\u975e\u9810\u671f\u7684\u7570\u5e38\u72c0\u6cc1\u3002\u8a66\u5716\u547c\u53eb {0}\uff0c\u4f46\u6c92\u6709\u5340\u57df\u4ea4\u6613\u3002
+ILLEGAL_STATE_CWSJR1139.explanation=\u5982\u679c\u6c92\u6709\u5340\u57df\u4ea4\u6613\uff0c\u5c31\u4e0d\u5141\u8a31\u547c\u53eb\u9019\u500b\u65b9\u6cd5\u3002
+ILLEGAL_STATE_CWSJR1139.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1140=CWSJR1140E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u767c\u751f\u4e86\u975e\u9810\u671f\u7684\u7570\u5e38\u72c0\u6cc1\u3002\u8a66\u5716\u547c\u53eb {0}\uff0c\u4f46\u6c92\u6709\u5340\u57df\u4ea4\u6613\u3002
+ILLEGAL_STATE_CWSJR1140.explanation=\u5982\u679c\u5ee3\u57df\u4ea4\u6613\u5728\u4f5c\u7528\u4e2d\uff0c\u5c31\u4e0d\u5141\u8a31\u547c\u53eb\u9019\u500b\u65b9\u6cd5\u3002
+ILLEGAL_STATE_CWSJR1140.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1141=CWSJR1141E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u767c\u751f\u4e86\u975e\u9810\u671f\u7684\u7570\u5e38\u72c0\u6cc1\u3002\u8a66\u5716\u547c\u53eb {0}\uff0c\u4f46\u6c92\u6709\u5340\u57df\u4ea4\u6613\u3002
+ILLEGAL_STATE_CWSJR1141.explanation=\u5982\u679c\u6c92\u6709\u5340\u57df\u4ea4\u6613\uff0c\u5c31\u4e0d\u5141\u8a31\u547c\u53eb\u9019\u500b\u65b9\u6cd5\u3002
+ILLEGAL_STATE_CWSJR1141.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1142=CWSJR1142E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u767c\u751f\u4e86\u975e\u9810\u671f\u7684\u7570\u5e38\u72c0\u6cc1\u3002\u8a66\u5716\u547c\u53eb {0}\uff0c\u4f46\u6c92\u6709\u5340\u57df\u4ea4\u6613\u3002
+ILLEGAL_STATE_CWSJR1142.explanation=\u5982\u679c\u6c92\u6709\u5340\u57df\u4ea4\u6613\uff0c\u5c31\u4e0d\u5141\u8a31\u547c\u53eb\u9019\u500b\u65b9\u6cd5\u3002
+ILLEGAL_STATE_CWSJR1142.useraction=CMSG0002
+
+#
+# JmsJcaReferenceUtils
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+# {1} is the class where the error occurred
+EXCEPTION_RECEIVED_CWSJR1161=CWSJR1161E: \u5728 {1} \u985e\u5225\u8d77\u59cb\u8a2d\u5b9a\u671f\u9593\uff0c\u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u7570\u5e38\u72c0\u6cc1\uff1a{0}\u3002
+EXCEPTION_RECEIVED_CWSJR1161.explanation=JmsJcaReferenceUtils \u985e\u5225\u6c92\u6709\u8d77\u59cb\u8a2d\u5b9a\u3002
+EXCEPTION_RECEIVED_CWSJR1161.useraction=CMSG0002
+
+#
+# JmsJcaActivationSpecImpl
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is the value of the target significance
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSJR1179=CWSJR1179E: JMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u4e0b\u5217\u76ee\u6a19\u6709\u6548\u503c\u6b04\u4f4d\u7121\u6548 [{2}]\u3002\u9810\u671f\u503c\u70ba [{0}] \u6216 [{1}]\u3002
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSJR1179.explanation=\u5728\u9a57\u8b49 JMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u914d\u7f6e\u5167\u5bb9\u671f\u9593\uff0c\u767c\u73fe\u76ee\u6a19\u91cd\u8981\u6027\u5167\u5bb9\u7121\u6548\u3002
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSJR1179.useraction=\u8acb\u66f4\u6b63\u555f\u52d5\u898f\u683c\u4e2d\u7684\u76ee\u6a19\u91cd\u8981\u6027\u5167\u5bb9\u503c\uff0c\u7136\u5f8c\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the target type
+INVALID_PROPERTY_TARGET_TYPE_CWSJR1180=CWSJR1180E: JMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u4e0b\u5217\u76ee\u6a19\u985e\u578b\u6b04\u4f4d\u7121\u6548 [{3}]\u3002\u9810\u671f\u503c\u70ba [{0}]\u3001[{1}] \u6216 [{2}]\u3002
+INVALID_PROPERTY_TARGET_TYPE_CWSJR1180.explanation=\u5728\u9a57\u8b49 JMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u914d\u7f6e\u5167\u5bb9\u671f\u9593\uff0c\u767c\u73fe\u76ee\u6a19\u985e\u578b\u7121\u6548\u3002
+INVALID_PROPERTY_TARGET_TYPE_CWSJR1180.useraction=\u8acb\u66f4\u6b63\u555f\u52d5\u898f\u683c\u4e2d\u7684\u76ee\u6a19\u985e\u578b\u5167\u5bb9\u503c\uff0c\u7136\u5f8c\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} is a list of invalid properties
+INVALID_PROPERTIES_CWSJR1181=CWSJR1181E: JMS \u555f\u52d5\u898f\u683c\u5177\u6709\u7121\u6548\u7684\u503c - JMS \u555f\u52d5\u898f\u683c\u9a57\u8b49\u5931\u6557\u7684\u539f\u56e0\u70ba\uff1a{0}
+INVALID_PROPERTIES_CWSJR1181.explanation=\u5728\u9a57\u8b49 JMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u914d\u7f6e\u5167\u5bb9\u671f\u9593\uff0c\u767c\u73fe\u4e00\u6216\u591a\u500b\u5167\u5bb9\u7121\u6548\u3002
+INVALID_PROPERTIES_CWSJR1181.useraction=\u8acb\u66f4\u6b63 JMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u5167\u5bb9\u503c\uff0c\u7136\u5f8c\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} The exception that was thrown
+EXCEPTION_RECEIVED_CWSJR1182=CWSJR1182E: \u5167\u90e8\u932f\u8aa4\u3002\u7576\u8a66\u5716\u53d6\u5f97\u516c\u7528\u7a0b\u5f0f\u985e\u5225\u6642\uff0c\u64f2\u51fa\u4e0b\u5217\u7570\u5e38\u72c0\u6cc1\uff1a{0}
+EXCEPTION_RECEIVED_CWSJR1182.explanation=\u5728\u7aef\u9ede\u555f\u52d5\u671f\u9593\uff0cJMS \u8cc7\u6e90\u914d\u63a5\u5668\u8a66\u5716\u53d6\u5f97\u516c\u7528\u7a0b\u5f0f\u985e\u5225\uff0c\u4f46\u6536\u5230\u975e\u9810\u671f\u7684\u7570\u5e38\u72c0\u6cc1\u3002
+EXCEPTION_RECEIVED_CWSJR1182.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_CLIENTID_CWSJR1183=CWSJR1183E: \u5fc5\u9808\u8a2d\u5b9a JMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u7528\u6236\u7aef ID \u6b04\u4f4d
+INVALID_PROPERTY_CLIENTID_CWSJR1183.explanation=\u5728\u9a57\u8b49 JMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u914d\u7f6e\u5167\u5bb9\u671f\u9593\uff0c\u767c\u73fe\u7528\u6236\u7aef ID \u7121\u6548\u3002
+INVALID_PROPERTY_CLIENTID_CWSJR1183.useraction=\u8acb\u66f4\u6b63\u555f\u52d5\u898f\u683c\u4e2d\u7684\u7528\u6236\u7aef ID \u5167\u5bb9\u503c\uff0c\u7136\u5f8c\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} The exception that was thrown
+EXCEPTION_RECEIVED_CWSJR1185=CWSJR1185E: \u5728 JMS \u555f\u52d5\u898f\u683c\u7684\u9a57\u8b49\u671f\u9593\uff0c\u767c\u751f\u5167\u90e8\u932f\u8aa4\uff1a{0}\u3002
+EXCEPTION_RECEIVED_CWSJR1185.explanation=\u5728 JMS \u555f\u52d5\u898f\u683c\u7684\u9a57\u8b49\u671f\u9593\uff0c\u6536\u5230\u975e\u9810\u671f\u7684\u7570\u5e38\u72c0\u6cc1\u3002
+EXCEPTION_RECEIVED_CWSJR1185.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} The exception that was thrown
+WLM_CLASSIFIER_REG_CWSJR1186=CWSJR1186E: \u5728\u767b\u9304 JMS \u8cc7\u6e90\u914d\u63a5\u5668\u7684 WLM \u5206\u985e\u5668\u671f\u9593\uff0c\u767c\u751f\u5167\u90e8\u932f\u8aa4\uff1a{0}\u3002
+WLM_CLASSIFIER_REG_CWSJR1186.explanation=\u5728\u8655\u7406\u7a0b\u5f0f\u767b\u9304\u4e2d\u767b\u9304 JMS \u8cc7\u6e90\u914d\u63a5\u5668\u7684 WLM \u5206\u985e\u5668\u671f\u9593\uff0c\u6536\u5230\u975e\u9810\u671f\u7684\u7570\u5e38\u72c0\u6cc1\u3002
+WLM_CLASSIFIER_REG_CWSJR1186.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_BUSNAME_CWSJR1187=CWSJR1187E: JMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u532f\u6d41\u6392\u540d\u7a31\u5fc5\u9808\u6307\u5b9a\u4e00\u503c
+INVALID_PROPERTY_BUSNAME_CWSJR1187.explanation=\u5728\u9a57\u8b49 JMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u914d\u7f6e\u5167\u5bb9\u671f\u9593\uff0c\u767c\u73fe\u532f\u6d41\u6392\u540d\u7a31\u7121\u6548\u3002
+INVALID_PROPERTY_BUSNAME_CWSJR1187.useraction=\u8acb\u66f4\u6b63\u555f\u52d5\u898f\u683c\u4e2d\u7684\u532f\u6d41\u6392\u540d\u7a31\u5167\u5bb9\u503c\uff0c\u7136\u5f8c\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_DESTINATION_CWSJR1188=CWSJR1188E: JMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u76ee\u7684\u5730\u5fc5\u9808\u6307\u5b9a\u4e00\u503c
+INVALID_PROPERTY_DESTINATION_CWSJR1188.explanation=\u5728\u9a57\u8b49 JMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u914d\u7f6e\u5167\u5bb9\u671f\u9593\uff0c\u767c\u73fe\u76ee\u7684\u5730\u7121\u6548\u3002
+INVALID_PROPERTY_DESTINATION_CWSJR1188.useraction=\u8acb\u66f4\u6b63\u555f\u52d5\u898f\u683c\u4e2d\u7684\u76ee\u7684\u5730\u5167\u5bb9\u503c\uff0c\u7136\u5f8c\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is the other allowed value
+# {2} is the value of the destination type
+INVALID_PROPERTY_DESTINATION_TYPE_CWSJR1189=CWSJR1189E: JMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u4e0b\u5217\u76ee\u7684\u5730\u985e\u578b\u7121\u6548 [{2}]\u3002\u9810\u671f\u503c\u70ba [{0}] \u6216 [{1}]\u3002
+INVALID_PROPERTY_DESTINATION_TYPE_CWSJR1189.explanation=\u5728\u9a57\u8b49 JMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u914d\u7f6e\u5167\u5bb9\u671f\u9593\uff0c\u767c\u73fe\u76ee\u7684\u5730\u985e\u578b\u7121\u6548\u3002
+INVALID_PROPERTY_DESTINATION_TYPE_CWSJR1189.useraction=\u8acb\u66f4\u6b63\u555f\u52d5\u898f\u683c\u4e2d\u7684\u76ee\u7684\u5730\u985e\u578b\u5167\u5bb9\u503c\uff0c\u7136\u5f8c\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is the other allowed value
+# {2} is the value of the acknowledge mode
+INVALID_PROPERTY_ACKNOWLEDGE_MODE_CWSJR1190=CWSJR1190E: JMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u4e0b\u5217\u78ba\u8a8d\u6a21\u5f0f\u7121\u6548 [{2}]\u3002\u9810\u671f\u503c\u70ba [{0}] \u6216 [{1}]\u3002
+INVALID_PROPERTY_ACKNOWLEDGE_MODE_CWSJR1190.explanation=\u5728\u9a57\u8b49 JMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u914d\u7f6e\u5167\u5bb9\u671f\u9593\uff0c\u767c\u73fe\u78ba\u8a8d\u6a21\u5f0f\u7121\u6548\u3002
+INVALID_PROPERTY_ACKNOWLEDGE_MODE_CWSJR1190.useraction=\u8acb\u66f4\u6b63\u555f\u52d5\u898f\u683c\u4e2d\u7684\u78ba\u8a8d\u6a21\u5f0f\u5167\u5bb9\u503c\uff0c\u7136\u5f8c\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the read ahead
+INVALID_PROPERTY_READ_AHEAD_CWSJR1191=CWSJR1191E: JMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u4e0b\u5217\u5148\u8b80\u503c\u7121\u6548 [{3}]\u3002\u9810\u671f\u503c\u70ba [{0}]\u3001[{1}] \u6216 [{2}]\u3002
+INVALID_PROPERTY_READ_AHEAD_CWSJR1191.explanation=\u5728\u9a57\u8b49 JMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u914d\u7f6e\u5167\u5bb9\u671f\u9593\uff0c\u767c\u73fe\u5148\u8b80\u503c\u7121\u6548\u3002
+INVALID_PROPERTY_READ_AHEAD_CWSJR1191.useraction=\u8acb\u66f4\u6b63\u555f\u52d5\u898f\u683c\u4e2d\u7684\u5148\u8b80\u5167\u5bb9\u503c\uff0c\u7136\u5f8c\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} is the queue class expected
+# {1} is the queue class we were passed
+INVALID_PROPERTY_QUEUE_CWSJR1192=CWSJR1192E: \u4f7f\u7528\u4f47\u5217\u76ee\u7684\u5730\u985e\u578b\u7684 JMS \u555f\u52d5\u898f\u683c\u5fc5\u9808\u6709\u985e\u578b\u70ba [{0}] \u7684\u76ee\u7684\u5730\uff0c\u4f46\u662f\u6240\u50b3\u9001\u76ee\u7684\u5730\u7684\u985e\u578b\u537b\u662f [{1}]
+INVALID_PROPERTY_QUEUE_CWSJR1192.explanation=\u5728\u9a57\u8b49 JMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u914d\u7f6e\u5167\u5bb9\u671f\u9593\uff0c\u767c\u73fe\u76ee\u7684\u5730\u7121\u6548\u3002
+INVALID_PROPERTY_QUEUE_CWSJR1192.useraction=\u8acb\u66f4\u6b63\u555f\u52d5\u898f\u683c\u4e2d\u7684\u76ee\u7684\u5730\u5167\u5bb9\u503c\uff0c\u7136\u5f8c\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} is the topic class expected
+# {1} is the topic class we were passed
+INVALID_PROPERTY_TOPIC_CWSJR1193=CWSJR1193E: \u4f7f\u7528\u4e3b\u984c\u76ee\u7684\u5730\u985e\u578b\u7684 JMS \u555f\u52d5\u898f\u683c\u5fc5\u9808\u6709\u985e\u578b\u70ba [{0}] \u7684\u76ee\u7684\u5730\uff0c\u4f46\u662f\u6240\u50b3\u9001\u76ee\u7684\u5730\u7684\u985e\u578b\u537b\u662f [{1}]
+INVALID_PROPERTY_TOPIC_CWSJR1193.explanation=\u5728\u9a57\u8b49 JMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u914d\u7f6e\u5167\u5bb9\u671f\u9593\uff0c\u767c\u73fe\u76ee\u7684\u5730\u7121\u6548\u3002
+INVALID_PROPERTY_TOPIC_CWSJR1193.useraction=\u8acb\u66f4\u6b63\u555f\u52d5\u898f\u683c\u4e2d\u7684\u76ee\u7684\u5730\u5167\u5bb9\u503c\uff0c\u7136\u5f8c\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is the other allowed value
+# {2} is the value of the subscription durability
+INVALID_PROPERTY_SUBDUR_CWSJR1194=CWSJR1194E: JMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u4e0b\u5217\u8a02\u95b1\u5ef6\u7e8c\u6027\u7121\u6548 [{2}]\u3002\u9810\u671f\u503c\u70ba [{0}] \u6216 [{1}]\u3002
+INVALID_PROPERTY_SUBDUR_CWSJR1194.explanation=\u5728\u9a57\u8b49 JMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u914d\u7f6e\u5167\u5bb9\u671f\u9593\uff0c\u767c\u73fe\u8a02\u95b1\u5ef6\u7e8c\u6027\u7121\u6548\u3002
+INVALID_PROPERTY_SUBDUR_CWSJR1194.useraction=\u8acb\u66f4\u6b63\u555f\u52d5\u898f\u683c\u4e2d\u7684\u8a02\u95b1\u5ef6\u7e8c\u6027\u5167\u5bb9\u503c\uff0c\u7136\u5f8c\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_DURSUBHOME_CWSJR1195=CWSJR1195E: \u4f7f\u7528\u53ef\u5ef6\u7e8c\u8a02\u95b1\u6642\uff0cJMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u53ef\u5ef6\u7e8c\u8a02\u95b1\u8d77\u59cb\u4f4d\u7f6e\u5fc5\u9808\u542b\u6709\u4e00\u503c\u3002
+INVALID_PROPERTY_DURSUBHOME_CWSJR1195.explanation=\u5728\u9a57\u8b49 JMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u914d\u7f6e\u5167\u5bb9\u671f\u9593\uff0c\u767c\u73fe\u53ef\u5ef6\u7e8c\u8a02\u95b1\u8d77\u59cb\u4f4d\u7f6e\u7121\u6548\u3002
+INVALID_PROPERTY_DURSUBHOME_CWSJR1195.useraction=\u8acb\u66f4\u6b63\u555f\u52d5\u898f\u683c\u4e2d\u7684\u53ef\u5ef6\u7e8c\u8a02\u95b1\u8d77\u59cb\u4f4d\u7f6e\u5167\u5bb9\u503c\uff0c\u7136\u5f8c\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_SUBNAME_CWSJR1196=CWSJR1196E: \u4f7f\u7528\u53ef\u5ef6\u7e8c\u8a02\u95b1\u6642\uff0cJMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u8a02\u95b1\u540d\u7a31\u5fc5\u9808\u542b\u6709\u4e00\u503c
+INVALID_PROPERTY_SUBNAME_CWSJR1196.explanation=\u5728\u9a57\u8b49 JMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u914d\u7f6e\u5167\u5bb9\u671f\u9593\uff0c\u767c\u73fe\u8a02\u95b1\u540d\u7a31\u7121\u6548\u3002
+INVALID_PROPERTY_SUBNAME_CWSJR1196.useraction=\u8acb\u66f4\u6b63\u555f\u52d5\u898f\u683c\u4e2d\u7684\u8a02\u95b1\u540d\u7a31\u5167\u5bb9\u503c\uff0c\u7136\u5f8c\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the subscription durability
+INVALID_PROPERTY_SHARE_DURSUB_CWSJR1197=CWSJR1197E: JMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u4e0b\u5217\u5171\u7528\u53ef\u5ef6\u7e8c\u8a02\u95b1\u6b04\u4f4d\u7121\u6548 [{3}]\u3002\u9810\u671f\u503c\u70ba [{0}]\u3001[{1}] \u6216 [{2}]\u3002
+INVALID_PROPERTY_SHARE_DURSUB_CWSJR1197.explanation=\u5728\u9a57\u8b49 JMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u914d\u7f6e\u5167\u5bb9\u671f\u9593\uff0c\u767c\u73fe\u5171\u7528\u53ef\u5ef6\u7e8c\u8a02\u95b1\u5167\u5bb9\u7121\u6548\u3002
+INVALID_PROPERTY_SHARE_DURSUB_CWSJR1197.useraction=\u8acb\u66f4\u6b63\u555f\u52d5\u898f\u683c\u4e2d\u7684\u5171\u7528\u53ef\u5ef6\u7e8c\u8a02\u95b1\u5167\u5bb9\u503c\uff0c\u7136\u5f8c\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_MAXCONC_CWSJR1198=CWSJR1198E: JMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u4e26\u884c\u4e0a\u9650\u5fc5\u9808\u6307\u5b9a\u4e00\u500b\u6b63\u503c
+INVALID_PROPERTY_MAXCONC_CWSJR1198.explanation=\u5728\u9a57\u8b49 JMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u914d\u7f6e\u5167\u5bb9\u671f\u9593\uff0c\u767c\u73fe\u4e26\u884c\u4e0a\u9650\u503c\u7121\u6548\u3002
+INVALID_PROPERTY_MAXCONC_CWSJR1198.useraction=\u8acb\u66f4\u6b63\u555f\u52d5\u898f\u683c\u4e2d\u7684\u4e26\u884c\u4e0a\u9650\u5167\u5bb9\u503c\uff0c\u7136\u5f8c\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_MAXBATCH_CWSJR1199=CWSJR1199E: JMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u6279\u6b21\u5927\u5c0f\u4e0a\u9650\u5fc5\u9808\u6307\u5b9a\u4e00\u500b\u6b63\u503c
+INVALID_PROPERTY_MAXBATCH_CWSJR1199.explanation=\u5728\u9a57\u8b49 JMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u914d\u7f6e\u5167\u5bb9\u671f\u9593\uff0c\u767c\u73fe\u6279\u6b21\u5927\u5c0f\u4e0a\u9650\u7121\u6548\u3002
+INVALID_PROPERTY_MAXBATCH_CWSJR1199.useraction=\u8acb\u66f4\u6b63\u555f\u52d5\u898f\u683c\u4e2d\u7684\u6279\u6b21\u5927\u5c0f\u4e0a\u9650\u5167\u5bb9\u503c\uff0c\u7136\u5f8c\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_SHARECMP_CWSJR1200=CWSJR1200E: \u5728 JMS \u555f\u52d5\u898f\u683c\u4e2d\uff0c\u5fc5\u9808\u8a2d\u5b9a\u5177\u6709 CMP \u6b04\u4f4d\u7684\u5171\u7528\u8cc7\u6599\u4f86\u6e90
+INVALID_PROPERTY_SHARECMP_CWSJR1200.explanation=\u5728\u9a57\u8b49 JMS \u555f\u52d5\u898f\u683c\u4e2d\u7684\u914d\u7f6e\u5167\u5bb9\u671f\u9593\uff0c\u767c\u73fe\u5177\u6709 CMP \u7684\u5171\u7528\u8cc7\u6599\u4f86\u6e90\u7121\u6548\u3002
+INVALID_PROPERTY_SHARECMP_CWSJR1200.useraction=\u8acb\u66f4\u6b63\u555f\u52d5\u898f\u683c\u4e2d\u5177\u6709 CMP \u7684\u5171\u7528\u8cc7\u6599\u4f86\u6e90\u5167\u5bb9\u503c\uff0c\u7136\u5f8c\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+
+#
+# JmsJcaFactory
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the exception thrown
+EXCEPTION_DURING_INIT_CWSJR1441=CWSJR1441E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u5efa\u7acb JmsJcaFactory \u7269\u4ef6\u5931\u6557\uff0c\u7570\u5e38\u72c0\u6cc1\uff1a{0}\u3002
+EXCEPTION_DURING_INIT_CWSJR1441.explanation=\u5efa\u7acb JmsJcaFactory \u7269\u4ef6\u6642\uff0c\u767c\u751f\u554f\u984c\u3002\u8acb\u53c3\u95b1\u96a8\u9644\u7684\u932f\u8aa4\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002
+EXCEPTION_DURING_INIT_CWSJR1441.useraction=CMSG0002
+
+#
+# JmsJcaManagedConnectionSynchronizationProvider
+#
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+CREATE_UNCOORDINATED_TRANSACTION_CWSJR1461=CWSJR1461E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002SIUncoordinatedTransaction \u5efa\u7acb\u5931\u6557\uff0c\u7570\u5e38\u72c0\u6cc1\uff1a{0}\u3002
+CREATE_UNCOORDINATED_TRANSACTION_CWSJR1461.explanation=\u7576\u63a5\u6536\u5230\u7570\u5e38\u72c0\u6cc1\u6642\uff0c\u670d\u52d9\u6574\u5408\u6280\u8853 JMS \u8cc7\u6e90\u914d\u63a5\u5668\u6b63\u5728\u8a66\u5716\u5efa\u7acb SIUncoordinatedTransaction\uff0c\u4ee5\u4fbf\u5728\u4ea4\u6613\u4e2d\u767b\u9304\u70ba Synchronization\u3002
+CREATE_UNCOORDINATED_TRANSACTION_CWSJR1461.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+NOT_SUPPORTED_EXCEPTION_CWSJR1462=CWSJR1462E: \u901a\u5f80\u50b3\u8a0a\u5f15\u64ce\u7684\u9023\u7dda\u4e0d\u652f\u63f4\u5132\u5b58\u5668\u7ba1\u7406\u7684\u6301\u7e8c\u6027\u5171\u7528\u6700\u4f73\u5316\u3002
+NOT_SUPPORTED_EXCEPTION_CWSJR1462.explanation=\u670d\u52d9\u6574\u5408\u6280\u8853 JMS \u8cc7\u6e90\u914d\u63a5\u5668\u53d6\u5f97\u7684\u9023\u7dda\u4e0d\u652f\u63f4\u5132\u5b58\u5668\u7ba1\u7406\u7684\u6301\u7e8c\u6027\u6700\u4f73\u5316\uff0c\u56e0\u70ba\u5b83\u901a\u5f80\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u3002
+NOT_SUPPORTED_EXCEPTION_CWSJR1462.useraction=\u8acb\u78ba\u5b9a\u6709\u672c\u7aef\u50b3\u8a0a\u5f15\u64ce\u53ef\u4f9b\u8cc7\u6e90\u914d\u63a5\u5668\u9023\u63a5\uff0c\u6216\u5229\u7528\u7ba1\u7406\u4e3b\u63a7\u53f0\u4f86\u505c\u7528 Connection Factory \u5b9a\u7fa9\u7684\u5171\u7528\u6700\u4f73\u5316\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} the managed connection
+ACTIVE_SYNCHRONIZATION_EXCEPTION_CWSJR1463=CWSJR1463E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u5df2\u5728\u4ea4\u6613\u4e2d\uff0c\u5c07\u53d7\u7ba1\u7406\u7684\u9023\u7dda {0} \u767b\u9304\u70ba\u540c\u6b65\u5316\u3002
+ACTIVE_SYNCHRONIZATION_EXCEPTION_CWSJR1463.explanation=\u7576\u5728\u4ea4\u6613\u4e2d\u5c07\u53d7\u7ba1\u7406\u7684\u9023\u7dda\u767b\u9304\u70ba\u540c\u6b65\u5316\u6642\uff0c\u767c\u751f\u547c\u53eb getSynchronization\u3002
+ACTIVE_SYNCHRONIZATION_EXCEPTION_CWSJR1463.useraction=CMSG0002
+
+#
+# JmsJcaEndpointInvokerImpl
+#
+# -------------------------------------------------------------------------------------------------
+# {0} The exception that was thrown
+UTILITY_CLASS_CWSJR1481=CWSJR1481E: \u5167\u90e8\u932f\u8aa4\u3002\u7576\u8a66\u5716\u53d6\u5f97\u516c\u7528\u7a0b\u5f0f\u985e\u5225\u6642\uff0c\u64f2\u51fa\u4e0b\u5217\u7570\u5e38\u72c0\u6cc1\uff1a{0}\u3002
+UTILITY_CLASS_CWSJR1481.explanation=\u5728\u7aef\u9ede\u555f\u52d5\u671f\u9593\uff0cJMS \u8cc7\u6e90\u914d\u63a5\u5668\u8a66\u5716\u53d6\u5f97\u516c\u7528\u7a0b\u5f0f\u985e\u5225\uff0c\u4f46\u6536\u5230\u975e\u9810\u671f\u7684\u7570\u5e38\u72c0\u6cc1\u3002
+UTILITY_CLASS_CWSJR1481.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint
+# {1} the expected interface
+UNEXPECTED_ENDPOINT_CWSJR1482=CWSJR1482E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u8a0a\u606f\u7aef\u9ede {0} \u672a\u5be6\u4f5c\u9810\u671f\u7684 {1} \u4ecb\u9762\u3002
+UNEXPECTED_ENDPOINT_CWSJR1482.explanation=\u8a0a\u606f\u7aef\u9ede Factory \u50b3\u56de\u672a\u4f9d\u9810\u671f\u5be6\u4f5c MessageListener \u4ecb\u9762\u7684\u8a0a\u606f\u7aef\u9ede\u3002
+UNEXPECTED_ENDPOINT_CWSJR1482.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+ON_MESSAGE_CWSJR1483=CWSJR1483E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002\u8a66\u5716\u53d6\u5f97 onMessage \u65b9\u6cd5\u7684\u5be6\u4f8b\u6642\uff0c\u64f2\u51fa {0} \u7570\u5e38\u72c0\u6cc1\u3002
+ON_MESSAGE_CWSJR1483.explanation=\u8a66\u5716\u53d6\u5f97 onMessage \u65b9\u6cd5\u7684\u5be6\u4f8b\u671f\u9593\uff0c\u7522\u751f\u7570\u5e38\u72c0\u6cc1\u3002
+ON_MESSAGE_CWSJR1483.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSJR9999=CWSJR9999E: {0}
+TEMPORARY_CWSJR9999.explanation=\u5982\u679c\u8a0a\u606f\u6c92\u6709\u63d0\u4f9b\u8db3\u5920\u7684\u8cc7\u8a0a\uff0c\u8acb\u6aa2\u67e5\u96a8\u9644\u7684\u932f\u8aa4\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002
+TEMPORARY_CWSJR9999.useraction=\u8acb\u53c3\u95b1\u96a8\u9644\u7684\u932f\u8aa4\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002

@@ -1,0 +1,121 @@
+###############################################################################
+# Copyright (c) 2011, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.logging/resources/com/ibm/ws/logging/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# Messages in the range TRAS3000 to 3199 are reserved for this messages file.
+# The list of prefixes and the range of messages in use (or "reserved") are shown in 
+# http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+# -------------------------------------------------------------------------------------------------
+
+FATAL=FATAL
+ERROR=EROARE
+AUDIT=AUDIT
+EVENT=EVENIMENT
+DETAIL=DETALII
+
+## Shared with tWAS
+
+# Informational message telling the user the trace state has changed.
+MSG_TRACE_STATE_CHANGED=TRAS0018I: A fost modificat\u0103 starea urm\u0103ririi. Noua stare a urm\u0103ririi este {0}.
+MSG_TRACE_STATE_CHANGED.explanation=A fost primit\u0103 \u015fi procesat\u0103 o cerere de modificare a st\u0103rii curente a urm\u0103ririi.
+MSG_TRACE_STATE_CHANGED.useraction=Dac\u0103 noua stare a urm\u0103ririi nu este starea de urm\u0103rire dorit\u0103, modifica\u0163i-o la starea dorit\u0103.
+
+#PK509567
+# Warning message telling the user that the rename operation filed while rolling a log file over.
+MSG_ROLLOVER_RENAME_FAILED=TRAS0031W: Nu poate redenumi fi\u015fierul {0} la {1} \u00een timpul rollover-ului fi\u015fierului istoric. Se \u00eencearc\u0103 copierea con\u0163inutului de fi\u015fier.
+MSG_ROLLOVER_RENAME_FAILED.explanation=Redenumirea fi\u015fierului indicat a e\u015fuat.  Cauza cea mai probabil\u0103 este aceea c\u0103 un alt proces sau fir de execu\u0163ie acceseaz\u0103 fi\u015fierul istoric. WebSphere va \u00eencerca s\u0103 finalizeze opera\u0163ia de rollover prin copierea con\u0163inutului fi\u015fierului istoric - acest procedeu este mai \u0103ncet, iar toate firele de execu\u0163ie care \u00eencearc\u0103 s\u0103 \u00eenregistreze \u00een istoric vor fi oprite pe parcursul acestuia.
+MSG_ROLLOVER_RENAME_FAILED.useraction=Determina\u0163i cauza e\u015fecului la redenumire \u015fi rezolva\u0163i-o - aceasta poate implica oprirea altor procese care acceseaz\u0103 acela\u015fi fi\u015fier istoric.
+
+## new for lWAS
+INSTRUMENTATION_SERVICE_UNAVAILABLE=TRAS0032W: Nu este disponibil\u0103 injec\u0163ia \u00een timpul rul\u0103rii a metodei detaliate de urm\u0103rire.
+INSTRUMENTATION_SERVICE_UNAVAILABLE.explanation=Transformatorul fi\u015fierului de clas\u0103 responsabil pentru ad\u0103ugarea urm\u0103ririi la nivel de metod\u0103 nu a putut fi instalat pentru c\u0103 nu s-a putut ob\u0163ine o referin\u0163\u0103 java.lang.instrument.Instrumentation potrivit\u0103.
+INSTRUMENTATION_SERVICE_UNAVAILABLE.useraction=Porni\u0163i serverul cu argumentul de linie de comand\u0103 -javaagent corespunz\u0103tor.
+
+## Should not be used anymore because of issue 508
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS=TRAS0033E: Injec\u0163ia \u00een timpul rul\u0103rii a metodei detaliate de urm\u0103rire a e\u015fuat pentru clasa {0} cu excep\u0163ia {1}
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS.explanation=A ap\u0103rut o eroare \u00een timp ce se injecta metoda detaliat\u0103 de urm\u0103rire \u00een clasa specificat\u0103.
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS.useraction=CMSG0002 
+
+## new for lWAS
+TRACE_STRING_BAD_LEVEL=TRAS0034W: Nivelul de urm\u0103rire {0} pentru specifica\u0163ia {1} nu este valid. Specifica\u0163iile de urm\u0103rire vor fi ignorate.
+TRACE_STRING_BAD_LEVEL.explanation=Nivelul de urm\u0103rire configurat pentru grupul specificat, clas\u0103 sau nume de pachet nu a fost recunoscut; setarea de urm\u0103rire pentru acel nume va fi s\u0103rit\u0103.
+TRACE_STRING_BAD_LEVEL.useraction=Examina\u0163i configura\u0163ia urm\u0103ririi \u015fi corecta\u0163i nivelul la o valoare recunoscut\u0103. Nivelurile de urm\u0103rire valide sunt listate \u00een documenta\u0163ie \u015fi includ 'all', 'info' \u015fi 'debug'.
+
+## new for lWAS
+TRACE_STRING_BAD_ACTION=TRAS0035W: Valoarea set\u0103rii de urm\u0103rire {0} pentru specifica\u0163ia {1} nu este recunoscut\u0103. Specifica\u0163iile de urm\u0103rire vor fi ignorate.
+TRACE_STRING_BAD_ACTION.explanation=Setarea de urm\u0103rire configurat\u0103 pentru grupul specificat, clas\u0103 sau nume de pachet nu a fost recunoscut\u0103; setarea de urm\u0103rire pentru acel nume va fi s\u0103rit\u0103.
+TRACE_STRING_BAD_ACTION.useraction=Nu este necesar\u0103 nicio ac\u0163iune dec\u00e2t dac\u0103 valoarea set\u0103rii de urm\u0103rire inten\u0163ionat\u0103 este 'disabled' (dezactivat). \u00cen acest caz, examina\u0163i configura\u0163ia urm\u0103ririi \u015fi corecta\u0163i setarea la 'disabled' (dezactivat).
+
+## new for lWAS
+UNABLE_TO_CREATE_RESOURCE=TRAS0036E: Sistemul nu poate crea fi\u015fierul {0} din cauza excep\u0163iei urm\u0103toare: {1}
+UNABLE_TO_CREATE_RESOURCE.explanation=O ncercare de deschidere a resursei specifice a e\u015fuat. Excep\u0163ia indic\u0103 motivul principal al e\u015fecului.
+UNABLE_TO_CREATE_RESOURCE.useraction=Examina\u0163i excep\u0163ia pentru a determina cauza r\u0103d\u0103cin\u0103. Asigura\u0163i-v\u0103 c\u0103 numele de fi\u015fier specificat este un nume de fi\u015fier valid. Asigura\u0163i-v\u0103 c\u0103 runtime-ul Application Server are permisiune de acces de scriere la directorul pentru resurs\u0103 \u015fi c\u0103 discul nu este plin. Dac\u0103 aceasta nu rezolv\u0103 problema, verifica\u0163i informa\u0163iile cu privire la determinarea problemelor din cadrul paginii web de Suport server a WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+## new for lWAS
+UNABLE_TO_CREATE_RESOURCE_NOEX=TRAS0037E: Sistemul nu poate crea fi\u015fierul nou {0}
+UNABLE_TO_CREATE_RESOURCE_NOEX.explanation=O component\u0103 a serverului de aplica\u0163ii nu a putut realiza o opera\u0163ie pe o resurs\u0103 necesar\u0103.
+UNABLE_TO_CREATE_RESOURCE_NOEX.useraction=Asigura\u0163i-v\u0103 c\u0103 numele de fi\u015fier specificat este un nume de fi\u015fier valid. Asigura\u0163i-v\u0103 c\u0103 runtime-ul Application Server are permisiune de acces de scriere la directorul pentru resurs\u0103 \u015fi c\u0103 discul nu este plin. Dac\u0103 aceasta nu rezolv\u0103 problema, verifica\u0163i informa\u0163iile cu privire la determinarea problemelor din cadrul paginii web de Suport server a WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+## new for lWAS
+UNABLE_TO_DELETE_RESOURCE_NOEX=TRAS0038E: Sistemul nu pote \u015fterge fi\u015fierul {0}
+UNABLE_TO_DELETE_RESOURCE_NOEX.explanation=O component\u0103 a serverului de aplica\u0163ii nu a putut realiza o opera\u0163ie pe o resurs\u0103 necesar\u0103.
+UNABLE_TO_DELETE_RESOURCE_NOEX.useraction=Asigura\u0163i-v\u0103 c\u0103 numele de fi\u015fier specificat este un nume de fi\u015fier valid. Asigura\u0163i-v\u0103 c\u0103 runtime-ul Application Server are permisiune de acces de scriere la directorul pentru resurs\u0103 \u015fi c\u0103 discul nu este plin. Dac\u0103 aceasta nu rezolv\u0103 problema, verifica\u0163i informa\u0163iile cu privire la determinarea problemelor din cadrul paginii web de Suport server a WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+## new for lWAS
+UNABLE_TO_DELETE_RESOURCE=TRAS0039E: Sistemul nu a putut \u015fterge fi\u015fierul {0} din cauza urm\u0103toarei excep\u0163ii: {1}
+UNABLE_TO_DELETE_RESOURCE.explanation=A e\u015fuat o \u00eencercare de a \u015fterge resursa specificat\u0103. Excep\u0163ia indic\u0103 motivul principal al e\u015fecului.
+UNABLE_TO_DELETE_RESOURCE.useraction=Examina\u0163i excep\u0163ia pentru a determina cauza r\u0103d\u0103cin\u0103. Asigura\u0163i-v\u0103 c\u0103 runtime-ul serverului de aplica\u0163ii are acces de scriere permis \u00een director pentru resurs\u0103. Dac\u0103 aceasta nu rezolv\u0103 problema, verifica\u0163i informa\u0163iile cu privire la determinarea problemelor din cadrul paginii web de Suport server a WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# common 
+UNKNOWN_TRACE_SPEC=TRAS0040I: Starea de urm\u0103rire configurat\u0103 a inclus urm\u0103toarele specifica\u0163ii care nu se potrivesc cu niciun program de \u00eenregistrare \u00een istoric \u00eenregistrat momentan pe server: {0} Ignora\u0163i acest mesaj dac\u0103 specifica\u0163iile de urm\u0103rire {0} sunt valide.
+UNKNOWN_TRACE_SPEC.explanation=Programele de \u00eenregistrare \u00een istoric sunt \u00eenregistrate pe server c\u00e2nd se folose\u015fte pentru prima dat\u0103 codul care le creeaz\u0103. Sistemul a detectat c\u0103 anumite specifica\u0163ii de urm\u0103rire se refer\u0103 la programe de \u00eenregistrare \u00een istoric ce nu au fost \u00eenregistrate pe server. Specifica\u0163iile de urm\u0103rire configurate ar putea fi valide pentru programe de \u00eenregistrare \u00een istoric care nu sunt \u00eenc\u0103 \u00eenregistrate sau se poate s\u0103 fi fost tastate incorect. Aceast\u0103 verificare este realizat\u0103 de fiecare dat\u0103 c\u00e2nd se actualizeaz\u0103 specifica\u0163ia de urm\u0103rire pe un server ce ruleaz\u0103.
+UNKNOWN_TRACE_SPEC.useraction=Asigura\u0163i-v\u0103 c\u0103 specifica\u0163ia de urm\u0103rire a fost configurat\u0103 corect. Dac\u0103 nu este nicio gre\u015feal\u0103 \u00een \u015firul specifica\u0163iilor de urm\u0103rire, nu este necesar\u0103 nicio ac\u0163iune. 
+
+## Should not be used anymore because of issue 508
+MESSAGES_CONFIGURED_HIDDEN=TRAS0041I: Urm\u0103toarele mesaje sunt ascunse pentru fi\u015fierele console.log \u015fi messages.log: {0}
+MESSAGES_CONFIGURED_HIDDEN.explanation=Mesajele care sunt configurate pentru a fi ascunse nu sunt scrise \u00een fi\u015fierele console.log \u015fi messages.log. \u00cens\u0103 ele sunt scrise \u00een fi\u015fierul trace.log. 
+MESSAGES_CONFIGURED_HIDDEN.useraction=Nu este necesar\u0103 nicio ac\u0163iune
+
+MSG_ROUTER_UPDATED=TRAS0042I: Grupul de rutare mesaje {0} con\u0163ine urm\u0103toarele mesaje: {1}
+MSG_ROUTER_UPDATED.explanation=Setul de ID-uri de mesaje configurate pentru grupul de rutare mesaje specificat s-a modificat. Este listat setul de ID-uri de mesaje asociate curent cu acest grup de rutare mesaje.
+MSG_ROUTER_UPDATED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+## use new id range
+
+# updated the old TRAS0033E to TRAS3000E
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2=TRAS3000E: Injec\u0163ia runtime a urm\u0103ririi detaliate a metodei a e\u015fuat pentru clasa {0} cu excep\u0163ia {1}.
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2.explanation=A ap\u0103rut o eroare \u00een timp ce se injecta metoda detaliat\u0103 de urm\u0103rire \u00een clasa specificat\u0103.
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2.useraction=Vede\u0163i informa\u0163iile de determinare a problemelor pe pagina web a site-ului de suport al produsului: http://www.ibm.com/software/webservers/appserv/was/support. 
+
+# updated the old TRAS0041I to TRAS3001I
+MESSAGES_CONFIGURED_HIDDEN_2=TRAS3001I: Urm\u0103toarele mesaje sunt ascunse pentru fi\u015fierele console.log \u015fi messages.log: {0}
+MESSAGES_CONFIGURED_HIDDEN_2.explanation=Mesajele care sunt configurate pentru a fi ascunse nu sunt scrise \u00een fi\u015fierele console.log \u015fi messages.log. Ele sunt scrise la fi\u015fierul trace.log. 
+MESSAGES_CONFIGURED_HIDDEN_2.useraction=Nu este necesar\u0103 nicio ac\u0163iune
+
+# Note: no 9999 message kept here because saving footprint space is more important
+
+# End of file

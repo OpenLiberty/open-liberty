@@ -17,6 +17,7 @@ Subsystem-Name: Batch API 1.0
 -features=com.ibm.websphere.appserver.javax.cdi-1.2; ibm.tolerates:=2.0,\
  com.ibm.websphere.appserver.jndi-1.0, \
  com.ibm.websphere.appserver.servlet-3.1; ibm.tolerates:=4.0, \
+ com.ibm.websphere.appserver.javax.annotation-1.2; ibm.tolerates:=1.3, \
  com.ibm.ws.persistence-1.0, \
  com.ibm.websphere.appserver.contextService-1.0, \
  com.ibm.websphere.appserver.jdbc-4.1; ibm.tolerates:="4.0, 4.2", \

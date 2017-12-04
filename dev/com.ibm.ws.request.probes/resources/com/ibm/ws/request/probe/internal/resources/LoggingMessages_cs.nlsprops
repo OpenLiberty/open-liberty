@@ -1,0 +1,30 @@
+###############################################################################
+# Copyright (c) 2014, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.request.probe/resources/com/ibm/ws/request/probe/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+# Messages in the range TRAS3200 to 3399 are reserved for this messages file.
+# The list of prefixes and the range of messages in use (or "reserved") are shown in 
+# http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+
+# updated the old TRAS0116E to TRAS3200E
+INSTR_INST_NOT_AVAILABLE_ERROR=TRAS3200E: Instance p\u0159\u00edpravy n\u00e1stroj\u016f Java nen\u00ed dostupn\u00e1, proto nepracuj\u00ed schopnosti monitorov\u00e1n\u00ed a diagnostiky. Zkonfigurujte soubor ws-javaagent.jar pomoc\u00ed volby -javaagent JVM.
+INSTR_INST_NOT_AVAILABLE_ERROR.explanation=Instance p\u0159\u00edpravy n\u00e1stroj\u016f je nezbytn\u00e1 pro transformaci t\u0159\u00edd formou vkl\u00e1d\u00e1n\u00ed bajtov\u00e9ho k\u00f3du. Vkl\u00e1d\u00e1n\u00ed bajtov\u00e9ho k\u00f3du profil Liberty vyu\u017e\u00edv\u00e1 pro generov\u00e1n\u00ed informac\u00ed monitorov\u00e1n\u00ed a diagnostiky.
+INSTR_INST_NOT_AVAILABLE_ERROR.useraction=Nezbytn\u00e1 jsou dal\u0161\u00ed nastaven\u00ed JVM pro povolen\u00ed p\u0159\u00edpravy n\u00e1stroj\u016f Java. Zkonfigurujte soubor ws-javaagent.jar pomoc\u00ed volby -javaagent JVM. Soubor ws-javaagent.jar je v adres\u00e1\u0159i ${wlp.install.dir}/bin/tools instalace profilu Liberty.
+
+REQUEST_PROBE_FORMAT_HEADER_DURATION=Trv\u00e1n\u00ed
+REQUEST_PROBE_FORMAT_HEADER_OPERATION=Operace

@@ -1,0 +1,25 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxws.ejb/resources/com/ibm/ws/jaxb/tools/internal/resources/JaxbToolsMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXB Tools Code
+#RANGE 0700 - 0799
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+error.parameter.target.missed=CWWKW0700E: Po\u017eadovan\u00fd c\u00edl parametru nebyl ur\u010den.
+error.parameter.target.missed.explanation=Je-li c\u00edlov\u00fd parametr ur\u010den, existuj\u00edc\u00ed aplikace mohou b\u00fdt znovu vygenerov\u00e1ny beze zm\u011bny jejich chov\u00e1n\u00ed p\u0159i aktualizaci \u00farovn\u011b specifikace JAXB podporovan\u00e9 profilem Liberty.
+error.parameter.target.missed.useraction=Ur\u010dete \u00farove\u0148 specifikace JAXB, kter\u00e9 generovan\u00fd k\u00f3d odpov\u00edd\u00e1. Platn\u00e1 hodnota je 2.0, 2.1, nebo 2.2.

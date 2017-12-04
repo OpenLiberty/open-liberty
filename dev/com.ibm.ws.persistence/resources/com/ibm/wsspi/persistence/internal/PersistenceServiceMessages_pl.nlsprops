@@ -1,0 +1,91 @@
+###############################################################################
+# Copyright (c) 2011, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWNEN (Injection Engine)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME com.ibm.ws.persistence/resources/com/ibm/wsspi/persistence/internal/PersistenceServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKD
+#COMPONENTNAMEFOR CWWKD WebSphere Persistence Service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+
+# Message   Range       Used by                         Notes
+# Prefix 
+# CWWKD     0100-0199   com.ibm.ws.persistence.utility  Persistence Service
+# CWWKD     0200-0299   com.ibm.ws.persistence          Persistence Service
+# CWWKD     0300-9999   Reserved for use by liberty
+
+#-------------------------------------------------------------------------------
+# DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
+ILLEGAL_IDENTIFIER_CWWKD0200E=CWWKD0200E: Konfiguracja przedrostka DatabaseStore {1} zawiera niedozwolone znaki.
+ILLEGAL_IDENTIFIER_CWWKD0200E.explanation=Przedrostek DatabaseStore mo\u017ce zawiera\u0107 tylko liczby, litery i symbol podkre\u015blenia (_).
+ILLEGAL_IDENTIFIER_CWWKD0200E.useraction=Przedrostek DatabaseStore nale\u017cy zmodyfikowa\u0107 tak, aby zawiera\u0142 tylko liczby, litery i symbol podkre\u015blenia (_).
+
+#-------------------------------------------------------------------------------
+# DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
+ILLEGAL_IDENTIFIER_CWWKD0201E=CWWKD0201E: Konfiguracja schematu DatabaseStore {1} zawiera niedozwolone znaki.
+ILLEGAL_IDENTIFIER_CWWKD0201E.explanation=Schemat DatabaseStore mo\u017ce zawiera\u0107 tylko liczby, litery i symbol podkre\u015blenia (_).
+ILLEGAL_IDENTIFIER_CWWKD0201E.useraction=Schemat DatabaseStore nale\u017cy zmodyfikowa\u0107 tak, aby zawiera\u0142 tylko liczby, litery i symbol podkre\u015blenia (_).
+
+#-------------------------------------------------------------------------------
+# DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
+DEACTIVATED_CWWKD0202E=CWWKD0202E: Element DatabaseStore zosta\u0142 zdezaktywowany.
+DEACTIVATED_CWWKD0202E.explanation=Podj\u0119to pr\u00f3b\u0119 wykonania operacji na elemencie DatabaseStore, kt\u00f3ry zosta\u0142 zdezaktywowany.
+DEACTIVATED_CWWKD0202E.useraction= Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#-------------------------------------------------------------------------------
+# DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
+INVALID_CHAR_IN_PREPSTMT_CWWKD0203E=CWWKD0203E: Wykryto niedozwolony znak Unicode w parametrze String komendy PreparedStatement.
+INVALID_CHAR_IN_PREPSTMT_CWWKD0203E.explanation= Element DatabaseStore zosta\u0142 automatycznie lub r\u0119cznie skonfigurowany do odrzucania znak\u00f3w Unicode w argumentach String komendy PreparedStatement, a znaleziono taki znak w parametrze String komendy PreparedStatement.
+INVALID_CHAR_IN_PREPSTMT_CWWKD0203E.useraction=Przed podj\u0119ciem kolejnej pr\u00f3by usu\u0144 znak Unicode z parametru String.
+
+#-------------------------------------------------------------------------------
+# DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
+PROVIDER_WARNING_CWWKD0291W=CWWKD0291W: {0}
+PROVIDER_WARNING_CWWKD0291W.explanation=Element DatabaseStore zarejestrowa\u0142 ten komunikat ostrzegawczy.
+PROVIDER_WARNING_CWWKD0291W.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 elementu DatabaseStore.
+
+#-------------------------------------------------------------------------------
+# DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
+PROVIDER_ERROR_CWWKD0292E=CWWKD0292E: {0}
+PROVIDER_ERROR_CWWKD0292E.explanation=Element DatabaseStore zarejestrowa\u0142 ten komunikat o b\u0142\u0119dzie.
+PROVIDER_ERROR_CWWKD0292E.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 elementu DatabaseStore.
+

@@ -16,61 +16,90 @@
  */
 package com.ibm.jbatch.container.jsl.impl;
 
+import java.io.ByteArrayOutputStream;
+import java.io.StringReader;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilderFactory;
 
-
-
+import org.w3c.dom.Node;
+import org.w3c.dom.bootstrap.DOMImplementationRegistry;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSSerializer;
+import org.xml.sax.InputSource;
 
 import com.ibm.jbatch.container.jsl.JSLValidationEventHandler;
 import com.ibm.jbatch.container.jsl.ModelSerializer;
-import com.ibm.jbatch.container.jsl.ValidatorHelper;
 import com.ibm.jbatch.jsl.model.JSLJob;
-
-import java.io.ByteArrayOutputStream;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 
 public class JobModelSerializerImpl implements ModelSerializer<JSLJob> {
 
-	@Override
-	public String serializeModel(JSLJob model) {
-		
-		final JSLJob finalModel = model;
-		String serializedModel = AccessController.doPrivileged(
-		    	 new PrivilegedAction<String>() {
-		              public String run() {
-		            	  return marshalJSLJob(finalModel);
-		              }
-		          });
-		
-		return serializedModel;
-	}
+    @Override
+    public String serializeModel(JSLJob model) {
+
+        final JSLJob finalModel = model;
+        String serializedModel = AccessController.doPrivileged(
+                                                               new PrivilegedAction<String>() {
+                                                                   @Override
+                                                                   public String run() {
+                                                                       return marshalJSLJob(finalModel);
+                                                                   }
+                                                               });
+
+        return serializedModel;
+    }
+
+    @Override
+    public String prettySerializeModel(JSLJob model) {
+        String serializedModel = serializeModel(model);
+
+        return formatXML(serializedModel);
+    }
 
     private String marshalJSLJob(JSLJob job) {
-    	String resultXML = null;
-    	JSLValidationEventHandler handler = new JSLValidationEventHandler();
-    	try {
-    		JAXBContext ctx = JAXBContext.newInstance("com.ibm.jbatch.jsl.model");
-    		Marshaller m = ctx.createMarshaller();
-    		m.setSchema(ValidatorHelper.getXJCLSchema());
-    		m.setEventHandler(handler);
-    		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    		//m.marshal(job, baos);
-    		/*
-    		 * from scott: 
-    		 */
-    		m.marshal( new JAXBElement(
-    				new QName("http://xmlns.jcp.org/xml/ns/javaee","job"), JSLJob.class, job ), baos);
-    		resultXML = baos.toString();
-    	}
-    	catch(Exception e){
-    		throw new RuntimeException("Exception while marshalling JSLJob", e);
-    	}
-    	
-    	return resultXML;
+        String resultXML = null;
+        JSLValidationEventHandler handler = new JSLValidationEventHandler();
+        try {
+            ClassLoader currentClassLoader = JSLJob.class.getClassLoader();
+            JAXBContext ctx = JAXBContext.newInstance("com.ibm.jbatch.jsl.model", currentClassLoader);
+            Marshaller m = ctx.createMarshaller();
+            m.setEventHandler(handler);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            //m.marshal(job, baos);
+            /*
+             * from scott:
+             */
+            m.marshal(new JAXBElement(new QName("http://com.ibm.jbatch.model/serialization", "job"), JSLJob.class, job), baos);
+            resultXML = baos.toString();
+        } catch (Exception e) {
+            throw new RuntimeException("Exception while marshalling JSLJob", e);
+        }
+
+        return resultXML;
     }
-    
+
+    private String formatXML(String input) {
+        String returnString;
+        try {
+            final InputSource src = new InputSource(new StringReader(input));
+            final Node document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(src).getDocumentElement();
+            final DOMImplementationRegistry registry = DOMImplementationRegistry.newInstance();
+            final DOMImplementationLS impl = (DOMImplementationLS) registry.getDOMImplementation("LS");
+            final LSSerializer writer = impl.createLSSerializer();
+            writer.getDomConfig().setParameter("format-pretty-print", Boolean.TRUE);
+            writer.getDomConfig().setParameter("xml-declaration", false); /* skip XML declare */
+            returnString = writer.writeToString(document);
+            return returnString;
+        } catch (Exception e) {
+            // Oh well, just return it as one line
+            returnString = input;
+        }
+        return returnString;
+    }
+
 }

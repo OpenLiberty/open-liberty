@@ -21,6 +21,6 @@ IBM-API-Package: io.opentracing;  type="third-party",\
          com.ibm.ws.opentracing, \
          com.ibm.ws.opentracing.cdi, \
          com.ibm.websphere.appserver.thirdparty.opentracing; location:="dev/api/third-party/,lib/"
-        
-kind=beta
+         
+kind=ga
 edition=core

@@ -1,0 +1,81 @@
+###############################################################################
+# Copyright (c) 2012, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.concurrent/resources/com/ibm/ws/concurrent/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC EE Managed Concurrency
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1100 to CWWCK1199 except those specifically identified as moved
+
+# Moved from com.ibm.ws.context
+CWWKC1000.unrecognized.property=CWWKC1000E: A(z) {0} konfigur\u00e1ci\u00f3s elem fel nem ismert {1} attrib\u00fatumot tartalmaz.
+CWWKC1000.unrecognized.property.explanation=Ismeretlen tulajdons\u00e1g van konfigur\u00e1lva a kontextusszolg\u00e1ltat\u00e1sban.
+CWWKC1000.unrecognized.property.useraction=T\u00e1vol\u00edtsa el vagy jav\u00edtsa az ismeretlen tulajdons\u00e1got.
+
+# Moved from com.ibm.ws.context
+CWWKC1001.context.providers.unavailable=CWWKC1001E: A be\u00e1ll\u00edtott {0} sz\u00e1lkontextus nem \u00e9rhet\u0151 el a(z) {1} konfigur\u00e1ci\u00f3s elem eset\u00e9n.
+CWWKC1001.context.providers.unavailable.explanation=Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 nem tal\u00e1lja a sz\u00e1lkontextus megadott t\u00edpusainak szolg\u00e1ltat\u00f3it.
+CWWKC1001.context.providers.unavailable.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00e9rt sz\u00e1lkontextus szolg\u00e1ltat\u00f3i enged\u00e9lyezettek.
+
+# Moved from com.ibm.ws.context
+CWWKC1002.provider.cardinality.violation=CWWKC1002E: A(z) {0} konfigur\u00e1ci\u00f3s elem nem rendelkezhet t\u00f6bb {1} t\u00edpus\u00fa alelemmel.
+CWWKC1002.provider.cardinality.violation.explanation=Legfeljebb egy-egy elem konfigur\u00e1lhat\u00f3 az egyes kontextusszolg\u00e1ltat\u00f3-t\u00edpusokb\u00f3l egy kontextusszolg\u00e1ltat\u00f3 alatt.
+CWWKC1002.provider.cardinality.violation.useraction=T\u00e1vol\u00edtsa el a t\u00f6bbsz\u00f6r szerepl\u0151 kontextusszolg\u00e1ltat\u00f3 elemeket a kontextusszolg\u00e1ltat\u00e1s konfigur\u00e1ci\u00f3j\u00e1b\u00f3l.
+
+# Moved from com.ibm.ws.context
+CWWKC1020.baseContextRef.infinite=CWWKC1020E: A(z) {0} konfigur\u00e1ci\u00f3s elem baseContextRef attrib\u00fatuma a f\u00fcgg\u0151s\u00e9gek v\u00e9gtelen l\u00e1nc\u00e1t okozza.
+CWWKC1020.baseContextRef.infinite.explanation=A f\u00fcgg\u0151s\u00e9gek v\u00e9gtelen l\u00e1nca l\u00e9tezik, mert a baseContextRef k\u00f6zvetlen\u00fcl vagy k\u00f6zvetetten ugyanarra a kontextusszolg\u00e1ltat\u00e1s-p\u00e9ld\u00e1nyra mutat vissza.
+CWWKC1020.baseContextRef.infinite.useraction=Friss\u00edtse a kontextusszolg\u00e1ltat\u00e1s konfigur\u00e1ci\u00f3j\u00e1t, hogy megt\u00f6rje a f\u00fcgg\u0151s\u00e9gek v\u00e9gtelen l\u00e1nc\u00e1t.
+
+CWWKC1100.resource.unavailable=CWWKC1100E: A(z) {0} er\u0151forr\u00e1s nem \u00e9rhet\u0151 el.
+CWWKC1100.resource.unavailable.explanation=El\u00e9rhetetlenn\u00e9 v\u00e1lhat az er\u0151forr\u00e1s a kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1sa miatt vagy az\u00e9rt is, mert vagy az er\u0151forr\u00e1s, vagy egy m\u00e1sik szolg\u00e1ltat\u00e1s, amelyt\u0151l az er\u0151forr\u00e1s f\u00fcgg, be\u00e1ll\u00edt\u00e1sait m\u00f3dos\u00edtott\u00e1k.
+CWWKC1100.resource.unavailable.useraction=Ellen\u0151rizze az er\u0151forr\u00e1s be\u00e1ll\u00edt\u00e1sait, valamint minden m\u00e1s olyan er\u0151forr\u00e1s konfigur\u00e1ci\u00f3j\u00e1t, amelyt\u0151l az er\u0151forr\u00e1s f\u00fcgg.
+
+CWWKC1110.task.canceled=CWWKC1110I: A(z) {1} v\u00e9grehajt\u00f3 szolg\u00e1ltat\u00e1snak elk\u00fcld\u00f6tt {0} feladat megszak\u00edt\u00e1sra ker\u00fclt.
+CWWKC1110.task.canceled.explanation=A feladat v\u00e9grehajt\u00e1sa megszak\u00edt\u00e1sra ker\u00fclt.
+CWWKC1110.task.canceled.useraction=Nincs teend\u0151.
+
+CWWKC1101.task.failed=CWWKC1101E: A(z) {1} v\u00e9grehajt\u00f3 szolg\u00e1ltat\u00e1snak elk\u00fcld\u00f6tt {0} feladat a k\u00f6vetkez\u0151 hib\u00e1val meghi\u00fasult: {2}.
+CWWKC1101.task.failed.explanation=Egy v\u00e9grehajt\u00f3nak elk\u00fcld\u00f6tt feladat meghi\u00fasult. Az okot a kiv\u00e9tel\u00fczenet tartalmazza.
+CWWKC1101.task.failed.useraction=Jav\u00edtsa ki a hiba kiv\u00e1lt\u00f3 ok\u00e1t \u00e9s k\u00fcldje el \u00fajra a feladatot.
+
+CWWKC1102.listener.failed=CWWKC1102E: A(z) {1} v\u00e9grehajt\u00f3 szolg\u00e1ltat\u00e1snak elk\u00fcld\u00f6tt {0} feladat fel\u00fcgyeltfeladat-figyel\u0151je a k\u00f6vetkez\u0151 hib\u00e1val meghi\u00fasult: {2}.
+CWWKC1102.listener.failed.explanation=Egy fel\u00fcgyeltfeladat-figyel\u0151 m\u0171velet meghi\u00fasult. Az okot a kiv\u00e9tel\u00fczenet tartalmazza.
+CWWKC1102.listener.failed.useraction=Jav\u00edtsa ki a hiba kiv\u00e1lt\u00f3 ok\u00e1t \u00e9s d\u00f6ntse el, hogy elk\u00fcldi-e \u00fajra a feladatot.
+
+CWWKC1103.skip.run.failed=CWWKC1103E: A(z) {1} v\u00e9grehajt\u00f3 szolg\u00e1ltat\u00e1snak elk\u00fcld\u00f6tt {0} feladat v\u00e9grehajt\u00e1sa kihagy\u00e1sra ker\u00fclt, mert a Trigger.skipRun m\u0171velet a k\u00f6vetkez\u0151 hib\u00e1val meghi\u00fasult: {2}.
+CWWKC1103.skip.run.failed.explanation=A trigger skipRun m\u0171velete meghi\u00fasult, ez\u00e9rt a feladat aktu\u00e1lis v\u00e9grehajt\u00e1si k\u00eds\u00e9rlete kihagy\u00e1sra ker\u00fclt.
+CWWKC1103.skip.run.failed.useraction=Jav\u00edtsa ki a hiba kiv\u00e1lt\u00f3 ok\u00e1t \u00e9s d\u00f6ntse el, hogy elk\u00fcldi-e \u00fajra a feladatot.
+
+CWWKC1111.task.invalid=CWWKC1111E: A(z) {0} feladat nem \u00e9rv\u00e9nyes.
+CWWKC1111.task.invalid.explanation=A feladat nem k\u00fcldhet\u0151 el, mert nem \u00e9rv\u00e9nyes.
+CWWKC1111.task.invalid.useraction=Friss\u00edtse az alkalmaz\u00e1st, hogy \u00e9rv\u00e9nyes feladatot k\u00fcldj\u00f6n az ExecutorService sz\u00e1m\u00e1ra.
+
+CWWKC1112.all.tasks.canceled=CWWKC1112I: Minden feladat megszak\u00edt\u00e1sra ker\u00fclt.
+CWWKC1112.all.tasks.canceled.explanation=Minden feladatot megszak\u00edtottak, miel\u0151tt b\u00e1rmelyik feladat megh\u00edv\u00e1sra ker\u00fclhetett volna.
+CWWKC1112.all.tasks.canceled.useraction=Nincs teend\u0151.
+
+CWWKC1120.future.get.rejected=CWWKC1120E: A taskSubmitted \u00e9s taskStarting ManagedTaskListener met\u00f3dusoknak \u00e1tadott Future \u00e9rt\u00e9k nem haszn\u00e1lhat\u00f3 a feladat befejez\u00e9s\u00e9re v\u00e1rakoz\u00e1shoz.
+CWWKC1120.future.get.rejected.explanation=A taskSubmitted \u00e9s taskStarting ManagedTaskListener  met\u00f3dusok azon a sz\u00e1lon futnak, amely a feladatot elk\u00fcldi vagy elind\u00edtja. Ez\u00e9rt az ezen met\u00f3dusoknak \u00e1tadott Future \u00e9rt\u00e9ket nem szabad a feladatra v\u00e1rakoz\u00e1shoz haszn\u00e1lni.
+CWWKC1120.future.get.rejected.useraction=Az alkalmaz\u00e1st friss\u00edt\u00e9s\u00e9vel ker\u00fclje el get megh\u00edv\u00e1s\u00e1t a taskSubmitted \u00e9s taskStarting met\u00f3dusoknak \u00e1tadott Future \u00e9rt\u00e9kre.
+
+CWWKC1130.xprop.value.invalid=CWWKC1130E: A(z) {0} fel\u00fcgyelt v\u00e9grehajt\u00f3nak elk\u00fcld\u00f6tt feladat {1} v\u00e9grehajt\u00e1si tulajdons\u00e1got tartalmaz {2} \u00e9rt\u00e9kkel, ami fel\u00fcgyelt v\u00e9grehajt\u00f3k eset\u00e9ben nem \u00e9rv\u00e9nyes.
+CWWKC1130.xprop.value.invalid.explanation=Bizonyos v\u00e9grehajt\u00e1si tulajdons\u00e1gok fel\u00fcgyelt v\u00e9grehajt\u00f3k eset\u00e9ben nem \u00e9rv\u00e9nyesek, de m\u00e1s er\u0151forr\u00e1st\u00edpusok eset\u00e9ben (p\u00e9ld\u00e1ul kontextus szolg\u00e1ltat\u00e1s vagy fel\u00fcgyelt sz\u00e1lgy\u00e1r) \u00e9rv\u00e9nyesek lehetnek.
+CWWKC1130.xprop.value.invalid.useraction=Az alkalmaz\u00e1st friss\u00edtve hagyja ki a v\u00e9grehajt\u00e1si tulajdons\u00e1got vagy \u00e1ll\u00edtsa azt be \u00e9rv\u00e9nyes \u00e9rt\u00e9kre.

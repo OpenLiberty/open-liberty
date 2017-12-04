@@ -1,0 +1,98 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.utility/resources/com/ibm/ws/security/utility/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+error=Fehler: {0}
+error.inputConsoleNotAvailable=Die Eingabekonsole ist nicht verf\u00fcgbar.
+error.missingIO=Fehler. E/A-Einheit fehlt: {0}
+
+usage=Syntax: {0}
+task.unknown=Unbekannte Task: {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Common messages
+tooManyArgs=Zu viele Argumente.
+insufficientArgs=Zu wenige Argumente.
+invalidArg=Das Argument {0} ist ung\u00fcltig.
+missingArg=Das Argument {0} fehlt.
+missingValue=Der Wert f\u00fcr das Argument {0} fehlt.
+missingArg2=Sie m\u00fcssen das Argument {0} oder das Argument {1} angeben.
+exclusiveArg=Sie m\u00fcssen entweder das Argument {0} oder das Argument {1} angeben, aber nicht beide.
+serverNotFound=Der angegebene Server {0} wurde nicht an der Position {1} gefunden.
+
+
+encode.enterText=Text eingeben:
+encode.reenterText=Text erneut eingeben:
+encode.readError=Fehler beim Lesen des Textes.
+encode.entriesDidNotMatch=Die Eintr\u00e4ge stimmen nicht \u00fcberein.
+
+
+password.enterText=Kennwort eingeben:
+password.reenterText=Kennwort erneut eingeben:
+password.readError=Fehler beim Lesen des Kennworts.
+password.entriesDidNotMatch=Die Kennw\u00f6rter stimmen nicht \u00fcberein.
+
+name=Name
+days=Tage
+
+sslCert.abort=Zertifikatserstellung wird abgebrochen:
+sslCert.createFailed=SSL-Standardzertifikat kann nicht erstellt werden:\n\
+{0}
+sslCert.errorEncodePassword=Fehler beim Verschl\u00fcsseln des Kennworts (Zertifikat nicht erstellt):\n\
+{0}
+sslCert.createKeyStore=Keystore {0} wird erstellt.\n
+sslCert.oneType=Die Argumente {0} und {1} k\u00f6nnen nicht gleichzeitig angegeben werden.
+sslCert.clientNotFound=Der angegebene Client {0} wurde nicht an der Position {1} gefunden.
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+sslCert.serverXML=Das SSL-Zertifikat f\u00fcr den Server {0} wurde erstellt. Das Zertifikat wird mit {1} als SubjectDN erstellt. \n\
+\n\
+F\u00fcgen Sie zum Aktivieren von SSL der Datei server.xml die folgenden Zeilen hinzu:
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+sslCert.clientXML=Das SSL-Zertifikat f\u00fcr den Client {0} wurde erstellt. Das Zertifikat wird mit {1} als SubjectDN erstellt. \n\
+\n\
+F\u00fcgen Sie zum Aktivieren von SSL der Datei client.xml die folgenden Zeilen hinzu:
+
+fileUtility.failedDirCreate=Fehler beim Erstellen des Verzeichnisses {0}
+file.exists=Die Keystore-Datei {0} ist bereits vorhanden. Es kann keine Keystore-Datei an dieser Position erstellt werden.
+file.requiredDirNotCreated=Die erforderliche Verzeichnisstruktur f\u00fcr {0} konnte nicht erstellt werden.
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# The following string will be appended after encode.option-desc.encoding
+# message in UtilityOptions.nlsprops file.
+encode.option-custom.encryption=\n\
+\tDie angepasste Kennwortverschl\u00fcsselung ist ebenfalls verf\u00fcgbar.
+encode.option-desc.custom.feature=\n\
+\tDer Featurename von {0} ist wie folgt:\n\
+\t
+encode.option-desc.custom.description=\n\
+\tDie Beschreibung von {0} ist wie folgt:\n\
+\t
+
+# The following message is shown when there is no custom password
+# encryption is enabled.
+no.custom.encyption=Die angepasste Kennwortverschl\u00fcsselung wurde nicht erkannt.
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Note to translator: 'LTPA' should not be translated
+createLTPAKeys.abort=Erstellung der Datei mit den LTPA-Schl\u00fcsseln wird abgebrochen:
+createLTPAKeys.fileExists=Die Datei {0} ist bereits vorhanden. Es kann keine Datei mit LTPA-Schl\u00fcsseln an dieser Position erstellt werden.
+createLTPAKeys.createdFile=Datei mit LTPA-Schl\u00fcsseln erstellt: {0}\n\
+F\u00fcgen Sie die folgende Konfiguration in Ihrer Datei server.xml hinzu:\n\
+{1}\n

@@ -1,0 +1,35 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.artifact.api.zip/resources/com/ibm/ws/artifact/api/zip/internal/resources/ZipArtifactMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKM
+#COMPONENTNAMEFOR CWWKM Module API
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+bad.zip.data=CWWKM0101E: Le syst\u00e8me n''a pas pu traiter les donn\u00e9es d''archive pour {0}.
+bad.zip.data.explanation=Une exception est survenue lors du traitement des donn\u00e9es compress\u00e9es de l'archive. 
+bad.zip.data.useraction=V\u00e9rifiez que le fichier est une archive valide.
+
+remove.cache.data=CWWKM0102W: Le syst\u00e8me a supprim\u00e9 les donn\u00e9es en cache non valides de l''emplacement {0}
+remove.cache.data.explanation=La structure de l'application semble avoir chang\u00e9. Cela n\u00e9cessite de supprimer les donn\u00e9es en cache, car elles sont bas\u00e9es sur l'ancienne structure.
+remove.cache.data.useraction=Si votre application a chang\u00e9 de structure, ce comportement est normal.
+
+extract.cache.fail=CWWKM0103E: Le syst\u00e8me n''a pas pu extraire une archive int\u00e9gr\u00e9e de l''application vers un emplacement cache pour la raison suivante : {0}
+extract.cache.fail.explanation=Une erreur s'est produite durant la cr\u00e9ation des donn\u00e9es de cache de l'application, emp\u00eachant le traitement correct de celle-ci. 
+extract.cache.fail.useraction=V\u00e9rifiez la cause indiqu\u00e9e.

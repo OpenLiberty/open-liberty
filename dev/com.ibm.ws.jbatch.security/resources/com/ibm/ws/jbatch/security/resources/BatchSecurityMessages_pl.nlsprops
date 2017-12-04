@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.security/resources/com/ibm/ws/jbatch/security/resources/BatchSecurityMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0300 - 0349: com.ibm.ws.jbatch.security
+# 
+
+#No fill-ins
+BATCH_SECURITY_ENABLED=CWWKY0300I: Zabezpieczenia zada\u0144 wsadowych s\u0105 w\u0142\u0105czone.
+BATCH_SECURITY_ENABLED.explanation=U\u017cytkownicy s\u0105 autoryzowani na podstawie r\u00f3l zada\u0144 wsadowych podczas wykonywania wszystkich operacji zada\u0144 wsadowych.
+BATCH_SECURITY_ENABLED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#No fill-ins
+BATCH_SECURITY_DISABLED=CWWKY0301I: Zabezpieczenia zada\u0144 wsadowych s\u0105 wy\u0142\u0105czone.
+BATCH_SECURITY_DISABLED.explanation=U\u017cytkownicy nie s\u0105 autoryzowani na podstawie r\u00f3l zada\u0144 wsadowych.
+BATCH_SECURITY_DISABLED.useraction=Je\u015bli nie jest wymagana autoryzacja na podstawie r\u00f3l zada\u0144 wsadowych w tej konfiguracji serwera, nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#{0} The invocation subject on the thread.
+#{1} The job instance id.
+USER_UNAUTHORIZED_JOB_INSTANCE=CWWKY0302W: U\u017cytkownik {0} nie jest autoryzowany do wykonywania operacji zada\u0144 wsadowych powi\u0105zanych z instancj\u0105 zadania {1}.
+USER_UNAUTHORIZED_JOB_INSTANCE.explanation=U\u017cytkownik nie jest cz\u0119\u015bci\u0105 roli zadania wsadowego, kt\u00f3ra jest autoryzowana do wykonywania \u017c\u0105danej operacji zadania wsadowego dla tej instancji zadania.
+USER_UNAUTHORIZED_JOB_INSTANCE.useraction=Je\u015bli u\u017cytkownik jest autoryzowany do wykonywania \u017c\u0105danej operacji zadania wsadowego, nale\u017cy skonfigurowa\u0107 autoryzacj\u0119 zabezpiecze\u0144 zada\u0144 wsadowych i doda\u0107 tego u\u017cytkownika do wymaganych r\u00f3l zada\u0144 wsadowych. 
+
+#{0} The invocation subject on the thread.
+USER_UNAUTHORIZED_NO_BATCH_ROLES=CWWKY0303W: U\u017cytkownik {0} nie jest autoryzowany do wykonywania \u017cadnych operacji zada\u0144 wsadowych.
+USER_UNAUTHORIZED_NO_BATCH_ROLES.explanation=U\u017cytkownik nie jest cz\u0119\u015bci\u0105 \u017cadnych r\u00f3l zada\u0144 wsadowych i nie jest autoryzowany do wykonywania operacji zada\u0144 wsadowych.
+USER_UNAUTHORIZED_NO_BATCH_ROLES.useraction=Je\u015bli u\u017cytkownik nie jest autoryzowany, aby by\u0142 u\u017cytkownikiem zadania wsadowego, nie jest wymagana \u017cadna czynno\u015b\u0107. Je\u015bli u\u017cytkownik jest autoryzowany do wykonywania operacji zada\u0144 wsadowych i s\u0105 w\u0142\u0105czone zabezpieczenia zada\u0144 wsadowych, nale\u017cy skonfigurowa\u0107 autoryzacj\u0119 zabezpiecze\u0144 zada\u0144 wsadowych i doda\u0107 tego u\u017cytkownika do wymaganych r\u00f3l zada\u0144 wsadowych. 
+
+#{0} The invocation subject on the thread.
+USER_UNAUTHORIZED_TO_START_JOB=CWWKY0304W: U\u017cytkownik {0} nie jest autoryzowany do uruchamiania zada\u0144 wsadowych.
+USER_UNAUTHORIZED_TO_START_JOB.explanation=U\u017cytkownik nie jest cz\u0119\u015bci\u0105 roli zadania wsadowego, kt\u00f3ra jest autoryzowana do uruchamiania zada\u0144 wsadowych.
+USER_UNAUTHORIZED_TO_START_JOB.useraction=Je\u015bli u\u017cytkownik nie jest autoryzowany do uruchamiania zada\u0144 wsadowych, nie jest wymagana \u017cadna czynno\u015b\u0107. Je\u015bli u\u017cytkownik jest autoryzowany do wykonywania \u017c\u0105danej operacji zadania wsadowego, nale\u017cy skonfigurowa\u0107 autoryzacj\u0119 zabezpiecze\u0144 zada\u0144 wsadowych i doda\u0107 tego u\u017cytkownika do wymaganych r\u00f3l zada\u0144 wsadowych.

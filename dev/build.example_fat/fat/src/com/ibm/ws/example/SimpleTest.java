@@ -65,6 +65,6 @@ public class SimpleTest extends FATServletClient {
     @Test
     public void verifyArtifactoryDependency() throws Exception {
         // Confirm that the example Artifactory dependency was download and is available on the classpath
-        org.apache.derby.drda.NetworkServerControl.class.getName();
+        org.apache.commons.logging.Log.class.getName();
     }
 }

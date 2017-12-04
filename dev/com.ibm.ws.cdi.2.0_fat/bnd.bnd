@@ -15,10 +15,12 @@ src: \
 	fat/src,\
 	test-applications/asyncEventsApp/src,\
 	test-applications/beanManagerLookupApp/src,\
-	test-applications/interceptionFactoryApp/src,\
-	test-applications/builtinAnnoLiteralsApp/src
+	test-applications/builtinAnnoLiteralsApp/src,\
+	test-applications/cdiContainerConfigApp/src,\
+	test-applications/configuratorApp/src,\
+	test-applications/interceptionFactoryApp/src
 
-test.project: true
+fat.project: true
 
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}
@@ -30,12 +32,10 @@ javac.source: 1.8
 javac.target: 1.8
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
-#      or binaries from Artifactory (e.g. org.apache.derby:derbynet)
-# had this in buildpath -> org.apache.derby:derbynet;version=10.11.1.1
-# had com.ibm.websphere.javaee.cdi.1.2;version=latest
+#      or binaries from Artifactory (e.g. commons-logging:commons-logging)
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
-	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+	com.ibm.websphere.javaee.annotation.1.3;version=latest,\
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest
 	

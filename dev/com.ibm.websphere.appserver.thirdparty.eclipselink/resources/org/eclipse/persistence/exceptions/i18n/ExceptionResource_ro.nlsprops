@@ -1,0 +1,57 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2014
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+CallHeader=Apelare: 
+
+DescriptionHeader=Descriere excep\u0163ie: 
+
+DescriptorExceptionsHeader=Excep\u0163ii descriptor: 
+
+DescriptorHeader=Descriptor: 
+
+ErrorCodeHeader=Cod eroare: 
+
+ErrorFormattingMessage=Eroare la \u00eencercarea de formatare a mesajului excep\u0163iei: {0} Argumentele sunt: {1}
+
+ExceptionHeader=Excep\u0163ie [EclipseLink-
+
+InternalExceptionHeader=Excep\u0163ie intern\u0103: 
+
+InternalExceptionStackHeader=Stiv\u0103 de excep\u0163ii interne: 
+
+LocalExceptionStackHeader=Stiv\u0103 de excep\u0163ii locale: 
+
+MappingHeader=Mapare: 
+
+NoExceptionTranslationForThisLocale=(Nu exist\u0103 transla\u0163ie Englez\u0103 pentru aceast\u0103 excep\u0163ie.) {0}
+
+QueryHeader=Interogare: 
+
+RuntimeExceptionsHeader=Excep\u0163ii de runtime: 
+
+TargetInvocationExceptionHeader=Excep\u0163ie de invocare \u0163int\u0103: 
+
+TargetInvocationExceptionStackHeader=Stiv\u0103 de excep\u0163ie invocare \u0163int\u0103: 
+

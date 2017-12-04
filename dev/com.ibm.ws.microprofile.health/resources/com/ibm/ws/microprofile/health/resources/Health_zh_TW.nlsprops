@@ -1,0 +1,50 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMH
+#COMPONENTNAMEFOR CWMH MicroProfile Health API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Health Impl -  range is 0000-4999, plus 9999 for the emergency message
+# The range 0000-0049 has been reserved for messages issued above the HealthCheckExecutor within the call stack
+# The range 0050-0099 has been reserved for messages issued at or below the HealthCheckExecutor within the call stack
+#-----------------------------------------------------------------------------------------------------------------------------
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Health error message
+#-----------------------------------------------------------------------------------------------------------------------------
+OSGI_SERVICE_ERROR=CWMH0000E: {0} OSGi \u670d\u52d9\u7121\u6cd5\u4f7f\u7528\u3002
+OSGI_SERVICE_ERROR.explanation=\u56e0\u6307\u5b9a\u7684\u670d\u52d9\u7121\u6cd5\u4f7f\u7528\uff0c\u800c\u64f2\u51fa\u9019\u500b\u5167\u90e8\u4f3a\u670d\u5668\u932f\u8aa4\u3002
+OSGI_SERVICE_ERROR.useraction=\u8acb\u4ee5 clean \u9078\u9805\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+
+# A Health API error has occurred: {0}
+temporary.CWMH9999E=CWMH9999E: \u767c\u751f\u4e0b\u5217 Health API \u932f\u8aa4\uff1a{0}
+temporary.CWMH9999E.explanation=\u767c\u751f\u963b\u6b62\u6b63\u5e38\u4f5c\u696d\u9032\u884c\u7684 Health API \u932f\u8aa4\u3002
+temporary.CWMH9999E.useraction=\u8acb\u6aa2\u95b1 FFDC \u65e5\u8a8c\u548c\u7570\u5e38\u72c0\u6cc1\u6587\u5b57\uff0c\u4ee5\u8b58\u5225\u554f\u984c\u3002
+
+# The HealthCheck bean call method had an exception
+healthcheck.bean.call.exception.CWMH0050E=CWMH0050E: {1} \u61c9\u7528\u7a0b\u5f0f\uff08\u4f86\u81ea {2} \u6a21\u7d44\uff09\u4e2d\u7684 {0} HealthCheck \u65b9\u6cd5\u64f2\u51fa\u7570\u5e38\u72c0\u6cc1 {3}\uff0c\u8a0a\u606f\uff1a{4}
+healthcheck.bean.call.exception.CWMH0050E.explanation=\u6307\u5b9a\u7684\u547c\u53eb\u65b9\u6cd5\u7522\u751f\u4e86\u7570\u5e38\u72c0\u6cc1\u3002
+healthcheck.bean.call.exception.CWMH0050E.useraction=\u8acb\u5728 HealthCheck Bean \u4e2d\u6aa2\u95b1\u60a8\u7684\u547c\u53eb\u65b9\u6cd5\uff0c\u4ee5\u8b58\u5225\u6240\u767c\u751f\u7684\u7570\u5e38\u72c0\u6cc1\u3002
+
+# The HealthCheck bean call method had a DOWN outcome
+healthcheck.application.down.CWMH0051W=CWMH0051W: {0} \u5728\u6a21\u7d44 {2} \u7684 {1} \u61c9\u7528\u7a0b\u5f0f\u4e2d\u5be6\u4f5c HealthCheckResponse\uff0c\u5b83\u5831\u544a\u4e86\u542b\u6709\u8cc7\u6599 {4} \u7684 DOWN \u8f38\u51fa\u7d50\u679c {3}\u3002
+healthcheck.application.down.CWMH0051W.explanation=DOWN \u8f38\u51fa\u7d50\u679c\u53ef\u80fd\u9020\u6210\u76e3\u8996\u670d\u52d9\u5c0d\u6b64\u4f3a\u670d\u5668\u63a1\u53d6\u52d5\u4f5c\u3002
+healthcheck.application.down.CWMH0051W.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002\u9019\u5247\u8b66\u544a\u8a18\u9304\u4e86 DOWN \u8f38\u51fa\u7d50\u679c\u3002

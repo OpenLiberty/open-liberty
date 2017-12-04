@@ -1,0 +1,35 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authorization.jacc.web/resources/com/ibm/ws/security/authorization/jacc/web/resources/JaccWebAuthorizationMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Security JACC Authorization
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS2880 - CWWKS2889
+
+JACC_WEB_GET_POLICYCONFIGURATION_FAILURE=CWWKS2880E: A JACC szolg\u00e1ltat\u00e1s nem tudja lek\u00e9rdezni a(z) {0} kontextusazonos\u00edt\u00f3j\u00fa PolicyConfiguration objektumot. A kiv\u00e9tel: {1}.
+JACC_WEB_GET_POLICYCONFIGURATION_FAILURE.explanation=A JACC szolg\u00e1ltat\u00f3 nem tudja lek\u00e9rdezni a JACC szolg\u00e1ltat\u00f3 PolicyConfiguration objektumot. Ez egy s\u00falyos hiba lehet a JACC szolg\u00e1ltat\u00f3ban.
+JACC_WEB_GET_POLICYCONFIGURATION_FAILURE.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse \u00e1t a JACC szolg\u00e1ltat\u00f3 \u00e9s kiszolg\u00e1l\u00f3napl\u00f3kat.
+
+JACC_WEB_PERMISSION_PROPAGATION_FAILURE=CWWKS2881E: A JACC szolg\u00e1ltat\u00e1s nem tudja terjeszteni a(z) {0} kontextusazonos\u00edt\u00f3j\u00fa webes biztons\u00e1gi megszor\u00edt\u00e1sokat a JACC szolg\u00e1ltat\u00f3nak {1} kiv\u00e9tel miatt.
+JACC_WEB_PERMISSION_PROPAGATION_FAILURE.explanation=A JACC szolg\u00e1ltat\u00e1s nem tudja terjeszteni a webes biztons\u00e1gi megszor\u00edt\u00e1sokat a JACC szolg\u00e1ltat\u00f3nak a v\u00e1ratlan kiv\u00e9tel miatt.
+JACC_WEB_PERMISSION_PROPAGATION_FAILURE.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse \u00e1t a JACC szolg\u00e1ltat\u00f3 \u00e9s kiszolg\u00e1l\u00f3napl\u00f3kat.
+
+JACC_WEB_IMPLIES_FAILURE=CWWKS2882E: A(z) {0} kontextusazonos\u00edt\u00f3j\u00fa webes er\u0151forr\u00e1s felhatalmaz\u00e1sa a(z) {1} kiv\u00e9tel miatt meghi\u00fasult.
+JACC_WEB_IMPLIES_FAILURE.explanation=A megadott webes er\u0151forr\u00e1s felhatalmaz\u00e1sa meghi\u00fasult.
+JACC_WEB_IMPLIES_FAILURE.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse \u00e1t a JACC szolg\u00e1ltat\u00f3 \u00e9s kiszolg\u00e1l\u00f3napl\u00f3kat.
+
+JACC_WEB_SPI_PARAMETER_ERROR=CWWKS2883E: A(z) {1} met\u00f3dus {0} param\u00e9ter objektuma \u00e9rv\u00e9nytelen. A param\u00e9ter v\u00e1rt objektuma: {2}.
+JACC_WEB_SPI_PARAMETER_ERROR.explanation=A JACC szolg\u00e1ltat\u00e1s nem tudta elv\u00e9gezni a k\u00e9r\u00e9st, mert a param\u00e9ter objektuma \u00e9rv\u00e9nytelen volt. Ez egy bels\u0151 hiba.
+JACC_WEB_SPI_PARAMETER_ERROR.useraction=Ez egy bels\u0151 hiba. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, akkor tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server t\u00e1mogat\u00e1si oldalon, a http://www.ibm.com/software/webservers/appserv/was/support/ c\u00edmen. 

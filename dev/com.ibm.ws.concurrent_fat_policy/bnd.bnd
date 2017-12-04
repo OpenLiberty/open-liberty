@@ -15,7 +15,7 @@ src: \
 	fat/src,\
 	test-applications/concurrentpolicyfat/src
 
-test.project: true
+fat.project: true
 
 runtime.minimum.java.level: 1.8
 
