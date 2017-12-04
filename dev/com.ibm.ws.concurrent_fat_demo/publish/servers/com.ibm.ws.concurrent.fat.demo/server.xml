@@ -25,5 +25,7 @@
     <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
   </library>
 
+  <javaPermission codebase="${server.config.dir}derby/derby-10.11.1.1.jar" className="java.security.AllPermission"/>
+
   <include location="../fatTestPorts.xml"/>
 </server>
