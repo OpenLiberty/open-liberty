@@ -19,7 +19,7 @@ public class ArchiveProcessor implements ApplicationArchiveProcessor {
 	@Override
 	public void process(Archive<?> applicationArchive, TestClass testClass) {
 		if (applicationArchive instanceof WebArchive) {
-			File hamcrest = new File("../lib/hamcrest-all-1.3.jar");
+			File hamcrest = new File("../../../lib/hamcrest-all-1.3.jar");
 			System.out.println("WLP: Adding Jar:" + hamcrest.getAbsolutePath() );
 			((WebArchive) applicationArchive).addAsLibraries(hamcrest);
 		}
