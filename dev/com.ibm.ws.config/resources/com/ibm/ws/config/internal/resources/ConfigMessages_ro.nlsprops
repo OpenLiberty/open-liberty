@@ -471,5 +471,10 @@ error.extendsAlias.collision=CWWKG0100E: Atributul {2} ibm:extendsAlias este dup
 error.extendsAlias.collision.explanation=Atributul ibm:extendsAlias trebuie s\u0103 fie unic \u00eentr-o singur\u0103 ierarhie extins\u0103.
 error.extendsAlias.collision.useraction=Face\u0163i fiecare atribut ibm:extendsAlias unic \u00een ierarhia extins\u0103.
 
+warning.binding.config=CWWKG0101W: Configura\u0163ia cu identitatea persistat\u0103 (PID) {0} este legat\u0103 la bundle-ul {1}. Configura\u0163ia nu este vizibil\u0103 altor bundle-uri.  
+warning.binding.config.explanation=O configura\u0163ie este legat\u0103 de bundle-ul apelant c\u00e2nd metoda getConfiguration a interfe\u0163ei ConfigurationAdmin este apelat\u0103 pentru prima dat\u0103. Din moment ce configura\u0163ia este legat\u0103, nu mai este vizibil\u0103 pentru alte bundle-uri.
+warning.binding.config.useraction=pentru a v\u0103 asigura c\u0103 loca\u0163ie de bundle este valoarea a\u015fteptat\u0103, utiliza\u0163i metoda getConfiguration pe interfa\u0163a ConfigurationAdmin care ia o loca\u0163ie de bundle ca al doilea parametru.
+
+
 # Non-TR message
 error.invalidOCDRef=EROARE: PID-ul metatipului [{0}] specific\u0103 un ID al defini\u0163iei de clas\u0103 de obiecte inexistent [{1}]

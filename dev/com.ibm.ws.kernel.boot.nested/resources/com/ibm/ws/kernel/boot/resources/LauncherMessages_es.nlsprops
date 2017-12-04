@@ -654,6 +654,14 @@ info.envProductExtension=CWWKE0940I: La extensi\u00f3n de producto {0} tiene un 
 info.envProductExtension.explanation= La variable de entorno WLP_PRODUCT_EXT_DIR apunta a la ubicaci\u00f3n de la extensi\u00f3n de producto. Se ha encontrado el servidor y utiliza la extensi\u00f3n de producto.
 info.envProductExtension.useraction=No es necesaria ninguna acci\u00f3n.
 
+error.zosProcStart.procedure.invalid=CWWKE0942E: El procedimiento STC de z/OS {0} no se ha podido iniciar. El nombre de procedimiento no es v\u00e1lido. Aseg\u00farese de que el nombre de procedimiento no tenga m\u00e1s de 8 caracteres y no contenga una coma.
+error.zosProcStart.procedure.invalid.explanation=El nombre del procedimiento STC especificado en la propiedad WLP_ZOS_PROCEDURE del archivo server.env no es v\u00e1lido. El nombre de procedimiento no debe tener m\u00e1s de 8 caracteres y no debe contener ninguna coma.
+error.zosProcStart.procedure.invalid.useraction=Compruebe que el nombre de procedimiento no tenga m\u00e1s de 8 caracteres y que no contenga una coma.
+
+error.zosProcStart.jobname.invalid=CWWKE0943E: El procedimiento STC de z/OS {0} no se ha podido iniciar. El nombre de trabajo {1} no es v\u00e1lido. Aseg\u00farese de que el nombre de trabajo no tenga m\u00e1s de 8 caracteres y no contenga una coma.
+error.zosProcStart.jobname.invalid.explanation=El nombre del trabajo STC especificado en la propiedad WLP_ZOS_JOBNAME del archivo server.env no es v\u00e1lido. El nombre de trabajo no debe tener m\u00e1s de 8 caracteres y no debe contener ninguna coma.
+error.zosProcStart.jobname.invalid.useraction=Compruebe que el nombre de trabajo no tenga m\u00e1s de 8 caracteres y que no contenga una coma.
+
 info.serverStarting=Se est\u00e1 iniciando el servidor {0}.
 info.serverStarted=Servidor {0} iniciado.
 info.serverStartedWithPID=Servidor {0} iniciado con ID de proceso {1}.

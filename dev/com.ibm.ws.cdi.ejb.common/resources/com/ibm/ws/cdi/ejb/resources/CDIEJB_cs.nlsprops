@@ -32,3 +32,8 @@ lifecycle.interceptor.exception.CWOWB2001E=CWOWB2001E: Zachyt\u00e1va\u010d \u01
 lifecycle.interceptor.exception.CWOWB2001E.explanation=Zachyt\u00e1va\u010de \u017eivotn\u00edho cyklu by nem\u011bly generovat kontrolovan\u00e9 v\u00fdjimky. 
 lifecycle.interceptor.exception.CWOWB2001E.useraction=Zkontrolujte protokoly a ur\u010dete probl\u00e9m.
 
+internal.server.error.CWOWB2002E=CWOWB2002E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1}
+internal.server.error.CWOWB2002E.explanation=CMSG0001
+internal.server.error.CWOWB2002E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+

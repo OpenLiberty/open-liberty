@@ -647,6 +647,14 @@ info.server.resume.request.completed.useraction=Es ist keine Aktion erforderlich
 info.envProductExtension=CWWKE0940I: Die Produkterweiterung {0} hat die Produkt-ID {1} und das Produktinstallationsverzeichnis {2}. Diese Produkterweiterung wurde mit der Umgebungsvariablen WLP_PRODUCT_EXT_DIR angegeben. 
 info.envProductExtension.explanation= Die Umgebungsvariable WLP_PRODUCT_EXT_DIR verweist auf die Position der Produkterweiterung. Der Server hat die Produkterweiterung gefunden und verwendet sie.
 info.envProductExtension.useraction=Es ist keine Aktion erforderlich. 
+error.zosProcStart.procedure.invalid=CWWKE0942E: Die z/OS-STC-Prozedur {0} konnte nicht gestartet werden. Der Prozedurname ist nicht g\u00fcltig. Stellen Sie sicher, dass der Prozedurname nicht l\u00e4nger als acht Zeichen ist und dass er kein Komma enth\u00e4lt.
+error.zosProcStart.procedure.invalid.explanation=Der mit der Eigenschaft WLP_ZOS_PROCEDURE in der Datei server.env angegebene STC-Prozedurname ist nicht g\u00fcltig. Der Prozedurname darf nicht l\u00e4nger als acht Zeichen sein und kein Komma enthalten.
+error.zosProcStart.procedure.invalid.useraction=Stellen Sie sicher, dass der Prozedurname nicht l\u00e4nger als acht Zeichen ist und dass er kein Komma enth\u00e4lt.
+
+error.zosProcStart.jobname.invalid=CWWKE0943E: Die z/OS-STC-Prozedur {0} konnte nicht gestartet werden. Der Jobname {1} ist nicht g\u00fcltig. Stellen Sie sicher, dass der Jobname nicht l\u00e4nger als acht Zeichen ist und dass er kein Komma enth\u00e4lt.
+error.zosProcStart.jobname.invalid.explanation=Der mit der Eigenschaft WLP_ZOS_JOBNAME in der Datei server.env angegebene STC-Jobname ist nicht g\u00fcltig. Der Jobname darf nicht l\u00e4nger als acht Zeichen sein und kein Komma enthalten.
+error.zosProcStart.jobname.invalid.useraction=Stellen Sie sicher, dass der Jobname nicht l\u00e4nger als acht Zeichen ist und dass er kein Komma enth\u00e4lt.
+
 info.serverStarting=Server {0} wird gestartet.
 info.serverStarted=Der Server {0} wurde gestartet.
 info.serverStartedWithPID=Der Server {0} wurde mit der Prozess-ID {1} gestartet.

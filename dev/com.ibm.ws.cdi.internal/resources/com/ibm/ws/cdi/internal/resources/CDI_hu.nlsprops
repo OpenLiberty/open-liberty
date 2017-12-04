@@ -34,7 +34,6 @@ multiple.beans.xml.warning.CWOWB1001W=CWOWB1001W: A(z) {0} webalkalmaz\u00e1s ar
 multiple.beans.xml.warning.CWOWB1001W.explanation=A CDI t\u00f6bb beans.xml f\u00e1jlt tal\u00e1lt.
 multiple.beans.xml.warning.CWOWB1001W.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az alkalmaz\u00e1s arch\u00edvum csak egy beans.xml f\u00e1jlt tartalmazzon.
 
-
 managed.class.bean.class.mismatch.CWOWB1002E=CWOWB1002E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. A k\u00f6vetkez\u0151 adatokkal l\u00e9pjen kapcsolatba a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3 term\u00e9kt\u00e1mogat\u00e1s\u00e1val: {0} {1}
 managed.class.bean.class.mismatch.CWOWB1002E.explanation=CMSG0001
 managed.class.bean.class.mismatch.CWOWB1002E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.

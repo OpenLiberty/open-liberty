@@ -241,7 +241,10 @@ info.frameworkRestart=CWWKE0041I: O cache da plataforma est\u00e1 fora de sincro
 info.frameworkRestart.explanation=A estrutura foi reiniciada porque o cache da plataforma estava fora de sincroniza\u00e7\u00e3o.
 info.frameworkRestart.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
-# CWWKE0042E removed because it's only used in com.ibm.ws.kernel.boot.cmdline - Do not reuse.
+error.badVersion=CWWKE0042E: A vers\u00e3o de Java correta n\u00e3o est\u00e1 em execu\u00e7\u00e3o. O ambiente de tempo de execu\u00e7\u00e3o requer Java 7 ou superior.
+error.badVersion.explanation=Uma vers\u00e3o de Java n\u00e3o suportada est\u00e1 em execu\u00e7\u00e3o ou a vari\u00e1vel do sistema JAVA_HOME \
+est\u00e1 configurada para apontar para uma vers\u00e3o mais antiga de Java.
+error.badVersion.useraction= Fa\u00e7a upgrade da vers\u00e3o Java para Java 7 ou ajuste a vari\u00e1vel do sistema JAVA_HOME para apontar para Java 7.
 
 error.unsupportedLaunch=CWWKE0043E: O local da ativa\u00e7\u00e3o n\u00e3o \u00e9 um arquivo local. ({0})
 error.unsupportedLaunch.explanation=O ambiente de tempo de execu\u00e7\u00e3o deve ser ativado a partir de um arquivo local, por \
@@ -754,8 +757,7 @@ deve conter v\u00edrgula.
 error.zosProcStart.procedure.invalid.useraction=Verifique se o nome do procedimento n\u00e3o tem mais de oito \
 caracteres e n\u00e3o cont\u00e9m v\u00edrgula.
 
-error.zosProcStart.jobname.invalid=CWWKE0943E: Falha ao iniciar o procedimento {0} do z/OS STC. O nome da tarefa {1} n\u00e3o \u00e9 v\u00e1lido.  \
-Assegure-se de que o nome da tarefa n\u00e3o tenha mais de oito caracteres e n\u00e3o contenha v\u00edrgula.
+error.zosProcStart.jobname.invalid=CWWKE0943E: Falha ao iniciar o procedimento {0} do z/OS STC. O nome da tarefa {1} n\u00e3o \u00e9 v\u00e1lido. Assegure-se de que o nome da tarefa n\u00e3o tenha mais de oito caracteres e n\u00e3o contenha v\u00edrgula.
 error.zosProcStart.jobname.invalid.explanation=O nome da tarefa STC especificado pela propriedade \
 WLP_ZOS_JOBNAME no arquivo server.env n\u00e3o \u00e9 v\u00e1lido. O nome da tarefa n\u00e3o deve ter mais de 8 caracteres e n\u00e3o deve conter \
 v\u00edrgula.

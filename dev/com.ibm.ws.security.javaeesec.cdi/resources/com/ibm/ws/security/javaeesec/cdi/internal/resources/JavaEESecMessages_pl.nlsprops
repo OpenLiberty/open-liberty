@@ -18,9 +18,9 @@
 
 # Message prefix block: CWWKS1925 - CWWKS1949
 
-JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1925E: Wdro\u017cenie aplikacji nie powiod\u0142o si\u0119, poniewa\u017c znaleziono wiele implementacji interfejsu HttpAuthenticationMechanism.  Lista klas: {0}. Najprawdopodobniej przyczyn\u0105 jest problem z pakietem aplikacji. Upewnij si\u0119, \u017ce w aplikacji istnieje tylko jedna implementacja interfejsu HttpAuthenticationMechanism.
-JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=Wdro\u017cenie aplikacji nie powiod\u0142o si\u0119, poniewa\u017c znaleziono wiele implementacji interfejsu HttpAuthenticationMechanism. Taka sytuacja nie jest dozwolona.
-JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Upewnij si\u0119, \u017ce w aplikacji istnieje tylko jedna implementacja interfejsu HttpAuthenticationMechanism.
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1925E: Wdra\u017canie modu\u0142u {0} w aplikacji {1} zako\u0144czy\u0142o si\u0119 niepowodzeniem, poniewa\u017c znaleziono wiele implementacji obiektu HttpAuthenticationMechanism. Lista klas: {2}. Najprawdopodobniej przyczyn\u0105 jest problem z pakietem aplikacji. Upewnij si\u0119, \u017ce w ka\u017cdym module istnieje tylko jedna implementacja obiektu HttpAuthenticationMechanism.
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=Wdro\u017cenie aplikacji nie powiod\u0142o si\u0119, poniewa\u017c znaleziono wiele implementacji obiektu HttpAuthenticationMechanism. Taka sytuacja nie jest dozwolona.
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Upewnij si\u0119, \u017ce w aplikacji istnieje tylko jedna implementacja obiektu HttpAuthenticationMechanism dla ka\u017cdego modu\u0142u.
 
 JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST=CWWKS1926E: Komponent bean LoginToContinueProperties nie istnieje. Logowanie za pomoc\u0105 formularza nie jest w\u0142\u0105czone. Upewnij si\u0119, \u017ce aplikacja ma adnotacj\u0119 LoginToContinue.
 JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST.explanation=Nie istnieje komponent bean LoginToContinueProperties wymagany na potrzeby uwierzytelniania logowania za pomoc\u0105 formularza.
@@ -39,6 +39,32 @@ JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.explanation=Atrybut UniqueId w danym obiekcie
 JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.useraction=Je\u015bli aplikacja udost\u0119pnia interfejs IdentityStore, upewnij si\u0119, \u017ce zwraca on poprawn\u0105 warto\u015b\u0107 UniqueId w ramach obiektu CredentialValidationResult.
 
 JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER=CWWKS1930W: Nie znaleziono komponentu bean IdentityStoreHandler. U\u017cyj rejestru u\u017cytkownik\u00f3w zdefiniowanego w pliku server.xml.  Komponent bean IdentityStoreHandler jest tworzony, gdy istnieje co najmniej jeden komponent bean IdentityStore. Je\u015bli aplikacja ma u\u017cywa\u0107 komponentu bean IdentityStore, upewnij si\u0119, \u017ce jest on poprawnie skonfigurowany.
-
 JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.explanation=Nie znaleziono komponentu bean IdentityStoreHandler. Je\u015bli aplikacja ma u\u017cywa\u0107 komponentu bean IdentityStore, upewnij si\u0119, \u017ce jest on poprawnie skonfigurowany. Komponent bean IdentityStoreHandler jest tworzony, gdy istnieje co najmniej jeden komponent bean IdentityStore.
 JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.useraction=Je\u015bli aplikacja ma u\u017cywa\u0107 komponentu bean IdentityStore, upewnij si\u0119, \u017ce jest on poprawnie skonfigurowany.
+
+JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS=CWWKS1931E: Wdra\u017canie aplikacji zako\u0144czy\u0142o si\u0119 niepowodzeniem, poniewa\u017c w pliku web.xml nie znaleziono elementu login-config dla modu\u0142u {0} w aplikacji {1}. Aby w\u0142\u0105czy\u0107 komponent bean HttpAuthenticationMechanism, usu\u0144 element login-config z pliku web.xml.
+JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.explanation=Wdra\u017canie aplikacji zako\u0144czy\u0142o si\u0119 niepowodzeniem, poniewa\u017c zdefiniowano zar\u00f3wno element login-config, jak i komponent bean HttpAuthenticationMechanism. W aplikacji mo\u017ce by\u0107 u\u017cywany tylko jeden z tych mechanizm\u00f3w uwierzytelniania.
+JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.useraction=Aby w\u0142\u0105czy\u0107 komponent bean HttpAuthenticationMechanism, usu\u0144 element login-config z pliku web.xml.
+
+JAVAEESEC_CDI_WARNING_NO_REALM_NAME=CWWKS1932W: Nazwa dziedziny na potrzeby uwierzytelniania podstawowego nie jest ustawiona, zosta\u0142a wi\u0119c u\u017cyta warto\u015b\u0107 domy\u015blna defaultRealm.
+JAVAEESEC_CDI_WARNING_NO_REALM_NAME.explanation=Poniewa\u017c nazwa dziedziny na potrzeby uwierzytelniania podstawowego nie zosta\u0142a zdefiniowana, nazwa dziedziny zosta\u0142a ustawiona na warto\u015b\u0107 domy\u015bln\u0105 defaultRealm.
+JAVAEESEC_CDI_WARNING_NO_REALM_NAME.useraction=Aby ustawi\u0107 nazw\u0119 dziedziny, zdefiniuj j\u0105 w adnotacji BasicAuthenticationMechanismDefinition w aplikacji.
+
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM=CWWKS1933E: Warto\u015b\u0107 {0} parametru konfiguracyjnego {1} jest niepoprawna.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM.explanation=Warto\u015b\u0107 parametru konfiguracyjnego jest niepoprawna.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM.useraction=Upewnij si\u0119, \u017ce parametr konfiguracyjny jest ustawiony poprawnie.
+
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM=CWWKS1934E: Warto\u015b\u0107 {0} parametru konfiguracyjnego {1} jest mniejsza ni\u017c warto\u015b\u0107 minimalna {2}.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.explanation=Warto\u015b\u0107 parametru konfiguracyjnego jest mniejsza ni\u017c warto\u015b\u0107 minimalna.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.useraction=Upewnij si\u0119, \u017ce warto\u015b\u0107 parametru konfiguracyjnego jest r\u00f3wna warto\u015bci minimalnej lub od niej wi\u0119ksza.
+
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA=CWWKS1935E: Zakodowane dane s\u0105 niepoprawne. {0}
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.explanation=Warto\u015b\u0107 zakodowana w bazie danych jest niepoprawna.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.useraction=Upewnij si\u0119, \u017ce zakodowane dane w bazie danych zosta\u0142y zakodowane za pomoc\u0105 algorytmu mieszaj\u0105cego, kt\u00f3ry obs\u0142uguje klasa implementacji PasswordHash.
+
+#The following messages are used with JAVAEESEC_ERR_RPASSWORDHASH_INVALID_DATA message.
+JAVAEESEC_CDI_INVALID_ITERATION=Warto\u015b\u0107 {0} iteracji nie jest liczb\u0105.
+JAVAEESEC_CDI_INVALID_ALGORITHM=Algorytm mieszaj\u0105cy {0} nie jest obs\u0142ugiwany.
+JAVAEESEC_CDI_INVALID_ELEMENTS=Liczba element\u00f3w {0} nie wynosi 4.
+JAVAEESEC_CDI_INVALID_HASH_VALUE=Warto\u015b\u0107 mieszaj\u0105ca nie jest poprawnie zakodowana.
+JAVAEESEC_CDI_INVALID_SALT_VALUE=Warto\u015b\u0107 klucza dodatkowego nie jest poprawnie zakodowana.

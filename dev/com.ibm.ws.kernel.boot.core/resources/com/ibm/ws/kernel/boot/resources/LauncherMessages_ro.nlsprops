@@ -653,6 +653,14 @@ info.envProductExtension=CWWKE0940I: Extensia produsului {0} are un identificato
 info.envProductExtension.explanation= Variabila de mediu WLP_PRODUCT_EXT_DIR indic\u0103 loca\u0163ia extensiei de produs. Serverul a fost g\u0103sit \u015fi utilizeaz\u0103 extensia de produs.
 info.envProductExtension.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 
+error.zosProcStart.procedure.invalid=CWWKE0942E: A e\u015fuat pornirea procedurii z/OS STC {0}. Numele de procedur\u0103 nu este valid. Verifica\u0163i c\u0103 numele de procedur\u0103 nu are mai mult de opt caractere \u015fi nu con\u0163ine o virgul\u0103.
+error.zosProcStart.procedure.invalid.explanation=Numele de procedur\u0103 STC specificat de proprietatea WLP_ZOS_PROCEDURE din fi\u015fierul server.env file nu este valid. Numele de procedur\u0103 nu trebuie s\u0103 aib\u0103 mai mult de opt caractere \u015fi nu poate con\u0163ine o virgul\u0103.
+error.zosProcStart.procedure.invalid.useraction=Verifica\u0163i c\u0103 numele de procedur\u0103 nu are mai mult de opt caractere \u015fi nu con\u0163ine o virgul\u0103.
+
+error.zosProcStart.jobname.invalid=CWWKE0943E: A e\u015fuat pornirea procedurii z/OS STC {0}. Numele de job {1} nu este valid. Verifica\u0163i c\u0103 numele de job nu are mai mult de opt caractere \u015fi nu con\u0163ine o virgul\u0103.
+error.zosProcStart.jobname.invalid.explanation=Numele de job STC specificat de proprietatea WLP_ZOS_JOBNAME din fi\u015fierul server.env file nu este valid. Numele de job nu trebuie s\u0103 aib\u0103 mai mult de opt caractere \u015fi nu poate con\u0163ine o virgul\u0103.
+error.zosProcStart.jobname.invalid.useraction=Verifica\u0163i c\u0103 numele de job nu are mai mult de opt caractere \u015fi nu con\u0163ine o virgul\u0103.
+
 info.serverStarting=Se porne\u015fte serverul {0}.
 info.serverStarted=Serverul {0} a pornit.
 info.serverStartedWithPID=Serverul {0} a pornit cu ID de proces {1}.

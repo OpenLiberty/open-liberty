@@ -27,14 +27,18 @@ JAVAEESEC_ERROR_NO_VALIDATION=CWWKS1911E: Ning\u00fan objeto IdentityStore admit
 JAVAEESEC_ERROR_NO_VALIDATION.explanation=Ninguno de los objetos IdentityStore admite la validaci\u00f3n de usuarios, por tanto, el c\u00f3digo de seguridad no autentica al usuario.
 JAVAEESEC_ERROR_NO_VALIDATION.useraction=Aseg\u00farese de que al menos un IdentityStore admita la validaci\u00f3n de usuarios.
 
-JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: El objeto HttpAuthenticationMechanism no se puede identificar para la autenticaci\u00f3n. Aseg\u00farese de que haya un HttpAuthenticationMechanism en la aplicaci\u00f3n.
+JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: No se ha encontrado el objeto HttpAuthenticationMechanism del m\u00f3dulo {0} en la aplicaci\u00f3n {1}. Compruebe que el m\u00f3dulo contiene un objeto HttpAuthenticationMechanism.
 JAVAEESEC_ERROR_NO_HAM.explanation=El objeto HttpAuthenticationMechanism no se puede identificar para la autenticaci\u00f3n. Puede ser que no haya ning\u00fan objeto o que haya varios objetos que se correspondan con la condici\u00f3n especificada. Aseg\u00farese de que haya un HttpAuthenticationMechanism en la aplicaci\u00f3n.
 JAVAEESEC_ERROR_NO_HAM.useraction=Aseg\u00farese de que haya un HttpAuthenticationMechanism en la aplicaci\u00f3n.
 
-JAVAEESEC_ERROR_NO_HAM_PROPS=CWWKS1913E: El objeto HAMProperties no se puede identificar para la autenticaci\u00f3n. Lo m\u00e1s probable es que no haya ning\u00fan objeto HttpAuthenticationMechanism en la aplicaci\u00f3n. Compruebe que se haya definido un objeto HttpAuthenticationMechanism.
-JAVAEESEC_ERROR_NO_HAM_PROPS.explanation=El objeto HAMProperties no se puede identificar para la autenticaci\u00f3n. Podr\u00eda ser que no hubiera ning\u00fan objeto HttpAuthenticationMechanism definido en la aplicaci\u00f3n.
-JAVAEESEC_ERROR_NO_HAM_PROPS.useraction=Aseg\u00farese de que haya un HttpAuthenticationMechanism en la aplicaci\u00f3n.
+JAVAEESEC_ERROR_NO_MODULE_PROPS=CWWKS1913E: No se encuentra el objeto ModuleProperties para la autenticaci\u00f3n de la aplicaci\u00f3n {0}, probablemente porque la aplicaci\u00f3n no contiene un objeto HttpAuthenticationMechanism. Compruebe que se haya definido un objeto HttpAuthenticationMechanism para cada m\u00f3dulo.
+JAVAEESEC_ERROR_NO_MODULE_PROPS.explanation=El objeto ModuleProperties, que es obligatorio para autenticar la aplicaci\u00f3n, no se puede identificar. Este error suele producirse porque no se ha definido un objeto HttpAuthenticationMechanism en la aplicaci\u00f3n.
+JAVAEESEC_ERROR_NO_MODULE_PROPS.useraction=Compruebe que cada m\u00f3dulo de la aplicaci\u00f3n contenga un objeto HttpAuthenticationMechanism.
 
 JAVAEESEC_WARNING_NO_REALM_NAME=CWWKS1914W: No se ha establecido el nombre de reino para la autenticaci\u00f3n b\u00e1sica; se utiliza el valor defaultRealm.
 JAVAEESEC_WARNING_NO_REALM_NAME.explanation=No se ha establecido el nombre de reino para la autenticaci\u00f3n b\u00e1sica; se utiliza el valor predeterminado defaultRealm.
 JAVAEESEC_WARNING_NO_REALM_NAME.useraction=Si el nombre de reino debe establecerse, establ\u00e9zcalo utilizando la anotaci\u00f3n BasicAuthenticationMechanismDefinition en la aplicaci\u00f3n.
+
+JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1915E: El despliegue del m\u00f3dulo {0} en la aplicaci\u00f3n {1} ha fallado debido a que se se han encontrado varias implementaciones de HttpAuthenticationMechanism. La lista de clases es {2}. Probablemente se trate de un problema del empaquetado de la aplicaci\u00f3n. Aseg\u00farese de que solo haya una implementaci\u00f3n HttpAuthenticationMechanism en cada m\u00f3dulo.
+JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=El despliegue de la aplicaci\u00f3n ha fallado porque se ha encontrado m\u00e1s de una implementaci\u00f3n de HttpAuthenticationMechanism. Esta condici\u00f3n no est\u00e1 permitida.
+JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Aseg\u00farese de que solo haya una implementaci\u00f3n HttpAuthenticationMechanism en cada m\u00f3dulo de la aplicaci\u00f3n.

@@ -449,5 +449,10 @@ error.extendsAlias.collision=CWWKG0100E: Das ibm:extendsAlias-Attribut {2} ist i
 error.extendsAlias.collision.explanation=Das ibm:extendsAlias-Attribut muss in einer extends-Hierarchie eindeutig sein.
 error.extendsAlias.collision.useraction=Verwenden Sie in der extends-Hierarchie nur eindeutige ibm:extendsAlias-Attribute.
 
+warning.binding.config=CWWKG0101W: Die Konfiguration mit der persistenten ID (PID) {0} ist an das Bundle {1} gebunden. Die Konfiguration ist f\u00fcr andere Bundles nicht sichtbar. 
+warning.binding.config.explanation=Es wird eine Konfiguration an das aufrufenden Bundle gebunden, wenn die Methode getConfiguration der Schnittstelle ConfigurationAdmin zum ersten Mal aufgerufen wird. Nachdem die Konfiguration gebunden wurde, ist sie f\u00fcr andere Bundles nicht mehr sichtbar. 
+warning.binding.config.useraction=Um sicherzustellen, dass die Bundleposition den erwarteten Wert hat, verwenden Sie die Methode getConfiguration in der Schnittstelle ConfigurationAdmin, die eine Bundleposition als zweiten Parameter akzeptiert.
+
+
 # Non-TR message
 error.invalidOCDRef=FEHLER: Die Metatyp-PID [{0}] gibt die ID einer nicht vorhandenen Objektklassendefinition [{1}] an.

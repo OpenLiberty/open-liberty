@@ -32,3 +32,8 @@ lifecycle.interceptor.exception.CWOWB2001E=CWOWB2001E: Un intercettatore del cic
 lifecycle.interceptor.exception.CWOWB2001E.explanation=Gli intercettatori del ciclo di vita devono evitare di emettere eccezioni controllate 
 lifecycle.interceptor.exception.CWOWB2001E.useraction=Controllare i log per determinare il problema
 
+internal.server.error.CWOWB2002E=CWOWB2002E: Si \u00e8 verificato un errore interno in WebSphere Application Server. Contattare l'assistenza di WebSphere Application Server riportando i seguenti dati: {0} {1}
+internal.server.error.CWOWB2002E.explanation=CMSG0001
+internal.server.error.CWOWB2002E.useraction=Consultare le informazioni sulla determinazione dei problemi nella pagina Web di supporto di WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+

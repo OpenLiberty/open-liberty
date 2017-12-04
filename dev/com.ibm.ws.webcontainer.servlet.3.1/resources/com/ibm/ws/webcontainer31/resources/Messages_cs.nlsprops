@@ -33,7 +33,7 @@ Unsupported.op.from.servlet.context.listener.31.useraction=Aby bylo mo\u017en\u0
 # 
 # Notes for translation:
 # {0} is the application name
-handlerClass.is.null==SRVE9003E: P\u0159edan\u00fd objekt HttpUpgradeHandler m\u00e1 hodnotu ve webov\u00fdch aplikac\u00edch hodnotu null: {0}.
+handlerClass.is.null=SRVE9003E: P\u0159edan\u00fd objekt HttpUpgradeHandler m\u00e1 hodnotu ve webov\u00fdch aplikac\u00edch hodnotu null: {0}.
 handlerClass.is.null.explanation=Upgrade pro po\u017eadavek se nezda\u0159il, proto\u017ee p\u0159edan\u00fd objekt HttpUpgradeHandler m\u00e1 hodnotu Null.
 handlerClass.is.null.useraction= Ujist\u011bte se, \u017ee je poskytnut spr\u00e1vn\u00fd objekt HttpUpgradeHandler.
 # --------------------------------

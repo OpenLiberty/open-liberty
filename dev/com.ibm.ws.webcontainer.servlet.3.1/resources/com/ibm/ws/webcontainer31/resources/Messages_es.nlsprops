@@ -33,7 +33,7 @@ Unsupported.op.from.servlet.context.listener.31.useraction=A\u00f1ada la escucha
 # 
 # Notes for translation:
 # {0} is the application name
-handlerClass.is.null==SRVE9003E: El objeto HttpUpgradeHandler pasado es NULL con la aplicaci\u00f3n web: {0}.
+handlerClass.is.null=SRVE9003E: El objeto HttpUpgradeHandler pasado es NULL con la aplicaci\u00f3n web: {0}.
 handlerClass.is.null.explanation=No se ha podido actualizar la solicitud porque el objeto HttpUpgradeHandler pasado es NULL.
 handlerClass.is.null.useraction= Aseg\u00farese de que se proporciona el objeto HttpUpgradeHandler correcto.
 # --------------------------------
