@@ -11,16 +11,16 @@
 
 import org.apache.tools.ant.filters.HeadFilter
 
-classes {
-  doLast {
-    copy {
-      from new File("${projectDir}/resources")
-      into new File("${buildDir}/resources/globalize")
-      include '**/*.nlsprops'
-      rename { String fileName ->
-        fileName.replace('.nlsprops', '.properties')
-      }
-      filter(HeadFilter, lines: -1, skip: 8)
-    }
+task copyNlsResources(type: Copy) { 
+  from project.file('resources')
+  into new File(project.buildDir, 'resources/globalize')
+  include '**/*.nlsprops'
+  rename { String fileName ->
+    fileName.replace('.nlsprops', '.properties')
   }
+  filter(HeadFilter, lines: -1, skip: 8)
+}
+
+classes {
+  dependsOn copyNlsResources
 }

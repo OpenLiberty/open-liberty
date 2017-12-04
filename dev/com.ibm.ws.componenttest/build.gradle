@@ -8,15 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
 // Special publish feature task since this is a test feature
-publishFeatureResources {
+task publishFeatureManifests(type: Copy) {
     dependsOn jar
-	dependsOn copyMavenLibs
-	inputs.files(fileTree(dir: "${projectDir}/publish/features", include: '*.mf')).skipWhenEmpty()
-    doLast {
-        copy {
-            from "${projectDir}/publish/features"
-            into "${rootDir}/build.image/wlp/lib/features"
-        }
-    }
+    from project.file('publish/features')
+    into buildImage.file('wlp/lib/features')
+    include '*.mf'
 }
+
+assemble.dependsOn publishFeatureManifests

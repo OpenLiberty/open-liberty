@@ -59,7 +59,7 @@ public class DerbyResourceAdapterSecurityTest extends FATServletClient {
         rar.addAsManifestResource(new File("test-resourceadapters/fvt-resourceadapter/resources/META-INF/ra.xml"));
         rar.addAsManifestResource(new File("test-resourceadapters/fvt-resourceadapter/resources/META-INF/wlp-ra.xml"));
 
-        rar.addAsLibrary(new File("publish/servers/com.ibm.ws.jca.fat.derbyra.security/derby/derby-10.11.1.1.jar"));
+        rar.addAsLibrary(new File("publish/shared/resources/derby/derby.jar"));
 
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "loginModule.jar");
         jar.addPackage("com.ibm.ws.jca.fat.security.login");

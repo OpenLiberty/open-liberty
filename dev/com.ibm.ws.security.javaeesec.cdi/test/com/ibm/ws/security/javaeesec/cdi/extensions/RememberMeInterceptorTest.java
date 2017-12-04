@@ -13,7 +13,6 @@ package com.ibm.ws.security.javaeesec.cdi.extensions;
 import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.Method;
-import java.security.Principal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -211,28 +210,28 @@ public class RememberMeInterceptorTest {
 
         final HttpAuthenticationMechanism mechanismWithELExpresssion = new TestHttpAuthenticationMechanismWithRememberMeELExpressions();
         final RememberMe rememberMe = mechanismWithELExpresssion.getClass().getAnnotation(RememberMe.class);
-
-        final String isRememberMeExpression = rememberMe.isRememberMeExpression();
-        final String cookieSecureOnlyExpression = rememberMe.cookieSecureOnlyExpression();
+        final String cookieName = "CookieNameFromELExpression";
 
         mockery.checking(new Expectations() {
             {
                 one(elProcessor).defineBean("httpMessageContext", httpMessageContext);
                 one(elProcessor).defineBean("self", mechanismWithELExpresssion);
-                one(elProcessor).eval(isRememberMeExpression.substring(2, isRememberMeExpression.length() - 1));
+                one(elProcessor).eval(removeBrackets(rememberMe.isRememberMeExpression()));
                 will(returnValue(Boolean.TRUE));
-                exactly(2).of(elProcessor).eval(cookieSecureOnlyExpression.substring(2, cookieSecureOnlyExpression.length() - 1));
+                one(elProcessor).eval(removeBrackets(rememberMe.cookieSecureOnlyExpression()));
                 will(returnValue(Boolean.TRUE));
-                one(elProcessor).eval(rememberMe.cookieMaxAgeSecondsExpression());
+                one(elProcessor).eval(removeBrackets(rememberMe.cookieMaxAgeSecondsExpression()));
                 will(returnValue(Integer.valueOf(600)));
-                one(elProcessor).eval(rememberMe.cookieHttpOnlyExpression());
+                one(elProcessor).eval(removeBrackets(rememberMe.cookieHttpOnlyExpression()));
                 will(returnValue(Boolean.TRUE));
+                one(elProcessor).eval(removeBrackets(rememberMe.cookieName()));
+                will(returnValue(cookieName));
             }
         });
 
         InvocationContext ic = createInvocationContext("validateRequest", mechanismWithELExpresssion);
         withCookies(null).doesNotNotifyContainerAboutLogin();
-        invokesNextInterceptor(ic, AuthenticationStatus.SUCCESS).withSecureRequest(true).generatesLoginToken().createsCookie(DEFAULT_COOKIE_NAME, COOKIE_VALUE, 600, true, true);
+        invokesNextInterceptor(ic, AuthenticationStatus.SUCCESS).withSecureRequest(true).generatesLoginToken().createsCookie(cookieName, COOKIE_VALUE, 600, true, true);
 
         AuthenticationStatus status = (AuthenticationStatus) interceptor.intercept(ic);
 
@@ -355,7 +354,6 @@ public class RememberMeInterceptorTest {
         return this;
     }
 
-    @SuppressWarnings("unchecked")
     private RememberMeInterceptorTest generatesLoginToken() {
         mockery.checking(new Expectations() {
             {
@@ -421,16 +419,6 @@ public class RememberMeInterceptorTest {
         return this;
     }
 
-    private RememberMeInterceptorTest withPrincipal(final Principal principal) {
-        mockery.checking(new Expectations() {
-            {
-                one(request).getUserPrincipal();
-                will(returnValue(principal));
-            }
-        });
-        return this;
-    }
-
     private RememberMeInterceptorTest invokesNextInterceptor(final InvocationContext invocationContext, final Object status) throws Exception {
         mockery.checking(new Expectations() {
             {
@@ -483,6 +471,10 @@ public class RememberMeInterceptorTest {
         return this;
     }
 
+    private String removeBrackets(String expression) {
+        return expression.substring(2, expression.length() - 1);
+    }
+
     @RememberMe
     private class TestHttpAuthenticationMechanismWithDefaultRememberMe implements HttpAuthenticationMechanism {
         @Override
@@ -499,8 +491,8 @@ public class RememberMeInterceptorTest {
         }
     }
 
-    @RememberMe(cookieHttpOnlyExpression = "mybean.httpOnly", cookieMaxAgeSecondsExpression = "mybean.maxAge",
-                cookieSecureOnlyExpression = "#{mybean.secureOnly}", isRememberMeExpression = "${mybean.rememberMe}")
+    @RememberMe(cookieHttpOnlyExpression = "${mybean.httpOnly}", cookieMaxAgeSecondsExpression = "${mybean.maxAge}",
+                cookieSecureOnlyExpression = "#{mybean.secureOnly}", isRememberMeExpression = "${mybean.rememberMe}", cookieName = "${mybean.cookieName}")
     private class TestHttpAuthenticationMechanismWithRememberMeELExpressions implements HttpAuthenticationMechanism {
         @Override
         public AuthenticationStatus validateRequest(HttpServletRequest arg0, HttpServletResponse arg1, HttpMessageContext arg2) throws AuthenticationException {

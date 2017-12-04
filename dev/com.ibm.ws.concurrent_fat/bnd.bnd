@@ -18,7 +18,7 @@ src: \
 	test-applications/concurrentSpec/src,\
 	test-bundles/test.resource/src
 
-test.project: true
+fat.project: true
 
 # Declare additional tested features not present in the original server.xml's
 tested.features: \

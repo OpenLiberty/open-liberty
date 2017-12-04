@@ -22,7 +22,7 @@ src: \
 	test-applications/MultipleValidationXmlEjb2.jar/src,\
 	test-applications/MultipleValidationXmlWeb.war/src
 
-test.project: true
+fat.project: true
 
 -buildpath: \
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\

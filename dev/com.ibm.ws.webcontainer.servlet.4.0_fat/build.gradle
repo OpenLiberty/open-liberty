@@ -8,29 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-apply from: '../cnf/gradle/scripts/fat.gradle'
 
-// Example of pulling down binary dependencies from Artifactory
-addRequiredLibraries {
-  doLast {
-    // Define dependency groups
-    configurations {
-      libs
-    }
-    // Define G:A:V coordinates of each dependency
-    dependencies {
-      libs 'httpunit:httpunit:1.5.4',
-           'net.sf.jtidy:jtidy:9.3.8',	
-           'org.apache.httpcomponents.client5:httpclient5:5.0-alpha2',
-           'org.apache.httpcomponents.core5:httpcore5:5.0-alpha4',
-           'commons-logging:commons-logging:1.1.3',
-           'commons-codec:commons-codec:1.6'
-    }
-    // Copy the dependencies wherever they may be needed
-    copy {
-      // Adding jars to "autoFVT/lib/" will include them in a FAT bucket classpath at runtime
-      from configurations.libs
-      into "${buildDir}/autoFVT/lib/"
-    }
-  }
+// Define G:A:V coordinates of each dependency
+dependencies {
+  requiredLibs 'httpunit:httpunit:1.5.4',
+    'net.sf.jtidy:jtidy:9.3.8',	
+    'org.apache.httpcomponents.client5:httpclient5:5.0-alpha2',
+    'org.apache.httpcomponents.core5:httpcore5:5.0-alpha4',
+    'commons-logging:commons-logging:1.1.3',
+    'commons-codec:commons-codec:1.6'
 }

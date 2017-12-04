@@ -155,7 +155,7 @@ src: \
 javac.source: 1.7
 javac.target: 1.7
 	
-test.project: true
+fat.project: true
 
 tested.features:\
 	cdi-2.0,\

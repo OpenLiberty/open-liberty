@@ -11,7 +11,7 @@
 
 clean {
   doLast {
-    delete "${projectDir}/apacheds-2.0.0-M15/lib/com.ibm.ws.org.apache.directory.server.jar"
+    delete project.file('apacheds-2.0.0-M15/lib/com.ibm.ws.org.apache.directory.server.jar')
   }
 }
 
@@ -20,15 +20,15 @@ jar.doLast {
    * Copy the ApacheDS JAR to the ApacheDS service lib directory.
    */
   sourceSets.main.runtimeClasspath.each { file ->
-    if ("apacheds-service-2.0.0-M15.jar".equals(file.name)) {
+    if ('apacheds-service-2.0.0-M15.jar'.equals(file.name)) {
       copy {
         from file.absolutePath
-        into "apacheds-2.0.0-M15/lib/"
+        into 'apacheds-2.0.0-M15/lib/'
       }
     }
   }
 }
 
 clean.doFirst {
-  file("apacheds-2.0.0-M15/lib/apacheds-service-2.0.0-M15.jar").delete()
+  file('apacheds-2.0.0-M15/lib/apacheds-service-2.0.0-M15.jar').delete()
 }
