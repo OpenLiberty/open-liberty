@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2014 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,7 +41,6 @@ import com.ibm.ws.ssl.core.TraceNLSHelper;
  * @since WAS 6.1
  * @ibm-api
  **/
-
 public class JSSEHelper {
     private final static TraceComponent tc = Tr.register(JSSEHelper.class, "SSL", "com.ibm.ws.ssl.resources.ssl");
 
@@ -279,7 +278,7 @@ public class JSSEHelper {
      * WebSphereRuntimePermission "setSSLConfig" to be granted.
      * </p>
      *
-     * @param props
+     * @param props The SSL properties to set on the thread.
      * @ibm-api
      **/
     public void setSSLPropertiesOnThread(Properties props) {
@@ -540,17 +539,16 @@ public class JSSEHelper {
 
     /**
      * <p>
-     * This method creates an SSLContext based on the SSL properties specified.
-     * The properties can be retrieved from the SSL configuration using the
-     * getProperties API in this class.
-     *
+     * This method creates an SSLSocketFactory for use by an SSL application or
+     * component. Precedence logic will determine which parameters are used for
+     * creating the SSLSocketFactory. See the JavaDoc for getSSLContext with the
+     * same parameters for more info on the behavior of this API.
+     * </p>
+     * <p>
+     * When Java 2 Security is enabled, access to call this method requires
+     * WebSphereRuntimePermission "getSSLConfig" to be granted.
      * </p>
      *
-     * @param sslAliasName - Used in direct selection. The alias name of a
-     *            specific SSL configuration (optional). You can pass in "null" here.
-     *            If sslAliasName is provided but does not exist it will check
-     *            connection information for a match. Then look for a default if no
-     *            match with the connection information.
      * @param connectionInfo - This refers to the remote connection information. The
      *            current properties known by the runtime include:
      *            <p>
@@ -567,6 +565,7 @@ public class JSSEHelper {
      *            com.ibm.ssl.direction="inbound"
      *            </code></p>
      *            It's highly recommended to supply these properties when possible.
+     * @param props Properties used to configure the SSL socket factory. See {@link Constants} for valid properties.
      * @return SSLSocketFactory
      * @throws com.ibm.websphere.ssl.SSLException
      * @ibm-api
@@ -1240,7 +1239,7 @@ public class JSSEHelper {
      * specified in the properties resides.
      * </p>
      *
-     * @param props
+     * @param props The SSL properties to validate.
      * @throws com.ibm.websphere.ssl.SSLException
      *
      * @ibm-api

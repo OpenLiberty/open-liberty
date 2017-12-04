@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,17 @@
  *******************************************************************************/
 package com.ibm.ws.security.wim.env.was;
 
+import static com.ibm.websphere.ssl.JSSEHelper.CONNECTION_INFO_DIRECTION;
+import static com.ibm.websphere.ssl.JSSEHelper.CONNECTION_INFO_REMOTE_HOST;
+import static com.ibm.websphere.ssl.JSSEHelper.CONNECTION_INFO_REMOTE_PORT;
+import static com.ibm.websphere.ssl.JSSEHelper.DIRECTION_OUTBOUND;
+
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -27,7 +36,6 @@ import com.ibm.websphere.security.wim.ConfigConstants;
 import com.ibm.websphere.security.wim.ras.WIMMessageHelper;
 import com.ibm.websphere.security.wim.ras.WIMMessageKey;
 import com.ibm.websphere.ssl.JSSEHelper;
-import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.security.wim.env.ISSLUtil;
 import com.ibm.wsspi.security.wim.exception.WIMException;
 import com.ibm.wsspi.security.wim.exception.WIMSystemException;
@@ -42,66 +50,91 @@ public class SSLUtilImpl implements ISSLUtil {
 
     @Override
     public Properties getSSLPropertiesOnThread() {
-        return JSSEHelper.getInstance().getSSLPropertiesOnThread();
+        return AccessController.doPrivileged(new PrivilegedAction<Properties>() {
+            @Override
+            public Properties run() {
+                return JSSEHelper.getInstance().getSSLPropertiesOnThread();
+            }
+        });
     }
 
     @Override
     public void resetSSLAlias() {
-        JSSEHelper.getInstance().setSSLPropertiesOnThread(null);
+        setSSLPropertiesOnThread(null);
     }
 
     @Override
-    public void setSSLAlias(String sslAlias, Hashtable<?, ?> ldapEnv) throws WIMException {
+    public void setSSLAlias(final String sslAlias, Hashtable<?, ?> ldapEnv) throws WIMException {
         final String METHODNAME = "setSSLAlias";
 
-        try {
-            Map<String, Object> connectionInfo = null;
-            Properties props;
-            String provider = (String) ldapEnv.get(Context.PROVIDER_URL);
+        final Map<String, Object> connectionInfo = new HashMap<String, Object>();;
+        String provider = (String) ldapEnv.get(Context.PROVIDER_URL);
 
-            if (provider != null) {
-                // Get the first URL
-                StringTokenizer providerTokens = new StringTokenizer(provider);
-                provider = providerTokens.nextToken();
+        if (provider != null) {
+            /*
+             * Get the first URL
+             */
+            StringTokenizer providerTokens = new StringTokenizer(provider);
+            provider = providerTokens.nextToken();
 
-                // Create a URL to extract host-name and port
-                provider = provider.replaceFirst("ldap", "http");
-                URL providerURL = new URL(provider);
-
-                // Set out bound connection info
-                connectionInfo = new HashMap<String, Object>();
-                connectionInfo.put(com.ibm.websphere.ssl.JSSEHelper.CONNECTION_INFO_DIRECTION, com.ibm.websphere.ssl.JSSEHelper.DIRECTION_OUTBOUND);
-                connectionInfo.put(com.ibm.websphere.ssl.JSSEHelper.CONNECTION_INFO_REMOTE_HOST, providerURL.getHost());
-                connectionInfo.put(com.ibm.websphere.ssl.JSSEHelper.CONNECTION_INFO_REMOTE_PORT, providerURL.getPort() == -1 ? "636" : Integer.toString(providerURL.getPort()));
+            /*
+             * Create a URL to extract host-name and port
+             */
+            provider = provider.replaceFirst("ldap", "http");
+            URL providerURL = null;
+            try {
+                providerURL = new URL(provider);
+            } catch (MalformedURLException e) {
+                String msg = Tr.formatMessage(tc, WIMMessageKey.INVALID_INIT_PROPERTY, WIMMessageHelper.generateMsgParms(ldapEnv.get(Context.PROVIDER_URL)));
+                throw new WIMSystemException(WIMMessageKey.INVALID_INIT_PROPERTY, msg);
             }
 
-            if (connectionInfo != null)
-                props = JSSEHelper.getInstance().getProperties(sslAlias, connectionInfo, null);
-            else
-                props = JSSEHelper.getInstance().getProperties(sslAlias);
+            /*
+             * Set out bound connection info
+             */
+            connectionInfo.put(CONNECTION_INFO_DIRECTION, DIRECTION_OUTBOUND);
+            connectionInfo.put(CONNECTION_INFO_REMOTE_HOST, providerURL.getHost());
+            connectionInfo.put(CONNECTION_INFO_REMOTE_PORT, providerURL.getPort() == -1 ? "636" : Integer.toString(providerURL.getPort()));
+        }
 
-            // Set properties to thread
-            JSSEHelper.getInstance().setSSLPropertiesOnThread(props);
+        /*
+         * Get the SSL properties.
+         */
+        Properties props;
+        try {
+            props = AccessController.doPrivileged(new PrivilegedExceptionAction<Properties>() {
+                @Override
+                public Properties run() throws Exception {
+                    if (!connectionInfo.isEmpty()) {
+                        return JSSEHelper.getInstance().getProperties(sslAlias, connectionInfo, null);
+                    } else {
+                        return JSSEHelper.getInstance().getProperties(sslAlias);
+                    }
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            String msg = Tr.formatMessage(tc, WIMMessageKey.INVALID_INIT_PROPERTY, WIMMessageHelper.generateMsgParms(ConfigConstants.CONFIG_PROP_SSL_CONFIGURATION));
+            throw new WIMSystemException(WIMMessageKey.INVALID_INIT_PROPERTY, msg, e);
+        }
 
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, METHODNAME + " Properties for SSL Alias '" + sslAlias + "':" + props);
-        } catch (SSLException e) {
-            throw new WIMSystemException(WIMMessageKey.INVALID_INIT_PROPERTY, Tr.formatMessage(
-                                                                                               tc,
-                                                                                               WIMMessageKey.INVALID_INIT_PROPERTY,
-                                                                                               WIMMessageHelper.generateMsgParms(ConfigConstants.CONFIG_PROP_SSL_CONFIGURATION)));
-        } catch (MalformedURLException e) {
-            throw new WIMSystemException(WIMMessageKey.INVALID_INIT_PROPERTY, 
-                    Tr.formatMessage(
-                    tc,
-                    WIMMessageKey.INVALID_INIT_PROPERTY,
-                    WIMMessageHelper.generateMsgParms((String) ldapEnv.get(Context.PROVIDER_URL))
-                    ));
-		}
-	}
+        /*
+         * Set SSL properties to thread
+         */
+        setSSLPropertiesOnThread(props);
+
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, METHODNAME + " Properties for SSL Alias '" + sslAlias + "':" + props);
+        }
+    }
 
     @Override
-    public void setSSLPropertiesOnThread(Properties props) {
-        JSSEHelper.getInstance().setSSLPropertiesOnThread(props);
+    public void setSSLPropertiesOnThread(final Properties props) {
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+            @Override
+            public Void run() {
+                JSSEHelper.getInstance().setSSLPropertiesOnThread(props);
+                return null;
+            }
+        });
     }
 }
