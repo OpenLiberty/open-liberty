@@ -30,8 +30,6 @@ import org.osgi.service.component.annotations.Modified;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.opentracing.filters.ExcludeFilter;
-import com.ibm.ws.opentracing.filters.IncludeFilter;
 import com.ibm.ws.opentracing.filters.SpanFilter;
 import com.ibm.ws.opentracing.filters.SpanFilterType;
 
@@ -76,8 +74,12 @@ public class OpentracingService {
         // in the main path in `process`.
         List<SpanFilter> filters = new ArrayList<SpanFilter>();
 
-        processFilters(filters, map, configAdmin, "excludeSpans", ExcludeFilter.class);
-        processFilters(filters, map, configAdmin, "includeSpans", IncludeFilter.class);
+        /*
+         * Removing filter processing until microprofile spec for it is approved. Expect to add this code
+         * back in in 1Q18 - smf
+         */
+//        processFilters(filters, map, configAdmin, "excludeSpans", ExcludeFilter.class);
+//        processFilters(filters, map, configAdmin, "includeSpans", IncludeFilter.class);
 
         SpanFilter[] finalFilters = new SpanFilter[filters.size()];
         filters.toArray(finalFilters);

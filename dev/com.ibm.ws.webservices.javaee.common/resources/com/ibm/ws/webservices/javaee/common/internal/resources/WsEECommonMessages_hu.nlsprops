@@ -1,0 +1,95 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# translator:
+# Translate words on the right hand side of the = sign.
+# Do not translate {0}, {1}, %1, %2 etc.
+# Do NOT translate any words when they START with: '-
+# Do NOT translate any words when they START with: @
+# Preserve all spaces after a backslash (\) even at the end of a line.
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.webservices.javaee.common/resources/com/ibm/ws/webservices/javaee/common/resources/WsEECommonMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere WebServices EE Common Code
+#RANGE 0300-0399
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+#{0}=service impl bean link
+warn.dd.invalid.portcomponentname=CWWKW0300W: A(z) {0} <port-component-name> elem \u00e9rt\u00e9ke null a webservices.xml f\u00e1jlban.
+warn.dd.invalid.portcomponentname.explanation=A <port-component-name> elem \u00e9rt\u00e9ke nem lehet null vagy \u00fcres.
+warn.dd.invalid.portcomponentname.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a <port-component-name> eleme \u00e9rt\u00e9ke ne legyen null vagy \u00fcres.
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.protocolbinding=CWWKW0301W: A <protocol-binding> elem {0} \u00e9rt\u00e9ke nem \u00e9rv\u00e9nyes \u00e9rt\u00e9k a(z) {1} port\u00f6sszetev\u0151 sz\u00e1m\u00e1ra a webservices.xml f\u00e1jlban.
+warn.dd.invalid.protocolbinding.explanation=A webservices.xml f\u00e1jlban a <protocol-binding> elem \u00e9rt\u00e9k\u00e9nek a k\u00f6vetkez\u0151 URL c\u00edmek ("http://schemas.xmlsoap.org/wsdl/soap/http","http://www.w3.org/2003/05/soap/bindings/HTTP/","http://schemas.xmlsoap.org/wsdl/soap/http?mtom=true","http://www.w3.org/2003/05/soap/bindings/HTTP/?mtom=true"), illetve \u00e1lnev\u00fck (##SOAP11_HTTP,##SOAP11_HTTP.MTOM,##SOAP12_HTTP,##SOAP12_HTTP.MTOM,##XML_HTTP) egyik\u00e9nek kell lennie.
+warn.dd.invalid.protocolbinding.useraction=Az al\u00e1bbi URL c\u00edmek ("http://schemas.xmlsoap.org/wsdl/soap/http","http://www.w3.org/2003/05/soap/bindings/HTTP/","http://schemas.xmlsoap.org/wsdl/soap/http?mtom=true","http://www.w3.org/2003/05/soap/bindings/HTTP/?mtom=true") vagy a hozz\u00e1juk tartoz\u00f3 \u00e1lnevek ##SOAP11_HTTP,##SOAP11_HTTP.MTOM,##SOAP12_HTTP,##SOAP12_HTTP.MTOM,##XML_HTTP egyik\u00e9t haszn\u00e1lja a protokollk\u00f6t\u00e9snek.
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.wsdlservice=CWWKW0302W: A webservices.xml f\u00e1jl <wsdl-service> elem\u00e9nek {0} \u00e9rt\u00e9ke a(z) {1} port\u00f6sszetev\u0151re min\u0151s\u00edtetlen.
+warn.dd.invalid.wsdlservice.explanation=A <wsdl-service> elem \u00e9rt\u00e9k\u00e9nek a webservices.xml f\u00e1jlban min\u0151s\u00edtett n\u00e9vnek kell lennie.
+warn.dd.invalid.wsdlservice.useraction=A webservices.xml f\u00e1jl <wsdl-service> elem\u00e9hez haszn\u00e1ljon min\u0151s\u00edtett nevet. A min\u0151s\u00edtett n\u00e9v egy XML n\u00e9vtartom\u00e1nyb\u00f3l \u00e9s egy helyi n\u00e9vb\u0151l \u00e1ll. P\u00e9ld\u00e1ul a <wsdl-service> elem meghat\u00e1roz\u00e1sa a webservices.xml f\u00e1jlban: <wsdl-service xmlns:pfx="http://com.ibm.example">pfx:ExampleWSDLService</wsdl-service>.
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.wsdlport=CWWKW0303W: A webservices.xml f\u00e1jl <wsdl-port> elem\u00e9nek {0} \u00e9rt\u00e9ke a(z) {1} port\u00f6sszetev\u0151re min\u0151s\u00edtetlen.
+warn.dd.invalid.wsdlport.explanation=A <wsdl-port> elem \u00e9rt\u00e9k\u00e9nek a webservices.xml f\u00e1jlban min\u0151s\u00edtett n\u00e9vnek kell lennie. 
+warn.dd.invalid.wsdlport.useraction=A webservices.xml f\u00e1jl <wsdl-port> elem\u00e9hez haszn\u00e1ljon min\u0151s\u00edtett nevet. A min\u0151s\u00edtett n\u00e9v egy XML n\u00e9vtartom\u00e1nyb\u0151\u00f3l \u00e9s egy helyi n\u00e9vb\u0151l \u00e1ll. P\u00e9ld\u00e1ul a <wsdl-port> meghat\u00e1roz\u00e1sa a webservices.xml f\u00e1jlban: <wsdl-port xmlns:pfx="http://com.ibm.example">pfx:ExampleWSDLPort</wsdl-port>.
+
+#{0}=namespace of the port qname
+#{1}=value
+#{2}=port component name
+warn.dd.invalid.namespace.of.wsdlport=CWWKW0304W: A(z) {1} \u00e9rt\u00e9k  {0} n\u00e9vtere a webservices.xml f\u00e1jl <wsdl-port> elem\u00e9ben \u00e9rv\u00e9nytelen a(z) {2} port\u00f6sszetev\u0151re.
+warn.dd.invalid.namespace.of.wsdlport.explanation=Ha a <wsdl-port> elem n\u00e9vtere meg van adva, akkor annak meg kell egyeznie a <wsdl-service> elemben megadott n\u00e9vt\u00e9rrel. 
+warn.dd.invalid.namespace.of.wsdlport.useraction=Adjon meg olyan n\u00e9vteret, amely megegyezik a <wsdl-service> elemben megadott n\u00e9vt\u00e9rrel. 
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.serviceendpointinterface=CWWKW0305W: A <service-endpoint-interface> elem {0} \u00e9rt\u00e9ke nem teljes k\u00e9pz\u00e9s\u0171 oszt\u00e1lyn\u00e9v a(z) {1} port\u00f6sszetev\u0151 sz\u00e1m\u00e1ra a webservices.xml f\u00e1jlban.
+warn.dd.invalid.serviceendpointinterface.explanation=A <service-endpoint-interface> elem \u00e9rt\u00e9k\u00e9nek a webservices.xml f\u00e1jlban teljes k\u00e9pz\u00e9s\u0171 oszt\u00e1lyn\u00e9vnek kell lennie.
+warn.dd.invalid.serviceendpointinterface.useraction=A webservices.xml f\u00e1jl <service-endpoint-interface> elem\u00e9hez haszn\u00e1ljon min\u0151s\u00edtett oszt\u00e1lynevet. A teljes k\u00e9pz\u00e9s\u0171 oszt\u00e1lyn\u00e9v <csomag_n\u00e9v>.<oszt\u00e1ly_n\u00e9v> form\u00e1tum\u00fa, p\u00e9ld\u00e1ul com.ibm.ws.example.MyService.
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.mtomthreshold=CWWKW0306W: Az <mtom-threshold> elem {0} \u00e9rt\u00e9ke a(z) {1} port\u00f6sszetev\u0151 sz\u00e1m\u00e1ra negat\u00edv \u00e9rt\u00e9k a webservices.xml f\u00e1jlban.
+warn.dd.invalid.mtomthreshold.explanation=A <mtom-threshold> elem \u00e9rt\u00e9k\u00e9nek a webservices.xml f\u00e1jlban nem negat\u00edv eg\u00e9sznek kell lennie.
+warn.dd.invalid.mtomthreshold.useraction=A webservices.xml f\u00e1jl <mtom-threshold> elem\u00e9hez haszn\u00e1ljon nem negat\u00edv eg\u00e9sz \u00e9rt\u00e9ket.
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.enablemtom=CWWKW0307W: Az <enable-mtom> elem {0} \u00e9rt\u00e9ke nem logikai \u00e9rt\u00e9k a(z) {1} port\u00f6sszetev\u0151 sz\u00e1m\u00e1ra a webservices.xml f\u00e1jlban.
+warn.dd.invalid.enablemtom.explanation=Az <enable-mtom> elem \u00e9rt\u00e9k\u00e9nek nem logikai \u00e9rt\u00e9knek kell lennie a webservices.xml f\u00e1jlban.
+warn.dd.invalid.enablemtom.useraction=\u00c1ll\u00edtsa be az <enable-mtom> elemet true vagy false \u00e9rt\u00e9kre.
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.respectbinding=CWWKW0308W: Az <enabled> elem {0} \u00e9rt\u00e9ke a <respect-binding> elemben nem logikai \u00e9rt\u00e9k a(z) {1} port\u00f6sszetev\u0151 sz\u00e1m\u00e1ra a webservices.xml f\u00e1jlban.
+warn.dd.invalid.respectbinding.explanation=A <respect-binding> elemben meghat\u00e1rozott <enabled> elem \u00e9rt\u00e9k\u00e9nek logikai \u00e9rt\u00e9knek kell lennie.
+warn.dd.invalid.respectbinding.useraction=\u00c1ll\u00edtsa be az <enabled> elemet true vagy false \u00e9rt\u00e9kre.
+
+#{0}=value
+#{1}=element tag
+#{2}=port component name
+warn.dd.invalid.addressing=CWWKW0309W: A(z) {1} {0} \u00e9rt\u00e9ke az <addressing> elemben nem logikai \u00e9rt\u00e9k a(z) {2} port\u00f6sszetev\u0151 sz\u00e1m\u00e1ra a webservices.xml f\u00e1jlban.
+warn.dd.invalid.addressing.explanation=Az <addressing> elemben meghat\u00e1rozott <enabled> vagy <required> elem \u00e9rt\u00e9k\u00e9nek logikai \u00e9rt\u00e9knek kell lennie.
+warn.dd.invalid.addressing.useraction=\u00c1ll\u00edtsa az <enabled> vagy a <required> elemet true vagy false \u00e9rt\u00e9k\u0171re.
+
+#{0}=element tag
+#{1}=port component name
+warn.dd.invalid.handler=CWWKW0310W: A webservices.xml f\u00e1jl {1} port\u00f6sszetev\u0151j\u00e9nek <handler> elem\u00e9ben a(z) {0} elem hi\u00e1nyzik.
+warn.dd.invalid.handler.explanation=A <handler-class> elem \u00e9s a <handler-name> elem k\u00f6telez\u0151, amikor be van \u00e1ll\u00edtva kezel\u0151.
+warn.dd.invalid.handler.useraction=\u00c1ll\u00edtsa be a <handler-class> elemet \u00e9s a <handler-name> elemet egy \u00e9rv\u00e9nyes kezel\u0151re. A <handler-name> elem \u00e9rt\u00e9k\u00e9nek egyedi n\u00e9vnek kell lennie ugyanabban a webservices.xml f\u00e1jlban. A <handler-class> elem \u00e9rt\u00e9k\u00e9nek egy teljes k\u00e9pz\u00e9s\u0171 oszt\u00e1lyn\u00e9vnek kell lennie. A teljes k\u00e9pz\u00e9s\u0171 oszt\u00e1lyn\u00e9v <csomag_neve>.<oszt\u00e1ly_neve> form\u00e1tum\u00fa, p\u00e9ld\u00e1ul com.ibm.ws.example.MyHandler.

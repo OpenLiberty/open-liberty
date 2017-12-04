@@ -1,0 +1,726 @@
+###############################################################################
+# Copyright (c) 2012, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# 93022           2013-27-02 kavitha new message added for Invalid XID 
+# 
+# -------------------------------------------------------------------------------------------------
+
+# File com.ibm.ws.sib.example.CWSISMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_SInn0001=CWSIS0001I: This is a message with insert {0}
+# MSG_DESCRIPTIVE_NAME_SInn0001.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_SInn0001.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+# I have allocated ranges of message ids (500 messages each) so we can avoid tripping over each other.
+# If you need a new range - just allocate it (but check no-one has it already).
+#
+#   - Msgs in the range CWSIS0000-CWSIS0499 belong to the interface stuff (eg PTvL)
+#   - Msgs in the range CWSIS0500-CWSIS0999 belong to the core implementation stuff (eg PTvL)
+#   - Msgs in the range CWSIS1000-CWSIS1499 belong to the transaction stuff (eg GB)
+#   - Msgs in the range CWSIS1500-CWSIS1999 belong to the persistence stuff (eg BTD)
+#   - Msgs in the range CWSIS2000-CWSIS2499 belong to the expiry stuff (eg KC)
+#
+#   - CWSIS9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+#
+# cmvc_en_version_level=1.4,0,03/04/23,08:38:27
+#
+#CMVCPATHNAME com.ibm.ws.messaging.common/resources/com/ibm/ws/sib/msgstore/CWSISMessages.nlsprops
+#COMPONENTPREFIX CWSIS
+#COMPONENTNAMEFOR CWSIS MessageStore
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# MsgStore Interface
+# -------------------------------------------------------------------------------------------------
+
+
+# {0} is the text of the exception thrown
+INVALID_ITEM_CONSTRUCTOR_SIMS0001=CWSIS0001E: Un articol nu are un constructor implicit accesibil (public) {0}.
+INVALID_ITEM_CONSTRUCTOR_SIMS0001.explanation=La depozitul de date a fost ad\u0103ugat un articol care nu a avut un constructor corespunz\u0103tor.
+INVALID_ITEM_CONSTRUCTOR_SIMS0001.useraction=CMSG0002
+
+# {0} is the text of the exception thrown
+STARTUP_EXCEPTION_SIMS0002=CWSIS0002E: Motorul de mesagerie a \u00eent\u00e2lnit o excep\u0163ie \u00een timpul pornirii. Excep\u0163ie: {0}
+STARTUP_EXCEPTION_SIMS0002.explanation=Dac\u0103 mesajul nu furnizeaz\u0103 suficiente informa\u0163ii, atunci verifica\u0163i mesajele adiacente de eroare pentru mai multe informa\u0163ii.
+STARTUP_EXCEPTION_SIMS0002.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+REFERENCE_CONSISTENCY_SIMS0003=CWSIS0003E: Referin\u0163a {0} nu are niciun articol referit \u015fi nu poate fi ad\u0103ugat la {1}.
+REFERENCE_CONSISTENCY_SIMS0003.explanation=A fost f\u0103cut\u0103 o \u00eencercare de ad\u0103ugare a unei referin\u0163e la un flux de referin\u0163e, care \u00eencalc\u0103 constr\u00e2ngerile de consiten\u0163\u0103.
+REFERENCE_CONSISTENCY_SIMS0003.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+#STREAM_NOT_STORED_SIMS0004=CWSIS0004E: It is not possible to add {0} to {1} because it is not in a data store.
+#STREAM_NOT_STORED_SIMS0004.explanation=An attempt was made to add an item to a stream that is not in a data store.
+#STREAM_NOT_STORED_SIMS0004.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+STREAM_ADD_CONFLICT_SIMS0005=CWSIS0005E: Nu este posibil\u0103 ad\u0103ugarea {0} la al doilea flux {1}.
+STREAM_ADD_CONFLICT_SIMS0005.explanation=A fost f\u0103cut\u0103 o \u00eencercare de ad\u0103ugare a unui articol la un flux, atunci c\u00e2nd articolul era deja \u00eentr-un alt flux.
+STREAM_ADD_CONFLICT_SIMS0005.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+STREAM_WRONG_STATE_SIMS0006=CWSIS0006E: Nu este posibil\u0103 ad\u0103ugarea la fluxul {0} care este {1}.
+STREAM_WRONG_STATE_SIMS0006.explanation=A fost f\u0103cut\u0103 o \u00eencercare de ad\u0103ugare la un fux care era \u00eentr-o stare incorect\u0103.
+STREAM_WRONG_STATE_SIMS0006.useraction=CMSG0002
+
+
+# -------------------------------------------------------------------------------------------------
+# MsgStore Implementation
+# -------------------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------------------
+STREAM_STORAGE_MISMATCH_SIMS0500=CWSIS0500E: Strategia stocare articol {0} dep\u0103\u015fe\u015fte strategia de stocare a fluxului care \u00eel con\u0163ine {1}.
+STREAM_STORAGE_MISMATCH_SIMS0500.explanation=A fost f\u0103cut\u0103 o \u00eencercare de ad\u0103ugare a unui articol la un flux unde articolul avea o strategie de depozitare mai \u00eenalt\u0103 dec\u00e2t fluxul.
+STREAM_STORAGE_MISMATCH_SIMS0500.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+STREAM_NOT_EMPTY_SIMS0501=CWSIS0501E: Nu este posibil\u0103 \u015ftergerea unui flux care nu este gol.
+STREAM_NOT_EMPTY_SIMS0501.explanation=A fost f\u0103cut\u0103 o \u00eencercare de a \u015ftergere a unui flux care nu era gol.
+STREAM_NOT_EMPTY_SIMS0501.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+RESTORING_ITEM_SIMS0502=CWSIS0502E: A ap\u0103rut o excep\u0163ie \u00een timpul restaur\u0103rii unui articol.
+RESTORING_ITEM_SIMS0502.explanation=A e\u015fuat o \u00eencercare de restaurare a unui element.
+RESTORING_ITEM_SIMS0502.useraction=CMSG0002
+
+#MSGSTORE_CONFIGURATION_ERROR_SIMS0503=CWSIS0503E: Configuration information for the data store is not available.
+#MSGSTORE_CONFIGURATION_ERROR_SIMS0503.explanation=The data store did not receive its configuration.
+#MSGSTORE_CONFIGURATION_ERROR_SIMS0503.useraction=CMSG0002
+
+ROOT_PERSISTABLE_EXCEPTION_SIMS0504=CWSIS0504E: Obiectul persistabil r\u0103d\u0103cin\u0103 nu poate fi creat.
+ROOT_PERSISTABLE_EXCEPTION_SIMS0504.explanation=Obiectul persistent root nu a fost creat.
+ROOT_PERSISTABLE_EXCEPTION_SIMS0504.useraction=CMSG0002
+
+INVALID_MSGSTORE_STATE_SIMS0505=CWSIS0505E: Depozitul de mesaje este \u00eentr-o stare incorect\u0103, {0}.
+INVALID_MSGSTORE_STATE_SIMS0505.explanation=Depozitul de date nu este \u00een starea corect\u0103 pentru a realiza opera\u0163ia cerut\u0103.
+INVALID_MSGSTORE_STATE_SIMS0505.useraction=CMSG0002
+
+#INVALID_AUTHENTICATION_DATA_SIMS0506=CWSIS0506E: The authentication data associated with the alias, {0}, is invalid.
+#INVALID_AUTHENTICATION_DATA_SIMS0506.explanation=The authentication data provided cannot be used to access the database containing the data store.
+#INVALID_AUTHENTICATION_DATA_SIMS0506.useraction=Provide an alternate authentication alias and try again.
+
+STREAM_NOT_EMPTY_SIMS0507=CWSIS0507E: Nu este posibil\u0103 \u015ftergerea unui flux care nu este gol. Articole din flux={0}. Clasa de flux={1}
+STREAM_NOT_EMPTY_SIMS0507.explanation=A fost f\u0103cut\u0103 o \u00eencercare de a \u015ftergere a unui flux care nu era gol. \
+Num\u0103rul articolelor r\u0103mase \u00een flux \u015fi tipul s\u0103u sunt livrate prin mesajul care ajut\u0103 la determinarea motivului pentru care aceast\u0103 opera\u0163ie a fost \u00eencercat\u0103.
+STREAM_NOT_EMPTY_SIMS0507.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Transaction messages
+# -------------------------------------------------------------------------------------------------
+
+XA_PROTOCOL_ERROR_SIMS1000=CWSIS1000E: Ac\u0163iunea cerut\u0103 nu a putut fi urmat\u0103 deoarece nu este \u00een conformitate cu protocolul de tranzac\u0163ii XA.
+XA_PROTOCOL_ERROR_SIMS1000.explanation=A survenit o eroare intern\u0103. Protocolul de tranzac\u0163ii XA nu a fost urmat corect.
+XA_PROTOCOL_ERROR_SIMS1000.useraction=CMSG0002
+
+TRAN_PROTOCOL_ERROR_SIMS1001=CWSIS1001E: Ac\u0163iunea cerut\u0103 nu a putut fi urmat\u0103 deoarece nu este \u00een conformitate cu protocolul de tranzac\u0163ii intern al managerului de resurse.
+TRAN_PROTOCOL_ERROR_SIMS1001.explanation=A survenit o eroare intern\u0103. Protocolul de tranzac\u0163ii al managerului de resurse nu a fost urmat corect.
+TRAN_PROTOCOL_ERROR_SIMS1001.useraction=CMSG0002
+
+COMPLETION_EXCEPTION_SIMS1002=CWSIS1002E: A fost prins\u0103 o excep\u0163ie nea\u015fteptat\u0103 \u00een timpul complet\u0103rii tranzac\u0163iei. Excep\u0163ie: {0}
+COMPLETION_EXCEPTION_SIMS1002.explanation=A survenit o eroare intern\u0103. Procesarea tranzac\u0163iei a e\u015fuat atunci c\u00e2nd managerului de resurse i s-a cerut s\u0103 i\u015fi termine activitatea.
+COMPLETION_EXCEPTION_SIMS1002.useraction=CMSG0002
+
+NOT_SUPPORTED_OUTSIDE_WEBSPHERE_SIMS1003=CWSIS1003E: Func\u0163ia WebSphere nu poate fi folosit\u0103 \u00een afara WebSphere.
+NOT_SUPPORTED_OUTSIDE_WEBSPHERE_SIMS1003.explanation=A fost f\u0103cut\u0103 o \u00eencercare de utilizare a unei func\u0163ii specifice WebSphere \u00een afara mediului de execu\u0163ie WebSphere.
+NOT_SUPPORTED_OUTSIDE_WEBSPHERE_SIMS1003.useraction=CMSG0002
+
+CANNOT_COMMIT_COMPLETE_SIMS1004=CWSIS1004E: Tranzac\u0163ia nu poate fi comis\u0103. Tranzac\u0163ia este finalizat\u0103 sau in curs de finalizare.
+CANNOT_COMMIT_COMPLETE_SIMS1004.explanation=S-a f\u0103cut o \u00eencercare de comitere a unei tranzac\u0163ii care deja a fost finalizat\u0103 sau este \u00een proces de finalizare.
+CANNOT_COMMIT_COMPLETE_SIMS1004.useraction=CMSG0002
+
+CANNOT_ROLLBACK_COMPLETE_SIMS1005=CWSIS1005E: Tranzac\u0163ia nu poate fi derulat\u0103 \u00eenapoi. Tranzac\u0163ia este finalizat\u0103 sau in curs de finalizare.
+CANNOT_ROLLBACK_COMPLETE_SIMS1005.explanation=S-a f\u0103cut o \u00eencercare de \u00eentoarcere \u00eenapoi a unei tranzac\u0163ii care deja a fost finalizat\u0103 sau este \u00een proces de finalizare.
+CANNOT_ROLLBACK_COMPLETE_SIMS1005.useraction=CMSG0002
+
+HEURISTIC_HAZARD_SIMS1006=CWSIS1006E: Rezultatul unei tranzac\u0163ii folosite pentru a modifica con\u0163inutul unui depozit de magazii nu a putut fi determinat. Motorul de mesagerie este \u00een curs de oprire, pentru evitarea posibilita\u0163ii de pierdere a datelor.
+HEURISTIC_HAZARD_SIMS1006.explanation=A fost detectat un hazard euristic. Motorul de mesagerie poate s\u0103 nu fie sincronizat \u015fi are nevoie s\u0103 fie repornit pentu a determina dac\u0103 modific\u0103rile din depozitul s\u0103u de mesaj au reu\u015fit.
+HEURISTIC_HAZARD_SIMS1006.useraction=CMSG0002
+
+XID_NOT_RECOGNISED_SIMS1007=CWSIS1007E: Nu este posibil\u0103 ac\u0163iunea {0} deoarece nu este recunoscut XID-ul furnizat de motorul de mesagerie. XID: {1}
+XID_NOT_RECOGNISED_SIMS1007.explanation=Nu se poate finaliza ac\u0163iunea cerut\u0103 deoarece motorul de mesagerie nu recunoa\u015fte valoarea XID-ului furnizat.  \
+Acest lucru se poate \u00eent\u00e2mpla dac\u0103 motorul de mesagerie nu a v\u0103zut XID-ul \u00eenainte sau dac\u0103 XID-ul este \u00een starea incorect\u0103.
+XID_NOT_RECOGNISED_SIMS1007.useraction=CMSG0002
+
+XID_STILL_ASSOCIATED_SIMS1008=CWSIS1008E: Nu este posibil\u0103 ac\u0163iunea {0} deoarece XID-ul furnizat nu a fost \u00eenc\u0103 apelat la finalul asocierii \u00eentre motorul de mesagerie \u015fi XID.  XID: {1}
+XID_STILL_ASSOCIATED_SIMS1008.explanation=Nu se poate finaliza ac\u0163iunea cerut\u0103 deoarece motorul de mesagerie este \u00eenc\u0103 asociat cu XID-ul furnizat. \
+Disocia\u0163i XID-ul de motorul de mesagerie prin apelarea metodei de terminare XA \u00eenainte de a \u00eencerca s\u0103 finaliza\u0163i ramura tranzac\u0163iei.
+XID_STILL_ASSOCIATED_SIMS1008.useraction=CMSG0002
+
+XID_ALREADY_ASSOCIATED_SIMS1009=CWSIS1009E: Nu este posibil\u0103 ac\u0163iunea {0} deoarece XID-ul furnizat este deja asociat cu acest motor de mesagerie. XID: {1}
+XID_ALREADY_ASSOCIATED_SIMS1009.explanation=Nu se poate finaliza ac\u0163iunea cerut\u0103 deoarece motorul de mesagerie este deja asociat cu XID-ul furnizat.
+XID_ALREADY_ASSOCIATED_SIMS1009.useraction=CMSG0002
+
+INVALID_XID_STRING_SIMS1010=CWSIS1010E: Un \u015fir XID invalid a fost transmis opera\u0163iei de angajare \u015fi de derulare \u00eenapoi.
+INVALID_XID_STRING_SIMS1010.explanation=Opera\u0163ia de angajare \u015fi de derulare \u00eenapoi nu poate fi efectuat\u0103 folosind \u015firul XID specificat.
+INVALID_XID_STRING_SIMS1010.useraction= Specifica\u0163i un \u015fir XID valid.
+
+UNEXPECTED_EXCEPTION_SIMS1099=CWSIS1099E: A survenit o eroare intern\u0103. Excep\u0163ie: {0}
+UNEXPECTED_EXCEPTION_SIMS1099.explanation=A survenit o eroare intern\u0103. Folosi\u0163i informa\u0163iile excep\u0163iei pentru a determina cauza erorii.
+UNEXPECTED_EXCEPTION_SIMS1099.useraction=CMSG0002
+
+# ------------------------------------------------- Unrecoverable Messages ------------------------------------------------- #
+
+UNRECOVERABLE_ERROR_SIMS1499=CWSIS1499E: A avut loc o eroare nerecuperabil\u0103 \u015fi motorul de mesagerie nu poate continua.
+UNRECOVERABLE_ERROR_SIMS1499.explanation=A survenit o eroare intern\u0103.
+UNRECOVERABLE_ERROR_SIMS1499.useraction=CMSG0002
+
+
+
+# -------------------------------------------------------------------------------------------------
+# Persistence
+# -------------------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------------------
+DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1500=CWSIS1500E: Dispecerul nu poate accepta lucru.
+DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1500.explanation=Dispecerul nu poate accepta mai mult\u0103 \u00eenc\u0103rcare din cauza unei erori survenite mai devreme la depozitul de date.
+DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1500.useraction=CMSG0002
+
+DATASOURCE_EXCEPTION_SIMS1501=CWSIS1501E: Sursa de date a produs o excep\u0163ie nea\u015fteptat\u0103: {0}
+DATASOURCE_EXCEPTION_SIMS1501.explanation=Sursa de date care a fost configurat\u0103 pentru a fi folosit\u0103 ca un depozit de date a produs o excep\u0163ie.
+DATASOURCE_EXCEPTION_SIMS1501.useraction=CMSG0002
+
+INVALID_TUPLE_TYPE_SIMS1502=CWSIS1502E: Tipul tuple, {0}, nu este recunoscut ca un tip valid.
+INVALID_TUPLE_TYPE_SIMS1502.explanation=A survenit o eroare intern\u0103.
+INVALID_TUPLE_TYPE_SIMS1502.useraction=CMSG0002
+
+#DATABASE_NOT_SUPPORTED_SIMS1503=CWSIS1503E: Database: {0}, version: {1}, platform: {2}, is not supported
+#DATABASE_NOT_SUPPORTED_SIMS1503.explanation=The specified database is not recognized as a supported database.
+#DATABASE_NOT_SUPPORTED_SIMS1503.useraction=Rerun the command and specify a supported database.
+
+#SEVERE_PERSISTENCE_EXCEPTION_SIMS1504=CWSIS1504E: The messaging engine is stopping due to an exception from the data source.
+#SEVERE_PERSISTENCE_EXCEPTION_SIMS1504.explanation=An exception from the data source caused the messaging engine to stop in order to avoid data corruption.
+#SEVERE_PERSISTENCE_EXCEPTION_SIMS1504.useraction=CMSG0002
+
+#KEY_GENERATOR_UPDATE_FAILED_SIMS1505 is no longer used.
+
+#KEY_GENERATOR_MISSING_SIMS1506 is no longer used.
+
+INVALID_PERSISTABLE_OPERATION_SIMS1507=CWSIS1507E: Acest articol, {0}, nu poate con\u0163ine alte articole deoarece este de tipul, {1}
+INVALID_PERSISTABLE_OPERATION_SIMS1507.explanation=A survenit o opera\u0163ie incorect\u0103 la reprezentarea intern\u0103 a mesajului.
+INVALID_PERSISTABLE_OPERATION_SIMS1507.useraction=CMSG0002
+
+#TABLE_NUMBER_OUTSIDE_RANGE_SIMS1508=CWSIS1508E: The item table identifier, {0}, is outside of the allowed range.
+#TABLE_NUMBER_OUTSIDE_RANGE_SIMS1508.explanation=A maximum of 32 item tables can be used, with identifiers in the range 0 - 31.
+#TABLE_NUMBER_OUTSIDE_RANGE_SIMS1508.useraction=CMSG0002
+
+#INVALID_NUMBER_OF_STREAM_TABLES_SIMS1509=CWSIS1509E: An incorrect number of stream tables, {0}, were found.
+#INVALID_NUMBER_OF_STREAM_TABLES_SIMS1509.explanation=There must be only one stream table.
+#INVALID_NUMBER_OF_STREAM_TABLES_SIMS1509.useraction=Correct the problem and try again.
+
+#INVALID_NUMBER_OF_PERMANENT_TABLES_SIMS1510=CWSIS1510E: An incorrect number of permanent tables, {0}, were found.
+#INVALID_NUMBER_OF_PERMANENT_TABLES_SIMS1510.explanation=There must be at least one permanent table.
+#INVALID_NUMBER_OF_PERMANENT_TABLES_SIMS1510.useraction=Correct the problem and try again.
+
+#INVALID_NUMBER_OF_TEMPORARY_TABLES_SIMS1511=CWSIS1511E: An incorrect number of temporary tables, {0}, were found.
+#INVALID_NUMBER_OF_TEMPORARY_TABLES_SIMS1511.explanation=There must be at least one temporary table.
+#INVALID_NUMBER_OF_TEMPORARY_TABLES_SIMS1511.useraction=Correct the problem and try again.
+
+#UNKNOWN_ITEM_TABLE_KEY_SIMS1512 is no longer used.
+
+ROLLBACK_ONLY_EXCEPTION_SIMS1513=CWSIS1513E: Starea doar derulare \u00eenapoi nu poate fi setat\u0103 pe o conexiune de autocomitere
+ROLLBACK_ONLY_EXCEPTION_SIMS1513.explanation=A fost f\u0103cut\u0103 o \u00eencercare de setare a st\u0103rii unei conexiuni de autocomitere la valoarea 'numai derulare \u00eenapoi'
+ROLLBACK_ONLY_EXCEPTION_SIMS1513.useraction=CMSG0002
+
+#JNDI_NAME_NOT_SPECIFIED_SIMS1514=CWSIS1514E: A data source JNDI name has not been specified.
+#JNDI_NAME_NOT_SPECIFIED_SIMS1514.explanation=A JNDI name is needed in order to identify the data source to use as a data store.
+#JNDI_NAME_NOT_SPECIFIED_SIMS1514.useraction=Correct the problem and try again.
+
+#DATABASE_NOT_RECOGNIZED_SIMS1515=CWSIS1515E: The database, {0}, is not recognized as a valid database.
+#DATABASE_NOT_RECOGNIZED_SIMS1515.explanation=An internal error has occurred.
+#DATABASE_NOT_RECOGNIZED_SIMS1515.useraction=CMSG0002
+
+#INVALID_TABLE_ENTRY_SIMS1516=CWSIS1516E: Both data columns of table, {0}, were non-null.
+#INVALID_TABLE_ENTRY_SIMS1516.explanation=An internal error has occurred.
+#INVALID_TABLE_ENTRY_SIMS1516.useraction=CMSG0002
+
+# {0} is the messaging engine's name
+#RELIABLE_PERSISTENT_DATA_LOST_SIMS1517=CWSIS1517W: Reliable persistent data could not be written to the data store by messaging engine {0}.
+#RELIABLE_PERSISTENT_DATA_LOST_SIMS1517.explanation=An earlier exception prevented the writing of reliable persistent data to the data store for the messaging engine. The data cannot be recovered.
+#RELIABLE_PERSISTENT_DATA_LOST_SIMS1517.useraction=CMSG0002
+
+#MAX_DATA_SIZE_SIMS1518 is no longer used.
+
+# {0} is the messaging engine's name
+#CANNOT_OBTAIN_DATA_STORE_LOCK_SIMS1519=CWSIS1519E: Messaging engine {0} cannot obtain the lock on its data store, which ensures it has exclusive access to the data.
+#CANNOT_OBTAIN_DATA_STORE_LOCK_SIMS1519.explanation=The data store lock is already held, probably by another active or recently failed messaging engine.
+#CANNOT_OBTAIN_DATA_STORE_LOCK_SIMS1519.useraction=CMSG0002
+
+INVALID_TASK_OPERATION_SIMS1520=CWSIS1520E: Tranzac\u0163ia nu se afl\u0103 \u00eentr-o stare legitim\u0103 pentru a realiza opera\u0163ia. Aceasta este \u00een starea: {0}
+INVALID_TASK_OPERATION_SIMS1520.explanation=Tranzac\u0163ia trebuie s\u0103 fie \u00eentr-o stare valid\u0103 pentru a executa taskul.
+INVALID_TASK_OPERATION_SIMS1520.useraction=CMSG0002
+
+#UNSUPPORTED_TASK_OPERATION_SIMS1521 is no longer used.
+
+#CONNECTION_WAIT_TIMEOUT_SIMS1522=CWSIS1522E: The messaging engine's request for a database connection timed out.
+#CONNECTION_WAIT_TIMEOUT_SIMS1522.explanation=The connection pool for the data source used by the messaging engine is too small.
+#CONNECTION_WAIT_TIMEOUT_SIMS1522.useraction=CMSG0002
+
+#DYNAMIC_TABLE_CREATION_EXCEPTION_SIMS1523=CWSIS1523E: Dynamic allocation of database objects in DB2 for z/OS is not allowed.
+#DYNAMIC_TABLE_CREATION_EXCEPTION_SIMS1523.explanation=Database tables required by the data store cannot be created dynamically.
+#DYNAMIC_TABLE_CREATION_EXCEPTION_SIMS1523.useraction=Use the sibDDLGenerator tool to generate the DDL statements for the data store tables.
+
+#DATASOURCE_NOT_FOUND_EXCEPTION_SIMS1524=CWSIS1524E: Data source, {0}, not found.
+#DATASOURCE_NOT_FOUND_EXCEPTION_SIMS1524.explanation=The look up of the specified JNDI name has failed to locate the data source.
+#DATASOURCE_NOT_FOUND_EXCEPTION_SIMS1524.useraction=Verify that the JNDI name is valid and try again.
+
+#INVALID_TABLE_TYPE_EXCEPTION_SIMS1525=CWSIS1525E: Incorrect item table type, {0}.
+#INVALID_TABLE_TYPE_EXCEPTION_SIMS1525.explanation=An item table type has not been recognized as valid.
+#INVALID_TABLE_TYPE_EXCEPTION_SIMS1525.useraction=Correct the problem and try again.
+
+#INVALID_TABLE_OPERATION_EXCEPTION_SIMS1526=CWSIS1526E: The item table, {0}, is not able to perform the operation. It is of type, {1}.
+#INVALID_TABLE_OPERATION_EXCEPTION_SIMS1526.explanation=The item table cannot perform the requested operation because it is not of the correct type.
+#INVALID_TABLE_OPERATION_EXCEPTION_SIMS1526.useraction=CMSG0002
+
+INVALID_PERSISTABLE_STATE_SIMS1527=CWSIS1527E: Un obiect persistabil se afl\u0103 \u00eentr-o stare incorect\u0103: opera\u0163iile au \u00eenceput num\u0103r\u0103toarea: {0}, opera\u0163iile au terminat num\u0103r\u0103toarea: {1}.
+INVALID_PERSISTABLE_STATE_SIMS1527.explanation=Obiectul persistent este \u00eentr-o stare incorect\u0103 deoarece num\u0103rul opera\u0163iilor \u00eencepute este mai mare dec\u00e2t num\u0103rul opera\u0163iilor finalizate.
+INVALID_PERSISTABLE_STATE_SIMS1527.useraction=CMSG0002
+
+#DATASOURCE_WRAPPER_STATE_EXCEPTION_SIMS1528=CWSIS1528E: New connections cannot be provided because the persistence layer is stopped.
+#DATASOURCE_WRAPPER_STATE_EXCEPTION_SIMS1528.explanation=The data store persistence layer has been stopped so no more connections will be provided.
+#DATASOURCE_WRAPPER_STATE_EXCEPTION_SIMS1528.useraction=Restart the messaging engine and try again.
+
+#EXPECTED_COLUMN_NOT_FOUND_SIMS1529=CWSIS1529E: The column, {0}, was not found in the table, {1}, as expected.
+#EXPECTED_COLUMN_NOT_FOUND_SIMS1529.explanation=The messaging engine expected to find the column in the relevant table.
+#EXPECTED_COLUMN_NOT_FOUND_SIMS1529.useraction=Correct the problem and try again.
+
+#EXPECTED_DATA_TYPE_NOT_FOUND_SIMS1530=CWSIS1530E: The data type, {0}, was found instead of the expected type, {1}, for column, {2}, in table, {3}.
+#EXPECTED_DATA_TYPE_NOT_FOUND_SIMS1530.explanation=The messaging engine expects certain data types to be used for the columns in the data store tables.
+#EXPECTED_DATA_TYPE_NOT_FOUND_SIMS1530.useraction=Correct the problem and try again.
+
+#MAX_DATA_SIZE_EXCEPTION_SIMS1531=CWSIS1531E: The maximum data size, {0} bytes, of the data store has been exceeded. The data size was, {1} bytes.
+#MAX_DATA_SIZE_EXCEPTION_SIMS1531.explanation=The maximum data size that can be stored in the data store tables has been exceeded.
+#MAX_DATA_SIZE_EXCEPTION_SIMS1531.useraction=CMSG0002
+
+#MISSING_TABLE_EXCEPTION_SIMS1532=CWSIS1532E: The table, {0}, is missing.
+#MISSING_TABLE_EXCEPTION_SIMS1532.explanation=The messaging engine was unable to find the table in the DBMS, and the option to have the messaging engine automatically create it was not selected.
+#MISSING_TABLE_EXCEPTION_SIMS1532.useraction=Correct the problem and try again.
+
+#MISSING_SCHEMA_EXCEPTION_SIMS1533=CWSIS1533E: The schema, {0}, does not exist.
+#MISSING_SCHEMA_EXCEPTION_SIMS1533.explanation=The messaging engine was unable to locate the schema in the DBMS.
+#MISSING_SCHEMA_EXCEPTION_SIMS1533.useraction=Correct the problem and try again.
+
+INVALID_CLASSMAP_TABLE_REFERENCE_SIMS1534=CWSIS1534E: Referin\u0163a la clas\u0103, {0}, nu a fost rezolvat\u0103.
+INVALID_CLASSMAP_TABLE_REFERENCE_SIMS1534.explanation=Motorul de mesagerie a e\u015fuat \u00een g\u0103sirea unui nume de clas\u0103 care s\u0103 corespund\u0103 referin\u0163ei.
+INVALID_CLASSMAP_TABLE_REFERENCE_SIMS1534.useraction=CMSG0002 
+
+#DBLOCK_MEUUID_DOESNT_MATCH_SIMS1535=CWSIS1535E: The messaging engine''s unique id does not match that found in the data store. ME_UUID={0}, ME_UUID(DB)={1}
+#DBLOCK_MEUUID_DOESNT_MATCH_SIMS1535.explanation=The unique id of your messaging engine does not match that in the data store.
+#DBLOCK_MEUUID_DOESNT_MATCH_SIMS1535.useraction=You are trying to connect to an existing set of database tables that are owned \ 
+#                                               by a different messaging engine. Either point your messaging engine's data source \ 
+#                                               to a separate set of tables or remove the existing ones.
+
+#DBLOCK_VERSION_DOESNT_MATCH_SIMS1536=CWSIS1536E: The messaging engine''s version does not match that found in the data store. VERSION={0}, VERSION(DB)={1}
+#DBLOCK_VERSION_DOESNT_MATCH_SIMS1536.explanation=The version of your messaging engine does not match that in the data store.
+#DBLOCK_VERSION_DOESNT_MATCH_SIMS1536.useraction=You are trying to connect to an existing set of database tables that are owned \ 
+#                                                by a different messaging engine. Either point your messaging engine's data source \ 
+#                                                to a separate set of tables or remove the existing ones.
+
+#DBLOCK_ACQUIRED_SIMS1537=CWSIS1537I: The messaging engine, ME_UUID={0}, INC_UUID={1}, has acquired an exclusive lock on the data store.
+#DBLOCK_ACQUIRED_SIMS1537.explanation=The messaging engine, identified by the UUIDs in the message, has established ownership of the data store.
+#DBLOCK_ACQUIRED_SIMS1537.useraction=No action is required.
+
+#DBLOCK_ATTEMPTING_SIMS1538=CWSIS1538I: The messaging engine, ME_UUID={0}, INC_UUID={1}, is attempting to obtain an exclusive lock on the data store.
+#DBLOCK_ATTEMPTING_SIMS1538.explanation=The messaging engine, identified by the UUIDs in the message, is attempting to establish ownership of the data store.
+#DBLOCK_ATTEMPTING_SIMS1538.useraction=No action is required.
+
+#DDLGENERATOR_USAGE_INFO_SIMS1539=CWSIS1539I: sibDDLGenerator [{0} <DBMS name>] [{1} <DBMS version>] [{2} <DBMS platform>] [{3} <schema>] [{4} <user>] [{5}|{6}] [{7} <database> (z/OS only)][{8} <true|false> (z/OS only)][{9} <tablespace prefix, maximum 5 characters> (z/OS only)][{10} <storage group> [{11} <high-level qualifier>] (z/OS only)] [{12} <buffer pool> (z/OS only)] [{13} <terminator>] [{14}] [{15}] [{16} <statements>] [{17} <statements>] [{18} <number of permanent tables>] [{19} <number of temporary tables>]
+#DDLGENERATOR_USAGE_INFO_SIMS1539.explanation=DDLGenerator usage information.
+#DDLGENERATOR_USAGE_INFO_SIMS1539.useraction=Rerun the command using the correct syntax.
+
+#INVALID_NUMBER_OF_TABLES_SPECIFIED_SIMS1540=CWSIS1540E: An invalid number of tables has been specified, {0}.
+#INVALID_NUMBER_OF_TABLES_SPECIFIED_SIMS1540.explanation=The specified number of tables must be a positive integer.
+#INVALID_NUMBER_OF_TABLES_SPECIFIED_SIMS1540.useraction=Correct the error and try again.
+
+#MAX_NUMBER_OF_TABLES_EXCEEDED_SIMS1541=CWSIS1541E: The maximum number of SIBnnn tables that can be used by a messaging engine, {0}, has been exceeded.
+#MAX_NUMBER_OF_TABLES_EXCEEDED_SIMS1541.explanation=The total number of stream (there is always one stream table), permanent and temporary tables should not exceed the maximum.
+#MAX_NUMBER_OF_TABLES_EXCEEDED_SIMS1541.useraction=Reduce the number of permanent or temporary tables specified, and restart the server.
+
+#INCOMPATIBLE_NUMBER_OF_TABLES_SIMS1542=CWSIS1542E: The configured number of permanent or temporary tables, {1}, is less than the number currently in use, {0}.
+#INCOMPATIBLE_NUMBER_OF_TABLES_SIMS1542.explanation=The number of permanent or temporary tables cannot be decreased.
+#INCOMPATIBLE_NUMBER_OF_TABLES_SIMS1542.useraction=Restore the original values for the number of permanent and temporary tables, and restart the server. 
+
+#DBLOCK_NO_OWNER_SIMS1543=CWSIS1543I: No previous owner was found in the messaging engine's data store.
+#DBLOCK_NO_OWNER_SIMS1543.explanation=The data store has not been used by another messaging engine.
+#DBLOCK_NO_OWNER_SIMS1543.useraction=No action is required.
+
+#DBLOCK_MULTIPLE_OWNERS_SIMS1544=CWSIS1544E: Multiple previous owner id's found in the messaging engine's data store.
+#DBLOCK_MULTIPLE_OWNERS_SIMS1544.explanation=The data store has identified more than one messagine engine as its owner.
+#DBLOCK_MULTIPLE_OWNERS_SIMS1544.useraction=CMSG0002
+
+#DBLOCK_ONE_OWNER_SIMS1545=CWSIS1545I: A single previous owner was found in the messaging engine''s data store, ME_UUID={0}, INC_UUID={1}
+#DBLOCK_ONE_OWNER_SIMS1545.explanation=The messaging engine identified has previously used the data store.
+#DBLOCK_ONE_OWNER_SIMS1545.useraction=No action is required.
+
+#DBLOCK_NOT_HELD_SIMS1546 is no longer used.
+
+#SCHEMA_NAME_UNDEFINED_SIMS1547=CWSIS1547E: Unable to determine the schema name for the messaging engine.
+#SCHEMA_NAME_UNDEFINED_SIMS1547.explanation=The schema name was not defined explicitly for the data store, and the database user id was not provided.
+#SCHEMA_NAME_UNDEFINED_SIMS1547.useraction=Provide a schema name and try again.
+
+FILE_STORE_LOG_SIZE_CHANGE_PREVENTED_SIMS1548=CWSIS1548W: Dimensiunea fi\u015fierului istoric nu poate fi modificat\u0103 \u00een acest moment la valoarea din configura\u0163ia depozitului de fi\u015fiere a motorului de mesagerie.
+FILE_STORE_LOG_SIZE_CHANGE_PREVENTED_SIMS1548.explanation=Con\u0163inuturile actuale ale depozitului de fi\u015fiere \u00eempiedic\u0103 valoarea din configura\u0163ie s\u0103 aibe efect.
+FILE_STORE_LOG_SIZE_CHANGE_PREVENTED_SIMS1548.useraction=Nu este necesar\u0103 nici o ac\u0163iune. Motorul de mesagerie va \u00eencerca s\u0103 aplice din nou modificarea de configura\u0163ie data viitoare c\u00e2nd va porni.
+
+FILE_STORE_STORE_SIZE_CHANGE_PREVENTED_SIMS1549=CWSIS1549W: Dimensiunea depozitului de fi\u015fiere nu poate fi modificat\u0103 \u00een acest moment la valoarea din configura\u0163ia depozitului de fi\u015fiere a motorului de mesagerie.
+FILE_STORE_STORE_SIZE_CHANGE_PREVENTED_SIMS1549.explanation=Con\u0163inuturile actuale ale depozitului de fi\u015fiere \u00eempiedic\u0103 valoarea din configura\u0163ie s\u0103 aibe efect.
+FILE_STORE_STORE_SIZE_CHANGE_PREVENTED_SIMS1549.useraction=Nu este necesar\u0103 nici o ac\u0163iune. Motorul de mesagerie va \u00eencerca s\u0103 aplice din nou modificarea de configura\u0163ie data viitoare c\u00e2nd va porni.
+
+FILE_STORE_LOG_SIZE_CONFIGURATION_INFO_SIMS1550=CWSIS1550I: Dimensiunea curent\u0103 a fi\u015fierului istoric este de {0} octe\u0163i. \u00cen informa\u0163iile de configurare, dimensiunea fi\u015fierului cu istoricul evenimetelor este {1} octe\u0163i.
+FILE_STORE_LOG_SIZE_CONFIGURATION_INFO_SIMS1550.explanation=Aceasta este parte component\u0103 din informa\u0163iile de configurare ale depozitului de fi\u015fiere.
+FILE_STORE_LOG_SIZE_CONFIGURATION_INFO_SIMS1550.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+FILE_STORE_PERMANENT_STORE_SIZE_CURRENT_INFO_SIMS1551=CWSIS1551I: Dimensiunea minim\u0103 curent\u0103 rezervat\u0103 a depozitului de fi\u015fiere permanent este de {0} octe\u0163i. Dimensiunea maxim\u0103 curent\u0103 este {1} octe\u0163i.
+FILE_STORE_PERMANENT_STORE_SIZE_CURRENT_INFO_SIMS1551.explanation=Aceasta este parte component\u0103 din informa\u0163iile de configurare ale depozitului de fi\u015fiere.
+FILE_STORE_PERMANENT_STORE_SIZE_CURRENT_INFO_SIMS1551.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+FILE_STORE_PERMANENT_STORE_SIZE_CURRENT_INFO_UNLIMITED_SIMS1552=CWSIS1552I: Dimensiunea minim\u0103 curent\u0103 rezervat\u0103 a depozitului de fi\u015fiere permanent este de {0} octe\u0163i. Dimensiunea maxim\u0103 curent\u0103 este nelimitat\u0103.
+FILE_STORE_PERMANENT_STORE_SIZE_CURRENT_INFO_UNLIMITED_SIMS1552.explanation=Aceasta este parte component\u0103 din informa\u0163iile de configurare ale depozitului de fi\u015fiere.
+FILE_STORE_PERMANENT_STORE_SIZE_CURRENT_INFO_UNLIMITED_SIMS1552.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+FILE_STORE_PERMANENT_STORE_SIZE_CONFIGURATION_INFO_SIMS1553=CWSIS1553I: Dimensiunea minim\u0103 rezervat\u0103 din informa\u0163iile de configurare ale depozitului de fi\u015fiere permanent este de {0} octe\u0163i. Dimensiunea maxim\u0103 este {1} octe\u0163i.
+FILE_STORE_PERMANENT_STORE_SIZE_CONFIGURATION_INFO_SIMS1553.explanation=Aceasta este parte component\u0103 din informa\u0163iile de configurare ale depozitului de fi\u015fiere.
+FILE_STORE_PERMANENT_STORE_SIZE_CONFIGURATION_INFO_SIMS1553.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+FILE_STORE_PERMANENT_STORE_SIZE_CONFIGURATION_INFO_UNLIMITED_SIMS1554=CWSIS1554I: Dimensiunea minim\u0103 rezervat\u0103 din informa\u0163iile de configurare ale fi\u015fierului de stocare permanent este de {0} octe\u0163i. Dimensiunea maxim\u0103 este nelimitat\u0103.
+FILE_STORE_PERMANENT_STORE_SIZE_CONFIGURATION_INFO_UNLIMITED_SIMS1554.explanation=Aceasta este parte component\u0103 din informa\u0163iile de configurare ale depozitului de fi\u015fiere.
+FILE_STORE_PERMANENT_STORE_SIZE_CONFIGURATION_INFO_UNLIMITED_SIMS1554.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+FILE_STORE_TEMPORARY_STORE_SIZE_CURRENT_INFO_SIMS1555=CWSIS1555I: Dimensiunea minim\u0103 curent\u0103 rezervat\u0103 a depozitului de fi\u015fiere temporar este de {0} octe\u0163i. Dimensiunea maxim\u0103 curent\u0103 este {1} octe\u0163i.
+FILE_STORE_TEMPORARY_STORE_SIZE_CURRENT_INFO_SIMS1555.explanation=Aceasta este parte component\u0103 din informa\u0163iile de configurare ale depozitului de fi\u015fiere.
+FILE_STORE_TEMPORARY_STORE_SIZE_CURRENT_INFO_SIMS1555.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+FILE_STORE_TEMPORARY_STORE_SIZE_CURRENT_INFO_UNLIMITED_SIMS1556=CWSIS1556I: Dimensiunea minim\u0103 curent\u0103 rezervat\u0103 a depozitului de fi\u015fiere temporar este de {0} octe\u0163i. Dimensiunea maxim\u0103 curent\u0103 este nelimitat\u0103.
+FILE_STORE_TEMPORARY_STORE_SIZE_CURRENT_INFO_UNLIMITED_SIMS1556.explanation=Aceasta este parte component\u0103 din informa\u0163iile de configurare ale depozitului de fi\u015fiere.
+FILE_STORE_TEMPORARY_STORE_SIZE_CURRENT_INFO_UNLIMITED_SIMS1556.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+FILE_STORE_TEMPORARY_STORE_SIZE_CONFIGURATION_INFO_SIMS1557=CWSIS1557I: Dimensiunea minim\u0103 rezervat\u0103 din informa\u0163iile de configurare ale depozitului de fi\u015fiere temporar este de {0} octe\u0163i. Dimensiunea maxim\u0103 este {1} octe\u0163i.
+FILE_STORE_TEMPORARY_STORE_SIZE_CONFIGURATION_INFO_SIMS1557.explanation=Aceasta este parte component\u0103 din informa\u0163iile de configurare ale depozitului de fi\u015fiere.
+FILE_STORE_TEMPORARY_STORE_SIZE_CONFIGURATION_INFO_SIMS1557.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+FILE_STORE_TEMPORARY_STORE_SIZE_CONFIGURATION_INFO_UNLIMITED_SIMS1558=CWSIS1558I: Dimensiunea minim\u0103 rezervat\u0103 din informa\u0163iile de configurare ale fi\u015fierului de stocare temporar este de {0} octe\u0163i. Dimensiunea maxim\u0103 este nelimitat\u0103.
+FILE_STORE_TEMPORARY_STORE_SIZE_CONFIGURATION_INFO_UNLIMITED_SIMS1558.explanation=Aceasta este parte component\u0103 din informa\u0163iile de configurare ale depozitului de fi\u015fiere.
+FILE_STORE_TEMPORARY_STORE_SIZE_CONFIGURATION_INFO_UNLIMITED_SIMS1558.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+FILE_STORE_PERMANENT_STORE_USED_CURRENT_INFO_SIMS1559=CWSIS1559I: Datele din depozitul de fi\u015fiere permanent ocup\u0103 {0} octe\u0163i.
+FILE_STORE_PERMANENT_STORE_USED_CURRENT_INFO_SIMS1559.explanation=Acesta este num\u0103rul de octe\u0163i al spa\u0163iului consumat de con\u0163inuturile fi\u015fierului de depozit permanent. Nu este posibil s\u0103 se reduc\u0103 mai jos de aceast\u0103 valoare dimensiunea minim\u0103 rezervat\u0103 .
+FILE_STORE_PERMANENT_STORE_USED_CURRENT_INFO_SIMS1559.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+FILE_STORE_TEMPORARY_STORE_USED_CURRENT_INFO_SIMS1560=CWSIS1560I: Datele din depozitul de fi\u015fiere temporar ocup\u0103 {0} octe\u0163i.
+FILE_STORE_TEMPORARY_STORE_USED_CURRENT_INFO_SIMS1560.explanation=Acesta este num\u0103rul de octe\u0163i al spa\u0163iului consumat de con\u0163inuturile fi\u015fierului de depozit temporar. Nu este posibil s\u0103 se reduc\u0103 mai jos de aceast\u0103 valoare dimensiunea minim\u0103 rezervat\u0103 .
+FILE_STORE_TEMPORARY_STORE_USED_CURRENT_INFO_SIMS1560.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+FILE_STORE_LOCK_MEUUID_DOESNT_MATCH_SIMS1561=CWSIS1561E: ID-ul unic al motorului de mesagerie nu se potrive\u015fte cu cel g\u0103sit \u00een depozitul de fi\u015fiere. ME_UUID={0}, ME_UUID(FS)={1}
+FILE_STORE_LOCK_MEUUID_DOESNT_MATCH_SIMS1561.explanation=ID-ul unic al motorului dumneavoastr\u0103 de mesagerie nu se potrive\u015fte cu cel din depozitul de date.
+FILE_STORE_LOCK_MEUUID_DOESNT_MATCH_SIMS1561.useraction=\u00cencerca\u0163i s\u0103 v\u0103 conecta\u0163i la un set existent de fi\u015fiere care sunt de\u0163inute de un motor de mesagerie diferit. \
+Fie corela\u0163i depozitul de fi\u015fiere al motorului dumneavoastr\u0103 de mesagerie la un set de fi\u015fiere separat, fie \u00eel sterge\u0163i pe cel existent.
+
+FILE_STORE_LOCK_VERSION_DOESNT_MATCH_SIMS1562=CWSIS1562E: Versiunea motorului de mesagerie nu se potrive\u015fte cu cea g\u0103sit\u0103 \u00een depozitul de fi\u015fiere. VERSIUNEA={0}, VERSION(FS)={1}
+FILE_STORE_LOCK_VERSION_DOESNT_MATCH_SIMS1562.explanation=Versiunea motorului dumneavoastr\u0103 de mesagerie nu se potrive\u015fte cu cea din depozitul de fi\u015fiere.
+FILE_STORE_LOCK_VERSION_DOESNT_MATCH_SIMS1562.useraction=\u00cencerca\u0163i s\u0103 v\u0103 conecta\u0163i la un set existent de fi\u015fiere care sunt de\u0163inute de un motor de mesagerie diferit. \
+Fie corela\u0163i depozitul de fi\u015fiere al motorului dumneavoastr\u0103 de mesagerie la un set de fi\u015fiere separat, fie \u00eel sterge\u0163i pe cel existent.
+
+# {0} is the messaging engine's UUID
+# {1} is the messaging engine's IND_UUID
+FILE_STORE_LOCK_ACQUIRED_SIMS1563=CWSIS1563I: Motorul de mesagerie, ME_UUID={0}, INC_UUID={1}, a ob\u0163inut un z\u0103vor exclusiv pe depozitul de fi\u015fiere.
+FILE_STORE_LOCK_ACQUIRED_SIMS1563.explanation=Motorul de mesagerie, identificat de c\u0103tre UUID-urile din mesaj, a stabilit dreptul de proprietate asupra depozitului de fi\u015fiere.
+FILE_STORE_LOCK_ACQUIRED_SIMS1563.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+# {0} is the messaging engine's UUID
+# {1} is the messaging engine's IND_UUID
+FILE_STORE_LOCK_ATTEMPTING_SIMS1564=CWSIS1564I: Motorul de mesagerie, ME_UUID={0}, INC_UUID={1}, \u00eencearc\u0103 s\u0103 ob\u0163in\u0103 un z\u0103vor exclusiv pe depozitul de fi\u015fiere.
+FILE_STORE_LOCK_ATTEMPTING_SIMS1564.explanation=Motorul de mesagerie, identificat de c\u0103tre UUID-urile din mesaj, \u00eencearc\u0103 s\u0103 stabileasc\u0103 dreptul de proprietate asupra depozitului de fi\u015fiere.
+FILE_STORE_LOCK_ATTEMPTING_SIMS1564.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+FILE_STORE_LOCK_NO_OWNER_SIMS1565=CWSIS1565I: Niciun posesor anterior nu a fost g\u0103sit \u00een depozitul de fi\u015fiere al motorului de mesagerie.
+FILE_STORE_LOCK_NO_OWNER_SIMS1565.explanation=Depozitul de fi\u015fiere nu a fost folosit de c\u0103tre un alt motor de mesagerie.
+FILE_STORE_LOCK_NO_OWNER_SIMS1565.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+# {0} is the UUID of the messaging engine found in the file store
+# {1} is the INC_UUID of the messaging engine found in the file store
+FILE_STORE_LOCK_ONE_OWNER_SIMS1566=CWSIS1566I: Un singur posesor anterior a fost g\u0103sit \u00een depozitul de fi\u015fiere al motorului de mesagerie, ME_UUID={0}, INC_UUID={1}
+FILE_STORE_LOCK_ONE_OWNER_SIMS1566.explanation=Motorul de mesagerie identificat a folosit anterior de depozitul de fi\u015fiere.
+FILE_STORE_LOCK_ONE_OWNER_SIMS1566.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+# {0} is the messaging engine's name
+CANNOT_OBTAIN_FILE_STORE_LOCK_SIMS1567=CWSIS1567E: Motorul de mesagerie {0} nu poate ob\u0163ine blocarea depozitului s\u0103u de fi\u015fiere, care \u00eel asigur\u0103 c\u0103 are acces exclusiv la date.
+CANNOT_OBTAIN_FILE_STORE_LOCK_SIMS1567.explanation=Cheia depozitului de fi\u015fiere este deja re\u0163inut\u0103, probabil de c\u0103tre un alt motor de mesagerie activ sau defectat recent.
+CANNOT_OBTAIN_FILE_STORE_LOCK_SIMS1567.useraction=CMSG0002
+
+# {0} is the messaging engine's name
+#MESSAGING_ENGINE_PERSISTENCE_DATASTORE_SIMS1568=CWSIS1568I: Messaging engine {0} is using a data store.
+#MESSAGING_ENGINE_PERSISTENCE_DATASTORE_SIMS1568.explanation=The message store for the messaging engine is a data store.
+#MESSAGING_ENGINE_PERSISTENCE_DATASTORE_SIMS1568.useraction=No action is required.
+
+# {0} is the messaging engine's name
+MESSAGING_ENGINE_PERSISTENCE_FILESTORE_SIMS1569=CWSIS1569I: Motorul de mesagerie {0} folose\u015fte un depozit de fi\u015fiere.
+MESSAGING_ENGINE_PERSISTENCE_FILESTORE_SIMS1569.explanation=Depozitul de mesaje pentu motorul de mesagerie este un depozit de fi\u015fiere.
+MESSAGING_ENGINE_PERSISTENCE_FILESTORE_SIMS1569.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+# {0} is the text of the exception thrown
+#DBLOCK_EXCEPTION_SIMS1570=CWSIS1570E: The messaging engine encountered an exception while locking the data store. Exception: {0}
+#DBLOCK_EXCEPTION_SIMS1570.explanation=If the message does not give sufficient information, see the accompanying error messages for further information.
+#DBLOCK_EXCEPTION_SIMS1570.useraction=CMSG0002
+
+# {0} is the number of permanent tables in use
+# {1} is the number of temporary tables in use
+#NUMBER_OF_TABLES_IN_USE_SIMS1571=CWSIS1571I: Data store table summary: Permanent {0}, temporary {1}.
+#NUMBER_OF_TABLES_IN_USE_SIMS1571.explanation=The data store is using these permanent and temporary tables.
+#NUMBER_OF_TABLES_IN_USE_SIMS1571.useraction=No action is required.
+
+# This message is also issued if the number of tables is changing
+# {0} is the number of permanent tables previously in use
+# {1} is the number of temporary tables previously in use
+#NUMBER_OF_TABLES_PREVIOUS_SIMS1572=CWSIS1572I: Data store table summary before configuration change: Permanent {0}, temporary {1}.
+#NUMBER_OF_TABLES_PREVIOUS_SIMS1572.explanation=The data store was using these permanent and temporary tables before the configuration was changed.
+#NUMBER_OF_TABLES_PREVIOUS_SIMS1572.useraction=No action is required.
+
+FILE_STORE_LOG_FULL_SIMS1573E=CWSIS1573E: Fi\u015fierul istoric al depozitului de fi\u015fiere este plin.
+FILE_STORE_LOG_FULL_SIMS1573E.explanation=Depozitul de fi\u015fiere nu mai are spa\u0163iu \u00een fi\u015fierul cu istoricul evenimentelor pentru a de pozita mesaje. \
+Aceasta poate fi din cauza unei construc\u0163ii nea\u015fteptate a mesajelor sau din cauz\u0103 c\u0103 dimensiunea fi\u015fierului este prea mic\u0103. 
+FILE_STORE_LOG_FULL_SIMS1573E.useraction=Pune\u0163i \u00een ordine orice mesaje \u00een exces sau, dac\u0103 este necesar, m\u0103ri\u0163i dimensiunea fi\u015fierelor cu istoricul evenimentelor.
+
+FILE_STORE_PERMANENT_STORE_FULL_SIMS1574E=CWSIS1574E: Fi\u015fierul depozit permanent al depozitului de fi\u015fiere este plin.
+FILE_STORE_PERMANENT_STORE_FULL_SIMS1574E.explanation=Depozitul de fi\u015fiere nu mai are spa\u0163iu \u00een fi\u015fierul de depozit permanent pentru a depozita mesaje. \
+Aceasta poate fi din cauza unei construc\u0163ii nea\u015fteptate a mesajelor sau din cauz\u0103 c\u0103 dimensiunea fi\u015fierului este prea mic\u0103.
+FILE_STORE_PERMANENT_STORE_FULL_SIMS1574E.useraction=Cur\u0103\u0163a\u0163i orice mesaje \u00een exces sau, dac\u0103 este necesar, m\u0103ri\u0163i dimensiunea fi\u015fierului de depozit permanent.
+
+FILE_STORE_TEMPORARY_STORE_FULL_SIMS1575E=CWSIS1575E: Fi\u015fierul depozit temporar al depozitului de fi\u015fiere este plin.
+FILE_STORE_TEMPORARY_STORE_FULL_SIMS1575E.explanation=Depozitul de fi\u015fiere nu mai are spa\u0163iu \u00een fi\u015fierul de depozit temporar pentru a depozita mesaje. \
+Aceasta poate fi din cauza unei construc\u0163ii nea\u015fteptate a mesajelor sau din cauz\u0103 c\u0103 dimensiunea fi\u015fierului este prea mic\u0103.
+FILE_STORE_TEMPORARY_STORE_FULL_SIMS1575E.useraction=Cur\u0103\u0163a\u0163i orice mesaje \u00een exces sau, dac\u0103 este necesar, m\u0103ri\u0163i dimensiunea fi\u015fierului de depozit temporar.
+
+SPILL_DISPATCHER_IS_FULL_SIMS1576E=CWSIS1576E: Dispecerul de v\u0103rsare este plin. 
+SPILL_DISPATCHER_IS_FULL_SIMS1576E.explanation=Dispecerul de v\u0103rs\u0103ri \u00een depozitul de date este plin \u015fi nu poate accepta nici un mesaj nou p\u00e2na c\u00e2nd nu se face disponibil ceva spa\u0163iu. \
+\u015etergerea mesajelor existente va permite ajutarea dispecerului prin eliberarea spa\u0163iului.
+SPILL_DISPATCHER_IS_FULL_SIMS1576E.useraction=Nu este necesar\u0103 nici o ac\u0163iune pentru a \u00eentoarce dispecerul la normal. \
+Totu\u015fi, acesta poate fi un simptom al faptului ca dimensiunea fi\u015fierului de depozit temporar devine prea mic\u0103.
+
+PERSISTENT_DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1577=CWSIS1577E: Dispecerul persistent nu poate accepta lucru.
+PERSISTENT_DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1577.explanation=Dispecerul persistent nu poate accepta mai mult\u0103 \u00eenc\u0103rcare din cauza unei erori survenite mai devreme.
+PERSISTENT_DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1577.useraction=CMSG0002
+
+SPILL_DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1578=CWSIS1578E: Dispecerul de v\u0103rsare nu poate accepta lucru.
+SPILL_DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1578.explanation=Dispecerul de v\u0103rs\u0103ri \u00een depozitul de date nu poate accepta mai mult\u0103 \u00eenc\u0103rcare din cauza unei erori survenite mai devreme.
+SPILL_DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1578.useraction=CMSG0002
+
+FILE_STORE_LOG_FILE_IN_USE_SIMS1579=CWSIS1579E: Fi\u015fierul istoric al depozitului de fi\u015fiere este blocat de alt proces.
+FILE_STORE_LOG_FILE_IN_USE_SIMS1579.explanation=Atunci c\u00e2nd depozitul de fi\u015fiere \u00eencearc\u0103 s\u0103 blocheze propriul fi\u015fier cu istoricul evenimentelor, aceasta este posibil s\u0103 nu se poat\u0103 face din cauz\u0103 c\u0103 un alt proces a re\u0163inut deja blocarea fi\u015fierului. \
+Acest proces ar putea fi alt motor de mesagerie aciv sau orice alt proces de aplica\u0163ie.
+FILE_STORE_LOG_FILE_IN_USE_SIMS1579.useraction=Verifica\u0163i c\u0103 depozitul dumneavoastr\u0103 de fisiere se refer\u0103 la un fisier cu istoricul evenimentelor utilizat exclusiv pentru acel depozit de fi\u015fiere. \
+Dac\u0103 un motor de mesagerie secundar foloseste acela\u015fi fi\u015fier, aceasta poate fi din cauza unei configura\u0163ii incorecte sau a unei \u00eencerc\u0103ri incorecte de preluare. \
+Pentru a permite acestui motor de mesagerie s\u0103 porneasc\u0103, determina\u0163i care motor de mesagerie folose\u015fte fi\u015fierul cu istoricul evenimentelor \u015fi opri\u0163i acel motor de mesagerie.
+
+# {0} is the path to the log file that was provided from the configuration.
+FILE_STORE_CANNOT_FIND_LOG_FILE_SIMS1580=CWSIS1580E: Fi\u015fierul istoric al depozitului de fi\u015fiere nu poate fi g\u0103sit la loca\u0163ia furnizat\u0103: {0}.
+FILE_STORE_CANNOT_FIND_LOG_FILE_SIMS1580.explanation=Atunci c\u00e2nd depozitul de fi\u015fiere a \u00eencercat s\u0103 deschid\u0103 sau s\u0103 creeze propriul fi\u015fier cu istoricul evenimentelor, nu a putut s\u0103 o fac\u0103. \
+O cauz\u0103 obi\u015fnuit\u0103 a acestei probleme este aceea c\u0103 nu este prezent un disc montat sau c\u0103 a fost introdus\u0103 incorect calea furnizat\u0103.
+FILE_STORE_CANNOT_FIND_LOG_FILE_SIMS1580.useraction=Verifica\u0163i calea livrat\u0103, pentru a vedea dac\u0103 ea se refer\u0103 la un disc sau un director disponibil.
+
+# {0} The log file name
+FILE_STORE_ATTEMPTING_TO_INITIALISE_SIMS1581=CWSIS1581I: Depozitul de fi\u015fiere \u00eencearc\u0103 s\u0103 ini\u0163ializeze fi\u015fierul s\u0103u istoric: {0}
+FILE_STORE_ATTEMPTING_TO_INITIALISE_SIMS1581.explanation=Depozitul de fi\u015fiere se porne\u015fte \u015fi \u00eencearc\u0103 s\u0103 citeasc\u0103 con\u0163inuturile fi\u015fierului s\u0103u cu istoricul evenimentelor.
+FILE_STORE_ATTEMPTING_TO_INITIALISE_SIMS1581.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+FILE_STORE_PROBLEM_INITIALISING_LOG_SIMS1582=CWSIS1582I: Depozitul de fi\u015fiere a avut o problema la ini\u0163ializarea fi\u015fierului s\u0103u istoric dar va re\u00eencerca ini\u0163ializarea.
+FILE_STORE_PROBLEM_INITIALISING_LOG_SIMS1582.explanation=Depozitul de fi\u015fiere a e\u015fuat ini\u0163ializarea din aceast\u0103 \u00eencercare. \
+Un mesaj anterior va fi expediat pentru detalierea cauzei e\u015fu\u0103rii. \
+Depozitul de fi\u015fiere va \u00eencerca s\u0103 reia ini\u0163alizarea pentru a vedea dac\u0103 defectul este reparabil.
+FILE_STORE_PROBLEM_INITIALISING_LOG_SIMS1582.useraction=Dac\u0103 dup\u0103 c\u00e2teva \u00eencerc\u0103ri depozitul de fi\u015fiere nu ini\u0163ializeaz\u0103 cu succes, atunci verifica\u0163i fi\u015fierul cu istoricul evenimentelor corespunz\u0103tor mesajelor, care descrie defectul, pentru a vedea dac\u0103 este o problem\u0103 de configura\u0163ie sau de conectivitate.
+
+FILE_STORE_INITIALISATION_RETRY_LIMIT_EXCEEDED_SIMS1583=CWSIS1583E: Depozitul de fi\u015fiere a dep\u0103\u015fit limita de re\u00eencerc\u0103ri de ini\u0163ializare \u015fi se va opri.
+FILE_STORE_INITIALISATION_RETRY_LIMIT_EXCEEDED_SIMS1583.explanation=Depozitul de fi\u015fiere pentru motorul de mesagerie a atins limita de timp pentru re\u00eencerc\u0103rile de ini\u0163ializare \u015fi acum se va opri. \
+Mesajele anterioare ar trebui sa descrie cauza pentru repetatele e\u015fu\u0103ri de ini\u0163ializare. \
+Dup\u0103 oprire, motorul de mesagerie va fi eligibil pentru preluare, \u00een cazul \u00een care configura\u0163ia serverului dumneavoastr\u0103 suport\u0103 aceasta.
+FILE_STORE_INITIALISATION_RETRY_LIMIT_EXCEEDED_SIMS1583.useraction=Mesajele expediate anterior ar trebui s\u0103 ajute la determinarea cauzei e\u015fu\u0103rii ini\u0163ializ\u0103rii de c\u0103tre depozitul de fi\u015fiere.
+
+FILE_STORE_SUCCESSFULLY_INITIALISED_SIMS1584=CWSIS1584I: Depozitul de fi\u015fiere s-a ini\u0163ializat cu succes.
+FILE_STORE_SUCCESSFULLY_INITIALISED_SIMS1584.explanation=Depozitul de fi\u015fiere a deschis \u015fi a initializat fi\u015fierul s\u0103u cu istoricul evenientelor.
+FILE_STORE_SUCCESSFULLY_INITIALISED_SIMS1584.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+# {0} The permanent store file name
+# {1} The temporary store file name
+FILE_STORE_START_PERMANENT_TEMPORARY_STORES_SIMS1585=CWSIS1585I: Depozitul de fi\u015fiere \u00eencearc\u0103 pornirea depozitului s\u0103u permanent ({0}) \u015fi a depozitului s\u0103u temp orar ({1}).
+FILE_STORE_START_PERMANENT_TEMPORARY_STORES_SIMS1585.explanation=Depozitul de fi\u015fiere \u00eencepe s\u0103 \u00eencerce s\u0103 deschid\u0103 \u015fi s\u0103 citeasc\u0103 con\u0163inuturile fi\u015fierelor sale de depozit. \
+Dac\u0103 aceasta este prima dat\u0103 c\u00e2nd motorul de mesagerie a fost pornit, atunci fi\u015fierele vor fi de asemenea create.
+FILE_STORE_START_PERMANENT_TEMPORARY_STORES_SIMS1585.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+FILE_STORE_SUCCESSFULLY_STARTED_PERMANENT_STORE_SIMS1586=CWSIS1586I: Depozitul permanent al depozitului de fi\u015fiere s-a ini\u0163ializat cu succes.
+FILE_STORE_SUCCESSFULLY_STARTED_PERMANENT_STORE_SIMS1586.explanation=Depozitul de fi\u015fiere a deschis \u015fi a verificat cu succes con\u0163inuturile fi\u015fierului s\u0103u de depozit permanent.
+FILE_STORE_SUCCESSFULLY_STARTED_PERMANENT_STORE_SIMS1586.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+FILE_STORE_SUCCESSFULLY_STARTED_TEMPORARY_STORE_SIMS1587=CWSIS1587I: Depozitul temporar al depozitului de fi\u015fiere s-a ini\u0163ializat cu succes.
+FILE_STORE_SUCCESSFULLY_STARTED_TEMPORARY_STORE_SIMS1587.explanation=Depozitul de fi\u015fiere a deschis \u015fi a verificat cu succes con\u0163inuturile fi\u015fierului s\u0103u de depozit temporar.
+FILE_STORE_SUCCESSFULLY_STARTED_TEMPORARY_STORE_SIMS1587.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+FILE_STORE_STARTED_SUCCESSFULLY_SIMS1588=CWSIS1588I: Depozitul de fi\u015fiere a pornit cu succes.
+FILE_STORE_STARTED_SUCCESSFULLY_SIMS1588.explanation=Depozitul de fi\u015fiere a deschis si a citit cu succes toate fi\u015fiere sale \u015fi acum este gata s\u0103 accepte noua sarcin\u0103.
+FILE_STORE_STARTED_SUCCESSFULLY_SIMS1588.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+FILE_STORE_STOP_EXPECTED_SIMS1589=CWSIS1589I: Depozitul de fi\u015fiere s-a oprit cu succes.
+FILE_STORE_STOP_EXPECTED_SIMS1589.explanation=Depozitul de fi\u015fiere s-a oprit, ca parte a unei opriri de activitate controlate.
+FILE_STORE_STOP_EXPECTED_SIMS1589.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+FILE_STORE_STOP_UNEXPECTED_SIMS1590=CWSIS1590E: Depozitul de fi\u015fiere s-a oprit nea\u015fteptat.
+FILE_STORE_STOP_UNEXPECTED_SIMS1590.explanation=Depozitul de fi\u015fiere s-a oprit din cauza unei erori nea\u015fteptate. Mesajele anterioare din jurnalul cu evenimente ar trebui s\u0103 descrie eroarea.
+FILE_STORE_STOP_UNEXPECTED_SIMS1590.useraction=Analiza\u0163i toate mesajele din jurnalul evenimentelor pentru a determina cauza care st\u0103 la baza opririi nea\u015fteptate de activitate.
+
+FILE_STORE_UNEXPECTED_INITIALISATION_EXCEPTION_SIMS1591=CWSIS1591E: Depozitul de fi\u015fiere a prins o excep\u0163ie nea\u015fteptat\u0103 \u00een timpul ini\u0163ializ\u0103rii.
+FILE_STORE_UNEXPECTED_INITIALISATION_EXCEPTION_SIMS1591.explanation=O excep\u0163ie nea\u015fteptat\u0103 a fost \u00eent\u00e2lnit\u0103 \u00een timpul ini\u0163ializ\u0103rii depozitului de fi\u015fiere \u015fi a optit motorul de mesagerie din activitatea de pornire.
+FILE_STORE_UNEXPECTED_INITIALISATION_EXCEPTION_SIMS1591.useraction=CMSG0002
+
+FILE_STORE_UNEXPECTED_IO_EXCEPTION_SIMS1592=CWSIS1592E: Depozitul de fi\u015fiere a prins o excep\u0163ie io nea\u015fteptat\u0103.
+FILE_STORE_UNEXPECTED_IO_EXCEPTION_SIMS1592.explanation=O excep\u0163ie de io nea\u015fteptat\u0103 a fost \u00eent\u00e2lnit\u0103 \u00een timpul ini\u0163ializ\u0103rii depozitului de fi\u015fiere. \
+Se pote face alt\u0103 \u00eencercare de ini\u0163ializare.
+FILE_STORE_UNEXPECTED_IO_EXCEPTION_SIMS1592.useraction=Verifica\u0163i jurnalele cu evenimente ale serverului pentru a vedea dac\u0103 problema este rezolvat\u0103 atunci c\u00e2nd se \u00eencearc\u0103 o reluare a ini\u0163ializ\u0103rii depozitului de fi\u015fiere.
+
+# Messages CWSIS1593 & CWSIS1594 introduced to replace message CWSIS1546 which is ambiguous
+# {0} the messaging engine UUID
+# {1} the incarnation UUID
+#DBLOCK_FAILED_SIMS1593=CWSIS1593I: The messaging engine, ME_UUID={0}, INC_UUID={1}, has failed to gain an initial lock on the data store.
+#DBLOCK_FAILED_SIMS1593.explanation=The messaging engine, identified by the UUIDs in the message, has been unable to get an exclusive lock \ 
+#                                   on the database tables that hold its data. This could be due to another instance of the messaging engine \ 
+#                                   running against the same set of tables. It could also be the result of a lock from a previously running \ 
+#                                   instance being held for longer than expected in the database. The messaging engine will retry for a \ 
+#                                   period during startup to see if it is able to acquire the lock.
+#DBLOCK_FAILED_SIMS1593.useraction=If the messaging engine does not succeed in acquiring the lock during the startup retry period then \ 
+#                                  check that no other instance of the messaging engine is running and that there are no outstanding locks \ 
+#                                 on the tables for this messaging engine being held on your database server.
+
+# {0} the messaging engine UUID
+# {1} the incarnation UUID
+#DBLOCK_LOST_SIMS1594=CWSIS1594I: The messaging engine, ME_UUID={0}, INC_UUID={1}, has lost the lock on the data store.
+#DBLOCK_LOST_SIMS1594.explanation=The messaging engine, identified by the UUIDs in the message, has lost an existing lock on the tables that \ 
+#                                 hold its data. This may be due to a connectivity problem between the messaging engine and the database server \ 
+#                                 or that another instance of the messaging engine has started and taken control of the tables.
+#DBLOCK_LOST_SIMS1594.useraction=Check that a network connection between your messaging engine and database server is available and that there is \ 
+#                               only one instance of the messaging engine running.
+
+#INVALID_PARAMETER_COMBINATION_SIMS1595=CWSIS1595E: An invalid combination of parameters has been specified, Database: {0}, version: {1}, platform: {2} . Refer to the documentation for the correct parameters for your database.
+#INVALID_PARAMETER_COMBINATION_SIMS1595.explanation=The combination of parameters used was unrecognized by the sibDDLGenerator.
+#INVALID_PARAMETER_COMBINATION_SIMS1595.useraction=Refer to the documentation for a valid combination of parameters to use for your database. Rerun the command with a valid combination of parameters.
+
+#DATASTORE_LOCK_CANNOT_BE_DISABLED_CWSIS1596=CWSIS1596I: The data store exclusive lock cannot be disabled.
+#DATASTORE_LOCK_CANNOT_BE_DISABLED_CWSIS1596.explanation=The data store exclusive lock ensures integrity of the data within the data store and cannot \ 
+#                                                        be disabled for this messaging engine.
+#DATASTORE_LOCK_CANNOT_BE_DISABLED_CWSIS1596.useraction=If you have identified a need to disable the data store exclusive lock contact IBM Support.
+
+#DATASTORE_LOCK_DISABLED_CWSIS1597=CWSIS1597I: The data store exclusive lock has been disabled for {0} milliseconds.
+#DATASTORE_LOCK_DISABLED_CWSIS1597.explanation=A request was made to disable the data store exclusive lock. The lock will remain disabled for the \ 
+#                                              length of time stated in the message at which point it will re-enable automatically.
+#DATASTORE_LOCK_DISABLED_CWSIS1597.useraction=No action is required.
+
+#DATASTORE_LOCK_REENABLED_CWSIS1598=CWSIS1598I: The data store exclusive lock has been automatically re-enabled.
+#DATASTORE_LOCK_REENABLED_CWSIS1598.explanation=The messaging engines data store has re-enabled its exclusive lock after the requested time period.
+#DATASTORE_LOCK_REENABLED_CWSIS1598.useraction=No action is required.
+
+#DBLOCK_ATTEMPTING_SIMS1599=CWSIS1599I: The messaging engine, ME_UUID={0}, INC_UUID={1}, is attempting to obtain ownership on the data store.
+#DBLOCK_ATTEMPTING_SIMS1599.explanation=The messaging engine, identified by the UUIDs in the message, is attempting to establish ownership of the data store.
+#DBLOCK_ATTEMPTING_SIMS1599.useraction=No action is required.
+
+#DBLOCK_EXCEPTION_SIMS1600=CWSIS1600E: Unable to update Messaging Engine status as the messaging engine encountered an exception while acquiring ownership on the message store. Exception: {0}
+#DBLOCK_EXCEPTION_SIMS1600.explanation=If the message does not give sufficient information, see the accompanying error messages for further information.
+#DBLOCK_EXCEPTION_SIMS1600.useraction=CMSG0002
+
+#DBLOCK_ACQUIRED_SIMS1601=CWSIS1601I: The messaging engine, ME_UUID={0}, INC_UUID={1}, has obtained ownership on the data store.
+#DBLOCK_ACQUIRED_SIMS1601.explanation=The messaging engine, identified by the UUIDs in the message, has established ownership of the data store.
+#DBLOCK_ACQUIRED_SIMS1601.useraction=No action is required.
+
+#INCOMPATIBLE_DATASTORE_FOR_RESTRICT_DB_LOCK_FEATURE_SIMS1602=CWSIS1602W: Restrict database locking feature is not supported, because the messaging engine is trying to connect to a datastore which is not migrated to a version that supports this feature.
+#INCOMPATIBLE_DATASTORE_FOR_RESTRICT_DB_LOCK_FEATURE_SIMS1602.explanation=Messaging Engine is trying to connect to a datastore which is not migrated to a version that supports this feature.
+#INCOMPATIBLE_DATASTORE_FOR_RESTRICT_DB_LOCK_FEATURE_SIMS1602.useraction=Use sibDBUpdgrade command to migrate the existing tables.
+
+#INCOMPATIBLE_DATASTORE_FOR_RDC_FEATURE_SIMS1603=CWSIS1603W: Keep count of failed deliveries feature is not supported, because the messaging engine is trying to connect to a datastore which is not migrated to a version that supports this feature.
+#INCOMPATIBLE_DATASTORE_FOR_RDC_FEATURE_SIMS1603.explanation=Messaging Engine is trying to connect to a datastore which is not migrated to a version that supports this feature.
+#INCOMPATIBLE_DATASTORE_FOR_RDC_FEATURE_SIMS1603.useraction=Use sibDBUpdgrade command to migrate the existing tables.
+
+
+# -------------------------------------------------------------------------------------------------
+# Expiry
+# -------------------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the non-unique key
+DUPLICATE_EXPIRABLE_SIMS2000=CWSIS2000E: Acest articol nu are o cheie unic\u0103: {0}
+DUPLICATE_EXPIRABLE_SIMS2000.explanation=A fost f\u0103cut\u0103 o \u00eencercare de ad\u0103ugare la indexul de expirare a unui obiect care nu este unic.
+DUPLICATE_EXPIRABLE_SIMS2000.useraction=CMSG0002
+
+# {0} is the text of the exception thrown
+EXPIRY_DAEMON_TERMINATED_SIMS2001=CWSIS2001E: Demonul de expirare s-a terminat anormal datorit\u0103 unei excep\u0163ii nea\u015fteptate: {0}
+EXPIRY_DAEMON_TERMINATED_SIMS2001.explanation=Execu\u0163ia demonului de expirare a fost \u00eentrerupt\u0103 \u015fi a fost oprit.
+EXPIRY_DAEMON_TERMINATED_SIMS2001.useraction=CMSG0002
+ 
+# {0} is the text of the exception thrown
+CACHE_LOADER_TERMINATED_SIMS2003=CWSIS2003E: Demonul \u00eenc\u0103rc\u0103tor de cache s-a terminat anormal datorit\u0103 unei excep\u0163ii nea\u015fteptate: {0}
+CACHE_LOADER_TERMINATED_SIMS2003.explanation=Execu\u0163ia demonului de \u00eenc\u0103rcare cache a fost \u00eentrerupt\u0103 \u015fi a fost oprit.
+CACHE_LOADER_TERMINATED_SIMS2003.useraction=CMSG0002
+
+EXPIRY_THREAD_ALREADY_RUNNING_SIMS2004=CWSIS2004E: Demonul de expirare ruleaz\u0103 deja.
+EXPIRY_THREAD_ALREADY_RUNNING_SIMS2004.explanation=S-a facut o \u00eencercare de pornire a execu\u0163iei demonului de expirare, dar acesta deja ruleaz\u0103.
+EXPIRY_THREAD_ALREADY_RUNNING_SIMS2004.useraction=CMSG0002
+
+
+# -------------------------------------------------------------------------------------------------
+# DeliveryDelayManager
+# -------------------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the non-unique key
+DUPLICATE_DELIVERYDELAYABLE_SIMS2010=CWSIS2010E: Acest articol nu are o cheie unic\u0103: {0}
+DUPLICATE_DELIVERYDELAYABLE_SIMS2010.explanation=A fost f\u0103cut\u0103 o \u00eencercare de a ad\u0103uga un obiect neunic la indexul de \u00eent\u00e2rziere livrare.
+DUPLICATE_DELIVERYDELAYABLE_SIMS2010.useraction=Reporni\u0163i motorul de mesagerie. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina web de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# {0} is the text of the exception thrown
+DELIVERYDELAYMANAGER_DAEMON_TERMINATED_SIMS2011=CWSIS2011E: Demonul managerului de \u00eent\u00e2rziere livrare s-a oprit anormal din cauza unei excep\u0163ii nea\u015fteptate: {0}
+DELIVERYDELAYMANAGER_DAEMON_TERMINATED_SIMS2011.explanation=Firul de execu\u0163ie al demonului managerului de \u00eent\u00e2rziere livrare a fost \u00eentrerupt \u015fi s-a oprit.
+DELIVERYDELAYMANAGER_DAEMON_TERMINATED_SIMS2011.useraction=Reporni\u0163i motorul de mesagerie. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina web de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+ 
+DELIVERYDELAYMANAGER_THREAD_ALREADY_RUNNING_SIMS2012=CWSIS2012E: Demonul managerului de \u00eent\u00e2rziere livrare ruleaz\u0103 deja.
+DELIVERYDELAYMANAGER_THREAD_ALREADY_RUNNING_SIMS2012.explanation=A fost f\u0103cut\u0103 o \u00eencercare de a porni firul de execu\u0163ie al demonului managerului de \u00eent\u00e2rziere livrare dar acesta deja ruleaz\u0103.
+DELIVERYDELAYMANAGER_THREAD_ALREADY_RUNNING_SIMS2012.useraction=Reporni\u0163i motorul de mesagerie. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina web de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_SIMS9999=CWSIS9999E: ''{0}''
+TEMPORARY_SIMS9999.explanation=Dac\u0103 mesajul nu v\u0103 d\u0103 suficiente informa\u0163ii, verifica\u0163i mesajele de eroare care acompaniaz\u0103 acest mesaj pentru mai multe informa\u0163ii.
+TEMPORARY_SIMS9999.useraction=Verifica\u0163i mesajele de eroare adiacente pentru mai multe informa\u0163ii.

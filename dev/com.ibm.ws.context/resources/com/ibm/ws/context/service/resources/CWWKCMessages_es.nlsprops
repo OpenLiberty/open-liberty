@@ -1,0 +1,51 @@
+###############################################################################
+# Copyright (c) 2012, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.context/resources/com/ibm/ws/context/service/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Context Propagation Service
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# CWWKC1000, CWWKC1001, CWWKC1002 have been moved to another file. Do not reuse them.
+
+CWWKC1003.not.serializable=CWWKC1003E: El elemento de configuraci\u00f3n {0} debe tener un identificador (ID) o un jndiName exclusivo para poder serializarse.
+CWWKC1003.not.serializable.explanation=Para poder serializarse, un servicio de contexto debe tener un atributo jndiName o id exclusivo.
+CWWKC1003.not.serializable.useraction=A\u00f1ada un atributo id o un atributo jndiName a la configuraci\u00f3n del servicio de contexto.
+
+CWWKC1004.context.provider.unavailable=CWWKC1004E: El proveedor de contexto de hebra {0} no est\u00e1 disponible.
+CWWKC1004.context.provider.unavailable.explanation=El servidor de aplicaciones no ha podido encontrar un proveedor del tipo de contexto de hebra especificado.
+CWWKC1004.context.provider.unavailable.useraction=Aseg\u00farese de que la caracter\u00edstica que proporciona el tipo de contexto de hebra especificado est\u00e1 habilitada.
+
+CWWKC1010.context.service.unavailable=CWWKC1010E: No se ha encontrado un elemento de configuraci\u00f3n con el identificador o el jndiName exclusivo {0} en la configuraci\u00f3n de servidor.
+CWWKC1010.context.service.unavailable.explanation=No se encuentra un servicio de contexto con el ID o jndiName especificado en la configuraci\u00f3n.
+CWWKC1010.context.service.unavailable.useraction=Aseg\u00farese de que exista un servicio de contexto con el ID o jndiName especificado en la configuraci\u00f3n y de que sea v\u00e1lido.
+
+CWWKC1011.app.unavailable=CWWKC1011E: No se ha podido iniciar la tarea {0} porque la aplicaci\u00f3n {1} que la ha sometido no est\u00e1 disponible.
+CWWKC1011.app.unavailable.explanation=La aplicaci\u00f3n que ha sometido una tarea debe estar disponible para que se inicie la tarea.
+CWWKC1011.app.unavailable.useraction=Aseg\u00farese de que la aplicaci\u00f3n se ha iniciado y vuelva a someter la tarea.
+
+CWWKC1012.module.unavailable=CWWKC1012E: No se ha podido iniciar la tarea {0} porque el m\u00f3dulo {1} de la aplicaci\u00f3n {2} que la ha sometido no est\u00e1 disponible.
+CWWKC1012.module.unavailable.explanation=El m\u00f3dulo que ha sometido una tarea debe estar disponible para que se inicie la tarea.
+CWWKC1012.module.unavailable.useraction=Aseg\u00farese de que el m\u00f3dulo se haya iniciado y vuelva a someter la tarea.
+
+CWWKC1013.component.unavailable=CWWKC1013E: No se ha podido iniciar la tarea {0} porque el componente {1} del m\u00f3dulo {2} en la aplicaci\u00f3n {3} que la ha sometido no est\u00e1 disponible.
+CWWKC1013.component.unavailable.explanation=El componente de la aplicaci\u00f3n que ha sometido una tarea debe estar disponible para que se inicie la tarea.
+CWWKC1013.component.unavailable.useraction=Aseg\u00farese de que el componente de la aplicaci\u00f3n se ha iniciado y vuelva a someter la tarea.
+
+# CWWKC1020 has been moved to another file. Do not reuse it.

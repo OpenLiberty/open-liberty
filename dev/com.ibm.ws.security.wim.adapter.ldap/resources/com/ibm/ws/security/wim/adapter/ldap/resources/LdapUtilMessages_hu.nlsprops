@@ -1,0 +1,207 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.wim.adapter.ldap.util/resources/com/ibm/ws/security/wim/adapter/ldap/util/resources/LdapUtilMessages.nlsprops
+#COMPONENTPREFIX CWIML
+#COMPONENTPREFIX CWIMK
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR Virtual Member Manager user registry utilities
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: Profile Manager: 1000-1999
+# Message prefix block: Repository Manager: 4000-4499
+# Message prefix block: Adapters: 4500-4999
+# Message prefix block: CWWKS3200 - CWWKS3299
+
+ENTITY_NOT_FOUND=CWIML4001E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) {0} entit\u00e1s nem tal\u00e1lhat\u00f3. Adja meg a helyes entit\u00e1st vagy hozza l\u00e9tre a hi\u00e1nyz\u00f3 entit\u00e1st.
+ENTITY_NOT_FOUND.explanation=A megadott entit\u00e1sn\u00e9v, amely lehet uniqueName vagy uniqueId, nem tal\u00e1lhat\u00f3 az alapul szolg\u00e1l\u00f3 lerakatban. A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem folytat\u00f3dhat az entit\u00e1s megtal\u00e1l\u00e1sa n\u00e9lk\u00fcl.
+ENTITY_NOT_FOUND.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az entit\u00e1s l\u00e9tezik az alapul szolg\u00e1l\u00f3 lerakatban. Ha az entit\u00e1s l\u00e9tezik, akkor ellen\u0151rizze, hogy be van \u00e1ll\u00edtva az olvas\u00e1si jogosults\u00e1g az entit\u00e1shoz, \u00e9s pr\u00f3b\u00e1lkozzon \u00fajra.
+
+INVALID_LEVEL_IN_CONTROL=CWIML4514E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) {0} level tulajdons\u00e1ga sz\u00e1m\u00e1ra helytelen \u00e9rt\u00e9k van megadva itt: {1}. A level tulajdons\u00e1g \u00e9rt\u00e9k\u00e9nek 0-nak vagy pozit\u00edv eg\u00e9sznek kell lennie.
+INVALID_LEVEL_IN_CONTROL.explanation=A level tulajdons\u00e1g \u00e9rt\u00e9ke negat\u00edv sz\u00e1mk\u00e9nt van megadva.
+INVALID_LEVEL_IN_CONTROL.useraction=A level tulajdons\u00e1g \u00e9rt\u00e9k\u00e9nek 0-nak vagy pozit\u00edv eg\u00e9sznek kell lennie. M\u00f3dos\u00edtsa a level tulajdons\u00e1g \u00e9rt\u00e9k\u00e9t, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+
+NAMING_EXCEPTION=CWIML4520E: Az LDAP m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) {0} LDAP elnevez\u00e9si kiv\u00e9tel t\u00f6rt\u00e9nt a feldolgoz\u00e1s sor\u00e1n.
+NAMING_EXCEPTION.explanation=Az \u00fczenet azt jelzi, hogy \u00e1ltal\u00e1nos elnevez\u00e9si kiv\u00e9tel t\u00f6rt\u00e9nt egy LDAP m\u0171velet sor\u00e1n. Tov\u00e1bbi r\u00e9szletek\u00e9rt tekintse meg a kiv\u00e9telt. 
+NAMING_EXCEPTION.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kapcsol\u00f3d\u00f3 lerakat (p\u00e9ld\u00e1ul: egy LDAP kiszolg\u00e1l\u00f3n l\u00e9v\u0151 adatb\u00e1zis) el van ind\u00edtva \u00e9s helyesen van be\u00e1ll\u00edtva.
+
+SYSTEM_EXCEPTION=CWIML1998E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A k\u00f6vetkez\u0151 rendszerkiv\u00e9tel t\u00f6rt\u00e9nt a felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet feldolgoz\u00e1sa sor\u00e1n: {0} 
+SYSTEM_EXCEPTION.explanation=A program rendszerkiv\u00e9telt \u00e9szlelt a felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet v\u00e9grehajt\u00e1sa sor\u00e1n. 
+SYSTEM_EXCEPTION.useraction= Tekintse \u00e1t a napl\u00f3kat a hiba ok\u00e1\u00e9rt, \u00e9s tegye meg a megfelel\u0151 jav\u00edt\u00f3 int\u00e9zked\u00e9seket. 
+
+INVALID_PROPERTY_VALUE=CWIML1013E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) {0} tulajdons\u00e1g megadott \u00e9rt\u00e9ke nem \u00e9rv\u00e9nyes a(z) {1} entit\u00e1sra. A tulajdons\u00e1g \u00e9rt\u00e9k\u00e9nek helyesnek \u00e9s megfelel\u0151 adatt\u00edpus\u00fanak kell lennie.
+INVALID_PROPERTY_VALUE.explanation=A tulajdons\u00e1g \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen. P\u00e9ld\u00e1ul egy azonos\u00edt\u00f3 t\u00edpus\u00fa tulajdons\u00e1g helytelen bejegyz\u00e9sre mutat.
+INVALID_PROPERTY_VALUE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a tulajdons\u00e1g \u00e9rt\u00e9ke helyes, \u00e9s az adatt\u00edpusa megfelel\u0151. Ha azonos\u00edt\u00f3 t\u00edpus\u00fa tulajdons\u00e1gokat pr\u00f3b\u00e1l lek\u00e9rni m\u00e1s tulajdons\u00e1gokkal egy\u00fctt, ossza fel azokat k\u00e9t h\u00edv\u00e1sra. Az egyik h\u00edv\u00e1ssal a nem azonos\u00edt\u00f3 t\u00edpus\u00fa tulajdons\u00e1gokat, a m\u00e1sikkal pedig az azonos\u00edt\u00f3 t\u00edpus\u00fa tulajdons\u00e1gokat k\u00e9rje le.
+
+GENERIC=CWIML1999E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. Fut\u00e1s k\u00f6zbeni hiba t\u00f6rt\u00e9nt a feldolgoz\u00e1s sor\u00e1n: {0}
+GENERIC.explanation=A programban a m\u0171k\u00f6d\u00e9s sor\u00e1n a megadott hiba t\u00f6rt\u00e9nt.
+GENERIC.useraction= Tekintse \u00e1t a napl\u00f3kat a hiba ok\u00e1\u00e9rt, \u00e9s tegye meg a megfelel\u0151 jav\u00edt\u00f3 int\u00e9zked\u00e9seket.
+
+MISSING_MANDATORY_PROPERTY=CWIML1028E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A k\u00f6telez\u0151 {0} tulajdons\u00e1g \u00e9rt\u00e9ke hi\u00e1nyzik. Biztos\u00edtson \u00e9rt\u00e9ket a k\u00f6telez\u0151 tulajdons\u00e1ghoz.
+MISSING_MANDATORY_PROPERTY.explanation=A m\u0171velet nem hajthat\u00f3 v\u00e9gre, mert a k\u00f6telez\u0151 tulajdons\u00e1g \u00e9rt\u00e9ke hi\u00e1nyzik. P\u00e9ld\u00e1ul az RDN (relat\u00edv megk\u00fcl\u00f6nb\u00f6ztetett n\u00e9v) tulajdons\u00e1g nincs megadva az entit\u00e1s l\u00e9trehoz\u00e1sakor; esetleg a propertyName vagy a entityTypeName hi\u00e1nyzik a PropertyDefinitionControl vagyExtensionPropertyDefinitionControl be\u00e1ll\u00edt\u00e1sb\u00f3l; esetleg az entityName nem szerepel az entitySchema be\u00e1ll\u00edt\u00e1sban.
+MISSING_MANDATORY_PROPERTY.useraction=Biztos\u00edtson \u00e9rt\u00e9ket a k\u00f6telez\u0151 tulajdons\u00e1ghoz.
+
+ENTITY_IS_NOT_A_GROUP=CWIML4525E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A megadott {0} entit\u00e1st\u00edpus nem Group. Ez a m\u0171velet csak Group entit\u00e1st\u00edpus eset\u00e9n t\u00e1mogatott.
+ENTITY_IS_NOT_A_GROUP.explanation=A csoporttal kapcsolatos m\u0171veletek, p\u00e9ld\u00e1ul tagok hozz\u00e1rendel\u00e9se csoporthoz vagy csoport tagjainak lek\u00e9rdez\u00e9se, csak a Group entit\u00e1st\u00edpussal haszn\u00e1lhat\u00f3k. Kiv\u00e9tel t\u00f6rt\u00e9nik, ha a megadott entit\u00e1s nem Group t\u00edpus\u00fa.
+ENTITY_IS_NOT_A_GROUP.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott entit\u00e1st\u00edpus Group t\u00edpus. Az LDAP csatol\u00f3 eset\u00e9ben gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a Group entit\u00e1st\u00edpushoz meghat\u00e1rozott objektumoszt\u00e1ly egyezik a csoport t\u00e9nyleges objektumoszt\u00e1ly\u00e1val.
+
+CLEAR_ALL_CLEAR_CACHE_MODE=CWIML4002W:  A(z) {2} felhaszn\u00e1l\u00f3 a gyors\u00edt\u00f3t\u00e1r szab\u00e1lyoz\u00e1st a(z) {1} gyors\u00edt\u00f3t\u00e1r takar\u00edt\u00e1si m\u00f3ddal adta \u00e1t a(z) {0} lerakat eset\u00e9ben. A teljes LDAP lerakat gyors\u00edt\u00f3t\u00e1r ki\u00fcr\u00edt\u00e9sre ker\u00fcl.
+CLEAR_ALL_CLEAR_CACHE_MODE.explanation=A megadott felhaszn\u00e1l\u00f3 a megadott lerakat teljes gyors\u00edt\u00f3t\u00e1r\u00e1t pr\u00f3b\u00e1lja t\u00f6r\u00f6lni a clearAll m\u00f3ddal.
+CLEAR_ALL_CLEAR_CACHE_MODE.useraction=Ez az \u00fczenet fel\u00fclvizsg\u00e1lati c\u00e9lb\u00f3l napl\u00f3z\u00e1sra ker\u00fcl.
+
+UNKNOWN_CLEAR_CACHE_MODE=CWIML4003W:  A(z) {0} lerakathoz a gyors\u00edt\u00f3t\u00e1r szab\u00e1lyoz\u00e1sban megadott {1} gyors\u00edt\u00f3t\u00e1r takar\u00edt\u00e1si m\u00f3d nem t\u00e1mogatott. Adjon meg t\u00e1mogatott gyors\u00edt\u00f3t\u00e1r takar\u00edt\u00e1si m\u00f3dot.
+UNKNOWN_CLEAR_CACHE_MODE.explanation=A megadott gyors\u00edt\u00f3t\u00e1r takar\u00edt\u00e1si m\u00f3d erre a lerakatra nem t\u00e1mogatott.
+UNKNOWN_CLEAR_CACHE_MODE.useraction=Adjon meg olyan gyors\u00edt\u00f3t\u00e1r takar\u00edt\u00e1si m\u00f3dot, amely t\u00e1mogatott a megadott lerakatra. 
+
+INVALID_PROPERTY_DATA_TYPE=CWIML4522E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) {0} tulajdons\u00e1g adatt\u00edpusa \u00e9rv\u00e9nytelen.  A be\u00e1ll\u00edtott felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1snak \u00e9s a h\u00e1tt\u00e9r lerakatnak ugyanolyan adatt\u00edpus\u00fa tulajdons\u00e1ggal kell rendelkeznie. 
+INVALID_PROPERTY_DATA_TYPE.explanation=A megadott adatt\u00edpus nem egyezik meg a tulajdons\u00e1g sz\u00e1m\u00e1ra meghat\u00e1rozott adatt\u00edpussal. P\u00e9ld\u00e1ul a be\u00e1ll\u00edtott felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1sban meghat\u00e1rozott adatt\u00edpus bin\u00e1ris, de a h\u00e1tt\u00e9r lerakatban meghat\u00e1rozott adatt\u00edpus karaktersorozat.
+INVALID_PROPERTY_DATA_TYPE.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a tulajdons\u00e1g adatt\u00edpusa ugyanaz legyen a be\u00e1ll\u00edtott felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1sban \u00e9s a h\u00e1tt\u00e9r lerakatban. 
+
+LDAP_ENTRY_NOT_FOUND=CWIML4527E: Az LDAP m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) {0} LDAP bejegyz\u00e9s nem tal\u00e1lhat\u00f3: {1} Adja meg az entit\u00e1s helyes egyedi nev\u00e9t, \u00e9s hat\u00e1rozza meg az LDAP lerakat helyes csom\u00f3pont lek\u00e9pez\u00e9s\u00e9t.
+LDAP_ENTRY_NOT_FOUND.explanation=A megadott entit\u00e1s LDAP bejegyz\u00e9se nem tal\u00e1lhat\u00f3 az LDAP kiszolg\u00e1l\u00f3n.
+LDAP_ENTRY_NOT_FOUND.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az entit\u00e1s egyedi neve helyesen van megadva. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az LDAP lerakat csom\u00f3pont-lek\u00e9pez\u00e9se helyesen van meghat\u00e1rozva.
+
+PROPERTY_NOT_DEFINED=CWIML0514W: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) {0} tulajdons\u00e1g nincs meghat\u00e1rozva. Hat\u00e1rozza meg vagy haszn\u00e1lja a helyes tulajdons\u00e1gnevet.
+PROPERTY_NOT_DEFINED.explanation=A megadott tulajdons\u00e1g nincs meghat\u00e1rozva.
+PROPERTY_NOT_DEFINED.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a tulajdons\u00e1g meg van hat\u00e1rozva, vagy haszn\u00e1lja a helyes tulajdons\u00e1gnevet.
+
+CANNOT_SEARCH_PRINCIPAL_NAME_WITH_OTHER_PROPS=CWIML1021E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s keres\u00e9si m\u0171velet nem hajthat\u00f3 v\u00e9gre. A principalName nem haszn\u00e1lhat\u00f3 keres\u00e9si m\u0171veletekben m\u00e1s tulajdons\u00e1gokkal egy\u00fctt.
+CANNOT_SEARCH_PRINCIPAL_NAME_WITH_OTHER_PROPS.explanation=A principalName keres\u00e9se m\u00e1s tulajdons\u00e1gokkal a keres\u00e9si kifejez\u00e9sben nem t\u00e1mogatott.
+CANNOT_SEARCH_PRINCIPAL_NAME_WITH_OTHER_PROPS.useraction=Ne haszn\u00e1lja a principalName tulajdons\u00e1got keres\u00e9si m\u0171veletekben m\u00e1s tulajdons\u00e1gokkal egy\u00fctt.
+
+NULL_CHECKPOINT_VALUE=CWIML4550E: Az LDAP m\u0171velet nem hajthat\u00f3 v\u00e9gre. \u00dcres vagy null ellen\u0151rz\u0151 pont \u00e9rt\u00e9k lett \u00e1tadva a v\u00e1ltoz\u00e1sk\u00f6vet\u00e9st t\u00e1mogat\u00f3 illeszt\u0151nek. Adjon meg \u00e9rv\u00e9nyes ellen\u0151rz\u00e9si pontot, vagy tiltsa a lerakat 'supportChangeLog' jelz\u0151t a server.xml f\u00e1jlban.
+NULL_CHECKPOINT_VALUE.explanation=Ha egy lerakat t\u00e1mogatja a v\u00e1ltoz\u00e1sk\u00f6vet\u00e9st a lerakat server.xml f\u00e1jlj\u00e1nak 'supportChangeLog' jelz\u0151je szerint, akkor az \u00e1tadott ellen\u0151rz\u00e9si pont a ChangeControl vez\u00e9rl\u0151ben nem lehet \u00fcres vagy null\u00e9rt\u00e9k\u0171.
+NULL_CHECKPOINT_VALUE.useraction=Pr\u00f3b\u00e1lkozzon \u00fajra a keres\u00e9ssel \u00e9rv\u00e9nyes ellen\u0151rz\u0151 pont haszn\u00e1lat\u00e1val, vagy tiltsa le a lerakat 'supportChangeLog' jelz\u0151j\u00e9t a server.xml f\u00e1jlban, ha a felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s illeszt\u0151 nem k\u00e9pes a v\u00e1ltoz\u00e1sk\u00f6vet\u00e9sre.
+
+MISSING_OR_EMPTY_PASSWORD=CWIML4541E: A bejelentkez\u00e9si m\u0171velet nem hajthat\u00f3 v\u00e9gre. A jelsz\u00f3 hi\u00e1nyzik vagy \u00fcres.
+MISSING_OR_EMPTY_PASSWORD.explanation=Ha az azonos\u00edt\u00f3n\u00e9v meg lett adva a bejelentkez\u00e9skor, akkor a jelsz\u00f3 nem lehet null vagy \u00fcres.
+MISSING_OR_EMPTY_PASSWORD.useraction=Adja meg a jelsz\u00f3t.
+
+PASSWORD_CHECKED_FAILED=CWIML4529E: A bejelentkez\u00e9si m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) {0} azonos\u00edt\u00f3n\u00e9v jelsz\u00f3ellen\u0151rz\u00e9se meghi\u00fasult. Az ok: {1}. Adja meg helyesen az azonos\u00edt\u00f3nevet \u00e9s jelsz\u00f3t, \u00e9s ellen\u0151rizze, hogy a fi\u00f3k enged\u00e9lyezett \u00e9s nem z\u00e1rolt.
+PASSWORD_CHECKED_FAILED.explanation=A megadott azonos\u00edt\u00f3nevet nem lehet hiteles\u00edteni, mert a jelsz\u00f3ellen\u0151rz\u00e9s meghi\u00fasult.
+PASSWORD_CHECKED_FAILED.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az azonos\u00edt\u00f3n\u00e9v \u00e9s a jelsz\u00f3 is helyesen van megadva. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a fi\u00f3k nincsen z\u00e1rolva \u00e9s enged\u00e9lyezett.
+
+UNSUPPORTED_CLEAR_CACHE_MODE=CWIML4004W: Az LDAP lerakat gyors\u00edt\u00f3t\u00e1r takar\u00edt\u00e1si m\u0171velet nem hajthat\u00f3 v\u00e9gre. A gyors\u00edt\u00f3t\u00e1r szab\u00e1lyoz\u00e1sban \u00e1tadott {1} gyors\u00edt\u00f3t\u00e1r takar\u00edt\u00e1si m\u00f3dot a megadott {0} lerakat nem t\u00e1mogatja erre a m\u0171veletre. Adjon meg t\u00e1mogatott gyors\u00edt\u00f3t\u00e1r takar\u00edt\u00e1si m\u00f3dot.
+UNSUPPORTED_CLEAR_CACHE_MODE.explanation=A megadott gyors\u00edt\u00f3t\u00e1r takar\u00edt\u00e1si m\u00f3d \u00e9rv\u00e9nytelen ehhez a lerakathoz.
+UNSUPPORTED_CLEAR_CACHE_MODE.useraction=Adjon meg helyes gyors\u00edt\u00f3t\u00e1r takar\u00edt\u00e1si m\u00f3dot. A gyors\u00edt\u00f3t\u00e1r nem lesz ki\u00fcr\u00edtve a megadott lerakat eset\u00e9n, kiv\u00e9ve, ha \u00e9rv\u00e9nyes gyors\u00edt\u00f3t\u00e1r takar\u00edt\u00e1si m\u00f3dot ad meg.
+
+CURRENT_LDAP_SERVER=CWIML4564I: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s most csatlakozik a(z) {0} LDAP kiszolg\u00e1l\u00f3hoz.
+CURRENT_LDAP_SERVER.explanation=A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s most csatlakoztatva van a megadott LDAP kiszolg\u00e1l\u00f3hoz.
+CURRENT_LDAP_SERVER.useraction=Nincs teend\u0151.
+
+CANNOT_CONNECT_TO_LDAP_SERVER=CWIML4563I: Nem lehet csatlakozni a be\u00e1ll\u00edtott els\u0151dleges {0} LDAP kiszolg\u00e1l\u00f3hoz. Fel\u00e9p\u00fcl a kapcsolat az \u00e1t\u00e1ll\u00e1si kiszolg\u00e1l\u00f3 fel\u00e9, ha a server.xml f\u00e1jlban ez be van \u00e1ll\u00edtva.
+CANNOT_CONNECT_TO_LDAP_SERVER.explanation=Nem lehet csatlakozni az els\u0151dleges LDAP kiszolg\u00e1l\u00f3hoz. Fel\u00e9p\u00fcl a kapcsolat az \u00e1t\u00e1ll\u00e1si kiszolg\u00e1l\u00f3 fel\u00e9, ha a server.xml f\u00e1jlban ez be van \u00e1ll\u00edtva. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tanulm\u00e1nyozza az \u00e1t\u00e1ll\u00e1s le\u00edr\u00e1s\u00e1t.
+CANNOT_CONNECT_TO_LDAP_SERVER.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott LDAP kiszolg\u00e1l\u00f3 fut.
+
+INVALID_CERTIFICATE_FILTER=CWIML0002E: A bejelentkez\u00e9si m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) {0} tan\u00fas\u00edtv\u00e1nysz\u0171r\u0151 szintaxisa nem \u00e9rv\u00e9nyes. A helyes szintaxis: LDAP attribute=$[\u00dcgyf\u00e9l igazol\u00e1s attrib\u00fatum] (p\u00e9ld\u00e1ul, uid=$[SubjectCN]).
+INVALID_CERTIFICATE_FILTER.explanation=A sz\u0171r\u0151 szerkezet szintaxisa: LDAP attribute=$[\u00dcgyf\u00e9l igazol\u00e1s attrib\u00fatum] (p\u00e9ld\u00e1ul, uid=$[SubjectCN]). A sz\u0171r\u0151 meghat\u00e1roz\u00e1s bal oldala egy LDAP attrib\u00fatum, ami f\u00fcgg att\u00f3l a s\u00e9m\u00e1t\u00f3l, amely haszn\u00e1lat\u00e1ra az LDAP kiszolg\u00e1l\u00f3 konfigur\u00e1lva van.  A sz\u0171r\u0151 meghat\u00e1roz\u00e1s jobb oldala az \u00fcgyf\u00e9l tan\u00fas\u00edtv\u00e1nyban szerepl\u0151 nyilv\u00e1nos attrib\u00fatumok egyike. A jobb oldalnak egy doll\u00e1r jellel ($) \u00e9s egy nyit\u00f3 kapcsos z\u00e1r\u00f3jellel ({ vagy [) kell kezd\u0151dnie \u00e9s egy z\u00e1r\u00f3 kapcsos z\u00e1r\u00f3jellel (} vagy ]) v\u00e9gz\u0151dnie. Az al\u00e1bbi tan\u00fas\u00edtv\u00e1ny attrib\u00fatum\u00e9rt\u00e9kek haszn\u00e1lhat\u00f3k a sz\u0171r\u0151 meghat\u00e1roz\u00e1s jobb oldal\u00e1n. A karakterl\u00e1ncok kis/nagybet\u0171 \u00e9rz\u00e9kenyek: $[UniqueKey], $[PublicKey], $[Issuer], $[NotAfter], $[NotBefore], $[SerialNumber], $[SigAlgName], $[SigAlgOID], $[SigAlgParams], $[SubjectCN], $[Version]. 
+INVALID_CERTIFICATE_FILTER.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az igazol\u00e1ssz\u0171r\u0151 a le\u00edrt szintaxist k\u00f6veti.
+
+TBS_CERTIFICATE_UNSUPPORTED=CWIML0008E: A bejelentkez\u00e9si m\u0171velet nem hajthat\u00f3 v\u00e9gre. A getTBSCertificate() m\u0171velet nem t\u00e1mogatott sz\u0171r\u0151kifejez\u00e9sben. Adjon meg egy helyes tan\u00fas\u00edtv\u00e1nysz\u0171r\u0151t.
+TBS_CERTIFICATE_UNSUPPORTED.explanation=TBSCertificate tan\u00fas\u00edtv\u00e1nyattrib\u00fatum nem haszn\u00e1lhat\u00f3 a sz\u0171r\u0151meghat\u00e1roz\u00e1sban. Az al\u00e1bbi tan\u00fas\u00edtv\u00e1ny attrib\u00fatum\u00e9rt\u00e9kek haszn\u00e1lhat\u00f3k a sz\u0171r\u0151 meghat\u00e1roz\u00e1s jobb oldal\u00e1n. A karaktersorozatokban a kis- \u00e9s nagybet\u0171k elt\u00e9r\u0151nek sz\u00e1m\u00edtanak: ${UniqueKey}, ${PublicKey}, ${Issuer}, ${NotAfter}, ${NotBefore}, ${SerialNumber}, ${SigAlgName}, ${SigAlgOID}, ${SigAlgParams}, ${SubjectCN}, ${Version}.
+TBS_CERTIFICATE_UNSUPPORTED.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az igazol\u00e1ssz\u0171r\u0151 helyes.
+
+UNKNOWN_CERTIFICATE_ATTRIBUTE=CWIML0009E: A bejelentkez\u00e9si m\u0171velet nem hajthat\u00f3 v\u00e9gre. Ismeretlen {0} tan\u00fas\u00edtv\u00e1nyattrib\u00fatum ker\u00fclt felhaszn\u00e1l\u00e1sra a sz\u0171r\u0151meghat\u00e1roz\u00e1sban. Adjon meg t\u00e1mogatott tan\u00fas\u00edtv\u00e1nysz\u0171r\u0151t.
+UNKNOWN_CERTIFICATE_ATTRIBUTE.explanation=Csak a k\u00f6vetkez\u0151 tan\u00fas\u00edtv\u00e1ny attrib\u00fatum\u00e9rt\u00e9kek haszn\u00e1lhat\u00f3k a sz\u0171r\u0151meghat\u00e1roz\u00e1s jobb oldal\u00e1n. A karaktersorozatokban a kis- \u00e9s nagybet\u0171k elt\u00e9r\u0151nek sz\u00e1m\u00edtanak: ${UniqueKey}, ${PublicKey}, ${Issuer}, ${NotAfter}, ${NotBefore}, ${SerialNumber}, ${SigAlgName}, ${SigAlgOID}, ${SigAlgParams}, ${SubjectCN}, ${Version}. 
+UNKNOWN_CERTIFICATE_ATTRIBUTE.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az igazol\u00e1ssz\u0171r\u0151 helyes.
+
+UNKNOWN_DN_FIELD=CWIML0003E: A bejelentkez\u00e9si m\u0171velet nem hajthat\u00f3 v\u00e9gre. A be\u00e1ll\u00edtott {0} Megk\u00fcl\u00f6nb\u00f6ztetett n\u00e9v mez\u0151 \u00e9rv\u00e9nytelen. Adjon meg \u00e9rv\u00e9nyes Megk\u00fcl\u00f6nb\u00f6ztetett n\u00e9v mez\u0151t.
+UNKNOWN_DN_FIELD.explanation=Az igazol\u00e1s sz\u0171r\u0151ben a megk\u00fcl\u00f6nb\u00f6ztetett n\u00e9v (DN) mez\u0151 ismeretlen.
+UNKNOWN_DN_FIELD.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az igazol\u00e1ssz\u0171r\u0151 helyes. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tanulm\u00e1nyozza a tan\u00fas\u00edtv\u00e1ny konfigur\u00e1ci\u00f3s le\u00edr\u00e1s\u00e1t.
+
+EXT_ID_VALUE_IS_NULL=CWIML4548E: A bejelentkez\u00e9si m\u0171velet nem hajthat\u00f3 v\u00e9gre. A megadott {0} k\u00fcls\u0151 azonos\u00edt\u00f3k\u00e9nt haszn\u00e1lt LDAP attrib\u00fatum null\u00e9rt\u00e9k\u0171 a(z) {1} entit\u00e1s eset\u00e9n.
+EXT_ID_VALUE_IS_NULL.explanation=A k\u00fcls\u0151 azonos\u00edt\u00f3k\u00e9nt haszn\u00e1lt LDAP attrib\u00fatumnak minden egyes entit\u00e1s eset\u00e9n tartalmaznia kell egy \u00e9rt\u00e9ket.
+EXT_ID_VALUE_IS_NULL.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a helyes attrib\u00fatum van kiv\u00e1lasztva a k\u00fcls\u0151 azonos\u00edt\u00f3hoz. Ha nem l\u00e9tezik megfelel\u0151 attrib\u00fatum, akkor haszn\u00e1lhatja a megk\u00fcl\u00f6nb\u00f6ztetett nevet k\u00fcls\u0151 azonos\u00edt\u00f3k\u00e9nt.
+
+EXT_ID_HAS_MULTIPLE_VALUES=CWIML4528E: A keres\u00e9si m\u0171velet nem hajthat\u00f3 v\u00e9gre. A k\u00fcls\u0151 azonos\u00edt\u00f3k\u00e9nt haszn\u00e1lt LDAP attrib\u00fatum t\u00f6bb \u00e9rt\u00e9keket tartalmaz: {0}. K\u00fcls\u0151 azonos\u00edt\u00f3k\u00e9nt v\u00e1lassza a helyes LDAP attrib\u00fatumot.
+EXT_ID_HAS_MULTIPLE_VALUES.explanation=A k\u00fcls\u0151 azonos\u00edt\u00f3k\u00e9nt haszn\u00e1lt LDAP attrib\u00fatumnak egyedinek kell lennie \u00e9s nem tartalmazhat t\u00f6bb \u00e9rt\u00e9ket.
+EXT_ID_HAS_MULTIPLE_VALUES.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a helyes attrib\u00fatum van kiv\u00e1lasztva a k\u00fcls\u0151 azonos\u00edt\u00f3hoz. Ha nem l\u00e9tezik megfelel\u0151 attrib\u00fatum, akkor haszn\u00e1lhatja a megk\u00fcl\u00f6nb\u00f6ztetett nevet k\u00fcls\u0151 azonos\u00edt\u00f3k\u00e9nt.
+
+INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A be\u00e1ll\u00edtott alapbejegyz\u00e9s meghat\u00e1roz\u00e1sa \u00e9rv\u00e9nytelen: {0}. \u00c1ll\u00edtson be \u00e9rv\u00e9nyes alapbejegyz\u00e9s meghat\u00e1roz\u00e1st a server.xml f\u00e1jlban. P\u00e9ld\u00e1ul: <baseEntry name="..." baseDN="...."/>.
+INVALID_BASE_ENTRY_DEFINITION.explanation=Az alapbejegyz\u00e9s meghat\u00e1roz\u00e1s\u00e1nak szintaxisa: <baseEntry name="..." baseDN="...."/>.
+INVALID_BASE_ENTRY_DEFINITION.useraction=Jav\u00edtsa az alapbejegyz\u00e9s meghat\u00e1roz\u00e1st a server.xml f\u00e1jlban.
+
+INVALID_DN_SYNTAX=CWIML4517E: A bejelentkez\u00e9si m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) {0} megk\u00fcl\u00f6nb\u00f6ztetett n\u00e9v (DN) nem \u00e9rv\u00e9nyes. A helyes szintaxissal adja meg a megk\u00fcl\u00f6nb\u00f6ztetett nevet.
+INVALID_DN_SYNTAX.explanation=A megadott megk\u00fcl\u00f6nb\u00f6ztetett n\u00e9v (DN) \u00e9rv\u00e9nytelen. A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem folytat\u00f3dhat \u00e9rv\u00e9nyes megk\u00fcl\u00f6nb\u00f6ztetett n\u00e9v n\u00e9lk\u00fcl.
+INVALID_DN_SYNTAX.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megk\u00fcl\u00f6nb\u00f6ztetett n\u00e9v szintaxisa helyes. P\u00e9ld\u00e1ul: tekintse \u00e1t a vez\u00e9rl\u0151karaktereket.
+
+INIT_POOL_SIZE_TOO_BIG=CWIML4532E: A(z) {0} kezdeti kontextus t\u00e1rol\u00f3m\u00e9ret nagyobb, mint a maxim\u00e1lis kontextus t\u00e1rol\u00f3m\u00e9ret ({1}). Ez\u00e9rt a kontextust\u00e1rol\u00f3 tilt\u00e1sra ker\u00fcl.
+INIT_POOL_SIZE_TOO_BIG.explanation=A kezdeti k\u00f6rnyezet t\u00e1rol\u00f3m\u00e9retnek kisebbnek kell lennie a maxim\u00e1lis k\u00f6rnyezet t\u00e1rol\u00f3m\u00e9retn\u00e9l.
+INIT_POOL_SIZE_TOO_BIG.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a kezdeti k\u00f6rnyezet t\u00e1rol\u00f3m\u00e9ret kisebb legyen a maxim\u00e1lis k\u00f6rnyezet t\u00e1rol\u00f3m\u00e9retn\u00e9l, vagy \u00e1ll\u00edtsa be a maxim\u00e1lis k\u00f6rnyezet t\u00e1rol\u00f3m\u00e9retet 0 \u00e9rt\u00e9kre.
+
+PREF_POOL_SIZE_TOO_BIG=CWIML4533E: A kontextus t\u00e1rol\u00f3m\u00e9ret el\u0151nyben r\u00e9szes\u00edtett {0} m\u00e9ret\u00e9nek kisebbnek kell lennie a maxim\u00e1lis kontextus  t\u00e1rol\u00f3m\u00e9retn\u00e9l ({1}). Ez\u00e9rt a kontextust\u00e1rol\u00f3 tilt\u00e1sra ker\u00fcl.
+PREF_POOL_SIZE_TOO_BIG.explanation=A prefer\u00e1lt k\u00f6rnyezet t\u00e1rol\u00f3m\u00e9retnek kisebbnek kell lennie a maxim\u00e1lis k\u00f6rnyezet t\u00e1rol\u00f3m\u00e9retn\u00e9l.
+PREF_POOL_SIZE_TOO_BIG.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az el\u0151nyben r\u00e9szes\u00edtett k\u00f6rnyezet t\u00e1rol\u00f3m\u00e9ret kisebb legyen a maxim\u00e1lis k\u00f6rnyezet t\u00e1rol\u00f3m\u00e9retn\u00e9l, vagy \u00e1ll\u00edtsa be a maxim\u00e1lis k\u00f6rnyezet t\u00e1rol\u00f3m\u00e9retet 0 \u00e9rt\u00e9kre.
+
+MISSING_INI_PROPERTY=CWIML0004E: Hiba t\u00f6rt\u00e9nt a felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s inicializ\u00e1l\u00e1sa sor\u00e1n. A(z) {0} inicializ\u00e1l\u00e1si tulajdons\u00e1ghi\u00e1nyzik a server.xml f\u00e1jlb\u00f3l. Adjon meg egy inicializ\u00e1l\u00e1si tulajdons\u00e1got a server.xml f\u00e1jlban.
+MISSING_INI_PROPERTY.explanation=A megadott inicializ\u00e1l\u00e1si tulajdons\u00e1g k\u00f6telez\u0151. A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet en\u00e9lk\u00fcl nem ind\u00edthat\u00f3.
+MISSING_INI_PROPERTY.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy ez a tulajdons\u00e1g meg van-e adva a server.xml f\u00e1jlban. Gondoskodj\u00e9k r\u00f3la, hogy ez a tulajdons\u00e1g nem \u00fcres vagy null.
+
+DUPLICATE_ENTITY_TYPE=CWIML4531E: T\u00f6bbsz\u00f6r szerepl\u0151 {0} entit\u00e1st\u00edpus lett megadva a server.xml f\u00e1jlban.
+DUPLICATE_ENTITY_TYPE.explanation=A server.xml f\u00e1jlban meghat\u00e1rozott entit\u00e1st\u00edpusnak egyedinek kell lennie.
+DUPLICATE_ENTITY_TYPE.useraction=A server.xml f\u00e1jl szerkeszt\u00e9s\u00e9vel t\u00e1vol\u00edtsa el a t\u00f6bbsz\u00f6r szerepl\u0151 entit\u00e1st\u00edpust.
+
+LDAP_CONFIG_INCOMPLETE=CWWKS3200E: Konfigur\u00e1ci\u00f3s kiv\u00e9tel t\u00f6rt\u00e9nt. A(z) {0} attrib\u00fatumot meg kell adni.
+LDAP_CONFIG_INCOMPLETE.explanation=Az attrib\u00fatumot meg kell adni.
+LDAP_CONFIG_INCOMPLETE.useraction=Adja meg a hi\u00e1nyz\u00f3 attrib\u00fatum \u00e9rt\u00e9k\u00e9t.
+
+LDAP_SSL_SOCKET_FACTORY_INIT_ERROR=CWWKS3201E: Kiv\u00e9tel t\u00f6rt\u00e9nt az LDAP SSL socketgy\u00e1rt\u00f3 enged\u00e9lyez\u00e9se k\u00f6zben: {0}.
+LDAP_SSL_SOCKET_FACTORY_INIT_ERROR.explanation=Az SSL-LDAP konfigur\u00e1ci\u00f3ban megadott SSL konfigur\u00e1ci\u00f3s \u00e1ln\u00e9v, hoszt vagy port helytelen.
+LDAP_SSL_SOCKET_FACTORY_INIT_ERROR.useraction=Adja meg az SSL-re felk\u00e9sz\u00edtett LDAP kiszolg\u00e1l\u00f3hoz csatlakoz\u00e1shoz sz\u00fcks\u00e9ges, helyes konfigur\u00e1ci\u00f3s inform\u00e1ci\u00f3kat.
+
+LDAP_UNSUPPORTED_TYPE=CWWKS3202E: Nem t\u00e1mogatott LDAP kiszolg\u00e1l\u00f3t\u00edpus ker\u00fclt megad\u00e1sra: {0}.
+LDAP_UNSUPPORTED_TYPE.explanation=Az al\u00e1bbi LDAP kiszolg\u00e1l\u00f3 t\u00edpusok t\u00e1mogatottak: Netscape Directory Server, IBM Lotus Domino, IBM SecureWay Directory Server, Microsoft Active Directory, Sun Java System Directory Server, IBM Tivoli Directory Server, Novell eDirectory, Custom.
+LDAP_UNSUPPORTED_TYPE.useraction=Adjon meg t\u00e1mogatott LDAP kiszolg\u00e1l\u00f3t\u00edpust.
+
+LDAP_SSL_ENABLED_WITHOUT_SSL=CWWKS3203E: Az sslEnabled attrib\u00fatum true \u00e9rt\u00e9kre van be\u00e1ll\u00edtva, de az SSL szolg\u00e1ltat\u00e1s nem enged\u00e9lyezett.
+LDAP_SSL_ENABLED_WITHOUT_SSL.explanation=Ha az sslEnabled attrib\u00fatum true \u00e9rt\u00e9kre van be\u00e1ll\u00edtva, akkor enged\u00e9lyezni kell az SSL szolg\u00e1ltat\u00e1st is.
+LDAP_SSL_ENABLED_WITHOUT_SSL.useraction=\u00c1ll\u00edtsa be az sslEnabled attrib\u00fatumot false \u00e9rt\u00e9kre vagy enged\u00e9lyezze az SSL szolg\u00e1ltat\u00e1st.
+
+LDAP_REGISTRY_INVALID_FAILOVER_SERVERS_DEFINITION=CWWKS3204E: Az \u00e1t\u00e1ll\u00e1si kiszolg\u00e1l\u00f3 meghat\u00e1roz\u00e1sa \u00e9rv\u00e9nytelen: {0}
+LDAP_REGISTRY_INVALID_FAILOVER_SERVERS_DEFINITION.explanation=Az \u00e1t\u00e1ll\u00e1si kiszolg\u00e1l\u00f3k meghat\u00e1roz\u00e1s\u00e1hoz haszn\u00e1land\u00f3 szintaxis: <kiszolg\u00e1l\u00f3 hoszt="..." port="..." />.
+LDAP_REGISTRY_INVALID_FAILOVER_SERVERS_DEFINITION.useraction=Jav\u00edtsa ki az \u00e1t\u00e1ll\u00e1si kiszolg\u00e1l\u00f3 meghat\u00e1roz\u00e1s\u00e1t a konfigur\u00e1ci\u00f3ban.
+
+SERVER_MUST_DEFINE_HOST=A kiszolg\u00e1l\u00f3 elemnek meg kell hat\u00e1roznia egy hosztot.
+SERVER_MUST_DEFINE_PORT=A kiszolg\u00e1l\u00f3 elemnek meg kell hat\u00e1roznia egy portot.
+
+LDAP_REGISTRY_UNREACHABLE_SERVER=CWWKS3205A: Nem lehet csatlakozni a k\u00f6vetkez\u0151h\u00f6z: {0}.
+LDAP_REGISTRY_UNREACHABLE_SERVER.explanation=Lehet, hogy a kiszolg\u00e1l\u00f3 nem m\u0171k\u00f6dik, vagy rossz port van megadva.
+LDAP_REGISTRY_UNREACHABLE_SERVER.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3 m\u0171k\u00f6dik, \u00e9s a portsz\u00e1m helyes.
+
+LDAP_REGISTRY_UNABLE_TO_AUTHENTICATE=CWWKS3206A: Nem lehet hiteles\u00edteni a be\u00e1ll\u00edtott {1} k\u00f6t\u00e9si megk\u00fcl\u00f6nb\u00f6ztetett n\u00e9vvel a k\u00f6vetkez\u0151n: {0}.
+LDAP_REGISTRY_UNABLE_TO_AUTHENTICATE.explanation=A bindDN \u00e9s a bindPassword helytelen, vagy rossz port van megadva.
+LDAP_REGISTRY_UNABLE_TO_AUTHENTICATE.useraction=Ellen\u0151rizze, hogy a be\u00e1ll\u00edtott bindDN \u00e9s bindPassword megfelel\u0151-e a be\u00e1ll\u00edtott LDAP kiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra.
+
+ENTITY_HAS_DESCENDENTS=CWIML4519E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) {0} entit\u00e1snak vannak lesz\u00e1rmazottai. Nem t\u00f6r\u00f6lhet\u0151 \u00e9s nem nevezhet\u0151 \u00e1t. El\u0151sz\u00f6r t\u00f6r\u00f6lje az entit\u00e1s \u00f6sszes lesz\u00e1rmazottj\u00e1t, majd t\u00f6r\u00f6lje vagy nevezze \u00e1t mag\u00e1t az entit\u00e1st.
+ENTITY_HAS_DESCENDENTS.explanation=A t\u00f6rl\u00e9s vagy az \u00e1tnevez\u00e9s csak cs\u00facsentit\u00e1sokon hajthat\u00f3 v\u00e9gre, azaz lesz\u00e1rmazottak n\u00e9lk\u00fcli entit\u00e1sokon. A megadott entit\u00e1snak vannak lesz\u00e1rmazottai.
+ENTITY_HAS_DESCENDENTS.useraction=El\u0151sz\u00f6r t\u00f6r\u00f6lje az entit\u00e1s \u00f6sszes lesz\u00e1rmazottj\u00e1t, majd t\u00f6r\u00f6lje vagy nevezze \u00e1t mag\u00e1t az entit\u00e1st.
+
+ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) {0} nem \u00e9rv\u00e9nyes entit\u00e1st\u00edpus. H\u00edvja meg a m\u0171veletet \u00e9rv\u00e9nyes entit\u00e1st\u00edpus megad\u00e1s\u00e1val.
+ENTITY_TYPE_NOT_SUPPORTED.explanation=Egy m\u0171veletet k\u00e9rt egy entit\u00e1son, de a m\u0171velet nem t\u00e1mogatja a megadott entit\u00e1st\u00edpust. Ha p\u00e9ld\u00e1ul egy lerakat GET m\u0171velet ker\u00fcl megh\u00edv\u00e1sra egy Account entit\u00e1s eset\u00e9ben, akkor a m\u0171velet meghi\u00fasul.
+ENTITY_TYPE_NOT_SUPPORTED.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a t\u00e1mogatott entit\u00e1st\u00edpusok m\u0171veletei vannak megh\u00edvva, \u00e9s t\u00e1vol\u00edtson el minden nem t\u00e1mogatott entit\u00e1st\u00edpust a bemenetb\u0151l.
+
+CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY=CWIML4543E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. Nem lehet l\u00e9trehozni vagy friss\u00edteni a(z) {0} tulajdons\u00e1got a(z) {1} lerakatban.
+CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY.explanation=A l\u00e9trehoz\u00e1s vagy friss\u00edt\u00e9s m\u0171veletben olyan \u00e9rt\u00e9k van megadva egy tulajdons\u00e1g sz\u00e1m\u00e1ra, ami nem \u00edrhat\u00f3 a lerakatba. P\u00e9ld\u00e1ul a pricipalName nem adhat\u00f3 meg egy CREATE m\u0171velet sz\u00e1m\u00e1ra.
+CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY.useraction=T\u00e1vol\u00edtsa el a hib\u00e1s tulajdons\u00e1gokat a bemenetb\u0151l, \u00e9s pr\u00f3b\u00e1lkozzon \u00fajra a m\u0171velettel \u00e9srv\u00e9nyes tulajdons\u00e1gokat \u00e9s \u00e9rt\u00e9keket megadva.
+
+PARENT_NOT_FOUND=CWIML4526E: A CREATE felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. Az entit\u00e1s nem ker\u00fclt l\u00e9trehoz\u00e1sra, mert az entit\u00e1s sz\u00fcl\u0151je nem tal\u00e1lhat\u00f3. Az alapul szolg\u00e1l\u00f3 JDNI kiv\u00e9tel: {0}
+PARENT_NOT_FOUND.explanation=Ha a l\u00e9trehoz\u00e1skor az entit\u00e1s sz\u00fcl\u0151je nem tal\u00e1lhat\u00f3, kiv\u00e9tel t\u00f6rt\u00e9nik.
+PARENT_NOT_FOUND.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az entit\u00e1shoz meghat\u00e1rozott alap\u00e9rtelmezett sz\u00fcl\u0151 l\u00e9tezik.  Ha nem l\u00e9tezik, l\u00e9tre kell hoznia, \u00e9s \u00fajra kell pr\u00f3b\u00e1lkoznia a m\u0171velettel.
+
+ENTITY_ALREADY_EXIST=CWIML4501E: A CREATE felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. M\u00e1r l\u00e9tezik egy entit\u00e1s ugyanezzel a(z) {0} egyedi n\u00e9vvel, vagy ugyanezzel az RDN \u00e9rt\u00e9kkel.
+ENTITY_ALREADY_EXIST.explanation=A megadott egyedi n\u00e9v vagy egy azonos RDN \u00e9rt\u00e9kkel rendelkez\u0151 entit\u00e1s m\u00e1r l\u00e9tezik a lerakatban. Az azonos egyedi n\u00e9vvel vagy relat\u00edv megk\u00fcl\u00f6nb\u00f6ztetett n\u00e9vvel (RDN) rendelkez\u0151 t\u00f6bbsz\u00f6r szerepl\u0151 entit\u00e1s nem adhat\u00f3 hozz\u00e1 a lerakathoz.
+ENTITY_ALREADY_EXIST.useraction=Pr\u00f3b\u00e1lkozzon \u00fajra a m\u0171velettel, \u00e9s adjon meg egy m\u00e1sik nevet az entit\u00e1snak, hogy egyedi legyen.
+
+WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED=CWIML4547E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. Az \u00edr\u00e1si m\u0171veletek nem enged\u00e9lyezettek a(z) {0} m\u00e1sodlagos LDAP kiszolg\u00e1l\u00f3n.
+WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED.explanation=Minden \u00edr\u00e1si m\u0171velet (l\u00e9trehoz\u00e1s, friss\u00edt\u00e9s, t\u00f6rl\u00e9s) csak az els\u0151dleges LDAP kiszolg\u00e1l\u00f3n enged\u00e9lyezett.
+WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az els\u0151dleges kiszolg\u00e1l\u00f3 el van ind\u00edtva, \u00e9s pr\u00f3b\u00e1lkozzon \u00fajra a m\u0171velettel.

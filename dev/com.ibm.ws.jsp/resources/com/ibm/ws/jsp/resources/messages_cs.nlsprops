@@ -1,0 +1,1260 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME ws/code/jsp/src/com/ibm/ws/jsp/resources/messages.nlsprops
+#COMPONENTPREFIX JSPG
+#COMPONENTNAMEFOR JSPG jsp
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+
+jsp.params.invalid.parent=JSPG0001E: Atribut jsp:params m\u00e1 neplatnou nad\u0159\u00edzenou zna\u010dku.
+jsp.params.invalid.parent.explanation=
+jsp.params.invalid.parent.useraction=
+
+jsp.fallback.invalid.parent=JSPG0002E: Atribut jsp:fallback m\u00e1 neplatnou nad\u0159\u00edzenou zna\u010dku.
+jsp.fallback.invalid.parent.explanation=
+jsp.fallback.invalid.parent.useraction=
+
+jsp.param.invalid.parent=JSPG0003E: Atribut jsp:param m\u00e1 neplatnou nad\u0159\u00edzenou zna\u010dku.
+jsp.param.invalid.parent.explanation=
+jsp.param.invalid.parent.useraction=
+
+jsp.param.name.empty=JSPG0004E: Atribut n\u00e1zvu jsp:param nem\u016f\u017ee b\u00fdt pr\u00e1zdn\u00fd.
+jsp.param.name.empty.explanation=
+jsp.param.name.empty.useraction=
+
+jsp.error.tld.not.found=JSPG0005E: Soubor tld nebyl nalezen: URI[{0}], p\u0159edpona: [{1}]
+jsp.error.tld.not.found.explanation=
+jsp.error.tld.not.found.useraction=
+
+jsp.error.missing.attribute=JSPG0006E: Vlastn\u00ed zna\u010dka neobsahuje vy\u017eadovan\u00fd atribut {0}.
+jsp.error.missing.attribute.explanation=
+jsp.error.missing.attribute.useraction=
+
+jsp.error.bad.attribute=JSPG0007E: Ve vlastn\u00ed zna\u010dce chyb\u00ed atribut {0}.
+jsp.error.bad.attribute.explanation=
+jsp.error.bad.attribute.useraction=
+
+jsp.error.invalid.attributes=JSPG0008E: Vlastn\u00ed zna\u010dka obsahuje neplatn\u00e9 atributy.
+jsp.error.invalid.attributes.explanation=
+jsp.error.invalid.attributes.useraction=
+
+jsp.error.unable.loadclass=JSPG0009E: Nelze na\u010d\u00edst t\u0159\u00eddu obslu\u017en\u00e9 rutiny zna\u010dek {0}.
+jsp.error.unable.loadclass.explanation=
+jsp.error.unable.loadclass.useraction=
+
+jsp.root.has.no.attributes=JSPG0010E: Prvek jsp:root nem\u00e1 \u017e\u00e1dn\u00e9 atributy.
+jsp.root.has.no.attributes.explanation=
+jsp.root.has.no.attributes.useraction=
+
+jsp.error.usebean.missing.attribute=JSPG0011E: Atribut jsp:useBean neobsahuje ID atributu.
+jsp.error.usebean.missing.attribute.explanation=
+jsp.error.usebean.missing.attribute.useraction=
+
+jsp.error.usebean.missing.type=JSPG0012E: Ve zna\u010dce jsp:useBean nen\u00ed uveden atribut typu nebo atribut t\u0159\u00eddy.
+jsp.error.usebean.missing.type.explanation=
+jsp.error.usebean.missing.type.useraction=
+
+jsp.error.usebean.duplicate=JSPG0013E: Objekt typu bean s identifik\u00e1torem {0} ji\u017e byl definov\u00e1n. 
+jsp.error.usebean.duplicate.explanation=
+jsp.error.usebean.duplicate.useraction=
+
+jsp.error.usebean.prohibited.as.session=JSPG0014E: Atribut oboru nem\u016f\u017ee m\u00edt hodnotu "session", pokud direktiva str\u00e1nky relace m\u00e1 hodnotu false.
+jsp.error.usebean.prohibited.as.session.explanation=
+jsp.error.usebean.prohibited.as.session.useraction=
+
+jsp.error.usebean.not.both=JSPG0015E: Objekt jsp:useBean nem\u016f\u017ee obsahovat sou\u010dasn\u011b atribut t\u0159\u00eddy a atribut beanName (class = [{0}], beanName =[{1}]). 
+jsp.error.usebean.not.both.explanation=
+jsp.error.usebean.not.both.useraction=
+
+jsp.error.usebean.invalid.scope=JSPG0016E: Neplatn\u00e1 hodnota pro atribut oboru. Atribut mus\u00ed b\u00fdt nastaven na str\u00e1nku, \u017e\u00e1dost, relaci nebo aplikaci. Ur\u010den\u00fd obor: {0}.
+jsp.error.usebean.invalid.scope.explanation=
+jsp.error.usebean.invalid.scope.useraction=
+
+jsp.error.usebean.contains.no.attributes=JSPG0017E: Prvek jsp:useBean nem\u00e1 \u017e\u00e1dn\u00e9 atributy.
+jsp.error.usebean.contains.no.attributes.explanation=
+jsp.error.usebean.contains.no.attributes.useraction=
+
+jsp.error.expression.contains.no.cdata=JSPG0018E: V\u00fdraz neobsahuje \u017e\u00e1dn\u00fd text.
+jsp.error.expression.contains.no.cdata.explanation=
+jsp.error.expression.contains.no.cdata.useraction=
+
+jsp.error.invalid.value.for.session=JSPG0019E: Neplatn\u00e1 hodnota pro direktivu relace
+jsp.error.invalid.value.for.session.explanation=
+jsp.error.invalid.value.for.session.useraction=
+
+jsp.error.page.invalid.buffer=JSPG0020E: Neplatn\u00e1 hodnota pro direktivu vyrovn\u00e1vac\u00ed pam\u011bti
+jsp.error.page.invalid.buffer.explanation=
+jsp.error.page.invalid.buffer.useraction=
+
+jsp.error.page.invalid.autoflush=JSPG0021E: Neplatn\u00e1 hodnota pro direktivu autoflush
+jsp.error.page.invalid.autoflush.explanation=
+jsp.error.page.invalid.autoflush.useraction=
+
+jsp.error.page.invalid.threadsafe=JSPG0022E: Neplatn\u00e1 hodnota pro direktivu threadsafe
+jsp.error.page.invalid.threadsafe.explanation=
+jsp.error.page.invalid.threadsafe.useraction=
+
+jsp.error.page.invalid.iserrorpage=JSPG0023E: Neplatn\u00e1 hodnota atributu iserrorpage
+jsp.error.page.invalid.iserrorpage.explanation=
+jsp.error.page.invalid.iserrorpage.useraction=
+
+jsp.error.page.directive.unknown=JSPG0024E: Nezn\u00e1m\u00e1 direktiva {0}
+jsp.error.page.directive.unknown.explanation=
+jsp.error.page.directive.unknown.useraction=
+
+jsp.error.page.directive.contains.no.attributes=JSPG0025E: Direktiva str\u00e1nky neobsahuje \u017e\u00e1dn\u00e9 atributy.
+jsp.error.page.directive.contains.no.attributes.explanation=
+jsp.error.page.directive.contains.no.attributes.useraction=
+
+jsp.error.scriptlet.contains.no.cdata=JSPG0026E: Skriptlet neobsahuje \u017e\u00e1dn\u00fd text.
+jsp.error.scriptlet.contains.no.cdata.explanation=
+jsp.error.scriptlet.contains.no.cdata.useraction=
+
+jsp.error.declaration.contains.no.cdata=JSPG0027E: Deklarace neobsahuje \u017e\u00e1dn\u00fd text.
+jsp.error.declaration.contains.no.cdata.explanation=
+jsp.error.declaration.contains.no.cdata.useraction=
+
+jsp.error.jsptext.contains.no.cdata=JSPG0028E: Objekt jsp:text neobsahuje \u017e\u00e1dn\u00fd text.
+jsp.error.jsptext.contains.no.cdata.explanation=
+jsp.error.jsptext.contains.no.cdata.useraction=
+
+jsp.error.invoke.only.in.tagfiles=JSPG0029E: Akci invoke lze pou\u017e\u00edt pouze v souborech zna\u010dek.
+jsp.error.invoke.only.in.tagfiles.explanation=
+jsp.error.invoke.only.in.tagfiles.useraction=
+
+jsp.error.dobody.only.in.tagfiles=JSPG0030E: Akci doBody lze pou\u017e\u00edt pouze v souborech zna\u010dek.
+jsp.error.dobody.only.in.tagfiles.explanation=
+jsp.error.dobody.only.in.tagfiles.useraction=
+
+jsp.error.tag.directive.only.in.tagfiles=JSPG0031E: Direktivu tag lze pou\u017e\u00edt pouze v souborech zna\u010dek.
+jsp.error.tag.directive.only.in.tagfiles.explanation=
+jsp.error.tag.directive.only.in.tagfiles.useraction=
+
+jsp.error.attribute.directive.only.in.tagfiles=JSPG0032E: Direktivu attribute lze pou\u017e\u00edt pouze v souborech zna\u010dek.
+jsp.error.attribute.directive.only.in.tagfiles.explanation=
+jsp.error.attribute.directive.only.in.tagfiles.useraction=
+
+jsp.error.variable.directive.only.in.tagfiles=JSPG0033E: Direktivu variable lze pou\u017e\u00edt pouze v souborech zna\u010dek.
+jsp.error.variable.directive.only.in.tagfiles.explanation=
+jsp.error.variable.directive.only.in.tagfiles.useraction=
+
+jsp.error.internal.dtd.not.found=JSPG0034E: Soubor xml dtd nebo sch\u00e9ma nebyly nalezeny.
+jsp.error.internal.dtd.not.found.explanation=
+jsp.error.internal.dtd.not.found.useraction=
+
+jsp.error.page.encoding.mismatch=JSPG0035E: K\u00f3dov\u00e1n\u00ed str\u00e1nek v konfiguraci jsp neodpov\u00edd\u00e1 k\u00f3dov\u00e1n\u00ed v souboru jsp.
+jsp.error.page.encoding.mismatch.explanation=
+jsp.error.page.encoding.mismatch.useraction=
+
+jsp.error.failed.to.find.resource=JSPG0036E: Prost\u0159edek {0} nebyl nalezen.
+jsp.error.failed.to.find.resource.explanation=
+jsp.error.failed.to.find.resource.useraction=
+
+jsp.error.page.invalid.iselignored=JSPG0037E: Neplatn\u00e1 hodnota atributu isELIgnored
+jsp.error.page.invalid.iselignored.explanation=
+jsp.error.page.invalid.iselignored.useraction=
+
+jsp.error.page.invalid.dynamicattributes= JSPG0038E: Byla zad\u00e1na neplatn\u00e1 hodnota pro direktivu dynamicAttributes.
+jsp.error.page.invalid.dynamicattributes.explanation=
+jsp.error.page.invalid.dynamicattributes.useraction=
+
+jsp.error.page.directive.only.in.jsps=JSPG0039E: Direktivu page lze pou\u017e\u00edt pouze v souborech zna\u010dek.
+jsp.error.page.directive.only.in.jsps.explanation=
+jsp.error.page.directive.only.in.jsps.useraction=
+
+jsp.error.static.include.circular.dependency=JSPG0040E: Str\u00e1nka {0} ji\u017e byla staticky vlo\u017eena.
+jsp.error.static.include.circular.dependency.explanation=
+jsp.error.static.include.circular.dependency.useraction=
+
+jsp.error.tld.fn.invalid.signature.classnotfound=JSPG0041E: Nebyla nalezena t\u0159\u00edda funkc\u00ed pro jazyk v\u00fdraz\u016f. {0} {1} {2}
+jsp.error.tld.fn.invalid.signature.classnotfound.explanation=
+jsp.error.tld.fn.invalid.signature.classnotfound.useraction=
+
+jsp.error.tld.fn.invalid.signature.parenexpected=JSPG0042E: Pro funkci jazyka v\u00fdraz\u016f {0} {1} byly o\u010dek\u00e1v\u00e1ny z\u00e1vorky.
+jsp.error.tld.fn.invalid.signature.parenexpected.explanation=
+jsp.error.tld.fn.invalid.signature.parenexpected.useraction=
+
+jsp.error.tld.fn.invalid.signature=JSPG0043E: Neplatn\u00fd podpis pro funkci jazyka v\u00fdraz\u016f {0} {1}
+jsp.error.tld.fn.invalid.signature.explanation=
+jsp.error.tld.fn.invalid.signature.useraction=
+
+jsp.error.tld.fn.invalid.signature.commaexpected=JSPG0044E: Pro funkci jazyka v\u00fdraz\u016f {0} {1} byla o\u010dek\u00e1v\u00e1na \u010d\u00e1rka.
+jsp.error.tld.fn.invalid.signature.commaexpected.explanation=
+jsp.error.tld.fn.invalid.signature.commaexpected.useraction=
+
+jsp.error.introspect.taghandler=JSPG0045E: Chyba p\u0159i na\u010d\u00edt\u00e1n\u00ed informac\u00ed o objektu bean pro {0}
+jsp.error.introspect.taghandler.explanation=
+jsp.error.introspect.taghandler.useraction=
+
+jsp.error.tagfile.not.found=JSPG0046E: Nelze naj\u00edt soubor zna\u010dek pro zna\u010dku {0}. 
+jsp.error.tagfile.not.found.explanation=
+jsp.error.tagfile.not.found.useraction=
+
+jsp.error.taglib.not.found=JSPG0047E: Nelze naj\u00edt knihovnu zna\u010dek pro adresu URI {0}. 
+jsp.error.taglib.not.found.explanation=
+jsp.error.taglib.not.found.useraction=
+
+jsp.error.tlv.invalid.page=JSPG0048E: Ov\u011b\u0159en\u00ed str\u00e1nky pou\u017eit\u00edm valid\u00e1toru taglib pro polo\u017eku {0}: {1} se nezda\u0159ilo.
+jsp.error.tlv.invalid.page.explanation=
+jsp.error.tlv.invalid.page.useraction=
+
+jsp.error.compile.failed=JSPG0049E: Chyba p\u0159i kompilaci modulu {0}: {1}
+jsp.error.compile.failed.explanation=
+jsp.error.compile.failed.useraction=
+
+jsp.error.tld.not.found.at.location=JSPG0050E: Soubor tld nebyl nalezen v adres\u00e1\u0159i {0}.
+jsp.error.tld.not.found.at.location.explanation=
+jsp.error.tld.not.found.at.location.useraction=
+
+jsp.error.page.directive.dup.value=JSPG0051E: Duplicitn\u00ed hodnota direktivy str\u00e1nky: {0}
+jsp.error.page.directive.dup.value.explanation=
+jsp.error.page.directive.dup.value.useraction=
+
+jsp.error.tag.directive.dup.value=JSPG0052E: Duplicitn\u00ed hodnota direktivy zna\u010dky: {0}
+jsp.error.tag.directive.dup.value.explanation=
+jsp.error.tag.directive.dup.value.useraction=
+
+jsp.error.xml.no.prelude=JSPG0053E: V dokumentech Jsp nelze pou\u017e\u00edt \u00favodn\u00ed p\u0159\u00edkaz include.
+jsp.error.xml.no.prelude.explanation=
+jsp.error.xml.no.prelude.useraction=
+
+jsp.error.xml.no.coda=JSPG0054E: V dokumentech Jsp nelze pou\u017e\u00edt z\u00e1v\u011bre\u010dn\u00fd p\u0159\u00edkaz include.
+jsp.error.xml.no.coda.explanation=
+jsp.error.xml.no.coda.useraction=
+
+jsp.error.unable.to.create.xml.attr=JSPG0055E: Nelze vytvo\u0159it atribut xml z n\u00e1zvu [{0}] a hodnoty [{1}].
+jsp.error.unable.to.create.xml.attr.explanation=
+jsp.error.unable.to.create.xml.attr.useraction=
+
+jsp.error.unable.to.create.xml.element=JSPG0056E: Nelze vytvo\u0159it prvek xml z oboru n\u00e1zv\u016f [{0}] a n\u00e1zvu [{1}].
+jsp.error.unable.to.create.xml.element.explanation=
+jsp.error.unable.to.create.xml.element.useraction=
+
+jsp.jspmodc.usage=JSPG0057I: JspModC -appDir <cesta> -tmpDir <cesta> -forceTranslation <true/false> -additionalClasspath <cesta ke t\u0159\u00edd\u00e1m> -jspFile <soubor jsp>
+jsp.jspmodc.usage.explanation=
+jsp.jspmodc.usage.useraction=
+
+jsp.engine.info=JSPG0058I: Stroj IBM JSP 2.1
+jsp.engine.info.explanation=
+jsp.engine.info.useraction=
+
+jsp.error.invalid.jsp.syntax=JSPG0060E: Neplatn\u00e1 syntaxe jsp [{0}]
+jsp.error.invalid.jsp.syntax.explanation=
+jsp.error.invalid.jsp.syntax.useraction=
+
+jsp.error.unknown.attribute=JSPG0061E: Atribut {0} nen\u00ed podporov\u00e1n pro prvek jsp {1}.
+jsp.error.unknown.attribute.explanation=
+jsp.error.unknown.attribute.useraction=
+
+jsp.error.unknown.runtime.attribute=JSPG0062E: Atribut {0} \u010dasu \u017e\u00e1dosti (request-time) nen\u00ed rozpozn\u00e1n jako prvek JSP {1}.
+jsp.error.unknown.runtime.attribute.explanation=
+jsp.error.unknown.runtime.attribute.useraction=
+
+jsp.error.invalid.value.for.language=JSPG0063E: Neplatn\u00e1 hodnota pro direktivu language {0}
+jsp.error.invalid.value.for.language.explanation=
+jsp.error.invalid.value.for.language.useraction=
+
+# keep this around so at least NLS is done if this is added at a later time.
+jsp.error.invalid.value.for.buffer=JSPG0064E: Neplatn\u00e1 hodnota pro platn\u00e9 hodnoty direktivy buffer. Pokud se hodnota li\u0161\u00ed od nastaven\u00ed none, je vy\u017eadov\u00e1na p\u0159\u00edpona kb.
+jsp.error.invalid.value.for.buffer.explanation=
+jsp.error.invalid.value.for.buffer.useraction=
+
+
+jsp.error.validating.el.nesting.el.not.allowed=JSPG0065E: Neplatn\u00e9 pou\u017eit\u00ed zna\u010dky EL. Vno\u0159en\u00ed zna\u010dek EL nen\u00ed povoleno.
+jsp.error.validating.el.nesting.el.not.allowed.explanation=
+jsp.error.validating.el.nesting.el.not.allowed.useraction=
+
+
+failed.to.parse.el.expression=JSPG0066E: Anal\u00fdza zna\u010dky v\u00fdrazu {0} se nezda\u0159ila.
+failed.to.parse.el.expression.explanation=
+failed.to.parse.el.expression.useraction=
+
+
+el.expression.not.allowed.for.attribute=JSPG0067E: Neplatn\u00e9 pou\u017eit\u00ed zna\u010dky EL. Hodnota "{2}" nen\u00ed povolena pro atribut "{1}" prvku jsp {0}.
+el.expression.not.allowed.for.attribute.explanation=
+el.expression.not.allowed.for.attribute.useraction=
+
+jsp.error.unmatched.tag=JSPG0068E: P\u0159i anal\u00fdze str\u00e1nky jsp [{0}] byla nalezena nep\u00e1rov\u00e1 zna\u010dka.
+jsp.error.unmatched.tag.explanation=
+jsp.error.unmatched.tag.useraction=
+
+jsp.error.unmatched.end.tag=JSPG0069E: P\u0159i anal\u00fdze str\u00e1nky jsp byla nalezena nep\u00e1rov\u00e1 koncov\u00e1 zna\u010dka. O\u010dek\u00e1v\u00e1no: {0}; nalezeno: {1}; na pozici: {2}
+jsp.error.unmatched.end.tag.explanation=
+jsp.error.unmatched.end.tag.useraction=
+
+jsp.error.dup.url.pattern=JSPG0070E: V konfiguraci Jsp webov\u00fdch aplikac\u00ed byl nalezen duplicitn\u00ed vzorek URL [{0}].
+jsp.error.dup.url.pattern.explanation=
+jsp.error.dup.url.pattern.useraction=
+
+jsp.error.tld.load.failed=JSPG0071E: Na\u010dten\u00ed souboru tld z prost\u0159edku webinf {0} se nezda\u0159ilo. Zpr\u00e1va: {1}
+jsp.error.tld.load.failed.explanation=
+jsp.error.tld.load.failed.useraction=
+
+jsp.error.tld.load.failed.from.jar=JSPG0072E: Na\u010dten\u00ed souboru tld ze zdroje jar {0} se nezda\u0159ilo. Prost\u0159edek: {1}, zpr\u00e1va: {2}
+jsp.error.tld.load.failed.from.jar.explanation=
+jsp.error.tld.load.failed.from.jar.useraction=
+
+jsp.error.usebean.class.must.be.assignable.to.type=JSPG0073E: T\u0159\u00edda useBean "{0}" mus\u00ed b\u00fdt p\u0159i\u0159azena typu "{1}" pro prvek jsp {2}. 
+jsp.error.usebean.class.must.be.assignable.to.type.explanation=
+jsp.error.usebean.class.must.be.assignable.to.type.useraction=
+
+jsp.error.usebean.cannot.locate.class.to.validate.assignable=JSPG0074E: Nelze naj\u00edt t\u0159\u00eddu pro ur\u010den\u00ed, zda lze t\u0159\u00eddu useBean "{0}" p\u0159i\u0159adit typu "{1}" pro prvek jsp {2}.
+jsp.error.usebean.cannot.locate.class.to.validate.assignable.explanation
+jsp.error.usebean.cannot.locate.class.to.validate.assignable.useraction
+
+jsp.error.multiple.attribute.definitions=JSPG0075E: N\u011bkolik v\u00fdskyt\u016f atributu {0} nen\u00ed povoleno pro prvek jsp {1}.
+jsp.error.multiple.attribute.definitions.explanation=
+jsp.error.multiple.attribute.definitions.useraction=
+
+jsp.error.missing.required.attribute=JSPG0076E: Chyb\u00ed povinn\u00fd atribut {0} u prvku jsp {1}. 
+jsp.error.missing.required.attribute.explanation=
+jsp.error.missing.required.attribute.useraction=
+
+jsp.error.end.of.file.reached=JSPG0077E: P\u0159i zpracov\u00e1n\u00ed polo\u017eky {0} na pozici {1} bylo dosa\u017eeno konce souboru.
+jsp.error.end.of.file.reached.explanation=
+jsp.error.end.of.file.reached.useraction=
+
+
+jsp.body-content.directive.value.invalid=JSPG0078E: Neplatn\u00e1 hodnota pro zna\u010dku body-content atributu direktivy tag. Hodnota: {0}
+jsp.body-content.directive.value.invalid.explanation=
+jsp.body-content.directive.value.invalid.useraction=
+
+multiple.occurences.attribute.tagfile.name=JSPG0079E:  V\u00edce v\u00fdskyt\u016f atributu name, alias \u010di name-given "{2}" nen\u00ed povoleno. N\u00e1zev "{2}" byl uveden v prvc\u00edch jsp "{0}" a "{1}".
+multiple.occurences.attribute.tagfile.name.explanation=
+multiple.occurences.attribute.tagfile.name.useraction=
+
+variable.attribute.nameGiven.nameFromAttribute.not.both=JSPG0080E:  Direktiva prom\u011bnn\u00e9 v souboru zna\u010dek nem\u016f\u017ee obsahovat prvek JSP {0} sou\u010dasn\u011b s atributy name-given a name-from-attribute (name-given=[{1}], name-from-attribute=[{2}]). 
+variable.attribute.nameGiven.nameFromAttribute.not.both.explanation=
+variable.attribute.nameGiven.nameFromAttribute.not.both.useraction=
+
+missing.required.variable.attribute.nameGiven.nameFromAttribute=JSPG0081E:  Direktiva prom\u011bnn\u00e9 v souboru zna\u010dek vy\u017eaduje pro prvek JSP {0} bu\u010f atribut name-given, nebo name-from-attribute. 
+missing.required.variable.attribute.nameGiven.nameFromAttribute.explanation=
+missing.required.variable.attribute.nameGiven.nameFromAttribute.useraction=
+
+invalid.value.for.variable.directive.attribute.scope=JSPG0082E:  Neplatn\u00e1 hodnota pro obor atributu direktivy prom\u011bnn\u00e9 "{1}" pro prvek jsp {0}. 
+invalid.value.for.variable.directive.attribute.scope.explanation=
+invalid.value.for.variable.directive.attribute.scope.useraction=
+
+required.attribute.alias.required.if.nameFromAttribute.specified=JSPG0083E: Pro prvek JSP {0} specifikovan\u00fd pomoc\u00ed atributu name-from-attribute "{1}" chyb\u00ed alias povinn\u00e9ho atributu.
+required.attribute.alias.required.if.nameFromAttribute.specified.explanation=
+required.attribute.alias.required.if.nameFromAttribute.specified.useraction=
+
+attribute.alias.not.permitted.if.namegiven.specified=JSPG0084E: Alias atributu "{2}" nen\u00ed povolen, pokud je specifikov\u00e1n atribut name-given "{1}". Prvek jsp: {0}
+attribute.alias.not.permitted.if.namegiven.specified.explanation=
+attribute.alias.not.permitted.if.namegiven.specified.useraction=
+
+jsp.error.loadclass.taghandler.attr=JSPG0085E: P\u0159i na\u010dten\u00ed t\u0159\u00eddy specifikovan\u00e9 pro atribut zna\u010dky pro polo\u017eku {0} do\u0161lo k chyb\u011b.
+jsp.error.loadclass.taghandler.attr.explanation=
+jsp.error.loadclass.taghandler.attr.useraction=
+
+jsp.error.include.type.invalid=JSPG0086E: Statick\u00e9 zahrnut\u00ed {0} mus\u00ed b\u00fdt stejn\u00e9ho typu, jako vkl\u00e1dan\u00e1 str\u00e1nka jsp. 
+jsp.error.include.type.invalid.explanation=
+jsp.error.include.type.invalid.useraction=
+
+jsp.error.encoding.mismatch.config.xml=JSPG0087E: Neshoda mezi k\u00f3dov\u00e1n\u00edm konfigurace jsp {0} a k\u00f3dov\u00e1n\u00edm prologu xml {1}
+jsp.error.encoding.mismatch.config.xml.explanation=
+jsp.error.encoding.mismatch.config.xml.useraction=
+
+jsp.error.encoding.mismatch.config.pageencoding=JSPG0088E: Neshoda mezi k\u00f3dov\u00e1n\u00edm konfigurace jsp {0} a k\u00f3dov\u00e1n\u00edm direktivy str\u00e1nky {1}
+jsp.error.encoding.mismatch.config.pageencoding.explanation=
+jsp.error.encoding.mismatch.config.pageencoding.useraction=
+
+jsp.error.encoding.mismatch.pageencoding.xml=JSPG0089E: Neshoda mezi k\u00f3dov\u00e1n\u00edm direktivy str\u00e1nky {0} a k\u00f3dov\u00e1n\u00edm prologu xml {1}
+jsp.error.encoding.mismatch.pageencoding.xml.explanation=
+jsp.error.encoding.mismatch.pageencoding.xml.useraction=
+
+jsp.error.encoding.already.supplied=JSPG0090E: Pro tuto str\u00e1nku jsp ji\u017e bylo p\u0159ed\u00e1no chybov\u00e9 k\u00f3dov\u00e1n\u00ed pageEncoding.
+jsp.error.encoding.already.supplied.explanation=
+jsp.error.encoding.already.supplied.useraction=
+
+jsp.error.single.line.number=JSPG0091E: Do\u0161lo k chyb\u011b na \u0159\u00e1dku {0} v souboru {1}.
+jsp.error.single.line.number.explanation=
+jsp.error.single.line.number.useraction=
+
+jsp.error.multiple.line.number=JSPG0092E: Do\u0161lo k chyb\u011b mezi \u0159\u00e1dky {0} a {1} v souboru {2}.
+jsp.error.multiple.line.number.explanation=
+jsp.error.multiple.line.number.useraction=
+
+jsp.error.corresponding.servlet=JSPG0093E: Byla generov\u00e1na chyba servletu ze souboru: {0} 
+jsp.error.corresponding.servlet.explanation=
+jsp.error.corresponding.servlet.useraction=
+
+jsp.error.el.function.prefix.not.found=JSPG0094E: Nelze naj\u00edt p\u0159edponu pro funkci el {0}.
+jsp.error.el.function.prefix.not.found.explanation=
+jsp.error.el.function.prefix.not.found.useraction=
+
+jsp.error.el.function.not.found=JSPG0095E: Nelze naj\u00edt funkci el {0} v souboru tld s adresou uri {1}.
+jsp.error.el.function.not.found.explanation=
+jsp.error.el.function.not.found.useraction=
+
+jsp.error.function.classnotfound=JSPG0096E: Nelze na\u010d\u00edst {0}.
+jsp.error.function.classnotfound.explanation=
+jsp.error.function.classnotfound.useraction=
+
+jsp.error.noFunctionMethod=JSPG0097E: Nelze na\u010d\u00edst metodu funkce el {0}.
+jsp.error.noFunctionMethod.explanation=
+jsp.error.noFunctionMethod.useraction=
+
+jsp.error.output.has.body=JSPG0098E: Zna\u010dka jsp:output nem\u016f\u017ee obsahovat t\u011blo.
+jsp.error.output.has.body.explanation=
+jsp.error.output.has.body.useraction=
+
+jsp.error.root.invalid.version=JSPG0099E: Atribut verze jsp:root je neplatn\u00fd: {0}
+jsp.error.root.invalid.version.explanation=
+jsp.error.root.invalid.version.useraction=
+
+jsp.error.tagfile.tag_dynamic_attrs_equals_attr_name=JSPG0100E: N\u00e1zev dynamick\u00e9ho mapov\u00e1n\u00ed atribut\u016f je toto\u017en\u00fd s atributem n\u00e1zvu pro direktivu atributu zna\u010dky. 
+jsp.error.tagfile.tag_dynamic_attrs_equals_attr_name.explanation=
+jsp.error.tagfile.tag_dynamic_attrs_equals_attr_name.useraction=
+
+jsp.error.tagfile.tag_dynamic_attrs_equals_var_name_given=JSPG0101E: N\u00e1zev dynamick\u00e9ho mapov\u00e1n\u00ed atribut\u016f je toto\u017en\u00fd s atributem name-given pro direktivu prom\u011bnn\u00e9 zna\u010dky. 
+jsp.error.tagfile.tag_dynamic_attrs_equals_var_name_given.explanation=
+jsp.error.tagfile.tag_dynamic_attrs_equals_var_name_given.useraction=
+
+jsp.error.jsptext.has.child.elements=JSPG0102E: Zna\u010dka jsp:text nem\u016f\u017ee obsahovat pod\u0159\u00edzen\u00e9 prvky.
+jsp.error.jsptext.has.child.elements.explanation=
+jsp.error.jsptext.has.child.elements.useraction=
+
+
+jsp.error.jspbody.emptybody.only=JSPG0105E: Zna\u010dka {0} nem\u016f\u017ee ve sv\u00e9m t\u011ble obsahovat atribut jsp:attribute. Nalezeno: {1}
+jsp.error.jspbody.emptybody.only.explanation=
+jsp.error.jspbody.emptybody.only.useraction=
+
+jsp.error.jspoutput.xml.only=JSPG0106E: Prvek jsp:output lze pou\u017e\u00edt pouze v dokumentech JSP a v souborech zna\u010dek podle syntaxe XML.
+jsp.error.jspoutput.xml.only.explanation=
+jsp.error.jspoutput.xml.only.useraction=
+
+jsp.error.attribute.fragment.cannot.be.scriplet=JSPG0107E: Prvek jsp:attribute s hodnotou typu JspFragment nem\u016f\u017ee obsahovat skriptlety {0}.
+jsp.error.attribute.fragment.cannot.be.scriplet.explanation=
+jsp.error.attribute.fragment.cannot.be.scriplet.useraction=
+
+jsp.error.illegal.fragment.and.rtexprvalue=JSPG0108E: Ur\u010den\u00e1 hodnota rtexprvalue pro atribut fragmentu typu nen\u00ed povolen\u00e1. Hodnota rtexprvalue: {0}
+jsp.error.illegal.fragment.and.rtexprvalue.explanation=
+jsp.error.illegal.fragment.and.rtexprvalue.useraction=
+
+jsp.error.illegal.fragment.and.type=JSPG0109E: Ur\u010den\u00e1 hodnota type pro atribut fragmentu typu nen\u00ed povolen\u00e1. Typ: {0}
+jsp.error.illegal.fragment.and.type.explanation=
+jsp.error.illegal.fragment.and.type.useraction=
+
+jsp.error.illegal.type.primitive=JSPG0110E: Ur\u010den\u00ed typu jako primitivn\u00ed t\u0159\u00eddy pro atribut souboru zna\u010dky nen\u00ed povoleno. Primitivn\u00ed t\u0159\u00edda: {0}
+jsp.error.illegal.type.primitive.explanation=
+jsp.error.illegal.type.primitive.useraction=
+
+jsp.error.tagfile.cannot.locate.class.to.validate.primitive=JSPG0111E: Nelze ov\u011b\u0159it, \u017ee typ atributu pro soubor zna\u010dky {0} nen\u00ed primitivn\u00ed t\u0159\u00eddou.
+jsp.error.tagfile.cannot.locate.class.to.validate.primitive.explanation=
+jsp.error.tagfile.cannot.locate.class.to.validate.primitive.useraction=
+
+jsp.error.scripting.disabled.for.translation.unit=JSPG0112E: Pro tuto jednotku b\u011bhov\u00e9ho prost\u0159ed\u00ed bylo zak\u00e1z\u00e1no skriptov\u00e1n\u00ed v b\u011bhov\u00fdch v\u00fdrazech. 
+jsp.error.scripting.disabled.for.translation.unit.explanation=
+jsp.error.scripting.disabled.for.translation.unit.useraction=
+
+jsp.error.scriptlets.disabled.for.translation.unit=JSPG0113E: Pro tuto jednotku p\u0159ekladu byly zak\u00e1z\u00e1ny skriptlety. 
+jsp.error.scriptlets.disabled.for.translation.unit.explanation=
+jsp.error.scriptlets.disabled.for.translation.unit.useraction=
+
+jsp.error.declarations.disabled.for.translation.unit=JSPG0114E: Pro tuto jednotku p\u0159ekladu byly zak\u00e1z\u00e1ny deklarace. 
+jsp.error.declarations.disabled.for.translation.unit.explanation=
+jsp.error.declarations.disabled.for.translation.unit.useraction=
+
+jsp.error.expressions.disabled.for.translation.unit=JSPG0115E: Pro tuto jednotku p\u0159ekladu byly zak\u00e1z\u00e1ny v\u00fdrazy. 
+jsp.error.expressions.disabled.for.translation.unit.explanation=
+jsp.error.expressions.disabled.for.translation.unit.useraction=
+
+jsp.error.multiple.occurrences.directive=JSPG0116E: Nelze uv\u00e9st n\u011bkolik direktiv str\u00e1nky {0}, kter\u00e9 maj\u00ed r\u016fzn\u00e9 hodnoty. Prvn\u00ed v\u00fdskyt: {1}, druh\u00fd v\u00fdskyt: {2}
+jsp.error.multiple.occurrences.directive.explanation=
+jsp.error.multiple.occurrences.directive.useraction=
+
+jsp.error.invalid.taglib.directive.tagdir.uri=JSPG0117E: V direktiv\u011b taglib nelze ur\u010dit adresu uri ve spojen\u00ed s direktivou tagdir. uri: "[{0}]", tagdir: "[{1}]"
+jsp.error.invalid.taglib.directive.tagdir.uri.explanation=
+jsp.error.invalid.taglib.directive.tagdir.uri.useraction=
+
+jsp.error.invalid.taglib.directive.duplicate.uri=JSPG0118E: V direktiv\u011b taglib nelze ur\u010dit n\u011bkolik v\u00fdskyt\u016f adresy uri. uri: "[{0}]", uri: "[{1}]"
+jsp.error.invalid.taglib.directive.duplicate.uri.explanation=
+jsp.error.invalid.taglib.directive.duplicate.uri.useraction=
+
+jsp.error.invalid.taglib.directive.duplicate.tagdir=JSPG0119E: V direktiv\u011b taglib nelze ur\u010dit n\u011bkolik v\u00fdskyt\u016f adresy tagdir. tagdir: "[{0}]", tagdir: "[{1}]"
+jsp.error.invalid.taglib.directive.duplicate.tagdir.explanation=
+jsp.error.invalid.taglib.directive.duplicate.tagdir.useraction=
+
+jsp.error.page.pageencoding.mismatch=JSPG0120E: Pro odpov\u00eddaj\u00edc\u00ed vzor URI nelze ur\u010dit n\u011bkolik hodnot pro atribut pageEncoding a prvek konfigurace. Direktiva: "[{0}]", konfigurace: "[{1}]"
+jsp.error.page.pageencoding.mismatch.explanation=
+jsp.error.page.pageencoding.mismatch.useraction=
+
+jsp.error.jsp.attribute.defined.value.jsp.attribute=JSPG0121E: Neplatn\u00e9 pou\u017eit\u00ed atributu <jsp:attribute> p\u0159i definici hodnoty atributu <jsp:attribute>
+jsp.error.jsp.attribute.defined.value.jsp.attribute.explanation=
+jsp.error.jsp.attribute.defined.value.jsp.attribute.useraction=
+
+jsp.error.el.function.cannot.parse=JSPG0122E: Nelze analyzovat funkci EL {0}.
+jsp.error.el.function.cannot.parse.explanation=
+jsp.error.el.function.cannot.parse.useraction=
+
+jsp.error.unable.locate.tagname=JSPG0123E: Nebyly nalezeny \u00fadaje o atributu zna\u010dky pro atribut {0}.
+jsp.error.unable.locate.tagname.explanation=
+jsp.error.unable.locate.tagname.useraction=
+
+# jsp2.1ELwork
+jsp.error.attribute.cannot.be.request.time=JSPG0124E: Podle deskriptoru TLD nebo direktivy atributu v souboru zna\u010dek nep\u0159ij\u00edm\u00e1 atribut "[{0}]" \u017e\u00e1dn\u00e9 v\u00fdrazy. Hodnota v\u00fdrazu: "[{1}]".
+jsp.error.attribute.cannot.be.request.time.explanation=
+jsp.error.attribute.cannot.be.request.time.useraction=
+
+jsp.error.attribute.cannot.be.request.time.fragment=JSPG0125E: Vlastn\u00ed atribut zna\u010dky {0} nem\u016f\u017ee b\u00fdt b\u011bhov\u00fdm fragmentem.
+jsp.error.attribute.cannot.be.request.time.fragment.explanation=
+jsp.error.attribute.cannot.be.request.time.fragment.useraction=
+
+jsp.error.page.pageencoding.dup=JSPG0126E: Soubor jsp {0} nem\u016f\u017ee obsahovat v\u00edce ne\u017e jednu direktivu pageEncoding.
+jsp.error.page.pageencoding.dup.explanation=
+jsp.error.page.pageencoding.dup.useraction=
+
+jsp.error.multiple.occurrences.tag.directive=JSPG0127E: Direktiva zna\u010dky {0} nesm\u00ed b\u00fdt ur\u010dena v\u00edce ne\u017e jednou. Prvn\u00ed v\u00fdskyt: {1}, druh\u00fd v\u00fdskyt: {2}
+jsp.error.multiple.occurrences.tag.directive.explanation=
+jsp.error.multiple.occurrences.tag.directive.useraction=
+
+jsp.error.translation.failed=JSPG0128E: Nelze p\u0159elo\u017eit str\u00e1nku JSP {0}.
+jsp.error.translation.failed.explanation=
+jsp.error.translation.failed.useraction=
+
+jsp.error.jsp.servlet.init.failed=JSPG0129E: Inicializace JspServlet se nezda\u0159ila.
+jsp.error.jsp.servlet.init.failed.explanation=
+jsp.error.jsp.servlet.init.failed.useraction=
+
+jsp.error.include.flush.invalid.value=JSPG0130E: Neplatn\u00e1 hodnota pro atribut flush: {0}
+jsp.error.include.flush.invalid.value.explanation=
+jsp.error.include.flush.invalid.value.useraction=
+
+jsp.error.non_null_tei_and_var_subelems=JSPG0131E: Chyba: U zna\u010dky tei s hodnotou jinou ne\u017e Null byly nalezeny d\u00edl\u010d\u00ed prvky prom\u011bnn\u00e9.
+jsp.error.non_null_tei_and_var_subelems.explanation=
+jsp.error.non_null_tei_and_var_subelems.useraction=
+
+jsp.error.tei.invalid.attributes=JSPG0132E: Byly nalezeny neplatn\u00e9 atributy pro {0} {1}. Chyba: {2}
+jsp.error.tei.invalid.attributes.explanation=
+jsp.error.tei.invalid.attributes.useraction=
+
+jsp.error.jsp.attribute.invalid.parent=JSPG0133E: Nad\u0159\u00edzen\u00fd objekt prvku jsp:attribute mus\u00ed b\u00fdt standardn\u00ed nebo vlastn\u00ed akc\u00ed.
+jsp.error.jsp.attribute.invalid.parent.explanation=
+jsp.error.jsp.attribute.invalid.parent.useraction=
+
+jsp.error.jsp.body.invalid.parent=JSPG0134E: Nad\u0159\u00edzen\u00fd objekt prvku jsp:body je neplatn\u00fd.
+jsp.error.jsp.body.invalid.parent.explanation=
+jsp.error.jsp.body.invalid.parent.useraction=
+
+jsp.error.jsp.body.parent.nobody=JSPG0135E: Nad\u0159\u00edzen\u00fd objekt prvku jsp:body je vlastn\u00ed zna\u010dkou, kter\u00e1 ve zna\u010dce tld neobsahuje \u017e\u00e1dn\u00e9 t\u011blo.
+jsp.error.jsp.body.parent.nobody.explanation=
+jsp.error.jsp.body.parent.nobody.useraction=
+
+jsp.error.tagfile.invoke.var_varreader=JSPG0136E: Funkce jsp:invoke nem\u016f\u017ee m\u00edt nastaven\u00ed var i varReader.
+jsp.error.tagfile.invoke.var_varreader.explanation=
+jsp.error.tagfile.invoke.var_varreader.useraction=
+
+jsp.error.tagfile.dobody.var_varreader=JSPG0137E: Funkce jsp:doBody nem\u016f\u017ee m\u00edt nastaven\u00ed var i varReader.
+jsp.error.tagfile.dobody.var_varreader.explanation=
+jsp.error.tagfile.dobody.var_varreader.useraction=
+
+jsp.error.tagfile.invoke.scope_var_varreader=JSPG0138E: P\u0159i nastaven\u00ed oboru mus\u00ed m\u00edt funkce jsp:invoke nastaven\u00ed var nebo varReader.
+jsp.error.tagfile.invoke.scope_var_varreader.explanation=
+jsp.error.tagfile.invoke.scope_var_varreader.useraction=
+
+jsp.error.tagfile.dobody.scope_var_varreader=JSPG0139E: P\u0159i nastaven\u00ed oboru mus\u00ed m\u00edt funkce jsp:doBody nastaven\u00ed var nebo varReader.
+jsp.error.tagfile.dobody.scope_var_varreader.explanation=
+jsp.error.tagfile.dobody.scope_var_varreader.useraction=
+
+jsp.error.tagfile.invoke.scope_invalid=JSPG0140E: Hodnota oboru jsp:invoke je neplatn\u00e1.
+jsp.error.tagfile.invoke.scope_invalid.explanation=
+jsp.error.tagfile.invoke.scope_invalid.useraction=
+
+jsp.error.tagfile.dobody.scope_invalid=JSPG0141E: Hodnota oboru jsp:doBody je neplatn\u00e1. 
+jsp.error.tagfile.dobody.scope_invalid.explanation=
+jsp.error.tagfile.dobody.scope_invalid.useraction=
+
+rt.expression.not.allowed.for.attribute=JSPG0142E: Hodnota b\u011bhov\u00e9ho v\u00fdrazu "{2}" nen\u00ed povolen\u00e1 pro atribut "{1}" prvku jsp {0}.
+rt.expression.not.allowed.for.attribute.explanation=
+rt.expression.not.allowed.for.attribute.useraction=
+
+jsp.error.jsp.attribute.prefix.mismatch=JSPG0143E: Atribut name zna\u010dky jsp:attribute m\u00e1 jinou p\u0159edponu ne\u017e nad\u0159\u00edzen\u00e1 zna\u010dka: {0} se nerovn\u00e1 {1}
+jsp.error.jsp.attribute.prefix.mismatch.explanation=
+jsp.error.jsp.attribute.prefix.mismatch.useraction=
+
+jsp.error.plugin.invalid.type=JSPG0144E: Neplatn\u00e1 hodnota pro atribut "type" modulu plug-in: {0}
+jsp.error.plugin.invalid.type.explanation=
+jsp.error.plugin.invalid.type.useraction=
+
+jsp.error.element.unknown=JSPG0145E: Nezn\u00e1m\u00fd prvek JSP: {0}
+jsp.error.element.unknown.explanation=
+jsp.error.element.unknown.useraction=
+
+jsp.error.include.directive.attribute.invalid=JSPG0146E: Neplatn\u00fd atribut pro direktivu include: {0}
+jsp.error.include.directive.attribute.invalid.explanation=
+jsp.error.include.directive.attribute.invalid.useraction=
+
+jsp.error.static.include.value.missing=JSPG0147E: Vy\u017eadovan\u00fd atribut "file" pro direktivu include nebyl nalezen.
+jsp.error.static.include.value.missing.explanation=
+jsp.error.static.include.value.missing.useraction=
+
+jsp.batchcompilerbase.jspfile.does.not.exist=JSPG0148E: Soubor JSP neexistuje: {0}
+jsp.batchcompilerbase.jspfile.does.not.exist.explanation=
+jsp.batchcompilerbase.jspfile.does.not.exist.useraction=
+
+jsp.batchcompilerbase.docroot.not.found=JSPG0149E: C\u00edlov\u00fd adres\u00e1\u0159 neexistuje: {0}
+jsp.batchcompilerbase.docroot.not.found.explanation=
+jsp.batchcompilerbase.docroot.not.found.useraction=
+
+jsp.batchcompilerbase.docroot.not.directory=JSPG0150E: N\u00e1zev c\u00edlov\u00e9ho adres\u00e1\u0159e nen\u00ed adres\u00e1\u0159em: {0}
+jsp.batchcompilerbase.docroot.not.directory.explanation=
+jsp.batchcompilerbase.docroot.not.directory.useraction=
+
+jsp.batchcompilerbase.return.code=JSPG0151I: N\u00e1vratov\u00fd k\u00f3d: {0}
+jsp.batchcompilerbase.return.code.explanation=
+jsp.batchcompilerbase.return.code.useraction=
+
+jsp.batchcompilerbase.unable.to.create.classloader=JSPG0152E: Nelze vytvo\u0159it objekt classloader.
+jsp.batchcompilerbase.unable.to.create.classloader.explanation=
+jsp.batchcompilerbase.unable.to.create.classloader.useraction=
+
+jsp.batchcompiler.initializing.server=JSPG0153I: Prob\u00edh\u00e1 inicializace serveru...
+jsp.batchcompiler.initializing.server.explanation=
+jsp.batchcompiler.initializing.server.useraction=
+
+jsp.batchcompiler.exception.while.processing.arguments=JSPG0154E: P\u0159i zpracov\u00e1n\u00ed argument\u016f p\u0159\u00edkazov\u00e9ho \u0159\u00e1dku do\u0161lo k v\u00fdjimce.
+jsp.batchcompiler.exception.while.processing.arguments.explanation=
+jsp.batchcompiler.exception.while.processing.arguments.useraction=
+
+jsp.batchcompiler.unknown.argument=JSPG0155E: Nezn\u00e1m\u00fd argument p\u0159\u00edkazov\u00e9ho \u0159\u00e1dku: {0}
+jsp.batchcompiler.unknown.argument.explanation=
+jsp.batchcompiler.unknown.argument.useraction=
+
+jsp.batchcompiler.using.default.log.level=JSPG0156W: Nezn\u00e1m\u00e1 \u00farove\u0148 protokolov\u00e1n\u00ed: {0}, pou\u017eit\u00ed v\u00fdchoz\u00ed hodnoty: {1}
+jsp.batchcompiler.using.default.log.level.explanation=
+jsp.batchcompiler.using.default.log.level.useraction=
+
+jsp.batchcompiler.using.default.cell.name=JSPG0157I: N\u00e1zev bu\u0148ky nebyl uveden. Pou\u017eije se v\u00fdchoz\u00ed nastaven\u00ed: {0}
+jsp.batchcompiler.using.default.cell.name.explanation=
+jsp.batchcompiler.using.default.cell.name.useraction=
+
+jsp.batchcompiler.using.default.node.name=JSPG0158I: N\u00e1zev uzlu nebyl uveden. Pou\u017eije se v\u00fdchoz\u00ed nastaven\u00ed: {0}
+jsp.batchcompiler.using.default.node.name.explanation=
+jsp.batchcompiler.using.default.node.name.useraction=
+
+jsp.batchcompiler.using.default.server.name=JSPG0159I: N\u00e1zev serveru nebyl uveden. Pou\u017eije se v\u00fdchoz\u00ed nastaven\u00ed: {0}
+jsp.batchcompiler.using.default.server.name.explanation=
+jsp.batchcompiler.using.default.server.name.useraction=
+
+jsp.batchcompiler.compiling.all.webmodules=JSPG0160I: Kompilace v\u0161ech webov\u00fdch modul\u016f
+jsp.batchcompiler.compiling.all.webmodules.explanation=
+jsp.batchcompiler.compiling.all.webmodules.useraction=
+
+jsp.batchcompiler.unable.to.initialize.server=JSPG0161E: Nelze inicializovat server.
+jsp.batchcompiler.unable.to.initialize.server.explanation=
+jsp.batchcompiler.unable.to.initialize.server.useraction=
+
+jsp.batchcompiler.exception.caught.while.adding.componentmanager.service=JSPG0162E: P\u0159i p\u0159id\u00e1n\u00ed slu\u017eby ComponentManager byla zachycena v\u00fdjimka.
+jsp.batchcompiler.exception.caught.while.adding.componentmanager.service.explanation=
+jsp.batchcompiler.exception.caught.while.adding.componentmanager.service.useraction=
+
+jsp.batchcompiler.exception.caught.while.initializing.batchcompiler.service=JSPG0163E: P\u0159i inicializaci slu\u017eby d\u00e1vkov\u00e9ho kompil\u00e1toru byla zachycena v\u00fdjimka.
+jsp.batchcompiler.exception.caught.while.initializing.batchcompiler.service.explanation=
+jsp.batchcompiler.exception.caught.while.initializing.batchcompiler.service.useraction=
+
+jsp.batchcompiler.repository.not.available=JSPG0164E: Slu\u017eba \u00falo\u017ei\u0161t\u011b nen\u00ed k dispozici.
+jsp.batchcompiler.repository.not.available.explanation=
+jsp.batchcompiler.repository.not.available.useraction=
+
+jsp.batchcompiler.reading.configfile=JSPG0165I: \u010cten\u00ed konfigura\u010dn\u00edho souboru... \n
+jsp.batchcompiler.reading.configfile.explanation=
+jsp.batchcompiler.reading.configfile.useraction=
+
+jsp.batchcompiler.enterpriseapp.not.found=JSPG0166E: Podnikov\u00e1 aplikace nebyla nalezena: {0}
+jsp.batchcompiler.enterpriseapp.not.found.explanation=
+jsp.batchcompiler.enterpriseapp.not.found.useraction=
+
+jsp.batchcompiler.finished.reading.configfile=JSPG0167I: Bylo dokon\u010deno \u010dten\u00ed konfigura\u010dn\u00edho souboru.
+jsp.batchcompiler.finished.reading.configfile.explanation=
+jsp.batchcompiler.finished.reading.configfile.useraction=
+
+jsp.batchcompiler.successfully.exiting=JSPG0168I: D\u00e1vkov\u00fd kompil\u00e1tor byl \u00fasp\u011b\u0161n\u011b ukon\u010den\u00fd bez chyb.
+jsp.batchcompiler.successfully.exiting.explanation=
+jsp.batchcompiler.successfully.exiting.useraction=
+
+jsp.batchcompiler.exiting.with.errors=JSPG0169I: D\u00e1vkov\u00fd kompil\u00e1tor byl ukon\u010den\u00fd s chybami.
+jsp.batchcompiler.exiting.with.errors.explanation=
+jsp.batchcompiler.exiting.with.errors.useraction=
+
+jsp.batchcompiler.error.reading.configuration=JSPG0170E: Chyba p\u0159i \u010dten\u00ed konfigurace: {0} {1}
+jsp.batchcompiler.error.reading.configuration.explanation=
+jsp.batchcompiler.error.reading.configuration.useraction=
+
+jsp.batchcompiler.error.while.finding.server=JSPG0171E: Chyba p\u0159i hled\u00e1n\u00ed serveru.
+jsp.batchcompiler.error.while.finding.server.explanation=
+jsp.batchcompiler.error.while.finding.server.useraction=
+
+jsp.batchcompiler.error.while.finding.enterpriseapp=JSPG0172E: Chyba p\u0159i hled\u00e1n\u00ed podnikov\u00e9 aplikace
+jsp.batchcompiler.error.while.finding.enterpriseapp.explanation=
+jsp.batchcompiler.error.while.finding.enterpriseapp.useraction=
+
+jsp.batchcompiler.extracttodir.not.writable=JSPG0173E: Do adres\u00e1\u0159e extractToDir nelze zapisovat: {0}
+jsp.batchcompiler.extracttodir.not.writable.explanation=
+jsp.batchcompiler.extracttodir.not.writable.useraction=
+
+jsp.batchcompiler.extracttodir.not.a.directory=JSPG0174E: Adres\u00e1\u0159 extractToDir nen\u00ed adres\u00e1\u0159em: {0}
+jsp.batchcompiler.extracttodir.not.a.directory.explanation=
+jsp.batchcompiler.extracttodir.not.a.directory.useraction=
+
+jsp.batchcompiler.exception.caught.extracting.earfile=JSPG0175E: Do\u0161lo k chyb\u011b p\u0159i extrakci archivu: {0} byla zachycena v\u00fdjimka.
+jsp.batchcompiler.exception.caught.extracting.earfile.explanation=
+jsp.batchcompiler.exception.caught.extracting.earfile.useraction=
+
+jsp.batchcompiler.war.path.does.not.exist=JSPG0176E: Cesta WAR neexistuje: {0}
+jsp.batchcompiler.war.path.does.not.exist.explanation=
+jsp.batchcompiler.war.path.does.not.exist.useraction=
+
+jsp.batchcompiler.war.path.is.not.a.file=JSPG0177E: Cesta WAR nen\u00ed souborem: {0}
+jsp.batchcompiler.war.path.is.not.a.file.explanation=
+jsp.batchcompiler.war.path.is.not.a.file.useraction=
+
+jsp.batchcompiler.ear.path.does.not.exist=JSPG0178E: Cesta EAR neexistuje: {0}
+jsp.batchcompiler.ear.path.does.not.exist.explanation=
+jsp.batchcompiler.ear.path.does.not.exist.useraction=
+
+jsp.batchcompiler.ear.path.is.not.a.file=JSPG0179E: Cesta EAR nen\u00ed souborem: {0}
+jsp.batchcompiler.ear.path.is.not.a.file.explanation=
+jsp.batchcompiler.ear.path.is.not.a.file.useraction=
+
+jsp.batchcompiler.webmodule.not.found=JSPG0180E: Webov\u00fd modul nebyl nalezen: {0}
+jsp.batchcompiler.webmodule.not.found.explanation=
+jsp.batchcompiler.webmodule.not.found.useraction=
+
+jsp.batchcompiler.removing.file=JSPG0183I: Prob\u00edh\u00e1 odebr\u00e1n\u00ed {0}
+jsp.batchcompiler.removing.file.explanation=
+jsp.batchcompiler.removing.file.useraction=
+
+jsp.batchcompiler.extracting=JSPG0184I: Prob\u00edh\u00e1 extrakce {0} do {1}
+jsp.batchcompiler.extracting.explanation=
+jsp.batchcompiler.extracting.useraction=
+
+jsp.batchcompiler.done.extracting=JSPG0185I: Extrakce dokon\u010dena
+jsp.batchcompiler.done.extracting.explanation=
+jsp.batchcompiler.done.extracting.useraction=
+
+jsp.batchcompiler.saving.zipfile=JSPG0186I: Prob\u00edh\u00e1 ukl\u00e1d\u00e1n\u00ed konfigurace {0}
+jsp.batchcompiler.saving.zipfile.explanation=
+jsp.batchcompiler.saving.zipfile.useraction=
+
+jsp.batchcompiler.done.saving=JSPG0187I: Ukl\u00e1d\u00e1n\u00ed dokon\u010deno
+jsp.batchcompiler.done.saving.explanation=
+jsp.batchcompiler.done.saving.useraction=
+
+jsp.batchcompiler.exception.while.saving=JSPG0188E: P\u0159i operaci ulo\u017een\u00ed do\u0161lo k v\u00fdjimce.
+jsp.batchcompiler.exception.while.saving.explanation=
+jsp.batchcompiler.exception.while.saving.useraction=
+
+jsp.batchcompiler.must.supply.ear.path.or.war.path.or.enterpriseapp=JSPG0192E: Nebyla uvedena cesta EAR, cesta WAR ani n\u00e1zev podnikov\u00e9 aplikace. Jeden z t\u011bchto \u00fadaj\u016f je nutn\u00e9 zadat.
+jsp.batchcompiler.must.supply.ear.path.or.war.path.or.enterpriseapp.explanation=
+jsp.batchcompiler.must.supply.ear.path.or.war.path.or.enterpriseapp.useraction=
+
+jsp.batchcompiler.must.supply.only.one.of.ear.path.or.war.path.or.enterpriseapp=JSPG0193E: Je nutn\u00e9 zadat jeden z n\u00e1sleduj\u00edc\u00edch \u00fadaj\u016f: cesta EAR, cesta WAR nebo podnikov\u00e1 aplikace.
+jsp.batchcompiler.must.supply.only.one.of.ear.path.or.war.path.or.enterpriseapp.explanation=
+jsp.batchcompiler.must.supply.only.one.of.ear.path.or.war.path.or.enterpriseapp.useraction=
+
+jsp.batchcompiler.webmodule.name.being.ignored.because.war.path.given=JSPG0194W: N\u00e1zev webov\u00e9ho modulu {0} se ignoruje, proto\u017ee byla uvedena cesta WAR.
+jsp.batchcompiler.webmodule.name.being.ignored.because.war.path.given.explanation=
+jsp.batchcompiler.webmodule.name.being.ignored.because.war.path.given.useraction=
+
+jsp.batchcompiler.exception.caught.extracting.warfile=JSPG0195E: P\u0159i extrakci souboru WAR byla zachycena v\u00fdjimka: {0}.
+jsp.batchcompiler.exception.caught.extracting.warfile.explanation=
+jsp.batchcompiler.exception.caught.extracting.warfile.useraction=
+
+jsp.batchcompiler.extracttodir.must.not.overlap.with.ear.path=JSPG0196E: Cesta extractToDir kompil\u00e1toru d\u00e1vek JSP se nesm\u00ed p\u0159ekr\u00fdvat s cestou EAR.
+jsp.batchcompiler.extracttodir.must.not.overlap.with.ear.path.explanation=
+jsp.batchcompiler.extracttodir.must.not.overlap.with.ear.path.useraction=
+
+jsp.batchcompiler.extracttodir.must.not.overlap.with.war.path=JSPG0197E: Cesta extractToDir kompil\u00e1toru d\u00e1vek JSP se nesm\u00ed p\u0159ekr\u00fdvat s cestou WAR.
+jsp.batchcompiler.extracttodir.must.not.overlap.with.war.path.explanation=
+jsp.batchcompiler.extracttodir.must.not.overlap.with.war.path.useraction=
+
+jsp.batchcompiler.extracttodir.does.not.exist=JSPG0198E: Cesta extractToDir neexistuje: {0}
+jsp.batchcompiler.extracttodir.does.not.exist.explanation=
+jsp.batchcompiler.extracttodir.does.not.exist.useraction=
+
+jsp.batchcompiler.exception.caught.getting.warfile.list=JSPG0199E: P\u0159i na\u010d\u00edt\u00e1n\u00ed seznamu soubor\u016f war byla zachycena v\u00fdjimka.
+jsp.batchcompiler.exception.caught.getting.warfile.list.explanation=
+jsp.batchcompiler.exception.caught.getting.warfile.list.useraction=
+
+jsp.batchcompiler.exception.caught.opening.earfile=JSPG0200E: P\u0159i otev\u00edr\u00e1n\u00ed souboru EAR byla zachycena v\u00fdjimka.
+jsp.batchcompiler.exception.caught.opening.earfile.explanation=
+jsp.batchcompiler.exception.caught.opening.earfile.useraction=
+
+jsp.batchcompiler.exception.caught.opening.warfile=JSPG0202E: P\u0159i otv\u00edr\u00e1n\u00ed souboru war byla zachycena v\u00fdjimka.
+jsp.batchcompiler.exception.caught.opening.warfile.explanation=
+jsp.batchcompiler.exception.caught.opening.warfile.useraction=
+
+jsp.batchcompiler.ignoring.extracttodir=JSPG0203W: Funkce ExtractToDir {0} byla ignorov\u00e1na, proto\u017ee byl uveden n\u00e1zev enterpriseapp.name.
+jsp.batchcompiler.ignoring.extracttodir.explanation=
+jsp.batchcompiler.ignoring.extracttodir.useraction=
+
+jsp.batchcompiler.error.adding.variable.map=JSPG0204W: P\u0159i p\u0159id\u00e1v\u00e1n\u00ed mapov\u00e1n\u00ed prom\u011bnn\u00e9 do\u0161lo k v\u00fdjimce. {0}
+jsp.batchcompiler.error.adding.variable.map.explanation=
+jsp.batchcompiler.error.adding.variable.map.useraction=
+
+jsp.error.building.visitor.order=JSPG0205W: Chyba p\u0159i vytv\u00e1\u0159en\u00ed po\u0159ad\u00ed n\u00e1v\u0161t\u011bvn\u00edk\u016f JSP. {0}
+jsp.error.building.visitor.order.explanation=
+jsp.error.building.visitor.order.useraction=
+
+jsp.error.failed.load.jsp-visitor-definition=JSPG0206E: Chyba p\u0159i na\u010d\u00edt\u00e1n\u00ed zna\u010dky jsp-visitor-definition
+jsp.error.failed.load.jsp-visitor-definition.explanation=
+jsp.error.failed.load.jsp-visitor-definition.useraction=
+
+jsp.batchcompiler.exception.while.processing.arguments.filenotfound=JSPG0207E: Byla zachycena v\u00fdjimka p\u0159i zpracov\u00e1n\u00ed argument\u016f p\u0159\u00edkazov\u00e9ho \u0159\u00e1dku - soubor: {0}, zpr\u00e1va: {1}
+jsp.batchcompiler.exception.while.processing.arguments.filenotfound.explanation=
+jsp.batchcompiler.exception.while.processing.arguments.filenotfound.useraction=
+
+jsp.batchcompiler.compiletowebinf.being.ignored.because.compiletodir.given=JSPG0208W: Hodnota compileToWebInf se ignorovala, proto\u017ee byl uveden parametr compileToDir {0}.
+jsp.batchcompiler.compiletowebinf.being.ignored.because.compiletodir.given.explanation=
+jsp.batchcompiler.compiletowebinf.being.ignored.because.compiletodir.given.useraction=
+
+jsp.error.failed.read.jsp=JSPG0209E: Funkci {0}(0,0) se nepoda\u0159ilo na\u010d\u00edst str\u00e1nku JSP: {1}
+jsp.error.failed.read.jsp.explanation=
+jsp.error.failed.read.jsp.useraction=
+
+jsp.error.page.invalid.autoflush.buffer=JSPG0210E: Argument autoFlush nelze nastavit na hodnotu false v p\u0159\u00edpad\u011b, \u017ee nen\u00ed nastaven\u00fd parametr vyrovn\u00e1vac\u00ed pam\u011bti.
+jsp.error.page.invalid.autoflush.buffer.explanation=
+jsp.error.page.invalid.autoflush.buffer.useraction=
+
+jsp.error.root.must.be.top=JSPG0211E: Prvek jsp:root mus\u00ed b\u00fdt ko\u0159enov\u00fdm prvkem dokumentu.
+jsp.error.root.must.be.top.explanation=
+jsp.error.root.must.be.top.useraction=
+
+jsp.error.root.only.in.jsp.document=JSPG0212E: Prvek jsp:root lze pou\u017e\u00edt pouze v dokumentech JSP.
+jsp.error.root.only.in.jsp.document.explanation=
+jsp.error.root.only.in.jsp.document.useraction=
+
+jsp.error.no.doctype-root-element.attr=JSPG0213E: P\u0159i pou\u017eit\u00ed atributu doctype-system mus\u00ed chyba obsahovat prvek doctype-root-element.
+jsp.error.no.doctype-root-element.attr.explanation=
+jsp.error.no.doctype-root-element.attr.useraction=
+
+jsp.error.no.doctype-system.attr=JSPG0214E: Atribut doctype-system chyby nen\u00ed uveden. 
+jsp.error.no.doctype-system.attr.explanation=
+jsp.error.no.doctype-system.attr.useraction=
+
+jsp.error.failed.translation.context.creation=JSPG0215E: Selhalo vytvo\u0159en\u00ed kontextu konfigurovan\u00e9ho p\u0159ekladu z objektu {0}. V\u00fdjimka: {2}
+jsp.error.failed.translation.context.creation.explanation=
+jsp.error.failed.translation.context.creation.useraction=
+
+jsp.error.failed.load.context.class=JSPG0216E: Zaveden\u00ed t\u0159\u00eddy konfigurovan\u00e9ho kontextu {0} se nezda\u0159ilo.
+jsp.error.failed.load.context.class.explanation=
+jsp.error.failed.load.context.class.useraction=
+
+jsp.error.failed.load.extension.processor.class=JSPG0217E: Zaveden\u00ed t\u0159\u00eddy procesoru pro konfigurovanou p\u0159\u00edponu {0} se nezda\u0159ilo.
+jsp.error.failed.load.extension.processor.class.explanation=
+jsp.error.failed.load.extension.processor.class.useraction=
+
+
+jsp.error.unable.locate.setter.method.attribute.for.tagname=JSPG0218E: Selhalo nalezen\u00ed metody setter pro atribut {1} ve t\u0159\u00edd\u011b zna\u010dek {0}.
+jsp.error.unable.locate.setter.method.attribute.for.tagname.explanation=
+jsp.error.unable.locate.setter.method.attribute.for.tagname.useraction=
+
+jsp.error.invalid.taglib.directive.attribute=JSPG0219E: Nezn\u00e1m\u00fd atribut direktivy taglib pro chybu {0} s hodnotou {1}
+jsp.error.invalid.taglib.directive.attribute.explanation=
+jsp.error.invalid.taglib.directive.attribute.useraction=
+
+jsp.error.invalid.taglib.directive.missing.required.prefix=JSPG0220E: V direktiv\u011b taglib chyby nen\u00ed uvedena vy\u017eadovan\u00e1 p\u0159edpona atributu.
+jsp.error.invalid.taglib.directive.missing.required.prefix.explanation=
+jsp.error.invalid.taglib.directive.missing.required.prefix.useraction=
+
+jsp.batchcompiler.compiling.in.metainf.not.allowed=JSPG0221E: Kompilace str\u00e1nky JSP v META-INF nen\u00ed povolena. Soubor: {0}
+jsp.batchcompiler.compiling.in.metainf.not.allowed.explanation=
+jsp.batchcompiler.compiling.in.metainf.not.allowed.useraction=
+
+jsp.batchcompiler.if.removetempdir.true.enterpriseapp.must.be.given=JSPG0222E: Je-li atribut removeTempDir nastaven\u00fd na hodnotu true, je nutn\u00e9 uv\u00e9st n\u00e1zev enterpriseApp.name.
+jsp.batchcompiler.if.removetempdir.true.enterpriseapp.must.be.given.explanation=
+jsp.batchcompiler.if.removetempdir.true.enterpriseapp.must.be.given.useraction=
+
+jsp.batchcompiler.if.translatejsps.false.removetempdir.must.be.true=JSPG0223E: Je-li atribut translate nastaven\u00fd na hodnotu false, mus\u00ed m\u00edt parametr removeTempDir hodnotu true.
+jsp.batchcompiler.if.translatejsps.false.removetempdir.must.be.true.explanation=
+jsp.batchcompiler.if.translatejsps.false.removetempdir.must.be.true.useraction=
+
+jsp.batchcompiler.ignoring.scratchdir=JSPG0224W: Parametr scratchdir [{0}] stroje JSP se ignoruje, proto\u017ee byla uvedena cesta ear.path nebo war.path.
+jsp.batchcompiler.ignoring.scratchdir.explanation=
+jsp.batchcompiler.ignoring.scratchdir.useraction=
+
+jsp.error.single.line.number.included.file=JSPG0225E: Do\u0161lo k chyb\u011b na \u0159\u00e1dku {0} ve staticky zahrnut\u00e9m souboru {1}.
+jsp.error.single.line.number.included.file.explanation=
+jsp.error.single.line.number.included.file.useraction=
+
+jsp.error.multiple.line.number.included.file=JSPG0226E: Do\u0161lo k chyb\u011b mezi \u0159\u00e1dky {0} a {1} ve staticky zahrnut\u00e9m souboru {2}.
+jsp.error.multiple.line.number.included.file.explanation=
+jsp.error.multiple.line.number.included.file.useraction=
+
+jsp.error.exception.caught.translating=JSPG0227E: P\u0159i p\u0159ekladu {0} byla zachycena v\u00fdjimka.
+jsp.error.exception.caught.translating.explanation=
+jsp.error.exception.caught.translating.useraction=
+
+jsp.error.exception.caught.translating.included.file=JSPG0228E: P\u0159i p\u0159ekladu {0} byla zachycena v\u00fdjimka - chyba ve staticky zahrnut\u00e9m souboru {1}.
+jsp.error.exception.caught.translating.included.file.explanation=
+jsp.error.exception.caught.translating.included.file.useraction=
+
+JSPG0229=Chyba p\u0159i zpracov\u00e1n\u00ed JSP
+JSPG0230=K\u00f3d chyby HTTP:
+JSPG0231=Chybov\u00e1 zpr\u00e1va:
+JSPG0232=P\u0159\u00ed\u010dina:
+
+jsp.batchcompiler.exception.caught.while.getting.configuration.options=JSPG0233E: P\u0159i na\u010d\u00edt\u00e1n\u00ed voleb konfigurace do\u0161lo k v\u00fdjimce.
+jsp.batchcompiler.exception.caught.while.getting.configuration.options.explanation=
+jsp.batchcompiler.exception.caught.while.getting.configuration.options.useraction=
+
+jsp.error.unable.to.locate.tld.jar.file=JSPG0234E: Kontejner JSP nem\u016f\u017ee nal\u00e9zt prost\u0159edek [{0}] archivu Java (JAR) pro anal\u00fdzu deskriptor\u016f knihovny zna\u010dek.
+jsp.error.unable.to.locate.tld.jar.file.explanation=Nelze nal\u00e9zt knihovnu zna\u010dek URI, kter\u00e1 je definov\u00e1na jako um\u00edst\u011bn\u00ed JAR (soubor web.xml nebo direktiva str\u00e1nky).
+jsp.error.unable.to.locate.tld.jar.file.useraction=Ov\u011b\u0159te, zda existuje soubor JAR a zda k n\u011bmu m\u016f\u017ee p\u0159istupovat tento webov\u00fd modul.
+
+jsp.error.failed.load.tei.class=JSPG0235E: Kontejneru JSP se nepoda\u0159ilo na\u010d\u00edst t\u0159\u00eddu TagExtraInfo [{0}]. 
+jsp.error.failed.load.tei.class.explanation=Kontejner JSP nem\u016f\u017ee na\u010d\u00edst t\u0159\u00eddu TagExtraInfo, kter\u00e1 je ur\u010den\u00e1 v deskriptoru knihovny zna\u010dek (TLD).
+jsp.error.failed.load.tei.class.useraction=Ov\u011b\u0159te, zda existuje t\u0159\u00edda TagExtraInfo a zda k n\u00ed m\u016f\u017ee p\u0159istupovat tento webov\u00fd modul.
+
+jsp.error.failed.load.tlv.class=JSPG0236E: Kontejneru JSP se nepoda\u0159ilo na\u010d\u00edst t\u0159\u00eddu TagLibraryValidator [{0}].
+jsp.error.failed.load.tlv.class.explanation=Kontejneru JSP se nezda\u0159ilo na\u010d\u00edst t\u0159\u00eddu TagLibraryValidator, kter\u00e1 je ur\u010den\u00e1 v deskriptoru knihovny zna\u010dek (TLD).
+jsp.error.failed.load.tlv.class.useraction=Ov\u011b\u0159te, zda existuje t\u0159\u00edda TagLibraryValidator a zda k n\u00ed m\u016f\u017ee p\u0159istupovat tento webov\u00fd modul.
+
+jsp.error.tagfile.nameFrom.noAttribute=JSPG0237E: Nelze naj\u00edt direktivu atributu s atributem n\u00e1zvu (name) s hodnotou \"{0}\", co\u017e je hodnota tohoto atributu name-from-attribute.
+jsp.error.tagfile.nameFrom.noAttribute.explanation=Vysv\u011btlen\u00ed
+jsp.error.tagfile.nameFrom.noAttribute.useraction=Akce u\u017eivatele
+
+jsp.error.tagfile.nameFrom.badAttribute=JSPG0238E: Direktiva atributu (kter\u00e1 je deklarov\u00e1na na \u0159\u00e1dku {0} a jej\u00ed\u017e atribut n\u00e1zvu (name) je \"{1}\", co\u017e je hodnota atributu name-from-attribute) mus\u00ed b\u00fdt typu java.lang.String, je povinn\u00e1 (\"required\") a nen\u00ed hodnotou typu \"rtexprvalue\".
+jsp.error.tagfile.nameFrom.badAttribute.explanation=Vysv\u011btlen\u00ed
+jsp.error.tagfile.nameFrom.badAttribute.useraction=Akce u\u017eivatele
+
+jsp.error.jspoutput.conflict=JSPG0239E: <jsp:output>: V\u00edcen\u00e1sobn\u00e9 v\u00fdskyty atributu \"{0}\" s rozd\u00edln\u00fdmi hodnotami (star\u00e1: {1}, nov\u00e1: {2}) jsou nep\u0159\u00edpustn\u00e9.
+jsp.error.jspoutput.conflict.explanation=<jsp:output> obsahuje v\u00edcen\u00e1sobn\u00e9 v\u00fdskyty atributu s r\u016fzn\u00fdmi hodnotami.
+jsp.error.jspoutput.conflict.useraction=Zajist\u011bte, aby v\u00edcen\u00e1sobn\u00e9 v\u00fdskyty atributu obsahovaly tut\u00e9\u017e hodnotu.
+
+# defect 396002
+jsp.error.prefix.redefined=JSPG0240E: Do\u0161lo k pokusu p\u0159edefinovat p\u0159edponu \"{0}\" na hodnotu \"{1}\", p\u0159i\u010dem\u017e v aktu\u00e1ln\u00edm oboru ji\u017e byla definov\u00e1na jako \"{2}\".
+jsp.error.prefix.redefined.explanation= P\u0159edpona knihovny zna\u010dek ji\u017e byla definov\u00e1na s jin\u00fdm identifik\u00e1torem URI.
+jsp.error.prefix.redefined.useraction= Zajist\u011bte, aby p\u0159edpona byla definov\u00e1na pomoc\u00ed jedin\u00e9ho identifik\u00e1toru URI.
+
+# defect 396002
+jsp.error.prefix.use_before_dcl=JSPG0241E: P\u0159edpona \"{0}\" ur\u010den\u00e1 v t\u00e9to direktiv\u011b zna\u010dky byla d\u0159\u00edve pou\u017eita akc\u00ed v souboru {1}.
+jsp.error.prefix.use_before_dcl.explanation= P\u0159edpona knihovny zna\u010dek byla pou\u017eita p\u0159ed direktivou zna\u010dky, kter\u00e1 p\u0159edponu definuje.
+jsp.error.prefix.use_before_dcl.useraction= P\u0159esu\u0148te direktivu zna\u010dky nad v\u0161echny akce, kter\u00e9 p\u0159edponu pou\u017e\u00edvaj\u00ed.
+
+# jsp2.1work
+jsp.error.page.invalid.trimdirectivewhitespaces=JSPG0242E: Neplatn\u00e1 hodnota atributu trimDirectiveWhitespaces
+jsp.error.page.invalid.trimdirectivewhitespaces.explanation=
+jsp.error.page.invalid.trimdirectivewhitespaces.useraction=
+
+# jsp2.1ELwork
+jsp.error.page.invalid.deferredsyntaxallowedasliteral=JSPG0243E: Neplatn\u00e1 hodnota atributu deferredSyntaxAllowedAsLiteral
+jsp.error.page.invalid.deferredsyntaxallowedasliteral.explanation=
+jsp.error.page.invalid.deferredsyntaxallowedasliteral.useraction=
+
+# jsp2.1ELwork
+jsp.error.el.template.deferred=JSPG0244E: V textu \u0161ablony nen\u00ed povolena hodnota \"{0}\"
+jsp.error.el.template.deferred.explanation=
+jsp.error.el.template.deferred.useraction=
+
+# jsp2.1ELwork
+jsp.error.page.conflict.deferredsyntaxallowedasliteral=JSPG0245E: Direktiva Page: V\u00edcen\u00e1sobn\u00fd v\u00fdskyt atributu ''deferredSyntaxAllowedAsLiteral'' s rozd\u00edln\u00fdmi hodnotami (star\u00e1: {0}, nov\u00e1: {1}) nen\u00ed povolen.
+jsp.error.page.conflict.deferredsyntaxallowedasliteral.explanation=
+jsp.error.page.conflict.deferredsyntaxallowedasliteral.useraction=
+
+# jsp2.1ELwork
+jsp.error.tag.conflict.deferredsyntaxallowedasliteral=JSPG0246E: Direktiva Tag: V\u00edcen\u00e1sobn\u00fd v\u00fdskyt atributu ''deferredSyntaxAllowedAsLiteral'' s rozd\u00edln\u00fdmi hodnotami (star\u00e1: {0}, nov\u00e1: {1}) nen\u00ed povolen.
+jsp.error.tag.conflict.deferredsyntaxallowedasliteral.explanation=
+jsp.error.tag.conflict.deferredsyntaxallowedasliteral.useraction=
+
+# jsp2.1ELwork
+jsp.error.page.conflict.trimdirectivewhitespaces=JSPG0247E: Direktiva Page: V\u00edcen\u00e1sobn\u00fd v\u00fdskyt atributu ''trimDirectiveWhitespaces'' s rozd\u00edln\u00fdmi hodnotami (star\u00e1: {0}, nov\u00e1: {1}) nen\u00ed povolen.
+jsp.error.page.conflict.trimdirectivewhitespaces.explanation=
+jsp.error.page.conflict.trimdirectivewhitespaces.useraction=
+
+# jsp2.1ELwork
+jsp.error.tag.conflict.trimdirectivewhitespaces=JSPG0248E: Direktiva Tag: V\u00edcen\u00e1sobn\u00fd v\u00fdskyt atributu ''trimDirectiveWhitespaces'' s rozd\u00edln\u00fdmi hodnotami (star\u00e1: {0}, nov\u00e1: {1}) nen\u00ed povolen.
+jsp.error.tag.conflict.trimdirectivewhitespaces.explanation=
+jsp.error.tag.conflict.trimdirectivewhitespaces.useraction=
+
+# jsp2.1ELwork
+jsp.error.tag.conflict.attr=JSPG0249E: Direktiva Tag: V\u00edcen\u00e1sobn\u00fd v\u00fdskyt atributu \"{0}\" s rozd\u00edln\u00fdmi hodnotami (star\u00e1: {1}, nov\u00e1: {2}) nen\u00ed povolen.
+jsp.error.tag.conflict.attr.explanation=
+jsp.error.tag.conflict.attr.useraction=
+
+# jsp2.1ELwork
+jsp.error.tagdirective.badbodycontent=JSPG0250E: Neplatn\u00fd obsah t\u011bla zpr\u00e1vy ({0}) v direktiv\u011b tag.
+jsp.error.tagdirective.badbodycontent.explanation=
+jsp.error.tagdirective.badbodycontent.useraction=
+
+# jsp2.1ELwork
+jsp.error.deferredvaluetypewithoutdeferredvalue=JSPG0251E: Nelze ur\u010dit hodnotu, pokud atribut 'deferredValue' nem\u00e1 hodnotu 'true'.
+jsp.error.deferredvaluetypewithoutdeferredvalue.explanation=
+jsp.error.deferredvaluetypewithoutdeferredvalue.useraction=
+
+# jsp2.1ELwork
+jsp.error.deferredmethodsignaturewithoutdeferredmethod=JSPG0252E: Nelze ur\u010dit signaturu metody, pokud atribut 'deferredMethod' nem\u00e1 hodnotu 'true'.
+jsp.error.deferredmethodsignaturewithoutdeferredmethod.explanation=
+jsp.error.deferredmethodsignaturewithoutdeferredmethod.useraction=
+
+# jsp2.1ELwork
+jsp.error.deferredmethodandvalue=JSPG0253E: Atributy 'deferredValue' a 'deferredMethod' nemohou m\u00edt sou\u010dasn\u011b hodnotu 'true'.
+jsp.error.deferredmethodandvalue.explanation=
+jsp.error.deferredmethodandvalue.useraction=
+
+# jsp2.1ELwork
+jsp.error.invalid.version=JSPG0254E: Je definov\u00e1na neplatn\u00e1 verze str\u00e1nky JSP pro soubor zna\u010dek v um\u00edst\u011bn\u00ed {0}.
+jsp.error.invalid.version.explanation=
+jsp.error.invalid.version.useraction=
+
+# jsp2.1ELwork
+jsp.error.unknown_attribute_type=JSPG0255E: Nezn\u00e1m\u00fd typ atributu ({1}) pro atribut {0}.
+jsp.error.unknown_attribute_type.explanation=
+jsp.error.unknown_attribute_type.useraction=
+
+# jsp2.1ELwork
+jsp.error.coerce_to_type=JSPG0256E: Pro atribut {0} nelze p\u0159ev\u00e9st hodnotu ({2}) na typ ({1}).
+jsp.error.coerce_to_type.explanation=
+jsp.error.coerce_to_type.useraction=
+
+# jsp2.1work
+jsp.error.xml.spaceRequiredBeforeVersionInTextDecl=JSPG0257E: V textov\u00e9 deklaraci je p\u0159ed pseudoatributem verze vy\u017eadov\u00e1na mezera.
+jsp.error.xml.spaceRequiredBeforeVersionInTextDecl.explanation=
+jsp.error.xml.spaceRequiredBeforeVersionInTextDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.spaceRequiredBeforeVersionInXMLDecl=JSPG0258E: V deklaraci XML je p\u0159ed pseudoatributem verze vy\u017eadov\u00e1na mezera.
+jsp.error.xml.spaceRequiredBeforeVersionInXMLDecl.explanation=
+jsp.error.xml.spaceRequiredBeforeVersionInXMLDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.versionNotSupported=JSPG0259E: Verze XML \"{0}\" nen\u00ed podporov\u00e1na; jedin\u00e1 podporovan\u00e1 verze je XML 1.0.
+jsp.error.xml.versionNotSupported.explanation=
+jsp.error.xml.versionNotSupported.useraction=
+
+# jsp2.1work
+jsp.error.xml.encodingDeclRequired=JSPG0260E: V textov\u00e9 deklaraci je vy\u017eadov\u00e1na deklarace k\u00f3dov\u00e1n\u00ed.
+jsp.error.xml.encodingDeclRequired.explanation=
+jsp.error.xml.encodingDeclRequired.useraction=
+
+# jsp2.1work
+jsp.error.xml.versionInfoRequired=JSPG0261E: V deklaraci XML je vy\u017eadov\u00e1na verze.
+jsp.error.xml.versionInfoRequired.explanation=
+jsp.error.xml.versionInfoRequired.useraction=
+
+# jsp2.1work
+jsp.error.xml.spaceRequiredBeforeEncodingInTextDecl=JSPG0262E: V textov\u00e9 deklaraci je p\u0159ed pseudoatributem k\u00f3dov\u00e1n\u00ed vy\u017eadov\u00e1na mezera.
+jsp.error.xml.spaceRequiredBeforeEncodingInTextDecl.explanation=
+jsp.error.xml.spaceRequiredBeforeEncodingInTextDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.spaceRequiredBeforeEncodingInXMLDecl=JSPG0263E: V deklaraci XML je p\u0159ed pseudoatributem k\u00f3dov\u00e1n\u00ed vy\u017eadov\u00e1na mezera.
+jsp.error.xml.spaceRequiredBeforeEncodingInXMLDecl.explanation=
+jsp.error.xml.spaceRequiredBeforeEncodingInXMLDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.eqRequiredInTextDecl=JSPG0264E: V textov\u00e9 deklaraci mus\u00ed b\u00fdt atribut \"{0}\" n\u00e1sledov\u00e1n znakem '' = ''.
+jsp.error.xml.eqRequiredInTextDecl.explanation=
+jsp.error.xml.eqRequiredInTextDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.eqRequiredInXMLDecl=JSPG0265E: V deklaraci XML mus\u00ed b\u00fdt atribut \"{0}\" n\u00e1sledov\u00e1n znakem '' = ''.
+jsp.error.xml.eqRequiredInXMLDecl.explanation=
+jsp.error.xml.eqRequiredInXMLDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.quoteRequiredInTextDecl=JSPG0266E: Hodnotou n\u00e1sleduj\u00edc\u00ed atribut \"{0}\" v textov\u00e9 deklaraci mus\u00ed b\u00fdt uzav\u0159en\u00fd \u0159et\u011bzec.
+jsp.error.xml.quoteRequiredInTextDecl.explanation=
+jsp.error.xml.quoteRequiredInTextDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.quoteRequiredInXMLDecl=JSPG0267E: Hodnotou n\u00e1sleduj\u00edc\u00ed atribut \"{0}\" v deklaraci XML mus\u00ed b\u00fdt uzav\u0159en\u00fd \u0159et\u011bzec.
+jsp.error.xml.quoteRequiredInXMLDecl.explanation=
+jsp.error.xml.quoteRequiredInXMLDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.invalidCharInTextDecl=JSPG0268E: V textov\u00e9 deklaraci byl nalezen neplatn\u00fd znak XML (Unicode: 0x{0}).
+jsp.error.xml.invalidCharInTextDecl.explanation=
+jsp.error.xml.invalidCharInTextDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.invalidCharInXMLDecl=JSPG0269E: V deklaraci XML byl nalezen neplatn\u00fd znak XML (Unicode: 0x{0}).
+jsp.error.xml.invalidCharInXMLDecl.explanation=
+jsp.error.xml.invalidCharInXMLDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.closeQuoteMissingInTextDecl=JSPG0270E: V textov\u00e9 deklaraci chyb\u00ed uzav\u00edrac\u00ed uvozovky hodnoty n\u00e1sleduj\u00edc\u00ed atribut \"{0}\".
+jsp.error.xml.closeQuoteMissingInTextDecl.explanation=
+jsp.error.xml.closeQuoteMissingInTextDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.closeQuoteMissingInXMLDecl=JSPG0271E: V deklaraci XML chyb\u00ed uzav\u00edrac\u00ed uvozovky hodnoty n\u00e1sleduj\u00edc\u00ed atribut \"{0}\".
+jsp.error.xml.closeQuoteMissingInXMLDecl.explanation=
+jsp.error.xml.closeQuoteMissingInXMLDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.encodingByteOrderUnsupported=JSPG0272E: Dan\u00e9 po\u0159ad\u00ed bajt\u016f pro k\u00f3dov\u00e1n\u00ed \"{0}\" nen\u00ed podporov\u00e1no.
+jsp.error.xml.encodingByteOrderUnsupported.explanation=
+jsp.error.xml.encodingByteOrderUnsupported.useraction=
+
+# jsp2.1work
+jsp.error.xml.encodingDeclInvalid=JSPG0273E: Neplatn\u00fd n\u00e1zev k\u00f3dov\u00e1n\u00ed \"{0}\".
+jsp.error.xml.encodingDeclInvalid.explanation=
+jsp.error.xml.encodingDeclInvalid.useraction=
+
+# jsp2.1work
+jsp.error.xml.spaceRequiredBeforeStandalone=JSPG0274E: V deklaraci XML je p\u0159ed samostatn\u00fdm pseudoatributem vy\u017eadov\u00e1na mezera.
+jsp.error.xml.spaceRequiredBeforeStandalone.explanation=
+jsp.error.xml.spaceRequiredBeforeStandalone.useraction=
+
+# jsp2.1work
+jsp.error.xml.sdDeclInvalid=JSPG0275E: Deklarace samostatn\u00e9ho dokumentu mus\u00ed m\u00edt hodnotu \"ano\" nebo \"ne\", nikoli hodnotu \"{0}\".
+jsp.error.xml.sdDeclInvalid.explanation=
+jsp.error.xml.sdDeclInvalid.useraction=
+
+# jsp2.1work
+jsp.error.xml.noMorePseudoAttributes=JSPG0276E: Nejsou dovoleny \u017e\u00e1dn\u00e9 dal\u0161\u00ed pseudoatributy.
+jsp.error.xml.noMorePseudoAttributes.explanation=
+jsp.error.xml.noMorePseudoAttributes.useraction=
+
+# jsp2.1work
+jsp.error.xml.morePseudoAttributes=JSPG0277E: Jsou o\u010dek\u00e1v\u00e1ny dal\u0161\u00ed pseudoatributy.
+jsp.error.xml.morePseudoAttributes.explanation=
+jsp.error.xml.morePseudoAttributes.useraction=
+
+# jsp2.1work
+jsp.error.xml.xmlDeclUnterminated=JSPG0278E: Deklarace XML mus\u00ed kon\u010dit \u0159et\u011bzcem \"?>\".
+jsp.error.xml.xmlDeclUnterminated.explanation=
+jsp.error.xml.xmlDeclUnterminated.useraction=
+
+# jsp2.1work
+jsp.error.xml.pseudoAttrNameExpected=JSPG0279E: Je o\u010dek\u00e1v\u00e1n n\u00e1zev pseudoatributu.
+jsp.error.xml.pseudoAttrNameExpected.explanation=
+jsp.error.xml.pseudoAttrNameExpected.useraction=
+
+# jsp2.1work
+jsp.error.xml.reservedPITarget=JSPG0280E: C\u00edl instrukce zpracov\u00e1n\u00ed odpov\u00eddaj\u00edc\u00ed \u0159et\u011bzci \"[xX][mM][lL]\" nen\u00ed povolen.
+jsp.error.xml.reservedPITarget.explanation=
+jsp.error.xml.reservedPITarget.useraction=
+
+# jsp2.1work
+jsp.error.xml.spaceRequiredInPI=JSPG0281E: Mezi c\u00edlem a daty instrukce zpracov\u00e1n\u00ed je vy\u017eadov\u00e1na mezera.
+jsp.error.xml.spaceRequiredInPI.explanation=
+jsp.error.xml.spaceRequiredInPI.useraction=
+
+# jsp2.1work
+jsp.error.xml.invalidCharInPI=JSPG0282E: V instrukci zpracov\u00e1n\u00ed byl nalezen neplatn\u00fd znak XML (Unicode: 0x{0}).
+jsp.error.xml.invalidCharInPI.explanation=
+jsp.error.xml.invalidCharInPI.useraction=
+
+# jsp2.1work
+jsp.error.xml.invalidCharInContent=JSPG0283E: V prvku obsahu dokumentu byl nalezen neplatn\u00fd znak XML (Unicode: 0x{0}).
+jsp.error.xml.invalidCharInContent.explanation=
+jsp.error.xml.invalidCharInContent.useraction=
+
+# jsp2.1work
+jsp.error.xml.operationNotSupported=JSPG0284E: Operace \"{0}\" nen\u00ed podporov\u00e1na \u010dtec\u00edm za\u0159\u00edzen\u00edm {1}.
+jsp.error.xml.operationNotSupported.explanation=
+jsp.error.xml.operationNotSupported.useraction=
+
+# jsp2.1work
+jsp.error.xml.invalidASCII=JSPG0285E: Bajt \"{0}\" nen\u00ed 7bitovou hodnotu k\u00f3dov\u00e1n\u00ed ASCII.
+jsp.error.xml.invalidASCII.explanation=
+jsp.error.xml.invalidASCII.useraction=
+
+# jsp2.1work
+jsp.error.xml.expectedByte=JSPG0286E: O\u010dek\u00e1v\u00e1n bajt {0} {1}bajtov\u00e9 posloupnosti k\u00f3dov\u00e1n\u00ed UTF-8.
+jsp.error.xml.expectedByte.explanation=
+jsp.error.xml.expectedByte.useraction=
+
+# jsp2.1work
+jsp.error.xml.invalidByte=JSPG0287E: Neplatn\u00fd bajt {0} {1}bajtov\u00e9 posloupnosti k\u00f3dov\u00e1n\u00ed UTF-8.
+jsp.error.xml.invalidByte.explanation=
+jsp.error.xml.invalidByte.useraction=
+
+# jsp2.1work
+jsp.error.xml.invalidHighSurrogate=JSPG0288E: Vysok\u00e9 bajty nahrazen\u00ed v posloupnosti k\u00f3dov\u00e1n\u00ed UTF-8 nesm\u00ed b\u00fdt vy\u0161\u0161\u00ed ne\u017e 0x10, byla v\u0161ak nalezena hodnota 0x{0}.
+jsp.error.xml.invalidHighSurrogate.explanation=
+jsp.error.xml.invalidHighSurrogate.useraction=
+
+# jsp2.1work
+jsp.error.prolog_config_encoding_mismatch=JSPG0289E: K\u00f3dov\u00e1n\u00ed str\u00e1nky ur\u010den\u00e9 v prologu XML ({0}) se li\u0161\u00ed od k\u00f3dov\u00e1n\u00ed ur\u010den\u00e9ho ve skupin\u011b ({1}).
+jsp.error.prolog_config_encoding_mismatch.explanation=
+jsp.error.prolog_config_encoding_mismatch.useraction=
+
+# jsp2.1work
+jsp.error.invalid.tagdir=JSPG0290E: Adres\u00e1\u0159 soubor\u016f zna\u010dek {0} neza\u010d\u00edn\u00e1 \u0159et\u011bzcem \"/WEB-INF/tags\".
+jsp.error.invalid.tagdir.explanation=
+jsp.error.invalid.tagdir.useraction=
+
+# jsp2.1work
+jsp.error.invalid.implicit=JSPG0291E: Neplatn\u00fd implicitn\u00ed deskriptor TLD pro soubor zna\u010dek v um\u00edst\u011bn\u00ed {0}; neplatn\u00fd prvek= [{1}].
+jsp.error.invalid.implicit.explanation=
+jsp.error.invalid.implicit.useraction=
+
+# jsp2.1work
+jsp.error.invalid.implicit.version=JSPG0292E: Neplatn\u00e1 verze str\u00e1nky JSP definov\u00e1na v implicitn\u00edm deskriptoru TLD pro soubor zna\u010dek v um\u00edst\u011bn\u00ed {0}; verze= [{1}].
+jsp.error.invalid.implicit.version.explanation=
+jsp.error.invalid.implicit.version.useraction=
+
+jsp.ard.nullRequestDispatcher=JSPG0293E: Objekt ARDRequestDispatcher m\u00e1 hodnotu Null.
+jsp.ard.nullRequestDispatcher.explanation=
+jsp.ard.nullRequestDispatcher.useraction=
+
+jsp.ard.executionError=JSPG0294E: Fragment ARD m\u00e1 hodnotu Null.
+jsp.ard.executionError.explanation=
+jsp.ard.executionError.useraction=
+
+jsp.ard.notAFragmentResponse=JSPG0295E: Objekt nen\u00ed objektem FragmentResponse.
+jsp.ard.notAFragmentResponse.explanation=
+jsp.ard.notAFragmentResponse.useraction=
+
+jsp.ard.nullFragmentResponse=JSPG0296E: Fragment ARD v ur\u010den\u00e9m oboru neexistuje.
+jsp.ard.nullFragmentResponse.explanation=
+jsp.ard.nullFragmentResponse.useraction=
+
+jsp.ard.importTagValidationError=JSPG0297E: Do\u0161lo k pot\u00ed\u017e\u00edm se zna\u010dkou importu. Je t\u0159eba nastavit atribut URL, atribut var nebo oba uveden\u00e9 atributy.
+jsp.ard.importTagValidationError.explanation=
+jsp.ard.importTagValidationError.useraction=
+
+jsp.error.pageContext.multipleInitOrRelease=JSPG0298E: Objekt PageContext byl ji\u017e inicializov\u00e1n nebo uvoln\u011bn. 
+jsp.error.pageContext.multipleInitOrRelease.explanation=Kontejner str\u00e1nek JSP za\u0159izuje inicializaci a uvol\u0148ov\u00e1n\u00ed objekt\u016f PageContext.
+jsp.error.pageContext.multipleInitOrRelease.useraction=Podle specifikace ov\u011b\u0159te, zda neexistuj\u00ed aplikace pou\u017e\u00edvaj\u00edc\u00ed objekty JspFactory.
+
+jsp.error.dynamicAttributes.translationException=JSPG0299E: Dynamick\u00fd atribut {0} m\u00e1 p\u0159edponu, kter\u00e1 nen\u00ed namapov\u00e1na na obor n\u00e1zv\u016f.
+jsp.error.dynamicAttributes.translationException.explanation=P\u0159edpona dynamick\u00e9ho atributu nen\u00ed namapov\u00e1na na obor n\u00e1zv\u016f.
+jsp.error.dynamicAttributes.translationException.useraction=Zajist\u011bte, aby p\u0159edpona byla namapov\u00e1na na existuj\u00edc\u00ed obor n\u00e1zv\u016f.
+
+jsp.ard.badContext = JSPG0300E: Nelze z\u00edskat objekt RequestDispatcher pro kontext {0}.
+jsp.ard.badContext.explanation=Pro po\u017eadovan\u00fd kontext nelze z\u00edskat objekt RequestDispatcher.
+jsp.ard.badContext.useraction=Ov\u011b\u0159te, zda jsou hodnoty zna\u010dek spr\u00e1vn\u00e9 a zda po\u017eadovan\u00fd kontext existuje.
+
+jsp.error.translation.invalid.void.deferredMethodClass = JSPG0301E:  Neplatn\u00fd atribut {0} pro odlo\u017eenou metodu vracej\u00edc\u00ed hodnotu void.
+jsp.error.translation.invalid.void.deferredMethodClass.explanation=Atributem p\u0159edan\u00fdm odlo\u017een\u00e9 metod\u011b vracej\u00edc\u00ed hodnotu void nem\u016f\u017ee b\u00fdt \u0159et\u011bzcov\u00fd liter\u00e1l.
+jsp.error.translation.invalid.void.deferredMethodClass.useraction=Zm\u011b\u0148te hodnotu p\u0159ed\u00e1vanou pro atribut.
+
+jsp.jdk.not.at.17=JSPG8500W: JDK 7 nen\u00ed pou\u017eito, a\u010dkoli byla \u00farove\u0148 jdkSourceLevel zad\u00e1na jako 17.
+jsp.jdk.not.at.17.explanation=Byl zad\u00e1n po\u017eadavek na kompilaci jsps na nepodporovan\u00e9 \u00farovni.
+jsp.jdk.not.at.17.useraction=Bu\u010fto nainstalujte JDK 7, nebo zm\u011b\u0148te \u00farove\u0148 jdkSourceLevel na 16.
+
+jsp.jdk.version.exception=JSPG8501W: Do\u0161lo k v\u00fdjimce p\u0159i kontrole vlastnosti java.version
+jsp.jdk.version.exception.explanation=Do\u0161lo k probl\u00e9mu p\u0159i syntaktick\u00e9 anal\u00fdze vlastnosti java.version.
+jsp.jdk.version.exception.useraction=Ov\u011b\u0159te, zda je verze java platn\u00e1.
+
+jsp.load.class.exception=JSPG0302W: Nezda\u0159ilo se na\u010d\u00edst n\u00e1sleduj\u00edc\u00ed t\u0159\u00eddu JSP: {0}, v\u00fdjimka je: {1}
+jsp.load.class.exception.explanation=P\u0159i na\u010d\u00edt\u00e1n\u00ed t\u0159\u00eddy JSP do\u0161lo k probl\u00e9mu. Kontejner JSP se m\u00edsto toho pokus\u00ed na\u010d\u00edst soubor t\u0159\u00eddy s n\u00e1zvem bal\u00edku org.apache.jsp.
+jsp.load.class.exception.useraction=Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, restartujte aplikaci.
+
+jsp.jdksourcelevel.value =JSPG8502I: Hodnota atributu JSP jdkSourceLevel je \"{0}\".
+jsp.jdksourcelevel.value.explanation =
+jsp.jdksourcelevel.value.useraction =
+
+jsp.parse.tld.exception=JSPG0303W: Syst\u00e9m nebyl schopen zanalyzovat n\u00e1sleduj\u00edc\u00ed deskriptor knihovny zna\u010dek: {0}. V\u00fdjimka pro chybu p\u0159i anal\u00fdze: {1}
+jsp.parse.tld.exception.explanation=Do\u0161lo k probl\u00e9mu p\u0159i anal\u00fdze souboru deskriptoru knihovny zna\u010dek. Tato chyba mohla b\u00fdt zp\u016fsobena chybn\u00fdm souborem XML.
+jsp.parse.tld.exception.useraction=Zkontrolujte soubor deskriptoru knihovny zna\u010dek, zda se v n\u011bm nevyskytuje chybn\u00fd soubor XML. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1 i po oprav\u011b chybn\u00e9ho souboru XML, restartujte aplikaci.
+
+system.java.compiler.not.found=JSPG0304W: Atribut JSP useJDKCompiler je nastaven na hodnotu true, ale nebyl nalezen kompil\u00e1tor Java SDK. Kontejner JSP pou\u017e\u00edv\u00e1 ke kompilaci soubor\u016f JSP ve webov\u00e9m modulu kompil\u00e1tor vestav\u011bn\u00fd v produktu: {0}.
+system.java.compiler.not.found.explanation=Kontejneru JSP se nezda\u0159ilo naj\u00edt syst\u00e9mov\u00fd kompil\u00e1tor, co\u017e obvykle ozna\u010duje, \u017ee v cest\u011b ke t\u0159\u00edd\u011b nebyl nalezen soubor JAR sady Java SDK (tools.jar).
+system.java.compiler.not.found.useraction=Zkontrolujte, zda se soubor JAR sady Java SDK (tools.jar) nach\u00e1z\u00ed v cest\u011b ke t\u0159\u00edd\u011b, a ov\u011b\u0159te, zda sada Java SDK podporuje rozhran\u00ed API kompil\u00e1toru jazyka Java. Dal\u0161\u00ed informace viz po\u017eadavek specifikace Java 199.

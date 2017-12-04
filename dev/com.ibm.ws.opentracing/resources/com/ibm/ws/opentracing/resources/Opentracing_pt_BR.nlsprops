@@ -1,0 +1,102 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMOT
+#COMPONENTNAMEFOR CWMOT MicroProfile Opentracing API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+# -----------------------------------------------------------------------
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Opentracing Impl -  range is 0000-4999, plus 9999 for the emergency message
+#-----------------------------------------------------------------------------------------------------------------------------
+OPENTRACING_NO_APPNAME_FOUND_IN_JNDI=CWMOT0000E: Consulta do nome do aplicativo em JNDI n\u00e3o retornou um valor. Um nome padr\u00e3o \u00e9 usado para o nome de servi\u00e7o Opentracing.
+OPENTRACING_NO_APPNAME_FOUND_IN_JNDI.explanation=O recurso fornece o nome do aplicativo \u00e0 implementa\u00e7\u00e3o OpentracingTracerFactory fornecida pelo usu\u00e1rio. O nome do aplicativo n\u00e3o p\u00f4de ser recuperado pela consulta do JNDI de "java:app/AppName". Um nome do servi\u00e7o padr\u00e3o foi fornecido.
+OPENTRACING_NO_APPNAME_FOUND_IN_JNDI.useraction=Determine por que o nome do aplicativo n\u00e3o est\u00e1 dispon\u00edvel por meio de consulta do JNDI de "java:app/AppName".
+
+OPENTRACING_COULD_NOT_CREATE_TRACER=CWMOT0001E: A chamada do m\u00e9todo OpentracingTracerFactory.newInstance(...) fornecido pelo usu\u00e1rio falhou com Exce\u00e7\u00e3o. Mensagem = {0}
+OPENTRACING_COULD_NOT_CREATE_TRACER.explanation=O recurso constr\u00f3i implementa\u00e7\u00f5es de Rastreador com um OpentracingTracerFactory fornecido pelo usu\u00e1rio. O m\u00e9todo OpentracingTracerFactory.newInstance retornou uma exce\u00e7\u00e3o.
+OPENTRACING_COULD_NOT_CREATE_TRACER.useraction=Determine por que o m\u00e9todo OpentracingTracerFactory newInstance fornecido pelo usu\u00e1rio retornou uma exce\u00e7\u00e3o.
+
+OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST=CWMOT0002E: Nenhum rastreador est\u00e1 dispon\u00edvel para uma solicita\u00e7\u00e3o de entrada. A solicita\u00e7\u00e3o de entrada n\u00e3o ser\u00e1 correlacionada com o servi\u00e7o de envio de dados.
+OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST.explanation=Uma implementa\u00e7\u00e3o de rastreador n\u00e3o estava dispon\u00edvel quando uma solicita\u00e7\u00e3o chegou no terminal do aplicativo. Essa solicita\u00e7\u00e3o de entrada n\u00e3o fornecer\u00e1 nenhuma informa\u00e7\u00e3o ao servi\u00e7o Opentracing.
+OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST.useraction=Examine erros pr\u00e9vios para determinar porque um Rastreador n\u00e3o est\u00e1 dispon\u00edvel.
+
+OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST=CWMOT0003E: O Span criado para uma solicita\u00e7\u00e3o de entrada n\u00e3o est\u00e1 dispon\u00edvel para a resposta \u00e0 solicita\u00e7\u00e3o. A solicita\u00e7\u00e3o de entrada n\u00e3o ser\u00e1 correlacionada ao servi\u00e7o de envio de dados.
+OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST.explanation=O Span criado quando a solicita\u00e7\u00e3o chegou n\u00e3o est\u00e1 dispon\u00edvel quando a resposta retorna. Nenhuma informa\u00e7\u00e3o de Span ser\u00e1 fornecida ao servi\u00e7o Opentracing.
+OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST.useraction=Examine erros pr\u00e9vios para determinar porque um Span n\u00e3o est\u00e1 dispon\u00edvel.
+
+OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST=CWMOT0004E: Nenhum rastreador foi localizado para uma solicita\u00e7\u00e3o de sa\u00edda. A solicita\u00e7\u00e3o de sa\u00edda n\u00e3o ser\u00e1 correlacionada com uma solicita\u00e7\u00e3o de entrada.
+OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST.explanation=Uma implementa\u00e7\u00e3o de rastreador n\u00e3o estava dispon\u00edvel quando uma solicita\u00e7\u00e3o foi enviada do aplicativo. Essa solicita\u00e7\u00e3o de sa\u00edda n\u00e3o fornecer\u00e1 nenhuma informa\u00e7\u00e3o para o servi\u00e7o Opentracing.
+OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST.useraction=Examine erros pr\u00e9vios para determinar porque um Rastreador n\u00e3o est\u00e1 dispon\u00edvel.
+
+OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST=CWMOT0005E: O Span criado para uma solicita\u00e7\u00e3o de sa\u00edda n\u00e3o est\u00e1 dispon\u00edvel para a resposta \u00e0 solicita\u00e7\u00e3o. A solicita\u00e7\u00e3o de sa\u00edda n\u00e3o ser\u00e1 correlacionada com uma solicita\u00e7\u00e3o de entrada.
+OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST.explanation=O Span criado quando a solicita\u00e7\u00e3o foi enviada n\u00e3o est\u00e1 dispon\u00edvel quando a resposta retorna. Nenhuma informa\u00e7\u00e3o de Span ser\u00e1 fornecida ao servi\u00e7o Opentracing.
+OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST.useraction=Examine erros pr\u00e9vios para determinar porque um Span n\u00e3o est\u00e1 dispon\u00edvel.
+
+OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: A Chamada do m\u00e9todo OpentracingTracerFactory.newInstance(...) fornecido pelo usu\u00e1rio retornou nulo
+OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=O recurso constr\u00f3i implementa\u00e7\u00f5es de Rastreador com um OpentracingTracerFactory fornecido pelo usu\u00e1rio. O m\u00e9todo OpentracingTracerFactory.newInstance retornou nulo.
+OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=Determine por que o m\u00e9todo OpentracingTracerFactory newInstance fornecido pelo usu\u00e1rio retornou nulo.
+
+OPENTRACING_FILTER_PATTERN_BLANK=CWMOT0007E: O atributo de padr\u00e3o de um elemento de configura\u00e7\u00e3o opentracing excludeSpans ou includeSpans est\u00e1 em branco.
+OPENTRACING_FILTER_PATTERN_BLANK.explanation=Um padr\u00e3o de URI v\u00e1lido deve ser especificado e n\u00e3o pode estar em branco.
+OPENTRACING_FILTER_PATTERN_BLANK.useraction=Consulte a documenta\u00e7\u00e3o sobre padr\u00f5es v\u00e1lidos.
+OPENTRACING_FILTER_PATTERN_INVALID=CWMOT0008E: O atributo de padr\u00e3o {0} de um elemento de configura\u00e7\u00e3o opentracing excludeSpans ou includeSpans \u00e9 um URI inv\u00e1lido (RFC 2396).
+OPENTRACING_FILTER_PATTERN_INVALID.explanation=Um padr\u00e3o de URI v\u00e1lido deve ser especificado. O problema mais comum \u00e9 de caracteres inv\u00e1lidos com codifica\u00e7\u00e3o de URL % n\u00e3o adequada.
+OPENTRACING_FILTER_PATTERN_INVALID.useraction=Consulte o RFC 2396 e certifique-se de que voc\u00ea tem caracteres inv\u00e1lidos codificados por URL % corretamente.
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Opentracing error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# An Opentracing API error has occurred: {0}
+temporary.CWMOT9999E=CWMOT9999E: Um erro de API Opentracing ocorreu: {0}
+temporary.CWMOT9999E.explanation=Ocorreu um erro de API Opentracing que impede a opera\u00e7\u00e3o normal.
+temporary.CWMOT9999E.useraction=Revise os logs FFDC e o texto de exce\u00e7\u00e3o para identificar o problema.

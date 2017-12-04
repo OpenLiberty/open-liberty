@@ -1,0 +1,98 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.utility/resources/com/ibm/ws/security/utility/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+error=Erreur : {0}
+error.inputConsoleNotAvailable=La console d'entr\u00e9e n'est pas disponible.
+error.missingIO=Erreur, p\u00e9riph\u00e9rique d''entr\u00e9e-sortie manquant : {0}.
+
+usage=Syntaxe : {0}
+task.unknown=T\u00e2che inconnue : {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Common messages
+tooManyArgs=Nombre d'arguments trop \u00e9lev\u00e9.
+insufficientArgs=Arguments insuffisants.
+invalidArg=Argument {0} non valide.
+missingArg=Argument {0} manquant.
+missingValue=Valeur manquante pour l''argument {0}.
+missingArg2=L''argument {0} ou l''argument {1} doivent \u00eatre fournis.
+exclusiveArg=L''argument {0} ou l''argument {1} doivent \u00eatre sp\u00e9cifi\u00e9s, mais pas les deux.
+serverNotFound=Le serveur sp\u00e9cifi\u00e9 {0} est introuvable \u00e0 l''emplacement {1}
+
+
+encode.enterText=Entrez du texte :
+encode.reenterText=Entrez \u00e0 nouveau le texte :
+encode.readError=Erreur de lecture de texte.
+encode.entriesDidNotMatch=Les entr\u00e9es ne concordent pas.
+
+
+password.enterText=Entrez le mot de passe :
+password.reenterText=Entrer de nouveau le mot de passe :
+password.readError=Erreur lors de la lecture du mot de passe.
+password.entriesDidNotMatch=Les mots de passe ne concordent pas.
+
+name=nom
+days=jours
+
+sslCert.abort=Interruption de la cr\u00e9ation de certificat :
+sslCert.createFailed=Impossible de cr\u00e9er le certificat SSL par d\u00e9faut :\n\
+{0}
+sslCert.errorEncodePassword=Erreur lors du codage du mot de passe (certificat non cr\u00e9\u00e9) :\n\
+{0}
+sslCert.createKeyStore=Cr\u00e9ation de fichier de cl\u00e9s {0}\n
+sslCert.oneType=Les arguments {0} et {1} ne peuvent pas \u00eatre sp\u00e9cifi\u00e9s en m\u00eame temps.
+sslCert.clientNotFound=Le client sp\u00e9cifi\u00e9 {0} est introuvable \u00e0 l''emplacement {1}
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+sslCert.serverXML=Certificat SSL cr\u00e9\u00e9 pour le serveur {0}. Le certificat est cr\u00e9\u00e9 avec {1} comme SubjectDN.\n\
+\n\
+Ajoutez les lignes suivantes dans le fichier server.xml pour activer SSL :
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+sslCert.clientXML=Certificat SSL cr\u00e9\u00e9 pour le client {0}. Le certificat est cr\u00e9\u00e9 avec {1} comme SubjectDN.\n\
+\n\
+Ajoutez les lignes suivantes dans le fichier client.xml pour activer SSL :
+
+fileUtility.failedDirCreate=La cr\u00e9ation du r\u00e9pertoire {0} a \u00e9chou\u00e9
+file.exists=Le fichier de cl\u00e9s {0} existe d\u00e9j\u00e0.  Impossible de cr\u00e9er un fichier de cl\u00e9s dans cet emplacement.
+file.requiredDirNotCreated=Impossible de cr\u00e9er la structure de r\u00e9pertoires requise pour {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# The following string will be appended after encode.option-desc.encoding
+# message in UtilityOptions.nlsprops file.
+encode.option-custom.encryption=\n\
+\tLe chiffrement personnalis\u00e9 de mot de passe est \u00e9galement disponible.
+encode.option-desc.custom.feature=\n\
+\tLe nom de fonction de {0} est le suivant :\n\
+\t
+encode.option-desc.custom.description=\n\
+\tLa description de {0} est la suivante :\n\
+\t
+
+# The following message is shown when there is no custom password
+# encryption is enabled.
+no.custom.encyption=Le chiffrement personnalis\u00e9 de mot de passe n'a pas \u00e9t\u00e9 d\u00e9tect\u00e9.
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Note to translator: 'LTPA' should not be translated
+createLTPAKeys.abort=Interruption de la cr\u00e9ation de fichier de cl\u00e9s LTPA :
+createLTPAKeys.fileExists=Le fichier {0} existe d\u00e9j\u00e0.  Impossible de cr\u00e9er un fichier de cl\u00e9s LTPA \u00e0 cet emplacement.
+createLTPAKeys.createdFile=Fichier de cl\u00e9s LTPA cr\u00e9\u00e9 : {0}\n\
+Inclure la configuration suivante dans votre fichier server.xml\n\
+{1}\n

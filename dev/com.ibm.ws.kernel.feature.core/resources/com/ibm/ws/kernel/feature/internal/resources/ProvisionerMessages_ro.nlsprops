@@ -1,0 +1,354 @@
+###############################################################################
+# Copyright (c) 2010, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.feature/resources/com/ibm/ws/kernel/feature/internal/resources/ProvisionerMessages.nlsprops
+#COMPONENTPREFIX CWWKF
+#COMPONENTNAMEFOR CWWKF Liberty Feature Manager
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+#   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
+# -------------------------------------------------------------------------------------------------
+
+UPDATE_MISSING_FEATURE_ERROR=CWWKF0001E: Nu s-a putut g\u0103si o defini\u0163ie de caracteristic\u0103 pentru {0}
+UPDATE_MISSING_FEATURE_ERROR.explanation=Managerul de caracteristici nu a putut g\u0103si o defini\u0163ie pentru caracteristica specificat\u0103.
+UPDATE_MISSING_FEATURE_ERROR.useraction=Verifica\u0163i c\u0103 numele caracteristicii specificate este scris corect \u015fi c\u0103 defini\u0163ia caracteristicii exist\u0103 \u015fi este lizibil\u0103 \u00een directorul lib/features.
+
+UPDATE_MISSING_BUNDLE_ERROR=CWWKF0002E: Nu s-a putut g\u0103si un bundle pentru {0}.
+UPDATE_MISSING_BUNDLE_ERROR.explanation=Managerul de caracteristici nu a putut g\u0103si un bundle cerut de o caracteristic\u0103 activat\u0103.
+UPDATE_MISSING_BUNDLE_ERROR.useraction=Asigura\u0163i-v\u0103 c\u0103 bundle-urile din directorul lib sunt lizibile \u015fi c\u0103 imaginea de instalare este complet\u0103.
+
+UPDATE_INSTALL_EXCEPTIONS_ERROR=CWWKF0003E: S-a generat o excep\u0163ie la instalarea sau dezinstalarea bundle-ului {0}. Excep\u0163ie: {1}
+UPDATE_INSTALL_EXCEPTIONS_ERROR.explanation=Managerul de caracteristici nu a putut instala sau dezinstala bundle-ul specificat.
+UPDATE_INSTALL_EXCEPTIONS_ERROR.useraction=Vede\u0163i excep\u0163ia cu referin\u0163\u0103 \u015fi mesajele FFDC generate pentru fiecare e\u015fuare.
+
+UPDATE_OTHER_EXCEPTION_ERROR=CWWKF0004E: A ap\u0103rut o excep\u0163ie necunoscut\u0103 \u00een timp ce se instalau sau se \u00eenl\u0103turau caracteristici. Excep\u0163ie: {0}
+UPDATE_OTHER_EXCEPTION_ERROR.explanation=A ap\u0103rut o excep\u0163ie nea\u015fteptat\u0103 \u00een timp ce se ad\u0103ugau sau se \u00eenl\u0103turau una sau mai multe caracteristici din runtime.
+UPDATE_OTHER_EXCEPTION_ERROR.useraction=Vede\u0163i excep\u0163ia cu referin\u0163\u0103 \u015fi mesajul FFDC generat pentru informa\u0163ii suplimentare.
+
+UPDATE_LIFECYCLE_EXCEPTIONS_ERROR=CWWKF0005E: S-a generat o excep\u0163ie la pornirea, oprirea sau dezinstalarea bundle-ului {0}. Excep\u0163ie: {1}
+UPDATE_LIFECYCLE_EXCEPTIONS_ERROR.explanation=A ap\u0103rut o excep\u0163ie la modificarea st\u0103rii unui bundle gestionat de managerul de caracteristici.
+UPDATE_LIFECYCLE_EXCEPTIONS_ERROR.useraction=Vede\u0163i excep\u0163ia cu referin\u0163\u0103 \u015fi \u00eenregistr\u0103rile FFDC asociate pentru detalii.
+
+UPDATE_BUNDLE_CACHE_WARNING=CWWKF0006W: Sistemul nu a putut citi sau persista lista de bundle-uri de caracteristici \u00een\u0103rcate pentru aceast\u0103 instan\u0163\u0103 de server la {0}, a\u015fa c\u0103 s-a dezactivat cache-ul de bundle de pornire la cald. Excep\u0163ie: {1}
+UPDATE_BUNDLE_CACHE_WARNING.explanation=Fi\u015fierul cache al bundle-ului nu a putut fi creat sau citit. Vede\u0163i excep\u0163ia cu referin\u0163\u0103 pentru informa\u0163ii suplimentare. 
+UPDATE_BUNDLE_CACHE_WARNING.useraction=Asigura\u0163i-v\u0103 c\u0103 directorul de server \u015fi subdirectorul zonei de lucru sunt inscriptibile. 
+
+STARTING_AUDIT=CWWKF0007I: Caracteristic\u0103 actualizare pornit\u0103.
+STARTING_AUDIT.explanation=Managerul de caracteristici a \u00eenceput procesarea caracteristicilor activate. Intervalul (\u00een secunde) depinde de momentul \u00een care a fost lansat\u0103 platforma.
+STARTING_AUDIT.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+COMPLETE_AUDIT=CWWKF0008I: Actualizare caracteristic\u0103 finalizat\u0103 \u00een {0} secunde.
+COMPLETE_AUDIT.explanation=Managerul de caracteristici a finalizat procesarea caracteristicilor activate. Intervalul (\u00een secunde) depinde de momentul \u00een care a fost lansat\u0103 platforma.
+COMPLETE_AUDIT.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+EMPTY_FEATURES_WARNING=CWWKF0009W: Serverul nu a fost configurat pentru instalarea oric\u0103ror caracteristici.
+EMPTY_FEATURES_WARNING.explanation=Nicio caracteristic\u0103 nu a fost configurat\u0103 pentru a fi instalat\u0103. 
+EMPTY_FEATURES_WARNING.useraction=Actualiza\u0163i configura\u0163ia pentru a ad\u0103uga orice caracteristici necesare. 
+
+BUNDLE_MATCH_WARNING=CWWKF0010W: Mai mult de un bundle s-a potrivit filtrului specificat ({0}), folosind {1}. Potriviri: {2} 
+BUNDLE_MATCH_WARNING.explanation=Un element defini\u0163ie de caracteristic\u0103 s-a potrivit cu mai mult de un bundle. Asta ar putea fi din cauz\u0103 c\u0103 filtrul este prea general sau pentru c\u0103 sunt bundle-uri vechi \u00een imagine care se potrivesc filtrului.
+BUNDLE_MATCH_WARNING.useraction=Asigura\u0163i-v\u0103 c\u0103 filtrul este suficient de precis \u015fi c\u0103 se folose\u015fte o imagine de instalare curat\u0103.
+
+SERVER_STARTED=CWWKF0011I: Serverul {0} este gata s\u0103 ruleze o planet\u0103 mai inteligent\u0103.
+SERVER_STARTED.explanation=Serverul a pornit cu succes.
+SERVER_STARTED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+FEATURES_ADDED=CWWKF0012I: Serverul a instalat caracterisiticile urm\u0103toare: {0}.
+FEATURES_ADDED.explanation=Serverul a instalat un set de caracterisitici.
+FEATURES_ADDED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+FEATURES_REMOVED=CWWKF0013I: Serverul a \u00eenl\u0103turat caracterisiticile urm\u0103toare: {0}.
+FEATURES_REMOVED.explanation=Serverul a \u00eenl\u0103turat un set de caracterisitici.
+FEATURES_REMOVED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+TEST_FIX_DETECTED=CWWKF0014W: Serverul are urm\u0103toarele corec\u0163ii de testare active la runtime: {0}.  Pentru o listare complet\u0103 de corec\u0163ii instalate, rula\u0163i: productInfo versiunea --ifixes
+TEST_FIX_DETECTED.explanation=Bundle-urile OSGi \u00eenc\u0103rcate la runtime au fost modificate de c\u00e2teva dintre corec\u0163iile de testare instalate. O listare a tuturor corec\u0163iilor instalate poate fi ob\u0163inut\u0103 folosind comanda: productInfo versiunea --ifixes
+TEST_FIX_DETECTED.useraction=Un server de produc\u0163ie nu trebuie s\u0103 aib\u0103 corec\u0163ii de test instalate. Dac\u0103 acesta este un server de produc\u0163ie \u00eenl\u0103tura\u0163i corec\u0163iile test \u015fi reporni\u0163i serverul.
+
+INTERIM_FIX_DETECTED=CWWKF0015I: Serverul are urm\u0103toarele corec\u0163ii interimare active la runtime: {0}. Pentru o listare complet\u0103 de corec\u0163ii instalate, rula\u0163i: productInfo versiunea --ifixes
+INTERIM_FIX_DETECTED.explanation=Bundle-urile OSGi \u00eenc\u0103rcate la runtime au fost modificate de c\u00e2teva dintre corec\u0163iile interimare instalate. O listare a tuturor corec\u0163iilor instalate poate fi ob\u0163inut\u0103 folosind comanda: productInfo versiunea --ifixes
+INTERIM_FIX_DETECTED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+# IBM-Provision-Capability is a manifest header name and should not be translated.
+INVALID_PROVISION_CAPABILITY_FILTER=CWWKF0016I: Filtrul {0} din antetul de manifest al caracteristicii {1} este incorect: {2}
+INVALID_PROVISION_CAPABILITY_FILTER.explanation=Antetul IBM-Provision-Capability con\u0163ine unul sau mai multe filtre OSGi cu sintax\u0103 invalid\u0103.
+INVALID_PROVISION_CAPABILITY_FILTER.useraction=\u00cembun\u0103t\u0103\u0163i\u0163i sintaxa filtrului din antetul IBM-Provision-Capability.
+
+PRODUCT_FEATURE_INSTALL_PATH_ERROR=CWWKF0017E: Calea de instalare a produsului {0} specificat\u0103 \u00een fi\u015fierul cu propriet\u0103\u0163i al produsului {1} nu a putut fi g\u0103sit\u0103.
+PRODUCT_FEATURE_INSTALL_PATH_ERROR.explanation=Managerul caracteristicii nu a putut g\u0103si calea de instalare al produsului de instalat.
+PRODUCT_FEATURE_INSTALL_PATH_ERROR.useraction=Verifica\u0163i c\u0103 este definit\u0103 o cale de produs valid\u0103 pentru proprietatea com.ibm.websphere.productInstall \u00een fi\u015fierul de propriet\u0103\u0163i al produsului.
+
+PRODUCT_FEATURE_PROPERTIES_FILE_ERROR=CWWKF0018E: Proprietatea com.ibm.websphere.productInstall nu se afl\u0103 \u00een fi\u015fierul de propriet\u0103\u0163i de produs {0}.
+PRODUCT_FEATURE_PROPERTIES_FILE_ERROR.explanation=Managerul de caracteristici a g\u0103sit un fi\u015fier de propriet\u0103\u0163i de produs care nu con\u0163ine proprietatea com.ibm.websphere.productInstall.
+PRODUCT_FEATURE_PROPERTIES_FILE_ERROR.useraction=Ad\u0103uga\u0163i com.ibm.websphere.productInstall \u00een fi\u015fierul cu propriet\u0103\u0163i al produsului care este situat \u00een etc/extensions.
+
+PRODUCT_FEATURE_LOAD_ERROR=CWWKF0019E: Excep\u0163ie: {1} a fost generat c\u00e2nd se \u00eenc\u0103rca fi\u015fierul de propriet\u0103\u0163i de produs {0}.
+PRODUCT_FEATURE_LOAD_ERROR.explanation=Excep\u0163ia specificat\u0103 a ap\u0103rut c\u00e2nd managerul de caracteristici a \u00eencercat s\u0103 citeasc\u0103 propriet\u0103\u0163i din fi\u015fierul de propriet\u0103\u0163i de produs.
+PRODUCT_FEATURE_LOAD_ERROR.useraction=Vede\u0163i excep\u0163ia cu referin\u0163\u0103 \u015fi \u00eenregistr\u0103rile FFDC asociate pentru detalii.
+
+#SUPERCEDED FEATURES
+SUPERSEDED_CONFIGURATION_ERROR=CWWKF0020E: Caracteristica {0} a \u00eenlocuit atributul setat la fals, dar atributul superseded-by este {1}. 
+SUPERSEDED_CONFIGURATION_ERROR.explanation=Antetul Symbolic-Name \u00eentr-o caracteristic\u0103 are atributul superseded-by configurat, dar atributul s\u0103u \u00eenlocuit este setat la fals.
+SUPERSEDED_CONFIGURATION_ERROR.useraction=Asigura\u0163i-v\u0103 c\u0103 antetul Symbolic-Name are atributele superseded \u015fi superseded-by corect configurate.
+
+UPDATE_NOT_PUBLIC_FEATURE_ERROR=CWWKF0021E: Caracteristica {0} specificat\u0103 \u00een server.xml nu este o caracteristic\u0103 public\u0103, deci nu va fi rulat\u0103 de server.
+UPDATE_NOT_PUBLIC_FEATURE_ERROR.explanation=Numai caracteristicile publice pot fi specificate \u00een server.xml.
+UPDATE_NOT_PUBLIC_FEATURE_ERROR.useraction=Modifica\u0163i configura\u0163ia serverului pentru a specifica o caracteristic\u0103 public\u0103 ce furnizeaz\u0103 func\u0163ia cerut\u0103.  Dac\u0103 dezvolta\u0163i o caracteristic\u0103 pe care utilizatorii ar trebui s-o specifice \u00een configura\u0163ia lor de server, modifica\u0163i caracteristica pentru a avea vizibilitate public\u0103, ad\u0103ug\u00e2nd visibility=public ca atribut la Subsystem-SymbolicName pentru caracteristic\u0103.
+
+UNSUPPORTED_FEATURE_VERSION=CWWKF0022E: Caracteristica {0} nu este suportat\u0103. Antetul IBM-Feature-Version este setat la {1}.
+UNSUPPORTED_FEATURE_VERSION.explanation=Serverul suport\u0103 numai caracteristicile ale c\u0103ror IBM-Feature-Version este setat la 2. Un num\u0103r mai mare ca 2 indic\u0103 faptul c\u0103, caracteristica este inten\u0163ionat\u0103 pentru o versiune ulterioar\u0103 a produsului.
+UNSUPPORTED_FEATURE_VERSION.useraction=Contacta\u0163i autorul caracteristicii pentru a ob\u0163ine o copie care este proiectat\u0103 pentru aceast\u0103 versiune a produsului.
+
+#Minify feature query messages
+ERROR_OPENING_JAR_FOR_CLASSPATH=CWWKF0023W: O caracteristic\u0103 a f\u0103cut referire la o arhiv\u0103 {1} care nu a putut fi procesat\u0103 \u00een timpul unei interog\u0103ri de \u00eempachetare. Excep\u0163ia: {2}
+ERROR_OPENING_JAR_FOR_CLASSPATH.explanation=A ap\u0103rut o excep\u0163ie c\u00e2nd fi\u015fierul jar de caracteristici a fost citit \u00een timpul unei interog\u0103ri de \u00eempachetare.
+ERROR_OPENING_JAR_FOR_CLASSPATH.useraction=Vede\u0163i excep\u0163ia cu referin\u0163\u0103 \u015fi \u00eenregistr\u0103rile FFDC asociate pentru detalii.
+
+ERROR_MISSING_FEATURE_RESOURCE=CWWKF0024W: Caracteristica {0} a f\u0103cut referire la o resurs\u0103 {1} care nu a putut fi localizat\u0103 \u00een timpul unei interog\u0103ri de \u00eempachetare. 
+ERROR_MISSING_FEATURE_RESOURCE.explanation=Managerul de caracteristici nu a putut g\u0103si con\u0163inutul caracteristicii specificate.
+ERROR_MISSING_FEATURE_RESOURCE.useraction=Verifica\u0163i c\u0103 produsul a fost instalat corect. Dac\u0103 problema persist\u0103, contacta\u0163i-v\u0103 reprezentantul de service.
+
+ERROR_UNKNOWN_FEATURE_RESOURCE_TYPE=CWWKF0025W: Caracteristica {0} a f\u0103cut referire la o resurs\u0103 {1} de un tip necunoscut {2} \u00een timpul unei interog\u0103ri de \u00eempachetare. 
+ERROR_UNKNOWN_FEATURE_RESOURCE_TYPE.explanation=Managerul de caracteristici nu a putut \u00een\u0163elege con\u0163inutul caracteristicii specificate.
+ERROR_UNKNOWN_FEATURE_RESOURCE_TYPE.useraction=Verifica\u0163i c\u0103 produsul a fost instalat corect. Dac\u0103 problema persist\u0103, contacta\u0163i-v\u0103 reprezentantul de service.
+
+SERVER_MINIFY=CWWKF0026I: Serverul {0} este gata s\u0103 construiasc\u0103 un pachet mai mic.
+SERVER_MINIFY.explanation=Serverul preg\u0103te\u015fte informa\u0163ii pentru o opera\u0163ie de \u00eempachetare server \u00een a\u015fteptare.
+SERVER_MINIFY.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+# end Minify feature query messages
+
+PRODUCT_FEATURE_INSTALL_PATH_SYMBOL_ERROR=CWWKF0027E: Caracteristicile extensiei de produs nu vor fi instalate deoarece calea de instalare a extensiei de produs specificat\u0103 \u00een fi\u015fierul de propriet\u0103\u0163i al extensiei de produs {0} con\u0163ine loca\u0163ia simbolic\u0103 {1}.
+PRODUCT_FEATURE_INSTALL_PATH_SYMBOL_ERROR.explanation=O cale de instalare a extensiei de produs nu poate con\u0163ine loca\u0163ii simbolice.
+PRODUCT_FEATURE_INSTALL_PATH_SYMBOL_ERROR.useraction=Actualiza\u0163i proprietatea com.ibm.websphere.productInstall \u00een fi\u015fierul de propriet\u0103\u0163i al extensiei de produs specificate, astfel \u00eenc\u00e2t s\u0103 nu con\u0163in\u0103 nicio loca\u0163ie simbolic\u0103.
+
+PRODUCT_FEATURE_INSTALL_PATH_WLP_ERROR=CWWKF0028E: Caracteristicile extensiei de produs nu vor fi instalate deoarece calea de instalare a extensiei de produs specificat\u0103 \u00een fi\u015fierul de propriet\u0103\u0163i al extensiei de produs {0} este aceea\u015fi ca wlp.install.dir.
+PRODUCT_FEATURE_INSTALL_PATH_WLP_ERROR.explanation=O cale de instalare a extensiei de produs nu poate fi aceea\u015fi cu wlp.install.dir.
+PRODUCT_FEATURE_INSTALL_PATH_WLP_ERROR.useraction=Actualiza\u0163i proprietatea com.ibm.websphere.productInstall \u00een fi\u015fierul de propriet\u0103\u0163i al extensiei de produs specificate, astfel \u00eenc\u00e2t s\u0103 nu fie aceea\u015fi cu wlp.install.dir.
+
+BUNDLE_EXCEPTION_ERROR=CWWKF0029E: {0}
+BUNDLE_EXCEPTION_ERROR.explanation=S-a aruncat o BundleException de c\u0103tre Cadrul de lucru OSGi.
+BUNDLE_EXCEPTION_ERROR.useraction=Consulta\u0163i mesajul excep\u0163iei pentru informa\u0163ii.
+
+INVALID_START_PHASE_WARNING=CWWKF0030W: Faza de pornire {0} specificat\u0103 pentru bundle-ul {1} \u00een caracteristica {2} este invalid\u0103.
+INVALID_START_PHASE_WARNING.explanation=S-a specificat o valoare invalid\u0103 pentru faza de pornire.
+INVALID_START_PHASE_WARNING.useraction=Specifica\u0163i o valoare valid\u0103 pentru faza de pornire. 
+
+FEATURE_NOT_INSTALLED=CWWKF0031I: Serverul a \
+s\u0103rit peste caracteristica de \u00eenc\u0103rcare {0} deoarece func\u0163ionalitatea \
+echivalent\u0103 exist\u0103 deja.
+FEATURE_NOT_INSTALLED.explanation=Dac\u0103 sunt \
+specificate \u00een mod explicit dou\u0103 versiuni ale aceleia\u015fi \
+caracteristici \u00een fi\u015fierul server.xml file, sau dac\u0103 fi\u015fierul \
+server.xml file specific\u0103 caracteristici care includ caracteristici \
+cu func\u0163ionalit\u0103\u0163i duble, serverul ocole\u015fte \u00eenc\u0103rcarea versiunii \
+secunde.
+FEATURE_NOT_INSTALLED.useraction=Dac\u0103 dou\u0103 versiuni \
+ale aceleia\u015fi caracteristici sunt specificate explicit \u00een fi\u015fierul \
+server.xml, \u015fterge\u0163i versiunea care nu este necesar\u0103.
+
+FEATURE_JAVA_LEVEL_NOT_MET_ERROR=CWWKF0032E: Caracteristica \
+{0} are nevoie de o versiune de mediu runtime Java minim\u0103 de {1}.
+FEATURE_JAVA_LEVEL_NOT_MET_ERROR.explanation=Pentru \
+a folosi caracteristica men\u0163ionat\u0103, trebuie s\u0103 ave\u0163i versiunea \
+specificat\u0103 sau o versiune ulterioar\u0103 a mediului runtime Java (JRE) \
+instalat\u0103 \u00een mediul dumneavoastr\u0103.
+FEATURE_JAVA_LEVEL_NOT_MET_ERROR.useraction=Moderniza\u0163i-v\u0103 \
+mediul runtimeJava la versiunea specificat\u0103 sau mai sus.
+
+UPDATE_CONFLICT_FEATURE_ERROR=CWWKF0033E: Caracteristicile singleton {0} \u015fi {1} nu pot fi \u00eenc\u0103rcate \u00een acela\u015fi timp.  Caracteristicile configurate {2} \u015fi {3} includ una sau mai multe caracteristici care cauzeaz\u0103 conflictul. Configura\u0163ia dumneavoastr\u0103 nu este suportat\u0103; actualiza\u0163i server.xml pentru a \u00eenl\u0103tura caracteristicile incompatibile.
+UPDATE_CONFLICT_FEATURE_ERROR.explanation=Nu pot fi \u00eenc\u0103rcate \u00een acela\u015fi timp mai multe versiuni ale unei caracteristici singleton.  Acest conflict poate ap\u0103rea atunci c\u00e2nd dou\u0103 versiuni ale unei caracteristici singleton sunt configurate direct \u00een configura\u0163ia serverului. Sau atunci c\u00e2nd caracteristicile configurate includ versiuni deiferite ale unei caracteristici singleton \u015fi nu pot \
+tolera o versiune comun\u0103 a caracteristicii singleton.
+UPDATE_CONFLICT_FEATURE_ERROR.useraction=\u00cencerca\u0163i s\u0103 specifica\u0163i o versiune diferit\u0103 a \
+caracteristicilor configurate care au cauzat conflictul \u00een server.xml.  Dac\u0103 nu sunt disponibile alte versiuni, \
+caracteristicile configurate nu sunt compatibile una cu alta \u015fi nu pot fi configurate \u00een acela\u015fi timp.
+
+FEATURES_ADDED_CLIENT=CWWKF0034I: Clientul a instalat urm\u0103toarele caracteristici: {0}.
+FEATURES_ADDED_CLIENT.explanation=Clientul a instalat un set de caracteristici.
+FEATURES_ADDED_CLIENT.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+CLIENT_STARTED=CWWKF0035I: Clientul {0} ruleaz\u0103.
+CLIENT_STARTED.explanation=Clientul a pornit cu succes.
+CLIENT_STARTED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#Required feature gather query messages
+SERVER_GATHER_FEATURES=CWWKF0036I: Serverul {0} a terminat str\u00e2ngerea unei liste de caracteristici necesare.
+SERVER_GATHER_FEATURES.explanation=Serverul a compilat o list\u0103 de caracteristici necesare.
+SERVER_GATHER_FEATURES.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+#End required feature gather query messages
+
+UPDATE_NOT_PUBLIC_FEATURE_CLIENT_ERROR=CWWKF0037E: Caracteristica {0} specificat\u0103 \u00een fi\u015fierul client.xml nu este o caracteristic\u0103 public\u0103 \u015fi nu va fi rulat\u0103 de client.
+UPDATE_NOT_PUBLIC_FEATURE_CLIENT_ERROR.explanation=Pute\u0163i specifica numai caracteristici publice \u00een fi\u015fierul client.xml.
+UPDATE_NOT_PUBLIC_FEATURE_CLIENT_ERROR.useraction=Modifica\u0163i configura\u0163ia de client pentru a specifica o caracteristic\u0103 public\u0103 ce furnizeaz\u0103 func\u0163ia necesar\u0103.  Dac\u0103 dezvolta\u0163i o caracteristic\u0103 pe care utilizatorii ar trebui s\u0103 o specifice \u00een configura\u0163ie lor de client, modifica\u0163i caracteristica pentru a avea vizibilitate public\u0103 prin ad\u0103ugarea visibility=public ca atribut la Subsystem-SymbolicName pentru caracteristic\u0103.
+
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_ERROR=CWWKF0038E: Caracteristica {0} care este specificat\u0103 \u00een fi\u015fierul {1} suport\u0103 numai tipurile de procese client care vor avea ca rezultat c\u0103 aceast\u0103 caracteristic\u0103 s\u0103 nu fie rulat\u0103 de procesul de server.
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_ERROR.explanation=Caracteristica configurat\u0103 nu suport\u0103 tipul de proces specificat.
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_ERROR.useraction=\u00cenl\u0103tura\u0163i caracteristica din configura\u0163ie sau modifica\u0163i fi\u015fierul manifest de caracteristic\u0103 pentru a activa suportul pentru tipul de proces dorit.
+
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_ERROR=CWWKF0039E: Caracteristica {0} suport\u0103 numai tipurile de procese client care vor avea ca rezultat c\u0103 aceast\u0103 caracteristic\u0103 s\u0103 nu fie rulat\u0103 de procesul de server.  E posibil s\u0103 nu func\u0163ioneze corespunz\u0103tor caracteristica {1} care este specificat\u0103 \u00een fi\u015fierul {2} din cauza dependen\u0163ei de caracteristica {0}.
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_ERROR.explanation=Caracteristica configurat\u0103 nu suport\u0103 tipul de proces specificat.
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_ERROR.useraction=\u00cenl\u0103tura\u0163i caracteristica din configura\u0163ie sau modifica\u0163i fi\u015fierul manifest de caracteristic\u0103 pentru a activa suportul pentru tipul de proces dorit.
+
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_CLIENT_ERROR=CWWKF0040E: Caracteristica {0} care este specificat\u0103 \u00een fi\u015fierul {1} suport\u0103 numai tipurile de procese server care vor avea ca rezultat c\u0103 aceast\u0103 caracteristic\u0103 s\u0103 nu fie rulat\u0103 de procesul de client.
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_CLIENT_ERROR.explanation=Caracteristica configurat\u0103 nu suport\u0103 tipul de proces specificat.
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_CLIENT_ERROR.useraction=\u00cenl\u0103tura\u0163i caracteristica din configura\u0163ie sau modifica\u0163i fi\u015fierul manifest de caracteristic\u0103 pentru a activa suportul pentru tipul de proces dorit.
+
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR=CWWKF0041E: Caracteristica {0} suport\u0103 numai tipurile de procese server care vor avea ca rezultat c\u0103 aceast\u0103 caracteristic\u0103 s\u0103 nu fie rulat\u0103 de procesul de client.  E posibil s\u0103 nu func\u0163ioneze corespunz\u0103tor caracteristica {1} care este specificat\u0103 \u00een fi\u015fierul {2} din cauza dependen\u0163ei de caracteristica {0}.
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.explanation=Caracteristica configurat\u0103 nu suport\u0103 tipul de proces specificat.
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.useraction=\u00cenl\u0103tura\u0163i caracteristica din configura\u0163ie sau modifica\u0163i fi\u015fierul manifest de caracteristic\u0103 pentru a activa suportul pentru tipul de proces dorit.
+
+# CWWK042E  {0} = feature Name: {1} = server name 
+UPDATE_MISSING_CORE_FEATURE_ERROR=CWWKF0042E: Nu s-a putut g\u0103si o defini\u0163ie de caracteristic\u0103 pentru caracteristica {0}.  \u00cencerca\u0163i rularea comenzii bin/installUtility install {0} pentru a instala caracteristica. Alternativ, pute\u0163i rula comanda bin/installUtility install {1}pentru a instala toate caracteristicile la care se face referire \u00een aceast\u0103 configura\u0163ie.
+UPDATE_MISSING_CORE_FEATURE_ERROR.explanation=Managerul de caracteristici nu a putut g\u0103si o defini\u0163ie pentru caracteristica specificat\u0103.
+UPDATE_MISSING_CORE_FEATURE_ERROR.useraction=Verifica\u0163i c\u0103 numele caracteristicii specificate este scris corect.  \
+De asemenea, verifica\u0163i c\u0103 exist\u0103 defini\u0163ia caracteristicii \u015fi c\u0103 este lizibil\u0103 \u00een directorul lib/features. \
+Dac\u0103 caracteristica nu exist\u0103,  \u00eencerca\u0163i s\u0103 rula\u0163i comanda bin/installUtility install feature_name pentru a instala caracteristica sau \u00eencerca\u0163i s\u0103 rula\u0163i comanda bin/installUtility install server_name, pentru a instala toate caracteristicile la care se face referire \u00een aceast\u0103 configura\u0163ie. 
+
+#   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
+
+tool.feature.exists=CWWKF1000I: Caracteristica {0} exist\u0103 deja. Nu va fi reinstalat\u0103. Pentru a modifica o caracteristic\u0103 existent\u0103, trebuie s\u0103 o dezinstala\u0163i manual mai \u00eent\u00e2i.
+tool.feature.exists.explanation=Caracteristica \u00een curs de instalare exist\u0103 deja.
+tool.feature.exists.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+tool.missing.args=CWWKF1001E: {0} necesit\u0103 {1} argumente, dar s-au furnizat {2}.
+tool.missing.args.explanation=S-a folosit num\u0103rul gre\u015fit de argumente pentru a invoca ac\u0163iunea.
+tool.missing.args.useraction=Rula\u0163i din nou comanda cu argumentele corecte.
+tool.unknown.options=CWWKF1002E: {0} nu suport\u0103 op\u0163iunile: {1}.
+tool.unknown.options.explanation=S-a f\u0103cut o \u00eencercare de a rula o comand\u0103 folosind argumente invalide.
+tool.unknown.options.useraction=Rula\u0163i din nou comanda f\u0103r\u0103 argumentele invalide.
+
+tool.install.bad.extension=CWWKF1003E: Extensia produsului {0} nu exist\u0103.
+tool.install.bad.extension.explanation=Extensia produsului \u00een care va fi instalat\u0103 caracteristica nu este \u00eenregistrat\u0103.
+tool.install.bad.extension.useraction=Instala\u0163i caracteristica \u00eentr-o extensie de produs care este \u00eenregistrat\u0103 sau \u00eenregistra\u0163i extensia de produs lips\u0103.
+tool.install.invalid.extension=CWWKF1004E: Extensia produsului {0} nu specific\u0103 o loca\u0163ie.
+tool.install.invalid.extension.explanation=Extensia produsului nu se poate g\u0103si pentru c\u0103 fi\u015fierul de \u00eenregistrare nu con\u0163ine o loca\u0163ie.
+tool.install.invalid.extension.useraction=Corecta\u0163i \u00eenregistrarea extensiei produsului, astfel \u00eenc\u00e2t s\u0103 con\u0163in\u0103 loca\u0163ia extensiei.
+tool.install.ioexception.extension=CWWKF1005E: A ap\u0103rut o eroare nea\u015fteptat\u0103 la citirea extensiei de produs {0}, excep\u0163ia: {1}
+tool.install.ioexception.extension.explanation=A ap\u0103rut o eroare nea\u015fteptat\u0103 c\u00e2nd se \u00eencerca citirea fi\u015fierului de propriet\u0103\u0163i pentru extensia de produs furnizat\u0103 \u00een mesajul de eroare.
+tool.install.ioexception.extension.useraction=Examina\u0163i mesajul excep\u0163iei pentru o explica\u0163ie a faptului c\u0103 fi\u015fierul nu a putut fi citit \u015fi re\u00eencerca\u0163i.
+tool.install.no.dir=CWWKF1006E: Nu se poate instala caracteristica pentru c\u0103 directorul {0} nu exist\u0103.
+tool.install.no.dir.explanation=Directorul extensiei de produs nu exist\u0103, a\u015fadar caracteristica nu poate fi instalat\u0103 \u00een el.
+tool.install.no.dir.useraction=Asigura\u0163i-v\u0103 c\u0103 directorul exist\u0103 \u015fi \u00eencerca\u0163i s\u0103 instala\u0163i din nou caracteristica.
+tool.install.download.esa=CWWKF1007E: A ap\u0103rut o eroare la desc\u0103rcarea arhivei Subsistem la {0}, excep\u0163ia {1}
+tool.install.download.esa.explanation=A ap\u0103rut o eroare la desc\u0103rcarea arhivei Subsistem. Asta ar putea fi pentru c\u0103 URL-ul nu este valid sau din cauza unei probleme de re\u0163ea temporare. A doua propozi\u0163ie a mesajului de eroare ar putea oferi informa\u0163ii suplimentare asupra cauzei erorii.
+tool.install.download.esa.useraction=Verifica\u0163i c\u0103 URL-ul la arhiva subsistemului este corect \u015fi re\u00eencerca\u0163i.
+tool.install.download.tmpFile=CWWKF1008E: Nu se poate crea un fi\u015fier temporar pentru a desc\u0103rca arhiva subsistemului, excep\u0163ia {0}
+tool.install.download.tmpFile.explanation=Opera\u0163ia de instalare a caracteristicii descarc\u0103 arhiva subsistemului \u00eentr-un fi\u015fier temporar, dar nu s-a putut crea un fi\u015fier temporar. Aceasta este probabil cauzat\u0103 de o constr\u00e2ngere de ma\u015fin\u0103. A doua propozi\u0163ie a mesajului de eroare ar putea oferi informa\u0163ii suplimentare asupra cauzei erorii.
+tool.install.download.tmpFile.useraction=Se poate ca sistemul de fi\u015fiere temporar s\u0103 fie plin. Dac\u0103 da, cur\u0103\u0163area spa\u0163iului va rezolva aceast\u0103 problem\u0103.
+tool.install.file.notexist=CWWKF1009E: Fi\u015fierul {0} nu exist\u0103.
+tool.install.file.notexist.explanation=Fi\u015fierul arhiv\u0103 de subsistem furnizat opera\u0163iei de instalare nu exist\u0103.
+tool.install.file.notexist.useraction=Asigura\u0163i-v\u0103 c\u0103 s-a furnizat corect numele fi\u015fierului arhiv\u0103 de subsistem \u015fi rula\u0163i din nou opera\u0163ia de instalare.
+tool.install.file.notafile=CWWKF1010E: {0} nu este un fi\u015fier.
+tool.install.file.notafile.explanation=Numele de fi\u015fier furnizat a identificat un director \u00een loc de o arhiv\u0103 de subsistem.
+tool.install.file.notafile.useraction=Asigura\u0163i-v\u0103 c\u0103 s-a furnizat corect numele fi\u015fierului arhiv\u0103 de subsistem \u015fi rula\u0163i din nou opera\u0163ia de instalare.
+tool.install.missing.feature=CWWKF1011E: Caracteristica {0} depinde de {1} care nu este instalat.
+tool.install.missing.feature.explanation=Caracteristica \u00een curs de instalare depinde de alte caracteristici care nu au fost instalate \u00eenc\u0103. Caracteristica nu poate fi folosit\u0103 p\u00e2n\u0103 c\u00e2nd nu se instaleaz\u0103 caracteristica numit\u0103 \u00een mesajul de eroare.
+tool.install.missing.feature.useraction=Instala\u0163i caracteristica lips\u0103 \u015fi rula\u0163i din nou instalarea.
+tool.install.missing.content=CWWKF1012E: Resursa {0} nu exist\u0103 \u00een arhiva subsistemului la loca\u0163ia {1}.
+tool.install.missing.content.explanation=La procesarea con\u0163inutului subsistemului, un fi\u015fier a fost referit dar nu s-a g\u0103sit \u00een arhiv\u0103.
+tool.install.missing.content.useraction=Contacta\u0163i autorul subsistemului pentru a ob\u0163ine o arhiv\u0103 actualizat\u0103 ce cuprinde con\u0163inutul cerut.
+tool.install.content.notfound=CWWKF1013E: Con\u0163inutul {0} din subsistem nu a fost g\u0103sit \u00een arhiva subsistemului.
+tool.install.content.notfound.explanation=La procesarea con\u0163inutului subsistemului, nu s-au g\u0103sit unele bundle-uri necesare \u00een arhiva subsistemului.
+tool.install.content.notfound.useraction=Contacta\u0163i autorul subsistemului pentru a ob\u0163ine o arhiv\u0103 actualizat\u0103 ce cuprinde con\u0163inutul cerut.
+tool.install.bad.zip=CWWKF1014E: A ap\u0103rut o eroare la citirea fi\u015fierului arhiv\u0103 {0}, excep\u0163ia {1}
+tool.install.bad.zip.explanation=Nu s-a putut citi arhiva subsistemului.
+tool.install.bad.zip.useraction=Verifica\u0163i c\u0103 arhiva subsistemului este complet\u0103 \u015fi valid\u0103. Dac\u0103 nu este valid\u0103, ob\u0163ine\u0163i o arhiv\u0103 proasp\u0103t\u0103 de la furnizor.
+tool.install.file.exists=CWWKF1015E: Fi\u015fierul {0} exist\u0103 deja.
+tool.install.file.exists.explanation=Instalarea arhivei subsistemului a e\u015fuat pentru c\u0103 exist\u0103 deja un fi\u015fier din arhiv\u0103 \u00een instalare.
+tool.install.file.exists.useraction=Examina\u0163i fi\u015fierele care exist\u0103 deja. Dac\u0103 opera\u0163ia de instalare poate continua, rula\u0163i din nou opera\u0163ia, fie folosind op\u0163iunea --when-file-exists=replace pentru a \u00eenlocui fi\u015fierele existente, fie op\u0163iunea --when-file-exists=ignore pentru a continua f\u0103r\u0103 fi\u015fierul existent.
+tool.install.dir.create.fail=CWWKF1016E: Nu se poate crea structura de director {0}.
+tool.install.dir.create.fail.explanation=Directoarele cerute de caracteristica \u00een curs de instalare nu au putut fi create.
+tool.install.dir.create.fail.useraction=Asigura\u0163i-v\u0103 c\u0103 exist\u0103 directorul furnizat \u015fi permisiunile necesare pentru a permite crearea structurii directorului. Rula\u0163i din nou opera\u0163ia de instalare.
+tool.install.feature.ok=CWWKF1017I: Una sau mai multe caracteristici au fost instalate cu succes: {0}.
+tool.install.feature.ok.explanation=Acest mesaj este pur informativ.
+tool.install.feature.ok.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+tool.install.invalid.when.file.exists.value=CWWKF1018E: Valoarea {0} nu este o op\u0163iune valid\u0103 pentru --when-file-exists. Op\u0163iunile valide sunt fail (e\u015fuare), replace (\u00eenlocuire) sau ignore (ignorare).
+tool.install.invalid.when.file.exists.value.explanation=Op\u0163iunea --when-file-exists trebuie s\u0103 fie fail, replace, ignore.
+tool.install.invalid.when.file.exists.value.useraction=Furniza\u0163i una din valorile valide: fail, replace sau ignore.
+tool.product.ext.features.not.found=CWWKF1019E: Extensia de produs {0} nu con\u0163ine nicio caracteristic\u0103.
+tool.product.ext.features.not.found.explanation=Fi\u015fierele manifest ale caracteristicii asociate cu extensia de produs specificat\u0103 nu au fost g\u0103site.
+tool.product.ext.features.not.found.useraction=Verifica\u0163i c\u0103 este valid directorul unde se afl\u0103 manifestele caracteristicii.
+tool.product.ext.not.found=CWWKF1020E: Extensia de produs {0} nu se poate g\u0103si la loca\u0163ia {1}.
+tool.product.ext.not.found.explanation=Extensia de produs nu se poate g\u0103si la loca\u0163ia men\u0163ionat\u0103.
+tool.product.ext.not.found.useraction=Verifica\u0163i c\u0103 loca\u0163ia de instalare a produsului este definit\u0103 corect \u00een fi\u015fierul de propriet\u0103\u0163i pentru instalarea produsului.
+tool.product.ext.not.defined=CWWKF1021E: Extensia de produs cu numele {0} nu exist\u0103.
+tool.product.ext.not.defined.explanation=Extensia de produs cu numele specificat nu exist\u0103.
+tool.product.ext.not.defined.useraction=Verifica\u0163i c\u0103 numele extensiei de produs specificat este valid.
+tool.install.content.no.subsystem.manifest=CWWKF1022E: Fi\u015fierul OSGI-INF/SUBSYSTEM.MF nu a fost g\u0103si \u00een arhiv\u0103.
+tool.install.content.no.subsystem.manifest.explanation=Arhiva subsistemului nu con\u0163ine fi\u015fierul OSGI-INF/SUBSYSTEM.MF, care con\u0163ine metadate despre subsistem.
+tool.install.content.no.subsystem.manifest.useraction=Ad\u0103uga\u0163i fi\u015fierul OSGI-INF/SUBSYSTEM.MF \u00een arhiv\u0103.
+# {0} is the path to the file being used
+tool.install.two.subsystem.manifests=CWWKF1023W: Sunt dou\u0103 fi\u015fiere cu calea OSGI-INF/SUBSYSTEM.MF, dar sunt specificate cu dimensiuni diferite de litere. Se va folosi fi\u015fierul {0}. 
+tool.install.two.subsystem.manifests.explanation=Trebuie s\u0103 folosi\u0163i un singur fi\u015fier OSGI-INF/SUBSYSTEM.MF pentru a defini o caracteristic\u0103, dar arhiva con\u0163ine dou\u0103 fi\u015fiere OSGI-INF/SUBSYSTEM.MF care sunt specificate cu dimensiuni diferite de litere.
+tool.install.two.subsystem.manifests.useraction=\u015eterge\u0163i unul din fi\u015fierele SUBSYSTEM.MF.
+
+# {0} is the path to the (missing) feature directory
+tool.feature.dir.not.found=CWWKF1024E: Comanda featureManager nu a putut g\u0103si directorul de caracteristici \u015fi nu a putut crea unul \u00een calea de director {0}.
+tool.feature.dir.not.found.explanation=Directorul de caracteristici pentru acest server nu exist\u0103. Directorul inten\u0163ionat cu numele features (caracteristici) s-ar putea s\u0103 fi fost creat din gre\u015feal\u0103 ca fi\u015fier.   Comanda featureManager a \u00eencercat s\u0103 creeze directorul features, dar nu a putut. C\u00eend directorul features nu poate fi creat, utilizatorului \u00eei lipsesc deseori permisiunile de scriere pentru calea de director. 
+tool.feature.dir.not.found.useraction=Finaliza\u0163i una din urm\u0103toarele ac\u0163iuni: (1) Crea\u0163i manual directorul specificat \u015fi rula\u0163i din nou comanda featureManager. (2) Rula\u0163i din nou comanda featureManager ca utilizator cu suficient acces de scriere la calea de director specificat\u0103.  
+
+tool.find.view.info.name=\ \ \ \ Nume: {0}
+tool.find.view.info.symbolic.name=\ \ \ \ Nume simbolic: {0}
+tool.find.view.info.description=\ \ \ \ Descriere: {0}
+tool.find.view.info.enabled.by=\ \ \ \ Activat de:
+tool.find.no.feature=Nu a fost g\u0103sit\u0103 nicio caracteristic\u0103.
+
+tool.missing.option=CWWKF1025E: Ac\u0163iunea {0} \
+necesit\u0103 op\u0163iunea {1}, dar op\u0163iunea cerut\u0103 nu a fost furnizat\u0103.
+tool.missing.option.explanation=S-a f\u0103cut o \
+\u00eencercare de a rula o comand\u0103 f\u0103r\u0103 a specifica o op\u0163iune necesar\u0103.
+tool.missing.option.useraction=Rula\u0163i din nou \
+comanda cu op\u0163iunea necesar\u0103.
+
+tool.classpath.feature.not.found=CWWKF1026E: Caracteristica \
+{0} nu exist\u0103.
+tool.classpath.feature.not.found.explanation=S-a \
+specificat o caracteristic\u0103 ce nu exist\u0103.
+tool.classpath.feature.not.found.useraction=Rula\u0163i \
+din nou comanda f\u0103r\u0103 a specifica acea caracteristic\u0103. 
+
+tool.classpath.feature.not.public=CWWKF1027E: Caracteristica \
+{0} nu este public\u0103.
+tool.classpath.feature.not.public.explanation=S-a \
+specificat o caracteristic\u0103 ce nu este public\u0103.
+tool.classpath.feature.not.public.useraction=Rula\u0163i \
+din nou comanda f\u0103r\u0103 a specifica acea caracteristic\u0103.
+
+tool.classpath.wrong.drive=CWWKF1028E: Fi\u015fierul \
+de ie\u015fire {0} trebuie s\u0103 se afle pe aceea\u015fi unitate ca fi\u015fierul {1}.
+tool.classpath.wrong.drive.explanation=Fi\u015fierul \
+de ie\u015fire trebuie s\u0103 se afle pe aceea\u015fi unitate ca toate fi\u015fierele \
+care sunt referite de c\u0103tre caracteristicile specificate.
+tool.classpath.wrong.drive.useraction=Rula\u0163i din nou \
+comanda cu un fi\u015fier de ie\u015fire care se afl\u0103 pe aceea\u015fi unitate ca \
+fi\u015fierul specificat.
+
+tool.classpath.create.fail=CWWKF1029E: Fi\u015fierul \
+de ie\u015fire {0} nu a putut fi creat. S-a primit urm\u0103toarea eroare: {1}
+tool.classpath.create.fail.explanation=A \
+ap\u0103rut o eroare la crearea fi\u015fierului de ie\u015fire.
+tool.classpath.create.fail.useraction=Examina\u0163i \
+mesajul erorii, corecta\u0163i problema \u015fi rula\u0163i din nou comanda. 
+
+tool.userfeature.install.location.invalid=CWWKF1036E: Caracteristica de utilizator {0} nu a putut fi instalat\u0103 la nucleu (core).
+tool.userfeature.install.location.invalid.explanation= Caracteristica de utilizator nu este o caracteristic\u0103 de nucleu \u015fi prin urmare nu poate fi instalat\u0103 la nucleu.
+tool.userfeature.install.location.invalid.useraction= Instala\u0163i caracteristica de utilizator la usr. 
+

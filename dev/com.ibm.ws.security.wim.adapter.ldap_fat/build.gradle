@@ -9,38 +9,21 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-apply from: '../cnf/gradle/scripts/fat.gradle'
-
-def autoFvtDir = "${projectDir}/build/libs/autoFVT"
-def publishDir = autoFvtDir + "/publish"
-
-addRequiredLibraries.doLast {
-  /*
-   * Copy libraries necessary for FAT runtime. 
-   */
-  configurations { 
-     fatLibs { }
-  }
-  dependencies { 
-    fatLibs 'com.ibm.ws.componenttest:public.api:1.0.0',
-            'commons-logging:commons-logging:1.1.1',
-            'commons-codec:commons-codec:1.4',
-            'org.apache.httpcomponents:httpclient:4.1.2',
-            'org.apache.httpcomponents:httpcore:4.1.2',
-            'org.apache.directory.server:apacheds-service:2.0.0-M15',
-            project(':fattest.simplicity'),
-            project(':apache_directory_server'),
-            project(':com.ibm.websphere.security.wim.base'),
-            project(':com.ibm.ws.security.registry'),
-            project(':com.ibm.ws.security.registry_test.servlet'),
-            project(':com.ibm.ws.security.wim.core'),
-            project(':com.ibm.ws.security.wim_test.servlet'),
-            project(':com.ibm.ws.webcontainer.security_test.servlets')
-  }
-  copy {
-    from configurations.fatLibs
-    into "${autoFvtDir}/lib/"
-  }
+dependencies { 
+  requiredLibs 'com.ibm.ws.componenttest:public.api:1.0.0',
+    'commons-logging:commons-logging:1.1.1',
+    'commons-codec:commons-codec:1.4',
+    'org.apache.httpcomponents:httpclient:4.1.2',
+    'org.apache.httpcomponents:httpcore:4.1.2',
+    'org.apache.directory.server:apacheds-service:2.0.0-M15',
+    project(':fattest.simplicity'),
+    project(':com.ibm.ws.org.apache.directory.server'),
+    project(':com.ibm.websphere.security.wim.base'),
+    project(':com.ibm.ws.security.registry'),
+    project(':com.ibm.ws.security.registry_test.servlet'),
+    project(':com.ibm.ws.security.wim.core'),
+    project(':com.ibm.ws.security.wim_test.servlet'),
+    project(':com.ibm.ws.webcontainer.security_test.servlets')
 }
 
 autoFVT.doLast {
@@ -48,34 +31,35 @@ autoFVT.doLast {
    * Copy the local ApacheDS LDAP instances. 
    */
   copy {
-    from "${projectDir}/../apache_directory_server/apacheds-2.0.0-M15"
-    into "${buildDir}/autoFVT/apacheds-2.0.0-M15"
+    from project(':com.ibm.ws.org.apache.directory.server').projectDir
+    into autoFvtDir
+    include 'apacheds-2.0.0-M15/**'
   }
 
   /*
    * Copy sample CustomRepository user feature to this test bucket.
    */
   copy { 
-    from "${projectDir}/../com.ibm.ws.security.wim.repository_test.custom/publish/usr/extension/lib/features/customRepositorySample-1.0.mf"
-    into "${publishDir}/features"
+    from project(':com.ibm.ws.security.wim.repository_test.custom').file('publish/usr/extension/lib/features/customRepositorySample-1.0.mf')
+    into new File(autoFvtDir, 'publish/features')
   }
   copy {
-    from "${projectDir}/../com.ibm.ws.security.wim.repository_test.custom/build/libs/com.ibm.ws.security.wim.repository_test.custom.jar"
-    into "${publishDir}/bundles"
-    rename("com.ibm.ws.security.wim.repository_test.custom.jar", "com.ibm.ws.security.wim.repository_test.custom_1.0.jar")
+    from new File(project(':com.ibm.ws.security.wim.repository_test.custom').buildDir, 'com.ibm.ws.security.wim.repository_test.custom.jar')
+    into new File(autoFvtDir, 'publish/bundles')
+    rename 'com.ibm.ws.security.wim.repository_test.custom.jar', 'com.ibm.ws.security.wim.repository_test.custom_1.0.jar'
   }
     
   /*
    * Copy sample custom UserRegistry feature to this test bucket.
    */
   copy { 
-    from "${projectDir}/../com.ibm.ws.security.registry_test.custom/publish/features/customRegistrySample-1.0.mf"
-    into "${autoFvtDir}/lib/LibertyFATTestFiles/internalfeatures/"
+    from project(':com.ibm.ws.security.registry_test.custom').file('publish/features/customRegistrySample-1.0.mf')
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles/internalfeatures')
   }
   copy {
-    from "${projectDir}/../com.ibm.ws.security.registry_test.custom/build/libs/com.ibm.ws.security.registry_test.custom.jar"
-    into "${autoFvtDir}/lib/LibertyFATTestFiles/internalfeatures/"
-    rename("com.ibm.ws.security.registry_test.custom.jar", "com.ibm.ws.security.registry_test.custom_1.0.jar")
+    from new File(project(':com.ibm.ws.security.registry_test.custom').buildDir, 'com.ibm.ws.security.registry_test.custom.jar')
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles/internalfeatures')
+    rename 'com.ibm.ws.security.registry_test.custom.jar', 'com.ibm.ws.security.registry_test.custom_1.0.jar'
   }
     
   /*
@@ -103,6 +87,7 @@ autoFVT.doLast {
     'com.ibm.ws.security.wim.adapter.ldap.fat.context.pool.on.ldap.fail',
     'com.ibm.ws.security.wim.adapter.ldap.fat.context.pool.timeout',
     'com.ibm.ws.security.wim.adapter.ldap.fat.custom',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.custom.getname',
     'com.ibm.ws.security.wim.adapter.ldap.fat.dynamic',
     'com.ibm.ws.security.wim.adapter.ldap.fat.ETSFforGroupM',
     'com.ibm.ws.security.wim.adapter.ldap.fat.federation',
@@ -131,8 +116,8 @@ autoFVT.doLast {
   ]
   servers.each { server ->
     copy { 
-      from "${projectDir}/../com.ibm.ws.security.registry_test.servlet/build/libs/test-application/userRegistry.war"
-      into "${publishDir}/servers/${server}/dropins"
+      from new File(project(':com.ibm.ws.security.registry_test.servlet').buildDir, 'test-application/userRegistry.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
     }
   }
 
@@ -144,8 +129,8 @@ autoFVT.doLast {
   ]
   servers.each { server ->
     copy { 
-      from "${projectDir}/../com.ibm.ws.security.wim_test.servlet/build/libs/test-application/vmmService.war"
-      into "${publishDir}/servers/${server}/dropins"
+      from new File(project(':com.ibm.ws.security.wim_test.servlet').buildDir, 'test-application/vmmService.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
     }
   }
 
@@ -159,9 +144,9 @@ autoFVT.doLast {
   ]
   servers.each { server ->
     copy { 
-      from "${projectDir}/../com.ibm.ws.webcontainer.security_test.servlets/build/libs/test-application/clientcert.zip"
-      into "${publishDir}/servers/${server}/apps"
-      rename("clientcert.zip", "clientcert.war")
+      from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/clientcert.zip')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+      rename 'clientcert.zip', 'clientcert.war'
     }
   }
 
@@ -173,9 +158,9 @@ autoFVT.doLast {
   ]
   servers.each { server ->
     copy { 
-      from "${projectDir}/../com.ibm.ws.webcontainer.security_test.servlets/build/libs/test-application/basicauth.zip"
-      into "${publishDir}/servers/${server}/apps"
-      rename("basicauth.zip", "basicauth.war")
+      from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/basicauth.zip')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+      rename 'basicauth.zip', 'basicauth.war'
     }
   }
 }

@@ -1,0 +1,425 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.jbatch.container/resources/com/ibm/jbatch/container/internal/resources/JBatchMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# NLS message prefix registry: http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+#
+# This file contains the messages in use.
+#
+# The range of messages "reserved":
+# 0001 - 0100: com.ibm.jbatch.container
+# 
+
+stopping.job.at.shutdown=CWWKY0001I: Wykonywanie zadania \
+{0} zostanie zatrzymane, poniewa\u017c trwa dezaktywowanie komponentu wsadowego.
+stopping.job.at.shutdown.explanation=Ten komunikat ma \
+charakter wy\u0142\u0105cznie informacyjny.
+stopping.job.at.shutdown.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+jobs.running.at.shutdown=CWWKY0002I: Trwa dezaktywowanie komponentu wsadowego. \
+Wprowadzone zosta\u0142y \u017c\u0105dania zatrzymania dla wszystkich aktywnych wykona\u0144 zada\u0144. \
+Nast\u0119puj\u0105ce wykonania zada\u0144 by\u0142y nadal uruchomione w czasie dezaktywowania: {0}. 
+jobs.running.at.shutdown.explanation=Je\u015bli komponent \
+wsadowy zostanie zdezaktywowany, wprowadzane s\u0105 \u017c\u0105dania zatrzymania wszystkich \
+aktywnych wykona\u0144 zada\u0144, a nast\u0119pnie ma miejsce kr\u00f3tkie oczekiwanie na ich \
+zatrzymanie.  \
+W tym komunikacie zg\u0142aszane s\u0105 wykonania zada\u0144, kt\u00f3re nie zosta\u0142y zatrzymane. \
+Wykonania zada\u0144, kt\u00f3re s\u0105 uruchomione po zdezaktywowaniu komponentu wsadowego, \
+mog\u0105 zachowywa\u0107 si\u0119 w nieprzewidywalny spos\u00f3b.
+jobs.running.at.shutdown.useraction=Zaleca si\u0119, aby przed \
+zdezaktywowaniem komponentu wsadowego poczeka\u0107 na zako\u0144czenie wszystkich zada\u0144. \
+Komponent wsadowy jest dezaktywowany podczas zatrzymywania serwera, podczas \
+usuwania sk\u0142adnika wsadowego lub podczas aktualizowania konfiguracji zadania \
+wsadowego.
+ 
+jsl.schema.invalid=CWWKY0003E: Dokument JSL (dokument XML zadania) pod adresem URL {0} nie jest poprawny zgodnie ze schematem XML zadania. \
+Pierwszy b\u0142\u0105d sprawdzania poprawno\u015bci zarejestrowany przez analizator poprawno\u015bci JAXB: {1}.
+jsl.schema.invalid.explanation=Dokument XML nie jest zgodny ze schematem XSD.
+jsl.schema.invalid.useraction=U\u017cyj narz\u0119dzia do sprawdzania poprawno\u015bci konstrukcji XML, aby sprawdzi\u0107, kt\u00f3ra konstrukcja narusza wymagania schematu.
+
+jsl.not.found.batch-jobs=CWWKY0004E: Nazwy dokumentu JSL (dokumentu XML zadania) {0} nie znaleziono w po\u0142o\u017ceniu {1} w archiwum aplikacji.
+jsl.not.found.batch-jobs.explanation=Nie mo\u017cna znale\u017a\u0107 dokumentu w po\u0142o\u017ceniu okre\u015blonym przez parametry u\u017cyte podczas wysy\u0142ania (tzn. \
+uruchamiania) zadania.
+jsl.not.found.batch-jobs.useraction=Upewnij si\u0119, \u017ce parametry u\u017cyte do zidentyfikowania po\u0142o\u017cenia JSL s\u0105 poprawne. \
+W przypadku u\u017cywania zdalnego wprowadzania zadania, aby wprowadzi\u0107 zadanie zdefiniowane w dokumencie JSL spakowanym w module aplikacji, upewnij si\u0119, \u017ce modu\u0142 aplikacji zosta\u0142 poprawnie zidentyfikowany za pomoc\u0105 parametr\u00f3w przekazanych do interfejsu REST (bezpo\u015brednio lub za pomoc\u0105 programu narz\u0119dziowego wiersza komend).
+
+persistence.service.status=CWWKY0005I: Us\u0142uga utrwalania zadania wsadowego {0} jest nast\u0119puj\u0105ca: {1}.
+persistence.service.status.explanation=Ten komunikat ma \
+charakter wy\u0142\u0105cznie informacyjny.
+persistence.service.status.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+job.recovery.failed=CWWKY0006W: Us\u0142uga odtwarzania zada\u0144 \
+wsadowych nie mo\u017ce poprawi\u0107 statusu zadania wsadowego dla wcze\u015bniej \
+uruchomionej instancji zadania {0}, kt\u00f3ra zosta\u0142a zako\u0144czona. Operacja \
+poprawiania nie powiod\u0142a si\u0119 z powodu nast\u0119puj\u0105cego wyj\u0105tku: {1}.
+job.recovery.failed.explanation=Us\u0142uga odtwarzania \
+zada\u0144 wsadowych s\u0142u\u017c\u0105ca do poprawiania statusu zada\u0144, kt\u00f3re by\u0142y uruchomione we \
+wcze\u015bniejszej, nieprawid\u0142owo zako\u0144czonej instancji tego serwera, nie mog\u0142a \
+poprawi\u0107 statusu danej instancji zadania ze wzgl\u0119du na podany wyj\u0105tek.
+job.recovery.failed.useraction=Wyeliminuj przyczyn\u0119 wyj\u0105tku, \
+je\u015bli to mo\u017cliwe, a nast\u0119pnie zrestartuj serwer, aby ponownie uruchomi\u0107 us\u0142ug\u0119 odtwarzania zada\u0144 wsadowych.
+
+recovery.failed=CWWKY0007W: Us\u0142uga odtwarzania zada\u0144 \
+wsadowych nie mo\u017ce poprawi\u0107 statusu zadania wsadowego dla uruchomionych \
+wcze\u015bniej zada\u0144, kt\u00f3re zosta\u0142y zako\u0144czone. Operacja poprawiania nie powiod\u0142a si\u0119 z powodu nast\u0119puj\u0105cego wyj\u0105tku: {0}.
+recovery.failed.explanation=Us\u0142uga odtwarzania zada\u0144 \
+wsadowych s\u0142u\u017c\u0105ca do poprawiania statusu zada\u0144, kt\u00f3re by\u0142y uruchomione we \
+wcze\u015bniejszej, nieprawid\u0142owo zako\u0144czonej instancji tego serwera, zako\u0144czy\u0142a si\u0119 niepowodzeniem ze wzgl\u0119du na podany wyj\u0105tek.
+recovery.failed.useraction=Wyeliminuj przyczyn\u0119 wyj\u0105tku, je\u015bli \
+to mo\u017cliwe, a nast\u0119pnie zrestartuj serwer, aby ponownie uruchomi\u0107 us\u0142ug\u0119 odtwarzania zada\u0144 wsadowych.
+
+batch.kernel.persistence=CWWKY0008I: Sk\u0142adnik wsadowy u\u017cywa typu trwa\u0142o\u015bci {0}.
+batch.kernel.persistence.explanation=Ten komunikat ma \
+charakter wy\u0142\u0105cznie informacyjny.
+batch.kernel.persistence.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+#{0} The job name
+#{1} The job instance id
+#{2} The job execution id
+job.started=CWWKY0009I: Uruchomiono zadanie {0} dla instancji zadania {1} i wykonania zadania {2}.
+job.started.explanation=Uruchomiono nowy w\u0105tek wykonywania zadania.
+job.started.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+#{0} The job name
+#{1} The batch status of the job
+#{2} The exit status of the job
+#{3} The job instance id
+#{4} The job execution id
+job.ended=CWWKY0010I: Zadanie {0} zako\u0144czy\u0142o si\u0119, zwracaj\u0105c status partii {1} i status wyj\u015bcia {2} dla instancji zadania {3} i wykonania zadania {4}.
+job.ended.explanation=Wykonywanie zadania zosta\u0142o zako\u0144czone.
+job.ended.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+#{0} The job name
+#{1} The batch status of the job
+#{2} The exit status of the job
+#{3} The job instance id
+#{4} The job execution id
+job.failed=CWWKY0011W: Zadanie {0} zako\u0144czy\u0142o si\u0119 niepowodzeniem, zwracaj\u0105c status partii {1} i status wyj\u015bcia {2} dla instancji zadania {3} i wykonania zadania {4}.
+job.failed.explanation=Wykonywanie zadania nie powiod\u0142o si\u0119.
+job.failed.useraction=Przejrzyj dzienniki zadania powi\u0105zanej operacji wykonywania zadania w celu okre\u015blenia przyczyny niepowodzenia.
+
+#{0} The partition number
+#{1} The step name
+#{2} The job instance id
+#{3} The job execution id
+partition.started=CWWKY0012I: Partycja {0} zosta\u0142a uruchomiona dla kroku {1}, instancji zadania {2} i wykonania zadania {3}.
+partition.started.explanation=Uruchomiono now\u0105 partycj\u0119.
+partition.started.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+#{0} The step name
+#{1} The partition number
+#{2} The batch status of the partition
+#{3} The exit status of the partition
+#{4} The job instance id
+#{5} The job execution id
+partition.ended=CWWKY0013I: Partycja {0} zako\u0144czy\u0142a dzia\u0142anie, zwracaj\u0105c status partii {1} i status wyj\u015bcia {2} dla kroku {3}, instancji zadania {4} i wykonania zadania {5}.
+partition.ended.explanation=Dzia\u0142anie partycji zosta\u0142o zako\u0144czone.
+partition.ended.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+#{0} The step name
+#{1} The partition number
+#{2} The batch status of the partition
+#{3} The exit status of the partition
+#{4} The job instance id
+#{5} The job execution id
+partition.failed=CWWKY0014W: Dzia\u0142anie partycji {0} zako\u0144czy\u0142o si\u0119 niepowodzeniem, zwracaj\u0105c status partii {1} i status wyj\u015bcia {2} dla kroku {3}, instancji zadania {4} i wykonania zadania {5}.
+partition.failed.explanation=Zako\u0144czenie dzia\u0142ania partycji nie powiod\u0142o si\u0119.
+partition.failed.useraction=Przejrzyj dzienniki zadania powi\u0105zanej operacji wykonywania zadania w celu okre\u015blenia przyczyny niepowodzenia.
+
+#{0} The flow name
+#{1} The job instance id
+#{2} The job execution id
+flow.started=CWWKY0015I: Uruchomiono przep\u0142yw {0} dla instancji zadania {1} i wykonania zadania {2}.
+flow.started.explanation=Uruchomiono przep\u0142yw.
+flow.started.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+#{0} The flow name
+#{1} The job instance id
+#{2} The job execution id
+flow.ended=CWWKY0016I: Zako\u0144czono przep\u0142yw {0} dla instancji zadania {1} i wykonania zadania {2}.
+flow.ended.explanation=Zako\u0144czono przep\u0142yw.
+flow.ended.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+#{0} The flow name
+#{1} The job instance id
+#{2} The job execution id
+flow.failed=CWWKY0017W: Przep\u0142yw {0} zako\u0144czy\u0142 si\u0119 niepowodzeniem dla instancji zadania {1} i wykonania zadania {2}.
+flow.failed.explanation=Zako\u0144czenie przep\u0142ywu nie powiod\u0142o si\u0119.
+flow.failed.useraction=Przejrzyj dzienniki zadania powi\u0105zanej operacji wykonywania zadania w celu okre\u015blenia przyczyny niepowodzenia.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+step.started=CWWKY0018I: Uruchomiono krok {0} dla instancji zadania {1} i wykonania zadania {2}.
+step.started.explanation=Krok o okre\u015blonej nazwie rozpocz\u0105\u0142 wykonywanie w w\u0105tku.
+step.started.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+#{0} The step name
+#{1} The batch status of the step
+#{2} The exit status of the step
+#{3} The job instance id
+#{4} The job execution id
+step.failed=CWWKY0019W: Krok {0} zako\u0144czy\u0142 si\u0119 niepowodzeniem, zwracaj\u0105c status partii {1} i status wyj\u015bcia {2} dla instancji zadania {3} i wykonania zadania {4}.
+step.failed.explanation=Zako\u0144czenie kroku nie powiod\u0142o si\u0119.
+step.failed.useraction=Przejrzyj dzienniki zadania powi\u0105zanej operacji wykonywania kroku w celu okre\u015blenia przyczyny niepowodzenia.
+
+#{0} The step name
+#{1} The batch status of the step
+#{2} The exit status of the step
+#{3} The job instance id
+#{4} The job execution id
+step.ended=CWWKY0020I: Krok {0} zako\u0144czy\u0142 si\u0119, zwracaj\u0105c status partii {1} i status wyj\u015bcia {2} dla instancji zadania {3} i wykonania zadania {4}.
+step.ended.explanation=Zako\u0144czono przetwarzanie kroku.
+step.ended.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.started=CWWKY0021I: Uruchomiono now\u0105 porcj\u0119 dla kroku {0} w instancji zadania {1} i wykonaniu zadania {2}. Metryki kroku = {3}
+chunk.started.explanation= Uruchomiono now\u0105 transakcj\u0119 w celu przetworzenia tej porcji.
+chunk.started.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.ended=CWWKY0022I: Pomy\u015blnie zako\u0144czono porcj\u0119 dla kroku {0} w instancji zadania {1} i wykonaniu zadania {2}. Metryki kroku = {3}
+chunk.ended.explanation= Transakcja powi\u0105zana z t\u0105 porcj\u0119 zosta\u0142a poprawnie zatwierdzona.
+chunk.ended.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.rollback=CWWKY0024W: Bie\u017c\u0105ca porcja zosta\u0142a wycofana do poprzedniego punktu kontrolnego dla kroku {0} w instancji zadania {1} i wykonaniu zadania {2}. Metryki kroku = {3}
+chunk.rollback.explanation= Wyst\u0105pi\u0142o niepowodzenie bie\u017c\u0105cej porcji, kt\u00f3re spowodowa\u0142o wycofanie zmian transakcji do poprzedniego punktu kontrolnego.
+chunk.rollback.useraction=Przejrzyj dzienniki zadania powi\u0105zanej operacji wykonywania zadania w celu okre\u015blenia przyczyny niepowodzenia.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.rollback.and.retry=CWWKY0025W: Trwa przetwarzanie operacji wycofywania zmian dla bie\u017c\u0105cej porcji po wyst\u0105pieniu powtarzalnego wyj\u0105tku dla kroku {0} w instancji zadania {1} i wykonaniu zadania {2}. Metryki kroku = {3}
+chunk.rollback.and.retry.explanation= Podczas przetwarzania porcji wyst\u0105pi\u0142 powtarzalny wyj\u0105tek. Ta operacja przetwarzania zostanie wycofana do poprzedniego punktu kontrolnego, a nast\u0119pnie zostanie podj\u0119ta kolejna pr\u00f3ba jej wykonania.
+chunk.rollback.and.retry.useraction=Przejrzyj dzienniki zadania powi\u0105zanej operacji wykonywania zadania w celu okre\u015blenia przyczyny niepowodzenia.
+
+#{0} The step name that is associated with this reader
+item.reader.opened=CWWKY0026I: Otwarto program odczytuj\u0105cy element dla kroku {0}.
+item.reader.opened.explanation=Otwarto program odczytuj\u0105cy element powi\u0105zany z tym krokiem.
+item.reader.opened.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+#{0} The step name that is associated with this reader
+item.reader.closed=CWWKY0027I: Zamkni\u0119to program odczytuj\u0105cy element dla kroku {0}.
+item.reader.closed.explanation=Zamkni\u0119to program odczytuj\u0105cy element powi\u0105zany z tym krokiem.
+item.reader.closed.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+#{0} The step name that is associated with this writer
+item.writer.opened=CWWKY0028I: Otwarto program zapisuj\u0105cy element dla kroku {0}.
+item.writer.opened.explanation=Otwarto program zapisuj\u0105cy element powi\u0105zany z tym krokiem.
+item.writer.opened.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+#{0} The step name that is associated with this writer
+item.writer.closed=CWWKY0029I: Zamkni\u0119to program zapisuj\u0105cy element dla kroku {0}.
+item.writer.closed.explanation=Zamkni\u0119to program zapisuj\u0105cy element powi\u0105zany z tym krokiem.
+item.writer.closed.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+#{0} The step name that is associated with this writer
+#{1} The exception that occurred
+exception.executing.step=CWWKY0030I: Wyst\u0105pi\u0142 wyj\u0105tek \
+podczas uruchamiania kroku {0}.\n\
+{1}
+exception.executing.step.explanation=Mo\u017ce to by\u0107 \
+b\u0142\u0105d aplikacji. Wyst\u0105pi\u0142 wyj\u0105tek podczas wykonywania podstawowej cz\u0119\u015bci \
+kroku po wywo\u0142aniu odpowiednich artefakt\u00f3w aplikacji wsadowej przez kontener \
+zada\u0144 wsadowych.
+exception.executing.step.useraction=Przejrzyj dzienniki zadania powi\u0105zanej operacji wykonywania zadania w celu okre\u015blenia przyczyny niepowodzenia.  Mo\u017ce \
+to wymaga\u0107 debugowania aplikacji.
+
+#{0} The step name that is associated with this writer
+#{1} The exception that occurred
+exception.after.step=CWWKY0031I: Wyst\u0105pi\u0142 wyj\u0105tek \
+podczas uruchamiania ko\u0144cowej cz\u0119\u015bci kroku {0}.\n\
+{1}
+exception.after.step.explanation=Mo\u017ce to by\u0107 b\u0142\u0105d \
+aplikacji. Wyst\u0105pi\u0142 wyj\u0105tek podczas wykonywania ko\u0144cowej cz\u0119\u015bci kroku, np. uwzgl\u0119dniania metody StepListener afterStep(), po wywo\u0142aniu odpowiednich \
+artefakt\u00f3w aplikacji wsadowej przez kontener zada\u0144 wsadowych.
+exception.after.step.useraction=Przejrzyj dzienniki zadania powi\u0105zanej operacji wykonywania zadania w celu okre\u015blenia przyczyny niepowodzenia.  Mo\u017ce to wymaga\u0107 debugowania aplikacji.
+
+#{0} The exception that occurred
+error.persisting.stepExecution=CWWKY0032I: Wyst\u0105pi\u0142 \
+wyj\u0105tek podczas pr\u00f3by utrwalenia statusu wykonania kroku i danych pokrewnych.\n\
+{0}
+error.persisting.stepExecution.explanation=W tej \
+sytuacji status ko\u0144cowego kroku zwykle nie jest poprawnie utrwalany w bazie \
+danych, a status zadania wsadowego mo\u017ce zosta\u0107 zablokowany w stanie \
+URUCHOMIONO, cho\u0107 w rzeczywisto\u015bci zadanie nie jest ju\u017c wykonywane. Je\u015bli \
+zostanie podj\u0119ta pr\u00f3ba zrestartowania, mo\u017ce to spowodowa\u0107 b\u0142\u0119dy niesp\u00f3jno\u015bci \
+stanu po zrestartowaniu. 
+error.persisting.stepExecution.useraction=Upewnij si\u0119, \u017ce \
+baza danych jest poprawnie skonfigurowana i po\u0142\u0105czona.   Nast\u0119pnie, w razie \
+konieczno\u015bci, zrestartuj serwer wykonuj\u0105cy (serwer, na kt\u00f3rym zadanie jest \
+wykonywane). Wyzwoli to odtwarzanie i spowoduje oznaczenie powi\u0105zanych \
+zada\u0144 i krok\u00f3w jako zako\u0144czonych niepowodzeniem, dzi\u0119ki czemu b\u0119dzie mo\u017cna \
+pomy\u015blnie wykona\u0107 restart zadania. 
+
+#{0} The exception that occurred
+exception.executing.job=CWWKY0033I: Wyst\u0105pi\u0142 wyj\u0105tek \
+podczas wykonywania zadania.\n\
+{0}
+exception.executing.job.explanation=Mo\u017ce to by\u0107 b\u0142\u0105d \
+aplikacji. Wyst\u0105pi\u0142 wyj\u0105tek podczas wykonywania podstawowej cz\u0119\u015bci zadania po \
+wywo\u0142aniu odpowiednich artefakt\u00f3w aplikacji wsadowej przez kontener zada\u0144 \
+wsadowych.
+exception.executing.job.useraction=Przejrzyj dzienniki zadania powi\u0105zanej operacji wykonywania zadania w celu okre\u015blenia przyczyny niepowodzenia.  Mo\u017ce to wymaga\u0107 debugowania aplikacji.
+
+#{0} The exception that occurred
+exception.after.job=CWWKY0034I: Wyst\u0105pi\u0142 wyj\u0105tek podczas \
+uruchamiania ko\u0144cowej cz\u0119\u015bci zadania.\n\
+{0}
+exception.after.job.explanation=Mo\u017ce to by\u0107 b\u0142\u0105d \
+aplikacji. Wyst\u0105pi\u0142 wyj\u0105tek podczas wykonywania ko\u0144cowej cz\u0119\u015bci zadania, \
+np. uwzgl\u0119dniania metody JobListener afterJob(), po wywo\u0142aniu odpowiednich \
+artefakt\u00f3w aplikacji wsadowej przez kontener zada\u0144 wsadowych.
+exception.after.job.useraction=Przejrzyj dzienniki powi\u0105zanego \
+zadania w celu okre\u015blenia przyczyny niepowodzenia.  Mo\u017ce to wymaga\u0107 debugowania \
+aplikacji.
+
+#{0} The exception that occurred
+error.persisting.jobExecution=CWWKY0035I: Wyst\u0105pi\u0142 \
+wyj\u0105tek podczas pr\u00f3by utrwalenia statusu wykonania zadania i danych \
+pokrewnych.\n\
+{0}
+error.persisting.jobExecution.explanation=W tej \
+sytuacji status ko\u0144cowego zadania wsadowego zadania zwykle nie jest poprawnie \
+utrwalany w bazie danych, a status zadania wsadowego mo\u017ce zosta\u0107 zablokowany w \
+stanie URUCHOMIONO, cho\u0107 w rzeczywisto\u015bci zadanie nie jest ju\u017c wykonywane. Je\u015bli zostanie podj\u0119ta pr\u00f3ba zrestartowania, mo\u017ce to spowodowa\u0107 b\u0142\u0119dy \
+niesp\u00f3jno\u015bci stanu po zrestartowaniu.
+error.persisting.jobExecution.useraction=Upewnij si\u0119, \u017ce baza \
+danych jest poprawnie skonfigurowana i po\u0142\u0105czona.   Nast\u0119pnie, w razie \
+konieczno\u015bci, zrestartuj serwer wykonuj\u0105cy (serwer, na kt\u00f3rym zadanie jest \
+wykonywane). Wyzwoli to odtwarzanie i spowoduje oznaczenie powi\u0105zanych zada\u0144 i \
+krok\u00f3w jako zako\u0144czonych niepowodzeniem, dzi\u0119ki czemu b\u0119dzie mo\u017cna pomy\u015blnie \
+wykona\u0107 restart zadania.
+
+#{0} The invalid job instance id.
+#{1} The persistence exception.
+error.invalid.persisted.job.id=CWWKY0036E: Niepoprawna \
+warto\u015b\u0107 identyfikatora instancji zadania {0} wygenerowana jako warto\u015b\u0107 klucza \
+podstawowego dla tabeli zadania wsadowego. Warto\u015b\u0107 identyfikatora musi by\u0107 \
+dodatni\u0105 liczb\u0105 ca\u0142kowit\u0105.\n\
+{1}
+error.invalid.persisted.job.id.explanation=Wykonanie \
+zadania nie powiod\u0142o si\u0119, poniewa\u017c w tabeli zadania wsadowego wygenerowano \
+niepoprawny identyfikator. Identyfikator zadania wsadowego musi by\u0107 dodatni\u0105 \
+liczb\u0105 ca\u0142kowit\u0105.
+error.invalid.persisted.job.id.useraction=Upewnij si\u0119, \u017ce \
+u\u017cywana definicja tabeli bazy danych zadania wsadowego zezwala na stosowanie \
+jako warto\u015bci identyfikator\u00f3w u\u017cywanych jako klucze podstawowe tylko dodatnich \
+liczb ca\u0142kowitych.
+
+#{0} The invalid execution id.
+#{1} The persistence exception.
+error.invalid.persisted.exe.id=CWWKY0037E: Niepoprawna \
+warto\u015b\u0107 identyfikatora wykonania zadania {0} wygenerowana jako warto\u015b\u0107 klucza \
+podstawowego dla tabeli zadania wsadowego. Warto\u015b\u0107 identyfikatora musi by\u0107 \
+dodatni\u0105 liczb\u0105 ca\u0142kowit\u0105.\n\
+{1}
+error.invalid.persisted.exe.id.explanation=Wykonanie \
+zadania nie powiod\u0142o si\u0119, poniewa\u017c w tabeli zadania wsadowego wygenerowano \
+niepoprawny identyfikator. Identyfikator zadania wsadowego musi by\u0107 dodatni\u0105 \
+liczb\u0105 ca\u0142kowit\u0105.
+error.invalid.persisted.exe.id.useraction=Upewnij si\u0119, \u017ce \
+u\u017cywana definicja tabeli bazy danych zadania wsadowego zezwala na stosowanie \
+jako warto\u015bci identyfikator\u00f3w u\u017cywanych jako klucze podstawowe tylko dodatnich \
+liczb ca\u0142kowitych.
+
+#{0} The invalid step execution id.
+#{1} The persistence exception.
+error.invalid.persisted.step.id=CWWKY0038E: Niepoprawna \
+warto\u015b\u0107 identyfikatora wykonania kroku {0} wygenerowana jako warto\u015b\u0107 klucza \
+podstawowego dla tabeli zadania wsadowego. Warto\u015b\u0107 identyfikatora musi by\u0107 \
+dodatni\u0105 liczb\u0105 ca\u0142kowit\u0105.\n\
+{1}
+error.invalid.persisted.step.id.explanation=Wykonanie \
+zadania nie powiod\u0142o si\u0119, poniewa\u017c w tabeli zadania wsadowego wygenerowano \
+niepoprawny identyfikator. Identyfikator zadania wsadowego musi by\u0107 dodatni\u0105 \
+liczb\u0105 ca\u0142kowit\u0105.
+error.invalid.persisted.step.id.useraction=Upewnij si\u0119, \u017ce \
+u\u017cywana definicja tabeli bazy danych zadania wsadowego zezwala na stosowanie \
+jako warto\u015bci identyfikator\u00f3w u\u017cywanych jako klucze podstawowe tylko dodatnich \
+liczb ca\u0142kowitych.
+
+partition.recovery.failed=CWWKY0039W: Us\u0142uga odtwarzania \
+zada\u0144 wsadowych nie mo\u017ce poprawi\u0107 statusu zadania wsadowego dla wcze\u015bniej \
+uruchomionej partycji {0}, kt\u00f3ra zosta\u0142a zako\u0144czona. Operacja \
+poprawiania nie powiod\u0142a si\u0119 z powodu nast\u0119puj\u0105cego wyj\u0105tku: {1}.
+partition.recovery.failed.explanation=Us\u0142uga \
+odtwarzania zada\u0144 wsadowych s\u0142u\u017c\u0105ca do poprawiania statusu partycji, kt\u00f3re by\u0142y \
+uruchomione we wcze\u015bniejszej, nieprawid\u0142owo zako\u0144czonej instancji tego serwera, \
+nie mog\u0142a poprawi\u0107 statusu danej partycji ze wzgl\u0119du na podany wyj\u0105tek.
+partition.recovery.failed.useraction=Wyeliminuj przyczyn\u0119 wyj\u0105tku, je\u015bli \
+to mo\u017cliwe, a nast\u0119pnie zrestartuj serwer, aby ponownie uruchomi\u0107 us\u0142ug\u0119 odtwarzania zada\u0144 wsadowych.
+
+info.batch.events.publish.topic=CWWKY0040I: \u015arodowisko wykonawcze zada\u0144 wsadowych b\u0119dzie publikowa\u0107 zdarzenia w elemencie g\u0142\u00f3wnym tematu JMS {0}.
+info.batch.events.publish.topic.explanation=Komunikat informacyjny. \u015arodowisko wykonawcze zada\u0144 wsadowych b\u0119dzie publikowa\u0107 zdarzenia w wymienionym elemencie g\u0142\u00f3wnym tematu JMS zadania wsadowego.
+info.batch.events.publish.topic.useraction=Mo\u017cna zmodyfikowa\u0107 element g\u0142\u00f3wny tematu JMS zadania wsadowego. Sprawd\u017a skonfigurowane opcje, kt\u00f3re s\u0105 u\u017cywane na potrzeby batchJmsEvents.
+
+cdi.ambiguous.artifact.names=CWWKY0041W: Kontener zada\u0144 wsadowych dzia\u0142a z aktywnym sk\u0142adnikiem CDI, ale mechanizm CDI nie m\u00f3g\u0142 za\u0142adowa\u0107 artefaktu wsadowego jako komponentu bean zarz\u0105dzanego przez CDI i wykona\u0107 innych operacji wstawiania CDI. Ten problem mo\u017ce by\u0107 spowodowany przez brak adnotacji definiuj\u0105cej komponent bean, takiej jak @Dependent, niezamierzony tryb wykrywania komponent\u00f3w bean lub niejednoznaczn\u0105 warto\u015b\u0107 ref.
+cdi.ambiguous.artifact.names.explanation=Gdy \u015brodowisko wykonawcze zada\u0144 wsadowych \u0142aduje artefakty przy u\u017cyciu mechanizmu CDI, wstawiane s\u0105 w\u0142a\u015bciwo\u015bci zadania wsadowego (@BatchProperty) i konteksty zadania wsadowego (JobContext i StepContext) oraz udost\u0119pniane s\u0105 pe\u0142ne mo\u017cliwo\u015bci CDI. Mo\u017cliwo\u015bci te obejmuj\u0105 wstawianie innych zarz\u0105dzanych komponent\u00f3w bean zgodnie z kwalifikatorami i wszystkie inne funkcje modelu programowania CDI. Gdy \u015brodowisko wykonawcze zada\u0144 wsadowych \u0142aduje artefakty bez u\u017cycia mechanizmu CDI, wstawia wy\u0142\u0105cznie w\u0142a\u015bciwo\u015bci zada\u0144 wsadowych i konteksty. Poniewa\u017c nie jest to komponent bean zarz\u0105dzany przez CDI w tej \u015bcie\u017cce, \u017cadne inne wstawienia ani funkcje modelu programowania CDI nie s\u0105 dost\u0119pne w obr\u0119bie tego artefaktu zadania wsadowego. Ten komunikat wskazuje, \u017ce mimo skonfigurowania na serwerze aktywnego sk\u0142adnika CDI nie mo\u017cna za\u0142adowa\u0107 artefaktu zadania wsadowego jako komponentu bean zarz\u0105dzanego przez CDI, poniewa\u017c warto\u015b\u0107 atrybutu ref, kt\u00f3ra odpowiada odwo\u0142aniu do tego artefaktu w pliku XML, nie wskazuje pojedynczego, jednoznacznego komponentu bean zarz\u0105dzanego przez CDI.
+cdi.ambiguous.artifact.names.useraction=Dodaj do artefaktu zadania wsadowego adnotacj\u0119 @Dependent lub inn\u0105 odpowiedni\u0105 adnotacj\u0119 definiuj\u0105c\u0105 komponent bean. Mo\u017cna r\u00f3wnie\u017c ustawi\u0107 tryb wykrywania komponent\u00f3w bean na warto\u015b\u0107 all w pliku beans.xml, jednak to rozwi\u0105zanie mo\u017ce spowolni\u0107 dzia\u0142anie aplikacji. Je\u015bli nie s\u0105 potrzebne wszystkie niejednoznaczne artefakty, mo\u017cna r\u00f3wnie\u017c usun\u0105\u0107 z aplikacji niejednoznaczne atrybuty ref, tak aby pozosta\u0142o tylko pojedyncze, jednoznaczne odwo\u0142anie.
+
+#{0} job/flow/partition
+#{1} The JSL
+display.resolved.jsl=CWWKY0042I:  Rozstrzygni\u0119ty element JSL dla tego {0} to \n\
+\ {1}.
+display.resolved.jsl.explanation=Element JSL u\u017cyty dla tego zadania, przep\u0142ywu lub partycji jest wy\u015bwietlany po rozstrzygni\u0119ciu parametr\u00f3w i w\u0142a\u015bciwo\u015bci.  Element JSL zadania nie rozstrzyga w\u0142a\u015bciwo\u015bci planu partycji.  Poszukaj tego komunikatu w poszczeg\u00f3lnych dziennikach partycji w celu rozstrzygni\u0119cia w\u0142a\u015bciwo\u015bci planu partycji.
+display.resolved.jsl.useraction=Upewnij si\u0119, \u017ce element i rozstrzygni\u0119cie parametru s\u0105 zgodne z oczekiwaniami.
+
+#{0} The JSL
+display.unresolved.jsl=CWWKY0043I:  Nierozstrzygni\u0119ty element JSL dla tego zadania to \n\
+\ {0}.
+display.unresolved.jsl.explanation=Element JSL u\u017cyty dla tego zadania jest wy\u015bwietlany przed rozstrzygni\u0119ciem parametr\u00f3w i w\u0142a\u015bciwo\u015bci.
+display.unresolved.jsl.useraction=Upewnij si\u0119, \u017ce nazwa pliku tego elementu JSL jest poprawna i sprawd\u017a, czy \u017ar\u00f3d\u0142o tego elementu JSL zawiera poprawny element JSL.
+

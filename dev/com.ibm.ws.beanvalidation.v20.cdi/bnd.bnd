@@ -12,15 +12,29 @@
 
 bVersion=1.0
 
+javac.source: 1.8
+javac.target: 1.8
+
 Bundle-Name: BeanValidation CDI 2.0
 Bundle-SymbolicName: com.ibm.ws.beanvalidation.v20.cdi
 Bundle-Description: Bean Validation v2.0 CDI Integration Bundle; version=${bVersion}
 
 WS-TraceGroup: BeanValidation
 
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
 Private-Package: \
   com.ibm.ws.beanvalidation.v20.cdi.*
-  
+
+Import-Package: \
+  org.hibernate.validator.cdi.internal,\
+  *
+
+Include-Resource: \
+  OSGI-INF=resources/OSGI-INF
+
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
 -dsannotations-inherit: true
 -dsannotations: \
   com.ibm.ws.beanvalidation.v20.cdi.internal.ValidationReleasableFactoryImpl
@@ -38,4 +52,5 @@ Private-Package: \
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.ws.classloading;version=latest,\
 	com.ibm.ws.javaee.dd;version=latest,\
-	com.ibm.websphere.appserver.spi.kernel.service;version=latest
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest, \
+	com.ibm.ws.org.hibernate.validator.cdi.6.0.4.Final;version=latest

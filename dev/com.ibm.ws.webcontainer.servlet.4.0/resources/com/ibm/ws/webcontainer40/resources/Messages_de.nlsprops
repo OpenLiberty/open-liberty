@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+#CMVCPATHNAME 
+#COMPONENTPREFIX CWWWC
+#COMPONENTNAMEFOR CWWWC Servlet Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# --------------------------------
+
+# Since servlet 4.0.  Use the registered and reserved prefix CWWWC from now on.  
+# 0001 - 0199 for Base
+# 0200 - 0299 for Servlet 3.0
+# 0300 - 0399 for Servlet 3.1
+# 0400 - 0499 for Servlet 4
+name.is.null=CWWWC0400E: Ein Attributname oder ein Anfangsparametername ist null.
+name.is.null.explanation=Dies ist ein Anwendungsfehler. Der Name ist entweder in getAttribute(), setAttribute(), getInitParameter() oder setInitParameter() im Kontext null.
+name.is.null.useraction=Aktualisieren Sie den Attributnamen oder den Anfangsparameternamen mit einem Wert ungleich null.
+
+# -----------------------------------------------
+unsupported.response.encoding.[{0}]=CWWWC0401E: Fehler beim Festlegen der Zeichencodierung f\u00fcr die Antwort: [{0}].
+unsupported.response.encoding.[{0}].explanation=Die in der Antwort angegebene Antwortcodierung ist nicht g\u00fcltig. Dies ist ein Anwendungsfehler.
+unsupported.response.encoding.[{0}].useraction=Untersuchen Sie die Protokoll, um festzustellen, ob die angegebene Codierung g\u00fcltig ist.
+

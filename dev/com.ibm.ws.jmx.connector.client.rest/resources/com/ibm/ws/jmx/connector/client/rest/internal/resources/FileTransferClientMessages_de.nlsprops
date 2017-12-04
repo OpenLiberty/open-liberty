@@ -1,0 +1,59 @@
+###############################################################################
+# Copyright (c) 2011, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.client/resources/com/ibm/ws/jmx/connector/client/rest/internal/resources/FileTransferClientMessages.nlsprops
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR WebSphere Management File Transfer Client
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKX7951 - CWWKX7999
+
+filetransfer.client.init=CWWKX7951I: Ein neuer Datei\u00fcbertragungsclient hat eine Verbindung mit der Verbindungs-ID {0} hergestellt.
+filetransfer.client.init.explanation=Ein neuer Datei\u00fcbertragungsclient hat eine Verbindung mit der angegebenen Verbindungs-ID hergestellt.
+filetransfer.client.init.useraction=Dies ist eine Informationsnachricht. Es ist keine Aktion erforderlich.
+
+filetransfer.client.error=CWWKX7952E: Der clientseitige Fehler "{0}" ist f\u00fcr die Verbindung {1} aufgetreten.
+filetransfer.client.error.explanation=Auf der Clientseite des JMX-REST-Connectors ist ein Fehler aufgetreten, und es wurde die angegebene Nachricht generiert.
+filetransfer.client.error.useraction=Verwenden Sie die generierte Fehlernachricht, um das Problem, das diesen Fehler verursacht, zu identifizieren und zu beheben, und f\u00fchren Sie anschlie\u00dfend die Operation erneut aus.
+
+filetransfer.server.error=CWWKX7953E: Der serverseitige Fehler "{0}" ist f\u00fcr die Verbindung {1} aufgetreten.
+filetransfer.server.error.explanation=Auf der Serverseite des JMX-REST-Connectors ist ein Fehler aufgetreten, und es wurde die angegebene Nachricht generiert.
+filetransfer.server.error.useraction=Verwenden Sie die generierte Fehlernachricht, um das Problem, das diesen Fehler verursacht, zu identifizieren und zu beheben, und f\u00fchren Sie anschlie\u00dfend die Operation erneut aus.
+
+filetransfer.client.bad.credentials=CWWKX7954E: Der angegebene Benutzername oder das angegebene Kennwort ist nicht berechtigt. Der Server hat mit dem Code {0} und der Nachricht "{1}" f\u00fcr die Verbindung {2} geantwortet.
+filetransfer.client.bad.credentials.explanation=Die beim Anfordern der Verbindung angegebenen Berechtigungsnachweise sind nicht g\u00fcltig. M\u00f6glicherweise ist der Benutzer nicht vorhanden, oder er hat keine Berechtigung f\u00fcr den Zugriff auf den Server, oder das Kennwort ist ung\u00fcltig.
+filetransfer.client.bad.credentials.useraction=Korrigieren Sie den Benutzernamen bzw. das Kennwort, und fordern Sie dann eine neue Verbindung an.
+
+filetransfer.response.code.error=CWWKX7955E: Der Datei\u00fcbertragungsclient hat den Antwortcode {0} mit der Nachricht "{1}" f\u00fcr die Verbindung {2} empfangen.
+filetransfer.response.code.error.explanation=Der Datei\u00fcbertragungsclient hat einen unerwarteten Antwortcode vom Server empfangen.
+filetransfer.response.code.error.useraction=Verwenden Sie den Antwortcode des Clients, um die Ursache f\u00fcr dieses Problem zu identifizieren und zu beheben, und f\u00fchren Sie anschlie\u00dfend die Operation erneut aus.
+
+filetransfer.download.file=CWWKX7956I: Die Anforderung zum Herunterladen der Datei {0} war erfolgreich, und der Inhalt der Datei wurde in die Datei {1} geschrieben. Die Verbindung {2} wurde daf\u00fcr verwendet.
+filetransfer.download.file.explanation=Die Downloadanforderung f\u00fcr die angegebene Datei war erfolgreich.
+filetransfer.download.file.useraction=Dies ist eine Informationsnachricht. Es ist keine Aktion erforderlich.
+
+filetransfer.unsupported.operation=CWWKX7957E: Die Operation {0} wird vom Datei\u00fcbertragungsclient f\u00fcr die Verbindung {1} nicht unterst\u00fctzt.
+filetransfer.unsupported.operation.explanation=Die angegebene Operation wird vom Datei\u00fcbertragungsclient nicht unterst\u00fctzt.
+filetransfer.unsupported.operation.useraction=Fordern Sie eine Operation an, die vom Datei\u00fcbertragungsclient unterst\u00fctzt wird.
+
+filetransfer.upload.file=CWWKX7958I: Die Anforderung zum Hochladen der Datei {0} war erfolgreich, und der Inhalt der Datei wurde in die Datei {1} geschrieben. Die Verbindung {2} wurde daf\u00fcr verwendet.
+filetransfer.upload.file.explanation=Die Uploadanforderung f\u00fcr die angegebene Datei war erfolgreich.
+filetransfer.upload.file.useraction=Dies ist eine Informationsnachricht. Es ist keine Aktion erforderlich.
+
+filetransfer.delete.file=CWWKX7959I: Die Anforderung zum L\u00f6schen der Datei {0} \u00fcber die Verbindung {1} war erfolgreich.
+filetransfer.delete.file.explanation=Die Anforderung zum L\u00f6schen der angegebenen Datei war erfolgreich.
+filetransfer.delete.file.useraction=Dies ist eine Informationsnachricht. Es ist keine Aktion erforderlich.
+
+filetransfer.delete.all=CWWKX7960I: Die Anforderung zum L\u00f6schen aller Dateien und Ordner aus der Sammlung {0} \u00fcber die Verbindung {1} war erfolgreich.
+filetransfer.delete.all.explanation=Die L\u00f6schanforderung f\u00fcr die angegebene Sammlung war erfolgreich.
+filetransfer.delete.all.useraction=Dies ist eine Informationsnachricht. Es ist keine Aktion erforderlich.

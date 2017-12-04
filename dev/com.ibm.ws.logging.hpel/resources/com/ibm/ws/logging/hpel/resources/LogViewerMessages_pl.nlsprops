@@ -1,0 +1,296 @@
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME ws/code/ras/src/com/ibm/ws/logging/hpel/resources/LogViewerMessages.nlsprops
+#COMPONENTPREFIX CWTRA
+#COMPONENTNAMEFOR CWTRA WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+# Date Translation Comment - There are two types of date format strings in this properties file. 
+#
+# 1. The first is a date format string which is used  by Java. These date format strings should not be translated but
+# rearranged to represent the  date format convention appropriate for the locale.
+# For example, a Jan 31st date in the US is represented as 01/31/2011 or M/d/yy. In the case of a
+# locale where the day comes before the month, such as 31/01/2011, the string should be changed to d/M/yy. 
+#  The messages IDs CWTRA0001I, CWTRA0002I, CWTRA0003I, and CWTRA0073I
+# must have the strings remain in English - as they are used by the product. But the character order should be 
+# changed as needed to be locale appropriate.
+# 
+# 2. Date format strings in the file that need to be both translated and have characters rearranged per 
+# localization rules of the language being translated. These date strings will appear as-is and are
+# used to demonstrate to the user the date format expected by user input. 
+#
+# For example, a message id with the key M/d/yy will continue to be displayed as M/d/yy.  In another locale, such 
+# as Spanish, it needs to be considered that the month and day position will be swapped and characters might need
+# to be translated, as a US locale understands that y represents year while the spanish word for year is ano and y 
+# might not make sense to the user.  This applies to message ids CWTRA0074I and CWTRA0075I
+# -------------------------------------------------------------------------------------------------
+
+CWTRA0000E=Nie znaleziono katalogu repozytorium.
+
+# Example output in the En_en locale is: 4/27/10
+# Note to translator, see Date Translation Comment above as this is type 1.
+CWTRA0001I=d/M/yy
+
+# Example output in the En_en locale is: April 27, 2010 1:30 A.M. CDT
+# Note to translator, see Date Translation Comment above as this is type 1.
+CWTRA0002I=d MMM yyyy HH:mm z
+
+# Example output in the En_en locale is: 4/27/10 1:30:0:100 CDT
+# Note to translator, see Date Translation Comment above as this is type 1.
+CWTRA0003I=d/M/yy HH:m:s:S z
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0004E=Nie mo\u017cna przeanalizowa\u0107 daty/godziny uruchomienia.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0005E=Nie mo\u017cna dokona\u0107 zapisu do po\u0142o\u017cenia dziennika danych wyj\u015bciowych.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0006E=Nie mo\u017cna przeanalizowa\u0107 daty/godziny zatrzymania.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0007I=LogViewerMessages
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0008E=Nie mo\u017cna przeanalizowa\u0107 identyfikatora w\u0105tku. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0009E=Nie mo\u017cna dokona\u0107 zapisu do po\u0142o\u017cenia wyeksportowanego repozytorium binarnego.  Upewnij si\u0119, \u017ce okre\u015blony katalog jest pusty i ma uprawnienia do zapisu.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0010I=Operacja zako\u0144czona
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0013E=Nie mo\u017cna przeanalizowa\u0107 poziomu {0}  
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0014I=Nie mo\u017cna u\u017cy\u0107 oryginalnych ustawie\u0144 narodowych repozytori\u00f3w. Zostan\u0105 u\u017cyte domy\u015blne ustawienia narodowe systemu. 
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0015I=Nie mo\u017cna dokona\u0107 zapisu do pliku wyj\u015bciowego 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0016I=Zapisywanie danych wyj\u015bciowych do: 
+
+# -------------------------------------------------------------------------------------------------
+LVM_SelectServerPrompt=Wybierz serwer
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0018I=Przetworzono nast\u0119puj\u0105c\u0105 liczb\u0119 rekord\u00f3w: {0} w nast\u0119puj\u0105cym czasie: {1} s (liczba rekord\u00f3w na sekund\u0119: {2}).
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0019E=Nie mo\u017cna przeanalizowa\u0107 odst\u0119pu czasu {0}: {1}.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0020I=Okre\u015blony katalog nie zawiera obecnie \u017cadnych plik\u00f3w dziennika ani plik\u00f3w \u015bledzenia.  Monitorowanie tego katalogu b\u0119dzie kontynuowane.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0021E=Okre\u015blony katalog nie zawiera \u017cadnych plik\u00f3w dziennika ani plik\u00f3w \u015bledzenia.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0022E=Opcja {0} wymaga nast\u0119puj\u0105cej liczby parametr\u00f3w: {1}.  
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0023E=Nieznany argument: {0}
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0024E=Brak argumentu -repositoryDir lub we wskazanym po\u0142o\u017ceniu nie znaleziono repozytorium HPEL. \n\t Argument -repositoryDir jest wymagany, je\u015bli element logViewer jest wywo\u0142ywany spoza katalogu bin profilu. \n\t Je\u015bli warto\u015b\u0107 argumentu -repositoryDir nie wskazuje na repozytorium HPEL, oznacza to, \u017ce specyfikacja \n \t jest niepoprawna lub repozytorium nie zosta\u0142o jeszcze utworzone. \n\t Przyczyn\u0105 mo\u017ce by\u0107 fakt, \u017ce repozytorium HPEL nie jest w\u0142\u0105czone lub \u017ce \n\t serwer aplikacji nie zosta\u0142 uruchomiony od momentu w\u0142\u0105czenia repozytorium HPEL.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0026E=Niepoprawne argumenty daty: data okre\u015blona parametrem -startDate jest p\u00f3\u017aniejsza ni\u017c data okre\u015blona parametrem -stopDate
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0027E=Niepoprawne argumenty poziomu: poziom -minLevel jest wy\u017cszy ni\u017c poziom -maxLevel
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0028E=Okre\u015blono niepoprawny format danych wyj\u015bciowych: {0}
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0029I=U\u017cyj opcji -help, aby wy\u015bwietli\u0107 informacje o u\u017cywaniu.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0030I=Jako katalog repozytorium u\u017cywany jest katalog {0}. 
+
+# -------------------------------------------------------------------------------------------------
+#CWTRA0031I=LogViewer is used to output log data from the HPEL repository (group of common \nbinary log files) to a text file, console, or to a new HPEL repository. \n\n\By default, the LogViewer will output all records in the repository in basic \nformat.  Use options to control what is included in the LogViewer output, to format \nthe output, or to direct where the output is sent. 
+CWTRA0031I=Komenda logViewer\nKomenda logViewer s\u0142u\u017cy do wy\u015bwietlania, odpytywania i filtrowania repozytori\u00f3w dziennik\u00f3w i danych \u015bledzenia HPEL. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0032I=Jako katalog repozytorium u\u017cywany jest katalog {0}.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0033I=logViewer.bat|sh [opcje]
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0034I=Opcje:\n\n-repositoryDir <nazwa katalogu>\n\t Okre\u015bla \u015bcie\u017ck\u0119 do katalogu repozytorium. W przypadku jednoczesnego odpytywania \n\t repozytori\u00f3w dziennika i \u015bledzenia nale\u017cy poda\u0107 \u015bcie\u017ck\u0119 \n\t do katalogu nadrz\u0119dnego, kt\u00f3ry zawiera katalogi danych dziennika \n\t i \u015bledzenia. Je\u015bli jest u\u017cywane domy\u015blne po\u0142o\u017cenie repozytorium, \n\t katalog_g\u0142\u00f3wny_profilu/logs/application_server/, a narz\u0119dzie jest uruchamiane\n\t z katalogu bin profilu, ten argument jest opcjonalny. W przypadku niepodania\n\t po\u0142o\u017cenia narz\u0119dzie sprawdzi po\u0142o\u017cenie domy\u015blne. Je\u015bli w profilu istnieje wiele serwer\u00f3w \n \t aplikacji z repozytoriami HPEL, u\u017cytkownik zostanie zapytany \n\t o repozytorium dziennik\u00f3w i \u015bledzenia serwera, kt\u00f3re ma zosta\u0107 wy\u015bwietlone. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0035I=-outLog <nazwa_pliku>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0036I=\t Okre\u015bla nazw\u0119 pliku, do kt\u00f3rego ma by\u0107 zapisywane wyj\u015bcie tekstowe. Je\u015bli ta informacja\n\t nie zostanie okre\u015blona, wyj\u015bcie tekstowe zostanie wy\u015bwietlone na konsoli. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0037I=-startDate <data_godzina>
+
+# -------------------------------------------------------------------------------------------------
+# Note to translator: Parms {0} and {1} will be substituted with values from CWTRA0074I and CWTRA0075I respectively, so please make sure that if CWTRA0074I and CWTRA0075I are translated, it is possible that H, m, s, S, and z will need to be translated as well.
+# see Date Translation Comment above as an example where translation might be required for type 2.
+CWTRA0038I=\t Okre\u015bla najwcze\u015bniejsz\u0105 dat\u0119 lub dat\u0119 i godzin\u0119, od kt\u00f3rej \n\t pozycje dziennika maj\u0105 by\u0107 wydobywane. Mo\u017cna poda\u0107 tylko dat\u0119 albo \n\t dat\u0119 i godzin\u0119.  Je\u015bli zostanie podana tylko data, b\u0119dzie to r\u00f3wnowa\u017cne \n\t z podaniem godziny 00:00:00:000 w strefie czasowej u\u017cytkownika. Daty powinny \n\t by\u0107 wprowadzane w formacie {0}. Daty i godziny nale\u017cy wprowadza\u0107 w formacie \n\t  {1}, gdzie G to godzina w formacie 24-godzinnym, m \n\t to minuty, s to sekundy, S to milisekundy, a \n\t z to strefa czasowa. Je\u015bli w tej opcji podana zostanie godzina, \n\t nale\u017cy u\u017cy\u0107 cudzys\u0142ow\u00f3w, poniewa\u017c w formacie daty i godziny \n\t wyst\u0119puj\u0105 spacje.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0039I=\t Przyk\u0142ady: \n\t -startDate {0} \n\t -startDate "{1}"
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0040I=-stopDate <data_godzina>
+
+# -------------------------------------------------------------------------------------------------
+# Note to translator: Parms {0} and {1} will be substituted with values from CWTRA0074I and CWTRA0075I respectively, so please make sure that if CWTRA0074I and CWTRA0075I are translated, it is possible that H, m, s, S, and z will need to be translated as well.
+# see Date Translation Comment above as an example where translation might be required for type 2.
+CWTRA0041I=\t Okre\u015bla najp\u00f3\u017aniejsz\u0105 dat\u0119 lub dat\u0119 i godzin\u0119, do kt\u00f3rej \n\t pozycje dziennika maj\u0105 by\u0107 wydobywane. Mo\u017cna poda\u0107 tylko dat\u0119 albo \n\t dat\u0119 i godzin\u0119.  Je\u015bli zostanie podana tylko data, b\u0119dzie to r\u00f3wnowa\u017cne \n\t z podaniem godziny 23:59:59:999 w strefie czasowej u\u017cytkownika.  Daty powinny \n\t by\u0107 wprowadzane w formacie {0}. Daty i godziny nale\u017cy wprowadza\u0107 w formacie \n\t  {1}, gdzie G to godzina w formacie 24-godzinnym, m \n\t to minuty, s to sekundy, S to milisekundy, a \n\t z to strefa czasowa. Je\u015bli w tej opcji podana zostanie godzina, \n\t nale\u017cy u\u017cy\u0107 cudzys\u0142ow\u00f3w, poniewa\u017c w formacie daty i godziny \n\t wyst\u0119puj\u0105 spacje.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0042I=\t Przyk\u0142ady: \n\t -stopDate {0} \n\t -stopDate "{1}"
+
+# Description of the -level option ----------------------------------------------------------------
+CWTRA0044I=\t Okre\u015bla, \u017ce komenda LogViewer b\u0119dzie wyodr\u0119bnia\u0107 tylko pozycje dziennika \n\t z okre\u015blonego poziomu. Je\u015bli zostanie po\u0142\u0105czona z opcjami \n\t -minLevel lub -maxLevel, u\u017cywane s\u0105 ostatnie opcje.
+
+# Description of the -minLevel option -------------------------------------------------------------
+CWTRA0046I=\t Okre\u015bla, \u017ce komenda LogViewer nie b\u0119dzie wy\u015bwietla\u0107 pozycji dziennika \n\t poni\u017cej okre\u015blonego poziomu. Okre\u015blenie poziomu spowoduje \n\t wyodr\u0119bnienie wszystkich komunikat\u00f3w na tym poziomie lub wy\u017cszym.
+
+# Description of the -maxLevel option -------------------------------------------------------------
+CWTRA0048I=\t Okre\u015bla, \u017ce komenda LogViewer nie b\u0119dzie wy\u015bwietla\u0107 pozycji dziennika \n\t powy\u017cej okre\u015blonego poziomu. Okre\u015blenie poziomu spowoduje \n\t wyodr\u0119bnienie wszystkich komunikat\u00f3w na tym poziomie lub ni\u017cszym.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0049I=-format <basic | advanced | CBE-1.0.1>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0050I=\t Okre\u015bla format wyj\u015bciowy. Obs\u0142ugiwane formaty to podstawowy, zaawansowany i \n\t CBE-1.0.1. Je\u015bli ten parametr nie zostanie okre\u015blony, wyj\u015bcie zostanie zwr\u00f3cone \n\t w formacie podstawowym. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0051I=-tail [odst\u0119p czasu]
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0052I=\t Okre\u015bla, \u017ce komenda logViewer ma w spos\u00f3b ci\u0105g\u0142y monitorowa\u0107 repozytorium \n\t i prezentowa\u0107 nowe pozycje dziennika po ich utworzeniu. W tym przypadku po tym parametrze \n\t mo\u017cna poda\u0107 opcjonalny argument ca\u0142kowity, aby okre\u015bli\u0107, jak cz\u0119sto \n\t narz\u0119dzie LogViewer ma odpytywa\u0107 repozytorium pod k\u0105tem nowych rekord\u00f3w. Domy\u015blnie \n\t komenda LogViewer odpytuje repozytorium pod k\u0105tem nowych rekord\u00f3w co 5 sekund. Je\u015bli parametr \n\t jest u\u017cywany z innymi opcjami filtrowania, b\u0119d\u0105 wy\u015bwietlane tylko nowe rekordy \n\t zgodne z kryteriami filtru. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0053I=-monitor [odst\u0119p czasu]
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0054I=\t Synonim opcji -tail.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0055I=-includeLoggers <nazwy_programu_rejestruj\u0105cego>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0056I=\t Opcja umo\u017cliwia okre\u015blenie, kt\u00f3re programy rejestruj\u0105ce maj\u0105 \n\t zosta\u0107 uwzgl\u0119dnione w danych wyj\u015bciowych. W przypadku podania wielu \n\t pozycji, nale\u017cy je rozdzieli\u0107 przecinkami. Je\u015bli opcja ta zostanie u\u017cyta \n\t w po\u0142\u0105czeniu z opcj\u0105 -excludeLoggers, a program rejestruj\u0105cy okre\u015bli zgodno\u015b\u0107 \n\t z obydwoma tymi opcjami, do okre\u015blenia, czy program rejestruj\u0105cy ma \n\t zosta\u0107 uwzgl\u0119dniony czy wykluczony, zostanie u\u017cyta bardziej konkretna pozycja.  Taka sytuacja ma \n\t miejsce w ostatnim z poni\u017cszych przyk\u0142ad\u00f3w, w kt\u00f3rym s\u0105 wykluczone wszystkie \n\t programy rejestruj\u0105ce com.ibm za wyj\u0105tkiem program\u00f3w rejestruj\u0105cych com.ibm.ws.config.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0057I=\t Przyk\u0142ady: \n\t -includeLoggers SystemErr \n\t -includeLoggers "com.ibm.*,org.apache.struts.*" \n\t -includeLoggers "com.ibm.ws.config" -excludeLoggers "com.ibm.*"
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0058I=-excludeLoggers <nazwy_programu_rejestruj\u0105cego>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0059I=\t Opcja umo\u017cliwia okre\u015blenie, kt\u00f3re programy rejestruj\u0105ce maj\u0105\n\t zosta\u0107 wykluczone z danych wyj\u015bciowych. W przypadku podania wielu \n\t pozycji, nale\u017cy je rozdzieli\u0107 przecinkami. Je\u015bli opcja ta zostanie u\u017cyta \n\t w po\u0142\u0105czeniu z opcj\u0105 -includeLoggers, a program rejestruj\u0105cy okre\u015bli zgodno\u015b\u0107 \n\t z obydwoma tymi opcjami, do okre\u015blenia, czy program rejestruj\u0105cy ma \n\t zosta\u0107 uwzgl\u0119dniony czy wykluczony, zostanie u\u017cyta bardziej konkretna pozycja.  Taka sytuacja ma \n\t miejsce w ostatnim z poni\u017cszych przyk\u0142ad\u00f3w, w kt\u00f3rym s\u0105 wykluczone wszystkie \n\t programy rejestruj\u0105ce com.ibm za wyj\u0105tkiem program\u00f3w rejestruj\u0105cych com.ibm.ws.config.
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0060I=\t Przyk\u0142ady: \n\t -excludeLoggers SystemErr \n\t -excludeLoggers "com.hp.*,org.apache.struts.*" \n\t -includeLoggers "com.ibm.ws.config" -excludeLoggers "com.ibm.*"
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0061I=-thread <identyfikator_w\u0105tku>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0062I=\t Powoduje wy\u015bwietlenie pozycji dziennika z okre\u015blonego w\u0105tku. \n\t Ta opcja odfiltruje wszystkie komunikaty w dzienniku, kt\u00f3re nie zosta\u0142y \n\t utworzone przez identyfikator w\u0105tku okre\u015blony przez u\u017cytkownika. \n\t Uwaga: identyfikator w\u0105tku nale\u017cy poda\u0107 w formie warto\u015bci szesnastkowej.
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0065I=-extractToNewRepository <nazwa_katalogu>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0066I=\t Opcja umo\u017cliwia wyodr\u0119bnienie rekord\u00f3w i zapisanie danych wyj\u015bciowych \n\t do nowego repozytorium binarnego. Tej opcji mo\u017cna u\u017cy\u0107 wraz z innymi opcjami \n\t filtrowania, aby uzyska\u0107 w nowym repozytorium podzbi\u00f3r rekord\u00f3w dziennika \n\t i rekord\u00f3w \u015bledzenia.  Opcja u\u017cywa jako argumentu \u015bcie\u017cki do katalogu, w kt\u00f3rym \n\t ma zosta\u0107 zapisane nowe repozytorium. Katalog musi by\u0107 pusty. \n\t Je\u015bli katalog nie istnieje, zostanie utworzony.  Je\u015bli jednak podczas \n\t tworzenia katalogu wyst\u0105pi\u0105 b\u0142\u0119dy, mo\u017ce to spowodowa\u0107 powstanie \n\t zb\u0119dnych katalog\u00f3w.
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0067I=-listInstances
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0068I=\t Ta opcja s\u0142u\u017cy do pokazania identyfikator\u00f3w dost\u0119pnych instancji \n\t proces\u00f3w serwera, kt\u00f3re s\u0105 dost\u0119pne do u\u017cycia z opcj\u0105 -instance. Po uruchomieniu \n\t programu LogViewer z opcj\u0105 -listInstances mo\u017cna u\u017cy\u0107 opcji -instance, aby \n\t wywo\u0142a\u0107 program LogViewer z argumentem w postaci jednego z identyfikator\u00f3w \n\t instancji proces\u00f3w serwera. Poniewa\u017c ta opcja nie powoduje przetwarzania \u017cadnych \n\t rekord\u00f3w dziennika ani rekord\u00f3w \u015bledzenia, po jej podaniu wszystkie inne \n\t opcje s\u0105 ignorowane. 
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0069I=-instance <id_instancji>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0070I=\t Ta opcja s\u0142u\u017cy do pobierania danych dziennika i danych \u015bledzenia \n\t z okre\u015blonego identyfikatora procesu serwera. Przed u\u017cyciem tej opcji nale\u017cy uruchomi\u0107 \n\t program LogViewer z opcj\u0105 -listInstances. Pozwoli to uzyska\u0107 poprawny identyfikator instancji. \n\t Ta opcja jest wymagana w przypadku wy\u015bwietlania dziennik\u00f3w i danych \u015bledzenia \n\t z poziomu \u015brodowiska zawieraj\u0105cego procesy podrz\u0119dne, na przyk\u0142ad z poziomu \n\t systemu operacyjnego z/OS. Je\u015bli ta opcja zostanie u\u017cyta w po\u0142\u0105czeniu z opcj\u0105 \n\t -latestInstance, opcja -instance zostanie zignorowana.
+
+# LogViewer command line heading for listinstances on z/OS
+CWTRA0071I=       Identyfikator instancji                               Data rozpocz\u0119cia
+
+# LogViewer command line heading for listinstances on distributed
+CWTRA0072I=Identyfikator instancji               Data rozpocz\u0119cia
+
+# Instance Start Date format
+CWTRA0073I=dd/MM/yy HH:mm:ss.SSS z
+
+# Example output in the En_en locale is: M/d/yy
+# Note to translator, see Date Translation Comment above as this is type 2.
+CWTRA0074I=d/M/yy
+
+# Example output in the En_en locale is: M/d/yy H:m:s:S z
+# Note to translator, see Date Translation Comment above as this is type 2.
+CWTRA0075I=d/M/yy HH:m:s:S z
+
+NoLevelNameInCustomLevelsFile=Problem z formatem w pliku {0}. Poziom w formie liczby ca\u0142kowitej {1}. Warto\u015b\u0107 powinna zawiera\u0107 nazw\u0119 poziomu.
+TooManyValuesInCustomLevelsFile=Problem z formatem w pliku {0}. Poziom w formie liczby ca\u0142kowitej {1}. Warto\u015b\u0107 {2} zawiera liczb\u0119 pozycji wi\u0119ksz\u0105 ni\u017c {3}.
+LevelIdTooBigInCustomLevelsFile=Problem z formatem w pliku {0}. Poziom w formie liczby ca\u0142kowitej {1}. Przynajmniej jedna z warto\u015bci {2} lub {3} powinna by\u0107 jednoznakowym identyfikatorem poziomu.
+NotIntegerKeyInCustomLevelsFile=Problem z formatem w pliku {0}. Klucz {1} powinien by\u0107 liczb\u0105 ca\u0142kowit\u0105.
+SpecifiedCustomLevelsFileNotFound=Nie znaleziono pliku {0} zawieraj\u0105cego specyfikacj\u0119 poziomu niestandardowego.
+ErrorReadingCustomLevelsFile=Nie mo\u017cna odczyta\u0107 pliku {0} zawieraj\u0105cego specyfikacj\u0119 poziomu niestandardowego. B\u0142\u0105d: {1}
+SpecifiedCustomHeaderFileNotFound=Nie znaleziono pliku {0} zawieraj\u0105cego specyfikacj\u0119 nag\u0142\u00f3wka niestandardowego.
+ErrorReadingCustomHeaderFile=Nie mo\u017cna odczyta\u0107 pliku {0} zawieraj\u0105cego specyfikacj\u0119 nag\u0142\u00f3wka niestandardowego. B\u0142\u0105d: {1}
+
+ErrorUsingHeaderTimeZone=Nag\u0142\u00f3wek dziennika zawiera niepoprawn\u0105 specyfikacj\u0119 strefy czasowej: {0}. Zamiast niej zostanie u\u017cyte domy\u015blne ustawienie systemu.
+
+UnsupportedEncodingError=Okre\u015blone kodowanie {0} nie jest obs\u0142ugiwane w tej maszynie JVM.
+
+# -------------------------------------------------------------------------------------------------
+LVM_ERROR_INSTANCEID=Nie mo\u017cna u\u017cy\u0107 warto\u015bci identyfikatora instancji podanej w opcji -instance.  U\u017cyj jednej z poprawnych warto\u015bci identyfikatora instancji, kt\u00f3re mo\u017cna wy\u015bwietli\u0107 za pomoc\u0105 opcji -listInstances.
+
+
+# ------------------------------------------------------------------------------------------------- 
+LVM_HELP_LATESTINSTANCE=-latestInstance
+
+# -------------------------------------------------------------------------------------------------
+LVM_HELP_LATESTINSTANCE_DESCR=\t Ta opcja umo\u017cliwia pobranie danych dziennika i danych \u015bledzenia \n\t z najnowszej instancji serwera.  Je\u015bli opcja ta zostanie u\u017cyta wraz z opcj\u0105 -instance, \n\t opcja -instance zostanie zignorowana.
+
+
+# ------------------------------------------------------------------------------------------------- 
+LVM_HELP_MESSAGE=-message <komunikat>
+
+# -------------------------------------------------------------------------------------------------
+LVM_HELP_MESSAGE_DESCR=\t Ta opcja umo\u017cliwia pobranie tylko danych dziennika lub \u015bledzenia, kt\u00f3rych \n\t pole komunikatu jest zgodne z okre\u015blonym tekstem. Podczas pobierania danych dziennika lub danych \u015bledzenia \n\t znak gwiazdki (*) reprezentuje seri\u0119 znak\u00f3w, \n\t a znak zapytania (?) reprezentuje jeden znak.
+
+LVM_HELP_EXTENSIONS=-includeExtensions nazwa[=warto\u015b\u0107][,nazwa[=warto\u015b\u0107]]*
+
+LVM_HELP_EXTENSIONS_DESCR=\t Ta opcja s\u0142u\u017cy do pobierania danych dziennika i \u015bledzenia z nazw\u0105 rozszerzenia, kt\u00f3ra \n\t jest zgodna z podan\u0105 nazw\u0105, i z warto\u015bci\u0105 rozszerzenia, kt\u00f3ra jest zgodna z podan\u0105 \n\t warto\u015bci\u0105. Tej opcji mo\u017cna tak\u017ce u\u017cy\u0107 w celu pobrania danych dziennika i \u015bledzenia \n\t z nazw\u0105 rozszerzenia, kt\u00f3ra jest zgodna z podan\u0105 nazw\u0105, i z warto\u015bci\u0105 \n\t rozszerzenia, kt\u00f3ra jest zgodna z dowoln\u0105 warto\u015bci\u0105 \u2013 wystarczy pomin\u0105\u0107 cz\u0119\u015b\u0107 =warto\u015b\u0107 \n\t opcji. Wiele argument\u00f3w nazwa=warto\u015b\u0107 nale\u017cy rozdziela\u0107 przecinkiem. \n\t Nale\u017cy u\u017cy\u0107 dw\u00f3ch znak\u00f3w r\u00f3wno\u015bci (==) zamiast jednego (=) w \n\t przypadkach, gdy nazwa lub warto\u015b\u0107 musi zawiera\u0107 znak r\u00f3wno\u015bci. \n\t Nale\u017cy u\u017cy\u0107 dw\u00f3ch przecink\u00f3w (,,) zamiast jednego (,) w \n\t przypadkach, gdy nazwa lub warto\u015b\u0107 musi zawiera\u0107 przecinek.
+
+LVM_HELP_ENCODING=-encoding <charset>
+
+LVM_HELP_ENCODING_DESCR=\t Okre\u015bla zestaw znak\u00f3w, kt\u00f3re b\u0119d\u0105 u\u017cywane przez program LogViewer do wyprowadzania tekstu.
+
+#--------------------------------------------------------------------------------------------------
+LVM_HELP_SAMPLES_INTRO=Poni\u017cej przedstawiono przyk\u0142ady u\u017cycia programu Log Viewer z niekt\u00f3rymi dost\u0119pnymi opcjami \nwymienionymi powy\u017cej.
+LVM_HELP_SAMPLE1= Aby pobra\u0107 z repozytorium tylko pozycje dziennika, kt\u00f3re mog\u0105 zawiera\u0107 zar\u00f3wno pozycje dziennika, jak i pozycje \u015bledzenia: \n\t logViewer.bat -minLevel DETAIL
+LVM_HELP_SAMPLE2= Aby pobra\u0107 pozycje dziennika z minimalnym poziomem SEVERE z programu rejestruj\u0105cego com.my.company.name.MyClass \nwyst\u0119puj\u0105ce mi\u0119dzy {0} a {1}:\n\t logViewer.bat -startDate "{2}" -stopDate "{3}" \n\t-includeLoggers "com.my.company.name.MyClass"  -minLevel SEVERE
+LVM_HELP_SAMPLE3= Aby utworzy\u0107 kopi\u0119 zapasow\u0105 repozytorium, gdzie {1} b\u0119dzie zawiera\u0107 kopi\u0119 \nistniej\u0105cego repozytorium dziennika i danych \u015bledzenia z {0}: \n \t logViewer.bat -extractToNewRepository {1} -startDate "{2}"
+LVM_HELP_SAMPLE4= Aby wy\u015bwietli\u0107 dziennik i pozycje \u015bledzenia z poziomu kodu aplikacji (przy za\u0142o\u017ceniu, \n\u017ce nazwy programu rejestruj\u0105cego zaczynaj\u0105 si\u0119 od przedrostka com.mycompany): \n \t logViewer.bat -includeloggers com.mycompany.*

@@ -1,0 +1,480 @@
+###############################################################################
+# Copyright (c) 2010, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKG
+#COMPONENTNAMEFOR CWWKG WebSphere kernel config service messages
+#CMVCPATHNAME com.ibm.ws.config/resources/com/ibm/ws/config/internal/resources/ConfigMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+# Message prefix block: CWWKG0001 - CWWKG1000
+# -------------------------------------------------------------------------------------------------
+
+copyright=\n\
+Material cu licen\u0163\u0103 - Proprietatea IBM\n\
+(C) COPYRIGHT International Business Machines Corp. 2010 - Toate drepturile rezervate.\n\
+Drepturi restric\u0163ionate pentru utilizatorii guvernamentali SUA - Utilizarea, duplicarea \u015fi publicarea\n\
+sunt restric\u0163ionate de Contractul GSA ADP Schedule cu IBM Corp.
+
+error.parse.server=CWWKG0001E: Parser-ul de configurare a detectat o eroare la parsarea r\u0103d\u0103cinii configura\u0163iei \u015fi a documentelor de configurare cu referire. Eroare: {0}
+error.parse.server.explanation=Configura\u0163ia serverului nu a putut fi citit\u0103 pentru c\u0103 este o eroare \u00eentr-unul din fi\u015fierele de configurare.
+error.parse.server.useraction=Rezolva\u0163i eroarea din fi\u015fierul de configurare, apoi reporni\u0163i serverul.
+
+error.parse.bundle=CWWKG0002E: Parser-ul de configurare a detectat o eroare \u00een timp ce procesa bundle-ul, versiunea sau identitatea persistat\u0103 (PID). Eroare: {0} Eroare: {1} Motiv: {2}
+error.parse.bundle.explanation=A fost o eroare la parsarea configura\u0163iei specificate.
+error.parse.bundle.useraction=Rezolva\u0163i eroarea de configurare \u015fi apoi re\u00eencerca\u0163i ac\u0163iunea.
+
+info.prop.ignored=CWWKG0003I: Nu este specificat un operator sau valoarea specificat\u0103 este nul\u0103 sau goal\u0103. Proprietatea este ignorat\u0103. Proprietate: {0} Fi\u015fier: {1}
+info.prop.ignored.explanation=O proprietate de configurare a\u015fteptat\u0103 lipse\u015fte sau este nespecificat\u0103 \u015fi a fost ignorat\u0103.
+info.prop.ignored.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+info.unsupported.api=CWWKG0004I: Acest API nu este suportat: {0}
+info.unsupported.api.explanation=API-ul specificat nu este suportat.
+info.unsupported.api.useraction=Folosi\u0163i un API suportat.
+
+info.ignore.unresolved.optional.include=CWWKG0005I: Se ignor\u0103 resursa op\u0163ional\u0103 {0} nerezolvat\u0103({1}). Linia: {2}, {3}
+info.ignore.unresolved.optional.include.explanation=Nu s-a putut g\u0103si un fi\u015fier de configurare op\u0163ional \u015fi va fi ignorat.
+info.ignore.unresolved.optional.include.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+info.ignore.invalid.optional.include=CWWKG0006I: Se ignor\u0103 resursa @include? ({0}), care nu este valid\u0103.  Linia: {1}. {2}
+info.ignore.invalid.optional.include.explanation=Resursa specificat\u0103 nu este valid\u0103 \u015fi a fost ignorat\u0103.
+info.ignore.invalid.optional.include.useraction=Face\u0163i resursa valid\u0103 dac\u0103 nu ar trebui ignorat\u0103.
+
+warn.file.delete.failed=CWWKG0007W: Sistemul nu a putut \u015fterge {0}
+warn.file.delete.failed.explanation=Nu s-a putut \u015fterge resursa specificat\u0103.
+warn.file.delete.failed.useraction=Rezolva\u0163i toate problemele care \u00eempiedic\u0103 \u015ftergerea resursei, apoi re\u00eencerca\u0163i ac\u0163iunea.
+
+warn.file.mkdirs.failed=CWWKG0008W: Sistemul nu a putut crea directoare pentru {0}.
+warn.file.mkdirs.failed.explanation=Nu s-au putut crea directoarele specificate.
+warn.file.mkdirs.failed.useraction=Rezolva\u0163i toate problemele care \u00eempiedic\u0103 crearea directoarelor, apoi re\u00eencerca\u0163i ac\u0163iunea.
+
+warn.bundle.factory.noinstance=CWWKG0009W: Configura\u0163ia {0} din bundle-ul {1} specific\u0103 configura\u0163ie de fabric\u0103 f\u0103r\u0103 ID.
+warn.bundle.factory.noinstance.explanation=Configura\u0163ia de fabric\u0103 specificat\u0103 nu avea un ID.
+warn.bundle.factory.noinstance.useraction=Specifica\u0163i un ID pentru configura\u0163ia de fabric\u0103.
+
+frameworkShutdown=CWWKG0010I: Serverul {0} se opre\u015fte datorit\u0103 unei erori anterioare de ini\u0163ializare.
+frameworkShutdown.explanation=O eroare de ini\u0163ializare anterioar\u0103 a f\u0103cut ca serverul s\u0103-\u015fi opreasc\u0103 activitatea.
+frameworkShutdown.useraction=Rezolva\u0163i eroarea de ini\u0163ializare, apoi reporni\u0163i serverul.
+
+config.validator.foundConflictSingleton=Au fost g\u0103site set\u0103ri \u00een conflict pentru configura\u0163ia {0}.
+config.validator.foundConflictInstance=Au fost g\u0103site set\u0103ri \u00een conflict pentru instan\u0163a {1} a configura\u0163iei {0}.
+config.validator.attributeConflict=Proprietatea {0} are valori \u00een conflict.
+config.validator.valueConflict=Valoarea {0} este setat\u0103 \u00een {1}.
+config.validator.valueConflictNull=Nu este setat\u0103 nicio valoare \u00een {0}.
+config.validator.valueConflictSecure=Valoarea securizat\u0103 este setat\u0103 \u00een {0}.
+config.validator.activeValue=Proprietatea {0} va fi setat\u0103 la {1}.
+config.validator.activeValueNull=Proprietatea {0} nu va fi setat\u0103 la nicio valoare.
+config.validator.activeValueSecure=Proprietatea {0} va fi setat\u0103 la valoarea definit\u0103 \u00een {1}.
+
+warn.config.validate.failed=CWWKG0011W: Validarea configura\u0163iei nu a avut succes. {0}
+warn.config.validate.failed.explanation=Configura\u0163ia nu este valid\u0103, datorit\u0103 problemelor specificate.
+warn.config.validate.failed.useraction=Corecta\u0163i configura\u0163ia.
+
+warn.config.delete.failed=CWWKG0012W: Sistemul nu a putut \u015fterge configura\u0163ia {0}.
+warn.config.delete.failed.explanation=Configura\u0163ia nu a fost \u00eenl\u0103turat\u0103 din serviciul ConfigurationAdmin.
+warn.config.delete.failed.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+warn.config.delete.failed.multiple=CWWKG0013W: Sistemul nu a \u015fters configura\u0163ia {0}. S-au g\u0103sit mai multe configura\u0163ii care se potrivesc.
+warn.config.delete.failed.multiple.explanation=Configura\u0163ia specificat\u0103 nu a putut fi \u00eenl\u0103turat\u0103 cu succes din serviciul ConfigurationAdmin, pentru c\u0103 s-a g\u0103sit mai mult de o configura\u0163ie care se potrive\u015fte.
+warn.config.delete.failed.multiple.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+error.syntax.parse.server=CWWKG0014E: Parser-ul de configurare a detectat o eroare de sintax\u0103 XML \u00een timp ce parsa r\u0103d\u0103cina configura\u0163iei \u015fi documentele de configurare cu referire. Eroare: {0} Fi\u015fier: {1} Linia: {2} Coloana: {3}
+error.syntax.parse.server.explanation=Configura\u0163ia serverului nu a putut fi citit\u0103 pentru c\u0103 e o eroare de sintax\u0103 XML \u00eentr-unul din fi\u015fierele de configurare.
+error.syntax.parse.server.useraction=Rezolva\u0163i eroare de sintax\u0103 XML din documentul de configurare, apoi reporni\u0163i serverul.
+
+error.config.update.init=CWWKG0015E: Sistemul nu a putut actualiza una sau mai multe configura\u0163ii. Eroare: {0}
+error.config.update.init.explanation=Nu s-au putut actualiza una sau mai multe configura\u0163ii \u00een serviciul ConfigurationAdmin.
+error.config.update.init.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+info.config.refresh.start=CWWKG0016I: Se porne\u015fte actualizarea configura\u0163iei serverului.
+info.config.refresh.start.explanation=Fi\u015fierele configura\u0163iei serverului au fost modificate \u015fi sistemul \u00eencearc\u0103 s\u0103 actualizeze configura\u0163ia serverului cu noile informa\u0163ii.
+info.config.refresh.start.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+info.config.refresh.stop=CWWKG0017I: Configura\u0163ia serverului a fost actualizat\u0103 cu succes \u00een {0} secunde.
+info.config.refresh.stop.explanation=Sistemul a detectat modific\u0103ri la fi\u015fierele configura\u0163iei serverului \u015fi a actualizat configura\u0163ia serverului cu noile informa\u0163ii.
+info.config.refresh.stop.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+info.config.refresh.nochanges=CWWKG0018I: Configura\u0163ia serverului nu a fost actualizat\u0103. Nu s-a detectat nici o modificare func\u0163ional\u0103.
+info.config.refresh.nochanges.explanation=Fi\u015fierele de configurare a serverului au fost modificate dar nu s-a detectat nici o modificare de configura\u0163ie func\u0163ional\u0103.
+info.config.refresh.nochanges.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+schemagen.noextensions=CWWKG0019E: Configura\u0163ia p\u0103rinte {0} specificat\u0103 \u00een {1} nu suport\u0103 extensii.
+schemagen.noextensions.explanation=Extensiile metatip trebuie activate pentru a permite configura\u0163iile imbricate.
+schemagen.noextensions.useraction=Ad\u0103uga\u0163i ibm:supportExtensions="true" \u00een fi\u015fierul metatype.xml.
+
+schemagen.invalid.parent=CWWKG0020E: Configura\u0163ia p\u0103rinte {0} specificat\u0103 \u00een {1} nu este valid\u0103.
+schemagen.invalid.parent.explanation=Configura\u0163ia p\u0103rinte specificat\u0103 \u00een atributul ibm:parentPid nu exist\u0103.
+schemagen.invalid.parent.useraction=Corecta\u0163i atributul ibm:parentPid \u00een fi\u015fierul metatype.xml.
+
+schemagen.duplicate.pid=CWWKG0021E: Acela\u015fi PID (identitate persistat\u0103 de configura\u0163ie) {0} este definit \u00een multiple fi\u015fiere metatype.xml.
+schemagen.duplicate.pid.explanation=Configura\u0163ia atributelor pid \u015fi factoryPid trebuie s\u0103 fie unic\u0103.
+schemagen.duplicate.pid.useraction=Edita\u0163i fi\u015fierele metatype.xml astfel \u00eenc\u00e2t toate atributele pid \u015fi factoryPid s\u0103 fie unice.
+
+schemagen.alias.required=CWWKG0022E: Un alias de configurare este necesar pentru configura\u0163ia imbricat\u0103 {0}.
+schemagen.alias.required.explanation=Configura\u0163ia imbricat\u0103 nu are un alias de configurare.
+schemagen.alias.required.useraction=Configura\u0163i un atribut config.alias \u00een fi\u015fierul metatype.xml.
+
+schemagen.invalid.child=CWWKG0023E: Configura\u0163ia copil {0} trebuie s\u0103 fie o configura\u0163ie de fabric\u0103.
+schemagen.invalid.child.explanation=Configura\u0163ia trebuie s\u0103 fie o configura\u0163ie de fabric\u0103.
+schemagen.invalid.child.useraction=Pentru a defini o configura\u0163ie de fabric\u0103, folosi\u0163i un atribut factoryPid \u00een loc de un atribut pid.
+
+error.config.update.disk=CWWKG0024E: Configura\u0163ia de server {0} nu a fost actualizat\u0103 pe disc. Eroare: {1}
+error.config.update.disk.explanation=Datele de configurare a serverului nu au fost stocate cu succes pe disc.
+error.config.update.disk.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+error.config.update.event=CWWKG0025E: Evenimentele de actualizare a configura\u0163iei serverului nu au fost emise pentru {0}. Eroare: {1}
+error.config.update.event.explanation=Evenimentele de actualizare a configura\u0163iei serverului nu au fost emise.
+error.config.update.event.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+error.alias.collision=CWWKG0026E: Dou\u0103 sau mai multe defini\u0163ii de metatipuri \u00eempart acela\u015fi PID (identitate persistat\u0103) sau alias. PID-ul sau aliasul lui {0} este partajat de {1} defini\u0163ii ale claselor de obiecte.
+error.alias.collision.explanation=Mai multe defini\u0163ii de metatipuri \u00eempart aceea\u015fi valoare de alias. Aceasta poate rezulta \u00een comportament runtime nea\u015fteptat.
+error.alias.collision.useraction=Raporta\u0163i problema la IBM service.
+
+info.config.refresh.timeout=CWWKG0027W: Timeout \u00een timpul actualiz\u0103rii configura\u0163iei de server.
+info.config.refresh.timeout.explanation=Sistemul a intrat \u00een timeout \u00een timp ce a\u015ftepta ca componente s\u0103 proceseze noua configura\u0163ie de server.
+info.config.refresh.timeout.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+audit.include.being.processed=CWWKG0028A: Procesarea resursei de configurare incluse: {0}
+audit.include.being.processed.explanation=Con\u0163inuturile resursei specificate vor fi incluse \u00een configura\u0163ia serverului.
+audit.include.being.processed.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+schemagen.bad.reference.extension=CWWKG0029E: Atributul {0} nu are extensie ibm:reference sau extensia nu specific\u0103 un pid.
+schemagen.bad.reference.extension.explanation=Extensia ibm:reference este necesar\u0103 pentru atributele definite cu ibm:type=pid.
+schemagen.bad.reference.extension.useraction=Edita\u0163i fi\u015fierul metatype.xml corespunz\u0103tor \u015fi ad\u0103uga\u0163i sau corecta\u0163i extensia ibm:reference.
+
+schemagen.bad.reference.pid=CWWKG0030E: Referin\u0163a Pid {0} men\u0163ionat\u0103 pe extensia ibm:reference nu exist\u0103.
+schemagen.bad.reference.pid.explanation=Referin\u0163a pid specificat\u0103 \u00een extensia ibm:reference nu exist\u0103 sau este invalid\u0103.
+schemagen.bad.reference.pid.useraction=Edita\u0163i fi\u015fierul metatype.xml corespunz\u0103tor \u015fi corecta\u0163i numele pid \u00een extensia ibm:reference.
+
+error.unique.value.conflict=CWWKG0031E: Valoarea {1} specificat\u0103 pentru atributul unic {0} este deja \u00een utilizare.
+error.unique.value.conflict.explanation=Valoarea pentru atributul specificat trebuie s\u0103 fie unic dar este deja utilizat.
+error.unique.value.conflict.useraction=Modifica\u0163i valoarea atributului astfel \u00eenc\u00e2t s\u0103 fie unic.
+
+warn.config.invalid.value=CWWKG0032W: Valoare nea\u015fteptat\u0103 specificat\u0103 pentru proprietatea [{0}], valoare = [{1}]. Valoarea(le) a\u015fteptat\u0103 este: {2}.
+warn.config.invalid.value.explanation=Valoarea specificat\u0103 pentru proprietatea nu poate fi utilizat\u0103.
+warn.config.invalid.value.useraction=Corecta\u0163i valoarea propriet\u0103\u0163ii pentru a utiliza o valoare a\u015fteptat\u0103.
+
+warning.pid.not.found=CWWKG0033W: Valoarea [{1}] specificat\u0103 pentru atributul de referin\u0163\u0103 {0}] a fost g\u0103sit\u00ee \u00een configura\u0163ie.
+warning.pid.not.found.explanation=Valoarea specificat\u0103 trebuie s\u0103 fie un element \u00een configura\u0163ie.
+warning.pid.not.found.useraction=Modifica\u0163i valoarea atributului pentru a fi de referin\u0163\u0103 pentru un element de configurare valid.
+
+error.targetRequired=CWWKG0034E: Trebuie specificat fi\u015fierul \u0163int\u0103
+error.targetRequired.explanation=Trebuie furnizat fi\u015fierul \u0163int\u0103 pe linia de comand\u0103.
+error.targetRequired.useraction=Re\u00eencerca\u0163i comanda \u015fi specifica\u0163i un fi\u015fier \u0163int\u0103. \u00cencerca\u0163i s\u0103 folosi\u0163ie --help pentru o list\u0103 de op\u0163iuni valide.
+
+error.unknownArgument=CWWKG0035E: Op\u0163iune necunoscut\u0103: {0}
+error.unknownArgument.explanation=Op\u0163iunea specificat\u0103 nu a fost recunoscut\u0103.
+error.unknownArgument.useraction=Re\u00eencerca\u0163i comanda folosind op\u0163iuni valide. \u00cencerca\u0163i s\u0103 folosi\u0163ie --help pentru o list\u0103 de op\u0163iuni valide.
+
+error.schemaGenException=CWWKG0036E: Eroare la generarea schemei: {0}
+error.schemaGenException.explanation=S-a \u00eent\u00e2lnit o eroare la generarea schemei.
+error.schemaGenException.useraction=Investigarea excep\u0163iei
+
+error.schemaGenInvalidJarLocation=CWWKG0037E: Loca\u0163ie conserv\u0103 invalid\u0103.
+error.schemaGenInvalidJarLocation.explanation=Loca\u0163ia conservei de configurare este incorect\u0103.
+error.schemaGenInvalidJarLocation.useraction=Verifica\u0163i c\u0103 conserva de configurare este localizat\u0103 \u00een wlp/lib.
+
+error.ocdExists=CWWKG0038E: Clasa de obiecte cu {0} este \u00eenregistrat\u0103 deja.
+error.ocdExists.explanation=Nu se poate \u00eenregistra o clas\u0103 de obiecte de dou\u0103 ori.
+error.ocdExists.useraction=\u00cenl\u0103tura\u0163i clasa de obiecte duplicat.
+
+error.dsExists=CWWKG0039E: Desemnarea cu {0} este \u00eenregistrat\u0103 deja.
+error.dsExists.explanation=Nu se poate \u00eenregistra o desemnare de dou\u0103 ori.
+error.dsExists.useraction=\u00cenl\u0103tura\u0163i clasa de desemnare duplicat.
+
+error.fileNotFound=CWWKG0040E: Fi\u015fierul {0} nu a fost g\u0103sit.
+error.fileNotFound.explanation=Fi\u015fierul care con\u0163ine lista pid-urilor de exclus nu a fost g\u0103sit.
+error.fileNotFound.useraction=Corecta\u0163i numele fi\u015fierului \u015fi rula\u0163i din nou comanda.
+
+error.invalidArgument=CWWKG0041E: Argument invalid {0}. Valoarea trebuie specificat\u0103.
+error.invalidArgument.explanation=Nu a fost g\u0103sit\u0103 o valoare pentru argument.
+error.invalidArgument.useraction=Re\u00eencerca\u0163i comanda cu valoarea specificat\u0103.
+
+warn.parse.circular.include=CWWKG0042W: Resursele de configura\u0163ie incluse dintr-o dependen\u0163\u0103 circular\u0103: {0}.
+warn.parse.circular.include.explanation=Una sau mai multe configura\u0163ii incluse creeaz\u0103 o dependen\u0163\u0103 circular\u0103.
+warn.parse.circular.include.useraction=\u00cenl\u0103tura\u0163i includerile care determin\u0103 dependen\u0163a circular\u0103.
+
+info.configValidator.validator=CWWKG0043I: Clasa de validator configura\u0163ie este \u00een uz: {0}.
+info.configValidator.validator.explanation=Clasa desemnat\u0103 va fi folosit\u0103 pentru a valida configura\u0163ia.
+info.configValidator.validator.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+fatal.configValidator.documentNotValid=CWWKG0044E: Serverul se opre\u015fte (shutdown) deoarece un document de configura\u0163ie nu con\u0163ine o semn\u0103tur\u0103 valid\u0103: {0}.
+fatal.configValidator.documentNotValid.explanation=Documentul de configura\u0163ie desemnat nu con\u0163ine o semn\u0103tur\u0103 valid\u0103 sau o por\u0163iune a documentului care este protejat\u0103 de semn\u0103tur\u0103 a fost modificat\u0103. Acest mesaj este precedat de un mesaj de eroare care ofer\u0103 mai multe informa\u0163ii despre eroarea spcific\u0103 din document.
+fatal.configValidator.documentNotValid.useraction=Corecta\u0163i eroarea din documentul de configura\u0163ie care a fost identificat\u0103 \u00een mesajul precedent.
+
+error.configValidator.parseFailed=CWWKG0045E: Nu se poate parsa un document de configura\u0163ie: {0}, {1}.
+error.configValidator.parseFailed.explanation=A fost aruncat\u0103 o excep\u0163ie \u00een timp ce s-a \u00eencercat parsarea documentului de configura\u0163ie specificat.
+error.configValidator.parseFailed.useraction=Corecta\u0163i eroarea din documentul de configura\u0163ie care a cauzat aruncarea excep\u0163iei \u015fi apoi reporni\u0163i serverul.
+
+error.configValidator.unmarshalFailed=CWWKG0046E: Nu s-a putut executa opera\u0163ia unmarshal asupra semn\u0103turii con\u0163inute \u00eentr-un document de configura\u0163ie: {0}, {1}.
+error.configValidator.unmarshalFailed.explanation=A fost aruncat\u0103 o excep\u0163ie \u00een timp ce s-a \u00eencercat opera\u0163ia unmarshal asupra documentului de configura\u0163ie specificat.
+error.configValidator.unmarshalFailed.useraction=Corecta\u0163i eroarea din documentul de configura\u0163ie care a cauzat aruncarea excep\u0163iei \u015fi apoi reporni\u0163i serverul.
+
+error.configValidator.error=CWWKG0047E: A ap\u0103rut o eroare \u00een timp ce se \u00eencerca verificarea unui document de configura\u0163ie: {0}, {1}.
+error.configValidator.error.explanation=A fost aruncat\u0103 o excep\u0163ie \u00een timp ce s-a \u00eencercat s\u0103 se verifice dac\u0103 documentul de configura\u0163ie desemnat con\u0163ine o semn\u0103tur\u0103 valid\u0103.
+error.configValidator.error.useraction=Corecta\u0163i eroarea din documentul de configura\u0163ie care a cauzat aruncarea excep\u0163iei \u015fi apoi reporni\u0163i serverul.
+
+error.configValidator.signatureMissing=CWWKG0048E: Documentul de configura\u0163ie nu con\u0163ine o semn\u0103tur\u0103: {0}.
+error.configValidator.signatureMissing.explanation=Un document de configura\u0163ie desemnat nu con\u0163ine o semn\u0103tur\u0103.
+error.configValidator.signatureMissing.useraction=\u00cenlocui\u0163i documentul de configura\u0163ie desemnat cu o versiune a documentului care con\u0163ine o semn\u0103tur\u0103 valid\u0103 \u015fi reporni\u0163i serverul.
+
+error.configValidator.keyInfoMissing=CWWKG0049E: Nu a fost g\u0103sit un element KeyInfo \u00een semn\u0103tur\u0103 con\u0163inut\u0103 \u00eentr-un document de configura\u0163ie: {0}.
+error.configValidator.keyInfoMissing.explanation=Semn\u0103tura din documentul de configura\u0163ie desemnat nu con\u0163ine un element KeyInfo.
+error.configValidator.keyInfoMissing.useraction=\u00cenlocui\u0163i documentul de configura\u0163ie desemnat cu o versiune a documentului care con\u0163ine o semn\u0103tur\u0103 valid\u0103 \u015fi reporni\u0163i serverul.
+
+error.configValidator.signerNotAuthorized=CWWKG0050E: Documentul de configura\u0163ie a fost semnat de o entitate neautorizat\u0103: {0}.
+error.configValidator.signerNotAuthorized.explanation=Semn\u0103tura din documentul de configura\u0163ie desemnat con\u0163ine un certificat neautorizat.
+error.configValidator.signerNotAuthorized.useraction=\u00cenlocui\u0163i documentul de configura\u0163ie desemnat cu o versiune a documentului care con\u0163ine o semn\u0103tur\u0103 valid\u0103 \u015fi reporni\u0163i serverul.
+
+error.configValidator.x509DataMissing=CWWKG0051E: Nu a fost g\u0103sit elementul X509Data \u00een semn\u0103tur\u0103 con\u0163inut\u0103 \u00eentr-un document de configura\u0163ie: {0}.
+error.configValidator.x509DataMissing.explanation=Semn\u0103tura din documentul de configura\u0163ie desemnat nu con\u0163ine un element X509Data.
+error.configValidator.x509DataMissing.useraction=\u00cenlocui\u0163i documentul de configura\u0163ie desemnat cu o versiune a documentului care con\u0163ine o semn\u0103tur\u0103 valid\u0103 \u015fi reporni\u0163i serverul.
+
+error.configValidator.x509CertificateMissing=CWWKG0052E: Nu a fost g\u0103sit elementul X509Certificate \u00een semn\u0103tur\u0103 con\u0163inut\u0103 \u00eentr-un document de configura\u0163ie: {0}.
+error.configValidator.x509CertificateMissing.explanation=Semn\u0103tura din documentul de configura\u0163ie desemnat nu con\u0163ine un element X509Certificate.
+error.configValidator.x509CertificateMissing.useraction=\u00cenlocui\u0163i documentul de configura\u0163ie desemnat cu o versiune a documentului care con\u0163ine o semn\u0103tur\u0103 valid\u0103 \u015fi reporni\u0163i serverul.
+
+error.configValidator.protectedSectionModified=CWWKG0053E: A fost modificat\u0103 o sec\u0163iune dintr-un document de configura\u0163ie care este protejat\u0103 de o semn\u0103tur\u0103: {0}
+error.configValidator.protectedSectionModified.explanation=Sec\u0163iunea protejat\u0103 dintr-un document de configura\u0163ie desemnat a fost actualizat\u0103.
+error.configValidator.protectedSectionModified.useraction=\u00cenl\u0103tura\u0163i actualizarea din sec\u0163iunea protejat\u0103 a documentului de configura\u0163ie desemnat \u015fi reporni\u0163i serverul.
+
+error.configValidator.signatureNotValid=CWWKG0054E: Semn\u0103tura con\u0163inut\u0103 \u00eentr-un document de configura\u0163ie nu este valid\u0103: {0}.
+error.configValidator.signatureNotValid.explanation=Semn\u0103tura din documentul de configura\u0163ie desemnat nu este valid\u0103.
+error.configValidator.signatureNotValid.useraction=\u00cenlocui\u0163i documentul de configura\u0163ie desemnat cu o versiune a documentului care con\u0163ine o semn\u0103tur\u0103 valid\u0103 \u015fi reporni\u0163i serverul.
+
+info.configValidator.documentValid=CWWKG0055I: Documentul de configura\u0163ie con\u0163ine o semn\u0103tur\u0103 valid\u0103: {0}.
+info.configValidator.documentValid.explanation=Documentul de configura\u0163ie desemnat con\u0163ine o semn\u0103tur\u0103 valid\u0103.
+info.configValidator.documentValid.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+fatal.configValidator.dropinsEnabled=CWWKG0056E: Serverul s-a oprit (shutdown) pentru c\u0103 sunt activate drop-in-urile.
+fatal.configValidator.dropinsEnabled.explanation=Documentele de configura\u0163ie folosite pentru pornirea unui server \u00eenglobat fie nu au con\u0163inut un element applicationMonitor, fie au con\u0163inut un element applicationMonitor care nu a dezactivat drop-in-urile.
+fatal.configValidator.dropinsEnabled.useraction=Specifica\u0163i "dropinsEnabled=false" \u00eentr-un element applicationMonitor \u00eentr-un document de configura\u0163ie.
+
+warn.configValidator.refreshFailed=CWWKG0057W: Noua configura\u0163ie nu a fost \u00eenc\u0103rcat\u0103 din cauza semn\u0103turii invalide.
+warn.configValidator.refreshFailed.explanation=Noul document de configura\u0163ie nu con\u0163ine o semn\u0103tur\u0103 valid\u0103, astfel configura\u0163ia nu va fi modificat\u0103.
+warn.configValidator.refreshFailed.useraction=\u00cenlocui\u0163i documentul de configura\u0163ie actualizat cu o versiune a documentului care con\u0163ine o semn\u0103tur\u0103 valid\u0103 \u015fi apoi re\u00eencerca\u0163i actualizarea.
+
+error.missing.required.attribute=CWWKG0058E: Elementului {0} cu identificatorul unic {2} \u00eei lipse\u015fte atributul necesar {1}.
+error.missing.required.attribute.explanation=Atributul lips\u0103 este necesar \u00een fi\u015fierul de configurare server.xml sau unul dn fi\u015fierele sale de configurare cu referin\u0163\u0103.
+error.missing.required.attribute.useraction=Ad\u0103uga\u0163i atributul \u00een fi\u015fierul de configurare server.xml sau unul din fi\u015fierele sale de configurare cu referin\u0163\u0103.
+
+error.missingSuper=CWWKG0059E: Identitatea persstat\u0103 {0} nu a putut fi procesat\u0103 pentru c\u0103 extinde o identitate persistat\u0103 indisponibil\u0103 {1}.
+error.missingSuper.explanation=A ap\u0103rut o eroare intern\u0103 \u00een timpul unei \u00eencerc\u0103ri de configurare a identit\u0103\u0163ii persistate specificate, pentru c\u0103 extinde alt\u0103 identitate persistat\u0103 care era indisponibil\u0103.
+error.missingSuper.useraction=Asigura\u0163i-v\u0103 c\u0103 bundle-ul sau caracteristica ce furnizeaz\u0103 identitatea persistat\u0103 lips\u0103 este disponibil(\u0103) \u00een timpul rul\u0103rii. Aceasta este o eroare intern\u0103. Urma\u0163i procedurile standard WebSphere de determinare a problemelor.
+
+error.final.override=CWWKG0060E: Nu este valid s\u0103 \u00eenlocui\u0163i sau s\u0103 redenumi\u0163i atributul {0} pentru identitatea persistat\u0103 {1} pentru c\u0103 este declarat\u0103 final\u0103 de identitatea persistat\u0103 {2}.
+error.final.override.explanation=Atributul este declarat final. Orice \u00eencercare de reconfigurare va fi ignorat\u0103.
+error.final.override.useraction=Nu \u00eencerca\u0163i s\u0103 reconfigura\u0163i un atribut care a fost marcat ca final. Aceasta este o eroare intern\u0103. Urma\u0163i procedurile standard WebSphere de determinare a problemelor.
+
+#"ibm:extends" is an xml attribute name and should not be translated
+#TODO could this be renamed error.factoryOnly.extends?
+error.factoryOnly=CWWKG0061E: Identitatea persistat\u0103 {0} nu este o identitate persistat\u0103 de fabric\u0103 \u015fi, prin urmare, nu poate fi folosit\u0103 pentru a extinde identitatea persistat\u0103 {1}.
+error.factoryOnly.explanation=Atributul ibm:extends este aplicabil numai pentru identit\u0103\u0163ile persistate de fabric\u0103.
+error.factoryOnly.useraction=Reconfigura\u0163i identitatea persistat\u0103 pentru a folosi o identitate persistat\u0103 de fabric\u0103 sau \u00eenl\u0103tura\u0163i atributul ibm:extends din defini\u0163ia componentei de obiect. Aceasta este o eroare intern\u0103. Urma\u0163i procedurile standard WebSphere de determinare a problemelor.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.factoryOnly.extendsAlias=CWWKG0096E: Identitatea persistat\u0103 {0} nu este o identitate persistat\u0103 de fabric\u0103 \u015fi, prin urmare, nu poate avea un atribut ibm:extendsAlias de {1}. Reconfigura\u0163i identitatea persistat\u0103 pentru a folosi o identitate persistat\u0103 de fabric\u0103 sau \u00eenl\u0103tura\u0163i atributul ibm:extendsAlias din identitatea persistent\u0103.
+error.factoryOnly.extendsAlias.explanation=Atributul ibm:extendsAlias este aplicabil numai pentru identit\u0103\u0163ile persistate de fabric\u0103 care extind alt\u0103 identitate persistat\u0103 de fabric\u0103.
+error.factoryOnly.extendsAlias.useraction=Reconfigura\u0163i identitatea persistat\u0103 pentru a folosi o identitate persistat\u0103 de fabric\u0103 sau \u00eenl\u0103tura\u0163i atributul ibm:extendsAlias din identitatea persistent\u0103.
+
+#"ibm:extends" is an xml attribute name and should not be translated
+error.superFactoryOnly=CWWKG0062E: Identitatea persistat\u0103 {0} nu este o identitate persistat\u0103 de fabric\u0103, prin urmare, nu poate fi extins\u0103 de identitatea persistat\u0103 {1}.
+error.superFactoryOnly.explanation=Atributul ibm:extends este aplicabil numai pentru identit\u0103\u0163ile persistate de fabric\u0103.
+error.superFactoryOnly.useraction=Reconfigura\u0163i identitatea persistat\u0103 pentru a folosi o identitate persistat\u0103 de fabric\u0103 sau \u00eenl\u0103tura\u0163i atributul ibm:extends din defini\u0163ia componentei de obiect. Aceasta este o eroare intern\u0103. Urma\u0163i procedurile standard WebSphere de determinare a problemelor.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.ExtendsAliasMustExtend=CWWKG0097E: Identitatea persistat\u0103 {0} specific\u0103 un atribut ibm:extendsAlias de {1} \u015fi trebuie, prin urmare, s\u0103 specifice atributul ibm:extends.
+error.ExtendsAliasMustExtend.explanation=Atunci c\u00e2nd specifica\u0163i un atribut ibm:extendsAlias, trebuie s\u0103 specifica\u0163i un atribut ibm:extends.
+error.ExtendsAliasMustExtend.useraction=Specifica\u0163i un atribut ibm:extends.
+
+#"ibm:parentPid" and "ibm:childAlias" are xml attribute names and should not be translated
+error.parentpid.and.childalias=CWWKG0098E: Identitatea persistat\u0103 {0} specific\u0103 atributul {1} de {2} \u015fi trebuie, prin urmare, s\u0103 specifice atributul {3}.
+error.parentpid.and.childalias.explanation=Metatype-ul indic\u0103 faptul c\u0103 un element imbricat primul-copil a fost specificat par\u0163ial. Elementele imbricate primul-copil trebuie, prin urmare, s\u0103 specifice \u015fi atributul ibm:parentPid \u015fi atributul ibm:childAlias.
+error.parentpid.and.childalias.useraction=Dac\u0103 acest metatype este destinat unui element imbricat primul-copil, furniza\u0163i atributul lips\u0103. Altfel, \u00eenl\u0103tura\u0163i atributul care a fost furnizat. 
+
+#"ibm:rename" is an xml attribute name and should not be translated
+schemagen.rename.attribute.missing=CWWKG0063E: Nu se poate redenumi defini\u0163ia atributului {1} a\u015fa cum s-a specificat de atributul ibm:rename {2} \u00een identitatea persistat\u0103 {0}.
+schemagen.rename.attribute.missing.explanation=Un atribut dintr-un metatip de extindere \u00eencearc\u0103 s\u0103 redenumeasc\u0103 un atribut inexistent.
+schemagen.rename.attribute.missing.useraction=Corecta\u0163i extensia de redenumire pentru a specifica un atribut existent. Aceasta este o eroare intern\u0103. Urma\u0163i procedurile standard WebSphere de determinare a problemelor.
+
+schemagen.invalid.type.override=CWWKG0064E: \u00cenlocuire invalid\u0103 a tipului de atribut de c\u0103tre atributul {0} \u00een metatipul {1}. Tipul original {2} va fi folosit \u00een loc.
+schemagen.invalid.type.override.explanation=Un atribut \u00eencearc\u0103 s\u0103 \u00eenlocuiasc\u0103 tipul unui atribut extins, dar tipurile de atribute nu pot fi modificate de atributele de extensie.
+schemagen.invalid.type.override.useraction=Tipul de atribut va fi setat automat la tipul original. Pentru a evita reapari\u0163ia acestei erori, corecta\u0163i valoarea tipului de pe atribut cu extensia de redenumire. Aceasta este o eroare intern\u0103. Urma\u0163i procedurile standard WebSphere de determinare a problemelor.
+
+schemagen.non.factorypid.extension=CWWKG0065E: O identitate persistat\u0103 ne-fabric\u0103 {0} \u00eencearc\u0103 s\u0103 extind\u0103 alt metatip.
+schemagen.non.factorypid.extension.explanation=O identitate persistat\u0103 ne-fabric\u0103 \u00eencearc\u0103 s\u0103 extind\u0103 alt metatip. Numai identit\u0103\u0163ile persistate de fabric\u0103 pot folosi extensii.
+schemagen.non.factorypid.extension.useraction=Modifica\u0163i tipul s\u0103 fie o fabric\u0103, sau \u00eenl\u0103tura\u0163i extensiile din defini\u0163ia metatipului. Aceasta este o eroare intern\u0103. Urma\u0163i procedurile standard WebSphere de determinare a problemelor.
+
+schemagen.invalid.extension.pid=CWWKG0066E: Identitatea persistat\u0103 metatip {0} \u00eencearc\u0103 s\u0103 extind\u0103 o identitate persistat\u0103 inexistent\u0103 {1}
+schemagen.invalid.extension.pid.explanation=Metatipul \u00eencearc\u0103 s\u0103 extind\u0103 alt metatip care nu exist\u0103.
+schemagen.invalid.extension.pid.useraction=Modifica\u0163i extensia metatipului pentru a specifica o identitate persistat\u0103 existent\u0103. Aceasta este o eroare intern\u0103. Urma\u0163i procedurile standard WebSphere de determinare a problemelor.
+
+#"ibm:rename" is an xml attribute name and should not be translated
+error.rename.attribute.missing=CWWKG0067E: Nu se poate redenumi defini\u0163ia atributului {1} specificat\u0103 de atributul ibm:rename {2} \u00een identitatea persistat\u0103 {0}.
+error.rename.attribute.missing.explanation=Un atribut dintr-un metatip de extindere \u00eencearc\u0103 s\u0103 redenumeasc\u0103 un atribut inexistent.
+error.rename.attribute.missing.useraction=Corecta\u0163i numele de atribut identificat \u00een extensia de redenumire pentru a specifica un atribut existent. Aceasta este o eroare intern\u0103. Urma\u0163i procedurile standard WebSphere de determinare a problemelor.
+
+#"ibm:rename" is an xml attribute name and should not be translated
+error.conflicting.rename.attribute=CWWKG0068E: Nu se poate redenumi atributul {0} \u00een {1} \u00een identitatea persistat\u0103 {2} pentru c\u0103 acest atribut a fost deja redenumit de un tip extins.
+error.conflicting.rename.attribute.explanation=Metatipul are un atribut ibm:rename care face referin\u0163\u0103 la un ID de defini\u0163ie al unui atribut care a fost redenumit de un metatip extins.
+error.conflicting.rename.attribute.useraction=Modifica\u0163i atributul ibm:rename pentru a specifica un ID de defini\u0163ie al unui atribut valid. Aceasta este o eroare intern\u0103. Urma\u0163i procedurile standard WebSphere de determinare a problemelor.
+
+schemagen.unresolved.attrib.desc=CWWKG0069W: Atributul {0} al defini\u0163ie de clas\u0103 de obiecte {1} din bundle-ul {2} are o descriere de atribut nerezolvat\u0103.
+schemagen.unresolved.attrib.desc.explanation=Un atribut din metatip are o descriere localizat\u0103, dar mesajul nu poate fi rezolvat. Drept urmare, atributul nu va fi afi\u015fat \u00een mesaj.
+schemagen.unresolved.attrib.desc.useraction=Fie folosi\u0163i o descriere de metatip nelocalizat\u0103, fie v\u0103 asigura\u0163i c\u0103 fi\u015fierul de localiz\u0103ri con\u0163ine descrierea localizat\u0103.
+
+schemagen.unresolved.attrib.name=CWWKG0070W: Atributul {0} al defini\u0163ie de clas\u0103 de obiecte {1} din bundle-ul {2} are un nume de atribut nerezolvat\u0103.
+schemagen.unresolved.attrib.name.explanation=Un atribut din metatip are un nume localizat, dar mesajul nu poate fi rezolvat.
+schemagen.unresolved.attrib.name.useraction=Fie folosi\u0163i un nume de metatip nelocalizat, fie v\u0103 asigura\u0163i c\u0103 fi\u015fierul de localiz\u0103ri con\u0163ine numele localizat.
+
+schemagen.no.attrib.desc=CWWKG0071W: Atributul {0} al defini\u0163ie de clas\u0103 de obiecte {1} din bundle-ul {2} nu are nici o descriere de atribut.
+schemagen.no.attrib.desc.explanation=Unui atribut din metatip \u00eei lipse\u015fte o descriere.
+schemagen.no.attrib.desc.useraction=Furniza\u0163i o descriere pentru atributul metatipului.
+
+schemagen.no.attrib.name=CWWKG0072W: Atributul {0} al defini\u0163ie de clas\u0103 de obiecte {1} din bundle-ul {2} nu are nici un nume de atribut.
+schemagen.no.attrib.name.explanation=Unui atribut din metatip \u00eei lipse\u015fte un nume.
+schemagen.no.attrib.name.useraction=Furniza\u0163i un nume pentru atributul metatipului.
+
+missing.metatype.file=CWWKG0073W: Nu se pot g\u0103si fi\u015fierele de localizare metatip din bundle-ul {0}.
+missing.metatype.file.explanation=Jar-ul specificat nu con\u0163ine fi\u015fierele de localizare metatip cerute.
+missing.metatype.file.useraction=Contacta\u0163i autorul bundle-ului pentru a ob\u0163ine un bundle cu fi\u015fierele de localizare necesare.
+
+error.config.update.exception=CWWKG0074E: Nu se poate actualiza configura\u0163ia pentru {0} cu identificatorul unic {2} din cauza excep\u0163iei: {1}.
+error.config.update.exception.explanation=A ap\u0103rut o excep\u0163ie \u00een timp ce se \u00eencerca actualizarea configura\u0163iei.
+error.config.update.exception.useraction=Verifica\u0163i configura\u0163ia pentru erori \u015fi \u00eencerca\u0163i din nou actualizarea.
+
+error.attribute.validation.exception=CWWKG0075E: Valoarea {2} nu este valid\u0103 pentru atributul {1} al elementului de configurare {0}. Mesajul de validare a fost: {3}.
+error.attribute.validation.exception.explanation=Validarea atributului a e\u015fuat.
+error.attribute.validation.exception.useraction=Actualiza\u0163i configura\u0163ia pentru a folosi o valoare valid\u0103 pentru atribut.
+
+warning.old.config.still.in.use=CWWKG0076W: Configura\u0163ia anterioar\u0103 pentru {0} cu ID-ul {1} este \u00eenc\u0103 \u00een uz.
+warning.old.config.still.in.use.explanation=Actualizarea elementului de configurare a e\u015fuat, dar se va continua folosirea unei valori anterioare.
+warning.old.config.still.in.use.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+error.specify.parentpid=CWWKG0077E: Defini\u0163ia metatipului pentru {0} define\u015fte un alias copil, dar nu define\u015fte un p\u0103rinte.
+error.specify.parentpid.explanation=Aceasta este o eroare intern\u0103 unde atributul childAlias este valid numai c\u00e2nd se specific\u0103 \u015fi un atributparentPID.
+error.specify.parentpid.useraction=Defini\u0163i atributul parentPID \u00een defini\u0163ia metatipului. Aceasta este o eroare intern\u0103. Urma\u0163i procedurile WebSphere de determinare a problemelor.
+
+error.prod.ext.features.not.found=CWWKG0078E: Extensia de produs {0} nu con\u0163ine nici o caracteristic\u0103.
+error.prod.ext.features.not.found.explanation=Fi\u015fierele manifest ale caracteristicii asociate cu extensia de produs specificat\u0103 nu au fost g\u0103site.
+error.prod.ext.features.not.found.useraction=Verifica\u0163i c\u0103 este valid directorul unde se afl\u0103 manifestele caracteristicii.
+
+error.prod.ext.not.found=CWWKG0079E: Extensia de produs {0} nu se poate g\u0103si la loca\u0163ia {1}.
+error.prod.ext.not.found.explanation=Extensia de produs nu se poate g\u0103si la loca\u0163ia men\u0163ionat\u0103.
+error.prod.ext.not.found.useraction=Verifica\u0163i c\u0103 loca\u0163ia de instalare a produsului este definit\u0103 corect \u00een fi\u015fierul de propriet\u0103\u0163i pentru instalarea produsului.
+
+error.prod.ext.not.defined=CWWKG0080E: Extensia de produs cu numele {0} nu exist\u0103.
+error.prod.ext.not.defined.explanation=Extensia de produs cu numele specificat nu exist\u0103.
+error.prod.ext.not.defined.useraction=Verifica\u0163i c\u0103 numele extensiei de produs specificat este valid.
+
+error.invalid.boolean.attribute=CWWKG0081E: Valoarea {0} pentru atributul boolean {1} este invalid\u0103. Valorile valide sunt "true" \u015fi "false". Valoarea implicit\u0103 a {2} va fi utilizat\u0103.
+error.invalid.boolean.attribute.explanation=Validarea atributului a e\u015fuat.
+error.invalid.boolean.attribute.useraction=Actualiza\u0163i configura\u0163ia pentru a folosi o valoare valid\u0103 pentru atribut.
+
+warning.invalid.boolean.attribute=CWWKG0082W: Valoarea {0} pentru atributul boolean {1} va fi interpretat\u0103 ca "false".
+warning.invalid.boolean.attribute.explanation=Validarea atributului a e\u015fuat.
+warning.invalid.boolean.attribute.useraction=Actualiza\u0163i configura\u0163ia pentru a folosi o valoare valid\u0103 pentru atribut.
+
+warn.config.invalid.using.default.value=CWWKG0083W: A ap\u0103rut un defect de validare \u00een timpul proces\u0103rii propriet\u0103\u0163ii [{0}], valoare = [{1}]. Valoarea implicit\u0103 \u00een utilizare: {2}. 
+warn.config.invalid.using.default.value.explanation=Valoarea specificat\u0103 pentru proprietate nu este valid\u0103 \u015fi nu poate fi utilizat\u0103.  Valoarea implicit\u0103 este utilizat\u0103 \u00een loc.
+warn.config.invalid.using.default.value.useraction=Sistemul va utiliza valoarea implicit\u0103 sau pute\u0163i corecta valoarea propriet\u0103\u0163ii pentru a o utiliza ca valoare valid\u0103.
+
+warn.cannot.resolve.optional.include=CWWKG0084W: Fi\u015fierul op\u0163ional de configurare inclus nu poate fi rezolvat: {0}
+warn.cannot.resolve.optional.include.explanation=Fi\u015fierul de configurare specificat nu este valid. Uzual, aceast\u0103 eroare indic\u0103 faptul c\u0103 URL-ul nu este bine format sau con\u0163ine un protocol necunoscut.
+warn.cannot.resolve.optional.include.useraction=Verifica\u0163i URL-ul pentru a v\u0103 asigura c\u0103 este valid \u015fi c\u0103 folose\u015fte un protocol binecunoscut, cum ar fi file, http sau https.
+
+warning.unexpected.server.element=CWWKG0085W: Documentul de configurare server con\u0163ine un element de server imbricat. Este ignorat\u0103 configura\u0163ia imbricat\u0103.
+warning.unexpected.server.element.explanation=Un element de server este imbricat \u00een elementul de server la nivel de top \u00een documentul XML de configurare. Va fi ignorat con\u0163inutul din serverul imbricat. 
+warning.unexpected.server.element.useraction=Actualiza\u0163i documentul de configurare server pentru a \u00eenl\u0103tura elementul de server imbricat.
+
+warn.bad.reference.filter=CWWKG0086W: Filtrul de referin\u0163e {0} nu este valid.
+warn.bad.reference.filter.explanation=Aceasta este o eroare intern\u0103. Filtrul de referin\u0163e specificat \u00een defini\u0163ia atributului are o sintax\u0103 invalid\u0103. 
+warn.bad.reference.filter.useraction=Autorul defini\u0163iei de metatip trebuie s\u0103 specifice un filtru de referin\u0163e valid. Aceasta este o eroare intern\u0103.
+
+warning.multiple.matches=CWWKG0087W: Valoarea [{1}] specificat\u0103 pentru atributul de referin\u0163\u0103 [{0}] nu este valid\u0103 deoarece se potrive\u015fte cu mai multe configura\u0163ii.
+warning.multiple.matches.explanation=Mai multe elemente din configura\u0163ie folosesc acela\u015fi atribut ID. Serverul nu poate determina ce element s-a dorit s\u0103 se potriveasc\u0103 cu referin\u0163a.
+warning.multiple.matches.useraction=Actualiza\u0163i configura\u0163ia ca fiecare element s\u0103 foloseasc\u0103 un atribut ID diferit. 
+
+error.breaking.include.conflict=CWWKG0088E: Elementul de configurare {1} este specificat \u00een dou\u0103 resurse de configurare diferite: {0} \u015fi {2}.
+error.breaking.include.conflict.explanation=Resursa de configurare inclus\u0103 a fost configurat\u0103 astfel \u00eenc\u00e2t conflictele din elementele de \
+configurare sunt rezolvate fie prin oprirea serverului, fie prin nepermiterea actualiz\u0103rii unei configura\u0163ii runtime.
+error.breaking.include.conflict.useraction=Fie actualiza\u0163i resursa de configurare inclus\u0103 pentru a \u00eenl\u0103tura elementul de conflict, fie \
+modifica\u0163i comportamentul rezolu\u0163iei de conflict pentru a fi combinat, \u00eenlocuit sau ignorat, \u00een loc s\u0103 fie \u00eentrerupt.
+ 
+error.include.location.not.specified=CWWKG0089E: Atributul \
+loca\u0163iei trebuie specificat pe elementul de configurare include \
+specificat pe linia {0} a resursei {1}
+error.include.location.not.specified.explanation=Este \
+specificat un element de configurare include \u00een configura\u0163ia \
+serverului, dar elementul nu specific\u0103 loca\u0163ia.
+error.include.location.not.specified.useraction=Ad\u0103uga\u0163i \
+atributul loca\u0163iei la elementul de configurare.
+ 
+error.cannot.read.location=CWWKG0090E: Resursa \
+de configurare {0} nu exist\u0103 sau nu poate fi citit\u0103. 
+error.cannot.read.location.explanation=Resursa \
+din loca\u0163ia specificat\u0103 nu este disponibil\u0103.
+error.cannot.read.location.useraction=Verifica\u0163i c\u0103 \
+atributul loca\u0163iei este specificat corect \u015fi asigura\u0163i-v\u0103 c\u0103 resursa \
+este disponibil\u0103.
+
+error.variable.name.missing=CWWKG0091E: Un \
+atribut de nume trebuie specificat pentru variabil\u0103 pe linia {0} a \
+resursei {1}
+error.variable.name.missing.explanation=Configura\u0163ia \
+serverului con\u0163ine un element de configurare variabil\u0103 care nu are un \
+atribut de nume.
+error.variable.name.missing.useraction=Ad\u0103uga\u0163i un \
+atribut de nume la variabil\u0103.
+
+error.variable.value.missing=CWWKG0092E: Un \
+atribut de valoare trebuie specificat pentru variabil\u0103 pe linia {0} a \
+resursei {1}
+error.variable.value.missing.explanation=Configura\u0163ia serverului con\u0163ine un element de configurare variabil\u0103 \
+care nu are un atribut de valoare.
+error.variable.value.missing.useraction=Ad\u0103uga\u0163i un \
+atribut de valoare la variabil\u0103.
+
+audit.dropin.being.processed=CWWKG0093A: Procesarea resursei drop-in-urilor de configurare: {0}
+audit.dropin.being.processed.explanation=Con\u0163inuturile resursei specificate vor fi incluse \u00een configura\u0163ia serverului.
+audit.dropin.being.processed.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+warning.unrecognized.merge.behavior=CWWKG0094W: Valoarea {0} care este specificat\u0103 pentru comportamentul de combinare pe elementul de configurare includere nu este valid. Sistemul va folosi valoarea implicit\u0103 de merge.
+warning.unrecognized.merge.behavior.explanation=Elementul de configurare includere specific\u0103 o valoare care nu este valid\u0103.  Valorile valide sunt:  merge, replace \u015fi ignore.
+warning.unrecognized.merge.behavior.useraction=Actualiza\u0163i configura\u0163ia de server pentru a corecta comportamentul de combinare.
+
+error.missing.required.attribute.singleton=CWWKG0095E: Elementului {0} \u00eei lipse\u015fte atributul  necesar {1}.
+error.missing.required.attribute.singleton.explanation=Atributul lips\u0103 este necesar \u00een fi\u015fierul de configurare server.xml sau unul dn fi\u015fierele sale de configurare cu referin\u0163\u0103.
+error.missing.required.attribute.singleton.useraction=Ad\u0103uga\u0163i atributul \u00een fi\u015fierul de configurare server.xml sau unul din fi\u015fierele sale de configurare cu referin\u0163\u0103.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.extendsAlias.collision=CWWKG0100E: Atributul {2} ibm:extendsAlias este duplicat \u00eentr-o singur\u0103 ierarhie de extensii. PID-urile sunt {0} \u015fi {1}. Face\u0163i fiecare atribut ibm:extendsAlias unic \u00een ierarhia extins\u0103.
+error.extendsAlias.collision.explanation=Atributul ibm:extendsAlias trebuie s\u0103 fie unic \u00eentr-o singur\u0103 ierarhie extins\u0103.
+error.extendsAlias.collision.useraction=Face\u0163i fiecare atribut ibm:extendsAlias unic \u00een ierarhia extins\u0103.
+
+warning.binding.config=CWWKG0101W: Configura\u0163ia cu identitatea persistat\u0103 (PID) {0} este legat\u0103 la bundle-ul {1}. Configura\u0163ia nu este vizibil\u0103 altor bundle-uri.  
+warning.binding.config.explanation=O configura\u0163ie este legat\u0103 de bundle-ul apelant c\u00e2nd metoda getConfiguration a interfe\u0163ei ConfigurationAdmin este apelat\u0103 pentru prima dat\u0103. Din moment ce configura\u0163ia este legat\u0103, nu mai este vizibil\u0103 pentru alte bundle-uri.
+warning.binding.config.useraction=pentru a v\u0103 asigura c\u0103 loca\u0163ie de bundle este valoarea a\u015fteptat\u0103, utiliza\u0163i metoda getConfiguration pe interfa\u0163a ConfigurationAdmin care ia o loca\u0163ie de bundle ca al doilea parametru.
+
+
+# Non-TR message
+error.invalidOCDRef=EROARE: PID-ul metatipului [{0}] specific\u0103 un ID al defini\u0163iei de clas\u0103 de obiecte inexistent [{1}]

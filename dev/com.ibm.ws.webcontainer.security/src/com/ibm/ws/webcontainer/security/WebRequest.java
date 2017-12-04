@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,9 +26,9 @@ import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
  * <p>An instance of this class is created during EJSWebCollaborator.preInvoke() before authentication is performed and
  * during WebCollaborator's authenticate() and login() methods.
  * It provides a convenient data-object for holding parameters & object references needed to perform authentication.
- * 
+ *
  * @author IBM Corp.
- * 
+ *
  */
 public interface WebRequest {
 
@@ -60,7 +60,7 @@ public interface WebRequest {
 
     /**
      * Answers whether or not the web request has any authentication data.
-     * 
+     *
      * @return {@code true} if some authentication data is available, {@code false} otherwise.
      */
     boolean hasAuthenticationData();
@@ -80,4 +80,9 @@ public interface WebRequest {
     public Map<String, Object> getProperties();
 
     public void setProperties(Map<String, Object> props);
+
+    public boolean isRequestAuthenticate();
+
+    public void setRequestAuthenticate(boolean requestAuthenticate);
+
 }

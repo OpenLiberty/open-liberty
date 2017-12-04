@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/common/internal/resources/SSOCommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security SSO Common
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS6101 - CWWKS6200
+SUBJECT_MAPPING_INCORRECT_CLAIM_TYPE=CWWKS6101E: Cererea de autentificare a e\u015fuat deoarece tipul de date din [{0}] revendicate \u00een informa\u0163iile utilizatorului autentificat nu este valid. Revendicarea specificat\u0103 este asociat\u0103 cu atributul de configura\u0163ie [{1}]. 
+SUBJECT_MAPPING_INCORRECT_CLAIM_TYPE.explanation=Informa\u0163iile utilizatorului autentificat au un tip invalid de date de revendicate \u015fi rularea nu poate continua procesul de autentificare.
+SUBJECT_MAPPING_INCORRECT_CLAIM_TYPE.useraction=Verifica\u0163i c\u0103 configura\u0163ia de logare client Social specific\u0103 numele corect al revendic\u0103rii pentru atribut.
+
+SUBJECT_MAPPING_MISSING_ATTR=CWWKS6102E: Cererea de autentificare a e\u015fuat deoarece informa\u0163iile utilizatorului autentificat nu con\u0163in revendicarea [{0}] specificat\u0103 de atributul [{1}].
+SUBJECT_MAPPING_MISSING_ATTR.explanation=Informa\u0163iile utilizatorului autentificat nu con\u0163in revendicarea specificat\u0103 pentru a identifica atributul denumit \u015fi runtime-ul nu poate continua procesul de autentificare.
+SUBJECT_MAPPING_MISSING_ATTR.useraction=Face\u0163i una din urm\u0103toarele. 1)Verifica\u0163i dac\u0103 configura\u0163ia de logare client Social poate specifica o revendicare diferit\u0103 ca atribut 2)Verifica\u0163i c\u0103 furnizorul emite informa\u0163iile utilizatorului autentificat cu revendicarea specificat\u0103.
+
+ERROR_AUTHENTICATE=CWWKS6103E: Nu poate fi creat un subiect de securitate pentru utilizatorul {0}.
+ERROR_AUTHENTICATE.explanation=Utilizatorul nu a putut fi autentificat. 
+ERROR_AUTHENTICATE.useraction=Verifica\u0163i c\u0103 utilizatorul exist\u0103 \u00een registru \u015fi c\u0103 parola sau alte acredit\u0103ri sunt corecte.
+
+CONFIG_REQUIRED_ATTRIBUTE_NULL=CWWKS6104W: Atributul de configura\u0163ie [{0}] care este necesar lipse\u015fte sau este gol \u015fi nu este furnizat\u0103 o valoare implicit\u0103. Verifica\u0163i c\u0103 atributul este configurat, c\u0103 nu este gol \u015fi c\u0103 nu con\u0163ine doar caractere spa\u0163ii albe.
+CONFIG_REQUIRED_ATTRIBUTE_NULL.explanation=E posibil ca atributul de configurare specificat s\u0103 lipseasc\u0103 din configura\u0163ia serverului. Dac\u0103 este specificat\u0103 o valoare, spa\u0163iul alb de la \u00eenceputul \u015fi sf\u00e2r\u015fitul valorii este \u00eenl\u0103turat c\u00e2nd este procesat\u0103 valoarea, astfel \u00eenc\u00e2t \u00een configura\u0163ie s\u0103 poat\u0103 fi goal\u0103 sau s\u0103 con\u0163in\u0103 doar caractere spa\u0163ii albe.
+CONFIG_REQUIRED_ATTRIBUTE_NULL.useraction=Asigura\u0163i-v\u0103 c\u0103 atributul de configurare specificat este configurat, c\u0103 nu este gol \u015fi c\u0103 nu con\u0163ine doar caractere spa\u0163ii albe.
+
+CONFIG_REQUIRED_ATTRIBUTE_NULL_WITH_CONFIG_ID=CWWKS6105W: Atributul de configura\u0163ie necesar [{0}] lipse\u015fte sau este gol \u00een configura\u0163ia [{1}] \u015fi nu este furnizat\u0103 o valoare implicit\u0103. Verifica\u0163i c\u0103 atributul este configurat, c\u0103 nu este gol \u015fi c\u0103 nu con\u0163ine doar caractere spa\u0163ii albe.
+CONFIG_REQUIRED_ATTRIBUTE_NULL_WITH_CONFIG_ID.explanation=Este posibil ca atributul de configurare specificat s\u0103 lipseasc\u0103 din elementul de configura\u0163ie server specificat. Dac\u0103 este specificat\u0103 o valoare, spa\u0163iul alb de la \u00eenceputul \u015fi sf\u00e2r\u015fitul valorii este \u00eenl\u0103turat c\u00e2nd este procesat\u0103 valoarea, astfel \u00eenc\u00e2t \u00een configura\u0163ie s\u0103 poat\u0103 fi goal\u0103 sau s\u0103 con\u0163in\u0103 doar caractere spa\u0163ii albe.
+CONFIG_REQUIRED_ATTRIBUTE_NULL_WITH_CONFIG_ID.useraction=Asigura\u0163i-v\u0103 c\u0103 atributul de configurare specificat este configurat, c\u0103 nu este gol \u015fi c\u0103 nu con\u0163ine doar caractere spa\u0163ii albe.

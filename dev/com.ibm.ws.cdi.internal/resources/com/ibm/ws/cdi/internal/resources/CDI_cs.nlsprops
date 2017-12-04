@@ -1,0 +1,70 @@
+#CMVCPATHNAME SERV1/ws/code/prereq.jcdi/src/com/ibm/ws/webbeans/resources/jcdi.nlsprops
+#COMPONENTPREFIX CWOWB
+#COMPONENTNAMEFOR CWOWB Java EE Contexts and Dependency Injection 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by JCDI
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A CDI error has occurred: {0}
+cdi.resource.injection.error.CWOWB1000E=CWOWB1000E: Do\u0161lo k chyb\u011b CDI: {0}
+cdi.resource.injection.error.CWOWB1000E.explanation=Do\u0161lo k chyb\u011b CDI, je\u017e br\u00e1n\u00ed norm\u00e1ln\u00edmu provozu.
+cdi.resource.injection.error.CWOWB1000E.useraction=Prozkoumejte protokoly FFDC a text v\u00fdjimky a identifikujte p\u0159\u00ed\u010dinu probl\u00e9mu.
+
+# Web Application Archive "{0}" contains more than one beans.xml file. Using "{1}". Ignoring "{2}".
+multiple.beans.xml.warning.CWOWB1001W=CWOWB1001W: Archiv Web Application Archive {0} obsahuje v\u00edce soubor\u016f beans.xml. Bude pou\u017eita p\u0159edvolba {1}. Ignoruje se {2}.
+multiple.beans.xml.warning.CWOWB1001W.explanation=Kontejner CDI nalezl v\u00edce soubor\u016f beans.xml.
+multiple.beans.xml.warning.CWOWB1001W.useraction=Ujist\u011bte se, \u017ee archiv aplikace obsahuje pouze jeden soubor beans.xml.
+
+managed.class.bean.class.mismatch.CWOWB1002E=CWOWB1002E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1}
+managed.class.bean.class.mismatch.CWOWB1002E.explanation=CMSG0001
+managed.class.bean.class.mismatch.CWOWB1002E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+
+error.loading.class.CWOWB1003E=CWOWB1003E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0} {1}
+error.loading.class.CWOWB1003E.explanation=CMSG0001
+error.loading.class.CWOWB1003E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+
+unknown.container.type.CWOWB1004E=CWOWB1004E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0}
+unknown.container.type.CWOWB1004E.explanation=CMSG0001
+unknown.container.type.CWOWB1004E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+
+error.loading.resource.CWOWB1005E=CWOWB1005E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0}
+error.loading.resource.CWOWB1005E.explanation=CMSG0001
+error.loading.resource.CWOWB1005E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+no.injection.target.context.CWOWB1006E=CWOWB1006E: Do\u0161lo k intern\u00ed chyb\u011b serveru WebSphere Application Server. Kontaktujte podporu serveru WebSphere Application Server s n\u00e1sleduj\u00edc\u00edmi daty: {0}
+no.injection.target.context.CWOWB1006E.explanation=CMSG0001
+no.injection.target.context.CWOWB1006E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+resource.producer.validation.error.CWOWB1007E=CWOWB1007E: Pole producenta {0} je typu {1}, co\u017e neodpov\u00edd\u00e1 typu vlo\u017een\u00e9ho objektu.
+resource.producer.validation.error.CWOWB1007E.explanation=CDI nelezl pole producenta prost\u0159edku, jeho\u017e typ neodpov\u00edd\u00e1 typu do n\u011bj vkl\u00e1dan\u00e9ho prost\u0159edku Java EE.
+resource.producer.validation.error.CWOWB1007E.useraction=Ujist\u011bte se, \u017ee je do pole producenta prost\u0159edku vkl\u00e1d\u00e1n spr\u00e1vn\u00fd prost\u0159edek Java EE a typ pole odpov\u00edd\u00e1 typu do n\u011bj vkl\u00e1dan\u00e9ho prost\u0159edku.
+
+no.injection.target.CWOWB1008E=CWOWB1008E: \u010clen {0} t\u0159\u00eddy {1} nem\u016f\u017ee b\u00fdt vlo\u017een, proto\u017ee t\u0159\u00edda {1} nen\u00ed v archivu objekt\u016f typu bean.
+no.injection.target.CWOWB1008E.explanation=Vlo\u017een\u00ed nen\u00ed \u00fasp\u011b\u0161n\u00e9, proto\u017ee spr\u00e1vce objekt\u016f typu bean pro archiv, do kter\u00e9ho t\u0159\u00edda pat\u0159\u00ed, je null.
+no.injection.target.CWOWB1008E.useraction=Ujist\u011bte se, \u017ee archiv, do n\u011bho\u017e t\u0159\u00edda pat\u0159\u00ed, je archivem objekt\u016f typu bean. Viz specifikace CDI, kde je uvedeno, jak vytvo\u0159it archiv, jen\u017e je archivem objekt\u016f typu bean.
+
+implicit.bean.scanning.disabled.CWOWB1009W=CWOWB1009W: Implicitn\u00ed archivy objekt\u016f typu bean jsou zak\u00e1z\u00e1ny.
+implicit.bean.scanning.disabled.CWOWB1009W.explanation=Archivy nejsou skenov\u00e1ny pro objekty typu CDI bean, pokud nemaj\u00ed soubor beans.xml.
+implicit.bean.scanning.disabled.CWOWB1009W.useraction=Ujist\u011bte se, \u017ee ka\u017ed\u00fd archivu, kter\u00fd pou\u017e\u00edv\u00e1 CDI, m\u00e1 soubor beans.xml, nebo znovu povolte skenov\u00e1n\u00ed implicitn\u00edch objekt\u016f typu bean v souboru server.xml.

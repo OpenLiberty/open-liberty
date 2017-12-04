@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.runtime.update/resources/com/ibm/ws/runtime/update/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel: runtime update notifications
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 1100-1199 com.ibm.ws.runtime.update.internal.resources.Messages
+# -------------------------------------------------------------------------------------------------
+
+quiesce.begin=CWWKE1100I: Es wird bis zu 30 Sekunden auf die Stilllegung des Servers gewartet.
+quiesce.begin.explanation=Der Server wartet bis zu 30 Sekunden auf die Stilllegung von Services, bevor er mit dem Systemabschluss fortf\u00e4hrt.
+quiesce.begin.useraction=Es ist keine Aktion erforderlich.
+
+quiesce.end=CWWKE1101I: Serverstilllegung abgeschlossen.
+quiesce.end.explanation=Die Stilllegungsoperation wurde erfolgreich abgeschlossen.
+quiesce.end.useraction=Es ist keine Aktion erforderlich.
+
+quiece.warning=CWWKE1102W: Die Stilllegungsoperation wurde nicht abgeschlossen. Der Server stoppt jetzt.
+quiece.warning.explanation=Der Prozess konnte nicht alle Services innerhalb von 30 Sekunden stilllegen.
+quiece.warning.useraction=Sie k\u00f6nnen Fehlernachrichten ignorieren, die als Folge nicht verf\u00fcgbarer erforderlicher Services angezeigt werden.
+
+client.quiesce.begin=CWWKE1103I: Es wird bis zu 30 Sekunden auf die Stilllegung des Clients gewartet.
+client.quiesce.begin.explanation=Der Client wartet bis zu 30 Sekunden auf die Stilllegung von Services, bevor er mit dem Systemabschluss fortf\u00e4hrt.
+client.quiesce.begin.useraction=Es ist keine Aktion erforderlich.
+
+client.quiesce.end=CWWKE1104I: Clientstilllegung abgeschlossen.
+client.quiesce.end.explanation=Die Stilllegungsoperation wurde erfolgreich abgeschlossen.
+client.quiesce.end.useraction=Es ist keine Aktion erforderlich.

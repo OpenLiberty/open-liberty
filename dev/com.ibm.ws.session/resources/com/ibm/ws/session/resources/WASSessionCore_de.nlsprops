@@ -1,0 +1,134 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.session-3.0/resources/com/ibm/ws/session/resources/WASSessionCore.nlsprops
+#COMPONENTPREFIX SESN
+#COMPONENTNAMEFOR SESN Session
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+SessionContext.createWhenStop=SESN0006E: Es wurde versucht, eine Sitzung zu erstellen, als der Anwendungsserver gerade gestoppt wurde.
+SessionContext.createWhenStop.explanation=Dieser Fehler tritt auf, wenn w\u00e4hrend des Stoppens des Anwendungsservers eine Sitzungsanforderung empfangen wird.
+SessionContext.createWhenStop.useraction=Starten Sie den Server erneut.
+# -------------------------------------------------------------------------------------------------
+SessionContext.accessWhenStop=SESN0007E: Es wurde versucht, auf eine Sitzung zuzugreifen, als der Anwendungsserver gerade gestoppt wurde.
+SessionContext.accessWhenStop.explanation=Dieser Fehler tritt auf, wenn w\u00e4hrend des Stoppens des Anwendungsservers eine Sitzungsanforderung empfangen wird.
+SessionContext.accessWhenStop.useraction=Starten Sie den Server erneut.
+# -------------------------------------------------------------------------------------------------
+SessionContext.unauthAccessError=SESN0008E: Ein als {0} authentifizierter Benutzer hat versucht, auf eine Sitzung zuzugreifen, deren Eigner {1} ist.
+SessionContext.unauthAccessError.explanation=Das Feature Session Security Integration hat festgestellt, dass ein nicht berechtigter Benutzer versucht hat, auf eine Sitzung zuzugreifen.
+SessionContext.unauthAccessError.useraction=Es ist keine Aktion erforderlich.
+# -------------------------------------------------------------------------------------------------
+SessionData.putValErr1=SESN0012E: Es wurde ein Nullschl\u00fcssel eingegeben. Die Methode "HttpSession.putValue" oder die Methode "HttpSession.setAttribute" wurde mit einem Nullschl\u00fcssel \u00fcber ein Servlet oder eine JSP-Datei aufgerufen.
+SessionData.putValErr1.explanation=Die Methode HttpSession.putValue oder die Methode HttpSession.setAttribute darf nicht mit einem Nullschl\u00fcssel aufgerufen werden.
+SessionData.putValErr1.useraction=Korrigieren Sie das Servlet bzw. die JSP-Datei so, dass kein Nullschl\u00fcssel \u00fcbergeben wird.
+# -------------------------------------------------------------------------------------------------
+SessionData.putValErr2=SESN0013E: Es wurde ein Nullwert f\u00fcr den Schl\u00fcssel {0} eingegeben. Die Methode "HttpSession.putValue" wurde mit einem Nullwert \u00fcber ein Servlet oder eine JSP-Datei aufgerufen.
+SessionData.putValErr2.explanation=Die Methode HttpSession.putValue darf nicht mit einem Nullwert aufgerufen werden.
+SessionData.putValErr2.useraction=Korrigieren Sie das Servlet bzw. die JSP-Datei so, dass kein Nullwert \u00fcbergeben wird.
+# -------------------------------------------------------------------------------------------------
+SessionContext.responseAlreadyCommitted=SESN0066E: Die Antwort wurde bereits im Client festgeschrieben. Das Sitzungs-Cookie kann nicht gesetzt werden.
+SessionContext.responseAlreadyCommitted.explanation=Die Antwort wurde bereits im Client festgeschrieben, sodass das Sitzungscookie nicht an den Client gesendet werden kann.
+SessionContext.responseAlreadyCommitted.useraction=Korrigieren Sie die Anwendung so, dass sie auf die Anwendung zugreift, bevor sie in die Antwort schreibt.
+# -------------------------------------------------------------------------------------------------
+SessionContext.maxSessionIdLengthExceeded=SESN0116W: Die Sitzungs-ID {0} \u00fcberschreitet die maximale L\u00e4nge {1}.
+SessionContext.maxSessionIdLengthExceeded.explanation=Der f\u00fcr die Eigenschaft SessionIdentifierMaxLength angegebene Wert wurde \u00fcberschritten.
+SessionContext.maxSessionIdLengthExceeded.useraction=Setzen Sie diese Eigenschaft nur, wenn es absolut erforderlich ist. Wenn diese Eigenschaft erforderlich ist, setzen Sie sie auf den gr\u00f6\u00dften Wert, den Ihre Installation toleriert. Sollten trotzdem Probleme auftreten, ist dies wahrscheinlich auf wiederholtes Failover zur\u00fcckzuf\u00fchren. Untersuchen und beheben Sie die eigentliche Ursache f\u00fcr das Failover.
+# -------------------------------------------------------------------------------------------------
+SessionContextRegistry.globalSessionsEnabled=SESN0117I: Es sind globale Sitzungen f\u00fcr Webmodule aktiviert, die mit der Sitzungsverwaltungskonfiguration auf Webcontainerebene ausgef\u00fchrt werden.
+SessionContextRegistry.globalSessionsEnabled.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+SessionContextRegistry.globalSessionsEnabled.useraction=Wenn keine globalen Sitzungen erforderlich sind, inaktivieren Sie sie, indem Sie die Eigenschaft Servlet21SessionCompatibility auf false setzen.
+# -------------------------------------------------------------------------------------------------
+SessionContextRegistry.globalSessionTBWWarning=SESN0118W: Das Feature f\u00fcr zeitbasierte Schreiboperationen ist f\u00fcr globale Sitzungen aktiviert. Der Zugriff auf eine globale Sitzung \u00fcber mehrere Server oder Cluster kann zum Verlust der Integrit\u00e4t der Sitzungsdaten f\u00fchren.
+SessionContextRegistry.globalSessionTBWWarning.explanation=Wenn das Feature f\u00fcr zeitbasiertes Schreiben mit globalen Sitzungen aktiviert ist und nicht alle Webmodule, die auf die globale Sitzung zugreifen, in demselben Server oder Cluster enthalten sind, kann die Integrit\u00e4t der Sitzungsdaten verloren gehen.
+SessionContextRegistry.globalSessionTBWWarning.useraction=Inaktivieren Sie das Feature f\u00fcr zeitbasiertes Schreiben, wenn Webmodule, die auf eine globale Sitzung zugreifen, auf mehrere Server oder Cluster verteilt sind.
+# -------------------------------------------------------------------------------------------------
+SessionContextRegistry.globalSessionM2MWarning=SESN0119W: Die Replikation zwischen Speichern ist f\u00fcr globale Sitzungen aktiviert. Der Zugriff auf eine globale Sitzung \u00fcber mehrere Server oder Cluster kann zum Verlust der Integrit\u00e4t der Sitzungsdaten f\u00fchren.
+SessionContextRegistry.globalSessionM2MWarning.explanation=Wenn die Replikation zwischen Speichern mit globalen Sitzungen aktiviert ist und nicht alle Webmodule, die auf die globale Sitzung zugreifen, in demselben Server oder Cluster enthalten sind, kann die Integrit\u00e4t der Sitzungsdaten verloren gehen.
+SessionContextRegistry.globalSessionM2MWarning.useraction=Inaktivieren Sie die Replikation zwischen Speichern, wenn Webmodule, die auf eine globale Sitzung zugreifen, auf mehrere Server oder Cluster verteilt sind.
+# -------------------------------------------------------------------------------------------------
+SessionContextRegistry.SessionNotGlobalForWebApp=SESN0120I: Das Webmodul {0} nimmt nicht an globalen Sitzungen teil, weil die Sitzungsverwaltungskonfiguration auf Webcontainerebene \u00fcberschrieben wurde.
+SessionContextRegistry.SessionNotGlobalForWebApp.explanation=Das angegebene Webmodul nimmt nicht an globalen Sitzungen teil, weil die Sitzungsverwaltungskonfiguration auf Webcontainerebene auf Unternehmensanwendungs- oder Webmodulebene \u00fcberschrieben wurde.
+SessionContextRegistry.SessionNotGlobalForWebApp.useraction=Wenn das Webmodul an globalen Sitzungen teilnehmen soll, m\u00fcssen Sie die Sitzungsverwaltungskonfiguration, die auf Unternehmensanwendungs- oder Webmodulebene angegeben ist, inaktivieren und den Server erneut starten.
+# -------------------------------------------------------------------------------------------------
+SessionContext.CrossoverOnRetrieve=SESN0121E: Es wurde ein Sitzungstausch in der Webanwendung {0} festgestellt. Die Sitzung {1} wurde abgerufen, obwohl Sitzung {2} erwartet wurde.
+SessionContext.CrossoverOnRetrieve.explanation=Beim Aufruf der Methode request.getSession wurde eine andere Sitzung als die angeforderte Sitzung zur\u00fcckgegeben.
+SessionContext.CrossoverOnRetrieve.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+SessionContext.CrossoverOnReference=SESN0122E: Es wurde ein Sitzungstausch in der Webanwendung {0} festgestellt. Die Sitzung {1} wurde von der Methode {2} referenziert, obwohl die Sitzung {3} erwartet wurde.
+SessionContext.CrossoverOnReference.explanation=Eine Anwendung hat eine andere Sitzung referenziert als die, die der Anforderung zugeordnet ist.
+SessionContext.CrossoverOnReference.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+SessionContext.CrossoverOnReturn=SESN0123E: Es wurde ein Sitzungstausch in der Webanwendung {0} festgestellt. Die Sitzung {1} wurde an den Client zur\u00fcckgegeben, obwohl die Sitzung {2} erwartet wurde.
+SessionContext.CrossoverOnReturn.explanation=Es wurde ein Cookie oder ein URL an den Client zur\u00fcckgegeben, das bzw. der eine Sitzungs-ID enth\u00e4lt, die der Anforderung nicht zugeordnet ist.
+SessionContext.CrossoverOnReturn.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+SessionContext.DebugCrossoverEnabled=SESN0124W: Die Erkennung des Sitzungsaustauschs ist aktiviert.
+SessionContext.DebugCrossoverEnabled.explanation=Die Pr\u00fcfungen f\u00fcr Sitzungstausch werden initialisiert.
+SessionContext.DebugCrossoverEnabled.useraction=Um eine bessere Leistung zu erzielen, k\u00f6nnen Sie diese Pr\u00fcfungen inaktivieren, indem Sie die angepasste Eigenschaft DebugSessionCrossover f\u00fcr den Webcontainer auf false setzen.
+# -------------------------------------------------------------------------------------------------
+SessionContext.propertyFound=SESN0169I: Der Sitzungsmanager hat die angepasste Eigenschaft {0} mit dem Wert {1} gefunden.
+SessionContext.propertyFound.explanation=Der Sitzungsmanager verwendet die angegebene Eigenschaft und den angegebenen Wert, um das Verhalten zu steuern.
+SessionContext.propertyFound.useraction=Vergewissern Sie sich, dass die angegebene Eigenschaft und der angegebene Wert das gew\u00fcnschte Verhalten ergeben.
+# -------------------------------------------------------------------------------------------------
+SessionContext.invalidPropertyFound=SESN0170W: Der Sitzungsmanager hat die angepasste Eigenschaft {0} mit dem nicht numerischen Wert {1} gefunden. Die Eigenschaft wird ignoriert.
+SessionContext.invalidPropertyFound.explanation=Der Sitzungsmanager hat erwartet, dass die angegebene Eigenschaft einen numerischen Wert enth\u00e4lt.
+SessionContext.invalidPropertyFound.useraction=\u00c4ndern Sie den angegebenen Eigenschaftswert in einen g\u00fcltigen numerischen Wert.
+# -------------------------------------------------------------------------------------------------
+SessionContext.valueOutOfRange=SESN0171W: Der Sitzungsmanager hat die angepasste Eigenschaft {0} mit dem Wert {1} gefunden, der au\u00dferhalb des g\u00fcltigen Bereichs liegt. Deshalb wird {2} verwendet.
+SessionContext.valueOutOfRange.explanation=Der Sitzungsmanager hat erwartet, dass die angegebene Eigenschaft einen Wert aus einem bestimmten Bereich enth\u00e4lt. Der Sitzungsmanager verwendet stattdessen den n\u00e4chst g\u00fcltigen Wert.
+SessionContext.valueOutOfRange.useraction=\u00c4ndern Sie den angegebenen Eigenschaftswert in einen Wert aus dem dokumentierten Bereich.
+# -------------------------------------------------------------------------------------------------
+# ---------------------------------------NEW 7.0---------------------------------------------------
+SessionIdGeneratorImpl.UsingDefaultSecureRandom=SESN0172I: Der Sitzungsmanager verwendet die SecureRandom-Java-Standardimplementierung f\u00fcr die Generierung von Sitzungs-IDs.
+SessionIdGeneratorImpl.UsingDefaultSecureRandom.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+SessionIdGeneratorImpl.UsingDefaultSecureRandom.useraction=Es ist keine Aktion erforderlich.
+# -------------------------------------------------------------------------------------------------
+SessionContextRegistry.existingContext=SESN0175I: Es wird ein vorhandener Sitzungskontext f\u00fcr den Anwendungsschl\u00fcssel {0} verwendet.
+SessionContextRegistry.existingContext.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+SessionContextRegistry.existingContext.useraction=Es ist keine Aktion erforderlich.
+# -------------------------------------------------------------------------------------------------
+SessionContextRegistry.newContext=SESN0176I: Es wird ein neuer Sitzungskontext f\u00fcr den Anwendungsschl\u00fcssel {0} erstellt.
+SessionContextRegistry.newContext.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+SessionContextRegistry.newContext.useraction=Es ist keine Aktion erforderlich.
+# -------------------------------------------------------------------------------------------------
+SessionProperties.serverLevelConfigOnly=SESN0194W: Der Sitzungsmanager hat die angepasste Eigenschaft {0} mit dem Wert {1} gefunden. Der Sitzungsmanagert kann die Serverkonfiguration nicht mit dem Wert {2} \u00fcberschreiben. Die Eigenschaft wird ignoriert.
+SessionProperties.serverLevelConfigOnly.explanation=Die angepasste Eigenschaft kann nur in der Konfiguration auf Serverebene definiert werden.
+SessionProperties.serverLevelConfigOnly.useraction=Entfernen Sie die angepasste Eigenschaft aus der Konfiguration auf Anwendungs-/Modulebene. \u00c4ndern Sie, sofern anwendbar, die Konfiguration auf Serverebene.
+# -------------------------------------------------------------------------------------------------
+SessionProperties.propertyFoundButAlreadySet=SESN0195I: Der Sitzungsmanager hat die angepasste Eigenschaft {0} mit dem Wert {1} gefunden. Die angepasste Eigenschaft kann nur in der Konfiguration auf Serverebene definiert werden. Da diese Eigenschaft mit der Konfigurationseigenschaft auf Serverebene identisch ist, wird sie verwendet.
+SessionProperties.propertyFoundButAlreadySet.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+SessionProperties.propertyFoundButAlreadySet.useraction=Es ist keine Aktion erforderlich.
+# -------------------------------------------------------------------------------------------------
+Store.createSessionIdAlreadyExists=SESN0196W: Der ID-Generator hat eine ID generiert, die bereits vorhanden ist.
+Store.createSessionIdAlreadyExists.explanation=Der ID-Generator hat eine ID generiert, die bereits vorhanden ist. Deshalb wird eine andere ID generiert.
+Store.createSessionIdAlreadyExists.useraction=Es ist keine Aktion erforderlich.
+# ---------------------------------------NEW 8.5---------------------------------------------------
+# -------------------------------------------------------------------------------------------------
+SessionMgrComponentImpl.noPersistence=SESN8501I: Der Sitzungsmanager konnte keine persistente Speicherposition finden. HttpSession-Objekte werden im lokalen Anwendungsserverspeicher gespeichert.
+SessionMgrComponentImpl.noPersistence.explanation=Sie k\u00f6nnen eine persistente Speicherposition verwenden, wenn die Sitzungsdaten des Benutzers \u00fcber einen Serverneustart hinweg erhalten bleiben m\u00fcssen, oder wenn die Sitzungsdaten eines Benutzers zu wichtig sind, um sie durch einen unerwarteten Serverfehler zu verlieren. Wenn keine persistente Speicherposition ermittelt wird, werden HttpSession-Objekte ausschlie\u00dflich im lokalen Anwendungsserverspeicher gespeichert. Standardm\u00e4\u00dfig ist keine persistente Speicherposition vorhanden. Sie muss durch den Serveradministrator konfiguriert werden.
+SessionMgrComponentImpl.noPersistence.useraction=Es ist keine Aktion erforderlich. Wenn Sie beabsichtigen, eine persistente Speicherposition zu konfigurieren, suchen Sie in den Serverprotokollen und in der Serverkonfiguration nach Fehlern.
+# -------------------------------------------------------------------------------------------------
+SessionMgrComponentImpl.persistenceMode=SESN8502I: Der Sitzungsmanager hat eine persistente Speicherposition gefunden. Es wird der Sitzungspersistenzmodus {0} verwendet.
+SessionMgrComponentImpl.persistenceMode.explanation=Sie k\u00f6nnen eine persistente Speicherposition verwenden, wenn die Sitzungsdaten des Benutzers \u00fcber einen Serverneustart hinweg erhalten bleiben m\u00fcssen, oder wenn die Sitzungsdaten eines Benutzers zu wichtig sind, um sie durch einen unerwarteten Serverfehler zu verlieren. Wenn eine persistente Speicherposition ermittelt wird, werden HttpSession-Objekte im lokalen Anwendungsserverspeicher gespeichert und in der Speicherposition persistent gespeichert. Standardm\u00e4\u00dfig ist keine persistente Speicherposition vorhanden. Sie muss durch den Serveradministrator konfiguriert werden.
+SessionMgrComponentImpl.persistenceMode.useraction=Es ist keine Aktion erforderlich. Wenn Sie keine persistente Speicherposition konfigurieren m\u00f6chten, aktualisieren Sie Ihre Serverkonfiguration, indem Sie alle Referenzen auf die Speicherposition sowie das Feature entfernen, das f\u00fcr die Speicherposition vom Feature Manager ben\u00f6tigt wird.
+# -------------------------------------------------------------------------------------------------
+# This isn't an official message but is used to log exception data.
+# It is used in many places in the session manager and has existed this way for many years.
+CommonMessage.exception=Ausnahme: 
+# -------------------------------------------------------------------------------------------------
+# The following are not official messages but have been in-use for many years for logging extra data following an error
+CommonMessage.object=Sitzungsobjekt: {0}
+CommonMessage.sessionid=Sitzungs-ID: {0}
+CommonMessage.miscData=Sonstige Daten: {0}
+# -------------------------------------------------------------------------------------------------
+SessionContext.invalidCloneSeparator=SESN0800W: F\u00fcr die Eigenschaft CloneSeparator muss genau ein Zeichen angegeben werden, dass kein Leerzeichen sein darf. Der derzeit festgelegte Wert f\u00fcr CloneSeparator ist "{0}".
+SessionContext.invalidCloneSeparator.explanation=F\u00fcr die Eigenschaft CloneSeparator muss genau ein Zeichen angegeben werden, dass kein Leerzeichen sein darf.
+SessionContext.invalidCloneSeparator.useraction=\u00c4ndern Sie die angepasste Eigenschaft CloneSeparator.

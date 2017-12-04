@@ -1,0 +1,94 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# translator:
+# Translate words on the right hand side of the = sign.
+# Do not translate {0}, {1}, %1, %2 etc.
+# Do NOT translate any words when they START with: '-
+# Do NOT translate any words when they START with: @
+# Preserve all spaces after a backslash (\) even at the end of a line.
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.webservices.javaee.common/resources/com/ibm/ws/webservices/javaee/common/resources/WsEECommonMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere WebServices EE Common Code
+#RANGE 0300-0399
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+#{0}=service impl bean link
+warn.dd.invalid.portcomponentname=CWWKW0300W: \u5728 webservices.xml \u4e2d\uff0c{0} \u7684 <port-component-name> \u5143\u7d20\u503c\u662f\u7a7a\u503c\u6216\u7a7a\u7684\u3002
+warn.dd.invalid.portcomponentname.explanation=<port-component-name> \u5143\u7d20\u7684\u503c\u4e0d\u5f97\u70ba\u7a7a\u503c\u6216\u7a7a\u7684\u3002
+warn.dd.invalid.portcomponentname.useraction=\u8acb\u78ba\u5b9a <port-component-name> \u5143\u7d20\u7684\u503c\u4e0d\u662f\u7a7a\u503c\u6216\u7a7a\u7684\u3002
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.protocolbinding=CWWKW0301W: <protocol-binding> \u5143\u7d20\u503c {0} \u4e0d\u662f\u9069\u7528\u65bc webservices.xml \u4e2d\u4e4b\u57e0\u5143\u4ef6 {1} \u7684\u6709\u6548\u503c\u3002
+warn.dd.invalid.protocolbinding.explanation=webservices.xml \u4e2d <protocol-binding> \u5143\u7d20\u7684\u503c\u5fc5\u9808\u662f\u4e0b\u5217 URL \u4e4b\u4e00\uff1a"http://schemas.xmlsoap.org/wsdl/soap/http","http://www.w3.org/2003/05/soap/bindings/HTTP/","http://schemas.xmlsoap.org/wsdl/soap/http?mtom=true","http://www.w3.org/2003/05/soap/bindings/HTTP/?mtom=true"\uff0c\u6216\u662f\u5176\u5225\u540d\u4e4b\u4e00\uff1a##SOAP11_HTTP,##SOAP11_HTTP.MTOM,##SOAP12_HTTP,##SOAP12_HTTP.MTOM,##XML_HTTP\u3002
+warn.dd.invalid.protocolbinding.useraction=\u8acb\u4f7f\u7528\u901a\u8a0a\u5354\u5b9a\u9023\u7d50\u7684\u5176\u4e2d\u4e00\u500b URL\uff08"http://schemas.xmlsoap.org/wsdl/soap/http"\u3001"http://www.w3.org/2003/05/soap/bindings/HTTP/"\u3001"http://schemas.xmlsoap.org/wsdl/soap/http?mtom=true"\u3001"http://www.w3.org/2003/05/soap/bindings/HTTP/?mtom=true"\uff09\u6216\u662f\u5176\u5225\u540d ##SOAP11_HTTP\u3001##SOAP11_HTTP.MTOM\u3001##SOAP12_HTTP\u3001##SOAP12_HTTP.MTOM\u3001##XML_HTTP\u3002
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.wsdlservice=CWWKW0302W: webservices.xml \u4e2d\u7684\u57e0\u5143\u4ef6 {1} \u4e4b <wsdl-service> \u5143\u7d20\u503c {0} \u672a\u53d7\u9650\u5b9a\u3002
+warn.dd.invalid.wsdlservice.explanation=webservices.xml \u4e2d\u7684 <wsdl-service> \u5143\u7d20\u503c\u5fc5\u9808\u662f\u5b8c\u6574\u540d\u7a31\u3002
+warn.dd.invalid.wsdlservice.useraction=\u8acb\u5728 webservices.xml \u7684 <wsdl-service> \u5143\u7d20\u4e2d\u4f7f\u7528\u5b8c\u6574\u540d\u7a31\u3002\u5b8c\u6574\u540d\u7a31\u61c9\u5305\u542b XML \u540d\u7a31\u7a7a\u9593\u548c\u672c\u7aef\u540d\u7a31\u3002\u4f8b\u5982\uff0c\u5728 webservices.xml \u4e2d\uff0c<wsdl-service> \u7684\u5b9a\u7fa9\u61c9\u985e\u4f3c\u65bc <wsdl-service xmlns:pfx="http://com.ibm.example">pfx:ExampleWSDLService</wsdl-service>\u3002
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.wsdlport=CWWKW0303W: webservices.xml \u4e2d\u7684\u57e0\u5143\u4ef6 {1} \u4e4b <wsdl-port> \u5143\u7d20\u503c {0} \u672a\u53d7\u9650\u5b9a\u3002
+warn.dd.invalid.wsdlport.explanation=webservices.xml \u4e2d\u7684 <wsdl-port> \u5143\u7d20\u503c\u5fc5\u9808\u662f\u5b8c\u6574\u540d\u7a31\u3002
+warn.dd.invalid.wsdlport.useraction=\u8acb\u5728 webservices.xml \u7684 <wsdl-port> \u5143\u7d20\u4e2d\u4f7f\u7528\u5b8c\u6574\u540d\u7a31\u3002\u5b8c\u6574\u540d\u7a31\u61c9\u5305\u542b XML \u540d\u7a31\u7a7a\u9593\u548c\u672c\u7aef\u540d\u7a31\u3002\u4f8b\u5982\uff0c\u5728 webservices.xml \u4e2d\uff0c<wsdl-port> \u7684\u5b9a\u7fa9\u61c9\u985e\u4f3c\u65bc <wsdl-port xmlns:pfx="http://com.ibm.example">pfx:ExampleWSDLPort</wsdl-port>\u3002
+
+#{0}=namespace of the port qname
+#{1}=value
+#{2}=port component name
+warn.dd.invalid.namespace.of.wsdlport=CWWKW0304W: webservices.xml \u4e2d\u7684\u57e0\u5143\u4ef6 {2} \u4e4b <wsdl-port> \u5143\u7d20\u503c {1} \u7684\u540d\u7a31\u7a7a\u9593 {0} \u7121\u6548\u3002
+warn.dd.invalid.namespace.of.wsdlport.explanation=\u5982\u679c\u6307\u5b9a\u4e86 <wsdl-port> \u5143\u7d20\u7684\u540d\u7a31\u7a7a\u9593\uff0c\u5b83\u5fc5\u9808\u7b26\u5408 <wsdl-service> \u5143\u7d20\u4e2d\u6240\u6307\u5b9a\u7684\u540d\u7a31\u7a7a\u9593\u3002
+warn.dd.invalid.namespace.of.wsdlport.useraction=\u8acb\u6307\u5b9a\u7b26\u5408 <wsdl-service> \u5143\u7d20\u4e2d\u6240\u6307\u5b9a\u7684\u540d\u7a31\u7a7a\u9593\u3002
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.serviceendpointinterface=CWWKW0305W: <service-endpoint-interface> \u5143\u7d20\u503c {0} \u4e0d\u662f\u9069\u7528\u65bc webservices.xml \u4e2d\u4e4b\u57e0\u5143\u4ef6 {1} \u7684\u5b8c\u6574\u985e\u5225\u540d\u7a31\u3002
+warn.dd.invalid.serviceendpointinterface.explanation=webservices.xml \u4e2d <service-endpoint-interface> \u5143\u7d20\u7684\u503c\u5fc5\u9808\u662f\u5b8c\u6574\u7684\u985e\u5225\u540d\u7a31\u3002
+warn.dd.invalid.serviceendpointinterface.useraction=\u8acb\u5728 webservices.xml \u7684 <service-endpoint-interface> \u5143\u7d20\u4e2d\u4f7f\u7528\u5b8c\u6574\u985e\u5225\u540d\u7a31\u3002\u5b8c\u6574\u985e\u5225\u540d\u7a31\u61c9\u8a72\u985e\u4f3c\u65bc <package_name>.<class_name>\uff0c\u4f8b\u5982 com.ibm.ws.example.MyService\u3002
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.mtomthreshold=CWWKW0306W: webservices.xml \u4e2d\u7684\u57e0\u5143\u4ef6 {1} \u4e4b <mtom-threshold> \u5143\u7d20\u503c {0} \u662f\u4e00\u500b\u8ca0\u6574\u6578\u3002
+warn.dd.invalid.mtomthreshold.explanation=webservices.xml \u4e2d\u7684 <mtom-threshold> \u5143\u7d20\u503c\u5fc5\u9808\u662f\u6574\u6578\uff0c\u4e14\u4e0d\u662f\u8ca0\u6578\u3002
+warn.dd.invalid.mtomthreshold.useraction=\u8acb\u5728 webservices.xml \u7684 <mtom-threshold> \u5143\u7d20\u4e2d\u4f7f\u7528\u4e0d\u662f\u8ca0\u6578\u7684\u6574\u6578\u3002
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.enablemtom=CWWKW0307W: <enable-mtom> \u5143\u7d20\u503c {0} \u4e0d\u662f\u9069\u7528\u65bc webservices.xml \u4e2d\u4e4b\u57e0\u5143\u4ef6 {1} \u7684\u5e03\u6797\u503c\u3002
+warn.dd.invalid.enablemtom.explanation=webservices.xml \u4e2d\u7684 <enable-mtom> \u5143\u7d20\u503c\u5fc5\u9808\u662f\u5e03\u6797\u503c\u3002
+warn.dd.invalid.enablemtom.useraction=\u8acb\u5c07 <enable-mtom> \u5143\u7d20\u503c\u8a2d\u70ba true \u6216 false\u3002
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.respectbinding=CWWKW0308W: <respect-binding> \u5143\u7d20\u4e2d\u7684 <enabled> \u5143\u7d20\u503c {0} \u4e0d\u662f\u9069\u7528\u65bc webservices.xml \u4e2d\u4e4b\u57e0\u5143\u4ef6 {1} \u7684\u5e03\u6797\u503c\u3002
+warn.dd.invalid.respectbinding.explanation=<respect-binding> \u5143\u7d20\u4e2d\u6240\u5b9a\u7fa9\u7684 <enabled> \u5143\u7d20\u503c\u5fc5\u9808\u662f\u5e03\u6797\u503c\u3002
+warn.dd.invalid.respectbinding.useraction=\u8acb\u5c07 <enabled> \u5143\u7d20\u503c\u8a2d\u70ba true \u6216 false\u3002
+
+#{0}=value
+#{1}=element tag
+#{2}=port component name
+warn.dd.invalid.addressing=CWWKW0309W: <addressing> \u5143\u7d20\u4e2d\u4e4b {1} \u7684 {0} \u503c\u4e0d\u662f\u9069\u7528\u65bc webservices.xml \u4e2d\u4e4b\u57e0\u5143\u4ef6 {2} \u7684\u5e03\u6797\u503c\u3002
+warn.dd.invalid.addressing.explanation=<addressing> \u5143\u7d20\u4e2d\u6240\u5b9a\u7fa9\u7684 <enabled> \u6216 <required> \u5143\u7d20\u503c\u5fc5\u9808\u662f\u5e03\u6797\u503c\u3002
+warn.dd.invalid.addressing.useraction=\u8acb\u5c07 <enabled> \u6216 <required> \u5143\u7d20\u7684\u503c\u8a2d\u70ba true \u6216 false\u3002
+
+#{0}=element tag
+#{1}=port component name
+warn.dd.invalid.handler=CWWKW0310W: \u5728 webservices.xml \u4e2d\uff0c\u57e0\u5143\u4ef6 {1} \u7684 <handler> \u5143\u7d20\u907a\u6f0f {0} \u5143\u7d20\u3002
+warn.dd.invalid.handler.explanation=\u8a2d\u5b9a\u8655\u7406\u7a0b\u5f0f\u6642\uff0c\u9700\u8981 <handler-class> \u5143\u7d20\u548c <handler-name> \u5143\u7d20\u3002
+warn.dd.invalid.handler.useraction=\u8acb\u5c07 <handler-class> \u5143\u7d20\u548c <handler-name> \u5143\u7d20\u8a2d\u70ba\u6709\u6548\u7684\u8655\u7406\u7a0b\u5f0f\u3002<handler-name> \u5143\u7d20\u7684\u503c\u5fc5\u9808\u662f\u76f8\u540c webservices.xml \u4e2d\u7684\u552f\u4e00\u540d\u7a31\u3002<handler-class> \u5143\u7d20\u7684\u503c\u5fc5\u9808\u662f\u5b8c\u6574\u7684\u985e\u5225\u540d\u7a31\u3002\u5b8c\u6574\u985e\u5225\u540d\u7a31\u61c9\u8a72\u985e\u4f3c\u65bc <package_name>.<class_name>\uff0c\u4f8b\u5982 com.ibm.ws.example.MyHandler\u3002

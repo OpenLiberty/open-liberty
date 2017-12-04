@@ -8,22 +8,22 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-task publishExtract {
-	dependsOn jar
-	doLast {
-		copy {
-			from(zipTree(file("" + buildDir + "/" + project.name + ".jar")))
-			include 'META-INF/MANIFEST.MF'
-		    into "${rootDir}/build.image/wlp/lib/extract"
-		}
-		copy {
-			from(zipTree(file("" + buildDir + "/" + project.name + ".jar")))
-			exclude 'META-INF/'
-		    into "${rootDir}/build.image"
-		}
-	}
+
+task publishManifest(type: Copy) {
+    dependsOn jar
+    from(zipTree(new File(buildDir, project.name + '.jar')))
+    include 'META-INF/MANIFEST.MF'
+    into buildImage.file('wlp/lib/extract')
+}
+
+task publishExtract(type: Copy) {
+    dependsOn jar
+    dependsOn publishManifest
+    from(zipTree(new File(buildDir, project.name + '.jar')))
+    exclude 'META-INF/'
+    into buildImage.projectDir
 }
 
 assemble {
-	dependsOn publishExtract
+    dependsOn publishExtract
 }

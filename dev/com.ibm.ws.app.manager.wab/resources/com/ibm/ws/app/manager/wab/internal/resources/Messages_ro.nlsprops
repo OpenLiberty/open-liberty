@@ -1,0 +1,63 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.wab/resources/com/ibm/ws/app/manager/wab/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKZ
+#COMPONENTNAMEFOR CWWKZ Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+#   Reserving message prefixes CWWKZ0201 to CWWKZ0300
+
+bundle.tracker.init.fail=CWWKZ0201E: A ap\u0103rut o eroare la ini\u0163ializarea programului de instalare WAB.
+bundle.tracker.init.fail.explanation=Serverul nu a putut ini\u0163ializa programul de instalare Web Application Bundle (WAB), a\u015fadar WAB-urile nu au fost instalate.
+bundle.tracker.init.fail.useraction=Vede\u0163i istoricul \u015fi fi\u015fierele FFDC pentru informa\u0163ii suplimentare.
+
+wab.install.fail=CWWKZ0202E: Nu s-a putut instala bundle-ul {0} cu r\u0103d\u0103cina contextual\u0103 {1} \u00een containerul web.
+wab.install.fail.explanation=Serverul nu a putut instala Web Application Bundle (WAB) \u00een containerul web.
+wab.install.fail.useraction=Vede\u0163i istoricul \u015fi fi\u015fierele FFDC pentru informa\u0163ii suplimentare.
+
+wab.install.fail.adapt=CWWKZ0203E: Nu s-a putut instala bundle-ul {0} cu r\u0103d\u0103cina contextual\u0103 {1} \u00een containerul web.
+wab.install.fail.adapt.explanation=Serverul nu a putut instala Web Application Bundle (WAB) \u00een containerul web.
+wab.install.fail.adapt.useraction=Vede\u0163i istoricul \u015fi fi\u015fierele FFDC pentru informa\u0163ii suplimentare.
+
+wab.install.fail.overlay=CWWKZ0204E: Nu s-a putut instala bundle-ul {0} cu r\u0103d\u0103cina contextual\u0103 {1} \u00een containerul web.
+wab.install.fail.overlay.explanation=Serverul nu a putut instala Web Application Bundle (WAB) \u00een containerul web.
+wab.install.fail.overlay.useraction=Vede\u0163i istoricul \u015fi fi\u015fierele FFDC pentru informa\u0163ii suplimentare.
+
+wab.install.fail.cache=CWWKZ0205E: Nu s-a putut instala bundle-ul {0} cu r\u0103d\u0103cina contextual\u0103 {1} \u00een containerul web.
+wab.install.fail.cache.explanation=Serverul nu a putut instala Web Application Bundle (WAB) \u00een containerul web.
+wab.install.fail.cache.useraction=Vede\u0163i istoricul \u015fi fi\u015fierele FFDC pentru informa\u0163ii suplimentare.
+
+wab.install.fail.container=CWWKZ0206E: Nu s-a putut instala bundle-ul {0} cu r\u0103d\u0103cina contextual\u0103 {1} \u00een containerul web.
+wab.install.fail.container.explanation=Serverul nu a putut instala Web Application Bundle (WAB) \u00een containerul web.
+wab.install.fail.container.useraction=Vede\u0163i istoricul \u015fi fi\u015fierele FFDC pentru informa\u0163ii suplimentare.
+
+wab.install.fail.wiring=CWWKZ0207E: Nu s-a putut instala bundle-ul {0} cu r\u0103d\u0103cina contextual\u0103 {1} \u00een containerul web.
+wab.install.fail.wiring.explanation=Serverul nu a putut instala Web Application Bundle (WAB) \u00een containerul web.
+wab.install.fail.wiring.useraction=Vede\u0163i istoricul \u015fi fi\u015fierele FFDC pentru informa\u0163ii suplimentare.
+
+wab.install.fail.clash=CWWKZ0208E: Bundle-ul {0} cu r\u0103d\u0103cina contextual\u0103 {1} nu poate fi instalat \u00een containerul web pentru c\u0103 are aceea\u015fi r\u0103d\u0103cin\u0103 contextual\u0103 ca urm\u0103toarele bundle-uri: {2}
+wab.install.fail.clash.explanation=R\u0103d\u0103cina contextual\u0103 pentru fiecare Web Application Bundle (WAB) din containerul web trebuie s\u0103 fie unic\u0103. Serverul nu poate instala WAB-ul \u00een containerul web pentru c\u0103 r\u0103d\u0103cina sa contextual\u0103 este aceea\u015fi cu alt bundle care este implementat.
+wab.install.fail.clash.useraction=Folosi\u0163i o alt\u0103 r\u0103d\u0103cin\u0103 contextual\u0103.

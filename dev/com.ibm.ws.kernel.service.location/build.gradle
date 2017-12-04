@@ -10,7 +10,8 @@
  *******************************************************************************/
 
 test {
+    dependsOn ':cnf:copyMavenLibs'
     doFirst {
-		jvmArgs "-javaagent:${rootDir}/cnf/mavenlibs/jmockit-1.25.jar"
-	}
+        jvmArgs '-javaagent:' + cnf.file('mavenlibs/jmockit-1.25.jar')
+    }
 }

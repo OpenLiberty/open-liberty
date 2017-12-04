@@ -1,0 +1,51 @@
+###############################################################################
+# Copyright (c) 2012, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.context/resources/com/ibm/ws/context/service/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Context Propagation Service
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# CWWKC1000, CWWKC1001, CWWKC1002 have been moved to another file. Do not reuse them.
+
+CWWKC1003.not.serializable=CWWKC1003E: L''elemento di configurazione {0} deve avere un identificativo univoco (id) o un nome jndi per poter essere serializzato.
+CWWKC1003.not.serializable.explanation=Per poter essere serializzato, un servizio contesto deve avere un attributo ID univoco o un attributo nome jndi.
+CWWKC1003.not.serializable.useraction=Aggiunge un attributo id o jndiName alla configurazione del servizio di contesto.
+
+CWWKC1004.context.provider.unavailable=CWWKC1004E: Il provider di contesto del thread {0} non \u00e8 disponibile.
+CWWKC1004.context.provider.unavailable.explanation=Il server delle applicazioni non \u00e8 in grado di trovare un provider con il tipo di contesto di thread specificato.
+CWWKC1004.context.provider.unavailable.useraction=Verificare che la funzione che fornisce il tipo di contesto di thread specificato sia abilitata.
+
+CWWKC1010.context.service.unavailable=CWWKC1010E: Un elemento di configurazione con un identificativo univoco o un nome jndi {0} non \u00e8 stato trovato nella configurazione del server.
+CWWKC1010.context.service.unavailable.explanation=Nella configurazione non si trova un servizio contesto con l'ID o il nome jndi specificato.
+CWWKC1010.context.service.unavailable.useraction=Assicurarsi che il servizio contesto con l'ID o il nome jndi specificato esista nella configurazione e che sia valido.
+
+CWWKC1011.app.unavailable=CWWKC1011E: Impossibile avviare l''attivit\u00e0 {0} perch\u00e9 l''applicazione {1}, che la ha inoltrata, non \u00e8 disponibile.
+CWWKC1011.app.unavailable.explanation=L'applicazione che ha inoltrato un'attivit\u00e0 deve essere disponibile per consentire l'avvio dell'attivit\u00e0.
+CWWKC1011.app.unavailable.useraction=Verificare che l'applicazione sia stata avviata e inoltrare nuovamente l'attivit\u00e0.
+
+CWWKC1012.module.unavailable=CWWKC1012E: Impossibile avviare l''attivit\u00e0 {0} perch\u00e9 il modulo {1} dell''applicazione {2}, che la ha inoltrata, non \u00e8 disponibile.
+CWWKC1012.module.unavailable.explanation=Il modulo che ha inoltrato un'attivit\u00e0 deve essere disponibile per consentire l'avvio dell'attivit\u00e0.
+CWWKC1012.module.unavailable.useraction=Verificare che il modulo sia stato avviato e inoltrare nuovamente l'attivit\u00e0.
+
+CWWKC1013.component.unavailable=CWWKC1013E: Impossibile avviare l''attivit\u00e0 {0} perch\u00e9 il componente {1} del modulo {2}, nell''applicazione {3}, che la ha inoltrata, non \u00e8 disponibile.
+CWWKC1013.component.unavailable.explanation=IL componente dell'applicazione che ha inoltrato un'attivit\u00e0 deve essere disponibile per consentire l'avvio dell'attivit\u00e0.
+CWWKC1013.component.unavailable.useraction=Verificare che il componente dell'applicazione sia stato avviato e inoltrare nuovamente l'attivit\u00e0.
+
+# CWWKC1020 has been moved to another file. Do not reuse it.

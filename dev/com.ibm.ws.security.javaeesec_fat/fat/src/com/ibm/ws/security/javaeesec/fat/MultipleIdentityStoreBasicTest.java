@@ -226,6 +226,7 @@ public class MultipleIdentityStoreBasicTest extends JavaEESecTestBase {
     @Test
     public void testMultipleISBasicAuthWith1stISuccess_DeniedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        myServer.setMarkToEndOfLog();
         String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.INVALIDUSER,
                                                           LocalLdapServer.PASSWORD,
                                                           HttpServletResponse.SC_FORBIDDEN);
@@ -249,6 +250,7 @@ public class MultipleIdentityStoreBasicTest extends JavaEESecTestBase {
     @Test
     public void testMultipleISBasicAuthWith1st2ndFail_DeniedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        myServer.setMarkToEndOfLog();
         String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.USER1,
                                                           LocalLdapServer.INVALIDPASSWORD,
                                                           HttpServletResponse.SC_FORBIDDEN);

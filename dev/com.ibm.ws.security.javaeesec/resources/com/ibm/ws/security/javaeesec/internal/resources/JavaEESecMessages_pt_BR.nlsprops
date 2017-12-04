@@ -1,0 +1,44 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.javaeesec/resources/com/ibm/ws/security/javaeesec/internal/resources/JavaEESecMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Java EE Security 1.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS1900 - CWWKS1924
+# 1900 to 1909 will be used for some informational message such as JSR375 is enabled or something like that...
+
+JAVAEESEC_ERROR_NO_IDENTITYSTORES=CWWKS1910E: O objeto IdentityStore n\u00e3o foi encontrado. Certifique-se de que pelo menos um IdentityStore seja definido pela anota\u00e7\u00e3o no aplicativo.
+JAVAEESEC_ERROR_NO_IDENTITYSTORES.explanation=O objeto IdentityStore n\u00e3o foi encontrado. \u00c9 necess\u00e1rio para a autentica\u00e7\u00e3o e autoriza\u00e7\u00e3o.
+JAVAEESEC_ERROR_NO_IDENTITYSTORES.useraction=Certifique-se de que o aplicativo esteja devidamente anotado para ativar pelo menos um IdentityStore.
+
+JAVAEESEC_ERROR_NO_VALIDATION=CWWKS1911E: Nenhum objeto IdentityStore suporta a valida\u00e7\u00e3o de usu\u00e1rio. Verifique se pelo menos um IdentityStore d\u00e1 suporte \u00e0 valida\u00e7\u00e3o de usu\u00e1rio.
+JAVAEESEC_ERROR_NO_VALIDATION.explanation=Nenhum dos objetos IdentityStore suporta a valida\u00e7\u00e3o de usu\u00e1rio, portanto, o c\u00f3digo de seguran\u00e7a n\u00e3o autentica o usu\u00e1rio.
+JAVAEESEC_ERROR_NO_VALIDATION.useraction=Verifique se pelo menos um IdentityStore d\u00e1 suporte \u00e0 valida\u00e7\u00e3o de usu\u00e1rio.
+
+JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: O objeto HttpAuthenticationMechanism para o m\u00f3dulo {0} no aplicativo {1} n\u00e3o foi localizado. Certifique-se de que o m\u00f3dulo contenha um objeto HttpAuthenticationMechanism.
+JAVAEESEC_ERROR_NO_HAM.explanation=O objeto HttpAuthenticationMechanism n\u00e3o pode ser identificado para autentica\u00e7\u00e3o. Pode ser que n\u00e3o haja nenhum objeto ou m\u00faltiplos objetos que correspondam \u00e0 condi\u00e7\u00e3o especificada. Verifique se h\u00e1 um HttpAuthenticationMechanism no aplicativo.
+JAVAEESEC_ERROR_NO_HAM.useraction=Verifique se h\u00e1 um HttpAuthenticationMechanism no aplicativo.
+
+JAVAEESEC_ERROR_NO_MODULE_PROPS=CWWKS1913E: O objeto ModuleProperties para autentica\u00e7\u00e3o do aplicativo {0} n\u00e3o pode ser localizado, provavelmente porque o aplicativo n\u00e3o cont\u00e9m um objeto HttpAuthenticationMechanism. Certifique-se de que um objeto HttpAuthenticationMechanism esteja definido para cada m\u00f3dulo.
+JAVAEESEC_ERROR_NO_MODULE_PROPS.explanation=O objeto ModuleProperties, que \u00e9 necess\u00e1rio para autenticar o aplicativo, n\u00e3o pode ser identificado. Esse erro geralmente resulta da n\u00e3o defini\u00e7\u00e3o de um objeto HttpAuthenticationMechanism no aplicativo.
+JAVAEESEC_ERROR_NO_MODULE_PROPS.useraction=Certifique-se de que cada m\u00f3dulo no aplicativo contenha um objeto HttpAuthenticationMechanism.
+
+JAVAEESEC_WARNING_NO_REALM_NAME=CWWKS1914W: O nome da regi\u00e3o para a autentica\u00e7\u00e3o b\u00e1sica n\u00e3o est\u00e1 configurado, o valor defaultRealm est\u00e1 sendo usado.
+JAVAEESEC_WARNING_NO_REALM_NAME.explanation=O nome da regi\u00e3o para a autentica\u00e7\u00e3o b\u00e1sica n\u00e3o est\u00e1 configurado, o valor padr\u00e3o defaultRealm est\u00e1 sendo usado.
+JAVAEESEC_WARNING_NO_REALM_NAME.useraction=Se o nome da regi\u00e3o precisa ser configurado, configure-o usando a anota\u00e7\u00e3o BasicAuthenticationMechanismDefinition no aplicativo.
+
+JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1915E: A implementa\u00e7\u00e3o para o m\u00f3dulo {0} no aplicativo {1} falhou porque m\u00faltiplas implementa\u00e7\u00f5es HttpAuthenticationMechanism foram localizadas. A lista de classes \u00e9 {2}. Mais provavelmente, esse \u00e9 um problema de empacotamento de aplicativo. Certifique-se de que haja apenas uma implementa\u00e7\u00e3o HttpAuthenticationMechanism em cada m\u00f3dulo.
+JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=A implementa\u00e7\u00e3o do aplicativo falhou porque mais de uma implementa\u00e7\u00e3o HttpAuthenticationMechanism foi localizada. Essa condi\u00e7\u00e3o n\u00e3o \u00e9 permitida.
+JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Certifique-se de que haja apenas uma implementa\u00e7\u00e3o HttpAuthenticationMechanism para cada m\u00f3dulo no aplicativo.

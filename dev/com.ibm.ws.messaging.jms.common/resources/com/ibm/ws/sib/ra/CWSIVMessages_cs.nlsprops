@@ -1,0 +1,1194 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.ra.CWSIVMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIV0001=CWSIV0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you want them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Msgs in the range CWSIV0001-CWSIV0049 belong to class com.ibm.ws.sib.ra.recovery.impl.SibRaXaResourceInfo
+#   - Msgs in the range CWSIV0050-CWSIV0099 belong to class com.ibm.ws.sib.ra.SibRaFactory
+#   - Msgs in the range CWSIV0100-CWSIV0149 belong to class com.ibm.ws.sib.ra.impl.SibRaConnectionFactory
+#   - Msgs in the range CWSIV0150-CWSIV0199 belong to class com.ibm.ws.sib.ra.impl.SibRaConnection
+#   - Msgs in the range CWSIV0200-CWSIV0249 belong to class com.ibm.ws.sib.ra.impl.SibRaDestinationSession
+#   - Msgs in the range CWSIV0250-CWSIV0299 belong to class com.ibm.ws.sib.ra.impl.SibRaConsumerSession
+#   - Msgs in the range CWSIV0300-CWSIV0349 belong to class com.ibm.ws.sib.ra.impl.SibRaConnectionInfo
+#   - Msgs in the range CWSIV0350-CWSIV0399 belong to class com.ibm.ws.sib.ra.impl.SibRaManagedConnectionFactory
+#   - Msgs in the range CWSIV0400-CWSIV0449 belong to class com.ibm.ws.sib.ra.impl.SibRaManagedConnection
+#   - Msgs in the range CWSIV0450-CWSIV0499 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaResourceAdapterImpl
+#   - Msgs in the range CWSIV0500-CWSIV0549 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaActivationSpecImpl
+#   - Msgs in the range CWSIV0550-CWSIV0599 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaEndpointActivation
+#   - Msgs in the range CWSIV0600-CWSIV0649 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaDispatcher
+#   - Msgs in the range CWSIV0650-CWSIV0699 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaTransactionalDispatcher
+#   - Msgs in the range CWSIV0700-CWSIV0749 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaConsumerSession
+#   - Msgs in the range CWSIV0750-CWSIV0799 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaStaticDestinationEndpointActivation
+#   - Msgs in the range CWSIV0800-CWSIV0849 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaDynamicDestinationEndpointActivation
+#   - Msgs in the range CWSIV0850-CWSIV0899 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaEndpointInvokerImpl
+#   - Msgs in the range CWSIV0900-CWSIV0949 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaListener
+#   - Msgs in the range CWSIV0950-CWSIV0999 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaMessagingEngineConnection
+#   - Msgs in the range CWSIV1000-CWSIV1049 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaDispatchEndpointActivation
+#   - Msgs in the range CWSIV1050-CWSIV1099 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaDispatchTarget
+#   - Msgs in the range CWSIV1100-CWSIV1149 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaSingleProcessListener
+#   - Msgs in the range CWSIV1150-CWSIV1199 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaMultiProcessListener
+#   - Msgs in the range CWSIV1200-CWSIV1249 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaSynchronizedDispatcher
+#   - CWSIV9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+#
+# cmvc_en_version_level=1.29,0,05/04/28,09:28:22
+#
+#CMVCPATHNAME com.ibm.ws.messaging.jms/resources/com/ibm/ws/sib/ra/CWSIVMessages.nlsprops
+#COMPONENTPREFIX CWSIV
+#COMPONENTNAMEFOR CWSIV SIBus Resource Adapter
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} the security alias that could not be resolved
+RECOVERY_ALIAS_NOT_RESOLVED_CWSIV0001=CWSIV0001W: B\u011bhem zpracov\u00e1n\u00ed zotaven\u00ed se nepoda\u0159ilo vy\u0159e\u0161it alias zabezpe\u010den\u00ed {0}.
+RECOVERY_ALIAS_NOT_RESOLVED_CWSIV0001.explanation=U prost\u0159edku, u kter\u00e9ho prob\u00edh\u00e1 zpracov\u00e1n\u00ed zotaven\u00ed, byl zad\u00e1n alias zabezpe\u010den\u00ed, kter\u00fd nelze vy\u0159e\u0161it. Zpracov\u00e1n\u00ed bude pokra\u010dovat s nedefinovan\u00fdm jm\u00e9nem u\u017eivatele a heslem.
+RECOVERY_ALIAS_NOT_RESOLVED_CWSIV0001.useraction=Ov\u011b\u0159te, zda je zadan\u00fd alias definov\u00e1n pro aplika\u010dn\u00ed server, u kter\u00e9ho prob\u00edh\u00e1 zpracov\u00e1n\u00ed zotaven\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was received
+CONNECTION_FACTORY_EXCEPTION_CWSIV0050=CWSIV0050E: Do\u0161lo k intern\u00ed chyb\u011b. V\u00fdjimka {0} byla p\u0159ijata z b\u011bhov\u00e9ho prost\u0159ed\u00ed JCA p\u0159i pokusu o z\u00edsk\u00e1n\u00ed tov\u00e1rny p\u0159ipojen\u00ed.
+CONNECTION_FACTORY_EXCEPTION_CWSIV0050.explanation=P\u0159i pokusu o z\u00edsk\u00e1n\u00ed objektu SICoreConnectionFactory pomoc\u00ed b\u011bhov\u00e9ho prost\u0159ed\u00ed JCA byla p\u0159ijata neo\u010dek\u00e1van\u00e1 v\u00fdjimka.
+CONNECTION_FACTORY_EXCEPTION_CWSIV0050.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection factory that was returned
+INCORRECT_FACTORY_TYPE_CWSIV0051=CWSIV0051E: Do\u0161lo k intern\u00ed chyb\u011b. Tov\u00e1rna p\u0159ipojen\u00ed vr\u00e1cen\u00e1 z b\u011bhov\u00e9ho prost\u0159ed\u00ed JCA {0} neimplementuje objekt SICoreConnectionFactory.
+INCORRECT_FACTORY_TYPE_CWSIV0051.explanation=Tov\u00e1rna p\u0159ipojen\u00ed vr\u00e1cen\u00e1 z b\u011bhov\u00e9ho prost\u0159ed\u00ed JCA neimplementovala objekt SICoreConnectionFactory.
+INCORRECT_FACTORY_TYPE_CWSIV0051.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the invalid value
+# {1} the name of the property
+# {2} the first valid value
+# {3} the second valid value
+INVALID_PROPERTY_CWSIV0052=CWSIV0052E: Hodnota {0} nen\u00ed platnou hodnotou vlastnosti {1} tov\u00e1rny p\u0159ipojen\u00ed. Platn\u00e9 hodnoty jsou {2} a {3}.
+INVALID_PROPERTY_CWSIV0052.explanation=Mapov\u00e1n\u00ed vlastnost\u00ed p\u0159edan\u00e9 metod\u011b getConnectionFactory objektu SICoreConnectionFactorySelector obsahuje pro danou vlastnost neplatnou hodnotu.
+INVALID_PROPERTY_CWSIV0052.useraction=Ov\u011b\u0159te, zda sada vlastnost\u00ed p\u0159edan\u00e1 metod\u011b getConnectionFactory objektu SICoreConnectionFactorySelector je platn\u00e1.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the property
+# {1} the required type
+INVALID_PROPERTY_TYPE_CWSIV0053=CWSIV0053E: Vlastnost tov\u00e1rny p\u0159ipojen\u00ed {0} nen\u00ed po\u017eadovan\u00e9ho typu {1}.
+INVALID_PROPERTY_TYPE_CWSIV0053.explanation=Mapov\u00e1n\u00ed vlastnost\u00ed p\u0159edan\u00e9 metod\u011b getConnectionFactory objektu SICoreConnectionFactorySelector obsahovalo pro danou vlastnost hodnotu, kter\u00e1 nen\u00ed po\u017eadovan\u00e9ho typu.
+INVALID_PROPERTY_TYPE_CWSIV0053.useraction=Ov\u011b\u0159te, zda sada vlastnost\u00ed p\u0159edan\u00e1 metod\u011b getConnectionFactory objektu SICoreConnectionFactorySelector je platn\u00e1.
+
+# -------------------------------------------------------------------------------------------------
+ALIAS_REQUIRED_CWSIV0054=CWSIV0054E: Vlastnosti tov\u00e1rny p\u0159ipojen\u00ed musej\u00ed obsahovat hodnotu pro alias CONTAINER_AUTHENTICATION_ALIAS.
+ALIAS_REQUIRED_CWSIV0054.explanation=Mapov\u00e1n\u00ed vlastnost\u00ed p\u0159edan\u00e9 metod\u011b getConnectionFactory objektu SICoreConnectionFactorySelector vy\u017eadovalo, aby kontejner poskytoval pov\u011b\u0159en\u00ed pomoc\u00ed v\u00fdchoz\u00edho mapov\u00e1n\u00ed \u010dinitel\u016f, ale neuv\u00e1d\u011blo alias ov\u011b\u0159ov\u00e1n\u00ed kontejneru.
+ALIAS_REQUIRED_CWSIV0054.useraction=Ov\u011b\u0159te, zda sada vlastnost\u00ed p\u0159edan\u00e1 metod\u011b getConnectionFactory objektu SICoreConnectionFactorySelector obsahuje hodnotu pro alias CONTAINER_AUTHENTICATION_ALIAS.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the invalid value
+# {1} the name of the property
+# {2} the first valid value
+# {3} the second valid value
+INVALID_PROPERTY_CWSIV0055=CWSIV0055E: Hodnota {0} nen\u00ed platnou hodnotou vlastnosti {1} tov\u00e1rny p\u0159ipojen\u00ed. Platn\u00e9 hodnoty jsou {2} a {3}.
+INVALID_PROPERTY_CWSIV0055.explanation=Mapov\u00e1n\u00ed vlastnost\u00ed p\u0159edan\u00e9 metod\u011b getConnectionFactory objektu SICoreConnectionFactorySelector obsahuje pro danou vlastnost neplatnou hodnotu.
+INVALID_PROPERTY_CWSIV0055.useraction=Ov\u011b\u0159te, zda sada vlastnost\u00ed p\u0159edan\u00e1 metod\u011b getConnectionFactory objektu SICoreConnectionFactorySelector je platn\u00e1.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection that was returned
+# {1} the expected type for the connection
+INCORRECT_CONNECTION_TYPE_CWSIV0101=CWSIV0101E: Do\u0161lo k intern\u00ed chyb\u011b. Spr\u00e1vce p\u0159ipojen\u00ed JCA vr\u00e1til p\u0159ipojen\u00ed {0}, kter\u00e9 nebylo o\u010dek\u00e1van\u00e9ho typu {1}.
+INCORRECT_CONNECTION_TYPE_CWSIV0101.explanation=B\u011bhem pokusu o z\u00edsk\u00e1n\u00ed p\u0159ipojen\u00ed prost\u0159ednictv\u00edm spr\u00e1vce p\u0159ipojen\u00ed JCA bylo vr\u00e1ceno p\u0159ipojen\u00ed neo\u010dek\u00e1van\u00e9ho typu.
+INCORRECT_CONNECTION_TYPE_CWSIV0101.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+ACTIVE_LOCAL_TRAN_CWSIV0150=CWSIV0150E: St\u00e1vaj\u00edc\u00ed transakce SIUncoordinatedTransaction nebyla dokon\u010dena.
+ACTIVE_LOCAL_TRAN_CWSIV0150.explanation=Do\u0161lo k pokusu o vytvo\u0159en\u00ed nov\u00e9 transakce SIUncoordinatedTransaction, a\u010dkoli nebyla dokon\u010dena aktu\u00e1ln\u00ed transakce.
+ACTIVE_LOCAL_TRAN_CWSIV0150.useraction=P\u0159ed vytvo\u0159en\u00edm nov\u00e9 transakce se ujist\u011bte, zda u aktu\u00e1ln\u00ed transakce SIUncoordinatedTransaction do\u0161lo k vol\u00e1n\u00ed potvrzen\u00ed nebo odvol\u00e1n\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+ACTIVE_CONTAINER_TRAN_CWSIV0151=CWSIV0151E: V podprocesu existuje transakce spravovan\u00e1 v r\u00e1mci kontejneru.
+ACTIVE_CONTAINER_TRAN_CWSIV0151.explanation=Do\u0161lo k pokusu o vytvo\u0159en\u00ed nov\u00e9 transakce SIUncoordinatedTransaction, a\u010dkoli v podprocesu existuje transakce spravovan\u00e1 v r\u00e1mci kontejneru.
+ACTIVE_CONTAINER_TRAN_CWSIV0151.useraction=Upravte aplikaci tak, aby se vol\u00e1n\u00ed prov\u00e1d\u011blo v prost\u0159ed\u00ed, kde podproces neobsahuje transakci spravovanou v r\u00e1mci kontejneru.
+
+# -------------------------------------------------------------------------------------------------
+XARESOURCE_NOT_SUPPORTED_CWSIV0152=CWSIV0152E: Vytvo\u0159en\u00ed prost\u0159edku SIXAResource nen\u00ed podporov\u00e1no.
+XARESOURCE_NOT_SUPPORTED_CWSIV0152.explanation=Vytvo\u0159en\u00ed prost\u0159edku SIXAResource nen\u00ed podporov\u00e1no p\u0159i pou\u017eit\u00ed implementace RA_CONNECTION stroje SPI syst\u00e9mu zpr\u00e1v platformy, proto\u017ee glob\u00e1ln\u00ed transakce jsou zpracov\u00e1v\u00e1ny adapt\u00e9rem prost\u0159edk\u016f.
+XARESOURCE_NOT_SUPPORTED_CWSIV0152.useraction=Pokud mus\u00ed aplikace zpracovat glob\u00e1ln\u00ed transakce v\u00fdslovn\u011b, pou\u017eijte jinou implementaci stroje SPI syst\u00e9mu zpr\u00e1v platformy. Jinak odeberte vol\u00e1n\u00ed na prost\u0159edek getSIXAResource.
+
+# -------------------------------------------------------------------------------------------------
+CLONE_NOT_SUPPORTED_CWSIV0153=CWSIV0153E: Klonov\u00e1n\u00ed p\u0159ipojen\u00ed nen\u00ed podporov\u00e1no.
+CLONE_NOT_SUPPORTED_CWSIV0153.explanation=Klonov\u00e1n\u00ed p\u0159ipojen\u00ed nen\u00ed podporov\u00e1no p\u0159i pou\u017eit\u00ed implementace RA_CONNECTION j\u00e1dra SPI.
+CLONE_NOT_SUPPORTED_CWSIV0153.useraction=Zva\u017ete, zda je klonov\u00e1n\u00ed p\u0159ipojen\u00ed nezbytn\u00e9, nebo zda by posta\u010dilo pouh\u00e9 vytvo\u0159en\u00ed dal\u0161\u00edho p\u0159ipojen\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection manager
+LAZY_ENLIST_NOT_SUPPORTED_CWSIV0154=CWSIV0154E: Do\u0161lo k intern\u00ed chyb\u011b. Spr\u00e1vce p\u0159ipojen\u00ed {0} nepodporuje v\u00fdpis ne\u010dinn\u00fdch p\u0159ipojen\u00ed.
+LAZY_ENLIST_NOT_SUPPORTED_CWSIV0154.explanation=Bylo zru\u0161eno p\u0159idru\u017een\u00ed aktu\u00e1ln\u00edho p\u0159ipojen\u00ed k jeho spravovan\u00e9mu p\u0159ipojen\u00ed, ale spr\u00e1vce p\u0159ipojen\u00ed nepodporuje v\u00fdpis ne\u010dinn\u00fdch p\u0159ipojen\u00ed, aby se mohlo uskute\u010dnit opakovan\u00e9 p\u0159idru\u017een\u00ed.
+LAZY_ENLIST_NOT_SUPPORTED_CWSIV0154.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+REASSOCIATION_FAILED_CWSIV0155=CWSIV0155E: Do\u0161lo k intern\u00ed chyb\u011b. Do\u0161lo k vyvol\u00e1n\u00ed v\u00fdjimky {0} p\u0159i pokusu o opakovan\u00e9 p\u0159idru\u017een\u00ed ke spravovan\u00e9mu p\u0159ipojen\u00ed.
+REASSOCIATION_FAILED_CWSIV0155.explanation=Bylo zru\u0161eno p\u0159idru\u017een\u00ed aktu\u00e1ln\u00edho p\u0159ipojen\u00ed k jeho spravovan\u00e9mu p\u0159ipojen\u00ed a p\u0159i pokusu o opakovan\u00e9 p\u0159idru\u017een\u00ed byla p\u0159ijata v\u00fdjimka.
+REASSOCIATION_FAILED_CWSIV0155.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 v\u00fdjimce.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_CONNECTION_CWSIV0156=CWSIV0156E: Byla zru\u0161ena platnost p\u0159ipojen\u00ed.
+INVALID_CONNECTION_CWSIV0156.explanation=P\u0159edchoz\u00ed chyba zp\u016fsobila, \u017ee p\u0159ipojen\u00ed nen\u00ed nad\u00e1le platn\u00e9.
+INVALID_CONNECTION_CWSIV0156.useraction=P\u0159\u00ed\u010dinu p\u0159edchoz\u00ed chyby ur\u010dete podle informac\u00ed v protokolech chyb. Aplikace by m\u011bla vytvo\u0159it nov\u00e9 p\u0159ipojen\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONTAINER_TRAN_CWSIV0157=CWSIV0157E: Do\u0161lo k intern\u00ed chyb\u011b. Do\u0161lo k vyvol\u00e1n\u00ed v\u00fdjimky {0} p\u0159i pokusu o z\u00edsk\u00e1n\u00ed aktu\u00e1ln\u00ed transakce kontejneru.
+CONTAINER_TRAN_CWSIV0157.explanation=B\u011bhem pokusu o z\u00edsk\u00e1n\u00ed aktu\u00e1ln\u00ed transakce kontejneru byla obdr\u017eena v\u00fdjimka.
+CONTAINER_TRAN_CWSIV0157.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 v\u00fdjimce.
+
+# -------------------------------------------------------------------------------------------------
+ACTIVE_LOCAL_TRAN_CWSIV0158=CWSIV0158E: Existuje aktivn\u00ed transakce SIUncoordinatedTransaction p\u0159idru\u017een\u00e1 k tomuto p\u0159ipojen\u00ed.
+ACTIVE_LOCAL_TRAN_CWSIV0158.explanation=Do\u0161lo k pokusu o pou\u017eit\u00ed nedefinovan\u00e9ho parametru transakce, a\u010dkoli st\u00e1le existuje aktivn\u00ed transakce SIUncoordinatedTransaction p\u0159idru\u017een\u00e1 k tomuto p\u0159ipojen\u00ed.
+ACTIVE_LOCAL_TRAN_CWSIV0158.useraction=Jako parametr transakce p\u0159edejte aktivn\u00ed transakci SIUncoordinatedTransaction nebo u n\u00ed nejprve p\u0159ed p\u0159ed\u00e1n\u00edm nedefinovan\u00e9 hodnoty vyvolejte potvrzen\u00ed/odvol\u00e1n\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+INCORRECT_LOCAL_TRAN_CWSIV0159=CWSIV0159E: Nebyla p\u0159ed\u00e1na aktivn\u00ed transakce SIUncoordinatedTransaction p\u0159idru\u017een\u00e1 k tomuto p\u0159ipojen\u00ed.
+INCORRECT_LOCAL_TRAN_CWSIV0159.explanation=Do\u0161lo k pokusu o pou\u017eit\u00ed transakce SIUncoordinatedTransaction jako parametru transakce, a\u010dkoli existuje jin\u00e1 aktivn\u00ed transakce SIUncoordinatedTransaction p\u0159idru\u017een\u00e1 k tomuto p\u0159ipojen\u00ed.
+INCORRECT_LOCAL_TRAN_CWSIV0159.useraction=Ov\u011b\u0159te, zda aplikace p\u0159ed\u00e1v\u00e1 aktu\u00e1ln\u00ed aktivn\u00ed transakci SIUncoordinatedTransaction p\u0159idru\u017eenou k tomuto p\u0159ipojen\u00ed, nebo hodnotu null, pokud by operace m\u011bla b\u00fdt provedena mimo transakci.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_XARESOURCE_CWSIV0160=CWSIV0160E: Prost\u0159edek SIXAResource nep\u0159edstavuje platn\u00fd parametr transakce.
+INVALID_XARESOURCE_CWSIV0160.explanation=Pou\u017eit\u00ed prost\u0159edku SIXAResource jako parametru transakce nen\u00ed podporov\u00e1no p\u0159i pou\u017eit\u00ed implementace RA_CONNECTION rozhran\u00ed SPI Core syst\u00e9mu zpr\u00e1v platformy, proto\u017ee glob\u00e1ln\u00ed transakce jsou zpracov\u00e1v\u00e1ny adapt\u00e9rem prost\u0159edk\u016f.
+INVALID_XARESOURCE_CWSIV0160.useraction=Pokud mus\u00ed aplikace zpracovat glob\u00e1ln\u00ed transakce v\u00fdslovn\u011b, pou\u017eijte jinou implementaci stroje SPI syst\u00e9mu zpr\u00e1v platformy. Jinak p\u0159edejte jako parametr transakce hodnotu null.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the transaction parameter
+UNRECOGNISED_TRAN_CWSIV0161=CWSIV0161E: Parametr transakce {0} nebyl typu, kter\u00fd lze rozpoznat.
+UNRECOGNISED_TRAN_CWSIV0161.explanation=Objekt p\u0159edan\u00fd jako parametr transakce nebyl typu, kter\u00fd lze rozpoznat.
+UNRECOGNISED_TRAN_CWSIV0161.useraction=Ov\u011b\u0159te, zda je parametr transakce bu\u010f nedefinovan\u00fd, nebo zda se jedn\u00e1 o transakci SIUncoordinatedTransaction z\u00edskanou z tohoto p\u0159ipojen\u00ed nebo o transakci SibRaAutoCommitTransaction.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONTAINER_COMMIT_FAILED_CWSIV0162=CWSIV0162E: Do\u0161lo k intern\u00ed chyb\u011b. Byla vyvol\u00e1na v\u00fdjimka {0} b\u011bhem pokusu kontejneru o potvrzen\u00ed lok\u00e1ln\u00ed transakce aplikace.
+CONTAINER_COMMIT_FAILED_CWSIV0162.explanation=Kontejner zjistil nevy\u0159\u00edzenou lok\u00e1ln\u00ed transakci aplikace na konci rozsahu sd\u00edlen\u00ed a p\u0159i pokusu o jej\u00ed potvrzen\u00ed byla vyvol\u00e1na v\u00fdjimka.
+CONTAINER_COMMIT_FAILED_CWSIV0162.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 v\u00fdjimce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONTAINER_ROLLBACK_FAILED_CWSIV0163=CWSIV0163E: Do\u0161lo k intern\u00ed chyb\u011b. Byla vyvol\u00e1na v\u00fdjimka {0} b\u011bhem pokusu kontejneru o odvol\u00e1n\u00ed lok\u00e1ln\u00ed transakce aplikace.
+CONTAINER_ROLLBACK_FAILED_CWSIV0163.explanation=Kontejner zjistil nevy\u0159\u00edzenou lok\u00e1ln\u00ed transakci aplikace na konci rozsahu sd\u00edlen\u00ed a p\u0159i pokusu o jej\u00ed odvol\u00e1n\u00ed byla vyvol\u00e1na v\u00fdjimka.
+CONTAINER_ROLLBACK_FAILED_CWSIV0163.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 v\u00fdjimce.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_SESSION_CWSIV0200=CWSIV0200E: Byla zru\u0161ena platnost p\u0159ipojen\u00ed, ze kter\u00e9ho byla tato relace vytvo\u0159ena.
+INVALID_SESSION_CWSIV0200.explanation=P\u0159edchoz\u00ed chyba zp\u016fsobila, \u017ee p\u0159ipojen\u00ed nen\u00ed nad\u00e1le platn\u00e9.
+INVALID_SESSION_CWSIV0200.useraction=P\u0159\u00ed\u010dinu p\u0159edchoz\u00ed chyby ur\u010dete podle informac\u00ed v protokolech chyb. Aplikace by m\u011bla vytvo\u0159it nov\u00e9 p\u0159ipojen\u00ed a relaci.
+
+# -------------------------------------------------------------------------------------------------
+ASYNCHRONOUS_METHOD_CWSIV0250=CWSIV0250E: Metody t\u00fdkaj\u00edc\u00ed se asynchronn\u00edho p\u0159\u00edjmu zpr\u00e1v nejsou podporov\u00e1ny.
+ASYNCHRONOUS_METHOD_CWSIV0250.explanation=Pou\u017eit\u00ed metod ConsumerSession t\u00fdkaj\u00edc\u00edch se asynchronn\u00edho p\u0159\u00edjmu zpr\u00e1v nen\u00ed podporov\u00e1no p\u0159i pou\u017eit\u00ed implementace RA_CONNECTION stroje SPI syst\u00e9mu zpr\u00e1v platformy.
+ASYNCHRONOUS_METHOD_CWSIV0250.useraction=Pokud je asynchronn\u00ed p\u0159\u00edjem zpr\u00e1v nezbytn\u00fd, pou\u017eijte jinou implementaci stroje SPI syst\u00e9mu zpr\u00e1v platformy.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONNECTION_CREATION_CWSIV0300=CWSIV0300E: Do\u0161lo k intern\u00ed chyb\u011b. Do\u0161lo k vyvol\u00e1n\u00ed v\u00fdjimky {0} p\u0159i pokusu o vytvo\u0159en\u00ed p\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v.
+CONNECTION_CREATION_CWSIV0300.explanation=Byla obdr\u017eena v\u00fdjimka p\u0159i pokusu o vytvo\u0159en\u00ed p\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v.
+CONNECTION_CREATION_CWSIV0300.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 v\u00fdjimce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONNECTION_FACTORY_ERROR_CWSIV0350=CWSIV0350E: Do\u0161lo k intern\u00ed chyb\u011b. Do\u0161lo k vyvol\u00e1n\u00ed v\u00fdjimky {0} p\u0159i pokusu o vytvo\u0159en\u00ed tov\u00e1rny p\u0159ipojen\u00ed j\u00e1dra SPI.
+CONNECTION_FACTORY_ERROR_CWSIV0350.explanation=Byla vyvol\u00e1na v\u00fdjimka p\u0159i pokusu o vytvo\u0159en\u00ed tov\u00e1rny p\u0159ipojen\u00ed rozhran\u00ed SPI Core pomoc\u00ed typu tov\u00e1rny TRM_CONNECTION.
+CONNECTION_FACTORY_ERROR_CWSIV0350.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 v\u00fdjimce.
+
+# -------------------------------------------------------------------------------------------------
+NON_MANAGED_ENVIRONMENT_CWSIV0351=CWSIV0351E: Vytvo\u0159en\u00ed tov\u00e1rny p\u0159ipojen\u00ed v nespravovan\u00e9m prost\u0159ed\u00ed nen\u00ed podporov\u00e1no.
+NON_MANAGED_ENVIRONMENT_CWSIV0351.explanation=Vytvo\u0159en\u00ed tov\u00e1rny p\u0159ipojen\u00ed nen\u00ed podporov\u00e1no v nespravovan\u00e9m prost\u0159ed\u00ed p\u0159i pou\u017eit\u00ed implementace RA_CONNECTION rozhran\u00ed SPI Core, proto\u017ee k poskytnut\u00ed podpory pro transakce kontejneru je nezbytn\u00fd spr\u00e1vce p\u0159ipojen\u00ed.
+NON_MANAGED_ENVIRONMENT_CWSIV0351.useraction=V nespravovan\u00e9m prost\u0159ed\u00ed vytvo\u0159te tov\u00e1rnu p\u0159ipojen\u00ed pomoc\u00ed selektoru SICoreConnectionFactorySelector s jin\u00fdm typem FactoryType ne\u017e RA_CONNECTION.
+
+# -------------------------------------------------------------------------------------------------
+NULL_REQUEST_INFO_CWSIV0352=CWSIV0352E: Do\u0161lo k intern\u00ed chyb\u011b. Pro vytvo\u0159en\u00ed spravovan\u00e9ho p\u0159ipojen\u00ed jsou nezbytn\u00e9 informace \u017e\u00e1dosti o p\u0159ipojen\u00ed.
+NULL_REQUEST_INFO_CWSIV0352.explanation=Spr\u00e1vce p\u0159ipojen\u00ed se pokusil o vytvo\u0159en\u00ed spravovan\u00e9ho p\u0159ipojen\u00ed bez zad\u00e1n\u00ed informac\u00ed \u017e\u00e1dosti o p\u0159ipojen\u00ed.
+NULL_REQUEST_INFO_CWSIV0352.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONNECTION_CLONE_CWSIV0353=CWSIV0353E: Do\u0161lo k intern\u00ed chyb\u011b. Do\u0161lo k vyvol\u00e1n\u00ed v\u00fdjimky {0} p\u0159i pokusu o klonov\u00e1n\u00ed p\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v.
+CONNECTION_CLONE_CWSIV0353.explanation=Byla vyvol\u00e1na v\u00fdjimka p\u0159i pokusu o klonov\u00e1n\u00ed p\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v b\u011bhem vytv\u00e1\u0159en\u00ed spravovan\u00e9ho p\u0159ipojen\u00ed.
+CONNECTION_CLONE_CWSIV0353.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 v\u00fdjimce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection request information object passed
+# {1} the expected type for the object
+UNRECOGNISED_REQUEST_INFO_CWSIV0354=CWSIV0354E: Do\u0161lo k intern\u00ed chyb\u011b. Objekt informac\u00ed \u017e\u00e1dosti o p\u0159ipojen\u00ed {0} nebyl o\u010dek\u00e1van\u00e9ho typu {1}.
+UNRECOGNISED_REQUEST_INFO_CWSIV0354.explanation=Objekt p\u0159edan\u00fd jako parametr informac\u00ed \u017e\u00e1dosti o p\u0159ipojen\u00ed nebyl o\u010dek\u00e1van\u00e9ho typu.
+UNRECOGNISED_REQUEST_INFO_CWSIV0354.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CREATE_MANAGED_CONNECTION_CWSIV0355=CWSIV0355E: Do\u0161lo k intern\u00ed chyb\u011b. B\u011bhem vytv\u00e1\u0159en\u00ed spravovan\u00e9ho p\u0159ipojen\u00ed byla vyvol\u00e1na n\u00e1sleduj\u00edc\u00ed v\u00fdjimka: {0}
+CREATE_MANAGED_CONNECTION_CWSIV0355.explanation=Byla vyvol\u00e1na v\u00fdjimka p\u0159i pokusu o vytvo\u0159en\u00ed spravovan\u00e9ho p\u0159ipojen\u00ed.
+CREATE_MANAGED_CONNECTION_CWSIV0355.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 v\u00fdjimce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the JCA exception
+CONNECTION_ERROR_RETRY_CWSIV0356=CWSIV0356W: P\u0159i pokusu o z\u00edsk\u00e1n\u00ed p\u0159ipojen\u00ed do\u0161lo k n\u00e1sleduj\u00edc\u00ed chyb\u011b p\u0159ipojov\u00e1n\u00ed architektury JCA. Na\u010d\u00edt\u00e1n\u00ed p\u0159ipojen\u00ed bude zopakov\u00e1no. V\u00fdjimka: {0}.
+CONNECTION_ERROR_RETRY_CWSIV0356.explanation=P\u0159i z\u00edsk\u00e1v\u00e1n\u00ed p\u0159ipojen\u00ed byla zachycena chyba. Syst\u00e9m uvoln\u00ed p\u0159ipojen\u00ed a pot\u00e9 se pokus\u00ed z\u00edskat dal\u0161\u00ed p\u0159ipojen\u00ed.
+CONNECTION_ERROR_RETRY_CWSIV0356.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection request information object passed
+# {1} the expected type for the object
+UNRECOGNISED_REQUEST_INFO_CWSIV0401=CWSIV0401E: Do\u0161lo k intern\u00ed chyb\u011b. Objekt informac\u00ed \u017e\u00e1dosti o p\u0159ipojen\u00ed {0} nebyl o\u010dek\u00e1van\u00e9ho typu {1}.
+UNRECOGNISED_REQUEST_INFO_CWSIV0401.explanation=Objekt p\u0159edan\u00fd jako parametr informac\u00ed \u017e\u00e1dosti o p\u0159ipojen\u00ed nebyl o\u010dek\u00e1van\u00e9ho typu.
+UNRECOGNISED_REQUEST_INFO_CWSIV0401.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONNECTION_CLOSE_CWSIV0402=CWSIV0402E: Do\u0161lo k intern\u00ed chyb\u011b. Do\u0161lo k vyvol\u00e1n\u00ed v\u00fdjimky {0} p\u0159i pokusu o uzav\u0159en\u00ed p\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v.
+CONNECTION_CLOSE_CWSIV0402.explanation=Do\u0161lo k vyvol\u00e1n\u00ed v\u00fdjimky p\u0159i pokusu o uzav\u0159en\u00ed p\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v.
+CONNECTION_CLOSE_CWSIV0402.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 v\u00fdjimce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection object passed
+# {1} the expected type for the object
+UNRECOGNISED_CONNECTION_CWSIV0403=CWSIV0403E: Do\u0161lo k intern\u00ed chyb\u011b. Objekt p\u0159ipojen\u00ed {0} nebyl o\u010dek\u00e1van\u00e9ho typu {1}.
+UNRECOGNISED_CONNECTION_CWSIV0403.explanation=Objekt p\u0159edan\u00fd jako parametr p\u0159ipojen\u00ed nebyl typu, kter\u00fd byl v tomto adapt\u00e9ru prost\u0159edk\u016f o\u010dek\u00e1v\u00e1n.
+UNRECOGNISED_CONNECTION_CWSIV0403.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+ACTIVE_LOCAL_TRAN_CWSIV0404=CWSIV0404E: Do\u0161lo k intern\u00ed chyb\u011b. Ji\u017e existuje aktivn\u00ed lok\u00e1ln\u00ed transakce kontejneru.
+ACTIVE_LOCAL_TRAN_CWSIV0404.explanation=Kontejner se pokou\u0161\u00ed o zah\u00e1jen\u00ed lok\u00e1ln\u00ed transakce, a\u010dkoli je ji\u017e jedna aktivn\u00ed.
+ACTIVE_LOCAL_TRAN_CWSIV0404.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+LOCAL_TRAN_BEGIN_CWSIV0405=CWSIV0405E: Do\u0161lo k intern\u00ed chyb\u011b. Byla vyvol\u00e1na v\u00fdjimka {0} b\u011bhem pokusu kontejneru o zah\u00e1jen\u00ed lok\u00e1ln\u00ed transakce.
+LOCAL_TRAN_BEGIN_CWSIV0405.explanation=Byla vyvol\u00e1na v\u00fdjimka b\u011bhem pokusu kontejneru o zah\u00e1jen\u00ed lok\u00e1ln\u00ed transakce.
+LOCAL_TRAN_BEGIN_CWSIV0405.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 v\u00fdjimce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+LOCAL_TRAN_COMMIT_CWSIV0406=CWSIV0406E: Do\u0161lo k intern\u00ed chyb\u011b. Byla vyvol\u00e1na v\u00fdjimka {0} b\u011bhem pokusu kontejneru o potvrzen\u00ed lok\u00e1ln\u00ed transakce.
+LOCAL_TRAN_COMMIT_CWSIV0406.explanation=Byla vyvol\u00e1na v\u00fdjimka b\u011bhem pokusu kontejneru o potvrzen\u00ed lok\u00e1ln\u00ed transakce.
+LOCAL_TRAN_COMMIT_CWSIV0406.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 v\u00fdjimce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+LOCAL_TRAN_ROLLBACK_CWSIV0407=CWSIV0407E: Do\u0161lo k intern\u00ed chyb\u011b. Byla vyvol\u00e1na v\u00fdjimka {0} b\u011bhem pokusu kontejneru o odvol\u00e1n\u00ed lok\u00e1ln\u00ed transakce.
+LOCAL_TRAN_ROLLBACK_CWSIV0407.explanation=Byla vyvol\u00e1na v\u00fdjimka b\u011bhem pokusu kontejneru o odvol\u00e1n\u00ed lok\u00e1ln\u00ed transakce.
+LOCAL_TRAN_ROLLBACK_CWSIV0407.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 v\u00fdjimce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+XARESOURCE_CREATE_CWSIV0408=CWSIV0408E: Do\u0161lo k intern\u00ed chyb\u011b. Do\u0161lo k vyvol\u00e1n\u00ed v\u00fdjimky {0} p\u0159i pokusu o z\u00edsk\u00e1n\u00ed prost\u0159edku SIXAResource.
+XARESOURCE_CREATE_CWSIV0408.explanation=Do\u0161lo k vyvol\u00e1n\u00ed v\u00fdjimky p\u0159i pokusu o z\u00edsk\u00e1n\u00ed prost\u0159edku SIXAResource.
+XARESOURCE_CREATE_CWSIV0408.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 v\u00fdjimce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the unexpected activation specification
+# {1} the expected type
+UNEXPECTED_ACTIVATION_SPEC_CWSIV0451=CWSIV0451E: Do\u0161lo k intern\u00ed chyb\u011b. Specifikace aktivace {0} p\u0159edan\u00e1 u aktivace koncov\u00e9ho bodu nebyla o\u010dek\u00e1van\u00e9ho typu {1}.
+UNEXPECTED_ACTIVATION_SPEC_CWSIV0451.explanation=Specifikace aktivace p\u0159edan\u00e1 u aktivace koncov\u00e9ho bodu nebyla typu, kter\u00fd byl o\u010dek\u00e1v\u00e1n v adapt\u00e9ru prost\u0159edk\u016f.
+UNEXPECTED_ACTIVATION_SPEC_CWSIV0451.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the invalid activation specification
+# {1} the exception thrown during validation
+INVALID_ACTIVATION_SPEC_CWSIV0452=CWSIV0452E: Byla vyvol\u00e1na v\u00fdjimka {1} p\u0159i pokusu o ov\u011b\u0159en\u00ed specifikace aktivace {0} b\u011bhem aktivace koncov\u00e9ho bodu.
+INVALID_ACTIVATION_SPEC_CWSIV0452.explanation=B\u011bhem aktivace koncov\u00e9ho bodu byla dan\u00e1 specifikace aktivace ur\u010dena jako nespr\u00e1vn\u00e1.
+INVALID_ACTIVATION_SPEC_CWSIV0452.useraction=Nespr\u00e1vn\u00e9 vlastnosti naleznete v p\u0159ipojen\u00e9 v\u00fdjimce a spr\u00e1vn\u00e9 hodnoty ve spravovan\u00e9 specifikaci aktivace nebo v deskriptoru implementace objektu typu message-driven bean.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the invalid activation specification
+# {1} the list of messages showing invalid properties
+INVALID_PROPERTIES_CWSIV0501=CWSIV0501E: P\u0159i ov\u011b\u0159ov\u00e1n\u00ed vlastnost\u00ed definovan\u00fdch ve specifikaci aktivace byly zji\u0161t\u011bny n\u00e1sleduj\u00edc\u00ed probl\u00e9my. Probl\u00e9my: {1}. Specifikace aktivace: {0}.
+INVALID_PROPERTIES_CWSIV0501.explanation=B\u011bhem ov\u011b\u0159en\u00ed dan\u00e9 specifikace aktivace byla nejm\u00e9n\u011b jedna vlastnost ur\u010dena jako nespr\u00e1vn\u00e1.
+INVALID_PROPERTIES_CWSIV0501.useraction=Opravte hodnoty pro dan\u00e9 vlastnosti ve spravovan\u00e9 specifikaci aktivace nebo v konfiguraci aktivace objektu typu message-driven bean a spus\u0165te aplikaci.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The exception that was thrown
+DEST_FACTORY_CWSIV0502=CWSIV0502E: Do\u0161lo k intern\u00ed chyb\u011b. P\u0159i pokusu o z\u00edsk\u00e1n\u00ed prost\u0159edku tov\u00e1rny SIDestinationAddressFactory do\u0161lo k vyvol\u00e1n\u00ed n\u00e1sleduj\u00edc\u00ed v\u00fdjimky: {0}.
+DEST_FACTORY_CWSIV0502.explanation=B\u011bhem aktivace koncov\u00e9ho bodu se adapt\u00e9r prost\u0159edk\u016f j\u00e1dra SPI pokusil z\u00edskat tov\u00e1rnu SIDestinationAddressFactory a byla p\u0159ijata neo\u010dek\u00e1van\u00e1 v\u00fdjimka.
+DEST_FACTORY_CWSIV0502.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The exception that was thrown
+WLM_CLASSIFIER_REG_CWSIV0503=CWSIV0503E: B\u011bhem registrace klasifik\u00e1toru WLM pro adapt\u00e9r prost\u0159edk\u016f j\u00e1dra SPI do\u0161lo k intern\u00ed chyb\u011b: {0}.
+WLM_CLASSIFIER_REG_CWSIV0503.explanation=B\u011bhem registrace klasifik\u00e1toru WLM pro adapt\u00e9r prost\u0159edk\u016f j\u00e1dra SPI s registrem obslu\u017en\u00fdch rutin byla p\u0159ijata neo\u010dek\u00e1van\u00e1 v\u00fdjimka.
+WLM_CLASSIFIER_REG_CWSIV0503.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_BUSNAME_CWSIV0504=CWSIV0504E: N\u00e1zev sb\u011brnice ve specifikaci aktivace rozhran\u00ed SPI Core mus\u00ed m\u00edt p\u0159i\u0159azenu hodnotu.
+INVALID_PROPERTY_BUSNAME_CWSIV0504.explanation=B\u011bhem ov\u011b\u0159ov\u00e1n\u00ed vlastnost\u00ed konfigurovan\u00fdch ve specifikaci aktivace rozhran\u00ed SPI Core bylo zji\u0161t\u011bno, \u017ee n\u00e1zev sb\u011brnice je neplatn\u00fd.
+INVALID_PROPERTY_BUSNAME_CWSIV0504.useraction=Opravte hodnotu vlastnosti n\u00e1zvu sb\u011brnice v r\u00e1mci specifikace aktivace a pot\u00e9 restartujte server.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is another allowed value
+# {4} is the value of the destination type
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0505=CWSIV0505E: N\u00e1sleduj\u00edc\u00ed typ c\u00edle v r\u00e1mci specifikace aktivace rozhran\u00ed SPI Core je neplatn\u00fd [{4}]. O\u010dek\u00e1v\u00e1ny jsou hodnoty [{0}] nebo [{1}] nebo [{2}] nebo [{3}].
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0505.explanation=B\u011bhem ov\u011b\u0159ov\u00e1n\u00ed vlastnost\u00ed konfigurovan\u00fdch ve specifikaci aktivace rozhran\u00ed SPI Core bylo zji\u0161t\u011bno, \u017ee typ c\u00edle je neplatn\u00fd.
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0505.useraction=Opravte hodnotu vlastnosti typu c\u00edle v r\u00e1mci specifikace aktivace a pot\u00e9 restartujte server.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the subscription durability
+INVALID_PROPERTY_SHARE_DURSUB_CWSIV0506=CWSIV0506E: N\u00e1sleduj\u00edc\u00ed pole sd\u00edlen\u00ed trval\u00fdch odb\u011br\u016f ve specifikaci aktivace rozhran\u00ed SPI Core je neplatn\u00e9 [{3}]. Byly o\u010dek\u00e1v\u00e1ny hodnoty [{0}], [{1}] nebo [{2}].
+INVALID_PROPERTY_SHARE_DURSUB_CWSIV0506.explanation=B\u011bhem ov\u011b\u0159ov\u00e1n\u00ed vlastnost\u00ed konfigurovan\u00fdch ve specifikaci aktivace rozhran\u00ed SPI Core bylo zji\u0161t\u011bno, \u017ee vlastnost sd\u00edlen\u00ed trval\u00fdch odb\u011br\u016f je neplatn\u00e1.
+INVALID_PROPERTY_SHARE_DURSUB_CWSIV0506.useraction=Opravte hodnotu vlastnosti sd\u00edlen\u00ed trval\u00fdch odb\u011br\u016f v r\u00e1mci specifikace aktivace a pot\u00e9 restartujte server.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_DURSUBHOME_CWSIV0507=CWSIV0507E: Domov trval\u00fdch odb\u011br\u016f v r\u00e1mci specifikace aktivace rozhran\u00ed SPI Core mus\u00ed m\u00edt p\u0159i pou\u017eit\u00ed trval\u00fdch odb\u011br\u016f zad\u00e1nu hodnotu.
+INVALID_PROPERTY_DURSUBHOME_CWSIV0507.explanation=B\u011bhem ov\u011b\u0159ov\u00e1n\u00ed vlastnost\u00ed konfigurovan\u00fdch ve specifikaci aktivace rozhran\u00ed SPI Core bylo zji\u0161t\u011bno, \u017ee domov trval\u00fdch odb\u011br\u016f je neplatn\u00fd.
+INVALID_PROPERTY_DURSUBHOME_CWSIV0507.useraction=Opravte hodnotu vlastnosti domova trval\u00fdch odb\u011br\u016f v r\u00e1mci specifikace aktivace a pot\u00e9 restartujte server.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the destination type
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0508=CWSIV0508E: N\u00e1sleduj\u00edc\u00ed typ c\u00edle v r\u00e1mci specifikace aktivace rozhran\u00ed SPI Core je neplatn\u00fd [{3}]. O\u010dek\u00e1v\u00e1ny jsou hodnoty [{0}] nebo [{1}] nebo [{2}].
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0508.explanation=B\u011bhem ov\u011b\u0159ov\u00e1n\u00ed vlastnost\u00ed konfigurovan\u00fdch ve specifikaci aktivace rozhran\u00ed SPI Core bylo zji\u0161t\u011bno, \u017ee typ c\u00edle je neplatn\u00fd. T\u00e9mata nejsou povolena, proto\u017ee nebyl ur\u010den \u017e\u00e1dn\u00fd n\u00e1zev m\u00edsta ur\u010den\u00ed.
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0508.useraction=Opravte hodnotu vlastnosti typu c\u00edle v r\u00e1mci specifikace aktivace a pot\u00e9 restartujte server.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_MAXBATCH_CWSIV0509=CWSIV0509E: Maxim\u00e1ln\u00ed velikost d\u00e1vky ve specifikaci aktivace rozhran\u00ed SPI Core mus\u00ed m\u00edt p\u0159i\u0159azenu kladnou hodnotu.
+INVALID_PROPERTY_MAXBATCH_CWSIV0509.explanation=B\u011bhem ov\u011b\u0159ov\u00e1n\u00ed vlastnost\u00ed konfigurovan\u00fdch ve specifikaci aktivace rozhran\u00ed SPI Core bylo zji\u0161t\u011bno, \u017ee maxim\u00e1ln\u00ed velikost d\u00e1vky je neplatn\u00e1.
+INVALID_PROPERTY_MAXBATCH_CWSIV0509.useraction=Opravte hodnotu vlastnosti maxim\u00e1ln\u00ed velikost d\u00e1vky v r\u00e1mci specifikace aktivace a pot\u00e9 restartujte server.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the deletion mode
+INVALID_PROPERTY_DELETION_MODE_CWSIV0510=CWSIV0510E: N\u00e1sleduj\u00edc\u00ed re\u017eim odstran\u011bn\u00ed v r\u00e1mci specifikace aktivace rozhran\u00ed SPI Core je neplatn\u00fd [{3}]. O\u010dek\u00e1v\u00e1ny jsou hodnoty [{0}] nebo [{1}] nebo [{2}].
+INVALID_PROPERTY_DELETION_MODE_CWSIV0510.explanation=B\u011bhem ov\u011b\u0159ov\u00e1n\u00ed vlastnost\u00ed konfigurovan\u00fdch ve specifikaci aktivace rozhran\u00ed SPI Core bylo zji\u0161t\u011bno, \u017ee re\u017eim odstran\u011bn\u00ed je neplatn\u00fd.
+INVALID_PROPERTY_DELETION_MODE_CWSIV0510.useraction=Opravte hodnotu vlastnosti re\u017eimu odstran\u011bn\u00ed v r\u00e1mci specifikace aktivace a pot\u00e9 restartujte server.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_MAXCONC_CWSIV0511=CWSIV0511E: Maxim\u00e1ln\u00ed soub\u011b\u017enost ve specifikaci aktivace rozhran\u00ed SPI Core mus\u00ed m\u00edt p\u0159i\u0159azenu kladnou hodnotu.
+INVALID_PROPERTY_MAXCONC_CWSIV0511.explanation=B\u011bhem ov\u011b\u0159ov\u00e1n\u00ed vlastnost\u00ed konfigurovan\u00fdch ve specifikaci aktivace rozhran\u00ed SPI Core bylo zji\u0161t\u011bno, \u017ee maxim\u00e1ln\u00ed soub\u011b\u017enost je neplatn\u00e1.
+INVALID_PROPERTY_MAXCONC_CWSIV0511.useraction=Opravte hodnotu vlastnosti maxim\u00e1ln\u00ed soub\u011b\u017enosti v r\u00e1mci specifikace aktivace a pot\u00e9 restartujte server.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the target type
+INVALID_PROPERTY_TARGET_TYPE_CWSIV0512=CWSIV0512E: N\u00e1sleduj\u00edc\u00ed pole typu c\u00edle v r\u00e1mci specifikace aktivace rozhran\u00ed SPI Core je neplatn\u00e9 [{3}]. Byly o\u010dek\u00e1v\u00e1ny hodnoty [{0}], [{1}] nebo [{2}].
+INVALID_PROPERTY_TARGET_TYPE_CWSIV0512.explanation=B\u011bhem ov\u011b\u0159ov\u00e1n\u00ed vlastnost\u00ed konfigurovan\u00fdch ve specifikaci aktivace rozhran\u00ed SPI Core bylo zji\u0161t\u011bno, \u017ee typ c\u00edle je neplatn\u00fd.
+INVALID_PROPERTY_TARGET_TYPE_CWSIV0512.useraction=Opravte hodnotu vlastnosti typu c\u00edle v r\u00e1mci specifikace aktivace a pot\u00e9 restartujte server.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is the value of the target significance
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSIV0513=CWSIV0513E: N\u00e1sleduj\u00edc\u00ed pole v\u00fdznamnosti c\u00edle v r\u00e1mci specifikace aktivace rozhran\u00ed SPI Core je neplatn\u00e9 [{2}]. Byly o\u010dek\u00e1v\u00e1ny hodnoty [{0}] nebo [{1}].
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSIV0513.explanation=B\u011bhem ov\u011b\u0159ov\u00e1n\u00ed vlastnost\u00ed konfigurovan\u00fdch ve specifikaci aktivace rozhran\u00ed SPI Core bylo zji\u0161t\u011bno, \u017ee v\u00fdznamnost c\u00edle je neplatn\u00e1.
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSIV0513.useraction=Opravte hodnotu vlastnosti v\u00fdznamnosti c\u00edle v r\u00e1mci specifikace aktivace a pot\u00e9 restartujte server.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the provider endpoints
+INVALID_PROPERTY_PROVIDER_ENDPOINTS_CWSIV0514=CWSIV0514E: Koncov\u00e9 body poskytovatele byly nastaveny na hodnotu {0} ve specifikaci aktivace rozhran\u00ed SPI Core. Koncov\u00e9 body poskytovatele nejsou podporov\u00e1ny, je-li nastavena vlastnost pou\u017eit\u00ed p\u0159edm\u011btu serveru.
+INVALID_PROPERTY_PROVIDER_ENDPOINTS_CWSIV0514.explanation=B\u011bhem ov\u011b\u0159ov\u00e1n\u00ed vlastnost\u00ed konfigurovan\u00fdch ve specifikaci aktivace rozhran\u00ed SPI Core bylo zji\u0161t\u011bno, \u017ee koncov\u00fd bod poskytovatele je neplatn\u00fd, proto\u017ee je nastavena vlastnost pou\u017eit\u00ed p\u0159edm\u011btu serveru.
+INVALID_PROPERTY_PROVIDER_ENDPOINTS_CWSIV0514.useraction=Ov\u011b\u0159te, \u017ee vlastnost koncov\u00fdch bod\u016f poskytovatele nen\u00ed nastavena, je-li nastaveno pou\u017eit\u00ed p\u0159edm\u011btu serveru. Opravte hodnotu vlastnosti v r\u00e1mci specifikace aktivace a pot\u00e9 restartujte server.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_USEDESTWILDCARD_CWSIV0515=CWSIV0515E: Ve specifikaci aktivace rozhran\u00ed SPI Core byla nastavena vlastnost "pou\u017e\u00edt z\u00e1stupn\u00fd znak m\u00edsta ur\u010den\u00ed", zat\u00edmco se pou\u017e\u00edv\u00e1 prostor t\u00e9matu. Vlastnost "pou\u017e\u00edt z\u00e1stupn\u00fd znak m\u00edsta ur\u010den\u00ed" nen\u00ed podporov\u00e1na, je-li pou\u017eit prostor t\u00e9matu.
+INVALID_PROPERTY_USEDESTWILDCARD_CWSIV0515.explanation=B\u011bhem ov\u011b\u0159ov\u00e1n\u00ed vlastnost\u00ed konfigurovan\u00fdch ve specifikaci aktivace rozhran\u00ed SPI Core bylo zji\u0161t\u011bno, \u017ee vlastnost "pou\u017e\u00edt z\u00e1stupn\u00fd znak m\u00edsta ur\u010den\u00ed" je neplatn\u00e1, proto\u017ee se pou\u017e\u00edv\u00e1 prostor t\u00e9matu.
+INVALID_PROPERTY_USEDESTWILDCARD_CWSIV0515.useraction=Ov\u011b\u0159te, \u017ee nen\u00ed nastavena vlastnost "pou\u017e\u00edt z\u00e1stupn\u00fd znak m\u00edsta ur\u010den\u00ed" p\u0159i pou\u017eit\u00ed prostoru t\u00e9matu. Opravte hodnotu vlastnosti v r\u00e1mci specifikace aktivace a pot\u00e9 restartujte server.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint factory throwing the exception
+# {1} the exception thrown
+NO_METHOD_CWSIV0550=CWSIV0550E: Do\u0161lo k intern\u00ed chyb\u011b. V\u00fdjimku {1} vyvolala tov\u00e1rna koncov\u00e9ho bodu zpr\u00e1v {0} p\u0159i pokusu o ur\u010den\u00ed, zda u metody onMessage do\u0161lo k transakci.
+NO_METHOD_CWSIV0550.explanation=Aktivace koncov\u00e9ho bodu p\u0159ijala p\u0159i pokusu o ur\u010den\u00ed jeho principu transakc\u00ed z tov\u00e1rny koncov\u00e9ho bodu zpr\u00e1v v\u00fdjimku indikuj\u00edc\u00ed, \u017ee neexistuje metoda onMessage pro tento koncov\u00fd bod.
+NO_METHOD_CWSIV0550.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the MDB that had the problem
+# {1} the max concurrency on the MDB
+# {2} the max pool size JCA is using
+# {3} the new max concurrency to use
+MAX_CONCURRENCY_CWSIV0551=CWSIV0551W: Maxim\u00e1ln\u00ed soub\u011b\u017enost pro objekt MDB {0} byla v p\u0159\u00edslu\u0161n\u00e9 specifikaci aktivace nastavena na hodnotu {1}. To je vy\u0161\u0161\u00ed hodnota ne\u017e maxim\u00e1ln\u00ed velikost fondu JCA {2}, a maxim\u00e1ln\u00ed soub\u011b\u017enost pro objekt MDB byla proto sn\u00ed\u017eena na hodnotu {3}
+MAX_CONCURRENCY_CWSIV0551.explanation=Konfigurace maxim\u00e1ln\u00ed soub\u011b\u017enosti v r\u00e1mci specifikace aktivace byla nastavena na p\u0159\u00edli\u0161 vysokou hodnotu nebo maxim\u00e1ln\u00ed soub\u011b\u017enost v r\u00e1mci maxim\u00e1ln\u00ed velikost fondu JCA byla nastavena na p\u0159\u00edli\u0161 n\u00edzkou hodnotu. To by nem\u011blo zp\u016fsobit probl\u00e9my, proto\u017ee syst\u00e9m zpr\u00e1v platformy sn\u00ed\u017e\u00ed maxim\u00e1ln\u00ed soub\u011b\u017enost v r\u00e1mci specifikace aktivace, bylo v\u0161ak vyd\u00e1no varov\u00e1n\u00ed pro u\u017eivatele, aby v\u011bd\u011bli, \u017ee maxim\u00e1ln\u00ed soub\u011b\u017enost, kterou konfigurovali, nebude pou\u017eita.
+MAX_CONCURRENCY_CWSIV0551.useraction=Toto varov\u00e1n\u00ed se bude d\u00e1le zobrazovat v\u017edy, kdy\u017e dojde ke spu\u0161t\u011bn\u00ed objektu typu message-driven bean. Tuto varovnou zpr\u00e1vu odeberete sn\u00ed\u017een\u00edm hodnoty maxim\u00e1ln\u00ed soub\u011b\u017enosti specifikace aktivace nebo zv\u00fd\u0161en\u00edm maxim\u00e1ln\u00ed velikost fondu pro fond koncov\u00e9ho bodu JCA (pomoc\u00ed syst\u00e9mov\u00e9 vlastnosti prost\u0159ed\u00ed JVM com.ibm.websphere.ejbcontainer.poolSize).
+
+# -------------------------------------------------------------------------------------------------
+# {0} the messaging engine UUID
+# {1} the bus name
+# {2} the endpoint
+ENDPOINT_DEACTIVATED_CWSIV0554=CWSIV0554E: Do\u0161lo k intern\u00ed chyb\u011b. Do\u0161lo k pokusu o z\u00edsk\u00e1n\u00ed p\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v s UUID {0} na sb\u011brnici {1} po zak\u00e1z\u00e1n\u00ed koncov\u00e9ho bodu {2}.
+ENDPOINT_DEACTIVATED_CWSIV0554.explanation=Byl vytvo\u0159en po\u017eadavek na p\u0159ipojen\u00ed k dan\u00e9mu stroji syst\u00e9mu zpr\u00e1v, ale aktivace koncov\u00e9ho bodu byla zak\u00e1z\u00e1na.
+ENDPOINT_DEACTIVATED_CWSIV0554.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the ME name
+# (2) the bus name
+# {3} the endpoint activation
+MESSAGING_ENGINE_STARTING_CWSIV0555=CWSIV0555E: Byla vyvol\u00e1na v\u00fdjimka {0} b\u011bhem zpracov\u00e1n\u00ed spu\u0161t\u011bn\u00ed stroje syst\u00e9mu zpr\u00e1v {1} na sb\u011brnici {2} pro aktivaci koncov\u00e9ho bodu {3}.
+MESSAGING_ENGINE_STARTING_CWSIV0555.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f se p\u0159i p\u0159ijet\u00ed v\u00fdjimky pokou\u0161el o zpracov\u00e1n\u00ed dan\u00e9ho stroje syst\u00e9mu zpr\u00e1v. Zpr\u00e1vy z m\u00edst ur\u010den\u00ed lokalizovan\u00fdch v tomto stroji syst\u00e9mu zpr\u00e1v nebudou p\u0159ijaty objektem typu message-driven bean. Pokud je p\u0159ijatou v\u00fdjimkou v\u00fdjimka ov\u011b\u0159ov\u00e1n\u00ed, ov\u011b\u0159te, zda byla specifikace aktivace p\u0159idru\u017eena k platn\u00e9mu aliasu ov\u011b\u0159ov\u00e1n\u00ed.
+MESSAGING_ENGINE_STARTING_CWSIV0555.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 v\u00fdjimce. Po vy\u0159e\u0161en\u00ed probl\u00e9mu restartujte stroj syst\u00e9mu zpr\u00e1v, adapt\u00e9r prost\u0159edk\u016f nebo aplikaci.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Activation Specification ID
+# {1} Destination Name
+TARGETTED_CONNECTION_SUCCESSFUL_CWSIV0556=CWSIV0556I: P\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v bylo \u00fasp\u011b\u0161n\u00e9. Objekt typu message-driven bean se specifikac\u00ed aktivace {0} nebude nyn\u00ed schopen p\u0159ijmout zpr\u00e1vy z c\u00edle {1}.
+TARGETTED_CONNECTION_SUCCESSFUL_CWSIV0556.explanation=Adapt\u00e9r prost\u0159edku JMS byl schopen \u00fasp\u011b\u0161n\u011b dos\u00e1hnout p\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v. To umo\u017e\u0148uje, aby objekt typu message-driven bean p\u0159ijal zpr\u00e1vu z c\u00edle.
+TARGETTED_CONNECTION_SUCCESSFUL_CWSIV0556.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# -------------------------------------------------------------------------------------------------
+
+
+
+# {0} the exception thrown
+# {1} the list of messages
+UNLOCK_EXCEPTION_CWSIV0601=CWSIV0601E: Do\u0161lo k intern\u00ed chyb\u011b. Byla p\u0159ijata v\u00fdjimka {0} p\u0159i pokusu o odemknut\u00ed zpr\u00e1v {1}.
+UNLOCK_EXCEPTION_CWSIV0601.explanation=Adapt\u00e9r prost\u0159edk\u016f p\u0159ijal v\u00fdjimku p\u0159i pokusu o odemknut\u00ed sady zpr\u00e1v.
+UNLOCK_EXCEPTION_CWSIV0601.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the message being deleted
+# {2} the transaction under which the message was being deleted
+DELETE_EXCEPTION_CWSIV0602=CWSIV0602E: Do\u0161lo k intern\u00ed chyb\u011b. Byla p\u0159ijata v\u00fdjimka {0} p\u0159i pokusu o odstran\u011bn\u00ed zpr\u00e1vy {1} v r\u00e1mci transakce {2}.
+DELETE_EXCEPTION_CWSIV0602.explanation=Adapt\u00e9r prost\u0159edk\u016f p\u0159ijal v\u00fdjimku p\u0159i pokusu o odstran\u011bn\u00ed zpr\u00e1vy v r\u00e1mci dan\u00e9 transakce.
+DELETE_EXCEPTION_CWSIV0602.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the messages being deleted
+# {2} the transaction under which the messages were being deleted
+DELETE_SET_EXCEPTION_CWSIV0603=CWSIV0603E: Do\u0161lo k intern\u00ed chyb\u011b. Byla p\u0159ijata v\u00fdjimka {0} p\u0159i pokusu o odstran\u011bn\u00ed zpr\u00e1v {1} v r\u00e1mci transakce {2}.
+DELETE_SET_EXCEPTION_CWSIV0603.explanation=Adapt\u00e9r prost\u0159edk\u016f p\u0159ijal v\u00fdjimku p\u0159i pokusu o odstran\u011bn\u00ed zpr\u00e1v v r\u00e1mci dan\u00e9 transakce.
+DELETE_SET_EXCEPTION_CWSIV0603.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+REQUEST_METRICS_CWSIV0604=CWSIV0604E: Do\u0161lo k intern\u00ed chyb\u011b. Byla p\u0159ijata v\u00fdjimka {0} p\u0159i pokusu o z\u00edsk\u00e1n\u00ed instance metriky \u017e\u00e1dost\u00ed.
+REQUEST_METRICS_CWSIV0604.explanation=Adapt\u00e9r prost\u0159edk\u016f p\u0159ijal v\u00fdjimku p\u0159i pokusu o z\u00edsk\u00e1n\u00ed instance metriky \u017e\u00e1dost\u00ed.
+REQUEST_METRICS_CWSIV0604.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint
+# {1} the destination the message endpoint is attached to
+MESSAGE_ENDPOINT_SHOULD_BE_DEACTIVATED_CWSIV0605=CWSIV0605W: Koncov\u00fd bod zpr\u00e1v {0}, kter\u00fd naslouchal na m\u00edst\u011b ur\u010den\u00ed {1}, byl m\u011bl b\u00fdt zak\u00e1z\u00e1n, proto\u017ee bylo dosa\u017eeno maxim\u00e1ln\u00edho po\u010dtu po sob\u011b jdouc\u00edch selh\u00e1n\u00ed.
+MESSAGE_ENDPOINT_SHOULD_BE_DEACTIVATED_CWSIV0605.explanation=Syst\u00e9m zjistil, \u017ee existuje potenci\u00e1ln\u00ed probl\u00e9m s objektem MDB p\u0159idru\u017een\u00fdm koncov\u00e9mu bodu zpr\u00e1v.
+MESSAGE_ENDPOINT_SHOULD_BE_DEACTIVATED_CWSIV0605.useraction=Prozkoumejte potenci\u00e1ln\u00ed probl\u00e9my s objektem MDB, kter\u00e9 by mohly zp\u016fsobit dal\u0161\u00ed selh\u00e1n\u00ed. Koncov\u00fd bod zpr\u00e1v je mo\u017eno zak\u00e1zat, a p\u0159edej\u00edt tak dal\u0161\u00edm chyb\u00e1m. Chcete-li tak u\u010dinit, p\u0159edejte objektu MBean koncov\u00e9ho bodu zpr\u00e1v n\u00e1zev koncov\u00e9ho bodu v t\u00e9to zpr\u00e1v\u011b. T\u00edm koncov\u00fd bod zak\u00e1\u017eete nebo zastav\u00edte aplikaci, kter\u00e1 obsahuje dan\u00fd objekt MDB (Message Driven Bean).
+
+# -------------------------------------------------------------------------------------------------
+# {0} the session
+# {1} the message handle
+# {2} the transaction
+# {3} the bifurcated consumer session class name
+INVALID_SESSION_CWSIV0606=CWSIV0606E: Do\u0161lo k intern\u00ed chyb\u011b. P\u0159i pokusu o odstran\u011bn\u00ed manipul\u00e1toru zpr\u00e1vy {1} v r\u00e1mci transakce {2} nebyla relace {0} po\u017eadovan\u00e9ho typu {3}.
+INVALID_SESSION_CWSIV0606.explanation=Adapt\u00e9r prost\u0159edk\u016f zjistil probl\u00e9m p\u0159i pokusu o odstran\u011bn\u00ed manipul\u00e1toru zpr\u00e1vy.
+INVALID_SESSION_CWSIV0606.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the number of messagesin the list
+# {1} the message list
+# {2} the handle
+# {3} the transaction
+MESSAGE_LIST_INCORRECT_CWSIV0607=CWSIV0607E: Do\u0161lo k intern\u00ed chyb\u011b. P\u0159i pokusu o odstran\u011bn\u00ed manipul\u00e1toru zpr\u00e1vy {2} v r\u00e1mci transakce {3} obsahoval seznam zpr\u00e1v {1} nespr\u00e1vn\u00fd po\u010det zpr\u00e1v ({0}, o\u010dek\u00e1v\u00e1na 1 zpr\u00e1va).
+MESSAGE_LIST_INCORRECT_CWSIV0607.explanation=Adapt\u00e9r prost\u0159edk\u016f zjistil probl\u00e9m p\u0159i pokusu o odstran\u011bn\u00ed manipul\u00e1toru zpr\u00e1vy.
+MESSAGE_LIST_INCORRECT_CWSIV0607.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the message handle
+# {2} the transaction
+DELETE_EXCEPTION_CWSIV0608=CWSIV0608E: Do\u0161lo k intern\u00ed chyb\u011b. P\u0159i pokusu o odstran\u011bn\u00ed manipul\u00e1toru zpr\u00e1vy {1} v r\u00e1mci transakce {2} do\u0161lo k v\u00fdjimce {0}.
+DELETE_EXCEPTION_CWSIV0608.explanation=Adapt\u00e9r prost\u0159edk\u016f zjistil probl\u00e9m p\u0159i pokusu o odstran\u011bn\u00ed manipul\u00e1toru zpr\u00e1vy.
+DELETE_EXCEPTION_CWSIV0608.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the connection throwing the exception
+XARESOURCE_EXCEPTION_CWSIV0650=CWSIV0650E: Do\u0161lo k intern\u00ed chyb\u011b. Byla p\u0159ijata v\u00fdjimka {0} p\u0159i pokusu o z\u00edsk\u00e1n\u00ed prost\u0159edku XAResource z p\u0159ipojen\u00ed {1}.
+XARESOURCE_EXCEPTION_CWSIV0650.explanation=Adapt\u00e9r prost\u0159edk\u016f p\u0159ijal v\u00fdjimku p\u0159i pokusu o z\u00edsk\u00e1n\u00ed prost\u0159edku XAResource z p\u0159ipojen\u00ed s c\u00edlem p\u0159edat jej p\u0159i vytv\u00e1\u0159en\u00ed koncov\u00e9ho bodu.
+XARESOURCE_EXCEPTION_CWSIV0650.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the endpoint on which beforeDelivery is being invoked
+BEFORE_DELIVERY_CWSIV0651=CWSIV0651E: Do\u0161lo k intern\u00ed chyb\u011b. Byla p\u0159ijata v\u00fdjimka {0} p\u0159i pokusu o vyvol\u00e1n\u00ed metody beforeDelivery u koncov\u00e9ho bodu {1}.
+BEFORE_DELIVERY_CWSIV0651.explanation=Adapt\u00e9r prost\u0159edk\u016f p\u0159ijal v\u00fdjimku p\u0159i pokusu o vyvol\u00e1n\u00ed metody beforeDelivery u koncov\u00e9ho bodu p\u0159ed vol\u00e1n\u00edm metody onMessage.
+BEFORE_DELIVERY_CWSIV0651.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is a connection property name, eg targetType
+# {1} is the required connection property value
+ME_NAME_REQUIRED_CWSIV0652=CWSIV0652E: Aby bylo mo\u017en\u00e9 v transakci pou\u017e\u00edvat prost\u0159edky rozhran\u00ed JMS, mus\u00ed b\u00fdt ur\u010den specifick\u00fd stroj syst\u00e9mu zpr\u00e1v. Vlastnost p\u0159ipojen\u00ed {0} mus\u00ed b\u00fdt nastavena na hodnotu {1}.
+ME_NAME_REQUIRED_CWSIV0652.explanation=Chcete-li povolit zotavov\u00e1n\u00ed transakc\u00ed, mus\u00ed b\u00fdt c\u00edlem tov\u00e1rny p\u0159ipojen\u00ed konkr\u00e9tn\u00ed stroj syst\u00e9mu zpr\u00e1v ve sb\u011brnici.
+ME_NAME_REQUIRED_CWSIV0652.useraction=Zm\u011b\u0148te vlastnosti tov\u00e1rny p\u0159ipojen\u00ed 'targetGroup' na hodnotu 'n\u00e1zev stroje syst\u00e9mu zpr\u00e1v ve sb\u011brnici', vlastnost 'targetType' na hodnotu 'ME' a vlastnost 'targetSignificance' na hodnotu 'Required' (vy\u017eadov\u00e1no).
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the ConsumerSession whose parent connection is throwing the exception
+CLONE_EXCEPTION_CWSIV0700=CWSIV0700E: Do\u0161lo k intern\u00ed chyb\u011b. Byla p\u0159ijata v\u00fdjimka {0} p\u0159i pokusu o klonov\u00e1n\u00ed nad\u0159\u00edzen\u00e9ho p\u0159ipojen\u00ed pro relaci {1}.
+CLONE_EXCEPTION_CWSIV0700.explanation=Adapt\u00e9r prost\u0159edk\u016f p\u0159ijal v\u00fdjimku p\u0159i pokusu o klonov\u00e1n\u00ed p\u0159ipojen\u00ed, kter\u00e9 by m\u011blo b\u00fdt v relaci vr\u00e1ceno z metody getConnection a p\u0159ed\u00e1no do koncov\u00e9ho bodu.
+CLONE_EXCEPTION_CWSIV0700.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the method that is not supported
+NOT_SUPPORTED_CWSIV0701=CWSIV0701E: Pou\u017eit\u00ed metody {0} nen\u00ed podporov\u00e1no.
+NOT_SUPPORTED_CWSIV0701.explanation=Danou metodu nelze vyvolat v relaci p\u0159edan\u00e9 v metod\u011b onMessage objektu typu message-driven bean stroje SPI syst\u00e9mu zpr\u00e1v platformy.
+NOT_SUPPORTED_CWSIV0701.useraction=Odeberte vol\u00e1n\u00ed zp\u016fsobuj\u00edc\u00ed chybu a v p\u0159\u00edpad\u011b pot\u0159eby vytvo\u0159te samostatnou relaci stroje SPI syst\u00e9mu zpr\u00e1v platformy.
+
+# -------------------------------------------------------------------------------------------------
+OUT_OF_SCOPE_CWSIV0702=CWSIV0702E: Relace ji\u017e nen\u00ed v rozsahu.
+OUT_OF_SCOPE_CWSIV0702.explanation=Relaci p\u0159edanou do metody onMessage objektu typu message-driven bean stroje SPI syst\u00e9mu zpr\u00e1v platformy nelze pou\u017e\u00edt po dokon\u010den\u00ed metody.
+OUT_OF_SCOPE_CWSIV0702.useraction=Odeberte vol\u00e1n\u00ed zp\u016fsobuj\u00edc\u00ed chybu a v p\u0159\u00edpad\u011b pot\u0159eby vytvo\u0159te samostatnou relaci stroje SPI syst\u00e9mu zpr\u00e1v platformy.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the destination UUID
+DESTINATION_LOCALITY_CWSIV0753=CWSIV0753E: Do\u0161lo k intern\u00ed chyb\u011b. P\u0159i pokusu o ur\u010den\u00ed sady bod\u016f front pro m\u00edsto ur\u010den\u00ed {1} do\u0161lo k n\u00e1sleduj\u00edc\u00ed v\u00fdjimce: {0}.
+DESTINATION_LOCALITY_CWSIV0753.explanation=P\u0159i pokusu o ur\u010den\u00ed sady stroj\u016f syst\u00e9mu zpr\u00e1v s body front pro dan\u00e9 m\u00edsto ur\u010den\u00ed byla p\u0159ijata neo\u010dek\u00e1van\u00e1 v\u00fdjimka.
+DESTINATION_LOCALITY_CWSIV0753.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+FOREIGN_DESTINATION_CWSIV0754=CWSIV0754E: M\u00edsto ur\u010den\u00ed {0} na sb\u011brnici {1} nen\u00ed definov\u00e1no jako bod fronty pro sb\u011brnici, ke kter\u00e9 je p\u0159ipojen objekt typu message-driven bean
+FOREIGN_DESTINATION_CWSIV0754.explanation=Objekt typu message-driven bean mus\u00ed b\u00fdt p\u0159ipojen ke sb\u011brnici, kter\u00e1 je hostitelem pro m\u00edsto ur\u010den\u00ed, z n\u011bho\u017e objekt typu bean p\u0159ij\u00edm\u00e1. Ciz\u00ed sb\u011brnice nejsou podporov\u00e1ny.
+FOREIGN_DESTINATION_CWSIV0754.useraction=Upravte specifikaci aktivace pro objekt typu message-driven bean tak, aby se p\u0159ipojoval k po\u017eadovan\u00e9 sb\u011brnici, nebo p\u0159esu\u0148te m\u00edsto ur\u010den\u00ed na sb\u011brnici, ke kter\u00e9 se objekt typu message-driven bean p\u0159ipojuje.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the required destination type
+# {3} the actual destination type
+INCORRECT_TYPE_CWSIV0755=CWSIV0755E: M\u00edsto ur\u010den\u00ed {0} na sb\u011brnici {1} je typu {3}, nikoli po\u017eadovan\u00e9ho typu {2}.
+INCORRECT_TYPE_CWSIV0755.explanation=Typ c\u00edle definovan\u00fd ve specifikaci aktivace objektu typu message-driven bean neodpov\u00edd\u00e1 typu konfigurovan\u00e9ho m\u00edsta ur\u010den\u00ed.
+INCORRECT_TYPE_CWSIV0755.useraction=Ov\u011b\u0159te, zda je specifikace aktivace objektu typu message-driven bean konfigurov\u00e1na se spr\u00e1vn\u00fdm m\u00edstem ur\u010den\u00ed, typem nebo ob\u011bma hodnotami.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+UNKNOWN_TYPE_CWSIV0756=CWSIV0756E: Do\u0161lo k intern\u00ed chyb\u011b. M\u00edsto ur\u010den\u00ed {0} na sb\u011brnici {1} m\u00e1 definici neo\u010dek\u00e1van\u00e9ho typu.
+UNKNOWN_TYPE_CWSIV0756.explanation=Dan\u00e9 m\u00edsto ur\u010den\u00ed nebylo lok\u00e1ln\u00ed, ciz\u00ed ani s aliasem.
+UNKNOWN_TYPE_CWSIV0756.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+NOT_FOUND_CWSIV0757=CWSIV0757E: M\u00edsto ur\u010den\u00ed {0} na sb\u011brnici {1} nebylo nalezeno.
+NOT_FOUND_CWSIV0757.explanation=M\u00edsto ur\u010den\u00ed konfigurovan\u00e9 v objektu typu message-driven bean neexistuje na dan\u00e9 sb\u011brnici.
+NOT_FOUND_CWSIV0757.useraction=Zkontrolujte definici m\u00edsta ur\u010den\u00ed ve specifikaci aktivace nebo vazb\u00e1ch objektu typu message-driven bean.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the exception
+UNEXPECTED_EXCEPTION_CWSIV0758=CWSIV0758E: Do\u0161lo k intern\u00ed chyb\u011b. P\u0159i pokusu o z\u00edsk\u00e1n\u00ed definice m\u00edsta ur\u010den\u00ed {0} na sb\u011brnici {1} do\u0161lo k n\u00e1sleduj\u00edc\u00ed v\u00fdjimce: {2}.
+UNEXPECTED_EXCEPTION_CWSIV0758.explanation=P\u0159i pokusu o z\u00edsk\u00e1n\u00ed definice dan\u00e9ho c\u00edle byla p\u0159ijata neo\u010dek\u00e1van\u00e1 v\u00fdjimka.
+UNEXPECTED_EXCEPTION_CWSIV0758.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the bus
+NO_ACTIVE_MES_CWSIV0759=CWSIV0759W: B\u011bhem aktivace objektu typu message-driven bean nebyly nalezeny \u017e\u00e1dn\u00e9 vhodn\u00e9 aktivn\u00ed stroje syst\u00e9mu zpr\u00e1v na lok\u00e1ln\u00edm serveru na sb\u011brnici {0}.
+NO_ACTIVE_MES_CWSIV0759.explanation=Objekt typu message-driven bean byl konfigurov\u00e1n na p\u0159ipojen\u00ed k dan\u00e9 sb\u011brnici, ale na lok\u00e1ln\u00edm serveru nejsou \u017e\u00e1dn\u00e9 vhodn\u00e9 aktivn\u00ed stroje syst\u00e9mu zpr\u00e1v. P\u0159\u00edjem zpr\u00e1v za\u010dne, a\u017e se vhodn\u00fd lok\u00e1ln\u00ed stroj syst\u00e9mu zpr\u00e1v stane aktivn\u00edm.
+NO_ACTIVE_MES_CWSIV0759.useraction=Ov\u011b\u0159te, zda je spu\u0161t\u011bn vhodn\u00fd stroj syst\u00e9mu zpr\u00e1v. Zpr\u00e1va se zobraz\u00ed p\u0159i vytvo\u0159en\u00ed \u00fasp\u011b\u0161n\u00e9ho p\u0159ipojen\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the bus
+# {1} the name of the messaging engine
+# {2} the name of the destination
+NEW_CONSUMER_CWSIV0764=CWSIV0764I: Byl vytvo\u0159en spot\u0159ebitel pro objekt typu message-driven bean u m\u00edsta ur\u010den\u00ed {2} na sb\u011brnici {0} jako n\u00e1sledek aktivace stroje syst\u00e9mu zpr\u00e1v {1}.
+NEW_CONSUMER_CWSIV0764.explanation=Aktivace stroje syst\u00e9mu zpr\u00e1v v po\u017eadovan\u00e9 sb\u011brnici vedla k vytvo\u0159en\u00ed nov\u00e9ho spot\u0159ebitele pro dan\u00e9 m\u00edsto ur\u010den\u00ed.
+NEW_CONSUMER_CWSIV0764.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the ME name
+# (2) the bus name
+MESSAGING_ENGINE_STOPPING_CWSIV0765=CWSIV0765E: Byla vyvol\u00e1na v\u00fdjimka {0} p\u0159i pokusu o vytvo\u0159en\u00ed p\u0159ipojen\u00ed k jin\u00e9mu stroji syst\u00e9mu zpr\u00e1v b\u011bhem zastavov\u00e1n\u00ed stroje syst\u00e9mu zpr\u00e1v {1} na sb\u011brnici {2}.
+MESSAGING_ENGINE_STOPPING_CWSIV0765.explanation=B\u011bhem zastavov\u00e1n\u00ed dan\u00e9ho stroje syst\u00e9mu zpr\u00e1v obdr\u017eel adapt\u00e9r prost\u0159edk\u016f v\u00fdjimku p\u0159i pokusu o p\u0159ipojen\u00ed k alternativn\u00edmu stroji syst\u00e9mu zpr\u00e1v.
+MESSAGING_ENGINE_STOPPING_CWSIV0765.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 v\u00fdjimce. Po vy\u0159e\u0161en\u00ed probl\u00e9mu restartujte stroj syst\u00e9mu zpr\u00e1v nebo adapt\u00e9r prost\u0159edk\u016f.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the destination
+# {2} the messaging engine name
+# {3} the bus name
+# {4} the endpoint activation
+SESSION_ERROR_CWSIV0766=CWSIV0766E: Byla vyvol\u00e1na v\u00fdjimka {0} pro spot\u0159ebitele v m\u00edst\u011b ur\u010den\u00ed {1} ve stroji syst\u00e9mu zpr\u00e1v {2} na sb\u011brnici {3} pro aktivaci koncov\u00e9ho bodu {4}.
+SESSION_ERROR_CWSIV0766.explanation=Pro dan\u00e9ho spot\u0159ebitele byla p\u0159ijata asynchronn\u00ed v\u00fdjimka. Odpov\u00eddaj\u00edc\u00ed objekt typu message-driven bean bude zak\u00e1z\u00e1n a nebude dost\u00e1vat \u017e\u00e1dn\u00e9 dal\u0161\u00ed zpr\u00e1vy.
+SESSION_ERROR_CWSIV0766.useraction=P\u0159\u00ed\u010dinu vyhledejte ve v\u00fdjimce. Po vy\u0159e\u0161en\u00ed probl\u00e9mu restartujte stroj syst\u00e9mu zpr\u00e1v, adapt\u00e9r prost\u0159edk\u016f nebo aplikaci.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the messaging engine name
+# {2} the endpoint activation
+CONNECTION_ERROR_CWSIV0767=CWSIV0767E: Byla vyvol\u00e1na v\u00fdjimka {0} v p\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v {1} pro aktivaci koncov\u00e9ho bodu {2}.
+CONNECTION_ERROR_CWSIV0767.explanation=Pro dan\u00e9 p\u0159ipojen\u00ed byla p\u0159ijata v\u00fdjimka. Odpov\u00eddaj\u00edc\u00ed objekt typu message-driven bean bude zak\u00e1z\u00e1n a nebude dost\u00e1vat \u017e\u00e1dn\u00e9 dal\u0161\u00ed zpr\u00e1vy.
+CONNECTION_ERROR_CWSIV0767.useraction=P\u0159\u00ed\u010dinu vyhledejte ve v\u00fdjimce. Po vy\u0159e\u0161en\u00ed probl\u00e9mu restartujte stroj syst\u00e9mu zpr\u00e1v, adapt\u00e9r prost\u0159edk\u016f nebo aplikaci.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+# {2} the endpoint activation
+LAST_ME_CWSIV0768=CWSIV0768I: Zastavuje se posledn\u00ed lok\u00e1ln\u00ed stroj syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1} pou\u017e\u00edvan\u00fd aktivac\u00ed koncov\u00e9ho bodu {2}.
+LAST_ME_CWSIV0768.explanation=Dan\u00e1 aktivace koncov\u00e9ho bodu pou\u017e\u00edvala stroj syst\u00e9mu zpr\u00e1v, kter\u00fd byl nyn\u00ed zastaven. Neexistuj\u00ed \u017e\u00e1dn\u00e9 dal\u0161\u00ed stroje syst\u00e9mu zpr\u00e1v, ke kter\u00fdm by se bylo mo\u017en\u00e9 p\u0159ipojit. P\u0159idru\u017een\u00fd objekt typu message-driven bean za\u010dne znovu p\u0159ij\u00edmat zpr\u00e1vy, jakmile bude k dispozici vhodn\u00fd stroj syst\u00e9mu zpr\u00e1v.
+LAST_ME_CWSIV0768.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+ATTACH_FAILED_CWSIV0769=CWSIV0769W: Vytvo\u0159en\u00ed spot\u0159ebitele pro vzd\u00e1len\u00e9 m\u00edsto ur\u010den\u00ed {0} na sb\u011brnici {1} pro aktivaci koncov\u00e9ho bodu {2} selhalo s v\u00fdjimkou {3}.
+ATTACH_FAILED_CWSIV0769.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f se \u00fasp\u011b\u0161n\u011b p\u0159ipojil k lok\u00e1ln\u00edmu stroji syst\u00e9mu zpr\u00e1v, ale potom obdr\u017eel v\u00fdjimku p\u0159i pokusu o vytvo\u0159en\u00ed spot\u0159ebitele ve vzd\u00e1len\u00e9m bodu front.
+ATTACH_FAILED_CWSIV0769.useraction=Ov\u011b\u0159te, zda je k dispozici stroj syst\u00e9mu zpr\u00e1v s bodem front pro dan\u00e9 m\u00edsto ur\u010den\u00ed. Adapt\u00e9r prost\u0159edk\u016f se bude automaticky znovu pravideln\u011b pokou\u0161et o vytvo\u0159en\u00ed spot\u0159ebitele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+CONSUMER_FAILED_CWSIV0770=CWSIV0770W: Spot\u0159ebitel pro vzd\u00e1len\u00e9 m\u00edsto ur\u010den\u00ed {0} na sb\u011brnici {1} pro aktivaci koncov\u00e9ho bodu {2} selhal s v\u00fdjimkou {3}.
+CONSUMER_FAILED_CWSIV0770.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f obdr\u017eel v\u00fdjimku pro existuj\u00edc\u00edho spot\u0159ebitele ve vzd\u00e1len\u00e9m bodu front.
+CONSUMER_FAILED_CWSIV0770.useraction=Ov\u011b\u0159te, zda je k dispozici stroj syst\u00e9mu zpr\u00e1v s bodem front pro dan\u00e9 m\u00edsto ur\u010den\u00ed. Adapt\u00e9r prost\u0159edk\u016f se bude automaticky znovu pravideln\u011b pokou\u0161et o opakovan\u00e9 vytvo\u0159en\u00ed spot\u0159ebitele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the name of the messaging engine
+# {2} the name of the bus
+# {3} the endpoint activation
+RELOAD_FAILED_CWSIV0773=CWSIV0773E: Byla vyvol\u00e1na v\u00fdjimka {0} b\u011bhem zpracov\u00e1n\u00ed aktualizovan\u00e9 konfigurace stroje syst\u00e9mu zpr\u00e1v {1} na sb\u011brnici {2} pro aktivaci koncov\u00e9ho bodu {3}.
+RELOAD_FAILED_CWSIV0773.explanation=B\u011bhem zpracov\u00e1n\u00ed aktualizovan\u00e9 konfigurace pro dan\u00fd stroj syst\u00e9mu zpr\u00e1v byla p\u0159ijata v\u00fdjimka. Je mo\u017en\u00e9, \u017ee odpov\u00eddaj\u00edc\u00ed objekt typu message-driven bean nem\u016f\u017ee obdr\u017eet zpr\u00e1vy pro bod front v tomto stroji syst\u00e9mu zpr\u00e1v.
+RELOAD_FAILED_CWSIV0773.useraction=P\u0159\u00ed\u010dinu naleznete ve v\u00fdjimce. Po vy\u0159e\u0161en\u00ed probl\u00e9mu restartujte stroj syst\u00e9mu zpr\u00e1v, adapt\u00e9r prost\u0159edk\u016f nebo aplikaci.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the name of the destination
+# {2} the name of the messaging engine
+# {3} the name of the bus
+# {4} the endpoint activation
+FAILURE_DURING_RELOAD_CWSIV0774=CWSIV0774W: Byla vyvol\u00e1na v\u00fdjimka {0} pro spot\u0159ebitele v m\u00edst\u011b ur\u010den\u00ed {1} ve stroji syst\u00e9mu zpr\u00e1v {2} na sb\u011brnici {3} pro aktivaci koncov\u00e9ho bodu {4} v dob\u011b, kdy stroj syst\u00e9mu zpr\u00e1v znovu na\u010d\u00edtal konfiguraci.
+FAILURE_DURING_RELOAD_CWSIV0774.explanation=Dan\u00e1 v\u00fdjimka byla pro spot\u0159ebitele p\u0159ijata v dob\u011b, kdy odpov\u00eddaj\u00edc\u00ed stroj syst\u00e9mu zpr\u00e1v znovu na\u010d\u00edtal konfiguraci.
+FAILURE_DURING_RELOAD_CWSIV0774.useraction=Toto varov\u00e1n\u00ed lze ignorovat, pokud byl bod front, ke kter\u00e9mu byl spot\u0159ebitel p\u0159ipojen, \u00famysln\u011b odstran\u011bn jako sou\u010d\u00e1st aktualizace konfigurace. Pokud byl definov\u00e1n n\u00e1hradn\u00ed bod front, bude p\u0159i dokon\u010den\u00ed aktualizace vytvo\u0159en nov\u00fd spot\u0159ebitel.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+CONNECT_FAILED_CWSIV0775=CWSIV0775W: Vytvo\u0159en\u00ed p\u0159ipojen\u00ed pro m\u00edsto ur\u010den\u00ed {0} na sb\u011brnici {1} pro aktivaci koncov\u00e9ho bodu {2} selhalo s v\u00fdjimkou {3}.
+CONNECT_FAILED_CWSIV0775.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f obdr\u017eel v\u00fdjimku p\u0159i pokusu o p\u0159ipojen\u00ed ke vzd\u00e1len\u00e9mu stroji syst\u00e9mu zpr\u00e1v.
+CONNECT_FAILED_CWSIV0775.useraction=Ov\u011b\u0159te, zda je stroj syst\u00e9mu zpr\u00e1v na dan\u00e9 sb\u011brnici k dispozici. Adapt\u00e9r prost\u0159edk\u016f se automaticky periodicky pokou\u0161\u00ed p\u0159ipojit ke sb\u011brnici.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+CONNECTION_ERROR_CWSIV0776=CWSIV0776W: P\u0159ipojen\u00ed ke vzd\u00e1len\u00e9mu stroji syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1} pro aktivaci koncov\u00e9ho bodu {2} selhalo s v\u00fdjimkou {3}.
+CONNECTION_ERROR_CWSIV0776.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f obdr\u017eel v\u00fdjimku pro existuj\u00edc\u00ed p\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v.
+CONNECTION_ERROR_CWSIV0776.useraction=Ov\u011b\u0159te, zda je stroj syst\u00e9mu zpr\u00e1v na dan\u00e9 sb\u011brnici k dispozici. Adapt\u00e9r prost\u0159edk\u016f se automaticky periodicky pokou\u0161\u00ed p\u0159ipojit ke sb\u011brnici.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the destination
+# {2} the name of the bus
+CONNECTED_CWSIV0777=CWSIV0777I: P\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v {0} pro m\u00edsto ur\u010den\u00ed {1} na sb\u011brnici {2} bylo \u00fasp\u011b\u0161n\u011b vytvo\u0159eno.
+CONNECTED_CWSIV0777.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f \u00fasp\u011b\u0161n\u011b vytvo\u0159il p\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v pro danou aktivaci koncov\u00e9ho bodu.
+CONNECTED_CWSIV0777.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+# {2} the endpoint activation
+ME_INITIALIZING_CWSIV0778=CWSIV0778I: Lok\u00e1ln\u00ed stroj syst\u00e9mu zpr\u00e1v {0} pro sb\u011brnici {1}, kter\u00fd je vy\u017eadov\u00e1n aktivac\u00ed koncov\u00e9ho bodu {2}, je nyn\u00ed k dispozici.
+ME_INITIALIZING_CWSIV0778.explanation=Dan\u00e1 aktivace koncov\u00e9ho bodu se p\u0159ipojovala vzd\u00e1len\u011b, proto\u017ee nebyly povoleny \u017e\u00e1dn\u00e9 lok\u00e1ln\u00ed stroje syst\u00e9mu zpr\u00e1v. V\u0161echna vzd\u00e1len\u00e1 p\u0159ipojen\u00ed jsou nyn\u00ed uzav\u0159ena. Jakmile je aktivn\u00ed lok\u00e1ln\u00ed stroj syst\u00e9mu zpr\u00e1v, dojde k pokusu o vytvo\u0159en\u00ed nov\u00e9ho p\u0159ipojen\u00ed.
+ME_INITIALIZING_CWSIV0778.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+ME_DESTROYED_CWSIV0779=CWSIV0779I: Byl zlikvidov\u00e1n posledn\u00ed lok\u00e1ln\u00ed stroj syst\u00e9mu zpr\u00e1v {0} pro sb\u011brnici {1}.
+ME_DESTROYED_CWSIV0779.explanation=Dan\u00e1 aktivace koncov\u00e9ho bodu se p\u0159ipojovala lok\u00e1ln\u011b, ale nezb\u00fdvaj\u00ed \u017e\u00e1dn\u00e9 povolen\u00e9 lok\u00e1ln\u00ed stroje syst\u00e9mu zpr\u00e1v. Adapt\u00e9r prost\u0159edk\u016f se pokou\u0161\u00ed o p\u0159ipojen\u00ed ke vzd\u00e1len\u00e9mu stroji syst\u00e9mu zpr\u00e1v.
+ME_DESTROYED_CWSIV0779.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+# {2} the endpoint activation
+ME_TERMINATED_CWSIV0780=CWSIV0780W: Vzd\u00e1len\u00fd stroj syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1}, ke kter\u00e9mu byla p\u0159ipojena aktivace koncov\u00e9ho bodu {2}, byl ukon\u010den.
+ME_TERMINATED_CWSIV0780.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f obdr\u017eel upozorn\u011bn\u00ed, \u017ee vzd\u00e1len\u00fd stroj syst\u00e9mu zpr\u00e1v, ke kter\u00e9mu byl p\u0159ipojen, byl ukon\u010den.
+ME_TERMINATED_CWSIV0780.useraction=Ov\u011b\u0159te, zda je stroj syst\u00e9mu zpr\u00e1v na dan\u00e9 sb\u011brnici k dispozici. Adapt\u00e9r prost\u0159edk\u016f se automaticky periodicky pokou\u0161\u00ed p\u0159ipojit ke sb\u011brnici.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+# {2} the endpoint activation
+ME_QUIESCING_CWSIV0781=CWSIV0781W: Vzd\u00e1len\u00fd stroj syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1}, ke kter\u00e9mu byla p\u0159ipojena aktivace koncov\u00e9ho bodu {2}, je uv\u00e1d\u011bn do klidov\u00e9ho stavu.
+ME_QUIESCING_CWSIV0781.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f obdr\u017eel upozorn\u011bn\u00ed, \u017ee vzd\u00e1len\u00fd stroj syst\u00e9mu zpr\u00e1v, ke kter\u00e9mu byl p\u0159ipojen, je uv\u00e1d\u011bn do klidov\u00e9ho stavu a byl odpojen.
+ME_QUIESCING_CWSIV0781.useraction=Ov\u011b\u0159te, zda je stroj syst\u00e9mu zpr\u00e1v na dan\u00e9 sb\u011brnici k dispozici. Adapt\u00e9r prost\u0159edk\u016f se automaticky periodicky pokou\u0161\u00ed p\u0159ipojit ke sb\u011brnici.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+CONNECT_FAILED_CWSIV0782=CWSIV0782W: Vytvo\u0159en\u00ed p\u0159ipojen\u00ed pro m\u00edsto ur\u010den\u00ed {0} na sb\u011brnici {1} pro aktivaci koncov\u00e9ho bodu {2} se nezda\u0159ilo s v\u00fdjimkou {3}. Zkontrolujte specifikaci aktivace koncov\u00e9ho bodu {2}.
+CONNECT_FAILED_CWSIV0782.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f obdr\u017eel v\u00fdjimku p\u0159i p\u0159ipojov\u00e1n\u00ed ke stroji syst\u00e9mu zpr\u00e1v.
+CONNECT_FAILED_CWSIV0782.useraction=Ov\u011b\u0159te, zda je stroj syst\u00e9mu zpr\u00e1v na dan\u00e9 sb\u011brnici k dispozici.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+CONNECT_FAILED_CWSIV0783=CWSIV0783E: Vytvo\u0159en\u00ed p\u0159ipojen\u00ed pro m\u00edsto ur\u010den\u00ed {0} na sb\u011brnici {1} pro aktivaci koncov\u00e9ho bodu {2} selhalo s v\u00fdjimkou {3}.
+CONNECT_FAILED_CWSIV0783.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f obdr\u017eel v\u00fdjimku p\u0159i pokusu o p\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v. Odpov\u00eddaj\u00edc\u00ed objekt typu message-driven bean se deaktivuje a nem\u016f\u017ee p\u0159ij\u00edmat dal\u0161\u00ed zpr\u00e1vy.
+CONNECT_FAILED_CWSIV0783.useraction=P\u0159\u00ed\u010dinu naleznete ve v\u00fdjimce. Po vy\u0159e\u0161en\u00ed probl\u00e9mu restartujte adapt\u00e9r prost\u0159edk\u016f nebo aplikaci.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+ME_STOPPING_CWSIV0784=CWSIV0784I: Zastavuje se lok\u00e1ln\u00ed stroj syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1}.
+ME_STOPPING_CWSIV0784.explanation=Dan\u00e1 aktivace koncov\u00e9ho bodu pou\u017e\u00edvala stroj syst\u00e9mu zpr\u00e1v, kter\u00fd byl nyn\u00ed zastaven. Adapt\u00e9r prost\u0159edk\u016f se pokus\u00ed o p\u0159ipojen\u00ed k jin\u00e9mu stroji syst\u00e9mu zpr\u00e1v.
+ME_STOPPING_CWSIV0784.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+ME_QUIESCING_CWSIV0785=CWSIV0785I: Prob\u00edh\u00e1 uv\u00e1d\u011bn\u00ed stroje syst\u00e9mu zpr\u00e1v {0} ve sb\u011brnici {1} do klidov\u00e9ho stavu.
+ME_QUIESCING_CWSIV0785.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f obdr\u017eel upozorn\u011bn\u00ed, \u017ee stroj syst\u00e9mu zpr\u00e1v, ke kter\u00e9mu byl p\u0159ipojen, je uv\u00e1d\u011bn do klidov\u00e9ho stavu a byl odpojen.
+ME_QUIESCING_CWSIV0785.useraction=Ov\u011b\u0159te, zda je stroj syst\u00e9mu zpr\u00e1v na dan\u00e9 sb\u011brnici k dispozici. Adapt\u00e9r prost\u0159edk\u016f se automaticky periodicky pokou\u0161\u00ed p\u0159ipojit ke sb\u011brnici.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+ME_TERMINATED_CWSIV0786=CWSIV0786I: \u010cinnost stroje syst\u00e9mu zpr\u00e1v {0} ve sb\u011brnici {1} byla ukon\u010dena.
+ME_TERMINATED_CWSIV0786.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f obdr\u017eel upozorn\u011bn\u00ed, \u017ee stroj syst\u00e9mu zpr\u00e1v, ke kter\u00e9mu byl p\u0159ipojen, byl ukon\u010den.
+ME_TERMINATED_CWSIV0786.useraction=Ov\u011b\u0159te, zda je stroj syst\u00e9mu zpr\u00e1v na dan\u00e9 sb\u011brnici k dispozici. Adapt\u00e9r prost\u0159edk\u016f se automaticky periodicky pokou\u0161\u00ed p\u0159ipojit ke sb\u011brnici.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the target type
+# {1} the target significance
+# {2} the target
+# {3} the busname
+TARGETTED_CONNECTION_FAILED_CWSIV0787=CWSIV0787I: Vytvo\u0159en\u00ed p\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v b\u011bhem zad\u00e1v\u00e1n\u00ed c\u00edle p\u0159ipojen\u00ed se nezda\u0159ilo. Jednalo se o c\u00edl typu {0}, s v\u00fdznamnost\u00ed {1} a n\u00e1zvem {2}. C\u00edlovou sb\u011brnic\u00ed byla sb\u011brnice {3}.
+TARGETTED_CONNECTION_FAILED_CWSIV0787.explanation=Syst\u00e9mu se pro danou sadu informac\u00ed o c\u00edli nepoda\u0159ilo p\u0159ipojit ke stroji syst\u00e9mu zpr\u00e1v. \
+Pokud nen\u00ed k dispozici \u017e\u00e1dn\u00fd stroj syst\u00e9mu zpr\u00e1v odpov\u00eddaj\u00edc\u00ed c\u00edlov\u00fdm dat\u016fm, m\u016f\u017ee se jednat o do\u010dasn\u00fd probl\u00e9m s p\u0159ipojen\u00edm. Jinak se m\u016f\u017ee jednat o probl\u00e9m t\u00fdkaj\u00edc\u00ed se konfigurace pou\u017eit\u00e9 specifikace aktivace.
+TARGETTED_CONNECTION_FAILED_CWSIV0787.useraction=Ov\u011b\u0159te, zda je na dan\u00e9 sb\u011brnici k dispozici stroj syst\u00e9mu zpr\u00e1v, kter\u00fd odpov\u00edd\u00e1 zadan\u00fdm informac\u00edm o c\u00edli. \
+Adapt\u00e9r prost\u0159edk\u016f se automaticky periodicky pokou\u0161\u00ed p\u0159ipojit ke sb\u011brnici. \
+V p\u0159\u00edpad\u011b, \u017ee stroj syst\u00e9mu zpr\u00e1v je dostupn\u00fd, ov\u011b\u0159te, zda jsou nastaven\u00ed konfigurace aktivace, obzvl\u00e1\u0161t\u011b n\u00e1zev sb\u011brnice a informace o c\u00edli, spr\u00e1vn\u00e1.
+           
+# -------------------------------------------------------------------------------------------------
+# {0} the busname
+CONNECTION_FAILED_CWSIV0788=CWSIV0788I: Vytvo\u0159en\u00ed p\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v se nezda\u0159ilo. C\u00edlovou sb\u011brnic\u00ed byla sb\u011brnice {0}.
+CONNECTION_FAILED_CWSIV0788.explanation=Syst\u00e9mu se nepoda\u0159ilo p\u0159ipojit ke stroji syst\u00e9mu zpr\u00e1v. \
+Pokud nen\u00ed na sb\u011brnici k dispozici \u017e\u00e1dn\u00fd stroj syst\u00e9mu zpr\u00e1v, m\u016f\u017ee se jednat o do\u010dasn\u00fd probl\u00e9m s p\u0159ipojen\u00edm. Jinak se m\u016f\u017ee jednat o probl\u00e9m t\u00fdkaj\u00edc\u00ed se konfigurace pou\u017eit\u00e9 specifikace aktivace.
+CONNECTION_FAILED_CWSIV0788.useraction=Ov\u011b\u0159te, zda je stroj syst\u00e9mu zpr\u00e1v na dan\u00e9 sb\u011brnici k dispozici. \
+Adapt\u00e9r prost\u0159edk\u016f se automaticky periodicky pokou\u0161\u00ed p\u0159ipojit ke sb\u011brnici. \
+V p\u0159\u00edpad\u011b, \u017ee stroj syst\u00e9mu zpr\u00e1v je dostupn\u00fd, ov\u011b\u0159te, zda jsou nastaven\u00ed konfigurace aktivace, obzvl\u00e1\u0161t\u011b n\u00e1zev sb\u011brnice, spr\u00e1vn\u00e1.
+           
+# -------------------------------------------------------------------------------------------------
+# {0} the busname
+# {1} the durable subscription home
+DURSUB_CONNECTION_FAILED_CWSIV0789=CWSIV0789I: Vytvo\u0159en\u00ed p\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v, kter\u00fd je hostitelem trval\u00e9ho odb\u011bru, se nezda\u0159ilo. C\u00edlovou sb\u011brnic\u00ed byla sb\u011brnice {0}, domov trval\u00fdch odb\u011br\u016f m\u011bl n\u00e1zev {1}.
+DURSUB_CONNECTION_FAILED_CWSIV0789.explanation=Syst\u00e9mu se nepoda\u0159ilo p\u0159ipojit ke stroji syst\u00e9mu zpr\u00e1v, kter\u00fd je hostitelem domova trval\u00fdch odb\u011br\u016f. \
+Pokud dan\u00fd stroj syst\u00e9mu zpr\u00e1v nen\u00ed na sb\u011brnici k dispozici, m\u016f\u017ee se jednat o do\u010dasn\u00fd probl\u00e9m s p\u0159ipojen\u00edm. Jinak se m\u016f\u017ee jednat o probl\u00e9m t\u00fdkaj\u00edc\u00ed se konfigurace pou\u017eit\u00e9 specifikace aktivace.
+DURSUB_CONNECTION_FAILED_CWSIV0789.useraction=Ov\u011b\u0159te, zda je stroj syst\u00e9mu zpr\u00e1v, kter\u00fd je hostitelem domova trval\u00fdch odb\u011br\u016f, na dan\u00e9 sb\u011brnici k dispozici. \
+Adapt\u00e9r prost\u0159edk\u016f se automaticky periodicky pokou\u0161\u00ed p\u0159ipojit ke sb\u011brnici. \
+V p\u0159\u00edpad\u011b, \u017ee stroj syst\u00e9mu zpr\u00e1v je dostupn\u00fd, ov\u011b\u0159te, zda jsou nastaven\u00ed konfigurace aktivace, obzvl\u00e1\u0161t\u011b n\u00e1zev sb\u011brnice a domov trval\u00fdch odb\u011br\u016f, spr\u00e1vn\u00e1.
+           
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the ME name
+# (2) the bus name
+CREATE_CONNECTION_FAILED_CWSIV0801=CWSIV0801E: Byla vyvol\u00e1na v\u00fdjimka {0} b\u011bhem vytv\u00e1\u0159en\u00ed p\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v {1} na sb\u011brnici {2}.
+CREATE_CONNECTION_FAILED_CWSIV0801.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f j\u00e1dra SPI se p\u0159i p\u0159ijet\u00ed v\u00fdjimky pokou\u0161el o vytvo\u0159en\u00ed p\u0159ipojen\u00ed pro dan\u00fd stroj syst\u00e9mu zpr\u00e1v. Zpr\u00e1vy z m\u00edst ur\u010den\u00ed lokalizovan\u00fdch v tomto stroji syst\u00e9mu zpr\u00e1v nebudou p\u0159ijaty objektem typu message-driven bean.
+CREATE_CONNECTION_FAILED_CWSIV0801.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 v\u00fdjimce. Po vy\u0159e\u0161en\u00ed probl\u00e9mu restartujte stroj syst\u00e9mu zpr\u00e1v, adapt\u00e9r prost\u0159edk\u016f nebo aplikaci.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the destination name
+# {2} the ME name
+# (3) the bus name
+CREATE_LISTENER_FAILED_CWSIV0803=CWSIV0803E: Byla vyvol\u00e1na v\u00fdjimka {0} b\u011bhem vytv\u00e1\u0159en\u00ed spot\u0159ebitele pro m\u00edsto ur\u010den\u00ed {1} ve stroji syst\u00e9mu zpr\u00e1v {2} na sb\u011brnici {3}.
+CREATE_LISTENER_FAILED_CWSIV0803.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f se p\u0159i p\u0159ijet\u00ed v\u00fdjimky pokou\u0161el o vytvo\u0159en\u00ed spot\u0159ebitele pro dan\u00e9 m\u00edsto ur\u010den\u00ed. Zpr\u00e1vy z lokalizace m\u00edsta ur\u010den\u00ed nebudou p\u0159ij\u00edm\u00e1ny objektem typu message-driven bean.
+CREATE_LISTENER_FAILED_CWSIV0803.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 v\u00fdjimce. Po vy\u0159e\u0161en\u00ed probl\u00e9mu restartujte stroj syst\u00e9mu zpr\u00e1v, adapt\u00e9r prost\u0159edk\u016f nebo aplikaci.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the ME name
+# (2) the bus name
+ADD_DESTINATION_LISTENER_FAILED_CWSIV0804=CWSIV0804E: Byla vyvol\u00e1na v\u00fdjimka {0} b\u011bhem p\u0159id\u00e1n\u00ed modulu listener m\u00edsta ur\u010den\u00ed pro stroj syst\u00e9mu zpr\u00e1v {1} na sb\u011brnici {2}.
+ADD_DESTINATION_LISTENER_FAILED_CWSIV0804.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f se p\u0159i p\u0159ijet\u00ed v\u00fdjimky pokou\u0161el o p\u0159id\u00e1n\u00ed modulu listener m\u00edsta ur\u010den\u00ed pro dan\u00fd stroj syst\u00e9mu zpr\u00e1v. Zpr\u00e1vy z bod\u016f front v tomto stroji syst\u00e9mu zpr\u00e1v nebudou p\u0159ij\u00edm\u00e1ny objektem typu message-driven bean.
+ADD_DESTINATION_LISTENER_FAILED_CWSIV0804.useraction=P\u0159\u00ed\u010dinu naleznete v p\u0159ipojen\u00e9 v\u00fdjimce. Po vy\u0159e\u0161en\u00ed probl\u00e9mu restartujte stroj syst\u00e9mu zpr\u00e1v, adapt\u00e9r prost\u0159edk\u016f nebo aplikaci.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the destination name
+# {2} the ME name
+# (3) the bus name
+CREATE_LISTENER_FAILED_CWSIV0805=CWSIV0805E: Byla vyvol\u00e1na v\u00fdjimka {0} b\u011bhem vytv\u00e1\u0159en\u00ed spot\u0159ebitele pro nov\u00e9 m\u00edsto ur\u010den\u00ed {1} ve stroji syst\u00e9mu zpr\u00e1v {2} na sb\u011brnici {3}.
+CREATE_LISTENER_FAILED_CWSIV0805.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f se p\u0159i p\u0159ijet\u00ed v\u00fdjimky pokou\u0161el o vytvo\u0159en\u00ed spot\u0159ebitele pro dan\u00e9 nov\u00e9 m\u00edsto ur\u010den\u00ed. Zpr\u00e1vy z tohoto bodu front nebudou p\u0159ij\u00edm\u00e1ny objektem typu message-driven bean.
+CREATE_LISTENER_FAILED_CWSIV0805.useraction=P\u0159\u00ed\u010dinu naleznete v p\u0159ipojen\u00e9 v\u00fdjimce. Po vy\u0159e\u0161en\u00ed probl\u00e9mu restartujte stroj syst\u00e9mu zpr\u00e1v, adapt\u00e9r prost\u0159edk\u016f nebo aplikaci.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the destination
+# {2} the messaging engine name
+# {3} the bus name
+# {4} the endpoint activation
+SESSION_ERROR_CWSIV0806=CWSIV0806E: Byla vyvol\u00e1na v\u00fdjimka {0} pro spot\u0159ebitele v m\u00edst\u011b ur\u010den\u00ed {1} ve stroji syst\u00e9mu zpr\u00e1v {2} na sb\u011brnici {3} pro aktivaci koncov\u00e9ho bodu {4}.
+SESSION_ERROR_CWSIV0806.explanation=Pro dan\u00e9ho spot\u0159ebitele byla p\u0159ijata asynchronn\u00ed v\u00fdjimka. Odpov\u00eddaj\u00edc\u00ed objekt typu message-driven bean bude zak\u00e1z\u00e1n a nebude dost\u00e1vat \u017e\u00e1dn\u00e9 dal\u0161\u00ed zpr\u00e1vy.
+SESSION_ERROR_CWSIV0806.useraction=P\u0159\u00ed\u010dinu vyhledejte ve v\u00fdjimce. Po vy\u0159e\u0161en\u00ed probl\u00e9mu restartujte stroj syst\u00e9mu zpr\u00e1v, adapt\u00e9r prost\u0159edk\u016f nebo aplikaci.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the messaging engine name
+# {2} the endpoint activation
+CONNECTION_ERROR_CWSIV0807=CWSIV0807E: Byla vyvol\u00e1na v\u00fdjimka {0} v p\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v {1} pro aktivaci koncov\u00e9ho bodu {2}.
+CONNECTION_ERROR_CWSIV0807.explanation=Pro dan\u00e9 p\u0159ipojen\u00ed byla p\u0159ijata v\u00fdjimka. Odpov\u00eddaj\u00edc\u00ed objekt typu message-driven bean bude zak\u00e1z\u00e1n a nebude dost\u00e1vat \u017e\u00e1dn\u00e9 dal\u0161\u00ed zpr\u00e1vy.
+CONNECTION_ERROR_CWSIV0807.useraction=P\u0159\u00ed\u010dinu vyhledejte ve v\u00fdjimce. Po vy\u0159e\u0161en\u00ed probl\u00e9mu restartujte stroj syst\u00e9mu zpr\u00e1v, adapt\u00e9r prost\u0159edk\u016f nebo aplikaci.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the destination
+# {1} the messaging engine name
+# {2} the bus name
+# {3} the exception
+SESSION_DROPPED_CWSIV0808=CWSIV0808W: \u010cten\u00ed zpr\u00e1v z m\u00edsta ur\u010den\u00ed {0} ve stroji syst\u00e9mu zpr\u00e1v {1} na sb\u011brnici {2} bylo zastaveno, proto\u017ee relace byla zru\u0161ena. V\u00fdjimka: {3}
+SESSION_DROPPED_CWSIV0808.explanation=Relace byla zru\u0161ena z p\u0159\u00ed\u010diny uveden\u00e9ho ve v\u00fdjimce. P\u0159\u00ed\u010dinou m\u016f\u017ee b\u00fdt to, \u017ee zadan\u00e9 m\u00edsto ur\u010den\u00ed bylo odstran\u011bno nebo ozna\u010deno jako pouze pro odes\u00edl\u00e1n\u00ed. Odpov\u00eddaj\u00edc\u00ed objekt typu message-driven bean bude zak\u00e1z\u00e1n a nebude dost\u00e1vat \u017e\u00e1dn\u00e9 dal\u0161\u00ed zpr\u00e1vy.
+SESSION_DROPPED_CWSIV0808.useraction=Pokud toto varov\u00e1n\u00ed nebylo o\u010dek\u00e1v\u00e1no, vy\u0159e\u0161te pot\u00ed\u017ee a pot\u00e9 podle pot\u0159eby restartujte aplikaci, adapt\u00e9r prost\u0159edk\u016f nebo stroj syst\u00e9mu zpr\u00e1v.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the destination wildcard string
+# {1} the messaging engine name
+# {2} the bus name
+NO_LISTENERS_CREATED_CWSIV0809=CWSIV0809W: Z\u00e1stupn\u00fd znak n\u00e1zvu m\u00edsta ur\u010den\u00ed {0} neodpov\u00edd\u00e1 \u017e\u00e1dn\u00e9mu z m\u00edst ur\u010den\u00ed, kter\u00e1 jsou dostupn\u00e1 ke \u010dten\u00ed zpr\u00e1v ve stroji syst\u00e9mu zpr\u00e1v {1} na sb\u011brnici {2}
+NO_LISTENERS_CREATED_CWSIV0809.explanation=Specifikace aktivace obsahuje z\u00e1stupn\u00fd znak m\u00edsta ur\u010den\u00ed za \u00fa\u010delem \u010dten\u00ed zpr\u00e1v z v\u00edce m\u00edst ur\u010den\u00ed, z\u00e1stupn\u00fd znak v\u0161ak neodpov\u00edd\u00e1 \u017e\u00e1dn\u00e9mu dostupn\u00e9mu m\u00edstu ur\u010den\u00ed.
+NO_LISTENERS_CREATED_CWSIV0809.useraction=Ov\u011b\u0159te, zda specifikace aktivace pou\u017e\u00edv\u00e1 z\u00e1stupn\u00fd znak m\u00edsta ur\u010den\u00ed, zda m\u00edsto ur\u010den\u00ed se z\u00e1stupn\u00fdm znakem odpov\u00edd\u00e1 n\u011bkter\u00fdm m\u00edst\u016fm ur\u010den\u00ed a za je pro zadan\u00e9 podrobnosti o u\u017eivateli povoleno p\u0159ij\u00edm\u00e1n\u00ed z m\u00edst ur\u010den\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint
+# {1} the expected interface
+UNEXPECTED_ENDPOINT_CWSIV0850=CWSIV0850E: Do\u0161lo k intern\u00ed chyb\u011b. Koncov\u00fd bod zpr\u00e1v {0} neimplementuje o\u010dek\u00e1van\u00e9 rozhran\u00ed {1}.
+UNEXPECTED_ENDPOINT_CWSIV0850.explanation=Tov\u00e1rna koncov\u00e9ho bodu zpr\u00e1v vr\u00e1tila koncov\u00fd bod zpr\u00e1v, kter\u00fd neimplementuje rozhran\u00ed SibRaMessageListener, jak bylo o\u010dek\u00e1v\u00e1no.
+UNEXPECTED_ENDPOINT_CWSIV0850.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+ON_MESSAGE_CWSIV0851=CWSIV0851E: Do\u0161lo k intern\u00ed chyb\u011b. Do\u0161lo k vyvol\u00e1n\u00ed v\u00fdjimky {0} p\u0159i pokusu o z\u00edsk\u00e1n\u00ed instance metody onMessage.
+ON_MESSAGE_CWSIV0851.explanation=Byla vygenerov\u00e1na v\u00fdjimka p\u0159i pokusu o z\u00edsk\u00e1n\u00ed instance metody onMessage.
+ON_MESSAGE_CWSIV0851.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the destination name
+# {2} the bus name
+# {3} the connection
+LISTENER_CREATION_CWSIV0900=CWSIV0900E: Do\u0161lo k vyvol\u00e1n\u00ed v\u00fdjimky {0} p\u0159i pokusu o vytvo\u0159en\u00ed modulu listener pro m\u00edsto ur\u010den\u00ed {1} na sb\u011brnici {2} vyu\u017e\u00edvaj\u00edc\u00ed p\u0159ipojen\u00ed {3}.
+LISTENER_CREATION_CWSIV0900.explanation=K vyvol\u00e1n\u00ed v\u00fdjimky do\u0161lo, kdy\u017e se p\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f pokou\u0161el o vytvo\u0159en\u00ed modulu listener pro dan\u00e9 m\u00edsto ur\u010den\u00ed.
+LISTENER_CREATION_CWSIV0900.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 v\u00fdjimce. Odstra\u0148te probl\u00e9m a pot\u00e9 podle pot\u0159eby restartujte aplikaci, adapt\u00e9r prost\u0159edk\u016f nebo stroj syst\u00e9mu zpr\u00e1v.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+SELECTION_FACTORY_CWSIV0901=CWSIV0901E: Do\u0161lo k intern\u00ed chyb\u011b. Do\u0161lo k vyvol\u00e1n\u00ed v\u00fdjimky {0} p\u0159i pokusu o z\u00edsk\u00e1n\u00ed instance tov\u00e1rny SelectionCriteriaFactory.
+SELECTION_FACTORY_CWSIV0901.explanation=K vyvol\u00e1n\u00ed v\u00fdjimky do\u0161lo p\u0159i pokusu o z\u00edsk\u00e1n\u00ed instance tov\u00e1rny SelectionCriteriaFactory.
+SELECTION_FACTORY_CWSIV0901.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the message endpoint
+# {1} the destination the message endpoint was listening too
+MESSAGE_ENDPOINT_PAUSED_AUTONOMICALLY_CWSIV0902=CWSIV0902W: Koncov\u00fd bod zpr\u00e1v {0}, kter\u00fd naslouchal na m\u00edst\u011b ur\u010den\u00ed {1}, byl syst\u00e9mem pozastaven.
+MESSAGE_ENDPOINT_PAUSED_AUTONOMICALLY_CWSIV0902.explanation=Syst\u00e9m pozastavil koncov\u00fd bod zpr\u00e1v, proto\u017ee zjistil probl\u00e9m s koncov\u00fdm bodem zpr\u00e1v objektu typu message-driven bean.
+MESSAGE_ENDPOINT_PAUSED_AUTONOMICALLY_CWSIV0902.useraction=Prozkoumejte potenci\u00e1ln\u00ed probl\u00e9my s objektem typu message-driven bean, kter\u00e9 by mohly zp\u016fsobit dal\u0161\u00ed chyby. Kdy\u017e budete p\u0159ipraveni koncov\u00fd bod zpr\u00e1v obnovit, pou\u017eijte administrativn\u00ed konzolu. Alternativn\u011b m\u016f\u017eete koncov\u00fd  bod zpr\u00e1v obnovit pomoc\u00ed objektu typu MBean koncov\u00e9ho bodu zpr\u00e1v, kter\u00e9mu p\u0159ed\u00e1te n\u00e1zev koncov\u00e9ho bodu v t\u00e9to zpr\u00e1v\u011b.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the message endpoint
+# {1} the destination the message endpoint was listening too
+# {2} the exception thrown from the invoke
+INVOKE_MBEAN_EXCEPTION__CWSIV0903=CWSIV0903W: Byl proveden pokus o pozastaven\u00ed koncov\u00e9ho bodu zpr\u00e1v {0}, kter\u00fd naslouchal na m\u00edst\u011b ur\u010den\u00ed {1}, ale do\u0161lo k selh\u00e1n\u00ed vyvol\u00e1n\u00ed objektu typu MBean s n\u00e1sleduj\u00edc\u00ed v\u00fdjimkou {2}.
+INVOKE_MBEAN_EXCEPTION__CWSIV0903.explanation=Syst\u00e9m zjistil probl\u00e9m s objektem typu message-driven bean koncov\u00e9ho bodu zpr\u00e1v, av\u0161ak pokus o pozastaven\u00ed koncov\u00e9ho bodu zpr\u00e1v se nezda\u0159il.
+INVOKE_MBEAN_EXCEPTION__CWSIV0903.useraction=Zkontrolujte stav koncov\u00e9ho bodu zpr\u00e1v pomoc\u00ed skript\u016f wsadmin nebo prost\u0159ednictv\u00edm administrativn\u00ed konzoly. Je-li koncov\u00fd bod zpr\u00e1v aktivn\u00ed, pozastavte jej a prozkoumejte mo\u017en\u00e9 probl\u00e9my s objektem typu message-driven bean. Koncov\u00fd bod obnovte, a\u017e na to budete p\u0159ipraveni.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the message endpoint
+# {1} the destination the message endpoint was listening too
+NO_MBEAN_EXCEPTION_CWSIV0904=CWSIV0904W: B\u011bhem pokusu o zastaven\u00ed objektu typu message-driven bean nebylo mo\u017en\u00e9 naj\u00edt \u017e\u00e1dn\u00e9 koncov\u00e9 body zpr\u00e1v pro koncov\u00fd bod {0}, kter\u00fd naslouchal na m\u00edstu ur\u010den\u00ed {1}. 
+NO_MBEAN_EXCEPTION_CWSIV0904.explanation=Syst\u00e9m nenalezl koncov\u00fd bod zpr\u00e1v.
+NO_MBEAN_EXCEPTION_CWSIV0904.useraction=Zkontrolujte stav koncov\u00e9ho bodu zpr\u00e1v pomoc\u00ed skript\u016f wsadmin nebo prost\u0159ednictv\u00edm administrativn\u00ed konzoly. Je-li koncov\u00fd bod zpr\u00e1v aktivn\u00ed, pozastavte jej a prozkoumejte mo\u017en\u00e9 probl\u00e9my s objektem typu message-driven bean. Koncov\u00fd bod obnovte, a\u017e na to budete p\u0159ipraveni.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the message endpoint
+# {1} the destination the message endpoint was listening too
+MULTIPLE_MBEAN_EXCEPTION_CWSIV0905=CWSIV0905W: B\u011bhem pokusu o zastaven\u00ed objektu typu message-driven bean bylo nalezeno v\u00edce koncov\u00fdch bod\u016f zpr\u00e1v pro koncov\u00fd bod {0}, kter\u00fd naslouchal na m\u00edstu ur\u010den\u00ed {1}. M\u011bl by existovat pouze jeden koncov\u00fd bod. Objekt typu message-driven bean nebude zastaven. 
+MULTIPLE_MBEAN_EXCEPTION_CWSIV0905.explanation=Syst\u00e9m zjistil v\u00edce koncov\u00fdch bod\u016f zpr\u00e1v a nedok\u00e1zal identifikovat, kter\u00fd z nich m\u00e1 pozastavit.
+MULTIPLE_MBEAN_EXCEPTION_CWSIV0905.useraction=Zkontrolujte stav v\u0161ech koncov\u00fdch bod\u016f zpr\u00e1v v tomto objektu typu message-driven bean pomoc\u00ed skript\u016f wsadmin nebo prost\u0159ednictv\u00edm administrativn\u00ed konzoly. Je-li n\u011bkter\u00fd koncov\u00fd bod zpr\u00e1v aktivn\u00ed, pozastavte jej a prozkoumejte mo\u017en\u00e9 probl\u00e9my s objektem typu message-driven bean. Koncov\u00fd bod obnovte, a\u017e na to budete p\u0159ipraveni.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the value it used to be
+# {1} the new value 
+MAXSEQUENTIALMESSAGEFAILURE_CONFIG_VALUE_CHANGED_CWSIV0906=CWSIV0906W: Konfigura\u010dn\u00ed hodnota maxim\u00e1ln\u00edho po\u010dtu selh\u00e1n\u00ed posloupnosti zpr\u00e1v pro objekty typu bean \u0159\u00edzen\u00fdch zpr\u00e1vami byla zm\u011bn\u011bna z hodnoty {0} na hodnotu {1}.
+MAXSEQUENTIALMESSAGEFAILURE_CONFIG_VALUE_CHANGED_CWSIV0906.explanation=Hodnota maxim\u00e1ln\u00edho po\u010dtu selh\u00e1n\u00ed posloupnosti zpr\u00e1v byla zm\u011bn\u011bna, proto\u017ee bylo zapnuto striktn\u00ed \u0159azen\u00ed zpr\u00e1v.
+MAXSEQUENTIALMESSAGEFAILURE_CONFIG_VALUE_CHANGED_CWSIV0906.useraction=Nen\u00ed pot\u0159ebn\u00e1 \u017e\u00e1dn\u00e1 akce, pokud nepo\u017eadujete funkci selh\u00e1n\u00ed posloupnosti zpr\u00e1v. Pokud funkci selh\u00e1n\u00ed posloupnosti zpr\u00e1v po\u017eadujete, vypn\u011bte p\u0159esn\u00e9 \u0159azen\u00ed zpr\u00e1v.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the value it used to be
+# {1} the new value 
+MAXSEQUENTIALMESSAGEFAILURE_EXCEPTION_DESTINATION_CWSIV0907=CWSIV0907W: Konfigura\u010dn\u00ed hodnota maxim\u00e1ln\u00edho po\u010dtu selh\u00e1n\u00ed posloupnosti zpr\u00e1v pro objekty typu bean \u0159\u00edzen\u00fdch zpr\u00e1vami byla zm\u011bn\u011bna z hodnoty {0} na hodnotu {1}.
+MAXSEQUENTIALMESSAGEFAILURE_EXCEPTION_DESTINATION_CWSIV0907.explanation=Hodnota maxim\u00e1ln\u00edho po\u010dtu selh\u00e1n\u00ed posloupnosti zpr\u00e1v byla zm\u011bn\u011bna, proto\u017ee pro m\u00edsto ur\u010den\u00ed, ve kter\u00e9m objekt typu message-driven bean p\u0159ij\u00edm\u00e1 data, nen\u00ed definov\u00e1n \u017e\u00e1dn\u00fd c\u00edl v\u00fdjimek.
+MAXSEQUENTIALMESSAGEFAILURE_EXCEPTION_DESTINATION_CWSIV0907.useraction=Nen\u00ed pot\u0159ebn\u00e1 \u017e\u00e1dn\u00e1 akce, pokud nepo\u017eadujete funkci selh\u00e1n\u00ed posloupnosti zpr\u00e1v. Pokud funkci selh\u00e1n\u00ed posloupnosti zpr\u00e1v po\u017eadujete, konfigurujte pro dan\u00e9 m\u00edsto ur\u010den\u00ed c\u00edl v\u00fdjimek.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the connection factory
+CREATE_CONNECTION_CWSIV0950=CWSIV0950E: Do\u0161lo k intern\u00ed chyb\u011b. Do\u0161lo k vyvol\u00e1n\u00ed v\u00fdjimky {0} p\u0159i pokusu o vytvo\u0159en\u00ed p\u0159ipojen\u00ed u tov\u00e1rny {1}.
+CREATE_CONNECTION_CWSIV0950.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f se p\u0159i p\u0159ijet\u00ed neo\u010dek\u00e1van\u00e9 v\u00fdjimky pokou\u0161el o vytvo\u0159en\u00ed p\u0159ipojen\u00ed.
+CREATE_CONNECTION_CWSIV0950.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the messaging engine UUID
+CREATE_CONNECTION_CWSIV0951=CWSIV0951E: Do\u0161lo k intern\u00ed chyb\u011b. Do\u0161lo k vyvol\u00e1n\u00ed v\u00fdjimky {0} p\u0159i pokusu o vytvo\u0159en\u00ed p\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v {1}.
+CREATE_CONNECTION_CWSIV0951.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f se p\u0159i p\u0159ijet\u00ed neo\u010dek\u00e1van\u00e9 v\u00fdjimky pokou\u0161el o vytvo\u0159en\u00ed p\u0159ipojen\u00ed.
+CREATE_CONNECTION_CWSIV0951.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+LISTENER_CLOSED_CWSIV0952=CWSIV0952E: Do\u0161lo k intern\u00ed chyb\u011b. Do\u0161lo k pokusu o vytvo\u0159en\u00ed modulu listener v p\u0159ipojen\u00ed, kter\u00e9 bylo uzav\u0159eno.
+LISTENER_CLOSED_CWSIV0952.explanation=P\u0159ipojen\u00ed stroje syst\u00e9mu zpr\u00e1v obdr\u017eelo po\u017eadavek na vytvo\u0159en\u00ed modulu listener, ale ji\u017e bylo uzav\u0159eno.
+LISTENER_CLOSED_CWSIV0952.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+LISTENER_CLOSED_CWSIV0953=CWSIV0953E: Do\u0161lo k intern\u00ed chyb\u011b. Do\u0161lo k pokusu o vytvo\u0159en\u00ed dispe\u010dera pro p\u0159ipojen\u00ed, kter\u00e9 bylo uzav\u0159eno.
+LISTENER_CLOSED_CWSIV0953.explanation=P\u0159ipojen\u00ed stroje syst\u00e9mu zpr\u00e1v obdr\u017eelo po\u017eadavek na vytvo\u0159en\u00ed dispe\u010dera, ale ji\u017e bylo uzav\u0159eno.
+LISTENER_CLOSED_CWSIV0953.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the connection factory
+CREATE_CONNECTION_CWSIV0954=CWSIV0954E: Do\u0161lo k vyvol\u00e1n\u00ed v\u00fdjimky ov\u011b\u0159ov\u00e1n\u00ed {0} p\u0159i pokusu o vytvo\u0159en\u00ed p\u0159ipojen\u00ed u tov\u00e1rny {1}.
+CREATE_CONNECTION_CWSIV0954.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f se p\u0159i p\u0159ijet\u00ed v\u00fdjimky ov\u011b\u0159ov\u00e1n\u00ed pokou\u0161el o vytvo\u0159en\u00ed p\u0159ipojen\u00ed.
+CREATE_CONNECTION_CWSIV0954.useraction=Ov\u011b\u0159te, zda je ve specifikaci ActivationSpec, pro jej\u00ed\u017e pou\u017eit\u00ed je konfigurov\u00e1n objekt typu message-driven bean, zad\u00e1no spr\u00e1vn\u00e9 jm\u00e9no u\u017eivatele a heslo.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the messaging engine UUID
+CREATE_CONNECTION_CWSIV0955=CWSIV0955E: Do\u0161lo k vyvol\u00e1n\u00ed v\u00fdjimky ov\u011b\u0159ov\u00e1n\u00ed {0} p\u0159i pokusu o vytvo\u0159en\u00ed p\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v {1}.
+CREATE_CONNECTION_CWSIV0955.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f se p\u0159i p\u0159ijet\u00ed v\u00fdjimky ov\u011b\u0159ov\u00e1n\u00ed pokou\u0161el o vytvo\u0159en\u00ed p\u0159ipojen\u00ed.
+CREATE_CONNECTION_CWSIV0955.useraction=Ov\u011b\u0159te, zda je ve specifikaci ActivationSpec, pro jej\u00ed\u017e pou\u017eit\u00ed je konfigurov\u00e1n objekt typu message-driven bean, zad\u00e1no spr\u00e1vn\u00e9 jm\u00e9no u\u017eivatele a heslo.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+CREATE_CONNECTION_CWSIV0957=CWSIV0957E: Do\u0161lo k vyvol\u00e1n\u00ed v\u00fdjimky ov\u011b\u0159ov\u00e1n\u00ed {0} p\u0159i pokusu o z\u00edsk\u00e1n\u00ed subjektu serveru WebSphere Application Server.
+CREATE_CONNECTION_CWSIV0957.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f se pokou\u0161el o vytvo\u0159en\u00ed p\u0159ipojen\u00ed s pou\u017eit\u00edm subjektu serveru, nepoda\u0159ilo se mu v\u0161ak subjekt z\u00edskat.
+CREATE_CONNECTION_CWSIV0957.useraction=Ov\u011b\u0159te, zda jsou nastaven\u00ed zabezpe\u010den\u00ed aplika\u010dn\u00edho serveru konfigurov\u00e1na spr\u00e1vn\u011b.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the messaging engine UUID
+# {2} the activation specification
+CREATE_CONNECTION_CWSIV0958=CWSIV0958E: Do\u0161lo k vyvol\u00e1n\u00ed v\u00fdjimky autorizace {0} p\u0159i pokusu o vytvo\u0159en\u00ed p\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v {1} s pou\u017eit\u00edm specifikace aktivace {2}.
+CREATE_CONNECTION_CWSIV0958.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f se p\u0159i p\u0159ijet\u00ed v\u00fdjimky autorizace pokou\u0161el o vytvo\u0159en\u00ed p\u0159ipojen\u00ed.
+CREATE_CONNECTION_CWSIV0958.useraction=Ov\u011b\u0159te, \u017ee je v r\u00e1mci specifikace aktivace nastaven spr\u00e1vn\u00fd alias ov\u011b\u0159ov\u00e1n\u00ed, pro jeho\u017e pou\u017e\u00edv\u00e1n\u00ed je objekt typu message-driven bean konfigurov\u00e1n.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the messaging engine UUID
+# {2} the activation specification
+CREATE_CONNECTION_CWSIV0959=CWSIV0959E: Do\u0161lo k vyvol\u00e1n\u00ed v\u00fdjimky autorizace {0} p\u0159i pokusu o vytvo\u0159en\u00ed p\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v {1} s pou\u017eit\u00edm specifikace aktivace {2}.
+CREATE_CONNECTION_CWSIV0959.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f se p\u0159i p\u0159ijet\u00ed v\u00fdjimky autorizace pokou\u0161el o vytvo\u0159en\u00ed p\u0159ipojen\u00ed.
+CREATE_CONNECTION_CWSIV0959.useraction=Ov\u011b\u0159te, zda je alias ov\u011b\u0159ov\u00e1n\u00ed v r\u00e1mci specifikace aktivace, pro jej\u00ed\u017e pou\u017e\u00edv\u00e1n\u00ed je objekt typu message-driven bean konfigurov\u00e1n, opr\u00e1vn\u011bn pro p\u0159ipojov\u00e1n\u00ed ke stroji zpr\u00e1v.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the bus name
+# {2} the activation specification
+CREATE_CONNECTION_CWSIV0960=CWSIV0960E: Do\u0161lo k vyvol\u00e1n\u00ed v\u00fdjimky autorizace {0} p\u0159i pokusu o vytvo\u0159en\u00ed p\u0159ipojen\u00ed ke sb\u011brnici {1} s pou\u017eit\u00edm specifikace aktivace {2}.
+CREATE_CONNECTION_CWSIV0960.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f se p\u0159i p\u0159ijet\u00ed v\u00fdjimky autorizace pokou\u0161el o vytvo\u0159en\u00ed p\u0159ipojen\u00ed.
+CREATE_CONNECTION_CWSIV0960.useraction=Ov\u011b\u0159te, \u017ee je v r\u00e1mci specifikace aktivace nastaven spr\u00e1vn\u00fd alias ov\u011b\u0159ov\u00e1n\u00ed, pro jeho\u017e pou\u017e\u00edv\u00e1n\u00ed je objekt typu message-driven bean konfigurov\u00e1n.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the bus name
+# {2} the activation specifcation
+CREATE_CONNECTION_CWSIV0961=CWSIV0961E: Do\u0161lo k vyvol\u00e1n\u00ed v\u00fdjimky autorizace {0} p\u0159i pokusu o vytvo\u0159en\u00ed p\u0159ipojen\u00ed ke sb\u011brnici {1} s pou\u017eit\u00edm specifikace aktivace {2}.
+CREATE_CONNECTION_CWSIV0961.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f se p\u0159i p\u0159ijet\u00ed v\u00fdjimky autorizace pokou\u0161el o vytvo\u0159en\u00ed p\u0159ipojen\u00ed.
+CREATE_CONNECTION_CWSIV0961.useraction=Ov\u011b\u0159te, zda je alias ov\u011b\u0159ov\u00e1n\u00ed v r\u00e1mci specifikace aktivace, pro jej\u00ed\u017e pou\u017e\u00edv\u00e1n\u00ed je objekt typu message-driven bean konfigurov\u00e1n, opr\u00e1vn\u011bn pro p\u0159ipojov\u00e1n\u00ed ke sb\u011brnici.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the bus name
+# {2} the activation specifcation
+CREATE_CONNECTION_CWSIV0962=CWSIV0962E: P\u0159i pokusu o nav\u00e1z\u00e1n\u00ed p\u0159ipojen\u00ed ke sb\u011brnici {1} s pou\u017eit\u00edm specifikace aktivace {2} do\u0161lo k v\u00fdjimce ov\u011b\u0159en\u00ed {0}.
+CREATE_CONNECTION_CWSIV0962.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edku se p\u0159i p\u0159ijet\u00ed v\u00fdjimky ov\u011b\u0159ov\u00e1n\u00ed pokou\u0161el o vytvo\u0159en\u00ed p\u0159ipojen\u00ed.
+CREATE_CONNECTION_CWSIV0962.useraction=Ov\u011b\u0159te, zda je alias ov\u011b\u0159ov\u00e1n\u00ed v r\u00e1mci specifikace aktivace, pro jej\u00ed\u017e pou\u017e\u00edv\u00e1n\u00ed je objekt typu message-driven bean nakonfigurov\u00e1n, ov\u011b\u0159en pro p\u0159ipojov\u00e1n\u00ed ke sb\u011brnici.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint factory passed
+# {1} the expected interface
+WAS_ENDPOINT_FACTORY_CWSIV1000=CWSIV1000E: Do\u0161lo k intern\u00ed chyb\u011b. Tov\u00e1rna koncov\u00e9ho bodu zpr\u00e1v {0} p\u0159edan\u00e1 do adapt\u00e9ru prost\u0159edk\u016f neimplementovala o\u010dek\u00e1van\u00e9 rozhran\u00ed {1}.
+WAS_ENDPOINT_FACTORY_CWSIV1000.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f vy\u017eaduje, aby tov\u00e1rna koncov\u00e9ho bodu zpr\u00e1v implementovala dan\u00e9 rozhran\u00ed s c\u00edlem z\u00edskat jedine\u010dn\u00fd n\u00e1zev objektu typu message-driven bean.
+WAS_ENDPOINT_FACTORY_CWSIV1000.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the request object passed
+# {1} the expected interface
+MSG_TOKEN_CWSIV1050=CWSIV1050E: Do\u0161lo k intern\u00ed chyb\u011b. Objekt po\u017eadavku {0} p\u0159edan\u00fd do adapt\u00e9ru prost\u0159edk\u016f neimplementoval o\u010dek\u00e1van\u00e9 rozhran\u00ed {1}.
+MSG_TOKEN_CWSIV1050.explanation=C\u00edl odbaven\u00ed p\u0159\u00edchoz\u00edho adapt\u00e9ru prost\u0159edk\u016f obdr\u017eel objekt po\u017eadavku, kter\u00fd nebyl o\u010dek\u00e1van\u00e9ho typu.
+MSG_TOKEN_CWSIV1050.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the session ID
+# {1} the messaging engine UUID
+# {2} the message handle
+# {3} the messages
+READ_SET_CWSIV1051=CWSIV1051E: Do\u0161lo k intern\u00ed chyb\u011b. Pole zpr\u00e1v {3} vr\u00e1cen\u00e9 pro manipul\u00e1tor zpr\u00e1vy {2} z relace {0} ve stroji syst\u00e9mu zpr\u00e1v {1} neobsahovalo jednu zpr\u00e1vu.
+READ_SET_CWSIV1051.explanation=C\u00edl odbaven\u00ed p\u0159\u00edchoz\u00edho adapt\u00e9ru prost\u0159edk\u016f nedostal zp\u011bt jednu zpr\u00e1vu v r\u00e1mci v\u00fdm\u011bny za dan\u00fd manipul\u00e1tor zpr\u00e1vy.
+READ_SET_CWSIV1051.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the session ID
+# {1} the messaging engine UUID
+# {2} the message handle
+# {3} the exception thrown
+EXCEPTION_CWSIV1052=CWSIV1052W: P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f obdr\u017eel v\u00fdjimku {3} p\u0159i zpracov\u00e1n\u00ed manipul\u00e1toru zpr\u00e1vy {2} z relace {0} ve stroji syst\u00e9mu zpr\u00e1v {1}.
+EXCEPTION_CWSIV1052.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f nedok\u00e1zal zpracovat dan\u00fd manipul\u00e1tor zpr\u00e1vy p\u0159ijat\u00fd z dodatku \u0159\u00eddic\u00ed oblasti.
+EXCEPTION_CWSIV1052.useraction=P\u0159\u00ed\u010dinu vyhledejte v podrobnostech o v\u00fdjimce. Pokus o doru\u010den\u00ed zpr\u00e1vy bude zopakov\u00e1n po vypr\u0161en\u00ed platnosti z\u00e1mku zpr\u00e1vy.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the j2eeName (MDB Name)
+NO_POOL_CWSIV1053=CWSIV1053E: Do\u0161lo k intern\u00ed chyb\u011b. P\u0159\u00edchoz\u00edmu adapt\u00e9ru prost\u0159edk\u016f se nepoda\u0159ilo naj\u00edt fond aktivac\u00ed koncov\u00fdch bod\u016f pro {0}, tak\u017ee nemohl na\u010d\u00edst aktivaci koncov\u00e9ho bodu.
+NO_POOL_CWSIV1053.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f nedok\u00e1zal z fondu z\u00edskat aktivaci koncov\u00e9ho bodu, proto\u017ee nemohl fond naj\u00edt.
+NO_POOL_CWSIV1053.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the locked message enumeration
+RETRIEVE_MESSAGES_CWSIV1100=CWSIV1100E: Do\u0161lo k intern\u00ed chyb\u011b. Do\u0161lo k vyvol\u00e1n\u00ed v\u00fdjimky {0} p\u0159i pokusu o z\u00edsk\u00e1n\u00ed zpr\u00e1v z v\u00fd\u010dtu {1}.
+RETRIEVE_MESSAGES_CWSIV1100.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f se p\u0159i p\u0159ijet\u00ed neo\u010dek\u00e1van\u00e9 v\u00fdjimky pokou\u0161el o na\u010dten\u00ed zpr\u00e1v z v\u00fd\u010dtu.
+RETRIEVE_MESSAGES_CWSIV1100.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the value it used to be
+# {1} the new value
+MAXCONCURRENCY_CONFIG_VALUE_CHANGED_CWSIV1101=CWSIV1101W: Konfigura\u010dn\u00ed hodnota maxim\u00e1ln\u00ed soub\u011b\u017enosti objekt\u016f typu bean \u0159\u00edzen\u00fdch zpr\u00e1vami byla zm\u011bn\u011bna z hodnoty {0} na hodnotu {1}.
+MAXCONCURRENCY_CONFIG_VALUE_CHANGED_CWSIV1101.explanation=Hodnota maxim\u00e1ln\u00ed soub\u011b\u017enosti byla zm\u011bn\u011bna, proto\u017ee bylo zapnuto striktn\u00ed \u0159azen\u00ed zpr\u00e1v.
+MAXCONCURRENCY_CONFIG_VALUE_CHANGED_CWSIV1101.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce, nejsou-li po\u017eadov\u00e1ny soub\u011b\u017en\u00e9 objekty typu message-driven bean. V takov\u00e9m p\u0159\u00edpad\u011b vypn\u011bte striktn\u00ed \u0159azen\u00ed zpr\u00e1v.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the locked message enumeration
+RETRIEVE_MESSAGES_CWSIV1150=CWSIV1150E: Do\u0161lo k intern\u00ed chyb\u011b. Do\u0161lo k vyvol\u00e1n\u00ed v\u00fdjimky {0} p\u0159i pokusu o z\u00edsk\u00e1n\u00ed zpr\u00e1v z v\u00fd\u010dtu {1}.
+RETRIEVE_MESSAGES_CWSIV1150.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f se p\u0159i p\u0159ijet\u00ed neo\u010dek\u00e1van\u00e9 v\u00fdjimky pokou\u0161el o na\u010dten\u00ed zpr\u00e1v z v\u00fd\u010dtu.
+RETRIEVE_MESSAGES_CWSIV1150.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the session
+# {1} the connection
+GET_ID_CWSIV1151=CWSIV1151E: Do\u0161lo k intern\u00ed chyb\u011b. Do\u0161lo k vyvol\u00e1n\u00ed v\u00fdjimky {0} p\u0159i pokusu o z\u00edsk\u00e1n\u00ed identifik\u00e1toru pro relaci {0} vytvo\u0159enou z p\u0159ipojen\u00ed {1}.
+GET_ID_CWSIV1151.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f se p\u0159i p\u0159ijet\u00ed neo\u010dek\u00e1van\u00e9 v\u00fdjimky pokou\u0161el o z\u00edsk\u00e1n\u00ed identifik\u00e1toru pro relaci.
+GET_ID_CWSIV1151.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint factory passed
+# {1} the expected interface
+WAS_ENDPOINT_FACTORY_CWSIV1152=CWSIV1152E: Do\u0161lo k intern\u00ed chyb\u011b. Tov\u00e1rna koncov\u00e9ho bodu zpr\u00e1v {0} p\u0159edan\u00e1 do adapt\u00e9ru prost\u0159edk\u016f neimplementovala o\u010dek\u00e1van\u00e9 rozhran\u00ed {1}.
+WAS_ENDPOINT_FACTORY_CWSIV1152.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f vy\u017eaduje, aby tov\u00e1rna koncov\u00e9ho bodu zpr\u00e1v implementovala dan\u00e9 rozhran\u00ed s c\u00edlem z\u00edskat jedine\u010dn\u00fd n\u00e1zev objektu typu message-driven bean.
+WAS_ENDPOINT_FACTORY_CWSIV1152.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The default value for message lock expiry.
+UNABLE_TO_LOCATE_SERVER_CWSIV1153=CWSIV1153W: Nelze \u010d\u00edst p\u0159izp\u016fsobenou vlastnost MessageLockExpiry, proto\u017ee syst\u00e9m zpr\u00e1v platformy nemohl vyhledat server. Bude pou\u017eita v\u00fdchoz\u00ed hodnota {0}.
+UNABLE_TO_LOCATE_SERVER_CWSIV1153.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f nemohl naj\u00edt server, a vlastnosti MessageLockExpiry byla proto p\u0159i\u0159azena v\u00fdchoz\u00ed hodnota.
+UNABLE_TO_LOCATE_SERVER_CWSIV1153.useraction=CMSG0002
+
+#
+# {0} The value the message lock expiry was set to
+# {1} The default value for message lock expiry.
+INVALID_MESSAGELOCKEXPIRY_CWSIV1154=CWSIV1154W: Hodnota pro vlastnost MessageLockExpiry je pravd\u011bpodobn\u011b {0}. Tuto hodnotu nelze p\u0159ev\u00e9st na cel\u00e9 \u010d\u00edslo. Bude pou\u017eita v\u00fdchoz\u00ed hodnota {1}.
+INVALID_MESSAGELOCKEXPIRY_CWSIV1154.explanation=P\u0159i \u010dten\u00ed hodnoty pro vlastnost MessageLockExpiry se nepoda\u0159ilo p\u0159ev\u00e9st hodnotu na cel\u00e9 \u010d\u00edslo.
+INVALID_MESSAGELOCKEXPIRY_CWSIV1154.useraction=Ov\u011b\u0159te, zda je hodnota p\u0159i\u0159azen\u00e1 p\u0159izp\u016fsoben\u00e9 vlastnosti MessageLockExpiry cel\u00e9 \u010d\u00edslo. Zm\u011bny se projev\u00ed a\u017e po restartov\u00e1n\u00ed serveru.
+
+#
+# {0} The value the message lock expiry was set to
+# {1} The default value for message lock expiry.
+NEGATIVE_MESSAGELOCKEXPIRY_CWSIV1155=CWSIV1155W: Hodnota pro vlastnost MessageLockExpiry je pravd\u011bpodobn\u011b {0}. Tato hodnota nem\u016f\u017ee b\u00fdt z\u00e1porn\u00e1. Bude pou\u017eita v\u00fdchoz\u00ed hodnota {1}.
+NEGATIVE_MESSAGELOCKEXPIRY_CWSIV1155.explanation=Pro \u010das vypr\u0161en\u00ed platnosti z\u00e1mku zpr\u00e1vy nejsou povoleny z\u00e1porn\u00e9 hodnoty.
+NEGATIVE_MESSAGELOCKEXPIRY_CWSIV1155.useraction=Ov\u011b\u0159te, zda je hodnota p\u0159i\u0159azen\u00e1 p\u0159izp\u016fsoben\u00e9 vlastnosti MessageLockExpiry kladn\u00e1 nebo nula, pot\u00e9 restartujte server, aby se zm\u011bny projevily.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the endpoint on which beforeDelivery is being invoked
+BEFORE_DELIVERY_CWSIV1200=CWSIV1200E: Do\u0161lo k intern\u00ed chyb\u011b. Byla p\u0159ijata v\u00fdjimka {0} p\u0159i pokusu o vyvol\u00e1n\u00ed metody beforeDelivery u koncov\u00e9ho bodu {1}.
+BEFORE_DELIVERY_CWSIV1200.explanation=Adapt\u00e9r prost\u0159edk\u016f p\u0159ijal v\u00fdjimku p\u0159i pokusu o vyvol\u00e1n\u00ed metody beforeDelivery u koncov\u00e9ho bodu p\u0159ed vol\u00e1n\u00edm metody onMessage.
+BEFORE_DELIVERY_CWSIV1200.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection on which the create was attempted
+# {1} the exception thrown
+UNCOORD_TRAN_CWSIV1201=CWSIV1201E: Do\u0161lo k intern\u00ed chyb\u011b. Byla p\u0159ijata v\u00fdjimka {1} p\u0159i pokusu o vytvo\u0159en\u00ed nekoordinovan\u00e9 transakce u p\u0159ipojen\u00ed {0}.
+UNCOORD_TRAN_CWSIV1201.explanation=Adapt\u00e9r prost\u0159edk\u016f p\u0159ijal v\u00fdjimku p\u0159i pokusu o vytvo\u0159en\u00ed nekoordinovan\u00e9 transakce v r\u00e1mci dan\u00e9ho p\u0159ipojen\u00ed.
+UNCOORD_TRAN_CWSIV1201.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the synchronization that was being registered
+# {1} the exception thrown
+REGISTER_SYNC_CWSIV1202=CWSIV1202E: Do\u0161lo k intern\u00ed chyb\u011b. Byla p\u0159ijata v\u00fdjimka {1} p\u0159i pokusu o registraci synchronizace {0}.
+REGISTER_SYNC_CWSIV1202.explanation=Adapt\u00e9r prost\u0159edk\u016f p\u0159ijal v\u00fdjimku p\u0159i pokusu o registraci dan\u00e9 synchronizace pomoc\u00ed spr\u00e1vce transakc\u00ed.
+REGISTER_SYNC_CWSIV1202.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the transaction
+# {1} the expected interface
+SYNC_CWSIV1203=CWSIV1203E: Transakce {0} vr\u00e1cen\u00e1 z p\u0159ipojen\u00ed neimplementovala o\u010dek\u00e1van\u00e9 rozhran\u00ed {1}.
+SYNC_CWSIV1203.explanation=P\u0159\u00edchoz\u00ed adapt\u00e9r prost\u0159edk\u016f vy\u017eaduje, aby nekoordinovan\u00e1 transakce implementovala dan\u00e9 rozhran\u00ed s c\u00edlem prov\u00e9st optimalizaci s jednof\u00e1zov\u00fdm potvrzen\u00edm.
+SYNC_CWSIV1203.useraction=Ov\u011b\u0159te, zda je syst\u00e9m spr\u00e1vn\u011b konfigurov\u00e1n, aby bylo mo\u017en\u00e9 vyu\u017e\u00edt optimalizace s jednof\u00e1zov\u00fdm potvrzen\u00edm mezi strojem syst\u00e9mu zpr\u00e1v a datab\u00e1z\u00ed p\u0159i sou\u010dasn\u00e9m pou\u017eit\u00ed objekt\u016f entity bean, kter\u00e9 pou\u017e\u00edvaj\u00ed perzistenci spravovanou kontejnerem.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The object name
+# {1} The method name
+NULL_XA_RESOURCE_CWSIV1210=CWSIV1210E: Do\u0161lo k intern\u00ed chyb\u011b, metod\u011b {1} objektu {0} byla p\u0159ed\u00e1na hodnota Null. Je t\u0159eba p\u0159edat platn\u00fd prost\u0159edek XAResource.
+NULL_XA_RESOURCE_CWSIV1210.explanation=CMSG0001
+NULL_XA_RESOURCE_CWSIV1210.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIV9999=CWSIV9999E: {0}
+TEMPORARY_CWSIV9999.explanation=Pokud zpr\u00e1va neposkytuje dostate\u010dn\u00e9 informace, zkuste vyhledat dal\u0161\u00ed informace v okoln\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch.
+TEMPORARY_CWSIV9999.useraction=Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch.
+

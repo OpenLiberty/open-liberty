@@ -19,7 +19,7 @@ src: \
 javac.source: 1.8
 javac.target: 1.8
 	
-test.project: true
+fat.project: true
 
 -buildpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

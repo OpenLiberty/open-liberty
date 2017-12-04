@@ -1,0 +1,218 @@
+###############################################################################
+# Copyright (c) 2011, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.war/resources/com/ibm/ws/app/manager/war/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKZ
+#COMPONENTNAMEFOR CWWKZ Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+# Reserving message prefixes CWWKZ0101 to CWWKZ0200
+
+# Now unused, but preserved for the Infocenter:
+#   error.file.copy.failed
+#   error.ear.extraction.exception
+#   error.ear.extraction.failed
+#   error.dir.creation.failed
+#   error.bundle.context.unavailable
+#{0} is source file name 
+#{1} is destination file name 
+#{2} is application name
+error.file.copy.failed=CWWKZ0101E: El archivo {0} no se ha podido copiar en la ubicaci\u00f3n {1} durante el inicio de la aplicaci\u00f3n {2}. 
+error.file.copy.failed.explanation=Antes de que se inicie la aplicaci\u00f3n, el archivo de aplicaci\u00f3n se copia en una nueva ubicaci\u00f3n. Ha fallado la operaci\u00f3n de copia de archivo, por lo que la aplicaci\u00f3n no se ha iniciado.
+error.file.copy.failed.useraction=Examine las ubicaciones del archivo de origen y destino para ver si el problema se puede resolver.
+
+#{0} is ear file name
+#{1} is extract destination
+#{2} is exception message
+error.ear.extraction.exception=CWWKZ0102E: El archivo ear {0} no se ha podido extraer en la ubicaci\u00f3n {1}. El mensaje de la excepci\u00f3n es: {2}
+error.ear.extraction.exception.explanation=El servidor no ha podido iniciar la aplicaci\u00f3n porque no se ha podido extraer el archivo ear.
+error.ear.extraction.exception.useraction=Lea el mensaje de excepci\u00f3n para obtener m\u00e1s informaci\u00f3n.  Puede haber detalles adicionales disponibles en el registro de excepciones.
+
+#{0} is ear file name
+#{1} is extract destination
+error.ear.extraction.failed=CWWKZ0103E: El archivo ear {0} no se ha podido extraer en la ubicaci\u00f3n {1}. 
+error.ear.extraction.failed.explanation=El servidor no ha podido iniciar la aplicaci\u00f3n porque no se ha podido extraer el archivo ear.
+error.ear.extraction.failed.useraction=Examine el archivo ear para asegurarse de que es un archivo v\u00e1lido.
+
+#{0} is directory name
+#{1} is application name
+error.dir.creation.failed=CWWKZ0104E: El directorio {0} no se ha podido crear durante el inicio de la aplicaci\u00f3n {1}.
+error.dir.creation.failed.explanation=Antes de iniciarse la aplicaci\u00f3n, se crea un directorio. Ha fallado la operaci\u00f3n de creaci\u00f3n de directorio, por lo que la aplicaci\u00f3n no se ha iniciado.
+error.dir.creation.failed.useraction=Examine la ubicaci\u00f3n del directorio para ver si el problema se puede resolver.
+
+#{0} is application name
+error.bundle.context.unavailable=CWWKZ0105E: El contexto de paquete no estaba disponible para iniciar la aplicaci\u00f3n {0}.
+error.bundle.context.unavailable.explanation=El servidor no ha podido iniciar la aplicaci\u00f3n.  Esto puede deberse a un error interno.
+error.bundle.context.unavailable.useraction=Examine los registros de mensajes y de excepci\u00f3n para buscar errores relacionados.
+
+# Leaving these (for now); there are catch points which seem
+# to have uses for them.
+#   error.not.installed
+#   error.cache.adapt
+
+#{0} is the application name
+error.not.installed=CWWKZ0106E: No se ha podido iniciar la aplicaci\u00f3n web {0}.
+error.not.installed.explanation=Un error anterior ha impedido la instalaci\u00f3n de la aplicaci\u00f3n.
+error.not.installed.useraction=Compruebe la ubicaci\u00f3n en la configuraci\u00f3n de la aplicaci\u00f3n.
+
+# RESERVED: CWWKZ0107E is used by com.ibm.ws.app.manager.module
+error.cache.adapt=CWWKZ0107E: Se ha producido un error interno. No se ha podido adaptar la memoria cach\u00e9 para el m\u00f3dulo web {0}.
+error.cache.adapt.explanation=CMSG0001
+error.cache.adapt.useraction=CMSG0002
+
+# RESERVED: CWWKZ0108E is used by com.ibm.ws.app.manager.module
+
+# Added by task 73569:
+#
+# The codes for modules types are current (WAR, EJB).  These are untranslated text values
+# used to indicate the type of the module which is being processed.  The type corresponds to
+# the archive, not to the presence of function within the module.
+
+#{0} is the application name
+#{1} is the library relative path
+#{2} is the exception message
+error.application.library.container=CWWKZ0111E: La aplicaci\u00f3n {0} ha encontrado un error al acceder a la biblioteca de la aplicaci\u00f3n {1}: {2}
+error.application.library.container.explanation=Se ha producido un error interno al acceder al contenido de la biblioteca.  Esta biblioteca no est\u00e1 disponible para su uso.
+error.application.library.container.useraction=Revise el contenido de la aplicaci\u00f3n para asegurarse de que un archivo est\u00e9 presente para la biblioteca.
+
+#{0} is the application name
+#{1} is the exception message
+error.application.libraries=CWWKZ0112E: La aplicaci\u00f3n {0} ha encontrado un error al listar las bibliotecas de la aplicaci\u00f3n: {1}
+error.application.libraries.explanation=Se ha producido un error al listar las bibliotecas de la aplicaci\u00f3n.  La lista de bibliotecas de la aplicaci\u00f3n ser\u00e1 incompleta.
+error.application.libraries.useraction=Consulte la informaci\u00f3n de la excepci\u00f3n para obtener detalles adicionales.
+
+#{0} is the application name
+#{1} is the relative path to the application descriptor
+#{2} is the exception message
+error.application.parse.descriptor=CWWKZ0113E: La aplicaci\u00f3n {0} ha encontrado un error de an\u00e1lisis al procesar el descriptor de la aplicaci\u00f3n {1}: {2}
+error.application.parse.descriptor.explanation=Se ha producido un error al analizar el descriptor de la aplicaci\u00f3n.  No hay m\u00f3dulos disponibles para la aplicaci\u00f3n.
+error.application.parse.descriptor.useraction=Consulte la informaci\u00f3n de la excepci\u00f3n para obtener detalles adicionales.  Revise el contenido del descriptor de la aplicaci\u00f3n para asegurarse de que el contenido es v\u00e1lido como datos XML.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+#{3} is the exception message
+error.module.container=CWWKZ0114E: La aplicaci\u00f3n {0} ha encontrado un error al acceder al contenido del m\u00f3dulo {1} de tipo {2}: {3}
+error.module.container.explanation=Se ha producido un error interno al acceder al contenido del m\u00f3dulo.  El m\u00f3dulo no estar\u00e1 disponible para su uso.
+error.module.container.useraction=Consulte la informaci\u00f3n de la excepci\u00f3n para obtener detalles adicionales.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+error.module.container.null=CWWKZ0115E: La aplicaci\u00f3n {0} ha obtenido un valor nulo al acceder al contenido del m\u00f3dulo candidato {1} de tipo {2}
+error.module.container.null.explanation=Se ha producido un error interno al acceder al contenido del m\u00f3dulo.  Puede que a la aplicaci\u00f3n le falte un archivo para el m\u00f3dulo.  El m\u00f3dulo no estar\u00e1 disponible para su uso.
+error.module.container.null.useraction=Revise el contenido de la aplicaci\u00f3n para asegurarse de que un archivo est\u00e9 presente para el m\u00f3dulo.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+#{3} is the exception message
+error.module.create=CWWKZ0116E: La aplicaci\u00f3n {0} no ha podido finalizar la creaci\u00f3n del m\u00f3dulo {1} de tipo {2}: {3}
+error.module.create.explanation=Se ha producido un error interno al finalizar la creaci\u00f3n de un m\u00f3dulo.  El m\u00f3dulo no estar\u00e1 disponible para su uso.
+error.module.create.useraction=Consulte la informaci\u00f3n de la excepci\u00f3n para obtener detalles adicionales.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+error.module.locate.failed=CWWKZ0117E: La aplicaci\u00f3n {0} no ha podido encontrar el m\u00f3dulo {1} de tipo {2}
+error.module.locate.failed.explanation=No hay ning\u00fan archivo archivador disponible para un m\u00f3dulo listado en el descriptor de la aplicaci\u00f3n.  El m\u00f3dulo no estar\u00e1 disponible para su uso.
+error.module.locate.failed.useraction=Consulte la informaci\u00f3n de la excepci\u00f3n para obtener detalles adicionales.  Revise el contenido de la aplicaci\u00f3n para asegurarse de que un archivo est\u00e9 presente para el m\u00f3dulo.
+
+#{0} is the application name
+#{1} is the descriptor relative path
+#{2} is the module relative path
+#{3} is a code for the module type (WAR, EJB)
+#{4} is the exception message
+error.module.parse.descriptor=CWWKZ0118E: La aplicaci\u00f3n {0} ha  encontrado un error de an\u00e1lisis al procesar el descriptor {1} del m\u00f3dulo {2} de tipo {3}: {4}
+error.module.parse.descriptor.explanation=Se ha producido un error al analizar el descriptor de despliegue del m\u00f3dulo.  El m\u00f3dulo no estar\u00e1 disponible para su uso.
+error.module.parse.descriptor.useraction=Consulte la informaci\u00f3n de la excepci\u00f3n para obtener detalles adicionales.  Revise el contenido del descriptor de la aplicaci\u00f3n para asegurarse de que el contenido es v\u00e1lido como datos XML.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+#{3} is the exception message
+error.module.class.source=CWWKZ0120E: La aplicaci\u00f3n {0} no ha podido acceder a las clases para el m\u00f3dulo {1} de tipo {2}: {3}
+error.module.class.source.explanation=Se ha producido un error interno al intentar explorar un archivo JAR para anotaciones EJB.  JAR no estar\u00e1 disponible como JAR de EJB.
+error.module.class.source.useraction=Consulte la informaci\u00f3n de la excepci\u00f3n para obtener detalles adicionales.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+#{3} is the exception message
+error.module.annotation.targets=CWWKZ0121E: La aplicaci\u00f3n {0} no ha podido acceder a las anotaciones para el m\u00f3dulo {1} de tipo {2}: {3}
+error.module.annotation.targets.explanation=Se ha producido un error interno al intentar explorar un archivo JAR para anotaciones EJB.  JAR no estar\u00e1 disponible como JAR de EJB.
+error.module.annotation.targets.useraction=Consulte la informaci\u00f3n de la excepci\u00f3n para obtener detalles adicionales.
+
+#{0} is the application name
+#{1} is the module relative path
+error.module.uri.duplicate=CWWKZ0122W: La aplicaci\u00f3n {0} declara varios m\u00f3dulos con el URI {1} en META-INF/application.xml.
+error.module.uri.duplicate.explanation=Varios m\u00f3dulos apuntan al mismo archivo.  S\u00f3lo un m\u00f3dulo estar\u00e1 disponible para su uso.
+error.module.uri.duplicate.useraction=Revise el contenido del descriptor de la aplicaci\u00f3n para asegurarse de que cada m\u00f3dulo apunta a un \u00fanico archivo.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is the exception message
+error.module.manifest.read.failed=CWWKZ0123E: La aplicaci\u00f3n {0} no ha podido leer el archivo META-INF/MANIFEST.MF para el m\u00f3dulo {1}. Excepci\u00f3n: {2}
+error.module.manifest.read.failed.explanation=Al intentar determinar si el m\u00f3dulo es un EJB o un m\u00f3dulo de cliente de aplicaciones, se ha producido un error al intentar leer el archivo META-INF/MANIFEST.MF. Este m\u00f3dulo no se tratar\u00e1 como un m\u00f3dulo de cliente de aplicaciones.
+error.module.manifest.read.failed.useraction=Consulte la informaci\u00f3n de la excepci\u00f3n para obtener detalles adicionales. Revise el contenido de la aplicaci\u00f3n para comprobar que la v\u00eda de acceso de META-INF/MANIFEST.MF es un archivo y no un directorio, y aseg\u00farese de que el archivo MANIFEST.MF sea v\u00e1lido. 
+
+#{0} is the application name
+error.no.modules=CWWKZ0124E: La aplicaci\u00f3n {0} no contiene ning\u00fan m\u00f3dulo.
+error.no.modules.explanation=La aplicaci\u00f3n no declara ning\u00fan m\u00f3dulo en el archivo application.xml y la aplicaci\u00f3n no contiene ning\u00fan archivo de archivado de m\u00f3dulo.
+error.no.modules.useraction=A\u00f1ada un archivo de archivado de m\u00f3dulo a la aplicaci\u00f3n y reinicie la aplicaci\u00f3n.
+
+#{0} is the application name
+#{1} is the module relative path
+error.module.manifest.read.no.mainclass=CWWKZ0125E: La aplicaci\u00f3n {0} no contiene el atributo Main-Class en el archivo META-INF/MANIFEST.MF del m\u00f3dulo {1}.
+error.module.manifest.read.no.mainclass.explanation=El archivo META-INF/MANIFEST.MF del m\u00f3dulo no existe o no contiene el atributo Main-Class. Este m\u00f3dulo no se tratar\u00e1 como un m\u00f3dulo de cliente de aplicaciones.
+error.module.manifest.read.no.mainclass.useraction=Aseg\u00farese de que el archivo META-INF/MANIFEST.MF para la aplicaci\u00f3n contiene el atributo Main-Class. 
+
+#{0} is the context root specified in server.xml on the application element
+#{1} is the name of the application where context-root is specified
+warning.context.root.not.used=CWWKZ0126W:  El valor de ra\u00edz de contexto {0} que se ha especificado en la aplicaci\u00f3n {1} no tiene ning\u00fan efecto.
+warning.context.root.not.used.explanation=La propiedad context-root no es v\u00e1lida para una aplicaci\u00f3n empresarial. El valor no se utilizar\u00e1 para los m\u00f3dulos web contenidos dentro de la aplicaci\u00f3n de empresa.
+warning.context.root.not.used.useraction=Elimine la propiedad context-root del elemento aplication en la configuraci\u00f3n del servidor. 
+
+error.module.no.defaultclient=CWWKZ0127E: Hay varios m\u00f3dulos de cliente en la aplicaci\u00f3n. Proporcione el nombre del m\u00f3dulo de cliente predeterminado.
+error.module.no.defaultclient.explanation=Si hay varios m\u00f3dulos de cliente empaquetados en la aplicaci\u00f3n, proporcione el nombre del m\u00f3dulo de cliente a ejecutar.
+error.module.no.defaultclient.useraction=Especifique el m\u00f3dulo de cliente a ejecutar proporcionando su nombre utilizando el atributo defaultClientModule en <enterpriseApplication/>.
+
+error.module.dup.client=CWWKZ0128E: Hay varios m\u00f3dulos de cliente con el mismo nombre {0}.
+error.module.dup.client.explanation=Hay varios m\u00f3dulos de cliente y algunos de ellos est\u00e1n utilizando el mismo nombre.
+error.module.dup.client.useraction=Proporcione nombres exclusivos para los m\u00f3dulos de cliente en la aplicaci\u00f3n.
+
+error.module.client.notfound=CWWKZ0129E: No se puede encontrar el m\u00f3dulo de cliente {0} en la aplicaci\u00f3n.
+error.module.client.notfound.explanation=El m\u00f3dulo de cliente especificado no existe en la aplicaci\u00f3n.
+error.module.client.notfound.useraction=Aseg\u00farese de que el m\u00f3dulo de cliente exista en la aplicaci\u00f3n.
+
+#{0} is the application name
+error.client.not.installed=CWWKZ0130E: No se ha podido iniciar el cliente de aplicaci\u00f3n {0}.
+error.client.not.installed.explanation=Un error anterior ha impedido la instalaci\u00f3n de la aplicaci\u00f3n.
+error.client.not.installed.useraction=Compruebe la ubicaci\u00f3n en la configuraci\u00f3n de la aplicaci\u00f3n.
+
+#{0} is the application name, {1} is the exception (likely disk space, write permissions, file lock, or some other IO issue.) 
+warning.could.not.expand.application=CWWKZ0131W: No se ha podido expandir la aplicaci\u00f3n {0} debido a la excepci\u00f3n {1}.
+warning.could.not.expand.application.explanation=La aplicaci\u00f3n no se ha podido expandir en un directorio temporal. La aplicaci\u00f3n continuar\u00e1 ejecut\u00e1ndose, pero el comportamiento de determinados m\u00e9todos que acceden a los archivos de la aplicaci\u00f3n pueden verse afectado. 
+warning.could.not.expand.application.useraction=Intente resolver el problema en el mensaje de la excepci\u00f3n y reinicie el servidor o actualice la aplicaci\u00f3n. 

@@ -1,0 +1,28 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.auth.data/resources/com/ibm/ws/security/auth/data/internal/resources/AuthDataMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Authentication Data
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS1350 - CWWKS1399
+# Do not translate DefaultPrincipalMapping, JAAS, HashMap, and WSMappingCallbackHandler.
+MISSING_MAP_IN_CALLBACK_WSMAPPINGCALLBAKHANDLER=CWWKS1350E: Die programmgesteuerte JAAS-Anmeldung mit DefaultPrincipalMapping kann nicht durchgef\u00fchrt werden, weil der WSMappingCallbackHandler ohne das HashMap-Objekt f\u00fcr die Zuordnungseigenschaften erstellt wurde.
+MISSING_MAP_IN_CALLBACK_WSMAPPINGCALLBAKHANDLER.explanation=Der f\u00fcr die Durchf\u00fchrung der programmgesteuerten JAAS-Anmeldung mit DefaultPrincipalMapping verwendete DefaultPrincipalMapping enth\u00e4lt keinen Parameter java.util.Map.
+MISSING_MAP_IN_CALLBACK_WSMAPPINGCALLBAKHANDLER.useraction=Vergewissern Sie sich, dass die Anwendung, die die programmgesteuerte JAAS-Anmeldung mit DefaultPrincipalMapping durchf\u00fchrt, den WSMappingCallbackHandler mit einer java.util.Map-Instanz erstellt.
+
+# Do not translate DefaultPrincipalMapping, JAAS, HashMap, WSMappingCallbackHandler, and com.ibm.wsspi.security.auth.callback.Constants.MAPPING_ALIAS.
+MISSING_MAPPING_ALIAS_IN_CALLBACK_WSMAPPINGCALLBAKHANDLER=CWWKS1351E: Die programmgesteuerte JAAS-Anmeldung mit DefaultPrincipalMapping kann nicht durchgef\u00fchrt werden, weil der com.ibm.wsspi.security.auth.callback.Constants.MAPPING_ALIAS-Eintrag nicht im HashMap-Objekt f\u00fcr die Zuordnungseigenschaften gefunden wurde.
+MISSING_MAPPING_ALIAS_IN_CALLBACK_WSMAPPINGCALLBAKHANDLER.explanation=Der Parameter java.util.Map des f\u00fcr die Durchf\u00fchrung der programmgesteuerten JAAS-Anmeldung mit DefaultPrincipalMapping verwendeten WSMappingCallbackHandler enth\u00e4lt keinen Wert f\u00fcr den com.ibm.wsspi.security.auth.callback.Constants.MAPPING_ALIAS-Eintrag.
+MISSING_MAPPING_ALIAS_IN_CALLBACK_WSMAPPINGCALLBAKHANDLER.useraction=Vergewissern Sie sich, dass die Anwendung, die die programmgesteuerte JAAS-Anmeldung mit DefaultPrincipalMapping durchf\u00fchrt, den WSMappingCallbackHandler mit einer java.util.Map-Instanz erstellt, die einen Wert f\u00fcr den com.ibm.wsspi.security.auth.callback.Constants.MAPPING_ALIAS-Eintrag enth\u00e4lt.

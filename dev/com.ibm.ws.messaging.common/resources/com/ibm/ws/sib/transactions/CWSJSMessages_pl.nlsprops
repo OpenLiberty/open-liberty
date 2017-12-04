@@ -1,0 +1,107 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.transactions.CWSJSMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_SInn0000=CWSIG0001I: This is a message with insert {0}
+# MSG_DESCRIPTIVE_NAME_SInn0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_SInn0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.messaging.common/resources/com/ibm/ws/sib/transactions/CWSJSMessages.nlsprops
+#COMPONENTPREFIX CWSJS
+#COMPONENTNAMEFOR CWSJS transactions
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+INTERNAL_ERROR_CWSJS0001=CWSJS0001E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
+INTERNAL_ERROR_CWSJS0001.explanation=CMSG0001
+INTERNAL_ERROR_CWSJS0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the exception thrown
+LOCALTX_FAIL_CWSJS0002=CWSJS0002E: Wyst\u0105pi\u0142 wyj\u0105tek {0} podczas przetwarzania operacji transakcyjnej, dlatego operacja nie powiod\u0142a si\u0119.
+LOCALTX_FAIL_CWSJS0002.explanation=Wyst\u0105pi\u0142 okre\u015blony wyj\u0105tek podczas przetwarzania operacji transakcyjnej.  Z powodu wyj\u0105tku operacja transakcyjna nie powiod\u0142a si\u0119.
+LOCALTX_FAIL_CWSJS0002.useraction=Sprawd\u017a przyczyn\u0119 wyj\u0105tku.
+
+# -------------------------------------------------------------------------------------------------
+DUPLICATE_COMPLETE_CWSJS0003=CWSJS0003E: Podj\u0119to pr\u00f3b\u0119 zako\u0144czenia transakcji lokalnej, kt\u00f3ra zosta\u0142a ju\u017c zako\u0144czona.
+DUPLICATE_COMPLETE_CWSJS0003.explanation=Wywo\u0142ano metod\u0119 commit lub rollback lokalnej transakcji po zako\u0144czeniu tej transakcji.
+DUPLICATE_COMPLETE_CWSJS0003.useraction=Unikaj wielokrotnych pr\u00f3b zako\u0144czenia transakcji.
+
+# -------------------------------------------------------------------------------------------------
+LOCAL_ENLIST_INTO_COMPLETED_CWSJS0004=CWSJS0004E: Podj\u0119to pr\u00f3b\u0119 wykonania operacji w zasi\u0119gu zako\u0144czonej transakcji lokalnej.
+LOCAL_ENLIST_INTO_COMPLETED_CWSJS0004.explanation=Podj\u0119to pr\u00f3b\u0119 wykonania odtwarzalnej akcji przy u\u017cyciu transakcji lokalnej, kt\u00f3ra zosta\u0142a ju\u017c zatwierdzona lub wycofana.
+LOCAL_ENLIST_INTO_COMPLETED_CWSJS0004.useraction=Nie nale\u017cy wykonywa\u0107 nowych operacji transakcyjnych w zasi\u0119gu transakcji, kt\u00f3ra zosta\u0142a ju\u017c zako\u0144czona.
+
+# -------------------------------------------------------------------------------------------------
+GLOBAL_ENLIST_NO_TX_CWSJS0005=CWSJS0005E: Podj\u0119to pr\u00f3b\u0119 wykonania operacji przy u\u017cyciu niezarejestrowanego zasobu XAResource. 
+GLOBAL_ENLIST_NO_TX_CWSJS0005.explanation=Podj\u0119to pr\u00f3b\u0119 wykonania operacji transakcyjnej przy u\u017cyciu zasobu XAResource, kt\u00f3ry nie zosta\u0142 zarejestrowany w transakcji globalnej.
+GLOBAL_ENLIST_NO_TX_CWSJS0005.useraction=Nie nale\u017cy wykonywa\u0107 operacji transakcyjnych w zasi\u0119gu niezarejestrowanego zasobu XAResource.
+# -------------------------------------------------------------------------------------------------
+NO_CLASSPATH_CWSJS0006=CWSJS0006E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.  Nie mo\u017cna okre\u015bli\u0107 bie\u017c\u0105cej \u015bcie\u017cki klasy.
+NO_CLASSPATH_CWSJS0006.explanation=CMSG0001
+NO_CLASSPATH_CWSJS0006.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+UNRECOVERABLE_ERROR_CWSJS0007=CWSJS0007E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.  \u0141a\u0144cuch reprezentuj\u0105cy identyfikator XID zosta\u0142 uszkodzony.
+UNRECOVERABLE_ERROR_CWSJS0007.explanation=CMSG0001
+UNRECOVERABLE_ERROR_CWSJS0007.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of operations permitted within a single transaction.
+TX_SIZE_EXCEEDED_CWSJS0008=CWSJS0008E: Przekroczono maksymaln\u0105 liczb\u0119 operacji dozwolonych w zasi\u0119gu pojedynczej transakcji ({0}).
+TX_SIZE_EXCEEDED_CWSJS0008.explanation=W zasi\u0119gu pojedynczej transakcji podj\u0119to pr\u00f3b\u0119 wykonania wi\u0119kszej liczby operacji ni\u017c jest dozwolone.
+TX_SIZE_EXCEEDED_CWSJS0008.useraction=Zmniejsz liczb\u0119 operacji, kt\u00f3re pr\u00f3bowano wykona\u0107 w zasi\u0119gu transakcji, aby by\u0142a ona mniejsza ni\u017c podana warto\u015b\u0107 ograniczenia.
+
+# -------------------------------------------------------------------------------------------------
+INTERNAL_ERROR_CWSJS0009=CWSJS0009E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
+INTERNAL_ERROR_CWSJS0009.explanation=CMSG0001
+INTERNAL_ERROR_CWSJS0009.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of operations that is permitted within a single transaction.
+TX_SIZE_EXCEEDED_CWSJS0010=CWSJS0010E: Przekroczono maksymaln\u0105 liczb\u0119 operacji dozwolonych w zasi\u0119gu pojedynczej transakcji ({0}).
+TX_SIZE_EXCEEDED_CWSJS0010.explanation=W zasi\u0119gu pojedynczej transakcji podj\u0119to pr\u00f3b\u0119 wykonania wi\u0119kszej liczby operacji ni\u017c jest dozwolone.
+TX_SIZE_EXCEEDED_CWSJS0010.useraction=Zmniejsz liczb\u0119 operacji, kt\u00f3re pr\u00f3bowano wykona\u0107 w zasi\u0119gu transakcji, aby by\u0142a ona mniejsza ni\u017c podana warto\u015b\u0107 ograniczenia.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSJS9999=CWSJS9999E: {0}
+TEMPORARY_CWSJS9999.explanation=Je\u015bli te informacje s\u0105 niewystarczaj\u0105ce, przejrzyj wcze\u015bniejsze komunikaty, aby uzyska\u0107 dodatkow\u0105 pomoc.
+TEMPORARY_CWSJS9999.useraction=Wi\u0119cej informacji zawieraj\u0105 do\u0142\u0105czone komunikaty o b\u0142\u0119dach.

@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.security/resources/com/ibm/ws/jbatch/security/resources/BatchSecurityMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0300 - 0349: com.ibm.ws.jbatch.security
+# 
+
+#No fill-ins
+BATCH_SECURITY_ENABLED=CWWKY0300I: Enged\u00e9lyezett a k\u00f6tegelt biztons\u00e1gi szolg\u00e1ltat\u00e1s.
+BATCH_SECURITY_ENABLED.explanation=A felhaszn\u00e1l\u00f3k jogosults\u00e1ga az \u00f6sszes k\u00f6tegelt m\u0171velet v\u00e9grehajt\u00e1sa sor\u00e1n a k\u00f6tegelt szerepeknek megfelel\u0151en ker\u00fcl ellen\u0151rz\u00e9sre.
+BATCH_SECURITY_ENABLED.useraction=Nincs teend\u0151.
+
+#No fill-ins
+BATCH_SECURITY_DISABLED=CWWKY0301I: Le van tiltva a k\u00f6tegelt biztons\u00e1gi szolg\u00e1ltat\u00e1s.
+BATCH_SECURITY_DISABLED.explanation=A felhaszn\u00e1l\u00f3k jogosults\u00e1g\u00e1nak ellen\u0151rz\u00e9s\u00e9re NEM ker\u00fcl sor a k\u00f6tegelt szerepeknek megfelel\u0151en.
+BATCH_SECURITY_DISABLED.useraction=Ha ebben a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban nincs sz\u00fcks\u00e9g k\u00f6tegeltszerep-alap\u00fa jogosults\u00e1gkezel\u00e9sre, akkor nincs teend\u0151.
+
+#{0} The invocation subject on the thread.
+#{1} The job instance id.
+USER_UNAUTHORIZED_JOB_INSTANCE=CWWKY0302W: A(z) {0} felhaszn\u00e1l\u00f3 nem jogosult a(z) {1} feladatp\u00e9ld\u00e1nyhoz t\u00e1rs\u00edtott k\u00f6tegelt m\u0171veletek v\u00e9grehajt\u00e1s\u00e1ra.
+USER_UNAUTHORIZED_JOB_INSTANCE.explanation=A felhaszn\u00e1l\u00f3 nem rendelkezik a k\u00e9rt k\u00f6tegelt m\u0171velet adott feladatp\u00e9ld\u00e1nyon val\u00f3 v\u00e9grehajt\u00e1s\u00e1ra jogosult k\u00f6tegelt szereppel.
+USER_UNAUTHORIZED_JOB_INSTANCE.useraction=Ha a felhaszn\u00e1l\u00f3 jogosult a k\u00e9rt k\u00f6tegelt m\u0171velet v\u00e9grehajt\u00e1s\u00e1ra, akkor a k\u00f6tegelt biztons\u00e1gi jogosults\u00e1g konfigur\u00e1l\u00e1s\u00e1val adja hozz\u00e1 a k\u00e9rd\u00e9ses felhaszn\u00e1l\u00f3t a sz\u00fcks\u00e9ges k\u00f6tegelt szerepekhez. 
+
+#{0} The invocation subject on the thread.
+USER_UNAUTHORIZED_NO_BATCH_ROLES=CWWKY0303W: A(z) {0} felhaszn\u00e1l\u00f3 nem jogosult a k\u00f6tegelt m\u0171veletek v\u00e9grehajt\u00e1s\u00e1ra.
+USER_UNAUTHORIZED_NO_BATCH_ROLES.explanation=A felhaszn\u00e1l\u00f3 nem rendelkezik k\u00f6tegelt szerepekkel, \u00edgy nem jogosult a k\u00f6tegelt m\u0171veletek v\u00e9grehajt\u00e1s\u00e1ra.
+USER_UNAUTHORIZED_NO_BATCH_ROLES.useraction=Ha a felhaszn\u00e1l\u00f3 nem jogosult arra, hogy k\u00f6tegelt felhaszn\u00e1l\u00f3 legyen, akkor nincs teend\u0151. Amennyiben a felhaszn\u00e1l\u00f3 jogosult a k\u00f6tegelt m\u0171veletek v\u00e9grehajt\u00e1s\u00e1ra \u00e9s enged\u00e9lyezett a k\u00f6tegelt biztons\u00e1gi szolg\u00e1ltat\u00e1s, \u00fagy a k\u00f6tegelt biztons\u00e1gi jogosults\u00e1g konfigur\u00e1l\u00e1s\u00e1val adja hozz\u00e1 a k\u00e9rd\u00e9ses felhaszn\u00e1l\u00f3t a sz\u00fcks\u00e9ges k\u00f6tegelt szerepekhez.
+
+#{0} The invocation subject on the thread.
+USER_UNAUTHORIZED_TO_START_JOB=CWWKY0304W: A(z) {0} felhaszn\u00e1l\u00f3 nem jogosult a k\u00f6tegelt feladatok ind\u00edt\u00e1s\u00e1ra.
+USER_UNAUTHORIZED_TO_START_JOB.explanation=A felhaszn\u00e1l\u00f3 nem rendelkezik k\u00f6tegelt feladatok ind\u00edt\u00e1s\u00e1ra jogosult k\u00f6tegelt szereppel.
+USER_UNAUTHORIZED_TO_START_JOB.useraction=Ha a felhaszn\u00e1l\u00f3 nem jogosult arra, hogy k\u00f6tegelt feladatokat ind\u00edtson, akkor nincs teend\u0151. Amennyiben a felhaszn\u00e1l\u00f3 jogosult a k\u00e9rt k\u00f6tegelt m\u0171velet v\u00e9grehajt\u00e1s\u00e1ra, \u00fagy a k\u00f6tegelt biztons\u00e1gi jogosults\u00e1g konfigur\u00e1l\u00e1s\u00e1val adja hozz\u00e1 a k\u00e9rd\u00e9ses felhaszn\u00e1l\u00f3t a sz\u00fcks\u00e9ges k\u00f6tegelt szerepekhez. 

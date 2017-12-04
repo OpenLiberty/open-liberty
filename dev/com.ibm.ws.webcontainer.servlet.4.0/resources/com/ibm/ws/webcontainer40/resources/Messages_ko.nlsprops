@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+#CMVCPATHNAME 
+#COMPONENTPREFIX CWWWC
+#COMPONENTNAMEFOR CWWWC Servlet Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# --------------------------------
+
+# Since servlet 4.0.  Use the registered and reserved prefix CWWWC from now on.  
+# 0001 - 0199 for Base
+# 0200 - 0299 for Servlet 3.0
+# 0300 - 0399 for Servlet 3.1
+# 0400 - 0499 for Servlet 4
+name.is.null=CWWWC0400E: \uc18d\uc131 \uc774\ub984 \ub610\ub294 \ucd08\uae30 \ub9e4\uac1c\ubcc0\uc218 \uc774\ub984\uc774 \ub110\uc785\ub2c8\ub2e4.
+name.is.null.explanation=\uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc624\ub958\uc785\ub2c8\ub2e4. context getAttribute(), setAttribute(), getInitParameter() \ub610\ub294 setInitParameter()\uc5d0\uc11c \uc774\ub984\uc774 \ub110\uc785\ub2c8\ub2e4.
+name.is.null.useraction=\uc18d\uc131 \uc774\ub984 \ub610\ub294 \ucd08\uae30 \ub9e4\uac1c\ubcc0\uc218 \uc774\ub984\uc744 \ub110\uc774 \uc544\ub2cc \uac12\uc73c\ub85c \uc5c5\ub370\uc774\ud2b8\ud558\uc2ed\uc2dc\uc624.
+
+# -----------------------------------------------
+unsupported.response.encoding.[{0}]=CWWWC0401E: \uc751\ub2f5 \ubb38\uc790 \uc778\ucf54\ub529[{0}]\uc744 \uc124\uc815\ud558\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4.
+unsupported.response.encoding.[{0}].explanation=\uc751\ub2f5\uc5d0 \uc9c0\uc815\ub41c \uc751\ub2f5 \uc778\ucf54\ub529\uc774 \uc720\ud6a8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc624\ub958\uc785\ub2c8\ub2e4.
+unsupported.response.encoding.[{0}].useraction=\ub85c\uadf8\ub97c \uac80\ud1a0\ud558\uc5ec \uc9c0\uc815\ud55c \uc778\ucf54\ub529\uc774 \uc720\ud6a8\ud55c \uc778\ucf54\ub529\uc778\uc9c0 \uacb0\uc815\ud558\uc2ed\uc2dc\uc624.
+

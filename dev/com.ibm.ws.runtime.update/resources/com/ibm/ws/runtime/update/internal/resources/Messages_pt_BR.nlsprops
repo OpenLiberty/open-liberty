@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.runtime.update/resources/com/ibm/ws/runtime/update/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel: runtime update notifications
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 1100-1199 com.ibm.ws.runtime.update.internal.resources.Messages
+# -------------------------------------------------------------------------------------------------
+
+quiesce.begin=CWWKE1100I: Aguardando at\u00e9 30 segundos para o servidor ser colocado em modo quiesce.
+quiesce.begin.explanation=O servidor espera at\u00e9 30 segundos para que os servi\u00e7os sejam colocados em modo quiesce antes de continuar com o encerramento.
+quiesce.begin.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+quiesce.end=CWWKE1101I: Coloca\u00e7\u00e3o em modo quiesce do servidor conclu\u00edda.
+quiesce.end.explanation=A opera\u00e7\u00e3o de coloca\u00e7\u00e3o em modo quiesce foi conclu\u00edda com \u00eaxito.
+quiesce.end.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+quiece.warning=CWWKE1102W: A opera\u00e7\u00e3o de coloca\u00e7\u00e3o em modo quiesce n\u00e3o foi conclu\u00edda. O servidor ser\u00e1 parado agora.
+quiece.warning.explanation=O processo n\u00e3o conseguiu colocar em modo quiesce todos os servi\u00e7os dentro de 30 segundos.
+quiece.warning.useraction=\u00c9 poss\u00edvel ignorar com seguran\u00e7a as mensagens de erro que sejam resultado da indisponibilidade dos servi\u00e7os necess\u00e1rios.
+
+client.quiesce.begin=CWWKE1103I: Aguardando at\u00e9 30 segundos para o cliente ser colocado em modo quiesce.
+client.quiesce.begin.explanation=O cliente espera at\u00e9 30 segundos para que os servi\u00e7os sejam colocados em modo quiesce antes de continuar com o encerramento.
+client.quiesce.begin.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+client.quiesce.end=CWWKE1104I: Opera\u00e7\u00e3o de quiesce do cliente conclu\u00edda.
+client.quiesce.end.explanation=A opera\u00e7\u00e3o de quiesce foi conclu\u00edda com sucesso.
+client.quiesce.end.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.

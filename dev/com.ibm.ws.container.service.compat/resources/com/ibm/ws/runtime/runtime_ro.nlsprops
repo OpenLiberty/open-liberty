@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 1997, 2008 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# Standard Server runtime messages
+#
+#  Notes:
+#
+#   - DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+#   - WSVR0025I - WSVR0028I are reserved for TimeBomb (bootstrap*.nlsprops)
+#   - WSVR0300x - WSVR0314x are reserved for config (config*.nlsprops)
+#   - WSVR0313E is used for a MDB related error message by EJB component (see runtime.nlsprops)
+#   - WSVR0330x - WSVR0399x are reserved for class loader (this file)
+#   - WSVR0614x - WSVR0620x are reserved for bootstrap (bootstrap*.nlsprops.)
+#   - WSVR0631x - WSVR0650x are reserved for selective bundle provider extension
+#   - WSVR0700x - WSVR0720x are reserved for ThinRegistry (bootstrap*.nlsprops)
+#   - WSVR0800x - WSVR0899x are reserved for config (config*.nlsprops)
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://seaux.raleigh.ibm.com/g11n/was/seae/45/messages/index.html
+# or contact Dennis Hebert/Raleigh/IBM (hebert@us.ibm.com)
+#
+# cmvc_en_version_level=1.128,0,10/05/13,15:15:23
+#
+#CMVCPATHNAME com.ibm.ws.compat/resources/com/ibm/ws/runtime/runtime.nlsprops
+#COMPONENTPREFIX WSVR
+#COMPONENTNAMEFOR WSVR WebSphere Server
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+WSVR0603E=WSVR0603E: Metoda ComponentMetaDataAccessor beginContext a primit un ComponentMetaData NULL.
+WSVR0603E.explanation=CMSG0001
+WSVR0603E.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# PK39527 - Update message text
+# -------------------------------------------------------------------------------------------------
+WSVR0623W=WSVR0623W: Excep\u0163ie nea\u015fteptat\u0103 ap\u0103rut\u0103: \"{0}\". Proprietatea com.ibm.websphere.threadpool.clearThreadLocal a fost setat\u0103 \u015fi va fi aplicat\u0103 la pool-ul fir de execu\u0163ie {0}. Aceast\u0103 op\u0163iune este depreciat\u0103.
+WSVR0623W.explanation=Proprietatea com.ibm.websphere.threadpool.clearThreadLocal este \u00eenc\u0103 utilizat\u0103 \u00een aceast\u0103 edi\u0163ie, dar va fi \u00eenl\u0103turat\u0103 \u00eentr-o edi\u0163ie viitoare.
+WSVR0623W.useraction=\u00cenl\u0103tura\u0163i proprietatea com.ibm.websphere.threadpool.clearThreadLocal de la propriet\u0103\u0163ile Java Virtual Machine (JVM).
+
+# F743-24122
+WSVR0629I=WSVR0629I: Buffer-ul de cerere pentru pool-ul fir de execu\u0163ie \"{0}\" \u015fi-a atins capacitatea.
+WSVR0629I.explanation=Coada de cereri de lucru \u00een a\u015fteptare pe pool-ul fir de execu\u0163ie specificat \u015fi-a atins limita, fapt ce ar putea s\u0103 duc\u0103 la poten\u0163iale probleme de performan\u0163\u0103.
+WSVR0629I.useraction=Nicio ac\u0163iune imediat\u0103 nu este cerut\u0103; totu\u015fi, pentru a preveni situa\u0163ia \u00een viitor, dimensiunea buffer-ului de cerere al pool-ului fire de execu\u0163ie poate avea nevoie s\u0103 fie m\u0103rit\u0103.
+
+# PM13147 - Log growth of thread pool beyond maximum size
+WSVR0630I=WSVR0630I: Pool-ul de fire de execu\u0163ie \"{0}\" care poate fi crescut a fost extins peste capacitatea maxim\u0103 definit\u0103 ini\u0163ial.  Dimensiunea pool-ului este momentan \"{1}\".
+WSVR0630I.explanation=Pool-ul de fire de execu\u0163ie specificat \u015fi-a atins dimensiunea maxim\u0103 predefinit\u0103 \u015fi va fi extins.
+WSVR0630I.useraction=Nueste necesar\u0103 nicio ac\u0163iune imediat\u0103; dar, pool-ul va continua s\u0103 creasc\u0103 at\u00e2t timp c\u00e2t cererile de lucru sunt mai numeroase dec\u00e2t num\u0103rul disponibil de fire de execu\u0163ie.

@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.registry.basic/resources/com/ibm/ws/security/registry/basic/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Basic User Registry Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS3100 - CWWKS3199
+
+BASIC_REGISTRY_INVALID_USER_DEFINITION=CWWKS3100E: La definizione di utente non \u00e8 valida: {0}
+BASIC_REGISTRY_INVALID_USER_DEFINITION.explanation=La sintassi per la definizione di un utente \u00e8 <nome utente="..." password="..." />.
+BASIC_REGISTRY_INVALID_USER_DEFINITION.useraction=Modificare la definizione di utente nella configurazione.
+USER_MUST_DEFINE_NAME=Un elemento utente deve definire un nome.
+USER_MUST_DEFINE_PASSWORD=L''elemento utente con nome ''{0}'' deve definire una password.
+
+BASIC_REGISTRY_INVALID_GROUP_DEFINITION=CWWKS3101E: La definizione di gruppo non \u00e8 valida: {0}
+BASIC_REGISTRY_INVALID_GROUP_DEFINITION.explanation=La sintassi per la definizione di un gruppo \u00e8 <nome gruppo="...">.
+BASIC_REGISTRY_INVALID_GROUP_DEFINITION.useraction=Modificare la definizione di gruppo nella configurazione.
+GROUP_MUST_DEFINE_NAME=Un elemento gruppo deve definire un nome.
+
+BASIC_REGISTRY_INVALID_MEMBER_DEFINITION=CWWKS3102E: La definizione di membro non \u00e8 valida: {0}
+BASIC_REGISTRY_INVALID_MEMBER_DEFINITION.explanation=La sintassi per la definizione di un membro \u00e8 <nome membro="...">.
+BASIC_REGISTRY_INVALID_MEMBER_DEFINITION.useraction=Modificare la definizione di membro nella configurazione.
+MEMBER_MUST_DEFINE_NAME=Un elemento membro deve definire un nome.
+
+BASIC_REGISTRY_NO_USERS_DEFINED=CWWKS3103W: Non \u00e8 definito alcun utente per la configurazione BasicRegistry dell''ID {0}.
+BASIC_REGISTRY_NO_USERS_DEFINED.explanation=Per la configurazione non \u00e8 definito alcun utente. Questo comportamento pu\u00f2 essere intenzionale, ma potrebbe indicare un errore di configurazione.
+BASIC_REGISTRY_NO_USERS_DEFINED.useraction=Se richiesto, definire almeno un utente nella configurazione.
+
+BASIC_REGISTRY_SAME_USER_DEFINITION=CWWKS3104E: Sono definiti pi\u00f9 utenti con il nome ''{0}''. Le voci per questo utente non saranno utilizzate.
+BASIC_REGISTRY_SAME_USER_DEFINITION.explanation=I nomi degli utenti devono essere univoci.
+BASIC_REGISTRY_SAME_USER_DEFINITION.useraction=Definire un solo utente con il nome specificato.
+
+BASIC_REGISTRY_SAME_GROUP_DEFINITION=CWWKS3105E: Sono definiti pi\u00f9 gruppi con il nome ''{0}''. Le voci per questo gruppo non saranno utilizzate.
+BASIC_REGISTRY_SAME_GROUP_DEFINITION.explanation=I nomi dei gruppi devono essere univoci.
+BASIC_REGISTRY_SAME_GROUP_DEFINITION.useraction=Definire un solo gruppo con il nome specificato
+
+BASIC_REGISTRY_SAME_MEMBER_DEFINITION=CWWKS3106W: Sono definite pi\u00f9 voci membro con il nome ''{0}'' per il gruppo ''{1}''.
+BASIC_REGISTRY_SAME_MEMBER_DEFINITION.explanation=I gruppi supportano una sola voce membro per ciascun nome utente.
+BASIC_REGISTRY_SAME_MEMBER_DEFINITION.useraction=Definire una sola voce membro per l'utente nel gruppo specificato.
+
+BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION=CWWKS3107W: La voce di membro con il nome ''{0}'' per il gruppo ''{1}'' non corrisponde a un utente definito.
+BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.explanation=Il nome specificato per la voce di membro non corrisponde ad alcun utente definito.
+BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.useraction=Controllare l'ortografia del nome membro e accertarsi che corrisponda a un utente definito nel registro.

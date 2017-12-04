@@ -1,0 +1,104 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWNEN (Injection Engine)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME com.ibm.ws.injection/resources/com/ibm/ws/injection/resources/InjectionMessages.nlsprops
+#COMPONENTPREFIX CWNEN
+#COMPONENTNAMEFOR CWNEN Injection Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWNEN1xxxI=CWNEN1xxxI: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWNEN1xxxI.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWNEN1xxxI.useraction=User action text for the message
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# NOTE: CWNEN1000-CWNEN1999 are reserved for use in this message file. All other
+#       CWNEN ranges are reserved by com/ibm/wsspi/injection/injection.nlsprops
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+JNDI_NON_JEE_THREAD_CWNEN1000E=CWNEN1000E: Operaci rozhran\u00ed JNDI pro n\u00e1zev java:comp/env nelze dokon\u010dit, proto\u017ee aktu\u00e1ln\u00ed podproces nen\u00ed p\u0159idru\u017een k aplika\u010dn\u00ed komponent\u011b Java Enterprise Edition. Tento stav m\u016f\u017ee nastat, pokud klient rozhran\u00ed JNDI pou\u017e\u00edvaj\u00edc\u00ed n\u00e1zev java:comp/env nebude spu\u0161t\u011bn v podprocesu po\u017eadavku aplikace serveru. Ov\u011b\u0159te, \u017ee aplikace prost\u0159ed\u00ed Java EE nespou\u0161t\u00ed operace rozhran\u00ed JNDI pro n\u00e1zvy java:comp/env v r\u00e1mci blok\u016f statick\u00e9ho k\u00f3du nebo v podprocesech vytvo\u0159en\u00fdch touto aplikac\u00ed. Takov\u00fd k\u00f3d nemus\u00ed b\u00fdt nutn\u011b spou\u0161t\u011bn v r\u00e1mci podprocesu po\u017eadavku aplikace serveru, a nen\u00ed tedy podporov\u00e1n operacemi rozhran\u00ed JNDI pro n\u00e1zvy java:comp/env.
+JNDI_NON_JEE_THREAD_CWNEN1000E.explanation=Operace rozhran\u00ed JNDI pro n\u00e1zev java:comp/env jsou podporov\u00e1ny pouze pro podprocesy p\u0159idru\u017een\u00e9 k aplika\u010dn\u00ed komponent\u011b Java EE.
+JNDI_NON_JEE_THREAD_CWNEN1000E.useraction=Zm\u011b\u0148te aplikaci tak, aby se operace rozhran\u00ed JNDI vyskytovala v podprocesu p\u0159idru\u017een\u00e9m k aplika\u010dn\u00ed komponent\u011b Java EE.
+
+#-------------------------------------------------------------------------------
+# {0} the JNDI name that could not be resolved
+JNDI_CANNOT_INSTANTIATE_OBJECT_CWNEN1001E=CWNEN1001E: Objekt odkazovan\u00fd n\u00e1zvem rozhran\u00ed JNDI {0} nelze p\u0159ev\u00e9st na instanci. Pokud je n\u00e1zev odkazu mapov\u00e1n na n\u00e1zev rozhran\u00ed JNDI ve vazb\u00e1ch deskriptoru implementace pro aplikaci prov\u00e1d\u011bj\u00edc\u00ed vyhled\u00e1n\u00ed v rozhran\u00ed JNDI, zkontrolujte, zda mapov\u00e1n\u00ed n\u00e1zvu rozhran\u00ed JNDI ve vazb\u011b deskriptoru implementace je spr\u00e1vn\u00e9. Je-li mapov\u00e1n\u00ed n\u00e1zvu rozhran\u00ed JNDI spr\u00e1vn\u00e9, ov\u011b\u0159te, \u017ee lze c\u00edlov\u00fd prost\u0159edek rozpoznat s pou\u017eit\u00edm ur\u010den\u00e9ho n\u00e1zvu relativn\u011b vzhledem k v\u00fdchoz\u00edmu po\u010d\u00e1te\u010dn\u00edmu kontextu.
+JNDI_CANNOT_INSTANTIATE_OBJECT_CWNEN1001E.explanation=Do\u0161lo k chyb\u011b p\u0159i vytv\u00e1\u0159en\u00ed instance odkazu na objekt zadan\u00fdm n\u00e1zvem rozhran\u00ed JNDI.
+JNDI_CANNOT_INSTANTIATE_OBJECT_CWNEN1001E.useraction=Dal\u0161\u00ed informace o chyb\u011b viz vno\u0159en\u00e1 v\u00fdjimka nebo hlavn\u00ed chyba.
+
+#-------------------------------------------------------------------------------
+APPXML_REF_NAMESPACE_CWNEN1002E=CWNEN1002E: Odkaz {0} deklarovan\u00fd souborem META-INF/application.xml v aplikaci {1} nen\u00ed v kontextu java:global ani java:app.
+APPXML_REF_NAMESPACE_CWNEN1002E.explanation=Odkazy deklarovan\u00e9 v souboru META-INF/application.xml mohou pou\u017e\u00edvat pouze n\u00e1zvy v kontextu java:global nebo java:app.
+APPXML_REF_NAMESPACE_CWNEN1002E.useraction=Odeberte odkaz nebo aktualizujte n\u00e1zev na odkaz, aby m\u011bl p\u0159edponu java:global/ nebo java:app/.
+
+#-------------------------------------------------------------------------------
+BINDING_OBJECT_NOT_FOUND_CWNEN1003E=CWNEN1003E: Server nena\u0161el vazbu {0} typu {1} pro odkaz {2}.
+BINDING_OBJECT_NOT_FOUND_CWNEN1003E.explanation=Server nena\u0161el vazbu s uveden\u00fdm n\u00e1zvem a typem.
+BINDING_OBJECT_NOT_FOUND_CWNEN1003E.useraction=Definujte prost\u0159edek s uveden\u00fdm n\u00e1zvem, nebo nakonfigurujte vazby aplikac\u00ed tak, aby pou\u017e\u00edvaly ji\u017e nadefinovan\u00fd prost\u0159edek.
+
+#-------------------------------------------------------------------------------
+DEFAULT_BINDING_OBJECT_NOT_FOUND_CWNEN1004E=CWNEN1004E: Server nena\u0161el v\u00fdchoz\u00ed vazbu {0} typu {1} pro odkaz {2}.
+DEFAULT_BINDING_OBJECT_NOT_FOUND_CWNEN1004E.explanation=Server nena\u0161el vazbu s uveden\u00fdm n\u00e1zvem a typem. Aplikace neur\u010dila n\u00e1zev vazby, tak\u017ee se pou\u017eil v\u00fdchoz\u00ed n\u00e1zev vazby.
+DEFAULT_BINDING_OBJECT_NOT_FOUND_CWNEN1004E.useraction=Definujte prost\u0159edek s uveden\u00fdm n\u00e1zvem, nebo nakonfigurujte vazby aplikac\u00ed tak, aby pou\u017e\u00edvaly ji\u017e nadefinovan\u00fd prost\u0159edek.
+
+#-------------------------------------------------------------------------------
+LISTENER_BINDING_OBJECT_NOT_FOUND_CWNEN1005E=CWNEN1005E: Server nena\u0161el vazbu {0} typu {1} pro odkaz {2}. Vazbu ur\u010dila slu\u017eba {3}.
+LISTENER_BINDING_OBJECT_NOT_FOUND_CWNEN1005E.explanation=Server nena\u0161el vazbu s uveden\u00fdm n\u00e1zvem a typem.
+LISTENER_BINDING_OBJECT_NOT_FOUND_CWNEN1005E.useraction=Obra\u0165te se na poskytovatele slu\u017eby.
+
+#-------------------------------------------------------------------------------
+INDIRECT_LOOKUP_FAILED_CWNEN1006E=CWNEN1006E: Server nemohl z\u00edskat objekt pro vazbu {0} typu {1}. Zpr\u00e1va v\u00fdjimky byla: {2}
+INDIRECT_LOOKUP_FAILED_CWNEN1006E.explanation=Server na\u0161el vazbu s uveden\u00fdm n\u00e1zvem a typem, ale p\u0159i p\u0159\u00edstupu k n\u00ed do\u0161lo k chyb\u011b. 
+INDIRECT_LOOKUP_FAILED_CWNEN1006E.useraction=Dal\u0161\u00ed vysv\u011btlen\u00ed viz text zpr\u00e1vy v\u00fdjimky.
+
+#-------------------------------------------------------------------------------
+EJB_REF_NOT_SUPPORTED_CWNEN1007E=CWNEN1007E: V konfiguraci serveru chyb\u00ed funkce pro podporu odkazu EJB {0} na komponentu {1} v modulu {2} aplikace {3}.
+EJB_REF_NOT_SUPPORTED_CWNEN1007E.explanation=Aplikace deklaruje odkaz na objekty EJB relace, ale server nem\u00e1 nakonfigurovanou funkci, kter\u00e1 by podporovala objekty typu EJB relace.
+EJB_REF_NOT_SUPPORTED_CWNEN1007E.useraction=Upravte konfiguraci serveru tak, aby povolovala funkci podporuj\u00edc\u00ed objekty typu EJB relace. Povolte nap\u0159. funkci ejbLite-3.1.
+
+#-------------------------------------------------------------------------------
+INDIRECT_LOOKUP_LOOP_CWNEN1008E=CWNEN1008E: Vazba obsahuje nep\u0159\u00edm\u00e9 vyhled\u00e1n\u00ed, kter\u00e9 odkazuje na sebe.
+INDIRECT_LOOKUP_LOOP_CWNEN1008E.explanation=Vazba obsahuje nep\u0159\u00edm\u00e9 vyhled\u00e1n\u00ed, kter\u00e9 odkazuje na sebe. Pokud se nap\u0159\u00edklad pou\u017e\u00edv\u00e1 anotace incorrect @Resource(name="jdbc/ds", lookup="java:comp/env/jdbc/ds"), potom m\u00e1 n\u00e1zev implicitn\u00ed p\u0159edponu java:comp/env/, tak\u017ee hledan\u00fd \u0159et\u011bzec odkazuje na odkaz na prost\u0159edek, kter\u00fd vytv\u00e1\u0159\u00ed nekone\u010dnou smy\u010dku.
+INDIRECT_LOOKUP_LOOP_CWNEN1008E.useraction=Zm\u011b\u0148te vyhled\u00e1n\u00ed nebo n\u00e1zev_vazby na c\u00edlov\u00fd prost\u0159edek. Pokud se nap\u0159\u00edklad pou\u017e\u00edv\u00e1 anotace @Resource(name="jdbc/ds", lookup="java:comp/env/jdbc/ds"), potom by m\u011blo b\u00fdt vyhled\u00e1n\u00ed zm\u011bn\u011bno na jdbc/ds, co\u017e vyhled\u00e1 prost\u0159edek ve v\u00fdchoz\u00edm oboru n\u00e1zv\u016f.

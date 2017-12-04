@@ -1,0 +1,81 @@
+###############################################################################
+# Copyright (c) 2011, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#CMVCPATHNAME com.ibm.ws.classloading/resources/com/ibm/ws/classloading/internal/resources/ClassLoadingServiceMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKL
+#COMPONENTNAMEFOR CWWKL Class Loading Service
+#
+# NLS_MESSAGEFORMAT_VAR
+################### LIBRARY SERVICE EXPORT MESSAGES 0050-0058 ################### 
+#################################################################################
+
+# {0} - the name of the library
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the implementation class
+bell.service.name=CWWKL0050I: Knihovna {0} zaregistrovala slu\u017ebu, kter\u00e1 je deklarov\u00e1na v souboru {1}, s vyu\u017eit\u00edm implementa\u010dn\u00ed t\u0159\u00eddy {2}.
+bell.service.name.explanation=Slu\u017eba byla deklarov\u00e1na v adres\u00e1\u0159i META-INF/services a byla zaregistrov\u00e1na na serveru. 
+bell.service.name.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+bell.no.impl=CWWKL0051W: Syst\u00e9m nenalezl implementaci {0} slu\u017eby, kter\u00e1 je deklarov\u00e1na v souboru {1} a registrov\u00e1na z knihovny {2}.
+bell.no.impl.explanation=Implementace t\u00e9to slu\u017eby nebyla nalezena.
+bell.no.impl.useraction=Ujist\u011bte se, \u017ee v\u00e1mi uveden\u00fd n\u00e1zev v deklaraci slu\u017eby je spr\u00e1vn\u00fd.
+
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+# {3} - message from the NoClassDefFoundError
+bell.no.inter=CWWKL0052W: Syst\u00e9m nem\u016f\u017ee vytvo\u0159it instanci implementa\u010dn\u00ed t\u0159\u00eddy {0}, proto\u017ee chyb\u00ed definice t\u0159\u00eddy. Tato t\u0159\u00edda je implementac\u00ed slu\u017eby, kter\u00e1 je deklarov\u00e1na v souboru {1} a registrov\u00e1na z knihovny {2}. Jedn\u00e1 se o n\u00e1sleduj\u00edc\u00ed chybu: {3}.
+bell.no.inter.explanation=T\u0159\u00edda, kter\u00e1 je nezbytn\u00e1 pro inicializaci t\u00e9to slu\u017eby, nebyla nalezena.
+bell.no.inter.useraction=Ujist\u011bte se, \u017ee v\u00e1mi uveden\u00fd n\u00e1zev v deklaraci slu\u017eby je spr\u00e1vn\u00fd. 
+
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+bell.not.constructible=CWWKL0053W: Syst\u00e9m nem\u016f\u017ee vytvo\u0159it instanci implementa\u010dn\u00ed t\u0159\u00eddy {0}. Tato t\u0159\u00edda je implementac\u00ed slu\u017eby, kter\u00e1 je deklarov\u00e1na v souboru {1} a registrov\u00e1na z knihovny {2}.
+bell.not.constructible.explanation=Syst\u00e9m nem\u016f\u017ee vytvo\u0159it instanci implementace slu\u017eby, proto\u017ee nem\u00e1 \u017e\u00e1dn\u00fd p\u0159\u00edstup k definici t\u0159\u00eddy, t\u0159\u00edda chyb\u00ed nebo nen\u00ed \u017e\u00e1dn\u00fd konstruktor argumentu.
+bell.not.constructible.useraction=Ujist\u011bte se, \u017ee existuje p\u0159\u00edstup k definici t\u0159\u00eddy a konstruktoru.
+
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+bell.illegal.access=CWWKL0054W: Syst\u00e9m nem\u016f\u017ee vytvo\u0159it instanci implementa\u010dn\u00ed t\u0159\u00eddy {0} kv\u016fli neopr\u00e1vn\u011bn\u00e9mu p\u0159\u00edstupu. Tato t\u0159\u00edda je implementac\u00ed slu\u017eby, kter\u00e1 je deklarov\u00e1na v souboru {1} a registrov\u00e1na z knihovny {2}.
+bell.illegal.access.explanation=Syst\u00e9m nem\u016f\u017ee p\u0159istoupit k deklaraci t\u0159\u00eddy nebo konstruktoru.
+bell.illegal.access.useraction=Ujist\u011bte se, \u017ee t\u0159\u00edda a konstruktor jsou definov\u00e1ny a jsou p\u0159\u00edstupn\u00e9.
+
+# {0} - the name of the library
+bell.no.services.found=CWWKL0055W: Syst\u00e9m nenalezl v n\u00e1sleduj\u00edc\u00ed knihovn\u011b \u017e\u00e1dn\u00e9 slu\u017eby: {0}
+bell.no.services.found.explanation=Ve slo\u017ece META-INF/services nebyly deklarov\u00e1ny \u017e\u00e1dn\u00e9 slu\u017eby.
+bell.no.services.found.useraction=Zkontrolujte, zda jsou funkce BELL (Basic Extensions using Liberty Libraries) nakonfigurovan\u00e9 se spr\u00e1vnou knihovnou, kter\u00e1 m\u00e1 o\u010dek\u00e1vanou slo\u017eku META-INF/services
+
+# {0} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {1} - the name of the library
+# {2} - the exception thrown when trying to read the file
+bell.io.error=CWWKL0056W: Do\u0161lo k chyb\u011b p\u0159i \u010dten\u00ed souboru {0} pro export slu\u017eeb z knihovny {1}. Chyba je: {2}
+bell.io.error.explanation=Deklarace slu\u017eby nen\u00ed \u010diteln\u00e1.
+bell.io.error.useraction=Ujist\u011bte se, \u017ee soubor je syst\u00e9mem \u010diteln\u00fd.
+
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+# {3} - the exception thrown when instantiating the class
+bell.error.ctor=CWWKL0057W: Instance {0} nebyla \u00fasp\u011b\u0161n\u011b vytvo\u0159ena. Tato t\u0159\u00edda je implementac\u00ed slu\u017eby, kter\u00e1 je deklarov\u00e1na v souboru {1} a registrov\u00e1na z knihovny {2}. Do\u0161lo k n\u00e1sleduj\u00edc\u00ed chyb\u011b: {3}
+bell.error.ctor.explanation=Syst\u00e9m obdr\u017eel b\u011bhem vytv\u00e1\u0159en\u00ed instance chybu s neo\u010dek\u00e1vanou v\u00fdjimkou. K t\u00e9to chyb\u011b do\u0161lo v d\u016fsledku v\u00fdjimky z konstruktoru t\u0159\u00eddy.
+bell.error.ctor.useraction=Pokud se v konstruktoru objevila v\u00fdjimka, projd\u011bte a zkontrolujte chov\u00e1n\u00ed konstruktoru t\u0159\u00eddy.
+
+bell.no.services.config=CWWKL0058W: Nelze naj\u00edt slu\u017ebu {0} ve slo\u017ece META-INF/services z knihovny {1}.
+bell.no.services.config.explanation=Ve slo\u017ece META-INF/services nen\u00ed deklarov\u00e1na odpov\u00eddaj\u00edc\u00ed slu\u017eba.
+bell.no.services.config.useraction= Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele.

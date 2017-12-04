@@ -1,0 +1,499 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.processor.CWSJUMessages.nlsprops
+#
+# SIB.processor component file for logging messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJU0001=CWSJU0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - CWSJU9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.22.1.6
+#
+#CMVCPATHNAME SIB/ws/code/sib.processor/src/com/ibm/ws/sib/processor/CWSJUMessages.nlsprops
+#COMPONENTPREFIX CWSJU
+#COMPONENTNAMEFOR CWSJU Message Tracing
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+# {4} The transaction id
+PRODUCER_SEND_CWSJU0001=CWSJU0001I: A(z) {0} el\u0151\u00e1ll\u00edt\u00f3 elk\u00fcld\u00f6tt egy {1} azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenetet a(z) {3} c\u00e9lhoz a(z) {4} tranzakci\u00f3 haszn\u00e1lat\u00e1val.
+PRODUCER_SEND_CWSJU0001.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+PRODUCER_SEND_CWSJU0001.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_NO_TRAN_CWSJU0002=CWSJU0002I: A(z) {0} el\u0151\u00e1ll\u00edt\u00f3 elk\u00fcld\u00f6tt egy {1} azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenetet a(z) {3} c\u00e9lhoz.
+PRODUCER_SEND_NO_TRAN_CWSJU0002.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+PRODUCER_SEND_NO_TRAN_CWSJU0002.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+# {4} The messaging engine name or uuid
+PRODUCER_SEND_COMMIT_CWSJU0003=CWSJU0003I: Egy {0} azonos\u00edt\u00f3val, {1} rendszer\u00fczenet-azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet v\u00e9gleges\u00edt\u00e9sre ker\u00fclt a(z) {4} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {3} c\u00e9lon.
+PRODUCER_SEND_COMMIT_CWSJU0003.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+PRODUCER_SEND_COMMIT_CWSJU0003.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_QUEUE_CWSJU0004=CWSJU0004I: Egy {0} azonos\u00edt\u00f3val, {1} rendszer\u00fczenet-azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet elk\u00fcld\u00e9sre ker\u00fclt a(z) {3} sorhoz.
+PRODUCER_SEND_QUEUE_CWSJU0004.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+PRODUCER_SEND_QUEUE_CWSJU0004.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The JMS Correlation Id
+# {2} The destination name
+PRODUCER_SEND_TOPICSPACE_CWSJU0005=CWSJU0005I: A(z) {0} azonos\u00edt\u00f3val \u00e9s {1} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet elk\u00fcld\u00e9sre ker\u00fclt a(z) {2} t\u00e9mak\u00f6rter\u00fclethez.
+PRODUCER_SEND_TOPICSPACE_CWSJU0005.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+PRODUCER_SEND_TOPICSPACE_CWSJU0005.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_SERVICE_CWSJU0006=CWSJU0006I: Egy {0} azonos\u00edt\u00f3val, {1} rendszer\u00fczenet-azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet elk\u00fcld\u00e9sre ker\u00fclt a(z) {3} szolg\u00e1ltat\u00e1shoz.
+PRODUCER_SEND_SERVICE_CWSJU0006.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+PRODUCER_SEND_SERVICE_CWSJU0006.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_PORT_CWSJU0007=CWSJU0007I: Egy {0} azonos\u00edt\u00f3val, {1} rendszer\u00fczenet-azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet elk\u00fcld\u00e9sre ker\u00fclt a(z) {3} porthoz.
+PRODUCER_SEND_PORT_CWSJU0007.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+PRODUCER_SEND_PORT_CWSJU0007.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The destination name
+# {2} The number of matched consumers
+PUBLICATION_COUNT_CWSJU0008=CWSJU0008I: A(z) {1} c\u00e9lon a(z) {0} azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet {2} feldolgoz\u00f3nak felelt meg.
+PUBLICATION_COUNT_CWSJU0008.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+PUBLICATION_COUNT_CWSJU0008.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The destination name
+# {3} The transaction id
+MESSAGE_ROLLBACK_CWSJU0010=CWSJU0010I: A(z) {0} azonos\u00edt\u00f3val \u00e9s {1} rendszer\u00fczenet-azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet visszag\u00f6rget\u00e9sre ker\u00fclt a(z) {2} c\u00e9lb\u00f3l a(z) {3} tranzakci\u00f3ban.
+MESSAGE_ROLLBACK_CWSJU0010.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+MESSAGE_ROLLBACK_CWSJU0010.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The destination name
+MESSAGE_EXPIRED_CWSJU0011=CWSJU0011I: A(z) {0} azonos\u00edt\u00f3val \u00e9s {1} rendszer\u00fczenet-azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet a(z) {2} c\u00e9lon lej\u00e1rt.
+MESSAGE_EXPIRED_CWSJU0011.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+MESSAGE_EXPIRED_CWSJU0011.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+# {4} The reason.
+# {5} The explanation for why the message was exception destinationed
+MESSAGE_EXCEPTION_DESTINATIONED_CWSJU0012=CWSJU0012I: Egy {0} azonos\u00edt\u00f3val, {1} rendszer\u00fczenet-azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet elhelyez\u00e9sre ker\u00fclt a(z) {3} kiv\u00e9teli c\u00e9lon {4} okkal \u00e9s {5} magyar\u00e1zattal.
+MESSAGE_EXCEPTION_DESTINATIONED_CWSJU0012.explanation=A megadott azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet elk\u00fcld\u00e9sre ker\u00fclt a kiv\u00e9teli c\u00e9lhoz.
+MESSAGE_EXCEPTION_DESTINATIONED_CWSJU0012.useraction=Vizsg\u00e1lja meg, hogy mi\u00e9rt ker\u00fclt elhelyez\u00e9sre az \u00fczenet a kiv\u00e9teli c\u00e9lon, majd jav\u00edtsa ki a hib\u00e1t.
+
+# Missing 13
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+PRODUCER_SEND_BUS_CWSJU0014=CWSJU0014I: Egy {0} azonos\u00edt\u00f3val, {1} rendszer\u00fczenet-azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet elk\u00fcld\u00e9sre ker\u00fclt a(z) {3} busz k\u00f6zti \u00f6sszek\u00f6ttet\u00e9snek.
+PRODUCER_SEND_BUS_CWSJU0014.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+PRODUCER_SEND_BUS_CWSJU0014.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The link name
+PRODUCER_SEND_LINK_CWSJU0015=CWSJU0015I: Egy {0} azonos\u00edt\u00f3val, {1} rendszer\u00fczenet-azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet elk\u00fcld\u00e9sre ker\u00fclt a(z) {3} \u00f6sszek\u00f6ttet\u00e9s-\u00e1tviteli adatfolyamnak.
+PRODUCER_SEND_LINK_CWSJU0015.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+PRODUCER_SEND_LINK_CWSJU0015.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The mq link name
+PRODUCER_SEND_MQLINK_CWSJU0016=CWSJU0016I: Egy {0} azonos\u00edt\u00f3val, {1} rendszer\u00fczenet-azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet elk\u00fcld\u00e9sre ker\u00fclt a(z) {3} WebSphere MQ \u00f6sszek\u00f6ttet\u00e9s-\u00e1tviteli adatfolyamnak.
+PRODUCER_SEND_MQLINK_CWSJU0016.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+PRODUCER_SEND_MQLINK_CWSJU0016.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+# {4} The transaction id
+PRODUCER_SEND_BUS_CWSJU0017=CWSJU0017I: A(z) {0} el\u0151\u00e1ll\u00edt\u00f3 elk\u00fcld\u00f6tt egy {1} azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenetet a(z) {3} busz k\u00f6zti \u00f6sszek\u00f6ttet\u00e9snek a(z) {4} tranzakci\u00f3 haszn\u00e1lat\u00e1val.
+PRODUCER_SEND_BUS_CWSJU0017.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+PRODUCER_SEND_BUS_CWSJU0017.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The link name
+# {4} The transaction id
+PRODUCER_SEND_LINK_CWSJU0018=CWSJU0018I: A(z) {0} el\u0151\u00e1ll\u00edt\u00f3 elk\u00fcld\u00f6tt egy {1} azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenetet a(z) {3} \u00f6sszek\u00f6ttet\u00e9snek a(z) {4} tranzakci\u00f3 haszn\u00e1lat\u00e1val.
+PRODUCER_SEND_LINK_CWSJU0018.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+PRODUCER_SEND_LINK_CWSJU0018.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+# {4} The transaction id
+PRODUCER_SEND_MQLINK_CWSJU0019=CWSJU0019I: A(z) {0} el\u0151\u00e1ll\u00edt\u00f3 elk\u00fcld\u00f6tt egy {1} azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenetet a(z) {3} WebSphere MQ \u00f6sszek\u00f6ttet\u00e9snek a(z) {4} tranzakci\u00f3 haszn\u00e1lat\u00e1val.
+PRODUCER_SEND_MQLINK_CWSJU0019.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+PRODUCER_SEND_MQLINK_CWSJU0019.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The messaging engine uuid
+# {4} The destination name
+INBOUND_MESSAGE_RECEIVED_CWSJU0020=CWSJU0020I: Egy {0} azonos\u00edt\u00f3val, {1} rendszer\u00fczenet-azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet fogad\u00e1sra ker\u00fclt a(z) {4} c\u00e9llal rendelkez\u0151 {3} azonos\u00edt\u00f3j\u00fa \u00fczenetkezel\u00e9si alrendszerr\u0151l.
+INBOUND_MESSAGE_RECEIVED_CWSJU0020.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+INBOUND_MESSAGE_RECEIVED_CWSJU0020.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The messaging engine uuid
+# {4} The destination name
+OUTBOUND_MESSAGE_SENT_CWSJU0021=CWSJU0021I: Egy {0} azonos\u00edt\u00f3val, {1} rendszer\u00fczenet-azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet \u00e1tvitelre ker\u00fcl a(z) {4} c\u00e9l {3} azonos\u00edt\u00f3j\u00fa \u00fczenetkezel\u00e9si alrendszer\u00e9nek.
+OUTBOUND_MESSAGE_SENT_CWSJU0021.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+OUTBOUND_MESSAGE_SENT_CWSJU0021.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The ME uuid or name
+# {4} The destination name
+MESSAGE_FORWARDED_CWSJU0022=CWSJU0022I: Egy {0} azonos\u00edt\u00f3val, {1} rendszer\u00fczenet-azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet \u00e1tvitelre ker\u00fcl a(z) {4} c\u00e9l {3} azonos\u00edt\u00f3j\u00fa \u00fczenetkezel\u00e9si alrendszer\u00e9nek.
+MESSAGE_FORWARDED_CWSJU0022.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+MESSAGE_FORWARDED_CWSJU0022.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The messaging engine uuid
+# {4} The destination name
+OUTBOUND_MESSAGE_SENT_CWSJU0023=CWSJU0023I: Egy {0} azonos\u00edt\u00f3val, {1} rendszer\u00fczenet-azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet \u00e1tvitelre ker\u00fcl a(z) {4} busz k\u00f6zti \u00f6sszek\u00f6ttet\u00e9shez t\u00e1rs\u00edtott {3} azonos\u00edt\u00f3j\u00fa \u00fczenetkezel\u00e9si alrendszernek.
+OUTBOUND_MESSAGE_SENT_CWSJU0023.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+OUTBOUND_MESSAGE_SENT_CWSJU0023.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The messaging engine uuid
+# {4} The destination name
+OUTBOUND_MESSAGE_SENT_CWSJU0024=CWSJU0024I: Egy {0} azonos\u00edt\u00f3val, {1} rendszer\u00fczenet-azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet \u00e1tvitelre ker\u00fcl a(z) {4} WebSphere MQ \u00f6sszek\u00f6ttet\u00e9shez t\u00e1rs\u00edtott {3} azonos\u00edt\u00f3j\u00fa \u00fczenetkezel\u00e9si alrendszernek.
+OUTBOUND_MESSAGE_SENT_CWSJU0024.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+OUTBOUND_MESSAGE_SENT_CWSJU0024.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The source ME uuid
+# {2} The target ME uuid
+# {3} The internal consumer uuid
+REMOTE_REQUEST_SENT_CWSJU0030=CWSJU0030I: Egy \u00fczenet ir\u00e1nti k\u00e9r\u00e9s a(z) {0} c\u00e9lon elk\u00fcld\u00e9sre ker\u00fclt a(z) {1} \u00fczenetkezel\u00e9si alrendszerr\u0151l a(z) {2} \u00fczenetkezel\u00e9si alrendszerre egy a(z) {3} UUID azonos\u00edt\u00f3j\u00fa c\u00e9lr\u00f3l gy\u0171jt\u0151 feldolgoz\u00f3 helyett.
+REMOTE_REQUEST_SENT_CWSJU0030.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+REMOTE_REQUEST_SENT_CWSJU0030.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The source ME uuid
+# {2} The target ME uuid
+# {3} The internal consumer uuid
+REMOTE_MESSAGE_SENT_CWSJU0031=CWSJU0031I: Egy a(z) {0} c\u00e9lnak k\u00e9rt \u00fczenet elk\u00fcld\u00e9sre ker\u00fclt a(z) {1} \u00fczenetkezel\u00e9si alrendszerr\u0151l a(z) {2} \u00fczenetkezel\u00e9si alrendszerre egy a(z) {3} UUID azonos\u00edt\u00f3j\u00fa c\u00e9lr\u00f3l gy\u0171jt\u0151 feldolgoz\u00f3 helyett.
+REMOTE_MESSAGE_SENT_CWSJU0031.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+REMOTE_MESSAGE_SENT_CWSJU0031.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The request tick
+# {1} The message
+REMOTE_REQUEST_SATISFIED_CWSJU0032=CWSJU0032I: A(z) {1} \u00fczenet a(z) {0} azonos\u00edt\u00f3j\u00fa t\u00e1voli k\u00e9r\u00e9shez lett hozz\u00e1rendelve.
+REMOTE_REQUEST_SATISFIED_CWSJU0032.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+REMOTE_REQUEST_SATISFIED_CWSJU0032.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The request tick
+REMOTE_REQUEST_EXPIRED_CWSJU0033=CWSJU0033I: A(z) {0} azonos\u00edt\u00f3j\u00fa t\u00e1voli k\u00e9r\u00e9s lej\u00e1rt.
+REMOTE_REQUEST_EXPIRED_CWSJU0033.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+REMOTE_REQUEST_EXPIRED_CWSJU0033.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message 
+# {1} The request id
+# {2} The destination
+# {3} The source me
+# {4} The target me
+# {5} The gatheirng uuid
+REMOTE_MESSAGE_EXPIRED_CWSJU0034=CWSJU0034I: A(z) {0} t\u00e1rolt \u00fczenet, amelyet a(z) {1} k\u00e9r\u00e9sazonos\u00edt\u00f3val, a(z) {2} c\u00e9lr\u00f3l a(z) {4} \u00fczenetkezel\u00e9si alrendszeren k\u00e9rt a(z) {3} \u00fczenetkezel\u00e9si alrendszer a(z) {5} feldolgoz\u00f3 sz\u00e1m\u00e1ra, most j\u00e1rt le, \u00e9s \u00fajra el\u00e9rhet\u0151v\u00e9 lesz t\u00e9ve a forr\u00e1s \u00fczenetkezel\u00e9si alrendszeren. 
+REMOTE_MESSAGE_EXPIRED_CWSJU0034.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+REMOTE_MESSAGE_EXPIRED_CWSJU0034.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The consumer id
+# {4} The destination name
+# {5} The transaction id
+CONSUMER_RECEIVE_CWSJU0040=CWSJU0040I: Egy {0} azonos\u00edt\u00f3val, {1} rendszer\u00fczenet-azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet a(z) {5} tranzakci\u00f3 haszn\u00e1lat\u00e1val k\u00e9zbes\u00edt\u00e9sre ker\u00fclt a(z) {4} c\u00e9lt\u00f3l a(z) {3} feldolgoz\u00f3nak.
+CONSUMER_RECEIVE_CWSJU0040.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+CONSUMER_RECEIVE_CWSJU0040.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The consumer id
+# {4} The destination name
+CONSUMER_RECEIVE_NO_TRAN_CWSJU0041=CWSJU0041I: Egy {0} azonos\u00edt\u00f3val, {1} rendszer\u00fczenet-azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet k\u00e9zbes\u00edt\u00e9sre ker\u00fclt a(z) {4} c\u00e9lt\u00f3l a(z) {3} feldolgoz\u00f3nak.
+CONSUMER_RECEIVE_NO_TRAN_CWSJU0041.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+CONSUMER_RECEIVE_NO_TRAN_CWSJU0041.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The consumer id
+# {1} The destination name
+# {2} The transaction id
+CONSUMER_RECEIVE_NO_MESSAGE_CWSJU0042=CWSJU0042I: A(z) {0} feldolgoz\u00f3 nem fogadott \u00fczeneteket a(z) {1} c\u00e9lr\u00f3l a(z) {2} tranzakci\u00f3 haszn\u00e1lat\u00e1val.
+CONSUMER_RECEIVE_NO_MESSAGE_CWSJU0042.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+CONSUMER_RECEIVE_NO_MESSAGE_CWSJU0042.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The consumer id
+# {1} The destination name
+CONSUMER_RECEIVE_NO_MESSAGE_NO_TRAN_CWSJU0043=CWSJU0043I: A(z) {0} feldolgoz\u00f3 nem fogadott \u00fczeneteket a(z) {1} c\u00e9lr\u00f3l.
+CONSUMER_RECEIVE_NO_MESSAGE_NO_TRAN_CWSJU0043.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+CONSUMER_RECEIVE_NO_MESSAGE_NO_TRAN_CWSJU0043.useraction=Semmit sem kell tennie.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+# {4} The transaction id
+PRODUCER_SEND_CWSJU0051=CWSJU0051I: A(z) {0} el\u0151\u00e1ll\u00edt\u00f3 elk\u00fcld\u00f6tt egy {1} azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenetet a(z) {3} k\u00f6zvet\u00edt\u00e9si ponthoz a(z) {4} tranzakci\u00f3 haszn\u00e1lat\u00e1val.
+PRODUCER_SEND_CWSJU0051.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+PRODUCER_SEND_CWSJU0051.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_NO_TRAN_CWSJU0052=CWSJU0052I: A(z) {0} el\u0151\u00e1ll\u00edt\u00f3 elk\u00fcld\u00f6tt egy {1} azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenetet a(z) {3} k\u00f6zvet\u00edt\u00e9si ponthoz.
+PRODUCER_SEND_NO_TRAN_CWSJU0052.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+PRODUCER_SEND_NO_TRAN_CWSJU0052.useraction=Semmit sem kell tennie.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+# {4} The messaging engine name or uuid
+PRODUCER_SEND_COMMIT_CWSJU0053=CWSJU0053I: Egy {0} azonos\u00edt\u00f3val, {1} rendszer\u00fczenet-azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet v\u00e9gleges\u00edt\u00e9sre ker\u00fclt a(z) {4} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {3} k\u00f6zvet\u00edt\u00e9si ponton.
+PRODUCER_SEND_COMMIT_CWSJU0053.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+PRODUCER_SEND_COMMIT_CWSJU0053.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_CWSJU0054=CWSJU0054I: Egy {0} azonos\u00edt\u00f3val, {1} rendszer\u00fczenet-azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet elk\u00fcld\u00e9sre ker\u00fclt a(z) {3} k\u00f6zvet\u00edt\u00e9si ponthoz.
+PRODUCER_SEND_CWSJU0054.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+PRODUCER_SEND_CWSJU0054.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+PRODUCER_SEND_NO_TRAN_BUS_CWSJU0061=CWSJU0061I: A(z) {0} el\u0151\u00e1ll\u00edt\u00f3 elk\u00fcld\u00f6tt egy {1} azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenetet a(z) {3} busz k\u00f6zti \u00f6sszek\u00f6ttet\u00e9snek.
+PRODUCER_SEND_NO_TRAN_BUS_CWSJU0061.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+PRODUCER_SEND_NO_TRAN_BUS_CWSJU0061.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+PRODUCER_SEND_NO_TRAN_LINK_CWSJU0062=CWSJU0062I: A(z) {0} el\u0151\u00e1ll\u00edt\u00f3 elk\u00fcld\u00f6tt egy {1} azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenetet a(z) {3} \u00f6sszek\u00f6ttet\u00e9shez.
+PRODUCER_SEND_NO_TRAN_LINK_CWSJU0062.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+PRODUCER_SEND_NO_TRAN_LINK_CWSJU0062.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+PRODUCER_SEND_NO_TRAN_MQLINK_CWSJU0063=CWSJU0063I: A(z) {0} el\u0151\u00e1ll\u00edt\u00f3 elk\u00fcld\u00f6tt egy {1} azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenetet a(z) {3} WebShpere MQ \u00f6sszek\u00f6ttet\u00e9shez.
+PRODUCER_SEND_NO_TRAN_MQLINK_CWSJU0063.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+PRODUCER_SEND_NO_TRAN_MQLINK_CWSJU0063.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+# {4} The messaging engine name or uuid
+PRODUCER_SEND_COMMIT_BUS_CWSJU0064=CWSJU0064I: Egy {0} azonos\u00edt\u00f3val, {1} rendszer\u00fczenet-azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet v\u00e9gleges\u00edt\u00e9sre ker\u00fclt a(z) {4} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {3} c\u00e9lon.
+PRODUCER_SEND_COMMIT_BUS_CWSJU0064.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+PRODUCER_SEND_COMMIT_BUS_CWSJU0064.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+# {4} The messaging engine name or uuid
+PRODUCER_SEND_COMMIT_LINK_CWSJU0065=CWSJU0065I: Egy {0} azonos\u00edt\u00f3val, {1} rendszer\u00fczenet-azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet v\u00e9gleges\u00edt\u00e9sre ker\u00fclt a(z) {4} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {3} c\u00e9lon.
+PRODUCER_SEND_COMMIT_LINK_CWSJU0065.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+PRODUCER_SEND_COMMIT_LINK_CWSJU0065.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+# {4} The messaging engine name or uuid
+PRODUCER_SEND_COMMIT_MQLINK_CWSJU0066=CWSJU0066I: Egy {0} azonos\u00edt\u00f3val, {1} rendszer\u00fczenet-azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet v\u00e9gleges\u00edt\u00e9sre ker\u00fclt a(z) {4} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {3} WebSphere MQ \u00f6sszek\u00f6ttet\u00e9sen.
+PRODUCER_SEND_COMMIT_MQLINK_CWSJU0066.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+PRODUCER_SEND_COMMIT_MQLINK_CWSJU0066.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_TEMPORARY_QUEUE_CWSJU0101=CWSJU0101I: Egy {0} azonos\u00edt\u00f3val, {1} rendszer\u00fczenet-azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet elk\u00fcld\u00e9sre ker\u00fclt a(z) {3} ideiglenes sorhoz.
+PRODUCER_SEND_TEMPORARY_QUEUE_CWSJU0101.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+PRODUCER_SEND_TEMPORARY_QUEUE_CWSJU0101.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_TEMPORARY_TOPICSPACE_CWSJU0102=CWSJU0102I: Egy {0} azonos\u00edt\u00f3val, {1} rendszer\u00fczenet-azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet elk\u00fcld\u00e9sre ker\u00fclt a(z) {3} ideiglenes t\u00e9mak\u00f6rter\u00fclethez.
+PRODUCER_SEND_TEMPORARY_TOPICSPACE_CWSJU0102.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+PRODUCER_SEND_TEMPORARY_TOPICSPACE_CWSJU0102.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The messaging engine uuid
+# {4} The destination name
+INBOUND_MESSAGE_RECEIVED_TEMP_CWSJU0120=CWSJU0120I: Egy {0} azonos\u00edt\u00f3val, {1} rendszer\u00fczenet-azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet fogad\u00e1sra ker\u00fclt a(z) {4} c\u00e9llal rendelkez\u0151 {3} azonos\u00edt\u00f3j\u00fa \u00fczenetkezel\u00e9si alrendszerr\u0151l.
+INBOUND_MESSAGE_RECEIVED_TEMP_CWSJU0120.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+INBOUND_MESSAGE_RECEIVED_TEMP_CWSJU0120.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The messaging engine uuid
+# {4} The destination name
+OUTBOUND_MESSAGE_SENT_TEMP_CWSJU0121=CWSJU0121I: Egy {0} azonos\u00edt\u00f3val, {1} rendszer\u00fczenet-azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet \u00e1tvitelre ker\u00fcl a(z) {4} c\u00e9l {3} azonos\u00edt\u00f3j\u00fa \u00fczenetkezel\u00e9si alrendszer\u00e9nek.
+OUTBOUND_MESSAGE_SENT_TEMP_CWSJU0121.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+OUTBOUND_MESSAGE_SENT_TEMP_CWSJU0121.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The ME uuid or name
+# {4} The destination name
+MESSAGE_FORWARDED_TEMP_CWSJU0122=CWSJU0122I: Egy {0} azonos\u00edt\u00f3val, {1} rendszer\u00fczenet-azonos\u00edt\u00f3val \u00e9s {2} viszony\u00edt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet \u00e1tvitelre ker\u00fcl a(z) {4} ideiglenes c\u00e9l {3} azonos\u00edt\u00f3j\u00fa \u00fczenetkezel\u00e9si alrendszer\u00e9nek.
+MESSAGE_FORWARDED_TEMP_CWSJU0122.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet a program \u00e1llapot\u00e1t jelzi.
+MESSAGE_FORWARDED_TEMP_CWSJU0122.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSJU9999=CWSJU9999E: {0}
+TEMPORARY_CWSJU9999.explanation=Ha az \u00fczenet nem ad elegend\u0151 inform\u00e1ci\u00f3t, akkor ellen\u0151rizze a kor\u00e1bbi \u00fczeneteket a tov\u00e1bbi seg\u00edts\u00e9g\u00e9rt.
+TEMPORARY_CWSJU9999.useraction=Tekintse meg a kor\u00e1bbi \u00fczeneteket tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt.

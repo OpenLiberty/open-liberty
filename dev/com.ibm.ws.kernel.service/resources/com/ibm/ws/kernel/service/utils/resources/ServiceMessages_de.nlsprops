@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.service/resources/com/ibm/ws/kernel/service/utils/resources/ServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0100 - 0199 com.ibm.ws.kernel.service.utils.resources.ServiceMessages
+# -------------------------------------------------------------------------------------------------
+invalidStringArray=CWWKE0101W: Der angegebene Parameter ist keine Zeichenfolge bzw. kein Zeichenfolgenarray. {1}={2} f\u00fcr {0}
+invalidStringArray.explanation=Der Wert f\u00fcr den angegebenen Konfigurationsparameter wurde nicht oder kann nicht in eine Zeichenfolge oder ein Zeichenfolgenarray konvertiert werden.
+invalidStringArray.useraction=\u00dcberpr\u00fcfen Sie den in der Serverkonfiguration angegebenen Wert, und stellen Sie sicher, dass der Wert eine g\u00fcltige Darstellung einer Zeichenfolge bzw. eines Zeichenfolgenarrays ist.
+
+invalidStringCollection=CWWKE0102W: Der angegebene Parameter ist keine Zeichenfolge bzw. Zeichenfolgensammlung. {1}={2} f\u00fcr {0}
+invalidStringCollection.explanation=Der Wert f\u00fcr den angegebenen Konfigurationsparameter wurde nicht oder kann nicht in eine Zeichenfolge oder Zeichenfolgesammlung konvertiert werden.
+invalidStringCollection.useraction=Stellen Sie sicher, dass der in der Serverkonfiguration angegebene Wert eine g\u00fcltige Darstellung einer Zeichenfolge oder Zeichenfolgesammlung ist.
+
+invalidBoolean=CWWKE0103W: Der angegebene Parameter stellt keinen g\u00fcltigen booleschen Wert dar. {1}={2} f\u00fcr {0}
+invalidBoolean.explanation=Der Wert f\u00fcr den angegebenen Konfigurationsparameter wurde nicht bzw. konnte nicht in einen booleschen Wert konvertiert werden.
+invalidBoolean.useraction=Stellen Sie sicher, dass der in der Serverkonfiguration angegebene Wert eine g\u00fcltige Darstellung eines booleschen Werts ist.
+
+invalidLong=CWWKE0104W: Der angegebene Parameter stellt keinen g\u00fcltigen Wert des Typs long dar. {1}={2} f\u00fcr {0}
+invalidLong.explanation=Der Wert f\u00fcr den angegebenen Konfigurationsparameter wurde nicht bzw. konnte nicht in einen long-Wert konvertiert werden.
+invalidLong.useraction=Stellen Sie sicher, dass der in der Serverkonfiguration angegebene Wert eine g\u00fcltige Darstellung eines long-Werts ist.
+
+invalidInteger=CWWKE0105W: Der angegebene Parameter stellt keinen g\u00fcltigen ganzzahligen Wert dar. {1}={2} f\u00fcr {0}
+invalidInteger.explanation=Der Wert f\u00fcr den angegebenen Konfigurationsparameter wurde nicht bzw. konnte nicht in einen ganzzahligen Wert konvertiert werden.
+invalidInteger.useraction=Stellen Sie sicher, dass der in der Serverkonfiguration angegebene Wert eine g\u00fcltige Darstellung eines ganzzahligen Werts ist.
+
+invalidIntegerArray=CWWKE0106W: Der angegebene Parameter stellt keinen g\u00fcltigen Integer-Array dar. {1}={2} f\u00fcr {0}
+invalidIntegerArray.explanation=Der Wert f\u00fcr den angegebenen Konfigurationsparameter wurde nicht bzw. konnte nicht in einen Ganzzahlenarray konvertiert werden.
+invalidIntegerArray.useraction=Stellen Sie sicher, dass der in der Serverkonfiguration angegebene Wert eine g\u00fcltige Darstellung eines Ganzzahlenarrays ist.
+
+invalidDuration=CWWKE0107W: Der angegebene Parameter stellt keinen g\u00fcltigen Dauerwert dar. {1}={2} f\u00fcr {0}
+invalidDuration.explanation=Der Wert f\u00fcr den angegebenen Konfigurationsparameter wurde nicht bzw. konnte nicht in einen Dauerwert konvertiert werden.
+invalidDuration.useraction=Stellen Sie sicher, dass der in der Serverkonfiguration angegebene Wert eine g\u00fcltige Darstellung eines Dauerwerts ist.
+
+#
+# W A R N I N G:   Do not use CWWKE0108 - CCWKE0109 they are currently in use LauncherMessages.nlsprops
+#

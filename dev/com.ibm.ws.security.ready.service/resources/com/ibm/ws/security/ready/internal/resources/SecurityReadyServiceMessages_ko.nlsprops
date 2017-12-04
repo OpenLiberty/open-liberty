@@ -1,0 +1,35 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.ready.service/resources/com/ibm/ws/security/internal/resources/SecurityReadyServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS0007 - CWWKS0009
+
+#
+# NOTE: CWWKS0007 through CWWKS0009 have been moved from com.ibm.ws.security project, they should not be retranslated!
+#
+
+SECURITY_SERVICE_STARTING=CWWKS0007I: \ubcf4\uc548 \uc11c\ube44\uc2a4 \uc2dc\uc791 \uc911...
+SECURITY_SERVICE_STARTING.explanation=\ubcf4\uc548 \uc11c\ube44\uc2a4\uac00 \uc2dc\uc791 \uc911\uc785\ub2c8\ub2e4. \uc774\ub294 \uc77c\ud68c\uc131 \ucd08\uae30\ud654\uac00 \ubc1c\uc0dd\ud574\uc57c \ud558\ub294 \uacbd\uc6b0 \uc2dc\uac04\uc774 \uac78\ub9b4 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+SECURITY_SERVICE_STARTING.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc74c
+
+SECURITY_SERVICE_READY=CWWKS0008I: \ubcf4\uc548 \uc11c\ube44\uc2a4\uac00 \uc900\ube44\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+SECURITY_SERVICE_READY.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+SECURITY_SERVICE_READY.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc74c
+
+SECURITY_SERVICE_STOPPED=CWWKS0009I: \ubcf4\uc548 \uc11c\ube44\uc2a4\uac00 \uc911\uc9c0\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+SECURITY_SERVICE_STOPPED.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+SECURITY_SERVICE_STOPPED.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc74c

@@ -1,0 +1,14 @@
+FormPostServlet.war
+/JavaEESecAnnotatedBasicAuthServlet.war
+/JavaEESecAnnotatedFormLoginForwardServlet.war
+/JavaEESecAnnotatedFormLoginNoIdentityStoreServlet.war
+/JavaEESecAnnotatedFormLoginServlet.war
+/JavaEESecAnnotatedFormPostForwardServlet.war
+/JavaEESecAnnotatedFormPostServlet.war
+/JavaEESecBasicAuthNoIdentityStoreServlet.war
+/JavaEESecBasicAuthServlet.war
+/JavaEESecCustomFormLoginForwardServlet.war
+/JavaEESecCustomFormLoginServlet.war
+/JavaEESecCustomFormPostForwardServlet.war
+/JavaEESecCustomFormPostServlet.war
+/JavaEESecServlet.war

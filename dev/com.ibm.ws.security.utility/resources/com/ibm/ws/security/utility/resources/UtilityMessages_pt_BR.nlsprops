@@ -1,0 +1,94 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.utility/resources/com/ibm/ws/security/utility/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+error=Erro: {0}
+error.inputConsoleNotAvailable=O console de entrada n\u00e3o est\u00e1 dispon\u00edvel.
+error.missingIO=Erro, dispositivo de E/S ausente: {0}.
+
+usage=Uso: {0}
+task.unknown=Tarefa desconhecida: {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Common messages
+tooManyArgs=Argumentos em excesso.
+insufficientArgs=Argumentos insuficientes.
+invalidArg=Argumento inv\u00e1lido {0}.
+missingArg=Argumento ausente {0}.
+missingValue=Valor ausente para o argumento {0}.
+missingArg2=Use o argumento {0} ou o argumento {1} deve ser fornecido.
+exclusiveArg=O argumento {0} ou o argumento {1} deve ser especificado, mas n\u00e3o ambos.
+serverNotFound=Servidor {0} especificado n\u00e3o p\u00f4de ser localizado no local {1}
+
+
+encode.enterText=Inserir texto:
+encode.reenterText=Reinserir texto:
+encode.readError=Erro ao ler texto.
+encode.entriesDidNotMatch=Entradas n\u00e3o corresponderam.
+
+
+password.enterText=Inserir Senha:
+password.reenterText=Reinserir senha:
+password.readError=Erro ao ler senha.
+password.entriesDidNotMatch=As senhas n\u00e3o corresponderam.
+
+name=Nome
+days=dia(s)
+
+sslCert.abort=Interrompendo cria\u00e7\u00e3o do certificado:
+sslCert.createFailed=Imposs\u00edvel criar certificado SSL padr\u00e3o:\n\
+{0}
+sslCert.errorEncodePassword=Erro ao codificar senha (certificado n\u00e3o criado):\n\
+{0}
+sslCert.createKeyStore=Criando keystore {0}\n
+sslCert.oneType=Os argumentos {0} e {1} n\u00e3o podem ser especificados ao mesmo tempo.
+sslCert.clientNotFound=O cliente especificado {0} n\u00e3o p\u00f4de ser localizado no local {1}
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+sslCert.serverXML=Certificado SSL criado para o servidor {0}. O certificado \u00e9 criado com {1} como o SubjectDN.\n\
+\n\
+Inclua as linhas a seguir no server.xml para ativar o SSL:
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+sslCert.clientXML=Certificado SSL criado para o cliente {0}. O certificado \u00e9 criado com {1} como o SubjectDN.\n\
+\n\
+Inclua as linhas a seguir no client.xml para ativar o SSL:
+
+fileUtility.failedDirCreate=Falha ao criar diret\u00f3rio {0}
+file.exists=O arquivo keystore {0} j\u00e1 existe.  N\u00e3o \u00e9 poss\u00edvel criar um arquivo keystore nesse local.
+file.requiredDirNotCreated=N\u00e3o foi poss\u00edvel criar a estrutura de diret\u00f3rio necess\u00e1ria para {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# The following string will be appended after encode.option-desc.encoding
+# message in UtilityOptions.nlsprops file.
+encode.option-custom.encryption=\n \tA criptografia de senha customizada tamb\u00e9m est\u00e1 dispon\u00edvel.
+encode.option-desc.custom.feature=\n \tO nome do recurso de {0} \u00e9 o seguinte:\n \t
+encode.option-desc.custom.description=\n \tA descri\u00e7\u00e3o de {0} \u00e9 a seguinte:\n \t
+
+# The following message is shown when there is no custom password
+# encryption is enabled.
+no.custom.encyption=A criptografia de senha customizada n\u00e3o foi detectada.
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Note to translator: 'LTPA' should not be translated
+createLTPAKeys.abort=Interrompendo a cria\u00e7\u00e3o do \
+arquivo-chave de LTPA:
+createLTPAKeys.fileExists=O arquivo {0} j\u00e1 \
+existe.  N\u00e3o \u00e9 poss\u00edvel criar um arquivo-chave de LTPA nesse local.
+createLTPAKeys.createdFile=Arquivo-chave de LTPA criado: {0}\n Inclua a seguinte configura\u00e7\u00e3o no \
+server.xml\n {1}\n

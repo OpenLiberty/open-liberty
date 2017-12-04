@@ -1,0 +1,73 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.server/resources/com/ibm/ws/jmx/connector/server/internal/resources/FileTransferServerMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX JMX REST Connector
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKX0121 - CWWKX0199
+
+SERVER_ACCESS_DENIED_ERROR=CWWKX0121E: Accesso negato al percorso {0}.
+SERVER_ACCESS_DENIED_ERROR.explanation=\u00c8 stato effettuato un tentativo di accesso ad un percorso esterno alla region di lettura/scrittura configurata.
+SERVER_ACCESS_DENIED_ERROR.useraction=Correggere il percorso per indicare quello che si trova nella region di lettura/scrittura configurata.
+
+OSGI_SERVICE_ERROR=CWWKX0122E: Il servizio OSGi {0} non \u00e8 disponibile.
+OSGI_SERVICE_ERROR.explanation=Si tratta di un errore interno del server generato perch\u00e9 il servizio specificato non \u00e8 disponibile.
+OSGI_SERVICE_ERROR.useraction=Riavviare il server con l'opzione "clean".
+
+DOWNLOAD_REQUEST_COMPLETE_INFO=CWWKX0123I: La richiesta di scaricamento per il file {0} \u00e8 stata completata correttamente.
+DOWNLOAD_REQUEST_COMPLETE_INFO.explanation=La richiesta di scaricamento del file specificato \u00e8 stata completata correttamente.
+DOWNLOAD_REQUEST_COMPLETE_INFO.useraction=Si tratta di un messaggio informativo, non \u00e8 richiesta alcuna azione.
+
+UPLOAD_REQUEST_COMPLETE_INFO=CWWKX0124I: La richiesta di caricamento del file {0} \u00e8 stata completata correttamente.
+UPLOAD_REQUEST_COMPLETE_INFO.explanation=La richiesta di caricamento del file specificato \u00e8 stata completata correttamente.
+UPLOAD_REQUEST_COMPLETE_INFO.useraction=Si tratta di un messaggio informativo, non \u00e8 richiesta alcuna azione.
+
+DELETE_REQUEST_COMPLETE_INFO=CWWKX0125I: La richiesta di eliminazione del file {0} \u00e8 stata completata correttamente.
+DELETE_REQUEST_COMPLETE_INFO.explanation=La richiesta di eliminazione del file specificato \u00e8 stata completata correttamente.
+DELETE_REQUEST_COMPLETE_INFO.useraction=Si tratta di un messaggio informativo, non \u00e8 richiesta alcuna azione.
+
+DELETE_REQUEST_ERROR=CWWKX0126E: Impossibile completare la richiesta di eliminazione del file {0}.
+DELETE_REQUEST_ERROR.explanation=La richiesta di eliminazione del file specificato ha avuto esito negativo: \u00e8 possibile che un altro processo stia utilizzando il file.
+DELETE_REQUEST_ERROR.useraction=Verificare che il file non sia al momento utilizzato da un altro processo e che siano presenti le autorizzazioni appropriate che consentono l'eliminazione del file.
+
+PATH_NOT_VALID=CWWKX0127E: Il percorso {0} non \u00e8 valido.
+PATH_NOT_VALID.explanation=Il percorso specificato non \u00e8 valido e non \u00e8 stato possibile individuarlo.
+PATH_NOT_VALID.useraction=Assicurarsi che sia specificato un percorso valido che non contenga valori o caratteri non validi.
+
+NO_WRITE_LOCATION=CWWKX0128E: Sul server di instradamento non \u00e8 configurata alcuna ubicazione scrivibile.
+NO_WRITE_LOCATION.explanation=Sul server di instradamento non \u00e8 configurata alcuna ubicazione scrivibile.
+NO_WRITE_LOCATION.useraction=Assicurarsi che sul server di instradamento sia configurata almeno un'ubicazione scrivibile.
+
+UPLOAD_EXPANSION_ERROR=CWWKX0129E: Impossibile espandere l''archivio caricato {0}.
+UPLOAD_EXPANSION_ERROR.explanation=Non \u00e8 stato possibile completare l'espansione dell'archivio caricato specificato.
+UPLOAD_EXPANSION_ERROR.useraction=Assicurarsi che l'archivio non sia danneggiato.
+
+ARCHIVE_EXPANDER_ERROR=CWWKX0130E: Impossibile individuare l'utility di espansione archivio.
+ARCHIVE_EXPANDER_ERROR.explanation=Non \u00e8 stato possibile individuare l'utility di espansione archivio necessaria.
+ARCHIVE_EXPANDER_ERROR.useraction=Assicurarsi che la directory di installazione di Liberty non sia danneggiata.
+
+UNKNOWN_TASK_ID_ERROR=CWWKX0131E: Non \u00e8 stata trovata un''attivit\u00e0 con l''id {0}.
+UNKNOWN_TASK_ID_ERROR.explanation=L'identificativo fornito non corrisponde ad alcuna attivit\u00e0 attualmente contenuta nel registro attivit\u00e0.
+UNKNOWN_TASK_ID_ERROR.useraction=Interrogare relativamente a un identificativo valido che non sia stato riciclato.
+
+INVALID_ACTION_OPTIONS=CWWKX0132E: Le opzioni dell''azione post trasferimento {0} non sono valide.
+INVALID_ACTION_OPTIONS.explanation=Le opzioni dell'azione post trasferimento devono essere null, vuote o un elenco separato da virgole con la stessa lunghezza dell'elenco di azioni.
+INVALID_ACTION_OPTIONS.useraction=Assicurarsi che le opzioni dell'azione post trasferimento contengano valori validi.

@@ -1,0 +1,63 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.registry/resources/com/ibm/ws/security/registry/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security User Registry Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS3000 - CWWKS3099
+
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_REFID=CWWKS3000E: Wyst\u0105pi\u0142 wyj\u0105tek konfiguracji. Nie skonfigurowano parametru refId dla konfiguracji rejestru u\u017cytkownik\u00f3w.
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_REFID.explanation=Element konfiguracji rejestru u\u017cytkownik\u00f3w odwo\u0142uje si\u0119 do okre\u015blonych instancji rejestru u\u017cytkownik\u00f3w wed\u0142ug warto\u015bci ich identyfikator\u00f3w.
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_REFID.useraction=Podaj warto\u015b\u0107 parametru refId w konfiguracji rejestru u\u017cytkownik\u00f3w.
+
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_ID=CWWKS3001E: Wyst\u0105pi\u0142 wyj\u0105tek konfiguracji. Nie mo\u017cna znale\u017a\u0107 \u017c\u0105danej instancji rejestru u\u017cytkownik\u00f3w o identyfikatorze {0}.
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_ID.explanation=Ka\u017cda konfiguracja rejestru u\u017cytkownik\u00f3w okre\u015bla warto\u015b\u0107 parametru id.
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_ID.useraction=Podaj warto\u015b\u0107 parametru id dla skonfigurowanego elementu lub utw\u00f3rz wymagan\u0105 konfiguracj\u0119.
+
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_FACTORY_TYPE=CWWKS3002E: Wyst\u0105pi\u0142 wyj\u0105tek konfiguracji. Nie mo\u017cna znale\u017a\u0107 \u017c\u0105danej fabryki rejestru u\u017cytkownik\u00f3w typu {0}.
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_FACTORY_TYPE.explanation=Ka\u017cdy pakunek implementacji rejestru u\u017cytkownik\u00f3w okre\u015bla sw\u00f3j udost\u0119pniony typ.
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_FACTORY_TYPE.useraction=Okre\u015bl obs\u0142ugiwany typ lub zainstaluj pakunek, kt\u00f3ry udost\u0119pnia instancj\u0119 rejestru u\u017cytkownik\u00f3w wymaganego typu.
+
+USER_REGISTRY_SERVICE_CONFIGURATION_WITHOUT_ID=CWWKS3003E: Wyst\u0105pi\u0142 wyj\u0105tek konfiguracji. Konfiguracja dla typu rejestru {0} nie zawiera definicji identyfikatora.
+USER_REGISTRY_SERVICE_CONFIGURATION_WITHOUT_ID.explanation=Konfiguracja dla typu rejestru nie zawiera definicji identyfikatora.
+USER_REGISTRY_SERVICE_CONFIGURATION_WITHOUT_ID.useraction=Zdefiniuj identyfikator dla konfiguracji typu rejestru.
+
+USER_REGISTRY_SERVICE_WITHOUT_TYPE=CWWKS3004E: Wyst\u0105pi\u0142 wyj\u0105tek wewn\u0119trzny. Us\u0142uga {0} nie definiuje typu rejestru, kt\u00f3ry implementuje.
+USER_REGISTRY_SERVICE_WITHOUT_TYPE.explanation=Us\u0142uga nie definiuje w\u0142a\u015bciwo\u015bci com.ibm.ws.security.registry.type.
+USER_REGISTRY_SERVICE_WITHOUT_TYPE.useraction=Zdefiniuj w\u0142a\u015bciwo\u015b\u0107 com.ibm.ws.security.registry.type dla us\u0142ugi.
+
+USER_REGISTRY_SERVICE_NO_USER_REGISTRY_AVAILABLE=CWWKS3005E: Wyst\u0105pi\u0142 wyj\u0105tek konfiguracji. Brak dost\u0119pnej us\u0142ugi implementacji rejestru u\u017cytkownik\u00f3w.  Upewnij si\u0119, \u017ce skonfigurowano rejestr u\u017cytkownik\u00f3w.
+USER_REGISTRY_SERVICE_NO_USER_REGISTRY_AVAILABLE.explanation=\u017badna implementacja rejestru u\u017cytkownik\u00f3w nie jest dost\u0119pna z poziomu rejestru us\u0142ug OSGi.
+USER_REGISTRY_SERVICE_NO_USER_REGISTRY_AVAILABLE.useraction=Okre\u015bl opcj\u0119 implementacji rejestru u\u017cytkownik\u00f3w.
+
+USER_REGISTRY_SERVICE_MULTIPLE_USER_REGISTRY_AVAILABLE=CWWKS3006E: Wyst\u0105pi\u0142 wyj\u0105tek konfiguracji. Istnieje wiele dost\u0119pnych us\u0142ug implementacji rejestru u\u017cytkownik\u00f3w i system nie mo\u017ce ustali\u0107, kt\u00f3rej u\u017cy\u0107.
+USER_REGISTRY_SERVICE_MULTIPLE_USER_REGISTRY_AVAILABLE.explanation=Dost\u0119pnych jest wiele implementacji rejestru u\u017cytkownik\u00f3w z poziomu rejestru us\u0142ug OSGi.
+USER_REGISTRY_SERVICE_MULTIPLE_USER_REGISTRY_AVAILABLE.useraction=Okre\u015bl tylko jedn\u0105 opcj\u0119 implementacji rejestru u\u017cytkownik\u00f3w.  W przypadku wybierania wielu rejestr\u00f3w u\u017cytkownik\u00f3w nale\u017cy uwzgl\u0119dni\u0107 opcj\u0119 stowarzyszania w celu stowarzyszenia rejestr\u00f3w u\u017cytkownik\u00f3w.
+
+USER_REGISTRY_SERVICE_ID_WITH_CONFLICTING_TYPE=CWWKS3007E: Wyst\u0105pi\u0142 wyj\u0105tek konfiguracji. Konfiguracja o typie {0} i identyfikatorze {1} powoduje konflikt z konfiguracj\u0105 o typie {2} i identyfikatorze {3}. Konfiguracja o typie {0} i identyfikatorze {1} zostanie zignorowana.
+USER_REGISTRY_SERVICE_ID_WITH_CONFLICTING_TYPE.explanation=Wiele konfiguracji rejestru definiuje ten sam identyfikator. Taka operacja nie jest obs\u0142ugiwana.
+USER_REGISTRY_SERVICE_ID_WITH_CONFLICTING_TYPE.useraction=Zmie\u0144 identyfikator jednej z powoduj\u0105cych konflikt konfiguracji rejestru na unikalny.
+
+FEDERATING_REGISTRY=CWWKS3008I: Rejestr u\u017cytkownik\u00f3w z identyfikatorem {0} jest stowarzyszony.
+FEDERATING_REGISTRY.explanation=Stowarzyszanie rejestru u\u017cytkownik\u00f3w jest w\u0142\u0105czone i skonfigurowany rejestr u\u017cytkownik\u00f3w jest stowarzyszony.
+FEDERATING_REGISTRY.useraction=Je\u015bli stowarzyszanie repozytorium nie jest wymagane, zaktualizuj konfiguracj\u0119 w pliku server.xml, aby wy\u0142\u0105czy\u0107 stowarzyszanie.
+
+REMOVE_FEDERATED_REGISTRY=CWWKS3009I: Rejestr u\u017cytkownik\u00f3w z identyfikatorem {0} usuni\u0119to ze stowarzyszania.
+REMOVE_FEDERATED_REGISTRY.explanation=Stowarzyszanie rejestru u\u017cytkownik\u00f3w jest w\u0142\u0105czone, a skonfigurowany rejestr u\u017cytkownik\u00f3w, kt\u00f3ry by\u0142 wcze\u015bniej stowarzyszony, usuni\u0119to ze stowarzyszania.
+REMOVE_FEDERATED_REGISTRY.useraction=Je\u015bli stowarzyszanie repozytorium nie jest wymagane, zaktualizuj konfiguracj\u0119 w pliku server.xml, aby wy\u0142\u0105czy\u0107 stowarzyszanie.
+
+USER_REGISTRY_SERVICE_FEDERATION_FAILED=CWWKS3010E: Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek podczas stowarzyszania rejestr\u00f3w u\u017cytkownik\u00f3w: {0}.
+USER_REGISTRY_SERVICE_FEDERATION_FAILED.explanation=Podj\u0119to nieudan\u0105 pr\u00f3b\u0119 stowarzyszenia rejestr\u00f3w u\u017cytkownik\u00f3w.
+USER_REGISTRY_SERVICE_FEDERATION_FAILED.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,6 +43,7 @@ public class WebRequestImpl implements WebRequest {
     private boolean unprotectedURI = false;
     private boolean specialUnprotectedURI = false;
     private Map<String, Object> propMap = null;
+    private boolean requestAuthenticate = false;
 
     public WebRequestImpl(HttpServletRequest req, HttpServletResponse resp,
                           SecurityMetadata securityMetadata, WebAppSecurityConfig config) {
@@ -119,8 +120,7 @@ public class WebRequestImpl implements WebRequest {
     /** {@inheritDoc} */
     @Override
     public LoginConfiguration getLoginConfig() {
-        LoginConfiguration loginConfig =
-                        securityMetadata != null ? securityMetadata.getLoginConfiguration() : null;
+        LoginConfiguration loginConfig = securityMetadata != null ? securityMetadata.getLoginConfiguration() : null;
         return loginConfig;
     }
 
@@ -139,7 +139,7 @@ public class WebRequestImpl implements WebRequest {
      * This unfortunately consolidates and duplicates a lot of logic from the different
      * authenticators. However, this is necessary to avoid additional work if we don't
      * have any of this information.
-     * 
+     *
      * @return {@code true} if some authentication data is available, {@code false} otherwise.
      */
     private boolean determineIfRequestHasAuthenticationData() {
@@ -155,8 +155,7 @@ public class WebRequestImpl implements WebRequest {
             authenticationMethod = loginConfig.getAuthenticationMethod();
         }
         if (LoginConfiguration.CLIENT_CERT.equals(authenticationMethod)) {
-            X509Certificate certChain[] =
-                            (X509Certificate[]) request.getAttribute(CertificateLoginAuthenticator.PEER_CERTIFICATES);
+            X509Certificate certChain[] = (X509Certificate[]) request.getAttribute(CertificateLoginAuthenticator.PEER_CERTIFICATES);
             if (certChain == null || certChain.length == 0) {
                 hasClientCertHeader = false;
             } else {
@@ -230,7 +229,7 @@ public class WebRequestImpl implements WebRequest {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.webcontainer.security.WebRequest#getProperties()
      */
     @Override
@@ -240,11 +239,25 @@ public class WebRequestImpl implements WebRequest {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.webcontainer.security.WebRequest#setProperties(java.util.HashMap)
      */
     @Override
     public void setProperties(Map<String, Object> props) {
         propMap = props;
     }
+
+    @Override
+    public boolean isRequestAuthenticate() {
+        return requestAuthenticate;
+    }
+
+    /*
+     * Set to true if handling an HttpServletRequest.authenticate.
+     */
+    @Override
+    public void setRequestAuthenticate(boolean requestAuthenticate) {
+        this.requestAuthenticate = requestAuthenticate;
+    }
+
 }

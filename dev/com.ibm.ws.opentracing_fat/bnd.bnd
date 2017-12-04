@@ -10,6 +10,9 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
+javac.source: 1.8
+javac.target: 1.8
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 src: \
 	fat/src,\
@@ -18,7 +21,7 @@ src: \
 	
 -sub: *.bnd
 
-test.project: true
+fat.project: true
 
 tested.features: opentracing-1.0
 

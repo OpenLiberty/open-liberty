@@ -1,0 +1,70 @@
+#CMVCPATHNAME SERV1/ws/code/prereq.jcdi/src/com/ibm/ws/webbeans/resources/jcdi.nlsprops
+#COMPONENTPREFIX CWOWB
+#COMPONENTNAMEFOR CWOWB Java EE Contexts and Dependency Injection 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by JCDI
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A CDI error has occurred: {0}
+cdi.resource.injection.error.CWOWB1000E=CWOWB1000E: Wyst\u0105pi\u0142 b\u0142\u0105d CDI: {0}
+cdi.resource.injection.error.CWOWB1000E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d funkcji CDI, kt\u00f3ry uniemo\u017cliwi jej normalne dzia\u0142anie.
+cdi.resource.injection.error.CWOWB1000E.useraction=Sprawd\u017a dzienniki FFDC i tekst wyj\u0105tku w celu zidentyfikowania problemu.
+
+# Web Application Archive "{0}" contains more than one beans.xml file. Using "{1}". Ignoring "{2}".
+multiple.beans.xml.warning.CWOWB1001W=CWOWB1001W: Archiwum aplikacji WWW {0} zawiera wi\u0119cej ni\u017c jeden plik beans.xml. U\u017cywane: {1}. Ignorowane: {2}.
+multiple.beans.xml.warning.CWOWB1001W.explanation=Funkcja CDI znalaz\u0142a wi\u0119cej ni\u017c jeden plik beans.xml.
+multiple.beans.xml.warning.CWOWB1001W.useraction=Upewnij si\u0119, \u017ce archiwum aplikacji zawiera tylko jeden plik beans.xml.
+
+managed.class.bean.class.mismatch.CWOWB1002E=CWOWB1002E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1}
+managed.class.bean.class.mismatch.CWOWB1002E.explanation=CMSG0001
+managed.class.bean.class.mismatch.CWOWB1002E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+
+error.loading.class.CWOWB1003E=CWOWB1003E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1}
+error.loading.class.CWOWB1003E.explanation=CMSG0001
+error.loading.class.CWOWB1003E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+
+unknown.container.type.CWOWB1004E=CWOWB1004E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0}
+unknown.container.type.CWOWB1004E.explanation=CMSG0001
+unknown.container.type.CWOWB1004E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+
+error.loading.resource.CWOWB1005E=CWOWB1005E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0}
+error.loading.resource.CWOWB1005E.explanation=CMSG0001
+error.loading.resource.CWOWB1005E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+no.injection.target.context.CWOWB1006E=CWOWB1006E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0}
+no.injection.target.context.CWOWB1006E.explanation=CMSG0001
+no.injection.target.context.CWOWB1006E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+resource.producer.validation.error.CWOWB1007E=CWOWB1007E: Pole producenta {0} ma typ {1}, kt\u00f3ry jest niezgodny z typem wstrzykni\u0119tego obiektu.
+resource.producer.validation.error.CWOWB1007E.explanation=Funkcja CDI znalaz\u0142a pole producenta zasobu o typie niezgodnym z typem wstrzykni\u0119tego do niego zasobu Java EE.
+resource.producer.validation.error.CWOWB1007E.useraction=Upewnij si\u0119, \u017ce do pola producenta zasobu wstrzykiwany jest poprawny zas\u00f3b Java EE, a typ pola jest zgodny z typem wstrzykiwanego do niego zasobu.
+
+no.injection.target.CWOWB1008E=CWOWB1008E: Sk\u0142adowa {0} klasy {1} nie mo\u017ce zosta\u0107 wstrzykni\u0119ta, poniewa\u017c klasa {1} nie znajduje si\u0119 w archiwum komponentu bean.
+no.injection.target.CWOWB1008E.explanation=Wstrzykni\u0119cie nie powiod\u0142o si\u0119, poniewa\u017c mened\u017cer komponentu bean archiwum, do kt\u00f3rego nale\u017cy klasa, ma warto\u015b\u0107 NULL.
+no.injection.target.CWOWB1008E.useraction=Upewnij si\u0119, \u017ce archiwum, do kt\u00f3rego nale\u017cy klasa, jest archiwum komponentu bean. Informacje na temat przekszta\u0142cania archiwum w archiwum komponentu bean zawiera specyfikacja CDI.
+
+implicit.bean.scanning.disabled.CWOWB1009W=CWOWB1009W: Niejawne archiwa komponent\u00f3w bean s\u0105 wy\u0142\u0105czone.
+implicit.bean.scanning.disabled.CWOWB1009W.explanation=Archiwa nie s\u0105 skanowane pod k\u0105tem komponent\u00f3w bean CDI, o ile nie maj\u0105 pliku beans.xml.
+implicit.bean.scanning.disabled.CWOWB1009W.useraction=Upewnij si\u0119, \u017ce ka\u017cde archiwum korzystaj\u0105ce z funkcji CDI ma plik beans.xml, lub ponownie w\u0142\u0105cz skanowanie niejawnych komponent\u00f3w bean w pliku server.xml.

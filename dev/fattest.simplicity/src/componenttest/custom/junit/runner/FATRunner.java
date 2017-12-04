@@ -499,8 +499,6 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                             }
                         }
                     } catch (TopologyException e) {
-                        //ignore the exception as log directory doesn't exist and no FFDC log
-                        Log.info(c, "retrieveFFDCCounts", "Ignoring exception: " + e);
                         retry = false;
                     } catch (Exception e) {
                         Log.info(c, "retrieveFFDCCounts", "Exception parsing FFDC summary");

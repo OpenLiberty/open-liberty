@@ -1,0 +1,196 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.utility/resources/com/ibm/ws/security/utility/resources/UtilityOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_ALL
+
+global.description=Beschreibung:
+global.actions=Aktionen:
+global.options=Optionen:
+global.usage=Syntax:
+global.required=Erforderlich:
+global.options.statement=\tVerwenden Sie den Befehl help [Aktionsname], um detaillierte Optionsinformationen f\u00fcr jede Aktion anzuzeigen.
+
+
+
+# -------- GENERAL OPTIONS -----------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+#Note to translator, please make sure that the the length of the line should
+# not exceed 80 characters. Therefore the \n (CRLF) needs to be placed at or
+# before 72th characters if the line starts with \t.
+# And this statement is applied after the sentences are translated.
+# So please feel free to place \n character at or before 72th characters if
+# the translated sentence is longer than the original sentence.
+
+help.desc=\tGibt die Hilfeinformationen zur angegebenen Aktion aus.
+#Note to translator the word "help" should not be translated
+help.usage.options=\t{0} help [Aktionsname]
+
+# -------- ENCODE OPTIONS ------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+encode.desc=\tCodiert den bereitgestellten Text.
+#Note to translator the word "encode" should not be translated
+encode.usage.options=\t{0} encode [Optionen]
+encode.option-key.text=\ \ \ \ textToEncode
+encode.option-desc.text=\tWenn Sie keine Argumente angeben, wird das Tool im interaktiven\n\
+\tModus aufgerufen. Andernfalls wird der angegebene Text codiert.\n\
+\tText mit Leerzeichen muss in Anf\u00fchrungszeichen gesetzt werden,\n\
+\twenn er als Argument angegeben wird.
+encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|hash{1}]
+encode.option-desc.encoding=\tGibt an, wie das Kennwort codiert wird. Die unterst\u00fctzten\n\
+\tCodierungen sind xor, aes und hash. Die Standardcodierung ist xor. \
+{2}
+encode.option-key.key=\ \ \ \ --key=[Schl\u00fcssel]
+encode.option-desc.key=\tGibt den bei der Codierung mit AES zu verwendenden Schl\u00fcssel an. \n\
+\tDie Zeichenfolge wird hashverschl\u00fcsselt, um einen Chiffrierschl\u00fcssel\n\
+\tzu erzeugen, der zur Verschl\u00fcsselung und Entschl\u00fcsselung des\n\
+\tKennworts verwendet wird. Der Schl\u00fcssel kann durch Definition \n\
+\tder Variablen wlp.password.encryption.key, deren Wert der \n\
+\tSchl\u00fcssel ist, an den Server \u00fcbergeben werden. Wenn Sie diese\n\
+\tOption nicht angeben, wird ein Standardschl\u00fcssel verwendet.
+encode.option-key.notrim=\ \ \ \ --notrim
+encode.option-desc.notrim=\tGibt an, ob Leerzeichen am Anfang und\n\
+\tEnde des angegebenen Texts entfernt werden. Wenn Sie diese\n\
+\tOption angeben, wird der bereitgestellte Text so codiert, wie\n\
+\ter ist. \
+\tWenn Sie diese Option nicht angeben, werden die Leerzeichen \n\
+\tam Anfang und am Ende des angegebenen Texts entfernt. 
+encode.option-key.listCustom=\ \ \ \ --listCustom
+encode.option-desc.listCustom=\tZeigt die Informationen der angepassten Kennwortverschl\u00fcsselung\n\
+\tim JSON-Format (JavaScript Object Notation) an.\n\
+\tDie Informationen setzen sich wie folgt zusammen:\n\
+\tname: Name des Algorithmus f\u00fcr die angepasste Kennwortverschl\u00fcsselung\n\
+\tfeaturename: Featurename\n\
+\tdescription: Beschreibung der angepassten Kennwortverschl\u00fcsselung
+
+
+
+# -------- CREATE SSL CERTIFICATE OPTIONS --------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+sslCert.desc=\tErstellt ein SSL-Standardzertifikat f\u00fcr die Server- \n\
+\toder Clientkonfiguration.
+
+#Note to translator the word "createSSLCertificate" should not be translated
+sslCert.usage.options=\t{0} createSSLCertificate '{--server Servername|--client Clientname'}  \n\
+\t--password Kennwort [Optionen]
+sslCert.required-key.server=\ \ \ \ --server=Name
+sslCert.required-desc.server=\tServer, f\u00fcr den das Zertifikat erstellt werden soll. \
+Dieses Argument kann nicht verwendet werden, wenn\n\
+\tdas Argument --client verwendet wird.
+sslCert.required-key.client=\ \ \ \ --client=Name
+sslCert.required-desc.client=\tClient, f\u00fcr den das Zertifikat erstellt werden soll. Dieses Argument \n\
+\tkann nicht verwendet werden, wenn das Argument --server verwendet wird.
+sslCert.required-key.password=\ \ \ \ --password[=Kennwort]
+sslCert.required-desc.password=\tDas Keystore-Kennwort (mindestens {1} Zeichen).\n\
+\tWenn kein Wert definiert wird, werden Sie zur Eingabe eines Werts \n\
+\taufgefordert.
+sslCert.option-key.validity=\ \ \ \ --validity=Tage
+sslCert.option-desc.validity=\tDie G\u00fcltigkeit des Zertifikats in Tagen. Der \n\
+\tStandardg\u00fcltigkeitszeitraum ist {2}. Der Mindestg\u00fcltigkeitszeitraum \n\
+\tist {3}.
+sslCert.option-key.subject=\ \ \ \ --subject=DN
+sslCert.option-desc.subject=\tDer definierte Name (DN) f\u00fcr das Zertifikatssubjekt und den \n\
+\tZertifikatsaussteller. Der Standard-DN basiert auf dem Hostnamen.
+sslCert.option.addon=Das Zertifikat wird mit dem Alias {4} erstellt.\n\
+Der Schl\u00fcsselalgorithmus ist {5} und der Signaturalgorithmus ist {6}.\n\
+Verwenden Sie das keytool direkt, um mehr Steuerung \u00fcber die \n\
+Zertifikatserstellung zu erhalten.
+sslCert.option-key.password.encoding=\ \ \ \ --passwordEncoding=[xor|aes]
+sslCert.option-desc.password.encoding=\tGibt an, wie das Keystore-Kennwort codiert wird. Die unterst\u00fctzten\n\
+\tCodierungen sind xor und aes. Die Standardcodierung ist xor. \n\
+\tVerwenden Sie den Befehl securityUtility encode --listCustom, um \n\
+\tfestzustellen, ob zus\u00e4tzliche angepasste Verschl\u00fcsselungen\n\
+\tunterst\u00fctzt werden.
+sslCert.option-key.password.key=\ \ \ \ --passwordKey=[Schl\u00fcssel]
+sslCert.option-desc.password.key=\tGibt den bei der Codierung des Keystore-Kennworts mit AES \n\
+\tzu verwendenden Schl\u00fcssel an. Diese Zeichenfolge wird hashverschl\u00fcsselt, \n\
+\tum einen Chiffrierschl\u00fcssel zu erzeugen, der zur Verschl\u00fcsselung \n\
+\tund Entschl\u00fcsselung des Kennworts Verschl\u00fcsselung und Entschl\u00fcsselung \n\
+\tdes Kennworts verwendet wird. Der Schl\u00fcssel kann durch Definition \n\
+\tder Variablen wlp.password.encryption.key, deren Wert der \n\
+\tSchl\u00fcssel ist, an den Server \u00fcbergeben werden. Wenn Sie \n\
+\tdiese Option nicht angeben, wird ein Standardschl\u00fcssel verwendet.
+
+sslCert.option-key.createConfigFile=\ \ \ \ --createConfigFile=Datei
+sslCert.option-desc.createConfigFile=\tOptional. Das Code-Snippet wird in die angegebene Datei und\n\
+\tnicht in die Konsolenanzeige geschrieben. Anschlie\u00dfend kann die\n\
+\tDatei mithilfe des bereitgestellten Code-Snippets in die \n\
+\tKonfigurationsdatei server.xml eingeschlossen werden.
+
+sslCert.option-key.keySize=\ \ \ \ --keySize=Gr\u00f6\u00dfe
+sslCert.option-desc.keySize=\tGr\u00f6\u00dfe des Zertifikatsschl\u00fcssels.  \
+Die Standardschl\u00fcsselgr\u00f6\u00dfe ist {7}.
+
+sslCert.option-key.sigAlg=\ \ \ \ --sigAlg=Signaturalgorithmus
+sslCert.option-desc.sigAlg=\tDer Signaturalgorithmus des Zertifikats.\n\
+\tDer Standardsignaturalgorithmus ist {8}.
+
+
+# -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+# Note to translator: the words 'LTPA' and 'ltpa.keys' should not be translated 
+createLTPAKeys.desc= \
+\tErstellt einen Satz von LTPA-Schl\u00fcsseln, die der Server verwenden\n\
+\tkann bzw. die von mehreren Servern gemeinsam genutzt werden k\u00f6nnen.\n\
+\tWenn kein Server und keine Datei angegeben ist, wird eine Datei \n\
+\tltpa.keys im aktuellen Arbeitsverzeichnis erstellt.
+#Note to translator the word "createLTPAKeys" should not be translated
+createLTPAKeys.usage.options=\t{0} createLTPAKeys --password[=Kennwort] [Optionen]
+createLTPAKeys.required-key.password=\ \ \ \ --password[=Kennwort]
+createLTPAKeys.required-desc.password=\tDas Kennwort f\u00fcr die LTPA-Schl\u00fcssel. \
+Wenn kein Wert definiert ist, werden Sie zur Eingabe eines Werts\
+aufgefordert.
+createLTPAKeys.option-key.server=\ \ \ \ --server=Name
+createLTPAKeys.option-desc.server=\tDer Server, f\u00fcr den die LTPA-Schl\u00fcssel erstellt werden.\n\
+\tDieses Argument kann nicht verwendet werden, wenn das Argument\n\
+\t--file verwendet wird.
+createLTPAKeys.option-key.file=\ \ \ \ --file=Name
+createLTPAKeys.option-desc.file=\tDie Datei, in die die LTPA-Schl\u00fcssel geschrieben werden.\n\
+\tDieses Argument kann nicht verwendet werden, wenn das Argument\n\
+\t--server verwendet wird.
+createLTPAKeys.option-key.password.encoding=\ \ \ \ --passwordEncoding=[xor|aes]
+createLTPAKeys.option-desc.password.encoding=\tGibt an, wie das Kennwort f\u00fcr die LTPA-Schl\u00fcssel in\n\
+\tder Datei server.xml codiert werden soll. Die unterst\u00fctzten\n\
+\t Codierungen sind xor und aes. Die Standardcodierung ist xor. \n\
+\tVerwenden Sie den Befehl securityUtility encode --listCustom,\n\
+\tum festzustellen, ob zus\u00e4tzliche angepasste Verschl\u00fcsselungen\n\
+\tunterst\u00fctzt werden.
+createLTPAKeys.option-key.password.key=\ \ \ \ --passwordKey=[Schl\u00fcssel]
+createLTPAKeys.option-desc.password.key=\tGibt den bei der Codierung des Kennworts f\u00fcr\n\
+\tdie LTPA-Schl\u00fcssel mit AES zu verwendenden Schl\u00fcssel an. Diese\n\
+\tZeichenfolge wird hashverschl\u00fcsselt, um einen Chiffrierschl\u00fcssel\n\
+\tzu erzeugen, der zur Verschl\u00fcsselung und Entschl\u00fcsselung des\n\
+\tKennworts Verschl\u00fcsselung und Entschl\u00fcsselung des Kennworts verwendet\n\
+\twird. Der Schl\u00fcssel kann durch Definition der Variablen\n\
+\twlp.password.encryption.key, deren Wert der Schl\u00fcssel ist,\n\
+\tan den Server \u00fcbergeben werden. Wenn Sie diese Option nicht angeben,\n\
+\twird ein Standardschl\u00fcssel verwendet.

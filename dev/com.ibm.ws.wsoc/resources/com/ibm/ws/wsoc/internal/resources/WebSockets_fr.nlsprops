@@ -1,0 +1,230 @@
+###############################################################################
+# Copyright (c) 2002, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+
+
+#COMPONENTPREFIX CWWKH
+#COMPONENTNAMEFOR CWWKH WebSphere WebSocket
+#CMVCPATHNAME com.ibm.ws.wsoc-1.0/resources/com/ibm/ws/wsoc/internal/resources/WebSockets.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+invalid.endpointclass=CWWKH0001E: Une exception s''est produite lors du d\u00e9ploiement de l''application WebSocket car la classe de noeud final annot\u00e9e {0} n''est pas publique ou concr\u00e8te, ou bien n''a pas de constructeur publique sans arguments.
+invalid.endpointclass.explanation=La classe de noeud final de serveur annot\u00e9e doit \u00eatre publique, concr\u00e8te et avoir un constructeur public sans arguments.
+invalid.endpointclass.useraction=Corrigez la classe de noeud final de serveur annot\u00e9e en classe publique, concr\u00e8te et avec un constructeur public sans arguments. Apr\u00e8s avoir r\u00e9solu le probl\u00e8me, d\u00e9ployez \u00e0 nouveau l'application.
+
+missing.annotation=CWWKH0002E: Une exception s''est produite lors du d\u00e9ploiement de l''application WebSocket car les annotations @onOpen et @onMessage sont toutes deux manquantes dans la classe de noeud final annot\u00e9e {0}.
+missing.annotation.explanation=La classe ServerEndpoint annot\u00e9e n'est pas valide si @OnOpen et @onMessage sont tous deux manquants.
+missing.annotation.useraction=Corrigez la classe ServerEndpoint annot\u00e9e en ajoutant @OnOpen et/ou @OnMessage. Apr\u00e8s avoir r\u00e9solu le probl\u00e8me, d\u00e9ployez \u00e0 nouveau l'application.
+
+morethanonepong.annotation=CWWKH0003E: Une exception s''est produite lors du d\u00e9ploiement de l''application WebSocket car plusieurs m\u00e9thodes @OnMessage avec type de message Pong ont \u00e9t\u00e9 d\u00e9finies dans la classe de noeud final annot\u00e9e {0}.
+morethanonepong.annotation.explanation=La classe ServerEndpoint annot\u00e9e n'est pas valide car plus d'une m\u00e9thode @OnMessage avec type de message Pong a \u00e9t\u00e9 d\u00e9finie dans cette classe. Le d\u00e9ploiement de l'application WebSocket n'a pas abouti. 
+morethanonepong.annotation.useraction=Corrigez la classe ServerEndpoint annot\u00e9e en d\u00e9finissant une seule m\u00e9thode @OnMessage de type de message Pong. Apr\u00e8s avoir r\u00e9solu le probl\u00e8me, d\u00e9ployez \u00e0 nouveau l'application.
+
+morethanonebinary.annotation=CWWKH0004E: Une exception s''est produite lors du d\u00e9ploiement de l''application WebSocket car plusieurs m\u00e9thodes @OnMessage avec type de message binaire ont \u00e9t\u00e9 d\u00e9finies dans la classe de noeud final annot\u00e9e {0}.
+morethanonebinary.annotation.explanation=La classe ServerEndpoint annot\u00e9e n'est pas valide car plus d'une m\u00e9thode @OnMessage avec type de message binaire a \u00e9t\u00e9 d\u00e9finie dans cette classe. Le d\u00e9ploiement de l'application WebSocket n'a pas abouti. 
+morethanonebinary.annotation.useraction=Corrigez la classe ServerEndpoint annot\u00e9e en d\u00e9finissant une seule m\u00e9thode @OnMessage de type de message binaire. Apr\u00e8s avoir r\u00e9solu le probl\u00e8me, d\u00e9ployez \u00e0 nouveau l'application.
+
+missing.msgtype.param=CWWKH0005E: Une exception s''est produite lors du d\u00e9ploiement de l''application WebSocket car la m\u00e9thode @OnMessage dans la classe de noeud final annot\u00e9e {0} n''a pas de param\u00e8tre de message de type pong, binaire ou texte.
+missing.msgtype.param.explanation=La classe ServerEndpoint annot\u00e9e n'est pas valide car la m\u00e9thode @OnMessage n'a pas de param\u00e8tre de message de type pong, binaire ou texte. Le d\u00e9ploiement de l'application WebSocket n'a pas abouti. 
+missing.msgtype.param.useraction=Corrigez la classe ServerEndpoint annot\u00e9e en d\u00e9clarant la m\u00e9thode @OnMessage avec un param\u00e8tre de message de type texte, binaire ou pong. Apr\u00e8s avoir r\u00e9solu le probl\u00e8me, d\u00e9ployez \u00e0 nouveau l'application.
+
+morethanonetext.annotation=CWWKH0006E: Une exception s''est produite lors du d\u00e9ploiement de l''application WebSocket car plusieurs m\u00e9thodes @OnMessage avec type de message texte ont \u00e9t\u00e9 d\u00e9finies dans la classe de noeud final annot\u00e9 {0}.
+morethanonetext.annotation.explanation=La classe ServerEndpoint annot\u00e9 n'est pas valide car plusieurs m\u00e9thodes @OnMessage avec type de message texte ont \u00e9t\u00e9 d\u00e9finies dans cette classe. Le d\u00e9ploiement de l'application WebSocket n'a pas abouti. 
+morethanonetext.annotation.useraction=Corrigez la classe ServerEndpoint annot\u00e9 en d\u00e9finissant une seule m\u00e9thode @OnMessage avec type de message. Apr\u00e8s avoir r\u00e9solu le probl\u00e8me, d\u00e9ployez \u00e0 nouveau l'application.
+
+invalid.onopen.annotation=CWWKH0007E: Une exception s''est produite lors du d\u00e9ploiement de l''application WebSocket car la m\u00e9thode @OnOpen {0} dans la classe de noeud final annot\u00e9e {1} a des param\u00e8tres autres que Session, EndpointConfig ou @PathParam.
+invalid.onopen.annotation.explanation=Type de param\u00e8tre non valide d\u00e9tect\u00e9 dans la m\u00e9thode @OnOpen. La m\u00e9thode @OnOpen ne peut avoir que des param\u00e8tres facultatifs de type Session, EndpointConfig et @PathParam. 
+invalid.onopen.annotation.useraction=Corrigez la classe ServerEndpoint annot\u00e9e en supprimant le param\u00e8tre non valide dans la m\u00e9thode @OnOpen. Apr\u00e8s avoir r\u00e9solu le probl\u00e8me, d\u00e9ployez \u00e0 nouveau l'application.
+
+morethanoneclose.annotation=CWWKH0008E: Une exception s''est produite lors du d\u00e9ploiement de l''application WebSocket car plusieurs m\u00e9thodes @OnClose ont \u00e9t\u00e9 d\u00e9finies dans la classe de noeud final annot\u00e9{0}. Les m\u00e9thodes @OnClose sont {1} et {2}.
+morethanoneclose.annotation.explanation=La classe ServerEndpoint annot\u00e9e n'est pas valide car plus d'une m\u00e9thode @OnClose a \u00e9t\u00e9 d\u00e9finie dans cette classe. Le d\u00e9ploiement de l'application WebSocket n'a pas abouti. 
+morethanoneclose.annotation.useraction=Corrigez la classe ServerEndpoint annot\u00e9e en d\u00e9finissant une seule m\u00e9thode @OnClose. Apr\u00e8s avoir r\u00e9solu le probl\u00e8me, d\u00e9ployez \u00e0 nouveau l'application.
+
+invalid.onclose.annotation=CWWKH0009E: Une exception s''est produite lors du d\u00e9ploiement de l''application WebSocket car la m\u00e9thode @OnClose {0} dans la classe de noeud final annot\u00e9e {1} a des param\u00e8tres autres que Session, CloseReason ou @PathParam.
+invalid.onclose.annotation.explanation=Type de param\u00e8tre non valide d\u00e9tect\u00e9 dans la m\u00e9thode @OnClose. La m\u00e9thode @OnClose ne peut avoir que des param\u00e8tres facultatifs de type Session, CloseReason et @PathParam. 
+invalid.onclose.annotation.useraction=Corrigez la classe ServerEndpoint annot\u00e9e en supprimant le param\u00e8tre non valide dans la m\u00e9thode @OnClose. Apr\u00e8s avoir r\u00e9solu le probl\u00e8me, d\u00e9ployez \u00e0 nouveau l'application.
+
+morethanoneerror.annotation=CWWKH0010E: Une exception s''est produite lors du d\u00e9ploiement de l''application WebSocket car plusieurs m\u00e9thodes @OnError ont \u00e9t\u00e9 d\u00e9finies dans la classe de noeud final annot\u00e9e {0}. Les m\u00e9thodes @OnError sont {1} et {2}.
+morethanoneerror.annotation.explanation=La classe ServerEndpoint annot\u00e9e n'est pas valide car plus d'une m\u00e9thode @OnError a \u00e9t\u00e9 d\u00e9finie dans cette classe. Le d\u00e9ploiement de l'application WebSocket n'a pas abouti. 
+morethanoneerror.annotation.useraction=Corrigez la classe ServerEndpoint annot\u00e9e en d\u00e9finissant une seule m\u00e9thode @OnError. Apr\u00e8s avoir r\u00e9solu le probl\u00e8me, d\u00e9ployez \u00e0 nouveau l'application.
+
+invalid.onerror.annotation=CWWKH0011E: Une exception s''est produite lors du d\u00e9ploiement de l''application WebSocket car la m\u00e9thode @OnError {0} dans la classe de noeud final annot\u00e9e {1} comporte des param\u00e8tres autres que Throwable, Session ou @PathParam.
+invalid.onerror.annotation.explanation=Type de param\u00e8tre non valide d\u00e9tect\u00e9 dans la m\u00e9thode @OnError. La m\u00e9thode @OnError ne peut avoir que le param\u00e8tre obligatoire Throwable et les param\u00e8tres facultatifs Session et @PathParam. 
+invalid.onerror.annotation.useraction=Corrigez la classe ServerEndpoint annot\u00e9e en supprimant le type de param\u00e8tre non valide dans la m\u00e9thode @OnError. Apr\u00e8s avoir r\u00e9solu le probl\u00e8me, d\u00e9ployez \u00e0 nouveau l'application.
+
+missing.throwable=CWWKH0012E: Une exception s''est produite lors du d\u00e9ploiement de l''application WebSocket car il manque dans la m\u00e9thode @OnError {0} dans la classe de noeud final annot\u00e9e {1} un param\u00e8tre obligatoire de type Throwable.
+missing.throwable.explanation=La classe ServerEndpoint annot\u00e9e n'est pas valide car il manque dans la m\u00e9thode @OnError un param\u00e8tre obligatoire de type Throwable. Le d\u00e9ploiement de l'application WebSocket n'a pas abouti. 
+missing.throwable.useraction=Corrigez la classe ServerEndpoint annot\u00e9e en ajoutant le param\u00e8tre obligatoire de type Throwable \u00e0 la m\u00e9thode @OnError. Apr\u00e8s avoir r\u00e9solu le probl\u00e8me, d\u00e9ployez \u00e0 nouveau l'application.
+
+invalid.pong.annotation=CWWKH0013E: Une exception s''est produite lors du d\u00e9ploiement de l''application WebSocket car la m\u00e9thode @OnMessage {0} dans la classe de noeud final annot\u00e9e {1} comporte un param\u00e8tre non valide {2}.
+invalid.pong.annotation.explanation=Un type de param\u00e8tre non valide a \u00e9t\u00e9 d\u00e9tect\u00e9 dans la m\u00e9thode @OnMessage avec type de message pong. Le d\u00e9ploiement de l'application WebSocket n'a pas abouti.
+invalid.pong.annotation.useraction=Corrigez la classe ServerEndpoint annot\u00e9e en supprimant le param\u00e8tre non valide dans la m\u00e9thode @OnMessage. Apr\u00e8s avoir r\u00e9solu le probl\u00e8me, d\u00e9ployez \u00e0 nouveau l'application.
+
+morethanone.binary.param=CWWKH0014E: Une exception s''est produite lors du d\u00e9ploiement de l''application WebSocket car la m\u00e9thode @OnMessage {0} dans la classe de noeud final annot\u00e9e {1} comporte plus d''un param\u00e8tre de type de message binaire.
+morethanone.binary.param.explanation=La classe ServerEndpoint annot\u00e9e n'est pas valide car la m\u00e9thode @OnMessage comporte plus d'un param\u00e8tre de type de message binaire. Le d\u00e9ploiement de l'application WebSocket n'a pas abouti. 
+morethanone.binary.param.useraction=Corrigez la classe ServerEndpoint annot\u00e9e en d\u00e9finissant un seul param\u00e8tre de type de message binaire. Apr\u00e8s avoir r\u00e9solu le probl\u00e8me, d\u00e9ployez \u00e0 nouveau l'application.
+
+invalid.decoderclass=CWWKH0015E: Une exception s''est produite lors du d\u00e9ploiement de l''application WebSocket car la classe de d\u00e9codeur {0} utilis\u00e9e dans la m\u00e9thode @OnMessage {1} de la classe de noeud final annot\u00e9e {2} n''est pas publique ou concr\u00e8te, ou n''a pas de constructeur public sans arguments.
+invalid.decoderclass.explanation=La classe de d\u00e9codeur utilis\u00e9e dans la classe ServerEndpoint annot\u00e9e doit \u00eatre publique, concr\u00e8te et avoir un constructeur public sans arguments.
+invalid.decoderclass.useraction=Corrigez la classe de d\u00e9codeur en classe publique, concr\u00e8te et avec un constructeur public sans arguments. Apr\u00e8s avoir r\u00e9solu le probl\u00e8me, d\u00e9ployez \u00e0 nouveau l'application.
+
+morethanone.message.param=CWWKH0016E: Une exception s''est produite lors du d\u00e9ploiement de l''application WebSocket car la m\u00e9thode @OnMessage {0} dans la classe de noeud final annot\u00e9e {1} a plus d''un param\u00e8tre de type de message {2}.
+morethanone.message.param.explanation=La classe ServerEndpoint annot\u00e9e n'est pas valide car la m\u00e9thode @OnMessage comporte plus d'un param\u00e8tre de type de message. Le d\u00e9ploiement de l'application WebSocket n'a pas abouti. 
+morethanone.message.param.useraction=Corrigez la m\u00e9thode @OnMessage en d\u00e9finissant un seul param\u00e8tre de type de message conform\u00e9ment \u00e0 la documentation de l'API javax.websocket.OnMessage. Apr\u00e8s avoir r\u00e9solu le probl\u00e8me, d\u00e9ployez \u00e0 nouveau l'application.
+
+invalid.binary.param=CWWKH0017E: Une exception s''est produite lors du d\u00e9ploiement de l''application WebSocket car la m\u00e9thode @OnMessage {0} dans la classe de noeud final annot\u00e9e {1} comporte un param\u00e8tre non valide {2}.
+invalid.binary.param.explanation=Un type de param\u00e8tre non valide a \u00e9t\u00e9 d\u00e9tect\u00e9 dans la m\u00e9thode @OnMessage avec type de message binaire. Le d\u00e9ploiement de l'application WebSocket n'a pas abouti.
+invalid.binary.param.useraction=Corrigez la m\u00e9thode @OnMessage en supprimant le type de param\u00e8tre non valide en vous r\u00e9f\u00e9rant \u00e0 la documentation de l'API javax.websocket.OnMessage. Apr\u00e8s avoir r\u00e9solu le probl\u00e8me, d\u00e9ployez \u00e0 nouveau l'application.
+
+morethanone.text.param=CWWKH0018E: Une exception s''est produite lors du d\u00e9ploiement de l''application WebSocket car la m\u00e9thode @OnMessage {0} dans la classe de noeud final annot\u00e9e {1} a plus d''un param\u00e8tre de type de message texte {2}.
+morethanone.text.param.explanation=La classe ServerEndpoint annot\u00e9e n'est pas valide car la m\u00e9thode @OnMessage comporte plus d'un param\u00e8tre de type de message texte. Le d\u00e9ploiement de l'application WebSocket n'a pas abouti. 
+morethanone.text.param.useraction=Corrigez la m\u00e9thode @OnMessage en d\u00e9finissant un seul param\u00e8tre de type de message texte conform\u00e9ment \u00e0 la documentation de l'API javax.websocket.OnMessage. Apr\u00e8s avoir r\u00e9solu le probl\u00e8me, d\u00e9ployez \u00e0 nouveau l'application.
+
+invalid.text.param=CWWKH0019E: Une exception s''est produite lors du d\u00e9ploiement de l''application WebSocket car la m\u00e9thode @OnMessage {0} dans la classe de noeud final annot\u00e9e {1} comporte un param\u00e8tre non valide {2}.
+invalid.text.param.explanation=Un type de param\u00e8tre non valide a \u00e9t\u00e9 d\u00e9tect\u00e9 dans la m\u00e9thode @OnMessage avec type de message texte. Le d\u00e9ploiement de l'application WebSocket n'a pas abouti.
+invalid.text.param.useraction=Corrigez la m\u00e9thode @OnMessage en supprimant le type de param\u00e8tre non valide en vous r\u00e9f\u00e9rant \u00e0 la documentation de l'API javax.websocket.OnMessage. Apr\u00e8s avoir r\u00e9solu le probl\u00e8me, d\u00e9ployez \u00e0 nouveau l'application.
+
+missing.path.segment=CWWKH0020E: Une exception s''est produite lors de l''appel du noeud final de serveur WebSocket. Le param\u00e8tre @PathParam {0} d\u00e9fini sur la m\u00e9thode {1} n''a pas de segment de chemin correspondant dans l''URI @ServerEndpoint dans la classe de noeud final annot\u00e9e {2}.
+missing.path.segment.explanation=Le param\u00e8tre @PathParam n'a pas de segment de chemin correspondant dans l'URI @ServerEndpoint. 
+missing.path.segment.useraction=Corrigez le param\u00e8tre @PathParam afin qu'il corresponde \u00e0 l'un des segments de chemin dans l'URI @ServerEndpoint. Apr\u00e8s avoir r\u00e9solu le probl\u00e8me, d\u00e9ployez \u00e0 nouveau l'application.
+
+missing.pathparam.value=CWWKH0021E: Une exception s''est produite lors du d\u00e9ploiement de l''application WebSocket car il manque dans l''annotation @PathParam {0} d\u00e9finie dans la m\u00e9thode {1} la valeur de l''annotation dans la classe de noeud final annot\u00e9e {2}.
+missing.pathparam.value.explanation=L'annotation @PathParam n'a pas de valeur. Le d\u00e9ploiement de l'application WebSocket n'a pas abouti.
+missing.pathparam.value.useraction=Corrigez l'annotation @PathParam en ajoutant la valeur \u00e0 l'annotation. Apr\u00e8s avoir r\u00e9solu le probl\u00e8me, d\u00e9ployez \u00e0 nouveau l'application.
+
+invalid.pathparam.type=CWWKH0022E: Une exception s''est produite lors du d\u00e9ploiement de l''application WebSocket car le param\u00e8tre @PathParam {0} d\u00e9fini dans la m\u00e9thode {1} a un type non valide dans la classe de noeud final annot\u00e9e {2}.
+invalid.pathparam.type.explanation=Le param\u00e8tre @PathParam a un type non valide. Le d\u00e9ploiement de l'application WebSocket n'a pas abouti.
+invalid.pathparam.type.useraction=Corrigez le type d'annotation @PathParam en cha\u00eene, type primitif Java ou version en cadre. Apr\u00e8s avoir r\u00e9solu le probl\u00e8me, d\u00e9ployez \u00e0 nouveau l'application.
+
+mismatch.pathparam.type=CWWKH0023E: Une exception s''est produite lors de l''ex\u00e9cution de la m\u00e9thode {0} dans la classe de noeud final annot\u00e9e {1} lors de la conversion des donn\u00e9es @PathParam \u00e0 l''index de param\u00e8tre {2} vers le type {3}.
+mismatch.pathparam.type.explanation=La conversion du param\u00e8tre de chemin @PathParam avec le segment correspondant de l'URI ServerEndpoint a \u00e9chou\u00e9 en raison d'un type non valide. L'ex\u00e9cution de la m\u00e9thode de noeud final n'a pas abouti.
+mismatch.pathparam.type.useraction=Assurez-vous que le segment d'URI ServerEndpoint corresponde au type de donn\u00e9es du param\u00e8tre @PathParam correspondant.
+
+bytes.notavailable=CWWKH0024E: Une exception s'est produite lors de la lecture d'un message WebSocket entrant car aucun autre octet n'\u00e9tait disponible pour sa lecture.
+bytes.notavailable.explanation=Une exception s'est produite lors de la lecture d'un message WebSocket entrant car aucun autre octet n'\u00e9tait disponible pour sa lecture.
+bytes.notavailable.useraction=V\u00e9rifiez que les donn\u00e9es du message WebSocket entrant sont correctes.
+
+onmessage.notdefined=CWWKH0025E: Le client a envoy\u00e9 au noeud final {0} un message ne comportant pas une m\u00e9thode @OnMessage ou MessageHandler pour le type de message d\u00e9fini.
+onmessage.notdefined.explanation=Impossible de r\u00e9aliser la demande WebSocket du client car celui-ci envoie au ServerEndpoint un message ne comportant pas une m\u00e9thode @OnMessage ou MessageHandler pour le type de message d\u00e9fini.
+onmessage.notdefined.useraction=Notifiez le client ou ajoutez la m\u00e9thode @OnMessage au noeud final de serveur annot\u00e9e ou bien ajoutez un MessageHandler pour pouvoir traiter la demande du client, puis d\u00e9ployez \u00e0 nouveau l'application.
+
+decoder.ioexception=CWWKH0026E: Impossible de r\u00e9aliser la demande WebSocket du client car une exception IOException s''est produite lors de l''appel de onMessage dans la classe {0} pour d\u00e9codage des donn\u00e9es du message {1}. Message d''exception : {2}
+decoder.ioexception.explanation=Impossible de r\u00e9aliser la demande WebSocket du client car une exception IOException s'est produite lors de l'appel de onMessage pour d\u00e9codage des donn\u00e9es du message. 
+decoder.ioexception.useraction=V\u00e9rifiez les donn\u00e9es du message entrant et le d\u00e9codeur.
+
+decoder.create.exception=CWWKH0027E: Impossible de r\u00e9aliser la demande WebSocket en raison d''un probl\u00e8me lors de la cr\u00e9ation d''une nouvelle instance de la classe de d\u00e9codeur {0}. Exception : {1}
+decoder.create.exception.explanation=Impossible de r\u00e9aliser la demande WebSocket en raison d'un probl\u00e8me lors de la cr\u00e9ation d'une nouvelle instance de la classe de d\u00e9codeur.
+decoder.create.exception.useraction=V\u00e9rifiez la classe du d\u00e9codeur.
+
+fin1.processing.error=CWWKH0028E: Une exception s''est produite lors de la lecture d''un message entrant dans la classe ServerEndpoint {0} en raison d''une erreur lors du traitement de la valeur 1 de FIN.
+fin1.processing.error.explanation=Une exception s'est produite lors de la lecture d'un message WebSocket entrant en raison d'une erreur lors du traitement de la valeur 1 de FIN.
+fin1.processing.error.useraction=V\u00e9rifiez que les donn\u00e9es du cadre de message WebSocket entrant sont correctes.
+ 
+fin0.processing.error=CWWKH0029E: Une exception s''est produite lors de la lecture d''un message entrant dans la classe ServerEndpoint {0} en raison d''une erreur lors du traitement de la valeur 0 de FIN.
+fin0.processing.error.explanation=Une exception s'est produite lors de la lecture d'un message WebSocket entrant en raison d'une erreur lors du traitement de la valeur 0 de FIN.
+fin0.processing.error.useraction=V\u00e9rifiez que les donn\u00e9es du cadre de message WebSocket entrant sont correctes.
+
+invalid.opcode=CWWKH0030E: Une exception s''est produite lors de la lecture d''un message WebSocket entrant dans la classe ServerEndpoint {0} en raison d''un opcode {1} non valide dans le cadre du message.
+invalid.opcode.explanation=Une exception s'est produite lors de la lecture d'un message WebSocket entrant en raison d'un opcode non valide dans le cadre du message.
+invalid.opcode.useraction=V\u00e9rifiez que les donn\u00e9es du cadre de message WebSocket entrant sont correctes.
+
+invalid.continue.opcode=CWWKH0031E: Une exception s''est produite lors de la lecture d''un message WebSocket entrant dans la classe ServerEndpoint {0} en raison d''un opcode continue non valide avec message non fragment\u00e9.
+invalid.continue.opcode.explanation=Une exception s'est produite lors de la lecture d'un message WebSocket entrant en raison d'un opcode continue non valide avec message non fragment\u00e9.
+invalid.continue.opcode.useraction=V\u00e9rifiez que les donn\u00e9es du cadre de message WebSocket entrant sont correctes.  
+
+incorrect.maskflag=CWWKH0032E: Une exception s''est produite lors de la lecture d''un message WebSocket entrant dans la classe ServerEndpoint {0} car l''indicateur de masque n''a pas \u00e9t\u00e9 d\u00e9fini correctement dans le cadre du message.
+incorrect.maskflag.explanation=Une exception s'est produite lors de la lecture d'un message WebSocket entrant car l'indicateur de masque n'a pas \u00e9t\u00e9 d\u00e9fini correctement dans le cadre du message.
+incorrect.maskflag.useraction=V\u00e9rifiez que les donn\u00e9es du cadre de message WebSocket entrant sont correctes. 
+
+invalid.maskflag.value=CWWKH0033E: Une exception s''est produite lors de la lecture d''un message WebSocket entrant dans la classe ServerEndpoint {0} car une valeur correcte n''a pas \u00e9t\u00e9 affect\u00e9e \u00e0 l''indicateur de masque.
+invalid.maskflag.value.explanation=Une exception s'est produite lors de la lecture d'un message WebSocket entrant car une valeur correcte n'a pas \u00e9t\u00e9 affect\u00e9e \u00e0 l'indicateur de masque dans le cadre du message.
+invalid.maskflag.value.useraction=V\u00e9rifiez que les donn\u00e9es du cadre de message WebSocket entrant sont correctes.
+
+duplicate.uri=CWWKH0034E: Une exception s''est produite lors du d\u00e9ploiement de l''application WebSocket car plusieurs noeuds finaux de serveur ont le m\u00eame URI {0}.
+duplicate.uri.explanation=La classe ServerEndpoint annot\u00e9e n'est pas valide car plusieurs noeuds finaux de serveur ont le m\u00eame URI. Le d\u00e9ploiement de l'application WebSocket n'a pas abouti. 
+duplicate.uri.useraction=D\u00e9finissez des URI ServerEndpoint uniques dans l'application WebSocket. Apr\u00e8s avoir r\u00e9solu le probl\u00e8me, d\u00e9ployez \u00e0 nouveau l'application.
+
+invalid.nonzero.opcode=CWWKH0035E: Une exception s''est produite lors de la lecture d''un message WebSocket entrant dans la classe ServerEndpoint {0} en raison d''un opcode non z\u00e9ro non valide dans un cadre autre que le premier.
+invalid.nonzero.opcode.explanation=Une exception s'est produite lors de la lecture d'un message WebSocket entrant en raison d'un opcode non z\u00e9ro non valide dans un cadre autre que le premier.
+invalid.nonzero.opcode.useraction=V\u00e9rifiez que les donn\u00e9es du cadre de message WebSocket entrant sont correctes.
+
+morethanoneonopen.annotation=CWWKH0036E: Une exception s''est produite lors du d\u00e9ploiement de l''application WebSocket car plusieurs m\u00e9thodes @OnOpen ont \u00e9t\u00e9 d\u00e9finies dans la classe de noeud final annot\u00e9e {0}.
+morethanoneonopen.annotation.explanation=La classe ServerEndpoint annot\u00e9e n'est pas valide car plus d'une m\u00e9thode @OnOpen a \u00e9t\u00e9 d\u00e9finie dans cette classe. Le d\u00e9ploiement de l'application WebSocket n'a pas abouti. 
+morethanoneonopen.annotation.useraction=Corrigez la classe ServerEndpoint annot\u00e9e en d\u00e9finissant une seule m\u00e9thode @OnOpen. Apr\u00e8s avoir r\u00e9solu le probl\u00e8me, d\u00e9ployez \u00e0 nouveau l'application.
+
+invalid.message.toobig=CWWKH0037E: Message WebSocket entrant non valide dans la classe ServerEndpoint {0}. La taille du message entrant est {1}, ce qui d\u00e9passe la valeur maxMessageSize {2} d\u00e9finie dans la m\u00e9thode d''annotation @OnMessage{3}.
+invalid.message.toobig.explanation=Le message WebSocket ne peut pas d\u00e9passer la taille maxMessageSize d\u00e9finie dans l'annotation @OnMessage.
+invalid.message.toobig.useraction=V\u00e9rifiez que le client envoie un message WebSocket plus petit que la valeur maxMessageSize d\u00e9finie dans @OnMessage ou augmentez la valeur de maxMessageSize dans @OnMessage et d\u00e9ployez \u00e0 nouveau l'application.
+
+maxidletimeout.closesession=CWWKH0038E: La session WebSocket est inactive depuis {0} secondes. Fermeture de la connexion.
+maxidletimeout.closesession.explanation=Le d\u00e9lai d'attente de la session WebSocket a expir\u00e9. Les sessions WebSocket deviennent inactives lorsque des messages ne sont pas envoy\u00e9s ou re\u00e7us au cours du nombre de secondes sp\u00e9cifi\u00e9 par le param\u00e8tre maxIdleTimeout.
+maxidletimeout.closesession.useraction=V\u00e9rifiez pourquoi le client n'envoie ou ne re\u00e7oit pas de messages. Si n\u00e9cessaire, augmentez la valeur du param\u00e8tre maxIdleTimeout \u00e0 l'aide de l'API Session.setMaxIdleTimeout().
+
+client.invalid.returncode=CWWKH0039E: Lors de l''envoi d''une demande WebSocket sortante au noeud final {1} sur le serveur cible, une r\u00e9ponse {0} a \u00e9t\u00e9 re\u00e7ue au lieu d''une r\u00e9ponse 101.
+client.invalid.returncode.explanation=Les op\u00e9rations WebSocket sortantes requi\u00e8rent un code r\u00e9ponse 101 pour les op\u00e9rations WebSocket.
+client.invalid.returncode.useraction=Utilisez le code r\u00e9ponse non valide pour d\u00e9terminer si le noeud final cible est valide et ex\u00e9cute un noeud final WebSocket et pour d\u00e9terminer la cause de l'\u00e9chec sur la demande WebSocket sortante. 
+
+client.invalid.acceptkey=CWWKH0040E: Le serveur cible a r\u00e9pondu avec une cl\u00e9 d''acceptation WebSocket non valide lors de l''envoi d''une demande WebSocket sortante au noeud final {1}.  
+client.invalid.acceptkey.explanation=Les op\u00e9rations WebSocket sortantes requi\u00e8rent que le serveur cible renvoie une cl\u00e9 d'acceptation WebSocket valide pour les op\u00e9rations WebSocket.
+client.invalid.acceptkey.useraction=V\u00e9rifiez que le serveur cible est compatible avec le protocole WebSocket.
+
+client.invalid.endpoint=CWWKH0041E: Le noeud final non valide {0} a \u00e9t\u00e9 sp\u00e9cifi\u00e9 lors d''une demande WebSocket sortante.
+client.invalid.endpoint.explanation=Un noeud final valide est requis pour une demande WebSocket sortante.
+client.invalid.endpoint.useraction=V\u00e9rifiez que le param\u00e8tre ClientEndpoint utilis\u00e9 dans la m\u00e9thode connectToServer de l'appel de l'API WebSocket est un noeud final de client annot\u00e9. 
+
+client.invalid.scheme=CWWKH0042E: Un sch\u00e9ma {0} non valide a \u00e9t\u00e9 utilis\u00e9 pour la connexion client sortante. Les sch\u00e9mas valides pour le protocole WebSocket sont ws ou wss.
+client.invalid.scheme.explanation=Les sch\u00e9mas WebSocket valides sont ws ou wss.
+client.invalid.scheme.useraction=Utilisez un sch\u00e9ma valide lors d'une demande WebSocket sortante.
+
+client.invalid.configurator=CWWKH0043E: La classe de configurateur {0} n''a pas \u00e9t\u00e9 cr\u00e9\u00e9e lors d''une demande sortante. L''exception est {1}. 
+client.invalid.configurator.explanation=La classe Configuration n'a pas \u00e9t\u00e9 cr\u00e9\u00e9e lors d'une demande sortante, peut-\u00eatre parce que le constructeur d'argument z\u00e9ro public n'existait pas ou n'\u00e9tait pas accessible.
+client.invalid.configurator.useraction=V\u00e9rifiez l'ad\u00e9quation de la classe de configurateur et que la classe comporte un constructeur d'argument z\u00e9ro public accessible.
+ 
+client.connection.error=CWWKH0044E: Le noeud final {0} n''a pas pu \u00eatre trait\u00e9 lors d''une demande WebSocket sortante.  L''exception est {1}.
+client.connection.error.explanation=L'exception s'est produite lorsque le noeud final a tent\u00e9 de se connecter au serveur cible lors d'une demande WebSocket sortante.
+client.connection.error.useraction=Utilisez les d\u00e9tails de l'exception pour d\u00e9terminer sa cause et corriger le probl\u00e8me.
+
+client.invalid.endpointclass=CWWKH0045E: La classe {0} non valide a \u00e9t\u00e9 sp\u00e9cifi\u00e9e lors d''une demande WebSocket sortante.
+client.invalid.endpointclass.explanation=Une classe de noeud final valide est requise pour une demande WebSocket sortante.
+client.invalid.endpointclass.useraction=V\u00e9rifiez que le param\u00e8tre de noeud final qui est utilis\u00e9 dans la m\u00e9thode connectToServer de l'appel d'API WebSocket \u00e9tend une classe de noeud final WebSocket.
+
+adding.endpoint=CWWKH0046I: Ajout d''un noeud final de serveur WebSocket avec l''URI suivante : {0}
+adding.endpoint.explanation=Le noeud final de serveur WebSocket avec l'URI sp\u00e9cifi\u00e9e est disponible pour le client WebSocket \u00e0 utiliser.
+adding.endpoint.useraction=Aucune action n'est requise. 
+
+invalid.endpoint.context=CWWKH0047E: Les noeuds finaux de serveur WebSocket avec le chemin de contexte {0} ne sont pas disponibles pour le client.
+invalid.endpoint.context.explanation=Les noeuds finaux de serveur WebSocket avec le chemin de contexte sont indisponibles pour le service du client WebSocket.
+invalid.endpoint.context.useraction=Pour plus d'informations sur la raison de l'indisponibilit\u00e9 des noeuds finaux de serveur , consultez les journaux et la trace du serveur de profil Liberty.
+
+client.connection.nossl=CWWKH0048E: Le noeud final {0} n''a pas pu \u00eatre trait\u00e9 lors d''une demande WebSocket sortante car la s\u00e9curit\u00e9 n''est pas activ\u00e9e.
+client.connection.nossl.explanation=La s\u00e9curit\u00e9 doit \u00eatre activ\u00e9e pour le traitement des demandes WebSocket s\u00e9curis\u00e9es sortantes.
+client.connection.nossl.useraction=Activer la s\u00e9curit\u00e9.
+
+endpoint.addsclosed=CWWKH0049E: Impossible d'ajouter des noeuds finaux WebSocket suppl\u00e9mentaires une fois l'application WebSocket d\u00e9marr\u00e9e.
+endpoint.addsclosed.explanation=Les noeuds finaux WebSocket doivent \u00eatre ajout\u00e9s avant le d\u00e9marrage de l'application WebSocket.
+endpoint.addsclosed.useraction=Ajoutez des noeuds finaux WebSocket avant le d\u00e9marrage de l'application WebSocket.
+
+endpoint.creation.error=CWWKH0050E: La classe de noeud final {0} n''a pas pu \u00eatre cr\u00e9\u00e9e.  L''exception est {1}.
+endpoint.creation.error.explanation=L'exception s'est produite lors de la cr\u00e9ation de la classe de noeud final.
+endpoint.creation.error.useraction=Utilisez les d\u00e9tails de l'exception pour d\u00e9terminer sa cause et corriger le probl\u00e8me.
+
+endpoint.instance.error=CWWKH0051E: Le serveur ne peut pas acc\u00e9der \u00e0 la classe de noeud final {0} en raison de l''exception suivante : {1}
+endpoint.instance.error.explanation=Une erreur s'est produite lorsque le serveur a tent\u00e9 d'acc\u00e9der \u00e0 la classe de noeud final sp\u00e9cifi\u00e9e.
+endpoint.instance.error.useraction=Passez en revue les d\u00e9tails de l'exception afin de d\u00e9terminer pourquoi il n'est pas possible d'acc\u00e9der \u00e0 la classe de noeud final puis r\u00e9solvez le probl\u00e8me.
+
+missingslashornull.uri=CWWKH0052E: Une exception s''est produite pendant le d\u00e9ploiement ou le d\u00e9marrage d''un noeud final du serveur : {0} avec l''URI : "{1}". L''URI du noeud final est null ou ne commence pas par /.
+missingslashornull.uri.explanation=ServerEndpoint n'est pas valide car l'URI du noeud final est null ou ne commence pas par / dans la classe de noeud final. L'application WebSocket n'est pas disponible pour les demandes. 
+missingslashornull.uri.useraction=D\u00e9finissez un URI de noeud final non null commen\u00e7ant par /. Apr\u00e8s avoir r\u00e9solu le probl\u00e8me, d\u00e9ployez \u00e0 nouveau l'application.
+
+
+

@@ -1,0 +1,30 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.context/resources/com/ibm/ws/security/context/resources/SecurityContextMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Context
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS0800 - CWWKS0899
+SEC_CONTEXT_DESERIALIZE_AUTHN_ERROR=CWWKS0800E: Se ha producido un error de autenticaci\u00f3n cuando se han vuelto a crear los sujetos del contexto de seguridad deserializado. La excepci\u00f3n es: {0}. Como resultado, se utilizar\u00e1 el sujeto no autenticado para este contexto de seguridad. 
+SEC_CONTEXT_DESERIALIZE_AUTHN_ERROR.explanation=Se ha producido un error de autenticaci\u00f3n cuando se volv\u00edan a crear los sujetos que se encontraban en el contexto de seguridad. Como resultado, en su lugar, se utilizar\u00e1 el sujeto no autenticado.
+SEC_CONTEXT_DESERIALIZE_AUTHN_ERROR.useraction=Revise la excepci\u00f3n y los registros para comprender por qu\u00e9 ha fallado la autenticaci\u00f3n.
+
+SEC_CONTEXT_DESERIALIZE_TOO_MANY_PRINCIPALS=CWWKS0801E: Mientras se obten\u00eda el principal del sujeto, se ha encontrado que el sujeto ten\u00eda m\u00e1s de un principal del tipo WSPrincipal. S\u00f3lo puede existir un WSPrincipal en el sujeto. Los nombres de los WSPrincipals son: {0}. Como resultado, no se deserializar\u00e1 el contexto de seguridad en la hebra.
+SEC_CONTEXT_DESERIALIZE_TOO_MANY_PRINCIPALS.explanation=El contexto de seguridad no se ha podido deserializar debido a que el sujeto tiene demasiados principales de tipo WSPrincipal. S\u00f3lo se da soporte a un principal de este tipo.
+SEC_CONTEXT_DESERIALIZE_TOO_MANY_PRINCIPALS.useraction=Revise la aplicaci\u00f3n para comprender por qu\u00e9 el asunto tiene m\u00e1s de un WSPrincipal.
+
+SEC_CONTEXT_UNABLE_TO_SERIALIZE=CWWKS0802W: Al serializar el contexto de seguridad, la clave de cach\u00e9 personalizada {0} no se ha podido serializar debido a la excepci\u00f3n siguiente: {1}. Como resultado, el contexto de seguridad no contendr\u00e1 la clave de cach\u00e9 personalizada.
+SEC_CONTEXT_UNABLE_TO_SERIALIZE.explanation=La clave de cach\u00e9 personalizada del sujeto no se ha podido serializar cuando se serializaba el contexto de seguridad. Aunque el contexto de seguridad no contendr\u00e1 la clave de cach\u00e9 personalizada, esto no afecta la serializaci\u00f3n del contexto de seguridad en s\u00ed.
+SEC_CONTEXT_UNABLE_TO_SERIALIZE.useraction=Revise los registros para comprender la raz\u00f3n por la que ha fallado la serializaci\u00f3n de la clave de cach\u00e9 personalizada.

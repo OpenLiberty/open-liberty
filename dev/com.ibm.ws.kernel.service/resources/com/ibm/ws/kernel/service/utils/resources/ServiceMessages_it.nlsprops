@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.service/resources/com/ibm/ws/kernel/service/utils/resources/ServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0100 - 0199 com.ibm.ws.kernel.service.utils.resources.ServiceMessages
+# -------------------------------------------------------------------------------------------------
+invalidStringArray=CWWKE0101W: Il parametro specificato non \u00e8 una stringa o un array di stringhe. {1}={2} per {0}
+invalidStringArray.explanation=Il valore per il parametro di configurazione specificato non \u00e8 o non pu\u00f2 essere convertito in una stringa o in un array di stringhe.
+invalidStringArray.useraction=Controllare il valore specificato nella configurazione del server e verificare che sia una rappresentazione valida di una stringa o di un array di stringhe.
+
+invalidStringCollection=CWWKE0102W: Il parametro specificato non \u00e8 una stringa o una raccolta di stringhe. {1}={2} per {0}
+invalidStringCollection.explanation=Il valore per il parametro di configurazione specificato non \u00e8 o non pu\u00f2 essere convertito in una stringa o in una raccolta di stringhe.
+invalidStringCollection.useraction=Verificare che il valore specificato nella configurazione del server sia una rappresentazione valida di una stringa o di una raccolta di stringhe.
+
+invalidBoolean=CWWKE0103W: Il parametro specificato non rappresenta un valore booleano. {1}={2} per {0}
+invalidBoolean.explanation=Il valore per il parametro di configurazione specificato non \u00e8 o non pu\u00f2 essere convertito in un valore booleano.
+invalidBoolean.useraction=Verificare che il valore specificato nella configurazione del server sia una rappresentazione valida di un valore booleano.
+
+invalidLong=CWWKE0104W: Il parametro specificato non rappresenta un valore long. {1}={2} per {0}
+invalidLong.explanation=Il valore per il parametro di configurazione specificato non \u00e8 o non pu\u00f2 essere convertito in un valore long.
+invalidLong.useraction=Verificare che il valore specificato nella configurazione del server sia una rappresentazione valida di un valore long.
+
+invalidInteger=CWWKE0105W: Il parametro specificato non rappresenta un numero intero. {1}={2} per {0}
+invalidInteger.explanation=Il valore per il parametro di configurazione specificato non \u00e8 o non pu\u00f2 essere convertito in un valore numero intero.
+invalidInteger.useraction=Verificare che il valore specificato nella configurazione del server sia una rappresentazione valida di un valore numero intero.
+
+invalidIntegerArray=CWWKE0106W: Il parametro specificato non rappresenta un array di numeri interi. {1}={2} per {0}
+invalidIntegerArray.explanation=Il valore per il parametro di configurazione specificato non \u00e8 o non pu\u00f2 essere convertito in un array di numeri interi.
+invalidIntegerArray.useraction=Verificare che il valore specificato nella configurazione del server sia una rappresentazione valida di un array di numeri interi.
+
+invalidDuration=CWWKE0107W: Il parametro specificato non rappresenta un valore di durata. {1}={2} per {0}
+invalidDuration.explanation=Il valore per il parametro di configurazione specificato non \u00e8 o non pu\u00f2 essere convertito in un valore di durata.
+invalidDuration.useraction=Verificare che il valore specificato nella configurazione del server sia una rappresentazione valida di un valore di durata.
+
+#
+# W A R N I N G:   Do not use CWWKE0108 - CCWKE0109 they are currently in use LauncherMessages.nlsprops
+#

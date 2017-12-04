@@ -81,7 +81,7 @@ public class MultipleIdentityStoreFormRedirectTest extends JavaEESecTestBase {
         ldapServer = new LocalLdapServer();
         ldapServer.start();
 
-        WCApplicationHelper.addWarToServerApps(myServer, WAR_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.redirect","web.war.identitystores.ldap.ldap1","web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly");
+        WCApplicationHelper.addWarToServerApps(myServer, WAR_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.redirect","web.war.identitystores.ldap.ldap1","web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly");
         myServer.setServerConfigurationFile(XML_NAME);
         myServer.startServer(true);
         myServer.addInstalledAppForValidation(APP_NAME);
@@ -240,6 +240,7 @@ public class MultipleIdentityStoreFormRedirectTest extends JavaEESecTestBase {
     @Test
     public void testMultipleISFormRedirectWith1stISuccess_DeniedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        myServer.setMarkToEndOfLog();
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
         String response = getFormLoginPage(httpclient, urlBase + queryString, REDIRECT, urlBase + loginUri, TITLE_LOGIN_PAGE);
 
@@ -270,6 +271,7 @@ public class MultipleIdentityStoreFormRedirectTest extends JavaEESecTestBase {
     @Test
     public void testMultipleISFormRedirectWith1st2ndFail_DeniedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        myServer.setMarkToEndOfLog();
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
         String response = getFormLoginPage(httpclient, urlBase + queryString, REDIRECT, urlBase + loginUri, TITLE_LOGIN_PAGE);
 

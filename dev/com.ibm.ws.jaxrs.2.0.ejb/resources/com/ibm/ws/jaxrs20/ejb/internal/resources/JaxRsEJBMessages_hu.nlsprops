@@ -1,0 +1,40 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs-2.0.ejb/resources/com/ibm/ws/jaxrs20/ejb/internal/resources/JaxRsEJBMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS EJB Code
+#RANGE 1100 - 1199
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+
+
+warning.jaxrs.ejb.resource.mismatch=CWWKW1100W: A(z) {0} JAXRS-2.0 er\u0151forr\u00e1s {1} hat\u00f3k\u00f6re nem felel meg a(z) {2} EJB hat\u00f3k\u00f6rnek. A Liberty a k\u00f6vetkez\u0151t\u0151l k\u00e9r le er\u0151forr\u00e1sp\u00e9ld\u00e1nyt: {3}.
+warning.jaxrs.ejb.resource.mismatch.explanation=Ha a JAXRS-2.0 er\u0151forr\u00e1s hat\u00f3k\u00f6r nem felel meg az EJB hat\u00f3k\u00f6rnek, \u00e9s az er\u0151forr\u00e1sp\u00e9ld\u00e1ny l\u00e9tezik EJB-ben, akkor a Liberty az er\u0151forr\u00e1sp\u00e9ld\u00e1nyt EJB-t\u0151l k\u00e9ri le.
+warning.jaxrs.ejb.resource.mismatch.useraction=Nem kell semmit tennie. 
+
+warning.jaxrs.ejb.provider.mismatch=CWWKW1102W: A(z) {0} JAXRS-2.0 szolg\u00e1ltat\u00f3 EJB hat\u00f3k\u00f6re: {1}. A Liberty a szolg\u00e1ltat\u00f3p\u00e9ld\u00e1nyt a k\u00f6vetkez\u0151t\u0151l k\u00e9ri le: {2}.
+warning.jaxrs.ejb.provider.mismatch.explanation=A szolg\u00e1ltat\u00f3p\u00e9ld\u00e1ny csak Singleton. A Liberty EJB-t\u0151l k\u00e9r le szolg\u00e1ltat\u00f3p\u00e9ld\u00e1nyokat, ha a szolg\u00e1ltat\u00f3 EJB hat\u00f3k\u00f6re Dependent vagy ApplicationScoped.
+warning.jaxrs.ejb.provider.mismatch.useraction=Nem kell semmit tennie.
+
+warning.failed.instantiate.ejb.instance=CWWKW1103W: A(z) {0} oszt\u00e1ly EJB p\u00e9ld\u00e1nya nem p\u00e9ld\u00e1nyos\u00edthat\u00f3. A Liberty a p\u00e9ld\u00e1nyt JAXRS-t\u0151l k\u00e9ri le.
+warning.failed.instantiate.ejb.instance.explanation= A(z) {0} EJB oszt\u00e1ly nem rendelkezik alap\u00e9rtelmezett konstruktorral. A Liberty InstantiationException kiv\u00e9telt kap, amikor megk\u00eds\u00e9rli p\u00e9ld\u00e1nyos\u00edtani az EJB p\u00e9ld\u00e1nyt.
+warning.failed.instantiate.ejb.instance.useraction=Nincs teend\u0151. 
+
+error.failed.toloadejbclass=CWWKW1104W: A(z) {0} EJB oszt\u00e1ly nem t\u00f6lthet\u0151 be.
+error.failed.toloadejbclass.explanation= A(z) {0} EJB oszt\u00e1ly nem t\u00f6lthet\u0151 be.
+error.failed.toloadejbclass.useraction=A probl\u00e9ma megold\u00e1sa \u00e9rdek\u00e9ben jav\u00edtsa ki az alkalmaz\u00e1st.

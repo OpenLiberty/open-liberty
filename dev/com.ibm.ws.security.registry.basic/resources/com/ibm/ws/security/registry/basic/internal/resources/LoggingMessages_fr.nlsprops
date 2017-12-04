@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.registry.basic/resources/com/ibm/ws/security/registry/basic/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Basic User Registry Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS3100 - CWWKS3199
+
+BASIC_REGISTRY_INVALID_USER_DEFINITION=CWWKS3100E: La d\u00e9finition d''utilisateur n''est pas valide : {0}
+BASIC_REGISTRY_INVALID_USER_DEFINITION.explanation=La syntaxe de d\u00e9finition d'un utilisateur est de la forme <user name="..." password="..." />.
+BASIC_REGISTRY_INVALID_USER_DEFINITION.useraction=Corrigez la d\u00e9finition d'utilisateur dans la configuration.
+USER_MUST_DEFINE_NAME=Un \u00e9l\u00e9ment user doit d\u00e9finir un nom (attribut name).
+USER_MUST_DEFINE_PASSWORD=L''\u00e9l\u00e9ment user ayant le nom ''{0}'' doit d\u00e9finir un mot de passe.
+
+BASIC_REGISTRY_INVALID_GROUP_DEFINITION=CWWKS3101E: La d\u00e9finition de groupe n''est pas valide : {0}
+BASIC_REGISTRY_INVALID_GROUP_DEFINITION.explanation=La syntaxe de d\u00e9finition d'un groupe est de la forme <group name="...">.
+BASIC_REGISTRY_INVALID_GROUP_DEFINITION.useraction=Corrigez la d\u00e9finition de groupe dans la configuration.
+GROUP_MUST_DEFINE_NAME=Un \u00e9l\u00e9ment group doit d\u00e9finir un nom (attribut name).
+
+BASIC_REGISTRY_INVALID_MEMBER_DEFINITION=CWWKS3102E: La d\u00e9finition de membre n''est pas valide : {0}
+BASIC_REGISTRY_INVALID_MEMBER_DEFINITION.explanation=La syntaxe de d\u00e9finition d'un membre est de la forme <member name="...">.
+BASIC_REGISTRY_INVALID_MEMBER_DEFINITION.useraction=Corrigez la d\u00e9finition de membre dans la configuration.
+MEMBER_MUST_DEFINE_NAME=Un \u00e9l\u00e9ment member doit d\u00e9finir un nom (attribut name).
+
+BASIC_REGISTRY_NO_USERS_DEFINED=CWWKS3103W: Aucun utilisateur n''est d\u00e9fini pour la configuration BasicRegistry dont l''ID est {0}.
+BASIC_REGISTRY_NO_USERS_DEFINED.explanation=Aucun utilisateur n'est d\u00e9fini pour la configuration. Peut-\u00eatre est-ce intentionnel ? Sinon, il y a vraisemblablement une erreur de configuration.
+BASIC_REGISTRY_NO_USERS_DEFINED.useraction=Si n\u00e9cessaire, d\u00e9finissez au moins un utilisateur dans la configuration.
+
+BASIC_REGISTRY_SAME_USER_DEFINITION=CWWKS3104E: Plusieurs utilisateurs ayant le nom ''{0}'' sont d\u00e9finis. Les entr\u00e9es de cet utilisateur ne seront pas utilis\u00e9es.
+BASIC_REGISTRY_SAME_USER_DEFINITION.explanation=Les noms d'utilisateur doivent \u00eatre uniques.
+BASIC_REGISTRY_SAME_USER_DEFINITION.useraction=D\u00e9finissez un seul utilisateur avec le nom indiqu\u00e9.
+
+BASIC_REGISTRY_SAME_GROUP_DEFINITION=CWWKS3105E: Plusieurs groupes ayant le nom ''{0}'' sont d\u00e9finis. Les entr\u00e9es de ce groupe ne seront pas utilis\u00e9es.
+BASIC_REGISTRY_SAME_GROUP_DEFINITION.explanation=Les noms de groupe doivent \u00eatre uniques.
+BASIC_REGISTRY_SAME_GROUP_DEFINITION.useraction=D\u00e9finissez un seul groupe avec le nom indiqu\u00e9.
+
+BASIC_REGISTRY_SAME_MEMBER_DEFINITION=CWWKS3106W: Plusieurs entr\u00e9es de membre avec le nom ''{0}'' sont d\u00e9finies pour le groupe ''{1}''.
+BASIC_REGISTRY_SAME_MEMBER_DEFINITION.explanation=Pour un groupe donn\u00e9, un nom d'utilisateur particulier ne peut appara\u00eetre que dans une seule entr\u00e9e de membre (member).
+BASIC_REGISTRY_SAME_MEMBER_DEFINITION.useraction=D\u00e9finissez une seule entr\u00e9e 'member' pour l'utilisateur dans le groupe indiqu\u00e9.
+
+BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION=CWWKS3107W: L''entr\u00e9e member ayant le nom ''{0}'' pour le groupe ''{1}'' ne correspond pas \u00e0 un utilisateur d\u00e9fini.
+BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.explanation=Le nom sp\u00e9cifi\u00e9 pour l'entr\u00e9e member ne correspond pas \u00e0 un utilisateur d\u00e9fini.
+BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.useraction=V\u00e9rifiez l'orthographe du nom du membre et assurez-vous qu'il correspond \u00e0 un utilisateur d\u00e9fini dans le registre.

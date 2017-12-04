@@ -1,0 +1,831 @@
+###############################################################################
+# Copyright (c) 1997, 2003 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=1.21.6.11
+#CMVCPATHNAME SERV1/ws/code/dynacache/src/com/ibm/ws/cache/resources/dynacache.nlsprops
+#COMPONENTPREFIX DYNA
+#COMPONENTNAMEFOR DYNA WebSphere Dynacache
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# No Comment Provided
+dynacache.priority=DYNA0001E: Valoarea priorit\u0103\u0163ii nu era un num\u0103r valid pentru intrarea {0}. Folosi\u0163i un \u00eentreg \u00een loc de {1}.
+dynacache.priority.explanation=Utilizatorul a introdus o valoare ne\u00eentreag\u0103 sau un \u00eentreg nepozitiv pentru prioritate.
+dynacache.priority.useraction=Modifica\u0163i valoarea priorit\u0103\u0163ii \u00eentr-un \u00eentreg pozitiv.
+
+# No Comment Provided
+dynacache.timeout=DYNA0002E: Valoarea de timeout nu era un num\u0103r valid pentru intrarea {0}. Folosi\u0163i un \u00eentreg \u00een loc de {1}.
+dynacache.timeout.explanation=Utilizatorul a introdus o valoare ne\u00eentreag\u0103 pentru timeout.
+dynacache.timeout.useraction=Modifica\u0163i valoarea timeout-ului \u00eentr-un num\u0103r \u00eentreg.
+
+# No Comment Provided
+dynacache.badconfig=DYNA0003E: Nu se pune \u00een cache {0} din cauza configur\u0103rii gre\u015fite.
+dynacache.badconfig.explanation=Servlet-ul specificat a fost configurat incorect.
+dynacache.badconfig.useraction=Verifica\u0163i c\u0103 s-au dat valori legale, necontradictorii \u015fi c\u0103 toate c\u00e2mpurile necesare sunt specificate.
+
+# No Comment Provided
+dynacache.questionconfig=DYNA0004E: S-a creat un generator de intr\u0103ri cache implicit, dar nu s-au oferit informa\u0163ii de configurare. Acest generator va folosi URI-ul f\u0103r\u0103 nici un parametru pentru a genera ID-uri cache. Aceste informa\u0163ii ar trebui setate \u00een fi\u015fierul servletcache.xml.
+dynacache.questionconfig.explanation=Un servlet a fost configurat cu informa\u0163ii de configurare triviale. Este legal, de\u015fi pu\u0163in probabil corect, cu excep\u0163ia celor mai simple cazuri.
+dynacache.questionconfig.useraction=Verifica\u0163i c\u0103 servlet-ul de pus \u00een cache necesit\u0103 numai URI-ul de invocare pentru a determina unicitatea.
+
+# No Comment Provided
+dynacache.externaldup=DYNA0005E: Intrare ExternalCacheGroup duplicat\u0103 pentru adresa {0}.
+dynacache.externaldup.explanation=S-a introdus un ExternalCacheGroup duplicat \u00een configura\u0163ie.
+dynacache.externaldup.useraction=\u00cenl\u0103tura\u0163i grupul duplicat.
+
+# No Comment Provided
+dynacache.externalnotfound=DYNA0006E: ExternalCacheGroup {0} nu a putut fi g\u0103sit.
+dynacache.externalnotfound.explanation=Grupul cache extern la care ar trebui \u00eenaintat\u0103 aceast\u0103 ie\u015fire de servlet nu a fost \u00eenregistrat \u00een configura\u0163ia cache global\u0103.
+dynacache.externalnotfound.useraction=Verifica\u0163i ortografia acestui grup cache extern. Dac\u0103 este corect\u0103, defini\u0163i acest grup \u00een propriet\u0103\u0163ile cache globale.
+
+# No Comment Provided
+dynacache.externaladaptererror=DYNA0007E: Eroare la ini\u0163ializarea adaptorului cache extern: {0}
+dynacache.externaladaptererror.explanation=Eroarea specificat\u0103 a fost creat\u0103 \u00een timpul ini\u0163ializ\u0103rii adaptorului cache extern.
+dynacache.externaladaptererror.useraction=Identifica\u0163i cauza erorii din informa\u0163iile specifice de eroare care sunt furnizate \u00een mesaj
+
+# No Comment Provided
+dynacache.notexist=DYNA0008E: CacheUnit nu mai exist\u0103.
+dynacache.notexist.explanation=S-a trimis sau s-a primit un mesaj de la o unitate cache care nu mai este \u00eenregistrat\u0103 cu aceast\u0103 unitate cache \u00eentr-un grup de replicare cache.
+dynacache.notexist.useraction=Verifica\u0163i c\u0103 unitatea cache specificat\u0103 ar trebui s\u0103 fie activ\u0103; dac\u0103 da, reporni\u0163i serverul.
+
+# No Comment Provided
+dynacache.xmlnodoc=DYNA0009E: Nici un element numit {0} \u00een documentul {1}.
+dynacache.xmlnodoc.explanation=La parsarea documentului specificat, nu s-a g\u0103sit un element XML a\u015fteptat.
+dynacache.xmlnodoc.useraction=Compara\u0163i formatul de fi\u015fier XML cu documenta\u0163ia produsului, c\u0103ut\u00e2nd o configurare gre\u015fit\u0103.
+
+# No Comment Provided
+dynacache.xmlnoelem=DYNA0010E: Nici un element numit {0} \u00een {1}.
+dynacache.xmlnoelem.explanation=La parsarea fi\u015fierelor XML de configurare specificate, nu s-a g\u0103sit un element XML a\u015fteptat.
+dynacache.xmlnoelem.useraction=Compara\u0163i formatul de fi\u015fier XML cu documenta\u0163ia produsului, c\u0103ut\u00e2nd o configurare gre\u015fit\u0103.
+
+# No Comment Provided
+dynacache.fileNotFound=DYNA0011E: Fi\u015fierul cache de servlet {0} nu a fost g\u0103sit; punerea \u00een cache este dezactivat\u0103
+dynacache.fileNotFound.explanation=Propriet\u0103\u0163ile de punere \u00een cache specificate nu au fost specificate pentru acest server de aplica\u0163ii. Punerea \u00een cache este dezactivat\u0103.
+dynacache.fileNotFound.useraction=Construi\u0163i un fi\u015fier XML de configurare cache cu numele specificat. Consulta\u0163i documenta\u0163ia produsului pentru instruc\u0163iuni despre modul \u00een care s\u0103 se construiasc\u0103 un fi\u015fier XML de configurare cache.
+
+# No Comment Provided
+dynacache.cachingEnabled=DYNA0012I: Este activat\u0103 punerea \u00een cache dinamic\u0103 a servletului
+dynacache.cachingEnabled.explanation=Este activat\u0103 punerea \u00een cache dinamic\u0103 a servletului.
+dynacache.cachingEnabled.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+dynacache.cachingDisabled=DYNA0013I: Este dezactivat\u0103 punerea \u00een cache dinamic\u0103 a servletului
+dynacache.cachingDisabled.explanation=Este dezactivat\u0103 punerea \u00een cache dinamic\u0103 a servletului.
+dynacache.cachingDisabled.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+dynacache.uriMatched=DYNA0014I: {0} este un URI ce poate fi pus \u00een cache
+dynacache.uriMatched.explanation=Un servlet sau fi\u015fier JSP s-a ini\u0163ializat cu o politic\u0103 cache valid\u0103 configurat\u0103.
+dynacache.uriMatched.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+dynacache.error=DYNA0015I: Punerea \u00een cacher de servlet dinamic a \u00eent\u00e2lnit o eroare: {0}
+dynacache.error.explanation=Mesaj de eroare general\u0103.
+dynacache.error.useraction=Depana\u0163i eroarea furnizat\u0103.
+
+# No Comment Provided
+dynacache.stats.dump=DYNA0016I: S-a creat dump pentru statisticile de punere \u00een cache de servlet dinamic la: {0}
+dynacache.stats.dump.explanation=Statisticile cache au fost scrise \u00een fi\u015fierul specificat.
+dynacache.stats.dump.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+dynacache.joingroup=DYNA0017I: Al\u0103turat grupului {0}
+dynacache.joingroup.explanation=Aceast\u0103 unitate cache s-a al\u0103turat cu succes unui grup de cache cooperant.
+dynacache.joingroup.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+dynacache.idgeneratorerror=DYNA0018E: Eroare la \u00eenc\u0103rcare Generatorului de ID {0}
+dynacache.idgeneratorerror.explanation=Eroare la \u00eenc\u0103rcarea Generatorului de ID.
+dynacache.idgeneratorerror.useraction=Depana\u0163i problema folosind mesajul de eroare furnizat.
+
+# No Comment Provided
+dynacache.metadatageneratorerror=DYNA0019E: Eroare la \u00eenc\u0103rcarea Generatorului de Metadate {0}
+dynacache.metadatageneratorerror.explanation=Eroare la \u00eenc\u0103rcarea Generatorului de Metadate.
+dynacache.metadatageneratorerror.useraction=Depana\u0163i problema folosind mesajul de eroare furnizat.
+
+# No Comment Provided
+dynacache.notSerializable=DYNA0020E: Nu se poate pune \u00een cache {0}, atributele cererii nu pot fi puse \u00een serie.
+dynacache.notSerializable.explanation=Ie\u015firea servletului a fost marcat\u0103 pentru replicare \u00eentre cache-uri, ceea ce necesit\u0103 ca toate atributele cererii s\u0103 poat\u0103 fi puse \u00een serie.
+dynacache.notSerializable.useraction=Modifica\u0163i politica cache pentru acest servlet, astfel \u00eenc\u00e2t ie\u015firea sa s\u0103 nu fie replicat\u0103, sau modifica\u0163i aplica\u0163ia pentru ca toate atributele cererii s\u0103 poat\u0103 fi puse \u00een serie.
+
+# No Comment Provided
+dynacache.cacheInitFailed=DYNA0021E: Nu se poate ini\u0163ializa unitatea cache {0}: {1}
+dynacache.cacheInitFailed.explanation=Eroare neanticipat\u0103 la ini\u0163ializarea cache-ului.
+dynacache.cacheInitFailed.useraction=Depana\u0163i problema folosind mesajul de eroare furnizat.
+
+# No Comment Provided
+dynacache.configerror=DYNA0022E: Eroare la procesarea configura\u0163iei cache dinamic: {0}
+dynacache.configerror.explanation=Eroare neanticipat\u0103 la procesarea configura\u0163iei cache.
+dynacache.configerror.useraction=Depana\u0163i problema folosind mesajul de eroare furnizat.
+
+# No Comment Provided
+dynacache.nullServletMapping=DYNA0023E: Eroare la construirea politicii cache {0}.  Nu este definit\u0103 nici o mapare de servlet pentru servletul {1}
+dynacache.nullServletMapping.explanation=Nu s-a putut g\u0103si o mapare de servlet pentru servletul cache sau fi\u015fierul JSP.
+dynacache.nullServletMapping.useraction=Corecta\u0163i eroarea de configurare folosind unealta de asamblare a aplica\u0163iei.
+
+# No Comment Provided
+dynacache.excludeerror=DYNA0024E: Eroare la construirea politicii cache {0}.  Variabilele de excludere erau duplicate sau definite incorect pentru variabila cache {1}.
+dynacache.excludeerror.explanation=Erau prezente variabile de excludere duplicate.
+dynacache.excludeerror.useraction=\u00cenl\u0103tura\u0163i variabila duplicat\u0103 sau variabilele de excludere definite incorect care au fost specificate.
+
+# No Comment Provided
+dynacache.badexternalconfig=DYNA0025E: Punerea \u00een cache extern\u0103 a unui servlet folose\u015fte automat to\u0163i parametrii cererii \u015fi nimic altceva la construirea ID-urilor cache.  Parametrii cererii ar putea fi defini\u0163i pentru punere \u00een cache extern\u0103 NUMAI de folosit cu func\u0163iile de excludere, invalidare \u015fi dataid.
+dynacache.badexternalconfig.explanation=O intrare a fost marcat\u0103 ca put\u00e2nd fi pus\u0103 \u00een cache extern \u015fi con\u0163ine reguli de generare ID suplimentare.
+dynacache.badexternalconfig.useraction=\u00cenl\u0103tura\u0163i regulile suplimentare.
+
+# No Comment Provided
+DYNA0026E=DYNA0026E: Eroare la citirea elementului {0}.  \u00cen timpul proces\u0103rii valorii {1}, s-a primit excep\u0163ia: {2}.
+DYNA0026E.explanation=A ap\u0103rut o eroare la citirea fi\u015fierului de configurare cache.
+DYNA0026E.useraction=Corecta\u0163i eroarea folosind informa\u0163iile care sunt furnizate \u00een mesajul de eroare.
+
+# No Comment Provided
+DYNA0027E=DYNA0027E: Politic\u0103 de replicare nerecunoscut\u0103: {0}.
+DYNA0027E.explanation=S-a specificat o politic\u0103 de replicare nerecunoscut\u0103.
+DYNA0027E.useraction=Politicile de replicare valide sunt not-shared, shared-push, shared-pull \u015fi shared-push-pull.
+
+# No Comment Provided
+DYNA0028E=DYNA0028E: Utilizare ilegal\u0103 a componentei {0} c\u00e2nd idgenerator {1} este deja definit.
+DYNA0028E.explanation=O politic\u0103 cache a specificat at\u00e2t o component\u0103, c\u00e2t \u015fi un idgenerator pentru aceea\u015fi regul\u0103 ID cache.
+DYNA0028E.useraction=Folosi\u0163i fie taguri de component\u0103, fie un idgenerator, dar nu ambele simultan.
+
+# No Comment Provided
+DYNA0029E=DYNA0029E: Utilizare ilegal\u0103 a idgenerator {0} c\u00e2nd componenta {1} este deja definit\u0103.
+DYNA0029E.explanation=O politic\u0103 cache a specificat at\u00e2t o component\u0103, c\u00e2t \u015fi un idgenerator pentru aceea\u015fi regul\u0103 ID cache.
+DYNA0029E.useraction=Folosi\u0163i fie taguri de component\u0103, fie un idgenerator, dar nu ambele simultan.
+
+# No Comment Provided
+DYNA0030E=DYNA0030E: Elementului {0} \u00eei lipse\u015fte atributul necesar {1}.
+DYNA0030E.explanation=Un atribut necesar lipsea din configura\u0163ia cache-ului.
+DYNA0030E.useraction=Ad\u0103uga\u0163i atributul necesar \u00een fi\u015fierul dumneavoastr\u0103 de configurare cache.
+
+# No Comment Provided
+DYNA0031E=DYNA0031E: Utilizare ilegal\u0103 a elementului {0} cu ID-ul {1}.  Este prezent deja elementul metod\u0103 sau c\u00e2mp.
+DYNA0031E.explanation=Fi\u015fierul de configurare a specificat mai multe taguri de c\u00e2mp sau metode pentru aceea\u015fi component\u0103.
+DYNA0031E.useraction=Elimina\u0163i metoda duplicat\u0103, c\u00e2mpul sau ambele elemente din component\u0103 \u00een fi\u015fierul de configurare.
+
+# No Comment Provided
+DYNA0032E=DYNA0032E: Elementul sau atributul {0} trebuie setat fie la valoarea adev\u0103r, fie la fals.  Valoare prezent\u0103: {0}.
+DYNA0032E.explanation=Elementul specificat trebuie s\u0103 aib\u0103 valoarea adev\u0103r sau fals, dar s-a specificat alt\u0103 valoare.
+DYNA0032E.useraction=Corecta\u0163i elementul pentru a avea o valoare adev\u0103r sau fals.
+
+# No Comment Provided
+DYNA0033E=DYNA0033E: Nu se poate cerceta metoda {0} din clasa {1}.  Excep\u0163ia: {2}
+DYNA0033E.explanation=A ap\u0103rut o eroare \u00een timp ce se \u00eencerca localizarea metodei a\u015fa cum s-a specificat \u00een fi\u015fierul de configurare cache.
+DYNA0033E.useraction=Verifica\u0163i c\u0103 metoda specificat\u0103 \u00een fi\u015fierul de configurare cache exist\u0103 \u00een obiectul invocat \u015fi metoda este public\u0103.
+
+# No Comment Provided
+DYNA0034E=DYNA0034E: Excep\u0163ie la invocarea metodei {0} pe clasa {1}.  Excep\u0163ia: {2}
+DYNA0034E.explanation=A ap\u0103rut o eroare la invocarea metodei specificate pentru a genera un ID cache.
+DYNA0034E.useraction=Depana\u0163i problema folosind informa\u0163iile furnizate \u00een mesajul de eroare.
+
+# No Comment Provided
+DYNA0035E=DYNA0035E: Nu se poate cereceta c\u00e2mpul {0} din clasa {1}.  Excep\u0163ia: {2}
+DYNA0035E.explanation=A ap\u0103rut o eroare \u00een timp ce se \u00eencerca localizarea c\u00e2mpului, a\u015fa cum se specific\u0103 \u00een fi\u015fierul de configurare cache.
+DYNA0035E.useraction=Verifica\u0163i c\u0103 exist\u0103 c\u00e2mpul specificat \u00een fi\u015fierul de configurare cache \u00een obiectul invocat \u015fi c\u00e2mpul este public.
+
+# No Comment Provided
+DYNA0036E=DYNA0036E: Excep\u0163ie la extragerea c\u00e2mpului {0} din clasa {1}.  Excep\u0163ia: {2}
+DYNA0036E.explanation=A ap\u0103rut o eroare \u00een timp ce se extr\u0103gea c\u00e2mpul specificat pentru a genera un ID cache.
+DYNA0036E.useraction=Depana\u0163i problema folosind informa\u0163iile furnizate \u00een mesajul de eroare.
+
+# No Comment Provided
+DYNA0037E=DYNA0037E: Element nerecunoscut {0} \u00een timpul proces\u0103rii elementului {1}.
+DYNA0037E.explanation=S-a \u00eent\u00e2lnit un element nerecunoscut la parsarea fi\u015fierului de configurare cache.
+DYNA0037E.useraction=Corecta\u0163i documentul pentru a se potrivi fi\u015fierului cachespec.dtd.
+
+# No Comment Provided
+DYNA0038E=DYNA0038E: Tip de component\u0103 nerecunoscut {0} pentru comanda {1}.
+DYNA0038E.explanation=Tipul de component\u0103 specificat nu este valid pentru punerea \u00een cache a comenzii.
+DYNA0038E.useraction=Tipurile de componente valide pentru comenzi sunt metod\u0103 \u015fi c\u00e2mp.
+
+# No Comment Provided
+DYNA0039E=DYNA0039E: Comenzile nu suport\u0103 clase generatoare de metadate.  Trebuie s\u0103 \u00eenlocui\u0163i metoda prepareMetaData().
+DYNA0039E.explanation=Fi\u015fierul de configurare cache a specificat un generator de metadate personalizat pentru o comand\u0103, dar nu este suportat.
+DYNA0039E.useraction=Consulta\u0163i documenta\u0163ia produsului pentru informa\u0163ii despre implementarea metodei CacheableCommand.prepareMetaData.
+
+# No Comment Provided
+DYNA0040E=DYNA0040E: Tip de component\u0103 ilegal {0} f\u0103c\u00e2nd service la {1}.
+DYNA0040E.explanation=Un tip de component\u0103 nesuportat a fost \u00eent\u00e2lnit \u00een timpul proces\u0103rii obiectului specificat.
+DYNA0040E.useraction=Corecta\u0163i politica de configurare cache pentru a con\u0163ine numai tipuri de componente valide pentru obiectul specificat.
+
+# No Comment Provided
+DYNA0041E=DYNA0041E: Tip de component\u0103 invalid {0} pentru fragmentul cu margini {1}.
+DYNA0041E.explanation=Un servlet sau JSP a fost marcat Cu margini, dar politica cache con\u0163ine reguli de component\u0103 care nu sunt valide pe un server de margine IBM.
+DYNA0041E.useraction=Corecta\u0163i politica cache pentru a elimina regulile care nu sunt pornite la Serverul de margine IBM sau marca\u0163i servletul sau fi\u015fierul JSP ca nefiind cu margini.
+
+# No Comment Provided
+DYNA0042E=DYNA0042E: Tip de component\u0103 invalid {0} pentru servletul/fragmentul jsp {1}.
+DYNA0042E.explanation=Un tip de component\u0103 nesuportat a fost \u00eent\u00e2lnit \u00een timpul proces\u0103rii servletului specificat sau a fi\u015fierului JSP.
+DYNA0042E.useraction=Corecta\u0163i politica de configurare cache pentru a con\u0163ine numai tipuri de componente valide pentru obiectul specificat.
+
+# No Comment Provided
+DYNA0043E=DYNA0043E: Fi\u015fierul de configurare {0} con\u0163inea erori \u015fi nu va fi folosit.
+DYNA0043E.explanation=Fi\u015fierul de configurare specificat con\u0163inea erori critice \u015fi nu poate fi utilizat.
+DYNA0043E.useraction=Corecta\u0163i erorile specificate \u00een fi\u015fierul de configurare.
+
+# No Comment Provided
+DYNA0044E=DYNA0044E: Avertisment parsare XML: {0}, la parsarea fi\u015fierului {1} la linia {2}, coloana {3}.
+DYNA0044E.explanation=A ap\u0103rut un avertisment de parsare XML \u00een timp ce se procesa un fi\u015fier de configurare cache.
+DYNA0044E.useraction=Corecta\u0163i problema care este specificat\u0103 \u00een mesaj.
+
+# No Comment Provided
+DYNA0045E=DYNA0045E: Eroare parsare XML: {0}, la parsarea fi\u015fierului {1} la linia {2}, coloana {3}.
+DYNA0045E.explanation=A ap\u0103rut un avertisment de parsare XML \u00een timp ce se procesa un fi\u015fier de configurare cache.
+DYNA0045E.useraction=Corecta\u0163i problema care este specificat\u0103 \u00een mesaj.
+
+# No Comment Provided
+DYNA0046E=DYNA0046E: Excep\u0163ia I/E {0} a avut loc \u00een timp ce se procesa fi\u015fierul de configurare {1}.
+DYNA0046E.explanation=A ap\u0103rut o eroare la citirea fi\u015fierului de configurare cache.
+DYNA0046E.useraction=Corecta\u0163i problema care este specificat\u0103 \u00een mesaj.
+
+# No Comment Provided
+DYNA0047I=DYNA0047I: S-au \u00eenc\u0103rcat cu succes intr\u0103rile cache din fi\u015fierul de configurare {0}.
+DYNA0047I.explanation=Un fi\u015fier de configurare cache a fost procesat cu succes pentru intr\u0103rile cache din loca\u0163ia specificat\u0103.
+DYNA0047I.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA0048I=DYNA0048I: WebSphere Dynamic Cache ini\u0163ializat cu succes.
+DYNA0048I.explanation=Serviciile cache dinamic au fost ini\u0163ializate cu succes.
+DYNA0048I.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA0049E=DYNA0049E: Tip de component\u0103 nerecunoscut {0}.
+DYNA0049E.explanation=Tipul de component\u0103 specificat era prezent \u00een fi\u015fierul de configurare cache, dar nu este recunoscut de cache.
+DYNA0049E.useraction=\u00cenl\u0103tura\u0163i tipul de component\u0103 nerecunoscut din fi\u015fierul de configurare cache.
+
+# No Comment Provided
+DYNA0050E=DYNA0050E: Valoare nerecunoscut\u0103 {0} pentru elementul {1}.
+DYNA0050E.explanation=Elementul specificat din fi\u015fierul de configurare cache con\u0163inea o valoare nerecunoscut\u0103.
+DYNA0050E.useraction=Consulta\u0163i documenta\u0163ia produsului pentru informa\u0163ii despre valorile valide pentru elementul specificat.
+
+# No Comment Provided
+DYNA0051E=DYNA0051E: Nu s-a putut pune \u00een cache o CacheableCommand pentru c\u0103 s-a dezactivat Punerea \u00een cache dinamic\u0103 WebSphere.
+DYNA0051E.explanation=S-a f\u0103cut o \u00eencercare de a folosi o CacheableCommand, dar punerea \u00een cache a servletului din set\u0103rile containerului web este dezactivat\u0103.
+DYNA0051E.useraction=Permite\u0163i punerea \u00een cache a servletului din set\u0103rile containerului web din consola administrativ\u0103.
+
+# No Comment Provided
+DYNA0052E=DYNA0052E: Obiectul pus \u00een cache nu poate fi replicat sau salvat pe disc.  CacheID={0}   ClassName={1}   Tip={2}    Excep\u0163ie={3}
+DYNA0052E.explanation=Obiectul a fost marcat pentru replicare \u00eentre cache-uri sau salvat pe disc, ceea ce necesit\u0103 ca obiectul \u015fi toate obiectele cu referin\u0163\u0103 din cadrul obiectului s\u0103 poat\u0103 fi puse \u00een serie.  CacheID este ID-ul intr\u0103rii cache care nu poate fi pus\u0103 \u00een serie.  ClassName este numele clasei obiectului pus \u00een cache care nu poate fi pus \u00een serie.  Tip este tipul de date pentru a indica ce date sunt \u00een curs de punere \u00een serie.  Excep\u0163ie este excep\u0163ia primit\u0103 \u00een timpul \u00eencerc\u0103rii de punere \u00een serie.
+DYNA0052E.useraction=Modifica\u0163i politica de punere \u00een cache pentru acest obiect pentru a nu fi replicat sau salvat pe disc sau modifica\u0163i aplica\u0163ia pentru ca obiectul \u015fi toate obiectele cu referin\u0163\u0103 s\u0103 poat\u0103 fi puse \u00een serie.
+
+# No Comment Provided
+DYNA0053I=DYNA0053I: Desc\u0103rcarea pe disc este activat\u0103 pentru cache-ul numit {0} \u00een directorul {1}.
+DYNA0053I.explanation=Caracteristica de desc\u0103rcare pe disc este activat\u0103 pentru numele cache specificat. Cache-ul discului este memorat \u00een directorul specificat.
+DYNA0053I.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA0054W=DYNA0054W: Desc\u0103rcarea pe disc este activat\u0103 pentru numele de cache {0}. Loca\u0163ia {1} nu poate fi creat\u0103. Loca\u0163ia alternativ\u0103 implicit\u0103 {2} este folosit\u0103 \u00een loc.
+DYNA0054W.explanation=Caracteristica de desc\u0103rcare pe disc este activat\u0103 pentru numele cache specificat. Cache-ul discului este memorat \u00een loca\u0163ia alternativ\u0103 pentru c\u0103 directorul specificat nu poate fi creat.
+DYNA0054W.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA0055E=DYNA0055E: Desc\u0103rcarea pe disc este dezactivat\u0103 pentru numele de cache {0} pentru c\u0103 loca\u0163ia {1} sau {2} nu poate fi creat\u0103. 
+DYNA0055E.explanation=Caracteristica de desc\u0103rcare pe disc este dezactivat\u0103 pentru numele de cahe specificat pentru c\u0103 loca\u0163ia de desc\u0103rcare pe disc \u015fi loca\u0163ia alternativ\u0103 implicit\u0103 nu pot fi create.
+DYNA0055E.useraction=Asigura\u0163i-v\u0103 c\u0103 loca\u0163ia de desc\u0103rcare pe disc are suficiente de privilegii de acces.
+
+# No Comment Provided
+DYNA0056W=DYNA0056W: Fi\u015fierele cache de disc au fost reini\u0163ializate din cauza datelor corupte. 
+DYNA0056W.explanation=Fi\u015fierele cache de disc au fost reini\u0163ializate c\u00e2nd a repornit serverul din cauza datelor corupte. Aceasta ar putea fi din cauza opririi nea\u015fteptate a unui JVM (Java Virtual Machine) sau a ap\u0103rut o excep\u0163ie de disc. S-a pierdut tot con\u0163inutul cache de disc vechi.
+DYNA0056W.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA0057I=DYNA0057I: Cur\u0103\u0163area cache-ului de disc a \u00eenceput pentru numele de cache {0}. Statisticile sunt: {1} 
+DYNA0057I.explanation=Cur\u0103\u0163area cache-ului de disc a \u00eenceput s\u0103 \u00eenl\u0103ture intr\u0103rile cache expirate.
+DYNA0057I.useraction=Nu este necesitat\u0103 nicio ac\u0163iune de utilizator.
+
+# No Comment Provided
+DYNA0058I=DYNA0058I: Cur\u0103\u0163area cache-ului de disc s-a terminat pentru numele de cache {0}. Statisticile sunt: {1}
+DYNA0058I.explanation=Cur\u0103\u0163area cache-ului de disc s-a terminat.
+DYNA0058I.useraction=Nu este necesitat\u0103 nicio ac\u0163iune de utilizator.
+
+# No Comment Provided
+DYNA0059I=DYNA0059I: Configura\u0163ia cache-ului de disc pentru numele de cache {0}. Configura\u0163ia este: {1}
+DYNA0059I.explanation=Asta afi\u015feaz\u0103 configura\u0163ia cache-ului de disc.
+DYNA0059I.useraction=Nu este necesitat\u0103 nicio ac\u0163iune de utilizator.
+
+# No Comment Provided
+DYNA0060I=DYNA0060I: Rev\u0103rsarea pe disc la oprire este activat\u0103 pentru numele de cache {0}.
+DYNA0060I.explanation=Caracteristica de rev\u0103rsare pe disc la oprire este activat\u0103 pentru numele cache specificat.
+DYNA0060I.useraction=Nu este necesitat\u0103 nicio ac\u0163iune de utilizator.
+
+# No Comment Provided
+DYNA0061I=DYNA0061I: Rev\u0103rsarea pe disc la oprire este dezactivat\u0103 pentru numele de cache {0}.
+DYNA0061I.explanation=Caracteristica de rev\u0103rsare pe disc la oprire este dezactivat\u0103 pentru numele cache specificat.
+DYNA0061I.useraction=Nu este necesitat\u0103 nicio ac\u0163iune de utilizator.
+
+# No Comment Provided
+DYNA0062I=DYNA0062I: S-au \u00eenc\u0103rcat cu succes instan\u0163ele cache din fi\u015fierul de configurare {0}.
+DYNA0062I.explanation=S-a procesat cu succes un fi\u015fier de configurare cache pentru instan\u0163ele cache din loca\u0163ia specificat\u0103.
+DYNA0062I.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA0063W=DYNA0063W: Dimensiunea cache a discului a atins limita de {0} GB pentru numele de cache {1}.  {2} intr\u0103ri de cache au fost evacuate din memorie dar nu au fost desc\u0103rcate pe disc.
+DYNA0063W.explanation=Obiectul pus \u00een cache nu va fi desc\u0103rcat pe disc pentru c\u0103 este peste limita dimensiunii cache de disc \u00een GB.
+DYNA0063W.useraction=Modifica\u0163i proprietatea personalizat\u0103 diskCacheSizeInGB la o valoare mai mare astfel \u00eenc\u00e2t s\u0103 poat\u0103 memora mai multe cache-uri pe disc.
+
+# No Comment Provided
+DYNA0064W=DYNA0064W: Dimensiunea intr\u0103rii cache este peste limita de {0} MB pentru numele de cache {1}. {2} intr\u0103ri de cache au fost evacuate din memorie dar nu au fost desc\u0103rcate pe disc.
+DYNA0064W.explanation=Obiectul pus \u00een cache nu va fi desc\u0103rcat pe disc pentru c\u0103 este peste limita dimensiunii cache de disc \u00een MB.
+DYNA0064W.useraction=Modifica\u0163i proprietatea personalizat\u0103 diskCacheEntrySizeInMB la o valoare mai mare astfel \u00eenc\u00e2t s\u0103 poat\u0103 memora mai multe cache-uri pe disc.
+
+# No Comment Provided
+DYNA0065W=DYNA0065W: Dimensiunea cache-ului de disc este peste limita {0} pentru numele de cache {1}.  {2} intr\u0103ri de cache au fost evacuate din memorie dar nu au fost desc\u0103rcate pe disc.
+DYNA0065W.explanation=Obiectul pus \u00een cache nu va fi desc\u0103rcat pe disc pentru c\u0103 este peste limita dimensiunii cache de disc.
+DYNA0065W.useraction=Modifica\u0163i proprietatea personalizat\u0103 diskCacheSize la o valoare mai mare astfel \u00eenc\u00e2t s\u0103 poat\u0103 memora mai multe cache-uri pe disc.
+
+# No Comment Provided
+DYNA0066W=DYNA0066W: Caracteristica de limitare a dimensiunii cache de disc \u00een GB este dezactivat\u0103 pentru numele de cache {0}. Proprietatea personalizat\u0103 diskCacheSizeInGB este setat\u0103 la 0. \u015eterge\u0163i toate fi\u015fierele cache de disc de sub directorul {1} \u00eenainte de a activa aceast\u0103 caracteristic\u0103.
+DYNA0066W.explanation=Fi\u015fierele de disc de pe sistem sunt \u00eentr-un format vechi \u015fi caracteristica de limitare a dimensiunii cache-ului de disc \u00een GB folose\u015fte un nou format de disc. \u00cenainte de a activa aceast\u0103 caracteristic\u0103, \u015fterge\u0163i toate fi\u015fierele cache de disc de pe sistem.
+DYNA0066W.useraction=\u015eterge\u0163i toate fi\u015fierele cache de disc \u015fi apoi reporni\u0163i serverul.
+
+# No Comment Provided
+DYNA0067W=DYNA0067W: Colectorul de gunoi pentru cache-ul de disc este dezactivat, iar Politica de evacuare este setat\u0103 la NONE  pentru numele cache{0}. \u015eterge\u0163i toate fi\u015fierele cache de disc de sub directorul {1} \u00eenainte de a activa aceast\u0103 caracteristic\u0103.
+DYNA0067W.explanation=Fi\u015fierele de disc de pe sistem sunt \u00eentr-un format vechi \u015fi caracteristica de colectare a gunoiului cache-ului de disc folose\u015fte un nou format de disc. \u00cenainte de a activa aceast\u0103 caracteristic\u0103, \u015fterge\u0163i toate fi\u015fierele cache de disc de pe sistem.
+DYNA0067W.useraction=\u015eterge\u0163i toate fi\u015fierele cache de disc \u015fi apoi reporni\u0163i serverul.
+
+# No Comment Provided
+DYNA0068W=DYNA0068W: Prag de disc invalid setat pentru numele de cache {0}. Se folosesc valorile implicite 80% \u015fi respectiv 70% pentru limitele pragului de sus \u015fi de jos.
+DYNA0068W.explanation=Limita pragului cache-ului de disc fie a fost setat\u0103 < 0 sau pragul de sus este mai mic dec\u00e2t limita pragului de jos.
+DYNA0068W.useraction=Pragul cache-ulu ide disc ar trebui s\u0103 fie mai mare dec\u00e2t 0 \u015fi limita pragului de sus ar trebui s\u0103 fie mai mare dec\u00e2t limita pragului de jos.
+
+# No Comment Provided
+DYNA0069W=DYNA0069W: O valoare invalid\u0103 {0} pentru prioritatea personalizat\u0103 {1} \u00een numele de cache {2}. Intervalul valid este jos: {3} \u015fi sus: {4}. Aceast\u0103 proprietate personalizat\u0103 este setat\u0103 la {5}.
+DYNA0069W.explanation=Valoarea propriet\u0103\u0163ii personalizate nu este valid\u0103. Corecta\u0163i valoarea folosind valorile de jos \u015fi de sus specificate de interval \u00een mesajul de avertisment.
+DYNA0069W.useraction=Corecta\u0163i valoarea folosind valorile de jos \u015fi de sus specificate de interval \u00een mesajul de avertisment.
+
+# No Comment Provided
+DYNA0070W=DYNA0070W: Colectorul de gunoi pentru cache-ul de disc este dezactivat, iar Politica de evacuare este setat\u0103 la NONE  pentru numele cache{0}. Asta deoarece dimensiunea cache-ului de disc sau limita cache-ului de disc \u00een GB nu este setat\u0103.
+DYNA0070W.explanation=Setarea propriet\u0103\u0163ilor personalizate diskCacheSize sau diskCacheSizeInGB este necesar\u0103 pentru a putea utiliza caracteristica colectorului de gunoi pentru cache-ul de disc.
+DYNA0070W.useraction=Seta\u0163i propriet\u0103\u0163ile personalizate diskCacheSize sau diskCacheSizeInGB \u015fi reporni\u0163i serverul.
+
+# No Comment Provided
+DYNA0071W=DYNA0071W: Proprietatea personalizat\u0103 diskCacheSizeInGB pentru numele cache {0} este setat la o valoare mai mare {1} deoarece dimensiunea total\u0103 a fi\u015fierelor cache de pe disc are o valoare mai mare. Pentru a seta diskCacheSizeInGB cu o valoare mai mic\u0103, \u015fterge\u0163i toate fi\u015fierele cache pentru disc din directorul {2}.
+DYNA0071W.explanation=Fi\u015fierele cache de disc nu se pot mic\u015fora. 
+DYNA0071W.useraction=Pentru a seta proprietatea personalizat\u0103 diskCacheSizeInGB la o valoare mai mic\u0103, \u015fterge\u0163i toate fi\u015fierele cache de pe disc \u015fi reporni\u0163i serverul.
+
+# No Comment Provided
+DYNA0072E=DYNA0072E: Desc\u0103rcarea pe disc este dezactivat\u0103 pentru numele de cache {0} pentru c\u0103 a ap\u0103rut o excep\u0163ie de disc. Loca\u0163ia desc\u0103rc\u0103rii pe disc este \u00een {1}. Excep\u0163ie: {2}. 
+DYNA0072E.explanation=Caracteristica de desc\u0103rcare pe disc este dezactivat\u0103 pentru numele cache specificat pentru c\u0103 a ap\u0103rut o excep\u0163ie de disc.
+DYNA0072E.useraction=Fi\u015fierele cache de disc pentru aceast\u0103 instan\u0163\u0103 cache vor fi \u015fterse c\u00e2nd este repornit serverul.
+
+# No Comment Provided
+DYNA0073I=DYNA0073I: Rev\u0103rsarea pe disc la oprire pentru numele de cache {0} s-a finalizat. Statisticile sunt: {1}
+DYNA0073I.explanation=Opera\u0163ia de rev\u0103rsare pe disc la oprire s-a finalizat cu statisticile. 
+DYNA0073I.useraction=Nu este necesitat\u0103 nicio ac\u0163iune de utilizator.
+
+# No Comment Provided
+DYNA1001I=DYNA1001I: Instan\u0163a Cache dinamic WebSphere cu numele {0} s-a ini\u0163ializat cu succes.
+DYNA1001I.explanation=Instan\u0163a Cache dinamic numit\u0103 a fost ini\u0163ializat\u0103 cu succes.
+DYNA1001I.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1002E=DYNA1002E: Instan\u0163ele de Cache dinamic WebSphere nu pot fi ini\u0163ializate din cauza erorii {0}.
+DYNA1002E.explanation=Instan\u0163ele de cache dinamic nu pot fi ini\u0163ializate.  Nu este disponibil\u0103 nici o instan\u0163\u0103 cache.
+DYNA1002E.useraction=Depana\u0163i problema folosind mesajul de eroare.  Istoricele serverului de aplica\u0163ii con\u0163in informa\u0163ii suplimentare.
+
+# No Comment Provided
+DYNA1003E=DYNA1003E: Instan\u0163a Cache dinamic WebSphere numit\u0103 {0} nu poate fi ini\u0163ializat\u0103 din cauza erorii {1}.
+DYNA1003E.explanation=Instan\u0163a de cache dinamic numit\u0103 nu poate fi ini\u0163ializat\u0103.  Instan\u0163a numit\u0103 nu este disponibil\u0103.
+DYNA1003E.useraction=Depana\u0163i problema folosind mesajul de eroare.  Istoricele serverului de aplica\u0163ii con\u0163in informa\u0163ii suplimentare.
+
+# No Comment Provided
+DYNA1004E=DYNA1004E: Instan\u0163a Cache dinamic WebSphere numit\u0103 {0} nu poate fi ini\u0163ializat\u0103 pentru c\u0103 nu este configurat\u0103.
+DYNA1004E.explanation=Instan\u0163a de cache dinamic numit\u0103 nu poate fi ini\u0163ializat\u0103.  Punerea \u00een cache dinamic este dezactivat\u0103 pentru instan\u0163a numit\u0103.
+DYNA1004E.useraction=Folosi\u0163i consola administrativ\u0103 pentru a configura resursa de instan\u0163\u0103 cache.
+
+# No Comment Provided
+DYNA1005E=DYNA1005E: Instan\u0163a Cache dinamic WebSphere numit\u0103 {0} nu poate fi accesat\u0103 pentru c\u0103 este de tipul gre\u015fit.
+DYNA1005E.explanation=Instan\u0163a de cache dinamic numit\u0103 nu poate fi folosit\u0103.  Punerea \u00een cache dinamic este dezactivat\u0103 pentru instan\u0163a numit\u0103.
+DYNA1005E.useraction=Folosi\u0163i consola administrativ\u0103 pentru a configura resursa de instan\u0163\u0103 cache folosind tipul corect.
+
+# No Comment Provided
+DYNA1006E=DYNA1006E: Metoda {0} a prins excep\u0163ia: {1}
+DYNA1006E.explanation=O excep\u0163ie a fost prins\u0103 cu metoda specificat\u0103.
+DYNA1006E.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1007I=DYNA1007I:  serviciul {0} a fost initializat cu succes. 
+DYNA1007I.explanation=Serviciul controler z/OS pentru serviciul cache dinamic s-a ini\u0163ializat cu succes.
+DYNA1007I.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1008E=DYNA1008E: Metoda {0}: proxy este null.
+DYNA1008E.explanation=Metoda specificat\u0103 nu a putut ob\u0163ine un proxy servitor pentru DRS.
+DYNA1008E.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1009E=DYNA1009E: Metoda {0}: jetonul este null.
+DYNA1009E.explanation=Metodei specificate i-a fost transmis un jeton servant null. 
+DYNA1009E.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1010E=DYNA1010E: Metoda {0}: Eroare parametru: entryKey este null.
+DYNA1010E.explanation=Metodei specificate i s-a transmis un parametru entryKey nul. 
+DYNA1010E.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1011E=DYNA1011E: Metoda {0}: tokenBytes este null: token = {1}  tokenBytes = {2}
+DYNA1011E.explanation=Metoda specificat\u0103 nu poate apela proxy-ul pentru c\u0103 tokenBytes este null. 
+DYNA1011E.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1012E=DYNA1012E: Metoda {0}: eventBytes este null: event = {1}  eventBytes = {2}
+DYNA1012E.explanation=Metoda specificat\u0103 nu poate apela proxy-ul pentru c\u0103 eventBytes este null.
+DYNA1012E.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1013E=DYNA1013E: Metoda {0}: entryKeyBytes este null: entryKey = {1}  entryKeyBytes = {2}
+DYNA1013E.explanation=Metoda specificat\u0103 nu poate apela proxy-ul pentru c\u0103 entryKeyBytes este null.
+DYNA1013E.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1014E=DYNA1014E: Metoda {0}: Intrarea ar fi trebuit s\u0103 fie \u00een tabela noastr\u0103 push/pull, dar jetonul servant este null. entryKey = {1}
+DYNA1014E.explanation=Metoda specificat\u0103 nu a putut extrage cacheEntry din tabela push/pull pentru c\u0103 jetonul servant owner este null.
+DYNA1014E.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1015E=DYNA1015E: Metoda {0}: propKeyBytes este null: propKey = {1}  propKeyBytes = {2}
+DYNA1015E.explanation=Metoda specificat\u0103 nu poate apela proxy-ul pentru c\u0103 propKeyBytes este null.
+DYNA1015E.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1016E=DYNA1016E: Metoda {0}: dbmBytes este null: dbm = {1}  dbmBytes = {2}
+DYNA1016E.explanation=Metoda specificat\u0103 nu poate apela proxy-ul pentru c\u0103 DRSBootstrapMsg convertit \u00een octe\u0163i este null.
+DYNA1016E.useraction=F\u0103r\u0103.
+                                         
+# No Comment Provided
+DYNA1017E=DYNA1017E: Metoda {0}: Eroare parametru: dbm este null.
+DYNA1017E.explanation=Metodei specificate i-a fost transmis un obiect dbm null. 
+DYNA1017E.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1018E=DYNA1018E: Metoda {0}: Valoarea tmp returnat\u0103 de proxy.handleBootstrapRequest este null:  tmp = {1}, token = {2} 
+DYNA1018E.explanation=Pentru metoda specificat\u0103, valoarea returnat\u0103 din proxy.handleBootstrapRequest  este null.
+DYNA1018E.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1019E=DYNA1019E: Metoda {0}: Eroare parametru: propKey este null.
+DYNA1019E.explanation=Metodei specificate i-a fost transmis un parametru propKey null. 
+DYNA1019E.useraction=Niciuna. 
+
+# No Comment Provided
+DYNA1020E=DYNA1020E: Metoda {0}: Eroare parametru: valoarea este null.
+DYNA1020E.explanation=Metodei specificate i-a fost transmis null pentru parametrul valorii. 
+DYNA1020E.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1021E=DYNA1021E: Metoda {0}: Nu se poate converti parametrul valorii la octe\u0163i.
+DYNA1021E.explanation=Metoda specificat\u0103 nu poate converti parametrul valorii \u00een octe\u0163i. 
+DYNA1021E.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1022E=DYNA1022E: Metoda {0}: Eroare parametru:  Informa\u0163iile de rutare DRSJvmId sunt null.
+DYNA1022E.explanation=Metodei specificate i-a fost transmis null pentru parametrul de rutare DRSJvmId. 
+DYNA1022E.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1023E=DYNA1023E: Metoda {0}: Eroare parametru:  entryKeyList este null.
+DYNA1023E.explanation=Metodei specificate i-a fost transmis null pentru entryKeyList. 
+DYNA1023E.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1024E=DYNA1024E: Metoda {0}: Nu se poate converti entryKeyList \u00een octe\u0163i - entryKeyList = {1}  entryKeyListBytes = {2}
+DYNA1024E.explanation=Metoda specificat\u0103 nu poate converti parametrul entryKeyList \u00eentr-un \u015fir de octe\u0163i.
+DYNA1024E.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1025E=DYNA1025E: Metoda {0}: Nu se poate converti DRSJvmId \u00een octe\u0163i - jvmId  = {1}  jvmIdBytes = {2}
+DYNA1025E.explanation=Metoda specificat\u0103 nu poate converti parametrul DRSJvmID \u00eentr-un \u015fir de octe\u0163i.
+DYNA1025E.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1026I=DYNA1026I: Instan\u0163a DynacacheDRSController DRS {0} a primit evenimentul REPLICATION_UP.
+DYNA1026I.explanation=Instan\u0163a DynacacheDRSController DRS specificat\u0103 a primit evenimentul REPLICATION_UP.
+DYNA1026I.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1027I=DYNA1027I: Instan\u0163a DynacacheDRSController DRS {0} a primit evenimentul REPLICATION_DOWN.
+DYNA1027I.explanation=Instan\u0163a DynacacheDRSController DRS specificat\u0103 a primit evenimentul REPLICATION_DOWN.
+DYNA1027I.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1028I=DYNA1028I: Instan\u0163a DynacacheDRSController DRS {0} a primit evenimentul IS_CONGESTED.
+DYNA1028I.explanation=Instan\u0163a DynacacheDRSController DRS specificat\u0103 a primit evenimentul IS_CONGESTED.
+DYNA1028I.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1029I=DYNA1029I: Instan\u0163a DynacacheDRSController DRS {0} a primit evenimentul NOT_CONGESTED.
+DYNA1029I.explanation=Instan\u0163a DynacacheDRSController DRS specificat\u0103 a primit evenimentul NOT_CONGESTED.
+DYNA1029I.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1030E=DYNA1030E: Valori de interval invalide, atributele jos: {0} \u015fi sus: {1} trebuie s\u0103 fie \u00eentregi
+DYNA1030E.explanation=Un atribut necesar lipsea din configura\u0163ia cache.
+DYNA1030E.useraction=Ad\u0103uga\u0163i atributul necesar \u00een fi\u015fierul dumneavoastr\u0103 de configurare cache.
+
+# No Comment Provided
+DYNA1031E=DYNA1031E: Interval invalid, atributul jos: {0} este mai mare dec\u00e2t atributul sus: {1}.
+DYNA1031E.explanation=Valorile de atribut jos \u015fi sus specificate pentru interval nu sunt valide.
+DYNA1031E.useraction=Corecta\u0163i valorile de atribute jos \u015fi sus astfel \u00eenc\u00e2t valoarea de jos s\u0103 fie mai mic\u0103 dec\u00e2t valoarea de sus.
+
+# No Comment Provided
+DYNA1032E=DYNA1032E: Proprietatea cu numele  primary-storage  trebuie setat\u0103 la valoarea memorie (memory) sau disc (disk).  Valoare prezent\u0103: {0}.
+DYNA1032E.explanation=Elementul specificat trebuie s\u0103 aib\u0103 valoarea memorie sau disc, dar s-a specificat alt\u0103 valoare.
+DYNA1032E.useraction=Corecta\u0163i elementul pentru a avea valoarea memorie sau disc.
+
+
+# No Comment Provided
+DYNA1033W=DYNA1033W: Proprietatea personalizat\u0103 disableDependencyId este set\u0103 la {0}, lucru care nu se potrive\u015fte cu starea curent\u0103 a fi\u015fierelor de disc pentru numele cache {1}. Proprietatea personalizat\u0103 disableDependencyId este set\u0103 la {2}. 
+DYNA1033W.explanation=Setarea propriet\u0103\u0163ii personalizate disableDependencyId nu se potrive\u015fte cu starea curent\u0103 a fi\u015fierelor de pe disc.
+DYNA1033W.useraction=Pentru a seta proprietatea personalizat\u0103 disableDependencyId cu valorile dorite, \u015fterge\u0163i toate fi\u015fierele cache de pe disc \u015fi reporni\u0163i serverul.
+
+# No Comment Provided
+DYNA1034W=DYNA1034W: Proprietatea personalizat\u0103 disableTemplatesSupport este set\u0103 la {0}, lucru care nu se potrive\u015fte cu starea curent\u0103 a fi\u015fierelor de disc pentru numele cache {1}. Proprietatea personalizat\u0103 disableTemplatesSupport este set\u0103 la {2}. 
+DYNA1034W.explanation=Setarea propriet\u0103\u0163ii personalizate disableTemplatesSupport nu se potrive\u015fte cu starea curent\u0103 a fi\u015fierelor de pe disc.
+DYNA1034W.useraction=Pentru a seta proprietatea personalizat\u0103 disableTemplatesSupport cu valorile dorite, \u015fterge\u0163i toate fi\u015fierele cache de pe disc \u015fi reporni\u0163i serverul.
+
+# No Comment Provided
+DYNA1035I=DYNA1035I: Lista de chei cache {0} \u015fi hashcode-urile lor din cache-ul de memorie pentru numele cache {1}: {2} 
+DYNA1035I.explanation=Afi\u015feaz\u0103 fiecare cheie cache \u015fi hashcode-ul s\u0103u \u00een cache-ul de memorie.
+DYNA1035I.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1036I=DYNA1036I: List\u0103 de chei cache {0} \u015fi hashcode-urile lor \u00een cache-ul de disc pentru numele cache {1}: {2} 
+DYNA1036I.explanation=Afi\u015feaz\u0103 fiecare cheie cache \u015fi hashcode-ul s\u0103u \u00een cache-ul de disc.
+DYNA1036I.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1037I=DYNA1037I: Lista de chei cache {0} \u015fi hashcode-urile lor \u00een PushPullTable pentru nume cache {1}: {2} 
+DYNA1037I.explanation=Afi\u015feaz\u0103 fiecare cheie cache \u015fi hashcode-ul s\u0103u \u00een PushPullTable.
+DYNA1037I.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1038I=DYNA1038I: Num\u0103rul total de intr\u0103ri cache \u00een cache-ul de memorie este {0} pentru numele cache {1}.
+DYNA1038I.explanation=Afi\u015feaz\u0103 num\u0103rul total de intr\u0103ri \u00een cache-ul de memorie.
+DYNA1038I.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1039I=DYNA1039I: Num\u0103rul total de intr\u0103ri cache \u00een cache-ul de disc estr {0} pentru numele cache {1}.
+DYNA1039I.explanation=Afi\u015feaz\u0103 num\u0103rul total de intr\u0103ri \u00een cache-ul de disc.
+DYNA1039I.useraction=F\u0103r\u0103.
+
+
+# No Comment Provided
+DYNA1040I=DYNA1040I: Num\u0103rul total de ID-uri cache \u00een PushPullTable este {0} pentru numele cache {1}.
+DYNA1040I.explanation=Afi\u015feaz\u0103 num\u0103rul total de ID-uri cache \u00een PushPullTable.
+DYNA1040I.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1041W=DYNA1041W: Compararea cache \u00eentre server1 {0} \u015fi server2 {1} pentru numele cache {2} a e\u015fuat.
+DYNA1041W.explanation=E\u015fuarea compar\u0103rii cache ar putea fi cauzat\u0103 de: (1) Desc\u0103rcarea pe disc este activat\u0103. C\u00e2nd instan\u0163ele cache fac bootstrop una cu cealalt\u0103 la pornirea serverului, intr\u0103rile cache de disc nu sunt replicate \u00eentre ele. (2) Aglomerarea \u00een DRS ar putea face ca unele actualiz\u0103ri cache s\u0103 fie abandonate. (3) Unele intr\u0103ri cache nu pot fi partajate \u00een domeniul de replicare. (4) Comanda compareCaches() nu va func\u0163iona cu politica de partajare Push-Pull. Folosi\u0163i comanda compareCacheKeys.
+DYNA1041W.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1042E=DYNA1042E: Instan\u0163a cache de intrare {0} nu este valid\u0103 sau nu este configurat\u0103.
+DYNA1042E.explanation=Instan\u0163a cache de intrare nu este valid\u0103. Configura\u0163i instan\u0163a cache folosind fie consola administrativ\u0103, fie fi\u015fierul cacheinstances.properties. 
+DYNA1042E.useraction=Asigura\u0163i-v\u0103 c\u0103 o instan\u0163\u0103 cache este configurat\u0103 corect \u015fi numele instan\u0163ei cache este corect.
+
+# No Comment Provided
+DYNA1043E=DYNA1043E: Tiparul de intrare {0} nu este o expresie regulat\u0103 valid\u0103. Excep\u0163ie: {1}
+DYNA1043E.explanation=Tiparul de intrare nu este o expresie regulat\u0103 valid\u0103.
+DYNA1043E.useraction=Verifica\u0163i clasa java.util.regex.Pattern.
+
+# No Comment Provided
+DYNA1044E=DYNA1044E: Eroare intern\u0103: E\u015fuarea cre\u0103rii MessageDigest pentru algoritmul MD5. Excep\u0163ie: {0}
+DYNA1044E.explanation=Eroare intern\u0103: E\u015fuarea cre\u0103rii MessageDigest pentru algoritmul MD5.
+DYNA1044E.useraction=Contacta\u0163i service-ul IBM pentru a depana aceast\u0103 problem\u0103.
+
+# No Comment Provided
+DYNA1045E=DYNA1045E: Nodul de intrare {0} nu este un nume de nod valid.
+DYNA1045E.explanation=Numele nodului de intrare nu este valid.
+DYNA1045E.useraction=Asigura\u0163i-v\u0103 c\u0103 nodul exist\u0103 \u015fi numele este corect.
+
+# No Comment Provided
+DYNA1046E=DYNA1046E: Serverul de intrare {0} nu este un nume de server valid.
+DYNA1046E.explanation=Numele serverului de intrare nu este valid.
+DYNA1046E.useraction=Asigura\u0163i-v\u0103 c\u0103 serverul exist\u0103 \u015fi numele este corect.
+
+# No Comment Provided
+DYNA1047E=DYNA1047E: Eroare intern\u0103: E\u015fuarea cre\u0103rii obiectului AdminService. Excep\u0163ie: {0}
+DYNA1047E.explanation=Eroare intern\u0103: E\u015fuarea cre\u0103rii obiectului AdminService.
+DYNA1047E.useraction=Contacta\u0163i service-ul IBM pentru a depana aceast\u0103 problem\u0103.
+
+# No Comment Provided
+DYNA1048E=DYNA1048E: Comanda MBean {0} poate rula numai sub Managerul de implementare.
+DYNA1048E.explanation=Comanda MBean CompareCaches poate rula doar sub managerul de implementare.
+DYNA1048E.useraction=Rula\u0163i comanda CompareCaches din MBean-ul Dynacache al Managerului de implementare.
+
+# No Comment Provided
+DYNA1049E=DYNA1049E: MBean-ul DynaCache nu s-a g\u0103sit \u00een nodul {0} pe care se afl\u0103 serverul {1}.
+DYNA1049E.explanation=MBean-ul DynaCache nu s-a g\u0103sit \u00een nodul pe care se afl\u0103 serverul.
+DYNA1049E.useraction=Verifica\u0163i expresia de interogare pentru MBean. Asigura\u0163i-v\u0103 c\u0103 numele de nod \u015fi server furnizate exist\u0103.
+
+# No Comment Provided
+DYNA1050E=DYNA1050E: A ap\u0103rut o excep\u0163ie \u00een timp ce se \u00eencerca invocarea comenzii MBean {0} pe serverul {1}. Excep\u0163ia: {2}
+DYNA1050E.explanation=A ap\u0103rut o excep\u0163ie \u00een timp ce se \u00eencerca invocarea comenzii MBean.
+DYNA1050E.useraction=G\u0103si\u0163i explica\u0163ia excep\u0163iei \u00een fi\u015fierul de server SystemOut.log.
+
+# No Comment Provided
+DYNA1051E=DYNA1051E: Comanda MBean {0} nu poate fi realizat\u0103 deoarece caracteristica de desc\u0103rcare pe disc nu este activat\u0103 pentru instan\u0163a cache numit\u0103 {1}. 
+DYNA1051E.explanation=Comanda MBean nu poate fi invocat\u0103 deoarece caracteristica de desc\u0103rcare pe disc nu este activat\u0103 pentru instan\u0163a cache numit\u0103. 
+DYNA1051E.useraction=Asigura\u0163i-v\u0103 c\u0103 este activat\u0103 caracteristica de desc\u0103rcare pe disc pentru instan\u0163a cache numit\u0103. Consulta\u0163i articolul Configurarea desc\u0103rc\u0103rii pe disc pentru cache dinamic \u00een documenta\u0163ia produsului.
+
+# No Comment Provided
+DYNA1052E=DYNA1052E: Numele de intrare {0} nu este un nume statistic de cache valid.
+DYNA1052E.explanation=Numele statistic de cache de intrare nu este valid.
+DYNA1052E.useraction=Asigura\u0163i-v\u0103 c\u0103 numele statisticii de cache este valid.
+
+# No Comment Provided
+DYNA1053E=DYNA1053E: A ap\u0103rut o excep\u0163ie c\u00e2nd se \u00eencerca invocarea comenzii MBean {0}. Excep\u0163ie: {1}
+DYNA1053E.explanation=A ap\u0103rut o excep\u0163ie \u00een timp ce se \u00eencerca invocarea comenzii MBean.
+DYNA1053E.useraction=Consulta\u0163i explica\u0163ia excep\u0163iei, descris\u0103 \u00een mesajul de eroare.
+
+# No Comment Provided
+DYNA1054I=DYNA1054I: Cache dinamic (cache nucleu) ini\u0163ializat cu succes.
+DYNA1054I.explanation=Cache-ul dinamic (cache nucleu) a fost ini\u0163ializat cu succes.
+DYNA1054I.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1055I=DYNA1055I: Cache dinamic (cache servlet) ini\u0163ializat cu succes.
+DYNA1055I.explanation=Cache-ul dinamic (cache servlet) a fost ini\u0163ializat cu succes.
+DYNA1055I.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1056I=DYNA1056I: Cache dinamic (cache obiect) ini\u0163ializat cu succes.
+DYNA1056I.explanation=Cache-ul dinamic (cache obiect) a fost ini\u0163ializat cu succes.
+DYNA1056I.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1057W=DYNA1057W: Instan\u0163a cache {0} definit\u0103 \u00een {1} nu este ad\u0103ugat\u0103 pentru c\u0103 exist\u0103 deja un cache cu acest nume. 
+DYNA1057W.explanation=Instan\u0163a cache nu este ad\u0103ugat\u0103 pentru c\u0103 exist\u0103 deja un cache cu acest nume.
+DYNA1057W.useraction=Asigura\u0163i-v\u0103 c\u0103 instan\u0163a cache nu define\u015fte mai mult de o dat\u0103 \u00een fi\u015fierele de propriet\u0103\u0163i.
+
+# No Comment Provided
+DYNA1058W=DYNA1058W: Replicarea cache este dezactivat\u0103 pentru instan\u0163a cache {0} pentru c\u0103 serviciul Cache dinamic ruleaz\u0103 \u00eentr-un server independent.
+DYNA1058W.explanation=Replicarea cache este dezactivat\u0103 pentru instan\u0163a cache pentru c\u0103 serviciul Cache dinamic ruleaz\u0103 \u00eentr-un server independent.
+DYNA1058W.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1059W=DYNA1059W: Instan\u0163a Cache dinamic numit\u0103 {0} nu poate fi folosit\u0103 pentru c\u0103 serviciul cache Servlet dinamic nu a fost pornit.
+DYNA1059W.explanation=Serviciul cache Servlet dinamic nu a fost pornit. Instan\u0163ele cache de servlet nu pot fi folosite.
+DYNA1059W.useraction=Asigura\u0163i-v\u0103 c\u0103 punerea \u00een cache a servletului dinamic este activat\u0103 \u00een consola administrativ\u0103.
+
+# No Comment Provided
+DYNA1060W=DYNA1060W: Instan\u0163a Cache dinamic numit\u0103 {0} nu poate fi folosit\u0103 pentru c\u0103 serviciul Obiect dinamic nu a fost pornit.
+DYNA1060W.explanation=Serviciul cache Obiect dinamic numit nu a fost pornit. Instan\u0163ele cache de obiect nu pot fi folosite.
+DYNA1060W.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1061E=DYNA1061E: Nu este activat nici cache-ul de servlet, nici punerea \u00een cache a obiectelor.
+DYNA1061E.explanation=Nu este activat nici cache-ul de servlet, nici punerea \u00een cache a obiectelor.
+DYNA1061E.useraction=Asigura\u0163i-v\u0103 c\u0103 punerea \u00een cache a servletului dinamic este activat\u0103 \u00een consola administrativ\u0103.
+
+# No Comment Provided
+DYNA1062E=DYNA1062E: Cache-ul dinamic (cache nucleu) a e\u015fuat la ini\u0163ializare. Excep\u0163ie: {0}
+DYNA1062E.explanation=Cache-ul dinamic (cache nucleu) a e\u015fuat la ini\u0163ializare.
+DYNA1062E.useraction=Depana\u0163i problema folosind mesajul de eroare furnizat.
+
+# No Comment Provided
+DYNA1063E=DYNA1063E: Opera\u0163ia {0} pentru cacheName {1} nu poate fi realizat\u0103 pentru c\u0103 furnizorul cache {2} nu suport\u0103 caracteristica alias.
+DYNA1063E.explanation=Aceast\u0103 opera\u0163ie anume nu poate fi realizat\u0103 pentru c\u0103 furnizorul cache nu suport\u0103 caracteristica alias.
+DYNA1063E.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1064E=DYNA1064E: Opera\u0163ia {0} pentru cacheName {1} nu poate fi realizat\u0103 pentru c\u0103 furnizorul cache {2} nu suport\u0103 caracteristica de desc\u0103rcare cache pe disc.
+DYNA1064E.explanation=Aceast\u0103 opera\u0163ie anume nu poate fi realizat\u0103 pentru c\u0103 furnizorul cache nu suport\u0103 caracteristica de desc\u0103rcare cache pe disc.
+DYNA1064E.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1065E=DYNA1065E: Opera\u0163ia {0} pentru cacheName {1} nu poate fi realizat\u0103 pentru c\u0103 furnizorul cache {2} nu suport\u0103 caracteristica de replicare DRS.
+DYNA1065E.explanation=Aceast\u0103 opera\u0163ie anume nu poate fi realizat\u0103 pentru c\u0103 furnizorul cache nu suport\u0103 caracteristica de replicare DRS (serviciu de replicare date).
+DYNA1065E.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1066E=DYNA1066E: Nu se poate ini\u0163ializa furnizorul cache {0}. Cache-ul dinamic va fi folosit pentru a crea instan\u0163a cache {1} \u00een locul furnizorului cache configurat.
+DYNA1066E.explanation=A ap\u0103rut o eroare neanticipat\u0103 la ini\u0163ializarea furnizorului cache configurat. Cache-ul dinamic va fi folosit ca furnizor cache pentru a crea instan\u0163a cache \u00een locul furnizorului configurat. 
+DYNA1066E.useraction=Asigura\u0163i-v\u0103 c\u0103 furnizorul cache este furnizat ca bundle runtime Server de aplica\u0163ii sau ca bibliotec\u0103 \u00een directorul lib al Serverului de aplica\u0163ii. 
+
+# No Comment Provided
+DYNA1067E=DYNA1067E: Caracteristica Dimensiune cache \u00een MB este dezactivat\u0103 pentru c\u0103 obiectul pus \u00een cache nu este dimensionabil.  ClassName={0}   Type={1}
+DYNA1067E.explanation=Caracteristica Dimensiune cache \u00een MB este dezactivat\u0103 pentru c\u0103 obiectul pus \u00een cache nu este implementat s\u0103 fie dimensionabil. 
+DYNA1067E.useraction=Asigura\u0163i-v\u0103 c\u0103 clasa de obiect pus\u0103 \u00een cache implementeaz\u0103 interfa\u0163a com.ibm.websphere.cache.Sizable.
+
+# No Comment Provided
+DYNA1068E=DYNA1068E: Caracteristica Dimensiune cache \u00een MB este dezactivat\u0103 pentru c\u0103 furnizorul cache configurat {0} nu suport\u0103 aceast\u0103 caracteristic\u0103 pentru instan\u0163a cache {1}.
+DYNA1068E.explanation=Caracteristica Dimensiune cache \u00een MB este dezactivat\u0103 pentru c\u0103 furnizorul cache configurat nu suport\u0103 aceast\u0103 caracteristic\u0103.
+DYNA1068E.useraction=F\u0103r\u0103
+
+# No Comment Provided
+DYNA1069I=DYNA1069I: Proprietatea personalizat\u0103  lruToDiskTriggerTime  va fi setat\u0103 la {0} pentru a ob\u0163ine o performan\u0163\u0103 mai bun\u0103.
+DYNA1069I.explanation=\u00centruc\u00e2t caracteristica Dimensiune cache memorie \u00een MB sau Procent declan\u015fator LRU este activat\u0103, proprietatea personalizat\u0103 lruToDiskTriggerTime  va fi modificat\u0103 la o valoare mai bun\u0103 pentru a ob\u0163ine o performan\u0163\u0103 mai bun\u0103.
+DYNA1069I.useraction=F\u0103r\u0103
+
+DYNA1070I=DYNA1070I: Instan\u0163a cache {0} este plin\u0103 \u015fi a atins dimensiunea configurat\u0103 maxim\u0103 de {1} intr\u0103ri. Se va face acum spa\u0163iu pe heap-ul JVM pentru noi intr\u0103ri, evacu\u00e2nd intr\u0103rile cache existente folosind algoritmul LRU. V\u0103 rug\u0103m s\u0103 lua\u0163i \u00een considerare activarea caracteristicii de desc\u0103rcare pe disc pentru instan\u0163a cache pentru a \u00eempiedica renun\u0163area la intr\u0103ri cache din memorie.
+DYNA1070I.explanation=\u00centruc\u00e2t caracteristica de desc\u0103rcare pe disc este dezactivat\u0103 \u015fi instan\u0163a cache este plin\u0103, se va face disponibil spa\u0163iu heap JVM pentru noi intr\u0103ri, evacu\u00e2nd intr\u0103ri cache folosind algoritmul LRU.
+DYNA1070I.useraction=Activa\u0163i caracteristica de desc\u0103rcare pe disc pentru instan\u0163a cache pentru a \u00eempiedica renun\u0163area la intr\u0103ri cache din memorie.
+
+# No Comment Provided
+DYNA1071I=DYNA1071I: Furnizorul cache {0} este folosit.
+DYNA1071I.explanation=Aceasta afi\u015feaz\u0103 numele furnizorului cache folosit.
+DYNA1071I.useraction=F\u0103r\u0103.
+
+# No Comment Provided
+DYNA1072W=DYNA1072W: ID-ul cache-ului {0} nu va fi copiat pe alte servere deoarece skipMemoryWriteToDisk este setat la true. Politica de partajare va fi setat\u0103 la nepartajare.
+DYNA1072W.explanation=ID-ul cache specificat nu va fi replicat la alte servere pentru c\u0103 skipMemoryWriteToDisk este setat la adev\u0103r. 
+DYNA1072W.useraction=F\u0103r\u0103.
+
+# RemoteJMSInvalidator external cache group is configured incorrectly
+DYNA1073E=DYNA1073E: Grupul cache extern RemoteJMSInvalidator nu este configurat \u00een mod corespunz\u0103tor. Urm\u0103toarea adres\u0103 a fost oferit\u0103 pentru membrul grupului cache extern: {0}
+DYNA1073E.explanation=Trebuie s\u0103 rezolva\u0163i eroarea de configurare pentru grupul cache extern speciificat pentru a func\u0163iona corect.
+DYNA1073E.useraction=F\u0103r\u0103.
+
+# RemoteInvalidator is no longer connected to SIB servers in the remote cell or core group
+DYNA1074W=DYNA1074W: Grupul cache extern RemoteJMSInvalidator nu mai este conectat. Numele JNDI configurat al fabricii de conexiuni de cozi este {0} \u015fi numele JNDI al destina\u0163iei \u0163intite este {1}.
+DYNA1074W.explanation=Serverele magistrale de integrare a serviciului din fabrica de conexiuni de cozi specificat\u0103 nu mai sunt disponibile.
+DYNA1074W.useraction=F\u0103r\u0103.
+
+# RemoteInvalidator has successfully connected to the SIB servers in the remote cell or core group
+DYNA1075I=DYNA1075I: Grupul cache extern RemoteJMSInvalidator este conectat. Numele JNDI configurat al fabricii de conexiuni de cozi este {0} \u015fi numele JNDI al destina\u0163iei \u0163intite este {1}.
+DYNA1075I.explanation=Grupul cache extern este acum conectat la serverele magistral\u0103 de integrare serviciu care sunt definite \u00een fabrica de conexiuni de cozi.
+DYNA1075I.useraction=F\u0103r\u0103.
+
+# RemoteInvalidator has successfully connected to the SIB servers in the remote cell or core group
+DYNA1076W=DYNA1076W: Grupul cache extern RemoteJMSInvalidator nu se poate conecta. Numele JNDI configurat al fabricii de conexiuni de cozi este {0} \u015fi numele JNDI al destina\u0163iei \u0163intite este {1}.
+DYNA1076W.explanation=Grupul cache extern nu se poate conecta la serverele magistral\u0103 de integrare serviciu care sunt definite \u00een fabrica de conexiuni de cozi.
+DYNA1076W.useraction=Ar putea fi nevoie s\u0103 reporni\u0163i serverele magistral\u0103 de integrare serviciu \u0163intite.
+
+# displays defined custom property
+DYNA1077I=DYNA1077I: Proprietatea personalizat\u0103 cu numele {0} \u015fi valoarea {1}a fost detectat\u0103.
+DYNA1077I.explanation=Numele \u015fi valoarea unei propriet\u0103\u0163i personalizate definite.
+DYNA1077I.useraction=F\u0103r\u0103.
+
+# Dynacache openjpa messages
+
+queryCache-instance-created=DYNA1080I: Instan\u0163a OpenJPA L2 QueryCache Dynacache {0} creat\u0103 sau extras\u0103 cu succes pentru unitatea persistent\u0103 {1}.
+queryCache-instance-created.explanation=Instan\u0163a OpenJPA L2 QueryCache Dynacache creat\u0103 cu succes.
+queryCache-instance-created.useraction=F\u0103r\u0103.
+
+dataCache-instance-created=DYNA1081I: Instan\u0163a OpenJPA L2 DataCache Dynacache {0} creat\u0103 sau extras\u0103 cu succes pentru unitatea persistent\u0103 {1}.
+dataCache-instance-created.explanation=Instan\u0163a OpenJPA L2 DataCache Dynacache creat\u0103 cu succes.
+dataCache-instance-created.useraction=F\u0103r\u0103.
+
+specify-replication-domain=DYNA1082W: Domeniul de replicare nu a fost specificat.
+specify-replication-domain.explanation=Se for\u0163eaz\u0103 enableCacheReplication la fals.
+specify-replication-domain.useraction=V\u0103 rug\u0103m configura\u0163i un domeniu de replicare WebSphere de asociat cu instan\u0163a cache.
+
+no-cache-name=DYNA1083W: Nici un cache numit nu este specificat pentru instan\u0163a cache open-jpa L2. Se folose\u015fte numele unit\u0103\u0163ii persistente  {0}  ca nume de instan\u0163\u0103 cache.
+no-cache-name.explanation=F\u0103r\u0103.
+no-cache-name.useraction=V\u0103 rug\u0103m configura\u0163i un nume pentru instan\u0163a cache open-jpa L2.
+
+no-cache-size=DYNA1084W: Nu este specificat\u0103 nici o dimensiune cache pentru instan\u0163a cache open-jpa L2 {0}.  Se seteaz\u0103 dimensiunea cache din memorie la {1}.
+no-cache-size.explanation=F\u0103r\u0103.
+no-cache-size.useraction=V\u0103 rug\u0103m configura\u0163i o dimensiune pentru instan\u0163a cache open-jpa L2.
+
+incompatible-configuration=DYNA1085W: Proprietatea {0} a fost configurat\u0103 la valoarea incompatibil\u0103 {1} . Se for\u0163eaz\u0103 aceast\u0103 valoare la {2}.
+incompatible-configuration.explanation=F\u0103r\u0103.
+incompatible-configuration.useraction=V\u0103 rug\u0103m furniza\u0163i o configura\u0163ie compatibil\u0103 pentru instan\u0163a cache open-jpa L2.
+incompatible-configuration1=DYNA1086I: \u00centruc\u00e2t proprietatea openjpa.DataCacheManager este setat\u0103 la  dynacache   Furnizorul cacheDynacache OpenJPA L2 va seta FOR\u0162AT proprietatea openjpa.DataCache la  dynacache .
+incompatible-configuration1.explanation=Acest mesaj are doar scop informa\u0163ional.
+incompatible-configuration1.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+incompatible-configuration2=DYNA1087I: \u00centruc\u00e2t proprietatea openjpa.DataCacheManager este setat\u0103 la  dynacache  Furnizorul cache Dynacache OpenJPA L2  va seta FOR\u0162AT proprietatea openjpa.RemoteCommitProvider la nimic (f\u0103r\u0103).
+incompatible-configuration2.explanation=Acest mesaj are doar scop informa\u0163ional.
+incompatible-configuration2.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+incompatible-configuration3=DYNA1088I: \u00centruc\u00e2t proprietatea openjpa.Datacache este setat\u0103 la dynacache  Furnizorul cache Dynacache OpenJPA L2 va seta FOR\u0162AT proprietatea openjpa.RemoteCommitProvider la nimic (f\u0103r\u0103).
+incompatible-configuration3.explanation=Acest mesaj are doar scop informa\u0163ional.
+incompatible-configuration3.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+incompatible-configuration4=DYNA1089I: \u00centruc\u00e2t proprietatea openjpa.Querycache este setat\u0103 la  dynacache   Furnizorul cacheDynacache OpenJPA L2 va seta FOR\u0162AT proprietatea openjpa.DataCache la  dynacache .
+incompatible-configuration4.explanation=Acest mesaj are doar scop informa\u0163ional.
+incompatible-configuration4.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+DYNA1090I=DYNA1090I: Serviciul Cache dinamic este dezactivat.
+DYNA1090I.explanation=Serviciile Cache dinamic, Cache obiect \u015fi Punere \u00een cache servlet au fost dezactivate prin consola administrativ\u0103 sau script. 
+DYNA1090I.useraction=Activa\u0163i serviciul Cache dinamic prin setarea atributului de activare pentru obiectul AdminConfig DynamicCache din domeniul serverului sau prin panoul consolei adiministrative Servere de aplica\u0163ii > <server_name> > serviciu Cache dinamic
+
+DYNA1091E=DYNA1091E: Configura\u0163ia pentru instan\u0163a cache {0}nu a fost recunoscut\u0103 din cauza excep\u0163iei {0}.
+DYNA1091E.explanation=Configura\u0163ia Cache dinamic pentru instan\u0163a cache este invalid\u0103 din cauza excep\u0163iei aruncate.
+DYNA1091E.useraction=V\u0103 rug\u0103m corecta\u0163i \u015fi adresa\u0163i cauza excep\u0163iei, pentru ca configura\u0163ia cache s\u0103 poat\u0103 fi ad\u0103ugat\u0103 cu succes la runtime-ul Cache dinamic.
+                     
+no-jpa-cache-exists-with-this-name=DYNA1092E: Nu exist\u0103 nici un DataCache cu numele {0}.
+no-jpa-cache-exists-with-this-name.explanation=V\u0103 rug\u0103m s\u0103 confirma\u0163i c\u0103 L2 DataCache s-a creat cu succes.
+no-jpa-cache-exists-with-this-name.useraction=V\u0103 rug\u0103m s\u0103 confirma\u0163i c\u0103 L2 Data Cache este corect.
+
+no-dynacache-manager-configured=DYNA1093E: DataCache {0} nu s-a configurat cu DataCacheManager corect \u00een unitatea persistent\u0103 {1} . 
+no-dynacache-manager-configured.explanation=proprietatea openjpa.DataCacheManager ar trebui s\u0103 fie setat\u0103 cu dynacache. 
+no-dynacache-manager-configured.useraction=V\u0103 rug\u0103m s\u0103 corecta\u0163i aceast\u0103 proprietate \u00een persistence.xml.
+
+incorrect-class-name=DYNA1094E: Clasa de entitate {0} NU a putut fi \u00eenc\u0103rcat\u0103 de \u00eenc\u0103rc\u0103torul de clase {1}. 
+incorrect-class-name.explanation=V\u0103 rug\u0103m s\u0103 confirma\u0163i c\u0103 Clasa exist\u0103 \u00een aplica\u0163ie \u015fi este vizibil\u0103 pentru \u00eenc\u0103rc\u0103torul de clase al serverului de aplica\u0163ii.
+incorrect-class-name.useraction=V\u0103 rug\u0103m s\u0103 furniza\u0163i numele Clas\u0103 de entitate corect \u015fi s\u0103 configura\u0163i o bibliotec\u0103 partajat\u0103 cu domeniu de server ce con\u0163ine clasele asociate cu serverul.
+
+unable-to-retrieve-OpenJPA-configuration-for-cache-instance=DYNA1095E: Unitatea de persisten\u0163\u0103: {0} nu s-a g\u0103sit \u00een aplica\u0163ia: {1} modulul: {2} .
+unable-to-retrieve-OpenJPA-configuration-for-cache-instance.explanation= XML-ul unit\u0103\u0163ii de persisten\u0163\u0103 nu s-a putut g\u0103si \u00een loca\u0163ia specificat\u0103.
+unable-to-retrieve-OpenJPA-configuration-for-cache-instance.useraction= V\u0103 rug\u0103m s\u0103 confirma\u0163i c\u0103 unitatea de persisten\u0163\u0103 este \u00eentr-adev\u0103r plasat\u0103 \u00een loca\u0163ia specificat\u0103 de parametrii mbean.
+                   

@@ -25,6 +25,7 @@ import org.junit.Test;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
@@ -74,6 +75,7 @@ import componenttest.topology.impl.LibertyServerFactory;
  * <p>Search for "***" within comments for specific tested conditions.</p>
  */
 @Mode(TestMode.FULL)
+@MinimumJavaLevel(javaLevel = 1.8)
 public class FATOpentracing implements FATOpentracingConstants {
     private static final String FEATURE_NAME = "com.ibm.ws.opentracing.mock-0.30.mf";
     private static final String BUNDLE_NAME = "com.ibm.ws.opentracing.mock.jar";
@@ -1509,7 +1511,11 @@ public class FATOpentracing implements FATOpentracingConstants {
             requestPath );
     }
 
-    @Test
+    /*
+     * Removed filter processing until microprofile spec for it is approved. Expect to add back in 1Q18 - smf
+     * Disable the tests until we add the code back in.
+     */
+    //@Test
     public void testExcludes() throws Exception {
         testExcludedPath("simple");
         testExcludedPath("wildcardTest");

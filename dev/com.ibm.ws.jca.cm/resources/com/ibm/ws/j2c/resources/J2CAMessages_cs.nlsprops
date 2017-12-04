@@ -1,0 +1,337 @@
+###############################################################################
+# Copyright (c) 1997, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# Instructions to translation will precede the line to which it applies
+#
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# Example: MSG_DESCRIPTIVE_NAME_J2CA0001=J2CA0001I: This is a message.
+#
+# The prefix for this component is:
+#     J2CA (J2C Connection Manager)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# :Begin: WebSphere Quality Validation Information :Begin:
+# :End: WebSphere Quality Validation Information :End:
+#
+#CMVCPATHNAME com.ibm.ws.jca.cm/resources/com/ibm/ws/j2c/resources/J2CAMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA Java Platform, Enterprise Edition Connector Architecture Server Implementation
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+NULL_MANAGED_CONNECTION_J2CA0015=J2CA0015E: Spr\u00e1vce fondu p\u0159ipojen\u00ed nem\u016f\u017ee p\u0159id\u011blit spravovan\u00e9 p\u0159ipojen\u00ed z prost\u0159edku {0}.
+NULL_MANAGED_CONNECTION_J2CA0015.explanation=Spr\u00e1vce fondu nem\u016f\u017ee p\u0159id\u011blit spravovan\u00e9 p\u0159ipojen\u00ed. P\u0159\u00ed\u010dinou mohou b\u00fdt vlastnosti p\u0159idru\u017een\u00e9 ke spr\u00e1vci fondu (nap\u0159\u00edklad p\u0159ekro\u010den\u00ed maxim\u00e1ln\u00edho po\u010dtu p\u0159ipojen\u00ed). Spravovan\u00e9 p\u0159ipojen\u00ed vr\u00e1cen\u00e9 spr\u00e1vcem fondu m\u00e1 hodnotu Null.
+NULL_MANAGED_CONNECTION_J2CA0015.useraction=CMSG0002
+
+# --------------------------------
+XA_OP_NOT_SUPPORTED_J2CA0016=J2CA0016E: Byla vyvol\u00e1na dvouf\u00e1zov\u00e1 operace XA, {0}, s ID transakce {1}. Tento adapt\u00e9r prost\u0159edku z fondu {2} nepodporuje dvouf\u00e1zov\u00e9 zpracov\u00e1n\u00ed.
+XA_OP_NOT_SUPPORTED_J2CA0016.explanation=Tato informace indikuje, \u017ee byl proveden pokus o pou\u017eit\u00ed p\u0159ipojen\u00ed v kontextu transakce XA spole\u010dn\u011b s jin\u00fdmi prost\u0159edky prost\u0159ed\u00ed XA. Nejedn\u00e1 se o platnou operaci pro tento adapt\u00e9r prost\u0159edku.
+XA_OP_NOT_SUPPORTED_J2CA0016.useraction=Upravte logiku tak, aby bylo pou\u017eit\u00ed prost\u0159edk\u016f rozd\u011bleno na samostatn\u00e9 transakce.
+
+# --------------------------------                    
+FAILED_MANAGED_CONNECTION_J2CA0020=J2CA0020E: Spr\u00e1vce fondu p\u0159ipojen\u00ed nem\u016f\u017ee p\u0159id\u011blit spravovan\u00e9 p\u0159ipojen\u00ed: {0}.
+FAILED_MANAGED_CONNECTION_J2CA0020.explanation=Spr\u00e1vce fondu vyvolal v\u00fdjimku p\u0159i pokusu o p\u0159id\u011blen\u00ed spravovan\u00e9ho p\u0159ipojen\u00ed. Text v\u00fdjimky m\u016f\u017ee obsahovat dal\u0161\u00ed informace u\u017eite\u010dn\u00e9 p\u0159i ur\u010dov\u00e1n\u00ed probl\u00e9mu.
+FAILED_MANAGED_CONNECTION_J2CA0020.useraction=Pokud neexistuj\u00ed u\u017eivatelem \u0159\u00edzen\u00e9 indikace, je mo\u017en\u00e9, \u017ee se zpr\u00e1va zobrazila v d\u016fsledku intern\u00ed chyby p\u0159i zpracov\u00e1n\u00ed spr\u00e1vce p\u0159ipojen\u00ed. Shrom\u00e1\u017ed\u011bte diagnostick\u00e1 data a vyhledejte dal\u0161\u00ed informace na str\u00e1nk\u00e1ch podpory spole\u010dnosti IBM.
+
+# --------------------------------
+FAILED_CONNECTION_J2CA0021=J2CA0021E: Do\u0161lo k v\u00fdjimce p\u0159i pokusu o z\u00edsk\u00e1n\u00ed p\u0159ipojen\u00ed z prost\u0159edku spravovan\u00e9ho p\u0159ipojen\u00ed {1}: {0}.
+FAILED_CONNECTION_J2CA0021.explanation=Adapt\u00e9r prost\u0159edku vyvolal v\u00fdjimku p\u0159i pokusu o vol\u00e1n\u00ed metody getConnection{}. Text v\u00fdjimky m\u016f\u017ee obsahovat dal\u0161\u00ed informace u\u017eite\u010dn\u00e9 p\u0159i ur\u010dov\u00e1n\u00ed probl\u00e9mu.
+FAILED_CONNECTION_J2CA0021.useraction=Pokud neexistuj\u00ed u\u017eivatelem \u0159\u00edzen\u00e9 indikace, je mo\u017en\u00e9, \u017ee se zpr\u00e1va zobrazila v d\u016fsledku intern\u00ed chyby p\u0159i zpracov\u00e1n\u00ed spr\u00e1vce p\u0159ipojen\u00ed. Shrom\u00e1\u017ed\u011bte diagnostick\u00e1 data a vyhledejte dal\u0161\u00ed informace na str\u00e1nk\u00e1ch podpory spole\u010dnosti IBM.
+
+# --------------------------------
+FAILED_CONNECTION_RELEASE_J2CA0022=J2CA0022I: Do\u0161lo k v\u00fdjimce p\u0159i pokusu o vy\u010di\u0161t\u011bn\u00ed a uvoln\u011bn\u00ed spravovan\u00e9ho p\u0159ipojen\u00ed z prost\u0159edku {1} pro objekt getConnection, u kter\u00e9ho do\u0161lo k nezdaru, ze spravovan\u00e9ho p\u0159ipojen\u00ed {0}. Tato druh\u00e1 chyba byla absorbov\u00e1na a byla znovu vr\u00e1cena p\u016fvodn\u00ed chyba.
+FAILED_CONNECTION_RELEASE_J2CA0022.explanation=Do\u0161lo k probl\u00e9mu p\u0159i pokusu o vymaz\u00e1n\u00ed z\u00e1znam\u016f po ne\u00fasp\u011b\u0161n\u00e9m pokusu o spu\u0161t\u011bn\u00ed metody getConnection. Tato zpr\u00e1va je informa\u010dn\u00ed a m\u011bla by b\u00fdt za \u00fa\u010delem spr\u00e1vn\u00e9ho ur\u010den\u00ed probl\u00e9mu kombinov\u00e1na s dal\u0161\u00edmi souvisej\u00edc\u00edmi zpr\u00e1vami.
+FAILED_CONNECTION_RELEASE_J2CA0022.useraction=Vysv\u011btlen\u00ed a odezvy u\u017eivatele naleznete v dal\u0161\u00edch souvisej\u00edc\u00edch zpr\u00e1v\u00e1ch.
+
+# --------------------------------
+XA_OPERATION_NOT_SUPPORTED_J2CA0023=J2CA0023E: Byla vyvol\u00e1na dvouf\u00e1zov\u00e1 operace XA {0}. Tento adapt\u00e9r prost\u0159edku ze zdroje dat {1} nepodporuje dvouf\u00e1zov\u00e9 zpracov\u00e1n\u00ed.
+XA_OPERATION_NOT_SUPPORTED_J2CA0023.explanation=Do\u0161lo k pokusu o vyvol\u00e1n\u00ed operace XA v adapt\u00e9ru prost\u0159edku, kter\u00fd podporuje pouze lok\u00e1ln\u00ed transakce. Je mo\u017en\u00e9, \u017ee byl adapt\u00e9r prost\u0159edku lok\u00e1ln\u00edch transakc\u00ed zahrnut do kontextu transakce XA spole\u010dn\u011b s jin\u00fdmi prost\u0159edky prost\u0159ed\u00ed XA.
+XA_OPERATION_NOT_SUPPORTED_J2CA0023.useraction=Upravte obchodn\u00ed logiku tak, aby bylo pou\u017eit\u00ed prost\u0159edk\u016f rozd\u011bleno na samostatn\u00e9 transakce.
+
+# --------------------------------
+XA_END_EXCP_J2CA0024=J2CA0024E: Metoda {0} v r\u00e1mci ID v\u011btve transakc\u00ed {1} fondu prost\u0159edk\u016f {4} zachytila {2} a vr\u00e1tila {3}.
+XA_END_EXCP_J2CA0024.explanation=P\u0159i zpracov\u00e1n\u00ed dan\u00e9 metody do\u0161lo k probl\u00e9mu. Rozhran\u00ed definuje specifick\u00e9 v\u00fdjimky, kter\u00e9 lze vyvolat; zachycen\u00e1 v\u00fdjimka tedy byla mapov\u00e1na na vyvolanou v\u00fdjimku. Zpracov\u00e1n\u00ed v r\u00e1mci metody nebylo \u00fasp\u011b\u0161n\u011b dokon\u010deno.
+XA_END_EXCP_J2CA0024.useraction=Ov\u011b\u0159te, \u017ee obchodn\u00ed logika aplikace spr\u00e1vn\u011b zachyt\u00e1v\u00e1 vyvolanou v\u00fdjimku a \u017ee obsahuje pot\u0159ebnou logiku pro zotaven\u00ed. Zkontrolujte tak\u00e9, zda soubory protokolu neobsahuj\u00ed informace o d\u0159\u00edv\u011bj\u0161\u00edch chyb\u00e1ch, kter\u00e9 v\u00fdjimku zp\u016fsobily.
+
+# --------------------------------
+REGISTER_WITH_SYNCHRONIZATION_EXCP_J2CA0026=J2CA0026E: Metoda {0} zachytila {1} p\u0159i pokusu o registraci adapt\u00e9ru prost\u0159edku se spr\u00e1vcem synchronizace pro aktu\u00e1ln\u00ed transakci a vr\u00e1tila {2}.
+REGISTER_WITH_SYNCHRONIZATION_EXCP_J2CA0026.explanation=P\u0159i zpracov\u00e1n\u00ed dan\u00e9 metody do\u0161lo k probl\u00e9mu. Rozhran\u00ed definuje specifick\u00e9 v\u00fdjimky, kter\u00e9 lze vyvolat; zachycen\u00e1 v\u00fdjimka tedy byla mapov\u00e1na na vyvolanou v\u00fdjimku. Zpracov\u00e1n\u00ed v r\u00e1mci metody nebylo \u00fasp\u011b\u0161n\u011b dokon\u010deno.
+REGISTER_WITH_SYNCHRONIZATION_EXCP_J2CA0026.useraction=Ov\u011b\u0159te, \u017ee obchodn\u00ed logika aplikace spr\u00e1vn\u011b zachyt\u00e1v\u00e1 vyvolanou v\u00fdjimku a obsahuje pot\u0159ebnou logiku pro zotaven\u00ed. Zkontrolujte tak\u00e9, zda soubory protokolu neobsahuj\u00ed informace o d\u0159\u00edv\u011bj\u0161\u00edch chyb\u00e1ch, kter\u00e9 v\u00fdjimku zp\u016fsobily.
+
+# --------------------------------
+XA_RESOURCE_ADAPTER_OPERATION_ID_EXCP_J2CA0027=J2CA0027E: Do\u0161lo k v\u00fdjimce p\u0159i vyvol\u00e1v\u00e1n\u00ed metody {0} v adapt\u00e9ru prost\u0159edku XA z objektu DataSource {3} v r\u00e1mci ID transakce {1}: {2}.
+XA_RESOURCE_ADAPTER_OPERATION_ID_EXCP_J2CA0027.explanation=P\u0159i zpracov\u00e1n\u00ed dan\u00e9 metody do\u0161lo k probl\u00e9mu. Zpracov\u00e1n\u00ed v r\u00e1mci metody nebylo \u00fasp\u011b\u0161n\u011b dokon\u010deno.
+XA_RESOURCE_ADAPTER_OPERATION_ID_EXCP_J2CA0027.useraction=Ov\u011b\u0159te, \u017ee obchodn\u00ed logika aplikace spr\u00e1vn\u011b zachyt\u00e1v\u00e1 vyvolanou v\u00fdjimku a \u017ee obsahuje pot\u0159ebnou logiku pro zotaven\u00ed. Zkontrolujte tak\u00e9, zda soubory protokolu neobsahuj\u00ed informace o d\u0159\u00edv\u011bj\u0161\u00edch chyb\u00e1ch, kter\u00e9 v\u00fdjimku zp\u016fsobily.
+
+# --------------------------------
+XA_RESOURCE_ADAPTER_OPERATION_EXCP_J2CA0028=J2CA0028E: Do\u0161lo k v\u00fdjimce p\u0159i vyvol\u00e1v\u00e1n\u00ed metody {0} v adapt\u00e9ru prost\u0159edku XA z objektu DataSource {2}: {1}.
+XA_RESOURCE_ADAPTER_OPERATION_EXCP_J2CA0028.explanation=P\u0159i zpracov\u00e1n\u00ed dan\u00e9 metody do\u0161lo k probl\u00e9mu. Zpracov\u00e1n\u00ed v r\u00e1mci metody nebylo \u00fasp\u011b\u0161n\u011b dokon\u010deno.
+XA_RESOURCE_ADAPTER_OPERATION_EXCP_J2CA0028.useraction=Ov\u011b\u0159te, \u017ee obchodn\u00ed logika aplikace spr\u00e1vn\u011b zachyt\u00e1v\u00e1 vyvolanou v\u00fdjimku a \u017ee obsahuje pot\u0159ebnou logiku pro zotaven\u00ed. Zkontrolujte tak\u00e9, zda soubory protokolu neobsahuj\u00ed informace o d\u0159\u00edv\u011bj\u0161\u00edch chyb\u00e1ch, kter\u00e9 v\u00fdjimku zp\u016fsobily.
+
+# --------------------------------
+ENLIST_RESOURCE_EXCP_J2CA0030=J2CA0030E: Metoda {0} zachytila v\u00fdjimku {1} p\u0159i pokusu o zobrazen\u00ed seznamu prost\u0159edk\u016f z objektu DataSource {3} pomoc\u00ed spr\u00e1vce transakc\u00ed pro aktu\u00e1ln\u00ed transakci a vyvolala v\u00fdjimku {2}.
+ENLIST_RESOURCE_EXCP_J2CA0030.explanation=P\u0159i zpracov\u00e1n\u00ed dan\u00e9 metody do\u0161lo k probl\u00e9mu. Rozhran\u00ed definuje specifick\u00e9 v\u00fdjimky, kter\u00e9 lze vyvolat; zachycen\u00e1 v\u00fdjimka tedy byla mapov\u00e1na na vyvolanou v\u00fdjimku. Zpracov\u00e1n\u00ed v r\u00e1mci metody nebylo \u00fasp\u011b\u0161n\u011b dokon\u010deno.
+ENLIST_RESOURCE_EXCP_J2CA0030.useraction=Ov\u011b\u0159te, \u017ee obchodn\u00ed logika aplikace spr\u00e1vn\u011b zachyt\u00e1v\u00e1 vyvolanou v\u00fdjimku a \u017ee obsahuje pot\u0159ebnou logiku pro zotaven\u00ed. Zkontrolujte tak\u00e9, zda soubory protokolu neobsahuj\u00ed informace o d\u0159\u00edv\u011bj\u0161\u00edch chyb\u00e1ch, kter\u00e9 v\u00fdjimku zp\u016fsobily.
+
+# --------------------------------
+DELIST_RESOURCE_EXCP_J2CA0031=J2CA0031I: Metoda {0} zachytila v\u00fdjimku {1} p\u0159i pokusu o vy\u0159azen\u00ed prost\u0159edk\u016f z objektu DataSource {3} ze spr\u00e1vce transakc\u00ed pro aktu\u00e1ln\u00ed transakci a vyvolala v\u00fdjimku {2}.
+DELIST_RESOURCE_EXCP_J2CA0031.explanation=Do\u0161lo k probl\u00e9mu p\u0159i pokusu o vy\u0159azen\u00ed prost\u0159edk\u016f ze spr\u00e1vce transakc\u00ed. Tato zpr\u00e1va je informativn\u00ed.
+DELIST_RESOURCE_EXCP_J2CA0031.useraction=Zobrazuje-li se tato zpr\u00e1va pravideln\u011b, shrom\u00e1\u017ed\u011bte diagnostick\u00e9 informace a vyhledejte dal\u0161\u00ed informace na str\u00e1nk\u00e1ch podpory spole\u010dnosti IBM.
+
+# --------------------------------
+UNEXPECTED_CONNECTION_EVENT_J2CA0034=J2CA0034E: Z adapt\u00e9ru prost\u0159edku byla pro prost\u0159edek {2} p\u0159ijata neo\u010dek\u00e1van\u00e1 ud\u00e1lost. O\u010dek\u00e1van\u00fd typ: ConnectionEvent {0}, p\u0159ijat\u00fd typ ConnectionEvent: {1}.
+UNEXPECTED_CONNECTION_EVENT_J2CA0034.explanation=S nejv\u011bt\u0161\u00ed pravd\u011bpodobnost\u00ed do\u0161lo k chyb\u011b konkr\u00e9tn\u00edho adapt\u00e9ru prost\u0159edku.
+UNEXPECTED_CONNECTION_EVENT_J2CA0034.useraction=Obra\u0165te se na dodavatele adapt\u00e9ru prost\u0159edku.
+
+# --------------------------------
+NO_VALID_TRANSACTION_CONTEXT_J2CA0040=J2CA0040E: Nebyl nalezen \u017e\u00e1dn\u00fd platn\u00fd kontext transakce u podprocesu pro metodu {0} s koordin\u00e1torem {1} s vyu\u017eit\u00edm prost\u0159edk\u016f z objektu DataSource {2}.
+NO_VALID_TRANSACTION_CONTEXT_J2CA0040.explanation=Do\u0161lo k intern\u00ed chyb\u011b p\u0159i zpracov\u00e1n\u00ed spr\u00e1vce p\u0159ipojen\u00ed. Pro danou operaci je vy\u017eadov\u00e1n platn\u00fd kontext transakce, nebyl v\u0161ak nalezen.
+NO_VALID_TRANSACTION_CONTEXT_J2CA0040.useraction=CMSG0002
+
+# --------------------------------
+POOL_MANAGER_EXCP_CCF2_0001_J2CA0045=J2CA0045E: P\u0159ipojen\u00ed nen\u00ed dostupn\u00e9 p\u0159i vyvol\u00e1v\u00e1n\u00ed metody {0} pro prost\u0159edek {1}.
+POOL_MANAGER_EXCP_CCF2_0001_J2CA0045.explanation=Do\u0161lo k uplynut\u00ed \u010dasov\u00e9ho limitu \u010dek\u00e1n\u00ed. Byla vyvol\u00e1na v\u00fdjimkaConnectionWaitTimeoutException.
+POOL_MANAGER_EXCP_CCF2_0001_J2CA0045.useraction=Nakonfigurujte znovu fond p\u0159ipojen\u00ed. Chcete-li t\u00e9to chyb\u011b p\u0159edej\u00edt, zvy\u0161te maxim\u00e1ln\u00ed po\u010det p\u0159ipojen\u00ed nebo zvy\u0161te \u010dasov\u00fd interval \u010dek\u00e1n\u00ed.
+
+# --------------------------------
+POOL_MANAGER_EXCP_CCF2_0002_J2CA0046=J2CA0046E: Metoda {0} zachytila v\u00fdjimku p\u0159i vytv\u00e1\u0159en\u00ed objektu ManagedConnection pro prost\u0159edek {3}. Vr\u00e1tila v\u00fdjimku {2}. P\u016fvodn\u00ed v\u00fdjimka: {1}
+POOL_MANAGER_EXCP_CCF2_0002_J2CA0046.explanation=Do\u0161lo k chyb\u011b p\u0159i vytv\u00e1\u0159en\u00ed objektu ManagedConnection. To lze obvykle vy\u0159e\u0161it pomoc\u00ed chybov\u00fdch zpr\u00e1v z adapt\u00e9ru prost\u0159edku.
+POOL_MANAGER_EXCP_CCF2_0002_J2CA0046.useraction=CMSG0002
+
+# --------------------------------
+HANDLE_NOT_CLOSED_J2CA0055=J2CA0055W: Obslu\u017en\u00e1 rutina p\u0159ipojen\u00ed nebyla uzav\u0159ena na konci jednotky pracovn\u00edho rozsahu. Spr\u00e1vce Connection Manager obslu\u017en\u00e9 rutiny uzav\u0159e.
+HANDLE_NOT_CLOSED_J2CA0055.explanation=Pracovn\u00ed rozsah relace aktivity, transakce nebo lok\u00e1ln\u00ed transakce je ukon\u010dov\u00e1n, nebyly v\u0161ak uzav\u0159eny obslu\u017en\u00e9 rutiny p\u0159ipojen\u00ed. Ukl\u00e1d\u00e1n\u00ed obslu\u017en\u00fdch rutin do mezipam\u011bti mimo aktu\u00e1ln\u00ed jednotku pracovn\u00edho rozsahu nen\u00ed podporov\u00e1no pro tuto konfiguraci nebo verzi.
+HANDLE_NOT_CLOSED_J2CA0055.useraction=Prozkoumejte aplikaci a ov\u011b\u0159te, \u017ee jsou p\u0159ed ukon\u010den\u00edm aktu\u00e1ln\u00ed jednotky pracovn\u00edho rozsahu uzav\u0159eny obslu\u017en\u00e9 rutiny p\u0159ipojen\u00ed.
+
+# --------------------------------
+RA_CONNECTION_ERROR_J2CA0056=J2CA0056I: Spr\u00e1vce p\u0159ipojen\u00ed p\u0159ijal z\u00e1va\u017enou chybu p\u0159ipojen\u00ed z adapt\u00e9ru prost\u0159edku pro prost\u0159edek {1}. V\u00fdjimka: {0}
+RA_CONNECTION_ERROR_J2CA0056.explanation=Adapt\u00e9r prost\u0159edku ozn\u00e1mil spr\u00e1vci p\u0159ipojen\u00ed, \u017ee do\u0161lo k chyb\u011b p\u0159ipojen\u00ed. Tato informa\u010dn\u00ed zpr\u00e1va je zaprotokolov\u00e1na, aby u\u017eivatel\u00e9 mohli vr\u00e1cenou v\u00fdjimku zobrazit.
+RA_CONNECTION_ERROR_J2CA0056.useraction=Spr\u00e1vce p\u0159ipojen\u00ed odebere z fondu chybov\u00e9 p\u0159ipojen\u00ed nebo v\u0161echna p\u0159ipojen\u00ed (v z\u00e1vislosti na konfiguraci). Jedn\u00e1 se o norm\u00e1ln\u00ed chov\u00e1n\u00ed. Pokud k t\u00e9to chyb\u011b dojde neo\u010dek\u00e1van\u011b, prozkoumejte v\u00fdjimku a ur\u010dete mo\u017en\u00fd zdroj probl\u00e9mu.
+
+# --------------------------------
+NULL_TRAN_WRAPPER_J2CA0057=J2CA0057E: Metoda interactionPending nemohla naj\u00edt spole\u010dnou t\u0159\u00eddu (wrapper) transakce.
+NULL_TRAN_WRAPPER_J2CA0057.explanation=Jedn\u00e1 se o intern\u00ed chybu platformy WebSphere.
+NULL_TRAN_WRAPPER_J2CA0057.useraction=CMSG0002
+
+# --------------------------------
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0058=J2CA0058E: ConnectionManager nem\u016f\u017ee p\u0159idru\u017eit p\u0159ipojen\u00ed {0} k objektu ManagedConnection {1} pro prost\u0159edek {3}. P\u0159ijat\u00e1 v\u00fdjimka: {2}
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0058.explanation=S nejv\u011bt\u0161\u00ed pravd\u011bpodobnost\u00ed se jedn\u00e1 o chybu aplikace. P\u0159\u00edklad:  P\u0159ipojen\u00ed v mezipam\u011bti je uvedeno v transakci, potom je p\u0159ipojen\u00ed uzav\u0159eno. Ne\u017e transakce dokon\u010d\u00ed zpracov\u00e1n\u00ed jin\u00e9ho po\u017eadavku, je odesl\u00e1n stejn\u00e9 sad\u011b EJB, kter\u00e1 p\u016fvodn\u011b p\u0159ipojen\u00ed otev\u0159ela. Obslu\u017en\u00e1 rutina v mezipam\u011bti je st\u00e1le p\u0159idru\u017eena k p\u016fvodn\u00ed transakc\u00ed a nelze ji p\u0159idru\u017eit k jin\u00e9 transakci, dokud nen\u00ed transakce dokon\u010dena (potvrzena).
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0058.useraction=Prozkoumejte aplikaci a ov\u011b\u0159te, \u017ee je transakce potvrzena co nejd\u0159\u00edve po uzav\u0159en\u00ed p\u0159ipojen\u00ed.
+
+# --------------------------------
+FAILED_DOPRIVILEGED_J2CA0060=J2CA0060E: PrivilegedActionException vol\u00e1 doPrivileged: {0}
+FAILED_DOPRIVILEGED_J2CA0060.explanation=Jedn\u00e1 se o b\u011bhovou chybu zabezpe\u010den\u00ed.
+FAILED_DOPRIVILEGED_J2CA0060.useraction=CMSG0002
+
+# ---------------------------------
+INVALID_OR_UNEXPECTED_SETTING_J2CA0067=J2CA0067W: Neplatn\u00e9 nastaven\u00ed {0} {1}. M\u00edsto toho bude pou\u017eita v\u00fdchoz\u00ed hodnota {2}.
+INVALID_OR_UNEXPECTED_SETTING_J2CA0067.explanation=Do\u0161lo k intern\u00ed chyb\u011b. Bude pou\u017eita v\u00fdchoz\u00ed hodnota.
+INVALID_OR_UNEXPECTED_SETTING_J2CA0067.useraction=Jedn\u00e1 se pouze o varov\u00e1n\u00ed. Pokud pozd\u011bji dojde k chyb\u011b, m\u016f\u017ee v\u00e1m pomoci v \u0159e\u0161en\u00ed probl\u00e9mu. Jinak je m\u016f\u017eete ignorovat.
+
+# ---------------------------------
+DELIST_FAILED_J2CA0073=J2CA0073E: Nelze vy\u0159adit p\u0159ipojen\u00ed z prost\u0159edku {2} z transakce v metod\u011b {0}, proto\u017ee do\u0161lo k v\u00fdjimce. Byla zah\u00e1jena likvidace p\u0159ipojen\u00ed. V\u00fdjimka: {1}.
+DELIST_FAILED_J2CA0073.explanation=Byla obdr\u017eena intern\u00ed chyba a spr\u00e1vce p\u0159ipojen\u00ed nemohl vy\u0159adit p\u0159ipojen\u00ed z transakce, ke kter\u00e9 se vztahovalo. Spr\u00e1vce p\u0159ipojen\u00ed se pokus\u00ed o likvidaci p\u0159ipojen\u00ed.
+DELIST_FAILED_J2CA0073.useraction=CMSG0002
+
+# ---------------------------------
+ENLIST_FAILED_J2CA0074=J2CA0074E: Nelze p\u0159idat p\u0159ipojen\u00ed z prost\u0159edku {2} pro aktu\u00e1ln\u00ed transakci v metod\u011b {0}, proto\u017ee do\u0161lo k v\u00fdjimce. Byla zah\u00e1jena likvidace p\u0159ipojen\u00ed. V\u00fdjimka: {1}.
+ENLIST_FAILED_J2CA0074.explanation=Byla obdr\u017eena intern\u00ed chyba a spr\u00e1vce p\u0159ipojen\u00ed nemohl p\u0159idat p\u0159ipojen\u00ed pro aktu\u00e1ln\u00ed transakci. Spr\u00e1vce p\u0159ipojen\u00ed se pokus\u00ed o likvidaci p\u0159ipojen\u00ed.
+ENLIST_FAILED_J2CA0074.useraction=CMSG0002
+
+# ---------------------------------
+MISSING_TRANSACTION_CONTEXT_J2CA0075=J2CA0075W: P\u0159i zpracov\u00e1n\u00ed metody {0} mus\u00ed existovat aktivn\u00ed transakce.
+MISSING_TRANSACTION_CONTEXT_J2CA0075.explanation=Standardn\u00ed zpracov\u00e1n\u00ed spr\u00e1vy p\u0159ipojen\u00ed vy\u017eaduje, aby existovala transakce. Jinak nelze aktu\u00e1ln\u00ed metodu spustit.
+MISSING_TRANSACTION_CONTEXT_J2CA0075.useraction=Spus\u0165te v\u0161echny transakce vy\u017eadovan\u00e9 pro \u00fasp\u011b\u0161n\u00e9 pou\u017eit\u00ed p\u0159ipojen\u00ed.
+
+# ---------------------------------
+FAILED_TO_OBTAIN_LOCALTRAN_J2CA0077=J2CA0077E: Byla zachycena v\u00fdjimka p\u0159i pokusu o z\u00edsk\u00e1n\u00ed javax.resource.cci.LocalTransaction z objektu ManagedConnection pro prost\u0159edek{1}. V\u00fdjimka: {0}
+FAILED_TO_OBTAIN_LOCALTRAN_J2CA0077.explanation=Spr\u00e1vce p\u0159ipojen\u00ed nem\u016f\u017ee z\u00edskat objekt LocalTransaction z adapt\u00e9ru prost\u0159edku. Tento stav indikuje probl\u00e9m s adapt\u00e9rem prost\u0159edku.
+FAILED_TO_OBTAIN_LOCALTRAN_J2CA0077.useraction=P\u0159i identifikaci probl\u00e9mu m\u016f\u017eete vyu\u017e\u00edt chybov\u00e9 zpr\u00e1vy z adapt\u00e9ru prost\u0159edku.
+
+# ---------------------------------
+FAILED_TO_OBTAIN_XAResource_J2CA0078=J2CA0078E: Byla zachycena v\u00fdjimka p\u0159i pokusu o z\u00edsk\u00e1n\u00ed javax.transaction.xa.XAResource z objektu ManagedConnection v objektu DataSource {1}. V\u00fdjimka: {0}
+FAILED_TO_OBTAIN_XAResource_J2CA0078.explanation=Spr\u00e1vce p\u0159ipojen\u00ed nem\u016f\u017ee z\u00edskat objekt XAResource z adapt\u00e9ru prost\u0159edku. Tento stav indikuje probl\u00e9m s adapt\u00e9rem prost\u0159edku.
+FAILED_TO_OBTAIN_XAResource_J2CA0078.useraction=P\u0159i identifikaci probl\u00e9mu m\u016f\u017eete vyu\u017e\u00edt chybov\u00e9 zpr\u00e1vy z adapt\u00e9ru prost\u0159edku.
+
+# ---------------------------------
+ILLEGAL_STATE_EXCEPTION_J2CA0079=J2CA0079E: Metoda {0} zjistila neplatn\u00fd intern\u00ed stav a vr\u00e1tila v\u00fdjimku IllegalStateException. V\u00fdjimka: {1}
+ILLEGAL_STATE_EXCEPTION_J2CA0079.explanation=Spr\u00e1vce p\u0159ipojen\u00ed zjistil, \u017ee do\u0161lo k intern\u00ed chyb\u011b.
+ILLEGAL_STATE_EXCEPTION_J2CA0079.useraction=CMSG0002
+
+# ---------------------------------
+ILLEGAL_ARGUMENT_EXCEPTION_J2CA0080=J2CA0080E: Metoda {0} zjistila neplatn\u00fd intern\u00ed argument a vr\u00e1tila v\u00fdjimku IllegalArgumentException. V\u00fdjimka: {1}
+ILLEGAL_ARGUMENT_EXCEPTION_J2CA0080.explanation=Spr\u00e1vce p\u0159ipojen\u00ed zjistil, \u017ee do\u0161lo k intern\u00ed chyb\u011b.
+ILLEGAL_ARGUMENT_EXCEPTION_J2CA0080.useraction=CMSG0002
+
+# ---------------------------------
+MCERROR_J2CA0081=J2CA0081E: Metoda {0} se nezda\u0159ila p\u0159i pokusu o proveden\u00ed metody {1} u objektu ManagedConnection {2} z prost\u0159edku {4}. Zachycen\u00e1 v\u00fdjimka: {3}
+MCERROR_J2CA0081.explanation=Spr\u00e1vce p\u0159ipojen\u00ed zachytil v\u00fdjimku p\u0159i pokusu o proveden\u00ed operace u objektu ManagedConnection.
+MCERROR_J2CA0081.useraction=Vzhledem k tomu, \u017ee objekt ManagedConnection je sou\u010d\u00e1st\u00ed adapt\u00e9ru prost\u0159edku, lze p\u0159i hled\u00e1n\u00ed p\u0159\u00ed\u010diny probl\u00e9mu vyu\u017e\u00edt zpr\u00e1vy z adapt\u00e9ru prost\u0159edku.
+
+# --------------------------------
+ATTEMPT_TO_SHARE_LTC_CONNECTION_J2CA0086=J2CA0086I: Jedno fyzick\u00e9 p\u0159ipojen\u00ed k {1} nem\u016f\u017ee v hranic\u00edch odd\u011blen\u00ed lok\u00e1ln\u00edch transakc\u00ed sd\u00edlet v\u00edce otev\u0159en\u00fdch manipul\u00e1tor\u016f p\u0159ipojen\u00ed, tak\u017ee se pro ka\u017ed\u00fd manipul\u00e1tor p\u0159ipojen\u00ed pou\u017eije jin\u00e9 fyzick\u00e9 p\u0159ipojen\u00ed. V takov\u00e9 situaci je d\u016fle\u017eit\u00e9 zkontrolovat, aby i po zav\u0159en\u00ed manipul\u00e1toru p\u0159ipojen\u00ed nez\u016fstala \u017e\u00e1dn\u00e1 transak\u010dn\u00ed pr\u00e1ce, proto\u017ee budou-li v hranic\u00edch odd\u011blen\u00ed lok\u00e1ln\u00edch transakc\u00ed po\u017eadov\u00e1ny dal\u0161\u00ed sd\u00edliteln\u00e9 manipul\u00e1tory p\u0159ipojen\u00ed, nelze p\u0159edv\u00eddat fyzick\u00e9 p\u0159ipojen\u00ed, ke kter\u00e9mu se p\u0159idru\u017e\u00ed.
+ATTEMPT_TO_SHARE_LTC_CONNECTION_J2CA0086.explanation=V\u00edce otev\u0159en\u00fdch manipul\u00e1tor\u016f p\u0159ipojen\u00ed m\u016f\u017ee sd\u00edlet jedno fyzick\u00e9 p\u0159ipojen\u00ed pouze v rozsahu glob\u00e1ln\u00ed transakce. Je-li v hranic\u00edch odd\u011blen\u00ed lok\u00e1ln\u00edch transakc\u00ed otev\u0159eno v\u00edce manipul\u00e1tor\u016f p\u0159ipojen\u00ed, bude ka\u017ed\u00fd manipul\u00e1tor pou\u017e\u00edvat jin\u00e9 fyzick\u00e9 p\u0159ipojen\u00ed. Otev\u0159en\u00edm v\u00edce sd\u00edliteln\u00fdch manipul\u00e1tor\u016f p\u0159ipojen\u00ed v hranic\u00edch jednoho odd\u011blen\u00ed lok\u00e1ln\u00edch transakc\u00ed najednou se zv\u00fd\u0161\u00ed po\u017eadavky na fond p\u0159ipojen\u00ed pro maxim\u00e1ln\u00ed po\u010det p\u0159ipojen\u00ed, a m\u016f\u017ee se v\u00fdrazn\u011b nav\u00fd\u0161it slo\u017eitost vyu\u017eit\u00ed manipul\u00e1tor\u016f p\u0159ipojen\u00ed s ohledem na lok\u00e1ln\u00ed transakce v aplikac\u00edch, kter\u00e9 vyu\u017e\u00edvaj\u00ed tento vzorec.
+ATTEMPT_TO_SHARE_LTC_CONNECTION_J2CA0086.useraction=Zkontrolujte, zda je fond p\u0159ipojen\u00ed dimenzov\u00e1n tak, aby ka\u017ed\u00fd podproces mohl po\u017eadovat v\u00edce fyzick\u00fdch p\u0159ipojen\u00ed, a zkontrolujte k\u00f3d aplikace, abyste se ujistili, \u017ee tento vzorec vyu\u017eit\u00ed je \u017e\u00e1douc\u00ed a je zad\u00e1n o\u010dek\u00e1van\u00fd rozsah sd\u00edlen\u00ed.
+
+# --------------------------------
+BAD_RETURN_VALUE_FROM_ENLIST_J2CA0087=J2CA0087E: Spr\u00e1vce transakc\u00ed nem\u016f\u017ee do transakce za\u0159adit prost\u0159edek {0} z objektu DataSource {1}.
+BAD_RETURN_VALUE_FROM_ENLIST_J2CA0087.explanation=Tato zpr\u00e1va indikuje probl\u00e9m p\u0159i za\u0159azov\u00e1n\u00ed do transakce. Je mo\u017en\u00e9, \u017ee prost\u0159edek ji\u017e byl do transakce zaregistrov\u00e1n nebo \u017ee transakce nen\u00ed ve spr\u00e1vn\u00e9m stavu.
+BAD_RETURN_VALUE_FROM_ENLIST_J2CA0087.useraction=Ov\u011b\u0159te, \u017ee obchodn\u00ed logika aplikace spr\u00e1vn\u011b zachyt\u00e1v\u00e1 vyvolanou v\u00fdjimku a \u017ee obsahuje pot\u0159ebnou logiku pro zotaven\u00ed. Ov\u011b\u0159te, zda soubory protokolu neobsahuj\u00ed informace o p\u0159edchoz\u00edch chyb\u00e1ch (zejm\u00e9na o chyb\u00e1ch transakce), kter\u00e9 mohly v\u00fdjimku zp\u016fsobit.
+
+# --------------------------------
+ATTEMPT_TO_DESTORY_CONNECTION_IN_USE_J2CA0088=J2CA0088W: Likvidovan\u00fd objekt ManagedConnection z prost\u0159edku {1} je v neplatn\u00e9m stavu {0}. Zpracov\u00e1n\u00ed bude pokra\u010dovat.
+ATTEMPT_TO_DESTORY_CONNECTION_IN_USE_J2CA0088.explanation=Do\u0161lo k intern\u00ed chyb\u011b.
+ATTEMPT_TO_DESTORY_CONNECTION_IN_USE_J2CA0088.useraction=CMSG0002
+                     
+# ---------------------------------
+INTERUPTED_EXCEPTION_J2CA0091=J2CA0091E: Do\u0161lo k v\u00fdjimce InterruptedException u podprocesu programu pro uvoln\u011bn\u00ed pam\u011bti.
+INTERUPTED_EXCEPTION_J2CA0091.explanation=Do\u0161lo k v\u00fdjimce InterruptedException u podprocesu programu pro uvoln\u011bn\u00ed pam\u011bti. Zpracov\u00e1n\u00ed J2C bude pokra\u010dovat, nepou\u017e\u00edvan\u00e1 a zastaral\u00e1 p\u0159ipojen\u00ed v\u0161ak nebudou shroma\u017e\u010fov\u00e1na.
+INTERUPTED_EXCEPTION_J2CA0091.useraction=CMSG0002
+
+# 0096 deleted
+
+# --------------------------------
+GET_SOURCE_CLASS_CAST_EXCP_J2CA0098=J2CA0098E: Byla vr\u00e1cena v\u00fdjimka ClassCastException p\u0159i pokusu o p\u0159etypov\u00e1n\u00ed event.getSource na ManagedConnection: {0}
+GET_SOURCE_CLASS_CAST_EXCP_J2CA0098.explanation=Zdroj ud\u00e1losti, kter\u00fd spustil modul listener, nebyl typu ManagedConnection.
+GET_SOURCE_CLASS_CAST_EXCP_J2CA0098.useraction=CMSG0002
+
+# --------------------------------
+DUPLICATE_USERNAME_PASSWORD_CONNECTOR_PROPERTY_J2CA0103=J2CA0103I: Nebyla p\u0159id\u00e1na duplicitn\u00ed vlastnost konektoru. {0}
+DUPLICATE_USERNAME_PASSWORD_CONNECTOR_PROPERTY_J2CA0103.explanation=Do\u0161lo k pokusu o p\u0159id\u00e1n\u00ed duplicitn\u00ed vlastnosti konektoru. Vlastnost nebyla p\u0159id\u00e1na.
+DUPLICATE_USERNAME_PASSWORD_CONNECTOR_PROPERTY_J2CA0103.useraction=P\u0159izp\u016fsoben\u00e1 vlastnost tov\u00e1rny p\u0159ipojen\u00ed nebo zdroje dat obsahovala jm\u00e9no u\u017eivatele a heslo, byl v\u0161ak zad\u00e1n tak\u00e9 alias ov\u011b\u0159ov\u00e1n\u00ed spravovan\u00fd komponentou. Tento alias m\u00e1 p\u0159ednost p\u0159ed p\u0159izp\u016fsoben\u00fdmi vlastnostmi. Tato chyba m\u016f\u017ee b\u00fdt tak\u00e9 d\u016fsledkem ru\u010dn\u00ed \u00fapravy dokumentu resources.xml.
+
+# ---------------------------------
+INFINITE_CONNECTION_WAIT_TIMEOUT_J2CA0127=J2CA0127I: Byla zad\u00e1na hodnota ConnectionWaitTimeout 0 pro {0}. Po\u017eadavek bude \u010dekat, ne\u017e bude mo\u017en\u00e9 z\u00edskat p\u0159ipojen\u00ed.
+INFINITE_CONNECTION_WAIT_TIMEOUT_J2CA0127.explanation=Hodnota 0 parametru ConnectionWaitTimeout indikuje nekone\u010dnou dobu \u010dek\u00e1n\u00ed. Tento podproces bude pozastaven, ne\u017e bude p\u0159ipojen\u00ed uvoln\u011bno.
+INFINITE_CONNECTION_WAIT_TIMEOUT_J2CA0127.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# --------------------------------
+CONNECTION_CLOSED_NULL_HANDLE_J2CA0148=J2CA0148W: Byl nalezen objekt ConnectionHandle s hodnotou null v objektu CONNECTION_CLOSED ConnectionEvent {0}
+CONNECTION_CLOSED_NULL_HANDLE_J2CA0148.explanation=Objekt Java EE Connector Architecture vy\u017eaduje, aby objekt CONNECTION_CLOSED ConnectionEvent obsahoval platnou obslu\u017enou rutinu p\u0159ipojen\u00ed p\u0159idru\u017eenou k instanci ManagedConnection.
+CONNECTION_CLOSED_NULL_HANDLE_J2CA0148.useraction=Adapt\u00e9r prost\u0159edk\u016f mus\u00ed pou\u017e\u00edvat ConnectionEvent.setConnectionHandle() k p\u0159ed\u00e1n\u00ed obslu\u017en\u00e9 rutin\u011b p\u0159ipojen\u00ed v objektu CONNECTION_CLOSED ConnectionEvent.
+
+# ---------------------------------
+SET_ONCE_PROP_ALREADY_SET_J2CA0159=J2CA0159E: Intern\u00ed chyba. Byl proveden pokus o zm\u011bnu ji\u017e nastaven\u00e9 vlastnosti s jednor\u00e1zov\u00fdm nastaven\u00edm. N\u00e1zev vlastnosti: {0}.
+SET_ONCE_PROP_ALREADY_SET_J2CA0159.explanation=CMSG0001
+SET_ONCE_PROP_ALREADY_SET_J2CA0159.useraction=CMSG0002
+
+# 0165 deleted
+
+# 0166 deleted
+
+# 0167 deleted
+
+# --------------------------------
+UNABLE_TO_CHANGE_PROPERTY_J2CA0169=J2CA0169E: Nelze zm\u011bnit vlastnost {0} pro zdroj dat nebo tov\u00e1rnu p\u0159ipojen\u00ed {1}.
+UNABLE_TO_CHANGE_PROPERTY_J2CA0169.explanation=Spr\u00e1vce p\u0159ipojen\u00ed nemohl v dan\u00e9m okam\u017eiku prov\u00e9st po\u017eadovanou zm\u011bnu konfigura\u010dn\u00ed prom\u011bnn\u00e9.
+UNABLE_TO_CHANGE_PROPERTY_J2CA0169.useraction=Pokuste se znovu zm\u011bnit konfigura\u010dn\u00ed prom\u011bnnou.
+
+# 0200 deleted
+
+# ---------------------------------
+INCOMPATIBLE_PROPERTY_TYPE_J2CA0207=J2CA0207W: Pro artefakt adapt\u00e9ru prost\u0159edku je definov\u00e1na vlastnost {0}, jej\u00ed\u017e hodnota {2} nen\u00ed kompatibiln\u00ed s p\u0159\u00edslu\u0161n\u00fdm typem {1}.
+INCOMPATIBLE_PROPERTY_TYPE_J2CA0207.explanation=Tov\u00e1rna p\u0159ipojen\u00ed, specifikace aktivace nebo spravovan\u00fd objekt m\u00e1 definov\u00e1nu neplatnou vlastnost prost\u0159edku. Hodnota z\u016fstane nenastavena.
+INCOMPATIBLE_PROPERTY_TYPE_J2CA0207.useraction=Opravte vlastnost prost\u0159edku tak, aby jej\u00ed hodnota byla konzistentn\u00ed s datov\u00fdm typem.
+
+# ---------------------------------
+NO_RA_EXCEPTION_J2CA0216=J2CA0216I: Spr\u00e1vce p\u0159ipojen\u00ed p\u0159ijal z\u00e1va\u017enou chybu p\u0159ipojen\u00ed z adapt\u00e9ru prost\u0159edku pro prost\u0159edek {0}. Je mo\u017en\u00e9, \u017ee jsou informace k dispozici v p\u0159edchoz\u00edch zpr\u00e1v\u00e1ch \u010di v\u00fdjimk\u00e1ch.
+NO_RA_EXCEPTION_J2CA0216.explanation=Adapt\u00e9r prost\u0159edku ozn\u00e1mil spr\u00e1vci p\u0159ipojen\u00ed, \u017ee do\u0161lo k nezotaviteln\u00e9 chyb\u011b p\u0159ipojen\u00ed. Z adapt\u00e9ru prost\u0159edku nebyla obdr\u017eena \u017e\u00e1dn\u00e1 v\u00fdjimka. 
+NO_RA_EXCEPTION_J2CA0216.useraction=Spr\u00e1vce p\u0159ipojen\u00ed odebere chybov\u00e9 p\u0159ipojen\u00ed nebo v\u0161echna p\u0159ipojen\u00ed (v z\u00e1vislosti na konfiguraci) z fondu. Jedn\u00e1 se o norm\u00e1ln\u00ed chov\u00e1n\u00ed. V p\u0159\u00edpad\u011b negativn\u00edch \u00fa\u010dink\u016f m\u016f\u017ee b\u00fdt pot\u0159ebn\u00e9 obr\u00e1tit se na dodavatele adapt\u00e9ru prost\u0159edku.
+
+# 0226 deleted
+
+# ---------------------------------
+# {0} Configured feature that is ignored.
+# {1} Name of the resource on which the feature is configured. 
+IGNORE_FEATURE_J2CA0240=J2CA0240I: Neimplementovan\u00e1 funkce {0} pro prost\u0159edek {1} je ignorov\u00e1na.
+IGNORE_FEATURE_J2CA0240.explanation=Aplika\u010dn\u00ed server tuto funkci neimplementuje.
+IGNORE_FEATURE_J2CA0240.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# ---------------------------------
+# {0}    The field that is missing during de-serialization
+# {1}    The classname of the object with the missing field
+DESERIALIZATION_FIELD_NOT_FOUND_J2CA0278=J2CA0278W: Nelze deserializovat pole {0} v t\u0159\u00edd\u011b {1}. Bude pou\u017eita v\u00fdchoz\u00ed hodnota.
+DESERIALIZATION_FIELD_NOT_FOUND_J2CA0278.explanation=B\u011bhem deserializace objektu nebylo nalezeno o\u010dek\u00e1van\u00e9 pole. Nejpravd\u011bpodobn\u011bj\u0161\u00ed p\u0159\u00ed\u010dinou je objekt, pro kter\u00fd je prov\u00e1d\u011bna deserializace jinou verz\u00ed t\u0159\u00eddy, ne\u017e kter\u00e1 byla pou\u017eita pro jeho serializaci.
+DESERIALIZATION_FIELD_NOT_FOUND_J2CA0278.useraction=Toto varov\u00e1n\u00ed ozna\u010duje potenci\u00e1ln\u00ed probl\u00e9m. Nen\u00ed v\u0161ak nutn\u00e9 prov\u00e1d\u011bt \u017e\u00e1dnou akci, pokud nedojde k dal\u0161\u00edm probl\u00e9m\u016fm.
+
+# --------------------------------
+ATTEMPT_TO_VALIDATE_MC_CONNECTIONS_J2CA0285=J2CA0285W: Metoda {0} zachytila v\u00fdjimku p\u0159i ov\u011b\u0159ov\u00e1n\u00ed spravovan\u00fdch p\u0159ipojen\u00ed pro prost\u0159edek {3}. Vr\u00e1tila v\u00fdjimku {2}. P\u016fvodn\u00ed v\u00fdjimka: {1}
+ATTEMPT_TO_VALIDATE_MC_CONNECTIONS_J2CA0285.explanation=Vol\u00e1n\u00ed metody getInvalidConnections() vr\u00e1tilo v\u00fdjimku prost\u0159edku.
+ATTEMPT_TO_VALIDATE_MC_CONNECTIONS_J2CA0285.useraction=P\u0159ejd\u011bte na web podpory pro poskytovatele adapt\u00e9ru prost\u0159edku.
+
+# 0286 deleted
+                                            
+# ---------------------------------
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0292=J2CA0292E: ManagedConnection z prost\u0159edku {0} nelze za\u0159adit do aktu\u00e1ln\u00ed transakce.
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0292.explanation=Do\u0161lo k intern\u00ed chyb\u011b p\u0159i zpracov\u00e1n\u00ed metody lazyEnlist().
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0292.useraction=CMSG0002
+
+# --------------------------------
+FAILED_TO_ENLIST_CONNECTION_J2CA0293=J2CA0293E: Metoda lazyEnlist() spr\u00e1vce p\u0159ipojen\u00ed vy\u017eaduje pro prost\u0159edek {0} parametr ManagedConnection, kter\u00fd nem\u00e1 hodnotu Null.
+FAILED_TO_ENLIST_CONNECTION_J2CA0293.explanation=S nejv\u011bt\u0161\u00ed pravd\u011bpodobnost\u00ed do\u0161lo k chyb\u011b implementace adapt\u00e9ru prost\u0159edku. Adapt\u00e9r prost\u0159edku volal metodu lazyEnlist() s hodnotou Null pro objekt ManagedConnection.
+FAILED_TO_ENLIST_CONNECTION_J2CA0293.useraction=P\u0159ejd\u011bte na web podpory pro poskytovatele adapt\u00e9ru prost\u0159edku. K\u00f3d adapt\u00e9ru prost\u0159edku p\u0159edal metod\u011b lazyEnlist() hodnotu Null. Dal\u0161\u00ed informace o optimalizaci Lazy Transaction Enlistment naleznete v \u010d\u00e1sti 7.14.2 v JCA 1.5.
+
+# --------------------------------
+ILLEGAL_USE_OF_LOCAL_TRANSACTION_J2CA0295=J2CA0295E: Spr\u00e1vce p\u0159ipojen\u00ed detekoval pokus o spu\u0161t\u011bn\u00ed lok\u00e1ln\u00ed transakce v r\u00e1mci glob\u00e1ln\u00ed (u\u017eivatelsk\u00e9) transakce. Zkontrolujte spr\u00e1vnost k\u00f3du aplikace.
+ILLEGAL_USE_OF_LOCAL_TRANSACTION_J2CA0295.explanation=Tato situace pravd\u011bpodobn\u011b indikuje chybu v r\u00e1mci aplikace. Aplikace by nem\u011bla spou\u0161t\u011bt lok\u00e1ln\u00ed transakce, pracuje-li v r\u00e1mci glob\u00e1ln\u00ed transakce.
+ILLEGAL_USE_OF_LOCAL_TRANSACTION_J2CA0295.useraction=Prozkoumejte k\u00f3d aplikace a ur\u010dete, ve kter\u00e9m m\u00edst\u011b je spou\u0161t\u011bna lok\u00e1ln\u00ed transakce v r\u00e1mci glob\u00e1ln\u00ed transakce. Prozkoumejte adres\u00e1\u0159 FFDC pro tuto zpr\u00e1vu a vyhledejte trasov\u00e1n\u00ed z\u00e1sobn\u00edku, kter\u00e9 by mohlo obsahovat \u010d\u00edsla \u0159\u00e1dk\u016f p\u0159\u00edslu\u0161n\u00e9ho k\u00f3du. T\u00edm m\u016f\u017eete z\u00fa\u017eit rozsah vyhled\u00e1v\u00e1n\u00ed. Pokud \u010d\u00edsla \u0159\u00e1dk\u016f nebyla nalezena, nap\u0159\u00edklad pokud by k\u00f3d kompilov\u00e1n v re\u017eimu JIT nebo jinak znepr\u016fhledn\u011bn, m\u016f\u017ee b\u00fdt vhodn\u00e9 proch\u00e1zet k\u00f3d pomoc\u00ed p\u0159\u00edkaz\u016f System.out.println(), kter\u00e9 v\u00e1m usnadn\u00ed vyhled\u00e1n\u00ed probl\u00e9mov\u00e9 oblasti. Pokud probl\u00e9m nebyl nalezen, p\u0159ejd\u011bte na web podpory  spole\u010dnosti IBM.
+                                   
+# ---------------------------------
+DUPLICATE_CONNECTOR_PROPERTY_J2CA0308=J2CA0308W: Nebyla p\u0159id\u00e1na duplicitn\u00ed vlastnost konektoru. {0}.
+DUPLICATE_CONNECTOR_PROPERTY_J2CA0308.explanation=Do\u0161lo k pokusu o p\u0159id\u00e1n\u00ed duplicitn\u00ed vlastnosti konektoru. Vlastnost nebyla p\u0159id\u00e1na.
+DUPLICATE_CONNECTOR_PROPERTY_J2CA0308.useraction=Byla ur\u010dena p\u0159izp\u016fsoben\u00e1 vlastnost tov\u00e1rny p\u0159ipojen\u00ed nebo zdroje dat, tato vlastnost v\u0161ak ji\u017e existuje. K tomu mohlo doj\u00edt v d\u016fsledku ru\u010dn\u00ed \u00fapravy dokumentu resources.xml.
+
+# 0680 deleted
+
+# 0681 deleted
+
+# 0682 deleted
+
+# 0683 deleted
+
+# 0687 deleted
+
+# 0689 deleted
+
+# ---------------------------------
+POOL_MANAGER_NOT_FOUND_J2CA0695=J2CA0695E: P\u0159i zpracov\u00e1n\u00ed p\u0159ekon\u00e1n\u00ed selh\u00e1n\u00ed nebyl pro prost\u0159edek s n\u00e1zvem rozhran\u00ed JNDI {0} nalezen prim\u00e1rn\u00ed spr\u00e1vce fondu.
+POOL_MANAGER_NOT_FOUND_J2CA0695.explanation=V pr\u016fb\u011bhu zpracov\u00e1n\u00ed p\u0159ekon\u00e1n\u00ed selh\u00e1n\u00ed do\u0161lo k intern\u00ed chyb\u011b.
+POOL_MANAGER_NOT_FOUND_J2CA0695.useraction=CMSG0002
+
+# ---------------------------------
+FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002=J2CA1002E: Neplatn\u00fd objekt MCWrapper {0} voln\u00e9ho fondu pro prost\u0159edek {1}.
+FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.explanation=Pokus o vyhrazen\u00ed objektu MCWrapper se nezda\u0159il.
+FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.useraction=CMSG0002
+
+# ---------------------------------
+SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003=J2CA1003E: Nelze odebrat objekt MCWrapper {0} ze sd\u00edlen\u00e9ho fondu.
+SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003.explanation=Pokus o odebr\u00e1n\u00ed objektu MCWrapper se nezda\u0159il, co\u017e mohlo zp\u016fsobit probl\u00e9m ve sd\u00edlen\u00e9m fondu.
+SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003.useraction=CMSG0002
+
+# ---------------------------------
+# End of File
+#
+# ---------------------------------

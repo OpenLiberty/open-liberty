@@ -1,0 +1,356 @@
+###############################################################################
+# Copyright (c) 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#  10-22-01  ihodges               Creation
+#  10-24-01  irobins   113516      Added ERR_BEGIN_LTC_ACT
+#  27/02/02  gareth  LIDB1436.01.1 Use new RAS format
+#  14-03-02 amulholl    121351     Add message def ERR_DEPLOY
+#  25-04-02 beavenj    126204      Add message defs ERR_DEPLOY_...
+#  27-05-02 dmatthew   130828      Add message defs for cleanup failures
+#  23-08-02 irobins    143408      Use common messages
+#  17-06-03 ihodges    151542      New message ERR_BEGIN_GLOBAL_TX
+#  02-02-04 irobins    165735      Update explanation text
+#  01-06-04 dmatthew   207915      Change errors to warnings for unresolved
+#  26-02-07 awilkins   422999      Message review: updates to useraction and explanation
+#  11-02-08 mallam     496337      PII additions
+#  29-02-08 johawkes   501807      Style changes
+#-----------------------------------------------------------------------
+#
+# DEVELOPER INSTRUCTIONS
+# ----------------------
+#
+# To add a new message, define the key string in LTCTrace.java, then create
+# the message text below using that key.  Fill in the comment block above the
+# message to assist in translation of the message, particularly to aid in the
+# appropriate positioning of any message inserts within the translated text.
+# To issue the message, use the LTCTrace.Message method.
+#
+# USE OF PROPERTIES FILE FOR MESSAGES:
+#
+# - Each property in the property file is terminated by the line termination character.
+# - If a line contains only whitespace or if the first non-whitespace character of a
+# line is # or !, the line is ignored. (comments start with # or !)
+# - Every line in the properties file other than whitespace lines or comment lines
+# denotes a single property. A \ is treated as a line continuation character. Lines
+# should be terminated with the line termination character.
+# - Correct grammar for a property line is <key><separator><element>. A valid separator
+# is any one of equal, colon or whitespace ( =: ).
+# - The key consists of all the characters on the line starting from the first
+# non-whitespace up to the first separator. Separator characters can be included in the
+# key by escaping them (e.g. \:) This is not recommended because it is error prone and
+# confusing.
+# - Whitespace after the key is skipped until the first non-whitespace character is
+# found. All remaining characters up to the appropriate line termination character
+# define the element.
+#
+# MESSAGE INSERTS
+#
+#  Primitives
+# Primitives, such as int and long are not recognized as subclasses of Object
+# and cannot be directly passed to one of these methods. A primitive value must
+# be transformed to its proper type (e.g Integer, Long) before being passed as
+# a parameter.
+#
+#  Object
+# For normal Objects, toString() is called on the object and the resulting String
+# is displayed. For exceptions, the stack trace will be printed.For Objects that
+# implement the Traceable interface, the toTraceString() method is called instead.
+# To provide the proper trace representation for the Object, provide the proper
+# implementation for the appropriate method.
+#
+#  Object[]
+# Since Object[] is a proper subclass of Object, Object[] can be passed. Use
+# Object[] when more than one parameter should be passed to a message logging
+# or trace method. The appropriate method (toString() or toTraceString()) is
+# called on each Object in the array. This array should contain only
+# standalone normal Objects and should not contain other arrays. Passing nested
+# array may result in the following Strings being displayed :
+#  "[B@924586a0b" - This is deciphered as a byte array at location X.
+# This is typically returned when an array of primitives is passed as a member
+# of an Object[]. It is the result of calling toString() on the byte[].
+#  "[Ljava.lang.Object;@9136fa0b" : An array of objects.
+# Typically this is seen when an array containing nested arrays is passed.
+#
+#  Array of Primitives
+# An array of primitive (e.g. byte[], int[] is recognized as an Object, but is
+# treated somewhat as a second cousin of Object by Java. The results you see
+# will depend on the type of array passed and the API used. For consistent results,
+# user code should preprocess and format the primitive array into some type of
+# String form before passing it to the method. If such preprocessing is not
+# performed, you may see something results something like the following:
+#  "Illegal trace argument : array of long."
+# This is typically returned when an array of primitives is passed to a method
+# taking an Object and the Tr service does not provide special parsing for
+# primitive arrays of this type.
+#  "01040703..." : the hex representation of an array of bytes.
+# Typically this may be seen when a byte array is passed to a method taking a
+# single Object. This behavior is subject to change and should not be relied on.
+#  " '1' '2' ..." : The String representation of the members of an int[] formed
+# by converting each element to an Integer and calling toString on the Integers.
+# This behavior is subject to change and should not be relied on.
+#
+#  Common messages
+# The following common messages are used in this file:
+#
+#         CMSG0001       This is an unexpected exception. The cause can not be immediately determined.
+#         CMSG0002       For further information on resolving this error, please consult the IBM WebSphere Application Server Support website available
+#                        at: http://www-3.ibm.com/software/webservers/appserv/support.html. The site provides searchable databases of technotes,
+#                        solutions, and e-fixes. Information on contacting the WebSphere Support team is also provided.
+#
+# During the build, the WebSphere Message Tool will recognize the common message keywords, and replace them with text defined in the
+#                Common Messages Table.
+#
+#
+#
+#
+#-----------------------------------------------------------------------
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells Java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+#
+#-----------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+#CMVCPATHNAME ws/code/transaction.impl/src/com/ibm/ws/LocalTransaction/resources/LocalTransactionMessages.nlsprops
+#COMPONENTPREFIX WLTC
+#COMPONENTNAMEFOR WLTC WebSphere Transaction Monitor
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+#-----------------------------------------------------------------------
+ERR_INT_ERROR=WLTC0001E: {1} \ud074\ub798\uc2a4\uc758 {0} \uba54\uc18c\ub4dc\uc5d0\uc11c \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc608\uc678 \uc2a4\ud0dd \ucd94\uc801\uc740 \ub2e4\uc74c\uacfc \uac19\uc2b5\ub2c8\ub2e4. {2}.
+ERR_INT_ERROR.explanation=CMSG0001
+ERR_INT_ERROR.useraction=CMSG0002 
+
+#-----------------------------------------------------------------------
+ERR_BEGIN_TX_GLB_ACT=WLTC0002E: \uae00\ub85c\ubc8c \ud2b8\ub79c\uc7ad\uc158\uc774 \ud65c\uc131\ud654\ub418\uc5c8\uc73c\ubbc0\ub85c LocalTransactionContainment\ub97c \uc2dc\uc791\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ERR_BEGIN_TX_GLB_ACT.explanation=\uae00\ub85c\ubc8c \ud2b8\ub79c\uc7ad\uc158\uc774 \ud65c\uc131\ud654\ub418\uc5b4 \uc788\ub294 \ub3d9\uc548 \ub85c\uceec \ud2b8\ub79c\uc7ad\uc158\uc744 \uc2dc\uc791\ud558\ub824\uace0 \ud588\uc9c0\ub9cc \uc774\ub294 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+ERR_BEGIN_TX_GLB_ACT.useraction=\ub85c\uceec \ud2b8\ub79c\uc7ad\uc158\uc5d0\uc11c \uc791\uc5c5\uc744 \uc218\ud589\ud558\uae30 \uc804\uc5d0 \uae00\ub85c\ubc8c \ud2b8\ub79c\uc7ad\uc158\uc774 \uc644\ub8cc\ub418\uc5c8\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+#-----------------------------------------------------------------------
+ERR_RESUME_TX_GLB_ACT=WLTC0003E: \uae00\ub85c\ubc8c \ud2b8\ub79c\uc7ad\uc158\uc774 \ud65c\uc131\ud654\ub418\uc5c8\uc73c\ubbc0\ub85c LocalTransactionContainment\ub97c \uc7ac\uac1c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ERR_RESUME_TX_GLB_ACT.explanation=\ud604\uc7ac \uae00\ub85c\ubc8c \ud2b8\ub79c\uc7ad\uc158\uc774 \ud65c\uc131\ud654\ub418\uc5b4 \uc788\uc73c\ubbc0\ub85c \ucee8\ud14c\uc774\ub108\uac00 LocalTransactionContainment\ub97c \uc7ac\uac1c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ERR_RESUME_TX_GLB_ACT.useraction=LocalTransactionContainment\ub97c \uc7ac\uac1c\ud558\uae30 \uc804\uc5d0 \uae00\ub85c\ubc8c \ud2b8\ub79c\uc7ad\uc158\uc774 \uc644\ub8cc \ub610\ub294 \uc77c\uc2dc\uc911\uc9c0\ub418\uc5c8\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_TX_GLB_ACT=WLTC0004E: \uae00\ub85c\ubc8c \ud2b8\ub79c\uc7ad\uc158\uc774 \ud65c\uc131\ud654\ub418\uc5b4 \uc788\uc73c\ubbc0\ub85c \ub85c\uceec \ud2b8\ub79c\uc7ad\uc158 \uc790\uc6d0\uc744 \ub4f1\ub85d\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ERR_ENLIST_TX_GLB_ACT.explanation=\ud604\uc7ac \uae00\ub85c\ubc8c \ud2b8\ub79c\uc7ad\uc158\uc774 \ud65c\uc131\ud654\ub418\uc5b4 \uc788\uc73c\ubbc0\ub85c \ub85c\uceec \ud2b8\ub79c\uc7ad\uc158 \uc5f0\uacb0\uc744 \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ERR_ENLIST_TX_GLB_ACT.useraction=\ub85c\uceec \ud2b8\ub79c\uc7ad\uc158\uc5d0\uc11c \uc791\uc5c5\uc744 \uc218\ud589\ud558\uae30 \uc804\uc5d0 \uae00\ub85c\ubc8c \ud2b8\ub79c\uc7ad\uc158\uc774 \uc644\ub8cc\ub418\uc5c8\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_TX_CLEANUP=WLTC0005E: \uc790\uc6d0\uc744 \ub4f1\ub85d\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. local-transaction resolution-control \uac12\uc774 Application\uc774\ubbc0\ub85c \uc815\ub9ac\ub97c \uc704\ud574\uc11c\ub9cc \uc790\uc6d0\uc744 \ub4f1\ub85d\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+ERR_ENLIST_TX_CLEANUP.explanation=resolution-control \uac12\uc774 ContainerAtBoundary\uac00 \uc544\ub2d0 \ub54c \ucee8\ud14c\uc774\ub108\uac00 \uc790\uc6d0\uc744 \ub4f1\ub85d\ud558\ub824\uace0 \ud588\uc2b5\ub2c8\ub2e4.
+ERR_ENLIST_TX_CLEANUP.useraction=CMSG0002 
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_LTC_COMPLETE=WLTC0006E: \uc790\uc6d0\uc744 \ub4f1\ub85d\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. LocalTransactionContainment\ub97c \uc644\ub8cc \uc911\uc774\uac70\ub098 \uc644\ub8cc\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+ERR_ENLIST_LTC_COMPLETE.explanation=LocalTransactionContainment\uac00 \uc790\uc6d0\uc744 \ub4f1\ub85d\ud560 \uc218 \uc788\ub294 \uc0c1\ud0dc\uac00 \uc544\ub2d9\ub2c8\ub2e4.
+ERR_ENLIST_LTC_COMPLETE.useraction=CMSG0002 
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_CLN_TX_GLB_ACT=WLTC0007E: \uae00\ub85c\ubc8c \ud2b8\ub79c\uc7ad\uc158\uc774 \ud65c\uc131\ud654\ub418\uc5b4 \uc788\uc73c\ubbc0\ub85c \uc815\ub9ac\ub97c \uc704\ud574 \uc790\uc6d0\uc744 \ub4f1\ub85d\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ERR_ENLIST_CLN_TX_GLB_ACT.explanation=\ud604\uc7ac \uae00\ub85c\ubc8c \ud2b8\ub79c\uc7ad\uc158\uc774 \ud65c\uc131\ud654\ub418\uc5b4 \uc788\uc73c\ubbc0\ub85c \ub85c\uceec \ud2b8\ub79c\uc7ad\uc158 \uc5f0\uacb0\uc744 \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ERR_ENLIST_CLN_TX_GLB_ACT.useraction=\ub85c\uceec \ud2b8\ub79c\uc7ad\uc158\uc5d0\uc11c \uc791\uc5c5\uc744 \uc218\ud589\ud558\uae30 \uc804\uc5d0 \uae00\ub85c\ubc8c \ud2b8\ub79c\uc7ad\uc158\uc774 \uc644\ub8cc\ub418\uc5c8\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_CLN_TX_CLEANUP=WLTC0008E: \uc815\ub9ac\ub97c \uc704\ud574 \uc790\uc6d0\uc744 \ub4f1\ub85d\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. local-transaction resolution-control \uac12\uc774 ContainerAtBoundary\uc774\ubbc0\ub85c \uc815\ub9ac\ub97c \uc704\ud574 \uc790\uc6d0\uc744 \ub4f1\ub85d\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ERR_ENLIST_CLN_TX_CLEANUP.explanation=\ub85c\uceec \ud2b8\ub79c\uc7ad\uc158 \uc5f0\uacb0\uc744 \uc0ac\uc6a9\ud558\ub294 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \ucee8\ud14c\uc774\ub108\uac00 \ub85c\uceec \ud2b8\ub79c\uc7ad\uc158\uc744 \uc2dc\uc791\ud558\uace0 \ud574\uc11d\ud560 \uc218 \uc788\ub3c4\ub85d \uad6c\uc131\ub418\uc5c8\uc73c\ub098, \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \ub85c\uceec \ud2b8\ub79c\uc7ad\uc158 \uc790\uccb4\ub97c \uc2dc\uc791\ud588\uc2b5\ub2c8\ub2e4.
+ERR_ENLIST_CLN_TX_CLEANUP.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \ucee8\ud14c\uc774\ub108\uc5d0 \uc758\ud574 \ud574\uc11d\ub418\ub294 \ub85c\uceec \ud2b8\ub79c\uc7ad\uc158\uc744 \uc0ac\uc6a9\ud558\ub294 \uacbd\uc6b0 \uc5f0\uacb0 \uc0ac\uc6a9\ubc95\uc758 get-use-model\uc744 \ub530\ub77c\uc57c \ud569\ub2c8\ub2e4.
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_CLN_LTC_COMPLETE=WLTC0009E: \uc815\ub9ac\ub97c \uc704\ud574 \uc790\uc6d0\uc744 \ub4f1\ub85d\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. LocalTransactionContainment\ub97c \uc644\ub8cc \uc911\uc774\uac70\ub098 \uc644\ub8cc\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+ERR_ENLIST_CLN_LTC_COMPLETE.explanation=LocalTransactionContainment\uac00 \uc790\uc6d0\uc744 \ub4f1\ub85d\ud560 \uc218 \uc788\ub294 \uc0c1\ud0dc\uac00 \uc544\ub2d9\ub2c8\ub2e4.
+ERR_ENLIST_CLN_LTC_COMPLETE.useraction=CMSG0002 
+
+#-----------------------------------------------------------------------
+ERR_DELIST_TX_GLB_ACT=WLTC0010E: \uae00\ub85c\ubc8c \ud2b8\ub79c\uc7ad\uc158\uc774 \ud65c\uc131\ud654\ub418\uc5c8\uc73c\ubbc0\ub85c \uc790\uc6d0\uc744 \ub4f1\ub85d \ucde8\uc18c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ERR_DELIST_TX_GLB_ACT.explanation=\ud604\uc7ac \uae00\ub85c\ubc8c \ud2b8\ub79c\uc7ad\uc158\uc774 \ud65c\uc131\ud654\ub418\uc5b4 \uc788\uc73c\ubbc0\ub85c LocalTransactionContainment\uac00 \uc790\uc6d0\uc744 \ub4f1\ub85d \ucde8\uc18c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ERR_DELIST_TX_GLB_ACT.useraction=CMSG0002 
+
+#-----------------------------------------------------------------------
+ERR_DELIST_NOT_ENLISTED=WLTC0011E: \uc790\uc6d0\uc744 \ub4f1\ub85d \ucde8\uc18c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc790\uc6d0\uc774 LocalTransactionContainment\uc5d0\uc11c \uc815\ub9ac\ub97c \uc704\ud574 \ub4f1\ub85d\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+ERR_DELIST_NOT_ENLISTED.explanation=LocalTransactionContainment\uac00 \uc815\ub9ac\ub97c \uc704\ud574 \ub4f1\ub85d\ub418\uc9c0 \uc54a\uc740 \uc790\uc6d0\uc744 \ub4f1\ub85d \ucde8\uc18c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ERR_DELIST_NOT_ENLISTED.useraction=CMSG0002 
+
+#-----------------------------------------------------------------------
+ERR_DELIST_LTC_COMPLETE=WLTC0012E: \uc790\uc6d0\uc744 \ub4f1\ub85d \ucde8\uc18c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. LocalTransactionContainment\ub97c \uc644\ub8cc \uc911\uc774\uac70\ub098 \uc644\ub8cc\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+ERR_DELIST_LTC_COMPLETE.explanation=LocalTransactionContainment\uac00 \uc790\uc6d0\uc744 \ub4f1\ub85d \ucde8\uc18c\ud560 \uc218 \uc788\ub294 \uc0c1\ud0dc\uac00 \uc544\ub2d9\ub2c8\ub2e4.
+ERR_DELIST_LTC_COMPLETE.useraction=CMSG0002 
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_SYNCH_TX_GLB_ACT=WLTC0013E: \uae00\ub85c\ubc8c \ud2b8\ub79c\uc7ad\uc158\uc774 \ud65c\uc131\ud654\ub418\uc5c8\uc73c\ubbc0\ub85c \ub3d9\uae30\ud654\ub97c \ub4f1\ub85d\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ERR_ENLIST_SYNCH_TX_GLB_ACT.explanation=\ud604\uc7ac \uae00\ub85c\ubc8c \ud2b8\ub79c\uc7ad\uc158\uc774 \ud65c\uc131\ud654\ub418\uc5b4 \uc788\uc73c\ubbc0\ub85c LocalTransactionContainment\uc5d0 \ub3d9\uae30\ud654\ub97c \ub4f1\ub85d\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ERR_ENLIST_SYNCH_TX_GLB_ACT.useraction=CMSG0002 
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_SYNCH_LTC_COMPLETE=WLTC0014E: \ub3d9\uae30\ud654\ub97c \ub4f1\ub85d\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. LocalTransactionContainment\ub97c \uc644\ub8cc \uc911\uc774\uac70\ub098 \uc644\ub8cc\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+ERR_ENLIST_SYNCH_LTC_COMPLETE.explanation=LocalTransactionContainment\uac00 \ub3d9\uae30\ud654\ub97c \ub4f1\ub85d\ud560 \uc218 \uc788\ub294 \uc0c1\ud0dc\uac00 \uc544\ub2d9\ub2c8\ub2e4.
+ERR_ENLIST_SYNCH_LTC_COMPLETE.useraction=CMSG0002 
+
+#-----------------------------------------------------------------------
+ERR_XA_RESOURCE_START=WLTC0015E: {0} \uc790\uc6d0\uc744 \uc2dc\uc791\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc608\uc678 \uc2a4\ud0dd \ucd94\uc801\uc740 \ub2e4\uc74c\uacfc \uac19\uc2b5\ub2c8\ub2e4. {1}.
+ERR_XA_RESOURCE_START.explanation=\ucee8\ud14c\uc774\ub108\uac00 \ub85c\uceec \ud2b8\ub79c\uc7ad\uc158\uc744 \uc2dc\uc791\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ERR_XA_RESOURCE_START.useraction=\uc790\uc6d0 \uad00\ub9ac\uc790\ub97c \uac80\uc0ac\ud558\uc2ed\uc2dc\uc624.
+
+#-----------------------------------------------------------------------
+ERR_XA_RESOURCE_COMPLETE=WLTC0016E: {0} \uc790\uc6d0\uc744 \uc644\ub8cc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc608\uc678 \uc2a4\ud0dd \ucd94\uc801\uc740 \ub2e4\uc74c\uacfc \uac19\uc2b5\ub2c8\ub2e4. {1}.
+ERR_XA_RESOURCE_COMPLETE.explanation=\ucee8\ud14c\uc774\ub108\uac00 \ub85c\uceec \ud2b8\ub79c\uc7ad\uc158\uc744 \uc644\ub8cc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ERR_XA_RESOURCE_COMPLETE.useraction=\uc790\uc6d0 \uad00\ub9ac\uc790\ub97c \uac80\uc0ac\ud558\uc2ed\uc2dc\uc624.
+
+#-----------------------------------------------------------------------
+ERR_XA_RESOURCE_ROLLEDBACK=WLTC0017E: setRollbackOnly()\uac00 \ud638\ucd9c\ub418\uc5b4 \uc790\uc6d0\uc774 \ub864\ubc31\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+ERR_XA_RESOURCE_ROLLEDBACK.explanation=LTC(LocalTransactionContainment)\uc5d0\uc11c setRollbackOnly()\uac00 \ud638\ucd9c\ub418\uc5b4 LTC\uc5d0 \ub4f1\ub85d\ub41c \uc790\uc6d0\uc774 \ucee4\ubbf8\ud2b8\ub418\uc9c0 \uc54a\uace0 \ub864\ubc31\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+ERR_XA_RESOURCE_ROLLEDBACK.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+#-----------------------------------------------------------------------
+ERR_BEGIN_LTC_ACT=WLTC0018E: LocalTransactionContainment\ub97c \uc2dc\uc791\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. LocalTransactionContainment\uac00 \uc774\ubbf8 \ud65c\uc131 \uc0c1\ud0dc\uc785\ub2c8\ub2e4.
+ERR_BEGIN_LTC_ACT.explanation=LocalTransactionContainment\ub97c \uc0c8\ub85c \uc2dc\uc791\ud558\ub824\uace0 \ud588\uc744 \ub54c \uc774\ubbf8 \ud65c\uc131\ud654\ub418\uc5b4 \uc788\uc5c8\uc2b5\ub2c8\ub2e4.
+ERR_BEGIN_LTC_ACT.useraction=CMSG0002 
+
+#-----------------------------------------------------------------------
+ERR_STATE_RB_ONLY=WLTC0019E: \uc870\uc791\uc744 \uc218\ud589\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. LocalTransactionContainment\uac00 \ub864\ubc31 \uc804\uc6a9\uc73c\ub85c \ud45c\uc2dc\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+ERR_STATE_RB_ONLY.explanation=\uc2e4\ud328\ud55c \uc870\uc791\uc774 \uc218\ud589\ub41c LocalTransactionContainment\uac00 \ucee8\ud14c\uc774\ub108\uc5d0 \uc758\ud574 \ub864\ubc31 \uc804\uc6a9\uc73c\ub85c \ud45c\uc2dc\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+ERR_STATE_RB_ONLY.useraction=\ucd94\uc801\uc744 \uc0ac\uc6a9\ud558\uc5ec LocalTransactionContainment\uac00 \ub864\ubc31 \uc804\uc6a9\uc73c\ub85c \ud45c\uc2dc\ub41c \uc774\uc720\ub97c \ud310\ubcc4\ud558\uc2ed\uc2dc\uc624.
+
+#-----------------------------------------------------------------------
+ERR_LTC_COMPLETE=WLTC0020E: \uc870\uc791\uc744 \uc218\ud589\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. LocalTransactionContainment\ub97c \uc644\ub8cc \uc911\uc774\uac70\ub098 \uc644\ub8cc\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+ERR_LTC_COMPLETE.explanation=\uc2e4\ud328\ud55c \uc870\uc791\uc774 \uc218\ud589\ub41c LocalTransactionContainment\ub97c \uc644\ub8cc \uc911\uc774\uac70\ub098 \uc644\ub8cc\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+ERR_LTC_COMPLETE.useraction=CMSG0002 
+
+#-----------------------------------------------------------------------
+ERR_NP_INCONSISTENT=WLTC0021E: \uc790\uc6d0\uc758 \uc644\ub8cc \uc0c1\ud0dc\uac00 \uc77c\uce58\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+ERR_NP_INCONSISTENT.explanation=ActivitySessionResource\ub85c \ub4f1\ub85d\ub41c LocalTransactionCoordinator\uac00 \ubd88\uc77c\uce58\ud558\ub294 \uacb0\uacfc\ub85c \uc644\ub8cc\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+ERR_NP_INCONSISTENT.useraction=CMSG0002 
+
+#-----------------------------------------------------------------------
+ERR_NP_ROLLEDBACK=WLTC0022E: LTC\uc5d0\uc11c setRollbackOnly\uac00 \ud638\ucd9c\ub418\uc5b4 \uc790\uc6d0\uc774 \uc7ac\uc124\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+ERR_NP_ROLLEDBACK.explanation=LocalTransactionContainment\uc5d0\uc11c setRollbackOnly\uac00 \ud638\ucd9c\ub418\uc5b4 ActivitySessionResource\ub85c \ub4f1\ub85d\ub41c LocalTransactionCoordinator\uac00 \uc7ac\uc124\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+ERR_NP_ROLLEDBACK.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+#-----------------------------------------------------------------------
+ERR_NP_ILLEGAL=WLTC0023E: \uc798\ubabb\ub41c \uc0c1\ud0dc\ub85c \uc778\ud574 \uc790\uc6d0\uc774 \uc644\ub8cc\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+ERR_NP_ILLEGAL.explanation=ActivitySessionResource\ub85c \ub4f1\ub85d\ub41c LocalTransactionCoordinator\uc758 \uc0c1\ud0dc\uac00 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc73c\ubbc0\ub85c \uc644\ub8cc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ERR_NP_ILLEGAL.useraction=CMSG0002 
+
+#-----------------------------------------------------------------------
+ERR_AS_LOOKUP_ASM=WLTC0024E: ActivitySession \uc11c\ube44\uc2a4\uc5d0 \uc811\uc18d\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. ActivitySessionManager\ub97c \ucc3e\uc544\ubcf4\ub294 \ub370 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+ERR_AS_LOOKUP_ASM.explanation=JNDI \ub124\uc784\uc2a4\ud398\uc774\uc2a4\uc5d0\uc11c ActivitySessionManager \uc624\ube0c\uc81d\ud2b8\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ERR_AS_LOOKUP_ASM.useraction=CMSG0002 
+
+#-----------------------------------------------------------------------
+ERR_AS_ILLEGAL_STATE=WLTC0025E: ActivitySession \uc11c\ube44\uc2a4\uc5d0 \ub4f1\ub85d\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. ActivitySession \uc0c1\ud0dc\uac00 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+ERR_AS_ILLEGAL_STATE.explanation=\ud604\uc7ac ActivitySession \uc0c1\ud0dc\uac00 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc73c\ubbc0\ub85c LocalTransactionContainment\ub97c \uc790\uc6d0\uc73c\ub85c \ub4f1\ub85d\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ERR_AS_ILLEGAL_STATE.useraction=CMSG0002 
+
+#-----------------------------------------------------------------------
+ERR_AS_UNEXPECTED=WLTC0026E: ActivitySession \uc11c\ube44\uc2a4\uc640 \uc0c1\ud638\uc791\uc6a9\ud558\ub294 \uc911\uc5d0 \uc608\uc0c1\uce58 \uc54a\uc740 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+ERR_AS_UNEXPECTED.explanation=LocalTransactionContainment\ub97c ActivitySession \uc11c\ube44\uc2a4\uc5d0 \ub4f1\ub85d\ud558\ub824\ub294 \uc911\uc5d0 \uc608\uc0c1\uce58 \uc54a\uc740 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+ERR_AS_UNEXPECTED.useraction=CMSG0002 
+
+#-----------------------------------------------------------------------
+ERR_NO_LTC_CLEANUP=WLTC0027E: \uc815\ub9ac\ud560 LocalTransactionCoordinator\uac00 \uc5c6\uc2b5\ub2c8\ub2e4.
+ERR_NO_LTC_CLEANUP.explanation=LocalTransactionCoordinator\uac00 \ud604\uc7ac \uc2a4\ub808\ub4dc\uc640 \uc5f0\uad00\ub418\uc5b4 \uc788\uc9c0 \uc54a\uc73c\ubbc0\ub85c \uc815\ub9ac\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ERR_NO_LTC_CLEANUP.useraction=CMSG0002 
+
+#-----------------------------------------------------------------------
+ERR_NO_LTC_COMPLETE=WLTC0028E: \uc644\ub8cc\ud560 LocalTransactionCoordinator\uac00 \uc5c6\uc2b5\ub2c8\ub2e4.
+ERR_NO_LTC_COMPLETE.explanation=LocalTransactionCoordinator\uac00 \ud604\uc7ac \uc2a4\ub808\ub4dc\uc640 \uc5f0\uad00\ub418\uc5b4 \uc788\uc9c0 \uc54a\uc73c\ubbc0\ub85c \uc644\ub8cc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ERR_NO_LTC_COMPLETE.useraction=CMSG0002 
+
+#-----------------------------------------------------------------------
+ERR_DEPLOY=WLTC0029E: \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc124\uce58\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ucef4\ud3ec\ub10c\ud2b8 {0}\uc5d0 \uc124\uce58\ub41c WebSphere Application Server \uc5d0\ub514\uc158\uc5d0\uc11c \uc0ac\uc6a9\ud560 \uc218 \uc5c6\ub294 WebSphere \ubc30\uce58 \ub514\uc2a4\ud06c\ub9bd\ud130 \ud655\uc7a5\uc790\uac00 \uc788\uc2b5\ub2c8\ub2e4. \uc0ac\uc6a9\ud560 \uacbd\uc6b0, \ub370\uc774\ud130 \ubb34\uacb0\uc131\uc774 \uc190\uc2e4\ub420 \uc218 \uc788\uc2b5\ub2c8\ub2e4. ActivationPolicy\ub294 {1}\uc774\uba70 LocalTransactionBoundary\ub294 {2}\uc785\ub2c8\ub2e4.
+ERR_DEPLOY.explanation=\uba54\uc2dc\uc9c0\uc5d0 \uc2dd\ubcc4\ub41c \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \uc124\uce58\ub41c \uc81c\ud488 \uc5d0\ub514\uc158\uc5d0\uc11c \uc9c0\uc6d0\ub418\uc9c0 \uc54a\ub294 \ud655\uc7a5\uc790\ub85c \uc5b4\uc148\ube14\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \
+\uc608\uc0c1\ub418\ub294 \ud655\uc7a5\uc790 \uc9c0\uc6d0\uc774 \uc5c6\ub294 \uacbd\uc6b0\uc5d0\ub3c4 \uc81c\ud488\uc5d0\uc11c \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc758 \uc2e4\ud589\uc744 \ud5c8\uc6a9\ud558\ub294 \uacbd\uc6b0, \uc791\ub3d9\uc774 \ubcc0\uacbd\ub418\uc5b4 \ub370\uc774\ud130 \ubb34\uacb0\uc131\uc5d0 \uc601\ud5a5\uc744 \ubbf8\uce60 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \uc608\ub97c \ub4e4\uc5b4, \ud655\uc7a5\uc790 \uc9c0\uc6d0\uc774 \uc788\ub294 \uacbd\uc6b0 \uc5ec\ub7ec \ud2b8\ub79c\uc7ad\uc158\uc5d0\uc11c \ud2b8\ub79c\uc7ad\uc158 \ub370\uc774\ud130\uac00 \uc5c5\ub370\uc774\ud2b8\ub420 \ub54c \uac19\uc740 \ud2b8\ub79c\uc7ad\uc158\uc5d0\uc11c \ud2b8\ub79c\uc7ad\uc158 \ub370\uc774\ud130\uac00 \uc5c5\ub370\uc774\ud2b8\ub420 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \
+\ub530\ub77c\uc11c \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc124\uce58\ub294 \uc548\uc804\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+ERR_DEPLOY.useraction=\uc124\uce58\uc5d0 \uc2e4\ud328\ud55c \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \uc870\uc0ac\ud558\uc2ed\uc2dc\uc624.  \
+\ud655\uc7a5\uc790 \uc9c0\uc6d0 \uc5c6\uc774 \uc2e4\ud589\ud560 \uc218 \uc788\ub294 \uacbd\uc6b0, \ud655\uc7a5\uc790\ub97c \uc9c0\uc815\ud558\uc9c0 \uc54a\uace0 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \ub9ac\uc5b4\uc148\ube14\ud558\uc2ed\uc2dc\uc624.  \
+\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \ud655\uc7a5 \uc9c0\uc6d0\uc774 \ud544\uc694\ud55c \uacbd\uc6b0, \ud574\ub2f9 \uc9c0\uc6d0\uc744 \uc81c\uacf5\ud558\ub294 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc11c\ubc84\uc5d0\ub9cc \uc124\uce58\ud558\uc2ed\uc2dc\uc624.
+
+#-----------------------------------------------------------------------
+ERR_DEPLOY_RESOLUTION=WLTC0030E: \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc124\uce58\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. {0} \uc560\ud50c\ub9ac\ucf00\uc774\uc158 Bean\uc774 \uc790\uccb4 \ud2b8\ub79c\uc7ad\uc158\uc744 \uad00\ub9ac\ud558\ub3c4\ub85d \uad6c\uc131\ub418\uc5c8\uc9c0\ub9cc, ContainerAtBoundary\uc758 \ub85c\uceec \ud2b8\ub79c\uc7ad\uc158 \ucc98\ub9ac \uc81c\uc5b4 \uc124\uc815\uc774 \ud638\ud658\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+ERR_DEPLOY_RESOLUTION.explanation=\uba54\uc2dc\uc9c0\uc5d0 \ud45c\uc2dc\ub41c Bean\uc774 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\ub294 \ud655\uc7a5\uc790\ub85c \uc5b4\uc148\ube14\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \ub530\ub77c\uc11c, \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \uc124\uce58\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+ERR_DEPLOY_RESOLUTION.useraction=\uc124\uce58\uc5d0 \uc2e4\ud328\ud55c \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 Bean\uc758 \ub300\uccb4 \uad6c\uc131\uc73c\ub85c \ub9ac\uc5b4\uc148\ube14\ud574\uc57c \ud569\ub2c8\ub2e4.
+
+#-----------------------------------------------------------------------
+ERR_DEPLOY_FAILURE=WLTC0031E: \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc124\uce58\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. {0} \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ucef4\ud3ec\ub10c\ud2b8\ub97c \uc124\uce58\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ERR_DEPLOY_FAILURE.explanation=\uba54\uc2dc\uc9c0\uc5d0 \ud45c\uc2dc\ub41c \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \uc62c\ubc14\ub974\uac8c \uc124\uce58\ub418\uc9c0 \uc54a\uc544\uc11c \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ERR_DEPLOY_FAILURE.useraction=CMSG0002 
+
+#-----------------------------------------------------------------------
+WRN_LTC_UNRESOLVED_ROLLEDBACK=WLTC0032W: LocalTransactionContainment\ub97c \uc815\ub9ac\ud558\ub294 \uc911\uc5d0 \ud558\ub098 \uc774\uc0c1\uc758 \ub85c\uceec \ud2b8\ub79c\uc7ad\uc158 \uc790\uc6d0\uc774 \ub864\ubc31\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+WRN_LTC_UNRESOLVED_ROLLEDBACK.explanation=\ubd88\uc644\uc804\ud55c \ub85c\uceec \ud2b8\ub79c\uc7ad\uc158 \uc790\uc6d0\uc758 LocalTransactionContainment\uac00 \uc885\ub8cc\ub418\uc5c8\uc73c\uba70 \uc774\uc5d0 \ub530\ub77c \uc790\uc6d0\uc774 \ub864\ubc31\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+WRN_LTC_UNRESOLVED_ROLLEDBACK.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+#-----------------------------------------------------------------------
+WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK=WLTC0033W: LocalTransactionContainment\ub97c \uc815\ub9ac\ud560 \ub54c {0} \uc790\uc6d0\uc774 \ub864\ubc31\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK.explanation=LocalTransactionContainment\uc758 \uc644\ub8cc \uc2dc\uc810\uc5d0\uc11c \ub85c\uceec \ud2b8\ub79c\uc7ad\uc158 \uc790\uc6d0\uc774 \ud574\uc11d\ub418\uc9c0 \uc54a\uc558\uc73c\uba70 \ub864\ubc31\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+#-----------------------------------------------------------------------
+ERR_NP_INCONSISTENT_CLEANUP=WLTC0034E: LocalTransactionContainment \uc644\ub8cc \uc0c1\ud0dc\uac00 \uc815\ub9ac \uc911\uc5d0 \uc77c\uce58\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+ERR_NP_INCONSISTENT_CLEANUP.explanation=ActivitySessionSynchronization\uc73c\ub85c \ub4f1\ub85d\ub41c LocalTransactionCoordinator\uac00 \uc815\ub9ac \uc911\uc5d0 \ubd88\uc77c\uce58\ud558\ub294 \uacb0\uacfc\ub85c \uc644\ub8cc\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+ERR_NP_INCONSISTENT_CLEANUP.useraction=CMSG0002 
+
+#-----------------------------------------------------------------------
+WRN_NP_ROLLEDBACK_CLEANUP=WLTC0035W: \uc815\ub9ac \uc911\uc5d0 \ucc98\ub9ac\ub418\uc9c0 \uc54a\uc740 LocalTransactionContainment\uac00 \uc7ac\uc124\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+WRN_NP_ROLLEDBACK_CLEANUP.explanation=ActivitySessionSynchronization\uc73c\ub85c \ub4f1\ub85d\ub41c LocalTransactionCoordinator\uac00 \uc7ac\uc124\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+WRN_NP_ROLLEDBACK_CLEANUP.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc744 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \uad00\ub828\ub41c \uba54\uc2dc\uc9c0\ub97c \ubaa8\ub450 \uac80\ud1a0\ud558\uc5ec \uc7ac\uc124\uc815 \uc6d0\uc778\uc744 \ud310\ubcc4\ud558\uc2ed\uc2dc\uc624. 
+#-----------------------------------------------------------------------
+ERR_NP_ILLEGAL_CLEANUP=WLTC0036E: \uc0c1\ud0dc\uac00 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc73c\ubbc0\ub85c \uc815\ub9ac \uc911\uc5d0 LocalTransactionContainment\uc5d0 \ub4f1\ub85d\ub41c \ud558\ub098 \uc774\uc0c1\uc758 \uc790\uc6d0\uc774 \uc644\ub8cc\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+ERR_NP_ILLEGAL_CLEANUP.explanation=ActivitySessionSynchronization\uc73c\ub85c \ub4f1\ub85d\ub41c LocalTransactionCoordinator\uc5d0 \uc798\ubabb\ub41c \uc0c1\ud0dc\uc758 \uc790\uc6d0\uc774 \ud558\ub098 \uc774\uc0c1 \uc788\uc73c\ubbc0\ub85c \uc815\ub9ac \uc911\uc5d0 \uc644\ub8cc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ERR_NP_ILLEGAL_CLEANUP.useraction=CMSG0002 
+
+#-----------------------------------------------------------------------
+ERR_BEGIN_GLOBAL_TX=WLTC0037E: \uae00\ub85c\ubc8c \ud2b8\ub79c\uc7ad\uc158\uc744 \uc2dc\uc791\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. LocalTransactionContainment\uac00 \uc774\ubbf8 \uc791\uc5c5\uc5d0\uc11c \ud65c\uc131 \uc0c1\ud0dc\uc785\ub2c8\ub2e4.
+ERR_BEGIN_GLOBAL_TX.explanation=\uae00\ub85c\ubc8c \ud2b8\ub79c\uc7ad\uc158\uc744 \uc2dc\uc791\ud558\ub824\uace0 \ud560 \ub54c LocalTransactionContainment\uac00 \uc774\ubbf8 \ud65c\uc131\ud654\ub418\uc5b4 \uc788\uc5c8\uc2b5\ub2c8\ub2e4.
+ERR_BEGIN_GLOBAL_TX.useraction=CMSG0002 
+

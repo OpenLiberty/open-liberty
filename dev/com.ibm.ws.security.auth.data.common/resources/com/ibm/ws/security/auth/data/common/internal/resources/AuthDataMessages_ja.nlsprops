@@ -1,0 +1,28 @@
+###############################################################################
+# Copyright (c) 2012, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.auth.data.common/resources/com/ibm/ws/security/auth/data/common/internal/resources/AuthDataMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Auth Data Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS1300 - CWWKS1349
+
+
+AUTH_DATA_CONFIG_ERROR_NO_SUCH_ALIAS=CWWKS1300E: \u69cb\u6210\u4f8b\u5916\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 \u8981\u6c42\u3055\u308c\u305f\u8a8d\u8a3c\u30c7\u30fc\u30bf\u5225\u540d {0} \u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3067\u3057\u305f\u3002
+AUTH_DATA_CONFIG_ERROR_NO_SUCH_ALIAS.explanation=\u6307\u5b9a\u3055\u308c\u305f\u5225\u540d\u304c\u5fc5\u8981\u3067\u3059\u3002
+AUTH_DATA_CONFIG_ERROR_NO_SUCH_ALIAS.useraction=\u65e2\u5b58\u306e\u30e6\u30fc\u30b6\u30fc\u306b\u5bfe\u3057\u3066\u6709\u52b9\u306a\u8a8d\u8a3c\u30c7\u30fc\u30bf\u5225\u540d\u3092\u6307\u5b9a\u3059\u308b\u304b\u3001\u307e\u305f\u306f\u65b0\u3057\u3044\u8a8d\u8a3c\u30c7\u30fc\u30bf\u5225\u540d\u3092\u69cb\u6210\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+AUTH_DATA_CONFIG_ERROR_INCOMPLETE=CWWKS1301E: \u69cb\u6210\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 \u5c5e\u6027 {0} \u3092\u5b9a\u7fa9\u3059\u308b\u5fc5\u8981\u304c\u3042\u308a\u307e\u3059\u3002
+AUTH_DATA_CONFIG_ERROR_INCOMPLETE.explanation=\u793a\u3055\u308c\u305f\u5c5e\u6027\u3092\u5b9a\u7fa9\u3059\u308b\u5fc5\u8981\u304c\u3042\u308a\u307e\u3059\u3002
+AUTH_DATA_CONFIG_ERROR_INCOMPLETE.useraction=\u6b20\u843d\u3057\u3066\u3044\u308b\u5c5e\u6027\u306e\u5024\u3092\u6307\u5b9a\u3057\u3066\u304f\u3060\u3055\u3044\u3002

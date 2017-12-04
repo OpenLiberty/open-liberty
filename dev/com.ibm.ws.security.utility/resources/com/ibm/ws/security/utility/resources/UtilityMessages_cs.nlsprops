@@ -1,0 +1,98 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.utility/resources/com/ibm/ws/security/utility/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+error=Chyba: {0}
+error.inputConsoleNotAvailable=Vstupn\u00ed konzola nen\u00ed dostupn\u00e1.
+error.missingIO=Chyba, chyb\u00ed za\u0159\u00edzen\u00ed I/O: {0}.
+
+usage=Pou\u017eit\u00ed: {0}
+task.unknown=Nezn\u00e1m\u00e1 \u00faloha: {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Common messages
+tooManyArgs=P\u0159\u00edli\u0161 mnoho argument\u016f.
+insufficientArgs=Nedostate\u010dn\u00e9 mno\u017estv\u00ed argument\u016f.
+invalidArg=Neplatn\u00fd argument {0}.
+missingArg=Chyb\u00ed argument {0}.
+missingValue=Chyb\u00ed hodnota pro argument {0}.
+missingArg2=Mus\u00ed b\u00fdt zad\u00e1n bu\u010f argument {0}, nebo argument {1}.
+exclusiveArg=Mus\u00ed b\u00fdt zad\u00e1n bu\u010f argument {0}, nebo argument {1}, nikoli oboj\u00ed.
+serverNotFound=Zadan\u00fd server {0} nelze v um\u00edst\u011bn\u00ed {1} naj\u00edt
+
+
+encode.enterText=Zadejte text:
+encode.reenterText=Znovu zadejte text:
+encode.readError=Chyba p\u0159i \u010dten\u00ed textu.
+encode.entriesDidNotMatch=Polo\u017eky si neodpov\u00eddaly.
+
+
+password.enterText=Zadejte heslo:
+password.reenterText=Potvr\u010fte heslo:
+password.readError=Chyba p\u0159i \u010dten\u00ed hesla.
+password.entriesDidNotMatch=Hesla si neodpov\u00eddala.
+
+name=n\u00e1zev
+days=dn\u016f
+
+sslCert.abort=Prob\u00edh\u00e1 p\u0159ed\u010dasn\u00e9 ukon\u010den\u00ed vytvo\u0159en\u00ed certifik\u00e1tu:
+sslCert.createFailed=Nelze vytvo\u0159it v\u00fdchoz\u00ed certifik\u00e1t SSL:\n\
+{0}
+sslCert.errorEncodePassword=Chyba p\u0159i k\u00f3dov\u00e1n\u00ed hesla (certifik\u00e1t nebyl vytvo\u0159en):\n\
+{0}
+sslCert.createKeyStore=Vytv\u00e1\u0159en\u00ed \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f {0}\n
+sslCert.oneType=Argumenty {0} a {1} nelze ur\u010dit sou\u010dasn\u011b.
+sslCert.clientNotFound=Zadan\u00e9ho klienta {0} nelze v um\u00edst\u011bn\u00ed {1} naj\u00edt
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+sslCert.serverXML=Vytvo\u0159en\u00fd certifik\u00e1t SSL pro server {0}. Certifik\u00e1t je vytvo\u0159en s {1} jako SubjectDN.\n\
+\n\
+Chcete-li povolit SSL, p\u0159idejte n\u00e1sleduj\u00edc\u00ed \u0159\u00e1dky do souboru server.xml:
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+sslCert.clientXML=Vytvo\u0159en\u00fd certifik\u00e1t SSL pro klienta {0}. Certifik\u00e1t je vytvo\u0159en s {1} jako SubjectDN.\n\
+\n\
+Chcete-li povolit SSL, p\u0159idejte n\u00e1sleduj\u00edc\u00ed \u0159\u00e1dky do souboru client.xml:
+
+fileUtility.failedDirCreate=Nepoda\u0159ilo se vytvo\u0159it adres\u00e1\u0159 {0}.
+file.exists=Soubor \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f {0} ji\u017e existuje. Nelze vytvo\u0159it soubor \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f v dan\u00e9m um\u00edst\u011bn\u00ed.
+file.requiredDirNotCreated=Nelze vytvo\u0159it po\u017eadovanou adres\u00e1\u0159ovou strukturu pro {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# The following string will be appended after encode.option-desc.encoding
+# message in UtilityOptions.nlsprops file.
+encode.option-custom.encryption=\n\
+\tVlastn\u00ed \u0161ifrov\u00e1n\u00ed hesel je rovn\u011b\u017e dostupn\u00e9.
+encode.option-desc.custom.feature=\n\
+\tN\u00e1zev funkce {0} je n\u00e1sleduj\u00edc\u00ed:\n\
+\t
+encode.option-desc.custom.description=\n\
+\tPopis {0} je n\u00e1sleduj\u00edc\u00ed:\n\
+\t
+
+# The following message is shown when there is no custom password
+# encryption is enabled.
+no.custom.encyption=Vlastn\u00ed \u0161ifrov\u00e1n\u00ed hesel nen\u00ed zji\u0161t\u011bno.
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Note to translator: 'LTPA' should not be translated
+createLTPAKeys.abort=P\u0159ed\u010dasn\u00e9 ukon\u010den\u00ed tvorby souboru s kl\u00ed\u010di LTPA:
+createLTPAKeys.fileExists=Soubor {0} ji\u017e existuje. Nelze vytvo\u0159it soubor s kl\u00ed\u010di LTPA v dan\u00e9m um\u00edst\u011bn\u00ed.
+createLTPAKeys.createdFile=Vytvo\u0159en\u00fd soubor s kl\u00ed\u010di LTPA: {0}\n\
+Zahr\u0148te n\u00e1sleduj\u00edc\u00ed konfiguraci do souboru server.xml\n\
+{1}\n

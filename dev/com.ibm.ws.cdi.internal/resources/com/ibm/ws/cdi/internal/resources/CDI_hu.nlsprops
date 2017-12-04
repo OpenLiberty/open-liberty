@@ -1,0 +1,70 @@
+#CMVCPATHNAME SERV1/ws/code/prereq.jcdi/src/com/ibm/ws/webbeans/resources/jcdi.nlsprops
+#COMPONENTPREFIX CWOWB
+#COMPONENTNAMEFOR CWOWB Java EE Contexts and Dependency Injection 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by JCDI
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A CDI error has occurred: {0}
+cdi.resource.injection.error.CWOWB1000E=CWOWB1000E: CDI hiba t\u00f6rt\u00e9nt: {0}
+cdi.resource.injection.error.CWOWB1000E.explanation=CDI hiba t\u00f6rt\u00e9nt, ami megakad\u00e1lyozza a norm\u00e1l m\u0171k\u00f6d\u00e9st.
+cdi.resource.injection.error.CWOWB1000E.useraction=Az FFDC napl\u00f3k \u00e9s a kiv\u00e9tel sz\u00f6veg\u00e9nek \u00e1ttekint\u00e9s\u00e9vel azonos\u00edtsa a probl\u00e9m\u00e1t.
+
+# Web Application Archive "{0}" contains more than one beans.xml file. Using "{1}". Ignoring "{2}".
+multiple.beans.xml.warning.CWOWB1001W=CWOWB1001W: A(z) {0} webalkalmaz\u00e1s arch\u00edvum t\u00f6bb beans.xml f\u00e1jlt tartalmaz. A(z) {1} ker\u00fcl felhaszn\u00e1l\u00e1sra. A(z) {2} figyelmen k\u00edv\u00fcl marad.
+multiple.beans.xml.warning.CWOWB1001W.explanation=A CDI t\u00f6bb beans.xml f\u00e1jlt tal\u00e1lt.
+multiple.beans.xml.warning.CWOWB1001W.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az alkalmaz\u00e1s arch\u00edvum csak egy beans.xml f\u00e1jlt tartalmazzon.
+
+managed.class.bean.class.mismatch.CWOWB1002E=CWOWB1002E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. A k\u00f6vetkez\u0151 adatokkal l\u00e9pjen kapcsolatba a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3 term\u00e9kt\u00e1mogat\u00e1s\u00e1val: {0} {1}
+managed.class.bean.class.mismatch.CWOWB1002E.explanation=CMSG0001
+managed.class.bean.class.mismatch.CWOWB1002E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+
+error.loading.class.CWOWB1003E=CWOWB1003E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. A k\u00f6vetkez\u0151 adatokkal l\u00e9pjen kapcsolatba a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3 term\u00e9kt\u00e1mogat\u00e1s\u00e1val: {0} {1}
+error.loading.class.CWOWB1003E.explanation=CMSG0001
+error.loading.class.CWOWB1003E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+
+unknown.container.type.CWOWB1004E=CWOWB1004E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. A k\u00f6vetkez\u0151 adatokkal l\u00e9pjen kapcsolatba a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3 term\u00e9kt\u00e1mogat\u00e1s\u00e1val: {0}
+unknown.container.type.CWOWB1004E.explanation=CMSG0001
+unknown.container.type.CWOWB1004E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+
+error.loading.resource.CWOWB1005E=CWOWB1005E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. A k\u00f6vetkez\u0151 adatokkal l\u00e9pjen kapcsolatba a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3 term\u00e9kt\u00e1mogat\u00e1s\u00e1val: {0}
+error.loading.resource.CWOWB1005E.explanation=CMSG0001
+error.loading.resource.CWOWB1005E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+no.injection.target.context.CWOWB1006E=CWOWB1006E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. A k\u00f6vetkez\u0151 adatokkal l\u00e9pjen kapcsolatba a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3 term\u00e9kt\u00e1mogat\u00e1s\u00e1val: {0}
+no.injection.target.context.CWOWB1006E.explanation=CMSG0001
+no.injection.target.context.CWOWB1006E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+resource.producer.validation.error.CWOWB1007E=CWOWB1007E: A(z) {0} el\u0151\u00e1ll\u00edt\u00f3 mez\u0151 t\u00edpusa {1}, ami nem felel meg a besz\u00fart objektum t\u00edpus\u00e1nak.
+resource.producer.validation.error.CWOWB1007E.explanation=A CDI egy er\u0151forr\u00e1s-el\u0151\u00e1ll\u00edt\u00f3 mez\u0151t tal\u00e1lt, ahol a mez\u0151 t\u00edpusa nem felelt meg a mez\u0151be besz\u00fart Java EE er\u0151forr\u00e1s t\u00edpus\u00e1nak.
+resource.producer.validation.error.CWOWB1007E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a helyes Java EE er\u0151forr\u00e1s van besz\u00farva az er\u0151forr\u00e1s-el\u0151\u00e1ll\u00edt\u00f3 mez\u0151be, \u00e9s hogy a mez\u0151 t\u00edpusa megfelel a mez\u0151be besz\u00fart er\u0151forr\u00e1s t\u00edpus\u00e1nak.
+
+no.injection.target.CWOWB1008E=CWOWB1008E: A(z) {1} oszt\u00e1ly {0} tagja nem sz\u00farhat\u00f3 be, mivel a(z) {1} oszt\u00e1ly nincs a komponens arch\u00edvumban.
+no.injection.target.CWOWB1008E.explanation=A besz\u00far\u00e1s sikertelen, mivel az arch\u00edvum komponenskezel\u0151, amelybe az oszt\u00e1ly tartozik, null \u00e9rt\u00e9k\u0171.
+no.injection.target.CWOWB1008E.useraction=Gondoskodjon r\u00f3la, hogy az arch\u00edvum, amelybe az oszt\u00e1ly tartozik, komponens arch\u00edvum legyen. A CDI specifik\u00e1ci\u00f3ban megtal\u00e1lja, hogyan tud egy arch\u00edvumot komponens arch\u00edvumm\u00e1 alak\u00edtani.
+
+implicit.bean.scanning.disabled.CWOWB1009W=CWOWB1009W: Az implicit komponens arch\u00edvumok tiltottak.
+implicit.bean.scanning.disabled.CWOWB1009W.explanation=A rendszer az arch\u00edvumokban nem keres CDI komponenseket, hacsak nincs beans.xml f\u00e1jljuk.
+implicit.bean.scanning.disabled.CWOWB1009W.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy minden CDI komponenst haszn\u00e1l\u00f3 arch\u00edvum rendelkezik beans.xml f\u00e1jllal vagy enged\u00e9lyezze \u00fajra az implicit komponensek keres\u00e9s\u00e9t a server.xml f\u00e1jlban.

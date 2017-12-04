@@ -1,0 +1,62 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.filemonitor/resources/com/ibm/ws/kernel/filemonitor/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0400 - 0499 com.ibm.ws.kernel.filemonitor.internal.resources.FileMonitorMessages
+# -------------------------------------------------------------------------------------------------
+
+badFilter=CWWKE0400W: Der angegebene Parameter gibt keinen g\u00fcltigen Dateinamensfilter an. {0}={1}
+badFilter.explanation=Der Wert f\u00fcr den angegebenen Konfigurationsparameter wurde nicht bzw. konnte nicht in einen Zeichenfolgewert konvertiert werden.
+badFilter.useraction=\u00dcberpr\u00fcfen Sie den in der Serverkonfiguration angegebenen Wert.
+
+badInterval=CWWKE0401W: Der angegebene Parameter stellt kein g\u00fcltiges \u00dcberwachungsintervall dar. {0}={1}
+badInterval.explanation=Der f\u00fcr den genannten Konfigurationsparameter angegebene Wert konnte nicht als \u00dcberwachungsintervall geparst werden.
+badInterval.useraction=\u00dcberpr\u00fcfen Sie den in der Serverkonfiguration angegebenen Wert, und stellen Sie sicher, dass der Wert ein g\u00fcltiges \u00dcberwachungsintervall ist. \
+Beispiel: 1s f\u00fcr eine Sekunde. \
+G\u00fcltige Einheiten sind ms=Millisekunden, s=Sekunden, m=Minuten, h=Stunden.
+
+## unused as of 8.5.0.1
+badDiskCache=CWWKE0402W: Die angegebene Cacheposition konnte nicht zugeordnet werden. Deshalb werden alle Informationen zu \u00fcberwachten Dateien im Hauptspeicher gespeichert. {0}={1}
+badDiskCache.explanation=Der Service konnte keine Cacheposition f\u00fcr eine Gruppe \u00fcberwachter Ressourcen erstellen.
+badDiskCache.useraction=Vergewissern Sie sich, dass Sie Schreibzugriff auf das Serververzeichnis und den Arbeitsbereich haben.
+
+createMonitorException=CWWKE0403W: Beim Erstellen eines Monitors f\u00fcr {0} ist eine Ausnahme eingetreten. Die \u00dcberwachung f\u00fcr diese Ressource ist inaktiviert. Ausnahmenachricht: {1}
+createMonitorException.explanation=Beim Erstellen des Monitors f\u00fcr die angegebene Ressource ist eine unerwartete Ausnahme eingetreten. Die Ressource wird nicht \u00fcberwacht. 
+createMonitorException.useraction=Vergewissern Sie sich, dass Sie Lesezugriff auf die angegebene Ressource haben. Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+
+## unreachable in 8.5 GM -- cache file never used
+UNABLE_TO_DELETE_CACHE_FILE=CWWKE0404E: Die Cachedatei {0} konnte nicht gel\u00f6scht werden.
+UNABLE_TO_DELETE_CACHE_FILE.explanation=Der Service konnte eine Cacheposition f\u00fcr eine Gruppe \u00fcberwachter Ressourcen nicht l\u00f6schen.
+UNABLE_TO_DELETE_CACHE_FILE.useraction=Vergewissern Sie sich, dass Sie Schreibzugriff auf das Serververzeichnis und den Arbeitsbereich haben.
+
+fileMonitorException=CWWKE0405W: Beim Benachrichtigen eines Monitors \u00fcber die folgenden Dateierstellungen, -\u00e4nderungen und -l\u00f6schungen ist eine Ausnahme eingetreten: {0}, {1}, {2}. Die Monitorklasse ist {3}. Ausnahmenachricht: {4}
+fileMonitorException.explanation=Beim Erstellen des Monitors f\u00fcr die angegebene Ressource ist eine unerwartete Ausnahme eingetreten. 
+fileMonitorException.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+
+fileMonitorDisabled=CWWKE0406W: Beim Benachrichtigen eines Monitors \u00fcber \u00c4nderungen sind mehr als {0} Ausnahmen eingetreten. Die Monitorklasse ist {1}. Dieser FileMonitor wurde jetzt inakiviert. 
+fileMonitorDisabled.explanation=Beim Benachrichtigen eines Monitors f\u00fcr die angegebene Ressource sind zu viele aufeinanderfolgende Ausnahmen eingetreten. Die Ressource wird nicht mehr \u00fcberwacht. 
+fileMonitorDisabled.useraction=Suchen Sie in den Ausnahmen und den zugeh\u00f6rigen FFDC-Nachrichten nach weiteren Informationen.

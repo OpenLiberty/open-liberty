@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+#CMVCPATHNAME 
+#COMPONENTPREFIX CWWWC
+#COMPONENTNAMEFOR CWWWC Servlet Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# --------------------------------
+
+# Since servlet 4.0.  Use the registered and reserved prefix CWWWC from now on.  
+# 0001 - 0199 for Base
+# 0200 - 0299 for Servlet 3.0
+# 0300 - 0399 for Servlet 3.1
+# 0400 - 0499 for Servlet 4
+name.is.null=CWWWC0400E: Un nume de atribut sau un nume de parametru ini\u0163ial este null.
+name.is.null.explanation=Aceasta este o eroare de aplica\u0163ie.  Numele este null \u00een contextul getAttribute(), setAttribute(), getInitParameter() sau setInitParameter().
+name.is.null.useraction=Actualiza\u0163i numele de atribut sau numele de parametru ini\u0163ial cu o valoare non-null.
+# -----------------------------------------------
+unsupported.response.encoding.[{0}]=CWWWC0401E: Nu s-a putut seta codarea caracterelor r\u0103spunsului: [{0}].
+unsupported.response.encoding.[{0}].explanation=Codarea r\u0103spunsului specificat\u0103 \u00een r\u0103spuns nu este valid\u0103. Aceasta este o eroare de aplica\u0163ie.
+unsupported.response.encoding.[{0}].useraction=Examina\u0163i istoricele pentru a determina dac\u0103 codarea specificat\u0103 este una valid\u0103.
+

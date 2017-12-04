@@ -1,0 +1,200 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.utils.CWSIUMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_SInn0000=CWSIU0001I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_SInn0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_SInn0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# cmvc_en_version_level=1.31,0,09/07/29,08:43:02
+#
+#CMVCPATHNAME ws/code/sib.utils/src/com/ibm/ws/sib/utils/CWSIUMessages.nlsprops
+#COMPONENTPREFIX CWSIU
+#COMPONENTNAMEFOR CWSIU utils
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the messaging build release
+# {1} is the messaging build level
+
+WPM_SPLASH_CWSIU0000=CWSIU0000I: Version : {0} Niveau : {1}
+WPM_SPLASH_CWSIU0000.explanation=Ce message affiche la version de compilation de la messagerie en cours et le niveau.
+WPM_SPLASH_CWSIU0000.useraction=Aucune.
+
+# -------------------------------------------------------------------------------------------------
+#                                                                                          220097.0
+# {0} is the name of a runtime property
+# {1} is the new value of the named property
+
+RUNTIME_CWSIU0001=CWSIU0001I: La propri\u00e9t\u00e9 d''ex\u00e9cution {0} a \u00e9t\u00e9 remplac\u00e9e par la valeur {1}.
+RUNTIME_CWSIU0001.explanation=La valeur d'une propri\u00e9t\u00e9 d'ex\u00e9cution a \u00e9t\u00e9 remplac\u00e9e par une valeur diff\u00e9rente de la valeur par d\u00e9faut.
+RUNTIME_CWSIU0001.useraction=Aucune.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that will be suppressed
+# {1} is the time interval during which the message will be suppressed
+
+FUTURE_MESSAGES_SUPPRESSED_CWSIU0002=CWSIU0002I: Les occurrences ult\u00e9rieures du message {0} seront supprim\u00e9es pendant les {1} prochaines minutes.
+FUTURE_MESSAGES_SUPPRESSED_CWSIU0002.explanation=Afin d'\u00e9viter que les fichiers journaux ne contiennent des copies identiques du message, les occurrences ult\u00e9rieures de celui-ci seront supprim\u00e9es.
+FUTURE_MESSAGES_SUPPRESSED_CWSIU0002.useraction=Aucune action n'est requise. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that will be suppressed
+
+ALL_MESSAGES_SUPPRESSED_CWSIU0003=CWSIU0003I: Les occurrences ult\u00e9rieures du message {0} seront supprim\u00e9es.
+ALL_MESSAGES_SUPPRESSED_CWSIU0003.explanation=Afin d'\u00e9viter que les fichiers journaux ne contiennent des copies identiques du message, toutes les occurrences ult\u00e9rieures de celui-ci seront supprim\u00e9es.
+ALL_MESSAGES_SUPPRESSED_CWSIU0003.useraction=Aucune action n'est requise. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that has been suppressed
+# {1} is the number of times the message has been suppressed (i.e. not displayed)
+# {2} is the length of the time interval during which the message was suppressed
+# {3} is the time of the first message to be suppressed
+# {4} is the time of the last message to be suppressed
+# {5} is the time interval during which the message will be suppressed again
+
+MESSAGES_SUPPRESSED_CWSIU0004=CWSIU0004I: Le message {0} a \u00e9t\u00e9 produit {1} fois au cours des {2} derni\u00e8res minutes entre {3} et {4}. \
+Les occurrences ult\u00e9rieures de ce message seront supprim\u00e9es pendant les {5} prochaines minutes.
+MESSAGES_SUPPRESSED_CWSIU0004.explanation=Le message a \u00e9t\u00e9 produit de nombreuses fois, mais n'a pas \u00e9t\u00e9 affich\u00e9.
+MESSAGES_SUPPRESSED_CWSIU0004.useraction=Aucune action n'est requise. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that will be suppressed
+# {1} is the time interval during which the message will be suppressed
+
+SOME_FUTURE_MESSAGES_SUPPRESSED_CWSIU0005=CWSIU0005I: Les occurrences ult\u00e9rieures du message suivant seront supprim\u00e9es pendant les {1} prochaines minutes : {0}
+SOME_FUTURE_MESSAGES_SUPPRESSED_CWSIU0005.explanation=Afin d'\u00e9viter que les fichiers journaux ne contiennent des copies identiques \
+du message, les occurrences ult\u00e9rieures de celui-ci seront supprim\u00e9es.
+SOME_FUTURE_MESSAGES_SUPPRESSED_CWSIU0005.useraction=Aucune action n'est requise. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that will be suppressed
+
+SOME_ALL_MESSAGES_SUPPRESSED_CWSIU0006=CWSIU0006I: Les occurrences ult\u00e9rieures du message suivant seront supprim\u00e9es : {0}
+SOME_ALL_MESSAGES_SUPPRESSED_CWSIU0006.explanation=Afin d'\u00e9viter que les fichiers journaux ne contiennent des copies identiques du \
+message, toutes les occurrences ult\u00e9rieures de celui-ci seront supprim\u00e9es.
+SOME_ALL_MESSAGES_SUPPRESSED_CWSIU0006.useraction=Aucune action n'est requise. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that has been suppressed
+# {1} is the number of times the message has been suppressed (i.e. not displayed)
+# {2} is the length of the time interval during which the message was suppressed
+# {3} is the time of the first message to be suppressed
+# {4} is the time of the last message to be suppressed
+# {5} is the time interval during which the message will be suppressed again
+
+SOME_MESSAGES_SUPPRESSED_CWSIU0007=CWSIU0007I: Le message {0} a \u00e9t\u00e9 produit {1} fois au cours des {2} derni\u00e8res minutes entre {3} et {4}. \
+Les occurrences ult\u00e9rieures de ce message seront supprim\u00e9es pendant les {5} prochaines minutes.
+SOME_MESSAGES_SUPPRESSED_CWSIU0007.explanation=Le message a \u00e9t\u00e9 produit de nombreuses fois, mais n'a pas \u00e9t\u00e9 affich\u00e9.
+SOME_MESSAGES_SUPPRESSED_CWSIU0007.useraction=Aucune action n'est requise. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the illegal character supplied in the topic string
+# {1} is the topic string to be converted from MA0C to SIB
+INVALID_WILDCARD_CHAR_CWSIU0011=CWSIU0011E: Le caract\u00e8re {0} n''est pas admis dans une cha\u00eene de caract\u00e8res g\u00e9n\u00e9riques de sujet SIB {1}.
+INVALID_WILDCARD_CHAR_CWSIU0011.explanation=Les points d'interrogation ne sont pas admis dans la syntaxe de caract\u00e8res g\u00e9n\u00e9riques de sujet SIB.
+INVALID_WILDCARD_CHAR_CWSIU0011.useraction=Supprimez les instances de point d'interrogation dans la cha\u00eene de caract\u00e8res g\u00e9n\u00e9riques de sujet fournie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the topic string to be converted from MA0C to SIB
+INVALID_ASTERIX_WILDCARD_CWSIU0012=CWSIU0012E: Le cha\u00eene de sujets {0} ne peut pas \u00eatre convertie en syntaxe SIB car elle contient un ast\u00e9risque non isol\u00e9.
+INVALID_ASTERIX_WILDCARD_CWSIU0012.explanation=Les ast\u00e9risques ne sont pas admis dans la syntaxe de caract\u00e8res g\u00e9n\u00e9riques SIB sauf s'ils sont isol\u00e9s \u00e0 l'aide de barres obliques.
+INVALID_ASTERIX_WILDCARD_CWSIU0012.useraction=V\u00e9rifiez que l'ast\u00e9risque est entour\u00e9 de barres obliques dans la cha\u00eene de sujets indiqu\u00e9e.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property file that can not be loaded
+# {1} is the exception thrown when the file can not be loaded
+EXCP_DURING_LOAD_CWSIU0050=CWSIU0050E: Le fichier de propri\u00e9t\u00e9s {0} ne peut pas \u00eatre charg\u00e9 \u00e0 cause de l''exception : {1}.
+EXCP_DURING_LOAD_CWSIU0050.explanation=CMSG0001
+EXCP_DURING_LOAD_CWSIU0050.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name
+# {1} is the value of the Exception
+CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_CWSIU0051=CWSIU0051E: Une erreur interne s''est produite.  Un objet de la classe {0} ne peut pas \u00eatre cr\u00e9\u00e9 \u00e0 cause de l''exception : {1}.
+CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_CWSIU0051.explanation=CMSG0001
+CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_CWSIU0051.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that has been suppressed
+# {1} is the time that the message was suppressed
+A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0101=CWSIU0101I: Une occurrence plus ancienne du message {0} a \u00e9t\u00e9 supprim\u00e9e de l''affichage \u00e0 {1}.
+A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0101.explanation=Le message a \u00e9t\u00e9 produit auparavant, mais l'occurrence la plus r\u00e9cente a \u00e9t\u00e9 supprim\u00e9e de l'affichage.
+A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0101.useraction=Aucune.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that has been suppressed
+# {1} is the number of times the message has been suppressed (i.e. not displayed)
+# {2} is the time of the first message to be suppressed
+# {3} is the time of the last message to be suppressed
+MESSAGES_SUPPRESSED_EARLIER_CWSIU0102=CWSIU0102I: Le message {0} a \u00e9t\u00e9 produit {1} fois entre {2} et {3}, mais a \u00e9t\u00e9 supprim\u00e9 de l''affichage.
+MESSAGES_SUPPRESSED_EARLIER_CWSIU0102.explanation=Le message a \u00e9t\u00e9 produit de nombreuses fois, mais n'a pas \u00e9t\u00e9 affich\u00e9.
+MESSAGES_SUPPRESSED_EARLIER_CWSIU0102.useraction=Aucune.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that has been suppressed
+# {1} is the time of the first message to be suppressed
+SOME_A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0103=CWSIU0103I: Une occurrence plus ancienne de "{0}" a \u00e9t\u00e9 supprim\u00e9e de l''affichage \u00e0 {1}.
+SOME_A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0103.explanation=Le message a \u00e9t\u00e9 produit auparavant, mais l'occurrence \
+la plus r\u00e9cente avant le message actuel a \u00e9t\u00e9 supprim\u00e9e de l'affichage.
+SOME_A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0103.useraction=Aucune.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that has been suppressed
+# {1} is the number of times the message has been suppressed (i.e. not displayed)
+# {2} is the time of the first message to be suppressed
+# {3} is the time of the last message to be suppressed
+SOME_MESSAGES_SUPPRESSED_EARLIER_CWSIU0104=CWSIU0104I: "{0}" a \u00e9t\u00e9 produit {1} fois entre {2} et {3}, mais a \u00e9t\u00e9 supprim\u00e9 de l''affichage.
+SOME_MESSAGES_SUPPRESSED_EARLIER_CWSIU0104.explanation=Le message a \u00e9t\u00e9 produit de nombreuses fois, mais n'a pas \u00e9t\u00e9 affich\u00e9.
+SOME_MESSAGES_SUPPRESSED_EARLIER_CWSIU0104.useraction=Aucune.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect hexadecimal string
+BAD_HEX_STRING_CWSIU0200=CWSIU0200E: La cha\u00eene hexad\u00e9cimale {0} est incorrectement format\u00e9e.
+BAD_HEX_STRING_CWSIU0200.explanation=Une tentative de conversion d'une cha\u00eene en tableau d'octets a \u00e9chou\u00e9 car le cha\u00eene contient des caract\u00e8res qui ne sont pas hexad\u00e9cimaux ou un nombre impair de caract\u00e8res.
+BAD_HEX_STRING_CWSIU0200.useraction=Corrigez le contenu de la cha\u00eene pour laquelle la conversion n'aboutit pas.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIU9999=CWSIU9999E: {0}
+TEMPORARY_CWSIU9999.explanation=Si le message ne fournit pas suffisamment d'informations, consultez les messages \u00e9mis pr\u00e9c\u00e9demment pour obtenir plus de d\u00e9tails.
+TEMPORARY_CWSIU9999.useraction=Si vous ne pouvez pas r\u00e9soudre le probl\u00e8me, prenez contact avec votre administrateur syst\u00e8me afin qu'il vous aide \u00e0 r\u00e9soudre le probl\u00e8me.
+

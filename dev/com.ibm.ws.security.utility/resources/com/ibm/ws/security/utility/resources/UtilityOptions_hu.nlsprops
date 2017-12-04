@@ -1,0 +1,172 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.utility/resources/com/ibm/ws/security/utility/resources/UtilityOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_ALL
+
+global.description=Le\u00edr\u00e1s:
+global.actions=M\u0171veletek:
+global.options=Param\u00e9terek:
+global.usage=Haszn\u00e1lat:
+global.required=K\u00f6telez\u0151:
+global.options.statement=\tAz egyes m\u0171veletek r\u00e9szletes param\u00e9terinform\u00e1ci\u00f3it a help [m\u0171veletn\u00e9v] paranccsal k\u00e9rheti le.
+
+
+
+# -------- GENERAL OPTIONS -----------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+#Note to translator, please make sure that the the length of the line should
+# not exceed 80 characters. Therefore the \n (CRLF) needs to be placed at or
+# before 72th characters if the line starts with \t.
+# And this statement is applied after the sentences are translated.
+# So please feel free to place \n character at or before 72th characters if
+# the translated sentence is longer than the original sentence.
+
+help.desc=\tS\u00fag\u00f3inform\u00e1ci\u00f3kat jelen\u00edt meg a megadott m\u0171veletr\u0151l.
+#Note to translator the word "help" should not be translated
+help.usage.options=\t{0} help [m\u0171veletn\u00e9v]
+
+# -------- ENCODE OPTIONS ------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+encode.desc=\tK\u00f3dolja a megadott sz\u00f6veget.
+#Note to translator the word "encode" should not be translated
+encode.usage.options=\t{0} encode [param\u00e9terek]
+encode.option-key.text=\ \ \ \ sz\u00f6vegK\u00f3dol\u00e1shoz
+encode.option-desc.text=\tHa nincsenek megadva argumentumok, akkor az eszk\u00f6z interakt\u00edv   \n\
+\tm\u00f3dban lesz; egy\u00e9b esetben a megadott sz\u00f6veg ker\u00fcl k\u00f3dol\u00e1sra.\n\
+\tA sz\u00f3k\u00f6z\u00f6ket tartalmaz\u00f3 sz\u00f6veget id\u00e9z\u0151jelek k\u00f6z\u00e9 kell tenni, ha argumentumk\u00e9nt van megadva.
+encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|hash{1}]
+encode.option-desc.encoding=\tMegadja a jelsz\u00f3 k\u00f3dol\u00e1s\u00e1nak m\u00f3dj\u00e1t. A t\u00e1mogatott k\u00f3dol\u00e1sok: xor, aes\n\
+\t\u00e9s hash. Az alap\u00e9rtelmezett k\u00f3dol\u00e1s: xor. {2}
+encode.option-key.key=\ \ \ \ --key=[kulcs]
+encode.option-desc.key=\tMegad egy kulcsot az AES k\u00f3dol\u00e1shoz. Ez a karaktersorozat\n\
+\tlesz kivonatolva titkos\u00edt\u00e1si kulcs el\u0151\u00e1ll\u00edt\u00e1s\u00e1hoz, amely a jelsz\u00f3 titkos\u00edt\u00e1s\u00e1ban\n\
+\t\u00e9s visszafejt\u00e9s\u00e9ben ker\u00fcl felhaszn\u00e1l\u00e1sra. A kulcsot a kiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra a\n\
+\twlp.password.encryption.key meghat\u00e1roz\u00e1s\u00e1val lehet megadni, amelynek \u00e9rt\u00e9ke\n\
+\ta kulcs. Ha ez a param\u00e9ter nincs megadva, akkor alap\u00e9rtelmezett kulcs ker\u00fcl felhaszn\u00e1l\u00e1sra.
+encode.option-key.notrim=\ \ \ \ --notrim
+encode.option-desc.notrim=\tMegadja, hogy a sz\u00f3k\u00f6z karaktereket el kell-e t\u00e1vol\u00edtani a megadott\n\
+\tsz\u00f6veg elej\u00e9r\u0151l \u00e9s v\u00e9g\u00e9r\u0151l. Ha ez a param\u00e9ter meg van adva, akkor a \n\
+\tmegadott \u00fagy lesz k\u00f3dolva, ahogy van.\n\
+\tHa a param\u00e9ter nincs megadva, akkor a sz\u00f3k\u00f6z karakterek el lesznek  \n\
+\tt\u00e1vol\u00edtva a megadott sz\u00f6veg elej\u00e9r\u0151l \u00e9s v\u00e9g\u00e9r\u0151l. 
+encode.option-key.listCustom=\ \ \ \ --listCustom
+encode.option-desc.listCustom=\tMegjelen\u00edti az egy\u00e9ni jelsz\u00f3titkos\u00edt\u00e1si inform\u00e1ci\u00f3kat\n\
+\tJavaScript Object Notation (JSON) form\u00e1tumban. \n\
+\tAz inform\u00e1ci\u00f3 a k\u00f6vetkez\u0151ket tartalmazza: \n\
+\tname : az egy\u00e9ni jelsz\u00f3titkos\u00edt\u00e1si algoritmus neve \n\
+\tfeaturename : a szolg\u00e1ltat\u00e1s neve\n\
+\tdescription : az egy\u00e9ni jelsz\u00f3titkos\u00edt\u00e1s le\u00edr\u00e1sa
+
+
+
+# -------- CREATE SSL CERTIFICATE OPTIONS --------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+sslCert.desc=\tAlap\u00e9rtelmezett SSL tan\u00fas\u00edtv\u00e1nyt hoz l\u00e9tre a kiszolg\u00e1l\u00f3 vagy \n\
+\t\u00fcgyf\u00e9l konfigur\u00e1ci\u00f3 sz\u00e1m\u00e1ra. 
+#Note to translator the word "createSSLCertificate" should not be translated
+sslCert.usage.options=\t{0} createSSLCertificate '{--server kiszolg\u00e1l\u00f3n\u00e9v|--client \u00fcgyf\u00e9ln\u00e9v'}  \n\
+\t--password jelsz\u00f3 [param\u00e9terek]
+sslCert.required-key.server=\ \ \ \ --server=n\u00e9v
+sslCert.required-desc.server=\tA kiszolg\u00e1l\u00f3, mely sz\u00e1m\u00e1ra a tan\u00fas\u00edtv\u00e1ny l\u00e9trehoz\u00e1sra ker\u00fcl.  Ez az argumentum\n\
+\tnem haszn\u00e1lhat\u00f3 a --client argumentum haszn\u00e1latakor.
+sslCert.required-key.client=\ \ \ \ --client=n\u00e9v
+sslCert.required-desc.client=\tAz \u00fcgyf\u00e9l, amely sz\u00e1m\u00e1ra l\u00e9tre kell hozni a tan\u00fas\u00edtv\u00e1nyt.  Ez az argumentum\n\
+\tnem haszn\u00e1lhat\u00f3 a --server argumentum haszn\u00e1latakor.
+sslCert.required-key.password=\ \ \ \ --password[=pwd]
+sslCert.required-desc.password=\tKulcst\u00e1rol\u00f3 jelsz\u00f3, minim\u00e1lisan {1} karakter.\n\
+\tHa nincs \u00e9rt\u00e9k megadva, akkor a rendszer r\u00e1k\u00e9rdez.
+sslCert.option-key.validity=\ \ \ \ --validity=nap
+sslCert.option-desc.validity=\tA napok sz\u00e1ma, ameddig a tan\u00fas\u00edtv\u00e1ny \u00e9rv\u00e9nyes. Az alap\u00e9rtelmezett \u00e9rv\u00e9nyess\u00e9gi id\u0151szak:  \n\
+\t{2}. A minim\u00e1lis \u00e9rv\u00e9nyess\u00e9gi id\u0151szak: {3}.
+sslCert.option-key.subject=\ \ \ \ --subject=DN
+sslCert.option-desc.subject=\tDN a tan\u00fas\u00edtv\u00e1ny t\u00e1rgya \u00e9s kibocs\u00e1t\u00f3ja. Az alap\u00e9rtelmezett DN a    \n\
+\thosztn\u00e9ven alapul.
+sslCert.option.addon=A tan\u00fas\u00edtv\u00e1ny {4} \u00e1ln\u00e9vvel ker\u00fcl l\u00e9trehoz\u00e1sra.\n\
+A kulcsalgoritmus: {5}; az al\u00e1\u00edr\u00e1si algoritmus: {6}.\n\
+Ha tov\u00e1bbi vez\u00e9rl\u00e9si lehet\u0151s\u00e9gekre van sz\u00fcks\u00e9ge a tan\u00fas\u00edtv\u00e1ny l\u00e9trehoz\u00e1sa eset\u00e9ben, haszn\u00e1lja k\u00f6zvetlen\u00fcl a kulcseszk\u00f6zt.
+sslCert.option-key.password.encoding=\ \ \ \ --passwordEncoding=[xor|aes]
+sslCert.option-desc.password.encoding=\tMegadja a kulcst\u00e1rol\u00f3 jelsz\u00f3 k\u00f3dol\u00e1s\u00e1nak m\u00f3dj\u00e1t. A t\u00e1mogatott k\u00f3dol\u00e1sok:\n\
+\txor \u00e9s aes. Az alap\u00e9rtelmezett k\u00f3dol\u00e1s az xor. \n\
+\tA securityUtility encode --listCustom parancs haszn\u00e1lat\u00e1val megn\u00e9zheti,\n\
+\thogy vannak-e tov\u00e1bbi t\u00e1mogatott egy\u00e9ni titkos\u00edt\u00e1sok.
+sslCert.option-key.password.key=\ \ \ \ --passwordKey=[kulcs]
+sslCert.option-desc.password.key=\tMegad egy kulcsot a kulcst\u00e1rol\u00f3 jelsz\u00f3 AES\n\
+\tk\u00f3dol\u00e1s\u00e1hoz. Ez a karaktersorozat lesz kivonatolva titkos\u00edt\u00e1si kulcs el\u0151\u00e1ll\u00edt\u00e1s\u00e1hoz,\n\
+\tamely a jelsz\u00f3 titkos\u00edt\u00e1s\u00e1ban \u00e9s visszafejt\u00e9s\u00e9ben ker\u00fcl felhaszn\u00e1l\u00e1sra. A kulcsot a\n\
+\tkiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra a wlp.password.encryption.key meghat\u00e1roz\u00e1s\u00e1val lehet megadni,\n\
+\tamelynek \u00e9rt\u00e9ke a kulcs. Ha ez a param\u00e9ter nincs megadva, akkor\n\
+\taz alap\u00e9rtelmezett kulcs ker\u00fcl felhaszn\u00e1l\u00e1sra.
+
+sslCert.option-key.createConfigFile=\ \ \ \ --createConfigFile=f\u00e1jl
+sslCert.option-desc.createConfigFile=\tNem k\u00f6telez\u0151. A k\u00f3dr\u00e9szlet a megadott f\u00e1jlba ker\u00fcl ki\u00edr\u00e1sra\n\
+\ta konzolk\u00e9perny\u0151 helyett. A f\u00e1jlt ezut\u00e1n fel lehet venni a\n\
+\tserver.xml konfigur\u00e1ci\u00f3ba a megadott k\u00f3dr\u00e9szlet seg\u00edts\u00e9g\u00e9vel.
+
+sslCert.option-key.keySize=\ \ \ \ --keySize=m\u00e9ret
+sslCert.option-desc.keySize=\tTan\u00fas\u00edtv\u00e1nykulcs m\u00e9rete.  \
+Az alap\u00e9rtelmezett kulcsm\u00e9ret: {7}.
+
+sslCert.option-key.sigAlg=\ \ \ \ --sigAlg=signature algorithm
+sslCert.option-desc.sigAlg=\tA tan\u00fas\u00edtv\u00e1ny al\u00e1\u00edr\u00e1si algoritmusa.\n\
+\tAz alap\u00e9rtelmezett al\u00e1\u00edr\u00e1si algoritmus a k\u00f6vetkez\u0151: {8}.
+
+
+# -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+# Note to translator: the words 'LTPA' and 'ltpa.keys' should not be translated 
+createLTPAKeys.desc=\tLTPA kulcsk\u00e9szlet l\u00e9trehoz\u00e1sa a kiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra, vagy \n\
+\tmegoszthat\u00f3an t\u00f6bb kiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra. Ha nincs megadva kiszolg\u00e1l\u00f3 vagy f\u00e1jl, akkor az ltpa.keys\n\
+\tf\u00e1jl az aktu\u00e1lis munkak\u00f6nyvt\u00e1rba ker\u00fcl l\u00e9trehoz\u00e1sra.
+#Note to translator the word "createLTPAKeys" should not be translated
+createLTPAKeys.usage.options=\t{0} createLTPAKeys --password[=jelsz\u00f3] [param\u00e9terek]
+createLTPAKeys.required-key.password=\ \ \ \ --password[=jelsz\u00f3]
+createLTPAKeys.required-desc.password=\tLTPA kulcs jelsz\u00f3. \
+Ha nincs \u00e9rt\u00e9k megadva, akkor a rendszer r\u00e1k\u00e9rdez.
+createLTPAKeys.option-key.server=\ \ \ \ --server=n\u00e9v
+createLTPAKeys.option-desc.server=\tA kiszolg\u00e1l\u00f3, amely sz\u00e1m\u00e1ra az LTPA kulcsok l\u00e9trehoz\u00e1sra ker\u00fclnek.\n\
+\tEz az argumentum nem haszn\u00e1lhat\u00f3  --file argumentum haszn\u00e1latakor.
+createLTPAKeys.option-key.file=\ \ \ \ --file=n\u00e9v
+createLTPAKeys.option-desc.file=\tAz LTPA kulcsok be\u00edr\u00e1s\u00e1ra szolg\u00e1l\u00f3 f\u00e1jl. \n\
+\tEz az argumentum nem haszn\u00e1lhat\u00f3  --server argumentum haszn\u00e1latakor.
+createLTPAKeys.option-key.password.encoding=\ \ \ \ --passwordEncoding=[xor|aes]
+createLTPAKeys.option-desc.password.encoding=\tMegadja az LTPA kulcs jelsz\u00f3 k\u00f3dol\u00e1s\u00e1nak m\u00f3dj\u00e1t a server.xml f\u00e1jlban.\n\
+\tA t\u00e1mogatott k\u00f3dol\u00e1sok: xor \u00e9s aes. Az alap\u00e9rtelmezett k\u00f3dol\u00e1s az xor. \n\
+\tA securityUtility encode --listCustom parancs haszn\u00e1lat\u00e1val megn\u00e9zheti,\n\
+\thogy vannak-e tov\u00e1bbi t\u00e1mogatott egy\u00e9ni titkos\u00edt\u00e1sok.
+createLTPAKeys.option-key.password.key=\ \ \ \ --passwordKey=[kulcs]
+createLTPAKeys.option-desc.password.key=\tMegad egy, az LTPA kulcs jelsz\u00f3 AES k\u00f3dol\u00e1sakor haszn\u00e1lt kulcsot.\n\
+\tEz a karaktersorozat lesz kivonatolva titkos\u00edt\u00e1si kulcs el\u0151\u00e1ll\u00edt\u00e1s\u00e1hoz,\n\
+\tamely a jelsz\u00f3 titkos\u00edt\u00e1s\u00e1ban \u00e9s visszafejt\u00e9s\u00e9ben ker\u00fcl felhaszn\u00e1l\u00e1sra. A kulcsot a\n\
+\tkiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra a wlp.password.encryption.key meghat\u00e1roz\u00e1s\u00e1val lehet megadni,\n\
+\tamelynek \u00e9rt\u00e9ke a kulcs. Ha ez a param\u00e9ter nincs megadva, akkor\n\
+\taz alap\u00e9rtelmezett kulcs ker\u00fcl felhaszn\u00e1l\u00e1sra.

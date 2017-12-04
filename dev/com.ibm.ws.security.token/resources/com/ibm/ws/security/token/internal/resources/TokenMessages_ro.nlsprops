@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.token/resources/com/ibm/ws/security/token/internal/resources/TokenMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Token Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS4000 - CWWKS4099
+
+TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE=CWWKS4000E: A avut loc o excep\u0163ie de configurare. Instan\u0163a TokenService cerut\u0103 de tipul {0} nu a putut fi g\u0103sit\u0103.
+TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE.explanation=Fiecare bundle de implementare TokenService \u00ee\u015fi specific\u0103 tipul furnizat.
+TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE.useraction=Specifica\u0163i un tip suportat sau instala\u0163i bundle-ul ce furnizeaz\u0103 instan\u0163a TokenService a tipului cerut.
+
+TOKEN_SERVICE_INVALID_TOKEN=CWWKS4001E: Jetonul de securitate nu poate fi validat. Acest lucru se datoreaz\u0103 motivelor  urm\u0103toare\n\
+1. Jetonul de securitate a fost generat pe alt server utiliz\u00e2nd chei diferite.\n\
+2. Configurarea jetoanelor sau cheile de securitate ale serviciului de jetoane care au creat jetonul s-au modificat.\n\
+3. Serviciul de jetoane care a creat jetonul nu mai este disponibil.
+TOKEN_SERVICE_INVALID_TOKEN.explanation=Jetonul nu poate fi recreat de serviciile de jetoane configurate curent.
+TOKEN_SERVICE_INVALID_TOKEN.useraction=Verifica\u0163i c\u0103 cel pu\u0163in o caracteristic\u0103 include un serviciu de jetoane care este configurat corespunz\u0103tor pentru a recrea jetonul.                                                    a
+
+TOKEN_SERVICE_INVALID_TOKEN_INFO=CWWKS4001I: Jetonul de securitate nu poate fi validat. Acest lucru se datoreaz\u0103 motivelor  urm\u0103toare\n\
+1. Jetonul de securitate a fost generat pe alt server utiliz\u00e2nd chei diferite.\n\
+2. Configurarea jetoanelor sau cheile de securitate ale serviciului de jetoane care au creat jetonul s-au modificat.\n\
+3. Serviciul de jetoane care a creat jetonul nu mai este disponibil.
+TOKEN_SERVICE_INVALID_TOKEN_INFO.explanation=Jetonul nu poate fi recreat de serviciile de jetoane configurate curent.
+TOKEN_SERVICE_INVALID_TOKEN_INFO.useraction=Verifica\u0163i c\u0103 cel pu\u0163in o caracteristic\u0103 include un serviciu de jetoane care este configurat corespunz\u0103tor pentru a recrea jetonul.                                                    a
+
+KRB_S4U2PROXY_NOT_SUPPORTED=CWWKS4002E: API-ul de delegare constr\u00e2ns\u0103 (S4U2self \u015fi S4U2proxy) API are nevoie de o versiune de mediu runtime Java minim\u0103 JavaSE 1.8.
+KRB_S4U2PROXY_NOT_SUPPORTED.explanation=API-urile de delegare constr\u00e2ns\u0103 (S4U2self and S4U2proxy) au nevoie de o versiune de mediu runtime Java minim\u0103 IBM JavaSE 1.8.
+KRB_S4U2PROXY_NOT_SUPPORTED.useraction=Asigura\u0163i-v\u0103 c\u0103 utiliza\u0163i un mediu runtime Java de IBM JavaSE 1.8.
+
+KRB_OSGI_SERVICE_ERROR=CWWKS4003E: Serviciul de delegare constr\u00e2ns\u0103 OSGi {0} nu este disponibil.
+KRB_OSGI_SERVICE_ERROR.explanation=Serviciul OSGi specificat nu este disponibil.
+KRB_OSGI_SERVICE_ERROR.useraction=Asigura\u0163i-v\u0103 c\u0103 este activat\u0103 caracteristica de delegare constr\u00e2ns\u0103 \u015fi c\u0103 utiliza\u0163i un mediu runtime Java de IBM JavaSE 1.8. Revizui\u0163i jurnalele serverului pentru informa\u0163ii suplimentare.

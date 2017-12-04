@@ -14,7 +14,9 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import javax.enterprise.inject.spi.BeanManager;
+import javax.validation.Configuration;
 import javax.validation.ConstraintValidatorFactory;
+import javax.validation.ValidatorFactory;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
@@ -164,5 +166,18 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
         BeanManager beanManager = beanManagers.remove(event.getMetaData());
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "Removed bean manager from cache: ", beanManager);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.ibm.ws.beanvalidation.service.ValidationReleasableFactory#injectValidatorFactoryResources(javax.validation.Configuration, java.lang.ClassLoader)
+     */
+    //TODO: Look at refactoring this method into a new service used by bval 2.0 only.
+    @Override
+    public ValidatorFactory injectValidatorFactoryResources(Configuration<?> config, ClassLoader appClassLoader) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "injectValidatorFactoryResources called for bval 1.1. Returning null. ");
+        return null;
     }
 }

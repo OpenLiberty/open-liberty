@@ -1,0 +1,75 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jca.cm/resources/com/ibm/ws/jca/cm/internal/resources/J2CAMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA Connection Management
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+DEACTIVATED_J2CA8001=J2CA8001I: {0} {1} no est\u00e1 disponible.
+DEACTIVATED_J2CA8001.explanation=Este mensaje es meramente informativo.
+DEACTIVATED_J2CA8001.useraction=No se requiere ninguna acci\u00f3n.
+
+DEACTIVATED_J2CA8006=J2CA8006I: No est\u00e1 disponible {0} {1} en {2}.
+DEACTIVATED_J2CA8006.explanation=Este mensaje es meramente informativo.
+DEACTIVATED_J2CA8006.useraction=No se requiere ninguna acci\u00f3n.
+
+UNKNOWN_PROP_J2CA8010=J2CA8010W: Propiedad no reconocida {0}: {1}
+UNKNOWN_PROP_J2CA8010.explanation=No se ha reconocido una propiedad configurada.
+UNKNOWN_PROP_J2CA8010.useraction=Corrija o elimine la propiedad configurada.
+
+UNSUPPORTED_VALUE_J2CA8011=J2CA8011E: El valor {0} no est\u00e1 soportado para {1} en {2}
+UNSUPPORTED_VALUE_J2CA8011.explanation=Un valor configurado no est\u00e1 soportado.
+UNSUPPORTED_VALUE_J2CA8011.useraction=Corrija el valor o elimine la propiedad configurada.
+
+MISSING_LIBRARY_J2CA8020=J2CA8020E: No se ha podido cargar ni acceder a los archivos de la biblioteca {0}
+MISSING_LIBRARY_J2CA8020.explanation=Los archivos no se pueden cargar desde la biblioteca compartida.
+MISSING_LIBRARY_J2CA8020.useraction=Verifique los permisos de archivo y la configuraci\u00f3n de la biblioteca compartida.
+
+MISSING_LIBRARY_J2CA8022=J2CA8022E: La aplicaci\u00f3n {0} no tiene bibliotecas compartidas que proporcionen {1} para {2} {3}.
+MISSING_LIBRARY_J2CA8022.explanation=Para utilizar or\u00edgenes de datos definidos por la aplicaci\u00f3n, el controlador JDBC que proporciona la clase de origen de datos debe estar disponible como biblioteca compartida para la aplicaci\u00f3n.
+MISSING_LIBRARY_J2CA8022.useraction=A\u00f1ada el controlador JDBC como biblioteca compartida para la aplicaci\u00f3n.
+
+MISSING_RESOURCE_J2CA8030=J2CA8030E: No se puede encontrar {0} {1} para {2} {3}.
+MISSING_RESOURCE_J2CA8030.explanation=El recurso especificado requiere otro recurso que no est\u00e1 disponible.
+MISSING_RESOURCE_J2CA8030.useraction=Compruebe que el recurso est\u00e9 correctamente configurado.
+
+CARDINALITY_ERROR_J2CA8040=J2CA8040E: {0} {1} s\u00f3lo puede tener un elemento {2}.
+CARDINALITY_ERROR_J2CA8040.explanation=El recurso no puede tener m\u00e1s de un elemento del tipo especificado.
+CARDINALITY_ERROR_J2CA8040.useraction=Actualice la configuraci\u00f3n para que s\u00f3lo haya un elemento del tipo especificado asociado al recurso.
+
+RECOMMEND_AUTH_ALIAS_J2CA8050=J2CA8050I: Debe utilizarse un alias de autenticaci\u00f3n en lugar de definir un nombre de usuario y una contrase\u00f1a en {0}.
+RECOMMEND_AUTH_ALIAS_J2CA8050.explanation=Se recomienda utilizar un alias de autenticaci\u00f3n en lugar de configurar un nombre de usuario y una contrase\u00f1a en un recurso.
+RECOMMEND_AUTH_ALIAS_J2CA8050.useraction=Configure el nombre de usuario y la contrase\u00f1a en el elemento authData en lugar de hacerlo directamente en el recurso. 
+
+INVALID_MBEAN_INVOKE_PARAM_J2CA8060=J2CA8060E: {0} no es un par\u00e1metro v\u00e1lido para la acci\u00f3n {1}.
+INVALID_MBEAN_INVOKE_PARAM_J2CA8060.explanation=Los par\u00e1metros especificados para una acci\u00f3n deben corresponder a par\u00e1metros v\u00e1lidos para la acci\u00f3n especificada.
+INVALID_MBEAN_INVOKE_PARAM_J2CA8060.useraction=Especifique par\u00e1metros v\u00e1lidos para la acci\u00f3n que se invoca.
+
+INVALID_MBEAN_INVOKE_ACTION_J2CA8061=J2CA8061E: {0} no es una acci\u00f3n v\u00e1lida para el MBean {1}.
+INVALID_MBEAN_INVOKE_ACTION_J2CA8061.explanation=Se ha intentado invocar una acci\u00f3n que no estaba disponible para el MBean especificado.
+INVALID_MBEAN_INVOKE_ACTION_J2CA8061.useraction=Cambie la acci\u00f3n que se invoca por un m\u00e9todo v\u00e1lido para el MBean especificado.
+
+MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062=J2CA8062E: El atributo {0} no es v\u00e1lido para el MBean {1}.
+MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.explanation=Se ha intentado obtener o establecer un atributo que no estaba disponible para el MBean especificado.
+MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.useraction=Cambie el atributo especificado por uno de los atributos disponibles para este MBean.

@@ -25,7 +25,6 @@ WS-TraceGroup: OPENTRACING
                 com.ibm.ws.opentracing.OpentracingService
                 
 -includeresource: \
-   OSGI-INF=resources/OSGI-INF, \
    @${repo;io.opentracing:opentracing-api;0.30.0}!/!(OSGI-OPT/src|META-INF/maven)/*
 
 Import-Package: *

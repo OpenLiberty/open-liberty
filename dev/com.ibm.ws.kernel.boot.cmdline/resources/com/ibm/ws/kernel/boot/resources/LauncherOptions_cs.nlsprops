@@ -1,0 +1,139 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.kernel.boot/resources/com/ibm/ws/kernel/boot/resources/LauncherOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+briefUsage=Pou\u017eit\u00ed: java [JVM volby] -javaagent:bin/tools/ws-javaagent.jar \\        \n\
+\t-jar bin/tools/ws-server.jar serverName [akce] [volby]  
+scriptUsage=Pou\u017eit\u00ed: {0} action serverName [volby]
+
+use.actions=Akce:
+use.options=Volby:
+use.jvmarg=Volby JVM:
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# ServerName
+processName.key=\ \ \ \ n\u00e1zev_serveru
+processName.desc=\tLok\u00e1ln\u011b jedine\u010dn\u00fd n\u00e1zev serveru. N\u00e1zev m\u016f\u017ee b\u00fdt sestaven    \n\
+\ts pou\u017eit\u00edm alfanumerick\u00fdch znak\u016f Unicode (nap\u0159\u00edklad A-Za-z0-9),\n\
+\tpodtr\u017e\u00edtka (_), poml\u010dky (-), plus (+) a te\u010dky (.). N\u00e1zev serveru     \n\
+\tnem\u016f\u017ee za\u010d\u00ednat poml\u010dkou (-) nebo te\u010dkou (.).
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# JavaAgent 
+javaAgent.key=\ \ \ \ -javaagent:bin/tools/ws-javaagent.jar
+javaAgent.desc=\tToto je volba prost\u0159ed\u00ed JVM, kter\u00e1 ur\u010duje agenta pro p\u0159\u00edpravu n\u00e1stroj\u016f.   \n\
+\tB\u011bhov\u00e9 prost\u0159ed\u00ed pou\u017e\u00edv\u00e1 p\u0159\u00edpravu n\u00e1stroj\u016f ke shroma\u017e\u010fov\u00e1n\u00ed informac\u00ed trasov\u00e1n\u00ed a dal\u0161\u00edho \n\
+\tlad\u011bn\u00ed. Soubor bootstrap-agent.jar se nach\u00e1z\u00ed ve stejn\u00e9m adres\u00e1\u0159i \n\
+\tjako soubor jar pou\u017eit\u00fd ke spu\u0161t\u011bn\u00ed b\u011bhov\u00e9ho prost\u0159ed\u00ed.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Actions: create, stop, version, package, dump
+action-key.create=\ \ \ \ --create
+action-desc.create=\tVytvo\u0159\u00ed nov\u00fd server, pokud zadan\u00fd server neexistuje. \n\
+\tvolbu --template lze pou\u017e\u00edt k ur\u010den\u00ed \u0161ablony, kter\u00e1 m\u00e1 b\u00fdt pou\u017eita p\u0159i      \n\
+\ttvorb\u011b nov\u00e9ho serveru.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.list=\ \ \ \ --list
+action-desc.list=\tVypsat v\u00e1mi definovan\u00e9 aplika\u010dn\u00ed servery profilu Liberty.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.start=\ \ \ \ --start
+action-desc.start=\tSpust\u00ed dan\u00fd server.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.run=\ \ \ \ --run
+action-desc.run=\tSpustit pojmenovan\u00fd server na pop\u0159ed\u00ed konzoly.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.debug=\ \ \ \ --debug
+action-desc.debug=\tSpustit pojmenovan\u00fd server na pop\u0159ed\u00ed konzoly pot\u00e9, co se ladic\u00ed program\n\
+\tp\u0159ipoj\u00ed k portu lad\u011bn\u00ed (v\u00fdchoz\u00ed hodnota: 7777).
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.status=\ \ \ \ --status
+action-desc.status=\tZkontroluje stav dan\u00e9ho serveru.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.stop=\ \ \ \ --stop
+action-desc.stop=\tZastav\u00ed spu\u0161t\u011bnou instanci na dan\u00e9m serveru.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.version=\ \ \ \ --version
+action-desc.version=\tZobraz\u00ed verzi serveru a skon\u010d\u00ed.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.package=\ \ \ \ --package
+action-desc.package=\tZabalit server do archivu. Lze pou\u017e\u00edt volbu --archive.    \n\
+\tVolbu --include lze pou\u017e\u00edvat s hodnotami "all", "usr", "minify", \n\
+\t"wlp", "runnable", "all,runnable" a "minify,runnable". Hodnoty \n\
+\t"runnable" a "all,runnable" jsou ekvivalentn\u00ed. Hodnota "runnable" \n\
+\tfunguje pouze pro archivy typu "jar".
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.dump=\ \ \ \ --dump
+action-desc.dump=\tVypsat diagnostick\u00e9 informace ze serveru do archivu. Lze\n\
+\tpou\u017e\u00edt volbu --archive. Lze pou\u017e\u00edt volbu --include s\n\
+\thodnotami "heap", "system" a "thread".
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.javadump=\ \ \ \ --javadump
+action-desc.javadump=\tVypsat diagnostick\u00e9 informace z prost\u0159ed\u00ed JVM serveru. Lze pou\u017e\u00edt volbu --include\n\
+\ts hodnotami "heap" a "system".
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.help=\ \ \ \ --help
+action-desc.help=\tVytisknout informace n\u00e1pov\u011bdy.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.pause=\ \ \ \ --pause
+action-desc.pause=\tPozastavit v\u0161echny komponenty serveru, kter\u00e9 pozastavit lze. Je mo\u017en\u00e9 \n\
+\tpozastavit jen \u010d\u00e1st komponent, pokud tyto komponenty ur\u010d\u00edte v r\u00e1mci \n\
+\tvolby --target.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.resume=\ \ \ \ --resume
+action-desc.resume=\tObnovit b\u011bh v\u0161ech pozastaven\u00fdch komponent serveru. S pomoc\u00ed volby \n\
+\t--target je mo\u017en\u00e9 obnovit pouze b\u011bh konkr\u00e9tn\u00edch pozastaven\u00fdch komponent.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.clean=\ \ \ \ --clean
+option-desc.clean=\tVy\u010dist\u00ed ve\u0161ker\u00e9 informace ulo\u017een\u00e9 v mezipam\u011bti vztahuj\u00edc\u00ed se k t\u00e9to instanci serveru.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.archive=\ \ \ \ --archive="cesta k c\u00edlov\u00e9mu souboru archivu"
+option-desc.archive=\tUr\u010dete c\u00edl archivu, kter\u00fd m\u00e1 vytvo\u0159it akce bal\u00edku nebo \n\
+\tv\u00fdpisu pam\u011bti. C\u00edl lze ur\u010dit bu\u010f jako absolutn\u00ed cestu, nebo jako     \n\
+\trelativn\u00ed cestu. Je-li tato volba vynech\u00e1na, archivn\u00ed soubor bude\n\
+\tvytvo\u0159en ve v\u00fdstupn\u00edm adres\u00e1\u0159i serveru. P\u0159\u00edpona n\u00e1zvu c\u00edlov\u00e9ho \n\
+\tsouboru m\u016f\u017ee ovlivnit form\u00e1t vygenerovan\u00e9ho archivu.       \n\
+\tV\u00fdchoz\u00edm form\u00e1tem archivu pro akci bal\u00edku v opera\u010dn\u00edm syst\u00e9mu z/OS je "pax" \n\
+\ta na v\u0161ech ostatn\u00edch platform\u00e1ch "zip".                                    \n\
+\tForm\u00e1t archivu "jar" vytvo\u0159\u00ed samorozbalovac\u00ed soubor jar podobn\u00fd \n\
+\tp\u016fvodn\u00edmu archivu instala\u010dn\u00edho programu.                                      \n\
+\tForm\u00e1t archivu "jar" v kombinaci s hodnotou "runnable" volby --include\n\
+\tvytvo\u0159\u00ed spustiteln\u00fd soubor jar, kter\u00fd dok\u00e1\u017ee spustit server Liberty ze \n\
+\tsouboru jar s pomoc\u00ed volby java -jar.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.include=\ \ \ \ --include=hodnota,hodnota,...
+option-desc.include=\tSeznam hodnot odd\u011blen\u00fdch \u010d\u00e1rkami. Platn\u00e9 hodnoty se r\u016fzn\u00ed v z\u00e1vislosti na\n\
+\tp\u0159\u00edslu\u0161n\u00e9 akci.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.target=\ \ \ \ --target=hodnota,hodnota
+option-desc.target=\tUv\u00e1d\u00ed \u010d\u00e1rkami odd\u011blen\u00fd seznam komponent, kter\u00e9 je mo\u017en\u00e9 pozastavit nebo \n\
+\tobnovit jejich b\u011bh.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.template=\ \ \ \ --template="n\u00e1zev_\u0161ablony"
+option-desc.template=\tUr\u010dete n\u00e1zev \u0161ablony, je\u017e m\u00e1 b\u00fdt pou\u017eita k vytvo\u0159en\u00ed nov\u00e9ho serveru. 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.os=\ \ \ \ --os=hodnota,hodnota,...
+option-desc.os=\tUv\u00e1d\u00ed opera\u010dn\u00ed syst\u00e9my, kter\u00e9 m\u00e1 dle v\u00e1s zabalen\u00fd server podporovat.\n\
+\t Zadejte seznam odd\u011blen\u00fd \u010d\u00e1rkami. V\u00fdchoz\u00ed hodnota je any,    \n\
+\tco\u017e znamen\u00e1, \u017ee server lze naimplementovat na libovoln\u00fd opera\u010dn\u00ed    \n\
+\tsyst\u00e9m podporovan\u00fd zdrojem.                                      \n\
+\tChcete-li zadat, \u017ee se ur\u010dit\u00fd opera\u010dn\u00ed syst\u00e9m nem\u00e1 podporovat, p\u0159idejte\n\
+\tp\u0159ed n\u011bj znam\u00e9nko minus ("-"). Seznam hodnot opera\u010dn\u00edch syst\u00e9m\u016f viz \n\
+\tweb aliance OSGi s n\u00e1sleduj\u00edc\u00ed adresou URL:                  \n\
+\thttp://www.osgi.org/Specifications/Reference#os                      \n\
+\tTato volba plat\u00ed pouze pro operace s bal\u00edkem a lze ji pou\u017e\u00edt pouze   \n\
+\ts volbou --include=minify. Pokud opera\u010dn\u00ed syst\u00e9m vylou\u010d\u00edte,\n\
+\tnem\u016f\u017eete ho p\u0159i pozd\u011bj\u0161\u00edm opakov\u00e1n\u00ed operace minify s archivem  \n\
+\tzahrnout. 

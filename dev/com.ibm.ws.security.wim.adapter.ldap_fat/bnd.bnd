@@ -15,14 +15,14 @@ bVersion=1.0
 src: \
 	fat/src
 
-test.project: true
+fat.project: true
 
 # Declare additional tested features not present in the original server.xml's
 tested.features: \
         vmmapi-1.0
 
 -buildpath: \
-	apache_directory_server;version=latest,\
+	com.ibm.ws.org.apache.directory.server;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.security.wim.base;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\

@@ -1,0 +1,38 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.cmdline/resources/com/ibm/ws/kernel/boot/cmdline/resources/CommandLineMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0600 - 0699 com.ibm.ws.kernel.boot.cmdline.resources.CommandLineMessages
+# -------------------------------------------------------------------------------------------------
+
+error.sdkRequired=CWWKE0600E: Tento n\u00e1stroj vy\u017eaduje sadu Java SDK, ale byla spu\u0161t\u011bna pomoc\u00ed prost\u0159ed\u00ed JRE: {0}
+error.sdkRequired.explanation=N\u00e1stroj vy\u017eaduje sadu Java SDK, ale byla spu\u0161t\u011bna pomoc\u00ed prost\u00e9ho prost\u0159ed\u00ed Java Runtime Environment.
+error.sdkRequired.useraction=Nastavte prom\u011bnnou prost\u0159ed\u00ed JAVA_HOME na cestu sady Java SDK a potom zkuste znovu p\u0159\u00edkaz.
+
+error.compilerMissing=CWWKE0601E: Tento n\u00e1stroj vy\u017eaduje dostupn\u00fd kompil\u00e1tor jazyka Java. Zkontrolujte, zda je modul java.compiler dostupn\u00fd.
+error.compilerMissing.explanation=N\u00e1stroj vy\u017eaduje kompil\u00e1tor jazyka Java. Tento n\u00e1stroj se v\u0161ak spustil bez jak\u00e9hokoliv takov\u00e9ho modulu.
+error.compilerMissing.useraction=Ov\u011b\u0159te, zda m\u00e1 v\u00e1\u0161 obraz jazyka Java dostupn\u00fd modul java.compiler. Pak ov\u011b\u0159te, zda je dostupn\u00fd i za b\u011bhu tak, \u017ee zad\u00e1te n\u00e1sleduj\u00edc\u00ed volbu p\u0159\u00edkazov\u00e9ho \u0159\u00e1dku: --add-modules java.compiler

@@ -1,0 +1,25 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs-2.0.tools/resources/com/ibm/ws/jaxrs20/tools/internal/resources/JaxRsToolsMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS 2.0 Tools Code
+#RANGE 0900-9999
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+error.badVersion=CWWKW0900E: Nem a megfelel\u0151 Java v\u00e1ltozat fut. A fut\u00e1si k\u00f6rnyezet Java 7 vagy \u00fajabb v\u00e1ltozatot ig\u00e9nyel.
+error.badVersion.explanation=Egy nem t\u00e1mogatott Java v\u00e1ltozat fut, vagy a JAVA_HOME rendszerv\u00e1ltoz\u00f3 \u00fagy van be\u00e1ll\u00edtva, hogy egy r\u00e9gebbi Java v\u00e1ltozatra mutat.
+error.badVersion.useraction= Friss\u00edtse a Java v\u00e1ltozatot a Java 7-es v\u00e1ltozatra, vagy \u00e1ll\u00edtsa be a JAVA_HOME rendszerv\u00e1ltoz\u00f3t \u00fagy, hogy Java 7 fut\u00e1si k\u00f6rnyezetre mutasson.

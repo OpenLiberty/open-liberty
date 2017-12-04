@@ -1,0 +1,32 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2014
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JMSProcessingExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+18001=Fehler beim Verarbeiten der eingehenden JMS-Nachricht
+
+18002=Das im JMS-Service erstellte Topic f\u00fcr die gegenseitige Verbindung von Sitzungen muss in der Eigenschaft JMSClusteringService definiert sein.
+
+18003=Das Lookup des im env-entry-Element der Message-driven Bean definierten Sitzungsnamens ist fehlgeschlagen. 
+18004=Die Message-driven Bean (MDB) kann die Sitzung nicht finden. Die MDB-Methode getSession() muss eine Sitzung zur\u00fcckgeben, die nicht null ist.
+

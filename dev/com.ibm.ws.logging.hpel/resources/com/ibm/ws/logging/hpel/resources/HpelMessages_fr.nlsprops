@@ -1,0 +1,140 @@
+###############################################################################
+# Copyright (c) 1997, 2009 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME ws/code/ras/src/com/ibm/ws/logging/hpel/resources/HpelMessages.nlsprops
+#COMPONENTPREFIX HPEL
+# Long proper prefix CWLHP
+#COMPONENTNAMEFOR HPEL IBM High Performance Extensible Logging
+#NLS_MESSAGEFORMAT_VAR
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+# AbstractBufferedLogFileWriter messages.
+HPEL_WrongBufferSizeValue=HPEL0101W: La taille de m\u00e9moire tampon {0} sp\u00e9cifi\u00e9e dans la propri\u00e9t\u00e9 syst\u00e8me {1} n''est pas un nombre. Utilisation de la valeur {2} \u00e0 la place.
+HPEL_WrongBufferSizeValue.explanation=La taille de m\u00e9moire tampon sp\u00e9cifi\u00e9e n'est pas valide ; la taille par d\u00e9faut est utilis\u00e9e \u00e0 la place.
+HPEL_WrongBufferSizeValue.useraction=Si la taille par d\u00e9faut n'est pas optimale, sp\u00e9cifiez une taille de m\u00e9moire tampon valide.
+
+HPEL_WrongFlushPeriodValue=HPEL0102W: La p\u00e9riode de vidage {0} sp\u00e9cifi\u00e9e dans la propri\u00e9t\u00e9 syst\u00e8me {1} n''est pas un nombre. Utilisation de la valeur {2} \u00e0 la place.
+HPEL_WrongFlushPeriodValue.explanation=La p\u00e9riode de vidage sp\u00e9cifi\u00e9e n'est pas valide ; la p\u00e9riode par d\u00e9faut est utilis\u00e9e \u00e0 la place.
+HPEL_WrongFlushPeriodValue.useraction=Si la p\u00e9riode de vidage par d\u00e9faut n'est pas optimale, sp\u00e9cifiez une p\u00e9riode de vidage valide.
+
+HPEL_ExceptionInPeriodicFlush=HPEL0103W: Exception lors du vidage p\u00e9riodique du flux de consignation.
+HPEL_ExceptionInPeriodicFlush.explanation=Une exception est survenue lors du vidage du flux de consignation plac\u00e9 en m\u00e9moire tampon.  Voir les d\u00e9tails dans le message.
+HPEL_ExceptionInPeriodicFlush.useraction=Examinez l'exception pour d\u00e9terminer la cause premi\u00e8re de l'\u00e9chec. V\u00e9rifiez que le nom de fichier sp\u00e9cifi\u00e9 est valide. Assurez-vous que le contexte d'ex\u00e9cution du serveur d'applications est autoris\u00e9 \u00e0 acc\u00e9der en \u00e9criture au r\u00e9pertoire du fichier journal de service. Si cela ne suffit pas \u00e0 r\u00e9soudre le probl\u00e8me, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+# AbstractHPELRepositoryExporter messages.
+HPEL_HeaderWithoutProcessId=HPEL0104E: L''en-t\u00eate ne contient pas d''informations d''ID de processus. V\u00e9rifiez que la propri\u00e9t\u00e9 {0} y est d\u00e9finie.
+HPEL_HeaderWithoutProcessId.explanation=Des informations manquent dans l'en-t\u00eate.
+HPEL_HeaderWithoutProcessId.useraction=Examinez l'exception pour d\u00e9terminer la cause premi\u00e8re de l'\u00e9chec. V\u00e9rifiez que le nom de fichier sp\u00e9cifi\u00e9 est valide. Assurez-vous que le contexte d'ex\u00e9cution du serveur d'applications est autoris\u00e9 \u00e0 acc\u00e9der en \u00e9criture au r\u00e9pertoire du fichier journal de service. Si cela ne suffit pas \u00e0 r\u00e9soudre le probl\u00e8me, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_ErrorWhileSerializingHeader=HPEL0105E: Exception lors de la conversion de l'en-t\u00eate de journal en tableau d'octets.
+HPEL_ErrorWhileSerializingHeader.explanation=L'en-t\u00eate de journal n'est pas valide car le traitement du code n'est pas parvenu \u00e0 l'analyser ni \u00e0 le convertir.
+HPEL_ErrorWhileSerializingHeader.useraction=Examinez l'exception pour d\u00e9terminer la cause premi\u00e8re de l'\u00e9chec. V\u00e9rifiez que le nom de fichier sp\u00e9cifi\u00e9 est valide. Assurez-vous que le contexte d'ex\u00e9cution du serveur d'applications est autoris\u00e9 \u00e0 acc\u00e9der en \u00e9criture au r\u00e9pertoire du fichier journal de service. Si cela ne suffit pas \u00e0 r\u00e9soudre le probl\u00e8me, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_LogHeaderWasNotSet=HPEL0106E: Erreur d'appel : tentative d'exportation d'un enregistrement de journal interdite avant la d\u00e9finition d'informations au niveau du processus.
+HPEL_LogHeaderWasNotSet.explanation=Un ordre de traitement a \u00e9t\u00e9 \u00e9mis et les enregistrements sont \u00e9crits alors que le syst\u00e8me de consignation n'est pas pr\u00eat.
+HPEL_LogHeaderWasNotSet.useraction=Examinez l'exception pour d\u00e9terminer la cause premi\u00e8re de l'\u00e9chec. V\u00e9rifiez que le nom de fichier sp\u00e9cifi\u00e9 est valide. Assurez-vous que le contexte d'ex\u00e9cution du serveur d'applications est autoris\u00e9 \u00e0 acc\u00e9der en \u00e9criture au r\u00e9pertoire du fichier journal de service. Si cela ne suffit pas \u00e0 r\u00e9soudre le probl\u00e8me, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_ErrorWhileSerializingRecord=HPEL0107E: Exception lors de la conversion d'un enregistrement de journal en tableau d'octets.
+HPEL_ErrorWhileSerializingRecord.explanation=Les informations de journal n'ont pas \u00e9t\u00e9 s\u00e9rialis\u00e9es correctement. Des informations sur l'exception sont incluses dans l'erreur.
+HPEL_ErrorWhileSerializingRecord.useraction=Examinez l'exception pour d\u00e9terminer la cause premi\u00e8re de l'\u00e9chec. V\u00e9rifiez que le nom de fichier sp\u00e9cifi\u00e9 est valide. Assurez-vous que le contexte d'ex\u00e9cution du serveur d'applications est autoris\u00e9 \u00e0 acc\u00e9der en \u00e9criture au r\u00e9pertoire du fichier journal de service. Si cela ne suffit pas \u00e0 r\u00e9soudre le probl\u00e8me, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+# LogRecordBrowser messages.
+HPEL_NoRecordAtLocation=HPEL0108W: Aucun enregistrement n'a \u00e9t\u00e9 trouv\u00e9 \u00e0 l'emplacement sp\u00e9cifi\u00e9.
+HPEL_NoRecordAtLocation.explanation=L'emplacement sp\u00e9cifi\u00e9 pour le r\u00e9pertoire du journal ne contient pas de fichier comportant des enregistrements.
+HPEL_NoRecordAtLocation.useraction=Examinez l'exception pour d\u00e9terminer la cause premi\u00e8re de l'\u00e9chec. V\u00e9rifiez que le nom de fichier sp\u00e9cifi\u00e9 est valide. Assurez-vous que le contexte d'ex\u00e9cution du serveur d'applications est autoris\u00e9 \u00e0 acc\u00e9der en \u00e9criture au r\u00e9pertoire du fichier journal de service. Si cela ne suffit pas \u00e0 r\u00e9soudre le probl\u00e8me, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+# LogRepositoryBrowserImpl messages.
+HPEL_NotRepositoryLocation=HPEL0109E: L'emplacement sp\u00e9cifi\u00e9 n'appartient pas \u00e0 ce r\u00e9f\u00e9rentiel.
+HPEL_NotRepositoryLocation.explanation=Les informations de r\u00e9f\u00e9rentiel sp\u00e9cifi\u00e9es sont incorrectes.
+HPEL_NotRepositoryLocation.useraction=R\u00e9visez les informations d'emplacement sp\u00e9cifi\u00e9es et modifiez les appels.
+
+HPEL_NotRepositoryFileNoTimestamp=HPEL0110E: Le fichier "{0}" utilis\u00e9 dans l''argument n''appartient pas \u00e0 ce r\u00e9f\u00e9rentiel. Impossible d''extraire l''horodatage.
+HPEL_NotRepositoryFileNoTimestamp.explanation=Le fichier n'est pas un fichier l\u00e9gitime dans le r\u00e9f\u00e9rentiel.
+HPEL_NotRepositoryFileNoTimestamp.useraction=Examinez l'exception pour d\u00e9terminer la cause premi\u00e8re de l'\u00e9chec. V\u00e9rifiez que le nom de fichier sp\u00e9cifi\u00e9 est valide. Assurez-vous que le contexte d'ex\u00e9cution du serveur d'applications est autoris\u00e9 \u00e0 acc\u00e9der en \u00e9criture au r\u00e9pertoire du fichier journal de service. Si cela ne suffit pas \u00e0 r\u00e9soudre le probl\u00e8me, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_RepositoryFileMissing=HPEL0111W: Le fichier "{0}" manque dans le r\u00e9f\u00e9rentiel. Il a tr\u00e8s probablement \u00e9t\u00e9 supprim\u00e9 par le gestionnaire de conservation.
+HPEL_RepositoryFileMissing.explanation=Le fichier attendu a \u00e9t\u00e9 supprim\u00e9 par le gestionnaire des emplacements ou manuellement.
+HPEL_RepositoryFileMissing.useraction=Si vous avez besoin d'informations figurant dans ce fichier et que ce dernier a \u00e9t\u00e9 archiv\u00e9, restaurez  les informations.
+
+HPEL_NotRepositoryFileNoProcessId=HPEL0112E: Le fichier "{0}" utilis\u00e9 dans l''argument n''appartient pas \u00e0 ce r\u00e9f\u00e9rentiel. Impossible d''extraire l''ID de processus.
+HPEL_NotRepositoryFileNoProcessId.explanation=Les informations d'en-t\u00eate du fichier indiquent que le fichier n'est pas syntaxiquement correct dans ce r\u00e9f\u00e9rentiel.
+HPEL_NotRepositoryFileNoProcessId.useraction=Examinez l'exception pour d\u00e9terminer la cause premi\u00e8re de l'\u00e9chec. V\u00e9rifiez que le nom de fichier sp\u00e9cifi\u00e9 est valide. Assurez-vous que le contexte d'ex\u00e9cution du serveur d'applications est autoris\u00e9 \u00e0 acc\u00e9der en \u00e9criture au r\u00e9pertoire du fichier journal de service. Si cela ne suffit pas \u00e0 r\u00e9soudre le probl\u00e8me, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+# LogRepositoryWriterImpl messages.
+HPEL_IncorrectSwitchHour=HPEL0113W: La valeur {0} sp\u00e9cifi\u00e9e pour l''heure n''est pas correcte. La valeur {1} sera utilis\u00e9e \u00e0 la place.
+HPEL_IncorrectSwitchHour.explanation=L'heure sp\u00e9cifi\u00e9e n'est pas valide ; une heure par d\u00e9faut est utilis\u00e9e \u00e0 la place.
+HPEL_IncorrectSwitchHour.useraction=Si l'heure par d\u00e9faut n'est pas optimale, sp\u00e9cifiez une heure valide.
+
+# OneLogFileRecordIterator messages.
+HPEL_NoHeaderRecordInFileHead=HPEL0114E: Echec de la lecture de l''enregistrement d''en-t\u00eate au d\u00e9but du fichier "{0}" : {1}
+HPEL_NoHeaderRecordInFileHead.explanation=Soit le fichier ne contient pas d'informations d'en-t\u00eate valides, soit lorsque la mise en m\u00e9moire tampon est activ\u00e9e, le r\u00e9f\u00e9rentiel cr\u00e9e un nouveau fichier binaire qui est accessible simultan\u00e9ment. 
+HPEL_NoHeaderRecordInFileHead.useraction=Il peut s'agir d'un probl\u00e8me de timing.  Examinez l'exception pour d\u00e9terminer la cause premi\u00e8re de l'\u00e9chec. V\u00e9rifiez que le nom de fichier sp\u00e9cifi\u00e9 est valide. Assurez-vous que le contexte d'ex\u00e9cution du serveur d'applications est autoris\u00e9 \u00e0 acc\u00e9der en \u00e9criture au r\u00e9pertoire du fichier journal de service. Si cela ne suffit pas \u00e0 r\u00e9soudre le probl\u00e8me, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_NoRecordsInFile=HPEL0115E: Aucun enregistrement trouv\u00e9 dans le fichier "{0}".
+HPEL_NoRecordsInFile.explanation=Ce fichier est vide.  Cet incident indique g\u00e9n\u00e9ralement qu'une erreur est survenue car les fichiers sont cr\u00e9\u00e9s lorsque des enregistrements \u00e0 stocker existent ou le r\u00e9f\u00e9rentiel cr\u00e9e un nouveau fichier binaire qui est accessible simultan\u00e9ment. 
+HPEL_NoRecordsInFile.useraction=Il peut s'agir d'un probl\u00e8me de timing.  Examinez l'exception pour d\u00e9terminer la cause premi\u00e8re de l'\u00e9chec. V\u00e9rifiez que le nom de fichier sp\u00e9cifi\u00e9 est valide. Assurez-vous que le contexte d'ex\u00e9cution du serveur d'applications est autoris\u00e9 \u00e0 acc\u00e9der en \u00e9criture au r\u00e9pertoire du fichier journal de service. Si cela ne suffit pas \u00e0 r\u00e9soudre le probl\u00e8me, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_InconsistencyInHeaderRecordSize=HPEL0116W: La v\u00e9rification de la taille de l''enregistrement en-t\u00eate du journal a \u00e9chou\u00e9. La copie de fin d''une taille d''en-t\u00eate d''enregistrement ({0}) \u00e0 la position ({1}) est diff\u00e9rente de celle du d\u00e9but ({2}). Cet incident peut indiquer un probl\u00e8me dans le fichier journal "{3}".
+HPEL_InconsistencyInHeaderRecordSize.explanation=Les informations internes du fichier journal indiquent qu'un incident peut \u00eatre survenu.
+HPEL_InconsistencyInHeaderRecordSize.useraction=Examinez l'exception pour d\u00e9terminer la cause premi\u00e8re de l'\u00e9chec. V\u00e9rifiez que le nom de fichier sp\u00e9cifi\u00e9 est valide. Assurez-vous que le contexte d'ex\u00e9cution du serveur d'applications est autoris\u00e9 \u00e0 acc\u00e9der en \u00e9criture au r\u00e9pertoire du fichier journal de service. Si cela ne suffit pas \u00e0 r\u00e9soudre le probl\u00e8me, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_InconsistencyInLogRecordSize=HPEL0117W: La copie de la fin (tail) d''une taille d''enregistrement de message ({0}) \u00e0 la position ({1}) est diff\u00e9rente de celle du d\u00e9but (head)({2}). Cet incident peut indiquer un probl\u00e8me dans le fichier journal "{3}".
+HPEL_InconsistencyInLogRecordSize.explanation=Les informations internes du fichier journal indiquent qu'un incident peut \u00eatre survenu.
+HPEL_InconsistencyInLogRecordSize.useraction=Examinez l'exception pour d\u00e9terminer la cause premi\u00e8re de l'\u00e9chec. V\u00e9rifiez que le nom de fichier sp\u00e9cifi\u00e9 est valide. Assurez-vous que le contexte d'ex\u00e9cution du serveur d'applications est autoris\u00e9 \u00e0 acc\u00e9der en \u00e9criture au r\u00e9pertoire du fichier journal de service. Si cela ne suffit pas \u00e0 r\u00e9soudre le probl\u00e8me, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_OffsetBeyondFileSize=HPEL0118E: Tentative incorrecte de positionnement d''un flux pour le fichier "{0}" \u00e0 la position {1}, qui se trouve au-del\u00e0 de la fin du fichier : {2}.
+HPEL_OffsetBeyondFileSize.explanation=Une position dans un fichier n'est pas valide (elle se trouve apr\u00e8s la fin du fichier).
+HPEL_OffsetBeyondFileSize.useraction=S'il s'agit d'un client \u00e9crit localement, r\u00e9visez la logique du calcul de la position.  Examinez l'exception pour d\u00e9terminer la cause premi\u00e8re de l'\u00e9chec. V\u00e9rifiez que le nom de fichier sp\u00e9cifi\u00e9 est valide. Assurez-vous que le contexte d'ex\u00e9cution du serveur d'applications est autoris\u00e9 \u00e0 acc\u00e9der en \u00e9criture au r\u00e9pertoire du fichier journal de service. Si cela ne suffit pas \u00e0 r\u00e9soudre le probl\u00e8me, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_ErrorSettingFileOffset=HPEL0119E: Echec du positionnement du flux pour le fichier "{0}" \u00e0 la position {1} \u00e0 partir de laquelle un enregistrement de journal a pu \u00eatre lu pr\u00e9c\u00e9demment : {2}.
+HPEL_ErrorSettingFileOffset.explanation=Il semble qu'il s'agisse d'un incident li\u00e9 au positionnement \u00e0 l'emplacement appropri\u00e9 dans le fichier.
+HPEL_ErrorSettingFileOffset.useraction=Examinez l'exception pour d\u00e9terminer la cause premi\u00e8re de l'\u00e9chec. V\u00e9rifiez que le nom de fichier sp\u00e9cifi\u00e9 est valide. Assurez-vous que le contexte d'ex\u00e9cution du serveur d'applications est autoris\u00e9 \u00e0 acc\u00e9der en \u00e9criture au r\u00e9pertoire du fichier journal de service. Si cela ne suffit pas \u00e0 r\u00e9soudre le probl\u00e8me, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_ErrorReadingFileOffset=HPEL0120E: Echec de l''extraction de la position courante dans le flux pour le fichier "{0}" : {2}.
+HPEL_ErrorReadingFileOffset.explanation=Il semble qu'il s'agisse d'un incident li\u00e9 au positionnement \u00e0 l'emplacement appropri\u00e9 dans le fichier. 
+HPEL_ErrorReadingFileOffset.useraction=Examinez l'exception pour d\u00e9terminer la cause premi\u00e8re de l'\u00e9chec. V\u00e9rifiez que le nom de fichier sp\u00e9cifi\u00e9 est valide. Assurez-vous que le contexte d'ex\u00e9cution du serveur d'applications est autoris\u00e9 \u00e0 acc\u00e9der en \u00e9criture au r\u00e9pertoire du fichier journal de service. Si cela ne suffit pas \u00e0 r\u00e9soudre le probl\u00e8me, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_ErrorReadingLogRecord=HPEL0121E: Echec de la lecture d''un enregistrement de journal \u00e0 partir du fichier "{0}" : {1}.
+HPEL_ErrorReadingLogRecord.explanation=Impossible de lire un enregistrement \u00e0 partir du fichier.
+HPEL_ErrorReadingLogRecord.useraction=Examinez l'exception pour d\u00e9terminer la cause premi\u00e8re de l'\u00e9chec. V\u00e9rifiez que le nom de fichier sp\u00e9cifi\u00e9 est valide. Assurez-vous que le contexte d'ex\u00e9cution du serveur d'applications est autoris\u00e9 \u00e0 acc\u00e9der en \u00e9criture au r\u00e9pertoire du fichier journal de service. Si cela ne suffit pas \u00e0 r\u00e9soudre le probl\u00e8me, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_ErrorSkippingFailedLogRecord=HPEL0122E: L''enregistrement suivant n''a pas pu \u00eatre ignor\u00e9 apr\u00e8s un incident dans le fichier "{0}" : {1}.
+HPEL_ErrorSkippingFailedLogRecord.explanation=Une erreur est survenue lors de la tentative de repositionnement dans le fichier.
+HPEL_ErrorSkippingFailedLogRecord.useraction=Examinez l'exception pour d\u00e9terminer la cause premi\u00e8re de l'\u00e9chec. V\u00e9rifiez que le nom de fichier sp\u00e9cifi\u00e9 est valide. Assurez-vous que le contexte d'ex\u00e9cution du serveur d'applications est autoris\u00e9 \u00e0 acc\u00e9der en \u00e9criture au r\u00e9pertoire du fichier journal de service. Si cela ne suffit pas \u00e0 r\u00e9soudre le probl\u00e8me, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+# CompatZipRepositoryExporter and HPELZipRepositoryExporter message.
+HPEL_ErrorClosingZipStream=HPEL0123W: Une erreur est survenue lors de la fermeture d'un flux de zip.
+HPEL_ErrorClosingZipStream.explanation=Une erreur est survenue lors de la fermeture d'un flux.  L'exception inclut davantage d'informations.
+HPEL_ErrorClosingZipStream.useraction=Examinez l'exception pour d\u00e9terminer la cause premi\u00e8re de l'\u00e9chec. V\u00e9rifiez que le nom de fichier sp\u00e9cifi\u00e9 est valide. Assurez-vous que le contexte d'ex\u00e9cution du serveur d'applications est autoris\u00e9 \u00e0 acc\u00e9der en \u00e9criture au r\u00e9pertoire du fichier journal de service. Si cela ne suffit pas \u00e0 r\u00e9soudre le probl\u00e8me, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+# RepositoryReaderImpl message.
+HPEL_RepositoryPointerNotInRepository=HPEL0124W: Le pointeur de r\u00e9f\u00e9rentiel sp\u00e9cifi\u00e9 n'appartient \u00e0 aucun r\u00e9f\u00e9rentiel. Le fichier qu'il d\u00e9signe a tr\u00e8s probablement d\u00e9j\u00e0 \u00e9t\u00e9 supprim\u00e9.
+HPEL_RepositoryPointerNotInRepository.explanation=Le pointeur de r\u00e9f\u00e9rentiel sp\u00e9cifi\u00e9 n'appartient \u00e0 aucun r\u00e9f\u00e9rentiel. Le fichier qu'il d\u00e9signe a tr\u00e8s probablement d\u00e9j\u00e0 \u00e9t\u00e9 supprim\u00e9.
+HPEL_RepositoryPointerNotInRepository.useraction=Examinez l'exception pour d\u00e9terminer la cause premi\u00e8re de l'\u00e9chec. V\u00e9rifiez que le nom de fichier sp\u00e9cifi\u00e9 est valide. Assurez-vous que le contexte d'ex\u00e9cution du serveur d'applications est autoris\u00e9 \u00e0 acc\u00e9der en \u00e9criture au r\u00e9pertoire du fichier journal de service. Si cela ne suffit pas \u00e0 r\u00e9soudre le probl\u00e8me, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+# Additional messages from OneLogFileRecordIterator
+HPEL_ErrorReadingLogRecordDoSkip=HPEL0125W: Impossible de trouver un enregistrement valide \u00e0 la position {0}. {1} octets vont \u00eatre ignor\u00e9s pour passer \u00e0 l''enregistrement suivant dans le fichier {2}.
+HPEL_ErrorReadingLogRecordDoSkip.explanation=Impossible de lire un enregistrement \u00e0 partir du fichier alors que ce dernier contient probablement d'autres enregistrements valides.
+HPEL_ErrorReadingLogRecordDoSkip.useraction=Examinez l'exception pour d\u00e9terminer la cause premi\u00e8re de l'\u00e9chec. V\u00e9rifiez que le nom de fichier sp\u00e9cifi\u00e9 est valide. Assurez-vous que le contexte d'ex\u00e9cution du serveur d'applications est autoris\u00e9 \u00e0 acc\u00e9der en \u00e9criture au r\u00e9pertoire du fichier journal de service. Si cela ne suffit pas \u00e0 r\u00e9soudre le probl\u00e8me, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+# Messages for handling of PCI list
+IllegalArgInConstructingPatternLevel=HPEL0150W: Argument interdit dans la construction d''un \u00e9l\u00e9ment dans la liste restreinte {0}
+IllegalArgInConstructingPatternLevel.explanation=Le format d'une nouvelle entr\u00e9e de la liste restreinte \u00e9tait incorrect.
+IllegalArgInConstructingPatternLevel.useraction=D\u00e9terminez si cette entr\u00e9e provient du fichier de propri\u00e9t\u00e9s ou d'une personne ayant utilis\u00e9 l'API pour ajouter des entr\u00e9es, puis corrigez le fichier ou l'appelant de l'API.
+
+InvalidPatternString=HPEL0151I: La cha\u00eene du niveau/mod\u00e8le {0} ne peut pas \u00eatre correctement analys\u00e9e dans un mod\u00e8le de nom de consignateur et un niveau
+InvalidPatternString.explanation=La cha\u00eene \u00e0 analyser dans le nom de consignateur et le niveau n'a pas pu \u00eatre analys\u00e9e.
+InvalidPatternString.useraction=D\u00e9terminez si cette entr\u00e9e provient du fichier de propri\u00e9t\u00e9s ou d'une personne ayant utilis\u00e9 l'API pour ajouter des entr\u00e9es, puis corrigez le fichier ou l'appelant de l'API.
+
+# Messages for file system space alarms
+HPEL_FileSystem_Space_Warning=HPEL0161W: Le syst\u00e8me de fichiers sur {0} n\u00e9cessite {1} octets pour la consignation, mais il ne lui reste que {2} octets.
+HPEL_FileSystem_Space_Warning.explanation=Les configurations de consignation et de tra\u00e7age n\u00e9cessitent plus d'espace que n'en contient actuellement ce syst\u00e8me de fichiers.
+HPEL_FileSystem_Space_Warning.useraction=Lib\u00e9rez de l'espace dans le syst\u00e8me de fichiers ou modifiez les configurations de consignation et de trace afin de pointer vers un autre emplacement ou de consommer moins d'espace.

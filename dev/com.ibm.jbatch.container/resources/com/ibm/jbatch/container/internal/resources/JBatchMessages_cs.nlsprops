@@ -1,0 +1,316 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.jbatch.container/resources/com/ibm/jbatch/container/internal/resources/JBatchMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# NLS message prefix registry: http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+#
+# This file contains the messages in use.
+#
+# The range of messages "reserved":
+# 0001 - 0100: com.ibm.jbatch.container
+# 
+
+stopping.job.at.shutdown=CWWKY0001I: Zastavuje se prov\u00e1d\u011bn\u00ed \u00falohy {0} z d\u016fvodu deaktivace komponenty d\u00e1vky.
+stopping.job.at.shutdown.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+stopping.job.at.shutdown.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+jobs.running.at.shutdown=CWWKY0002I: Komponenta d\u00e1vky se deaktivuje. \
+Pro v\u0161echna aktivn\u00ed prov\u00e1d\u011bn\u00ed \u00faloh byly vyd\u00e1ny po\u017eadavky na zastaven\u00ed. \
+V okam\u017eiku deaktivace byla spu\u0161t\u011bna tato proveden\u00ed \u00faloh: {0}.
+jobs.running.at.shutdown.explanation=Po deaktivaci komponenty d\u00e1vek se vyd\u00e1 po\u017eadavek na zastaven\u00ed v\u0161ech aktivn\u00edch proveden\u00ed \u00faloh a kr\u00e1tce se po\u010dk\u00e1 na jejich zastaven\u00ed. \
+Proveden\u00ed \u00faloh, kter\u00e1 se nezastavila, budou nahl\u00e1\u0161ena ve zpr\u00e1v\u011b. \
+Proveden\u00ed \u00faloh, kter\u00e1 pokra\u010duj\u00ed po deaktivaci komponenty d\u00e1vek, mohou vykazovat nep\u0159edv\u00eddateln\u00e9 chov\u00e1n\u00ed.
+jobs.running.at.shutdown.useraction=Doporu\u010duje se po\u010dkat na dokon\u010den\u00ed v\u0161ech \u00faloh p\u0159ed deaktivac\u00ed komponenty d\u00e1vek. \
+Komponenta d\u00e1vek se deaktivuje p\u0159i zastaven\u00ed serveru, p\u0159i odebr\u00e1n\u00ed funkce d\u00e1vek nebo p\u0159i aktualizaci konfigurace d\u00e1vek.
+ 
+jsl.schema.invalid=CWWKY0003E: Dokument JSL (dokument Job XML) na adrese URL {0} nen\u00ed dle sch\u00e9matu Job XML platn\u00fd. \
+Prvn\u00ed chyba ov\u011b\u0159en\u00ed platnosti zaprotokolovan\u00e1 valid\u00e1torem JAXB byla: {1}.
+jsl.schema.invalid.explanation=Dokument XML neodpov\u00edd\u00e1 sch\u00e9matu XSD.
+jsl.schema.invalid.useraction=Pou\u017eijte n\u00e1stroj pro ov\u011b\u0159en\u00ed platnosti XML a vyhledejte konstrukci, kter\u00e1 nespl\u0148uje po\u017eadavky sch\u00e9matu.
+
+jsl.not.found.batch-jobs=CWWKY0004E: N\u00e1zev dokumentu JSL (Job XML): {0} nebyl v um\u00edst\u011bn\u00ed {1} v r\u00e1mci archivu aplikace nalezen.
+jsl.not.found.batch-jobs.explanation=Dokument nebyl nalezen v um\u00edst\u011bn\u00ed, kter\u00e9 ozna\u010dily parametry pou\u017eit\u00e9 k odesl\u00e1n\u00ed (nap\u0159. \
+start) \u00falohy.
+jsl.not.found.batch-jobs.useraction=Ujist\u011bte se, \u017ee jsou parametry pou\u017eit\u00e9 k identifikaci um\u00edst\u011bn\u00ed dokumentu JSL spr\u00e1vn\u00e9. \
+Pou\u017e\u00edv\u00e1te-li k odesl\u00e1n\u00ed \u00falohy definovan\u00e9 v dokumentu JSL zabalen\u00e9ho do modulu aplikace odesl\u00e1n\u00ed vzd\u00e1len\u00e9 \u00falohy, ujist\u011bte se, \u017ee je tento modul aplikace spr\u00e1vn\u011b ozna\u010den pomoc\u00ed parametr\u016f p\u0159ed\u00e1van\u00fdch do rozhran\u00ed REST (a\u0165 u\u017e p\u0159\u00edmo, nebo pomoc\u00ed obslu\u017en\u00e9ho programu p\u0159\u00edkazov\u00e9ho \u0159\u00e1dku).
+
+persistence.service.status=CWWKY0005I: Slu\u017eba perzistence d\u00e1vky {0} je {1}.
+persistence.service.status.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+persistence.service.status.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+job.recovery.failed=CWWKY0006W: Slu\u017eba obnovy d\u00e1vkov\u00fdch \u00faloh nem\u016f\u017ee opravit stav d\u00e1vky pro d\u0159\u00edve spu\u0161t\u011bnou instanci \u00falohy {0}, kter\u00e1 ji\u017e byla ukon\u010dena. N\u00e1prava se nezda\u0159ila kv\u016fli v\u00fdjimce {1}.
+job.recovery.failed.explanation=Slu\u017eba obnovy d\u00e1vkov\u00fdch \u00faloh, kter\u00e1 opravuje stav \u00faloh spu\u0161t\u011bn\u00fdch v dob\u011b, kdy byla nestandardn\u011b ukon\u010dena p\u0159edch\u00e1zej\u00edc\u00ed instance tohoto serveru, nem\u016f\u017ee opravit stav dan\u00e9 instance \u00falohy kv\u016fli dan\u00e9 v\u00fdjimce.
+job.recovery.failed.useraction=Je-li to mo\u017en\u00e9, odstra\u0148te p\u0159\u00ed\u010dinu v\u00fdjimky a restartuje server, aby se slu\u017eba obnovy d\u00e1vkov\u00fdch \u00faloh spustila znovu.
+
+recovery.failed=CWWKY0007W: Slu\u017eba obnovy d\u00e1vkov\u00fdch \u00faloh nem\u016f\u017ee opravit stav d\u00e1vky pro d\u0159\u00edve spu\u0161t\u011bn\u00e9 \u00falohy, kter\u00e9 ji\u017e byly ukon\u010deny. N\u00e1prava se nezda\u0159ila kv\u016fli v\u00fdjimce {0}.
+recovery.failed.explanation=Slu\u017eba obnovy d\u00e1vkov\u00fdch \u00faloh, kter\u00e1 opravuje stav \u00faloh spu\u0161t\u011bn\u00fdch v dob\u011b, kdy byla nestandardn\u011b ukon\u010dena p\u0159edch\u00e1zej\u00edc\u00ed instance tohoto serveru, nezda\u0159ila se kv\u016fli dan\u00e9 v\u00fdjimce.
+recovery.failed.useraction=Je-li to mo\u017en\u00e9, odstra\u0148te p\u0159\u00ed\u010dinu v\u00fdjimky a restartuje server, aby se slu\u017eba obnovy d\u00e1vkov\u00fdch \u00faloh spustila znovu.
+
+batch.kernel.persistence=CWWKY0008I: D\u00e1vkov\u00e1 funkce vyu\u017e\u00edv\u00e1 perzistenci typu {0}.
+batch.kernel.persistence.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+batch.kernel.persistence.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} The job name
+#{1} The job instance id
+#{2} The job execution id
+job.started=CWWKY0009I: Byla spu\u0161t\u011bna \u00faloha {0} \
+pro instanci \u00falohy {1} a proveden\u00ed \u00falohy {2}.
+job.started.explanation=Byl spu\u0161t\u011bn nov\u00fd podproces proveden\u00ed \u00falohy.
+job.started.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} The job name
+#{1} The batch status of the job
+#{2} The exit status of the job
+#{3} The job instance id
+#{4} The job execution id
+job.ended=CWWKY0010I: \u00daloha {0} skon\u010dila se stavem d\u00e1vky {1} a stavem ukon\u010den\u00ed {2} pro instanci \u00falohy {3} a proveden\u00ed \u00falohy {4}.
+job.ended.explanation=Prov\u00e1d\u011bn\u00ed \u00falohy skon\u010dilo.
+job.ended.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} The job name
+#{1} The batch status of the job
+#{2} The exit status of the job
+#{3} The job instance id
+#{4} The job execution id
+job.failed=CWWKY0011W: \u00daloha {0} se nezda\u0159ila se stavem d\u00e1vky {1} a stavem ukon\u010den\u00ed {2} pro instanci \u00falohy {3} a proveden\u00ed \u00falohy {4}.
+job.failed.explanation=Proveden\u00ed \u00falohy nebylo \u00fasp\u011b\u0161n\u011b ukon\u010deno.
+job.failed.useraction=Zkontrolujte protokoly \u00faloh pro p\u0159idru\u017een\u00e9 proveden\u00ed \u00falohy a zjist\u011bte p\u0159\u00ed\u010dinu selh\u00e1n\u00ed.
+
+#{0} The partition number
+#{1} The step name
+#{2} The job instance id
+#{3} The job execution id
+partition.started=CWWKY0012I: Zah\u00e1jena segmentace {0} pro krok {1} pro instanci \u00falohy {2} a proveden\u00ed \u00falohy {3}.
+partition.started.explanation=Byla zah\u00e1jena nov\u00e1 segmentace.
+partition.started.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} The step name
+#{1} The partition number
+#{2} The batch status of the partition
+#{3} The exit status of the partition
+#{4} The job instance id
+#{5} The job execution id
+partition.ended=CWWKY0013I: Segmentace {0} skon\u010dila se stavem d\u00e1vky {1} a stavem ukon\u010den\u00ed {2} pro krok {3} pro instanci \u00falohy {4} a proveden\u00ed \u00falohy {5}.
+partition.ended.explanation=Segmentace ukon\u010dena.
+partition.ended.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} The step name
+#{1} The partition number
+#{2} The batch status of the partition
+#{3} The exit status of the partition
+#{4} The job instance id
+#{5} The job execution id
+partition.failed=CWWKY0014W: Segmentace {0} se nezda\u0159ila se stavem d\u00e1vky {1} a stavem ukon\u010den\u00ed {2} pro krok {3} pro instanci \u00falohy {4} a proveden\u00ed \u00falohy {5}.
+partition.failed.explanation=Segmentace nebyla \u00fasp\u011b\u0161n\u011b ukon\u010dena.
+partition.failed.useraction=Zkontrolujte protokoly \u00faloh pro p\u0159idru\u017een\u00e9 proveden\u00ed \u00falohy a zjist\u011bte p\u0159\u00ed\u010dinu selh\u00e1n\u00ed.
+
+#{0} The flow name
+#{1} The job instance id
+#{2} The job execution id
+flow.started=CWWKY0015I: Spu\u0161t\u011bn tok {0} pro instanci \u00falohy {1} a proveden\u00ed \u00falohy {2}.
+flow.started.explanation=Spu\u0161t\u011bn tok.
+flow.started.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} The flow name
+#{1} The job instance id
+#{2} The job execution id
+flow.ended=CWWKY0016I: Ukon\u010den tok {0} pro instanci \u00falohy {1} a proveden\u00ed \u00falohy {2}.
+flow.ended.explanation=Tok ukon\u010den.
+flow.ended.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} The flow name
+#{1} The job instance id
+#{2} The job execution id
+flow.failed=CWWKY0017W: Tok {0} pro instanci \u00falohy {1} a proveden\u00ed \u00falohy {2} se nezda\u0159il.
+flow.failed.explanation=Tok nebyl \u00fasp\u011b\u0161n\u011b ukon\u010den.
+flow.failed.useraction=Zkontrolujte protokoly \u00faloh pro p\u0159idru\u017een\u00e9 proveden\u00ed \u00falohy a zjist\u011bte p\u0159\u00ed\u010dinu selh\u00e1n\u00ed.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+step.started=CWWKY0018I: Zah\u00e1jen krok {0} pro instanci \u00falohy {1} a proveden\u00ed \u00falohy {2}.
+step.started.explanation=Bylo zah\u00e1jeno prov\u00e1d\u011bn\u00ed uveden\u00e9ho kroku v podprocesu.
+step.started.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} The step name
+#{1} The batch status of the step
+#{2} The exit status of the step
+#{3} The job instance id
+#{4} The job execution id
+step.failed=CWWKY0019W: Krok {0} se nezda\u0159il se stavem d\u00e1vky {1} a stavem ukon\u010den\u00ed {2} pro instanci \u00falohy {3} a proveden\u00ed \u00falohy {4}.
+step.failed.explanation=Krok nebyl \u00fasp\u011b\u0161n\u011b ukon\u010den.
+step.failed.useraction=Zkontrolujte protokoly \u00faloh pro p\u0159idru\u017een\u00e9 proveden\u00ed kroku a zjist\u011bte p\u0159\u00ed\u010dinu selh\u00e1n\u00ed.
+
+#{0} The step name
+#{1} The batch status of the step
+#{2} The exit status of the step
+#{3} The job instance id
+#{4} The job execution id
+step.ended=CWWKY0020I: Krok {0} skon\u010dil se stavem d\u00e1vky {1} a stavem ukon\u010den\u00ed {2} pro instanci \u00falohy {3} a proveden\u00ed \u00falohy {4}.
+step.ended.explanation=Bylo ukon\u010deno zpracov\u00e1n\u00ed kroku.
+step.ended.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.started=CWWKY0021I: Byl spu\u0161t\u011bn nov\u00fd blok pro krok {0} v r\u00e1mci instance \u00falohy {1} a proveden\u00ed \u00falohy {2}. Metriky kroku = {3}
+chunk.started.explanation= Pro zpracov\u00e1n\u00ed tohoto bloku byla spu\u0161t\u011bna nov\u00e1 transakce.
+chunk.started.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.ended=CWWKY0022I: Blok pro krok {0} v r\u00e1mci instance \u00falohy {1} a proveden\u00ed \u00falohy {2} byl \u00fasp\u011b\u0161n\u011b ukon\u010den. Metriky kroku = {3}
+chunk.ended.explanation= Transakce p\u0159idru\u017een\u00e1 k tomuto bloku byla \u00fasp\u011b\u0161n\u011b potvrzena.
+chunk.ended.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.rollback=CWWKY0024W: Aktu\u00e1ln\u00ed blok byl navr\u00e1cen do p\u0159edchoz\u00edho kontroln\u00edho bodu pro krok {0} v r\u00e1mci instance \u00falohy {1} a proveden\u00ed \u00falohy {2}. Metriky kroku = {3}
+chunk.rollback.explanation= V pr\u016fb\u011bhu tohoto aktu\u00e1ln\u00edho bloku do\u0161lo k selh\u00e1n\u00ed, kter\u00e9 zp\u016fsobilo vr\u00e1cen\u00ed transakce zp\u011bt do p\u0159edchoz\u00edho kontroln\u00edho bodu.
+chunk.rollback.useraction=Zkontrolujte protokoly \u00faloh pro p\u0159idru\u017een\u00e9 proveden\u00ed \u00falohy a zjist\u011bte p\u0159\u00ed\u010dinu selh\u00e1n\u00ed.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.rollback.and.retry=CWWKY0025W: Odvol\u00e1n\u00ed zpracov\u00e1n\u00ed pro aktu\u00e1ln\u00ed blok po v\u00fdjimce, kterou je mo\u017en\u00e9 napravit, pro krok {0} v r\u00e1mci instance \u00falohy {1} a proveden\u00ed \u00falohy {2}. Metriky kroku = {3}
+chunk.rollback.and.retry.explanation= B\u011bhem zpracov\u00e1n\u00ed bloku do\u0161lo k v\u00fdjimce, kterou je mo\u017en\u00e9 napravit. Zpracov\u00e1n\u00ed se vr\u00e1t\u00ed do p\u0159edchoz\u00edho kontroln\u00edho bodu a zopakuje se.
+chunk.rollback.and.retry.useraction=Zkontrolujte protokoly \u00faloh pro p\u0159idru\u017een\u00e9 proveden\u00ed \u00falohy a zjist\u011bte p\u0159\u00ed\u010dinu selh\u00e1n\u00ed.
+
+#{0} The step name that is associated with this reader
+item.reader.opened=CWWKY0026I: Byla otev\u0159ena \u010dte\u010dka polo\u017eek pro krok {0}.
+item.reader.opened.explanation=Byla otev\u0159ena \u010dte\u010dka polo\u017eek p\u0159idru\u017een\u00e1 k tomuto kroku.
+item.reader.opened.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} The step name that is associated with this reader
+item.reader.closed=CWWKY0027I: Byla zav\u0159ena \u010dte\u010dka polo\u017eek pro krok {0}.
+item.reader.closed.explanation=Byla zav\u0159ena \u010dte\u010dka polo\u017eek p\u0159idru\u017een\u00e1 k tomuto kroku.
+item.reader.closed.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} The step name that is associated with this writer
+item.writer.opened=CWWKY0028I: Byl otev\u0159en zapisova\u010d polo\u017eek pro krok {0}.
+item.writer.opened.explanation=Byl otev\u0159en zapisova\u010d polo\u017eek p\u0159idru\u017een\u00fd k tomuto kroku.
+item.writer.opened.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} The step name that is associated with this writer
+item.writer.closed=CWWKY0029I: Byl zav\u0159en zapisova\u010d polo\u017eek pro krok {0}.
+item.writer.closed.explanation=Byl zav\u0159en zapisova\u010d polo\u017eek p\u0159idru\u017een\u00fd k tomuto kroku.
+item.writer.closed.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} The step name that is associated with this writer
+#{1} The exception that occurred
+exception.executing.step=CWWKY0030I: Do\u0161lo k v\u00fdjimce p\u0159i spu\u0161t\u011bn\u00ed kroku {0}.\n\
+{1}
+exception.executing.step.explanation=M\u016f\u017ee se jednat o chybu aplikace. Do\u0161lo k v\u00fdjimce p\u0159i prov\u00e1d\u011bn\u00ed hlavn\u00ed \u010d\u00e1sti kroku pot\u00e9, co kontejner d\u00e1vek vyvolal p\u0159\u00edslu\u0161n\u00e9 artefakty aplikace pro d\u00e1vkov\u00e9 \u00falohy.
+exception.executing.step.useraction=Zkontrolujte protokoly \u00faloh pro p\u0159idru\u017een\u00e9 proveden\u00ed \u00falohy a zjist\u011bte p\u0159\u00ed\u010dinu selh\u00e1n\u00ed. To m\u016f\u017ee zahrnovat i lad\u011bn\u00ed aplikace.
+
+#{0} The step name that is associated with this writer
+#{1} The exception that occurred
+exception.after.step=CWWKY0031I: Do\u0161lo k v\u00fdjimce p\u0159i spu\u0161t\u011bn\u00ed posledn\u00ed \u010d\u00e1sti kroku {0}.\n\
+{1}
+exception.after.step.explanation=M\u016f\u017ee se jednat o chybu aplikace. Do\u0161lo k v\u00fdjimce p\u0159i prov\u00e1d\u011bn\u00ed posledn\u00ed \u010d\u00e1sti kroku (nap\u0159. zahrnut\u00ed metody afterStep() modulu StepListener) pot\u00e9, co kontejner d\u00e1vek vyvolal p\u0159\u00edslu\u0161n\u00e9 artefakty aplikace pro d\u00e1vkov\u00e9 \u00falohy.
+exception.after.step.useraction=Zkontrolujte protokoly \u00faloh pro p\u0159idru\u017een\u00e9 proveden\u00ed \u00falohy a zjist\u011bte p\u0159\u00ed\u010dinu selh\u00e1n\u00ed. To m\u016f\u017ee zahrnovat i lad\u011bn\u00ed aplikace.
+
+#{0} The exception that occurred
+error.persisting.stepExecution=CWWKY0032I: Do\u0161lo k v\u00fdjimce p\u0159i pokusu o uchov\u00e1n\u00ed stavu proveden\u00ed kroku i souvisej\u00edc\u00edch dat.\n\
+{0}
+error.persisting.stepExecution.explanation=Pokud k tomu dojde, obvykle se do datab\u00e1ze spr\u00e1vn\u011b neulo\u017e\u00ed stav d\u00e1vky posledn\u00edho kroku a stav d\u00e1vky m\u016f\u017ee z\u016fstat ve stavu STARTED (spu\u0161t\u011bno), p\u0159esto\u017ee se ji\u017e neprov\u00e1d\u00ed. To m\u016f\u017ee kolidovat s pokusem o restartov\u00e1n\u00ed z d\u016fvodu chyb nekonzistentn\u00edho stavu po restartu. 
+error.persisting.stepExecution.useraction=Zkontrolujte, zda je spr\u00e1vn\u011b nakonfigurovan\u00e1 a p\u0159ipojen\u00e1 datab\u00e1ze.   Pot\u00e9 m\u016f\u017eete v p\u0159\u00edpad\u011b pot\u0159eby restartovat server prov\u00e1d\u011bc\u00edho modulu (server, na kter\u00e9m se prov\u00e1d\u00ed \u00faloha), \u010d\u00edm\u017e dojde ke spu\u0161t\u011bn\u00ed obnovy a ozna\u010den\u00ed p\u0159idru\u017een\u00fdch \u00faloh i krok\u016f stavem FAILED (nezda\u0159ilo se), aby restartov\u00e1n\u00ed \u00falohy mohlo b\u00fdt \u00fasp\u011b\u0161n\u011b provedeno. 
+
+#{0} The exception that occurred
+exception.executing.job=CWWKY0033I: Do\u0161lo k v\u00fdjimce p\u0159i prov\u00e1d\u011bn\u00ed \u00falohy.\n\
+{0}
+exception.executing.job.explanation=M\u016f\u017ee se jednat o chybu aplikace. Do\u0161lo k v\u00fdjimce p\u0159i prov\u00e1d\u011bn\u00ed hlavn\u00ed \u010d\u00e1sti \u00falohy pot\u00e9, co kontejner d\u00e1vek vyvolal p\u0159\u00edslu\u0161n\u00e9 artefakty aplikace pro d\u00e1vkov\u00e9 \u00falohy.
+exception.executing.job.useraction=Zkontrolujte protokoly \u00faloh pro p\u0159idru\u017een\u00e9 proveden\u00ed \u00falohy a zjist\u011bte p\u0159\u00ed\u010dinu selh\u00e1n\u00ed. To m\u016f\u017ee zahrnovat i lad\u011bn\u00ed aplikace.
+
+#{0} The exception that occurred
+exception.after.job=CWWKY0034I: Do\u0161lo k v\u00fdjimce p\u0159i spu\u0161t\u011bn\u00ed posledn\u00ed \u010d\u00e1sti \u00falohy.\n\
+{0}
+exception.after.job.explanation=M\u016f\u017ee se jednat o chybu aplikace. Do\u0161lo k v\u00fdjimce p\u0159i prov\u00e1d\u011bn\u00ed posledn\u00ed \u010d\u00e1sti \u00falohy (nap\u0159. zahrnut\u00ed metody afterJob() modulu JobListener) pot\u00e9, co kontejner d\u00e1vek vyvolal p\u0159\u00edslu\u0161n\u00e9 artefakty aplikace pro d\u00e1vkov\u00e9 \u00falohy.
+exception.after.job.useraction=Zkontrolujte protokoly p\u0159idru\u017een\u00e9 \u00falohy a ur\u010dete p\u0159\u00ed\u010dinu selh\u00e1n\u00ed. To m\u016f\u017ee zahrnovat i lad\u011bn\u00ed aplikace.
+
+#{0} The exception that occurred
+error.persisting.jobExecution=CWWKY0035I: Do\u0161lo k v\u00fdjimce p\u0159i pokusu o uchov\u00e1n\u00ed stavu proveden\u00ed \u00falohy a souvisej\u00edc\u00edch dat.\n\
+{0}
+error.persisting.jobExecution.explanation=Pokud k tomu dojde, obvykle se do datab\u00e1ze spr\u00e1vn\u011b neulo\u017e\u00ed stav d\u00e1vky posledn\u00ed \u00falohy a stav d\u00e1vky m\u016f\u017ee z\u016fstat ve stavu STARTED (spu\u0161t\u011bno), p\u0159esto\u017ee se ji\u017e neprov\u00e1d\u00ed. To m\u016f\u017ee kolidovat s pokusem o restartov\u00e1n\u00ed z d\u016fvodu chyb nekonzistentn\u00edho stavu po restartu.
+error.persisting.jobExecution.useraction=Zkontrolujte, zda je spr\u00e1vn\u011b nakonfigurovan\u00e1 a p\u0159ipojen\u00e1 datab\u00e1ze.   Pot\u00e9 m\u016f\u017eete v p\u0159\u00edpad\u011b pot\u0159eby restartovat server prov\u00e1d\u011bc\u00edho modulu (server, na kter\u00e9m se prov\u00e1d\u00ed \u00faloha), \u010d\u00edm\u017e dojde ke spu\u0161t\u011bn\u00ed obnovy a ozna\u010den\u00ed p\u0159idru\u017een\u00fdch \u00faloh i krok\u016f stavem FAILED (nezda\u0159ilo se), aby restartov\u00e1n\u00ed \u00falohy mohlo b\u00fdt \u00fasp\u011b\u0161n\u011b provedeno.
+
+#{0} The invalid job instance id.
+#{1} The persistence exception.
+error.invalid.persisted.job.id=CWWKY0036E: Neplatn\u00e1 hodnota ID instance \u00falohy {0} vygenerovan\u00e1 jako hodnota prim\u00e1rn\u00edho kl\u00ed\u010de pro tabulku d\u00e1vek. Hodnota ID mus\u00ed b\u00fdt kladn\u00e9 cel\u00e9 \
+\u010d\u00edslo.\n\
+{1}
+error.invalid.persisted.job.id.explanation=Proveden\u00ed \u00falohy se nezda\u0159ilo, proto\u017ee bylo v d\u00e1vkov\u00e9 tabulce vygenerov\u00e1no neplatn\u00e9 ID. ID d\u00e1vky mus\u00ed b\u00fdt kladn\u00e9 cel\u00e9 \u010d\u00edslo.
+error.invalid.persisted.job.id.useraction=Ujist\u011bte se, \u017ee pou\u017eit\u00e1 definice datab\u00e1zov\u00e9 tabulky d\u00e1vek povoluje jako hodnoty ID, kter\u00e9 jsou pou\u017e\u00edvan\u00e9 jako prim\u00e1rn\u00ed kl\u00ed\u010de, pouze kladn\u00e1 cel\u00e1 \u010d\u00edsla.
+
+#{0} The invalid execution id.
+#{1} The persistence exception.
+error.invalid.persisted.exe.id=CWWKY0037E: Neplatn\u00e1 hodnota ID proveden\u00ed \u00falohy {0} vygenerovan\u00e1 jako hodnota prim\u00e1rn\u00edho kl\u00ed\u010de pro tabulku d\u00e1vek. Hodnota ID mus\u00ed b\u00fdt kladn\u00e9 cel\u00e9 \u010d\u00edslo.\n\
+{1}
+error.invalid.persisted.exe.id.explanation=Proveden\u00ed \u00falohy se nezda\u0159ilo, proto\u017ee bylo v d\u00e1vkov\u00e9 tabulce vygenerov\u00e1no neplatn\u00e9 ID. ID d\u00e1vky mus\u00ed b\u00fdt kladn\u00e9 cel\u00e9 \u010d\u00edslo.
+error.invalid.persisted.exe.id.useraction=Ujist\u011bte se, \u017ee pou\u017eit\u00e1 definice datab\u00e1zov\u00e9 tabulky d\u00e1vek povoluje jako hodnoty ID, kter\u00e9 jsou pou\u017e\u00edvan\u00e9 jako prim\u00e1rn\u00ed kl\u00ed\u010de, pouze kladn\u00e1 cel\u00e1 \
+\u010d\u00edsla.
+
+#{0} The invalid step execution id.
+#{1} The persistence exception.
+error.invalid.persisted.step.id=CWWKY0038E: Neplatn\u00e1 hodnota ID proveden\u00ed kroku {0} vygenerovan\u00e1 jako hodnota prim\u00e1rn\u00edho kl\u00ed\u010de pro tabulku d\u00e1vek. Hodnota ID mus\u00ed b\u00fdt kladn\u00e9 cel\u00e9 \
+\u010d\u00edslo.\n\
+{1}
+error.invalid.persisted.step.id.explanation=Proveden\u00ed \u00falohy se nezda\u0159ilo, proto\u017ee bylo v d\u00e1vkov\u00e9 tabulce vygenerov\u00e1no neplatn\u00e9 ID. ID d\u00e1vky mus\u00ed b\u00fdt kladn\u00e9 cel\u00e9 \u010d\u00edslo.
+error.invalid.persisted.step.id.useraction=Ujist\u011bte se, \u017ee pou\u017eit\u00e1 definice datab\u00e1zov\u00e9 tabulky d\u00e1vek povoluje jako hodnoty ID, kter\u00e9 jsou pou\u017e\u00edvan\u00e9 jako prim\u00e1rn\u00ed kl\u00ed\u010de, pouze kladn\u00e1 cel\u00e1 \
+\u010d\u00edsla.
+
+partition.recovery.failed=CWWKY0039W: Slu\u017eba obnovy d\u00e1vkov\u00fdch \u00faloh nem\u016f\u017ee opravit stav d\u00e1vky pro d\u0159\u00edve spu\u0161t\u011bnou oblast {0}, kter\u00e1 ji\u017e byla ukon\u010dena. N\u00e1prava se nezda\u0159ila kv\u016fli v\u00fdjimce {1}.
+partition.recovery.failed.explanation=Slu\u017eba obnovy d\u00e1vkov\u00fdch \u00faloh, kter\u00e1 opravuje stav oblast\u00ed spu\u0161t\u011bn\u00fdch v dob\u011b, kdy byla nestandardn\u011b ukon\u010dena p\u0159edch\u00e1zej\u00edc\u00ed instance tohoto serveru, nem\u016f\u017ee opravit stav dan\u00e9 instance \u00falohy kv\u016fli dan\u00e9 v\u00fdjimce.
+partition.recovery.failed.useraction=Je-li to mo\u017en\u00e9, odstra\u0148te p\u0159\u00ed\u010dinu v\u00fdjimky a restartuje server, aby se slu\u017eba obnovy d\u00e1vkov\u00fdch \u00faloh spustila znovu.
+
+info.batch.events.publish.topic=CWWKY0040I: D\u00e1vkov\u00e9 b\u011bhov\u00e9 prost\u0159ed\u00ed bude publikovat ud\u00e1losti do ko\u0159ene t\u00e9matu JMS {0}.
+info.batch.events.publish.topic.explanation=Informa\u010dn\u00ed zpr\u00e1va. D\u00e1vkov\u00e9 b\u011bhov\u00e9 prost\u0159ed\u00ed bude publikovat ud\u00e1losti do uveden\u00e9ho ko\u0159ene t\u00e9matu JMS d\u00e1vky.
+info.batch.events.publish.topic.useraction=Ko\u0159en t\u00e9matu JMS d\u00e1vky lze upravovat. Zkontrolujte nakonfigurovan\u00e9 volby pou\u017eit\u00e9 pro batchJmsEvents.
+
+cdi.ambiguous.artifact.names=CWWKY0041W: Kontejner d\u00e1vek je spu\u0161t\u011bn s aktivn\u00ed funkc\u00ed CDI, ale gener\u00e1tor CDI nedok\u00e1zal na\u010d\u00edst artefakt d\u00e1vky jako objekt typu bean opravovan\u00fd CDI a prov\u00e9st dal\u0161\u00ed vlo\u017een\u00ed CDI. Tento probl\u00e9m m\u016f\u017ee b\u00fdt zp\u016fsoben chyb\u011bj\u00edc\u00edm anotac\u00ed definuj\u00edc\u00ed objekt typu bean, jako nap\u0159. @Dependent, re\u017eimem zji\u0161\u0165ov\u00e1n\u00ed necht\u011bn\u00fdch objekt\u016f typu bean nebo nejednozna\u010dnou hodnotou 'ref'.
+cdi.ambiguous.artifact.names.explanation=Kdy\u017e b\u011bhov\u00e9 prost\u0159ed\u00ed d\u00e1vek na\u010dte artefakty pomoc\u00ed gener\u00e1toru CDI, vlo\u017e\u00ed se vlastnosti d\u00e1vky (@BatchProperty) a d\u00e1vkov\u00e9 kontexty (JobContext a StepContext), a jsou zp\u0159\u00edstupn\u011bny \u00fapln\u00e9 schopnosti CDI. Mezi tyto schopnosti pat\u0159\u00ed vlo\u017een\u00ed dal\u0161\u00edch spravovan\u00fdch objekt\u016f typu bean podle kvalifik\u00e1tor\u016f a v\u0161ech dal\u0161\u00edch funkc\u00ed programovac\u00edho modelu CDI. Kdy\u017e b\u011bhov\u00e9 prost\u0159ed\u00ed d\u00e1vek na\u010dte artefakty bez pou\u017eit\u00ed gener\u00e1toru CDI, vlo\u017e\u00ed pouze vlastnosti a kontexty d\u00e1vek. Proto\u017ee v t\u00e9to cest\u011b nen\u00ed objekt typu bean spravovan\u00fd CDI, nejsou v tomto d\u00e1vkov\u00e9m artefaktu dostupn\u00e1 \u017e\u00e1dn\u00e1 dal\u0161\u00ed vlo\u017een\u00ed nebo jin\u00e9 funkce programovac\u00edho modelu CDI. Tato zpr\u00e1va ozna\u010duje, \u017ee a\u010dkoli je server nakonfigurov\u00e1n s aktivn\u00ed funkc\u00ed CDI, nebyl d\u00e1vkov\u00fd artefakt na\u010dten jako objekt typu bean spravovan\u00fd CDI, proto\u017ee hodnota atributu 'ref', kter\u00e1 odpov\u00edd\u00e1 v XML odkazu na tento artefakt, neukazuje na jeden jednozna\u010dn\u00fd objekt typu bean spravovan\u00fd CDI.
+cdi.ambiguous.artifact.names.useraction=P\u0159idejte anotaci @Dependent nebo jinou vhodnou anotaci pro definici objektu typu bean do sv\u00e9ho d\u00e1vkov\u00e9ho artefaktu. Nebo m\u016f\u017eete nastavit re\u017eim zji\u0161\u0165ov\u00e1n\u00ed objekt\u016f typu bean na hodnotu 'all' v souboru beans.xml, p\u0159esto\u017ee by toto \u0159e\u0161en\u00ed mohlo zpomalit va\u0161i aplikaci. Pokud \u017e\u00e1dn\u00fd z nejednozna\u010dn\u00fdch artefakt\u016f nen\u00ed pot\u0159eba, m\u016f\u017eete tak\u00e9 odebrat nejednozna\u010dn\u00e9 atributy 'ref' z aplikace, tak\u017ee z\u016fstanou pouze jednotliv\u00e9 a jednozna\u010dn\u00e9 odkazy.
+
+#{0} job/flow/partition
+#{1} The JSL
+display.resolved.jsl=CWWKY0042I:  Vy\u0159e\u0161en\u00fdch JSL pro {0} je \n\
+\ {1}.
+display.resolved.jsl.explanation=JSL pou\u017eit\u00fd pro \u00falohu, tok nebo oblast je zobrazen po vy\u0159e\u0161en\u00ed parametr\u016f a vlastnost\u00ed. JSL \u00falohy ne\u0159e\u0161\u00ed vlastnosti pl\u00e1nu oblasti. Pro vy\u0159e\u0161en\u00ed vlastnost\u00ed pl\u00e1nu oblasti vyhledejte tuto zpr\u00e1vu v protokolech jednotliv\u00fdch oblast\u00ed.
+display.resolved.jsl.useraction=Ov\u011b\u0159te, \u017ee JSL a vy\u0159e\u0161en\u00ed parametru jsou dle o\u010dek\u00e1v\u00e1n\u00ed.
+
+#{0} The JSL
+display.unresolved.jsl=CWWKY0043I:  Nevy\u0159e\u0161en\u00fdch JSL pro tuto \u00falohu je \n\
+\ {0}.
+display.unresolved.jsl.explanation=JSL pou\u017eit\u00fd pro \u00falohu je zobrazen p\u0159ed vy\u0159e\u0161en\u00edm parametr\u016f a vlastnost\u00ed.
+display.unresolved.jsl.useraction=Ujist\u011bte se, \u017ee n\u00e1zev souboru pro JSL je spr\u00e1vn\u00fd, a ov\u011b\u0159te, \u017ee zdroj JSL obsahuje spr\u00e1vn\u00fd JSL.
+
