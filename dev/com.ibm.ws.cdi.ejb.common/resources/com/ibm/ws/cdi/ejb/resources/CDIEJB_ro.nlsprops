@@ -32,3 +32,8 @@ lifecycle.interceptor.exception.CWOWB2001E=CWOWB2001E: Un interceptor ciclu de v
 lifecycle.interceptor.exception.CWOWB2001E.explanation=Interceptoarele de ciclu de via\u0163\u0103 ar trebui s\u0103 evite s\u0103 arunce excep\u0163ii verificate. 
 lifecycle.interceptor.exception.CWOWB2001E.useraction=Verifica\u0163i istoricele pentru determinarea problemei.
 
+internal.server.error.CWOWB2002E=CWOWB2002E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1}
+internal.server.error.CWOWB2002E.explanation=CMSG0001
+internal.server.error.CWOWB2002E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+

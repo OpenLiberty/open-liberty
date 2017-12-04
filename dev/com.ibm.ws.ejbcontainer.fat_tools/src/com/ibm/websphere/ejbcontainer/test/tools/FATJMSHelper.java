@@ -1,28 +1,13 @@
-// IBM Confidential OCO Source Material
-// Copyright IBM Corp. 2003, 2014
-//
-// The source code for this program is not published or otherwise divested
-// of its trade secrets, irrespective of what has been deposited with the
-// U.S. Copyright Office.
-//
-// Change Activity:
-//
-// Reason    Version   Date     Userid    Change Description
-// --------- --------- -------- --------- -----------------------------------------
-// dxxxxxx    ASVxx      2003xxxx alvinso  : Initial Release
-// d182693    ASV        20031203 zhousean : initial release created for WAS.wstest
-// d233071    WAS60      20041001 tkb      : Fixed timing problem on ND.
-// d245115    WAS601     20041129 tkb      : Fixed problem with timing problem fix.
-// d278401    WAS602     20050523 tkb      : Support running with security enabled
-// d433583    EJB3.SERV1 20070419 guorong  : create MDB pure annotation and pure xml TCs
-// d496568    WASX.FVT   20080217 jgrassel : Added support for sending and receiving Topic messages
-// d519706    WASX.FVT   20080528 jgrassel : Modifications needed by AccessIntent test
-// F896-16402 WAS70      20090827 akiani   : Ported to Moonstone FAT Framework.
-// d630468    WAS70      20100108 bkail    : Use FATHelper.loadProperties
-// d662837    WAS70      20110506 bmdecker : Fixed wasPasswd/wasPasswd bug
-// d662837.1  WAS70      20110512 bmdecker : Fix retry logic for createQueueConnection
-// ---------- ---------  -------- --------- -----------------------------------------
-
+/*******************************************************************************
+ * Copyright (c) 2015 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.websphere.ejbcontainer.test.tools;
 
 import java.io.Serializable;
@@ -54,12 +39,12 @@ import javax.naming.NamingException;
 
 /**
  * @author alvinso
- * 
+ *
  *         To change this generated comment edit the template variable
  *         "typecomment": Window>Preferences>Java>Templates. To enable and
  *         disable the creation of type comments go to
  *         Window>Preferences>Java>Code Generation.
- * 
+ *
  *         This class provides the methods for sending and receiving JMS
  *         messages.
  */
@@ -110,7 +95,7 @@ public class FATJMSHelper {
 
     /**
      * constructor
-     * 
+     *
      * @throws Exception
      */
     public FATJMSHelper() throws Exception {
@@ -124,7 +109,7 @@ public class FATJMSHelper {
 
     /**
      * Look up the Resource from JNDI
-     * 
+     *
      * @param name
      *            : JNDI context
      * @return Object of the resource
@@ -137,7 +122,7 @@ public class FATJMSHelper {
 
     /**
      * Send text message
-     * 
+     *
      * @param text
      *            : message
      * @return message ID
@@ -163,8 +148,7 @@ public class FATJMSHelper {
                 svLogger.info("Message is sent to the queue.");
                 id = objectMessage.getJMSMessageID();
             } else {
-                objectMessage = queueSession
-                                .createObjectMessage((Serializable) text);
+                objectMessage = queueSession.createObjectMessage((Serializable) text);
                 sender.send(objectMessage);
                 svLogger.info("Message is sent to the queue.");
                 id = objectMessage.getJMSMessageID();
@@ -182,7 +166,7 @@ public class FATJMSHelper {
 
     /**
      * Send text message
-     * 
+     *
      * @param text
      *            : message
      * @param jmsType
@@ -190,8 +174,7 @@ public class FATJMSHelper {
      * @return message ID
      * @throws JMSException
      */
-    public String sendMessageToQueue(Object text, String jmsType)
-                    throws JMSException {
+    public String sendMessageToQueue(Object text, String jmsType) throws JMSException {
         TextMessage message = null;
         ObjectMessage objectMessage = null;
         String id = null;
@@ -213,8 +196,7 @@ public class FATJMSHelper {
                 svLogger.info("Message is sent to the queue.");
                 id = objectMessage.getJMSMessageID();
             } else {
-                objectMessage = queueSession
-                                .createObjectMessage((Serializable) text);
+                objectMessage = queueSession.createObjectMessage((Serializable) text);
                 objectMessage.setJMSType(jmsType);
                 sender.send(objectMessage);
                 svLogger.info("Message is sent to the queue.");
@@ -260,7 +242,7 @@ public class FATJMSHelper {
 
     /**
      * Get text message
-     * 
+     *
      * @param timeOut
      *            : maximum time out for getting message from queue
      * @return object of the message
@@ -278,9 +260,8 @@ public class FATJMSHelper {
             // message. If it hasn't, report this and throw an exception...
             //
             if (inMessage == null) {
-                svLogger
-                                .info("The attempt to read the message failed.  Maximum timeout is reached. ("
-                                      + timeOut + "ms.)");
+                svLogger.info("The attempt to read the message failed.  Maximum timeout is reached. ("
+                              + timeOut + "ms.)");
                 return null;
             } else {
                 //
@@ -303,8 +284,7 @@ public class FATJMSHelper {
                     // Report that the incoming message was not of the expected
                     // type, and throw an exception
                     //
-                    svLogger
-                                    .info("Reply message was not a TextMessage or ObjectMessage.");
+                    svLogger.info("Reply message was not a TextMessage or ObjectMessage.");
                     return null;
                 }
             }
@@ -320,7 +300,7 @@ public class FATJMSHelper {
 
     /**
      * Create queue connection
-     * 
+     *
      * @param queueConnectionFactory
      *            : JNDI context
      * @throws Exception
@@ -376,7 +356,7 @@ public class FATJMSHelper {
     // createQueueConnection(QueueConnectionFactory qcf)
     /**
      * Create queue connection
-     * 
+     *
      * @param qcf
      *            : QueueConnectionFactory
      * @throws Exception
@@ -426,7 +406,7 @@ public class FATJMSHelper {
 
     /**
      * create queue session
-     * 
+     *
      * @throws JMSException
      */
     public void createQueueSession() throws JMSException {
@@ -458,14 +438,13 @@ public class FATJMSHelper {
 
     /**
      * create queue sender
-     * 
+     *
      * @param queue
      *            : JNDI context
      * @throws JMSException
      * @throws NamingException
      */
-    public void createQueueSender(String queue) throws JMSException,
-                    NamingException {
+    public void createQueueSender(String queue) throws JMSException, NamingException {
         //
         // Obtain the Destination object from JNDI
         //
@@ -490,7 +469,7 @@ public class FATJMSHelper {
     // d433583, add an overload method, createQueueSender(Queue queue)
     /**
      * create queue sender
-     * 
+     *
      * @param queue
      *            : Queue
      * @throws JMSException
@@ -512,14 +491,13 @@ public class FATJMSHelper {
 
     /**
      * create queue receiver
-     * 
+     *
      * @param queue
      *            : JNDI context
      * @throws NamingException
      * @throws JMSException
      */
-    public void createQueueReceiver(String queue) throws NamingException,
-                    JMSException {
+    public void createQueueReceiver(String queue) throws NamingException, JMSException {
         //
         // Obtain the Destination object from JNDI
         //
@@ -543,7 +521,7 @@ public class FATJMSHelper {
 
     /**
      * close queue connection
-     * 
+     *
      * @throws JMSException
      */
     public void closeQueueConnection() throws JMSException {
@@ -597,15 +575,14 @@ public class FATJMSHelper {
 
     /**
      * Create topic connection
-     * 
+     *
      * @param topicConnectionFactory
      *            : JNDI context
      * @throws JMSException
      * @throws NamingException
      * @throws InterruptedException
      */
-    public void createTopicConnection(String topicConnectionFactory)
-                    throws JMSException, NamingException, InterruptedException {
+    public void createTopicConnection(String topicConnectionFactory) throws JMSException, NamingException, InterruptedException {
         //
         // Obtain the connection factory from JNDI
         //
@@ -649,7 +626,7 @@ public class FATJMSHelper {
 
     /**
      * create topic session
-     * 
+     *
      * @throws JMSException
      */
     public void createTopicSession() throws JMSException {
@@ -674,14 +651,13 @@ public class FATJMSHelper {
 
     /**
      * create Topic Publisher
-     * 
+     *
      * @param tname
      *            : JNDI context
      * @throws JMSException
      * @throws NamingException
      */
-    public void createTopicPublisher(String tname) throws JMSException,
-                    NamingException {
+    public void createTopicPublisher(String tname) throws JMSException, NamingException {
         //
         // Obtain the Destination object from JNDI
         //
@@ -710,7 +686,7 @@ public class FATJMSHelper {
 
     /**
      * Send text message to topic
-     * 
+     *
      * @param text
      *            : message
      * @throws JMSException
@@ -744,15 +720,14 @@ public class FATJMSHelper {
 
     /**
      * Send text message to topic
-     * 
+     *
      * @param text
      *            : message
      * @param jmsType
      *            : set the JMS type
      * @throws JMSException
      */
-    public void sendMessageToTopic(String text, String jmsType)
-                    throws JMSException {
+    public void sendMessageToTopic(String text, String jmsType) throws JMSException {
         try {
             //
             // Use the session to create messages, create an empty TextMessage
@@ -851,8 +826,7 @@ public class FATJMSHelper {
     private static Hashtable<String, FATTopicConnection> fatTopicConnectionHashTable = new Hashtable<String, FATTopicConnection>();
 
     public void createFATTopicConnection(String name) {
-        FATTopicConnection newFATTopicConnection = new FATTopicConnection(name,
-                        this);
+        FATTopicConnection newFATTopicConnection = new FATTopicConnection(name, this);
 
         fatTopicConnectionHashTable.put(name, newFATTopicConnection);
     }
@@ -868,7 +842,7 @@ public class FATJMSHelper {
 
     /**
      * Create topic connection
-     * 
+     *
      * @param topicConnectionFactory
      *            : JNDI context
      * @param fatTopicConnectionName
@@ -878,8 +852,7 @@ public class FATJMSHelper {
      * @throws JMSException
      */
     public void createTopicConnection(String topicConnectionFactory,
-                                      String fatTopicConnectionName) throws InterruptedException,
-                    NamingException, JMSException {
+                                      String fatTopicConnectionName) throws InterruptedException, NamingException, JMSException {
         FATTopicConnection fatTopicConnection = getFATTopicConnection(fatTopicConnectionName);
         if (fatTopicConnection == null) {
             svLogger.info("*** Failed to find FATTopicConnection.");
@@ -908,8 +881,7 @@ public class FATJMSHelper {
                     Thread.sleep(30000); // 30 seconds
                 }
 
-                fatTopicConnection
-                                .setTcf((TopicConnectionFactory) lookupResource(topicConnectionFactory));
+                fatTopicConnection.setTcf((TopicConnectionFactory) lookupResource(topicConnectionFactory));
                 // tcf = (TopicConnectionFactory)
                 // lookupResource(topicConnectionFactory);
 
@@ -920,12 +892,10 @@ public class FATJMSHelper {
                 if (!(wasUser.equalsIgnoreCase("none") || wasPasswd.equalsIgnoreCase("none")))
                     // tc = tcf.createTopicConnection(FATCommon.getDBUser(),
                     // FATCommon.getDBPassword());
-                    fatTopicConnection.setTc(fatTopicConnection.getTcf()
-                                    .createTopicConnection(wasUser, wasPasswd));
+                    fatTopicConnection.setTc(fatTopicConnection.getTcf().createTopicConnection(wasUser, wasPasswd));
                 else
                     // tc = tcf.createTopicConnection();
-                    fatTopicConnection.setTc(fatTopicConnection.getTcf()
-                                    .createTopicConnection());
+                    fatTopicConnection.setTc(fatTopicConnection.getTcf().createTopicConnection());
                 svLogger.info("Starting connection ...");
                 fatTopicConnection.getTc().start();
                 // tc.start();
@@ -941,13 +911,12 @@ public class FATJMSHelper {
 
     /**
      * create topic session
-     * 
+     *
      * @param fatTopicConnectionName
      *            : name of topic connection
      * @throws JMSException
      */
-    public void createTopicSession(String fatTopicConnectionName)
-                    throws JMSException {
+    public void createTopicSession(String fatTopicConnectionName) throws JMSException {
         FATTopicConnection fatTopicConnection = getFATTopicConnection(fatTopicConnectionName);
 
         boolean transacted = false;
@@ -958,8 +927,7 @@ public class FATJMSHelper {
         try {
             svLogger.info("Creating topic session ...");
 
-            fatTopicConnection.setTs(fatTopicConnection.getTc()
-                            .createTopicSession(transacted, Session.AUTO_ACKNOWLEDGE));
+            fatTopicConnection.setTs(fatTopicConnection.getTc().createTopicSession(transacted, Session.AUTO_ACKNOWLEDGE));
             // tc.createTopicSession(transacted, Session.AUTO_ACKNOWLEDGE));
             // topicSession =
             // tc.createTopicSession(transacted, Session.AUTO_ACKNOWLEDGE);
@@ -974,14 +942,13 @@ public class FATJMSHelper {
 
     /**
      * create topic receiver
-     * 
+     *
      * @param topic
      *            : JNDI context
      * @throws JMSException
      * @throws NamingException
      */
-    public void createTopicSubcriber(String topic) throws JMSException,
-                    NamingException {
+    public void createTopicSubcriber(String topic) throws JMSException, NamingException {
         //
         // Obtain the Destination object from JNDI
         //
@@ -1005,7 +972,7 @@ public class FATJMSHelper {
 
     /**
      * create topic receiver
-     * 
+     *
      * @param topic
      *            : JNDI context
      * @param fatTopicConnectionName
@@ -1013,8 +980,7 @@ public class FATJMSHelper {
      * @throws JMSException
      * @throws NamingException
      */
-    public void createTopicSubcriber(String topic, String fatTopicConnectionName)
-                    throws JMSException, NamingException {
+    public void createTopicSubcriber(String topic, String fatTopicConnectionName) throws JMSException, NamingException {
         FATTopicConnection fatTopicConnection = getFATTopicConnection(fatTopicConnectionName);
 
         //
@@ -1031,8 +997,7 @@ public class FATJMSHelper {
             svLogger.info("Create topic subscriber ...");
             // topicSubscriber = topicSession.createSubscriber(receiveTopic);
 
-            fatTopicConnection.setTsub(fatTopicConnection.getTs()
-                            .createSubscriber(receiveTopic));
+            fatTopicConnection.setTsub(fatTopicConnection.getTs().createSubscriber(receiveTopic));
             // topicSession.createSubscriber(receiveTopic));
         } catch (JMSException je) {
             svLogger.info("createTopicReceiver failed with " + je);
@@ -1046,7 +1011,7 @@ public class FATJMSHelper {
 
     /**
      * Get text message from a topic
-     * 
+     *
      * @param timeOut
      *            : maximum time out for getting message from topic
      * @param fatTopicConnectionName
@@ -1054,8 +1019,7 @@ public class FATJMSHelper {
      * @return object of the message
      * @throws JMSException
      */
-    public Object getTopicMessage(int timeOut, String fatTopicConnectionName)
-                    throws JMSException {
+    public Object getTopicMessage(int timeOut, String fatTopicConnectionName) throws JMSException {
         FATTopicConnection fatTopicConnection = getFATTopicConnection(fatTopicConnectionName);
         Object replyObj = null;
 
@@ -1068,9 +1032,8 @@ public class FATJMSHelper {
             // message. If it hasn't, report this and throw an exception...
             //
             if (inMessage == null) {
-                svLogger
-                                .info("The attempt to read the message failed.  Maximum timeout is reached. ("
-                                      + timeOut + "ms.)");
+                svLogger.info("The attempt to read the message failed.  Maximum timeout is reached. ("
+                              + timeOut + "ms.)");
                 return null;
             } else {
                 //
@@ -1093,8 +1056,7 @@ public class FATJMSHelper {
                     // Report that the incoming message was not of the expected
                     // type, and throw an exception
                     //
-                    svLogger
-                                    .info("Reply message was not a TextMessage or ObjectMessage.");
+                    svLogger.info("Reply message was not a TextMessage or ObjectMessage.");
                     return inMessage; // null;
                 }
             }
@@ -1110,7 +1072,7 @@ public class FATJMSHelper {
 
     /**
      * Send text message to topic
-     * 
+     *
      * @param obj
      *            : message
      * @param jmsType
@@ -1118,8 +1080,7 @@ public class FATJMSHelper {
      * @return message ID
      * @throws JMSException
      */
-    public String sendObjectMessageToTopic(Serializable obj, String jmsType)
-                    throws JMSException {
+    public String sendObjectMessageToTopic(Serializable obj, String jmsType) throws JMSException {
         String messageID = null;
         try {
             //
@@ -1156,7 +1117,7 @@ public class FATJMSHelper {
 
     /**
      * Send text message to topic
-     * 
+     *
      * @param obj
      *            : message
      * @param jmsType
@@ -1168,8 +1129,7 @@ public class FATJMSHelper {
      * @throws NamingException
      */
     public String sendObjectMessageToTopicWithReplyTo(Serializable obj,
-                                                      String jmsType, String replyToTopicName) throws JMSException,
-                    NamingException {
+                                                      String jmsType, String replyToTopicName) throws JMSException, NamingException {
         String messageID = null;
         try {
             //
@@ -1215,7 +1175,7 @@ public class FATJMSHelper {
 
     /**
      * close topic connection
-     * 
+     *
      * @throws JMSException
      */
     public void closeTopicConnection() throws JMSException {

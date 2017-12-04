@@ -70,7 +70,7 @@ OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST=CWMOT0002E: Aucune impl\u00e9mentation
 OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST.explanation=Aucune impl\u00e9mentation Tracer n'\u00e9tait disponible lors de l'arriv\u00e9e d'une demande au noeud final de l'application. Cette demande entrante ne fournira aucune information au service Opentracing.
 OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST.useraction=Examinez les erreurs ant\u00e9rieures pour d\u00e9terminer pourquoi aucune impl\u00e9mentation Tracer n'\u00e9tait disponible.
 
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST=CWMOT0003E: L'\u00e9l\u00e9ment Span cr\u00e9\u00e9 pour une demande entrante n'\u00e9tait pas disponible pour la r\u00e9ponse \u00e0 la demande.  La demande entrante ne sera pas corr\u00e9l\u00e9e avec le service en amont.
+OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST=CWMOT0003E: L'\u00e9l\u00e9ment Span cr\u00e9\u00e9 pour une demande entrante n'\u00e9tait pas disponible pour la r\u00e9ponse \u00e0 la demande. La demande entrante ne sera pas corr\u00e9l\u00e9e avec le service en amont.
 OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST.explanation=L'\u00e9l\u00e9ment Span cr\u00e9\u00e9 lorsque la r\u00e9ponse est arriv\u00e9e n'\u00e9tait pas disponible lors du renvoi de la r\u00e9ponse. Aucune information Span ne sera fournie au service Opentracing.
 OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST.useraction=Examinez les erreurs ant\u00e9rieures pour d\u00e9terminer pourquoi aucun \u00e9l\u00e9ment Span n'\u00e9tait disponible.
 
@@ -85,6 +85,14 @@ OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST.useraction=Examinez les err
 OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: L'appel de la m\u00e9thode OpentracingTracerFactory.newInstance(...) fournie par l'utilisateur a envoy\u00e9 une valeur Null.
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=La fonction construit des impl\u00e9mentations Tracer avec une interface OpentracingTracerFactory fournie par l'utilisateur. La m\u00e9thode OpentracingTracerFactory.newInstance a renvoy\u00e9 la valeur null.
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=D\u00e9terminer pourquoi la m\u00e9thode OpentracingTracerFactory newInstance fournie par l'utilisateur a renvoy\u00e9 la valeur null.
+
+OPENTRACING_FILTER_PATTERN_BLANK=CWMOT0007E: L'attribut pattern d'un \u00e9l\u00e9ment de configuration opentracing excludeSpans ou includeSpans est vide.
+OPENTRACING_FILTER_PATTERN_BLANK.explanation=Un masque d'URI valide doit \u00eatre sp\u00e9cifi\u00e9 et ne doit pas \u00eatre vide.
+OPENTRACING_FILTER_PATTERN_BLANK.useraction=Consultez la documentation sur les masques valides.
+
+OPENTRACING_FILTER_PATTERN_INVALID=CWMOT0008E: L'attribut pattern {0} d'un \u00e9l\u00e9ment de configuration opentracing excludeSpans ou includeSpans d\u00e9signe un URI non valide (RFC 2396).
+OPENTRACING_FILTER_PATTERN_INVALID.explanation=Vous devez sp\u00e9cifier un masque URI valide. Le probl\u00e8me le plus fr\u00e9quent est un codage d'URL % incorrect pour les caract\u00e8res non valides.
+OPENTRACING_FILTER_PATTERN_INVALID.useraction=Consultez la RFC 2396 et v\u00e9rifiez que vous avez sp\u00e9cifi\u00e9 un codage d'URL % pour les caract\u00e8res non valides.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message

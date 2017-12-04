@@ -15,7 +15,7 @@
 src: \
 	bvt/src
 
-publish.wlp.clients.disabled: true
+publish.wlp.clients: false
 
 test.project: true
 

@@ -48,3 +48,11 @@ failed_to_extract_saml_token_from_subject.useraction=Assegure que o server.xml t
 failed_run_as_subject=CWWKW0706E: Ocorreu uma exce\u00e7\u00e3o ao tentar obter o RunAsSubject. A exce\u00e7\u00e3o era: [{0}].
 failed_run_as_subject.explanation=Ocorreu uma exce\u00e7\u00e3o ao obter o RunAsSubject.
 failed_run_as_subject.useraction=Certifique-se de que o servidor tenha sido configurado e iniciado corretamente.
+
+warn_missing_mpjwt_token=CWWKW0707W: O atributo [{0}] na configura\u00e7\u00e3o [{1}] est\u00e1 definido para [{2}], mas o MicroProfile JSON Web Token (JWT) n\u00e3o est\u00e1 dispon\u00edvel. A solicita\u00e7\u00e3o n\u00e3o cont\u00e9m um cabe\u00e7alho de Autoriza\u00e7\u00e3o com o token.
+warn_missing_mpjwt_token.explanation=O tempo de execu\u00e7\u00e3o falhou ao localizar o MicroProfile JWT no assunto runAs. Esse erro geralmente indica um problema com a autentica\u00e7\u00e3o. Certifique-se de que nenhum erro seja encontrado enquanto o recurso MicroProfile JWT autenticar um usu\u00e1rio.
+warn_missing_mpjwt_token.useraction=Verifique a a\u00e7\u00e3o do usu\u00e1rio para quaisquer erros anteriores que o servidor registrou.
+
+warn_mpjwt_prop_service_notavail=CWWKW0708W: O servi\u00e7o MicroProfile JWT Propagation n\u00e3o est\u00e1 dispon\u00edvel. O tempo de execu\u00e7\u00e3o n\u00e3o pode acessar o token para inclu\u00ed-lo no cabe\u00e7alho de autoriza\u00e7\u00e3o.
+warn_mpjwt_prop_service_notavail.explanation=O servi\u00e7o MicroProfile JWT Propagation requer o recurso mpJwt-1.0. 
+warn_mpjwt_prop_service_notavail.useraction=Certifique-se de que o servidor esteja executando com o recurso requerido.

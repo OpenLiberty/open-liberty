@@ -295,3 +295,17 @@ info.batch.events.publish.topic.useraction=La ra\u00edz de tema JMS por lotes se
 cdi.ambiguous.artifact.names=CWWKY0041W: El contenedor de proceso por lotes est\u00e1 en ejecuci\u00f3n con una caracter\u00edstica CDI activa, pero el motor de CDI no ha podido cargar el artefacto por lotes como un bean gestionado por CDI y realizar otras inyecciones de CDI. Este problema puede ser causado porque falta una anotaci\u00f3n de definici\u00f3n de bean como @Dependent, una modalidad de descubrimiento de bean indeseada o un valor de 'ref' ambiguo.
 cdi.ambiguous.artifact.names.explanation=Cuando el tiempo de ejecuci\u00f3n por lotes carga los artefactos mediante el motor de CDI, se inyectan las propiedades por lotes (@BatchProperty) y los contextos por lotes (JobContext y StepContext) y se vuelven disponibles todas las prestaciones de CDI. Estas prestaciones incluyen la inyecci\u00f3n de otros beans gestionados de acuerdo con los calificadores y todas las dem\u00e1s caracter\u00edsticas del modelo de programaci\u00f3n de CDI. Cuando el tiempo de ejecuci\u00f3n por lotes carga los artefactos sin utilizar el motor de CDI, solo inyecta las propiedades y los contextos por lotes. Dado que no hay un bean gestionado por CDI en esta v\u00eda de acceso, no hay ninguna otra inyecci\u00f3n ni otra caracter\u00edstica del modelo de programaci\u00f3n de CDI disponible en ese artefacto por lotes. Este mensaje indica que aunque el servidor est\u00e1 configurado para que la caracter\u00edstica CDI est\u00e9 activa, no se puede cargar el artefacto por lotes como un bean gestionado por CDI porque el valor de atributo 'ref' que corresponde a esta referencia de artefacto en XML no apunta a un bean gestionado por CDI \u00fanico no ambiguo.
 cdi.ambiguous.artifact.names.useraction=A\u00f1ada la anotaci\u00f3n @Dependent u otra anotaci\u00f3n de definici\u00f3n por bean adecuada para el artefacto por lotes. O bien, puede establecer una modalidad de descubrimiento de bean en 'all' en el archivo beans.xml, aunque esta soluci\u00f3n podr\u00eda ralentizar la aplicaci\u00f3n. Si no son necesarios todos los artefactos ambiguos, puede eliminar tambi\u00e9n los atributos 'ref' ambiguos de la aplicaci\u00f3n para que solo permanezca una referencia \u00fanica no ambigua.
+
+#{0} job/flow/partition
+#{1} The JSL
+display.resolved.jsl=CWWKY0042I:  El JSL resuelto para este {0} es \n\
+\ {1}.
+display.resolved.jsl.explanation=El JSL utilizado para el trabajo, flujo o partici\u00f3n se muestra despu\u00e9s de resolver los par\u00e1metros y propiedades. El JSL de trabajo no resuelve las propiedades del plan de partici\u00f3n. Busque este mensaje en los registros de partici\u00f3n individual en busca de una resoluci\u00f3n de propiedad de plan de partici\u00f3n.
+display.resolved.jsl.useraction=Verifique que el JSL y la resoluci\u00f3n del par\u00e1metro es la prevista.
+
+#{0} The JSL
+display.unresolved.jsl=CWWKY0043I:  El JSL no resuelto para este trabajo es \n\
+\ {0}.
+display.unresolved.jsl.explanation=El JSL utilizado para el trabajo se muestra antes de resolver los par\u00e1metros y propiedades.
+display.unresolved.jsl.useraction=Aseg\u00farese de que el nombre de archivo del JSL sea correcto y compruebe que el origen del JSL contenga el JSL correcto.
+

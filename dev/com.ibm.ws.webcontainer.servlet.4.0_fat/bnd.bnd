@@ -19,7 +19,7 @@ src: \
 	test-applications/TestAddJspFile.war/src, \
 	test-applications/TestEncoding.war/src
 	
-test.project: true
+fat.project: true
 
 javac.source: 1.8
 javac.target: 1.8

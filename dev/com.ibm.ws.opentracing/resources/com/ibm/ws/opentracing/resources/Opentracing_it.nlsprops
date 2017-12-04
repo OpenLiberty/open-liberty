@@ -59,7 +59,7 @@
 # Messages used by Opentracing Impl -  range is 0000-4999, plus 9999 for the emergency message
 #-----------------------------------------------------------------------------------------------------------------------------
 OPENTRACING_NO_APPNAME_FOUND_IN_JNDI=CWMOT0000E: La ricerca del nome dell'applicazione in JNDI non ha restituito un valore. Per il nome del servizio Opentracing viene utilizzato un nome predefinito.
-OPENTRACING_NO_APPNAME_FOUND_IN_JNDI.explanation=La funzione fornisce il nome dell'applicazione all'implementazione OpentracingTracerFactory fornita dall'utente. Il nome dell'applicazione non pu\u00f2 essere richiamato dallaricerca JNDI di "java:app/AppName". \u00c8 stato fornito un nome servizio predefinito.
+OPENTRACING_NO_APPNAME_FOUND_IN_JNDI.explanation=La funzione fornisce il nome dell'applicazione all'implementazione OpentracingTracerFactory fornita dall'utente. Il nome dell'applicazione non pu\u00f2 essere richiamato dalla ricerca JNDI di "java:app/AppName". \u00c8 stato fornito un nome servizio predefinito.
 OPENTRACING_NO_APPNAME_FOUND_IN_JNDI.useraction=Determinare il motivo per cui il nome dell'applicazione non \u00e8 disponibile tramite la ricerca JNDI di "java:app/AppName".
 
 OPENTRACING_COULD_NOT_CREATE_TRACER=CWMOT0001E: Richiamo del metodo OpentracingTracerFactory.newInstance(...) fornito dall'utente non riuscito con eccezione. Messaggio = {0}
@@ -85,6 +85,14 @@ OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST.useraction=Esaminare gli er
 OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: Richiamo del metodo OpentracingTracerFactory.newInstance(...) fornito dall'utente ha restituito un valore null
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=La funzione crea implementazioni del programma di traccia con un OpentracingTracerFactory fornito dall'utente. Il metodo OpentracingTracerFactory.newInstance restituisce un valore null.
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=Determinare il motivo per cui il metodo OpentracingTracerFactory newInstance fornito dall'utente restituisce un valore null.
+
+OPENTRACING_FILTER_PATTERN_BLANK=CWMOT0007E: L'attributo pattern di un elemento di configurazione excludeSpans o includeSpans di opentracing \u00e8 vuoto.
+OPENTRACING_FILTER_PATTERN_BLANK.explanation=\u00c8 necessario specificare un pattern di URI valido che non sia vuoto.
+OPENTRACING_FILTER_PATTERN_BLANK.useraction=Consultare la documentazione per i pattern validi.
+
+OPENTRACING_FILTER_PATTERN_INVALID=CWMOT0008E: L'attributo pattern {0} di un elemento di configurazione excludeSpans o includeSpans di opentracing \u00e8 un URI non valido (RFC 2396).
+OPENTRACING_FILTER_PATTERN_INVALID.explanation=\u00c8 necessario specificare un pattern di URI valido. Il problema pi\u00f9 comune \u00e8 che i caratteri non validi negli URL non siano stati correttamente codificati tramite simboli %.
+OPENTRACING_FILTER_PATTERN_INVALID.useraction=Consultare RFC 2396 e accertarsi che i caratteri non validi negli URL siano stati correttamente codificati tramite simboli %.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message

@@ -21,7 +21,7 @@ src: \
 	
 -sub: *.bnd
 
-test.project: true
+fat.project: true
 
 tested.features: opentracing-1.0
 

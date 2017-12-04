@@ -25,10 +25,10 @@ src: \
 	test-applications/BeanValidationCDI_11.war/src,\
 	test-applications/DefaultBeanValidationCDI_11.war/src
 
-test.project: true
+fat.project: true
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
-#      or binaries from Artifactory (e.g. org.apache.derby:derbynet)
+#      or binaries from Artifactory (e.g. commons-logging:commons-logging)
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.validation.1.1;version=latest,\

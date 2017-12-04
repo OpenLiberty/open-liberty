@@ -48,3 +48,11 @@ failed_to_extract_saml_token_from_subject.useraction=Assicurarsi che il file ser
 failed_run_as_subject=CWWKW0706E: Si \u00e8 verificata un''eccezione durante il tentativo di ottenere RunAsSubject. L''eccezione era: [{0}].
 failed_run_as_subject.explanation=Si \u00e8 verificata un'eccezione durante il richiamo di RunAsSubject.
 failed_run_as_subject.useraction=Assicurarsi che il server sia configurato e avviato correttamente.
+
+warn_missing_mpjwt_token=CWWKW0707W: L''attributo [{0}] nella configurazione [{1}] \u00e8 impostato su [{2}], ma il JWT (JSON Web Token) microprofilo non \u00e8 disponibile. La richiesta non contiene un''intestazione Autorizzazione con il token.
+warn_missing_mpjwt_token.explanation=Il runtime non \u00e8 riuscito a trovare il JWT microprofilo nel soggetto Esegui come. Questo errore generalmente indica un problema con l'autenticazione. Assicurarsi che non vengano rilevati errori mentre la funzione JWT microprofilo autentica un utente.
+warn_missing_mpjwt_token.useraction=Controllare eventuali errori precedenti nell'azione utente registrati dal server.
+
+warn_mpjwt_prop_service_notavail=CWWKW0708W: Il servizio Propagazione JWT microprofilo non \u00e8 disponibile. Il runtime non pu\u00f2 accedere al token per includerlo nell'intestazione Autorizzazione.
+warn_mpjwt_prop_service_notavail.explanation=Il servizio Propagazione JWT microprofilo richiede la funzione mpJwt-1.0. 
+warn_mpjwt_prop_service_notavail.useraction=Verificare che il server sia in esecuzione con la funzione richiesta.

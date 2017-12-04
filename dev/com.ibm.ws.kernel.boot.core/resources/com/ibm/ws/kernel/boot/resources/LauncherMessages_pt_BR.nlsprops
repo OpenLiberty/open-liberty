@@ -739,6 +739,21 @@ info.envProductExtension=CWWKE0940I: A extens\u00e3o de produto {0} possui um id
 info.envProductExtension.explanation= A vari\u00e1vel de ambiente WLP_PRODUCT_EXT_DIR aponta para o local da extens\u00e3o de produto. O servidor localizou e est\u00e1 usando a extens\u00e3o de produto.
 info.envProductExtension.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
+error.zosProcStart.procedure.invalid=CWWKE0942E: Falha ao iniciar o procedimento {0} do z/OS STC. O nome do \
+procedimento n\u00e3o \u00e9 v\u00e1lido. Assegure-se de que o nome do procedimento n\u00e3o tenha mais de oito caracteres e n\u00e3o contenha uma v\u00edrgula.
+error.zosProcStart.procedure.invalid.explanation=O nome do procedimento STC especificado pela \
+propriedade WLP_ZOS_PROCEDURE no arquivo server.env n\u00e3o \u00e9 v\u00e1lido. O nome do procedimento n\u00e3o deve ter mais de 8 caracteres e n\u00e3o \
+deve conter v\u00edrgula.
+error.zosProcStart.procedure.invalid.useraction=Verifique se o nome do procedimento n\u00e3o tem mais de oito \
+caracteres e n\u00e3o cont\u00e9m v\u00edrgula.
+
+error.zosProcStart.jobname.invalid=CWWKE0943E: Falha ao iniciar o procedimento {0} do z/OS STC. O nome da tarefa {1} n\u00e3o \u00e9 v\u00e1lido. Assegure-se de que o nome da tarefa n\u00e3o tenha mais de oito caracteres e n\u00e3o contenha v\u00edrgula.
+error.zosProcStart.jobname.invalid.explanation=O nome da tarefa STC especificado pela propriedade \
+WLP_ZOS_JOBNAME no arquivo server.env n\u00e3o \u00e9 v\u00e1lido. O nome da tarefa n\u00e3o deve ter mais de 8 caracteres e n\u00e3o deve conter \
+v\u00edrgula.
+error.zosProcStart.jobname.invalid.useraction=Verifique se o nome da tarefa n\u00e3o tem mais de oito caracteres e n\u00e3o \
+cont\u00e9m v\u00edrgula.
+
 info.serverStarting=Iniciando servidor {0}.
 info.serverStarted=Servidor {0} iniciado.
 info.serverStartedWithPID=O servidor {0} foi \

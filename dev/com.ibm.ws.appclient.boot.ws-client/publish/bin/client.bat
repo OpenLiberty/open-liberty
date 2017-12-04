@@ -155,7 +155,7 @@ goto:eof
 
 :help
   call:installEnv
-  !JAVA_CMD_QUOTED! !JAVA_PARAMS_QUOTED! --help
+  !JAVA_CMD_QUOTED! !JAVA_PARAMS_QUOTED! --help !CLIENT_NAME!
   set RC=%errorlevel%
   call:javaCmdResult
 goto:eof

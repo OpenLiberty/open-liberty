@@ -88,7 +88,8 @@ public class SecondServlet extends HttpServlet {
         String endMsg = "STOP";
 
         if (serverURL == null) {
-            throw (new NullPointerException());
+             System.out.println("serverURL is null, it will not inform the other application that this app is shutting down");
+             return;
         }
 
         System.out.println("MYTEST applicaiton stopped attempting to send to " + serverURL);

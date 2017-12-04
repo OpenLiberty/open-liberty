@@ -456,5 +456,10 @@ ibm:extendsAlias mus\u00ed b\u00fdt v r\u00e1mci hierarchie prvk\u016f extends j
 error.extendsAlias.collision.explanation=V r\u00e1mci jedn\u00e9 hierarchie prvk\u016f extends mus\u00ed b\u00fdt atribut ibm:extendsAlias jedine\u010dn\u00fd.
 error.extendsAlias.collision.useraction=Ka\u017ed\u00fd atribut ibm:extendsAlias mus\u00ed b\u00fdt v r\u00e1mci hierarchie prvk\u016f extends jedine\u010dn\u00fd.
 
+warning.binding.config=CWWKG0101W: Konfigurace s PID (persisted identity) {0} je sv\u00e1z\u00e1na s bal\u00edkem {1}. Konfigurace viditeln\u00e1 pro jin\u00e9 bal\u00edky. 
+warning.binding.config.explanation=Konfigurace je sv\u00e1z\u00e1na s bal\u00edkem vol\u00e1n\u00ed, kdy\u017e je metoda getConfiguration rozhran\u00ed ConfigurationAdmin vol\u00e1na poprv\u00e9. Po sv\u00e1z\u00e1n\u00ed nen\u00ed konfigurace ji\u017e viditeln\u00e1 pro jin\u00e9 bal\u00edky. 
+warning.binding.config.useraction=Chcete-li se ujistit, \u017ee um\u00edst\u011bn\u00ed bal\u00edku je o\u010dek\u00e1van\u00e1 hodnota, pou\u017eijte metodu getConfiguration v rozhran\u00ed ConfigurationAdmin, kde jako druh\u00fd parametr je um\u00edst\u011bn\u00ed bal\u00edku.
+
+
 # Non-TR message
 error.invalidOCDRef=CHYBA: PID metatypu [{0}] ur\u010duje neexistuj\u00edc\u00ed ID definice t\u0159\u00eddy objekt\u016f [{1}].

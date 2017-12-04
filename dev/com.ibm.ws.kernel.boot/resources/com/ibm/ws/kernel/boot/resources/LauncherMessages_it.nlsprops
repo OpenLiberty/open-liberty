@@ -195,7 +195,9 @@ info.frameworkRestart=CWWKE0041I: La cache della piattaforma non \u00e8 sincroni
 info.frameworkRestart.explanation=Il framework \u00e8 stato riavviato perch\u00e9 la cache della piattaforma non \u00e8 sincronizzata.
 info.frameworkRestart.useraction=Non \u00e8 richiesta alcuna azione.
 
-# CWWKE0042E removed because it's only used in com.ibm.ws.kernel.boot.cmdline - Do not reuse.
+error.badVersion=CWWKE0042E: Non \u00e8 in esecuzione la versione di Java corretta. L'ambiente di runtime richiede Java 7 o versione successiva.
+error.badVersion.explanation=\u00c8 in esecuzione una versione di Java non supportata oppure la variabile di sistema JAVA_HOME \u00e8 impostata in modo da puntare ad una versione di Java precedente.
+error.badVersion.useraction= Aggiornare la versione di Java a Java 7 o modificare la variabile di sistema JAVA_HOME in modo che punti a Java 7.
 
 error.unsupportedLaunch=CWWKE0043E: L''ubicazione di avvio non \u00e8 un file locale. ({0})
 error.unsupportedLaunch.explanation=L'ambiente di runtime deve essere avviato da un file locale, come, ad esempio, un file JAR.

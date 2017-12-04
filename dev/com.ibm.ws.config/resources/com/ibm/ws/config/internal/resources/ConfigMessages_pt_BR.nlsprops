@@ -468,5 +468,14 @@ error.extendsAlias.collision=CWWKG0100E: O atributo {2} ibm:extendsAlias est\u00
 error.extendsAlias.collision.explanation=O atributo ibm:extendsAlias deve ser exclusivo dentro de uma hierarquia de extens\u00f5es \u00fanicas.
 error.extendsAlias.collision.useraction=Torne cada atributo ibm:extendsAlias exclusivo dentro da hierarquia de extens\u00f5es.
 
+warning.binding.config=CWWKG0101W: A configura\u00e7\u00e3o com a identidade persistida (PID) {0} est\u00e1 ligada ao pacote \
+configur\u00e1vel {1}. A configura\u00e7\u00e3o n\u00e3o \u00e9 vis\u00edvel a outros pacotes configur\u00e1veis.  
+warning.binding.config.explanation=Uma configura\u00e7\u00e3o est\u00e1 ligada ao pacote configur\u00e1vel de chamada quando o \
+m\u00e9todo getConfiguration da interface ConfigurationAdmin \u00e9 chamado pela primeira vez. Depois que a configura\u00e7\u00e3o \u00e9 ligada, ela n\u00e3o \u00e9 \
+mais vis\u00edvel aos outros pacotes configur\u00e1veis.  
+warning.binding.config.useraction=Para assegurar que o local do pacote configur\u00e1vel seja o valor esperado, use o \
+m\u00e9todo getConfiguration na interface ConfigurationAdmin que obt\u00e9m um local do pacote configur\u00e1vel como o segundo par\u00e2metro.
+
+
 # Non-TR message
 error.invalidOCDRef=ERRO: A PID de metatipo [{0}] especifica o ID de defini\u00e7\u00e3o de classe de objeto n\u00e3o existente [{1}]

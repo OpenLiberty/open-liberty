@@ -53,19 +53,59 @@ public class ValidatorFactoryBuilderImpl implements ValidatorFactoryBuilder {
     private final AtomicServiceReference<ClassLoadingService> classLoadingServiceSR = new AtomicServiceReference<ClassLoadingService>(REFERENCE_CLASSLOADING_SERVICE);
     private final AtomicServiceReference<ValidationReleasableFactory> validationReleasableFactorySR = new AtomicServiceReference<ValidationReleasableFactory>(REFERENCE_VALIDATION_RELEASABLE_FACTORY);
 
+    /**
+     * Privileged action for creating a thread context class loader.
+     */
+    private class CreateThreadContextClassLoaderAction implements PrivilegedAction<ClassLoader> {
+        private final ClassLoader parentCL;
+
+        private CreateThreadContextClassLoaderAction(ClassLoader parentCL) {
+            this.parentCL = parentCL;
+        }
+
+        @Override
+        public ClassLoader run() {
+            return classLoadingServiceSR.getServiceWithException().createThreadContextClassLoader(parentCL);
+        }
+    }
+
+    /**
+     * Privileged action for destroying a thread context class loader.
+     */
+    private class DestroyThreadContextClassLoaderAction implements PrivilegedAction<Void> {
+        private final ClassLoader tccl;
+
+        private DestroyThreadContextClassLoaderAction(ClassLoader tccl) {
+            this.tccl = tccl;
+        }
+
+        @Override
+        public Void run() {
+            classLoadingServiceSR.getServiceWithException().destroyThreadContextClassLoader(tccl);
+            return null;
+        }
+    }
+
     @Override
     public void closeValidatorFactory(ValidatorFactory vf) {
         vf.close();
     }
 
     @Override
-    public ValidatorFactory buildValidatorFactory(ClassLoader appClassLoader, String containerPath) {
+    public ValidatorFactory buildValidatorFactory(final ClassLoader appClassLoader, final String containerPath) {
         ClassLoader tcclClassLoader = null;
         SetContextClassLoaderPrivileged setClassLoader = null;
         ClassLoader oldClassLoader = null;
         try {
             tcclClassLoader = configureBvalClassloader(this.getClass().getClassLoader());
-            ClassLoader bvalClassLoader = new Validation20ClassLoader(appClassLoader, containerPath);
+
+            // consider refactoring to combine multiple privileged actions into one
+            ClassLoader bvalClassLoader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                @Override
+                public ClassLoader run() {
+                    return new Validation20ClassLoader(appClassLoader, containerPath);
+                }
+            });
 
             ThreadContextAccessor tca = System.getSecurityManager() == null ? ThreadContextAccessor.getThreadContextAccessor() : AccessController.doPrivileged(getThreadContextAccessorAction);
 
@@ -108,7 +148,7 @@ public class ValidatorFactoryBuilderImpl implements ValidatorFactoryBuilder {
     };
 
     public void releaseLoader(ClassLoader tccl) {
-        classLoadingServiceSR.getServiceWithException().destroyThreadContextClassLoader(tccl);
+        AccessController.doPrivileged(new DestroyThreadContextClassLoaderAction(tccl));
     }
 
     public ClassLoader configureBvalClassloader(ClassLoader cl) {
@@ -127,7 +167,7 @@ public class ValidatorFactoryBuilderImpl implements ValidatorFactoryBuilder {
     }
 
     private ClassLoader createTCCL(ClassLoader parentCL) {
-        return classLoadingServiceSR.getServiceWithException().createThreadContextClassLoader(parentCL);
+        return AccessController.doPrivileged(new CreateThreadContextClassLoaderAction(parentCL));
     }
 
     @Reference(name = REFERENCE_CLASSLOADING_SERVICE,

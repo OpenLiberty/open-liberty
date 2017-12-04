@@ -14,7 +14,7 @@ bVersion=1.0
 src: \
 	fat/src
 
-test.project: true
+fat.project: true
 
 tested.features: \
   capabilityc-1.0, featuref-1.0, productauto:pfeaturen-1.0, productauto:pfeaturem-1.0, featuree-1.0,\

@@ -33,7 +33,7 @@ Unsupported.op.from.servlet.context.listener.31.useraction=\u4f7f\u7528\u8a3b\u9
 # 
 # Notes for translation:
 # {0} is the application name
-handlerClass.is.null==SRVE9003E: \u96a8 Web \u61c9\u7528\u7a0b\u5f0f {0} \u50b3\u905e\u7684 HttpUpgradeHandler \u7269\u4ef6\u662f\u7a7a\u503c\u3002
+handlerClass.is.null=SRVE9003E: \u96a8 Web \u61c9\u7528\u7a0b\u5f0f {0} \u50b3\u905e\u7684 HttpUpgradeHandler \u7269\u4ef6\u662f\u7a7a\u503c\u3002
 handlerClass.is.null.explanation=\u7121\u6cd5\u5347\u7d1a\u8981\u6c42\uff0c\u56e0\u70ba\u50b3\u905e\u7684 HttpUpgradeHandler \u7269\u4ef6\u662f\u7a7a\u503c\u3002
 handlerClass.is.null.useraction= \u8acb\u78ba\u5b9a\u63d0\u4f9b\u6b63\u78ba\u7684 HttpUpgradeHandler \u7269\u4ef6\u3002
 # --------------------------------

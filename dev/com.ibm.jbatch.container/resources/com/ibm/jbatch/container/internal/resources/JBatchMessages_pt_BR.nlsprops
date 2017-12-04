@@ -325,3 +325,16 @@ info.batch.events.publish.topic.useraction=A raiz do t\u00f3pico JMS em lote pod
 cdi.ambiguous.artifact.names=CWWKY0041W: O cont\u00eainer de lote est\u00e1 em execu\u00e7\u00e3o com um recurso de CDI ativo, mas o mecanismo CDI n\u00e3o p\u00f4de carregar o artefato em lote como um bean gerenciado pelo CDI e executar outras inje\u00e7\u00f5es de CDI. Esse problema pode ser causado por uma anota\u00e7\u00e3o de defini\u00e7\u00e3o de bean ausente, como @Dependent, um modo de descoberta de bean indesejado ou um valor 'ref' amb\u00edguo.
 cdi.ambiguous.artifact.names.explanation=Quando o tempo de execu\u00e7\u00e3o do lote carrega artefatos usando o mecanismo CDI, as propriedades em lote (@BatchProperty) e os contextos em lote (JobContext e StepContext) s\u00e3o injetados e os recursos integrais de CDI s\u00e3o disponibilizados. Esses recursos incluem a inje\u00e7\u00e3o de outros beans gerenciados de acordo com qualificadores e todos os outros recursos do modelo de programa\u00e7\u00e3o CDI. Quando o tempo de execu\u00e7\u00e3o do lote carrega os artefatos sem usar o mecanismo CDI, ele injeta somente as propriedades e os contextos em lote. Como ele n\u00e3o \u00e9 um bean gerenciado pelo CDI nesse caminho, nenhuma outra inje\u00e7\u00e3o ou outro recurso do modelo de programa\u00e7\u00e3o CDI est\u00e1 dispon\u00edvel nesse artefato em lote. Essa mensagem indica que embora o servidor esteja configurado para que o recurso CDI de esteja ativo, o artefato em lote n\u00e3o pode ser carregado como um bean gerenciado pelo CDI porque o valor de atributo 'ref' que corresponde a essa refer\u00eancia de artefato em XML n\u00e3o aponta para um \u00fanico e inequ\u00edvoco bean gerenciado pelo CDI.
 cdi.ambiguous.artifact.names.useraction=Inclua a anota\u00e7\u00e3o @Dependent ou outra anota\u00e7\u00e3o de defini\u00e7\u00e3o de bean adequada em seu artefato em lote. Como alternativa, \u00e9 poss\u00edvel configurar o modo de descoberta de bean como 'all' no arquivo beans.xml, embora essa solu\u00e7\u00e3o possa tornar o aplicativo lento. Se todos os artefatos amb\u00edguos n\u00e3o forem necess\u00e1rios, tamb\u00e9m ser\u00e1 poss\u00edvel remover os atributos 'ref' amb\u00edguos do aplicativo para que somente uma \u00fanica e inequ\u00edvoca refer\u00eancia permanece.
+
+#{0} job/flow/partition
+#{1} The JSL
+display.resolved.jsl=CWWKY0042I:  O JSL resolvido para este {0} \u00e9 \n\
+\ {1}.
+display.resolved.jsl.explanation=O JSL usado para a tarefa, o fluxo ou a parti\u00e7\u00e3o \u00e9 exibido depois que par\u00e2metros e propriedades s\u00e3o resolvidos.  A tarefa JSL n\u00e3o resolve propriedades de plano de parti\u00e7\u00e3o.  Procure essa mensagem nos logs de parti\u00e7\u00e3o individual para resolu\u00e7\u00e3o de propriedade de plano de parti\u00e7\u00e3o.
+display.resolved.jsl.useraction=Verifique se a resolu\u00e7\u00e3o do JSL e do par\u00e2metro \u00e9 a esperada.
+#{0} The JSL
+display.unresolved.jsl=CWWKY0043I:  O JSL n\u00e3o resolvido para esta tarefa \u00e9 \n\
+\ {0}.
+display.unresolved.jsl.explanation=O JSL usado para a tarefa \u00e9 exibido antes de par\u00e2metros e propriedades serem resolvidos.
+display.unresolved.jsl.useraction=Assegure-se de que o nome do arquivo para o JSL esteja correto e verifique se a origem do JSL cont\u00e9m o JSL correto.
+

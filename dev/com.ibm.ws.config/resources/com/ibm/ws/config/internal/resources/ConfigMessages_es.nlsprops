@@ -451,5 +451,10 @@ error.extendsAlias.collision=CWWKG0100E: El atributo {2} ibm:extendsAlias est\u0
 error.extendsAlias.collision.explanation=El atributo ibm:extendsAlias debe ser exclusivo en una jerarqu\u00eda \u00fanica de ampliaciones.
 error.extendsAlias.collision.useraction=Haga que cada atributo ibm:extendsAlias sea exclusivo en la jerarqu\u00eda de ampliaciones.
 
+warning.binding.config=CWWKG0101W: La configuraci\u00f3n con la identidad persistente (PID) {0} est\u00e1 enlazada al paquete {1}. La configuraci\u00f3n no es visible para otros paquetes. 
+warning.binding.config.explanation=Se enlaza una configuraci\u00f3n al paquete que llama cuando se invoca por primera vez el m\u00e9todo getConfiguration de la interfaz ConfigurationAdmin. Una vez que se ha enlazado la configuraci\u00f3n, deja de estar visible a los otros paquetes. 
+warning.binding.config.useraction=Para garantizar que la ubicaci\u00f3n del paquete tenga el valor esperado, utilice el m\u00e9todo getConfiguration en la interfaz ConfigurationAdmin que acepta una ubicaci\u00f3n de paquete como segundo par\u00e1metro.
+
+
 # Non-TR message
 error.invalidOCDRef=ERROR: PID de metatype [{0}] especifica un ID de definici\u00f3n de clase de objeto no existente [{1}]

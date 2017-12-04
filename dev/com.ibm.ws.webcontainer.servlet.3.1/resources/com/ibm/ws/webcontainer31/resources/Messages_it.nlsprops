@@ -33,7 +33,7 @@ Unsupported.op.from.servlet.context.listener.31.useraction=Aggiungere il listene
 # 
 # Notes for translation:
 # {0} is the application name
-handlerClass.is.null==SRVE9003E: L''oggetto HttpUpgradeHandler passato \u00e8 null con applicazione web: {0}.
+handlerClass.is.null=SRVE9003E: L''oggetto HttpUpgradeHandler passato \u00e8 null con applicazione web: {0}.
 handlerClass.is.null.explanation=Impossibile eseguire l'aggiornamento della richiesta perch\u00e9 l'oggetto HttpUpgradeHandler passato \u00e8 null.
 handlerClass.is.null.useraction= Assicurarsi che venga fornito l'oggetto HttpUpgradeHandler corretto.
 # --------------------------------

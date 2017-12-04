@@ -66,6 +66,15 @@ public class Validation20ClassLoader extends ClassLoader {
                 }
                 return super.getResource(resourceName);
             }
+        } else if (moduleHint != null) {
+            try {
+                return getResourceWithHint(resourceName);
+            } catch (IOException e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.error(tc, "IOException", e);
+                }
+                return super.getResource(resourceName);
+            }
         } else {
             return super.getResource(resourceName);
         }
@@ -126,5 +135,31 @@ public class Validation20ClassLoader extends ClassLoader {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "getValidationXml is returning URL : " + validationXml);
         return validationXml;
+    }
+
+    private URL getResourceWithHint(String resourceName) throws IOException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "getResourceWithHint : " + resourceName);
+            Tr.debug(tc, "moduleHint : " + moduleHint);
+        }
+
+        URL resource = null;
+        List<URL> resourceUrls = Collections.list(super.getResources(resourceName));
+        for (URL aUrl : resourceUrls) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "aUrl.getPath(): " + aUrl.getPath());
+            if (aUrl.getPath().contains(moduleHint)) {
+                resource = aUrl;
+            }
+        }
+
+        // Use the first resource if we didn't match on the module.
+        if (resource == null && resourceUrls.size() >= 1) {
+            resource = resourceUrls.get(0);
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "getResourceWithHint is returning URL : " + resource);
+        return resource;
     }
 }

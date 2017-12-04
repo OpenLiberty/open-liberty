@@ -614,7 +614,7 @@ case "$ACTION" in
   
   help)
     installEnv
-    javaCmd --help
+    javaCmd --help "${CLIENT_NAME}"
   ;;  
 
   help:usage)

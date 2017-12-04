@@ -823,3 +823,6 @@ assemble {
     webFragmentDeploymentFailureForUserDataConstraint
     
 }
+
+// We aren't making a war for the entire project
+war { enabled false }

@@ -34,7 +34,6 @@ multiple.beans.xml.warning.CWOWB1001W=CWOWB1001W: Arhiva aplica\u0163ie web {0} 
 multiple.beans.xml.warning.CWOWB1001W.explanation=CDI a g\u0103sit mai mult de un fi\u015fier beans.xml.
 multiple.beans.xml.warning.CWOWB1001W.useraction=Asigura\u0163i-v\u0103 c\u0103 arhiva aplica\u0163iei con\u0163ine doar un fi\u015fier beans.xml.
 
-
 managed.class.bean.class.mismatch.CWOWB1002E=CWOWB1002E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1}
 managed.class.bean.class.mismatch.CWOWB1002E.explanation=MSG0001
 managed.class.bean.class.mismatch.CWOWB1002E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.

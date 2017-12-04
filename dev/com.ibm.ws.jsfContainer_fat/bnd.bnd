@@ -20,7 +20,7 @@ src: \
 	test-applications/JSF22StatelessView/src,\
 	test-applications/noJsfApp/src
 
-test.project: true
+fat.project: true
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
