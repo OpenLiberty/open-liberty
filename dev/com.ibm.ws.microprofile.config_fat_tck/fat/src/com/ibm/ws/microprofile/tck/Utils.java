@@ -34,6 +34,12 @@ public class Utils {
     public static String[] mvnCliPackageRoot;
     static List<String> jarsFromWlp = new ArrayList<String>(3);
 
+    /**
+     * Initialise shared values for a particular server.
+     *
+     * @param server
+     * @throws Exception
+     */
     public static void init(LibertyServer server) throws Exception {
         wlp = server.getInstallRoot();
         home = new File(System.getProperty("user.dir"));
@@ -60,9 +66,9 @@ public class Utils {
      * Resolves a set of "-Djarname=path" type strings to add to the CLI. The path is resolved to existing
      * jar names that match the jarName but also include version numbers etc.
      *
+     * @param server
      * @param nonVersionedJars
-     * @param mvnCliRoot2
-     * @return
+     * @return an array of string that can be added to a ProcessRunner command
      */
     private static String[] getJarCliEnvVars(LibertyServer server, List<String> nonVersionedJars) {
 
@@ -83,7 +89,7 @@ public class Utils {
      *
      * @param a
      * @param b
-     * @return
+     * @return cat a b
      */
     public static String[] concatStringArray(String[] a, String[] b) {
         Stream<String> streamA = Arrays.stream(a);
@@ -92,6 +98,8 @@ public class Utils {
     }
 
     /**
+     * Run a command using a ProcessBuilder
+     *
      * @param cmd
      * @param workingDirectory TODO
      * @param outputFile TODO
@@ -108,6 +116,13 @@ public class Utils {
         return exitCode;
     }
 
+    /**
+     * Find a set of jars in a LibertyServer
+     *
+     * @param jars
+     * @param server
+     * @return a Map that has the jars list parameter as the keySet and the resolved paths as entries.
+     */
     public static Map<String, String> resolveJarPaths(List<String> jars, LibertyServer server) {
         HashMap<String, String> result = new HashMap<String, String>(jars.size());
         for (Iterator<String> iterator = jars.iterator(); iterator.hasNext();) {
@@ -213,7 +228,7 @@ public class Utils {
     /**
      * @param string
      */
-    private static void log(String string) {
+    public static void log(String string) {
         System.out.println("GDH:" + string);
     }
 

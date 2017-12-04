@@ -10,7 +10,7 @@ import org.jboss.arquillian.core.spi.LoadableExtension;
 public class ArquillianLoadableExtension implements LoadableExtension {
 	@Override
 	public void register(ExtensionBuilder extensionBuilder) {
-		System.out.println("WLP: Adding Extension");
+		System.out.println("WLP: Adding Extension com.ibm.ws.microprofile.config.test.ArchiveProcessor");
 		extensionBuilder.service(ApplicationArchiveProcessor.class, ArchiveProcessor.class);
 	}
 }
