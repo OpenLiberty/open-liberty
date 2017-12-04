@@ -62,7 +62,7 @@ public interface ServerEndpointControlMBean {
     /**
      * Query the state of all registered server endpoints.
      *
-     * @return The cumulative state of all registered endpoints
+     * @return True if the cumulative state of all registered endpoints is paused, otherwise false.
      */
     public boolean isPaused();
 

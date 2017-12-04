@@ -38,7 +38,6 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.kernel.server.ServerEndpointControlMBean;
-//import com.ibm.websphere.kernel.server.ServerEndpointControlMBean;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.ExpectedFFDC;
