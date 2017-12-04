@@ -276,7 +276,7 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
         if (System.getSecurityManager() != null) {
             valueExtractors = AccessController.doPrivileged(GetInstancesFromServiceLoader.action(PrivHelper.getContextClassLoader(), ValueExtractor.class));
         } else {
-            valueExtractors = GetInstancesFromServiceLoader.action(PrivHelper.getContextClassLoader(), ValueExtractor.class).run();
+            valueExtractors = GetInstancesFromServiceLoader.action(Thread.currentThread().getContextClassLoader(), ValueExtractor.class).run();
         }
 
         for (ValueExtractor<?> valueExtractor : valueExtractors) {
