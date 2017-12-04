@@ -34,5 +34,5 @@
 
   <variable name="onError" value="FAIL"/>
   
-  <javaPermission codebase="${server.config.dir}/derby/derby*.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${server.config.dir}derby/derby-10.11.1.1.jar" className="java.security.AllPermission"/>
 </server>
