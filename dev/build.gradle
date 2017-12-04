@@ -31,7 +31,9 @@ Workspace.addGestalt(Constants.GESTALT_BATCH, null)
 ext {
   bndWorkspace = new Workspace(rootDir, bnd_cnf).setOffline(gradle.startParameter.offline)
   cnf = rootProject.project(bnd_cnf)
+  buildImage = project(':build.image')
 }
+gradle.bndWorkspaceConfigure(bndWorkspace)
 
 /* Configure the subprojects */
 subprojects {

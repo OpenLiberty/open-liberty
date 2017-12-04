@@ -10,12 +10,11 @@
  *******************************************************************************/
 
 task rmic(type: Exec, dependsOn: compileJava) {
-	String rmicClasspath = compileJava.destinationDir
-    sourceSets.main.compileClasspath.each {
-      rmicClasspath += System.properties['path.separator'] + it
-    }  
-	executable "rmic"
-	args "-iiop",  "-d", compileJava.destinationDir, "-classpath", rmicClasspath, "javax.management.j2ee.Management", "javax.management.j2ee.ManagementHome"
+    String rmicClasspath = sourceSets.main.runtimeClasspath.asPath
+    inputs.files(sourceSets.main.runtimeClasspath)
+    outputs.dir(new File(compileJava.destinationDir, 'org/omg/stub'))
+    executable 'rmic'
+    args '-iiop', '-d', compileJava.destinationDir, '-classpath', rmicClasspath, 'javax.management.j2ee.Management', 'javax.management.j2ee.ManagementHome'
 }
 
 jar {

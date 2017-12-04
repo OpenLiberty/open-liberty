@@ -9,13 +9,16 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 // Global vars
-def autoFvtDir = "${buildDir}/autoFVT"
-def publishDir = autoFvtDir + "/publish"
+ext.autoFvtDir = new File(project.buildDir, 'autoFVT')
+
+// Local vars
+File publishDir = new File(autoFvtDir, 'publish')
 
 publishing {
   publications {
     maven(MavenPublication) {
-      artifactId project.name
+      artifactId project.name + '_autoFVT'
+      groupId 'test'
       version project.version
       artifact zipProjectFVT
     }
@@ -30,47 +33,44 @@ task cleanFat() {
 
 task cleanBeforeRun() {
   doLast {
-    delete autoFvtDir + "/output/", autoFvtDir + "/results"
+    delete new File(autoFvtDir, 'output')
+    delete new File(autoFvtDir, 'results')
   }
 }
 
-task addRequiredLibraries {
+configurations {
+  requiredLibs
+  derby
+}
+
+dependencies {
+  derby 'org.apache.derby:derby:10.11.1.1'
+}
+
+task addRequiredLibraries(type: Copy) {
   shouldRunAfter cleanFat
   shouldRunAfter jar
-  def props = new Properties()
-  file("${rootDir}/generated.properties").withInputStream { props.load(it) }
-  repositories {
-    if (usrHomeProps.exists() && !props.getProperty('artifactory.force.external.repo')) {
-      // If Artifactory is available, use it
-      maven {
-        credentials {
-          username props.getProperty("artifactory.download.user")
-          password props.getProperty("artifactory.download.token")
-        }
-        url ("https://" + props.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty")
-      }
-    } else {
-      // Otherwise, use public maven
-      mavenCentral()
-      maven {
-        url ("http://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/wasliberty-open-liberty/")
-      }
-    }
-  }
-  configurations {
-    libs
-  }
+  from configurations.requiredLibs
+  into new File(autoFvtDir, 'lib')
+}
+
+task addDerby(type: Copy) {
+  shouldRunAfter cleanFat
+  shouldRunAfter jar
+  from configurations.derby
+  into new File(autoFvtDir, 'publish/shared/resources/derby')
+  rename 'derby-.*.jar', 'derby.jar'
 }
 
 task copyFeatureBundles {
   shouldRunAfter assemble
-  enabled file("${projectDir}/test-bundles").exists()
+  enabled project.file('test-bundles').exists()
   doLast {
-    file("${buildDir}/buildfiles").eachLine { String line ->
-      if(!line.contains(project.name + ".jar")) {
+    new File(project.buildDir, 'buildfiles').eachLine { String line ->
+      if (!line.contains(project.name + ".jar")) {
         copy {
           from line
-          into "${buildDir}/autoFVT/publish/files/bundles"
+          into new File(autoFvtDir, 'publish/files/bundles')
         }
       }
     }
@@ -79,10 +79,10 @@ task copyFeatureBundles {
 
 task autoFVT {
   dependsOn jar
-  dependsOn copyMavenLibs
+  dependsOn ':cnf:copyMavenLibs'
   dependsOn addRequiredLibraries
   dependsOn copyFeatureBundles
-  enabled new File("${projectDir}/fat").exists()
+  enabled project.file('fat').exists()
 
   // For now we are just forcing the autoFVT create every time, this will be fixed
   // TODO: Be smart about when to recreate the autoFVT.zip
@@ -90,13 +90,13 @@ task autoFVT {
     // Copy the compiled classes
     copy {
       from compileJava.destinationDir
-      into "${autoFvtDir}/build/classes"
+      into new File(autoFvtDir, 'build/classes')
     }
 
     // Copy the buildtask jars
     copy {
-      from "${rootDir}/cnf/mavenlibs"
-      into "${autoFvtDir}/build/lib"
+      from cnf.file('mavenlibs')
+      into new File(autoFvtDir, 'build/lib')
       include 'asm-all-5.2.jar'
       include 'org.apache.aries.util-*.jar'
       include 'osgi.core*.jar'
@@ -105,49 +105,56 @@ task autoFVT {
 
     // Copy the com.ibm.ws.junit.extensions jar
     copy {
-      from rootProject.project('com.ibm.ws.junit.extensions').buildDir
+      from project(':com.ibm.ws.junit.extensions').buildDir
       include 'com.ibm.ws.junit.extensions.jar'
-      into "${autoFvtDir}/build/lib"
+      into new File(autoFvtDir, 'build/lib')
     }
       
     // Copy the infra jar
     copy {
-      from "${rootDir}/cnf/mavenlibs/infra.buildtasks-core-4.0.0.jar"
-      into "${autoFvtDir}/build/lib"
+      from cnf.file('mavenlibs/infra.buildtasks-core-4.0.0.jar')
+      into new File(autoFvtDir, 'build/lib')
     }
 
     // Copy the bundle jar
     copy {
       from buildDir
       include '*.jar'
-      into "${autoFvtDir}/build/lib"
+      into new File(autoFvtDir, 'build/lib')
     }
     
     // Include JSON-P processor implementation
     copy {
-      from rootProject.project('com.ibm.ws.org.glassfish.json').buildDir
+      from project(':com.ibm.ws.org.glassfish.json').buildDir
       include '*.jar'
-      into "${autoFvtDir}/lib"
+      into new File(autoFvtDir, 'lib')
     }
 
     // Copy the DDL files
     // TODO: Consider if this can be removed, it looks like there's only a single project for this rule
     copy {
-      from "${projectDir}/ddl"
+      from project.file('ddl')
       include '**/*'
-      into "${autoFvtDir}/ddl"
+      into new File(autoFvtDir, 'ddl')
     }
 
-    // Copy the autoFVT-defaults
+    // Copy the static autoFVT-defaults
     copy {
-      from "${rootDir}/fattest.simplicity/autoFVT-defaults"
+      from new File(project(':fattest.simplicity').projectDir, '/autoFVT-defaults')
       include '**/*'
-      into "${autoFvtDir}"
+      into autoFvtDir
     }
-    
+
+    // Copy the dynamic autoFVT-defaults
+    copy {
+      from new File(project(':fattest.simplicity').buildDir, '/autoFVT-defaults')
+      include '**/*'
+      into autoFvtDir
+    }
+
     // Create a fat.bnd.properties file that contains metadata about the FAT
     def bndProps = new Properties()
-    File propsFile = new File("${autoFvtDir}/fat.bnd.properties")
+    File propsFile = new File(autoFvtDir, 'fat.bnd.properties')
     // Check for minimum java level for test execution:
     def minJavaLevel = bnd('runtime.minimum.java.level')
     if(minJavaLevel == null)
@@ -164,54 +171,54 @@ task autoFVT {
     // Copy the component test libs
     // TODO: It looks like the componenttest.app.jar got combined into something else, so this is now way more source in the jar than was there before. This might need changing then.
     copy {
-      from rootProject.project('com.ibm.ws.componenttest').buildDir
+      from project(':com.ibm.ws.componenttest').buildDir
       include 'com.ibm.ws.componenttest.jar'
       rename 'com.ibm.ws.componenttest.jar', 'componenttest.app.jar'
-      into "${autoFvtDir}/lib"
+      into new File(autoFvtDir, 'lib')
     }
 
     // Copy the fattest libs
     copy {
-      from rootProject.project('fattest.simplicity').buildDir
+      from project(':fattest.simplicity').buildDir
       include 'fattest*.*'
-      into "${autoFvtDir}/lib"
+      into new File(autoFvtDir, 'lib')
     }
 
     // TODO: This is to compensate for the fact that the ant build of fattest.simplicity produced this jar but the gradle build doesn't
     copy {
-      from rootProject.project('com.ibm.ws.common.encoder').buildDir
+      from project(':com.ibm.ws.common.encoder').buildDir
       include 'com.ibm.ws.common.encoder.jar'
       rename 'com.ibm.ws.common.encoder.jar', 'fattest.encoder.jar'
-      into "${autoFvtDir}/lib"
+      into new File(autoFvtDir, 'lib')
     }
 
     // Copy the published files
     copy {
-      from "${projectDir}/publish/files", "${autoFvtDir}/publish/files"
+      from project.file('publish/files'), new File(publishDir, 'files')
       include '**/*'
-      into "${autoFvtDir}/lib/LibertyFATTestFiles"
+      into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
     }
 
     // Copy the publish directory (minus the 'files' directory)
     copy {
-      from "${projectDir}/publish"
+      from project.file('publish')
       include '**/*'
       exclude 'files'
-      into "${autoFvtDir}/publish"
+      into publishDir
     }
 
     // Copy the logging libraries over for use while running FATs
     copy {
-      from rootProject.project('com.ibm.ws.logging.core').buildDir
+      from project(':com.ibm.ws.logging.core').buildDir
       include 'com.ibm.ws.logging.core.jar'
-      into "${autoFvtDir}/lib"
+      into new File(autoFvtDir, 'lib')
     }
     
     // Copy all non-java app resourecs, such as *.html or *.jsp
     copy {
       includeEmptyDirs = false
-      from "${projectDir}"
-      into "${autoFvtDir}/"
+      from projectDir
+      into autoFvtDir
       include 'test-applications/**', 'test-bundles/**', 'test-resourceadapters/**'
       exclude '**/*.java'
     }
@@ -223,8 +230,8 @@ task autoFVT {
     if(testedFeatures != null)
       testedFeatures.split(',').each{ featureDeps.add(it.trim().toLowerCase()) }
     // Scan publish/ dir for features
-    if(file("${autoFvtDir}/publish/").exists()) {
-      file("${autoFvtDir}/publish/").eachFileRecurse(groovy.io.FileType.FILES) {
+    if(publishDir.exists()) {
+      publishDir.eachFileRecurse(groovy.io.FileType.FILES) {
         if(it.name.endsWith('.xml')) {
           file(it).eachLine { line ->
             if(line.contains("<feature>")) {
@@ -236,8 +243,8 @@ task autoFVT {
       }
     }
     // Scan FAT files dir for features
-    if(file("${autoFvtDir}/lib/LibertyFATTestFiles").exists()){
-      file("${autoFvtDir}/lib/LibertyFATTestFiles").eachFileRecurse(groovy.io.FileType.FILES) {
+    if(new File(autoFvtDir, 'lib/LibertyFATTestFiles').exists()){
+      new File(autoFvtDir, 'lib/LibertyFATTestFiles').eachFileRecurse(groovy.io.FileType.FILES) {
         if(it.name.endsWith('.xml')) {
           file(it).eachLine { line ->
             if(line.contains("<feature>")) {
@@ -254,7 +261,7 @@ task autoFVT {
       def root = fatDeps { 
     	  "feature-deps" featureDeps
       }
-      new File("${autoFvtDir}/fat-metadata.json").write(new groovy.json.JsonBuilder(root).toPrettyString())
+      new File(autoFvtDir, 'fat-metadata.json').write(new groovy.json.JsonBuilder(root).toPrettyString())
     } else {
       println "This FAT does not test any features."
     }
@@ -263,7 +270,7 @@ task autoFVT {
 
 task zipAutoFVT(type: Zip) {
   dependsOn autoFVT
-  from "${buildDir}/autoFVT"
+  from autoFvtDir
   into 'autoFVT'
   archiveName 'autoFVT.zip'
 }
@@ -282,16 +289,16 @@ task runfat(type: Exec) {
   environment System.getProperties()
   if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
     executable "cmd"
-    args '/c', 'ant', "-f", autoFvtDir + "/TestBuild.xml"
+    args '/c', 'ant', "-f", new File(autoFvtDir, 'TestBuild.xml')
   } else {
     executable "ant"
-    args "-f", autoFvtDir + "/TestBuild.xml"
+    args "-f", new File(autoFvtDir, 'TestBuild.xml')
   }
   doLast {
     // We can have this here because this task only ever runs locally, and thus is OK to unconditionally fail
     // the build. If we ever run FATs in remote builds, we should also gate this on a property like 
     // 'is.running.remote.build' so we don't fail the entire build whenever a testcase fails
-    if(file(autoFvtDir + "/output/fail.log").exists())
+    if(new File(autoFvtDir, "output/fail.log").exists())
       throw new GradleException("The FAT bucket has test failures! See the logs and results for details.")
   }
 }

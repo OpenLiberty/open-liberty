@@ -8,66 +8,47 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-apply from: '../cnf/gradle/scripts/fat.gradle'
-	
 
 configurations {
-  commons
-  derbyEmbedded
-  slf4jjdk
-  deltaspike
-  quartz
-  }
+  deltaspikeWarLibs
+}
+
 dependencies {
-  commons 'commons-logging:commons-logging:1.1.3', 'commons-codec:commons-codec:1.6'
-  derbyEmbedded 'org.apache.derby:derby:10.11.1.1'
-  slf4jjdk 'org.slf4j:slf4j-jdk14:1.7.7', 'org.slf4j:slf4j-api:1.7.7'
-  deltaspike 'org.apache.deltaspike.core:deltaspike-core-api:1.5.0', 'org.apache.deltaspike.core:deltaspike-core-impl:1.5.0', 'org.apache.deltaspike.cdictrl:deltaspike-cdictrl-api:1.5.0', 'org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld:1.5.0', 'org.apache.deltaspike.modules:deltaspike-scheduler-module-api:1.5.0', 'org.apache.deltaspike.modules:deltaspike-scheduler-module-impl:1.5.0'
-  quartz 'org.quartz-scheduler:quartz:2.2.1'
+  requiredLibs 'commons-logging:commons-logging:1.1.3',
+    'commons-codec:commons-codec:1.6'
+  deltaspikeWarLibs 'org.apache.deltaspike.core:deltaspike-core-api:1.5.0',
+    'org.apache.deltaspike.core:deltaspike-core-impl:1.5.0',
+    'org.apache.deltaspike.cdictrl:deltaspike-cdictrl-api:1.5.0',
+    'org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld:1.5.0',
+    'org.apache.deltaspike.modules:deltaspike-scheduler-module-api:1.5.0',
+    'org.apache.deltaspike.modules:deltaspike-scheduler-module-impl:1.5.0',
+    'org.quartz-scheduler:quartz:2.2.1',
+    'org.slf4j:slf4j-jdk14:1.7.7',
+    'org.slf4j:slf4j-api:1.7.7'
 }
 
-task deltaspike (type: Copy) {
-  from configurations.deltaspike
-  into "${buildDir}/autoFVT/test-applications/deltaspikeTest.war/resources/WEB-INF/lib/"
-}
-
-task quartz (type: Copy) {
-  from configurations.quartz
-  into "${buildDir}/autoFVT/test-applications/deltaspikeTest.war/resources/WEB-INF/lib/"
+task addToDeltaspikeWar(type: Copy) {
+  from configurations.deltaspikeWarLibs
+  into new File(autoFvtDir, 'test-applications/deltaspikeTest.war/resources/WEB-INF/lib')
 }
 
 //This task has a different output directory to the generic one in fat.gradle
-task copyCDIFeatureBundle {
-  enabled file("${projectDir}/test-bundles").exists()
+task copyCDIFeatureBundles {
+  enabled project.file('test-bundles').exists()
   doLast {
-    file("${buildDir}/buildfiles").eachLine { String line ->
-      if(!line.contains(project.name + ".jar")) {
+    new File(project.buildDir, 'buildfiles').eachLine { String line ->
+      if (!line.contains(project.name + '.jar')) {
         copy {
           from line
-          into "${buildDir}/autoFVT/publish/bundles"
+          into new File(autoFvtDir, 'publish/bundles')
         }
       }
     }
   }
 }
 
-
 addRequiredLibraries {
-  dependsOn deltaspike
-  dependsOn copyCDIFeatureBundle
-  doLast {
-    copy {
-      from configurations.commons
-      into "${buildDir}/autoFVT/lib/"
-    } 
-    copy {
-      from configurations.derbyEmbedded
-      into "${buildDir}/autoFVT/publish/shared/resources/derby/"
-    } 
-    copy {
-      from configurations.slf4jjdk
-      into "${buildDir}/autoFVT/test-applications/deltaspikeTest.war/resources/WEB-INF/lib/"
-    }
-  }
+  dependsOn addDerby
+  dependsOn addToDeltaspikeWar
+  dependsOn copyCDIFeatureBundles
 }
-

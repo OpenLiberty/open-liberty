@@ -10,10 +10,11 @@
  *******************************************************************************/
 
 task publishEmptyTemplatesFolders {
-  dependsOn publishTemplates
+  outputs.dirs(buildImage.file('wlp/templates/servers/defaultServer/apps'),
+               buildImage.file('wlp/templates/servers/defaultServer/dropins'))
   doLast {
-    file("${rootDir}/build.image/wlp/templates/servers/defaultServer/apps").mkdir()
-    file("${rootDir}/build.image/wlp/templates/servers/defaultServer/dropins").mkdir()
+    buildImage.mkdir('wlp/templates/servers/defaultServer/apps')
+    buildImage.mkdir('wlp/templates/servers/defaultServer/dropins')
   }
 }
 

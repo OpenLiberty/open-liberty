@@ -15,7 +15,7 @@
         
     <jdbcDriver id="derby">
         <library>
-            <fileset dir="${shared.resource.dir}/derby" includes="*.jar" />
+            <fileset dir="${shared.resource.dir}/derby" includes="derby.jar" />
         </library>
     </jdbcDriver>
 

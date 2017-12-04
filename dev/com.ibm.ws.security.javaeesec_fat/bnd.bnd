@@ -29,7 +29,7 @@ src: \
 javac.source: 1.8
 javac.target: 1.8
 
-test.project: true
+fat.project: true
 
 -buildpath: \
 	org.apache.httpcomponents:httpclient;version=4.1.2,\

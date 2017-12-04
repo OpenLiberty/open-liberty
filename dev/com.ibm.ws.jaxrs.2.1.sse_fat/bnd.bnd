@@ -19,7 +19,7 @@ src: \
 	test-applications/BasicSseApp/src,\
 	test-applications/SseJsonbApp/src
 
-test.project: true
+fat.project: true
 
 
 -buildpath: \

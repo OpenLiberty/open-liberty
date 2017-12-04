@@ -18,7 +18,7 @@ src: \
 	test-bundles/com.ibm.ws.persistence.consumer/src,\
 	test-applications/consumer/src
 
-test.project: true
+fat.project: true
 
 -buildpath: \
     com.ibm.websphere.appserver.api.persistence;version=latest,\
