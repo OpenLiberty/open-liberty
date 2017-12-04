@@ -276,6 +276,11 @@ UNABLE_TO_FIND_TOOLS_JAR=The Liberty Java agent could not be attached because th
 
 UNABLE_TO_FIND_JAVA_AGENT=The Liberty Java agent could not be located. This server will run, but it cannot perform functions that require the Java agent, such as monitoring or tracing.
 
+RUN_IN_CHILD_JVM_DEBUG=WLP_JAR_DEBUG was set. The server will run in a separate Java virtual machine.
+RUN_IN_CHILD_JVM_JVM_OPTIONS=The jar contains jvm.options files. The server will run in a separate Java virtual machine.
+RUN_IN_CHILD_JVM_IBM_AGENT_ISSUE=An IBM SDK is being used without the -XX:+EnableHCR option. The server will run in a separate Java virtual machine.
+RUN_IN_CHILD_JVM_JRE=A Java runtime environment installation is being used. The server will run in a separate Java virtual machine.
+
 # messages for LicenseSelfEctractor
 LICENSE_invalidInstall=The {0} directory is not a valid Liberty installation. Specify the root directory of the Liberty installation that you want to upgrade.
 LICENSE_invalidVersion=The license cannot be upgraded because the specified product installation is at version {0}, but the license can only be upgraded from version {1}.

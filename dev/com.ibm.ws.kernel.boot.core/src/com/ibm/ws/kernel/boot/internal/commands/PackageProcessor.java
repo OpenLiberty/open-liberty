@@ -17,9 +17,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.jar.Attributes;
@@ -52,7 +54,7 @@ public class PackageProcessor implements ArchiveProcessor {
 
     private final BootstrapConfig bootProps;
 
-    private final List<Pair<PackageOption, String>> options;
+    private final Map<PackageOption, String> options;
 
     public static final String PACKAGE_ARCHIVE_ENTRY_PREFIX = "wlp/";
 
@@ -77,7 +79,13 @@ public class PackageProcessor implements ArchiveProcessor {
         this.packageFile = packageFile;
         this.bootProps = bootProps;
         this.installRoot = bootProps.getInstallRoot();
-        this.options = options;
+        
+        this.options = new HashMap<PackageOption, String>();
+        if (options != null) {
+            for (Pair<PackageOption, String> option : options) {
+                this.options.put(option.getPairKey(), option.getPairValue());
+            }
+        }
 
         this.wlpUserDir = bootProps.getUserRoot();
         this.processConfigDir = bootProps.getConfigFile(null);
@@ -92,19 +100,9 @@ public class PackageProcessor implements ArchiveProcessor {
      * @return true if --include=usr was specified on the package command.
      */
     private boolean isIncludeOptionEqualToUsr() {
-        if (options == null) {
-            return false;
-        }
+        String val = options.get(PackageOption.INCLUDE);
 
-        for (Pair<PackageOption, String> option : options) {
-            if (PackageOption.INCLUDE.equals(option.getPairKey())) {
-                if (IncludeOption.USR.getValue().equals(option.getPairValue())) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return IncludeOption.USR.matches(val);
     }
 
     /**
@@ -139,21 +137,9 @@ public class PackageProcessor implements ArchiveProcessor {
      * @return true if --include=runnable was specified on the package command.
      */
     private boolean doesIncludeOptionHaveRunnable() {
-        if (options == null) {
-            return false;
-        }
+        String val =  options.get(PackageOption.INCLUDE);
 
-        for (Pair<PackageOption, String> option : options) {
-            if (PackageOption.INCLUDE.equals(option.getPairKey())) {
-                if (IncludeOption.RUNNABLE.getValue().equals(option.getPairValue()) ||
-                    IncludeOption.ALLRUNNABLE.getValue().equals(option.getPairValue()) ||
-                    IncludeOption.MINIFYRUNNABLE.getValue().equals(option.getPairValue())) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return IncludeOption.RUNNABLE.matches(val);
     }
 
     /**
@@ -219,26 +205,21 @@ public class PackageProcessor implements ArchiveProcessor {
                 //add any meta-inf folder content, and the auto-extract code.
                 archive.addEntryConfigs(createSelfExtractEntryConfigs());
             }
-            if (null == options || options.isEmpty()) {
+            if (options.isEmpty()) {
                 archive.addEntryConfigs(createAllConfigs(processName, runtimeOnly));
             } else {
+                String val = options.get(PackageOption.INCLUDE);
                 // process all the options here
-                for (Pair<PackageOption, String> option : options) {
-                    if (PackageOption.INCLUDE.equals(option.getPairKey())) {
-                        String val = option.getPairValue();
-                        if (includeAllorRunnable(val)) {
-                            archive.addEntryConfigs(createAllConfigs(processName, runtimeOnly));
-                        } else if (includeUsr(val)) {
-                            archive.addEntryConfigs(createUsrConfigs(processName, true));
-                        } else if (bootProps.getProcessType() != BootstrapConstants.LOC_PROCESS_TYPE_CLIENT &&
-                                   includeMinifyorMinifyRunnable(val)) {
-                            archive.addEntryConfigs(createMinifyConfigs(processName));
-                        } else {
-                            System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("warn.packageServer.include.unknownOption"), val));
-                            archive.addEntryConfigs(createAllConfigs(processName, runtimeOnly));
-                        }
-                    }
-                    // other conditions
+                if (includeAllorRunnable(val)) {
+                    archive.addEntryConfigs(createAllConfigs(processName, runtimeOnly));
+                } else if (includeUsr(val)) {
+                    archive.addEntryConfigs(createUsrConfigs(processName, true));
+                } else if (bootProps.getProcessType() != BootstrapConstants.LOC_PROCESS_TYPE_CLIENT &&
+                           includeMinifyorMinifyRunnable(val)) {
+                    archive.addEntryConfigs(createMinifyConfigs(processName));
+                } else {
+                    System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("warn.packageServer.include.unknownOption"), val));
+                    archive.addEntryConfigs(createAllConfigs(processName, runtimeOnly));
                 }
             }
             archive.create();
@@ -266,15 +247,7 @@ public class PackageProcessor implements ArchiveProcessor {
      * Otherwise return false.
      */
     private boolean includeAllorRunnable(String val) {
-        if (IncludeOption.ALL.getValue().equals(val)) {
-            return true;
-        } else if (IncludeOption.RUNNABLE.getValue().equals(val)) {
-            return true;
-        } else if (IncludeOption.ALLRUNNABLE.getValue().equals(val)) {
-            return true;
-        } else {
-            return false;
-        }
+        return IncludeOption.ALL.matches(val) || IncludeOption.RUNNABLE.matches(val);
     }
 
     /*
@@ -285,13 +258,7 @@ public class PackageProcessor implements ArchiveProcessor {
      * Otherwise return false.
      */
     private boolean includeMinifyorMinifyRunnable(String val) {
-        if (IncludeOption.MINIFY.getValue().equals(val)) {
-            return true;
-        } else if (IncludeOption.MINIFYRUNNABLE.getValue().equals(val)) {
-            return true;
-        } else {
-            return false;
-        }
+        return IncludeOption.MINIFY.matches(val);
     }
 
     /*
@@ -301,11 +268,7 @@ public class PackageProcessor implements ArchiveProcessor {
      * Otherwise return false.
      */
     private boolean includeUsr(String val) {
-        if (IncludeOption.USR.getValue().equals(val)) {
-            return true;
-        } else {
-            return false;
-        }
+        return IncludeOption.USR.matches(val);
     }
 
     private List<ArchiveEntryConfig> createSelfExtractEntryConfigs() throws IOException {
@@ -717,7 +680,7 @@ public class PackageProcessor implements ArchiveProcessor {
 
     // include option values
     public enum IncludeOption {
-        ALL("all"), USR("usr"), MINIFY("minify"), WLP("wlp"), RUNNABLE("runnable"), ALLRUNNABLE("all,runnable"), MINIFYRUNNABLE("minify,runnable");
+        ALL("all"), USR("usr"), MINIFY("minify"), WLP("wlp"), RUNNABLE("runnable");
         private final String value;
 
         private IncludeOption(String value) {
@@ -728,6 +691,16 @@ public class PackageProcessor implements ArchiveProcessor {
             return value;
         }
 
+        public boolean matches(String optionValue) {
+            if (optionValue != null) {
+                String[] optionValues = optionValue.split(",");
+                for (String option : optionValues) {
+                    if (option.equalsIgnoreCase(value)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
     }
-
 }
