@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/
 apply from: '../cnf/gradle/scripts/fat.gradle'
+ *******************************************************************************/
 	
 dependencies {
   requiredLibs 'org.hamcrest:hamcrest-all:1.3'
