@@ -27,6 +27,14 @@ public class ConfigTckPackageTest {
     @Server("FATServer")
     public static LibertyServer server;
 
+//    <systemPath>${api.stable}com.ibm.websphere.org.eclipse.microprofile.config.${mpconfig.version}_${mpconfig.bundle.version}.${version.qualifier}.jar</systemPath>
+//    <systemPath>${lib}com.ibm.ws.microprofile.config_${liberty.version}.jar</systemPath>
+//    <systemPath>${lib}com.ibm.ws.microprofile.config.cdi_${liberty.version}.jar</systemPath>
+
+    String[] jarsUsed = { "com.ibm.websphere.org.eclipse.microprofile.config",
+                          "com.ibm.ws.microprofile.config",
+                          "com.ibm.ws.microprofile.config.cdi" };
+
     private static String className;
     private static String packageName;
     static {
@@ -52,6 +60,7 @@ public class ConfigTckPackageTest {
             Utils.init(server);
         }
         File mvnOutput = new File(Utils.home, "mvnOut_TCK");
+        System.out.print("GDH FIND");
         int rc = Utils.runCmd(Utils.mvnCliTckRoot, Utils.tckRunnerDir, mvnOutput);
     }
 

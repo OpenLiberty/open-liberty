@@ -18,6 +18,7 @@ addRequiredLibraries {
       derby
       configTck
     }
+    
     // Define G:A:V coordinates of each dependency
     dependencies {
       derby 'org.apache.derby:derbynet:10.11.1.1'
@@ -29,11 +30,34 @@ addRequiredLibraries {
       from configurations.derby
       into "${buildDir}/autoFVT/lib/"
     }
-    // Copy jars needed by the tckRunner
+    // Copy jars needed by the tckRunner e.g. hamcrest
     copy {
       from configurations.configTck
       into "${buildDir}/autoFVT/publish/tckRunner/lib"
     }
+    
+    def projectVersion = (isRelease ? bnd.buildID : "1.0.${qualifier}-SNAPSHOT")
+    if (releaseVersionOverride != null) {
+      projectVersion = releaseVersionOverride
+    }
+    project.version = bnd('Bundle-Version', projectVersion)
+    
+    
+    // Create a fat.bnd.properties file that contains metadata about the FAT
+    def props = new Properties()
+    File propsFile = new File("${buildDir}/autoFVT/publish/tckRunner/jarNaming.properties")
+    props.setProperty("Freddy", "Mercury" )
+    props.setProperty("qualifier", "${qualifier}")
+    props.setProperty("ver", project.version )
+    props.setProperty("ver2", projectVersion )
+    props.setProperty("ver3", bnd.buildID )
+
+   
+    def writer = new FileWriter(propsFile)
+    try {
+      props.store(writer, null)
+    } finally {
+      writer.close()
+    }
   }
 }
-	
